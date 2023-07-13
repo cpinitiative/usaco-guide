@@ -306,20 +306,12 @@ private static class Centroid {
 #include <bits/stdc++.h>
 using namespace std;
 
-const int MN = 1e5 + 10, INF = 0x3f3f3f3f;
+vector<vector<int>> adj;
+vector<int> subtree_size, min_dist;
+vector<bool> is_removed;
+vector<vector<pair<int, int>>> ancestors;
 
-int N, M;
-int subtree_size[MN], min_dist[MN];
-int t, b, dist;
-bool is_removed[MN];
-vector<int> adj[MN];
-
-struct Ancestor {
-	int n, dist;
-};
-vector<Ancestor> ancestors[MN];
-
-int get_subtree_size(int node, int parent = 0) {
+int get_subtree_size(int node, int parent = -1) {
 	subtree_size[node] = 1;
 	for (int child : adj[node]) {
 		if (child == parent || is_removed[child]) { continue; }
@@ -328,7 +320,7 @@ int get_subtree_size(int node, int parent = 0) {
 	return subtree_size[node];
 }
 
-int get_centroid(int node, int tree_size, int parent = 0) {
+int get_centroid(int node, int tree_size, int parent = -1) {
 	for (int child : adj[node]) {
 		if (child == parent || is_removed[child]) { continue; }
 		if (subtree_size[child] * 2 > tree_size) {
@@ -338,23 +330,22 @@ int get_centroid(int node, int tree_size, int parent = 0) {
 	return node;
 }
 
-void get_dists(int node, int parent = 0) {
+void get_dists(int node, int centroid, int parent = -1, int cur_dist = 1) {
 	for (int child : adj[node]) {
 		if (child == parent || is_removed[child]) { continue; }
-		++dist;
-		get_dists(child, node);
-		--dist;
+		++cur_dist;
+		get_dists(child, centroid, node, cur_dist);
+		--cur_dist;
 	}
-	ancestors[node].push_back({t, dist});
+	ancestors[node].push_back({centroid, cur_dist});
 }
 
-void build_centroid_decomp(int node = 1) {
+void build_centroid_decomp(int node = 0) {
 	int centroid = get_centroid(node, get_subtree_size(node));
 
 	for (int child : adj[centroid]) {
 		if (is_removed[child]) { continue; }
-		t = centroid, dist = 1;
-		get_dists(child, centroid);
+		get_dists(child, centroid, centroid);
 	}
 
 	is_removed[centroid] = true;
@@ -365,33 +356,51 @@ void build_centroid_decomp(int node = 1) {
 	}
 }
 
+void paint(int node) {
+	for (auto &[ancestor, dist] : ancestors[node]) {
+		min_dist[ancestor] = min(min_dist[ancestor], dist);
+	}
+	min_dist[node] = 0;
+}
+
+void query(int node) {
+	int ans = min_dist[node];
+	for (auto &[ancestor, dist] : ancestors[node]) {
+		if (!dist) { continue; }
+		ans = min(ans, dist + min_dist[ancestor]);
+	}
+
+	cout << ans << "\n";
+}
+
 int main() {
-	scanf("%d%d", &N, &M);
-	for (int i = 0, a, b; i + 1 < N; ++i) {
-		scanf("%d%d", &a, &b);
+	int N, M;
+	cin >> N >> M;
+	
+	adj.assign(N, vector<int>());
+	for (int i = 0, a, b; i < N - 1; ++i) {
+		cin >> a >> b;
+		a--, b--;
 		adj[a].push_back(b);
 		adj[b].push_back(a);
 	}
 
+	subtree_size.assign(N, 0);
+	ancestors.assign(N, vector<pair<int, int>>());
+	is_removed.assign(N, false);
 	build_centroid_decomp();
 
-	memset(min_dist, INF, sizeof min_dist);
-	for (int i = 0, t = 1, n = 1; i <= M; ++i) {
+	min_dist.assign(N, 1e9);
+	paint(0);
+	for (int i = 0, t, v; i < M; ++i) {
+		cin >> t >> v;
+		v--;
 		if (t == 1) {
-			for (auto x : ancestors[n]) {
-				min_dist[x.n] = min(min_dist[x.n], x.dist);
-			}
-			min_dist[n] = 0;
+			paint(v);
 		} else {
-			int ans = min_dist[n];
-			for (auto x : ancestors[n]) {
-				if (!x.dist) { continue; }
-				ans = min(ans, x.dist + min_dist[x.n]);
-			}
-			printf("%d\n", ans);
+			query(v);
 		}
 
-		if (i < M) { scanf("%d%d", &t, &n); }
 	}
 }
 ```
