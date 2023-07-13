@@ -7,7 +7,7 @@ author: Daniel Ge
 
 ## Implementation
 
-**Time Complexity:** $\mathcal{O}(N)$
+**Time Complexity:** $\mathcal{O}(n)$
 
 <LanguageSection>
 <CPPSection>
@@ -16,7 +16,7 @@ author: Daniel Ge
 #include <bits/stdc++.h>
 using namespace std;
 
-// used for topological sort
+// Used for topological sort
 int indegree[26];
 vector<int> conn[26];
 vector<int> sorted;
@@ -39,30 +39,41 @@ void topological_sort() {
 int main() {
 	ios_base::sync_with_stdio(0);
 	cin.tie(nullptr);
-	int N;
-	string cur, prev;  // we make sure each pair of consecutive strings are in
-	                   // the right order
+	int n;
+	// We make sure each pair of consecutive strings are in the right order
+	string cur, prev;  
 
-	cin >> N >> prev;  // no previous string to compare the first string to, so
-	                   // read directly into prev
-	for (int i = 1; i < N; i++) {
+	/*
+	 No previous string to compare the first string to, 
+	 so we read it directly into prev
+	*/
+	cin >> n >> prev;  
+	for (int i = 1; i < n; i++) {
 		cin >> cur;
 
-		int leng =
-		    min(prev.length(), cur.length());  // maximum length to compare
-		int j;
-		for (j = 0; j < leng; j++) {
-			if (prev[j] != cur[j]) {
-				// as soon as we see a difference,
-				// we make sure the alphabetic follows the order presented
-				indegree[int(cur[j]) - 97]++;
-				conn[int(prev[j]) - 97].push_back(int(cur[j]) - 97);
+		// Maximum length to compare
+		int leng = min(prev.length(), cur.length());  
+		// How long the prefix has been the same for
+		int samed = 0;
+
+		while (samed < leng) {
+			if (prev[samed] != cur[samed]) {
+				/*
+				 As soon as we see a difference, we make sure 
+				 the alphabetic follows the order presented
+				*/
+				int ncur = int(cur[samed]) - 97, nprev = int(prev[samed]) - 97;
+				indegree[ncur] ++;
+				conn[nprev].push_back(ncur);
 				break;
 			}
+			samed ++;
 		}
-		if ((j == leng) && (prev.length() > cur.length())) {
-			// if cur is a prefix of prev, then it is already impossible
-			// for cur to be lexicographically more than prev
+		/*
+			If cur is a prefix of prev, then it is already impossible 
+			for cur to be lexicographically more than prev
+		*/
+		if ((samed == leng) && (prev.length() > cur.length())) {
 			cout << "Impossible" << endl;
 			return 0;
 		}
@@ -71,8 +82,8 @@ int main() {
 
 	topological_sort();
 
+	// If topological sort not completeable, it's impossible
 	if (sorted.size() < 26) {
-		// if topological sort not complete-able, it's impossible
 		cout << "Impossible" << endl;
 	} else {
 		for (auto s : sorted) { cout << char(s + 97); }
