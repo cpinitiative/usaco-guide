@@ -197,46 +197,49 @@ General centroid code is shown below.
 <!-- pulled from https://codeforces.com/contest/1303/submission/76216413, which I think is my most recent centroid problem -->
 
 ```cpp
-vector<int> adj[maxn];  // adjacency list
-bool is_removed[MN];
-int subtree_size[MN];
+vector<vector<int>> adj;
+vector<bool> is_removed;
+vector<int> subtree_size;
 
-int dfs(int u, int parent = 0) {
-	subtree_size[u] = 1;
-	for (int v : adj[u]) {
-		if (v != parent && !is_removed[v]) { subtree_size[u] += dfs(v, u); }
+/** DFS to calculate the size of the subtree rooted at `node` */ 
+int get_subtree_size(int node, int parent = -1) {
+	subtree_size[node] = 1;
+	for (int child : adj[node]) {
+		if (child == parent || is_removed[child]) { continue; }
+		subtree_size[node] += get_subtree_size(child, node);
 	}
-
-	return subtree_size[u];
+	return subtree_size[node];
 }
 
-/*
- * This function returns a centroid (a tree may have
- * two centroids) of the subtree containing node u
- * after node removals
- * @param u current node
- * @param sz size of current subtree after node removals
+/**
+ * Returns a centroid (a tree may have two centroids) of the subtree
+ * containing node `node` after node removals
+ * @param node current node
+ * @param tree_size size of current subtree after node removals
  * @param parent parent of u
  * @return first centroid found
  */
-int get_centroid(int u, int sz, int parent = 0) {
-	for (int v : adj[u]) {
-		if (v != parent && !is_removed[v]) {
-			if (subtree_size[v] * 2 > sz) { return get_centroid(v, sz, u); }
+int get_centroid(int node, int tree_size, int parent = -1) {
+	for (int child : adj[node]) {
+		if (child == parent || is_removed[child]) { continue; }
+		if (subtree_size[child] * 2 > tree_size) {
+			return get_centroid(child, tree_size, node);
 		}
 	}
-	return u;
+	return node;
 }
 
-void solve(int root = 1) {
-	int c = get_centroid(root, dfs(root));
+/** Build up the centroid decomposition recursively */
+void build_centroid_decomp(int node = 0) {
+	int centroid = get_centroid(node, get_subtree_size(node));
 
 	// do something
 
-	is_removed[c] = true;  // remove current centroid
-	// solve subtrees
-	for (int v : adj[c]) {
-		if (!is_removed[v]) { solve(v); }
+	is_removed[centroid] = true;
+
+	for (int child : adj[centroid]) {
+		if (is_removed[child]) { continue; }
+		build_centroid_decomp(child);
 	}
 }
 ```
