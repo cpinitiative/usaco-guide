@@ -1,0 +1,159 @@
+---
+id: cf-1732C1
+source: CF
+title: "Sheikh (Easy version)"
+author: Ryan Chou
+---
+
+[Official Editorial](https://codeforces.com/blog/entry/108327)
+
+<Spoiler title="Hint 1">
+What's the maximum value of $f(l, r) = \operatorname{sum}(l, r) - \operatorname{xor}(l, r)$?
+</Spoiler>
+
+<Spoiler title="Hint 1 (answer)">
+Note that since the XOR of two numbers can never grow _more_ than their sum, adding another number to our range cannot ever make our answer worse.
+
+Thus, the maximum value of $f(l, r)$ is $f(1, n)$.
+We've now reduced the problem to finding the minimum-length subsegment that achieves this maximum!
+</Spoiler>
+
+<Spoiler title="Solution">
+## Explanation
+
+From the hint, we now just have to find the minimum-length subsegment that achieves the maximum value of $f(l, r)$.
+
+Remember that since the XOR of two numbers can never grow more than their sum, including extra elements will never make our answer worse. Therefore, our length is actually monotonically increasing<Asterisk>If $x$ works, then $x + 1$ will always work.</Asterisk>!
+
+Now, we can simply binary search on the length and check if there exists a subsegment of that length that has a cost equal to $f(1, n)$. Unfortunately, this is still too slow since calculating costs takes linear time.
+
+To fix this, we need some method of calculating range sums and range XORs in constant time. This is where [prefix sums](/silver/prefix-sums) and prefix XORs come in!
+Since XOR and addition are associative and have [identity elements](https://en.wikipedia.org/wiki/Identity_element), we can use the same concept with them! If we let $p_i = a_1 \oplus a_2 \oplus \dots \oplus a_i$, then we can calculate the XOR of the range $[l, r]$ as $p_r \oplus p_{l - 1}$.
+
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N \log N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using ll = long long;
+
+int main() {
+	int tc;
+	cin >> tc;
+
+	for (int _ = 0; _ < tc; _++) {
+		int n, q;
+		cin >> n >> q;
+		vector<ll> pref_sum(n + 1);
+		vector<ll> pref_xor(n + 1);
+
+		auto cost = [&](int l, int r) {
+			return (pref_sum[r] - pref_sum[l - 1]) -
+			       (pref_xor[r] ^ pref_xor[l - 1]);
+		};
+
+		for (int i = 0; i < n; i++) {
+			int x;
+			cin >> x;
+
+			pref_sum[i + 1] = x + pref_sum[i];
+			pref_xor[i + 1] = x ^ pref_xor[i];
+		}
+
+		int L, R;
+		cin >> L >> R;
+
+		// binary search on length
+		ll best_cost = cost(1, n);
+
+		int lo = 1, hi = n;
+		while (lo < hi) {
+			int mid = lo + (hi - lo) / 2;
+			bool possible = 0;
+
+			for (int i = 1; i + mid - 1 <= n; i++) {
+				// if this segment has the most optimal cost
+				if (cost(i, i + mid - 1) == best_cost) {
+					possible = 1;
+					break;
+				}
+			}
+
+			if (possible) {
+				hi = mid;
+			} else {
+				lo = mid + 1;
+			}
+		}
+
+		for (int i = 1; i + lo - 1 <= n; i++) {
+			// this was the segment we found
+			if (cost(i, i + lo - 1) == best_cost) {
+				cout << i << ' ' << i + lo - 1 << endl;
+				break;
+			}
+		}
+	}
+}
+```
+</CPPSection>
+
+<PySection>
+
+```py
+tc = int(input())
+
+for _ in range(tc):
+	n, q = map(int, input().split())
+
+	pref_sum = [0] * (n + 1)
+	pref_xor = [0] * (n + 1)
+
+	cost = lambda l, r: (pref_sum[r] - pref_sum[l - 1]) - (
+		pref_xor[r] ^ pref_xor[l - 1]
+	)
+
+	a = list(map(int, input().split()))
+	for i in range(n):
+		pref_sum[i + 1] = a[i] + pref_sum[i]
+		pref_xor[i + 1] = a[i] ^ pref_xor[i]
+
+	_, _ = map(int, input().split())
+
+	# binary search on length
+	best_cost = cost(1, n)
+
+	lo = 1
+	hi = n
+
+	while lo < hi:
+		mid = lo + (hi - lo) // 2
+		possible = False
+
+		for i in range(1, n - mid + 2):
+			# if this segment has the most optimal cost
+			if cost(i, i + mid - 1) == best_cost:
+				possible = True
+				break
+
+		if possible:
+			hi = mid
+		else:
+			lo = mid + 1
+
+	for i in range(1, n - lo + 2):
+		# this was the segment we found
+		if cost(i, i + lo - 1) == best_cost:
+			print(i, i + lo - 1)
+			break
+```
+</PySection>
+</LanguageSection>
+</Spoiler>
