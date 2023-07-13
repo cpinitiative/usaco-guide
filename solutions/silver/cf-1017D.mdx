@@ -66,14 +66,10 @@ int main() {
 			int all_same = (1 << n) - 1;
 			int diff = i ^ j;
 			int wu_value = wu[all_same] - wu[diff];
-			if (wu_value <= max_k) {
-				pref_wu[i][wu_value] += str_count[j];
-			}
+			if (wu_value <= max_k) { pref_wu[i][wu_value] += str_count[j]; }
 		}
 		// accumulate prefix sums of count
-		for (int j = 1; j <= max_k; j++) {
-			pref_wu[i][j] += pref_wu[i][j-1];
-		}
+		for (int j = 1; j <= max_k; j++) { pref_wu[i][j] += pref_wu[i][j - 1]; }
 	}
 
 	for (int query = 0; query < q; query++) {
@@ -87,7 +83,6 @@ int main() {
 		cout << pref_wu[val][k] << "\n";
 	}
 }
-
 ```
 </CPPSection>
 </LanguageSection>
