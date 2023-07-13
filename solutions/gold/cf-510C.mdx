@@ -5,9 +5,25 @@ title: Fox And Names
 author: Daniel Ge
 ---
 
+## Solution
+The key idea here is to perform topological sort on the characters of the alphabet. 
+
+We find what must come before what by comparing consecutive strings. If string $name_i$ is lexicographically less than $name_{i+1}$, we compare only the first occurence of a different letter. In other words, we take the common prefix out and compare the first letters. For example, if we are given,
+```
+axcd
+axbe
+```
+We see that the common prefix is "ax", so the first pair of differing letters is 'c' and 'b'. Since "axcd" comes first, that means 'c' comes before 'b' in the desired alphabet.
+
+In the special case that one word is the prefix of the other such as the case with,
+```
+abc
+abcde
+```
+We just check whether the second (lexicographically greater) string is longer as is supposed to be the case according to the problem statement. If this is indeed not the case, then we can just output "Impossible".
 ## Implementation
 
-**Time Complexity:** $\mathcal{O}(n)$
+**Time Complexity:** $\mathcal{O}(n\text{ |name}_i|)$
 
 <LanguageSection>
 <CPPSection>
