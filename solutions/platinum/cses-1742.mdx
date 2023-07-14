@@ -40,38 +40,38 @@ const int ENDING_VALUE = INT_MAX;
 // BeginCodeSnip{Segment Tree Code}
 class Segtree {
   private:
-    vector<int> t;
+	vector<int> t;
 
   public:
-    Segtree(int N) { t.resize(3 * N); }
-    void update(int node, int l, int r, int idx, int val) {
-        if (l == r) {
-            t[node] += val;
-            return;
-        }
-        int mid = (l + r) / 2;
-        if (idx <= mid) {
-            update(2 * node, l, mid, idx, val);
-        } else {
-            update(2 * node + 1, mid + 1, r, idx, val);
-        }
-        t[node] = t[2 * node] + t[2 * node + 1];
-    }
-    int query(int node, int l, int r, int x, int y) {
-        if (r < x || l > y) return 0;
-        if (x <= l && r <= y) return t[node];
-        int mid = (l + r) / 2;
-        return query(2 * node, l, mid, x, y) +
-               query(2 * node + 1, mid + 1, r, x, y);
-    }
+	Segtree(int N) { t.resize(3 * N); }
+	void update(int node, int l, int r, int idx, int val) {
+		if (l == r) {
+			t[node] += val;
+			return;
+		}
+		int mid = (l + r) / 2;
+		if (idx <= mid) {
+			update(2 * node, l, mid, idx, val);
+		} else {
+			update(2 * node + 1, mid + 1, r, idx, val);
+		}
+		t[node] = t[2 * node] + t[2 * node + 1];
+	}
+	int query(int node, int l, int r, int x, int y) {
+		if (r < x || l > y) return 0;
+		if (x <= l && r <= y) return t[node];
+		int mid = (l + r) / 2;
+		return query(2 * node, l, mid, x, y) +
+		       query(2 * node + 1, mid + 1, r, x, y);
+	}
 };
 // EndCodeSnip
 
 struct Point {
-    ll x, y;
+	ll x, y;
 };
 struct Segment {
-    ll a, b, x, y;
+	ll a, b, x, y;
 };
 
 int n;
@@ -81,189 +81,189 @@ vector<Segment> segments, original_segments;
 map<char, pair<int, int>> dir;
 
 struct event {
-    ll x, y, id;
-    bool operator<(const event &other) {
-        if (x == other.x)
-            return (0 <= id && id < n && 0 <= other.id && other.id < n)
-                       ? segments[id].b < segments[other.id].b
-                       : id < other.id;
+	ll x, y, id;
+	bool operator<(const event &other) {
+		if (x == other.x)
+			return (0 <= id && id < n && 0 <= other.id && other.id < n)
+			           ? segments[id].b < segments[other.id].b
+			           : id < other.id;
 
-        return x < other.x;
-    }
+		return x < other.x;
+	}
 };
 
 void coordinate_compression(vector<Segment> &v) {
-    vector<ll> compressx, compressy;
+	vector<ll> compressx, compressy;
 
-    compressx.push_back(0);
-    compressy.push_back(0);
+	compressx.push_back(0);
+	compressy.push_back(0);
 
-    for (auto seg : v) {
-        compressx.push_back(seg.a);
-        compressx.push_back(seg.x);
-        compressy.push_back(seg.b);
-        compressy.push_back(seg.y);
-    }
+	for (auto seg : v) {
+		compressx.push_back(seg.a);
+		compressx.push_back(seg.x);
+		compressy.push_back(seg.b);
+		compressy.push_back(seg.y);
+	}
 
-    sort(all(compressx));
-    compressx.erase(unique(all(compressx)), compressx.end());
-    sort(all(compressy));
-    compressy.erase(unique(all(compressy)), compressy.end());
+	sort(all(compressx));
+	compressx.erase(unique(all(compressx)), compressx.end());
+	sort(all(compressy));
+	compressy.erase(unique(all(compressy)), compressy.end());
 
-    for (Segment &seg : v) {
-        seg.a = lower_bound(all(compressx), seg.a) - compressx.begin() + 1;
-        seg.x = lower_bound(all(compressx), seg.x) - compressx.begin() + 1;
+	for (Segment &seg : v) {
+		seg.a = lower_bound(all(compressx), seg.a) - compressx.begin() + 1;
+		seg.x = lower_bound(all(compressx), seg.x) - compressx.begin() + 1;
 
-        seg.b = lower_bound(all(compressy), seg.b) - compressy.begin() + 1;
-        seg.y = lower_bound(all(compressy), seg.y) - compressy.begin() + 1;
+		seg.b = lower_bound(all(compressy), seg.b) - compressy.begin() + 1;
+		seg.y = lower_bound(all(compressy), seg.y) - compressy.begin() + 1;
 
-        if (seg.a > seg.x) swap(seg.a, seg.x);
-        if (seg.b > seg.y) swap(seg.b, seg.y);
-        max_height = max(max_height, seg.b);
-        max_height = max(max_height, seg.y);
-    }
+		if (seg.a > seg.x) swap(seg.a, seg.x);
+		if (seg.b > seg.y) swap(seg.b, seg.y);
+		max_height = max(max_height, seg.b);
+		max_height = max(max_height, seg.y);
+	}
 }
 
 bool intersect(int idx) {
-    vector<event> events;
-    for (int i = 0; i <= idx; i++) {
-        if (segments[i].a == segments[i].x) {
-            events.push_back({segments[i].a, segments[i].b, i});
-        } else {
-            events.push_back({segments[i].a, segments[i].b, BEGINNING_VALUE});
-            events.push_back({segments[i].x, segments[i].y, ENDING_VALUE});
-        }
-    }
-    sort(all(events));
+	vector<event> events;
+	for (int i = 0; i <= idx; i++) {
+		if (segments[i].a == segments[i].x) {
+			events.push_back({segments[i].a, segments[i].b, i});
+		} else {
+			events.push_back({segments[i].a, segments[i].b, BEGINNING_VALUE});
+			events.push_back({segments[i].x, segments[i].y, ENDING_VALUE});
+		}
+	}
+	sort(all(events));
 
-    Segtree sg(max_height);
-    Segment last_vertical_line = {0, 0, 0, 0};
-    for (auto event : events) {
-        if (event.id == BEGINNING_VALUE) {
-            // Beginning of a horizontal line
-            sg.update(1, 1, max_height, event.y, 1);
-            // Check for horizontal-horizontal intersection
-            if (sg.query(1, 1, max_height, event.y, event.y) > 1) return true;
-        } else if (event.id == ENDING_VALUE) {
-            // Ending of a horizontal line
-            sg.update(1, 1, max_height, event.y, -1);
-        } else {
-            // Checking for vertical-horizontal intersection
-            if (sg.query(1, 1, max_height, segments[event.id].b,
-                         segments[event.id].y) > 0)
-                return true;
-            // Checking for vertical-vertical intersection
-            if (segments[event.id].a == last_vertical_line.a &&
-                segments[event.id].b <= last_vertical_line.y &&
-                segments[event.id].y > last_vertical_line.b)
-                return true;
-            last_vertical_line = segments[event.id];
-        }
-    }
-    return false;
+	Segtree sg(max_height);
+	Segment last_vertical_line = {0, 0, 0, 0};
+	for (auto event : events) {
+		if (event.id == BEGINNING_VALUE) {
+			// Beginning of a horizontal line
+			sg.update(1, 1, max_height, event.y, 1);
+			// Check for horizontal-horizontal intersection
+			if (sg.query(1, 1, max_height, event.y, event.y) > 1) return true;
+		} else if (event.id == ENDING_VALUE) {
+			// Ending of a horizontal line
+			sg.update(1, 1, max_height, event.y, -1);
+		} else {
+			// Checking for vertical-horizontal intersection
+			if (sg.query(1, 1, max_height, segments[event.id].b,
+			             segments[event.id].y) > 0)
+				return true;
+			// Checking for vertical-vertical intersection
+			if (segments[event.id].a == last_vertical_line.a &&
+			    segments[event.id].b <= last_vertical_line.y &&
+			    segments[event.id].y > last_vertical_line.b)
+				return true;
+			last_vertical_line = segments[event.id];
+		}
+	}
+	return false;
 }
 
 int main() {
-    cin >> n;
+	cin >> n;
 
-    dir['R'] = {1, 0};
-    dir['L'] = {-1, 0};
-    dir['U'] = {0, 1};
-    dir['D'] = {0, -1};
+	dir['R'] = {1, 0};
+	dir['L'] = {-1, 0};
+	dir['U'] = {0, 1};
+	dir['D'] = {0, -1};
 
-    ll a = 0, b = 0;
-    for (int i = 0; i < n; i++) {
-        char c;
-        int steps;
-        cin >> c >> steps;
+	ll a = 0, b = 0;
+	for (int i = 0; i < n; i++) {
+		char c;
+		int steps;
+		cin >> c >> steps;
 
-        ll x = a + dir[c].first * steps;
-        ll y = b + dir[c].second * steps;
+		ll x = a + dir[c].first * steps;
+		ll y = b + dir[c].second * steps;
 
-        if (i > 0) {
-            a += dir[c].first;
-            b += dir[c].second;
-        }
+		if (i > 0) {
+			a += dir[c].first;
+			b += dir[c].second;
+		}
 
-        direction.push_back(c);
+		direction.push_back(c);
 
-        segments.push_back({a, b, x, y});
-        original_segments.push_back({a, b, x, y});
+		segments.push_back({a, b, x, y});
+		original_segments.push_back({a, b, x, y});
 
-        a = x, b = y;
-    }
+		a = x, b = y;
+	}
 
-    coordinate_compression(segments);
+	coordinate_compression(segments);
 
-    // Binary search
-    int l = 0, r = n - 1, last = r;
-    while (l <= r) {
-        // Check if the first mid segments intersect
-        int mid = (l + r) >> 1;
-        if (!intersect(mid)) l = mid + 1, last = mid;
-        else r = mid - 1;
-    }
+	// Binary search
+	int l = 0, r = n - 1, last = r;
+	while (l <= r) {
+		// Check if the first mid segments intersect
+		int mid = (l + r) >> 1;
+		if (!intersect(mid)) l = mid + 1, last = mid;
+		else r = mid - 1;
+	}
 
-    auto dist = [](Segment seg) {
-        return abs(seg.x - seg.a) + abs(seg.y - seg.b) + 1;
-    };
-    // Check if segment a and b intersect
-    auto intersect = [](Segment a, Segment b) {
-        if (a.a > a.x) swap(a.a, a.x);
-        if (a.b > a.y) swap(a.b, a.y);
-        if (b.b > b.y) swap(b.b, b.y);
-        if (b.a > b.x) swap(b.a, b.x);
-        if (a.b == a.y && b.b == b.y && a.b == b.b)
-            return a.a <= b.x && a.x > b.a;
-        if (a.a == a.x && b.a == b.x && a.a == b.a)
-            return a.b <= b.y && a.y > b.b;
-        if (a.a == a.x && b.b == b.y)
-            return a.b <= b.b && b.b <= a.y && b.a <= a.a && b.x >= a.a;
-        if (a.b == a.y && b.a == b.x)
-            return b.b <= a.b && a.b <= b.y && a.a <= b.a && a.x >= b.a;
-        return false;
-    };
+	auto dist = [](Segment seg) {
+		return abs(seg.x - seg.a) + abs(seg.y - seg.b) + 1;
+	};
+	// Check if segment a and b intersect
+	auto intersect = [](Segment a, Segment b) {
+		if (a.a > a.x) swap(a.a, a.x);
+		if (a.b > a.y) swap(a.b, a.y);
+		if (b.b > b.y) swap(b.b, b.y);
+		if (b.a > b.x) swap(b.a, b.x);
+		if (a.b == a.y && b.b == b.y && a.b == b.b)
+			return a.a <= b.x && a.x > b.a;
+		if (a.a == a.x && b.a == b.x && a.a == b.a)
+			return a.b <= b.y && a.y > b.b;
+		if (a.a == a.x && b.b == b.y)
+			return a.b <= b.b && b.b <= a.y && b.a <= a.a && b.x >= a.a;
+		if (a.b == a.y && b.a == b.x)
+			return b.b <= a.b && a.b <= b.y && a.a <= b.a && a.x >= b.a;
+		return false;
+	};
 
-    // Add up all the segment lengths before the intersection
-    ll ans = -1;
-    for (int i = 0; i <= last; i++) ans += dist(original_segments[i]);
+	// Add up all the segment lengths before the intersection
+	ll ans = -1;
+	for (int i = 0; i <= last; i++) ans += dist(original_segments[i]);
 
-    // Check if there are no intersections & if the next segment is useless
-    if (last == n - 1 ||
-        (direction[last + 1] == 'D' && direction[last] == 'U') ||
-        (direction[last + 1] == 'U' && direction[last] == 'D') ||
-        (direction[last + 1] == 'L' && direction[last] == 'R') ||
-        (direction[last + 1] == 'R' && direction[last] == 'L')) {
-        printf("%lli\n", ans);
-        return 0;
-    }
+	// Check if there are no intersections & if the next segment is useless
+	if (last == n - 1 ||
+	    (direction[last + 1] == 'D' && direction[last] == 'U') ||
+	    (direction[last + 1] == 'U' && direction[last] == 'D') ||
+	    (direction[last + 1] == 'L' && direction[last] == 'R') ||
+	    (direction[last + 1] == 'R' && direction[last] == 'L')) {
+		printf("%lli\n", ans);
+		return 0;
+	}
 
-    // Find the length of the incomplete segment - the one that causes the
-    // intersection
-    char c = direction[last + 1];
-    Segment seg = original_segments[last + 1];
-    l = 0, r = dist(seg);
-    ll add = 0;
-    // Binary search its length
-    while (l <= r) {
-        int mid = (l + r) >> 1;
-        Segment new_seg = {seg.a, seg.b, seg.a + dir[c].first * mid,
-                           seg.b + dir[c].second * mid};
-        bool ok = 1;
-        // Check if this length causes an intersection with other segment
-        for (int i = 0; i < last && ok; i++) {
-            if (intersect(new_seg, original_segments[i])) ok = 0;
-        }
-        if (ok) {
-            l = mid + 1, add = dist(new_seg) + !(new_seg.a == new_seg.x &&
-                                                 new_seg.x == new_seg.y);
-        } else {
-            r = mid - 1;
-        }
-    }
-    cout << ans + add;
+	// Find the length of the incomplete segment - the one that causes the
+	// intersection
+	char c = direction[last + 1];
+	Segment seg = original_segments[last + 1];
+	l = 0, r = dist(seg);
+	ll add = 0;
+	// Binary search its length
+	while (l <= r) {
+		int mid = (l + r) >> 1;
+		Segment new_seg = {seg.a, seg.b, seg.a + dir[c].first * mid,
+		                   seg.b + dir[c].second * mid};
+		bool ok = 1;
+		// Check if this length causes an intersection with other segment
+		for (int i = 0; i < last && ok; i++) {
+			if (intersect(new_seg, original_segments[i])) ok = 0;
+		}
+		if (ok) {
+			l = mid + 1, add = dist(new_seg) + !(new_seg.a == new_seg.x &&
+			                                     new_seg.x == new_seg.y);
+		} else {
+			r = mid - 1;
+		}
+	}
+	cout << ans + add;
 
-    return 0;
+	return 0;
 }
 ```
 </CPPSection>
