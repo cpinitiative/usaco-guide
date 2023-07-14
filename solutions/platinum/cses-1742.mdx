@@ -74,7 +74,7 @@ struct Segment {
 };
 
 int n;
-ll max_y;
+ll max_height;
 vector<char> direction;
 vector<Segment> segments, original_segments;
 const map<char, pair<int, int>> dir;
@@ -118,8 +118,8 @@ void coordinate_compression(vector<Segment> &v) {
 
 		if (seg.a > seg.x) swap(seg.a, seg.x);
 		if (seg.b > seg.y) swap(seg.b, seg.y);
-		max_y = max(max_y, seg.b);
-		max_y = max(max_y, seg.y);
+		max_height = max(max_height, seg.b);
+		max_height = max(max_height, seg.y);
 	}
 }
 
@@ -135,7 +135,7 @@ bool intersect(int idx) {
 	}
 	sort(all(events));
 
-	Segtree sg(max_y);
+	Segtree sg(max_height);
 	Segment last_vertical_line = {0, 0, 0, 0};
 	for (auto event : events) {
 		if (event.id == BEGINNING_VALUE) {
