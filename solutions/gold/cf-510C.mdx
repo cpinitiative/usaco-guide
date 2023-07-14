@@ -33,36 +33,34 @@ We just check whether the second (lexicographically greater) string is longer as
 using namespace std;
 
 // Used for topological sort
-int indegree[26];
-vector<int> conn[26];
+vector<int> indegree = vector<int>(26, 0);
+vector<vector<int>> conn = vector<vector<int>>(26, vector<int>());
 vector<int> sorted;
 
 void topological_sort() {
 	queue<int> q;
 	for (int i = 0; i < 26; i++) {
-		if (indegree[i] == 0) q.push(i);
+		if (indegree[i] == 0) { q.push(i); }
 	}
 	while (!q.empty()) {
 		int pos = q.front();
 		q.pop();
 		sorted.push_back(pos);
 		for (auto c : conn[pos]) {
-			if ((--indegree[c]) == 0) q.push(c);
+			if ((--indegree[c]) == 0) { q.push(c); }
 		}
 	}
 }
 
 int main() {
-	ios_base::sync_with_stdio(0);
-	cin.tie(nullptr);
 	int n;
 	// We make sure each pair of consecutive strings are in the right order
 	string cur, prev;  
 
 	/*
-	 No previous string to compare the first string to, 
-	 so we read it directly into prev
-	*/
+	 * No previous string to compare the first string to, 
+	 * so we read it directly into prev
+	 */
 	cin >> n >> prev;  
 	for (int i = 1; i < n; i++) {
 		cin >> cur;
@@ -75,9 +73,9 @@ int main() {
 		while (samed < leng) {
 			if (prev[samed] != cur[samed]) {
 				/*
-				 As soon as we see a difference, we make sure 
-				 the alphabetic follows the order presented
-				*/
+				 * As soon as we see a difference, we make sure 
+				 * the alphabetic follows the order presented
+				 */
 				int ncur = int(cur[samed]) - 97, nprev = int(prev[samed]) - 97;
 				indegree[ncur] ++;
 				conn[nprev].push_back(ncur);
@@ -86,9 +84,9 @@ int main() {
 			samed ++;
 		}
 		/*
-			If cur is a prefix of prev, then it is already impossible 
-			for cur to be lexicographically more than prev
-		*/
+		 * If cur is a prefix of prev, then it is already impossible 
+		 * for cur to be lexicographically more than prev
+		 */
 		if ((samed == leng) && (prev.length() > cur.length())) {
 			cout << "Impossible" << endl;
 			return 0;
