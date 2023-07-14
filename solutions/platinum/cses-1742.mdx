@@ -48,15 +48,18 @@ class Segtree {
 			t[node] += val;
 			return;
 		}
-		int mid = (l + r) >> 1;
-		if (idx <= mid) update(2 * node, l, mid, idx, val);
-		else update(2 * node + 1, mid + 1, r, idx, val);
+		int mid = (l + r) / 2;
+		if (idx <= mid) {
+			update(2 * node, l, mid, idx, val);
+		} else {
+			update(2 * node + 1, mid + 1, r, idx, val);
+		}
 		t[node] = t[2 * node] + t[2 * node + 1];
 	}
 	int query(int node, int l, int r, int x, int y) {
 		if (r < x || l > y) return 0;
 		if (x <= l && r <= y) return t[node];
-		int mid = (l + r) >> 1;
+		int mid = (l + r) / 2;
 		return query(2 * node, l, mid, x, y) +
 		       query(2 * node + 1, mid + 1, r, x, y);
 	}
@@ -156,7 +159,7 @@ bool intersect(int idx) {
 }
 
 int main() {
-	scanf("%d ", &n);
+	cin >> n;
 
 	dir['R'] = {1, 0};
 	dir['L'] = {-1, 0};
@@ -167,7 +170,7 @@ int main() {
 	for (int i = 0; i < n; i++) {
 		char c;
 		int steps;
-		scanf("%c %d ", &c, &steps);
+		cin >> c >> steps;
 		ll x = a + dir[c].first * steps;
 		ll y = b + dir[c].second * steps;
 		if (i > 0) {
@@ -248,7 +251,7 @@ int main() {
 			r = mid - 1;
 		}
 	}
-	printf("%lli\n", ans + add);
+	cout << ans + add;
 
 	return 0;
 }
