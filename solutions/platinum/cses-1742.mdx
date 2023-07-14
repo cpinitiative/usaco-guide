@@ -93,18 +93,22 @@ struct event {
 
 void coordinate_compression(vector<Segment> &v) {
 	vector<ll> compressx, compressy;
+	
 	compressx.push_back(0);
 	compressy.push_back(0);
+
 	for (auto seg : v) {
 		compressx.push_back(seg.a);
 		compressx.push_back(seg.x);
 		compressy.push_back(seg.b);
 		compressy.push_back(seg.y);
 	}
+
 	sort(all(compressx));
 	compressx.erase(unique(all(compressx)), compressx.end());
 	sort(all(compressy));
 	compressy.erase(unique(all(compressy)), compressy.end());
+
 	for (Segment &seg : v) {
 		seg.a = lower_bound(all(compressx), seg.a) - compressx.begin() + 1;
 		seg.x = lower_bound(all(compressx), seg.x) - compressx.begin() + 1;
@@ -174,7 +178,7 @@ int main() {
 
 		ll x = a + dir[c].first * steps;
 		ll y = b + dir[c].second * steps;
-		
+
 		if (i > 0) {
 			a += dir[c].first;
 			b += dir[c].second;
