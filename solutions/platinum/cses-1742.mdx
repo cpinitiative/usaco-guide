@@ -195,7 +195,7 @@ int main() {
 		return abs(seg.x - seg.a) + abs(seg.y - seg.b) + 1;
 	};
 	// Check if segment a and b intersect
-	auto intersect = [&](Segment a, Segment b) {
+	auto intersect = [](Segment a, Segment b) {
 		if (a.a > a.x) swap(a.a, a.x);
 		if (a.b > a.y) swap(a.b, a.y);
 		if (b.b > b.y) swap(b.b, b.y);
@@ -237,13 +237,16 @@ int main() {
 		Segment new_seg = {seg.a, seg.b, seg.a + dir[c].first * mid,
 		                   seg.b + dir[c].second * mid};
 		bool ok = 1;
-		// Check if this lenth causes an intersection with other segment
-		for (int i = 0; i < last && ok; i++)
+		// Check if this length causes an intersection with other segment
+		for (int i = 0; i < last && ok; i++) {
 			if (intersect(new_seg, original_segments[i])) ok = 0;
-		if (ok)
+		}
+		if (ok) {
 			l = mid + 1, add = dist(new_seg) + !(new_seg.a == new_seg.x &&
 			                                     new_seg.x == new_seg.y);
-		else r = mid - 1;
+		} else {
+			r = mid - 1;
+		}
 	}
 	printf("%lli\n", ans + add);
 
