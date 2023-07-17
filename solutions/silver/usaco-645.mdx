@@ -73,9 +73,7 @@ void search() {
 
 	// compute prefix/suffix minimums and maximums
 	pref[0] = {cows[0].second, cows[0].second};
-	for (int i = 1; i < N; ++i) {
-		pref[i] = upd(pref[i - 1], cows[i].second);
-	}
+	for (int i = 1; i < N; ++i) { pref[i] = upd(pref[i - 1], cows[i].second); }
 
 	suf[N - 1] = {cows[N - 1].second, cows[N - 1].second};
 	for (int i = N - 2; i >= 0; i--) {
@@ -84,16 +82,16 @@ void search() {
 
 	// initial area with one enclosure
 	ll area = (ll)(cows.back().first - cows.front().first) *
-						(pref.back().second - pref.back().first);
+	          (pref.back().second - pref.back().first);
 
 	ll best = LLONG_MAX;
 	for (int i = 0; i < N - 1; ++i) {
 		// if it's possible to split
 		if (cows[i].first != cows[i + 1].first) {
 			ll first_rect = (ll)(cows[i].first - cows[0].first) *
-								(pref[i].second - pref[i].first);
+			                (pref[i].second - pref[i].first);
 			ll second_rect = (ll)(cows.back().first - cows[i + 1].first) *
-								 (suf[i + 1].second - suf[i + 1].first);
+			                 (suf[i + 1].second - suf[i + 1].first);
 
 			best = min(best, first_rect + second_rect);
 		}
@@ -109,14 +107,12 @@ int main() {
 	cin >> N;
 	cows.resize(N);
 
-	for (pair<int, int> &cow : cows)
-		cin >> cow.first >> cow.second;
+	for (pair<int, int> &cow : cows) cin >> cow.first >> cow.second;
 
 	// try all splits on x axis
 	search();
 
-	for (pair<int, int> &cow : cows)
-		swap(cow.first, cow.second);
+	for (pair<int, int> &cow : cows) swap(cow.first, cow.second);
 
 	// try all splits on y axis
 	search();
@@ -138,38 +134,40 @@ n = int(input())
 cows = [list(map(int, input().split())) for _ in range(n)]
 ans = 0
 
+
 def search():
-    global ans
+	global ans
 
-    cows.sort()
+	cows.sort()
 
-    upd = lambda x, y:(min(x[0], y), max(x[1], y))
+	upd = lambda x, y: (min(x[0], y), max(x[1], y))
 
 	# compute prefix/suffix minimums and maximums
-    pref = [(cows[0][1], cows[0][1])]
-    for i in range(1, n):
-        pref.append(upd(pref[-1], cows[i][1]))
+	pref = [(cows[0][1], cows[0][1])]
+	for i in range(1, n):
+		pref.append(upd(pref[-1], cows[i][1]))
 
-    suf = [(cows[-1][1], cows[-1][1])]
-    for i in range(n - 2, -1, -1):
-        suf.append(upd(suf[-1], cows[i][1]))
-    suf.reverse()
+	suf = [(cows[-1][1], cows[-1][1])]
+	for i in range(n - 2, -1, -1):
+		suf.append(upd(suf[-1], cows[i][1]))
+	suf.reverse()
 
-    # initial area with one enclosure
-    area = (cows[-1][0] - cows[0][0]) * (pref[-1][1] - pref[-1][0])
-    best = float('inf')
+	# initial area with one enclosure
+	area = (cows[-1][0] - cows[0][0]) * (pref[-1][1] - pref[-1][0])
+	best = float("inf")
 
-    for i in range(n - 1):
-        # if it's possible to split
-        if cows[i][0] != cows[i + 1][0]:
-            first_rect = (cows[i][0] - cows[0][0]) * \
-                         (pref[i][1] - pref[i][0])
-            second_rect = (cows[-1][0] - cows[i + 1][0]) * \
-                          (suf[i + 1][1] - suf[i + 1][0])
+	for i in range(n - 1):
+		# if it's possible to split
+		if cows[i][0] != cows[i + 1][0]:
+			first_rect = (cows[i][0] - cows[0][0]) * (pref[i][1] - pref[i][0])
+			second_rect = (cows[-1][0] - cows[i + 1][0]) * (
+				suf[i + 1][1] - suf[i + 1][0]
+			)
 
-            best = min(best, first_rect + second_rect)
+			best = min(best, first_rect + second_rect)
 
-    ans = max(ans, area - best)
+	ans = max(ans, area - best)
+
 
 # try all splits on x axis
 search()
