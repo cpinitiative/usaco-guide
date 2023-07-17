@@ -9,15 +9,61 @@ author: Paul Chen
 
 # Explanation
 
-**Observation 1**: Notice that $x \ AND \ y + x \ OR \ y = x + y$, so the total sum of all the elements never changes.
+<Spoiler title="Hint 1">
 
-**Observation 2**: Notice that during each operation, the number and position of the set bits don't change. For instance, let $x = 110_2$, $y = 101_2$. $x \ AND \ y = 100_2$, and $x \ OR \ y = 111_2$. Before and after the operation, there are two $1$ bits that are set, one $2$ bit that is set, and one $4$ bit that is set.
+Notice that $x \ AND \ y + x \ OR \ y = x + y$, so the total sum of all the elements never changes.
 
-**Observation 3**: Notice when performing an operation, $\sum_{i=1}^{n}{a_i^2}$ increases when $|x - y|$ increases. Thus, we want to keep performing operations such that $|x - y|$ increases. In fact, because $x \ AND \ y \leq \min(x, y)$ and $x \ OR \ y \geq \max(x, y)$, performing an operation will never decrease $|x - y|$.
+<Spoiler title="Why is this true?">
 
-Therefore, the optimal configuration occurs when it is impossible to change $|x - y|$ with more operations. This happens when, for any two values $a_i$ and $a_j$, $a_i \ AND \ a_j = \min(a_i, a_j)$, and $a_i \ OR \ a_j = \max(a_i, a_j)$. In other words, when we sort the optimal configuration in ascending order, $a_i \ AND \ a_{i + 1} = a_i$.
+Let's analyze how much each bit position contributes to the sum. For every $i$, let $A$ be the $i$-th rightmost bit of $x$ and $B$ be the $i$-th rightmost bit of $y$ ($A, B \in \{0, 1\}$). 
 
-The optimal configuration can be built by handling each bit separately. This approach takes into account Observation 2, which states that no operations will alter the bits. For instance, consider the array, `[1, 5, 4, 7, 3]`. In binary form, it is represented as `[001, 101, 100, 111, 011]`. To structure this array optimally, move all the set bits to one end. This results in the reconfigured array: `[000, 001, 101, 111, 111]`. In decimal form, this new array reads `[0, 1, 5, 7, 7]`. Finally, find the sum of squares of the elements in this new array. The resulting total provides the desired solution.
+By trying out all possible cases for $a$ and $b$, we get that $A \ AND \ B + A \ OR \ B = A + B$. 
+
+Summing each of these bit positions gives us $x \ AND \ y + x \ OR \ y = x + y$.
+
+</Spoiler>
+
+</Spoiler>
+
+<Spoiler title="Hint 2">
+
+Notice that before and after each operation, the amount of active bits at each position don't change. 
+
+For example, let $x = 110_2$, $y = 101_2$. $x \ AND \ y = 100_2$, and $x \ OR \ y = 111_2$.
+
+- The rightmost bit of $y$ is active, as well as the rightmost bit of $x \ OR \ y$.
+
+- The second rightmost bit of $x$ is active, as well as the second rightmost bit of $x \ OR \ y$.
+
+- The third rightmost bits of $x$ and $y$ are active, as well as the third rightmost bits of $x \ AND \ y$ and $x \ OR \ y$.
+
+Before and after the operations, there is always one active bit in the rightmost position, one active bit in the second rightmost position, and two active bits in the third rightmost position.
+
+</Spoiler>
+
+<Spoiler title="Hint 3">
+
+Notice when performing an operation, $\sum_{i=1}^{n}{a_i^2}$ increases when $|x - y|$ increases.
+
+</Spoiler>
+
+<Spoiler title="Solution">
+
+We want to keep performing operations such that $|x - y|$ increases. In fact, because $x \ AND \ y \leq \min(x, y)$ and $x \ OR \ y \geq \max(x, y)$, performing an operation will never decrease $|x - y|$. Therefore, the optimal configuration occurs when it is impossible to change $|x - y|$ with more operations. This happens when, for any two values $a_i$ and $a_j$, $a_i \ AND \ a_j = \min(a_i, a_j)$, and $a_i \ OR \ a_j = \max(a_i, a_j)$. In other words, when we sort the optimal configuration in ascending order, $a_i \ AND \ a_{i + 1} = a_i$.
+
+The optimal configuration can be built by handling each bit separately. This approach takes into account Hint 2, which states that no operations will alter the amount of active bits at a given position. For each bit position, move all the active bits at position to the right end of the array.
+
+For example, consider the array, `[1, 5, 4, 7, 3]`, which can be represented in binary form as `[001, 101, 100, 111, 011]`.
+
+1. For the rightmost position, we move all the active bits to the right end of the array. After this operation, the array becomes `[000, 101, 101, 111, 011]`.
+
+2. For the second rightmost position, we don't need to take any action as all the active bits are already at the right end of the array.
+
+3. For the third rightmost position, we move all the active bits to the right end of the array. This results in the array `[000, 001, 101, 111, 111]`.
+
+This results in the reconfigured array: `[000, 001, 101, 111, 111]`. In decimal form, this new array reads `[0, 1, 5, 7, 7]`. Finally, find the sum of squares of the elements in this new array. The resulting total provides the desired solution.
+
+</Spoiler>
 
 ## Implementation
 
@@ -32,6 +78,8 @@ The optimal configuration can be built by handling each bit separately. This app
 #include <bits/stdc++.h>
 using namespace std;
 
+const int MAX_BIT = 20;
+
 int main() {
 	int n;
 	cin >> n;
@@ -40,9 +88,9 @@ int main() {
 		cin >> a[i];
 	}
 
-	// Count the number of set bits at each position.
-	vector<int> num_bits(20);
-	for (int i = 0; i < 20; i++) {
+	// Count the number of active bits at each position.
+	vector<int> num_bits(MAX_BIT);
+	for (int i = 0; i < MAX_BIT; i++) {
 		for (int j = 0; j < n; j++) {
 			if (a[j] & (1ll << i)) {
 				num_bits[i]++;
@@ -50,12 +98,14 @@ int main() {
 		}
 	}
 
-	// Create the optimal array and calculate the sum of the squares of the new
-	// array.
+	/* 
+		Create the optimal array and calculate 
+		the sum of the squares of the new array.
+	*/
 	long long ans = 0;
 	for (int i = 0; i < n; i++) {
 		long long new_val = 0;
-		for (int j = 0; j < 20; j++) {
+		for (int j = 0; j < MAX_BIT; j++) {
 			if (num_bits[j]) {
 				new_val |= (1ll << j);
 				num_bits[j]--;
@@ -75,19 +125,23 @@ int main() {
 import java.io.*;
 import java.util.*;
 
-class AndOrSquareSum {
-	public static void main(String[] args) {
-		Scanner sc = new Scanner(System.in);
+public class AndOrSquareSum {
+	public final static int MAX_BIT = 20;
 
-		int n = sc.nextInt();
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+		int n = Integer.parseInt(br.readLine().trim());
 		int[] a = new int[n];
+
+		String[] inputs = br.readLine().trim().split(" ");
 		for (int i = 0; i < n; i++) {
-			a[i] = sc.nextInt();
+			a[i] = Integer.parseInt(inputs[i]);
 		}
 
-		// Count the number of set bits at each position.
-		int[] num_bits = new int[20];
-		for (int i = 0; i < 20; i++) {
+		// Count the number of active bits at each position.
+		int[] num_bits = new int[MAX_BIT];
+		for (int i = 0; i < MAX_BIT; i++) {
 			for (int j = 0; j < n; j++) {
 				if ((a[j] & (1L << i)) != 0) {
 					num_bits[i]++;
@@ -95,12 +149,14 @@ class AndOrSquareSum {
 			}
 		}
 
-		// Create the optimal array and calculate the sum of the squares of the
-		// new array.
+		/*
+			Create the optimal array and calculate 
+			the sum of the squares of the new array.
+		*/
 		long ans = 0;
 		for (int i = 0; i < n; i++) {
 			long new_val = 0;
-			for (int j = 0; j < 20; j++) {
+			for (int j = 0; j < MAX_BIT; j++) {
 				if (num_bits[j] != 0) {
 					new_val |= (1L << j);
 					num_bits[j]--;
@@ -119,21 +175,24 @@ class AndOrSquareSum {
 <PySection>
 
 ```py
+MAX_BIT = 20
+
 n = int(input())
 a = list(map(int, input().split()))
 
-# Count the number of set bits at each position.
-num_bits = [0]*20
-for i in range(20):
+# Count the number of active bits at each position.
+num_bits = [0]*MAX_BIT
+for i in range(MAX_BIT):
 	for j in range(n):
 		if a[j] & (1 << i):
 			num_bits[i] += 1
 
-# Create the optimal array and calculate the sum of the squares of the new array.
+# Create the optimal array and calculate
+# the sum of the squares of the new array.
 ans = 0
 for i in range(n):
 	curr = 0
-	for j in range(20):
+	for j in range(MAX_BIT):
 		if num_bits[j]:
 			curr |= (1 << j)
 			num_bits[j] -= 1
