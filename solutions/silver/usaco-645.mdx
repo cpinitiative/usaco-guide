@@ -2,139 +2,14 @@
 id: usaco-645
 source: USACO Gold 2016 Open
 title: Splitting the Field
-author: Óscar Garries, Benjamin Qi
+author: Óscar Garries, Benjamin Qi, Ryan Chou
 ---
 
-[Official Analysis](http://www.usaco.org/current/data/sol_split_gold_open16.html)
+[Official Analysis (Java)](http://www.usaco.org/current/data/sol_split_gold_open16.html)
 
-<LanguageSection>
+<Warning title="Weak Test Data">
 
-<CPPSection>
-
-## Implementation
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const int MX = 5e4;
-int n, x[MX], y[MX], ar[MX];
-
-bool cmp(int a, int b) {
-	if (x[a] == x[b]) return y[a] < y[b];
-	return x[a] < x[b];
-}
-
-bool cmp1(int a, int b) {
-	if (y[a] == y[b]) return x[a] < x[b];
-	return y[a] < y[b];
-}
-
-int main() {
-	freopen("split.in", "r", stdin);
-	freopen("split.out", "w", stdout);
-	cin >> n;
-	multiset<int> allX, allY, leftX, leftY, rightX, rightY;
-	for (int i = 0; i < n; i++) {
-		ar[i] = i;
-		cin >> x[i] >> y[i];
-		allX.insert(x[i]);
-		allY.insert(y[i]);
-	}
-	sort(ar, ar + n, cmp);
-	int x1 = *allX.rbegin(), x2 = *allX.begin(), y1 = *allY.rbegin(),
-	    y2 = *allY.begin();
-	long long area = (x1 - x2) * 1LL * (y1 - y2);  // original area
-	long long sol = 0;                             // maximum difference
-
-	for (int k = 0; k <= 1; k++) {
-		rightX = allX;
-		rightY = allY;
-		leftX.clear();
-		leftY.clear();
-		for (int i = 0; i < n; i++) {
-			int j = ar[i];
-			long long areaL = 0, areaR = 0;
-
-			leftX.insert(x[j]);
-			leftY.insert(y[j]);
-			rightX.erase(rightX.find(x[j]));
-			rightY.erase(rightY.find(y[j]));
-
-			x1 = *leftX.begin();
-			y1 = *leftY.begin();
-			x2 = *leftX.rbegin();
-			y2 = *leftY.rbegin();
-			areaL = (x2 - x1) * 1LL * (y2 - y1);
-			if (!rightX.empty()) {
-				x1 = *rightX.begin();
-				y1 = *rightY.begin();
-				x2 = *rightX.rbegin();
-				y2 = *rightY.rbegin();
-				areaR = (x2 - x1) * 1LL * (y2 - y1);
-			}
-			sol = max(sol, area - (areaR + areaL));
-		}
-		sort(ar, ar + n, cmp1);
-	}
-	cout << sol << '\n';
-}
-```
-
-</CPPSection>
-
-</LanguageSection>
-
-## Alternative
-
-From the analysis:
-
-> Note that it is also possible to dispense with the binary search trees
-> entirely and just keep running mins and maxes in $y$.
-
-```cpp
-// CodeSnip{CPP Short Template}
-
-const ll INF = 1e18;  // not too close to LLONG_MAX
-
-int N;
-ll ans = 0;
-vector<pi> v;
-
-void tri() {
-	sort(all(v));
-	vector<pi> lef(N), rig(N);
-	auto comb = [](pi a, int b) -> pi { return mp(min(a.f, b), max(a.s, b)); };
-	lef[0] = {v[0].s, v[0].s};
-	for (int i = 1; i < N; ++i) lef[i] = comb(lef[i - 1], v[i].s);
-	rig[N - 1] = mp(v[N - 1].s, v[N - 1].s);
-	for (int i = N - 2; i >= 0; --i) rig[i] = comb(rig[i + 1], v[i].s);
-	ll area = (ll)(v.back().f - v.front().f) * (lef.back().s - lef.back().f);
-	ll best = INF;
-	for (int i = 0; i < N - 1; ++i)
-		if (v[i].f != v[i + 1].f)
-			best = min(best, (ll)(v[i].f - v[0].f) * (lef[i].s - lef[i].f) +
-			                     (ll)(v.back().f - v[i + 1].f) *
-			                         (rig[i + 1].s - rig[i + 1].f));
-	ans = max(ans, area - best);
-}
-
-int main() {
-	setIO("split");
-	cin >> N;
-	v.resize(N);
-	for (pi &t : v) cin >> t.f >> t.s;
-	tri();
-	for (pi &t : v) swap(t.f, t.s);
-	tri();
-	cout << ans;
-	return 0;
-}
-```
-
-## Note - Weak Test Data
-
-The above codes give different outputs on the following test case:
+Some accepted submissions may give different outputs on the following test case:
 
 The right answer should be $6$.
 
@@ -158,3 +33,151 @@ The right answer should be $6$.
 5 4
 5 5
 ```
+</Warning>
+
+## Explanation
+
+Since the enclosures must be rectangular, there *must* be a vertical or horizontal line that separates the two. Othewise,
+we'd have a case where one enclosure has to contain some cow on the x-axis *and* some cow on the y-axis as the other enclosure.
+
+Thus, we'll perform two sweeps, checking all possible vertical and horizontal lines. To keep track of the best answer, we'll keep
+prefix and suffix minimums and maximums to calculate each possible answer in $\mathcal{O}(1)$ time.
+
+It's also possible to use binary search instead of prefix/suffix minimums and maximums.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N \log N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using ll = long long;
+
+int N;
+ll ans = 0;
+vector<pair<int, int>> cows;
+
+void search() {
+	sort(cows.begin(), cows.end());
+
+	vector<pair<int, int>> pref(N), suf(N);
+
+	auto upd = [](pair<int, int> a, int b) -> pair<int, int> {
+		return {min(a.first, b), max(a.second, b)};
+	};
+
+	// compute prefix/suffix minimums and maximums
+	pref[0] = {cows[0].second, cows[0].second};
+	for (int i = 1; i < N; ++i) {
+		pref[i] = upd(pref[i - 1], cows[i].second);
+	}
+
+	suf[N - 1] = {cows[N - 1].second, cows[N - 1].second};
+	for (int i = N - 2; i >= 0; i--) {
+		suf[i] = upd(suf[i + 1], cows[i].second);
+	}
+
+	// initial area with one enclosure
+	ll area = (ll)(cows.back().first - cows.front().first) *
+						(pref.back().second - pref.back().first);
+
+	ll best = LLONG_MAX;
+	for (int i = 0; i < N - 1; ++i) {
+		// if it's possible to split
+		if (cows[i].first != cows[i + 1].first) {
+			ll first_rect = (ll)(cows[i].first - cows[0].first) *
+								(pref[i].second - pref[i].first);
+			ll second_rect = (ll)(cows.back().first - cows[i + 1].first) *
+								 (suf[i + 1].second - suf[i + 1].first);
+
+			best = min(best, first_rect + second_rect);
+		}
+	}
+
+	ans = max(ans, area - best);
+}
+
+int main() {
+	freopen("split.in", "r", stdin);
+	freopen("split.out", "w", stdout);
+
+	cin >> N;
+	cows.resize(N);
+
+	for (pair<int, int> &cow : cows)
+		cin >> cow.first >> cow.second;
+
+	// try all splits on x axis
+	search();
+
+	for (pair<int, int> &cow : cows)
+		swap(cow.first, cow.second);
+
+	// try all splits on y axis
+	search();
+
+	cout << ans << endl;
+}
+```
+</CPPSection>
+
+<PySection>
+
+```py
+import sys
+
+sys.stdin = open("split.in")
+sys.stdout = open("split.out", "w")
+
+n = int(input())
+cows = [list(map(int, input().split())) for _ in range(n)]
+ans = 0
+
+def search():
+    global ans
+
+    cows.sort()
+
+    upd = lambda x, y:(min(x[0], y), max(x[1], y))
+
+	# compute prefix/suffix minimums and maximums
+    pref = [(cows[0][1], cows[0][1])]
+    for i in range(1, n):
+        pref.append(upd(pref[-1], cows[i][1]))
+
+    suf = [(cows[-1][1], cows[-1][1])]
+    for i in range(n - 2, -1, -1):
+        suf.append(upd(suf[-1], cows[i][1]))
+    suf.reverse()
+
+    # initial area with one enclosure
+    area = (cows[-1][0] - cows[0][0]) * (pref[-1][1] - pref[-1][0])
+    best = float('inf')
+
+    for i in range(n - 1):
+        # if it's possible to split
+        if cows[i][0] != cows[i + 1][0]:
+            first_rect = (cows[i][0] - cows[0][0]) * \
+                         (pref[i][1] - pref[i][0])
+            second_rect = (cows[-1][0] - cows[i + 1][0]) * \
+                          (suf[i + 1][1] - suf[i + 1][0])
+
+            best = min(best, first_rect + second_rect)
+
+    ans = max(ans, area - best)
+
+# try all splits on x axis
+search()
+cows = [(y, x) for x, y in cows]
+# try all splits on y axis
+search()
+
+print(ans)
+```
+</PySection>
+</LanguageSection>
