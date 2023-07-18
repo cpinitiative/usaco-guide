@@ -6,20 +6,18 @@ author: Mihnea Brebenel
 ---
 
 ## Solution 1 - Using Segment Tree
-As you have already guessed this is a sweep line problem. In this approach I handle the sweep line with a Segment Tree.
 
-Before we start talking about the actual solution, we need to make some observations about the problem's constraints. The coordinates can get easily big enough
-to cause us some issues like - the coordinates values can reach $10^11$ way too big to be handled by Segment Tree. To solve this use [coordinate compresstion](/silver/sorting-custom?lang=cpp).
+First, we need to make some observations about the problem's constraints. The coordinates values can reach $10^11$, which is beyond the memory limit of a segment tree. To solve this, use [coordinate compresstion](/silver/sorting-custom?lang=cpp).
 
 Now with the coordinates compressed we can easily use the sweep line. The goal is to find the *first* intersection in the robot path. To find the first intersection we use binary search. The check function in binary search takes the first mid segments
-and determines if there is an intersection .The beginning/ending of a line is marked as an event which are stored and processed by the Segment Tree.
+and determines if there is an intersection .The beginning and the end of a line are marked as an event, which is stored and processed by the segment tree.
 
 The last thing to do is to find the length of the incomplete segment - the on that causes the intersection. There are several ways to do this.
 One way is to use again the sweep line to find the first intersection of the line, but the implementation would be tricky. You could also use brute force and try for every possible length as long as it doesn't intersect another segment.
 We can improve the brute force approach by using binary search. If you are not familiar with finding segment intersection, it may be worth solving [this](https://cses.fi/problemset/task/1740) first.
 
 ## Solution 2 - Using set
-In this approach the sweep line is handled by a set instead of a segment tree, and thus the coordinate compression is no needed anymore.
+In this approach, the sweep line is handled by a set instead of a segment tree; thus, coordinate compression is no longer needed.
 
 ## Implementation
 
