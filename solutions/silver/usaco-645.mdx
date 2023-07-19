@@ -15,42 +15,8 @@ The right answer should be $6$.
 
 ```cpp
 // BeginCodeSnip{Test Case}
-17
-1
-1
-1
-2
-1
-3
-2
-1
-2
-2
-2
-3
-3
-1
-3
-2
-3
-3
-3
-4
-3
-5
-4
-3
-4
-4
-4
-5
-5
-3
-5
-4
-5
-5
-// EndCodeSnip
+17 1 1 1 2 1 3 2 1 2 2 2 3 3 1 3 2 3 3 3 4 3 5 4 3 4 4 4 5 5 3 5 4 5 5
+    // EndCodeSnip
 ```
 </Warning>
 
@@ -94,9 +60,7 @@ ll search() {
 
 	// compute prefix/suffix minimums and maximums
 	pref[0] = {cows[0].second, cows[0].second};
-	for (int i = 1; i < n; ++i) {
-		pref[i] = upd(pref[i - 1], cows[i].second);
-	}
+	for (int i = 1; i < n; ++i) { pref[i] = upd(pref[i - 1], cows[i].second); }
 
 	suf[n - 1] = {cows[n - 1].second, cows[n - 1].second};
 	for (int i = n - 2; i >= 0; i--) {
@@ -105,16 +69,16 @@ ll search() {
 
 	// initial area with one enclosure
 	ll area = (ll)(cows.back().first - cows.front().first) *
-						(pref.back().second - pref.back().first);
+	          (pref.back().second - pref.back().first);
 
 	ll best = LLONG_MAX;
 	for (int i = 0; i < n - 1; ++i) {
 		// if it's possible to split
 		if (cows[i].first != cows[i + 1].first) {
 			ll first_rect = (ll)(cows[i].first - cows[0].first) *
-								(pref[i].second - pref[i].first);
+			                (pref[i].second - pref[i].first);
 			ll second_rect = (ll)(cows.back().first - cows[i + 1].first) *
-								 (suf[i + 1].second - suf[i + 1].first);
+			                 (suf[i + 1].second - suf[i + 1].first);
 
 			best = min(best, first_rect + second_rect);
 		}
@@ -130,16 +94,12 @@ int main() {
 	cin >> n;
 	cows.resize(n);
 
-	for (pair<int, int> &cow : cows) {
-		cin >> cow.first >> cow.second;
-	}
+	for (pair<int, int> &cow : cows) { cin >> cow.first >> cow.second; }
 
 	// try all splits on x axis
 	ans = max(ans, search());
 
-	for (pair<int, int> &cow : cows) {
-		swap(cow.first, cow.second);
-	}
+	for (pair<int, int> &cow : cows) { swap(cow.first, cow.second); }
 
 	// try all splits on y axis
 	ans = max(ans, search());
@@ -167,6 +127,8 @@ ans = 0
 """
 returns the maximum area saved by testing splits along cows[i].first
 """
+
+
 def search():
 	global ans
 
