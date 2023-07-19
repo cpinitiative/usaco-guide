@@ -8,12 +8,16 @@ author: Daniel Ge
 ## Solution
 The key idea here is to perform topological sort on the characters of the alphabet. 
 
-We find what must come before what by comparing consecutive strings. If string $name_i$ is lexicographically less than $name_{i+1}$, we compare only the first occurence of a different letter. In other words, we take the common prefix out and compare the first letters. For example, if we are given,
+We compare each pair of consecutive strings to determine the relative placement of one pair of letters in the alphabet. When comparing two strings, 
+we look at the first occurence of a different letters. In other words, we take the common prefix out and compare the first letters. 
+
+For example, if we are given,
 ```
 axcd
 axbe
 ```
-We see that the common prefix is "ax", so the first pair of differing letters is 'c' and 'b'. Since "axcd" comes first, that means 'c' comes before 'b' in the desired alphabet.
+We see that the common prefix is "ax", so the first pair of differing letters is 'c' and 'b'. 
+Since "axcd" comes first, that means 'c' comes before 'b' in the desired alphabet.
 
 In the special case that one word is the prefix of the other such as the case with,
 ```
