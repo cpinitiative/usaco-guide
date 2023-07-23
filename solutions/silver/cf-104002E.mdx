@@ -1,0 +1,86 @@
+---
+id: cf-104002E
+source: CF
+title: William and Robot
+author: Alex Du
+---
+
+## Explanation
+
+First note that for any even number $k \leq n$, a valid solution must have selected at most $k/2$ integers. This is the only requirement for a valid solution.
+
+To solve this problem, we can use a greedy algorithm. For any even $k$, if we know the $k/2$ integers that make the highest sum, we can use this to find the $k/2+1$ integers for $k+2$.
+
+The base case is $k = 2$, where the highest sum is simply the max of the first two integers.
+
+Similarly, we can always select the max of the $k-1$ and $k-2$ elements, since we will still be one step ahead of the robot.
+
+After $k=2$, it is sometimes optimal to select both the $k-1$ and $k-2$ elements. In this case, we must replace one of the previous integers we took. We can use a multiset to store all of our current integers, and remove the smallest one when the minimum of the two integers is greater than our current minimum. Since we only access the smallest integer at a time, this can also be done with a priority queue.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N \log N)$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    int n;
+    cin >> n;
+
+    vector<int> a(n);
+    for (int &i : a) cin >> i;
+
+    multiset<int> taken;
+
+    // cannot take both the first and second number
+    taken.insert(max(a[0], a[1]));
+
+    for (int i = 2; i < n; i += 2) {
+        int smallest_taken = *taken.begin();
+
+        // if it is worth it to give up a previous number to take both, give up the smallest
+        if (smallest_taken < min(a[i], a[i+1]))
+        {
+            // erase using pointer, not value, since multiset will erase
+            // all elements of the same value if value is passed in
+            taken.erase(taken.begin());
+            taken.insert(a[i]);
+            taken.insert(a[i + 1]);
+        }
+        // take the max of the two otherwise
+        else {
+            taken.insert(max(a[i], a[i + 1]));
+        }
+    }
+
+    long long ans = 0;
+
+    // sum up answer
+    for (int t : taken)
+        ans += t;
+
+    cout << ans << endl;
+}
+```
+
+</CPPSection>
+
+<PySection>
+
+
+
+</PySection>
+
+<JavaSection>
+
+
+
+</JavaSection>
+
+</LanguageSection>
