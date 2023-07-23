@@ -76,7 +76,7 @@ ll search() {
 	          (pref.back().second - pref.back().first);
 
 	ll best = LLONG_MAX;
-	for (int i = 0; i < n - 1; ++i) {
+	for (int i = 0; i < n - 1; i++) {
 		// if it's possible to split
 		if (cows[i].first != cows[i + 1].first) {
 			ll first_rect = (ll)(cows[i].first - cows[0].first) *
@@ -116,24 +116,16 @@ int main() {
 <PySection>
 
 ```py
-import sys
-
-sys.stdin = open("split.in")
-sys.stdout = open("split.out", "w")
-
 with open("split.in") as read:
 	n = int(read.readline())
 	cows = [list(map(int, read.readline().split())) for _ in range(n)]
 
 ans = 0
 
-
-"""
-returns the maximum area saved by testing splits along cows[i].first
-"""
-
-
 def search():
+	"""
+	returns the maximum area saved by testing splits along cows[i].first
+	"""
 	global ans
 
 	cows.sort()
