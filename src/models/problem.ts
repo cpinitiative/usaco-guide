@@ -307,6 +307,7 @@ export const getProblemInfo = (
   if (!ordering) {
     ordering = defaultOrdering;
   }
+  // eslint-disable-next-line prefer-const
   let { solutionMetadata, ...info } = metadata;
 
   if (
