@@ -371,9 +371,9 @@ int get_centroid(int node, int tree_size, int parent = -1) {
 void get_dists(int node, int centroid, int parent = -1, int cur_dist = 1) {
 	for (int child : adj[node]) {
 		if (child == parent || is_removed[child]) { continue; }
-		++cur_dist;
+		cur_dist++;
 		get_dists(child, centroid, node, cur_dist);
-		--cur_dist;
+		cur_dist--;
 	}
 	ancestors[node].push_back({centroid, cur_dist});
 }
