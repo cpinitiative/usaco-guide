@@ -15,17 +15,17 @@ The direction of the edges of this graph are can be determined by adjacent pairs
 
 <Spoiler title="Solution">
 ## Explanation
-The key idea here is to perform topological sort on the characters of the alphabet. 
+The key idea here is to perform topological sort on the characters of the alphabet.
 
-We compare each pair of consecutive strings to determine the relative placement of one pair of letters in the alphabet. When comparing two strings, 
-we look at the first occurence of a different letters. In other words, we take the common prefix out and compare the first letters. 
+We compare each pair of consecutive strings to determine the relative placement of one pair of letters in the alphabet. When comparing two strings,
+we look at the first occurence of a different letters. In other words, we take the common prefix out and compare the first letters.
 
 For example, if we are given,
 ```
 axcd
 axbe
 ```
-We see that the common prefix is "ax", so the first pair of differing letters is 'c' and 'b'. 
+We see that the common prefix is "ax", so the first pair of differing letters is 'c' and 'b'.
 Since "axcd" comes first, that means 'c' comes before 'b' in our modified alphabet.
 
 In the special case that one word is the prefix of the other such as the case with,
@@ -69,36 +69,36 @@ void topological_sort() {
 int main() {
 	int n;
 	// We make sure each pair of consecutive strings are in the right order
-	string cur, prev;  
+	string cur, prev;
 
 	/*
-	 * No previous string to compare the first string to, 
+	 * No previous string to compare the first string to,
 	 * so we read it directly into prev
 	 */
-	cin >> n >> prev;  
+	cin >> n >> prev;
 	for (int i = 1; i < n; i++) {
 		cin >> cur;
 
 		// Maximum length to compare
-		int leng = min(prev.length(), cur.length());  
+		int leng = min(prev.length(), cur.length());
 		// How long the prefix has been the same for
 		int samed = 0;
 
 		while (samed < leng) {
 			if (prev[samed] != cur[samed]) {
 				/*
-				 * As soon as we see a difference, we make sure 
+				 * As soon as we see a difference, we make sure
 				 * the alphabetic follows the order presented
 				 */
 				int ncur = cur[samed] - 'a', nprev = prev[samed] - 'a';
-				indegree[ncur] ++;
+				indegree[ncur]++;
 				conn[nprev].push_back(ncur);
 				break;
 			}
-			samed ++;
+			samed++;
 		}
 		/*
-		 * If cur is a prefix of prev, then it is already impossible 
+		 * If cur is a prefix of prev, then it is already impossible
 		 * for cur to be lexicographically more than prev
 		 */
 		if ((samed == leng) && (prev.length() > cur.length())) {
