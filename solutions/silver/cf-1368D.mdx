@@ -17,9 +17,18 @@ Notice that $x \ AND \ y + x \ OR \ y = x + y$, so the total sum of all the elem
 
 Let's analyze how much each bit position contributes to the sum. For every $i$, let $A$ be the $i$-th rightmost bit of $x$ and $B$ be the $i$-th rightmost bit of $y$ ($A, B \in \{0, 1\}$).
 
-By trying out all possible cases for $a$ and $b$, we get that $A \ AND \ B + A \ OR \ B = A + B$.
+By trying out all possible cases for $A$ and $B$, we get that $A \ AND \ B + A \ OR \ B = A + B$, as shown in the following truth table:
 
-Summing each of these bit positions gives us $x \ AND \ y + x \ OR \ y = x + y$.
+| A | B | A AND B | A OR B | A AND B + A OR B | A + B |
+|---|---|---------|--------|------------------|-------|
+| 0 | 0 |    0    |   0    |        0         |   0   |
+| 0 | 1 |    0    |   1    |        1         |   1   |
+| 1 | 0 |    0    |   1    |        1         |   1   |
+| 1 | 1 |    1    |   1    |        2         |   2   |
+
+<br/>
+
+Summing the individual bit positions gives us $x \ AND \ y + x \ OR \ y = x + y$.
 
 </Spoiler>
 
@@ -31,11 +40,11 @@ Notice that before and after each operation, the number of active bits at each p
 
 For example, let $x = 110_2$, $y = 101_2$. $x \ AND \ y = 100_2$, and $x \ OR \ y = 111_2$.
 
-- The rightmost bit of $y$ is active, as well as the rightmost bit of $x \ OR \ y$.
+- The rightmost bits of $y$ and $x \ OR \ y$ are active.
 
-- The second rightmost bit of $x$ is active, as well as the second rightmost bit of $x \ OR \ y$.
+- The second rightmost bits of $x$ and $x \ OR \ y$ are active.
 
-- The third rightmost bits of $x$ and $y$ are active, as well as the third rightmost bits of $x \ AND \ y$ and $x \ OR \ y$.
+- The third rightmost bits of $x$, $y$, $x \ AND \ y$, and $x \ OR \ y$ are active.
 
 Before and after the operations, there is always one active bit in the rightmost position, one active bit in the second rightmost position, and two active bits in the third rightmost position.
 
