@@ -13,11 +13,11 @@ To solve this problem, we can use a greedy algorithm.
 
 For any even $k$, if we know the $\frac{k}{2}$ integers that make the highest sum, we can use this to find the $\frac{k}{2}+1$ integers for $k+2$.
 
-The base case is $k = 2$, where the highest sum is simply the max of the first two integers.
+The base case is $k = 2$, where the highest sum is simply the maximum of the first two integers.
 
-Similarly, we can always select the max of the $k-1$ and $k-2$ elements, since we will still be one step ahead of the robot.
+Similarly, to gain the highest sum for our current $k$, we will always select the maximum of the $k-1$ and $k-2$ elements, since we now have another turn and this will build directly off of our previous solution.
 
-After $k=2$, it is sometimes optimal to select both the $k-1$ and $k-2$ elements. In this case, we must replace one of the previous integers we took. We can use a multiset to store all of our current integers, and remove the smallest one when the minimum of the two integers is greater than our current minimum. Since we only access the smallest integer at a time, this can also be done with a priority queue.
+However, it is sometimes optimal to take both integers, rather than just the maximum of the two. After $k=2$, we can choose to remove any previous integer we selected and replace it with the minimum of the two integers we are currently considering. Since we can remove any integer, we will remove the minimum. Therefore, this is only worth it if the minimum of the two integers is greater than the minimum of all the integers we already selected. We need to quickly access and remove the smallest integer, so this can be done with a priority queue or a multiset.
 
 ## Implementation
 
