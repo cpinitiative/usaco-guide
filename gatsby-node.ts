@@ -318,7 +318,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
     problemSlugs[slug] = node.uniqueId;
     problemInfo[node.uniqueId] = node;
     problemURLToUniqueID[node.url] = node.uniqueId;
-    const path = `problems/user-solutions/${node.uniqueId}`;
+    const path = `problems/${node.uniqueId}/user-solutions`;
     createPage({
       path: path,
       component: userSolutionTemplate,

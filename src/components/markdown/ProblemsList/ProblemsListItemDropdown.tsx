@@ -8,13 +8,12 @@ import { isUsaco, ProblemInfo } from '../../../models/problem';
 import TextTooltip from '../../Tooltip/TextTooltip';
 import ProblemListItemSolution from './ProblemListItemSolution';
 import { ProblemsListItemProps } from './ProblemsListItem';
+import { Link } from 'gatsby';
 
 function ViewSolutionsContent({
   problem,
-  onViewProblemSolutions,
 }: {
   problem: ProblemInfo;
-  onViewProblemSolutions: () => void;
 }): JSX.Element {
   const { solutions, currentUserSolutions } =
     useUserSolutionsForProblem(problem);
@@ -45,13 +44,13 @@ function ViewSolutionsContent({
     );
   }
   return (
-    <button
-      type="button"
+    <Link 
       className="focus:outline-none block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900"
-      onClick={onViewProblemSolutions}
+      to={`/problems/${problem.uniqueId}/user-solutions`}
+      target="_blank"
     >
       {viewSolutionsContent}
-    </button>
+    </Link>
   );
 }
 
@@ -74,10 +73,6 @@ export default function ProblemsListItemDropdown(
 
   const tippyRef = React.useRef<Instance>();
   const [isDropdownShown, setIsDropdownShown] = React.useState(false);
-  const onViewProblemSolutions = () => {
-    tippyRef.current.hide();
-    navigate('/problems/user-solutions/' + problem.uniqueId);
-  };
 
   return (
     <Tippy
@@ -88,7 +83,6 @@ export default function ProblemsListItemDropdown(
             {solutionContent}
             <ViewSolutionsContent
               problem={problem}
-              onViewProblemSolutions={onViewProblemSolutions}
             />
             <button
               type="button"
