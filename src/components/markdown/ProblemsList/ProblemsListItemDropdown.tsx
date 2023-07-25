@@ -44,7 +44,7 @@ function ViewSolutionsContent({
     );
   }
   return (
-    <Link 
+    <Link
       className="focus:outline-none block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900"
       to={`/problems/${problem.uniqueId}/user-solutions`}
       target="_blank"
@@ -81,9 +81,7 @@ export default function ProblemsListItemDropdown(
         isDropdownShown ? (
           <div className="-mx-2 text-left">
             {solutionContent}
-            <ViewSolutionsContent
-              problem={problem}
-            />
+            <ViewSolutionsContent problem={problem} />
             <button
               type="button"
               className="focus:outline-none block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900"
