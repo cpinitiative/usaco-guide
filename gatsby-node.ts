@@ -7,6 +7,7 @@ import {
   checkInvalidUsacoMetadata,
   getProblemInfo,
   getProblemURL,
+  ProblemInfo,
   ProblemMetadata,
 } from './src/models/problem';
 
@@ -260,11 +261,13 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
     reporter.panicOnBuild('🚨 ERROR: Loading "createPages" query');
   }
   // Check to make sure problems with the same unique ID have consistent information, and that there aren't duplicate slugs
+  // Also creates user solution pages for each problem
   const problems = result.data.problems.edges;
   let problemSlugs = {}; // maps slug to problem unique ID
   let problemInfo = {}; // maps unique problem ID to problem info
   let problemURLToUniqueID = {}; // maps problem URL to problem unique ID
   let urlsThatCanHaveMultipleUniqueIDs = ['https://cses.fi/107/list/'];
+  const userSolutionTemplate = path.resolve(`./src/templates/userSolutionTemplate.tsx`);
   problems.forEach(({ node }) => {
     let slug = getProblemURL(node);
     if (
@@ -313,6 +316,14 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
     problemSlugs[slug] = node.uniqueId;
     problemInfo[node.uniqueId] = node;
     problemURLToUniqueID[node.url] = node.uniqueId;
+    const path = `problems/user-solutions/${node.uniqueId}`;
+    createPage({
+      path: path,
+      component: userSolutionTemplate,
+      context: {
+        problem: node
+      },
+    });
   });
   // End problems check
   const moduleTemplate = path.resolve(`./src/templates/moduleTemplate.tsx`);
