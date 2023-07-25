@@ -9,7 +9,7 @@ import UserDataContext from '../context/UserDataContext/UserDataContext';
 import { useUserPermissions } from '../context/UserDataContext/UserPermissionsContext';
 import useUserProblemSolutionActions from '../hooks/useUserProblemSolutionActions';
 import useUserSolutionsForProblem from '../hooks/useUserSolutionsForProblem';
-import { ProblemInfo } from '../models/problem';
+import { ShortProblemInfo } from '../models/problem';
 import CodeBlock from './markdown/CodeBlock/CodeBlock';
 
 export default function ProblemSolutions({
@@ -19,7 +19,7 @@ export default function ProblemSolutions({
 }: {
   onClose: () => void;
   showSubmitSolutionModal: () => void;
-  problem: ProblemInfo;
+  problem: ShortProblemInfo;
 }): JSX.Element {
   const { solutions, currentUserSolutions } =
     useUserSolutionsForProblem(problem);

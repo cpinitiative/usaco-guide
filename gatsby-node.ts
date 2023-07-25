@@ -7,7 +7,7 @@ import {
   checkInvalidUsacoMetadata,
   getProblemInfo,
   getProblemURL,
-  ProblemInfo,
+  ShortProblemInfo,
   ProblemMetadata,
 } from './src/models/problem';
 
@@ -319,11 +319,12 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
     problemInfo[node.uniqueId] = node;
     problemURLToUniqueID[node.url] = node.uniqueId;
     const path = `problems/${node.uniqueId}/user-solutions`;
+    const problem = node as ShortProblemInfo;
     createPage({
       path: path,
       component: userSolutionTemplate,
       context: {
-        problem: node,
+        problem: problem,
       },
     });
   });
