@@ -4,8 +4,7 @@ import ProblemSolutions from '../components/ProblemSolutions';
 import SubmitProblemSolutionModal from '../components/SubmitProblemSolutionModal';
 import { ShortProblemInfo } from '../models/problem';
 
-// Condensed version of ProblemInfo since 
-
+// Condensed version of ProblemInfo since
 
 export default function Template(props) {
   const [isSubmitModalOpen, setIsSubmitModalOpen] = React.useState(false);
