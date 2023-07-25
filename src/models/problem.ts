@@ -562,6 +562,6 @@ export type ProblemFeedback = {
  these are just the attributes required for the user solutions pages that it does retrieve
 */
 export type ShortProblemInfo = {
-  problemId: string, 
+  uniqueId: string, 
   name: string,
 }
