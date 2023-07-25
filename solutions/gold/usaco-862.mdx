@@ -10,7 +10,7 @@ author: Ryan Chou
 <Spoiler title="Hint">
 Instead of trying to find the number of incompatible pairs, try to find the number of compatible pairs!
 
-This is known as [complementary counting](https://artofproblemsolving.com/wiki/index.php/Complementary_counting) :D
+This is known as [complementary counting](https://artofproblemsolving.com/wiki/index.php/Complementary_counting).
 </Spoiler>
 
 <Spoiler title="Solution">
@@ -19,7 +19,7 @@ This is known as [complementary counting](https://artofproblemsolving.com/wiki/i
 
 Since there are $\frac{N(N-1)}{2}$ total pairs of cows, if we can count the numbers of compatible pairs, we can just subtract it from the total to get our answer!
 
-We can use PIE (Principle of Inclusion/Exclusion) to calculate this! This means we'll have to add all pairs of cows that share one flavor in common, subtract cows that share two flavors,
+We can use [PIE (Principle of Inclusion/Exclusion)](https://artofproblemsolving.com/wiki/index.php/Principle_of_Inclusion-Exclusion) to calculate this! This means we'll have to add all pairs of cows that share one flavor in common, subtract cows that share two flavors,
 and so on...
 
 To understand why this works, imagine that we only have three flavors of cows, and that some cows share more than one flavor with each other. Then, if we were to only
@@ -45,7 +45,6 @@ const int FLAVORS = 5;
 int main() {
 	freopen("cowpatibility.in", "r", stdin);
 	freopen("cowpatibility.out", "w", stdout);
-	cin.tie(0)->sync_with_stdio(0);
 
 	int n;
 	cin >> n;
@@ -65,6 +64,7 @@ int main() {
 	for (int i = 0; i < n; i++) {
 		common[4][cows[i]]++;
 
+		// iterate over all subsets
 		for (int a = 0; a < FLAVORS; a++) {
 			common[0][{cows[i][a]}]++;
 			for (int b = a + 1; b < FLAVORS; b++) {
@@ -82,6 +82,8 @@ int main() {
 
 	long long ans = 0;
 
+	// PIE to count the number of compatible pairs
+	// (see explanation above)
 	for (int i = 0; i < FLAVORS; i++) {
 		for (auto &[k, v] : common[i]) {
 			if (i % 2 == 0) {
