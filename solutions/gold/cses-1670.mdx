@@ -8,11 +8,11 @@ author: Maggie Liu, Daniel Ge
 <Spoiler title="Hint">
 Think of all $9!$ possible configurations of the board as the nodes, and our moves
 as the edges that connect them. We then perform BFS, starting at our intial given
-configuration. 
+configuration.
 </Spoiler>
 
 The difficulty of this problem is with how we choose to implement the BFS. We present
-two solutions: Solution 1 runs faster, and solution 2 is easier to write (but may 
+two solutions: Solution 1 runs faster, and solution 2 is easier to write (but may
 TLE).
 
 <Spoiler title="Solution 1">
@@ -117,7 +117,7 @@ For example, the grid in the testcase,
 ```
 becomes "213759846".
 
-We then perform BFS normally but with a few notable changes. Since we cannot have 
+We then perform BFS normally but with a few notable changes. Since we cannot have
 our strings be the indices of an array, we store the "depth" of each string (number of moves required to reach a board configuration) inside our queue.
 
 In addition, we store the strings (board configurations) we have already seen inside an **unordered_set**, as using normal (ordered) sets will TLE.
@@ -141,50 +141,51 @@ const int fact[9] = {1, 1, 2, 6, 24, 120, 720, 5040, 40320}, fact9 = 362880;
 unordered_set<string> visited;
 
 // Defined globally to be used in processwap
-queue<pair<string, int>> q; 
-int moves; 
+queue<pair<string, int>> q;
+int moves;
 string curboard;
 
 // Processing swapping the numbers in x, y positions
-void processwap (int x, int y) {
-    swap(curboard[x], curboard[y]);
-    // Check whether already visited this potential board 
-    if(visited.find(curboard) == visited.end()) {
-        q.push({curboard, moves + 1});
-        visited.insert(curboard);
-    }
-    // Restore to original board
-    swap(curboard[x], curboard[y]);
+void processwap(int x, int y) {
+	swap(curboard[x], curboard[y]);
+	// Check whether already visited this potential board
+	if (visited.find(curboard) == visited.end()) {
+		q.push({curboard, moves + 1});
+		visited.insert(curboard);
+	}
+	// Restore to original board
+	swap(curboard[x], curboard[y]);
 }
 
-int main () {
-    string inp;
-    // Rewriting the input as a string
-    for (int i = 0; i < 9; i ++) {
-        int a; cin >> a;
-        inp += to_string(a - 1);
-    }
+int main() {
+	string inp;
+	// Rewriting the input as a string
+	for (int i = 0; i < 9; i++) {
+		int a;
+		cin >> a;
+		inp += to_string(a - 1);
+	}
 
-    q.push({inp, 0});
-    while (!q.empty()) {
-        tie(curboard, moves) = q.front();
-        q.pop();
-        if (curboard == "012345678") {
-            cout << moves << endl;
-            return 0;
-        }
+	q.push({inp, 0});
+	while (!q.empty()) {
+		tie(curboard, moves) = q.front();
+		q.pop();
+		if (curboard == "012345678") {
+			cout << moves << endl;
+			return 0;
+		}
 
-        // Horizontal swaps
-        for (int i = 0; i < 9; i += 3) {
-            processwap(i, i + 1);
-            processwap(i + 1, i + 2);
-        }
-        // Vertical swaps
-        for (int i = 0; i < 3; i ++) {
-            processwap(i, i + 3);
-            processwap(i + 3, i + 6);
-        }
-    }
+		// Horizontal swaps
+		for (int i = 0; i < 9; i += 3) {
+			processwap(i, i + 1);
+			processwap(i + 1, i + 2);
+		}
+		// Vertical swaps
+		for (int i = 0; i < 3; i++) {
+			processwap(i, i + 3);
+			processwap(i + 3, i + 6);
+		}
+	}
 }
 ```
 
