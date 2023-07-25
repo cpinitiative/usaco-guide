@@ -76,7 +76,7 @@ export default function ProblemsListItemDropdown(
   const [isDropdownShown, setIsDropdownShown] = React.useState(false);
   const onViewProblemSolutions = () => {
     tippyRef.current.hide();
-    navigate('/problems/user-solutions/'+ problem.uniqueId);
+    navigate('/problems/user-solutions/' + problem.uniqueId);
   };
 
   return (

@@ -267,7 +267,9 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
   let problemInfo = {}; // maps unique problem ID to problem info
   let problemURLToUniqueID = {}; // maps problem URL to problem unique ID
   let urlsThatCanHaveMultipleUniqueIDs = ['https://cses.fi/107/list/'];
-  const userSolutionTemplate = path.resolve(`./src/templates/userSolutionTemplate.tsx`);
+  const userSolutionTemplate = path.resolve(
+    `./src/templates/userSolutionTemplate.tsx`
+  );
   problems.forEach(({ node }) => {
     let slug = getProblemURL(node);
     if (
@@ -321,7 +323,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
       path: path,
       component: userSolutionTemplate,
       context: {
-        problem: node
+        problem: node,
       },
     });
   });
