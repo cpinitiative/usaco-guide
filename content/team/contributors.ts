@@ -180,7 +180,12 @@ export const RestOfMembers: Member[] = [
   {
     photo: 'ryan',
     name: 'Ryan Chou',
-    titles: ['Content Manager', roles.liveInstructor, roles.videoInstructor, roles.contentAuthor],
+    titles: [
+      'Content Manager',
+      roles.liveInstructor,
+      roles.videoInstructor,
+      roles.contentAuthor,
+    ],
     github: 'ryanchou-dev',
     website: 'https://www.ryanchou.dev/',
   },
@@ -209,7 +214,12 @@ export const RestOfMembers: Member[] = [
   {
     photo: 'jesse',
     name: 'Jesse Choe',
-    titles: ['Director of Classes', 'Content Manager', roles.contentAuthor, roles.liveInstructor],
+    titles: [
+      'Director of Classes',
+      'Content Manager',
+      roles.contentAuthor,
+      roles.liveInstructor,
+    ],
     github: 'jessechoe10',
     email: 'jessechoe10@gmail.com',
     codeforces: 'YoRepi7',
@@ -332,13 +342,13 @@ export const RestOfMembers: Member[] = [
   {
     photo: 'aakash_gokhale',
     name: 'Aakash Gokhale',
-    titles: ['Director of Contests']
+    titles: ['Director of Contests'],
   },
   {
     photo: 'justin_huang',
     name: 'Justin Huang',
-    titles: ['Director of Software', roles.webdev]
-  }
+    titles: ['Director of Software', roles.webdev],
+  },
 ];
 
 export const NotPictured: Member[] = [
@@ -358,7 +368,6 @@ export const NotPictured: Member[] = [
     github: 'sathu-beep',
     codeforces: 'sus',
   },
-
 ];
 
 export const FormerMembers: Member[] = [
