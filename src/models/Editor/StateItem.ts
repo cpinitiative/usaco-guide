@@ -1,10 +1,9 @@
 import { Timestamp } from 'firebase/firestore';
 
 export default abstract class StateItem<
-  T extends
-    {
-      [key: string]: string;
-    },
+  T extends {
+    [key: string]: string;
+  },
 > {
   public readonly id: number;
   public readonly timestamp: Timestamp;

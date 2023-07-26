@@ -22,7 +22,7 @@ import Quiz from './Quiz';
 import { Resource, ResourcesList } from './ResourcesList';
 import Spoiler from './Spoiler';
 import Warning from './Warning';
-import Youtube from './Youtube';
+import YouTube from './YouTube';
 
 const MATHDIV = props => {
   return (
@@ -63,7 +63,7 @@ export const components = {
   PySection,
   IncompleteSection,
   Asterisk,
-  Youtube,
+  YouTube,
   PrefixSumInteractive,
   Quiz,
   MATHDIV,
