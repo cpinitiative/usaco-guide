@@ -21,9 +21,6 @@ export default function Template(props) {
     return null;
   }
 
-  const handleGoBack = () => {
-    navigate(-1);
-  };
   const handleShowSubmitSolutionModal = () => {
     setIsSubmitModalOpen(true);
   };
@@ -31,7 +28,6 @@ export default function Template(props) {
   return (
     <>
       <ProblemSolutions
-        onClose={handleGoBack}
         showSubmitSolutionModal={handleShowSubmitSolutionModal}
         problem={problem}
       />
