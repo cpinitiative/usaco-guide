@@ -186,6 +186,14 @@ subgraphs.
 	 />
 </Resources>
 
+<Warning>
+
+The implementation by
+[Carpanese](https://medium.com/carpanese/an-illustrated-introduction-to-centroid-decomposition-8c1989d53308#d10f)
+(ll. 20-21) leads to a segmentation fault due to an invalidated iterator in the range-based for loop after erasing the element.
+
+</Warning>
+
 ## Implementation
 
 General centroid code is shown below.
@@ -197,46 +205,49 @@ General centroid code is shown below.
 <!-- pulled from https://codeforces.com/contest/1303/submission/76216413, which I think is my most recent centroid problem -->
 
 ```cpp
-vector<int> adj[maxn];  // adjacency list
-bool is_removed[MN];
-int subtree_size[MN];
+vector<vector<int>> adj;
+vector<bool> is_removed;
+vector<int> subtree_size;
 
-int dfs(int u, int parent = 0) {
-	subtree_size[u] = 1;
-	for (int v : adj[u]) {
-		if (v != parent && !is_removed[v]) { subtree_size[u] += dfs(v, u); }
+/** DFS to calculate the size of the subtree rooted at `node` */
+int get_subtree_size(int node, int parent = -1) {
+	subtree_size[node] = 1;
+	for (int child : adj[node]) {
+		if (child == parent || is_removed[child]) { continue; }
+		subtree_size[node] += get_subtree_size(child, node);
 	}
-
-	return subtree_size[u];
+	return subtree_size[node];
 }
 
-/*
- * This function returns a centroid (a tree may have
- * two centroids) of the subtree containing node u
- * after node removals
- * @param u current node
- * @param sz size of current subtree after node removals
+/**
+ * Returns a centroid (a tree may have two centroids) of the subtree
+ * containing node `node` after node removals
+ * @param node current node
+ * @param tree_size size of current subtree after node removals
  * @param parent parent of u
  * @return first centroid found
  */
-int get_centroid(int u, int sz, int parent = 0) {
-	for (int v : adj[u]) {
-		if (v != parent && !is_removed[v]) {
-			if (subtree_size[v] * 2 > sz) { return get_centroid(v, sz, u); }
+int get_centroid(int node, int tree_size, int parent = -1) {
+	for (int child : adj[node]) {
+		if (child == parent || is_removed[child]) { continue; }
+		if (subtree_size[child] * 2 > tree_size) {
+			return get_centroid(child, tree_size, node);
 		}
 	}
-	return u;
+	return node;
 }
 
-void solve(int root = 1) {
-	int c = get_centroid(root, dfs(root));
+/** Build up the centroid decomposition recursively */
+void build_centroid_decomp(int node = 0) {
+	int centroid = get_centroid(node, get_subtree_size(node));
 
 	// do something
 
-	is_removed[c] = true;  // remove current centroid
-	// solve subtrees
-	for (int v : adj[c]) {
-		if (!is_removed[v]) { solve(v); }
+	is_removed[centroid] = true;
+
+	for (int child : adj[centroid]) {
+		if (is_removed[child]) { continue; }
+		build_centroid_decomp(child);
 	}
 }
 ```
@@ -302,87 +313,156 @@ private static class Centroid {
 
 ## Solution - Xenia & Tree
 
+For every node, there are at most $\log N$ centroid components that include this
+node, where $N$ denotes the number of nodes. Let's call the centroid whose
+component contains one node the centroid ancestor of this node. Also note that
+the path between every two nodes in the tree must include one of their common
+centroid ancestors, since the tree is being split into subtrees with the
+centroids as their respective roots. If we store the distance to the nearest red
+node for every centroid, we can query the minimal distance between any node and
+the nearest red node by calculating the minimum distance between the node and
+one of its centroid ancestors with the minimal distance from that centroid to a
+red node. To paint a node red, we just update all centroid ancestors of this
+node. Both operations can be done in $\mathcal{O} (\log N)$ time, as there are
+at most that many centroid ancestors for one node.
+
+<LanguageSection>
+
+<CPPSection>
+
 ```cpp
-#include <cstdio>
-#include <cstring>
-#include <vector>
+#include <bits/stdc++.h>
+using namespace std;
 
-template <typename T> bool ckmin(T &a, const T &b) {
-	return b < a ? a = b, 1 : 0;
+// a number that is large enough while not causing overflow
+const int INF = 1e9;
+
+vector<vector<int>> adj;
+vector<int> subtree_size;
+// min_dist[v] := the minimal distance between v and a red node
+vector<int> min_dist;
+vector<bool> is_removed;
+vector<vector<pair<int, int>>> ancestors;
+
+int get_subtree_size(int node, int parent = -1) {
+	subtree_size[node] = 1;
+	for (int child : adj[node]) {
+		if (child == parent || is_removed[child]) { continue; }
+		subtree_size[node] += get_subtree_size(child, node);
+	}
+	return subtree_size[node];
 }
 
-const int MN = 1e5 + 10, INF = 0x3f3f3f3f;
-
-int N, M, s[MN], m[MN][2], t, b, d;
-bool r[MN], red[MN];
-std::vector<int> a[MN], v[MN];
-struct info {
-  public:
-	int n, b, d;
-};
-std::vector<info> g[MN];
-
-int dfs(int n, int p = 0) {
-	s[n] = 1;
-	for (auto x : a[n])
-		if (x != p && !r[x]) s[n] += dfs(x, n);
-	return s[n];
-}
-int find(int n, int ms, int p = 0) {
-	for (auto x : a[n])
-		if (!r[x] && x != p && s[x] * 2 > ms) return find(x, ms, n);
-	return n;
-}
-void dfs2(int n, int p = 0) {
-	for (auto x : a[n])
-		if (!r[x] && x != p) ++d, dfs2(x, n), --d;
-	g[n].push_back({t, b, d});
-}
-void centroid(int n = 1) {
-	n = find(n, dfs(n));
-	v[n].reserve(a[n].size());
-	for (auto x : a[n])
-		if (!r[x]) {
-			t = n, b = v[n].size(), d = 1;
-			dfs2(x, n);
-			v[n].push_back(INF);
+int get_centroid(int node, int tree_size, int parent = -1) {
+	for (int child : adj[node]) {
+		if (child == parent || is_removed[child]) { continue; }
+		if (subtree_size[child] * 2 > tree_size) {
+			return get_centroid(child, tree_size, node);
 		}
-	r[n] = 1;
-	for (auto x : a[n])
-		if (!r[x]) centroid(x);
+	}
+	return node;
+}
+
+/**
+ * Calculate the distance between current `node` and the `centroid` it belongs
+ * to. The distances between a node and all its centroid ancestors are stored
+ * in the vector `ancestors`.
+ * @param cur_dist the distance between `node` and `centroid`
+ */
+void get_dists(int node, int centroid, int parent = -1, int cur_dist = 1) {
+	for (int child : adj[node]) {
+		if (child == parent || is_removed[child]) { continue; }
+		cur_dist++;
+		get_dists(child, centroid, node, cur_dist);
+		cur_dist--;
+	}
+	ancestors[node].push_back({centroid, cur_dist});
+}
+
+void build_centroid_decomp(int node = 0) {
+	int centroid = get_centroid(node, get_subtree_size(node));
+
+	/*
+	 * For all nodes in the subtree rooted at `centroid`, calculate their
+	 * distances to the centroid
+	 */
+	for (int child : adj[centroid]) {
+		if (is_removed[child]) { continue; }
+		get_dists(child, centroid, centroid);
+	}
+
+	is_removed[centroid] = true;
+	for (int child : adj[centroid]) {
+		if (is_removed[child]) { continue; }
+		// build the centroid decomposition for all child components
+		build_centroid_decomp(child);
+	}
+}
+
+/**
+ * Paint `node` red by updating all of its ancestors' minimal distances
+ * to a red node
+ */
+void paint(int node) {
+	for (auto &[ancestor, dist] : ancestors[node]) {
+		min_dist[ancestor] = min(min_dist[ancestor], dist);
+	}
+	min_dist[node] = 0;
+}
+
+/** Print the minimal distance between `node` to a red node */
+void query(int node) {
+	int ans = min_dist[node];
+	for (auto &[ancestor, dist] : ancestors[node]) {
+		if (!dist) { continue; }
+		/*
+		 * The distance between `node` and a red painted node is the sum of
+		 * the distance from `node` to one of its ancestors (`dist`) and the
+		 * distance from this ancestor to the nearest red node
+		 * (`min_dist[ancestor]`).
+		 */
+		ans = min(ans, dist + min_dist[ancestor]);
+	}
+
+	cout << ans << "\n";
 }
 
 int main() {
-	scanf("%d%d", &N, &M);
-	for (int i = 0, u, v; i + 1 < N; ++i)
-		scanf("%d%d", &u, &v), a[u].push_back(v), a[v].push_back(u);
-	centroid();
-	memset(m, 0x3f, sizeof m);
-	for (int i = 0, t = 1, n = 1; i <= M; ++i) {
-		if (t == 1) {
-			for (auto x : g[n]) {
-				int &q = v[x.n][x.b];
-				if (x.d < q) {
-					if (m[x.n][0] == q) m[x.n][0] = x.d;
-					else
-						for (int i = 0, u = x.d; i < 2; ++i)
-							if (u < m[x.n][i]) std::swap(u, m[x.n][i]);
-					q = x.d;
-				}
-			}
-			red[n] = 1;
-			m[n][0] = 0;
-		} else {
-			int f = m[n][0];
-			for (auto x : g[n])
-				if (x.d) ckmin(f, m[x.n][v[x.n][x.b] == m[x.n][0]] + x.d);
-			printf("%d\n", f);
-		}
-		if (i < M) scanf("%d%d", &t, &n);
+	int N, M;
+	cin >> N >> M;
+
+	adj.assign(N, vector<int>());
+	for (int i = 0; i < N - 1; i++) {
+		int a, b;
+		cin >> a >> b;
+		a--, b--;
+		adj[a].push_back(b);
+		adj[b].push_back(a);
 	}
-	return 0;
+
+	subtree_size.assign(N, 0);
+	ancestors.assign(N, vector<pair<int, int>>());
+	is_removed.assign(N, false);
+	build_centroid_decomp();
+
+	min_dist.assign(N, INF);
+	paint(0);
+	for (int i = 0; i < M; i++) {
+		int t, v;
+		cin >> t >> v;
+		v--;
+		if (t == 1) {
+			paint(v);
+		} else {
+			query(v);
+		}
+	}
 }
 ```
+
+</CPPSection>
+
+</LanguageSection>
 
 ## Problems
 
