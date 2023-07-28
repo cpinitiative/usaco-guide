@@ -10,11 +10,13 @@ import * as React from 'react';
 import { useContext } from 'react';
 import toast from 'react-hot-toast';
 import UserDataContext from '../context/UserDataContext/UserDataContext';
-import { ProblemInfo } from '../models/problem';
+import { ProblemInfo, ShortProblemInfo } from '../models/problem';
 import { UserSolutionForProblem } from '../models/userSolutionForProblem';
 import { useFirebaseApp } from './useFirebase';
 
-export default function useUserSolutionsForProblem(problem: ProblemInfo) {
+export default function useUserSolutionsForProblem(
+  problem: ProblemInfo | ShortProblemInfo
+) {
   const [solutions, setSolutions] =
     React.useState<UserSolutionForProblem[]>(null);
   const [currentUserSolutions, setCurrentUserSolutions] =
