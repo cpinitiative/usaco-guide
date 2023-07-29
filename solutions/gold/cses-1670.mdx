@@ -12,7 +12,9 @@ configuration.
 </Spoiler>
 
 The difficulty of this problem is with how we choose to implement the BFS. We present
-two solutions with the first being faster and the second being easier to write (note that the second solution may TLE)
+two solutions with the first being faster and the second being easier to write 
+(note that the second solution may TLE). The differences lies with how the grid is
+[hashed](/gold/string-hashing).
 
 <Spoiler title="Solution 1">
 ## Explanation
@@ -136,16 +138,15 @@ grid
 #include <bits/stdc++.h>
 using namespace std;
 
-const int fact[9] = {1, 1, 2, 6, 24, 120, 720, 5040, 40320}, fact9 = 362880;
 unordered_set<string> visited;
 
-// Defined globally to be used in processwap
+// Defined globally to be used in process_swap
 queue<pair<string, int>> q;
 int moves;
 string curboard;
 
 // Processing swapping the numbers in x, y positions
-void processwap(int x, int y) {
+void process_swap(int x, int y) {
 	swap(curboard[x], curboard[y]);
 	// Check whether already visited this potential board
 	if (visited.find(curboard) == visited.end()) {
@@ -176,13 +177,13 @@ int main() {
 
 		// Horizontal swaps
 		for (int i = 0; i < 9; i += 3) {
-			processwap(i, i + 1);
-			processwap(i + 1, i + 2);
+			process_swap(i, i + 1);
+			process_swap(i + 1, i + 2);
 		}
 		// Vertical swaps
 		for (int i = 0; i < 3; i++) {
-			processwap(i, i + 3);
-			processwap(i + 3, i + 6);
+			process_swap(i, i + 3);
+			process_swap(i + 3, i + 6);
 		}
 	}
 }
