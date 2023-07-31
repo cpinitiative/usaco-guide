@@ -57,7 +57,7 @@ function ProblemHit({ hit }: ProblemHitProps) {
           </p>
         </span>
         <ConfettiProvider>
-          <ProblemStatusCheckbox problem={problem} size='large'/>
+          <ProblemStatusCheckbox problem={problem} size="large" />
         </ConfettiProvider>
       </div>
       {/* <div>
