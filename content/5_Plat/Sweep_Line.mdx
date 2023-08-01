@@ -163,7 +163,110 @@ For each point, we recalculate $\delta = \min(\delta, \delta_p)$, and update our
 
 ### Solution
 
-<IncompleteSection />
+<LanguageSection>
+<CPPSection>
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+
+int sweep_line_x;
+
+struct Point { 
+    int x, y, segment_idx; 
+    bool operator<(const Point &oth) { return x == oth.x ? y < oth.y : x < oth.x; }
+};
+struct Segment { int a, b, x, y, idx;  };
+
+double coordinate(Segment a) {    
+    if(a.b == a.y) return a.y;
+    return a.b + (a.y - a.b) * (sweep_line_x-a.a) / (a.x - a.a);
+}
+
+bool operator<(Segment a, Segment b) { return a.idx != b.idx && coordinate(a) < coordinate(b); }
+bool operator==(Segment a, Segment b) { return a.idx == b.idx; }
+int orientation(Point a, Point b, Point c) { return (b.x-a.x) * (c.y-a.y) - (c.x-a.x) * (b.y-a.y); }
+
+bool intersect(Segment a, Segment b) {
+    Point p1 = {a.a, a.b}, p2 = {a.x, a.y}, p3 = {b.a, b.b}, p4 = {b.x, b.y};
+    if( orientation(p1, p2, p3) * orientation(p1, p2, p4) > 0 ) return false;
+    if( orientation(p3, p4, p1) * orientation(p3, p4, p2) > 0 ) return false;
+    return true;
+}
+
+int main() {
+    int n;
+    cin >> n;
+    vector<Segment> segments;
+    vector<Point> events;
+    for(int i = 0; i < n; i++) {
+        int a, b, x, y;
+        cin >> a >> b >> x >> y;
+
+        segments.push_back({a, b, x, y, i});
+        events.push_back({a, b, i});
+        events.push_back({x, y, i});
+    }
+
+    sort(events.begin(), events.end());
+
+    // Keep track of active segments
+    set<Segment> active_segments;
+    // The two overlapping segments
+    int first_segment , second_segment;
+    for(int i = 0; i < (int)events.size(); i++) {
+        first_segment = events[i].segment_idx;
+        auto it = active_segments.find(segments[first_segment]);
+        sweep_line_x = events[i].x;
+        if(it != active_segments.end()) {
+            // ending segment
+            // Check the intersection of the segments above and below
+            auto after = next(it), before = it;
+        
+            if(before != active_segments.begin() && after != active_segments.end()) {
+                before--;
+                if(intersect(segments[before->idx], segments[after->idx])) {
+                    first_segment = before->idx;
+                    second_segment = after->idx;
+                    break;
+                }
+            }
+            active_segments.erase(it);
+        } else { 
+            // new segment & check for intersection 
+            it = active_segments.lower_bound(segments[first_segment]);
+            // Check the intersection of the segments above and below
+            if(it != active_segments.end() && intersect(segments[first_segment], *it)) { 
+                second_segment = it->idx; 
+                break;
+            }
+            if(it != active_segments.begin()) { 
+                it--;
+                if(intersect(*it, segments[first_segment])) {
+                    second_segment = it->idx;
+                    break;
+                }
+            }
+            active_segments.insert(segments[first_segment]);
+        }
+    }
+
+    if(first_segment > second_segment) swap(first_segment, second_segment);
+
+    // Which segment of the two is the answer 
+    int ans = 0;
+    for(int i = 0; i < n; i++) {
+        if(i != second_segment && intersect(segments[i], segments[second_segment]))
+            ans++;
+    }
+    printf("%d\n",(ans > 1 ? second_segment+1 : first_segment+1));
+
+    return 0;
+}
+```
+</CPPSection>
+</LanguageSection>
 
 ### Problems
 
