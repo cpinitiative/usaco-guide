@@ -166,11 +166,11 @@ Let's simplify the problem a little bit and focus on finding any of overlapping 
 
 To find a pair of overlapping segments we use a sweep line approach. Imagine sweeping a vertical line across the scene from left to right, pausing at every segment endpoint.
 We simulate this by sorting all the segment endpoints by x and walk through this sorted array (called 'events' in the code below). As we scan we keep track of active segments
-by using a set (called 'active_segments' in the code below). When we hit the beginning point of a segment, we add it to the active set, and when we hit the ending point of a segment, we remove it from the active set. 
+by using a set (called 'active_segments' in the code below). When we hit the beginning point of a segment, we add it to the active set, and when we hit the ending point of a segment, we remove it from the active set.
 The operation of inserting or removing takes $\mathcal{O}(\log n)$.
 
-The active set of segments is ordered by $y$ coordinate. If two segments overlap, it means that they are adjacent in the set. So every time we insert or remove 
-a segment we check if the adjacent segments overlap. 
+The active set of segments is ordered by $y$ coordinate. If two segments overlap, it means that they are adjacent in the set. So every time we insert or remove
+a segment we check if the adjacent segments overlap.
 
 Here is an animation of how it works:
 
@@ -190,106 +190,122 @@ using namespace std;
 
 long long sweep_line_x;
 
-struct Point { 
-    long long x, y, segment_idx; 
-    bool operator<(const Point &oth) { return x == oth.x ? y < oth.y : x < oth.x; }
+struct Point {
+	long long x, y, segment_idx;
+	bool operator<(const Point &oth) {
+		return x == oth.x ? y < oth.y : x < oth.x;
+	}
 };
-struct Segment { long long a, b, x, y, idx;  };
+struct Segment {
+	long long a, b, x, y, idx;
+};
 
-double coordinate(Segment a) {    
-    if(a.a == a.x) return a.b;
-    return a.b + (a.y - a.b) * (sweep_line_x-a.a) / (a.x - a.a);
+double coordinate(Segment a) {
+	if (a.a == a.x) return a.b;
+	return a.b + (a.y - a.b) * (sweep_line_x - a.a) / (a.x - a.a);
 }
 
-
-int sign(long long x) { if (x==0) return 0; else return x<0 ? -1 : +1; }
-int operator* (Point p1, Point p2) { return sign(p1.x * p2.y - p1.y * p2.x); }
-Point operator- (Point p1, Point p2) { Point p = {p1.x-p2.x, p1.y-p2.y}; return p; }
+int sign(long long x) {
+	if (x == 0) return 0;
+	else return x < 0 ? -1 : +1;
+}
+int operator*(Point p1, Point p2) { return sign(p1.x * p2.y - p1.y * p2.x); }
+Point operator-(Point p1, Point p2) {
+	Point p = {p1.x - p2.x, p1.y - p2.y};
+	return p;
+}
 bool intersect(Segment a, Segment b) {
-  Point p1 = {a.a, a.b}, q1 = {a.x, a.y}, p2 = {b.a, b.b}, q2 = {b.x, b.y};
-  return ((q2-p1)*(q1-p1)) * ((q1-p1)*(p2-p1)) >= 0 && ((q1-p2)*(q2-p2)) * ((q2-p2)*(p1-p2)) >= 0;
+	Point p1 = {a.a, a.b}, q1 = {a.x, a.y}, p2 = {b.a, b.b}, q2 = {b.x, b.y};
+	return ((q2 - p1) * (q1 - p1)) * ((q1 - p1) * (p2 - p1)) >= 0 &&
+	       ((q1 - p2) * (q2 - p2)) * ((q2 - p2) * (p1 - p2)) >= 0;
 }
 
-bool operator<(Segment a, Segment b) { return a.idx != b.idx && coordinate(a) <= coordinate(b); }
+bool operator<(Segment a, Segment b) {
+	return a.idx != b.idx && coordinate(a) <= coordinate(b);
+}
 bool operator==(Segment a, Segment b) { return a.idx == b.idx; }
-long long orientation(Point a, Point b, Point c) { return (b.x-a.x) * (c.y-a.y) - (c.x-a.x) * (b.y-a.y); }
-
+long long orientation(Point a, Point b, Point c) {
+	return (b.x - a.x) * (c.y - a.y) - (c.x - a.x) * (b.y - a.y);
+}
 
 ifstream in("cowjump.in");
 ofstream out("cowjump.out");
 
 int main() {
-    int n;
-    in >> n;
-    vector<Segment> segments;
-    vector<Point> events;
-    for(int i = 0; i < n; i++) {
-        int a, b, x, y;
-        in >> a >> b >> x >> y;
+	int n;
+	in >> n;
+	vector<Segment> segments;
+	vector<Point> events;
+	for (int i = 0; i < n; i++) {
+		int a, b, x, y;
+		in >> a >> b >> x >> y;
 
-        segments.push_back({a, b, x, y, i});
-        events.push_back({a, b, i});
-        events.push_back({x, y, i});
-    }
+		segments.push_back({a, b, x, y, i});
+		events.push_back({a, b, i});
+		events.push_back({x, y, i});
+	}
 
-    sort(events.begin(), events.end());
+	sort(events.begin(), events.end());
 
-    // Keep track of active segments
-    set<Segment> active_segments;
-    // The two overlapping segments
-    int first_segment, second_segment;
-    for(int i = 0; i < 2 * n; i++) {
-        first_segment = events[i].segment_idx;
-        sweep_line_x = events[i].x;
+	// Keep track of active segments
+	set<Segment> active_segments;
+	// The two overlapping segments
+	int first_segment, second_segment;
+	for (int i = 0; i < 2 * n; i++) {
+		first_segment = events[i].segment_idx;
+		sweep_line_x = events[i].x;
 		// Check if the point is the end or the beginning of a segment
-        auto it = active_segments.find(segments[first_segment]);
+		auto it = active_segments.find(segments[first_segment]);
 
-        if(it != active_segments.end()) {
-            // ending segment
-            // Check the intersection of the segments above and below
-            auto after = next(it), before = it;
-            if(before != active_segments.begin() && after != active_segments.end()) {
-                before--;
-                if(intersect(segments[before->idx], segments[after->idx])) {
-                    first_segment = before->idx;
-                    second_segment = after->idx;
-                    break; 
-                }
-            }
-            active_segments.erase(it);
-        } else { 
-            // new segment & check for intersection 
-            it = active_segments.lower_bound(segments[first_segment]);
-			
-            // Check the intersection of the segments above and below
-            if(it != active_segments.end() && intersect(segments[first_segment], *it)) { 
-                second_segment = it->idx; 
-                break;
-            }
-            if(it != active_segments.begin()) { 
-                it--;
-                if(intersect(segments[it->idx], segments[first_segment])) {
-                    second_segment = it->idx;
-                    break;
-                }
-            }
-            active_segments.insert(segments[first_segment]);
-        }
-    }
+		if (it != active_segments.end()) {
+			// ending segment
+			// Check the intersection of the segments above and below
+			auto after = next(it), before = it;
+			if (before != active_segments.begin() &&
+			    after != active_segments.end()) {
+				before--;
+				if (intersect(segments[before->idx], segments[after->idx])) {
+					first_segment = before->idx;
+					second_segment = after->idx;
+					break;
+				}
+			}
+			active_segments.erase(it);
+		} else {
+			// new segment & check for intersection
+			it = active_segments.lower_bound(segments[first_segment]);
 
-    if(first_segment > second_segment) swap(first_segment, second_segment);
+			// Check the intersection of the segments above and below
+			if (it != active_segments.end() &&
+			    intersect(segments[first_segment], *it)) {
+				second_segment = it->idx;
+				break;
+			}
+			if (it != active_segments.begin()) {
+				it--;
+				if (intersect(segments[it->idx], segments[first_segment])) {
+					second_segment = it->idx;
+					break;
+				}
+			}
+			active_segments.insert(segments[first_segment]);
+		}
+	}
 
-    //printf("%d %d\n", first_segment, second_segment);
-    // Which segment of the two is the answer 
-    int ans = 0;
-    for(int i = 0; i < n; i++) {
-        if(i != second_segment && intersect(segments[i], segments[second_segment]))
-            ans++;
-    } 
+	if (first_segment > second_segment) swap(first_segment, second_segment);
 
-    out << (ans > 1 ? second_segment+1 : first_segment+1);
+	// printf("%d %d\n", first_segment, second_segment);
+	//  Which segment of the two is the answer
+	int ans = 0;
+	for (int i = 0; i < n; i++) {
+		if (i != second_segment &&
+		    intersect(segments[i], segments[second_segment]))
+			ans++;
+	}
 
-    return 0;
+	out << (ans > 1 ? second_segment + 1 : first_segment + 1);
+
+	return 0;
 }
 ```
 </CPPSection>
