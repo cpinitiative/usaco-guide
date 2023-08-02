@@ -180,38 +180,44 @@ Time complexity: $\mathcal{O}(n\log n)$.
 
 using namespace std;
 
-int sweep_line_x;
+long long sweep_line_x;
 
 struct Point { 
-    int x, y, segment_idx; 
+    long long x, y, segment_idx; 
     bool operator<(const Point &oth) { return x == oth.x ? y < oth.y : x < oth.x; }
 };
-struct Segment { int a, b, x, y, idx;  };
+struct Segment { long long a, b, x, y, idx;  };
 
 double coordinate(Segment a) {    
-    if(a.b == a.y) return a.y;
+    if(a.a == a.x) return a.b;
     return a.b + (a.y - a.b) * (sweep_line_x-a.a) / (a.x - a.a);
 }
 
-bool operator<(Segment a, Segment b) { return a.idx != b.idx && coordinate(a) < coordinate(b); }
-bool operator==(Segment a, Segment b) { return a.idx == b.idx; }
-int orientation(Point a, Point b, Point c) { return (b.x-a.x) * (c.y-a.y) - (c.x-a.x) * (b.y-a.y); }
 
+int sign(long long x) { if (x==0) return 0; else return x<0 ? -1 : +1; }
+int operator* (Point p1, Point p2) { return sign(p1.x * p2.y - p1.y * p2.x); }
+Point operator- (Point p1, Point p2) { Point p = {p1.x-p2.x, p1.y-p2.y}; return p; }
 bool intersect(Segment a, Segment b) {
-    Point p1 = {a.a, a.b}, p2 = {a.x, a.y}, p3 = {b.a, b.b}, p4 = {b.x, b.y};
-    if( orientation(p1, p2, p3) * orientation(p1, p2, p4) > 0 ) return false;
-    if( orientation(p3, p4, p1) * orientation(p3, p4, p2) > 0 ) return false;
-    return true;
+  Point p1 = {a.a, a.b}, q1 = {a.x, a.y}, p2 = {b.a, b.b}, q2 = {b.x, b.y};
+  return ((q2-p1)*(q1-p1)) * ((q1-p1)*(p2-p1)) >= 0 && ((q1-p2)*(q2-p2)) * ((q2-p2)*(p1-p2)) >= 0;
 }
+
+bool operator<(Segment a, Segment b) { return a.idx != b.idx && coordinate(a) <= coordinate(b); }
+bool operator==(Segment a, Segment b) { return a.idx == b.idx; }
+long long orientation(Point a, Point b, Point c) { return (b.x-a.x) * (c.y-a.y) - (c.x-a.x) * (b.y-a.y); }
+
+
+ifstream in("cowjump.in");
+ofstream out("cowjump.out");
 
 int main() {
     int n;
-    cin >> n;
+    in >> n;
     vector<Segment> segments;
     vector<Point> events;
     for(int i = 0; i < n; i++) {
         int a, b, x, y;
-        cin >> a >> b >> x >> y;
+        in >> a >> b >> x >> y;
 
         segments.push_back({a, b, x, y, i});
         events.push_back({a, b, i});
@@ -223,22 +229,22 @@ int main() {
     // Keep track of active segments
     set<Segment> active_segments;
     // The two overlapping segments
-    int first_segment , second_segment;
-    for(int i = 0; i < (int)events.size(); i++) {
+    int first_segment, second_segment;
+    for(int i = 0; i < 2 * n; i++) {
         first_segment = events[i].segment_idx;
-        auto it = active_segments.find(segments[first_segment]);
         sweep_line_x = events[i].x;
+        auto it = active_segments.find(segments[first_segment]);
         if(it != active_segments.end()) {
             // ending segment
             // Check the intersection of the segments above and below
-            auto after = next(it), before = it;
-        
+            auto after = it, before = it;
+            after++;
             if(before != active_segments.begin() && after != active_segments.end()) {
                 before--;
                 if(intersect(segments[before->idx], segments[after->idx])) {
                     first_segment = before->idx;
                     second_segment = after->idx;
-                    break;
+                    break; 
                 }
             }
             active_segments.erase(it);
@@ -252,7 +258,7 @@ int main() {
             }
             if(it != active_segments.begin()) { 
                 it--;
-                if(intersect(*it, segments[first_segment])) {
+                if(intersect(segments[it->idx], segments[first_segment])) {
                     second_segment = it->idx;
                     break;
                 }
@@ -263,13 +269,15 @@ int main() {
 
     if(first_segment > second_segment) swap(first_segment, second_segment);
 
+    //printf("%d %d\n", first_segment, second_segment);
     // Which segment of the two is the answer 
     int ans = 0;
     for(int i = 0; i < n; i++) {
         if(i != second_segment && intersect(segments[i], segments[second_segment]))
             ans++;
-    }
-    printf("%d\n",(ans > 1 ? second_segment+1 : first_segment+1));
+    } 
+
+    out << (ans > 1 ? second_segment+1 : first_segment+1);
 
     return 0;
 }
