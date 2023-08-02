@@ -2,9 +2,21 @@
 id: cses-1670
 source: CSES
 title: Swap Game
-author: Maggie Liu
+author: Maggie Liu, Daniel Ge
 ---
 
+<Spoiler title="Hint">
+Think of all $9!$ possible configurations of the board as the nodes with the moves
+as the edges that connect them. We perform BFS, starting at our intial given
+configuration.
+</Spoiler>
+
+The difficulty of this problem is with how we choose to implement the BFS. We present
+two solutions with the first being faster and the second being easier to write
+(note that the second solution may TLE). The differences lies with how the grid is
+[hashed](/gold/string-hashing).
+
+<Spoiler title="Solution 1">
 ## Explanation
 
 Since there are only $9!$ states the grid can be in, we can use BFS to find the
@@ -22,7 +34,6 @@ array. When we reach the sorted grid, we print the $\texttt{dist}$.
 grid
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
@@ -86,5 +97,100 @@ int main() {
 ```
 
 </CPPSection>
-
 </LanguageSection>
+</Spoiler>
+
+
+<Spoiler title="Solution 2">
+<Warning>
+While this solution is much easier to implement, it is extremely difficult to write an implementation that does not TLE in Java or Python. It may TLE in C++ if written inefficiently.
+</Warning>
+## Explanation
+Since there are only $9!$ states the grid can be in, we can use BFS to find the
+number of moves needed to reach the $\texttt{target}$ from the starting grid. We
+represent each grid as a string read left-to-right then top-to-bottom.
+
+For example, the grid in the testcase,
+```
+2 1 3
+7 5 9
+8 4 6
+```
+becomes "213759846".
+
+We then perform BFS normally but with a few notable changes.
+
+1. Since we can't have strings be the indices of an array, we store the "depth" of each string (number of moves required to reach a board configuration) inside our queue.
+
+2. We also store the strings (board configurations) already seen inside an **unordered_set**, as using normal (ordered) sets would be too slow.
+
+<Info title="Significance of using unordered set">
+As we will learn in the [hashing module](/gold/hashmaps), unordered set does searches and insertions in constant time despite a large constant factor while a normal set does this in $\mathcal{O}(\log n)$. Since we are dealing with up to $9!$ terms, it is necessary to use an unordered set.
+</Info>
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N^2!)$, where $N$ is the side length of the
+grid
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+unordered_set<string> visited;
+
+// Defined globally to be used in process_swap
+queue<pair<string, int>> q;
+int moves;
+string curboard;
+
+// Processing swapping the numbers in x, y positions
+void process_swap(int x, int y) {
+	swap(curboard[x], curboard[y]);
+	// Check whether already visited this potential board
+	if (visited.find(curboard) == visited.end()) {
+		q.push({curboard, moves + 1});
+		visited.insert(curboard);
+	}
+	// Restore to original board
+	swap(curboard[x], curboard[y]);
+}
+
+int main() {
+	string inp;
+	// Rewriting the input as a string
+	for (int i = 0; i < 9; i++) {
+		int a;
+		cin >> a;
+		inp += to_string(a - 1);
+	}
+
+	q.push({inp, 0});
+	while (!q.empty()) {
+		tie(curboard, moves) = q.front();
+		q.pop();
+		if (curboard == "012345678") {
+			cout << moves << endl;
+			return 0;
+		}
+
+		// Horizontal swaps
+		for (int i = 0; i < 9; i += 3) {
+			process_swap(i, i + 1);
+			process_swap(i + 1, i + 2);
+		}
+		// Vertical swaps
+		for (int i = 0; i < 3; i++) {
+			process_swap(i, i + 3);
+			process_swap(i + 3, i + 6);
+		}
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>
+</Spoiler>
