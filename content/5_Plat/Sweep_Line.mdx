@@ -233,12 +233,13 @@ int main() {
     for(int i = 0; i < 2 * n; i++) {
         first_segment = events[i].segment_idx;
         sweep_line_x = events[i].x;
+		// Check if the point is the end or the beginning of a segment
         auto it = active_segments.find(segments[first_segment]);
+
         if(it != active_segments.end()) {
             // ending segment
             // Check the intersection of the segments above and below
-            auto after = it, before = it;
-            after++;
+            auto after = next(it), before = it;
             if(before != active_segments.begin() && after != active_segments.end()) {
                 before--;
                 if(intersect(segments[before->idx], segments[after->idx])) {
@@ -251,6 +252,7 @@ int main() {
         } else { 
             // new segment & check for intersection 
             it = active_segments.lower_bound(segments[first_segment]);
+			
             // Check the intersection of the segments above and below
             if(it != active_segments.end() && intersect(segments[first_segment], *it)) { 
                 second_segment = it->idx; 
