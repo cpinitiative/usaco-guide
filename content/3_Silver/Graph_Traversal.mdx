@@ -92,68 +92,15 @@ From the second resource:
 When implementing DFS, we often use a recursive function to visit the vertices and an array to store whether we've seen a vertex before.
 
 <LanguageSection>
-<PySection>
-
-```py
-import sys
-
-sys.setrecursionlimit(1000000)  # may need if input is large
-
-MAX_N = int(1e6)
-adj = [[] for _ in range(MAX_N)]
-visited = [False] * MAX_N
-
-# Define adjacency list and read in problem-specific input
-
-
-def dfs(current_node):
-	visited[current_node] = True
-	for neighbor in adj[current_node]:
-		if not visited[neighbor]:
-			dfs(neighbor)
-
-
-for i in range(MAX_N):
-	if not visited[i]:
-		dfs(i)
-```
-
-</PySection>
-<JavaSection>
-
-```java
-static ArrayList<ArrayList<Integer>> adj;
-static boolean[] visited;
-static final int MAX_N = (int)1e6;
-
-public static void main(String[] args) throws IOException {
-	visited = new boolean[MAX_N];
-	adj = new ArrayList<ArrayList<Integer>>();
-	for (int i = 0; i < MAX_N; i++) adj.add(new ArrayList<Integer>());
-
-	// Define adjacency list and read in problem-specific input
-
-	for (int i = 0; i < MAX_N; i++) {
-		// iterate over all connected components in the graph
-		if (!visited[i]) { dfs(i); }
-	}
-}
-
-static void dfs(int currentNode) {
-	if (visited[currentNode]) { return; }
-
-	visited[currentNode] = true;
-	for (int neighbor : adj.get(currentNode)) { dfs(neighbor); }
-}
-```
-
-</JavaSection>
 <CPPSection>
 
 ```cpp
-const int MAX_N = 1e6;
-vector<int> adj[MAX_N];
-bool visited[MAX_N];
+#include <bits/stdc++.h>
+using namespace std;
+
+int n = 6;
+vector<vector<int>> adj(n);
+vector<bool> visited(n);
 
 void dfs(int current_node) {
 	if (visited[current_node]) { return; }
@@ -163,9 +110,18 @@ void dfs(int current_node) {
 }
 
 int main() {
-	// Define adjacency list and read in problem-specific input
+	/*
+	 * Define adjacency list and read in problem-specific input
+	 *
+	 * In this example, we've provided "dummy input" that's
+	 * reflected in the GIF above to help illustrate the
+	 * order of the recrusive calls.
+	 */
+	adj[0] = {1, 2, 4};
+	adj[1] = {3, 4};
+	adj[2] = {5};
 
-	for (int i = 0; i < MAX_N; i++) {
+	for (int i = 0; i < n; i++) {
 		// iterate over all connected components in the graph
 		if (!visited[i]) { dfs(i); }
 	}
@@ -173,6 +129,85 @@ int main() {
 ```
 
 </CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class DFSDemo {
+	static List<Integer>[] adj;
+	static boolean[] visited;
+	static int n = 6;
+
+	public static void main(String[] args) throws IOException {
+		visited = new boolean[n];
+
+		/*
+		 * Define adjacency list and read in problem-specific input
+		 *
+		 * In this example, we've provided "dummy input" that's
+		 * reflected in the GIF above to help illustrate the
+		 * order of the recrusive calls.
+		 */
+		adj = new ArrayList[n];
+		for (int i = 0; i < n; i++) { adj[i] = new ArrayList<>(); }
+		adj[0] = new ArrayList<>(Arrays.asList(1, 2, 4));
+		adj[1] = new ArrayList<>(Arrays.asList(3, 4));
+		adj[2] = new ArrayList<>(Arrays.asList(5));
+
+		for (int i = 0; i < n; i++) {
+			// iterate over all connected components in the graph
+			if (!visited[i]) { dfs(i); }
+		}
+	}
+
+	static void dfs(int currentNode) {
+		if (visited[currentNode]) { return; }
+
+		visited[currentNode] = true;
+		for (int neighbor : adj[currentNode]) { dfs(neighbor); }
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+import sys
+
+sys.setrecursionlimit(10**5)  # Python has a default recursion limit of 1000
+
+n = 6
+visited = [False] * n
+
+"""
+Define adjacency list and read in problem-specific input here.
+
+In this example, we've provided "dummy input" that's
+reflected in the GIF above to help illustrate the
+order of the recrusive calls.
+"""
+adj = [[] for _ in range(n)]
+adj[0] = [1, 2, 4]
+adj[1] = [3, 4]
+adj[2] = [5]
+
+
+def dfs(current_node):
+	visited[current_node] = True
+	for neighbor in adj[current_node]:
+		if not visited[neighbor]:
+			dfs(neighbor)
+
+
+for i in range(n):
+	if not visited[i]:
+		dfs(i)
+```
+
+</PySection>
 </LanguageSection>
 
 ## BFS
@@ -193,7 +228,7 @@ int main() {
 		url="https://www.khanacademy.org/computing/computer-science/algorithms/breadth-first-search/a/breadth-first-search-and-its-uses"
 	 />
 	<Resource
-		source="Youtube"
+		source="YouTube"
 		title="Breadth First Search Algorithm"
 		url="https://www.youtube.com/watch?v=oDqjPvD54Ss"
 	>
@@ -380,7 +415,13 @@ public static void main(String[] args) throws IOException {
 	ArrayList<ArrayList<Integer>> adj = new ArrayList<ArrayList<Integer>>();
 	for (int i = 0; i < MAX_N; i++) adj.add(new ArrayList<Integer>());
 
-	// Define adjacency list and read in problem-specific input
+	/*
+	 * Define adjacency list and read in problem-specific input
+	 *
+	 * In this example, we've provided "dummy input" that's
+	 * reflected in the GIF above to help illustrate the
+	 * order of the recrusive calls.
+	 */
 
 	for (int i = 0; i < MAX_N; i++) {
 		// iterate over all connected components in the graph
@@ -407,15 +448,22 @@ public static void main(String[] args) throws IOException {
 <CPPSection>
 
 ```cpp
-const int MAX_N = 1e6;
+int n = 6;
+vector<vector<int>> adj(n);
+vector<bool> visited(n);
 
 int main() {
-	vector<int> adj[MAX_N];
-	bool visited[MAX_N] = {0};
+	/*
+	 * Define adjacency list and read in problem-specific input
+	 *
+	 * In this example, we've provided "dummy input" that's
+	 * reflected in the GIF above to help illustrate the
+	 * order of the recrusive calls.
+	 */
+	adj[0] = {1, 2, 4};
+	adj[1] = {3, 4} adj[2].push_back(5);
 
-	// Define adjacency list and read in problem-specific input
-
-	for (int i = 0; i < MAX_N; i++) {
+	for (int i = 0; i < n; i++) {
 		// iterate over all connected components in the graph
 		if (!visited[i]) {
 			queue<int> q;
@@ -442,13 +490,23 @@ int main() {
 ```py
 from collections import deque
 
-MAX_N = int(1e6)
-adj = [[] for _ in range(MAX_N)]
-visited = [False] * MAX_N
+"""
+Define adjacency list and read in problem-specific input
 
-# Define adjacency list and read in problem-specific input
+In this example, we've provided "dummy input" that's
+reflected in the GIF above to help illustrate the
+order of the recrusive calls.
+"""
 
-for i in range(MAX_N):
+n = 6
+adj = [[] for _ in range(n)]
+visited = [False] * n
+
+adj[0] = [1, 2, 4]
+adj[1] = [3, 4]
+adj[2] = [5]
+
+for i in range(n):
 	# iterate over all connected components in the graph
 	if not visited[i]:
 		q = deque([i])

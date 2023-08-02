@@ -3,7 +3,7 @@ import className from 'classnames';
 import * as React from 'react';
 import { LANGUAGE_LABELS } from '../context/UserDataContext/properties/userLang';
 import useUserProblemSolutionActions from '../hooks/useUserProblemSolutionActions';
-import { ProblemInfo } from '../models/problem';
+import { ShortProblemInfo } from '../models/problem';
 import ButtonGroup from './ButtonGroup';
 import TabIndentableTextarea from './elements/TabIndentableTextarea';
 
@@ -14,7 +14,7 @@ export default function SubmitProblemSolutionModal({
 }: {
   isOpen: boolean;
   onClose: () => void;
-  problem: ProblemInfo;
+  problem: ShortProblemInfo;
 }) {
   const [solutionCode, setSolutionCode] = React.useState('');
   const [codeLang, setCodeLang] = React.useState('');

@@ -1,0 +1,95 @@
+---
+id: cf-1338A
+source: CF
+title: Powered Addition
+author: Kevin Sheng
+---
+
+[Official Editorial](https://codeforces.com/blog/entry/75913)
+
+## Explanation
+
+The first thing we have to notice here is that we can get the minimum number
+of seconds by doing the bare minimum to make the sequence increasing.
+If we have a number that's less than its predecessor, there's *no reason*
+to make that number greater than what comes before it.
+
+With that out of the way, we know how much we should add to each number.
+To get the overall minimum number of seconds to make the sequence nondecreasing,
+we can take the floors of the log base 2 of each number and add 1.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(n)$ for each test case.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <algorithm>
+#include <cmath>
+#include <iostream>
+#include <vector>
+
+using std::cout;
+using std::endl;
+using std::vector;
+
+int main() {
+	int test_num;
+	std::cin >> test_num;
+	for (int t = 0; t < test_num; t++) {
+		int size;
+		std::cin >> size;
+		vector<int> arr(size);
+		for (int &i : arr) { std::cin >> i; }
+
+		vector<int> target{arr[0]};
+		vector<int> to_add;
+		for (int i = 1; i < size; i++) {
+			if (target.back() > arr[i]) {
+				to_add.push_back(target.back() - arr[i]);
+				target.push_back(target.back());
+			} else {
+				target.push_back(arr[i]);
+			}
+		}
+
+		int min_time = 0;
+		for (int a : to_add) {
+			min_time = std::max(min_time, (int)log2(a) + 1);
+		}
+		cout << min_time << endl;
+	}
+}
+```
+
+</CPPSection>
+<PySection>
+
+```py
+from math import log2
+
+for _ in range(int(input())):
+	size = int(input())
+	arr = [int(i) for i in input().split()]
+	assert len(arr) == size
+
+	target = [arr[0]]
+	to_add = []
+	for i in range(1, size):
+		if target[-1] > arr[i]:
+			to_add.append(target[-1] - arr[i])
+			target.append(target[-1])
+		else:
+			target.append(arr[i])
+
+	min_time = 0
+	for a in to_add:
+		min_time = max(min_time, int(log2(a)) + 1)
+
+	print(min_time)
+```
+
+</PySection>
+</LanguageSection>

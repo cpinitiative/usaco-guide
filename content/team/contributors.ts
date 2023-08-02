@@ -66,7 +66,7 @@ export const OrderedFirstMembers: Member[] = [
   {
     photo: 'maggie',
     name: 'Maggie Liu',
-    titles: ['Executive', roles.webdev, roles.videoInstructor],
+    titles: ['Board', roles.webdev, roles.videoInstructor],
     github: 'maggie-j-liu',
     website: 'https://maggieliu.dev',
     codeforces: 'ml1234',
@@ -126,15 +126,8 @@ export const OrderedFirstMembers: Member[] = [
   {
     photo: 'evan',
     name: 'Evan Zhao',
-    titles: ['Director of Classes', roles.liveInstructor],
+    titles: ['Executive', 'Director of Classes', roles.liveInstructor],
     email: 'evanzhao12@gmail.com',
-  },
-  {
-    photo: 'pranav',
-    name: 'Pranav Jadhav',
-    titles: ['Director of Clubs', roles.clubCurriculum],
-    github: 'pranavgithub1',
-    email: 'pra168109@gmail.com',
   },
   {
     photo: 'andi',
@@ -187,7 +180,12 @@ export const RestOfMembers: Member[] = [
   {
     photo: 'ryan',
     name: 'Ryan Chou',
-    titles: [roles.liveInstructor, roles.videoInstructor, roles.contentAuthor],
+    titles: [
+      'Content Manager',
+      roles.liveInstructor,
+      roles.videoInstructor,
+      roles.contentAuthor,
+    ],
     github: 'ryanchou-dev',
     website: 'https://www.ryanchou.dev/',
   },
@@ -216,7 +214,12 @@ export const RestOfMembers: Member[] = [
   {
     photo: 'jesse',
     name: 'Jesse Choe',
-    titles: [roles.contentAuthor, roles.liveInstructor],
+    titles: [
+      'Director of Classes',
+      'Content Manager',
+      roles.contentAuthor,
+      roles.liveInstructor,
+    ],
     github: 'jessechoe10',
     email: 'jessechoe10@gmail.com',
     codeforces: 'YoRepi7',
@@ -298,7 +301,7 @@ export const RestOfMembers: Member[] = [
   {
     photo: 'trisha',
     name: 'Trisha Sabadra',
-    titles: [roles.liveInstructor],
+    titles: ['Director of Classes', roles.liveInstructor],
   },
   {
     photo: 'advay',
@@ -331,6 +334,21 @@ export const RestOfMembers: Member[] = [
     name: 'Faris Raza',
     titles: [roles.liveInstructor, roles.clubCurriculum],
   },
+  {
+    photo: 'alex_wang',
+    name: 'Alex Wang',
+    titles: ['Director of Clubs'],
+  },
+  {
+    photo: 'aakash_gokhale',
+    name: 'Aakash Gokhale',
+    titles: ['Director of Contests'],
+  },
+  {
+    photo: 'justin_huang',
+    name: 'Justin Huang',
+    titles: ['Director of Software', roles.webdev],
+  },
 ];
 
 export const NotPictured: Member[] = [
@@ -353,6 +371,13 @@ export const NotPictured: Member[] = [
 ];
 
 export const FormerMembers: Member[] = [
+  {
+    photo: 'pranav',
+    name: 'Pranav Jadhav',
+    titles: ['Director of Clubs', roles.clubCurriculum],
+    github: 'pranavgithub1',
+    email: 'pra168109@gmail.com',
+  },
   {
     photo: 'neo',
     name: 'Neo Wang',
