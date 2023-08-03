@@ -216,6 +216,12 @@ int sign(long long x) {
 	}
 }
 
+int operator*(Point p1, Point p2) { return sign(p1.x * p2.y - p1.y * p2.x); }
+Point operator-(Point p1, Point p2) {
+	Point p = {p1.x - p2.x, p1.y - p2.y};
+	return p;
+}
+
 bool intersect(Segment a, Segment b) {
 	Point p1 = {a.a, a.b}, q1 = {a.x, a.y}, p2 = {b.a, b.b}, q2 = {b.x, b.y};
 	return ((q2 - p1) * (q1 - p1)) * ((q1 - p1) * (p2 - p1)) >= 0 &&
@@ -226,11 +232,6 @@ long long orientation(Point a, Point b, Point c) {
 	return (b.x - a.x) * (c.y - a.y) - (c.x - a.x) * (b.y - a.y);
 }
 
-int operator*(Point p1, Point p2) { return sign(p1.x * p2.y - p1.y * p2.x); }
-Point operator-(Point p1, Point p2) {
-	Point p = {p1.x - p2.x, p1.y - p2.y};
-	return p;
-}
 bool operator<(Segment a, Segment b) {
 	return a.idx != b.idx && coordinate(a) <= coordinate(b);
 }
