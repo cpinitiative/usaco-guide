@@ -162,10 +162,10 @@ For each point, we recalculate $\delta = \min(\delta, \delta_p)$, and update our
 <FocusProblem problem="segSam" />
 
 ### Solution
-Let's simplify the problem a little bit and focus on finding any of overlapping segments. The segment we are looking for is on of the two.
+Let's simplify the problem a little bit and focus on finding any overlapping segments. The segment we are looking for is one of the two.
 
 To find a pair of overlapping segments we use a sweep line approach. Imagine sweeping a vertical line across the scene from left to right, pausing at every segment endpoint.
-We simulate this by sorting all the segment endpoints by x and walk through this sorted array (called 'events' in the code below). As we scan we keep track of active segments
+We simulate this by sorting all the segment endpoints by x and walking through this sorted array (called 'events' in the code below). As we scan, we keep track of active segments
 by using a set (called 'active_segments' in the code below). When we hit the beginning point of a segment, we add it to the active set, and when we hit the ending point of a segment, we remove it from the active set.
 The operation of inserting or removing takes $\mathcal{O}(\log n)$.
 
@@ -179,10 +179,13 @@ Here is an animation of how it works:
 </video>
 
 
+## Implementation 
+
 Time complexity: $\mathcal{O}(n\log n)$.
 
 <LanguageSection>
 <CPPSection>
+
 ```cpp
 #include <bits/stdc++.h>
 
@@ -192,8 +195,8 @@ long long sweep_line_x;
 
 struct Point {
 	long long x, y, segment_idx;
-	bool operator<(const Point &oth) {
-		return x == oth.x ? y < oth.y : x < oth.x;
+	bool operator<(const Point &other) {
+		return x == other.x ? y < other.y : x < other.x;
 	}
 };
 struct Segment {
@@ -201,37 +204,39 @@ struct Segment {
 };
 
 double coordinate(Segment a) {
-	if (a.a == a.x) return a.b;
+	if (a.a == a.x) { return a.b; }
 	return a.b + (a.y - a.b) * (sweep_line_x - a.a) / (a.x - a.a);
 }
 
 int sign(long long x) {
-	if (x == 0) return 0;
-	else return x < 0 ? -1 : +1;
+	if (x == 0) { return 0; }
+	else { return x < 0 ? -1 : +1; }
 }
-int operator*(Point p1, Point p2) { return sign(p1.x * p2.y - p1.y * p2.x); }
-Point operator-(Point p1, Point p2) {
-	Point p = {p1.x - p2.x, p1.y - p2.y};
-	return p;
-}
+
 bool intersect(Segment a, Segment b) {
 	Point p1 = {a.a, a.b}, q1 = {a.x, a.y}, p2 = {b.a, b.b}, q2 = {b.x, b.y};
 	return ((q2 - p1) * (q1 - p1)) * ((q1 - p1) * (p2 - p1)) >= 0 &&
 	       ((q1 - p2) * (q2 - p2)) * ((q2 - p2) * (p1 - p2)) >= 0;
 }
 
-bool operator<(Segment a, Segment b) {
-	return a.idx != b.idx && coordinate(a) <= coordinate(b);
-}
-bool operator==(Segment a, Segment b) { return a.idx == b.idx; }
 long long orientation(Point a, Point b, Point c) {
 	return (b.x - a.x) * (c.y - a.y) - (c.x - a.x) * (b.y - a.y);
 }
 
-ifstream in("cowjump.in");
-ofstream out("cowjump.out");
+int operator*(Point p1, Point p2) { return sign(p1.x * p2.y - p1.y * p2.x); }
+Point operator-(Point p1, Point p2) {
+	Point p = {p1.x - p2.x, p1.y - p2.y};
+	return p;
+}
+bool operator<(Segment a, Segment b) {
+	return a.idx != b.idx && coordinate(a) <= coordinate(b);
+}
+bool operator==(Segment a, Segment b) { return a.idx == b.idx; }
+
 
 int main() {
+	ifstream in("cowjump.in");
+	ofstream out("cowjump.out");
 	int n;
 	in >> n;
 	vector<Segment> segments;
@@ -258,7 +263,7 @@ int main() {
 		auto it = active_segments.find(segments[first_segment]);
 
 		if (it != active_segments.end()) {
-			// ending segment
+			// Ending segment
 			// Check the intersection of the segments above and below
 			auto after = next(it), before = it;
 			if (before != active_segments.begin() &&
@@ -272,7 +277,7 @@ int main() {
 			}
 			active_segments.erase(it);
 		} else {
-			// new segment & check for intersection
+			// New segment & check for intersection
 			it = active_segments.lower_bound(segments[first_segment]);
 
 			// Check the intersection of the segments above and below
@@ -294,18 +299,17 @@ int main() {
 
 	if (first_segment > second_segment) swap(first_segment, second_segment);
 
-	// printf("%d %d\n", first_segment, second_segment);
 	//  Which segment of the two is the answer
 	int ans = 0;
 	for (int i = 0; i < n; i++) {
 		if (i != second_segment &&
-		    intersect(segments[i], segments[second_segment]))
+		    intersect(segments[i], segments[second_segment])) {
 			ans++;
+		}
 	}
 
 	out << (ans > 1 ? second_segment + 1 : first_segment + 1);
 
-	return 0;
 }
 ```
 </CPPSection>
