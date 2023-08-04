@@ -2,7 +2,7 @@
 id: intro-sorted-sets
 title: 'More Operations on Sorted Sets'
 author: Darren Yao, Benjamin Qi, Andrew Wang
-contributors: Aadit Ambadkar
+contributors: Aadit Ambadkar, Jeffrey Hu
 prerequisites:
   - intro-sets
 description:
@@ -391,6 +391,37 @@ pq.add(6);                      // [7, 6, 5]
 ```
 
 </JavaSection>
+
+<PySection>
+
+### [Python](https://docs.python.org/3/library/heapq.html)
+
+In Python, we delete and retrieve the element of **lowest** rather than highest priority.
+
+Note that Python's priority queue is not encapsulated; `heapq` operates on a provided list directly by turning it into a heap, then doing operations on the heap.
+
+<Warning>
+
+Because of a heap's structure, printing out `pq` will **not** print out the elements in sorted order in Python. The comments below are a **representation** of what the heap contains, **not** what the contents of `pq` actually are.
+
+</Warning>
+
+```python
+import heapq
+
+pq = []
+heapq.heapify(pq)  # This line is not necessary since pq starts as an empty list. However, for lists of length greater than 1, heapify is required to turn the list into a heap.
+heapq.heappush(pq, 7)  # [7]
+heapq.heappush(pq, 2)  # [7, 2]
+heapq.heappush(pq, 1)  # [7, 2, 1]
+heapq.heappush(pq, 5)  # [7, 5, 2, 1]
+print(pq[0])           # 1
+heapq.heappop(pq)      # [7, 5, 2]
+heapq.heappop(pq)      # [7, 5]
+heapq.heappush(pq, 6)  # [7, 6, 5]
+```
+
+</PySection>
 
 </LanguageSection>
 
