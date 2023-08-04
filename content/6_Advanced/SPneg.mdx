@@ -1,7 +1,7 @@
 ---
 id: sp-neg
 title: 'Shortest Paths with Negative Edge Weights'
-author: Benjamin Qi, Andi Qu, Dong Liu
+author: Benjamin Qi, Andi Qu, Dong Liu, F. Bruno D. R.
 prerequisites:
   - shortest-paths
 description: 'Returning to Bellman-Ford and Floyd-Warshall.'
@@ -43,7 +43,95 @@ frequency: 0
 
 #### Solution
 
-<IncompleteSection />
+Although this is a Single Source Shortest Paths problem, we can not use the known
+Dijkstra's algorithm, because we have negative weights on edges. An alternative is
+to use the Bellman-Ford algorithm. The algorithm first considers all the paths
+which use 1 edge. Then it calculates all the paths with at most 2 edges, and so
+on. If the graph has no negative cycle, then the shortest path between the source
+and any other vertice should have at most V-1 edges, where V stands for the number
+of vertices in the graph. Because of that, the algorithm iterates through at most
+all edges V-1 times. Hence, it runs in O(E * V).
+
+If the graph has a negative cycle, we can detect a vertice in this cycle by running
+another relaxation. In this problem, belonging to a negative cycle means the
+distance to that point is minus infinity. Notice that all points that are reachable
+from those will also have minus infinity cost. In the solution below, we detect
+all the negative cycles and save the point from which we detected the cycle. We then
+do a bfs with those points as sources.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include<bits/stdc++.h>
+using namespace std;
+using ii = pair<int, int>;
+
+const int INF = 1e9;
+
+int main(){
+    int n, m, q, s;
+
+    cin >> n >> m >> q >> s;
+    while(!(n == 0 && m == 0 && q == 0 && s == 0)){
+        vector<vector<ii>> adj(n);
+        for(int i = 0; i < m; i++){
+            int u, v, w;
+            cin >> u >> v >> w;
+            adj[u].emplace_back(v, w);
+        }
+
+        vector<int> dist(n, INF);
+        dist[s] = 0;
+
+        for(int i = 0; i < n-1; i++){
+            for(int u = 0; u < n; u++){
+                if(dist[u] == INF) { continue; }
+                for(auto& [v, w] : adj[u]){
+                    dist[v] = min(dist[v], dist[u] + w);
+                }
+            }
+        }
+
+        queue<int> bfs_queue;
+
+        // one more iteration to detect negative cycles on graph
+        for(int u = 0; u < n; u++){
+            if(dist[u] == INF) { continue; }
+            for(auto& [v, w] : adj[u]){
+                // the relaxed vertices belong to a negative cycle
+                if(dist[u] + w < dist[v]) { bfs_queue.push(v); }
+            }
+        }
+
+        vector<bool> is_negative_inf(n, false);
+
+        while(!bfs_queue.empty()){
+            int u = bfs_queue.front();
+            bfs_queue.pop();
+            is_negative_inf[u] = true;
+            for(auto& [v, w] : adj[u]){
+                if(is_negative_inf[v]) { continue; }
+                bfs_queue.push(v);
+            }
+        }
+
+        for(int i = 0; i < q; i++){
+            int target; cin >> target;
+            if(is_negative_inf[target]) { cout << "-Infinity\n"; }
+            else if(dist[target] == INF) { cout << "Impossible\n"; }
+            else { cout << dist[target] << '\n'; }
+        }
+
+        cin >> n >> m >> q >> s;
+    }
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
 
 ### Finding Negative Cycles
 
