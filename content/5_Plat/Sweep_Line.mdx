@@ -173,6 +173,10 @@ For each point, we recalculate $\delta = \min(\delta, \delta_p)$, and update our
 
 <FocusProblem problem="manSam" />
 
+The key observation is that although there are many point, they are spread across a small surface i.e. $0 \le x, y \le 1000$. So instead of using  Kruskal's or Prim's 
+algorithm we can use a Dijkstra approach style. Starting from an arbitrary point, from the first one in the code below, run Dijkstra algorithm. The priority queue
+will sort the points after the distance to the MST.
+
 <LanguageSection>
 <CPPSection>
 
@@ -205,6 +209,7 @@ int main() {
 
 	auto inside = [](int x, int y) { return 0 <= x && 0 <= y && x <= 1000 && y <= 1000; };
 
+	// Dijkstra algorithm
 	int ans = 0;
 	while(!pq.empty()) {
 		int x = pq.top().second.first;
