@@ -173,7 +173,7 @@ For each point, we recalculate $\delta = \min(\delta, \delta_p)$, and update our
 
 <FocusProblem problem="manSam" />
 
-The key observation is that although there are many point, they are spread across a small surface i.e. $0 \le x, y \le 1000$. So instead of using  Kruskal's or Prim's 
+The key observation is that although there are many point, they are spread across a small surface i.e. $0 \le x, y \le 1000$. So instead of using  Kruskal's or Prim's
 algorithm we can use a Dijkstra approach style. Starting from an arbitrary point, from the first one in the code below, run Dijkstra algorithm. The priority queue
 will sort the points after the distance to the MST.
 
@@ -192,46 +192,49 @@ const int dx[4] = {-1, 0, 1, 0};
 const int dy[4] = {0, 1, 0, -1};
 
 int d[NMAX][NMAX];
-bool mat[NMAX][NMAX]; // True if (x,y) point is in the input
+bool mat[NMAX][NMAX];  // True if (x,y) point is in the input
 
 int main() {
 	int n;
 	cin >> n;
 	memset(d, -1, sizeof(d));
 	priority_queue<pair<int, pair<int, int>>> pq;
-	for(int i = 0; i < n; i++) {
+	for (int i = 0; i < n; i++) {
 		int x, y;
 		scanf("%d %d", &x, &y);
 		mat[x][y] = 1;
-		if(!i) {
+		if (!i) {
 			d[x][y] = 0;
 			pq.push({0, {x, y}});
 		}
 	}
 
-	auto inside = [](int x, int y) { return 0 <= x && 0 <= y && x <= 1000 && y <= 1000; };
+	auto inside = [](int x, int y) {
+		return 0 <= x && 0 <= y && x <= 1000 && y <= 1000;
+	};
 
 	// Dijkstra algorithm
 	int ans = 0;
-	while(!pq.empty()) {
+	while (!pq.empty()) {
 		int x = pq.top().second.first;
 		int y = pq.top().second.second;
 		int dist = -pq.top().first;
 		pq.pop();
 
-		if(dist != d[x][y]) continue ;
-		if(mat[x][y]) {
+		if (dist != d[x][y]) continue;
+		if (mat[x][y]) {
 			mat[x][y] = 0;
 			ans += dist;
 			d[x][y] = 0;
 			pq.push({0, {x, y}});
-			if(dist) continue ;
+			if (dist) continue;
 		}
 
-		for(int dir = 0; dir < 4; dir++) {
+		for (int dir = 0; dir < 4; dir++) {
 			int newx = x + dx[dir];
 			int newy = y + dy[dir];
-			if( inside(newx, newy) && (d[newx][newy] == -1 || dist + 1 < d[newx][newy]) ) {
+			if (inside(newx, newy) &&
+			    (d[newx][newy] == -1 || dist + 1 < d[newx][newy])) {
 				d[newx][newy] = dist + 1;
 				pq.push({-d[newx][newy], {newx, newy}});
 			}
