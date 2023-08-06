@@ -216,10 +216,18 @@ int sign(long long x) {
 	}
 }
 
-int operator*(Point p1, Point p2) { return sign(p1.x * p2.y - p1.y * p2.x); }
+int operator*(Point p1, Point p2) { 
+	return sign(p1.x * p2.y - p1.y * p2.x); 
+}
 Point operator-(Point p1, Point p2) {
 	Point p = {p1.x - p2.x, p1.y - p2.y};
 	return p;
+}
+bool operator<(Segment a, Segment b) {
+	return a.idx != b.idx && coordinate(a) <= coordinate(b);
+}
+bool operator==(Segment a, Segment b) { 
+	return a.idx == b.idx; 
 }
 
 bool intersect(Segment a, Segment b) {
@@ -231,11 +239,6 @@ bool intersect(Segment a, Segment b) {
 long long orientation(Point a, Point b, Point c) {
 	return (b.x - a.x) * (c.y - a.y) - (c.x - a.x) * (b.y - a.y);
 }
-
-bool operator<(Segment a, Segment b) {
-	return a.idx != b.idx && coordinate(a) <= coordinate(b);
-}
-bool operator==(Segment a, Segment b) { return a.idx == b.idx; }
 
 int main() {
 	ifstream in("cowjump.in");
