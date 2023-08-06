@@ -48,9 +48,9 @@ Dijkstra's algorithm, because we have negative weights on edges. An alternative 
 to use the Bellman-Ford algorithm. The algorithm first considers all the paths
 which use 1 edge. Then it calculates all the paths with at most 2 edges, and so
 on. If the graph has no negative cycle, then the shortest path between the source
-and any other vertice should have at most V-1 edges, where V stands for the number
+and any other vertice should have at most $V-1$ edges, where $V$ stands for the number
 of vertices in the graph. Because of that, the algorithm iterates through at most
-all edges V-1 times. Hence, it runs in O(E * V).
+all edges $V-1$ times. Hence, it runs in $O(E \cdot V)$.
 
 If the graph has a negative cycle, we can detect a vertice in this cycle by running
 another relaxation. In this problem, belonging to a negative cycle means the
@@ -66,7 +66,6 @@ do a [BFS](/silver/graph-traversal) with those points as sources.
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
-using ii = pair<int, int>;
 
 const int INF = 1e9;
 
@@ -75,7 +74,7 @@ int main() {
 	cin >> n >> m >> q >> s;
 
 	while (!(n == 0 && m == 0 && q == 0 && s == 0)) {
-		vector<vector<ii>> adj(n);
+		vector<vector<pair<int, int>>> adj(n);
 		for (int i = 0; i < m; i++) {
 			int u, v, w;
 			cin >> u >> v >> w;
