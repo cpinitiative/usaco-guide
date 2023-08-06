@@ -173,8 +173,8 @@ For each point, we recalculate $\delta = \min(\delta, \delta_p)$, and update our
 
 <FocusProblem problem="manSam" />
 
-The key observation is that although there are many points, they are spread across a small surface i.e. $0 \le x, y \le 1000$. So instead of using  Kruskal's or Prim's
-algorithm, we can use a Dijkstra approach style. Starting from an arbitrary point, from the first one in the code below, run Dijkstra algorithm. The priority queue
+The key observation is that although there are many points, they are spread across a small surface i.e. $0 \leq x, y \leq 1000$. So instead of using Kruskal's or Prim's
+algorithm, we can use Dijkstra's. Starting from an arbitrary point, from the first one in the code below, run Dijkstra algorithm. The priority queue
 will sort the points after the distance to the MST.
 
 *Time Complexity:* $\mathcal{O}(1)$
@@ -187,12 +187,12 @@ will sort the points after the distance to the MST.
 
 using namespace std;
 
-const int NMAX = 1003;
+const int NMAX = 1001;
 const int dx[4] = {-1, 0, 1, 0};
 const int dy[4] = {0, 1, 0, -1};
 
 int d[NMAX][NMAX];
-bool mat[NMAX][NMAX];  // True if (x,y) point is in the input
+bool mat[NMAX][NMAX];  // mat[x][y] = if (x, y) point is in the input
 
 int main() {
 	int n;
@@ -233,6 +233,7 @@ int main() {
 		for (int dir = 0; dir < 4; dir++) {
 			int newx = x + dx[dir];
 			int newy = y + dy[dir];
+			// Check if it's a new point or if the distance has improved
 			if (inside(newx, newy) &&
 			    (d[newx][newy] == -1 || dist + 1 < d[newx][newy])) {
 				d[newx][newy] = dist + 1;
@@ -241,8 +242,6 @@ int main() {
 		}
 	}
 	cout << ans << '\n';
-
-	return 0;
 }
 ```
 
