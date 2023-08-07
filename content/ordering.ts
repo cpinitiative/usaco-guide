@@ -254,6 +254,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
         'extend-euclid',
         'xor-basis',
         'fracturing-search',
+        'parallel_binary_search',
         'game-theory',
         'multiplicative',
         'matroid-isect',
