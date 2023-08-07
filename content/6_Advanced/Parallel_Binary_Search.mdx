@@ -36,19 +36,18 @@ Total Complexity: $O((N + Q) \cdot \log_2{N})$
 #define ll long long
 #define pii pair<int, int>
 using namespace std;
- 
+
 const int N = 2e5 + 1;
- 
+
 int n, m, q;
 vector<pii> edges;
- 
+
 struct dsu {
-	int ccc = 0; // Connected Components Count
+	int ccc = 0;  // Connected Components Count
 	int cnt[N], par[N];
 	void init(int sz) {
 		ccc = sz;
-		for (int i = 0; i <= sz; i++)
-			par[i] = i, cnt[i] = 1;
+		for (int i = 0; i <= sz; i++) par[i] = i, cnt[i] = 1;
 	}
 	int root(int node) {
 		if (par[node] == node) return node;
@@ -57,8 +56,7 @@ struct dsu {
 	bool link(int x, int y) {
 		x = root(x), y = root(y);
 		if (cnt[x] < cnt[y]) swap(x, y);
-		if (x == y)
-			return false;
+		if (x == y) return false;
 		par[y] = x;
 		cnt[x] += cnt[y];
 		ccc--;
@@ -66,28 +64,24 @@ struct dsu {
 	}
 };
 
-// Parallel Binary Search Query 
+// Parallel Binary Search Query
 struct pbs {
-public:
+  public:
 	int idx, l, r;
 	int a, b;
-	int mid() {
-		return (l + r) / 2;
-	}
+	int mid() { return (l + r) / 2; }
 } qrs[N];
- 
-int main()
-{
+
+int main() {
 	ios::sync_with_stdio(0), cin.tie(0);
 	cin >> n >> m >> q;
-	for (int i = 1; i <= m; i++)
-	{
+	for (int i = 1; i <= m; i++) {
 		int a, b;
 		cin >> a >> b;
 		if (a > b) swap(a, b);
-		edges.push_back({ a, b });
+		edges.push_back({a, b});
 	}
- 
+
 	for (int i = 0; i < q; i++) {
 		cin >> qrs[i].a >> qrs[i].b;
 		qrs[i].idx = i;
@@ -95,12 +89,10 @@ int main()
 	}
 	dsu cur;
 	int lg = ceil(log2(m));
-	while (lg--)
-	{
+	while (lg--) {
 		cur.init(n);
-		sort(qrs, qrs + q, [](const pbs& x, const pbs& y) {
-			return x.mid() < y.mid();
-			});
+		sort(qrs, qrs + q,
+		     [](const pbs &x, const pbs &y) { return x.mid() < y.mid(); });
 		int idx = 0;
 		for (int i = 0; i < m; i++) {
 			cur.link(edges[i].first, edges[i].second);
@@ -111,18 +103,17 @@ int main()
 				}
 				if (cur.root(qrs[idx].a) == cur.root(qrs[idx].b))
 					qrs[idx].r = qrs[idx].mid();
-				else
-					qrs[idx].l = qrs[idx].mid() + 1;
+				else qrs[idx].l = qrs[idx].mid() + 1;
 				idx++;
 			}
 			if (idx == q) break;
 		}
 	}
-	sort(qrs, qrs + q, [](const pbs& x, const pbs& y) {
-		return x.idx < y.idx;
-		});
+	sort(qrs, qrs + q,
+	     [](const pbs &x, const pbs &y) { return x.idx < y.idx; });
 	for (int i = 0; i < q; i++)
-		cout << (qrs[i].l == m + 1 ? -1 : (qrs[i].a == qrs[i].b ? 0 : qrs[i].l)) << '\n';
+		cout << (qrs[i].l == m + 1 ? -1 : (qrs[i].a == qrs[i].b ? 0 : qrs[i].l))
+		     << '\n';
 }
 ```
 
