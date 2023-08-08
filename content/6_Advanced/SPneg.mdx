@@ -67,8 +67,6 @@ do a [BFS](/silver/graph-traversal) with those points as sources.
 #include <bits/stdc++.h>
 using namespace std;
 
-const int INF = INT32_MAX;
-
 int main() {
 	int n, m, q, s;
 	cin >> n >> m >> q >> s;
@@ -81,12 +79,12 @@ int main() {
 			adj[u].emplace_back(v, w);
 		}
 
-		vector<int> dist(n, INF);
+		vector<int> dist(n, INT32_MAX);
 		dist[s] = 0;
 
 		for (int i = 0; i < n - 1; i++) {
 			for (int u = 0; u < n; u++) {
-				if (dist[u] == INF) { continue; }
+				if (dist[u] == INT32_MAX) { continue; }
 				for (auto &[v, w] : adj[u]) {
 					dist[v] = min(dist[v], dist[u] + w);
 				}
@@ -97,7 +95,7 @@ int main() {
 
 		// one more iteration to detect negative cycles on graph
 		for (int u = 0; u < n; u++) {
-			if (dist[u] == INF) { continue; }
+			if (dist[u] == INT32_MAX) { continue; }
 			for (auto &[v, w] : adj[u]) {
 				// the relaxed vertices belong to a negative cycle
 				if (dist[u] + w < dist[v]) { bfs_queue.push(v); }
@@ -121,7 +119,7 @@ int main() {
 			cin >> target;
 			if (is_negative_inf[target]) {
 				cout << "-Infinity" << '\n';
-			} else if (dist[target] == INF) {
+			} else if (dist[target] == INT32_MAX) {
 				cout << "Impossible" << '\n';
 			} else {
 				cout << dist[target] << '\n';
