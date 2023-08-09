@@ -53,8 +53,7 @@ const int N = 2e5 + 1;
 struct DSU {
 	int cnt[N], par[N];
 	void Init(int sz) {
-		for (int i = 0; i <= sz; i++)
-			par[i] = i, cnt[i] = 1;
+		for (int i = 0; i <= sz; i++) par[i] = i, cnt[i] = 1;
 	}
 	int Root(int node) {
 		if (par[node] == node) return node;
@@ -67,9 +66,7 @@ struct DSU {
 		par[y] = x;
 		cnt[x] += cnt[y];
 	}
-	bool Connected(int x, int y) {
-		return Root(x) == Root(y);
-	}
+	bool Connected(int x, int y) { return Root(x) == Root(y); }
 };
 
 // Parallel Binary Search Query
@@ -89,7 +86,7 @@ int main() {
 	for (int i = 0; i < m; i++) {
 		int a, b;
 		cin >> a >> b;
-		edges.push_back({ a, b });
+		edges.push_back({a, b});
 	}
 
 	for (int i = 0; i < q; i++) {
@@ -102,8 +99,7 @@ int main() {
 	while (lg--) {
 		dsu.Init(n);
 		sort(qrs, qrs + q,
-			[](const PBS& x, const PBS& y) { return x.Mid() < y.Mid(); }
-		);
+		     [](const PBS &x, const PBS &y) { return x.Mid() < y.Mid(); });
 		// Pointer of current query
 		int idx = 0;
 		for (int i = 0; i < m; i++) {
@@ -114,7 +110,8 @@ int main() {
 					// the answer will be <= i
 					qrs[idx].r = qrs[idx].Mid();
 				else
-					// Otherwise, it needs more edges to be connected, the answer will be > i
+					// Otherwise, it needs more edges to be connected, the
+					// answer will be > i
 					qrs[idx].l = qrs[idx].Mid() + 1;
 				idx++;
 			}
@@ -123,18 +120,14 @@ int main() {
 	}
 
 	sort(qrs, qrs + q,
-		[](const PBS& x, const PBS& y) { return x.idx < y.idx; }
-	);
+	     [](const PBS &x, const PBS &y) { return x.idx < y.idx; });
 
 	for (int i = 0; i < q; i++) {
 		// if after union of all edges still not connected
-		if (qrs[i].l == m + 1)
-			cout << -1 << '\n';
+		if (qrs[i].l == m + 1) cout << -1 << '\n';
 		// if asking is the node connected to itself
-		else if (qrs[i].a == qrs[i].b)
-			cout << 0 << '\n';
-		else
-			cout << qrs[i].l << '\n';
+		else if (qrs[i].a == qrs[i].b) cout << 0 << '\n';
+		else cout << qrs[i].l << '\n';
 	}
 }
 ```
