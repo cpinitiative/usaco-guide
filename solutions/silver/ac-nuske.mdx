@@ -84,7 +84,7 @@ See the implementation for more details.
 
 ## Implementation
 
-**Time Complexity:** $\mathcal{O}(NM + Q)$
+**Time Complexity:** $\mathcal{O}(NM + q)$
 
 <LanguageSection>
 <CPPSection>
@@ -95,31 +95,31 @@ using namespace std;
 
 const int MAX_SIZE = 2e3 + 1;
 
-/*
- * Since we are performing 2D prefix sums, for convienience, the grid is
- * translated 1 unit right and down.
- * The extra row above and column to the left will be filled with 0's.
- */
-
-// This is the grid S
-vector<bitset<MAX_SIZE>> grid(MAX_SIZE, bitset<MAX_SIZE>());
-
-// Overall prefix sums array. pref[x][y] is how many connected components
-// we have in the 2D array from (1, 1) to (x, y), inclusive.
-vector<vector<int>> pref(MAX_SIZE, vector<int>(MAX_SIZE));
-
-// horpref[x][y] is how many connected components we have in the row from
-// (x, 1) to (x, y), inclusive.
-vector<vector<int>> horpref(MAX_SIZE, vector<int>(MAX_SIZE));
-
-// verpref[x][y] is how many connected components we have in the column from
-// (1, y) to (x, y), inclusive.
-vector<vector<int>> verpref(MAX_SIZE, vector<int>(MAX_SIZE));
-
-int N, M, Q;
-
 int main() {
-	cin >> N >> M >> Q;
+	/*
+	* Since we are performing 2D prefix sums, for convienience, the grid is
+	* translated 1 unit right and down.
+	* The extra row above and column to the left will be filled with 0's.
+	*/
+
+	// This is the grid S
+	vector<bitset<MAX_SIZE>> grid(MAX_SIZE, bitset<MAX_SIZE>());
+
+	// Overall prefix sums array. pref[x][y] is how many connected components
+	// we have in the 2D array from (1, 1) to (x, y), inclusive.
+	vector<vector<int>> pref(MAX_SIZE, vector<int>(MAX_SIZE));
+
+	// horpref[x][y] is how many connected components we have in the row from
+	// (x, 1) to (x, y), inclusive.
+	vector<vector<int>> horpref(MAX_SIZE, vector<int>(MAX_SIZE));
+
+	// verpref[x][y] is how many connected components we have in the column from
+	// (1, y) to (x, y), inclusive.
+	vector<vector<int>> verpref(MAX_SIZE, vector<int>(MAX_SIZE));
+
+	int n, m, q;
+
+	cin >> n >> m >> q;
 
 	/*
 	 * The next 4 loops can be combined one for-loop, but for ease of
@@ -127,8 +127,8 @@ int main() {
 	 *
 	 * Reading the grid:
 	 */
-	for (int i = 1; i <= N; i++) {
-		for (int j = 1; j <= M; j++) {
+	for (int i = 1; i <= n; i++) {
+		for (int j = 1; j <= m; j++) {
 			char a;
 			cin >> a;
 			grid[i][j] = (a == '1');
@@ -136,8 +136,8 @@ int main() {
 	}
 
 	// Processing pref
-	for (int i = 1; i <= N; i++) {
-		for (int j = 1; j <= M; j++) {
+	for (int i = 1; i <= n; i++) {
+		for (int j = 1; j <= m; j++) {
 			pref[i][j] = pref[i - 1][j] + pref[i][j - 1] - pref[i - 1][j - 1];
 			if (grid[i][j]) {
 				if ((!grid[i - 1][j]) && (!grid[i][j - 1])) {
@@ -161,8 +161,8 @@ int main() {
 	}
 
 	// Processing horpref and verpref
-	for (int i = 1; i <= N; i++) {
-		for (int j = 1; j <= M; j++) {
+	for (int i = 1; i <= n; i++) {
+		for (int j = 1; j <= m; j++) {
 			horpref[i][j] = horpref[i][j - 1];
 			verpref[i][j] = verpref[i - 1][j];
 			if (grid[i][j]) {
@@ -179,7 +179,7 @@ int main() {
 		}
 	}
 
-	for (int i = 0; i < Q; i++) {
+	for (int i = 0; i < q; i++) {
 		int a, b, c, d;
 		cin >> a >> b >> c >> d;
 
