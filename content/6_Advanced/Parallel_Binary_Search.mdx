@@ -5,7 +5,7 @@ author: Muaath Alqarni
 description: 'Answer binary search queries offline'
 prerequisites:
   - binary-search
-  - divide-and-conquer
+  - 'Divide & Conquer'
 frequency: 0
 ---
 
@@ -17,6 +17,16 @@ frequency: 0
 	<Resource source="SPBook" title="Parallel Binary Seach" url="https://kostka.dev/sp/spbook.pdf#page=22" />
 </Resources>
 
+## Tutorial
+This technique is usually used when we can solve a single query by doing linear or binary search on monotonic function.
+
+The trick is doing it offline, sort queries by their median (initially $l$, $r$ will be the binary search values), do linear search,
+whenever you find a query its median in same as your position in linear search, check the monotonic function, and do same as binary search (edit either $l$ or $r$).
+
+You will need to do the linear search $O(\log_2{N})$ times, so $l = r$.
+
+Usually the complexity would be: $O((N+Q) \cdot \log_2{(N+Q)}^2)$
+
 <FocusProblem problem="sam" />
 
 ## Solution - New Roads Queries
@@ -24,19 +34,11 @@ We can see that connectivity of the nodes is a monotonic function.
 
 Now let's use parallel binary search:
 
-First, sort the queries by median.
+When sweeping through the array of edges, union them in the DSU.
 
-Then sweep through the array of edges and union them in the DSU.
-Whenever there is a query with median = $i$, if the two nodes where connected in DSU, it means the answer is $\leq i$, otherwise it means $\gt i$.
+Whenever there is a query with median = $i$, if the two nodes where connected in DSU, it means the answer is $\leq i$ ($r = i$), otherwise it means $\gt i$ ($l = i+1$).
 
-**Complexity:**
-
-We need to do the sweep $O(\log_2{N})$ times, same as binary search.
-Sorting the queries by median is $O(Q \cdot \log_2{Q})$
-And $O(\alpha(N))$ for the DSU
-
-
-Total Complexity: $O((N + Q) \cdot \log_2(N+Q)^2 \cdot \alpha(N))$
+**Total Complexity:** $O((N+Q) \cdot \log_2(N+Q)^2 \cdot \alpha{(N)})$, $\alpha{(N)}$ is for the DSU.
 
 ## Implementation - New Roads Queries
 <LanguageSection>
@@ -72,7 +74,7 @@ struct DSU {
 struct PBS {
 	// l, r are the binary search variables
 	int idx, l, r;
-	int a, b;
+	int u, v;
 	int Mid() const { return (l + r) / 2; }
 } qrs[N];
 
@@ -83,13 +85,13 @@ int main() {
 
 	vector<pair<int, int>> edges;
 	for (int i = 0; i < m; i++) {
-		int a, b;
-		cin >> a >> b;
-		edges.push_back({a, b});
+		int u, v;
+		cin >> u >> v;
+		edges.push_back({u, v});
 	}
 
 	for (int i = 0; i < q; i++) {
-		cin >> qrs[i].a >> qrs[i].b;
+		cin >> qrs[i].u >> qrs[i].v;
 		qrs[i].idx = i;
 		qrs[i].l = 1, qrs[i].r = m + 1;
 	}
@@ -105,7 +107,7 @@ int main() {
 			dsu.Union(edges[i].first, edges[i].second);
 			while (idx < q && qrs[idx].Mid() == i + 1) {
 				// If the two nodes were connected after i edges
-				if (dsu.Connected(qrs[idx].a, qrs[idx].b))
+				if (dsu.Connected(qrs[idx].u, qrs[idx].v))
 					// the answer will be <= i
 					qrs[idx].r = qrs[idx].Mid();
 				else
