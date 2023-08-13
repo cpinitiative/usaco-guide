@@ -2,7 +2,7 @@
 id: toposort
 title: 'Topological Sort'
 author: Benjamin Qi, Nathan Chen
-contributors: Michael Cao, Andi Qu, Andrew Wang, Qi Wang, Maggie Liu
+contributors: Michael Cao, Andi Qu, Andrew Wang, Qi Wang, Maggie Liu, Martin Lin
 prerequisites:
   - graph-traversal
   - intro-dp
@@ -927,6 +927,63 @@ public class Main {
 ```
 
 </JavaSection>
+<PySection>
+
+```py
+from collections import defaultdict, deque
+
+
+def main():
+    cities, flights = list(map(int, input().split(" ")))
+    edge = defaultdict(list)
+    back_edge = defaultdict(list)
+    in_degree = [0] * cities
+
+    for _ in range(flights):
+        u, v = list(map(int, input().split(" ")))
+        u, v = u - 1, v - 1
+        edge[u].append(v)
+        in_degree[v] += 1
+        back_edge[v].append(u)
+
+    topo_order = []
+    queue = deque([i for i, v in enumerate(in_degree) if v == 0])
+    while queue:
+        cur_node = queue.popleft()
+        topo_order.append(cur_node)
+        for neigh_node in edge[cur_node]:
+            in_degree[neigh_node] -= 1
+            if in_degree[neigh_node] == 0:
+                queue.append(neigh_node)
+
+    # Compute the dist array in topological order
+    parent = [-1] * cities
+    dist = [-float("inf")] * cities
+    dist[0] = 1
+    for i in range(len(topo_order)):
+        v = topo_order[i]
+        for prev in back_edge[v]:
+            if dist[prev] + 1 > dist[v]:
+                dist[v] = dist[prev] + 1
+                parent[v] = prev
+
+    if dist[-1] == -float("inf"):
+        print("IMPOSSIBLE")
+    else:
+        print(dist[-1])
+        cursor = cities - 1
+        path = []
+        while parent[cursor] != -1:
+            path.append(cursor + 1)
+            cursor = parent[cursor]
+        path.append(1)
+        print(*path[::-1])
+
+
+main()
+```
+
+</PySection>
 
 </LanguageSection>
 
