@@ -53,10 +53,10 @@ and add them to the clique in the first half.
 <CPPSection>
 
 ```cpp
-#include <iostream>
-#include <cassert>
-#include <vector>
 #include <bitset>
+#include <cassert>
+#include <iostream>
+#include <vector>
 
 using std::cout;
 using std::endl;
@@ -64,17 +64,15 @@ using std::vector;
 using ll = long long;
 
 /** @return whether n has a bit set at the position given */
-bool bit_set(const ll& n, int pos) {
-	return n & (1LL << pos);
-}
+bool bit_set(const ll &n, int pos) { return n & (1LL << pos); }
 
 /** @return the number given with more bits set */
-ll more_bits(const ll& a, const ll& b) {
+ll more_bits(const ll &a, const ll &b) {
 	return __builtin_popcountll(a) > __builtin_popcountll(b) ? a : b;
 }
 
 /** @return a pair with the two things our subsets keep track of */
-std::pair<vector<bool>, vector<ll>> max_cliques(const vector<ll>& adj) {
+std::pair<vector<bool>, vector<ll>> max_cliques(const vector<ll> &adj) {
 	int sz = adj.size();  // just a shorthand
 
 	// This keeps track of whether subsets are cliques themselves
@@ -87,9 +85,7 @@ std::pair<vector<bool>, vector<ll>> max_cliques(const vector<ll>& adj) {
 		}
 	}
 	for (int ss = 1; ss < (1 << sz); ss++) {
-		if (__builtin_popcountll(ss) <= 2) {
-			continue;
-		}
+		if (__builtin_popcountll(ss) <= 2) { continue; }
 		valid[ss] = true;
 		for (int prev = 0; prev < sz; prev++) {
 			if (bit_set(ss, prev) && !valid[ss & ~(1 << prev)]) {
@@ -108,7 +104,8 @@ std::pair<vector<bool>, vector<ll>> max_cliques(const vector<ll>& adj) {
 		}
 		for (int prev = 0; prev < sz; prev++) {
 			if (bit_set(ss, prev)) {
-				largest[ss] = more_bits(largest[ss], largest[ss & ~(1 << prev)]);
+				largest[ss] =
+				    more_bits(largest[ss], largest[ss & ~(1 << prev)]);
 			}
 		}
 	}
@@ -138,23 +135,17 @@ int main() {
 
 	int half2 = node_num - half1;
 	vector<ll> half2_adj(half2);
-	for (int n = 0; n < half2; n++) {
-		half2_adj[n] = adj[half1 + n] >> half1;
-	}
+	for (int n = 0; n < half2; n++) { half2_adj[n] = adj[half1 + n] >> half1; }
 	auto [valid2, largest2] = max_cliques(half2_adj);
 
 	ll best_ss = 0;
 	// Iterate through all cliques in the first half
 	for (int ss1 = 0; ss1 < (1 << half1); ss1++) {
-		if (!valid1[ss1]) {
-			continue;
-		}
+		if (!valid1[ss1]) { continue; }
 		// Get all nodes in the second half connected to all nodes in the first
 		ll ss2 = (1 << half2) - 1;
 		for (int n = 0; n < half1; n++) {
-			if (bit_set(ss1, n)) {
-				ss2 &= adj[n] >> half1;
-			}
+			if (bit_set(ss1, n)) { ss2 &= adj[n] >> half1; }
 		}
 
 		// And calculate the final answer for this current clique
