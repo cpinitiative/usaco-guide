@@ -33,30 +33,30 @@ are joined at the bottom-right corner (*), so they cannot touch anywhere else.
 ```
 With this in mind, we can do casework. Let's say we're looking for $\texttt{prefix[i][j]}$.
 
-**Case 1:** $\texttt{grid[i][j]} = \texttt{grid[i - 1][j]} = \texttt{grid[i][j - 1]} = 1$
+**Case 1:** $\texttt{grid}_{i, j} = \texttt{grid}_{i - 1, j} = \texttt{grid}_{i, j - 1} = 1$
 ```
 ? 1
 1 1
 ```
-We name $\texttt{grid[i - 1][j]}$ $A$ and $\texttt{grid[i][j - 1]}$ $B$.
+We name $\texttt{grid}_{i - 1, j}$ $A$ and $\texttt{grid}_{i, j - 1}$ $B$.
 ```
 ? A
 B 1
 ```
-Before we added $\texttt{grid[i][j]}$, $A$ and $B$ must have been part of separate connected
+Before we added $\texttt{grid}_{i, j}$, $A$ and $B$ must have been part of separate connected
 components since if otherwise, they must be connected at another location, which violates the problem
 statement. Therefore, we have merged two connected components into one. In this case, we have,
-$\texttt{pref[i][j]} = \texttt{pref[i - 1][j]} + \texttt{pref[i][j - 1]} - \texttt{pref[i - 1][j - 1]} - 1$.
+$\texttt{pref}_{i, j} = \texttt{pref}_{i - 1, j} + \texttt{pref}_{i, j - 1} - \texttt{pref}_{i - 1, j - 1} - 1$.
 
-**Case 2:** $\texttt{grid[i][j]} = 1$, $\texttt{grid[i - 1][j]} = \texttt{grid[i][j - 1]} = 0$
+**Case 2:** $\texttt{grid}_{i, j} = 1$, $\texttt{grid}_{i - 1, j} = \texttt{grid}_{i, j - 1} = 0$
 ```
 ? 0
 0 1
 ```
 We have added a new connected component! In this case, we have,
-$\texttt{pref[i][j]} = \texttt{pref[i - 1][j]} + \texttt{pref[i][j - 1]} - \texttt{pref[i - 1][j - 1]} + 1$.
+$\texttt{pref}_{i, j} = \texttt{pref}_{i - 1, j} + \texttt{pref}_{i, j - 1} - \texttt{pref}_{i - 1, j - 1} + 1$.
 
-**Case 3:** All remaining cases where $\texttt{grid[i][j]} = 1$
+**Case 3:** All remaining cases where $\texttt{grid}_{i, j} = 1$
 ```
 ? 1
 0 1
@@ -67,12 +67,12 @@ Or,
 1 1
 ```
 We have simply added on to a previous connected component, so we have,
-$\texttt{pref[i][j]} = \texttt{pref[i - 1][j]} + \texttt{pref[i][j - 1]} - \texttt{pref[i - 1][j - 1]}$.
+$\texttt{pref}_{i, j} = \texttt{pref}_{i - 1, j} + \texttt{pref}_{i, j - 1} - \texttt{pref}_{i - 1, j - 1}$.
 
-**Case 4:** $\texttt{grid[i][j]} = 0$
-No new connected component can be made by introducing $\texttt{grid[i][j]}$, and no two connected
-components can be merged. Therefore, in this case, we simply have, \
-$\texttt{pref[i][j]} = \texttt{pref[i - 1][j]} + \texttt{pref[i][j - 1]} - \texttt{pref[i - 1][j - 1]}$
+**Case 4:** $\texttt{grid}_{i, j} = 0$
+No new connected component can be made by introducing $\texttt{grid}_{i, j}$, and no two connected
+components can be merged. Therefore, in this case, we simply have, 
+$\texttt{pref}_{i, j} = \texttt{pref}_{i - 1, j} + \texttt{pref}_{i, j - 1} - \texttt{pref}_{i - 1, j - 1}$
 
 At this point, we are more than halfway done! However, with this, we can only calculate the change in number of
 connected components in a certain range. We still need to find how many connected components we start with!
