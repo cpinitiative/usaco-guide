@@ -317,7 +317,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
     }
 
     // skipping usaco problems to be created with div_to_probs
-    if(node.uniqueId.startsWith("usaco")){
+    if (node.uniqueId.startsWith('usaco')) {
       return;
     }
     problemSlugs[slug] = node.uniqueId;
@@ -333,13 +333,12 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
       },
     });
   });
-  const divisions = ["Bronze", "Silver", "Gold", "Platinum"];
-  divisions.forEach((division) => {
-    div_to_probs[division].forEach((problem) => {
-      const uniqueId = "usaco-" + problem[0];
+  const divisions = ['Bronze', 'Silver', 'Gold', 'Platinum'];
+  divisions.forEach(division => {
+    div_to_probs[division].forEach(problem => {
+      const uniqueId = 'usaco-' + problem[0];
       const name = problem[2];
       const path = `problems/${uniqueId}/user-solutions`;
-
 
       createPage({
         path: path,
@@ -347,13 +346,12 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
         context: {
           problem: {
             uniqueId: uniqueId,
-            name: name
+            name: name,
           },
         },
       });
-    })
-  })
-
+    });
+  });
 
   // End problems check
   const moduleTemplate = path.resolve(`./src/templates/moduleTemplate.tsx`);
