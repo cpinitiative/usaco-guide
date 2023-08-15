@@ -147,27 +147,27 @@ int main() {
 
 ```py
 def main():
-    """This code is put in a function for performance reasons."""
-    n = int(input().strip())
-    nums = [int(v) for v in input().split(" ")]
+	"""This code is put in a function for performance reasons."""
+	n = int(input().strip())
+	nums = [int(v) for v in input().split(" ")]
 
-    ans = -float("inf")
-    left, right = 0, 0
-    unique_songs = set()
-    while right < n:
-        # Invariant: all the songs in `unique_songs` are unique in each iteration.
-        # To maintain this invariant, shrink the window before inserting nums[right].
-        while nums[right] in unique_songs:
-            unique_songs.remove(nums[left])
-            left += 1
+	ans = -float("inf")
+	left, right = 0, 0
+	unique_songs = set()
+	while right < n:
+		# Invariant: all the songs in `unique_songs` are unique in each iteration.
+		# To maintain this invariant, shrink the window before inserting nums[right].
+		while nums[right] in unique_songs:
+			unique_songs.remove(nums[left])
+			left += 1
 
-        unique_songs.add(nums[right])
-        right += 1
+		unique_songs.add(nums[right])
+		right += 1
 
-        # right - left is the window size.
-        ans = max(ans, right - left)
+		# right - left is the window size.
+		ans = max(ans, right - left)
 
-    print(ans)
+	print(ans)
 
 
 main()
