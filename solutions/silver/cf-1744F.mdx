@@ -7,59 +7,64 @@ author: Alex Du
 
 ## Explanation
 
-<Spoiler title="Hint 1 (read before solution)">
+[Official Analysis (No Code)](https://codeforces.com/blog/entry/108101)
+
+<Spoiler title="Hint 1">
 
 How do we know if a specific subsegment satisfies the constraints for a given
-$mex$?
+$\texttt{mex}$?
 
-First, to reach that value of $mex$, we must find subsegments which contain all
-integers $0, 1, \ldots, mex-1$, while also not containing $mex$.
+First, to reach that value of $\texttt{mex}$, we must find subsegments which contain all
+integers $0, 1, \ldots, \texttt{mex}-1$, while also not containing $\texttt{mex}$.
 
-Given a subsegment, $mex > med$ will be satisfied if the length of the
-subsegment is $\leq 2 \cdot mex$, since the median will be at most $mex-1$.
+Then, given a subsegment, $\texttt{mex} > \texttt{med}$ will be satisfied if the length of the
+subsegment is $\leq 2 \cdot \texttt{mex}$, since the median will be at most $\texttt{mex}-1$.
 
-Combining these two ideas, we can first find $l$ and $r$, which represent the
+</Spoiler>
+
+<Spoiler title="Hint 2">
+
+Combining the two ideas in Hint 1, we can first find $l$ and $r$, which represent the
 indices of the left-most and right-most occurences of the numbers
-$0, 1, \ldots mex - 1$ respectively. Then, find all subsegments that contain the
-subsegment $l \ldots r$ within themselves, have length $\leq 2 \cdot mex$, and
-do not contain $mex$ itself. Now, we just need to figure out how to count these
+$0, 1, \ldots \texttt{mex} - 1$ respectively. Then, find all subsegments that contain the
+subsegment $l \ldots r$ within themselves, have length $\leq 2 \cdot \texttt{mex}$, and
+do not contain $\texttt{mex}$ itself. Now, we just need to count these
 subsegments efficiently.
 
 </Spoiler>
 
 <Spoiler title="Solution">
 
-Let $pos$ be the index of $mex$. If we know $l$, $r$, and $pos$, then we can
-count the subsegments for this $mex$ quickly.
+Let $\texttt{pos}$ be the index of $\texttt{mex}$. If we know $l$, $r$, and $\texttt{pos}$, then we can
+count the subsegments for this $\texttt{mex}$ quickly.
 
-First, if $pos$ is between $l$ and $r$, the number of subsegments with this
-$mex$ is zero, since the $mex$ of this subsegment is greater than the $mex$ we
+First, if $\texttt{pos}$ is between $l$ and $r$, the number of subsegments with this
+$\texttt{mex}$ is zero, since the $\texttt{mex}$ of this subsegment is greater than the $\texttt{mex}$ we
 are looking for.
 
 We need to find all subsegments that contain $l \ldots r$, that don't contain
-$pos$. Say $pos>r$, since we only need to slightly change our approach for
-$pos < l$. We can increment $r$ from $r$ to $pos-1$ fast enough, since each time
+$\texttt{pos}$. Say $\texttt{pos}>r$, since we only need to slightly change our approach for
+$\texttt{pos} < l$. We can increment $r$ from $r$ to $\texttt{pos}-1$ fast enough, since each time
 we increment we increase the size of our subsegment by $1$, for a maximum of $N$
 times.
 
 Considering this new bound of $r$, we can find the number of possible values of
-$l$ that form a valid subsegment. We know that the $mex$ is correct for this
+$l$ that form a valid subsegment. We know that the $\texttt{mex}$ is correct for this
 right bound of $r$ and all left bounds $\leq l$, since the original $l \ldots r$
-covered $0, 1, \ldots, mex - 1$, and $pos > r$. Therefore, we just need to find
-the number of positions $\leq l$ such that $r-l+1 \leq mex \cdot 2$. The lower
-bound of our smallest value of $l$ is $r-mex \cdot 2 + 1$, which can be found by
+covered $0, 1, \ldots, \texttt{mex} - 1$, and $\texttt{pos} > r$. Therefore, we just need to find
+the number of\ positions $\leq l$ such that $r-l+1 \leq \texttt{mex} \cdot 2$. The lower
+bound of our smallest value of $l$ is $r-\texttt{mex} \cdot 2 + 1$, which can be found by
 rearranging the previous inequality. Note that if this value is negative, it
 must be set to $0$. After this, we know that all values between $l$ and this
 smallest $l$ are valid left bounds for our given $r$, so we can add
-$l-smallest\_l + 1$. Again, note that if $l < smallest\_l$, which will happen in
-the case that our bounds $l$ and $r$ are too big, we should instead add $0$.
+$l-\texttt{smallest\_l} + 1$. Again, note that if $l < \texttt{smallest\_l}$, which will happen in
+the case that our bounds $l$ and $r$ are too big for our current $\texttt{mex}$, we should instead add $0$.
 
-We can do the same if $pos < l$, by decrementing from $l$ to $pos+1$ with minimal
+We can do the same if $\texttt{pos} < l$, by decrementing from $l$ to $\texttt{pos}+1$ with minimal
 changes to the math.
 
-To quickly find the next position of $mex$, we can store the position of each integer.
+To quickly find the next position of $\texttt{mex}$, we can store the position of each integer.
 
-</Spoiler>
 
 ## Implementation
 
@@ -77,63 +82,62 @@ using namespace std;
 
 using ll = long long;
 
-void solve() {
-	int n;
-	cin >> n;
-
-	// stores position of integer
-	vector<int> pos(n);
-
-	for (int i = 0; i < n; i++) {
-		int x;
-		cin >> x;
-		pos[x] = i;
-	}
-
-	// initialize left and right bounds for mex
-	int l = pos[0], r = pos[0];
-	ll ans = 1;
-
-	// mex represents the current mex l and r cover
-	for (int mex = 1; mex < n; mex++) {
-		int next_pos = pos[mex];
-
-		// skip if next_pos is already between l and r
-		if (l <= next_pos && next_pos <= r) { continue; }
-
-		/*
-		 * Since we can create a valid subsegment for a given mex up until
-		 * size mex * 2, our max difference between l and r is mex * 2 - 1.
-		 */
-		int max_diff = mex * 2 - 1;
-
-		if (next_pos < l) {
-			for (; l > next_pos; l--) {
-				int largest_r = min(l + max_diff, n - 1);
-				// add all possible right bounds that don't change the current
-				// mex
-				ans += max(largest_r - r + 1, 0);
-			}
-		} else {
-			for (; r < next_pos; r++) {
-				int smallest_l = max(r - max_diff, 0);
-				// add all possible left bounds that don't change the current
-				// mex
-				ans += max(l - smallest_l + 1, 0);
-			}
-		}
-	}
-
-	cout << ans << endl;
-}
-
 int main() {
-	int t;
-	cin >> t;
-	while (t--) { solve(); }
+    int t;
+    cin >> t;
+    while (t--) {
+        int n;
+        cin >> n;
+
+        // stores\texttt{pos}ition of integer
+        vector<int>\texttt{pos}(n);
+
+        for (int i = 0; i < n; i++) {
+            int x;
+            cin >> x;
+           \texttt{pos}[x] = i;
+        }
+
+        // initialize left and right bounds for mex
+        int l =\texttt{pos}[0], r =\texttt{pos}[0];
+        ll ans = 1;
+
+        // mex represents the current mex l and r cover
+        for (int mex = 1; mex < n; mex++) {
+            int next_pos =\texttt{pos}[mex];
+
+            // skip if next_pos is already between l and r
+            if (l <= next_pos && next_pos <= r) { continue; }
+
+            /*
+             * Since we can create a valid subsegment for a given mex up until
+             * size mex * 2, our max difference between l and r is mex * 2 - 1.
+             */
+            int max_diff = mex * 2 - 1;
+
+            if (next_pos < l) {
+                for (; l > next_pos; l--) {
+                    int largest_r = min(l + max_diff, n-1);
+                    // add all\texttt{pos}sible right bounds that don't change the current mex
+                    ans += max(largest_r - r + 1, 0);
+                }
+            } else {
+                for (; r < next_pos; r++) {
+                    int smallest_l = max(r - max_diff, 0);
+                    // add all\texttt{pos}sible left bounds that don't change the current mex
+                    ans += max(l-smallest_l + 1, 0);
+                }
+            }
+        }
+
+        cout << ans << endl;
+    }
 }
 ```
 
 </CPPSection>
 
 </LanguageSection>
+
+</Spoiler>
+
