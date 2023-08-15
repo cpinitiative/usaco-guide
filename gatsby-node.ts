@@ -10,7 +10,7 @@ import {
   ShortProblemInfo,
   ProblemMetadata,
 } from './src/models/problem';
-
+import div_to_probs from './src/components/markdown/ProblemsList/DivisionList/div_to_probs.json';
 // Questionable hack to get full commit history so that timestamps work
 try {
   execSync(
@@ -315,6 +315,11 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
         }. Is this correct? (If this is correct, add the URL to \`urlsThatCanHaveMultipleUniqueIDs\` in gatsby-node.ts)`
       );
     }
+
+    // skipping usaco problems to be created with div_to_probs
+    if(node.uniqueId.startsWith("usaco")){
+      return;
+    }
     problemSlugs[slug] = node.uniqueId;
     problemInfo[node.uniqueId] = node;
     problemURLToUniqueID[node.url] = node.uniqueId;
@@ -328,6 +333,28 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
       },
     });
   });
+  const divisions = ["Bronze", "Silver", "Gold", "Platinum"];
+  divisions.forEach((division) => {
+    div_to_probs[division].forEach((problem) => {
+      const uniqueId = "usaco-" + problem[0];
+      const name = problem[2];
+      const path = `problems/${uniqueId}/user-solutions`;
+
+
+      createPage({
+        path: path,
+        component: userSolutionTemplate,
+        context: {
+          problem: {
+            uniqueId: uniqueId,
+            name: name
+          },
+        },
+      });
+    })
+  })
+
+
   // End problems check
   const moduleTemplate = path.resolve(`./src/templates/moduleTemplate.tsx`);
   const modules = result.data.modules.edges;
