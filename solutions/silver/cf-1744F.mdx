@@ -83,57 +83,55 @@ using namespace std;
 using ll = long long;
 
 int main() {
-	int t;
-	cin >> t;
-	while (t--) {
-		int n;
-		cin >> n;
+    int t;
+    cin >> t;
+    while (t--) {
+        int n;
+        cin >> n;
 
-		// stores\texttt{pos}ition of integer
-		vector<int>\texttt{pos}(n);
+        // stores position of integer
+        vector<int> pos(n);
 
-		for (int i = 0; i < n; i++) {
-			int x;
-			cin >> x;
-			\texttt{pos}[x] = i;
-		}
+        for (int i = 0; i < n; i++) {
+            int x;
+            cin >> x;
+            pos[x] = i;
+        }
 
-		// initialize left and right bounds for mex
-		int l =\texttt{pos}[0], r =\texttt{pos}[0];
-		ll ans = 1;
+        // initialize left and right bounds for mex
+        int l = pos[0], r = pos[0];
+        ll ans = 1;
 
-		// mex represents the current mex l and r cover
-		for (int mex = 1; mex < n; mex++) {
-			int next_pos =\texttt{pos}[mex];
+        // mex represents the current mex l and r cover
+        for (int mex = 1; mex < n; mex++) {
+            int next_pos = pos[mex];
 
-			// skip if next_pos is already between l and r
-			if (l <= next_pos && next_pos <= r) { continue; }
+            // skip if next_pos is already between l and r
+            if (l <= next_pos && next_pos <= r) { continue; }
 
-			/*
-			 * Since we can create a valid subsegment for a given mex up until
-			 * size mex * 2, our max difference between l and r is mex * 2 - 1.
-			 */
-			int max_diff = mex * 2 - 1;
+            /*
+             * Since we can create a valid subsegment for a given mex up until
+             * size mex * 2, our max difference between l and r is mex * 2 - 1.
+             */
+            int max_diff = mex * 2 - 1;
 
-			if (next_pos < l) {
-				for (; l > next_pos; l--) {
-					int largest_r = min(l + max_diff, n - 1);
-					// add all\texttt{pos}sible right bounds that don't change
-					// the current mex
-					ans += max(largest_r - r + 1, 0);
-				}
-			} else {
-				for (; r < next_pos; r++) {
-					int smallest_l = max(r - max_diff, 0);
-					// add all\texttt{pos}sible left bounds that don't change
-					// the current mex
-					ans += max(l - smallest_l + 1, 0);
-				}
-			}
-		}
+            if (next_pos < l) {
+                for (; l > next_pos; l--) {
+                    int largest_r = min(l + max_diff, n-1);
+                    // add all possible right bounds that don't change the current mex
+                    ans += max(largest_r - r + 1, 0);
+                }
+            } else {
+                for (; r < next_pos; r++) {
+                    int smallest_l = max(r - max_diff, 0);
+                    // add all possible left bounds that don't change the current mex
+                    ans += max(l-smallest_l + 1, 0);
+                }
+            }
+        }
 
-		cout << ans << endl;
-	}
+        cout << ans << endl;
+    }
 }
 ```
 
