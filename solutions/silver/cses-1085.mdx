@@ -53,9 +53,7 @@ bool is_possible(const vector<ll> &arr, const int k, ll max_sum) {
 	// sum of the current subarray
 	ll cur_sum = 0;
 	for (const int &x : arr) {
-		if (x > max_sum) {
-			return false;
-		}
+		if (x > max_sum) { return false; }
 
 		if (cur_sum + x > max_sum) {
 			subarr_count++;
@@ -63,9 +61,7 @@ bool is_possible(const vector<ll> &arr, const int k, ll max_sum) {
 		}
 		cur_sum += x;
 	}
-	if (cur_sum > 0) {
-		subarr_count++;
-	}
+	if (cur_sum > 0) { subarr_count++; }
 
 	return subarr_count <= k;
 }
@@ -74,9 +70,7 @@ int main() {
 	int n, k;
 	cin >> n >> k;
 	vector<ll> arr(n);
-	for (ll &i : arr) {
-		cin >> i;
-	}
+	for (ll &i : arr) { cin >> i; }
 
 	ll l = 1, r = MAX_SUM;
 	while (l < r) {
@@ -100,19 +94,18 @@ import java.util.StringTokenizer;
 
 public class ArrayDivision {
 	// MAX_N * MAX_X
-	static final long MAX_SUM = (long) (2e5 * 1e9);
+	static final long MAX_SUM = (long)(2e5 * 1e9);
 
 	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader br =
+		    new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st = new StringTokenizer(br.readLine());
 		int n = Integer.parseInt(st.nextToken());
 		int k = Integer.parseInt(st.nextToken());
 
 		st = new StringTokenizer(br.readLine());
 		long[] arr = new long[n];
-		for (int i = 0; i < n; i++) {
-			arr[i] = Long.parseLong(st.nextToken());
-		}
+		for (int i = 0; i < n; i++) { arr[i] = Long.parseLong(st.nextToken()); }
 		br.close();
 
 		long l = 1, r = MAX_SUM;
@@ -128,8 +121,8 @@ public class ArrayDivision {
 	}
 
 	/**
-	 * true if the given `arr` can be divided into `k` subarrays where the sum of
-	 * each subarray is at most `max_sum`
+	 * true if the given `arr` can be divided into `k` subarrays where the sum
+	 * of each subarray is at most `max_sum`
 	 */
 	private static boolean is_possible(long[] arr, int k, long max_sum) {
 		// # of subarrays needed if sum of each subarray is at most max_sum
@@ -137,9 +130,7 @@ public class ArrayDivision {
 		// sum of the current subarray
 		long cur_sum = 0;
 		for (long x : arr) {
-			if (x > max_sum) {
-				return false;
-			}
+			if (x > max_sum) { return false; }
 
 			if (cur_sum + x > max_sum) {
 				subarr_count++;
@@ -147,9 +138,7 @@ public class ArrayDivision {
 			}
 			cur_sum += x;
 		}
-		if (cur_sum > 0) {
-			subarr_count++;
-		}
+		if (cur_sum > 0) { subarr_count++; }
 
 		return subarr_count <= k;
 	}
