@@ -162,15 +162,16 @@ For each point, we recalculate $\delta = \min(\delta, \delta_p)$, and update our
 <FocusProblem problem="segSam" />
 
 ### Solution
-Let's simplify the problem a little bit and focus on finding any overlapping segments. The segment we are looking for is one of the two.
+Let's simplify the problem a little bit and focus on finding any overlapping segments. 
 
-To find a pair of overlapping segments use a sweep line approach by sweeping a vertical line across the scene from left to right, pausing at every segment endpoint.
+To find a pair of overlapping segments, use a sweep line approach by sweeping a vertical line across the scene from left to right, pausing at every segment endpoint.
+
 We simulate this by sorting all the segment endpoints by $x$ and walking through the sorted array (called 'events' in the code below). As we scan, we keep track of active segments
 using a set (called 'active_segments' in the code below). When we hit the beginning point of a segment, add it to the active set, and remove it from the active set when we hit the ending point of a segment.
+
 Inserting or removing the active segments from the set takes $\mathcal{O}(\log n)$ per operation.
 
-The active set of segments is ordered by $y$ coordinate. If two segments overlap, they are adjacent in the set, so every time we insert or remove
-a segment, we check if the adjacent segments overlap.
+The active set of segments is ordered by $y$ coordinate. If two segments overlap, they are adjacent in the set, so every time we insert or remove a segment, we check if the adjacent segments overlap.
 
 Here is an animation of how it works:
 
@@ -193,12 +194,15 @@ using namespace std;
 
 long long sweep_line_x;
 
+// BeginCodeSnip{Point structure}
 struct Point {
 	long long x, y, segment_idx;
 	bool operator<(const Point &other) {
 		return x == other.x ? y < other.y : x < other.x;
 	}
 };
+// EndCodeSnip
+
 struct Segment {
 	long long a, b, x, y, idx;
 };
