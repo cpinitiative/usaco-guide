@@ -156,8 +156,7 @@ export default function TopNavigationBar({
             <div className="pr-16 sm:text-center sm:px-16">
               <p className="font-medium text-white">
                 <span className="md:inline">
-                  We're looking for students for USACO Bronze and Silver
-                  classes!
+                  Registration for USACO classes now open!
                 </span>
                 <span className="block sm:ml-2 sm:inline-block">
                   <a
