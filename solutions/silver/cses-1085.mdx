@@ -40,55 +40,54 @@ using namespace std;
 
 using ll = long long;
 
-using vi = vector<int>;
-#define pb push_back
-#define rsz resize
-#define all(x) begin(x), end(x)
-#define sz(x) (int)(x).size()
+// MAX_N * MAX_X
+ll MAX_SUM = 2e5 * 1e9;
 
-using pi = pair<int, int>;
-#define f first
-#define s second
-#define mp make_pair
+/**
+ * true if the given `arr` can be divided into `k` subarrays where the sum of
+ * each subarray is at most `max_sum`
+ */
+bool is_possible(const vector<ll> &arr, const int k, ll max_sum) {
+	// # of subarrays needed if sum of each subarray is at most max_sum
+	int subarr_count = 0;
+	// sum of the current subarray
+	ll cur_sum = 0;
+	for (const int &x : arr) {
+		if (x > max_sum) {
+			return false;
+		}
+
+		if (cur_sum + x > max_sum) {
+			subarr_count++;
+			cur_sum = 0;
+		}
+		cur_sum += x;
+	}
+	if (cur_sum > 0) {
+		subarr_count++;
+	}
+
+	return subarr_count <= k;
+}
 
 int main() {
-	ios::sync_with_stdio(false);
-	cin.tie(0);
 	int n, k;
 	cin >> n >> k;
-	vector<ll> a(n);
-	// The maximum sum possible is the sum of all the elements in the vector.
-	ll max_sum = 0;
-	for (int i = 0; i < n; i++) {
-		cin >> a[i];
-		max_sum = max_sum + a[i];
+	vector<ll> arr(n);
+	for (ll &i : arr) {
+		cin >> i;
 	}
 
-	ll lo = 0, hi = max_sum, ans = 0;
-	auto works = [&](ll mid) {
-		int groups = 0;
-		ll sum = 0;
-		for (int i = 0; i < n; i++) {
-			if (a[i] > mid) { return false; }
-			if (sum + a[i] > mid) {
-				++groups;
-				sum = 0;
-			}
-			sum += a[i];
-		}
-		if (sum > 0) { ++groups; }
-		return groups <= k;
-	};
-	while (lo <= hi) {
-		ll mid = (lo + hi) / 2;
-		if (works(mid)) {
-			hi = mid - 1;
-			ans = mid;
+	ll l = 1, r = MAX_SUM;
+	while (l < r) {
+		ll mid = (l + r) / 2;
+		if (is_possible(arr, k, mid)) {
+			r = mid;
 		} else {
-			lo = mid + 1;
+			l = mid + 1;
 		}
 	}
-	cout << ans << '\n';
+	cout << l << '\n';
 }
 ```
 </CPPSection>
