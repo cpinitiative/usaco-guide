@@ -40,22 +40,12 @@ First, if $\texttt{pos}$ is between $l$ and $r$, the number of subsegments with 
 
 We need to find all subsegments that contain $l \ldots r$ that don't include $\texttt{pos}$. Say $\texttt{pos}>r$, since we only need to change our approach slightly $\texttt{pos} < l$, we can increment $r$ from $r$ to $\texttt{pos}-1$ fast enough, since each time we increment we increase the size of our subsegment by $1$, for a maximum of $N$ times.
 
-Considering this new bound of $r$, we can find the number of possible values of
-$l$ that form a valid subsegment. We know that the $\texttt{mex}$ is correct for this
-right bound of $r$ and all left bounds $\leq l$, since the original $l \ldots r$
-covered $0, 1, \ldots, \texttt{mex} - 1$, and $\texttt{pos} > r$. Therefore, we just need to find
-the number of\ positions $\leq l$ such that $r-l+1 \leq \texttt{mex} \cdot 2$. The lower
-bound of our smallest value of $l$ is $r-\texttt{mex} \cdot 2 + 1$, which can be found by
-rearranging the previous inequality. Note that if this value is negative, it
-must be set to $0$. After this, we know that all values between $l$ and this
-smallest $l$ are valid left bounds for our given $r$, so we can add
-$l-\texttt{smallest\_l} + 1$. Again, note that if $l < \texttt{smallest\_l}$, which will happen in
-the case that our bounds $l$ and $r$ are too big for our current $\texttt{mex}$, we should instead add $0$.
+Considering this new bound of $r$, we can find the number of possible values of $l$ that form a valid subsegment. We know that the $\texttt{mex}$ is correct for this right bound of $r$ and all left bounds $\leq l$, since the original $l \ldots r$ covered $0, 1, \ldots, \texttt{mex} - 1$, and $\texttt{pos} > r$. Therefore, we need to find the number of\ positions $\leq l$ such that $r-l+1 \leq \texttt{mex} \cdot 2$. The lower
+bound of our smallest value of $l$ is $r-\texttt{mex} \cdot 2 + 1$, which we can find by rearranging the previous inequality. 
 
-We can do the same if $\texttt{pos} < l$, by decrementing from $l$ to $\texttt{pos}+1$ with minimal
-changes to the math.
+Note that if this value is negative, we should set it to $0$. After this, we know that all values between $l$ and this smallest $l$ are valid left bounds for our given $r$ so that we can add $l-\texttt{smallest\_l} + 1$. Again, note that if $l < \texttt{smallest\_l}$, which will happen in the case that our bounds $l$ and $r$ are too big for our current $\texttt{mex}$, we should instead add $0$. 
 
-To quickly find the next position of $\texttt{mex}$, we can store the position of each integer.
+We can do the same if $\texttt{pos} < l$, by decrementing from $l$ to $\texttt{pos}+1$ with minimal changes to the math. To quickly find the next position of $\texttt{mex}$, we can store the position of each integer.
 
 
 ## Implementation
