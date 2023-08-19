@@ -11,15 +11,15 @@ author: Paul Chen
 
 <Spoiler title="Hint 1">
 
-Notice that $x \ AND \ y + x \ OR \ y = x + y$, so the total sum of all the elements never changes.
+Notice that $x \ \& \ y + x \ | \ y = x + y$, so the total sum of all the elements never changes.
 
 <Spoiler title="Why is this true?">
 
 Let's analyze how much each bit position contributes to the sum. For every $i$, let $A$ be the $i$-th rightmost bit of $x$ and $B$ be the $i$-th rightmost bit of $y$ ($A, B \in \{0, 1\}$).
 
-By trying out all possible cases for $A$ and $B$, we get that $A \ AND \ B + A \ OR \ B = A + B$, as shown in the following truth table:
+By trying out all possible cases for $A$ and $B$, we get that $A \ \& \ B + A \ | \ B = A + B$, as shown in the following truth table:
 
-| A | B | A AND B | A OR B | A AND B + A OR B | A + B |
+| A | B | A \& B | A \| B | A \& B + A \| B | A + B |
 |---|---|---------|--------|------------------|-------|
 | 0 | 0 |    0    |   0    |        0         |   0   |
 | 0 | 1 |    0    |   1    |        1         |   1   |
@@ -28,7 +28,7 @@ By trying out all possible cases for $A$ and $B$, we get that $A \ AND \ B + A \
 
 <br/>
 
-Summing the individual bit positions gives us $x \ AND \ y + x \ OR \ y = x + y$.
+Summing the individual bit positions gives us $x \ \& \ y + x \ | \ y = x + y$.
 
 </Spoiler>
 
@@ -38,13 +38,13 @@ Summing the individual bit positions gives us $x \ AND \ y + x \ OR \ y = x + y$
 
 Notice that before and after each operation, the number of active bits at each position don't change.
 
-For example, let $x = 110_2$, $y = 101_2$. $x \ AND \ y = 100_2$, and $x \ OR \ y = 111_2$.
+For example, let $x = 110_2$, $y = 101_2$. $x \ \& \ y = 100_2$, and $x \ | \ y = 111_2$.
 
-- The rightmost bits of $y$ and $x \ OR \ y$ are active.
+- The rightmost bits of $y$ and $x \ | \ y$ are active.
 
-- The second rightmost bits of $x$ and $x \ OR \ y$ are active.
+- The second rightmost bits of $x$ and $x \ | \ y$ are active.
 
-- The third rightmost bits of $x$, $y$, $x \ AND \ y$, and $x \ OR \ y$ are active.
+- The third rightmost bits of $x$, $y$, $x \ \& \ y$, and $x \ | \ y$ are active.
 
 Before and after the operations, there is always one active bit in the rightmost position, one active bit in the second rightmost position, and two active bits in the third rightmost position.
 
@@ -58,7 +58,7 @@ Notice when performing an operation, $\sum_{i=1}^{n}{a_i^2}$ increases when $|x 
 
 <Spoiler title="Solution">
 
-We want to keep performing operations such that $|x - y|$ increases. In fact, because $x \ AND \ y \leq \min(x, y)$ and $x \ OR \ y \geq \max(x, y)$, performing an operation will never decrease $|x - y|$. Therefore, the optimal configuration occurs when it is impossible to change $|x - y|$ with more operations. This happens when, for any two values $a_i$ and $a_j$, $a_i \ AND \ a_j = \min(a_i, a_j)$, and $a_i \ OR \ a_j = \max(a_i, a_j)$. In other words, when we sort the optimal configuration in ascending order, $a_i \ AND \ a_{i + 1} = a_i$.
+We want to keep performing operations such that $|x - y|$ increases. In fact, because $x \ \& \ y \leq \min(x, y)$ and $x \ | \ y \geq \max(x, y)$, performing an operation will never decrease $|x - y|$. Therefore, the optimal configuration occurs when it is impossible to change $|x - y|$ with more operations. This happens when, for any two values $a_i$ and $a_j$, $a_i \ \& \ a_j = \min(a_i, a_j)$, and $a_i \ | \ a_j = \max(a_i, a_j)$. In other words, when we sort the optimal configuration in ascending order, $a_i \ \& \ a_{i + 1} = a_i$.
 
 The optimal configuration can be built by handling each bit separately. This approach takes into account Hint 2, which states that no operations will alter the amount of active bits at a given position. For each bit position, move all the active bits at position to the right end of the array.
 
