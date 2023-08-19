@@ -156,12 +156,11 @@ export default function TopNavigationBar({
             <div className="pr-16 sm:text-center sm:px-16">
               <p className="font-medium text-white">
                 <span className="md:inline">
-                  We're looking for instructors for USACO Bronze and Silver
-                  classes!
+                  Registration for USACO classes now open!
                 </span>
                 <span className="block sm:ml-2 sm:inline-block">
                   <a
-                    href="https://forms.gle/YbPR1J3caZW3pV5r6"
+                    href="https://joincpi.org/classes"
                     target="_blank"
                     rel="noreferrer"
                     className="text-white font-bold underline"
