@@ -1,0 +1,200 @@
+---
+id: cf-1368D
+source: CF
+title: AND, OR and square sum
+author: Paul Chen
+---
+
+[Official Analysis](https://codeforces.com/blog/entry/79027)
+
+# Explanation
+
+<Spoiler title="Hint 1">
+
+Notice that $x \ \& \ y + x \ | \ y = x + y$, so the total sum of all the elements never changes.
+
+<Spoiler title="Why is this true?">
+
+Let's analyze how much each bit position contributes to the sum. For every $i$, let $A$ be the $i$-th rightmost bit of $x$ and $B$ be the $i$-th rightmost bit of $y$ ($A, B \in \{0, 1\}$).
+
+By trying out all possible cases for $A$ and $B$, we get that $A \ \& \ B + A \ | \ B = A + B$, as shown in the following truth table:
+
+| A | B | A \& B | A \| B | A \& B + A \| B | A + B |
+|---|---|---------|--------|------------------|-------|
+| 0 | 0 |    0    |   0    |        0         |   0   |
+| 0 | 1 |    0    |   1    |        1         |   1   |
+| 1 | 0 |    0    |   1    |        1         |   1   |
+| 1 | 1 |    1    |   1    |        2         |   2   |
+
+<br/>
+
+Summing the individual bit positions gives us $x \ \& \ y + x \ | \ y = x + y$.
+
+</Spoiler>
+
+</Spoiler>
+
+<Spoiler title="Hint 2">
+
+Notice that before and after each operation, the number of active bits at each position don't change.
+
+For example, let $x = 110_2$, $y = 101_2$. $x \ \& \ y = 100_2$, and $x \ | \ y = 111_2$.
+
+- The rightmost bits of $y$ and $x \ | \ y$ are active.
+
+- The second rightmost bits of $x$ and $x \ | \ y$ are active.
+
+- The third rightmost bits of $x$, $y$, $x \ \& \ y$, and $x \ | \ y$ are active.
+
+Before and after the operations, there is always one active bit in the rightmost position, one active bit in the second rightmost position, and two active bits in the third rightmost position.
+
+</Spoiler>
+
+<Spoiler title="Hint 3">
+
+Notice when performing an operation, $\sum_{i=1}^{n}{a_i^2}$ increases when $|x - y|$ increases.
+
+</Spoiler>
+
+<Spoiler title="Solution">
+
+We want to keep performing operations such that $|x - y|$ increases. In fact, because $x \ \& \ y \leq \min(x, y)$ and $x \ | \ y \geq \max(x, y)$, performing an operation will never decrease $|x - y|$. Therefore, the optimal configuration occurs when it is impossible to change $|x - y|$ with more operations. This happens when, for any two values $a_i$ and $a_j$, $a_i \ \& \ a_j = \min(a_i, a_j)$, and $a_i \ | \ a_j = \max(a_i, a_j)$. In other words, when we sort the optimal configuration in ascending order, $a_i \ \& \ a_{i + 1} = a_i$.
+
+The optimal configuration can be built by handling each bit separately. This approach takes into account Hint 2, which states that no operations will alter the amount of active bits at a given position. For each bit position, move all the active bits at position to the right end of the array.
+
+For example, consider the array, `[1, 5, 4, 7, 3]`, which can be represented in binary form as `[001, 101, 100, 111, 011]`.
+
+1. For the rightmost position, we move all the active bits to the right end of the array. After this operation, the array becomes `[000, 101, 101, 111, 011]`.
+
+2. For the second rightmost position, we don't need to take any action as all the active bits are already at the right end of the array.
+
+3. For the third rightmost position, we move all the active bits to the right end of the array. This results in the array `[000, 001, 101, 111, 111]`.
+
+This results in the reconfigured array: `[000, 001, 101, 111, 111]`. In decimal form, this new array reads `[0, 1, 5, 7, 7]`. Finally, find the sum of squares of the elements in this new array. The resulting total provides the desired solution.
+
+</Spoiler>
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MAX_BIT = 20;
+
+int main() {
+	int n;
+	cin >> n;
+	vector<int> a(n);
+	for (int i = 0; i < n; i++) { cin >> a[i]; }
+
+	// Count the number of active bits at each position.
+	vector<int> num_bits(MAX_BIT);
+	for (int i = 0; i < MAX_BIT; i++) {
+		for (int j = 0; j < n; j++) {
+			if (a[j] & (1ll << i)) { num_bits[i]++; }
+		}
+	}
+
+	/*
+	 * Create the optimal array and calculate
+	 * the sum of the squares of the new array.
+	 */
+	long long ans = 0;
+	for (int i = 0; i < n; i++) {
+		long long new_val = 0;
+		for (int j = 0; j < MAX_BIT; j++) {
+			if (num_bits[j]) {
+				new_val |= (1ll << j);
+				num_bits[j]--;
+			}
+		}
+		ans += new_val * new_val;
+	}
+	cout << ans << "\n";
+}
+```
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class AndOrSquareSum {
+	public final static int MAX_BIT = 20;
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader br =
+		    new BufferedReader(new InputStreamReader(System.in));
+
+		int n = Integer.parseInt(br.readLine().trim());
+		int[] a = new int[n];
+
+		String[] inputs = br.readLine().trim().split(" ");
+		for (int i = 0; i < n; i++) { a[i] = Integer.parseInt(inputs[i]); }
+
+		// Count the number of active bits at each position.
+		int[] num_bits = new int[MAX_BIT];
+		for (int i = 0; i < MAX_BIT; i++) {
+			for (int j = 0; j < n; j++) {
+				if ((a[j] & (1L << i)) != 0) { num_bits[i]++; }
+			}
+		}
+
+		/*
+		 * Create the optimal array and calculate
+		 * the sum of the squares of the new array.
+		 */
+		long ans = 0;
+		for (int i = 0; i < n; i++) {
+			long new_val = 0;
+			for (int j = 0; j < MAX_BIT; j++) {
+				if (num_bits[j] != 0) {
+					new_val |= (1L << j);
+					num_bits[j]--;
+				}
+			}
+			ans += new_val * new_val;
+		}
+
+		System.out.println(ans);
+	}
+}
+```
+</JavaSection>
+<PySection>
+
+```py
+MAX_BIT = 20
+
+n = int(input())
+a = list(map(int, input().split()))
+
+# Count the number of active bits at each position.
+num_bits = [0] * MAX_BIT
+for i in range(MAX_BIT):
+	for j in range(n):
+		if a[j] & (1 << i):
+			num_bits[i] += 1
+
+# Create the optimal array and calculate
+# the sum of the squares of the new array.
+ans = 0
+for i in range(n):
+	curr = 0
+	for j in range(MAX_BIT):
+		if num_bits[j]:
+			curr |= 1 << j
+			num_bits[j] -= 1
+	ans += curr * curr
+
+print(ans)
+```
+</PySection>
+</LanguageSection>
