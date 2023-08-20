@@ -48,12 +48,15 @@ int main() {
 						// we have already placed all the logos
 						goto outer;
 					}
+
 					int w = logos[num_placed].first;
 					int h = logos[num_placed].second;
+
 					if (rotate_mask & (1 << num_placed)) {
 						// rotate 90 degrees
 						swap(w, h);
 					}
+
 					// place configuration
 					for (int r = i; r < i + h; r++) {
 						for (int c = j; c < j + w; c++) {
@@ -64,16 +67,20 @@ int main() {
 							grid[r][c] = num_placed + 'A';
 						}
 					}
+
 					num_placed++;
 				}
 			}
 		}
+
+		// at this point, all logos must be placed
 		assert(num_placed == 3);
+
 		printf("%d\n", len);
 		for (int i = 0; i < len; i++) { printf("%s\n", grid[i].c_str()); }
 		return 0;
-	outer:;
 		// continue the iteration
+	outer:;
 	}
 	printf("-1");
 }
