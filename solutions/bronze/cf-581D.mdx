@@ -20,11 +20,11 @@ $90$ degrees. The rest is just checking if the configurations are valid.
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
-const int n = 3;
+const int N = 3;
 
 int main() {
-	vector<pair<int, int>> logos(n);
-	for (int i = 0; i < n; i++) {
+	vector<pair<int, int>> logos(N);
+	for (int i = 0; i < N; i++) {
 		scanf("%d%d", &logos[i].first, &logos[i].second);
 	}
 	long long area = 0;
@@ -39,14 +39,14 @@ int main() {
 		return 0;
 	}
 	// loop through all rotations of each rectangle
-	for (int rotate_mask = 0; rotate_mask < (1 << n); rotate_mask++) {
+	for (int rotate_mask = 0; rotate_mask < (1 << N); rotate_mask++) {
 		vector<string> grid(len, string(len, 'Z'));  // temporary grid
 		// 'Z' represents an empty space in the grid
 		int num_placed = 0;
 		for (int i = 0; i < len; i++) {
 			for (int j = 0; j < len; j++) {
 				if (grid[i][j] == 'Z') {
-					if (num_placed == n) {
+					if (num_placed == N) {
 						// we have already placed all the logos
 						goto outer;
 					}
@@ -76,7 +76,7 @@ int main() {
 		}
 
 		// at this point, all logos must be placed
-		assert(num_placed == 3);
+		assert(num_placed == N);
 
 		printf("%d\n", len);
 		for (int i = 0; i < len; i++) { printf("%s\n", grid[i].c_str()); }
