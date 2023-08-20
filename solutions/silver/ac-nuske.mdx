@@ -93,7 +93,7 @@ See the implementation for more details.
 #include <bits/stdc++.h>
 using namespace std;
 
-const int MAX_SIZE = 2e3 + 1;
+const int MAX_SIZE = 2e3;
 
 int main() {
 	/*
@@ -103,19 +103,19 @@ int main() {
 	 */
 
 	// This is the grid S
-	vector<bitset<MAX_SIZE>> grid(MAX_SIZE, bitset<MAX_SIZE>());
+	vector<bitset<MAX_SIZE + 1>> grid(MAX_SIZE + 1, bitset<MAX_SIZE + 1>());
 
 	// Overall prefix sums array. pref[x][y] is how many connected components
 	// we have in the 2D array from (1, 1) to (x, y), inclusive.
-	vector<vector<int>> pref(MAX_SIZE, vector<int>(MAX_SIZE));
+	vector<vector<int>> pref(MAX_SIZE + 1, vector<int>(MAX_SIZE + 1));
 
 	// horpref[x][y] is how many connected components we have in the row from
 	// (x, 1) to (x, y), inclusive.
-	vector<vector<int>> horpref(MAX_SIZE, vector<int>(MAX_SIZE));
+	vector<vector<int>> horpref(MAX_SIZE + 1, vector<int>(MAX_SIZE + 1));
 
 	// verpref[x][y] is how many connected components we have in the column from
 	// (1, y) to (x, y), inclusive.
-	vector<vector<int>> verpref(MAX_SIZE, vector<int>(MAX_SIZE));
+	vector<vector<int>> verpref(MAX_SIZE + 1, vector<int>(MAX_SIZE + 1));
 
 	int n, m, q;
 
