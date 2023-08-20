@@ -11,39 +11,33 @@ author: Alex Du
 
 <Spoiler title="Hint 1">
 
-To reach that value of $\texttt{mex}$, we must find subsegments which contain all
+To find subsegments with a given value of $\texttt{mex}$, we must find subsegments which contain all
 integers $0, 1, \ldots, \texttt{mex}-1$, while also not containing $\texttt{mex}$.
-
-Then, given a subsegment, $\texttt{mex} > \texttt{med}$ will be satisfied if the length of the
-subsegment is $\leq 2 \cdot \texttt{mex}$, since the median will be at most $\texttt{mex}-1$.
 
 </Spoiler>
 
 <Spoiler title="Hint 2">
 
-First find $l$ and $r$, which represent the
-indices of the left-most and right-most occurences of the numbers
-$0, 1, \ldots \texttt{mex} - 1$ respectively. Then, find all subsegments that contain the
-subsegment $l \ldots r$ within themselves, have length $\leq 2 \cdot \texttt{mex}$, and
-do not contain $\texttt{mex}$ itself. Now, we just need to count these
-subsegments efficiently.
+For a subsegment of length $\leq 2 \cdot \texttt{mex}$, the condition $\texttt{mex} > \texttt{med}$ will be satisfied, since the median can be at most $\texttt{mex}-1$.
 
 </Spoiler>
 
 <Spoiler title="Solution">
 
-Let $\texttt{pos}$ be the index of $\texttt{mex}$. If we know $l$, $r$, and $\texttt{pos}$, then we can quickly count the subsegments for this $\texttt{mex}$.
+We will iterate  $\texttt{mex}$ from $1$ to $n-1$, finding all valid subsegments of that $\texttt{mex}$ at a time.
+
+Let $l$ and $r$ represent the highest left bound and the lowest right bound respectively of a subsegment that satisfies a given $\texttt{mex}$, and $\texttt{pos}$ represent  the index of $\texttt{mex}$. If we know $l$, $r$, and $\texttt{pos}$, then we can quickly count the subsegments for a given $\texttt{mex}$.
 
 
-First, if $\texttt{pos}$ is between $l$ and $r$, the number of subsegments with this $\texttt{mex}$ is zero since the $\texttt{mex}$ of this subsegment is greater than the $\texttt{mex}$ we are looking for.
+First, if $\texttt{pos}$ is between $l$ and $r$, the number of valid subsegments with this $\texttt{mex}$ is zero since the $\texttt{mex}$ of this subsegment is greater than the $\texttt{mex}$ we are looking for.
 
 
-We need to find all subsegments that contain $l \ldots r$ that don't include $\texttt{pos}$. Say $\texttt{pos}>r$, since we only need to change our approach slightly $\texttt{pos} < l$, we can increment $r$ from $r$ to $\texttt{pos}-1$ fast enough, since each time we increment we increase the size of our subsegment by $1$, for a maximum of $N$ times.
+We need to find all subsegments of length $\leq 2 \cdot \texttt{mex}$ that contain $l \ldots r$ that don't include $\texttt{pos}$. Say $\texttt{pos}>r$, since we only need to change our approach slightly if $\texttt{pos} < l$. We can increment $r$ from $r$ to $\texttt{pos}-1$ fast enough, since each time we increment we increase the size of our subsegment by $1$, for a maximum of $N$ times.
 
-Considering this new bound of $r$, we can find the number of possible values of $l$ that form a valid subsegment. We know that the $\texttt{mex}$ is correct for this right bound of $r$ and all left bounds $\leq l$, since the original $l \ldots r$ covered $0, 1, \ldots, \texttt{mex} - 1$, and $\texttt{pos} > r$. Therefore, we need to find the number of\ positions $\leq l$ such that $r-l+1 \leq \texttt{mex} \cdot 2$. The lower
+Considering this new bound of $r$, we can find the number of possible values of $l$ that form a valid subsegment. We know that the $\texttt{mex}$ is correct for this right bound of $r$ and all left bounds $\leq l$, since the original $l \ldots r$ covered $0, 1, \ldots, \texttt{mex} - 1$, and $\texttt{pos} > r$. Therefore, we need to find the number of positions $\leq l$ such that $r-l+1 \leq \texttt{mex} \cdot 2$. The lower
 bound of our smallest value of $l$ is $r-\texttt{mex} \cdot 2 + 1$, which we can find by rearranging the previous inequality.
 
-Note that if this value is negative, we should set it to $0$. After this, we know that all values between $l$ and this smallest $l$ are valid left bounds for our given $r$ so that we can add $l-\texttt{smallest\_l} + 1$. Again, note that if $l < \texttt{smallest\_l}$, which will happen in the case that our bounds $l$ and $r$ are too big for our current $\texttt{mex}$, we should instead add $0$.
+Note that if this value is negative, we should set it to $0$. After this, we know that all values between $l$ and this smallest $l$ are valid left bounds for our given $r$ so that we can add $l-\texttt{smallest\_l} + 1$. Again, note that if $l < \texttt{smallest\_l}$, which will happen in the case that our subsegment is too big for our current $\texttt{mex}$, we should instead add $0$.
 
 We can do the same if $\texttt{pos} < l$, by decrementing from $l$ to $\texttt{pos}+1$ with minimal changes to the math. To quickly find the next position of $\texttt{mex}$, we can store the position of each integer.
 
