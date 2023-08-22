@@ -165,7 +165,7 @@ export default function TopNavigationBar({
                     rel="noreferrer"
                     className="text-white font-bold underline"
                   >
-                    Apply here&rarr;
+                    Join here&rarr;
                   </a>
                 </span>
               </p>
