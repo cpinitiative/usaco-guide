@@ -8,25 +8,19 @@ author: Chu Minjae
 
 ## Explanation
 
-This question is simply solved through sorting algorithm.
+We can solve this problem by sorting the maximum tuition rates!
 
-For this question, `long long` type should be used becasue the number could be up to `10^5 * 10^6 = 10^11`.
+There are two reasons for doing this:
 
-We start by pluggin in the input value into `totalNumberOfCows` and `vector maxTuition'.
+1. We need to find the smallest optimal tuition, so by searching the value from the smallest to the largest, we can get the smallest optimal tuition.
 
-Next, we sort the 'vector maxTuition'.
+2. We can easily calculate the current tuition from the current index.
 
-There are two reasons for sorting.
+As we iterate through the list, we can calculate the total tuition at an index $i$ with the equation `maxTuition[i] * (totalNumberOfCows - i)`.
 
-First, we need to find the smallest optimal tuition, so by searching the value from the smallest to the largest, we can get the smallest optimal tuition.
+Since we've already sorted the cows, we can quickly figure out how many people can pay the tuition from `totalNumberOfCows - i`. We'll take the maximum of these quantities.
 
-Second, we could easily calculate the `currentTuition`.
-
-Using the `for loop`, we can calculate the total tuition at the certain index i using the equation `maxTuition[i] * (totalNumberOfCows - i)`.
-
-As we already sorted the value, we can easily know how much could at least pay the tuition which is expressed as `(totalNumberOfCows - i)`.
-
-By comparing, we can find the largest sum of tuition with the smallest tuition, which is 'bestTuition`.
+Note that for this question, 64-bit integers should be used as numbers can go up to `10^5 * 10^6 = 10^11`.
 
 
 ## Implementation
