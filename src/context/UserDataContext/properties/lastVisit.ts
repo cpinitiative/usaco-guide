@@ -1,142 +1,54 @@
-import { setDoc } from 'firebase/firestore';
-import UserDataPropertyAPI from '../userDataPropertyAPI';
+import { UserData } from '../UserDataContext';
+import { createUserDataGetter, createUserDataMutation } from './hooks';
 
-export type LastVisitAPI = {
-  lastVisitDate: number;
-  setLastVisitDate: (today: number) => void;
-  consecutiveVisits: number;
-  numPageviews: number;
-  // timestamp for midnight on that day ==> how many pageviews for that day
-  pageviewsPerDay: { [key: number]: number };
-};
-
-export default class LastVisitProperty extends UserDataPropertyAPI {
-  private lastVisitDate: number;
-  private consecutiveVisits: number;
-  private numPageviews: number;
-  private pageviewsPerDay: { [key: number]: number };
-
-  initializeFromLocalStorage = () => {
-    this.lastVisitDate = this.getValueFromLocalStorage(
-      this.getLocalStorageKey('lastVisitDate'),
-      new Date().getTime()
-    );
-    this.consecutiveVisits = this.getValueFromLocalStorage(
-      this.getLocalStorageKey('consecutiveVisits'),
-      1
-    );
-    this.numPageviews = this.getValueFromLocalStorage(
-      this.getLocalStorageKey('numPageviews'),
-      0
-    );
-    this.pageviewsPerDay = this.getValueFromLocalStorage(
-      this.getLocalStorageKey('pageviewsPerDay'),
-      {}
-    );
+export const useLastVisitInfo = createUserDataGetter(userData => {
+  return {
+    lastVisitDate: userData.lastVisitDate,
+    consecutiveVisits: userData.consecutiveVisits,
+    numPageviews: userData.numPageviews,
+    pageviewsPerDay: userData.pageviewsPerDay,
   };
+});
+export const useSetLastVisitDate = createUserDataMutation(
+  (userData, today: number) => {
+    const timeSinceLastVisit = today - userData.lastVisitDate;
+    const oneDay = 1000 * 60 * 60 * 20,
+      twoDays = 1000 * 60 * 60 * 24 * 2;
 
-  writeValueToLocalStorage = () => {
-    this.saveLocalStorageValue(
-      this.getLocalStorageKey('lastVisitDate'),
-      this.lastVisitDate
-    );
-    this.saveLocalStorageValue(
-      this.getLocalStorageKey('consecutiveVisits'),
-      this.consecutiveVisits
-    );
-    this.saveLocalStorageValue(
-      this.getLocalStorageKey('numPageviews'),
-      this.numPageviews
-    );
-    this.saveLocalStorageValue(
-      this.getLocalStorageKey('pageviewsPerDay'),
-      this.pageviewsPerDay
-    );
-  };
+    const changes: Partial<UserData> = {};
+    if (timeSinceLastVisit >= oneDay && timeSinceLastVisit <= twoDays) {
+      changes['lastVisitDate'] = today;
+      changes['consecutiveVisits'] = userData.consecutiveVisits + 1;
+    } else if (timeSinceLastVisit > twoDays) {
+      changes['lastVisitDate'] = today;
+      changes['consecutiveVisits'] = 1;
+    }
+    changes['numPageviews'] = userData.numPageviews + 1;
+    changes['pageviewsPerDay'] = { ...userData.pageviewsPerDay };
 
-  eraseFromLocalStorage = () => {
-    window.localStorage.removeItem(this.getLocalStorageKey('lastVisitDate'));
-    window.localStorage.removeItem(
-      this.getLocalStorageKey('consecutiveVisits')
-    );
-    window.localStorage.removeItem(this.getLocalStorageKey('numPageviews'));
-    window.localStorage.removeItem(this.getLocalStorageKey('pageviewsPerDay'));
-  };
+    const todayDate = new Date(today);
+    todayDate.setHours(0, 0, 0, 0);
+    const todayDateTimestamp = todayDate.getTime();
+    if (todayDateTimestamp in changes.pageviewsPerDay) {
+      changes.pageviewsPerDay[todayDateTimestamp]++;
+    } else {
+      changes.pageviewsPerDay[todayDateTimestamp] = 1;
+    }
 
-  exportValue = (): any => {
-    return {
-      lastVisitDate: this.lastVisitDate,
-      consecutiveVisits: this.consecutiveVisits,
-      numPageviews: this.numPageviews,
-      pageviewsPerDay: this.pageviewsPerDay,
-    };
-  };
+    return changes;
 
-  importValueFromObject = (data: Record<string, any>) => {
-    this.lastVisitDate = data['lastVisitDate'] || new Date().getTime();
-    this.consecutiveVisits = data['consecutiveVisits'] || 1;
-    this.numPageviews = data['numPageviews'] || 0;
-    this.pageviewsPerDay = data['pageviewsPerDay'] || {};
-  };
-
-  getAPI = () => {
-    return {
-      lastVisitDate: this.lastVisitDate,
-      consecutiveVisits: this.consecutiveVisits,
-      numPageviews: this.numPageviews,
-      pageviewsPerDay: this.pageviewsPerDay,
-      setLastVisitDate: (today: number) => {
-        const timeSinceLastVisit = today - this.lastVisitDate;
-        const oneDay = 1000 * 60 * 60 * 20,
-          twoDays = 1000 * 60 * 60 * 24 * 2;
-
-        let newLastVisit = null,
-          newConsecutiveVisits = null;
-        if (timeSinceLastVisit >= oneDay && timeSinceLastVisit <= twoDays) {
-          newLastVisit = today;
-          newConsecutiveVisits = this.consecutiveVisits + 1;
-        } else if (timeSinceLastVisit > twoDays) {
-          newLastVisit = today;
-          newConsecutiveVisits = 1;
-        }
-
-        let changes = {};
-        if (newLastVisit !== null) {
-          this.lastVisitDate = newLastVisit;
-          this.consecutiveVisits = newConsecutiveVisits;
-          changes = {
-            lastVisitDate: newLastVisit,
-            consecutiveVisits: newConsecutiveVisits,
-          };
-        }
-
-        this.numPageviews++;
-        const todayDate = new Date(today);
-        todayDate.setHours(0, 0, 0, 0);
-        const todayDateTimestamp = todayDate.getTime();
-        if (todayDateTimestamp in this.pageviewsPerDay) {
-          this.pageviewsPerDay[todayDateTimestamp]++;
-        } else {
-          this.pageviewsPerDay[todayDateTimestamp] = 1;
-        }
-
-        if (this.firebaseUserDoc) {
-          setDoc(
-            this.firebaseUserDoc,
-            {
-              ...changes,
-              numPageviews: this.numPageviews,
-              pageviewsPerDay: {
-                [todayDateTimestamp]: this.pageviewsPerDay[todayDateTimestamp],
-              },
-            },
-            { merge: true }
-          );
-        }
-
-        this.writeValueToLocalStorage();
-        this.triggerRerender();
-      },
-    };
-  };
-}
+    // if (this.firebaseUserDoc) {
+    //   setDoc(
+    //     this.firebaseUserDoc,
+    //     {
+    //       ...changes,
+    //       numPageviews: this.numPageviews,
+    //       pageviewsPerDay: {
+    //         [todayDateTimestamp]: this.pageviewsPerDay[todayDateTimestamp],
+    //       },
+    //     },
+    //     { merge: true }
+    //   );
+    // }
+  }
+);

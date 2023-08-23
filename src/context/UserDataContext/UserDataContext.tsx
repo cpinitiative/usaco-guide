@@ -62,11 +62,14 @@ type UserDataContextAPI = {
   userData: UserData | null;
   firebaseUser: User | null;
   isLoaded: boolean;
+  updateUserData: (
+    computeUpdatesFunc: (prevUserData: UserData) => Partial<UserData>
+  ) => void;
 };
 
 export const assignDefaultsToUserData = (data: object): UserData => {
   return {
-    consecutiveVisits: 0,
+    consecutiveVisits: 1,
     showTags: true,
     hideDifficulty: false,
     hideModules: false,
@@ -78,7 +81,7 @@ export const assignDefaultsToUserData = (data: object): UserData => {
     lang: 'cpp',
     lastReadAnnouncement: '',
     lastViewedModule: '',
-    lastVisitDate: 0,
+    lastVisitDate: new Date().getTime(),
     numPageviews: 0,
     pageviewsPerDay: {},
     theme: 'system',
@@ -91,9 +94,11 @@ export const assignDefaultsToUserData = (data: object): UserData => {
   };
 };
 
+// todo figure out why we even need defaults here...
 const UserDataContext = createContext<UserDataContextAPI>({
   // make suer CREATING_ACCOUNT_FOR_FIRST_TIME is here
   userData: assignDefaultsToUserData({}),
+  updateUserData: _ => {},
   firebaseUser: null,
   // firebaseUser: null,
   // getDataExport: () => Promise.resolve(),
@@ -311,4 +316,14 @@ export const UserDataProvider = ({
   );
 };
 
-export default UserDataContext;
+export const useUserData = (): UserData => {
+  const userData = React.useContext(UserDataContext).userData;
+  if (!userData) {
+    throw new Error("userData was null, but it shouldn't be");
+  }
+  return userData;
+};
+
+export const useUpdateUserData = () => {
+  return React.useContext(UserDataContext).updateUserData;
+};
