@@ -11,23 +11,90 @@ import * as React from 'react';
 import { createContext, ReactNode, useState } from 'react';
 import toast from 'react-hot-toast';
 import { useFirebaseApp } from '../../hooks/useFirebase';
+import { ModuleProgress } from '../../models/module';
+import { ProblemProgress } from '../../models/problem';
+import { ResourceProgress } from '../../models/resource';
+import runMigration from './migration';
 import { UserPermissionsContextProvider } from './UserPermissionsContext';
 
 // What's actually stored in local storage / firebase
-type UserData = {
+export type UserData = {
   consecutiveVisits: number;
+  // show tags on problems table
+  showTags: boolean;
+  // hide difficulty on problems table
+  hideDifficulty: boolean;
+  // hide modules in problems list (problems search page)
+  hideModules: boolean;
+  // show ignored modules in dashboard
+  showIgnored: boolean;
+  // used for usaco monthlies table (I think)
+  divisionTableQuery: {
+    division: string;
+    season: string;
+  };
+  lang: string;
+  lastReadAnnouncement: string;
+  lastViewedModule: string;
+  lastVisitDate: number; // timestamp
+  numPageviews: number;
+  // mapping timestamp to pageviews
+  pageviewsPerDay: Record<number, number>;
+  theme: string;
+  // mapping module ID to progress
+  userProgressOnModules: Record<string, ModuleProgress>;
+  userProgressOnModulesActivity: {
+    timestamp: number;
+    moduleID: string;
+    moduleProgress: ModuleProgress;
+  }[];
+  userProgressOnProblems: Record<string, ProblemProgress>;
+  userProgressOnProblemsActivity: {
+    timestamp: number;
+    problemID: string;
+    problemProgress: ProblemProgress;
+  }[];
+  userProgressOnResources: Record<string, ResourceProgress>;
 };
 
 // What's exposed in the context
 type UserDataContextAPI = {
-  userData: UserData;
-  firebaseUser: User;
+  userData: UserData | null;
+  firebaseUser: User | null;
   isLoaded: boolean;
+};
+
+export const assignDefaultsToUserData = (data: object): UserData => {
+  return {
+    consecutiveVisits: 0,
+    showTags: true,
+    hideDifficulty: false,
+    hideModules: false,
+    showIgnored: true,
+    divisionTableQuery: {
+      division: '',
+      season: '',
+    },
+    lang: 'cpp',
+    lastReadAnnouncement: '',
+    lastViewedModule: '',
+    lastVisitDate: 0,
+    numPageviews: 0,
+    pageviewsPerDay: {},
+    theme: 'system',
+    userProgressOnModules: {},
+    userProgressOnModulesActivity: [],
+    userProgressOnProblems: {},
+    userProgressOnProblemsActivity: [],
+    userProgressOnResources: {},
+    ...data,
+  };
 };
 
 const UserDataContext = createContext<UserDataContextAPI>({
   // make suer CREATING_ACCOUNT_FOR_FIRST_TIME is here
-  consecutiveVisits: 0,
+  userData: assignDefaultsToUserData({}),
+  firebaseUser: null,
   // firebaseUser: null,
   // getDataExport: () => Promise.resolve(),
   // importUserData: () => true,
@@ -173,6 +240,8 @@ export const UserDataProvider = ({
 
   // initialize from localstorage
   React.useEffect(() => {
+    runMigration();
+
     let localStorageData: object;
     try {
       localStorageData = JSON.parse(
@@ -181,7 +250,7 @@ export const UserDataProvider = ({
     } catch (e) {
       localStorageData = {};
     }
-    setUserData(assignDefaultsTouserData(localStorageData));
+    setUserData(assignDefaultsToUserData(localStorageData));
   }, []);
 
   const userDataAPI = {
