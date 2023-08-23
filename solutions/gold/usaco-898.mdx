@@ -193,7 +193,7 @@ public class Sleepy {
 <LanguageSection>
 <CPPSection>
 ```cpp
-#include <bits/stdc++.h> 
+#include <bits/stdc++.h>
 using namespace std;
 
 // Importing Indexed Sets
@@ -207,14 +207,17 @@ Tree<int> sorted;
 int N;
 vector<int> nums;
 
-int main () {
-	ifstream fin; ofstream fout;
-	fin.open("sleepy.in"); fout.open("sleepy.out");
+int main() {
+	ifstream fin;
+	ofstream fout;
+	fin.open("sleepy.in");
+	fout.open("sleepy.out");
 
 	fin >> N;
 	// Reading input and look for longest suffix that is increasing
-	for (int i = 0; i < N; i ++) {
-		int a; fin >> a;
+	for (int i = 0; i < N; i++) {
+		int a;
+		fin >> a;
 		nums.push_back(a);
 		if (i > 0) {
 			if (nums[i - 1] > nums[i]) { sorted.clear(); }
@@ -226,7 +229,7 @@ int main () {
 	int ls = sorted.size();
 	fout << N - ls << endl;
 
-	for (int i = 0; i < N - ls; i ++) {
+	for (int i = 0; i < N - ls; i++) {
 		if (i != 0) fout << " ";
 		sorted.insert(nums[i]);
 		fout << sorted.order_of_key(nums[i]) + (N - ls - i - 1);
