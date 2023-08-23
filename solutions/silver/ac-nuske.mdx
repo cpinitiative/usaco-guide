@@ -1,0 +1,201 @@
+---
+id: ac-nuske
+source: AtCoder Grand Contest
+title: Nuske vs Phantom Thnook
+author: Daniel Ge
+---
+
+## Explanation
+Our approach is to perform 2D Prefix Sums, where our prefix sums array calculates how many
+connected components there are from (0, 0) to (x, y). However, it is not clear what the
+transition function is. For example, if our grid looks like this,
+```
+01
+11
+```
+$\texttt{prefix}_{0, 1} = 1$ as there is one connected component in the first row, and
+$\texttt{prefix}_{1, 0} = 1$ as there is one connected component in the first column. However,
+$\texttt{prefix}_{1, 1} = 1$ also as these two connected components get merged.
+
+The key to finding the transition function is the line "for every pair of two blue square $a$ and $b$,
+there is at most one path that starts from $a$, repeatedly proceeds to an adjacent (side by side)
+blue square and finally reaches $b$, without traversing the same square more than once."
+
+This means that if two separate connected regions are joined at one point, they cannot be joined
+anywhere else. For example, below, two separate connected components (A and B)
+are joined at the bottom-right corner (*), so they cannot touch anywhere else.
+```
+01101     0AA0A
+00101     00A0A
+00111     00AAA
+10001     B000A
+11111     BBBB*
+```
+With this in mind, we can do casework. Let's say we're looking for $\texttt{prefix[i][j]}$.
+
+**Case 1:** $\texttt{grid}_{i, j} = \texttt{grid}_{i - 1, j} = \texttt{grid}_{i, j - 1} = 1$
+```
+? 1
+1 1
+```
+We name $\texttt{grid}_{i - 1, j}$ $A$ and $\texttt{grid}_{i, j - 1}$ $B$.
+```
+? A
+B 1
+```
+Before we added $\texttt{grid}_{i, j}$, $A$ and $B$ must have been part of separate connected
+components since if otherwise, they must be connected at another location, which violates the problem
+statement. Therefore, we have merged two connected components into one. In this case, we have,
+$\texttt{pref}_{i, j} = \texttt{pref}_{i - 1, j} + \texttt{pref}_{i, j - 1} - \texttt{pref}_{i - 1, j - 1} - 1$.
+
+**Case 2:** $\texttt{grid}_{i, j} = 1$, $\texttt{grid}_{i - 1, j} = \texttt{grid}_{i, j - 1} = 0$
+```
+? 0
+0 1
+```
+We have added a new connected component! In this case, we have,
+$\texttt{pref}_{i, j} = \texttt{pref}_{i - 1, j} + \texttt{pref}_{i, j - 1} - \texttt{pref}_{i - 1, j - 1} + 1$.
+
+**Case 3:** All remaining cases where $\texttt{grid}_{i, j} = 1$
+```
+? 1
+0 1
+```
+Or,
+```
+? 0
+1 1
+```
+We have simply added on to a previous connected component, so we have,
+$\texttt{pref}_{i, j} = \texttt{pref}_{i - 1, j} + \texttt{pref}_{i, j - 1} - \texttt{pref}_{i - 1, j - 1}$.
+
+**Case 4:** $\texttt{grid}_{i, j} = 0$
+No new connected component can be made by introducing $\texttt{grid}_{i, j}$, and no two connected
+components can be merged. Therefore, in this case, we simply have,
+$\texttt{pref}_{i, j} = \texttt{pref}_{i - 1, j} + \texttt{pref}_{i, j - 1} - \texttt{pref}_{i - 1, j - 1}$
+
+At this point, we are more than halfway done! However, with this, we can only calculate the change in number of
+connected components in a certain range. We still need to find how many connected components we start with!
+
+This part is quite easy, we simply calculate how many connected components there are in the top row and
+left-most column of the range we are searching for. We can use the similar idea, once again using prefix sums.
+
+See the implementation for more details.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(NM + q)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MAX_SIZE = 2e3;
+
+int main() {
+	/*
+	 * Since we are performing 2D prefix sums, for convienience, the grid is
+	 * translated 1 unit right and down.
+	 * The extra row above and column to the left will be filled with 0's.
+	 */
+
+	// This is the grid S
+	vector<bitset<MAX_SIZE + 1>> grid(MAX_SIZE + 1, bitset<MAX_SIZE + 1>());
+
+	// Overall prefix sums array. pref[x][y] is how many connected components
+	// we have in the 2D array from (1, 1) to (x, y), inclusive.
+	vector<vector<int>> pref(MAX_SIZE + 1, vector<int>(MAX_SIZE + 1));
+
+	// horpref[x][y] is how many connected components we have in the row from
+	// (x, 1) to (x, y), inclusive.
+	vector<vector<int>> horpref(MAX_SIZE + 1, vector<int>(MAX_SIZE + 1));
+
+	// verpref[x][y] is how many connected components we have in the column from
+	// (1, y) to (x, y), inclusive.
+	vector<vector<int>> verpref(MAX_SIZE + 1, vector<int>(MAX_SIZE + 1));
+
+	int n, m, q;
+
+	cin >> n >> m >> q;
+
+	/*
+	 * The next 4 loops can be combined one for-loop, but for ease of
+	 * understanding we have divided it.
+	 *
+	 * Reading the grid:
+	 */
+	for (int i = 1; i <= n; i++) {
+		for (int j = 1; j <= m; j++) {
+			char a;
+			cin >> a;
+			grid[i][j] = (a == '1');
+		}
+	}
+
+	// Processing pref
+	for (int i = 1; i <= n; i++) {
+		for (int j = 1; j <= m; j++) {
+			pref[i][j] = pref[i - 1][j] + pref[i][j - 1] - pref[i - 1][j - 1];
+			if (grid[i][j]) {
+				if ((!grid[i - 1][j]) && (!grid[i][j - 1])) {
+					/*
+					 *   0
+					 * 0 1
+					 * A new connected component forms!
+					 */
+					pref[i][j]++;
+				}
+				if ((grid[i - 1][j]) && (grid[i][j - 1])) {
+					/*
+					 *   1
+					 * 1 1
+					 * Two connected component merges!
+					 */
+					pref[i][j]--;
+				}
+			}
+		}
+	}
+
+	// Processing horpref and verpref
+	for (int i = 1; i <= n; i++) {
+		for (int j = 1; j <= m; j++) {
+			horpref[i][j] = horpref[i][j - 1];
+			verpref[i][j] = verpref[i - 1][j];
+			if (grid[i][j]) {
+				// 0 1
+				// A new connected component in the row forms
+				horpref[i][j] += (!grid[i][j - 1]);
+				/*
+				 * 0
+				 * 1
+				 * A new connected component in the column forms
+				 */
+				verpref[i][j] += (!grid[i - 1][j]);
+			}
+		}
+	}
+
+	for (int i = 0; i < q; i++) {
+		int a, b, c, d;
+		cin >> a >> b >> c >> d;
+
+		int ans = grid[a][b];  // Whether we start with a connected component
+
+		// How many new connected components appear in the top row and leftmost
+		// column
+		ans += horpref[a][d] - horpref[a][b];
+		ans += verpref[c][b] - verpref[a][b];
+
+		// Change in # of connected components in the rest of the grid
+		ans += pref[c][d] - pref[a][d] - pref[c][b] + pref[a][b];
+		cout << ans << endl;
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>
