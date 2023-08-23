@@ -299,6 +299,13 @@ export const RestOfMembers: Member[] = [
     github: '876pol',
   },
   {
+    photo: 'danielge',
+    name: 'Daniel Ge',
+    titles: [roles.contentAuthor],
+    codeforces: 'Mathandski',
+    github: 'DenialRiver1434',
+  },
+  {
     photo: 'trisha',
     name: 'Trisha Sabadra',
     titles: ['Director of Classes', roles.liveInstructor],
