@@ -230,9 +230,9 @@ bool operator<(Segment a, Segment b) {
 }
 bool operator==(Segment a, Segment b) { return a.idx == b.idx; }
 
-// To check if two segments intersect we will use the signed area of the ABC
-// triangle. This can be derived from the cross product of the vectors AB and
-// AC.
+// To check if two segments intersect we will use the signed area of the ABC triangle.
+// This can be derived from the cross product of the vectors AB and AC.
+
 bool intersect(Segment a, Segment b) {
 	Point p1 = {a.a, a.b}, q1 = {a.x, a.y}, p2 = {b.a, b.b}, q2 = {b.x, b.y};
 	return ((q2 - p1) * (q1 - p1)) * ((q1 - p1) * (p2 - p1)) >= 0 &&
@@ -262,6 +262,7 @@ int main() {
 
 	// Keep track of active segments
 	set<Segment> active_segments;
+
 	// The two overlapping segments
 	int first_segment, second_segment;
 	for (int i = 0; i < 2 * n; i++) {
@@ -272,9 +273,9 @@ int main() {
 
 		if (it != active_segments.end()) {
 			// Ending segment & Check the intersection of the segments above and
+
 			auto after = next(it), before = it;
-			if (before != active_segments.begin() &&
-			    after != active_segments.end()) {
+			if (before != active_segments.begin() && after != active_segments.end()) {
 				before--;
 				if (intersect(segments[before->idx], segments[after->idx])) {
 					first_segment = before->idx;
@@ -306,7 +307,7 @@ int main() {
 
 	if (first_segment > second_segment) swap(first_segment, second_segment);
 
-	//  Which segment of the two is the answer
+	// Which segment of the two is the answer
 	int ans = 0;
 	for (int i = 0; i < n; i++) {
 		if (i != second_segment &&
