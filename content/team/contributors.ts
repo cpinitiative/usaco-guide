@@ -559,7 +559,7 @@ export const FormerMembers: Member[] = [
     website: 'https://thepuzzlr.com/',
     youtube: 'https://www.youtube.com/c/ThePuzzlr',
   },
-    {
+  {
     photo: 'aadit',
     name: 'Aadit Ambadkar',
     titles: [roles.contentAuthor],
