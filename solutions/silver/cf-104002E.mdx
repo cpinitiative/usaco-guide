@@ -1,0 +1,85 @@
+---
+id: cf-104002E
+source: CF
+title: William and Robot
+author: Alex Du
+---
+
+## Explanation
+
+First note that the only requirement for a valid solution is that for any even number $k \leq n$, William must have selected at most $\frac{k}{2}$ integers out of the first $k$ integers.
+It is impossible to select more than $\frac{k}{2}$ integers in the first $k$ integers, since the robot will have taken all other $\frac{k}{2}$ integers by the time you can choose your next integer.
+Note that it is also possible to "save" your choices, since you can choose less than $\frac{k}{2}$ integers for $k < n$, allowing you to choose more for a larger $k$.
+
+For example, if we had array of size $4$, we could select either of the first two elements and either of the last two elements, selecting exactly $\frac{k}{2}$ integers for both $k = 2$ and $k = 4$.
+Alternatively, we could select both of the last two elements, selecting 0 integers for $k = 2$ and $2$ integers for $k = 4$.
+Note that we cannot take both the first and second element, since the Robot will take the one we don't pick.
+
+To solve this problem, we can use a greedy algorithm.
+
+For any even $k$, if we know the $\frac{k}{2}$ integers that make the highest sum, we can use this to find the $\frac{k}{2}+1$ integers for $k+2$.
+
+The base case is $k = 2$, where the highest sum is simply the maximum of the first two integers.
+
+Similarly, to gain the highest sum for our current $k$, we will always select the maximum of the $k-1$ and $k-2$ elements, since we now have another turn and this will build directly off of our previous solution.
+
+However, it is sometimes optimal to take both integers, rather than just the maximum of the two.
+After $k=2$, we can choose to remove any previous integer we selected and replace it with the minimum of the two integers we are currently considering.
+Since we can remove any integer, we will remove the minimum. Therefore, this is only worth it if the minimum of the two integers is greater than the minimum of all the integers we already selected.
+To quickly access and remove the smallest integer, we can use either a priority queue or a multiset.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N \log N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	int n;
+	cin >> n;
+
+	vector<int> a(n);
+	for (int &i : a) { cin >> i; }
+
+	// stores currently selected numbers
+	multiset<int> taken;
+
+	// cannot take both the first and second number
+	taken.insert(max(a[0], a[1]));
+
+	for (int i = 2; i < n; i += 2) {
+		int smallest_taken = *taken.begin();
+
+		/*
+		 * if it is worth it to give up a previous number
+		 * to select both, give up the smallest
+		 */
+		if (smallest_taken < min(a[i], a[i + 1])) {
+			/*
+			 * erase using pointer, not value, since multiset will erase
+			 * all elements of the same value if value is passed in
+			 */
+			taken.erase(taken.begin());
+			taken.insert(a[i]);
+			taken.insert(a[i + 1]);
+		} else {
+			taken.insert(max(a[i], a[i + 1]));
+		}
+	}
+
+	long long ans = 0;
+
+	// sum up the answer
+	for (int t : taken) { ans += t; }
+
+	cout << ans << endl;
+}
+```
+
+</CPPSection>
+</LanguageSection>
