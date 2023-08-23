@@ -2,7 +2,7 @@
 id: usaco-898
 source: USACO Gold 2019 January
 title: Sleepy Cow Sorting
-author: Nathan Gong, Melody Yu (Video), Qi Wang
+author: Nathan Gong, Melody Yu (Video), Qi Wang, Daniel Ge
 ---
 
 [Official Analysis](http://www.usaco.org/current/data/sol_sleepy_gold_jan19.html)
@@ -186,4 +186,52 @@ public class Sleepy {
 }
 ```
 </JavaSection>
+</LanguageSection>
+
+### Using Indexed Set
+
+<LanguageSection>
+<CPPSection>
+```cpp
+#include <bits/stdc++.h> 
+using namespace std;
+
+// Importing Indexed Sets
+#include <ext/pb_ds/assoc_container.hpp>
+using namespace __gnu_pbds;
+template <class T>
+using Tree =
+    tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
+
+Tree<int> sorted;
+int N;
+vector<int> nums;
+
+int main () {
+	ifstream fin; ofstream fout;
+	fin.open("sleepy.in"); fout.open("sleepy.out");
+
+	fin >> N;
+	// Reading input and look for longest suffix that is increasing
+	for (int i = 0; i < N; i ++) {
+		int a; fin >> a;
+		nums.push_back(a);
+		if (i > 0) {
+			if (nums[i - 1] > nums[i]) { sorted.clear(); }
+		}
+		sorted.insert(a);
+	}
+
+	// Need to sort everything except increasing suffix
+	int ls = sorted.size();
+	fout << N - ls << endl;
+
+	for (int i = 0; i < N - ls; i ++) {
+		if (i != 0) fout << " ";
+		sorted.insert(nums[i]);
+		fout << sorted.order_of_key(nums[i]) + (N - ls - i - 1);
+	}
+}
+```
+</CPPSection>
 </LanguageSection>
