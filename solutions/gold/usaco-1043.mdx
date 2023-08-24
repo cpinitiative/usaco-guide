@@ -1,0 +1,203 @@
+---
+id: usaco-1043
+source: USACO Gold 2020 US Open
+title: Exercise
+author: Ryan Chou, Kevin Sheng
+---
+
+<Spoiler title="Hint 1">
+
+How do we know whether a "$k$-step" path is achievable?
+
+</Spoiler>
+
+<Spoiler title="Hint 1 (answer)">
+
+After examining the sample input (more specifically the $6$-step case in the problem statement),
+we can see that the cows move in disjoint cycles.
+
+![Cycles of the sample input.](/usaco-1043/hint1.png)
+
+Since in each cycle $i$, the cows take $\texttt{len}(i)$ steps to return to their original
+positions, where $\texttt{len}(x)$ denotes the length of the $x$th cycle.
+Thus, it'll take $lcm(\texttt{len}(0), \texttt{len}(1), \dots, \texttt{len}(N - 1))$ to reach their
+identity permutation again.
+
+</Spoiler>
+
+<Spoiler title="Hint 2">
+
+With this information, how should we construct our cycles to make sure that we've covered all possible paths?
+
+</Spoiler>
+
+<Spoiler title="Hint 2 (answer)">
+
+Since having any set of cycles with common factors could only make our answer worse (diving by their GCD would not change the answer),
+we can assume that all cycles are pairwise coprime. Thus, for any possible $k$-step path, we can construct it with a set of cycles where
+the size of each cycle is a prime factor in $k$. In other words, if $k = \prod p_1^{e_1},p_2^{e_2},\dots, p_n^{e_n}$, the minimum number of
+cows we need to have is $\sum p_1^{e_1},p_2^{e_2},\dots, p_n^{e_n}$.
+
+For any remaining cows, we can just cycle them back to themselves. This is because a self-loop is equivalent to removing that cycle from the graph ($lcm(1, x) = x$),
+
+Now, we just have to compute the sum of numbers with $\sum p_1^{e_1},p_2^{e_2},\dots, p_n^{e_n} \leq N$.
+
+</Spoiler>
+
+<Spoiler title="Solution">
+
+## Explanation
+
+From the hints above, we know that we can construct any $k$-step path if the sum of $k$'s prime factorization is less than or equal to $N$.
+
+We can use [Knapsack DP](/gold/knapsack) for this!
+
+### States
+
+Since we have to choose to either take or not take some multiple of a prime, we need to keep track of two things:
+1. The primes we've considered
+2. The number of cows we've used
+
+Since $N \leq 10^4$, there are only $1229$ primes to consider.
+
+Let $\texttt{dp}_{i,j} =$ the answer for the first $i$ primes, given that we can only use up to $j$ cows.
+
+The answer will just be $\texttt{dp}_{P, N}$, where $P$ represents the number of primes $\leq N$.
+
+### Base Cases
+We know we can have if our target array is the identity one, we'll complete our exercise in $0$ steps. Thus, $\texttt{dp}_{0, 0} = 1$.
+
+### Transitions
+
+Initially, we'll set $\texttt{dp}_{i, j} = \texttt{dp}_{i -1, j}$, since we can always choose to not take the $i$th prime.
+
+After fixing a cycle with size $p^e$, we need to add all of the other ways to complete the exercise with $j - p^e$ cows.
+
+Thus, while $p^e \leq j$:
+$$\texttt{dp}_{i, j} \mathrel{+}= \texttt{dp}_{i - 1, j - p^e} \cdot p^e$$
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(NP)$, where $P$ represents the number of primes $\leq N$.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using ll = long long;
+
+int main() {
+	freopen("exercise.in", "r", stdin);
+	freopen("exercise.out", "w", stdout);
+
+	int n, m;
+	cin >> n >> m;
+
+	// sieve of eratosthenes to precompute primes
+	vector<bool> is_prime(n + 1, true);
+	is_prime[0] = false;
+	is_prime[1] = false;
+	for (int i = 2; i <= n; i++) {
+		if (!is_prime[i]) { continue; }
+		for (ll j = i * i; j <= n; j += i) { is_prime[j] = false; }
+	}
+
+	vector<int> primes;
+	for (int i = 1; i <= n; i++) {
+		if (is_prime[i]) { primes.push_back(i); }
+	}
+
+	vector<vector<ll>> dp((int)primes.size() + 1, vector<ll>(n + 1, 0));
+
+	// set identity permutations
+	for (int i = 0; i <= n; i++) { dp[0][i] = 1; }
+
+	for (int i = 1; i <= (int)primes.size(); i++) {
+		for (int j = 0; j <= n; j++) {
+			// initial - don't use prime[i] at all
+			dp[i][j] = dp[i - 1][j] % m;
+
+			// use all possible powers of prime[i]
+			ll cur_exp = primes[i - 1];
+			while (j >= cur_exp) {
+				dp[i][j] += (dp[i - 1][j - cur_exp] % m) * (cur_exp % m);
+
+				cur_exp = ((cur_exp % m) * (primes[i - 1] % m));
+			}
+		}
+	}
+
+	cout << dp[(int)primes.size()][n] % m << endl;
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.math.BigInteger;
+import java.util.*;
+
+public final class Exercise {
+	public static void main(String[] args) throws IOException {
+		StringTokenizer initial = new StringTokenizer(
+		    new BufferedReader(new FileReader("exercise.in")).readLine());
+		int cowNum = Integer.parseInt(initial.nextToken());
+		BigInteger mod = new BigInteger(initial.nextToken());
+
+		// the sum of all the LCMs of the prime powers that sum to i (the array
+		// index)
+		BigInteger[] totalWithSum = new BigInteger[cowNum + 1];
+		Arrays.fill(totalWithSum, BigInteger.ZERO);
+
+		totalWithSum[0] = new BigInteger("1");
+		for (int i = 2; i <= cowNum; i++) {
+			if (!prime(i)) { continue; }
+
+			/*
+			 * keep another array where we store the updates so the prime
+			 * powers of a single number don't interfere with each other
+			 */
+			BigInteger[] updatedTotal = totalWithSum.clone();
+			for (int p = i; p <= cowNum;
+			     p *= i) {  // go through all prime powers
+				for (int from = 0; from + p <= cowNum; from++) {
+					updatedTotal[from + p] =
+					    updatedTotal[from + p].add(totalWithSum[from].multiply(
+					        new BigInteger(String.valueOf(p))));
+				}
+			}
+			totalWithSum = updatedTotal;
+		}
+
+		BigInteger total = BigInteger.ZERO;
+		for (BigInteger prod : totalWithSum) { total = total.add(prod); }
+		total = total.mod(mod);
+
+		PrintWriter written = new PrintWriter("exercise.out");
+		written.println(total);
+		written.close();
+	}
+
+	// https://geeksforgeeks.org/primality-test-set-1-introduction-and-school-method
+	private static boolean prime(int n) {
+		if (n <= 1) return false;
+		if (n <= 3) return true;
+		if (n % 2 == 0 || n % 3 == 0) return false;
+
+		for (int i = 5; i * i <= n; i = i + 6) {
+			if (n % i == 0 || n % (i + 2) == 0) { return false; }
+		}
+		return true;
+	}
+}
+```
+</JavaSection>
+</LanguageSection>
+
+</Spoiler>
