@@ -12,13 +12,12 @@ author: Óscar Garries, Benjamin Qi, Ryan Chou
 
 Some accepted submissions may give different outputs on the following test case:
 
-The right answer should be $6$.
-
-```cpp
-// BeginCodeSnip{Test Case}
-17 1 1 1 2 1 3 2 1 2 2 2 3 3 1 3 2 3 3 3 4 3 5 4 3 4 4 4 5 5 3 5 4 5 5
-    // EndCodeSnip
 ```
+17 1 1 1 2 1 3 2 1 2 2 2 3 3 1 3 2 3 3 3 4 3 5 4 3 4 4 4 5 5 3 5 4 5 5
+```
+
+The correct answer should be $6$.
+
 </Warning>
 
 ## Explanation
@@ -33,7 +32,6 @@ prefix and suffix minimums and maximums to calculate each possible solution in $
 
 We can also use a binary search tree instead of prefix/suffix minimums and maximums. To do this, we can create two ordered sets: a set representing the current enclosure,
 and a set representing the other enclosure. As we sweep across these coordinates, we'll add them to the current set and remove them from the other enclosure. To query, we'll fetch the minimum and maximum values from the sets.
-
 
 ## Implementation
 
@@ -112,6 +110,7 @@ int main() {
 	cout << ans << endl;
 }
 ```
+
 </CPPSection>
 <JavaSection>
 
@@ -120,10 +119,8 @@ import java.io.*;
 import java.util.*;
 
 public class SplittingTheField {
-	\```
-	    // returns updated min/maxs when considering a new coordinate
-	    public static Pair
-	    upd(Pair a, long b) {
+	// returns updated min/maxs when considering a new coordinate
+	public static Pair upd(Pair a, long b) {
 		return new Pair(Math.min(a.first, b), Math.max(a.second, b));
 	}
 
@@ -206,8 +203,8 @@ class Pair implements Comparable<Pair> {
 }
 // EndCodeSnip
 ```
-</JavaSection>
 
+</JavaSection>
 <PySection>
 
 ```py
@@ -219,9 +216,7 @@ ans = 0
 
 
 def search():
-	"""
-	returns the maximum area saved by testing splits along cows[i].first
-	"""
+	"""returns the maximum area saved by testing splits along cows[i].first"""
 	global ans
 
 	cows.sort()
@@ -265,5 +260,6 @@ ans = max(ans, search())
 
 print(ans, file=open("split.out", "w"))
 ```
+
 </PySection>
 </LanguageSection>
