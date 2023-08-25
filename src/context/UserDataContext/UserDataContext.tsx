@@ -336,10 +336,6 @@ export const UserDataProvider = ({
           'Import user data (beta)? All existing data will be lost. Make sure to back up your data before proceeding.'
         )
       ) {
-        // Todo: make sure CREATING_ACCOUNT_FOR_FIRST_TIME is set correctly
-        // if (CREATING_ACCOUNT_FOR_FIRST_TIME !== undefined)
-        //   data['CREATING_ACCOUNT_FOR_FIRST_TIME'] =
-        //     CREATING_ACCOUNT_FOR_FIRST_TIME;
         const updatedData = assignDefaultsToUserData(data);
         localStorage.setItem(
           'guide:userData:v100',
@@ -347,10 +343,15 @@ export const UserDataProvider = ({
         );
         setUserData(updatedData);
         if (firebaseUser) {
-          setDoc(
-            doc(getFirestore(firebaseApp), 'users', firebaseUser.uid),
-            data
-          ).catch(err => {
+          // Stupid hack: if firebase user is set, userData will actually have
+          // the CREATING_ACCOUNT_FOR_FIRST_TIME property, since userData will
+          // be set from the Firebase doc.
+          const CREATING_ACCOUNT_FOR_FIRST_TIME = (userData as any)
+            .CREATING_ACCOUNT_FOR_FIRST_TIME;
+          setDoc(doc(getFirestore(firebaseApp), 'users', firebaseUser.uid), {
+            ...data,
+            CREATING_ACCOUNT_FOR_FIRST_TIME,
+          }).catch(err => {
             console.error(err);
             alert(
               `importUserData: Error setting firebase doc. Check console for details.`
