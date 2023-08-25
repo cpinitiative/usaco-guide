@@ -3,8 +3,8 @@ import { UserData, useUpdateUserData, useUserData } from '../UserDataContext';
 export function createUserDataGetter<ReturnValue>(
   getter: (userData: UserData) => ReturnValue
 ): () => ReturnValue {
-  const userData = useUserData();
   return () => {
+    const userData = useUserData();
     return getter(userData);
   };
 }

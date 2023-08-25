@@ -26,5 +26,5 @@ const MagicScriptTag = () => {
   return <script dangerouslySetInnerHTML={{ __html: codeToRunOnClient }} />;
 };
 export const onRenderBody = ({ setPreBodyComponents }) => {
-  setPreBodyComponents(<MagicScriptTag />);
+  setPreBodyComponents(<MagicScriptTag key="magic-script-tag" />);
 };
