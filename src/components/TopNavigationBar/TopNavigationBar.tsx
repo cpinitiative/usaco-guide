@@ -19,11 +19,13 @@ import {
 import classNames from 'classnames';
 import { Link } from 'gatsby';
 import * as React from 'react';
-import { Fragment, useContext, useState } from 'react';
-import MODULE_ORDERING from '../../../content/ordering';
+import { Fragment, useState } from 'react';
 import { SignInContext } from '../../context/SignInContext';
-import UserDataContext from '../../context/UserDataContext/UserDataContext';
-import { useUserGroups } from '../../hooks/groups/useUserGroups';
+import {
+  useFirebaseUser,
+  useIsUserDataLoaded,
+  useSignOutAction,
+} from '../../context/UserDataContext/UserDataContext';
 import ContactUsSlideover from '../ContactUsSlideover/ContactUsSlideover';
 import { LoadingSpinner } from '../elements/LoadingSpinner';
 import Logo from '../Logo';
@@ -39,31 +41,13 @@ export default function TopNavigationBar({
   currentSection = null,
   hideClassesPromoBar = false,
 }) {
-  const { firebaseUser, signOut, isLoaded, userProgressOnModules } =
-    useContext(UserDataContext);
+  const firebaseUser = useFirebaseUser();
+  const signOut = useSignOutAction();
+  const isLoaded = useIsUserDataLoaded();
   const { signIn } = React.useContext(SignInContext);
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const [isContactUsActive, setIsContactUsActive] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const userGroups = useUserGroups();
-
-  const sections = {};
-  for (const section of Object.keys(MODULE_ORDERING)) {
-    let total = 0;
-    let completed = 0;
-    MODULE_ORDERING[section].forEach(chapter => {
-      chapter.items.forEach(module => {
-        total++;
-        if (Object.keys(userProgressOnModules).includes(module)) {
-          completed++;
-        }
-      });
-    });
-    sections[section] = {
-      total,
-      completed,
-    };
-  }
 
   const resources = [
     {

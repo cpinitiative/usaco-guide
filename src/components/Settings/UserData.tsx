@@ -1,13 +1,17 @@
 import * as React from 'react';
-import { useContext, useState } from 'react';
-import UserDataContext from '../../context/UserDataContext/UserDataContext';
+import { useState } from 'react';
 
 export default function UserData() {
-  const userSettings = useContext(UserDataContext);
+  const getDataExport = () => {
+    throw new Error('NOT IMPLEMENTED YET');
+  };
+  const importUserData = () => {
+    throw new Error('NOT IMPLEMENTED YET');
+  };
 
   const handleExportUserData = () => {
     const dataStr = `data:text/json;charset=utf-8,${encodeURIComponent(
-      JSON.stringify(userSettings.getDataExport())
+      JSON.stringify(getDataExport())
     )}`;
     const downloadAnchorNode = document.createElement('a');
     downloadAnchorNode.setAttribute('href', dataStr);
@@ -38,7 +42,7 @@ export default function UserData() {
     if (file === '') return;
     try {
       const data = JSON.parse(file);
-      if (userSettings.importUserData(data)) {
+      if (importUserData(data)) {
         setFile('');
         setResetInput(resetInput + 1); // clears file input
       }

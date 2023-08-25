@@ -1,10 +1,10 @@
 import { updateProfile } from 'firebase/auth';
 import React from 'react';
 import toast from 'react-hot-toast';
-import UserDataContext from '../../context/UserDataContext/UserDataContext';
+import { useFirebaseUser } from '../../context/UserDataContext/UserDataContext';
 
 export default function Profile(): JSX.Element {
-  const { firebaseUser } = React.useContext(UserDataContext);
+  const firebaseUser = useFirebaseUser();
 
   const [name, setName] = React.useState(firebaseUser?.displayName);
 

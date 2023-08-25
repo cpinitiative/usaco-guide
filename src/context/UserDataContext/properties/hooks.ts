@@ -14,11 +14,13 @@ export function createUserDataMutation<UpdatePayload>(
     userData: UserData,
     updatePayload: UpdatePayload
   ) => Partial<UserData>
-): (updatePayload: UpdatePayload) => void {
-  const updateUserData = useUpdateUserData();
-  return updatePayload => {
-    updateUserData((prevUserData: UserData) =>
-      mutation(prevUserData, updatePayload)
-    );
+): () => (updatePayload: UpdatePayload) => void {
+  return () => {
+    const updateUserData = useUpdateUserData();
+    return updatePayload => {
+      updateUserData((prevUserData: UserData) =>
+        mutation(prevUserData, updatePayload)
+      );
+    };
   };
 }

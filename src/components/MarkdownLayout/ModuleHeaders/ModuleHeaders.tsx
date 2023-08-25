@@ -4,7 +4,6 @@ import classNames from 'classnames';
 import { Link } from 'gatsby';
 import * as React from 'react';
 import { Fragment, useContext } from 'react';
-// import { SolutionInfo } from '../../models/solution';
 import {
   moduleIDToSectionMap,
   moduleIDToURLMap,
@@ -14,10 +13,10 @@ import MarkdownLayoutContext from '../../../context/MarkdownLayoutContext';
 import { useMarkdownProblems } from '../../../context/MarkdownProblemListsContext';
 import { ProblemSolutionContext } from '../../../context/ProblemSolutionContext';
 import {
-  Language,
   LANGUAGE_LABELS,
-} from '../../../context/UserDataContext/properties/userLang';
-import UserDataContext from '../../../context/UserDataContext/UserDataContext';
+  useSetUserLangSetting,
+  useUserLangSetting,
+} from '../../../context/UserDataContext/properties/simpleProperties';
 import { ModuleInfo, ModuleLinkInfo } from '../../../models/module';
 import { getProblemsProgressInfo } from '../../../utils/getProgressInfo';
 import { DashboardProgressSmall } from '../../Dashboard/DashboardProgress';
@@ -36,7 +35,8 @@ export default function ModuleHeaders({
     handleCompletionChange,
   } = useContext(MarkdownLayoutContext);
 
-  const { lang, setLang } = useContext(UserDataContext);
+  const lang = useUserLangSetting();
+  const setLang = useSetUserLangSetting();
 
   // this is for modules
   const problemIDs =
@@ -50,7 +50,7 @@ export default function ModuleHeaders({
   const problem = problemSolutionContext?.problem;
 
   // either prerequisites for modules or appears in for problems
-  let moduleHeaderLinks: { label: string; url?: string }[] = null;
+  let moduleHeaderLinks: { label: string; url?: string }[];
   if (markdownData instanceof ModuleInfo) {
     moduleHeaderLinks = (markdownData.prerequisites || []).map(prereq => {
       const moduleLink = moduleLinks.find(x => x.id === prereq);
@@ -86,20 +86,19 @@ export default function ModuleHeaders({
 
   return (
     <>
-      {markdownData instanceof ModuleInfo &&
-        markdownData.frequency !== null && (
-          <div className="px-0.5">
-            <div className="sm:flex sm:items-center sm:justify-between mb-4 space-y-1 sm:space-y-0">
-              <Frequency frequency={markdownData.frequency} />
-              {problemIDs.length > 0 && (
-                <DashboardProgressSmall
-                  {...problemsProgressInfo}
-                  total={problemIDs.length}
-                />
-              )}
-            </div>
+      {markdownData instanceof ModuleInfo && markdownData.frequency !== null && (
+        <div className="px-0.5">
+          <div className="sm:flex sm:items-center sm:justify-between mb-4 space-y-1 sm:space-y-0">
+            <Frequency frequency={markdownData.frequency} />
+            {problemIDs.length > 0 && (
+              <DashboardProgressSmall
+                {...problemsProgressInfo}
+                total={problemIDs.length}
+              />
+            )}
           </div>
-        )}
+        </div>
+      )}
       <div className="sm:flex sm:items-center sm:justify-between mb-4">
         <div className="flex-1 min-w-0">
           <h1 className="text-2xl font-bold text-gray-900 dark:text-dark-high-emphasis sm:text-3xl">
@@ -179,7 +178,7 @@ export default function ModuleHeaders({
                     className="origin-top-left absolute z-10 left-0 mt-2 w-56 rounded-md shadow-lg bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5 focus:outline-none"
                   >
                     <div className="py-1">
-                      {['cpp', 'java', 'py'].map((lang: Language) => (
+                      {(['cpp', 'java', 'py'] as const).map(lang => (
                         <Menu.Item key={lang}>
                           {({ active }) => (
                             <button

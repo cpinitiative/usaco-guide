@@ -18,7 +18,18 @@ import divToProbs from '../components/markdown/ProblemsList/DivisionList/div_to_
 import SEO from '../components/seo';
 import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
 import { SignInContext } from '../context/SignInContext';
-import UserDataContext from '../context/UserDataContext/UserDataContext';
+import { useLastVisitInfo } from '../context/UserDataContext/properties/lastVisit';
+import {
+  useLastReadAnnouncement,
+  useLastViewedModule,
+  useSetLastReadAnnouncement,
+  useShowIgnoredSetting,
+} from '../context/UserDataContext/properties/simpleProperties';
+import {
+  useUserProgressOnModules,
+  useUserProgressOnProblems,
+} from '../context/UserDataContext/properties/userProgress';
+import { useFirebaseUser } from '../context/UserDataContext/UserDataContext';
 import {
   AnnouncementInfo,
   graphqlToAnnouncementInfo,
@@ -30,7 +41,6 @@ import {
 
 export default function DashboardPage(props: PageProps) {
   const { modules, announcements, problems } = props.data as any;
-  const userSettings = React.useContext(UserDataContext);
   const moduleIDToName = modules.edges.reduce((acc, cur) => {
     acc[cur.node.frontmatter.id] = cur.node.frontmatter.title;
     return acc;
@@ -76,18 +86,15 @@ export default function DashboardPage(props: PageProps) {
     }
     return res;
   }, [problems]);
-  const {
-    lastViewedModule: lastViewedModuleID,
-    userProgressOnModules,
-    userProgressOnProblems,
-    lastReadAnnouncement,
-    setLastReadAnnouncement,
-    firebaseUser,
-    consecutiveVisits,
-  } = React.useContext(UserDataContext);
+  const lastViewedModuleID = useLastViewedModule();
+  const userProgressOnModules = useUserProgressOnModules();
+  const userProgressOnProblems = useUserProgressOnProblems();
+  const lastReadAnnouncement = useLastReadAnnouncement();
+  const setLastReadAnnouncement = useSetLastReadAnnouncement();
+  const firebaseUser = useFirebaseUser();
+  const { consecutiveVisits, numPageviews } = useLastVisitInfo();
+  const showIgnored = useShowIgnoredSetting();
   const { signIn } = React.useContext(SignInContext);
-
-  const showIgnored = userSettings.showIgnored;
 
   const lastViewedModuleURL = moduleIDToURLMap[lastViewedModuleID];
   const activeModules: ActiveItem[] = React.useMemo(() => {
@@ -292,17 +299,14 @@ export default function DashboardPage(props: PageProps) {
         </main>
       </div>
 
-      {parsedAnnouncements[0].id !== lastReadAnnouncement &&
-        userSettings.numPageviews > 12 && (
-          <div className="h-12">
-            <AnnouncementBanner
-              announcement={parsedAnnouncements[0]}
-              onDismiss={() =>
-                setLastReadAnnouncement(parsedAnnouncements[0].id)
-              }
-            />
-          </div>
-        )}
+      {parsedAnnouncements[0].id !== lastReadAnnouncement && numPageviews > 12 && (
+        <div className="h-12">
+          <AnnouncementBanner
+            announcement={parsedAnnouncements[0]}
+            onDismiss={() => setLastReadAnnouncement(parsedAnnouncements[0].id)}
+          />
+        </div>
+      )}
     </Layout>
   );
 }

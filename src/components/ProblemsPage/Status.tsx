@@ -1,7 +1,7 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import Select from 'react-select';
 import { useDarkMode } from '../../context/DarkModeContext';
-import UserDataContext from '../../context/UserDataContext/UserDataContext';
+import { useUserProgressOnProblems } from '../../context/UserDataContext/properties/userProgress';
 
 const options = [
   { label: 'Not Attempted', value: 'Not Attempted' },
@@ -14,7 +14,7 @@ const options = [
 
 export default function Status({ refine, problemIds }): JSX.Element {
   const darkMode = useDarkMode();
-  const data = useContext(UserDataContext).userProgressOnProblems;
+  const data = useUserProgressOnProblems();
   const handleChange = e => {
     const refinements = [];
     for (const status of e) {

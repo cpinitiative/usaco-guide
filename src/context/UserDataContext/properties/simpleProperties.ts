@@ -63,7 +63,7 @@ export const LANGUAGE_LABELS: { [key in Language | 'unknown']: string } = {
   java: 'Java',
   py: 'Python',
   unknown: 'Unknown',
-};
+} as const;
 
 // Note: User Lang is synchronized with a URL query parameter
 // the logic to handle this synchronization is in UserDataContext.tsx

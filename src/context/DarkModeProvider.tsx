@@ -1,13 +1,9 @@
 import * as React from 'react';
 import { DarkModeContext } from './DarkModeContext';
-import UserDataContext from './UserDataContext/UserDataContext';
+import { useThemeSetting } from './UserDataContext/properties/simpleProperties';
 
 export function DarkModeProvider({ children }) {
-  const userData = React.useContext(UserDataContext);
-  if (!userData) {
-    throw new Error('DarkModeProvider must be used inside a UserDataProvider');
-  }
-  const theme = userData.theme;
+  const theme = useThemeSetting();
 
   const [darkMode, setDarkMode] = React.useReducer((prev, next) => {
     if (prev !== next) {

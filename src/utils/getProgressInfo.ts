@@ -1,5 +1,7 @@
-import { useContext } from 'react';
-import UserDataContext from '../context/UserDataContext/UserDataContext';
+import {
+  useUserProgressOnModules,
+  useUserProgressOnProblems,
+} from '../context/UserDataContext/properties/userProgress';
 // import { ProblemProgress } from '../models/problem';
 // import { ModuleProgress } from '../models/module';
 
@@ -29,7 +31,7 @@ const getProgressInfo = (
 };
 
 export function getModulesProgressInfo(moduleIDs: string[]) {
-  const { userProgressOnModules } = useContext(UserDataContext);
+  const userProgressOnModules = useUserProgressOnModules();
   return getProgressInfo(
     moduleIDs,
     userProgressOnModules,
@@ -41,7 +43,7 @@ export function getModulesProgressInfo(moduleIDs: string[]) {
 }
 
 export function getProblemsProgressInfo(problemIDs: string[]) {
-  const { userProgressOnProblems } = useContext(UserDataContext);
+  const userProgressOnProblems = useUserProgressOnProblems();
   return getProgressInfo(
     problemIDs,
     userProgressOnProblems,

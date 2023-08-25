@@ -12,7 +12,7 @@ export class ModuleLinkInfo {
 
   constructor(
     public id: string,
-    public section: string,
+    public section: SectionID,
     public title: string,
     public description?: string,
     public frequency?: ModuleFrequency,

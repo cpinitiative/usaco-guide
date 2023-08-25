@@ -4,14 +4,14 @@ import {
   getDocs,
   getFirestore,
 } from '@firebase/firestore';
-import React, { useContext, useState } from 'react';
-import UserDataContext from '../../../context/UserDataContext/UserDataContext';
+import React, { useState } from 'react';
+import { useFirebaseUser } from '../../../context/UserDataContext/UserDataContext';
 import { useFirebaseApp } from '../../../hooks/useFirebase';
 import { GroupData } from '../../../models/groups/groups';
 import { GroupCard } from './GroupCard';
 
 export default function AdminViewAllGroups(): JSX.Element {
-  const { firebaseUser } = useContext(UserDataContext);
+  const firebaseUser = useFirebaseUser();
   const [groups, setGroups] = useState<GroupData[] | null>(null);
 
   useFirebaseApp(

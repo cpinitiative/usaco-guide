@@ -1,6 +1,6 @@
 import { graphql } from 'gatsby';
 import * as React from 'react';
-import { useContext, useEffect } from 'react';
+import { useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import { SECTION_LABELS } from '../../content/ordering';
 import Layout from '../components/layout';
@@ -9,14 +9,15 @@ import MarkdownLayout from '../components/MarkdownLayout/MarkdownLayout';
 import SEO from '../components/seo';
 import { ConfettiProvider } from '../context/ConfettiContext';
 import { MarkdownProblemListsProvider } from '../context/MarkdownProblemListsContext';
-import UserDataContext from '../context/UserDataContext/UserDataContext';
+import { useSetLastViewedModule } from '../context/UserDataContext/properties/simpleProperties';
 import { graphqlToModuleInfo } from '../utils/utils';
 
 export default function Template(props): JSX.Element {
   const { xdm, moduleProblemLists } = props.data; // data.markdownRemark holds your post data
   const { body } = xdm;
   const module = React.useMemo(() => graphqlToModuleInfo(xdm), [xdm]);
-  const { isLoaded, setLastViewedModule } = useContext(UserDataContext);
+  const isLoaded = useIsUserDataLoaded();
+  const setLastViewedModule = useSetLastViewedModule();
   React.useEffect(() => {
     setLastViewedModule(module.id);
   }, []);

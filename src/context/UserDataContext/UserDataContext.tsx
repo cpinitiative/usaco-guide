@@ -64,6 +64,7 @@ export type UserData = {
 type UserDataContextAPI = {
   userData: UserData | null;
   firebaseUser: User | null;
+  forceFirebaseUserRerender: () => void;
   isLoaded: boolean;
   updateUserData: (
     computeUpdatesFunc: (prevUserData: UserData) => Partial<UserData>
@@ -108,6 +109,7 @@ const UserDataContext = createContext<UserDataContextAPI>({
   updateUserData: _ => {},
   signOut: () => Promise.resolve(),
   firebaseUser: null,
+  forceFirebaseUserRerender: () => {},
   isLoaded: true,
 });
 
@@ -254,6 +256,20 @@ export const UserDataProvider = ({
     userData,
 
     firebaseUser,
+    /**
+     * Forces anything that depends on firebaseUser to rerender.
+     * Sometimes, such as when we just linked a Github account to a Google account,
+     * firebaseUser changes, but React doesn't know about the change so it doesn't rerender.
+     * This function forces React to update firebaseUser and trigger any rerenders
+     * that might be necessary. This funcation is used in SignInModal.tsx,
+     * when someone links a Google or Github account, causing firebaseUser to change,
+     * but onAuthStateChanged doesn't rereun.
+     */
+    forceFirebaseUserRerender: () => {
+      // todo: test to see whether this actually works lol
+      setFirebaseUser(getAuth(firebaseApp).currentUser);
+    },
+
     isLoaded,
 
     updateUserData: React.useCallback(
@@ -367,4 +383,16 @@ export const useUpdateUserData = () => {
 
 export const useFirebaseUser = () => {
   return React.useContext(UserDataContext).firebaseUser;
+};
+
+export const useIsUserDataLoaded = () => {
+  return React.useContext(UserDataContext).isLoaded;
+};
+
+export const useForceFirebaseUserRerender = () => {
+  return React.useContext(UserDataContext).forceFirebaseUserRerender;
+};
+
+export const useSignOutAction = () => {
+  return React.useContext(UserDataContext).signOut;
 };

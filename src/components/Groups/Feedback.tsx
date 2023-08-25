@@ -7,17 +7,15 @@ import {
   setDoc,
   updateDoc,
 } from 'firebase/firestore';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
-import UserDataContext from '../../context/UserDataContext/UserDataContext';
+import { useFirebaseUser } from '../../context/UserDataContext/UserDataContext';
 import { useFirebaseApp } from '../../hooks/useFirebase';
 
 export default function Feedback({ videoId }): JSX.Element {
   const firebaseApp = useFirebaseApp();
   const db = getFirestore(firebaseApp);
-  const {
-    firebaseUser: { uid },
-  } = useContext(UserDataContext);
+  const { uid } = useFirebaseUser()!;
   const baseClasses =
     'rounded-full border h-8 w-8 text-xl transform transition focus:outline-none';
   const unselectedClasses = 'hover:scale-110 border-gray-200';
@@ -64,7 +62,7 @@ export default function Feedback({ videoId }): JSX.Element {
             ([emoji, key, name]: [
               string,
               'very_bad' | 'bad' | 'good' | 'great',
-              string,
+              string
             ]) => (
               <button
                 key={key}

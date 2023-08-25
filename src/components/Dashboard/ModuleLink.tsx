@@ -3,8 +3,7 @@ import * as React from 'react';
 import { useContext } from 'react';
 import styled, { css } from 'styled-components';
 import tw from 'twin.macro';
-import { LANGUAGE_LABELS } from '../../context/UserDataContext/properties/userLang';
-import UserDataContext from '../../context/UserDataContext/UserDataContext';
+import { useUserProgressOnModules } from '../../context/UserDataContext/properties/userProgress';
 import { ModuleLinkInfo } from '../../models/module';
 import { FrequencyLabels } from '../Frequency';
 import ModuleFrequencyDots from '../MarkdownLayout/ModuleFrequencyDots';
@@ -168,7 +167,7 @@ function timeAgoString(time): string {
 }
 
 const ModuleLink = ({ link }: { link: ModuleLinkInfo }): JSX.Element => {
-  const { userProgressOnModules } = useContext(UserDataContext);
+  const userProgressOnModules = useUserProgressOnModules();
   const progress = userProgressOnModules[link.id] || 'Not Started';
 
   let lineColorStyle = tw`bg-gray-200`;

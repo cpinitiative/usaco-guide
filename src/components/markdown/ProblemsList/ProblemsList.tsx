@@ -1,9 +1,11 @@
 import { globalHistory } from '@reach/router';
 import * as React from 'react';
-import { useContext } from 'react';
 import 'tippy.js/themes/light.css';
 import { useMarkdownProblemLists } from '../../../context/MarkdownProblemListsContext';
-import UserDataContext from '../../../context/UserDataContext/UserDataContext';
+import {
+  useHideDifficultySetting,
+  useShowTagsSetting,
+} from '../../../context/UserDataContext/properties/simpleProperties';
 import { ProblemInfo } from '../../../models/problem';
 import Transition from '../../Transition';
 import { DivisionProblemInfo } from './DivisionList/DivisionProblemInfo';
@@ -67,9 +69,8 @@ export function ProblemsList(unannotatedProps: ProblemsListProps): JSX.Element {
     isDivisionTable: !(typeof unannotatedProps.problems === 'string'),
     problems,
   } as AnnotatedProblemsListProps;
-  const userSettings = useContext(UserDataContext);
-  const showTags = userSettings.showTags;
-  const showDifficulty = !userSettings.hideDifficulty;
+  const showTags = useShowTagsSetting();
+  const hideDifficulty = useHideDifficultySetting();
 
   const [problem, setProblem] = React.useState(null);
   const [showModal, setShowModal] = React.useState(false);

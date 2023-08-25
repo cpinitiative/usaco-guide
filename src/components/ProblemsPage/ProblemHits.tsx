@@ -1,33 +1,39 @@
 import { Link } from 'gatsby';
 import * as React from 'react';
-import { useContext } from 'react';
 import { Highlight } from 'react-instantsearch-dom';
 import { moduleIDToSectionMap } from '../../../content/ordering';
-import UserDataContext from '../../context/UserDataContext/UserDataContext';
+import { ConfettiProvider } from '../../context/ConfettiContext';
+import {
+  useHideDifficultySetting,
+  useHideModulesSetting,
+  useShowTagsSetting,
+} from '../../context/UserDataContext/properties/simpleProperties';
+import { useUserProgressOnProblems } from '../../context/UserDataContext/properties/userProgress';
 import {
   AlgoliaProblemInfo,
-  ProblemInfo,
   getProblemURL,
+  ProblemInfo,
   recentUsaco,
 } from '../../models/problem';
 import { difficultyClasses } from '../markdown/ProblemsList/ProblemsListItem';
 import ProblemStatusCheckbox from '../markdown/ProblemsList/ProblemStatusCheckbox';
-import { ConfettiProvider } from '../../context/ConfettiContext';
 
 interface ProblemHitProps {
   hit: AlgoliaProblemInfo;
 }
 
 function ProblemHit({ hit }: ProblemHitProps) {
-  const { userProgressOnProblems, hideDifficulty, showTags, hideModules } =
-    useContext(UserDataContext);
+  const userProgressOnProblems = useUserProgressOnProblems();
+  const hideDifficulty = useHideDifficultySetting();
+  const showTags = useShowTagsSetting();
+  const hideModules = useHideModulesSetting();
   if (hit.problemModules.length == 0 && recentUsaco.includes(hit.source)) {
     hit.problemModules.push({
       id: 'usaco-monthlies',
       title: 'USACO Monthlies',
     });
   }
-  let problem = hit as any as ProblemInfo;
+  const problem = hit as any as ProblemInfo;
   problem.uniqueId = hit.objectID;
   return (
     <div className="bg-white dark:bg-gray-900 shadow p-4 sm:p-6 rounded-lg ">

@@ -9,9 +9,12 @@ import {
   where,
 } from 'firebase/firestore';
 import * as React from 'react';
-import { ReactNode, useContext } from 'react';
+import { ReactNode } from 'react';
 import toast from 'react-hot-toast';
-import UserDataContext from '../../context/UserDataContext/UserDataContext';
+import {
+  useFirebaseUser,
+  useIsUserDataLoaded,
+} from '../../context/UserDataContext/UserDataContext';
 import { GroupData, isUserAdminOfGroup } from '../../models/groups/groups';
 import { PostData } from '../../models/groups/posts';
 import { useFirebaseApp } from '../useFirebase';
@@ -34,7 +37,8 @@ const ActiveGroupContext = React.createContext<{
 } | null>(null);
 
 export function ActiveGroupProvider({ children }: { children: ReactNode }) {
-  const { firebaseUser, isLoaded: isUserLoaded } = useContext(UserDataContext);
+  const firebaseUser = useFirebaseUser();
+  const isUserLoaded = useIsUserDataLoaded();
   const [activeGroupId, setActiveGroupId] = React.useState<string>();
   const [posts, setPosts] = React.useState<PostData[]>([]);
   const [inStudentView, setInStudentView] = React.useState(false);
