@@ -226,6 +226,11 @@ export const UserDataProvider = ({
       // If the user is signed in, sync remote data with local data
       if (user) {
         const userDoc = doc(getFirestore(firebaseApp), 'users', user.uid);
+
+        // For the very first firestore data read, we should set the language property
+        // to whatever the URL query param is
+        let shouldUseLangQueryParam = true;
+
         snapshotUnsubscribe = onSnapshot(userDoc, {
           next: snapshot => {
             const data = snapshot.data();
@@ -248,6 +253,12 @@ export const UserDataProvider = ({
               );
             } else {
               const newUserData = assignDefaultsToUserData(data);
+              if (shouldUseLangQueryParam) {
+                const urlLang = getLangFromUrl();
+                if (urlLang) {
+                  newUserData.lang = urlLang;
+                }
+              }
               localStorage.setItem(
                 'guide:userData:v100',
                 JSON.stringify(newUserData)
@@ -255,6 +266,7 @@ export const UserDataProvider = ({
               setUserData(newUserData);
             }
 
+            shouldUseLangQueryParam = false;
             setIsLoaded(true);
           },
           error: error => {
