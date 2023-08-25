@@ -10,6 +10,7 @@ import SEO from '../components/seo';
 import { ConfettiProvider } from '../context/ConfettiContext';
 import { MarkdownProblemListsProvider } from '../context/MarkdownProblemListsContext';
 import { useSetLastViewedModule } from '../context/UserDataContext/properties/simpleProperties';
+import { useIsUserDataLoaded } from '../context/UserDataContext/UserDataContext';
 import { graphqlToModuleInfo } from '../utils/utils';
 
 export default function Template(props): JSX.Element {

@@ -70,7 +70,7 @@ export function ProblemsList(unannotatedProps: ProblemsListProps): JSX.Element {
     problems,
   } as AnnotatedProblemsListProps;
   const showTags = useShowTagsSetting();
-  const hideDifficulty = useHideDifficultySetting();
+  const showDifficulty = !useHideDifficultySetting();
 
   const [problem, setProblem] = React.useState(null);
   const [showModal, setShowModal] = React.useState(false);

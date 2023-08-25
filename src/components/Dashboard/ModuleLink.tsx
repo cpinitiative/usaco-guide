@@ -2,7 +2,10 @@ import { Link } from 'gatsby';
 import * as React from 'react';
 import styled, { css } from 'styled-components';
 import tw from 'twin.macro';
-import { useUserLangSetting } from '../../context/UserDataContext/properties/simpleProperties';
+import {
+  LANGUAGE_LABELS,
+  useUserLangSetting,
+} from '../../context/UserDataContext/properties/simpleProperties';
 import { useUserProgressOnModules } from '../../context/UserDataContext/properties/userProgress';
 import { ModuleLinkInfo } from '../../models/module';
 import { FrequencyLabels } from '../Frequency';

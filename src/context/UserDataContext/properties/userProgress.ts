@@ -50,7 +50,7 @@ export const useSetProgressOnModule = () => {
       //   });
       // }
     }
-  );
+  )();
   return (moduleID: string, progress: ModuleProgress) => {
     return setProgressOnModule({ moduleID, progress });
   };
@@ -78,7 +78,7 @@ export const useSetProgressOnProblem = () => {
         ],
       };
     }
-  );
+  )();
   return (problemID: string, progress: ProblemProgress) => {
     return setProgressOnProblem({ problemID, progress });
   };
@@ -104,7 +104,7 @@ export const useSetProgressOnResource = () => {
         },
       };
     }
-  );
+  )();
   return (resourceID: string, progress: ResourceProgress) => {
     return setProgressOnResource({ resourceID, progress });
   };
