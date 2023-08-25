@@ -1,5 +1,5 @@
 import * as Sentry from '@sentry/browser';
-import { getAuth, onAuthStateChanged, User } from 'firebase/auth';
+import { getAuth, onAuthStateChanged, signOut, User } from 'firebase/auth';
 import {
   doc,
   getFirestore,
@@ -68,6 +68,7 @@ type UserDataContextAPI = {
   updateUserData: (
     computeUpdatesFunc: (prevUserData: UserData) => Partial<UserData>
   ) => void;
+  signOut: () => Promise<void>;
 };
 
 export const assignDefaultsToUserData = (data: object): UserData => {
@@ -286,10 +287,9 @@ export const UserDataProvider = ({
     };
   });
 
-  // initialize from localstorage
-  React.useEffect(() => {
-    runMigration();
-
+  const initializeFromLocalStorage = (
+    { useURLLang } = { useURLLang: true }
+  ) => {
     let localStorageData: Partial<UserData>;
     try {
       localStorageData = JSON.parse(
@@ -299,9 +299,11 @@ export const UserDataProvider = ({
       localStorageData = {};
     }
 
-    const urlLang = getLangFromUrl();
-    if (urlLang) {
-      localStorageData.lang = urlLang;
+    if (useURLLang) {
+      const urlLang = getLangFromUrl();
+      if (urlLang) {
+        localStorageData.lang = urlLang;
+      }
     }
 
     const actualUserData = assignDefaultsToUserData(localStorageData);
@@ -312,6 +314,12 @@ export const UserDataProvider = ({
     localStorage.setItem('guide:userData:v100', JSON.stringify(actualUserData));
 
     setUserData(actualUserData);
+  };
+
+  // initialize from localstorage
+  React.useEffect(() => {
+    runMigration();
+    initializeFromLocalStorage();
   }, []);
 
   const userDataAPI: UserDataContextAPI = {
@@ -363,11 +371,12 @@ export const UserDataProvider = ({
       [firebaseApp, setUserData, !!firebaseUser]
     ),
 
-    // signOut: (): Promise<void> => {
-    //   return signOut(getAuth(firebaseApp)).then(() => {
-    //     // todo: clear, then re-initialize from local storage
-    //   });
-    // },
+    signOut: (): Promise<void> => {
+      return signOut(getAuth(firebaseApp)).then(() => {
+        localStorage.removeItem('guide:userData:v100');
+        initializeFromLocalStorage({ useURLLang: false });
+      });
+    },
 
     // getDataExport: (): Record<string, any> => {
     //   return {};
