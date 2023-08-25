@@ -101,8 +101,9 @@ export const assignDefaultsToUserData = (data: object): UserData => {
 };
 
 // localstorage key for theme. We need this to set light / dark theme the moment the page loads.
-// duplicated from guide:userData:v100.
 export const themeKey = 'guide:userData:theme';
+
+const LOCAL_STORAGE_KEY = 'guide:userData:v100';
 
 // Todo figure out why we even need defaults
 const UserDataContext = createContext<UserDataContextAPI>({
@@ -193,7 +194,7 @@ export const UserDataProvider = ({
                 }
               }
               localStorage.setItem(
-                'guide:userData:v100',
+                LOCAL_STORAGE_KEY,
                 JSON.stringify(newUserData)
               );
               setUserData(newUserData);
@@ -225,7 +226,7 @@ export const UserDataProvider = ({
     let localStorageData: Partial<UserData>;
     try {
       localStorageData = JSON.parse(
-        localStorage.getItem('guide:userData:v100') ?? '{}'
+        localStorage.getItem(LOCAL_STORAGE_KEY) ?? '{}'
       );
     } catch (e) {
       localStorageData = {};
@@ -243,7 +244,7 @@ export const UserDataProvider = ({
     // We should write back to local storage if either URL lang changed,
     // or if some defaults were assigned. But being lazy, let's just
     // write back all the time.
-    localStorage.setItem('guide:userData:v100', JSON.stringify(actualUserData));
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(actualUserData));
 
     setUserData(actualUserData);
   };
@@ -287,16 +288,13 @@ export const UserDataProvider = ({
           // just assume reading will be valid. If it isn't, the user can always reload
           // the page to get a working version of user data.
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          localStorage.getItem('guide:userData:v100')!
+          localStorage.getItem(LOCAL_STORAGE_KEY)!
         );
 
         const changes = updateFunc(latestUserData);
         const newUserData = { ...latestUserData, ...changes };
 
-        localStorage.setItem(
-          'guide:userData:v100',
-          JSON.stringify(newUserData)
-        );
+        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(newUserData));
 
         setUserData(newUserData);
 
@@ -325,7 +323,7 @@ export const UserDataProvider = ({
 
     signOut: (): Promise<void> => {
       return signOut(getAuth(firebaseApp)).then(() => {
-        localStorage.removeItem('guide:userData:v100');
+        localStorage.removeItem(LOCAL_STORAGE_KEY);
         initializeFromLocalStorage({ useURLLang: false });
       });
     },
@@ -337,10 +335,7 @@ export const UserDataProvider = ({
         )
       ) {
         const updatedData = assignDefaultsToUserData(data);
-        localStorage.setItem(
-          'guide:userData:v100',
-          JSON.stringify(updatedData)
-        );
+        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updatedData));
         setUserData(updatedData);
         if (firebaseUser) {
           // Stupid hack: if firebase user is set, userData will actually have
