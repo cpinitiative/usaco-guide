@@ -19,9 +19,9 @@ export default function Template(props): JSX.Element {
   const module = React.useMemo(() => graphqlToModuleInfo(xdm), [xdm]);
   const isLoaded = useIsUserDataLoaded();
   const setLastViewedModule = useSetLastViewedModule();
-  React.useEffect(() => {
-    setLastViewedModule(module.id);
-  }, []);
+  useEffect(() => {
+    if (isLoaded) setLastViewedModule(module.id);
+  }, [isLoaded]);
 
   useEffect(() => {
     // source: https://miguelpiedrafita.com/snippets/scrollToHash

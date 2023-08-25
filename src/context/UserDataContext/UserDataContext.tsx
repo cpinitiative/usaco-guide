@@ -274,6 +274,12 @@ export const UserDataProvider = ({
 
     updateUserData: React.useCallback(
       updateFunc => {
+        if (!isLoaded) {
+          throw new Error(
+            'updateUserData() can only be called after user data has been loaded.'
+          );
+        }
+
         const latestUserData = JSON.parse(
           // Since we write valid user data to local storage every time the page loads,
           // just assume reading will be valid. If it isn't, the user can always reload
@@ -312,7 +318,7 @@ export const UserDataProvider = ({
         // After this transaction finishes, we don't have to do anything -- our
         // onSnapshot listener will automatically be called with the updated data
       },
-      [firebaseApp, setUserData, !!firebaseUser]
+      [firebaseApp, setUserData, isLoaded, !!firebaseUser]
     ),
 
     signOut: (): Promise<void> => {

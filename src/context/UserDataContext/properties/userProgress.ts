@@ -100,7 +100,7 @@ export const useSetProgressOnResource = () => {
       return {
         userProgressOnResources: {
           ...userData.userProgressOnResources,
-          moduleID: progress,
+          [resourceID]: progress,
         },
       };
     }
