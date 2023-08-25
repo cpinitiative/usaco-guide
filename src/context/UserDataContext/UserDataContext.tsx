@@ -69,6 +69,7 @@ type UserDataContextAPI = {
   updateUserData: (
     computeUpdatesFunc: (prevUserData: UserData) => Partial<UserData>
   ) => void;
+  importUserData: (data: Partial<UserData>) => boolean;
   signOut: () => Promise<void>;
 };
 
@@ -110,6 +111,7 @@ const UserDataContext = createContext<UserDataContextAPI>({
   signOut: () => Promise.resolve(),
   firebaseUser: null,
   forceFirebaseUserRerender: () => {},
+  importUserData: _ => false,
   isLoaded: true,
 });
 
@@ -328,42 +330,37 @@ export const UserDataProvider = ({
       });
     },
 
-    // getDataExport: (): Record<string, any> => {
-    //   return {};
-    //   // return UserDataContextAPIs.reduce(
-    //   //   (acc, api) => ({ ...acc, ...api.exportValue() }),
-    //   //   {}
-    //   // );
-    // },
-
-    // Todo: make sure CREATING_ACCOUNT_FOR_FIRST_TIME is set correctly
-    // importUserData: (data: Record<string, any>): boolean => {
-    //   // if (
-    //   //   confirm(
-    //   //     'Import user data (beta)? All existing data will be lost. Make sure to back up your data before proceeding.'
-    //   //   )
-    //   // ) {
-    //   //   if (CREATING_ACCOUNT_FOR_FIRST_TIME !== undefined)
-    //   //     data['CREATING_ACCOUNT_FOR_FIRST_TIME'] =
-    //   //       CREATING_ACCOUNT_FOR_FIRST_TIME;
-    //   //   UserDataContextAPIs.forEach(api => api.importValueFromObject(data));
-    //   //   UserDataContextAPIs.forEach(api => api.writeValueToLocalStorage());
-    //   //   if (firebaseUser) {
-    //   //     setDoc(
-    //   //       doc(getFirestore(firebaseApp), 'users', firebaseUser.uid),
-    //   //       data
-    //   //     ).catch(err => {
-    //   //       console.error(err);
-    //   //       alert(
-    //   //         `importUserData: Error setting firebase doc. Check console for details.`
-    //   //       );
-    //   //     });
-    //   //   }
-    //   //   triggerRerender();
-    //   //   return true;
-    //   // }
-    //   return false;
-    // },
+    importUserData: (data: Partial<UserData>): boolean => {
+      if (
+        confirm(
+          'Import user data (beta)? All existing data will be lost. Make sure to back up your data before proceeding.'
+        )
+      ) {
+        // Todo: make sure CREATING_ACCOUNT_FOR_FIRST_TIME is set correctly
+        // if (CREATING_ACCOUNT_FOR_FIRST_TIME !== undefined)
+        //   data['CREATING_ACCOUNT_FOR_FIRST_TIME'] =
+        //     CREATING_ACCOUNT_FOR_FIRST_TIME;
+        const updatedData = assignDefaultsToUserData(data);
+        localStorage.setItem(
+          'guide:userData:v100',
+          JSON.stringify(updatedData)
+        );
+        setUserData(updatedData);
+        if (firebaseUser) {
+          setDoc(
+            doc(getFirestore(firebaseApp), 'users', firebaseUser.uid),
+            data
+          ).catch(err => {
+            console.error(err);
+            alert(
+              `importUserData: Error setting firebase doc. Check console for details.`
+            );
+          });
+        }
+        return true;
+      }
+      return false;
+    },
   };
 
   return (
@@ -401,4 +398,8 @@ export const useForceFirebaseUserRerender = () => {
 
 export const useSignOutAction = () => {
   return React.useContext(UserDataContext).signOut;
+};
+
+export const useImportUserDataAction = () => {
+  return React.useContext(UserDataContext).importUserData;
 };

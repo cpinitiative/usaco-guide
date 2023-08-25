@@ -1,17 +1,17 @@
 import * as React from 'react';
 import { useState } from 'react';
+import {
+  useImportUserDataAction,
+  useUserData,
+} from '../../context/UserDataContext/UserDataContext';
 
 export default function UserData() {
-  const getDataExport = () => {
-    throw new Error('NOT IMPLEMENTED YET');
-  };
-  const importUserData = () => {
-    throw new Error('NOT IMPLEMENTED YET');
-  };
+  const userData = useUserData();
+  const importUserData = useImportUserDataAction();
 
   const handleExportUserData = () => {
     const dataStr = `data:text/json;charset=utf-8,${encodeURIComponent(
-      JSON.stringify(getDataExport())
+      JSON.stringify(userData)
     )}`;
     const downloadAnchorNode = document.createElement('a');
     downloadAnchorNode.setAttribute('href', dataStr);
