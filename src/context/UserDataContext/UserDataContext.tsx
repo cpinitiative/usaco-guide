@@ -15,20 +15,21 @@ import { ModuleProgress } from '../../models/module';
 import { ProblemProgress } from '../../models/problem';
 import { ResourceProgress } from '../../models/resource';
 import runMigration from './migration';
+import { Theme } from './properties/simpleSettings';
 import { UserPermissionsContextProvider } from './UserPermissionsContext';
 
 // What's actually stored in local storage / firebase
 export type UserData = {
   consecutiveVisits: number;
-  // show tags on problems table
+  /** show tags on problems table */
   showTags: boolean;
-  // hide difficulty on problems table
+  /** hide difficulty on problems table */
   hideDifficulty: boolean;
-  // hide modules in problems list (problems search page)
+  /** hide modules in problems list (problems search page) */
   hideModules: boolean;
-  // show ignored modules in dashboard
+  /** show ignored modules in dashboard */
   showIgnored: boolean;
-  // used for usaco monthlies table (I think)
+  /** used for usaco monthlies table (I think) */
   divisionTableQuery: {
     division: string;
     season: string;
@@ -40,7 +41,7 @@ export type UserData = {
   numPageviews: number;
   // mapping timestamp to pageviews
   pageviewsPerDay: Record<number, number>;
-  theme: string;
+  theme: Theme;
   // mapping module ID to progress
   userProgressOnModules: Record<string, ModuleProgress>;
   userProgressOnModulesActivity: {
