@@ -1,9 +1,10 @@
 import * as Sentry from '@sentry/browser';
-import { getAuth, onAuthStateChanged, signOut, User } from 'firebase/auth';
+import { getAuth, onAuthStateChanged, User } from 'firebase/auth';
 import {
   doc,
   getFirestore,
   onSnapshot,
+  runTransaction,
   serverTimestamp,
   setDoc,
 } from 'firebase/firestore';
@@ -15,7 +16,8 @@ import { ModuleProgress } from '../../models/module';
 import { ProblemProgress } from '../../models/problem';
 import { ResourceProgress } from '../../models/resource';
 import runMigration from './migration';
-import { Theme } from './properties/simpleSettings';
+import { Language, Theme } from './properties/settings';
+import { getLangFromUrl, updateLangURL } from './userLangQueryVariableUtils';
 import { UserPermissionsContextProvider } from './UserPermissionsContext';
 
 // What's actually stored in local storage / firebase
@@ -34,7 +36,7 @@ export type UserData = {
     division: string;
     season: string;
   };
-  lang: string;
+  lang: Language;
   lastReadAnnouncement: string;
   lastViewedModule: string;
   lastVisitDate: number; // timestamp
@@ -95,7 +97,7 @@ export const assignDefaultsToUserData = (data: object): UserData => {
   };
 };
 
-// todo figure out why we even need defaults here...
+// Todo figure out why we even need defaults
 const UserDataContext = createContext<UserDataContextAPI>({
   // make suer CREATING_ACCOUNT_FOR_FIRST_TIME is here
   userData: assignDefaultsToUserData({}),
@@ -190,13 +192,33 @@ export const UserDataProvider = ({
 }): JSX.Element => {
   const firebaseApp = useFirebaseApp();
   const [firebaseUser, setFirebaseUser] = useState<User | null>(null);
-  const [userData, setUserData] = useState<UserData | null>(null);
+  const [userData, setUserData] = React.useReducer(
+    (prevState: UserData, updates: Partial<UserData>): UserData => {
+      if (updates.lang && prevState.lang !== updates.lang) {
+        updateLangURL(updates.lang);
+      }
+      return { ...prevState, ...updates };
+    },
+    null,
+    () => {
+      // These initial values are what's used during the initial SSG render
+      return assignDefaultsToUserData({
+        lang: 'showAll',
+      });
+    }
+  );
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
 
   // Listen for firebase user sign in / sign out
   useFirebaseApp(firebase => {
     const auth = getAuth(firebase);
-    onAuthStateChanged(auth, user => {
+    let snapshotUnsubscribe: null | (() => void) = null;
+    const authUnsubscribe = onAuthStateChanged(auth, user => {
+      if (snapshotUnsubscribe) {
+        snapshotUnsubscribe();
+        snapshotUnsubscribe = null;
+      }
+
       if (user == null) setIsLoaded(true);
       else setIsLoaded(false);
       setFirebaseUser(user);
@@ -204,7 +226,7 @@ export const UserDataProvider = ({
       // If the user is signed in, sync remote data with local data
       if (user) {
         const userDoc = doc(getFirestore(firebaseApp), 'users', user.uid);
-        return onSnapshot(userDoc, {
+        snapshotUnsubscribe = onSnapshot(userDoc, {
           next: snapshot => {
             const data = snapshot.data();
             if (!data) {
@@ -225,8 +247,12 @@ export const UserDataProvider = ({
                 { merge: true }
               );
             } else {
-              // todo: override local user data with remote user data
-              setUserData(assignDefaultsToUserData(data));
+              const newUserData = assignDefaultsToUserData(data);
+              localStorage.setItem(
+                'guide:userData:v100',
+                JSON.stringify(newUserData)
+              );
+              setUserData(newUserData);
             }
 
             setIsLoaded(true);
@@ -242,13 +268,17 @@ export const UserDataProvider = ({
         });
       }
     });
+    return () => {
+      authUnsubscribe();
+      if (snapshotUnsubscribe) snapshotUnsubscribe();
+    };
   });
 
   // initialize from localstorage
   React.useEffect(() => {
     runMigration();
 
-    let localStorageData: object;
+    let localStorageData: Partial<UserData>;
     try {
       localStorageData = JSON.parse(
         localStorage.getItem('guide:userData:v100') ?? '{}'
@@ -256,56 +286,112 @@ export const UserDataProvider = ({
     } catch (e) {
       localStorageData = {};
     }
-    setUserData(assignDefaultsToUserData(localStorageData));
+
+    const urlLang = getLangFromUrl();
+    if (urlLang) {
+      localStorageData.lang = urlLang;
+    }
+
+    const actualUserData = assignDefaultsToUserData(localStorageData);
+
+    // We should write back to local storage if either URL lang changed,
+    // or if some defaults were assigned. But being lazy, let's just
+    // write back all the time.
+    localStorage.setItem('guide:userData:v100', JSON.stringify(actualUserData));
+
+    setUserData(actualUserData);
   }, []);
 
-  const userDataAPI = {
+  const userDataAPI: UserDataContextAPI = {
     userData,
 
     firebaseUser,
     isLoaded,
 
-    signOut: (): Promise<void> => {
-      return signOut(getAuth(firebaseApp)).then(() => {
-        // todo: clear, then re-initialize from local storage
-      });
-    },
+    updateUserData: React.useCallback(
+      updateFunc => {
+        const latestUserData = JSON.parse(
+          // Since we write valid user data to local storage every time the page loads,
+          // just assume reading will be valid. If it isn't, the user can always reload
+          // the page to get a working version of user data.
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          localStorage.getItem('guide:userData:v100')!
+        );
 
-    getDataExport: (): Record<string, any> => {
-      return {};
-      // return UserDataContextAPIs.reduce(
-      //   (acc, api) => ({ ...acc, ...api.exportValue() }),
-      //   {}
-      // );
-    },
+        const changes = updateFunc(latestUserData);
+        const newUserData = { ...latestUserData, ...changes };
 
-    importUserData: (data: Record<string, any>): boolean => {
-      // if (
-      //   confirm(
-      //     'Import user data (beta)? All existing data will be lost. Make sure to back up your data before proceeding.'
-      //   )
-      // ) {
-      //   if (CREATING_ACCOUNT_FOR_FIRST_TIME !== undefined)
-      //     data['CREATING_ACCOUNT_FOR_FIRST_TIME'] =
-      //       CREATING_ACCOUNT_FOR_FIRST_TIME;
-      //   UserDataContextAPIs.forEach(api => api.importValueFromObject(data));
-      //   UserDataContextAPIs.forEach(api => api.writeValueToLocalStorage());
-      //   if (firebaseUser) {
-      //     setDoc(
-      //       doc(getFirestore(firebaseApp), 'users', firebaseUser.uid),
-      //       data
-      //     ).catch(err => {
-      //       console.error(err);
-      //       alert(
-      //         `importUserData: Error setting firebase doc. Check console for details.`
-      //       );
-      //     });
-      //   }
-      //   triggerRerender();
-      //   return true;
-      // }
-      return false;
-    },
+        localStorage.setItem(
+          'guide:userData:v100',
+          JSON.stringify(newUserData)
+        );
+
+        setUserData(newUserData);
+
+        // If thie user isn't signed in, this is all we need to do
+        if (!firebaseUser) return;
+
+        const userDoc = doc(
+          getFirestore(firebaseApp),
+          'users',
+          firebaseUser.uid
+        );
+        // Otherwise, if the user is signed in, we need to update Firebase too
+        runTransaction(getFirestore(firebaseApp), async transaction => {
+          const firebaseUserData = assignDefaultsToUserData(
+            await transaction.get<Partial<UserData>>(userDoc)
+          );
+          const changes = updateFunc(firebaseUserData);
+          transaction.update(userDoc, changes);
+        });
+
+        // After this transaction finishes, we don't have to do anything -- our
+        // onSnapshot listener will automatically be called with the updated data
+      },
+      [firebaseApp, setUserData, !!firebaseUser]
+    ),
+
+    // signOut: (): Promise<void> => {
+    //   return signOut(getAuth(firebaseApp)).then(() => {
+    //     // todo: clear, then re-initialize from local storage
+    //   });
+    // },
+
+    // getDataExport: (): Record<string, any> => {
+    //   return {};
+    //   // return UserDataContextAPIs.reduce(
+    //   //   (acc, api) => ({ ...acc, ...api.exportValue() }),
+    //   //   {}
+    //   // );
+    // },
+
+    // importUserData: (data: Record<string, any>): boolean => {
+    //   // if (
+    //   //   confirm(
+    //   //     'Import user data (beta)? All existing data will be lost. Make sure to back up your data before proceeding.'
+    //   //   )
+    //   // ) {
+    //   //   if (CREATING_ACCOUNT_FOR_FIRST_TIME !== undefined)
+    //   //     data['CREATING_ACCOUNT_FOR_FIRST_TIME'] =
+    //   //       CREATING_ACCOUNT_FOR_FIRST_TIME;
+    //   //   UserDataContextAPIs.forEach(api => api.importValueFromObject(data));
+    //   //   UserDataContextAPIs.forEach(api => api.writeValueToLocalStorage());
+    //   //   if (firebaseUser) {
+    //   //     setDoc(
+    //   //       doc(getFirestore(firebaseApp), 'users', firebaseUser.uid),
+    //   //       data
+    //   //     ).catch(err => {
+    //   //       console.error(err);
+    //   //       alert(
+    //   //         `importUserData: Error setting firebase doc. Check console for details.`
+    //   //       );
+    //   //     });
+    //   //   }
+    //   //   triggerRerender();
+    //   //   return true;
+    //   // }
+    //   return false;
+    // },
   };
 
   return (
