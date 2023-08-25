@@ -98,93 +98,17 @@ export const assignDefaultsToUserData = (data: object): UserData => {
   };
 };
 
+// localstorage key for theme. We need this to set light / dark theme the moment the page loads.
+// duplicated from guide:userData:v100.
+export const themeKey = 'guide:userData:theme';
+
 // Todo figure out why we even need defaults
 const UserDataContext = createContext<UserDataContextAPI>({
-  // make suer CREATING_ACCOUNT_FOR_FIRST_TIME is here
   userData: assignDefaultsToUserData({}),
   updateUserData: _ => {},
   signOut: () => Promise.resolve(),
   firebaseUser: null,
-  // firebaseUser: null,
-  // getDataExport: () => Promise.resolve(),
-  // importUserData: () => true,
-  // showTags: false,
-  // hideDifficulty: false,
-  // hideModules: false,
-  // divisionTableQuery: {
-  //   division: '',
-  //   season: '',
-  // },
   isLoaded: true,
-  // lang: 'cpp',
-  // lastReadAnnouncement: 'open-source',
-  // lastViewedModule: 'binary-search-sorted',
-  // lastVisitDate: 1608324157466,
-  // numPageviews: 130,
-  // onlineUsers: -1,
-  // pageviewsPerDay: {
-  //   1606896000000: 4,
-  //   1607068800000: 17,
-  //   1608192000000: 27,
-  //   1608278400000: 82,
-  // },
-  // theme: 'system',
-  // setTheme: _x => {
-  //   // do nothing
-  // },
-  // setShowTags: _x => {
-  //   // do nothing
-  // },
-  // setHideDifficulty: _x => {
-  //   // do nothing
-  // },
-  // setHideModules: _x => {
-  //   // do nothing
-  // },
-  // setDivisionTableQuery: _x => {
-  //   // do nothing
-  // },
-  // setLang: _x => {
-  //   // do nothing
-  // },
-  // setLastReadAnnouncement: _x => {
-  //   // do nothing
-  // },
-  // setLastViewedModule: _x => {
-  //   // do nothing
-  // },
-  // setLastVisitDate: _x => {
-  //   // do nothing
-  // },
-  // setModuleProgress: (_moduleID, _progress) => {
-  //   // do nothing/
-  // },
-  // setShowIgnored: _x => {
-  //   // do nothing
-  // },
-  // setUserProgressOnProblems: (_problemId, _status) => {
-  //   // do nothing
-  // },
-  // setUserProgressOnResources: (_moduleId, _status) => {
-  //   // do nothing
-  // },
-  // showIgnored: false,
-  // signOut: () => {
-  //   // do nothing
-  //   return Promise.resolve();
-  // },
-  // triggerUserDataContextRerender: () => {},
-  // userProgressOnModules: {},
-  // userProgressOnModulesActivity: [],
-  // userProgressOnProblems: {},
-  // userProgressOnProblemsActivity: [],
-  // userProgressOnResources: {},
-  // adSettings: {
-  //   hideMarch2021: false,
-  // },
-  // setAdSettings: () => {
-  //   // do nothing
-  // },
 });
 
 export const UserDataProvider = ({
@@ -198,6 +122,9 @@ export const UserDataProvider = ({
     (prevState: UserData, updates: Partial<UserData>): UserData => {
       if (updates.lang && prevState.lang !== updates.lang) {
         updateLangURL(updates.lang);
+      }
+      if (updates.theme && prevState.theme !== updates.theme) {
+        localStorage.setItem(themeKey, JSON.stringify(updates.theme));
       }
       return { ...prevState, ...updates };
     },
@@ -387,6 +314,7 @@ export const UserDataProvider = ({
     //   // );
     // },
 
+    // Todo: make sure CREATING_ACCOUNT_FOR_FIRST_TIME is set correctly
     // importUserData: (data: Record<string, any>): boolean => {
     //   // if (
     //   //   confirm(
@@ -435,4 +363,8 @@ export const useUserData = (): UserData => {
 
 export const useUpdateUserData = () => {
   return React.useContext(UserDataContext).updateUserData;
+};
+
+export const useFirebaseUser = () => {
+  return React.useContext(UserDataContext).firebaseUser;
 };

@@ -57,11 +57,12 @@ export const useSetHideModulesSetting = createUserDataMutation(
 );
 
 export type Language = 'showAll' | 'cpp' | 'java' | 'py';
-export const LANGUAGE_LABELS: { [key in Language]: string } = {
+export const LANGUAGE_LABELS: { [key in Language | 'unknown']: string } = {
   showAll: 'All',
   cpp: 'C++',
   java: 'Java',
   py: 'Python',
+  unknown: 'Unknown',
 };
 
 // Note: User Lang is synchronized with a URL query parameter
