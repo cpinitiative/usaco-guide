@@ -16,7 +16,7 @@ import { ModuleProgress } from '../../models/module';
 import { ProblemProgress } from '../../models/problem';
 import { ResourceProgress } from '../../models/resource';
 import runMigration from './migration';
-import { Language, Theme } from './properties/settings';
+import { Language, Theme } from './properties/simpleProperties';
 import { getLangFromUrl, updateLangURL } from './userLangQueryVariableUtils';
 import { UserPermissionsContextProvider } from './UserPermissionsContext';
 
@@ -103,6 +103,7 @@ const UserDataContext = createContext<UserDataContextAPI>({
   // make suer CREATING_ACCOUNT_FOR_FIRST_TIME is here
   userData: assignDefaultsToUserData({}),
   updateUserData: _ => {},
+  signOut: () => Promise.resolve(),
   firebaseUser: null,
   // firebaseUser: null,
   // getDataExport: () => Promise.resolve(),

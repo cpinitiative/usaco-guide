@@ -76,3 +76,36 @@ export const useSetUserLangSetting = createUserDataMutation(
     };
   }
 );
+
+export const useDivisionTableQuery = createUserDataGetter(
+  userData => userData.divisionTableQuery
+);
+export const useSetDivisionTableQuery = createUserDataMutation(
+  (userData, divisionTableQuery: typeof userData.divisionTableQuery) => {
+    return {
+      divisionTableQuery,
+    };
+  }
+);
+
+export const useLastReadAnnouncement = createUserDataGetter(
+  userData => userData.lastReadAnnouncement
+);
+export const useSetLastReadAnnouncement = createUserDataMutation(
+  (userData, lastReadAnnouncement: string) => {
+    return {
+      lastReadAnnouncement,
+    };
+  }
+);
+
+export const useLastViewedModule = createUserDataGetter(
+  userData => userData.lastViewedModule
+);
+export const useSetLastViewedModule = createUserDataMutation(
+  (userData, lastViewedModule: string) => {
+    return {
+      lastViewedModule,
+    };
+  }
+);
