@@ -204,18 +204,15 @@ using Tree =
     tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
 
 Tree<int> sorted;
-int N;
+int n;
 vector<int> nums;
 
 int main() {
-	ifstream fin;
-	ofstream fout;
-	fin.open("sleepy.in");
-	fout.open("sleepy.out");
+	ifstream fin("sleepy.in");
 
-	fin >> N;
+	fin >> n;
 	// Reading input and look for longest suffix that is increasing
-	for (int i = 0; i < N; i++) {
+	for (int i = 0; i < n; i++) {
 		int a;
 		fin >> a;
 		nums.push_back(a);
@@ -225,14 +222,15 @@ int main() {
 		sorted.insert(a);
 	}
 
+	ofstream fout("sleepy.out");
 	// Need to sort everything except increasing suffix
 	int ls = sorted.size();
-	fout << N - ls << endl;
+	fout << n - ls << endl;
 
-	for (int i = 0; i < N - ls; i++) {
+	for (int i = 0; i < n - ls; i++) {
 		if (i != 0) fout << " ";
 		sorted.insert(nums[i]);
-		fout << sorted.order_of_key(nums[i]) + (N - ls - i - 1);
+		fout << sorted.order_of_key(nums[i]) + (n - ls - i - 1);
 	}
 }
 ```
