@@ -4,9 +4,9 @@ import {
   doc,
   getFirestore,
   onSnapshot,
-  runTransaction,
   serverTimestamp,
   setDoc,
+  updateDoc,
 } from 'firebase/firestore';
 import * as React from 'react';
 import { createContext, ReactNode, useState } from 'react';
@@ -66,8 +66,14 @@ type UserDataContextAPI = {
   firebaseUser: User | null;
   forceFirebaseUserRerender: () => void;
   isLoaded: boolean;
+  /**
+   * See properties/hooks.ts for documentation on how this function works.
+   */
   updateUserData: (
-    computeUpdatesFunc: (prevUserData: UserData) => Partial<UserData>
+    updateFunc: (prevUserData: UserData) => {
+      localStorageUpdate: Partial<UserData>;
+      firebaseUpdate: object;
+    }
   ) => void;
   importUserData: (data: Partial<UserData>) => boolean;
   signOut: () => Promise<void>;
@@ -254,6 +260,7 @@ export const UserDataProvider = ({
   React.useEffect(() => {
     runMigration();
     initializeFromLocalStorage();
+    // todo: does this actually run before isLoaded is set to true?
   }, []);
 
   const userDataAPI: UserDataContextAPI = {
@@ -284,6 +291,9 @@ export const UserDataProvider = ({
           );
         }
 
+        // In the localStorage path, this is guaranteed the latest copy of the data
+        // In the firestore path, this is probably still the latest copy of the data,
+        // since any time firestore updates, it writes to localStorage.
         const latestUserData = JSON.parse(
           // Since we write valid user data to local storage every time the page loads,
           // just assume reading will be valid. If it isn't, the user can always reload
@@ -292,42 +302,39 @@ export const UserDataProvider = ({
           localStorage.getItem(LOCAL_STORAGE_KEY)!
         );
 
-        const changes = updateFunc(latestUserData);
-        const newUserData = { ...latestUserData, ...changes };
-
-        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(newUserData));
-
-        setUserData(newUserData);
-
-        // If thie user isn't signed in, this is all we need to do
-        if (!firebaseUser) return;
-
-        const userDoc = doc(
-          getFirestore(firebaseApp),
-          'users',
-          firebaseUser.uid
-        );
-        const test = Math.random();
-        // Otherwise, if the user is signed in, we need to update Firebase too
-        console.log('running transaction', test, changes);
-        // todo: problem where multiple transactions are run and aren't batched
-        runTransaction(getFirestore(firebaseApp), async transaction => {
-          const firebaseUserData = assignDefaultsToUserData(
-            (await transaction.get<Partial<UserData>>(userDoc)).data() ?? {}
+        if (firebaseUser) {
+          // user is signed in to firebase, do the firebase update path
+          const userDoc = doc(
+            getFirestore(firebaseApp),
+            'users',
+            firebaseUser.uid
           );
-          console.log('attempting fb transaction', test, firebaseUserData);
-          const changes = updateFunc(firebaseUserData);
-          transaction.update(userDoc, changes);
-        })
-          .then(() => {
-            console.log('finished transaction', test);
-          })
-          .catch(err => {
-            console.log('failed transaction', test, err);
-          });
+          const test = Math.random();
 
-        // After this transaction finishes, we don't have to do anything -- our
-        // onSnapshot listener will automatically be called with the updated data
+          const changes = updateFunc(latestUserData).firebaseUpdate;
+          console.log('running update', test, changes);
+          updateDoc(userDoc, changes)
+            .then(() => {
+              console.log('finished update', test);
+            })
+            .catch(err => {
+              console.log('failed update', test, err);
+            });
+
+          // After this update finishes, we don't have to do anything -- our
+          // onSnapshot listener will automatically be called with the updated data
+          // Also, firestore has optimistic updates, so the user will see changes immediately
+        } else {
+          // user isn't signed in, do the localStorage update path
+          const newUserData = {
+            ...latestUserData,
+            ...updateFunc(latestUserData).localStorageUpdate,
+          };
+
+          localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(newUserData));
+
+          setUserData(newUserData);
+        }
       },
       [firebaseApp, setUserData, isLoaded, !!firebaseUser]
     ),

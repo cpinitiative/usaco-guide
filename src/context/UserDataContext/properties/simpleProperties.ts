@@ -1,9 +1,9 @@
-import { createUserDataGetter, createUserDataMutation } from './hooks';
+import { createSimpleUserDataMutation, createUserDataGetter } from './hooks';
 
 export const useShowTagsSetting = createUserDataGetter(userData => {
   return userData.showTags;
 });
-export const useSetShowTagsSetting = createUserDataMutation(
+export const useSetShowTagsSetting = createSimpleUserDataMutation(
   (userData, showTags: boolean) => {
     return {
       showTags,
@@ -14,7 +14,7 @@ export const useSetShowTagsSetting = createUserDataMutation(
 export const useShowIgnoredSetting = createUserDataGetter(userData => {
   return userData.showIgnored;
 });
-export const useSetShowIgnoredSetting = createUserDataMutation(
+export const useSetShowIgnoredSetting = createSimpleUserDataMutation(
   (userData, showIgnored: boolean) => {
     return {
       showIgnored,
@@ -26,7 +26,7 @@ export type Theme = 'light' | 'dark' | 'system';
 export const useThemeSetting = createUserDataGetter(userData => {
   return userData.theme;
 });
-export const useSetThemeSetting = createUserDataMutation(
+export const useSetThemeSetting = createSimpleUserDataMutation(
   (userData, theme: Theme) => {
     return {
       theme,
@@ -37,7 +37,7 @@ export const useSetThemeSetting = createUserDataMutation(
 export const useHideDifficultySetting = createUserDataGetter(userData => {
   return userData.hideDifficulty;
 });
-export const useSetHideDifficultySetting = createUserDataMutation(
+export const useSetHideDifficultySetting = createSimpleUserDataMutation(
   (userData, hideDifficulty: boolean) => {
     return {
       hideDifficulty,
@@ -48,7 +48,7 @@ export const useSetHideDifficultySetting = createUserDataMutation(
 export const useHideModulesSetting = createUserDataGetter(userData => {
   return userData.hideModules;
 });
-export const useSetHideModulesSetting = createUserDataMutation(
+export const useSetHideModulesSetting = createSimpleUserDataMutation(
   (userData, hideModules: boolean) => {
     return {
       hideModules,
@@ -70,7 +70,7 @@ export const LANGUAGE_LABELS: { [key in Language | 'unknown']: string } = {
 export const useUserLangSetting = createUserDataGetter(
   userData => userData.lang
 );
-export const useSetUserLangSetting = createUserDataMutation(
+export const useSetUserLangSetting = createSimpleUserDataMutation(
   (userData, lang: Language) => {
     return {
       lang,
@@ -81,7 +81,7 @@ export const useSetUserLangSetting = createUserDataMutation(
 export const useDivisionTableQuery = createUserDataGetter(
   userData => userData.divisionTableQuery
 );
-export const useSetDivisionTableQuery = createUserDataMutation(
+export const useSetDivisionTableQuery = createSimpleUserDataMutation(
   (userData, divisionTableQuery: typeof userData.divisionTableQuery) => {
     return {
       divisionTableQuery,
@@ -92,7 +92,7 @@ export const useSetDivisionTableQuery = createUserDataMutation(
 export const useLastReadAnnouncement = createUserDataGetter(
   userData => userData.lastReadAnnouncement
 );
-export const useSetLastReadAnnouncement = createUserDataMutation(
+export const useSetLastReadAnnouncement = createSimpleUserDataMutation(
   (userData, lastReadAnnouncement: string) => {
     return {
       lastReadAnnouncement,
