@@ -100,13 +100,9 @@ export const useSetLastReadAnnouncement = createUserDataMutation(
   }
 );
 
+// last viewed module is set in useUpdateStreakEffect
+// we have a limitation of one update per second (firebase rate limit),
+// so we combine the two updates
 export const useLastViewedModule = createUserDataGetter(
   userData => userData.lastViewedModule
-);
-export const useSetLastViewedModule = createUserDataMutation(
-  (userData, lastViewedModule: string) => {
-    return {
-      lastViewedModule,
-    };
-  }
 );

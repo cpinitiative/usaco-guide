@@ -197,6 +197,7 @@ export const UserDataProvider = ({
                 LOCAL_STORAGE_KEY,
                 JSON.stringify(newUserData)
               );
+              console.log('got new fb data', newUserData);
               setUserData(newUserData);
             }
 
@@ -306,14 +307,24 @@ export const UserDataProvider = ({
           'users',
           firebaseUser.uid
         );
+        const test = Math.random();
         // Otherwise, if the user is signed in, we need to update Firebase too
+        console.log('running transaction', test, changes);
+        // todo: problem where multiple transactions are run and aren't batched
         runTransaction(getFirestore(firebaseApp), async transaction => {
           const firebaseUserData = assignDefaultsToUserData(
-            await transaction.get<Partial<UserData>>(userDoc)
+            (await transaction.get<Partial<UserData>>(userDoc)).data() ?? {}
           );
+          console.log('attempting fb transaction', test, firebaseUserData);
           const changes = updateFunc(firebaseUserData);
           transaction.update(userDoc, changes);
-        });
+        })
+          .then(() => {
+            console.log('finished transaction', test);
+          })
+          .catch(err => {
+            console.log('failed transaction', test, err);
+          });
 
         // After this transaction finishes, we don't have to do anything -- our
         // onSnapshot listener will automatically be called with the updated data

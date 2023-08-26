@@ -9,7 +9,6 @@ import MarkdownLayout from '../components/MarkdownLayout/MarkdownLayout';
 import SEO from '../components/seo';
 import { ConfettiProvider } from '../context/ConfettiContext';
 import { MarkdownProblemListsProvider } from '../context/MarkdownProblemListsContext';
-import { useSetLastViewedModule } from '../context/UserDataContext/properties/simpleProperties';
 import { useIsUserDataLoaded } from '../context/UserDataContext/UserDataContext';
 import { graphqlToModuleInfo } from '../utils/utils';
 
@@ -18,10 +17,6 @@ export default function Template(props): JSX.Element {
   const { body } = xdm;
   const module = React.useMemo(() => graphqlToModuleInfo(xdm), [xdm]);
   const isLoaded = useIsUserDataLoaded();
-  const setLastViewedModule = useSetLastViewedModule();
-  useEffect(() => {
-    if (isLoaded) setLastViewedModule(module.id);
-  }, [isLoaded]);
 
   useEffect(() => {
     // source: https://miguelpiedrafita.com/snippets/scrollToHash
@@ -39,7 +34,7 @@ export default function Template(props): JSX.Element {
   }, [isLoaded]);
 
   return (
-    <Layout>
+    <Layout setLastViewedModule={module.id}>
       <SEO title={`${module.title}`} description={module.description} />
       <Helmet>
         <script type="application/ld+json">{`
