@@ -145,6 +145,10 @@ export const UserDataProvider = ({
 
   // Listen for firebase user sign in / sign out
   useFirebaseApp(firebase => {
+    // For the very first firestore data read, we should set the language property
+    // to whatever the URL query param is
+    let shouldUseLangQueryParam = true;
+
     const auth = getAuth(firebase);
     let snapshotUnsubscribe: null | (() => void) = null;
     const authUnsubscribe = onAuthStateChanged(auth, user => {
@@ -160,10 +164,6 @@ export const UserDataProvider = ({
       // If the user is signed in, sync remote data with local data
       if (user) {
         const userDoc = doc(getFirestore(firebaseApp), 'users', user.uid);
-
-        // For the very first firestore data read, we should set the language property
-        // to whatever the URL query param is
-        let shouldUseLangQueryParam = true;
 
         snapshotUnsubscribe = onSnapshot(userDoc, {
           next: snapshot => {
