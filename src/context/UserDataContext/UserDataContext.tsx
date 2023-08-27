@@ -309,17 +309,22 @@ export const UserDataProvider = ({
             'users',
             firebaseUser.uid
           );
-          const test = Math.random();
 
           const changes = updateFunc(latestUserData).firebaseUpdate;
-          console.log('running update', test, changes);
-          updateDoc(userDoc, changes)
-            .then(() => {
-              console.log('finished update', test);
-            })
-            .catch(err => {
-              console.log('failed update', test, err);
-            });
+          const firebaseUpdatePromise = updateDoc(userDoc, changes);
+
+          firebaseUpdatePromise.catch(err => {
+            console.error('Failed to sync to server', changes);
+            console.error(err);
+            toast.error(
+              'Failed to sync to server: ' +
+                err +
+                '. Please submit an error report on Github with developer console messages.',
+              {
+                duration: Infinity,
+              }
+            );
+          });
 
           // After this update finishes, we don't have to do anything -- our
           // onSnapshot listener will automatically be called with the updated data
