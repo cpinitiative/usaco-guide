@@ -9,7 +9,7 @@ import {
   updateDoc,
 } from 'firebase/firestore';
 import * as React from 'react';
-import { createContext, ReactNode, useState } from 'react';
+import { createContext, ReactNode, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
 import { useFirebaseApp } from '../../hooks/useFirebase';
 import { ModuleProgress } from '../../models/module';
@@ -148,6 +148,24 @@ export const UserDataProvider = ({
     }
   );
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
+  const numPendingFirebaseWritesRef = useRef(0);
+
+  // Show a message warning the user their data isn't saved
+  // if they try to exit the page before firebase finishes writing
+  React.useEffect(() => {
+    function beforeUnloadListener(this: Window, ev: BeforeUnloadEvent) {
+      if (numPendingFirebaseWritesRef.current !== 0) {
+        ev.preventDefault();
+        return (ev.returnValue = '');
+      }
+    }
+    addEventListener('beforeunload', beforeUnloadListener, { capture: true });
+    return () => {
+      removeEventListener('beforeunload', beforeUnloadListener, {
+        capture: true,
+      });
+    };
+  }, []);
 
   // Listen for firebase user sign in / sign out
   useFirebaseApp(firebase => {
@@ -313,18 +331,23 @@ export const UserDataProvider = ({
           const changes = updateFunc(latestUserData).firebaseUpdate;
           const firebaseUpdatePromise = updateDoc(userDoc, changes);
 
-          firebaseUpdatePromise.catch(err => {
-            console.error('Failed to sync to server', changes);
-            console.error(err);
-            toast.error(
-              'Failed to sync to server: ' +
-                err +
-                '. Please submit an error report on Github with developer console messages.',
-              {
-                duration: Infinity,
-              }
-            );
-          });
+          numPendingFirebaseWritesRef.current++;
+          firebaseUpdatePromise
+            .catch(err => {
+              console.error('Failed to sync to server', changes);
+              console.error(err);
+              toast.error(
+                'Failed to sync to server: ' +
+                  err +
+                  '. Please submit an error report on Github with developer console messages.',
+                {
+                  duration: Infinity,
+                }
+              );
+            })
+            .finally(() => {
+              numPendingFirebaseWritesRef.current--;
+            });
 
           // After this update finishes, we don't have to do anything -- our
           // onSnapshot listener will automatically be called with the updated data

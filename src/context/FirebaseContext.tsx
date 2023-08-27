@@ -35,7 +35,7 @@ export const FirebaseProvider = ({ children }) => {
         });
       }
 
-      const shouldUseEmulator = true;
+      const shouldUseEmulator = false;
       if (shouldUseEmulator) {
         connectAuthEmulator(getAuth(firebaseApp), 'http://localhost:9099');
         connectFirestoreEmulator(getFirestore(firebaseApp), 'localhost', 8080);
