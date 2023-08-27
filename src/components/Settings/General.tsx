@@ -18,7 +18,7 @@ export default function General(): JSX.Element {
   const showTags = useShowTagsSetting();
   const setShowTags = useSetShowTagsSetting();
   const hideDifficulty = useHideDifficultySetting();
-  const setHideDifficulty = useSetHideDifficultySetting;
+  const setHideDifficulty = useSetHideDifficultySetting();
   const hideModules = useHideModulesSetting();
   const setHideModules = useSetHideModulesSetting();
   const [isLongPolling, setIsLongPolling] = React.useState<boolean>(false);

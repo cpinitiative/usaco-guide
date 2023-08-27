@@ -5,7 +5,7 @@ import MODULE_ORDERING, {
   SECTION_LABELS,
 } from '../../../../content/ordering';
 import MarkdownLayoutContext from '../../../context/MarkdownLayoutContext';
-import { ModuleLinkInfo } from '../../../models/module';
+import { MarkdownLayoutSidebarModuleLinkInfo } from '../../../models/module';
 import { SolutionInfo } from '../../../models/solution';
 import SectionsDropdown from '../../SectionsDropdown';
 import Accordion from './Accordion';
@@ -13,7 +13,7 @@ import ItemLink from './ItemLink';
 
 export interface NavLinkGroup {
   label: string;
-  children: ModuleLinkInfo[];
+  children: MarkdownLayoutSidebarModuleLinkInfo[];
 }
 
 export const SidebarNav = () => {
@@ -26,7 +26,9 @@ export const SidebarNav = () => {
       ? 'general'
       : markdownLayoutInfo.section;
   if (markdownLayoutInfo instanceof SolutionInfo) {
-    for (const section in SECTION_LABELS) {
+    for (const section of Object.keys(
+      SECTION_LABELS
+    ) as (keyof typeof SECTION_LABELS)[]) {
       MODULE_ORDERING[section].forEach((category: Chapter) => {
         category.items.forEach(moduleID => {
           if (activeIDs.includes(moduleID)) {
@@ -43,7 +45,7 @@ export const SidebarNav = () => {
     return MODULE_ORDERING[activeSection].map((category: Chapter) => ({
       label: category.name,
       children: category.items.map(
-        moduleID => sidebarLinks.find(link => link.id === moduleID) // lol O(n^2)?
+        moduleID => sidebarLinks.find(link => link.id === moduleID)! // lol O(n^2)?
       ),
     }));
   }, [activeSection, sidebarLinks]);

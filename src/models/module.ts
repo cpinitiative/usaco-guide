@@ -49,7 +49,7 @@ export type TableOfContents = {
 export class ModuleInfo extends ModuleLinkInfo {
   constructor(
     public id: string,
-    public section: string,
+    public section: SectionID,
     public title: string,
     public body: any,
     public author: string,

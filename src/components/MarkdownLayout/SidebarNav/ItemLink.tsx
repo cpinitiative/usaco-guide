@@ -5,7 +5,10 @@ import styled from 'styled-components';
 import tw from 'twin.macro';
 import MarkdownLayoutContext from '../../../context/MarkdownLayoutContext';
 import { useUserProgressOnModules } from '../../../context/UserDataContext/properties/userProgress';
-import { ModuleLinkInfo } from '../../../models/module';
+import {
+  MarkdownLayoutSidebarModuleLinkInfo,
+  ModuleLinkInfo,
+} from '../../../models/module';
 
 export const LinkWithProgress = styled.span`
   ${tw`block relative`}
@@ -93,7 +96,11 @@ const StyledLink = styled.span`
   }
 `;
 
-const ItemLink = ({ link }: { link: ModuleLinkInfo }) => {
+const ItemLink = ({
+  link,
+}: {
+  link: MarkdownLayoutSidebarModuleLinkInfo | ModuleLinkInfo;
+}) => {
   const { activeIDs } = useContext(MarkdownLayoutContext);
   const isActive = activeIDs.includes(link.id);
   const itemRef = React.useRef(null);
