@@ -270,7 +270,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
   const userSolutionTemplate = path.resolve(
     `./src/templates/userSolutionTemplate.tsx`
   );
-  let usaco_uids : string[] = [];
+  let usaco_uids: string[] = [];
   problems.forEach(({ node }) => {
     let slug = getProblemURL(node);
     if (
@@ -341,21 +341,20 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
       const name = problem[2];
       const path = `problems/${uniqueId}/user-solutions`;
 
-      if(!usaco_uids.includes(uniqueId)){
+      if (!usaco_uids.includes(uniqueId)) {
         createPage({
           path: path,
           component: userSolutionTemplate,
           context: {
             problem: {
               uniqueId: uniqueId,
-              name: name
+              name: name,
             },
           },
         });
       }
-    })
-  })
-
+    });
+  });
 
   // End problems check
   const moduleTemplate = path.resolve(`./src/templates/moduleTemplate.tsx`);
