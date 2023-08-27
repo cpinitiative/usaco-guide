@@ -268,13 +268,6 @@ export const RestOfMembers: Member[] = [
     email: 'erxu@ctemc.org',
   },
   {
-    photo: 'aditya',
-    name: 'Aditya Gupta',
-    titles: [roles.contentAuthor],
-    website: 'https://thepuzzlr.com/',
-    youtube: 'https://www.youtube.com/c/ThePuzzlr',
-  },
-  {
     photo: 'albert_jiang',
     name: 'Albert Jiang',
     titles: [roles.videoInstructor],
@@ -299,6 +292,15 @@ export const RestOfMembers: Member[] = [
     github: '876pol',
   },
   {
+    photo: 'danielge',
+    name: 'Daniel Ge',
+    titles: [roles.contentAuthor],
+    codeforces: 'Mathandski',
+    github: 'DenialRiver1434',
+    email: 'mailto:shurongge@gmail.com',
+    website: 'https://denialriver1434.github.io/',
+  },
+  {
     photo: 'trisha',
     name: 'Trisha Sabadra',
     titles: ['Director of Classes', roles.liveInstructor],
@@ -315,11 +317,6 @@ export const RestOfMembers: Member[] = [
     photo: 'jaiman',
     name: 'Jaiman Pandya',
     titles: [roles.clubCurriculum],
-  },
-  {
-    photo: 'aadit',
-    name: 'Aadit Ambadkar',
-    titles: [roles.contentAuthor],
   },
   {
     photo: 'nikita',
@@ -554,6 +551,18 @@ export const FormerMembers: Member[] = [
     photo: 'yifan_ma',
     name: 'Yifan Ma',
     titles: [roles.videoInstructor],
+  },
+  {
+    photo: 'aditya',
+    name: 'Aditya Gupta',
+    titles: [roles.contentAuthor],
+    website: 'https://thepuzzlr.com/',
+    youtube: 'https://www.youtube.com/c/ThePuzzlr',
+  },
+  {
+    photo: 'aadit',
+    name: 'Aadit Ambadkar',
+    titles: [roles.contentAuthor],
   },
 ];
 
