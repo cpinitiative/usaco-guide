@@ -71,11 +71,9 @@ int main() {
 	for (int i = 0; i < m - 1; i++) {
 		ll years_upper = years + (occ[i + 1].first - occ[i].first) * (i + 1);
 		track_city.insert(occ[i].second);
-		// beginning of query (sorted by year)
-		int query_low_index =
-		    lower_bound(all(query), make_pair(years, 0)) - query.begin();
-		for (int j = query_low_index; j < q && query[j].first < years_upper;
-		     j++) {
+		// beginning of query, sorted by year
+		int q_low_ind = lower_bound(all(query), make_pair(years, 0)) - query.begin();
+		for (int j = q_low_ind; j < q && query[j].first < years_upper; j++) {
 			ll qyears = query[j].first;
 			int qindex = query[j].second;
 			// retrieve the requested city by original query order
