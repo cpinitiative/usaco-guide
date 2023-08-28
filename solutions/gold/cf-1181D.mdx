@@ -29,29 +29,30 @@ There might be some leftover queries that ask for years after the final $y$. At 
 ```cpp
 #include <bits/stdc++.h>
 #include <ext/pb_ds/assoc_container.hpp>
-#include <ext/pb_ds/tree_policy.hpp>
 #include <ext/pb_ds/detail/standard_policies.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
 using namespace std;
 using namespace __gnu_pbds;
 
 using ll = long long;
 #define all(x) x.begin(), x.end()
 
-template<typename T>
-using ordered_set = tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
+template <typename T>
+using ordered_set =
+    tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
 
-int main(){
+int main() {
 	int n, m, q;
 	scanf("%d%d%d", &n, &m, &q);
 	vector<int> counter(m);
-	for(int i = 0; i < n; i++){
+	for (int i = 0; i < n; i++) {
 		int x;
 		scanf("%d", &x);
 		counter[--x]++;
-	} 
+	}
 
 	vector<pair<ll, int>> query(q);  // {year, index}
-	for(int i = 0; i < q; i++){
+	for (int i = 0; i < q; i++) {
 		scanf("%lld", &query[i].first);
 		query[i].first -= n;
 		query[i].second = i;
@@ -59,9 +60,7 @@ int main(){
 	sort(all(query));
 
 	vector<pair<ll, int>> occ(m);  // {occurrence, city}
-	for(int i = 0; i < m; i++){
-		occ[i] = {counter[i], i};
-	}
+	for (int i = 0; i < m; i++) { occ[i] = {counter[i], i}; }
 	sort(all(occ));
 
 	vector<int> qans(q, -1);
@@ -69,28 +68,29 @@ int main(){
 	ordered_set<int> track_city;
 
 	ll years = 1;
-	for(int i = 0; i < m - 1; i++){
-		ll years_upper = years + (occ[i+1].first - occ[i].first) * (i + 1);
+	for (int i = 0; i < m - 1; i++) {
+		ll years_upper = years + (occ[i + 1].first - occ[i].first) * (i + 1);
 		track_city.insert(occ[i].second);
-		int query_low_index = lower_bound(all(query), make_pair(years, 0)) - query.begin();
-		for(int j = query_low_index; j < q && query[j].first < years_upper; j++){
+		int query_low_index =
+		    lower_bound(all(query), make_pair(years, 0)) - query.begin();
+		for (int j = query_low_index; j < q && query[j].first < years_upper;
+		     j++) {
 			ll qyears = query[j].first;
 			int qindex = query[j].second;
-			qans[qindex] = *track_city.find_by_order((qyears - years) % (i + 1));
+			qans[qindex] =
+			    *track_city.find_by_order((qyears - years) % (i + 1));
 		}
 		years = years_upper;
 	}
 
 	// answer the rest of the queries that goes past max occurrence
-	for(int i = 0; i < q; i++){
-		if(qans[query[i].second] == -1){
+	for (int i = 0; i < q; i++) {
+		if (qans[query[i].second] == -1) {
 			qans[query[i].second] = (query[i].first - years) % m;
 		}
 	}
 
-	for(int i: qans){
-		printf("%d\n", i + 1);
-	}
+	for (int i : qans) { printf("%d\n", i + 1); }
 }
 ```
 </CPPSection>
