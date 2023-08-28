@@ -48,22 +48,26 @@ int main(){
 		int x;
 		scanf("%d", &x);
 		counter[--x]++;
-	}
-	vector<pair<ll, int>> query(q); // {year, index}
+	} 
+
+	vector<pair<ll, int>> query(q);  // {year, index}
 	for(int i = 0; i < q; i++){
 		scanf("%lld", &query[i].first);
 		query[i].first -= n;
 		query[i].second = i;
 	}
 	sort(all(query));
-	vector<pair<ll, int>> occ(m); // {occurrence, city}
+
+	vector<pair<ll, int>> occ(m);  // {occurrence, city}
 	for(int i = 0; i < m; i++){
 		occ[i] = {counter[i], i};
 	}
 	sort(all(occ));
+
 	vector<int> qans(q, -1);
 	// tracks the initial indicies of the cities so far in sorted order
 	ordered_set<int> track_city;
+
 	ll years = 1;
 	for(int i = 0; i < m - 1; i++){
 		ll years_upper = years + (occ[i+1].first - occ[i].first) * (i + 1);
@@ -76,12 +80,14 @@ int main(){
 		}
 		years = years_upper;
 	}
+
 	// answer the rest of the queries that goes past max occurrence
 	for(int i = 0; i < q; i++){
 		if(qans[query[i].second] == -1){
 			qans[query[i].second] = (query[i].first - years) % m;
 		}
 	}
+
 	for(int i: qans){
 		printf("%d\n", i + 1);
 	}
