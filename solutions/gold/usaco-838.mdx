@@ -1,0 +1,230 @@
+---
+id: usaco-838
+source: USACO Gold 2018 Open
+title: Milking Order
+author: Timothy Gao, Qi Wang, Melody Yu, Neo Wang
+---
+
+[Official Analysis](http://www.usaco.org/current/data/sol_milkorder_gold_open18.html)
+
+<Spoiler title="Hint 1">
+
+This problem can be split into two problems: determining the cow order given the first $X$ observations, and actually finding $X$.
+
+</Spoiler>
+
+<Spoiler title="Hint 2">
+
+If the first $X$ observations don't contradict each other, what does that say about any prefix of those observations? Similarly, if there's a contradiction in the first $X$, what would happen if we added any additional observation?
+
+</Spoiler>
+
+<Spoiler title="Hint 3">
+
+Try representing the cows' social hierarchy as a directed graph.
+
+</Spoiler>
+
+<Spoiler title="Solution">
+
+## Video Solution
+
+Note: The video solution might not be the same as other solutions. Code in C++.
+
+<YouTube id="OaL9vEkShyk" />
+
+## Solution
+
+Denote each cow as a node in a graph. Let's draw a directed edge from each node $u$ to another node $v$ if $u$ must come before $v$. Note that this can be done when we process the $M$ observations. Now, notice that an ordering is valid only if the resulting graph is a DAG. Additionally, we can use a priority queue (instead of a queue) with topological sort to generate the lexicographically minimum topological ordering. It remains to find how many observations we can follow starting from the first observation, which we can binary search for.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}((E + N \log N) \log M)$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+// CodeSnip{CPP Short Template}
+// BeginCodeSnip{Topological Sort}
+/*
+ * Description: sorts vertices such that if there exists an edge x->y, then x
+ * goes before y Source: KACTL Verification:
+ * https://open.kattis.com/problems/quantumsuperposition
+ */
+
+struct TopoSort {
+	int N;
+	vi in, res;
+	vector<vi> adj;
+	void init(int _N) {
+		N = _N;
+		in.resize(N);
+		adj.resize(N);
+	}
+	void ae(int x, int y) { adj[x].pb(y), in[y]++; }
+	bool sort() {
+		priority_queue<int, vi, greater<int>> todo;
+		for (int i = 1; i < N; i++)
+			if (!in[i]) todo.push(i);
+		while (sz(todo)) {
+			int x = todo.top();
+			todo.pop();
+			res.pb(x);
+			for (const int &i : adj[x])
+				if (!(--in[i])) todo.push(i);
+		}
+		return sz(res) == N - 1;
+	}
+};
+// EndCodeSnip{Topological Sort}
+
+vi ret;
+vector<vi> order;
+int n, m;
+
+bool check(int x) {
+	TopoSort T;
+	T.init(n + 1);
+	for (int i = 0; i < x; i++) {
+		for (int j = 0; j < sz(order[i]) - 1; j++) {
+			T.ae(order[i][j], order[i][j + 1]);
+		}
+	}
+	bool ans = T.sort();
+	if (ans) ret = T.res;
+	return ans;
+}
+
+int main() {
+	setIO("milkorder");
+	cin >> n >> m;
+	order.resize(m);
+
+	for (int i = 0; i < m; i++) {
+		int k;
+		cin >> k;
+		vi v(k);
+		for (int j = 0; j < k; j++) cin >> v[j];
+		order[i] = v;
+	}
+
+	int lo = 0, hi = m;
+	while (lo < hi) {  // find the last successful check()
+		int mid = lo + (hi - lo + 1) / 2;
+		check(mid) ? lo = mid : hi = mid - 1;
+	}
+
+	for (int i = 0; i < n; i++) { cout << ret[i] << (i != n - 1 ? " " : ""); }
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class MilkingOrder {
+	static int N, M;
+	static List<Edge>[] adj;
+	static List<Integer> res;
+	public static void main(String[] args) throws Exception {
+		Kattio io = new Kattio("milkorder");
+
+		N = io.nextInt();
+		M = io.nextInt();
+
+		adj = new List[M];
+
+		for (int i = 0; i < M; i++) { adj[i] = new ArrayList<>(); }
+
+		for (int i = 0; i < M - 1; i++) {
+			int n = io.nextInt();
+
+			int prev = -1;
+			for (int j = 0; j < n; j++) {
+				int to = io.nextInt() - 1;
+				if (prev != -1) { adj[i].add(new Edge(prev, to)); }
+
+				prev = to;
+			}
+		}
+
+		int l = 0;
+		int r = M;
+
+		while (l < r) {
+			int mid = (l + r + 1) / 2;
+
+			if (check(mid)) {
+				l = mid;
+			} else {
+				r = mid - 1;
+			}
+		}
+
+		check(l);
+
+		for (int i = 0; i < res.size(); i++) {
+			io.print(res.get(i));
+			if (i < res.size() - 1) { io.print(" "); }
+		}
+
+		io.close();
+	}
+
+	public static boolean check(int x) {
+		int[] inDeg = new int[N];
+		List<Integer>[] edge = new List[N];
+		res = new ArrayList<>();
+
+		for (int i = 0; i < N; i++) { edge[i] = new ArrayList<>(); }
+
+		for (int i = 0; i < x; i++) {
+			for (int j = 0; j < adj[i].size(); j++) {
+				inDeg[adj[i].get(j).t]++;
+				edge[adj[i].get(j).f].add(adj[i].get(j).t);
+			}
+		}
+
+		PriorityQueue<Integer> q = new PriorityQueue<>();
+
+		for (int i = 0; i < N; i++) {
+			if (inDeg[i] == 0) { q.add(i); }
+		}
+
+		while (!q.isEmpty()) {
+			int curr = q.poll();
+
+			res.add(curr + 1);
+
+			for (int next : edge[curr]) {
+				inDeg[next]--;
+				if (inDeg[next] == 0) { q.add(next); }
+			}
+		}
+
+		return res.size() == N;
+	}
+
+	private static class Edge {
+		int f, t;
+		public Edge(int a, int b) {
+			f = a;
+			t = b;
+		}
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+
+</LanguageSection>
+
+</Spoiler>

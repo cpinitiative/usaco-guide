@@ -1,0 +1,110 @@
+---
+id: usaco-384
+source: USACO Gold 2014 January
+title: Ski Course Rating
+author: Chongtian Ma
+---
+
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_skilevel.html)
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N^2 \log N^2)$
+
+<LanguageSection>
+<CPPSection>
+
+Interestingly, the following code passes all test cases but won't pass if $T = 1$; you'd have to make a separate edge case for that.
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+
+struct Edge {
+	int u, v, w;
+};
+
+struct DSU {
+	vector<int> p, sz, unprocessed_starts;
+	DSU(int n) : p(n), sz(n, 1), unprocessed_starts(n) {
+		iota(p.begin(), p.end(), 0);
+	}
+
+	int get(int x) {
+		if (p[x] != x) { p[x] = get(p[x]); }
+		return p[x];
+	}
+
+	void unite(Edge e) {
+		int a = get(e.u);
+		int b = get(e.v);
+		if (sz[a] < sz[b]) { swap(a, b); }
+		if (a != b) {
+			p[b] = a;
+			sz[a] += sz[b];
+			unprocessed_starts[a] += unprocessed_starts[b];
+		}
+	}
+};
+
+int main() {
+	ifstream read("skilevel.in");
+	int n, m, t;
+	read >> n >> m >> t;
+	vector<vector<int>> grid(n, vector<int>(m));
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < m; j++) { read >> grid[i][j]; }
+	}
+	vector<vector<int>> is_start(n, vector<int>(m));
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < m; j++) { read >> is_start[i][j]; }
+	}
+
+	auto to_int = [&](int r, int c) -> int { return r * m + c; };
+
+	vector<Edge> edges;
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < m; j++) {
+			// add an edge between adjacent spots
+			if (i < n - 1) {
+				edges.push_back({to_int(i, j), to_int(i + 1, j),
+				                 abs(grid[i][j] - grid[i + 1][j])});
+			}
+			if (j < m - 1) {
+				edges.push_back({to_int(i, j), to_int(i, j + 1),
+				                 abs(grid[i][j] - grid[i][j + 1])});
+			}
+		}
+	}
+
+	// sort edges by weight
+	sort(edges.begin(), edges.end(), [&](Edge a, Edge b) { return a.w < b.w; });
+
+	DSU dsu(n * m);
+
+	// initialize in dsu if this is a starting point
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < m; j++) {
+			if (is_start[i][j]) { dsu.unprocessed_starts[to_int(i, j)] = 1; }
+		}
+	}
+
+	ll ans = 0;
+	for (Edge e : edges) {
+		dsu.unite(e);
+		int par = dsu.get(e.u);
+		if (dsu.sz[par] >= t) {
+			// add number of start nodes we havent processed * current weight
+			ans += (ll)e.w * dsu.unprocessed_starts[par];
+			// reset unprocessed start nodes to 0
+			dsu.unprocessed_starts[par] = 0;
+		}
+	}
+
+	ofstream("skilevel.out") << ans << endl;
+}
+```
+
+</CPPSection>
+</LanguageSection>

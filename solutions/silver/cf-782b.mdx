@@ -1,0 +1,230 @@
+---
+id: cf-782B
+source: CF
+title: The Meeting Place Cannot Be Changed
+author: Aditya Gupta, George Pong
+---
+
+[Official Analysis](https://codeforces.com/blog/entry/50854)
+
+## Explanation
+
+We can binary search on the location where the friends will meet up. Since we want a precision of $10^{-6}$, we stop when the difference between high and low is less than $10^{-6}$.
+
+Whenever we are calculating the answer, we take note of which side the maximum answer came from. If the max answer comes from both sides, regardless of where we decide to go next, our answer will only increase, so we return that answer. Otherwise, if it only comes from one side of the point that we just calculated, we move our search towards that side, as moving it towards the other side will only increase our answer.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N\log M)$ where $M$ is the farthest north location
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using ll = long long;
+
+const double MAX_ERROR = 10e-7;
+
+vector<double> locations;
+vector<double> speeds;
+
+double min_ans = (double)INT_MAX;
+double curr_min_time;
+bool left_has_max = false;  // which side gives us max answer
+bool right_has_max = false;
+
+double get_time(double loc) {
+	double max_time = 0;
+	for (int i = 0; i < locations.size(); i++) {
+		if (locations[i] == loc) { continue; }
+		double i_time = abs(locations[i] - loc) / speeds[i];
+		// amount of time for ith friend to get to loc
+		if (i_time > max_time) {
+			left_has_max = false;  // reset to false, as we have a new maximum
+			right_has_max = false;
+			if (locations[i] > loc) {
+				right_has_max = true;
+			} else {
+				left_has_max = true;
+			}
+			max_time = i_time;
+		} else if (i_time == max_time) {
+			// The max can be from both sides, so we don't reset the 2 booleans
+			if (locations[i] > loc) {
+				right_has_max = true;
+			} else {
+				left_has_max = true;
+			}
+		}
+	}
+	return max_time;
+}
+
+int main() {
+	int n;
+	cin >> n;
+	locations.resize(n);
+	speeds.resize(n);
+
+	double low = 0;
+	double high = 0;  // high will be the location of the farthest north friend
+	double mid;
+
+	for (int i = 0; i < n; i++) {
+		cin >> locations[i];
+		high = max(high, locations[i]);
+	}
+	for (int i = 0; i < n; i++) { cin >> speeds[i]; }
+
+	while (high - low > MAX_ERROR) {
+		mid = (high + low) / 2;
+
+		// returns time it would take if friends were to meet at mid
+		curr_min_time = get_time(mid);
+
+		min_ans = min(min_ans, curr_min_time);
+		if (left_has_max && right_has_max) {
+			break;
+		} else if (left_has_max) {
+			high = mid;
+		} else {
+			low = mid;
+		}
+	}
+
+	cout << fixed << min_ans << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.util.*;
+
+public class MeetingPlace {
+	static final double MAX_ERROR = 10e-7;
+
+	static List<Double> locations = new ArrayList<>();
+	static List<Double> speeds = new ArrayList<>();
+
+	static double min_ans = Double.MAX_VALUE;
+	static double curr_min_time;
+	static boolean left_has_max = false;  // which side gives us max answer
+	static boolean right_has_max = false;
+
+	/**
+	 * Checks whether all friends can converge on one point in the specified
+	 * time interval.
+	 */
+	public static double get_time(double loc) {
+		double max_time = 0;
+		for (int i = 0; i < locations.size(); i++) {
+			if (locations.get(i) == loc) { continue; }
+			double i_time = Math.abs(locations.get(i) - loc) / speeds.get(i);
+			if (i_time > max_time) {
+				// reset to false, as we have a new maximum
+				left_has_max = false;
+				right_has_max = false;
+				if (locations.get(i) > loc) {
+					right_has_max = true;
+				} else {
+					left_has_max = true;
+				}
+				max_time = i_time;
+			} else if (i_time == max_time) {
+				// The max can be from both sides, so we don't reset the 2
+				// booleans
+				if (locations.get(i) > loc) {
+					right_has_max = true;
+				} else {
+					left_has_max = true;
+				}
+			}
+		}
+		return max_time;
+	}
+
+	public static void main(String[] args) {
+		Scanner scanner = new Scanner(System.in);
+		int n = scanner.nextInt();
+		double low = 0;
+		double high = 0;  // location of the farthest north friend
+
+		for (int i = 0; i < n; i++) {
+			double location = scanner.nextDouble();
+			locations.add(location);
+			high = Math.max(high, location);
+		}
+
+		for (int i = 0; i < n; i++) { speeds.add(scanner.nextDouble()); }
+
+		// Binary search is used to find the minimum time.
+		while (high - low > MAX_ERROR) {
+			double mid = (high + low) / 2;
+			curr_min_time = get_time(mid);
+			min_ans = Math.min(min_ans, curr_min_time);
+			if (left_has_max && right_has_max) {
+				break;
+			} else if (left_has_max) {
+				high = mid;
+			} else {
+				low = mid;
+			}
+		}
+
+		System.out.printf("%.10f%n", min_ans);
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+num_friends = int(input())
+friend_coords = list(map(int, input().split()))
+friend_veloci = list(map(int, input().split()))
+
+
+def all_friends_converge(seconds: int) -> bool:
+	"""
+	Checks whether all friends can converge on one point in the specified time interval.
+
+	:param seconds: Amount of seconds given for friends to converge.
+	:returns: If the friends can converge to a single point.
+	"""
+
+	overlap_lower, overlap_upper = 1, 10**9
+	for i in range(num_friends):
+		lower_bound = friend_coords[i] - (friend_veloci[i] * seconds)
+		upper_bound = friend_coords[i] + (friend_veloci[i] * seconds)
+		if lower_bound > overlap_upper or upper_bound < overlap_lower:
+			return False
+		if lower_bound > overlap_lower:
+			overlap_lower = lower_bound
+		if upper_bound < overlap_upper:
+			overlap_upper = upper_bound
+	return True
+
+
+left, right = 0, 10**9
+diff = 10**-6
+
+while left + diff < right:
+	mid = (left + right) / 2
+	last_comparison = all_friends_converge(mid)
+	if last_comparison:
+		right = mid
+	else:
+		left = mid + diff
+
+# We make our output slightly more accurate
+print(((left + mid) / 2) if last_comparison else ((mid + right) / 2))
+```
+
+</PySection>
+</LanguageSection>

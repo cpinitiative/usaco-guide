@@ -2,6 +2,7 @@ import { Dialog, Transition } from '@headlessui/react';
 import { CheckCircleIcon, XCircleIcon } from '@heroicons/react/outline';
 import { XIcon } from '@heroicons/react/solid';
 import React from 'react';
+import { useDarkMode } from '../context/DarkModeContext';
 import { useQuizOpen } from '../context/QuizGeneratorContext';
 import CodeBlock from './markdown/CodeBlock/CodeBlock';
 
@@ -18,6 +19,7 @@ interface Question {
 
 export default function QuizGeneratorModal(): JSX.Element {
   const { open, setOpen } = useQuizOpen();
+  const isDarkMode = useDarkMode();
   const [quiz, setQuiz] = React.useState<Question[]>([
     { question: '', answers: [] },
   ]);
@@ -307,7 +309,9 @@ export default function QuizGeneratorModal(): JSX.Element {
                   >
                     {copyText}
                   </button>
-                  <CodeBlock className="language-mdx">{getCode()}</CodeBlock>
+                  <CodeBlock className="language-mdx" isDarkMode={isDarkMode}>
+                    {getCode()}
+                  </CodeBlock>
                 </div>
               </div>
             </div>

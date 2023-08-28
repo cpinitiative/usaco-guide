@@ -1,0 +1,109 @@
+---
+id: usaco-791
+source: USACO Gold 2018 January
+title: Stamp Painting
+author: Aakash Gokhale
+---
+
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_spainting_gold_jan18.html)
+
+## Solution
+
+This is a similar solution to the official editorial but uses a segment tree for the transitions instead. I highly recommend reading the official editorial in addition to this solution.
+
+Notice the constraints required to make an ordering of stamps valid. There must be at least one segment of length k or longer. We can work backwards starting from this segment. Remove this segment of length $k$. Then we can remove the segments to the left and right of it because even if there aren't longer than $k$, we can assume that they overlapped with the previous segment we removed. We can remove the whole painting like this.
+
+Now we just need to count the number of orderings with a contiguous segment of length $k$ with all the same color. Instead of this, we can use complementary counting and count the opposite instead with dynamic programming. Let $dp[i]$ be the number of orderings for the first $i$ characters. When $i$ is less than $k$, $dp[i] = m^i$ since the first $i$ characters can be any of the $m$ colors. Notice that we can add a segment of length of up to $k - 1$ of a single color to the end of a valid ordering. This segment can have $m - 1$ colors (we can't choose the color that corresponds to the previous segment because the two segments combined can become longer than $k$). Thus, we can state the following recurrences.
+
+If $x < k$, then $dp[x]$ will be $m^x$. Otherwise if $x >= k$, then $dp[x]$ will be the sum of the last $k - 1$ $dp$ states multiplied by $m - 1$.
+More formally, we can define this relation as:
+$$dp[x] = m^x \texttt{   if   } x < k$$
+
+
+$$dp[x] = (m - 1) \cdot \sum_{i=x-k+1}^{x-1} dp[i] \texttt{   if   } x \ge k$$
+
+To compute the second type of transition, we can use a segment tree. We can subtract $dp[n]$ from $m^n$ (total number of paintings) to get the number of valid paintings.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N \log(N))$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using ll = long long;
+
+const ll MOD = 1e9 + 7;
+
+// BeginCodeSnip{Segment Tree}
+template <class T> struct SegTree {
+	const T ID = 0;
+	T cmb(T a, T b) { return (a + b) % MOD; }
+	int n;
+	vector<T> seg;
+	SegTree(int _n) {
+		for (n = 1; n < _n;) n *= 2;
+		seg.assign(2 * n, ID);
+	}
+	void pull(int p) { seg[p] = cmb(seg[2 * p], seg[2 * p + 1]); }
+	void upd(int p, T val) {
+		seg[p += n] = val;
+		for (p /= 2; p; p /= 2) pull(p);
+	}
+	T query(int l, int r) {
+		T ra = ID, rb = ID;
+		for (l += n, r += n + 1; l < r; l /= 2, r /= 2) {
+			if (l & 1) ra = cmb(ra, seg[l++]);
+			if (r & 1) rb = cmb(seg[--r], rb);
+		}
+		return cmb(ra, rb);
+	}
+};
+// EndCodeSnip
+
+/**
+ * Binary exponentiation for fast exponentiation.
+ * However, since n is small enough, you could also precalculate the powers of m
+ * instead.
+ */
+ll bi_pow(ll a, ll b) {
+	ll ans = 1;
+	while (b) {
+		if (b & 1) { ans = ans * a % MOD; }
+		a = a * a % MOD;
+		b /= 2;
+	}
+	return ans;
+}
+
+int main() {
+	freopen("spainting.in", "r", stdin);
+	freopen("spainting.out", "w", stdout);
+	ll n, m, k;
+	cin >> n >> m >> k;
+
+	// Initialize segment tree
+	SegTree<ll> dp(n + 1);
+
+	for (int i = 1; i <= n; i++) {
+		ll a;
+		if (i < k) {  // If i is less than k, dp[i] will be a power of m
+			a = bi_pow(m, i);
+		} else {  // Otherwise, apply the second dp formula
+			a = (m - 1) * dp.query(max(1, i - (int)k + 1), i - 1) % MOD;
+		}
+		dp.upd(i, a);
+	}
+	// Subtract dp[n] from the total number of segments
+	cout << (bi_pow(m, n) + MOD - dp.query(n, n)) % MOD << endl;
+}
+```
+
+</CPPSection>
+
+</LanguageSection>

@@ -1,0 +1,415 @@
+---
+id: usaco-917
+source: USACO Bronze February 2019
+title: Measuring Traffic
+author: Brad Ma, Kevin Sheng, Jay Fu
+---
+
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_traffic_bronze_feb19.html)
+
+## Implementation
+**Time Complexity** $\mathcal{O}(N)$
+
+<LanguageSection>
+<CPPSection>
+
+<Warning>
+Using `INT32_MAX` and `INT32_MIN` for the initial
+bounds will cause integer overflow because the max
+and min will not necessarily execute first.
+</Warning>
+
+```cpp
+#include <algorithm>
+#include <fstream>
+#include <iostream>
+#include <string>
+#include <vector>
+
+using std::cout;
+using std::endl;
+using std::vector;
+
+// An arbitrary number that's large compared to the ones in the problem.
+const int LARGE = 1e9;
+
+int main() {
+	std::ifstream read("traffic.in");
+	int num_miles;
+	read >> num_miles;
+
+	vector<std::string> segment_type(num_miles);
+	vector<int> start(num_miles);
+	vector<int> end(num_miles);
+	for (int m = 0; m < num_miles; m++) {
+		read >> segment_type[m] >> start[m] >> end[m];
+	}
+
+	// Set a large range that might as well be (-infinity, infinity)
+	int low = -LARGE;
+	int high = LARGE;
+	for (int m = num_miles - 1; m >= 0; m--) {
+		if (segment_type[m] == "none") {
+			// Set a new range based on sensor reading.
+			low = std::max(low, start[m]);
+			high = std::min(high, end[m]);
+		} else if (segment_type[m] == "off") {
+			// Update range of possible traffic flows
+			low += start[m];
+			high += end[m];
+		} else if (segment_type[m] == "on") {
+			low -= end[m];
+			high -= start[m];
+			// Set to zero if low becomes negative
+			low = std::max(0, low);
+		}
+	}
+
+	std::ofstream write("traffic.out");
+	write << low << ' ' << high << endl;
+
+	low = -LARGE;
+	high = LARGE;
+
+	// Process again, this time scanning the other way
+	for (int m = 0; m < num_miles; m++) {
+		if (segment_type[m] == "none") {
+			low = std::max(low, start[m]);
+			high = std::min(high, end[m]);
+		} else if (segment_type[m] == "on") {
+			low += start[m];
+			high += end[m];
+		} else if (segment_type[m] == "off") {
+			low -= end[m];
+			high -= start[m];
+			low = std::max(0, low);
+		}
+	}
+
+	write << low << ' ' << high << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+<Warning>
+Using `Integer.MIN_VALUE` and `INTEGER.MAX_VALUE` for the initial
+bounds will cause integer overflow because the max
+and min will not necessarily execute first.
+</Warning>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class MeasuringTraffic {
+	// An arbitrary number that's large compared to the ones in the problem.
+	static final int LARGE = (int)1e9;
+
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio("traffic");
+		int numMiles = io.nextInt();
+		String[] segmentType = new String[numMiles];
+		int[] start = new int[numMiles];
+		int[] end = new int[numMiles];
+
+		for (int m = 0; m < numMiles; m++) {
+			segmentType[m] = io.next();
+			start[m] = io.nextInt();
+			end[m] = io.nextInt();
+		}
+
+		// Set a large range that might as well be (-infinity, infinity)
+		int low = -LARGE;
+		int high = LARGE;
+
+		for (int m = numMiles - 1; m >= 0; m--) {
+			if (segmentType[m].equals("none")) {
+				// Set a new range based on sensor reading.
+				low = Math.max(low, start[m]);
+				high = Math.min(high, end[m]);
+			} else if (segmentType[m].equals("off")) {
+				// Update range of possible traffic flows
+				low += start[m];
+				high += end[m];
+			} else if (segmentType[m].equals("on")) {
+				low -= end[m];
+				high -= start[m];
+				// Set to zero if low becomes negative
+				low = Math.max(0, low);
+			}
+		}
+
+		io.println(low + " " + high);
+
+		low = -LARGE;
+		high = LARGE;
+
+		// Process again, this time scanning the other way
+		for (int m = 0; m < numMiles; m++) {
+			if (segmentType[m].equals("none")) {
+				low = Math.max(low, start[m]);
+				high = Math.min(high, end[m]);
+			} else if (segmentType[m].equals("on")) {
+				low += start[m];
+				high += end[m];
+			} else if (segmentType[m].equals("off")) {
+				low -= end[m];
+				high -= start[m];
+				low = Math.max(0, low);
+			}
+		}
+
+		io.println(low + " " + high);
+		io.close();
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+with open("traffic.in") as read:
+	num_miles = int(read.readline())
+
+	segment_type = []
+	start = []
+	end = []
+
+	for m in range(num_miles):
+		curr_type, s, e = read.readline().split()
+		segment_type.append(curr_type)
+		start.append(int(s))
+		end.append(int(e))
+
+low = -float("inf")
+high = float("inf")
+
+for m in range(num_miles - 1, -1, -1):
+	if segment_type[m] == "none":
+		# Set a new range based on sensor reading.
+		low = max(low, start[m])
+		high = min(high, end[m])
+	elif segment_type[m] == "off":
+		# Update range of possible traffic flows
+		low += start[m]
+		high += end[m]
+	elif segment_type[m] == "on":
+		low -= end[m]
+		high -= start[m]
+		# Set to zero if low becomes negative
+		low = max(0, low)
+
+write = open("traffic.out", "w")
+print(low, high, file=write)
+
+low = -float("inf")
+high = float("inf")
+
+# Process again, this time scanning the other way
+for m in range(num_miles):
+	if segment_type[m] == "none":
+		low = max(low, start[m])
+		high = min(high, end[m])
+	elif segment_type[m] == "on":
+		low += start[m]
+		high += end[m]
+	elif segment_type[m] == "off":
+		low -= end[m]
+		high -= start[m]
+		low = max(0, low)
+
+print(low, high, file=write)
+```
+
+</PySection>
+</LanguageSection>
+
+
+## Video Solution
+
+By Jay Fu
+<YouTube id="RZBnIYC3GTw" />
+
+<Spoiler title="Video Solution Code">
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+#include <fstream>
+using namespace std;
+
+int main() {
+	int N, A[100], B[100];
+	string T[100];
+	ifstream fin("traffic.in");
+	fin >> N;
+	for (int i = 0; i < N; i++) { fin >> T[i] >> A[i] >> B[i]; }
+
+	ofstream fout("traffic.out");
+
+	// Below is the initial range (a,b). We will narrow/modify this range as
+	// we scan through the highway components from mile N to mile 1.
+	// The resulting range will be the range of possible initial traffic flows.
+	int a = -999999999, b = 999999999;
+
+	// Note that we are scanning backwards from mile N to mile 1 here.
+	for (int i = N - 1; i >= 0; i--) {
+		// if there is no ramp, the possible range (a,b) is
+		// narrowed to the range given by the senor.
+		if (T[i] == "none") {
+			a = max(a, A[i]);
+			b = min(b, B[i]);
+		}
+
+		// if there is an off-ramp with range (a',b'),
+		// the new range of possible traffic flows is (a+a',b+b')
+		if (T[i] == "off") {
+			a += A[i];
+			b += B[i];
+		}
+
+		// if there is an on-ramp with range (a',b'),
+		// the new range of possible traffic flows is (a-b',b-a')
+		if (T[i] == "on") {
+			a -= B[i];
+			b -= A[i];
+			a = max(0, a);
+		}
+	}
+
+	// Output the range of possible initial traffic flows.
+	fout << a << " " << b << "\n";
+
+	// Below is the inital range (a,b). We will narrow/modify this range as
+	// we scan through the highway components from mile 1 to mile N.
+	// The resulting range will be the range of possible final traffic flows.
+	a = -999999999, b = 999999999;
+	for (int i = 0; i < N; i++) {
+		// if there is no ramp, the possible range (a,b) is
+		// narrowed to the range given by the sensor.
+		if (T[i] == "none") {
+			a = max(a, A[i]);
+			b = min(b, B[i]);
+		}
+
+		// if there is an on-ramp with range (a',b'),
+		// the new range of possible traffic flows is (a+a',b+b')
+		if (T[i] == "on") {
+			a += A[i];
+			b += B[i];
+		}
+
+		// if there is an off-ramp with range (a',b'),
+		// the new range of possible traffic flows is (a-b',b-a')
+		if (T[i] == "off") {
+			a -= B[i];
+			b -= A[i];
+			a = max(0, a);
+		}
+	}
+	fout << a << " " << b << "\n";
+
+	return 0;
+}
+```
+
+</CPPSection>
+<JavaSection>
+```java
+import java.io.*;
+import java.util.StringTokenizer;
+
+public class traffic {
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new FileReader("traffic.in"));
+		PrintWriter pw = new PrintWriter("traffic.out");
+		int N = Integer.parseInt(br.readLine());
+		int[] A = new int[100];
+		int[] B = new int[100];
+		String[] T = new String[100];
+		for (int i = 0; i < N; i++) {
+			StringTokenizer s = new StringTokenizer(br.readLine());
+			T[i] = s.nextToken();
+			A[i] = Integer.parseInt(s.nextToken());
+			B[i] = Integer.parseInt(s.nextToken());
+		}
+		PrintWriter out = new PrintWriter("traffic.out");
+
+		// Below is the initial range (a,b). We will narrow/modify this range as
+		// we scan through the highway components from mile N to mile 1.
+		// The resulting range will be the range of possible initial traffic
+		// flows.
+		int a = -999999999;
+		int b = 999999999;
+
+		// Note that we are scanning backwards from mile N to mile 1 here.
+		for (int i = N - 1; i >= 0; i--) {
+			// if there is no ramp, the possible range (a,b) is
+			// narrowed to the range given by the senor.
+			if (T[i].equals("none")) {
+				a = Math.max(a, A[i]);
+				b = Math.min(b, B[i]);
+			}
+
+			// if there is an off-ramp with range (a',b'),
+			// the new range of possible traffic flows is (a+a',b+b')
+			if (T[i].equals("off")) {
+				a += A[i];
+				b += B[i];
+			}
+
+			// if there is an on-ramp with range (a',b'),
+			// the new range of possible traffic flows is (a-b',b-a')
+			if (T[i].equals("on")) {
+				a -= B[i];
+				b -= A[i];
+				a = Math.max(0, a);
+			}
+		}
+		// Output the range of possible initial traffic flows.
+		out.println(a + " " + b);
+
+		// Below is the inital range (a,b). We will narrow/modify this range as
+		// we scan through the highway components from mile 1 to mile N.
+		// The resulting range will be the range of possible final traffic
+		// flows.
+		a = -999999999;
+		b = 999999999;
+		for (int i = 0; i < N; i++) {
+			// if there is no ramp, the possible range (a,b) is
+			// narrowed to the range given by the sensor.
+			if (T[i].equals("none")) {
+				a = Math.max(a, A[i]);
+				b = Math.min(b, B[i]);
+			}
+
+			// if there is an on-ramp with range (a',b'),
+			// the new range of possible traffic flows is (a+a',b+b')
+			if (T[i].equals("on")) {
+				a += A[i];
+				b += B[i];
+			}
+
+			// if there is an off-ramp with range (a',b'),
+			// the new range of possible traffic flows is (a-b',b-a')
+			if (T[i].equals("off")) {
+				a -= B[i];
+				b -= A[i];
+				a = Math.max(0, a);
+			}
+		}
+		out.println(a + " " + b);
+		out.close();
+	}
+}
+```
+
+</JavaSection>
+</LanguageSection>
+</Spoiler>

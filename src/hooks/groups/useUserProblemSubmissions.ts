@@ -16,9 +16,8 @@ export default function useUserProblemSubmissions(
   postId: string,
   problemId: string
 ) {
-  const [submissions, setSubmissions] = React.useState<FirebaseSubmission[]>(
-    null
-  );
+  const [submissions, setSubmissions] =
+    React.useState<FirebaseSubmission[]>(null);
   const activeGroup = useActiveGroup();
 
   useFirebaseApp(

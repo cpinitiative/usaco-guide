@@ -13,9 +13,8 @@ const ContactUsSlideoverContext = createContext<{
 export default ContactUsSlideoverContext;
 
 export const ContactUsSlideoverProvider = ({ children }) => {
-  const [isContactUsSlideoverOpen, setIsContactUsSlideoverOpen] = useState(
-    false
-  );
+  const [isContactUsSlideoverOpen, setIsContactUsSlideoverOpen] =
+    useState(false);
   return (
     <ContactUsSlideoverContext.Provider
       value={{

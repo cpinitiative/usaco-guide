@@ -1,0 +1,153 @@
+---
+id: baltic-09-candy
+source: Baltic OI 2009
+title: Candy Machine
+author: Panos Paskalis
+---
+
+[Official Analysis (C++)](http://www.csc.kth.se/contest/boi/candy-spoiler.pdf)
+
+## Explanation
+
+### Observation
+
+We can think of the output slots as positions on the number line.
+Consider a wagon that starts moving at time $0$. Then, that wagon can catch a
+candy $c_i$ $(s_i, t_i)$ if its position at time $0$ is within the range
+$[s_i - t_i, s_i + t_i]$. Let's define this range as the **range of acceptable
+wagon positions** for $c_i$ at time $0$. With every passing second, this range
+is reduced by $1$ unit to the left and to the right of $s_i$.
+Generally, the range of acceptable wagon positions for $c_i$ at time $t$
+(where $t \leq t_i$) is:
+$$
+[s_i - (t_i - t), s_i + (t_i - t)]
+$$
+At time $t_i$ this range has been shrunk to a single point, $s_i$.
+
+A wagon can catch a candy $c_j$ $(s_j, t_j)$ before $c_i$, if the range of
+acceptable wagon positions for $i$ at time $t_j$ includes $s_j$, (since the
+wagon will be at $s_j$ to catch $j$). However, at time $t_j$ the range for
+acceptable wagon positions of $c_i$ will have been reduced to
+$$
+[s_i - (t_i - t_j), s_i + (t_i - t_j)]
+$$
+
+But $s_j$ needs to be inside this range, therefore:
+$$
+s_i - (t_i - t_j) \leq s_j \text{ and } s_j \leq s_i + (t_i - t_j) \iff
+$$
+$$
+s_i - t_i \leq s_j - t_j \text{ and } s_j + t_j \leq s_i + t_i
+$$
+
+This is equivalent to saying that the range of acceptable wagon positions of
+$c_j$ is fully contained within the range of $c_i$.
+
+We have therefore concluded that two candies can be caught by the same wagon
+if (and only if) their ranges of acceptable wagon positions are nested.
+
+### Finding the minimum number of wagons
+
+We can think of each candy as its range of acceptable wagon positions at time
+0 $[s - t, s + t]$ (note that each candy corresponds to a unique range and vice
+versa). We can conclude that a wagon can catch a sequence of candies
+$c_1, c_2, ..., c_k$, if they form a sequence of nested ranges. It follows that
+the minimum number of wagons needed is the longest sequence of non-nested
+ranges.
+
+Two ranges $[l_1, r_1]$, $[l_2, r_2]$ that are not nested adhere to:
+$$l_1 < l_2 \implies r_1 < r_2$$.
+
+If we sort the candies by the left endpoint of their ranges such that
+$$
+l_1 \leq l_2 \leq ... \leq l_n
+$$
+then a sequence of non-nested ranges would correspond to an increasing
+sequence of right endpoints. Therefore, the minimum number of required wagons
+would correspond to the length of the longest increasing sequence of right
+endpoints.
+
+### Assigning the candies to wagons
+
+By following the binary search algorithm described in
+[the LIS module](/gold/lis), we can assign the candies with the same LIS length
+to the same wagon. The ranges that have the same LIS length cannot be nested.
+If they were, we could use the inside range to increase the LIS of the outside
+one by 1.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N \log N)$
+
+<Warning>
+Watch out for the case $l_i = l_j$, in which case we must sort by decreasing
+right endpoint to ensure they would not be counted as non-nested ranges.
+</Warning>
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+typedef pair<int, int> pi;
+
+int main() {
+	int n;
+	cin >> n;
+	vector<pi> candies(n);
+	for (int i = 0; i < n; i++) {
+		int s, t;
+		cin >> s >> t;
+		candies[i] = make_pair(s - t, s + t);
+	}
+
+	/*
+	 * Sort the segments by left endpoint
+	 * NOTE: It is important to sort segments of same left point by decreasing
+	 * right point so they count as nested
+	 */
+	sort(candies.begin(), candies.end(), [](const pi &a, const pi &b) -> bool {
+		return (a.first == b.first ? a.second > b.second : a.first < b.first);
+	});
+
+	vector<int> lis(n + 1, INT_MAX);
+	lis[0] = 0;
+	vector<vector<pi>> candies_caught(n + 1);
+	for (int i = 0; i < n; i++) {
+		int r_point = candies[i].second;
+
+		int l = 0;  // Condition: lis[l] < r_point
+		int r = n;  // Condition: lis[r] >= r_point
+		while (r > l + 1) {
+			int mid = (l + r) / 2;
+			if (lis[mid] < r_point) {
+				l = mid;
+			} else {
+				r = mid;
+			}
+		}
+		lis[l + 1] = r_point;
+		// Candies with the same lis length can be caught by the same wagon
+		candies_caught[l + 1].push_back(candies[i]);
+	}
+
+	int ans = 0;
+	while (ans < n && lis[ans + 1] != INT_MAX) { ans++; }
+
+	cout << ans << "\n";
+	for (int len = 1; len <= ans; len++) {
+		for (pi c : candies_caught[len]) {
+			int s = (long long)(c.first + c.second) / 2;
+			int t = (long long)(c.second - c.first) / 2;
+
+			cout << s << " " << t << " " << len << "\n";
+		}
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>

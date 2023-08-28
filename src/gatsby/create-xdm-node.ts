@@ -98,12 +98,24 @@ export async function createXdmNode({ id, node, content }, api) {
   //   node.absolutePath
   // )
 
+  const langSecOc = (content.match(/<LanguageSection/g) || []).length;
+  const cppOc = (content.match(/<CPPSection/g) || []).length;
+  const javaOc = (content.match(/<JavaSection/g) || []).length;
+  const pyOc = (content.match(/<PySection/g) || []).length;
+  if (langSecOc < Math.max(cppOc, javaOc, pyOc)) {
+    throw new Error(
+      `${node.absolutePath}: # lang sections = ${langSecOc} < max(${cppOc},${javaOc},${pyOc})`
+    );
+  }
   const { data: frontmatter } = graymatter(content);
   xdmNode = {
     ...xdmNode,
     body: compiledResult,
     frontmatter,
     isIncomplete: content.indexOf('<IncompleteSection') !== -1,
+    cppOc,
+    javaOc,
+    pyOc,
     toc: tableOfContents,
     mdast: mdast.data,
   };

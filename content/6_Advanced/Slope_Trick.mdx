@@ -64,29 +64,27 @@ Let $dp[i][j]$ denote the maximum amount of money you can have on day $i$ if you
 have exactly $j$ shares of stock on that day. The final answer will be
 $dp[N][0]$. This solution runs in $\mathcal{O}(N^2)$ time.
 
-<Spoiler title="Slow Code">
-
 ```cpp
-
 vector<vl> dp = {{0}};
 int N;
 
 int main() {
 	re(N);
-	F0R(i,N) {
-		int x; re(x);
-		dp.pb(vl(i+2,-INF));
-		F0R(j,i+1) {
-			ckmax(dp.bk[j+1],dp[sz(dp)-2][j]-x);
-			ckmax(dp.bk[j],dp[sz(dp)-2][j]);
-			if (j) ckmax(dp.bk[j-1],dp[sz(dp)-2][j]+x);
+	F0R(i, N) {
+		int x;
+		re(x);
+		dp.pb(vl(i + 2, -INF));
+		F0R(j, i + 1) {
+			ckmax(dp.bk[j + 1], dp[sz(dp) - 2][j] - x);
+			ckmax(dp.bk[j], dp[sz(dp) - 2][j]);
+			if (j) ckmax(dp.bk[j - 1], dp[sz(dp) - 2][j] + x);
 		}
 	}
 	int cnt = 0;
-	trav(t,dp) {
-		pr("dp[",cnt++,"] = ");
+	trav(t, dp) {
+		pr("dp[", cnt++, "] = ");
 		pr('{');
-		F0R(i,sz(t)) {
+		F0R(i, sz(t)) {
 			if (i) cout << ", ";
 			cout << setw(3) << t[i];
 		}
@@ -94,8 +92,6 @@ int main() {
 	}
 }
 ```
-
-</Spoiler>
 
 If we run this on the first sample case, then we get the following table:
 
@@ -130,8 +126,6 @@ a function of $j$ is **concave down**.
 
 ### Full Solution
 
-<Spoiler title="Explanation">
-
 We'll process the shares in order. Suppose that we are currently considering the
 $i$-th day, where shares are worth $p_i$. We can replace (buy or sell a share)
 in the statement with (buy, then sell somewhere between 0 and 2 shares).
@@ -153,7 +147,9 @@ in the statement with (buy, then sell somewhere between 0 and 2 shares).
   difference in the list because we can't end up with a negative amount of
   shares.
 
-**Example:** consider the transition from `dp[4]` to `dp[5]`. Note that $p_5=9$.
+<Spoiler title="Example">
+
+Let's consider the transition from `dp[4]` to `dp[5]`. Note that $p_5=9$.
 
 Start with:
 
@@ -226,8 +222,6 @@ line represents not being able to sell any shares at all.
 
 </Spoiler>
 
-<Spoiler title="My Code">
-
 The implementation is quite simple; maintain a priority queue representing
 $dif[i]$ that allows you to pop the minimum element. After adding $i$ elements,
 $ans$ stores the current value of $dp[i][i]$. At the end, you add all the
@@ -238,12 +232,17 @@ differences in $dif[N]$ to go from $dp[N][N]$ to $dp[N][0]$.
 using namespace std;
 
 int main() {
-	int N; cin >> N;
-	priority_queue<int,vector<int>,greater<int>> pq;
+	int N;
+	cin >> N;
+	priority_queue<int, vector<int>, greater<int>> pq;
 	long long ans = 0;
 	for (int i = 0; i < N; ++i) {
-		int p; cin >> p; ans -= p;
-		pq.push(p); pq.push(p); pq.pop();
+		int p;
+		cin >> p;
+		ans -= p;
+		pq.push(p);
+		pq.push(p);
+		pq.pop();
 	}
 	for (int i = 0; i < N; ++i) {
 		ans += pq.top();
@@ -252,8 +251,6 @@ int main() {
 	cout << ans << "\n";
 }
 ```
-
-</Spoiler>
 
 ### Extension
 
@@ -305,8 +302,6 @@ $\mathcal{O}(N\cdot d_N)$ time.
 
 ### Full Solution
 
-<Spoiler title="Explanation">
-
 Similar to before, this DP is concave up for a fixed $i$! Given a piecewise
 linear function $f_i(x)$ that takes as input $x$ and outputs $dp[i][x]$, we need
 to support the following two operations to transform this function into
@@ -326,10 +321,6 @@ linear function changes by one.
 
 This solution runs in $\mathcal{O}(N\log N)$ time.
 
-</Spoiler>
-
-<Spoiler title="My Code">
-
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
@@ -337,32 +328,33 @@ using namespace std;
 typedef long long ll;
 
 int N;
-ll fst = 0; // value of DP function at 0
-priority_queue<ll> points; // points where DP function changes slope
+ll fst = 0;                 // value of DP function at 0
+priority_queue<ll> points;  // points where DP function changes slope
 
 int main() {
 	cin >> N;
-	vector<ll> dif(N+1);
+	vector<ll> dif(N + 1);
 	for (int i = 1; i <= N; ++i) {
-		int a,b; cin >> a >> b;
-		dif[i] = a-b+dif[i-1];
+		int a, b;
+		cin >> a >> b;
+		dif[i] = a - b + dif[i - 1];
 	}
-	assert(dif[N] >= 0); // assume solution exists
+	assert(dif[N] >= 0);  // assume solution exists
 	for (int i = 1; i < N; ++i) {
 		if (dif[i] < 0) fst -= dif[i], dif[i] = 0;
 		fst += dif[i];
-		points.push(dif[i]); points.push(dif[i]);
+		points.push(dif[i]);
+		points.push(dif[i]);
 		points.pop();
 	}
 	while (points.size()) {
-		ll a = points.top(); points.pop();
-		fst -= min(a,dif[N]);
+		ll a = points.top();
+		points.pop();
+		fst -= min(a, dif[N]);
 	}
 	cout << fst << "\n";
 }
 ```
-
-</Spoiler>
 
 ## USACO Landscaping
 
@@ -379,8 +371,6 @@ dirt while the $i$-th flowerbed has $j$ extra units of dirt (or lacks $-j$ units
 of dirt if $j$ is negative). The answer will be $dp[N][0]$.
 
 ### Full Solution
-
-<Spoiler title="Explanation">
 
 This DP is concave up for any fixed $i$. To get $dp[i+1]$ from $dp[i]$ we must
 be able to support the following operations.
@@ -406,49 +396,50 @@ $j\ge 0$. We'll call these the left and right deques, respectively.
 We can implement the last operation by updating all of the differences in the
 deques "lazily." This solution runs in $\mathcal{O}(\sum A_i+\sum B_i)$ time.
 
-</Spoiler>
-
-<Spoiler title="My Solution">
-
 ```cpp
 #include <bits/stdc++.h>
 
 using namespace std;
 
-int N,X,Y,Z;
-int difl, difr; // "lazy" update
+int N, X, Y, Z;
+int difl, difr;  // "lazy" update
 deque<int> L, R;
 long long ans;
 
-void rig() { // shift right A, so origin moves left
-	if (L.size() == 0) L.push_back(-Y-difl);
-	int t = L.back()+difl; L.pop_back();
-	t = max(t,-Y); ans -= t;
-	R.push_front(t-difr);
+void rig() {  // shift right A, so origin moves left
+	if (L.size() == 0) L.push_back(-Y - difl);
+	int t = L.back() + difl;
+	L.pop_back();
+	t = max(t, -Y);
+	ans -= t;
+	R.push_front(t - difr);
 }
 
-void lef() { // shift left B, so origin moves right
-	if (R.size() == 0) R.push_front(X-difr);
-	int t = R.front()+difr; R.pop_front();
-	t = min(t,X); ans += t;
-	L.push_back(t-difl);
+void lef() {  // shift left B, so origin moves right
+	if (R.size() == 0) R.push_front(X - difr);
+	int t = R.front() + difr;
+	R.pop_front();
+	t = min(t, X);
+	ans += t;
+	L.push_back(t - difl);
 }
 
 int main() {
-	freopen("landscape.in","r",stdin);
-	freopen("landscape.out","w",stdout);
+	freopen("landscape.in", "r", stdin);
+	freopen("landscape.out", "w", stdout);
 	cin >> N >> X >> Y >> Z;
 	for (int i = 0; i < N; ++i) {
-		int A,B; cin >> A >> B;
-		for (int j = 0; j < A; ++j) rig(); // or we can just do |A-B| shifts in one direction
+		int A, B;
+		cin >> A >> B;
+		for (int j = 0; j < A; ++j)
+			rig();  // or we can just do |A-B| shifts in one direction
 		for (int j = 0; j < B; ++j) lef();
-		difl -= Z, difr += Z; // adjust slopes differently for left and right of j=0
+		difl -= Z,
+		    difr += Z;  // adjust slopes differently for left and right of j=0
 	}
 	cout << ans << "\n";
 }
 ```
-
-</Spoiler>
 
 ### Extension
 
@@ -457,7 +448,7 @@ maintaining a map from $j$ to $dif[j+1]-dif[j]$ for all $j$ such that the latter
 quantity is nonzero. Then the operation "add $Z\cdot |j|$ to $DP[j]$ for all
 $j$" corresponds to a point update in the map (`advance()` in the code below).
 
-<Spoiler title="Code (from Alex Wei)">
+Code from Alex Wei.
 
 ```cpp
 #include <bits/stdc++.h>
@@ -473,44 +464,44 @@ ofstream fout("landscape.out");
 const int MAXN = 100005;
 ll N, X, Y, Z, A, B;
 ll ls, rs, lv, zp;
-map<ll,ll> M;
+map<ll, ll> M;
 
-void fix_left(ll s){
-	if(ls >= s) return;
+void fix_left(ll s) {
+	if (ls >= s) return;
 	auto it = M.begin();
-	while(ls + it -> second <= s){
-		ls += it -> second;
-		lv += ls * (next(it) -> first - it -> first);
+	while (ls + it->second <= s) {
+		ls += it->second;
+		lv += ls * (next(it)->first - it->first);
 		M.erase(it++);
 	}
-	it -> second -= s - ls;
+	it->second -= s - ls;
 	ls = s;
 }
 
-void fix_right(ll s){
-	if(rs <= s) return;
+void fix_right(ll s) {
+	if (rs <= s) return;
 	auto it = --M.end();
-	while(rs - it -> second >= s){
-		rs -= it -> second;
+	while (rs - it->second >= s) {
+		rs -= it->second;
 		M.erase(it--);
 	}
-	it -> second += s - rs;
+	it->second += s - rs;
 	rs = s;
 }
 
-void advance(){
-	ll lo = M.begin() -> first;
-	if(zp < lo) lv += ls * (zp - lo);
+void advance() {
+	ll lo = M.begin()->first;
+	if (zp < lo) lv += ls * (zp - lo);
 	else lv += Z * (zp - lo);
 	ls -= Z, rs += Z;
 	M[zp] += 2 * Z;
 }
 
-int main(){
+int main() {
 	fin >> N >> X >> Y >> Z;
 	ls = -INF, rs = INF;
 	M[0] = 2 * INF;
-	for(int i = 0; i < N; i++){
+	for (int i = 0; i < N; i++) {
 		fin >> A >> B;
 		zp += B - A;
 		fix_left(-Y);
@@ -518,15 +509,13 @@ int main(){
 		advance();
 	}
 	ll res = lv, s = ls;
-	for(auto it = M.begin(); it -> first < zp; it++){
-		s += it -> second;
-		res += s * (next(it) -> first - it -> first);
+	for (auto it = M.begin(); it->first < zp; it++) {
+		s += it->second;
+		res += s * (next(it)->first - it->first);
 	}
 	fout << res << '\n';
 }
 ```
-
-</Spoiler>
 
 ## Problems
 

@@ -1,0 +1,553 @@
+---
+id: usaco-569
+source: USACO Bronze 2015 December
+title: Contaminated Milk
+author: Jesse Choe, Kevin Sheng, Yifan Ma
+---
+
+[Official Analysis (Java)](http://www.usaco.org/current/data/sol_badmilk_bronze_dec15.html)
+
+## Video Solution
+
+By Yifan Ma
+
+<YouTube id="oqQ2TDLih2w" />
+
+<Spoiler title="Video Solution Code">
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+void setIO(const string &s) {
+	ios_base::sync_with_stdio(false);
+	cin.tie(nullptr);
+	freopen((s + ".in").c_str(), "r", stdin);
+	freopen((s + ".out").c_str(), "w", stdout);
+}
+
+int n, m, d, s;
+/*
+ * For record i of a person drinking milk, we store data as follows:
+ * personDrink[i]: the person who drank the milk
+ * milkDrink[i]: the type of milk that the person drank
+ * timeDrink[i]: the time the person drank the milk
+ */
+int personDrink[1001], milkDrink[1001], timeDrink[1001];
+/*
+ * For record i of a person being sick, we store data as follows:
+ * personSick[i]: the person who got sick
+ * timeSick[i]: the time that person got sick
+ */
+int personSick[51], timeSick[51];
+
+/*
+ * Given a person, a type of milk, and a time, this method returns
+ * true if and only if the given person drank the given type of milk
+ * before the given time.
+ */
+bool drankBefore(int person, int milkType, int time) {
+	// loop over all records of drinking
+	for (int i = 1; i <= d; ++i)
+		if (personDrink[i] == person && milkDrink[i] == milkType &&
+		    timeDrink[i] < time)
+			return 1;
+	// none of the records satisfied the conditions, return false
+	return 0;
+}
+
+/*
+ * Given a type of milk, this method returns true if and only if
+ * the given milk type could be bad. This is true if and only if
+ * for each person who got sick, this person consumed the given
+ * type of milk before that person got sick.
+ */
+bool milkBad(int milkType) {
+	// loop over all records of people being sick
+	for (int i = 1; i <= s; ++i)
+		if (!drankBefore(personSick[i], milkType, timeSick[i])) return 0;
+	// all the records checked out, so return true
+	return 1;
+}
+
+int countDrink(int milkType) {
+	// didDrink[i] will be true if and only if person i did drink the given type
+	// of milk
+	vector<bool> didDrink(51);
+	// loop over all records of drinking
+	for (int i = 1; i <= d; ++i)
+		if (milkDrink[i] == milkType) didDrink[personDrink[i]] = 1;
+	int cnt = 0;
+	// now that we've looped over all records, just count the number of people
+	// who drank that milk
+	for (int i = 1; i <= 50; ++i) cnt += didDrink[i];
+	return cnt;
+}
+
+signed main() {
+	setIO("badmilk");
+
+	cin >> n >> m >> d >> s;
+	for (int i = 1; i <= d; ++i)
+		cin >> personDrink[i] >> milkDrink[i] >> timeDrink[i];
+	for (int i = 1; i <= s; ++i) cin >> personSick[i] >> timeSick[i];
+
+	int ans = 0;
+	for (int i = 1; i <= m; ++i)
+		if (milkBad(i)) ans = max(ans, countDrink(i));
+
+	cout << ans << '\n';
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+public class badmilk {
+	/*
+	 * For record i of a person drinking milk, we store data as follows:
+	 * personDrink[i]: the person who drank the milk
+	 * milkDrink[i]: the type of milk that the person drank
+	 * timeDrink[i]: the time the person drank the milk
+	 */
+	static int[] personDrink;
+	static int[] milkDrink;
+	static int[] timeDrink;
+
+	/*
+	 * For record i of a person being sick, we store data as follows:
+	 * personSick[i]: the person who got sick
+	 * timeSick[i]: the time that person got sick
+	 */
+	static int[] personSick;
+	static int[] timeSick;
+
+	public static void main(String[] args) throws IOException {
+		// initialize file I/O
+		BufferedReader br = new BufferedReader(new FileReader("badmilk.in"));
+		PrintWriter pw =
+		    new PrintWriter(new BufferedWriter(new FileWriter("badmilk.out")));
+
+		// read in the first line, store n, m, d, and s
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int n = Integer.parseInt(st.nextToken());
+		int m = Integer.parseInt(st.nextToken());
+		int d = Integer.parseInt(st.nextToken());
+		int s = Integer.parseInt(st.nextToken());
+
+		// initialize the arrays about drinking milk
+		personDrink = new int[d];
+		milkDrink = new int[d];
+		timeDrink = new int[d];
+		for (int i = 0; i < d; i++) {
+			// read in record i of someone drinking milk
+			st = new StringTokenizer(br.readLine());
+			personDrink[i] = Integer.parseInt(st.nextToken());
+			milkDrink[i] = Integer.parseInt(st.nextToken());
+			timeDrink[i] = Integer.parseInt(st.nextToken());
+		}
+
+		// initialize the arrays about people getting sick
+		personSick = new int[s];
+		timeSick = new int[s];
+		for (int i = 0; i < s; i++) {
+			// read in record i of someone drinking
+			st = new StringTokenizer(br.readLine());
+			personSick[i] = Integer.parseInt(st.nextToken());
+			timeSick[i] = Integer.parseInt(st.nextToken());
+		}
+
+		int maxCanGetSick = 0;
+
+		for (int i = 1; i <= m; i++) {
+			// check if milk type i can be bad
+			if (milkTypeCanBeBad(i)) {
+				// the milk type can be bad, now count how many people drank
+				// that type of milk
+				int numDrank = numPeopleDrink(i);
+				if (numDrank > maxCanGetSick) {
+					// update the maximum number of people that could be sick
+					maxCanGetSick = numDrank;
+				}
+			}
+		}
+
+		// print the answer!
+		pw.println(maxCanGetSick);
+
+		// close output stream
+		pw.close();
+	}
+
+	/*
+	 * Given a type of milk, this method returns true if and only if
+	 * the given milk type could be bad. This is true if and only if
+	 * for each person who got sick, this person consumed the given
+	 * type of milk before that person got sick.
+	 */
+	private static boolean milkTypeCanBeBad(int milkType) {
+		// loop over all records of people being sick
+		for (int i = 0; i < personSick.length; i++) {
+			// check for record i of sickness if that person drank that milk
+			// before they got sick
+			if (!personDrankMilkBefore(personSick[i], milkType, timeSick[i])) {
+				// that person did not, this milk type cannot be bad then
+				return false;
+			}
+		}
+		// all the records checked out, so return true
+		return true;
+	}
+
+	/*
+	 * Given a person, a type of milk, and a time, this method returns
+	 * true if and only if the given person drank the given type of milk
+	 * before the given time.
+	 */
+	private static boolean personDrankMilkBefore(int person, int milkType,
+	                                             int time) {
+		// loop over all records of drinking
+		for (int i = 0; i < personDrink.length; i++) {
+			// check if record i of drinking if that person did drink that type
+			// of milk before the given time
+			if (personDrink[i] == person && milkDrink[i] == milkType &&
+			    timeDrink[i] < time) {
+				// all conditions are satisfised, return true
+				return true;
+			}
+		}
+		// none of the records satisfied the conditions, return false
+		return false;
+	}
+
+	private static int numPeopleDrink(int milkType) {
+		// didDrink[i] will be true if and only if person i did drink the given
+		// type of milk
+		boolean[] didDrink = new boolean[51];
+		// loop over all records of drinking
+		for (int i = 0; i < personDrink.length; i++) {
+			// check if this record corresponds to the given type of milk
+			if (milkDrink[i] == milkType) {
+				// it does, mark that this person did drink that milk
+				didDrink[personDrink[i]] = true;
+			}
+		}
+		// now that we've looped over all records, just count the number of
+		// people who drank that milk
+		int numPeopleDrink = 0;
+		for (int i = 1; i < didDrink.length; i++) {
+			if (didDrink[i]) { numPeopleDrink++; }
+		}
+		return numPeopleDrink;
+	}
+}
+```
+
+</JavaSection>
+
+</LanguageSection>
+</Spoiler>
+
+## Explanation
+
+We can do a simple brute force to find out which milk could possibly be bad, and
+then see how many people that milk could have infected in total.
+
+Since FJ needs one medicine for each person who could possibly get sick, we can
+just take the maximum possible number of infected people over all milk types
+that could have possibly gone bad.
+
+The main issue is checking if a milk could have been the one that went bad. To
+resolve this, let's treat both a person drinking milk and a person getting sick
+as a type of _event_. Then, we can have a list of events sorted by time. Note
+that sick events must be before drinking events if they occur at the same time
+because one can only get sick if they drank the milk at a _strictly_ earlier
+point in time. The sample case in this format would be as follows:
+
+<center>
+
+| Time | Person | Drink |
+| :--: | :----: | :---: |
+|  1   |   1    |   1   |
+|  1   |   1    |   4   |
+|  2   |   1    |   2   |
+|  3   |   1    |  NA   |
+|  3   |   3    |   1   |
+|  4   |   1    |   3   |
+|  5   |   2    |   1   |
+|  7   |   2    |   2   |
+|  8   |   2    |  NA   |
+
+</center>
+
+With this list of events, we can then go through marking the people that could
+have possibly gotten sick and checking each event where a person got sick if
+they could have possibly gotten sick.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(M(D+N))$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <algorithm>
+#include <fstream>
+#include <iostream>
+#include <vector>
+
+using std::cout;
+using std::endl;
+using std::vector;
+
+/*
+ * Let's treat someone drinking milk and someone getting sick
+ * as both "events".
+ * We can differentiate the two by setting the value of milk
+ * as -1 for someone getting sick.
+ */
+struct Event {
+	int person;
+	int milk = -1;
+	int time;
+};
+
+int main() {
+	std::ifstream read("badmilk.in");
+	int people_num;
+	int milk_num;
+	int drink_times;
+	int sick_times;
+	read >> people_num >> milk_num >> drink_times >> sick_times;
+
+	vector<Event> events(drink_times + sick_times);
+	for (int e = 0; e < events.size(); e++) {
+		Event &ev = events[e];
+		if (e < drink_times) {
+			read >> ev.person >> ev.milk >> ev.time;
+			ev.milk--;
+		} else {
+			read >> ev.person >> ev.time;
+		}
+		ev.person--;
+	}
+
+	/*
+	 * Sort the events based on when they occurred.
+	 * Note that since one can only get sick if they drank
+	 * the milk at a *strictly* earlier point in time, we have to put
+	 * the sick events before the drinking events if they occur at
+	 * the same point in time.
+	 */
+	std::sort(
+	    events.begin(), events.end(), [&](const Event &e1, const Event &e2) {
+		    return e1.time != e2.time ? e1.time < e2.time : e1.milk < e2.milk;
+	    });
+
+	int max_med = 0;
+	// Go through each milk and check if it could be the bad one.
+	for (int m = 0; m < milk_num; m++) {
+		vector<bool> can_be_sick(people_num);
+		bool possible = true;
+		// Simulate the events, marking if each person could possibly be sick.
+		for (const Event &e : events) {
+			if (e.milk == -1) {
+				if (!can_be_sick[e.person]) {
+					possible = false;
+					break;
+				}
+			} else if (e.milk == m) {
+				can_be_sick[e.person] = true;
+			}
+		}
+
+		/*
+		 * If this milk could possibly be the bad one,
+		 * we see how many people could possibly be sick in total.
+		 */
+		if (possible) {
+			int meds = 0;
+			for (bool p : can_be_sick) { meds += p; }
+			max_med = std::max(max_med, meds);
+		}
+	}
+
+	std::ofstream("badmilk.out") << max_med << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class BadMilk {
+	/*
+	 * Let's treat someone drinking milk and someone getting sick
+	 * as both "events".
+	 * We can differentiate the two by setting the value of milk
+	 * as -1 for someone getting sick.
+	 */
+	// BeginCodeSnip{Event Class}
+	static class Event {
+		public int person;
+		public int milk;
+		public int time;
+
+		public Event(int person, int milk, int time) {
+			this.person = person;
+			this.milk = milk;
+			this.time = time;
+		}
+
+		public Event(int person, int time) { this(person, -1, time); }
+	}
+	// EndCodeSnip
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader read = new BufferedReader(new FileReader("badmilk.in"));
+		StringTokenizer initial = new StringTokenizer(read.readLine());
+		int personNum = Integer.parseInt(initial.nextToken());
+		int milkNum = Integer.parseInt(initial.nextToken());
+		int drinkTimes = Integer.parseInt(initial.nextToken());
+		int sickTimes = Integer.parseInt(initial.nextToken());
+
+		Event[] events = new Event[drinkTimes + sickTimes];
+		for (int e = 0; e < events.length; e++) {
+			StringTokenizer ev = new StringTokenizer(read.readLine());
+			if (e < drinkTimes) {
+				events[e] = new Event(Integer.parseInt(ev.nextToken()) - 1,
+				                      Integer.parseInt(ev.nextToken()) - 1,
+				                      Integer.parseInt(ev.nextToken()));
+			} else {
+				events[e] = new Event(Integer.parseInt(ev.nextToken()) - 1,
+				                      Integer.parseInt(ev.nextToken()));
+			}
+		}
+
+		/*
+		 * Sort the events based on when they occurred.
+		 * Note that since one can only get sick if they drank
+		 * the milk at a *strictly* earlier point in time, we have to put
+		 * the sick events before the drinking events if they occur at
+		 * the same point in time.
+		 */
+		Arrays.sort(
+		    events,
+		    (e1,
+		     e2) -> e1.time != e2.time ? e1.time - e2.time : e1.milk - e2.milk);
+
+		int maxMed = 0;
+		// Go through each milk and check if it could be the bad one.
+		for (int m = 0; m < milkNum; m++) {
+			boolean possible = true;
+			boolean[] canBeSick = new boolean[personNum];
+			// Simulate the events, marking if each person could possibly be
+			// sick.
+			for (Event e : events) {
+				if (e.milk == -1) {
+					if (!canBeSick[e.person]) {
+						possible = false;
+						break;
+					}
+				} else if (e.milk == m) {
+					canBeSick[e.person] = true;
+				}
+			}
+
+			/*
+			 * If this milk could possibly be the bad one,
+			 * we see how many people could possibly be sick in total.
+			 */
+			if (possible) {
+				int meds = 0;
+				for (boolean p : canBeSick) { meds += p ? 1 : 0; }
+				maxMed = Math.max(maxMed, meds);
+			}
+		}
+
+		PrintWriter written = new PrintWriter("badmilk.out");
+		written.println(maxMed);
+		written.close();
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+from functools import cmp_to_key
+
+with open("badmilk.in") as read:
+	data = [int(i) for i in read.readline().split()]
+	people_num, milk_num, drink_times, sick_times = data
+
+	"""
+	Let's treat someone drinking milk and someone getting sick
+	as both "events".
+	An event will be represented by a 3-tuple formatted like so:
+	(person, milk, time)
+
+	We can differentiate the two by setting the value of milk
+	as -1 for someone getting sick.
+	"""
+	events = []
+	for _ in range(drink_times):
+		e = [int(i) for i in read.readline().split()]
+		e[0] -= 1
+		e[1] -= 1
+		events.append(tuple(e))
+
+	for _ in range(sick_times):
+		e = [int(i) for i in read.readline().split()]
+		e[0] -= 1
+		events.append((e[0], -1, e[1]))
+
+"""
+Sort the events based on when they occurred.
+Note that since one can only get sick if they drank
+the milk at a *strictly* earlier point in time, we have to put
+the sick events before the drinking events if they occur at
+the same point in time.
+"""
+cmp = lambda e1, e2: e1[2] - e2[2] if e1[2] != e2[2] else e1[1] - e2[1]
+events.sort(key=cmp_to_key(cmp))
+
+max_med = 0
+# Go through each milk and check if it could be the bad one.
+for m in range(milk_num):
+	possible = True
+	can_be_sick = [False for _ in range(people_num)]
+	# Simulate the events, marking if each person could possibly be sick.
+	for e in events:
+		if e[1] == -1:
+			if not can_be_sick[e[0]]:
+				possible = False
+				break
+		elif e[1] == m:
+			can_be_sick[e[0]] = True
+
+	"""
+	If this milk could possibly be the bad one,
+	we see how many people could possibly be sick in total.
+	"""
+	if possible:
+		max_med = max(max_med, sum(can_be_sick))
+
+print(max_med, file=open("badmilk.out", "w"))
+```
+
+</PySection>
+</LanguageSection>

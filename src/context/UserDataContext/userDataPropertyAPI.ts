@@ -1,3 +1,4 @@
+import { FirebaseApp } from 'firebase/app';
 import { DocumentReference, setDoc } from 'firebase/firestore';
 
 /**
@@ -24,6 +25,10 @@ export default abstract class UserDataPropertyAPI {
    * this function.
    */
   protected triggerRerender: () => void;
+  /**
+   * The firebase app
+   */
+  protected firebaseApp: FirebaseApp | null = null;
 
   public setFirebaseUserDoc = (doc: DocumentReference | null) => {
     this.firebaseUserDoc = doc;
@@ -31,6 +36,10 @@ export default abstract class UserDataPropertyAPI {
 
   public setTriggerRerenderFunction = (func: () => void) => {
     this.triggerRerender = func;
+  };
+
+  public setFirebaseApp = (app: FirebaseApp | null) => {
+    this.firebaseApp = app;
   };
 
   /**

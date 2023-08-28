@@ -1,0 +1,233 @@
+---
+id: cf-616D
+source: CF
+title: Longest k-Good Segment
+author: Sofia Yang, Mohammad Nour Massri, Neo Wang
+---
+
+[Official Editorial](https://codeforces.com/blog/entry/22712)
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N \log N)$
+
+We can binary search for the largest valid segment size. If this segment is
+valid, update the current value of $\texttt{ret}$ with our indices $i$ and $j$.
+Rather than using a `map`, we instead opt to use a presized
+[HashTable](/gold/faster-hashmap) for faster $\mathcal{O}(1)$
+query operations.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+// CodeSnip{CPP Short Template}
+
+// BeginCodeSnip{HashTable}
+
+/**
+ * Description: Hash map with the same API as unordered\_map, but \tilde 3x
+ * faster. Initial capacity must be a power of 2 if provided. Source: KACTL
+ * Usage: ht<int,int> h({},{},{},{},{1<<16});
+ */
+
+mt19937 rng((uint32_t)chrono::steady_clock::now().time_since_epoch().count());
+const long double PI = acos((long double)-1);
+
+#include <ext/pb_ds/assoc_container.hpp>
+using namespace __gnu_pbds;
+struct chash {  /// use most bits rather than just the lowest ones
+	const uint64_t C = ll(2e18 * PI) + 71;  // large odd number
+	const int RANDOM = rng();
+	ll operator()(ll x)
+	    const {  /// https://gcc.gnu.org/onlinedocs/gcc/Other-Builtins.html
+		return __builtin_bswap64((x ^ RANDOM) * C);
+	}
+};
+template <class K, class V> using um = unordered_map<K, V, chash>;
+template <class K, class V> using ht = gp_hash_table<K, V, chash>;
+template <class K, class V> V get(ht<K, V> &u, K x) {
+	auto it = u.find(x);
+	return it == end(u) ? 0 : it->s;
+}
+
+// EndCodeSnip{HashTable}
+
+const int mx = 5e5 + 1;
+
+int n, k;
+int v[mx];
+pi ret;
+
+int lowest = 0;
+
+bool check(int x) {
+	if (x > n) return 0;
+	ht<int, int> s({}, {}, {}, {}, {1 << 19});
+	int j = 0;
+	s[v[0]]++;
+
+	for (int i = 0; i < n; i++) {
+		// constructs sliding window of size x
+		while (j < n - 1 && j < i + x - 1) {
+			j++;
+			s[v[j]]++;
+		}
+
+		// checks for a new window
+		if (sz(s) <= k && j - i == x - 1) {
+			if (x > lowest) { ret = {i, j}; }
+			return 1;
+		}
+
+		s[v[i]]--;
+		if (s[v[i]] <= 0) s.erase(v[i]);
+	}
+
+	return 0;
+}
+
+int main() {
+	setIO();
+
+	cin >> n >> k;
+	for (int i = 0; i < n; i++) cin >> v[i];
+
+	int lo = 1, hi = n;
+	lo--;
+	assert(lo <= hi);  // assuming f is decreasing
+	while (lo < hi) {  // find first index such that f is true
+		int mid = lo + (hi - lo + 1) / 2;
+		check(mid) ? lo = mid : hi = mid - 1;
+	}
+
+	cout << ret.f + 1 << " " << ret.s + 1;
+}
+```
+</CPPSection>
+</LanguageSection>
+
+
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+const int N = 5e5 + 9, MAX_Ai = 1e6 + 9;
+int n, k;
+int a[N];
+int frequency[MAX_Ai];  // frequency of each number in the window
+int maxSegment, leftMaxSegment,
+    rightMaxSegment;  // max size of the segment and its ends
+
+int main() {
+	scanf("%d%d", &n,
+	      &k);  // large input data use scanf/printf instead of cin/cout
+	for (int i = 0; i < n; i++) scanf("%d", a + i);
+
+	int r = -1;         // the right end of the current window
+	int cntDifVal = 0;  // the number of different values in the window
+
+	// if frequency[val] == 0 then adding val to the window will result in
+	// adding a new different element which increases the number of different
+	// values by 1
+
+	for (int l = 0; l < n; l++) {  // l is the left end of the window
+
+		/*
+		we can expand the window [l,r] to [l,r+1] if these 2 conditions hold:
+		1. r < n-1 making sure we don't go beyond the array's boundaries
+		2. adding the value a[r+1] to the window does not increase the
+		number of different values in the window to be larger than k
+		*/
+
+		while (r < n - 1 && cntDifVal + (frequency[a[r + 1]] == 0) <= k) {
+			cntDifVal += frequency[a[r + 1]] ==
+			             0;         // update the number of different values
+			frequency[a[r + 1]]++;  // update the frequency array
+			r++;  // update the right end of the current window
+		}
+
+		// update the answer if we find a larger segment
+		if (r - l + 1 > maxSegment) {
+			maxSegment = r - l + 1;
+			leftMaxSegment = l;
+			rightMaxSegment = r;
+		}
+
+		// here we discard the first element a[l] making the current segment
+		// [l+1,r]
+		frequency[a[l]]--;  // update the frequency
+		cntDifVal -=
+		    frequency[a[l]] == 0;  // update the number of different values
+	}
+	// we add one because the answer should be 1-indexed
+	printf("%d %d\n", leftMaxSegment + 1, rightMaxSegment + 1);
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+public class KGood {
+	// CodeSnip{Kattio}
+
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio();
+		int N = io.nextInt();
+		int K = io.nextInt();
+		int difVal = 0;  // Number of different values in the window.
+		int left = 0;
+		int maxLen = 0;
+		int maxL = 0;
+		int maxR = 0;
+		int[] arr = new int[N];
+		for (int i = 0; i < N; i++) { arr[i] = io.nextInt(); }
+
+		int max = Arrays.stream(arr).max().getAsInt();
+		int[] freq =
+		    new int[max + 1];  // Frequency of each number in the window.
+
+		for (int i = 0; i < N; i++) {
+			int x = arr[i];
+			// Increment the frequency of the number.
+			if (freq[x] == 0) {
+				freq[x] = 1;
+				difVal++;
+			} else {
+				freq[x]++;
+			}
+
+			// If the window isn't valid, shift the left bound rightwards.
+			while (difVal > K) {
+				freq[arr[left]]--;
+				if (freq[arr[left]] == 0) { difVal--; }
+				left++;
+			}
+
+			// Update the window length.
+			int curLen = i - left + 1;
+			if (curLen > maxLen) {
+				maxLen = curLen;
+				maxL = left;
+				maxR = i;
+			}
+		}
+		io.printf("%d %d%n", maxL + 1, maxR + 1);
+		io.close();
+	}
+}
+```
+
+</JavaSection>
+
+</LanguageSection>

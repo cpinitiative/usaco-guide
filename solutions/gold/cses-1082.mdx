@@ -1,0 +1,167 @@
+---
+id: cses-1082
+source: CSES
+title: Sum of Divisors
+author: Benjamin Qi, Kevin Sheng
+---
+
+<Spoiler title="Hint 1">
+
+$n=10^{12}$ implies that the desired time complexity is $\mathcal{O}(\sqrt n)$.
+
+</Spoiler>
+
+<Spoiler title="Hint 2">
+
+Calculating the sum of the divisors for each number from $1$ to $n$ seems to be
+impossible- even if it was doable in constant time the solution would still TLE.
+
+What if instead of starting from the numbers, we started from the *divisors*
+instead?
+
+</Spoiler>
+
+<Spoiler title="Solution">
+
+As mentioned in Hint 2, let's start from the divisors instead of the numbers.
+
+If we consider any divisor $d$, notice that it will always occur
+$\left\lfloor \frac{n}{d}\right\rfloor$ times if we list out all the divisors
+of the numbers from $1$ to $n$.
+
+So now, to get our answer all we have to do is calculate the below expression:
+$$
+\sum_{d=1}^{n} \left\lfloor \frac{n}{d}\right\rfloor
+$$
+
+But calculating this with brute force yields an $\mathcal{O}(n \sqrt{n})$ solution,
+which is still too slow.
+
+However, if you list out the values of $\left\lfloor \frac{n}{d}\right\rfloor$ (henceforth referred to as $q$)
+for large enough values of $n$, notice that the values start to form long "chains" of the same
+value. For example, here's the list of values for $n=20$:
+$$
+[20, 10, 6, 5, 4, 3, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+$$
+
+Taking this pattern further, it's possible to show that there's at most
+$2\sqrt{n}$ distinct values of $q$
+(proof [here](https://math.stackexchange.com/questions/1069460)).
+
+Knowing this, we can quickly process all terms in the summation with the same value of $q$.
+We start with $d=1$ and jump to the next value that yields a different value of $q$
+instead of naively increasing it by $1$.
+
+## Video Solution
+
+Note: The video solution might not be the same as other solutions. Code in C++.
+<YouTube id="JqWiWJQOQyU " />
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+
+using std::cout;
+using std::endl;
+
+const int MOD = 1e9 + 7;
+const int TWO_MOD_INV = 500000004;
+
+/** @return The sum of all numbers in [start, end] mod MOD. */
+long long total_sum(long long start, long long end) {
+	return ((((end - start + 1) % MOD) * ((start + end) % MOD) % MOD) *
+	        TWO_MOD_INV % MOD);
+}
+
+int main() {
+	long long n;
+	std::cin >> n;
+
+	long long total = 0;
+	long long at = 1;
+	while (at <= n) {
+		long long add_amt = n / at;  // Our divisor to process
+		// The largest number that still has the same value of q
+		long long last_same = n / add_amt;
+
+		total = (total + add_amt * total_sum(at, last_same)) % MOD;
+		at = last_same + 1;
+	}
+
+	cout << total << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+
+public class DivisorSum {
+	static final int MOD = (int)1e9 + 7;
+	static final int TWO_MOD_INV = 500000004;
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader read =
+		    new BufferedReader(new InputStreamReader(System.in));
+		long n = Long.parseLong(read.readLine());
+
+		long total = 0;
+		long at = 1;
+		while (at <= n) {
+			long add_amt = n / at;  // Our divisor to process
+			// The largest number that still has the same value of q
+			long last_same = n / add_amt;
+
+			total = (total + add_amt * totalSum(at, last_same)) % MOD;
+			at = last_same + 1;
+		}
+
+		System.out.println(total);
+	}
+
+	/** @return The sum of all numbers in [start, end] mod MOD. */
+	static long totalSum(long start, long end) {
+		return ((((end - start + 1) % MOD) * ((start + end) % MOD) % MOD) *
+		        TWO_MOD_INV % MOD);
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+MOD = 10**9 + 7
+
+
+def total_sum(start: int, end: int) -> int:
+	"""Returns the sum of all numbers in [start, end]."""
+	return (end - start + 1) * (start + end) // 2
+
+
+n = int(input())
+
+total = 0
+at = 1
+while at <= n:
+	add_amt = n // at  # Our divisor to process
+	# The largest number that still has the same value of q
+	last_same = n // add_amt
+
+	total += add_amt * total_sum(at, last_same)
+	at = last_same + 1
+
+print(total % MOD)
+```
+
+</PySection>
+</LanguageSection>
+
+[Loan Repayment](http://www.usaco.org/index.php?page=viewproblem2&cpid=991) uses
+a similar idea.
+
+</Spoiler>

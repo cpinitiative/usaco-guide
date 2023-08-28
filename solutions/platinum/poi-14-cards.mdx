@@ -1,0 +1,191 @@
+---
+id: poi-14-cards
+source: POI
+title: Cards
+author: Dong Liu, Dustin Miao
+---
+
+**Time Complexity:** $\mathcal O(N\log N)$
+
+## Explanation
+
+We can use a segment tree to solve this problem.
+
+For each segment tree node with the range $[l, r]$, we will store if it's possible to arrange the cards $l\dots r$ so that we either
+
+- don't flip card $l$ and card $r$
+- don't flip card $l$ and flip card $r$
+- flip card $l$ and don't flip card $r$
+- flip card $l$ and card $r$
+
+We can represent these states in a 2 by 2 matrix `bool[2][2]` where the first dimension stores whether we flip card $l$ and the second dimension stores whether we flip card $r$.
+
+To calculate the states for a specific segment tree node, we loop through all possible states of our left child node $(a, b)$ and all possible states of our right child node $(c, d)$. If the transition from $b$ to $c$ works, then $(a, d)$ works since we're only considering endpoints.
+
+To perform a swap operation with index $i$ and $j$, we simply swap the cards at $i$ and $j$. We can just recalculate all nodes in the segment tree that are related to either $i$ or $j$. Since there are around $\mathcal O(\log N)$ ranges in the segment tree that contain $i$ or $j$, this whole swap operation takes $\mathcal O(\log N)$.
+
+Additionally, we also have to print if we can form a non-decreasing list using the cards. To do this, if any states of the root node in our segment tree (which covers $[1, n]$) is possible, then our answer is yes (`TAK`), otherwise no (`NIE`).
+
+## Implementation
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 1 << 18;
+
+int n, q, aa[N][2];
+bool tt[N << 1][2][2];
+
+void pull(int i, int l, int r) {
+	memset(tt[i], 0, sizeof(tt[i]));
+	int j = i << 1, k = i << 1 | 1;
+	int m = (l + r) >> 1;
+	for (int a = 0; a < 2; ++a)
+		for (int b = 0; b < 2; ++b)
+			for (int c = 0; c < 2; ++c)
+				for (int d = 0; d < 2; ++d)
+					if (tt[j][a][b] && tt[k][c][d] && aa[m][b] <= aa[m + 1][c])
+						tt[i][a][d] = 1;
+}
+
+void build(int k = 1, int l = 0, int r = n - 1) {
+	if (l == r) {
+		tt[k][0][0] = tt[k][1][1] = 1;
+		return;
+	}
+	int m = (l + r) >> 1;
+	build(k << 1, l, m);
+	build(k << 1 | 1, m + 1, r);
+	pull(k, l, r);
+}
+
+void update(int i, int k = 1, int l = 0, int r = n - 1) {
+	if (l == r) {
+		tt[k][0][0] = tt[k][1][1] = 1;
+		return;
+	}
+	int m = (l + r) >> 1;
+	if (i <= m) update(i, k << 1, l, m);
+	else update(i, k << 1 | 1, m + 1, r);
+	pull(k, l, r);
+}
+
+int main() {
+	scanf("%d", &n);
+	for (int i = 0; i < n; ++i) { scanf("%d%d", aa[i], aa[i] + 1); }
+	build();
+	scanf("%d", &q);
+	while (q--) {
+		int i, j;
+		scanf("%d%d", &i, &j);
+		swap(aa[--i], aa[--j]);
+		update(i), update(j);
+		bool ok = tt[1][0][0] || tt[1][0][1] || tt[1][1][0] || tt[1][1][1];
+		printf("%s\n", ok ? "TAK" : "NIE");
+	}
+}
+```
+</CPPSection>
+
+</LanguageSection>
+
+## Alternate Solution
+
+We can reduce the number of states stored in the segment tree to just two:
+- The minimum last value of the interval given that we take the lesser side of the first card (denote this as $FF$)
+- The minimum last value of the interval given that we take the greater side of the first card (denote this as $SS$)
+
+Note that it will always be optimal to take the lesser side of the last side given that we can take both. This, in turn, prepares the current interval with the next merging step, if applicable.
+
+Let's denote the array of cards as $A$, where $A.FF$ is the front side and $A.SS$ is the back side. Without loss of generality, assume that $A[i].FF \leq A[i].SS$ for all $i \in [1, n]$. We consider merging interval $u$ and $v$ to create interval $w$, where $w$ corresponds to the array elements $[l, r]$. Note that this implies $u$ corresponds to $[l, m]$ and $v$ corresponds to $[m + 1, r]$, where $m = \lfloor \frac {l + r} 2 \rfloor$
+- $$w.FF = \begin{cases} v.FF & u.FF \leq A[m + 1].FF \\ v.SS & A[tm + 1].FF < u.FF \leq A[tm + 1].SS \\ \infty & \text{otherwise}\end{cases}$$
+- $$w.SS = \begin{cases} v.FF & u.SS \leq A[m + 1].FF \\ v.SS & A[tm + 1].FF < u.SS \leq A[tm + 1].SS \\ \infty & \text{otherwise}\end{cases}$$
+
+Note that we choose $\infty$ to be the default value, because under our merge conditions, infinity conveniently overrides all other operators. This means that if any point of the array is discontinuous (or unable to be made into a non-decreasing sequence), node $1$ in the segment tree, which corresponds to the entire array, will also have $w.FF = w.SS = \infty$.
+
+**Time Complexity:** $\mathcal{O}(N\log{N})$
+
+## Implementation
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using ll = long long;
+using pll = pair<ll, ll>;
+
+#define MP make_pair
+#define FF first
+#define SS second
+
+const ll llinf = 999999999999999;
+
+ll N, Q;
+pll A[200005], T[800005];
+
+void merge(int t, int tl, int tr) {
+	T[t] = MP(llinf, llinf);
+	int tm = (tl + tr) >> 1;
+	// for first val
+	if (T[t << 1].FF <= A[tm + 1].SS) T[t].FF = T[t << 1 | 1].SS;
+	if (T[t << 1].FF <= A[tm + 1].FF) T[t].FF = T[t << 1 | 1].FF;
+	// for second val
+	if (T[t << 1].SS <= A[tm + 1].SS) T[t].SS = T[t << 1 | 1].SS;
+	if (T[t << 1].SS <= A[tm + 1].FF) T[t].SS = T[t << 1 | 1].FF;
+}
+
+void build(ll t = 1, ll tl = 1, ll tr = N) {
+	T[t] = MP(llinf, llinf);
+	if (tl == tr) {
+		T[t] = A[tl];
+		return;
+	}
+	ll tm = (tl + tr) >> 1;
+	build(t << 1, tl, tm);
+	build(t << 1 | 1, tm + 1, tr);
+	merge(t, tl, tr);
+}
+
+void update(int i, pll v, int t = 1, int tl = 1, int tr = N) {
+	if (tl == tr) {
+		T[t] = A[tl] = v;
+		return;
+	}
+	ll tm = (tl + tr) >> 1;
+	if (i <= tm) update(i, v, t << 1, tl, tm);
+	else update(i, v, t << 1 | 1, tm + 1, tr);
+	merge(t, tl, tr);
+}
+
+int main() {
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
+
+	cin >> N;
+	for (int i = 1; i <= N; i++) {
+		cin >> A[i].FF >> A[i].SS;
+		if (A[i].FF > A[i].SS) swap(A[i].FF, A[i].SS);
+	}
+	build();
+	cin >> Q;
+	while (Q--) {
+		int a, b;
+		cin >> a >> b;
+		pll t = A[a];
+		update(a, A[b]);
+		update(b, t);
+		if (T[1].FF == llinf) cout << "NIE\n";
+		else cout << "TAK\n";
+	}
+}
+```
+</CPPSection>
+
+</LanguageSection>

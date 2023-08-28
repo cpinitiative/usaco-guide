@@ -1,0 +1,275 @@
+---
+id: usaco-713
+source: USACO Bronze 2017 February
+title: Why Did the Cow Cross the Road III
+author: Óscar Garries, Ryan Chou, Varun Ragunath
+---
+
+[Official Analysis (Java)](http://www.usaco.org/current/data/sol_cowqueue_bronze_feb17.html)
+
+## Video Solution
+
+By Varun Ragunath
+
+<YouTube id="O7r-Tp9vFGQ" />
+
+<Spoiler title="Video Solution Code">
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	freopen("cowqueue.in", "r", stdin);
+	freopen("cowqueue.out", "w", stdout);
+	cin.sync_with_stdio(0);
+	cin.tie(0);
+
+	// get input
+	// number of cows, information for each cow
+
+	int n;
+	cin >> n;
+
+	vector<pair<int, int>> cows(n);
+
+	for (int i = 0; i < n; i++) { cin >> cows[i].first >> cows[i].second; }
+
+	// now we need to determine the optimal ordering
+	// obviously sorting is the "best" and only way to sort the cows
+
+	// to sort the cows we can either use a library implementation or bubble
+	// sort
+
+	// here we will implement bubble sort
+
+	bool swapped = true;
+
+	while (swapped) {
+		swapped = false;
+		for (int i = 0; i < n - 1; i++) {
+			if (cows[i] > cows[i + 1]) {
+				swap(cows[i], cows[i + 1]);
+				swapped = true;
+			}
+		}
+	}
+
+	// now that we have sorted the array, it is time to simulate the process
+
+	int cur_time = 0;  // stores the current time
+
+	for (int i = 0; i < n; i++) {
+		// if the time the current cow we are processing has already passed
+		// then we need to update their time to the current time
+		cows[i].first = max(cows[i].first, cur_time);
+		// now we need to calculate when they will be able to leave the
+		// questioning
+		cur_time = cows[i].first + cows[i].second;
+		// cur_time now holds the amount of time needed to process the first i
+		// cows
+	}
+
+	cout << cur_time << '\n';
+
+	return 0;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class cowqueue {
+	public static void main(String[] args) throws IOException {
+		cowqueue.Kattio io = new cowqueue.Kattio("cowqueue");
+
+		// getting input
+		// number of cows, information for each cow
+		int n = io.nextInt();
+		int[][] cows = new int[n][2];
+
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < 2; j++) { cows[i][j] = io.nextInt(); }
+		}
+
+		// we need to generate the optimal ordering of cows
+		// clearly the optimal ordering will be to just sort the cows by
+		// arriving time we can do bubble sort
+
+		boolean swapped = true;
+
+		while (swapped) {
+			swapped = false;
+			for (int i = 0; i < n - 1; i++) {
+				if (cows[i][0] > cows[i + 1][0]) {
+					// how do you write a swap in java????
+					int ext = cows[i][0];
+					cows[i][0] = cows[i + 1][0];
+					cows[i + 1][0] = ext;
+
+					ext = cows[i][1];
+					cows[i][1] = cows[i + 1][1];
+					cows[i + 1][1] = ext;
+
+					swapped = true;
+				}
+			}
+		}
+
+		// now it is time to simulate the process
+		int cur_time = 0;  // stores the current time
+
+		for (int i = 0; i < n; i++) {
+			// update the time cow[i] starts questioning
+			cows[i][0] = Math.max(cur_time, cows[i][0]);
+			// now that we have the time ith cow enters the queue,
+			// lets calculate when it leaves the queue
+			cur_time = (cows[i][0] + cows[i][1]);
+		}
+
+		io.println(cur_time);
+		io.close();
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+</LanguageSection>
+</Spoiler>
+
+Since the time the cows arrive and need for questioning can be up to $10^6$, we should traverse through the times as steps.
+
+## Implementation
+
+**Time Complexity**: $\mathcal{O}(N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <algorithm>
+#include <cstdio>
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+int main() {
+	freopen("cowqueue.in", "r", stdin);
+	int n;
+	cin >> n;
+
+	vector<pair<int, int>> cows(n);
+	for (int i = 0; i < n; i++) { cin >> cows[i].first >> cows[i].second; }
+
+	sort(cows.begin(), cows.end());
+
+	int curr_time = 0;
+	for (const pair<int, int> &c : cows) {
+		// this cow was already waiting, add duration to current time.
+		if (curr_time > c.first) {
+			curr_time += c.second;
+		} else {
+			// the last cow finished before this one arrived,
+			// so set the current time to when this cow finishes.
+			curr_time = c.first + c.second;
+		}
+	}
+
+	freopen("cowqueue.out", "w", stdout);
+	cout << curr_time << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+class CowQueue {
+	// BeginCodeSnip{Cow Class}
+	static class Cow {
+		public int arrival;
+		public int duration;
+
+		public Cow(int arrival, int duration) {
+			this.arrival = arrival;
+			this.duration = duration;
+		}
+	}
+	// EndCodeSnip
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader read = new BufferedReader(new FileReader("cowqueue.in"));
+		int n = Integer.parseInt(read.readLine());
+
+		Cow[] cows = new Cow[n];
+		for (int i = 0; i < n; i++) {
+			StringTokenizer cow = new StringTokenizer(read.readLine());
+			cows[i] = new Cow(Integer.parseInt(cow.nextToken()),
+			                  Integer.parseInt(cow.nextToken()));
+		}
+		read.close();
+
+		Arrays.sort(cows, Comparator.comparingInt(c -> c.arrival));
+
+		int currTime = 0;
+		for (Cow c : cows) {
+			// this cow was already waiting, add duration to the current time
+			if (currTime > c.arrival) {
+				currTime += c.duration;
+			} else {
+				// the last cow finished before this one arrived,
+				// so set the current time to when this cow finishes.
+				currTime = c.arrival + c.duration;
+			}
+		}
+
+		PrintWriter written = new PrintWriter("cowqueue.out");
+		written.println(currTime);
+		written.close();
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+import sys
+
+sys.stdin = open("cowqueue.in")
+
+n = int(input())
+
+cows = []
+for i in range(n):
+	cows.append(list(map(int, input().split())))
+
+cows.sort()
+
+curr_time = 0
+for c in cows:
+	# this cow was already waiting, add duration to current time.
+	if curr_time > c[0]:
+		curr_time += c[1]
+	else:
+		# the last cow finished before this one arrived,
+		# so set the current time to when this cow finishes.
+		curr_time = c[0] + c[1]
+
+print(curr_time, file=open("cowqueue.out", "w"))
+```
+
+</PySection>
+</LanguageSection>

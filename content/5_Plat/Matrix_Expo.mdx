@@ -3,7 +3,7 @@ id: matrix-expo
 redirects:
   - /plat/mat-exp
 title: 'Matrix Exponentiation'
-author: 'Benjamin Qi, Neo Wang'
+author: 'Benjamin Qi, Harshini Rayasam, Neo Wang'
 description: Repeatedly multiplying a square matrix by itself.
 prerequisites:
   - intro-dp
@@ -83,7 +83,11 @@ $$
 The base case is true, and the induction step is true. Therefore the formula
 holds for all $n \in \mathbb{N}$.
 
-### Implementation
+<LanguageSection>
+
+<CPPSection>
+
+## Implementation
 
 **Time complexity:** $\mathcal{O}(\log n)$
 
@@ -99,9 +103,9 @@ using Matrix = array<array<ll, 2>, 2>;
 
 Matrix mul(Matrix a, Matrix b) {
 	Matrix res = {{{0, 0}, {0, 0}}};
-	for(int i = 0; i < 2; i++) {
-		for(int j = 0; j < 2; j++) {
-			for(int k = 0; k < 2; k++) {
+	for (int i = 0; i < 2; i++) {
+		for (int j = 0; j < 2; j++) {
+			for (int k = 0; k < 2; k++) {
 				res[i][j] += a[i][k] * b[k][j];
 				res[i][j] %= MOD;
 			}
@@ -112,19 +116,60 @@ Matrix mul(Matrix a, Matrix b) {
 }
 
 int main() {
-	ll n; cin >> n;
+	ll n;
+	cin >> n;
 
-	Matrix base = {{{1,0}, {0,1}}};
-	Matrix m = {{{1,1}, {1,0}}};
+	Matrix base = {{{1, 0}, {0, 1}}};
+	Matrix m = {{{1, 1}, {1, 0}}};
 
-	for(; n > 0; n /= 2, m = mul(m, m)) {
-		if(n & 1) base = mul(base, m);
+	for (; n > 0; n /= 2, m = mul(m, m)) {
+		if (n & 1) base = mul(base, m);
 	}
 
 	cout << base[0][1];
 }
 ```
+</CPPSection>
 
+<PySection>
+```py
+from typing import List
+
+MOD = 10**9 + 7
+
+
+def mul(A: List[List[int]], B: List[List[int]], MOD: int) -> List[List[int]]:
+	C = [[0, 0], [0, 0]]
+	for i in range(2):
+		for j in range(2):
+			for k in range(2):
+				C[i][j] += ((A[i][k]) * (B[k][j])) % MOD
+	return C
+
+
+def power(matrix: List[List[int]], n: int) -> List[List[int]]:
+	if n == 0:
+		return [[1, 0], [0, 1]]
+	if n == 1:
+		return matrix
+	half = power(matrix, n // 2, MOD)
+	square = mul(half, half, MOD)
+	if n % 2 == 0:
+		return square
+	return mul(matrix, square, MOD)
+
+
+n = int(input())
+if n == 0:
+	print(0)
+elif n > 2:
+	o = power([[1, 1], [1, 0]], n - 1)
+	print(o[0][0] % MOD)
+else:
+	print(1)
+```
+</PySection>
+</LanguageSection>
 ## Problems
 
 <Problems problems="probs" />

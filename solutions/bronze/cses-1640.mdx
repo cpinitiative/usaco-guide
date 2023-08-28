@@ -1,0 +1,301 @@
+---
+id: cses-1640
+source: CSES
+title: Sum of Two Values
+author: Michael Cao, Benjamin Qi, Brad Ma, Ryan Chou, David Zhang
+---
+
+Given an array of $n$ elements, you are asked to find two values which sum to
+$x$.
+
+## Solution 1 - Dictionary/Map
+
+Let's start by iterating over the first value in $\mathcal{O}(n)$ time. Given
+one value, $a$, the other value must be $x - a$ unless $a > x$ (in which case
+$a$ cannot be a valid first value).
+
+So the question reduces to, given some value $a$, does some other value $x - a$
+exist?
+
+<LanguageSection>
+<PySection>
+
+### Using a Dictionary
+
+</PySection>
+<CPPSection>
+
+### Using a Map
+
+</CPPSection>
+
+<JavaSection>
+
+### Using a Map
+
+</JavaSection>
+</LanguageSection>
+
+One idea that comes to mind would be to used a boolean array to store the
+values. Unfortunately, since $a_i \leq 10^9$, this approach isn't feasible.
+
+<LanguageSection>
+<CPPSection>
+
+However, we can store the values in an (un)ordered map which maps each value to
+an index, and use the `.count` method to check whether a value exists, and
+return the corresponding index if it does.
+
+</CPPSection>
+<JavaSection>
+
+However, we can store the values in a map which maps each value to an index, and
+use the `.containsKey` method to check whether a value exists, and return the
+corresponding index if it does.
+
+</JavaSection>
+<PySection>
+
+However, we can store the values in a dictionary which maps each value to an
+index. Then, we can use the dictionary to check in $\mathcal{O}(1)$ time get the corresponding
+index for a value (if there is one).
+
+</PySection>
+</LanguageSection>
+
+To be careful not to count the same index twice, we'll add values to the map as
+we iterate through it, so at some index $i$ you only consider values with index
+$j < i$.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	int n, x;
+	cin >> n >> x;
+
+	vector<int> values(n);
+	for (int i = 0; i < n; i++) { cin >> values[i]; }
+
+	// use a map to avoid using a very large array
+	map<int, int> val_to_ind;
+	for (int i = 0; i < n; i++) {
+		// target minus a number is the other number
+		if (val_to_ind.count(x - values[i])) {
+			cout << i + 1 << " " << val_to_ind[x - values[i]] << endl;
+			return 0;
+		}
+		val_to_ind[values[i]] = i + 1;
+	}
+
+	cout << "IMPOSSIBLE" << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class TwoSum {
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
+
+		int n = io.nextInt();
+		int target = io.nextInt();
+
+		int[] values = new int[n];
+		for (int i = 0; i < n; i++) { values[i] = io.nextInt(); }
+
+		// use a map to avoid using a very large array
+		Map<Integer, Integer> valToInd = new HashMap<>();
+		for (int i = 0; i < n; i++) {
+			// target minus a number is the other number
+			if (valToInd.containsKey(target - values[i])) {
+				io.println((i + 1) + " " + valToInd.get(target - values[i]));
+				// remember to close here before exiting to avoid blank output
+				io.close();
+				System.exit(0);
+			}
+			valToInd.put(values[i], i + 1);
+		}
+
+		io.println("IMPOSSIBLE");
+		io.close();
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+import sys
+
+n, target = map(int, input().split())
+values = [int(x) for x in input().split()]
+
+# use a map to avoid using a very large array
+val_to_ind = {}
+for i, val in enumerate(values):
+	# target minus a number is the other number
+	if target - val in val_to_ind:
+		print(i + 1, val_to_ind[target - val])
+		sys.exit(0)
+	val_to_ind[val] = i + 1
+
+print("IMPOSSIBLE")
+```
+
+</PySection>
+</LanguageSection>
+
+## Solution 2 - Two Pointers
+
+By keeping two pointers, one at each end of the list, we can greedily move the left and right pointers if the sum of the two elements
+are less than or greater than the target sum, finding the two indices in $\mathcal{O}(N)$ time.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	int n, target;
+	cin >> n >> target;
+
+	vector<pair<int, int>> values;
+	// append the element and its index
+	for (int i = 0; i < n; i++) {
+		int x;
+		cin >> x;
+		values.push_back({x, i + 1});
+	}
+
+	sort(values.begin(), values.end());
+	int left = 0;
+	int right = n - 1;
+	while (left < right) {
+		// adjust left and right pointers
+		if (values[left].first + values[right].first > target) {
+			right--;
+		} else if (values[left].first + values[right].first < target) {
+			left++;
+		} else if (values[left].first + values[right].first == target) {
+			cout << values[left].second << " " << values[right].second << endl;
+			return 0;
+		}
+	}
+
+	// print IMPOSSIBLE if we haven't found a pair
+	cout << "IMPOSSIBLE" << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class TwoSum {
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
+		int n = io.nextInt();
+		int target = io.nextInt();
+
+		List<Pair> values = new ArrayList<>();
+		// append the element and its index
+		for (int i = 0; i < n; i++) {
+			int x = io.nextInt();
+			values.add(new Pair(x, i + 1));
+		}
+
+		Collections.sort(values);
+
+		int left = 0;
+		int right = n - 1;
+		while (left < right) {
+			// adjust the left and right pointers
+			if (values.get(left).val + values.get(right).val > target) {
+				right--;
+			} else if (values.get(left).val + values.get(right).val < target) {
+				left++;
+			} else if (values.get(left).val + values.get(right).val == target) {
+				int leftInd = values.get(left).index;
+				int rightInd = values.get(right).index;
+				io.println(leftInd + " " + rightInd);
+				io.close();
+				return;
+			}
+		}
+
+		// print IMPOSSIBLE if we haven't found a pair
+		io.println("IMPOSSIBLE");
+		io.close();
+	}
+
+	static class Pair implements Comparable<Pair> {
+		int val, index;
+
+		public Pair(int x, int y) {
+			this.val = x;
+			this.index = y;
+		}
+
+		@Override
+		public int compareTo(Pair o) {
+			return -Integer.compare(o.val, val);
+		}
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+n, target = list(map(int, input().split()))
+nums = list(map(int, input().split()))
+values = []
+
+# append the element and its index
+for i in range(n):
+	values.append([nums[i], i + 1])
+
+values.sort()
+
+ans = []
+left = 0
+right = n - 1
+while left < right:
+	lr_sum = values[left][0] + values[right][0]
+	# adjust the left and right pointers
+	if lr_sum == target:
+		ans.append(str(values[right][1]))
+		ans.append(str(values[left][1]))
+		break
+	elif lr_sum > target:
+		right -= 1
+	else:
+		left += 1
+
+# print IMPOSSIBLE if we haven't found a pair
+print(" ".join(ans) if ans else "IMPOSSIBLE")
+```
+
+</PySection>
+</LanguageSection>

@@ -14,7 +14,7 @@ import Card from '../components/Dashboard/DashboardCard';
 import DashboardProgress from '../components/Dashboard/DashboardProgress';
 import WelcomeBackBanner from '../components/Dashboard/WelcomeBackBanner';
 import Layout from '../components/layout';
-import divToProbs from '../components/markdown/ProblemsList/DivisionList/div_to_probs';
+import divToProbs from '../components/markdown/ProblemsList/DivisionList/div_to_probs.json';
 import SEO from '../components/seo';
 import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
 import { SignInContext } from '../context/SignInContext';
@@ -41,13 +41,18 @@ export default function DashboardPage(props: PageProps) {
       const problem = cur.node;
       // ignore problems that don't have an associated module (extraProblems.json)
       if (problem.module) {
-        acc[problem.uniqueId] = {
-          label: `${problem.source}: ${problem.name}`,
+        if (!(problem.uniqueId in acc)) {
+          acc[problem.uniqueId] = {
+            label: `${problem.source}: ${problem.name}`,
+            modules: [],
+          };
+        }
+        acc[problem.uniqueId].modules.push({
           url: `${moduleIDToURLMap[problem.module.frontmatter.id]}/#problem-${
             problem.uniqueId
           }`,
           moduleId: problem.module.frontmatter.id,
-        };
+        });
       }
       return acc;
     }, {});
@@ -60,7 +65,11 @@ export default function DashboardPage(props: PageProps) {
         if (!(id in res)) {
           res[id] = {
             label: `${division}: ${probInfo[2]}`,
-            url: `/general/usaco-monthlies/#problem-${id}`,
+            modules: [
+              {
+                url: `/general/usaco-monthlies/#problem-${id}`,
+              },
+            ],
           };
         }
       }
@@ -114,7 +123,8 @@ export default function DashboardPage(props: PageProps) {
           problemIDMap.hasOwnProperty(x)
       )
       .map(x => ({
-        ...problemIDMap[x],
+        label: problemIDMap[x].label,
+        url: problemIDMap[x].modules[0].url,
         status: userProgressOnProblems[x] as
           | 'Reviewing'
           | 'Solving'
@@ -131,10 +141,11 @@ export default function DashboardPage(props: PageProps) {
   const allModulesProgressInfo = getModulesProgressInfo(moduleProgressIDs);
 
   const problemStatisticsIDs = React.useMemo(() => {
-    return Object.keys(problemIDMap).filter(
-      problemID =>
-        moduleIDToSectionMap[problemIDMap[problemID].moduleId] ===
-        lastViewedSection
+    return Object.keys(problemIDMap).filter(problemID =>
+      problemIDMap[problemID].modules.some(
+        (module: { url: string; moduleId: string }) =>
+          moduleIDToSectionMap[module.moduleId] === lastViewedSection
+      )
     );
   }, [problemIDMap, lastViewedSection]);
   const allProblemsProgressInfo = getProblemsProgressInfo(problemStatisticsIDs);

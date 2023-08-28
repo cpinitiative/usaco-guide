@@ -1,0 +1,146 @@
+---
+id: cf-1158A
+source: CF
+title: The Party and Sweets
+author: Jesse Choe, Brad Ma
+---
+
+[Official Editorial](https://codeforces.com/blog/entry/66993)
+
+
+# Solution (Greedy)
+
+Let's consider the following example:
+
+```
+2 2
+0 1
+1 0
+```
+
+The answer to this example is $-1$ since boy $2$ ends up giving girl $2$ too
+many sweets, even if boy $2$ gives girl $2$ the minimum number of sweets he
+could possibly give, which is $1$. However, girl $2$ received a maximum of no
+sweets, making it impossible.
+
+If a single boy gives more sweets than a girl received, then any arrangement of
+sweets is impossible with the constraints. More formally, if
+
+$$
+\max(b_1, b_2, \dots, b_{n-1}, b_n) > \min(g_1, g_2, \dots, g_{m-1}, g_m),
+$$
+
+then the answer is $-1$.
+
+If the input provided has an arrangement of sweets that follow the given
+constraints, then we can greedily find the answer.
+
+Since our objective is to minimize the total number of sweets given out, let's first consider a lower bound on the answer. Since the fewest
+number of sweets boy $i$ gives each girl is $b_i$, he gives out a total of at least $b_i \cdot m$ sweets. Thus, the answer to this problem is lower bounded by $\sum\limits_{i=1}^{n} b_i \cdot m$.
+
+We are not done yet, however. The previous sum does not necessarily satisfy the condition
+that $g_i$ is the maximum number of sweets a single girl received. Each girl $j$ has some boy $i$ who gave her $g_j$ sweets instead of $b_i$ sweets. This raises our lower bound by $g_j-b_i$. We would like to choose $i$ such that $b_i$ is maximal. Since we know $\max(b) \leq \min(g)$, we would always choose the boy who gives the most sweets.
+
+However, this boy still must give $b_i$ sweets to some girl; thus if no $g_j$ is equal to $b_i$, then he needs to have given some girl $b_i$ sweets and the boy who gives the second most sweets can give this girl her maximal sweets.
+
+**Time Complexity:** $\mathcal{O}(N\log N + M\log M)$
+
+<LanguageSection>
+
+<CPPSection>
+
+### C++ Implementation
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+using ll = long long;
+
+int main() {
+
+	int n, m;
+	cin >> n >> m;
+	vector<int> b(n), g(m);
+	ll res = 0;
+
+	for (int i = 0; i < n; i++) {
+		cin >> b[i];
+		res += b[i];
+	}
+
+	for (int i = 0; i < m; i++) { cin >> g[i]; }
+
+	// Initial lower bound on answer
+	res *= m;
+
+	sort(b.begin(), b.end());
+	sort(g.begin(), g.end());
+
+	// If it's impossible to satisfy the constraints
+	if (b[n - 1] > g[0]) {
+		cout << -1;
+		return 0;
+	}
+
+	for (int i = 1; i < m; i++) { res += g[i] - b[n - 1]; }
+
+	if (g[0] != b[n - 1]) { res += g[0] - b[n - 2]; }
+
+	cout << res << endl;
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class ThePartyAndSweets {
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
+
+		int n = io.nextInt();
+		int m = io.nextInt();
+
+		int[] b = new int[n];
+		int[] g = new int[m];
+		long res = 0;
+
+		for (int x = 0; x < n; x++) {
+			b[x] = io.nextInt();
+			res += b[x];
+		}
+
+		for (int x = 0; x < m; x++) { g[x] = io.nextInt(); }
+
+		// Initial lower bound on answer
+		res *= m;
+
+		Arrays.sort(b);
+		Arrays.sort(g);
+
+		// If it's impossible to satisfy the constraints
+		if (b[n - 1] > g[0]) {
+			io.println(-1);
+			io.close();
+			System.exit(0);
+		}
+
+		for (int i = 1; i < m; i++) { res += (g[i] - b[n - 1]); }
+
+		if (g[0] != b[n - 1]) { res += (g[0] - b[n - 2]); }
+
+		io.println(res);
+		io.close();
+	}
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+
+</LanguageSection>

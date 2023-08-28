@@ -1,0 +1,464 @@
+---
+id: usaco-1061
+source: USACO Bronze 2020 December
+title: Stuck in a Rut
+author: Ryan Chou, Alex Yang, Raymond Luo, Melody Yu
+---
+
+[Official Analysis (C++ and Java)](http://www.usaco.org/current/data/sol_prob3_bronze_dec20.html)
+
+## Explanation
+
+Since $x, y \leq 10^9$, we can't simulate each time period. Instead, let's try to identify when pairs of cows are going to intersect.
+
+One important observation is that cows can't move backwards, so the only way for two cows to collide is if $n[x] > e[x] $ and $n[y] < e[y]$.
+
+In other words, a cow can only run into the rut of another cow when the two cows are positioned like so:
+
+![](usaco-1061/intersection_example.png)
+
+Now we can sort cows by their starting coordinates, which ensures that earlier collisions will execute first (i.e., simulating left to right), and then simulate those collisions.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N^2)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+struct Cow {
+	int x, y;
+	int ind;
+};
+
+int main() {
+	int n;
+	cin >> n;
+	vector<Cow> n_cows;
+	vector<Cow> e_cows;
+
+	for (int i = 0; i < n; i++) {
+		char dir;
+		int x, y;
+		cin >> dir >> x >> y;
+		if (dir == 'N') {
+			n_cows.push_back({x, y, i});
+		} else if (dir == 'E') {
+			e_cows.push_back({x, y, i});
+		}
+	}
+
+	sort(n_cows.begin(), n_cows.end(),
+	     [&](const Cow &c1, const Cow &c2) { return c1.x < c2.x; });
+	sort(e_cows.begin(), e_cows.end(),
+	     [&](const Cow &c1, const Cow &c2) { return c1.y < c2.y; });
+
+	vector<int> stop_pos(n, -1);
+	for (const Cow &ncow : n_cows) {
+		for (const Cow &ecow : e_cows) {
+			// Check that the two cows will intersect.
+			if (ncow.x > ecow.x && ncow.y < ecow.y) {
+				// Distance they travel before reaching the other cow's line.
+				int n_trav = ecow.y - ncow.y;
+				int e_trav = ncow.x - ecow.x;
+
+				// Check if the north cow blocks the east cow.
+				if (n_trav < e_trav && stop_pos[ecow.ind] == -1) {
+					// # Save the x-coordinate at which the east cow stops
+					stop_pos[ecow.ind] = ncow.x;
+				}
+
+				// Check if the east cow blocks the north cow.
+				if (n_trav > e_trav && stop_pos[ecow.ind] == -1) {
+					// Save the y-coordinate at which the north cow stops
+					stop_pos[ncow.ind] = ecow.y;
+					// At this point we can move on- this cow won't move
+					// anymore.
+					break;
+				}
+			}
+		}
+	}
+
+	vector<int> dist(n, -1);
+	for (const Cow &nc : n_cows) {
+		// A cow eats a finite amount of grass if & only if this value isn't -1.
+		if (stop_pos[nc.ind] != -1) {
+			// Eaten is (stopped position - original position)
+			dist[nc.ind] = stop_pos[nc.ind] - nc.y;
+		}
+	}
+
+	for (const Cow &ec : e_cows) {
+		if (stop_pos[ec.ind] != -1) { dist[ec.ind] = stop_pos[ec.ind] - ec.x; }
+	}
+
+	for (int d : dist) {
+		cout << (d == -1 ? "Infinity" : to_string(d)) << '\n';
+	}
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class StuckInARut {
+	public static void main(String[] args) throws IOException {
+		BufferedReader r = new BufferedReader(new InputStreamReader(System.in));
+
+		int n = Integer.parseInt(r.readLine());
+		List<int[]> nCows = new ArrayList<>();
+		List<int[]> eCows = new ArrayList<>();
+		for (int i = 0; i < n; i++) {
+			StringTokenizer cow = new StringTokenizer(r.readLine());
+			String dir = cow.nextToken();
+			int x = Integer.parseInt(cow.nextToken());
+			int y = Integer.parseInt(cow.nextToken());
+			if (dir.equals("N")) {
+				nCows.add(new int[] {x, y, i});
+			} else if (dir.equals("E")) {
+				eCows.add(new int[] {x, y, i});
+			}
+		}
+
+		// Sort north cows by x coordinates.
+		nCows.sort(Comparator.comparingInt(o -> o[0]));
+		// Sort east cows by y coordinates.
+		eCows.sort(Comparator.comparingInt(o -> o[1]));
+
+		/*
+		 * Stores the position at which cows stop.
+		 * (x-coordinate for east cows, y-coordinate for north cows)
+		 */
+		int[] stopPos = new int[n];
+		Arrays.fill(stopPos, -1);
+		// check every combination of cows
+		for (int[] ncow : nCows) {
+			for (int[] ecow : eCows) {
+				// Check that the two cows will intersect.
+				if (ncow[0] > ecow[0] && ncow[1] < ecow[1]) {
+					// Distance they travel before reaching the other cow's
+					// line.
+					int nTrav = ecow[1] - ncow[1];
+					int eTrav = ncow[0] - ecow[0];
+
+					// Check if the north cow blocks the east cow.
+					if (nTrav < eTrav && stopPos[ecow[2]] == -1) {
+						// # Save the x-coordinate at which the east cow stops
+						stopPos[ecow[2]] = ncow[0];
+					}
+
+					// Check if the east cow blocks the north cow.
+					if (nTrav > eTrav && stopPos[ecow[2]] == -1) {
+						// Save the y-coordinate at which the north cow stops
+						stopPos[ncow[2]] = ecow[1];
+						// At this point we can move on- this cow won't move
+						// anymore.
+						break;
+					}
+				}
+			}
+		}
+
+		// Tracks distance traveled.
+		int[] dist = new int[n];
+		Arrays.fill(dist, -1);
+		for (int[] nc : nCows) {
+			// A cow eats a finite amount of grass if & only if this value isn't
+			// -1.
+			if (stopPos[nc[2]] != -1) {
+				// Eaten is (stopped position - original position)
+				dist[nc[2]] = stopPos[nc[2]] - nc[1];
+			}
+		}
+
+		for (int[] ec : eCows) {
+			if (stopPos[ec[2]] != -1) { dist[ec[2]] = stopPos[ec[2]] - ec[0]; }
+		}
+
+		for (int d : dist) { System.out.println(d == -1 ? "Infinity" : d); }
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+n = int(input())
+n_cows = []
+e_cows = []
+
+for i in range(n):
+	dir_, d, y = input().split()
+	if dir_ == "N":
+		n_cows.append((int(d), int(y), i))
+	elif dir_ == "E":
+		e_cows.append((int(d), int(y), i))
+
+# Sort north cows by x coordinates.
+n_cows.sort()
+# Sort east cows by y coordinates.
+e_cows.sort(key=lambda cow: cow[1])
+
+"""
+Stores the position at which cows stop.
+(x-coordinate for east cows, y-coordinate for north cows)
+"""
+stop_pos = [None] * n
+for ncow in n_cows:
+	for ecow in e_cows:
+		# Check that the two cows will intersect.
+		if ncow[0] > ecow[0] and ncow[1] < ecow[1]:
+			# Distance they travel before reaching the other cow's line.
+			n_trav = ecow[1] - ncow[1]
+			e_trav = ncow[0] - ecow[0]
+
+			# Check if the north cow blocks the east cow.
+			if n_trav < e_trav and stop_pos[ecow[2]] is None:
+				# Save the x-coordinate at which the east cow stops
+				stop_pos[ecow[2]] = ncow[0]
+
+			# Check if the east cow blocks the north cow.
+			if n_trav > e_trav and stop_pos[ecow[2]] is None:
+				# Save the y-coordinate at which the north cow stops
+				stop_pos[ncow[2]] = ecow[1]
+				# At this point we can move on- this cow won't move anymore.
+				break
+
+# Tracks distance travelled.
+dist = [-1] * n
+for nc in n_cows:
+	# A cow eats a finite amount of grass if & only if this value isn't None.
+	if stop_pos[nc[2]] is not None:
+		# Eaten is (stopped position - original position)
+		dist[nc[2]] = stop_pos[nc[2]] - nc[1]
+
+for ec in e_cows:
+	if stop_pos[ec[2]] is not None:
+		dist[ec[2]] = stop_pos[ec[2]] - ec[0]
+
+for d in dist:
+	print("Infinity" if d == -1 else d)
+```
+
+</PySection>
+</LanguageSection>
+
+## Video Solution
+
+By Melody Yu
+
+<YouTube id="U0OoMrVIK7w" />
+
+<Spoiler title="Video Solution Code">
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+vector<array<int, 3>> north;
+vector<array<int, 3>> east;
+int myINF = 1e9;
+
+#define f first
+#define s second
+
+int main() {
+	int N;
+	cin >> N;
+	vector<pair<int, int>> pos(N);
+	for (int i = 0; i < N; i++) {
+		char d;
+		cin >> d;
+		pair<int, int> p;
+		cin >> p.first >> p.second;
+
+		array<int, 3> varr = {p.f, p.s, i};
+		if (d == 'E') {
+			east.push_back(varr);
+		} else {
+			north.push_back(varr);
+		}
+		pos[i] = p;
+	}
+
+	vector<vector<int>> meetTime;
+
+	for (auto nC : north) {
+		for (auto eC : east) {
+			int yT = eC[1] - nC[1];
+			int xT = nC[0] - eC[0];
+
+			if (xT == yT) { continue; }
+
+			if (yT > xT && xT > 0) {
+				meetTime.push_back({yT, nC[2], eC[2], 0});
+			} else if (yT < xT && yT > 0) {
+				meetTime.push_back({xT, eC[2], nC[2], 1});
+			}
+		}
+	}
+
+	sort(meetTime.begin(), meetTime.end());
+
+	vector<int> ans(N, myINF);
+
+	for (auto mt : meetTime) {
+		if (ans[mt[2]] == myINF && ans[mt[1]] == myINF) {
+			// both not stopped
+			ans[mt[1]] = mt[0];
+			continue;
+		}
+		if (ans[mt[1]] == myINF) {
+			// not yet assigned
+
+			if (mt[3]) {
+				int start = pos[mt[2]].s;
+				int end = start + ans[mt[2]];
+
+				if (pos[mt[1]].s >= start && pos[mt[1]].s <= end) {
+					ans[mt[1]] = mt[0];
+				}
+			} else {
+				int start = pos[mt[2]].f;
+				int end = start + ans[mt[2]];
+
+				if (pos[mt[1]].f >= start && pos[mt[1]].f <= end) {
+					ans[mt[1]] = mt[0];
+				}
+			}
+		}
+	}
+
+	for (auto v : ans) {
+		if (v == myINF) {
+			cout << "Infinity" << endl;
+		} else {
+			cout << v << endl;
+		}
+	}
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class StuckInARut {
+	static final int myINF = 1000000007;
+
+	public static void main(String[] args) throws IOException {
+		StuckInARut.Kattio io = new StuckInARut.Kattio();
+		Integer N = io.nextInteger();
+
+		ArrayList<ArrayList<Integer>> east =
+		    new ArrayList<ArrayList<Integer>>();
+		ArrayList<ArrayList<Integer>> north =
+		    new ArrayList<ArrayList<Integer>>();
+		ArrayList<ArrayList<Integer>> pos = new ArrayList<ArrayList<Integer>>();
+
+		for (Integer i = 0; i < N; i++) {
+			String d = io.next();
+			Integer x = io.nextInteger();
+			Integer y = io.nextInteger();
+			ArrayList<Integer> p = new ArrayList<Integer>();
+			p.add(x);
+			p.add(y);
+			pos.add(p);
+			p.add(i);
+			if (d.compareTo("E") == 0) {
+				east.add(p);
+			} else {
+				north.add(p);
+			}
+		}
+
+		ArrayList<ArrayList<Integer>> meetTime =
+		    new ArrayList<ArrayList<Integer>>();
+		for (ArrayList<Integer> nC : north) {
+			for (ArrayList<Integer> eC : east) {
+				Integer yT = eC.get(1) - nC.get(1);
+				Integer xT = nC.get(0) - eC.get(0);
+
+				if (xT == yT) { continue; }
+
+				if (yT > xT && xT > 0) {
+					meetTime.add(new ArrayList<Integer>(
+					    Arrays.asList(yT, nC.get(2), eC.get(2), 0)));
+				} else if (yT < xT && yT > 0) {
+					meetTime.add(new ArrayList<Integer>(
+					    Arrays.asList(xT, eC.get(2), nC.get(2), 1)));
+				}
+			}
+		}
+
+		Collections.sort(meetTime, new Comparator<ArrayList<Integer>>() {
+			public int compare(ArrayList<Integer> s1, ArrayList<Integer> s2) {
+				return Integer.compare(s1.get(0), s2.get(0));
+			}
+		});
+
+		ArrayList<Integer> ans =
+		    new ArrayList<Integer>(Collections.nCopies(N, myINF));
+
+		for (ArrayList<Integer> mt : meetTime) {
+			if (ans.get(mt.get(2)) == myINF && ans.get(mt.get(1)) == myINF) {
+				// both not stopped
+				ans.set(mt.get(1), mt.get(0));
+				continue;
+			}
+			if (ans.get(mt.get(1)) == myINF) {
+				// not yet assigned
+
+				if (mt.get(3) == 1) {
+					Integer start = pos.get(mt.get(2)).get(1);
+					Integer end = start + ans.get(mt.get(2));
+
+					if (pos.get(mt.get(1)).get(1) >= start &&
+					    pos.get(mt.get(1)).get(1) <= end) {
+						ans.set(mt.get(1), mt.get(0));
+					}
+				} else {
+					Integer start = pos.get(mt.get(2)).get(0);
+					Integer end = start + ans.get(mt.get(2));
+
+					if (pos.get(mt.get(1)).get(0) >= start &&
+					    pos.get(mt.get(1)).get(0) <= end) {
+						ans.set(mt.get(1), mt.get(0));
+					}
+				}
+			}
+		}
+
+		for (Integer v : ans) {
+			if (v == myINF) {
+				io.println("Infinity");
+			} else {
+				io.println(v);
+			}
+		}
+
+		io.close();
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+</LanguageSection>
+</Spoiler>

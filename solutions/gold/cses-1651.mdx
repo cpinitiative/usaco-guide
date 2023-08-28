@@ -1,0 +1,176 @@
+---
+id: cses-1651
+source: CSES
+title: Range Update Queries
+author: Benjamin Qi, Óscar Garries, Nathan Gong
+---
+
+## Explanation
+
+<Info title="Implementation Note">
+We will be using 1-based arrays (index starting from 1) throughout this problem.
+The element at index 0 will always be 0.
+</Info>
+
+We can solve this problem by taking advantage of a
+[difference array](https://codeforces.com/blog/entry/78762), where
+$\texttt{diff}[i] = \texttt{arr}[i]-\texttt{arr}[i-1]$ for all $i$
+$(1 \leq i \leq n)$. To calculate $\texttt{arr}[i]$ using $\texttt{diff}$, we
+can find the sum of all the values in $\texttt{diff}$ up to the $i$-th index:
+
+$$
+\texttt{arr}[i] = \sum^i_{j=0}\texttt{diff}[j] = \texttt{diff}[0] + \texttt{diff}[1] + \dots + \texttt{diff}[i]
+$$
+
+This means that we can answer point queries in $\mathcal{O}(\log n)$ time by
+calculating prefix sums of $\texttt{diff}$ with a segment tree or binary-indexed
+tree.
+
+To respond to range updates on an interval $[a, b]$, we can increment
+$\texttt{diff}[a]$ by $u$ and decrement $\texttt{diff}[b+1]$ by $u$. This way,
+when answering point queries, all the values at indices $a \dots b$ will be
+increased by $u$ and all values at indices less than $a$ or greater than $b$
+remain unchanged.
+
+## Implementation
+
+**Time Complexity**: $\mathcal{O}(q\log n)$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+using ll = long long;
+using ld = long double;
+
+template <class T> struct Seg {
+	int n;
+	T ID = 0;
+	vector<T> seg;
+	T comb(T a, T b) { return a + b; }
+	void init(int _n) {
+		n = _n;
+		seg.assign(n * 2, ID);
+	}
+	void pull(int p) { seg[p] = comb(seg[p * 2], seg[p * 2 + 1]); }
+	void upd(int i, T val) {
+		seg[i += n] += val;
+		for (i /= 2; i; i /= 2) { pull(i); }
+	}
+	T query(int l, int r) {
+		T ra = ID, rb = ID;
+		for (l += n, r += n + 1; l < r; l /= 2, r /= 2) {
+			if (l & 1) ra = comb(ra, seg[l++]);
+			if (r & 1) rb = comb(rb, seg[--r]);
+		}
+		return comb(ra, rb);
+	}
+};
+
+int main() {
+	int n, q;
+	cin >> n >> q;
+	// sgt stores the difference array
+	Seg<ll> sgt;
+	sgt.init(n + 1);
+	vector<int> ar(n + 1);
+	for (int i = 1; i <= n; i++) {
+		cin >> ar[i];
+		sgt.upd(i, ar[i] - ar[i - 1]);
+	}
+	while (q--) {
+		int t;
+		cin >> t;
+		if (t == 1) {
+			int a, b;
+			ll val;
+			cin >> a >> b >> val;
+			sgt.upd(a, val);
+			sgt.upd(b + 1, -val);
+		} else {
+			int k;
+			cin >> k;
+			cout << sgt.query(1, k) << '\n';
+		}
+	}
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class RangeUpdateQueries {
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
+		int n = io.nextInt();
+		int q = io.nextInt();
+
+		int[] arr = new int[n + 1];
+		for (int i = 1; i <= n; i++) { arr[i] = io.nextInt(); }
+
+		// seg stores the difference array
+		SegmentTree seg = new SegmentTree(n + 1);
+		for (int i = 1; i <= n; i++) { seg.add(i, arr[i] - arr[i - 1]); }
+		for (int i = 0; i < q; i++) {
+			int operation = io.nextInt();
+			if (operation == 1) {
+				int a = io.nextInt();
+				int b = io.nextInt();
+				int u = io.nextInt();
+				seg.add(a, u);
+				if (b < n) seg.add(b + 1, -u);
+			} else {
+				int k = io.nextInt();
+				io.println(seg.sum(0, k));
+			}
+		}
+		io.close();
+	}
+
+	static class SegmentTree {
+		private long[] tree;
+		private int n;
+
+		public SegmentTree(int n) {
+			this.n = n;
+			tree = new long[n * 2];
+		}
+
+		public long sum(int a, int b) {
+			a += n;
+			b += n;
+			long sum = 0;
+			while (a <= b) {
+				if (a % 2 == 1) sum += tree[a++];
+				if (b % 2 == 0) sum += tree[b--];
+				a /= 2;
+				b /= 2;
+			}
+			return sum;
+		}
+
+		public void add(int index, long amount) {
+			index += n;
+			tree[index] += amount;
+			for (index /= 2; index >= 1; index /= 2) {
+				tree[index] = tree[2 * index] + tree[2 * index + 1];
+			}
+		}
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+
+</LanguageSection>

@@ -84,7 +84,7 @@ frequency: 1
 #include <bits/stdc++.h>
 using namespace std;
 
-//BeginCodeSnip{Link Cut Tree}
+// BeginCodeSnip{Link Cut Tree}
 struct Node {
 	int x;
 	Node *l = 0;
@@ -94,72 +94,65 @@ struct Node {
 
 	Node() = default;
 
-	Node(int v) {
-		x = v;
-	}
+	Node(int v) { x = v; }
 
 	void push() {
-		if(rev) {
+		if (rev) {
 			rev = false;
 			swap(l, r);
-			if(l) l->rev ^= true;
-			if(r) r->rev ^= true;
+			if (l) l->rev ^= true;
+			if (r) r->rev ^= true;
 		}
 	}
 
-	bool is_root() {
-		return p == 0 || (p->l != this && this != p->r);
-	}
+	bool is_root() { return p == 0 || (p->l != this && this != p->r); }
 };
 
 struct LCT {
 	vector<Node> a;
 
 	LCT(int n) {
-		a.resize(n+1);
-		for(int i = 1; i <= n; ++i)
-		a[i].x = i;
+		a.resize(n + 1);
+		for (int i = 1; i <= n; ++i) a[i].x = i;
 	}
 
-	void rot(Node* c) {
+	void rot(Node *c) {
 		auto p = c->p;
 		auto g = p->p;
 
-		if(!p->is_root())
-			(g->r == p ? g->r : g->l) = c;
+		if (!p->is_root()) (g->r == p ? g->r : g->l) = c;
 
 		p->push();
 		c->push();
 
-		if(p->l == c) { // rtr
+		if (p->l == c) {  // rtr
 			p->l = c->r;
 			c->r = p;
-			if(p->l) p->l->p = p;
-		} else { // rtl
+			if (p->l) p->l->p = p;
+		} else {  // rtl
 			p->r = c->l;
 			c->l = p;
-			if(p->r) p->r->p = p;
+			if (p->r) p->r->p = p;
 		}
 
 		p->p = c;
 		c->p = g;
 	}
 
-	void splay(Node* c) {
-		while(!c->is_root()) {
+	void splay(Node *c) {
+		while (!c->is_root()) {
 			auto p = c->p;
 			auto g = p->p;
-			if(!p->is_root())
-				rot((g->r == p) == (p->r == c) ? p : c);
+			if (!p->is_root()) rot((g->r == p) == (p->r == c) ? p : c);
 			rot(c);
 		}
 		c->push();
 	}
 
-	Node* access(int v) {
-		Node* last = 0;
-		Node* c = &a[v];
-		for(Node* p = c; p; p = p->p) {
+	Node *access(int v) {
+		Node *last = 0;
+		Node *c = &a[v];
+		for (Node *p = c; p; p = p->p) {
 			splay(p);
 			p->r = last;
 			last = p;
@@ -170,21 +163,20 @@ struct LCT {
 
 	void make_root(int v) {
 		access(v);
-		auto* c = &a[v];
-		if(c->l)
-			c->l->rev ^= true, c->l = 0;
+		auto *c = &a[v];
+		if (c->l) c->l->rev ^= true, c->l = 0;
 	}
 
 	void link(int u, int v) {
 		make_root(v);
-		Node* c = &a[v];
+		Node *c = &a[v];
 		c->p = &a[u];
 	}
 
 	void cut(int u, int v) {
 		make_root(u);
 		access(v);
-		if(a[v].l) {
+		if (a[v].l) {
 			a[v].l->p = 0;
 			a[v].l = 0;
 		}
@@ -196,7 +188,7 @@ struct LCT {
 		return a[u].p;
 	}
 };
-//EndCodeSnip
+// EndCodeSnip
 
 int N, M;
 
@@ -207,18 +199,16 @@ int main() {
 
 	LCT lc(N);
 
-	while(M--) {
-		string a; cin >> a;
-		int b, c; cin >> b >> c;
-		if(a == "add") {
-			lc.link(b, c);
-		}
+	while (M--) {
+		string a;
+		cin >> a;
+		int b, c;
+		cin >> b >> c;
+		if (a == "add") { lc.link(b, c); }
 
-		if(a == "rem") {
-			lc.cut(b, c);
-		}
+		if (a == "rem") { lc.cut(b, c); }
 
-		if(a == "conn") {
+		if (a == "conn") {
 			cout << (lc.connected(b, c) ? "YES" : "NO") << "\n";
 		}
 	}
@@ -229,66 +219,71 @@ int main() {
 
 ```cpp
 // CodeSnip{Benq Template}
-//BeginCodeSnip{Euler Tour Tree}
+// BeginCodeSnip{Euler Tour Tree}
 /**
  * Description: Euler Tour Tree using treap, each edge is
- 	* represented by two nodes. Supports reroot, insert edge,
- 	* delete edge, get connected component. Can support
- 	* aggregate over vertices in connected component by
- 	* introducing self-loops.
+ * represented by two nodes. Supports reroot, insert edge,
+ * delete edge, get connected component. Can support
+ * aggregate over vertices in connected component by
+ * introducing self-loops.
  * Time: O(\log N)
  * Source:
- 	* https://codeforces.com/blog/entry/53265 (Rerooting dynamic Euler tour trees)
- 	* https://codeforces.com/blog/entry/18369 (On Euler tour trees)
+ * https://codeforces.com/blog/entry/53265 (Rerooting dynamic Euler tour trees)
+ * https://codeforces.com/blog/entry/18369 (On Euler tour trees)
  * Verification:
- 	* https://www.spoj.com/problems/DYNACON1/
+ * https://www.spoj.com/problems/DYNACON1/
  */
 
 // TREAP OPERATIONS
-int cnt, pri[MX], par[MX]; // ETT node for each edge
-AR<int,2> c[MX];
+int cnt, pri[MX], par[MX];  // ETT node for each edge
+AR<int, 2> c[MX];
 
-int getRoot(int x) { // get top node in ETT
+int getRoot(int x) {  // get top node in ETT
 	while (par[x]) x = par[x];
 	return x;
 }
-void link(int x, int d, int y) { // set d-th child of x to y
-	assert(x); assert(d == 0 || d == 1);
+void link(int x, int d, int y) {  // set d-th child of x to y
+	assert(x);
+	assert(d == 0 || d == 1);
 	assert(!c[x][d]), c[x][d] = y;
 	if (y) assert(!par[y]), par[y] = x;
 }
-int dis(int x, int d) { // disconnected d-th child of x
-	assert(x); assert(d == 0 || d == 1);
-	int y = c[x][d]; c[x][d] = 0;
+int dis(int x, int d) {  // disconnected d-th child of x
+	assert(x);
+	assert(d == 0 || d == 1);
+	int y = c[x][d];
+	c[x][d] = 0;
 	if (y) assert(par[y] == x), par[y] = 0;
 	return y;
 }
-pi split(int x) { // x and everything to right goes in p.s
+pi split(int x) {  // x and everything to right goes in p.s
 	// everything else goes in p.f
-	pi p = {dis(x,0),x};
+	pi p = {dis(x, 0), x};
 	while (par[x]) {
 		int y = par[x];
 		if (c[y][0] == x) {
-			dis(y,0), link(y,0,p.s),  p.s = y;
+			dis(y, 0), link(y, 0, p.s), p.s = y;
 		} else {
 			assert(c[y][1] == x);
-			dis(y,1), link(y,1,p.f); p.f = y;
+			dis(y, 1), link(y, 1, p.f);
+			p.f = y;
 		}
 		x = y;
 	}
-	assert(!par[p.f] && !par[p.s]); return p;
+	assert(!par[p.f] && !par[p.s]);
+	return p;
 }
 
 int merge(int x, int y) {
 	assert(!par[x] && !par[y]);
-	if (!x || !y) return max(x,y);
+	if (!x || !y) return max(x, y);
 	if (pri[x] > pri[y]) {
-		int X = dis(x,1);
-		link(x,1,merge(X,y));
+		int X = dis(x, 1);
+		link(x, 1, merge(X, y));
 		return x;
 	} else {
-		int Y = dis(y,0);
-		link(y,0,merge(x,Y));
+		int Y = dis(y, 0);
+		link(y, 0, merge(x, Y));
 		return y;
 	}
 }
@@ -298,24 +293,26 @@ int merge(int x, int y) {
 // 	while (c[x][0]) x = c[x][0];
 // 	return x;
 // }
-int makeFirst(int x) { // rotate ETT of x such that x is first
-	assert(x); pi p = split(x);
-	return merge(p.s,p.f);
+int makeFirst(int x) {  // rotate ETT of x such that x is first
+	assert(x);
+	pi p = split(x);
+	return merge(p.s, p.f);
 }
-void remFirst(int x) { // remove first node of ETT rooted at x
+void remFirst(int x) {  // remove first node of ETT rooted at x
 	assert(x && !par[x]);
 	while (c[x][0]) x = c[x][0];
-	int y = dis(x,1), p = par[x];
-	if (p) dis(p,0), link(p,0,y);
+	int y = dis(x, 1), p = par[x];
+	if (p) dis(p, 0), link(p, 0, y);
 }
 
 // ETT OPERATIONS
-map<int,int> adj[MX];
+map<int, int> adj[MX];
 int makeEdge(int a, int b) {
-	adj[a][b] = ++cnt; pri[cnt] = rng();
+	adj[a][b] = ++cnt;
+	pri[cnt] = rng();
 	return cnt;
 }
-int reroot(int x) { // make edge beginning with x
+int reroot(int x) {  // make edge beginning with x
 	if (!sz(adj[x])) return 0;
 	return makeFirst(begin(adj[x])->s);
 }
@@ -324,29 +321,34 @@ bool con(int a, int b) {
 	a = begin(adj[a])->s, b = begin(adj[b])->s;
 	return getRoot(a) == getRoot(b);
 }
-void add(int a, int b) { // connect A and B with edge
-	int ta = reroot(a), tb = reroot(b); if (ta||tb) assert(ta != tb);
-	int x = makeEdge(a,b), y = makeEdge(b,a); // make two nodes for new edge
-	merge(merge(ta,x),merge(tb,y));
+void add(int a, int b) {  // connect A and B with edge
+	int ta = reroot(a), tb = reroot(b);
+	if (ta || tb) assert(ta != tb);
+	int x = makeEdge(a, b), y = makeEdge(b, a);  // make two nodes for new edge
+	merge(merge(ta, x), merge(tb, y));
 }
 void rem(int a, int b) {
-	int x = adj[a][b], y = adj[b][a]; makeFirst(x);
-	pi p = split(y); // assert(getFirst(p.f) == x && getFirst(p.s) == y);
+	int x = adj[a][b], y = adj[b][a];
+	makeFirst(x);
+	pi p = split(y);  // assert(getFirst(p.f) == x && getFirst(p.s) == y);
 	remFirst(p.f), remFirst(p.s);
 	adj[a].erase(b), adj[b].erase(a);
 }
-//EndCodeSnip
+// EndCodeSnip
 
 int main() {
-	int N,M; re(N,M);
-	F0R(i,M) {
-		str s; int A,B; re(s,A,B);
+	int N, M;
+	re(N, M);
+	F0R(i, M) {
+		str s;
+		int A, B;
+		re(s, A, B);
 		if (s == "add") {
-			add(A,B);
+			add(A, B);
 		} else if (s == "rem") {
-			rem(A,B);
+			rem(A, B);
 		} else {
-			if (con(A,B)) ps("YES");
+			if (con(A, B)) ps("YES");
 			else ps("NO");
 		}
 	}

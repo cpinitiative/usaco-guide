@@ -1,0 +1,107 @@
+---
+id: usaco-647
+source: USACO Gold 2016 Open
+title: '248'
+author: Melody Yu, Qi Wang
+---
+
+[Official Analysis (Java)](http://www.usaco.org/current/data/sol_248_gold_open16.html)
+
+## Video Solution
+
+Note: The video solution might not be the same as other solutions. Code in C++.
+<YouTube id="OdHxOYICx-o" />
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N^3)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	freopen("248.in", "r", stdin);
+
+	int n;
+	cin >> n;
+	vector<int> a(n);
+
+	int best = 0;
+	for (int i = 0; i < n; i++) {
+		cin >> a[i];
+		best = max(best, a[i]);
+	}
+
+	// dp[i][j] = max number that can be made with the interval [i, j]
+	vector<vector<int>> dp(n, vector<int>(n, -1));
+
+	for (int len = 1; len <= n; len++) {
+		for (int l = 0; l + len - 1 < n; l++) {
+			int r = l + len - 1;
+
+			if (l == r) {
+				dp[l][r] = a[l];
+				continue;
+			}
+
+			// merge prefix and suffix
+			for (int rr = l; rr < r; rr++) {
+				if (dp[l][rr] != -1 && dp[l][rr] == dp[rr + 1][r]) {
+					dp[l][r] = max(dp[l][r], dp[l][rr] + 1);
+				}
+			}
+			best = max(best, dp[l][r]);
+		}
+	}
+
+	freopen("248.out", "w", stdout);
+	cout << best << endl;
+}
+```
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class U248 {
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio("248");
+
+		int N = io.nextInt();
+		int[] board = new int[N];
+
+		int[][] dp = new int[N + 1][N + 1];
+		for (int i = 0; i < N; i++) {
+			board[i] = io.nextInt();
+			dp[i + 1][i + 1] = board[i];
+		}
+
+		int max_val = 0;
+		for (int i = N - 1; i >= 1; i--) {
+			for (int j = i + 1; j <= N; j++) {
+				for (int k = i; k < j; k++) {
+					if (dp[i][k] == dp[k + 1][j]) {
+						dp[i][j] = Math.max(dp[i][j], dp[i][k] + 1);
+					}
+				}
+
+				max_val = Math.max(max_val, dp[i][j]);
+			}
+		}
+
+		io.println(max_val);
+		io.close();
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+</LanguageSection>

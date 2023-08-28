@@ -8,7 +8,7 @@ export default function useProblemSubmissionResult(submissionID: string) {
   useEffect(() => {
     const queryResult = async (curSubmission, submissionID) => {
       const res = await fetch(
-        `https://oh2kjsg6kh.execute-api.us-west-1.amazonaws.com/Prod/submissions/${submissionID}`
+        `https://ggzk2rm2ad.execute-api.us-west-1.amazonaws.com/Prod/submissions/${submissionID}`
       );
       const data = await res.json();
 

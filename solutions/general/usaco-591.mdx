@@ -1,0 +1,198 @@
+---
+id: usaco-591
+source: USACO Bronze 2016 January
+title: Promotion Counting
+author: Danh Ta Chi Thanh, Lin Jiang, Neo Wang
+---
+
+[Official Analysis (Java)](http://www.usaco.org/current/data/sol_promote_bronze_jan16.html)
+
+## Video Solution
+
+By Neo Wang
+
+<YouTube id="lmsPzctjFEQ" />
+
+<Spoiler title="Video Solution Code">
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>  // see /general/running-code-locally
+using namespace std;
+
+using ll = long long;
+
+using vi = vector<int>;
+#define pb push_back
+#define all(x) begin(x), end(x)
+#define sz(x) (int)(x).size()
+
+using pi = pair<int, int>;
+#define f first
+#define s second
+#define mp make_pair
+
+void setIO(string name = "") {
+	cin.tie(0)->sync_with_stdio(0);  // see /general/fast-io
+	if (sz(name)) {
+		(void)!freopen((name + ".in").c_str(), "r", stdin);  // see /general/io
+		(void)!freopen((name + ".out").c_str(), "w", stdout);
+	}
+}
+
+int main() {
+	setIO("promote");
+
+	int bronzeBefore, bronzeAfter;
+	cin >> bronzeBefore >> bronzeAfter;
+
+	int silverBefore, silverAfter;
+	cin >> silverBefore >> silverAfter;
+
+	int goldBefore, goldAfter;
+	cin >> goldBefore >> goldAfter;
+
+	int platBefore, platAfter;
+	cin >> platBefore >> platAfter;
+
+	int goldToPlatinum = platAfter - platBefore;
+	int silverToGold = platAfter + goldAfter - platBefore - goldBefore;
+	int bronzeToSilver = silverAfter + goldAfter + platAfter - silverBefore -
+	                     goldBefore - platBefore;
+
+	cout << bronzeToSilver << "\n"
+	     << silverToGold << "\n"
+	     << goldToPlatinum << "\n";
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+public class promote {
+	public static void main(String[] args) throws IOException {
+		// initialize file I/O
+		BufferedReader br = new BufferedReader(new FileReader("promote.in"));
+		PrintWriter pw =
+		    new PrintWriter(new BufferedWriter(new FileWriter("promote.out")));
+
+		// read in counts for bronze
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int bronzeBefore = Integer.parseInt(st.nextToken());
+		int bronzeAfter = Integer.parseInt(st.nextToken());
+
+		// read in counts for silver
+		st = new StringTokenizer(br.readLine());
+		int silverBefore = Integer.parseInt(st.nextToken());
+		int silverAfter = Integer.parseInt(st.nextToken());
+
+		// read in counts for gold
+		st = new StringTokenizer(br.readLine());
+		int goldBefore = Integer.parseInt(st.nextToken());
+		int goldAfter = Integer.parseInt(st.nextToken());
+
+		// read in counts for platinum
+		st = new StringTokenizer(br.readLine());
+		int platinumBefore = Integer.parseInt(st.nextToken());
+		int platinumAfter = Integer.parseInt(st.nextToken());
+
+		// do the computations
+		int goldToPlatinum = platinumAfter - platinumBefore;
+		int silverToGold =
+		    goldAfter - goldBefore + platinumAfter - platinumBefore;
+		int bronzeToSilver = silverAfter - silverBefore + goldAfter -
+		                     goldBefore + platinumAfter - platinumBefore;
+
+		// print the answers
+		pw.println(bronzeToSilver);
+		pw.println(silverToGold);
+		pw.println(goldToPlatinum);
+
+		// close output stream
+		pw.close();
+	}
+}
+```
+
+</JavaSection>
+</LanguageSection>
+</Spoiler>
+
+<LanguageSection>
+
+<CPPSection>
+
+## Implementation
+
+```cpp
+#include <cstdio>
+#include <iostream>
+using namespace std;
+
+int main() {
+	// initialize file I/O
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);  // see Fast Input & Output
+	freopen("promote.in", "r", stdin);
+	freopen("promote.out", "w", stdout);
+
+	// read in counts for bronze
+	int bronzeBefore, bronzeAfter;
+	cin >> bronzeBefore >> bronzeAfter;
+
+	// read in counts for silver
+	int silverBefore, silverAfter;
+	cin >> silverBefore >> silverAfter;
+
+	// read in counts for gold
+	int goldBefore, goldAfter;
+	cin >> goldBefore >> goldAfter;
+
+	// read in counts for platinum
+	int platinumBefore, platinumAfter;
+	cin >> platinumBefore >> platinumAfter;
+
+	// do the computations
+	int goldToPlatinum = platinumAfter - platinumBefore;
+	int silverToGold = goldAfter - goldBefore + platinumAfter - platinumBefore;
+	int bronzeToSilver = silverAfter - silverBefore + goldAfter - goldBefore +
+	                     platinumAfter - platinumBefore;
+
+	// print the answers
+	cout << bronzeToSilver << "\n" << silverToGold << "\n" << goldToPlatinum;
+
+	return 0;
+}
+```
+
+</CPPSection>
+
+<PySection>
+
+```py
+import sys
+
+sys.stdin = open("promote.in", "r")
+sys.stdout = open("promote.out", "a")
+
+bronze = [int(a) for a in input().split(" ")]
+silver = [int(b) for b in input().split(" ")]
+gold = [int(c) for c in input().split(" ")]
+platinum = [int(d) for d in input().split(" ")]
+
+platinum_promotions = platinum[1] - platinum[0]
+gold_promotions = platinum_promotions + gold[1] - gold[0]
+silver_promotions = gold_promotions + silver[1] - silver[0]
+
+print(silver_promotions)
+print(gold_promotions)
+print(platinum_promotions)
+```
+
+</PySection>
+
+</LanguageSection>

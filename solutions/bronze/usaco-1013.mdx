@@ -1,0 +1,309 @@
+---
+id: usaco-1013
+source: USACO Bronze 2020 February
+title: Swapity Swap
+author: Benjamin Qi, David Li, Kevin Sheng
+---
+
+## Video Solution
+
+By David Li
+
+<YouTube id="LrcugMyMFyQ" />
+
+<Spoiler title="Video Solution Code">
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+
+using namespace std;
+
+void setIO(string s) {
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
+	freopen((s + ".in").c_str(), "r", stdin);
+	freopen((s + ".out").c_str(), "w", stdout);
+}
+
+int N, K, A1, A2, B1, B2, res[101];  // res stores the result
+
+int nex(int x) {
+	if (A1 <= x && x <= A2)  // simulate step 1
+		x = A1 + A2 - x;
+	if (B1 <= x && x <= B2)  // simulate step 2
+		x = B1 + B2 - x;
+	return x;
+}
+
+int main() {
+	setIO("swap");
+
+	// read in input
+	cin >> N >> K >> A1 >> A2 >> B1 >> B2;
+
+	// solve for each cow
+	for (int i = 1; i <= N; ++i) {
+		// p = how many turns so far?
+		// cur = where are we after p turns?
+		int p = 1, cur = nex(i);
+		while (cur != i) {  // keep going until we have found a cycle
+			p++;
+			cur = nex(cur);  // simulating another turn
+		}
+		int k = K % p;  // reduce k
+		for (int j = 0; j < k; ++j) cur = nex(cur);
+		res[cur] = i;  // position of cow i after k steps is cur
+	}
+	// print answer
+	for (int i = 1; i <= N; ++i) cout << res[i] << "\n";
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class swap {
+	static int A1, A2, B1, B2;
+	public static void main(String[] args) throws IOException {
+		// reading in input
+		BufferedReader br =
+		    new BufferedReader(new FileReader(new File("swap.in")));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int N = Integer.parseInt(st.nextToken());
+		int K = Integer.parseInt(st.nextToken());
+		st = new StringTokenizer(br.readLine());
+		A1 = Integer.parseInt(st.nextToken());
+		A2 = Integer.parseInt(st.nextToken());
+		st = new StringTokenizer(br.readLine());
+		B1 = Integer.parseInt(st.nextToken());
+		B2 = Integer.parseInt(st.nextToken());
+		int[] res = new int[N + 1];
+
+		// solve for each cow
+		for (int i = 1; i <= N; ++i) {
+			// p = how many turns so far?
+			// cur = where are we after p turns?
+			int p = 1, cur = nex(i);
+			while (cur != i) {  // keep going until we have found a cycle
+				p++;
+				cur = nex(cur);  // simulating another turn
+			}
+			int k = K % p;  // reduce k
+			for (int j = 0; j < k; ++j) cur = nex(cur);
+			res[cur] = i;  // position of cow i after k steps is cur
+		}
+
+		PrintWriter out = new PrintWriter("swap.out");
+		for (int i = 1; i <= N; i++) { out.println(res[i]); }
+		out.close();
+	}
+	public static int nex(int x) {  // simulates a turn, or two steps
+		if (A1 <= x && x <= A2) x = A1 + A2 - x;
+		if (B1 <= x && x <= B2) x = B1 + B2 - x;
+		return x;
+	}
+}
+```
+
+</JavaSection>
+</LanguageSection>
+
+</Spoiler>
+
+<Spoiler title="Hint 1">
+
+Try simulating the swaps yourselves on the sample input.
+What do you notice about the displacement of certain cows?
+
+</Spoiler>
+
+<Spoiler title="Answer to Hint 1">
+
+After a certain number of cycles, the cows end up right back where they started!
+
+</Spoiler>
+
+<Spoiler title="Hint 2">
+
+Given that the cows just end up going around in cycles throughout all these swaps, can you think of a more efficient way to simulate them?
+
+</Spoiler>
+
+<Spoiler title="Solution">
+
+[Official Analysis (C++ and Java)](http://www.usaco.org/current/data/sol_swap_bronze_feb20.html)
+
+## Implementation
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <fstream>
+#include <iostream>
+#include <numeric>
+#include <set>
+#include <vector>
+
+using std::cout;
+using std::endl;
+using std::vector;
+
+/** Reverses [start, end] in the given vector in-place. */
+template <typename T> void reverse_segment(vector<T> &vec, int start, int end) {
+	while (start < end) {
+		T temp = vec[start];
+		vec[start] = vec[end];
+		vec[end] = temp;
+
+		start++;
+		end--;
+	}
+}
+
+int main() {
+	std::ifstream read("swap.in");
+	int n, k;
+	read >> n >> k;
+	int a1, a2;
+	int b1, b2;
+	read >> a1 >> a2 >> b1 >> b2;
+
+	vector<int> cows(n);
+	// Assign the values 1, 2, 3... to the vector of cows
+	iota(cows.begin(), cows.end(), 1);
+
+	// Apply swaps until the cows repeat themselves
+	std::set<vector<int>> visited{cows};
+	while (true) {
+		reverse_segment(cows, a1 - 1, a2 - 1);
+		reverse_segment(cows, b1 - 1, b2 - 1);
+		if (visited.count(cows)) { break; }
+		visited.insert(cows);
+	}
+
+	int cycle_len = visited.size();
+	int swaps_left = k % cycle_len;
+	for (int s = 0; s < swaps_left; s++) {
+		reverse_segment(cows, a1 - 1, a2 - 1);
+		reverse_segment(cows, b1 - 1, b2 - 1);
+	}
+
+	std::ofstream written("swap.out");
+	for (int c : cows) { written << c << '\n'; }
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Swap {
+	public static void main(String[] args) throws IOException {
+		BufferedReader read = new BufferedReader(new FileReader("swap.in"));
+		StringTokenizer st = new StringTokenizer(read.readLine());
+		int n = Integer.parseInt(st.nextToken());
+		int k = Integer.parseInt(st.nextToken());
+
+		st = new StringTokenizer(read.readLine());
+		int a1 = Integer.parseInt(st.nextToken()) - 1;
+		int a2 = Integer.parseInt(st.nextToken()) - 1;
+
+		st = new StringTokenizer(read.readLine());
+		int b1 = Integer.parseInt(st.nextToken()) - 1;
+		int b2 = Integer.parseInt(st.nextToken()) - 1;
+		read.close();
+
+		List<Integer> cows = new ArrayList<>();
+		for (int c = 1; c <= n; c++) { cows.add(c); }
+
+		// Apply swaps until the cows repeat themselves
+		Set<List<Integer>> visited = new HashSet<>();
+		visited.add(new ArrayList<>(cows));
+		while (true) {
+			reverseSegment(cows, a1, a2);
+			reverseSegment(cows, b1, b2);
+			if (visited.contains(cows)) { break; }
+			visited.add(new ArrayList<>(cows));
+		}
+
+		int cycleLen = visited.size();
+		int swapsLeft = k % cycleLen;
+		for (int s = 0; s < swapsLeft; s++) {
+			reverseSegment(cows, a1, a2);
+			reverseSegment(cows, b1, b2);
+		}
+
+		PrintWriter written = new PrintWriter("swap.out");
+		for (int c : cows) { written.println(c); }
+		written.close();
+	}
+
+	/** Reverses [start, end] in the given list in-place. */
+	static <T> void reverseSegment(List<T> lst, int start, int end) {
+		while (start < end) {
+			T temp = lst.get(start);
+			lst.set(start, lst.get(end));
+			lst.set(end, temp);
+
+			start++;
+			end--;
+		}
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+from typing import List
+
+
+def reverse_segment(lst: List[int], start: int, end: int):
+	"""Reverses [start, end] in the given list in-place."""
+	while start < end:
+		lst[start], lst[end] = lst[end], lst[start]
+		start += 1
+		end -= 1
+
+
+with open("swap.in") as read:
+	n, k = map(int, read.readline().split())
+	a1, a2 = map(int, read.readline().split())
+	b1, b2 = map(int, read.readline().split())
+
+cows = list(range(1, n + 1))
+
+# Apply swaps until the cows repeat themselves
+visited = set()
+visited.add(tuple(cows))
+while True:
+	reverse_segment(cows, a1 - 1, a2 - 1)
+	reverse_segment(cows, b1 - 1, b2 - 1)
+	if tuple(cows) in visited:
+		break
+	visited.add(tuple(cows))
+
+cycle_len = len(visited)
+swaps_left = k % cycle_len
+for _ in range(swaps_left):
+	reverse_segment(cows, a1 - 1, a2 - 1)
+	reverse_segment(cows, b1 - 1, b2 - 1)
+
+print(*cows, sep="\n", file=open("swap.out", "w"))
+```
+
+</PySection>
+</LanguageSection>
+</Spoiler>

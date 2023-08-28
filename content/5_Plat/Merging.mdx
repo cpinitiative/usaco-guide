@@ -44,7 +44,7 @@ Suppose that we want merge two sets $a$ and $b$ of sizes $n$ and $m$,
 respectively. One possiblility is the following:
 
 ```cpp
-for (int x: b) a.insert(x);
+for (int x : b) a.insert(x);
 ```
 
 which runs in $\mathcal{O}(m\log (n+m))$ time, yielding a runtime of
@@ -57,8 +57,8 @@ $\mathcal{O}(N^2)$ is also too slow.
 With just one additional line of code, we can significantly speed this up.
 
 ```cpp
-if (a.size() < b.size()) swap(a,b);
-for (int x: b) a.insert(x);
+if (a.size() < b.size()) swap(a, b);
+for (int x : b) a.insert(x);
 ```
 
 Note that [swap](http://www.cplusplus.com/reference/utility/swap/) exchanges two
@@ -73,7 +73,7 @@ is at least $2X$. Thus, an element that has been moved $Y$ times will be in a
 set of size at least $2^Y$, and since the maximum size of a set is $N$ (the
 root), each element will be moved at most $\mathcal{O}(\log N$) times.
 
-<Spoiler title="Full Code">
+### Full Code
 
 ```cpp
 #include <bits/stdc++.h>
@@ -96,9 +96,7 @@ void process_colors(int curr, int parent) {
 			if (colors[curr].size() < colors[n].size()) {
 				swap(colors[curr], colors[n]);
 			}
-			for (int item : colors[n]) {
-				colors[curr].insert(item);
-			}
+			for (int item : colors[n]) { colors[curr].insert(item); }
 		}
 	}
 	distinct_num[curr] = colors[curr].size();
@@ -125,8 +123,6 @@ int main() {
 	}
 }
 ```
-
-</Spoiler>
 
 ## Generalizing
 

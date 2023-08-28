@@ -2,13 +2,13 @@
 id: toposort
 title: 'Topological Sort'
 author: Benjamin Qi, Nathan Chen
-contributors: Michael Cao, Andi Qu, Andrew Wang, Qi Wang, Maggie Liu
+contributors: Michael Cao, Andi Qu, Andrew Wang, Qi Wang, Maggie Liu, Martin Lin
 prerequisites:
-  - bfs
+  - graph-traversal
   - intro-dp
 description:
-  'An ordering of vertices in a directed acyclic graph that ensures that a node
-  is visited before every node it has a directed edge to.'
+  'Ordering the vertices of a directed acyclic graph such that each vertex
+  is visited before its children.'
 frequency: 1
 ---
 
@@ -70,8 +70,8 @@ using namespace std;
 
 #define pb push_back
 
-int N; // Number of nodes
-vector<int> graph[100000], top_sort; // Assume that this graph is a DAG
+int N;                                // Number of nodes
+vector<int> graph[100000], top_sort;  // Assume that this graph is a DAG
 bool visited[100000];
 
 void dfs(int node) {
@@ -91,23 +91,27 @@ void compute() {
 			dfs(i);
 		}
 	}
-	reverse(begin(top_sort),end(top_sort));
+	reverse(begin(top_sort), end(top_sort));
 	// The vector `top_sort` is now topologically sorted
 }
 
 int main() {
-	int M; cin >> N >> M;
+	int M;
+	cin >> N >> M;
 	for (int i = 0; i < M; ++i) {
-		int a, b; cin >> a >> b;
+		int a, b;
+		cin >> a >> b;
 		graph[a - 1].pb(b - 1);
 	}
 	compute();
 	vector<int> ind(N);
 	for (int i = 0; i < N; i++) ind[top_sort[i]] = i;
-	for (int i = 0; i < N; i++) for (int j: graph[i]) if (ind[j] <= ind[i]) {
-		cout << "IMPOSSIBLE\n"; // topological sort wasn't valid
-		exit(0);
-	}
+	for (int i = 0; i < N; i++)
+		for (int j : graph[i])
+			if (ind[j] <= ind[i]) {
+				cout << "IMPOSSIBLE\n";  // topological sort wasn't valid
+				exit(0);
+			}
 	for (int i : top_sort) cout << i + 1 << " ";
 	cout << "\n";
 }
@@ -118,8 +122,8 @@ int main() {
 <JavaSection>
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class CourseSchedule {
 	static List<Integer>[] graph;
@@ -127,15 +131,14 @@ public class CourseSchedule {
 	static int N;
 	static boolean[] visited;
 	public static void main(String[] args) throws Exception {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader br =
+		    new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st = new StringTokenizer(br.readLine());
 		N = Integer.parseInt(st.nextToken());
 		int M = Integer.parseInt(st.nextToken());
 		graph = new List[N];
 		visited = new boolean[N];
-		for (int i = 0; i < N; i++) {
-			graph[i] = new ArrayList<Integer>();
-		}
+		for (int i = 0; i < N; i++) { graph[i] = new ArrayList<Integer>(); }
 		for (int m = 0; m < M; m++) {
 			st = new StringTokenizer(br.readLine());
 			int a = Integer.parseInt(st.nextToken()) - 1;
@@ -150,7 +153,8 @@ public class CourseSchedule {
 		for (int i = 0; i < N; i++)
 			for (int j : graph[i])
 				if (ind[j] <= ind[i]) {
-					System.out.println("IMPOSSIBLE"); // topological sort wasn't valid
+					System.out.println(
+					    "IMPOSSIBLE");  // topological sort wasn't valid
 					System.exit(0);
 				}
 		for (int i : topo) System.out.print(i + 1 + " ");
@@ -164,7 +168,7 @@ public class CourseSchedule {
 		}
 		Collections.reverse(topo);
 	}
-	public static void dfs(int v) { // not always lexicographically least
+	public static void dfs(int v) {  // not always lexicographically least
 		for (Integer e : graph[v]) {
 			if (!visited[e]) {
 				visited[e] = true;
@@ -177,6 +181,62 @@ public class CourseSchedule {
 ```
 
 </JavaSection>
+<PySection>
+
+```py
+import sys
+
+MAX_N = 10**5
+sys.setrecursionlimit(MAX_N)
+
+
+def dfs(node):
+	for i in graph[node]:
+		if not visited[i]:
+			visited[i] = True
+			dfs(i)
+	top_sort.append(node)
+
+
+# N is number of nodes
+# M is number of edges
+N, M = map(int, input().strip().split())
+graph = [[] for _ in range(N)]
+top_sort = []
+ind = [0] * N
+
+for i in range(M):
+	u, v = map(int, input().strip().split())
+	graph[u - 1].append(v - 1)
+
+visited = [False] * N
+for i in range(N):
+	if not visited[i]:
+		visited[i] = True
+		dfs(i)
+
+top_sort = top_sort[::-1]
+for i in range(N):
+	ind[top_sort[i]] = i
+
+# Check if the topological sort is valid
+flag = 0
+for i in range(N):
+	for j in graph[i]:
+		if ind[j] <= ind[i]:
+			flag = 1
+			print("IMPOSSIBLE")
+			break
+
+	if flag == 1:
+		break
+
+top_sort = [x + 1 for x in top_sort]
+if flag == 0:
+	print(*top_sort)
+```
+
+</PySection>
 
 </LanguageSection>
 
@@ -199,9 +259,9 @@ stack and recursively backtracking until $u$ is reached again.
 <CPPSection>
 
 ```cpp
-#include <vector>
-#include <iostream>
 #include <algorithm>
+#include <iostream>
+#include <vector>
 using namespace std;
 
 bool visited[(int)1e5 + 5], on_stack[(int)1e5 + 5];
@@ -211,31 +271,29 @@ int N, M;
 bool dfs(int n) {
 	visited[n] = on_stack[n] = true;
 	for (int u : adj[n]) {
-		if(on_stack[u]) {
-			cycle.push_back(n); // start cycle
+		if (on_stack[u]) {
+			cycle.push_back(n);  // start cycle
 			on_stack[n] = on_stack[u] = false;
 			return true;
-		}
-		else if(!visited[u]) {
-			if(dfs(u)) { // continue cycle
-				if(on_stack[n]) {
+		} else if (!visited[u]) {
+			if (dfs(u)) {  // continue cycle
+				if (on_stack[n]) {
 					cycle.push_back(n);
 					on_stack[n] = false;
 					return true;
-				} else { // found u again
+				} else {  // found u again
 					cycle.push_back(n);
 					return false;
 				}
 			}
-			if(!cycle.empty()) // finished with cycle
+			if (!cycle.empty())  // finished with cycle
 				return false;
 		}
 	}
 	on_stack[n] = false;
 	return false;
 }
-int main()
-{
+int main() {
 	// take input, etc
 	cin >> N >> M;
 	for (int i = 0; i < M; i++) {
@@ -243,14 +301,12 @@ int main()
 		cin >> a >> b;
 		adj[a].push_back(b);
 	}
-	for (int i = 1; cycle.empty() && i <= N; i++)
-		dfs(i);
-	if(cycle.empty())
-		cout << "IMPOSSIBLE";
+	for (int i = 1; cycle.empty() && i <= N; i++) dfs(i);
+	if (cycle.empty()) cout << "IMPOSSIBLE";
 	else {
 		reverse(cycle.begin(), cycle.end());
 		cout << cycle.size() + 1 << "\n";
-		for(int n : cycle) cout << n << " ";
+		for (int n : cycle) cout << n << " ";
 		cout << cycle.at(0);
 	}
 }
@@ -270,7 +326,8 @@ public class cycle {
 	static List<Integer> cycle;
 	static int N, M;
 	public static void main(String[] args) throws IOException {
-		BufferedReader sc = new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader sc =
+		    new BufferedReader(new InputStreamReader(System.in));
 		PrintWriter out = new PrintWriter(System.out);
 		StringTokenizer st = new StringTokenizer(sc.readLine());
 		N = Integer.parseInt(st.nextToken());
@@ -279,24 +336,19 @@ public class cycle {
 		cycle = new ArrayList<Integer>();
 		visited = new boolean[N + 1];
 		onStack = new boolean[N + 1];
-		for (int i = 0; i <= N; i++) {
-			adj[i] = new ArrayList<Integer>();
-		}
+		for (int i = 0; i <= N; i++) { adj[i] = new ArrayList<Integer>(); }
 		for (int i = 0; i < M; i++) {
 			st = new StringTokenizer(sc.readLine());
 			int a = Integer.parseInt(st.nextToken());
 			int b = Integer.parseInt(st.nextToken());
 			adj[a].add(b);
 		}
-		for (int i = 1; cycle.isEmpty() && i <= N; i++) {
-			dfs(i);
-		}
-		if (cycle.isEmpty())
-			out.println("IMPOSSIBLE");
+		for (int i = 1; cycle.isEmpty() && i <= N; i++) { dfs(i); }
+		if (cycle.isEmpty()) out.println("IMPOSSIBLE");
 		else {
 			Collections.reverse(cycle);
 			out.println(cycle.size() + 1);
-			for (int n: cycle) out.print(n + " ");
+			for (int n : cycle) out.print(n + " ");
 			out.print(cycle.get(0));
 		}
 		out.close();
@@ -304,7 +356,7 @@ public class cycle {
 
 	public static boolean dfs(int n) {
 		visited[n] = onStack[n] = true;
-		for (int u: adj[n]) {
+		for (int u : adj[n]) {
 			if (onStack[u]) {
 				cycle.add(n);
 				onStack[n] = onStack[u] = false;
@@ -320,8 +372,7 @@ public class cycle {
 						return false;
 					}
 				}
-				if (!cycle.isEmpty())
-					return false;
+				if (!cycle.isEmpty()) return false;
 			}
 		}
 		onStack[n] = false;
@@ -331,6 +382,64 @@ public class cycle {
 ```
 
 </JavaSection>
+<PySection>
+
+```py
+import sys
+
+MAX_N = 10**5
+sys.setrecursionlimit(MAX_N)
+
+
+def dfs(node):
+	visited[node], on_stack[node] = True, True
+	for u in adj[node]:
+		if on_stack[u]:
+			cycle.append(node)
+			on_stack[node], on_stack[u] = False, False
+			return True
+
+		elif not visited[u]:
+			if dfs(u):
+				if on_stack[node]:
+					cycle.append(node)
+					on_stack[node] = False
+					return True
+				else:
+					cycle.append(node)
+					return False
+
+			if not cycle:
+				return False
+	on_stack[node] = False
+	return False
+
+
+N, M = map(int, input().split())
+adj = [[] for _ in range(N)]
+cycle = []
+visited = [False] * N
+on_stack = [False] * N
+
+for i in range(M):
+	u, v = map(int, input().split())
+	adj[u - 1].append(v - 1)
+
+for i in range(0, N):
+	if not cycle:
+		dfs(i)
+	else:
+		break
+
+if not cycle:
+	print("IMPOSSIBLE")
+else:
+	print(len(cycle) + 1)
+	cycle = [x + 1 for x in cycle]
+	print(cycle[0], *cycle[::-1])
+```
+
+</PySection>
 
 </LanguageSection>
 
@@ -353,63 +462,48 @@ The BFS version is known as
 
 ```cpp
 #include <iostream>
-#include <vector>
 #include <queue>
+#include <vector>
 using namespace std;
 
 const int MAX_N = 100000;
 
-int main()
-{
+int main() {
 	int n, m;
 	cin >> n >> m;
 	vector<int> graph[MAX_N];
 	int indegree[MAX_N]{};
 	queue<int> q;
-	for (int i = 0; i < m; i++)
-	{
+	for (int i = 0; i < m; i++) {
 		int a, b;
 		cin >> a >> b;
 		graph[a - 1].push_back(b - 1);
 		indegree[b - 1]++;
 	}
-	for (int i = 0; i < n; i++)
-	{
+	for (int i = 0; i < n; i++) {
 		// locate the nodes with indegree 0 and push them into the queue
-		if (indegree[i] == 0)
-		{
-			q.push(i);
-		}
+		if (indegree[i] == 0) { q.push(i); }
 	}
 	vector<int> order;
-	while (!q.empty())
-	{
+	while (!q.empty()) {
 		int curr = q.front();
 		q.pop();
 		// add the current node to the order
 		order.push_back(curr);
-		for (int next : graph[curr])
-		{
+		for (int next : graph[curr]) {
 			// remove the current node from the graph
 			indegree[next]--;
 			// push any new nodes with indegree 0 into the queue
-			if (indegree[next] == 0)
-			{
-				q.push(next);
-			}
+			if (indegree[next] == 0) { q.push(next); }
 		}
 	}
 	// if there isn't a valid topological sorting
-	if (order.size() != n)
-	{
+	if (order.size() != n) {
 		cout << "IMPOSSIBLE" << endl;
 		return 0;
 	}
 	cout << order[0] + 1;
-	for (int i = 1; i < n; i++)
-	{
-		cout << " " << order[i] + 1;
-	}
+	for (int i = 1; i < n; i++) { cout << " " << order[i] + 1; }
 	cout << endl;
 	return 0;
 }
@@ -422,16 +516,14 @@ int main()
 ```java
 public class TopoSort {
 	static int[] inDegree;
-	static List<Integer>[] edge; // adjacency list
+	static List<Integer>[] edge;  // adjacency list
 
-	static int N; // number of nodes
+	static int N;  // number of nodes
 
 	static void topological_sort() {
 		Queue<Integer> q = new LinkedList<>();
 		for (int i = 0; i < N; i++) {
-			if (inDegree[i] == 0) {
-				q.add(i);
-			}
+			if (inDegree[i] == 0) { q.add(i); }
 		}
 
 		while (!q.isEmpty()) {
@@ -439,7 +531,7 @@ public class TopoSort {
 
 			for (int next : edge[node]) {
 				inDegree[next]--;
-				if(inDegree[next] == 0) q.add(next);
+				if (inDegree[next] == 0) q.add(next);
 			}
 
 			// Put problem-specific processing here
@@ -453,7 +545,7 @@ public class TopoSort {
 
 <PySection>
 
-```python
+```py
 from collections import deque
 
 # The code is in a function so it can run faster.
@@ -534,7 +626,7 @@ Fortunately, this is the exact definition of a topological sort!
 
 In this task, we must find the longest path in a DAG.
 
-<Spoiler title="Solution">
+## Solution - Longest Flight Route
 
 Let $dp[v]$ denote the length of the longest path ending at the node $v$.
 Clearly
@@ -570,51 +662,49 @@ int N, M;
 // Does a topological sort
 void compute() {
 	queue<int> q;
-	for(int i = 0; i < N; i++) {
-		if(in_degree[i] == 0) {
-			q.push(i);
-		}
+	for (int i = 0; i < N; i++) {
+		if (in_degree[i] == 0) { q.push(i); }
 	}
 
-	while(!q.empty()) {
+	while (!q.empty()) {
 		int node = q.front();
 		q.pop();
 
-		for(int next : edge[node]) {
+		for (int next : edge[node]) {
 			in_degree[next]--;
-			if(in_degree[next] == 0) q.push(next);
+			if (in_degree[next] == 0) q.push(next);
 		}
 
 		// The below block computes the DP
 		int mx = -999999999;
 		int mx_node = -1;
-		for(int prev : backEdge[node]) {
-			if(dist[prev] + 1 > mx) {
+		for (int prev : backEdge[node]) {
+			if (dist[prev] + 1 > mx) {
 				mx = dist[prev] + 1;
 				mx_node = prev;
 			}
 		}
 
 		dist[node] = mx;
-		if(node == 0) dist[node] = 1;
+		if (node == 0) dist[node] = 1;
 		prev_flight[node] = mx_node;
 	}
-
 }
 
-int main() { // See "General - Fast I/O" for more information about the first two lines in the main function
+int main() {  // See "General - Fast I/O" for more information about the first
+	          // two lines in the main function
 	ios_base::sync_with_stdio(false);
 	cin.tie(NULL);
 
 	cin >> N >> M;
 
-	for(int i = 0; i < N; i++) {
+	for (int i = 0; i < N; i++) {
 		prev_flight[i] = -1;
 		dist[i] = -999999999;
 		in_degree[i] = 0;
 	}
 
-	for(int i = 0; i < M; i++) {
+	for (int i = 0; i < M; i++) {
 		int a, b;
 		cin >> a >> b;
 		a--, b--;
@@ -630,20 +720,20 @@ int main() { // See "General - Fast I/O" for more information about the first tw
 	int temp = N - 1;
 
 	bool contains0 = false;
-	if(temp == 0) contains0 = true;
+	if (temp == 0) contains0 = true;
 
-	while(temp != -1 && dist[temp] >= 0) {
+	while (temp != -1 && dist[temp] >= 0) {
 		answer.push(temp);
 		temp = prev_flight[temp];
-		if(temp == 0) contains0 = true;
+		if (temp == 0) contains0 = true;
 	}
 
-	if(contains0) {
+	if (contains0) {
 		cout << dist[N - 1] << "\n";
-		while(!answer.empty()) {
+		while (!answer.empty()) {
 			cout << answer.top() + 1;
 			answer.pop();
-			if(!answer.empty()) cout << " ";
+			if (!answer.empty()) cout << " ";
 		}
 		cout << "\n";
 	} else {
@@ -659,8 +749,8 @@ int main() { // See "General - Fast I/O" for more information about the first tw
 <JavaSection>
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 // longest_path
 public class Main {
@@ -672,38 +762,38 @@ public class Main {
 	// does a topological sort
 	static void compute() {
 		Queue<Integer> q = new ArrayDeque<Integer>();
-		for(int i = 0; i < N; i++) {
-			if(inDegree[i] == 0) {
-				q.add(i);
-			}
+		for (int i = 0; i < N; i++) {
+			if (inDegree[i] == 0) { q.add(i); }
 		}
 
-		while(!q.isEmpty()) {
+		while (!q.isEmpty()) {
 			int node = q.poll();
 
-			for(int next : edge[node]) {
+			for (int next : edge[node]) {
 				inDegree[next]--;
-				if(inDegree[next] == 0) q.add(next);
+				if (inDegree[next] == 0) q.add(next);
 			}
 
 			// The below block computes the DP
 			int mx = -999999999;
 			int mx_node = -1;
-			for(int prev : backEdge[node]) {
-				if(dist[prev] + 1 > mx) {
+			for (int prev : backEdge[node]) {
+				if (dist[prev] + 1 > mx) {
 					mx = dist[prev] + 1;
 					mx_node = prev;
 				}
 			}
 
 			dist[node] = mx;
-			if(node == 0) dist[node] = 1;
+			if (node == 0) dist[node] = 1;
 			prevFlight[node] = mx_node;
 		}
 	}
 
 	public static void main(String[] args) throws Exception {
-		FastIO sc = new FastIO(System.in); // View "General - Fast I/O" for more information about the "FastIO" class
+		FastIO sc =
+		    new FastIO(System.in);  // View "General - Fast I/O" for more
+		                            // information about the "FastIO" class
 
 		N = sc.nextInt();
 		M = sc.nextInt();
@@ -714,7 +804,7 @@ public class Main {
 		edge = new List[N];
 		backEdge = new List[N];
 
-		for(int i = 0; i < N; i++) {
+		for (int i = 0; i < N; i++) {
 			prevFlight[i] = -1;
 			dist[i] = -999999999;
 			inDegree[i] = 0;
@@ -722,7 +812,7 @@ public class Main {
 			backEdge[i] = new ArrayList<>();
 		}
 
-		for(int i = 0; i < M; i++) {
+		for (int i = 0; i < M; i++) {
 			int a = sc.nextInt() - 1;
 			int b = sc.nextInt() - 1;
 
@@ -735,24 +825,24 @@ public class Main {
 
 		PrintWriter pw = new PrintWriter(System.out);
 
-		ArrayDeque<Integer> answer = new ArrayDeque<>(); // Acts as a Stack
+		ArrayDeque<Integer> answer = new ArrayDeque<>();  // Acts as a Stack
 		int temp = N - 1;
 
 		boolean contains0 = false;
-		if(temp == 0) contains0 = true;
+		if (temp == 0) contains0 = true;
 
-		while(temp != -1 && dist[temp] >= 0) {
+		while (temp != -1 && dist[temp] >= 0) {
 			answer.push(temp);
 			temp = prevFlight[temp];
-			if(temp == 0) contains0 = true;
+			if (temp == 0) contains0 = true;
 		}
 
-		if(contains0) {
+		if (contains0) {
 			pw.println(dist[N - 1]);
-			while(!answer.isEmpty()) {
+			while (!answer.isEmpty()) {
 				pw.print(answer.peekFirst() + 1);
 				answer.pop();
-				if(!answer.isEmpty()) pw.print(" ");
+				if (!answer.isEmpty()) pw.print(" ");
 			}
 			pw.println();
 		} else {
@@ -773,17 +863,13 @@ public class Main {
 			dis = new FileInputStream(fileName);
 		}
 
-		public FastIO(InputStream is) throws Exception {
-			dis = is;
-		}
+		public FastIO(InputStream is) throws Exception { dis = is; }
 
 		int nextInt() throws Exception {
 			int ret = 0;
 
 			byte b;
-			do {
-				b = nextByte();
-			} while (b <= ' ');
+			do { b = nextByte(); } while (b <= ' ');
 			boolean negative = false;
 			if (b == '-') {
 				negative = true;
@@ -801,9 +887,7 @@ public class Main {
 			long ret = 0;
 
 			byte b;
-			do {
-				b = nextByte();
-			} while (b <= ' ');
+			do { b = nextByte(); } while (b <= ' ');
 			boolean negative = false;
 			if (b == '-') {
 				negative = true;
@@ -829,9 +913,7 @@ public class Main {
 			StringBuffer ret = new StringBuffer();
 
 			byte b;
-			do {
-				b = nextByte();
-			} while (b <= ' ');
+			do { b = nextByte(); } while (b <= ' ');
 			while (b > ' ') {
 				ret.appendCodePoint(b);
 				b = nextByte();
@@ -839,18 +921,78 @@ public class Main {
 
 			return ret.toString();
 		}
-
 	}
 	// EndCodeSnip
 }
-
 ```
 
 </JavaSection>
+<PySection>
 
+```py
+from collections import defaultdict, deque
+
+
+def main():
+	"""This code is put in a function for performance reasons."""
+	cities, flights = list(map(int, input().split(" ")))
+	edge = defaultdict(list)
+	back_edge = defaultdict(list)
+	in_degree = [0] * cities
+
+	for _ in range(flights):
+		u, v = list(map(int, input().split(" ")))
+		u, v = u - 1, v - 1
+		edge[u].append(v)
+		in_degree[v] += 1
+		back_edge[v].append(u)
+
+	# Use Kahn's algorithm to do a topological sort
+	topo_order = []
+	queue = deque([i for i, v in enumerate(in_degree) if v == 0])
+	while queue:
+		cur_node = queue.popleft()
+		topo_order.append(cur_node)
+		for neigh_node in edge[cur_node]:
+			in_degree[neigh_node] -= 1
+			if in_degree[neigh_node] == 0:
+				queue.append(neigh_node)
+
+	# Compute the dist array in topological order
+	parent = [-1] * cities
+	dist = [-float("inf")] * cities
+	dist[0] = 1
+	for i in range(len(topo_order)):
+		v = topo_order[i]
+		for prev in back_edge[v]:
+			if dist[prev] + 1 > dist[v]:
+				dist[v] = dist[prev] + 1
+				parent[v] = prev
+
+	if dist[-1] == -float("inf"):
+		print("IMPOSSIBLE")
+	else:
+		# dist[-1] denotes the length of the longest path
+		# ending at the final city. i.e. Lehmälä
+		print(dist[-1])
+
+		# Begin from the final city, trace the parent pointer
+		# to construct the entire path backward
+		cursor = cities - 1
+		path = []
+		while parent[cursor] != -1:
+			path.append(cursor + 1)
+			cursor = parent[cursor]
+		path.append(1)
+
+		# Print the path in the correct order
+		print(*path[::-1])
+
+
+main()
+```
+</PySection>
 </LanguageSection>
-
-</Spoiler>
 
 <!-- However, not all problems clearly give you directed acyclic graphs (ex. [Plat - Cave Paintings](http://usaco.org/index.php?page=viewproblem2&cpid=996)). An important step in many problems is to reduce the statement into a directed acyclic graph. See the editorial of the linked problem for more information.
 

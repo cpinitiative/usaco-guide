@@ -1,0 +1,210 @@
+---
+id: usaco-616
+source: USACO Bronze 2016 February
+title: Circular Barn
+author: Óscar Garries, Varun Ragunath
+---
+
+[Official Analysis](http://www.usaco.org/current/data/sol_cbarn_bronze_feb16.html)
+
+## Video Solution
+By Varun Ragunath
+
+<YouTube id="wqwTZTw86LM" />
+
+<Spoiler title="Video Solution Code">
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int main() {
+	freopen("cbarn.in", "r", stdin);
+	freopen("cbarn.out", "w", stdout);
+	cin.sync_with_stdio(0);
+	cin.tie(0);
+
+	// input
+
+	// have the number of cows and desired positions of each cow
+
+	int n;
+	cin >> n;
+
+	vector<int> cows(n);
+
+	for (int i = 0; i < n; i++) { cin >> cows[i]; }
+
+	// simple brute force
+
+	// check each possible barn we can open
+
+	int ret = (int)1e9;  // stores the current answer
+	// initially set to an abnormally large number
+
+	for (int open_barn = 0; open_barn < n; open_barn++) {
+		int curdist =
+		    0;  // stores the current distance if barn i was the opened barn
+		for (int pos = 0; pos < n; pos++) {
+			// the current barn we are processing is open_barn + pos
+			// however, since it is a circular array
+			// the position may wrap around
+			// index = (open_barn + pos)
+			curdist += pos * cows[(open_barn + pos) % n];
+		}
+		// update the answer
+		ret = min(ret, curdist);
+	}
+
+	cout << ret << '\n';
+
+	return 0;
+}
+```
+</CPPSection>
+
+<JavaSection>
+```java
+import java.io.*;
+import java.util.*;
+public class cbarn {
+	public static void main(String[] args) throws IOException {
+		// initialize file I/O
+		BufferedReader br = new BufferedReader(new FileReader("cbarn.in"));
+		PrintWriter pw =
+		    new PrintWriter(new BufferedWriter(new FileWriter("cbarn.out")));
+		// read in N
+		int n = Integer.parseInt(br.readLine());
+		int[] cows = new int[n];
+		// read in how many cows need to be in each room
+		for (int i = 0; i < n; i++) {
+			cows[i] = Integer.parseInt(br.readLine());
+		}
+		// the answer cannot exceed N * N * 100, since there are at most 100N
+		// cows, each of which can move at most N
+		int ans = n * n * 100;
+		for (int unlock = 0; unlock < n; unlock++) {
+			// assume we unlock the door at index "unlock", compute the distance
+			// all cows travel
+			int currentDistance = 0;
+			for (int offset = 0; offset < n; offset++) {
+				// count how many cows have to walk a distance of "offset"
+				currentDistance += offset * cows[(unlock + offset) % n];
+			}
+			// update the answer
+			if (currentDistance < ans) { ans = currentDistance; }
+		}
+		// print the answer
+		pw.println(ans);
+		// close output stream
+		pw.close();
+		br.close();
+	}
+}
+```
+</JavaSection>
+
+</LanguageSection>
+</Spoiler>
+
+<LanguageSection>
+<CPPSection>
+
+## Implementation
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	freopen("cbarn.in", "r", stdin);
+	freopen("cbarn.out", "w", stdout);
+
+	int room_num;
+	cin >> room_num;
+	vector<int> rooms(room_num);
+	int total_cows = 0;
+	for (int r = 0; r < room_num; r++) {
+		cin >> rooms[r];
+		total_cows += rooms[r];
+	}
+
+	int min_dist = INT32_MAX;
+	for (int unlock = 0; unlock < room_num; unlock++) {
+		int dist = 0;
+		int cows_left = total_cows;
+		for (int r = 0; r < room_num; r++) {
+			cows_left -= rooms[(unlock + r) % room_num];
+			dist += cows_left;
+		}
+		min_dist = min(min_dist, dist);
+	}
+
+	cout << min_dist << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class CBarn {
+	public static void main(String[] args) throws IOException {
+		BufferedReader read = new BufferedReader(new FileReader("cbarn.in"));
+		int roomNum = Integer.parseInt(read.readLine());
+
+		int[] rooms = new int[roomNum];
+		int totalCows = 0;
+		for (int r = 0; r < roomNum; r++) {
+			rooms[r] = Integer.parseInt(read.readLine());
+			totalCows += rooms[r];
+		}
+
+		int minDist = Integer.MAX_VALUE;
+		for (int unlock = 0; unlock < roomNum; unlock++) {
+			int dist = 0;
+			int cowsLeft = totalCows;
+			for (int r = 0; r < roomNum; r++) {
+				cowsLeft -= rooms[(unlock + r) % roomNum];
+				dist += cowsLeft;
+			}
+			minDist = Math.min(minDist, dist);
+		}
+
+		PrintWriter written = new PrintWriter("cbarn.out");
+		written.println(minDist);
+		written.close();
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+with open("cbarn.in") as read:
+	room_num = int(read.readline())
+	rooms = [int(read.readline()) for _ in range(room_num)]
+
+total_cows = sum(rooms)
+
+min_dist = float("inf")
+for unlock in range(room_num):
+	dist = 0
+	cows_left = total_cows
+	for r in range(room_num):
+		cows_left -= rooms[(unlock + r) % room_num]
+		dist += cows_left
+	min_dist = min(min_dist, dist)
+
+print(min_dist, file=open("cbarn.out", "w"))
+```
+
+</PySection>
+</LanguageSection>

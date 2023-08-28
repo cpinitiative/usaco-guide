@@ -1,0 +1,169 @@
+---
+id: ys-MaxIndepSet
+source: YS
+title: Max Indep Set
+author: Shijie Ren, Kevin Sheng
+---
+
+<Spoiler title="Hint 1">
+
+40 is just a bit too big for us to use bitmask DP.
+Could there be a way to reduce the amount of states we could use?
+
+</Spoiler>
+
+<Spoiler title="Hint 2">
+
+Say we split the graph in two halves arbitrarily and solved the problem on each half.
+How could we merge the halves efficiently?
+
+</Spoiler>
+
+<Spoiler title="Hint 3">
+
+Try having the graph subsets keep track of *all* possible cliques within it, not just whether
+the subset itself is a clique or not.
+
+</Spoiler>
+
+<Spoiler title="Solution">
+
+## Explanation
+
+To make things a bit easier to think about, let's consider the complement of the graph instead.
+Then it remains to find the maximum [clique](https://en.wikipedia.org/wiki/Clique_(graph_theory))
+in the graph instead of the maximum set.
+Note that this doesn't change anything about the actual problem- this is just to simplify things a little.
+
+First, let's split the graph in two as previously stated in the hints.
+For all node subsets of each half, we then calculate:
+1. Whether the subset *itself* is a clique
+2. The maximum clique that is a subset of the node subset
+
+Then, when merging the halves, we iterate through all cliques of the first half of the graph
+and check which nodes in the other half are connected to all nodes in the first clique.
+With these nodes in the other half, we can then look at the maximum clique we previously calculated
+and add them to the clique in the first half.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(2^{\frac N2})$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bitset>
+#include <cassert>
+#include <iostream>
+#include <vector>
+
+using std::cout;
+using std::endl;
+using std::vector;
+using ll = long long;
+
+/** @return whether n has a bit set at the position given */
+bool bit_set(const ll &n, int pos) { return n & (1LL << pos); }
+
+/** @return the number given with more bits set */
+ll more_bits(const ll &a, const ll &b) {
+	return __builtin_popcountll(a) > __builtin_popcountll(b) ? a : b;
+}
+
+/** @return a pair with the two things our subsets keep track of */
+std::pair<vector<bool>, vector<ll>> max_cliques(const vector<ll> &adj) {
+	int sz = adj.size();  // just a shorthand
+
+	// This keeps track of whether subsets are cliques themselves
+	vector<bool> valid(1 << sz);
+	valid[0] = true;
+	for (int n1 = 0; n1 < sz; n1++) {
+		valid[1 << n1] = true;
+		for (int n2 = n1 + 1; n2 < sz; n2++) {
+			valid[(1 << n1) + (1 << n2)] = adj[n1] & (1 << n2);
+		}
+	}
+
+	for (int ss = 1; ss < (1 << sz); ss++) {
+		if (__builtin_popcountll(ss) <= 2) { continue; }
+		valid[ss] = true;
+		for (int prev = 0; prev < sz; prev++) {
+			if (bit_set(ss, prev) && !valid[ss & ~(1 << prev)]) {
+				valid[ss] = false;
+				break;
+			}
+		}
+	}
+
+	// And this contains a max-size clique within each subset
+	vector<ll> largest(1 << sz);
+	for (int ss = 0; ss < (1 << sz); ss++) {
+		if (valid[ss]) {
+			largest[ss] = ss;
+			continue;
+		}
+		for (int prev = 0; prev < sz; prev++) {
+			if (bit_set(ss, prev)) {
+				largest[ss] =
+				    more_bits(largest[ss], largest[ss & ~(1 << prev)]);
+			}
+		}
+	}
+
+	return {valid, largest};
+}
+
+int main() {
+	int node_num;
+	int edge_num;
+	std::cin >> node_num >> edge_num;
+
+	vector<ll> adj(node_num, (1LL << node_num) - 1);
+	for (int e = 0; e < edge_num; e++) {
+		int n1, n2;
+		std::cin >> n1 >> n2;
+		adj[n1] &= ~(1LL << n2);
+		adj[n2] &= ~(1LL << n1);
+	}
+
+	// Calculate the relevant arrays for each half
+	int half1 = node_num / 2;
+	vector<ll> half1_adj(half1);
+	for (int n = 0; n < half1; n++) {
+		half1_adj[n] = adj[n] & ((1 << half1) - 1);
+	}
+	auto [valid1, largest1] = max_cliques(half1_adj);
+
+	int half2 = node_num - half1;
+	vector<ll> half2_adj(half2);
+	for (int n = 0; n < half2; n++) { half2_adj[n] = adj[half1 + n] >> half1; }
+	auto [valid2, largest2] = max_cliques(half2_adj);
+
+	ll best_ss = 0;
+	// Iterate through all cliques in the first half
+	for (int ss1 = 0; ss1 < (1 << half1); ss1++) {
+		if (!valid1[ss1]) { continue; }
+		// Get all nodes in the second half connected to all nodes in the first
+		ll ss2 = (1 << half2) - 1;
+		for (int n = 0; n < half1; n++) {
+			if (bit_set(ss1, n)) { ss2 &= adj[n] >> half1; }
+		}
+
+		// And calculate the final answer for this current clique
+		best_ss = more_bits(best_ss, largest1[ss1] + (largest2[ss2] << half1));
+	}
+
+	cout << __builtin_popcountll(best_ss) << endl;
+	for (int i = 0; i < node_num; i++) {
+		if (bit_set(best_ss, i)) {
+			cout << i << ' ';  // Trailing whitespace doesn't matter
+		}
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
+</Spoiler>

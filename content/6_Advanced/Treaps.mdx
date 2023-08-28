@@ -10,15 +10,15 @@ frequency: 2
 ---
 
 <Resources>
-	<Resource 
-		source = "GCP" 
-		title = "15.3 - Treaps" 
+	<Resource
+		source = "GCP"
+		title = "15.3 - Treaps"
 	>
 		Splitting and merging with code
 	</Resource>
-	<Resource 
-		source = "cp-algo" 
-		title = "Treap" 
+	<Resource
+		source = "cp-algo"
+		title = "Treap"
 		url = "/data_structures/treap.html"
 		starred
 	>
@@ -117,7 +117,7 @@ struct Node {
 	int val, pri;
 	// pointer to left and right child (NULL means no child)
 	Node *left, *right;
-	Node(int val) : val(val), pri(rand()), left(NULL), right(NULL) { };
+	Node(int val) : val(val), pri(rand()), left(NULL), right(NULL){};
 } *root;
 
 /**
@@ -170,7 +170,7 @@ For speed / memory, use arrays of fixed size rather than pointers.
 
 ## Implicit Treaps
 
-<FocusProblem problem="sam2"/>
+<FocusProblem problem="sam"/>
 
 In their most basic form, treaps are not very useful (languages like C++
 and Java already have a built-in self-balancing binary tree that is much more
@@ -191,7 +191,7 @@ this value implicitly.
 The index of a node is equal to the number of nodes less than it. It is
 important to note that these nodes can occur both in the left subtree of the
 current node as well as the node's ancestors and the left subtree of its
-ancestors. 
+ancestors.
 
 Note that in an implicit treap, the merge function is largely unchanged because
 it does not depend on the key. In the split operation we go from the root down,
@@ -200,7 +200,7 @@ so we simply maintain a running count of the size left subtree.
 An implementation of the split operation may look something like:
 
 <LanguageSection>
-	
+
 <CPPSection>
 
 ```cpp
@@ -210,30 +210,30 @@ void split(Node *treap, Node *&left, Node *&right, int val, int add = 0) {
 		return;
 	}
 
-	int cur_size = add + size(treap->left); //implicit key
+	int cur_size = add + size(treap->left);  // implicit key
 	if (cur_size < val) {
-		split(treap->right, treap->right, right, key, add + 1 + size(treap->left));
+		split(treap->right, treap->right, right, key,
+		      add + 1 + size(treap->left));
 		left = treap;
 	} else {
-		split(treap->left, left, treap->left, key, add)
-		right = treap;
+		split(treap->left, left, treap->left, key, add) right = treap;
 	}
 	treap->size = 1 + size(treap->left) + size(treap->right);
 }
 ```
 
 </CPPSection>
-	
-</LanguageSection>	
+
+</LanguageSection>
 
 In the split operation, because we are always comparing $\texttt{cur\_size}$ to
 $\texttt{val}$, we can simply eliminate the $\texttt{add}$ parameter by
 subtracting from $\texttt{val}$ each time. Our new code looks like:
 
 <LanguageSection>
-	
+
 <CPPSection>
-	
+
 ```cpp
 void split(Node *treap, Node *&left, Node *&right, int val) {
 	if (!treap) {
@@ -252,8 +252,8 @@ void split(Node *treap, Node *&left, Node *&right, int val) {
 }
 ```
 
-</CPPSection>	
-	
+</CPPSection>
+
 </LanguageSection>
 
 ### Implementation
@@ -270,9 +270,7 @@ struct Node {
 	Node(int c) : val(c), weight(rand()), size(1), left(NULL), right(NULL) {}
 } *root;
 
-int size(Node *treap) {
-	return treap ? treap->size : 0;
-}
+int size(Node *treap) { return treap ? treap->size : 0; }
 
 void split(Node *treap, Node *&left, Node *&right, int val) {
 	if (!treap) {
@@ -310,9 +308,9 @@ void merge(Node *&treap, Node *left, Node *right) {
 	treap->size = 1 + size(treap->left) + size(treap->right);
 }
 ```
-	
-</CPPSection>	
-	
+
+</CPPSection>
+
 </LanguageSection>
 
 With split and merge, how do we implement the additional operations?
@@ -352,9 +350,7 @@ struct Node {
 	Node(char c) : val(c), weight(rand()), size(1), left(NULL), right(NULL) {}
 } *root;
 
-inline int size(Node *treap) {
-	return treap ? treap->size : 0;
-}
+inline int size(Node *treap) { return treap ? treap->size : 0; }
 
 void split(Node *treap, Node *&left, Node *&right, int val) {
 	if (!treap) {
@@ -392,7 +388,7 @@ void merge(Node *&treap, Node *left, Node *right) {
 	treap->size = 1 + size(treap->left) + size(treap->right);
 }
 
-ostream& operator<<(ostream &os, Node *n) {
+ostream &operator<<(ostream &os, Node *n) {
 	if (!n) return os;
 	os << n->left;
 	os << n->val;
@@ -405,9 +401,7 @@ int main() {
 	string S;
 
 	cin >> N >> Q >> S;
-	for (char c : S) {
-		merge(root, root, new Node(c));
-	}
+	for (char c : S) { merge(root, root, new Node(c)); }
 	while (Q--) {
 		int l, r;
 		cin >> l >> r;
@@ -426,20 +420,9 @@ int main() {
 </LanguageSection>
 
 ## Problems
-	
+
 <Problems problems="impl" />
 
-- [CSES - Cut and Paste](https://cses.fi/problemset/task/2072)
-- [CSES - Substring Reversal](https://cses.fi/problemset/task/2073)
-- [CSES - Reversals and Sums](https://cses.fi/problemset/task/2074)
-- [NOI - Maintaining a Sequence](https://dmoj.ca/problem/noi05p2)
-- [Old Gold - Airplane Boarding](http://www.usaco.org/index.php?page=viewproblem2&cpid=402)
-- [CSA - Strings](https://csacademy.com/contest/archive/task/strings/)
-- [HE - Points & Distances](https://www.hackerearth.com/problem/algorithm/septembereasy-points-and-distances-d30d0e6b/description/)
-- [IOI 2013 - Game](https://oj.uz/submission/242393)
-- [Algorithms Thread Treaps Contest](https://codeforces.com/gym/102787)
-
 <IncompleteSection>
-- Add merging treaps
-- Format problems
+Add merging treaps and lazy propogation
 </IncompleteSection>

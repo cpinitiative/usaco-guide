@@ -1,0 +1,99 @@
+---
+id: ks-checksum
+source: Kick Start 2021 Round A
+title: Check Sum
+author: Neo Wang
+---
+
+[Official Analysis](https://zibada.guru/gcj/ks2021a/problems/#analysis-D)
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N^2\log N)$
+
+Since the official analysis is well-documented and covers the problem in its
+entirety, read that first. The following notes clarify a few details of the
+implementation.
+
+- Firstly, note that the number of rows and columns is equivalent to $2N$,
+  because the matrix is square. Therefore, when constructing our graph, we can
+  simply add $N$ to distinguish row $i$ from column $j$.
+
+> Of course, the problem of finding a minimum weight cycle breaking edge set is
+> equivalent to the well known problem of finding a maximum weight spanning
+> forest of $G$, except that we would build the complement set of edges to keep
+> rather than the set of edges to remove.
+
+- Notice that the edges that we should remove - which are highlighted in the
+  diagram in red - are equivalent to any edges that are not included in the
+  maximum spanning tree of graph $G$. Therefore, our answer is equivalent to the
+  difference between the total sum of all the edges and the those that are in
+  the maximum spanning tree.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+// CodeSnip{CPP Short Template}
+
+struct DSU {
+	vi e;
+	void init(int N) { e = vi(N, -1); }
+	int get(int x) { return e[x] < 0 ? x : e[x] = get(e[x]); }
+	bool sameSet(int a, int b) { return get(a) == get(b); }
+	int size(int x) { return -e[get(x)]; }
+	bool unite(int x, int y) {  // union by size
+		x = get(x), y = get(y);
+		if (x == y) return 0;
+		if (e[x] > e[y]) swap(x, y);
+		e[x] += e[y];
+		e[y] = x;
+		return 1;
+	}
+};
+
+template <class T> T kruskal(int N, vector<pair<T, pi>> ed) {
+	sort(ed.rbegin(), ed.rend());
+	T ans = 0;
+	DSU D;
+	D.init(N);  // edges that unite are in MST
+	for (auto a : ed)
+		if (D.unite(a.s.f, a.s.s)) ans += a.f;
+	return ans;
+}
+
+void solve(int tc) {
+	int n;
+	cin >> n;
+	vector<vi> A(n, vi(n)), B(n, vi(n));
+	for (int i = 0; i < n; i++)
+		for (int j = 0; j < n; j++) cin >> A[i][j];
+	for (int i = 0; i < n; i++)
+		for (int j = 0; j < n; j++) cin >> B[i][j];
+	vi row(n), col(n);
+	for (int i = 0; i < n; i++) cin >> row[i];
+	for (int i = 0; i < n; i++) cin >> col[i];
+	vector<pair<int, pi>> edges;
+	int total = 0;
+	for (int i = 0; i < n; i++)
+		for (int j = 0; j < n; j++) {
+			if (A[i][j] == -1) {
+				// n + j is used to distinguish rows from cols
+				edges.pb({B[i][j], {i, n + j}});
+				total += B[i][j];
+			}
+		}
+	cout << "Case #" << tc << ": " << total - kruskal(2 * n, edges) << "\n";
+}
+int main() {
+	setIO();
+	int n;
+	cin >> n;
+	for (int i = 1; i <= n; i++) solve(i);
+}
+```
+
+</CPPSection>
+
+</LanguageSection>

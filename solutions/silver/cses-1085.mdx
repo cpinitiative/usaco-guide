@@ -1,0 +1,197 @@
+---
+id: cses-1085
+source: CSES
+title: Array Division
+author: Michael Cao, George Pong, Chuyang Wang
+---
+
+## Explanation
+
+In this problem, we're asked to divide an array into $k$ subarrays such that the
+maximum sum of a subarray is minimized.
+
+Let's begin by making an important observation. First of all, if you can divide
+an array such that the maximum sum is at most $x$, you can also divide the array
+such that the maximum sum is at most $y > x$ with the same division.
+
+Now, given some maximum sum $x$, we can check whether a division is possible
+using a greedy algorithm. If we can divide the array into $s < k$ subarrays,
+then we can divide it into $k$ subarrays without increasing the maximum sum of a
+subarray. Therefore, we can greedily create subarrays as long as the sum of the
+subarray does not exceed $x$, and check if the number of subarrays is $\leq k$.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N \log N)$
+
+<Warning>
+
+Make sure to use 64-bit numbers to avoid overflow!
+Implementing the greedy algorithm also requires some caution.
+
+</Warning>
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using ll = long long;
+
+// MAX_N * MAX_X
+ll MAX_SUM = 2e5 * 1e9;
+
+/**
+ * true if the given `arr` can be divided into `k` subarrays where the sum of
+ * each subarray is at most `max_sum`
+ */
+bool is_possible(const vector<ll> &arr, const int k, ll max_sum) {
+	// # of subarrays needed if sum of each subarray is at most max_sum
+	int subarr_count = 0;
+	// sum of the current subarray
+	ll cur_sum = 0;
+
+	for (const int &x : arr) {
+		if (x > max_sum) { return false; }
+
+		if (cur_sum + x > max_sum) {
+			subarr_count++;
+			cur_sum = 0;
+		}
+		cur_sum += x;
+	}
+	if (cur_sum > 0) { subarr_count++; }
+
+	return subarr_count <= k;
+}
+
+int main() {
+	int n, k;
+	cin >> n >> k;
+	vector<ll> arr(n);
+	for (ll &i : arr) { cin >> i; }
+
+	ll l = 1, r = MAX_SUM;
+	while (l < r) {
+		ll mid = (l + r) / 2;
+		if (is_possible(arr, k, mid)) {
+			r = mid;
+		} else {
+			l = mid + 1;
+		}
+	}
+	cout << l << '\n';
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.StringTokenizer;
+
+public class ArrayDivision {
+	// MAX_N * MAX_X
+	static final long MAX_SUM = (long)(2e5 * 1e9);
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader br =
+		    new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int n = Integer.parseInt(st.nextToken());
+		int k = Integer.parseInt(st.nextToken());
+
+		st = new StringTokenizer(br.readLine());
+		long[] arr = new long[n];
+		for (int i = 0; i < n; i++) { arr[i] = Long.parseLong(st.nextToken()); }
+		br.close();
+
+		long l = 1, r = MAX_SUM;
+		while (l < r) {
+			long mid = (l + r) / 2;
+			if (is_possible(arr, k, mid)) {
+				r = mid;
+			} else {
+				l = mid + 1;
+			}
+		}
+		System.out.println(l);
+	}
+
+	/**
+	 * true if the given `arr` can be divided into `k` subarrays where the sum
+	 * of each subarray is at most `max_sum`
+	 */
+	private static boolean is_possible(long[] arr, int k, long max_sum) {
+		// # of subarrays needed if sum of each subarray is at most max_sum
+		int subarr_count = 0;
+		// sum of the current subarray
+		long cur_sum = 0;
+		for (long x : arr) {
+			if (x > max_sum) { return false; }
+
+			if (cur_sum + x > max_sum) {
+				subarr_count++;
+				cur_sum = 0;
+			}
+			cur_sum += x;
+		}
+		if (cur_sum > 0) { subarr_count++; }
+
+		return subarr_count <= k;
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+n, k = map(int, input().split())
+nums = list(map(int, input().split()))
+
+
+def can_divide_arrays(max_sum: int) -> bool:
+	"""
+	Checks if it is possible to divide nums into k subarrays with each
+	each subarray having a maximum sum of max_sum
+
+	:param max_sum: The maximum sum of each subarray
+	:returns: If it is possible to divide nums with the above conditions.
+	"""
+	num_subarrays = 0
+	cur_subarr_sum = 0
+	for num in nums:
+		if cur_subarr_sum + num <= max_sum:
+			cur_subarr_sum += num
+		elif num <= max_sum:
+			num_subarrays += 1
+			cur_subarr_sum = num
+			if num_subarrays > k:
+				return False
+		else:
+			return False
+
+	# last sub seq is not counted in the loop
+	num_subarrays += cur_subarr_sum > 0
+
+	return num_subarrays <= k
+
+
+left, right = 0, sum(nums)
+
+while left < right:
+	mid = (left + right) // 2
+	if can_divide_arrays(mid):
+		right = mid
+	else:
+		left = mid + 1
+
+print(left)
+```
+
+</PySection>
+</LanguageSection>

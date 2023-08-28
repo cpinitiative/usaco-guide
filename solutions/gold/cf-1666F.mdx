@@ -1,0 +1,141 @@
+---
+id: cf-1666F
+source: CF
+title: Fancy Stack
+author: Aakash Gokhale
+---
+
+[Official Editorial](https://codeforces.com/contest/1666/attachments/download/15881/nerc-2021-tutorial.pdf)
+
+## Explanation
+
+First we can solve an easier version of the problem where all the blocks are distinct.
+
+Notice that if we process the blocks from largest to smallest, we can incrementally fill the even positions, starting from the bottom and working our way up to the top.
+In addition, we can fill in the odd positions with whatever blocks we don't use in the even positions.
+
+We can do this problem using dynamic programming.
+Let $dp[i][j]$ be the number of ways to use the first $i$ blocks and place $j$ of those in the $j$ bottommost even positions (and $i - j$ of them in the odd position).
+
+There are two transitions.
+
+1. To $dp[i + 1][j + 1]$. If we add another even block, then there is only one place to put it.
+
+2. To $dp[i + 1][j]$. In this case we add the block to an odd position.
+Notice that we must place a block in between already placed larger blocks because of the condition that an even block is greater than its two neigboring odd blocks and later placed blocks will always be smaller.
+This means that there will be $\max(0, j - 1)$ positions to insert the block. When all $\frac{n}{2}$ even blocks are placed you can also insert it at the top of the stack.
+We also have to subtract out the $i - j$ blocks that are already placed in odd positions.
+
+When the blocks can be of the same size, let's process them in groups of blocks that are all the same size.
+
+There are still two possible transitions.
+Either we put one block into an even position and the remaining into odd or all of them into odd positions.
+
+To determine the number of ways to insert the blocks into the odd positions, we can evaluate ${\text{number of open spots} \choose \text{number of spots that we want to fill}}$.
+
+Our final answer will be $dp[n][\frac{n}{2}]$.
+
+**Time Complexity:** $\mathcal{O}(n^2)$
+
+## Implementation
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using ll = long long;
+
+const ll MOD = 998244353;
+const int MAXN = 5000;
+
+// https://usaco.guide/gold/combo?lang=cpp
+long long fac[MAXN + 1];
+long long inv[MAXN + 1];
+
+/** Computes x^y modulo p in O(log p) time. */
+long long exp(long long x, long long y, long long p) {
+	long long res = 1;
+	x %= p;
+	while (y != 0) {
+		if (y % 2 == 1) {
+			res *= x;
+			res %= p;
+		}
+		x *= x;
+		x %= p;
+		y >>= 1;
+	}
+	return res;
+}
+
+/** Precomputes n! from 0 to MAXN. */
+void factorial(long long p) {
+	fac[0] = 1;
+	for (int i = 1; i <= MAXN; i++) { fac[i] = fac[i - 1] * i % p; }
+}
+
+/**
+ * Precomputes all modular inverse factorials from 0 to MAXN
+ * in O(n + log p) time
+ */
+void inverses(long long p) {
+	inv[MAXN] = exp(fac[MAXN], p - 2, p);
+	for (int i = MAXN; i >= 1; i--) { inv[i - 1] = inv[i] * i % p; }
+}
+
+/** Computes nCr mod p */
+long long choose(long long n, long long r, long long p) {
+	return fac[n] * inv[r] % p * inv[n - r] % p;
+}
+
+void solve() {
+	int n;
+	cin >> n;
+	vector<int> a(n);
+	for (int &i : a) { cin >> i; }
+	reverse(a.begin(), a.end());
+
+	vector<pair<int, ll>> b;
+	for (int i = 0; i < n; i++) {
+		if (b.size() > 0 && b.back().first == a[i]) {
+			b.back().second++;
+		} else {
+			b.push_back({a[i], 1ll});
+		}
+	}
+
+	// i greatest are used, j are even spots, i - j are odd spots
+	vector<vector<int>> dp(n + 1, vector<int>(n + 1, 0ll));
+	dp[0][0] = 1;
+	ll size = 0;
+	for (int i = 0; i < ((int)b.size()); i++) {
+		for (ll j = 0; j <= size; j++) {
+			ll positions = max(j - 1, 0ll) + (j == n / 2) - (size - j);
+			// k in the even position and b[i].second - k in the odd
+			for (ll k = 0; k <= 1; k++) {
+				if (j + k > n / 2) { continue; }
+				dp[size + b[i].second][j + k] +=
+				    choose(positions, b[i].second - k, MOD) * dp[size][j] % MOD;
+				dp[size + b[i].second][j + k] %= MOD;
+			}
+		}
+		size += b[i].second;
+	}
+
+	cout << dp[n][n / 2] << endl;
+}
+
+int main() {
+	factorial(MOD);
+	inverses(MOD);
+	int test_num;
+	cin >> test_num;
+	for (int t = 0; t < test_num; t++) { solve(); }
+}
+```
+
+</CPPSection>
+</LanguageSection>

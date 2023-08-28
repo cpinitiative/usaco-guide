@@ -1,0 +1,147 @@
+---
+id: usaco-863
+source: USACO Gold 2018 December
+title: Teamwork
+author: Sofia Yang, Ryan Chou
+---
+
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_teamwork_gold_dec18.html)
+
+
+<Spoiler title="Hint 1">
+
+Notice the constraints on the input, $\mathcal{O}(N \cdot K)$ is feasible. Meaning, for each of the $N$ cows, we can recalculate the most optimal sums of skill levels $K$ times
+
+</Spoiler>
+
+<Spoiler title="Hint 2">
+
+We notice that we just need to find the best possible sums for the first $i$ cows as we iterate $i$ from $1$ to $N$. The $K$ process time for each cow comes from when we iterate through the possibility that they occupy in a group of size from $1$ to $K$.
+
+</Spoiler>
+
+<Spoiler title="Solution">
+
+## Explanation
+
+The important observation to make is that we don't need to store the groupings of cows, just the best possible sum so far. This hints at a [DP](/gold/intro-dp). Let $\texttt{dp[i]} =$ the maximum skill level for cows up to $i$, then we'll update $\texttt{dp[i]}$ for every previous cow down to $i - k + 1$, where $k$ represents the team size.
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N \cdot K)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	freopen("teamwork.in", "r", stdin);
+	freopen("teamwork.out", "w", stdout);
+
+	int n, k;
+	cin >> n >> k;
+	vector<int> skill(n);
+	for (int i = 0; i < n; i++) { cin >> skill[i]; }
+
+	vector<int> dp(n, -1);
+	for (int i = 0; i < n; i++) {
+		// by not joining it to a team, the default value is just skill[i]
+		int cur = skill[i];
+		for (int j = i; j >= (i - k + 1) && ~j; j--) {
+			cur = max(cur, skill[j]);
+			/*
+			 * update answer: dp[i] = max(dp[i],
+			 * the skill of joining this cow to a team + all of the previous
+			 * sums)
+			 */
+			if (j > 0) {
+				dp[i] = max(dp[i], dp[j - 1] + (cur * (i - j + 1)));
+			} else {
+				dp[i] = max(dp[i], cur * (i - j + 1));
+			}
+		}
+	}
+	cout << dp[n - 1] << endl;
+}
+```
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Teamwork {
+	public static void main(String[] args) throws IOException {
+		Kattio kattio = new Kattio("teamwork");
+		int cows = kattio.nextInt();
+		int teamSize = kattio.nextInt();
+		int[] input = new int[cows];
+		for (int i = 0; i < cows; i++) { input[i] = kattio.nextInt(); }
+
+		/*
+		 * dp[i] is the maximum sum of skill level of the first i cows,
+		 * if the last team ends at index i.
+		 */
+		int[] dp = new int[cows];
+		dp[0] = input[0];
+
+		for (int right = 1; right < cows; right++) {
+			// The max skill of the cows in the new team.
+			int maxSkill = input[right];
+			for (int left = right; left >= 0; left--) {
+				int currSize = right - left + 1;
+				if (currSize > teamSize) { break; }
+				maxSkill = Math.max(maxSkill, input[left]);
+				/*
+				 * The 'new' result is the sum of the skill levels of the
+				 * previous teams plus the skill level of the current team.
+				 */
+				if (left == 0) {
+					dp[right] = Math.max(dp[right], maxSkill * currSize);
+				} else {
+					dp[right] =
+					    Math.max(dp[right], dp[left - 1] + maxSkill * currSize);
+				}
+			}
+		}
+		kattio.println(dp[cows - 1]);
+		kattio.close();
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+</JavaSection>
+<PySection>
+
+```py
+n, k = map(int, input().split())
+l = []
+for i in range(n):
+	l.append(int(input()))
+
+dp = [-1] * n
+dp[0] = l[0]
+for i in range(n):
+	# by not joining it to a team, the default value is just l[i]
+	mx = l[i]
+	for j in range(i, -1, -1):
+		cr = i - j + 1
+		if cr > k:
+			break
+		mx = max(mx, l[j])
+		# update answer: dp[i] = max(dp[i],the skill of joining this cow to a team + all of the previous sums)
+		if j == 0:
+			dp[i] = max(dp[i], mx * cr)
+		else:
+			dp[i] = max(dp[i], dp[j - 1] + (mx * cr))
+print(dp[n - 1])
+```
+
+</PySection>
+</LanguageSection>
+
+</Spoiler>

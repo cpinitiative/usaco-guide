@@ -1,0 +1,153 @@
+---
+id: usaco-918
+source: USACO Silver 2019 February
+title: Sleepy Cow Herding
+author: Qi Wang, Melody Yu
+---
+
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_herding_silver_feb19.html)
+
+## Video Solution
+
+By Melody Yu
+
+Note: The video solution might not be the same as other solutions. Code in C++.
+
+<YouTube id="BvgV7f3pwcI" />
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N \log N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	freopen("herding.in", "r", stdin);
+
+	int n;
+	cin >> n;
+	vector<int> herd(n);
+	for (int i = 0; i < n; ++i) { cin >> herd[i]; }
+	sort(herd.begin(), herd.end());
+
+	int min_moves = INT32_MAX;
+	if (herd[n - 2] - herd[0] == n - 2 && herd[n - 1] - herd[n - 2] > 2) {
+		min_moves = 2;
+	} else if (herd[n - 1] - herd[1] == n - 2 && herd[1] - herd[0] > 2) {
+		min_moves = 2;
+	} else {
+		// min is the patch of length n that has the least # of gaps
+		int farthest_cow = 0;
+		for (int curr_cow = 0; curr_cow < n; ++curr_cow) {
+			while (farthest_cow + 1 < n &&
+			       herd[farthest_cow + 1] - herd[curr_cow] < n) {
+				farthest_cow++;
+			}
+			min_moves = min(min_moves, n - (farthest_cow - curr_cow + 1));
+		}
+	}
+
+	// calculate the number of empty cells
+	int gap_num = 0;
+	for (int i = 1; i < n; i++) { gap_num += herd[i] - herd[i - 1] - 1; }
+	// max is the maximum of the total gap minus either the first or last gap
+	int max_moves = max(gap_num - (herd[1] - herd[0] - 1),
+	                    gap_num - (herd[n - 1] - herd[n - 2] - 1));
+
+	freopen("herding.out", "w", stdout);
+	cout << min_moves << '\n' << max_moves << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Herding {
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new FileReader("herding.in"));
+
+		int n = Integer.parseInt(br.readLine());
+		int[] herd = new int[n];
+		for (int i = 0; i < n; i++) {
+			herd[i] = Integer.parseInt(br.readLine());
+		}
+		Arrays.sort(herd);
+		br.close();
+
+		int minMoves = Integer.MAX_VALUE;
+		if (herd[n - 2] - herd[0] == n - 2 && herd[n - 1] - herd[n - 2] > 2) {
+			minMoves = 2;
+		} else if (herd[n - 1] - herd[1] == n - 2 && herd[1] - herd[0] > 2) {
+			minMoves = 2;
+		} else {
+			// min is the patch of length n that has the least # of gaps
+			int farthestCow = 0;
+			for (int currCow = 0; currCow < n; currCow++) {
+				while (farthestCow + 1 < n &&
+				       herd[farthestCow + 1] - herd[currCow] < n) {
+					farthestCow++;
+				}
+				minMoves = Math.min(minMoves, n - (farthestCow - currCow + 1));
+			}
+		}
+
+		// calculate the number of empty cells
+		int gapNum = 0;
+		for (int i = 1; i < n; i++) { gapNum += herd[i] - herd[i - 1] - 1; }
+		// max is the maximum of the total gap minus either the first or last
+		// gap
+		int maxMoves = Math.max(gapNum - (herd[1] - herd[0] - 1),
+		                        gapNum - (herd[n - 1] - herd[n - 2] - 1));
+
+		PrintWriter pw = new PrintWriter("herding.out");
+		pw.println(minMoves);
+		pw.println(maxMoves);
+		pw.close();
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+with open("herding.in") as read:
+	n = int(read.readline())
+	herd = sorted(int(read.readline()) for _ in range(n))
+
+min_moves = float("inf")
+if herd[n - 2] - herd[0] == n - 2 and herd[n - 1] - herd[n - 2] > 2:
+	min_moves = 2
+elif herd[n - 1] - herd[1] == n - 2 and herd[1] - herd[0] > 2:
+	min_moves = 2
+else:
+	# min is the patch of length n that has the least # of gaps
+	farthest_cow = 0
+	for curr_cow in range(n):
+		while farthest_cow + 1 < n and herd[farthest_cow + 1] - herd[curr_cow] < n:
+			farthest_cow += 1
+		min_moves = min(min_moves, n - (farthest_cow - curr_cow + 1))
+
+# calculate the number of empty cells
+gap_num = 0
+for curr_cow in range(1, n):
+	gap_num += herd[curr_cow] - herd[curr_cow - 1] - 1
+# max is the maximum of the total gap minus either the first or last gap
+max_moves = max(
+	gap_num - (herd[1] - herd[0] - 1), gap_num - (herd[n - 1] - herd[n - 2] - 1)
+)
+
+print(min_moves, max_moves, sep="\n", file=open("herding.out", "w"))
+```
+
+</PySection>
+</LanguageSection>

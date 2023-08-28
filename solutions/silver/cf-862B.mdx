@@ -1,0 +1,119 @@
+---
+id: cf-862B
+source: CF
+title: Bipartiteness
+author: Ryan Chou
+---
+
+[Official Editorial](https://codeforces.com/blog/entry/54590)
+
+## Explanation
+Given the number of colored and uncolored nodes, the maximum number of edges that can exist is $c \cdot uc$ where $c$ represents the number of colored nodes, and $uc$ represents the number of uncolored nodes.
+
+This is because an edge can be drawn from each colored node to every other uncolored node. However, we already have $n - 1$ edges, so the answer is $(c \cdot uc) - (n - 1)$.
+
+To find the number of colored and uncolored nodes, we can run a [DFS](/silver/graph-traversal), incrementing the number of colored and uncolored nodes as we traverse the graph.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N + M)$
+
+<LanguageSection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Bipartiteness {
+	public static ArrayList<Integer>[] adj;
+
+	// counters for colored and uncolored nodes
+	public static long[] count = {0, 0};
+
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio();
+
+		int n = io.nextInt();
+
+		// +1 for 1-indexed nodes
+		adj = new ArrayList[n + 1];
+
+		for (int i = 0; i <= n; i++) { adj[i] = new ArrayList<>(); }
+
+		for (int i = 0; i < n - 1; i++) {
+			int u = io.nextInt();
+			int v = io.nextInt();
+
+			adj[u].add(v);
+			adj[v].add(u);
+		}
+
+		dfs(1, 0, false);
+
+		// ans = (all possible edges) - (existing edges)
+		long ans = (count[0] * count[1]) - (n - 1);
+
+		io.println(ans);
+		io.close();
+	}
+
+	public static void dfs(int node, int parent, boolean color) {
+		count[color ? 0 : 1]++;
+
+		for (int u : adj[node]) {
+			// if the adjacent node isn't the parent,
+			// visit that node with the opposite color
+			if (u != parent) { dfs(u, node, !color); }
+		}
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+</JavaSection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <vector>
+using namespace std;
+
+const int MAX_N = 100000;
+
+// +1 for 1-indexed nodes
+vector<int> adj[MAX_N + 1];
+
+// counters for colored and uncolored nodes
+long long c = 0, uc = 0;
+
+void dfs(int node, int parent, bool col) {
+	(col ? c : uc)++;
+
+	for (int u : adj[node]) {
+		// if the adjacent node isn't the parent,
+		// visit that node with the opposite color
+		if (u != parent) { dfs(u, node, !col); }
+	}
+}
+
+int main() {
+	int n;
+	cin >> n;
+
+	for (int i = 0; i < n - 1; i++) {
+		int u, v;
+		cin >> u >> v;
+		adj[u].push_back(v);
+		adj[v].push_back(u);
+	}
+
+	dfs(1, 0, 0);
+
+	cout << c * uc - (n - 1) << "\n";
+}
+```
+</CPPSection>
+
+</LanguageSection>

@@ -40,33 +40,123 @@ number line?) never explicitly mentioned in module
 
 **Time Complexity:** $\mathcal{O}(n\log n)$
 
-We will use a divide and conquer algorithm. First, sort the points by x-coordinate. Now, let $P$ be the subarray of points in the current step. Then, partition $P$ into two groups $L$ and $R$ representing the left and right halves of $P$. Let $\delta_l$ and $\delta_r$ be the answer of $L$ and $R$ respectively, and define $\delta$ as $\min(\delta_l, \delta_r)$. 
+We will use a divide and conquer algorithm. First, sort the points by x-coordinate. Now, let $P$ be the subarray of points in the current step. Then, partition $P$ into two groups $L$ and $R$ representing the left and right halves of $P$. Let $\delta_l$ and $\delta_r$ be the answer of $L$ and $R$ respectively, and define $\delta$ as $\min(\delta_l, \delta_r)$.
 
 Then $\delta$ is the upperbound of the answer. If a more optimal answer exists, it must bridge the two halves of the array (i.e. one of its endpoints is in $L$ and the other is in $R$). Let $mx$ be the x-coordinate of any median of $P$. Define two sets $L'$ and $R'$ such that $L' = \{p_i | x_i \leq mx, mx - x_i \leq \delta\}$ and $R' = \{p_i | x_i \geq mx, x_i - mx \leq \delta\}$
 
-A brute force matching algorithm that computes $\texttt{dist}(p, q)$ for all $p \in L'$, $q \in R'$ would have a worst-case runtime of $(\frac n 2)^2 = \mathcal{O}(n^2)$ (recall that $L'$ and $R'$ may have up to $\frac N 2$ points). However, because we are searching for distances of at most $\delta$, it suffices for each $p \in L'$ to check all points $\{q | q \in R', p.y - \delta \leq q.y \leq p.y + \delta\}$. 
+A brute force matching algorithm that computes $\texttt{dist}(p, q)$ for all $p \in L'$, $q \in R'$ would have a worst-case runtime of $(\frac n 2)^2 = \mathcal{O}(n^2)$ (recall that $L'$ and $R'$ may have up to $\frac N 2$ points). However, because we are searching for distances of at most $\delta$, it suffices for each $p \in L'$ to check all points $\{q | q \in R', p.y - \delta \leq q.y \leq p.y + \delta\}$.
 
 It can be shown that for each point $p$, there is a constant number of points that satisfy this property. Because each point in $R'$ is at least $\delta_r \geq \delta$ apart, arranging the points in the worst case would result in 6 points in the corners and sides of the bounding rectangle.
 
 ![Worst-case bounding box arrangement](./assets/sweeplineboundingbox.png)
 <!--- https://i.imgur.com/FuvFPUR.png -->
 
-To achieve the desired $\mathcal{O}(n)$ complexity per layer, we need to be able to efficiently get the points sorted by both x-coordinate (for dividing $P$) and y-coordinate (for matching between $L'$ and $R'$). This can be achieved by taking advantage of the merge-sort-like algorithm: sort by x-coordinate in the beginning, then for each step, merge the y-coordinates recursively. 
+To achieve the desired $\mathcal{O}(n)$ complexity per layer, we need to be able to efficiently get the points sorted by both x-coordinate (for dividing $P$) and y-coordinate (for matching between $L'$ and $R'$). This can be achieved by taking advantage of the merge-sort-like algorithm: sort by x-coordinate in the beginning, then for each step, merge the y-coordinates recursively.
 
-Because each step now runs in linear time and there is a total of $\lceil \log n \rceil$ steps, by the [master theorem](https://en.wikipedia.org/wiki/Master_theorem_(analysis_of_algorithms)) our solution now runs in $\mathcal{O}(n\log n)$. 
+Because each step now runs in linear time and there is a total of $\lceil \log n \rceil$ steps, by the [master theorem](https://en.wikipedia.org/wiki/Master_theorem_(analysis_of_algorithms)) our solution now runs in $\mathcal{O}(n\log n)$.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+struct Point {
+	long double x, y;
+	bool operator<(const Point &other) {
+		if (x == other.x) { return y < other.y; }
+		return x < other.x;
+	}
+};
+
+const pair<Point, Point> INF{{-1e9, -1e9}, {1e9, 1e9}};
+
+long double dist(const pair<Point, Point> &a) {
+	long double d1 = a.first.x - a.second.x;
+	long double d2 = a.first.y - a.second.y;
+	return sqrt(d1 * d1 + d2 * d2);
+}
+
+pair<Point, Point> get_closest_points(const pair<Point, Point> &a,
+                                      const pair<Point, Point> &b) {
+	return dist(a) < dist(b) ? a : b;
+}
+
+/**
+ * Brute force for points with near
+ * the median point in the sorted array
+ */
+pair<Point, Point> strip_solve(vector<Point> &points) {
+	pair<Point, Point> ans = INF;
+	for (int i = 0; i < (int)points.size(); i++) {
+		for (int j = i + 1; j < (int)points.size() && j - i < 9; j++) {
+			ans = get_closest_points(ans, {points[i], points[j]});
+		}
+	}
+	return ans;
+}
+
+/** Solve the problem for range [l, r] */
+pair<Point, Point> solve(vector<Point> &points, int l, int r) {
+	if (l == r) { return INF; }
+	int mid = (l + r) / 2;
+
+	// The smallest distance in range [l, mid]
+	pair<Point, Point> ans_left = solve(points, l, mid);
+	// The smallest distance in range [mid+1, r]
+	pair<Point, Point> ans_right = solve(points, mid + 1, r);
+	pair<Point, Point> ans;
+
+	ans = get_closest_points(ans_left, ans_right);
+	long double delta = dist(ans);
+
+	Point mid_point = points[mid];
+	vector<Point> strip;
+	for (int i = l; i < r; i++) {
+		if (abs(points[i].x - mid_point.x) <= delta) {
+			strip.push_back(points[i]);
+		}
+	}
+	sort(strip.begin(), strip.end(), [](Point a, Point b) {
+		return a.y < b.y || (a.y == b.y && a.x < b.x);
+	});
+	return get_closest_points(ans, strip_solve(strip));
+}
+
+int main() {
+	int n;
+	while (scanf("%d", &n) && n > 0) {
+		vector<Point> v;
+		for (int i = 0; i < n; i++) {
+			long double x, y;
+			scanf("%Lf %Lf", &x, &y);
+			v.push_back({x, y});
+		}
+		sort(v.begin(), v.end());
+		pair<Point, Point> ans = solve(v, 0, v.size());
+		printf("%0.2Lf %0.2Lf %0.2Lf %0.2Lf\n", ans.first.x, ans.first.y,
+		       ans.second.x, ans.second.y);
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>
 
 ### Solution 2
 
 **Time Complexity:** $\mathcal{O}(n\log n)$
 
-Extending Solution 1, we can use a set instead of divide and conquer. Once again, we define $\delta$ as the shortest distance between two points so far. After sorting the points by x-coordinate, we iterate through them while maintaining a running window containing the y-coordinates of all points in $[x-\delta,x]$. 
+Extending Solution 1, we can use a set instead of divide and conquer. Once again, we define $\delta$ as the shortest distance between two points so far. After sorting the points by x-coordinate, we iterate through them while maintaining a running window containing the y-coordinates of all points in $[x-\delta,x]$.
 
 ![Set Solution Sweep Line Bounding Box](./assets/setsolutionboundingbox.png)
 <!--- https://imgur.com/a/iA4cVvk -->
 
-As we visit point $P$, we utilize the set to consider all points with y-coordiate in $[P_y-\delta, P_y+\delta]$. The set contains $[P_x-\delta, P_x]$ because of how it is maintained as a running window. Now we have the same bounding box as Solution 1, with at most 6 points inside. 
+As we visit point $P$, we utilize the set to consider all points with y-coordiate in $[P_y-\delta, P_y+\delta]$. The set contains $[P_x-\delta, P_x]$ because of how it is maintained as a running window. Now we have the same bounding box as Solution 1, with at most 6 points inside.
 
-For each point, we recalculate $\delta = min(\delta, \delta_p)$, and update our set accordingly. Each point is inserted and removed from the set at most once, so the algorithm yields $\mathcal{O}(n\log n)$.
+For each point, we recalculate $\delta = \min(\delta, \delta_p)$, and update our set accordingly. Each point is inserted and removed from the set at most once, so the algorithm yields $\mathcal{O}(n\log n)$.
+
 ## Line Segments
 
 <FocusProblem problem="segSam" />
@@ -147,7 +237,8 @@ pair<ll, ll> origin, polygon[22];
 
 // Cross product
 ll cross(pair<ll, ll> a, pair<ll, ll> b) {
-	return (a.y - origin.y) * (b.x - origin.x) - (a.x - origin.x) * (b.y - origin.y);
+	return (a.y - origin.y) * (b.x - origin.x) -
+	       (a.x - origin.x) * (b.y - origin.y);
 }
 
 // Which half of the plane some point lies in
@@ -197,9 +288,8 @@ int main() {
 		cin >> m;
 		for (int j = 0; j < m; j++) cin >> polygon[j].x >> polygon[j].y;
 		// Sort the polygon's vertices to find the 2 "tangents" from the origin
-		sort(polygon, polygon + m, [](pair<ll, ll> a, pair<ll, ll> b) {
-			return cross(a, b) > 0;
-		});
+		sort(polygon, polygon + m,
+		     [](pair<ll, ll> a, pair<ll, ll> b) { return cross(a, b) > 0; });
 		events.push_back({1, i, polygon[0]});
 		events.push_back({-1, i, polygon[m - 1]});
 	}

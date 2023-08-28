@@ -1,0 +1,136 @@
+---
+id: usaco-1185
+source: USACO Gold 2022 January
+title: Drought
+author: Ryan Chou
+---
+
+[Official Analysis (C++)](http://usaco.org/current/data/sol_prob1_gold_jan22.html)
+
+[Alternative Analysis (C++)](https://gist.github.com/SansPapyrus683/4ce38f48e8879b15db05a900c6decdbc)
+
+## Explanation
+
+Let's consider a case where we have just two cows.
+
+$[2, 2]$
+
+In any case where the two hunger values are equal, it's always possible to reduce them both to zero! (by decreasing adjacent elements).
+
+However, with three cows:
+
+$[2, 2, 2]$
+
+We can't apply the same transformation. In fact, for any odd number of cows, it's impossible to guarantee that we can decrement all the elements to zero even if all the elements are equal.
+
+This motivates us to split the problem into two cases: even $N$ and odd $N$.
+
+If $N$ is even, then we can count the number of tuples such that all the elements are at zero because we can guarantee that this tuple can reach all equal states and vice versa.
+
+However, if $N$ is odd, we can't make the same assumption, they could be equal at any value! Thus, we have to count the number of tuples for all possible hunger levels $x$. To account for this, note that by shifting the ceiling of the data by $x$, we can find the answer for setting all cows to $x$ with the same process as earlier.
+
+What information do we have to keep track after processing the first $i$ cows?
+
+While it may seem that the index is all we need, since we can only decrease the right-most cow with the one to the left of it, we also have to keep track of the current cow's hunger value such that we don't make it impossible to get the right-most cow to zero.
+
+More formally, if we let $\texttt{dp}[i][j] =$ the number of tuples that can be formed if the first $i - 1$ elements are set to zero and the $i$th element is hunger value $j$, then this state affects all states $\texttt{dp}[i + 1][k - h_i]$ such that $h_i \leq k \leq h_{i + 1}$.
+
+Let's calculate the time complexity!
+
+We'll have $N \cdot \max H$ number of states, and each transition can take up to $\max H$ operations, so our time complexity would be $\mathcal{O}(N(\max H)^2)$. Unfortunately, in odd cases, we'll have to try all possible $x < \min H$, which'll give us a resulting time complexity of $\mathcal{O}(N(\max H)^3)$ (since all the elements can be the same).
+
+Luckily, because our transition updates a contiguous range of states ($[0, h_i]$), we can process our transition in $\mathcal{O}(1)$ with a difference array. For example, if we're currently on $\texttt{dp}[i][j]$, our algorithm would manually add $\texttt{dp}[i][j]$ to $\texttt{dp}[i + 1][k]$ where $k$ is within the range $[0, h_i]$. Instead, we'll add $\texttt{dp}[i][j]$ to $\texttt{diff}[0]$ and remember to subtract it at $\texttt{diff}[h_i]$.
+
+This speeds up our algorithm to $\mathcal{O}(N(\max H)^2)$!
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N(\max H)^2)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using ll = long long;
+
+const int MOD = 1e9 + 7;
+const int MX_HUNGER = 1000;
+
+int n;
+
+ll ways_offset(int shift, vector<int> &h, vector<ll> &dp, vector<ll> &diff) {
+	// initially one way to set the first i elements to zero
+	for (int i = 0; i <= MX_HUNGER; i++) { dp[i] = 1; }
+
+	// ways considering that all numbers before i are all zero & i is set to j
+	for (int i = 1; i < n; i++) {
+		int j = 0;
+		while (j <= (h[i - 1] - shift) && (h[i] - shift) - j + 1 >= 0) {
+			/*
+			 * we have to add (i, j) to (i + 1, [0, h[i] - j]),
+			 * use difference array to quickly update range
+			 */
+
+			int rb = (h[i] - shift) - j + 1;
+
+			diff[0] += dp[j];
+
+			if (diff[0] >= MOD) { diff[0] -= MOD; }
+
+			// be careful when modding negative values
+			diff[rb] = (((diff[rb] - dp[j]) % MOD) + MOD) % MOD;
+			j++;
+		}
+
+		dp[0] = diff[0];
+
+		for (int j = 1; j <= MX_HUNGER; j++) {
+			dp[j] = dp[j - 1] + diff[j];
+
+			if (dp[j] >= MOD) { dp[j] -= MOD; }
+
+			assert(dp[j] >= 0);
+		}
+
+		// reset difference array
+		for (int j = 0; j <= MX_HUNGER; j++) { diff[j] = 0; }
+	}
+
+	return dp[0];
+}
+
+int main() {
+	cin >> n;
+	h.reserve(n);
+
+	int mn = MX_HUNGER;
+	for (int i = 0; i < n; i++) {
+		cin >> h[i];
+		mn = min(mn, h[i]);
+	}
+
+	ll ans = 0;
+	vector<int> h;
+	vector<ll> dp(MX_HUNGER + 1);
+	vector<ll> diff(MX_HUNGER + 2);
+
+	if (n % 2 == 1) {
+		/*
+		 * we can't assume that all elements can be equal to zero.
+		 * instead, we have to compute the answer for all possible hunger
+		 * values.
+		 */
+		for (int i = 0; i <= mn; i++) {
+			ans = (ans + ways_offset(i) + MOD) % MOD;
+		}
+	} else {
+		ans = (ans + ways_offset(0) + MOD) % MOD;
+	}
+
+	cout << ans << endl;
+}
+```
+</CPPSection>
+</LanguageSection>

@@ -1,0 +1,119 @@
+---
+id: cses-2422
+source: CSES
+title: Multiplication Table
+author: Maggie Liu, Brad Ma
+---
+
+## Explanation
+
+We are asked to find the median of the numbers in an $n \times n$ multiplication
+table, where $n$ is odd. If $f(x)$ represents how many numbers in the
+multiplication table are less than or equal to $x$, then the median will have at
+least $\frac{n^2 + 1}{2}$ numbers less than or equal to it. So, we want to find
+the smallest $x$ such that $f(x) \geq \frac{n^2 + 1}{2}$.
+
+To find $f(x)$, we can loop through each row of the table. Since the numbers in
+a row are the column number multiplied by the row number, we can divide $x$ by
+the row number to find the number of columns where the number is less than or
+equal to $x$. Taking the minimum of the number of columns and $n$ will tell us
+how many numbers in that row are less than or equal to $x$, and summing over all
+rows will give us $f(x)$, which we store in the variable $\texttt{leq}$.
+
+Using $\texttt{leq}$, we can do binary search until we find the median. If
+$\texttt{leq} \geq \frac{n^2 + 1}{2}$, we set $\texttt{high}$ to $\texttt{mid}$
+because $\texttt{mid}$ works and is an upper bound for our answer. Otherwise, we
+set $\texttt{low}$ to $\texttt{mid} + 1$ because $\texttt{mid}$ doesn't work, so
+numbers less than $\texttt{mid}$ also won't work.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N\log N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+using namespace std;
+
+int main() {
+	long long n;
+	cin >> n;
+	long long low = 1, high = n * n, mid, leq;
+
+	// binary search to get the median
+	while (low < high) {
+		mid = (low + high) / 2;
+		leq = 0;
+		for (int i = 1; i <= n; i++) { leq += min(n, mid / i); }
+		if (leq >= (n * n + 1) / 2) {
+			high = mid;
+		} else {
+			low = mid + 1;
+		}
+	}
+	cout << high << endl;
+	return 0;
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.StringTokenizer;
+
+public class MultiplicationTable {
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
+		long n = io.nextInt();
+		long low = 1, high = n * n, mid, leq;
+
+		// binary search to find the median
+		while (low < high) {
+			mid = (low + high) / 2;
+			leq = 0;
+			for (int i = 1; i <= n; i++) { leq += Math.min(n, mid / i); }
+			if (leq >= (n * n + 1) / 2) {
+				high = mid;
+			} else {
+				low = mid + 1;
+			}
+		}
+
+		io.println(high);
+		io.close();
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+n = int(input())
+
+low = 1
+high = n**2
+
+# binary search to find the median
+while low < high:
+	mid = (low + high) // 2
+	leq = 0
+
+	for i in range(0, n):
+		leq += min(n, mid // (i + 1))
+
+	if leq >= (n**2 + 1) / 2:
+		high = mid
+	else:
+		low = mid + 1
+
+print(high)
+```
+
+</PySection>
+</LanguageSection>

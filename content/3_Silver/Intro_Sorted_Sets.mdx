@@ -6,16 +6,12 @@ contributors: Aadit Ambadkar
 prerequisites:
   - intro-sets
 description:
-  'Using iterators with sets, finding the next element smaller or larger than a
-  specified key in a set.'
+  'Finding the next element smaller or larger than a specified key in a set, and
+  using iterators with sets.'
 frequency: 2
 redirects:
   - intro-ordered
 ---
-
-<!-- Hard, would recommend skipping (1700 on CF) -->
-<!-- Hard, do not attempt until Gold/Plat (2100 on CF) -->
-<!-- First solve problem for $n$-th tournament only. Extremely hard, do not attempt (2700 on CF) -->
 
 <LanguageSection>
 
@@ -50,10 +46,10 @@ redirects:
 <br />
 
 In sets and maps where keys (or elements) are stored in sorted order, accessing
-or removing the next key higher or lower than some input key `k` is supported. 
+or removing the next key higher or lower than some input key `k` is supported.
 
-Keep in mind that insertion and deletion will take $\mathcal{O}(\log N)$ time for 
-sorted sets, which is more than the average $\mathcal{O}(1)$ insertion and 
+Keep in mind that insertion and deletion will take $\mathcal{O}(\log N)$ time for
+sorted sets, which is more than the average $\mathcal{O}(1)$ insertion and
 deletion for unordered sets, but less than the worst case $\mathcal{O}(N)$ insertion
 and deletion for unordered sets.
 
@@ -79,11 +75,14 @@ Iterators used with `HashSet` would yield the elements in random order:
 
 ```java
 Set<Integer> set = new HashSet<Integer>();
-set.add(1); set.add(3); set.add(0); set.add(-2);
+set.add(1);
+set.add(3);
+set.add(0);
+set.add(-2);
 Iterator it = set.iterator();
-while(it.hasNext()){
+while (it.hasNext()) {
 	Integer i = (Integer)it.next();
-	System.out.print(i + " "); // returns some random order
+	System.out.print(i + " ");  // returns some random order
 }
 ```
 
@@ -91,11 +90,14 @@ But with `TreeSet` the elements are in sorted order:
 
 ```java
 Set<Integer> set = new TreeSet<Integer>();
-set.add(1); set.add(3); set.add(0); set.add(-2);
+set.add(1);
+set.add(3);
+set.add(0);
+set.add(-2);
 Iterator it = set.iterator();
-while(it.hasNext()){
+while (it.hasNext()) {
 	Integer i = (Integer)it.next();
-	System.out.print(i + " "); // returns -2 0 1 3
+	System.out.print(i + " ");  // returns -2 0 1 3
 }
 ```
 
@@ -104,9 +106,12 @@ for-each loop which creates a hidden iterator and loops with it automatically:
 
 ```java
 Set<Integer> set = new TreeSet<Integer>();
-set.add(1); set.add(3); set.add(0); set.add(-2);
-for (int i : set){
-	System.out.print(i + " "); // returns -2 0 1 3
+set.add(1);
+set.add(3);
+set.add(0);
+set.add(-2);
+for (int i : set) {
+	System.out.print(i + " ");  // returns -2 0 1 3
 }
 ```
 
@@ -138,18 +143,18 @@ The sorted `std::set` also supports:
 
 ```cpp
 set<int> s;
-s.insert(1); // [1]
-s.insert(14); // [1, 14]
-s.insert(9); // [1, 9, 14]
-s.insert(2); // [1, 2, 9, 14]
-cout << *s.upper_bound(7) << '\n'; // 9
-cout << *s.upper_bound(9) << '\n'; // 14
-cout << *s.lower_bound(5) << '\n'; // 9
-cout << *s.lower_bound(9) << '\n'; // 9
-cout << *s.begin() << '\n'; // 1
+s.insert(1);                        // [1]
+s.insert(14);                       // [1, 14]
+s.insert(9);                        // [1, 9, 14]
+s.insert(2);                        // [1, 2, 9, 14]
+cout << *s.upper_bound(7) << '\n';  // 9
+cout << *s.upper_bound(9) << '\n';  // 14
+cout << *s.lower_bound(5) << '\n';  // 9
+cout << *s.lower_bound(9) << '\n';  // 9
+cout << *s.begin() << '\n';         // 1
 auto it = s.end();
-cout << *(--it) << '\n'; // 14
-s.erase(s.upper_bound(6)); // [1, 2, 14]
+cout << *(--it) << '\n';    // 14
+s.erase(s.upper_bound(6));  // [1, 2, 14]
 ```
 
 <Warning>
@@ -177,17 +182,17 @@ make sure to avoid it!
 
 ```java
 TreeSet<Integer> set = new TreeSet<Integer>();
-set.add(1); // [1]
-set.add(14); // [1, 14]
-set.add(9); // [1, 9, 14]
-set.add(2); // [1, 2, 9, 14]
-System.out.println(set.higher(7)); // 9
-System.out.println(set.higher(9)); // 14
-System.out.println(set.lower(5)); // 2
-System.out.println(set.first()); // 1
-System.out.println(set.last()); // 14
-set.remove(set.higher(6)); // [1, 2, 14]
-System.out.println(set.higher(23)); // ERROR, no such element exists
+set.add(1);                          // [1]
+set.add(14);                         // [1, 14]
+set.add(9);                          // [1, 9, 14]
+set.add(2);                          // [1, 2, 9, 14]
+System.out.println(set.higher(7));   // 9
+System.out.println(set.higher(9));   // 14
+System.out.println(set.lower(5));    // 2
+System.out.println(set.first());     // 1
+System.out.println(set.last());      // 14
+set.remove(set.higher(6));           // [1, 2, 14]
+System.out.println(set.higher(23));  // ERROR, no such element exists
 ```
 
 </JavaSection>
@@ -214,15 +219,16 @@ The ordered `map` also allows:
 
 ```cpp
 map<int, int> m;
-m[3] = 5; // [(3, 5)]
-m[11] = 4; // [(3, 5); (11, 4)]
-m[10] = 491; // [(3, 5); (10, 491); (11, 4)]
-cout << m.lower_bound(10)->first << " " << m.lower_bound(10)->second << '\n'; // 10 491
-cout << m.upper_bound(10)->first << " " << m.upper_bound(10)->second << '\n'; // 11 4
-m.erase(11); // [(3, 5); (10, 491)]
-if (m.upper_bound(10) == m.end())
-{
-	cout << "end" << endl; // Prints end
+m[3] = 5;     // [(3, 5)]
+m[11] = 4;    // [(3, 5); (11, 4)]
+m[10] = 491;  // [(3, 5); (10, 491); (11, 4)]
+cout << m.lower_bound(10)->first << " " << m.lower_bound(10)->second
+     << '\n';  // 10 491
+cout << m.upper_bound(10)->first << " " << m.upper_bound(10)->second
+     << '\n';  // 11 4
+m.erase(11);   // [(3, 5); (10, 491)]
+if (m.upper_bound(10) == m.end()) {
+	cout << "end" << endl;  // Prints end
 }
 ```
 
@@ -238,16 +244,16 @@ key/entry strictly lower than the specified key.
 
 ```java
 TreeMap<Integer, Integer> map = new TreeMap<Integer, Integer>();
-map.put(3, 5); // [(3, 5)]
-map.put(11, 4); // [(3, 5); (11, 4)]
-map.put(10, 491); // [(3, 5); (10, 491); (11, 4)]
-System.out.println(map.firstKey()); // 3
-System.out.println(map.firstEntry()); // (3, 5)
-System.out.println(map.lastEntry()); // (11, 4)
-System.out.println(map.higherEntry(4)); // (10, 491)
-map.remove(11); // [(3, 5); (10, 491)]
-System.out.println(map.lowerKey(4)); // 3
-System.out.println(map.lowerKey(3)); // ERROR
+map.put(3, 5);                           // [(3, 5)]
+map.put(11, 4);                          // [(3, 5); (11, 4)]
+map.put(10, 491);                        // [(3, 5); (10, 491); (11, 4)]
+System.out.println(map.firstKey());      // 3
+System.out.println(map.firstEntry());    // (3, 5)
+System.out.println(map.lastEntry());     // (11, 4)
+System.out.println(map.higherEntry(4));  // (10, 491)
+map.remove(11);                          // [(3, 5); (10, 491)]
+System.out.println(map.lowerKey(4));     // 3
+System.out.println(map.lowerKey(3));     // ERROR
 ```
 
 </JavaSection>
@@ -276,19 +282,19 @@ In addition to all of the regular set operations,
 
 ```cpp
 multiset<int> ms;
-ms.insert(1); // [1]
-ms.insert(14); // [1, 14]
-ms.insert(9); // [1, 9, 14]
-ms.insert(2); // [1, 2, 9, 14]
-ms.insert(9); // [1, 2, 9, 9, 14]
-ms.insert(9); // [1, 2, 9, 9, 9, 14]
-cout << ms.count(4) << '\n'; // 0
-cout << ms.count(9) << '\n'; // 3
-cout << ms.count(14) << '\n'; // 1
+ms.insert(1);                  // [1]
+ms.insert(14);                 // [1, 14]
+ms.insert(9);                  // [1, 9, 14]
+ms.insert(2);                  // [1, 2, 9, 14]
+ms.insert(9);                  // [1, 2, 9, 9, 14]
+ms.insert(9);                  // [1, 2, 9, 9, 9, 14]
+cout << ms.count(4) << '\n';   // 0
+cout << ms.count(9) << '\n';   // 3
+cout << ms.count(14) << '\n';  // 1
 ms.erase(ms.find(9));
-cout << ms.count(9) << '\n'; // 2
+cout << ms.count(9) << '\n';  // 2
 ms.erase(9);
-cout << ms.count(9) << '\n'; // 0
+cout << ms.count(9) << '\n';  // 0
 ```
 
 </CPPSection>
@@ -305,23 +311,19 @@ function as intended; just use `firstKey`, `lastKey`, `higherKey`, and
 ```java
 static TreeMap<Integer, Integer> multiset = new TreeMap<Integer, Integer>();
 
-public static void main(String[] args){
-	...
-}
+public static void main(String[] args) { ... }
 
-static void add(int x){
-	if(multiset.containsKey(x)){
+static void add(int x) {
+	if (multiset.containsKey(x)) {
 		multiset.put(x, multiset.get(x) + 1);
 	} else {
 		multiset.put(x, 1);
 	}
 }
 
-static void remove(int x){
+static void remove(int x) {
 	multiset.put(x, multiset.get(x) - 1);
-	if(multiset.get(x) == 0){
-		multiset.remove(x);
-	}
+	if (multiset.get(x) == 0) { multiset.remove(x); }
 }
 ```
 
@@ -357,14 +359,14 @@ faster than sets, so you should use them instead whenever possible.
 
 ```cpp
 priority_queue<int> pq;
-pq.push(7); // [7]
-pq.push(2); // [2, 7]
-pq.push(1); // [1, 2, 7]
-pq.push(5); // [1, 2, 5, 7]
-cout << pq.top() << endl; // 7
-pq.pop(); // [1, 2, 5]
-pq.pop(); // [1, 2]
-pq.push(6); // [1, 2, 6]
+pq.push(7);                // [7]
+pq.push(2);                // [2, 7]
+pq.push(1);                // [1, 2, 7]
+pq.push(5);                // [1, 2, 5, 7]
+cout << pq.top() << endl;  // 7
+pq.pop();                  // [1, 2, 5]
+pq.pop();                  // [1, 2]
+pq.push(6);                // [1, 2, 6]
 ```
 
 </CPPSection>
@@ -378,14 +380,14 @@ priority.
 
 ```java
 PriorityQueue<Integer> pq = new PriorityQueue<Integer>();
-pq.add(7); // [7]
-pq.add(2); // [7, 2]
-pq.add(1); // [7, 2, 1]
-pq.add(5); // [7, 5, 2, 1]
-System.out.println(pq.peek()); // 1
-pq.poll(); // [7, 5, 2]
-pq.poll(); // [7, 5]
-pq.add(6); // [7, 6, 5]
+pq.add(7);                      // [7]
+pq.add(2);                      // [7, 2]
+pq.add(1);                      // [7, 2, 1]
+pq.add(5);                      // [7, 5, 2, 1]
+System.out.println(pq.peek());  // 1
+pq.poll();                      // [7, 5, 2]
+pq.poll();                      // [7, 5]
+pq.add(6);                      // [7, 6, 5]
 ```
 
 </JavaSection>
@@ -398,13 +400,18 @@ pq.add(6); // [7, 6, 5]
 
 ## Harder Example - Bit Inversions
 
+<Warning>
+
+Problems marked as "Hard" or beyond in this module would likely be too difficult
+to appear on a USACO Silver contest.
+
+</Warning>
+
 <FocusProblem problem="sample" />
 
 ### Solution
 
 We'll use iterators extensively.
-
-<Spoiler title="Solution">
 
 Let the bit string be $s=s_0s_1s_2\ldots,s_{n-1}$. In the set `dif`, we store
 all indices $i$ such that $s_i\neq s_{i-1}$ (including $i=0$ and $i=n$). If the
@@ -443,10 +450,10 @@ void modify(int x) {
 	auto it = dif.find(x);
 	if (it != end(dif)) {  // x is currently present in dif, remove it
 		int a = *prev(it), b = *next(it);
-		ret.erase(ret.find(x - a)), ret.erase(ret.find(b - x)); // update ret
+		ret.erase(ret.find(x - a)), ret.erase(ret.find(b - x));  // update ret
 		ret.insert(b - a);
-		dif.erase(it);  // remove x from dif
-	} else {  // x is not currently in dif, insert it
+		dif.erase(it);             // remove x from dif
+	} else {                       // x is not currently in dif, insert it
 		it = dif.insert(x).first;  // insert x into dif
 		// it = iterator corresponding to x
 		int a = *prev(it), b = *next(it);
@@ -456,17 +463,21 @@ void modify(int x) {
 }
 
 int main() {
-	ios_base::sync_with_stdio(0); cin.tie(0);
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
 	cin >> s >> m;
-	dif.insert(0); dif.insert(sz(s));
+	dif.insert(0);
+	dif.insert(sz(s));
 	for (int i = 0; i < sz(s) - 1; ++i)
-		if (s[i] != s[i + 1]) dif.insert(i + 1); // initialize dif
+		if (s[i] != s[i + 1]) dif.insert(i + 1);  // initialize dif
 	for (auto it = dif.begin(); next(it) != dif.end(); it++) {
-		ret.insert(*next(it) - *it); // initialize ret
+		ret.insert(*next(it) - *it);  // initialize ret
 	}
 	for (int i = 0; i < m; ++i) {
-		int x; cin >> x; // 1-indexed position
-		modify(x - 1); modify(x);
+		int x;
+		cin >> x;  // 1-indexed position
+		modify(x - 1);
+		modify(x);
 		cout << *ret.rbegin() << " ";
 	}
 }
@@ -487,49 +498,56 @@ Java solutions are too slow for the CSES. Use C++ instead to get AC.
 import java.io.*;
 import java.util.*;
 
-class BitInversion{
-	public static TreeMap<Integer, Integer> ret = new TreeMap<Integer, Integer>();
+class BitInversion {
+	public static TreeMap<Integer, Integer> ret =
+	    new TreeMap<Integer, Integer>();
 	public static String s;
 	public static int m;
 	public static Set<Integer> dif = new TreeSet<Integer>();
 
 	public static void modify(int x) {
 		if (x == 0 || x == s.length()) return;
-		if (dif.contains(x)) { // x is currently present in dif, remove it
+		if (dif.contains(x)) {  // x is currently present in dif, remove it
 			int a = dif.lower(x), b = dif.higher(x);
-			remove(x - a); remove(b - x); // update ret
+			remove(x - a);
+			remove(b - x);  // update ret
 			add(b - a);
-			dif.remove(x); // remove x from dif
-		}
-		else {
-		  dif.add(x); // insert x into dif
-		  int a = dif.lower(x), b = dif.higher(x);
-		  remove(b - a); // update ret
-		  add(x - a); add(b - x);
+			dif.remove(x);  // remove x from dif
+		} else {
+			dif.add(x);  // insert x into dif
+			int a = dif.lower(x), b = dif.higher(x);
+			remove(b - a);  // update ret
+			add(x - a);
+			add(b - x);
 		}
 	}
 	public static void main(String[] args) throws IOException {
-		BufferedReader sc = new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader sc =
+		    new BufferedReader(new InputStreamReader(System.in));
 		PrintWriter out = new PrintWriter(System.out);
 		s = sc.readLine();
 		m = Integer.parseInt(sc.readLine());
-		dif.add(0); dif.add(s.length());
+		dif.add(0);
+		dif.add(s.length());
 		for (int i = 0; i < s.length() - 1; i++) {
-			if(s.charAt(i) != s.charAt(i + 1)) dif.add(i + 1); // initialize dif
+			if (s.charAt(i) != s.charAt(i + 1))
+				dif.add(i + 1);  // initialize dif
 		}
 		for (int it : dif) {
-			if(dif.higher(it) != null) add(dif.higher(it) - it); // initialize ret
+			if (dif.higher(it) != null)
+				add(dif.higher(it) - it);  // initialize ret
 		}
 		StringTokenizer st = new StringTokenizer(sc.readLine());
 		for (int i = 0; i < m; i++) {
-			int x = Integer.parseInt(st.nextToken()); // 1-indexed position
-			modify(x - 1); modify(x);
+			int x = Integer.parseInt(st.nextToken());  // 1-indexed position
+			modify(x - 1);
+			modify(x);
 			out.println(ret.lastKey());
 		}
 		out.close();
 	}
 
-	static void add(int x){
+	static void add(int x) {
 		if (ret.containsKey(x)) {
 			ret.put(x, ret.get(x) + 1);
 		} else {
@@ -537,14 +555,11 @@ class BitInversion{
 		}
 	}
 
-	static void remove(int x){
+	static void remove(int x) {
 		ret.put(x, ret.get(x) - 1);
-		if (ret.get(x) == 0) {
-			ret.remove(x);
-		}
+		if (ret.get(x) == 0) { ret.remove(x); }
 	}
 }
-
 ```
 
 </JavaSection>
@@ -571,33 +586,42 @@ set<int> dif;
 priority_queue<int> ret;
 int cnt[200005];
 
-void ad(int x) { cnt[x] ++; ret.push(x);  }
+void ad(int x) {
+	cnt[x]++;
+	ret.push(x);
+}
 void modify(int x) {
 	if (x == 0 || x == sz(s)) return;
 	auto it = dif.find(x);
 	if (it != end(dif)) {
-		int a = *prev(it), b = *next(it); dif.erase(it);
-		cnt[x-a] --, cnt[b-x] --; ad(b-a);
+		int a = *prev(it), b = *next(it);
+		dif.erase(it);
+		cnt[x - a]--, cnt[b - x]--;
+		ad(b - a);
 	} else {
 		it = dif.insert(x).first;
 		int a = *prev(it), b = *next(it);
-		cnt[b-a] --, ad(x-a), ad(b-x);
+		cnt[b - a]--, ad(x - a), ad(b - x);
 	}
 }
 
 int main() {
-	ios_base::sync_with_stdio(0); cin.tie(0);
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
 	cin >> s >> m;
-	dif.insert(0); dif.insert(sz(s));
+	dif.insert(0);
+	dif.insert(sz(s));
 	for (int i = 0; i < sz(s) - 1; ++i) {
-		if (s[i] != s[i + 1]) dif.insert(i+1);
+		if (s[i] != s[i + 1]) dif.insert(i + 1);
 	}
 	for (auto it = dif.begin(); next(it) != dif.end(); it++) {
 		ad(*next(it) - *it);
 	}
 	for (int i = 0; i < m; ++i) {
-		int x; cin >> x;
-		modify(x - 1); modify(x);
+		int x;
+		cin >> x;
+		modify(x - 1);
+		modify(x);
 		while (!cnt[ret.top()]) ret.pop();
 		// pop elements that should no longer be present in priority queue
 		cout << ret.top() << " ";
@@ -614,8 +638,9 @@ int main() {
 import java.io.*;
 import java.util.*;
 
-class BitInversion{
-	public static PriorityQueue<Integer> pq = new PriorityQueue<Integer>(Collections.reverseOrder());
+class BitInversion {
+	public static PriorityQueue<Integer> pq =
+	    new PriorityQueue<Integer>(Collections.reverseOrder());
 	public static String s;
 	public static int m;
 	public static TreeSet<Integer> dif = new TreeSet<Integer>();
@@ -625,55 +650,54 @@ class BitInversion{
 		pq.add(x);
 	}
 	public static void modify(int x) {
-		if(x == 0 || x == s.length()) return;
-		if(dif.contains(x)){ // x is currently present in dif, remove it
+		if (x == 0 || x == s.length()) return;
+		if (dif.contains(x)) {  // x is currently present in dif, remove it
 			int a = dif.lower(x), b = dif.higher(x);
-			cnt[x - a]--; cnt[b - x]--; // update ret
+			cnt[x - a]--;
+			cnt[b - x]--;  // update ret
 			add(b - a);
-			dif.remove(x); // remove x from dif
-		}
-		else{
-		  dif.add(x); // insert x into dif
-		  int a = dif.lower(x), b = dif.higher(x);
-		  cnt[b - a]--; // update ret
-		  add(x - a); add(b - x);
+			dif.remove(x);  // remove x from dif
+		} else {
+			dif.add(x);  // insert x into dif
+			int a = dif.lower(x), b = dif.higher(x);
+			cnt[b - a]--;  // update ret
+			add(x - a);
+			add(b - x);
 		}
 	}
 	public static void main(String[] args) throws IOException {
-		BufferedReader sc = new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader sc =
+		    new BufferedReader(new InputStreamReader(System.in));
 		PrintWriter out = new PrintWriter(System.out);
 		s = sc.readLine();
 		m = Integer.parseInt(sc.readLine());
-		cnt = new int[s.length()+1];
-		dif.add(0); dif.add(s.length());
+		cnt = new int[s.length() + 1];
+		dif.add(0);
+		dif.add(s.length());
 		for (int i = 0; i < s.length() - 1; i++) {
-			if(s.charAt(i) != s.charAt(i+1)) dif.add(i + 1); // initialize dif
+			if (s.charAt(i) != s.charAt(i + 1))
+				dif.add(i + 1);  // initialize dif
 		}
 		for (int it : dif) {
-			if(dif.higher(it) != null){
-				add(dif.higher(it) - it);
-			}
+			if (dif.higher(it) != null) { add(dif.higher(it) - it); }
 		}
 		StringTokenizer st = new StringTokenizer(sc.readLine());
-		for (int i = 0; i < m; i++){
-			int x = Integer.parseInt(st.nextToken()); // 1-indexed position
-			modify(x - 1); modify(x);
+		for (int i = 0; i < m; i++) {
+			int x = Integer.parseInt(st.nextToken());  // 1-indexed position
+			modify(x - 1);
+			modify(x);
 			while (cnt[pq.peek()] == 0) pq.poll();
 			// pop elements that should no longer be present in priority queue
 			out.println(pq.peek());
 		}
 		out.close();
 	}
-
 }
-
 ```
 
 </JavaSection>
 
 </LanguageSection>
-
-</Spoiler>
 
 ## Harder Problems
 

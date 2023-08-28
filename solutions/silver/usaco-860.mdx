@@ -1,0 +1,333 @@
+---
+id: usaco-860
+source: USACO Silver 2018 December
+title: Mooyo Mooyo
+author: Nathan Gong, Pranav Jadhav, Juheon Rhee
+---
+
+[Official Analysis](http://www.usaco.org/current/data/sol_mooyomooyo_silver_dec18.html)
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N^2)$
+
+<LanguageSection>
+<CPPSection>
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int n, k;
+const int MAX_ROWS = 100;
+const int MAX_COLS = 10;
+vector<vector<char>> board(MAX_ROWS, vector<char>(MAX_COLS));
+vector<vector<bool>> visited(MAX_ROWS, vector<bool>(MAX_COLS));
+
+// stores current component indices to set to '0'
+vector<pair<int, int>> component;
+
+/*
+ * floodfill to count connected regions
+ * returns size of connected region
+ * fills 'component' vector with the indices of the component
+ */
+int floodfill(int i, int j, char color) {
+	int cnt = 1;
+	if (i < 0 || j < 0 || i >= n || j >= MAX_COLS || visited[i][j] ||
+	    board[i][j] != color) {
+		return 0;
+	}
+
+	visited[i][j] = 1;
+	component.push_back({i, j});
+	cnt += (floodfill(i + 1, j, color) + floodfill(i - 1, j, color) +
+	        floodfill(i, j + 1, color) + floodfill(i, j - 1, color));
+	return cnt;
+}
+
+int main() {
+	freopen("mooyomooyo.in", "r", stdin);
+	freopen("mooyomooyo.out", "w", stdout);
+
+	cin >> n >> k;
+
+	for (int i = n - 1; i >= 0; i--) {
+		string nums;
+		cin >> nums;
+		for (int j = 0; j < MAX_COLS; j++) { board[i][j] = nums[j]; }
+	}
+
+	/*
+	 * Loop while there are regions that got destroyed (board changed)
+	 * If no regions were destroyed, we are at the final state (break loop;
+	 * return answer)
+	 */
+	bool board_changed = true;
+	while (board_changed) {
+		board_changed = false;
+
+		// destroy all haybales in connected regions with size >= k
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < MAX_COLS; j++) {
+				if (!visited[i][j] && board[i][j] != '0') {
+					char current_color = board[i][j];
+					int cnt = floodfill(i, j, current_color);
+
+					if (cnt >= k) {
+						// found a region to destroy
+						board_changed = true;
+						for (auto p : component) {
+							board[p.first][p.second] = '0';
+						}
+					}
+					component.clear();
+				}
+			}
+		}
+
+		// run gravity
+		for (int col = 0; col < MAX_COLS; col++) {
+			vector<char> column_after_gravity;
+			/*
+			 * loop over rows from bottom to top of current column
+			 * add nonzero elements to vector 'column_after_gravity'
+			 */
+			for (int row = 0; row < n; row++) {
+				if (board[row][col] != '0') {
+					column_after_gravity.push_back(board[row][col]);
+				}
+			}
+
+			/*
+			 * edit the board to reflect changes
+			 * going from bottom to top, fill the column with
+			 * column_after_gravity while we can, otherwise make it '0' (empty)
+			 */
+			for (int row = 0; row < n; row++) {
+				if (row < column_after_gravity.size()) {
+					board[row][col] = column_after_gravity[row];
+				} else {
+					board[row][col] = '0';
+				}
+			}
+		}
+
+		// reset visited array
+		fill(visited.begin(), visited.end(), vector<bool>(MAX_COLS, false));
+	}
+
+	for (int i = n - 1; i >= 0; i--) {
+		for (int j = 0; j < MAX_COLS; j++) { cout << board[i][j]; }
+		cout << '\n';
+	}
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class MooyoMooyo {
+	static int n, m, k;
+	static int[][] grid, region;
+
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio("mooyomooyo");
+
+		n = io.nextInt();
+		m = 10;
+		k = io.nextInt();
+		grid = new int[n][m];
+		region = new int[n][m];
+
+		for (int i = 0; i < n; i++) {
+			String row = io.next();
+			for (int j = 0; j < m; j++) {
+				grid[i][j] = Character.getNumericValue(row.charAt(j));
+			}
+		}
+
+		// Loop until game ends (when there are no more regions to delete)
+		while (true) {
+			// Stores the current region we're on
+			int r = 1;
+			// Reset region matrix
+			region = new int[n][m];
+
+			Set<Integer> largeRegions = new HashSet<>();
+			for (int i = 0; i < n; i++) {
+				for (int j = 0; j < m; j++) {
+					/*
+					 * Floodfill only if the current square isn't empty
+					 * and hasn't been visited (if it already has, region[i][j]
+					 * would be nonzero)
+					 */
+					if (grid[i][j] != 0 && region[i][j] == 0) {
+						int size = floodfill(i, j, r, grid[i][j]);
+						if (size >= k) { largeRegions.add(r); }
+						r++;
+					}
+				}
+			}
+
+			// Stop simulation if there are no more regions to delete
+			if (largeRegions.size() == 0) { break; }
+
+			// Delete squares that are part of a large region
+			for (int i = 0; i < n; i++) {
+				for (int j = 0; j < m; j++) {
+					if (largeRegions.contains(region[i][j])) { grid[i][j] = 0; }
+				}
+			}
+
+			/*
+			 * Apply gravity; In other words, for each column, we move all the
+			 * zeros to the top
+			 * Here's a good source explaining a similar concept:
+			 * https://www.geeksforgeeks.org/move-zeroes-end-array/
+			 */
+			for (int j = 0; j < m; j++) {
+				int count = n - 1;
+				for (int i = n - 1; i >= 0; i--) {
+					if (grid[i][j] != 0) { grid[count--][j] = grid[i][j]; }
+				}
+
+				while (count >= 0) { grid[count--][j] = 0; }
+			}
+		}
+
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < m; j++) { io.print(grid[i][j]); }
+			io.println();
+		}
+		io.close();
+	}
+
+	// Returns the size of the region containing square (i, j)
+	static int floodfill(int i, int j, int r, int color) {
+		// Exit if out of bounds, already visited, or if the current square
+		// has a different color
+		if (i < 0 || i >= n || j < 0 || j >= m) return 0;
+		if (region[i][j] != 0) return 0;
+		if (grid[i][j] != color) return 0;
+
+		// If we haven't exited, we can continue with floodfill
+		region[i][j] = r;
+		int size = 1;
+		size += floodfill(i + 1, j, r, color);
+		size += floodfill(i - 1, j, r, color);
+		size += floodfill(i, j + 1, r, color);
+		size += floodfill(i, j - 1, r, color);
+		return size;
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+<PySection>
+
+<Info>
+This solution uses [BFS](/silver/graph-traversal), but the general gist is similar to the DFS solution.
+</Info>
+
+```py
+from collections import deque
+
+# possible directions to visit all connected regions
+DIRECTIONS = ((1, 0), (0, 1), (-1, 0), (0, -1))
+
+c = []
+
+with open("mooyomooyo.in") as r:
+	a, b = map(int, r.readline().split())
+	for i in range(a):
+		c.append(list(map(int, list(r.readline().strip()))))
+
+mid = 5
+
+
+def gravity(graph, s, coords):
+	for i in range(s // 2):
+		for j in range(mid):
+			graph[i][j], graph[j][i] = graph[j][i], graph[i][j]
+
+	for y, x in coords:
+		graph[y].pop(x)
+		graph[y].append(0)
+
+	for i in range(mid):
+		for j in range(s // 2):
+			graph[i][j], graph[j][i] = graph[j][i], graph[i][j]
+
+	return graph
+
+
+def mark_connected(x, y, graph, visited):
+	q = deque()
+	q.append((x, y))
+	visited[y][x] = True
+	coords = [(x, y)]
+
+	while q:
+		x, y = q.pop()
+		for dx, dy in DIRECTIONS:
+			nx, ny = x + dx, y + dy
+			# boundaries
+			if 0 <= nx < 10 and 0 <= ny < a:
+				# check if already visited
+				if graph[ny][nx] == graph[y][x] and not visited[ny][nx]:
+					q.appendleft((nx, ny))
+					visited[ny][nx] = True
+					coords.append((nx, ny))
+	return coords
+
+
+def mooyo(graph):
+	visited = [[False] * 10 for _ in range(a)]
+	all_coords = []
+
+	for i in range(a):
+		for j in range(10):
+			# check if visited
+			if graph[i][j] != 0 and not visited[i][j]:
+				temp = mark_connected(j, i, graph, visited)
+				if len(temp) >= b:
+					all_coords += temp
+
+	if not all_coords:
+		return graph
+
+	for x, y in all_coords:
+		graph[y][x] = 0
+
+	for x in range(10):
+		blocks = []
+		for y in range(a):
+			if graph[y][x] != 0:
+				blocks.append(graph[y][x])
+				graph[y][x] = 0
+
+		y = a - 1
+		while blocks:
+			node = blocks.pop()
+			graph[y][x] = node
+			y -= 1
+
+	return mooyo(graph)
+
+
+ans = mooyo(c)
+with open("mooyomooyo.out", "w") as out:
+	for i in ans:
+		print("".join([str(x) for x in i]), file=out)
+```
+
+</PySection>
+
+</LanguageSection>

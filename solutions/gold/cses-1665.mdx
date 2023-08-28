@@ -1,0 +1,99 @@
+---
+id: cses-1665
+source: CSES
+title: Coding Company
+author: Benjamin Qi, Andi Qu, Daniel Zhu
+---
+
+First, sort the people. This allows us to express the contribution of each team
+as $(\text{Skill of last person}) - (\text{Skill of first person})$. Let $s_i$
+denote the skill of the $i$-th person.
+
+$dp[i][j][k] =$ The number of ways we can form teams from the first $i$ people
+such that there are $j$ "unfinished" teams and the total penalty so far is $k$. If the $l$-th person is the least skilled in an unfinished team, we define its contribution to the penalty as $-s_l$. Similarly, finishing a team with person $r$ contributes $s_r$ to the penalty. These definitions follow directly from the previous observation that the contribution of a team is $s_r - s_l$.
+
+There are 4 cases when we transition from $i - 1$ to $i$:
+
+- We make a team consisting of only person $i$.
+  - $dp[i - 1][j][k]$ transitions to the state $dp[i][j][k]$ (unfinished teams and penalty are not affected).
+- We append person $i$ to an unfinished team.
+  - This transitions to the state $dp[i][j][k]$ (again, unfinished teams and penalty are not affected). There are $j$ unfinished teams we can choose to extend, so $dp[i][j][k] \mathrel{+}= j \cdot dp[i - 1][j][k]$.
+- We use person $i$ to "finish" an unfinished team.
+  - This transitions to the state $dp[i][j - 1][k + s_i]$ (one less unfinished team, and we add to penalty as discussed above). There are again $j$ unfinished teams to choose from, so $dp[i][j - 1][k + s[i]] \mathrel{+}= j \cdot dp[i - 1][j][k]$.
+- We start a new unfinished team with person $i$.
+  - This transitions to the state $dp[i][j + 1][k - s[i]]$ (one more unfinished team, and we subtract from penalty as discussed above).
+
+Two more things:
+
+- $k$ in our DP array can be negative, so just add 5000 to each $k$; there can be at most $N/2 = 50$ unfinished intervals, and each of them contributes at most $-100$.
+- $dp[i]$ depends only on $dp[i - 1]$, so we can drop the first dimension that
+  we store (to save memory).
+
+I believe that this is called the "open and close interval trick". See
+[zscoder's blog post](https://codeforces.com/blog/entry/47764) for more
+information and problems.
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+using ll = long long;
+
+const int M = 1e9 + 7;
+const int K = 5e3;  // K is an offset to account for negatives
+
+int main() {
+	int n;
+	int x;  // max penalty
+	cin >> n >> x;
+	vector<int> s(n);
+	for (int i = 0; i < n; i++) { cin >> s[i]; }
+	sort(s.begin(), s.end());
+
+	/*
+	 * dp[N][N][X] -> dp[i][j][k] = first i people, j unfinished groups, k
+	 * penalty for convenience, we 1-index dp array and 0-index person array so
+	 * dp[i][j][k] lines up with s[i] (i.e. skill of person i + 1 = s[i]) notice
+	 * we only need to store 2 rows!
+	 */
+
+	// the subarray we're currently at
+	vector<vector<ll>> dp1(n + 1, vector<ll>(x + K + 1));
+	// the next subarray (we'll fill this up using dp1)
+	vector<vector<ll>> dp2(n + 1, vector<ll>(x + K + 1));
+
+	dp1[0][K] = 1;  // dp[0][0][0] -> 0 people, 0 unfinished groups, 0 penalty
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j <= (n - i); j++) {  // at most n - i unfinished groups
+			for (int k = 0; k <= x + K; k++) {
+				if (!dp1[j][k]) { continue; }
+				dp2[j][k] += dp1[j][k];  // i has their own group
+				if (j && k + s[i] <= x + K) {
+					dp2[j - 1][k + s[i]] += j * dp1[j][k];  // finish group
+				}
+				if (j + 1 <= n - (i + 1)) {
+					dp2[j + 1][k - s[i]] +=
+					    dp1[j][k];  // create new unfinished group
+				}
+				if (j <= n - (i + 1)) {
+					dp2[j][k] += j * dp1[j][k];  // extend unfinished group
+				}
+			}
+		}
+		for (int j = 0; j <= (n - (i + 1)); j++) {
+			for (int k = 0; k <= x + K; k++) {
+				dp1[j][k] = dp2[j][k] % M;  // i + 1 becomes the new i
+				dp2[j][k] = 0;
+			}
+		}
+	}
+
+	int ans = 0;
+	for (int i = K; i <= x + K; i++) {
+		ans += dp1[0][i];
+		ans %= M;
+	}
+
+	cout << ans << endl;
+}
+```

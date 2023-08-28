@@ -29,14 +29,14 @@ approaches. Both run in $\mathcal{O}(Q\sqrt N)$ time.
 <!-- partitioning into sqrt blocks (each block can have some sort of data structure ...)
  -->
 
-We partition the array into blocks of size
-$\texttt{blocksz}=\lfloor \sqrt{N} \rfloor$. Each block stores the sum of elements within it, and allows for the creation of
-corresponding `update` and `query` operations.
+We partition the array into blocks of size $\texttt{block\_size}=\lceil \sqrt{N}
+\rceil$. Each block stores the sum of elements within it, and allows for the
+creation of corresponding `update` and `query` operations.
 
 **Update Queries:** $\mathcal{O}(1)$
 
 To update an element at location $x$, first find the corresponding block using
-the formula $\frac{x}{\texttt{blocksz}}$.
+the formula $\frac{x}{\texttt{block\_size}}$.
 
 Then, apply the corresponding difference between the element currently stored at
 $x$ and the element we want to change it to.
@@ -46,62 +46,156 @@ $x$ and the element we want to change it to.
 To perform a sum query from $[0\ldots r]$, calculate
 
 $$
-\sum_{i = 0}^{R-1} \texttt{blocks}[i] + \sum_{R \cdot \texttt{blocksz}}^r \texttt{nums}[i]
+\sum_{i = 0}^{R-1} \texttt{blocks}[i] + \sum_{R \cdot \texttt{block\_size}}^r \texttt{nums}[i]
 $$
 
 where $\texttt{blocks}[i]$ represents the total sum of the $i$-th block, the
-$i$-th block represents the sum of the elements from the range
-$[i\cdot \texttt{blocksz},(i + 1)\cdot \texttt{blocksz})$, and
-$R=\left\lfloor \frac{r}{\texttt{blocksz}} \right\rfloor$.
+$i$-th block represents the sum of the elements from the range $[i\cdot
+\texttt{block\_size},(i + 1)\cdot \texttt{block\_size})$, and $R=\left\lceil
+\frac{r}{\texttt{block\_size}} \right\rceil$.
 
 Finally, $\sum_{i=l}^{r} \texttt{nums}[i]$ is the difference between the two
-sums $\sum_{i=0}^{r}\texttt{nums}[i]$ and $\sum_{i=0}^{l-1}\texttt{nums}[i]$, which each are calculated in $\mathcal{O}(\sqrt N)$.
+sums $\sum_{i=0}^{r}\texttt{nums}[i]$ and $\sum_{i=0}^{l-1}\texttt{nums}[i]$,
+which each are calculated in $\mathcal{O}(\sqrt N)$.
 
 <LanguageSection>
 
 <CPPSection>
 
 ```cpp
-//CodeSnip{CPP Short Template}
+#include <bits/stdc++.h>
+using namespace std;
 
-ll blocks[450]; // 450^2 > 2e5
-int nums[(int)(2e5 + 1)];
-int block_sz;
+struct Sqrt {
+	int block_size;
+	vector<int> nums;
+	vector<long long> blocks;
+	Sqrt(int sqrtn, vector<int> &arr) : block_size(sqrtn), blocks(sqrtn, 0) {
+		nums = arr;
+		for (int i = 0; i < nums.size(); i++) {
+			blocks[i / block_size] += nums[i];
+		}
+	}
 
-void upd(int x, int v) { // O(1) update
-	blocks[x / block_sz] -= nums[x];
-	nums[x] = v;
-	blocks[x / block_sz] += nums[x];
-}
+	/** O(1) update to set nums[x] to v */
+	void update(int x, int v) {
+		blocks[x / block_size] -= nums[x];
+		nums[x] = v;
+		blocks[x / block_size] += nums[x];
+	}
 
-ll query(int r) {
-	ll ret = 0;
-	for(int i = 0; i < r / block_sz; i++) ret += blocks[i];
-	for(int i = r / block_sz * block_sz; i < r; i++) ret += nums[i];
-	return ret;
-}
+	/** O(sqrt(n)) query for sum of [0, r) */
+	long long query(int r) {
+		long long res = 0;
+		for (int i = 0; i < r / block_size; i++) { res += blocks[i]; }
+		for (int i = (r / block_size) * block_size; i < r; i++) {
+			res += nums[i];
+		}
+		return res;
+	}
 
-ll query(int l, int r) {
-	return query(r) - query(l - 1);
-}
+	/** O(sqrt(n)) query for sum of [l, r) */
+	long long query(int l, int r) { return query(r) - query(l - 1); }
+};
 
 int main() {
-	setIO();
+	int n, q;
+	cin >> n >> q;
 
-	int n, q; cin >> n >> q;
-	block_sz = (int) sqrt(n);
+	vector<int> arr(n);
+	for (int i = 0; i < n; i++) { cin >> arr[i]; }
+	Sqrt sq((int)ceil(sqrt(n)), arr);
 
-	for(int i = 0; i < n; ++i) cin >> nums[i];
-	for(int i = 0; i < n; ++i) blocks[i / block_sz] += nums[i];
-	for(int i = 0; i < q; ++i) {
-		int t, l, r; cin >> t >> l >> r;
-		if (t == 1) upd(l - 1, r);
-		else cout << query(l, r) << "\n";
+	for (int i = 0; i < q; i++) {
+		int t, l, r;
+		cin >> t >> l >> r;
+		if (t == 1) {
+			sq.update(l - 1, r);
+		} else {
+			cout << sq.query(l, r) << "\n";
+		}
 	}
 }
 ```
 
 </CPPSection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class DRSQ {
+	public static void main(String[] args) throws IOException {
+		BufferedReader br =
+		    new BufferedReader(new InputStreamReader(System.in));
+		PrintWriter pw = new PrintWriter(System.out);
+		StringTokenizer st = new StringTokenizer(br.readLine());
+
+		int n = Integer.parseInt(st.nextToken());
+		int q = Integer.parseInt(st.nextToken());
+
+		int[] arr = Arrays.stream(br.readLine().split(" "))
+		                .mapToInt(Integer::parseInt)
+		                .toArray();
+		Sqrt sq = new Sqrt((int)Math.ceil(Math.sqrt(n)), arr);
+
+		for (int i = 0; i < q; i++) {
+			st = new StringTokenizer(br.readLine());
+			int type = Integer.parseInt(st.nextToken());
+			int l = Integer.parseInt(st.nextToken());
+			int r = Integer.parseInt(st.nextToken());
+
+			if (type == 1) {
+				sq.update(l - 1, r);
+			} else {
+				pw.println(sq.query(l, r));
+			}
+		}
+
+		br.close();
+		pw.close();
+	}
+
+	static class Sqrt {
+		static int blockSize;
+		static int[] nums;
+		static long[] blocks;
+
+		Sqrt(int sqrtn, int[] arr) {
+			blockSize = sqrtn;
+			blocks = new long[sqrtn];
+			nums = arr;
+			for (int i = 0; i < nums.length; i++) {
+				blocks[i / blockSize] += nums[i];
+			}
+		}
+
+		/** O(1) update to set nums[x] to v */
+		static void update(int x, int v) {
+			blocks[x / blockSize] -= nums[x];
+			nums[x] = v;
+			blocks[x / blockSize] += nums[x];
+		}
+
+		/** O(sqrt(n)) query for sum of [l, r) */
+		static long query(int l, int r) { return query(r) - query(l - 1); }
+
+		/** O(sqrt(n)) query for sum of [0, r) */
+		static long query(int r) {
+			long res = 0;
+			for (int i = 0; i < r / blockSize; i++) { res += blocks[i]; }
+			for (int i = (r / blockSize) * blockSize; i < r; i++) {
+				res += nums[i];
+			}
+			return res;
+		}
+	}
+}
+```
+
+</JavaSection>
 
 </LanguageSection>
 
@@ -119,41 +213,137 @@ recalculate prefix sums.
 <CPPSection>
 
 ```cpp
-//CodeSnip{CPP Short Template}
+#include <bits/stdc++.h>
+using namespace std;
 
 int n, q;
-vi x;
-vector<long long> cum;
+vector<int> arr;
+vector<long long> prefix;
 
+/** Build the prefix array for arr */
 void build() {
-	cum = {0};
-	for(const auto &t : x) cum.pb(cum.back() + t);
+	prefix[0] = 0;
+	for (int i = 1; i <= n; i++) { prefix[i] = prefix[i - 1] + arr[i - 1]; }
 }
 
 int main() {
-	setIO(); cin >> n >> q;
-	x.resize(n); for(int i = 0; i < n; i++) cin >> x[i];
+	cin >> n >> q;
+	arr.resize(n);
+	for (int i = 0; i < n; i++) { cin >> arr[i]; }
+	prefix.assign(n + 1, 0);
 	build();
-	vector<pair<int, int>> upd;
-	while(q--) {
-		int t, a, b; cin >> t >> a >> b;
-		if (t == 1) {
+
+	vector<pair<int, int>> updates;
+	for (int i = 0; i < q; i++) {
+		int type, a, b;
+		cin >> type >> a >> b;
+		if (type == 1) {
 			a--;
-			upd.pb({a, b - x[a]}); x[a] = b;
+			updates.push_back({a, b - arr[a]});
+			arr[a] = b;
 		} else {
-			ll ans = cum[b] - cum[a - 1];
+			long long ans = prefix[b] - prefix[a - 1];
 			a--, b--;
-			for(const auto &u : upd) {
-				if (a <= u.f && u.f <= b) ans += u.s;
+			for (const auto &[idx, val] : updates) {
+				if (a <= idx && idx <= b) { ans += val; }
 			}
 			cout << ans << "\n";
 		}
-		if (sz(upd) * sz(upd) >= n) upd.clear(), build();
+
+		// rebuild the prefix array once the buffer gets to sqrt(n)
+		if (updates.size() * updates.size() >= n) {
+			updates.clear();
+			build();
+		}
 	}
 }
 ```
 
 </CPPSection>
+
+<JavaSection>
+
+<Warning title="TLE">
+Due to tight time constraint on CSES, the Java implementation might get TLE.
+</Warning>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class DRSQ {
+	static int[] arr;
+	static List<Long> prefix;
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader br =
+		    new BufferedReader(new InputStreamReader(System.in));
+		PrintWriter pw = new PrintWriter(System.out);
+		StringTokenizer st = new StringTokenizer(br.readLine());
+
+		int n = Integer.parseInt(st.nextToken());
+		int q = Integer.parseInt(st.nextToken());
+
+		arr = Arrays.stream(br.readLine().split(" "))
+		          .mapToInt(Integer::parseInt)
+		          .toArray();
+		prefix = new ArrayList<>();
+		prefix.add(0L);
+		for (int i = 1; i <= arr.length; i++) {
+			prefix.add(prefix.get(i - 1) + arr[i - 1]);
+		}
+
+		List<Pair> updates = new ArrayList<>();
+		for (int i = 0; i < q; i++) {
+			st = new StringTokenizer(br.readLine());
+			int type = Integer.parseInt(st.nextToken());
+			int a = Integer.parseInt(st.nextToken());
+			int b = Integer.parseInt(st.nextToken());
+
+			if (type == 1) {
+				a--;
+				updates.add(new Pair(a, b - arr[a]));
+				arr[a] = b;
+			} else {
+				long ans = prefix.get(b) - prefix.get(a - 1);
+				a--;
+				b--;
+				for (Pair p : updates) {
+					if (a <= p.first && p.first <= b) { ans += p.second; }
+				}
+				pw.println(ans);
+			}
+
+			if (updates.size() * updates.size() >= n) {
+				updates = new ArrayList<>();
+				build();
+			}
+		}
+
+		br.close();
+		pw.close();
+	}
+
+	static void build() {
+		for (int i = 1; i <= arr.length; i++) {
+			prefix.set(i, prefix.get(i - 1) + arr[i - 1]);
+		}
+	}
+
+	// BeginCodeSnip{Pair Class}
+	private static class Pair {
+		public int first;
+		public int second;
+		Pair(int a, int b) {
+			first = a;
+			second = b;
+		}
+	}
+	// EndCodeSnip
+}
+```
+
+</JavaSection>
 
 </LanguageSection>
 
@@ -162,6 +352,9 @@ int main() {
 <Resources>
 	<Resource source="CF" title="Mo's Algorithm" url="7383">
 		<i>very</i> brief description
+	</Resource>
+	<Resource source="HE" title="Mo's Algorithm" url="https://www.hackerearth.com/practice/notes/mos-algorithm/" starred>
+		elaborate description with proof
 	</Resource>
 	<Resource source="CPH" title="Mo's Algorithm - 27.3" url="/CPH.pdf#page=265"/>
 </Resources>

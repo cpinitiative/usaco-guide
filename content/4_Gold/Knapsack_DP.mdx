@@ -6,8 +6,7 @@ contributors: Neo Wang
 prerequisites:
   - intro-dp
 description:
-  'Problems that can be modeled as filling a limited-size container with a
-  subset of items.'
+  'Problems that can be modeled as filling a limited-size container with items.'
 frequency: 2
 ---
 
@@ -20,7 +19,7 @@ frequency: 2
 		Solves "Minimizing Coins," 0/1 Knapsack
 	</Resource>
 	<Resource
-		source="Youtube"
+		source="YouTube"
 		title="Errichto DP #2 - Coin change, double counting"
 		url="https://www.youtube.com/watch?v=1mtvm2ubHCY"
 	>
@@ -103,11 +102,9 @@ int main() {
 	int n;
 	cin >> n;
 	dp[0] = 1;
-	for(int i = 1; i <= n; i++) {
-		for(int j = 1; j <= 6; j++) {
-			if(i - j >= 0) {
-				dp[i] += dp[i - j];
-			}
+	for (int i = 1; i <= n; i++) {
+		for (int j = 1; j <= 6; j++) {
+			if (i - j >= 0) { dp[i] += dp[i - j]; }
 		}
 		dp[i] %= 1000000007;
 	}
@@ -121,30 +118,28 @@ int main() {
 
 ```java
 
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class Main {
 	public static void main(String[] args) throws Exception {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		int n; n = Integer.parseInt(br.readLine());
+		BufferedReader br =
+		    new BufferedReader(new InputStreamReader(System.in));
+		int n;
+		n = Integer.parseInt(br.readLine());
 
-		long dp[] = new long[n+1];
+		long dp[] = new long[n + 1];
 		dp[0] = 1;
-		for(int i = 1; i <= n; i++) {
-			for(int j = 1; j <= 6; j++) {
-				if(i - j >= 0) {
-					dp[i] += dp[i - j];
-				}
+		for (int i = 1; i <= n; i++) {
+			for (int j = 1; j <= 6; j++) {
+				if (i - j >= 0) { dp[i] += dp[i - j]; }
 			}
 			dp[i] %= 1000000007;
 		}
 
 		System.out.println(dp[n]);
 	}
-
 }
-
 ```
 
 </JavaSection>
@@ -154,7 +149,7 @@ public class Main {
 ```py
 dp = [1]
 for i in range(int(input())):
-	dp.append(sum(dp[-6:]) % (10 ** 9 + 7))
+	dp.append(sum(dp[-6:]) % (10**9 + 7))
 print(dp[-1])
 ```
 
@@ -164,7 +159,7 @@ print(dp[-1])
 
 ## Problems
 
-### CSES
+### General
 
 <Problems problems="knapsack" />
 

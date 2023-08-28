@@ -1,0 +1,452 @@
+---
+id: usaco-990
+source: USACO Silver 2020 January
+title: Berry Picking
+author: Qi Wang, Daniel Suh, Juheon Rhee
+---
+
+<Spoiler title="Hint 1">
+
+Let's say Bessie and Elsie get the same number of berries.
+What's a case that give us this?
+How can we increase this value?
+
+</Spoiler>
+
+<Spoiler title="Solution">
+
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_berries_silver_jan20.html)
+
+## Implementation 1
+
+**Time Complexity:** $\mathcal{O}(max(B_i) \cdot N\log N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+typedef long long ll;
+typedef long double ld;
+
+#define mpa make_pair
+#define pb push_back
+#define ins insert
+#define f first
+#define s second
+#define all(x) x.begin(), x.end()
+#define nl "\n"
+
+void fileIO(string filename) {
+	freopen((filename + ".in").c_str(), "r", stdin);
+	freopen((filename + ".out").c_str(), "w", stdout);
+}
+
+int MOD = 1;
+
+bool cmp(int &a, int &b) {
+	// Sorts by the max mod, so Bessie can get the max amount of leftovers
+	return (a % MOD) > (b % MOD);
+}
+
+void solve() {
+	int N, K;
+	cin >> N >> K;
+	vector<int> A(N);
+	int maxD = 0;
+	for (int i = 0; i < N; i++) {
+		cin >> A[i];
+		maxD = max(maxD, A[i]);
+	}
+	int mx = 0;
+	for (int i = 1; i <= maxD; i++) {
+		int amount = 0;
+		// For loop calculates how many groups of "i" berries can be put into a
+		// basket
+		for (int j = 0; j < N; j++) { amount += A[j] / i; }
+		// If the amount is not enough for K / 2 baskets, it is not valid
+		if (amount < K / 2) { continue; }
+		if (amount >= K) {
+			// If there is greater than or equal to "i" sections for both Bessie
+			// and Ellie, then Bessie can collect (K / 2) * i berries
+			mx = max(mx, (K / 2) * i);
+			continue;
+		}
+		MOD = i;
+		sort(all(A), cmp);
+		// Gives the maximum amount of leftovers to Bessie
+		int cur = (amount - K / 2) * i;
+		for (int j = 0; j < N && j + amount < K; j++) { cur += A[j] % i; }
+		mx = max(mx, cur);
+	}
+	cout << mx << nl;
+}
+
+int main() {
+	fileIO("berries");
+
+	solve();
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Berries {
+	static int N, K;
+	static int[] B;
+	public static void main(String[] args) throws IOException {
+		InputReader in = new InputReader("berries.in");
+		N = in.nextInt();
+		K = in.nextInt();
+		B = new int[N];
+		int max = -1;
+		for (int i = 0; i < N; i++) {
+			B[i] = in.nextInt();
+			max = Math.max(max, B[i]);
+		}
+
+		int res = -1;
+		for (int i = 1; i <= max; i++) {
+			int count = 0;
+			int[] leftOver = new int[N];
+			for (int j = 0; j < N; j++) {
+				count += B[j] / i;
+				leftOver[j] = B[j] % i;
+			}
+
+			if (count >= K) {
+				// If count can account for both Bessie and Elsie, then we can
+				// just allocate K/2 * i to Bessie
+				res = Math.max(res, K / 2 * i);
+			} else if (count >= K / 2) {
+				// If count can only account for Elsie and some of Bessie, then
+				// we can take from the leftovers.
+				int berries = 0;
+				berries += (count - K / 2) * i;
+				Arrays.sort(leftOver);
+				int ix = leftOver.length - 1;
+				for (int j = count - K / 2; j < K / 2; j++) {
+					if (ix < 0) continue;
+					berries += leftOver[ix--];
+				}
+
+				res = Math.max(res, berries);
+			}
+		}
+
+		PrintWriter out =
+		    new PrintWriter(new BufferedWriter(new FileWriter("berries.out")));
+		out.println(res);
+		out.close();
+	}
+
+	// BeginCodeSnip{Input Reader}
+	private static class InputReader {
+		public BufferedReader reader;
+		public StringTokenizer tokenizer;
+
+		public InputReader() {
+			try {
+				reader =
+				    new BufferedReader(new InputStreamReader(System.in), 32768);
+			} catch (Exception e) {
+				throw new NullPointerException("Could not create input stream");
+			}
+		}
+
+		public InputReader(String fileName) {
+			try {
+				reader = new BufferedReader(new FileReader(new File(fileName)),
+				                            32768);
+			} catch (Exception ex) {
+				throw new NullPointerException(
+				    "Input file does not exist! Put it in the project folder.");
+			}
+			tokenizer = null;
+		}
+
+		public String next() {
+			while (tokenizer == null || !tokenizer.hasMoreTokens()) {
+				try {
+					tokenizer = new StringTokenizer(reader.readLine());
+				} catch (IOException e) { throw new RuntimeException(e); }
+			}
+			return tokenizer.nextToken();
+		}
+
+		public boolean hasNextInt() throws IOException {
+			return reader.ready();
+		}
+
+		public int nextInt() { return Integer.parseInt(next()); }
+
+		public double nextDouble() { return Double.parseDouble(next()); }
+
+		public long nextLong() { return Long.parseLong(next()); }
+
+		public char nextChar() { return next().charAt(0); }
+
+		/**
+		 * When you call next(), that entire line will be skipped.
+		 * No flushing buffers.
+		 * Doesn't work when you want to scan the remaining line.
+		 *
+		 * @return entire line
+		 */
+
+		public String nextLine() {
+			String str = "";
+			try {
+				str = reader.readLine();
+				tokenizer = null;
+			} catch (IOException e) { throw new RuntimeException(e); }
+			return str;
+		}
+	}
+	// EndCodeSnip
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+with open("berries.in") as read:
+	n, k = map(int, read.readline().split())
+	berries = [*map(int, read.readline().split())]
+
+ans = 0
+for i in range(1, max(berries) + 1):
+	mod = i
+	full = 0  # number of full baskets
+	tmp = 0
+
+	# sum of leftovers
+	for j in range(n):
+		full += berries[j] // mod
+
+	# if the amount isn't enough for k / 2 baskets, it is invalid
+	if full < k / 2:
+		break
+
+	"""
+	if there are greater than or equal to k sections for Bessie and Elsie,
+	Bessie can be allocated to (k / 2) * i berries
+	"""
+	if full >= k:
+		ans = max(ans, (k // 2) * i)
+		continue
+	idx = (full - k // 2) * i
+
+	# sorts berries list by mod so Bessie can get the maximum amount of leftovers
+	berries.sort(key=lambda x: (x % mod), reverse=True)
+
+	# calculates maximum amount of leftovers Bessie can take
+	while tmp < (k - full):
+		if tmp < len(berries):
+			idx += berries[tmp] % mod
+			tmp += 1
+		else:
+			break
+
+	ans = max(ans, idx)
+
+print(ans, file=open("berries.out", "w"))
+```
+
+</PySection>
+</LanguageSection>
+
+## Alternative Implementation
+
+We want the $\min(N, K - f)$ greatest elements of B (comparing values $\mod s$), where $f$ is the number of full baskets and $s$ is the size of a full basket.
+Since the order of these elements does not matter, we can use a [selection algorithm](https://en.wikipedia.org/wiki/Selection_algorithm) instead of sorting to reduce the time complexity by a factor of $\log N$.
+
+**Time Complexity:** $\mathcal{O}(max(B_i) \cdot N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	freopen("berries.in", "r", stdin);
+
+	int N, K;
+	cin >> N >> K;
+	vector<int> B(N);
+	for (int i = 0; i < N; i++) { cin >> B[i]; }
+	int m = 0;
+	for (int s = 1;; s++) {
+		int full = 0;
+		for (int n : B) { full += n / s; }
+		full = min(full, K);
+		if (full < K / 2) { break; }
+		if (full < K) {
+			nth_element(B.begin(), B.begin() + min(N, K - full) - 1, B.end(),
+			            [&](int a, int b) { return a % s > b % s; });
+		}
+		int bessie = (full - K / 2) * s;
+		for (int i = 0; i < min(N, K - full); i++) { bessie += B[i] % s; }
+		m = max(m, bessie);
+	}
+
+	freopen("berries.out", "w", stdout);
+	cout << m << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Berries {
+	static int s;
+	static Random rand;
+	public static void main(String[] args) throws IOException {
+		BufferedReader r =
+		    new BufferedReader(new FileReader(new File("berries.in")));
+		rand = new Random();
+		StringTokenizer st = new StringTokenizer(r.readLine());
+		int N = Integer.parseInt(st.nextToken());
+		int K = Integer.parseInt(st.nextToken());
+		int[] B = new int[N];
+		st = new StringTokenizer(r.readLine());
+		for (int i = 0; i < N; i++) { B[i] = Integer.parseInt(st.nextToken()); }
+		int m = 0;
+		for (s = 1;; s++) {
+			int full = 0;
+			for (int n : B) { full += n / s; }
+			full = Math.min(full, K);
+			if (full < K / 2) { break; }
+			if (full < K && K - full < N) { quickselect(B, K - full); }
+			int bessie = (full - K / 2) * s;
+			for (int i = 0; i < N && i < K - full; i++) { bessie += B[i] % s; }
+			m = Math.max(m, bessie);
+		}
+
+		PrintWriter pw = new PrintWriter(new FileWriter("berries.out"));
+		pw.println(m);
+		pw.close();
+	}
+
+	// BeginCodeSnip{Quickselect Function}
+	/**
+	 * Rearranges A such that A[i] contains the
+	 * ith greatest element in the list (mod s)
+	 * and A[j] % s >= A[i] % s for all 0 <= j <= i.
+	 */
+	static void quickselect(int[] A, int i) {
+		int l = 0, r = A.length - 1;
+		while (l < r) {
+			int j = partition(A, l, r);
+			if (j == i) {
+				return;
+			} else if (j < i) {
+				l = j + 1;
+			} else {
+				r = j - 1;
+			}
+		}
+	}
+
+	static int partition(int[] A, int l, int r) {
+		int m = l;
+		swap(A, l + rand.nextInt(r - l), r);
+		for (int i = l; i < r; i++) {
+			if (A[i] % s > A[r] % s) {
+				swap(A, i, m);
+				m++;
+			}
+		}
+		swap(A, m, r);
+		return m;
+	}
+
+	static void swap(int[] A, int i, int j) {
+		int t = A[i];
+		A[i] = A[j];
+		A[j] = t;
+	}
+	// EndCodeSnip
+}
+```
+
+</JavaSection>
+<PySection>
+
+<Warning>
+
+Due to Python's high constant factor, this actually runs slower than the previous solution.
+
+</Warning>
+
+```py
+import sys
+import random
+import itertools
+
+
+def quickselect(A: list, i: int, key=lambda x: x):
+	"""
+	Rearranges A such that A[i] contains the ith smallest element in the list.
+	It also makes it so that key(A[j]) <= key(A[i]) for all 0 <= j <= i.
+	"""
+
+	def partition():
+		def swap(i, j):
+			A[i], A[j] = A[j], A[i]
+
+		m = l
+		swap(random.randint(l, r - 1), r)
+		for i in range(l, r):
+			if key(A[i]) < key(A[r]):
+				swap(i, m)
+				m += 1
+		swap(m, r)
+		return m
+
+	l, r = 0, len(A) - 1
+	while l < r:
+		j = partition()
+		if j == i:
+			return
+		elif j < i:
+			l = j + 1
+		else:
+			r = j - 1
+
+
+with open("berries.in") as read:
+	N, K = map(int, read.readline().split())
+	B = list(map(int, read.readline().split()))
+
+m = 0
+for s in itertools.count(start=1):
+	full = min(K, sum(b // s for b in B))
+	if full < K // 2:
+		break
+	if full < K and K - full < N:
+		quickselect(B, K - full, lambda x: -(x % s))
+	bessie = (full - K // 2) * s + sum(x % s for x in B[: K - full])
+	m = max(m, bessie)
+
+print(m, file=open("berries.out", "w"))
+```
+
+</PySection>
+</LanguageSection>
+
+</Spoiler>

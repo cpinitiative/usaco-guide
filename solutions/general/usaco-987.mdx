@@ -1,0 +1,204 @@
+---
+id: usaco-987
+source: USACO Bronze 2020 January
+title: Word Processor
+author: Danh Ta Chi Thanh, Juheon Rhee, Jeffrey Meng
+---
+
+[Official Analysis (Python)](http://www.usaco.org/current/data/sol_word_bronze_jan20.html)
+
+## Video Solution
+
+By Jeffrey Meng
+
+<YouTube id="lE6mM6--wR0" />
+
+<Spoiler title="Video Solution Code">
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <cstdio>
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+int main() {
+	freopen("word.in", "r", stdin);
+	freopen("word.out", "w", stdout);
+
+	// Read N & K.
+	int N, K;
+	cin >> N >> K;
+
+	/*
+	 * This variable is used for storing the number of characters
+	 * on the current line but NOT including the space characters.
+	 */
+	int word_length = 0;
+
+	for (int i = 0; i < N; i++) {
+		string S;
+		cin >> S;  // Read the next word.
+		word_length += S.length();
+
+		// If it still satisfies the constraint, print the word on the same
+		// line.
+		if (word_length <= K) {
+			// If it isn't the first ever word, print a space character.
+			if (i > 0) { cout << " "; }
+			cout << S;
+		} else {
+			// If it's over the line limit, print a new line first.
+			cout << '\n' << S;
+			word_length = S.length();
+		}
+	}
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class WordProcessor {
+	public static void main(String[] args) throws IOException {
+		BufferedReader in = new BufferedReader(new FileReader("word.in"));
+
+		StringTokenizer st = new StringTokenizer(in.readLine());
+		int N = Integer.parseInt(st.nextToken());
+		int K = Integer.parseInt(st.nextToken());
+
+		st = new StringTokenizer(in.readLine());
+		String[] words = new String[N];
+		for (int i = 0; i < N; i++) { words[i] = st.nextToken(); }
+
+		PrintWriter out = new PrintWriter("word.out");
+
+		List<String> currentLine = new ArrayList<>();
+		int currentLineLength = 0;
+		for (String word : words) {
+			if (currentLineLength + word.length() <= K) {
+				currentLine.add(word);
+				currentLineLength += word.length();
+			} else {
+				out.println(String.join(" ", currentLine));
+				currentLine.clear();
+				currentLine.add(word);
+				currentLineLength = word.length();
+			}
+		}
+		out.println(String.join(" ", currentLine));
+
+		out.close();
+	}
+}
+```
+
+</JavaSection>
+</LanguageSection>
+</Spoiler>
+
+## Implementation
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <cstdio>
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+int main() {
+	freopen("word.in", "r", stdin);
+	freopen("word.out", "w", stdout);
+
+	int N, K;
+	cin >> N >> K;
+
+	// Number of characters on the current line (not including spaces)
+	int word_len = 0;
+	for (int i = 0; i < N; i++) {
+		string word;
+		cin >> word;
+		// Get the new length if we were to put the word on the current line.
+		word_len += word.length();
+		if (word_len <= K) {
+			// Print a space if it isn't the first word.
+			if (i != 0) { cout << ' '; }
+			cout << word;
+		} else {
+			cout << "\n" << word;
+			word_len = word.length();
+		}
+	}
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Word {
+	public static void main(String[] args) throws IOException {
+		BufferedReader read = new BufferedReader(new FileReader("word.in"));
+		StringTokenizer initial = new StringTokenizer(read.readLine());
+		initial.nextToken();  // we won't need N
+		int maxWidth = Integer.parseInt(initial.nextToken());
+
+		String[] essay = read.readLine().split(" ");
+		StringBuilder formatted = new StringBuilder();
+		int rnLength = 0;
+		for (String w : essay) {
+			if (rnLength + w.length() > maxWidth) {
+				formatted.deleteCharAt(formatted.length() - 1);
+				formatted.append('\n');
+				rnLength = 0;
+			}
+			formatted.append(w).append(' ');
+			rnLength += w.length();
+		}
+		formatted.deleteCharAt(formatted.length() - 1);
+
+		PrintWriter written = new PrintWriter("word.out");
+		written.println(formatted);
+		written.close();
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+with open("word.in") as read:
+	max_width = int(read.readline().split()[1])
+	essay = read.readline().split()
+
+formatted = ""
+rn_length = 0
+for w in essay:
+	# ok, this word exceeds the limit, let's wrap it around
+	if rn_length + len(w) > max_width:
+		formatted = formatted[:-1] + "\n"
+		rn_length = 0
+	formatted += w + " "
+	rn_length += len(w)
+formatted = formatted[:-1]
+
+with open("word.out", "w") as written:
+	for line in formatted.split("\n"):
+		print(line, file=written)
+```
+
+</PySection>
+</LanguageSection>

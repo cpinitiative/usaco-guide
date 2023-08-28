@@ -1,0 +1,103 @@
+---
+id: cses-1161
+source: CSES
+title: Stick Divisions
+author: Dong Liu, Benjamin Qi, Chuyang Wang
+---
+
+In this problem, we're asked to find the minimum cost to divide a stick with
+length $x$ into $n$ sticks with given lengths. It helps to work backwards; what
+if we start with sticks of lengths $d_1,\ldots,d_n$ and merge them into one?
+
+It turns out that this can be solved using
+[Huffman Coding](/CPH.pdf#page=73) (also see
+[Wikipedia](https://en.wikipedia.org/wiki/Huffman_coding#Basic_technique)). The
+algorithm is simple; take the two shortest sticks, merge them into one, and
+repeat.
+
+If you're wondering why Huffman Coding always produces an optimal solution, see
+[here](https://ocw.mit.edu/courses/6-02-introduction-to-eecs-ii-digital-communication-systems-fall-2012/95605227801c1ef2e1b6ddfd8da7a8a2_MIT6_02F12_chap03.pdf#page=6).
+
+## Implementation
+
+As we want to select both shortest sticks and then insert the combined new stick, we will want to have a data structure where we are able to get the smallest value in the collection, remove it and add new values to the collection. The insert and remove operations can be done easily with a priority queue in $\mathcal{O}(\log n)$ time, while retrieving the smallest value takes constant time.
+
+**Time Complexity:** $\mathcal{O}(n \log n)$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <queue>
+using namespace std;
+
+int main() {
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
+	int x, n;
+	cin >> x >> n;
+	priority_queue<int, vector<int>, greater<int>> PQ;
+	for (int i = 0; i < n; i++) {
+		int a;
+		cin >> a;
+		PQ.push(a);
+	}
+	long long ans = 0;
+	for (int i = 1; i < n; i++) {
+		int a = PQ.top();
+		PQ.pop();
+		int b = PQ.top();
+		PQ.pop();
+		PQ.push(a + b);
+		ans += a + b;
+	}
+
+	cout << ans << "\n";
+	return 0;
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class StickDivision {
+	public static void main(String[] args) throws IOException {
+		BufferedReader in =
+		    new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(in.readLine());
+
+		// with our algorithm the variable x will not be used at all
+		// since it is guaranteed by problem constraints that all values add up
+		// to x
+		int x = Integer.parseInt(st.nextToken());
+		int n = Integer.parseInt(st.nextToken());
+		Queue<Integer> sticks = new PriorityQueue<Integer>();
+		st = new StringTokenizer(in.readLine());
+		for (int i = 0; i < n; i++) sticks.add(Integer.valueOf(st.nextToken()));
+
+		long costs = 0;
+		// we keep combining two smallest sticks a and b
+		// until there is only one stick remaining, which will have the length x
+		while (sticks.size() > 1) {
+			int a = sticks.remove();
+			int b = sticks.remove();
+			sticks.add(a + b);
+			// the length of the combined stick is the cost for dividing them
+			// into the seperated sticks a and b
+			costs += a + b;
+		}
+		System.out.println(costs);
+	}
+}
+```
+
+</JavaSection>
+
+</LanguageSection>

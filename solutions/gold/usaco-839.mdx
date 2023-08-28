@@ -1,0 +1,61 @@
+---
+id: usaco-839
+source: USACO Gold 2018 Open
+title: Talent Show
+author: Arpan Banerjee
+---
+
+[Official Editorial](http://www.usaco.org/current/data/sol_talent_gold_open18.html)
+
+<Warning title="Common Misconception">
+Note that the following solution is incorrect: Instead of using binary search as the official solution does, a knapsack can be done. An array of talents can be kept, where $\texttt{talent}[i]$ is the minimum weight required to create a talent sum of $i$. To make sure each cow is used at most once and the order of the cows doesn't matter, the indices of $\texttt{talent}$ are iterated though from greatest to least, and the $\texttt{cows}$ are iterated though in the outer loop; the implementation should make this clear. This maximizes the ratio $\frac{t}{w}$ as desired. Then, the maximum ratio of $\frac{t_i}{w_i}$ can be easily found by going through $\texttt{talent}$ and ignoring any $w_i$ that is less than $W$.
+
+My $\mathcal{O}(\text{Total talent } \cdot n)$ code is below:
+
+<Spoiler title="Show Code">
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+#define w first
+#define t second
+using namespace std;
+
+const int inf = 2e9;
+const int total_talent = 250000;
+int n, W;
+double ans = 0;
+
+signed main() {
+	ifstream cin("talent.in");
+	ofstream cout("talent.out");
+	cin >> n >> W;
+	vector<pair<int, int>> cows(n);
+	for (int i = 0; i < n; i++) cin >> cows[i].w >> cows[i].t;
+	vector<int> talent(1e6 + 10, inf);
+	talent[0] = 0;
+	for (auto cow : cows)
+		for (int i = total_talent; i >= 0; i--)
+			if (talent[i] != inf)
+				talent[i + cow.t] = min(talent[i + cow.t], talent[i] + cow.w);
+	for (double T = 1; T < talent.size(); T++)
+		if (talent[T] >= W && T / talent[T] > ans) ans = T / talent[T];
+	cout << (int)(1000 * ans) << endl;
+}
+```
+</CPPSection>
+</LanguageSection>
+</Spoiler>
+However, even though this passes all of the test cases on USACO, there is a fatal flaw to this. We are finding the minimum weight required for each talent sum. What if the minimum weight for a talent sum is less than the weight threshold? Consider if the threshold is indeed attainable with a particular talent sum but the DP concluded it is not. The DP never considers a slightly higher weight, one that can pass the threshold, as a candidate for the answer. This means the DP fails on cases where the aforementioned scenario occurs and is optimal; one example is as follows:
+
+```
+4 16
+11 2
+17 2
+12 2
+4 4
+```
+
+The correct answer is 375; the above solution outputs 296.
+</Warning>

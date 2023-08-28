@@ -1,0 +1,374 @@
+---
+id: usaco-857
+source: USACO Bronze 2018 December
+title: Back and Forth
+author: Benjamin Qi, Ryan Chou, Jonathan Paulson
+---
+
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_backforth_bronze_dec18.html)
+
+## Video Solution
+By Jonathan Paulson
+
+<YouTube id="yzPV0NZAUV4" />
+
+<Spoiler title="Video Solution Code">
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <cassert>
+#include <cstdio>
+#include <iostream>
+#include <set>
+#include <vector>
+using namespace std;
+using ll = int64_t;
+
+// The possible amounts that could be left in the tank at the first barn
+set<ll> possible;
+void solve(ll trips_left, const vector<ll> &buckets_here,
+           const vector<ll> &buckets_there, ll tank_here, ll tank_there) {
+	if (trips_left == 0) {
+		// We completed all the trips, so the amount currently in the tank at
+		// the first barn is possible We started at the first barn and made four
+		// trips, so we also end at the first barn, so @tank_here represents the
+		// amount in the tank at the first barn
+		possible.insert(tank_here);
+	} else {
+		for (ll taken_idx = 0; taken_idx < buckets_here.size(); taken_idx++) {
+			ll bucket = buckets_here[taken_idx];
+			// Leave the taken bucket at our destination
+			vector<ll> new_buckets_dest(buckets_there);
+			new_buckets_dest.push_back(bucket);
+			// Remove the taken bucket from our current barn
+			vector<ll> new_buckets_src;
+			for (ll i = 0; i < buckets_here.size(); i++) {
+				if (i != taken_idx) {
+					new_buckets_src.push_back(buckets_here[i]);
+				}
+			}
+			// Move @bucket gallons of milk from the current tank to the other
+			// tank
+			ll new_tank_dest = tank_there + bucket;
+			ll new_tank_src = tank_here - bucket;
+			// Since we went to the other barn, "here" now refers to the "dest"
+			// barn and "there" now refers to the "src" barn
+			solve(trips_left - 1, new_buckets_dest, new_buckets_src,
+			      new_tank_dest, new_tank_src);
+		}
+	}
+}
+
+int main() {
+	assert(freopen("backforth.in", "r", stdin) != nullptr);
+	assert(freopen("backforth.out", "w", stdout) != nullptr);
+	vector<ll> buckets_here;
+	for (ll i = 0; i < 10; i++) {
+		ll bucket;
+		cin >> bucket;
+		buckets_here.push_back(bucket);
+	}
+	vector<ll> buckets_there;
+	for (ll i = 0; i < 10; i++) {
+		ll bucket;
+		cin >> bucket;
+		buckets_there.push_back(bucket);
+	}
+	solve(4, buckets_here, buckets_there, 1000, 1000);
+	cout << possible.size() << endl;
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class backforth {
+	// The possible amounts that could be left in the tank at the first barn
+	static HashSet<Integer> possible = new HashSet<Integer>();
+	static void solve(int trips_left, ArrayList<Integer> buckets_here,
+	                  ArrayList<Integer> buckets_there, int tank_here,
+	                  int tank_there) {
+		if (trips_left == 0) {
+			// We completed all the trips, so the amount currently in the tank
+			// at the first barn is possible We started at the first barn and
+			// made four trips, so we also end at the first barn, so @tank_here
+			// represents the amount in the tank at the first barn
+			possible.add(tank_here);
+		} else {
+			for (int taken_idx = 0; taken_idx < buckets_here.size();
+			     taken_idx++) {
+				int bucket = buckets_here.get(taken_idx);
+				// Leave the taken bucket at our destination
+				ArrayList<Integer> new_buckets_dest =
+				    new ArrayList<Integer>(buckets_there);
+				new_buckets_dest.add(bucket);
+				// Remove the taken bucket from our current barn
+				ArrayList<Integer> new_buckets_src = new ArrayList<Integer>();
+				for (int i = 0; i < buckets_here.size(); i++) {
+					if (i != taken_idx) {
+						new_buckets_src.add(buckets_here.get(i));
+					}
+				}
+				// Move @bucket gallons of milk from the current tank to the
+				// other tank
+				int new_tank_dest = tank_there + bucket;
+				int new_tank_src = tank_here - bucket;
+				// Since we went to the other barn, "here" now refers to the
+				// "dest" barn and "there" now refers to the "src" barn
+				solve(trips_left - 1, new_buckets_dest, new_buckets_src,
+				      new_tank_dest, new_tank_src);
+			}
+		}
+	}
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader in = new BufferedReader(new FileReader("backforth.in"));
+		PrintWriter out = new PrintWriter(
+		    new BufferedWriter(new FileWriter("backforth.out")));
+		String[] first_barn = in.readLine().split(" ");
+		String[] second_barn = in.readLine().split(" ");
+		ArrayList<Integer> buckets_here = new ArrayList<Integer>();
+		for (int i = 0; i < 10; i++) {
+			buckets_here.add(Integer.parseInt(first_barn[i]));
+		}
+		ArrayList<Integer> buckets_there = new ArrayList<Integer>();
+		for (int i = 0; i < 10; i++) {
+			buckets_there.add(Integer.parseInt(second_barn[i]));
+		}
+		solve(4, buckets_here, buckets_there, 1000, 1000);
+		out.println(possible.size());
+		out.flush();
+	}
+}
+```
+</JavaSection>
+
+<PySection>
+
+```py
+# The possible amounts that could be left in the tank at the first barn
+possible = set()
+
+
+def solve(trips_left, buckets_here, buckets_there, tank_here, tank_there):
+	if trips_left == 0:
+		# We completed all the trips, so the amount currently in the tank at the first barn is possible
+		# We started at the first barn and made four trips, so we also end at the first barn,
+		# so @tank_here represents the amount in the tank at the first barn
+		possible.add(tank_here)
+	else:
+		for taken_idx, bucket in enumerate(buckets_here):
+			# Leave the taken bucket at our destination
+			new_buckets_dest = buckets_there + [bucket]
+			# Remove the taken bucket from our current barn
+			new_buckets_src = [b for i, b in enumerate(buckets_here) if i != taken_idx]
+			# Move @bucket gallons of milk from the current tank to the other tank
+			new_tank_dest = tank_there + bucket
+			new_tank_src = tank_here - bucket
+
+		# Since we went to the other barn, "here" now refers to the "dest" barn and
+		# "there" now refers to the "src" barn
+		solve(
+			trips_left - 1,
+			new_buckets_dest,
+			new_buckets_src,
+			new_tank_dest,
+			new_tank_src,
+		)
+
+
+first_barn, second_barn = open("backforth.in").readlines()
+buckets_here = [int(x) for x in first_barn.split()]
+buckets_there = [int(x) for x in second_barn.split()]
+# We end up taking 4 trips back and forth
+# Each tank starts with 1000 gallons of milk
+# It is impossible to ever run out of milk in either tank,
+#  since we only take 4 trips and each bucket holds at most 100 gallons
+solve(4, buckets_here, buckets_there, 1000, 1000)
+with open("backforth.out", "w") as fout:
+	print(len(possible), file=fout)
+```
+
+</PySection>
+
+</LanguageSection>
+</Spoiler>
+
+
+<Spoiler title="Hint 1">
+
+What information do we need when Farmer John arrives at a barn?
+</Spoiler>
+
+<Spoiler title="Answer to Hint 1">
+
+We have to know the day, buckets that are available at each barn, and the current tank amounts.
+
+</Spoiler>
+
+
+<Spoiler title="Hint 2">
+
+At every point, we could choose any bucket to move. Could we write general logic to handle all of these possible states?
+
+</Spoiler>
+
+<Spoiler title="Solution">
+
+## Solution
+
+Similar to the second solution from the analysis.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+set<int> possible;
+
+void get_possible(int day, int a_tank, vector<int> a_buckets, int b_tank,
+                  vector<int> b_buckets) {
+	// Last day, add the amount of milk in the first tank.
+	if (day == 4) {
+		possible.insert(a_tank);
+		return;
+	}
+	// This transfers every possible bucket from barn x to barn y.
+	for (int i = 0; i < a_buckets.size(); i++) {
+		// Bucket to transfer.
+		int t = a_buckets[i];
+		// Creates a new copy of available buckets, and transfers the ith one.
+		vector<int> new_a = a_buckets;
+		new_a.erase(begin(new_a) + i);
+		vector<int> new_b = b_buckets;
+		new_b.push_back(t);
+
+		// Recursively call the function with the new buckets and tank amounts.
+		get_possible(day + 1, b_tank + t, new_b, a_tank - t, new_a);
+	}
+}
+
+int main() {
+	freopen("backforth.in", "r", stdin);
+	freopen("backforth.out", "w", stdout);
+	vector<int> a(10);
+	for (int &i : a) { cin >> i; }
+	vector<int> b(10);
+	for (int &i : b) { cin >> i; }
+
+	get_possible(0, 1000, a, 1000, b);
+	cout << possible.size() << endl;
+}
+```
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class BackForth {
+	static Set<Integer> possible = new HashSet<>();
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader read =
+		    new BufferedReader(new FileReader("backforth.in"));
+
+		StringTokenizer aST = new StringTokenizer(read.readLine());
+		StringTokenizer bST = new StringTokenizer(read.readLine());
+		List<Integer> a = new ArrayList<>();
+		List<Integer> b = new ArrayList<>();
+		for (int i = 0; i < 10; i++) {
+			a.add(Integer.parseInt(aST.nextToken()));
+			b.add(Integer.parseInt(bST.nextToken()));
+		}
+
+		getPossible(0, 1000, a, 1000, b);
+
+		PrintWriter write = new PrintWriter("backforth.out");
+		write.println(possible.size());
+		write.close();
+	}
+
+	static void getPossible(int day, int aTank, List<Integer> aBuckets,
+	                        int bTank, List<Integer> bBuckets) {
+		// Last day, add the amount of milk in the first tank.
+		if (day == 4) {
+			possible.add(aTank);
+			return;
+		}
+
+		// This transfers every possible bucket from barn x to barn y.
+		for (int i = 0; i < aBuckets.size(); i++) {
+			// Bucket to transfer.
+			int t = aBuckets.get(i);
+			// Creates a new copy of available buckets, and transfers the ith
+			// one.
+			List<Integer> newA = new ArrayList<>(aBuckets);
+			newA.remove(i);
+			List<Integer> newB = new ArrayList<>(bBuckets);
+			newB.add(t);
+
+			// Recursively call the function with the new buckets and tank
+			// amounts.
+			getPossible(day + 1, bTank + t, newB, aTank - t, newA);
+		}
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+import sys
+from typing import List
+
+sys.stdin = open("backforth.in", "r")
+sys.stdout = open("backforth.out", "w")
+
+possible = set()
+
+
+def get_possible(
+	day: int, a_tank: int, a_buckets: List[int], b_tank: int, b_buckets: List[int]
+) -> None:
+	# Last day, add the amount of milk in the first tank.
+	if day == 4:
+		possible.add(a_tank)
+		return
+
+	# This transfers every possible bucket from barn x to barn y.
+	for i in range(len(a_buckets)):
+		# Bucket to transfer.
+		t = a_buckets[i]
+
+		# Creates a new copy of available buckets, and transfers the ith one.
+		new_a = a_buckets.copy()
+		del new_a[i]
+		new_b = b_buckets.copy()
+		new_b.append(t)
+
+		# Recursively call the function with the new buckets and tank amounts.
+		get_possible(day + 1, b_tank + t, new_b, a_tank - t, new_a)
+
+
+a = list(map(int, input().split()))
+b = list(map(int, input().split()))
+
+get_possible(0, 1000, a, 1000, b)
+
+print(len(possible))
+```
+</PySection>
+</LanguageSection>
+</Spoiler>

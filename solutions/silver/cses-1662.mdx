@@ -1,0 +1,152 @@
+---
+id: cses-1662
+source: CSES
+title: Subarray Divisibility
+author: Qi Wang, Brad Ma
+---
+
+# Problem
+
+We are asked to find the number of subarrays that are divisible by $N$. In other
+words, we're supposed to find the number of subarrays with sum equal to
+$0 \pmod N$.
+
+Notice that **any** sum of a subarray can be represented as the difference of
+two prefixes.
+
+First, let $\texttt{sum}$ represent the prefix sum of array $a$ modulo $N$.
+
+With our prefix sums knowledge,
+
+$$
+\texttt{sum}(i, j) = \texttt{sum}(0, j) - \texttt{sum}(0, i-1)
+$$
+
+Since we want to calculate the number of $\texttt{sum}(i, j)$ that equals to
+$0\pmod N$, $\texttt{sum}(0, j)$ must be equal to $\texttt{sum}(0, i-1)$ for their
+difference to be $0$.
+
+Now, we calculate $\texttt{pmod}[i]$, the number of prefixes with remainder
+equivalent to $i\pmod{N}$. Then the number of pairs contributed by $i$ is
+
+$$
+{\texttt{pmod}[i]\choose{2}} = \texttt{pmod}[i] \cdot (\texttt{pmod}[i] - 1) / 2
+$$
+
+The answer is just the sum of this quantity over all $i$.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+/**
+ * @author Qi Wang
+ * (detemplifying courtesy of Kevin Sheng)
+ */
+int main() {
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
+
+	int N;
+	cin >> N;
+
+	vector<long long> M(N);
+	long long psums = 0;
+	M[psums] = 1;
+	for (int i = 0; i < N; i++) {
+		int a;
+		cin >> a;
+		psums += a;
+		// Remember to account for negative sums
+		M[(psums % N + N) % N]++;
+	}
+
+	long long ans = 0;
+	for (long long x : M) {
+		/*
+		 * Calculating the # of pairs.
+		 * This calculates the pairs without
+		 * duplicates and reverse groups.
+		 */
+		ans += x * (x - 1) / 2;
+	}
+	cout << ans << endl;
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class subarrayDivisibility {
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
+
+		int n = io.nextInt();
+
+		long[] M = new long[n];
+		long prefixSums = 0;
+		M[0] = 1;
+
+		for (int i = 0; i < n; i++) {
+			int a = io.nextInt();
+			prefixSums += a;
+			// remember to account for negative sums
+			M[((int)(prefixSums % n) + n) % n]++;
+		}
+
+		long answer = 0;
+		for (long x : M) {
+			/*
+			 *  calculating the # of pairs, this calculates the pairs without
+			 *  duplicates and reverse groups
+			 */
+
+			answer += x * (x - 1) / 2;
+		}
+
+		io.println(answer);
+		io.close();
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+</JavaSection>
+
+
+<PySection>
+
+```py
+n = int(input())
+arr = map(int, input().split())
+
+residue_counts = [0] * n
+partial_sum = 0
+residue_counts[partial_sum] = 1
+for a in arr:
+	partial_sum += a
+	partial_sum = partial_sum % n
+	residue_counts[partial_sum] += 1
+
+# each subarray with sum divisible by n corresponds to
+# a pair of indices that have the same residue
+print(sum(r * (r - 1) // 2 for r in residue_counts))
+```
+
+</PySection>
+</LanguageSection>

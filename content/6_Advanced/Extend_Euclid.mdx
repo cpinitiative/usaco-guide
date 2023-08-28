@@ -26,13 +26,55 @@ The original Euclidean Algorithm computes $\gcd(a,b)$ and looks like this:
 
 ```cpp
 ll euclid(ll a, ll b) {
-	for (;b;swap(a,b)) {
-		ll k = a/b;
-		a -= k*b;
+	while (b > 0) {
+		ll k = a / b;
+		a -= k * b;
+		swap(a, b);
 	}
-	return a; // gcd(a,b)
+	return a;
 }
 ```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+static long euclid(long a, long b) {
+	while (b > 0) {
+		long k = a / b;
+		a -= k * b;
+
+		long temp = b;
+		b = a;
+		a = temp;
+	}
+	return a;
+}
+```
+
+</JavaSection>
+
+<PySection>
+
+```py
+def euclid(a: int, b: int) -> int:
+	assert (
+		int(a) > 0 and int(b) > 0
+	), "Arguments must be positive, non-zero numeric values."
+
+	while b > 0:
+		k = a // b
+		# subtract multiples of one equation from the other.
+		a -= b * k
+		a, b = b, a
+
+	return a
+```
+
+</PySection>
+
+</LanguageSection>
 
 ## Extended Euclidean Algorithm
 
@@ -61,10 +103,6 @@ $$
 ax+by=\gcd(a,b)
 $$
 
-</CPPSection>
-
-</LanguageSection>
-
 We can slightly modify the version of the Euclidean algorithm given above to
 return more information!
 
@@ -73,28 +111,72 @@ return more information!
 <CPPSection>
 
 ```cpp
-array<ll,3> extendEuclid(ll a, ll b) {
-	array<ll,3> x = {1,0,a}, y = {0,1,b};
-	// we know that 1*a+0*b=a and 0*a+1*b=b
-	for (;y[2];swap(x,y)) { // run extended Euclidean algo
-		ll k = x[2]/y[2];
-		F0R(i,3) x[i] -= k*y[i];
-		// keep subtracting multiple of one equation from the other
-	}
-	return x; // x[0]*a+x[1]*b=x[2], x[2]=gcd(a,b)
-}
+array<ll, 3> extend_euclid(ll a, ll b) {
+	// we know that (1 * a) + (0 * b) = a and (0 * a) + (1 * b) = b
+	array<ll, 3> x = {1, 0, a};
+	array<ll, 3> y = {0, 1, b};
 
-int main() {
-	FOR(a,1,101) FOR(b,1,101) {
-		auto x = extendEuclid(a,b);
-		int g = x[2];
-		assert(g == __gcd(a,b));
-		if (a != b) assert(abs(x[0]) <= b/g/2 && abs(x[1]) <= a/g/2);
+	// run extended Euclidean algo
+	while (y[2] > 0) {
+		// keep subtracting multiple of one equation from the other
+		ll k = x[2] / y[2];
+		for (int i = 0; i < 3; i++) { x[i] -= k * y[i]; }
+		swap(x, y);
 	}
+	return x;  // x[0] * a + x[1] * b = x[2], x[2] = gcd(a, b)
 }
 ```
 
 </CPPSection>
+
+<JavaSection>
+
+```java
+static long[] extendEuclid(long a, long b) {
+	// we know that 1 * a + 0 * b = a and 0 * a + 1 * b = b
+	long[] x = {1, 0, a};
+	long[] y = {0, 1, b};
+
+	// run extended Euclidean algo
+	while (y[2] > 0) {
+		// keep subtracting multiple of one equation from the other
+		long k = x[2] / y[2];
+		for (int i = 0; i < 3; i++) { x[i] -= k * y[i]; }
+
+		long[] temp = x;
+		x = y;
+		y = temp;
+	}
+	return x;  // x[0] * a + x[1] * b = x[2], x[2] = gcd(a, b)
+}
+```
+
+</JavaSection>
+
+<PySection>
+
+```py
+def extend_euclid(a: int, b: int) -> list[int]:
+	assert (
+		int(a) > 0 and int(b) > 0
+	), "Arguments must be positive, non-zero numeric values."
+
+	# we know that 1 * a + 0 * b = a and 0 * a + 1 * b = b.
+	x_arr = [1, 0, int(a)]
+	y_arr = [0, 1, int(b)]
+	q = -1
+
+	while y_arr[2] > 0:  # run extended Euclidean algo.
+		q = x_arr[2] // y_arr[2]
+		for i in range(3):
+			# keep subtracting multiple of one equation from the other.
+			x_arr[i] -= y_arr[i] * q
+		x_arr, y_arr = y_arr, x_arr
+
+	return x_arr  # (x[0] * a) + (x[1] * b) = x[2], x[2] = gcd(a, b)
+```
+
+</PySection>
 
 </LanguageSection>
 
@@ -106,12 +188,33 @@ int main() {
 
 ```cpp
 ll euclid(ll a, ll b) {
-	if (!b) return a;
-	return euclid(b,a%b);
+	if (b == 0) { return a; }
+	return euclid(b, a % b);
 }
 ```
 
 </CPPSection>
+
+<JavaSection>
+
+```java
+static long euclid(long a, long b) {
+	if (b == 0) { return a; }
+	return euclid(b, a % b);
+}
+```
+
+</JavaSection>
+
+<PySection>
+
+```py
+def euclid(a: int, b: int) -> int:
+	"""Recursive Euclidean GCD."""
+	return a if b == 0 else euclid(b, a % b)
+```
+
+</PySection>
 
 </LanguageSection>
 
@@ -122,13 +225,38 @@ becomes
 <CPPSection>
 
 ```cpp
-pl extendEuclid(ll a, ll b) { // returns {x,y}
-	if (!b) return {1,0};
-	pl p = extendEuclid(b,a%b); return {p.s,p.f-a/b*p.s};
+pl extend_euclid(ll a, ll b) {  // returns {x,y}
+	if (b == 0) { return {1, 0}; }
+	pl p = extend_euclid(b, a % b);
+	return {p.s, p.f - a / b * p.s};
 }
 ```
 
 </CPPSection>
+
+<JavaSection>
+
+```java
+static long[] extendEuclid(long a, long b) {  // returns {x,y}
+	if (b == 0) { return new long[] {1, 0}; }
+	long[] p = extendEuclid(b, a % b);
+	return new long[] {p[1], p[0] - a / b * p[1]};
+}
+```
+
+</JavaSection>
+
+<PySection>
+
+```py
+def extend_euclid(a: int, b: int) -> list[int]:
+	if not b:
+		return [1, 0]
+	p = extend_euclid(b, a % b)
+	return [p[1], p[0] - (a // b) * p[1]]
+```
+
+</PySection>
 
 </LanguageSection>
 
@@ -161,23 +289,38 @@ $n^2 < \texttt{LLONG\_MAX}$.
 <CPPSection>
 
 ```cpp
-ll invGeneral(ll a, ll b) {
-	array<ll,3> x = extendEuclid(a,b);
-	assert(x[2] == 1); // gcd must be 1
-	return x[0]+(x[0]<0)*b;
+ll inv_general(ll a, ll b) {
+	array<ll, 3> x = extend_euclid(a, b);
+	assert(x[2] == 1);  // gcd must be 1
+	return x[0] + (x[0] < 0) * b;
 }
-
-int main() {
-	FOR(b,1,101) F0R(a,101) if (__gcd(a,b) == 1) {
-		ll x = invGeneral(a,b);
-		assert((a*x-1)%b == 0);
-		assert(0 <= x && x < b);
-	}
-}
-
 ```
 
 </CPPSection>
+
+<JavaSection>
+
+```java
+static long invGeneral(long a, long b) {
+	long[] x = extendEuclid(a, b);
+	assert (x[2] == 1);  // gcd must be 1
+	return x[0] + (x[0] < 0 ? 1 : 0) * b;
+}
+```
+
+</JavaSection>
+
+<PySection>
+
+```py
+def inv_general(a: int, b: int) -> int:
+	"""Returns the modular inverse of two positive, non-zero integer values."""
+	arr = extend_euclid(a, b)
+	assert arr[2] == 1, "GCD must be 1."
+	return arr[0] + (arr[0] < 0) * b
+```
+
+</PySection>
 
 </LanguageSection>
 

@@ -1,0 +1,197 @@
+---
+id: ac-strivore
+source: AC
+title: Strivore
+author: Kevin Sheng
+---
+
+<Spoiler title="Hint 1">
+
+The answer doesn't depend on the content of $S$.
+
+</Spoiler>
+
+<Spoiler title="Hint 2">
+
+Say we fix the positions of the $S$'s characters relative to the inserted ones.
+How can we assign values to the inserted characters such that overcounting
+is prevented?
+
+</Spoiler>
+
+<Spoiler title="Solution">
+
+[Official Analysis](https://img.atcoder.jp/abc171/editorial.pdf#page=18)
+
+[Alternative Analysis](https://codeforces.com/blog/entry/79153)
+
+The official solution says that if we don't allow characters right before a
+character of $S$ to be equal to said character, we can still count every
+possible string.
+
+While somewhat unintuitive, another way to think about this is:
+
+> For any possible string, go through the characters and greedily assign
+> the first character that matches that of $S$.
+> It is guaranteed that any character immediately before an assigned one won't
+> be equal to the assigned character.
+
+One of the strings obtainable from the first sample input is `moonwoff`.
+We can take the first two `o`s and the second-to-last `f`.
+
+After this (hopefully) helpful intuition, the implementation follows.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(K + |S|)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <string>
+#include <vector>
+
+using std::cout;
+using std::endl;
+using std::vector;
+
+constexpr int MOD = 1e9 + 7;
+
+// https://usaco.guide/gold/modular?lang=cpp#solution---exponentiation
+long long pow(long long base, long long exp) {
+	base %= MOD;
+	long long res = 1;
+	while (exp > 0) {
+		if (exp % 2 == 1) { res = res * base % MOD; }
+		base = base * base % MOD;
+		exp /= 2;
+	}
+	return res;
+}
+
+long long mod_inv(long long n) { return pow(n, MOD - 2); }
+
+int main() {
+	int char_num;
+	std::string str;
+	std::cin >> char_num >> str;
+
+	// place_num[i] = (str.size() + i) choose str.size()
+	vector<long long> place_num{1};
+	for (int i = 1; i <= char_num; i++) {
+		place_num.push_back(place_num.back() * (i + str.size() - 1) % MOD *
+		                    mod_inv(i) % MOD);
+	}
+
+	long long total = 0;
+	for (int back_num = 0; back_num <= char_num; back_num++) {
+		// The number of ways we can place the chars of S
+		long long str_amt = place_num[char_num - back_num];
+		// How many ways to assign chars without violating the condition
+		long long front_amt = pow(25, char_num - back_num);
+		// And finally, the number of ways the chars in the back can be done
+		long long back_amt = pow(26, back_num);
+		total = (total + str_amt * front_amt % MOD * back_amt % MOD) % MOD;
+	}
+
+	cout << total << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+
+public class Main {
+	private static final int MOD = (int)1e9 + 7;
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader read =
+		    new BufferedReader(new InputStreamReader(System.in));
+		int charNum = Integer.parseInt(read.readLine());
+		String str = read.readLine();
+
+		// placeNum[i] = (str.length() + i) choose str.length()
+		long[] placeNum = new long[charNum + 1];
+		placeNum[0] = 1;
+		for (int i = 1; i <= charNum; i++) {
+			placeNum[i] = (placeNum[i - 1] * (i + str.length() - 1) % MOD *
+			               modInv(i) % MOD);
+		}
+
+		long total = 0;
+		for (int backNum = 0; backNum <= charNum; backNum++) {
+			// The number of ways we can place the chars of S
+			long strAmt = placeNum[charNum - backNum];
+			// How many ways to assign chars without violating the condition
+			long frontAmt = pow(25, charNum - backNum);
+			// And finally, the number of ways the chars in the back can be done
+			long backAmt = pow(26, backNum);
+			total = (total + strAmt * frontAmt % MOD * backAmt % MOD) % MOD;
+		}
+
+		System.out.println(total);
+	}
+
+	static long modInv(long n) { return pow(n, MOD - 2); }
+
+	// https://usaco.guide/gold/modular?lang=java#solution---exponentiation
+	static long pow(long base, long exp) {
+		base %= MOD;
+		long res = 1;
+		while (exp > 0) {
+			if (exp % 2 == 1) { res = res * base % MOD; }
+			base = base * base % MOD;
+			exp /= 2;
+		}
+		return res;
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+<Warning>
+
+The below code will only run in time if you submit with PyPy.
+
+</Warning>
+
+```py
+MOD = 10**9 + 7
+
+
+def mod_inv(n: int):
+	return pow(n, MOD - 2, MOD)
+
+
+char_num = int(input())
+str_ = input()
+
+# place_num[i] = (len(str) + i) choose len(str)
+place_num = [1]
+for i in range(1, char_num + 1):
+	place_num.append(place_num[-1] * (i + len(str_) - 1) * mod_inv(i) % MOD)
+
+total = 0
+for back_num in range(0, char_num + 1):
+	# The number of ways we can place the chars of S
+	str_amt = place_num[char_num - back_num]
+	# How many ways to assign chars without violating the condition
+	front_amt = pow(25, char_num - back_num, MOD)
+	# And finally, the number of ways the chars in the back can be done
+	back_amt = pow(26, back_num, MOD)
+	total = (total + str_amt * front_amt * back_amt) % MOD
+
+print(total)
+```
+
+</PySection>
+</LanguageSection>
+
+</Spoiler>

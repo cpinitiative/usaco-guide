@@ -1,0 +1,246 @@
+---
+id: cf-1555B
+source: CF 1555B
+title: B. Two Tables
+authors: David Zhang, Lewis Everett
+---
+
+[Official Analysis (C++)](https://codeforces.com/blog/entry/93389)
+
+<Info title="Info/Tips">
+Oftentimes, problems will try to trick you. For example, since the judge is asking for a double, you would assume you may need to some advanced geometry or some diagonal movements, but a good rule of thumb is to always stay simple: the most elegant and more importantly the fastest solutions are the shortest.
+</Info>
+
+## Explanation
+
+Let's call:
+* $x_{1}$ and $x_{2}$ the leftmost and rightmost points of table 1 respectively
+* $y_{1}$ and $y_{2}$ the bottommost and topmost points of table 1 respectively
+* $w_{1}$ and $h_{1}$ the width and height of table 1 (equal to the difference in $x_{1}$ and $x_
+  {2}$ and $y_{1}$ and $y_{2}$ respectively)
+* $w_{2}$ and $h_{2}$ the width and height of table 2 respectively
+* $W$ and $H$ the width and height of the room respectively
+
+The key to this problem is realising that table 2 will only ever be in 4 different positions
+relative to table 1: to its left, right, top or bottom (see diagram below). In addition, in all
+cases we can assume that table 2 will be touching its respective wall in order to (attempt) to
+maximise its distance from table 1. E.g., if placing table 2 to the left of table 1, we will
+assume its leftmost edge will be touching the left wall of the room. Determining the solution is
+then simply a case of simulating all of these cases and finding which involves moving table 1 the smallest distance.
+
+![](cf-1555B\CF1555B-1.png)
+Possible placements of table 2 relative to table 1.
+
+To determine the minimum distance that table 1 must be moved, we have to calculate the overlap
+between the two tables. For example:
+
+![](cf-1555B\CF1555B-2.png)
+
+In this case, table 2 is placed to the left of table 1. We can therefore calculate its overlap
+with table 1 as follows: $w$ - $x_{1}$. Here the overlap is 1, meaning we
+must move table 1 one space from its starting position to fit table 2 in the room. We must then
+compare this answer to the answers we get from placing table 2 to the right, top or bottom of
+table 1. The smallest of all of these is our final answer.
+
+To summarise, we calculate the overlap of the two tables as follows:
+* Table 2 placed to the left of table 1: Overlap = $w$ - $x_{1}$
+* Table 2 placed to the right of table 1: Overlap = $x_{2}$ - ($W$ - $w$)
+* Table 2 placed to the top of table 1: Overlap = $y_{2}$ - ($H$ - $h$)
+* Table 2 placed to the bottom of table 1: Overlap = $h$ - $y_{1}$
+
+It is possible that the two tables don't overlap at all. In this case the above calculations
+would return a negative number so we should instead return 0 to indicate that table 1 doesn't
+have to move at all.
+
+<Warning>
+When placing table 2 on the left and right sides, make sure $w_{1} + w_{2} \leq W$,
+otherwise table 2 won't fit in the room.
+Similarly, when placing table 2 on the top and bottom sides, make sure $h_{1} + h_{2} \leq H$,
+otherwise table 2 won't fit in the room.
+</Warning>
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(1)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	int tc;
+	cin >> tc;
+	for (int i = 0; i < tc; i++) {
+		int total_width, total_height;
+		cin >> total_width >> total_height;
+
+		int x1, y1, x2, y2;
+		cin >> x1 >> y1 >> x2 >> y2;
+
+		int w1 = x2 - x1;
+		int h1 = y2 - y1;
+
+		int w2, h2;
+		cin >> w2 >> h2;
+
+		// Calculating min and max X and Y values needed to fit in their places
+		int left_place = w2;
+		int right_place = total_width - w2;
+		int top_place = total_height - h2;
+		int bottom_place = h2;
+
+		// Calculating distance needed to move first rectangle
+		int amount_needed_left = max(left_place - x1, 0);
+		int amount_needed_right = max(x2 - right_place, 0);
+		int amount_needed_top = max(y2 - top_place, 0);
+		int amount_needed_bottom = max(bottom_place - y1, 0);
+
+		// Checking bounds of the rectangles
+		if (w1 + w2 > total_width) {
+			amount_needed_left = INT32_MAX;
+			amount_needed_right = INT32_MAX;
+		}
+
+		if (h1 + h2 > total_height) {
+			amount_needed_top = INT32_MAX;
+			amount_needed_bottom = INT32_MAX;
+		}
+
+		// neat trick to get the min out of multiple elements
+		int ans = min({amount_needed_left, amount_needed_right,
+		               amount_needed_top, amount_needed_bottom});
+
+		// if the rectangles can't fit in the bigger rectangles in any way,
+		// print -1
+		cout << (ans == INT32_MAX ? -1 : ans) << endl;
+	}
+}
+```
+</CPPSection>
+<PySection>
+
+```py
+for _ in range(int(input())):
+	total_width, total_height = map(int, input().split())
+	x1, y1, x2, y2 = map(int, input().split())
+	w1 = x2 - x1
+	h1 = y2 - y1
+	w2, h2 = map(int, input().split())
+
+	ans = float("inf")
+
+	# Calculating minimum and maximum X and Y values needed to fit in their places
+	left_place = w2
+	right_place = total_width - w2
+	top_place = total_height - h2
+	bottom_place = h2
+
+	# Calculating distance needed to move first rectangle
+	amount_needed_left = max(left_place - x1, 0)
+	amount_needed_right = max(x2 - right_place, 0)
+	amount_needed_top = max(y2 - top_place, 0)
+	amount_needed_bottom = max(bottom_place - y1, 0)
+
+	# Checking bounds of the rectangles
+	if w1 + w2 > total_width:
+		amount_needed_left = float("inf")
+		amount_needed_right = float("inf")
+
+	if h1 + h2 > total_height:
+		amount_needed_top = float("inf")
+		amount_needed_bottom = float("inf")
+
+	# neat trick to get the min out of multiple elements
+	ans = min(
+		amount_needed_left, amount_needed_right, amount_needed_top, amount_needed_bottom
+	)
+
+	# if ans is float('inf'), there is no way to fit the two rectangles in the room
+	print(ans if ans != float("inf") else -1)
+```
+</PySection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class TwoTables {
+	static InputReader r = new InputReader(System.in);
+	static PrintWriter pw = new PrintWriter(System.out);
+	public static void main(String[] args) {
+		int n = r.nextInt();
+
+		for (int i = 0; i < n; i++) {
+			int W = r.nextInt();
+			int H = r.nextInt();
+			int x1 = r.nextInt();
+			int y1 = r.nextInt();
+			int x2 = r.nextInt();
+			int y2 = r.nextInt();
+			int w = r.nextInt();
+			int h = r.nextInt();
+
+			int answer = Integer.MAX_VALUE;
+
+			// Check if combined table widths can fit in the room
+			if ((x2 - x1) + w <= W) {
+				// Determine overlap when placing the table on the left
+				int left = Math.max(0, w - x1);
+				// Determine overlap when placing the table on the right
+				int right = Math.max(0, x2 - (W - w));
+				answer = Math.min(left, right);
+			}
+
+			// Check if combined table heights can fit in the room
+			if ((y2 - y1) + h <= H) {
+				int top = Math.max(0, y2 - (H - h));
+				int bottom = Math.max(0, h - y1);
+				int minTB = Math.min(top, bottom);
+				answer = Math.min(answer, minTB);
+			}
+
+			pw.println(answer == Integer.MAX_VALUE ? -1 : answer);
+		}
+		pw.close();
+	}
+
+	// BeginCodeSnip{I/O Template}
+	static class InputReader {
+		BufferedReader reader;
+		StringTokenizer tokenizer;
+
+		public InputReader(InputStream stream) {
+			reader = new BufferedReader(new InputStreamReader(stream), 32768);
+			tokenizer = null;
+		}
+
+		String next() {  // reads in the next string
+			while (tokenizer == null || !tokenizer.hasMoreTokens()) {
+				try {
+					tokenizer = new StringTokenizer(reader.readLine());
+				} catch (IOException e) { throw new RuntimeException(e); }
+			}
+			return tokenizer.nextToken();
+		}
+
+		public int nextInt() {  // reads in the next int
+			return Integer.parseInt(next());
+		}
+
+		public long nextLong() {  // reads in the next long
+			return Long.parseLong(next());
+		}
+
+		public double nextDouble() {  // reads in the next double
+			return Double.parseDouble(next());
+		}
+	}
+	// EndCodeSnip
+}
+```
+</JavaSection>
+</LanguageSection>

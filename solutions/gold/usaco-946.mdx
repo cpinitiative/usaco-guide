@@ -1,0 +1,412 @@
+---
+id: usaco-946
+source: USACO Gold 2019 Open
+title: I Would Walk 500 Miles
+author: Benjamin Qi, Aryansh Shrivastava, Chuyang Wang
+---
+
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_walk_gold_open19.html)
+
+
+## Solution 1: Prim's Algorithm
+
+For this problem, we want to maximize the minimum of the number of miles two
+cows are willing to walk, henceforth referred to as $M$. Let's consider a
+Minimum Spanning Tree (MST) of all $N$ cows. By adding the $i$-th edge to the
+MST, it implies that all edges between the rest $N - i$ components have weights
+higher or equal than this added edge, or, in other words, $M$ is equal to the
+weight of this added edge.
+
+In case of splitting the cows into $K$ groups, we remove the $K - 1$
+edges from the MST which have the maximum weight. $M$ is then equal to the
+weight of the minimum of those removed edges. If the edges in the MST are sorted
+in ascending order, $M$ would be the weight of the $N - K + 1$-th edge of the
+MST.
+
+As the typical implementation of Kruskal's Algorithm requires
+$\mathcal{O}(N^2 \log N)$ time for a dense graph as in our case, we use instead
+Prim's Algorithm with linear search for the closest vertex. Each scan only takes
+$\mathcal{O}(N)$ time, and we only have to do $N$ scans.
+
+Time Complexity: $\mathcal{O}(N^2)$
+
+
+<LanguageSection>
+
+<CPPSection>
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+
+const ll MOD = 2019201997LL;
+const ll FACTOR1 = 2019201913LL;
+const ll FACTOR2 = 2019201949LL;
+
+/**
+ * @return the number of miles cow a + 1 and b + 1 are willing to walk to see
+ * each other
+ */
+ll calc_length(ll a, ll b) {
+	a++, b++;
+	return (a * FACTOR1 + b * FACTOR2) % MOD;
+}
+
+/**
+ * Prim's Algorithm for dense graph to build the MST by scanning
+ * @return the edge lengths in the MST
+ */
+vector<ll> prim(int N) {
+	vector<ll> dist(N, MOD);
+	vector<bool> visited(N, false);
+
+	for (int i = 0; i < N; i++) {
+		// find the nearest node to the current MST
+		int min_dist_node = -1;
+		for (int j = 0; j < N; j++) {
+			if (!visited[j] &&
+			    (min_dist_node < 0 || dist[j] < dist[min_dist_node])) {
+				min_dist_node = j;
+			}
+		}
+
+		// add this node to the MST
+		visited[min_dist_node] = true;
+
+		// update the distances between the MST and other unconnected nodes
+		for (int j = 0; j < N; j++) {
+			if (!visited[j]) {
+				dist[j] = min(dist[j], calc_length(min(min_dist_node, j),
+				                                   max(min_dist_node, j)));
+			}
+		}
+	}
+	return dist;
+}
+
+int main() {
+	freopen("walk.in", "r", stdin);
+	freopen("walk.out", "w", stdout);
+
+	int N, K;
+	cin >> N >> K;
+
+	vector<ll> mst = prim(N);
+	sort(mst.begin(), mst.end());
+	cout << mst[N - K] << endl;
+}
+```
+</CPPSection>
+
+<JavaSection>
+```java
+import java.io.*;
+import java.util.*;
+
+public class Walk {
+	static final long MOD = 2019201997L;
+	static final long FACTOR1 = 2019201913L;
+	static final long FACTOR2 = 2019201949L;
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new FileReader("walk.in"));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		br.close();
+
+		int N = Integer.parseInt(st.nextToken());
+		int K = Integer.parseInt(st.nextToken());
+
+		long[] mst = prim(N);
+		Arrays.sort(mst);
+
+		PrintWriter pr = new PrintWriter("walk.out");
+		pr.println(mst[N - K]);
+		pr.close();
+	}
+
+	/**
+	 * @return the number of miles cow a + 1 and b + 1 are willing to walk to
+	 *     see
+	 * each other
+	 */
+	public static long calcLength(long a, long b) {
+		a++;
+		b++;
+		return (a * FACTOR1 + b * FACTOR2) % MOD;
+	}
+
+	/**
+	 * Prim's Algorithm for dense graph to build the MST by scanning
+	 * @return the edge lengths in the MST
+	 */
+	public static long[] prim(int N) {
+		long[] dist = new long[N];
+		boolean[] visited = new boolean[N];
+		for (int i = 0; i < N; i++) { dist[i] = MOD; }
+
+		for (int i = 0; i < N; i++) {
+			// find the nearest node to the current MST
+			int minDistNode = -1;
+			for (int j = 0; j < N; j++) {
+				if (!visited[j] &&
+				    (minDistNode < 0 || dist[j] < dist[minDistNode])) {
+					minDistNode = j;
+				}
+			}
+
+			// add this node to the MST
+			visited[minDistNode] = true;
+
+			// update the distances between the MST and other unconnected nodes
+			for (int j = 0; j < N; j++) {
+				if (!visited[j]) {
+					dist[j] =
+					    Math.min(dist[j], calcLength(Math.min(minDistNode, j),
+					                                 Math.max(minDistNode, j)));
+				}
+			}
+		}
+		return dist;
+	}
+}
+```
+</JavaSection>
+
+</LanguageSection>
+
+
+## Solution 2: Kruskal's Algorithm & Two-Pass Radix Sort
+
+Alternatively, we can also use Kruskal's Algorithm to construct our MST. Note
+that only the step of sorting all edges takes too long time. If we manage to
+sort all edges in linear time, we might be able to solve it with Kruskal's
+Algorithm as well.
+
+To sort these edges, we can apply a two-pass radix sort. In particular, we first
+use counting sort to sort the first 16 bits ($[0, 2^{16})$) of the weights. Then,
+in the second iteration, we sort the rest 16 bits ($[2^{16}, 2^{32})$). After the
+sorting process, we apply the unmodified Kruskal's Algorithm on the edges and
+$M$ is equal to the weight of the $N - K + 1$-th longest edge of the MST.
+
+Time Complexity: $\mathcal{O}(N^2)$
+
+
+<Warning title="TLE">
+Some large test cases might get TLE due to the bad constant factor for the
+radix sort.
+</Warning>
+
+
+<LanguageSection>
+
+<CPPSection>
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long int;
+
+// BeginCodeSnip{DSU}
+struct DSU {
+	int size;
+	vector<int> dsu;
+	DSU(int s) : size(s), dsu(s, -1) {}
+	int find(int x) {
+		if (dsu[x] < 0) return x;
+		return dsu[x] = find(dsu[x]);
+	}
+	bool unite(int a, int b) {
+		a = find(a), b = find(b);
+		if (a == b) return false;
+		if (dsu[a] > dsu[b]) swap(a, b);
+		dsu[a] += dsu[b];
+		dsu[b] = a;
+		return true;
+	}
+};
+// EndCodeSnip
+
+const ll MOD = 2019201997LL;
+const ll FACTOR1 = 2019201913LL;
+const ll FACTOR2 = 2019201949LL;
+
+/** @return the number of miles cow a and b are willing to walk to see each
+ * other */
+ll calc_length(ll a, ll b) { return (a * FACTOR1 + b * FACTOR2) % MOD; }
+
+/**
+ * Performs a two-pass radix sort on all the edges in the complete graph between
+ * all cows
+ * @return a in ascending order sorted list of all edges
+ */
+vector<pair<int, int>> calc_sorted_edges(int N) {
+	const int MAX_COMP = 1 << 16;
+	vector<int> count(MAX_COMP, 0);
+	int edges_count = N * (N - 1) / 2;
+	vector<pair<int, int>> pass_1(edges_count);
+	vector<pair<int, int>> pass_2(edges_count);
+
+	// first pass of the radix sort on [0, 1 << 16)
+	for (int i = 1; i <= N; i++) {
+		for (int j = i + 1; j <= N; j++) {
+			count[calc_length(i, j) & (MAX_COMP - 1)]++;
+		}
+	}
+	for (int i = 1; i < MAX_COMP; i++) { count[i] += count[i - 1]; }
+	for (int i = 1; i <= N; i++) {
+		for (int j = i + 1; j <= N; j++) {
+			pass_1[--count[calc_length(i, j) & (MAX_COMP - 1)]] = {i, j};
+		}
+	}
+
+	// second pass of the radix sort on [1 << 16, 1 << 32)
+	count.assign(1 << 16, 0);
+	for (int i = 1; i <= N; i++) {
+		for (int j = i + 1; j <= N; j++) { count[calc_length(i, j) >> 16]++; }
+	}
+	for (int i = 1; i < MAX_COMP; i++) { count[i] += count[i - 1]; }
+	for (int i = edges_count - 1; i >= 0; i--) {
+		auto &[a, b] = pass_1[i];
+		pass_2[--count[calc_length(a, b) >> 16]] = pass_1[i];
+	}
+
+	return pass_2;
+}
+
+int main() {
+	freopen("walk.in", "r", stdin);
+	freopen("walk.out", "w", stdout);
+
+	int N, K;
+	cin >> N >> K;
+
+	vector<pair<int, int>> edges = calc_sorted_edges(N);
+	// length of edges of the MST
+	vector<ll> edge_lens;
+	// Kruskal's Algorithm to construct the MST
+	DSU dsu(N + 1);
+	for (int i = 0; i < N * (N - 1) / 2; i++) {
+		auto &[a, b] = edges[i];
+		if (dsu.unite(a, b)) { edge_lens.push_back(calc_length(a, b)); }
+	}
+
+	cout << edge_lens[N - K] << endl;
+}
+```
+</CPPSection>
+
+</LanguageSection>
+
+
+## Solution 3: Math
+
+Since this problem has its roots in optimizing a given weight expression, we are
+motivated to use math.
+
+First, we can use modular arithmetic to find a direct expression for the modular
+residue. The goal is to find an expression for the modular residue involving
+only basic operations that we will be able to optimize with mathematical
+techniques. Using modular arithmetic properties (negative numbers in modular
+arithmetic), consider the expression $\pmod{2019201997}$ to reduce the numbers:
+
+$$
+2019201913x+2019201949y \equiv - 84 x - 48 y \pmod {2019201997}
+$$
+
+Since $x,y$ are bounded by $N \leq 7500,$ this expression will always give a
+negative value whose absolute value does not exceed the modulus $2019201997.$
+Thus, we can easily find an expression for the modular residue from here if we
+just shift up by the modulus $2019201997$ once:
+
+$$
+(2019201913x+2019201949y) \mod 2019201997 = 2019201997 - 84 x - 48 y.
+$$
+
+Now, it remains to optimize this expression. Formally, we must find a
+$K$-partition of the cows such that
+
+$$
+\min\limits_{x,y \, \text{in different groups}} (2019201997 - 84 x - 48 y)
+$$
+
+is maximized.
+
+Now, let's analyze the function's behavior: for large $x,y,$ the expression becomes
+small, and for small $x,y,$ the expression becomes large.
+
+But remembering the condition that $x,y$ must be in different groups to
+contribute to the answer, this means that large $x,y$ should be together in the
+same group (to greedily avoid making the expression small) and small $x,y$
+should be in different groups (to greedily make the expression large). This
+leads to the following greedy strategy:
+
+Make one group with all the largest cows that can fit and $k-1$ groups with all
+the smallest cows. Of course, the $k-1$ smallest cows are just $1 \dots k-1,$ so
+this means that the other $n-(k-1)$ cows will be in the large group.
+
+Now that we have pinpointed the optimal grouping, we can find the answer by
+going back to the question: we want to minimize the expression. To minimize the
+expression, we should greedily choose the largest cows that are in different
+groups (since large $x,y$ make the expression smaller). Clearly, this means that
+we should take cow $n,$ the largest cow in the group of large cows, and $k-1,$
+the largest cow not in the group of large cows.
+
+Recall that the problem statement requires $x < y,$ so we have
+$x = k - 1, y = n.$ Our answer is as easy as a substitution of these values into
+the modular residue expression $2019201997 - 84 x - 48 y:$
+
+$$
+2019201997 - 84 (k-1) - 48 n
+$$
+
+In retrospect, this solution is equivalent to performing Kruskal's MST algorithm
+by hand when we analyze the edge weight expression and use greedy logic to
+create the optimal grouping. (So the previous solutions will find the exact same
+grouping.)
+
+Time Complexity: $\mathcal{O}(1)$
+
+
+<LanguageSection>
+
+Senpat's implementation:
+
+<CPPSection>
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	freopen("walk.in", "r", stdin);
+	freopen("walk.out", "w", stdout);
+	int N, K;
+	cin >> N >> K;
+	long long answer = 2019201997LL - 48LL * N - 84LL * (K - 1LL);
+	cout << answer << endl;
+}
+```
+</CPPSection>
+
+<JavaSection>
+```java
+import java.io.*;
+import java.util.*;
+
+public class Walk {
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new FileReader("walk.in"));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		br.close();
+
+		int N = Integer.parseInt(st.nextToken());
+		int K = Integer.parseInt(st.nextToken());
+		long answer = 2019201997L - 48L * N - 84L * (K - 1L);
+
+		PrintWriter pr = new PrintWriter("walk.out");
+		pr.println(answer);
+		pr.close();
+	}
+}
+```
+</JavaSection>
+
+</LanguageSection>

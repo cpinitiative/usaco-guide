@@ -1,0 +1,320 @@
+---
+id: ccc-Twenty-four
+source: CCC 2008
+title: Twenty-four
+author: Paul Chen
+---
+
+## Explanation
+
+We can complete search through all possible ways to create an arithmetic expression with a card hand.
+For each permutation of the card hand, we try every way of placing arithmetic operators.
+Note that there are two possible ways that parentheses can be arranged: `((( ) ) )`, or `(( ) ( ))`, so we must try both cases.
+The arithmetic expression with the maximum value that is not greater than 24 is our answer.
+
+Time Complexity: $\mathcal{O}((\texttt{\# of cards})! \times (\texttt{\# of operations})^{(\texttt{\# of cards})}$
+
+## Implementation
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int ans;
+int hand[4];                   // The given card hand.
+vector<int> hand_permutation;  // The generated permutation of the card hand.
+bool chosen[4];  // Whether a given card is present in `hand_permutation`.
+
+// Function that takes in two numbers and an operation and returns the result.
+int operation(int op, int num1, int num2) {
+	switch (op) {
+	case 0:
+		return num1 + num2;
+	case 1:
+		return num1 - num2;
+	case 2:
+		return num1 * num2;
+	case 3: {
+		// The divisor cannot be 0 and the quotient must be a whole number.
+		if (num2 == 0 || num1 % num2 != 0) { return INT32_MIN; }
+		return num1 / num2;
+	}
+	}
+	return INT32_MIN;
+}
+
+// Function that generates all possible permutations of the card hand.
+void generate_hand_permutation() {
+	if (hand_permutation.size() == 4) {
+		// We have generated a permutation, so we can try placing the
+		// operators.
+		for (int op1 = 0; op1 < 4; op1++) {
+			for (int op2 = 0; op2 < 4; op2++) {
+				for (int op3 = 0; op3 < 4; op3++) {
+					int first = operation(op1, hand_permutation[0],
+					                      hand_permutation[1]);
+					// If the operation is invalid, continue;
+					if (first == INT32_MIN) { continue; }
+
+					int second = operation(op2, first, hand_permutation[2]);
+					if (second == INT32_MIN) { continue; }
+
+					int third = operation(op3, second, hand_permutation[3]);
+					if (third == INT32_MIN) { continue; }
+
+					if (third <= 24) { ans = max(ans, third); }
+				}
+			}
+		}
+
+		// Case 2: (( ) ( ))
+		for (int op1 = 0; op1 < 4; op1++) {
+			for (int op2 = 0; op2 < 4; op2++) {
+				for (int op3 = 0; op3 < 4; op3++) {
+					int first = operation(op1, hand_permutation[0],
+					                      hand_permutation[1]);
+					if (first == INT32_MIN) { continue; }
+
+					int second = operation(op2, hand_permutation[2],
+					                       hand_permutation[3]);
+					if (second == INT32_MIN) { continue; }
+
+					int third = operation(op3, first, second);
+					if (third == INT32_MIN) { continue; }
+
+					if (third <= 24) { ans = max(ans, third); }
+				}
+			}
+		}
+	} else {
+		// Otherwise, we continue to build our permutation array.
+		for (int i = 0; i < 4; i++) {
+			if (chosen[i]) continue;
+			chosen[i] = true;
+			hand_permutation.push_back(hand[i]);
+			generate_hand_permutation();
+			chosen[i] = false;
+			hand_permutation.pop_back();
+		}
+	}
+}
+
+int main() {
+	int num_hands;
+	cin >> num_hands;
+
+	for (int h = 0; h < num_hands; h++) {
+		ans = INT32_MIN;
+		for (int i = 0; i < 4; i++) { cin >> hand[i]; }
+
+		// Start complete search.
+		generate_hand_permutation();
+		cout << ans << "\n";
+	}
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Solution {
+	static int ans;
+	// The given card hand.
+	static int[] hand = new int[4];
+	// The generated permutation of the card hand.
+	static List<Integer> handPermutation = new ArrayList<>();
+	// Whether a given card is present in `hand_permutation`.
+	static boolean[] chosen = new boolean[4];
+
+	// Function that takes in two numbers and an operation and returns the
+	// result.
+	static int operation(int op, int num1, int num2) {
+		switch (op) {
+		case 0:
+			return num1 + num2;
+		case 1:
+			return num1 - num2;
+		case 2:
+			return num1 * num2;
+		case 3: {
+			// The divisor cannot be 0 and the quotient must be an integer.
+			if (num2 == 0 || num1 % num2 != 0) { return Integer.MIN_VALUE; }
+			return num1 / num2;
+		}
+		}
+		return Integer.MIN_VALUE;
+	}
+
+	// Function that generates all possible permutations of the card hand.
+	private static void generateHandPermutation() {
+		if (handPermutation.size() == 4) {
+			// We have generated a permutation, so we can try placing the
+			// operators.
+			// Case 1: ((( ) ) )
+			for (int op1 = 0; op1 < 4; op1++) {
+				for (int op2 = 0; op2 < 4; op2++) {
+					for (int op3 = 0; op3 < 4; op3++) {
+						int first = operation(op1, handPermutation.get(0),
+						                      handPermutation.get(1));
+						// If the operation is invalid, continue;
+						if (first == Integer.MIN_VALUE) { continue; }
+
+						int second =
+						    operation(op2, first, handPermutation.get(2));
+						if (second == Integer.MIN_VALUE) { continue; }
+
+						int third =
+						    operation(op3, second, handPermutation.get(3));
+						if (third == Integer.MIN_VALUE) { continue; }
+
+						if (third <= 24) { ans = Math.max(ans, third); }
+					}
+				}
+			}
+
+			// Case 2: (( ) ( ))
+			for (int op1 = 0; op1 < 4; op1++) {
+				for (int op2 = 0; op2 < 4; op2++) {
+					for (int op3 = 0; op3 < 4; op3++) {
+						int first = operation(op1, handPermutation.get(0),
+						                      handPermutation.get(1));
+						if (first == Integer.MIN_VALUE) { continue; }
+
+						int second = operation(op2, handPermutation.get(2),
+						                       handPermutation.get(3));
+						if (second == Integer.MIN_VALUE) { continue; }
+
+						int third = operation(op3, first, second);
+						if (third == Integer.MIN_VALUE) { continue; }
+
+						if (third <= 24) { ans = Math.max(ans, third); }
+					}
+				}
+			}
+		} else {
+			// Otherwise, we continue to build our permutation array.
+			for (int i = 0; i < 4; i++) {
+				if (chosen[i]) continue;
+				chosen[i] = true;
+				handPermutation.add(hand[i]);
+				generateHandPermutation();
+				chosen[i] = false;
+				handPermutation.remove(handPermutation.size() - 1);
+			}
+		}
+	}
+
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int num_hands = sc.nextInt();
+
+		for (int h = 0; h < num_hands; h++) {
+			ans = Integer.MIN_VALUE;
+			for (int i = 0; i < 4; i++) { hand[i] = sc.nextInt(); }
+
+			// Start complete search.
+			generateHandPermutation();
+			System.out.println(ans);
+		}
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+ans = 0
+hand = [0] * 4  # The given card hand.
+hand_permutation = []  # The generated permutation of the card hand.
+chosen = [False] * 4  # Whether a given card is present in `hand_permutation`.
+
+# Function that takes in two numbers and an operation and returns the result.
+def operation(op, num1, num2):
+	if op == 0:
+		return num1 + num2
+	elif op == 1:
+		return num1 - num2
+	elif op == 2:
+		return num1 * num2
+	else:
+		# The divisor cannot be 0 and the quotient must be a whole number.
+		if num2 == 0 or num1 % num2 != 0:
+			return float("-inf")
+		return num1 // num2
+
+
+# Function that generates all possible permutations of the card hand.
+def generate_hand_permutation():
+	global ans
+
+	if len(hand_permutation) == 4:
+		# We have generated a permutation, so we can try placing the operators.
+		for op1 in range(4):
+			for op2 in range(4):
+				for op3 in range(4):
+					first = operation(op1, hand_permutation[0], hand_permutation[1])
+					# If the operation is invalid, continue;
+					if first == float("-inf"):
+						continue
+
+					second = operation(op2, first, hand_permutation[2])
+					if second == float("-inf"):
+						continue
+
+					third = operation(op3, second, hand_permutation[3])
+					if third == float("-inf"):
+						continue
+
+					if third <= 24:
+						ans = max(ans, third)
+
+		# Case 2: (( ) ( ))
+		for op1 in range(4):
+			for op2 in range(4):
+				for op3 in range(4):
+					first = operation(op1, hand_permutation[0], hand_permutation[1])
+					if first == float("-inf"):
+						continue
+
+					second = operation(op2, hand_permutation[2], hand_permutation[3])
+					if second == float("-inf"):
+						continue
+
+					third = operation(op3, first, second)
+					if third == float("-inf"):
+						continue
+
+					if third <= 24:
+						ans = max(ans, third)
+	else:
+		# Otherwise, we continue to build our permutation array.
+		for i in range(4):
+			if chosen[i]:
+				continue
+			chosen[i] = True
+			hand_permutation.append(hand[i])
+			generate_hand_permutation()
+			chosen[i] = False
+			hand_permutation.pop()
+
+
+for _ in range(int(input())):
+	ans = float("-inf")
+	for i in range(4):
+		hand[i] = int(input())
+
+	# Start complete search.
+	generate_hand_permutation()
+	print(ans)
+```
+
+</PySection>
+</LanguageSection>

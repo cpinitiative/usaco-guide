@@ -108,64 +108,81 @@ priority queue of objects so that we can extract the minimum. Note that with the
 second approach mentioned in the first section the running time would instead be
 $\mathcal{O}(NMK\alpha(N)\log ans)$, which may be too slow.
 
-<Spoiler title="My Solution">
-
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
 typedef bitset<1225> B;
 typedef vector<int> vi;
 
-struct DSU { // for Kruskal's
-	vi e; void init(int n) { e = vi(n,-1); }
+struct DSU {  // for Kruskal's
+	vi e;
+	void init(int n) { e = vi(n, -1); }
 	int get(int x) { return e[x] < 0 ? x : e[x] = get(e[x]); }
 	bool sameSet(int a, int b) { return get(a) == get(b); }
 	int size(int x) { return -e[get(x)]; }
-	bool unite(int x, int y) { // union by size
-		x = get(x), y = get(y); if (x == y) return 0;
-		if (e[x] > e[y]) swap(x,y);
-		e[x] += e[y]; e[y] = x; return 1;
+	bool unite(int x, int y) {  // union by size
+		x = get(x), y = get(y);
+		if (x == y) return 0;
+		if (e[x] > e[y]) swap(x, y);
+		e[x] += e[y];
+		e[y] = x;
+		return 1;
 	}
 };
 
-int N,M,K;
-vector<array<int,3>> ed;
+int N, M, K;
+vector<array<int, 3>> ed;
 
 struct Partition {
-	B ban; vi span; int wei = 0, fix = 0; // "fix" smallest edges must be contained in spanning tree
+	B ban;
+	vi span;
+	int wei = 0,
+	    fix = 0;  // "fix" smallest edges must be contained in spanning tree
 	Partition(B _ban, int _fix) : ban(_ban), fix(_fix) {
-		DSU D; D.init(N); // now find MST within subspace
-		for (int i = 0; i < M; ++i) if (!ban[i] && D.unite(ed[i][1],ed[i][2]))
-			span.push_back(i), wei += ed[i][0]; // run Kruskal's ignoring banned edges
+		DSU D;
+		D.init(N);  // now find MST within subspace
+		for (int i = 0; i < M; ++i)
+			if (!ban[i] && D.unite(ed[i][1], ed[i][2]))
+				span.push_back(i),
+				    wei += ed[i][0];  // run Kruskal's ignoring banned edges
 	}
 };
-bool operator<(const Partition& l, const Partition& r) { return l.wei > r.wei; } // for pq
+bool operator<(const Partition &l, const Partition &r) {
+	return l.wei > r.wei;
+}  // for pq
 
 int main() {
 	cin >> N >> M >> K;
 	for (int i = 0; i < M; ++i) {
-		int a,b,c; cin >> a >> b >> c;
-		ed.push_back({c,a-1,b-1});
+		int a, b, c;
+		cin >> a >> b >> c;
+		ed.push_back({c, a - 1, b - 1});
 	}
-	sort(begin(ed),end(ed));
+	sort(begin(ed), end(ed));
 	priority_queue<Partition> pq;
-	pq.push({B(),0}); // start with MST
+	pq.push({B(), 0});  // start with MST
 	for (int i = 1; i <= K; ++i) {
-		if (!pq.size()) { cout << "-1\n"; exit(0); }
-		auto a = pq.top(); pq.pop();
-		assert(a.span.size() == N-1);
-		if (i == K) { cout << a.wei << "\n"; exit(0); } // print K-th smallest
-		while (a.fix < a.span.size()) { // insert O(N) children
-			B t = a.ban; t[a.span[a.fix]] = 1;
-			auto A = Partition(t,a.fix);
-			if (A.span.size() == N-1) pq.push(A);
-			a.fix ++;
+		if (!pq.size()) {
+			cout << "-1\n";
+			exit(0);
+		}
+		auto a = pq.top();
+		pq.pop();
+		assert(a.span.size() == N - 1);
+		if (i == K) {
+			cout << a.wei << "\n";
+			exit(0);
+		}                                // print K-th smallest
+		while (a.fix < a.span.size()) {  // insert O(N) children
+			B t = a.ban;
+			t[a.span[a.fix]] = 1;
+			auto A = Partition(t, a.fix);
+			if (A.span.size() == N - 1) pq.push(A);
+			a.fix++;
 		}
 	}
 }
 ```
-
-</Spoiler>
 
 ## Robotic Cow Herd
 
@@ -198,55 +215,64 @@ using namespace std;
 
 typedef long long ll;
 typedef vector<int> vi;
-typedef pair<ll,ll> pl;
+typedef pair<ll, ll> pl;
 
 #define f first
 #define s second
 
-int N,K;
-ll tot; // sum of cheapest
+int N, K;
+ll tot;  // sum of cheapest
 vector<vi> v;
 
-ll mx; ll res; int num;
+ll mx;
+ll res;
+int num;
 
 void dfs(int pos, ll cur, int id) {
 	if (cur > mx || num == K) return;
-	res += cur; num ++;
-	if (id+1 < v[pos].size())
-		dfs(pos,cur+v[pos][id+1]-v[pos][id],id+1);
-	for (int i = pos+1; i < v.size(); ++i) {
-		ll CUR = cur+v[i][1];
+	res += cur;
+	num++;
+	if (id + 1 < v[pos].size())
+		dfs(pos, cur + v[pos][id + 1] - v[pos][id], id + 1);
+	for (int i = pos + 1; i < v.size(); ++i) {
+		ll CUR = cur + v[i][1];
 		if (num == K || CUR > mx) break;
-		dfs(i,CUR,1);
+		dfs(i, CUR, 1);
 	}
 }
 
 void get() {
 	res = num = 0;
-	dfs(0,tot,0);
+	dfs(0, tot, 0);
 }
 
 int main() {
-	ios_base::sync_with_stdio(0); cin.tie(0);
-	freopen("roboherd.in","r",stdin);
-	freopen("roboherd.out","w",stdout);
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
+	freopen("roboherd.in", "r", stdin);
+	freopen("roboherd.out", "w", stdout);
 	cin >> N >> K;
 	for (int i = 0; i < N; ++i) {
-		int m; cin >> m;
-		vi p(m); for (int& x: p) cin >> x;
-		sort(begin(p),end(p));
-		tot += p[0]; for (int j = m-1; j >= 0; --j) p[j] -= p[0];
+		int m;
+		cin >> m;
+		vi p(m);
+		for (int &x : p) cin >> x;
+		sort(begin(p), end(p));
+		tot += p[0];
+		for (int j = m - 1; j >= 0; --j) p[j] -= p[0];
 		if (p.size() > 1) v.push_back(p);
 	}
-	sort(begin(v),end(v)); // sort by second-cheapest
+	sort(begin(v), end(v));  // sort by second-cheapest
 	ll lo = 0, hi = 1e13;
 	while (lo < hi) {
-		mx = (lo+hi+1)/2; get();
+		mx = (lo + hi + 1) / 2;
+		get();
 		if (num < K) lo = mx;
-		else hi = mx-1;
+		else hi = mx - 1;
 	}
-	mx = lo; get();
-	cout << res+(K-num)*(mx+1) << "\n";
+	mx = lo;
+	get();
+	cout << res + (K - num) * (mx + 1) << "\n";
 }
 ```
 
@@ -266,12 +292,13 @@ rather than $N$ children.
 ```cpp
 void dfs(int pos, ll cur, int id) {
 	if (cur > mx || num == K) return;
-	res += cur; num ++;
-	if (id+1 < v[pos].size())
-		dfs(pos,cur+v[pos][id+1]-v[pos][id],id+1);
-	if (pos+1 < v.size()) {
-		if (id == 1) dfs(pos+1,cur-v[pos][1]+v[pos+1][1],1);
-		if (id) dfs(pos+1,cur+v[pos+1][1],1);
+	res += cur;
+	num++;
+	if (id + 1 < v[pos].size())
+		dfs(pos, cur + v[pos][id + 1] - v[pos][id], id + 1);
+	if (pos + 1 < v.size()) {
+		if (id == 1) dfs(pos + 1, cur - v[pos][1] + v[pos + 1][1], 1);
+		if (id) dfs(pos + 1, cur + v[pos + 1][1], 1);
 	}
 }
 ```
@@ -308,41 +335,48 @@ possible robot, we can use a priority queue.
 using namespace std;
 
 typedef long long ll;
-typedef pair<int,int> pi;
+typedef pair<int, int> pi;
 typedef vector<int> vi;
-typedef pair<ll,pi> T;
+typedef pair<ll, pi> T;
 
 #define f first
 #define s second
 
-int N,K;
-ll tot; // sum of cheapest
+int N, K;
+ll tot;  // sum of cheapest
 vector<vi> v;
-priority_queue<T,vector<T>,greater<T>> pq;
+priority_queue<T, vector<T>, greater<T>> pq;
 
 int main() {
-	ios_base::sync_with_stdio(0); cin.tie(0);
-	freopen("roboherd.in","r",stdin);
-	freopen("roboherd.out","w",stdout);
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
+	freopen("roboherd.in", "r", stdin);
+	freopen("roboherd.out", "w", stdout);
 	cin >> N >> K;
 	for (int i = 0; i < N; ++i) {
-		int m; cin >> m;
-		vi p(m); for (int& x: p) cin >> x;
-		sort(begin(p),end(p));
-		tot += p[0]; for (int j = m-1; j >= 0; --j) p[j] -= p[0];
+		int m;
+		cin >> m;
+		vi p(m);
+		for (int &x : p) cin >> x;
+		sort(begin(p), end(p));
+		tot += p[0];
+		for (int j = m - 1; j >= 0; --j) p[j] -= p[0];
 		if (p.size() > 1) v.push_back(p);
 	}
-	sort(begin(v),end(v)); // sort by second-cheapest
-	pq.push({0,{0,0}});
+	sort(begin(v), end(v));  // sort by second-cheapest
+	pq.push({0, {0, 0}});
 	ll ans = 0;
 	for (int i = 0; i < K; ++i) {
-		auto a = pq.top(); pq.pop();
-		ans += tot+a.f; int pos = a.s.f, id = a.s.s;
-		if (id+1 < v[pos].size())
-			pq.push({a.f+v[pos][id+1]-v[pos][id],{pos,id+1}});
-		if (pos+1 < v.size()) {
-			if (id == 1) pq.push({a.f-v[pos][1]+v[pos+1][1],{pos+1,1}});
-			if (id) pq.push({a.f+v[pos+1][1],{pos+1,1}});
+		auto a = pq.top();
+		pq.pop();
+		ans += tot + a.f;
+		int pos = a.s.f, id = a.s.s;
+		if (id + 1 < v[pos].size())
+			pq.push({a.f + v[pos][id + 1] - v[pos][id], {pos, id + 1}});
+		if (pos + 1 < v.size()) {
+			if (id == 1)
+				pq.push({a.f - v[pos][1] + v[pos + 1][1], {pos + 1, 1}});
+			if (id) pq.push({a.f + v[pos + 1][1], {pos + 1, 1}});
 		}
 	}
 	cout << ans << "\n";

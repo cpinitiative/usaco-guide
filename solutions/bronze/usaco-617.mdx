@@ -1,0 +1,183 @@
+---
+id: usaco-617
+source: USACO Bronze 2016 February
+title: Load Balancing
+author: Maggie Liu, Kevin Sheng
+---
+
+[Official Analysis (Java)](http://www.usaco.org/current/data/sol_balancing_bronze_feb16.html)
+
+<LanguageSection>
+<CPPSection>
+
+## Implementation
+
+```cpp
+#include <algorithm>
+#include <cstdio>
+#include <iostream>
+#include <set>
+#include <vector>
+
+using namespace std;
+
+int main() {
+	freopen("balancing.in", "r", stdin);
+	freopen("balancing.out", "w", stdout);
+
+	int cow_num;
+	int max_pos;  // We won't use this variable
+	cin >> cow_num >> max_pos;
+
+	vector<int> x_vals(cow_num);
+	vector<int> y_vals(cow_num);
+	set<int> vfence;
+	set<int> hfence;
+	for (int c = 0; c < cow_num; c++) {
+		cin >> x_vals[c] >> y_vals[c];
+		vfence.insert(x_vals[c] + 1);  // x-coords of relevant vertical fences
+		hfence.insert(y_vals[c] + 1);  // y-coords of relevant horizontal fences
+	}
+
+	int min_imbalance = cow_num;
+	// Loop through each pair of fences
+	for (int v : vfence) {
+		for (int h : hfence) {
+			int top_left = 0;
+			int top_right = 0;
+			int bottom_left = 0;
+			int bottom_right = 0;
+
+			// Count the number of cows in each region
+			for (int c = 0; c < cow_num; c++) {
+				if (x_vals[c] < v && y_vals[c] > h) {
+					top_left++;
+				} else if (x_vals[c] > v && y_vals[c] > h) {
+					top_right++;
+				} else if (x_vals[c] < v && y_vals[c] < h) {
+					bottom_left++;
+				} else if (x_vals[c] > v && y_vals[c] < h) {
+					bottom_right++;
+				}
+			}
+
+			min_imbalance =
+			    min(min_imbalance,
+			        max({top_left, top_right, bottom_left, bottom_right}));
+		}
+	}
+
+	cout << min_imbalance << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Balancing {
+	public static void main(String[] args) throws IOException {
+		BufferedReader read =
+		    new BufferedReader(new FileReader("balancing.in"));
+		StringTokenizer initial = new StringTokenizer(read.readLine());
+		int cowNum = Integer.parseInt(initial.nextToken());
+		// We won't use this variable
+		int maxPos = Integer.parseInt(initial.nextToken());
+
+		int[] xvals = new int[cowNum];
+		int[] yvals = new int[cowNum];
+		Set<Integer> vfences = new HashSet<>();
+		Set<Integer> hfences = new HashSet<>();
+		for (int c = 0; c < cowNum; c++) {
+			StringTokenizer cow = new StringTokenizer(read.readLine());
+			xvals[c] = Integer.parseInt(cow.nextToken());
+			yvals[c] = Integer.parseInt(cow.nextToken());
+			vfences.add(xvals[c] + 1);  // x-coords of relevant vertical fences
+			hfences.add(yvals[c] +
+			            1);  // y-coords of relevant horizontal fences
+		}
+
+		int minImbalance = cowNum;
+		for (int v : vfences) {
+			for (int h : hfences) {
+				int topLeft = 0;
+				int topRight = 0;
+				int bottomLeft = 0;
+				int bottomRight = 0;
+
+				for (int c = 0; c < cowNum; c++) {
+					if (xvals[c] < v && yvals[c] > h) {
+						topLeft++;
+					} else if (xvals[c] > v && yvals[c] > h) {
+						topRight++;
+					} else if (xvals[c] < v && yvals[c] < h) {
+						bottomLeft++;
+					} else if (xvals[c] > v && yvals[c] < h) {
+						bottomRight++;
+					}
+				}
+
+				int currImbalance = Collections.max(
+				    Arrays.asList(topLeft, topRight, bottomLeft, bottomRight));
+				minImbalance = Math.min(minImbalance, currImbalance);
+			}
+		}
+
+		PrintWriter written = new PrintWriter("balancing.out");
+		written.println(minImbalance);
+		written.close();
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+with open("balancing.in") as read:
+	# max_pos won't be used
+	cow_num, max_pos = [int(i) for i in read.readline().split()]
+
+	x_vals = []
+	y_vals = []
+	v_fence = set()
+	h_fence = set()
+	for _ in range(cow_num):
+		x, y = [int(i) for i in read.readline().split()]
+		x_vals.append(x)
+		y_vals.append(y)
+		v_fence.add(x_vals[-1] + 1)  # x-coords of relevant vertical fences
+		h_fence.add(y_vals[-1] + 1)  # y-coords of relevant horizontal fences
+
+# Loop through each pair of fences
+min_imbalance = cow_num
+for v in v_fence:
+	for h in h_fence:
+		top_left = 0
+		top_right = 0
+		bottom_left = 0
+		bottom_right = 0
+
+		# Count the number of cows in each region
+		for c in range(cow_num):
+			if x_vals[c] < v and y_vals[c] > h:
+				top_left += 1
+			elif x_vals[c] > v and y_vals[c] > h:
+				top_right += 1
+			if x_vals[c] < v and y_vals[c] < h:
+				bottom_left += 1
+			elif x_vals[c] > v and y_vals[c] < h:
+				bottom_right += 1
+
+		min_imbalance = min(
+			min_imbalance, max(top_left, top_right, bottom_left, bottom_right)
+		)
+
+print(min_imbalance, file=open("balancing.out", "w"))
+```
+
+</PySection>
+</LanguageSection>

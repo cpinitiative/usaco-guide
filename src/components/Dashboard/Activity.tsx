@@ -15,10 +15,8 @@ export default function Activity() {
     setStartDate(d);
   }, []);
 
-  const {
-    userProgressOnModulesActivity,
-    userProgressOnProblemsActivity,
-  } = useContext(UserDataContext);
+  const { userProgressOnModulesActivity, userProgressOnProblemsActivity } =
+    useContext(UserDataContext);
 
   if (!startDate) return null;
 
@@ -38,8 +36,9 @@ export default function Activity() {
         moduleIDs.some(
           m => m[0] === activity.moduleID && m[1] === newDate.getTime()
         )
-      )
+      ) {
         continue;
+      }
       moduleIDs.push([activity.moduleID, newDate.getTime()]);
       if (newDate.getTime() in activityCount) {
         activityCount[newDate.getTime()]++;
@@ -60,8 +59,9 @@ export default function Activity() {
         problemIDs.some(
           p => p[0] === activity.problemID && p[1] === newDate.getTime()
         )
-      )
+      ) {
         continue;
+      }
       problemIDs.push([activity.problemID, newDate.getTime()]);
 
       if (newDate.getTime() in activityCount) {

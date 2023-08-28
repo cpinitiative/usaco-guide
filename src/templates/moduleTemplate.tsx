@@ -128,6 +128,7 @@ export const pageQuery = graphql`
           name
           url
           source
+          sourceDescription
           difficulty
           isStarred
           tags
@@ -136,6 +137,7 @@ export const pageQuery = graphql`
             label
             labelTooltip
             url
+            hasHints
             sketch
           }
         }

@@ -1,0 +1,279 @@
+---
+id: usaco-915
+source: USACO Bronze 2019 February
+title: Sleepy Cow Herding
+author: Sathvik Chundru, Ryan Chou, Vikas Thoutam, Yiming Huang
+---
+
+## Video Solution
+
+By Vikas Thoutam
+
+<YouTube id="f-sdO29bOFQ" />
+
+<Spoiler title="Video Solution Code">
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	// File input and output
+	freopen("herding.in", "r", stdin);
+	freopen("herding.out", "w", stdout);
+
+	// Read in the positions of the three cows, cow1, cow2, and cow3
+	int cow1, cow2, cow3;
+	cin >> cow1 >> cow2 >> cow3;
+
+	// Sort the three positions in order, this will make computation easier.
+	int temp;
+	if (cow1 > cow3) {
+		temp = cow3;
+		cow3 = cow1;
+		cow1 = temp;
+	}
+	if (cow2 > cow3) {
+		temp = cow3;
+		cow3 = cow2;
+		cow2 = temp;
+	}
+	if (cow1 > cow2) {
+		temp = cow2;
+		cow2 = cow1;
+		cow2 = temp;
+	}
+
+	// Compute the minimum number of moves, always 0, 1, or 2
+	int min;
+	if (cow1 + 1 == cow2 &&
+	    cow2 + 1 == cow3)  // In case they are already next to each other
+		min = 0;
+	else if (cow1 + 2 == cow2 ||
+	         cow2 + 2 == cow3)  // In case two of the cows are one apart, move
+	                            // the other cow in between
+		min = 1;
+	else  // All other cases, move one cow to be in the else if case, then add
+	      // one to satisfy the else if case
+		min = 2;
+
+	// Compute the maximum number of moves
+	// The value is simply one less than the size of the biggest gap
+	int maxVal = max(cow2 - cow1, cow3 - cow2) - 1;
+
+	// Print both min and max
+	printf("%d\n%d", min, maxVal);
+	fclose(stdout);
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.StringTokenizer;
+
+public class SleepyCowHerding {
+	public static void main(String[] args) throws IOException {
+		// File input and output
+		BufferedReader br = new BufferedReader(new FileReader("herding.in"));
+		PrintWriter pw = new PrintWriter("herding.out");
+
+		// Read in the positions of the three cows, cow1, cow2, and cow3
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int cow1 = Integer.parseInt(st.nextToken());
+		int cow2 = Integer.parseInt(st.nextToken());
+		int cow3 = Integer.parseInt(st.nextToken());
+
+		// Sort the three positions in order, this will make computation easier.
+		int temp;
+		if (cow1 > cow3) {
+			temp = cow3;
+			cow3 = cow1;
+			cow1 = temp;
+		}
+		if (cow2 > cow3) {
+			temp = cow3;
+			cow3 = cow2;
+			cow2 = temp;
+		}
+		if (cow1 > cow2) {
+			temp = cow2;
+			cow2 = cow1;
+			cow2 = temp;
+		}
+
+		// Compute the minimum number of moves, always 0, 1, or 2
+		int min;
+		if (cow1 + 1 == cow2 &&
+		    cow2 + 1 == cow3)  // In case they are already next to each other
+			min = 0;
+		else if (cow1 + 2 == cow2 ||
+		         cow2 + 2 == cow3)  // In case two of the cows are one apart,
+		                            // move the other cow in between
+			min = 1;
+		else  // All other cases, move one cow to be in the else if case, then
+		      // add one to satisfy the else if case
+			min = 2;
+
+		// Compute the maximum number of moves
+		// The value is simply one less than the size of the biggest gap
+		int max = Math.max(cow2 - cow1, cow3 - cow2) - 1;
+
+		// Print both min and max
+		pw.println(min);
+		pw.println(max);
+		pw.close();
+	}
+}
+```
+
+</JavaSection>
+</LanguageSection>
+</Spoiler>
+
+<Spoiler title="Hint 1">
+
+Let's first try to find the minimum.
+How many moves does it take at most to group the cows in consecutive locations?
+
+</Spoiler>
+
+<Spoiler title="Hint 2">
+
+Now let's try to find the maximum.
+Each move reduces the gap between the two endpoints by a certain amount.
+In order to maximize the number of steps, we just have to minimize the amount of gaps reduced after each move.
+
+</Spoiler>
+
+<Spoiler title="Hint 3">
+
+When there are two consecutive cows, what is the optimal way to move the cow that minimizes the amount of gaps reduced?
+
+</Spoiler>
+
+<Spoiler title="Solution">
+
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_herding_bronze_feb19.html)
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(1)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <algorithm>
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+int main() {
+	freopen("herding.in", "r", stdin);
+	freopen("herding.out", "w", stdout);
+
+	// all cow locations
+	vector<int> a;
+	for (int i = 0; i < 3; i++) {
+		int b;
+		cin >> b;
+		a.push_back(b);
+	}
+	sort(a.begin(), a.end());
+
+	/*
+	 * The minimum number of moves can only be 0, 1, or 2.
+	 * 0 is if they're already consecutive,
+	 * 1 is if there's a difference of 2 between any 2 numbers,
+	 * and 2 is for all other cases.
+	 */
+	if (a[0] == a[2] - 2) {
+		cout << 0 << endl;
+	} else if ((a[1] == a[2] - 2) || (a[0] == a[1] - 2)) {
+		cout << 1 << endl;
+	} else {
+		cout << 2 << endl;
+	}
+	// max is equal to largest difference between end and middle, minus one.
+	cout << max(a[2] - a[1], a[1] - a[0]) - 1;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+class Main {
+	public static void main(String[] args) throws IOException {
+		Scanner sc = new Scanner(new File("herding.in"));
+		PrintWriter pw = new PrintWriter(new File("herding.out"));
+		int[] cows = new int[3];
+		cows[0] = sc.nextInt();
+		cows[1] = sc.nextInt();
+		cows[2] = sc.nextInt();
+		Arrays.sort(cows);
+
+		// Printing the minimum number of moves
+		if (cows[2] == cows[0] + 2) {
+			pw.println(0);
+		} else if (cows[1] == cows[0] + 2 || cows[2] == cows[1] + 2) {
+			pw.println(1);
+		} else {
+			pw.println(2);
+		}
+
+		// Max number of moves
+		pw.println(Math.max(cows[1] - cows[0], cows[2] - cows[1]) - 1);
+		pw.close();
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+import sys
+
+sys.stdin = open("herding.in", "r")
+sys.stdout = open("herding.out", "w")
+a, b, c = map(int, input().split())
+
+# Best scenario: the three elements are already in order.
+if c == a + 2:
+	print(0)
+	"""
+	If there is a difference by 2, it can be solved in one move.
+	3 5 9 -> 5 7 9
+	"""
+elif b == a + 2 or c == b + 2:
+	print(1)
+	"""
+	It can always be solved in two moves by moving a -> c - 2 and b -> c - 1.
+	If there is less than one integer between the two elements, it'll be taken care
+	of in the if statement above.
+	"""
+else:
+	print(2)
+	"""
+	The worst case is incrementing by 1 in the largest gap.
+	3 5 9 -> 5 6 9 -> 6 7 9 -> 7 8 9
+	"""
+print(max(b - a, c - b) - 1)
+```
+
+</PySection>
+</LanguageSection>
+
+</Spoiler>

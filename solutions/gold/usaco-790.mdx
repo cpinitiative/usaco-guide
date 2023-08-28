@@ -1,0 +1,277 @@
+---
+id: usaco-790
+source: USACO Gold 2018 January
+title: Cow At Large
+author: Qi Wang, Jesse Choe, George Pong
+---
+
+[Official Analysis](http://www.usaco.org/current/data/sol_atlarge_gold_jan18.html)
+
+Suppose that a given farmer reaches Bessie at barn $i$; this is only possible if that farmer reached barn $i$ either:
+
+* At the same time as Bessie
+* At an earlier time than Bessie
+
+This means that we can treat this problem as a shortest path problem, where the farmer reaches barn $i$ at the same time or earlier than Bessie if $\texttt{dist1[i]} \leq \texttt{dist2[i]}$. Here, $\texttt{dist1[i]}$ represents the shortest distance between any given farmer and the $i$-th barn, and $\texttt{dist2[i]}$ represents the shortest distance between Bessie and the $i$-th barn. Note that $\texttt{dist2[i]}$ can also be represented as the tree depth at barn $i$ with the tree rooted at barn $k$.
+
+We can run BFS to find $\texttt{dist1[i]}$ and DFS or BFS to find $\texttt{dist2[i]}$. Once we find these shortest distances, we can simulate Bessies' movement by "catching" her when $\texttt{dist1[i]} \leq \texttt{dist2[i]}$. Once Bessie is caught, we can stop her movement and increase the total number of farmers by 1. This greedily finds the minimum number of farmers, since we only store the "optimal" farmers in our answer.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(V+E)$
+
+<LanguageSection>
+
+<CPPSection>
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+using ll = long long;
+using vl = vector<ll>;
+using pl = pair<ll, ll>;
+
+#define pb push_back
+#define f first
+#define s second
+
+const ll MAXN = 1e5, INF = 1e9;
+
+vl adj[MAXN];
+
+int main() {
+	freopen("atlarge.in", "r", stdin);
+	freopen("atlarge.out", "w", stdout);
+	ll n, k;
+	cin >> n >> k;
+	--k;
+	for (int i = 0; i < n - 1; i++) {
+		ll a, b;
+		cin >> a >> b;
+		--a, --b;
+		adj[a].pb(b), adj[b].pb(a);
+	}
+
+	/*
+	 * dist2 represents the shortest path from
+	 * Bessie's location to barn i
+	 * dist1 represents the shortest path from
+	 * any given farmers' location to barn i
+	 */
+	vl dist1(n, INF), dist2(n, INF);
+	dist2[k] = 0;
+	queue<ll> q;
+	q.push(k);
+
+	// BFS to find the shortest path from node k to node i
+	while (!q.empty()) {
+		ll cur = q.front();
+		q.pop();
+		for (ll u : adj[cur]) {
+			if (dist2[cur] + 1 < dist2[u]) {
+				dist2[u] = dist2[cur] + 1;
+				q.push(u);
+			}
+		}
+	}
+
+	for (int i = 0; i < n; i++) {
+		if (adj[i].size() == 1) {
+			q.push(i);
+			dist1[i] = 0;
+		}
+	}
+
+	/*
+	 * BFS to find the shortest distance between node j to node i,
+	 * where j is a leaf node (the farmers' location)
+	 */
+	while (!q.empty()) {
+		ll cur = q.front();
+		q.pop();
+		for (ll u : adj[cur]) {
+			if (dist1[cur] + 1 < dist1[u]) {
+				dist1[u] = dist1[cur] + 1;
+				q.push(u);
+			}
+		}
+	}
+
+	ll res = 0;
+	q.push(k);
+	vl vis(n);
+	while (!q.empty()) {
+		ll cur = q.front();
+		q.pop();
+		// Stop Bessie if a given farmer arrives at "cur" first
+		if (dist1[cur] <= dist2[cur]) {
+			res++;
+			continue;
+		}
+		// Used to avoid backtracking
+		if (vis[cur]) { continue; }
+		vis[cur] = true;
+		for (ll u : adj[cur]) { q.push(u); }
+	}
+	cout << res << endl;
+}
+```
+</CPPSection>
+
+<PySection>
+```py
+from collections import deque
+
+with open("atlarge.in", "r") as infile:
+	n, k = map(int, infile.readline().split())
+	graph = [[] for _ in range(n)]
+	for _ in range(n - 1):
+		f, t = map(lambda i: int(i) - 1, infile.readline().split())
+		graph[f].append(t)
+		graph[t].append(f)
+
+# store all the nodes which are an exit node
+exits = [node for node, adj_list in enumerate(graph) if len(adj_list) == 1]
+
+# stores minimum steps for a farmer or bessie to reach the node of index = node
+dist_bessie = [float("inf")] * n
+dist_farmer = [float("inf")] * n
+
+"""
+Multi-source BFS from all the exits to calculate, for all nodes, the minimum
+number of steps needed for a farmer to reach that node
+"""
+queue = deque(exits)
+for exit_node in exits:
+	dist_farmer[exit_node] = 0
+
+while queue:
+	curr = queue.pop()
+
+	for adj in graph[curr]:
+		if dist_farmer[curr] + 1 < dist_farmer[adj]:
+			dist_farmer[adj] = dist_farmer[curr] + 1
+			queue.appendleft(adj)
+
+"""
+BFS from node k to trace all of Bessie's paths. Increment the farmers needed
+when dist_bessie[i] = dist_farmer[i], where the additional farmer will cover
+all of Bessie's escape paths containing node i
+"""
+farmers_needed = 0
+queue = deque([k - 1])
+dist_bessie[k - 1] = 0
+while queue:
+	curr = queue.pop()
+
+	if dist_bessie[curr] >= dist_farmer[curr]:
+		farmers_needed += 1
+		continue
+
+	for adj in graph[curr]:
+		if dist_bessie[adj] == float("inf"):
+			dist_bessie[adj] = dist_bessie[curr] + 1
+			queue.appendleft(adj)
+
+print(farmers_needed, file=open("atlarge.out", "w"))
+```
+</PySection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class AtLarge {
+	static int N, K, A = 0;
+	static List<Integer>[] adj;
+	static int[] depth, leaf, inDeg, parent;
+	public static void main(String[] args) throws Exception {
+		Kattio io = new Kattio("atlarge");
+
+		N = io.nextInt();
+		K = io.nextInt();
+
+		adj = new List[N];
+		depth = new int[N];
+		leaf = new int[N];
+		inDeg = new int[N];
+		parent = new int[N];
+
+		Arrays.fill(depth, -1);
+		Arrays.fill(leaf, Integer.MAX_VALUE);
+
+		for (int i = 0; i < N; i++) { adj[i] = new ArrayList<>(); }
+
+		for (int i = 0; i < N - 1; i++) {
+			int a = io.nextInt() - 1;
+			int b = io.nextInt() - 1;
+
+			adj[a].add(b);
+			adj[b].add(a);
+
+			inDeg[a]++;
+			inDeg[b]++;
+		}
+
+		depth[K - 1] = 0;
+		dfs(K - 1);
+
+		for (int i = 0; i < N; i++) {
+			if (inDeg[i] == 1) { bfs(i); }
+		}
+
+		for (int i = 0; i < N; i++) {
+			if (i != K - 1) {
+				if (depth[parent[i]] < leaf[parent[i]] && depth[i] >= leaf[i]) {
+					A++;
+				}
+			}
+		}
+
+		io.println(A);
+		io.close();
+	}
+
+	public static void dfs(int n) {
+		for (Integer c : adj[n]) {
+			if (depth[c] != -1) continue;
+
+			depth[c] = depth[n] + 1;
+			parent[c] = n;
+			dfs(c);
+		}
+	}
+
+	public static void bfs(int l) {
+		Queue<Edge> q = new LinkedList<>();
+		q.add(new Edge(l, 0));
+
+		while (!q.isEmpty()) {
+			Edge curr = q.poll();
+
+			leaf[curr.n] = Math.min(leaf[curr.n], curr.d);
+
+			for (Integer n : adj[curr.n]) {
+				if (leaf[n] < curr.d + 1) continue;
+
+				q.add(new Edge(n, curr.d + 1));
+			}
+		}
+	}
+
+	private static class Edge {
+		int n, d;
+		public Edge(int a, int b) {
+			n = a;
+			d = b;
+		}
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+</LanguageSection>

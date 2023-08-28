@@ -1,0 +1,214 @@
+---
+id: ac-subtree
+source: AtCoder DP Contest
+title: Subtree
+author: Benjamin Qi, Andi Qu
+---
+
+## Solving For One Root
+
+Let's consider a simpler problem:
+
+> Assuming that node $1$ is painted black, how many ways can we paint the tree?
+
+First, root the tree at node $1$. Let $dp[i]$ be the number of ways that we can
+paint the subtree of node $i$ such that either node $i$ is colored black, or no
+nodes are colored black. Note that if $i$ is a leaf, then $dp[i]=2$ (we choose
+to color node $i$ black or not).
+
+For each child $c$ of $i$, there are $dp[c]$ ways to paint its subtree if $i$ is
+painted black. This means that we have the recurrence
+
+$$
+dp[i]=1+\prod_{c \in \text{Children of } i} dp[c]
+$$
+
+where the product corresponds to painting node $i$ black and the $1$ corresponds
+to painting node $i$ white.
+
+The answer to the simpler problem is thus $dp[1]-1$. Finding all $dp[i]$ takes
+$\mathcal{O}(N)$ time.
+
+## Solving For All Roots
+
+First, root the tree arbitrarily and do a DFS to find all $dp[i]$.
+
+Let $dp2[i]$ be the number of ways to colour the tree if we remove node $i$'s
+subtree such that either the parent of $i$ is black, or no nodes are colored
+black. Note that $dp2[1]=1$.
+
+The number of ways to paint the tree if we know node $i$ is black is simply
+$(dp[i]-1)\cdot dp2[i]$. How can we find $dp2[i]$ efficiently though?
+
+The basic recurrence for computing $dp2[i]$ is
+
+$$
+dp2[i] = 1+dp2[\text{Parent of } i] \cdot \prod_{s \in \text{Siblings of } i} dp[s]
+$$
+
+where the product corresponds to painting the parent of $i$ black and the $1$
+corresponds to painting the parent of $i$ white.
+
+Since $M$ isn't guaranteed to be prime though, we can't just find the product of
+each node's children and divide that product by each of its children's $dp[i]$
+(since we can't find modular inverses easily).
+
+However, notice how if node $i$ is the $k$-th child of its parent, then we can
+use prefix and suffix products to compute
+
+$$
+\prod_{s \in \text{Siblings of } i}dp[s]
+$$
+
+without using division. (i.e. We find the product of $dp[s]$ for the first to
+the $(k - 1)$-th child of $i$'s parent, the product of $dp[s]$ for the
+$(k + 1)$-th to the last child of $i$'s parent, and then multiply those
+together.)
+
+Finding all $dp2[i]$ takes $\mathcal{O}(N)$ time using a DFS, so the total
+complexity of this algorithm is thus $\mathcal{O}(N)$.
+
+## Implementation
+
+`down` corresponds to $dp$ and `up` corresponds to $dp2$. The code uses the
+exact same recurrences mentioned above.
+
+```cpp
+// CodeSnip{Benq Template}
+
+/**
+ * Description: modular arithmetic operations
+ */
+
+template <int RT> struct mint {
+	// static const int mod = MOD;
+	static constexpr mint rt() { return RT; }  // primitive root for FFT
+	int v;
+	explicit operator int() const {
+		return v;
+	}  // explicit -> don't silently convert to int
+	mint() { v = 0; }
+	mint(ll _v) {
+		v = int((-MOD < _v && _v < MOD) ? _v : _v % MOD);
+		if (v < 0) v += MOD;
+	}
+	friend bool operator==(const mint &a, const mint &b) { return a.v == b.v; }
+	friend bool operator!=(const mint &a, const mint &b) { return !(a == b); }
+	friend bool operator<(const mint &a, const mint &b) { return a.v < b.v; }
+	friend void re(mint &a) {
+		ll x;
+		re(x);
+		a = mint(x);
+	}
+	friend str ts(mint a) { return ts(a.v); }
+
+	mint &operator+=(const mint &m) {
+		if ((v += m.v) >= MOD) v -= MOD;
+		return *this;
+	}
+	mint &operator-=(const mint &m) {
+		if ((v -= m.v) < 0) v += MOD;
+		return *this;
+	}
+	mint &operator*=(const mint &m) {
+		v = (ll)v * m.v % MOD;
+		return *this;
+	}
+	mint &operator/=(const mint &m) { return (*this) *= inv(m); }
+	friend mint pow(mint a, ll p) {
+		mint ans = 1;
+		assert(p >= 0);
+		for (; p; p /= 2, a *= a)
+			if (p & 1) ans *= a;
+		return ans;
+	}
+	friend mint inv(const mint &a) {
+		assert(a.v != 0);
+		return pow(a, MOD - 2);
+	}
+
+	mint operator-() const { return mint(-v); }
+	mint &operator++() { return *this += 1; }
+	mint &operator--() { return *this -= 1; }
+	friend mint operator+(mint a, const mint &b) { return a += b; }
+	friend mint operator-(mint a, const mint &b) { return a -= b; }
+	friend mint operator*(mint a, const mint &b) { return a *= b; }
+	friend mint operator/(mint a, const mint &b) { return a /= b; }
+};
+
+typedef mint<5> mi;
+
+template <int SZ> struct SubtreeDP {
+	int par[SZ];
+	vi adj[SZ];
+	void ae(int a, int b) { adj[a].pb(b), adj[b].pb(a); }
+	struct T {
+		mi v = 1;
+		T &operator+=(const T &b) {
+			v *= b.v;
+			return *this;
+		}
+		void tran() { ++v; }
+	};
+	T up[SZ], down[SZ];
+	void dfs(int x) {
+		trav(t, adj[x]) if (t != par[x]) {
+			par[t] = x;
+			dfs(t);
+			down[x] += down[t];
+		}
+		down[x].tran();
+	}
+	void dfs2(int x) {
+		{
+			T pre = up[x];  // deal with prefixes
+			F0R(i, sz(adj[x])) {
+				int c = adj[x][i];
+				if (c == par[x]) continue;
+				up[c] += pre;
+				pre += down[c];
+			}
+		}
+		{
+			T pre;  // deal with suffixes
+			R0F(i, sz(adj[x])) {
+				int c = adj[x][i];
+				if (c == par[x]) continue;
+				up[c] += pre;
+				pre += down[c];
+			}
+		}
+		F0R(i, sz(adj[x])) {
+			int c = adj[x][i];
+			if (c == par[x]) continue;
+			up[c].tran();
+			dfs2(c);
+		}
+	}
+	// T getSub(int x, int y) { return par[x] == y ? down[x] : up[y]; }
+	// get subtree of x excluding y
+	void init(int n) {
+		par[1] = 0;
+		dfs(1);
+		dfs2(1);
+		FOR(i, 1, n + 1) ps((down[i].v - 1) * up[i].v);
+		// FOR(i,1,n+1) { alternative method
+		//     T p = T(); trav(t,adj[i]) p += getSub(t,i);
+		//     ps(p.v);
+		// }
+	}
+};
+
+int main() {
+	setIO();
+	int n;
+	re(n, MOD);
+	SubtreeDP<MX> S;
+	F0R(i, n - 1) {
+		int a, b;
+		re(a, b);
+		S.ae(a, b);
+	}
+	S.init(n);
+}
+```

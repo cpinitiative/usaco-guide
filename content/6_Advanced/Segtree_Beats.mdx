@@ -64,7 +64,7 @@ function update(upd_left, upd_right, upd_value, tree_node, tree_left, tree_right
 
 	if upd_right < tree_left or tree_right < upd_left or cur_max < upd_value
 		return
-	if upd_left = upd_right
+	if tree_left = tree_right
 		apply update
 		return
 
@@ -123,79 +123,74 @@ int N, Q;
 long long tsum[MAXN * 4], tmax[MAXN * 4];
 
 void update_mod(int l, int r, long long v, int t = 1, int tl = 1, int tr = N) {
-    if (r < tl || tr < l || tmax[t] < v) {
-        return;
-    }
-    else if (tl == tr) {
-        int val = tmax[t] % v;
-        tsum[t] = tmax[t] = val;
-        return;
-    }
+	if (r < tl || tr < l || tmax[t] < v) {
+		return;
+	} else if (tl == tr) {
+		int val = tmax[t] % v;
+		tsum[t] = tmax[t] = val;
+		return;
+	}
 
-    int tm = (tl + tr) / 2;
-    update_mod(l, r, v, t * 2, tl, tm);
-    update_mod(l, r, v, t * 2 + 1, tm + 1, tr);
-    tsum[t] = tsum[t * 2] + tsum[t * 2 + 1];
-    tmax[t] = max(tmax[t * 2], tmax[t * 2 + 1]);
+	int tm = (tl + tr) / 2;
+	update_mod(l, r, v, t * 2, tl, tm);
+	update_mod(l, r, v, t * 2 + 1, tm + 1, tr);
+	tsum[t] = tsum[t * 2] + tsum[t * 2 + 1];
+	tmax[t] = max(tmax[t * 2], tmax[t * 2 + 1]);
 }
 
 void update_set(int i, long long v, int t = 1, int tl = 1, int tr = N) {
-    if (tl == tr) {
-        tsum[t] = tmax[t] = v;
-        return;
-    }
+	if (tl == tr) {
+		tsum[t] = tmax[t] = v;
+		return;
+	}
 
-    int tm = (tl + tr) / 2;
-    if (i <= tm) {
-        update_set(i, v, t * 2, tl, tm);
-    }
-    else {
-        update_set(i, v, t * 2 + 1, tm + 1, tr);
-    }
-    tsum[t] = tsum[t * 2] + tsum[t * 2 + 1];
-    tmax[t] = max(tmax[t * 2], tmax[t * 2 + 1]);
+	int tm = (tl + tr) / 2;
+	if (i <= tm) {
+		update_set(i, v, t * 2, tl, tm);
+	} else {
+		update_set(i, v, t * 2 + 1, tm + 1, tr);
+	}
+	tsum[t] = tsum[t * 2] + tsum[t * 2 + 1];
+	tmax[t] = max(tmax[t * 2], tmax[t * 2 + 1]);
 }
 
 long long query(int l, int r, int t = 1, int tl = 1, int tr = N) {
-    if (r < tl || tr < l) {
-        return 0;
-    }
-    else if (l <= tl && tr <= r) {
-        return tsum[t];
-    }
+	if (r < tl || tr < l) {
+		return 0;
+	} else if (l <= tl && tr <= r) {
+		return tsum[t];
+	}
 
-    int tm = (tl + tr) / 2;
-    return query(l, r, t * 2, tl, tm) + query(l, r, t * 2 + 1, tm + 1, tr);
+	int tm = (tl + tr) / 2;
+	return query(l, r, t * 2, tl, tm) + query(l, r, t * 2 + 1, tm + 1, tr);
 }
 
 int main() {
-    cin >> N >> Q;
-    for (int i = 1; i <= N; i++) {
-        long long a;
-        cin >> a;
-        update_set(i, a);
-    }
-    for (int q = 0; q < Q; q++) {
-        int t;
-        cin >> t;
-        if (t == 1) {
-            int l, r;
-            cin >> l >> r;
-            cout << query(l, r) << '\n';
-        }
-        else if (t == 2) {
-            int l, r;
-            long long x;
-            cin >> l >> r >> x;
-            update_mod(l, r, x);
-        }
-        else if (t == 3) {
-            int i;
-            long long x;
-            cin >> i >> x;
-            update_set(i, x);
-        }
-    }
+	cin >> N >> Q;
+	for (int i = 1; i <= N; i++) {
+		long long a;
+		cin >> a;
+		update_set(i, a);
+	}
+	for (int q = 0; q < Q; q++) {
+		int t;
+		cin >> t;
+		if (t == 1) {
+			int l, r;
+			cin >> l >> r;
+			cout << query(l, r) << '\n';
+		} else if (t == 2) {
+			int l, r;
+			long long x;
+			cin >> l >> r >> x;
+			update_mod(l, r, x);
+		} else if (t == 3) {
+			int i;
+			long long x;
+			cin >> i >> x;
+			update_set(i, x);
+		}
+	}
 }
 ```
 
@@ -307,7 +302,7 @@ int N;
 ll A[MAXN];
 
 struct Node {
-	ll sum;  // Sum tag
+	ll sum;   // Sum tag
 	ll max1;  // Max value
 	ll max2;  // Second Max value
 	ll maxc;  // Max value count
@@ -357,26 +352,18 @@ void merge(int t) {
 }
 
 void push_add(int t, int tl, int tr, ll v) {
-	if (v == 0) {
-		return;
-	}
-	T[t].sum += (tr - tl + 1) *v;
+	if (v == 0) { return; }
+	T[t].sum += (tr - tl + 1) * v;
 	T[t].max1 += v;
-	if (T[t].max2 != -llINF) {
-		T[t].max2 += v;
-	}
+	if (T[t].max2 != -llINF) { T[t].max2 += v; }
 	T[t].min1 += v;
-	if (T[t].min2 != llINF) {
-		T[t].min2 += v;
-	}
+	if (T[t].min2 != llINF) { T[t].min2 += v; }
 	T[t].lazy += v;
 }
 
 // corresponds to a chmin update
 void push_max(int t, ll v, bool l) {
-	if (v >= T[t].max1) {
-		return;
-	}
+	if (v >= T[t].max1) { return; }
 	T[t].sum -= T[t].max1 * T[t].maxc;
 	T[t].max1 = v;
 	T[t].sum += T[t].max1 * T[t].maxc;
@@ -393,9 +380,7 @@ void push_max(int t, ll v, bool l) {
 
 // corresponds to a chmax update
 void push_min(int t, ll v, bool l) {
-	if (v <= T[t].min1) {
-		return;
-	}
+	if (v <= T[t].min1) { return; }
 	T[t].sum -= T[t].min1 * T[t].minc;
 	T[t].min1 = v;
 	T[t].sum += T[t].min1 * T[t].minc;
@@ -411,8 +396,7 @@ void push_min(int t, ll v, bool l) {
 }
 
 void pushdown(int t, int tl, int tr) {
-	if (tl == tr)
-		return;
+	if (tl == tr) return;
 	// sum
 	int tm = (tl + tr) >> 1;
 	push_add(t << 1, tl, tm, T[t].lazy);
@@ -428,7 +412,7 @@ void pushdown(int t, int tl, int tr) {
 	push_min(t << 1 | 1, T[t].min1, tm + 1 == tr);
 }
 
-void build(int t=1, int tl=0, int tr=N-1) {
+void build(int t = 1, int tl = 0, int tr = N - 1) {
 	T[t].lazy = 0;
 	if (tl == tr) {
 		T[t].sum = T[t].max1 = T[t].min1 = A[tl];
@@ -444,10 +428,8 @@ void build(int t=1, int tl=0, int tr=N-1) {
 	merge(t);
 }
 
-void update_add(int l, int r, ll v, int t=1, int tl=0, int tr=N-1) {
-	if (r < tl || tr < l) {
-		return;
-	}
+void update_add(int l, int r, ll v, int t = 1, int tl = 0, int tr = N - 1) {
+	if (r < tl || tr < l) { return; }
 	if (l <= tl && tr <= r) {
 		push_add(t, tl, tr, v);
 		return;
@@ -460,10 +442,8 @@ void update_add(int l, int r, ll v, int t=1, int tl=0, int tr=N-1) {
 	merge(t);
 }
 
-void update_chmin(int l, int r, ll v, int t=1, int tl=0, int tr=N-1) {
-	if (r < tl || tr < l || v >= T[t].max1) {
-		return;
-	}
+void update_chmin(int l, int r, ll v, int t = 1, int tl = 0, int tr = N - 1) {
+	if (r < tl || tr < l || v >= T[t].max1) { return; }
 	if (l <= tl && tr <= r && v > T[t].max2) {
 		push_max(t, v, tl == tr);
 		return;
@@ -476,10 +456,8 @@ void update_chmin(int l, int r, ll v, int t=1, int tl=0, int tr=N-1) {
 	merge(t);
 }
 
-void update_chmax(int l, int r, ll v, int t=1, int tl=0, int tr=N-1) {
-	if (r < tl || tr < l || v <= T[t].min1) {
-		return;
-	}
+void update_chmax(int l, int r, ll v, int t = 1, int tl = 0, int tr = N - 1) {
+	if (r < tl || tr < l || v <= T[t].min1) { return; }
 	if (l <= tl && tr <= r && v < T[t].min2) {
 		push_min(t, v, tl == tr);
 		return;
@@ -492,29 +470,25 @@ void update_chmax(int l, int r, ll v, int t=1, int tl=0, int tr=N-1) {
 	merge(t);
 }
 
-ll query_sum(int l, int r, int t=1, int tl=0, int tr=N-1) {
-	if (r < tl || tr < l) {
-		return 0;
-	}
-	if (l <= tl && tr <= r) {
-		return T[t].sum;
-	}
+ll query_sum(int l, int r, int t = 1, int tl = 0, int tr = N - 1) {
+	if (r < tl || tr < l) { return 0; }
+	if (l <= tl && tr <= r) { return T[t].sum; }
 	pushdown(t, tl, tr);
 
 	int tm = (tl + tr) >> 1;
-	return query_sum(l, r, t << 1, tl, tm) + query_sum(l, r, t << 1 | 1, tm + 1, tr);
+	return query_sum(l, r, t << 1, tl, tm) +
+	       query_sum(l, r, t << 1 | 1, tm + 1, tr);
 }
 
 int main() {
 	int Q;
 
 	cin >> N >> Q;
-	for (int i = 0; i < N; i++) {
-		cin >> A[i];
-	}
+	for (int i = 0; i < N; i++) { cin >> A[i]; }
 	build();
 	for (int q = 0; q < Q; q++) {
-		int t; cin >> t;
+		int t;
+		cin >> t;
 		if (t == 0) {
 			int l, r;
 			ll x;

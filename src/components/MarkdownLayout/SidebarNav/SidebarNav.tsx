@@ -29,7 +29,6 @@ export const SidebarNav = () => {
     for (const section in SECTION_LABELS) {
       MODULE_ORDERING[section].forEach((category: Chapter) => {
         category.items.forEach(moduleID => {
-          // console.log(moduleID,activeIDs)
           if (activeIDs.includes(moduleID)) {
             oriSection = section;
           }

@@ -1,0 +1,340 @@
+---
+id: usaco-689
+source: USACO Bronze 2017 January
+title: Cow Tipping
+author: Maggie Liu, Kevin Sheng, Melody Yu
+---
+
+[Official Analysis (Java)](http://www.usaco.org/current/data/sol_cowtip_bronze_jan17.html)
+
+## Video Solution
+
+By Melody Yu
+
+<YouTube id="RoOaXLTFS3E" />
+
+<Spoiler title="Video Solution Code">
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	freopen("cowtip.in", "r", stdin);
+	freopen("cowtip.out", "w", stdout);
+
+	// solution comes here
+	int n;
+	cin >> n;
+
+	vector<vector<char>> farm(n, vector<char>(n));
+
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
+			char temp;
+			cin >> temp;
+			farm[i][j] = temp;
+		}
+	}
+
+	int totalflips = 0;
+	for (int i = n - 1; i >= 0; i--) {
+		for (int j = n - 1; j >= 0; j--) {
+			// go from bottom right to top, check if it's a 1
+			if (farm[i][j] == '1') {
+				totalflips++;
+
+				// cow flip rectangle
+				for (int a = 0; a <= i; a++) {
+					for (int b = 0; b <= j; b++) {
+						if (farm[a][b] == '0') {
+							farm[a][b] = '1';
+						} else {
+							farm[a][b] = '0';
+						}
+					}
+				}
+				// end cow flip
+			}
+		}
+	}
+
+	cout << totalflips;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class CowTip {
+	public static void main(String[] args) throws IOException {
+		CowTip.Kattio io = new CowTip.Kattio("cowtip");
+		int N = io.nextInt();
+		int[][] farm = new int[N][N];
+
+		for (int i = 0; i < N; i++) {
+			String a = io.next();
+			for (int j = 0; j < N; j++) {
+				farm[i][j] = Character.getNumericValue(a.charAt(j));
+			}
+		}
+
+		int totalflips = 0;
+		for (int i = N - 1; i >= 0; i--) {
+			for (int j = N - 1; j >= 0; j--) {
+				// go from bottom right to top, check if it's a 1
+				if (farm[i][j] == 1) {
+					totalflips++;
+
+					// cow flip rectangle
+					for (int a = 0; a <= i; a++) {
+						for (int b = 0; b <= j; b++) {
+							if (farm[a][b] == 0) {
+								farm[a][b] = 1;
+							} else {
+								farm[a][b] = 0;
+							}
+						}
+					}
+					// end cow flip
+				}
+			}
+		}
+
+		io.println(totalflips);
+		io.close();
+	}
+
+	// https://usaco.guide/general/io?lang=java#io-template
+	static class Kattio extends PrintWriter {
+		private BufferedReader r;
+		private StringTokenizer st;
+
+		// standard input
+		public Kattio() { this(System.in, System.out); }
+		public Kattio(InputStream i, OutputStream o) {
+			super(o);
+			r = new BufferedReader(new InputStreamReader(i));
+		}
+		// USACO-style file input
+		public Kattio(String problemName) throws IOException {
+			super(new FileWriter(problemName + ".out"));
+			r = new BufferedReader(new FileReader(problemName + ".in"));
+		}
+
+		// returns null if no more input
+		public String next() {
+			try {
+				while (st == null || !st.hasMoreTokens())
+					st = new StringTokenizer(r.readLine());
+				return st.nextToken();
+			} catch (Exception e) {}
+			return null;
+		}
+
+		public int nextInt() { return Integer.parseInt(next()); }
+		public double nextDouble() { return Double.parseDouble(next()); }
+		public long nextLong() { return Long.parseLong(next()); }
+	}
+}
+```
+
+</JavaSection>
+</LanguageSection>
+</Spoiler>
+
+## Alternate Explanation
+
+While the official solution processes the cells in a standard right to left order starting
+from the bottom right square, there's another way to process them as well.
+
+Like in the official solution, we start at the lower right. However, we process
+the edges of the square simultaneously and "close in" on the top left square.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N^2)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <cstdio>
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+const char TIPPED = '0';
+
+bool flip(int r, int c, vector<vector<bool>> &cows) {
+	if (cows[r][c]) {
+		for (int ri = 0; ri <= r; ri++) {
+			for (int ci = 0; ci <= c; ci++) { cows[ri][ci] = !cows[ri][ci]; }
+		}
+		return true;
+	}
+	return false;
+}
+
+int main() {
+	freopen("cowtip.in", "r", stdin);
+	freopen("cowtip.out", "w", stdout);
+
+	int width;
+	cin >> width;
+	vector<vector<bool>> cows(width, vector<bool>(width));
+	for (int r = 0; r < width; r++) {
+		string row;
+		cin >> row;
+		for (int c = 0; c < width; c++) { cows[r][c] = row[c] != TIPPED; }
+	}
+
+	int x = width - 1;
+	int y = width - 1;
+	int min_flips = 0;
+	while (x >= 0 && y >= 0) {
+		// Flip the rectangle with lower right corner at (x, y)
+		min_flips += flip(x, y, cows);
+		if (x != y) {
+			// Also flip rectangle at (y, x) if it is different
+			min_flips += flip(y, x, cows);
+		}
+
+		/*
+		 * Transition to the next cell, first going to the left and then
+		 * to the next row if the current row has finished.
+		 */
+		if (x > 0) {
+			x--;
+		} else {
+			y--;
+			x = y;
+		}
+	}
+	cout << min_flips << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+
+public class CowTip {
+	static final char FLIPPED = '0';
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader read = new BufferedReader(new FileReader("cowtip.in"));
+		int width = Integer.parseInt(read.readLine());
+		boolean[][] cows = new boolean[width][width];
+		for (int r = 0; r < width; r++) {
+			String row = read.readLine();
+			for (int c = 0; c < width; c++) {
+				cows[r][c] = row.charAt(c) != FLIPPED;
+			}
+		}
+
+		int minFlips = 0;
+		int x = width - 1;
+		int y = width - 1;
+		while (x >= 0 && y >= 0) {
+			// Flip the rectangle with lower right corner at (x, y)
+			minFlips += flip(x, y, cows) ? 1 : 0;
+			if (x != y) {
+				// Also flip rectangle at (y, x) if it is different
+				minFlips += flip(y, x, cows) ? 1 : 0;
+			}
+
+			/*
+			 * Transition to the next cell, first going to the left and then
+			 * to the next row if the current row has finished.
+			 */
+			if (x > 0) {
+				x--;
+			} else {
+				y--;
+				x = y;
+			}
+		}
+
+		PrintWriter written = new PrintWriter("cowtip.out");
+		written.println(minFlips);
+		written.close();
+	}
+
+	static boolean flip(int r, int c, boolean[][] cows) {
+		if (cows[r][c]) {
+			for (int ri = 0; ri <= r; ri++) {
+				for (int ci = 0; ci <= c; ci++) {
+					cows[ri][ci] = !cows[ri][ci];
+				}
+			}
+			return true;
+		}
+		return false;
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+from typing import List
+
+
+TIPPED = "0"
+
+
+def flip(r: int, c: int, cows: List[List[int]]) -> bool:
+	if cows[r][c]:
+		for ri in range(r + 1):
+			for ci in range(c + 1):
+				cows[ri][ci] = not cows[ri][ci]
+		return True
+	return False
+
+
+with open("cowtip.in") as read:
+	width = int(read.readline())
+	cows = []
+	for _ in range(width):
+		row = read.readline()
+		to_add = []
+		for c in range(width):
+			to_add.append(row[c] != TIPPED)
+		cows.append(to_add)
+
+min_flips = 0
+x = width - 1
+y = width - 1
+while x >= 0 and y >= 0:
+	# Flip the rectangle with lower right corner at (x, y)
+	min_flips += flip(x, y, cows)
+	if x != y:
+		# Also flip rectangle at (y, x) if it is different
+		min_flips += flip(y, x, cows)
+
+	"""
+	Transition to the next cell, first going to the left and then
+	to the next row if the current row has finished.
+	"""
+	if x > 0:
+		x -= 1
+	else:
+		y -= 1
+		x = y
+
+print(min_flips, file=open("cowtip.out", "w"))
+```
+
+</PySection>
+</LanguageSection>

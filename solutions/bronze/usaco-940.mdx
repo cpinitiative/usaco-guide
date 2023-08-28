@@ -1,0 +1,526 @@
+---
+id: usaco-940
+source: USACO Bronze 2019 Open
+title: Milk Factory
+author: Mrinall Umasudhan, Jesse Choe, Ryan Chou, Chuyang Wang, David Eidenas, Neo Wang
+---
+
+## Video Solution
+
+By Neo Wang
+
+<YouTube id="fN681Y5TEQc" />
+
+<Spoiler title="Video Solution Code">
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>  // see /general/running-code-locally
+using namespace std;
+
+using ll = long long;
+
+using vi = vector<int>;
+#define pb push_back
+#define all(x) begin(x), end(x)
+#define sz(x) (int)(x).size()
+
+using pi = pair<int, int>;
+#define f first
+#define s second
+#define mp make_pair
+
+void setIO(string name = "") {
+	cin.tie(0)->sync_with_stdio(0);  // see /general/fast-io
+	if (sz(name)) {
+		(void)!freopen((name + ".in").c_str(), "r", stdin);  // see /general/io
+		(void)!freopen((name + ".out").c_str(), "w", stdout);
+	}
+}
+
+int in_deg[101], out_deg[101];
+
+int main() {
+	setIO("factory");
+
+	int N;
+	cin >> N;
+
+	// N - 1 edges in a tree
+	for (int i = 0; i < N - 1; i++) {
+		// a -> b
+		// out[a]++, in[b]++;
+		int a, b;
+		cin >> a >> b;
+		out_deg[a]++;
+		in_deg[b]++;
+	}
+
+	bool encountered_sink = false;
+	int idx_sink = -1;
+
+	for (int i = 1; i <= N; i++) {
+		if (encountered_sink && out_deg[i] == 0 && in_deg[i] > 0) {
+			idx_sink = -1;  // answer
+			break;
+		}
+		if (out_deg[i] == 0 && in_deg[i] > 0) {
+			encountered_sink = true;
+			idx_sink = i;
+		}
+	}
+
+	cout << idx_sink << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+// Source: https://usaco.guide/general/io
+
+/**
+ * Simple yet moderately fast I/O routines.
+ *
+ * Example usage:
+ *
+ * Kattio io = new Kattio();
+ *
+ * while (io.hasMoreTokens()) {
+ *    int n = io.nextInt();
+ *    double d = io.nextDouble();
+ *    double ans = d*n;
+ *
+ *    io.println("Answer: " + ans);
+ * }
+ *
+ * io.close();
+ *
+ *
+ * Some notes:
+ *
+ * - When done, you should always do io.close() or io.flush() on the
+ *   Kattio-instance, otherwise, you may lose output.
+ *
+ * - The nextInt(), nextDouble(), and nextLong() methods will throw an
+ *   exception if there is no more data in the input, so it is generally
+ *   a good idea to use hasMoreTokens() to check for end-of-file.
+ *
+ * @author: Kattis
+ */
+
+import java.io.*;
+import java.util.*;
+
+class Kattio extends PrintWriter {
+	private BufferedReader r;
+	private StringTokenizer st = new StringTokenizer("");
+	private String token;
+
+	// standard input
+	public Kattio() { this(System.in, System.out); }
+	public Kattio(InputStream i, OutputStream o) {
+		super(o);
+		r = new BufferedReader(new InputStreamReader(i));
+	}
+	// USACO-style file input
+	public Kattio(String problemName) throws IOException {
+		super(new FileWriter(problemName + ".out"));
+		r = new BufferedReader(new FileReader(problemName + ".in"));
+	}
+
+	private String peek() {
+		if (token == null) try {
+				while (!st.hasMoreTokens()) {
+					String line = r.readLine();
+					if (line == null) return null;
+					st = new StringTokenizer(line);
+				}
+				token = st.nextToken();
+			} catch (IOException e) {}
+		return token;
+	}
+	public boolean hasMoreTokens() { return peek() != null; }
+	private String next() {
+		String ans = peek();
+		token = null;
+		return ans;
+	}
+
+	public int nextInt() { return Integer.parseInt(next()); }
+	public double nextDouble() { return Double.parseDouble(next()); }
+	public long nextLong() { return Long.parseLong(next()); }
+}
+
+public class Main {
+
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio("factory");
+		int N = io.nextInt();
+		int[] in_deg = new int[101], out_deg = new int[101];
+		for (int i = 0; i < N - 1; i++) {
+			// a -> b
+			// out[a]++, in[b]++;
+			int a = io.nextInt(), b = io.nextInt();
+			out_deg[a]++;
+			in_deg[b]++;
+		}
+
+		boolean encountered_sink = false;
+		int idx_sink = -1;
+
+		for (int i = 1; i <= N; i++) {
+			if (encountered_sink && out_deg[i] == 0 && in_deg[i] > 0) {
+				idx_sink = -1;
+				break;
+			}
+
+			if (out_deg[i] == 0 && in_deg[i] > 0) {
+				encountered_sink = true;
+				idx_sink = i;
+			}
+		}
+
+		// cout << idx_sink << endl;
+		io.println(idx_sink);
+
+		io.close();
+	}
+}
+```
+
+</JavaSection>
+</LanguageSection>
+</Spoiler>
+
+<Spoiler title="Hint 1">
+
+What properties can we deduce about this supposed station $i$ that can help
+us find it?
+
+</Spoiler>
+
+<Spoiler title="Hint 2">
+
+Given the one-way walkways, if we can reach station $a$ from station $b$,
+does that mean we can reach station $b$ from station $a$?
+
+</Spoiler>
+
+<Spoiler title="Hint 3">
+
+The answer to the previous hint's question should be "No."
+We know that every station can reach station $i$; what does this mean about
+the walkways connected to station $i$ (as a beginning or an end)?
+
+</Spoiler>
+
+<Spoiler title="Solution 1">
+
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_factory_bronze_open19.html)
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <fstream>
+#include <iostream>
+#include <vector>
+
+using std::cout;
+using std::endl;
+using std::vector;
+
+int main() {
+	std::ifstream read("factory.in");
+	int station_num;
+	read >> station_num;
+
+	vector<int> outgoing(station_num);
+	for (int w = 0; w < station_num - 1; w++) {
+		int s1, s2;
+		read >> s1 >> s2;
+		// We actually don't care about s2 here!
+		outgoing[--s1]++;
+	}
+
+	vector<int> no_outs;
+	// Check all stations and see if they don't have any outgoing walkways
+	for (int s = 0; s < station_num; s++) {
+		if (outgoing[s] == 0) {
+			// Remember, we have to output the 1-indexed stations!
+			no_outs.push_back(s + 1);
+		}
+	}
+
+	// If there's two stations without any outs, then we can't find a station
+	int root = no_outs.size() == 1 ? no_outs[0] : -1;
+	std::ofstream("factory.out") << root << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Factory {
+	public static void main(String[] args) throws IOException {
+		BufferedReader read = new BufferedReader(new FileReader("factory.in"));
+		int stationNum = Integer.parseInt(read.readLine());
+		int[] outgoing = new int[stationNum];
+		for (int w = 0; w < stationNum - 1; w++) {
+			StringTokenizer walkway = new StringTokenizer(read.readLine());
+			int s1 = Integer.parseInt(walkway.nextToken()) - 1;
+			// We actually don't care about s2 here!
+			outgoing[s1]++;
+		}
+		read.close();
+
+		// Check all stations and see if they don't have any outgoing walkways
+		List<Integer> noOuts = new ArrayList<>();
+		for (int s = 0; s < stationNum; s++) {
+			if (outgoing[s] == 0) {
+				// Remember, we have to output the 1-indexed stations!
+				noOuts.add(s + 1);
+			}
+		}
+
+		// If there's two stations without any outs, then we can't find a
+		// station
+		int root = noOuts.size() == 1 ? noOuts.get(0) : -1;
+
+		PrintWriter written = new PrintWriter("factory.out");
+		written.println(root);
+		written.close();
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+with open("factory.in") as read:
+	station_num = int(read.readline())
+	outgoing = [0 for _ in range(station_num)]
+	for _ in range(station_num - 1):
+		s1, s2 = [int(i) - 1 for i in read.readline().split()]
+		# We actually don't care about s2 here!
+		outgoing[s1] += 1
+
+no_outs = []
+# Check all stations and see if they don't have any outgoing walkways
+for s in range(station_num):
+	if outgoing[s] == 0:
+		# Remember, we have to output the 1-indexed stations!
+		no_outs.append(s + 1)
+
+# If there's two stations without any outs, then we can't find a station
+root = no_outs[0] if len(no_outs) == 1 else -1
+print(root, file=open("factory.out", "w"))
+```
+
+</PySection>
+</LanguageSection>
+
+</Spoiler>
+
+<Spoiler title="Solution 2">
+
+## Explanation
+
+This problem can also be solved using [DFS](/silver/dfs) (a Silver topic).
+We can represent the factory as a directed unweighted graph with edges
+from $b_i$ to $a_i$ for all $i$. For every node $i\in [1,N]$, we start a DFS at
+node $i$ and check whether this results in every other node being visited. We
+can keep track of whether the current DFS visits all nodes with a boolean array
+whose entries are initially set to `false`. If every node is visited, then we
+print $i$. Otherwise, if there exists no $i$ such that this condition is
+satisfied, then we print $-1$.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N^2)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <fstream>
+#include <iostream>
+#include <vector>
+
+using std::cout;
+using std::endl;
+using std::vector;
+
+int main() {
+	std::ifstream read("factory.in");
+	int station_num;
+	read >> station_num;
+
+	vector<vector<int>> neighbors(station_num);
+	for (int w = 0; w < station_num - 1; w++) {
+		int s1, s2;
+		read >> s1 >> s2;
+		neighbors[--s2].push_back(--s1);
+	}
+
+	// The station which all others should be able to reach
+	int root = -1;
+	// Check all stations and see if they can be the root
+	for (int s = 0; s < station_num; s++) {
+		vector<bool> visited(station_num);
+		// We can always reach a station from itself
+		visited[s] = true;
+
+		// Our stack for DFS
+		vector<int> todo{s};
+		while (!todo.empty()) {
+			int curr = todo.back();
+			todo.pop_back();
+			for (int n : neighbors[curr]) {
+				// Make sure to only visited unvisited nodes
+				if (!visited[n]) {
+					visited[n] = true;
+					todo.push_back(n);
+				}
+			}
+		}
+
+		// Check if all nodes have been visited
+		bool valid = true;
+		for (int check_s = 0; check_s < station_num; check_s++) {
+			if (!visited[check_s]) {
+				valid = false;
+				break;
+			}
+		}
+
+		if (valid) {
+			root = s + 1;
+			break;
+		}
+	}
+
+	std::ofstream("factory.out") << root << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Factory {
+	public static void main(String[] args) throws IOException {
+		BufferedReader read = new BufferedReader(new FileReader("factory.in"));
+		int stationNum = Integer.parseInt(read.readLine());
+
+		List<Integer>[] neighbors = new ArrayList[stationNum];
+		for (int s = 0; s < stationNum; s++) {
+			neighbors[s] = new ArrayList<>();
+		}
+		for (int w = 0; w < stationNum - 1; w++) {
+			StringTokenizer walkway = new StringTokenizer(read.readLine());
+			int s1 = Integer.parseInt(walkway.nextToken()) - 1;
+			int s2 = Integer.parseInt(walkway.nextToken()) - 1;
+			neighbors[s2].add(s1);
+		}
+		read.close();
+
+		// The station which all others should be able to reach
+		int root = -1;
+		// Check all stations and see if they can be the root
+		for (int s = 0; s < stationNum; s++) {
+			boolean[] visited = new boolean[stationNum];
+			// We can always reach a station from itself
+			visited[s] = true;
+
+			// Our stack for DFS
+			List<Integer> todo = new ArrayList<>(Collections.singletonList(s));
+			while (!todo.isEmpty()) {
+				int curr = todo.remove(todo.size() - 1);
+				for (int n : neighbors[curr]) {
+					// Make sure to only visited unvisited nodes
+					if (!visited[n]) {
+						visited[n] = true;
+						todo.add(n);
+					}
+				}
+			}
+
+			// Check if all nodes have been visited
+			boolean valid = true;
+			for (int checkS = 0; checkS < stationNum; checkS++) {
+				if (!visited[checkS]) {
+					valid = false;
+					break;
+				}
+			}
+
+			if (valid) {
+				root = s + 1;
+				break;
+			}
+		}
+
+		PrintWriter written = new PrintWriter("factory.out");
+		written.println(root);
+		written.close();
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+with open("factory.in") as read:
+	station_num = int(read.readline())
+	neighbors = [[] for _ in range(station_num)]
+	for _ in range(station_num - 1):
+		s1, s2 = [int(i) - 1 for i in read.readline().split()]
+		neighbors[s2].append(s1)
+
+# The station which all others should be able to reach
+root = -1
+# Check all stations and see if they can be the root
+for s in range(station_num):
+	visited = [False for _ in range(station_num)]
+	# We can always reach a station from itself
+	visited[s] = True
+
+	# Our stack for DFS
+	todo = [s]
+	while todo:
+		curr = todo.pop()
+		for n in neighbors[curr]:
+			# Make sure to only visited unvisited nodes
+			if not visited[n]:
+				visited[n] = True
+				todo.append(n)
+
+	# Check if all nodes have been visited
+	if all(visited):
+		root = s + 1
+		break
+
+print(root, file=open("factory.out", "w"))
+```
+
+</PySection>
+</LanguageSection>
+
+</Spoiler>

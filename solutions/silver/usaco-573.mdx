@@ -1,0 +1,190 @@
+---
+id: usaco-573
+source: USACO Gold 2015 December
+title: High Card Low Card (Gold)
+author: Qi Wang, Ishwarendra Jha
+---
+
+**Time Complexity:** $\mathcal{O}(N\log{N})$
+
+[Official Analysis](http://www.usaco.org/current/data/sol_cardgame_gold_dec15.html)
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int number_of_wins(vector<int> &bessie, vector<int> &elsie,
+                   function<bool(int, int)> cmp) {
+	int n = size(bessie);
+	assert(size(bessie) == size(elsie));
+
+	sort(begin(bessie), end(bessie), cmp);
+	sort(begin(elsie), end(elsie), cmp);
+
+	int bpos =
+	    0;  // keep track of index of card which bessie uses in current move
+	int wins = 0;
+
+	for (int i = 0; i < n; i++) {
+		// Check if Bessie can win. If she can't, she'll just use her worst
+		// card.
+		if (cmp(bessie[bpos], elsie[i])) {
+			wins++;
+			bpos++;
+		}
+	}
+
+	return wins;
+}
+
+int main() {
+	freopen("cardgame.in", "r", stdin);
+	freopen("cardgame.out", "w", stdout);
+
+	int n;
+	cin >> n;
+
+	map<int, int> elsie_has;
+
+	// First and second half are independent of each other.
+	vector<int> bessie_first(n / 2), bessie_second(n / 2);
+	vector<int> elsie_first(n / 2), elsie_second(n / 2);
+
+	for (int i = 0; i < n; i++) {
+		int x;
+		cin >> x;
+
+		elsie_has[x] = 1;
+
+		if (i < n / 2) {
+			elsie_first[i] = x;
+		} else {
+			elsie_second[i - n / 2] = x;
+		}
+	}
+
+	for (int i = 2 * n; i > 0; i--) {
+		if (elsie_has.find(i) ==
+		    elsie_has.end())  // elsie does not have this card
+		{
+			if (size(bessie_first) <
+			    n / 2)  // bigger card must be used in first half
+			{
+				bessie_first.push_back(i);
+			} else {
+				bessie_second.push_back(i);
+			}
+		}
+	}
+
+	int ans = 0;
+
+	// First half person with card of larger value wins
+	ans += number_of_wins(bessie_first, elsie_first,
+	                      [](int a, int b) { return a > b; });
+
+	// In second half of game person with card of smaller value win
+	ans += number_of_wins(bessie_second, elsie_second,
+	                      [](int a, int b) { return a < b; });
+
+	cout << ans << endl;
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+
+import java.io.*;
+import java.util.*;
+
+public class highcardgold {
+	static boolean[] C;
+	static List<Integer> B = new ArrayList<>();
+	static List<Integer> F = new ArrayList<>();
+	static List<Integer> S = new ArrayList<>();
+	static int N;
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio("cardgame");
+		N = io.nextInt();
+
+		C = new boolean[2 * N + 1];
+
+		for (int i = 0; i < N; i++) {
+			int c = io.nextInt();
+			C[c] = true;
+			if (i < N / 2) F.add(c);  // First Half
+			else S.add(c);            // Second Half
+		}
+
+		for (int i = 1; i < 2 * N + 1; i++) {
+			if (!C[i]) B.add(i);  // Bessie's cards
+		}
+
+		// Sort cards (B is already sorted)
+		Collections.sort(F);
+		Collections.sort(S);
+
+		int ix = B.size() - 1;
+		int score = 0;
+		for (int i = F.size() - 1; i >= 0; i--) {
+			if (F.get(i) < B.get(ix)) {
+				score++;
+				ix--;
+			}
+		}
+
+		ix = 0;
+		for (int i = 0; i < S.size(); i++) {
+			if (B.get(ix) < S.get(i)) {
+				ix++;
+				score++;
+			}
+		}
+
+		io.println(score);
+		io.close();
+	}
+
+	private static class Kattio extends PrintWriter {
+		private BufferedReader r;
+		private StringTokenizer st;
+
+		// standard input
+		public Kattio() { this(System.in, System.out); }
+		public Kattio(InputStream i, OutputStream o) {
+			super(o);
+			r = new BufferedReader(new InputStreamReader(i));
+		}
+		// USACO-style file input
+		public Kattio(String problemName) throws IOException {
+			super(new FileWriter(problemName + ".out"));
+			r = new BufferedReader(new FileReader(problemName + ".in"));
+		}
+
+		// returns null if no more input
+		public String next() {
+			try {
+				while (st == null || !st.hasMoreTokens())
+					st = new StringTokenizer(r.readLine());
+				return st.nextToken();
+			} catch (Exception e) {}
+			return null;
+		}
+
+		public int nextInt() { return Integer.parseInt(next()); }
+		public double nextDouble() { return Double.parseDouble(next()); }
+		public long nextLong() { return Long.parseLong(next()); }
+	}
+}
+```
+
+</JavaSection>
+
+</LanguageSection>

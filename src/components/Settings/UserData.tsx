@@ -23,7 +23,6 @@ export default function UserData() {
   // https://stackoverflow.com/questions/61707105/react-app-upload-and-read-json-file-into-variable-without-a-server
   const handleUpload = e => {
     const file = e.target.files[0];
-    console.log('FOUND', file);
     if (file.type !== 'application/json') {
       alert('Must upload a JSON file.');
       return;
@@ -31,7 +30,6 @@ export default function UserData() {
     const fileReader = new FileReader();
     fileReader.readAsText(file, 'UTF-8');
     fileReader.onload = e => {
-      // console.log("e.target.result", e.target.result);
       setFile(e.target.result as any);
     };
   };

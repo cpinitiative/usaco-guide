@@ -1,0 +1,234 @@
+---
+id: cf-863B
+source: CF
+title: Kayaking
+author: Danh Ta Chi Thanh, Brad Ma, David Li
+---
+
+[Official Analysis](https://codeforces.com/blog/entry/54708)
+
+## Video Solution
+By David Li
+
+<YouTube id="XJPoIQNd3_U" />
+
+<Spoiler title="Video Solution Code">
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <algorithm>
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+const int MAXN = 55;
+
+int N, w[MAXN];
+
+int main() {
+
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
+	cout.tie(0);
+
+	// read in the input values
+	cin >> N;
+	for (int i = 0; i < 2 * N; i++) { cin >> w[i]; }
+
+	// sort the people by weight
+	sort(w, w + 2 * N);
+
+	int ans = 1e9;  // this variable will store our answer
+
+	// loop through all possible combinations of people in the single kayaks
+	for (int i = 0; i < 2 * N; i++) {
+		for (int j = i + 1; j < 2 * N; j++) {
+
+			// vector 's' will store the weights of the people who need to be
+			// placed in tandem kayaks
+			vector<int> s;
+			for (int k = 0; k < 2 * N; k++) {
+				if (k != i && k != j) s.push_back(w[k]);
+			}
+
+			int temp =
+			    0;  // this variable stores the instability of this situation
+
+			// calculating instability
+			for (int k = 0; k < 2 * N - 2; k += 2) { temp += s[k + 1] - s[k]; }
+
+			// if this instability is lower than our current answer, then update
+			// answer
+			ans = min(ans, temp);
+		}
+	}
+
+	// print the answer
+	cout << ans << "\n";
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class kayaking {
+	public static void main(String[] args) throws IOException {
+
+		// read in the input values
+		BufferedReader br =
+		    new BufferedReader(new InputStreamReader(System.in));
+		int N = Integer.parseInt(br.readLine());
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int[] w = new int[2 * N];
+		for (int i = 0; i < 2 * N; i++) {
+			w[i] = Integer.parseInt(st.nextToken());
+		}
+
+		// sort the people by weight
+		Arrays.sort(w);
+
+		int ans = (int)1e9;  // this variable will store our answer
+
+		// loop through all possible combinations of people in the single kayaks
+		for (int i = 0; i < 2 * N; i++) {
+			for (int j = i + 1; j < 2 * N; j++) {
+
+				// Arraylist 's' will store the weights of the people who need
+				// to be placed in tandem kayaks
+				ArrayList<Integer> s = new ArrayList<>();
+				for (int k = 0; k < 2 * N; k++) {
+					if (k != i && k != j) s.add(w[k]);
+				}
+
+				int temp = 0;  // this variable stores the instability of this
+				               // situation
+
+				// calculating instability
+				for (int k = 0; k < 2 * N - 2; k += 2) {
+					temp += s.get(k + 1) - s.get(k);
+				}
+
+				// if this instability is lower than our current answer, then
+				// update answer
+				ans = Math.min(ans, temp);
+			}
+		}
+
+		// print the answer
+		System.out.println(ans);
+	}
+}
+```
+</JavaSection>
+
+</LanguageSection>
+</Spoiler>
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N^3)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	int N;
+	cin >> N;
+	N *= 2;
+
+	vector<int> people(N);
+	for (int &p : people) { cin >> p; }
+	sort(people.begin(), people.end());
+
+	int min_instability = INT32_MAX;
+	for (int i = 0; i < N; i++) {
+		for (int j = i + 1; j < N; j++) {
+			vector<int> new_people;
+			for (int p = 0; p < N; p++) {
+				if (p != i && p != j) { new_people.push_back(people[p]); }
+			}
+
+			int total_instability = 0;
+			for (int p = 0; p < N - 2; p += 2) {
+				total_instability += new_people[p + 1] - new_people[p];
+			}
+			min_instability = min(min_instability, total_instability);
+		}
+	}
+	cout << min_instability << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Kayaking {
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
+		int N = io.nextInt() * 2;
+
+		int[] people = new int[N];
+		for (int x = 0; x < people.length; x++) { people[x] = io.nextInt(); }
+		Arrays.sort(people);
+
+		int minInstability = Integer.MAX_VALUE;
+		for (int i = 0; i < N; i++) {
+			for (int j = i + 1; j < N; j++) {
+				List<Integer> newPeople = new ArrayList<>();
+				for (int p = 0; p < N; p++) {
+					if ((p != i) && (p != j)) { newPeople.add(people[p]); }
+				}
+				int totalInstability = 0;
+				for (int p = 0; p < (N - 2); p += 2) {
+					totalInstability += newPeople.get(p + 1) - newPeople.get(p);
+				}
+				minInstability = Math.min(minInstability, totalInstability);
+			}
+		}
+
+		io.println(minInstability);
+		io.close();
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+n = int(input()) * 2
+people = sorted(int(i) for i in input().split())
+assert len(people) == n
+
+min_instability = float("inf")
+for i in range(n):
+	for j in range(i + 1, n):
+		new_people = [people[p] for p in range(n) if p != i and p != j]
+		total_instability = 0
+		for p in range(0, n - 2, 2):
+			total_instability += new_people[p + 1] - new_people[p]
+		min_instability = min(min_instability, total_instability)
+
+print(min_instability)
+```
+
+</PySection>
+</LanguageSection>

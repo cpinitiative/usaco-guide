@@ -155,10 +155,8 @@ export default function TopNavigationBar({
           <div className="max-w-screen-xl mx-auto py-3 px-3 sm:px-6 lg:px-8">
             <div className="pr-16 sm:text-center sm:px-16">
               <p className="font-medium text-white">
-                <span className="md:hidden">Register for USACO classes!</span>
-                <span className="hidden md:inline">
-                  Want to improve at USACO? Register for affordable USACO
-                  classes here!
+                <span className="md:inline">
+                  Registration for USACO classes now open!
                 </span>
                 <span className="block sm:ml-2 sm:inline-block">
                   <a
@@ -167,7 +165,7 @@ export default function TopNavigationBar({
                     rel="noreferrer"
                     className="text-white font-bold underline"
                   >
-                    Learn more &rarr;
+                    Join here&rarr;
                   </a>
                 </span>
               </p>
@@ -417,7 +415,7 @@ export default function TopNavigationBar({
         </div>
         {/*
         Mobile menu, toggle classes based on menu state.
-        
+
         Menu open: "block", Menu closed: "hidden"
       */}
         <div className={`${isMobileNavOpen ? 'block' : 'hidden'} lg:hidden`}>

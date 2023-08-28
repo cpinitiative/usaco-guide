@@ -1,0 +1,172 @@
+---
+id: usaco-592
+source: USACO Bronze 2016 January
+title: Angry Cows
+author: Qi Wang
+---
+
+[Official Analysis (Java)](http://www.usaco.org/current/data/sol_angry_bronze_jan16.html)
+
+<Warning>
+
+The solution from the official analysis is incorrect on the following input:
+
+```
+3
+3
+5
+6
+```
+
+It outputs 2, but the correct answer is 3.
+
+</Warning>
+
+## Video Solution
+By Qi Wang
+
+<YouTube id="aFHESO1lhEY" />
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N^2)$
+
+<LanguageSection>
+<CPPSection>
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int N;
+vector<int> bales;
+
+int exploded_num(int start, int direction) {
+	int radius = 1;
+	int prev = start;
+	while (true) {
+		int next = prev;
+		// Get the furthest explosion index without exceeding the current radius
+		while (next + direction >= 0 && next + direction < N &&
+		       abs(bales[next + direction] - bales[prev]) <= radius) {
+			next += direction;
+		}
+
+		// We didn't find a new haybale, so the chain explosion is over
+		if (next == prev) { break; }
+
+		// Update our previous explosion and increment radius
+		prev = next;
+		radius++;
+	}
+	return abs(prev - start);
+}
+
+int main() {
+	freopen("angry.in", "r", stdin);
+	freopen("angry.out", "w", stdout);
+
+	cin >> N;
+	bales.resize(N);
+	for (int i = 0; i < N; i++) { cin >> bales[i]; }
+
+	sort(bales.begin(), bales.end());
+	int max_exploded = 0;
+	for (int i = 0; i < N; i++) {
+		// Get the number of exploded bales for the left & right side
+		max_exploded =
+		    max(max_exploded, exploded_num(i, -1) + exploded_num(i, 1) + 1);
+	}
+	cout << max_exploded << endl;
+}
+```
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Angry {
+	static int N;
+	static int[] bales;
+
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio("angry");
+
+		N = io.nextInt();
+		bales = new int[N];
+		for (int i = 0; i < N; i++) { bales[i] = io.nextInt(); }
+
+		Arrays.sort(bales);
+		int maxExploded = 0;
+		for (int i = 0; i < N; i++) {
+			// Get the number of exploded bales for the left & right side
+			maxExploded = Math.max(maxExploded,
+			                       explodedNum(i, -1) + explodedNum(i, 1) + 1);
+		}
+		io.println(maxExploded);
+		io.close();
+	}
+
+	public static int explodedNum(int start, int direction) {
+		int radius = 1;
+		int prev = start;
+		while (true) {
+			int next = prev;
+			// Getting the furthest explosion index without exceeding radius
+			while (next + direction >= 0 && next + direction < N &&
+			       Math.abs(bales[next + direction] - bales[prev]) <= radius) {
+				next += direction;
+			}
+			// We didn't find a new haybale, so the chain explosion is over
+			if (next == prev) { break; }
+			// Update our previous explosion and increment radius
+			prev = next;
+			radius++;
+		}
+		return Math.abs(prev - start);
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+with open("angry.in") as read:
+	bales = sorted([int(read.readline()) for _ in range(int(read.readline()))])
+
+
+def exploded_num(start: int, direction: int) -> int:
+	radius = 1
+	prev = start
+	while True:
+		next_ = prev
+		# Get the furthest explosion index without exceeding the current radius
+		while (
+			0 <= next_ + direction < len(bales)
+			and abs(bales[next_ + direction] - bales[prev]) <= radius
+		):
+			next_ += direction
+
+		# We didn't find a new haybale, so the chain explosion is over
+		if next_ == prev:
+			break
+
+		# Update our previous explosion and increment radius
+		prev = next_
+		radius += 1
+	return abs(prev - start)
+
+
+max_exploded = 0
+for i in range(len(bales)):
+	# Get the number of exploded bales for the left & right side
+	max_exploded = max(max_exploded, exploded_num(i, -1) + exploded_num(i, 1) + 1)
+print(max_exploded, file=open("angry.out", "w"))
+```
+
+</PySection>
+</LanguageSection>

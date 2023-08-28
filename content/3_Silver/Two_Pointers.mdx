@@ -13,8 +13,6 @@ description:
 frequency: 2
 ---
 
-<Problems problems="sample" />
-
 ## Resources
 
 <Resources>
@@ -25,8 +23,8 @@ frequency: 2
 		above + mention of max subarray sum
 	</Resource>
 	<Resource
-		source="CF"
-		title="CF Edu"
+		source="CF EDU"
+		title="Two Pointers Method"
 		url="https://codeforces.com/edu/course/2/lesson/9"
 		starred
 	>
@@ -37,13 +35,13 @@ frequency: 2
 ## Two Pointers
 
 The two pointers method iterates two pointers across an array, to track the start and end
-of an interval. It can also be used to track two values in an array as shown in [CPH's 2SUM](/CPH.pdf#page=87) solution. 
+of an interval. It can also be used to track two values in an array as shown in [CPH's 2SUM](/CPH.pdf#page=87) solution.
 
 <FocusProblem problem="book" />
 
 ## Solution - Books
 
-We want to find the longest contiguous segment of books that can be read within $t$ minutes. 
+We want to find the longest contiguous segment of books that can be read within $t$ minutes.
 
 To accomplish this, we can define $\texttt{left}$ and $\texttt{right}$ to represent the beginning and end of the segment. Both will start at the beginning of the array. These numbers can be thought of as pointers, hence the name "two pointers."
 
@@ -186,6 +184,11 @@ Now, we can move the right pointer to the end. This makes the sum of values $1+2
 
 Since the right pointer has reached the end of the array, we are done at this point. This leaves us with $\texttt{ans}=3$.
 
+Here's an animation of the above example:
+<video width="960" height="720" controls>
+	<source src="/animations/two_pointers.mp4" type="video/mp4"/>
+</video>
+
 <Info title="Pro Tip">
 
 You can visualize these pointers as maintaining a sliding window of books for this problem.
@@ -199,16 +202,14 @@ You can visualize these pointers as maintaining a sliding window of books for th
 <CPPSection>
 
 ```cpp
-CodeSnip{CPP Short Template}
+// CodeSnip{CPP Short Template}
 
 int main() {
 	setIO();
 	int n, t, ans = 0;
 	cin >> n >> t;
 	vi books(n);
-	for (int i = 0; i < n; i++){
-		cin >> books[i];
-	}
+	for (int i = 0; i < n; i++) { cin >> books[i]; }
 
 	int left = 0, right = 0, cur = 0;
 	while (left < n && right < n) {
@@ -217,7 +218,7 @@ int main() {
 			cur += books[right++];
 			// Subtracting the exceeded book from cur.
 			if (cur > t) {
-				cur -= books[--right]; 
+				cur -= books[--right];
 				break;
 			}
 		}
@@ -235,8 +236,8 @@ int main() {
 <JavaSection>
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class Books {
 	public static void main(String[] args) {
@@ -245,9 +246,7 @@ public class Books {
 		int n = io.nextInt();
 		int t = io.nextInt();
 		int[] books = new int[n];
-		for (int i = 0; i < n; i++) {
-			books[i] = io.nextInt();
-		}
+		for (int i = 0; i < n; i++) { books[i] = io.nextInt(); }
 
 		int left = 0, right = 0, cur = 0, ans = 0;
 		while (left < n && right < n) {
@@ -256,7 +255,7 @@ public class Books {
 				cur += books[right++];
 				// Subtracting the exceeded book from cur.
 				if (cur > t) {
-					cur -= books[--right]; 
+					cur -= books[--right];
 					break;
 				}
 			}
@@ -269,7 +268,7 @@ public class Books {
 		io.close();
 	}
 
-	CodeSnip{Kattio}
+	// CodeSnip{Kattio}
 }
 ```
 
@@ -298,7 +297,7 @@ while left < n and right < n:
 			right -= 1
 			cur -= books[right]
 			break
-    
+
 	ans = max(ans, right - left)
 	cur -= books[left]
 	left += 1
@@ -321,14 +320,14 @@ print(ans)
       Keeping track of two indices to find a subarray that satisfies some condition.
       <Quiz.Explanation>
         Incorrect. The indices don't necessarily have to represent a subarray, they could just represent elements in the array.
-	      
+
       </Quiz.Explanation>
     </Quiz.Answer>
     <Quiz.Answer correct>
       Keeping track of two indices to find a pair of indices that satisfy some condition.
       <Quiz.Explanation>
         Correct.
-        
+
       </Quiz.Explanation>
     </Quiz.Answer>
     <Quiz.Answer>
@@ -345,28 +344,24 @@ print(ans)
     </Quiz.Answer>
   </Quiz.Question>
   <Quiz.Question>
-    What should go in place of `???`?
+    What should go in place of `cond`?
 
 	<LanguageSection>
 		<CPPSection>
 
 			```cpp
 			/*
-			* find two elements at distinct positions in an array 
-			* which add up to a target sum
-			*/
-			
+			 * find two elements at distinct positions in an array
+			 * which add up to a target sum
+			 */
 			sort(begin(nums), end(nums));
-
 			int l = 0;
 			int r = n - 1;
-
-			while (???) {
+			while (cond) {
 				if (nums[l] + nums[r] == target) {
 					// found pair
 					break;
-				}
-				else if (nums[l] + nums[r] > target) {
+				} else if (nums[l] + nums[r] > target) {
 					r--;
 				} else {
 					l++;
@@ -377,21 +372,17 @@ print(ans)
 		<JavaSection>
 		```java
 		/*
-		* find two elements at distinct positions in an array 
-		* which add up to a target sum
-		*/
-		
+		 * find two elements at distinct positions in an array
+		 * which add up to a target sum
+		 */
 		Arrays.sort(nums);
-
 		int l = 0;
 		int r = n - 1;
-
-		while (???) {
+		while (cond) {
 			if (nums[l] + nums[r] == target) {
 				// found pair
 				break;
-			}
-			else if (nums[l] + nums[r] > target) {
+			} else if (nums[l] + nums[r] > target) {
 				r--;
 			} else {
 				l++;
@@ -403,17 +394,15 @@ print(ans)
 
 			```py
 			nums.sort()
-
 			l = 0
 			r = n - 1
-
-			while (???):
+			while cond:
 				if nums[l] + nums[r] == target:
 					# found pair
 					break
 				elif nums[l] + nums[r] > target:
 					r -= 1
-				else: 
+				else:
 					l += 1
 			```
 		</PySection>

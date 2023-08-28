@@ -1,0 +1,624 @@
+---
+id: usaco-619
+source: USACO Silver 2016 February
+title: Load Balancing
+author: Benjamin Qi, Kevin Sheng, Varun Ragunath
+---
+
+[Official Analysis (Java)](http://www.usaco.org/current/data/sol_balancing_silver_feb16.html)
+
+## Video Solution
+
+By Varun Ragunath
+
+<YouTube id="Ob7ac08iMuU" />
+
+<Spoiler title="Video Solution Code">
+
+<Warning>
+
+This code is not actually correct; it outputs 3 for the following input when the
+answer should be 2.
+
+```
+4
+3 7
+7 1
+7 7
+9 7
+```
+
+See [Solution 2](#solution-2) for the correct code.
+
+</Warning>
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+vector<int> gen_important_pos(vector<int> locs) {
+	// we are given a bunch of coordinates, generate the relatively important
+	// positions
+	sort(locs.begin(), locs.end());
+	int n = (int)locs.size();  // number of positions
+	// the optimal cutting points lie from floor(n/4), ..., ceil(3n/4)
+	int l = min(n / 4, n - 1);        // left bound
+	int r = min((3 * n) / 4, n - 1);  // right bound
+	vector<int> ret_points;           // the final set of optimal points
+	for (int i = l; i <= r; i++) {
+		if (ret_points.empty() or (ret_points.back()) != locs[i] + 1) {
+			// this value is important
+			ret_points.push_back(locs[i] + 1);
+		}
+	}
+	return ret_points;
+}
+
+int main() {
+	freopen("balancing.in", "r", stdin);
+	freopen("balancing.out", "w", stdout);
+	cin.sync_with_stdio(0);
+	cin.tie(0);
+
+	// get input
+
+	int n;
+	cin >> n;
+
+	vector<pair<int, int>> positions(n);  // positions of each cow
+	vector<int> xcoords, ycoords;         // x and y coordinates
+
+	for (int i = 0; i < n; i++) {
+		cin >> positions[i].first >> positions[i].second;
+		xcoords.push_back(positions[i].first);
+		ycoords.push_back(positions[i].second);
+	}
+
+	// now we need to generate important x coordinates, and important y
+	// coordinates
+
+	xcoords = gen_important_pos(xcoords);
+	ycoords = gen_important_pos(ycoords);
+
+	// xcoords and ycoords now store the important points that we need to check
+
+	int opt = n;
+
+	for (int i = 0; i < (int)xcoords.size(); i++) {
+		for (int j = 0; j < (int)ycoords.size(); j++) {
+			int a = xcoords[i];
+			int b = ycoords[j];
+			int cow_count[2][2] = {0};
+			// update the quadrant each cow is in
+			for (int cow = 0; cow < n; cow++) {
+				if (++cow_count[(positions[cow].first < a)]
+				               [(positions[cow].second < b)] > opt)
+					break;
+			}
+			// find the maximum quadrant
+			int cur_div = max({cow_count[0][0], cow_count[0][1],
+			                   cow_count[1][0], cow_count[1][1]});
+			// update the min
+			opt = min(opt, cur_div);
+		}
+	}
+
+	cout << opt << '\n';
+
+	return 0;
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class balancing {
+	public static void main(String[] args) throws IOException {
+
+		// file io
+		balancing.Kattio io = new balancing.Kattio("balancing");
+
+		// input
+
+		int n = io.nextInt();  // cows
+
+		int[][] cows = new int[n][2];  // positions of cows
+
+		int[] xvals = new int[n];  // x coordinates of all cows
+		int[] yvals = new int[n];  // y coordinates of all cows
+
+		// get all values in input
+
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < 2; j++) { cows[i][j] = io.nextInt(); }
+			xvals[i] = cows[i][0];
+			yvals[i] = cows[i][1];
+		}
+
+		ArrayList<Integer> xs = new ArrayList<Integer>();
+		ArrayList<Integer> ys = new ArrayList<Integer>();
+
+		gen_points(xvals, n, xs);  // getting important points
+		gen_points(yvals, n, ys);
+
+		int opt = n;  // max possible answer is n
+
+		for (int i = 0; i < xs.size(); i++) {
+			for (int j = 0; j < ys.size(); j++) {
+				// iterating over all choices for a, b
+				int a = xs.get(i);
+				int b = ys.get(j);
+				int[][] cnt = new int[2][2];
+				// checking each cow
+				for (int cow = 0; cow < n; cow++) {
+					int p1 = 0, p2 = 0;
+					if (cows[cow][0] < a) p1 = 1;
+					if (cows[cow][1] < b) p2 = 1;
+					if ((++cnt[p1][p2]) > opt) {  // if it is worse than the
+						                          // optimal answer, break;
+						break;
+					}
+				}
+				// update running min
+				opt = Math.min(opt, Math.max(Math.max(cnt[0][0], cnt[0][1]),
+				                             Math.max(cnt[1][0], cnt[1][1])));
+			}
+		}
+
+		io.println(opt);
+		io.close();
+	}
+
+	public static void gen_points(int[] coords, int n, ArrayList<Integer> ret) {
+		Arrays.sort(coords);
+
+		// we pruned our search space from
+		// 1 -> n
+		// to n/4 -> 3n/4
+
+		int l = n / 4;                         // left bound of search space
+		int r = Math.min((3 * n) / 4, n - 1);  // right bound, we have to make
+		                                       // sure we dont go out of bounds
+
+		for (int i = l; i <= r; i++) {
+			// if it is empty, add it
+			if (ret.isEmpty()) {
+				ret.add(coords[i] + 1);
+			}  // if it is not a duplicate, add it
+			else if (ret.get(ret.size() - 1) != coords[i] + 1) {
+				ret.add(coords[i] + 1);
+			}
+		}
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+
+</LanguageSection>
+</Spoiler>
+
+## Solution 1
+
+Similar to the analysis.
+
+**Time Complexity:** $\mathcal{O}(N^2)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <algorithm>
+#include <fstream>
+#include <iostream>
+#include <vector>
+
+using std::cout;
+using std::endl;
+using std::vector;
+
+struct Cow {
+	int x, y;
+};
+
+/**
+ * Given a pre-defined vertical line, finds the most balanced
+ * horizontal line
+ * (Assumes the cows have been sorted by y-pos already)
+ */
+int min_partition(int x_line, const vector<Cow> &cows) {
+	vector<Cow> left;
+	vector<Cow> right;
+	for (const Cow &c : cows) {
+		if (c.x < x_line) {
+			left.push_back(c);
+		} else if (c.x > x_line) {
+			right.push_back(c);
+		}
+	}
+
+	int most_balanced = INT32_MAX;
+	int left_at = 0;
+	int right_at = 0;
+	while (left_at + right_at < cows.size()) {
+		int y_line = cows[left_at + right_at].y + 1;
+		while (left_at < left.size() && y_line > left[left_at].y) { left_at++; }
+		while (right_at < right.size() && y_line > right[right_at].y) {
+			right_at++;
+		}
+		int below_max = std::max(left_at, right_at);
+		int above_max =
+		    std::max(left.size() - left_at, right.size() - right_at);
+		most_balanced = std::min(most_balanced, std::max(below_max, above_max));
+	}
+
+	return most_balanced;
+}
+
+int main() {
+	std::ifstream read("balancing.in");
+	int cow_num;
+	read >> cow_num;
+	vector<Cow> by_x(cow_num);  // The array of cows (to be sorted by x-pos)
+	for (Cow &c : by_x) { read >> c.x >> c.y; }
+	std::sort(by_x.begin(), by_x.end(),
+	          [&](const Cow &p1, const Cow &p2) { return p1.x < p2.x; });
+
+	// Same as by_x, but sorted by y-pos
+	vector<Cow> by_y(by_x);
+	std::sort(by_y.begin(), by_y.end(),
+	          [&](const Cow &p1, const Cow &p2) { return p1.y < p2.y; });
+
+	int most_balanced = INT32_MAX;
+	int x_line_at = 0;  // The cow which decides the vertical line
+	while (x_line_at < by_x.size()) {
+		int x_line = by_x[x_line_at].x + 1;
+		most_balanced = std::min(most_balanced, min_partition(x_line, by_y));
+		// Go through the list of cows until we hit one with a new x-pos
+		while (x_line_at < cow_num && x_line > by_x[x_line_at].x) {
+			x_line_at++;
+		}
+	}
+
+	std::ofstream("balancing.out") << most_balanced << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Balancing {
+	public static void main(String[] args) throws IOException {
+		BufferedReader read =
+		    new BufferedReader(new FileReader("balancing.in"));
+		int cowNum = Integer.parseInt(read.readLine());
+		// The array of cows (to be sorted by x-pos)
+		int[][] byX = new int[cowNum][2];
+		for (int c = 0; c < cowNum; c++) {
+			StringTokenizer cow = new StringTokenizer(read.readLine());
+			byX[c] = new int[] {Integer.parseInt(cow.nextToken()),
+			                    Integer.parseInt(cow.nextToken())};
+		}
+		Arrays.sort(byX, Comparator.comparingInt(c -> c[0]));
+
+		// Same as byX, but sorted by y-pos instead
+		int[][] byY = byX.clone();
+		Arrays.sort(byY, Comparator.comparingInt(c -> c[1]));
+
+		int mostEqual = Integer.MAX_VALUE;
+		int xLineAt = 0;  // The cow which decides the vertical line
+		while (xLineAt < cowNum) {
+			int xLine = byX[xLineAt][0] + 1;
+			mostEqual = Math.min(mostEqual, minPartition(xLine, byY));
+			// Go through the list of cows until we hit one with a new x-pos
+			while (xLineAt < cowNum && xLine > byX[xLineAt][0]) { xLineAt++; }
+		}
+
+		PrintWriter written = new PrintWriter("balancing.out");
+		written.println(mostEqual);
+		written.close();
+	}
+
+	/**
+	 * Given a pre-defined vertical line, finds the most balanced
+	 * horizontal line
+	 * (Assumes the cows have been sorted by y-pos already)
+	 */
+	private static int minPartition(int xLine, int[][] cows) {
+		ArrayList<int[]> left = new ArrayList<>();
+		ArrayList<int[]> right = new ArrayList<>();
+		for (int[] c : cows) {
+			if (c[0] < xLine) {
+				left.add(c);
+			} else if (c[0] > xLine) {
+				right.add(c);
+			}
+		}
+
+		int mostEqual = Integer.MAX_VALUE;
+		int leftAt = 0;
+		int rightAt = 0;
+		while (leftAt + rightAt < cows.length) {
+			int yLine = cows[leftAt + rightAt][1] + 1;
+			while (leftAt < left.size() && yLine > left.get(leftAt)[1]) {
+				leftAt++;
+			}
+			while (rightAt < right.size() && yLine > right.get(rightAt)[1]) {
+				rightAt++;
+			}
+			int belowMax = Math.max(leftAt, rightAt);
+			int aboveMax =
+			    Math.max(left.size() - leftAt, right.size() - rightAt);
+			mostEqual = Math.min(mostEqual, Math.max(belowMax, aboveMax));
+		}
+
+		return mostEqual;
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+from typing import List, Tuple
+
+
+with open("balancing.in") as read:
+	# The array of cows (to be sorted by x-pos)
+	by_x = []
+	for _ in range(int(read.readline())):
+		by_x.append(tuple(int(i) for i in read.readline().split()))
+
+
+def min_partition(x_line: int, cows: List[Tuple[int, int]]) -> int:
+	"""
+	Given a pre-defined vertical line, finds the most balanced horizontal line
+	(Assumes that the cows have been sorted by y-pos already)
+	"""
+	left = [c for c in cows if c[0] < x_line]
+	right = [c for c in cows if c[0] > x_line]
+
+	most_balanced = float("inf")
+	left_at = 0
+	right_at = 0
+	while left_at + right_at < len(cows):
+		y_line = cows[left_at + right_at][1] + 1
+
+		while left_at < len(left) and y_line > left[left_at][1]:
+			left_at += 1
+
+		while right_at < len(right) and y_line > right[right_at][1]:
+			right_at += 1
+
+		below_max = max(left_at, right_at)
+		above_max = max(len(left) - left_at, len(right) - right_at)
+		most_balanced = min(most_balanced, max(below_max, above_max))
+
+	return most_balanced
+
+
+by_x.sort()
+# Same as by_x, but sorted by y-pos
+by_y = sorted(by_x, key=lambda c: c[1])
+
+most_balanced = float("inf")
+# The cow which decides the vertical line
+x_line_at = 0
+while x_line_at < len(by_x):
+	x_line = by_x[x_line_at][0] + 1
+	most_balanced = min(most_balanced, min_partition(x_line, by_y))
+	# Go through the list of cows until we hit one with a new x-pos
+	while x_line_at < len(by_x) and x_line > by_x[x_line_at][0]:
+		x_line_at += 1
+
+print(most_balanced, file=open("balancing.out", "w"))
+```
+
+</PySection>
+</LanguageSection>
+
+## Solution 2
+
+**Time Complexity:** $\mathcal{O}(N^3)$
+
+The solution to the
+[Bronze version](/problems/usaco-617-load-balancing/solution) of this problem
+runs in $\mathcal O(N^3)$ time, but is not fast enough to pass the Silver
+version. One way to speed up the Bronze solution is to check only a constant
+number of $x$ and $y$-coordinates that are close to the median $x$ or $y$,
+respectively. This would improve the time complexity to $\mathcal O(N)$.
+However, such a solution cannot be correct. For example, consider the case where
+$N=999$ and $x_i=y_i=2i-1$. Then $M=333$, and the $x$ and $y$ coordinates we
+need to select to obtain this $M$ are rather far away from their respective
+medians.
+
+Nevertheless, we can still speed up the Bronze solution by a constant factor by
+checking fewer $x$ and $y$ coordinates. Note that if we increase the
+$x$-coordinate of the north-south fence by two and there are still at most
+$\frac{N}{3}$ cows to the left of the fence, then $M$ stays the same or
+decreases. Thus, we can reduce the number of $x$-coordinates we need to check to
+$\frac{N}{3}+\mathcal O(1)$. Similarly, the number of $y$-coordinates we need to
+check is also $\frac{N}{3}+\mathcal O(1)$. This reduces the number of operations
+in the Bronze solution by a factor of 9, which is enough to pass the Silver
+version.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <algorithm>
+#include <fstream>
+#include <iostream>
+#include <vector>
+
+using std::cout;
+using std::endl;
+using std::vector;
+
+struct Cow {
+	int x, y;
+};
+
+/** Returns the list of *important* coordinates */
+vector<int> pos_of_interest(vector<int> &pos) {
+	int sz = pos.size();
+	std::sort(pos.begin(), pos.end());
+
+	vector<int> distinct;  // List of all the distinct positions
+	/*
+	 * For each of those distinct positions,
+	 * how many have the same or lesser position?
+	 */
+	vector<int> num_left;
+	for (int i = 0; i < sz; i++) {
+		if (i == sz - 1 || pos[i] != pos[i + 1]) {
+			distinct.push_back(pos[i] + 1);
+			num_left.push_back(i + 1);
+		}
+	}
+
+	vector<int> important;
+	for (int i = 0; i < distinct.size(); i++) {
+		// We can just move the fence to the right, so ignore this
+		if (i + 1 < distinct.size() && num_left[i + 1] <= sz / 3) { continue; }
+		// Same, but to the left
+		if (i > 0 && num_left[i - 1] >= sz - sz / 3) { continue; }
+		important.push_back(distinct[i]);
+	}
+
+	return important;
+}
+
+int main() {
+	std::ifstream read("balancing.in");
+	int cow_num;
+	read >> cow_num;
+
+	vector<Cow> cows(cow_num);
+	vector<int> x_pos;
+	vector<int> y_pos;
+	for (Cow &c : cows) {
+		read >> c.x >> c.y;
+		x_pos.push_back(c.x);
+		y_pos.push_back(c.y);
+	}
+
+	vector<int> to_check_x = pos_of_interest(x_pos);
+	vector<int> to_check_y = pos_of_interest(y_pos);
+	int most_balanced = INT32_MAX;
+	for (int x : to_check_x) {
+		for (int y : to_check_y) {
+			// Try placing a fence centered at (x, y)
+			vector<vector<int>> field_amt{{0, 0}, {0, 0}};
+			for (const Cow &c : cows) { field_amt[x < c.x][y < c.y]++; }
+
+			int balance = std::max({field_amt[0][0], field_amt[0][1],
+			                        field_amt[1][0], field_amt[1][1]});
+			most_balanced = std::min(most_balanced, balance);
+		}
+	}
+
+	std::ofstream("balancing.out") << most_balanced << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Balancing {
+	public static void main(String[] args) throws IOException {
+		BufferedReader read =
+		    new BufferedReader(new FileReader("balancing.in"));
+		int cowNum = Integer.parseInt(read.readLine());
+
+		int[][] cows = new int[cowNum][2];
+		int[] xPos = new int[cowNum];
+		int[] yPos = new int[cowNum];
+		for (int c = 0; c < cowNum; c++) {
+			StringTokenizer cow = new StringTokenizer(read.readLine());
+			int x = Integer.parseInt(cow.nextToken());
+			int y = Integer.parseInt(cow.nextToken());
+			cows[c] = new int[] {x, y};
+			xPos[c] = x;
+			yPos[c] = y;
+		}
+
+		List<Integer> toCheckX = posOfInterest(xPos);
+		List<Integer> toCheckY = posOfInterest(yPos);
+
+		int mostEqual = Integer.MAX_VALUE;
+		for (int x : toCheckX) {
+			for (int y : toCheckY) {
+				// Try placing a fence centered at (x, y)
+				int[][] fieldAmt = new int[][] {{0, 0}, {0, 0}};
+				for (int[] c : cows) {
+					fieldAmt[x < c[0] ? 1 : 0][y < c[1] ? 1 : 0]++;
+				}
+				int balance =
+				    Math.max(Math.max(fieldAmt[0][0], fieldAmt[0][1]),
+				             Math.max(fieldAmt[1][0], fieldAmt[1][1]));
+				mostEqual = Math.min(mostEqual, balance);
+			}
+		}
+
+		PrintWriter written = new PrintWriter("balancing.out");
+		written.print(mostEqual);
+		written.close();
+	}
+
+	/** Returns the list of *important* coordinates */
+	static List<Integer> posOfInterest(int[] pos) {
+		int sz = pos.length;  // Just a shorthand
+		Arrays.sort(pos);
+
+		// List of all the distinct positions
+		List<Integer> distinct = new ArrayList<>();
+		/*
+		 * For each of those distinct positions,
+		 * how many have the same or lesser position?
+		 */
+		List<Integer> numLeft = new ArrayList<>();
+		for (int i = 0; i < sz; i++) {
+			if (i == sz - 1 || pos[i] != pos[i + 1]) {
+				distinct.add(pos[i] + 1);
+				numLeft.add(i + 1);
+			}
+		}
+
+		List<Integer> important = new ArrayList<>();
+		for (int i = 0; i < distinct.size(); i++) {
+			// We can just move the fence to the right, so ignore this
+			if (i + 1 < distinct.size() && numLeft.get(i + 1) <= sz / 3) {
+				continue;
+			}
+			// Same, but to the left
+			if (i > 0 && numLeft.get(i - 1) >= sz - sz / 3) { continue; }
+			important.add(distinct.get(i));
+		}
+
+		return important;
+	}
+}
+```
+
+</JavaSection>
+</LanguageSection>

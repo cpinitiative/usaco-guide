@@ -1,0 +1,175 @@
+---
+id: cf-1713E
+source: Codeforces Div 2
+title: Cross Swapping
+author: Aakash Gokhale
+---
+
+[Official Analysis](https://codeforces.com/blog/entry/105419)
+
+## Explanation
+
+Notice that $a[i][j]$ can only be swapped with $a[j][i]$ no matter which operations are performed.
+
+For all $j$ such that $i < j$ (we only need to consider each pair once and keeping $i < j$ will ensure this), we can determine whether we want to swap them or keep them the same.
+
+If $a[i][j] > a[j][i]$, we want to swap them. If $a[i][j] < a[j][i]$ we want to keep them the same. If they are equal it doesn't matter.
+
+However, it is possible that not all conditions can work together with each other and swapping something/keeping something the same means we can't swap something else/keep something the same later on.
+Consider the following input:
+
+$0$ $2$ $1$
+
+$1$ $0$ $1$
+
+$3$ $2$ $0$
+
+We want to first swap $a[0][1]$ and $a[1][0]$ because $1$ is less than $2$. We can do this by flipping the $0$th row/col. This would give us the array:
+
+$0$ $1$ $3$
+
+$2$ $0$ $1$
+
+$1$ $2$ $0$
+
+Then we want to swap $a[0][2]$ and $a[2][0]$ because $1$ is less than $3$. To do this either we can either swap the $0$th row/col or the $2$nd row/col. However, swapping the $0$th row/col would undo the efforts of our first operation so we will swap the $2$nd row/col and get:
+
+$0$ $1$ $1$
+
+$2$ $0$ $2$
+
+$3$ $1$ $0$
+
+Now we want to swap $a[1][2]$ and $a[2][1]$ because $1$ is less than $2$ and we want the lexicographically minimum. However swapping the $1$st row/col would mess up the swap we made in the first operation and swapping the $2$nd row/col would mess up the swap we made in the second operation.
+Thus, it is impossible to make all swaps optimally.
+
+Since we want the lexicographically smallest answer, the earlier indices matter more than later indices so we find optimal row swaps for earlier indices first.
+
+We can create a disjoint set union to model this problem. The DSU will have $2n$ nodes where node $i$ represents the state where the operation is performed on the $i$th row and node $i + n$ represents the state where operation is not performed on the $i$th row.
+
+As we are iterating greedily through the array, we can merge ($i$ and $j$) and ($i + n$ and $j + n$) if we don't want to swap. This works because if we swap neither or swap both the arrangement remains the same.
+If we do want to swap we can merge ($i$ and $j + n$) and ($i + n$ and $j$). This works because if we swap exactly one of these, then the arrangement will change.
+
+After this we can construct the answer by iterating over each cell of the grid. If the cell's row index is equal to its column index (i.e. it's on the diagonal of the grid) it can never change regardless of the flips. If $a[i][j] == a[j][i]$ then we can manually set them (since we didn't merge them in the disjoint set union when comparing them the states might have not been merged). Otherwise, we can check whether $i$ and $j$ are merged in the disjoint set union. If they aren't then we will swap $a[i][j]$ and $a[j][i]$. Otherwise we will keep them the same.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N^2)$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using vi = vector<int>;
+
+// BeginCodeSnip{DSU}
+struct DSU {
+	vi e;
+	DSU(int n) { e = vi(n, -1); }
+
+	int get(int x) {
+		if (e[x] < 0) {
+			return x;
+		} else {
+			e[x] = get(e[x]);
+			return e[x];
+		}
+	}
+
+	bool same(int a, int b) { return get(a) == get(b); }
+
+	int size(int x) { return -e[get(x)]; }
+
+	bool unite(int x, int y) {
+		x = get(x);
+		y = get(y);
+		if (x == y) { return false; }
+		if (e[x] > e[y]) { swap(x, y); }
+		e[x] += e[y];
+		e[y] = x;
+		return true;
+	}
+};
+// EndCodeSnip
+
+void solve() {
+	int n;
+	cin >> n;
+	int a[n][n];
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) { cin >> a[i][j]; }
+	}
+
+	DSU dsu(2 * n);
+
+	for (int i = 0; i < n; i++) {
+		// Only check each pair once and diagnals don't matter
+		for (int j = i + 1; j < n; j++) {
+			// If they are the same we should not merge either way
+			// because it could affect later merges
+			if (a[i][j] == a[j][i]) {
+				continue;
+			} else if (a[i][j] > a[j][i]) {
+				// Swap the elements if the states are not already merged the
+				// opposite way
+				if (dsu.get(i) != dsu.get(j)) {
+					dsu.unite(i, j + n);
+					dsu.unite(j, i + n);
+				}
+			} else {
+				// Keep the elements the same if the states
+				// are not already merged the opposite way
+				if (dsu.get(i) != dsu.get(j + n)) {
+					dsu.unite(i, j);
+					dsu.unite(i + n, j + n);
+				}
+			}
+		}
+	}
+
+	// Construct the answer
+	vector<vi> ans(n, vi(n));
+	for (int i = 0; i < n; i++) {
+		for (int j = i; j < n; j++) {
+			/*
+			 * If a[i][j] is part of a diagonal or the pair is equal (a[i][j] ==
+			 * a[j][i]), manually set it to be the same as the original array
+			 */
+			if (i == j) {
+				ans[i][j] = a[i][j];
+			} else if (a[i][j] == a[j][i]) {
+				ans[i][j] = ans[j][i] = a[i][j];
+			} else {  // Otherwise check whether the i and j states are merged
+				if (dsu.get(i) == dsu.get(j)) {
+					ans[i][j] = a[i][j];
+					ans[j][i] = a[j][i];
+				} else {
+					ans[i][j] = a[j][i];
+					ans[j][i] = a[i][j];
+				}
+			}
+		}
+	}
+
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) { cout << ans[i][j] << " "; }
+		cout << '\n';
+	}
+}
+
+int main() {
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
+	int T;
+	cin >> T;
+	for (int t = 0; t < T; t++) { solve(); }
+}
+```
+
+</CPPSection>
+
+</LanguageSection>

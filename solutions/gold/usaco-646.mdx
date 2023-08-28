@@ -1,0 +1,276 @@
+---
+id: usaco-646
+source: USACO Gold 2016 Open
+title: Closing the Farm
+author: Nathan Gong, Melody Yu, George Pong
+---
+
+[Official Analysis](http://www.usaco.org/current/data/sol_closing_gold_open16.html)
+
+## Explanation
+
+We can represent the farm as an undirected graph, with each of the $n$ barns being a node, and each of the $m$ bidirectional paths being an edge. At each point in time, we want to check if the number of connected components is equal to one. Naively, this can be done with BFS or DFS. However, we would need to run this for all $n+1$ states of the barn, resulting in a TLE.
+
+We can use Disjoint Set Union (DSU) to efficiently keep track of the number of connected components after each change. However, the key part of this solution is that, as DSU can only efficiently create relationships between nodes and not destroy them, we simulate closing the barn in reverse.
+
+We start with an empty farm, and open barns in the reverse order they were closed in. For each barn we open, we unite the new barn to all its adjacent open barns, of which we will keep track of while opening. This makes the farm at each state the same as if it was being closed. While opening a barn will initially increase the number of connected components by 1, each successful union will decrease it by 1 as well. Thus, each opening of a barn will increase the number of connected components by $1 - \texttt{number of successful unions}$. Finally, our answer from each opening can be reversed once again to follow the initial order of closing the barns.
+
+## Video Solution
+
+Note: The video solution might not be the same as other solutions. Code in C++.
+
+<YouTube id="5G1CGuTfUJk" />
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(V \cdot E \cdot \alpha(n)))$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+// BeginCodeSnip{DSU}
+struct DSU {
+	vector<int> e;
+	DSU(int N) : e(N, -1) {}
+
+	// get representive component (uses path compression)
+	int get(int x) { return e[x] < 0 ? x : e[x] = get(e[x]); }
+
+	bool same_set(int a, int b) { return get(a) == get(b); }
+
+	int size(int x) { return -e[get(x)]; }
+
+	// union by size
+	bool unite(int x, int y) {
+		x = get(x), y = get(y);
+		if (x == y) return false;
+		if (e[x] > e[y]) swap(x, y);
+		e[x] += e[y];
+		e[y] = x;
+		return true;
+	}
+};
+// EndCodeSnip
+
+int main() {
+	freopen("closing.in", "r", stdin);
+	int n, m;
+	cin >> n >> m;
+
+	vector<vector<int>> adj(n);
+	for (int i = 0; i < m; i++) {
+		int u, v;
+		cin >> u >> v;
+		u--;
+		v--;
+		adj[u].push_back(v);
+		adj[v].push_back(u);
+	}
+
+	// conn[i] = whether the ith farm is closed
+	vector<bool> conn(n);
+	vector<int> rev(n);
+	for (int i = 0; i < n; i++) {
+		cin >> rev[i];
+		rev[i]--;
+	}
+
+	DSU dsu(n);
+	reverse(rev.begin(), rev.end());
+
+	conn[rev[0]] = 1;
+	// one node is always connected
+	vector<string> ans = {"YES"};
+
+	// connected components
+	int cc = 1;
+	for (int i = 1; i < n; i++) {
+		cc++;
+		conn[rev[i]] = 1;
+		for (int j : adj[rev[i]]) {
+			if (conn[j]) {
+				if (dsu.unite(j, rev[i])) { cc--; }
+			}
+		}
+		ans.push_back(cc == 1 ? "YES" : "NO");
+	}
+	reverse(ans.begin(), ans.end());
+
+	freopen("closing.out", "w", stdout);
+	for (const string &i : ans) { cout << i << '\n'; }
+}
+```
+</CPPSection>
+<PySection>
+
+```py
+# BeginCodeSnip{Disjoint Set Union}
+class DisjointSetUnion:
+	def __init__(self, num_nodes: int) -> None:
+		self.parent = [*range(num_nodes)]
+		self.size = [1] * num_nodes
+
+	def find_parent(self, v: int) -> int:
+		if self.parent[v] == v:
+			return v
+		self.parent[v] = self.find_parent(self.parent[v])
+		return self.parent[v]
+
+	def union(self, a: int, b: int) -> bool:
+		a = self.find_parent(a)
+		b = self.find_parent(b)
+		if a == b:
+			return False
+		if self.size[a] < self.size[b]:
+			a, b = b, a
+		self.parent[b] = a
+		self.size[a] += self.size[b]
+		return True
+
+	def connected(self, a: int, b: int) -> bool:
+		return self.find_parent(a) == self.find_parent(b)
+
+
+# EndCodeSnip
+
+with open("closing.in", "r") as infile:
+	n, m = map(int, infile.readline().split())
+	graph = [[] for _ in range(n)]
+	for _ in range(m):
+		f, t = map(lambda i: int(i) - 1, infile.readline().split())
+		graph[f].append(t)
+		graph[t].append(f)
+	remove_order = [int(infile.readline()) - 1 for _ in range(n)]
+
+dsu = DisjointSetUnion(n)
+
+"""
+We simulate opening the farm in the reverse order of closing it. For each barn,
+we open it, and then connect it to any open adjacent barns, all while counting
+the number of connected components.
+"""
+
+open_barns = set()
+components = 0
+fully_connected = []
+
+for node in remove_order[::-1]:
+	components += 1
+	for adj in graph[node]:
+		if adj in open_barns:
+			if dsu.union(adj, node):
+				components -= 1
+
+	fully_connected.append("YES" if components == 1 else "NO")
+	open_barns.add(node)
+
+print(*fully_connected[::-1], sep="\n", file=open("closing.out", "w"))
+```
+
+</PySection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class closing {
+	public static void main(String[] args) throws IOException {
+		Scanner sc = new Scanner(new File("closing.in"));
+		PrintWriter out = new PrintWriter("closing.out");
+
+		int n = sc.nextInt();
+		int m = sc.nextInt();
+
+		ArrayList<ArrayList<Integer>> adj = new ArrayList<>();
+		for (int i = 0; i < n; i++) { adj.add(new ArrayList<>()); }
+		for (int i = 0; i < m; i++) {
+			int a = sc.nextInt() - 1;
+			int b = sc.nextInt() - 1;
+			adj.get(a).add(b);
+			adj.get(b).add(a);
+		}
+
+		int[] order = new int[n];
+		for (int i = 0; i < n; i++) { order[i] = sc.nextInt() - 1; }
+
+		UnionFind graph = new UnionFind(n);
+		boolean[] open = new boolean[n];
+		ArrayList<String> answers = new ArrayList<>();
+
+		// Process closings in reverse order:
+		// Instead of closing each farm, we simulate opening farms
+		for (int i = n - 1; i >= 0; i--) {
+			open[order[i]] = true;
+
+			// Connect opening farm with neighbor iff it's open
+			for (int neighbor : adj.get(order[i])) {
+				if (open[neighbor]) { graph.union(order[i], neighbor); }
+			}
+			// Set answer to YES if # of connected components equals
+			// unopened barns + 1 (for component formed by open barns)
+			if (graph.components == i + 1) {
+				answers.add("YES");
+			} else {
+				answers.add("NO");
+			}
+		}
+
+		Collections.reverse(answers);
+		for (int i = 0; i < answers.size(); i++) {
+			out.println(answers.get(i));
+		}
+		out.close();
+	}
+
+	public static class UnionFind {
+		int[] nodes;
+		int[] sizes;
+		int components;
+
+		UnionFind(int n) {
+			nodes = new int[n];
+			sizes = new int[n];
+			components = n;
+			for (int i = 0; i < n; i++) {
+				nodes[i] = i;
+				sizes[i] = 1;
+			}
+		}
+
+		void union(int p, int q) {
+			int i = root(p);
+			int j = root(q);
+			if (i == j) return;
+
+			components--;
+			if (sizes[i] < sizes[j]) {
+				nodes[i] = nodes[j];
+				sizes[j] += sizes[i];
+			} else {
+				nodes[j] = nodes[i];
+				sizes[i] += sizes[j];
+			}
+		}
+
+		int root(int index) {
+			while (nodes[index] != index) {
+				nodes[index] = nodes[nodes[index]];
+				index = nodes[index];
+			}
+			return index;
+		}
+
+		boolean connected(int p, int q) { return root(p) == root(q); }
+	}
+}
+```
+
+</JavaSection>
+
+</LanguageSection>

@@ -1,0 +1,794 @@
+---
+id: usaco-833
+source: USACO Bronze 2018 Open
+title: Family Tree
+author: Danh Ta Chi Thanh, Ryan Chou, Chuyang Wang, Kevin Sheng, Amogha Pokkulandra
+---
+
+## Video Solution
+
+By Amogha Pokkulandra
+
+<YouTube id="CaGt8uCRNxU" />
+
+<Spoiler title="Video Solution Code">
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+vector<string> m;
+vector<string> d;
+
+int main() {
+	freopen("family.in", "r", stdin);
+	freopen("family.out", "w", stdout);
+
+	int lines;
+	string cowx, cowy;
+	cin >> lines >> cowx >> cowy;
+	string out;
+
+	for (int i = 0; i < lines; i++) {
+		string mom, dot;
+		cin >> mom >> dot;
+		m.push_back(mom);
+		d.push_back(dot);
+	}
+
+	vector<string> xAnc, yAnc;
+	string cx = cowx, cy = cowy;
+
+	while (find(d.begin(), d.end(), cx) != d.end()) {
+		xAnc.push_back(cx);
+		int tempX = distance(d.begin(), find(d.begin(), d.end(), cx));
+		cx = m[tempX];
+	}
+	xAnc.push_back(cx);
+
+	while (find(d.begin(), d.end(), cy) != d.end()) {
+		yAnc.push_back(cy);
+		int tempY = distance(d.begin(), find(d.begin(), d.end(), cy));
+		cy = m[tempY];
+	}
+	yAnc.push_back(cy);
+
+	string common;
+	bool found = false;
+	for (string x : xAnc) {
+		if (found) {
+			break;
+		} else {
+			for (string y : yAnc) {
+				if (x == y) {
+					common = x;
+					found = true;
+					break;
+				}
+			}
+		}
+	}
+
+	if (common == "") {
+		cout << ("NOT RELATED");
+	} else {
+		int xLvl =
+		    distance(xAnc.begin(), find(xAnc.begin(), xAnc.end(), common));
+		int yLvl =
+		    distance(yAnc.begin(), find(yAnc.begin(), yAnc.end(), common));
+
+		if (xLvl == yLvl && yLvl == 1) {
+			cout << ("SIBLINGS");
+		} else if (xLvl == yLvl || (xLvl > 1 && yLvl > 1)) {
+			cout << ("COUSINS");
+		} else if (xLvl > yLvl) {
+			int diff = xLvl - yLvl;
+			if (cowy == common) {
+				if (diff == 1) {
+					out = "mother";
+				} else {
+					for (int j = 0; j < diff - 2; j++) { out += "great-"; }
+					out += "grand-mother";
+				}
+				cout << (cowy + " is the " + out + " of " + cowx);
+			} else {
+				if (diff == 1) {
+					out = "aunt";
+				} else {
+					for (int k = 0; k < diff - 1; k++) { out += "great-"; }
+					out += "aunt";
+				}
+				cout << (cowy + " is the " + out + " of " + cowx);
+			}
+		} else {
+			int diff = yLvl - xLvl;
+			if (cowx == common) {
+				if (diff == 1) {
+					out = "mother";
+				} else {
+					for (int j = 0; j < diff - 2; j++) { out += "great-"; }
+					out += "grand-mother";
+				}
+				cout << (cowx + " is the " + out + " of " + cowy);
+			} else {
+				if (diff == 1) {
+					out = "aunt";
+				} else {
+					for (int k = 0; k < diff - 1; k++) { out += "great-"; }
+					out += "aunt";
+				}
+				cout << (cowx + " is the " + out + " of " + cowy);
+			}
+		}
+	}
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class FamilyTree {
+	public static List<String> m = new ArrayList<String>();
+	public static List<String> d = new ArrayList<String>();
+
+	public static void main(String[] args) throws IOException {
+		PrintWriter pw = new PrintWriter(new File("family.out"));
+		BufferedReader br =
+		    new BufferedReader(new FileReader(new File("family.in")));
+
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int lines = Integer.parseInt(st.nextToken());
+		String cowx = st.nextToken();
+		String cowy = st.nextToken();
+		String out = "";
+
+		for (int i = 0; i < lines; i++) {
+			st = new StringTokenizer(br.readLine());
+			m.add(st.nextToken());
+			d.add(st.nextToken());
+		}
+
+		List<String> xAnc = new ArrayList<String>();
+		List<String> yAnc = new ArrayList<String>();
+
+		String cX = cowx;
+		String cY = cowy;
+
+		while (d.contains(cX)) {
+			xAnc.add(cX);
+			cX = m.get(d.indexOf(cX));
+		}
+		xAnc.add(cX);
+
+		while (d.contains(cY)) {
+			yAnc.add(cY);
+			cY = m.get(d.indexOf(cY));
+		}
+		yAnc.add(cY);
+
+		List<String> comAnc = new ArrayList<String>(xAnc);
+		comAnc.retainAll(yAnc);
+
+		if (comAnc.isEmpty()) {
+			System.out.println("NOT RELATED");
+			pw.println("NOT RELATED");
+		} else {
+			String common = comAnc.get(0);
+			int xLvl = xAnc.indexOf(common);
+			int yLvl = yAnc.indexOf(common);
+
+			if (xLvl == yLvl && yLvl == 1) {
+				System.out.println("SIBLINGS");
+				pw.println("SIBLINGS");
+			} else if (xLvl == yLvl || (xLvl > 1 && yLvl > 1)) {
+				System.out.println("COUSINS");
+				pw.println("COUSINS");
+			} else if (xLvl > yLvl) {
+				int diff = xLvl - yLvl;
+				if (cowy.equals(common)) {
+					if (diff == 1) {
+						out = "mother";
+					} else {
+						for (int j = 0; j < diff - 2; j++) { out += "great-"; }
+						out += "grand-mother";
+					}
+					System.out.println(cowy + " is the " + out + " of " + cowx);
+					pw.println(cowy + " is the " + out + " of " + cowx);
+				} else {
+					if (diff == 1) {
+						out = "aunt";
+					} else {
+						for (int k = 0; k < diff - 1; k++) { out += "great-"; }
+						out += "aunt";
+					}
+					System.out.println(cowy + " is the " + out + " of " + cowx);
+					pw.println(cowy + " is the " + out + " of " + cowx);
+				}
+			} else {
+				int diff = yLvl - xLvl;
+				if (cowx.equals(common)) {
+					if (diff == 1) {
+						out = "mother";
+					} else {
+						for (int j = 0; j < diff - 2; j++) { out += "great-"; }
+						out += "grand-mother";
+					}
+					System.out.println(cowx + " is the " + out + " of " + cowy);
+					pw.println(cowx + " is the " + out + " of " + cowy);
+				} else {
+					if (diff == 1) {
+						out = "aunt";
+					} else {
+						for (int k = 0; k < diff - 1; k++) { out += "great-"; }
+						out += "aunt";
+					}
+					System.out.println(cowx + " is the " + out + " of " + cowy);
+					pw.println(cowx + " is the " + out + " of " + cowy);
+				}
+			}
+		}
+		pw.close();
+		br.close();
+	}
+}
+```
+
+</JavaSection>
+</LanguageSection>
+</Spoiler>
+
+
+## Solution
+
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_family_bronze_open18.html)
+
+By finding the closest common ancestor and the distances from the ancestor to the two cows, we can uniquely identify their relationship.
+## Implementation
+**Time Complexity:** $\mathcal{O}(N^3)$
+
+<LanguageSection>
+<PySection>
+
+```py
+import sys
+
+sys.stdin = open("family.in", "r")
+sys.stdout = open("family.out", "w")
+
+rel_num, cow_a, cow_b = input().split()
+relations = []
+
+for i in range(int(rel_num)):
+	relations.append(input().split())
+
+
+# gets the mother of the cow (if it exists)
+def mother(cow):
+	for r in relations:
+		if r[1] == cow:
+			return r[0]
+	return None
+
+
+# returns the distance between cow and cow2 (-1 if no relation)
+def direct_anc_dist(cow, cow2):
+	dist = 0
+	while cow2 != None:
+		if cow == cow2:
+			return dist
+		cow2 = mother(cow2)
+		dist += 1
+	return -1
+
+
+# distance from a to the common ancestor
+da = 0
+cow = cow_a
+while cow != None:
+	# if we found a common ancestor
+	if direct_anc_dist(cow, cow_b) != -1:
+		break
+	cow = mother(cow)
+	da += 1
+
+# if a common ancestor does not exist
+if cow == None:
+	print("NOT RELATED")
+	sys.exit()
+
+"""
+since we found a common ancestor, cow.
+we can call direct_anc() to get the distance
+from b to the common ancestor.
+"""
+db = direct_anc_dist(cow, cow_b)
+
+"""
+if they're related by a common ancestor,
+but not by a mother or aunt, we can return
+COUSINS.
+"""
+if da > 1 and db > 1:
+	print("COUSINS")
+	sys.exit()
+
+# if the distance from each cow to their common
+# ancestor is one, they're siblings,
+elif da == 1 and db == 1:
+	print("SIBLINGS")
+	sys.exit()
+else:
+	if da > db:
+		da, db = db, da
+		cow_b, cow_a = cow_a, cow_b
+	print(cow_a, "is the ", end="")
+
+	# we subtract two because 1 is in place of mother
+	# and 2 is in place of grandmother
+	for _ in range(db - 2):
+		print("great-", end="")
+	if da == 0 and db > 1:
+		print("grand-", end="")
+	if da == 0:
+		print("mother ", end="")
+	else:
+		print("aunt ", end="")
+	print("of", cow_b)
+```
+</PySection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class FamilyTree {
+	public static void main(String[] args) throws IOException {
+		BufferedReader in = new BufferedReader(new FileReader("family.in"));
+		PrintWriter out = new PrintWriter("family.out");
+
+		StringTokenizer st = new StringTokenizer(in.readLine());
+		int relNum = Integer.parseInt(st.nextToken());
+		String cowX = st.nextToken();
+		String cowY = st.nextToken();
+		String[][] relations = new String[relNum][];
+		for (int i = 0; i < relNum; i++) {
+			relations[i] = in.readLine().split(" ");
+		}
+		in.close();
+
+		// minimum distance between the shared ancestor and X and Y
+		int minXDist = 0;
+		int minYDist = 0;
+		String commonAncestor = cowX;
+		// try to find the common ancestor of X and Y (or if there isn't one)
+		while (commonAncestor != null) {
+			if (getAncestorDistance(commonAncestor, cowY, relations) != -1) {
+				minYDist = getAncestorDistance(commonAncestor, cowY, relations);
+				break;
+			}
+			commonAncestor = getMother(commonAncestor, relations);
+			minXDist++;
+		}
+
+		// if X and Y don't have common ancestors, they aren't related
+		if (commonAncestor == null) {
+			out.println("NOT RELATED");
+		}
+		// if both distances are greater than one they're cousins
+		else if (minXDist > 1 && minYDist > 1) {
+			out.println("COUSINS");
+		}
+		// both distances of 1 means they're siblings
+		else if (minXDist == 1 && minYDist == 1) {
+			out.println("SIBLINGS");
+		}
+		// if one itself is the ancestor then it's a (great-...) mother
+		// relationship
+		else if (minXDist == 0 || minYDist == 0) {
+			boolean xIsAncestor = minXDist == 0;
+			out.print(String.format("%s is the ", commonAncestor));
+			for (int i = 0; i < (xIsAncestor ? minYDist : minXDist) - 2; i++) {
+				out.print("great-");
+			}
+			if ((xIsAncestor ? minYDist : minXDist) > 1) {
+				out.print("grand-");
+			}
+			out.println(
+			    String.format("mother of %s", xIsAncestor ? cowY : cowX));
+		}
+		// otherwise, there's a (great-great-...) aunt relationship
+		else {
+			boolean auntIsX = minXDist == 1;
+			out.print(String.format("%s is the ", auntIsX ? cowX : cowY));
+			for (int i = 0; i < (auntIsX ? minYDist : minXDist) - 2; i++) {
+				out.print("great-");
+			}
+			out.println(String.format("aunt of %s", auntIsX ? cowY : cowX));
+		}
+		out.close();
+	}
+
+	// finds the mother of given child among those pairs (returns null if no
+	// mother)
+	private static String getMother(String child, String[][] relations) {
+		for (String[] pair : relations) {
+			if (child.equals(pair[1])) { return pair[0]; }
+		}
+		return null;
+	}
+
+	// returns the distance between start and end (-1 if no relation)
+	private static int getAncestorDistance(String start, String end,
+	                                       String[][] relations) {
+		int dist = 0;
+		while (end != null) {
+			if (end.equals(start)) { return dist; }
+			dist++;
+			end = getMother(end, relations);
+		}
+		return -1;
+	}
+}
+```
+
+</JavaSection>
+
+<CPPSection>
+
+```cpp
+#include <fstream>
+#include <string>
+#include <vector>
+
+using std::string;
+using std::vector;
+using Relation = std::pair<string, string>;
+
+// finds the mother of given child among those pairs (returns null if no mother)
+string mother(const string &child, const vector<Relation> &relations) {
+	for (const Relation &r : relations) {
+		if (r.second == child) { return r.first; }
+	}
+	return "";
+}
+
+// returns the distance between start and end (-1 if no relation)
+int ancestor_dist(
+    const string &start,
+    string end,  // we're going to reassign this variable so no reference
+    const vector<Relation> &relations) {
+	int dist = 0;
+	while (end != "") {
+		if (end == start) { return dist; }
+		dist++;
+		end = mother(end, relations);
+	}
+	return -1;
+}
+
+int main() {
+	std::ifstream read("family.in");
+	int rel_num;
+	string cow_x;
+	string cow_y;
+	read >> rel_num >> cow_x >> cow_y;
+	vector<Relation> relations(rel_num);
+	for (int r = 0; r < rel_num; r++) {
+		read >> relations[r].first >> relations[r].second;
+	}
+
+	// minimum distance between the shared ancestor and X and Y
+	int min_x_dist = 0;
+	int min_y_dist = 0;
+	string common_ancestor = cow_x;
+	// try to find the common ancestor of X and Y (or if there isn't one)
+	while (!common_ancestor.empty()) {
+		if (ancestor_dist(common_ancestor, cow_y, relations) != -1) {
+			min_y_dist = ancestor_dist(common_ancestor, cow_y, relations);
+			break;
+		}
+		common_ancestor = mother(common_ancestor, relations);
+		min_x_dist++;
+		// written << common_ancestor << '\n';
+	}
+
+	std::ofstream written("family.out");
+	// if X and Y don't have common ancestors, they aren't related
+	if (common_ancestor.empty()) {
+		written << "NOT RELATED\n";
+	}
+	// if both distances are greater than one they're cousins
+	else if (min_x_dist > 1 && min_y_dist > 1) {
+		written << "COUSINS\n";
+	}
+	// both distances of 1 means they're siblings
+	else if (min_x_dist == 1 && min_y_dist == 1) {
+		written << "SIBLINGS\n";
+	}
+	// if one itself is the ancestor then it's a (great-...) mother relationship
+	else if (min_x_dist == 0 || min_y_dist == 0) {
+		bool x_is_ancestor = min_x_dist == 0;
+		int ancestor_dist = x_is_ancestor ? min_y_dist : min_x_dist;
+		written << (x_is_ancestor ? cow_x : cow_y) << " is the ";
+		for (int i = 0; i < ancestor_dist - 2; i++) { written << "great-"; }
+		if (ancestor_dist > 1) { written << "grand-"; }
+		written << "mother of " << (x_is_ancestor ? cow_y : cow_x) << '\n';
+	}
+	// otherwise, there's a (great-great-...) aunt relationship
+	else {
+		bool x_is_aunt = min_x_dist == 1;
+		written << (x_is_aunt ? cow_x : cow_y) << " is the ";
+		for (int i = 0; i < (x_is_aunt ? min_y_dist : min_x_dist) - 2; i++) {
+			written << "great-";
+		}
+		written << "aunt of " << (x_is_aunt ? cow_y : cow_x) << '\n';
+	}
+}
+```
+</CPPSection>
+
+</LanguageSection>
+
+## Alternative Solution - BFS
+
+Note: This is an **alternative** solution and makes use of concepts outside the
+scope of Bronze. Breadth-first search is **not necessary** to know for the
+bronze division.
+
+**Time Complexity:** $\mathcal{O}(N \log N)$
+
+This problem can also be solved by using BFS to find the common ancestors and
+the distance between the two cows and their nearest common ancestor.
+
+<Warning>
+
+No Bronze / Silver problem has required knowledge of BFS, so feel free to skip
+this solution if you find it unfamiliar and come back later.
+
+</Warning>
+
+<LanguageSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Family {
+	public static void main(String[] args) throws IOException {
+		BufferedReader read = new BufferedReader(new FileReader("family.in"));
+		StringTokenizer initial = new StringTokenizer(read.readLine());
+		int N = Integer.parseInt(initial.nextToken());
+		String[] cows = new String[] {initial.nextToken(), initial.nextToken()};
+
+		Map<String, String> edge = new HashMap<>();
+		for (int i = 0; i < N; i++) {
+			StringTokenizer relation = new StringTokenizer(read.readLine());
+			String v = relation.nextToken();
+			String u = relation.nextToken();
+			// If v is a mother of u, then there is an edge from node u to node
+			// v.
+			edge.put(u, v);
+		}
+
+		// Map of the ancestors of each node & their distances
+		Map<String, Integer>[] ancestors =
+		    new HashMap[] {new HashMap<>(), new HashMap<>()};
+		for (int c = 0; c < cows.length; c++) {
+			// BFS to find the ancestors of both cows and the distance to them
+			String at = cows[c];
+			ancestors[c].put(at, 0);
+			while (edge.containsKey(at)) {
+				String next = edge.get(at);
+				ancestors[c].put(next, ancestors[c].get(at) + 1);
+				at = next;
+			}
+		}
+
+		String common = null;
+		int dist0 =
+		    Integer.MAX_VALUE;  // distance from cow 0 to the common ancestor
+		int dist1 = Integer.MAX_VALUE;  // and the distance from cow 1
+		for (var d0 : ancestors[0].entrySet()) {
+			if (ancestors[1].containsKey(d0.getKey())) {
+				int d1 = ancestors[1].get(d0.getKey());
+				if (dist0 > d0.getValue() && dist1 > d1) {
+					common = d0.getKey();
+					dist0 = d0.getValue();
+					dist1 = d1;
+				}
+			}
+		}
+
+		PrintWriter written = new PrintWriter("family.out");
+		if (common == null) {
+			written.println("NOT RELATED");
+		} else if (common.equals(cows[0]) || common.equals(cows[1])) {
+			written.printf("%s is the ", common);
+			int dist = common.equals(cows[0]) ? dist1 : dist0;
+			for (int i = 0; i < dist - 2; i++) { written.print("great-"); }
+			if (dist > 1) { written.print("grand-"); }
+			String young = common.equals(cows[0]) ? cows[1] : cows[0];
+			written.printf("mother of %s", young);
+		} else {
+			if (dist0 == 1 || dist1 == 1) {
+				if (dist0 == 1 && dist1 == 1) {
+					written.println("SIBLINGS");
+				} else {
+					boolean auntIs0 = dist0 == 1;
+					written.printf("%s is the ", auntIs0 ? cows[0] : cows[1]);
+					for (int i = 0; i < (auntIs0 ? dist1 : dist0) - 2; i++) {
+						written.print("great-");
+					}
+					written.printf("aunt of %s", auntIs0 ? cows[1] : cows[0]);
+				}
+			} else {
+				written.println("COUSINS");
+			}
+		}
+		written.close();
+	}
+}
+```
+
+</JavaSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	freopen("family.in", "r", stdin);
+	int N;
+	vector<string> cows(2);
+	cin >> N >> cows[0] >> cows[1];
+
+	map<string, string> edge;
+	for (int i = 0; i < N; ++i) {
+		string u, v;
+		cin >> v >> u;
+		// If v is a mother of u, then there is an edge from node u to node v.
+		edge[u] = v;
+	}
+
+	// Map of the ancestors of each node & their distances
+	vector<map<string, int>> ancestors(2);
+	for (int c = 0; c < 2; c++) {
+		// BFS to find the ancestors of both cows and the distance to them
+		string at = cows[c];
+		ancestors[c][cows[c]] = 0;
+		while (edge.count(at) != 0) {
+			auto n = edge.find(at);
+			ancestors[c][n->second] = ancestors[c][at] + 1;
+			at = n->second;
+		}
+	}
+
+	string common;
+	int dist0 = INT32_MAX;  // distance from cow 0 to the common ancestor
+	int dist1 = INT32_MAX;  // and the distance from cow 1
+	// Finding the lowest common ancestor
+	for (const pair<string, int> &d0 : ancestors[0]) {
+		auto d1 = ancestors[1].find(d0.first);
+		if (d1 != ancestors[1].end() &&
+		    (dist0 > d0.second || dist1 > d1->second)) {
+			common = d0.first;
+			dist0 = d0.second;
+			dist1 = d1->second;
+		}
+	}
+
+	freopen("family.out", "w", stdout);
+
+	if (common.empty()) {
+		cout << "NOT RELATED";
+	} else if (common == cows[1] || common == cows[0]) {
+		if (common == cows[0]) {
+			swap(cows[0], cows[1]);
+			swap(dist0, dist1);
+		}
+		cout << cows[1] << " is the ";
+		if (dist0 >= 2) {
+			for (int i = 0; i < dist0 - 2; ++i) { cout << "great-"; }
+			cout << "grand-";
+		}
+		cout << "mother of " << cows[0];
+	} else {
+		if (dist1 < dist0) {
+			swap(dist1, dist0);
+			swap(cows[1], cows[0]);
+		}
+		if (dist0 == 1) {
+			if (dist1 == 1) {
+				cout << "SIBLINGS";
+			} else {
+				cout << cows[0] << " is the ";
+				for (int i = 0; i < dist1 - 2; ++i) { cout << "great-"; }
+				cout << "aunt of " << cows[1];
+			}
+		} else {
+			cout << "COUSINS";
+		}
+	}
+	cout << endl;
+}
+```
+
+</CPPSection>
+<PySection>
+
+```py
+with open("family.in") as read:
+	cows = [None, None]
+	N, cows[0], cows[1] = read.readline().split()
+	N = int(N)
+
+	edge = {}
+	for _ in range(N):
+		v, u = read.readline().split()
+		edge[u] = v
+
+# Map of the ancestors of each node & their distances
+ancestors = [{}, {}]
+for c in range(2):
+	at = cows[c]
+	ancestors[c][cows[c]] = 0
+	while at in edge:
+		next_ = edge[at]
+		ancestors[c][next_] = ancestors[c][at] + 1
+		at = next_
+
+common = None
+dist0 = float("inf")
+dist1 = float("inf")
+for d0 in ancestors[0].items():
+	if d0[0] in ancestors[1]:
+		d1 = ancestors[1][d0[0]]
+		if dist0 > d0[1] and dist1 > d1:
+			common = d0[0]
+			dist0 = d0[1]
+			dist1 = d1
+
+with open("family.out", "w") as written:
+	if common is None:
+		print("NOT RELATED", file=written)
+	elif common == cows[0] or common == cows[1]:
+		print(f"{common} is the ", end="", file=written)
+
+		ancestors = dist1 if common == cows[0] else dist0
+		for _ in range(ancestors - 2):
+			print("great-", end="", file=written)
+		if ancestors > 1:
+			print("grand-", end="", file=written)
+
+		young = cows[1] if common == cows[0] else cows[0]
+		print(f"mother of {young}", file=written)
+	else:
+		if dist0 == 1 or dist1 == 1:
+			if dist0 == 1 and dist1 == 1:
+				print("SIBLINGS", file=written)
+			else:
+				aunt_is_0 = dist0 == 1
+
+				aunt = cows[0] if aunt_is_0 else cows[1]
+				print(f"{aunt} is the ", end="", file=written)
+				for _ in range((dist1 if aunt_is_0 else dist0) - 2):
+					print("great-", end="", file=written)
+
+				young = cows[1] if aunt_is_0 else cows[0]
+				print(f"aunt of {young}", file=written)
+		else:
+			print("COUSINS", file=written)
+```
+
+</PySection>
+</LanguageSection>

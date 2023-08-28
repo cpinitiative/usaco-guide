@@ -19,8 +19,6 @@ frequency: 2
 
 ### Solution - Max Subarray Sum
 
-<Spoiler title="Solution">
-
 Consider the prefix sum array $p$. The subarray sum $a_i \dots a_{j-1}$, where
 $i\leq j$ is $p[j]-p[i]$. Thus, we are looking for the maximum possible value of
 $p[j]-p[i]$ over $0 \leq i \leq j \leq N$.
@@ -41,9 +39,9 @@ right bound, and the maximum over all these values is our answer.
 <CPPSection>
 
 ```cpp
+#include <algorithm>
 #include <iostream>
 #include <vector>
-#include <algorithm>
 
 using namespace std;
 using ll = long long;
@@ -52,7 +50,7 @@ int main() {
 	int n;
 	cin >> n;
 	vector<long long> pfx(n + 1);  // prefix sum array initially filled with 0's
-	for (int i = 1; i <= n; i++){
+	for (int i = 1; i <= n; i++) {
 		ll x;
 		cin >> x;
 		pfx[i] = pfx[i - 1] + x;  // compute the prefix sum at each element
@@ -79,9 +77,8 @@ import java.util.Arrays;
 
 public class MaxSubSum {
 	public static void main(String[] args) throws IOException {
-		BufferedReader read = new BufferedReader(
-			new InputStreamReader(System.in)
-		);
+		BufferedReader read =
+		    new BufferedReader(new InputStreamReader(System.in));
 		read.readLine();
 		int[] arr = Arrays.stream(read.readLine().split(" ")
 				.mapToInt(Integer::parseInt).toArray();
@@ -118,8 +115,6 @@ print(max_subarray_sum)
 </PySection>
 </LanguageSection>
 
-</Spoiler>
-
 <Spoiler title = "Alternative Solution - Kadane's Algorithm">
 
 Note: it is recommended that you **disregard** this solution since it is not
@@ -144,9 +139,7 @@ int main() {
 	int n;
 	cin >> n;
 	vector<long long> x(n);
-	for (int i = 0; i < n; i++) {
-		cin >> x[i];
-	}
+	for (int i = 0; i < n; i++) { cin >> x[i]; }
 	ll current_sum = x[0];
 	ll max_subarray_sum = x[0];
 	for (int i = 1; i < n; i++) {
@@ -161,21 +154,21 @@ int main() {
 	cout << max_subarray_sum << endl;
 }
 ```
-</CPPSection>	
+</CPPSection>
 <JavaSection>
 
 ```java
 import java.io.*;
 import java.util.*;
-	
+
 public class MaxSubarraySumKadane {
-	public static void main (String[] args) {
+	public static void main(String[] args) {
 		Kattio io = new Kattio();
 		int n = io.nextInt();
 
 		long[] x = new long[n];
 
-		for (int i = 0; i < n; i++) { // read input
+		for (int i = 0; i < n; i++) {  // read input
 			x[i] = io.nextInt();
 		}
 
@@ -196,7 +189,7 @@ public class MaxSubarraySumKadane {
 		io.close();
 	}
 
-	//CodeSnip{Kattio}
+	// CodeSnip{Kattio}
 }
 ```
 </JavaSection>
@@ -216,7 +209,7 @@ for i in range(1, n):
 	subarray sum beginning at the current element.
 	"""
 	current_sum = max(current_sum + x[i], x[i])
-	
+
 	# Store the maximum subarray sum at each iteration.
 	max_subarray_sum = max(max_subarray_sum, current_sum)
 
@@ -556,20 +549,18 @@ int main() {
 	// build the prefix sum array
 	for (int i = 1; i <= N; i++) {
 		for (int j = 1; j <= N; j++) {
-			tree_pref[i][j] = forest[i][j]
-						+ tree_pref[i - 1][j]
-						+ tree_pref[i][j - 1]
-						- tree_pref[i - 1][j - 1];
+			tree_pref[i][j] = forest[i][j] + tree_pref[i - 1][j] +
+			                  tree_pref[i][j - 1] - tree_pref[i - 1][j - 1];
 		}
 	}
 
 	for (int q = 0; q < Q; q++) {
 		int from_row, to_row, from_col, to_col;
 		cin >> from_row >> from_col >> to_row >> to_col;
-		cout << tree_pref[to_row][to_col]
-				- tree_pref[from_row - 1][to_col]
-				- tree_pref[to_row][from_col - 1]
-				+ tree_pref[from_row - 1][from_col - 1] << '\n';
+		cout << tree_pref[to_row][to_col] - tree_pref[from_row - 1][to_col] -
+		            tree_pref[to_row][from_col - 1] +
+		            tree_pref[from_row - 1][from_col - 1]
+		     << '\n';
 	}
 }
 ```
@@ -593,24 +584,20 @@ public class ForestQueries {
 		N = io.nextInt();
 		Q = io.nextInt();
 
-		pfx = new int[N+1][N+1];
-		arr = new int[N+1][N+1];
+		pfx = new int[N + 1][N + 1];
+		arr = new int[N + 1][N + 1];
 
 		for (int i = 0; i < N; i++) {
 			String line = io.next();
 			for (int j = 0; j < N; j++) {
-				if (line.charAt(j) == '*') {
-					arr[i + 1][j + 1]++;
-				}
+				if (line.charAt(j) == '*') { arr[i + 1][j + 1]++; }
 			}
 		}
 
 		for (int i = 1; i < N + 1; i++) {
 			for (int j = 1; j < N + 1; j++) {
-				pfx[i][j] = arr[i][j]
-						+ pfx[i-1][j]
-						+ pfx[i][j-1]
-						- pfx[i-1][j-1];
+				pfx[i][j] = arr[i][j] + pfx[i - 1][j] + pfx[i][j - 1] -
+				            pfx[i - 1][j - 1];
 			}
 		}
 
@@ -619,17 +606,13 @@ public class ForestQueries {
 			int fromCol = io.nextInt();
 			int toRow = io.nextInt();
 			int toCol = io.nextInt();
-			io.println(
-					pfx[toRow][toCol]
-					- pfx[fromRow - 1][toCol]
-					- pfx[toRow][fromCol - 1]
-					+ pfx[fromRow - 1][fromCol - 1]
-			);
+			io.println(pfx[toRow][toCol] - pfx[fromRow - 1][toCol] -
+			           pfx[toRow][fromCol - 1] + pfx[fromRow - 1][fromCol - 1]);
 		}
 		io.close();
 	}
 
-	CodeSnip{Kattio}
+	// CodeSnip{Kattio}
 }
 ```
 
@@ -642,18 +625,22 @@ side_len, query_num = [int(i) for i in input().split()]
 tree_prefixes = [[0 for _ in range(side_len + 1)] for _ in range(side_len + 1)]
 for r in range(side_len):
 	for ci, c in enumerate(input()):
-		tree = c == '*'
-		tree_prefixes[r + 1][ci + 1] += (tree_prefixes[r][ci + 1]
-										 + tree_prefixes[r + 1][ci]
-										 - tree_prefixes[r][ci]
-										 + tree)
+		tree = c == "*"
+		tree_prefixes[r + 1][ci + 1] += (
+			tree_prefixes[r][ci + 1]
+			+ tree_prefixes[r + 1][ci]
+			- tree_prefixes[r][ci]
+			+ tree
+		)
 
 for _ in range(query_num):
 	from_row, from_col, to_row, to_col = [int(i) for i in input().split()]
-	print(tree_prefixes[to_row][to_col]
-		  - tree_prefixes[to_row][from_col - 1]
-		  - tree_prefixes[from_row - 1][to_col]
-		  + tree_prefixes[from_row - 1][from_col - 1])
+	print(
+		tree_prefixes[to_row][to_col]
+		- tree_prefixes[to_row][from_col - 1]
+		- tree_prefixes[from_row - 1][to_col]
+		+ tree_prefixes[from_row - 1][from_col - 1]
+	)
 ```
 
 </PySection>

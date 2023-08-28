@@ -1,0 +1,161 @@
+---
+id: cses-2428
+source: CSES
+title: Subarray Distinct Values
+author: Sofia Yang, Sai Vamsi
+---
+
+## Explanation
+
+Use a sliding window and keep a multiset to record the frequency of each element in the array.
+Expand the window to the right if the number of distinct elements after expanding the window is less or equal to $K$,
+otherwise remove the left-most element.
+When a new element at index $i$ is added to a window with a left-most element of index $j$,
+it will create ($i - j$) new subarrays, i.e ($j$ to $i$), ($j + 1$ to $i$), etc. which we can use to calculate the number of valid subarrays.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+
+int main() {
+	int n;
+	int k;
+	cin >> n >> k;
+	vector<int> arr(n);
+	for (int i = 0; i < n; i++) { cin >> arr[i]; }
+
+	int left = 0;
+	int right = 0;
+	ll ans = 0;
+	int distinct = 0;
+	map<int, int> freq;
+	while (left < n) {
+		while (right < n) {
+			if (freq.count(arr[right]) == 0 && distinct == k) { break; }
+
+			// Put the new array element in the map.
+			if (freq.count(arr[right]) == 0) {
+				freq[arr[right]] = 1;
+				distinct++;
+			} else {
+				freq[arr[right]]++;
+			}
+			right++;
+		}
+
+		// Add the new subarrays.
+		ans += (right - left);
+
+		// Slide the window rightwards.
+		if (freq[arr[left]] == 1) {
+			distinct--;
+			freq.erase(arr[left]);
+		} else {
+			freq[arr[left]] -= 1;
+		}
+		left++;
+	}
+
+	cout << ans << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class cses2428 {
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio();
+		int N = io.nextInt();
+		int K = io.nextInt();
+		int[] arr = new int[N];
+		for (int i = 0; i < N; i++) { arr[i] = io.nextInt(); }
+
+		int left = 0, right = 0;
+		long ans = 0;
+		int distinct = 0;
+
+		Map<Integer, Integer> freq = new HashMap<>();
+		while (left < N) {
+			while (right < N &&
+			       (distinct + (freq.containsKey(arr[right]) ? 0 : 1) <= K)) {
+				// Put the new array element in the map.
+				if (!freq.containsKey(arr[right])) {
+					freq.put(arr[right], 1);
+					distinct++;
+				} else {
+					freq.put(arr[right], freq.get(arr[right]) + 1);
+				}
+				right++;
+			}
+			// Add the new subarrays.
+			ans += (right - left);
+
+			// Slide the window rightwards.
+			if (freq.get(arr[left]) == 1) {
+				distinct--;
+				freq.remove(arr[left]);
+			} else {
+				freq.put(arr[left], freq.get(arr[left]) - 1);
+			}
+			left++;
+		}
+
+		io.println(ans);
+		io.close();
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+
+<PySection>
+
+```py
+n, k = map(int, input().split())
+arr = list(map(int, input().split()))
+left = 0
+right = 0
+ans = 0
+distinct = 0
+freq = {}
+while left < n:
+	while right < n:
+		if arr[right] not in freq and distinct == k:
+			break
+
+		# Put the new array element in the map.
+		if arr[right] in freq:
+			freq[arr[right]] += 1
+		else:
+			freq[arr[right]] = 1
+			distinct += 1
+		right += 1
+
+	# Add the new subarrays.
+	ans += right - left
+
+	# Slide the window rightwards.
+	freq[arr[left]] -= 1
+	if freq[arr[left]] == 0:
+		freq.pop(arr[left])
+		distinct -= 1
+	left += 1
+print(ans)
+```
+</PySection>
+</LanguageSection>

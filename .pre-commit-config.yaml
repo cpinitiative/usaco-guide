@@ -1,0 +1,26 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-added-large-files
+  - repo: https://github.com/pre-commit/mirrors-prettier
+    rev: v3.0.2
+    hooks:
+      - id: prettier
+  - repo: local
+    hooks:
+      - id: black-with-tabs
+        name: Format Python
+        entry: black
+        language: python
+        types: [python]
+        additional_dependencies: [black-with-tabs]
+      - id: format-mdx
+        name: Format MDX
+        entry: python py/format_code.py
+        language: python
+        types: [mdx]
+        additional_dependencies: [black-with-tabs, clang-format]

@@ -1,0 +1,296 @@
+---
+id: usaco-965
+source: USACO Bronze 2019 December
+title: Livestock Lineup
+author: Benjamin Qi, Kevin Sheng, Melody Yu, Ryan Chou
+---
+
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_lineup_bronze_dec19.html)
+
+## Video Solution
+By Melody Yu
+
+<YouTube id="xed_5FjVMoo" />
+
+<Spoiler title="Video Solution Code">
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int N;
+int main() {
+	freopen("lineup.in", "r", stdin);
+	freopen("lineup.out", "w", stdout);
+	cin >> N;
+
+	vector<pair<string, string>> restrictions;
+	for (int i = 0; i < N; i++) {
+		string a, t, b;
+		cin >> a;
+		cin >> t >> t >> t >> t;
+		cin >> b;
+		restrictions.push_back({a, b});
+	}
+
+	vector<string> cows = {"Bessie", "Buttercup", "Belinda", "Beatrice",
+	                       "Bella",  "Blue",      "Betsy",   "Sue"};
+	sort(cows.begin(), cows.end());
+	int count = 0;
+
+	while (next_permutation(cows.begin(), cows.end())) {
+		bool passed = true;
+		for (auto p : restrictions) {
+			string cow1 = p.first;
+			string cow2 = p.second;
+			auto a = find(cows.begin(), cows.end(), cow1);
+			auto b = find(cows.begin(), cows.end(), cow2);
+			if (abs(a - b) != 1) { passed = false; }
+		}
+		if (passed) { break; }
+	}
+
+	for (auto cow : cows) { cout << cow << endl; }
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Lineup {
+	static ArrayList<String> restrictionsA;
+	static ArrayList<String> restrictionsB;
+
+	private static ArrayList<String> permutations(ArrayList<String> s) {
+		// 1. finds the largest k, that c[k] < c[k+1]
+		int first = s.size() - 2;
+		for (; first >= 0; first--) {
+			if (s.get(first).compareTo(s.get(first + 1)) < 0) break;
+		}
+
+		if (first == -1) return null;
+
+		// 2. find last index toSwap, that c[k] < c[toSwap]
+		int toSwap = s.size() - 1;
+		for (; toSwap >= 0; toSwap--) {
+			if (s.get(first).compareTo(s.get(toSwap)) < 0) break;
+		}
+
+		// 3. swap elements with indexes first and last
+		Collections.swap(s, first++, toSwap);
+
+		// 4. reverse sequence from k+1 to n (inclusive)
+		toSwap = s.size() - 1;
+		while (first < toSwap) Collections.swap(s, first++, toSwap--);
+
+		return s;
+	}
+
+	private static int findIndex(ArrayList<String> perm, String cow) {
+		for (int i = 0; i < perm.size(); i++) {
+			if (cow.equals(perm.get(i))) { return i; }
+		}
+		return -1;
+	}
+
+	private static boolean check(ArrayList<String> perm) {
+		boolean passed = true;
+		for (int i = 0; i < restrictionsA.size(); i++) {
+			String cow1 = restrictionsA.get(i);
+			String cow2 = restrictionsB.get(i);
+			int a = findIndex(perm, cow1);
+			int b = findIndex(perm, cow2);
+			if (Math.abs(a - b) != 1) {
+				passed = false;
+				break;
+			}
+		}
+
+		if (passed) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public static void main(String[] args) throws IOException {
+		Lineup.Kattio io = new Lineup.Kattio("lineup");
+		int N = io.nextInt();
+
+		ArrayList<String> cows = new ArrayList<String>(
+		    Arrays.asList("Bessie", "Buttercup", "Belinda", "Beatrice", "Bella",
+		                  "Blue", "Betsy", "Sue"));
+
+		restrictionsA = new ArrayList<String>();
+		restrictionsB = new ArrayList<String>();
+
+		for (int i = 0; i < N; i++) {
+			String a = io.next();
+			io.next();
+			io.next();
+			io.next();
+			io.next();
+			String b = io.next();
+			restrictionsA.add(a);
+			restrictionsB.add(b);
+		}
+
+		Collections.sort(cows);
+		while (cows != null) {
+			if (check(cows)) {
+				for (String c : cows) { io.println(c); }
+				break;
+			}
+			cows = permutations(cows);
+		}
+
+		io.close();
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+</JavaSection>
+
+
+</LanguageSection>
+</Spoiler>
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$<Asterisk>Note that we don't have to include the time it takes to build permutations and iterate through them because they're constant factors.</Asterisk>
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+const int RESTRICT_LEN = 6;
+// list of cows, in alphabetical order
+const vector<string> COWS = {"Beatrice", "Belinda", "Bella",     "Bessie",
+                             "Betsy",    "Blue",    "Buttercup", "Sue"};
+
+vector<vector<string>> orderings;
+void build(vector<string> ordering) {
+	// finished building permutation
+	if ((int)(ordering.size()) == 8) {
+		orderings.push_back(ordering);
+		return;
+	}
+
+	for (const string &COW : COWS) {
+		if (find(ordering.begin(), ordering.end(), COW) == ordering.end()) {
+			ordering.push_back(COW);
+			build(ordering);
+			ordering.pop_back();
+		}
+	}
+}
+
+// returns index of a cow in an ordering
+int loc(const vector<string> &order, const string &cow) {
+	return find(order.begin(), order.end(), cow) - order.begin();
+}
+
+int main() {
+	freopen("lineup.in", "r", stdin);
+	freopen("lineup.out", "w", stdout);
+	int n;
+	cin >> n;
+
+	vector<pair<string, string>> restrictions;
+	for (int i = 0; i < n; i++) {
+		string cow1 = "";
+		string cow2 = "";
+		for (int j = 0; j < RESTRICT_LEN; j++) {
+			string word;
+			cin >> word;
+			cow1 = cow1.empty() ? word : cow1;
+			cow2 = word;
+		}
+		restrictions.emplace_back(cow1, cow2);
+	}
+
+	// build all possible orderings of cows
+	build({});
+	for (vector<string> &order : orderings) {
+		bool ok = true;
+		for (const pair<string, string> &rule : restrictions) {
+			if (abs(loc(order, rule.first) - loc(order, rule.second)) > 1) {
+				ok = 0;
+				break;
+			}
+		}
+
+		if (ok) {
+			for (const string &i : order) { cout << i << '\n'; }
+			break;
+		}
+	}
+}
+```
+
+</CPPSection>
+<PySection>
+
+```py
+from typing import List
+
+# list of cows, in alphabetical order
+COWS = ["Beatrice", "Belinda", "Bella", "Bessie", "Betsy", "Blue", "Buttercup", "Sue"]
+
+orderings = []
+
+
+def build(ordering: List[str]):
+	# finished building permutation
+	if len(ordering) == 8:
+		orderings.append(ordering.copy())
+		return
+
+	for cow in COWS:
+		if cow not in ordering:
+			ordering.append(cow)
+			build(ordering)
+			ordering.pop()
+
+
+with open("lineup.in") as read:
+	n = int(read.readline())
+	restrictions = []
+	for _ in range(n):
+		line = read.readline().split()
+		cow1 = line[0]
+		cow2 = line[-1]
+		restrictions.append((cow1, cow2))
+
+# build all possible orderings of cows
+build([])
+for order in orderings:
+	for rule in restrictions:
+		if abs(order.index(rule[0]) - order.index(rule[1])) > 1:
+			break
+	else:
+		with open("lineup.out", "w") as written:
+			for cow in order:
+				print(cow, file=written)
+		break
+```
+
+</PySection>
+</LanguageSection>
+
+## $\mathcal{O}(N)$ Solution With Graphs
+
+This solution is covered in the [Introduction to Graphs](/bronze/intro-graphs) module.

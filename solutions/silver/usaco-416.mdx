@@ -1,0 +1,498 @@
+---
+id: usaco-416
+source: USACO Silver 2014 March
+title: The Lazy Cow
+author: Daniel Ge, Brad Ma, Kevin Sheng
+---
+
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_lazy_silver.html)
+
+<Spoiler title="Hint 1">
+If the range of values Bessie can move to forms a square instead of this diamond, we can apply normal prefix sums.
+</Spoiler>
+<Spoiler title="Hint 2">
+What transformation would take a diamond to a square?
+</Spoiler>
+
+<Spoiler title="Solution">
+## Explanation
+
+Apply a rotation of 45 degrees on the grid like follows. Our goal is that, instead of a diamond as seen in the problem statement, the cells that Bessie can walk to form a square.
+<table>
+<tr>
+<td colspan="2">0</td>
+<td colspan="2">0</td>
+<td colspan="2">50</td>
+<td colspan="2">0</td>
+<td colspan="2">0</td>
+</tr>
+<tr>
+<td></td>
+<td colspan="2">0</td>
+<td colspan="2">14</td>
+<td colspan="2">5</td>
+<td colspan="2">0</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2">0</td>
+<td colspan="2">99</td>
+<td colspan="2">3</td>
+<td colspan="2">25</td>
+<td colspan="2">0</td>
+</tr>
+<tr>
+<td></td>
+<td colspan="2">8</td>
+<td colspan="2">10</td>
+<td colspan="2">2</td>
+<td colspan="2">6</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2">10</td>
+<td colspan="2">7</td>
+<td colspan="2">1</td>
+<td colspan="2">7</td>
+<td colspan="2">17</td>
+</tr>
+<tr>
+<td></td>
+<td colspan="2">0</td>
+<td colspan="2">5</td>
+<td colspan="2">2</td>
+<td colspan="2">21</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2">0</td>
+<td colspan="2">78</td>
+<td colspan="2">23</td>
+<td colspan="2">80</td>
+<td colspan="2">0</td>
+</tr>
+<tr>
+<td></td>
+<td colspan="2">0</td>
+<td colspan="2">1</td>
+<td colspan="2">11</td>
+<td colspan="2">0</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2">0</td>
+<td colspan="2">0</td>
+<td colspan="2">9</td>
+<td colspan="2">0</td>
+<td colspan="2">0</td>
+</tr>
+</table>
+<br></br>
+If we simply cram all the diagonals into rows, it creates this weird brick-like structure.
+This makes no sense as all as there are half-distances, how do you even put this into a 2D array?
+To resolve the half-distances issue, we simply expand the grid by a factor of 2, adding zeroes in as filler.
+Note that we add zeroes because they cannot impact the final sum.
+
+<table>
+<tr>
+    <td>0</td>
+    <td>0</td>
+    <td>0</td>
+    <td>0</td>
+    <td>50</td>
+    <td>0</td>
+    <td>0</td>
+    <td>0</td>
+    <td>0</td>
+</tr>
+  <tr>
+    <td>0</td>
+    <td>0</td>
+    <td>0</td>
+    <td>14</td>
+    <td>0</td>
+    <td>5</td>
+    <td>0</td>
+    <td>0</td>
+    <td>0</td>
+  </tr>
+  <tr>
+    <td>0</td>
+    <td>0</td>
+    <td>99</td>
+    <td>0</td>
+    <td>3</td>
+    <td>0</td>
+    <td>25</td>
+    <td>0</td>
+    <td>0</td>
+  </tr>
+  <tr>
+    <td>0</td>
+    <td>8</td>
+    <td>0</td>
+    <td>10</td>
+    <td>0</td>
+    <td>2</td>
+    <td>0</td>
+    <td>6</td>
+    <td>0</td>
+  </tr>
+  <tr>
+    <td>10</td>
+    <td>0</td>
+    <td>7</td>
+    <td>0</td>
+    <td>1 (B)</td>
+    <td>0</td>
+    <td>7</td>
+    <td>0</td>
+    <td>17</td>
+  </tr>
+  <tr>
+    <td>0</td>
+    <td>0</td>
+    <td>0</td>
+    <td>5</td>
+    <td>0</td>
+    <td>2</td>
+    <td>0</td>
+    <td>21</td>
+    <td>0</td>
+  </tr>
+  <tr>
+    <td>0</td>
+    <td>0</td>
+    <td>78</td>
+    <td>0</td>
+    <td>23</td>
+    <td>0</td>
+    <td>80</td>
+    <td>0</td>
+    <td>0</td>
+  </tr>
+  <tr>
+    <td>0</td>
+    <td>0</td>
+    <td>0</td>
+    <td>1</td>
+    <td>0</td>
+    <td>11</td>
+    <td>0</td>
+    <td>0</td>
+    <td>0</td>
+  </tr>
+  <tr>
+    <td>0</td>
+    <td>0</td>
+    <td>0</td>
+    <td>0</td>
+    <td>9</td>
+    <td>0</td>
+    <td>0</td>
+    <td>0</td>
+    <td>0</td>
+  </tr>
+</table>
+<br></br>
+
+<Info title="Thinking from a geometric standpoint">
+Initially, the distance between adjacent cells is $1$ and the distance between cells connected diagonally is $\sqrt{2}$.
+What we have done here is a dilation by a scale of $\sqrt{2}$, making the distance between adjacent cells now $\sqrt{2}$ and between cells $\sqrt{2} \cdot \sqrt{2} = 2$.
+
+If we then rotate by 45 degrees and add 0s inbetween, everything falls into place. Try to visualize this in your head!
+</Info>
+
+To demonstrate what we have achieved, now look at the cells that Bessie (B) can reach when K = 2, the exact situation in the problem statement.
+<table>
+  <tr>
+    <td>99</td>
+    <td>0</td>
+    <td>3</td>
+    <td>0</td>
+    <td>25</td>
+  </tr>
+  <tr>
+    <td>0</td>
+    <td>10</td>
+    <td>0</td>
+    <td>2</td>
+    <td>0</td>
+  </tr>
+  <tr>
+    <td>7</td>
+    <td>0</td>
+    <td>1 (B)</td>
+    <td>0</td>
+    <td>7</td>
+  </tr>
+  <tr>
+    <td>0</td>
+    <td>5</td>
+    <td>0</td>
+    <td>2</td>
+    <td>0</td>
+  </tr>
+  <tr>
+    <td>78</td>
+    <td>0</td>
+    <td>23</td>
+    <td>0</td>
+    <td>80</td>
+  </tr>
+</table>
+<br></br>
+This range is now a square, which grants us much more possibilities!
+
+To calculate the sum of the numbers in these squares, which are now the shapes of squares, a naive approach (implementation 1) may be to simply "slide" the square along and keep a running sum, adding and subtracting columns along the way.
+
+However, a much faster solution (implementation 2) is to use 2D prefix sums to calculate the sum of these square in constant time. This way, we can brute force through all the squares Bessie can be and take the maximum sum.
+
+## Implementation 1
+
+**Time Complexity** $\mathcal{O}(K \cdot N ^ 2)$
+
+<Warning>
+Depending on how you implement this problem, your code might have trouble passing the last testcase(s) using this approach. There is a much faster solution below.
+</Warning>
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <fstream>
+#include <iostream>
+#include <vector>
+
+using std::cout;
+using std::endl;
+using std::max;
+using std::min;
+using std::vector;
+
+int main() {
+	std::ifstream read("lazy.in");
+
+	int n;
+	int k;
+	read >> n >> k;
+
+	// the side length needed to accomodate for the 45 degree rotation
+	int new_n = 2 * n - 1;
+	vector<vector<int>> field(new_n, vector<int>(new_n));
+
+	// read input and store it rotated by 45 degrees
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) { read >> field[i + j][n - i + j - 1]; }
+	}
+
+	int start_c = n % 2 == 0 ? 1 : 0;
+
+	long long most_grass = 0;
+	for (int row = 0; row < new_n; row++) {
+		long long curr_grass = 0;
+		// build our initial square at the left side of the field
+		for (int r = max(row - k, 0); r <= min(row + k, new_n - 1); r++) {
+			for (int c = start_c; c < min(start_c + 2 * k + 1, new_n); c++) {
+				curr_grass += field[r][c];
+			}
+		}
+
+		// move the grid in 2-step increments and update most_grass each time
+		most_grass = max(most_grass, curr_grass);
+		for (int c = start_c; c + 2 * k + 1 < new_n - 1; c += 2) {
+			int add_c = c + 2 * k + 1;
+			for (int r = max(row - k, 0); r <= min(row + k, new_n - 1); r++) {
+				// remove the two cells that bessie can't reach anymore
+				curr_grass -= field[r][c] + field[r][c + 1];
+				// and add the two that she now can
+				curr_grass += field[r][add_c] + field[r][add_c + 1];
+			}
+			most_grass = max(most_grass, curr_grass);
+		}
+
+		start_c = 1 - start_c;  // alternate start_c between 1 and 0
+	}
+
+	std::ofstream("lazy.out") << most_grass << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import static java.lang.Math.max;
+import static java.lang.Math.min;
+
+import java.io.*;
+import java.util.StringTokenizer;
+
+public class Lazy {
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio("lazy");
+		int n = io.nextInt();
+		int k = io.nextInt();
+
+		// the side length needed to accomodate for the 45 degree rotation
+		int newN = 2 * n - 1;
+		int[][] field = new int[newN][newN];
+
+		// read input and store it rotated by 45 degrees
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
+				field[i + j][n - i + j - 1] = io.nextInt();
+			}
+		}
+
+		int startC = n % 2 == 0 ? 1 : 0;
+
+		long mostGrass = 0;
+		for (int row = 0; row < newN; row++) {
+			long currGrass = 0;
+			// build our initial square at the left side of the field
+			for (int r = max(row - k, 0); r <= min(row + k, newN - 1); r++) {
+				for (int c = startC; c < min(startC + 2 * k + 1, newN); c++) {
+					currGrass += field[r][c];
+				}
+			}
+
+			// move the grid in 2-step increments and update mostGrass each time
+			mostGrass = max(mostGrass, currGrass);
+			for (int c = startC; c + 2 * k + 1 < newN - 1; c += 2) {
+				int addC = c + 2 * k + 1;
+				for (int r = max(row - k, 0); r <= min(row + k, newN - 1);
+				     r++) {
+					// remove the two cells that bessie can't reach anymore
+					currGrass -= field[r][c] + field[r][c + 1];
+					// and add the two that she now can
+					currGrass += field[r][addC] + field[r][addC + 1];
+				}
+				mostGrass = max(mostGrass, currGrass);
+			}
+
+			startC = 1 - startC;  // alternate start_c between 1 and 0
+		}
+
+		io.println(mostGrass);
+		io.close();
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+</LanguageSection>
+
+## Implementation 2 (Prefix Sums)
+
+**Time Complexity** $\mathcal{O}(N ^ 2)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <fstream>
+#include <iostream>
+#include <vector>
+
+using std::endl;
+using std::max;
+using std::vector;
+
+int main() {
+	std::ifstream read("lazy.in");
+
+	int n;
+	int k;
+	read >> n >> k;
+	// the side length needed to accomodate the 45 degree rotation
+	int new_n = 2 * n - 1;
+	vector<vector<int>> field(new_n, vector<int>(new_n));
+
+	// read input and store it rotated by 45 degrees
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) { read >> field[i + j][n - i + j - 1]; }
+	}
+
+	vector<vector<int>> prefix(new_n + 1, vector<int>(new_n + 1));
+	for (int i = 0; i < new_n; i++) {
+		for (int j = 0; j < new_n; j++) {
+			prefix[i + 1][j + 1] = (field[i][j] + prefix[i + 1][j] +
+			                        prefix[i][j + 1] - prefix[i][j]);
+		}
+	}
+
+	int most_grass = 0;
+	for (int i = k; i < new_n - k; i++) {
+		for (int j = k; j < new_n - k; j++) {
+			most_grass =
+			    max(most_grass,
+			        prefix[i + k + 1][j + k + 1] - prefix[i + k + 1][j - k] -
+			            prefix[i - k][j + k + 1] + prefix[i - k][j - k]);
+		}
+	}
+
+	if (k >= n) {
+		// the loop above did not run, and Bessie can reach everything
+		most_grass = prefix[new_n][new_n];
+	}
+
+	std::ofstream("lazy.out") << most_grass << endl;
+}
+```
+
+</CPPSection>
+<PySection>
+
+<Warning>
+
+This code may occasionally TLE on the last test case.
+
+</Warning>
+
+```py
+import sys
+
+sys.stdin = open("lazy.in", "r")
+sys.stdout = open("lazy.out", "w")
+
+n, k = map(int, input().split())
+# the side length needed to accomodate the 45 degree rotation
+new_n = 2 * n - 1
+field = [[0] * new_n for _ in range(new_n)]
+
+# read input and store it rotated by 45 degrees
+for i in range(n):
+	for j, x in enumerate(map(int, input().split())):
+		field[i + j][n - i + j - 1] = x
+
+prefix = [[0] * (new_n + 1) for _ in range(new_n + 1)]
+for i in range(new_n):
+	for j in range(new_n):
+		prefix[i + 1][j + 1] = (
+			field[i][j] + prefix[i + 1][j] + prefix[i][j + 1] - prefix[i][j]
+		)
+
+most_grass = 0
+for i in range(k, new_n - k):
+	for j in range(k, new_n - k):
+		most_grass = max(
+			most_grass,
+			prefix[i + k + 1][j + k + 1]
+			- prefix[i + k + 1][j - k]
+			- prefix[i - k][j + k + 1]
+			+ prefix[i - k][j - k],
+		)
+
+if k >= n:
+	# the loop above did not run, and Bessie can reach everything
+	most_grass = prefix[new_n][new_n]
+
+print(most_grass)
+```
+
+</PySection>
+</LanguageSection>
+</Spoiler>

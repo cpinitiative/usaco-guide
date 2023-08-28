@@ -32,67 +32,10 @@ contiguous range on an array, we can do updates and range queries on it!
 
 ### Implementation
 
-After running $\text{dfs}()$, each range $[\texttt{st}[i], \texttt{en}[i]]$
-contains all ranges $[\texttt{st}[j], \texttt{en}[j]]$ for each $j$ in the
-subtree of $i$. Also, $\texttt{en}[i]-\texttt{st}[i]+1$ is equal to the subtree
-size of $i$.
-
-<LanguageSection>
-
-<CPPSection>
-
-```cpp
-const int MX = 2e5+5;
-vector<int> adj[MX];
-int timer = 0, st[MX], en[MX];
-
-void dfs(int node, int parent) {
-	st[node] = timer++;
-	for (int i : adj[node]) {
-		if (i != parent) {
-			dfs(i, node);
-		}
-	}
-	en[node] = timer-1;
-}
-```
-
-</CPPSection>
-
-<JavaSection>
-
-```java
-public static void dfs(int i, int p) {
-	st[i] = timer++;
-	for (int next : g[i]) {
-		if(next != p) dfs(next, i);
-	}
-	en[i] = timer-1;
-}
-```
-
-</JavaSection>
-
-</LanguageSection>
-
-### Example Input
-
-```
-5 3
-4 2 5 2 1
-1 2
-1 3
-3 4
-3 5
-2 3
-1 5 3
-2 3
-```
-
-Our example input corresponds to the following graph:
+Let's use the below graph for a quick demo of the technique:
 
 <center>
-	
+
 <svg
     width={747}
     height={532}
@@ -162,12 +105,91 @@ Our example input corresponds to the following graph:
       strokeWidth={6}
     />
   </svg>
-	
+
 </center>
 
-Before the DFS, our $\texttt{st}$ and $\texttt{en}$ arrays are initialized with
+Here's the code we're going to use to perform a Euler Tour on the graph.
+Notice that it follows the same general structure as a normal depth-first search.
+It's just that in this algorithm, we're keeping a few auxiliary variables we're
+going to use later on.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <vector>
+
+using std::vector;
+
+// The graph represented as an adjacency list (0-indexed)
+vector<vector<int>> neighbors{{1, 2}, {0}, {0, 3, 4}, {2}, {2}};
+vector<int> start(neighbors.size());
+vector<int> end(neighbors.size());
+int timer = 0;
+
+void euler_tour(int at, int prev) {
+	start[at] = timer++;
+	for (int n : neighbors[at]) {
+		if (n != prev) { euler_tour(n, at); }
+	}
+	end[at] = timer;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+public class EulerTour {
+	// The graph represented as an adjacency list (0-indexed)
+	static int[][] neighbors = new int[][] {{1, 2}, {0}, {0, 3, 4}, {2}, {2}};
+	static int[] start = new int[neighbors.length];
+	static int[] end = new int[neighbors.length];
+	static int timer = 0;
+
+	static void eulerTour(int at, int prev) {
+		start[at] = timer++;
+		for (int n : neighbors[at]) {
+			if (n != prev) { eulerTour(n, at); }
+		}
+		end[at] = timer;
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+# The graph represented as an adjacency list (0-indexed)
+neighbors = [[1, 2], [0], [0, 3, 4], [2], [2]]
+start = [0] * len(neighbors)
+end = [0] * len(neighbors)
+timer = 0
+
+
+def euler_tour(at: int, prev: int):
+	global timer
+	start[at] = timer
+	timer += 1
+	for n in neighbors[at]:
+		if n != prev:
+			euler_tour(n, at)
+	end[at] = timer
+```
+
+</PySection>
+</LanguageSection>
+
+### Tour Walkthrough
+
+Before the tour, our $\texttt{start}$ and $\texttt{end}$ arrays are initialized with
 zeros. In this visualization, the first row represents the node indices, the
-second row represents $\texttt{st}$, and the third represents $\texttt{en}$.
+second row represents $\texttt{start}$, and the third represents $\texttt{end}$.
+
+For brevity's sake, in this walkthrough, we're going to use $\text{dfs}$ instead
+of the full above function name.
 
 **Current timer value: 0**
 
@@ -183,7 +205,7 @@ second row represents $\texttt{st}$, and the third represents $\texttt{en}$.
 				<td>5</td>
 			</tr>
 			<tr>
-				<td>st[i]</td>
+				<td>$\texttt{start}$</td>
 				<td>0</td>
 				<td>0</td>
 				<td>0</td>
@@ -191,7 +213,7 @@ second row represents $\texttt{st}$, and the third represents $\texttt{en}$.
 				<td>0</td>
 			</tr>
 			<tr>
-				<td>en[i]</td>
+				<td>$\texttt{end}$</td>
 				<td>0</td>
 				<td>0</td>
 				<td>0</td>
@@ -202,7 +224,7 @@ second row represents $\texttt{st}$, and the third represents $\texttt{en}$.
 	</table>
 </center>
 
-Since we call $\text{dfs}(1, 0)$, we set $\texttt{st}[1]$ to the current timer
+Since we call $\text{dfs}(1, 0)$, we set $\texttt{start}[1]$ to the current timer
 value of $0$. Then, we proceed to call $\text{dfs}(2, 1)$ and
 $\text{dfs}(3, 1)$.
 
@@ -220,7 +242,7 @@ $\text{dfs}(3, 1)$.
 				<td>5</td>
 			</tr>
 			<tr>
-				<td>st[i]</td>
+				<td>$\texttt{start}$</td>
 				<td className="bg-green-100 dark:bg-green-700">0</td>
 				<td>0</td>
 				<td>0</td>
@@ -228,7 +250,7 @@ $\text{dfs}(3, 1)$.
 				<td>0</td>
 			</tr>
 			<tr>
-				<td>en[i]</td>
+				<td>$\texttt{end}$</td>
 				<td>0</td>
 				<td>0</td>
 				<td>0</td>
@@ -241,9 +263,9 @@ $\text{dfs}(3, 1)$.
 
 Now we must resolve $\text{dfs}(2, 1)$ and $\text{dfs}(3, 1)$. It does not
 matter which order we process these in, so for this example, we start with
-$\text{dfs}(2, 1)$. Since the timer value is 1, we set $\texttt{st}[2]$ to 1 and
+$\text{dfs}(2, 1)$. Since the timer value is 1, we set $\texttt{start}[2]$ to 1 and
 increment the timer. However, because node $2$ has no children, we don't call
-$\text{dfs}$. Instead, we set $\texttt{en}[2]$ to 1 because our current timer is
+$\text{dfs}$. Instead, we set $\texttt{end}[2]$ to 2 because our current timer is
 now 2.
 
 **Current timer value: 2**
@@ -260,7 +282,7 @@ now 2.
 				<td>5</td>
 			</tr>
 			<tr>
-				<td>st[i]</td>
+				<td>$\texttt{start}$</td>
 				<td>0</td>
 				<td className="bg-green-100 dark:bg-green-700">1</td>
 				<td>0</td>
@@ -268,9 +290,9 @@ now 2.
 				<td>0</td>
 			</tr>
 			<tr>
-				<td>en[i]</td>
+				<td>$\texttt{end}$</td>
 				<td>0</td>
-				<td className="bg-red-100 dark:bg-red-700">1</td>
+				<td className="bg-red-100 dark:bg-red-700">2</td>
 				<td>0</td>
 				<td>0</td>
 				<td>0</td>
@@ -280,7 +302,7 @@ now 2.
 </center>
 
 Now we must resolve $\text{dfs}(3, 1)$. Similar to before, we set
-$\texttt{st}[3]$ to the value of the timer (2 in this case) and increment the
+$\texttt{start}[3]$ to the value of the timer (2 in this case) and increment the
 timer. Then, we proceed to make the calls $\text{dfs}(4, 3)$ and
 $\text{dfs}(5, 3)$.
 
@@ -298,7 +320,7 @@ $\text{dfs}(5, 3)$.
 				<td>5</td>
 			</tr>
 			<tr>
-				<td>st[i]</td>
+				<td>$\texttt{start}$</td>
 				<td>0</td>
 				<td>1</td>
 				<td className="bg-green-100 dark:bg-green-700">2</td>
@@ -306,7 +328,7 @@ $\text{dfs}(5, 3)$.
 				<td>0</td>
 			</tr>
 			<tr>
-				<td>en[i]</td>
+				<td>$\texttt{end}$</td>
 				<td>0</td>
 				<td>1</td>
 				<td>0</td>
@@ -318,13 +340,13 @@ $\text{dfs}(5, 3)$.
 </center>
 
 Now we must resolve $\text{dfs}(4, 3)$ and $\text{dfs}(5, 3)$. First, we resolve
-$\text{dfs}(4, 3)$ by setting $\texttt{st}[4]$ to the value of the timer (3 in
+$\text{dfs}(4, 3)$ by setting $\texttt{start}[4]$ to the value of the timer (3 in
 this case) and incrementing the timer. Then, since node $4$ has no children, set
-$\texttt{en}[4]$ to 3.
+$\texttt{end}[4]$ to 4.
 
 Now the value of the timer is 4, and we must resolve $\text{dfs}(5, 3)$. Similar
-to before, we set $\texttt{st}[5]$ to 4. Since node $5$ also has no children,
-set $\texttt{en}[5]$ to 4.
+to before, we set $\texttt{start}[5]$ to 4. Since node $5$ also has no children,
+set $\texttt{end}[5]$ to 5.
 
 **Current timer value: 5**
 
@@ -340,7 +362,7 @@ set $\texttt{en}[5]$ to 4.
 				<td>5</td>
 			</tr>
 			<tr>
-				<td>st[i]</td>
+				<td>$\texttt{start}$</td>
 				<td>0</td>
 				<td>1</td>
 				<td>2</td>
@@ -348,20 +370,20 @@ set $\texttt{en}[5]$ to 4.
 				<td className="bg-green-100 dark:bg-green-700">4</td>
 			</tr>
 			<tr>
-				<td>en[i]</td>
+				<td>$\texttt{end}$</td>
 				<td>0</td>
-				<td>1</td>
+				<td>2</td>
 				<td>0</td>
-				<td className="bg-red-100 dark:bg-red-700">3</td>
 				<td className="bg-red-100 dark:bg-red-700">4</td>
+				<td className="bg-red-100 dark:bg-red-700">5</td>
 			</tr>
 		</tbody>
 	</table>
 </center>
 
-Now, we must resolve the remaining $\texttt{en}[\text{node}] = \text{timer} - 1$
-calls. We first encounter and resolve node $3$, setting $\texttt{en}[3]$ to 4.
-We then do the same for node $1$, setting $\texttt{en}[1]$ to 4. Our DFS
+Now, we must resolve the remaining $\texttt{end}[\text{node}] = \text{timer}$
+calls. We first encounter and resolve node $3$, setting $\texttt{end}[3]$ to 5.
+We then do the same for node $1$, setting $\texttt{end}[1]$ to 5. Our DFS
 traversal is now complete.
 
 <center>
@@ -376,7 +398,7 @@ traversal is now complete.
 				<td>5</td>
 			</tr>
 			<tr>
-				<td>st[i]</td>
+				<td>$\texttt{start}$</td>
 				<td>0</td>
 				<td>1</td>
 				<td>2</td>
@@ -384,152 +406,129 @@ traversal is now complete.
 				<td>4</td>
 			</tr>
 			<tr>
-				<td>en[i]</td>
-				<td className="bg-red-100 dark:bg-red-700">4</td>
-				<td>1</td>
-				<td className="bg-red-100 dark:bg-red-700">4</td>
-				<td>3</td>
+				<td>$\texttt{end}$</td>
+				<td className="bg-red-100 dark:bg-red-700">5</td>
+				<td>2</td>
+				<td className="bg-red-100 dark:bg-red-700">5</td>
 				<td>4</td>
+				<td>5</td>
 			</tr>
 		</tbody>
 	</table>
 </center>
 
-### Solution - Subtree Queries
+Notice that after running $\text{dfs}$, each range $[\texttt{start}[i], \texttt{end}[i]]$
+contains all ranges $[\texttt{start}[j], \texttt{end}[j]]$ for each $j$ in the
+subtree of $i$. Also, $\texttt{end}[i]-\texttt{start}[i]$ is equal to the subtree
+size of $i$.
 
-Assumes that `dfs()` code is included. Uses a segment tree.
+Here's a small animation of the tour if you're still confused:
+
+<video width="960" height="720" controls>
+	<source src="/animations/euler_tour.mp4" type="video/mp4"/>
+</video>
+
+### Solution - Subtree Queries
 
 <LanguageSection>
 
 <CPPSection>
 
 ```cpp
-/**
- * Description: 1D point update, range query where \texttt{comb} is
-	* any associative operation. If $N=2^p$ then \texttt{seg[1]==query(0,N-1)}.
- * Time: O(\log N)
- * Source:
-	* http://codeforces.com/blog/entry/18051
-	* KACTL
- * Verification: SPOJ Fenwick
- */
+#include <algorithm>
+#include <iostream>
+#include <vector>
 
-template<class T> struct Seg { // comb(ID,b) = b
-	const T ID = 0; T comb(T a, T b) { return a+b; }
-	int n; vector<T> seg;
-	void init(int _n) { n = _n; seg.assign(2*n,ID); }
-	void pull(int p) { seg[p] = comb(seg[2*p],seg[2*p+1]); }
-	void upd(int p, T val) { // set val at position p
-		seg[p += n] = val; for (p /= 2; p; p /= 2) pull(p); }
-	T query(int l, int r) {	// sum on interval [l, r]
-		T ra = ID, rb = ID;
-		for (l += n, r += n+1; l < r; l /= 2, r /= 2) {
-			if (l&1) ra = comb(ra,seg[l++]);
-			if (r&1) rb = comb(seg[--r],rb);
-		}
-		return comb(ra,rb);
+using std::cout;
+using std::endl;
+using std::vector;
+
+// BeginCodeSnip{BIT (from PURS module)}
+template <class T> class BIT {
+  private:
+	int size;
+	vector<T> bit;
+	vector<T> arr;
+
+  public:
+	BIT(int size) : size(size), bit(size + 1), arr(size) {}
+
+	void set(int ind, int val) { add(ind, val - arr[ind]); }
+
+	void add(int ind, int val) {
+		arr[ind] += val;
+		ind++;
+		for (; ind <= size; ind += ind & -ind) { bit[ind] += val; }
+	}
+
+	T pref_sum(int ind) {
+		ind++;
+		T total = 0;
+		for (; ind > 0; ind -= ind & -ind) { total += bit[ind]; }
+		return total;
 	}
 };
+// EndCodeSnip
 
-Seg<ll> S;
-int v[MX];
+vector<vector<int>> neighbors;
+vector<int> start;
+vector<int> end;
+int timer = 0;
+
+void euler_tour(int at, int prev) {
+	start[at] = timer++;
+	for (int n : neighbors[at]) {
+		if (n != prev) { euler_tour(n, at); }
+	}
+	end[at] = timer;
+}
 
 int main() {
-	int n,q; cin >> n >> q;
-	FOR(i,1,n+1) cin >> v[i];
-	F0R(i,n-1) {
-		int a,b; cin >> a >> b;
-		adj[a].pb(b), adj[b].pb(a);
+	int node_num;
+	int query_num;
+	std::cin >> node_num >> query_num;
+
+	vector<int> vals(node_num);
+	for (int &v : vals) { std::cin >> v; }
+
+	neighbors.resize(node_num);
+	for (int e = 0; e < node_num - 1; e++) {
+		int n1, n2;
+		std::cin >> n1 >> n2;
+		neighbors[--n1].push_back(--n2);
+		neighbors[n2].push_back(n1);
 	}
-	dfs(1,0);
-	S.init(n);
-	FOR(i,1,n+1) S.upd(st[i],v[i]);
-	F0R(i,q) {
-		int t; cin >> t;
-		if (t == 1) {
-			int s,x; cin >> s >> x;
-			S.upd(st[s],x);
-		} else {
-			int s; cin >> s;
-			cout << S.query(st[s],en[s]) << "\n";
+
+	start.resize(node_num);
+	end.resize(node_num);
+	euler_tour(0, -1);
+
+	BIT<long long> bit(node_num);
+	for (int i = 0; i < node_num; i++) { bit.set(start[i], vals[i]); }
+	for (int q = 0; q < query_num; q++) {
+		int type;
+		std::cin >> type;
+		if (type == 1) {
+			int node, val;
+			std::cin >> node >> val;
+			bit.set(start[--node], val);
+		} else if (type == 2) {
+			int node;
+			std::cin >> node;
+			long long end_sum = bit.pref_sum(end[--node] - 1);
+			long long start_sum;
+			if (start[node] == 0) {
+				start_sum = 0;
+			} else {
+				start_sum = bit.pref_sum(start[node] - 1);
+			}
+			cout << end_sum - start_sum << '\n';
 		}
 	}
 }
 ```
 
 </CPPSection>
-
-<JavaSection>
-
-```java
-import java.util.*;
-import java.io.*;
-
-public class Main {
-	public static int[] st;
-	public static int[] en;
-	public static int timer, n;
-	public static ArrayList<Integer> g[];
-
-	//Segtree code
-	public static final int N = (int)1e5;  // limit for array size
-	public static long t[] = new long[2*N];
-
-	public static void update(int p, long value) {  // set value at position p
-		for (t[p += n] = value; p > 1; p >>= 1) t[p>>1] = t[p] + t[p^1];
-	}
-
-	public static long query(int l, int r) {  // sum on interval [l, r) (0-INDEXED)
-		long res = 0;
-		for (l += n, r += n; l < r; l >>= 1, r >>= 1) {
-			if ((l&1) != 0) res += t[l++];
-			if ((r&1) != 0) res += t[--r];
-		}
-		return res;
-	}
-
-	public static void main(String[] args) throws Exception {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		StringTokenizer str = new StringTokenizer(br.readLine());
-		n = Integer.parseInt(str.nextToken());
-      		int q = Integer.parseInt(str.nextToken());
-      		int[] val = new int[n+1];
-      		g = new ArrayList[n+1];
-      		str = new StringTokenizer(br.readLine());
-      		for (int i = 1; i <= n; i++) {
-         		g[i] = new ArrayList<Integer>();
-         		val[i] = Integer.parseInt(str.nextToken());
-      		}
-      		st = new int[n+1]; en = new int[n+1]; timer = 0;
-      		for (int i = 0; i < n-1; i++) {
-         		str = new StringTokenizer(br.readLine());
-         		int a = Integer.parseInt(str.nextToken());
-         		int b = Integer.parseInt(str.nextToken());
-         		g[a].add(b);
-         		g[b].add(a);
-      		}
-      		dfs(1, 0);
-      		for (int i = 1; i <= n; i++) {
-         		update(st[i], val[i]);
-      		}
-      		for (int i = 0; i < q; i++) {
-         		str = new StringTokenizer(br.readLine());
-         		int a = Integer.parseInt(str.nextToken());
-			if(a == 1) {
-				int b = Integer.parseInt(str.nextToken());
-				int c = Integer.parseInt(str.nextToken());
-				update(st[b], c);
-			} else {
-				int b = Integer.parseInt(str.nextToken());
-				System.out.println(query(st[b], en[b]+1));
-			}
-      		}
-	}
-}
-```
-
-</JavaSection>
-
 </LanguageSection>
 
 ## LCA
@@ -569,13 +568,13 @@ public class Main {
 <CPPSection>
 
 ```cpp
-int n; // The number of nodes in the graph
+int n;  // The number of nodes in the graph
 vector<int> graph[100000];
 int timer = 0, tin[100000], euler_tour[200000];
-int segtree[800000]; // Segment tree for RMQ
+int segtree[800000];  // Segment tree for RMQ
 
 void dfs(int node = 0, int parent = -1) {
-	tin[node] = timer; // The time when we first visit a node
+	tin[node] = timer;  // The time when we first visit a node
 	euler_tour[timer++] = node;
 	for (int i : graph[node]) {
 		if (i != parent) {
@@ -606,7 +605,8 @@ int query(int a, int b, int node = 1, int l = 0, int r = timer - 1) {
 	if (l > b || r < a) return -1;
 	if (l >= a && r <= b) return segtree[node];
 	int mid = (l + r) / 2;
-	return mn_tin(query(a, b, node * 2, l, mid), query(a, b, node * 2 + 1, mid + 1, r));
+	return mn_tin(query(a, b, node * 2, l, mid),
+	              query(a, b, node * 2 + 1, mid + 1, r));
 }
 
 // Make sure you run $dfs` and `build()` before you run this
@@ -621,51 +621,51 @@ int lca(int a, int b) {
 <JavaSection>
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class LCA {
 	public static int[] euler_tour, tin;
 	public static int timer, size, N;
 	public static ArrayList<Integer> g[];
 
-   	//Segtree code
+	// Segtree code
 	public static final int maxsize = (int)1e7;  // limit for array size
 	public static int t[] = new int[maxsize];
 
 	public static void update(int p, int value) {  // set value at position p
-		for (t[p += size] = value; p > 1; p >>= 1) t[p>>1] = mn_tin(t[p], t[p^1]);
+		for (t[p += size] = value; p > 1; p >>= 1)
+			t[p >> 1] = mn_tin(t[p], t[p ^ 1]);
 	}
-	public static int query(int l, int r) {  // sum on interval [l, r) (0-INDEXED)
+	public static int query(int l,
+	                        int r) {  // sum on interval [l, r) (0-INDEXED)
 		int res = N;
 		for (l += size, r += size; l < r; l >>= 1, r >>= 1) {
-			if ((l&1) != 0) res = mn_tin(res, t[l++]);
-			if ((r&1) != 0) res = mn_tin(res, t[--r]);
+			if ((l & 1) != 0) res = mn_tin(res, t[l++]);
+			if ((r & 1) != 0) res = mn_tin(res, t[--r]);
 		}
 		return res;
 	}
 	public static void main(String[] args) throws Exception {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader br =
+		    new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer str = new StringTokenizer(br.readLine());
 		N = Integer.parseInt(str.nextToken());
 		int Q = Integer.parseInt(str.nextToken());
-		int[] val = new int[N+1];
-		g = new ArrayList[N+1];
+		int[] val = new int[N + 1];
+		g = new ArrayList[N + 1];
 		str = new StringTokenizer(br.readLine());
-		for (int i = 1; i <= N; i++) {
-			g[i] = new ArrayList<Integer>();
-		}
+		for (int i = 1; i <= N; i++) { g[i] = new ArrayList<Integer>(); }
 		for (int i = 2; i <= N; i++) {
 			int a = Integer.parseInt(str.nextToken());
 			g[i].add(a);
 			g[a].add(i);
 		}
-		euler_tour = new int[2*N-1]; tin = new int[N+1];
+		euler_tour = new int[2 * N - 1];
+		tin = new int[N + 1];
 		dfs(1, 0);
-		size = 2*N-1;
-		for (int i = 0; i < 2*N-1; i++) {
-			update(i, euler_tour[i]);
-		}
+		size = 2 * N - 1;
+		for (int i = 0; i < 2 * N - 1; i++) { update(i, euler_tour[i]); }
 		for (int i = 0; i < Q; i++) {
 			str = new StringTokenizer(br.readLine());
 			int a = Integer.parseInt(str.nextToken());
@@ -677,21 +677,19 @@ public class LCA {
 		tin[i] = timer;
 		euler_tour[timer++] = i;
 		for (int next : g[i]) {
-			if(next != p){
+			if (next != p) {
 				dfs(next, i);
 				euler_tour[timer++] = i;
 			}
 		}
 	}
 	public static int lca(int a, int b) {
-		if(tin[a] > tin[b]) {
+		if (tin[a] > tin[b]) {
 			int temp = a;
 			a = b;
 			b = temp;
 		}
-		if(a == b) {
-			return a;
-		}
+		if (a == b) { return a; }
 		return query(tin[a], tin[b]);
 	}
 	public static int mn_tin(int x, int y) {

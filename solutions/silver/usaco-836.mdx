@@ -1,0 +1,146 @@
+---
+id: usaco-836
+source: USACO Silver 2018 US Open
+title: Multiplayer Moo
+author: Kevin Sheng
+---
+
+[Official Editorial (C++)](http://www.usaco.org/current/data/sol_multimoo_silver_open18.html)
+
+The solution uses an iterative approach to floodfill instead of a recursive approach.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N^2)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <fstream>
+#include <iostream>
+#include <map>
+#include <set>
+#include <vector>
+
+using std::cout;
+using std::endl;
+using std::pair;
+using std::vector;
+
+/** @return the 4 cardinal neighbors of a position */
+vector<pair<int, int>> neighbors(int r, int c) {
+	return {{r + 1, c}, {r - 1, c}, {r, c + 1}, {r, c - 1}};
+}
+
+int main() {
+	std::ifstream read("multimoo.in");
+
+	int side_len;
+	read >> side_len;
+	vector<vector<int>> grid(side_len, vector<int>(side_len));
+	for (int r = 0; r < side_len; r++) {
+		for (int c = 0; c < side_len; c++) { read >> grid[r][c]; }
+	}
+
+	// contains the region ids of each cell- those with the same id are
+	// connected
+	vector<vector<int>> regions(side_len, vector<int>(side_len));
+	// region_cells[r] contains the positions of the cells with region id r
+	vector<vector<pair<int, int>>> region_cells;
+
+	int one_biggest = 0;
+	vector<vector<bool>> visited(side_len, vector<bool>(side_len));
+	// floodfill the regions to see which cells are connected
+	for (int r = 0; r < side_len; r++) {
+		for (int c = 0; c < side_len; c++) {
+			if (visited[r][c]) { continue; }
+
+			int curr_region = region_cells.size();
+
+			vector<pair<int, int>> contained;
+
+			vector<pair<int, int>> frontier{{r, c}};
+			visited[r][c] = true;
+			// floodfill to find all cells connected to the current one
+			while (!frontier.empty()) {
+				pair<int, int> curr = frontier.back();
+				frontier.pop_back();
+
+				contained.push_back(curr);
+				regions[curr.first][curr.second] = curr_region;
+
+				for (const auto &[nr, nc] :
+				     neighbors(curr.first, curr.second)) {
+					if (0 <= nr && 0 <= nc && nr < side_len && nc < side_len &&
+					    !visited[nr][nc] && grid[nr][nc] == grid[r][c]) {
+						visited[nr][nc] = true;
+						frontier.push_back({nr, nc});
+					}
+				}
+			}
+			one_biggest = std::max(one_biggest, (int)contained.size());
+			region_cells.push_back(contained);
+		}
+	}
+
+	// get the regions that are adjacent to other regions
+	vector<std::set<int>> adj_regions(region_cells.size());
+	for (const vector<pair<int, int>> &reg : region_cells) {
+		for (const auto &[r, c] : reg) {
+			for (const auto &[nr, nc] : neighbors(r, c)) {
+				if (0 <= nr && 0 <= nc && nr < side_len && nc < side_len &&
+				    regions[nr][nc] != regions[r][c]) {
+					adj_regions[regions[r][c]].insert(regions[nr][nc]);
+				}
+			}
+		}
+	}
+
+	/** @return the cow id of a region */
+	auto region_id = [&](int r) {
+		return grid[region_cells[r][0].first][region_cells[r][0].second];
+	};
+	// record of pairs of regions' areas that've been processed already
+	std::map<pair<int, int>, std::set<int>> seen;
+	int two_biggest = one_biggest;
+	for (int r1 = 0; r1 < region_cells.size(); r1++) {
+		for (int r2 : adj_regions[r1]) {
+			pair<int, int> valid{region_id(r1), region_id(r2)};
+			if (valid.first > valid.second) {
+				std::swap(valid.first, valid.second);
+			}
+
+			// if this pair & region have been processed already, don't start
+			if (seen[valid].count(r1)) { continue; }
+
+			// floodfill across whole regions this time, not just cells
+			int two_size = 0;
+			vector<int> frontier{r1};
+			// regions we've currently visited
+			vector<bool> curr_vis(region_cells.size());
+			curr_vis[r1] = true;
+			while (!frontier.empty()) {
+				int curr = frontier.back();
+				frontier.pop_back();
+				two_size += region_cells[curr].size();
+				seen[valid].insert(curr);
+				for (int nr : adj_regions[curr]) {
+					int nid = region_id(nr);
+					if (!curr_vis[nr] &&
+					    (valid.first == nid || valid.second == nid)) {
+						curr_vis[nr] = true;
+						frontier.push_back(nr);
+					}
+				}
+			}
+			two_biggest = std::max(two_biggest, two_size);
+		}
+	}
+
+	std::ofstream("multimoo.out") << one_biggest << '\n' << two_biggest << endl;
+}
+```
+
+</CPPSection>
+</LanguageSection>

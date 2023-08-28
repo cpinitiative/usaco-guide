@@ -1,0 +1,202 @@
+---
+id: usaco-785
+source: USACO Bronze 2018 January
+title: Out of Place
+author: Maggie Liu, Ryan Chou, Vikas Thoutam
+---
+
+[Official Analysis (Java)](http://www.usaco.org/current/data/sol_outofplace_bronze_jan18.html)
+
+## Video Solution
+
+By Vikas Thoutam
+
+<YouTube id="FaoAL7Prc6o" />
+
+<Spoiler title="Video Solution Code">
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	// file input and output
+	freopen("outofplace.in", "r", stdin);
+	freopen("outofplace.out", "w", stdout);
+
+	// Read in the array size (n) and create the original and sorted arrays,
+	// as well as the difference variable
+	int n;
+	cin >> n;
+	int og[n];
+	int sorted[n];
+	int diff = 0;
+
+	// Take in the values of the array as input,
+	// and place them in both original and sorted
+	for (int i = 0; i < n; i++) {
+		cin >> og[i];
+		sorted[i] = og[i];
+	}
+
+	// Actually sort the "sorted" array
+	sort(sorted, sorted + n);
+
+	// Count the number of differences in the arrays
+	for (int i = 0; i < n; i++) {
+		if (og[i] != sorted[i]) { diff++; }
+	}
+
+	// Print 0 if there are no differences (no swaps) or
+	// diff - 1 if there are differences
+	cout << max(0, diff - 1);
+
+	return 0;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Arrays;
+public class OutofPlace {
+	public static void main(String[] args) throws IOException {
+		// File input and output
+		BufferedReader br = new BufferedReader(new FileReader("outofplace.in"));
+		PrintWriter pw = new PrintWriter("outofplace.out");
+
+		// Read in the array size (n) and create the original and sorted arrays,
+		// as well as the difference variable
+		int n = Integer.parseInt(br.readLine());
+		int[] og = new int[n];
+		int[] sort = new int[n];
+		int diff = 0;
+
+		// Take in the values of the array as input,
+		// and place them in both original and sorted in the same order
+		for (int i = 0; i < n; i++) {
+			og[i] = Integer.parseInt(br.readLine());
+			sort[i] = og[i];
+		}
+
+		// Actually sort the "sorted" array
+		Arrays.sort(sort);
+
+		// Compute the number of positions that are
+		// different between the og and sorted arrays
+		for (int i = 0; i < n; i++) {
+			if (og[i] != sort[i]) { diff++; }
+		}
+
+		// Print 0 if there are no differences (no swaps) or diff - 1. If there
+		// are differences (you need one swap for each difference, minus 1)
+		pw.println(Math.max(0, diff - 1));
+		pw.close();
+	}
+}
+```
+
+</JavaSection>
+</LanguageSection>
+</Spoiler>
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N\log{N})$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <algorithm>
+#include <cstdio>
+#include <iostream>
+#include <vector>
+
+using std::cout;
+using std::endl;
+using std::vector;
+
+int main() {
+	freopen("outofplace.in", "r", stdin);
+	int cow_num;
+	std::cin >> cow_num;
+	vector<int> cows(cow_num);
+	for (int &c : cows) { std::cin >> c; }
+
+	vector<int> sorted_order(cows);
+	std::sort(sorted_order.begin(), sorted_order.end());
+
+	// The number of cows that are out of place relative to the sorted order
+	int bad_num = 0;
+	for (int i = 0; i < cow_num; i++) {
+		if (cows[i] != sorted_order[i]) { bad_num++; }
+	}
+
+	freopen("outofplace.out", "w", stdout);
+	cout << bad_num - 1 << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class OutOfPlace {
+	public static void main(String[] args) throws IOException {
+		BufferedReader read =
+		    new BufferedReader(new FileReader("outofplace.in"));
+		int cowNum = Integer.parseInt(read.readLine());
+		int[] cows = new int[cowNum];
+		for (int c = 0; c < cowNum; c++) {
+			cows[c] = Integer.parseInt(read.readLine());
+		}
+		read.close();
+
+		int[] sortedOrder = cows.clone();
+		Arrays.sort(sortedOrder);
+
+		// The number of cows that are out of place relative to the sorted order
+		int badNum = 0;
+		for (int i = 0; i < cowNum; i++) {
+			if (cows[i] != sortedOrder[i]) { badNum++; }
+		}
+
+		PrintWriter written = new PrintWriter("outofplace.out");
+		written.println(badNum - 1);
+		written.close();
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+with open("outofplace.in") as read:
+	cow_num = int(read.readline())
+	cows = [int(read.readline()) for _ in range(cow_num)]
+
+sorted_order = sorted(cows)
+
+# The number of cows that are out of place relative to the sorted order
+bad_num = 0
+for i in range(len(cows)):
+	if cows[i] != sorted_order[i]:
+		bad_num += 1
+
+print(bad_num - 1, file=open("outofplace.out", "w"))
+```
+
+</PySection>
+</LanguageSection>

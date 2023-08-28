@@ -1,0 +1,137 @@
+---
+id: cf-20C
+source: CF
+title: Dijkstra?
+author: Jesse Choe, Prashanth Ragam
+---
+
+We can implement Dijkstra's Shortest Path algorithm to find the shortest distances between node $1$ and node $n$. To find the path that yields the shortest path between nodes $1$ and $n$, we should backtrack from node $n$ and determine if a given node should be in the path using the shortest distance array. However, when the shortest distance from node 1 to node $n$ is $\infty$, then we should print $-1$.
+
+**Time Complexity:** $\mathcal{O}(N\log M)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+using ll = long long;
+using vi = vector<int>;
+using pi = pair<ll, ll>;
+
+#define f first
+#define s second
+#define all(x) begin(x), end(x)
+
+vector<pi> adj[100000];
+
+const ll INF = 1e11;
+
+int main() {
+	priority_queue<pi, vector<pi>, greater<pi>> pq;
+	int n, m;
+	cin >> n >> m;
+	for (int i = 0; i < m; i++) {
+		int a, b, w;
+		cin >> a >> b >> w;
+		a--, b--;
+		adj[a].push_back({w, b}), adj[b].push_back({w, a});
+	}
+	vector<ll> dist(n, INF);
+	dist[0] = 0;
+	vector<bool> visited(n, false);
+	pq.push({0, 0});
+	while (!pq.empty()) {
+		pi a = pq.top();
+		pq.pop();
+		if (visited[a.s]) continue;
+		visited[a.s] = true;
+		for (pi vertices : adj[a.s]) {
+			if (dist[a.s] + vertices.f < dist[vertices.s]) {
+				dist[vertices.s] = dist[a.s] + vertices.f;
+				pq.push({dist[vertices.s], vertices.s});
+			}
+		}
+	}
+	if (dist[n - 1] == INF) {
+		cout << -1 << endl;
+	} else {
+		vector<int> path;
+		int v = n - 1;
+		path.push_back(v + 1);
+		while (v != 0) {
+			for (pi u : adj[v]) {
+				if (dist[v] - u.f == dist[u.s]) {
+					v = u.s;
+					path.push_back(v + 1);
+					break;
+				}
+			}
+		}
+		reverse(all(path));
+		for (int node : path) { cout << node << " "; }
+		cout << endl;
+	}
+}
+```
+
+</CPPSection>
+
+<PySection>
+
+```py
+import sys
+from typing import Dict, List
+import heapq
+
+
+# Returns a list where list[ind] is the node through which we visit node ind
+def dijkstra(graph: Dict[int, List[int]], source: int) -> List[int]:
+	vis = [False] * (len(graph) + 1)
+	dist = [sys.maxsize] * (len(graph) + 1)
+	par = [-1] * (len(graph) + 1)
+	mnpq = []
+	dist[source] = 0
+	heapq.heappush(mnpq, (0, source))
+	while mnpq:
+		w1, cur = heapq.heappop(mnpq)
+		if vis[cur]:
+			continue
+		for v, w in graph[cur]:
+			if vis[v]:
+				continue
+			if (w + dist[cur]) < dist[v]:
+				dist[v] = w + dist[cur]
+				par[v] = cur
+			heapq.heappush(mnpq, (dist[v], v))
+		vis[cur] = True
+		if cur == len(graph) + 1:
+			return par
+	return par
+
+
+nv, ne = map(int, input().split())
+graph = {}
+for i in range(1, nv + 1):
+	graph[i] = graph.get(i, [])
+for i in range(ne):
+	u, v, w = map(int, input().split())
+	graph[u].append((v, w))
+	graph[v].append((u, w))
+
+d = dijkstra(graph, 1)
+if d[-1] == -1:
+	print(-1)
+	exit()
+
+path = [nv]
+cur = nv
+
+while cur != 1:  # tracing the path by backtracking the parent
+	path.append(d[cur])
+	cur = d[cur]
+print(*path[::-1])
+```
+</PySection>
+</LanguageSection>

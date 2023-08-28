@@ -1,0 +1,619 @@
+---
+id: usaco-831
+source: USACO Bronze 2018 Open
+title: Team Tic Tac Toe
+author: Jesse Choe, Kevin Sheng, Benjamin Qi, Brad Ma, Qian Qian, Jay Fu
+---
+
+## Video Solution
+
+By Jay Fu
+
+<YouTube id="eEQzCy5CBDs" />
+
+<Spoiler title="Video Solution Code">
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <fstream>
+#include <iostream>
+using namespace std;
+
+char B[3][3];
+
+// Does 1 cow win?
+int cow_wins(char ch) {
+	// Check diagonals
+	if (B[0][0] == ch && B[1][1] == ch && B[2][2] == ch) return 1;
+	if (B[0][2] == ch && B[1][1] == ch && B[2][0] == ch) return 1;
+
+	// Check rows and columns
+	for (int i = 0; i < 3; i++) {
+		if (B[0][i] == ch && B[1][i] == ch && B[2][i] == ch) return 1;
+		if (B[i][0] == ch && B[i][1] == ch && B[i][2] == ch) return 1;
+	}
+
+	return 0;
+}
+
+// Test if a team wins based on 3 characters in a row, column, or diagonal
+bool check3(char ch1, char ch2, char a, char b, char c) {
+	// All 3 characters have to be either ch1 or ch2
+	if (a != ch1 && a != ch2) return false;
+	if (b != ch1 && b != ch2) return false;
+	if (c != ch1 && c != ch2) return false;
+
+	// ch1 and ch2 have to appear at least once each
+	if (a != ch1 && b != ch1 && c != ch1) return false;
+	if (a != ch2 && b != ch2 && c != ch2) return false;
+
+	return true;
+}
+
+// Does a team win?
+int team_wins(char ch1, char ch2) {
+	// Check diagonals
+	if (check3(ch1, ch2, B[0][0], B[1][1], B[2][2])) return 1;
+	if (check3(ch1, ch2, B[0][2], B[1][1], B[2][0])) return 1;
+
+	// Check rows and columns
+	for (int i = 0; i < 3; i++) {
+		if (check3(ch1, ch2, B[0][i], B[1][i], B[2][i])) return 1;
+		if (check3(ch1, ch2, B[i][0], B[i][1], B[i][2])) return 1;
+	}
+
+	return 0;
+}
+
+int main(void) {
+	ifstream fin("tttt.in");
+	ofstream fout("tttt.out");
+
+	for (int i = 0; i < 3; i++)
+		for (int j = 0; j < 3; j++) fin >> B[i][j];
+
+	int answer1 = 0, answer2 = 0;
+	for (char ch = 'A'; ch <= 'Z'; ch++) answer1 += cow_wins(ch);
+	for (char ch1 = 'A'; ch1 <= 'Z'; ch1++)
+		for (char ch2 = ch1 + 1; ch2 <= 'Z'; ch2++)
+			answer2 += team_wins(ch1, ch2);
+
+	fout << answer1 << "\n" << answer2 << "\n";
+	return 0;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.PrintWriter;
+
+public class tttt {
+	static char[][] B = new char[3][3];
+
+	// Does 1 cow win?
+	static int cow_wins(char ch) {
+		// Check diagonals
+		if (B[0][0] == ch && B[1][1] == ch && B[2][2] == ch) return 1;
+		if (B[0][2] == ch && B[1][1] == ch && B[2][0] == ch) return 1;
+
+		// Check rows and columns
+		for (int i = 0; i < 3; i++) {
+			if (B[0][i] == ch && B[1][i] == ch && B[2][i] == ch) return 1;
+			if (B[i][0] == ch && B[i][1] == ch && B[i][2] == ch) return 1;
+		}
+
+		return 0;
+	}
+
+	// Test if a team wins based on 3 characters in a row, column, or diagonal
+	static boolean check3(char ch1, char ch2, char a, char b, char c) {
+		// All 3 characters have to be either ch1 or ch2
+		if (a != ch1 && a != ch2) return false;
+		if (b != ch1 && b != ch2) return false;
+		if (c != ch1 && c != ch2) return false;
+
+		// ch1 and ch2 have to appear at least once each
+		if (a != ch1 && b != ch1 && c != ch1) return false;
+		if (a != ch2 && b != ch2 && c != ch2) return false;
+
+		return true;
+	}
+
+	// Does a team win?
+	static int team_wins(char ch1, char ch2) {
+		// Check diagonals
+		if (check3(ch1, ch2, B[0][0], B[1][1], B[2][2])) return 1;
+		if (check3(ch1, ch2, B[0][2], B[1][1], B[2][0])) return 1;
+
+		// Check rows and columns
+		for (int i = 0; i < 3; i++) {
+			if (check3(ch1, ch2, B[0][i], B[1][i], B[2][i])) return 1;
+			if (check3(ch1, ch2, B[i][0], B[i][1], B[i][2])) return 1;
+		}
+
+		return 0;
+	}
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new FileReader("tttt.in"));
+		PrintWriter out = new PrintWriter("tttt.out");
+		for (int i = 0; i < 3; i++) {
+			String str = br.readLine();
+			for (int j = 0; j < 3; j++) { B[i][j] = str.charAt(j); }
+		}
+		int answer1 = 0, answer2 = 0;
+		for (char ch = 'A'; ch <= 'Z'; ch++) { answer1 += cow_wins(ch); }
+		for (char ch1 = 'A'; ch1 <= 'Z'; ch1++) {
+			for (char ch2 = (char)(ch1 + 1); ch2 <= 'Z'; ch2++) {
+				answer2 += team_wins(ch1, ch2);
+			}
+		}
+		out.println(answer1);
+		out.println(answer2);
+		out.close();
+	}
+}
+```
+
+</JavaSection>
+</LanguageSection>
+</Spoiler>
+
+## Solution 1
+
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_tttt_bronze_open18.html)
+
+<Spoiler title="Hint 1">
+
+Consider all the possible ways a letter can get three in a row, and how you
+would check all of them.
+
+</Spoiler>
+
+<Spoiler title="Hint 2">
+
+What are all of the possible ways that two cows can team up, and how would
+you check if that pairing is a win?
+
+</Spoiler>
+
+<Spoiler title="Answer to Hint 2">
+
+You can pair up any letter (A...Z) with any other letter.
+
+</Spoiler>
+
+<Spoiler title="Solution 1">
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+// check if the cow ch won in any row or column or diagonal
+bool check_single_cow_winner(char ch, const vector<string> &board) {
+	for (int i = 0; i < 3; i++) {
+		// check rows
+		if (board[i][0] == ch && board[i][1] == ch && board[i][2] == ch) {
+			return true;
+		}
+		// check columns
+		if (board[0][i] == ch && board[1][i] == ch && board[2][i] == ch) {
+			return true;
+		}
+	}
+	// check diagonals
+	if (board[0][0] == ch && board[1][1] == ch && board[2][2] == ch) {
+		return true;
+	}
+	if (board[0][2] == ch && board[1][1] == ch && board[2][0] == ch) {
+		return true;
+	}
+	return false;
+}
+
+// determine the number of individual cow wins
+int individual_wins(const vector<string> &board) {
+	int single_cow_wins = 0;
+	for (char ch = 'A'; ch <= 'Z'; ch++) {
+		single_cow_wins += check_single_cow_winner(ch, board);
+	}
+	return single_cow_wins;
+}
+
+// check if both cows ch1 and ch2 are in the row/column/diagonal under review.
+bool check_if_winners(char ch1, char ch2, char x, char y, char z) {
+	if (x == y && x != z) {
+		if (x == ch1 && z == ch2) { return true; }
+		if (x == ch2 && z == ch1) { return true; }
+	} else if (x == z && x != y) {
+		if (x == ch1 && y == ch2) { return true; }
+		if (x == ch2 && y == ch1) { return true; }
+	} else if (y == z && x != y) {
+		if (y == ch1 && x == ch2) { return true; }
+		if (y == ch2 && x == ch1) { return true; }
+	}
+	return false;
+}
+
+// check if the cows ch1 and ch2 can win in any of the rows or columns or
+// diagonals
+bool check_double_cow_winners(char ch1, char ch2, const vector<string> &board) {
+	for (int i = 0; i < 3; i++) {
+		// check rows
+		if (check_if_winners(ch1, ch2, board[i][0], board[i][1], board[i][2])) {
+			return true;
+		}
+		// check columns
+		if (check_if_winners(ch1, ch2, board[0][i], board[1][i], board[2][i])) {
+			return true;
+		}
+	}
+	// check diagonals
+	if (check_if_winners(ch1, ch2, board[0][0], board[1][1], board[2][2])) {
+		return true;
+	}
+	if (check_if_winners(ch1, ch2, board[0][2], board[1][1], board[2][0])) {
+		return true;
+	}
+	return false;
+}
+
+// determine the number of team wins
+int team_wins(const vector<string> &board) {
+	int double_cow_wins = 0;
+	for (char ch1 = 'A'; ch1 <= 'Z'; ch1++) {
+		for (char ch2 = ch1 + 1; ch2 <= 'Z'; ch2++) {
+			double_cow_wins += check_double_cow_winners(ch1, ch2, board);
+		}
+	}
+	return double_cow_wins;
+}
+
+int main() {
+	freopen("tttt.in", "r", stdin);
+	freopen("tttt.out", "w", stdout);
+
+	vector<string> board(3);
+	for (int i = 0; i < 3; i++) { cin >> board[i]; }
+
+	int individual_cows = individual_wins(board);
+	int team_cows = team_wins(board);
+
+	cout << individual_cows << endl;
+	cout << team_cows << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class TeamTicTacToe {
+	static char[][] board = new char[3][3];
+
+	// Does 1 cow win?
+	static boolean cowWins(char ch) {
+		// Check diagonals
+		if (board[0][0] == ch && board[1][1] == ch && board[2][2] == ch) {
+			return true;
+		}
+		if (board[0][2] == ch && board[1][1] == ch && board[2][0] == ch) {
+			return true;
+		}
+
+		// Check rows and columns
+		for (int i = 0; i < 3; i++) {
+			if (board[0][i] == ch && board[1][i] == ch && board[2][i] == ch) {
+				return true;
+			}
+			if (board[i][0] == ch && board[i][1] == ch && board[i][2] == ch) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	// Test if a team wins based on 3 characters in a row, column, or diagonal
+	static boolean check3(char ch1, char ch2, char a, char b, char c) {
+		// All 3 characters have to be either ch1 or ch2
+		if (a != ch1 && a != ch2) { return false; }
+		if (b != ch1 && b != ch2) { return false; }
+		if (c != ch1 && c != ch2) { return false; }
+
+		// ch1 and ch2 have to appear at least once each
+		if (a != ch1 && b != ch1 && c != ch1) { return false; }
+		if (a != ch2 && b != ch2 && c != ch2) { return false; }
+
+		return true;
+	}
+
+	// Does a team win?
+	static boolean teamWins(char ch1, char ch2) {
+		// Check diagonals
+		if (check3(ch1, ch2, board[0][0], board[1][1], board[2][2])) {
+			return true;
+		}
+		if (check3(ch1, ch2, board[0][2], board[1][1], board[2][0])) {
+			return true;
+		}
+
+		// And also check rows and column
+		for (int i = 0; i < 3; i++) {
+			if (check3(ch1, ch2, board[0][i], board[1][i], board[2][i])) {
+				return true;
+			}
+			if (check3(ch1, ch2, board[i][0], board[i][1], board[i][2])) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio("tttt");
+
+		for (int i = 0; i < 3; i++) {
+			String line = io.next();
+			for (int j = 0; j < 3; j++) { board[i][j] = line.charAt(j); }
+		}
+
+		int singleWins = 0;
+		for (char ch = 'A'; ch <= 'Z'; ch++) {
+			singleWins += cowWins(ch) ? 1 : 0;
+		}
+
+		int doubleWins = 0;
+		for (char ch1 = 'A'; ch1 <= 'Z'; ch1++) {
+			for (char ch2 = (char)((int)ch1 + 1); ch2 <= 'Z'; ch2++) {
+				doubleWins += teamWins(ch1, ch2) ? 1 : 0;
+			}
+		}
+
+		io.println(singleWins + "\n" + doubleWins);
+		io.close();
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+from typing import List
+
+
+with open("tttt.in") as read:
+	board = [read.readline() for _ in range(3)]
+
+
+# Does 1 cow win?
+def cow_wins(game: List[str], cow: str) -> bool:
+	# Check diagonals
+	if (
+		game[0][0] == game[1][1] == game[2][2] == cow
+		or game[0][2] == game[1][1] == game[2][0] == cow
+	):
+		return True
+
+	# Check rows and columns
+	for i in range(3):
+		if (
+			game[0][i] == game[1][i] == game[2][i] == cow
+			or game[i][0] == game[i][1] == game[i][2] == cow
+		):
+			return True
+	return False
+
+
+# Does a team win?
+def team_wins(game: List[str], cow1: str, cow2: str) -> bool:
+	# Test if a team wins based on 3 characters in a row, column, or diagonal
+	def check3(a: str, b: str, c: str) -> bool:
+		# All 3 characters have to be either cow1 or cow2
+		if a != cow1 and a != cow2:
+			return False
+		if b != cow1 and b != cow2:
+			return False
+		if c != cow1 and c != cow2:
+			return False
+
+		# cow1 and cow2 have to appear at least once each
+		if a != cow1 and b != cow1 and c != cow1:
+			return False
+		if a != cow2 and b != cow2 and c != cow2:
+			return False
+		return True
+
+	# Check diagonals like with a single cow
+	if check3(game[0][0], game[1][1], game[2][2]) or check3(
+		game[0][2], game[1][1], game[2][0]
+	):
+		return True
+
+	# And also check rows and column
+	for i in range(3):
+		if check3(game[0][i], game[1][i], game[2][i]) or check3(
+			game[i][0], game[i][1], game[i][2]
+		):
+			return True
+	return False
+
+
+single_wins = 0
+for c in range(ord("A"), ord("Z") + 1):
+	single_wins += cow_wins(board, chr(c))
+
+double_wins = 0
+for c1 in range(ord("A"), ord("Z") + 1):
+	for c2 in range(c1 + 1, ord("Z") + 1):
+		double_wins += team_wins(board, chr(c1), chr(c2))
+
+with open("tttt.out", "w") as written:
+	print(single_wins, file=written)
+	print(double_wins, file=written)
+```
+
+</PySection>
+</LanguageSection>
+</Spoiler>
+
+<Spoiler title="Solution 2">
+
+## Using Sets
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int WIDTH = 3;
+
+vector<string> board(WIDTH);
+set<set<char>> winners[WIDTH + 1];
+
+void insert(vector<pair<int, int>> coordinates) {
+	set<char> contained;
+	for (const pair<int, int> &p : coordinates) {
+		contained.insert(board[p.first][p.second]);
+	}
+	// add the amount of cows who contributed to this to the winners count
+	winners[contained.size()].insert(contained);
+}
+
+int main() {
+	ifstream read("tttt.in");
+	for (int r = 0; r < WIDTH; r++) { read >> board[r]; }
+	// insert rows
+	for (int i = 0; i < WIDTH; i++) { insert({{i, 0}, {i, 1}, {i, 2}}); }
+	// insert columns
+	for (int i = 0; i < WIDTH; i++) { insert({{0, i}, {1, i}, {2, i}}); }
+	// insert the 2 diagonals
+	insert({{0, 0}, {1, 1}, {2, 2}});
+	insert({{2, 0}, {1, 1}, {0, 2}});
+
+	ofstream written("tttt.out");
+	written << winners[1].size() << endl;
+	written << winners[2].size() << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class TeamTicTacToe {
+	private static char[][] gameboard = new char[3][3];
+	private static Set<Character> singleCow = new TreeSet<>();
+	private static Set<String> teams = new TreeSet<>();
+
+	private static void check(char first, char second, char third) {
+		// Stores unique cows in a row/column/diagonal
+		TreeSet<Character> contained = new TreeSet<>();
+		contained.add(first);
+		contained.add(second);
+		contained.add(third);
+		if (contained.size() == 1) {
+			// There is only one unique cow
+			singleCow.add(contained.first());
+		} else if (contained.size() == 2) {
+			// There are two unique cows
+			teams.add(contained.first() + "" + contained.last());
+		}
+	}
+
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio("tttt");
+
+		for (int i = 0; i < gameboard.length; i++) {
+			String line = io.next();
+			gameboard[i][0] = line.charAt(0);
+			gameboard[i][1] = line.charAt(1);
+			gameboard[i][2] = line.charAt(2);
+		}
+
+		// Check rows
+		for (int i = 0; i < gameboard.length; i++) {
+			check(gameboard[i][0], gameboard[i][1], gameboard[i][2]);
+		}
+
+		// Check columns
+		for (int i = 0; i < gameboard.length; i++) {
+			check(gameboard[0][i], gameboard[1][i], gameboard[2][i]);
+		}
+
+		// Check diagonals
+		check(gameboard[0][0], gameboard[1][1], gameboard[2][2]);
+		check(gameboard[0][2], gameboard[1][1], gameboard[2][0]);
+
+		io.println(singleCow.size());
+		io.println(teams.size());
+
+		io.close();
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+from typing import List, Tuple, Set
+
+
+WIDTH = 3
+
+
+def cow_contrib(game: List[str], pts: List[Tuple[int, int]]) -> Set[str]:
+	contained = set()
+	for pt in pts:
+		contained.add(game[pt[0]][pt[1]])
+	return contained
+
+
+with open("tttt.in") as read:
+	board = [read.readline() for _ in range(WIDTH)]
+
+winners = [set() for _ in range(WIDTH + 1)]
+# Function which adds a winning team to the winners array
+insert = lambda c: winners[len(c)].add(tuple(sorted(c)))
+
+# Insert all the rows
+for r in range(WIDTH):
+	insert(cow_contrib(board, [(r, c) for c in range(WIDTH)]))
+
+# Do the same for the columns
+for c in range(WIDTH):
+	insert(cow_contrib(board, [(r, c) for r in range(WIDTH)]))
+
+# And finally the diagonals
+insert(cow_contrib(board, [(i, i) for i in range(WIDTH)]))
+insert(cow_contrib(board, [(i, WIDTH - i - 1) for i in range(WIDTH)]))
+
+with open("tttt.out", "w") as written:
+	print(len(winners[1]), file=written)
+	print(len(winners[2]), file=written)
+```
+
+</PySection>
+</LanguageSection>
+</Spoiler>

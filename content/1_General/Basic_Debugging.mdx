@@ -1,0 +1,593 @@
+---
+id: basic-debugging
+title: Basic Debugging
+author: Benjamin Qi, Aaron Chew, Aryansh Shrivastava, Owen Wang
+description:
+  'How to identify errors within your program or avoid them in the first
+  place.'
+prerequisites:
+  - debugging-checklist
+redirects:
+  - /general/debugging-lang
+---
+
+<Resources>
+	<Resource
+		source="AryanshS"
+		url="https://sendtoaryansh.gitbook.io/informatics-notes/debugging-correctly"
+		title="Debugging Correctly"
+	>
+		Some parts were taken from here.
+	</Resource>
+	<Resource
+		source="LCPP"
+		url="https://www.learncpp.com/cpp-tutorial/basic-debugging-tactics/"
+		title="3.4 - A Strategy for Debugging"
+	>
+		How to add print statements.
+	</Resource>
+</Resources>
+
+## Printing Variables
+
+### Basic Print Statements
+
+The most basic way that you might debug is adding a print statement. This is
+great and serves the purpose for the most part. For instance, we can write the
+below to check the value of `x` at a point in our code.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <iostream>
+using namespace std;
+
+int x = 10;  // pretend this variable is important
+
+void dbg() { cout << "x = " << x << endl; }
+
+int main() {
+	dbg();  // x = 10
+	x = 5000;
+	dbg();  // x = 5000
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+public class Main {
+	static int x = 10;  // pretend this variable is important
+
+	public static void main(String[] args) {
+		dbg();  // x = 10
+		x = 5000;
+		dbg();  // x = 5000
+	}
+
+	static void dbg() {
+		System.out.print("x = ");
+		System.out.println(x);
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+x = 10  # pretend this variable is important
+
+
+def dbg():
+	print("x =", x)
+
+
+dbg()  # x = 10
+x = 5000
+dbg()  # x = 5000
+```
+
+</PySection>
+</LanguageSection>
+
+Such print statements are great on a basic level, and we can comment or define
+them out of our main code when we need to compile and execute a more final
+version of our code.
+
+### Standard Error Stream
+
+However, as great as print statements are, they are annoying to work with and
+efficiently separate from the actual parts of our code. This is important for
+example when we want an online judge (OJ) to read our output.
+
+The standard error stream is a quick fix to this. Instead of
+printing in the standard output stream, we can print in a whole new stream
+called the standard error stream instead.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+using namespace std;
+
+int x = 10;
+
+void dbg() { cerr << "x = " << x << endl; }
+
+int main() {
+	dbg();
+	x = 5000;
+	dbg();
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+public class Main {
+	static int x = 10;
+
+	public static void main(String[] args) {
+		dbg();
+		x = 5000;
+		dbg();
+	}
+
+	static void dbg() {
+		System.err.print("x = ");
+		System.err.println(x);
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+import sys
+
+x = 10
+
+
+def dbg():
+	print("x =", x, file=sys.stderr)
+
+
+dbg()  # outputs 10
+x = 5000
+dbg()  # now outputs 5000
+```
+
+</PySection>
+</LanguageSection>
+
+Try running this program and you might be confused about the difference. The
+content in the error stream appears right alongside that in the standard output
+stream. But this is the beauty of it! And the best thing about it is, if we
+submit this program to an OJ, it won't notice the output in the error stream
+at all!
+
+<Warning>
+
+Printing too much content to the error stream can cause TLE when
+submitting to an OJ.
+
+</Warning>
+
+<CPPOnly>
+
+### Debugging Macro
+
+<Resources>
+	<Resource source="GCC" url="https://gcc.gnu.org/onlinedocs/cpp/Standard-Predefined-Macros.html" title="Standard Predefined Macros">
+	</Resource>
+</Resources>
+
+Here's a handy macro that prints the line number (`__LINE__`) and the name of
+the variable (`#v`) in addition to the value of the variable (`v`).
+
+```cpp
+#include <iostream>
+using namespace std;
+
+#define dbg(v)                                                                 \
+	cout << "Line(" << __LINE__ << ") -> " << #v << " = " << (v) << endl;
+
+int x = 10;  // pretend this variable is important
+
+int main() {
+	dbg(x);  // Line(10) -> x = 10
+	x = 5000;
+	dbg(x);  // Line(12) -> x = 5000
+}
+```
+
+### Debugging STL Data Structures
+
+As C++ does not contain built-in print functions for many of its built-in
+data structures, it would be good to have some prewritten code to print them.
+[This](https://gist.github.com/SansPapyrus683/61b65d4d7ec223b48ebf5c3bb382ba8d)
+template is rather easy to use. It includes support for basically all of the
+needed data structures in competitive programming. Here's how you would use it:
+
+```cpp
+#include <iostream>
+#include <vector>
+
+#include "debugging.h"
+
+using namespace std;
+
+int main() {
+	vector<int> arr{1, 2, 3, 4};
+	cout << arr << endl;  // just feed it into cout like any other variable
+}
+```
+
+<Warning>
+
+You are not allowed to use pre-written code for USACO contests, so this template
+should only be used for other online contests.
+
+</Warning>
+
+</CPPOnly>
+
+## Assertions & Warnings
+
+<Resources>
+	<Resource
+		title="Asserts"
+		source="LCPP"
+		url="https://www.learncpp.com/cpp-tutorial/7-12a-assert-and-static_assert/"
+		starred
+	>
+		Includes `static_assert` and `#define NDEBUG`.
+	</Resource>
+	<Resource
+		title="5 - Diagnostics"
+		source="GCC"
+		url="https://gcc.gnu.org/onlinedocs/cpp/Diagnostics.html"
+		starred
+	>
+		Talks about `#warning` and `#error`.
+	</Resource>
+</Resources>
+
+Use `assert(cond)` to check that a condition `cond` holds. If it doesn't, then the program is terminated. For example, the following code snippet
+
+```cpp
+#include <cassert>
+#include <iostream>
+using namespace std;
+
+int main() {
+	assert(false);
+	cout << "OK" << endl;
+}
+```
+
+produces:
+
+```
+prog: main.cpp:6: int main(): Assertion `false' failed.
+/tmp/program/run.sh: line 1:   408 Aborted                 ./prog
+Command exited with non-zero status 134
+```
+
+If you want to disable all asserts (say, before submitting) you can add
+`#define NDEBUG` to the start of your program.
+
+```cpp
+#define NDEBUG
+#include <cassert>
+#include <iostream>
+using namespace std;
+
+int main() {
+	assert(false);
+	cout << "OK" << endl;  // OK
+}
+```
+
+## Stress Testing
+
+If your code is getting WA, one option is to run your buggy solution against
+another solution that you're relatively confident is correct on randomly
+generated test cases until you find a difference. Usually, small test cases
+will suffice. See the video for details.
+
+<Resources>
+	<Resource
+		source="Errichto"
+		title="Video - How to test your solution"
+		url="https://www.youtube.com/watch?v=JXTVOyQpSGM"
+		starred
+	>
+		Using a script for stress testing.
+	</Resource>
+	<Resource
+		source="Errichto"
+		title="Asking for help FAQ"
+		url="https://codeforces.com/blog/entry/64993"
+		starred
+	>
+		Contains some parts from the above videos.
+	</Resource>
+</Resources>
+
+### Option 1: A Single Program
+
+Write a single program including the two solutions and an input generator. If
+using C++, you should wrap each solution in a separate namespace to avoid
+compilation errors, like so:
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+namespace Solution1 {
+
+int solve(int x) { return x < 10; }
+
+}  // namespace Solution1
+
+namespace Solution2 {
+
+int solve(int x) { return x < 11; }
+
+}  // namespace Solution2
+
+int main() {
+	mt19937 rng(0);
+	while (true) {
+		int x = rng() % 100;
+		int out1 = Solution1::solve(x);
+		int out2 = Solution2::solve(x);
+		if (out1 != out2) {
+			cout << x << " " << out1 << " " << out2 << endl;
+			exit(0);
+		}
+	}
+}
+```
+
+Of course, you can only use this option if both solutions are written in the
+same language.
+
+### Option 2: Three Programs
+
+Another option is to write three different programs, one for the correct program,
+one for the incorrect program, and one for generating inputs. Then
+you can use the script below to find an input on which the correct and
+incorrect programs differ. If you want to learn how to write these scripts
+yourself, see [this module](/general/cpp-command#linux).
+
+<LanguageSection>
+<CPPSection>
+
+<Spoiler title="Scripts">
+
+Here is the script that was mentioned in the video:
+
+```
+# A and B are executables you want to compare, gen takes int
+# as command line arg. Usage: 'sh stress.sh'
+for ((i = 1; ; ++i)); do  # if they are same then will loop forever
+    echo $i
+    ./gen $i > int
+    ./A < int > out1
+    ./B < int > out2
+    diff -w out1 out2 || break
+    # diff -w <(./A < int) <(./B < int) || break
+done
+```
+
+We can modify this to work for other situations. For example, if you have
+input and output files (e.g., `1.in`, `1.out`, `2.in`, `2.out`, ..., `10.out` for
+old USACO problems) then you can use the following:
+
+```
+# A is the executable you want to test
+for ((i = 1; i <= 10; ++i)); do
+    echo $i
+    ./A < $i.in > out
+    diff -w out $i.out || break
+done
+echo "ALL TESTS PASSED"
+```
+
+The following will break on the first input file such that the produced output
+file is empty.
+
+```
+for((i = 1; ; ++i)); do
+	echo $i
+	./gen $i > int
+	./A < int > out
+	if ! [[ -s "out" ]] ; then
+		echo "no output"
+		break
+	fi ;
+done
+```
+
+<Warning>
+
+This won't work if you're using Windows. Instead, you can use what
+[tourist](https://www.youtube.com/watch?v=JU3HY5GLVnY&t=58m58s) does:
+
+```
+:: save this in test.bat
+
+@echo off
+gen > in
+your_sol out
+correct_sol correct_out
+fc out correct_out
+if errorlevel 1 exit
+test
+```
+</Warning>
+
+</Spoiler>
+
+</CPPSection>
+<JavaSection>
+
+Here is an script to test a Java program with input and output files. You will
+need to put the `.java`, this script, and the input and output files (`1.in`,
+`1.out`, etc.) in the same directory:
+
+<Spoiler title="Java testing script">
+
+```
+#!/bin/bash
+RED="\033[0;31m"
+GREEN="\033[0;32m"
+NC="\033[0m"
+
+wrong=0
+
+fileName=$(ls | grep java)
+
+IFS="."
+read -ra fileArr <<< $fileName
+
+className=${fileArr[0]}
+
+loop=true
+testCase=1
+
+while $loop; do
+	# Does this test case exist?
+	if [[ ! -e "$testCase.in" || ! -e "$testCase.out" ]]; then
+		# If not, then stop.
+		break;
+	fi
+
+	# If so, then test.
+	echo "Testing: $testCase"
+	cp $testCase.in $className.in
+	java $className.java < $className.in > $className.out
+
+	diffOut=$(diff -w $testCase.out $className.out 2>&1)
+
+	if [[ $diffOut == "" ]]; then
+		echo -e "$GREEN** PASSED **$NC\n"
+	else
+		echo -e "$RED** FAILED **$NC"
+		echo -e "$diffOut\n"
+		wrong=$((wrong += 1))
+	fi
+
+	testCase=$((testCase += 1))
+done
+
+# Check if any wrong.
+if [[ wrong -gt 0 ]]; then
+	if [[ $wrong == 1 ]]; then
+		echo -e "$RED*** $wrong/$testCase TEST CASE FAILED ***$NC"
+	else
+		echo -e "$RED*** $wrong/$((testCase - 1)) TEST CASES FAILED ***$NC"
+	fi
+else
+	echo -e "$GREEN*** ALL TEST CASES PASSED ***$NC"
+fi
+```
+
+</Spoiler>
+</JavaSection>
+</LanguageSection>
+
+## Debuggers
+
+<LanguageSection>
+<CPPSection>
+<Resources>
+	<Resource
+		source="LCPP"
+		title="3.6 - Using an integrated debugger"
+		url="https://www.learncpp.com/cpp-tutorial/using-an-integrated-debugger-stepping/"
+	/>
+	<Resource
+		source="Microsoft"
+		title="Debug C++ in Visual Studio Code"
+		url="https://code.visualstudio.com/docs/cpp/cpp-debug"
+	/>
+	<Resource
+		source="Jetbrains"
+		title="Debugging C++ in CLion"
+		url="https://www.jetbrains.com/help/clion/debugging-code.html"
+	/>
+</Resources>
+</CPPSection>
+<JavaSection>
+<Resources>
+	<Resource
+		source="Microsoft"
+		title="Debugging Java in Visual Studio Code"
+		url="https://code.visualstudio.com/docs/java/java-debugging"
+	/>
+	<Resource
+		source="Jetbrains"
+		title="Debugging Java in IntelliJ"
+		url="https://www.jetbrains.com/help/idea/debugging-your-first-java-application.html"
+	/>
+</Resources>
+</JavaSection>
+<PySection>
+<Resources>
+	<Resource
+		source="Microsoft"
+		title="Debugging Python in Visual Studio Code"
+		url="https://code.visualstudio.com/docs/python/debugging"
+	/>
+	<Resource
+		source="Jetbrains"
+		title="Debugging Python in PyCharm"
+		url="https://www.jetbrains.com/help/pycharm/part-1-debugging-python-code.html"
+	/>
+</Resources>
+</PySection>
+</LanguageSection>
+
+In essence, a debugger is a tool to "trace code" for you. Using a debugger
+varies from language to language and even from IDE to different
+IDE, so we will only go over the basics of a debugger.
+
+Pros of using a debugger:
+
+- No need to write print statements so you save time.
+- You can step through the code in real time.
+- C++: Print the line where a runtime error was triggered.
+
+Cons of using a debugger:
+
+- It is not much different from just printing the values out at various points
+  in your program.
+- Most competitive programmers do not use debuggers.
+- You cannot see the overall "output" of your program at each stage. For
+  example, if you wanted to see every single value of `i` in the program,
+  you could not using a debugger.
+
+### Breakpoints
+
+A debugger allows you to pause a code in its execution and see the values as a
+given point in the debugger. To do this, set a "breakpoint" at a certain line of code. When the code runs to
+that breakpoint, it will pause and you will be able to inspect all the different
+variables at that certain instance.
+
+There are two more useful and common operations. Once you are at the breakpoint,
+you may want to see what happens after the current line is executed. This would
+be the "Step Over" button that will allow you to move to the next line. Say you
+are at a line with the following code: `dfs(0, -1)`, if you click "step over" the
+debugger will ignore showing you what happens in this function and go to the
+next line. If you click "step in," however, you will enter the function and be
+able to step through that function.

@@ -1,0 +1,218 @@
+---
+id: usaco-598
+source: USACO Gold 2016 January
+title: Radio Contact
+author: Neo Wang, Melody Yu
+---
+
+[Official Analysis](http://www.usaco.org/current/data/sol_radio_gold_jan16.html)
+
+## Video Solution
+
+Note: The video solution might not be the same as other solutions. Code in C++.
+<YouTube id="MOei3fIEPR0" />
+
+## Explanation
+
+The key $\texttt{dp}$ observation to make here is already stated in the problem
+statement: "Farmer John can either stay put at his current location, or take one
+step forward", and likewise for Bessie. Thus, when constructing our
+$\texttt{dp}$, we can set $\texttt{dp}[i][j]$ equal to the best distance at
+Farmer John's move $i$ and Bessie's move $j$.
+
+Notice that it is hard to calculate a cumulative distance if we leave the string
+unprocessed (meaning that we read from the string directly). To resolve this, we
+can simply calculate the coordinates $(i,j)$ at every step of Bessie and Farmer
+John's path. In our implementation, we map each character to their appropriate
+`dx`, `dy` arrays in order to apply the appropriate changes, storing Farmer
+John's position at move $i$ as $\texttt{jl}[i]$ and Bessie's position at move
+$j$ at $\texttt{bl}[j]$.
+
+After this is done, we start building our $\texttt{dp}$:
+
+Either one of the following happens:
+
+1. Farmer John takes a step $(i+1)$:
+   $\texttt{dp}[i+1][j] = \min(\texttt{dp}[i+1][j], \texttt{dp}[i][j] + \text{dist}(\texttt{jl}[i+1], \texttt{bl}[j]))$
+
+2. Bessie takes a step $(j+1)$:
+   $\texttt{dp}[i][j+1] = \min(\texttt{dp}[i][j+1], \texttt{dp}[i][j] + \text{dist}(\texttt{jl}[i], \texttt{bl}[j+1]))$
+
+3. Both Farmer John and Bessie take steps $(i+1)$ and $(j+1)$:
+   $\texttt{dp}[i+1][j+1] = \min(\texttt{dp}[i+1][j+1], \texttt{dp}[i][j] + \text{dist}(\texttt{jl}[i+1], \texttt{bl}[j+1]))$
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(NM)$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+// CodeSnip{CPP Short Template}
+
+int N, M;
+
+const int INF = 1e9 + 7;
+const int MX = 1e3 + 1;
+
+int sq(int a) { return a * a; }
+
+int dist(pi a, pi b) {  // distance squared between two points
+	return sq(a.f - b.f) + sq(a.s - b.s);
+}
+
+map<char, int> md{{'N', 0}, {'E', 1}, {'S', 2}, {'W', 3}};
+
+const int dx[4]{0, 1, 0, -1};
+const int dy[4]{1, 0, -1, 0};
+
+// i = current step of John
+// j = current step of Bessie
+
+int dp[MX][MX];
+
+int main() {
+	setIO("radio");
+
+	cin >> N >> M;
+
+	vector<pi> jl(N + 1);  // john location
+	vector<pi> bl(M + 1);  // bessie location
+
+	int a, b;
+	cin >> a >> b;
+
+	jl[0] = {a, b};  // initial john location
+	cin >> a >> b;
+	bl[0] = {a, b};  // initial bessie location
+
+	string jS, bS;  // john and bessie movement strings
+	cin >> jS >> bS;
+
+	// calculating both of their movements
+	// dx[md[jS[i]]] may look complicated, but it just maps the char to its
+	// change
+
+	for (int i = 0; i < sz(jS); i++) {
+		jl[i + 1] = {jl[i].f + dx[md[jS[i]]], jl[i].s + dy[md[jS[i]]]};
+	}
+
+	for (int i = 0; i < sz(bS); i++) {
+		bl[i + 1] = {bl[i].f + dx[md[bS[i]]], bl[i].s + dy[md[bS[i]]]};
+	}
+
+	// either john moves, bessie moves, or both move
+
+	fill_n(dp[0], MX * MX, INF);
+
+	dp[0][0] = 0;
+
+	for (int i = 0; i < N; i++) {
+		for (int j = 0; j < M; j++) {
+			dp[i + 1][j] = min(dp[i + 1][j], dp[i][j] + dist(jl[i + 1], bl[j]));
+			dp[i][j + 1] = min(dp[i][j + 1], dp[i][j] + dist(jl[i], bl[j + 1]));
+			dp[i + 1][j + 1] =
+			    min(dp[i + 1][j + 1], dp[i][j] + dist(jl[i + 1], bl[j + 1]));
+		}
+	}
+
+	cout << dp[N][M] << "\n";
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class radio {
+	public static int[][] fjLocs;
+	public static int[][] bLocs;
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new FileReader("radio.in"));
+		PrintWriter pw = new PrintWriter(new FileWriter("radio.out"));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int N = Integer.parseInt(st.nextToken());
+		int M = Integer.parseInt(st.nextToken());
+
+		fjLocs = new int[N + 1][2];  // FJ's locations.
+		bLocs = new int[M + 1][2];   // Bessie's locations.
+
+		// FJ's original location.
+		st = new StringTokenizer(br.readLine());
+		fjLocs[0][0] = Integer.parseInt(st.nextToken());
+		fjLocs[0][1] = Integer.parseInt(st.nextToken());
+
+		// Bessie's original location.
+		st = new StringTokenizer(br.readLine());
+		bLocs[0][0] = Integer.parseInt(st.nextToken());
+		bLocs[0][1] = Integer.parseInt(st.nextToken());
+
+		// Find locations that the two visit.
+		String fjPath = br.readLine();
+		String bPath = br.readLine();
+		fill(fjLocs, fjPath);
+		fill(bLocs, bPath);
+
+		/*
+		 * dp[i][j] is the minimum cost for
+		 * FJ to take i steps, and for Bessie to take j steps.
+		 */
+		int[][] dp = new int[N + 1][M + 1];
+
+		// If FJ moves, and Bessie stays still.
+		for (int i = 1; i <= N; i++) {
+			dp[i][0] = dp[i - 1][0] + cost(fjLocs[i], bLocs[0]);
+		}
+
+		// If FJ stays still, and Bessie moves.
+		for (int j = 1; j <= M; j++) {
+			dp[0][j] = dp[0][j - 1] + cost(fjLocs[0], bLocs[j]);
+		}
+
+		for (int i = 1; i <= N; i++) {
+			for (int j = 1; j <= M; j++) {
+				// The current cost at this cell.
+				int curCost = cost(fjLocs[i], bLocs[j]);
+				// Calculate different costs based on who moves.
+				int bothMove = dp[i - 1][j - 1] + curCost;
+				int fjMove = dp[i - 1][j] + curCost;
+				int bMove = dp[i][j - 1] + curCost;
+				dp[i][j] = Math.min(Math.min(bothMove, fjMove), bMove);
+			}
+		}
+
+		pw.println(dp[N][M]);
+		pw.close();
+	}
+
+	// Fill the location arrays for FJ and Bessie.
+	public static void fill(int[][] loc, String dir) {
+		for (int i = 1; i <= dir.length(); i++) {
+			loc[i][0] = loc[i - 1][0];
+			loc[i][1] = loc[i - 1][1];
+
+			// Location chance based on direction.
+			char c = dir.charAt(i - 1);
+			if (c == 'N') { loc[i][1]++; }
+			if (c == 'E') { loc[i][0]++; }
+			if (c == 'S') { loc[i][1]--; }
+			if (c == 'W') { loc[i][0]--; }
+		}
+	}
+
+	// Square of the distance between points a and b.
+	public static int cost(int[] a, int[] b) {
+		return (a[0] - b[0]) * (a[0] - b[0]) + (a[1] - b[1]) * (a[1] - b[1]);
+	}
+}
+```
+</JavaSection>
+
+</LanguageSection>

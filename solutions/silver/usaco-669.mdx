@@ -1,0 +1,565 @@
+---
+id: usaco-669
+source: USACO Gold 2016 December
+title: Moocast
+author: Neo Wang, Óscar Garries, Kevin Sheng
+---
+
+[Official Analysis (Java)](http://www.usaco.org/current/data/sol_moocast_gold_dec16.html)
+
+### Implementation (DSU)
+
+**Time Complexity:** $\mathcal{O}(N^2 \log(N^2))$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <algorithm>
+#include <fstream>
+#include <iostream>
+#include <vector>
+
+using std::cout;
+using std::endl;
+using std::vector;
+
+// BeginCodeSnip{DSU}
+class DSU {
+  private:
+	vector<int> parents;
+	vector<int> sizes;
+
+  public:
+	DSU(int size) : parents(size), sizes(size, 1) {
+		for (int i = 0; i < size; i++) { parents[i] = i; }
+	}
+
+	int get_top(int n) {
+		return parents[n] == n ? n : (parents[n] = get_top(parents[n]));
+	}
+
+	bool link(int n1, int n2) {
+		n1 = get_top(n1);
+		n2 = get_top(n2);
+		if (n1 == n2) { return false; }
+		if (sizes[n1] < sizes[n2]) { std::swap(n1, n2); }
+		sizes[n1] += sizes[n2];
+		parents[n2] = n1;
+		return true;
+	}
+};
+// EndCodeSnip
+
+struct Edge {
+	int a, b, dist;
+};
+
+int main() {
+	std::ifstream read("moocast.in");
+
+	int n;
+	read >> n;
+
+	vector<int> x(n);
+	vector<int> y(n);
+
+	for (int i = 0; i < n; i++) { read >> x[i] >> y[i]; }
+
+	// Generate distances between all pairs of cows.
+	vector<Edge> edges;
+	for (int i = 0; i < n; i++) {
+		for (int j = i + 1; j < n; j++) {
+			int dx = x[i] - x[j];
+			int dy = y[i] - y[j];
+			edges.push_back({i, j, dx * dx + dy * dy});
+		}
+	}
+
+	// Sort edges by their distance.
+	auto cmp = [](const Edge &e1, const Edge &e2) { return e1.dist < e2.dist; };
+	std::sort(edges.begin(), edges.end(), cmp);
+
+	// Add edges from the smallest distance to the largest until the graph is
+	// connected. The answer is the last edge added.
+	int last_dist = 0;
+	int comp_num = n;
+	DSU dsu(n);
+	for (const Edge &e : edges) {
+		if (dsu.link(e.a, e.b)) {
+			last_dist = e.dist;
+			if (--comp_num == 1) { break; }
+		}
+	}
+
+	std::ofstream("moocast.out") << last_dist << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class MooCast {
+	static class Edge {
+		public int a;
+		public int b;
+		public int dist;
+		public Edge(int a, int b, int dist) {
+			this.a = a;
+			this.b = b;
+			this.dist = dist;
+		}
+	}
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader read = new BufferedReader(new FileReader("moocast.in"));
+		int n = Integer.parseInt(read.readLine());
+
+		int[] x = new int[n];
+		int[] y = new int[n];
+		for (int i = 0; i < n; i++) {
+			StringTokenizer cow = new StringTokenizer(read.readLine());
+			x[i] = Integer.parseInt(cow.nextToken());
+			y[i] = Integer.parseInt(cow.nextToken());
+		}
+
+		// Generate distances between all pairs of cows.
+		List<Edge> edges = new ArrayList<>();
+		for (int i = 0; i < n; i++) {
+			for (int j = i + 1; j < n; j++) {
+				int dx = x[i] - x[j];
+				int dy = y[i] - y[j];
+				edges.add(new Edge(i, j, dx * dx + dy * dy));
+			}
+		}
+
+		// Sort edges by their distance.
+		edges.sort(Comparator.comparingInt(e -> e.dist));
+
+		// Add edges from the smallest distance to the largest until the graph
+		// is connected. The answer is the last edge added.
+		int lastDist = 0;
+		int compNum = n;
+		DSU dsu = new DSU(n);
+		for (Edge e : edges) {
+			if (dsu.link(e.a, e.b)) {
+				lastDist = e.dist;
+				if (--compNum == 1) { break; }
+			}
+		}
+
+		PrintWriter written = new PrintWriter("moocast.out");
+		written.println(lastDist);
+		written.close();
+	}
+}
+
+// BeginCodeSnip{DSU}
+class DSU {
+	private final int[] parents;
+	private final int[] sizes;
+
+	public DSU(int size) {
+		parents = new int[size];
+		sizes = new int[size];
+		for (int i = 0; i < size; i++) {
+			parents[i] = i;
+			sizes[i] = 1;
+		}
+	}
+
+	public int getTop(int n) {
+		return parents[n] == n ? n : (parents[n] = getTop(parents[n]));
+	}
+
+	public boolean link(int e1, int e2) {
+		e1 = getTop(e1);
+		e2 = getTop(e2);
+		if (e1 == e2) { return false; }
+		if (sizes[e2] > sizes[e1]) { return link(e2, e1); }
+		parents[e2] = e1;
+		sizes[e1] += sizes[e2];
+		return true;
+	}
+}
+// EndCodeSnip
+```
+
+</JavaSection>
+<PySection>
+
+```py
+from typing import NamedTuple
+
+# BeginCodeSnip{DSU}
+class DSU:
+	def __init__(self, size: int) -> None:
+		self.sizes = [1 for _ in range(size)]
+		self.parents = [i for i in range(size)]
+
+	def get_top(self, n: int) -> int:
+		if self.parents[n] == n:
+			return n
+		self.parents[n] = self.get_top(self.parents[n])
+		return self.parents[n]
+
+	def link(self, n1: int, n2: int) -> bool:
+		n1 = self.get_top(n1)
+		n2 = self.get_top(n2)
+		if n1 == n2:
+			return False
+
+		if self.sizes[n1] < self.sizes[n2]:
+			n1, n2 = n2, n1
+
+		self.sizes[n1] += self.sizes[n2]
+		self.parents[n2] = n1
+		return True
+
+
+# EndCodeSnip
+
+
+class Edge(NamedTuple):
+	a: int
+	b: int
+	dist: int
+
+
+with open("moocast.in") as read:
+	n = int(read.readline())
+	x = []
+	y = []
+	for i in range(n):
+		x_i, y_i = [int(i) for i in read.readline().split()]
+		x.append(x_i)
+		y.append(y_i)
+
+# Generate distances between all pairs of cows.
+edges = []
+for i in range(n):
+	for j in range(i + 1, n):
+		dx = x[i] - x[j]
+		dy = y[i] - y[j]
+		edges.append(Edge(i, j, dx**2 + dy**2))
+
+# Sort edges by their distance.
+edges.sort(key=lambda e: e.dist)
+
+# Add edges from the smallest distance to the largest until the graph is
+# connected. The answer is the last edge added.
+last_dist = 0
+comp_num = n
+dsu = DSU(n)
+for e in edges:
+	if dsu.link(e.a, e.b):
+		last_dist = e.dist
+		comp_num -= 1
+		if comp_num == 1:
+			break
+
+print(last_dist, file=open("moocast.out", "w"))
+```
+
+</PySection>
+</LanguageSection>
+
+### Implementation (Binary Search + BFS)
+
+**Time Complexity:** $\mathcal{O}(N^2 \log(\text{hi}))$, where $\text{hi} \ge 2 \cdot 25000^2$
+
+An alternative solution involves using binary search and BFS.
+
+Let's define a function that checks if all cows are reachable spending a maximum of `power` per walkie-talkie.
+This can be accomplished with BFS.
+
+Notice that since this function is monotonic: if all cows are reachable with a certain power level $P$, they will still be reachable with any power level greater than $P$.
+
+Therefore, binary search can be employed to find the minimum value of `power` for which `all_reachable(power)` holds true.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <fstream>
+#include <iostream>
+#include <queue>
+#include <vector>
+
+using std::cout;
+using std::endl;
+using std::pair;
+using std::queue;
+using std::vector;
+
+/** @return the squared distance between 2 points */
+int dist_sq(const pair<int, int> &p1, const pair<int, int> &p2) {
+	int dx = p1.first - p2.first;
+	int dy = p1.second - p2.second;
+	return dx * dx + dy * dy;
+}
+
+/** @return if all cows are reachable with the given power level */
+bool all_reachable(int power, const vector<pair<int, int>> &cows) {
+	int start = 0;
+	queue<int> frontier;
+	frontier.push(start);
+	vector<bool> reached(cows.size());
+	reached[start] = true;
+	while (!frontier.empty()) {
+		int curr = frontier.front();
+		frontier.pop();
+		for (int c = 0; c < cows.size(); c++) {
+			if (!reached[c] && dist_sq(cows[curr], cows[c]) <= power) {
+				frontier.push(c);
+				reached[c] = true;
+			}
+		}
+	}
+
+	for (bool c : reached) {
+		if (!c) { return false; }
+	}
+	return true;
+}
+
+int main() {
+	std::ifstream read("moocast.in");
+	int cow_num;
+	read >> cow_num;
+	vector<pair<int, int>> cows(cow_num);
+	for (pair<int, int> &c : cows) { read >> c.first >> c.second; }
+
+	// Binary search to find the minimum power level needed
+	int lo = 0;
+	int hi = INT_MAX;
+	int valid = -1;
+	while (lo <= hi) {
+		int mid = lo + (hi - lo) / 2;
+		if (all_reachable(mid, cows)) {
+			valid = mid;
+			hi = mid - 1;
+		} else {
+			lo = mid + 1;
+		}
+	}
+
+	std::ofstream("moocast.out") << valid << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Moocast {
+	public static void main(String[] args) throws IOException {
+		BufferedReader read = new BufferedReader(new FileReader("moocast.in"));
+		int cowNum = Integer.parseInt(read.readLine());
+		int[][] cows = new int[cowNum][2];
+		for (int c = 0; c < cowNum; c++) {
+			StringTokenizer cow = new StringTokenizer(read.readLine());
+			cows[c][0] = Integer.parseInt(cow.nextToken());
+			cows[c][1] = Integer.parseInt(cow.nextToken());
+		}
+
+		// Binary search to find the minimum power level needed
+		int lo = 0;
+		int hi = Integer.MAX_VALUE;
+		int valid = -1;
+		while (lo <= hi) {
+			int mid = lo + (hi - lo) / 2;
+			if (allReachable(mid, cows)) {
+				valid = mid;
+				hi = mid - 1;
+			} else {
+				lo = mid + 1;
+			}
+		}
+
+		PrintWriter written = new PrintWriter("moocast.out");
+		written.println(valid);
+		written.close();
+	}
+
+	// Function to check if all cows are reachable given a certain power level
+	static boolean allReachable(int power, int[][] cows) {
+		int start = 0;
+		ArrayDeque<Integer> frontier = new ArrayDeque<>();
+		frontier.add(start);
+		boolean[] reached = new boolean[cows.length];
+		reached[start] = true;
+		while (!frontier.isEmpty()) {
+			int curr = frontier.poll();
+			for (int c = 0; c < cows.length; c++) {
+				if (!reached[c] && distSq(cows[curr], cows[c]) <= power) {
+					frontier.add(c);
+					reached[c] = true;
+				}
+			}
+		}
+
+		for (boolean c : reached) {
+			if (!c) { return false; }
+		}
+		return true;
+	}
+
+	/** @return the squared distance between two points */
+	static int distSq(int[] p1, int[] p2) {
+		int dx = p1[0] - p2[0];
+		int dy = p1[1] - p2[1];
+		return dx * dx + dy * dy;
+	}
+}
+```
+
+</JavaSection>
+</LanguageSection>
+
+### Implementation (Minimum Spanning Tree)
+
+**Time Complexity:** $\mathcal{O}(N^2)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int dist_sq(pair<int, int> &a, pair<int, int> &b) {
+	int dx = a.first - b.first;
+	int dy = a.second - b.second;
+	return dx * dx + dy * dy;
+}
+
+int main() {
+	freopen("moocast.in", "r", stdin);
+
+	int N;
+	cin >> N;
+	vector<pair<int, int>> cows(N);
+	for (auto &[x, y] : cows) { cin >> x >> y; }
+
+	/*
+	 * shortest distance to a cow in the spanning tree
+	 * or INT_MAX - 1 if there are no cows in the spanning tree
+	 * or INT_MAX if the cow is in the spanning tree
+	 */
+	vector<int> dist(N, INT_MAX - 1);
+	dist[0] = 0;
+	int m = 0;
+	for (int t = 0; t < N; t++) {
+		int i = min_element(dist.begin(), dist.end()) - dist.begin();
+		m = max(m, dist[i]);
+		dist[i] = INT_MAX;
+		for (int j = 0; j < N; j++) {
+			if (dist[j] != INT_MAX) {
+				dist[j] = min(dist[j], dist_sq(cows[i], cows[j]));
+			}
+		}
+	}
+
+	freopen("moocast.out", "w", stdout);
+	cout << m << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class MooCast {
+	static int distSq(int[] a, int[] b) {
+		int dx = a[0] - b[0];
+		int dy = a[1] - b[1];
+		return dx * dx + dy * dy;
+	}
+
+	static int minIndex(int[] a) {
+		int m = a[0];
+		int j = 0;
+		for (int i = 1; i < a.length; i++) {
+			if (a[i] < m) {
+				m = a[i];
+				j = i;
+			}
+		}
+		return j;
+	}
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader r = new BufferedReader(new FileReader("moocast.in"));
+		StringTokenizer st = new StringTokenizer(r.readLine());
+		int N = Integer.parseInt(st.nextToken());
+		int[][] cows = new int[N][2];
+		for (int i = 0; i < N; i++) {
+			st = new StringTokenizer(r.readLine());
+			cows[i][0] = Integer.parseInt(st.nextToken());
+			cows[i][1] = Integer.parseInt(st.nextToken());
+		}
+
+		/*
+		 * shortest distance to a cow in the spanning tree
+		 * or Integer.MAX_VALUE - 1 if there are no cows in the spanning tree
+		 * or Integer.MAX_VALUE if the cow is in the spanning tree
+		 */
+		int[] dist = new int[N];
+		for (int i = 1; i < N; i++) { dist[i] = Integer.MAX_VALUE - 1; }
+		int m = 0;
+		for (int t = 0; t < N; t++) {
+			int i = minIndex(dist);
+			m = Math.max(m, dist[i]);
+			dist[i] = Integer.MAX_VALUE;
+			for (int j = 0; j < N; j++) {
+				if (dist[j] != Integer.MAX_VALUE) {
+					dist[j] = Math.min(dist[j], distSq(cows[i], cows[j]));
+				}
+			}
+		}
+
+		PrintWriter pw = new PrintWriter(new FileWriter("moocast.out"));
+		pw.println(m);
+		pw.close();
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+def dist_sq(a, b):
+	return (a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2
+
+
+with open("moocast.in", "r") as stdin:
+	N = int(stdin.readline())
+	cows = [tuple(map(int, stdin.readline().strip().split())) for _ in range(N)]
+
+dist = {c: float("inf") for c in cows}
+dist[cows[0]] = 0
+m = 0
+for t in range(N):
+	i = min(dist, key=dist.__getitem__)
+	m = max(m, dist[i])
+	del dist[i]
+	for j in dist:
+		dist[j] = min(dist[j], dist_sq(i, j))
+
+print(m, file=open("moocast.out", "w"))
+```
+
+</PySection>
+</LanguageSection>

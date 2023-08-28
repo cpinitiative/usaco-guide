@@ -1,0 +1,161 @@
+---
+id: usaco-764
+source: USACO Silver 2017 December
+title: The Bovine Shuffle
+author: Jesse Choe, Tanish Tyagi, Paul Chen
+---
+
+[Official Analysis (Java)](http://www.usaco.org/current/data/sol_shuffle_silver_dec17.html)
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+## Implementation
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+using ll = long long;
+
+int main() {
+	freopen("shuffle.in", "r", stdin);
+	freopen("shuffle.out", "w", stdout);
+
+	ll n;
+	cin >> n;
+	vector<ll> a(n);
+	vector<ll> cows_after_shuffle(n);
+	for (int i = 0; i < n; i++) {
+		cin >> a[i];
+		a[i]--;
+		cows_after_shuffle[a[i]]++;
+	}
+
+	ll ans = n;
+	queue<ll> no_cows;
+
+	// Calculate positions that are empty after one shuffle.
+	for (int i = 0; i < n; i++) {
+		if (cows_after_shuffle[i] == 0) {
+			no_cows.push(i);
+			ans--;
+		}
+	}
+
+	while (!no_cows.empty()) {
+		ll curr = no_cows.front();
+		no_cows.pop();
+
+		// Position `curr` cannot contribute any cows.
+		if (--cows_after_shuffle[a[curr]] == 0) {
+			// If `a[curr]` has no cows, insert it into the queue.
+			no_cows.push(a[curr]);
+			ans--;
+		}
+	}
+	cout << ans << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Shuffle {
+	public static int n;
+	public static int[] parent;
+	public static int[] currStatus;  // 0 is not-visited, 1 is visited, 2 is
+	                                 // part of cycle
+	public static void count(int i) {
+		HashSet<Integer> there = new HashSet<Integer>();
+		while (currStatus[i] == 0) {
+			there.add(i);
+			currStatus[i] = 1;
+			i = parent[i];
+		}
+
+		// cycle is found, mark all nodes that are part of cycle
+		if (there.contains(i)) {
+			int savei = i;
+			do {
+				currStatus[i] = 2;
+				i = parent[i];
+			} while (i != savei);
+		}
+	}
+	public static void main(String[] args) throws Exception {
+		// Read in the parenting array.
+		BufferedReader stdin = new BufferedReader(new FileReader("shuffle.in"));
+		StringTokenizer tok = new StringTokenizer(stdin.readLine());
+		n = Integer.parseInt(tok.nextToken());
+		StringTokenizer line = new StringTokenizer(stdin.readLine());
+
+		parent = new int[n];
+		for (int i = 0; i < n; i++)
+			parent[i] = Integer.parseInt(line.nextToken()) - 1;
+
+		currStatus = new int[n];
+		for (int i = 0; i < n; i++)
+			if (currStatus[i] == 0) count(i);
+
+		// get length of cycle and return
+		int res = 0;
+		for (int i = 0; i < n; i++)
+			if (currStatus[i] == 2) res++;
+
+		PrintWriter out = new PrintWriter(new FileWriter("shuffle.out"));
+		out.println(res);
+		out.close();
+		stdin.close();
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+from collections import deque
+
+with open("shuffle.in", "r") as input_file:
+	n = int(input_file.readline())
+
+	cows_after_shuffle = [0] * n
+	a = list(map(int, input_file.readline().split()))
+
+	# Calculate number of cows that a position will receive after one shuffle.
+	for i in range(n):
+		a[i] -= 1
+		cows_after_shuffle[a[i]] += 1
+
+	ans = n
+	no_cows = deque()
+
+	# Calculate positions that are empty after one shuffle.
+	for i in range(n):
+		if cows_after_shuffle[i] == 0:
+			no_cows.append(i)
+			ans -= 1
+
+	while no_cows:
+		curr = no_cows.popleft()
+
+		# Position `curr` cannot contribute any cows.
+		cows_after_shuffle[a[curr]] -= 1
+
+		# If `a[curr]` has no cows, insert it into the queue.
+		if cows_after_shuffle[a[curr]] == 0:
+			no_cows.append(a[curr])
+			ans -= 1
+
+print(ans, file=open("shuffle.out", "w"))
+```
+
+</PySection>
+</LanguageSection>

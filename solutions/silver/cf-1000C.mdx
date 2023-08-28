@@ -1,0 +1,243 @@
+---
+id: cf-1000C
+source: CF
+title: Covered Points Count
+author: Jesse Choe, Chuyang Wang
+---
+
+[Official Editorial](http://codeforces.com/blog/entry/60288)
+
+
+## Solution 1: Coordinate Compression
+
+Due to the large constraints on $l_i$ and $r_i$, it is impossible to brute force
+the number of intersecting segments for each point on the coordinate line.
+However, notice that we can compress the coordinates and "pretend" as if the
+coordinates were between $1$ and $n$.
+
+This allows us to apply prefix sums on each point in our compressed number line
+and retransform these compressed coordinates to the original endpoints $l_i$ and
+$r_i$. To compress the coordinates, we can either sort the coordinates or use an
+ordered map.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N\log N)$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using ll = long long;
+
+int main() {
+	int n;
+	cin >> n;
+	// This stores the original endpoints to use in our frequency array later
+	vector<pair<ll, ll>> segments(n);
+	// This stores only the unique endpoints in sorted order
+	set<ll> points;
+	for (int i = 0; i < n; i++) {
+		cin >> segments[i].first >> segments[i].second;
+		points.insert(segments[i].first);
+		points.insert(segments[i].second + 1);
+	}
+
+	int cur = 0;
+	// This map stores the compressed coordinates.
+	map<ll, int> compressed;
+	vector<ll> coords;
+	for (const ll c : points) {
+		// Assign c to cur, where cur is our compressed coordinate for "a".
+		compressed[c] = cur;
+		/*
+		 * We still need to remember our original endpoints so
+		 * we can retransform the compressed coordinates
+		 */
+		coords.push_back(c);
+		cur++;
+	}
+	// This stores the frequency of a given endpoint.
+	vector<int> freq(2 * n);
+	for (int i = 0; i < n; i++) {
+		/*
+		 * A segment starts from [l*, r*], so we should end the segment
+		 * at r* + 1 to ensure that r* is included into the segment.
+		 */
+		freq[compressed[segments[i].first]]++;
+		freq[compressed[segments[i].second + 1]]--;
+	}
+	// prefix sums for number of points at a given compressed endpoint
+	for (int i = 1; i < 2 * n; i++) { freq[i] += freq[i - 1]; }
+
+	// covered_num[i] := number of points covered by exactly i segments
+	vector<ll> covered_num(n + 1);
+	for (int i = 1; i < coords.size(); i++) {
+		/*
+		 * We decompress the endpoints for a given frequency and add the points
+		 * in this range to the answer.
+		 */
+		covered_num[freq[i - 1]] += coords[i] - coords[i - 1];
+	}
+
+	for (int i = 1; i <= n; i++) { cout << covered_num[i] << " "; }
+	cout << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class CoveredPointsCount {
+	public static void main(String[] args) throws IOException {
+		BufferedReader br =
+		    new BufferedReader(new InputStreamReader(System.in));
+		int n = Integer.parseInt(br.readLine());
+
+		Pair[] segments = new Pair[n];
+		// This stores only the unique endpoints in sorted order
+		SortedSet<Long> points = new TreeSet<>();
+		for (int i = 0; i < n; i++) {
+			StringTokenizer st = new StringTokenizer(br.readLine());
+			segments[i] = new Pair(Long.parseLong(st.nextToken()),
+			                       Long.parseLong(st.nextToken()));
+			points.add(segments[i].first);
+			points.add(segments[i].second + 1);
+		}
+		br.close();
+
+		int cur = 0;
+		// This map stores the compressed coordinates.
+		Map<Long, Integer> compressed = new HashMap<>();
+		List<Long> coords = new ArrayList<>();
+		for (long c : points) {
+			// Assign c to cur, where cur is our compressed coordinate for "a".
+			compressed.put(c, cur);
+			/*
+			 * We still need to remember our original endpoints so
+			 * we can retransform the compressed coordinates
+			 */
+			coords.add(c);
+			cur++;
+		}
+		// This stores the frequency of a given endpoint.
+		int[] freq = new int[2 * n];
+		for (int i = 0; i < n; i++) {
+			/*
+			 * A segment starts from [l*, r*], so we should end the segment
+			 * at r* + 1 to ensure that r* is included into the segment.
+			 */
+			freq[compressed.get(segments[i].first)]++;
+			freq[compressed.get(segments[i].second + 1)]--;
+		}
+		// prefix sums for number of points at a given compressed endpoint
+		for (int i = 1; i < 2 * n; i++) { freq[i] += freq[i - 1]; }
+
+		// coveredNum[i] := number of points covered by exactly i segments
+		long[] coveredNum = new long[n + 1];
+		for (int i = 1; i < coords.size(); i++) {
+			/*
+			 * We decompress the endpoints for a given frequency and add the
+			 * points in this range to the answer.
+			 */
+			coveredNum[freq[i - 1]] += coords.get(i) - coords.get(i - 1);
+		}
+
+		for (int i = 1; i <= n; i++) {
+			System.out.print(coveredNum[i]);
+			System.out.print(" ");
+		}
+	}
+
+	// BeginCodeSnip{Long Pair Class}
+	private static class Pair {
+		public long first, second;
+
+		public Pair(long f, long s) {
+			first = f;
+			second = s;
+		}
+	}
+	// EndCodeSnip
+}
+```
+
+</JavaSection>
+
+</LanguageSection>
+
+
+## Solution 2: Map
+
+Alternatively, we can also use a map to store frequencies at each point of
+interest and iterate through them in order. This way, we don't need to
+explicitly perform the coordinate compression.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N\log N)$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using ll = long long;
+
+int main() {
+	int n;
+	cin >> n;
+
+	// distinct coordinates of the start and end of the segmetns
+	set<ll> points;
+	// frequency of a given coordinate
+	map<ll, int> freq;
+	for (int i = 0; i < n; i++) {
+		ll l, r;
+		cin >> l >> r;
+
+		/*
+		 * A segment starts from [l*, r*], so we should end the segment
+		 * at r* + 1 to ensure that r* is included into the segment.
+		 */
+		freq[l]++;
+		freq[r + 1]--;
+		points.insert(l);
+		points.insert(r + 1);
+	}
+
+	// number of overlapping segments at current position
+	int layers = freq[*points.begin()];
+	auto it = next(points.begin());
+	// covered_num[i] := number of points covered by exactly i segments
+	vector<ll> covered_num(n + 1);
+
+	/*
+	 * iterate through all coordinates of interest and add the number of points
+	 * in each range to the resp. answer
+	 */
+	while (it != points.end()) {
+		covered_num[layers] += (*it - *prev(it));
+		layers += freq[*it];
+		it++;
+	}
+
+	for (int i = 1; i < n; i++) { cout << covered_num[i] << " "; }
+	cout << covered_num[n] << endl;
+}
+```
+
+</CPPSection>
+
+</LanguageSection>

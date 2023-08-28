@@ -1,0 +1,149 @@
+---
+id: cf-839C
+source: CF
+title: Journey
+author: Reyansh Bahl, George Pong
+---
+
+[Official Solution (C++)](https://codeforces.com/blog/entry/53815)
+
+## Explanation
+
+The first step is to calculate the length and probability of each possible path.
+We can do this using DFS. We start of with a probability of 1, or 100%. Then,
+for each node, we divide the current path's probability by the number of
+possible next moves.
+
+For example, if node 1 is connected to nodes 2 and 3, the probability of
+reaching node 2 is $\frac{1}{2}$, or $0.5$, and the probability of reaching node 3 is
+also $0.5$. If node 3 is connected to nodes 4 and 5, the probability of reaching
+node 4 is $0.5 \div 2 = 0.25$ and the probability of reaching node 5 is also
+$0.25$. Let's say that nodes 2, 4, and 5 are leaf nodes. The possible paths are
+listed below:
+
+- $1 \rightarrow 2$ : $0.5$
+- $1 \rightarrow 3 \rightarrow 4$ : $0.25$
+- $1 \rightarrow 3 \rightarrow 5$ : $0.25$
+
+To calculate the expected length of the journey, we multiply each of the
+probabilities with the corresponding path length. In the example above, the
+expected length would be $1\cdot0.5 + 2\cdot0.25 + 2\cdot0.25 = 1.5$
+
+In the code, for each node, we calculate the number of possible next moves by
+looping through the node's neighbors and counting how many are unvisited. If
+there are no such nodes, then the path has ended and we can add the length of
+the path times the probability to the final answer. Otherwise, we divide the
+probability (as described above) and continue the DFS.
+
+Note: `setprecision(10)` sets the number of decimal places to be printed to be 10. See [this](https://cplusplus.com/reference/iomanip/setprecision/) for more details.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int n;
+vector<vector<int>> adj;  // adjacency list
+vector<bool> visited;     // stores which nodes have been visited
+
+double ans;
+
+void dfs(int node, int current_length, double current_probability) {
+	visited[node] = true;
+	int possible_moves = 0;
+	// count the number of cities we can move to
+	for (int x : adj[node]) {
+		if (!visited[x]) { possible_moves++; }
+	}
+
+	if (!possible_moves) {
+		// if there are no cities to move to, the path has ended
+		ans += current_length * current_probability;
+	} else {
+		// update the new probability by dividing it
+		// by the number of possible cities
+		double new_probability = current_probability / possible_moves;
+		for (int x : adj[node]) {
+			if (!visited[x]) { dfs(x, current_length + 1, new_probability); }
+		}
+	}
+}
+
+int main() {
+	cin >> n;
+	adj.resize(n + 1);
+	visited.resize(n + 1);
+
+	for (int i = 1; i < n; i++) {
+		int a, b;
+		cin >> a >> b;
+		adj[a].push_back(b);
+		adj[b].push_back(a);
+	}
+
+	// the traversal starts with node 1, path length 0, and probability 100%.
+	dfs(1, 0, 1);
+
+	cout << setprecision(10) << ans << endl;
+}
+```
+
+</CPPSection>
+
+<PySection>
+
+```py
+class Point:
+	"""Represents a point or node along our depth-first traversal frontier."""
+
+	def __init__(self, node: int, length: int, probability: float):
+		self.node = node
+		self.length = length
+		self.probability = probability
+
+
+n = int(input())
+graph = [[] for _ in range(n)]
+
+for _ in range(n - 1):
+	a, b = map(lambda i: int(i) - 1, input().split())
+	graph[a].append(b)
+	graph[b].append(a)
+
+visited = [False] * n
+visited[0] = True
+stack = [Point(0, 0, 1)]
+
+end_lengths = []
+while stack:
+	curr = stack.pop()
+
+	possible_moves = 0
+	for adj in graph[curr.node]:
+		if not visited[adj]:
+			possible_moves += 1
+
+	for adj in graph[curr.node]:
+		if not visited[adj]:
+			stack.append(Point(adj, curr.length + 1, curr.probability / possible_moves))
+			visited[adj] = True
+
+	if not possible_moves:  # current node is the end of a path
+		end_lengths.append((curr.length, curr.probability))
+
+expected_value = 0
+for length, probability in end_lengths:
+	expected_value += length * probability
+print(expected_value)
+```
+
+</PySection>
+
+</LanguageSection>

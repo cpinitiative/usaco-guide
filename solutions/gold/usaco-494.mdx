@@ -1,0 +1,206 @@
+---
+id: usaco-494
+source: Old Gold
+title: Guard Mark
+author: Ryan Chou, Sofia Yang
+---
+
+[Official Analysis](http://www.usaco.org/current/data/sol_guard_gold.html)
+
+## Explanation
+
+Note that since it might not always be optimal to keep the strongest/heaviest cow at the bottom of the stack, we have to go through every single possible subset, which is feasible with $N \leq 20$.
+
+Here's an example of a counter case:
+```
+4 6
+1 1000 4
+1 1 5
+3 2 3
+3 3 3
+```
+(In this case, it's more optimal to take the last two cows instead!)
+
+Almost every time the bounds are ~$20$, it suggests looping over subsets.
+
+Let's go through the information we need to implement it!
+
+#### States
+
+Let's use a bitmask ($\texttt{mask}$) to keep track of the cows we're using.
+
+To check if we've surpassed Mark's height already and if so, return the result, we should also keep track of the current height and the best safety factor we can get.
+
+$\texttt{dp}[\texttt{mask}] =\{$current height, maximum safety factor achievable$\}$
+
+#### Base Case
+
+With no cows, the safety factor will be infinite and the height will be zero.
+
+#### Transitions
+
+$\texttt{dp}[\texttt{mask}] = \max_{j \in mask}(\texttt{dp}[\texttt{mask}],\hspace{0.1cm}\min(\texttt{dp}[\texttt{mask} \char`\\ j] - \texttt{weight}_j,\hspace{0.1cm}\texttt{strength}_j))$
+
+Such that $j$ is the index of the $j$th cow and $\texttt{weight}_j,\hspace{0.1cm}\texttt{strength}_j$ represents the weight and strength of cow $j$ respectively.
+
+This gets the maximum safety factor if we put cow $j$ at the top of our stack for every $j$. We have to take into account $\texttt{strength}_j$ and $\texttt{dp}[\texttt{mask} \char`\\ j] - \texttt{weight}_j$ in the case that either one of the cows below can't sustain as much weight as cow $j$ can, or vice-versa.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(2^N \cdot N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+struct Cow {
+	int height;
+	int weight;
+	int strength;
+};
+
+int main() {
+	freopen("guard.in", "r", stdin);
+	freopen("guard.out", "w", stdout);
+
+	int n;
+	int h;
+	cin >> n >> h;
+
+	vector<Cow> cows(n);
+	for (int i = 0; i < n; i++) {
+		cin >> cows[i].height >> cows[i].weight >> cows[i].strength;
+	}
+
+	// dp[i] = {cumulative height, safety factor}
+	vector<pair<int, int>> dp(1 << n);
+
+	// initally we don't have any height, and we can add on infinite weight
+	dp[0] = {0, INT32_MAX};
+
+	for (int i = 1; i < (1 << n); i++) {
+		dp[i] = {0, -1};
+
+		for (int j = 0; j < n; j++) {
+			// if the jth bit is on
+			if (i & (1 << j)) {
+				// update our height
+				dp[i].first += cows[j].height;
+
+				int prev = i ^ (1 << j);
+				/*
+				 * maximum safety factor if we put cow j
+				 * at the top of our stack (account for j's strength as well)
+				 */
+				dp[i].second =
+				    max(dp[i].second, min(dp[prev].second - cows[j].weight,
+				                          cows[j].strength));
+			}
+		}
+	}
+
+	int max_safety = -1;
+	for (int i = 1; i < (1 << n); i++) {
+		if (dp[i].first >= h) { max_safety = max(dp[i].second, max_safety); }
+	}
+
+	// no tall enough/stable arrangement exists
+	if (max_safety < 0) {
+		cout << "Mark is too tall" << endl;
+	} else {
+		cout << max_safety << endl;
+	}
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class GuardMark {
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio("guard");
+
+		int N = io.nextInt();
+		int H = io.nextInt();
+		Cow[] cows = new Cow[N];
+		for (int i = 0; i < N; i++) {
+			int h = io.nextInt();
+			int w = io.nextInt();
+			int s = io.nextInt();
+			cows[i] = new Cow(h, w, s);
+		}
+
+		/*
+		 * dp[subset][0] = Height of subset of cows
+		 * dp[subset][1] = Safety factor of subset of cows
+		 */
+		int[][] dp = new int[1 << N][2];
+
+		// Initially, the height is 0 and infinite height can be stacked.
+		dp[0][0] = 0;
+		dp[0][1] = Integer.MAX_VALUE;
+
+		// Loop through each subset of cows.
+		for (int i = 1; i < (1 << N); i++) {
+			// Initial conditions.
+			dp[i][0] = 0;
+			dp[i][1] = -1;
+			for (int j = 0; j < N; j++) {
+				if ((i & (1 << j)) == 0) { continue; }
+				// Add cow's height to total subset height.
+				dp[i][0] += cows[j].height;
+				// Previous subset before this bit was set.
+				int prev = i ^ (1 << j);
+				/*
+				 * Maximum safety of subset given that j is topmost cow.
+				 * Check for previous safety factor - j's weight,
+				 * And check for j's own strength.
+				 */
+				dp[i][1] =
+				    Math.max(dp[i][1], Math.min(dp[prev][1] - cows[j].weight,
+				                                cows[j].strength));
+			}
+		}
+
+		int maxSafety = -1;
+		for (int i = 1; i < (1 << N); i++) {
+			if (dp[i][0] >= H) {
+				// Fulfills height conditions.
+				maxSafety = Math.max(dp[i][1], maxSafety);
+			}
+		}
+
+		// Can't find valid order.
+		if (maxSafety == -1) {
+			io.println("Mark is too tall");
+		} else {
+			io.println(maxSafety);
+		}
+		io.close();
+	}
+
+	static class Cow {
+		public int height;
+		public int weight;
+		public int strength;
+
+		public Cow(int height, int weight, int strength) {
+			this.height = height;
+			this.weight = weight;
+			this.strength = strength;
+		}
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+</LanguageSection>

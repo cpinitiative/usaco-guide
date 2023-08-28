@@ -1,0 +1,171 @@
+---
+id: usaco-694
+source: USACO Gold 2017 January
+title: Hoof, Paper, Scissors
+author: Melody Yu, Neo Wang, Brad Ma
+---
+
+[Official Analysis](http://www.usaco.org/current/data/sol_hps_gold_jan17.html)
+
+## Video Solution
+
+Note: The video solution might not be the same as other solutions. Code in C++.
+<YouTube id="YvPGN6ZPKCc" />
+
+## Solution
+
+The main observation for this problem is that we only need to keep track of the
+number of games played $i$, the number of times switched so far $j$, and the
+current gesture $k$ in order to determine the largest number of previous games
+won for any game $i$.
+
+For every move, either Bessie can either switch or stay on her current gesture.
+If she changes her gesture, then the next game $i+1$ will have used $j+1$
+gestures, which corresponds to the $\texttt{dp}$ state
+$\texttt{dp}[i+1][j+1][k]$. We can simulate this for all 3 gestures. Then, we
+just increment $\texttt{dp}[i][j][k]$ if Bessie wins at game $i$ with gesture
+$k$.
+
+Note that you can just compare the current gesture to `H, P, S` because there is
+always exactly one way to win.
+
+**Time Complexity:** $\mathcal{O}(NK)$
+
+<LanguageSection>
+
+<CPPSection>
+
+## Implementation
+
+```cpp
+// CodeSnip{CPP Short Template}
+
+const int MX = 1e5 + 5;
+
+int dp[MX][25][3];  // dp[i][j][k] is the largest number of games she wins at
+                    // games i with switches j with current item k
+int A[MX];          // 0 == H 1 == P 2 == S
+
+int main() {
+	setIO("hps");
+
+	int N, K;
+
+	cin >> N >> K;
+
+	for (int i = 0; i < N; i++) {
+		char a;
+		cin >> a;
+		if (a == 'H') A[i] = 0;
+		if (a == 'P') A[i] = 1;
+		if (a == 'S') A[i] = 2;
+	}
+
+	// either she switches to h or p or s or stays
+
+	for (int i = 0; i < N; i++) {
+		for (int j = 0; j <= K; j++) {
+			for (int k = 0; k < 3; k++) {
+				if (k == A[i]) dp[i][j][k]++;
+				dp[i + 1][j + 1][0] = max(dp[i + 1][j + 1][0],
+				                          dp[i][j][k]);  // switch to not item
+				dp[i + 1][j + 1][1] = max(dp[i + 1][j + 1][1],
+				                          dp[i][j][k]);  // switch to not item
+				dp[i + 1][j + 1][2] = max(dp[i + 1][j + 1][2],
+				                          dp[i][j][k]);  // switch to not item
+				dp[i + 1][j][k] = max(dp[i + 1][j][k], dp[i][j][k]);  // stay
+			}
+		}
+	}
+
+	int ret = 0;
+
+	for (int i = 0; i < 3; i++) { ret = max(ret, dp[N - 1][K][i]); }
+
+	cout << ret << endl;
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class HoofPaperScissors {
+	static int[] moves;
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new FileReader("hps.in"));
+		PrintWriter pw =
+		    new PrintWriter(new BufferedWriter(new FileWriter("hps.out")));
+
+		StringTokenizer inputLine = new StringTokenizer(br.readLine());
+		int numGames = Integer.parseInt(inputLine.nextToken());
+		int maximumSwitches = Integer.parseInt(inputLine.nextToken());
+		// dp[game][switches][type] = maximum number of wins
+		// at that game with at most that amount
+		// of switches and that with that type active
+		moves = new int[numGames + 1];
+		for (int x = 1; x <= numGames; x++) {
+			char c = br.readLine().charAt(0);
+			// set H as 0, P as 1, S as 2
+			if (c == 'H') {
+				moves[x] = 0;
+			} else if (c == 'P') {
+				moves[x] = 1;
+			} else {
+				moves[x] = 2;
+			}
+		}
+
+		int[][][] dp = new int[numGames + 1][maximumSwitches + 2][3];
+		int maximum = 0;
+
+		/*
+		c = current game number
+		n = number of switches
+		 */
+
+		for (int c = 1; c <= numGames; c++) {  // for each game
+			// for each switch amount
+			for (int n = 1; n < maximumSwitches + 2; n++) {
+				// try switching to the three possibilities
+				int add1 = 0;
+				if (moves[c] == 0) { add1 = 1; }
+				// take the maximum of the game before + add (win or lose)
+				// and switching from the other two options
+				dp[c][n][0] = Math.max(dp[c - 1][n][0] + add1,
+				                       Math.max(dp[c - 1][n - 1][1] + add1,
+				                                dp[c - 1][n - 1][2] + add1));
+
+				int add2 = 0;
+				if (moves[c] == 1) { add2 = 1; }
+				dp[c][n][1] = Math.max(dp[c - 1][n][1] + add2,
+				                       Math.max(dp[c - 1][n - 1][0] + add2,
+				                                dp[c - 1][n - 1][2] + add2));
+
+				int add3 = 0;
+				if (moves[c] == 2) { add3 = 1; }
+				dp[c][n][2] = Math.max(dp[c - 1][n][2] + add3,
+				                       Math.max(dp[c - 1][n - 1][0] + add3,
+				                                dp[c - 1][n - 1][1] + add3));
+
+				if (c == numGames) {  // check maximum if it is the last row
+					maximum = Math.max(maximum,
+					                   Math.max(dp[numGames][n][0],
+					                            Math.max(dp[numGames][n][1],
+					                                     dp[numGames][n][2])));
+				}
+			}
+		}
+		pw.println(maximum);
+		pw.close();
+	}
+}
+```
+</JavaSection>
+
+</LanguageSection>

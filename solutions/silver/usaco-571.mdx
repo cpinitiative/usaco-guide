@@ -1,0 +1,167 @@
+---
+id: usaco-571
+source: USACO Silver 2015 December
+title: High Card Wins
+author: Óscar Garries, Ryan Chou
+---
+
+[Official Analysis (Java)](http://www.usaco.org/current/data/sol_highcard_silver_dec15.html)
+
+Intuitively, we always want Bessie to win with the smallest card possible. We can ensure this minimum by storing the available cards for both Bessie and Elsie. If Elsie's current card is higher than Bessie's, we can move to the Bessie's next higher card.
+
+You can see the algorithm in action with the test set below:
+
+<img src = "/usaco-571-anim/highcard_algo.gif"/>
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <algorithm>
+#include <cstdio>
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+const int MAX_CARDS = 1e5;
+bool elsieHas[MAX_CARDS + 1];
+
+int main() {
+	freopen("highcard.in", "r", stdin);
+	freopen("highcard.out", "w", stdout);
+	int n;
+	cin >> n;
+	for (int i = 0; i < n; i++) {
+		int card;
+		cin >> card;
+		elsieHas[card] = true;
+	}
+
+	vector<int> elsie;
+	vector<int> bessie;
+
+	// Because we loop over the values in increasing order,
+	// the two lists will be in sorted order.
+	for (int i = 1; i <= n * 2; i++) {
+		// If Elsie has this card:
+		if (elsieHas[i]) {
+			elsie.push_back(i);
+		} else {
+			bessie.push_back(i);
+		}
+	}
+
+	int points = 0, bessieIndex = 0, elsieIndex = 0;
+	while (bessieIndex < n && elsieIndex < n) {
+		// If Bessie wins:
+		if (bessie[bessieIndex] > elsie[elsieIndex]) {
+			points++;
+			bessieIndex++;
+			elsieIndex++;
+			// Otherwise, choose the next highest card from Bessie's hand.
+		} else {
+			bessieIndex++;
+		}
+	}
+	cout << points;
+}
+```
+</CPPSection>
+
+<PySection>
+
+```py
+import sys
+
+sys.stdin = open("highcard.in", "r")
+sys.stdout = open("highcard.out", "w")
+
+elsie_has = set()
+n = int(input())
+
+for i in range(n):
+	elsie_has.add(int(input()))
+
+elsie, bessie = [], []
+
+# Because we loop over the values in increasing order,
+# the two lists will be in sorted order.
+for i in range(1, n * 2 + 1):
+	# If Elsie doesn't have the card:
+	if i not in elsie_has:
+		bessie.append(i)
+	else:
+		elsie.append(i)
+
+points, bessie_index, elsie_index = 0, 0, 0
+
+while bessie_index < n and elsie_index < n:
+	# If Bessie wins:
+	if bessie[bessie_index] > elsie[elsie_index]:
+		points += 1
+		bessie_index += 1
+		elsie_index += 1
+	# Otherwise, choose the next highest card from Bessie's hand.
+	else:
+		bessie_index += 1
+
+print(points)
+```
+</PySection>
+
+<JavaSection>
+
+```java
+// Code from Official USACO Editorial:
+import java.io.*;
+import java.util.*;
+
+public class HighCard {
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new FileReader("highcard.in"));
+		PrintWriter pw =
+		    new PrintWriter(new BufferedWriter(new FileWriter("highcard.out")));
+		int n = Integer.parseInt(br.readLine());
+		boolean[] elsieOwns = new boolean[2 * n + 1];
+		for (int i = 0; i < n; i++) {
+			elsieOwns[Integer.parseInt(br.readLine())] = true;
+		}
+		List<Integer> bessie = new ArrayList<Integer>();
+		List<Integer> elsie = new ArrayList<Integer>();
+		int points = 0;
+		// Because we loop over the values in increasing order,
+		// the two lists will be in sorted order.
+		for (int i = 1; i <= n * 2; i++) {
+			// If Elsie doesn't have the card:
+			if (elsieOwns[i]) {
+				elsie.add(i);
+			} else {
+				bessie.add(i);
+			}
+		}
+		int bessieIndex = 0;
+		int elsieIndex = 0;
+		while (bessieIndex < n && elsieIndex < n) {
+			// If Bessie wins:
+			if (bessie.get(bessieIndex) > elsie.get(elsieIndex)) {
+				points++;
+				bessieIndex++;
+				elsieIndex++;
+				// Otherwise, choose the next highest card from Bessie's hand.
+			} else {
+				bessieIndex++;
+			}
+		}
+		pw.println(points);
+		pw.close();
+	}
+}
+```
+</JavaSection>
+</LanguageSection>

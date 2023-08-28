@@ -1,0 +1,109 @@
+---
+id: usaco-807
+source: USACO Bronze 2018 February
+title: Teleportation
+author: Ananth Kashyap, Tanmoy Das, Thamognya Kodi
+---
+
+[Official Analysis](http://www.usaco.org/current/data/sol_teleport_bronze_feb18.html)
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(1)$
+
+<LanguageSection>
+
+<PySection>
+
+```py
+# Take in data using Python file i/o system
+file_in = open("teleport.in")
+data = file_in.read().strip().split("\n")
+a, b, x, y = map(int, data[0].split(" "))
+
+# Manually sort a, b to be increasing order
+if a > b:
+	a, b = b, a
+
+# Manually sort x, y to be increasing order
+if x > y:
+	x, y = y, x
+
+# Set base distance as distance needed to travel without using teleporter
+base_distance = abs(a - b)
+
+# Set teleporter distance to be the travel distance using the teleporter
+teleporter_distance = abs(a - x) + abs(b - y)
+
+# The answer is the minimum of the teleporter distance and the base distance
+ans = min(teleporter_distance, base_distance)
+
+# Output the answer using Python file i/o system
+print(ans, file=open("teleport.out", "w"))
+```
+
+</PySection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+
+public class Teleportation {
+	public static void main(String[] args) throws IOException {
+		BufferedReader r = new BufferedReader(new FileReader("teleport.in"));
+		PrintWriter pw = new PrintWriter("teleport.out");
+
+		String[] input = r.readLine().split(" ");
+		int a = Integer.parseInt(input[0]);
+		int b = Integer.parseInt(input[1]);
+		int x = Integer.parseInt(input[2]);
+		int y = Integer.parseInt(input[3]);
+
+		// Distance needed to travel without teleportation
+		int result = Math.abs(a - b);
+
+		// Result is minimum of all possible distances
+		result = Math.min(result, Math.abs(a - x) + Math.abs(b - y));
+		result = Math.min(result, Math.abs(a - y) + Math.abs(b - x));
+		pw.println(result);
+		pw.close()
+	}
+}
+```
+
+</JavaSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	freopen("teleport.in", "r", stdin);
+	freopen("teleport.out", "w", stdout);
+
+	int a, b, c, d;
+	cin >> a >> b >> c >> d;
+	/*
+	 * dist contains the best case scenario's strategy.
+	 * It is going to first take the distance without travel and
+	 * compare it with the other travel choices to figure
+	 * out whether it is the smallest and best case scenario for teleporting
+	 */
+	int dist = abs(a - b);  // calculate the distance without travel
+	if (dist > abs(a - c) + abs(b - d) {
+		dist = abs(a - c) + abs(b - d);
+	}
+	// repeat this again with the other possiblity given below
+	if (dist > abs(a - d) + abs(b - c) {
+		dist = abs(a - d) + abs(b - c);
+	}
+
+	cout << dist << endl;
+}
+```
+</CPPSection>
+
+</LanguageSection>

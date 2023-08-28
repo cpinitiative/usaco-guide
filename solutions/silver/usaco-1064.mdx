@@ -1,0 +1,189 @@
+---
+id: usaco-1064
+source: USACO Silver 2020 December
+title: Stuck in a Rut
+author: Qi Wang, Melody Yu (Video), Brad Ma
+---
+
+[Official Analysis](http://usaco.org/current/data/sol_prob3_silver_dec20.html)
+
+## Video Solution
+
+Note: The video solution might not be the same as other solutions. Code in C++.
+<YouTube id="7ZA0MQ9uFr4" />
+
+## Implementation
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+// Created by Qi Wang
+
+#include <bits/stdc++.h>
+
+using namespace std;
+
+#define FOR(i, a, b) for (int i = (a); i < (b); i++)
+#define FORE(i, a, b) for (int i = (a); i <= (b); i++)
+#define F0R(i, a) for (int i = 0; i < (a); i++)
+#define trav(a, x) for (auto &a : x)
+
+typedef long long ll;
+
+struct Cow {
+	pair<int, int> coor;
+	int id;
+	Cow(pair<int, int> p, int i) {
+		coor = p;
+		id = i;
+	}
+};
+
+int N;
+vector<Cow> C_N;
+vector<Cow> C_E;
+
+// Custom sorting methods
+bool cmp(const Cow &o, const Cow &t) {
+	if (o.coor.first == t.coor.first) { return o.coor.second < t.coor.second; }
+	return o.coor.first < t.coor.first;
+}
+
+bool cmp2(const Cow &o, const Cow &t) {
+	if (o.coor.second == t.coor.second) { return o.coor.first < t.coor.first; }
+	return o.coor.second < t.coor.second;
+}
+
+int main() {
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
+
+	cin >> N;
+
+	F0R(i, N) {
+		int x, y;
+		char d;
+		cin >> d >> x >> y;
+		if (d == 'N') {
+			C_N.push_back(Cow({x, y}, i));
+		} else {
+			C_E.push_back(Cow({x, y}, i));
+		}
+	}
+
+	sort(C_N.begin(), C_N.end(), cmp);
+	sort(C_E.begin(), C_E.end(), cmp2);
+
+	bool stopped[2501];
+	int blame[2501];
+	fill(stopped, stopped + N, false);
+	fill(blame, blame + N, 0);
+	trav(c1, C_E) {
+		trav(c2, C_N) {
+			// Checks whether they intersect
+			if (!stopped[c1.id] && !stopped[c2.id] &&
+			    c1.coor.second >= c2.coor.second &&
+			    c1.coor.first <= c2.coor.first) {
+				int xlen = c2.coor.first - c1.coor.first;
+				int ylen = c1.coor.second - c2.coor.second;
+
+				// checks which cow will block the other
+				if (ylen < xlen) {
+					stopped[c1.id] = true;
+					blame[c2.id] += 1 + blame[c1.id];
+				} else if (ylen > xlen) {
+					stopped[c2.id] = true;
+					blame[c1.id] += 1 + blame[c2.id];
+				}
+			}
+		}
+	}
+	F0R(i, N) { cout << blame[i] << "\n"; }
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class StuckInARut {
+	static int[] xCoordinates;
+	static int[] yCoordinates;
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader br =
+		    new BufferedReader(new InputStreamReader(System.in));
+		int n = Integer.parseInt(br.readLine());
+
+		List<Integer> eastCows = new ArrayList<>();
+		List<Integer> northCows = new ArrayList<>();
+		xCoordinates = new int[n];
+		yCoordinates = new int[n];
+
+		for (int i = 0; i < n; i++) {
+			StringTokenizer line = new StringTokenizer(br.readLine());
+			String direction = line.nextToken();
+			if (direction.equals("E")) {
+				eastCows.add(i);
+			} else {
+				northCows.add(i);
+			}
+			xCoordinates[i] = Integer.parseInt(line.nextToken());
+			yCoordinates[i] = Integer.parseInt(line.nextToken());
+		}
+
+		// sort the east cows by y-coordinate
+		eastCows.sort(Comparator.comparingInt(j -> yCoordinates[j]));
+		// sort the north cows by x-coordinate
+		northCows.sort(Comparator.comparingInt(j -> xCoordinates[j]));
+
+		boolean[] stopped = new boolean[n];
+		int[] amountStopped = new int[n];
+		for (int j : eastCows) {  // loop through all pairs of cows
+			for (int k : northCows) {
+				/*
+				 * make sure that both the east and north cows
+				 * are not stopped a collision is only possible
+				 * if the x of the north cow is greater
+				 * than the x of east cow and the y of the east
+				 * cow is greater than the y of the north cow
+				 */
+				if ((!stopped[j]) && (!stopped[k]) &&
+				    (xCoordinates[k] > xCoordinates[j]) &&
+				    (yCoordinates[j] > yCoordinates[k])) {
+					if ((xCoordinates[k] - xCoordinates[j]) >
+					    (yCoordinates[j] - yCoordinates[k])) {
+						// the north cow stops the east cow
+						// mark the east cow as stopped
+						stopped[j] = true;
+
+						// add number of cows that the east cow stops + 1
+						amountStopped[k] += (1 + amountStopped[j]);
+					} else if ((xCoordinates[k] - xCoordinates[j]) <
+					           (yCoordinates[j] - yCoordinates[k])) {
+						// the east cow stops the north cow
+						// mark the north cow as stopped
+						stopped[k] = true;
+
+						// add number of cows that the north cow stops + 1
+						amountStopped[j] += (1 + amountStopped[k]);
+					}
+					// if difference in x and difference in y is equal,
+					// let the cows continue as stated in the problem
+				}
+			}
+		}
+
+		for (int i = 0; i < n; i++) { System.out.println(amountStopped[i]); }
+	}
+}
+```
+
+</JavaSection>
+
+</LanguageSection>

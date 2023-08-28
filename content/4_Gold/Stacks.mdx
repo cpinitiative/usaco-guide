@@ -2,8 +2,9 @@
 id: stacks
 title: Stacks
 author: Darren Yao, Michael Cao
+contributors: George Pong
 description:
-  'A data structures that only allows insertion and deletion at one end.'
+  'A data structure that only allows insertion and deletion at one end.'
 prerequisites:
   - intro-ds
 frequency: 1
@@ -48,12 +49,12 @@ papers.
 
 ```cpp
 stack<int> s;
-s.push(1); // [1]
-s.push(13); // [1, 13]
-s.push(7); // [1, 13, 7]
-cout << s.top() << endl; // 7
-s.pop(); // [1, 13]
-cout << s.size() << endl; // 2
+s.push(1);                 // [1]
+s.push(13);                // [1, 13]
+s.push(7);                 // [1, 13, 7]
+cout << s.top() << endl;   // 7
+s.pop();                   // [1, 13]
+cout << s.size() << endl;  // 2
 ```
 
 </CPPSection>
@@ -68,12 +69,12 @@ cout << s.size() << endl; // 2
 
 ```java
 Stack<Integer> s = new Stack<Integer>();
-s.push(1); // [1]
-s.push(13); // [1, 13]
-s.push(7); // [1, 13, 7]
-System.out.println(s.peek()); // 7
-s.pop(); // [1, 13]
-System.out.println(s.size()); // 2
+s.push(1);                     // [1]
+s.push(13);                    // [1, 13]
+s.push(7);                     // [1, 13, 7]
+System.out.println(s.peek());  // 7
+s.pop();                       // [1, 13]
+System.out.println(s.size());  // 2
 ```
 
 </JavaSection>
@@ -93,14 +94,14 @@ like a stack.
   elements is an `O(n)` operation.
 
 ```py
-stack = []        # []
-stack.append(1)   # [1]
-stack.append(2)   # [1, 2]
-stack.append(3)   # [1, 2, 3]
-v = stack[-1]     # stack = [1, 2, 3] (unchanged), v = 3
-stack.pop()       # [1, 2]
-v = stack.pop()   # stack = [1], v = 2
-stack.append(4)   # [1, 4]
+stack = []  # []
+stack.append(1)  # [1]
+stack.append(2)  # [1, 2]
+stack.append(3)  # [1, 2, 3]
+v = stack[-1]  # stack = [1, 2, 3] (unchanged), v = 3
+stack.pop()  # [1, 2]
+v = stack.pop()  # stack = [1], v = 2
+stack.append(4)  # [1, 4]
 v = stack.pop(0)  # stack = [4], v = 1
 ```
 
@@ -178,9 +179,10 @@ int main() {
 	stack<pair<int, int>> stack;
 	stack.push({0, 0});
 
-	for(int i = 1; i <= N; ++i) {
-		int a; cin >> a;
-		while(!stack.empty() && stack.top().first >= a) stack.pop();
+	for (int i = 1; i <= N; ++i) {
+		int a;
+		cin >> a;
+		while (!stack.empty() && stack.top().first >= a) stack.pop();
 		cout << stack.top().second << " ";
 		stack.push({a, i});
 	}
@@ -197,46 +199,66 @@ int main() {
  * author: Kai Wang
  */
 
-import java.io.*; import java.util.*;
+import java.io.*;
+import java.util.*;
 public class NearestSmallestVals {
 
-    /**
-     * We keep a stack of pairs (ind, value)
-     * Traverse the array from left to right, use ans to store answers
-     * If the value of the a_i> (stk.peek()=a_k) then I remove the top of the stack.
-     * This is okay because for all j>k, a_j>=a_k, or (j,a_j) is in the stack
-     * If a_k < a_i then we set ans[i]=k and insert (i,a_i)
-     * Note the stack elements are sorted in order of index
-     *
-     */
-    public static void main(String[] args) throws IOException {
-        BufferedReader br=new BufferedReader(new InputStreamReader(System.in));
-        int N=Integer.parseInt(br.readLine()); int[] a=new int[N+1];
-        StringTokenizer st=new StringTokenizer(br.readLine());
-        for (int i = 1; i <= N; i++) {
-            a[i]=Integer.parseInt(st.nextToken());
-        }
-        Stack<Integer> stk=new Stack<>();
-        stk.add(0);
-        stk.add(1);
-        int[] ans=new int[N+1];ans[1]=0;
-        for (int i = 2; i <=N; i++) {
-            while(a[stk.peek()]>=a[i]){
-                stk.pop();
-            }
-            //stk.peek()<a[i]
-            //This exists because a[0]=0 and a[i]>0 for all i>0
-            ans[i]=stk.peek();
-            stk.push(i);
-        }
-        for (int i = 1; i <=N; i++) {
-            System.out.print(ans[i]+" ");
-        }
-    }
+	/**
+	 * We keep a stack of pairs (ind, value)
+	 * Traverse the array from left to right, use ans to store answers
+	 * If the value of the a_i> (stk.peek()=a_k) then I remove the top of the
+	 * stack. This is okay because for all j>k, a_j>=a_k, or (j,a_j) is in the
+	 * stack If a_k < a_i then we set ans[i]=k and insert (i,a_i) Note the stack
+	 * elements are sorted in order of index
+	 *
+	 */
+	public static void main(String[] args) throws IOException {
+		BufferedReader br =
+		    new BufferedReader(new InputStreamReader(System.in));
+		int N = Integer.parseInt(br.readLine());
+		int[] a = new int[N + 1];
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		for (int i = 1; i <= N; i++) {
+			a[i] = Integer.parseInt(st.nextToken());
+		}
+		Stack<Integer> stk = new Stack<>();
+		stk.add(0);
+		stk.add(1);
+		int[] ans = new int[N + 1];
+		ans[1] = 0;
+		for (int i = 2; i <= N; i++) {
+			while (a[stk.peek()] >= a[i]) { stk.pop(); }
+			// stk.peek()<a[i]
+			// This exists because a[0]=0 and a[i]>0 for all i>0
+			ans[i] = stk.peek();
+			stk.push(i);
+		}
+		for (int i = 1; i <= N; i++) { System.out.print(ans[i] + " "); }
+	}
 }
 ```
 
 </JavaSection>
+
+<PySection>
+
+```py
+n = int(input())
+nums = list(map(int, input().split()))
+
+ans = []
+stack = []  # stores (a_i, i)
+for idx, num in enumerate(nums):
+	while stack and stack[-1][0] >= num:
+		stack.pop()
+
+	ans.append(0 if not stack else stack[-1][1] + 1)
+	stack.append((num, idx))
+
+print(*ans)
+```
+
+</PySection>
 
 </LanguageSection>
 

@@ -1,0 +1,477 @@
+---
+id: hashmaps
+redirects:
+  - /gold/unordered
+  - /gold/unordered-map
+  - /gold/faster-hashmap
+title: (Optional) Hashmaps
+author: Darren Yao, Benjamin Qi
+contributors: Neo Wang, Nathan Gong
+description: 'Maintaining collections of distinct elements with hashing.'
+frequency: 1
+prerequisites:
+  - intro-sets
+  - string-hashing
+---
+
+<Warning>
+
+You can almost always use ordered sets and maps instead, but it's good to know that these exist.
+
+</Warning>
+
+<Resources>
+	<Resource source="IUSACO" title="4.4 - Sets & Maps">
+		module is based off this
+	</Resource>
+</Resources>
+
+## Hashing
+
+**Hashing** refers to assigning a unique code to every variable/object which
+allows insertions, deletions, and searches in $\mathcal{O}(1)$ time, albeit with
+a high constant factor, as hashing requires a large constant number of
+operations. However, as the name implies, elements are not ordered in any
+meaningful way, so traversals of an unordered set will return elements in some
+arbitrary order.
+
+## Custom Hashing
+
+<LanguageSection>
+<CPPSection>
+
+There is no built in method for hashing pairs or vectors. Namely,
+`unordered_set<vector<int>>` does not work. In this case, we can use an
+[sorted map](/silver/intro-sorted-sets) (which supports all of the functions used
+in the code above) or declare our own hash function.
+
+<Resources>
+	<Resource
+		source="Mark Nelson"
+		title="Hash Functions for C++ Unordered Containers"
+		url="https://marknelson.us/posts/2011/09/03/hash-functions-for-c-unordered-containers.html"
+		starred
+	>
+		How to create user-defined hash function for `unordered_map`.
+	</Resource>
+</Resources>
+
+The link provides an example of hashing pairs of strings, as well as other data
+structures like pairs.
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+typedef pair<int, int> pi;
+#define f first
+#define s second
+
+struct hashPi {
+	size_t operator()(const pi &p) const { return p.f ^ p.s; }
+};
+
+int main() { unordered_map<pi, int, hashPi> um; }
+```
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+typedef pair<int, int> pi;
+#define f first
+#define s second
+
+namespace std {
+template <> struct hash<pi> {
+	size_t operator()(const pi &p) const { return p.f ^ p.s; }
+};
+}  // namespace std
+
+int main() { unordered_map<pi, int> um; }
+```
+
+</CPPSection>
+<JavaSection>
+
+Java has its own hash functions for pre-defined objects like `ArrayList`'s.
+However, a custom hash function is still needed for user-defined objects.
+In order to create one, we can implement the `hashCode` method.
+
+Additionally, in order for `HashSet`'s and `HashMap`'s to work with
+a custom class, we must also implement the `equals` method.
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class HashTest {
+	public static void main(String[] args) {
+		// uses custom hash function in class Pair
+		Set<Pair> set = new HashSet<>();
+	}
+
+	static class Pair {
+		public int first, second;
+
+		public Pair(int first, int second) {
+			this.first = first;
+			this.second = second;
+		}
+
+		@Override
+		public int hashCode() {
+			return first ^ second;
+		}
+
+		@Override
+		public boolean equals(Object o) {
+			if (!(o instanceof Pair)) { return false; }
+			Pair p = (Pair)o;
+			return first == p.first && second == p.second;
+		}
+	}
+}
+```
+
+</JavaSection>
+</LanguageSection>
+
+However, this hash function is quite bad; if we insert
+$(0,0), (1,1), (2,2) \ldots$ then they will all be mapped to the same bucket (so
+it would easily be hacked in a Codeforces contest).
+
+<JavaOnly>
+
+In Java, an easy way to hash custom objects is to use the builtin
+`Objects.hash()` method. This method takes in multiple objects and uses them
+to create a hash code. However, this is easily hackable, as the code
+below shows.
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class HashTest {
+	public static void main(String[] args) {
+		// uses custom hash function in class Pair
+		Set<Pair> set = new HashSet<>();
+		for (int i = 0; i < 100000; ++i) {
+			// Pair p = new Pair(i, 0); // ~0.2s on ide.usaco.guide
+			Pair p = new Pair(i, -31 * i);  // >5s
+			set.add(p);
+		}
+	}
+
+	static class Pair {
+		public int first, second;
+
+		public Pair(int first, int second) {
+			this.first = first;
+			this.second = second;
+		}
+
+		@Override
+		public int hashCode() {
+			return Objects.hash(first, second);
+		}
+
+		@Override
+		public boolean equals(Object o) {
+			if (!(o instanceof Pair)) { return false; }
+			Pair p = (Pair)o;
+			return first == p.first && second == p.second;
+		}
+	}
+}
+```
+
+</JavaOnly>
+
+A better way to hash pairs would be to use polynomial hashing with a randomized
+base (as described in [this module](/gold/string-hashing)).
+
+## Anti-Hash Tests
+
+The built-in hashing algorithm for integers in C++ is vulnerable to pathological tests, causing abnormally slow runtimes. We describe the issue below and how to fix it. Java users are not affected (see [this](https://codeforces.com/blog/entry/62393?#comment-464875) comment).
+
+<Info title="Should I worry about anti-hash tests in USACO?">
+
+No - historically, no USACO problem has included an anti-hash test. However, these sorts of tests often appear in Codeforces, especially in educational rounds, where open hacking is allowed.
+
+</Info>
+
+<Resources>
+	<Resource title="Blowing up Unordered Map" source="CF" url="62393" starred>
+		Explanation of this problem and how to fix it.
+	</Resource>
+</Resources>
+
+<Spoiler title="Hack Case Generator">
+
+```cpp
+// source: https://codeforces.com/blog/entry/62393
+#include <cassert>
+#include <ctime>
+#include <iostream>
+#include <unordered_map>
+#include <vector>
+using namespace std;
+
+const int N = 2e5;
+
+vector<int> gen_multiples(int x) {
+	int cur = 1, rem = 1;
+	vector<int> res;
+	for (int i = 1; i <= N; i++) {
+		assert(1 <= cur && cur <= 1e9);
+		res.push_back(cur);
+		cur += x;
+		if (cur > 1e9) {
+			++rem;
+			cur = rem;
+		}
+	}
+	return res;
+}
+
+double insert_numbers(vector<int> nums) {
+	clock_t begin = clock();
+	unordered_map<long long, int> m;
+	for (int n : nums) m[n];
+	return (double)(clock() - begin) / CLOCKS_PER_SEC;
+}
+
+int main() {
+	const long prime_list[]{
+	    107897ul, 116731ul, 126271ul, 136607ul, 147793ul, 159871ul, 172933ul,
+	    187091ul, 202409ul, 218971ul, 236897ul, 256279ul, 277261ul, 299951ul,
+	};  // https://github.com/gcc-mirror/gcc/blob/5bea0e90e58d971cf3e67f784a116d81a20b927a/libstdc%2B%2B-v3/src/shared/hashtable-aux.cc
+	for (int prime : prime_list) {
+		cerr << "testing " << prime << ": ";
+		vector<int> multiples = gen_multiples(prime);
+		double runtime = insert_numbers(multiples);
+		cerr << runtime << "\n";
+		if (runtime > 1) {
+			// output hack case for https://cses.fi/problemset/task/1640/
+			cout << N << " 1\n";
+			for (int i = 0; i < N; ++i) {
+				if (i) cout << " ";
+				cout << multiples[i];
+			}
+			cout << "\n";
+			exit(0);
+		}
+	}
+}
+```
+
+</Spoiler>
+
+In order to make your `unordered_map` unhackable, the hash function $H$ you select must have the following property: it is hard to find integers $x$ and $y$ such that $x\neq y$ but $H(x)\equiv H(y) \pmod{P}$, where $P$ is the prime modulus corresponding to the number of buckets in your unordered map. Note that:
+ - The default hash function, $H(x)=x$, obviously does not satisfy this property, because you can simply choose $x=0$ and $y=P$.
+ - If open hacking is allowed, then any deterministic hash function does not satisfy this property, because a hacker could generate a test case specifically to break your solution. You should introduce randomness to ensure that your hash function changes from run to run.
+
+Here is a drop-in replacement for `unordered_map` that seems to work well in practice:
+
+<Resources>
+	<Resource
+		source="Benq (from KACTL)"
+		title="HashMap"
+		url="https://github.com/bqi343/USACO/blob/master/Implementations/content/data-structures/STL%20(5)/HashMap.h"
+	/>
+</Resources>
+
+```cpp
+struct chash {
+	// any random-ish large odd number will do
+	const uint64_t C = uint64_t(2e18 * PI) + 71;
+	// random 32-bit number
+	const uint32_t RANDOM =
+	    chrono::steady_clock::now().time_since_epoch().count();
+	size_t operator()(uint64_t x) const {
+		// see https://gcc.gnu.org/onlinedocs/gcc/Other-Builtins.html
+		return __builtin_bswap64((x ^ RANDOM) * C);
+	}
+};
+template <class K, class V> using cmap = unordered_map<K, V, chash>;
+// example usage: cmap<int, int>
+```
+
+## A Faster HashMap in C++
+
+In C++, it's usually faster to use `gp_hash_table<K, V>` instead of
+`unordered_map<K, V>`. Read / writes are much faster than `unordered_map`.
+The documentation is rather confusing, so I'll just summarize the most useful
+functions here. If you need a replacement for `unordered_set<K>`, use
+`gp_hash_table<K, null_type>`.
+
+<Resources>
+	<Resource
+		source="CF"
+		url="https://codeforces.com/blog/entry/60737"
+		title="Chilli - Order of magnitude faster hash tables"
+		starred
+	>
+		Introduces gp_hash_table
+	</Resource>
+	<Resource
+		source="GCC"
+		url="https://gcc.gnu.org/onlinedocs/libstdc++/ext/pb_ds/gp_hash_table.html#Resize_Policy566860465"
+		title="gp_hash_table Interface"
+	>
+		documentation
+	</Resource>
+	<Resource
+		source="Benq (from KACTL)"
+		title="HashMap"
+		url="https://github.com/bqi343/USACO/blob/master/Implementations/content/data-structures/STL%20(5)/HashMap.h"
+		starred
+	/>
+</Resources>
+
+### Custom Hashing
+
+Like `unordered_map`, `gp_hash_table` is vulernable to hash collisions if a
+cusetom hash function isn't used. We recommend using the same custom hash
+we used for unordered map above:
+
+```cpp
+#include <ext/pb_ds/assoc_container.hpp>
+using namespace __gnu_pbds;
+
+gp_hash_table<int, int, chash> table;
+```
+
+### Resizing
+
+Unordered map has
+[`reserve`](http://www.cplusplus.com/reference/unordered_map/unordered_map/reserve/).
+Calling this function before inserting any elements can result in a constant
+factor speedup.
+
+We can modify the declaration of `gp_hash_table` so that it supports the
+`resize` function, which operates similarly.
+
+```cpp
+template <class K, class V>
+using ht = gp_hash_table<
+    K, V, hash<K>, equal_to<K>, direct_mask_range_hashing<>, linear_probe_fn<>,
+    hash_standard_resize_policy<hash_exponential_size_policy<>,
+                                hash_load_check_resize_trigger<>, true>>;
+```
+
+These are the same template arguments as the default `gp_hash_table`, except
+`false` has been changed to `true`. This modification allows us to change the
+actual size of the hash table.
+
+```cpp
+int main() {
+	ht<int, null_type> g;
+	g.resize(5);
+	cout << g.get_actual_size() << "\n";  // 8
+	cout << g.size() << "\n";             // 0
+}
+```
+
+When calling `g.resize(x)`, `x` is rounded up to the nearest power of 2. Then
+the actual size of `g` is changed to be equal to `x` (unless `x < g.size()`, in
+which case an error is thrown).
+
+<Resources>
+	<Resource
+		source="GCC"
+		url="https://gcc.gnu.org/onlinedocs/libstdc++/ext/pb_ds/hash_standard_resize_policy.html"
+		title="Resize Policy"
+	>
+		documentation
+	</Resource>
+</Resources>
+
+Furthermore, if we construct `g` with the following arguments:
+
+```cpp
+ht<int, null_type> g({}, {}, {}, {}, {1 << 16});
+```
+
+then the actual size of `g` is always at least `1<<16` (regardless of calls to
+`resize`). The last argument **must** be a power of 2 (or else errors will be
+thrown).
+
+### Solving 3SUM
+
+<FocusProblem problem="three" />
+
+Since all the values are quite small, you can use an array instead of a hashmap.
+But if you didn't read the constraints carefully enough, you're in luck!
+
+<Warning>
+
+This code passes in 1180ms when initial capacity is specified, and TLEs
+when it is not.
+
+</Warning>
+
+```cpp
+#include <bits/stdc++.h>  // see C++ Tips & Tricks
+using namespace std;
+
+using ll = long long;
+
+using vi = vector<int>;
+#define pb push_back
+#define rsz resize
+#define all(x) begin(x), end(x)
+#define sz(x) (int)(x).size()
+
+using pi = pair<int, int>;
+#define f first
+#define s second
+#define mp make_pair
+
+void setIO(string name = "") {  // name is nonempty for USACO file I/O
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);  // see Fast Input & Output
+	// alternatively, cin.tie(0)->sync_with_stdio(0);
+	if (sz(name)) {
+		freopen((name + ".in").c_str(), "r", stdin);  // see Input & Output
+		freopen((name + ".out").c_str(), "w", stdout);
+	}
+}
+
+#include <ext/pb_ds/assoc_container.hpp>
+using namespace __gnu_pbds;
+
+int N, Q;
+long long ans[5000][5000];
+vector<int> A;
+
+int main() {
+	setIO("threesum");
+	cin >> N >> Q;
+	A.resize(N);
+	for (int i = 0; i < N; ++i) cin >> A[i];
+	for (int i = 0; i < N; ++i) {
+		gp_hash_table<int, int> g({}, {}, {}, {}, {1 << 13});
+		// initialize with certain capacity, must be power of 2
+		for (int j = i + 1; j < N; ++j) {
+			int res = -A[i] - A[j];
+			auto it = g.find(res);
+			if (it != end(g)) ans[i][j] = it->second;
+			g[A[j]]++;
+		}
+	}
+	for (int i = N - 1; i >= 0; --i)
+		for (int j = i + 1; j < N; ++j)
+			ans[i][j] += ans[i + 1][j] + ans[i][j - 1] - ans[i + 1][j - 1];
+	for (int i = 0; i < Q; ++i) {
+		int a, b;
+		cin >> a >> b;
+		cout << ans[a - 1][b - 1] << "\n";
+	}
+}
+```
+
+## Problems
+
+<Problems problems="four" />

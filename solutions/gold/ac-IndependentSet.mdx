@@ -1,0 +1,196 @@
+---
+id: ac-IndependentSet
+source: AtCoder DP Contest
+title: Independent Set
+author: Andrew Wang, Sofia Yang, Mohammad Nour Massri
+---
+
+## Explanation
+
+Root the tree at node $1$, allowing us to define the subtree of each node. Let
+$dp_0[v]$ represent the number of ways the subtree can be painted such that $v$
+is painted white. Similarily, let $dp_1[v]$ represent the number of ways the
+subtree can be painted such that $v$ is painted black.
+
+### Painted White
+
+The number of ways to paint a subtree such that the root node is painted white
+is the product of the ways to paint the child subtrees. The number of ways to
+paint a child subtree is the sum of how to paint it white and how to paint it
+black or, $dp_0[u] + dp_1[u]$. So the transition is:
+
+$$
+dp_0[v] = \prod_{u \in child(v)} \left(dp_0[u]+ dp_1[u]\right).
+$$
+
+### Painted Black
+
+Since no two adjacent nodes can both be painted black, if the root node of the
+subtree is painted black, none of its children can be painted black. This leads
+us to the conclusion that the number of ways to paint a subtree such that the
+root node is painted black is the product of all the ways the child subtrees can
+be painted white.
+
+$$
+dp_1[v] = \prod_{u \in child(v)} dp_0[u].
+$$
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int MOD = 1000000007;
+long dp[2][100000];
+vector<int> adj[100000];
+void dfs(int i, int p) {
+	dp[0][i] = 1;
+	dp[1][i] = 1;
+	for (int v : adj[i]) {
+		if (v != p) {
+			dfs(v, i);
+			dp[0][i] = (dp[0][i] * (dp[0][v] + dp[1][v])) % MOD;
+		}
+	}
+	for (int v : adj[i]) {
+		if (v != p) { dp[1][i] = (dp[1][i] * dp[0][v]) % MOD; }
+	}
+}
+int main() {
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
+	int n;
+	cin >> n;
+	for (int i = 0; i < n - 1; i++) {
+		int u, v;
+		cin >> u >> v;
+		u--, v--;
+		adj[u].push_back(v), adj[v].push_back(u);
+	}
+	dfs(0, -1);
+	cout << (dp[0][0] + dp[1][0]) % MOD << '\n';
+	return 0;
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Main {
+	public static ArrayList<Integer>[] adj;
+	public static boolean[] visited;
+	public static long[][] dp;
+	public static final int MOD = (int)1e9 + 7;
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader r = new BufferedReader(new InputStreamReader(System.in));
+		int N = Integer.parseInt(r.readLine());
+		visited = new boolean[N];
+		adj = new ArrayList[N];
+		dp = new long[2][N];
+
+		for (int i = 0; i < N; i++) { adj[i] = new ArrayList<>(); }
+
+		for (int i = 0; i < N - 1; i++) {
+			StringTokenizer st = new StringTokenizer(r.readLine());
+			int a = Integer.parseInt(st.nextToken()) - 1;
+			int b = Integer.parseInt(st.nextToken()) - 1;
+			adj[a].add(b);
+			adj[b].add(a);
+		}
+
+		dfs(0, -1);
+
+		/*
+		 * Return the number of ways for the root to be black,
+		 * added to the number of ways for the root to be white.
+		 */
+		System.out.println((dp[0][0] + dp[1][0]) % MOD);
+	}
+
+	public static void dfs(int node, int par) {
+		dp[0][node] = 1;
+		dp[1][node] = 1;
+
+		// The node is painted white.
+		for (int next : adj[node]) {
+			if (next != par) {
+				dfs(next, node);
+				// Number of ways to paint the subtree.
+				long subtree = (dp[0][next] + dp[1][next]);
+				dp[0][node] = (dp[0][node] * subtree) % MOD;
+			}
+		}
+
+		// The node is painted black.
+		for (int next : adj[node]) {
+			if (next != par) {
+				// If this node is black, none of the children can be black.
+				dp[1][node] = (dp[1][node] * dp[0][next]) % MOD;
+			}
+		}
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+# to solve Runtime Error problem with recursion in python
+from sys import setrecursionlimit
+
+setrecursionlimit(10**9)
+
+n = int(input())
+MOD = 10**9 + 7
+
+# representing the tree in an adjacency list
+adj = [[] for i in range(n)]
+
+for i in range(n - 1):
+	x, y = map(int, input().split())
+	x -= 1
+	y -= 1
+	adj[x].append(y)
+	adj[y].append(x)
+
+# 0 is white
+# 1 is black
+
+dp = [[0] * 2 for i in range(n)]
+
+
+def dfs(u, parent):
+	dp[u][0] = dp[u][1] = 1
+	for v in adj[u]:  # traversing the adjacency list of node u
+		if v != parent:  # v should be a child for u not its parent
+			dfs(v, u)  # recursively calculate the dp values for child v
+			# accumulate the children dp values to the dp of node u
+			# don't forget to take the values MOD 1e9+7
+			dp[u][1] *= dp[v][0]
+			dp[u][1] %= MOD
+			dp[u][0] *= (dp[v][0] + dp[v][1]) % MOD
+			dp[u][0] %= MOD
+
+
+dfs(0, -1)
+
+ans = (dp[0][0] + dp[0][1]) % MOD
+print(ans)
+```
+</PySection>
+</LanguageSection>

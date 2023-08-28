@@ -1,0 +1,196 @@
+---
+id: cses-1670
+source: CSES
+title: Swap Game
+author: Maggie Liu, Daniel Ge
+---
+
+<Spoiler title="Hint">
+Think of all $9!$ possible configurations of the board as the nodes with the moves
+as the edges that connect them. We perform BFS, starting at our intial given
+configuration.
+</Spoiler>
+
+The difficulty of this problem is with how we choose to implement the BFS. We present
+two solutions with the first being faster and the second being easier to write
+(note that the second solution may TLE). The differences lies with how the grid is
+[hashed](/gold/string-hashing).
+
+<Spoiler title="Solution 1">
+## Explanation
+
+Since there are only $9!$ states the grid can be in, we can use BFS to find the
+number of moves needed to reach the $\texttt{target}$ from the starting grid. We
+represent each grid as a number in base $9$.
+
+For each grid, we can swap two horizontally adjacent squares or two vertically
+adjacent squares. If we haven't processed this new grid yet, we can push the new
+grid and distance into the queue and mark it as visited in the $\texttt{vis}$
+array. When we reach the sorted grid, we print the $\texttt{dist}$.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N^2!)$, where $N$ is the side length of the
+grid
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <algorithm>
+#include <iostream>
+#include <queue>
+#include <vector>
+using namespace std;
+
+int powers[10];
+
+// swap two pieces and return the new grid
+int move(int grid, int i, int j) {
+	int a = grid % powers[i + 1] / powers[i];
+	int b = grid % powers[j + 1] / powers[j];
+	return grid - a * powers[i] - b * powers[j] + b * powers[i] + a * powers[j];
+}
+
+int main() {
+	powers[0] = 1;
+	for (int i = 1; i < 10; i++) { powers[i] = 9 * powers[i - 1]; }
+	vector<bool> vis(powers[9], false);
+	// the final grid we want to reach
+	int target = 0;
+	for (int i = 8; i >= 0; i--) { target += (8 - i) * powers[i]; }
+	int grid = 0, num;
+	for (int i = 8; i >= 0; i--) {
+		cin >> num;
+		grid += (num - 1) * powers[i];
+	}
+	queue<pair<int, int>> q;
+	q.push({grid, 0});
+	while (!q.empty()) {
+		auto [g, dist] = q.front();
+		q.pop();
+		// if we've reached the target, we can print the number of moves
+		if (g == target) {
+			cout << dist << endl;
+			return 0;
+		}
+		// swap two horizontally adjacent pieces
+		for (int i = 0; i < 8; i++) {
+			if (i % 3 == 2) { continue; }
+			int swapped = move(g, 8 - i, 8 - (i + 1));
+			if (!vis[swapped]) {
+				q.push({swapped, dist + 1});
+				vis[swapped] = true;
+			}
+		}
+		// swap two vertically adjacent pieces
+		for (int i = 0; i < 6; i++) {
+			int swapped = move(g, 8 - i, 8 - (i + 3));
+			if (!vis[swapped]) {
+				q.push({swapped, dist + 1});
+				vis[swapped] = true;
+			}
+		}
+	}
+	return 0;
+}
+```
+
+</CPPSection>
+</LanguageSection>
+</Spoiler>
+
+
+<Spoiler title="Solution 2">
+<Warning>
+While this solution is much easier to implement, it is extremely difficult to write an implementation that does not TLE in Java or Python. It may TLE in C++ if written inefficiently.
+</Warning>
+## Explanation
+Since there are only $9!$ states the grid can be in, we can use BFS to find the
+number of moves needed to reach the $\texttt{target}$ from the starting grid. We
+represent each grid as a string read left-to-right then top-to-bottom.
+
+For example, the grid in the testcase,
+```
+2 1 3
+7 5 9
+8 4 6
+```
+becomes "213759846".
+
+We then perform BFS normally but with a few notable changes.
+
+1. Since we can't have strings be the indices of an array, we store the "depth" of each string (number of moves required to reach a board configuration) inside our queue.
+
+2. We also store the strings (board configurations) already seen inside an **unordered_set**, as using normal (ordered) sets would be too slow.
+
+<Info title="Significance of using unordered set">
+As we will learn in the [hashing module](/gold/hashmaps), unordered set does searches and insertions in constant time despite a large constant factor while a normal set does this in $\mathcal{O}(\log n)$. Since we are dealing with up to $9!$ terms, it is necessary to use an unordered set.
+</Info>
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N^2!)$, where $N$ is the side length of the
+grid
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+unordered_set<string> visited;
+
+// Defined globally to be used in process_swap
+queue<pair<string, int>> q;
+int moves;
+string curboard;
+
+// Processing swapping the numbers in x, y positions
+void process_swap(int x, int y) {
+	swap(curboard[x], curboard[y]);
+	// Check whether already visited this potential board
+	if (visited.find(curboard) == visited.end()) {
+		q.push({curboard, moves + 1});
+		visited.insert(curboard);
+	}
+	// Restore to original board
+	swap(curboard[x], curboard[y]);
+}
+
+int main() {
+	string inp;
+	// Rewriting the input as a string
+	for (int i = 0; i < 9; i++) {
+		int a;
+		cin >> a;
+		inp += to_string(a - 1);
+	}
+
+	q.push({inp, 0});
+	while (!q.empty()) {
+		tie(curboard, moves) = q.front();
+		q.pop();
+		if (curboard == "012345678") {
+			cout << moves << endl;
+			return 0;
+		}
+
+		// Horizontal swaps
+		for (int i = 0; i < 9; i += 3) {
+			process_swap(i, i + 1);
+			process_swap(i + 1, i + 2);
+		}
+		// Vertical swaps
+		for (int i = 0; i < 3; i++) {
+			process_swap(i, i + 3);
+			process_swap(i + 3, i + 6);
+		}
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>
+</Spoiler>

@@ -1,0 +1,394 @@
+---
+id: cf-1216C
+source: CF 1216C
+title: D3C - White Sheet
+author: David Zhang, Varun Ragunath
+---
+
+## Video Solution
+
+By Varun Ragunath
+
+<YouTube id="lR2clYk3B6g" />
+
+<Spoiler title="Video Solution Code">
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	cin.sync_with_stdio(0);
+	cin.tie(0);
+
+	// input: get the original white sheet
+
+	int x1, y1, x2, y2;
+
+	cin >> x1 >> y1 >> x2 >> y2;
+
+	// update our white sheet with each new black sheet
+	// there will only be two iterations since there are only two black sheets
+
+	for (int black_sheet = 0; black_sheet < 2; black_sheet++) {
+		// input: get the current black sheet
+		int x3, y3, x4, y4;
+		cin >> x3 >> y3 >> x4 >> y4;
+
+		// since the the white sheet has to be either covered by a black sheet
+		// completely or it has to be covered by two black sheets with an
+		// intersection line
+
+		// lets check whether or not it would be possible for the seperator line
+		// to be vertical
+		if (y3 <= y1 and y4 >= y2) {
+			// the y axis bounds of the rectangle are completely engulfed by the
+			// black sheet this is a problem! now we need to update the bounds
+			// for our x axis for the left bound of the x axis, check whether or
+			// not it is covered
+			if (x1 >= x3 and x1 <= x4) {
+				// now we can tell the left bound is engulfed, and that
+				// it needs to be update to the right bound of our current black
+				// sheet
+				x1 = x4;
+			}
+			// apply similar logic to the right bound of the x axis
+			if (x2 >= x3 and x2 <= x4) { x2 = x3; }
+		}
+
+		// now apply similar logic for if the seperator line were to be
+		// horizontal
+		if (x3 <= x1 and x4 >= x2) {
+			// completely engulfed, so we need to update the border
+			// to update the border we apply the same logic as before
+			if (y1 >= y3 and y1 <= y4) { y1 = y4; }
+			// same here
+			if (y2 >= y3 and y2 <= y4) { y2 = y3; }
+		}
+	}
+
+	// now we have to check and confirm that our rectangle is not degenerate
+
+	if (x2 > x1 and y2 > y1) {
+		// since it is not degenerate, any point inside our current rectangle
+		// works as a possible point
+		cout << "YES\n";
+	} else {
+		// one of the sides of the rectangle is degenerate, so there is not
+		// visible point
+		cout << "NO\n";
+	}
+
+	return 0;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.util.*;
+public class whiteSheet {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		// input: get the original white sheet
+
+		int x1, y1, x2, y2;
+
+		x1 = sc.nextInt();
+		y1 = sc.nextInt();
+		x2 = sc.nextInt();
+		y2 = sc.nextInt();
+
+		// update our white sheet with each new black sheet
+		// there will only be two iterations since there are only two black
+		// sheets
+
+		for (int black_sheet = 0; black_sheet < 2; black_sheet++) {
+			// input: get the current black sheet
+			int x3, y3, x4, y4;
+			x3 = sc.nextInt();
+			y3 = sc.nextInt();
+			x4 = sc.nextInt();
+			y4 = sc.nextInt();
+
+			// since the the white sheet has to be either covered by a black
+			// sheet completely or it has to be covered by two black sheets with
+			// an intersection line
+
+			// lets check whether or not it would be possible for the seperator
+			// line to be vertical
+			if (y3 <= y1 && y4 >= y2) {
+				// the y axis bounds of the rectangle are completely engulfed by
+				// the black sheet this is a problem! now we need to update the
+				// bounds for our x axis for the left bound of the x axis, check
+				// whether or not it is covered
+				if (x1 >= x3 && x1 <= x4) {
+					// now we can tell the left bound is engulfed, and that
+					// it needs to be update to the right bound of our current
+					// black sheet
+					x1 = x4;
+				}
+				// apply similar logic to the right bound of the x axis
+				if (x2 >= x3 && x2 <= x4) { x2 = x3; }
+			}
+
+			// now apply similar logic for if the seperator line were to be
+			// horizontal
+			if (x3 <= x1 && x4 >= x2) {
+				// completely engulfed, so we need to update the border
+				// to update the border we apply the same logic as before
+				if (y1 >= y3 && y1 <= y4) { y1 = y4; }
+				// same here
+				if (y2 >= y3 && y2 <= y4) { y2 = y3; }
+			}
+		}
+
+		// now we have to check and confirm that our rectangle is not degenerate
+
+		if (x2 > x1 && y2 > y1) {
+			// since it is not degenerate, any point inside our current
+			// rectangle works as a possible point
+			System.out.println("YES");
+		} else {
+			// one of the sides of the rectangle is degenerate, so there is not
+			// visible point
+			System.out.println("NO");
+		}
+	}
+}
+```
+
+</JavaSection>
+</LanguageSection>
+</Spoiler>
+
+<Info title="Info/Tips">
+Especially with rectangle geometry, make a good habit of drawing patterns and observations on a scratch sheet of paper or whiteboard. It helps a lot!
+
+Also, if you don't understand the explanation, draw each possibility (Top, Bottom, Left and Right) on a sheet of paper and try to see the connections.
+</Info>
+[Official Analysis (C++)](https://codeforces.com/blog/entry/69954)
+
+## Explanation
+
+There are many ways to solve the problem, but the easiest way is to imagine cutting the white sheet.
+
+Everytime the white sheet is covered by a black sheet, we can imagine cutting the intersection between the black and white sheets. Then, if the area of the final white sheet after being cut by the two rectangles is greater than zero, there is a portion of the white sheet that is visible.
+
+However, when considering cutting the sheet, the portion that is being cut must cut from entirely $ x_{1}$->$ x_{2}$ or $ y_{1}$->$ y_{2}$ or else there will be a portion of the white sheet still shown. We only cut when a black sheet completely covers the entire width or length of the white sheet, otherwise there will still be bits and pieces shown.
+
+
+There are 4 instances of which a white sheet can cover a black sheet.
+
+$\textbf{Top: }$ From the top, if the white sheet is completely covered from $ x_{1}$->$ x_{2}$ or $ y_{1}$->$ y_{2}$ and intersects some part of a black sheet, then change the $y_{2}$ (top of the rectangle) to the bottom of the black rectangle.
+
+$\textbf{Bottom: }$ From the bottom, if the white sheet is completely covered from $ x_{1}$->$ x_{2}$ and intersects some part of a black sheet, then change the $y_{1}$ (bottom of the rectangle) to the top of the black rectangle.
+
+$\textbf{Left: }$ From the left, if the white sheet is completely covered from $y_1$ to $y_2$ and intersects some part of a black sheet, then change the $x_1$ (left edge of the rectangle) to the right edge of the black rectangle.
+
+$\textbf{Right: }$ From the right, if the white sheet is completely covered from $y_1$ to $y_2$ and intersects some part of a black sheet, then change the $x_2$ (right edge of the rectangle) to the left edge of the black rectangle.
+
+Also, keep in mind to make sure that $x_1$ is always $<$ $x_2$ and the same with $y_1$ and $y_2.$
+
+Since there are no for loops or any sort of repetitions, the time complexity is $\mathcal{O}(1)$
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(1)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+struct Rect {
+	int x1, y1, x2, y2;
+	int area() { return (x2 - x1) * (y2 - y1); }
+};
+
+/*
+   Main Idea: If B intersects entirely in the x or y direction, cut it.
+   This method cuts rectangle A based on rectangle B. (A - white sheet, B -
+   black sheet) We can cut rectangle A if B covers all of x1->x2 or y1->y2.
+ */
+Rect cut(Rect A, Rect B) {
+	// If B cuts A from the left side
+	if (A.x1 >= B.x1 && B.x2 >= A.x1 && B.y1 <= A.y1 && B.y2 >= A.y2) {
+		A.x1 = B.x2;
+		A.x2 = max(A.x2, B.x2);  // If B covers A entirely
+	}
+
+	// If B cuts A from the right side
+	if (A.x2 >= B.x1 && B.x2 >= A.x2 && B.y1 <= A.y1 && B.y2 >= A.y2) {
+		A.x2 = B.x1;
+		A.x1 = min(A.x1, B.x1);  // If B covers A entirely
+	}
+
+	// If B cuts A from the bottom side
+	if (A.y1 >= B.y1 && B.y2 >= A.y1 && B.x1 <= A.x1 && B.x2 >= A.x2) {
+		A.y1 = B.y2;
+		A.y2 = max(A.y2, B.y2);  // If B covers A entirely
+	}
+
+	// If B cuts A from the top side
+	if (A.y2 >= B.y1 && B.y2 >= A.y2 && B.x1 <= A.x1 && B.x2 >= A.x2) {
+		A.y2 = B.y1;
+		A.y1 = min(A.y1, B.y1);  // If B covers A entirely
+	}
+	return A;
+}
+
+int main() {
+	Rect A, B, C;
+	cin >> A.x1 >> A.y1 >> A.x2 >> A.y2;
+	cin >> B.x1 >> B.y1 >> B.x2 >> B.y2;
+	cin >> C.x1 >> C.y1 >> C.x2 >> C.y2;
+
+	A = cut(A, B);
+	A = cut(A, C);
+	// Print NO only if the remaining cut area is 0.
+	if (A.area() == 0) {
+		cout << "NO" << endl;
+	} else {
+		cout << "YES" << endl;
+	}
+}
+```
+</CPPSection>
+<PySection>
+
+```py
+class Rect:
+	def __init__(self, a: int, b: int, c: int, d: int):
+		self.x1, self.y1, self.x2, self.y2 = a, b, c, d
+
+
+"""
+Main Idea: If B intersects entirely in the x or y direction, cut it.
+This method cuts rectangle A based on rectangle B. (A - white sheet, B - black sheet)
+We can cut rectangle A if B covers all of x1->x2 or y1->y2.
+"""
+
+
+def cut(A: Rect, B: Rect) -> Rect:
+	# If B cuts A from the left side
+	if A.x1 >= B.x1 and B.x2 >= A.x1 and B.y1 <= A.y1 and B.y2 >= A.y2:
+		A.x1 = B.x2
+		A.x2 = max(A.x2, B.x2)  # If B covers A entirely
+
+	# If B cuts A from the right side
+	if A.x2 >= B.x1 and B.x2 >= A.x2 and B.y1 <= A.y1 and B.y2 >= A.y2:
+		A.x2 = B.x1
+		A.x1 = min(A.x1, B.x1)  # If B covers A entirely
+
+	# If B cuts A from the bottom side
+	if A.y1 >= B.y1 and B.y2 >= A.y1 and B.x1 <= A.x1 and B.x2 >= A.x2:
+		A.y1 = B.y2
+		A.y2 = max(A.y2, B.y2)  # If B covers A entirely
+
+	# If B cuts A from the top side
+	if A.y2 >= B.y1 and B.y2 >= A.y2 and B.x1 <= A.x1 and B.x2 >= A.x2:
+		A.y2 = B.y1
+		A.y1 = min(A.y1, B.y1)  # If B covers A entirely
+
+	return A
+
+
+X = list(map(int, input().split()))
+Y = list(map(int, input().split()))
+Z = list(map(int, input().split()))
+
+A = Rect(X[0], X[1], X[2], X[3])
+B = Rect(Y[0], Y[1], Y[2], Y[3])
+C = Rect(Z[0], Z[1], Z[2], Z[3])
+
+A = cut(A, B)
+A = cut(A, C)
+
+# Print NO only if the remaining cut area is 0.
+print("NO" if A.x2 - A.x1 == 0 or A.y2 - A.y1 == 0 else "YES")
+```
+</PySection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Main {
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio();
+		Rect A =
+		    new Rect(io.nextInt(), io.nextInt(), io.nextInt(), io.nextInt());
+		Rect B =
+		    new Rect(io.nextInt(), io.nextInt(), io.nextInt(), io.nextInt());
+		Rect C =
+		    new Rect(io.nextInt(), io.nextInt(), io.nextInt(), io.nextInt());
+
+		A = cut(A, B);
+		A = cut(A, C);
+
+		// Print NO only if the remaining cut area is 0.
+		if (A.area() == 0) {
+			System.out.println("NO");
+		} else {
+			System.out.println("YES");
+		}
+		io.close();
+	}
+
+	// CodeSnip{Kattio}
+
+	static class Rect {
+		public int x1, y1, x2, y2;
+		public Rect(int a, int b, int c, int d) {
+			x1 = a;
+			y1 = b;
+			x2 = c;
+			y2 = d;
+		}
+
+		public int area() { return (x2 - x1) * (y2 - y1); }
+	}
+
+	/*
+	   Main Idea: If B intersects entirely in the x or y direction, cut it.
+	   This method cuts rectangle A based on rectangle B. (A - white sheet, B -
+	   black sheet) We can cut rectangle A if B covers all of x1->x2 or y1->y2.
+	 */
+	static Rect cut(Rect A, Rect B) {
+
+		// If B cuts A from the left side
+		if (A.x1 >= B.x1 && B.x2 >= A.x1 && B.y1 <= A.y1 && B.y2 >= A.y2) {
+			A.x1 = B.x2;
+			A.x2 = Math.max(A.x2, B.x2);  // If B covers A entirely
+		}
+
+		// If B cuts A from the right side
+		if (A.x2 >= B.x1 && B.x2 >= A.x2 && B.y1 <= A.y1 && B.y2 >= A.y2) {
+			A.x2 = B.x1;
+			A.x1 = Math.min(A.x1, B.x1);  // If B covers A entirely
+		}
+
+		// If B cuts A from the bottom side
+		if (A.y1 >= B.y1 && B.y2 >= A.y1 && B.x1 <= A.x1 && B.x2 >= A.x2) {
+			A.y1 = B.y2;
+			A.y2 = Math.max(A.y2, B.y2);  // If B covers A entirely
+		}
+
+		// If B cuts A from the top side
+		if (A.y2 >= B.y1 && B.y2 >= A.y2 && B.x1 <= A.x1 && B.x2 >= A.x2) {
+			A.y2 = B.y1;
+			A.y1 = Math.min(A.y1, B.y1);  // If B covers A entirely
+		}
+		return A;
+	}
+}
+```
+</JavaSection>
+</LanguageSection>

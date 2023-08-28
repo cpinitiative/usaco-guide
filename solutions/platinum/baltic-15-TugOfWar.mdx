@@ -1,0 +1,134 @@
+---
+id: baltic-15-TugOfWar
+source: Baltic OI 2015
+title: Tug of War
+author: Andi Qu
+---
+
+[Official Analysis](https://boi.cses.fi/files/boi2015_solutions.zip)
+
+## Making Cycles
+
+Imagine we have a bipartite graph where each spot is a node and each person is
+an edge between the two spots they're willing to take.
+
+If any node has degree equal to 0, then it's not possible to assign the teams.
+
+If any node has degree equal to 1, then we must assign the person willing to
+take that spot to it. After assigning that person, we can delete the node and
+edge from the graph.
+
+We can repeatedly assign people to and delete nodes with degree equal to 1 by
+using a BFS. After doing this, all nodes will have degree greater than 1.
+
+However, if any node has degree greater than 2, then by the pigeonhole
+principle, there must be a node with degree equal to less than 2, which isn't
+possible.
+
+Thus, we are left with several disjoint simple cycles. Since this is a bipartite
+graph, these cycle lengths are all even.
+
+## Using Knapsack DP
+
+Let the set of all cycles be $C$ and let the difference in strengths from the
+nodes we previously deleted be $d$.
+
+Consider a single cycle. Notice how if a person/edge is assigned to some side,
+then the next person must be assigned to the opposite side.
+
+This means that each cycle contributes a fixed amount to the difference in
+strengths! Let the absolute value of this amount for the $i$-th cycle be $V_i$.
+
+We now only need to check whether there exist 2 disjoint sets $S$ and $T$ such
+that $S \cup T = C$ and
+
+$$
+\left |d + \sum_{i \in T} V_i - \sum_{i \in S} V_i \right | \leq K
+$$
+
+This is the same as checking whether a subset $S$ of $C$ exists such that
+
+$$
+\left |d + \sum_{i \in C} V_i - 2 \sum_{i \in S} V_i \right | \leq K
+$$
+
+We can check this using knapsack DP in $\mathcal{O}(NK)$ time.
+
+Since we are only checking whether we can obtain some value, we can use a bitset
+to speed this up.
+
+The final complexity is $\mathcal{O}(NK / 64)$, which is fast enough for 100
+points.
+
+## Implementation
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+multiset<pair<int, int>> graph[60001];
+bool visited[60001];
+bitset<600001> possible;
+int tot = 0, sm = 0;
+
+void dfs(int node) {
+	visited[node] = true;
+	if (!graph[node].size()) return;
+	int nxt, cost;
+	tie(nxt, cost) = *graph[node].begin();
+
+	tot += cost;
+	if (!visited[nxt]) {
+		graph[nxt].erase(graph[nxt].find({node, -cost}));
+		graph[node].clear();
+		dfs(nxt);
+	}
+}
+
+int main() {
+	int n, k;
+	scanf("%d %d", &n, &k);
+	for (int i = 1; i <= 2 * n; i++) {
+		int l, r, s;
+		scanf("%d %d %d", &l, &r, &s);
+		graph[l].insert({n + r, s});
+		graph[n + r].insert({l, -s});
+	}
+
+	queue<int> q;
+	for (int i = 1; i <= 2 * n; i++) {
+		if (graph[i].size() == 1) q.push(i);
+		if (graph[i].size() == 0) return printf("NO\n"), 0;
+	}
+	while (q.size()) {
+		int curr = q.front();
+		q.pop();
+		if (graph[curr].size() == 0) return printf("NO\n"), 0;
+		int nxt, cost;
+		tie(nxt, cost) = *graph[curr].begin();
+		tot += cost;
+
+		graph[curr].clear();
+		graph[nxt].erase(graph[nxt].find({curr, -cost}));
+		if (graph[nxt].size() == 1) q.push(nxt);
+	}
+
+	vector<int> items;
+	if (tot) items.push_back(abs(tot));
+	for (int i = 1; i <= 2 * n; i++)
+		if (!visited[i] && graph[i].size()) {
+			tot = 0;
+			graph[i].erase(graph[i].begin());
+			dfs(i);
+			if (tot) items.push_back(abs(tot));
+		}
+	sm = accumulate(items.begin(), items.end(), 0);
+
+	possible[0] = 1;
+	for (int i : items) possible |= possible << i;
+	for (int i = 0; i <= sm; i++)
+		if (possible[i] && abs(2 * i - sm) <= k) return printf("YES\n"), 0;
+	printf("NO\n");
+	return 0;
+}
+```

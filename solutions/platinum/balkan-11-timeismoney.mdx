@@ -1,0 +1,177 @@
+---
+id: balkan-11-timeismoney
+source: Balkan OI 2011
+title: Timeismoney
+author: Chuyang Wang
+---
+
+[Official Analysis](http://www.boi2011.ro/resurse/tasks/timeismoney-sol.pdf)
+
+## Explanation
+
+For the first few test cases where $t=c$, we can solve the problem by constructing an MST with $t$ being the weights. If we let $T = \sum t$ and $C = \sum c$, $V = T \cdot C = T^2$ will be minimized when $T$ is minimized.
+
+To solve the problem completely, we will have to minimize the product of those two sums, $V = C \cdot T$. The solution space contains all possible MSTs with their respective $T$ and $C$ values. We can view each of those possible solutions as a 2D-point $(T, C)$. There exists a curve $C(T) = \frac{V}{T}$ such that every point on it has the same $V$ value. As an inverse proportion function, it is convex, so the best solution must lie somewhere on the left-most curve, i.e. on the lower convex hull. Therefore, it suffices to check all points on the lower convex hull of our solution space to find the minimal $V$ value. Nevertheless, we cannot really calculate the convex hull since it would require all $\binom{M}{N-1}$ points to be known. Instead, we use another approach below.
+
+At the beginning, we choose two points on the lower convex hull, $A$ and $B$, as our starting points for our search. $A$ should be the point where we minimize $T$ and $B$ where we minimize $C$. We then want to find a point $P$ which is left-most from line $AB$. The area of the triangle $ABP$ is proportional to the distance between the line $AB$ and the point $P$, given $|AB|$ is constant. Therefore, we only have to find out the triangle $ABP$ with maximum area. Using the cross product, we get $-2A_{ABP} = AB \times AP = (x_B - x_A)(y_P - y_A) - (y_B - y_A)(x_P - x_A) = y_P(x_B - x_A) - x_P(y_B - y_A) + x_A(y_B - y_A) - y_A(x_B - x_A)$. Note that $x_A(y_B - y_A) - y_A(x_B - x_A)$ is constant and can be ignored. Thus, $-A_{ABP}$ is proportional to $y_P(x_B - x_A) - x_P(y_B - y_A)$. As our goal was to maximize $A_{ABP}$, we should here minimize $y_P(x_B - x_A) - x_P(y_B - y_A)$ instead. This can be done by taking this value as the weight of our MST algorithm and then build the MST. The result would be our new point $P$. If $P$ is on the right side of vector $AB$ (thus on the left side of line $AB$), it is also on the convex hull. We then use Divide-and-Conquer and solve the same problem with either points $A$, $P$ or $P$, $B$. For each of these points, we update the current best solution if the new point is better. Otherwise, if $P$ is on the right side of line $AB$, we do not have to search further with $P$ since it is not on the lower convex hull anymore.
+
+Since $T$ and $C$ are positive integers, the lower convex hull between $A$ and $B$ consists of $k \leq (N-1) \cdot t_{max} = 50745$ points. For each of those $k$ points, we run Kruskal's algorithm in $\mathcal{O}(M \log M)$. Therefore, the total time complexity is $\mathcal{O}(kM \log M)$. This suffices for the given test cases.
+
+<LanguageSection>
+<CPPSection>
+## Implementation
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long int;
+using pii = pair<int, int>;
+
+// BeginCodeSnip{DSU}
+struct DSU {
+	vector<int> g;
+	DSU(int n) : g(n, -1) {}
+	int find(int a) { return g[a] < 0 ? a : (g[a] = find(g[a])); }
+	/**
+	 * If a and b are already in the same set, return false and do nothing.
+	 * Otherwise, merge set a and b into one set and return true.
+	 */
+	bool unite(int a, int b) {
+		a = find(a);
+		b = find(b);
+		if (a == b) return false;
+		if (g[a] > g[b]) swap(a, b);
+		g[a] += g[b];
+		g[b] = a;
+		return true;
+	}
+};
+// EndCodeSnip
+
+struct Edge {
+	int x;
+	int y;
+	int time;
+	int cost;
+	int id;
+};
+
+/**
+ * Kruskal's Algorithm to find a MST with given edges and weights. Returns the
+ * time and cost as pair<int,int> as well as ids of edges of the MST as
+ * vector<int>.
+ */
+pair<pii, vector<int>> kruskal(int n, vector<Edge> &edges,
+                               vector<int> &weights) {
+	sort(begin(edges), end(edges), [&](const Edge &e1, const Edge &e2) {
+		return weights[e1.id] < weights[e2.id];
+	});
+	DSU dsu(n);
+	vector<int> mst;
+	int t = 0;
+	int c = 0;
+	for (Edge &e : edges) {
+		if (dsu.unite(e.x, e.y)) {
+			t += e.time;
+			c += e.cost;
+			mst.push_back(e.id);
+		}
+	}
+	return {{t, c}, mst};
+}
+
+/**
+ * Calculate the signed area of the triangle defined by the given points.
+ * This value is negative if point P is on the right side of vector AB.
+ */
+ll area(pii A, pii B, pii P) {
+	pii AB = {B.first - A.first, B.second - A.second};
+	pii AP = {P.first - A.first, P.second - A.second};
+	return AB.first * AP.second - AB.second * AP.first;
+}
+
+int main() {
+	int N, M;
+	cin >> N >> M;
+
+	vector<Edge> edges(M);
+	for (int i = 0; i < M; i++) {
+		int x, y, t, c;
+		cin >> x >> y >> t >> c;
+		edges[i] = {x, y, t, c, i};
+	}
+
+	// The best Minimum Spanning Tree found so far.
+	vector<int> best_MST;
+	// The sum of time and cost w.r.t. best_MST.
+	pii best_V = {1e8, 1e8};
+	vector<int> current_MST;
+	pii A, B, P;
+	// The weights used by Kruskal's Algorithm to determine the MST.
+	vector<int> weights(M);
+
+	// A corresponds to the values of the MST if we only minimize the time
+	for (int i = 0; i < M; i++) { weights[edges[i].id] = edges[i].time; }
+	tie(A, best_MST) = kruskal(N, edges, weights);
+	best_V = A;
+
+	// B corresponds to values of the MST if we only minimize the cost
+	for (int i = 0; i < M; i++) { weights[edges[i].id] = edges[i].cost; }
+	tie(B, current_MST) = kruskal(N, edges, weights);
+	// If solution B is better than A, update the best solution
+	if ((ll)B.first * B.second < (ll)A.first * A.second) {
+		best_V = B;
+		best_MST = current_MST;
+	}
+
+	// Search recursively for points on lower convex hull of the solution space
+	stack<pair<pii, pii>> to_search;
+	to_search.push({A, B});
+	while (!to_search.empty()) {
+		auto [A, B] = to_search.top();
+		to_search.pop();
+
+		/*
+		 * Since P is on the right side of vector AB, the signed area is
+		 * negative. Thus, to maximize the unsigned area of triangle ABP, we
+		 * should minimize this signed value.
+		 */
+		for (int i = 0; i < M; i++) {
+			weights[edges[i].id] = (edges[i].cost * (B.first - A.first) -
+			                        edges[i].time * (B.second - A.second));
+		}
+		tie(P, current_MST) = kruskal(N, edges, weights);
+
+		/*
+		 * If P is on the left side of vector AB, we can terminate the search
+		 * on this branch. Note that the "left side of vector AB" is the right
+		 * side on the coordinate system.
+		 */
+		if (area(A, B, P) >= 0) { continue; }
+
+		// Compare the V value and update the best result if needed.
+		if ((ll)P.first * P.second < (ll)best_V.first * best_V.second) {
+			best_V = P;
+			best_MST = current_MST;
+		}
+
+		/*
+		 * Search further with the new acquired point P to see if there is
+		 * another point that is on a hyperbola further left than P.
+		 */
+		to_search.push({A, P});
+		to_search.push({P, B});
+	}
+
+	cout << best_V.first << " " << best_V.second << "\n";
+	sort(begin(edges), end(edges),
+	     [](const Edge &e1, const Edge &e2) { return e1.id < e2.id; });
+	for (int &id : best_MST) {
+		cout << edges[id].x << " " << edges[id].y << "\n";
+	}
+}
+```
+
+</CPPSection>
+
+</LanguageSection>

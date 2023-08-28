@@ -17,6 +17,9 @@ export class ModuleLinkInfo {
     public description?: string,
     public frequency?: ModuleFrequency,
     public isIncomplete?: boolean,
+    public cppOc: number = 0,
+    public javaOc: number = 0,
+    public pyOc: number = 0,
     public probs?: any,
     public gitAuthorTime?: any
   ) {

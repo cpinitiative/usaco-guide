@@ -11,30 +11,28 @@ function SEO({
   title,
   pathname,
 }) {
-  const { site, image: defaultImage } = useStaticQuery(
-    graphql`
-      query {
-        site {
-          siteMetadata {
-            title
-            description
-            author
-            keywords
-            siteUrl
-          }
+  const { site, image: defaultImage } = useStaticQuery(graphql`
+    query {
+      site {
+        siteMetadata {
+          title
+          description
+          author
+          keywords
+          siteUrl
         }
-        image: file(relativePath: { eq: "social-media-image.jpg" }) {
-          childImageSharp {
-            resize(width: 1200, quality: 100) {
-              src
-              height
-              width
-            }
+      }
+      image: file(relativePath: { eq: "social-media-image.jpg" }) {
+        childImageSharp {
+          resize(width: 1200, quality: 100) {
+            src
+            height
+            width
           }
         }
       }
-    `
-  );
+    }
+  `);
   if (!metaImage) {
     metaImage = defaultImage.childImageSharp.resize;
   }

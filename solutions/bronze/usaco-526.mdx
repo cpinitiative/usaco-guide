@@ -1,0 +1,221 @@
+---
+id: usaco-526
+source: USACO Bronze 2015 February
+title: Censoring
+author: Brad Ma, Ahmad Bilal, Amogha Pokkulandra
+---
+
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_censor_bronze.html)
+
+## Explanation
+
+Let us define $\texttt{censored}$ as the final censored text.
+
+We can iterate through every character of $s$, appending it to $\texttt{censored}$.
+However, whenever we append a character we we need to check if $\texttt{censored}$ ends with the censored word.
+If it does, we remove it from $\texttt{censored}$ by taking off the last few characters.
+
+
+As a demonstration, let's try this on the example case where:
+$$
+\begin{align*}
+s&=\texttt{whatthemomooofun} \\
+t&=\texttt{moo}
+\end{align*}
+$$
+
+Our solution will loop through each character of $s$, appending it to $\texttt{censored}$ until it becomes $\texttt{whatthemomoo}$, when it will cut off the last 3 characters since they equal $t$. This results in $\texttt{censored}$ becoming $\texttt{whatthemo}$.
+Right after this, $\texttt{censored}$ becomes $\texttt{whatthemoo}$ as the next letter in $s$ is $o$, so we omit the last 3 characters again and $\texttt{censored}$ becomes $\texttt{whatthe}$.
+
+After this, the check isn't triggered anymore, so we end up with $\texttt{whatthefun}$ as our final word.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(S \cdot T)$
+
+<LanguageSection>
+<PySection>
+
+```py
+import sys
+
+sys.stdin = open("censor.in", "r")
+sys.stdout = open("censor.out", "w")
+
+s = input().strip()
+t = input().strip()
+
+censored = ""
+# Add each character to the censored string
+for char in s:
+	censored += char
+	# If the end of the string is t, we remove t from the end
+	if censored[-len(t) :] == t:
+		censored = censored[: -len(t)]
+
+print(censored)
+```
+</PySection>
+<CPPSection>
+
+```cpp
+#include "bits/stdc++.h"
+using namespace std;
+
+// BeginCodeSnip{{USACO-style I/O. See General / Input & Output}}
+void setIO(string name = "") {
+	cin.tie(0)->sync_with_stdio(0);
+	if ((int)name.size()) {
+		freopen((name + ".in").c_str(), "r", stdin);
+		freopen((name + ".out").c_str(), "w", stdout);
+	}
+}
+// EndCodeSnip
+
+int main() {
+	setIO("censor");
+	string s;
+	string t;
+	cin >> s >> t;
+
+	string censored;
+	// Add each character to the censored string
+	for (int i = 0; i < s.size(); i++) {
+		censored += s[i];
+		// If the end of the string is t, we remove t from the end
+		if (censored.size() > t.size() &&
+		    censored.substr(censored.size() - t.size()) == t) {
+			censored.resize(censored.size() - t.size());
+		}
+	}
+	cout << censored << endl;
+}
+```
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Censor {
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio("censor");
+		String s = io.next();
+		String t = io.next();
+
+		// We use StringBuilder in Java because it's significantly faster
+		StringBuilder censored = new StringBuilder();
+		censored.append(s.substring(0, t.length() - 1));
+
+		// Add each character to the censored string
+		for (int x = t.length() - 1; x < s.length(); x++) {
+			censored = censored.append(s.charAt(x));
+			// We need to check if our current string's longer than the censored
+			// word
+			if (censored.length() >= t.length()) {
+				String check =
+				    censored.substring(censored.length() - t.length());
+				// If the end of the string is t, we remove t from the end
+				if (check.equals(t)) {
+					censored.delete(censored.length() - t.length(),
+					                censored.length());
+				}
+			}
+		}
+		io.println(censored);
+		io.close();
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+</JavaSection>
+</LanguageSection>
+
+
+
+## Video Solution
+
+By Amogha Pokkulandra
+
+<YouTube id="ag46IZcJRQk" />
+
+<Spoiler title="Video Solution Code">
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int main() {
+	freopen("censor.in", "r", stdin);
+	freopen("censor.out", "w", stdout);
+
+	string S, T;  // String S and T, what we want to censor and the censor word
+	cin >> S >> T;
+	string out =
+	    "";  // No need for StringBuilder because c++ strings are mutable
+
+	for (int i = 0; i < S.length(); i++) {
+		// Reading in characters one at a time
+		out += S[i];
+
+		// Checking length condition
+		if ((out.length() >= T.length()) &&
+		    out.substr(out.length() - T.length()) == (T)) {
+			// Resizing the string such that it does not contain censor word
+			out.resize(out.size() - T.size());
+		}
+	}
+
+	cout << out;
+}
+```
+
+</CPPSection>
+<JavaSection>
+```java
+import java.io.*;
+
+public class Censoring {
+	public static void main(String[] args) throws IOException {
+		// file in and out
+		PrintWriter = pw = new PrintWriter(new File("censor.out"));
+		BufferedReader br =
+		    new BufferedReader(new FileReader(new File("censor.in")));
+
+		// String S, what we want to censor
+		String S = br.readLine();
+		// String T, the censored word
+		String T = br.readLine();
+		// StringBuilder solves the problem of immutable strings, so less memory
+		// is taken up
+		StringBuilder out = new StringBuilder("");
+
+		for (int i = 0; i < S.length(); i++) {
+			// Adding each character to the result one at a time
+			out.append(S.substring(i, i + 1));
+
+			// Checking the length of the result and whether the censor word
+			// exists
+			if ((out.length() >= T.length()) &&
+			    out.substring(out.length() - T.length()).contentEquals(T)) {
+				// Deleting the censored word, should it exist
+				out.delete(out.length() - T.length(), out.length());
+			}
+		}
+
+		System.out.println(out.toString());
+		pw.println(out);
+		pw.close();
+		br.close();
+	}
+}
+```
+
+</JavaSection>
+</LanguageSection>
+</Spoiler>

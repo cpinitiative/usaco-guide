@@ -4,10 +4,10 @@ title: Disjoint Set Union
 author: Benjamin Qi, Andrew Wang, Nathan Gong
 contributors: Michael Cao
 prerequisites:
-  - dfs
+  - graph-traversal
 description:
-  'The Disjoint Set Union (DSU) data structure allows you to add edges to an
-  initially empty graph and test whether two vertices of the graph are
+  'The Disjoint Set Union (DSU) data structure, which allows you to add edges to a
+   graph and test whether two vertices of the graph are
   connected.'
 frequency: 3
 ---
@@ -18,8 +18,8 @@ frequency: 3
 
 <Resources>
 	<Resource
-		source="CF"
-		title="EDU: DSU"
+		source="CF EDU"
+		title="DSU"
 		url="https://codeforces.com/edu/course/2/lesson/7"
 		starred
 	>
@@ -67,15 +67,12 @@ frequency: 3
 
 ## Implementation
 
-As the implementation is quite simple, you may prefer to use this in place of
-DFS for computing connected components.
-
 <LanguageSection>
 <CPPSection>
 
-Check PAPS for the explanation. `e[x]` contains the negation of the size of
-$x$'s component if $x$ is the representative of its component, and the parent of
-$x$ otherwise.
+Check PAPS for an explanation. `e[x]` contains the negation of the size of $x$'s
+component if $x$ is the representative of its component, and the parent of $x$
+otherwise.
 
 <Resources>
 	<Resource
@@ -104,7 +101,8 @@ struct DSU {
 		x = get(x), y = get(y);
 		if (x == y) return false;
 		if (e[x] > e[y]) swap(x, y);
-		e[x] += e[y]; e[y] = x;
+		e[x] += e[y];
+		e[y] = x;
 		return true;
 	}
 };
@@ -136,9 +134,7 @@ public class DisjointSets {
 	public boolean union(int x, int y) {
 		int xRoot = find(x);
 		int yRoot = find(y);
-		if (xRoot == yRoot) {
-			return false;
-		}
+		if (xRoot == yRoot) { return false; }
 		if (sizes[xRoot] < sizes[yRoot]) {
 			parents[xRoot] = yRoot;
 			sizes[yRoot] += sizes[xRoot];
@@ -150,9 +146,7 @@ public class DisjointSets {
 	}
 
 	// returns whether two nodes are in the same connected component
-	public boolean connected(int x, int y) {
-		return find(x) == find(y);
-	}
+	public boolean connected(int x, int y) { return find(x) == find(y); }
 }
 ```
 
@@ -193,20 +187,23 @@ class DisjointSets:
 </PySection>
 </LanguageSection>
 
+As the implementation is quite simple, you may prefer to use this in place of
+DFS for computing connected components.
+
 ## Solution - Focus Problem
 
-**Time Complexity:** $\mathcal{O}(Q \log ^*N)$
+**Time Complexity:** $\mathcal{O}(Q \alpha(N))$
 
 Without union find, we would have to represent the graph with an adjacency list
-and use [flood fill](/silver/flood-fill) to calculate
-connected components. This approach takes $\mathcal{O}(NQ)$ time, which is too
-slow, motivating us to use **union find**.
+and use [flood fill](/silver/flood-fill) to calculate connected components. This
+approach takes $\mathcal{O}(NQ)$ time, which is too slow, motivating us to use
+**union find**.
 
 By representing the graph with the union find data structure, we can use its
 methods to both _unite_ vertices and check if two vertices $u_i$ and $v_i$ are
-in the same connected component using only $\mathcal{O}(\log^*N)$ time. This
-reduces the overall time complexity to $\mathcal{O}(Q \log ^*N)$, which is a
-substantial improvement and allows us to pass all test cases.
+in the same connected component using only $\mathcal{O}(\alpha(N))$ amortized
+time. This reduces the overall time complexity to $\mathcal{O}(Q \alpha(N))$,
+which is a substantial improvement and allows us to pass all test cases.
 
 <LanguageSection>
 <CPPSection>
@@ -215,6 +212,7 @@ substantial improvement and allows us to pass all test cases.
 #include <bits/stdc++.h>
 using namespace std;
 
+// BeginCodeSnip{DSU}
 struct DSU {
 	vector<int> e;
 	DSU(int N) { e = vector<int>(N, -1); }
@@ -230,9 +228,12 @@ struct DSU {
 		x = get(x), y = get(y);
 		if (x == y) return false;
 		if (e[x] > e[y]) swap(x, y);
-		e[x] += e[y]; e[y] = x; return true;
+		e[x] += e[y];
+		e[y] = x;
+		return true;
 	}
 };
+// EndCodeSnip
 
 int main() {
 	int node_num, query_num;
@@ -278,9 +279,7 @@ public class Main {
 		public boolean union(int x, int y) {
 			int xRoot = find(x);
 			int yRoot = find(y);
-			if (xRoot == yRoot) {
-				return false;
-			}
+			if (xRoot == yRoot) { return false; }
 			if (sizes[xRoot] < sizes[yRoot]) {
 				parents[xRoot] = yRoot;
 				sizes[yRoot] += sizes[xRoot];
@@ -292,9 +291,7 @@ public class Main {
 		}
 
 		// returns whether two nodes are in the same connected component
-		public boolean connected(int x, int y) {
-			return find(x) == find(y);
-		}
+		public boolean connected(int x, int y) { return find(x) == find(y); }
 	}
 
 	public static void main(String[] args) {

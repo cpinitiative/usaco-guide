@@ -1,0 +1,171 @@
+---
+id: usaco-665
+source: USACO Bronze 2016 December
+title: The Cow-Signal
+author: Benjamin Qi, Jesse Choe, Jeffery Meng
+---
+
+[Official Analysis (Java)](http://www.usaco.org/current/data/sol_cowsignal_bronze_dec16.html)
+
+## Video Solution
+
+By Jeffrey Meng
+
+<YouTube id="yz3qBXEhRGc" />
+
+<Spoiler title="Video Solution Code">
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int main() {
+	freopen("cowsignal.in", "r", stdin);
+	freopen("cowsignal.out", "w", stdout);
+
+	int M, N, K;
+	cin >> M >> N >> K;
+
+	for (int i = 0; i < M; i++) {
+		string line;
+		cin >> line;
+		string outputLine;
+		for (int j = 0; j < N; j++) {
+			for (int k = 0; k < K; k++) { outputLine += line[j]; }
+		}
+		for (int j = 0; j < K; j++) { cout << outputLine << "\n"; }
+	}
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.StringTokenizer;
+
+public class CowSignal {
+	public static void main(String[] args) throws IOException {
+		BufferedReader in = new BufferedReader(new FileReader("cowsignal.in"));
+		PrintWriter out = new PrintWriter(
+		    new BufferedWriter(new FileWriter("cowsignal.out")));
+
+		StringTokenizer st = new StringTokenizer(in.readLine());
+
+		int M = Integer.parseInt(st.nextToken());
+		int N = Integer.parseInt(st.nextToken());
+		int K = Integer.parseInt(st.nextToken());
+
+		for (int i = 0; i < M; i++) {
+			String line = in.readLine();
+			String outputLine = "";
+			for (int j = 0; j < N; j++) {
+				for (int k = 0; k < K; k++) { outputLine += line.charAt(j); }
+			}
+			for (int j = 0; j < K; j++) { out.println(outputLine); }
+		}
+
+		out.close();
+	}
+}
+```
+
+</JavaSection>
+</LanguageSection>
+
+</Spoiler>
+
+## Implementation
+
+**Time Complexity:** $\mathcal{MN \cdot K^2}$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+void setIO(string name = "") {
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
+	if (name.size()) {
+		freopen((name + ".in").c_str(), "r", stdin);
+		freopen((name + ".out").c_str(), "w", stdout);
+	}
+}
+
+int main() {
+	setIO("cowsignal");
+
+	int height, width;
+	int scale;
+	cin >> height >> width >> scale;
+
+	vector<string> signal(height);
+	for (string &r : signal) { cin >> r; }
+
+	for (int i = 0; i < scale * height; i++) {
+		for (int j = 0; j < scale * width; j++) {
+			cout << signal[i / scale][j / scale];
+		}
+		cout << '\n';
+	}
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class CowSignal {
+	public static void main(String[] args) throws IOException {
+		BufferedReader read =
+		    new BufferedReader(new FileReader("cowsignal.in"));
+
+		StringTokenizer initial = new StringTokenizer(read.readLine());
+		int height = Integer.parseInt(initial.nextToken());
+		int width = Integer.parseInt(initial.nextToken());
+		int scale = Integer.parseInt(initial.nextToken());
+
+		String[] signal = new String[height];
+		for (int r = 0; r < height; r++) { signal[r] = read.readLine(); }
+
+		PrintWriter written = new PrintWriter("cowsignal.out");
+		for (int i = 0; i < scale * height; i++) {
+			for (int j = 0; j < scale * width; j++) {
+				written.print(signal[i / scale].charAt(j / scale));
+			}
+			written.println();
+		}
+		written.close();
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+with open("cowsignal.in") as read:
+	height, width, scale = map(int, read.readline().split())
+	signal = [read.readline() for _ in range(height)]
+
+with open("cowsignal.out", "w") as written:
+	for i in range(scale * height):
+		for j in range(scale * width):
+			print(signal[i // scale][j // scale], end="", file=written)
+
+		print(file=written)
+```
+
+</PySection>
+</LanguageSection>

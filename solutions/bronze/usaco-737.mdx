@@ -1,0 +1,349 @@
+---
+id: usaco-737
+source: USACO Bronze 2017 US Open
+title: Modern Art
+author: Juheon Rhee, Kevin Sheng, Yifan Ma
+---
+
+## Video Solution
+
+By Yifan Ma
+
+<YouTube id="" />
+
+<Spoiler title="Video Solution Code">
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <cmath>
+#include <fstream>
+#include <iostream>
+using namespace std;
+#define MAX_N 10
+
+int N, B[MAX_N][MAX_N];
+
+bool color_appears(int c) {
+	for (int i = 0; i < N; i++)
+		for (int j = 0; j < N; j++)
+			if (B[i][j] == c) return true;
+	return false;
+}
+
+// Is c1 "on top of c2" -- i.e., does c1 appear within the bounding box of c2?
+bool on_top_of(int c1, int c2) {
+	// Find c2's bounding box
+	int top = N, bottom = 0, left = N, right = 0;
+	for (int i = 0; i < N; i++)
+		for (int j = 0; j < N; j++)
+			if (B[i][j] == c2) {
+				top = min(top, i);
+				bottom = max(bottom, i);
+				left = min(left, j);
+				right = max(right, j);
+			}
+
+	// Does c1 fall within it?
+	for (int i = top; i <= bottom; i++)
+		for (int j = left; j <= right; j++)
+			if (B[i][j] == c1) return true;
+
+	return false;
+}
+
+int main(void) {
+	ifstream fin("art.in");
+	ofstream fout("art.out");
+	fin >> N;
+	for (int i = 0; i < N; i++) {
+		string s;
+		fin >> s;
+		for (int j = 0; j < N; j++) B[i][j] = s[j] - '0';
+	}
+
+	int answer = 0;
+	for (int i = 1; i <= 9; i++)
+		if (color_appears(i)) {
+			bool could_be_first = true;
+			for (int j = 1; j <= 9; j++)
+				if (j != i && color_appears(j) && on_top_of(i, j))
+					could_be_first = false;
+			if (could_be_first) answer++;
+		}
+
+	fout << answer << "\n";
+	return 0;
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Modern_Art {
+
+	static int n;
+	static int[][] B;
+
+	public static void main(String[] args) throws Exception {
+
+		BufferedReader br = new BufferedReader(new FileReader("art.in"));
+		PrintWriter out = new PrintWriter("art.out");
+
+		n = Integer.parseInt(br.readLine());
+		B = new int[n][n];
+		for (int i = 0; i < n; ++i) {
+			String s = br.readLine();
+			for (int j = 0; j < n; ++j) { B[i][j] = s.charAt(j) - '0'; }
+		}
+
+		int ans = 0;
+		for (int i = 1; i <= 9; ++i) {
+			if (color_appears(i)) {
+				boolean could_be_first = true;
+				for (int j = 1; j <= 9; ++j) {
+					if (j != i && color_appears(j) && on_top_of(i, j))
+						could_be_first = false;
+				}
+				if (could_be_first) ++ans;
+			}
+		}
+		out.println(ans);
+
+		out.close();
+		br.close();
+	}
+
+	public static boolean color_appears(int c) {
+		for (int i = 0; i < n; ++i) {
+			for (int j = 0; j < n; ++j) {
+				if (B[i][j] == c) return true;
+			}
+		}
+		return false;
+	}
+
+	// Is c1 "on top of c2" -- i.e., does c1 appear within the bounding box of
+	// c2?
+	public static boolean on_top_of(int c1, int c2) {
+		// Find c2's bounding box
+		int top = n, bottom = 0, left = n, right = 0;
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; ++j) {
+				if (B[i][j] == c2) {
+					top = Math.min(top, i);
+					bottom = Math.max(bottom, i);
+					left = Math.min(left, j);
+					right = Math.max(right, j);
+				}
+			}
+		}
+
+		// Does c1 fall within it?
+		for (int i = top; i <= bottom; i++) {
+			for (int j = left; j <= right; j++) {
+				if (B[i][j] == c1) return true;
+			}
+		}
+		return false;
+	}
+}
+```
+</JavaSection>
+
+</LanguageSection>
+</Spoiler>
+
+<Spoiler title="Hint">
+Try solving the sample input by hand: could you apply a similar method in your code?
+</Spoiler>
+
+<Spoiler title="Solution">
+
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_art_bronze_open17.html)
+
+## Implementation
+
+**Time Complexity**: $\mathcal O(N^3)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <fstream>
+#include <iostream>
+#include <vector>
+
+using std::cout;
+using std::endl;
+using std::vector;
+
+const int MAX_COLOR = 9;
+
+int main() {
+	/*
+	 * Bounding boxes of each of the colors.
+	 * The first element won't be used (colors go from 1-9)
+	 */
+	vector<int> left(MAX_COLOR + 1);
+	vector<int> right(MAX_COLOR + 1);
+	vector<int> up(MAX_COLOR + 1);
+	vector<int> down(MAX_COLOR + 1);
+	for (int c = 1; c <= MAX_COLOR; c++) {
+		left[c] = up[c] = INT32_MAX;
+		right[c] = down[c] = -1;
+	}
+
+	vector<bool> valid_start(MAX_COLOR + 1);
+	std::ifstream read("art.in");
+	int width;
+	read >> width;
+	vector<vector<int>> art(width, vector<int>(width));
+	for (int r = 0; r < width; r++) {
+		for (int c = 0; c < width; c++) {
+			char curr_char;
+			read >> curr_char;
+			int curr = curr_char - '0';
+			art[r][c] = curr;
+			if (curr != 0) {
+				left[curr] = std::min(left[curr], c);
+				right[curr] = std::max(right[curr], c);
+				down[curr] = std::max(down[curr], r);
+				up[curr] = std::min(up[curr], r);
+				valid_start[curr] = true;
+			}
+		}
+	}
+
+	for (int color = 1; color <= MAX_COLOR; color++) {
+		for (int r = up[color]; r <= down[color]; r++) {
+			for (int c = left[color]; c <= right[color]; c++) {
+				if (art[r][c] != color) { valid_start[art[r][c]] = false; }
+			}
+		}
+	}
+
+	int total_starts = 0;
+	for (bool s : valid_start) { total_starts += s ? 1 : 0; }
+	std::ofstream("art.out") << total_starts << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+package testing;
+
+import java.io.*;
+
+public class Art {
+	static final int MAX_COLOR = 9;
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader read = new BufferedReader(new FileReader("art.in"));
+		int width = Integer.parseInt(read.readLine());
+
+		/*
+		 * Bounding boxes of each of the colors.
+		 * The first element won't be used (colors go from 1-9)
+		 */
+		int[] left = new int[MAX_COLOR + 1];
+		int[] right = new int[MAX_COLOR + 1];
+		int[] down = new int[MAX_COLOR + 1];
+		int[] up = new int[MAX_COLOR + 1];
+		for (int c = 1; c <= MAX_COLOR; c++) {
+			left[c] = up[c] = Integer.MAX_VALUE;
+			right[c] = down[c] = -1;
+		}
+
+		boolean[] validStart = new boolean[MAX_COLOR + 1];
+		int[][] art = new int[width][width];
+		for (int r = 0; r < width; r++) {
+			String row = read.readLine();
+			for (int c = 0; c < width; c++) {
+				int curr = Character.getNumericValue(row.charAt(c));
+				art[r][c] = curr;
+				if (curr != 0) {
+					left[curr] = Math.min(left[curr], c);
+					right[curr] = Math.max(right[curr], c);
+					down[curr] = Math.max(down[curr], r);
+					up[curr] = Math.min(up[curr], r);
+					validStart[curr] = true;
+				}
+			}
+		}
+
+		for (int color = 1; color <= MAX_COLOR; color++) {
+			for (int r = up[color]; r <= down[color]; r++) {
+				for (int c = left[color]; c <= right[color]; c++) {
+					if (art[r][c] != color) { validStart[art[r][c]] = false; }
+				}
+			}
+		}
+
+		int totalStarts = 0;
+		for (boolean c : validStart) { totalStarts += c ? 1 : 0; }
+
+		PrintWriter written = new PrintWriter("art.out");
+		written.print(totalStarts);
+		written.close();
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+MAX_COLOR = 9
+
+"""
+Bounding boxes of each of the colors.
+The first element won't be used (colors go from 1-9)
+"""
+left = [0] * (MAX_COLOR + 1)
+right = [0] * (MAX_COLOR + 1)
+down = [0] * (MAX_COLOR + 1)
+up = [0] * (MAX_COLOR + 1)
+for c in range(1, MAX_COLOR + 1):
+	left[c], up[c] = float("inf"), float("inf")
+	right[c], down[c] = -1, -1
+
+valid_start = [False] * MAX_COLOR
+with open("art.in") as read:
+	n = int(read.readline().strip())
+	art = [None] * n
+	for r in range(n):
+		art[r] = [int(x) for x in read.readline().strip()]
+		for c in range(n):
+			if art[r][c] != 0:
+				curr = art[r][c]
+				left[curr] = min(left[curr], c)
+				right[curr] = max(right[curr], c)
+				down[curr] = max(down[curr], r)
+				up[curr] = min(up[curr], r)
+				valid_start[curr] = True
+
+for color in range(1, MAX_COLOR + 1):
+	if any(p[color] == float("inf") for p in [left, right, down, up]):
+		continue
+
+	for c in range(int(up[color]), int(down[color] + 1)):
+		for k in range(int(left[color]), int(right[color] + 1)):
+			if art[c][k] != color:
+				valid_start[art[c][k]] = False
+
+print(sum(valid_start), file=open("art.out", "w"))
+```
+
+</PySection>
+</LanguageSection>
+
+</Spoiler>

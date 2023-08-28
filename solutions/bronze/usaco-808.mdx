@@ -1,0 +1,352 @@
+---
+id: usaco-808
+source: USACO Bronze 2018 February
+title: Hoofball
+author: Ryan Chou, Ben Dodge, Arpan Banerjee
+---
+
+## Video Solution
+By Arpan Banerjee
+
+<YouTube id="kRHzaBuWw9g" />
+
+<Spoiler title="Video Solution Code">
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int n, cows[100], reach[100], to[100];
+
+// reach[i] is how many cows pass the ball to cow i
+// to[i] is where does cow i pass the ball
+
+int main() {
+	ifstream cin("hoofball.in");
+	ofstream cout("hoofball.out");
+	cin >> n;
+	for (int i = 0; i < n; i++) cin >> cows[i];
+	if (n <= 2) {
+		cout << 1 << endl;
+		return 0;
+	}
+	sort(cows, cows + n);  // O(nlogn)
+	reach[1]++;
+	reach[n - 2]++;
+	to[0] = 1;
+	to[n - 1] = n - 2;
+	for (int i = 1; i < n - 1; i++) {
+		if (cows[i] - cows[i - 1] <= cows[i + 1] - cows[i]) {
+			reach[i - 1]++;
+			to[i] = i - 1;
+		} else {
+			reach[i + 1]++;
+			to[i] = i + 1;
+		}
+	}
+	int num_islands = 0;
+	if (reach[0] == 1 && reach[1] == 1 && to[2] != 1) num_islands++;
+	if (reach[n - 1] == 1 && reach[n - 2] == 1 && to[n - 3] != n - 2)
+		num_islands++;
+
+	for (int i = 2; i < n - 3; i++) {
+		if (reach[i] == 1 && reach[i + 1] == 1 && to[i + 2] != i + 1 &&
+		    to[i - 1] != i) {
+			num_islands++;
+		}
+	}
+	cout << count(reach, reach + n, 0) + num_islands << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+class Main {
+	static BufferedReader in;
+	static PrintWriter out;
+	static {
+		try {
+			in = new BufferedReader(new FileReader("hoofball.in"));
+			out = new PrintWriter(new FileWriter("hoofball.out"));
+		} catch (IOException e) {}
+	}
+	public static void main(String[] args) throws IOException {
+
+		StringTokenizer st = new StringTokenizer(in.readLine());
+		int n = Integer.parseInt(st.nextToken());
+		int[] cows = new int[n];
+		st = new StringTokenizer(in.readLine());
+		for (int i = 0; i < n; i++) {
+			cows[i] = Integer.parseInt(st.nextToken());
+		}
+		in.close();
+		if (n <= 2) {
+			out.write(1);
+			System.exit(0);
+		}
+		Arrays.sort(cows);
+		int[] reach =
+		    new int[n];         // reach[i] is how many cows pass the ball to i
+		int[] to = new int[n];  // to[i] is where does cow i pass the ball
+		reach[1]++;
+		reach[n - 2]++;
+		to[0] = 1;
+		to[n - 1] = n - 2;
+		for (int i = 1; i < n - 1; i++) {
+			if (cows[i] - cows[i - 1] <= cows[i + 1] - cows[i]) {
+				reach[i - 1]++;
+				to[i] = i - 1;
+			} else {
+				reach[i + 1]++;
+				to[i] = i + 1;
+			}
+		}
+		int num_islands = 0;
+		if (reach[0] == 1 && reach[1] == 1 && to[2] != 1) num_islands++;
+		if (reach[n - 1] == 1 && reach[n - 2] == 1 && to[n - 3] != n - 2)
+			num_islands++;
+
+		for (int i = 2; i < n - 3; i++) {
+			if (reach[i] == 1 && reach[i + 1] == 1 && to[i + 2] != i + 1 &&
+			    to[i - 1] != i) {
+				num_islands++;
+			}
+		}
+		int num_zeros = 0;
+		for (int i = 0; i < n; i++) {
+			if (reach[i] == 0) { num_zeros++; }
+		}
+		out.print(num_zeros + num_islands);
+		out.close();
+	}
+}
+```
+
+</JavaSection>
+</LanguageSection>
+</Spoiler>
+
+<Spoiler title="Hint 1">
+
+Play with the sample input, and draw out other cases.
+
+</Spoiler>
+
+<Spoiler title="Hint 2">
+
+When will a ball get stuck in an infinite loop?
+
+</Spoiler>
+
+<Spoiler title="Solution">
+
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_hoofball_bronze_feb18.html)
+
+## Explanation
+
+First, let's realize that Farmer John will need another ball in one of two cases:
+1. A cow is a source cow, or a cow that Farmer John first passses to.
+2. Two cows are close together, so they pass a ball back and forth endlessly and another ball is needed for other cows to hold.
+
+So, each time this occurs we can count it and return this total count as our answer once we're done.
+We can do this first by finding which cow, if any, every cow passes the ball to.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N^2)$
+
+<LanguageSection>
+<PySection>
+
+```py
+import sys
+
+sys.stdin = open("hoofball.in", "r")
+sys.stdout = open("hoofball.out", "w")
+
+n = int(input())
+cows = sorted(list(map(int, input().strip().split())))
+balls = [0] * n
+ans = 0
+
+
+def nearestneighbor(ind):
+	lnbr, rnbr = -1, -1
+	ldist, rdist = 1000, 1000
+	for i in range(n):
+		"""
+		If the cow we're looking at is on the left
+		and it's closer to the target than the previous one.
+		"""
+		if cows[i] < cows[ind] and cows[ind] - cows[i] < ldist:
+			lnbr = i
+			ldist = cows[ind] - cows[i]
+	for i in range(n):
+		# same thing, but for the right.
+		if cows[i] > cows[ind] and cows[i] - cows[ind] < rdist:
+			rnbr = i
+			rdist = cows[i] - cows[ind]
+	return lnbr if ldist <= rdist else rnbr
+
+
+for i in range(n):
+	# all cows who receive a ball
+	balls[nearestneighbor(i)] += 1
+for i in range(n):
+	"""
+	if the cow isn't passed to by any of the neighbors,
+	then we have to give it a ball.
+	"""
+	if balls[i] == 0:
+		ans += 1
+	"""
+	If we find two cows which only pass to each other,
+	we have to give them one as well.
+	"""
+	if (
+		i < nearestneighbor(i)
+		and nearestneighbor(nearestneighbor(i)) == i
+		and balls[i] == 1
+		and balls[nearestneighbor(i)] == 1
+	):
+		ans += 1
+
+print(ans)
+```
+
+</PySection>
+<CPPSection>
+
+```cpp
+#include <fstream>
+#include <iostream>
+using namespace std;
+
+const int MAX_N = 100;
+const int MAX_X = 1000;
+
+int N, cows[MAX_N], cowsPassingTo[MAX_N];
+
+// Which cow does a given cow pass to?
+int passToCow(int cow) {
+	int leftCow = -1;
+	int rightCow = -1;
+	int leftRange = MAX_X;
+	int rightRange = MAX_X;
+	// For each cow, find closest cows to it on the left and right
+	for (int i = 0; i < N; i++) {
+		if (cows[i] < cows[cow] && cows[cow] - cows[i] < leftRange) {
+			leftCow = i;
+			leftRange = cows[cow] - cows[i];
+		}
+		if (cows[i] > cows[cow] && cows[i] - cows[cow] < rightRange) {
+			rightCow = i;
+			rightRange = cows[i] - cows[cow];
+		}
+	}
+
+	// Return the position identifier of cow that the given cow passes to
+	if (leftRange <= rightRange) { return leftCow; }
+	return rightCow;
+}
+
+int main() {
+	ifstream fin("hoofball.in");
+	ofstream fout("hoofball.out");
+	fin >> N;
+	int ballsNeeded = 0;
+	for (int i = 0; i < N; i++) { fin >> cows[i]; }
+	for (int i = 0; i < N; i++) { cowsPassingTo[passToCow(i)]++; }
+	for (int i = 0; i < N; i++) {
+		// This is a source cow, so give it a ball
+		if (cowsPassingTo[i] == 0) { ballsNeeded++; }
+		// This cow only passes to 1 other cow forever, so give it a ball
+		if (i < passToCow(i) && passToCow(passToCow(i)) == i &&
+		    cowsPassingTo[i] == 1 && cowsPassingTo[passToCow(i)] == 1) {
+			ballsNeeded++;
+		}
+	}
+	fout << ballsNeeded << "\n";
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Hoofball {
+	static final int MAX_X = 1000;
+
+	static int N;
+	static int[] cows;
+	static int[] cowsPassingTo;
+
+	// Which cow does a given cow pass to?
+	public static int passToCow(int cow) {
+		int leftCow = -1;
+		int rightCow = -1;
+		int leftRange = MAX_X;
+		int rightRange = MAX_X;
+
+		// For each cow, find closest cows to it on the left and right
+		for (int i = 0; i < N; i++) {
+			if (cows[i] < cows[cow] && cows[cow] - cows[i] < leftRange) {
+				leftCow = i;
+				leftRange = cows[cow] - cows[i];
+			}
+			if (cows[i] > cows[cow] && cows[i] - cows[cow] < rightRange) {
+				rightCow = i;
+				rightRange = cows[i] - cows[cow];
+			}
+		}
+
+		// Return the position identifier of cow that the given cow passes to
+		if (leftRange <= rightRange) { return leftCow; }
+		return rightCow;
+	}
+
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio("hoofball");
+
+		N = io.nextInt();
+		cows = new int[N];
+		cowsPassingTo = new int[N];
+		int ballsNeeded = 0;
+
+		for (int i = 0; i < N; i++) { cows[i] = io.nextInt(); }
+
+		// Let's classify each cow
+		for (int i = 0; i < N; i++) { cowsPassingTo[passToCow(i)]++; }
+
+		for (int i = 0; i < N; i++) {
+			// This is a source cow, so give it a ball
+			if (cowsPassingTo[i] == 0) { ballsNeeded++; }
+			// This cow only passes to 1 other cow forever, so give it a ball
+			if (i < passToCow(i) && passToCow(passToCow(i)) == i &&
+			    cowsPassingTo[i] == 1 && cowsPassingTo[passToCow(i)] == 1) {
+				ballsNeeded++;
+			}
+		}
+
+		io.println(ballsNeeded);
+		io.close();
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+</LanguageSection>
+</Spoiler>

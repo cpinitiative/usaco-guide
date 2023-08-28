@@ -1,0 +1,289 @@
+---
+id: usaco-916
+source: USACO Bronze 2019 February
+title: The Great Revegetation
+author: Ryan Chou, Brad Ma
+---
+
+<Spoiler title="Hint">
+
+What forces us to change to a different grass type?
+
+</Spoiler>
+
+## Video Solution
+
+By Jay Fu
+
+<YouTube id="GT9PEJbJjxo" />
+
+<Spoiler title="Video Solution Code">
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <fstream>
+#include <iostream>
+using namespace std;
+
+int main(void) {
+	// N is the number of pastures
+	int N;
+	// M is the number of FJ's cows
+	// aka the number of pairs of pastures that can't have the same grass type
+	// as each other
+	int M;
+	// A and B contains the pasture numbers for each pair of pastures
+	// A contains the lower pasture number while B contains the higher pasture
+	// number A[i] and B[i] indicates that pasture number A[i] and pasture
+	// number B[i] can't have the same grass type G contains the assigned grass
+	// type to each pasture G[i] = x means that the ith pasture is assigned
+	// grass type x
+	int A[151], B[151], G[101];
+	ifstream fin("revegetate.in");
+	// read in input
+	fin >> N >> M;
+	for (int i = 0; i < M; i++) {
+		fin >> A[i] >> B[i];
+
+		// this ensures that A always contains the lower pasture number and B
+		// always contains the higher pasture number for each pair
+		if (A[i] > B[i]) swap(A[i], B[i]);
+	}
+
+	ofstream fout("revegetate.out");
+
+	// i indicates the current pasture
+	// loop iterates through each pasture
+	for (int i = 1; i <= N; i++) {
+		// g indicates the current color type
+		int g;
+
+		// loop iterates through the 4 color types
+		for (g = 1; g <= 4; g++) {
+			// ok indicates whether the current color type works on the current
+			// pasture
+			bool ok = true;
+
+			// j indicates the current pair of pastures A[j] and B[j]
+			// loop iterates through each pair of pastures
+			for (int j = 0; j < M; j++)
+				// if higher pasture number in the pair is the current pasture
+				// number and the other pasture in the pair is already assigned
+				// the current color type this means the current color type
+				// won't work on the current pasture, so ok is set to false
+				if (B[j] == i && G[A[j]] == g) ok = false;
+
+			// if ok is true, we can move on to the next pasture
+			// otherwise, we have to try the next color type
+			if (ok) break;
+		}
+		// sets color type to current pasture
+		G[i] = g;
+		fout << g;
+	}
+	fout << "\n";
+	return 0;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.StringTokenizer;
+public class revegetate {
+	// N is the number of pastures
+	static int N;
+	// M is the number of FJ's cows
+	// aka the number of pairs of pastures that can't have the same grass type
+	// as each other
+	static int M;
+	// A and B contains the pasture numbers for each pair of pastures
+	// A contains the lower pasture number while B contains the higher pasture
+	// number A[i] and B[i] indicates that pasture number A[i] and pasture
+	// number B[i] can't have the same grass type G contains the assigned grass
+	// type to each pasture G[i] = x means that the ith pasture is assigned
+	// grass type x
+	static int[] A, B, G;
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new FileReader("revegetate.in"));
+		StringTokenizer s = new StringTokenizer(br.readLine());
+		N = Integer.parseInt(s.nextToken());
+		M = Integer.parseInt(s.nextToken());
+		A = new int[151];
+		B = new int[151];
+		G = new int[101];
+		// read in input
+		for (int i = 0; i < M; i++) {
+			s = new StringTokenizer(br.readLine());
+			A[i] = Integer.parseInt(s.nextToken());
+			B[i] = Integer.parseInt(s.nextToken());
+			// this ensures that A always contains the lower pasture number and
+			// B always contains the higher pasture number for each pair
+			if (A[i] > B[i]) {
+				int temp = A[i];
+				A[i] = B[i];
+				B[i] = temp;
+			}
+		}
+		PrintWriter out = new PrintWriter("revegetate.out");
+		// i indicates the current pasture
+		// loop iterates through each pasture
+		for (int i = 1; i <= N; i++) {
+			// g indicates the current color type
+			int g;
+			// loop iterates through the 4 color types
+			for (g = 1; g <= 4; g++) {
+				// ok indicates whether the current color type works on the
+				// current pasture
+				boolean ok = true;
+				// j indicates the current pair of pastures A[j] and B[j]
+				// loop iterates through each pair of pastures
+				for (int j = 0; j < M; j++)
+					// if higher pasture number in the pair is the current
+					// pasture number and the other pasture in the pair is
+					// already assigned the current color type this means the
+					// current color type won't work on the current pasture, so
+					// ok is set to false
+					if (B[j] == i && G[A[j]] == g) ok = false;
+				// if ok is true, we can move on to the next pasture
+				// otherwise, we have to try the next color type
+				if (ok) break;
+			}
+			// sets color type to the current pasture
+			G[i] = g;
+			out.print(g);
+		}
+		out.println();
+		out.close();
+	}
+}
+```
+
+</JavaSection>
+</LanguageSection>
+</Spoiler>
+
+<Spoiler title="Solution 1">
+
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_revegetate_bronze_feb19.html)
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(NM)$
+
+<LanguageSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.StringTokenizer;
+
+public class Revegetation {
+	static final int MAXIMUM = 151;
+
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio("revegetate");
+
+		int[] grassA = new int[MAXIMUM];
+		int[] grassB = new int[MAXIMUM];
+
+		// stores the identity of adjacent verticies
+		int[] G = new int[MAXIMUM];
+
+		int n = io.nextInt();
+		int m = io.nextInt();
+
+		for (int x = 0; x < m; x++) {
+			grassA[x] = io.nextInt();
+			grassB[x] = io.nextInt();
+
+			// put the smaller in A, the larger in B
+			if (grassA[x] > grassB[x]) {
+				int temp = grassA[x];
+				grassA[x] = grassB[x];
+				grassB[x] = temp;
+			}
+		}
+
+		for (int i = 1; i <= n; i++) {  // for each vertex
+			int j = 0;
+			for (j = 1; j <= 4; j++) {  // check which colors are free
+				boolean ok = true;
+				for (int k = 0; k < m; k++) {
+					if (grassB[k] == i && G[grassA[k]] == j) { ok = false; }
+				}
+				if (ok) { break; }
+			}
+			G[i] = j;
+			io.print(j);
+		}
+		io.println();
+		io.close();
+	}
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+</LanguageSection>
+</Spoiler>
+
+<Spoiler title="Solution 2">
+
+## Explanation
+
+We can iterate through the favorite pastures, and increment one to the pasture with the greater index, making the result minimal. All pastures start with
+the seed choice as one, this makes it so that we don't have to worry about decreasing or increasing more to a certain pasture. We'll also cycle through the
+previous favorite pastures to make sure that our new alteration doesn't interfere with any of the other cow's favorite pastures.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N^2)$
+
+<LanguageSection>
+<PySection>
+
+```py
+import sys
+
+sys.stdin = open("revegetate.in", "r")
+sys.stdout = open("revegetate.out", "w")
+
+pasture_num, cow_num = map(int, input().split())
+pastures = []
+ans = [1] * pasture_num
+
+for _ in range(cow_num):
+	past1, past2 = sorted(map(int, input().split()))
+	# Subtract one so that the indexes start from 0
+	pastures.append([past1 - 1, past2 - 1])
+
+# Assign the pastures at the front first.
+pastures.sort()
+for a, b in pastures:
+	# If they're not unique.
+	if ans[a] == ans[b]:
+		# Increment one to the pasture closer to the end.
+		# 100 is larger than 001.
+		ans[b] += 1
+
+		# All favorite pastures up to the current one.
+		for i, j in pastures[: pastures.index([a, b])]:
+			# Increment again if requirement isn't satisfied.
+			# This also means that either i == b or j == b,
+			# since the only reason they would become equal again
+			# is if they had a pasture in common.
+			if ans[i] == ans[j]:
+				ans[b] += 1
+print("".join(map(str, ans)))
+```
+
+</PySection>
+</LanguageSection>
+</Spoiler>

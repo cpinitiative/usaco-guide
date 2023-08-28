@@ -1,0 +1,102 @@
+---
+id: cses-1716
+source: CSES
+title: Distributing Apples
+author: Chuyang Wang
+---
+
+<Spoiler title="Hint 1">
+
+This might sound odd, but try representing a distribution by putting all the children and apples in a single line.
+
+</Spoiler>
+
+<Spoiler title="Hint 2">
+
+From the first hint, you should have noticed that each distribution can be represented by having each child own an interval of the apples.
+Now it remains to count how many ways you can put the children between the apples.
+
+</Spoiler>
+
+<Spoiler title="Solution">
+
+## Explanation
+
+To get a more illustrative idea of the given problem, consider $n + m - 1$ white
+balls in a row. Of those $n + m - 1$ white balls, $m - 1$ are chosen to be
+colored black as separators, which gives us exactly $m$ segments of (possibly
+zero) white balls. There are
+
+$$
+\binom{n + m - 1}{m - 1}
+$$
+
+ways to choose the balls to color black.
+
+The ways to color $m - 1$ balls black corresponds to the ways to distribute
+those $n$ apples to $m$ children, since the number of white balls in a segment
+corresponds to the number of apples given to a child.
+
+<Info title="Stars and bars">
+
+The given problem is equivalent to finding the number of solutions for the
+equation
+
+$$
+x_1 + x_2 + ... + x_n = m.
+$$
+
+The method used in this problem is called
+[Stars and bars](https://en.wikipedia.org/wiki/Stars_and_bars_(combinatorics)).
+
+</Info>
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using ll = long long;
+
+const ll MOD = 1e9 + 7;
+const int MAXN = 2e6;
+
+vector<ll> fac(MAXN, 1);
+vector<ll> inv(MAXN, 1);
+
+ll binpow(ll x, ll n, ll m) {
+	x %= m;
+	ll res = 1;
+	while (n > 0) {
+		if (n % 2 == 1) { res = res * x % m; }
+		x = x * x % m;
+		n /= 2;
+	}
+	return res;
+}
+
+ll binom(int n, int k) { return fac[n] * inv[k] % MOD * inv[n - k] % MOD; }
+
+int main() {
+	for (int i = 2; i < MAXN; i++) { fac[i] = i * fac[i - 1] % MOD; }
+
+	inv[MAXN - 1] = binpow(fac[MAXN - 1], MOD - 2, MOD);
+	for (int i = MAXN - 2; i > 0; i--) { inv[i] = (i + 1) * inv[i + 1] % MOD; }
+
+	int n, m;
+	cin >> n >> m;
+
+	cout << binom(n + m - 1, n - 1) << endl;
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
+</Spoiler>

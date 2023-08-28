@@ -1,0 +1,391 @@
+---
+id: usaco-963
+source: USACO Bronze 2019 December
+title: Cow Gymnastics
+author: Krish Thawani, Hua Zhi Vee, Jonathan Paulson, Ben Dodge, David Li
+---
+
+## Official Solution
+
+[Official Analysis](http://www.usaco.org/current/data/sol_gymnastics_bronze_dec19.html)
+
+## Video Solution
+
+By David Li
+
+<YouTube id="YV1rcD-sB00" />
+
+<Spoiler title="Video Solution Code">
+<LanguageSection>
+<CPPSection>
+```cpp
+	       #include <iostream>
+	       using namespace std;
+	       int N, K;
+	       int rankings[10][20], better[20][20];
+	       int main() {
+	       	freopen("gymnastics.in", "r", stdin);
+	       	freopen("gymnastics.out", "w", stdout);
+	       	// reading in input
+	       	cin >> K >> N;
+	       	for (int i = 0; i < K; i++) {
+	       		for (int j = 0; j < N; j++) {
+	       			cin >> rankings[i][j];
+	       			rankings[i][j]--;
+	       		}
+	       	}
+	       	// calculating the amount of times that cow a comes before cow b
+	       	for (int i = 0; i < K; i++) {              // looping over the trials
+	       		for (int j = 0; j < N; j++) {          // rankings[i][j] = cow a
+	       			for (int k = j + 1; k < N; k++) {  // rankings[i][k] = cow b
+	       				better[rankings[i][j]][rankings[i][k]]++;
+	       			}
+	       		}
+	       	}
+	       	// calculating answer
+	       	int ans = 0;
+	       	for (int i = 0; i < N; i++) {
+	       		for (int j = 0; j < N; j++) {
+	       			if (better[i][j] == K)  // if cow i comes before cow j K times then
+	       			                        // increment our answer
+	       				ans++;
+	       		}
+	       	}
+	       	// print answer
+	       	cout << ans;
+	       }
+	       ```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class gymnastics {
+	public static void main(String[] args) throws IOException {
+		// reading in input
+		BufferedReader br = new BufferedReader(new FileReader("gymnastics.in"));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int K = Integer.parseInt(st.nextToken());
+		int N = Integer.parseInt(st.nextToken());
+
+		int[][] data = new int[K][N];  // stores the input data
+		int[][] better =
+		    new int[N][N];  // stores how many times cow a comes before cow b
+
+		// reading in input
+		for (int i = 0; i < K; i++) {
+			st = new StringTokenizer(br.readLine());
+			for (int j = 0; j < N; j++) {
+				data[i][j] = Integer.parseInt(st.nextToken()) - 1;
+			}
+		}
+
+		// calculating the amount of times that cow a comes before cow b
+		for (int i = 0; i < K; i++) {              // looping over the trials
+			for (int j = 0; j < N; j++) {          // data[i][j] = cow a
+				for (int k = j + 1; k < N; k++) {  // data[i][k] = cow b
+					better[data[i][j]][data[i][k]]++;
+				}
+			}
+		}
+
+		// calculating answer
+		int ans = 0;
+		for (int i = 0; i < N; i++) {
+			for (int j = 0; j < N; j++) {
+				if (better[i][j] == K)  // if cow i comes before cow j K times
+				                        // then increment our answer
+					ans++;
+			}
+		}
+
+		// print answer
+		PrintWriter out = new PrintWriter("gymnastics.out");
+		out.print(ans);
+		out.close();
+	}
+}
+```
+</JavaSection>
+</LanguageSection>
+	</Spoiler>
+
+## Implementation
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <fstream>
+#include <iostream>
+#include <vector>
+
+using std::cout;
+using std::endl;
+using std::vector;
+
+template <typename T> int index(const vector<T> &vec, const T &n) {
+	for (int i = 0; i < vec.size(); i++) {
+		if (vec[i] == n) { return i; }
+	}
+	return -1;
+}
+
+int main() {
+	std::ifstream read("gymnastics.in");
+	int session_num;
+	int cow_num;
+	read >> session_num >> cow_num;
+	vector<vector<int>> sessions(session_num, vector<int>(cow_num));
+	for (int s = 0; s < session_num; s++) {
+		for (int c = 0; c < cow_num; c++) {
+			read >> sessions[s][c];
+			sessions[s][c]--;
+		}
+	}
+
+	int better_pairs = 0;
+	for (int c1 = 0; c1 < cow_num; c1++) {
+		for (int c2 = 0; c2 < cow_num; c2++) {
+			if (c1 == c2) { continue; }
+
+			bool better = true;
+			for (const vector<int> &s : sessions) {
+				if (index(s, c1) < index(s, c2)) {
+					better = false;
+					break;
+				}
+			}
+			better_pairs += better;
+		}
+	}
+
+	std::ofstream("gymnastics.out") << better_pairs << endl;
+}
+```
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Gymnastics {
+	public static void main(String[] args) throws IOException {
+		BufferedReader read =
+		    new BufferedReader(new FileReader("gymnastics.in"));
+		StringTokenizer initial = new StringTokenizer(read.readLine());
+		int sessionNum = Integer.parseInt(initial.nextToken());
+		int cowNum = Integer.parseInt(initial.nextToken());
+		int[][] sessions = new int[sessionNum][cowNum];
+		for (int s = 0; s < sessionNum; s++) {
+			StringTokenizer session = new StringTokenizer(read.readLine());
+			for (int c = 0; c < cowNum; c++) {
+				sessions[s][c] = Integer.parseInt(session.nextToken()) - 1;
+			}
+		}
+
+		int betterPairs = 0;
+		for (int c1 = 0; c1 < cowNum; c1++) {
+			for (int c2 = 0; c2 < cowNum; c2++) {
+				if (c1 == c2) { continue; }
+
+				boolean valid = true;
+				for (int[] s : sessions) {
+					if (index(s, c1) < index(s, c2)) {
+						valid = false;
+						break;
+					}
+				}
+
+				if (valid) { betterPairs++; }
+			}
+		}
+
+		PrintWriter written = new PrintWriter("gymnastics.out");
+		written.println(betterPairs);
+		written.close();
+	}
+
+	static int index(int[] arr, int n) {
+		for (int i = 0; i < arr.length; i++) {
+			if (arr[i] == n) { return i; }
+		}
+		return -1;
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+with open("gymnastics.in") as read:
+	session_num, cow_num = [int(i) for i in read.readline().split()]
+	sessions = []
+	for _ in range(session_num):
+		sessions.append([int(c) - 1 for c in read.readline().split()])
+
+better_pairs = 0
+for c1 in range(cow_num):
+	for c2 in range(cow_num):
+		if c1 == c2:
+			continue
+
+		for s in sessions:
+			if s.index(c1) < s.index(c2):
+				break
+		else:
+			better_pairs += 1
+
+print(better_pairs, file=open("gymnastics.out", "w"))
+```
+
+</PySection>
+</LanguageSection>
+
+## Alternate Solution
+
+We generate the ranking as we read the data.
+
+We can create a 2D array of booleans which states if cow $A$ has a ranking higher than
+cow $B$ in any point of time. After reading every ranking, for all $\frac{N(N-1)}{2}$
+pairs we set $b[A][B]=\text{true}$.
+
+Then we iterate though all pairs in $\mathcal{O}(N^2)$ time and check if they
+satisfy the condition. At least one of $b[A][B]$ and $b[B][A]$ must be true, and
+hence we only need to check if they are both true. If one of them is false, we
+increment our $\texttt{count}$ by 1. This is because if both are true, then
+the pair switches ranking order at some point and is not valid. If only one is true,
+then the pair maintained a consistent order.
+
+Note that at least one of them must be true, since in every ranking either $A>B$
+or $B>A$.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(K \cdot N^2)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <fstream>
+#include <iostream>
+#include <vector>
+
+using std::cout;
+using std::endl;
+using std::vector;
+
+int main() {
+	std::ifstream read("gymnastics.in");
+	int session_num;
+	int cow_num;
+	read >> session_num >> cow_num;
+
+	/*
+	 * better[c1][c2] = true
+	 * if c1 was better than c2 in *any* session (0-indexed).
+	 */
+	vector<vector<bool>> better(cow_num, vector<bool>(cow_num));
+	for (int s = 0; s < session_num; s++) {
+		vector<int> session(cow_num);
+		for (int &c : session) {
+			read >> c;
+			c--;
+		}
+		for (int i = 0; i < session.size(); i++) {
+			for (int j = i + 1; j < session.size(); j++) {
+				better[session[j]][session[i]] = true;
+			}
+		}
+	}
+
+	int better_pairs = 0;
+	for (int c1 = 0; c1 < cow_num; c1++) {
+		for (int c2 = c1 + 1; c2 < cow_num; c2++) {
+			better_pairs += !better[c1][c2] || !better[c2][c1];
+		}
+	}
+
+	std::ofstream("gymnastics.out") << better_pairs << endl;
+}
+```
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Gymnastics {
+	public static void main(String[] args) throws IOException {
+		BufferedReader read =
+		    new BufferedReader(new FileReader("gymnastics.in"));
+
+		StringTokenizer initial = new StringTokenizer(read.readLine());
+		int sessionNum = Integer.parseInt(initial.nextToken());
+		int cowNum = Integer.parseInt(initial.nextToken());
+
+		/*
+		 * better[c1][c2] = true
+		 * if c1 was better than c2 in *any* session (0-indexed).
+		 */
+		boolean[][] better = new boolean[cowNum][cowNum];
+		for (int s = 0; s < sessionNum; s++) {
+			StringTokenizer line = new StringTokenizer(read.readLine());
+			int[] session = new int[cowNum];
+			for (int c = 0; c < cowNum; c++) {
+				session[c] = Integer.parseInt(line.nextToken()) - 1;
+			}
+
+			for (int i = 0; i < session.length; i++) {
+				for (int j = i + 1; j < session.length; j++) {
+					better[session[j]][session[i]] = true;
+				}
+			}
+		}
+
+		int betterPairs = 0;
+		for (int c1 = 0; c1 < cowNum; c1++) {
+			for (int c2 = c1 + 1; c2 < cowNum; c2++) {
+				if (!better[c1][c2] || !better[c2][c1]) { betterPairs++; }
+			}
+		}
+
+		PrintWriter written = new PrintWriter("gymnastics.out");
+		written.println(betterPairs);
+		written.close();
+	}
+}
+```
+</JavaSection>
+<PySection>
+
+```py
+with open("gymnastics.in") as read:
+	session_num, cow_num = [int(i) for i in read.readline().split()]
+	"""
+	better[c1][c2] = True
+	if c1 was better than c2 in *any* session (0-indexed).
+	"""
+	better = [[False for _ in range(cow_num)] for _ in range(cow_num)]
+	for _ in range(session_num):
+		session = [int(c) - 1 for c in read.readline().split()]
+		for i in range(len(session)):
+			for j in range(i + 1, len(session)):
+				better[session[j]][session[i]] = True
+
+better_pairs = 0
+for c1 in range(cow_num):
+	for c2 in range(c1 + 1, cow_num):
+		better_pairs += not better[c1][c2] or not better[c2][c1]
+
+print(better_pairs, file=open("gymnastics.out", "w"))
+```
+</PySection>
+</LanguageSection>

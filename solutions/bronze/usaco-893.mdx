@@ -1,0 +1,283 @@
+---
+id: usaco-893
+source: USACO Bronze 2019 January
+title: Guess the Animal
+author: Brad Ma, Kevin Sheng, Nikhil Chatterjee
+---
+
+[Official Analysis (C++)](http://usaco.org/current/data/sol_guess_bronze_jan19.html)
+
+## Video Solution
+By Nikhil Chatterjee
+
+<YouTube id="qmltNgaSg8w" />
+
+<Spoiler title="Video Solution Code">
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int main(int argc, char **argv) {
+	freopen("guess.in", "r", stdin);
+	freopen("guess.out", "w", stdout);
+
+	int N;
+	cin >> N;
+	vector<vector<string>> characteristics(N);
+
+	for (int i = 0; i < N; ++i) {
+		string name;
+		cin >> name;
+		int K;
+		cin >> K;
+		for (int j = 0; j < K; ++j) {
+			string characteristic;
+			cin >> characteristic;
+			characteristics[i].push_back(characteristic);
+		}
+	}
+
+	int greatest_common = 0;
+
+	for (int i = 0; i < N; ++i) {
+		for (int j = i + 1; j < N; ++j) {
+			int common = 0;
+			for (const auto &characteristic1 : characteristics[i]) {
+				for (const auto &characteristic2 : characteristics[j]) {
+					if (characteristic1 == characteristic2) {
+						common++;
+						break;
+					}
+				}
+			}
+
+			greatest_common = max(greatest_common, common);
+		}
+	}
+
+	cout << greatest_common + 1 << "\n";
+
+	return 0;
+}
+```
+</CPPSection>
+<JavaSection>
+```java
+import java.io.*;
+import java.util.*;
+
+public class Solution {
+	public static void main(String[] args) throws IOException {
+		BufferedReader reader = new BufferedReader(
+		    new InputStreamReader(new FileInputStream("guess.in")));
+
+		int N = Integer.parseInt(reader.readLine());
+		List<String>[] characteristics = new List[N];
+		for (int i = 0; i < N; i++) {
+			characteristics[i] = new ArrayList<>();
+			String[] words = reader.readLine().split(" ");
+			for (int j = 2; j < words.length; j++) {
+				characteristics[i].add(words[j]);
+			}
+		}
+		reader.close();
+
+		int greatestCommon = 0;
+		for (int i = 0; i < N; ++i) {
+			for (int j = i + 1; j < N; ++j) {
+				int common = 0;
+
+				for (String characteristic1 : characteristics[i]) {
+					for (String characteristic2 : characteristics[j]) {
+						if (characteristic1.equals(characteristic2)) {
+							common++;
+							break;
+						}
+					}
+				}
+
+				greatestCommon = Math.max(greatestCommon, common);
+			}
+		}
+
+		PrintWriter writer = new PrintWriter(
+		    new OutputStreamWriter(new FileOutputStream("guess.out")));
+		writer.println(greatestCommon + 1);
+		writer.close();
+	}
+}
+```
+</JavaSection>
+<PySection>
+```py
+with open("guess.in", "r") as input_file:
+	lines = input_file.readlines()
+N = int(lines[0])
+characteristics = [0] * N
+for i in range(1, N + 1):
+	line = lines[i].split()
+	name = line[0]
+	K = int(line[1])
+	characteristics[i - 1] = [0] * K
+	for j in range(2, K + 2):
+		characteristic = line[j]
+		characteristics[i - 1][j - 2] = characteristic
+
+greatest_common = 0
+
+for i in range(N):
+	for j in range(i + 1, N):
+		common = 0
+		for characteristic1 in characteristics[i]:
+			for characteristic2 in characteristics[j]:
+				if characteristic1 == characteristic2:
+					common += 1
+					break
+		greatest_common = max(greatest_common, common)
+
+with open("guess.out", "w") as output_file:
+	output_file.write("{}".format(greatest_common + 1))
+```
+</PySection>
+</LanguageSection>
+</Spoiler>
+
+## Implementation
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <algorithm>
+#include <fstream>
+#include <iostream>
+#include <set>
+#include <string>
+#include <vector>
+
+using std::cout;
+using std::endl;
+using std::set;
+using std::string;
+using std::vector;
+
+template <typename T> set<T> intersection(const set<T> &s1, const set<T> &s2) {
+	set<T> ret;
+	for (const T &i : s1) {
+		if (s2.count(i)) { ret.insert(i); }
+	}
+	return ret;
+}
+
+int main() {
+	std::ifstream read("guess.in");
+
+	int animal_num;
+	read >> animal_num;
+	vector<set<string>> animals(animal_num);
+	for (int a = 0; a < animal_num; a++) {
+		string name;
+		int attr_num;
+		read >> name >> attr_num;
+		for (int ai = 0; ai < attr_num; ai++) {
+			string attr;
+			read >> attr;
+			animals[a].insert(attr);
+		}
+	}
+
+	int max_yes = 0;
+	for (int a1 = 0; a1 < animal_num; a1++) {
+		for (int a2 = a1 + 1; a2 < animal_num; a2++) {
+			/*
+			 * If there's 2 animals that have a bunch of traits in common,
+			 * Elsie can ask about all those traits.
+			 * Then she can ask for the "defining" trait,
+			 * resutling in the # of common traits + 1 "yes"es.
+			 */
+			set<string> common = intersection(animals[a1], animals[a2]);
+			max_yes = std::max(max_yes, (int)common.size() + 1);
+		}
+	}
+
+	std::ofstream("guess.out") << max_yes << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Guess {
+	public static void main(String[] args) throws IOException {
+		BufferedReader read = new BufferedReader(new FileReader("guess.in"));
+		int animalNum = Integer.parseInt(read.readLine());
+
+		HashSet<String>[] animals = new HashSet[animalNum];
+		for (int a = 0; a < animalNum; a++) {
+			StringTokenizer line = new StringTokenizer(read.readLine());
+			line.nextToken();
+			int attrNum = Integer.parseInt(line.nextToken());
+			animals[a] = new HashSet<>();
+			for (int attr = 0; attr < attrNum; attr++) {
+				animals[a].add(line.nextToken());
+			}
+		}
+
+		int maxYes = 0;
+		for (int a1 = 0; a1 < animalNum; a1++) {
+			for (int a2 = a1 + 1; a2 < animalNum; a2++) {
+				/*
+				 * If there's 2 animals that have a bunch of traits in common,
+				 * Elsie can ask about all those traits.
+				 * Then she can ask for the "defining" trait,
+				 * resutling in the # of common traits + 1 "yes"es.
+				 */
+				HashSet<String> a1Copy = new HashSet<>(animals[a1]);
+				a1Copy.retainAll(animals[a2]);
+				maxYes = Math.max(maxYes, a1Copy.size() + 1);
+			}
+		}
+
+		PrintWriter written = new PrintWriter("guess.out");
+		written.println(maxYes);
+		written.close();
+	}
+}
+```
+</JavaSection>
+<PySection>
+
+```py
+animals = []
+with open("guess.in") as read:
+	animal_num = int(read.readline())
+	for _ in range(animal_num):
+		line = read.readline().split()
+		# We don't care about the 1st or 2nd token.
+		animals.append(set(line[2:]))
+
+max_yes = 0
+for a1 in range(animal_num):
+	for a2 in range(a1 + 1, animal_num):
+		"""
+		If there's 2 animals that have a bunch of traits in common,
+		Elsie can ask about all those traits.
+		Then she can ask for the "defining" trait,
+		resutling in the # of common traits + 1 "yes"es.
+		"""
+		max_yes = max(max_yes, len(animals[a1].intersection(animals[a2])) + 1)
+
+print(max_yes, file=open("guess.out", "w"))
+```
+
+</PySection>
+</LanguageSection>

@@ -26,7 +26,10 @@ import TableOfContentsBlock from './TableOfContents/TableOfContentsBlock';
 import TableOfContentsSidebar from './TableOfContents/TableOfContentsSidebar';
 
 const ContentContainer = ({ children, tableOfContents }) => (
-  <main className="relative z-0 pt-6 lg:pt-2 focus:outline-none" tabIndex={0}>
+  <main
+    className="relative z-0 pt-6 lg:pt-2 focus:outline-none overflow-x-hidden"
+    tabIndex={0}
+  >
     <div className="mx-auto">
       <div className="flex justify-center">
         {/* Placeholder for the sidebar */}

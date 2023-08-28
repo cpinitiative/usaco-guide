@@ -64,7 +64,7 @@ export default function Feedback({ videoId }): JSX.Element {
             ([emoji, key, name]: [
               string,
               'very_bad' | 'bad' | 'good' | 'great',
-              string
+              string,
             ]) => (
               <button
                 key={key}

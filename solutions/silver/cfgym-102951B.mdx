@@ -1,0 +1,87 @@
+---
+id: cfgym-102951B
+source: CF
+title: Studying Algorithms
+author: Atharv Jain
+---
+## Video Solution
+
+By Atharv Jain
+
+<YouTube id="wJKV92iDMpg" />
+
+<Spoiler title="Video Solution Code">
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
+	int n, x;
+	cin >> n >> x;
+	vector<int> a(n);
+	for (int i = 0; i < n; i++) cin >> a[i];
+	sort(a.begin(), a.end());
+	for (int i = 0; i < n; i++) {
+		if (a[i] > x) {
+			cout << i << "\n";
+			exit(0);
+		}
+		x -= a[i];
+	}
+	cout << n << "\n";
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Main {
+	int n, x;
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
+		int n = io.nextInt(), x = io.nextInt();
+		int a[] = new int[n];
+		for (int i = 0; i < n; i++) a[i] = io.nextInt();
+		Arrays.sort(a);
+		int ans = n;
+		for (int i = 0; i < n; i++) {
+			if (x < a[i]) {
+				ans = i;
+				break;
+			}
+			x -= a[i];
+		}
+		io.println(ans);
+		io.close();
+	}
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+
+<PySection>
+```py
+n, x = map(int, input().split())
+a = list(map(int, input().split()))
+a.sort()
+ans = n
+for i in range(n):
+	if x < a[i]:
+		ans = i
+		break
+	x -= a[i]
+print(ans)
+```
+</PySection>
+</LanguageSection>
+</Spoiler>

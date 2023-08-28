@@ -15,6 +15,7 @@ import * as React from 'react';
 import Split from 'react-split';
 import styled from 'styled-components';
 import {
+  filesListAtom,
   monacoEditorInstanceAtom,
   openOrCreateExistingFileAtom,
 } from '../../atoms/editor';
@@ -54,15 +55,16 @@ export default function EditorPage(props: PageProps): JSX.Element {
   const editor = useAtomValue(monacoEditorInstanceAtom);
   const openOrCreateExistingFile = useUpdateAtom(openOrCreateExistingFileAtom);
 
+  const filesList = useAtomValue(filesListAtom); // null if hasn't been loaded from storage yet
   React.useEffect(() => {
     const defaultFilePath =
       props.location?.search?.length > 0
         ? getQueryVariable(props.location.search.slice(1), 'filepath')
         : null;
-    if (defaultFilePath) {
+    if (defaultFilePath && filesList !== null) {
       openOrCreateExistingFile(defaultFilePath);
     }
-  }, []);
+  }, [filesList]);
 
   return (
     <QuizGeneratorProvider>

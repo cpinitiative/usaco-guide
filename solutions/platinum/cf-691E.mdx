@@ -1,0 +1,95 @@
+---
+id: cf-691E
+source: Xor-Sequences
+title: Xor-sequences
+author: Neo Wang
+---
+
+## Explanation
+
+Notice that we're asked to count the total number of paths,
+so we can store the graph as an adjacency matrix by setting $A_{i, j}=1$ if the number of bits $x_i \oplus x_j$ is divisible by $3$. After contructing these edges,
+notice that this is the same problem as [CSES - Graph Paths](https://cses.fi/problemset/task/1723)([solution](/CPH.pdf#page=232)), except we query the sum of all the paths.
+
+Then, we can calculate $A^k$ in $\mathcal{O}(N^3\log K)$ using [Matrix Exponentiation](/plat/matrix-expo).
+
+Our final answer is:
+
+$$
+\sum_{i=0}^N \sum_{j=0}^N A_{i, j}^k
+$$
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N^3\log K)$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const long long MOD = 1e9 + 7;
+
+template <class T> struct Matrix {
+	vector<vector<T>> v;
+	void init(int n, int m) { v = vector<vector<T>>(n, vector<T>(m)); }
+
+	Matrix operator*(Matrix b) {
+		int x = v.size();
+		int y = v[0].size();
+		int z = b.v[0].size();
+		assert(y == sz(b.v));
+		Matrix<T> ret;
+		ret.init(x, z);
+		for (int i = 0; i < x; i++) {
+			for (int j = 0; j < y; j++) {
+				for (int k = 0; k < z; k++) {
+					ret.v[i][k] += v[i][j] * b.v[j][k];
+					ret.v[i][k] %= MOD;
+				}
+			}
+		}
+		return ret;
+	}
+};
+
+int main() {
+	long long n, m;
+	cin >> n >> m;
+	m--;
+	vector<long long> v(n);
+	for (int i = 0; i < n; i++) cin >> v[i];
+	Matrix<long long> A, B;
+	A.init(n, n);
+	B.init(n, n);
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
+			if (__builtin_popcountll(v[i] ^ v[j]) % 3 == 0) { A.v[i][j] = 1; }
+		}
+	}
+
+	Matrix<long long> ret;
+	ret.init(n, n);
+	for (int i = 0; i < n; i++) { ret.v[i][i] = 1; }
+	for (long long b = m; b > 0; b /= 2) {
+		if (b & 1) { ret = ret * A; }
+		A = A * A;
+	}
+
+	long long ans = 0;
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
+			ans += ret.v[i][j];
+			ans %= MOD;
+		}
+	}
+	cout << ans << '\n';
+}
+```
+
+</CPPSection>
+
+</LanguageSection>

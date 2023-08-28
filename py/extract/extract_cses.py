@@ -1,4 +1,4 @@
-query = '''
+query = """
 query MyQuery {
   allMdx(filter: {fileAbsolutePath: {regex: "/content/"}}) {
     nodes {
@@ -12,14 +12,14 @@ query MyQuery {
     }
   }
 }
-'''
+"""
 
 import json, sys
 
-F = open("id_cses.json","r")
+F = open("id_cses.json", "r")
 ids = json.load(F)
 
-f = open("oops.json","r")
+f = open("oops.json", "r")
 x = json.load(f)["data"]["allMdx"]["nodes"]
 
 done = {}
@@ -31,5 +31,5 @@ for y in x:
 			# print(p["id"], p["source"], y["frontmatter"]["id"])
 
 for a in ids:
-  if a not in done:
-    print(a,ids[a])
+	if a not in done:
+		print(a, ids[a])

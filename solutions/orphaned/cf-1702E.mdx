@@ -1,0 +1,114 @@
+---
+id: cf-1702E
+source: CF
+title: Split Into Two Sets
+author: Aadit Ambadkar
+---
+
+[Official Editorial (C++)](https://codeforces.com/blog/entry/104763)
+
+## Explanation
+
+**Time Complexity:** $\mathcal{O}(n)$
+
+First observe that if any number is present on more than 2 dominoes or if a domino has the same number repeated twice, as then,
+it is impossible to create the 2 sets. This is because both cases would result in one group having two numbers (we can't fit 3 items in 2 groups without
+that happening).
+
+We can turn this problem into
+a graph problem by drawing edges between dominoes that share numbers (the main motivation for this is that we have 2 sets, which reminds us of bipartite splits). Specifically, let domino $i$ have the two numbers
+$a_i$ and $b_i$. Then we draw an edge between dominoes $i$ and $j$ if and only if $a_i = a_j$ or $a_i = b_j$ or $a_j = b_i$
+or $a_j = b_j$.
+
+Now, suppose that we have a way to create the 2 sets, with $\frac{n}2$ dominoes in each set.
+Since each number appears only once in each set, this graph is bipartite.
+
+This leads us to the following assertion: It is possible to construct the two sets
+[if and only if](https://artofproblemsolving.com/wiki/index.php/Iff) the graph constructed as above is bipartite. We proved
+the only if clause above, all that remains is to prove the if clause.
+
+Suppose the graph is bipartite. Divide the graph into two sets according to the bipartite split of the graph. We wish to prove
+that no numbers are repeated twice in either of these sets. However, since an edge exists between any two dominoes which share
+a number, it is impossible for two dominoes which share a number to be in the same set (if it were possible, we would have a
+cycle of length 1, which is odd, contradicting the fact that the graph is bipartite). So, given a bipartite split of the graph,
+we can easliy construct our 2 desired sets.
+
+The implementation of this is relatively straight forward; Simply check if the graph is bipartite or not, and output accordingly.
+
+<LanguageSection>
+<CPPSection>
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+bool dfs(int u, int color, vector<int> &vis, vector<vector<int>> &adj) {
+	// If the node is already visited with and was marked in the same color
+	if (vis[u] == color) { return true; }
+
+	// If the node is already visited with and was marked in the other color
+	if (vis[u] == 1 - color) { return false; }
+
+	vis[u] = color;
+	for (int v : adj[u]) {
+		if (!dfs(v, 1 - color, vis, adj)) return false;
+	}
+	return true;
+}
+
+void solve() {
+	int n;
+	cin >> n;
+	vector<pair<int, int>> dominoes(n);
+
+	for (pair<int, int> &i : dominoes) { cin >> i.first >> i.second; }
+
+	for (pair<int, int> i : dominoes) {
+		// Check if a number on the domino is repeated
+		if (i.first == i.second) {
+			cout << "NO\n";
+			return;
+		}
+	}
+
+	map<int, vector<int>> color_to_index;
+	for (int i = 0; i < n; i++) {
+		color_to_index[dominoes[i].first].push_back(i);
+		color_to_index[dominoes[i].second].push_back(i);
+		// Check if a number exists in 3 or more dominoes
+		if (color_to_index[dominoes[i].first].size() > 2 ||
+		    color_to_index[dominoes[i].second].size() > 2) {
+			cout << "NO\n";
+			return;
+		}
+	}
+
+	// initialize variables for DFS
+	vector<int> vis(n, -1);
+	vector<vector<int>> adj(n);
+	for (pair<int, vector<int>> p : color_to_index) {
+		vector<int> v = p.second;
+		if (v.size() == 2) {
+			adj[v[0]].push_back(v[1]);
+			adj[v[1]].push_back(v[0]);
+		}
+	}
+
+	for (int i = 0; i < n; i++) {
+		if (vis[i] == -1) {
+			if (!dfs(i, 0, vis, adj)) {
+				cout << "NO" << endl;
+				return;
+			}
+		}
+	}
+	cout << "YES" << endl;
+}
+
+int main() {
+	int t;
+	cin >> t;
+	for (int test = 0; test < t; test++) { solve(); }
+}
+```
+</CPPSection>
+</LanguageSection>

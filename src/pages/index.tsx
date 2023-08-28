@@ -10,8 +10,7 @@ import {
   UserGroupIcon,
 } from '@heroicons/react/outline';
 import classNames from 'classnames';
-import { Link } from 'gatsby';
-import { OutboundLink } from 'gatsby-plugin-google-analytics';
+import { Link, navigate } from 'gatsby';
 import { StaticImage } from 'gatsby-plugin-image';
 import * as React from 'react';
 import { useRef } from 'react';
@@ -19,7 +18,6 @@ import { GlowingRing } from '../components/elements/landing/GlowingRing';
 import { GlowingText } from '../components/elements/landing/GlowingText';
 import { GradientText } from '../components/elements/landing/GradientText';
 import { HighlightedText } from '../components/elements/landing/HighlightedText';
-import AuthorsSection from '../components/Index/AuthorsSection';
 import ContributorsSection from '../components/Index/ContributorsSection';
 import { CPIProjectCard } from '../components/Index/CPIProjectCard';
 import { Feature } from '../components/Index/Feature';
@@ -35,6 +33,7 @@ import TrustedBy from '../components/Index/TrustedBy';
 import Layout from '../components/layout';
 import SEO from '../components/seo';
 import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
+import UserDataContext from '../context/UserDataContext/UserDataContext';
 
 const containerClasses = 'max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8';
 const headerClasses =
@@ -54,7 +53,7 @@ const linkTextStyles =
 
 export default function IndexPage(): JSX.Element {
   const learnMoreRef = useRef<HTMLDivElement>();
-
+  const { firebaseUser } = React.useContext(UserDataContext);
   return (
     <Layout>
       <SEO title={null} />
@@ -532,7 +531,7 @@ export default function IndexPage(): JSX.Element {
             Our Sponsors
           </p>
           {/* Sponsor logos don't fit well in the light theme */}
-          <p className="uppercase text-gray-600 dark:text-gray-400 font-semibold pt-6 md:text-lg">
+          {/*<p className="uppercase text-gray-600 dark:text-gray-400 font-semibold pt-6 md:text-lg">
             Platinum Sponsors
           </p>
           <div className="my-8 grid grid-cols-2 gap-0.5 md:grid-cols-3 lg:grid-cols-4 lg:my-6 text-gray-600 dark:text-gray-400 items-center">
@@ -541,7 +540,7 @@ export default function IndexPage(): JSX.Element {
                 <XCamp />
               </a>
             </div>
-          </div>
+          </div> */}
           <p className="uppercase text-gray-600 dark:text-gray-400 font-semibold pt-6 md:text-lg">
             Bronze Sponsors
           </p>
@@ -591,13 +590,14 @@ export default function IndexPage(): JSX.Element {
                   <dd className="mt-2">
                     <p className="text-base leading-6 text-gray-500 dark:text-gray-400">
                       USACO stands for the{' '}
-                      <OutboundLink
+                      <a
                         href="http://www.usaco.org/"
                         target="_blank"
+                        rel="noreferrer"
                         className="text-blue-600 dark:text-blue-400 underline"
                       >
                         USA Computing Olympiad
-                      </OutboundLink>
+                      </a>
                       . Check out the{' '}
                       <Link
                         to="/general/usaco-faq"
@@ -648,13 +648,14 @@ export default function IndexPage(): JSX.Element {
                   <dd className="mt-2">
                     <p className="text-base leading-6 text-gray-500 dark:text-gray-400">
                       Check out the{' '}
-                      <OutboundLink
+                      <a
                         href="https://joincpi.org/?ref=home"
                         target="_blank"
+                        rel="noreferrer"
                         className="text-blue-600 dark:text-blue-400 underline"
                       >
                         Competitive Programming Initiative
-                      </OutboundLink>
+                      </a>
                       !
                     </p>
                   </dd>
@@ -680,13 +681,14 @@ export default function IndexPage(): JSX.Element {
                   <dd className="mt-2">
                     <p className="text-base leading-6 text-gray-500 dark:text-gray-400">
                       If you get stuck, head over to the{' '}
-                      <OutboundLink
+                      <a
                         href="https://forum.usaco.guide"
                         target="_blank"
+                        rel="noreferrer"
                         className="text-blue-600 dark:text-blue-400 underline"
                       >
                         USACO Forum
-                      </OutboundLink>{' '}
+                      </a>{' '}
                       for help.
                     </p>
                   </dd>
@@ -715,13 +717,14 @@ export default function IndexPage(): JSX.Element {
                   <dd className="mt-2">
                     <p className="text-base leading-6 text-gray-500 dark:text-gray-400">
                       Yes! Check out our{' '}
-                      <OutboundLink
+                      <a
                         href="https://github.com/cpinitiative/usaco-guide/?ref=home"
                         target="_blank"
+                        rel="noreferrer"
                         className="text-blue-600 dark:text-blue-400 underline"
                       >
                         Github Repository
-                      </OutboundLink>
+                      </a>
                       .
                     </p>
                   </dd>
@@ -733,11 +736,9 @@ export default function IndexPage(): JSX.Element {
       </div>
       {/*End FAQ*/}
 
-      <AuthorsSection />
-
       <ContributorsSection />
 
-      <div className="bg-white dark:bg-dark-surface">
+      <div className="bg-gray-100 dark:bg-gray-900">
         <div className="max-w-screen-xl mx-auto py-12 px-4">
           <p className="text-center text-base leading-6 text-gray-400 dark:text-dark-med-emphasis">
             &copy; {new Date().getFullYear()} Competitive Programming

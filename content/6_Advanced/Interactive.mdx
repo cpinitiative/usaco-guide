@@ -55,22 +55,23 @@ suggests that we should binary search.
 
 Indeed, that's the solution - try to come up with it yourself!
 
-<Spoiler title="Solution">
+### Solution
 
 The solution is to binary search on the DFS order of the tree for the largest
 prefix without an easter egg. This works because any prefix of the DFS order is
 a connected component.
 
 ```cpp
-#include <bits/stdc++.h>
 #include "grader.h"
+#include <bits/stdc++.h>
 using namespace std;
 
 vector<int> graph[513], ord;
 
 void dfs(int node = 1, int parent = 0) {
 	ord.push_back(node);
-	for (int i : graph[node]) if (i != parent) dfs(i, node);
+	for (int i : graph[node])
+		if (i != parent) dfs(i, node);
 }
 
 int findEgg(int N, vector<pair<int, int>> bridges) {
@@ -90,8 +91,6 @@ int findEgg(int N, vector<pair<int, int>> bridges) {
 	return ord[l];
 }
 ```
-
-</Spoiler>
 
 ### Problems
 
@@ -115,7 +114,7 @@ access $A$ (since that would take 24 operations).
 Luckily, we can still store sufficient information about $A$ - just not in
 binary!
 
-<Spoiler title="Solution">
+#### Solution - cmp
 
 Here's how our algorithm works:
 
@@ -161,8 +160,6 @@ int compare(int b) {
 }
 ```
 
-</Spoiler>
-
 ### Tip 2 - Brute Force
 
 Sometimes, the amount of information that we can send is (slightly) more than
@@ -188,7 +185,7 @@ the sender sent.
 
 <FocusProblem problem="communicationXOR" />
 
-<Spoiler title="Solution">
+#### Solution - Coins
 
 Let the XOR-sum of the positions with heads-up coins be $X$. Notice how if we
 flip coin $X \oplus c$, then the new XOR-sum of the positions with heads-up coins is
@@ -202,23 +199,17 @@ This allows Shahrnaz to determine $c$ after Arnavaz flips exactly 1 coin!
 std::vector<int> coin_flips(std::vector<int> b, int c) {
 	std::vector<int> flips(1);
 	int xr = c;
-	for (int i = 0; i < b.size(); i++) {
-		xr ^= b[i] * i;
-	}
+	for (int i = 0; i < b.size(); i++) { xr ^= b[i] * i; }
 	flips[0] = xr;
 	return flips;
 }
 
 int find_coin(std::vector<int> b) {
 	int xr = 0;
-	for (int i = 0; i < b.size(); i++) {
-		xr ^= b[i] * i;
-	}
+	for (int i = 0; i < b.size(); i++) { xr ^= b[i] * i; }
 	return xr;
 }
 ```
-
-</Spoiler>
 
 ### Problems
 

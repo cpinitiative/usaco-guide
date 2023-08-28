@@ -81,16 +81,25 @@ export type ExecutionVerdict =
   | 'CE'
   | 'IE'; // IE is internal error
 
-export interface FirebaseSubmission {
-  language: string;
-  problemID: string;
-  score: number;
-  submissionID: string;
-  userID: string;
-  type: string;
-  verdict: string;
-  timestamp: any; // milliseconds
-}
+export type FirebaseSubmission =
+  | {
+      language: string;
+      problemID: string;
+      score: number;
+      submissionID: string;
+      userID: string;
+      type: string;
+      verdict: string;
+      timestamp: any; // milliseconds
+    }
+  | {
+      score: number;
+      userID: string;
+      type: 'submission-link';
+      verdict: string;
+      timestamp: any;
+      link: string;
+    };
 
 export const verdictToSymbol: { [key in ExecutionVerdict]: string } = {
   AC: '*',

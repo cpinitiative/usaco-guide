@@ -1,0 +1,340 @@
+---
+id: usaco-967
+source: USACO Silver 2019 December
+title: Meetings
+author: Kevin Sheng
+---
+
+[Official Editorial (C++)](http://usaco.org/current/data/sol_meetings_silver_dec19.html)
+
+This problem is extremely hard for Silver, so don't feel bad if you get stuck on it!
+
+## Explanation
+
+### Initial Analysis
+
+First of all, what really happens during a meeting?
+
+The cows do "bounce" off from each other, but that's
+really hard to think about *and* implement.
+
+An alternative way to approach this meeting mechanic is that
+the cows swap weights and continue on their way.
+If we think about it like that, then we have all the times
+the cows will reach the barn because we have their positions and speeds.
+
+Of course, now we have to account for the weights of the cows.
+
+Let's first think about it from the leftmost left-going cow.
+If it's the leftmost cow overall, nothing will happen.
+However, if there's some cows to the left of it,
+it will always take on the weight of the leftmost right-going cow
+because that's the cow it will meet last.
+More precisely, it will always take on the weight of the leftmost cow *overall*.
+
+Moving on the the second leftmost left-going cow (if there is one),
+it will take on the weight of the second leftmost cow *overall*, because
+the leftmost cow's weight has been taken.
+
+This pattern generalizes to the following two rules:
+* If a cow is going left and is the $n$-th leftmost left-going cow,
+  it will always take on the position of the $n$-th leftmost cow *overall*.
+* If a cow is going *right* and is the $n$-th *right*most right-going cow,
+  it will always take on the position of the $n$-th rightmost cow overall.
+
+With this rule and the previous observations, we can figure out the times
+at which cows will reach exits and the weights they will reach it with,
+and thus we will know the time at which half the total cows' weight
+will have reached a barn.
+
+### Final Solution
+
+Given that we have the end time, we just have to efficiently count the number
+of meetings that will occur before that time.
+
+To do this, we iterate through all cows in order, for each left-going cow
+seeing how many right-going cows are within their range. We can do this
+with a queue and the observation that a left-going cow at position $l$ and
+a right-going cow at position $r$ can meet if $l<r$ and $r+2e \geq l$,
+where $e$ is the ending time.
+
+<Info>
+
+It's also possible to see how many meetings each right-going cow would have
+gone through- we'd just have to go through the cows in reverse.
+
+</Info>
+
+## Implementation
+
+**Time Complexity**: $\mathcal{O}(N \log N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <algorithm>
+#include <fstream>
+#include <iostream>
+#include <queue>
+#include <vector>
+
+using std::cout;
+using std::endl;
+using std::vector;
+
+struct Cow {
+	int weight;
+	int pos;
+	int speed;
+};
+
+int main() {
+	std::ifstream read("meetings.in");
+
+	int cow_num;
+	int barn_pos;
+	read >> cow_num >> barn_pos;
+
+	vector<Cow> cows(cow_num);
+	int total_weight = 0;
+	for (Cow &c : cows) {
+		read >> c.weight >> c.pos >> c.speed;
+		total_weight += c.weight;
+	}
+
+	std::sort(cows.begin(), cows.end(),
+	          [](const Cow &c1, const Cow &c2) { return c1.pos < c2.pos; });
+
+	// get the cows that start off going to the left & right
+	vector<Cow> left;
+	vector<Cow> right;
+	for (const Cow &c : cows) {
+		if (c.speed == -1) {
+			left.push_back(c);
+		} else if (c.speed == 1) {
+			right.push_back(c);
+		}
+	}
+
+	/*
+	 * calculate each of the times when the cows meet the end
+	 * the leftmost cows get all of the -1 cow's positions as their times,
+	 * and similarly for the rightmost ones
+	 */
+	vector<std::pair<int, int>> weight_times;
+	for (int c = 0; c < left.size(); c++) {
+		// time of arrivial at barn & weight, respectively
+		weight_times.push_back({left[c].pos, cows[c].weight});
+	}
+	for (int c = 0; c < right.size(); c++) {
+		weight_times.push_back(
+		    {barn_pos - right[c].pos, cows[left.size() + c].weight});
+	}
+
+	// sort them by their occurrence
+	std::sort(weight_times.begin(), weight_times.end(),
+	          [](const std::pair<int, int> &a, const std::pair<int, int> &b) {
+		          return a.first < b.first;
+	          });
+
+	int endTime = -1;
+	for (const auto &[time, weight] : weight_times) {
+		total_weight -= 2 * weight;
+		if (total_weight <= 0) {
+			endTime = time;
+			break;
+		}
+	}
+
+	// count how many meetings occur before the end time
+	int meeting_num = 0;
+	// the cows that a left-going cow can meet before the end time
+	std::queue<int> leftSide;
+	for (int c = 0; c < cow_num; c++) {
+		if (cows[c].speed == 1) {
+			leftSide.push(cows[c].pos);
+		} else if (cows[c].speed == -1) {
+			// remove all the cows that can't meet this left-going cow
+			while (!leftSide.empty() &&
+			       leftSide.front() + 2 * endTime < cows[c].pos) {
+				leftSide.pop();
+			}
+			meeting_num += leftSide.size();
+		}
+	}
+
+	std::ofstream("meetings.out") << meeting_num << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Meetings {
+	static class Cow {
+		public int weight;
+		public int pos;
+		public int speed;
+		public Cow(int weight, int pos, int speed) {
+			this.weight = weight;
+			this.pos = pos;
+			this.speed = speed;
+		}
+	}
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader read = new BufferedReader(new FileReader("meetings.in"));
+		StringTokenizer initial = new StringTokenizer(read.readLine());
+
+		int cowNum = Integer.parseInt(initial.nextToken());
+		int barnPos = Integer.parseInt(initial.nextToken());
+
+		Cow[] cows = new Cow[cowNum];
+		int totalWeight = 0;
+		for (int c = 0; c < cowNum; c++) {
+			StringTokenizer cow = new StringTokenizer(read.readLine());
+			cows[c] = new Cow(Integer.parseInt(cow.nextToken()),
+			                  Integer.parseInt(cow.nextToken()),
+			                  Integer.parseInt(cow.nextToken()));
+			totalWeight += cows[c].weight;
+		}
+
+		Arrays.sort(cows, Comparator.comparingInt(c -> c.pos));
+
+		// get the cows that start off going to the left & right
+		List<Cow> left = new ArrayList<>();
+		List<Cow> right = new ArrayList<>();
+		for (Cow c : cows) {
+			if (c.speed == -1) {
+				left.add(c);
+			} else if (c.speed == 1) {
+				right.add(c);
+			}
+		}
+
+		/*
+		 * calculate each of the times when the cows meet the end
+		 * the leftmost cows get all of the -1 cow's positions as their times,
+		 * and similarly for the rightmost ones
+		 */
+		List<int[]> weightTimes = new ArrayList<>();
+		for (int c = 0; c < left.size(); c++) {
+			// time of arrivial at barn & weight, respectively
+			weightTimes.add(new int[] {left.get(c).pos, cows[c].weight});
+		}
+		for (int c = 0; c < right.size(); c++) {
+			weightTimes.add(new int[] {barnPos - right.get(c).pos,
+			                           cows[left.size() + c].weight});
+		}
+
+		// sort them by their occurrence
+		weightTimes.sort(Comparator.comparingInt(t -> t[0]));
+
+		int endTime = -1;
+		for (int[] barnMeeting : weightTimes) {
+			totalWeight -= 2 * barnMeeting[1];
+			if (totalWeight <= 0) {
+				endTime = barnMeeting[0];
+				break;
+			}
+		}
+
+		// count how many meetings occur before the end time
+		int meetingNum = 0;
+		// the cows that a left-going cow can meet before the end time
+		Queue<Integer> leftSide = new ArrayDeque<>();
+		for (int c = 0; c < cowNum; c++) {
+			if (cows[c].speed == 1) {
+				leftSide.add(cows[c].pos);
+			} else if (cows[c].speed == -1) {
+				// remove all the cows that can't meet this left-going cow
+				while (!leftSide.isEmpty() &&
+				       leftSide.peek() + 2 * endTime < cows[c].pos) {
+					leftSide.poll();
+				}
+				meetingNum += leftSide.size();
+			}
+		}
+
+		PrintWriter written = new PrintWriter("meetings.out");
+		written.println(meetingNum);
+		written.close();
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+from typing import NamedTuple
+from collections import deque
+
+
+class Cow(NamedTuple):
+	weight: int
+	pos: int
+	speed: int
+
+
+with open("meetings.in") as read:
+	cow_num, barn_pos = [int(i) for i in read.readline().split()]
+	cows = [Cow(*[int(i) for i in read.readline().split()]) for _ in range(cow_num)]
+	total_weight = sum(c.weight for c in cows)
+
+cows.sort(key=lambda c: c.pos)
+
+# get the cows that start off going to the left & right
+left = []
+right = []
+for c in cows:
+	if c.speed == -1:
+		left.append(c)
+	elif c.speed == 1:
+		right.append(c)
+
+"""
+calculate each of the times when the cows meet the end
+the leftmost cows get all of the -1 cow's positions as their times,
+and similarly for the rightmost ones
+"""
+weight_times = []
+for c in range(len(left)):
+	# time of arrivial at barn & weight, respectively
+	weight_times.append((left[c].pos, cows[c].weight))
+for c in range(len(right)):
+	weight_times.append((barn_pos - right[c].pos, cows[len(left) + c].weight))
+
+# sort them by their occurrence
+weight_times.sort(key=lambda t: t[0])
+
+end_time = -1
+for time, weight in weight_times:
+	total_weight -= 2 * weight
+	if total_weight <= 0:
+		end_time = time
+		break
+
+# count how many meetings occur before the end time
+meeting_num = 0
+# the cows that a left-going cow can meet before the end time
+left_side = deque()
+for c in range(cow_num):
+	if cows[c].speed == 1:
+		left_side.append(cows[c].pos)
+	elif cows[c].speed == -1:
+		# remove all the cows that can't meet this left-going cow
+		while left_side and left_side[0] + 2 * end_time < cows[c].pos:
+			left_side.popleft()
+		meeting_num += len(left_side)
+
+print(meeting_num, file=open("meetings.out", "w"))
+```
+
+</PySection>
+</LanguageSection>

@@ -3,9 +3,9 @@ id: intro-tree
 title: Introduction to Tree Algorithms
 author: Nathan Chen, Siyong Huang, Albert Ye
 prerequisites:
-  - dfs
+  - graph-traversal
 description: 'Introducing a special type of graph: trees.'
-frequency: 1
+frequency: 2
 ---
 
 <FocusProblem problem="treeSam" />
@@ -92,10 +92,10 @@ vector<int> children[SZ];
 int subtree_size[SZ], depth[SZ];
 
 void dfs_size(int node) {
-	subtree_size[node] = 1; // This one represents the root of `node's` subtree
+	subtree_size[node] = 1;  // This one represents the root of `node's` subtree
 	// (which would be `node` itself)
 	for (int child : children[node]) {
-		depth[child] = depth[node]+1; // not needed for this problem
+		depth[child] = depth[node] + 1;  // not needed for this problem
 		dfs_size(child);
 		subtree_size[node] += subtree_size[child];
 		// Add `node's` children's subtrees to the size of `node's` subtree
@@ -103,21 +103,23 @@ void dfs_size(int node) {
 }
 
 int main() {
-	int N; cin >> N;
-	for(int i = 1; i < N; i++) {
-		int parent; cin >> parent; parent--;
+	int N;
+	cin >> N;
+	for (int i = 1; i < N; i++) {
+		int parent;
+		cin >> parent;
+		parent--;
 		// this node is the parent of node i ... Also notice
 		// the decrement operator in order to make the node 0-indexed
 		children[parent].push_back(i);
 	}
 	dfs_size(0);
-	for(int i = 0; i < N; i++) {
-		cout << subtree_size[i]-1;
-		if(i != N-1) cout << " ";
+	for (int i = 0; i < N; i++) {
+		cout << subtree_size[i] - 1;
+		if (i != N - 1) cout << " ";
 	}
 	cout << "\n";
 }
-
 ```
 
 </CPPSection>
@@ -136,44 +138,38 @@ TLE. Instead, the Java sample code will use the
 import java.io.*;
 import java.util.*;
 
-public class Subordinates
-{
+public class Subordinates {
 	static InputReader in = new InputReader(System.in);
 	static PrintWriter out = new PrintWriter(System.out);
 
 	public static final int MN = 200020;
 
 	static int N, M, ans;
-	static int[] hd = new int[MN], nx = new int[MN], to = new int[MN], s = new int[MN], p = new int[MN];
+	static int[] hd = new int[MN], nx = new int[MN], to = new int[MN],
+	             s = new int[MN], p = new int[MN];
 
-	public static void adde(int u, int v, int id)
-	{
+	public static void adde(int u, int v, int id) {
 		nx[id] = hd[u];
 		hd[u] = id;
 		to[id] = v;
 	}
-	public static void dfs(int node)
-	{
-		s[node]=1;
-		for(int id=hd[node];id!=0;id=nx[id])
-		{
+	public static void dfs(int node) {
+		s[node] = 1;
+		for (int id = hd[node]; id != 0; id = nx[id]) {
 			dfs(to[id]);
-			s[node]+=s[to[id]];
+			s[node] += s[to[id]];
 		}
 	}
-	public static void main(String... args)
-	{
-		N=in.nextInt();
-		for(int i=2;i<=N;++i)
-		{
-			p[i]=in.nextInt();
+	public static void main(String... args) {
+		N = in.nextInt();
+		for (int i = 2; i <= N; ++i) {
+			p[i] = in.nextInt();
 			adde(p[i], i, i);
 		}
 		dfs(1);
-		for(int i=1;i<=N;++i)
-		{
-			out.print(s[i]-1);
-			if(i<N) out.print(" ");
+		for (int i = 1; i <= N; ++i) {
+			out.print(s[i] - 1);
+			if (i < N) out.print(" ");
 			else out.println();
 		}
 		out.close();
@@ -187,22 +183,29 @@ public class Subordinates
 
 In the Python solution, we need to set recursion limit to $2\times10^5$.
 
-```python
+```py
 import sys
-sys.setrecursionlimit(200006) # set recursion limit
-def dfs(x): # x is the current node
-	ans = 0 # stores the number of subordinates
+
+sys.setrecursionlimit(200006)  # set recursion limit
+
+
+def dfs(x):  # x is the current node
+	ans = 0  # stores the number of subordinates
 	for e in edges[x]:
-		if e != fa[x-1]:
+		if e != fa[x - 1]:
 			ans += dfs(e)
-	sub[x-1] = ans # 0-index is more convenient for printing
-	return ans+1 # add the node x itself
+	sub[x - 1] = ans  # 0-index is more convenient for printing
+	return ans + 1  # add the node x itself
+
+
 N = int(input())
-edges = [[] for _ in range(N+1)] # create empty adjacency list
-sub = [0 for _ in range(N)] # the number of subordinates
-fa = [1] + list(map(int, input().split())) # the parent of each node, set the parent of node 1 to itself
+edges = [[] for _ in range(N + 1)]  # create empty adjacency list
+sub = [0 for _ in range(N)]  # the number of subordinates
+fa = [1] + list(
+	map(int, input().split())
+)  # the parent of each node, set the parent of node 1 to itself
 for ind, f in enumerate(fa):
-	edges[f].append(ind+1) # add edges to the adjacency list
+	edges[f].append(ind + 1)  # add edges to the adjacency list
 dfs(1)
 for i in sub:
 	print(i, end=" ")
@@ -212,53 +215,12 @@ for i in sub:
 
 </LanguageSection>
 
-<!--
-## Computing parent, depth, and subtree sizes
+## Problems
 
-The following sample code computes the **parent**, **depth**, and **subtree sizes** of each node of a tree, assuming node 1 is the root.
-
-<LanguageSection>
-
-<CPPSection>
-
-```cpp
-//Not Tested
-#include <cstdio>
-#include <vector>
-
-const int MN = 2e5+10;
-std::vector<int> a[MN];
-int p[MN], d[MN], s[MN];
-void dfs(int n)
-{
-	s[n]=1;
-	for(int x:a[n])
-		if(x!=p[n])
-		{
-			d[x]=d[n]+1;
-			p[x]=n;
-			dfs(x);
-			s[n]+=s[x];
-		}
-}
-int main()
-{
-	for(int i=0,x,y;i+1<N;++i)
-		scanf("%d%d", &x, &y), a[x].push_back(y), a[y].push_back(x);
-	p[0]=-1;
-	d[0]=0;
-	dfs(1);
-	//do something
-}
-```
-
-</CPPSection>
-
-</LanguageSection>
-
--->
+<Problems problems="tree" hideSuggestProblemButton />
 
 ## Quiz
+
 <Quiz>
 	<Quiz.Question>
 		How is a preorder traversal found for a binary tree?
@@ -339,19 +301,8 @@ int main()
 		<Quiz.Answer>
 			`void dfs(vector<vector<int>>& adj)`
 			<Quiz.Explanation>
-				Incorrect. This DFS function cannot track the current node, therefore it cannot even run. 
+				Incorrect. This DFS function cannot track the current node, therefore it cannot even run.
 			</Quiz.Explanation>
 		</Quiz.Answer>
 	</Quiz.Question>
 </Quiz>
-
-	
-## Problems
-
-<!-- <Info>
-
-For the last two problems, try solving them on a tree first.
-
-</Info> -->
-
-<Problems problems="tree" hideSuggestProblemButton />

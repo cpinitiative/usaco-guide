@@ -1,0 +1,113 @@
+---
+id: usaco-1206
+source: USACO Silver 2022 February
+title: Redistributing Gifts
+author: Chongtian Ma
+---
+
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_prob1_silver_feb22.html)
+
+## Solution 1
+
+See the official analysis.
+
+## Solution 2 - Strongly Connected Components
+
+## Explanation
+
+Similar to the official analysis, we can construct a directed edge from $i$ to $j$ if cow $i$ prefers gift $j$ to gift $i$.
+If cow $i$ is able to receive a gift where it has an outgoing edge, then cow $i$ has received the most optimal gift it can be reassigned.
+Remember to also add an edge from cow $i$ to itself in case it cannot get a better gift.
+
+Then, we can separate the graph into strongly connected components (SCCs). If $i$ is in an SCC, this means that cow $i$ can receive
+all gifts in the SCC through a series of reassignments by definition of an SCC. The SCC must also have at least one of cow $i$'s preferred gift
+because it must contain at least one outgoing edge from $i$. If a cow does not belong in an SCC, it cannot receive a more optimal reassignment.
+
+## Implementation
+
+[Kosaraju's algorithm](https://en.wikipedia.org/wiki/Kosaraju's_algorithm) can be used to find all SCCs in the graph. At the end, it is optimal to just go down cow $i$'s preference list and assign the first gift belonging in the SCC.
+
+**Time Complexity:** $\mathcal{O}(N^3)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+const int N = 501;
+
+// The adjacency lists for the graph (revgraph is reversed)
+vector<int> graph[N], revgraph[N];
+vector<bool> vis(N), vis2(N);
+vector<int> path;
+
+// Stores all nodes in a SCC
+set<int> comp;
+
+// DFS functions for Kosaraju's
+void dfs(int node) {
+	vis[node] = true;
+	for (int i : graph[node]) {
+		if (!vis[i]) { dfs(i); }
+	}
+	path.push_back(node);
+}
+
+void dfs2(int node) {
+	vis2[node] = true;
+	for (int i : revgraph[node]) {
+		if (!vis2[i]) { dfs2(i); }
+	}
+	comp.insert(node);
+}
+
+int main() {
+	int n;
+	cin >> n;
+	for (int i = 1; i <= n; i++) {
+		// The graph array contains the cow i's preferred gifts (and itself).
+		graph[i].resize(n);
+		for (int j = 0; j < n; j++) { cin >> graph[i][j]; }
+		/*
+		 * We don't want edges to non-preferred gifts,
+		 * so we remove all gifts after its original assignment.
+		 */
+		while (graph[i].back() != i) { graph[i].pop_back(); }
+		for (int j : graph[i]) { revgraph[j].push_back(i); }
+	}
+
+	// classic kosaraju implementation
+	for (int i = 1; i <= n; i++) {
+		if (!vis[i]) { dfs(i); }
+	}
+
+	reverse(path.begin(), path.end());
+
+	vector<int> ans(n + 1);
+	for (int i : path) {
+		if (!vis2[i]) {
+			dfs2(i);
+			/*
+			 * Loop over all cows in the SCC and its preference list.
+			 * If a gift is found in its preference and also in the SCC,
+			 * just assign the it to the cow.
+			 */
+			for (int j : comp) {
+				for (int k : graph[j]) {
+					if (comp.count(k)) {
+						ans[j] = k;
+						break;
+					}
+				}
+			}
+			comp.clear();
+		}
+	}
+
+	for (int i = 1; i <= n; i++) { cout << ans[i] << endl; }
+}
+```
+</CPPSection>
+</LanguageSection>

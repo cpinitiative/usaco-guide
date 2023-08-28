@@ -1,0 +1,106 @@
+---
+id: usaco-265
+source: Old Gold
+title: The Cow Run
+author: Ryan Chou
+---
+
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_cowrun_mar13.html)
+
+## Explanation
+
+When we go from one point to another, it's optimal to pick up every cow along the way, so the list of cows that we visit will always form a subarray in the sorted list of all the cows.
+
+So, we'll sort the cows by their position.
+
+However, the optimal solution might involve going from one side to another as well. To account for this, let's use [range DP](/gold/dp-ranges).
+
+#### States
+
+We have to keep track of the cows that we've already picked up. Since this'll always be a range, we'll represent it as $i$ and $j$ (the endpoints of the interval).
+
+We also have to keep track of which side we're on ($k$).
+
+$\texttt{dp}[i][j][k] = \hspace{0.1cm}$minimum cost to visit all of these cows.
+
+The answer will be the minimum of each side when considering the entire range.
+
+#### Base Cases
+
+If we only visit cow $i$, then it'll cost us $\texttt{pos}[i] \cdot n$ because every other cow will keep costing us money while we go to halt that cow.
+
+#### Transitions
+
+There are four possible cases. Here, $k=0$ means that Farmer John is on the left of the interval, and $k=1$ means Farmer John is on the right.
+
+$\texttt{dp}[i][j][0] = \min(\texttt{dp}[i + 1][j][0] + |x[i + 1] - x[i]| \cdot \texttt{remaining}, \texttt{dp}[i + 1][j][1] + |x[i] - x[ij| \cdot \texttt{remaining})$
+
+$\texttt{dp}[i][j][1] = \min(\texttt{dp}[i][j - 1][1] + |x[j - 1] - x[j]| \cdot \texttt{remaining}, \texttt{dp}[i][j - 1][0] + |x[i] - x[j]| \cdot \texttt{remaining})$
+
+For each side, we have to consider whether to continue going the same way or to visit the next cow on the opposite end.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N^2)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	freopen("cowrun.in", "r", stdin);
+	freopen("cowrun.out", "w", stdout);
+
+	int n;
+	cin >> n;
+
+	vector<int> pos(n);
+	for (int i = 0; i < n; i++) { cin >> pos[i]; }
+
+	sort(pos.begin(), pos.end());
+
+	/*
+	 * dp[i][j][k] = min cost of visiting all cows within the range
+	 * i = left endpoint (inclusive)
+	 * j = right endpoint (inclusive)
+	 * k (0/1) = current side
+	 */
+	vector<vector<vector<int>>> dp(
+	    n + 1, vector<vector<int>>(n + 1, vector<int>(2, INT32_MAX)));
+
+	for (int i = n - 1; i >= 0; --i) {
+		for (int j = i; j < n; j++) {
+			if (i == j) {
+				dp[i][j][0] = abs(pos[i]) * n;
+				dp[i][j][1] = abs(pos[j]) * n;
+			} else {
+				// the number of cows which the cost is inflicted upon
+				int remaining = n - (j - i);
+
+				// consider if we want to go to the same or opposite side
+				if (i < n) {
+					dp[i][j][0] = min(
+					    dp[i + 1][j][0] +
+					        (abs(pos[i + 1] - pos[i]) * remaining),
+					    dp[i + 1][j][1] + (abs(pos[j] - pos[i]) * remaining));
+				}
+
+				if (j > 0) {
+					dp[i][j][1] = min(
+					    dp[i][j - 1][1] +
+					        (abs(pos[j - 1] - pos[j]) * remaining),
+					    dp[i][j - 1][0] + (abs(pos[j] - pos[i]) * remaining));
+				}
+			}
+		}
+	}
+
+	cout << min(dp[0][n - 1][0], dp[0][n - 1][1]) << endl;
+}
+```
+
+</CPPSection>
+</LanguageSection>

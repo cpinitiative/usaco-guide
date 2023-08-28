@@ -4,8 +4,7 @@ title: Introduction to Greedy Algorithms
 author: Darren Yao, Benjamin Qi
 contributors: Ryan Chou
 description:
-  'Selecting the choice that seems to be the best at the moment at every step of
-  your algorithm.'
+  'Problems that can be solved by selecting the choice that seems to be the best at the moment at every step.'
 frequency: 2
 prerequisites:
   - ad-hoc
@@ -50,7 +49,7 @@ paradigm.
 
 Try to come up with a greedy algorithm for problem above.
 
-<Spoiler title="Correct Greedy Algorithm">
+### Correct Greedy Algorithm
 
 In this problem, the correct greedy solution is to continually flip the longest
 possible ranges of mismatching cows.
@@ -62,9 +61,7 @@ with a video solution and intuitive proof.
 It is highly recommended you read it to gain a better understanding of the
 greedy algorithm.
 
-</Spoiler>
-
-<Spoiler title="Solution">
+### Solution - Mad Scientist
 
 <LanguageSection>
 
@@ -89,9 +86,9 @@ int main() {
 	cin >> A >> B;
 	ll ans = 0;
 	bool mismatched = false;
-	for(ll i=0; i<n; i++) {
-		if(A[i] != B[i]) {
-			if(!mismatched) {
+	for (ll i = 0; i < n; i++) {
+		if (A[i] != B[i]) {
+			if (!mismatched) {
 				mismatched = true;
 				ans++;
 			}
@@ -125,7 +122,7 @@ public class Solution {
 			ret++;
 			int lhs = 0;
 			while (a[lhs] == b[lhs]) lhs++;
-			int rhs = n-1;
+			int rhs = n - 1;
 			while (a[rhs] == b[rhs]) rhs--;
 			for (int i = lhs; i <= rhs; i++) {
 				if (a[i] == 'G') a[i] = 'H';
@@ -136,7 +133,7 @@ public class Solution {
 		io.close();
 	}
 
-	CodeSnip{Kattio}
+	// CodeSnip{Kattio}
 }
 ```
 
@@ -146,20 +143,19 @@ public class Solution {
 
 ```py
 import sys
-sys.stdin = open("breedflip.in","r")
-sys.stdout = open("breedflip.out","w")
 
-N,a,b = input(),input(),input()
-s = [False]+[x != y for x,y in zip(a,b)] # difference list
+sys.stdin = open("breedflip.in", "r")
+sys.stdout = open("breedflip.out", "w")
+
+N, a, b = input(), input(), input()
+s = [False] + [x != y for x, y in zip(a, b)]  # difference list
 # now count occurrences of [False,True], as the first C++ solution does
-print(sum(1 if not x and y else 0 for x,y in zip(s,s[1:])))
+print(sum(1 if not x and y else 0 for x, y in zip(s, s[1:])))
 ```
 
 </PySection>
 
 </LanguageSection>
-
-</Spoiler>
 
 Note that not all greedy problems necessarily require mathematical proofs of
 correctness. It is often sufficent to intuitively convince yourself your
@@ -182,31 +178,31 @@ programmers refer to this as "Proof by AC," or "Proof by Accepted."
 <!-- Anything else major that needs to be added? Bronze Ad Hoc is not very complicated. -->
 
 ## Quiz
-	
+
 <Quiz>
   <Quiz.Question>
     What is a greedy algorithm?
     <Quiz.Answer>
-      An algorithm which backtracks in order to find the most optimal solution.
+      An algorithm that backtracks in order to find the most optimal solution.
       <Quiz.Explanation>
-        Incorrect. Although greedy algorithms can use backtracking, this is not true for all of them.
+        Incorrect. Greedy algorithms do not backtrack.
       </Quiz.Explanation>
     </Quiz.Answer>
     <Quiz.Answer correct>
-      An algorithm which makes the locally optimal choice at each stage.
+      An algorithm that makes the locally optimal choice at each stage.
       <Quiz.Explanation>
         Correct. This allows a greedy algorithm to be very efficient and often easier to code.
       </Quiz.Explanation>
     </Quiz.Answer>
     <Quiz.Answer>
-      An algorithm which tries every possible combination in order to find the most optimal outcome.
+      An algorithm that tries every possible combination in order to find the most optimal outcome.
       <Quiz.Explanation>
         Incorrect. This is known as [complete search](/bronze/intro-complete) or [brute force](/bronze/intro-complete).
       </Quiz.Explanation>
     </Quiz.Answer>
   </Quiz.Question>
   <Quiz.Question>
-    Why would a greedy algorithm be preferred over a complete search algorithm when faced with a large input size? 
+    Why would a greedy algorithm be preferred over a complete search algorithm when faced with a large input size?
     <Quiz.Answer correct>
       Since greedy algorithms directly construct an answer, greedy algorithms are generally more efficient.
       <Quiz.Explanation>

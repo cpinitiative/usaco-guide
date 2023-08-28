@@ -1,0 +1,72 @@
+---
+id: ceoi-14-question
+source: CEOI 2014
+title: Question
+author: Andi Qu, Benjamin Qi
+---
+
+[Official Analysis](http://ceoi.inf.elte.hu/probarch/14/question-spoiler.pdf)
+
+<!-- We essentially want to construct a $920 \times 920$ matrix $M$ such that:
+
+- All elements of $M$ are positive integers no greater than 12.
+- Given $x$ and $M_{i, j}$ with $i \neq j$ and either $x = i$ or $x = j$, it's possible to determine whether $x = i$.
+ -->
+
+<Spoiler title="Hint 1">
+
+Associate a subset $S_q\subset \{1,\ldots,12\}$ with each $q\in [1,N]$ such that
+if $B$ receives a pair $(q,h)$, $B$ should answer yes iff $h\in S_q$ (and no
+otherwise).
+
+</Spoiler>
+
+<Spoiler title="Hint 2">
+
+It must be the case that $h\in S_x \setminus S_y$. In other words, no pair
+$(x,y)$ with $x\neq y$ exists such that $S_x$ contains $S_y$.
+
+</Spoiler>
+
+<Spoiler title="Hint 3">
+
+The number 920 seems oddly specific. Does it relate to 12 somehow?
+
+</Spoiler>
+
+<Spoiler title="Hint 4">
+
+$\binom{12}{6} = 924 > 920$
+
+</Spoiler>
+
+<Spoiler title="Solution">
+
+We can just associate each $q$ with a distinct subset $S_q$ of size 6.
+
+```cpp
+#include "question.h"
+using namespace std;
+
+int sets[925][12];
+
+void Init(int N) {
+	for (int i = 0, cnt = 1; i < (1 << 12); i++) {
+		if (__builtin_popcount(i) == 6) {
+			for (int j = 0; j < 12; j++)
+				if (i & (1 << j)) sets[cnt][j] = 1;
+				else sets[cnt][j] = 0;
+			cnt++;
+		}
+	}
+}
+
+int Alice(int x, int y) {
+	for (int i = 0; i < 12; i++)
+		if (sets[x][i] && !sets[y][i]) return i + 1;
+}
+
+int Bob(int q, int h) { return sets[q][h - 1]; }
+```
+
+</Spoiler>

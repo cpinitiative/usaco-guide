@@ -1,0 +1,351 @@
+---
+id: usaco-1276
+source: USACO Bronze 2023 January
+title: Air Cownditioning II
+author: Chuyang Wang, Kevin Sheng
+---
+
+[Official Analysis](http://www.usaco.org/current/data/sol_prob2_bronze_jan23.html)
+
+## Explanation
+
+Since $M = 10$ is given, we can iterate through all $2^{10}$ possible subsets of
+air conditioners. For each of them, we check if this subset of air conditioners
+satisfy the requirements of the cows by iterating through all possible positions
+$i \in [1;100]$. For each position $i$, we can iterate through all available air
+conditioners in the current subset to find out the temperature reduced at $i$
+and iterate through all cows to find the cow at this position and its demand. If
+the requirement at each position is fulfilled, we update the minimal cost
+accordingly.
+
+We can generate subsets with recursion or bitmasks: both ways are presented below.
+
+## Solution 1: Subset with Recursion
+
+**Time Complexity:** $\mathcal{O}(2^M \cdot 100 \cdot (M + N))$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int N, M;
+// {s, t, c}
+vector<array<int, 3>> cows;
+// {a, b, p, m}
+vector<array<int, 4>> air_conditioners;
+// uses[i] == true: the i-th air conditioner is used
+vector<bool> uses;
+// the minimum amount of money needed to keep all cows comfortable
+int min_cost = numeric_limits<int>().max();
+
+/**
+ * Based on 'uses', determine if the current subset of air conditioners suffices
+ * the constraints, and if so, update the minimum cost
+ */
+void update() {
+	bool is_feasible = true;
+
+	// iterate through all positions to check if the current subset is feasible
+	for (int i = 1; i <= 100; i++) {
+		// iterate through air conditioners to find the current cooling units
+		int cooling = 0;
+		for (int j = 0; j < M; j++) {
+			if (!uses[j]) { continue; }
+			auto &[a, b, p, m] = air_conditioners[j];
+			if (a <= i && i <= b) { cooling += p; }
+		}
+
+		// iterate through cows to find the current cow
+		int cow_requirement = 0;
+		for (int j = 0; j < N; j++) {
+			auto &[s, t, c] = cows[j];
+			if (s <= i && i <= t) {
+				cow_requirement = c;
+				break;
+			}
+		}
+
+		// For each position, the requirement of the cow must be met
+		if (cooling < cow_requirement) {
+			is_feasible = false;
+			break;
+		}
+	}
+
+	if (is_feasible) {
+		int cost = 0;
+		for (int i = 0; i < M; i++) {
+			if (uses[i]) { cost += air_conditioners[i][3]; }
+		}
+		min_cost = min(min_cost, cost);
+	}
+}
+
+/**
+ * Expand the subset, represented by 'uses', by choosing to (not) use the i-th
+ * air conditioner
+ */
+void search(int i) {
+	if (i == M) {
+		update();
+	} else {
+		uses[i] = false;
+		search(i + 1);
+		uses[i] = true;
+		search(i + 1);
+	}
+}
+
+int main() {
+	cin >> N >> M;
+
+	for (int i = 0; i < N; i++) {
+		int s, t, c;
+		cin >> s >> t >> c;
+		cows.push_back({s, t, c});
+	}
+
+	for (int i = 0; i < M; i++) {
+		int a, b, p, m;
+		cin >> a >> b >> p >> m;
+		air_conditioners.push_back({a, b, p, m});
+	}
+
+	uses.assign(M, false);
+	search(0);
+
+	cout << min_cost << endl;
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
+
+
+## Solution 2: Subset with Bitmask
+
+**Time Complexity:** $\mathcal{O}(2^M \cdot 100 \cdot (M + N))$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+/**
+ * Check if the given 'air_conditioners' satisfy the constraints of the cows
+ */
+bool check(vector<array<int, 3>> &cows,
+           vector<array<int, 4>> &air_conditioners) {
+	// iterate through all positions to check if the current subset is feasible
+	for (int i = 1; i <= 100; i++) {
+		// iterate through air conditioners to find the current cooling units
+		int cooling = 0;
+		for (int j = 0; j < air_conditioners.size(); j++) {
+			auto &[a, b, p, m] = air_conditioners[j];
+			if (a <= i && i <= b) { cooling += p; }
+		}
+
+		// iterate through cows to find the current cow
+		int cow_requirement = 0;
+		for (int j = 0; j < cows.size(); j++) {
+			auto &[s, t, c] = cows[j];
+			if (s <= i && i <= t) {
+				cow_requirement = c;
+				break;
+			}
+		}
+
+		// For each position, the requirement of the cow must be met
+		if (cooling < cow_requirement) { return false; }
+	}
+	return true;
+}
+
+int main() {
+	int N, M;
+	cin >> N >> M;
+
+	vector<array<int, 3>> cows;
+	for (int i = 0; i < N; i++) {
+		int s, t, c;
+		cin >> s >> t >> c;
+		cows.push_back({s, t, c});
+	}
+
+	vector<array<int, 4>> air_conditioners;
+	for (int i = 0; i < M; i++) {
+		int a, b, p, m;
+		cin >> a >> b >> p >> m;
+		air_conditioners.push_back({a, b, p, m});
+	}
+
+	int min_cost = numeric_limits<int>().max();
+	// use a bit mask to get all subsets
+	for (int mask = 0; mask < (1 << M); mask++) {
+		int cost = 0;
+		vector<array<int, 4>> used_conditioners;
+		for (int i = 0; i < M; i++) {
+			if (mask & (1 << i)) {
+				used_conditioners.push_back(air_conditioners[i]);
+				cost += air_conditioners[i][3];
+			}
+		}
+
+		if (check(cows, used_conditioners)) { min_cost = min(min_cost, cost); }
+	}
+
+	cout << min_cost << endl;
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class AirCownditioning {
+	// BeginCodeSnip{Cow and AC Class}
+	static class Cow {
+		public int start, end;
+		public int coolReq;
+		public Cow(int start, int end, int coolReq) {
+			this.start = start;
+			this.end = end;
+			this.coolReq = coolReq;
+		}
+	}
+	static class AC {
+		public int start, end;
+		public int coolAmt;
+		public int cost;
+		public AC(int start, int end, int coolReq, int cost) {
+			this.start = start;
+			this.end = end;
+			this.coolAmt = coolReq;
+			this.cost = cost;
+		}
+	}
+	// EndCodeSnip
+
+	static final int MAX_STALL = 100;
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader read =
+		    new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer initial = new StringTokenizer(read.readLine());
+		int cowNum = Integer.parseInt(initial.nextToken());
+		int acNum = Integer.parseInt(initial.nextToken());
+
+		Cow[] cows = new Cow[cowNum];
+		for (int c = 0; c < cowNum; c++) {
+			StringTokenizer cow = new StringTokenizer(read.readLine());
+			cows[c] = new Cow(Integer.parseInt(cow.nextToken()),
+			                  Integer.parseInt(cow.nextToken()),
+			                  Integer.parseInt(cow.nextToken()));
+		}
+
+		AC[] acs = new AC[acNum];
+		for (int a = 0; a < acNum; a++) {
+			StringTokenizer ac = new StringTokenizer(read.readLine());
+			acs[a] = new AC(Integer.parseInt(ac.nextToken()),
+			                Integer.parseInt(ac.nextToken()),
+			                Integer.parseInt(ac.nextToken()),
+			                Integer.parseInt(ac.nextToken()));
+		}
+
+		int minCost = Integer.MAX_VALUE;
+		for (int mask = 0; mask < (1 << acNum); mask++) {
+			// 1-indexed
+			int[] stalls = new int[MAX_STALL + 1];
+
+			int cost = 0;
+			for (int a = 0; a < acNum; a++) {
+				if ((mask & (1 << a)) != 0) {
+					for (int i = acs[a].start; i <= acs[a].end; i++) {
+						stalls[i] += acs[a].coolAmt;
+					}
+					cost += acs[a].cost;
+				}
+			}
+
+			boolean valid = true;
+			for (Cow c : cows) {
+				for (int i = c.start; i <= c.end; i++) {
+					if (stalls[i] < c.coolReq) {
+						valid = false;
+						break;
+					}
+				}
+			}
+			if (valid) { minCost = Math.min(minCost, cost); }
+		}
+
+		System.out.println(minCost);
+	}
+}
+```
+
+</JavaSection>
+
+<PySection>
+
+```py
+from typing import NamedTuple
+
+MAX_STALL = 100
+
+
+class Cow(NamedTuple):
+	start: int
+	end: int
+	cool_req: int
+
+
+class AC(NamedTuple):
+	start: int
+	end: int
+	cool_amt: int
+	cost: int
+
+
+cow_num, ac_num = [int(i) for i in input().split()]
+cows = [Cow(*[int(i) for i in input().split()]) for _ in range(cow_num)]
+acs = [AC(*[int(i) for i in input().split()]) for _ in range(ac_num)]
+
+min_cost = float("inf")
+for mask in range(1 << ac_num):
+	stalls = [0 for _ in range(MAX_STALL + 1)]
+
+	cost = 0
+	for v, a in enumerate(acs):
+		if mask & (1 << v):
+			for i in range(a.start, a.end + 1):
+				stalls[i] += a.cool_amt
+			cost += a.cost
+
+	valid = True
+	for c in cows:
+		for i in range(c.start, c.end + 1):
+			if stalls[i] < c.cool_req:
+				valid = False
+				break
+		if not valid:
+			break
+	else:
+		min_cost = min(min_cost, cost)
+
+print(min_cost)
+```
+
+</PySection>
+
+</LanguageSection>

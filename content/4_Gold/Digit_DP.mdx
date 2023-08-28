@@ -1,0 +1,393 @@
+---
+id: digit-dp
+title: 'Digit DP'
+author: Jesse Choe
+contributors: Nathan Wang, Chuyang Wang
+prerequisites:
+  - intro-dp
+description: 'Finding the number of integers in a range that have a property.'
+frequency: 1
+---
+
+<FocusProblem problem='focus' />
+
+## General Resources
+
+<Resources>
+	<Resource
+		source='AR'
+		title='Dynamic Programming for Computing Contests'
+		url='https://dp-book.com/Dynamic_Programming.pdf'
+	>
+
+	</Resource>
+	<Resource
+		source="GFG"
+		title="Digit DP | Introduction"
+		url="https://www.geeksforgeeks.org/digit-dp-introduction/"
+	>
+
+	</Resource>
+	<Resource
+		source="YouTube"
+		title="Introduction to Digit Dynamic Programming"
+		url="https://www.youtube.com/watch?v=heUFId6Qd1A"
+	>
+		Great introduction video
+	</Resource>
+	<Resource
+		source="CF"
+		title="Digit DP"
+		url="https://codeforces.com/blog/entry/53960"
+	>
+
+	</Resource>
+</Resources>
+
+Digit DP is a technique used to solve problems that asks you to find the number
+of integers within a range that satisfies some property based on the digits of
+the integers. Typically, the ranges are between large integers (such as between
+$1$ to $10^{18}$), so looping through each integer and checking if it satisfies
+the given property is too slow. Digit DP uses the digits of the integers to
+quickly count the number of integers with the given property in the range of
+integers.
+
+## Solution - Odometer
+
+### Without Dynamic Programming
+
+We can solve this problem in $\mathcal{O}(Y - X)$ time by looping through $X
+\ldots Y$ and checking whether a given number is an interesting number. However,
+since $Y - X$ can be large, the naive solution is too slow, requiring us to
+optimize it.
+
+### With Dynamic Programming
+
+One way to optimize the brute force approach of looping from $X$ to $Y$ and
+counting interesting numbers is by using dynamic programming. The DP approach
+involves considering all 9 digits one at a time to occupy at least half of the
+number.
+
+Let $\texttt{dp[pos][k][under][started]}$ where $\texttt{pos}$ is the current
+position, $\texttt{k}$ is a counter to see if you have at least half of the same
+digit, $\texttt{under}$ is whether you have gone below the actual number, and
+$\texttt{started}$ is a boolean if you still have leading zeros. The transition
+involves looping through 9 digits to add to the current location and comparing
+with the digit we want to occupy at least half of the number.
+
+Given the current state $\texttt{dp[pos][k][under][started]}$, we loop through
+all digits from 0 to 9 and consider adding each of them to the current position.
+If we add the digit $d$ to the current position, we update our state as follows:
+
+* If $d$ is less than the $i$-th digit of the actual number $Y$, then we set
+  $\texttt{under}$ to true.
+* If $d$ is not zero or $\texttt{started}$ is already true, then we set $\texttt{started}$ to
+  true.
+* If $d$ is equal to the digit we are interested in, then we increment $k$.
+* If $k$ is greater than $\lfloor \frac{i+1}{2} \rfloor$, then we increment our
+  count of interesting numbers by 1.
+* We move on to the next position by setting $i$ to $i+1$ and transitioning to
+  the next state.
+
+This algorithm is fast enough as the number of digits is small and there are
+only nine digits.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+using ll = long long;
+
+ll dp[19][50][2][2];  // dp[pos][k][under][started]
+string num;
+
+/** Reset the dp array to its initial values. */
+void reset() {
+	for (int i = 0; i < 19; i++) {
+		for (int j = 0; j < 50; j++) {
+			for (int k = 0; k < 2; k++) {
+				for (int l = 0; l < 2; l++) { dp[i][j][k][l] = -1; }
+			}
+		}
+	}
+}
+
+/**
+ * Calculate the number of sequences whose digits consist of at least half targ.
+ * If targ2 is not -1, then calculate the number of sequences whose digits are
+ * exactly half targ and half targ2.
+ * @param pos the starting position
+ * @param k counter for the number of the target digit targ
+ * @param under if the current sequence is smaller than the given upperbound
+ * @param started if the sequence has any digit other than leading zeros
+ */
+ll solve_dp(int pos, int k, bool under, bool started, int targ, int targ2) {
+	// base case: the sequence has reached the maximal length
+	if (pos == num.size()) {
+		// edge case: the sequence only contains zeros, i.e. did not start
+		if (!started) { return 0; }
+
+		/*
+		 * If we are interested in finding out whether the sequence contains
+		 * exactly half digits of targ and half digits of targ2.
+		 */
+		if (targ2 != -1) {
+			if (k == 20) {
+				return 1;
+			} else {
+				return 0;
+			}
+		}
+		/*
+		 * Otherwise, the sequence is interesting if at least half of the digits
+		 * are our target number targ.
+		 */
+		if (k >= 20) {
+			return 1;
+		} else {
+			return 0;
+		}
+	}
+
+	if (dp[pos][k][under][started] != -1) { return dp[pos][k][under][started]; }
+
+	ll ans = 0;
+	for (int i = 0; i <= 9; i++) {
+		int digit_diff = num[pos] - '0';
+		/*
+		 * If the sequence will be larger than the upperbound, then we can
+		 * terminate
+		 */
+		if (!under && i > digit_diff) { break; }
+
+		/*
+		 * If the new digit is smaller than the one in the upperbound, then any
+		 * child sequence can't be larger than than upperbound as this digit is
+		 * more significant than any following one
+		 */
+		bool is_under = under;
+		if (i < digit_diff) { is_under = true; }
+
+		// the sequence has started if any digits until pos is other than 0
+		bool is_started = started || i != 0;
+
+		/*
+		 * If we want to count how many sequences have exactly half digits of
+		 * targ and half of targ2, then any other number than targ or targ2
+		 * doesn't matter
+		 */
+		if (is_started && targ2 != -1 && i != targ && i != targ2) { continue; }
+
+		/*
+		 * The count for target digit targ is increased by one if i is targ, or
+		 * decreased by one otherwise.
+		 */
+		int new_k = k;
+		if (is_started) {
+			if (targ == i) {
+				new_k = k + 1;
+			} else {
+				new_k = k - 1;
+			}
+		}
+		ans += solve_dp(pos + 1, new_k, is_under, is_started, targ, targ2);
+	}
+	return dp[pos][k][under][started] = ans;
+}
+
+/** Count interesting sequences that are less or equal ubound */
+ll count_interesting_to(ll ubound) {
+	num = to_string(ubound);
+	ll ans = 0;
+	for (int i = 0; i <= 9; i++) {
+		reset();
+		ans += solve_dp(0, 20, false, false, i, -1);
+	}
+
+	/*
+	 * If a sequence's digits consist of exactly half i and half j, then it will
+	 * be counted twice. We have to subtract duplicates to avoid overcount.
+	 */
+	ll duplicates = 0;
+	for (int i = 0; i <= 9; i++) {
+		for (int j = 0; j <= 9; j++) {
+			reset();
+			duplicates += solve_dp(0, 20, false, false, i, j);
+		}
+	}
+	return ans - (duplicates / 2);
+}
+
+int main() {
+	freopen("odometer.in", "r", stdin);
+	freopen("odometer.out", "w", stdout);
+
+	ll X, Y;
+	cin >> X >> Y;
+	cout << count_interesting_to(Y) - count_interesting_to(X - 1) << endl;
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Odometer {
+	// dp[pos][count][under][started]
+	static long[][][][] dp = new long[19][50][2][2];
+	static String num;
+
+	/** Reset the dp array to its initial values. */
+	public static void reset() {
+		for (int i = 0; i < 19; i++) {
+			for (int j = 0; j < 50; j++) {
+				for (int k = 0; k < 2; k++) {
+					for (int l = 0; l < 2; l++) { dp[i][j][k][l] = -1; }
+				}
+			}
+		}
+	}
+
+	/**
+	 * Calculate the number of sequences whose digits consist of at least half
+	 * targ. If targ2 is not -1, then calculate the number of sequences whose
+	 * digits are exactly half targ and half targ2.
+	 * @param pos     the starting position
+	 * @param k       counter for the number of the target digit targ
+	 * @param under   1 if the current sequence is smaller than the given
+	 *     upperbound
+	 * @param started 1 if the sequence has any digit other than leading zeros
+	 */
+	public static long solveDP(int pos, int k, int under, int started, int targ,
+	                           int targ2) {
+		// base case: the sequence has reached the maximal length
+		if (pos == num.length()) {
+			// edge case: the sequence only contains zeros, i.e. did not start
+			if (started == 0) { return 0; }
+
+			/*
+			 * If we are interested in finding out whether the sequence contains
+			 * exactly half digits of targ and half digits of targ2.
+			 */
+			if (targ2 != -1) {
+				if (k == 20) {
+					return 1;
+				} else {
+					return 0;
+				}
+			}
+			/*
+			 * Otherwise, the sequence is interesting if at least half of the
+			 * digits are our target number targ.
+			 */
+			if (k >= 20) {
+				return 1;
+			} else {
+				return 0;
+			}
+		}
+
+		if (dp[pos][k][under][started] != -1) {
+			return dp[pos][k][under][started];
+		}
+
+		long ans = 0;
+		for (int i = 0; i <= 9; i++) {
+			int digit_diff = num.charAt(pos) - '0';
+			/*
+			 * if the sequence will be larger than the upperbound, then we can
+			 * terminate
+			 */
+			if (under == 0 && i > digit_diff) { break; }
+
+			/*
+			 * If the new digit is smaller than the one in the upperbound, then
+			 * any child sequence can't be larger than than upperbound as this
+			 * digit is more significant than any following one
+			 */
+			int isUnder = under;
+			if (i < digit_diff) { isUnder = 1; }
+
+			// the sequence has started if any digits until pos is other than 0
+			int isStarted = started | (i != 0 ? 1 : 0);
+
+			/*
+			 * If we want to count how many sequences have exactly half digits
+			 * of targ and half of targ2, then any other number than targ or
+			 * targ2 doesn't matter
+			 */
+			if (isStarted == 1 && targ2 != -1 && i != targ && i != targ2) {
+				continue;
+			}
+
+			/*
+			 * The count for target digit targ is increased by one if i is targ,
+			 * or decreased by one otherwise.
+			 */
+			int newK = k;
+			if (isStarted == 1) {
+				if (targ == i) {
+					newK = k + 1;
+				} else {
+					newK = k - 1;
+				}
+			}
+			ans += solveDP(pos + 1, newK, isUnder, isStarted, targ, targ2);
+		}
+		return dp[pos][k][under][started] = ans;
+	}
+
+	/** Count interesting sequences that are less or equal ubound */
+	public static long countInterestingTo(long ubound) {
+		num = String.valueOf(ubound);
+		long ans = 0;
+		for (int i = 0; i <= 9; i++) {
+			reset();
+			ans += solveDP(0, 20, 0, 0, i, -1);
+		}
+
+		/*
+		 * If a sequence's digits consist of exactly half i and half j, then it
+		 * will be counted twice. We have to subtract duplicates to avoid
+		 * overcount.
+		 */
+		long duplicates = 0;
+		for (int i = 0; i <= 9; i++) {
+			for (int j = 0; j <= 9; j++) {
+				reset();
+				duplicates += solveDP(0, 20, 0, 0, i, j);
+			}
+		}
+		return ans - (duplicates / 2);
+	}
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new FileReader("odometer.in"));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		br.close();
+
+		long X = Long.parseLong(st.nextToken());
+		long Y = Long.parseLong(st.nextToken());
+
+		PrintWriter pw = new PrintWriter("odometer.out");
+		pw.println(countInterestingTo(Y) - countInterestingTo(X - 1));
+		pw.close();
+	}
+}
+```
+
+</JavaSection>
+
+</LanguageSection>
+
+## Problems
+
+<Problems problems="problems" />

@@ -1,0 +1,123 @@
+---
+id: usaco-1011
+source: USACO Bronze 2020 February
+title: Triangles
+author: Ryan Chou, Mrinall Umasudhan, Sathvik Chundru
+---
+
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_triangles_bronze_feb20.html)
+
+## Explanation
+
+Brute force all possible right triangles by looping over all triples of points
+and checking whether they form a right triangle. If so, compute the area and
+find the maximum over all right triangles.
+
+### Implementation
+
+**Time Complexity:** $\mathcal{O}(N^3)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	freopen("triangles.in", "r", stdin);
+
+	int n;
+	cin >> n;
+	vector<int> x(n);  // x coordinates of all fence posts
+	vector<int> y(n);  // y coordinates of all fence posts
+	for (int i = 0; i < n; i++) { cin >> x[i] >> y[i]; }
+
+	int max_area = 0;
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
+			for (int k = 0; k < n; k++) {
+				// Check to see if both points are parallel to the x & y axis
+				if (y[i] == y[j] && x[i] == x[k]) {
+					int area = abs((x[j] - x[i]) * (y[k] - y[i]));
+					max_area = max(max_area, area);
+				}
+			}
+		}
+	}
+
+	freopen("triangles.out", "w", stdout);
+	cout << max_area << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Triangles {
+	public static void main(String[] args) throws IOException {
+		BufferedReader read =
+		    new BufferedReader(new FileReader("triangles.in"));
+
+		int n = Integer.parseInt(read.readLine());
+		int[] x = new int[n];  // x coordinates of all fence posts
+		int[] y = new int[n];  // y coordinates of all fence posts
+		for (int i = 0; i < n; i++) {
+			StringTokenizer fencePost = new StringTokenizer(read.readLine());
+			x[i] = Integer.parseInt(fencePost.nextToken());
+			y[i] = Integer.parseInt(fencePost.nextToken());
+		}
+		read.close();
+
+		int maxArea = 0;
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
+				for (int k = 0; k < n; k++) {
+					// Check to see if both points are parallel to the x & y
+					// axis
+					if (y[i] == y[j] && x[i] == x[k]) {
+						int area = Math.abs((x[j] - x[i]) * (y[k] - y[i]));
+						maxArea = Math.max(maxArea, area);
+					}
+				}
+			}
+		}
+
+		PrintWriter written = new PrintWriter("triangles.out");
+		written.println(maxArea);
+		written.close();
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+with open("triangles.in") as read:
+	n = int(read.readline())
+	x = []  # x coordinates of all fence posts
+	y = []  # y coordinates of all fence posts
+	for _ in range(n):
+		x_i, y_i = [int(i) for i in read.readline().split()]
+		x.append(x_i)
+		y.append(y_i)
+
+max_area = 0
+for i in range(n):
+	for j in range(n):
+		for k in range(n):
+			# Check to see if both points are parallel to the x & y axis
+			if y[i] == y[j] and x[i] == x[k]:
+				area = abs((x[j] - x[i]) * (y[k] - y[i]))
+				max_area = max(max_area, area)
+
+print(max_area, file=open("triangles.out", "w"))
+```
+
+</PySection>
+</LanguageSection>

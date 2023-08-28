@@ -1,0 +1,151 @@
+---
+id: cses-1636
+source: CSES
+title: Coin Combinations II
+author: Michael Cao, Nathan Gong, George Pong
+---
+
+<!-- This problem is very to similar Coin Combinations I, with the main difference being that we only count ordered combinations.  -->
+
+[Unoffical Editorial (C++)](https://codeforces.com/blog/entry/70018)
+
+<Info title="Note">
+The solution for this problem is very similar to that of
+[Coin Combinations I](https://cses.fi/problemset/task/1635). If you haven't solved that already, we recommend doing so before attempting this problem.
+</Info>
+
+The key difference between this problem and
+[Coin Combinations I](https://cses.fi/problemset/task/1635) is that we're now
+trying to find the number of **ordered** ways to add the coins to $x$. This
+means that if we had coins $\{1, 3, 5\}$ and $x=4$, adding $1 + 3$ is treated as
+the same "way" as $3 + 1$.
+
+## Solution
+
+We'll let $\texttt{dp}[w]$ equal the number of ordered ways to add the coins up
+to $w$. In the previous problem, we tried out each coin for each possible $w$.
+Here, we'll do the reverse, looping through all possible $w$ ($0\leq w \leq x$)
+for each coin $i$ while updating $\texttt{dp}$ as follows:
+
+$$
+\texttt{dp}[w] := \texttt{dp}[w] + \texttt{dp}[w-\texttt{coins}[i]]
+$$
+
+This essentially entails switching the order of the nested loops from the
+previous problem. Since we now loop over the coins before the weights, we only
+go through the set of coins once, so it's impossible to create two combinations
+with the same set of coins ordered differently.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(n \cdot x)$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+using vi = vector<int>;
+#define pb push_back
+#define rsz resize
+#define all(x) begin(x), end(x)
+#define sz(x) (int)(x).size()
+using pi = pair<int, int>;
+#define f first
+#define s second
+#define mp make_pair
+void setIO(string name = "") {  // name is nonempty for USACO file I/O
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);  // see Fast Input & Output
+	if (sz(name)) {
+		freopen((name + ".in").c_str(), "r", stdin);  // see Input & Output
+		freopen((name + ".out").c_str(), "w", stdout);
+	}
+}
+
+ll dp[1000001];
+
+const int MOD = (int)1e9 + 7;
+
+int main() {
+	int n, x;
+	cin >> n >> x;
+	vi coins(n);
+	for (int i = 0; i < n; i++) { cin >> coins[i]; }
+	dp[0] = 1;
+	for (int i = 1; i <= n; i++) {
+		for (int weight = 0; weight <= x; weight++) {
+			if (weight - coins[i - 1] >= 0) {  // prevent out of bounds cases
+				dp[weight] += dp[weight - coins[i - 1]];
+				dp[weight] %= MOD;
+			}
+		}
+	}
+	cout << dp[x] << '\n';
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.util.*;
+
+public class CoinCombinations2 {
+	static final int MOD = 1000000007;
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int n = sc.nextInt();
+		int x = sc.nextInt();
+
+		int[] coins = new int[n];
+		for (int i = 0; i < n; i++) { coins[i] = sc.nextInt(); }
+
+		// dp[w] = the number of ordered ways to add coins up to w
+		int[] dp = new int[x + 1];
+		dp[0] = 1;
+		for (int i = 0; i < n; i++) {       // loop through coins
+			for (int w = 0; w <= x; w++) {  // loop through sums
+				if (w - coins[i] >= 0) {    // prevent out of bounds cases
+					dp[w] = (dp[w] + dp[w - coins[i]]) % MOD;
+				}
+			}
+		}
+		System.out.println(dp[x]);
+	}
+}
+```
+
+</JavaSection>
+
+<PySection>
+
+```py
+import sys
+
+MOD = 10**9 + 7
+
+input = sys.stdin.readline  # Faster input. Using normal input() will TLE.
+
+n, x = map(int, input().split())
+coins = list(map(int, input().split()))
+
+combinations = [0] * (x + 1)
+combinations[0] = 1
+
+for coin in coins:
+	for i in range(len(combinations)):
+		if i - coin >= 0:
+			combinations[i] += combinations[i - coin]
+			combinations[i] %= MOD
+
+print(combinations[x])
+```
+
+</PySection>
+
+</LanguageSection>

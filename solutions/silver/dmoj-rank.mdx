@@ -1,0 +1,199 @@
+---
+id: dmoj-rank
+source: DMOJ
+title: Rank
+author: Ryan Chou, Ryan Kim
+---
+
+## Explanation
+We can use the games to construct a directed graph. If $a$ wins against $b$ then we can construct an edge from $b$ to $a$. Since the bounds of $N$ and $M$ are small, we can start a DFS from every vertex. If we reach that vertex again, then we can mark that vertex as “cyclic” and count said vertex in the result.
+
+## Implementation
+$\mathcal{O}(N^2 + M)$ time
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <vector>
+using namespace std;
+
+const int MAX_N = 20;
+vector<vector<int>> adj(MAX_N);
+bool vis[MAX_N], cyclic[MAX_N];
+
+int original_node;
+
+void dfs(int node) {
+	vis[node] = true;
+
+	// found a cycle
+	if (node == original_node) {
+		cyclic[node] = true;
+		return;
+	}
+
+	for (int u : adj[node]) {
+		if (!vis[u]) dfs(u);
+	}
+}
+
+int main() {
+	int n, k;
+	cin >> n >> k;
+
+	// process directed graph
+	for (int i = 0; i < k; i++) {
+		int a, b, sa, sb;
+		cin >> a >> b >> sa >> sb;
+
+		if (sa > sb) {
+			adj[b - 1].push_back(a - 1);
+		} else if (sa < sb) {
+			adj[a - 1].push_back(b - 1);
+		}
+	}
+
+	for (int i = 0; i < n; i++) {
+		original_node = i;
+		fill(begin(vis), end(vis), false);
+
+		for (int u : adj[i]) { dfs(u); }
+	}
+
+	// count number of cyclic nodes.
+	int ans = 0;
+	for (int i = 0; i < n; i++) {
+		if (cyclic[i]) ans++;
+	}
+	cout << ans << endl;
+}
+```
+</CPPSection>
+
+<PySection>
+
+```py
+n, m = map(int, input().split())
+
+adj = [[] for _ in range(n)]
+vis, cyclic = [False for _ in range(n)], [False for _ in range(n)]
+original_node = -1
+
+
+def dfs(node):
+	if vis[node]:
+		return
+
+	vis[node] = True
+
+	# found a cycle
+	if node == original_node:
+		cyclic[node] = True
+
+	for u in adj[node]:
+		if not vis[u]:
+			dfs(u)
+
+
+# process directed graph
+for i in range(m):
+	a, b, sa, sb = map(int, input().split())
+
+	if sa > sb:
+		adj[b - 1].append(a - 1)
+	elif sb > sa:
+		adj[a - 1].append(b - 1)
+
+for i in range(n):
+	original_node = i
+	vis = [False for _ in range(n)]
+
+	for u in adj[i]:
+		dfs(u)
+
+ans = 0
+for i in range(n):
+	if cyclic[i]:
+		ans += 1
+
+print(ans)
+```
+</PySection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Rank {
+	static Map<Integer, HashSet<Integer>> graph = new HashMap<>();
+	static int ans = 0;
+	static Set<Integer> visited = new HashSet<>();
+	static boolean cyclic = false;
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader br =
+		    new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int people = Integer.parseInt(st.nextToken());
+		int games = Integer.parseInt(st.nextToken());
+
+		for (int x = 0; x < games; x++) {
+			st = new StringTokenizer(br.readLine());
+			int p1 = Integer.parseInt(st.nextToken());   // Person 1
+			int p2 = Integer.parseInt(st.nextToken());   // Person 2
+			int p1s = Integer.parseInt(st.nextToken());  // Person 1 score
+			int p2s = Integer.parseInt(st.nextToken());  // Person 2 score
+
+			int winner;
+			int loser;
+
+			if (p1s > p2s) {
+				winner = p1;
+				loser = p2;
+			} else {
+				winner = p2;
+				loser = p1;
+			}
+			if (!graph.containsKey(winner)) {
+				graph.put(winner, new HashSet<>());
+			}
+			// Graph should put an edge from winner -> loser
+			graph.get(winner).add(loser);
+		}
+
+		for (int x = 1; x <= people; x++) {
+			// Count cyclic nodes
+			cyclic = false;
+			visited = new HashSet<>();
+			if (dfs(x, x)) { ans++; }
+		}
+		System.out.println(ans);
+	}
+
+	public static boolean dfs(int current, int start) {
+		// Keep traversing graph until either you run into
+		// the starting node, or you already visited all of the nodes
+		if (visited.contains(current) && current == start) {
+			// Is cyclic
+			cyclic = true;
+			return true;
+		}
+		if (visited.contains(current)) {
+			// Visited but not cyclic
+			return true;
+		}
+		visited.add(current);
+		if (!graph.containsKey(current)) {
+			graph.put(current, new HashSet<>());
+		}
+		for (int x : graph.get(current)) { dfs(x, start); }
+		return cyclic;
+	}
+}
+```
+</JavaSection>
+</LanguageSection>

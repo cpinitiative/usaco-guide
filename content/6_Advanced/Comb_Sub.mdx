@@ -28,8 +28,6 @@ We update $\texttt{dp[x][0]}$ with one of the child subtrees $t$ of $x$ by
 setting $\texttt{dp[x][0]}=\texttt{dp[x][0]}\oplus \texttt{dp[t][0]}$, and
 similarly for $\texttt{dp[x][1]}$.
 
-<Spoiler title="Code">
-
 ```cpp
 #include <iostream>
 #include <vector>
@@ -64,8 +62,8 @@ void process(int g) {
 	dp[g][1] = {INF, discounted[g]};
 	for (int t : child[g]) {
 		process(t);
-		dp[g][0] = total_min(dp[g][0],dp[t][0]);
-		dp[g][1] = total_min(dp[g][1],dp[t][1]);
+		dp[g][0] = total_min(dp[g][0], dp[t][0]);
+		dp[g][1] = total_min(dp[g][1], dp[t][1]);
 	}
 	for (int i = 0; i < dp[g][1].size(); i++) {
 		dp[g][1][i] = min(dp[g][1][i], dp[g][0][i]);
@@ -95,8 +93,6 @@ int main() {
 	}
 }
 ```
-
-</Spoiler>
 
 The editorial naively computes a bound of $\mathcal{O}(N^3)$ on the running time
 of this solution. However, this actually runs in $\mathcal{O}(N^2)$!

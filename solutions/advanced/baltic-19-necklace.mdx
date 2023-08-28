@@ -1,0 +1,191 @@
+---
+id: baltic-19-necklace
+source: Baltic OI 2019
+title: Necklace
+author: Andi Qu
+---
+
+[Official Analysis](https://boi.cses.fi/files/boi2019_solutions.zip)
+
+## Solution 1 (Magic DP)
+
+**Time complexity:** $\mathcal O(N^2)$. **Memory complexity:** $\mathcal O(N)$.
+
+<IncompleteSection>
+
+The editorial describes this approach so awfully :(. "Analyze the recurrences
+carefully"
+
+</IncompleteSection>
+
+### Code
+
+```cpp
+// DP: time O(n^2), mem O(n)
+#include <algorithm>
+#include <iostream>
+#include <string>
+#include <vector>
+
+using namespace std;
+
+int solve_noflip(string &s, string &t, int *loc) {
+	int n = s.size();  // vertical
+	int m = t.size();  // horizontal
+	int res = 0;
+	vector<short> forw_back_len(m + 1);
+	vector<short> cur_v_len(n + m + 1);  // offset -n
+	vector<short> cur_v_y(n + m + 1);
+	for (int i = 0; i <= n; ++i) cur_v_y[n - i] = i;
+	vector<short> cur_h_len(m + 1);
+	for (int i = 0; i <= n; ++i) {
+		for (int j = 0; j <= m; ++j)
+			forw_back_len[j] = max(0, forw_back_len[j] - 1);
+		for (int j = 0; j <= m; ++j) {
+			int idx = n - i + j;
+			while (cur_v_y[idx] - cur_v_len[idx] == i) {
+				int y = cur_v_y[idx];
+				// x-j == y-i
+				int x = y - i + j;
+				forw_back_len[x] = max(forw_back_len[x], cur_v_len[idx]);
+				if (y == n || x == m) {
+					cur_v_y[idx] = -1;
+				} else {
+					++cur_v_y[idx];
+					if (s[y] == t[x]) {
+						++cur_v_len[idx];
+					} else {
+						cur_v_len[idx] = 0;
+					}
+				}
+			}
+		}
+		vector<short> back_forw_len(m + 1);
+		for (int j = 0; j <= m; ++j) {
+			int nj = j - cur_h_len[j];
+			back_forw_len[nj] = max(back_forw_len[nj], cur_h_len[j]);
+		}
+		for (int j = 1; j <= m; ++j) {
+			back_forw_len[j] =
+			    max((int)back_forw_len[j], back_forw_len[j - 1] - 1);
+		}
+		for (int j = 0; j <= m; ++j) {
+			if (forw_back_len[j] + back_forw_len[j] > res) {
+				res = forw_back_len[j] + back_forw_len[j];
+				loc[0] = i - back_forw_len[j];
+				loc[1] = j - forw_back_len[j];
+			}
+		}
+		if (i < n) {
+			for (int j = m - 1; j >= 0; --j) {
+				if (s[i] == t[j]) {
+					cur_h_len[j + 1] = cur_h_len[j] + 1;
+				} else {
+					cur_h_len[j + 1] = 0;
+				}
+			}
+			cur_h_len[0] = 0;
+		}
+	}
+	return res;
+}
+
+int solve(string &s, string &t, int *loc) {
+	int loc_noflip[2];
+	int res = solve_noflip(s, t, loc_noflip);
+	reverse(t.begin(), t.end());
+	int loc_flip[2];
+	int res_flip = solve_noflip(s, t, loc_flip);
+	if (res_flip > res) {
+		res = res_flip;
+		loc[0] = loc_flip[0];
+		loc[1] = (int)t.size() - loc_flip[1] - res;
+	} else {
+		for (int i = 0; i < 2; ++i) loc[i] = loc_noflip[i];
+	}
+	return res;
+}
+
+int main() {
+	cin.sync_with_stdio(false);
+	string s, t;
+	cin >> s >> t;
+	int loc[2];
+	int res = solve(s, t, loc);
+	cout << res << '\n';
+	if (res) { cout << loc[0] << ' ' << loc[1] << '\n'; }
+	return 0;
+}
+```
+
+## Solution 2 (KMP)
+
+**Time complexity:** $\mathcal O(N^2)$. **Memory complexity:** $\mathcal O(N)$.
+
+Let the two strings be $S$ and $T$, and their lengths be $N$ and $M$
+respectively.
+
+For simplicity, assume that we can't flip the necklace over. (To handle the case
+where we can, just reverse $T$, run our algorithm again, and take the best
+result.)
+
+We essentially want to find two strings $A$ and $B$, and two indices $i$ and $j$
+such that:
+
+- $A$ is a **suffix** of $S[0 : i]$ and a **prefix** of $T[j + 1 : M - 1]$.
+- $B$ is a **prefix** of $S[i + 1 : N - 1]$ and a **suffix** of $T[0 : j]$.
+- $|A| + |B|$ is maximal.
+
+We can thus test each $i$ to find the best $j$ for that $i$, and then take the
+best overall result.
+
+To find the best $j$, we first reverse $T$ and split $S$ at index $i$. This
+turns the subproblem into finding the longest common prefix/suffix between two
+pairs of strings. This is a classical application of KMP, so we can solve this
+subproblem in $\mathcal O(N)$ time and $\mathcal O(N)$ memory.
+
+### Code
+
+```cpp
+#include <bits/stdc++.h>
+typedef long long ll;
+using namespace std;
+
+int p1[6002], p2[6002];
+
+void fill_p(string s, int *p) {
+	for (int i = 1; i < s.size(); i++) {
+		int j = p[i - 1];
+		while (j && s[i] != s[j]) j = p[j - 1];
+		if (s[i] == s[j]) j++;
+		p[i] = j;
+	}
+}
+
+tuple<int, int, int> solve(string s, string t, bool rev) {
+	int n = s.size(), m = t.size();
+	tuple<int, int, int> ans = {0, 0, 0};
+	for (int i = 0; i < n; i++) {
+		string s1 = s.substr(0, i), s2 = s.substr(i, n - i);
+		reverse(s1.begin(), s1.end());
+		string t1 = t, t2 = t;
+		reverse(t2.begin(), t2.end());
+		fill_p(s1 + "#" + t1, p1), fill_p(s2 + "#" + t2, p2);
+		for (int j = 1; j <= m; j++)
+			ans = max(ans, {p1[i + j] + p2[n + m - i - j], i - p1[i + j],
+			                rev ? m - j - p2[n + m - i - j] : j - p1[i + j]});
+	}
+	return ans;
+}
+
+int main() {
+	cin.tie(0)->sync_with_stdio(0);
+	string s, t;
+	cin >> s >> t;
+	tuple<int, int, int> ans = solve(s, t, false);
+	reverse(t.begin(), t.end());
+	ans = max(ans, solve(s, t, true));
+	cout << get<0>(ans) << '\n' << get<1>(ans) << ' ' << get<2>(ans);
+	return 0;
+}
+```

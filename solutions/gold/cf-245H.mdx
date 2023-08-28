@@ -1,0 +1,70 @@
+---
+id: cf-245H
+source: CF
+title: Queries for Number Of Palindromes
+author: Chongtian Ma
+---
+
+[Official Editorial (C++)](https://codeforces.com/blog/entry/5921)
+## Implementation
+
+Note this is a bit different from the implentation outlined in the official
+editorial. This loops over the start and end of the substrings rather than the
+length first.
+
+**Time Complexity:** $\mathcal{O}(N^2)$
+
+<LanguageSection>
+
+<CPPSection>
+
+<Warning title="Tight Constraints">
+Note that when printing out queries, make sure to use "\n" instead of endl or you will get a TLE!
+</Warning>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	cin.tie(0)->sync_with_stdio(false);
+	string s;
+	cin >> s;
+	int n = s.length();
+
+	// dp[i][j] = number of palidrome substrings in [i,j]
+	vector<vector<int>> dp(n, vector<int>(n));
+
+	// pal[i][j] = true if [i,j] is a palindrome
+	vector<vector<bool>> pal(n, vector<bool>(n));
+
+	for (int i = n - 1; i >= 0; i--) {
+		// base case: strings of length 1 are always a palindrome
+		dp[i][i] = pal[i][i] = 1;
+		for (int j = i + 1; j < n; j++) {
+			/*
+			 * We add a character before start and after the end.
+			 * If previously was a palindrome and the new characters
+			 * are the same, then it is still a palindrome.
+			 */
+			pal[i][j] = (pal[i + 1][j - 1] || j - i == 1) && (s[i] == s[j]);
+
+			// number of palindromes using inclusion - exclusion
+			dp[i][j] =
+			    dp[i + 1][j] + dp[i][j - 1] - dp[i + 1][j - 1] + pal[i][j];
+		}
+	}
+
+	int q;
+	cin >> q;
+	for (int i = 0; i < q; i++) {
+		int l, r;
+		cin >> l >> r;
+		cout << dp[l - 1][r - 1] << "\n";
+	}
+}
+```
+
+</CPPSection>
+
+</LanguageSection>

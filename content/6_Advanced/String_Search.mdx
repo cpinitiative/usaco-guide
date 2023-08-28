@@ -3,7 +3,7 @@ id: string-search
 title: 'String Searching'
 author: Benjamin Qi, Siyong Huang, Dustin Miao
 prerequisites:
-  - dfs
+  - graph-traversal
 description:
   Knuth-Morris-Pratt and Z Algorithms (and a few more related topics).
 frequency: 1
@@ -26,7 +26,7 @@ For a string $S$:
 - $S[l:r]$ denotes the substring beginning at index $l$ and ending at index $r$
 - $S[:r]$ is equivalent to $S[0:r]$, represents the prefix ending at $r$
 - $S[l:]$ is equivalent to $S[l:|S| - 1]$, represents the suffix beginning of $l$.
-- $S + T$ denotes concactinating $T$ to the end of $S$. Note that this implies that addition is **non-commutative**. 
+- $S + T$ denotes concactinating $T$ to the end of $S$. Note that this implies that addition is **non-commutative**.
 
 </Info>
 
@@ -53,27 +53,27 @@ For a string $S$:
 
 Define an array $\pi_S$ of size $|S|$ such that $\pi_S[i]$ is equal to the length of the longest nontrivial suffix of the prefix ending at position $i$ the coincides with a prefix of the entire string. Formally,
 
-$$ 
-\pi_S[i] = \max \{k \: | \: 1 \leq k < i \text{ and } S[0:k - 1] \equiv S[i - (k - 1): i] \} 
+$$
+\pi_S[i] = \max \{k \: | \: 1 \leq k < i \text{ and } S[0:k - 1] \equiv S[i - (k - 1): i] \}
 $$
 
-In other words, for a given index $i$, we would like to compute the length of the longest substring that ends at $i$, such that this string also happens to be a prefix of the *entire* string. One such string that satisfies this criteria is the prefix ending at $i$; we will be disregarding this solution for obvious reasons. 
+In other words, for a given index $i$, we would like to compute the length of the longest substring that ends at $i$, such that this string also happens to be a prefix of the *entire* string. One such string that satisfies this criteria is the prefix ending at $i$; we will be disregarding this solution for obvious reasons.
 
 For instance, for $S = \text{``abcabcd"}$, $\pi_S = [0, 0, 0, 1, 2, 3, 0]$, and the prefix function of $S = \text{``aabaaab"}$ is $\pi_S = [0, 1, 0, 1, 2, 2, 3]$. In the second example, $\pi_S[4] = 2$ because the prefix of length $2$ ($\text{``ab"})$ is equivalent to the substring of length $2$ that ends at index $4$. In the same way, $\pi_S[6] = 3$ because the prefix of length $3$ ($\text{``abb"}$) is equal to the substring of length $3$ that ends at index $6$. For both of these samples, there is no longer substring that satisfies these criterias.
 
-The purpose of the KMP algorithm is to efficiently compute the $\pi_S$ array in linear time. Suppose we have already computed the $\pi_S$ array for indices $0\dots i$, and need to compute the value for index $i + 1$. 
+The purpose of the KMP algorithm is to efficiently compute the $\pi_S$ array in linear time. Suppose we have already computed the $\pi_S$ array for indices $0\dots i$, and need to compute the value for index $i + 1$.
 
-Firstly, note that between $\pi_S[i]$ and $\pi_S[i + 1]$, $\pi_S[i + 1]$ can be at most one greater. This occurs when $S[\pi_S[i]] = S[i + 1]$. 
+Firstly, note that between $\pi_S[i]$ and $\pi_S[i + 1]$, $\pi_S[i + 1]$ can be at most one greater. This occurs when $S[\pi_S[i]] = S[i + 1]$.
 
 ![KMP Example 1](./kmp_example1.png)
 
-In the example above, $\pi_S[i] = 5$, meaning that a the suffix of length $5$ is equivalent to a prefix of length $5$ of the entire string. It follows that if the character at position $5$ of the string is equal to the character at position $i + 1$, then the match is simply extended by a single character. Thus, $\pi_S[i + 1] = \pi_S[i] + 1 = 6$.  
+In the example above, $\pi_S[i] = 5$, meaning that a the suffix of length $5$ is equivalent to a prefix of length $5$ of the entire string. It follows that if the character at position $5$ of the string is equal to the character at position $i + 1$, then the match is simply extended by a single character. Thus, $\pi_S[i + 1] = \pi_S[i] + 1 = 6$.
 
-In the general case, however, this is not necessarily true. That is to say, $S[\pi_S[i]] \neq S[i + 1]$. Thus, we need to find the largest index $j < \pi_S[i]$ such that the prefix property holds (ie $S[:j - 1] \equiv S[i - j + 1:i]$). For such a length $j$, we repeat the procedure in the first example by comparing characters at indicies $j$ and $i + 1$: if the two are equal, then we can conclude our search and assign $\pi_S[i + 1] = j + 1$, and otherwise, we find the next smallest $j$ and repeat. Indeed, notice that the first example is simply the case where $j$ begins as $\pi_S[i]$. 
+In the general case, however, this is not necessarily true. That is to say, $S[\pi_S[i]] \neq S[i + 1]$. Thus, we need to find the largest index $j < \pi_S[i]$ such that the prefix property holds (ie $S[:j - 1] \equiv S[i - j + 1:i]$). For such a length $j$, we repeat the procedure in the first example by comparing characters at indicies $j$ and $i + 1$: if the two are equal, then we can conclude our search and assign $\pi_S[i + 1] = j + 1$, and otherwise, we find the next smallest $j$ and repeat. Indeed, notice that the first example is simply the case where $j$ begins as $\pi_S[i]$.
 
 ![KMP Example 2](./kmp_example2.png)
 
-In the second example above, we let $j = 2$. 
+In the second example above, we let $j = 2$.
 
 The only thing that remains is to be able to efficiently find all the $j$ that we might possibly need. To recap, if the position we're currently at is $j$, to handle transitions we need to find the largest index $k$ that satisfies the prefix property $S[:k - 1] \equiv S[j - k + 1 : j]$. Since $j < i$, this value is simply $\pi_S[j - 1]$, a value that has already been computed. All that remains is to handle the case where $j = 0$. If $S[0] = S[i + 1]$, $\pi_S[i + 1] = 1$, otherwise $\pi_S[i + 1] = 0$.
 
@@ -86,12 +86,8 @@ vector<int> pi(const string &s) {
 	int n = (int)s.size();
 	vector<int> pi_s(n);
 	for (int i = 1, j = 0; i < n; i++) {
-		while (j > 0 && s[j] != s[i]) {
-			j = pi_s[j - 1]
-		}
-		if (s[i] == s[j]) {
-			j++;
-		}
+		while (j > 0 && s[j] != s[i]) { j = pi_s[j - 1]; }
+		if (s[i] == s[j]) { j++; }
 		pi_s[i] = j;
 	}
 	return pi_s;
@@ -99,10 +95,29 @@ vector<int> pi(const string &s) {
 ```
 
 </CPPSection>
+<PySection>
 
+```py
+from typing import List
+
+
+def pi(s: str) -> List[int]:
+	n = len(s)
+	pi_s = [0] * n
+	j = 0
+	for i in range(1, n):
+		while j > 0 and s[j] != s[i]:
+			j = pi_s[j - 1]
+		if s[i] == s[j]:
+			j += 1
+		pi_s[i] = j
+	return pi_s
+```
+
+</PySection>
 </LanguageSection>
 
-**Claim:** The KMP algorithm runs in $\mathcal{O}(n)$ for computing the $\pi_S$ array on a string $S$ of length $n$. 
+**Claim:** The KMP algorithm runs in $\mathcal{O}(n)$ for computing the $\pi_S$ array on a string $S$ of length $n$.
 
 **Proof:** Note that $j$ doesn't actually change through multiple iterations. This is because on iteration $i$, we assign $j = \pi_S[i - 1]$. However, in the previous iteration, we assign $\pi_S[i - 1]$ to be $j$. Furthermore, note that $j$ is always non-negative. In each iteration of $i$, $j$ is only increased by at most $1$ in the if statement. Since $j$ remains non-negative and is only increased a constant amount per iteration, it follows that $j$ can only decrease by at most $n$ times through all iterations of $i$. Since the inner loop is completely governed by $j$, the overall complexity amortizes to $\mathcal{O}(n)$. $\blacksquare$
 
@@ -177,7 +192,7 @@ character palindrome must have been created from a palindrome of length $-1$
 	<Resource
 		source="adilet.org"
 		title="Palindromic Tree"
-		url="http://adilet.org/blog/palindromic-tree/"
+		url="https://web.archive.org/web/20220130034214/https://adilet.org/blog/palindromic-tree/"
 	/>
 </Resources>
 
@@ -229,13 +244,13 @@ Build the entire trie first, and then run a _BFS_ to construct the fail array.
 
 <IncompleteSection>
 
-1731 Word Combinations -> trie 
+1731 Word Combinations -> trie
 
-1732 Finding Borders -> string search 
+1732 Finding Borders -> string search
 
-1733 Finding Periods -> string search 
+1733 Finding Periods -> string search
 
-1110 Minimal Rotation -> string search 
+1110 Minimal Rotation -> string search
 
 1111 Longest Palindrome -> string search
 

@@ -6,7 +6,7 @@ export default function Module({ items, refine }) {
   const darkMode = useDarkMode();
 
   const handleChange = e => {
-    let refinements = [];
+    const refinements = [];
     for (const module of e) {
       refinements.push(module.label);
     }

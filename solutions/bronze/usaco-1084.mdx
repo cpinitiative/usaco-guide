@@ -1,0 +1,257 @@
+---
+id: usaco-1084
+source: USACO Bronze 2021 January
+title: Even More Odd Photos
+author: Sathvik Chundru, Melody Yu (Video), Juheon Rhee
+---
+
+## Video Solution
+
+By Melody Yu
+
+<YouTube id="RYeYSB53dSY" />
+
+<Spoiler title="Video Solution Code">
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int group(int O, int E) {
+	int diff = O - E;
+	if (diff == 0) {
+		return O + E;
+	} else if (diff == 1) {
+		return O + E - 2;
+	} else if (diff == 2) {
+		return E + O - 1;
+	} else {
+		O -= 2;
+		E += 1;
+	}
+
+	return group(O, E);
+}
+
+int main() {
+	int N;
+	cin >> N;
+
+	int oddC = 0, evenC = 0;
+	for (int i = 0; i < N; i++) {
+		int cow;
+		cin >> cow;
+		if (cow % 2 == 0) {
+			evenC += 1;
+		} else {
+			oddC += 1;
+		}
+	}
+
+	if (evenC > oddC) {
+		cout << 2 * oddC + 1;
+	} else {
+		cout << group(oddC, evenC);
+	}
+	return 0;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class EvenMoreOddPhotos {
+	public static int group(int O, int E) {
+		int diff = O - E;
+		if (diff == 0) {
+			return O + E;
+		} else if (diff == 1) {
+			return O + E - 2;
+		} else if (diff == 2) {
+			return E + O - 1;
+		} else {
+			O -= 2;
+			E += 1;
+		}
+
+		return group(O, E);
+	}
+
+	public static void main(String[] args) throws IOException {
+		EvenMoreOddPhotos.Kattio io = new EvenMoreOddPhotos.Kattio();
+		int N = io.nextInt();
+		int oddC = 0, evenC = 0;
+		for (int i = 0; i < N; i++) {
+			int cow = io.nextInt();
+			if (cow % 2 == 0) {
+				evenC += 1;
+			} else {
+				oddC += 1;
+			}
+		}
+
+		if (evenC > oddC) {
+			io.println(2 * oddC + 1);
+		} else {
+			io.println(group(oddC, evenC));
+		}
+
+		io.close();
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+</LanguageSection>
+</Spoiler>
+
+<Spoiler title="Hint 1">
+
+Does FJ care about the actual values of the cows?
+
+</Spoiler>
+
+<Spoiler title="Hint 2">
+
+What's preventing us from putting each cow in their own group
+and calling it a day?
+
+</Spoiler>
+
+<Spoiler title="Answer to Hint 2">
+
+If there's too many even cows, then there won't be enough odd cows to alternate
+between the even cows and vice versa.
+
+</Spoiler>
+
+<Spoiler title="Hint 3">
+
+How should we partition the cows if there's too many even cows?
+What about if there's too many odd cows?
+
+</Spoiler>
+
+<Spoiler title="Solution">
+
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_prob2_bronze_jan21.html)
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class OddPhotos {
+	public static void main(String[] args) throws IOException {
+		BufferedReader in =
+		    new BufferedReader(new InputStreamReader(System.in));
+		int odd = 0;
+		int even = 0;
+		int n = Integer.parseInt(in.readLine());
+
+		StringTokenizer cowST = new StringTokenizer(in.readLine());
+		for (int i = 0; i < n; i++) {
+			int cow = Integer.parseInt(cowST.nextToken());
+			if (cow % 2 == 0) {
+				even++;
+			} else {
+				odd++;
+			}
+		}
+
+		// Pair up odd cows so that there aren't too many of them.
+		while (odd > even) {
+			odd = odd - 2;
+			// Two odd cows together are effectively an even cow.
+			even++;
+		}
+		// Group even cows so that there aren't too many evens either.
+		if (even > odd + 1) { even = odd + 1; }
+
+		System.out.println(even + odd);
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+n = int(input())
+even, odd = 0, 0
+
+cows = [int(i) for i in input().split()]
+for c in cows:
+	if c % 2 == 0:
+		even += 1
+	else:
+		odd += 1
+
+# Pair up odd cows so that there aren't too many of them.
+while odd > even:
+	odd -= 2
+	# Two odd cows together are effectively an even cow.
+	even += 1
+
+# Group even cows so that there aren't too many evens either.
+if even > odd + 1:
+	even = odd + 1
+
+print(even + odd)
+```
+
+</PySection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+int main() {
+	int n;
+	cin >> n;
+
+	int even = 0;
+	int odd = 0;
+	for (int i = 0; i < n; i++) {
+		int cow;
+		cin >> cow;
+		if (cow % 2 == 0) {
+			even++;
+		} else {
+			odd++;
+		}
+	}
+
+	// Pair up odd cows so that there aren't too many of them.
+	while (odd > even) {
+		odd = odd - 2;
+		// Two odd cows together are effectively an even cow.
+		even++;
+	}
+	// Group even cows so that there aren't too many evens either.
+	if (even > odd + 1) { even = odd + 1; }
+
+	cout << odd + even << endl;
+}
+```
+
+</CPPSection>
+</LanguageSection>
+</Spoiler>

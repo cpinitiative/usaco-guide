@@ -107,8 +107,6 @@ This means that we can use CHT to compute $dp[i]$ efficiently!
 However, since $m$ is not monotonic, we can't use linear CHT using a deque, so
 we must settle with $\mathcal{O}(N \log N)$.
 
-<Spoiler title="Code">
-
 I implemented CHT using a `std::set` here, but other implementations using
 things like the Li-Chao tree should work similarly.
 
@@ -131,9 +129,7 @@ bool operator<(Line l1, Line l2) {
 set<Line> cht;
 ll h[100001], w[100001], tot = 0, dp[100001];
 
-bool has_prev(set<Line>::iterator it) {
-	return it != cht.begin();
-}
+bool has_prev(set<Line>::iterator it) { return it != cht.begin(); }
 bool has_next(set<Line>::iterator it) {
 	return it != cht.end() && next(it) != cht.end();
 }
@@ -153,7 +149,7 @@ void calc_x(set<Line>::iterator it) {
 bool bad(set<Line>::iterator it) {
 	if (has_next(it) && next(it)->c <= it->c) return true;
 	return (has_prev(it) && has_next(it) &&
-			intersect(prev(it), next(it)) <= intersect(prev(it), it));
+	        intersect(prev(it), next(it)) <= intersect(prev(it), it));
 }
 
 void add_line(ll m, ll c) {
@@ -202,8 +198,6 @@ int main() {
 	return 0;
 }
 ```
-
-</Spoiler>
 
 ## Problems
 

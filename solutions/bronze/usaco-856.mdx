@@ -1,0 +1,256 @@
+---
+id: usaco-856
+source: USACO Bronze 2018 December
+title: The Bucket List
+author: Ananth Kashyap, Sathvik Chundru, Brad Ma, Aadit Ambadkar
+---
+
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_blist_bronze_dec18.html)
+
+## Implementation 1 - Brute Force
+
+**Time Complexity:** $\mathcal{O}(N \cdot T)$, where $T$ is the maximum time in the input.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <fstream>
+#include <iostream>
+#include <vector>
+
+using std::cout;
+using std::endl;
+using std::vector;
+
+const int MAX_TIME = 1000;
+
+struct Cow {
+	int start, end;
+	int buckets;
+};
+
+int main() {
+	std::ifstream read("blist.in");
+	int n;
+	read >> n;
+	vector<Cow> cows(n);
+	for (Cow &c : cows) { read >> c.start >> c.end >> c.buckets; }
+
+	// The maximum number of buckets needed
+	int max_buckets = 0;
+
+	/*
+	 * For each possible time, check how many buckets are needed at that time
+	 * and update the maximum accordingly
+	 */
+	for (int t = 1; t <= MAX_TIME; t++) {
+		int curr_buckets = 0;
+		for (const Cow &c : cows) {
+			if (c.start <= t && t <= c.end) { curr_buckets += c.buckets; }
+		}
+		max_buckets = std::max(max_buckets, curr_buckets);
+	}
+
+	std::ofstream("blist.out") << max_buckets << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class BList {
+	static final int MAX_TIME = 1000;
+
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio("blist");
+		int n = io.nextInt();
+		int[][] cows = new int[n][];
+		for (int c = 0; c < n; c++) {
+			cows[c] = new int[] {io.nextInt(), io.nextInt(), io.nextInt()};
+		}
+
+		// The maximum number of buckets needed
+		int maxBuckets = 0;
+
+		/*
+		 * For each possible time, check how many buckets are needed at that
+		 * time and update the maximum accordingly
+		 */
+		for (int t = 1; t <= MAX_TIME; t++) {
+			int currBuckets = 0;
+			for (int[] c : cows) {
+				if (c[0] <= t && t <= c[1]) { currBuckets += c[2]; }
+			}
+			maxBuckets = Math.max(maxBuckets, currBuckets);
+		}
+
+		io.println(maxBuckets);
+		io.close();
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+MAX_TIME = 1000
+
+with open("blist.in") as read:
+	n = int(read.readline())
+	cows = [[int(i) for i in read.readline().split()] for _ in range(n)]
+
+# The maximum number of buckets needed
+max_buckets = 0
+
+"""
+For each possible time, check how many buckets are needed at that time
+and update the maximum accordingly
+"""
+for t in range(1, MAX_TIME + 1):
+	curr_buckets = 0
+	for c in cows:
+		if c[0] <= t <= c[1]:
+			curr_buckets += c[2]
+	max_buckets = max(max_buckets, curr_buckets)
+
+print(max_buckets, file=open("blist.out", "w"))
+```
+
+</PySection>
+</LanguageSection>
+
+## Implementation 2 - Sweep
+
+**Time Complexity** $\mathcal{O}(N + T)$
+
+Solution 1 does a lot of unnecessary work, as we don't actually have to
+recount the buckets for every time step.
+This implementation keeps track of all the changes in milking times and iterates
+through all the time steps at once.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <fstream>
+#include <iostream>
+#include <vector>
+
+using std::cout;
+using std::endl;
+using std::vector;
+
+const int MAX_TIME = 1000;
+
+int main() {
+	std::ifstream read("blist.in");
+	int n;
+	read >> n;
+
+	vector<int> change(MAX_TIME + 1);
+	for (int c = 0; c < n; c++) {
+		int start, end;
+		int amt;
+		read >> start >> end >> amt;
+
+		// at the start, we'll need some additional buckets
+		change[start] += amt;
+		// at the end, those buckets are no longer needed
+		change[end] -= amt;
+	}
+
+	int max_buckets = 0;  // the maximum number of buckets needed
+	int curr_buckets =
+	    0;  // # of buckets we need at the current processing time
+	for (int t = 0; t < MAX_TIME; t++) {
+		// update the # of buckets we're using
+		curr_buckets += change[t];
+		// update the maximum accordingly
+		max_buckets = std::max(max_buckets, curr_buckets);
+	}
+
+	std::ofstream("blist.out") << max_buckets << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class BList {
+	static final int MAX_TIME = 1000;
+
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio("blist");
+		int n = io.nextInt();
+		int[] change = new int[MAX_TIME + 1];
+		for (int c = 0; c < n; c++) {
+			int start = io.nextInt();
+			int end = io.nextInt();
+			int amt = io.nextInt();
+
+			// at the start, we'll need some additional buckets
+			change[start] += amt;
+			// at the end, those buckets are no longer needed
+			change[end] -= amt;
+		}
+
+		int maxBuckets = 0;  // max # of buckets we'll need
+		int currBuckets =
+		    0;  // # of buckets we need at the current processing time
+		for (int t = 0; t < MAX_TIME; t++) {
+			// update the # of buckets we're using
+			currBuckets += change[t];
+			// update the maximum accordingly
+			maxBuckets = Math.max(maxBuckets, currBuckets);
+		}
+
+		io.println(maxBuckets);
+		io.close();
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+MAX_TIME = 1000
+
+change = [0 for _ in range(MAX_TIME + 1)]
+with open("blist.in") as read:
+	n = int(read.readline().strip())
+	for _ in range(n):
+		start, end, amt = map(int, read.readline().strip().split())
+
+		# at the start, we'll need some additional buckets
+		change[start] += amt
+		# at the end, those buckets are no longer needed
+		change[end] -= amt
+
+max_buckets = 0  # max # of buckets we'll need
+curr_buckets = 0  # # of buckets we need at the current processing time
+for t in range(MAX_TIME + 1):
+	# update the # of buckets we're using
+	curr_buckets += change[t]
+	# update the maximum accordingly
+	max_buckets = max(max_buckets, curr_buckets)
+
+print(max_buckets, file=open("blist.out", "w"))
+```
+
+</PySection>
+</LanguageSection>

@@ -1,0 +1,174 @@
+---
+id: usaco-939
+source: USACO Bronze 2019 Open
+title: Bucket Brigade
+author: Maggie Liu
+---
+
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_buckets_bronze_open19.html)
+
+## Video Solution
+
+By Maggie Liu
+
+<YouTube id="JifYWZYrIzs" />
+
+## Explanation
+
+If there was no rock, then the number of cows needed would just be the
+horizontal distance between the barn and the lake, plus the vertical distance
+between the barn and the lake, minus $1$. Adding the rock onto the farm usually
+doesn't change the answer. The only case where the rock matters is if the rock,
+barn and lake are on the same line, and the rock is between the barn and the
+lake. In this case, there will need to be $2$ extra cows to go around the rock.
+
+## Implementation
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <cstdio>
+#include <iostream>
+using namespace std;
+
+int main() {
+	freopen("buckets.in", "r", stdin);
+	freopen("buckets.out", "w", stdout);
+	int barn_i = 0, barn_j = 0, rock_i = 0, rock_j = 0, lake_i = 0, lake_j = 0;
+	for (int i = 0; i < 10; i++) {
+		string row;
+		cin >> row;
+		for (int j = 0; j < 10; j++) {
+			if (row[j] == 'B') {
+				barn_i = i;
+				barn_j = j;
+			} else if (row[j] == 'R') {
+				rock_i = i;
+				rock_j = j;
+			} else if (row[j] == 'L') {
+				lake_i = i;
+				lake_j = j;
+			}
+		}
+	}
+
+	// initial distance
+	int cows = abs(barn_i - lake_i) + abs(barn_j - lake_j) - 1;
+
+	// if the barn, lake and rock are in the same column
+	// and the rock is betwen the barn and the lake
+	if (barn_i == lake_i && rock_i == barn_i &&
+	    ((lake_j < rock_j && rock_j < barn_j) ||
+	     (barn_j < rock_j && rock_j < lake_j))) {
+		cows += 2;
+	}
+	// if the barn, lake and rock are in the same row
+	// and the rock is between the barn and the lake
+	else if (barn_j == lake_j && rock_j == barn_j &&
+	         ((lake_i < rock_i && rock_i < barn_i) ||
+	          (barn_i < rock_i && rock_i < lake_i))) {
+		cows += 2;
+	}
+	cout << cows << endl;
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class BucketBrigade {
+	public static void main(String[] args) throws IOException {
+		int barnI = 0, barnJ = 0, rockI = 0, rockJ = 0, lakeI = 0, lakeJ = 0;
+		Kattio io = new Kattio("buckets");
+		for (int i = 0; i < 10; i++) {
+			String row = io.next();
+			for (int j = 0; j < 10; j++) {
+				if (row.charAt(j) == 'B') {
+					barnI = i;
+					barnJ = j;
+				} else if (row.charAt(j) == 'R') {
+					rockI = i;
+					rockJ = j;
+				} else if (row.charAt(j) == 'L') {
+					lakeI = i;
+					lakeJ = j;
+				}
+			}
+		}
+
+		// distance without accounting for the rock
+		int cows = Math.abs(barnI - lakeI) + Math.abs(barnJ - lakeJ) - 1;
+
+		// if the barn, lake and rock are in the same row
+		// and the rock is betwen the barn and the lake
+		if (barnI == lakeI && barnI == rockI &&
+		    ((lakeJ < rockJ && rockJ < barnJ) ||
+		     (barnJ < rockJ && rockJ < lakeJ))) {
+			cows += 2;
+		}
+		// if the barn, lake and rock are in the same column
+		// and the rock is between the barn and the lake
+		else if (barnJ == lakeJ && barnJ == rockJ &&
+		         ((lakeI < rockI && rockI < barnI) ||
+		          (barnI < rockI && rockI < lakeI))) {
+			cows += 2;
+		}
+		io.println(cows);
+		io.close();
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+
+<PySection>
+
+```py
+import sys
+
+sys.stdin = open("buckets.in", "r")
+sys.stdout = open("buckets.out", "w")
+
+for i in range(10):
+	row = input()
+	for j in range(10):
+		if row[j] == "B":
+			barn_i = i
+			barn_j = j
+		if row[j] == "R":
+			rock_i = i
+			rock_j = j
+		if row[j] == "L":
+			lake_i = i
+			lake_j = j
+
+# distance without accounting for the rock
+cows = abs(barn_i - lake_i) + abs(barn_j - lake_j) - 1
+
+# if the barn, lake and rock are in the same row
+# and the rock is betwen the barn and the lake
+if barn_i == rock_i == lake_i and (
+	lake_j < rock_j < barn_j or barn_j < rock_j < lake_j
+):
+	cows += 2
+# if the barn, lake and rock are in the same column
+# and the rock is between the barn and the lake
+elif barn_j == rock_j == lake_j and (
+	lake_i < rock_i < barn_i or barn_i < rock_i < lake_i
+):
+	cows += 2
+print(cows)
+```
+
+</PySection>
+
+</LanguageSection>

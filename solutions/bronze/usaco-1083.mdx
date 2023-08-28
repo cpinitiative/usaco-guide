@@ -1,0 +1,62 @@
+---
+id: usaco-1083
+source: USACO Bronze 2021 January
+title: Uddered but not Herd
+author: Ananth Kashyap, Sofia Yang
+---
+
+[Official Analysis](http://www.usaco.org/current/data/sol_prob1_bronze_jan21.html)
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(|\texttt{word}|)$
+
+<LanguageSection>
+
+<PySection>
+
+```py
+# Take in the cowphabet and string as strings through standard Python input
+cowphabet = input()
+word = input()
+
+# For any string, we always have to look through the cowphabet at least once.
+num_times = 1
+
+for i in range(len(word) - 1):
+	# Check if next character in string appears before previous character
+	if cowphabet.index(word[i + 1]) <= cowphabet.index(word[i]):
+		num_times += 1
+
+print(num_times)
+```
+
+</PySection>
+
+<JavaSection>
+```java
+import java.io.*;
+
+public class UdderedButNotHerd {
+	public static void main(String[] args) throws IOException {
+		BufferedReader input =
+		    new BufferedReader(new InputStreamReader(System.in));
+		String cowphabet = input.readLine();
+		char[] word = input.readLine().toCharArray();
+
+		int numTimes = 1;  // There must be at least one humming sequence.
+		for (int i = 0; i < word.length - 1; i++) {
+			/*
+			 * Increment if the next letter appears at
+			 * or earlier than the current letter in the alphabet
+			 */
+			if (cowphabet.indexOf(word[i + 1]) <= cowphabet.indexOf(word[i])) {
+				numTimes++;
+			}
+		}
+		System.out.println(numTimes);
+	}
+}
+```
+</JavaSection>
+</LanguageSection>

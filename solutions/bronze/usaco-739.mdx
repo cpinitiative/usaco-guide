@@ -1,0 +1,391 @@
+---
+id: usaco-739
+source: USACO Silver 2017 US Open
+title: Bovine Genomics
+author: Brad Ma, Kevin Sheng, Jay Fu
+---
+
+[Official Editorial (C++)](http://www.usaco.org/current/data/sol_cownomics_silver_open17.html)
+
+## Video Solution
+
+By Jay Fu
+
+<YouTube id="hKBMRogNo0o" />
+
+<Spoiler title="Video Solution Code">
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <cmath>
+#include <fstream>
+#include <iostream>
+using namespace std;
+
+int N, M;
+string spotty[500], plain[500];
+int S[500][50], P[500][50], A[64];
+
+// test if the set of positions j1,j2,j3 is enough to explain spottiness
+bool test_location(int j1, int j2, int j3) {
+	bool good = true;
+
+	// mark the values in A used by a spotty cow
+	for (int i = 0; i < N; i++) A[S[i][j1] * 16 + S[i][j2] * 4 + S[i][j3]] = 1;
+
+	// see if a plain cow has the same values as a spotty cow
+	for (int i = 0; i < N; i++)
+		if (A[P[i][j1] * 16 + P[i][j2] * 4 + P[i][j3]]) good = false;
+
+	// reset int [] A
+	for (int i = 0; i < N; i++) A[S[i][j1] * 16 + S[i][j2] * 4 + S[i][j3]] = 0;
+	return good;
+}
+
+int main(void) {
+	ifstream fin("cownomics.in");
+	ofstream fout("cownomics.out");
+	fin >> N >> M;
+
+	// read in input
+	// convert letters in String [] spotty to numbers in int [][] S
+	for (int i = 0; i < N; i++) {
+		fin >> spotty[i];
+		for (int j = 0; j < M; j++) {
+			if (spotty[i][j] == 'A') S[i][j] = 0;
+			if (spotty[i][j] == 'C') S[i][j] = 1;
+			if (spotty[i][j] == 'G') S[i][j] = 2;
+			if (spotty[i][j] == 'T') S[i][j] = 3;
+		}
+	}
+
+	// read in input
+	// convert letters in String [] plain to numbers in int [][] P
+	for (int i = 0; i < N; i++) {
+		fin >> plain[i];
+		for (int j = 0; j < M; j++) {
+			if (plain[i][j] == 'A') P[i][j] = 0;
+			if (plain[i][j] == 'C') P[i][j] = 1;
+			if (plain[i][j] == 'G') P[i][j] = 2;
+			if (plain[i][j] == 'T') P[i][j] = 3;
+		}
+	}
+
+	int answer = 0;
+	// test every possible set of three distinct positions to see if it can
+	// explain spottiness
+	for (int j1 = 0; j1 < M; j1++)
+		for (int j2 = j1 + 1; j2 < M; j2++)
+			for (int j3 = j2 + 1; j3 < M; j3++)
+				if (test_location(j1, j2, j3)) answer++;
+	fout << answer << "\n";
+	return 0;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.StringTokenizer;
+
+public class cownomicsSilver {
+
+	static String[] spotty, plain;
+	static int N, M;
+	static int[][] S, P;
+	static int[] A;
+
+	// test if the set of positions j1,j2,j3 is enough to explain spottiness
+	static boolean test_location(int j1, int j2, int j3) {
+		boolean good = true;
+
+		// mark the values in A used by a spotty cow
+		for (int i = 0; i < N; i++)
+			A[S[i][j1] * 16 + S[i][j2] * 4 + S[i][j3]] = 1;
+
+		// see if a plain cow has the same values as a spotty cow
+		for (int i = 0; i < N; i++)
+			if (A[P[i][j1] * 16 + P[i][j2] * 4 + P[i][j3]] == 1) good = false;
+
+		// reset int [] A
+		for (int i = 0; i < N; i++)
+			A[S[i][j1] * 16 + S[i][j2] * 4 + S[i][j3]] = 0;
+
+		return good;
+	}
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new FileReader("cownomics.in"));
+		PrintWriter out = new PrintWriter("cownomics.out");
+		StringTokenizer s = new StringTokenizer(br.readLine());
+		N = Integer.parseInt(s.nextToken());
+		M = Integer.parseInt(s.nextToken());
+		spotty = new String[500];
+		plain = new String[500];
+		S = new int[500][50];
+		P = new int[500][50];
+		A = new int[64];
+
+		// read in input
+		// convert letters in String [] spotty to numbers in int [][] S
+		for (int i = 0; i < N; i++) {
+			spotty[i] = br.readLine();
+			for (int j = 0; j < M; j++) {
+				if (spotty[i].charAt(j) == 'A') S[i][j] = 0;
+				if (spotty[i].charAt(j) == 'C') S[i][j] = 1;
+				if (spotty[i].charAt(j) == 'G') S[i][j] = 2;
+				if (spotty[i].charAt(j) == 'T') S[i][j] = 3;
+			}
+		}
+
+		// read in input
+		// convert letters in String [] plain to numbers in int [][] P
+		for (int i = 0; i < N; i++) {
+			plain[i] = br.readLine();
+			for (int j = 0; j < M; j++) {
+				if (plain[i].charAt(j) == 'A') P[i][j] = 0;
+				if (plain[i].charAt(j) == 'C') P[i][j] = 1;
+				if (plain[i].charAt(j) == 'G') P[i][j] = 2;
+				if (plain[i].charAt(j) == 'T') P[i][j] = 3;
+			}
+		}
+
+		int answer = 0;
+		// test every possible set of three distinct positions to see if it can
+		// explain spottiness
+		for (int j1 = 0; j1 < M; j1++) {
+			for (int j2 = j1 + 1; j2 < M; j2++) {
+				for (int j3 = j2 + 1; j3 < M; j3++) {
+					if (test_location(j1, j2, j3)) answer++;
+				}
+			}
+		}
+		out.println(answer);
+		out.close();
+	}
+}
+```
+
+</JavaSection>
+</LanguageSection>
+</Spoiler>
+
+## Implementation
+
+**Time Complexity** $\mathcal{O}(NM^3)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <fstream>
+#include <iostream>
+#include <map>
+#include <string>
+#include <vector>
+
+using std::cout;
+using std::endl;
+using std::vector;
+
+const std::map<char, int> GENOME_ID{{'A', 0}, {'T', 1}, {'C', 2}, {'G', 3}};
+
+int main() {
+	std::ifstream read("cownomics.in");
+
+	int cow_num;
+	int genome_len;
+	read >> cow_num >> genome_len;
+
+	vector<vector<int>> spotted(cow_num, vector<int>(genome_len));
+	for (int s = 0; s < cow_num; s++) {
+		std::string genome;
+		read >> genome;
+		for (int g = 0; g < genome_len; g++) {
+			// A -> 0, C -> 1, T -> 2, G -> 3
+			spotted[s][g] = GENOME_ID.at(genome[g]);
+		}
+	}
+
+	vector<vector<int>> plain(cow_num, vector<int>(genome_len));
+	for (int p = 0; p < cow_num; p++) {
+		std::string genome;
+		read >> genome;
+		for (int g = 0; g < genome_len; g++) {
+			plain[p][g] = GENOME_ID.at(genome[g]);
+		}
+	}
+
+	int valid_sets = 0;
+	// Loop through every possible group of 3.
+	for (int a = 0; a < genome_len; a++) {
+		for (int b = a + 1; b < genome_len; b++) {
+			for (int c = b + 1; c < genome_len; c++) {
+				vector<bool> spotted_ids(64);
+				for (int sc = 0; sc < cow_num; sc++) {
+					/*
+					 * By multiplying the first, second, and
+					 * third digits by 16, 4, and 1 respectively, we can
+					 * get a number unique to that combination.
+					 */
+					int total = (spotted[sc][a] * 16 + spotted[sc][b] * 4 +
+					             spotted[sc][c] * 1);
+					spotted_ids[total] = true;
+				}
+
+				bool valid = true;
+				for (int pc = 0; pc < cow_num; pc++) {
+					int total = (plain[pc][a] * 16 + plain[pc][b] * 4 +
+					             plain[pc][c] * 1);
+					// We can't tell the spotted & plain cows apart.
+					if (spotted_ids[total]) {
+						valid = false;
+						break;
+					}
+				}
+
+				valid_sets += valid;
+			}
+		}
+	}
+
+	std::ofstream("cownomics.out") << valid_sets << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class BovineGenomics {
+	static final Map<Character, Integer> GENOME_ID =
+	    Map.ofEntries(Map.entry('A', 0), Map.entry('T', 1), Map.entry('C', 2),
+	                  Map.entry('G', 3));
+
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio("cownomics");
+
+		int cowNum = io.nextInt();
+		int genomeLen = io.nextInt();
+
+		int[][] spotted = new int[cowNum][genomeLen];
+		for (int s = 0; s < cowNum; s++) {
+			String genome = io.next();
+			for (int g = 0; g < genomeLen; g++) {
+				// A -> 0, C -> 1, T -> 2, G -> 3
+				spotted[s][g] = GENOME_ID.get(genome.charAt(g));
+			}
+		}
+
+		int[][] plain = new int[cowNum][genomeLen];
+		for (int p = 0; p < cowNum; p++) {
+			String genome = io.next();
+			for (int g = 0; g < genomeLen; g++) {
+				plain[p][g] = GENOME_ID.get(genome.charAt(g));
+			}
+		}
+
+		int validSets = 0;
+		// Loop through every possible group of 3.
+		for (int a = 0; a < genomeLen; a++) {
+			for (int b = a + 1; b < genomeLen; b++) {
+				for (int c = b + 1; c < genomeLen; c++) {
+					boolean[] spottedIDs = new boolean[64];
+					for (int sc = 0; sc < cowNum; sc++) {
+						/*
+						 * By multiplying the first, second, and
+						 * third digits by 16, 4, and 1 respectively, we can
+						 * get a number unique to that combination.
+						 */
+						int total = (spotted[sc][a] * 16 + spotted[sc][b] * 4 +
+						             spotted[sc][c] * 1);
+						spottedIDs[total] = true;
+					}
+
+					boolean valid = true;
+					for (int pc = 0; pc < cowNum; pc++) {
+						int total = (plain[pc][a] * 16 + plain[pc][b] * 4 +
+						             plain[pc][c] * 1);
+						// We can't tell the spotted & plain cows apart.
+						if (spottedIDs[total]) {
+							valid = false;
+							break;
+						}
+					}
+
+					validSets += valid ? 1 : 0;
+				}
+			}
+		}
+
+		io.println(validSets);
+		io.close();
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+<PySection>
+
+<Warning>
+
+Due to Python's slow speed, the below code TLEs on a couple test cases.
+
+</Warning>
+
+```py
+GENOME_ID = {"A": 0, "T": 1, "C": 2, "G": 3}
+
+with open("cownomics.in") as read:
+	cow_num, genome_len = [int(i) for i in read.readline().split()]
+
+	spotted = []
+	for _ in range(cow_num):
+		genome_str = read.readline()
+		genome = []
+		for g in range(genome_len):
+			# A -> 0, C -> 1, T -> 2, G -> 3
+			genome.append(GENOME_ID[genome_str[g]])
+		spotted.append(genome)
+
+	plain = []
+	for _ in range(cow_num):
+		genome_str = read.readline()
+		genome = []
+		for g in range(genome_len):
+			genome.append(GENOME_ID[genome_str[g]])
+		plain.append(genome)
+
+valid_sets = 0
+for a in range(genome_len):
+	for b in range(a + 1, genome_len):
+		for c in range(b + 1, genome_len):
+			spotted_ids = [False for _ in range(64)]
+			for sc in range(cow_num):
+				total = spotted[sc][a] * 16 + spotted[sc][b] * 4 + spotted[sc][c] * 1
+				spotted_ids[total] = True
+
+			for pc in range(cow_num):
+				total = plain[pc][a] * 16 + plain[pc][b] * 4 + plain[pc][c] * 1
+				if spotted_ids[total]:
+					break
+			else:
+				valid_sets += 1
+
+print(valid_sets, file=open("cownomics.out", "w"))
+```
+
+</PySection>
+</LanguageSection>

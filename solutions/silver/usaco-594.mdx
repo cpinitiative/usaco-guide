@@ -1,0 +1,143 @@
+---
+id: usaco-594
+source: USACO Silver 2016 January
+title: Angry Cows
+author: Óscar Garries, George Pong
+---
+
+[Official Analysis (Java)](http://www.usaco.org/current/data/sol_angry_silver_jan16.html)
+
+<Spoiler title="Hint 1">
+
+Suppose we already know a certain value of $R$ can't detonate all the haybales; what does this say about all the $R$-values less than the current value of $R$?
+Likewise, if we know a certain value of $R$ *can* detonate everything, what does this say about all the $R$-values *greater* than the current value?
+
+</Spoiler>
+
+<Spoiler title="Hint 2">
+
+If a certain value of $R$ doesn't work, all values less than that won't work either.
+Similarly, if a $R$-value *works*, all values greater than that will work as well.
+What algorithm takes advantage of this neat property?
+
+</Spoiler>
+
+<Spoiler title="Solution">
+
+## Explanation
+
+Notice that for any blast radius $x$, If $x$ can not detonate all the bales when shot efficiently, then any blast radius less than $x$ can not either. Thus, we can binary search for the minimum blast radius which can detonate all the bales.
+
+We simply need to test if a given blast radius will detonate all the bales, which can be done by calculating the minimum number of cows needed to do so with a given blast radius, and comparing it to the total number of cows we are given ($k$).
+
+We sort the list of hay bales by increasing position to let us easily determine if a bale is exploded or not. Let us consider the first (leftmost) haybale. We need one cow to detonate this haybale, and it is always most efficient to set the blast position of this cow as far to the right as possible, so we can detonate the maximum number of other bales. Thus, the position of the blast would be `cow position + radius`.
+
+This can be applied for every hay bale. We iterate through the sorted list of hay bales and detonate every one of them, storing the number of cows needed and the position of the last blast. If the current hay bale is in the radius of the last blast, the bale is already detonated. Otherwise, we need one more cow to detonate the current bale, and we reset the last blast position optimally.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N \log N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int main() {
+	freopen("angry.in", "r", stdin);
+	freopen("angry.out", "w", stdout);
+
+	int n, k;
+	cin >> n >> k;
+	int ar[n];
+
+	for (int i = 0; i < n; i++) { cin >> ar[i]; }
+
+	sort(ar, ar + n);
+
+	int lo = 1, hi = 1e9;
+	int sol = 1e9;
+
+	while (lo <= hi) {
+		int mid = lo + (hi - lo) / 2;
+		int i = 0;
+		for (int kas = 0; kas < k && i < n; kas++) {
+			int hasta = ar[i];
+			hasta += mid * 2;
+			while (i < n - 1 && ar[i + 1] <= hasta) i++;
+			i++;
+		}
+		bool ok;
+		ok = (i >= n);
+		if (ok) {
+			sol = min(sol, mid);
+			hi = mid - 1;
+		} else {
+			lo = mid + 1;
+		}
+	}
+
+	cout << sol << '\n';
+}
+```
+
+</CPPSection>
+<PySection>
+
+```py
+with open("angry.in", "r") as infile:
+	n, k = map(int, infile.readline().split())
+	bales = [int(infile.readline()) for _ in range(n)]
+	bales.sort()
+
+
+def valid_blast_radius(blast_radius: int) -> bool:
+	"""
+	Tests if all bales can be blown up with the specified blast radius.
+
+	Calculates the total number of cows needed to blow up all the bales with
+	the specified blast radius. If the number is less than or equal to the
+	actual number of cows we have, then it is possible. Otherwise, it is not.
+
+	:param blast_radius: The proposed blast radius to be tested.
+	:returns: True if it is possible to blow up all bales, False otherwise
+	"""
+
+	last_blast_location = -float("inf")
+	needed_cows = 0
+	for bale_position in bales:
+
+		# If the current bale is out of the last cow's blast radius, we need
+		# to use a new cow.
+		if abs(bale_position - last_blast_location) > blast_radius:
+			needed_cows += 1
+
+			# It is always most efficient to set the blast location of the current cow
+			# to where the new bale being blown up is exactly on left boundary.
+			last_blast_location = bale_position + blast_radius
+
+			if needed_cows > k:
+				return False
+
+	return True
+
+
+left, right = 0, bales[-1] - bales[0]
+
+while left < right:
+	mid = (left + right) // 2
+	if valid_blast_radius(mid):
+		right = mid
+	else:
+		left = mid + 1
+
+print(left, file=open("angry.out", "w"))
+```
+
+</PySection>
+</LanguageSection>
+
+</Spoiler>

@@ -1,0 +1,110 @@
+---
+id: cses-2185
+source: CSES
+title: Prime Multiples
+author: Alex Du
+---
+
+## Explanation
+
+We can identify that given any integer $c$, the number of integers that are divisible by it between 1 and $N$ is $\lfloor\frac{N}{c}\rfloor$
+
+If we consider each prime individually and find the number of multiples it has, we will find that there is an overlap
+for each number that is a multiple of two primes. For example, $10$ is a multiple of both $2$ and $5$, so if we added up all $\lfloor\frac{N}{a[i]}\rfloor$ for all
+primes, we would still need to subtract $\lfloor\frac{N}{a[i] \cdot a[j]}\rfloor$ for all distinct i and j.
+
+Similarly, this subtraction would
+have an overlap for each number that is a multiple of three primes. An example would be $30$, a multiple of $2$, $3$, and $5$, so we would have
+subtracted all multiples of both $6$, $10$, and $15$, which would mean that we must add back the number of integers that are multiples of three primes.
+This extends for the entire array, requiring us to alternate adding and subtracting depending on how many primes we are currently mutliplying.
+
+Considering only $30$, the full example would be that our answer is added $3$ times for $2$, $3$, and $5$ (subsets of array with $1$ prime), then subtracted $3$
+times for $6$, $10$, and $15$ (subsets of array with $2$ primes), and finally added once for $30$ (subset of array with $3$ primes),
+overall only being counted once.
+
+To implement this, we would need to go through each subset of the array, and add the number of multiples it has if the number of primes is not divisible by 2, and
+subtract otherwise. This is known as the [Inclusion Exclusion Principle](https://cp-algorithms.com/combinatorics/inclusion-exclusion.html).
+In order to iterate through all subsets of the array, we can iterate from $1$ to $2^K-1$ and use bit operators to find which indices we are using.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(K\cdot 2^K)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+
+int main() {
+	ll n, k;
+	cin >> n >> k;
+	vector<ll> a(k);
+	for (int i = 0; i < k; i++) cin >> a[i];
+
+	ll ans = 0;
+	for (ll i = 1; i < (1 << k); i++) {
+		ll prime_product = 1;
+		for (ll j = 0; j < k; j++) {
+			// check if we are using a[j] in this number
+			if (i & (1 << j)) {
+				// check to not overflow, if we do set prime_product to N+1 so
+				// ans doesn't change
+				if (prime_product > n / a[j]) {
+					prime_product = n + 1;
+					break;
+				}
+				prime_product *= a[j];
+			}
+		}
+
+		//__builtin_popcount gives the number of 1's in binary representation,
+		// which is also the number of primes we have multiplied
+		if (__builtin_popcount(i) % 2) {
+			ans += n / prime_product;
+		} else {
+			ans -= n / prime_product;
+		}
+	}
+
+	cout << ans << endl;
+}
+```
+
+</CPPSection>
+<PySection>
+
+<Warning>
+
+Due to Python's big constant factor, this code will TLE on a couple of test cases.
+
+</Warning>
+
+```py
+n, k = map(int, input().split())
+a = list(map(int, input().split()))
+
+ans = 0
+for i in range(1, 1 << k):
+	prime_product = 1
+
+	for j in range(k):
+		# check if we are using a[j] in this number
+		if i & (1 << j):
+			prime_product *= a[j]
+
+	# convert to binary representation and count number of 1's,
+	# which is equal to the number of primes we have multiplied
+	if bin(i).count("1") % 2:
+		ans += n // prime_product
+	else:
+		ans -= n // prime_product
+
+print(ans)
+```
+
+</PySection>
+
+</LanguageSection>

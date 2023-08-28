@@ -1,0 +1,120 @@
+---
+id: usaco-1227
+source: USACO Bronze 2022 US Open
+title: Photoshoot
+author: Kevin Sheng
+---
+
+<Spoiler title="Hint 1">
+
+Not caring about the number of flips, what's the best FJ can do in terms
+of putting cows in their even/odd positions?
+
+</Spoiler>
+
+<Spoiler title="Hint 2">
+
+If we reverse an odd number of cows, does anything effectively change?
+
+</Spoiler>
+
+<Spoiler title="Hint 3">
+
+How can we process the cows such that we don't have to look back to already
+processed cows? Keep in mind that we can only reverse *prefixes*.
+
+</Spoiler>
+
+<Spoiler title="Solution">
+
+[Official Analysis (C++, Java, and Python)](http://usaco.org/current/data/sol_prob1_bronze_open22.html)
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <cassert>
+#include <iostream>
+#include <string>
+
+using std::cout;
+using std::endl;
+using std::string;
+
+int main() {
+	int cow_num;
+	string cows;
+	std::cin >> cow_num >> cows;
+	assert(cows.size() == cow_num && cow_num % 2 == 0);
+
+	int flips = 0;
+	for (int c = cow_num - 2; c >= 0; c -= 2) {
+		string sub = cows.substr(c, 2);
+		if (sub[0] == sub[1]) { continue; }
+		if ((sub == "GH" && flips % 2 == 0) ||
+		    (sub == "HG" && flips % 2 == 1)) {
+			flips++;
+		}
+	}
+
+	cout << flips << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+
+public class Photoshoot {
+	public static void main(String[] args) throws IOException {
+		BufferedReader read =
+		    new BufferedReader(new InputStreamReader(System.in));
+		int cowNum = Integer.parseInt(read.readLine());
+		String cows = read.readLine();
+		assert cows.length() == cowNum && cowNum % 2 == 0;
+		read.close();
+
+		int flips = 0;
+		for (int c = cowNum - 2; c >= 0; c -= 2) {
+			String sub = cows.substring(c, c + 2);
+			if (sub.charAt(0) == sub.charAt(1)) { continue; }
+			if ((sub.equals("GH") && flips % 2 == 0) ||
+			    (sub.equals("HG") && flips % 2 == 1)) {
+				flips++;
+			}
+		}
+
+		System.out.println(flips);
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+cow_num = int(input())
+cows = input()
+assert len(cows) == cow_num and cow_num % 2 == 0
+
+flips = 0
+for c in range(cow_num - 2, -1, -2):
+	sub = cows[c : c + 2]
+	if sub[0] == sub[1]:
+		continue
+	if (sub == "GH" and flips % 2 == 0) or (sub == "HG" and flips % 2 == 1):
+		flips += 1
+
+print(flips)
+```
+
+</PySection>
+</LanguageSection>
+
+</Spoiler>

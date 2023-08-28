@@ -18,28 +18,24 @@ prerequisites:
 </Resources>
 
 <LanguageSection>
-
 <CPPSection>
 
 C++ contains two versions of sets and maps; one using **sorting** and the other
 using **hashing**.
 
 </CPPSection>
-
 <JavaSection>
 
 Java contains two versions of sets and maps; one using **sorting** and the other
 using **hashing**.
 
 </JavaSection>
-
 <PySection>
 
 Python has built-in sets and maps, however they do _not_ store elements in
 sorted order.
 
 </PySection>
-
 </LanguageSection>
 
 ## Sets
@@ -49,7 +45,6 @@ sorted order.
 A **set** is a collection of elements that contains no duplicates.
 
 <LanguageSection>
-
 <CPPSection>
 
 ### Unordered Sets
@@ -67,19 +62,29 @@ Some operations on an `std::unordered_set` named `s` include:
 - `s.count(x)`, which returns `1` if `s` contains `x` and `0` if it doesn't.
 
 Unordered sets work with primitive types, but require a
-[custom hash function](/gold/unordered-map#custom-hashing)
+[custom hash function](/gold/hashmaps#custom-hashing)
 for structures/classes like vectors and pairs.
+
+<Warning title="Unordered Set Performance">
+
+`unordered_set` actually has worst-case $\mathcal{O}(N)$ behavior, and
+a program that uses it times out on Distinct Numbers.
+For more on unordered maps and sets, check out [this module](/gold/unordered).
+
+In any case, just default to using ordered sets in C++.
+
+</Warning>
 
 ```cpp
 unordered_set<int> s;
-s.insert(1);  // {1}
-s.insert(4);  // {1, 4}
-s.insert(2);  // {1, 4, 2}
-s.insert(1);  // does nothing because 1's already in the set
+s.insert(1);                 // {1}
+s.insert(4);                 // {1, 4}
+s.insert(2);                 // {1, 4, 2}
+s.insert(1);                 // does nothing because 1's already in the set
 cout << s.count(1) << endl;  // 1
-s.erase(1);  // {2, 4}
+s.erase(1);                  // {2, 4}
 cout << s.count(5) << endl;  // 0
-s.erase(0);  // does nothing because 0 wasn't in the set
+s.erase(0);                  // does nothing because 0 wasn't in the set
 ```
 
 ### Sorted Sets
@@ -104,13 +109,10 @@ s.insert(4);  // [1, 4]
 s.insert(2);  // [1, 2, 4]
 
 // Outputs 1, 2, and 4 on separate lines
-for (int element : s) {
-	cout << element << endl;
-}
+for (int element : s) { cout << element << endl; }
 ```
 
 </CPPSection>
-
 <JavaSection>
 
 ### Unordered Sets
@@ -128,7 +130,7 @@ Some operations on a `HashSet` named `set` include:
 - `set.contains(x)`, which checks whether `set` contains the element `x`.
 
 Unordered sets work with primitive types and their object wrappers, but require
-a [custom hash function](/gold/unordered-map#custom-hashing)
+a [custom hash function](/gold/hashmaps#custom-hashing)
 for custom classes.
 
 ```java
@@ -139,7 +141,7 @@ set.add(2);  // {1, 4, 2}
 set.add(1);  // {1, 4, 2}
 // the add method did nothing because 1 was already in the set
 System.out.println(set.contains(1));  // true
-set.remove(1);  // {4, 2}
+set.remove(1);                        // {4, 2}
 System.out.println(set.contains(5));  // false
 set.remove(0);  // does nothing because 0 wasn't in the set
 ```
@@ -164,13 +166,10 @@ set.add(4);  // {1, 4}
 set.add(2);  // {1, 2, 4}
 
 // Outputs 1, 2, and 4 on separate lines
-for (int element : set) {
-	System.out.println(element);
-}
+for (int element : set) { System.out.println(element); }
 ```
 
 </JavaSection>
-
 <PySection>
 
 Python's built-in `set` uses hashing to support $\mathcal{O}(1)$ insertion,
@@ -182,20 +181,19 @@ deletion, and searches. Some operations on a Python `set` named `s` include:
 
 ```py
 s = set()
-s.add(1) # {1}
-s.add(4) # {1, 4}
-s.add(2) # {1, 4, 2}
-s.add(1) # {1, 4, 2}
+s.add(1)  # {1}
+s.add(4)  # {1, 4}
+s.add(2)  # {1, 4, 2}
+s.add(1)  # {1, 4, 2}
 # the add method did nothing because 1 was already in the set
-print(1 in s) # True
-s.remove(1) # {4, 2}
-print(5 in s) # False
-s.remove(0) # {4, 2}
+print(1 in s)  # True
+s.remove(1)  # {4, 2}
+print(5 in s)  # False
+s.remove(0)  # {4, 2}
 # if the element to be removed does not exist, nothing happens
 ```
 
 </PySection>
-
 </LanguageSection>
 
 ### Solution - Distinct Numbers
@@ -223,7 +221,8 @@ int main() {
 
 	set<int> distinctNumbers;
 	for (int i = 0; i < n; i++) {
-		int number; cin >> number;
+		int number;
+		cin >> number;
 		distinctNumbers.insert(number);
 	}
 
@@ -232,7 +231,6 @@ int main() {
 ```
 
 </CPPSection>
-
 <JavaSection>
 
 ```java
@@ -246,9 +244,7 @@ public class DistinctNumbers {
 		Kattio io = new Kattio();
 		int n = io.nextInt();
 		Set<Integer> set = new HashSet<>();
-		for (int i = 0; i < n; i++) {
-			set.add(io.nextInt());
-		}
+		for (int i = 0; i < n; i++) { set.add(io.nextInt()); }
 		io.println(set.size());
 		io.close();
 	}
@@ -258,7 +254,6 @@ public class DistinctNumbers {
 ```
 
 </JavaSection>
-
 <PySection>
 
 ```py
@@ -277,8 +272,93 @@ distinct_nums = {int(x) for x in input().split()}
 print(len(distinct_nums))
 ```
 
-</PySection>
+<Warning>
 
+The solutions above do not receive full credit on CSES, because it is possible
+to construct test cases where Python `set`s and `dict`s are extremely slow.
+See [this CF post](https://codeforces.com/blog/entry/101817) for more information.
+
+<Spoiler title="Hack Case Generator">
+
+```py
+# source: https://foss.heptapod.net/pypy/pypy/-/issues/3725
+import time
+
+
+def anti_hash_hack(n: int, cpython: bool = False, for_set=False):
+	"""
+	Args:
+	    integer n > 0
+	    cpython: CPython or Pypy
+	    for_set: set or dict
+	Output: List A of length n
+	such that 1 <= A[i] <= 2**(n.bit_length() + 2) + 10
+	"""
+	pow2 = 2 ** (n.bit_length() + 2)
+
+	A = []
+
+	def add_all(x):
+		for i in range(10 if (cpython and for_set) else 1):
+			A.append(x + i)
+
+	add_all(pow2 + 1)
+	i = 6 if cpython else 7
+	while len(A) < n // 2:
+		assert i > 0
+		add_all(i)
+		i = (5 * i + 1) % pow2
+
+	while len(A) < n:
+		A.append(1)
+
+	return A
+
+
+N = 200000
+A = anti_hash_hack(N, False, False)
+
+# https://cses.fi/problemset/task/1640/
+print_test = False
+if print_test:
+	print(N, 1)
+	print(" ".join(str(x) for x in A))
+
+do_test = True
+if do_test:
+	print("Creating set:")
+	start = time.time()
+	set(A)
+	print("Done", time.time() - start)
+
+	print("Creating dict:")
+	start = time.time()
+	my_dict = {}
+	for i in range(N):
+		my_dict[A[i]] = i
+	print("Done", time.time() - start)
+```
+
+</Spoiler>
+
+
+To fix this, we can use `str`s as keys instead of `int`s:
+
+```py
+n = int(input())  # unused
+distinct_nums = set(input().split())
+print(len(distinct_nums))
+```
+
+</Warning>
+
+<Info title="Should I worry about anti-hash tests in USACO?">
+
+No - historically, no USACO problem has included an anti-hash test. However, these sorts of tests often appear in Codeforces, especially in educational rounds, where open hacking is allowed.
+
+</Info>
+
+</PySection>
 </LanguageSection>
 
 #### Method 2 - Sorting
@@ -330,15 +410,15 @@ Some operations on an `std::map` and `std::unordered_map` named `m` include:
 
 ```cpp
 map<int, int> m;
-m[1] = 5;  // [(1, 5)]
-m[3] = 14;  // [(1, 5); (3, 14)]
-m[2] = 7;  // [(1, 5); (2, 7); (3, 14)]
-m[0] = -1;  // [(0, -1); (1, 5); (2, 7); (3, 14)]
-m.erase(2);  // [(0, -1); (1, 5); (3, 14)]
-cout << m[1] << endl;  // 5
+m[1] = 5;                    // [(1, 5)]
+m[3] = 14;                   // [(1, 5); (3, 14)]
+m[2] = 7;                    // [(1, 5); (2, 7); (3, 14)]
+m[0] = -1;                   // [(0, -1); (1, 5); (2, 7); (3, 14)]
+m.erase(2);                  // [(0, -1); (1, 5); (3, 14)]
+cout << m[1] << endl;        // 5
 cout << m.count(7) << endl;  // 0
 cout << m.count(1) << endl;  // 1
-cout << m[2] << endl;  // 0
+cout << m[2] << endl;        // 0
 ```
 
 </CPPSection>
@@ -361,11 +441,11 @@ associated with the specified key.
 
 ```java
 Map<Integer, Integer> map = new TreeMap<Integer, Integer>();
-map.put(1, 5);  // [(1, 5)]
-map.put(3, 14);  // [(1, 5); (3, 14)]
-map.put(2, 7);  // [(1, 5); (2, 7); (3, 14)]
-map.remove(2);  // [(1, 5); (3, 14)]
-System.out.println(map.get(1));  // 5
+map.put(1, 5);                           // [(1, 5)]
+map.put(3, 14);                          // [(1, 5); (3, 14)]
+map.put(2, 7);                           // [(1, 5); (2, 7); (3, 14)]
+map.remove(2);                           // [(1, 5); (3, 14)]
+System.out.println(map.get(1));          // 5
 System.out.println(map.containsKey(7));  // false
 System.out.println(map.containsKey(1));  // true
 ```
@@ -395,27 +475,17 @@ print(1 in d)  # True
 ### Iterating Over Maps
 
 <LanguageSection>
-
 <CPPSection>
 
 An `std::map` stores entries as [pairs](/bronze/intro-ds#pairs--tuples) in the
-form `{key, value}`. To iterate over maps, you can use a `for` loop. The `auto`
-keyword suffices to iterate over any type of pair (here, `auto` substitutes for
-`pair<const int, int>`).
+form `{key, value}`. To iterate over maps, you can use a `for` loop.
+The `auto` keyword suffices to iterate over any type of pair
+(here, `auto` substitutes for `pair<int, int>`).
 
 ```cpp
-for (const auto& x : m) {
-	cout << x.first << " " << x.second << endl;
-}
-for (auto x : m) {
-	cout << x.first << " " << x.second << endl;
-}
-
-/* both output the following:
-0 -1
-1 5
-3 14
-*/
+// Both of these output the same thing
+for (const auto &x : m) { cout << x.first << " " << x.second << endl; }
+for (auto x : m) { cout << x.first << " " << x.second << endl; }
 ```
 
 The first method (iterating over const references) is generally preferred over
@@ -425,30 +495,18 @@ allowing you to modify the values (but not the keys) of the pairs stored in the
 map:
 
 ```cpp
-for (auto& x : m) {
-	x.second = 3;
+for (auto &x : m) {
+	x.second = 1234;  // Change all values to 1234
 }
-for (pair<int,int> x : m) {
-	cout << x.first << " " << x.second << endl;
-}
-
-/*
-0 3
-1 3
-3 3
-*/
 ```
 
 </CPPSection>
-
 <JavaSection>
 
 To iterate over maps, you can use a for-each loop over the keys:
 
 ```java
-for (int k : m.keySet()) {
-	System.out.println(k + " " + m.get(k));
-}
+for (int k : m.keySet()) { System.out.println(k + " " + m.get(k)); }
 ```
 
 You can also use a for-each loop over the entries:
@@ -459,13 +517,21 @@ for (Map.Entry entry : m.entrySet()) {
 }
 ```
 
-</JavaSection>
+It's also possible to change the values while iterating over the keys
+(or over the values themselves, if they're mutable):
 
+```java
+for (int k : m.keySet()) {
+	m.put(k, 1234);  // Change all values to 1234
+}
+```
+
+</JavaSection>
 <PySection>
 
-To iterate over `dict`s, there are three options. Dicts will be returned in the
-same order of insertion in
-[Python 3.6+](https://stackoverflow.com/questions/39980323/are-dictionaries-ordered-in-python-3-6).
+To iterate over `dict`s, there are three options, all of which involve for loops.
+Dicts will be returned in the same order of insertion in
+[Python 3.6+](https://stackoverflow.com/questions/39980323).
 You can iterate over the keys:
 
 ```py
@@ -473,22 +539,29 @@ for key in d:
 	print(key)
 ```
 
-You can iterate over the values:
+Over the values:
 
 ```py
 for value in d.values():
 	print(value)
 ```
 
-You can iterate over the key-value pairs:
+And even over key-value pairs:
 
 ```py
 for key, value in d.items():
 	print(key, value)
 ```
 
-</PySection>
+It's also possible to change the values while iterating over the keys
+(or over the values themselves, if they're mutable):
 
+```py
+for key in d:
+	d[key] = 1234  # Change all values to 1234
+```
+
+</PySection>
 </LanguageSection>
 
 While you are free to change the _values_ in a map when iterating over it (as
@@ -550,8 +623,7 @@ results in a segmentation fault.
 ```cpp
 map<int, int> m;
 
-for (int i = 0; i < 10; ++i)
-	m[i] = i;
+for (int i = 0; i < 10; ++i) m[i] = i;
 
 for (auto &it : m) {
 	cout << "Current Key: " << it.first << endl;
@@ -571,16 +643,13 @@ the old one.
 ```cpp
 map<int, int> m, M;
 
-for (int i = 0; i < 10; ++i)
-	m[i] = i;
+for (int i = 0; i < 10; ++i) m[i] = i;
 
 int current_iteration = 0;
 
 for (const auto &it : m) {
 	// only includes every third element
-	if (current_iteration % 3 == 0) {
-		M[it.first] = it.second;
-	}
+	if (current_iteration % 3 == 0) { M[it.first] = it.second; }
 
 	current_iteration++;
 }
@@ -588,9 +657,7 @@ for (const auto &it : m) {
 swap(m, M);
 
 cout << "Entries:" << endl;
-for (const auto &it : m) {
-	cout << it.first << " " << it.second << endl;
-}
+for (const auto &it : m) { cout << it.first << " " << it.second << endl; }
 /*
  * Entries:
  * 0 0
@@ -605,30 +672,22 @@ after the iteration finishes.
 
 ```cpp
 map<int, int> m;
-for (int i = 0; i < 10; ++i) {
-	m[i] = i;
-}
+for (int i = 0; i < 10; ++i) { m[i] = i; }
 
 vector<int> to_erase;
 int current_iteration = 0;
 
 for (const auto &it : m) {
 	// removes every third element
-	if (current_iteration % 3 == 0) {
-		to_erase.push_back(it.first);
-	}
+	if (current_iteration % 3 == 0) { to_erase.push_back(it.first); }
 
 	current_iteration++;
 }
 
-for (int key : to_erase) {
-	m.erase(key);
-}
+for (int key : to_erase) { m.erase(key); }
 
 cout << "Remaining entries:" << endl;
-for (const auto &it : m) {
-	cout << it.first << " " << it.second << endl;
-}
+for (const auto &it : m) { cout << it.first << " " << it.second << endl; }
 
 /*
  * Remaining entries:
@@ -653,7 +712,9 @@ See the following snippet for an example:
 ```java
 Map<Integer, Integer> m = new TreeMap<>();
 // m starts as {0: 0, 1: 1, 2: 2}
-m.put(0, 0); m.put(1, 1); m.put(2, 2);
+m.put(0, 0);
+m.put(1, 1);
+m.put(2, 2);
 
 for (int key : m.keySet()) {
 	m.remove(key);  // ConcurrentModificationException thrown!!
@@ -666,14 +727,14 @@ elements while looping over them, like in the next code snippet:
 ```java
 Map<Integer, Integer> m = new TreeMap<>();
 // m starts as {0: 0, 1: 1, 2: 2}
-m.put(0, 0); m.put(1, 1); m.put(2, 2);
+m.put(0, 0);
+m.put(1, 1);
+m.put(2, 2);
 
 Iterator<Map.Entry<Integer, Integer>> iter = m.entrySet().iterator();
 while (iter.hasNext()) {
 	int key = iter.next().getKey();
-	if (key == 0 || key == 2) {
-		iter.remove();
-	}
+	if (key == 0 || key == 2) { iter.remove(); }
 }
 
 // m ends as {1: 1}
@@ -696,14 +757,14 @@ to the code above):
 ```java
 Map<Integer, Integer> m = new TreeMap<>();
 // m starts as {0: 0, 1: 1, 2: 2}
-m.put(0, 0); m.put(1, 1); m.put(2, 2);
+m.put(0, 0);
+m.put(1, 1);
+m.put(2, 2);
 
 Set<Integer> keysToRemove = new TreeSet<>();
 for (Map.Entry<Integer, Integer> entry : m.entrySet()) {
 	int key = entry.getKey();
-	if (key == 0 || key == 2) {
-		keysToRemove.add(key);
-	}
+	if (key == 0 || key == 2) { keysToRemove.add(key); }
 }
 
 // removes all entries with key in keysToRemove
@@ -1165,4 +1226,222 @@ make their implementation easier.
 
 </Quiz>
 </JavaSection>
+
+
+<PySection>
+
+<Quiz>
+	<Quiz.Question>
+		What is the time complexity of insertions, deletions, and searches in a sorted set of size $N$?
+		<Quiz.Answer>
+			$\mathcal{O}(1)$
+		</Quiz.Answer>
+		<Quiz.Answer>
+			$\mathcal{O}(N \log N)$
+		</Quiz.Answer>
+		<Quiz.Answer>
+			$\mathcal{O}(N)$
+		</Quiz.Answer>
+		<Quiz.Answer correct>
+			$\mathcal{O}(\log N)$
+			<Quiz.Explanation>
+				Correct.
+			</Quiz.Explanation>
+		</Quiz.Answer>
+	</Quiz.Question>
+	<Quiz.Question>
+		Which of the following is the correct output of this code?
+		```py
+		s = set()
+		s.add(1)
+		s.add(4)
+		s.add(5)
+		s.add(2)
+		print(3 in s)
+		```
+		<Quiz.Answer>
+			$1$
+			<Quiz.Explanation>
+				Incorrect. The output is a `bool`.
+			</Quiz.Explanation>
+		</Quiz.Answer>
+		<Quiz.Answer correct>
+			False
+			<Quiz.Explanation>
+				Correct. $3$ isn't present in `s`.
+			</Quiz.Explanation>
+		</Quiz.Answer>
+		<Quiz.Answer>
+			True
+			<Quiz.Explanation>
+				Incorrect. $3$ isn't present in `s`.
+			</Quiz.Explanation>
+		</Quiz.Answer>
+		<Quiz.Answer>
+			$0$
+			<Quiz.Explanation>
+				Incorrect. The output is a `bool`.
+			</Quiz.Explanation>
+		</Quiz.Answer>
+
+    </Quiz.Question>
+    <Quiz.Question>
+    	Which of the following is the correct output of this code?
+    	```py
+    	s = {4, 1, 2, 1, 3, 2, 3, 1, 3, 1}
+    	print(len(s))
+    	```
+    	<Quiz.Answer>
+    		$1$
+    		<Quiz.Explanation>
+
+    		</Quiz.Explanation>
+    	</Quiz.Answer>
+    	<Quiz.Answer correct>
+    		$4$
+    		<Quiz.Explanation>
+    			Correct. There are $4$ unique elements in `s`.
+    		</Quiz.Explanation>
+    	</Quiz.Answer>
+    	<Quiz.Answer>
+    		$7$
+    		<Quiz.Explanation>
+
+    		</Quiz.Explanation>
+    	</Quiz.Answer>
+    	<Quiz.Answer>
+    		$10$
+    		<Quiz.Explanation>
+    			Sets only store unique elements.
+    		</Quiz.Explanation>
+    	</Quiz.Answer>
+
+    </Quiz.Question>
+    <Quiz.Question>
+    	What is the time complexity of insertions, deletions, and searches in an unordered map of size $N$?
+    	<Quiz.Answer correct>
+    		$\mathcal{O}(1)$
+    		<Quiz.Explanation>
+    			Correct.
+    		</Quiz.Explanation>
+    	</Quiz.Answer>
+    	<Quiz.Answer>
+    		$\mathcal{O}(N)$
+    	</Quiz.Answer>
+    	<Quiz.Answer>
+    		$\mathcal{O}(N \log N)$
+    	</Quiz.Answer>
+    	<Quiz.Answer>
+    		$\mathcal{O}(\log N)$
+    	</Quiz.Answer>
+    </Quiz.Question>
+    <Quiz.Question>
+    	Which of the following is the correct output of this code?
+    	```py
+    	m = {1: 5, 2: 9, 3: 7, 4: 3}
+    	print(m[2])
+    	```
+    	<Quiz.Answer>
+    		$5$
+    		<Quiz.Explanation>
+
+    		</Quiz.Explanation>
+    	</Quiz.Answer>
+    	<Quiz.Answer correct>
+    		$9$
+    		<Quiz.Explanation>
+    			Correct. The value associated with the key $2$ is $9$.
+    		</Quiz.Explanation>
+    	</Quiz.Answer>
+    	<Quiz.Answer>
+    		$2$
+    		<Quiz.Explanation>
+
+    		</Quiz.Explanation>
+    	</Quiz.Answer>
+    	<Quiz.Answer>
+    		$0$
+    		<Quiz.Explanation>
+
+    		</Quiz.Explanation>
+    	</Quiz.Answer>
+
+    </Quiz.Question>
+    <Quiz.Question>
+    	Which of the following is the correct output of this code?
+    	```py
+    	m = dict()
+    	m[1] = 5
+    	m[2] = 9
+    	m[3] = 7
+    	m[4] = 3
+    	del m[2]
+    	print(m[2])
+    	```
+    	<Quiz.Answer correct>
+    		`KeyError: 2`
+    		<Quiz.Explanation>
+    			Correct. $2$ is no longer associated with a value.
+    		</Quiz.Explanation>
+    	</Quiz.Answer>
+    	<Quiz.Answer>
+    		$9$
+    		<Quiz.Explanation>
+ 		   $m[2]$ is erased, so $m[2]$ is no longer $9$.
+    		</Quiz.Explanation>
+    	</Quiz.Answer>
+    	<Quiz.Answer>
+    		$0$
+    		<Quiz.Explanation>
+    			Python dictionaries don't have default values. However, [defaultdicts](https://docs.python.org/3/library/collections.html#collections.defaultdict) do!
+    		</Quiz.Explanation>
+    	</Quiz.Answer>
+    	<Quiz.Answer>
+    		$2$
+    		<Quiz.Explanation>
+
+    		</Quiz.Explanation>
+    	</Quiz.Answer>
+
+    </Quiz.Question>
+    <Quiz.Question>
+    	Which of the following is the correct output of this code?
+    	```py
+    	m = dict()
+    	m[0] = 1
+    	m[2] = 5
+    	m[3] = 18
+    	m[2] = 3
+    	m[4] = 14
+    	print(m[2])
+    	```
+    	<Quiz.Answer>
+    		$1$
+    		<Quiz.Explanation>
+
+    		</Quiz.Explanation>
+    	</Quiz.Answer>
+    	<Quiz.Answer correct>
+    		$3$
+    		<Quiz.Explanation>
+    			Correct. `m[2]` is changed from $5$ to $3$.
+    		</Quiz.Explanation>
+    	</Quiz.Answer>
+    	<Quiz.Answer>
+    		$5$
+    		<Quiz.Explanation>
+    			While `m[2]` *is* set to $5$ at first, it's changed later on.
+    		</Quiz.Explanation>
+    	</Quiz.Answer>
+    	<Quiz.Answer>
+    		$-1$
+    		<Quiz.Explanation>
+
+    		</Quiz.Explanation>
+    	</Quiz.Answer>
+
+    </Quiz.Question>
+
+</Quiz>
+</PySection>
 </LanguageSection>

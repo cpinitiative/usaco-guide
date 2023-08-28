@@ -1,0 +1,342 @@
+---
+id: cses-1081
+source: CSES
+title: Common Divisor
+author: Andrew Wang, Andi Qu
+---
+
+## Solution 1
+
+The naive approach would be to brute-force each pair of numbers in the array and
+calculate the maximum GCD. Sadly, this solution gets TLE on around half of the
+test cases.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N^2\log(\max(x_i)))$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+using namespace std;
+
+const int MAX_N = 2e5;
+
+int arr[MAX_N];
+
+int gcd(int a, int b) { return b == 0 ? a : gcd(b, a % b); }
+
+int main() {
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
+
+	int n;
+	cin >> n;
+	for (int i = 0; i < n; i++) { cin >> arr[i]; }
+
+	int ans = 1;
+	for (int i = 0; i < n - 1; i++) {
+		for (int j = i + 1; j < n; j++) { ans = max(ans, gcd(arr[i], arr[j])); }
+	}
+	cout << ans << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class CommonDivisors {
+	public static int gcd(int a, int b) { return b == 0 ? a : gcd(b, a % b); }
+
+	public static void main(String[] args)
+	    throws NumberFormatException, IOException {
+		BufferedReader io =
+		    new BufferedReader(new InputStreamReader(System.in));
+		int n = Integer.parseInt(io.readLine());
+		int[] arr = Arrays.stream(io.readLine().split(" "))
+		                .mapToInt(Integer::parseInt)
+		                .toArray();
+		int ans = 1;
+		for (int i = 0; i < n - 1; i++) {
+			for (int j = i + 1; j < n; j++) {
+				ans = Math.max(ans, gcd(arr[i], arr[j]));
+			}
+		}
+		System.out.println(ans);
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+```py
+from math import gcd
+
+n = int(input())
+
+arr = list(map(int, input().split()))
+
+ans = 1
+for i in range(n - 1):
+	for j in range(i + 1, n):
+		ans = max(ans, gcd(arr[i], arr[j]))
+
+print(ans)
+```
+
+</PySection>
+</LanguageSection>
+
+## Solution 2
+
+Maintain an array, $\texttt{cnt}$, to store the count of divisors. For each
+value in the array, find its divisors and for each $u$ in those divisors,
+increment $\texttt{cnt}$ by one. The greatest GCD shared by two elements in the
+array will be the greatest index in our stored count for divisors with a count
+greater than or equal to $2$.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N\sqrt{\max(x_i)})$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <cmath>
+#include <iostream>
+using namespace std;
+
+const int MAX_VAL = 1e6;
+
+// divisors[i] = stores the count of numbers that have i as a divisor
+int divisors[MAX_VAL + 1];
+
+int main() {
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
+
+	int n;
+	cin >> n;
+	for (int i = 0; i < n; i++) {
+		int a;
+		cin >> a;
+
+		const int up = (int)sqrt(a);
+		for (int div = 1; div <= up; div++) {
+			if (a % div == 0) {
+				// the divisor and quotient are both divisors of a
+				divisors[div]++;
+				// make sure not to double count!
+				if (div != a / div) { divisors[a / div]++; }
+			}
+		}
+	}
+
+	for (int i = MAX_VAL; i >= 1; i--) {
+		if (divisors[i] >= 2) {
+			cout << i << endl;
+			break;
+		}
+	}
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+<Warning>
+Due to the tight time limit, the following Java solution still receives TLE on a few of the test cases.
+</Warning>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class CommonDivisors {
+	public static final int MAX_VAL = 1000000;
+
+	// divisors[i] = stores the count of numbers that have i as a divisor
+	public static int[] divisors = new int[MAX_VAL + 1];
+
+	public static void main(String[] args)
+	    throws NumberFormatException, IOException {
+		BufferedReader io =
+		    new BufferedReader(new InputStreamReader(System.in));
+		int n = Integer.parseInt(io.readLine());
+		int[] arr = Arrays.stream(io.readLine().split(" "))
+		                .mapToInt(Integer::parseInt)
+		                .toArray();
+		for (int i = 0; i < n; i++) {
+			int up = (int)Math.sqrt(arr[i]);
+			for (int div = 1; div <= up; div++) {
+				if (arr[i] % div == 0) {
+					// the divisor and quotient are both divisors of a
+					divisors[div]++;
+					// make sure not to double count!
+					if (div != arr[i] / div) { divisors[arr[i] / div]++; }
+				}
+			}
+		}
+
+		for (int i = MAX_VAL; i >= 1; i--) {
+			if (divisors[i] >= 2) {
+				System.out.println(i);
+				break;
+			}
+		}
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+<Warning>
+Due to the tight time limit, the following Python solution still receives TLE on about half the test cases.
+</Warning>
+
+```py
+from math import sqrt
+
+MAX_VAL = 1000000
+divisors = [0] * (MAX_VAL + 1)
+
+n = int(input())
+a = list(map(int, input().split()))
+for i in range(n):
+	up = int(sqrt(a[i]))
+	for div in range(1, up + 1):
+		if a[i] % div == 0:
+			# the divisor and quotient are both divisors of a
+			divisors[div] += 1
+			# make sure not to double count!
+			if div != a[i] // div:
+				divisors[a[i] // div] += 1
+
+for i in range(MAX_VAL, 0, -1):
+	if divisors[i] >= 2:
+		print(i)
+		break
+```
+
+</PySection>
+</LanguageSection>
+
+## Solution 3
+
+Given a value, $x$, we can check whether a pair has a GCD equal to $x$ by
+checking all the multiples of $x$. With that information, loop through all
+possible values of $x$ and check if it is a divisor to two or more values. This
+works in $\mathcal{O}(\max(x_i)\log(\max(x_i)))$ since
+
+$$
+\sum_{i = 1}^{\max(x_i)} \max(x_i)/i \approx \max(x_i)\log(\max(x_i)).
+$$
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(\max(x_i)\log(\max(x_i)))$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MAX_VAL = 1e6;
+
+// occ_num[i] contains the number of times i occurs in the array
+vector<int> occ_num(MAX_VAL + 1);
+
+int main() {
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
+
+	int n;
+	cin >> n;
+	for (int i = 0; i < n; i++) {
+		int x;
+		cin >> x;
+		occ_num[x]++;
+	}
+
+	// go through all possible gcd's
+	for (int gcd = MAX_VAL; gcd > 0; gcd--) {
+		// see how many numbers of the array have this number as a divisor
+		int div = 0;
+		for (int j = gcd; j <= MAX_VAL; j += gcd) { div += occ_num[j]; }
+		if (div >= 2) {
+			cout << gcd << endl;
+			break;
+		}
+	}
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class CommonDivisors {
+	public static final int MAXX = 1000000;
+
+	public static void main(String[] args)
+	    throws NumberFormatException, IOException {
+		BufferedReader io =
+		    new BufferedReader(new InputStreamReader(System.in));
+		int n = Integer.parseInt(io.readLine());
+		int[] arr = Arrays.stream(io.readLine().split(" "))
+		                .mapToInt(Integer::parseInt)
+		                .toArray();
+
+		int[] p = new int[MAXX + 1];
+		Arrays.fill(p, 0);
+
+		for (int i = 0; i < n; i++) { p[arr[i]]++; }
+
+		for (int i = MAXX; i >= 1; i--) {
+			int div = 0;
+			for (int j = i; j <= MAXX; j += i) { div += p[j]; }
+			if (div >= 2) {
+				System.out.println(i);
+				break;
+			}
+		}
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+MAXX = int(1e6 + 5)
+n = int(input())
+arr = list(map(int, input().split()))
+p = [0] * MAXX
+
+for i in range(n):
+	p[arr[i]] += 1
+
+for i in range(MAXX, 0, -1):
+	div = 0
+	for j in range(i, MAXX, i):
+		div += p[j]
+	if div >= 2:
+		print(i)
+		break
+```
+
+</PySection>
+</LanguageSection>

@@ -1,0 +1,223 @@
+---
+id: cf-814C
+source: CF
+title: An impassioned circulation of affection
+author: Neo Wang, Qi Wang, Jesse Choe, Kevin Sheng
+---
+
+[Official Editorial](https://codeforces.com/blog/entry/52449)
+
+## Solution (Two Pointers)
+
+**Time Complexity:** $\mathcal{O}(nq)$
+
+For each query we can keep a sliding window where no more than $m$ letters in
+the window are not $c$.
+
+### Implementation
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	int garland_len, query_num;
+	string garland;
+	cin >> garland_len >> garland >> query_num;
+
+	for (int i = 0; i < query_num; i++) {
+		int max_repaint;
+		char color;
+		cin >> max_repaint >> color;
+
+		int l = 0;
+		int r = 0;
+		int koyomity = 0;
+		while (l < garland_len && r < garland_len) {
+			while (r < garland_len) {
+				if (garland[r] != color) {
+					if (max_repaint == 0) break;
+					max_repaint--;
+				}
+				r++;
+			}
+			koyomity = max(koyomity, r - l);
+			max_repaint += garland[l++] != color;
+		}
+		cout << koyomity << endl;
+	}
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
+
+## Alternative Solution (Two Pointers with Prefix Sums)
+
+**Time Complexity:** $\mathcal{O}(n(k+q))$
+
+For each query we can use prefix sums to check the number of occurrences of a
+given letter $c$ and use two pointers to find the maximum Koyomity ending at a
+given pointer $p2$ from $0 \dots n$.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MAX_N = 1500;
+
+int dp[26][MAX_N + 1];
+
+int main() {
+	int garland_len;
+	string garland;
+	cin >> garland_len >> garland;
+	for (int i = 1; i <= garland_len; i++) {
+		int color = garland[i - 1] - 'a';
+		dp[color][i]++;
+	}
+
+	for (int i = 0; i < 26; i++) {
+		for (int j = 1; j <= garland_len; j++) {
+			dp[i][j] = dp[i][j - 1] + dp[i][j];
+		}
+	}
+
+	int query_num;
+	cin >> query_num;
+	for (int i = 0; i < query_num; i++) {
+		int max_repaint;
+		char color;
+		cin >> max_repaint >> color;
+		color -= 'a';
+
+		int l = 1, r = 1, koyomity = 1;
+		while (r <= garland_len) {
+			int c_count = dp[color][r] - dp[color][l - 1] + max_repaint;
+			if (c_count < r - l + 1) {
+				l++;
+			} else {
+				koyomity = max(koyomity, r - l + 1);
+				r++;
+			}
+		}
+		cout << koyomity << endl;
+	}
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
+
+## Alternative Solution (Dynamic Programming)
+
+<Warning>
+
+Dynamic programming is a [Gold](/gold/intro-dp) topic.
+
+</Warning>
+
+**Time Complexity:** $\mathcal{O}(n^2k + q)$
+
+We are performing up to $200\,000$ queries, so it may be optimal to have some
+way to quickly precompute our answer in constant time.
+
+We can use dynamic programming to cache such answers.
+
+Define $\texttt{dp}[i][j][k]$ to be the best possible score of the first $i$
+characters, with $j$ amount painted of character $k$. Either two things can
+happen when we add an additional character.
+
+1. We append the character and paint an additional square.
+
+   $$
+   \texttt{dp}[i+1][j+1][k] = \max(\texttt{dp}[i+1][j+1][k], \texttt{dp}[i][j][k] + 1)
+   $$
+
+2. We append the character, but since it is the same as our previous character
+   we get to "save" a paint.
+   $$
+   \texttt{dp}[i+1][j][k] = \max(\texttt{dp}[i+1][j][k], \texttt{dp}[i][j][k] + 1)
+   $$
+
+Since this only gives us the best possible score that ends with length $i$, we
+can just take the current best and translate it using
+$\texttt{dp}[i+1][j][k] = \max(\texttt{dp}[i+1][j][k], \texttt{dp}[i][j][k])$.
+
+Now, we can query the max painting score for any substring containing the first
+character. However, this is not required; we only have to query the optimal
+paintings with size $n$ (the full string) with $\texttt{dp}[n][m_i][c_i]$.
+
+### Implementation
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MAX_N = 1500;
+
+int dp[MAX_N + 1][MAX_N + 1][26];
+int garland[MAX_N + 1];
+
+int main() {
+	int garland_len;
+	cin >> garland_len;
+	for (int i = 0; i < garland_len; i++) {
+		char a;
+		cin >> a;
+		garland[i] = (int)(a - 'a');
+	}
+
+	// i = length of string
+	// j = amount painting
+	// k = character
+	for (int k = 0; k < 26; k++) {  // lower case characters
+		for (int i = 0; i < garland_len; i++) {
+			for (int j = 0; j < garland_len; j++) {
+				// appending a character
+				dp[i + 1][j + 1][k] = max(dp[i + 1][j + 1][k], dp[i][j][k] + 1);
+				// if we can "save"
+				if (garland[i] == k)
+					dp[i + 1][j][k] = max(dp[i + 1][j][k], dp[i][j][k] + 1);
+			}
+		}
+	}
+
+	// take the current best and translate it
+	for (int k = 0; k < 26; k++) {
+		for (int i = 0; i < garland_len; i++) {
+			for (int j = 0; j < garland_len; j++) {
+				dp[i + 1][j][k] = max(dp[i + 1][j][k], dp[i][j][k]);
+			}
+		}
+	}
+
+	int query_num;
+	cin >> query_num;
+	for (int i = 0; i < query_num; i++) {
+		int max_repaint;
+		char color;
+		cin >> max_repaint >> color;
+		color -= 'a';
+		cout << dp[garland_len][max_repaint][(int)color] << '\n';
+	}
+}
+```
+
+</CPPSection>
+
+</LanguageSection>

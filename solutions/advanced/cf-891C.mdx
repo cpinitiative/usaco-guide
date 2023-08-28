@@ -1,0 +1,141 @@
+---
+id: cf-891C
+source: CF
+title: Envy
+author: Chongtian Ma
+---
+
+[Official Analysis](https://codeforces.com/blog/entry/55841)
+
+## Explanation
+
+We can solve this using some MST intuition. In Kruskal's algorithm, we are to sort the edges by non-decreasing weight and unite vertices if they are not already in the same component. Here, we can check every query using this algorithm by processing each edge of each query offline.
+
+As we consider edges from non-decreasing weight, we can keep track of a partially-built MST. An edge can only be in a MST if we processed all edges that have weights less than this edge, and we are able to unite the endpoints of the edge. This is because edges that have the same weight are arbitrary, so if we prioritize considering this edge then another MST with the same total weight is constructed.
+
+We process all edges in non-decreasing weight, and for each query, unite the endpoint of all the edges that have this weight. If any edge does not satisfy the condition, the whole query fails.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(q \log n + m + q)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MAXN = 5e5 + 1;  // use indexing starting from 1
+vector<int> edge_by_weight[MAXN];
+// query_by_weight[weight][index of query] = {index of edges}
+map<int, vector<int>> query_by_weight[MAXN];
+
+struct DSU {
+	vector<int> p, sz;
+	// stores previous unites
+	vector<pair<int &, int>> psnap, szsnap;
+
+	DSU(int n) {
+		p.resize(n);
+		sz.resize(n, 1);
+		iota(p.begin(), p.end(), 0);
+	}
+
+	int get(int x) { return x == p[x] ? x : get(p[x]); }
+
+	void unite(int a, int b) {
+		a = get(a);
+		b = get(b);
+		if (sz[a] < sz[b]) { swap(a, b); }
+		if (a != b) {
+			// save this unite operation
+			szsnap.push_back({sz[a], sz[a]});
+			psnap.push_back({p[b], p[b]});
+
+			p[b] = a;
+			sz[a] += sz[b];
+		}
+	}
+
+	bool sameset(int a, int b) { return get(a) == get(b); }
+
+	int current() { return psnap.size(); }
+
+	void rollback(int until) {
+		while (szsnap.size() > until) {
+			szsnap.back().first = szsnap.back().second;
+			szsnap.pop_back();
+			psnap.back().first = psnap.back().second;
+			psnap.pop_back();
+		}
+	}
+};
+
+struct Edge {
+	int u, v, w;
+};
+
+int main() {
+	cin.tie(0)->sync_with_stdio(0);
+	int n, m;
+	cin >> n >> m;
+	vector<Edge> edges;
+	for (int i = 0; i < m; i++) {
+		int u, v, w;
+		cin >> u >> v >> w;
+		--u;
+		--v;
+		edges.push_back({u, v, w});
+		edge_by_weight[w].push_back(i);
+	}
+
+	int q;
+	cin >> q;
+	vector<bool> ans(q, true);
+	for (int i = 0; i < q; i++) {
+		int k;
+		cin >> k;
+		for (int j = 0; j < k; j++) {
+			int x;
+			cin >> x;
+			x--;
+			query_by_weight[edges[x].w][i].push_back(x);
+		}
+	}
+
+	DSU dsu(n);
+	for (int weight = 1; weight < MAXN; weight++) {
+		for (auto &query : query_by_weight[weight]) {
+			int index = query.first;
+			int snapshot = dsu.current();
+			// try merging each these edges with same weight
+			for (int edge : query.second) {
+				if (dsu.sameset(edges[edge].u, edges[edge].v)) {
+					/*
+					 * the vertices have already been in the partial MST
+					 * so this query is invalidated
+					 */
+					ans[index] = false;
+				}
+				dsu.unite(edges[edge].u, edges[edge].v);
+			}
+			// revert all merges to prepare for next query
+			dsu.rollback(snapshot);
+		}
+
+		/*
+		 * now that all queries have been processed,
+		 * keep building the partial MST with these edges
+		 */
+		for (int edge : edge_by_weight[weight]) {
+			dsu.unite(edges[edge].u, edges[edge].v);
+		}
+	}
+
+	for (int i = 0; i < q; i++) { cout << (ans[i] ? "YES" : "NO") << "\n"; }
+}
+```
+
+</CPPSection>
+</LanguageSection>

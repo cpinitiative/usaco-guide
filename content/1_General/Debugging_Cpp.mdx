@@ -1,0 +1,729 @@
+---
+id: debugging-cpp
+title: Debugging C++
+author: Benjamin Qi, Aryansh Shrivastava
+description: 'Debugging tips specific to C++.'
+prerequisites:
+  - basic-debugging
+---
+
+## Checking for Out of Bounds
+
+Writing to an out of bounds array index is known as
+[buffer overflow](https://en.wikipedia.org/wiki/Buffer_overflow). C++ may or
+may not produce a runtime error upon buffer overflow. For example,
+the following code results in a runtime error on
+[ide.usaco.guide](https://ide.usaco.guide), but outputs 4 on my computer.
+
+```cpp
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int main() {
+	vector<int> invalid_vec{1};
+	vector<int> valid_vec{1234};
+	cout << valid_vec[0] << "\n";  // outputs 1234
+	for (int i = 0; i < 10; i++) {
+		invalid_vec[i] = i;  // may or may not error
+	}
+	cout << valid_vec[0] << "\n";  // may output 4
+}
+```
+
+To ensure that an error is raised when accessing an out of bounds index,
+you can use
+[vector::at](https://www.cplusplus.com/reference/vector/vector/at) instead of
+[vector::operator[]](https://www.cplusplus.com/reference/vector/vector/operator[])
+like so:
+
+```cpp
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int main() {
+	vector<int> invalid_vec{1};
+	vector<int> valid_vec{1234};
+	cout << valid_vec.at(0) << "\n";  // outputs 1234
+	for (int i = 0; i < 10; i++) {
+		invalid_vec.at(i) = i;  // throws std::out_of_range
+	}
+	cout << valid_vec.at(0) << "\n";
+}
+```
+
+C++ will now check the bounds when we access the vectors and will
+produce the following output:
+
+```
+1234
+terminate called after throwing an instance of 'std::out_of_range'
+  what():  vector::_M_range_check: __n (which is 1) >= this->size() (which is 1)
+1 zsh: abort      ./$1 $@[2,-1]
+```
+
+<Info title="Line Numbers">
+
+Note that the output above does not contain the line number where the runtime
+error occurred. To output the line number, you can use a debugger such as `gdb`
+or `lldb`. See the section on [debuggers](#using-the-lldb-debugger) for more information.
+
+</Info>
+
+## Unspecified Evaluation Order
+
+Here is some unexpected behavior you might come across when trying to create a
+[trie](https://codeforces.com/blog/entry/83241#comment-705458) or a persistent
+segment tree.
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+vector<int> res{-1};
+
+int add_element() {
+	res.push_back(-1);
+	return res.size() - 1;  // index of added element
+}
+
+int main() {
+	for (int i = 0; i < 5; ++i) {
+		res[i] = add_element();
+		cout << i << " " << res[i] << "\n";
+	}
+}
+```
+
+Compiling and running the above code with `-std=c++17` gives the intended output:
+
+```
+0 1
+1 2
+2 3
+3 4
+4 5
+```
+
+But compiling and running with `-std=c++14` gives something unexpected:
+
+```
+0 -1
+1 -1
+2 3
+3 -1
+4 5
+```
+
+For both `-std=c++17` and `-std=c++14`, the intended output is produced
+if the result of `add_element()` is saved to a temporary variable.
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+vector<int> res{-1};
+
+int add_element() {
+	res.push_back(-1);
+	return res.size() - 1;  // index of added element
+}
+
+int main() {
+	for (int i = 0; i < 10; ++i) {
+		int tmp = add_element();
+		res[i] = tmp;
+		cout << i << " " << res[i] << "\n";
+	}
+}
+```
+
+<!-- See [this](https://codeforces.com/blog/entry/83241) CF blog post and  -->
+
+The problem is that `res[i] = add_element();` only works if `add_element()` is
+evaluated before `res[i]` is. If `res[i]` is evaluated first, and _then_
+`add_element()` results in the memory for `res` being reallocated, then `res[i]`
+is invalidated. The order in which `res[i]` and `add_element()` are evaluated is
+unspecified (at least before C++17).
+
+See
+[this](https://stackoverflow.com/questions/38501587/what-are-the-evaluation-order-guarantees-introduced-by-c17#:~:text=In%20C%2B%2B17%2C%20it,of%20the%20object%20is%20evaluated)
+StackOverflow post for some discussion about why this is the case
+([here](https://stackoverflow.com/questions/18040037)'s a similar issue).
+
+## GCC Warning Options
+
+In this section and the following one we'll go over options you can add to your
+`g++` compile command to aid in debugging.
+
+<Resources>
+	<Resource
+		source="CF"
+		title="andreyv - Catching Silly Mistakes with GCC"
+		url="https://codeforces.com/blog/entry/15547"
+		starred
+	>
+		Includes all the options below.
+	</Resource>
+  <Resource
+    source="GCC"
+    title="GCC Warning Options"
+    url="https://web.archive.org/web/20221101061037/https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html"
+  >
+    Official documentation for the options below.
+  </Resource>
+</Resources>
+
+Here are the warning options that Ben uses:
+
+```
+-Wall -Wextra -Wshadow -Wconversion -Wfloat-equal -Wduplicated-cond -Wlogical-op
+```
+
+We give examples for some of these below.
+
+<Info title="For Users of USACO Guide IDE">
+
+You can customize your compilation options in
+[ide.usaco.guide](https://ide.usaco.guide/).
+
+</Info>
+
+<Info title="Compilation Options Used by Top Competitive Programmers">
+
+You can check which options
+[Errichto](https://codeforces.com/blog/entry/64993) and
+[ecnerwala](https://gist.github.com/ecnerwala/a3c6332ac626bc448165) use.
+
+</Info>
+
+### `-Wall`
+
+Enables many (but not all) warning options, including `-Wuninitialized` and
+`-Wunused-variable`.
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	int x;
+	cout << x;
+}
+```
+
+Compile Output:
+
+```
+main.cpp: In function ‘int main()’:
+main.cpp:6:10: warning: ‘x’ is used uninitialized in this function [-Wuninitialized]
+    6 |  cout << x;
+      |          ^
+```
+
+### `-Wextra`
+
+Enables some warning options not enabled by `-Wall`, such as
+`-Wmissing-field-initializers`.
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+struct s {
+	int f, g, h;
+};
+
+int main() { s x = {3, 4}; }
+```
+
+Compile Output:
+
+```
+main.cpp: In function ‘int main()’:
+main.cpp:7:18: warning: missing initializer for member ‘s::h’ [-Wmissing-field-initializers]
+    7 |     s x = { 3, 4 };
+      |                  ^
+```
+
+### `-Wconversion`
+
+Warns for implicit conversions that may alter a value.
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	double x = 5.5;
+	int y = x;
+	cout << y;
+}
+```
+
+Compile Output:
+
+```
+main.cpp: In function ‘int main()’:
+main.cpp:6:13: warning: conversion from ‘double’ to ‘int’ may change value [-Wfloat-conversion]
+    6 |     int y = x;
+      |             ^
+```
+
+### `-Wshadow`
+
+<Resources>
+	<Resource
+		source="LCPP"
+		url="ttps://www.learncpp.com/cpp-tutorial/variable-shadowing-name-hiding/"
+		title="6.5 - Variable Shadowing (Name Hiding)"
+		starred
+	/>
+</Resources>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int x;
+
+int main() {
+	int x = 5;
+	cout << x;
+}
+```
+
+Compile Output:
+
+```
+main.cpp: In function ‘int main()’:
+main.cpp:7:6: warning: declaration of ‘x’ shadows a global declaration [-Wshadow]
+    7 |  int x = 5;
+      |      ^
+main.cpp:4:5: note: shadowed declaration is here
+    4 | int x;
+      |     ^
+```
+
+### `-Wfloat-equal`
+
+Warns if floating-point values are used in equality comparisons.
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	double x = 1.0 / 49 * 49;
+	cout << (x == 1.0);  // 0
+}
+```
+
+Compile Output:
+
+```
+main.cpp: In function ‘int main()’:
+main.cpp:6:16: warning: comparing floating-point with ‘==’ or ‘!=’ is unsafe [-Wfloat-equal]
+    6 |     cout << (x == 1.0);
+      |              ~~^~~~~~
+```
+
+## GCC Debug Options
+
+<Warning>
+
+These can slow down compilation time even runtime, so don't enable these when
+speed is of the essence (e.g., for Facebook Hacker Cup).
+
+</Warning>
+
+<Warning>
+
+`-fsanitize` flags
+[don't work with MinGW](https://github.com/msys2/MINGW-packages/issues/3163). If
+you're using Windows but still want to use these flags, consider using
+[an online compiler](https://repl.it/) (or installing Linux) instead.
+
+</Warning>
+
+### [`-fsanitize=undefined`](https://gcc.gnu.org/onlinedocs/gcc/Instrumentation-Options.html)
+
+#### Example: Array Out of Bounds
+
+Without `-fsanitize=undefined`, this program executes successfully and outputs
+garbage:
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	int v[5];
+	cout << v[5] << endl;  // may output an arbitrary integer
+}
+```
+
+With `-fsanitize=undefined`, this program still executes successfully,
+but the following runtime error is printed to standard error:
+
+```
+main.cpp:6:13: runtime error: index 5 out of bounds for type 'int [5]'
+main.cpp:6:13: runtime error: load of address 0x7ffc4efaf2d4 with insufficient space for an object of type 'int'
+0x7ffc4efaf2d4: note: pointer points here
+  11 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  f0 15 40 00 00 00 00 00  00 00 00 00 00 00 00 00
+              ^
+```
+
+#### Example: Vector Out of Bounds
+
+The code below produces a segmentation fault:
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	vector<int> v;
+	cout << v[-1] << endl;
+}
+```
+
+Output:
+
+```
+/tmp/program/run.sh: line 1:    71 Segmentation fault      ./prog
+Command exited with non-zero status 139
+```
+
+With `-fsanitize=undefined`, a slightly more informative error message is
+produced:
+
+```
+/opt/rh/devtoolset-10/root/usr/include/c++/10/bits/stl_vector.h:1046:34: runtime error: applying non-zero offset 18446744073709551612 to null pointer
+/tmp/program/run.sh: line 1:  1845 Segmentation fault      ./prog
+Command exited with non-zero status 139
+```
+
+#### Example: Integer Overflow
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	int x = 1 << 30;
+	cout << x + x << endl;
+}
+```
+
+With `-fsanitize=undefined`, this program still executes successfully,
+but the following runtime error is printed to standard error:
+
+```
+main.cpp:6:14: runtime error: signed integer overflow: 1073741824 * 2 cannot be represented in type 'int'
+```
+
+#### Example: Detecting Multiple Errors
+
+By default, the undefined behavior sanitizer will attempt to continue after
+detecting an error. For example, the following program with
+`-fsanitize=undefined` produces multiple runtime errors:
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	cout << (1 << 32) << endl;
+	cout << (1 << 32) << endl;
+	cout << (1 << 32) << endl;
+}
+```
+
+Standard Error:
+
+```
+main.cpp:5:13: runtime error: shift exponent 32 is too large for 32-bit type 'int'
+main.cpp:6:13: runtime error: shift exponent 32 is too large for 32-bit type 'int'
+main.cpp:7:13: runtime error: shift exponent 32 is too large for 32-bit type 'int'
+```
+
+To disable this behavior and exit after the first detected error, we can use
+`-fsanitize=undefined` with `-fno-sanitize-recover`.
+
+Standard Error:
+
+```
+main.cpp:5:13: runtime error: shift exponent 32 is too large for 32-bit type 'int'
+Command exited with non-zero status 1
+```
+
+### `-fsanitize=address`
+
+<Resources>
+	<Resource
+		source="GCC"
+		title="3.10 - Options for Debugging Your Program"
+		url="Debugging-Options.html"
+	>
+		documentation for -g
+	</Resource>
+</Resources>
+
+#### Example: Vector Out of Bounds
+
+Recall that this example from the previous subsection gives a segmentation fault:
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	vector<int> v;
+	cout << v[-1] << endl;
+}
+```
+
+Compiling with `-fsanitize=address` gives:
+
+<Spoiler title="Standard Error">
+
+```
+AddressSanitizer:DEADLYSIGNAL
+=================================================================
+==5669==ERROR: AddressSanitizer: SEGV on unknown address (pc 0x000000401290 bp 0x7fffc91c63b0 sp 0x7fffc91c6350 T0)
+==5669==The signal is caused by a READ memory access.
+==5669==Hint: this fault was caused by a dereference of a high value address (see register values below).  Dissassemble the provided pc to learn which register was used.
+    #0 0x401290 in main (/tmp/program/prog+0x401290)
+    #1 0x14ef9fd10139 in __libc_start_main (/lib64/libc.so.6+0x21139)
+    #2 0x401559 in _start (/tmp/program/prog+0x401559)
+
+AddressSanitizer can not provide additional info.
+SUMMARY: AddressSanitizer: SEGV (/tmp/program/prog+0x401290) in main
+==5669==ABORTING
+Command exited with non-zero status 1
+```
+
+</Spoiler>
+
+For more helpful information we should additionally compile with the `-g` flag,
+which generates a file containing debugging information based on the line
+numbering of the program.
+
+<Spoiler title="Standard Error">
+
+You can see that the error occurred on line 6.
+
+```
+AddressSanitizer:DEADLYSIGNAL
+=================================================================
+==2149==ERROR: AddressSanitizer: SEGV on unknown address (pc 0x000000401290 bp 0x7ffd3e426ae0 sp 0x7ffd3e426a80 T0)
+==2149==The signal is caused by a READ memory access.
+==2149==Hint: this fault was caused by a dereference of a high value address (see register values below).  Dissassemble the provided pc to learn which register was used.
+    #0 0x401290 in main /tmp/out/main.cpp:6
+    #1 0x14a33b4b3139 in __libc_start_main (/lib64/libc.so.6+0x21139)
+    #2 0x401559 in _start (/tmp/program/prog+0x401559)
+
+AddressSanitizer can not provide additional info.
+SUMMARY: AddressSanitizer: SEGV /tmp/out/main.cpp:6 in main
+==2149==ABORTING
+Command exited with non-zero status 1
+```
+
+</Spoiler>
+
+#### Example: Array Out of Bounds
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	int v[5];
+	cout << v[5] << endl;
+}
+```
+
+With `-fsanitize=address -g`:
+
+<Spoiler title="Standard Error">
+
+```
+=================================================================
+==2488==ERROR: AddressSanitizer: stack-buffer-overflow on address 0x7fffa870c164 at pc 0x00000040135b bp 0x7fffa870c120 sp 0x7fffa870c110
+READ of size 4 at 0x7fffa870c164 thread T0
+    #0 0x40135a in main /tmp/out/main.cpp:6
+    #1 0x1523eeb67139 in __libc_start_main (/lib64/libc.so.6+0x21139)
+    #2 0x401479 in _start (/tmp/program/prog+0x401479)
+
+Address 0x7fffa870c164 is located in stack of thread T0 at offset 52 in frame
+    #0 0x40117f in main /tmp/out/main.cpp:4
+
+  This frame has 1 object(s):
+    [32, 52) 'v' (line 5) <== Memory access at offset 52 overflows this variable
+HINT: this may be a false positive if your program uses some custom stack unwind mechanism, swapcontext or vfork
+      (longjmp and C++ exceptions *are* supported)
+SUMMARY: AddressSanitizer: stack-buffer-overflow /tmp/out/main.cpp:6 in main
+Shadow bytes around the buggy address:
+  0x1000750d97d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x1000750d97e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x1000750d97f0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x1000750d9800: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x1000750d9810: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+=>0x1000750d9820: 00 00 00 00 00 00 f1 f1 f1 f1 00 00[04]f3 f3 f3
+  0x1000750d9830: f3 f3 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x1000750d9840: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x1000750d9850: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x1000750d9860: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x1000750d9870: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07
+  Heap left redzone:       fa
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+  Shadow gap:              cc
+==2488==ABORTING
+Command exited with non-zero status 1
+```
+
+</Spoiler>
+
+### `-D_GLIBCXX_DEBUG`
+
+This enables debug mode, which replaces each STL container with its
+corresponding debug container.
+
+<Resources>
+	<Resource
+		source="GCC"
+		title="Using Debug Mode"
+		url="https://gcc.gnu.org/onlinedocs/libstdc++/manual/debug_mode_using.html#debug_mode.using.mode"
+	>
+		documentation for -D_GLIBCXX_DEBUG
+	</Resource>
+</Resources>
+
+Recall that the following program gives a segmentation fault.
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	vector<int> v;
+	cout << v[-1] << endl;
+}
+```
+
+With `-D_GLIBCXX_DEBUG` the following output is produced:
+
+<Spoiler title="Debug">
+
+```
+/usr/local/Cellar/gcc/9.2.0_1/include/c++/9.2.0/debug/vector:427:
+In function:
+    std::__debug::vector<_Tp, _Allocator>::reference
+    std::__debug::vector<_Tp,
+    _Allocator>::operator[](std::__debug::vector<_Tp,
+    _Allocator>::size_type) [with _Tp = int; _Allocator =
+    std::allocator<int>; std::__debug::vector<_Tp, _Allocator>::reference =
+    int&; std::__debug::vector<_Tp, _Allocator>::size_type = long unsigned
+    int]
+
+Error: attempt to subscript container with out-of-bounds index -1, but
+container only holds 0 elements.
+
+Objects involved in the operation:
+    sequence "this" @ 0x0x7ffee2503a50 {
+      type = std::__debug::vector<int, std::allocator<int> >;
+    }
+zsh: abort      ./prog
+```
+</Spoiler>
+
+
+## Using the LLDB Debugger
+
+<Resources>
+	<Resource
+		source="LLVM"
+		title="GDB to LLDB Command Map"
+		url="https://lldb.llvm.org/use/map.html"
+	>
+	</Resource>
+</Resources>
+
+Recall the example from [Checking Out of Bounds](#checking-for-out-of-bounds)
+section where the output didn't contain the number of the line where the
+runtime error occurred. Below, we show how to use `lldb` to output the line
+number. Assume the C++ source code is named `prog.cpp` and the executable
+is named `prog`.
+
+1. Add `-g` to the compile command and compile.
+2. Start debug mode on `prog` using `lldb prog`.
+3. Start running the program using `r`.
+4. Show the stack backtrace using `bt`.
+
+<Spoiler title="Output">
+
+You can see from the output below that the runtime error occurred on line 10.
+
+```
+benq:CF % g++-12 prog.cpp -g -o prog && lldb prog
+(lldb) target create "prog"
+Current executable set to '/Users/benq/Desktop/CF/prog' (x86_64).
+(lldb) r
+Process 86225 launched: '/Users/benq/Desktop/CF/prog' (x86_64)
+1234
+terminate called after throwing an instance of 'std::out_of_range'
+  what():  vector::_M_range_check: __n (which is 1) >= this->size() (which is 1)
+Process 86225 stopped
+* thread #1, queue = 'com.apple.main-thread', stop reason = signal SIGABRT
+    frame #0: 0x00007ff80e01300e libsystem_kernel.dylib`__pthread_kill + 10
+libsystem_kernel.dylib`__pthread_kill:
+->  0x7ff80e01300e <+10>: jae    0x7ff80e013018            ; <+20>
+    0x7ff80e013010 <+12>: movq   %rax, %rdi
+    0x7ff80e013013 <+15>: jmp    0x7ff80e00d1c5            ; cerror_nocancel
+    0x7ff80e013018 <+20>: retq
+Target 0: (prog) stopped.
+(lldb) bt
+* thread #1, queue = 'com.apple.main-thread', stop reason = signal SIGABRT
+  * frame #0: 0x00007ff80e01300e libsystem_kernel.dylib`__pthread_kill + 10
+    frame #1: 0x00007ff80e0491ff libsystem_pthread.dylib`pthread_kill + 263
+    frame #2: 0x00007ff80df94d24 libsystem_c.dylib`abort + 123
+    frame #3: 0x0000000100655871 libstdc++.6.dylib`__gnu_cxx::__verbose_terminate_handler() (.cold) + 92
+    frame #4: 0x0000000100556456 libstdc++.6.dylib`__cxxabiv1::__terminate(void (*)()) + 6
+    frame #5: 0x0000000100556473 libstdc++.6.dylib`std::terminate() + 19
+    frame #6: 0x00000001005565f3 libstdc++.6.dylib`__cxa_throw + 67
+    frame #7: 0x0000000100658803 libstdc++.6.dylib`std::__throw_out_of_range_fmt(char const*, ...) (.cold) + 22
+    frame #8: 0x0000000100002897 prog`std::vector<int, std::allocator<int> >::_M_range_check(this=0x00007ff7bfeff3d0, __n=1) const at stl_vector.h:1153:28
+    frame #9: 0x0000000100002629 prog`std::vector<int, std::allocator<int> >::at(this=0x00007ff7bfeff3d0, __n=1) at stl_vector.h:1175:16
+    frame #10: 0x0000000100002421 prog`main at prog.cpp:10:17
+    frame #11: 0x000000010001552e dyld`start + 462
+(lldb)
+```
+
+</Spoiler>
+
+<Info>
+
+As mentioned in [the previous module](/general/basic-debugging?lang=cpp#debuggers),
+there are many more things you can do with debuggers, but they aren't
+particularly useful for competitive programming.
+
+</Info>

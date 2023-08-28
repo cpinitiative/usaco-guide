@@ -1,0 +1,234 @@
+---
+id: usaco-593
+source: USACO Bronze 2016 January
+title: Mowing the Field
+author: Óscar Garries, Ryan Chou
+---
+
+[Official Analysis (Java)](http://www.usaco.org/current/data/sol_mowing_bronze_jan16.html)
+
+We can simulate Farmer John's movements across his field and update our answer when he comes across the same patch of grass.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(NS)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	freopen("mowing.in", "r", stdin);
+	int n;
+	cin >> n;
+	vector<pair<char, int>> steps(n);
+	for (auto &[dir, num_steps] : steps) { cin >> dir >> num_steps; }
+
+	// FJ's starting position.
+	pair<int, int> curr{0, 0};
+	// Make a hashmap, and mark off steps.
+	// We'll first mark off his starting position.
+	map<pair<int, int>, int> visits{{curr, 0}};
+
+	int time = 0;
+	int max_regrow = INT32_MAX;
+	for (const auto &[dir, num_steps] : steps) {
+		// Get the direction Farmer John is moving.
+		pair<int, int> delta;
+		switch (dir) {
+		case 'N':
+			delta = pair<int, int>{0, 1};
+			break;
+		case 'W':
+			delta = pair<int, int>{-1, 0};
+			break;
+		case 'E':
+			delta = pair<int, int>{1, 0};
+			break;
+		case 'S':
+			delta = pair<int, int>{0, -1};
+			break;
+		}
+
+		for (int i = 0; i < num_steps; i++) {
+			// Update our curent position.
+			curr = pair<int, int>{curr.first + delta.first,
+			                      curr.second + delta.second};
+			time++;
+
+			// Check if FJ's been to this patch of grass before.
+			if (visits.count(curr)) {
+				max_regrow = min(max_regrow, time - visits[curr]);
+			}
+
+			// Update the last time FJ has come upon this patch of grass.
+			visits[curr] = time;
+		}
+	}
+
+	freopen("mowing.out", "w", stdout);
+	// Output -1 if FJ has never gone back to the same patch of grass.
+	cout << (max_regrow == INT32_MAX ? -1 : max_regrow) << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Mowing {
+	// BeginCodeSnip{Step Class}
+	static class Step {
+		char dir;
+		int numSteps;
+
+		public Step(char dir, int numSteps) {
+			this.dir = dir;
+			this.numSteps = numSteps;
+		}
+	}
+	// EndCodeSnip
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader read = new BufferedReader(new FileReader("mowing.in"));
+		int n = Integer.parseInt(read.readLine());
+		Step[] steps = new Step[n];
+		for (int s = 0; s < n; s++) {
+			StringTokenizer step = new StringTokenizer(read.readLine());
+			steps[s] = new Step(step.nextToken().charAt(0),
+			                    Integer.parseInt(step.nextToken()));
+		}
+		read.close();
+
+		// FJ's starting position.
+		Point curr = new Point(0, 0);
+		// Make a hashmap, and mark off steps.
+		// We'll first mark off his starting position.
+		Map<Point, Integer> visits = new HashMap<>(Map.of(curr, 0));
+
+		int time = 0;
+		int maxRegrow = Integer.MAX_VALUE;
+		for (Step s : steps) {
+			for (int i = 0; i < s.numSteps; i++) {
+				// Update our curent position.
+				curr = curr.next(s.dir);
+				time++;
+
+				// Check if FJ's been to this patch of grass before.
+				if (visits.containsKey(curr)) {
+					maxRegrow = Math.min(maxRegrow, time - visits.get(curr));
+				}
+
+				// Update the last time FJ has come upon this patch of grass.
+				visits.put(curr, time);
+			}
+		}
+
+		PrintWriter written = new PrintWriter("mowing.out");
+		// Output -1 if FJ has never gone back to the same patch of grass.
+		written.println(maxRegrow == Integer.MAX_VALUE ? -1 : maxRegrow);
+		written.close();
+	}
+}
+
+// BeginCodeSnip{Point Class}
+class Point {
+	int x, y;
+
+	public Point(int x, int y) {
+		this.x = x;
+		this.y = y;
+	}
+
+	/**
+	 * @return The point reached after moving in the given direction from this
+	 *     point.
+	 */
+	public Point next(char dir) {
+		switch (dir) {
+		case 'N':
+			return new Point(x, y + 1);
+		case 'W':
+			return new Point(x - 1, y);
+		case 'E':
+			return new Point(x + 1, y);
+		case 'S':
+			return new Point(x, y - 1);
+		default:
+			return this;
+		}
+	}
+
+	@Override
+	public String toString() {
+		return String.format("(%d, %d)", x, y);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(x, y);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return obj instanceof Point && x == ((Point)obj).x &&
+		    y == ((Point)obj).y;
+	}
+}
+// EndCodeSnip
+```
+
+</JavaSection>
+<PySection>
+
+```py
+with open("mowing.in") as read:
+	n = int(read.readline())
+	steps = []
+	for _ in range(n):
+		dir_, num_steps = map(str, read.readline().split())
+		steps.append((dir_, int(num_steps)))
+
+# FJ's starting position.
+curr = (0, 0)
+# Make a hashmap, and mark off steps.
+# We'll first mark off his starting position.
+visits = {curr: 0}
+
+time = 0
+max_regrow = float("inf")
+for dir_, num_steps in steps:
+	# Get the direction Farmer John is moving.
+	if dir_ == "N":
+		delta = 0, 1
+	elif dir_ == "W":
+		delta = -1, 0
+	elif dir_ == "E":
+		delta = 1, 0
+	elif dir_ == "S":
+		delta = 0, -1
+
+	for _ in range(int(num_steps)):
+		# Update our curent position.
+		curr = (curr[0] + delta[0], curr[1] + delta[1])
+		time += 1
+
+		# Check if FJ's been to this patch of grass before.
+		if curr in visits:
+			max_regrow = min(max_regrow, time - visits[curr])
+		# Update the last time FJ has come upon this patch of grass.
+		visits[curr] = time
+
+# Output -1 if FJ has never gone back to the same patch of grass.
+output = -1 if max_regrow == float("inf") else max_regrow
+print(output, file=open("mowing.out", "w"))
+```
+
+</PySection>
+</LanguageSection>

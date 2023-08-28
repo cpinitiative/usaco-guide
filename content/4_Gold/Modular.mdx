@@ -13,10 +13,10 @@ frequency: 2
    -->
 
 <Resources>
-	<Resource 
-		  source="AryanshS" 
-		  title="The Art of Modular Arithmetic" 
-		  url="https://aryansh-s.github.io/The_Art_of_Modular_Arithmetic.pdf" 
+	<Resource
+		  source="AryanshS"
+		  title="The Art of Modular Arithmetic"
+		  url="https://aryansh-s.github.io/The_Art_of_Modular_Arithmetic.pdf"
 		  starred
 	>
 		introduces modular arithmetic through numerous math-contest-level examples and problems
@@ -42,7 +42,8 @@ frequency: 2
 		some practice probs
 	</Resource>
 	<Resource
-		source="MONT@Modern Olympiad Number Theory"
+		source="MONT"
+		sourceDescription="Modern Olympiad Number Theory"
 		title="2, 5 - Modular Arithmetic"
 		url="https://artofproblemsolving.com/community/c6h2344755"
 		starred
@@ -107,8 +108,6 @@ Finally, since $x ^ y$ for some $y \neq 1$ equals $x ^ {y - 1}$, and $x$ otherwi
 
 ### Solution - Exponentiation
 
-<Spoiler title="Solution">
-
 <LanguageSection>
 
 <CPPSection>
@@ -119,15 +118,14 @@ using namespace std;
 
 using ll = long long;
 
-ll binpow(ll x, ll n, ll m) {
+ll exp(ll x, ll n, ll m) {
 	assert(n >= 0);
 	x %= m;  // note: m * m must be less than 2^63 to avoid ll overflow
 	ll res = 1;
 	while (n > 0) {
-		if (n % 2 == 1)  // if n is odd
-			res = res * x % m;
+		if (n % 2 == 1) { res = res * x % m; }
 		x = x * x % m;
-		n /= 2;  // divide by two
+		n /= 2;
 	}
 	return res;
 }
@@ -138,7 +136,7 @@ int main() {
 	for (int i = 0; i < t; i++) {
 		int a, b;
 		cin >> a >> b;
-		cout << binpow(a, b, 1e9 + 7) << "\n";
+		cout << exp(a, b, 1e9 + 7) << "\n";
 	}
 }
 ```
@@ -153,27 +151,27 @@ import java.util.*;
 
 public class Exponentation {
 	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader br =
+		    new BufferedReader(new InputStreamReader(System.in));
 		PrintWriter out = new PrintWriter(System.out);
 		int n = Integer.parseInt(br.readLine());
 		for (int i = 0; i < n; i++) {
 			StringTokenizer st = new StringTokenizer(br.readLine());
 			long a = Long.parseLong(st.nextToken());
 			long b = Long.parseLong(st.nextToken());
-			out.println(binpow(a, b, (long) 1e9+7));
+			out.println(exp(a, b, (long)1e9 + 7));
 		}
 		out.close();
 	}
 
-	public static long binpow(long x, long n, long m) {
-		assert(n >= 0);
+	public static long exp(long x, long n, long m) {
+		assert (n >= 0);
 		x %= m;  // note: m * m must be less than 2^63 to avoid ll overflow
 		long res = 1;
 		while (n > 0) {
-			if (n % 2 == 1)  // if n is odd
-				res = res * x % m;
+			if (n % 2 == 1) { res = res * x % m; }
 			x = x * x % m;
-			n /= 2;  // divide by two
+			n /= 2;
 		}
 		return res;
 	}
@@ -186,8 +184,8 @@ public class Exponentation {
 
 We can use Python's builtin `pow` function to efficently compute modulo powers.
 ```py
-MOD = 10 ** 9 + 7
- 
+MOD = 10**9 + 7
+
 for _ in range(int(input())):
 	first, second = [int(i) for i in input().split()]
 	print(pow(first, second, MOD))
@@ -196,8 +194,6 @@ for _ in range(int(input())):
 </PySection>
 
 </LanguageSection>
-
-</Spoiler>
 
 ## Modular Inverse
 
@@ -254,7 +250,7 @@ of $a$ modulo $p$.
 const int MOD = 1e9 + 7;
 
 int main() {
-	ll x = binpow(2, MOD - 2, MOD);
+	ll x = exp(2, MOD - 2, MOD);
 	cout << x << "\n";  // 500000004
 	assert(2 * x % MOD == 1);
 }
@@ -266,11 +262,11 @@ int main() {
 
 ```java
 public class Main {
-	public static final int MOD = (int) Math.pow(10, 9) + 7;
+	public static final int MOD = (int)Math.pow(10, 9) + 7;
 	public static void main(String[] args) throws IOException {
-		long x = binpow(2, MOD - 2, MOD);
+		long x = exp(2, MOD - 2, MOD);
 		System.out.println(x);  // 500000004
-		assert(2 * x % MOD == 1);
+		assert (2 * x % MOD == 1);
 	}
 }
 ```
@@ -280,11 +276,11 @@ public class Main {
 <PySection>
 
 ```py
-MOD = 10 ** 9 + 7
+MOD = 10**9 + 7
 
-x = pow(2, MOD - 2, MOD);
+x = pow(2, MOD - 2, MOD)
 print(x)  # 500000004
-assert(2 * x % MOD == 1);
+assert 2 * x % MOD == 1
 ```
 
 </PySection>
@@ -307,7 +303,12 @@ We can also use the extended Euclidean algorithm. See the module in the
 
 </Optional>
 
+<CPPOnly>
+
 ## Templates
+
+Here are some templates that implement integer types that automatically
+wrap around when they exceed a certain modulus:
 
 <Resources>
 	<Resource
@@ -322,9 +323,21 @@ We can also use the extended Euclidean algorithm. See the module in the
 	>
 		feasible to type up during a contest
 	</Resource>
+	<Resource
+		source="AtCoder"
+		title="ModInt"
+		url="https://atcoder.jp/posts/518"
+	>
+		contains a `modint.hpp` file
+	</Resource>
+	<Resource
+		source="AtCoder"
+		title="ModInt Documentation"
+		url="https://atcoder.github.io/ac-library/document_en/modint.html"
+	/>
 </Resources>
 
-Using BenQ's template, both of these do the same thing:
+Here's an example using Benq's template:
 
 ```cpp
 #include <bits/stdc++.h>
@@ -332,44 +345,75 @@ using namespace std;
 
 const int MOD = 1e9 + 7;
 
-//BeginCodeSnip{ModInt}
+// BeginCodeSnip{ModInt}
 struct mi {
- 	int v; explicit operator int() const { return v; }
+	int v;
+	explicit operator int() const { return v; }
 	mi() { v = 0; }
 	mi(long long _v) : v(_v % MOD) { v += (v < 0) * MOD; }
 };
-mi& operator+=(mi& a, mi b) { 
-	if ((a.v += b.v) >= MOD) a.v -= MOD; 
+mi &operator+=(mi &a, mi b) {
+	if ((a.v += b.v) >= MOD) a.v -= MOD;
 	return a;
 }
-mi& operator-=(mi& a, mi b) { 
-	if ((a.v -= b.v) < 0) a.v += MOD; 
+mi &operator-=(mi &a, mi b) {
+	if ((a.v -= b.v) < 0) a.v += MOD;
 	return a;
 }
 mi operator+(mi a, mi b) { return a += b; }
 mi operator-(mi a, mi b) { return a -= b; }
-mi operator*(mi a, mi b) { return mi((long long) a.v * b.v); }
-mi& operator*=(mi& a, mi b) { return a = a * b; }
+mi operator*(mi a, mi b) { return mi((long long)a.v * b.v); }
+mi &operator*=(mi &a, mi b) { return a = a * b; }
 mi pow(mi a, long long p) {
 	assert(p >= 0);
 	return p == 0 ? 1 : pow(a * a, p / 2) * (p & 1 ? a : 1);
 }
-mi inv(mi a) { assert(a.v != 0); return pow(a, MOD - 2); }
+mi inv(mi a) {
+	assert(a.v != 0);
+	return pow(a, MOD - 2);
+}
 mi operator/(mi a, mi b) { return a * inv(b); }
-//EndCodeSnip
+// EndCodeSnip
 
 int main() {
 	{
 		int a = 1e8, b = 1e8, c = 1e8;
-		cout << (long long) a * b % MOD * c % MOD << "\n";  // 49000000
+		cout << (long long)a * b % MOD * c % MOD << "\n";  // 49000000
 	}
 	{
 		mi a = 1e8, b = 1e8, c = 1e8;
-		// cout << a * b * c << "\n";  // errors out- we have to convert it to an int
-		cout << (int) (a * b * c) << "\n";  // 49000000
+		// cout << a * b * c << "\n";  // Errors- we have to cast this an an int
+		cout << (int)(a * b * c) << "\n";  // 49000000
 	}
 }
 ```
+
+And one using AtCoder's:
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+#include <atcoder/modint>
+using mint = atcoder::modint;
+
+const int MOD = 1e9 + 7;
+
+int main() {
+	// Set a global modulus
+	mint::set_mod(MOD);
+
+	// Scientific notation doesn't work with AtCoder's class
+	mint a = 100000000;
+	mint b = 100000000;
+	mint c = 100000000;
+
+	mint res = a * b * c;
+	cout << res.val() << endl;  // Same result
+}
+```
+
+</CPPOnly>
 
 ## Problems
 

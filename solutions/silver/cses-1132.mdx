@@ -1,0 +1,217 @@
+---
+id: cses-1132
+source: CSES
+title: Tree Distances I
+author: Nathan Wang, Benjamin Qi, Abhishek Singh, Brad Ma
+---
+
+## Solution 1
+
+Described in [CPH 14.3](/CPH.pdf#page=147).
+
+<LanguageSection>
+
+<CPPSection>
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+vector<int> adj[200001];
+int firstMax[200001];   // to store first-max length.
+int secondMax[200001];  // to store second-max length.
+int c[200001];          // to store child for path of max length.
+
+// calculate for every node x the maximum
+// length of a path that goes through a child of x
+void dfs(int v, int p) {
+	firstMax[v] = 0;
+	secondMax[v] = 0;
+	for (auto x : adj[v]) {
+		if (x == p) continue;
+		dfs(x, v);
+		if (firstMax[x] + 1 > firstMax[v]) {
+			secondMax[v] = firstMax[v];
+			firstMax[v] = firstMax[x] + 1;
+			c[v] = x;
+		} else if (firstMax[x] + 1 > secondMax[v]) {
+			secondMax[v] = firstMax[x] + 1;
+		}
+	}
+}
+
+// calculate for every node x the
+// maximum length of a path through its parent p
+void dfs2(int v, int p) {
+	for (auto x : adj[v]) {
+		if (x == p) continue;
+		if (c[v] == x) {
+			if (firstMax[x] < secondMax[v] + 1) {
+				secondMax[x] = firstMax[x];
+				firstMax[x] = secondMax[v] + 1;
+				c[x] = v;
+			} else {
+				secondMax[x] = max(secondMax[x], secondMax[v] + 1);
+			}
+		} else {
+			secondMax[x] = firstMax[x];
+			firstMax[x] = firstMax[v] + 1;
+			c[x] = v;
+		}
+		dfs2(x, v);
+	}
+}
+
+int main() {
+	FIO;
+	int n, u, v;
+	cin >> n;
+	for (int i = 0; i < n - 1; i++) {
+		cin >> u >> v;
+		adj[u].push_back(v);
+		adj[v].push_back(u);
+	}
+	dfs(1, -1);
+	dfs2(1, -1);
+
+	for (int i = 1; i <= n; i++) { cout << firstMax[i] << " "; }
+	return 0;
+}
+```
+</CPPSection>
+
+<JavaSection>
+
+<Warning>
+Java exceeds the time limit on two test cases.
+</Warning>
+
+```java
+
+import java.io.*;
+import java.util.*;
+
+public class TreeDistancesI {
+	static ArrayList<Integer>[] adj;
+	static int MAX_N = 200000;
+	static int[] firstMax = new int[MAX_N + 1];   // to store first-max length.
+	static int[] secondMax = new int[MAX_N + 1];  // to store second-max length.
+	static int[] c =
+	    new int[MAX_N + 1];  // to store child for path of max length.
+
+	public static void dfs(int v, int p) {
+		firstMax[v] = 0;
+		secondMax[v] = 0;
+		for (int x : adj[v]) {
+			if (x == p) continue;
+			dfs(x, v);
+			if (firstMax[x] + 1 > firstMax[v]) {
+				secondMax[v] = firstMax[v];
+				firstMax[v] = firstMax[x] + 1;
+				c[v] = x;
+			} else if (firstMax[x] + 1 > secondMax[v]) {
+				secondMax[v] = firstMax[x] + 1;
+			}
+		}
+	}
+
+	public static void dfs2(int v, int p) {
+		for (int x : adj[v]) {
+			if (x == p) continue;
+			if (c[v] == x) {
+				if (firstMax[x] < secondMax[v] + 1) {
+					secondMax[x] = firstMax[x];
+					firstMax[x] = secondMax[v] + 1;
+					c[x] = v;
+				} else {
+					secondMax[x] = Math.max(secondMax[x], secondMax[v] + 1);
+				}
+			} else {
+				secondMax[x] = firstMax[x];
+				firstMax[x] = firstMax[v] + 1;
+				c[x] = v;
+			}
+			dfs2(x, v);
+		}
+	}
+
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
+		int n, u, v;
+		n = io.nextInt();
+		adj = new ArrayList[n + 1];
+		for (int x = 0; x < adj.length; x++) { adj[x] = new ArrayList(); }
+
+		for (int i = 0; i < n - 1; i++) {
+			u = io.nextInt();
+			v = io.nextInt();
+			adj[u].add(v);
+			adj[v].add(u);
+		}
+
+		dfs(1, -1);
+		dfs2(1, -1);
+
+		for (int i = 1; i <= n; i++) { io.print(firstMax[i] + " "); }
+
+		io.close();
+	}
+	// CodeSnip{Kattio}
+}
+```
+</JavaSection>
+
+</LanguageSection>
+
+## Solution 2
+
+Compute a diameter of the tree as described by algorithm 2
+[here](/CPH.pdf#page=146). Once we have a diameter $(a,b)$,
+output $\max(dist(a,i),dist(b,i))$ for each node $i$.
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+// dist[0][i] = distance from node a to node i
+// dist[1][i] = distance from node b to node i
+int dist[2][200000];
+vector<int> adj[200000];
+
+int dfs(int u, int p, int d, int i) {
+	dist[i][u] = d;
+	int opt = -1;
+	for (int v : adj[u]) {
+		if (v != p) {
+			int x = dfs(v, u, d + 1, i);
+			if (opt == -1 || dist[i][x] > dist[i][opt]) opt = x;
+		}
+	}
+	return opt == -1 ? u : opt;
+}
+
+int main() {
+	int n;
+	cin >> n;
+	for (int i = 0; i < n - 1; i++) {
+		int a, b;
+		cin >> a >> b;
+		--a;
+		--b;
+		adj[a].push_back(b);
+		adj[b].push_back(a);
+	}
+	// first, find node a by finding the farthest node from an arbitrary node x
+	int mxNode = dfs(0, 0, 0, 0);
+	// then, find node b (this step also computes distance from a to every other
+	// node)
+	int mxNode2 = dfs(mxNode, mxNode, 0, 0);
+	// finally, compute the distance from b to every other node
+	dfs(mxNode2, mxNode2, 0, 1);
+
+	for (int i = 0; i < n; i++) {
+		cout << max(dist[0][i], dist[1][i]) << " \n"[i == n - 1];
+	}
+	return 0;
+}
+```

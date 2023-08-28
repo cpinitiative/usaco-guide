@@ -10,7 +10,7 @@ import StateItem from './StateItem';
 export default class ShallowStateItem<
   T extends {
     [key: string]: string;
-  }
+  },
 > extends StateItem<T> {
   protected block: Block<T>;
 

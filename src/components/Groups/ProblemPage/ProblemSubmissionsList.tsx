@@ -92,7 +92,11 @@ export default function ProblemSubmissionsList({
         <SubmissionListItem
           problem={problem}
           submission={submission}
-          key={submission.submissionID}
+          key={
+            'submissionID' in submission
+              ? submission.submissionID
+              : submission.timestamp
+          }
         />
       ))}
     </ul>

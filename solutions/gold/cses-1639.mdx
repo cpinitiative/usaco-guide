@@ -1,0 +1,113 @@
+---
+id: cses-1639
+source: CSES
+title: Edit Distance
+author: Sofia Yang, Kevin Sheng
+---
+
+[Editorial (icecuber)](https://codeforces.com/blog/entry/70018)
+
+[CPH 7.5 (Edit Distance)](/CPH.pdf#page=84)
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(NM)$
+
+<LanguageSection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class EditDistance {
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
+		char[] str1 = io.next().toCharArray();
+		char[] str2 = io.next().toCharArray();
+
+		/*
+		 * dp[i][j] is the minimum number of moves to change the first i letters
+		 * of the string into the first j letters of result.
+		 */
+		int[][] dp = new int[str1.length + 1][str2.length + 1];
+		for (int i = 0; i < dp.length; i++) {
+			Arrays.fill(dp[i], Integer.MAX_VALUE);
+		}
+		dp[0][0] = 0;
+		for (int i = 0; i <= str1.length; i++) {
+			for (int j = 0; j <= str2.length; j++) {
+				if (i != 0) {
+					// Delete letter i - 1 from the string.
+					dp[i][j] = Math.min(dp[i][j], dp[i - 1][j] + 1);
+				}
+				if (j != 0) {
+					// Add letter j - 1 of the result to the string.
+					dp[i][j] = Math.min(dp[i][j], dp[i][j - 1] + 1);
+				}
+
+				// Make letter i - 1 equal to letter j - 1 of the result.
+				if (i != 0 && j != 0) {
+					int newCost = dp[i - 1][j - 1] +
+					              ((str1[i - 1] == str2[j - 1]) ? 0 : 1);
+					dp[i][j] = Math.min(dp[i][j], newCost);
+				}
+			}
+		}
+		io.println(dp[str1.length][str2.length]);
+		io.close();
+	}
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+
+<CPPSection>
+
+```cpp
+#include <algorithm>
+#include <iostream>
+#include <string>
+#include <vector>
+
+using std::cout;
+using std::endl;
+using std::vector;
+
+int main() {
+	std::string str1;
+	std::string str2;
+	std::cin >> str1 >> str2;
+	/*
+	 * dp[i][j] is the minimum number of moves to change the first i letters
+	 * of the string into the first j letters of result.
+	 */
+	vector<vector<int>> dp(str1.size() + 1,
+	                       vector<int>(str2.size() + 1, INT32_MAX));
+	dp[0][0] = 0;
+	for (int i = 0; i <= str1.size(); i++) {
+		for (int j = 0; j <= str2.size(); j++) {
+			if (i != 0) {
+				// Delete letter i - 1 from the string.
+				dp[i][j] = std::min(dp[i][j], dp[i - 1][j] + 1);
+			}
+			if (j != 0) {
+				// Add letter j - 1 of the result to the string.
+				dp[i][j] = std::min(dp[i][j], dp[i][j - 1] + 1);
+			}
+
+			// Make letter i - 1 equal to letter j - 1 of the result.
+			if (i != 0 && j != 0) {
+				int new_cost = dp[i - 1][j - 1] + (str1[i - 1] != str2[j - 1]);
+				dp[i][j] = std::min(dp[i][j], new_cost);
+			}
+		}
+	}
+	cout << dp[str1.size()][str2.size()] << endl;
+}
+```
+</CPPSection>
+
+</LanguageSection>

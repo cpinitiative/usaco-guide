@@ -1,0 +1,106 @@
+---
+id: cses-1650
+source: CSES
+title: Range Xor Queries
+author: Danh Ta Chi Thanh, Nathan Gong
+---
+
+## Explanation
+
+Whenever we come across range queries, prefix sums should immediately come to
+mind. However, since we are dealing with XOR sums over a range, we have to use a
+prefix XOR array rather than a prefix sum array. To do so, we can define
+$\texttt{prefix}$ as an array such that
+$\texttt{prefix}[i]= \texttt{arr}[0] \oplus \texttt{arr}[1] \oplus \dots \oplus \texttt{arr}[i]$.
+Thus, for each query $(a, b)$, our answer is simply
+$\texttt{prefix}[a-1]\oplus \texttt{prefix}[b]$.
+
+### Proof
+
+We know that
+$\texttt{prefix}[a-1]= \texttt{arr}[0] \oplus \texttt{arr}[1] \oplus \dots \oplus \texttt{arr}[a-1]$.
+We also know that
+$\texttt{prefix}[b]= \texttt{arr}[0] \oplus \texttt{arr}[1] \oplus \dots \oplus \texttt{arr}[b]$.
+
+Therefore, since $x\oplus x = 0$ for any $x$:
+
+$\texttt{prefix}[a-1] \oplus \texttt{prefix}[b]= \underbrace{\texttt{arr}[0] \oplus \texttt{arr}[0] \oplus \texttt{arr}[1] \oplus \texttt{arr}[1] \oplus \dots \oplus \texttt{arr}[a-1] \oplus \texttt{arr}[a-1]}_{\text{cancels out to 0}} \oplus \texttt{arr}[a] \oplus \texttt{arr}[a+1] \dots \oplus \texttt{arr}[b]$.
+
+This simplifies to
+$\texttt{arr}[a] \oplus \texttt{arr}[a+1] \dots \oplus \texttt{arr}[b]$, which
+is exactly what we're looking for.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(n+q)$
+
+<Info title="Implementation Note:">
+The operator for XOR in C++, Java, and Python is `^`.
+</Info>
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MAX_N = 2e5;
+
+int n, q, arr[MAX_N + 1], prefix[MAX_N + 1], a, b;
+int main() {
+	ios_base::sync_with_stdio(false);
+	cin.tie(0);
+
+	cin >> n >> q;
+	// arr and prefix use 1-based indexing
+	for (int i = 1; i <= n; ++i) { cin >> arr[i]; }
+	// Build prefix XOR array
+	prefix[1] = arr[1];
+	for (int i = 2; i <= n; i++) { prefix[i] = prefix[i - 1] ^ arr[i]; }
+
+	while (q--) {
+		cin >> a >> b;
+		cout << (prefix[a - 1] ^ prefix[b]) << endl;
+	}
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class RangeXorQueries {
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
+		int n = io.nextInt();
+		int q = io.nextInt();
+
+		// arr and prefix use 1-based indexing
+		int[] arr = new int[n + 1];
+		for (int i = 1; i <= n; i++) { arr[i] = io.nextInt(); }
+		// Build prefix XOR array
+		int[] prefix = new int[n + 1];
+		prefix[1] = arr[1];
+		for (int i = 2; i <= n; i++) { prefix[i] = prefix[i - 1] ^ arr[i]; }
+
+		for (int i = 0; i < q; i++) {
+			int a = io.nextInt();
+			int b = io.nextInt();
+			io.println(prefix[a - 1] ^ prefix[b]);
+		}
+		io.close();
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+
+</LanguageSection>

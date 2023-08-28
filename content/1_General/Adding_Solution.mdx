@@ -3,7 +3,7 @@ id: adding-solution
 title: Adding Solutions
 author: Nathan Wang, Benjamin Qi, Qi Wang
 contributors: Maggie Liu, Sathvik Chundru
-description: 'How you can add your own solutions to the guide.'
+description: 'How to add your own solutions to the guide.'
 prerequisites:
   - contributing
 ---
@@ -15,16 +15,14 @@ See [Working With MDX](/general/working-mdx) for additional information.
 1.  [Fork](https://docs.github.com/en/free-pro-team@latest/desktop/contributing-and-collaborating-using-github-desktop/cloning-and-forking-repositories-from-github-desktop)
     the GitHub repository.
 
-2.  If it doesn't already exist, create a new `mdx` file in `solutions/`
-    including frontmatter, e.g. the following in
-    [`usaco-690.mdx`](https://github.com/cpinitiative/usaco-guide/blob/master/solutions/usaco-690.mdx):
+2.  If you are adding a solution to a problem within a module, don't create a new file. If you are adding an internal solution, create a new `mdx` file in `solutions/<division>/` if it doesn't already exist, including frontmatter. Use [`solutions/silver/usaco-690.mdx`](https://github.com/cpinitiative/usaco-guide/blob/master/solutions/silver/usaco-690.mdx) as an example:
 
     ```
     ---
     id: usaco-690
     source: USACO Silver 2017 January
     title: Cow Dance Show
-    author: Óscar Garries
+    author: (add your name here)
     ---
 
     [Official Analysis](http://www.usaco.org/current/data/sol_cowdance_silver_jan17.html)
@@ -106,8 +104,7 @@ See [Working With MDX](/general/working-mdx) for additional information.
 
 4.  In the module's `.problems.json` file (in this case,
     [`Binary_Search.problems.json`](https://github.com/cpinitiative/usaco-guide/blob/master/content/3_Silver/Binary_Search.problems.json)),
-    change the `kind` of the `solutionMetadata` field to `internal` and remove
-    all other fields. Also add tags (if you want). If the problem is not in a
+    set `solutionMetadata` to `{ "kind": "internal" }`. Also add tags (if you want). If the problem is not in a
     module, you can add the problem to
     [`extraProblems.json`](https://github.com/cpinitiative/usaco-guide/blob/master/content/extraProblems.json).
 
@@ -132,30 +129,21 @@ See [Working With MDX](/general/working-mdx) for additional information.
 
 ## Code Conventions
 
-Since code for the USACO Guide is contributed from several authors, code style
-will **not** be uniform. Of course, we still strive for code that is readable
-and understandable. If any code does not compile or is hard to read, contact us.
+Your code will be automatically formatted using [pre-commit](https://pre-commit.com/).
+We strive for code that is readable and understandable. If any code does not
+compile or is hard to read, contact us.
 
 Read our guidelines below before contributing code.
 
 ### General
 
-- Use _tabs_ rather than spaces to indent.
-
-  <Info title="Pro Tip">
-  	If your code is indented with spaces, paste your code into the [Guide
-  	Editor](/editor), right-click, click "Command Palette" from the menu that
-  	pops up, and then search for "Convert Indentation to Tabs."
-  </Info>
-
+- Indentation will automatically be converted to tabs.
 - In general, do not include unused code (e.g. "templates").
   - There are some exceptions to this guideline (e.g. when using the `Kattio`
     class for Java I/O). In this case, collapse it with a
     [`CodeSnip`](/general/working-mdx#code-blocks-and-code-snippets).
-- Lines should not exceed 80 characters. If you need to, split comments across
-  multiple lines to follow this rule.
 - Use universally understandable variable names, especially for Bronze and
-  Silver. Should be more descriptive than what you would normally use
+  Silver. They should be more descriptive than what you would normally use
   in-contest.
 - Add comments throughout your code to explain your logic. Feel free to
   copy-paste the official USACO solution and improve it by adding more
@@ -175,8 +163,6 @@ Read our guidelines below before contributing code.
   <br />
 
   > Self-describing code doesn't need a comment.
-
-- Use spaces to separate your operators. For example, type `a + b` instead of `a+b`.
 
 - Don't repeat yourself.
   - [Rule Of Three](<https://en.wikipedia.org/wiki/Rule_of_three_(computer_programming)>)
@@ -203,12 +189,8 @@ Read our guidelines below before contributing code.
   [Github #806](https://github.com/cpinitiative/usaco-guide/issues/806)):
 
   ```cpp
-  CodeSnip{CPP Short Template}
-
-  int main() {
-    setIO();
-
-  }
+  // CodeSnip{CPP Short Template}
+  int main() { setIO(); }
   ```
 
 Optional reading:
@@ -239,19 +221,19 @@ Optional reading:
 	</Resource>
 </Resources>
 
-The C/C++ extension for
-[Visual Studio Code](/general/running-code-locally?lang=cpp#resource-https%3A%2F%2Fcode.visualstudio.com%2F)
-supports code formatting using `clang-format` (details
-[here](https://code.visualstudio.com/docs/cpp/cpp-ide#_code-formatting)). To
-indent using tabs, include the following in your
-`C_Cpp.clang_format_fallbackStyle` setting.
+C++ code is automatically formatted using [clang-format](https://clang.llvm.org/docs/ClangFormat.html) with the following settings:
 
 ```
-{ UseTab: AlignWithSpaces, TabWidth: 4, IndentWidth: 4 }
+TabWidth: 4
+IndentWidth: 4
+UseTab: ForIndentation
+AllowShortIfStatementsOnASingleLine: AllIfsAndElse
+AllowShortBlocksOnASingleLine: Always
+AllowShortFunctionsOnASingleLine: All
+AllowShortLambdasOnASingleLine: All
+AllowShortLoopsOnASingleLine: true
+SpacesBeforeTrailingComments: 2
 ```
-
-You don't have to use a formatter, but doing so will ensure consistency across
-the guide.
 
 </CPPSection>
 
@@ -268,6 +250,21 @@ the guide.
   - For example, `List<Integer> list = new ArrayList<>()` instead of
     `ArrayList<Integer> list = new ArrayList<>()`.
 
+
+Java code is automatically formatted using [clang-format](https://clang.llvm.org/docs/ClangFormat.html) with the following settings:
+
+```
+TabWidth: 4
+IndentWidth: 4
+UseTab: ForIndentation
+AllowShortIfStatementsOnASingleLine: AllIfsAndElse
+AllowShortBlocksOnASingleLine: Always
+AllowShortFunctionsOnASingleLine: All
+AllowShortLambdasOnASingleLine: All
+AllowShortLoopsOnASingleLine: true
+SpacesBeforeTrailingComments: 2
+```
+
 </JavaSection>
 
 <PySection>
@@ -283,6 +280,9 @@ the guide.
 		url="https://google.github.io/styleguide/pyguide.html"
 	/>
 </Resources>
+
+
+Python code is automatically formatted using [Black with tabs](https://pypi.org/project/black-with-tabs/).
 
 </PySection>
 

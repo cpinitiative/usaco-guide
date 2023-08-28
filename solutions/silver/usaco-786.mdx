@@ -1,0 +1,291 @@
+---
+id: usaco-786
+source: USACO Silver 2018 January
+title: Lifeguards
+author: Óscar Garries, Kevin Sheng, Nathan Wang
+---
+
+[Official Analysis (Java)](http://www.usaco.org/current/data/sol_lifeguards_silver_jan18.html)
+
+<LanguageSection>
+<CPPSection>
+
+## Implementation (With Sets)
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+struct Event {
+	int time;
+	int cow_id;
+	bool is_start;
+};
+
+bool operator<(const Event &a, const Event &b) { return a.time < b.time; }
+
+int main() {
+	freopen("lifeguards.in", "r", stdin);
+
+	int n;
+	cin >> n;
+	vector<Event> events;
+
+	for (int i = 0; i < n; i++) {
+		int l, r;
+		cin >> l >> r;
+		// each cow interval can be represented by a start and end event
+		events.push_back({l, i, true});
+		events.push_back({r, i, false});
+	}
+
+	sort(events.begin(), events.end());
+
+	// how much time each cow spends alone
+	vector<int> alone_time(n);
+
+	// cows that are currently working during within [prev_time, curr_time]
+	set<int> active;
+
+	// time of the previous event
+	int prev_time = 0;
+
+	// how much time is covered by all the cows together
+	int total_time = 0;
+
+	for (const Event &e : events) {
+		int curr_time = e.time;
+
+		// 1. update total time covered by all the cows
+		if (active.size() > 0) { total_time += curr_time - prev_time; }
+
+		// 2. check to see if there's only one cow in [prev_time, curr_time]
+		if (active.size() == 1) {
+			alone_time[*active.begin()] += curr_time - prev_time;
+		}
+
+		// 3. process the event
+		if (e.is_start) {
+			active.insert(e.cow_id);
+		} else {
+			active.erase(e.cow_id);
+		}
+
+		// 4. update prev_time
+		prev_time = curr_time;
+	}
+
+	int min_alone_time = *min_element(alone_time.begin(), alone_time.end());
+
+	freopen("lifeguards.out", "w", stdout);
+	cout << total_time - min_alone_time << endl;
+}
+```
+
+## Another Implementation (No Sets)
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+struct Cow {
+	int l, r;
+};
+
+bool operator<(const Cow &a, const Cow &b) { return a.l < b.l; }
+
+int main() {
+	freopen("lifeguards.in", "r", stdin);
+
+	int n;
+	cin >> n;
+
+	vector<Cow> cows(n);
+	for (int i = 0; i < n; i++) { cin >> cows[i].l >> cows[i].r; }
+
+	sort(cows.begin(), cows.end());
+
+	int total_time = 0;
+	// right = max ending point of lifeguards considered so far
+	int left = 0, right = 0;
+
+	// calculate total_time
+	for (int i = 0; i < n; i++) {
+		if (cows[i].r > right) {
+			left = max(right, cows[i].l);
+			total_time += cows[i].r - left;
+			right = cows[i].r;
+		}
+	}
+
+	Cow last;
+	last.l = cows[n - 1].r;
+	cows.push_back(last);
+
+	// min time a cow spends alone
+	int min_alone_time = total_time;
+	right = 0;
+	for (int i = 0; i < n; i++) {
+		int curr_res = min(cows[i + 1].l, cows[i].r) - max(cows[i].l, right);
+		min_alone_time = min(min_alone_time, curr_res);
+		right = max(right, cows[i].r);
+	}
+
+	freopen("lifeguards.out", "w", stdout);
+	// if min_alone_time < 0 then answer = tot
+	cout << total_time - max(min_alone_time, 0) << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+## Implementation
+
+Lightly modified from the official editorial.
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Lifeguards {
+	// BeginCodeSnip{Event Class}
+	static class Event implements Comparable<Event> {
+		public int time;
+		public int cowId;
+		public boolean isStart;
+
+		public Event(int time, int cowId, boolean isStart) {
+			this.time = time;
+			this.cowId = cowId;
+			this.isStart = isStart;
+		}
+
+		@Override
+		public int compareTo(Event other) {
+			return time - other.time;
+		}
+	}
+	// EndCodeSnip
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader read =
+		    new BufferedReader(new FileReader("lifeguards.in"));
+
+		int n = Integer.parseInt(read.readLine());
+		Event[] events = new Event[2 * n];
+		for (int i = 0; i < n; i++) {
+			StringTokenizer e = new StringTokenizer(read.readLine());
+			int l = Integer.parseInt(e.nextToken());
+			int r = Integer.parseInt(e.nextToken());
+			events[2 * i] = new Event(l, i, true);
+			events[2 * i + 1] = new Event(r, i, false);
+		}
+
+		Arrays.sort(events);
+
+		// how much time each cow spends alone
+		int[] aloneTime = new int[n];
+
+		// cows that are currently working during within [prev_time, curr_time]
+		Set<Integer> active = new HashSet<>();
+
+		// time of the previous event
+		int prevTime = 0;
+
+		// how much time is covered by all the cows together
+		int totalTime = 0;
+
+		for (Event e : events) {
+			int currTime = e.time;
+
+			// 1. update total time covered by all the cows
+			if (active.size() > 0) { totalTime += currTime - prevTime; }
+
+			// 2. check to see if there's only one cow in [prevTime, currTime]
+			if (active.size() == 1) {
+				aloneTime[active.iterator().next()] += currTime - prevTime;
+			}
+
+			// 3. process the event
+			if (e.isStart) {
+				active.add(e.cowId);
+			} else {
+				active.remove(e.cowId);
+			}
+
+			// 4. update prevTime
+			prevTime = currTime;
+		}
+
+		int minAloneTime = Arrays.stream(aloneTime).min().getAsInt();
+
+		PrintWriter written = new PrintWriter("lifeguards.out");
+		written.println(totalTime - minAloneTime);
+		written.close();
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+# BeginCodeSnip{Event Class}
+class Event:
+	def __init__(self, time: int, cow_id: int, is_start: bool) -> None:
+		self.time = time
+		self.cow_id = cow_id
+		self.is_start = is_start
+
+
+# EndCodeSnip
+
+with open("lifeguards.in") as read:
+	n = int(read.readline())
+	events = []
+	for i in range(n):
+		l, r = [int(i) for i in read.readline().split()]
+		# each cow interval can be represented by a start and end event
+		events.append(Event(l, i, True))
+		events.append(Event(r, i, False))
+
+events.sort(key=lambda e: e.time)
+
+# how much time each cow spends alone
+alone_time = [0 for _ in range(n)]
+
+# cows that are currently working during within [prev_time, curr_time]
+active = set()
+
+# time of the previous event
+prev_time = 0
+
+# how much time is covered by all the cows together
+total_time = 0
+
+for e in events:
+	curr_time = e.time
+	print(active)
+	# 1. update total time covered by all the cows
+	if active:
+		total_time += curr_time - prev_time
+
+	# 2. check to see if there's only one cow in [prev_time, curr_time]
+	if len(active) == 1:
+		alone_time[next(iter(active))] += curr_time - prev_time
+
+	# 3. process the event
+	if e.is_start:
+		active.add(e.cow_id)
+	else:
+		active.remove(e.cow_id)
+
+	# 4. update prev_time
+	prev_time = curr_time
+
+print(total_time - min(alone_time), file=open("lifeguards.out", "w"))
+```
+
+</PySection>
+</LanguageSection>

@@ -1,0 +1,110 @@
+---
+id: usaco-760
+source: USACO Bronze 2017 December
+title: The Bovine Shuffle
+author: Sathvik Chundru, Jesse Choe, Ryan Chou
+---
+
+[Official Analysis (C++ and Java)](http://www.usaco.org/current/data/sol_shuffle_bronze_dec17.html)
+
+If the $i$th cow moves to $a_i$ after one shuffle, then the cow at $a_i$ was at $i$ one shuffle ago.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int SHUFFLE_NUM = 3;
+
+int main() {
+	freopen("shuffle.in", "r", stdin);
+	int n;
+	cin >> n;
+
+	vector<int> shuffle(n);
+	for (int &i : shuffle) { cin >> i; }
+	vector<int> ids(n);
+	for (int &i : ids) { cin >> i; }
+
+	for (int i = 0; i < SHUFFLE_NUM; i++) {
+		vector<int> past_order(n);
+		for (int j = 0; j < n; j++) {
+			// -1 because the shuffle input starts from 1
+			past_order[j] = ids[shuffle[j] - 1];
+		}
+		ids = past_order;
+	}
+
+	freopen("shuffle.out", "w", stdout);
+	for (const int &i : ids) { cout << i << '\n'; }
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Shuffle {
+	static final int SHUFFLE_NUM = 3;
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader read = new BufferedReader(new FileReader("shuffle.in"));
+		int n = Integer.parseInt(read.readLine());
+		int[] shuffle = Arrays.stream(read.readLine().split(" "))
+		                    .mapToInt(Integer::parseInt)
+		                    .toArray();
+		int[] ids = Arrays.stream(read.readLine().split(" "))
+		                .mapToInt(Integer::parseInt)
+		                .toArray();
+		read.close();
+
+		for (int i = 0; i < SHUFFLE_NUM; i++) {
+			int[] pastOrder = new int[n];
+			for (int j = 0; j < n; j++) {
+				// -1 because the shuffle input starts from 1
+				pastOrder[j] = ids[shuffle[j] - 1];
+			}
+			ids = pastOrder;
+		}
+
+		PrintWriter written = new PrintWriter("shuffle.out");
+		for (int i : ids) { written.println(i); }
+		written.close();
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+SHUFFLE_NUM = 3
+
+with open("shuffle.in") as read:
+	n = int(read.readline())
+	shuffle = list(map(int, read.readline().split()))
+	ids = list(map(int, read.readline().split()))
+
+for _ in range(SHUFFLE_NUM):
+	past_order = [0] * n
+	for i in range(n):
+		# -1 because the shuffle input starts from 1
+		past_order[i] = ids[shuffle[i] - 1]
+	ids = past_order.copy()
+
+with open("shuffle.out", "w") as written:
+	for i in past_order:
+		print(i, file=written)
+```
+
+</PySection>
+</LanguageSection>

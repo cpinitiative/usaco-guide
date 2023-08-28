@@ -46,3 +46,8 @@ export function graphqlToModuleInfo(mdx: any): ModuleInfo {
     mdx.fields.gitAuthorTime
   );
 }
+
+// https://stackoverflow.com/questions/2218999/how-to-remove-all-duplicates-from-an-array-of-objects
+export function removeDuplicates<T>(arr: T[]): T[] {
+  return [...new Map(arr.map(item => [JSON.stringify(item), item])).values()];
+}

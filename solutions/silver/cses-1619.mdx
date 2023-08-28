@@ -1,0 +1,410 @@
+---
+id: cses-1619
+source: CSES
+title: Restaurant Customers
+author: Michael Cao, Neo Wang, Brad Ma, Alex Du, Aadit Ambadkar
+---
+
+In this problem, we're given $n$ intervals with distinct start and end points,
+and we want to find the maximum number of intervals overlapping some point.
+
+## Solution
+
+We can use prefix sums to determine the number of intervals that cover any
+particular point, and then find the maximum number in the sum.
+
+A naïve approach is to create an array $\texttt{ctr}$, where $\texttt{ctr}[i]$
+is the number of intervals that cover each point $i$. We can do this by looping
+through each interval $[a,b]$ and increasing $\texttt{ctr}[i]$ by $1$ for each
+index in $a \leq i \leq b$.
+
+This results in a $\mathcal{O}(nV)$ time complexity (where
+$0 \leq a \leq b \leq V$), which easily times out (think what happens when the
+interval $[0, V]$ is queried $n$ times).
+
+We can do better. It's easy to see that an increment of $x$ (before computation)
+in $\texttt{arr}[i]$ causes all subsequent $\texttt{prefix}[i...V]$ (after
+computation) to increase by $x$. We can also "undo" this operation by adding
+$-x$ to $\texttt{arr}[i]$. This concept can be conceptualized through increment
+and decrement points. An increment point increases (and decrement decreases) all
+subsequent cells. Note that our decrement point is located at $B+1$ because the
+interval is inclusive - decrementing at point $B$ turns the interval to
+$[A, B)$.
+
+**Example 1**: Add two to each point in the interval $[2, 4]$
+
+Our array after adding 2 at our increment (start) point (before computation)
+
+<center>
+	<table className="text-center">
+		<tr>
+			<td>0</td>
+			<td>0</td>
+			<td className="bg-green-200 dark:bg-green-800">2</td>
+			<td>0</td>
+			<td>0</td>
+			<td>0</td>
+		</tr>
+	</table>
+</center>
+
+Our prefix sum after adding 2 at our increment (start) point (and computing).
+
+<center>
+	<table className="text-center">
+		<tr>
+			<td>0</td>
+			<td>0</td>
+			<td className="bg-green-200 dark:bg-green-800">2</td>
+			<td>2</td>
+			<td>2</td>
+			<td>2</td>
+		</tr>
+	</table>
+</center>
+
+Our prefix sum after subtracting 2 at our decrement point (and computing).
+
+<center>
+	<table className="text-center">
+		<tr>
+			<td>0</td>
+			<td>0</td>
+			<td>2</td>
+			<td>2</td>
+			<td>2</td>
+			<td className="bg-red-200 dark:bg-red-800">0</td>
+		</tr>
+	</table>
+</center>
+
+Observe that this works for multiple intervals.
+
+**Example 2**: Add two to each point in $[2, 4]$ and one to each point in
+$[1, 3]$
+
+Adding interval $[2, 4]$ with increment point at $2$ and decrement at $4+1=5$
+
+<center>
+	<table className="text-center">
+		<tr>
+			<td>0</td>
+			<td>0</td>
+			<td className="bg-green-200 dark:bg-green-800">2</td>
+			<td>0</td>
+			<td>0</td>
+			<td className="bg-red-200 dark:bg-red-800">-2</td>
+		</tr>
+	</table>
+</center>
+
+Adding interval $[1, 3]$ with increment point at $1$ and decrement at $3+1=4$
+
+<center>
+	<table className="text-center">
+		<tr>
+			<td>0</td>
+			<td className="bg-green-200 dark:bg-green-800">1</td>
+			<td>2</td>
+			<td>0</td>
+			<td className="bg-red-200 dark:bg-red-800">-1</td>
+			<td>-2</td>
+		</tr>
+	</table>
+</center>
+
+After computation
+
+<center>
+	<table className="text-center">
+		<tr>
+			<td>0</td>
+			<td>1</td>
+			<td>3</td>
+			<td>3</td>
+			<td>2</td>
+			<td>0</td>
+		</tr>
+	</table>
+</center>
+
+In this problem, our $x$ is fixed at $1$. As a result, when we encounter a
+starting point, we can increment by $1$, and for an endpoint, decrement by $1$.
+We actually cannot compute the prefix sum array directly since $V \leq 10^9$,
+and we will run out of memory when creating an array of size $V$.
+
+Instead, we can either coordinate compress and compute the prefix sum over
+interesting intervals or sweep over the intervals while maintaining a running
+prefix sum.
+
+## Implementation 1
+
+If we put the start and end points into a list and sort them, all we need to do
+is find the max sum of values over all prefixes of the list.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	int n;
+	cin >> n;
+	vector<pair<int, int>> times;
+	for (int i = 0; i < n; i++) {
+		int start, end;
+		cin >> start >> end;
+		times.push_back({start, 1});
+		times.push_back({end, -1});
+	}
+
+	sort(times.begin(), times.end());
+
+	int curr_ppl = 0;
+	int max_ppl = 0;
+	for (const pair<int, int> &t : times) {
+		curr_ppl += t.second;
+		max_ppl = max(max_ppl, curr_ppl);
+	}
+
+	cout << max_ppl << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+If we use the same implementation as the C++ version, CSES will give a TLE
+verdict on test case 6.
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Customers {
+	public static void main(String[] args) throws IOException {
+		BufferedReader read =
+		    new BufferedReader(new InputStreamReader(System.in));
+		int n = Integer.parseInt(read.readLine());
+
+		int[][] times = new int[2 * n][];
+		for (int i = 0; i < n; i++) {
+			StringTokenizer cus = new StringTokenizer(read.readLine());
+			times[2 * i] = new int[] {Integer.parseInt(cus.nextToken()), 1};
+			times[2 * i + 1] =
+			    new int[] {Integer.parseInt(cus.nextToken()), -1};
+		}
+
+		// Sort the array by time
+		Arrays.sort(times, Comparator.comparingInt(t -> t[0]));
+
+		int mostPpl = 0;
+		int currPpl = 0;
+		for (int[] t : times) {
+			currPpl += t[1];
+			mostPpl = Math.max(mostPpl, currPpl);
+		}
+
+		System.out.println(mostPpl);
+	}
+}
+```
+
+To fix this, we can use a
+[`TreeMap`](https://docs.oracle.com/javase/7/docs/api/java/util/TreeMap.html)
+instead of a sorted array.
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Customers {
+	public static void main(String[] args) throws IOException {
+		BufferedReader read =
+		    new BufferedReader(new InputStreamReader(System.in));
+		TreeMap<Integer, Integer> times = new TreeMap<>();
+		int n = Integer.parseInt(read.readLine());
+		for (int i = 0; i < n; i++) {
+			StringTokenizer cus = new StringTokenizer(read.readLine());
+			times.put(Integer.parseInt(cus.nextToken()), 1);
+			times.put(Integer.parseInt(cus.nextToken()), -1);
+		}
+
+		int mostPpl = 0;
+		int currPpl = 0;
+		for (int t : times.values()) {
+			currPpl += t;
+			mostPpl = Math.max(mostPpl, currPpl);
+		}
+
+		System.out.println(mostPpl);
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+<Warning>
+
+Due to Python's high constant factor, this code may TLE on a couple test cases.
+
+</Warning>
+
+```py
+times = []
+for _ in range(int(input())):
+	start, end = map(int, input().split())
+	times.append((start, 1))
+	times.append((end, -1))
+
+times.sort()
+
+curr_ppl = 0
+max_ppl = 0
+
+for t in times:
+	curr_ppl += t[1]
+	max_ppl = max(max_ppl, curr_ppl)
+
+print(max_ppl)
+```
+
+Since all arrival and leaving times are distinct, we can store if a given time is an arrival or departure, and sort all the arrival and leaving times in one array.
+
+```py
+# Stores the change in the number of people at a specific time
+tmap = dict()
+times = []
+
+for _ in range(int(input())):
+	start, end = input().split()
+	start = int(start)
+	end = int(end)
+	# tmap is 1 when person enters, -1 when person leaves
+	tmap[start] = 1
+	tmap[end] = -1
+	times.append(start)
+	times.append(end)
+
+times.sort()
+
+curr_ppl = 0
+max_ppl = 0
+
+# Iterate through all times to see the maximum amount of people
+for t in times:
+	curr_ppl += tmap[t]
+	max_ppl = max(max_ppl, curr_ppl)
+
+print(max_ppl)
+```
+
+</PySection>
+</LanguageSection>
+
+## Implementation 2
+
+Coordinate compress interval endpoints and only compute the prefix sum array for
+interesting intervals.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	int n;
+	cin >> n;
+	vector<pair<int, int>> times;
+	for (int i = 0; i < n; i++) {
+		int start, end;
+		cin >> start >> end;
+		times.push_back({start, 1});
+		times.push_back({end + 1, -1});
+	}
+
+	sort(times.begin(), times.end());
+
+	int curr = 0;
+	int at = 0;
+	// Stores how much the # of people in the restaurant changes each time step
+	vector<int> ppl_change(2 * n);
+	// Compress the starting & ending events into a single array
+	for (int i = 0; i < 2 * n; i++) {
+		if (i == 0) {
+			times[i].first = 0;
+		} else if (times[i].first > curr) {
+			at++;
+			curr = times[i].first;
+		}
+		ppl_change[at + 1] += times[i].second;
+	}
+
+	// Build our prefix sum array
+	vector<int> ppl_amt(2 * n + 1);
+	for (int i = 1; i < 2 * n + 1; i++) {
+		ppl_amt[i] = ppl_change[i - 1] + ppl_amt[i - 1];
+	}
+
+	// Our answer is just the maximum of the prefix sum array
+	int max_ppl = 0;
+	for (int i = 0; i < 2 * n + 1; i++) { max_ppl = max(max_ppl, ppl_amt[i]); }
+
+	cout << max_ppl << endl;
+}
+```
+
+</CPPSection>
+<PySection>
+
+<Warning>
+
+Due to Python's big constant factor, this code may TLE on a couple test cases.
+
+</Warning>
+
+```py
+n = int(input())
+
+times = []
+
+for _ in range(n):
+	start, end = map(int, input().split())
+	times.append((start, 1))
+	times.append((end + 1, -1))
+
+times.sort()
+
+curr = 0
+at = 0
+
+# Stores how much the # of people in the restaurant changes each time step
+ppl_change = [0] * (2 * n)
+
+# Compress the starting & ending events into a single array
+for i in range(2 * n):
+	if i == 0:
+		times[i] = (0, times[i][1])
+	elif times[i][0] > curr:
+		at += 1
+		curr = times[i][0]
+	ppl_change[at] += times[i][1]
+
+# Build our prefix sum array
+ppl_amt = [0] * (2 * n + 1)
+for i in range(1, 2 * n + 1):
+	ppl_amt[i] = ppl_change[i - 1] + ppl_amt[i - 1]
+
+# Our answer is the maximum of the prefix sum array
+max_ppl = max(ppl_amt)
+
+print(max_ppl)
+```
+
+</PySection>
+</LanguageSection>

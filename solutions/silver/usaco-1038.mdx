@@ -1,0 +1,189 @@
+---
+id: usaco-1038
+source: USACO Silver 2020 US Open
+title: Social Distancing
+author: Albert Zhu, Melody Yu, George Pong
+---
+
+[Official Analysis](http://www.usaco.org/current/data/sol_socdist_silver_open20.html)
+
+## Video Solution
+
+Note: The video solution might not be the same as other solutions. Code in C++.
+<YouTube id="mt8QhnFOkr0" />
+
+## Explanation
+
+Observe that for any distance, if it is not possible for all the cows to stand on grass with the specified distance, then it is not possible for any distance greater than said distance. Furthermore, while it may be difficult to calculate $D$ directly (one does not even know how to approach such a problem), it is not as difficult to check if a certain proposed distance is valid. This makes for a perfect binary search problem.
+
+We need to check for a specified minimum distance between cows of $d$, if all cows are able to be placed on grass. This can be done by iterating through the sorted (mutually-disjoint) intervals and placing the cows optimally.
+
+Consider the first interval. It is most efficient to place the cow on the left-most edge of the interval to allow the most room for other cows. Then, if there is space in the same interval $d$ distance away, we place the next cow. We repeat until there is no more room in the current interval, where we switch to the next interval. We again place our cow as left as possible, while still keeping at least $d$ distance from the previous cow (If we cannot place a cow in this interval we skip it). We repeat this process until all cows have been placed or there are no more intervals. If there are no more intervals and there are cows left unplaced, then the proposed distance is invalid.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}((N+M)\log (\texttt{maxDist}))$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+void setIO(string prob = "") {
+	if (!prob.empty()) {
+		freopen((prob + ".in").c_str(), "r", stdin);
+		freopen((prob + ".out").c_str(), "w", stdout);
+	}
+}
+
+const int MAX_N = 1e5;
+
+pair<long long, long long> intervals[MAX_N];
+
+int main() {
+	setIO("socdist");
+
+	int n, m;
+	cin >> n >> m;
+	for (int i = 0; i < m; i++) {
+		cin >> intervals[i].first >> intervals[i].second;
+	}
+	sort(intervals, intervals + m);
+
+	long long lo = 0;
+	long long hi = intervals[m - 1].second - intervals[0].first + 1;
+	while (lo < hi) {
+		long long mid = lo + (hi - lo + 1) / 2;
+		int count = 1;
+		int intervalCount = 0;
+		long long current = intervals[0].first;
+
+		// try to fit the next cow into the earliest patch of grass that's
+		// available
+		while (current + mid <= intervals[m - 1].second) {
+			while (current + mid > intervals[intervalCount].second) {
+				intervalCount++;
+			}
+			current = max(intervals[intervalCount].first, current + mid);
+			count++;
+			if (count == n) break;
+		}
+
+		if (count >= n) lo = mid;
+		else hi = mid - 1;
+	}
+	cout << lo << '\n';
+}
+```
+
+</CPPSection>
+
+<PySection>
+
+```py
+with open("socdist.in", "r") as r:
+	n, m = map(int, r.readline().split())
+	intervals = [tuple(map(int, r.readline().split())) for _ in range(m)]
+	intervals.sort()
+
+
+def possible_placement(d: int) -> bool:
+	cows = n
+	prev_cow_location = intervals[0][0] - d
+
+	for begin, end in intervals:
+		if prev_cow_location + d < begin:
+			prev_cow_location = begin - d
+
+		while begin <= prev_cow_location + d <= end:
+			prev_cow_location += d
+			cows -= 1
+
+	return cows <= 0
+
+
+left, right = 0, intervals[-1][1] - intervals[0][0]
+
+while left < right:
+	mid = (left + right + 1) // 2
+	if possible_placement(mid):
+		left = mid
+	else:
+		right = mid - 1
+
+print(left, file=open("socdist.out", "w"))
+```
+
+</PySection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class SocDist {
+	static class Pair implements Comparable<Pair> {
+		long first, second;
+
+		public Pair(long x, long y) {
+			first = x;
+			second = y;
+		}
+
+		public int compareTo(Pair x) {
+			if (this.first == x.first) return (int)(this.second - x.second);
+			return (int)(this.first - x.first);
+		}
+	}
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader in = new BufferedReader(new FileReader("socdist.in"));
+		PrintWriter pw = new PrintWriter("socdist.out");
+		StringTokenizer st = new StringTokenizer(in.readLine());
+
+		int n = Integer.parseInt(st.nextToken());
+		int m = Integer.parseInt(st.nextToken());
+
+		Pair intervals[] = new Pair[m];
+		for (int i = 0; i < m; i++) {
+			st = new StringTokenizer(in.readLine());
+			intervals[i] = new Pair(Long.parseLong(st.nextToken()),
+			                        Long.parseLong(st.nextToken()));
+		}
+
+		Arrays.sort(intervals);
+		long lo = 0;
+		long hi = intervals[m - 1].second - intervals[0].first + 1;
+		while (lo < hi) {
+			long mid = lo + (hi - lo + 1) / 2;
+			int count = 1;
+			int intervalCount = 0;
+			long current = intervals[0].first;
+			// try to fit the next cow into the earliest patch of grass that's
+			// available
+			while (current + mid <= intervals[m - 1].second) {
+				while (current + mid > intervals[intervalCount].second) {
+					intervalCount++;
+				}
+				current =
+				    Math.max(intervals[intervalCount].first, current + mid);
+				count++;
+				if (count == n) break;
+			}
+			if (count >= n) lo = mid;
+			else hi = mid - 1;
+		}
+		pw.println(lo);
+		pw.close();
+	}
+}
+```
+
+</JavaSection>
+
+</LanguageSection>

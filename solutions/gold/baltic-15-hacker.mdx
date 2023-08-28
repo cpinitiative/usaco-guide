@@ -1,0 +1,138 @@
+---
+id: baltic-15-hacker
+source: Baltic OI 2015
+title: Hacker
+author: Michael Cao
+---
+
+[Official Analysis](https://boi.cses.fi/files/boi2015_solutions.zip)
+
+## Intuition
+
+In this problem, we're asked to play a game where players take turns claiming
+unclaimed elements in a circular array that are adjacent to one of their
+previously claimed elements (or any unclaimed element on their first turns).
+Both players try to maximize the sum of values of their chosen elements.
+
+After playing around with the game, we can make some important observations.
+
+### Observation 1
+
+<Info title = "Observation">
+
+At the end of the game, the first player will control a subarray (a contiguous
+subsequence) of the circular array of length exactly
+$\left \lceil{\frac{n}{2}}\right \rceil$, and the second player will control the
+remaining elements.
+
+</Info>
+
+Since each player can only choose an element not adjacent to any other element
+once (the first move), the elements each player claims must form a subarray.
+Also, notice that any move made by either player will increase the length of the
+subarray they control by one, and both players will always have a valid move.
+Therefore, because the first player moves first, the subarray they control will
+be of length $\left \lceil{\frac{n}{2}}\right \rceil$.
+
+### Observation 2
+
+<Info title = "Observation">
+
+For some first move made by the first player claiming index $x$, the second
+player can always force the first player to control any subarray of length
+$\left \lceil{\frac{n}{2}}\right \rceil$ containing $x$.
+
+</Info>
+
+Consider the following strategy: for some move by the first player extending to
+the left or right, make the opposite move.
+
+Using this strategy, the second player can force the first player to control any
+subarray of length $\left \lceil{\frac{n}{2}}\right \rceil$ containing the first
+players first move depending on the second players first move.
+
+<!-- Better proof? idk I kinda proof by AC'd -->
+
+## Computing the Solution
+
+Using these observations, the answer equals:
+
+$$
+\max_{1 \leq x \leq n}\min_{v \in S_x}v
+$$
+
+where $S_x$ represents a set of sums for all subarrays of length
+$\left \lceil{\frac{n}{2}}\right \rceil$ containing $x$ in the circular array,
+$\texttt{c}$.
+
+### Transforming the Circular Array
+
+First, to deal with the circular aspect of the array, let's concatenate it onto
+itself to create an array of length $2n$ and call it $\texttt{a}$. Now, we only
+need to compute subarrays on a linear array, where
+$S_x = S'_x \cup S'_{x + n} (1 \leq x \leq n)$ where $S'_x$ represents the set
+of subarrays containing $x$ in $\texttt{a}$.
+
+### Using A Sorted Set
+
+If we iterate over $x$ $(1 \leq x \leq 2n)$ in $\texttt{a}$, then we can store
+the running sorted set $S'_x$ and use it to update $S_{x \bmod n}$. For
+$x \geq 0$, add the sum over the subarray
+$[x, x + \left \lceil{\frac{n}{2}}\right \rceil - 1]$ to $S'x$ (you can compute
+this using prefix sums). Additionally, if
+$x \geq \left \lceil{\frac{n}{2}}\right \rceil$, remove the sum over
+$[x - \left \lceil{\frac{n}{2}}\right \rceil + 1, x]$. Then, we can compute the
+minimum value of $S'x$ for some $x$ by querying for the smallest value in the
+sorted set.
+
+<Warning>
+
+Make sure to use a `std::multiset` because there can be duplicate sums.
+
+</Warning>
+
+## Implementation
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using ll = long long;
+
+using vi = vector<int>;
+#define pb push_back
+#define rsz resize
+#define all(x) begin(x), end(x)
+#define sz(x) (int)(x).size()
+
+using pi = pair<int, int>;
+#define f first
+#define s second
+#define mp make_pair
+
+int main() {
+	ios::sync_with_stdio(false);
+	cin.tie(0);
+	int n;
+	cin >> n;
+	vi a(2 * n + 1);
+	a[0] = 0;
+	multiset<int> vals;
+	int SZ = (n + 1) / 2;
+	for (int i = 1; i <= n; i++) {
+		cin >> a[i];
+		a[n + i] = a[i];
+	}
+	for (int i = 1; i <= 2 * n; i++) { a[i] += a[i - 1]; }
+	int ans = 0;
+	vi ret(n + 1, INT_MAX);
+	for (int i = 1; i <= 2 * n; i++) {
+		if (i + SZ - 1 <= 2 * n) { vals.insert(a[i + SZ - 1] - a[i - 1]); }
+		if (i > SZ) { vals.erase(vals.find(a[i - 1] - a[i - 1 - SZ])); }
+		int prev = ((i - 1) % n) + 1;
+		ret[prev] = min(ret[prev], *vals.begin());
+	}
+	for (int i = 1; i <= n; i++) { ans = max(ans, ret[i]); }
+	cout << ans << '\n';
+}
+```

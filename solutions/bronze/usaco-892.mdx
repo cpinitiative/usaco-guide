@@ -1,0 +1,182 @@
+---
+id: usaco-892
+source: USACO Bronze 2019 January
+title: Sleepy Cow Sorting
+author: Ananth Kashyap, Brad Ma, Vikas Thoutam
+---
+
+[Official Analysis](http://www.usaco.org/current/data/sol_sleepy_bronze_jan19.html)
+
+## Video Solution
+By Vikas Thoutam
+
+<YouTube id="9sh0XJryLAg" />
+
+<Spoiler title="Video Solution Code">
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	// File input and output
+	freopen("sleepy.in", "r", stdin);
+	freopen("sleepy.out", "w", stdout);
+
+	// Take in size of array (n) and create a array to store the cow positions
+	int n;
+	cin >> n;
+	int cows[n];
+
+	// Take in the start positions of the cows and store them in the array
+	for (int i = 0; i < n; i++) { cin >> cows[i]; }
+
+	// Compute x, the length of the increasing subarray at the end
+	int x = 1;
+	for (int i = n - 2; i > -1 && cows[i] < cows[i + 1]; i--) x++;
+
+	// Print the answer, n-x
+	printf("%d", n - x);
+	fclose(stdout);
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.StringTokenizer;
+
+public class SleepyCowSorting {
+	public static void main(String[] args) throws IOException {
+		// File input and output
+		BufferedReader br = new BufferedReader(new FileReader("sleepy.in"));
+		PrintWriter pw = new PrintWriter("sleepy.out");
+
+		// Take in size of array (n) and create a array to store the cow
+		// positions
+		int n = Integer.parseInt(br.readLine());
+		int[] cows = new int[n];
+
+		// Take in the start positions of the cows and store them in the array
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		for (int i = 0; i < n; i++) {
+			cows[i] = Integer.parseInt(st.nextToken());
+		}
+
+		// Compute x, the length of the increasing subarray at the end
+		int x = 1;
+		for (int i = n - 2; i > -1 && cows[i] < cows[i + 1]; i--) x++;
+
+		// Print the answer, n-x
+		pw.print(n - x);
+		pw.close();
+	}
+}
+```
+</JavaSection>
+
+</LanguageSection>
+</Spoiler>
+
+## Explanation
+
+We can think about this problem by looking at the end of the array of cows. Notice that if the last $i$ elements in the array are sorted in increasing order, FJ can fully sort the cows in $n-i$ time steps. This is because the first $n-i$ elements are still to be sorted. Thus, we can find the last unsorted cow and output its position.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+
+<PySection>
+
+```py
+file_in = open("sleepy.in")
+data = file_in.read().strip().split("\n")
+
+n = int(data[0])
+cows = list(map(int, data[1].split(" ")))
+
+ans = 0
+
+# Find the number of strictly increasing values at the end of the list
+for i in range(n - 1, 0, -1):
+	if cows[i] < cows[i - 1]:
+		ans = i
+		break
+
+file_out = open("sleepy.out", "w")
+file_out.write(str(ans))
+file_out.close()
+```
+
+</PySection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class SleepyCowSorting {
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio("sleepy");
+		int n = io.nextInt();
+		int[] cows = new int[n];
+
+		for (int i = 0; i < n; i++) { cows[i] = io.nextInt(); }
+
+		// Find the number of strictly increasing values at the end of the list
+		int answer = n - 1;
+		for (int i = n - 2; i >= 0; i--) {
+			if (cows[i] < cows[i + 1]) {
+				answer = i;
+			} else {
+				break;
+			}
+		}
+
+		io.println(answer);
+		io.close();
+	}
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int cows[105];
+
+int main() {
+	freopen("sleepy.in", "r", stdin);
+	freopen("sleepy.out", "w", stdout);
+	int n;
+	cin >> n;
+	for (int i = 0; i < n; i++) { cin >> cows[i]; }
+	int answer = n - 1;
+	for (int i = n - 2; i >= 0; i--) {
+		if (cows[i] < cows[i + 1]) {
+			answer = i;
+		} else {
+			break;
+		}
+	}
+	cout << answer << endl;
+}
+```
+
+</CPPSection>
+
+</LanguageSection>

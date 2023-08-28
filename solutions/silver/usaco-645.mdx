@@ -1,0 +1,174 @@
+---
+id: usaco-645
+source: USACO Gold 2016 Open
+title: Splitting the Field
+author: Óscar Garries, Benjamin Qi, Ryan Chou
+---
+
+[Official Analysis (Java)](http://www.usaco.org/current/data/sol_split_gold_open16.html)
+
+<Warning title="Weak Test Data">
+
+Some accepted submissions may give different outputs on the following test case:
+
+The right answer should be $6$.
+
+```cpp
+// BeginCodeSnip{Test Case}
+17 1 1 1 2 1 3 2 1 2 2 2 3 3 1 3 2 3 3 3 4 3 5 4 3 4 4 4 5 5 3 5 4 5 5
+    // EndCodeSnip
+```
+</Warning>
+
+## Explanation
+
+Since the enclosures must be rectangular, there *must* be a vertical or horizontal line that separates the two. Otherwise,
+we'd have a case where one enclosure would have to overlap the other in order to enclose all the cows.
+
+![](<usaco-645/enclosures.png>)
+
+Thus, we'll perform two sweeps, one checking vertical splits, and the other checking horizontal splits. To keep track of the best answer, we'll keep
+prefix and suffix minimums and maximums to calculate each possible solution in $\mathcal{O}(1)$ time.
+
+We can also use a binary search tree instead of prefix/suffix minimums and maximums. To do this, we can create two ordered sets: a set representing the current enclosure,
+and a set representing the other enclosure. As we sweep across these coordinates, we'll add them to the current set and remove them from the other enclosure. To query, we'll fetch the minimum and maximum values from the sets.
+
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N \log N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using ll = long long;
+
+int n;
+ll ans = 0;
+vector<pair<int, int>> cows;
+
+/** returns the maximum area saved by testing splits along cows[i].first */
+ll search() {
+	sort(cows.begin(), cows.end());
+
+	vector<pair<int, int>> pref(n), suf(n);
+
+	// returns updated min/maxs when considering a new coordinate
+	auto upd = [](pair<int, int> a, int b) -> pair<int, int> {
+		return {min(a.first, b), max(a.second, b)};
+	};
+
+	// compute prefix/suffix minimums and maximums
+	pref[0] = {cows[0].second, cows[0].second};
+	for (int i = 1; i < n; ++i) { pref[i] = upd(pref[i - 1], cows[i].second); }
+
+	suf[n - 1] = {cows[n - 1].second, cows[n - 1].second};
+	for (int i = n - 2; i >= 0; i--) {
+		suf[i] = upd(suf[i + 1], cows[i].second);
+	}
+
+	// initial area with one enclosure
+	ll area = (ll)(cows.back().first - cows.front().first) *
+	          (pref.back().second - pref.back().first);
+
+	ll best = LLONG_MAX;
+	for (int i = 0; i < n - 1; i++) {
+		// if it's possible to split
+		if (cows[i].first != cows[i + 1].first) {
+			ll first_rect = (ll)(cows[i].first - cows[0].first) *
+			                (pref[i].second - pref[i].first);
+			ll second_rect = (ll)(cows.back().first - cows[i + 1].first) *
+			                 (suf[i + 1].second - suf[i + 1].first);
+
+			best = min(best, first_rect + second_rect);
+		}
+	}
+
+	return area - best;
+}
+
+int main() {
+	freopen("split.in", "r", stdin);
+	freopen("split.out", "w", stdout);
+
+	cin >> n;
+	cows.resize(n);
+
+	for (pair<int, int> &cow : cows) { cin >> cow.first >> cow.second; }
+
+	// try all splits on x axis
+	ans = max(ans, search());
+
+	for (pair<int, int> &cow : cows) { swap(cow.first, cow.second); }
+
+	// try all splits on y axis
+	ans = max(ans, search());
+
+	cout << ans << endl;
+}
+```
+</CPPSection>
+
+<PySection>
+
+```py
+with open("split.in") as read:
+	n = int(read.readline())
+	cows = [list(map(int, read.readline().split())) for _ in range(n)]
+
+ans = 0
+
+
+def search():
+	"""
+	returns the maximum area saved by testing splits along cows[i].first
+	"""
+	global ans
+
+	cows.sort()
+
+	upd = lambda x, y: (min(x[0], y), max(x[1], y))
+
+	# compute prefix/suffix minimums and maximums
+	pref = [(cows[0][1], cows[0][1])]
+	for i in range(1, n):
+		pref.append(upd(pref[-1], cows[i][1]))
+
+	suf = [(cows[-1][1], cows[-1][1])]
+	for i in range(n - 2, -1, -1):
+		suf.append(upd(suf[-1], cows[i][1]))
+	suf.reverse()
+
+	# initial area with one enclosure
+	area = (cows[-1][0] - cows[0][0]) * (pref[-1][1] - pref[-1][0])
+	best = float("inf")
+
+	for i in range(n - 1):
+		# if it's possible to split
+		if cows[i][0] != cows[i + 1][0]:
+			first_rect = (cows[i][0] - cows[0][0]) * (pref[i][1] - pref[i][0])
+			second_rect = (cows[-1][0] - cows[i + 1][0]) * (
+				suf[i + 1][1] - suf[i + 1][0]
+			)
+
+			best = min(best, first_rect + second_rect)
+
+	return area - best
+
+
+# try all splits on x-axis
+ans = max(ans, search())
+
+cows = [(y, x) for x, y in cows]
+
+# try all splits on y-axis
+ans = max(ans, search())
+
+print(ans, file=open("split.out", "w"))
+```
+</PySection>
+</LanguageSection>

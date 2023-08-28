@@ -1,0 +1,206 @@
+---
+id: cses-1202
+source: CSES
+title: Investigation
+author: Andrew Wang, Chuyang Wang
+---
+
+## Explanation
+
+We can run Dijkstra keeping track of
+- the distance: $\texttt{dist}[]$
+- the number of ways with the minimum distance: $\texttt{num}[]$
+- the minimum flights with the minimum distance: $\texttt{minf}[]$, and
+- the maximum flights with the minimum distance: $\texttt{maxf}[]$.
+
+For every node, $v$, we take into consideration all of its neighbors, $u$. If we
+can reach $u$ in a shorter distance than its current minimum, we update the
+distance and reset $\texttt{num}[u]$, $\texttt{minf}[u]$, and $\texttt{maxf}[u]$.
+
+We also have to take into
+consideration if we can reach $u$ in an equivalent distance. If so, we update:
+
+$$
+\texttt{num}[u] = \texttt{num}[v] + \texttt{num}[u]
+$$
+
+$$
+\texttt{minf}[u] = \min(\texttt{minf}[u], \texttt{minf}[v] + 1)
+$$
+
+$$
+\texttt{maxf}[u] = \max(\texttt{maxf}[u], \texttt{maxf}[v] + 1)
+$$
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}((N + M)\log N)$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+typedef long long ll;
+
+const int MAXN = 100001;
+const ll MAX = 0x3f3f3f3f3f3f3f3f;
+const int MOD = int(1e9) + 7;
+
+vector<pair<ll, int>> edge[MAXN];
+ll dist[MAXN];   // minimum distance
+ll num[MAXN];    // number of ways with the minimum distance
+int minf[MAXN];  // minimum flights with minimum distance
+int maxf[MAXN];  // maximum flights with minimum distance
+bool v[MAXN];    // if a node is visited
+
+void djikstra(int s) {
+	priority_queue<pair<ll, int>, vector<pair<ll, int>>, greater<pair<ll, int>>>
+	    pq;
+
+	pq.push({dist[s] = 0, s});
+	num[s] = 1;
+	while (!pq.empty()) {
+		int vert = pq.top().second;
+		pq.pop();
+
+		if (v[vert]) continue;
+		v[vert] = true;
+		for (auto [cost, next] : edge[vert]) {
+			ll alt = cost + dist[vert];
+
+			if (alt == dist[next]) {
+				num[next] = (num[next] + num[vert]) % MOD;
+				minf[next] = min(minf[next], minf[vert] + 1);
+				maxf[next] = max(maxf[next], maxf[vert] + 1);
+			} else if (alt < dist[next]) {
+				num[next] = num[vert];
+				minf[next] = minf[vert] + 1;
+				maxf[next] = maxf[vert] + 1;
+				pq.push({dist[next] = alt, next});
+			}
+		}
+	}
+}
+int main() {
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
+	int n, m;
+	cin >> n >> m;
+	for (int i = 0, start, end, cost; i < m; i++) {
+		cin >> start >> end >> cost;
+		edge[start].push_back({cost, end});
+	}
+	memset(dist + 1, 0x3f, n * sizeof(long long));
+	djikstra(1);
+	cout << dist[n] << " " << num[n] << " " << minf[n] << " " << maxf[n];
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Investigation {
+	static final int MOD = 1000000007;
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader in =
+		    new BufferedReader(new InputStreamReader(System.in));
+		PrintWriter out = new PrintWriter(System.out);
+		StringTokenizer st = new StringTokenizer(in.readLine());
+
+		int n = Integer.parseInt(st.nextToken());
+		int m = Integer.parseInt(st.nextToken());
+		List<List<Pair>> adj = new ArrayList<>(n);
+		for (int i = 0; i < n; i++) adj.add(new ArrayList<>());
+
+		for (int i = 0; i < m; i++) {
+			st = new StringTokenizer(in.readLine());
+			int a = Integer.parseInt(st.nextToken()) - 1;
+			int b = Integer.parseInt(st.nextToken()) - 1;
+			int cost = Integer.parseInt(st.nextToken());
+			adj.get(a).add(new Pair(cost, b));
+		}
+
+		long[] dist = new long[n];
+		long[] num = new long[n];
+		for (int i = 0; i < n; i++) {
+			dist[i] = Long.MAX_VALUE;
+			num[i] = 1;
+		}
+
+		// maximum number of flights in the minimum-price route
+		int[] maxf = new int[n];
+		// minimum number of flights in the minimum-price route
+		int[] minf = new int[n];
+
+		Queue<Pair> toVisit = new PriorityQueue<>();
+		// distance to the start node itself is 0
+		dist[0] = 0;
+		// f: distance to current node, s: current node
+		toVisit.add(new Pair(0, 0));
+		while (!toVisit.isEmpty()) {
+			Pair node = toVisit.remove();
+			long nodeDist = node.f;
+			int nodeIdx = node.s;
+			// if the node is already visited, we ignore it
+			if (dist[nodeIdx] != nodeDist) continue;
+
+			// child: f: cost, s: chlid node
+			for (Pair child : adj.get(nodeIdx)) {
+				long cost = child.f;
+				int childNode = child.s;
+				num[childNode] %= MOD;
+				// if found shorter path, reset num, maxf and minf for child
+				if (cost + dist[nodeIdx] < dist[childNode]) {
+					dist[childNode] = cost + dist[nodeIdx];
+					num[childNode] = num[nodeIdx];
+					maxf[childNode] = maxf[nodeIdx] + 1;
+					minf[childNode] = minf[nodeIdx] + 1;
+					toVisit.add(new Pair(dist[childNode], childNode));
+					// with equivalent distance, update num, maxf and minf
+				} else if (cost + dist[nodeIdx] == dist[childNode]) {
+					num[childNode] += num[nodeIdx];
+					maxf[childNode] =
+					    Integer.max(maxf[childNode], maxf[nodeIdx] + 1);
+					minf[childNode] =
+					    Integer.min(minf[childNode], minf[nodeIdx] + 1);
+				}
+			}
+		}
+
+		num[n - 1] %= MOD;
+		out.println(String.format("%d %d %d %d", dist[n - 1], num[n - 1],
+		                          minf[n - 1], maxf[n - 1]));
+		out.close();
+	}
+
+	private static class Pair implements Comparable<Pair> {
+		long f;
+		int s;
+
+		public Pair(long x, int y) {
+			f = x;
+			s = y;
+		}
+
+		@Override
+		public int compareTo(Pair o) {
+			int dx = Long.compare(f, o.f);
+			if (dx == 0) return s - o.s;
+			else return dx;
+		}
+	}
+}
+```
+</JavaSection>
+
+</LanguageSection>

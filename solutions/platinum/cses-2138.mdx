@@ -1,0 +1,73 @@
+---
+id: cses-2138
+source: CSES
+title: Reachable Nodes
+author: Chongtian Ma
+---
+
+## Explanation
+
+The naive approach would be to create a $N$ by $N$ 2D array that tracks whether
+node $v$ can be reached from node $u$. However, that would clearly take up too
+much memory ($2.5 \cdot 10^9$ bytes or $2500$ MB). We can optimize this using
+bitsets. Using a 2D array of bitsets, the revised complexity becomes
+$\frac{2.5 \cdot 10^9}{32} \cdot 4 = 3.25 \cdot 10^8$ bytes or $312.5$ MB, which is much
+more efficient.
+
+To do the actual calculation we can just do a DFS and for every node a child can
+reach, we mark it down for the parent as well.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(\frac{N \cdot M}{32})$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+const int MAXN = 5e4;
+
+vector<int> graph[MAXN + 1];
+bitset<MAXN + 1> can[MAXN + 1];
+vector<bool> visited(MAXN + 1);
+
+void dfs(int node) {
+	visited[node] = true;
+
+	// base case: node can reach itself
+	can[node][node] = 1;
+
+	for (int i : graph[node]) {
+		if (!visited[i]) { dfs(i); }
+
+		// activate all bits that are also in its child
+		can[node] |= can[i];
+	}
+}
+
+int main() {
+	cin.tie(0)->sync_with_stdio(0);
+	int n, m;
+	cin >> n >> m;
+
+	for (int i = 0; i < m; i++) {
+		int u, v;
+		cin >> u >> v;
+		graph[u].push_back(v);
+	}
+	for (int i = 1; i <= n; i++) {
+		if (!visited[i]) { dfs(i); }
+	}
+	for (int i = 1; i <= n; i++) {
+		// output the number of activated bits
+		cout << can[i].count() << " ";
+	}
+}
+```
+
+</CPPSection>
+
+</LanguageSection>

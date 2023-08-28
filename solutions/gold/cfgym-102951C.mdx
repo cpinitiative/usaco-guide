@@ -1,0 +1,115 @@
+---
+id: cfgym-102951C
+source: CF
+title: LIS on Permutations
+author: Dong Liu
+---
+
+### Slow Solution
+
+**Time Complexity**: $\mathcal O(N^2)$
+
+See [here](/gold/paths-grids#solution---longest-common-subsequence).
+
+### Efficient Solution
+
+**Time Complexity**: $\mathcal O(N\log N)$
+
+In the $\mathcal O(N^2)$ solution, we increase the DP arrray only if
+$a[i] = b[j]$, but since both arrays are permutations of length $N$, for each
+$a[i]$, there must be only one matching element in $b$.
+
+Let us create an array $pos$ where $pos[x]$ is the index of $x$ in $a$
+($a[pos[x]] = x$). Then, we can create another array, $c$ where $c[i]$ stores
+$pos[b[i]]$.
+
+Notice that every increasing subsequence $x_{1 \dots k}$ in $c$ corresponds to a
+common subsequence between $a$ and $b$. Increasing subsequence
+$c[x_1], c[x_2], \dots c[x_k]$ corresponds to the the common subsequence
+$b[x_1], b[x_2], \dots b[x_k]$, which is equivalent to
+$a[c[x_1]], a[c[x_2]], \dots a[c[x_k]]$. Thus, the length of the longest common
+subsequence between $a$ and $b$ is the longest increasing subsequence of $c$.
+
+Finding a LIS takes $\mathcal O(N\log N)$, so the overall time complexity in
+this algorithm is $\mathcal O(N\log N)$.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 1e5 + 5;
+int n, a[N], b[N], c[N], pos[N];
+vector<int> lis;
+
+int main() {
+	cin.tie(0)->sync_with_stdio(0);
+	cin >> n;
+	for (int i = 1; i <= n; ++i) {
+		cin >> a[i];
+		// pos is the inverse of a
+		pos[a[i]] = i;
+	}
+	for (int i = 1; i <= n; ++i) { cin >> b[i]; }
+	for (int i = 1; i <= n; ++i) { c[i] = pos[b[i]]; }
+
+	for (int i = 1; i <= n; ++i) {
+		int p = lower_bound(begin(lis), end(lis), c[i]) - begin(lis);
+		if (p == lis.size()) lis.push_back(c[i]);
+		else lis[p] = c[i];
+	}
+	cout << lis.size() << '\n';
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Main {
+	// CodeSnip{Kattio}
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
+
+		int n = io.nextInt();
+		int[] a = new int[n + 1], b = new int[n + 1], c = new int[n + 1],
+		      LIS = new int[n + 1];
+		int[] position = new int[n + 2];
+
+		for (int i = 1; i <= n; i++) {
+			a[i] = io.nextInt();
+			// position is the inverse of a
+			position[a[i]] = i;
+		}
+
+		for (int i = 1; i <= n; i++) { b[i] = io.nextInt(); }
+
+		for (int i = 1; i <= n; i++) { c[i] = position[b[i]]; }
+
+		// Length of the LIS
+		int len = 0;
+		for (int i = 1; i <= n; i++) {
+			// We find the value which is >= the target value using
+			// Arrays.binarySearch.
+			int val = Arrays.binarySearch(LIS, 0, len, c[i]);
+			if (val < 0) val = Math.abs(val + 1);
+			LIS[val] = c[i];
+			if (val == len) len++;
+		}
+
+		io.println(len);
+		io.close();
+	}
+}
+```
+
+</JavaSection>
+
+</LanguageSection>

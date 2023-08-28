@@ -1,0 +1,159 @@
+---
+id: cf-1279D
+source: CF
+title: Santa's Bot
+author: Kevin Sheng
+---
+
+[Official Editorial](https://codeforces.com/blog/entry/72577)
+
+Clarification: The optimization the author uses is this property of fractions
+modulo $998244353$ is this:
+
+<Info>
+
+Say we had two fractions $x=\frac{a}{b}$ and $y=\frac{c}{d}$. Let $f$ be a
+function that calculates the "total" of a fraction (that is, the numerator times
+the modular inverse of the denominator). To find $f(x + y)$, we can simply
+calculate $f(x) + f(y)$. Thus, to find the total of the overall probability, we
+can just add up all the totals of all the smaller probabilities, keeping a
+running sum as we go.
+
+</Info>
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <unordered_map>
+#include <vector>
+
+using std::cout;
+using std::endl;
+using std::vector;
+
+constexpr int MOD = 998244353;
+
+// from /gold/modular
+long long pow_mod(long long base, long long exp) {
+	base %= MOD;
+	long long result = 1;
+	while (exp > 0) {
+		if (exp % 2 == 1)  // if n is odd
+			result = result * base % MOD;
+		base = base * base % MOD;
+		exp /= 2;  // divide by two
+	}
+	return result;
+}
+
+long long mod_inv(long long n) { return pow_mod(n, MOD - 2); }
+
+long long frac_total(long long num, long long denom) {
+	return ((num % MOD) * mod_inv(denom)) % MOD;
+}
+
+int main() {
+	int child_num;
+	std::cin >> child_num;
+	vector<vector<int>> children(child_num);
+	std::unordered_map<int, int> wanter_nums;
+	for (int c = 0; c < child_num; c++) {
+		int wanted_num;
+		std::cin >> wanted_num;
+		for (int i = 0; i < wanted_num; i++) {
+			int item;
+			std::cin >> item;
+			wanter_nums[item]++;
+			children[c].push_back(item);
+		}
+	}
+
+	long long prob = 0;
+	for (const vector<int> &c : children) {
+		for (const int &i : c) {
+			int num = 1 * 1 * wanter_nums[i];
+			long long denom = child_num * (long long)c.size() * child_num;
+			prob = (prob + frac_total(num, denom)) % MOD;
+		}
+	}
+
+	cout << prob << endl;
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.HashMap;
+
+/**
+ * https://codeforces.com/problemset/problem/1279/D
+ * 2
+ * 2 2 1
+ * 1 1 should output 124780545
+ */
+public class SantaBot {
+	private static final int MOD = 998244353;
+	public static void main(String[] args) throws IOException {
+		BufferedReader read =
+		    new BufferedReader(new InputStreamReader(System.in));
+		int childNum = Integer.parseInt(read.readLine());
+
+		int[][] children = new int[childNum][];
+		HashMap<Integer, Integer> wanterNum = new HashMap<>();
+		for (int c = 0; c < childNum; c++) {
+			int[] raw = Arrays.stream(read.readLine().split(" "))
+			                .mapToInt(Integer::parseInt)
+			                .toArray();
+			children[c] = Arrays.copyOfRange(raw, 1, raw.length);
+			for (int i : children[c]) {
+				wanterNum.put(i, wanterNum.getOrDefault(i, 0) + 1);
+			}
+		}
+
+		long probTotal = 0;
+		for (int[] c : children) {
+			long denom = (long)childNum * c.length * childNum;
+			for (int i : c) {
+				int num = wanterNum.get(i);
+				probTotal = (probTotal + fracTotal(num, denom)) % MOD;
+			}
+		}
+		System.out.println(probTotal);
+	}
+
+	private static long fracTotal(long num, long denom) {
+		return ((num % MOD) * modInv(denom)) % MOD;
+	}
+
+	private static long modInv(long n) { return pow(n, MOD - 2); }
+
+	// from /gold/modular
+	private static long pow(long base, long exp) {
+		if (exp < 0) {
+			throw new IllegalArgumentException("exp must be nonnegative");
+		}
+		base %= MOD;
+		long res = 1;
+		while (exp > 0) {
+			if (exp % 2 == 1) { res = res * base % MOD; }
+			base = base * base % MOD;
+			exp /= 2;
+		}
+		return res;
+	}
+}
+```
+
+</JavaSection>
+
+</LanguageSection>

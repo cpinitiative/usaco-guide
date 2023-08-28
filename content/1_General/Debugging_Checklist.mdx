@@ -1,0 +1,142 @@
+---
+id: debugging-checklist
+title: How to Debug
+author: Benjamin Qi
+description: "What to do when your solution doesn't work."
+redirects:
+  - /general/debugging-general
+---
+
+<Resources>
+	<Resource
+		source="KACTL"
+		title="Troubleshooting"
+		url="https://github.com/kth-competitive-programming/kactl/blob/master/content/contest/troubleshoot.txt"
+		starred
+	>
+		things to try in an ICPC contest
+	</Resource>
+	<Resource
+		source="Errichto"
+		title="Asking for help FAQ"
+		url="https://codeforces.com/blog/entry/64993"
+		starred
+	/>
+</Resources>
+
+This module is based on the resources above. I've included the content that is
+most relevant to USACO.
+
+<Info title="Code Snippets">
+
+This module doesn't contain any code. See [Basic
+Debugging](/general/basic-debugging) and [Debugging C++](/general/debugging-cpp)
+for more information.
+
+</Info>
+
+## Pre-Submit
+
+- Your code should be readable (to yourself at the very least).
+  - Following style tips from the
+    [Adding Solutions](/general/adding-solution#code-conventions) module may
+    help with this.
+
+## Wrong Answer (or Runtime Error)
+
+- Is your output format correct?
+  - Did you remove debug output before submitting?
+- Do you handle all corner cases (such as $N=1$) / special cases?
+- For problems with multiple independent test cases (such as
+  [this one](http://www.usaco.org/index.php?page=viewproblem2&cpid=1141)), are
+  you clearing all data structures between test cases?
+  - Keep in mind that your solution might only behave incorrectly when a test
+    case is followed by a smaller test case.
+- Have you understood the problem correctly? Read the full problem statement
+  again.
+- Read your code again.
+  - Confusing $N$ and $M$, $i$ and $j$, etc.?
+- [Shadowed](https://en.wikipedia.org/wiki/Variable_shadowing#C++) or unused or
+  uninitialized variables?
+  - (C++) Compiling with
+    [warning options](/general/debugging-cpp#gcc-warning-options)
+    (`-Wall -Wshadow`) should detect these.
+- Any _undefined behavior_? It can result in different outputs locally vs online
+  (ex. maybe you are passing the sample case locally but not when you submit to
+  the USACO judge). Try running your code in multiple places (ex.
+  [USACO Guide IDE](https://ide.usaco.guide/),
+  [Codeforces Custom Test](https://codeforces.com/problemset/customtest)) and
+  see if you always get the same result. Common examples of undefined behavior
+  include:
+
+  - (C++) Uninitialized variables
+  - (C++) Not returning anything from non-`void` functions
+  - (C++) Array out of bounds
+    - Considering using `::at` as mentioned
+      [here](/general/debugging-cpp/#checking-for-out-of-bounds).
+  - (C++ / Java)
+    [Signed integer overflow](https://stackoverflow.com/questions/4240748/allowing-signed-integer-overflows-in-c-c)
+
+    - USACO problems usually contain a note of the following form if the output
+      format requires 64-bit rather than 32-bit integers, but it's easy to miss:
+
+    > Note that the large size of integers involved in this problem may require
+    > the use of 64-bit integer data types (e.g., a `long long` in C/C++)."
+
+  - (C++) Shifting a 32-bit integer by $\ge 32$ bits
+
+  In C++, compiling with
+  [instrumentation options](/general/debugging-cpp#gcc-debug-options) (`-fsanitize=address,undefined`) can help catch
+  these.
+
+- Add [assertions](/general/basic-debugging#assertions--warnings) and resubmit.
+- Floating point numbers
+  - Any NaNs (ex. taking the square root of a negative number)?
+  - Try using a type with more precision (ex. `long double` instead of `double`
+    in C++).
+  - Are you printing the output to the correct amount of precision?
+- Are you sure your algorithm works?
+  - Go through the algorithm for a simple case / write some testcases to run
+    your algorithm on.
+  - Write a test case generator and compare the outputs of your solution against
+    that of a (simpler) slow solution, or a model solution if available.
+    - See [stress testing](/general/basic-debugging#stress-testing) for more
+      information.
+
+## Runtime Error
+
+- Any undefined behavior? (see above)
+- Any assertions that might fail?
+- Any possible division by 0? (mod 0 for example)
+- Any possible infinite recursion?
+- Invalidated pointers or iterators?
+- Are you using too much memory?
+
+## Time Limit Exceeded
+
+- Do you have any possible infinite loops?
+- What is the complexity of your algorithm?
+- Did you remove debug output before submitting (ex. are you printing a lot of
+  information to [standard error](/general/basic-debugging#standard-error-stream))?
+- Unnecessary copying of data? C++ - Consider passing variables by reference.
+- C++ - Try substituting `array`s in place of `vector`s.
+
+## Last Resort
+
+- Rewrite your solution from the start.
+  - Be sure to save a copy of your original solution. It's always possible that
+    you might introduce more bugs in your new solution.
+
+## Before Posting on the [USACO Guide Forum](https://forum.usaco.guide/)
+
+- If you have found a small test case on which your program fails and you know
+  why the expected output is correct, you should be able to figure out why your
+  program is incorrect on your own.
+  - Add print statements to your code and compare their outputs to what you get
+    when you simulate your program by hand.
+  - Check for undefined behavior as described above.
+- If you haven't found a small test case on which your solution fails,
+  - Try downloading the official test data and seeing if your solution fails on
+    any small test cases.
+  - If that doesn't work, then try generating a small test case on which your
+    solution fails as described above.

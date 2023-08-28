@@ -1,0 +1,308 @@
+---
+id: usaco-809
+source: USACO Bronze 2018 February
+title: Taming the Herd
+author: Sathvik Chundru, Aditya Gupta, Jay Fu
+---
+
+## Video Solution
+
+By Jay Fu
+
+<YouTube id="f_Otluj98kM" />
+
+<Spoiler title="Video Solution Code">
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <algorithm>
+#include <cstdio>
+#include <iostream>
+using namespace std;
+#define MAXN 100000
+
+int N;
+int A[MAXN];
+
+int main() {
+	freopen("taming.in", "r", stdin);
+	freopen("taming.out", "w", stdout);
+	cin >> N;
+	for (int i = 0; i < N; i++) cin >> A[i];
+	if (A[0] > 0) {
+		cout << -1 << '\n';
+		return 0;
+	}
+	A[0] = 0;
+	int t = -1;
+	int req = 0;
+	int pos = 0;
+	for (int i = N - 1; i >= 0; i--) {
+		if (t != -1 && A[i] != -1 && A[i] != t) {
+			cout << -1 << '\n';
+			return 0;
+		}
+		if (t == -1) t = A[i];
+		if (A[i] == -1) A[i] = t;
+		if (A[i] == 0) req++;
+		if (A[i] == -1) pos++;
+		if (t > -1) t--;
+	}
+	cout << req << ' ' << req + pos << '\n';
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.StringTokenizer;
+
+public class taming {
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new FileReader("taming.in"));
+		PrintWriter out = new PrintWriter("taming.out");
+		int N = Integer.parseInt(br.readLine());
+		int[] A = new int[N];
+		StringTokenizer s = new StringTokenizer(br.readLine());
+		for (int i = 0; i < N; i++) { A[i] = Integer.parseInt(s.nextToken()); }
+		if (A[0] > 0) {
+			out.println(-1);
+			return;
+		}
+		A[0] = 0;
+		int t = -1;
+		int req = 0;
+		int pos = 0;
+		for (int i = N - 1; i >= 0; i--) {
+			if (t != -1 && A[i] != -1 && A[i] != t) {
+				out.println(-1);
+				out.close();
+				return;
+			}
+			if (t == -1) t = A[i];
+			if (A[i] == -1) A[i] = t;
+			if (A[i] == 0) req++;
+			if (A[i] == -1) pos++;
+			if (t > -1) t--;
+		}
+		out.println(req + " " + (req + pos));
+		out.close();
+	}
+}
+```
+
+</JavaSection>
+</LanguageSection>
+</Spoiler>
+
+<Spoiler title="Hint">
+If some record in Farmer John's log is set, then what other records must be set?
+</Spoiler>
+
+<Spoiler title="Solution">
+
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_taming_bronze_feb18.html)
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int main() {
+	freopen("taming.in", "r", stdin);
+	freopen("taming.out", "w", stdout);
+	int n;
+	cin >> n;
+
+	/*
+	 * A status of 2 means a breakout happened on day n.
+	 * A status of 1 means a breakout did not happen on day n.
+	 * A status of 0 means we are not sure what happened on day n.
+	 */
+	vector<int> status(n, 0);
+	vector<int> log(n);  // log for each day
+	for (int i = 0; i < n; i++) { cin >> log[i]; }
+	bool valid = true;
+	if (log[0] == 1) {
+		valid = false;  // we found a discrepancy
+	} else {
+		status[0] = 2;  // the problem says the first day had a breakout
+	}
+
+	for (int i = 1; i < n; i++) {
+		if (!valid) { break; }
+		if (log[i] == -1) {
+			continue;  // we have no log for this day, so we continue to the
+			           // next day
+		} else if (log[i] == 0) {
+			status[i] = 2;  // this means that we have a breakout on this day
+		} else {
+			// we now process the log[i] days, checking for discrepancies along
+			// the way
+			status[i] = 1;  // the current day does not have a breakout
+			int curr_index = i - 1;
+			log[i]--;
+			while (log[i] > 0 && curr_index > -1) {
+				if (status[curr_index] == 0 || status[curr_index] == 1) {
+					status[curr_index] = 1;
+				} else {
+					// we found a discrepancy
+					valid = false;
+					break;
+				}
+				log[i]--;
+				curr_index--;
+			}
+
+			// we check the day that the current log says a breakout happened on
+			if (curr_index > -1 &&
+			    (status[curr_index] == 0 || status[curr_index] == 2)) {
+				status[curr_index] = 2;
+			} else {
+				valid = false;  // we found a discrepancy
+			}
+		}
+	}
+
+	int min_ans = 0;
+	int max_ans = 0;
+	if (valid) {
+		for (int i : status) {
+			if (i == 2) {
+				// days that have a status of 2 are breakouts, so they count in
+				// both answers
+				min_ans++;
+				max_ans++;
+			} else if (i == 0) {
+				max_ans++;
+			}
+		}
+		cout << min_ans << " " << max_ans << "\n";
+	} else {
+		cout << -1 << "\n";  // there is no valid sequence
+	}
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Taming {
+	public static void main(String[] args) {
+		Kattio io = new Kattio("taming");
+		int n = io.nextInt();
+		int[] log = new int[n];
+		for (int i = 0; i < n; i++) { log[i] = io.nextInt(); }
+		/*
+		 * The first entry in the log is a special case,
+		 * since Farmer John already knows the cows broke out on that day.
+		 */
+		if (log[0] > 0) {
+			io.println(-1);
+			io.close();
+			System.exit(0);
+		}
+		// If it is a missing entry, we can set it to 0.
+		log[0] = 0;
+		int t = -1;
+		int req = 0;
+		int pos = 0;
+		/*
+		 * If we ever come across a contradiction, then the
+		 * log is necessarily inconsistent, so we can just output −1.
+		 * Otherwise, the log must consist of several streaks 0,1,2,…,k
+		 * of various lengths, with possibly some −1s between
+		 * streaks - entries which we could not uniquely deduce.
+		 * We know that the first streak starts on the first day.
+		 */
+		for (int i = n - 1; i >= 0; i--) {
+			if (t != -1 && log[i] != -1 && log[i] != t) {
+				io.println(-1);
+				io.close();
+				System.exit(0);
+			}
+			if (t == -1) { t = log[i]; }
+			if (log[i] == -1) { log[i] = t; }
+			if (log[i] == 0) { req++; }
+			if (log[i] == -1) { pos++; }
+			if (t > -1) { t--; }
+		}
+		int sum = req + pos;
+		io.println(req + " " + sum);
+		io.close();
+	}
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+fin = open("taming.in", "r")
+fout = open("taming.out", "w")
+
+inputs = [str(i) for i in fin.read().splitlines()]
+days = int(inputs[0])
+entry = [int(i) for i in inputs[1].split(" ")]
+
+time = -1  # Keep tracks of the days left where 0 outbreaks is guaranteed
+outbreaks = 0  # Count the number of outbreaks that must happen
+potential = 0  # Count the number of outbreaks that can potentially happen
+valid = True  # Check if the input is valid
+
+# If the first entry is above 0, then we have a contradiction
+if entry[0] > 0:
+	valid = False
+else:
+	entry[0] = 0
+
+"""
+If we ever come across a contradiction, then the
+log is necessarily inconsistent, so we can just output −1.
+Otherwise, the log must consist of several streaks 0,1,2,…,k
+of various lengths, with possibly some −1s between
+streaks - entries which we could not uniquely deduce.
+We know that the first streak starts on the first day.
+"""
+for day in range(days - 1, -1, -1):
+	if time != -1 and entry[day] != -1 and entry[day] != time:
+		valid = False
+		break
+	if time == -1:
+		time = entry[day]
+	if entry[day] == -1:
+		entry[day] = time
+	if entry[day] == 0:
+		outbreaks += 1
+	if entry[day] == -1:
+		potential += 1
+	if time > -1:
+		time -= 1
+
+if valid:
+	print(outbreaks, outbreaks + potential, file=fout)
+else:
+	print(-1, file=fout)
+```
+
+</PySection>
+</LanguageSection>
+</Spoiler>

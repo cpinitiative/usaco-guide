@@ -46,18 +46,19 @@ or you'll get a compilation error. From the link above:
 using namespace std;
 
 struct Edge {
-	int a,b,w;
-	bool operator<(const Edge& y) const { return w < y.w; }
+	int a, b, w;
+	bool operator<(const Edge &y) const { return w < y.w; }
 };
 
 int main() {
 	int M = 4;
 	set<Edge> v;
 	for (int i = 0; i < M; ++i) {
-		int a,b,w; cin >> a >> b >> w;
-		v.insert({a,b,w});
+		int a, b, w;
+		cin >> a >> b >> w;
+		v.insert({a, b, w});
 	}
-	for (Edge e: v) cout << e.a << " " << e.b << " " << e.w << "\n";
+	for (Edge e : v) cout << e.a << " " << e.b << " " << e.w << "\n";
 }
 ```
 
@@ -78,19 +79,20 @@ int main() {
 using namespace std;
 
 struct Edge {
-	int a,b,w;
+	int a, b, w;
 };
 
-bool cmp(const Edge& x, const Edge& y) { return x.w < y.w; }
+bool cmp(const Edge &x, const Edge &y) { return x.w < y.w; }
 
 int main() {
 	int M = 4;
-	set<Edge,bool(*)(const Edge&,const Edge&)> v(cmp);
+	set<Edge, bool (*)(const Edge &, const Edge &)> v(cmp);
 	for (int i = 0; i < M; ++i) {
-		int a,b,w; cin >> a >> b >> w;
-		v.insert({a,b,w});
+		int a, b, w;
+		cin >> a >> b >> w;
+		v.insert({a, b, w});
 	}
-	for (Edge e: v) cout << e.a << " " << e.b << " " << e.w << "\n";
+	for (Edge e : v) cout << e.a << " " << e.b << " " << e.w << "\n";
 }
 ```
 
@@ -101,16 +103,17 @@ You can also use the following syntax to declare set `v` using a function:
 ### With Lambda Expressions
 
 ```cpp
-auto cmp = [](const Edge& x, const Edge& y) { return x.w < y.w; };
+auto cmp = [](const Edge &x, const Edge &y) { return x.w < y.w; };
 
 int main() {
 	int M = 4;
-	set<Edge,bool(*)(const Edge&,const Edge&)> v(cmp);
+	set<Edge, bool (*)(const Edge &, const Edge &)> v(cmp);
 	for (int i = 0; i < M; ++i) {
-		int a,b,w; cin >> a >> b >> w;
-		v.insert({a,b,w});
+		int a, b, w;
+		cin >> a >> b >> w;
+		v.insert({a, b, w});
 	}
-	for (Edge e: v) cout << e.a << " " << e.b << " " << e.w << "\n";
+	for (Edge e : v) cout << e.a << " " << e.b << " " << e.w << "\n";
 }
 ```
 
@@ -131,21 +134,22 @@ Probably less confusing than the method above.
 using namespace std;
 
 struct Edge {
-	int a,b,w;
+	int a, b, w;
 };
 
 struct cmp {
-	bool operator()(const Edge& x, const Edge& y) const { return x.w < y.w; }
+	bool operator()(const Edge &x, const Edge &y) const { return x.w < y.w; }
 };
 
 int main() {
 	int M = 4;
-	set<Edge,cmp> v;
+	set<Edge, cmp> v;
 	for (int i = 0; i < M; ++i) {
-		int a,b,w; cin >> a >> b >> w;
-		v.insert({a,b,w});
+		int a, b, w;
+		cin >> a >> b >> w;
+		v.insert({a, b, w});
 	}
-	for (Edge e: v) cout << e.a << " " << e.b << " " << e.w << "\n";
+	for (Edge e : v) cout << e.a << " " << e.b << " " << e.w << "\n";
 }
 ```
 
@@ -162,11 +166,12 @@ int main() {
 	int M = 4;
 	vector<Edge> v;
 	for (int i = 0; i < M; ++i) {
-		int a,b,w; cin >> a >> b >> w;
-		v.push_back({a,b,w});
+		int a, b, w;
+		cin >> a >> b >> w;
+		v.push_back({a, b, w});
 	}
-	sort(begin(v),end(v),cmp());
-	for (Edge e: v) cout << e.a << " " << e.b << " " << e.w << "\n";
+	sort(begin(v), end(v), cmp());
+	for (Edge e : v) cout << e.a << " " << e.b << " " << e.w << "\n";
 }
 ```
 
@@ -183,18 +188,19 @@ We can use this to store a set in reverse order.
 using namespace std;
 
 struct Edge {
-	int a,b,w;
-	bool operator>(const Edge& y) const { return w > y.w; }
+	int a, b, w;
+	bool operator>(const Edge &y) const { return w > y.w; }
 };
 
 int main() {
 	int M = 4;
-	set<Edge,greater<Edge>> v;
+	set<Edge, greater<Edge>> v;
 	for (int i = 0; i < M; ++i) {
-		int a,b,w; cin >> a >> b >> w;
-		v.insert({a,b,w});
+		int a, b, w;
+		cin >> a >> b >> w;
+		v.insert({a, b, w});
 	}
-	for (Edge e: v) cout << e.a << " " << e.b << " " << e.w << "\n";
+	for (Edge e : v) cout << e.a << " " << e.b << " " << e.w << "\n";
 }
 
 /* Output:
@@ -210,9 +216,9 @@ int main() {
 The following are all valid:
 
 ```cpp
-set<int,greater<int>> a;
-map<int,string,greater<int>> b;
-priority_queue<int,vector<int>,greater<int>> c;
+set<int, greater<int>> a;
+map<int, string, greater<int>> b;
+priority_queue<int, vector<int>, greater<int>> c;
 ```
 
 Using a custom comparator for priority queues is especially common. Recall that

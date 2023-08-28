@@ -1,30 +1,34 @@
+import Filter from 'bad-words';
 import * as React from 'react';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
+import ContactUsSlideover from '../components/ContactUsSlideover/ContactUsSlideover';
+import { useDarkMode } from '../context/DarkModeContext';
 import { SignInContext } from '../context/SignInContext';
 import { LANGUAGE_LABELS } from '../context/UserDataContext/properties/userLang';
 import UserDataContext from '../context/UserDataContext/UserDataContext';
 import { useUserPermissions } from '../context/UserDataContext/UserPermissionsContext';
 import useUserProblemSolutionActions from '../hooks/useUserProblemSolutionActions';
 import useUserSolutionsForProblem from '../hooks/useUserSolutionsForProblem';
-import { ProblemInfo } from '../models/problem';
+import { ShortProblemInfo } from '../models/problem';
 import CodeBlock from './markdown/CodeBlock/CodeBlock';
 
 export default function ProblemSolutions({
-  onClose,
   showSubmitSolutionModal,
   problem,
 }: {
-  onClose: () => void;
   showSubmitSolutionModal: () => void;
-  problem: ProblemInfo;
+  problem: ShortProblemInfo;
 }): JSX.Element {
   const { solutions, currentUserSolutions } =
     useUserSolutionsForProblem(problem);
   const { deleteSolution, upvoteSolution, undoUpvoteSolution, mutateSolution } =
     useUserProblemSolutionActions();
   const { firebaseUser, lang } = useContext(UserDataContext);
+  const [isContactUsActive, setIsContactUsActive] = useState(false);
   const { signIn } = React.useContext(SignInContext);
   const canModerate = useUserPermissions().canModerate;
+  const isDarkMode = useDarkMode();
+  const filter = new Filter();
   const langArr = ['cpp', 'java', 'py'];
   langArr.sort(function (first, second) {
     if (first === lang && second !== lang) {
@@ -43,23 +47,7 @@ export default function ProblemSolutions({
 
   return (
     <div className="w-full rounded-lg overflow-hidden max-w-5xl mx-auto">
-      <div className="bg-white dark:bg-dark-surface px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-        <button className="mb-8 btn" onClick={() => onClose()}>
-          <svg
-            className="-ml-1 mr-2 h-4 w-4"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-          >
-            <path
-              fillRule="evenodd"
-              d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z"
-              clipRule="evenodd"
-            />
-          </svg>
-          Back
-        </button>
-
+      <div className="bg-white dark:bg-dark-surface px-4 pt-5 pb-4 sm:p-6 sm:pb-4 mt-6">
         <h3
           className="text-xl leading-6 font-medium text-gray-900 dark:text-gray-100"
           id="modal-headline"
@@ -68,23 +56,26 @@ export default function ProblemSolutions({
         </h3>
         <p className="mt-1 text-gray-500 dark:text-gray-400">
           Below are user-submitted solutions for {problem?.name}. If you notice
-          any of them are incorrect, email us at{' '}
-          <a
-            className="underline text-blue-600 dark:text-blue-400"
-            href="mailto:usacoguide@gmail.com"
-            target="_blank"
-            rel="noreferrer"
-          >
-            usacoguide@gmail.com
-          </a>
-          .
+          any of them are incorrect, submit the contact form below.
         </p>
+
         <button
           className="my-4 btn-primary"
           onClick={() => (firebaseUser ? showSubmitSolutionModal() : signIn())}
         >
           {firebaseUser ? 'Submit a Solution' : 'Sign in to submit a solution'}
         </button>
+        <button
+          className="my-4 mx-3 btn-primary"
+          onClick={() => setIsContactUsActive(true)}
+        >
+          Contact Us
+        </button>
+        <ContactUsSlideover
+          isOpen={isContactUsActive}
+          onClose={() => setIsContactUsActive(false)}
+          defaultLocation={`Problem Solution - ${problem?.name} (ID: ${problem?.uniqueId})`}
+        />
         <div className="h-8" />
         <h3 className="text-lg font-semibold pb-2 mb-4 border-b border-gray-200 dark:border-gray-800">
           My Solutions
@@ -120,6 +111,7 @@ export default function ProblemSolutions({
                       ? `language-${submission.language}`
                       : undefined
                   }
+                  isDarkMode={isDarkMode}
                 >
                   {submission.solutionCode}
                 </CodeBlock>
@@ -202,8 +194,11 @@ export default function ProblemSolutions({
                             ? `language-${submission.language}`
                             : undefined
                         }
+                        isDarkMode={isDarkMode}
                       >
-                        {submission.solutionCode}
+                        {filter.isProfane(submission.solutionCode)
+                          ? filter.clean(submission.solutionCode)
+                          : submission.solutionCode}
                       </CodeBlock>
                     </div>
                   </div>

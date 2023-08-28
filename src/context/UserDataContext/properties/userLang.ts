@@ -93,7 +93,6 @@ export default class UserLang extends SimpleUserDataPropertyAPI {
   protected changedLang = false;
 
   public initializeFromLocalStorage = () => {
-    // console.log('USERLANG: INIT FROM LOCALSTORAGE');
     const langFromUrl = getLangFromUrl();
     if (!this.changedLang && langFromUrl !== null) {
       this.value = langFromUrl;
@@ -108,7 +107,6 @@ export default class UserLang extends SimpleUserDataPropertyAPI {
   };
 
   public importValueFromObject = data => {
-    // console.log('USERLANG: IMPORT FROM OBJECT');
     const langFromUrl = getLangFromUrl();
     if (!this.changedLang && langFromUrl !== null) {
       this.value = langFromUrl;

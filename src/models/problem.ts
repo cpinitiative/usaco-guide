@@ -1,24 +1,12 @@
 import { slug } from 'github-slugger';
 import * as defaultOrdering from '../../content/ordering';
 import PGS from '../components/markdown/PGS';
-import id_to_sol from '../components/markdown/ProblemsList/DivisionList/id_to_sol';
+import id_to_sol from '../components/markdown/ProblemsList/DivisionList/id_to_sol.json';
 import { books } from '../utils/books';
-export const contests = {
-  CCC: ['DMOJ', 'Canadian Computing Competition'],
-  CCO: ['DMOJ', 'Canadian Computing Olympiad'],
-  APIO: ['oj.uz', 'Asia-Pacific Informatics Olympiad'],
-  'Baltic OI': ['oj.uz', 'Baltic Olympiad in Informatics'],
-  CEOI: ['oj.uz', 'Central European Olympiad in Informatics'],
-  COI: ['oj.uz', 'Croatian Olympiad in Informatics'],
-  COCI: ['oj.uz', 'Croatian Open Contest in Informatics'],
-  IOI: ['oj.uz', 'International Olympiad in Informatics'],
-  IZhO: ['oj.uz', 'International Zhautykov Olympiad'],
-  JOI: ['oj.uz', 'Japanese Olympiad in Informatics'],
-  LMiO: ['oj.uz', 'Lithuanian Olympiad in Informatics'],
-  RMI: ['oj.uz', 'Romanian Master of Informatics'],
-  'NOI.sg': ['oj.uz', 'Singapore National Olympiad in Informatics'],
-};
 
+export const recentUsaco = ['Bronze', 'Silver', 'Gold', 'Plat'];
+
+// abbreviation -> [URL, description or full name, instructions to view solutions]
 export const probSources = {
   Bronze: [
     'http://www.usaco.org/index.php?page=viewproblem2&cpid=',
@@ -60,9 +48,11 @@ export const probSources = {
   ],
   CF: [
     'https://codeforces.com/contest/',
-    'CodeForces',
+    'Codeforces',
     'Check contest materials, located to the right of the problem statement.',
   ],
+  'CF EDU': ['https://codeforces.com/edu/courses', 'Codeforces EDU'],
+  'CF Gym': ['https://codeforces.com/gyms', 'Codeforces Gym'],
   CSA: [
     'https://csacademy.com/contest/archive/task/',
     'CS Academy',
@@ -99,14 +89,26 @@ export const probSources = {
     'tlx.toki.id',
     'The editorial should be available in the announcements tab.',
   ],
-  'oj.uz': ['https://oj.uz/problem/view/', ''],
   YS: ['https://judge.yosupo.jp/problem/', 'Library Checker'],
 };
 
-// if (sol == '' && problem.source == 'HE') {
-//   sol = '@Check HE';
-//   hover = 'The editorial tab should be right next to the problem tab.';
-// }
+// olympiads on DMOJ and oj.uz
+// abbreviation -> [OJ, full name]
+export const olympiads = {
+  CCC: ['DMOJ', 'Canadian Computing Competition'],
+  CCO: ['DMOJ', 'Canadian Computing Olympiad'],
+  APIO: ['oj.uz', 'Asia-Pacific Informatics Olympiad'],
+  'Baltic OI': ['oj.uz', 'Baltic Olympiad in Informatics'],
+  CEOI: ['oj.uz', 'Central European Olympiad in Informatics'],
+  COI: ['oj.uz', 'Croatian Olympiad in Informatics'],
+  COCI: ['oj.uz', 'Croatian Open Contest in Informatics'],
+  IOI: ['oj.uz', 'International Olympiad in Informatics'],
+  IZhO: ['oj.uz', 'International Zhautykov Olympiad'],
+  JOI: ['oj.uz', 'Japanese Olympiad in Informatics'],
+  LMiO: ['oj.uz', 'Lithuanian Olympiad in Informatics'],
+  RMI: ['oj.uz', 'Romanian Master of Informatics'],
+  'NOI.sg': ['oj.uz', 'Singapore National Olympiad in Informatics'],
+};
 
 export type ProblemInfo = {
   /**
@@ -116,9 +118,10 @@ export type ProblemInfo = {
   name: string;
   url: string;
   /**
-   * Source of the problem. More information about some problem sources can be found in the probSources and the contests map.
+   * Source of the problem. More information about some problem sources can be found in the probSources and the olympiads map.
    */
   source: string;
+  sourceDescription?: string;
   difficulty: ProblemDifficulty;
   /**
    * In the context of a module, true if the problem is starred. False otherwise.
@@ -132,6 +135,7 @@ export type ProblemSolutionInfo =
   | {
       kind: 'internal';
       // The URL for internal solutions are well defined: /problems/[problem-slug]/solution
+      hasHints?: boolean;
     }
   | {
       kind: 'link';
@@ -143,7 +147,7 @@ export type ProblemSolutionInfo =
     }
   | {
       /*
-If the label is just text. Used for certain sources like CodeForces
+If the label is just text. Used for certain sources like Codeforces
 Ex:
 - label = Check CF
 - labelTooltip = "Check content materials, located to the right of the problem statement
@@ -178,7 +182,7 @@ export type ProblemMetadata = Omit<ProblemInfo, 'solution'> & {
 export type ProblemSolutionMetadata =
   | {
       // auto generate problem solution label based off of the given site
-      // For sites like CodeForces: "Check contest materials, located to the right of the problem statement."
+      // For sites like Codeforces: "Check contest materials, located to the right of the problem statement."
       kind: 'autogen-label-from-site';
       // The site to generate it from. Sometimes this may differ from the source; for example, Codeforces could be the site while Baltic OI could be the source if Codeforces was hosting a Baltic OI problem.
       site: string;
@@ -186,6 +190,7 @@ export type ProblemSolutionMetadata =
   | {
       // internal solution
       kind: 'internal';
+      hasHints?: boolean;
     }
   | {
       // URL solution
@@ -230,15 +235,15 @@ export type ProblemSolutionMetadata =
 
 // Checks if a given source is USACO
 export const isUsaco = (source: string): boolean => {
-  const posi = ['Bronze', 'Silver', 'Gold', 'Plat'];
-  for (let ind = 0; ind < posi.length; ++ind) {
-    if (source.includes(posi[ind])) return true;
-  }
+  if (recentUsaco.some(x => source.includes(x))) return true;
   if (source.startsWith('20')) {
-    // I think this is for the division list -- the source in this case is like 2015 December or something
-    const posi = ['December', 'January', 'February', 'US Open'];
-    for (let ind = 0; ind < posi.length; ++ind) {
-      if (source.endsWith(posi[ind])) return true;
+    // this is for the division list -- the source in this case is like 2015 December or something
+    if (
+      ['December', 'January', 'February', 'US Open'].some(x =>
+        source.endsWith(x)
+      )
+    ) {
+      return true;
     }
   }
   return false;
@@ -248,6 +253,7 @@ export const isUsaco = (source: string): boolean => {
 // TODO: add more checks?
 export function checkInvalidUsacoMetadata(metadata: ProblemMetadata) {
   if (!isUsaco(metadata.source)) return;
+  if (metadata.url.startsWith('http://poj.org/')) return;
   const id = metadata.uniqueId.substring(metadata.uniqueId.indexOf('-') + 1);
   if (!metadata.url.endsWith('=' + id)) {
     throw Error(`Invalid USACO Metadata: id=${id} url=${metadata.url}`);
@@ -301,7 +307,8 @@ export const getProblemInfo = (
   if (!ordering) {
     ordering = defaultOrdering;
   }
-  const { solutionMetadata, ...info } = metadata;
+  // eslint-disable-next-line prefer-const
+  let { solutionMetadata, ...info } = metadata;
 
   if (
     !info.source ||
@@ -309,16 +316,27 @@ export const getProblemInfo = (
     info.isStarred === null ||
     info.isStarred === undefined ||
     !info.name ||
-    !info.url
+    !info.url.startsWith('http')
   ) {
     console.error("problem metadata isn't valid", metadata);
     throw new Error('Bad problem metadata');
   }
 
   let sol: ProblemSolutionInfo;
+  if (solutionMetadata.kind === 'none') {
+    // for sites such as CF or AtCoder, automatically generate metadata even if solution is set to none
+    const autogenerated = autoGenerateSolutionMetadata(
+      info.source,
+      info.name,
+      info.url
+    );
+    if (autogenerated !== null) solutionMetadata = autogenerated;
+  }
   if (solutionMetadata.kind === 'autogen-label-from-site') {
     const site = solutionMetadata.site;
-    if (!probSources.hasOwnProperty(site) || probSources[site].length !== 3) {
+    const key = site as keyof typeof probSources;
+    if (!probSources.hasOwnProperty(site) || probSources[key].length !== 3) {
+      // https://stackoverflow.com/questions/57086672/element-implicitly-has-an-any-type-because-expression-of-type-string-cant-b
       console.error(metadata);
       throw new Error(
         "Couldn't autogenerate solution label from problem site " + site
@@ -327,11 +345,12 @@ export const getProblemInfo = (
     sol = {
       kind: 'label',
       label: 'Check ' + site,
-      labelTooltip: probSources[site][2],
+      labelTooltip: probSources[key][2],
     };
   } else if (solutionMetadata.kind === 'internal') {
     sol = {
       kind: 'internal',
+      ...(solutionMetadata.hasHints && { hasHints: solutionMetadata.hasHints }),
     };
   } else if (solutionMetadata.kind === 'link') {
     sol = {
@@ -497,332 +516,6 @@ export function autoGenerateSolutionMetadata(
   return null;
 }
 
-// legacy code follows
-
-export type ProblemSolution = {
-  kind: 'internal' | 'link' | 'text' | 'sketch';
-
-  /**
-   * The URL of the problem solution. Defined for kind = "internal" and kind = "link"
-   */
-  url?: string;
-
-  /**
-   * The label of the problem solution, defined for kind = "link" and kind = "text"
-   */
-  label?: string;
-
-  /**
-   * A tooltip to show in addition to the label, sometimes defined
-   */
-  labelTooltip?: string | null;
-
-  /**
-   * Defined for kind = "sketch"
-   */
-  sketch?: string;
-};
-
-const isExternal = link => {
-  return link.startsWith('http');
-};
-const isInternal = link => {
-  return /^[a-zA-Z\-0-9]+$/.test(link);
-};
-
-export class Problem {
-  public url: string;
-  public solution: ProblemSolution | null = null;
-  public hover = '';
-  public tooltipHoverDescription: string | null;
-  public solutionMetadata: any;
-
-  get uniqueID(): string {
-    let id;
-    if (
-      ['Bronze', 'Silver', 'Gold', 'Plat'].some(
-        x => this.source.indexOf(x) !== -1
-      )
-    ) {
-      // is usaco
-      id = `usaco-${this.id}`;
-    } else if (this.source === 'CSES') {
-      id = `cses-${this.id}`;
-    } else if (this.source === 'Kattis' && !this.id.startsWith('http')) {
-      id = `kattis-${this.id}`;
-    } else if (this.source === 'CF') {
-      const num = this.id.match(/([0-9]+)/g)[0];
-      const char = this.id.match(/\/([A-z0-9]+)$/)[1];
-      if (this.id.indexOf('gym') !== -1) {
-        id = `cfgym-${num}${char}`;
-      } else {
-        id = `cf-${num}${char}`;
-      }
-    } else {
-      const camelCase = x => {
-        if (x.match(/^[0-9]{4}/) !== null) {
-          return `${x[2]}${x[3]}-${camelCase(x.substring(7))}`;
-        }
-        x = x.replace(/[^\w\s]/g, '');
-        const str = x.replace(/(?:^\w|[A-Z]|\b\w)/g, function (word, index) {
-          return word.toUpperCase();
-        });
-        if (str.split(' ').length === 1) {
-          return str.toLowerCase();
-        } else {
-          return str.replace(/\s+/g, '');
-        }
-      };
-      if (this.source === 'Baltic OI') {
-        id = `baltic-${camelCase(this.name)}`;
-      } else if (this.source === 'Balkan OI') {
-        id = `balkan-${camelCase(this.name)}`;
-      } else {
-        id = `${camelCase(this.source)}-${camelCase(this.name)}`;
-      }
-    }
-    let extra = '';
-    if (this.solutionMetadata?.kind === 'internal') {
-      if (this.solID !== id) {
-        extra += '   [Current Sol ID: ' + this.solID + ']';
-      }
-    }
-    console.log(`${id}${extra}`);
-    // console.log(this.source, id);
-    return id;
-  }
-
-  private autoGenerateInfoFromSource() {
-    if (!(this.source in probSources) && isUsaco(this.source)) {
-      this.url = probSources['Bronze'][0] + this.url;
-      return;
-    }
-    if (this.source in probSources) {
-      if (!this.url.startsWith('http')) {
-        if (
-          this.source == 'CF' &&
-          (this.url.startsWith('problemset') ||
-            this.url.startsWith('contest') ||
-            this.url.startsWith('gym') ||
-            this.url.startsWith('edu'))
-        ) {
-          this.url = 'https://codeforces.com/' + this.url;
-        } else this.url = probSources[this.source][0] + this.url;
-      }
-      this.tooltipHoverDescription = probSources[this.source][1];
-    } else if (this.source in contests) {
-      if (!this.url.startsWith('http')) {
-        this.url = probSources[contests[this.source][0]][0] + this.url;
-      }
-      this.tooltipHoverDescription = contests[this.source][1];
-    } else {
-      if (!this.url.startsWith('http')) {
-        throw `URL ${this.id} is not valid. Did you make a typo in the problem source (${this.source}), or in the URL? Problem name: ${this.name}`;
-      }
-      if (this.source.indexOf('@') != -1) {
-        const ind = this.source.indexOf('@');
-        this.tooltipHoverDescription = this.source.substring(
-          ind + 1,
-          this.source.length
-        );
-        this.source = this.source.substring(0, ind);
-      }
-    }
-  }
-
-  private tryAutoGeneratingSolution() {
-    let autoGeneratedSolURL = null;
-    // console.log("AUTO GENERATE WITH ID",this.id)
-    if (isUsaco(this.source) && this.id in id_to_sol) {
-      autoGeneratedSolURL =
-        `http://www.usaco.org/current/data/` + id_to_sol[this.id];
-      this.solutionMetadata = {
-        kind: 'USACO',
-        usacoId: this.id,
-      };
-      // console.log("GENERATED",autoGeneratedSolURL);
-    } else if (this.source == 'IOI') {
-      for (let i = 1994; i <= 2017; ++i) {
-        const des = i.toString();
-        if (this.name.indexOf(des) != -1) {
-          const num = i - 1994 + 20;
-          autoGeneratedSolURL =
-            `https://ioinformatics.org/page/ioi-${i}/` + num.toString();
-          this.solutionMetadata = {
-            kind: 'IOI',
-            usacoId: i,
-          };
-          break;
-        }
-      }
-      if (autoGeneratedSolURL === null) {
-        for (let i = 1994; i <= 2017; ++i) {
-          let des = (i % 100).toString();
-          if (des.length == 1) des = '0' + des;
-          if (this.name.indexOf(des) != -1) {
-            const num = i - 1994 + 20;
-            autoGeneratedSolURL =
-              `https://ioinformatics.org/page/ioi-${i}/` + num.toString();
-            this.solutionMetadata = {
-              kind: 'IOI',
-              usacoId: i,
-            };
-            break;
-          }
-        }
-      }
-    }
-    // console.log("HA",this.source,autoGeneratedSolURL)
-    if (autoGeneratedSolURL !== null) {
-      this.solution = {
-        kind: 'link',
-        url: autoGeneratedSolURL,
-        label: 'External Sol',
-      };
-    } else {
-      if (this.source in probSources && probSources[this.source].length == 3) {
-        this.solution = {
-          kind: 'text',
-          label: 'Check ' + this.source,
-          labelTooltip: probSources[this.source][2],
-        };
-        this.solutionMetadata = {
-          kind: 'autogen-label-from-site',
-          site: this.source,
-        };
-      } else {
-        // this isn't necessary -- can just use hasOwnProperty instead of in
-        for (const source in probSources) {
-          if (
-            probSources[source].length == 3 &&
-            this.url.startsWith(probSources[source][0])
-          ) {
-            this.solution = {
-              kind: 'text',
-              label: 'Check ' + source,
-              labelTooltip: probSources[source][2],
-            };
-            this.solutionMetadata = {
-              kind: 'autogen-label-from-site',
-              site: source,
-            };
-            break;
-          }
-        }
-      }
-    }
-  }
-
-  constructor(
-    public source: string,
-    public name: string,
-    public id: string,
-    public difficulty?: ProblemDifficulty | null,
-    public starred?: boolean,
-    public tags?: string[],
-    public solID?: string,
-    public solQuality: 'bad' | 'ok' | 'good' = 'ok',
-    public fraction?: number,
-    public moduleLink?: string
-  ) {
-    this.url = id;
-    this.starred = this.starred ?? false;
-
-    this.autoGenerateInfoFromSource();
-    solID = solID || '';
-    // console.log("WHOOPS",solID);
-    // if (solID.startsWith('/')) {
-    //   this.solution = {
-    //     kind: 'link',
-    //     url: `${solID}`,
-    //     label: 'Link',
-    //   };
-    // }
-    if (isInternal(solID)) {
-      this.solution = {
-        kind: 'internal',
-        url: `/solutions/${solID}`,
-      };
-      this.solutionMetadata = {
-        kind: 'internal',
-      };
-    } else if (isExternal(solID)) {
-      this.solution = {
-        kind: 'link',
-        url: solID,
-        label: 'External Sol',
-      };
-      this.solutionMetadata = {
-        kind: 'link',
-        url: solID,
-      };
-    } else if (solID.startsWith('@CPH')) {
-      const getSec = (dictKey, book, sec) => {
-        let url = book;
-        if (sec[sec.length - 1] == ',') sec = sec.substring(0, sec.length - 1);
-        if (!/^\d.*$/.test(sec)) return url;
-        if (!(sec in PGS[dictKey])) {
-          throw `Could not find section ${sec} in source ${dictKey}`;
-        }
-        url += '#page=' + PGS[dictKey][sec];
-        return url;
-      };
-      const source = 'CPH';
-      const cphUrl = getSec(source, books[source][0], solID.substring(5));
-      this.solution = {
-        kind: 'link',
-        label: solID.substring(1),
-        url: cphUrl,
-      };
-      this.solutionMetadata = {
-        kind: 'CPH',
-        section: solID.substring(5),
-      };
-    } else if (solID.startsWith('@')) {
-      let solMsg = null;
-      if (solID == '@@') {
-        // empty solution
-        this.solutionMetadata = {
-          kind: 'none',
-        };
-      } else if (solID == '@B') {
-        solMsg = 'Below'; // solution later in module
-        this.solutionMetadata = {
-          kind: 'in-module',
-        };
-      } else {
-        this.solutionMetadata = {
-          kind: 'in-module',
-        };
-        solMsg = solID.substring(1); // custom message
-      }
-      if (solMsg) {
-        this.solutionMetadata = {
-          kind: 'in-module',
-        };
-        this.solution = {
-          kind: 'text',
-          label: solMsg,
-        };
-      }
-    } else {
-      this.tryAutoGeneratingSolution();
-      // console.log(this.solution);
-      if (solID && !this.solution) {
-        this.solutionMetadata = {
-          kind: 'sketch',
-          sketch: solID,
-        };
-        // only try sketch if all else fails
-        this.solution = {
-          kind: 'sketch',
-          sketch: solID,
-        };
-      }
-    }
-  }
-}
-
 export type ProblemProgress =
   | 'Not Attempted'
   | 'Solving'
@@ -862,4 +555,13 @@ export type ProblemFeedback = {
   solutionCode: string;
   isCodePublic: boolean;
   otherFeedback: string;
+};
+
+/* Condensed version of ProblemInfo only used for user solution page generation
+ gatsby-node's problem query doesn't retrieve all the attributes of ProblemInfo,
+ these are just the attributes required for the user solutions pages that it does retrieve
+*/
+export type ShortProblemInfo = {
+  uniqueId: string;
+  name: string;
 };

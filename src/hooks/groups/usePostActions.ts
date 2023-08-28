@@ -1,4 +1,5 @@
 import {
+  addDoc,
   arrayRemove,
   arrayUnion,
   collection,
@@ -32,9 +33,8 @@ export interface ProblemSubmissionRequestData {
 
 export function usePostActions(groupId: string) {
   const firebaseApp = useFirebaseApp();
-  const { firebaseUser, setUserProgressOnProblems } = useContext(
-    UserDataContext
-  );
+  const { firebaseUser, setUserProgressOnProblems } =
+    useContext(UserDataContext);
 
   const updatePost = async (postId: string, updatedData: Partial<PostData>) => {
     await updateDoc(
@@ -210,7 +210,7 @@ export function usePostActions(groupId: string) {
         },
       };
       const resp = await fetch(
-        `https://oh2kjsg6kh.execute-api.us-west-1.amazonaws.com/Prod/submissions`,
+        `https://ggzk2rm2ad.execute-api.us-west-1.amazonaws.com/Prod/submissions`,
         {
           method: 'POST',
           headers: {
@@ -224,6 +224,33 @@ export function usePostActions(groupId: string) {
         throw new Error(respData.message);
       }
       return respData.submissionID;
+    },
+    submitSubmissionLink: async (
+      submissionLink: string,
+      postId: string,
+      problemId: string
+    ) => {
+      const firestore = getFirestore(firebaseApp);
+      await addDoc(
+        collection(
+          firestore,
+          'groups',
+          groupId,
+          'posts',
+          postId,
+          'problems',
+          problemId,
+          'submissions'
+        ),
+        {
+          score: 1,
+          userID: firebaseUser.uid,
+          type: 'submission-link',
+          verdict: 'AC',
+          timestamp: Date.now(),
+          link: submissionLink,
+        }
+      );
     },
   };
 }

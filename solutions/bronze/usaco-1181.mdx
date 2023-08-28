@@ -1,0 +1,164 @@
+---
+id: usaco-1181
+source: USACO Bronze 2022 January
+title: Drought
+author: Chongtian Ma, Juheon Rhee
+---
+
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_prob3_bronze_jan22.html)
+
+## Explanation
+
+Let's go through the cows from left to right, making sure that all the cows we've processed have the same hunger value. Thus, we can break this
+problem up into cases:
+
+Suppose the cows are numbered from $1$ to $n$, and we are currently looking at cow $i$. If cow $i+1$ has a greater hunger value, then it is sufficient to decrease cow $i+1$ to the same hunger value as cow $i$. To do this we will pick the pair of cows $i+1$ and $i+2$ and decrease their hungers until cow $i+1$ has the same hunger value as cow $i$. Of course, if cow $i+2$ ends up with a negative hunger value, then it is impossible and we output $-1$.
+
+Now suppose cow $i$ has a greater hunger value than cow $i+1$. We obviously cannot decrease the hunger for cow $i+1$ any further since it will never be
+equal - we only can decrease the hunger for all the cows before $i+1$. To do this we select adjacent pairs of cows starting with the odd numbered cows and
+decrease their hunger values together (cows $1$ and $2$, cows $3$ and $4$, $\ldots$, cows $i-1$ and $i$).
+
+The following sequence of feeding shows how this strategy can be applied:
+```
+5 5 5 5 3 ...
+4 4 4 4 3 ...
+3 3 3 3 3 ...
+```
+
+After this, all the cows before $i+1$ will be decreased to the same hunger value as cow $i+1$.
+However, when $i$ is odd, it is impossible to decrease it's hunger unless we also decrease the hunger value for cow $i+1$, so we output $-1$.
+
+## Implementation
+
+Time Complexity: $\mathcal{O}(N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+
+void solve() {
+	int n;
+	cin >> n;
+	vector<ll> hunger(n + 1);  // hunger for each cow, (1-indexed)
+	for (int i = 1; i <= n; i++) { cin >> hunger[i]; }
+
+	ll bags_needed = 0;
+	for (int i = 1; i < n; i++) {
+		if (hunger[i + 1] > hunger[i]) {
+			if (i + 2 > n) {
+				/*
+				 * If the i+2'th cow doesn't exist, then we can't
+				 * possibly decrease the pair of cows starting with i+1.
+				 */
+				cout << -1 << "\n";
+				return;
+			}
+
+			ll difference = hunger[i + 1] - hunger[i];
+			hunger[i + 1] -= difference;
+			hunger[i + 2] -= difference;
+			if (hunger[i + 2] < 0) {
+				// Cow i+2 can't possibly have a negative hunger value.
+				cout << -1 << "\n";
+				return;
+			}
+
+			// It takes difference * 2 bags to get cows i+1 and i+2 to cow i's
+			// level.
+			bags_needed += difference * 2;
+		} else if (hunger[i] > hunger[i + 1]) {
+			if (i % 2 == 1) {
+				// If i is an odd index, then it is impossible.
+				cout << -1 << "\n";
+				return;
+			}
+
+			ll difference = hunger[i] - hunger[i + 1];
+			/*
+			 * It takes difference * i bags to get every cow
+			 * from 1 to i to the same hunger value as cow i + 1.
+			 */
+			bags_needed += difference * i;
+		}
+	}
+
+	cout << bags_needed << "\n";
+}
+
+int main() {
+	int tests;
+	cin >> tests;
+	for (int t = 0; t < tests; t++) { solve(); }
+}
+```
+
+</CPPSection>
+<PySection>
+
+```py
+from typing import List
+
+
+def check(same_lvl: int, corn: List[int], hunger_lvl: List[int]) -> bool:
+	# check if proposed corn is achievable
+	hunger_lvl[0] -= corn[0]
+	hunger_lvl[-1] -= corn[-1]
+
+	for i in range(1, len(hunger_lvl) - 1):
+		sum_of_corn = corn[i - 1] + corn[i]
+		hunger_lvl[i] -= sum_of_corn
+
+	return len(set(hunger_lvl)) == 1 and same_lvl >= 0 and min(corn) >= 0
+
+
+for _ in range(int(input())):
+	n_cows = int(input())
+	lvl = list(map(int, input().split()))
+	corns = [0] * (n_cows - 1)
+
+	if n_cows < 3:
+		print(0 if len(set(lvl)) == 1 else -1)
+		continue
+
+	find_min_level = []
+	# skip two to find the corn amount difference
+	for i in range(1, n_cows - 1, 2):
+		if i - 2 >= 0:
+			pos_lvl = lvl[i - 1] - corns[i - 2]
+		else:
+			pos_lvl = lvl[i - 1]
+		find_min_level.append(pos_lvl)
+		corns[i] = lvl[i] - pos_lvl
+
+	# find leveling, in which all the hunger level is the same
+	if n_cows % 2 == 0:
+		same_lvl = min(min(find_min_level), min(lvl))
+	else:
+		same_lvl = lvl[-1] - corns[-1]
+
+	corns[0] = lvl[0] - same_lvl
+
+	# fill in rest corn amount
+	if n_cows % 2 == 0:
+		n_cows_sub = n_cows - 2
+		corns[-1] = lvl[-1] - same_lvl
+	else:
+		n_cows_sub = n_cows - 1
+
+	for i in range(2, n_cows_sub, 2):
+		corns[i] = lvl[i] - corns[i - 1] - same_lvl
+
+	works = check(same_lvl, corns, lvl)
+
+	if works:
+		print(sum(corns) * 2)
+	else:
+		print(-1)
+```
+
+</PySection>
+</LanguageSection>

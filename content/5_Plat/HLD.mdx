@@ -53,7 +53,7 @@ of $x$. By the definition of light edge, $y$ must be a light child of $x$. This
 means that there has to be another child of $x$ with a larger subtree size than
 $y$, or else $y$ will become the heavy child of $x$. Hence the size of the
 subtree rooted at $x$ must be at least two times of the size of the subtree
-rooted at $y$. 
+rooted at $y$.
 
 Since the subtree size of a node can not exceed the total number
 of nodes $N$, the doubling process can only happen at most $\mathcal{O}(\log N)$
@@ -79,6 +79,11 @@ $\mathcal{O}(\log N)$ light edges, computing the value on the path from node $x$
 to node $y$ will take $\mathcal{O}(\log^2 N + \log N)$ = $\mathcal{O}(\log^2 N)$
 time. We can answer $Q$ queries in $\mathcal{O}(Q \log^2 N)$ time.
 
+Here's a helpful animation of how the algorithm works:
+<video width="960" height="720" controls>
+	<source src="/animations/HLD.mp4" type="video/mp4"/>
+</video>
+
 We can solve the focus problem "Path Queries II" using Heavy Light
 Decomposition:
 
@@ -91,9 +96,9 @@ Decomposition:
 #include "bits/stdc++.h"
 using namespace std;
 
-const int N = 2e5+5;
+const int N = 2e5 + 5;
 const int D = 19;
-const int S = (1<<D);
+const int S = (1 << D);
 
 int n, q, v[N];
 vector<int> adj[N];
@@ -103,17 +108,14 @@ int st[S], id[N], tp[N];
 
 void update(int idx, int val) {
 	st[idx += n] = val;
-	for (idx /= 2; idx; idx /= 2)
-		st[idx] = max(st[2 * idx], st[2 * idx + 1]);
+	for (idx /= 2; idx; idx /= 2) st[idx] = max(st[2 * idx], st[2 * idx + 1]);
 }
 
 int query(int lo, int hi) {
 	int ra = 0, rb = 0;
 	for (lo += n, hi += n + 1; lo < hi; lo /= 2, hi /= 2) {
-		if (lo & 1)
-			ra = max(ra, st[lo++]);
-		if (hi & 1)
-			rb = max(rb, st[--hi]);
+		if (lo & 1) ra = max(ra, st[lo++]);
+		if (hi & 1) rb = max(rb, st[--hi]);
 	}
 	return max(ra, rb);
 }
@@ -121,8 +123,8 @@ int query(int lo, int hi) {
 int dfs_sz(int cur, int par) {
 	sz[cur] = 1;
 	p[cur] = par;
-	for(int chi : adj[cur]) {
-		if(chi == par) continue;
+	for (int chi : adj[cur]) {
+		if (chi == par) continue;
 		dep[chi] = dep[cur] + 1;
 		p[chi] = cur;
 		sz[cur] += dfs_sz(chi, cur);
@@ -137,37 +139,37 @@ void dfs_hld(int cur, int par, int top) {
 	tp[cur] = top;
 	update(id[cur], v[cur]);
 	int h_chi = -1, h_sz = -1;
-	for(int chi : adj[cur]) {
-		if(chi == par) continue;
-		if(sz[chi] > h_sz) {
+	for (int chi : adj[cur]) {
+		if (chi == par) continue;
+		if (sz[chi] > h_sz) {
 			h_sz = sz[chi];
 			h_chi = chi;
 		}
 	}
-	if(h_chi == -1) return;
+	if (h_chi == -1) return;
 	dfs_hld(h_chi, cur, top);
-	for(int chi : adj[cur]) {
-		if(chi == par || chi == h_chi) continue;
+	for (int chi : adj[cur]) {
+		if (chi == par || chi == h_chi) continue;
 		dfs_hld(chi, cur, chi);
 	}
 }
 
-int path(int x, int y){
+int path(int x, int y) {
 	int ret = 0;
-	while(tp[x] != tp[y]){
-		if(dep[tp[x]] < dep[tp[y]])swap(x,y);
-		ret = max(ret, query(id[tp[x]],id[x]));
+	while (tp[x] != tp[y]) {
+		if (dep[tp[x]] < dep[tp[y]]) swap(x, y);
+		ret = max(ret, query(id[tp[x]], id[x]));
 		x = p[tp[x]];
 	}
-	if(dep[x] > dep[y])swap(x,y);
-	ret = max(ret, query(id[x],id[y]));
+	if (dep[x] > dep[y]) swap(x, y);
+	ret = max(ret, query(id[x], id[y]));
 	return ret;
 }
 
 int main() {
 	scanf("%d%d", &n, &q);
-	for(int i=1; i<=n; i++) scanf("%d", &v[i]);
-	for(int i=2; i<=n; i++) {
+	for (int i = 1; i <= n; i++) scanf("%d", &v[i]);
+	for (int i = 2; i <= n; i++) {
 		int a, b;
 		scanf("%d%d", &a, &b);
 		adj[a].push_back(b);
@@ -175,10 +177,10 @@ int main() {
 	}
 	dfs_sz(1, 1);
 	dfs_hld(1, 1, 1);
-	while(q--) {
+	while (q--) {
 		int t;
 		scanf("%d", &t);
-		if(t == 1) {
+		if (t == 1) {
 			int s, x;
 			scanf("%d%d", &s, &x);
 			v[s] = x;
@@ -186,12 +188,11 @@ int main() {
 		} else {
 			int a, b;
 			scanf("%d%d", &a, &b);
-			int res = path(a,b);
+			int res = path(a, b);
 			printf("%d ", res);
 		}
 	}
 }
-
 ```
 
 </CPPSection>

@@ -6,7 +6,7 @@ export default function Difficulty({ items, refine }) {
   const darkMode = useDarkMode();
 
   const handleChange = e => {
-    let refinements = [];
+    const refinements = [];
     for (const difficulty of e) {
       refinements.push(difficulty.label);
     }

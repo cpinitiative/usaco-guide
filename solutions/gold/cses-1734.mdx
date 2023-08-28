@@ -1,0 +1,207 @@
+---
+id: cses-1734
+source: CSES
+title: Distinct Values Queries
+author: Benjamin Qi, Andrew Wang, Óscar Garries, Chuyang Wang
+---
+
+<Spoiler title="Hint">
+
+Sort the queries in a specific order before answering them.
+
+</Spoiler>
+
+<Spoiler title="Solution">
+
+**Time Complexity:** $\mathcal{O}(N\log{N})$
+
+We answer the queries from right to left, sorted by their left indices. By using a BIT, we can keep track of indices that contain distinct values. For every value $arr[i]$, we set the latest (i.e. the left-most) index in $bit[i]$ to $1$. If this value appeared before, we set the last used index back to $0$. Then, we can answer all queries with $a = i$ by summing up the values between $[i, b]$. This ensures later indices after $i$ are included in the BIT to accurately answer queries.
+
+<LanguageSection>
+
+<CPPSection>
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+// BeginCodeSnip{BIT}
+struct BIT {
+	int size;
+	vector<int> bit;
+	BIT(int n) : size(n), bit(n + 1) {}
+	void update(int x, int v) {
+		x++;
+		for (; x <= size; x += x & (-x)) { bit[x] += v; }
+	}
+	/** @return sum of the values in [0,b] */
+	int query(int b) {
+		b++;
+		int result = 0;
+		for (; b > 0; b -= b & (-b)) { result += bit[b]; }
+		return result;
+	}
+};
+// EndCodeSnip
+
+int main() {
+	int n, q;
+	cin >> n >> q;
+
+	vector<int> arr(n);
+	vector<vector<pair<int, int>>> queries(n);
+	for (int i = 0; i < n; i++) { cin >> arr[i]; }
+	for (int i = 0; i < q; i++) {
+		int a, b;
+		cin >> a >> b;
+		a--, b--;
+		queries[a].push_back({b, i});
+	}
+
+	BIT bit(n);
+	// last_index[val] is the left-most index where arr[last_index[val]] = val.
+	map<int, int> last_index;
+	vector<int> solution(q, -1);
+	// Update the indices and answer queries from right to left.
+	for (int i = n - 1; i >= 0; i--) {
+		int val = arr[i];
+		/*
+		 * If val already appeared earlier, then the saved value is no
+		 * longer the left-most index, so erase it from our BIT.
+		 */
+		if (last_index.count(val) > 0) bit.update(last_index[val], -1);
+		// i becomes the left-most index.
+		last_index[val] = i;
+		bit.update(i, 1);
+
+		// Answer all queires with a == i.
+		for (auto &qr : queries[i]) {
+			/*
+			 * The solution for this query is bit[i,b].
+			 * This equals bit[0,b] since bit[0,i-1] = 0.
+			 */
+			solution[qr.second] = bit.query(qr.first);
+		}
+	}
+
+	for (auto &a : solution) { cout << a << "\n"; }
+}
+```
+</CPPSection>
+
+<JavaSection>
+
+<Warning title="TLE">
+The time limit on CSES is tight. Even with the correct algorithm, you could encounter TLE for some large test cases if you use Java.
+</Warning>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class DistinctValuesQueries {
+	public static void main(String[] args) throws IOException {
+		BufferedReader bf =
+		    new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(bf.readLine());
+		int n = Integer.parseInt(st.nextToken());
+		int q = Integer.parseInt(st.nextToken());
+
+		int[] arr = new int[n];
+		st = new StringTokenizer(bf.readLine());
+		for (int i = 0; i < n; i++) {
+			arr[i] = Integer.parseInt(st.nextToken());
+		}
+
+		List<List<Pair>> queries = new ArrayList<>();
+		for (int i = 0; i < n; i++) { queries.add(new ArrayList<>()); }
+		for (int i = 0; i < q; i++) {
+			st = new StringTokenizer(bf.readLine());
+			int a = Integer.parseInt(st.nextToken());
+			int b = Integer.parseInt(st.nextToken());
+			a--;
+			b--;
+			queries.get(a).add(new Pair(b, i));
+		}
+		bf.close();
+
+		// last_index[val] is the left-most index where arr[last_index[val]] =
+		// val.
+		Map<Integer, Integer> last_index = new HashMap<>();
+		BIT bit = new BIT(n);
+		int[] solution = new int[q];
+		for (int i = n - 1; i >= 0; i--) {
+			int val = arr[i];
+			/*
+			 * If val already appeared earlier, then the saved value is no
+			 * longer the left-most index, so erase it from our BIT.
+			 */
+			if (last_index.containsKey(val)) {
+				bit.update(last_index.get(val), -1);
+			}
+			// i becomes the left-most index.
+			last_index.put(val, i);
+			bit.update(i, 1);
+
+			// Answer all queires with a == i.
+			for (Pair qr : queries.get(i)) {
+				/*
+				 * The solution for this query is bit[i,b].
+				 * This equals bit[0,b] since bit[0,i-1] = 0.
+				 */
+				solution[qr.second] = bit.query(qr.first);
+			}
+		}
+
+		BufferedWriter bw =
+		    new BufferedWriter(new OutputStreamWriter(System.out));
+		for (int i = 0; i < q; i++) {
+			bw.write(Integer.toString(solution[i]));
+			bw.write("\n");
+		}
+		bw.flush();
+		bw.close();
+	}
+
+	// BeginCodeSnip{BIT}
+	private static class BIT {
+		int size;
+		int[] bit;
+
+		BIT(int n) {
+			size = n;
+			bit = new int[n + 1];
+		}
+
+		void update(int x, int v) {
+			x++;
+			for (; x <= size; x += x & -x) { bit[x] += v; }
+		}
+
+		/** @return sum of values in [0,b] */
+		int query(int b) {
+			b++;
+			int result = 0;
+			for (; b > 0; b -= b & -b) { result += bit[b]; }
+			return result;
+		}
+	}
+	// EndCodeSnip
+
+	// BeginCodeSnip{Pair}
+	private static class Pair {
+		public int first;
+		public int second;
+
+		Pair(int a, int b) {
+			first = a;
+			second = b;
+		}
+	}
+	// EndCodeSnip
+}
+```
+</JavaSection>
+
+</LanguageSection>
+
+</Spoiler>

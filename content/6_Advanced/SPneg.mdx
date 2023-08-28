@@ -1,7 +1,7 @@
 ---
 id: sp-neg
 title: 'Shortest Paths with Negative Edge Weights'
-author: Benjamin Qi, Andi Qu, Dong Liu
+author: Benjamin Qi, Andi Qu, Dong Liu, F. Bruno D. R.
 prerequisites:
   - shortest-paths
 description: 'Returning to Bellman-Ford and Floyd-Warshall.'
@@ -43,7 +43,97 @@ frequency: 0
 
 #### Solution
 
-<IncompleteSection />
+Although this is a Single Source Shortest Paths problem, we can not use the known
+Dijkstra's algorithm, because we have negative weights on edges. An alternative is
+to use the Bellman-Ford algorithm. The algorithm first considers all the paths
+which use 1 edge. Then it calculates all the paths with at most 2 edges, and so
+on. If the graph has no negative cycle, then the shortest path between the source
+and any other vertice should have at most $V-1$ edges, where $V$ stands for the number
+of vertices in the graph. Because of that, the algorithm iterates through at most
+all edges $V-1$ times. Hence, it runs in $O(E \cdot V)$.
+
+If the graph has a negative cycle, we can detect a vertice in this cycle by running
+another relaxation. In this problem, belonging to a negative cycle means the
+distance to that point is negative infinity. Notice that all points that are reachable
+from those will also have minus infinity cost. In the solution below, we detect
+all the negative cycles and save the point from which we detected the cycle. We then
+do a [BFS](/silver/graph-traversal) with those points as sources.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	int n, m, q, s;
+	cin >> n >> m >> q >> s;
+
+	while (!(n == 0 && m == 0 && q == 0 && s == 0)) {
+		vector<vector<pair<int, int>>> adj(n);
+		for (int i = 0; i < m; i++) {
+			int u, v, w;
+			cin >> u >> v >> w;
+			adj[u].emplace_back(v, w);
+		}
+
+		vector<int> dist(n, INT32_MAX);
+		dist[s] = 0;
+
+		for (int i = 0; i < n - 1; i++) {
+			for (int u = 0; u < n; u++) {
+				if (dist[u] == INT32_MAX) { continue; }
+				for (auto &[v, w] : adj[u]) {
+					dist[v] = min(dist[v], dist[u] + w);
+				}
+			}
+		}
+
+		queue<int> bfs_queue;
+
+		// one more iteration to detect negative cycles on graph
+		for (int u = 0; u < n; u++) {
+			if (dist[u] == INT32_MAX) { continue; }
+			for (auto &[v, w] : adj[u]) {
+				// the relaxed vertices belong to a negative cycle
+				if (dist[u] + w < dist[v]) { bfs_queue.push(v); }
+			}
+		}
+
+		vector<bool> is_negative_inf(n, false);
+
+		while (!bfs_queue.empty()) {
+			int u = bfs_queue.front();
+			bfs_queue.pop();
+			is_negative_inf[u] = true;
+			for (auto &[v, w] : adj[u]) {
+				if (is_negative_inf[v]) { continue; }
+				bfs_queue.push(v);
+			}
+		}
+
+		for (int i = 0; i < q; i++) {
+			int target;
+			cin >> target;
+			if (is_negative_inf[target]) {
+				cout << "-Infinity" << '\n';
+			} else if (dist[target] == INT32_MAX) {
+				cout << "Impossible" << '\n';
+			} else {
+				cout << dist[target] << '\n';
+			}
+		}
+
+		cin >> n >> m >> q >> s;
+	}
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
 
 ### Finding Negative Cycles
 
@@ -66,7 +156,8 @@ using namespace std;
 using ll = long long;
 
 struct edge {
-	int from, to; ll weight;
+	int from, to;
+	ll weight;
 };
 
 const int MAXN = 2505;
@@ -76,34 +167,34 @@ ll dist[MAXN];
 vector<edge> graph;
 
 void BellmanFord(int source) {
-	fill(parent+1, parent+n+1, 0);
-	fill(dist+1, dist+n+1, 1e18);
+	fill(parent + 1, parent + n + 1, 0);
+	fill(dist + 1, dist + n + 1, 1e18);
 	dist[source] = 0;
 	int last_node_updated;
-	for(int i=1; i<=n; i++) {
+	for (int i = 1; i <= n; i++) {
 		last_node_updated = -1;
-		for(edge &e : graph) {
-			if(dist[e.from] + e.weight < dist[e.to]) {
+		for (edge &e : graph) {
+			if (dist[e.from] + e.weight < dist[e.to]) {
 				dist[e.to] = dist[e.from] + e.weight;
 				parent[e.to] = e.from;
 				last_node_updated = e.to;
 			}
 		}
 	}
-	if(last_node_updated == -1) {
+	if (last_node_updated == -1) {
 		cout << "NO" << '\n';
 	} else {
 		cout << "YES" << '\n';
 		vector<int> cycle;
-		for(int i=0; i<n-1; i++) {
-			last_node_updated=parent[last_node_updated];
+		for (int i = 0; i < n - 1; i++) {
+			last_node_updated = parent[last_node_updated];
 		}
-		for(int x=last_node_updated; ; x=parent[x]) {
+		for (int x = last_node_updated;; x = parent[x]) {
 			cycle.push_back(x);
-			if (x==last_node_updated && cycle.size()>1) break;
+			if (x == last_node_updated && cycle.size() > 1) break;
 		}
 		reverse(cycle.begin(), cycle.end());
-		for(int x : cycle) cout << x << ' ';
+		for (int x : cycle) cout << x << ' ';
 		cout << '\n';
 	}
 }
@@ -112,8 +203,9 @@ int main() {
 	cin.tie(0)->sync_with_stdio(0);
 
 	cin >> n >> m;
-	while(m--) {
-		int a, b; ll c;
+	while (m--) {
+		int a, b;
+		ll c;
 		cin >> a >> b >> c;
 		graph.push_back({a, b, c});
 	}
@@ -169,30 +261,37 @@ Timeline (USACO Camp):
 const int MOD = 1000000007;
 const ll INF = 1e18;
 
-int n,m,q;
+int n, m, q;
 ll dist[150][150], bad[150][150];
 
 void solve() {
-	F0R(i,n) F0R(j,n) dist[i][j] = INF, bad[i][j] = 0;
-	F0R(i,n) dist[i][i] = 0;
-	F0R(i,m) {
-		int u,v,w; cin >> u >> v >> w;
-		dist[u][v] = min(dist[u][v],(ll)w);
+	F0R(i, n) F0R(j, n) dist[i][j] = INF, bad[i][j] = 0;
+	F0R(i, n) dist[i][i] = 0;
+	F0R(i, m) {
+		int u, v, w;
+		cin >> u >> v >> w;
+		dist[u][v] = min(dist[u][v], (ll)w);
 	}
-	F0R(k,n) F0R(i,n) F0R(j,n) if (dist[i][k] != INF && dist[k][j] != INF)
-		dist[i][j] = min(dist[i][j],dist[i][k]+dist[k][j]);
+	F0R(k, n)
+	F0R(i, n)
+	F0R(j, n)
+	if (dist[i][k] != INF && dist[k][j] != INF)
+		dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j]);
 
-	F0R(k,n) F0R(i,n) F0R(j,n) if (dist[i][k] != INF && dist[k][j] != INF)
-		if (dist[i][j] > dist[i][k]+dist[k][j])
-			bad[i][j] = 1;
+	F0R(k, n)
+	F0R(i, n)
+	F0R(j, n)
+	if (dist[i][k] != INF && dist[k][j] != INF)
+		if (dist[i][j] > dist[i][k] + dist[k][j]) bad[i][j] = 1;
 
-	F0R(k,n) F0R(i,n) F0R(j,n) {
+	F0R(k, n) F0R(i, n) F0R(j, n) {
 		if (dist[i][k] < INF && bad[k][j]) bad[i][j] = 1;
 		if (bad[i][k] && dist[k][j] < INF) bad[i][j] = 1;
 	}
 
-	F0R(i,q) {
-		int u,v; cin >> u >> v;
+	F0R(i, q) {
+		int u, v;
+		cin >> u >> v;
 		if (bad[u][v]) cout << "-Infinity\n";
 		else if (dist[u][v] == INF) cout << "Impossible\n";
 		else cout << dist[u][v] << "\n";
@@ -201,7 +300,8 @@ void solve() {
 }
 
 int main() {
-	ios_base::sync_with_stdio(0);cin.tie(0);
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
 	while (cin >> n >> m >> q) solve();
 }
 ```

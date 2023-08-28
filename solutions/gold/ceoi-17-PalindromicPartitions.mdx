@@ -1,0 +1,68 @@
+---
+id: ceoi-17-PalindromicPartitions
+source: CEOI
+title: 2017 - Palindromic Partitions
+author: Chongtian Ma
+---
+
+[Official Analysis](https://csacademy.com/contest/ceoi-2017-day-2/task/palindromic-partitions/solution/)
+
+## Implementation
+
+The greedy approach is implemented below. We are going to initialize two strings (in this case, hash values) - one built with the $i'$th character and the other with its $n - i - 1$'th complement. We will loop from left to right, adding characters one at a time to their respective strings until the left string is the same as the right string, in which we can create two partitions. To check the equality of these strings, we will use string hashing.
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+
+const ll P = 69421;
+const ll M = 1e9 + 9;
+
+int main() {
+	int tc;
+	cin >> tc;
+	while (tc--) {
+		string s;
+		cin >> s;
+
+		int n = s.length();
+		int ans = 0;
+		int found = 0;  // -1 if no further strings can be found on both side
+		int start = 0;  // index we start searching from
+
+		while (found != -1) {
+			ll hash_left = 0, hash_right = 0;
+			found = -1;
+			for (ll l = start, pw = 1; l < n / 2; l++, pw = (pw * P % M)) {
+				hash_left = (hash_left * P + s[l]) % M;
+				hash_right = (hash_right + pw * s[n - 1 - l]) % M;
+				if (hash_left == hash_right) {
+					found = l;
+					break;
+				}
+			}
+
+			// two partitions can be created with these two strings
+			if (found != -1) {
+				start = found + 1;
+				ans += 2;
+			}
+		}
+
+		// we have taken all the characters
+		if (start * 2 == n) {
+			cout << ans << endl;
+		} else {
+			cout << ans + 1 << endl;
+		}
+	}
+}
+```
+</CPPSection>
+</LanguageSection>

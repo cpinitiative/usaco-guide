@@ -1,0 +1,88 @@
+---
+id: cf-1017D
+source: CF
+title: The Wu
+author: Chongtian Ma
+---
+
+[Official Editorial (C++)](https://codeforces.com/blog/entry/61081)
+
+## Alternative Solution
+
+We can first precompute the wu values for each pair of strings. Then, we can sum up the number of strings that gives each wu value of each string in a prefix sum (represented by `pref_wu` in the following implementation). Thus, for each query, we can utilize the output of our prefix sum array.
+
+In the implementation,
+instead of looping through all bits and finding which bits are the same, $i \oplus j$ essentially gives the mask of the bits that are different, so wu of total
+minus wu of $(i \oplus j)$ will also give wu values of the bits that are the same. Also, since $k$ is at most $100$, we can precompute the answer for every $k$ for each string.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}({2^{2n}} + qn)$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MAX_K = 100;
+
+int main() {
+	cin.tie(0)->sync_with_stdio(0);
+	int n, m, q;
+	cin >> n >> m >> q;
+	vector<int> w(n);
+	for (int &i : w) { cin >> i; }
+
+	// precompute wu value for every subset
+	vector<int> wu(1 << n);
+	for (int i = 0; i < (1 << n); i++) {
+		for (int j = 0; j < n; j++) {
+			if (i & (1 << j)) { wu[i] += w[j]; }
+		}
+	}
+
+	// convert all strings to integers and store count
+	vector<int> str_count(1 << n);
+	for (int i = 0; i < m; i++) {
+		string s;
+		cin >> s;
+		int val = 0;
+		for (int j = 0; j < n; j++) {
+			if (s[j] == '1') { val += 1 << j; }
+		}
+		str_count[val]++;
+	}
+
+	/*
+	 * precompute wu value every possible k for a string
+	 * pref_wu[i][j] stores prefix of count up to k = j for string i
+	 */
+	vector<vector<int>> pref_wu(1 << n, vector<int>(MAX_K + 1));
+	for (int i = 0; i < (1 << n); i++) {
+		for (int j = 0; j < (1 << n); j++) {
+			int all_same = (1 << n) - 1;
+			int diff = i ^ j;
+			int wu_value = wu[all_same] - wu[diff];
+			if (wu_value <= MAX_K) { pref_wu[i][wu_value] += str_count[j]; }
+		}
+		// accumulate prefix sums of count
+		for (int j = 1; j <= MAX_K; j++) { pref_wu[i][j] += pref_wu[i][j - 1]; }
+	}
+
+	for (int query = 0; query < q; query++) {
+		string t;
+		int k;
+		cin >> t >> k;
+		int val = 0;
+		for (int i = 0; i < n; i++) {
+			if (t[i] == '1') { val += 1 << i; }
+		}
+		cout << pref_wu[val][k] << "\n";
+	}
+}
+```
+</CPPSection>
+</LanguageSection>

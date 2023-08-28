@@ -58,9 +58,7 @@ int find_lis(vector<int> a) {
 	vector<int> dp(a.size(), 1);
 	for (int i = 0; i < a.size(); i++) {
 		for (int j = 0; j < i; j++) {
-			if (a[j] < a[i]) {
-				dp[i] = max(dp[i], dp[j] + 1);
-			}
+			if (a[j] < a[i]) { dp[i] = max(dp[i], dp[j] + 1); }
 		}
 		lis = max(lis, dp[i]);
 	}
@@ -78,9 +76,7 @@ public static int findLis(int[] a) {
 	Arrays.fill(dp, 1);
 	for (int i = 0; i < a.length; i++) {
 		for (int j = 0; j < i; j++) {
-			if (a[j] < a[i]) {
-				dp[i] = Math.max(dp[i], dp[j] + 1);
-			}
+			if (a[j] < a[i]) { dp[i] = Math.max(dp[i], dp[j] + 1); }
 		}
 		lis = Math.max(lis, dp[i]);
 	}
@@ -93,6 +89,7 @@ public static int findLis(int[] a) {
 
 ```py
 from typing import List
+
 
 def find_lis(a: List[int]) -> int:
 	lis = 0
@@ -159,8 +156,8 @@ solution for PCB).
 <CPPSection>
 
 ```cpp
-#include <vector>
 #include <algorithm>
+#include <vector>
 using namespace std;
 
 int find_lis(vector<int> a) {
@@ -206,6 +203,7 @@ public static int findLis(int[] a) {
 ```py
 from typing import List
 from bisect import bisect_left
+
 
 def find_lis(arr: List[int]) -> int:
 	min_endings = []
@@ -266,35 +264,32 @@ The implementation follows:
 #include <bits/stdc++.h>
 using namespace std;
 
-//BeginCodeSnip{Range Maximum Segment Tree}
+// BeginCodeSnip{Range Maximum Segment Tree}
 class MaxSegTree {
-	private:
-		int len;
-		vector<int> segtree;
-	public:
-		MaxSegTree(int len) : len(len), segtree(2 * len) { }
+  private:
+	int len;
+	vector<int> segtree;
 
-		void set(int ind, int val) {
-			for (segtree[ind += len] = val; ind > 1; ind >>= 1) {
-				segtree[ind >> 1] = max(segtree[ind], segtree[ind ^ 1]);
-			}
-		}
+  public:
+	MaxSegTree(int len) : len(len), segtree(2 * len) {}
 
-		// maximum of the range [from, to)
-		int range_max(int from, int to) {
-			int max_ = INT32_MIN;
-			for (from += len, to += len; from < to; from >>= 1, to >>= 1) {
-				if ((from & 1) != 0) {
-					max_ = max(max_, segtree[from++]);
-				}
-				if ((to & 1) != 0) {
-					max_ = max(max_, segtree[--to]);
-				}
-			}
-			return max_;
+	void set(int ind, int val) {
+		for (segtree[ind += len] = val; ind > 1; ind >>= 1) {
+			segtree[ind >> 1] = max(segtree[ind], segtree[ind ^ 1]);
 		}
+	}
+
+	// maximum of the range [from, to)
+	int range_max(int from, int to) {
+		int max_ = INT32_MIN;
+		for (from += len, to += len; from < to; from >>= 1, to >>= 1) {
+			if ((from & 1) != 0) { max_ = max(max_, segtree[from++]); }
+			if ((to & 1) != 0) { max_ = max(max_, segtree[--to]); }
+		}
+		return max_;
+	}
 };
-//EndCodeSnip
+// EndCodeSnip
 
 int find_lis(vector<int> a) {
 	// apply coordinate compression to all elements of the array
@@ -303,12 +298,10 @@ int find_lis(vector<int> a) {
 	int at = 0;
 	map<int, int> coord_comp;
 	for (int i : sorted) {
-		if (!coord_comp.count(i)) {
-			coord_comp[i] = at++;
-		}
+		if (!coord_comp.count(i)) { coord_comp[i] = at++; }
 	}
 	// cmp(i) gives the compressed version of index i
-	auto cmp = [&] (int i) -> int { return coord_comp[a[i]]; };
+	auto cmp = [&](int i) -> int { return coord_comp[a[i]]; };
 
 	MaxSegTree dp(coord_comp.size());
 	dp.set(cmp(0), 1);
@@ -320,7 +313,7 @@ int find_lis(vector<int> a) {
 			dp.set(cmp(i), 1);
 		}
 	}
-	
+
 	return dp.range_max(0, coord_comp.size());
 }
 ```
@@ -339,9 +332,7 @@ public class FindLis {
 		HashMap<Integer, Integer> coordComp = new HashMap<>();
 		int at = 0;
 		for (int i : sorted) {
-			if (!coordComp.containsKey(i)) {
-				coordComp.put(i, at++);
-			}
+			if (!coordComp.containsKey(i)) { coordComp.put(i, at++); }
 		}
 
 		MaxSegTree dp = new MaxSegTree(coordComp.size());
@@ -360,7 +351,7 @@ public class FindLis {
 	}
 }
 
-//BeginCodeSnip{Range Maximum Segment Tree}
+// BeginCodeSnip{Range Maximum Segment Tree}
 class MaxSegTree {
 	int len;
 	int[] segtree;
@@ -380,17 +371,13 @@ class MaxSegTree {
 	int rangeMax(int from, int to) {
 		int max = Integer.MIN_VALUE;
 		for (from += len, to += len; from < to; from >>= 1, to >>= 1) {
-			if ((from & 1) != 0) {
-				max = Math.max(max, segtree[from++]);
-			}
-			if ((to & 1) != 0) {
-				max = Math.max(max, segtree[--to]);
-			}
+			if ((from & 1) != 0) { max = Math.max(max, segtree[from++]); }
+			if ((to & 1) != 0) { max = Math.max(max, segtree[--to]); }
 		}
 		return max;
 	}
 }
-//EndCodeSnip
+// EndCodeSnip
 ```
 
 </JavaSection>
@@ -404,7 +391,7 @@ class MaxSegTree:
 	def __init__(self, len_: int):
 		self.len = len_
 		self.segtree = [0] * (2 * len_)
-	
+
 	def set(self, ind: int, val: int) -> None:
 		ind += self.len
 		self.segtree[ind] = val
@@ -414,7 +401,7 @@ class MaxSegTree:
 
 	# maximum of the range [from, to)
 	def range_max(self, start: int, end: int) -> int:
-		max_ = -float('inf')
+		max_ = -float("inf")
 		start += self.len
 		end += self.len
 		while start < end:
@@ -447,11 +434,11 @@ def find_lis(a: List[int]) -> int:
 	for i in range(1, len(a)):
 		max_prev = dp.range_max(0, cmp(i))
 
-		if max_prev != -float('inf'):
+		if max_prev != -float("inf"):
 			dp.set(cmp(i), max_prev + 1)
 		else:
 			dp.set(cmp(i), 1)
-	
+
 	return dp.range_max(0, len(coord_comp))
 ```
 
@@ -576,18 +563,21 @@ import java.util.*;
 
 class PCB {
 	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader br =
+		    new BufferedReader(new InputStreamReader(System.in));
 		int n = Integer.parseInt(br.readLine());
-		TreeMap<Integer, Integer> a = new TreeMap<Integer, Integer>(Collections.reverseOrder());
+		TreeMap<Integer, Integer> a =
+		    new TreeMap<Integer, Integer>(Collections.reverseOrder());
 		for (int i = 0; i < n; i++) {
 			StringTokenizer st = new StringTokenizer(br.readLine());
-			a.put(Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken()));
+			a.put(Integer.parseInt(st.nextToken()),
+			      Integer.parseInt(st.nextToken()));
 		}
 		// finding the LIS of a reversed array = finding the LDS
 		int lis = 0;
 		TreeSet<Integer> s = new TreeSet<Integer>();
 		for (int k : a.keySet()) {
-			if(s.higher(a.get(k)) == null) lis++;
+			if (s.higher(a.get(k)) == null) lis++;
 			else s.remove(s.higher(a.get(k)));
 			s.add(a.get(k));
 		}

@@ -1,0 +1,160 @@
+---
+id: usaco-896
+source: USACO Silver 2019 January
+title: Mountain View
+author: Jesse Choe, Sofia Yang, Juheon Rhee
+---
+
+[Official Analysis (C++)](http://usaco.org/current/data/sol_mountains_silver_jan19.html)
+
+## Explanation
+
+Notice that a mountain is obscured by another mountain iff the base of the mountain (the area the mountain takes up on the ground) is contained within the base of the other mountain.
+
+However, going through all pairs of mountains and checking if one is obscured by another takes $\mathcal{O}(N^2)$ time and is too slow given the input size.
+
+To speed things up, let's sort the mountains by their left end first and then iterate through all of them, keeping track of the rightmost right end we've seen.
+Then, if the right side of the current mountain is less than the current highest right end, we know that that mountain is obscured by another.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(n\log n)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+struct Mountain {
+	int start, end;
+};
+
+bool operator<(const Mountain &m1, const Mountain &m2) {
+	// sort by start and tiebreak by putting the larger mountains first
+	if (m1.start == m2.start) { return m1.end > m2.end; }
+	return m1.start < m2.start;
+}
+
+int main() {
+	std::ifstream read("mountains.in");
+	int mountain_num;
+	read >> mountain_num;
+
+	vector<Mountain> mountains;
+	for (int m = 0; m < mountain_num; m++) {
+		int x, y;
+		read >> x >> y;
+		// store the mountains by the interval they cover
+		mountains.push_back({x - y, x + y});
+	}
+	sort(mountains.begin(), mountains.end());
+
+	int rightmost = -1;
+	int visible_num = 0;
+	for (const Mountain &m : mountains) {
+		if (m.end > rightmost) {
+			visible_num++;
+			rightmost = m.end;
+		}
+	}
+
+	std::ofstream("mountains.out") << visible_num << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.Arrays;
+import java.util.StringTokenizer;
+
+public class Mountains {
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new FileReader("mountains.in"));
+		int mountainNum = Integer.parseInt(br.readLine());
+
+		Mountain[] mountains = new Mountain[mountainNum];
+		for (int m = 0; m < mountainNum; m++) {
+			StringTokenizer st = new StringTokenizer(br.readLine());
+			int x = Integer.parseInt(st.nextToken());
+			int y = Integer.parseInt(st.nextToken());
+			// store the mountains by the interval they cover
+			mountains[m] = new Mountain(x - y, x + y);
+		}
+		Arrays.sort(mountains);
+
+		int rightmost = -1;
+		int visibleNum = 0;
+		for (Mountain m : mountains) {
+			if (m.end > rightmost) {
+				visibleNum++;
+				rightmost = m.end;
+			}
+		}
+
+		PrintWriter pw = new PrintWriter("mountains.out");
+		pw.println(visibleNum);
+		pw.close();
+	}
+}
+
+class Mountain implements Comparable<Mountain> {
+	public int start, end;
+
+	public Mountain(int start, int end) {
+		this.start = start;
+		this.end = end;
+	}
+
+	public int compareTo(Mountain other) {
+		// sort by start and tiebreak by putting the larger mountains first
+		if (this.start != other.start) {
+			return Integer.compare(this.start, other.start);
+		}
+		return Integer.compare(other.end, this.end);
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+class Mountain:
+	def __init__(self, start: int, end: int):
+		self.start = start
+		self.end = end
+
+	def __lt__(self, other: "Mountain"):
+		# sort by start and tiebreak by putting the larger mountains first
+		if self.start == other.start:
+			return self.end > other.end
+		return self.start < other.start
+
+
+with open("mountains.in") as read:
+	mountain_num = int(read.readline())
+	mountains = []
+	for _ in range(mountain_num):
+		x, y = [int(i) for i in read.readline().split()]
+		# store the mountains by the interval they cover
+		mountains.append(Mountain(x - y, x + y))
+
+mountains.sort()
+
+rightmost = -1
+visible_num = 0
+for m in mountains:
+	if m.end > rightmost:
+		visible_num += 1
+		rightmost = m.end
+
+print(visible_num, file=open("mountains.out", "w"))
+```
+
+</PySection>
+</LanguageSection>

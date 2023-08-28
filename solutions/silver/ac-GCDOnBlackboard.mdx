@@ -1,0 +1,147 @@
+---
+id: ac-GCDOnBlackboard
+source: AC
+title: GCD On Blackboard
+author: Andrew Cheng, Mohammad Nour Massri, David Zhang
+---
+
+## Solution
+The problem asks us to find the maximum possible GCD of the remaining $N-1$ numbers
+after taking any one of them away. Naively trying every single combination will result in a
+complexity of $\mathcal{O}(N^2 + N \log(\max a_i))$ as there are $N$ different ways to take away a number and calculating
+the GCD will take $\mathcal{O}(N+\log(\max a_i))$ time per case.
+
+To speed this process up, we can calculate the GCDs of every prefix and suffix. Let $l[i] = \gcd_{j=1}^{i} a[j]$ and $r[i] = \gcd_{j=i}^{N} a[j]$.
+Then the answer is the maximum of $\gcd(l[i-1],r[i+1]),$ $i \in [1,N]$.
+
+**Time Complexity:**
+$\mathcal{O}(N+\log(\max a_i))$
+
+<Spoiler title="Time Complexity Proof">
+
+At first glance, one might think the task of finding the GCD of an array of integers will take $\mathcal{O}(N\log(\max a_i))$ time
+as each GCD operation takes at most $\mathcal{O}(\log(\max a_i))$ time. However, as each GCD operation will decrease the maximum of the two operands
+by at least a factor of 2, there could only be a total of $\mathcal{O}(\log (\max a_i))$ GCD operations
+as opposed to $\mathcal{O}(N \log(\max a_i))$ operations (The smallest possible GCD is 1 by definition). Hence the total time complexity of this problem is $\mathcal{O}(N+\log(\max a_i))$
+as stated previously.
+
+<Optional>
+
+[This](https://codeforces.com/blog/entry/92720?#comment-814416) Codeforces blog discusses the time complexity of finding the GCD of an array.
+
+</Optional>
+
+</Spoiler>
+
+## Implementation
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int maxN = 1e5 + 5;
+
+int arr[maxN];
+int prefGcd[maxN];  // prefGcd[i] = GCD of a1,a2, ..., ai
+int suffGcd[maxN];  // suffGcd[i] = GCD of ai, ai+1, ..., an
+int N;
+
+int main() {
+	ios_base::sync_with_stdio(false);
+	cin.tie(0);
+	cin >> N;
+	for (int i = 1; i <= N; ++i) cin >> arr[i];
+
+	prefGcd[0] = 0;
+	suffGcd[N + 1] = 0;
+
+	for (int i = 1; i <= N; ++i) { prefGcd[i] = gcd(prefGcd[i - 1], arr[i]); }
+
+	for (int i = N; i >= 1; --i) { suffGcd[i] = gcd(suffGcd[i + 1], arr[i]); }
+
+	int res = 0;
+	for (int i = 1; i <= N; ++i) {
+		res = max(res, gcd(prefGcd[i - 1], suffGcd[i + 1]));
+	}
+	cout << res << '\n';
+}
+```
+</CPPSection>
+<PySection>
+
+```py
+from math import gcd
+
+n = int(input())
+arr = list(map(int, input().split()))
+
+ans = 0
+
+prefix_gcd = [0] * n
+prefix_gcd[0] = arr[0]
+
+suffix_gcd = [0] * n
+suffix_gcd[n - 1] = arr[n - 1]
+
+# prefix_gcd[i] = GCD of a[0], a[1], ..., a[i]
+for i in range(1, n):
+	prefix_gcd[i] = gcd(prefix_gcd[i - 1], arr[i])
+
+# suffix_gcd[i] = GCD of a[n - 1], a[n - 2], ..., a[i]
+for i in range(n - 2, -1, -1):
+	suffix_gcd[i] = gcd(suffix_gcd[i + 1], arr[i])
+
+# Calculate the answer if we replace an element with index between 1 and n - 2
+for i in range(1, n - 1):
+	ans = max(ans, gcd(prefix_gcd[i - 1], suffix_gcd[i + 1]))
+
+# Calculate the answer if we replace the first element in the array
+ans = max(ans, suffix_gcd[1])
+# Calculate the answer if we replace the last element in the array
+ans = max(ans, prefix_gcd[n - 2])
+
+print(ans)
+```
+</PySection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Main {
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio();
+		int n = io.nextInt();
+		int[] a = new int[n];
+
+		for (int i = 0; i < n; i++) { a[i] = io.nextInt(); }
+
+		int[] prefGCD = new int[n + 1];
+		int[] suffGCD = new int[n + 1];
+		for (int i = 1; i <= n; i++) {
+			prefGCD[i] = gcd(prefGCD[i - 1], a[i - 1]);
+		}
+		for (int i = n - 1; i >= 0; i--) {
+			suffGCD[i] = gcd(suffGCD[i + 1], a[i]);
+		}
+
+		int ans = 0;
+		for (int i = 0; i < n; i++) {
+			int g = gcd(suffGCD[i + 1], prefGCD[i]);
+			ans = Math.max(ans, g);
+		}
+		System.out.println(ans);
+		io.close();
+	}
+
+	static int gcd(int a, int b) { return b == 0 ? a : gcd(b, a % b); }
+
+	// CodeSnip{Kattio}
+}
+```
+</JavaSection>
+</LanguageSection>

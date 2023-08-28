@@ -1,6 +1,12 @@
 import * as Sentry from '@sentry/browser';
 import { getAuth, onAuthStateChanged, signOut, User } from 'firebase/auth';
-import { doc, getFirestore, onSnapshot, setDoc } from 'firebase/firestore';
+import {
+  doc,
+  getFirestore,
+  onSnapshot,
+  serverTimestamp,
+  setDoc,
+} from 'firebase/firestore';
 import * as React from 'react';
 import { createContext, ReactNode, useReducer, useState } from 'react';
 import toast from 'react-hot-toast';
@@ -12,7 +18,7 @@ import DivisionTableQuery, {
   DivisionTableQueryAPI,
 } from './properties/divisionTableQuery';
 import HideDifficulty, { HideDifficultyAPI } from './properties/hideDifficulty';
-import HideTags, { HideTagsAPI } from './properties/hideTags';
+import HideModules, { HideModulesAPI } from './properties/hideModules';
 import LastReadAnnouncement, {
   LastReadAnnouncementAPI,
 } from './properties/lastReadAnnouncement';
@@ -21,6 +27,7 @@ import LastViewedModule, {
 } from './properties/lastViewedModule';
 import LastVisitProperty, { LastVisitAPI } from './properties/lastVisit';
 import ShowIgnored, { ShowIgnoredAPI } from './properties/showIgnored';
+import ShowTags, { ShowTagsAPI } from './properties/showTags';
 import ThemeProperty, { ThemePropertyAPI } from './properties/themeProperty';
 import UserLang, { UserLangAPI } from './properties/userLang';
 import UserProgressOnModulesProperty, {
@@ -93,8 +100,9 @@ import { UserPermissionsContextProvider } from './UserPermissionsContext';
 const UserDataContextAPIs: UserDataPropertyAPI[] = [
   new UserLang(),
   new LastViewedModule(),
-  new HideTags(),
+  new ShowTags(),
   new HideDifficulty(),
+  new HideModules(),
   new DivisionTableQuery(),
   new ShowIgnored(),
   new ThemeProperty(),
@@ -108,8 +116,9 @@ const UserDataContextAPIs: UserDataPropertyAPI[] = [
 
 type UserDataContextAPI = UserLangAPI &
   LastViewedModuleAPI &
-  HideTagsAPI &
+  ShowTagsAPI &
   HideDifficultyAPI &
+  HideModulesAPI &
   DivisionTableQueryAPI &
   ShowIgnoredAPI &
   ThemePropertyAPI &
@@ -133,8 +142,9 @@ const UserDataContext = createContext<UserDataContextAPI>({
   firebaseUser: null,
   getDataExport: () => Promise.resolve(),
   importUserData: () => true,
-  hideTags: false,
+  showTags: false,
   hideDifficulty: false,
+  hideModules: false,
   divisionTableQuery: {
     division: '',
     season: '',
@@ -156,10 +166,13 @@ const UserDataContext = createContext<UserDataContextAPI>({
   setTheme: _x => {
     // do nothing
   },
-  setHideTags: _x => {
+  setShowTags: _x => {
     // do nothing
   },
   setHideDifficulty: _x => {
+    // do nothing
+  },
+  setHideModules: _x => {
     // do nothing
   },
   setDivisionTableQuery: _x => {
@@ -234,6 +247,10 @@ export const UserDataProvider = ({
     api.setTriggerRerenderFunction(triggerRerender)
   );
 
+  React.useEffect(() => {
+    UserDataContextAPIs.forEach(api => api.setFirebaseApp(firebaseApp));
+  }, [firebaseApp]);
+
   // Listen for firebase user sign in / sign out
   useFirebaseApp(firebase => {
     const auth = getAuth(firebase);
@@ -259,6 +276,9 @@ export const UserDataProvider = ({
     UserDataContextAPIs.forEach(api => api.initializeFromLocalStorage());
   }, []);
 
+  const [CREATING_ACCOUNT_FOR_FIRST_TIME, setCREATING_ACCOUNT_FOR_FIRST_TIME] =
+    useState(undefined);
+
   // If the user is signed in, sync remote data with local data
   React.useEffect(() => {
     if (firebaseUser) {
@@ -269,34 +289,36 @@ export const UserDataProvider = ({
         next: snapshot => {
           let data = snapshot.data();
           if (!data) {
-            const lastViewedModule = UserDataContextAPIs.find(
-              x => x instanceof LastViewedModule
-            ).exportValue();
-            const localDataIsNotEmpty = lastViewedModule !== null;
-
-            if (localDataIsNotEmpty) {
-              if (
-                confirm(
-                  `Override server data with local progress? (You'll lose your local progress if you choose no.)`
-                )
-              ) {
-                // sync all local data with firebase if the firebase account doesn't exist yet
-                setDoc(
-                  userDoc,
-                  UserDataContextAPIs.reduce((acc, cur) => {
-                    return {
-                      ...acc,
-                      ...cur.exportValue(),
-                    };
-                  }, {}),
-                  { merge: true }
-                );
-              }
-            }
+            // sync all local data with firebase if the firebase account doesn't exist yet
+            // other APIs use updateDoc() so we need to initialize it with *something*
+            setDoc(
+              userDoc,
+              UserDataContextAPIs.reduce(
+                (acc, cur) => {
+                  return {
+                    ...acc,
+                    ...cur.exportValue(),
+                  };
+                },
+                {
+                  // this is to prevent us from accidentally overriding the user data
+                  // firebase security rules will have a check to make sure that this is actually the first time
+                  // the user has logged in. occasionally, with poor internet, firebase will glitch and
+                  // we will accidentally override user data.
+                  // see https://github.com/cpinitiative/usaco-guide/issues/534
+                  CREATING_ACCOUNT_FOR_FIRST_TIME: serverTimestamp(),
+                }
+              ),
+              { merge: true }
+            );
           }
           data = data || {};
           UserDataContextAPIs.forEach(api => api.importValueFromObject(data));
           UserDataContextAPIs.forEach(api => api.writeValueToLocalStorage());
+
+          setCREATING_ACCOUNT_FOR_FIRST_TIME(
+            data['CREATING_ACCOUNT_FOR_FIRST_TIME']
+          );
           setIsLoaded(true);
           triggerRerender();
         },
@@ -344,13 +366,21 @@ export const UserDataProvider = ({
           'Import user data (beta)? All existing data will be lost. Make sure to back up your data before proceeding.'
         )
       ) {
+        if (CREATING_ACCOUNT_FOR_FIRST_TIME !== undefined)
+          data['CREATING_ACCOUNT_FOR_FIRST_TIME'] =
+            CREATING_ACCOUNT_FOR_FIRST_TIME;
         UserDataContextAPIs.forEach(api => api.importValueFromObject(data));
         UserDataContextAPIs.forEach(api => api.writeValueToLocalStorage());
         if (firebaseUser) {
           setDoc(
             doc(getFirestore(firebaseApp), 'users', firebaseUser.uid),
             data
-          );
+          ).catch(err => {
+            console.error(err);
+            alert(
+              `importUserData: Error setting firebase doc. Check console for details.`
+            );
+          });
         }
         triggerRerender();
         return true;

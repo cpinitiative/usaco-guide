@@ -57,33 +57,23 @@ int n;
 
 void update(int x, int y, int val) {
 	for (; x <= n; x += (x & (-x))) {
-		for (int i = y; i <= n; i += (i & (-i))) {
-			bit[x][i] += val;
-		}
+		for (int i = y; i <= n; i += (i & (-i))) { bit[x][i] += val; }
 	}
 }
 
 int query(int x1, int y1, int x2, int y2) {
 	int ans = 0;
 	for (int i = x2; i; i -= (i & (-i))) {
-		for (int j = y2; j; j -= (j & (-j))) {
-			ans += bit[i][j];
-		}
+		for (int j = y2; j; j -= (j & (-j))) { ans += bit[i][j]; }
 	}
 	for (int i = x2; i; i -= (i & (-i))) {
-		for (int j = y1 - 1; j; j -= (j & (-j))) {
-			ans -= bit[i][j];
-		}
+		for (int j = y1 - 1; j; j -= (j & (-j))) { ans -= bit[i][j]; }
 	}
 	for (int i = x1 - 1; i; i -= (i & (-i))) {
-		for (int j = y2; j; j -= (j & (-j))) {
-			ans -= bit[i][j];
-		}
+		for (int j = y2; j; j -= (j & (-j))) { ans -= bit[i][j]; }
 	}
 	for (int i = x1 - 1; i; i -= (i & (-i))) {
-		for (int j = y1 - 1; j; j -= (j & (-j))) {
-			ans += bit[i][j];
-		}
+		for (int j = y1 - 1; j; j -= (j & (-j))) { ans += bit[i][j]; }
 	}
 	return ans;
 }
@@ -93,11 +83,12 @@ int main() {
 	cin.tie(0);
 	int q;
 	cin >> n >> q;
-	for (int i = 1; i <= n; i++) for (int j = 1; j <= n; j++) {
-		char c;
-		cin >> c;
-		if (c == '*') update(j, i, 1);
-	}
+	for (int i = 1; i <= n; i++)
+		for (int j = 1; j <= n; j++) {
+			char c;
+			cin >> c;
+			if (c == '*') update(j, i, 1);
+		}
 	while (q--) {
 		int t;
 		cin >> t;
@@ -119,47 +110,53 @@ int main() {
 ### Alternative Implementation
 
 Using the multidimensional implementation mentioned
-[here](/gold/PURS/#solution-2).
+[here](/gold/PURS/#solution---dynamic-range-sum-queries-with-a-bit).
 
 ```cpp
-template <class T, int ...Ns> struct BIT {
+template <class T, int... Ns> struct BIT {
 	T val = 0;
 	void upd(T v) { val += v; }
 	T query() { return val; }
 };
 
 template <class T, int N, int... Ns> struct BIT<T, N, Ns...> {
-	BIT<T,Ns...> bit[N + 1];
-	template<typename... Args> void upd(int pos, Args... args) {
-		for (; pos <= N; pos += (pos&-pos)) bit[pos].upd(args...);
+	BIT<T, Ns...> bit[N + 1];
+	template <typename... Args> void upd(int pos, Args... args) {
+		for (; pos <= N; pos += (pos & -pos)) bit[pos].upd(args...);
 	}
-	template<typename... Args> T sum(int r, Args... args) {
-		T res = 0; for (; r; r -= (r&-r)) res += bit[r].query(args...);
+	template <typename... Args> T sum(int r, Args... args) {
+		T res = 0;
+		for (; r; r -= (r & -r)) res += bit[r].query(args...);
 		return res;
 	}
-	template<typename... Args> T query(int l, int r, Args... args) {
-		return sum(r,args...)-sum(l-1,args...);
+	template <typename... Args> T query(int l, int r, Args... args) {
+		return sum(r, args...) - sum(l - 1, args...);
 	}
-}; // BIT<int,10,10> gives a 2D BIT
+};  // BIT<int,10,10> gives a 2D BIT
 
-BIT<int,1000,1000> B;
-int n,q;
+BIT<int, 1000, 1000> B;
+int n, q;
 
 int main() {
-	setIO(); re(n,q);
-	F0R(i,n) {
-		string s; re(s);
-		F0R(j,n) if (s[j] == '*') B.upd(i+1,j+1,1);
+	setIO();
+	re(n, q);
+	F0R(i, n) {
+		string s;
+		re(s);
+		F0R(j, n) if (s[j] == '*') B.upd(i + 1, j + 1, 1);
 	}
-	F0R(i,q) {
-		int t; re(t);
+	F0R(i, q) {
+		int t;
+		re(t);
 		if (t == 1) {
-			int y,x; re(y,x);
-			if (B.query(y,y,x,x)) B.upd(y,x,-1);
-			else B.upd(y,x,1);
+			int y, x;
+			re(y, x);
+			if (B.query(y, y, x, x)) B.upd(y, x, -1);
+			else B.upd(y, x, 1);
 		} else {
-			int y1,x1,y2,x2; re(y1,x1,y2,x2);
-			ps(B.query(y1,y2,x1,x2));
+			int y1, x1, y2, x2;
+			re(y1, x1, y2, x2);
+			ps(B.query(y1, y2, x1, x2));
 		}
 	}
 }
@@ -276,13 +273,15 @@ struct Segtree {
 
 	int query(int l1, int r1, int l2, int r2) {
 		if (l2 > r2) return 0;
-		return query(l2, r2, roots[r1 + 1], 1, MAXN) - query(l2, r2, roots[l1], 1, MAXN);
+		return query(l2, r2, roots[r1 + 1], 1, MAXN) -
+		       query(l2, r2, roots[l1], 1, MAXN);
 	}
 	int query(int a, int b, int node, int l, int r) {
 		if (a > r || b < l) return 0;
 		if (a <= l && b >= r) return segtree[node];
 		int mid = (l + r) / 2;
-		return query(a, b, left_c[node], l, mid) + query(a, b, right_c[node], mid + 1, r);
+		return query(a, b, left_c[node], l, mid) +
+		       query(a, b, right_c[node], mid + 1, r);
 	}
 };
 ```

@@ -1,0 +1,150 @@
+---
+id: usaco-673
+source: USACO Plat 2016 December
+title: Team Building
+author: Ryan Chou
+---
+
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_team_platinum_dec16.html)
+
+Let's say that we want to find the answer for some subsection of the sample input. Then, we would need the number of elements to consider for Farmer John and Farmer Paul, and the size of the team. A naive approach would be to go through these in $NMK$ time, and due to the low bounds on $N$, $M$, and $K$, this'll actually run in time. So, we'll just run a bottom-up DP where
+
+$\texttt{dp}[i][j][k]$ = the number of teams of size $k$ after we've considered the first $i$ cows in Farmer John's team, the first $j$ cows in Farmer Paul's team.
+
+Then, our transition would be:
+
+$\texttt{dp}[i][j][k]$ = $\texttt{dp}[i - 1][j][k] + \texttt{dp}[i][j - 1][k] - \texttt{dp}[i - 1][j - 1][k]$
+
+If FJ's $i$th cow is greater than FP's $j$th cow, we also add $\texttt{dp}[i - 1][j - 1][k - 1]$, because by pairing up those two cows, we only have $k - 1$ more spots to consider.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(NMK)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+using std::vector;
+const int MOD = 1e9 + 9;
+
+int main() {
+	freopen("team.in", "r", stdin);
+	freopen("team.out", "w", stdout);
+
+	int n, m, k;
+	std::cin >> n >> m >> k;
+
+	vector<long long> fj(n), fp(m);
+
+	for (int i = 0; i < n; i++) { std::cin >> fj[i]; }
+
+	for (int i = 0; i < m; i++) { std::cin >> fp[i]; }
+
+	std::sort(fj.rbegin(), fj.rend());
+	std::sort(fp.rbegin(), fp.rend());
+
+	/*
+	 * dp[i][j][k] = the number of teams of size k after we've considered
+	 * the first $i$ cows in Farmer John's team, the first $j$ cows in
+	 * Farmer Paul's team.
+	 */
+	vector<vector<vector<long long>>> dp(
+	    n + 1, vector<vector<long long>>(m + 1, vector<long long>(k + 1)));
+
+	// base case: there is one way to construct a team of size zero.
+	for (int i = 0; i <= n; i++) {
+		for (int j = 0; j <= m; j++) { dp[i][j][0] = 1; }
+	}
+
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < m; j++) {
+			for (int s = 1; s <= k; s++) {
+				/*
+				 * the current number of teams will be at least the
+				 * number of teams from not including i and not including j
+				 */
+				dp[i + 1][j + 1][s] += dp[i + 1][j][s];
+				dp[i + 1][j + 1][s] += dp[i][j + 1][s];
+				dp[i + 1][j + 1][s] -= dp[i][j][s];
+
+				if (fj[i] > fp[j]) { dp[i + 1][j + 1][s] += dp[i][j][s - 1]; }
+
+				// prevent negative results
+				dp[i + 1][j + 1][s] += MOD;
+				dp[i + 1][j + 1][s] %= MOD;
+			}
+		}
+	}
+
+	std::cout << dp[n][m][k] << std::endl;
+}
+```
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Team {
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio("team");
+		final int MOD = 1000000009;
+
+		int n = io.nextInt();
+		int m = io.nextInt();
+		int k = io.nextInt();
+
+		int[] fj = new int[n];
+		for (int i = 0; i < n; i++) { fj[i] = io.nextInt(); }
+
+		int[] fp = new int[m];
+		for (int i = 0; i < m; i++) { fp[i] = io.nextInt(); }
+
+		Arrays.sort(fj);
+		Arrays.sort(fp);
+
+		/*
+		 * dp[i][j][k] = the number of teams of size k after we've considered
+		 * the first i cows in Farmer John's team, the first j cows in
+		 * Farmer Paul's team.
+		 */
+		long[][][] dp = new long[n + 1][m + 1][k + 1];
+
+		// base case: there is one way to construct a team of size zero.
+		for (int i = 0; i <= n; i++) {
+			for (int j = 0; j <= m; j++) { dp[i][j][0] = 1; }
+		}
+
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < m; j++) {
+				for (int s = 1; s <= k; s++) {
+					// dp transitions
+					dp[i + 1][j + 1][s] += dp[i + 1][j][s];
+					dp[i + 1][j + 1][s] += dp[i][j + 1][s];
+					dp[i + 1][j + 1][s] -= dp[i][j][s];
+
+					if (fj[i] > fp[j]) {
+						dp[i + 1][j + 1][s] += dp[i][j][s - 1];
+					}
+
+					// prevent negative results
+					dp[i + 1][j + 1][s] += MOD;
+					dp[i + 1][j + 1][s] %= MOD;
+				}
+			}
+		}
+
+		io.println(dp[n][m][k]);
+		io.close();
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+</JavaSection>
+</LanguageSection>

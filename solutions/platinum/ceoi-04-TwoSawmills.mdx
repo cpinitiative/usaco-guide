@@ -1,0 +1,139 @@
+---
+id: ceoi-04-TwoSawmills
+source: CEOI 04
+title: Two Sawmills
+author: Dustin Miao
+---
+
+# Explaination
+
+Let us define a function $f(a,b)$ which denotes the cost when we place sawmills at $a$ and $b$, $a < b$. Let $T$ be the cost of transporting all trees to the base of the hill (i.e. cost without building any sawmills). Denote two arrays $W$ and $D$ that represent the prefix sum of the weight and distance, respectively.
+
+$$f(a, b) = T - W[a] \cdot (D[b] - D[a]) - W[b] \cdot (D[n + 1] - D[b])$$
+
+If we hold $b$ as constant, we can rearrange the equation into:
+
+$$
+f(a, b) = T - W[a] \cdot D[b] + W[a] \cdot D[a] - W[b] \cdot D[n + 1] + W[b] \cdot D[b]
+$$
+
+$$
+f(a, b) = \{(T + W[a] \cdot D[a]) - W[a] \cdot D[b]\} - W[b] \cdot D[n +1] + W[b] \cdot D[b]
+$$
+
+Thus, $f$ can be decomposed into four parts: $y_a = T + W[a] \cdot D[a]$, $m_a = -W[a]$, $x = D[b]$, $c = -W[b] \cdot D[n + 1] + W[b] \cdot D[b]$. Thus,
+
+$$
+f(a, b) = (y_a + m_ax) + c
+$$
+
+Define another function $g(b)$ that denotes the minimum cost if we place the second sawmill at $b$. This can simply be expressed in terms of $f(a,b)$.
+
+$$
+g(b) = \min_{1 \leq a < b} (y_a + m_a x) + c
+$$
+
+Because $x$ and $c$ are functions of $b$, we can hold them constant. Note that $y_a + m_a x$ forms a linear function of $x$. We can use the [convex hull trick](/plat/convex-hull-trick?lang=cpp) to efficiently query the minimum value of a group of linear functions. The answer is simply $\max_{2 \leq b \leq N}g(b)$.
+
+The last thing that remains is to efficiently calculate $T$.
+
+$$
+T = w_1(d_1 + d_2 + \dots + d_n) + w_2(d_2 + d_3 + \dots + d_n) + \dots + w_n(d_n)
+$$
+
+$$
+T = \sum_{1 \leq k \leq n} W[k] \cdot d_k
+$$
+
+**Time Complexity:** $\mathcal{O}(n)$ or $\mathcal{O}(n \log n)$ depending on the implementation of CHT. Because the following solution uses [LineContainer](/adv/line-container), it runs in $\mathcal{O}(n \log n)$.
+
+# Implementation
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+// BeginCodeSnip{Line Container}
+/**
+ * Source: /adv/line-container?lang=cpp
+ */
+bool _Line_Comp_State;
+struct Line {
+	// k is slope, m is intercept, p is intersection point
+	mutable long long k, m, p;
+	bool operator<(const Line &o) const {
+		return _Line_Comp_State ? p < o.p : k < o.k;
+	}
+};
+
+struct LineContainer : multiset<Line> {
+	long long div(long long a, long long b) {
+		return a / b - ((a ^ b) < 0 && a % b);
+	}
+
+	bool isect(iterator x, iterator y) {
+		if (y == end()) {
+			x->p = LLONG_MAX;
+			return false;
+		}
+		if (x->k == y->k) {
+			x->p = x->m > y->m ? LLONG_MAX : -LLONG_MAX;
+		} else {
+			x->p = div(y->m - x->m, x->k - y->k);
+		}
+		return x->p >= y->p;
+	}
+	void add(long long k, long long m) {
+		auto z = insert({k, m, 0}), y = z++, x = y;
+		while (isect(y, z)) { z = erase(z); }
+		if (x != begin() && isect(--x, y)) { isect(x, y = erase(y)); }
+		while ((y = x) != begin() && (--x)->p >= y->p) { isect(x, erase(y)); }
+	}
+
+	long long query(long long x) {
+		assert(!empty());
+		_Line_Comp_State = 1;
+		auto l = *lower_bound({0, 0, x});
+		_Line_Comp_State = 0;
+		return l.k * x + l.m;
+	}
+};
+// EndCodeSnip
+
+const int MAXN = 20000;
+
+int N;
+long long W[MAXN + 1], D[MAXN + 1], T;
+
+int main() {
+	cin >> N;
+	for (int i = 1; i <= N; i++) {
+		int w, d;
+		cin >> w >> d;
+		W[i] = W[i - 1] + w;
+		D[i + 1] = D[i] + d;
+		T += W[i] * d;
+	}
+
+	LineContainer lc;
+	long long ans = LLONG_MAX;
+	for (int i = 1; i <= N; i++) {
+		if (i > 1) {
+			ans = min(ans, -lc.query(D[i]) - W[i] * D[N + 1] + W[i] * D[i]);
+		}
+		// y intercept and slope are negative to query minimum instead of
+		// maximum
+		lc.add(W[i], -(T + W[i] * D[i]));
+	}
+
+	cout << ans << '\n';
+}
+```
+
+</CPPSection>
+
+</LanguageSection>

@@ -1,0 +1,126 @@
+---
+id: usaco-639
+source: USACO Bronze 2016 Open
+title: Diamond Collector
+author: Danh Ta Chi Thanh, Ryan Chou
+---
+
+[Official Analysis (Java)](http://www.usaco.org/current/data/sol_diamond_bronze_open16.html)
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N^2)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <algorithm>
+#include <cstdio>
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+int main() {
+	freopen("diamond.in", "r", stdin);
+	int n, k;
+	cin >> n >> k;
+	vector<int> diamonds(n);
+	for (int &d : diamonds) { cin >> d; }
+
+	int most = 0;
+	/*
+	 * Iterate through all diamonds and test setting them
+	 * as the smallest diamond in the case.
+	 */
+	for (int x : diamonds) {
+		int fittable = 0;
+		/*
+		 * Get all diamonds at least as large as x (including x itself)
+		 * that differ from it by no more than k.
+		 */
+		for (int y : diamonds) {
+			if (x <= y && y <= x + k) { fittable++; }
+		}
+		most = max(most, fittable);
+	}
+
+	freopen("diamond.out", "w", stdout);
+	cout << most << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Diamond {
+	public static void main(String[] args) throws IOException {
+		BufferedReader read = new BufferedReader(new FileReader("diamond.in"));
+		StringTokenizer initial = new StringTokenizer(read.readLine());
+		int n = Integer.parseInt(initial.nextToken());
+		int k = Integer.parseInt(initial.nextToken());
+		int[] diamonds = new int[n];
+		for (int i = 0; i < n; i++) {
+			diamonds[i] = Integer.parseInt(read.readLine());
+		}
+		read.close();
+
+		int most = 0;
+		/*
+		 * Iterate through all diamonds and test setting them
+		 * as the smallest diamond in the case.
+		 */
+		for (int x : diamonds) {
+			int fittable = 0;
+			/*
+			 * Get all diamonds at least as large as x (including x itself)
+			 * that differ from it by no more than k.
+			 */
+			for (int y : diamonds) {
+				if (x <= y && y <= x + k) { fittable++; }
+			}
+			most = Math.max(most, fittable);
+		}
+
+		PrintWriter written = new PrintWriter("diamond.out");
+		written.println(most);
+		written.close();
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+with open("diamond.in") as fin:
+	n, k = map(int, fin.readline().split())
+	diamonds = [int(fin.readline()) for _ in range(n)]
+
+most = 0
+"""
+Iterate through all diamonds and test setting them
+as the smallest diamond in the case.
+"""
+for x in diamonds:
+	fittable = 0
+	"""
+	Get all diamonds at least as large as x (including x itself)
+	that differ from it by no more than k.
+	"""
+	for y in diamonds:
+		if x <= y <= x + k:
+			fittable += 1
+
+	most = max(most, fittable)
+
+print(most, file=open("diamond.out", "w"))
+```
+
+</PySection>
+</LanguageSection>

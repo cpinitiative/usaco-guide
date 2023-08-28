@@ -1,0 +1,92 @@
+---
+id: usaco-1233
+source: USACO Gold 2022 Open
+title: Apple Catching
+author: Qi Wang
+---
+
+[Official Analysis (Java)](http://www.usaco.org/current/data/sol_prob1_gold_open22.html)
+
+## Explanation
+
+In order for a cow to catch an apple, it must arrive before the apple hits the number line. Let item $i$ represent the cow and
+item $j$ represent the apple. Therefore, to catch the apple, $|x_i - x_j| \le t_j - t_i$ must be satisfied. After extracting the
+absolute value, we get these two inequalities.
+
+$$
+x_j - t_j \le x_i - t_i
+$$
+$$
+x_i + t_i \le x_j + t_j
+$$
+
+We represent each item as a point $(x_i - t_i, x_i + t_i)$. According to the inequalities above, in order for a cow to catch an
+apple, the point of the apple must be to its top-left. Thus we can sort in ascending order based off $x_i - t_i$ and greedily
+assign apples with larger $x_i + t_i$ values to each cow. To maximize the number caught, we must pair each cow with the lowest
+y-coordinate apples that still meet above conditions.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N \log N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MAX_N = 2e5;
+
+struct Item {
+	int q;  // type (cow or apple)
+	int t;  // time of entry
+	int x;  // position
+	int n;  // amount
+
+	bool operator<(const Item &y) {
+		if (x - t == y.x - y.t) { return q > y.q; }
+		return x - t < y.x - y.t;
+	}
+} p[MAX_N];
+
+int main() {
+	int N;
+	map<int, int>
+	    pts;  // stores how many apples are at each point defined above
+	cin >> N;
+	for (int i = 0; i < N; i++) { cin >> p[i].q >> p[i].t >> p[i].x >> p[i].n; }
+
+	sort(p, p + N);
+
+	int ans = 0;
+	for (int i = 0; i < N; i++) {
+		if (p[i].q == 2) {
+			pts[p[i].x + p[i].t] += p[i].n;
+		} else {
+			int n = p[i].n;
+			// greedily assign cows to the closest points
+			while (n) {
+				map<int, int>::iterator it = pts.lower_bound(p[i].x + p[i].t);
+
+				if (it == pts.end()) break;
+				int u = min(n, it->second);
+
+				if (u == it->second) {
+					pts.erase(it);
+				} else {
+					it->second -= u;
+				}
+
+				n -= u;
+				ans += u;
+			}
+		}
+	}
+
+	cout << ans << endl;
+}
+```
+
+</CPPSection>
+</LanguageSection>

@@ -1,0 +1,260 @@
+---
+id: cses-1073
+source: CSES
+title: Towers
+author: Nathan Gong, Benjamin Qi, Danh Ta Chi Thanh
+---
+
+Greedy approach: always add the next cube on top of the tower with the smallest
+possible cube on top (or create a new tower if this isn't possible).
+
+Equivalent to longest non-decreasing subsequence!
+
+It's important to note that we cannot use brute force to find the tower with the
+smallest possible cube on top because that will yield a time complexity of
+$\mathcal{O}(N^2)$, which is too slow.
+
+## Solution 1 - Binary Search + Dynamic Array
+
+**Time Complexity:** $\mathcal{O}(N\log N)$
+
+We can store existing towers using a dynamic array, where each tower's value is
+the size of the cube on top. For each cube, we can run upper bound binary search
+on the array to find the tower with the smallest top cube that's strictly larger
+than the current cube. If we find a suitable tower, we add the cube to the top
+and change the tower's value to the size of the cube. If no such tower exists,
+append a new tower to the end of the array. By doing so, we maintain the tower
+array in a sorted order (try and prove this for yourself). Our answer will be
+the size of the array after all cubes have been processed.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using vi = vector<int>;
+#define pb push_back
+#define sz(x) (int)(x).size()
+
+int n;
+vi x;  // stores towers in non-decreasing order
+
+int main() {
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
+	cin >> n;
+	for (int i = 0; i < n; ++i) {
+		int z;
+		cin >> z;
+		int lo = 0, hi = sz(x);
+		while (lo < hi) {
+			int mid = (lo + hi) / 2;
+			if (x[mid] > z) hi = mid;
+			else lo = mid + 1;
+		}
+		if (lo == sz(x)) x.pb(z);  // create new tower
+		else x[lo] = z;            // add to tower
+	}
+	cout << sz(x);
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Towers {
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio();
+		int n = io.nextInt();
+		int[] cubes = new int[n];
+		for (int i = 0; i < n; i++) { cubes[i] = io.nextInt(); }
+
+		// Stores towers in non-decreasing order
+		List<Integer> towers = new ArrayList<>();
+		for (int i = 0; i < n; i++) {
+			// Upper bound binary search
+			int lo = 0;
+			int hi = towers.size();
+			while (lo < hi) {
+				int mid = (lo + hi) / 2;
+				if (cubes[i] >= towers.get(mid)) lo = mid + 1;
+				else hi = mid;
+			}
+			// If there aren't any suitable towers, append new tower to end of
+			// array
+			if (lo == towers.size()) {
+				towers.add(cubes[i]);
+			}
+			// If there exists a satisfying tower, add the cube to that tower
+			// and update the top element of the tower
+			else {
+				towers.set(lo, cubes[i]);
+			}
+		}
+		io.println(towers.size());
+		io.close();
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+</JavaSection>
+
+<PySection>
+
+```py
+input()
+# Store the topmost cube of each tower
+towers = []
+for cube in map(int, input().split()):
+	# Binary search
+	left = 0
+	right = len(towers) - 1
+	tower_idx = -1
+	while left <= right:
+		mid = (left + right) // 2
+		if towers[mid] <= cube:
+			left = mid + 1
+		else:
+			right = mid - 1
+			tower_idx = mid
+
+	# If there exists a satisfying tower, add the cube to that tower and update
+	# the top element of the tower
+	if tower_idx != -1:
+		towers[tower_idx] = cube
+	# If there aren't any suitable towers, append new tower to end of array
+	else:
+		towers.append(cube)
+print(len(towers))
+```
+
+</PySection>
+
+</LanguageSection>
+
+## Solution 2 - Multiset
+
+**Time Complexity:** $\mathcal{O}(N\log N)$
+
+In this approach, we store the towers using an ordered multiset (which can be
+represented as a
+[TreeMap](/silver/intro-sorted-sets?lang=java#multisets) in
+Java), where each tower's value is the size of the cube on top. For each cube,
+we can use built-in methods (`upper_bound` in C++, `higherKey` in Java) to find
+the smallest-valued tower with a value strictly greater than the cube. If we
+find a suitable tower, we add the cube to the top and change the tower's value
+to the size of the cube by removing the tower's previous value from the set and
+adding it's new value into it. If no such tower exists, we add a new tower to
+the set. Our answer will be the total number of towers in the multiset (this
+takes some extra work to find in Java) after all cubes have been processed.
+
+
+<LanguageSection>
+
+<CPPSection>
+
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
+	int n, k;
+	cin >> n;
+	multiset<int> ans;
+	for (int i = 0; i < n; ++i) {
+		cin >> k;
+		auto it = ans.upper_bound(k);
+		// Find the tower having the element that is just larger than k to add
+		// k to. If it doesn't exist then we create a new tower.
+		if (it == ans.end()) ans.insert(k);
+		else {
+			// If there exists a satisfying tower, add k to that tower and
+			// update the top element of the tower
+			ans.erase(it);
+			ans.insert(k);
+		}
+	}
+	cout << ans.size();
+	return 0;
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+```java
+import java.io.*;
+import java.util.*;
+
+public class Towers {
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio();
+		int n = io.nextInt();
+		int[] cubes = new int[n];
+		for (int i = 0; i < n; i++) { cubes[i] = io.nextInt(); }
+
+		// Maps tower value to frequency
+		TreeMap<Integer, Integer> towers = new TreeMap<>();
+		for (int i = 0; i < n; i++) {
+			// If there are no suitable towers, add another tower to the set
+			if (towers.higherKey(cubes[i]) == null) {
+				towers.put(cubes[i], towers.getOrDefault(cubes[i], 0) + 1);
+			}
+			// If there exists a satisfying tower, add the cube to that tower
+			// and update the top element of the tower
+			else {
+				int size = towers.higherKey(cubes[i]);
+				towers.put(size, towers.get(size) - 1);
+				if (towers.get(size) == 0) { towers.remove(size); }
+				towers.put(cubes[i], towers.getOrDefault(cubes[i], 0) + 1);
+			}
+		}
+
+		// Calculate total number of towers
+		int ans = 0;
+		for (int i : towers.values()) { ans += i; }
+		io.println(ans);
+		io.close();
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+</JavaSection>
+
+<PySection>
+
+```py
+from bisect import bisect
+
+input()
+# Store the topmost cube of each tower
+towers = []
+for cube in map(int, input().split()):
+	tower_idx = bisect(towers, cube)
+
+	# If there exists a satisfying tower, add the cube to that tower and update
+	# the top element of the tower
+	if tower_idx < len(towers):
+		towers[tower_idx] = cube
+	# If there aren't any suitable towers, append new tower to end of array
+	else:
+		towers.append(cube)
+print(len(towers))
+```
+
+</PySection>
+
+</LanguageSection>

@@ -4,9 +4,7 @@ redirects:
   - /general/io
 title: Input & Output
 author: Darren Yao, Benjamin Qi, Allen Li
-description:
-  Demonstrates how to read input and print output for USACO contests, including
-  an example problem.
+description: How to read input and print output for USACO contests.
 prerequisites:
   - data-types
 ---
@@ -68,7 +66,7 @@ It doesn't matter. Whichever you're most comfortable with!
 
 ## Standard I/O
 
-In most websites (such as CodeForces and CSES), and in USACO problems after
+In most websites (such as Codeforces and CSES), and in USACO problems after
 December 2020, input and output are **standard**.
 
 <LanguageSection>
@@ -190,6 +188,14 @@ well as faster methods of input than those described in this module.
 
 ### Method 2 - [`BufferedReader`](https://docs.oracle.com/en/java/javase/15/docs/api/java.base/java/io/BufferedReader.html) and [`PrintWriter`](https://docs.oracle.com/en/java/javase/15/docs/api/java.base/java/io/PrintWriter.html)
 
+<Info title="USACO">
+
+This is the recommended I/O method for USACO contests. Feel free to refer to
+this section in-contest as it provides information about basic Java
+functionality.
+
+</Info>
+
 These are faster because they buffer the input and output and handle it all at
 once as opposed to parsing each line individually. However, `BufferedReader` is
 harder to use than `Scanner`. It has quite a few more methods and the `io`
@@ -222,7 +228,7 @@ public class Main {
 }
 ```
 
-#### Method 3 - I/O Template
+### Method 3 - I/O Template
 
 <Warning>
 
@@ -257,15 +263,15 @@ class Kattio extends PrintWriter {
 	private BufferedReader r;
 	private StringTokenizer st;
 	// standard input
-	public Kattio() { this(System.in,System.out); }
+	public Kattio() { this(System.in, System.out); }
 	public Kattio(InputStream i, OutputStream o) {
 		super(o);
 		r = new BufferedReader(new InputStreamReader(i));
 	}
 	// USACO-style file input
 	public Kattio(String problemName) throws IOException {
-		super(problemName+".out");
-		r = new BufferedReader(new FileReader(problemName+".in"));
+		super(problemName + ".out");
+		r = new BufferedReader(new FileReader(problemName + ".in"));
 	}
 	// returns null if no more input
 	public String next() {
@@ -332,7 +338,8 @@ following (ex.
 [here](http://www.usaco.org/current/data/sol_circlecross_bronze_feb17.html)):
 
 ```java
-PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("problemname.out")));
+PrintWriter pw =
+    new PrintWriter(new BufferedWriter(new FileWriter("problemname.out")));
 ```
 
 This is equivalent to what we use in this module:
@@ -379,7 +386,7 @@ import sys
 
 # sys.stdin/stdout is similar to a file in that we read lines for input/output
 my_str = sys.stdin.readline()
-sys.stdout.write(str(myStr) + '\n')
+sys.stdout.write(str(myStr) + "\n")
 # Renaming the read/write methods for convenience
 input = sys.stdin.readline
 print = sys.stdout.write
@@ -387,13 +394,13 @@ print = sys.stdout.write
 # Taking an integer as input
 my_int = int(input())
 # sys.stdout.write requires you to format code manually
-print(str(my_int) + '\n')
+print(str(my_int) + "\n")
 
 """
 For larger inputs, you can buffer the problem's input,
 and sort through it yourself. This is the fastest input method for python.
 """
-all_data = sys.stdin.read().split('\n')
+all_data = sys.stdin.read().split("\n")
 ```
 
 We can also use
@@ -460,13 +467,11 @@ Try to implement this yourself!
 	</Resource>
 </Resources>
 
+## Solution - Weird Algorithm
+
 <LanguageSection>
 
 <CPPSection>
-
-As noted in the resource above, this problem requires _64-bit integers_.
-
-<Spoiler title="Solution">
 
 ```cpp
 #include <iostream>
@@ -487,17 +492,11 @@ int main() {
 }
 ```
 
-</Spoiler>
-
 </CPPSection>
 
 <JavaSection>
 
-As noted in the resource above, this problem requires _64-bit integers_.
-
 ### Method 1 - `Scanner` and `System.out.print`
-
-<Spoiler title="Method 1">
 
 ```java
 import java.util.Scanner;
@@ -519,11 +518,7 @@ public class Main {
 }
 ```
 
-</Spoiler>
-
 ### Method 2 - `BufferedReader` and `PrintWriter`
-
-<Spoiler title="Method 2">
 
 ```java
 import java.io.*;
@@ -551,11 +546,7 @@ public class Main {
 }
 ```
 
-</Spoiler>
-
-#### With `Kattio`
-
-<Spoiler title="Kattio">
+### With `Kattio`
 
 ```java
 import java.io.*;
@@ -585,13 +576,9 @@ public class Main {
 }
 ```
 
-</Spoiler>
-
 </JavaSection>
 
 <PySection>
-
-<Spoiler title="Solution">
 
 ```py
 x = int(input())
@@ -604,15 +591,120 @@ while x != 1:
 print(x)
 ```
 
-</Spoiler>
-
 </PySection>
 
 </LanguageSection>
 
+<CPPOnly>
+
+<Warning>
+
+As noted in the resource above, this problem requires _64-bit integers_.
+The following solution, which uses `int` instead of `long long`, does
+not pass all of the test cases.
+
+```cpp
+#include <iostream>
+using namespace std;
+
+int main() {
+	int x;
+	cin >> x;
+	while (x != 1) {
+		cout << x << " ";
+		if (x % 2 == 0) {
+			x /= 2;
+		} else {
+			x = 3 * x + 1;
+		}
+	}
+	cout << x << endl;
+}
+```
+
+This happens because numbers in the sequence may exceed the maximum possible
+value for the `int` data type ($2^{31}-1$, as mentioned in the
+[prerequisite module](/general/data-types)).
+
+</Warning>
+
+</CPPOnly>
+
+<JavaOnly>
+
+As noted in the resource above, this problem requires _64-bit integers_.
+The following solution, which uses `int` instead of `long`, does
+not pass all of the test cases.
+
+```java
+import java.util.Scanner;
+
+public class Main {
+	public static void main(String[] args) {
+		Scanner r = new Scanner(System.in);
+		int x = r.nextInt();
+		while (x != 1) {
+			System.out.print(x + " ");
+			if (x % 2 == 0) {
+				x /= 2;
+			} else {
+				x = 3 * x + 1;
+			}
+		}
+		System.out.println(x);
+	}
+}
+```
+
+This happens because some numbers in the sequence can exceed the maximum possible
+value for the `int` data type ($2^{31}-1$, as mentioned in the
+[prerequisite module](/general/data-types)).
+
+</JavaOnly>
+
+### How to Submit Your Solution
+
+<Info title="Choice of IDE">
+
+We assume in this section that you are using an [online IDE](/general/running-code-online), such as the
+[USACO Guide IDE](https://ide.usaco.guide/). The instructions for using
+a [local IDE](/general/running-code-locally) are similar, except you skip the download step.
+
+</Info>
+
+Do the following to submit on CSES. Submitting on other platforms (such as
+USACO) is similar.
+
+1. Run your solution code with the sample input, and make sure that it produces the sample output.<Asterisk>for problems with only one correct output</Asterisk>
+2. Download your solution code into a file. The file extension should be one of `.cpp`, `.java`, `.py` or their equivalents, depending on your programming language.
+3. Open the problem statement. Log in if you aren't already logged in.
+4. Press the submit tab (for USACO, scroll to the bottom of the page).
+5. Upload your solution file. For CSES, assuming the file had the proper extension, the language should be automatically detected (for USACO, select the language yourself). Some platforms (such as Codeforces) allow you to paste your code into a text box instead of uploading a file.
+6. Submit your solution. For CSES, you will be redirected to the results page (for USACO, results will appear at the top of the page). If your solution is correct on all the test cases, you're done! Otherwise, fix your code and start again from step 1.
+
+<JavaOnly>
+
+<Warning title="File Naming for Java Users">
+
+The name of the file you submit must match the name of your public class.
+For example, if your public class is named `PublicClassName`, then the name of the
+file you submit must be `PublicClassName.java`.
+
+</Warning>
+
+</JavaOnly>
+
+<Info title="Submitting to Past USACO Problems">
+
+If you are using the [USACO Guide IDE](https://ide.usaco.guide/), you can
+submit to some past USACO problems through that (Settings -> Judge).
+You cannot use this to submit during a live contest.
+
+</Info>
+
 ## File I/O
 
-<Info title="Update">
+<Info title="USACO File I/O">
 
 USACO problems from December 2020 onwards use standard I/O rather than file I/O.
 You'll still need to use file I/O to submit to earlier problems.
@@ -641,8 +733,8 @@ I/O for file I/O. Afterwards, you can simply use `cin` and `cout` (or `scanf`
 and `printf`) to read and write data.
 
 ```cpp
-#include <iostream>
 #include <cstdio>
+#include <iostream>
 using namespace std;
 
 int main() {
@@ -668,8 +760,8 @@ For convenience, we can define a function that will redirect `stdin` and
 `stdout` based on the problem name:
 
 ```cpp
-#include <iostream>
 #include <cstdio>
+#include <iostream>
 using namespace std;
 
 // the argument is the input filename without the extension
@@ -887,8 +979,6 @@ For an explanation of the solutions below, check the
 
 ### Method 1 - `freopen`
 
-<Spoiler title="Method 1">
-
 ```cpp
 #include <iostream>
 #include <vector>
@@ -901,31 +991,18 @@ int main() {
 	freopen("paint.out", "w", stdout);
 
 	vector<bool> cover(100);
-	int a;
-	int b;
-	int c;
-	int d;;
+	int a, b, c, d;
 	cin >> a >> b >> c >> d;
-	for (int i = a; i < b; i++) {
-		cover[i] = true;
-	}
-	for (int i = c; i < d; i++) {
-		cover[i] = true;
-	}
+	for (int i = a; i < b; i++) { cover[i] = true; }
+	for (int i = c; i < d; i++) { cover[i] = true; }
 
 	int ans = 0;
-	for (int i = 0; i < cover.size(); i++) {
-		ans += cover[i];
-	}
+	for (int i = 0; i < cover.size(); i++) { ans += cover[i]; }
 	cout << ans << endl;
 }
 ```
 
-</Spoiler>
-
 ### Method 2 - `<fstream>`
-
-<Spoiler title="Method 2">
 
 ```cpp
 #include <fstream>
@@ -937,35 +1014,22 @@ int main() {
 	ofstream fout("paint.out");
 
 	vector<bool> cover(100);
-	int a;
-	int b;
-	int c;
-	int d;;
+	int a, b, c, d;
 	fin >> a >> b >> c >> d;
-	for (int i = a; i < b; i++) {
-		cover[i] = true;
-	}
-	for (int i = c; i < d; i++) {
-		cover[i] = true;
-	}
+	for (int i = a; i < b; i++) { cover[i] = true; }
+	for (int i = c; i < d; i++) { cover[i] = true; }
 
 	int ans = 0;
-	for (int i = 0; i < cover.size(); i++) {
-		ans += cover[i];
-	}
+	for (int i = 0; i < cover.size(); i++) { ans += cover[i]; }
 	fout << ans << endl;
 }
 ```
-
-</Spoiler>
 
 </CPPSection>
 
 <JavaSection>
 
 ### Method 1 - `Scanner` and `PrintWriter`
-
-<Spoiler title="Method 1">
 
 ```java
 import java.io.*;
@@ -982,17 +1046,11 @@ public class Main {
 		int d = r.nextInt();
 
 		int[] cover = new int[100];
-		for (int i = a; i < b; i++) {
-			cover[i] = 1;
-		}
-		for (int i = c; i < d; i++) {
-			cover[i] = 1;
-		}
+		for (int i = a; i < b; i++) { cover[i] = 1; }
+		for (int i = c; i < d; i++) { cover[i] = 1; }
 
 		int ans = 0;
-		for (int i = 0; i < cover.length; i++) {
-			ans += cover[i];
-		}
+		for (int i = 0; i < cover.length; i++) { ans += cover[i]; }
 		pw.println(ans);
 		/*
 		 * Make sure to include the line below, as it
@@ -1003,11 +1061,7 @@ public class Main {
 }
 ```
 
-</Spoiler>
-
 ### Method 2 - `BufferedReader` and `PrintWriter`
-
-<Spoiler title="Method 2">
 
 ```java
 import java.io.*;
@@ -1022,22 +1076,16 @@ public class Main {
 		int a = Integer.parseInt(st.nextToken());
 		int b = Integer.parseInt(st.nextToken());
 
-		st = new StringTokenizer(br.readLine());
+		st = new StringTokenizer(r.readLine());
 		int c = Integer.parseInt(st.nextToken());
 		int d = Integer.parseInt(st.nextToken());
 
 		int[] cover = new int[100];
-		for (int i = a; i < b; i++) {
-			cover[i] = 1;
-		}
-		for (int i = c; i < d; i++) {
-			cover[i] = 1;
-		}
+		for (int i = a; i < b; i++) { cover[i] = 1; }
+		for (int i = c; i < d; i++) { cover[i] = 1; }
 
 		int ans = 0;
-		for (int i = 0; i < cover.length; i++) {
-			ans += cover[i];
-		}
+		for (int i = 0; i < cover.length; i++) { ans += cover[i]; }
 		pw.println(ans);
 		/*
 		 * Make sure to include the line below, as it
@@ -1048,18 +1096,14 @@ public class Main {
 }
 ```
 
-</Spoiler>
-
-#### With `Kattio`
-
-<Spoiler title="Kattio">
+### With `Kattio`
 
 ```java
 import java.io.*;
 import java.util.*;
 
 public class Main {
-	public static void main(String[] args) throws IOException{
+	public static void main(String[] args) throws IOException {
 		Kattio io = new Kattio("paint");
 		int a = io.nextInt();
 		int b = io.nextInt();
@@ -1067,17 +1111,11 @@ public class Main {
 		int d = io.nextInt();
 
 		int[] cover = new int[100];
-		for (int i = a; i < b; i++) {
-			cover[i] = 1;
-		}
-		for (int i = c; i < d; i++) {
-			cover[i] = 1;
-		}
+		for (int i = a; i < b; i++) { cover[i] = 1; }
+		for (int i = c; i < d; i++) { cover[i] = 1; }
 
 		int ans = 0;
-		for (int i = 0; i < cover.length; i++) {
-			ans += cover[i];
-		}
+		for (int i = 0; i < cover.length; i++) { ans += cover[i]; }
 		io.println(ans);
 		/*
 		 * Make sure to include the line below, as it
@@ -1090,18 +1128,14 @@ public class Main {
 }
 ```
 
-</Spoiler>
-
 </JavaSection>
 
 <PySection>
 
 ### Method 1
 
-<Spoiler title="Method 1">
-
 ```py
-with open('paint.in', 'r') as inp:
+with open("paint.in", "r") as inp:
 	lines = [line for line in inp]
 	a, b = map(int, lines[0].split())
 	c, d = map(int, lines[1].split())
@@ -1115,17 +1149,13 @@ with open('paint.in', 'r') as inp:
 	ans = 0
 	for i in range(len(cover)):
 		ans += cover[i]
-	with open('paint.out', 'w') as out:
+	with open("paint.out", "w") as out:
 		print(ans, file=out)  # out.write(str(ans) + '\n') also works
 ```
-
-</Spoiler>
 
 ### Method 2
 
 Redirecting file input using `sys`, as mentioned above.
-
-<Spoiler title="Method 2">
 
 ```py
 import sys
@@ -1147,8 +1177,6 @@ for i in range(len(cover)):
 	ans += cover[i]
 print(ans)
 ```
-
-</Spoiler>
 
 </PySection>
 
@@ -1182,10 +1210,10 @@ output consists of a single integer `ans`:
 ### C++
 
 ```cpp
-cout << ans;  // OK, no newline
-cout << ans << endl;  // OK, newline
-cout << ans << "\n";  // OK, newline
-cout << ans << " ";  // NOT OK, extra space
+cout << ans;            // OK, no newline
+cout << ans << endl;    // OK, newline
+cout << ans << "\n";    // OK, newline
+cout << ans << " ";     // NOT OK, extra space
 cout << ans << "\n\n";  // NOT OK, extra newline
 ```
 
@@ -1196,10 +1224,10 @@ cout << ans << "\n\n";  // NOT OK, extra newline
 ### Java
 
 ```java
-pw.print(ans);  // OK, no newline
-pw.println(ans);  // OK, newline
-pw.print(ans + "\n");  // OK, newline
-pw.print(ans + " ");  // NOT OK, extra space
+pw.print(ans);           // OK, no newline
+pw.println(ans);         // OK, newline
+pw.print(ans + "\n");    // OK, newline
+pw.print(ans + " ");     // NOT OK, extra space
 pw.print(ans + "\n\n");  // NOT OK, extra newline
 ```
 
@@ -1210,11 +1238,11 @@ pw.print(ans + "\n\n");  // NOT OK, extra newline
 ### Python
 
 ```py
-print(ans, end='')  # OK, no newline
+print(ans, end="")  # OK, no newline
 print(ans)  # OK, newline
-print(str(ans) + '\n', end='')  # OK, newline
-print(str(ans) + " ", end='')  # NOT OK, extra space
-print(str(ans) + '\n')  # NOT OK, extra newline
+print(str(ans) + "\n", end="")  # OK, newline
+print(str(ans) + " ", end="")  # NOT OK, extra space
+print(str(ans) + "\n")  # NOT OK, extra newline
 ```
 
 </PySection>

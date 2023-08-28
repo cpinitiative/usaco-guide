@@ -1,0 +1,139 @@
+---
+id: cf-660F
+source: cf
+title: Bear and Bowling 4
+author: Dustin Miao
+---
+# Explaination
+
+The [Official Editorial](https://codeforces.com/blog/entry/44259) uses a divide and conquer approach. However, like many divide and conquer optimization problems, this can also be solved using the [convex hull trick](/plat/convex-hull-trick).
+
+First, define the following:
+
+$$
+\texttt{pre}[i] = \sum_{i = 1}^i a_i
+$$
+
+$$
+\texttt{ips}[i] = \sum_{i = 1}^i a_i \cdot i
+$$
+
+We would like to find the score of some subarray $[l, r]$, defined as
+
+$$
+\sum_{i = l}^r a_i\cdot(i - l+1)
+$$
+
+By expanding this expression, we can express this in terms of $\texttt{pre}$ and $\texttt{ips}$:
+
+$$
+\sum_{i = l}^r a_i\cdot(i - l+1) = \texttt{ips}[r]-\texttt{ips}[l-1]-(l-1)(\texttt{pre}[r]-\texttt{pre}[l-1])
+$$
+
+For this problem, we need to choose a contiguous subarray in order to maximize the required score. Let us define a function $f$, such that $f(r)$ denotes the maximum score of a subarray that ends at $r$. We can thus define $f$ as follows:
+
+$$
+\begin{align*}
+f(r) &= \max_{1 \leq l \leq r} \{\texttt{ips}[r] - \texttt{ips}[l - 1] - (l - 1)(\texttt{pre}[r] - \texttt{pre}[l - 1])\}\\
+&=\max_{1 \leq l \leq r} \{\texttt{ips}[r] - \texttt{ips}[l - 1] - (l - 1)\texttt{pre}[r] + (l - 1)\texttt{pre}[l - 1]\}\\
+&=\max_{1 \leq l \leq r} \{\texttt{ips}[r] - \texttt{ips}[l - 1] - l \cdot \texttt{pre}[r] + \texttt{pre}[r] + l \cdot \texttt{pre}[l - 1] - \texttt{pre}[l - 1]\}\\
+&= \max_{1 \leq l \leq r} \{(\texttt{ips}[l - 1] - \texttt{pre}[l - 1] + l \cdot \texttt{pre}[l - 1]) - l \cdot \texttt{pre}[r]\} + \texttt{ips}[r] + \texttt{pre}[r]
+\end{align*}
+$$
+
+We rearrange the equation such that terms that depend only on $l$ are wrapped in parenthesis inside of the $\max$ statement and terms that depend only on $r$ are moved outside of the $\max$ statement. Note that there is only a single term that depends on both $l$ and $r$.
+
+Because of this property, we can use the convex hull trick. Each value can be represented as a linear function of the form
+
+$$
+g_l(x) = l \cdot x + (\texttt{ips}[l - 1] - \texttt{pre}[l - 1] + l \cdot \texttt{pre}[l - 1])
+$$
+
+The original equation can thus be expressed as:
+
+$$
+f(r) = \max_{1 \leq l \leq r} \{g_l(\texttt{pre}[r])\} + \texttt{ips}[r] + \texttt{pre}[r]
+$$
+
+# Implementation
+
+<LanguageSection>
+
+<CPPSection>
+
+**Complexity**: $\mathcal{O}(n \log n)$. The impementation below uses a [Line Container](/adv/line-container/), but it's also possible to dynamically maintain a deque and using binary search for queries by taking advantange of the monotonicity of $l$.
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+// BeginCodeSnip{Line Container}
+template <typename T> T floor_div(T a, T b) {
+	return a / b - ((a ^ b) < 0 && a % b);
+}
+
+struct LineContainerLine {
+	mutable long long m, b, p;
+	bool operator<(const LineContainerLine &o) const { return m < o.m; }
+	bool operator<(long long x) const { return p < x; }
+};
+
+class LineContainer : multiset<LineContainerLine, less<>> {
+	bool isect(iterator x, iterator y) {
+		if (y == end()) {
+			x->p = LLONG_MAX;
+			return false;
+		}
+		if (x->m == y->m) {
+			x->p = x->b > y->b ? LLONG_MAX : LLONG_MIN;
+		} else {
+			x->p = floor_div(y->b - x->b, x->m - y->m);
+		}
+		return x->p >= y->p;
+	}
+
+  public:
+	void add(long long m, long long b) {
+		auto z = insert({m, b, 0});
+		auto y = z++;
+		auto x = y;
+		while (isect(y, z)) { z = erase(z); }
+		if (x != begin() && isect(--x, y)) { isect(x, y = erase(y)); }
+		while ((y = x) != begin() && (--x)->p >= y->p) { isect(x, erase(y)); }
+	}
+
+	long long query(long long x) {
+		assert(!empty());
+		auto l = *lower_bound(x);
+		return l.m * x + l.b;
+	}
+};
+// EndCodeSnip
+
+const int MAXN = 2e5 + 1;
+
+int N;
+long long A[MAXN], pre[MAXN], ips[MAXN];
+
+int main() {
+	cin >> N;
+	for (int i = 1; i <= N; i++) {
+		cin >> A[i];
+		pre[i] = pre[i - 1] + A[i];
+		ips[i] = ips[i - 1] + A[i] * i;
+	}
+
+	LineContainer lc;
+	long long ans = 0;
+	for (int i = 1; i <= N; i++) {
+		lc.add(-i, (i - 1) * pre[i - 1] - ips[i - 1]);
+		ans = max(ans, lc.query(pre[i]) + pre[i] + ips[i]);
+	}
+
+	cout << ans << '\n';
+}
+```
+
+</CPPSection>
+
+</LanguageSection>

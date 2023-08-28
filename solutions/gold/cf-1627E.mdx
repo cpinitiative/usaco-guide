@@ -1,0 +1,145 @@
+---
+id: cf-1627E
+source: CF
+title: Not Escaping
+author: Chongtian Ma
+---
+
+[Official Analysis (C++, Java, and Python)](https://codeforces.com/blog/entry/99067)
+
+## Alternate Explanation
+
+There can be at most $n \cdot m$ rooms, which is about $10^{10}$ total rooms and too much to process. However, not all of them are relevant (i.e. there are some rooms that are not a start point or an end point for a ladder, so processing them would be extraneous). Therefore, coordinate compression can be used here.
+
+We can use shortest paths to solve the problem. Since we can move freely on a floor, we can use Dijkstra's to find the minimal health to reach every room on that floor. Then, we can iterate over all the ladders on that floor and calculate the minimum health to travel to the endpoints of each ladder by using it.
+
+## Implementation
+
+**Time Complexity: $\mathcal O(n + k\log^2 k)$**
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+
+struct Ladder {
+	int from_row, from_col;
+	int to_row, to_col;
+	int health;
+};
+
+int main() {
+	int t;
+	cin >> t;
+
+	for (int test = 1; test <= t; test++) {
+
+		int n, m, k;
+		cin >> n >> m >> k;
+		vector<ll> x(n + 1);  // multiplier for moving on each floor
+		for (int i = 1; i <= n; i++) { cin >> x[i]; }
+
+		// stores all ladders info in the row they can be accessed.
+		vector<vector<Ladder>> ladder_row(n + 1);
+
+		/*
+		 * stores the columns where there is a ladder in each row or
+		 * just all the columns which are relevant in each row.
+		 */
+		vector<set<int>> ladder_col(n + 1);
+
+		for (int i = 0; i < k; i++) {
+			Ladder tmp;
+			cin >> tmp.from_row >> tmp.from_col >> tmp.to_row >> tmp.to_col >>
+			    tmp.health;
+			ladder_row[tmp.from_row].push_back(tmp);
+			ladder_col[tmp.from_row].insert(tmp.from_col);
+			ladder_col[tmp.to_row].insert(tmp.to_col);
+		}
+
+		// base cases
+		ladder_col[1].insert(1);
+		ladder_col[n].insert(m);
+
+		vector<map<int, ll>> dist(n + 1);
+		for (int i = 1; i <= n; i++) {
+			for (int j : ladder_col[i]) { dist[i][j] = INT64_MAX; }
+		}
+		dist[1][1] = 0;
+
+		for (int row = 1; row <= n; row++) {
+			int num_ladders = ladder_col[row].size();
+
+			// a copy of ladder_col[row]
+			vector<int> in_row(ladder_col[row].begin(), ladder_col[row].end());
+
+			/*
+			 * priority queue that sorts by minimum distance to that ladder
+			 * first, then col of ladder
+			 */
+			priority_queue<pair<ll, int>, vector<pair<ll, int>>,
+			               greater<pair<ll, int>>>
+			    pq;
+
+			for (int col : in_row) {
+				// make sure we can reach the ladder point
+				if (dist[row][col] != INT64_MAX) {
+					pq.push({dist[row][col], col});
+				}
+			}
+
+			while (!pq.empty()) {
+				ll distance = pq.top().first;
+				int col = pq.top().second;
+				pq.pop();
+				int index = lower_bound(in_row.begin(), in_row.end(), col) -
+				            in_row.begin();
+
+				// we go to the left ladder on the same floor
+				if (index > 0) {
+					int left_col = in_row[index - 1];
+					int dist_between = col - left_col;
+					ll cost = dist_between * x[row] + distance;
+					if (cost < dist[row][left_col]) {
+						dist[row][left_col] = cost;
+						pq.push({cost, left_col});
+					}
+				}
+
+				// we go to the right ladder
+				if (index < num_ladders - 1) {
+					int right_col = in_row[index + 1];
+					int dist_between = right_col - col;
+					ll cost = dist_between * x[row] + distance;
+					if (cost < dist[row][right_col]) {
+						dist[row][right_col] = cost;
+						pq.push({cost, right_col});
+					}
+				}
+			}
+
+			for (Ladder i : ladder_row[row]) {
+				if (dist[i.from_row][i.from_col] != INT64_MAX) {
+					// min of if we take this ladder or not.
+					ll from = dist[i.from_row][i.from_col];
+					dist[i.to_row][i.to_col] =
+					    min(dist[i.to_row][i.to_col], from - i.health);
+				}
+			}
+		}
+
+		if (dist[n][m] == INT64_MAX) {
+			cout << "NO ESCAPE" << endl;
+		} else {
+			cout << dist[n][m] << endl;
+		}
+	}
+}
+```
+</CPPSection>
+
+</LanguageSection>

@@ -1,0 +1,107 @@
+---
+id: ys-QueueComposite
+source: YS
+title: Queue Composite
+author: Ryan Chou
+---
+
+## Explanation
+
+Let's consider $f$ when we've added two equations to it, $\{a, b\}, \{c, d\}$.
+
+1. $$c(ax + b) + d$$
+2. $$acx + bc + d$$
+
+From this, we can make two observations.
+
+1. In the expanded equation, $x$ is just multiplied by all of its coefficents.
+2. Any constant is multiplied by all future coefficients.
+
+We can calculate all of this on the fly as we process "add" and "compute" queries, but how do we deal with "removal" queries under a modulus?
+
+<Spoiler title="Handling Removal Queries">
+
+We'll compute modular inverses to divide out removed coefficients, and subtract the constant multiplied by our new coefficient.
+
+The bottleneck comes from computing modular inverses, so the time complexity is $\mathcal{O}(\log n)$.
+
+</Spoiler>
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(\log n)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using ll = long long;
+const ll MOD = 998244353;
+
+// source: https://usaco.guide/gold/modular#solution---exponentiation
+ll bin_exp(ll x, ll n) {
+	assert(n >= 0);
+
+	x %= MOD;
+
+	ll res = 1;
+	while (n > 0) {
+		if (n % 2 == 1) { res = res * x % MOD; }
+		x = x * x % MOD;
+		n /= 2;
+	}
+	return res;
+}
+
+int main() {
+	int q;
+	cin >> q;
+
+	ll mult_x = 1;
+	ll constant = 0;
+	queue<pair<int, int>> f;
+	for (int i = 0; i < q; i++) {
+		int type;
+		cin >> type;
+
+		if (type == 0) {
+			int a, b;
+			cin >> a >> b;
+
+			// add to our queue
+			f.push({a, b});
+
+			// x will gain a factor of a in the final expansion
+			mult_x = (mult_x * a) % MOD;
+
+			/*
+			 * any existing constants will be multiplied by a
+			 * and b will be multiplied against all future "a"s
+			 */
+			constant = ((constant * a) % MOD + b) % MOD;
+		} else if (type == 1) {
+			pair<int, int> x = f.front();
+			f.pop();
+
+			// compute modular inverse with exponentation
+			ll inv = bin_exp(x.first, MOD - 2);
+
+			mult_x = (mult_x * inv) % MOD;
+			constant -= (x.second * mult_x) % MOD;
+
+			if (constant < 0) { constant += MOD; }
+		} else if (type == 2) {
+			int x;
+			cin >> x;
+
+			cout << ((mult_x * x) + constant) % MOD << endl;
+		}
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>

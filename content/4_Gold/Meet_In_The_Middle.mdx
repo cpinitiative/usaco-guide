@@ -3,7 +3,7 @@ id: meet-in-the-middle
 title: 'Meet In The Middle'
 author: Chongtian Ma
 description:
-  'Divide the search space into two'
+  'Problems involving dividing the search space into two.'
 frequency: 1
 prerequisites:
 ---
@@ -26,7 +26,7 @@ prerequisites:
 
 <Info title="Pro Tip">
 
-Meet in the Middle technique can take advantage of the smaller constraint and calculate 
+Meet in the Middle technique can take advantage of the smaller constraint and calculate
 a naive solution in two halves. Therefore the constraints tend to be doubled.
 
 </Info>
@@ -50,9 +50,8 @@ recombine them to search for our answer. For every $\texttt{sum}$ in the $\textt
 we can simply check how many elements of $x - \texttt{sum}$ there are in
 $\texttt{right}$. This can be done using simple binary search.
 
-<Spoiler title = "Implementation">
-Overall Time Complexity: $O(N\cdot 2^{N/2})$
-	
+Time Complexity: $O(N\cdot 2^{N/2})$
+
 <LanguageSection>
 
 <CPPSection>
@@ -66,9 +65,7 @@ int main() {
 	int n, x;
 	cin >> n >> x;
 	vector<int> a(n);
-	for (int i = 0; i < n; i++) {
-		cin >> a[i];
-	}
+	for (int i = 0; i < n; i++) { cin >> a[i]; }
 
 	// stores all possible subset sums in the interval [l, r]
 	auto get_subset_sums = [&](int l, int r) -> vector<ll> {
@@ -79,9 +76,7 @@ int main() {
 		for (int i = 0; i < (1 << len); i++) {
 			ll sum = 0;
 			for (int j = 0; j < len; j++) {
-				if (i & (1 << j)) {
-					sum += a[l + j];
-				}
+				if (i & (1 << j)) { sum += a[l + j]; }
 			}
 			res.push_back(sum);
 		}
@@ -95,7 +90,7 @@ int main() {
 	sort(right.begin(), right.end());
 
 	ll ans = 0;
-	for (ll i: left) {
+	for (ll i : left) {
 		auto low_iterator = lower_bound(right.begin(), right.end(), x - i);
 		auto high_iterator = upper_bound(right.begin(), right.end(), x - i);
 		int start_index = low_iterator - right.begin();
@@ -105,7 +100,6 @@ int main() {
 
 	cout << ans << endl;
 }
-
 ```
 
 </CPPSection>
@@ -117,106 +111,100 @@ CSES has very tight time constraints for java, so the following code will barely
 </Warning>
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class Main {
 
-    public static void main(String[] args) {
-        Kattio io = new Kattio();
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
 
-        int n = io.nextInt(), x = io.nextInt();
-        int[] a = new int[n];
-        for (int i = 0; i < n; i++) {
-            a[i] = io.nextInt();
-        }
+		int n = io.nextInt(), x = io.nextInt();
+		int[] a = new int[n];
+		for (int i = 0; i < n; i++) { a[i] = io.nextInt(); }
 
-        long[] left = get_subset_sums(a, 0, n / 2 - 1);
-        long[] right = get_subset_sums(a, n/2, n-1);
-        Arrays.sort(right);
+		long[] left = get_subset_sums(a, 0, n / 2 - 1);
+		long[] right = get_subset_sums(a, n / 2, n - 1);
+		Arrays.sort(right);
 
-        long answer = 0;
-        for (long i: left) {
-            int low_index = lower_bound(right, x - i);
-            int high_index = lower_bound(right, x - i + 1);
-            answer += high_index - low_index;
-        }
+		long answer = 0;
+		for (long i : left) {
+			int low_index = lower_bound(right, x - i);
+			int high_index = lower_bound(right, x - i + 1);
+			answer += high_index - low_index;
+		}
 
-        io.println(answer);
-        io.close();
-    }
+		io.println(answer);
+		io.close();
+	}
 
 	/*
-	* returns an array with all possible subset sums
-	* from [l..r]
-	*/ 
-    public static long[] get_subset_sums(int[] a, int l, int r){
-        int len = r - l + 1;
-        int index = 0;
-        long[] sums = new long[1 << len];
+	 * returns an array with all possible subset sums
+	 * from [l..r]
+	 */
+	public static long[] get_subset_sums(int[] a, int l, int r) {
+		int len = r - l + 1;
+		int index = 0;
+		long[] sums = new long[1 << len];
 
-        for (int i = 0; i < (1 << len); i++) {
-            for( int j = 0; j < len; j++) {
-                if ((i & (1 << j)) != 0) {
-                    sums[index] += a[j + l];
-                }
-            }
-            index++;
-        }
+		for (int i = 0; i < (1 << len); i++) {
+			for (int j = 0; j < len; j++) {
+				if ((i & (1 << j)) != 0) { sums[index] += a[j + l]; }
+			}
+			index++;
+		}
 
-        return sums;
-    }
+		return sums;
+	}
 
-    // finds the first index which has equal or greater than an element.
-    public static int lower_bound(long[] arr, long x){
-        int l = -1, r = arr.length;
-        while (l < r-1) {
-            int mid = l + (r - l) / 2;
-            if (arr[mid] < x) {
-                l = mid;
-            }
-            else r = mid;
-        }
-        return r;
-    }
+	// finds the first index which has equal or greater than an element.
+	public static int lower_bound(long[] arr, long x) {
+		int l = -1, r = arr.length;
+		while (l < r - 1) {
+			int mid = l + (r - l) / 2;
+			if (arr[mid] < x) {
+				l = mid;
+			} else r = mid;
+		}
+		return r;
+	}
 }
 
-//BeginCodeSnip{IO}
+// BeginCodeSnip{IO}
 class Kattio extends PrintWriter {
-    private BufferedReader r;
-    private StringTokenizer st;
-    // standard input
-    public Kattio() { this(System.in,System.out); }
-    public Kattio(InputStream i, OutputStream o) {
-        super(o);
-        r = new BufferedReader(new InputStreamReader(i));
-    }
-    // USACO-style file input
-    public Kattio(String problemName) throws IOException {
-        super(problemName+".out");
-        r = new BufferedReader(new FileReader(problemName+".in"));
-    }
-    // returns null if no more input
-    public String next() {
-        try {
-            while (st == null || !st.hasMoreTokens())
-                st = new StringTokenizer(r.readLine());
-            return st.nextToken();
-        } catch (Exception e) {}
-        return null;
-    }
-    public int nextInt() { return Integer.parseInt(next()); }
-    public double nextDouble() { return Double.parseDouble(next()); }
-    public long nextLong() { return Long.parseLong(next()); }
+	private BufferedReader r;
+	private StringTokenizer st;
+	// standard input
+	public Kattio() { this(System.in, System.out); }
+	public Kattio(InputStream i, OutputStream o) {
+		super(o);
+		r = new BufferedReader(new InputStreamReader(i));
+	}
+	// USACO-style file input
+	public Kattio(String problemName) throws IOException {
+		super(problemName + ".out");
+		r = new BufferedReader(new FileReader(problemName + ".in"));
+	}
+	// returns null if no more input
+	public String next() {
+		try {
+			while (st == null || !st.hasMoreTokens())
+				st = new StringTokenizer(r.readLine());
+			return st.nextToken();
+		} catch (Exception e) {}
+		return null;
+	}
+	public int nextInt() { return Integer.parseInt(next()); }
+	public double nextDouble() { return Double.parseDouble(next()); }
+	public long nextLong() { return Long.parseLong(next()); }
 }
-//EndCodeSnip
+// EndCodeSnip
 ```
 
 </JavaSection>
-	
+
 </LanguageSection>
-</Spoiler>
-	
+
 ### Problems
 
 <Problems problems="general" />

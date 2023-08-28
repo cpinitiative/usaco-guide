@@ -3,7 +3,7 @@ id: BCC-2CC
 title: 'BCCs and 2CCs'
 author: Benjamin Qi
 prerequisites:
-  - dfs
+  - graph-traversal
   - binary-jump
 description: ''
 frequency: 1
@@ -25,7 +25,83 @@ frequency: 1
 
 <Problems problems="sam2" />
 
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MAX_N = 3e5;
+
+int timer;  // Time of entry in node
+int scc;    // Number of strongly connected components
+int id[MAX_N];
+int low[MAX_N];  // Lowest ID in node's subtree in DFS tree
+vector<int> neighbors[MAX_N];
+vector<int> two_edge_components[MAX_N];
+stack<int> st;  // Keeps track of the path in our DFS
+
+void dfs(int node, int parent = -1) {
+	id[node] = low[node] = ++timer;
+	st.push(node);
+	bool multiple_edges = false;
+
+	for (int child : neighbors[node]) {
+		if (child == parent && !multiple_edges) {
+			multiple_edges = true;
+			continue;
+		}
+		if (!id[child]) {
+			dfs(child, node);
+			low[node] = min(low[node], low[child]);
+		} else {
+			low[node] = min(low[node], id[child]);
+		}
+	}
+
+	if (low[node] == id[node]) {
+		while (st.top() != node) {
+			two_edge_components[scc].push_back(st.top());
+			st.pop();
+		}
+		two_edge_components[scc++].push_back(st.top());
+		st.pop();
+	}
+}
+
+int main() {
+	int n, m;
+	cin >> n >> m;
+	for (int i = 0; i < m; i++) {
+		int x, y;
+		cin >> x >> y;
+		neighbors[x].push_back(y);
+		neighbors[y].push_back(x);
+	}
+
+	for (int node = 0; node < n; node++) {
+		if (id[node] != 0) { dfs(node); }
+	}
+
+	cout << scc << '\n';
+	for (int i = 0; i < scc; i++) {
+		cout << two_edge_components[i].size() << ' ';
+		for (int node : two_edge_components[i]) { cout << node << ' '; }
+		cout << '\n';
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
+<IncompleteSection>
+
 (implementation)
+
+</IncompleteSection>
 
 ### With DSU
 
@@ -35,9 +111,11 @@ The analysis for the above problem mentions an $\mathcal{O}(m\alpha(n))$
 solution. Although this is not a two-connected component problem, we can in fact
 use DSU to generate two-connected components.
 
+<IncompleteSection>
+
 (explanation?)
 
-<Spoiler title="Code">
+</IncompleteSection>
 
 The DSU operations take $\mathcal{O}(\log n)$ rather than
 $\mathcal{O}(\alpha(n))$ because the DSU does not use union by size, but it's
@@ -46,42 +124,49 @@ easy to change this.
 ```cpp
 struct TwoEdgeCC {
 	struct {
-		vi e; void init(int n) { e = vi(n,-1); }
+		vi e;
+		void init(int n) { e = vi(n, -1); }
 		int get(int x) { return e[x] < 0 ? x : e[x] = get(e[x]); }
-		bool unite(int x, int y) { // set par[y] = x
-			x = get(x), y = get(y); if (x == y) return 0;
-			e[x] += e[y]; e[y] = x; return 1;
+		bool unite(int x, int y) {  // set par[y] = x
+			x = get(x), y = get(y);
+			if (x == y) return 0;
+			e[x] += e[y];
+			e[y] = x;
+			return 1;
 		}
 	} DSU;
-	int N; vector<vi> adj; vi depth, par;
+	int N;
+	vector<vi> adj;
+	vi depth, par;
 	vpi extra;
 	void init(int _N) {
-		N = _N; DSU.init(N);
-		adj.rsz(N), depth.rsz(N), par = vi(N,-1);
+		N = _N;
+		DSU.init(N);
+		adj.rsz(N), depth.rsz(N), par = vi(N, -1);
 	}
 	void dfs(int x) {
-		trav(t,adj[x]) if (t != par[x])
-			par[t] = x, depth[t] = depth[x]+1, dfs(t);
+		trav(t, adj[x]) if (t != par[x]) par[t] = x, depth[t] = depth[x] + 1,
+		                                 dfs(t);
 	}
 	void ae(int a, int b) {
-		if (DSU.unite(a,b)) adj[a].pb(b), adj[b].pb(a); // edge of forest
-		else extra.pb({a,b}); // extra edge
+		if (DSU.unite(a, b)) adj[a].pb(b), adj[b].pb(a);  // edge of forest
+		else extra.pb({a, b});                            // extra edge
 	}
 	void ad(int a, int b) {
 		while (1) {
 			a = DSU.get(a), b = DSU.get(b);
 			if (a == b) return;
-			if (depth[a] < depth[b]) swap(a,b);
-			assert(par[a] != -1 && DSU.unite(par[a],a));
+			if (depth[a] < depth[b]) swap(a, b);
+			assert(par[a] != -1 && DSU.unite(par[a], a));
 		}
 	}
 	void gen() {
-		F0R(i,N) if (par[i] == -1) dfs(i); // independently for each connected component
-		DSU.init(N); trav(t,extra) ad(t.f,t.s); // add non-spanning edges
-};
+		F0R(i, N)
+		if (par[i] == -1) dfs(i);  // independently for each connected component
+		DSU.init(N);
+		trav(t, extra) ad(t.f, t.s);  // add non-spanning edges
+	};
 ```
-
-</Spoiler>
 
 ### Problems
 

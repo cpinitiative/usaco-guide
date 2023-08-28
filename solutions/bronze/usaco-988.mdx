@@ -1,0 +1,182 @@
+---
+id: usaco-988
+source: USACO Bronze 2020 January
+title: Photoshoot
+author: Ananth Kashyap, Ryan Chou, Ben Dodge
+---
+
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_photo_bronze_jan20.html)
+
+We'll start by saying that for each $i$ in range $[1, N]$, $a_1 = i$. For all other values of $a_i$, we are given $b_i = a_i + a_{i+1}$ for $[1, N)$, or $a_i = b_{i -1} - a_{i - 1}$ for $(1, N]$. We will then check if these values of $a_i$ produce a valid permutation.
+
+
+Since $N \leq 1000$, we can simulate this process for every possible starting cow and pick the first valid permutation (since that would be the lexicographical minimum).
+
+## Implementation
+
+
+<LanguageSection>
+
+<CPPSection>
+
+**Time Complexity:** $\mathcal{O}(N^2)$
+
+```cpp
+#include <algorithm>
+#include <cstdio>
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+int main() {
+	freopen("photo.in", "r", stdin);
+	freopen("photo.out", "w", stdout);
+	int n;
+	cin >> n;
+	vector<int> order(n);
+
+	for (int i = 1; i < n; i++) {
+		int a;
+		cin >> a;
+		order[i] = a;
+	}
+	// count represents the first element.
+	int count = 1;
+	int ans[1000];
+	ans[0] = count;
+
+	while (true) {
+		for (int i = 1; i < n; i++) {
+			// append the next element that follows the order.
+			ans[i] = order[i] - ans[i - 1];
+		}
+
+		bool flag = false;
+		for (int i = 0; i < n; i++) {
+			// all cows have to be in the range 1 - N.
+			if (ans[i] <= 0 || ans[i] > n) {
+				flag = true;
+				break;
+			}
+		}
+
+		if (unique(begin(ans), begin(ans) + n) != begin(ans) + n || flag) {
+			// permutation invalid, try the next one.
+			fill_n(begin(ans), n, 0);
+			count++;
+			ans[0] = count;
+		} else {
+			// permutation valid, print out the vector.
+			for (int i = 0; i < n; i++) {
+				if (i != n - 1) {
+					cout << ans[i] << " ";
+				} else {
+					cout << ans[i];
+				}
+			}
+			break;
+		}
+	}
+}
+```
+</CPPSection>
+<PySection>
+
+**Time Complexity:** $\mathcal{O}(N^3)$
+
+<Info title="Time Complexity">
+Since the `in` operator in Python takes $\mathcal{O}(N)$ time, this solution is slower than the C++ version.
+</Info>
+
+```py
+data = open("photo.in").read().strip().split("\n")
+n = int(data[0])
+b = list(map(int, data[1].split(" ")))
+
+a = []
+for i in range(1, n + 1):
+	a = []
+	a.append(i)
+	works = True
+	# Check if a valid permutation can be formed given the first number
+	for j in range(n - 1):
+		if ((b[j] - a[j]) in a) or ((b[j] - a[j]) == 0) or ((b[j] - a[j]) > n):
+			works = False
+			break
+		else:
+			a.append(b[j] - a[j])
+	if works:
+		break
+
+ans = ""
+for i in range(n - 1):
+	ans += str(a[i]) + " "
+ans += str(a[n - 1])
+print(ans, file=open("photo.out", "w"))
+```
+
+</PySection>
+<JavaSection>
+
+**Time Complexity:** $\mathcal{O}(N^2)$
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Photoshoot {
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio("photo");
+
+		int N = io.nextInt();
+		int[] bessieList = new int[N];
+		int[] correctList = new int[N];
+		// Used to prevent repeated values in our permutation
+		boolean[] used = new boolean[N];
+
+		for (int i = 1; i < N; i++) { bessieList[i] = io.nextInt(); }
+
+		// Iterate through every possible starting cow and see if we can
+		// construct a permutation based on that.
+		for (int i = 1; i <= N; i++) {
+			correctList[0] = i;
+			used = new boolean[N];
+			for (int j = 1; j < N; j++) {
+				correctList[j] = bessieList[j] - correctList[j - 1];
+			}
+			boolean bad = false;
+			for (int k : correctList) {
+				// Our permutation isn't valid because there are unacceptable
+				// values So, we can stop searching.
+				if (k > N || k <= 0) {
+					bad = true;
+					break;
+				} else {
+					// Our permutation isn't valid because some elements repeat
+					if (used[k - 1]) {
+						bad = true;
+						break;
+					} else {
+						used[k - 1] = true;
+					}
+				}
+			}
+			// We've found a valid permutation: since we started from 1, the
+			// first one we find will be the lexicographically smallest one
+			if (!bad) {
+				for (int j = 0; j < N; j++) {
+					io.print(correctList[j]);
+					if (j < N - 1) { io.print(" "); }
+				}
+				io.println();
+				io.close();
+			}
+		}
+	}
+	// CodeSnip{Kattio}
+}
+```
+</JavaSection>
+
+</LanguageSection>

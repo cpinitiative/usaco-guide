@@ -1,0 +1,105 @@
+---
+id: usaco-862
+source: USACO Gold 2018 December
+title: Cowpatibility
+author: Ryan Chou
+---
+
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_cowpatibility_gold_dec18.html)
+
+<Spoiler title="Hint">
+
+Instead of trying to find the number of incompatible pairs, try to find the number of *compatible* pairs instead!
+
+This is known as [complementary counting](https://artofproblemsolving.com/wiki/index.php/Complementary_counting).
+
+</Spoiler>
+
+<Spoiler title="Solution">
+
+## Explanation
+
+Since there are a total of $\frac{N(N-1)}{2}$ pairs of cows, if we can count the number of compatible pairs, we can subtract it from the total to get our answer!
+
+We can use [PIE (Principle of Inclusion/Exclusion)](https://artofproblemsolving.com/wiki/index.php/Principle_of_Inclusion-Exclusion) to calculate the number of compatible pairs! We'll have to add all pairs of cows that share one flavor in common, subtract cows that share two flavors in common,
+and so on...
+
+To understand why this works, imagine we only have three flavors of cows, and some cows share more than one flavor. If we were to only
+count the pairs of cows with one flavor, the pairs of cows that share two flavors would be overcounted, as shown in the animation below:
+
+<img src = "/usaco-862-anim/PIE.gif"/>
+
+To avoid considering rearranged sets of the same flavors, we'll sort the favorite flavors of each cow beforehand.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int FLAVORS = 5;
+
+int main() {
+	freopen("cowpatibility.in", "r", stdin);
+	freopen("cowpatibility.out", "w", stdout);
+
+	long long n;
+	cin >> n;
+
+	vector<array<int, FLAVORS>> cows(n);
+
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < FLAVORS; j++) { cin >> cows[i][j]; }
+
+		// sort flavors to avoid double counting
+		sort(cows[i].begin(), cows[i].end());
+	}
+
+	// common[i][j] = the number of cows that share i flavors (j) in common
+	vector<map<array<int, FLAVORS>, int>> common(FLAVORS);
+
+	for (int i = 0; i < n; i++) {
+		common[4][cows[i]]++;
+
+		// iterate over all subsets
+		for (int a = 0; a < FLAVORS; a++) {
+			common[0][{cows[i][a]}]++;
+			for (int b = a + 1; b < FLAVORS; b++) {
+				common[1][{cows[i][a], cows[i][b]}]++;
+				for (int c = b + 1; c < FLAVORS; c++) {
+					common[2][{cows[i][a], cows[i][b], cows[i][c]}]++;
+					for (int d = c + 1; d < FLAVORS; d++) {
+						common[3][{cows[i][a], cows[i][b], cows[i][c],
+						           cows[i][d]}]++;
+					}
+				}
+			}
+		}
+	}
+
+	long long compatible = 0;
+	// use PIE to count the number of compatible pairs
+	// (see explanation above)
+	for (int i = 0; i < FLAVORS; i++) {
+		for (auto &[k, v] : common[i]) {
+			if (i % 2 == 0) {
+				compatible += (long long)v * (v - 1) / 2;
+			} else {
+				compatible -= (long long)v * (v - 1) / 2;
+			}
+		}
+	}
+
+	cout << (n * (n - 1) / 2) - compatible << endl;
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
+</Spoiler>

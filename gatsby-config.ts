@@ -92,11 +92,12 @@ const plugins = [
     },
   },
   {
-    resolve: `gatsby-plugin-google-analytics`,
+    resolve: `gatsby-plugin-google-gtag`,
     options: {
-      trackingId: 'UA-55628264-7',
-      head: false,
-      pageTransitionDelay: 100,
+      trackingIds: ['G-1JGYFFBHXN'],
+      pluginConfig: {
+        head: false,
+      },
     },
   },
   {

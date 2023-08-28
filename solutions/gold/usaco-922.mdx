@@ -1,0 +1,92 @@
+---
+id: usaco-922
+source: USACO Gold 2019 February
+title: Dishwashing
+author: Chongtian Ma
+---
+
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_dishes_gold_feb19.html)
+
+## Alternate Solution - Binary Search
+
+We can binary search for the longest possible prefix. A prefix of length $i-1$ is just a prefix of length $i$ without a plate; if is it possible to wash all plates of prefix $i$ then it must also be possible to wash a prefix of $i-1$. Now we only need to simulate the stacking and washing. As the official analysis outlines, if plate $A$ is on top of plate $B$ on the same stack, then $A$ must be less than $B$, or else we cannot access the plate beneath it.
+
+We can greedily place each plate on stack $i$ if the top plate on stack $i$ is larger than our current plate and is the smallest out of all the other soapy stacks. This is because it is always more optimal to satisfy a stricter constraint, rather overriding a broader one if we place the plate on another stack which the plate on top is not the smallest possible.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	ifstream fin("dishes.in");
+	int n;
+	fin >> n;
+	vector<int> order(n);
+	for (int i = 0; i < n; i++) { fin >> order[i]; }
+
+	// returns true if dishes with indexes [0, end_index) can be washed
+	auto prefix_washable = [&](int end_index) -> bool {
+		deque<int> not_washed;
+		for (int i = 0; i < end_index; i++) { not_washed.push_back(order[i]); }
+		sort(not_washed.begin(), not_washed.end());
+
+		// Each array represents a separate soapy stack
+		deque<vector<int>> soapy_stacks;
+
+		for (int i = 0; i < end_index; i++) {
+			int plate = order[i];
+
+			// binary search for the first stack it can be placed
+			int l = -1, r = soapy_stacks.size();
+			while (l < r - 1) {
+				int mid = (l + r) / 2;
+				if (soapy_stacks[mid].back() > plate) {
+					r = mid;
+				} else {
+					l = mid;
+				}
+			}
+
+			// not able to be placed in any existing stack
+			if (r == soapy_stacks.size()) {
+				// create new stack
+				soapy_stacks.push_back({plate});
+			} else {
+				soapy_stacks[r].push_back(plate);
+			}
+
+			// while are able to wash a plate, wash it
+			while (!soapy_stacks.empty() &&
+			       soapy_stacks.front().back() == not_washed.front()) {
+				soapy_stacks.front().pop_back();
+				not_washed.pop_front();
+				// if first stack is empty, remove it
+				if (soapy_stacks.front().empty()) { soapy_stacks.pop_front(); }
+			}
+		}
+
+		// returns true if every plate is washed
+		return not_washed.empty();
+	};
+
+	// binary search for the longest possible prefix
+	int l = 0, r = n + 1;
+	while (l < r - 1) {
+		int mid = (l + r) / 2;
+		if (prefix_washable(mid)) {
+			l = mid;
+		} else {
+			r = mid;
+		}
+	}
+	ofstream("dishes.out") << l << endl;
+}
+```
+
+</CPPSection>
+
+</LanguageSection>

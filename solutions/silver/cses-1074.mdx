@@ -1,0 +1,101 @@
+---
+id: cses-1074
+source: CSES
+title: Stick Lengths
+author: Danh Ta Chi Thanh, Sofia Yang
+---
+
+In this problem, we are given an array with $n$ elements. We want to find the
+minimum cost to make all of the elements equal.
+
+## Solution
+
+[Unofficial Editorial](https://codeforces.com/blog/entry/83295)
+
+[Another solution and some proofs](https://www.geeksforgeeks.org/make-array-elements-equal-minimum-cost/)
+
+## Implementation
+Here is the code implementation for the easiest approach.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+// variables used for the current problem
+int n, median;
+vector<int> p;
+long long ans, cnt;
+
+void solve() {
+	cin >> n;
+	p.resize(n);
+	for (int &x : p) { cin >> x; }
+	sort(p.begin(), p.end());
+	median = p[n / 2];
+	for (const int &x : p) {
+		ans += abs(median - x);  // Calculate the cost to modify the stick
+		                         // length
+	}
+	cout << ans << "\n";
+	return;
+}
+
+int main() {
+	ios_base::sync_with_stdio(false);
+	cin.tie(nullptr);
+	solve();
+	return 0;
+}
+```
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class StickLengths {
+	// CodeSnip{Kattio}
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
+		int N = io.nextInt();
+		int[] arr = new int[N];
+		for (int i = 0; i < N; i++) { arr[i] = io.nextInt(); }
+		Arrays.sort(arr);
+
+		/*
+		 * Take the median stick length,
+		 * and calculate the cost to change each stick length to the median.
+		 */
+		int median = arr[N / 2];
+		long costs = 0;
+		for (int i = 0; i < N; i++) { costs += Math.abs(arr[i] - median); }
+		io.println(costs);
+		io.close();
+	}
+}
+```
+
+</JavaSection>
+
+<PySection>
+
+```py
+n = int(input())
+sticks = sorted(list(map(int, input().split())))
+median = sticks[n // 2]
+ans = 0
+for x in sticks:
+	ans += abs(median - x)
+print(ans)
+```
+
+</PySection>
+
+</LanguageSection>

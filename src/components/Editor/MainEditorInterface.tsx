@@ -98,24 +98,22 @@ export const MainEditorInterface = ({ className }): JSX.Element => {
       );
     }
   };
-
+  const tabs = isEditingSolution
+    ? [{ label: 'solution.mdx', value: 'content' }]
+    : [
+        { label: 'module.mdx', value: 'content' },
+        {
+          label: 'module.problems.json',
+          value: 'problems',
+        },
+      ];
   return (
     <div className={classNames('tw-forms-disable-all-descendants', className)}>
       <EditorTabBar
-        tabs={[
-          { label: 'module.mdx', value: 'module.mdx' },
-          ...(!isEditingSolution
-            ? [
-                {
-                  label: 'module.problems.json',
-                  value: 'module.problems.json',
-                },
-              ]
-            : []),
-        ]}
-        activeTab={tab === 'content' ? 'module.mdx' : 'module.problems.json'}
+        tabs={tabs}
+        activeTab={tab === 'content' ? 'content' : 'problems'}
         onTabSelect={tab =>
-          setTab(tab.value === 'module.mdx' ? 'content' : 'problems')
+          setTab(tab.value === 'content' ? 'content' : 'problems')
         }
         onFormatCode={handleFormatCode}
       />

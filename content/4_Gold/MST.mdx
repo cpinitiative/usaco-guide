@@ -7,9 +7,8 @@ prerequisites:
   - shortest-paths
   - dsu
 description:
-  'A subset of the edges of a connected, undirected, edge-weighted graph that
-  connects all the vertices to each other of minimum total weight, where no
-  cycles are allowed.'
+  'Finding a subset of the edges of a connected, undirected, edge-weighted graph that
+  connects all the vertices to each other of minimum total weight.'
 frequency: 2
 ---
 
@@ -53,6 +52,11 @@ determine whether adding an edge will create a cycle in constant time using
 the edges, the computational complexity of Kruskal's Algorithm is
 $\mathcal{O}(E \log E)$.
 
+Here's an animation of how the algorithm works:
+<video width="960" height="720" controls>
+	<source src="/animations/kruskal.mp4" type="video/mp4"/>
+</video>
+
 ### Implementation
 
 <LanguageSection>
@@ -71,10 +75,12 @@ $\mathcal{O}(E \log E)$.
 ```cpp
 #include "DSU.h"
 
-template<class T> T kruskal(int N, vector<pair<T,pi>> ed) {
+template <class T> T kruskal(int N, vector<pair<T, pi>> ed) {
 	sort(all(ed));
-	T ans = 0; DSU D; D.init(N); // edges that unite are in MST
-	trav(a,ed) if (D.unite(a.s.f,a.s.s)) ans += a.f;
+	T ans = 0;
+	DSU D;
+	D.init(N);  // edges that unite are in MST
+	trav(a, ed) if (D.unite(a.s.f, a.s.s)) ans += a.f;
 	return ans;
 }
 ```
@@ -85,9 +91,9 @@ template<class T> T kruskal(int N, vector<pair<T,pi>> ed) {
 
 ```java
 public static HashMap<Integer, ArrayList<Integer>> MST;
-public static PriorityQueue<Edge> pq; //contains all edges
+public static PriorityQueue<Edge> pq;  // contains all edges
 
-//Assumes that DSU code is included
+// Assumes that DSU code is included
 public static void kruskal() {
 	while (!pq.isEmpty()) {
 		Edge e = pq.poll();
@@ -100,9 +106,7 @@ public static void kruskal() {
 }
 
 static class Edge implements Comparable<Edge> {
-	int start,
-	end,
-	weight;
+	int start, end, weight;
 	public Edge(int s, int e, int w) {
 		start = s;
 		end = e;
@@ -144,64 +148,64 @@ no edges are counted twice, we cannot "accidentally" count $n-1$ edges.
 <CPPSection>
 
 ```cpp
-#include <iostream>
-#include <vector>
 #include <algorithm>
+#include <iostream>
+#include <limits>
+#include <vector>
+
 using namespace std;
 
-typedef long long ll;
-typedef pair<int, int> pi;
-typedef vector<int> vi;
-
-#define trav(a,x) for (auto& a: x)
-#define all(x) begin(x), end(x)
-#define mp make_pair
-#define f first
-#define s second
-
 struct DSU {
-	vi e; void init(int N) { e = vi(N,-1); }
-	// get representive component, uses path compression
+	vector<int> e;
+
+	DSU(int N) : e(N, -1) {}
+
 	int get(int x) { return e[x] < 0 ? x : e[x] = get(e[x]); }
-	bool sameSet(int a, int b) { return get(a) == get(b); }
+
+	bool connected(int a, int b) { return get(a) == get(b); }
+
 	int size(int x) { return -e[get(x)]; }
-	bool unite(int x, int y) { // union by size
-		x = get(x), y = get(y); if (x == y) return 0;
-		if (e[x] > e[y]) swap(x,y);
-		e[x] += e[y]; e[y] = x; return 1;
+
+	bool unite(int x, int y) {
+		x = get(x), y = get(y);
+		if (x == y) { return false; }
+		if (e[x] > e[y]) { swap(x, y); }
+		e[x] += e[y];
+		e[y] = x;
+		return true;
 	}
 };
 
-int cnt=0;
-template<class T> T kruskal(int N, vector<pair<T,pi>> ed) {
-	sort(all(ed));
-	T ans = 0; DSU D; D.init(N+1); // edges that unite are in MST
-	trav(a,ed)
-	if (D.unite(a.s.f,a.s.s)) {
-		ans += a.f;
-		cnt++;
+template <class T> T kruskal(int N, vector<pair<T, pair<int, int>>> edges) {
+	sort(edges.begin(), edges.end());
+	T ans = 0;
+	DSU D(N + 1);  // edges that unite are in MST
+	for (pair<T, pair<int, int>> &e : edges) {
+		if (D.unite(e.second.first, e.second.second)) { ans += e.first; }
 	}
-	return ans;
+	// -1 if the graph is not connected, otherwise the sum of the edge lengths
+	return (D.size(1) == N ? ans : -1);
 }
 
 int main() {
 	ios_base::sync_with_stdio(0);
 	cin.tie(0);
-	int n, m; cin >> n >> m;
-	vector<pair<ll,pi>> edge;
-	for (int i = 0; i < m; i++){
-		int a, b; ll c;
+	int n, m;
+	cin >> n >> m;
+	vector<pair<long long, pair<int, int>>> edges;
+	for (int i = 0; i < m; i++) {
+		int a, b;
+		long long c;
 		cin >> a >> b >> c;
-		edge.push_back(mp(c, mp(a, b)));
+		edges.push_back({c, {a, b}});
 	}
-	ll ans = kruskal(n, edge);
-	if(cnt == n-1){
+
+	long long ans = kruskal(n, edges);
+	if (ans >= 0) {
 		cout << ans;
-	}
-	else{
+	} else {
 		cout << "IMPOSSIBLE";
 	}
-	return 0;
 }
 ```
 
@@ -213,18 +217,19 @@ int main() {
 import java.io.*;
 import java.util.*;
 
-class kruskal {
+class Kruskal {
 	static int comp;
 	static int disjoint[];
 	static int size[];
 	public static void main(String[] args) throws IOException {
-		BufferedReader sc = new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader sc =
+		    new BufferedReader(new InputStreamReader(System.in));
 		PrintWriter out = new PrintWriter(System.out);
 		StringTokenizer st = new StringTokenizer(sc.readLine());
 		int N = Integer.parseInt(st.nextToken());
 		int M = Integer.parseInt(st.nextToken());
 
-		PriorityQueue<Edge> pq = new PriorityQueue < Edge > ();
+		PriorityQueue<Edge> pq = new PriorityQueue<Edge>();
 		for (int m = 0; m < M; m++) {
 			st = new StringTokenizer(sc.readLine());
 			int a = Integer.parseInt(st.nextToken());
@@ -250,18 +255,14 @@ class kruskal {
 		out.close();
 	}
 	public static int find(int v) {
-		if (disjoint[v] == -1) {
-			return v;
-		}
+		if (disjoint[v] == -1) { return v; }
 		disjoint[v] = find(disjoint[v]);
 		return disjoint[v];
 	}
 	public static void union(int u, int v) {
 		int uroot = find(u);
 		int vroot = find(v);
-		if (uroot == vroot) {
-			return;
-		}
+		if (uroot == vroot) { return; }
 		if (size[uroot] < size[vroot]) {
 			disjoint[uroot] = vroot;
 			size[vroot] = size[uroot] + size[vroot];
@@ -335,69 +336,58 @@ graphs (in which $E \approx V^2$).
 <CPPSection>
 
 ```cpp
-#include <iostream>
-#include <vector>
-#include <set>
+#include <bits/stdc++.h>
 using namespace std;
 
-typedef long long ll;
-typedef pair<ll, int> pl;
-typedef vector<int> vi;
-
-#define pb push_back
-#define mp make_pair
-#define f first
-#define s second
-
-
-vector<pl> adj[200000];
-int n;
-ll MAX = 100000000000L;
-ll prim(){
-	ll weight = 0;
-	vector<ll> min(n, MAX);
-	min[0] = 0;
-	set<pl> q;
+long long prim(int n, const vector<vector<pair<long long, int>>> &adj) {
+	long long weight = 0;
+	vector<long long> dist(n, numeric_limits<long long>::max());
+	dist[0] = 0;
+	set<pair<long long, int>> q;
+	// {cost, vertex}
 	q.insert({0, 0});
 	vector<bool> visited(n, false);
 	for (int i = 0; i < n; ++i) {
-		if (q.empty()) {
-			return -1;
-		}
-		int v = q.begin() -> s;
+		if (q.empty()) { return -1; }
+		int v = q.begin()->second;
 		visited[v] = true;
-		weight += q.begin()-> f;
+		weight += q.begin()->first;
 		q.erase(q.begin());
 
-		for (pl e : adj[v]) {
-			if(!visited[e.s] && e.f < min[e.s]) {
-				q.erase({min[e.s], e.s});
-				min[e.s] = e.f;
-				q.insert({e.f, e.s});
+		for (auto &[cost, child] : adj[v]) {
+			if (!visited[child] && cost < dist[child]) {
+				q.erase({dist[child], child});
+				dist[child] = cost;
+				q.insert({cost, child});
 			}
 		}
 	}
 	return weight;
 }
 int main() {
-	ios_base::sync_with_stdio(0);
+	ios_base::sync_with_stdio(false);
 	cin.tie(0);
-	int m; cin >> n >> m;
-	for (int i = 0; i < m; i++){
-		int a, b; ll c;
+	int n, m;
+	cin >> n >> m;
+
+	vector<vector<pair<long long, int>>> adj(n);
+	for (int i = 0; i < m; i++) {
+		int a, b;
+		long long c;
 		cin >> a >> b >> c;
-		a--; b--;
-		adj[a].pb(mp(c, b));
-		adj[b].pb(mp(c, a));
+		a--;
+		b--;
+		adj[a].push_back({c, b});
+		adj[b].push_back({c, a});
 	}
-	ll ans = prim();
-	if(ans == -1){
+
+	long long ans = prim(n, adj);
+	if (ans == -1) {
 		cout << "IMPOSSIBLE";
-	}
-	else{
+	} else {
 		cout << ans;
 	}
-	return 0;
+	cout << endl;
 }
 ```
 
@@ -409,22 +399,21 @@ int main() {
 import java.io.*;
 import java.util.*;
 
-class prim {
+class Prim {
 	static Map<Integer, ArrayList<Edge>> tree;
 	static int N, ct;
 	static long[] dist;
-	static long max = 10000000000000000 L;
+	static long max = 10000000000000000L;
 	public static void main(String[] args) throws IOException {
-		BufferedReader sc = new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader sc =
+		    new BufferedReader(new InputStreamReader(System.in));
 		PrintWriter out = new PrintWriter(System.out);
 		StringTokenizer st = new StringTokenizer(sc.readLine());
 		N = Integer.parseInt(st.nextToken());
 		int M = Integer.parseInt(st.nextToken());
 
-		tree = new HashMap<Integer, ArrayList<Edge>> ();
-		for (int i = 1; i <= N; i++) {
-			tree.put(i, new ArrayList<Edge> ());
-		}
+		tree = new HashMap<Integer, ArrayList<Edge>>();
+		for (int i = 1; i <= N; i++) { tree.put(i, new ArrayList<Edge>()); }
 		for (int m = 0; m < M; m++) {
 			st = new StringTokenizer(sc.readLine());
 			int a = Integer.parseInt(st.nextToken());
@@ -441,7 +430,7 @@ class prim {
 	static long prim(int source) {
 		dist = new long[N + 1];
 		boolean[] visited = new boolean[N + 1];
-		PriorityQueue<Pair> pq = new PriorityQueue<Pair> ();
+		PriorityQueue<Pair> pq = new PriorityQueue<Pair>();
 		Arrays.fill(dist, max);
 		dist[source] = 0;
 		long ret = 0;
@@ -449,13 +438,11 @@ class prim {
 		while (!pq.isEmpty()) {
 			Pair p = pq.poll();
 			int v = p.b;
-			if (visited[v]) {
-				continue;
-			}
+			if (visited[v]) { continue; }
 			visited[v] = true;
 			ct++;
 			ret += dist[v];
-			for (Edge e: tree.get(v)) {
+			for (Edge e : tree.get(v)) {
 				if (e.weight < dist[e.end] && !visited[e.end]) {
 					dist[e.end] = e.weight;
 					pq.add(new Pair(dist[e.end], e.end));
@@ -499,6 +486,7 @@ class Pair implements Comparable<Pair> {
 ```py
 import heapq
 
+
 def prim(n, G):
 	used = [False for _ in range(n)]
 	pq = [(0, 0)]
@@ -515,6 +503,7 @@ def prim(n, G):
 			if not used[neigh_node]:
 				heapq.heappush(pq, (neigh_weight, neigh_node))
 	return total_weight if count == n else -1
+
 
 n, m = map(int, input().split())
 G = [[] for _ in range(n)]

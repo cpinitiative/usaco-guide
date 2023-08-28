@@ -86,19 +86,20 @@ export default function ModuleHeaders({
 
   return (
     <>
-      {markdownData instanceof ModuleInfo && markdownData.frequency !== null && (
-        <div className="px-0.5">
-          <div className="sm:flex sm:items-center sm:justify-between mb-4 space-y-1 sm:space-y-0">
-            <Frequency frequency={markdownData.frequency} />
-            {problemIDs.length > 0 && (
-              <DashboardProgressSmall
-                {...problemsProgressInfo}
-                total={problemIDs.length}
-              />
-            )}
+      {markdownData instanceof ModuleInfo &&
+        markdownData.frequency !== null && (
+          <div className="px-0.5">
+            <div className="sm:flex sm:items-center sm:justify-between mb-4 space-y-1 sm:space-y-0">
+              <Frequency frequency={markdownData.frequency} />
+              {problemIDs.length > 0 && (
+                <DashboardProgressSmall
+                  {...problemsProgressInfo}
+                  total={problemIDs.length}
+                />
+              )}
+            </div>
           </div>
-        </div>
-      )}
+        )}
       <div className="sm:flex sm:items-center sm:justify-between mb-4">
         <div className="flex-1 min-w-0">
           <h1 className="text-2xl font-bold text-gray-900 dark:text-dark-high-emphasis sm:text-3xl">
@@ -127,7 +128,7 @@ export default function ModuleHeaders({
             />
           </div>
         )}
-        {/* {markdownData instanceof ModuleInfo && 
+        {/* {markdownData instanceof ModuleInfo &&
           `Last Updated: ${time_ago(markdownData.gitAuthorTime)}`
         } */}
       </div>
@@ -215,7 +216,9 @@ export default function ModuleHeaders({
           <div>
             <div className="h-4 sm:h-6" />
             <h3 className="text-sm leading-5 font-medium text-gray-800 my-0 dark:text-gray-200">
-              Prerequisites
+              {markdownData instanceof ModuleInfo
+                ? 'Prerequisites'
+                : 'Appears In'}
             </h3>
             <div className="text-sm leading-5 text-gray-700 mt-1 no-y-margin dark:text-gray-300">
               <ul className="list-disc list-inside pl-3 space-y-1">

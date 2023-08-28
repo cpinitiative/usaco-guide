@@ -1,0 +1,283 @@
+---
+id: usaco-784
+source: USACO Bronze 2018 January
+title: Lifeguards
+author: Danh Ta Chi Thanh, Ananth Kashyap, Amogha
+---
+
+## Video Solution
+
+<YouTube id="6csm5QNoDIs" />
+
+<Spoiler title="Video Solution Code">
+
+<Spoiler title="Hint 1">
+
+How do you effectively store the shifts of the lifeguards in a way that you can
+see how many cover each time?
+
+</Spoiler>
+
+<Spoiler title="Hint 2">
+
+If one of the lifeguards is fired, how would you see which of the times are
+still covered?
+
+</Spoiler>
+
+<Spoiler title="Solution">
+
+[Official Analysis (Java)](http://www.usaco.org/current/data/sol_lifeguards_bronze_jan18.html)
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int32_t main() {
+
+	freopen("lifeguards.in", "r", stdin);
+	freopen("lifeguards.out", "w", stdout);
+
+	int cows;
+	cin >> cows;
+	int startT[cows];
+	int endT[cows];
+	int times[1000];
+	int shiftTotal = -1;
+
+	for (int q = 0; q < 1000; q++) { times[q] = 0; }
+	for (int c = 0; c < cows; c++) {
+		cin >> startT[c] >> endT[c];
+		for (int k = startT[c]; k < endT[c]; k++) { times[k]++; }
+	}
+
+	for (int i = 0; i < cows; i++) {
+		for (int t = startT[i]; t < endT[i]; t++) { times[t]--; }
+
+		int covered = 0;
+		for (int t = 0; t < 1000; t++) {
+			if (times[t] > 0) { covered++; }
+		}
+		shiftTotal = max(shiftTotal, covered);
+
+		for (int t = startT[i]; t < endT[i]; t++) { times[t]++; }
+	}
+
+	cout << shiftTotal;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Lifeguards {
+	public static void main(String[] args) throws IOException {
+		PrintWriter pw = new PrintWriter(new File("lifeguards.out"));
+		BufferedReader br =
+		    new BufferedReader(new FileReader(new File("lifeguards.in")));
+		StringTokenizer st;
+
+		int cows = Integer.parseInt(br.readLine());
+		int[] startT = new int[cows];
+		int[] endT = new int[cows];
+		int[] times = new int[1000];
+		int shiftTotal = -1;
+
+		for (int c = 0; c < cows; c++) {
+			st = new StringTokenizer(br.readLine());
+			startT[c] = Integer.parseInt(st.nextToken());
+			endT[c] = Integer.parseInt(st.nextToken());
+			for (int k = startT[c]; k < endT[c]; k++) { times[k]++; }
+		}
+
+		for (int i = 0; i < cows; i++) {
+			for (int t = startT[i]; t < endT[i]; t++) { times[t]--; }
+
+			int covered = 0;
+			for (int t = 0; t < 1000; t++) {
+				if (times[t] > 0) { covered++; }
+			}
+			shiftTotal = Math.max(shiftTotal, covered);
+
+			for (int t = startT[i]; t < endT[i]; t++) { times[t]++; }
+		}
+		pw.println(shiftTotal);
+		pw.close();
+		br.close();
+	}
+}
+```
+
+</JavaSection>
+</LanguageSection>
+</Spoiler>
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(NT)$, where $T$ is the maximum time.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <algorithm>
+#include <cstdio>
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+struct Cow {
+	int start, end;
+};
+
+int main() {
+	freopen("lifeguards.in", "r", stdin);
+	int n;
+	cin >> n;
+
+	vector<Cow> lifeguards(n);
+	int max_time = 0;  // Max time we'll have to process up to
+	for (Cow &l : lifeguards) {
+		cin >> l.start >> l.end;
+		max_time = max(max_time, l.end);
+	}
+
+	/*
+	 * Simulate firing each lifeguard and compute the total
+	 * time covered by the remaining lifeguards
+	 */
+	int max_cover = 0;
+	for (int i = 0; i < n; i++) {
+		int time_covered = 0;
+		// Try to find a cow that can cover this interval
+		for (int t = 1; t <= max_time; t++) {
+			for (int j = 0; j < n; j++) {
+				// Check that it's not the fired cow
+				if (j != i) {
+					if (lifeguards[j].start <= t && t < lifeguards[j].end) {
+						// One more time slot covered- no need to search further
+						time_covered++;
+						break;
+					}
+				}
+			}
+		}
+		max_cover = max(max_cover, time_covered);
+	}
+
+	freopen("lifeguards.out", "w", stdout);
+	cout << max_cover << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Lifeguards {
+	// BeginCodeSnip{Lifeguard Class}
+	static class Lifeguard {
+		public int start, end;
+
+		public Lifeguard(int start, int end) {
+			this.start = start;
+			this.end = end;
+		}
+	}
+	// EndCodeSnip
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader read =
+		    new BufferedReader(new FileReader("lifeguards.in"));
+		int n = Integer.parseInt(read.readLine());
+
+		Lifeguard[] lifeguards = new Lifeguard[n];
+		int maxTime = 0;  // Max time we'll have to process up to
+		for (int i = 0; i < n; i++) {
+			StringTokenizer lifeguard = new StringTokenizer(read.readLine());
+			lifeguards[i] =
+			    new Lifeguard(Integer.parseInt(lifeguard.nextToken()),
+			                  Integer.parseInt(lifeguard.nextToken()));
+			maxTime = Math.max(maxTime, lifeguards[i].end);
+		}
+		read.close();
+
+		/*
+		 * Simulate firing each lifeguard and compute the total
+		 * time covered by the remaining lifeguards
+		 */
+		int maxCover = 0;
+		for (int i = 0; i < n; i++) {
+			int timeCovered = 0;
+			for (int t = 1; t <= maxTime; t++) {
+				// Try to find a cow that can cover this interval
+				for (int j = 0; j < n; j++) {
+					// Check that it's not the fired cow
+					if (j != i) {
+						if (lifeguards[j].start <= t && t < lifeguards[j].end) {
+							// One more time slot covered- no need to search
+							// further
+							timeCovered++;
+							break;
+						}
+					}
+				}
+			}
+			maxCover = Math.max(maxCover, timeCovered);
+		}
+
+		PrintWriter written = new PrintWriter("lifeguards.out");
+		written.println(maxCover);
+		written.close();
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+with open("lifeguards.in") as read:
+	n = int(read.readline())
+	lifeguards = []
+	for _ in range(n):
+		lifeguards.append([int(i) for i in read.readline().split()])
+
+# Max time we'll have to process up to
+max_time = max(max(l) for l in lifeguards)
+
+max_cover = 0
+"""
+Simulate firing each lifeguard and compute the total
+time covered by the remaining lifeguards
+"""
+for i in range(n):
+	time_covered = 0
+	for t in range(1, max_time + 1):
+		# Try to find a cow that can cover this interval
+		for j in range(n):
+			# Check that it's not the fired cow
+			if j != i:
+				if lifeguards[j][0] <= t < lifeguards[j][1]:
+					# One more time slot covered- no need to search further
+					time_covered += 1
+					break
+	max_cover = max(time_covered, max_cover)
+
+print(max_cover, file=open("lifeguards.out", "w"))
+```
+
+</PySection>
+</LanguageSection>
+</Spoiler>

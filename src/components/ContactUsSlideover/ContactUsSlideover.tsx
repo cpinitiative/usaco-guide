@@ -58,32 +58,32 @@ const Field = ({ label, id, value, onChange, errorMsg = null }) => {
 };
 
 export function validateEmail(email) {
-  const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  const re =
+    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   return re.test(String(email).toLowerCase());
 }
 
 export default function ContactUsSlideover({
   isOpen,
   onClose,
+  defaultLocation = '',
 }: {
   isOpen: boolean;
   onClose: () => void;
-  activeModule?: ModuleInfo;
+  defaultLocation?: string;
 }): JSX.Element {
   const userSettings = useContext(UserDataContext);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [location, setLocation] = useState('');
+  const [location, setLocation] = useState(defaultLocation);
   const [topic, setTopic] = useStickyState('', 'contact_form_topic');
   const topics = [
-    'Typo / Broken Link',
-    'Request - Missing Section or Editorial',
-    'Unclear Explanation',
-    'Website Bug',
-    'Suggestion',
-    // 'Request - Problem Editorial',
-    // 'I want to contribute!',
-    'Other',
+    ['Minor Mistake', 'typo, broken link, wrong time complexity'],
+    ['Unclear Explanation'],
+    ['Website Bug'],
+    ['Suggestion'],
+    ['Request - Missing Section or Solution'],
+    ['Other'],
   ];
   const [message, setMessage] = useStickyState('', 'contact_form_message');
   const [showSuccess, setShowSuccess] = useState(false);
@@ -95,12 +95,14 @@ export default function ContactUsSlideover({
   const submitForm = useContactFormAction();
 
   React.useEffect(() => {
-    const activeModule = markdownContext?.markdownLayoutInfo;
-    if (activeModule && activeModule instanceof ModuleInfo) {
-      setLocation(
-        `${SECTION_LABELS[activeModule.section]} - ${activeModule.title}`
-      );
-    } else setLocation('');
+    if (!defaultLocation) {
+      const activeModule = markdownContext?.markdownLayoutInfo;
+      if (activeModule && activeModule instanceof ModuleInfo) {
+        setLocation(
+          `${SECTION_LABELS[activeModule.section]} - ${activeModule.title}`
+        );
+      } else setLocation('');
+    }
   }, [markdownContext?.markdownLayoutInfo]);
 
   const { firebaseUser } = useContext(UserDataContext);
@@ -131,7 +133,7 @@ export default function ContactUsSlideover({
       email === '' ||
       !validateEmail(email) ||
       topic === '' ||
-      message === ''
+      message.length < 10
     ) {
       return;
     }
@@ -198,7 +200,7 @@ export default function ContactUsSlideover({
       }
       onSubmit={handleSubmit}
     >
-      <div className="bg-gray-50 dark:bg-gray-900 mb-4">
+      {/* <div className="bg-gray-50 dark:bg-gray-900 mb-4">
         <div className="px-4 py-5 sm:p-6">
           <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-200">
             Ask on the USACO Forum!
@@ -221,8 +223,8 @@ export default function ContactUsSlideover({
             </span>
           </div>
         </div>
-      </div>
-      <div className="px-4 sm:px-6">
+      </div> */}
+      <div className="px-4 sm:px-6 mt-4">
         {showSuccess && (
           <div className="rounded-md bg-green-50 dark:bg-green-800 p-4">
             <div className="flex">
@@ -307,6 +309,58 @@ export default function ContactUsSlideover({
               <legend className="text-sm leading-5 font-medium text-gray-900 dark:text-dark-high-emphasis">
                 Topic
               </legend>
+              <div className="text-sm">
+                The USACO Guide is not affiliated with the USACO. If you
+                encounter any issues with{' '}
+                <a
+                  className="hover:underline text-blue-600 dark:text-blue-300"
+                  target="_blank"
+                  rel="noreferrer"
+                  href="http://usaco.org"
+                >
+                  usaco.org
+                </a>{' '}
+                (e.g., trouble{' '}
+                <a
+                  className="hover:underline text-blue-600 dark:text-blue-300"
+                  target="_blank"
+                  rel="noreferrer"
+                  href="https://github.com/cpinitiative/usaco-guide/issues/2854"
+                >
+                  registering for an account
+                </a>
+                ), contact the USACO contest director (
+                <a
+                  className="hover:underline text-blue-600 dark:text-blue-300"
+                  target="_blank"
+                  rel="noreferrer"
+                  href="mailto:bcdean@clemson.edu"
+                >
+                  Brian Dean
+                </a>
+                ) rather than submitting this form.
+              </div>
+              <div className="text-sm">
+                If you have any questions about{' '}
+                <a
+                  className="hover:underline text-blue-600 dark:text-blue-300"
+                  target="_blank"
+                  rel="noreferrer"
+                  href="https://joincpi.org/classes"
+                >
+                  CPI classes
+                </a>
+                , please email{' '}
+                <a
+                  className="hover:underline text-blue-600 dark:text-blue-300"
+                  target="_blank"
+                  rel="noreferrer"
+                  href="mailto:classes@joincpi.org"
+                >
+                  classes@joincpi.org
+                </a>{' '}
+                rather than submitting this form.
+              </div>
               <div className="space-y-3">
                 {topics.map((t, idx) => (
                   <div key={idx}>
@@ -317,8 +371,8 @@ export default function ContactUsSlideover({
                           type="radio"
                           name="type"
                           className="form-radio h-4 w-4 text-blue-600 dark:bg-gray-600 dark:focus:ring-offset-dark-surface"
-                          checked={topic === t}
-                          onChange={() => setTopic(t)}
+                          checked={topic === t[0]}
+                          onChange={() => setTopic(t[0])}
                         />
                       </div>
                       <div className="pl-7 text-sm leading-5">
@@ -326,8 +380,59 @@ export default function ContactUsSlideover({
                           htmlFor={`contact_topic_${idx}`}
                           className="font-medium text-gray-900 dark:text-dark-high-emphasis"
                         >
-                          {t}
+                          {t[0]} {t.length > 1 ? `(e.g., ${t[1]})` : ''}
                         </label>
+                        {topic === t[0] && t[0].includes('Mistake') && (
+                          <div>
+                            Submitting a pull request{' '}
+                            <a
+                              className="hover:underline text-blue-600 dark:text-blue-300"
+                              target="_blank"
+                              rel="noreferrer"
+                              href="https://github.com/cpinitiative/usaco-guide/pulls"
+                            >
+                              here
+                            </a>{' '}
+                            is the preferred way to fix a mistake. See{' '}
+                            <a
+                              className="hover:underline text-blue-600 dark:text-blue-300"
+                              target="_blank"
+                              rel="noreferrer"
+                              href="/general/contributing"
+                            >
+                              this module
+                            </a>{' '}
+                            for how to contribute.
+                          </div>
+                        )}
+                        {topic === t[0] && t[0].startsWith('Unclear') && (
+                          <div>
+                            You may get a faster response by reaching out on the{' '}
+                            <a
+                              className="hover:underline text-blue-600 dark:text-blue-300"
+                              href="https://forum.usaco.guide/"
+                              target="_blank"
+                              rel="noreferrer"
+                            >
+                              USACO Guide forum
+                            </a>{' '}
+                            instead.
+                          </div>
+                        )}
+                        {topic === t[0] && t[0].includes('Website Bug') && (
+                          <div>
+                            If you are reporting a loss of user data, please
+                            include the information listed{' '}
+                            <a
+                              className="hover:underline text-blue-600 dark:text-blue-300"
+                              href="https://github.com/cpinitiative/usaco-guide/issues/3396#issuecomment-1414102550"
+                              target="_blank"
+                              rel="noreferrer"
+                            >
+                              here.
+                            </a>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -352,14 +457,14 @@ export default function ContactUsSlideover({
                   rows={4}
                   className={
                     'textarea ' +
-                    (showErrors && message === ''
+                    (showErrors && message.length < 10
                       ? 'border-red-300 dark:border-red-300 text-red-900 dark:text-red-300 placeholder-red-300 focus:border-red-300 dark:focus:border-red-300  focus:ring-red-300 dark:focus:ring-red-300'
                       : '')
                   }
                   value={message}
                   onChange={e => setMessage(e.target.value)}
                 />
-                {showErrors && message === '' && (
+                {showErrors && message.length < 10 && (
                   <div className="absolute top-0 pt-2 right-0 pr-3 flex items-center pointer-events-none">
                     <svg
                       className="h-5 w-5 text-red-500"
@@ -375,9 +480,9 @@ export default function ContactUsSlideover({
                   </div>
                 )}
               </div>
-              {showErrors && message === '' && (
+              {showErrors && message.length < 10 && (
                 <p className="mt-2 text-sm text-red-600 dark:text-red-400">
-                  This field is required.
+                  Message must be at least 10 chars.
                 </p>
               )}
             </div>

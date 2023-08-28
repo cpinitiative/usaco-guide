@@ -1,0 +1,154 @@
+---
+id: ac-MultipleOf2019
+source: AtCoder Beginner Contest
+title: Multiple of 2019
+author: Maggie Liu, Brad Ma, Mohammad Nour Massri, David Zhang
+---
+
+[Official Analysis](https://img.atcoder.jp/abc164/editorial.pdf#page=10)
+
+## Explanation
+In order to store sections of the string, we can make a suffix array $S$, such that:
+
+$${S_i = s_n + 10*s_{n-1} +100*s_{n-2} + ... + {10^{n-i}} * s_{i}}$$
+
+For example, if our string was $$1234$$ and the modulus was $$3$$ (instead of $$2019$$ for the sake of simplicity), the suffix array would be
+
+$$[1234, 234, 34, 4, 0]$$
+
+**Keep in mind, that an empty suffix with is also considered.**
+
+This is useful because we can access any substring in $\mathcal{O}(1)$ time through a range query. So if $${S_0} = 1234 $$ and $${S_3=4}$$, this means $${S_0}-{S_3} = 123 * {10^1}$$ or $$1230$$.
+
+It also means that if both $${S_0}(mod$$ $$M)=$$ $${S_3}(mod$$ $$M)$$ (both suffixes have the same remainders), subtracting would lead to $${S_0}(mod$$ $$M)-$$ $${S_3}(mod$$ $$M)=0$$, meaning a substring that is divisible by $$2019$$.
+
+So with $$1234$$, $${S_0-{S_3}=1234(mod}$$ $$3)-4(mod$$ $$3)=1-1=0$$. Because they substract to zero, it means the substring from index $$0$$ to $$2$$ leads to a number divisible by the modulus. (The substring is $$123$$ which is divisble by 3).
+
+However, we would still need to go through every pair of possible suffixes $(i, j)$ which would be $\mathcal{O}(N^2)$.
+
+Instead, **we do not need to know which suffix has a certain remainder, but rather how many suffixes have that certain remainder.**
+
+To elaborate, we can take $${N \choose K}$$, and choose 2 numbers that are divisible by the same remainder of 2019, where $$N=$$ the amount of times a certain remainder occurs, and $$K=$$ 2 (because we are picking 2 indicies $$i$$ and $$j$$).
+
+Therefore, our answer is the counts of all the remainders in an array from $$0...2018$$ and $${N \choose 2}$$.
+
+So in our example with $$1234$$, our new array would look like this:
+
+$$[2, 3, 0]$$
+
+Where each index represents the count of a certain remainder.
+* There are $$2$$ suffixes with a remainder of $$0$$ when dividing by $$3$$, $$[234, 0]$$
+* There are $$3$$ suffixes with a remainder of $$1$$ when dividing by $$3$$, $$[1234, 34, 4]$$
+* And there are no suffixes with a remainder of $$2$$
+
+So, the sum of all of these numbers would be $${2 \choose 2} + {3 \choose 2}=1+3=4$$
+
+If $$N<K$$, it should be $$0$$, since there aren't enough suffixes that can make a pair.
+
+<Info title="Implementation">
+A prefix array can be utilized as well, but a suffix array is easier to implement.
+</Info>
+
+### Errichto's Video
+<YouTube id="83yW2Pp6HMk" />
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <iostream>
+using namespace std;
+
+int main() {
+	string s;
+	cin >> s;
+	int num = 0, n = s.size(), pow = 1;
+	// initializes array with initializer list
+	// explained here: https://www.learncpp.com/cpp-tutorial/arrays-part-ii/
+	int count[2019]{1};
+	for (int i = n - 1; i >= 0; i--) {
+		// find the remainder of the current number mod 2019
+		num = (num + pow * (s[i] - '0')) % 2019;
+		// increment the count of this remainder
+		count[num]++;
+		pow = pow * 10 % 2019;
+	}
+	long long ans = 0;
+	for (int i = 0; i < 2019; i++) {
+		// there are nC2 ways to pair the numbers with the same remainder
+		ans += (long long)count[i] * (count[i] - 1) / 2;
+	}
+	cout << ans << endl;
+	return 0;
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class MultipleOf2019 {
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
+		String numberString = io.next();
+		int num = 0;
+		int stringLength = numberString.length();
+		int pow = 1;
+		int[] count = new int[2019];
+		count[0] = 1;
+
+		for (int i = stringLength - 1; i >= 0; i--) {
+			// find the remainder of the current number mod 2019
+			num = (num + pow * (numberString.charAt(i) - '0')) % 2019;
+			// increment the count of this remainder
+			count[num]++;
+			pow = pow * 10 % 2019;
+		}
+		long answer = 0;
+		for (int i = 0; i < 2019; i++) {
+			// there are nC2 ways to pair the numbers with the same remainder
+			answer += (long)count[i] * (count[i] - 1) / 2;
+		}
+		io.println(answer);
+		io.close();
+	}
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+MOD = 2019
+string = input()
+
+count = [0] * MOD
+count[0] = 1
+
+cur_num = 0
+power = 1
+for c in reversed(string):
+	# find the remainder of the current number MOD 2019
+	cur_num = (int(c) * power + cur_num) % MOD
+	# increase the power of 10
+	power = (power * 10) % MOD
+	# increase the count of this remainder
+	count[cur_num] += 1
+
+ans = 0
+for rep in count:
+	# when remainder i repeats rep times then there is C(rep, 2) valid pairs
+	ans += (rep * (rep - 1)) // 2
+print(ans)
+```
+</PySection>
+</LanguageSection>

@@ -77,13 +77,11 @@ export default functions.https.onCall(
       .collection('groups')
       .doc(groupId)
       .update({
-        [getMembershipKey(
-          targetPermissionLevel
-        )]: admin.firestore.FieldValue.arrayRemove(targetUid),
+        [getMembershipKey(targetPermissionLevel)]:
+          admin.firestore.FieldValue.arrayRemove(targetUid),
 
-        [getMembershipKey(
-          newPermissionLevel
-        )]: admin.firestore.FieldValue.arrayUnion(targetUid),
+        [getMembershipKey(newPermissionLevel)]:
+          admin.firestore.FieldValue.arrayUnion(targetUid),
       });
 
     return { success: true };

@@ -1,0 +1,118 @@
+---
+id: apio-10-Commando
+source: APIO 2010
+title: Commando
+author: Dustin Miao
+---
+
+# Explanation
+
+Let $\texttt{dp}[i]$ denote the maximum effectiveness of the prefix of length $i$ of the unit. The transitions are defined as $$\texttt{dp}[i] = \max_{0 \leq j < i} \{\texttt{dp}[j] + ax^2+bx+c\}$$, where $x = \texttt{sum}(j + 1, i) = \sum_{k = j + 1}^i x_k$.
+
+Define a prefix sum array $\texttt{pre}[i] = \sum_{k = 1}^i x_k$. We can then express $x$ as $\texttt{pre}[i] - \texttt{pre}[j]$. Now evaluate the first equation with our new value of $x$:
+- $\texttt{dp}[i] = \max_{1 \leq j < i} \{\texttt{dp}[j] + ax^2+bx+c\}$
+- $\texttt{dp}[i] = \max_{1 \leq j < i} \{\texttt{dp}[j] + a[\texttt{pre}[i] - \texttt{pre}[j]]^2+b[\texttt{pre}[i] - \texttt{pre}[j]]+c\}$
+- $\texttt{dp}[i] = \max_{1 \leq j < i} \{\texttt{dp}[j] + [a\cdot\texttt{pre}[i]^2 - 2a\cdot\texttt{pre}[i]\texttt{pre}[j] + a\cdot\texttt{pre}[j]^2] + b\cdot\texttt{pre}[i]-b\cdot\texttt{pre}[j]+c\}$
+
+We will factor terms that do not depend on $j$ outside of the $\max$ statement.
+
+$$\texttt{dp}[i] = \max_{0 \leq j < i} \{\texttt{dp}[j] - 2a\cdot\texttt{pre}[i]\texttt{pre}[j] + a\cdot\texttt{pre}[j]^2 - b\cdot\texttt{pre}[j]\} + a\cdot\texttt{pre}[i]^2 + b\cdot\texttt{pre}[i] + c$$
+
+We will group terms that depend only on $j$ with $\texttt{dp}[j]$.
+
+$$\texttt{dp}[i] = \max_{0 \leq j < i} \{(\texttt{dp}[j] + a\cdot\texttt{pre}[j]^2 - b\cdot\texttt{pre}[j]) - 2a\cdot\texttt{pre}[i]\texttt{pre}[j]\} + a\cdot\texttt{pre}[i]^2 + b\cdot\texttt{pre}[i] + c$$
+
+To efficiently handle transitions in $\mathcal{O}(\log n)$ or $\mathcal{O}(1)$, we will use the convex hull optimization.
+
+**Time Complexity:** $\mathcal{O}(n \log n)$
+
+# Implementation
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+// source:
+// https://github.com/kth-competitive-programming/kactl/blob/main/content/data-structures/LineContainer.h
+// supports insertion of linear functions and querying of MAXIMUM value of x for
+// a given x for details on internal implementation, see LineContainer module
+// alternatively, learn Li Chao Tree
+inline namespace _LineContainer {
+bool _Line_Comp_State;
+struct Line {
+	// k is slope, m is intercept, p is intersection point
+	mutable ll k, m, p;
+	bool operator<(const Line &o) const {
+		return _Line_Comp_State ? p < o.p : k < o.k;
+	}
+};
+
+struct LineContainer : multiset<Line> {
+	long long div(long long a, long long b) {
+		return a / b - ((a ^ b) < 0 && a % b);
+	}
+
+	bool isect(iterator x, iterator y) {
+		if (y == end()) {
+			x->p = LLONG_MAX;
+			return false;
+		}
+		if (x->k == y->k) x->p = x->m > y->m ? LLONG_MAX : -LLONG_MAX;
+		else x->p = div(y->m - x->m, x->k - y->k);
+		return x->p >= y->p;
+	}
+
+	void add(long long k, long long m) {
+		auto z = insert({k, m, 0}), y = z++, x = y;
+		while (isect(y, z)) z = erase(z);
+		if (x != begin() && isect(--x, y)) isect(x, y = erase(y));
+		while ((y = x) != begin() && (--x)->p >= y->p) isect(x, erase(y));
+	}
+
+	long long query(long long x) {
+		assert(!empty());
+		_Line_Comp_State = 1;
+		auto l = *lower_bound({0, 0, x});
+		_Line_Comp_State = 0;
+		return l.k * x + l.m;
+	}
+};
+}  // namespace _LineContainer
+
+long long N, A, B, C;
+LineContainer lc;
+
+int main() {
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
+
+	cin >> N >> A >> B >> C;
+	long long P = 0, a, dp = 0;
+	for (int i = 1; i <= N; i++) {
+		lc.add(-2 * A * P, dp + A * P * P - B * P);
+		cin >> a;
+		P += a;
+		dp = lc.query(P) + A * P * P + B * P + C;
+	}
+	cout << dp << '\n';
+}
+```
+</CPPSection>
+
+</LanguageSection>
+
+<Info title="Alternative Solution">
+
+The above solution uses [Line Container](/adv/line-container?lang=cpp). Using a deque, it is possible to solve this problem in $\mathcal{O}(n)$ time although this is not necessary. See the [Convex Hull Trick](/plat/convex-hull-trick?lang=cpp) for more details.
+
+</Info>
+
+<IncompleteSection>
+
+- Linear time solution using deque and convex hull trick
+
+</IncompleteSection>

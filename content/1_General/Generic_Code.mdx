@@ -42,11 +42,9 @@ competitor.
 </Resources>
 
 ```cpp
-//CodeSnip{CPP Short Template}
+// CodeSnip{CPP Short Template}
 
-int main() {
-	setIO();
-}
+int main() { setIO(); }
 ```
 
 This module will cover many of the features used in the code above.
@@ -110,31 +108,27 @@ relevant member functions.
 using namespace std;
 
 class Human {
-	private:  // internal properties
-		int body_temp;
-		int temper;
-		string name;
-	
-	public:  // external reactions
-		string get_name() {
-			return name;
-		}
+  private:  // internal properties
+	int body_temp;
+	int temper;
+	string name;
 
-		string get_feeling() {
-			if (body_temp >= 97 && body_temp <= 99) {
-				return "good";
-			}
-			return "bad";
-		}
+  public:  // external reactions
+	string get_name() { return name; }
 
-		string get_emotion() {
-			if (temper <= 10) {
-				return "sad";
-			} else if (temper <= 30) {
-				return "happy";
-			}
-			return "angry";
+	string get_feeling() {
+		if (body_temp >= 97 && body_temp <= 99) { return "good"; }
+		return "bad";
+	}
+
+	string get_emotion() {
+		if (temper <= 10) {
+			return "sad";
+		} else if (temper <= 30) {
+			return "happy";
 		}
+		return "angry";
+	}
 };
 ```
 
@@ -161,31 +155,27 @@ declaration itself:
 using namespace std;
 
 class Human {
-	private:  // internal properties
-		int body_temp = 98;
-		int temper = 25;
-		string name = "Sal";
-	
-	public:  // external reactions
-		string get_name() {
-			return name;
-		}
+  private:  // internal properties
+	int body_temp = 98;
+	int temper = 25;
+	string name = "Sal";
 
-		string get_feeling() {
-			if (body_temp >= 97 && body_temp <= 99) {
-				return "good";
-			}
-			return "bad";
-		}
+  public:  // external reactions
+	string get_name() { return name; }
 
-		string get_emotion() {
-			if (temper <= 10) {
-				return "sad";
-			} else if (temper <= 30) {
-				return "happy";
-			}
-			return "angry";
+	string get_feeling() {
+		if (body_temp >= 97 && body_temp <= 99) { return "good"; }
+		return "bad";
+	}
+
+	string get_emotion() {
+		if (temper <= 10) {
+			return "sad";
+		} else if (temper <= 30) {
+			return "happy";
 		}
+		return "angry";
+	}
 };
 ```
 
@@ -195,11 +185,9 @@ class).
 
 ```cpp
 int main() {
-    Human sal;
-	cout << sal.get_name()
-		 << " feels " << sal.get_feeling()
-		 << " and is " << sal.get_emotion()
-		 << endl;
+	Human sal;
+	cout << sal.get_name() << " feels " << sal.get_feeling() << " and is "
+	     << sal.get_emotion() << endl;
 }
 ```
 
@@ -219,45 +207,39 @@ the variables `body_temperature` and `temper`, which gives us some control over
 using namespace std;
 
 class Human {
-	private:  // internal properties
-		int body_temp;
-		int temper;
-		string name;
-	
-	public:  // external reactions
-		Human(string name_, int body_temp_, int temper_) {
-			name = name_;
-			body_temp = body_temp_;
-			temper = temper_;
-		}
+  private:  // internal properties
+	int body_temp;
+	int temper;
+	string name;
 
-		string get_name() {
-			return name;
-		}
+  public:  // external reactions
+	Human(string name_, int body_temp_, int temper_) {
+		name = name_;
+		body_temp = body_temp_;
+		temper = temper_;
+	}
 
-		string get_feeling() {
-			if (body_temp >= 97 && body_temp <= 99) {
-				return "good";
-			}
-			return "bad";
-		}
+	string get_name() { return name; }
 
-		string get_emotion() {
-			if (temper <= 10) {
-				return "sad";
-			} else if (temper <= 30) {
-				return "happy";
-			}
-			return "angry";
+	string get_feeling() {
+		if (body_temp >= 97 && body_temp <= 99) { return "good"; }
+		return "bad";
+	}
+
+	string get_emotion() {
+		if (temper <= 10) {
+			return "sad";
+		} else if (temper <= 30) {
+			return "happy";
 		}
+		return "angry";
+	}
 };
 
 int main() {
-    Human sal("Sal", 98, 25);
-	cout << sal.get_name()
-		 << " feels " << sal.get_feeling()
-		 << " and is " << sal.get_emotion()
-		 << endl;
+	Human sal("Sal", 98, 25);
+	cout << sal.get_name() << " feels " << sal.get_feeling() << " and is "
+	     << sal.get_emotion() << endl;
 }
 ```
 
@@ -269,10 +251,8 @@ and emotions for us without having to be rewritten.
 ```cpp
 // Prints out the condition of a human to cout
 void condition(Human h) {
-	cout << h.get_name()
-		 << " feels " << h.get_feeling()
-		 << " and is " << h.get_emotion()
-		 << endl;
+	cout << h.get_name() << " feels " << h.get_feeling() << " and is "
+	     << h.get_emotion() << endl;
 }
 
 int main() {
@@ -292,10 +272,8 @@ significantly faster than the first; using the argument name as the variable
 itself also becomes permissible and is guaranteed defined behavior:
 
 ```cpp
-Human(string name, int body_temp, int temper) :
-		name(name),
-		body_temp(body_temp),
-		temper(temper) { }
+Human(string name, int body_temp, int temper)
+    : name(name), body_temp(body_temp), temper(temper) {}
 ```
 
 ## Structs
@@ -310,21 +288,17 @@ struct Human {
 	int body_temp;
 	int temper;
 	string name;
-	
+
 	Human(string name_, int body_temp_, int temper_) {
 		name = name_;
 		body_temp = body_temp_;
 		temper = temper_;
 	}
 
-	string get_name() {
-		return name;
-	}
+	string get_name() { return name; }
 
 	string get_feeling() {
-		if (body_temp >= 97 && body_temp <= 99) {
-			return "good";
-		}
+		if (body_temp >= 97 && body_temp <= 99) { return "good"; }
 		return "bad";
 	}
 
@@ -346,11 +320,11 @@ integrated with the surrounding code, and we can do manipulations like the follo
 int main() {
 	// Initialize Sal
 	Human sal("Sal", 98, 25);
-	condition(sal);  // Get Sal's initial condition
-	sal.name = "Sally";  // Sal's friends sometimes call him Sally
+	condition(sal);       // Get Sal's initial condition
+	sal.name = "Sally";   // Sal's friends sometimes call him Sally
 	sal.body_temp = 102;  // Sal gets sick
-	sal.temper = 40;  // He develops a bad temper due to his sickness
-	condition(sal);  // Now we get Sal's new condition
+	sal.temper = 40;      // He develops a bad temper due to his sickness
+	condition(sal);       // Now we get Sal's new condition
 }
 ```
 
@@ -372,13 +346,13 @@ of classes and structs, integral to generic code.
 <Resources>
 	<Resource
 		source="LCPP"
-		title="13.1 - Function Templates"
-		url="https://www.learncpp.com/cpp-tutorial/131-function-templates/"
+		title="8.14 - Function Templates"
+		url="https://www.learncpp.com/cpp-tutorial/function-templates/"
 	/>
 	<Resource
 		source="LCPP"
-		title="13.3 - Template Classes"
-		url="https://www.learncpp.com/cpp-tutorial/133-template-classes/"
+		title="19.1 - Template Classes"
+		url="https://www.learncpp.com/cpp-tutorial/template-classes/"
 	/>
 </Resources>
 
@@ -421,8 +395,7 @@ Lo and behold, we have the **template** to come to our rescue. We can use the fo
 define the struct normally. In particular, if we use a class `T`, we achieve:
 
 ```cpp
-template<class T>
-struct Point3D {
+template <class T> struct Point3D {
 	T x;
 	T y;
 	T z;
@@ -431,9 +404,8 @@ struct Point3D {
 Point3D<int> p1{1, 2, 3};
 Point3D<int> p2{3, 4, 5};
 Point3D<double> p3{1.1, 2.2, 3.3};
-Point3D<long long> p4{
-	9223372036854775807, 9223372036854775807, 9223372036854775807
-};
+Point3D<long long> p4{9223372036854775807, 9223372036854775807,
+                      9223372036854775807};
 ```
 
 It would be narrow-minded to think that templates are in any way limited to
@@ -445,8 +417,7 @@ take a look at this function `ckmin`:
  * If b is less than a, this changes the value of a to that of b
  * and returns true. If not, the function simply returns false.
  */
-template<class T>
-bool ckmin(T& a, const T& b) {
+template <class T> bool ckmin(T &a, const T &b) {
 	if (b < a) {
 		a = b;
 		return true;
@@ -461,10 +432,7 @@ but we can easily write a templated function to fix this, handling all types
 of containers at once:
 
 ```cpp
-template<class T>
-int sz(T container) {
-	return (int) container.size();
-}
+template <class T> int sz(const T &container) { return (int)container.size(); }
 ```
 
 You can call this through typing `sz<vector<int>>(v)` where `v` is a
@@ -477,8 +445,8 @@ classes? Consider the below secondary pair comparator struct as an example:
 
 ```cpp
 struct CPS {
-	template<class T, class U>
-	bool operator() (const pair<T, U>& a, const pair<T, U>& b) {
+	template <class T, class U>
+	bool operator()(const pair<T, U> &a, const pair<T, U> &b) {
 		return make_pair(a.second, a.first) < make_pair(b.second, b.first);
 	}
 };
@@ -508,7 +476,7 @@ templates under the hood.
 <Resources>
 	<Resource
 		source="LCPP"
-		title="6.13 - Typedefs and type aliases"
+		title="8.7 - Typedefs and type aliases"
 		url="https://www.learncpp.com/cpp-tutorial/typedefs-and-type-aliases/"
 		starred
 	/>
@@ -553,7 +521,7 @@ and then just live with `cout`. But what if I was using strings and wanted to
 type neither `std::string` nor `string`? I could use `using` twice to fix this:
 
 ```cpp
-using std::string;  // Unnecessary if already using namespace std
+using std::string;   // Unnecessary if already using namespace std
 using str = string;  // Use str as an alias for string
 ```
 
@@ -587,14 +555,14 @@ instance, if we want to be able to write `arr<int, 6>` instead of
 `std::array<int, 6>`, we write:
 
 ```cpp
-template<class T, int SZ> using arr = std::array<T, SZ>;
+template <class T, int SZ> using arr = std::array<T, SZ>;
 ```
 
 As another example, if we want to use `ai` to mean integer array, we can make
 constructions like `ai<6>` work as well:
 
 ```cpp
-template<int SZ> using ai = std::array<int, SZ>;
+template <int SZ> using ai = std::array<int, SZ>;
 ```
 
 In general, it is important that `using` declarations have strong **scope**
@@ -667,7 +635,7 @@ This example defines `MOD` as `1e9 + 7` by find and replace.
 #define MOD 1e9 + 7
 
 int main() {
-	cout << int(MOD) << "\n";  // outputs 1000000007
+	cout << int(MOD) << "\n";      // outputs 1000000007
 	cout << int(MOD * 2) << "\n";  // outputs 1000000014
 	cout << int(2 * MOD) << "\n";  // outputs 2000000007
 }
@@ -678,9 +646,7 @@ But that's obviously not a good idea. A better alternative is the following:
 ```cpp
 const int MOD = 1e9 + 7;
 
-int main() {
-	cout << MOD << "\n";
-}
+int main() { cout << MOD << "\n"; }
 ```
 
 <Resources>
@@ -698,9 +664,7 @@ Also, `using` is preferable to `#define`. For example, the following code with
 #define ll long long
 // using ll = long long;
 
-int main() {
-	cout << ll(1e18);
-}
+int main() { cout << ll(1e18); }
 ```
 
 The takeaway from this is to avoid `#define` when possible. Of course, some competitive
@@ -711,7 +675,7 @@ programmers use macros extensively. Some examples are presented below.
 ### Pairs
 
 ```cpp
-using pi = pair<int,int>;
+using pi = pair<int, int>;
 #define mp make_pair
 #define f first
 #define s second
@@ -733,8 +697,8 @@ shown by this example:
 
 ```cpp
 vi x;
-cout << x.size() - 1 << "\n"; // otutputs 18446744073709551615 (incorrect)
-cout << sz(x) - 1 << "\n"; // outputs -1 (correct)
+cout << x.size() - 1 << "\n";  // otutputs 18446744073709551615 (incorrect)
+cout << sz(x) - 1 << "\n";     // outputs -1 (correct)
 ```
 
 `all(v)` makes sorting part or all of a vector a bit shorter.
@@ -760,16 +724,15 @@ and three-dimensional in others. I can do this like so:
 ```cpp
 const bool d2 = false;  // false for 2D, true for 3D
 
-template<class T>
-struct Point {
-	#if(d2)
-		T x;
-		T y;
-	#else
-		T x;
-		T y;
-		T z;
-	#endif
+template <class T> struct Point {
+#if (d2)
+	T x;
+	T y;
+#else
+	T x;
+	T y;
+	T z;
+#endif
 };
 ```
 
@@ -779,16 +742,15 @@ see whether or not a macro is defined via `#define`.
 ```cpp
 // #define 2D  // Uncomment to make Point 2D
 
-template<class T>
-struct Point {
-	#ifdef 2D
-		T x;
-		T y;
-	#else
-		T x;
-		T y;
-		T z;
-	#endif
+template <class T> struct Point {
+#ifdef 2D
+	T x;
+	T y;
+#else
+	T x;
+	T y;
+	T z;
+#endif
 }
 ```
 
@@ -796,21 +758,21 @@ There are many clever applications of this, including versioning. Importantly,
 if we want code to run differently for different versions of C++, we can write:
 
 ```cpp
-#if(__cplusplus < 201703L)
-	/**
-	 * "Clamps" v between the values of lo and hi if it's
-	 * out of the bounds defined by those two values.
-	 */
-	template<class T>
-	constexpr const T& clamp(const T& v, const T& lo, const T& hi) {
-		assert(lo <= hi);
-		if (v < lo) {
-			return lo;
-		} else if (hi < v) {
-			return hi;
-		}
-		return v;
+#if (__cplusplus < 201703L)
+/**
+ * "Clamps" v between the values of lo and hi if it's
+ * out of the bounds defined by those two values.
+ */
+template <class T>
+constexpr const T &clamp(const T &v, const T &lo, const T &hi) {
+	assert(lo <= hi);
+	if (v < lo) {
+		return lo;
+	} else if (hi < v) {
+		return hi;
 	}
+	return v;
+}
 #endif
 ```
 
@@ -822,19 +784,20 @@ Then, we can invoke `using` declarations to use the whole namespace.
 
 ```cpp
 namespace test {
-	const string greeting = "hi";
-	namespace test1 {
-		const int time = 2;
-	} using namespace test1;
-
-	template<class T> struct TestDS {
-		T s;
-
-		void add(T x) { s += x; }
-
-		T get() { return s; }
-	};
+const string greeting = "hi";
+namespace test1 {
+const int time = 2;
 }
+using namespace test1;
+
+template <class T> struct TestDS {
+	T s;
+
+	void add(T x) { s += x; }
+
+	T get() { return s; }
+};
+}  // namespace test
 ```
 
 These are fairly self-explanatory, but a more rare feature of C++11 is the
@@ -844,7 +807,7 @@ access.
 
 ```cpp
 inline namespace test {
-	const string greeting = "hi";
+const string greeting = "hi";
 }
 ```
 
@@ -854,18 +817,18 @@ removed it in the new version `v2`.
 
 ```cpp
 namespace v1 {
-	const string buggy_feature = "bugs";
-	const string greeting = "hi";
-}
+const string buggy_feature = "bugs";
+const string greeting = "hi";
+}  // namespace v1
 
 inline namespace v2 {
-	// removed the buggy_feature from this new version
-	const string buggy_feature = "what buggy feature?";
-	const string greeting = "hi";
-}
+// removed the buggy_feature from this new version
+const string buggy_feature = "what buggy feature?";
+const string greeting = "hi";
+}  // namespace v2
 
 int main() {
-	cout << buggy_feature << "\n";  // outputs "what buggy feature?"
+	cout << buggy_feature << "\n";      // outputs "what buggy feature?"
 	cout << v1::buggy_feature << "\n";  // outputs "bugs"
 }
 ```

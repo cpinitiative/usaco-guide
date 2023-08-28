@@ -4,53 +4,58 @@ import os
 # with open("template.cpp","r") as f:
 # 	template = "".join(f.readlines())
 
-def fraction_div(spaces,num):
+
+def fraction_div(spaces, num):
 	ans = 0
 	for x in spaces:
-		if x%num == 0:
+		if x % num == 0:
 			ans += 1
-	return ans/len(spaces)
+	return ans / len(spaces)
 
-def replace_prefix(line,num_spaces):
+
+def replace_prefix(line, num_spaces):
 	ind = 0
-	while ind < len(line) and line[ind] == ' ':
+	while ind < len(line) and line[ind] == " ":
 		ind += 1
-	res = ''
+	res = ""
 	cur = 0
-	while cur+num_spaces <= ind:
-		res += '\t'
+	while cur + num_spaces <= ind:
+		res += "\t"
 		cur += num_spaces
 	while cur < ind:
-		res += ' '
+		res += " "
 		cur += 1
 	res += line[ind:]
 	return res
+
 
 def modify(lines):
 	new_lines = lines[:]
 	# found_impl = False
 	# found_code = False
 	# found_complexity = False
-	for index,line in enumerate(lines):
-		if line.startswith("## Implementation") and not lines[index+1].startswith("\n"):
-			new_lines[index] = line+"\n"
+	for index, line in enumerate(lines):
+		if line.startswith("## Implementation") and not lines[index + 1].startswith(
+			"\n"
+		):
+			new_lines[index] = line + "\n"
 	# for index,line in enumerate(lines):
 	# 	line = line.replace("## C++ Implementation","## Implementation")
 	# 	line = line.replace("## Java Implementation","## Implementation")
 	# 	line = line.replace("## Python Implementation","## Implementation")
 	# 	new_lines[index] = line
-		# if line.startswith("## Implementation"):
-		# 	found_impl = True
-		# if line.startswith("```"):
-		# 	found_code = True
-		# if "\\mathcal{O}" in line and len(line) < 50:
-		# 	if not "Complexity:" in line:
-		# 		print("didn't find complexity")
-		# 	if not line.startswith("**"):
-		# 		print("didn't find bold")
-		# 	if not line.endswith("$\n"):
-		# 		print("didn't find $")
-		# 	# found_complexity = True
+	# if line.startswith("## Implementation"):
+	# 	found_impl = True
+	# if line.startswith("```"):
+	# 	found_code = True
+	# if "\\mathcal{O}" in line and len(line) < 50:
+	# 	if not "Complexity:" in line:
+	# 		print("didn't find complexity")
+	# 	if not line.startswith("**"):
+	# 		print("didn't find bold")
+	# 	if not line.endswith("$\n"):
+	# 		print("didn't find $")
+	# 	# found_complexity = True
 	# if found_complexity:
 	# 	print("FOUND COMPLEXITY")
 	# if found_code and (not found_impl or not found_complexity)
@@ -107,15 +112,15 @@ def modify(lines):
 	return new_lines
 
 
-for root,dirs,files in os.walk("."):
+for root, dirs, files in os.walk("."):
 	for file in files:
 		if file.endswith(".mdx"):
-			filename = os.path.join(root,file)
-			print("FILE",filename)
-			with open(filename,"r") as f:
+			filename = os.path.join(root, file)
+			print("FILE", filename)
+			with open(filename, "r") as f:
 				lines = f.readlines()
 				new_lines = modify(lines)
 			if lines != new_lines:
 				print("WRITING")
-				with open(filename,"w") as f:
+				with open(filename, "w") as f:
 					f.write("".join(new_lines))

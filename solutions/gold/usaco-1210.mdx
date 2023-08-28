@@ -1,0 +1,229 @@
+---
+id: usaco-1210
+source: USACO Gold 2022 February
+title: Cow Camp
+author: Aakash Gokhale
+---
+
+[Official Analysis](http://usaco.org/current/data/sol_prob2_gold_feb22.html)
+
+## Solution
+We can subtract $1$ from $T$ because we will always get the sample test case and add it to our final answer.
+
+
+Let $E_x$ be the expected value after at most $x$ submissions. We are trying to find $E_K$. To get the expected value of the final submission, we can find the relation between $E_x$ and $E_{x - 1}$.
+
+To do this we can find $E_x$ in terms of $E_{x -1}$ and $p_i$ which is the probability of getting exactly $i$ test cases.
+
+After $x-1$ submissions, you expect to get $E_{x-1}$ test cases. There are three posibilites if you decide to resubmit.
+
+Case 1: If you get less test cases than $E_{x-1}$, you don't want to resubmit.
+
+Case 2: If you get more test cases than $E_{x-1}$, you do want to resubmit.
+
+Case 3: If you get the same number of test cases as $E_{x-1}$, it doesn't matter if you resubmit. In this case it wouldn't hurt to resubmit or stay the same so we can combine this with Case 1 (or Case 2).
+
+The probablity that you get less than or equal to $E_{x-1}$ test cases is ${\sum_{i=0}}^{E_{x - 1}} p_i$. We can multiply this by the $E_{x-1}$ to get the expected value of $E_x$ if we stop before the $x$th submission and we get $E_{x-1} \cdot {\sum_{i=0}}^{E_{x - 1}} p_i$
+
+The probablity that you get more than $E_{x-1}$ test cases is ${\sum_{i=\lfloor E_{x-1} \rfloor + 1}}^T p_i$. The expected value of getting more than $E_{x-1}$ test cases is the sum of $i$ from ${\lfloor E_{x-1} \rfloor + 1}$ to $T$ of the probability of getting $i$ test cases multiplied by $i$ or ${\sum_{\lfloor E_{x-1} \rfloor + 1}}^T p_i i$.
+
+In addition, these formulas for both cases can help us mathematically prove that you can merge Case 3 with either Case 1 or 2. The only difference between both cases is whether the $i = E_{x-1}$ will belong to the first or second summation. If we merge it with Case 1, the term of the summation will become $E_{x-1} \cdot p_{E_{x-1}}$. If we merge it with Case 3, it would also become $E_{x-1} \cdot p_{E_{x-1}}$. This happens because $p_i \cdot E_{x-1} = p_i \cdot i$ is only satisfied when $i=E_{x-1}$.
+
+Adding the two parts gives our final expression for the expected value:
+
+$$E_x = E_{x -1} \cdot \sum_{i=0}^{\lfloor E_{x - 1} \rfloor} p_i + \sum_{i=\lfloor E_{x - 1} + 1 \rfloor}^{T} i p_i$$
+
+We can solve the problem by simulating each test case and recalculating the summations for each test case in $O(TK)$. However, this can easily be sped up to $O(T^2 + K)$ by pre-calculating $p_i$ using Pascal's identity and by precalculating the prefix sums of both $p_i$ and $p_i i$ so we can get the values of the summations in $O(1)$ instead of $O(T)$. This gives us the first $9$ test cases but is not good enough.
+
+In order to fully solve the question, we need to remove the $O(K)$ factor. We can do this if we are able to process multiple values of $E_x$ in a single step.
+
+Claim: We can process multiple queries if the values of ${\sum_{i=0}}^{\lfloor E_{x - 1} \rfloor} p_i$ and ${\sum_{i=\lfloor E_{x - 1} + 1 \rfloor}}^{T} i p_i$ don't change between queries.
+
+Proof:
+Let $a = {\sum_{i=0}}^{\lfloor E_{x - 1} \rfloor} p_i$ and $b = {\sum_{i=\lfloor E_{x - 1} + 1 \rfloor}}^{T} i p_i$. Then our formula becomes
+
+$E_x = E_{x - 1} \cdot a + b$
+
+Since $a$ and $b$ are constant, we can extend this formula and get
+
+$E_x = a \cdot (a \cdot ... (a \cdot E_{x - k} + b) ... + b) + b$
+
+Simplifying gives us a geometric sequence.
+
+$E_x = a^k \cdot E_{x - k} + a^{k - 1}b + a^{k - 2} + ... + b$
+
+We can rewrite the second through last term using the formula for a geometric series.
+
+$E_x = a^k \cdot E_{x - k} + \frac{b(a^k - 1)}{a - 1}$
+
+Here is more information about [geometric series](https://artofproblemsolving.com/wiki/index.php/Geometric_sequence).
+
+However, the values of $a$ and $b$ won't always remain the same. We can binary search on the max number of submissions Bessie can make before the values of $a$ and $b$ change. $a$ and $b$ will change when the value of ${\lfloor E_x \rfloor}$ changes. The conditions for binary search are fullfilled because $E_x$ is a non-decreasing function.
+
+Since there are at most $T$ values of $E_x$, $a$ and $b$ can change at most $T$ times so the resulting time complexity will be $O(T^2 + T \log K)$.
+
+## Implementation
+**Time Complexity:** $\mathcal{O}(T^2 + T \log K)$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using ll = long long;
+using db = double;
+
+const int MAXT = 1000;
+
+db prob[MAXT + 1][MAXT + 1];
+db pref_prob[MAXT + 1];
+db pref_exp[MAXT + 1];
+
+// Function to skip ahead x submissions with constants a and b with the current
+// expected value set to E.
+db skip_submissions(db a, db b, db E, ll x) {
+	return pow(a, x) * E + b * (pow(a, x) - 1) / (a - 1);
+}
+
+int main() {
+	int T;
+	ll K;
+	cin >> T >> K;
+
+	// Subtract sample test case
+	T--;
+
+	// Precompute probablity of choosing exactly i test cases using Pascal's
+	// Identity.
+	prob[0][0] = 1;
+	for (int i = 1; i <= T; i++) {
+		prob[i][0] = prob[i - 1][0] / 2;
+		for (int j = 1; j <= T; j++)
+			prob[i][j] = (prob[i - 1][j] + prob[i - 1][j - 1]) / 2;
+	}
+
+	// Create prefix sum of probablity
+	pref_prob[0] = prob[T][0];
+	for (int i = 1; i <= T; i++) pref_prob[i] = pref_prob[i - 1] + prob[T][i];
+
+	// Create prefix sum of expected value
+	pref_exp[0] = 0;
+	for (int i = 1; i <= T; i++) pref_exp[i] = pref_exp[i - 1] + prob[T][i] * i;
+
+	db E = 0;
+	while (K != 0) {
+		/*
+		 * Find the floor of the current expected value
+		 * which acts as the limit of how many submissions we can skip forward.
+		 */
+		ll cross = (ll)floor(E);
+
+		// Find constants a and b
+		db a = pref_prob[cross], b = pref_exp[T] - pref_exp[cross];
+
+		// Binary search to find how submissions we can skip forward
+		ll lo = 1;
+		ll hi = 1e9;
+		while (lo < hi) {
+			ll mid = (lo + hi + 1) / 2;
+			// Check if 'mid' submissions crosses the 'cross' limit.
+			if (floor(skip_submissions(a, b, E, mid)) == cross) {
+				lo = mid;
+			} else {
+				hi = mid - 1;
+			}
+		}
+		/*
+		 * Skip forward 'lo' submissions or the remaining amount of submissions
+		 * if there are less than 'lo' submissions left.
+		 */
+		lo = min(lo, K);
+		E = skip_submissions(a, b, E, lo);
+		K -= lo;
+	}
+	cout << fixed << setprecision(20);
+	cout << E + 1 << endl;
+}
+```
+
+</CPPSection>
+
+<PySection>
+```py
+import math
+
+
+def skip_submissions(a: float, b: float, e: float, x: float) -> float:
+	"""
+	Function that skips forward x submission
+	with constants a and b and current expected value e
+	based on the geometric series formula
+	"""
+	return pow(a, x) * e + b * (pow(a, x) - 1) / (a - 1)
+
+
+t, k = map(int, input().split())
+
+# Subtract sample
+t -= 1
+
+# Precompute probablility of getting i test cases using pascal's identity
+prob = [[0 for i in range(t + 1)] for j in range(t + 1)]
+prob[0][0] = 1
+for i in range(1, t + 1):
+	prob[i][0] = prob[i - 1][0] / 2
+
+	for j in range(1, t + 1):
+		prob[i][j] = (prob[i - 1][j] + prob[i - 1][j - 1]) / 2
+
+# Prefix sums for probablity
+pref_prob = [0 for i in range(t + 1)]
+pref_prob[0] = prob[t][0]
+for i in range(1, t + 1):
+	pref_prob[i] = pref_prob[i - 1] + prob[t][i]
+
+# Prefix sums for expected value
+pref_exp = [0 for i in range(t + 1)]
+pref_exp[0] = 0
+for i in range(1, t + 1):
+	pref_exp[i] = pref_exp[i - 1] + prob[t][i] * i
+
+e = 0
+while k != 0:
+	"""
+	Find the floor of the current expected value
+	which is also the limit on how many submissions we can skip forward
+	"""
+	cross = math.floor(e)
+
+	# Find a and b using the precomputed prefix sums
+	a = pref_prob[cross]
+	b = pref_exp[t] - pref_exp[cross]
+
+	# Binary search to see how many submissions we can skip forward
+	lo = 1
+	hi = 10**9
+	while lo < hi:
+		mid = math.floor((lo + hi + 1) / 2)
+		if math.floor(skip_submissions(a, b, e, mid)) == cross:
+			lo = mid
+		else:
+			hi = mid - 1
+
+	"""
+	Skip forward lo submissions
+	If the remaining number of submissions is less than lo,
+	skip forward for the remaining submissions
+	"""
+	lo = min(lo, k)
+	e = skip_submissions(a, b, e, lo)
+	k -= lo
+
+print(e + 1)
+```
+</PySection>
+
+</LanguageSection>

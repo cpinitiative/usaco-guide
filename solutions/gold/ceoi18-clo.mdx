@@ -1,0 +1,186 @@
+---
+id: ceoi18-clo
+source: CEOI 18
+title: Cloud Computing
+author: Kevin Sheng
+---
+
+[Official Analysis](https://ceoi2018.pl/wp-content/uploads/2018/08/solutions_day1.pdf#page=10)
+
+It might be tempting at first to do a 2-dimensional DP with the number of computer purchases and the number of customer orders, but that would result in a nasty and inefficient transition.
+
+Instead, let's try grouping the two into a single array of "transactions". Each transation has three attributes: the change in the number of cores, the associated clock rate of the cores, and the change in the total profits.
+For example, the example case would have a transaction array that looks like this:
+
+<center>
+<table className="text-center">
+	<tbody>
+		<tr>
+			<td>Core change</td>
+			<td>Clock rate</td>
+			<td>Profit change</td>
+		</tr>
+		<tr>
+			<td>4</td>
+			<td>2200</td>
+			<td>-700</td>
+		</tr>
+		<tr>
+			<td>2</td>
+			<td>1800</td>
+			<td>-10</td>
+		</tr>
+		<tr>
+			<td>20</td>
+			<td>2550</td>
+			<td>-9999</td>
+		</tr>
+		<tr>
+			<td>4</td>
+			<td>2000</td>
+			<td>-750</td>
+		</tr>
+		<tr>
+			<td>-1</td>
+			<td>1500</td>
+			<td>300</td>
+		</tr>
+		<tr>
+			<td>-6</td>
+			<td>1900</td>
+			<td>1500</td>
+		</tr>
+		<tr>
+			<td>-3</td>
+			<td>2400</td>
+			<td>4550</td>
+		</tr>
+	</tbody>
+</table>
+</center>
+
+Now we sort the array by clock rate in reverse, resulting in this:
+
+<center>
+<table className="text-center">
+	<tbody>
+		<tr>
+			<td>Core change</td>
+			<td>Clock rate</td>
+			<td>Profit change</td>
+		</tr>
+		<tr>
+			<td>20</td>
+			<td>2550</td>
+			<td>-9999</td>
+		</tr>
+		<tr>
+			<td>-3</td>
+			<td>2400</td>
+			<td>4550</td>
+		</tr>
+		<tr>
+			<td>4</td>
+			<td>2200</td>
+			<td>-700</td>
+		</tr>
+		<tr>
+			<td>4</td>
+			<td>2000</td>
+			<td>-750</td>
+		</tr>
+		<tr>
+			<td>-6</td>
+			<td>1900</td>
+			<td>1500</td>
+		</tr>
+		<tr>
+			<td>2</td>
+			<td>1800</td>
+			<td>-10</td>
+		</tr>
+		<tr>
+			<td>-1</td>
+			<td>1500</td>
+			<td>300</td>
+		</tr>
+	</tbody>
+</table>
+</center>
+
+Notice that in this order, as long as a customer order comes after a computer purchase, the computer will be able to satisfy the order as long as there are enough cores.
+
+This drastically simplifies the problem. Now we can simply define $\texttt{max\_profits}[t][c]$ as the maximum profit we can gain from the first $t$ transactions given that we have $c$ cores left.
+Given this, the rest of the problem is simple knapsack.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <algorithm>
+#include <iostream>
+#include <vector>
+
+using std::cout;
+using std::endl;
+using std::vector;
+
+struct Transaction {
+	int cores;
+	int rate;
+	int price;
+};
+
+int main() {
+	vector<Transaction> poss_transactions;
+	int max_computers = 0;
+	int comp_num;
+	std::cin >> comp_num;
+	for (int c = 0; c < comp_num; c++) {
+		Transaction trans;
+		std::cin >> trans.cores >> trans.rate >> trans.price;
+		trans.price = -trans.price;
+		poss_transactions.push_back(trans);
+		max_computers += trans.cores;
+	}
+	int order_num;
+	std::cin >> order_num;
+	for (int o = 0; o < order_num; o++) {
+		Transaction trans;
+		std::cin >> trans.cores >> trans.rate >> trans.price;
+		trans.cores = -trans.cores;
+		poss_transactions.push_back(trans);
+	}
+	/*
+	 * if we sort like this, then the entire clock rate issue
+	 * goes away as long as we process them in order
+	 */
+	std::sort(poss_transactions.begin(), poss_transactions.end(),
+	          [](const Transaction &a, const Transaction &b) -> bool {
+		          return a.rate != b.rate ? a.rate > b.rate : a.price < b.price;
+	          });
+
+	/*
+	 * max_profits[t][c] = the maximum profit we can gain from the first
+	 * t transactions given that we have c cores left
+	 */
+	vector<long long> max_profits(max_computers + 1, INT64_MIN);
+	max_profits[0] = 0;
+	for (const Transaction &t : poss_transactions) {
+		vector<long long> new_max(max_profits);
+		for (int c = 0; c <= max_computers; c++) {
+			int prev_comp = c - t.cores;
+			if (0 <= prev_comp && prev_comp <= max_computers &&
+			    max_profits[prev_comp] != INT64_MIN) {
+				new_max[c] =
+				    std::max(new_max[c], max_profits[prev_comp] + t.price);
+			}
+		}
+		max_profits = new_max;
+	}
+	cout << *std::max_element(max_profits.begin(), max_profits.end()) << endl;
+}
+```
+
+</CPPSection>
+</LanguageSection>

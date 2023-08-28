@@ -1,0 +1,260 @@
+---
+id: usaco-568
+source: USACO Bronze 2015 December
+title: Speeding
+author: Jesse Choe, Kevin Sheng, Maggie Liu
+---
+
+[Official Analysis (Java)](http://www.usaco.org/current/data/sol_speeding_bronze_dec15.html)
+
+## Video Solution
+By Maggie Liu
+
+<YouTube id="mtTTKf-3xSM" />
+
+<Spoiler title="Video Solution Code">
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <cstdio>
+#include <iostream>
+using namespace std;
+
+int main() {
+	freopen("speeding.in", "r", stdin);
+	freopen("speeding.out", "w", stdout);
+	int n, m;
+	cin >> n >> m;
+	int limit[100], bessie[100];
+	int length, speed, pos = 0;
+	for (int i = 0; i < n; i++) {
+		cin >> length >> speed;
+		// for each of the next length positions, set the speed limit
+		for (int j = pos; j < pos + length; j++) { limit[j] = speed; }
+		pos += length;
+	}
+
+	pos = 0;
+	for (int i = 0; i < m; i++) {
+		cin >> length >> speed;
+		// for each of the next length positions, set bessie's speed
+		for (int j = pos; j < pos + length; j++) { bessie[j] = speed; }
+		pos += length;
+	}
+
+	int max_over = 0;
+	for (int i = 0; i < 100; i++) {
+		// take the maximum bessie exceeded the limit by over all positions
+		max_over = max(max_over, bessie[i] - limit[i]);
+	}
+	cout << max_over << endl;
+	return 0;
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class SpeedingTicket {
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio("speeding");
+		int n = io.nextInt(), m = io.nextInt();
+		int length, speed, pos = 0;
+		int[] limit = new int[100], bessie = new int[100];
+		for (int i = 0; i < n; i++) {
+			length = io.nextInt();
+			speed = io.nextInt();
+			// for each of the next length positions, set the speed limit
+			for (int j = pos; j < pos + length; j++) { limit[j] = speed; }
+			pos += length;
+		}
+
+		pos = 0;
+		for (int i = 0; i < m; i++) {
+			length = io.nextInt();
+			speed = io.nextInt();
+			// for each of the next length positions, set bessie's speed
+			for (int j = pos; j < pos + length; j++) { bessie[j] = speed; }
+			pos += length;
+		}
+
+		int maxOver = 0;
+		for (int i = 0; i < 100; i++) {
+			// take the maximum bessie exceeded the limit by over all positions
+			maxOver = Math.max(maxOver, bessie[i] - limit[i]);
+		}
+		io.println(maxOver);
+		io.close();
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+</JavaSection>
+
+<PySection>
+
+```py
+import sys
+
+sys.stdin = open("speeding.in", "r")
+sys.stdout = open("speeding.out", "w")
+
+n, m = map(int, input().split())
+limit = []
+for i in range(n):
+	length, speed = map(int, input().split())
+	# for each of the next length positions, set the speed limit
+	limit.extend([speed] * length)
+
+bessie = []
+for i in range(m):
+	length, speed = map(int, input().split())
+	# for each of the next length positions, set bessie's speed
+	bessie.extend([speed] * length)
+
+max_over = 0
+for i in range(100):
+	# take the maximum bessie exceeded the limit by over all positions
+	max_over = max(max_over, bessie[i] - limit[i])
+
+print(max_over)
+```
+
+</PySection>
+
+</LanguageSection>
+</Spoiler>
+
+<LanguageSection>
+<CPPSection>
+
+## Implementation
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int LEN = 100;
+
+int main() {
+	freopen("speeding.in", "r", stdin);
+	freopen("speeding.out", "w", stdout);
+
+	int N, M;
+	cin >> N >> M;
+
+	int start = 0;
+	vector<int> limit(LEN);
+	for (int i = 0; i < N; i++) {
+		int length, speed;
+		cin >> length >> speed;
+		for (int j = start; j < start + length; j++) { limit[j] = speed; }
+		start += length;
+	}
+
+	start = 0;
+	vector<int> bessie(LEN);
+	for (int i = 0; i < M; i++) {
+		int length, speed;
+		cin >> length >> speed;
+		for (int j = start; j < start + length; j++) { bessie[j] = speed; }
+		start += length;
+	}
+
+	int worst = 0;
+	for (int i = 0; i < LEN; i++) { worst = max(worst, bessie[i] - limit[i]); }
+	cout << worst << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Speeding {
+	private static final int LEN = 100;
+	public static void main(String[] args) throws IOException {
+		BufferedReader read = new BufferedReader(new FileReader("speeding.in"));
+		StringTokenizer initial = new StringTokenizer(read.readLine());
+		int roadSegNum = Integer.parseInt(initial.nextToken());
+		int bessieSegNum = Integer.parseInt(initial.nextToken());
+		int[][] limitSegs = new int[roadSegNum][2];
+		for (int s = 0; s < roadSegNum; s++) {
+			limitSegs[s] = Arrays.stream(read.readLine().split(" "))
+			                   .mapToInt(Integer::parseInt)
+			                   .toArray();
+		}
+		int[][] bessieSegs = new int[bessieSegNum][2];
+		for (int s = 0; s < bessieSegNum; s++) {
+			bessieSegs[s] = Arrays.stream(read.readLine().split(" "))
+			                    .mapToInt(Integer::parseInt)
+			                    .toArray();
+		}
+
+		int[] limit = new int[LEN];
+		int start = 0;
+		for (int[] s : limitSegs) {
+			for (int i = 0; i < s[0]; i++) { limit[start + i] = s[1]; }
+			start += s[0];
+		}
+
+		int[] bessie = new int[LEN];
+		start = 0;
+		for (int[] s : bessieSegs) {
+			for (int i = 0; i < s[0]; i++) { bessie[start + i] = s[1]; }
+			start += s[0];
+		}
+
+		int worst = 0;
+		for (int p = 0; p < LEN; p++) {
+			worst = Math.max(worst, bessie[p] - limit[p]);
+		}
+		PrintWriter written = new PrintWriter("speeding.out");
+		written.println(worst);
+		written.close();
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+with open("speeding.in") as read:
+	road_seg_num, speed_seg_num = [int(i) for i in read.readline().split()]
+	limit_segs = [
+		[int(i) for i in read.readline().split()] for _ in range(road_seg_num)
+	]
+
+	bessie_segs = [
+		[int(i) for i in read.readline().split()] for _ in range(speed_seg_num)
+	]
+
+limit = []
+for s in limit_segs:
+	for _ in range(s[0]):
+		limit.append(s[1])
+bessie = []
+for s in bessie_segs:
+	for _ in range(s[0]):
+		bessie.append(s[1])
+
+worst = 0
+for a, b in zip(limit, bessie):
+	worst = max(worst, b - a)
+print(worst, file=open("speeding.out", "w"))
+```
+
+</PySection>
+</LanguageSection>

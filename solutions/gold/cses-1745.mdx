@@ -1,0 +1,126 @@
+---
+id: cses-1745
+source: CSES
+title: Money Sums
+author: Sofia Yang, Qian Qian
+---
+
+[Official Editorial](https://codeforces.com/blog/entry/70018)
+
+## Solution
+
+**Time Complexity:** $\mathcal{O}(N\cdot X)$
+
+For this problem, we'll define $\texttt{dp[i][j]}$ as if it is possible to make
+a sum of $j$ with $i$ coins.
+
+And if we loop through all the coins and possible sums, then we'll get two
+possible situations:
+
+If it is possible to make a sum of $j$ with less than $i$
+coins, then make the same sum with more than $i$ coins will also be possible.
+
+And if it is possible to make a sum of $\texttt{current\_sum - coin\_value[i]}$
+with $i - 1$ coins, then make a sum of $\texttt{current\_sum}$ with
+$i$ coins will also be possible.
+
+And at the end, we can loop through the $\texttt{dp}$ array, find all the
+possible $\texttt{sums}$ with $n$ coins, put them in a dynamic
+array, then print out the size of that dynamic array and every elements in it.
+
+## Implementation
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+const int MAX_N = 100;
+const int MAX_SUM = 1e5;
+
+bool dp[MAX_N + 1][MAX_SUM + 1];
+
+int main() {
+	int n;
+	cin >> n;
+
+	vector<int> coins_values(n);
+	for (int i = 0; i < n; i++) { cin >> coins_values[i]; }
+
+	dp[0][0] = true;
+
+	for (int i = 1; i <= n; i++) {
+		for (int current_sum = 0; current_sum <= MAX_SUM; current_sum++) {
+			dp[i][current_sum] = dp[i - 1][current_sum];
+			int prev_sum = current_sum - coins_values[i - 1];
+			if (prev_sum >= 0 && dp[i - 1][prev_sum]) {
+				dp[i][current_sum] = true;
+			}
+		}
+	}
+
+	vector<int> possible;
+	for (int sum = 1; sum <= MAX_SUM; sum++) {
+		if (dp[n][sum]) { possible.push_back(sum); }
+	}
+
+	cout << (int)(possible.size()) << endl;
+
+	for (int sum : possible) { cout << sum << " "; }
+	cout << endl;
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class MoneySums {
+	// CodeSnip{Kattio}
+
+	public static int maxSum = (int)1e5;
+
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio();
+
+		int N = io.nextInt();
+
+		int[] value = new int[N + 1];
+		for (int i = 1; i <= N; i++) { value[i] = io.nextInt(); }
+
+		boolean[][] dp = new boolean[N + 1][maxSum + 1];
+
+		dp[0][0] = true;
+
+		for (int i = 1; i <= N; i++) {
+			for (int curSum = 0; curSum <= maxSum; curSum++) {
+				dp[i][curSum] = dp[i - 1][curSum];
+				int prevSum = curSum - value[i];
+				if (prevSum >= 0 && dp[i - 1][prevSum]) {
+					dp[i][curSum] = true;
+				}
+			}
+		}
+
+		ArrayList<Integer> possible = new ArrayList<>();
+		for (int sum = 1; sum <= maxSum; sum++) {
+			if (dp[N][sum]) { possible.add(sum); }
+		}
+		io.println(possible.size());
+		for (int i : possible) { io.print(i + " "); }
+		io.close();
+	}
+}
+```
+
+</JavaSection>
+
+</LanguageSection>

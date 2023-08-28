@@ -1,0 +1,155 @@
+---
+id: cses-1757
+source: CSES
+title: Course Schedule II
+author: Benjamin Qi, Paul Chen
+---
+
+This problem is equivalent to
+[Minimal Labels](https://codeforces.com/contest/825/problem/E) from Codeforces.
+Treat the "label" of a vertex in "Minimal Labels" as the completion time of a
+course in "Course Schedule II." So it suffices to solve the CF problem
+([editorial](https://codeforces.com/blog/entry/53334)) and then output the
+[inverse permutation](https://mathworld.wolfram.com/InversePermutation.html).
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	int n, m;
+	cin >> n >> m;
+
+	vector<int> out(n + 1);           // Number of outgoing nodes
+	vector<vector<int>> radj(n + 1);  // Reverse graph
+
+	for (int i = 0; i < m; i++) {
+		int a, b;
+		cin >> a >> b;
+		radj[b].push_back(a);
+		out[a]++;
+	}
+
+	/*
+	 * Any node with out[i] == 0 can be used, so we store all possible
+	 * nodes in a max heap to get the node with the maximum id.
+	 */
+	priority_queue<int> pq;
+	for (int i = 1; i <= n; i++) {
+		if (out[i] == 0) { pq.push(i); }
+	}
+
+	vector<int> ans;
+	while (pq.size()) {
+		// Remove the node with the greatest id.
+		int x = pq.top();
+		pq.pop();
+		ans.push_back(x);
+
+		// Remove all edges that begin at `x`.
+		for (int t : radj[x]) {
+			out[t]--;
+			if (!out[t]) { pq.push(t); }
+		}
+	}
+	reverse(ans.begin(), ans.end());
+	for (int t : ans) { cout << t << " "; }
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+```java
+import java.io.*;
+import java.util.*;
+
+public class Main {
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
+		int n = io.nextInt();
+		int m = io.nextInt();
+		List<List<Integer>> graph = new ArrayList<>();
+		for (int i = 0; i <= n; i++) { graph.add(new LinkedList<>()); }
+		for (int i = 0; i < m; i++) {
+			int a = io.nextInt();
+			int b = io.nextInt();
+			graph.get(b).add(a);
+		}
+
+		// Calculate the in degree of each node.
+		int[] inDegree = new int[n + 1];
+		for (int i = 1; i <= n; i++) {
+			for (int to : graph.get(i)) { inDegree[to]++; }
+		}
+
+		/*
+		 * Any node with in degree 0 can be used, so we store all possible
+		 * nodes in a max heap to get the node with the maximum id.
+		 */
+		PriorityQueue<Integer> possibleNodes =
+		    new PriorityQueue<>(Comparator.reverseOrder());
+		for (int i = 1; i <= n; i++) {
+			if (inDegree[i] == 0) { possibleNodes.add(i); }
+		}
+
+		List<Integer> ans = new ArrayList<>();
+		while (!possibleNodes.isEmpty()) {
+			// Remove the node with the greatest id.
+			int node = possibleNodes.remove();
+			ans.add(node);
+
+			// Remove all edges that begin at `node`.
+			for (int to : graph.get(node)) {
+				if (--inDegree[to] == 0) { possibleNodes.add(to); }
+			}
+		}
+
+		for (int i = n - 1; i >= 0; i--) { io.print(ans.get(i) + " "); }
+		io.close();
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+</JavaSection>
+
+<PySection>
+```py
+import heapq
+
+n, m = map(int, input().split())
+out = [0] * (n + 1)  # Number of outgoing nodes
+radj = [[] for _ in range(n + 1)]  # Reverse graph
+
+for _ in range(m):
+	a, b = map(int, input().split())
+	radj[b].append(a)
+	out[a] += 1
+
+ans = []
+pq = []
+
+for i in range(1, n + 1):
+	if out[i] == 0:
+		# Any node with out[i] == 0 can be used, so we store all possible
+		# nodes in a max heap to get the node with the maximum id.
+		heapq.heappush(pq, -i)
+
+while pq:
+	x = -heapq.heappop(pq)  # Remove the node with the greatest id.
+	ans.append(x)
+	for t in radj[x]:
+		out[t] -= 1
+		if out[t] == 0:
+			heapq.heappush(pq, -t)  # Remove all edges that begin at `x`.
+
+print(" ".join(str(i) for i in reversed(ans)))
+```
+</PySection>
+
+</LanguageSection>

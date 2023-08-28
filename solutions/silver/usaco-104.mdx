@@ -1,0 +1,113 @@
+---
+id: usaco-104
+source: USACO Bronze 2012 January
+title: Haybale Stacking
+author: Óscar Garries, Brad Ma
+---
+
+[Official Analysis (Java)](http://www.usaco.org/current/data/sol_stacking.html)
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N\log N + K)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int main() {
+	int n, k;
+	cin >> n >> k;
+	vector<int> diff(n + 1);
+	// read input and build difference array
+	for (int i = 0; i < k; i++) {
+		int l, r;
+		cin >> l >> r;
+		l--;  // make zero-indexed
+		r--;
+		diff[l]++;
+		diff[r + 1]--;
+	}
+
+	int sol[1000000];
+	int tot = 0;
+	for (int i = 0; i < n; i++) {  // build prefix sum array
+		tot += diff[i];
+		sol[i] = tot;
+	}
+	sort(sol, sol + n);          // sort to get median
+	cout << sol[n / 2] << '\n';  // output the median
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+class HaybaleStacking {
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
+
+		int n = io.nextInt();
+		int k = io.nextInt();
+
+		// differenceArray[n] is the difference between A[n + 1] and A[n]
+		int[] differenceArray = new int[n + 1];
+		// read input and build differenceArray
+		for (int x = 0; x < k; x++) {
+			int a = io.nextInt() - 1;  // read and make zero-indexed
+			int b = io.nextInt() - 1;
+
+			differenceArray[a]++;
+			differenceArray[b + 1]--;
+		}
+
+		int[] prefixSum = new int[n + 1];
+		int total = 0;
+		for (int x = 0; x < n; x++) {  // build prefixSum array
+			total += differenceArray[x];
+			prefixSum[x] = total;
+		}
+
+		Arrays.sort(prefixSum);
+		io.println(prefixSum[prefixSum.length / 2]);
+		io.close();
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+n, k = map(int, input().split())
+differences = [0] * (n + 1)  # make a difference array
+for i in range(k):
+	start, end = map(int, input().split())
+	# add one to the start
+	differences[start - 1] += 1
+	# subtract one from the next number outside of start - end
+	differences[end] -= 1
+
+pref = [0] * n  # prefix sums array
+s = 0
+# uses differences and total sum to get where all the haybales are
+for i in range(n):
+	pref[i] = differences[i] + s
+	s += differences[i]
+pref.sort()
+
+print(pref[n // 2])
+```
+
+</PySection>
+</LanguageSection>

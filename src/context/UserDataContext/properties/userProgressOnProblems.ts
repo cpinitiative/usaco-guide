@@ -1,5 +1,5 @@
 import * as Sentry from '@sentry/browser';
-import { setDoc, updateDoc } from 'firebase/firestore';
+import { arrayUnion, updateDoc } from 'firebase/firestore';
 import { ProblemActivity } from '../../../models/activity';
 import { ProblemProgress } from '../../../models/problem';
 import UserDataPropertyAPI from '../userDataPropertyAPI';
@@ -110,36 +110,35 @@ export default class UserProgressOnProblemsProperty extends UserDataPropertyAPI 
       userProgressOnProblems: this.progressValue,
       userProgressOnProblemsActivity: this.activityValue,
       setUserProgressOnProblems: (problemId, status) => {
-        if (!this.firebaseUserDoc) {
-          // if the user isn't using firebase, it is possible that they
-          // have multiple tabs open, which can result in localStorage
-          // being out of sync.
-          this.initializeFromLocalStorage();
-        }
+        //if (!this.firebaseUserDoc) {
+        // if the user isn't using firebase, it is possible that they
+        // have multiple tabs open, which can result in localStorage
+        // being out of sync.
+        // edit: We're still having issues with people getting their progress deleted,
+        // so let's just greedily reinitialize every time.
+        this.initializeFromLocalStorage();
+        //}
         try {
-          this.activityValue.push({
+          const newActivityData = {
             timestamp: Date.now(),
             problemID: problemId,
             problemProgress: status,
-          });
+          };
+          this.activityValue.push(newActivityData);
           this.progressValue[problemId] = status;
 
           if (this.firebaseUserDoc) {
-            setDoc(
-              this.firebaseUserDoc,
-              {
-                [this.progressStorageKey]: {
-                  [problemId]: status,
-                },
-                [this.activityStorageKey]: this.activityValue,
-              },
-              { merge: true }
-            );
+            updateDoc(this.firebaseUserDoc, {
+              [`${this.progressStorageKey}.${problemId}`]: status,
+              [this.activityStorageKey]: arrayUnion(newActivityData),
+            });
           }
 
           this.writeValueToLocalStorage();
           this.triggerRerender();
         } catch (e) {
+          console.error(e);
+
           Sentry.captureException(e, {
             extra: {
               status,

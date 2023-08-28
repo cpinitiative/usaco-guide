@@ -1,0 +1,121 @@
+---
+id: usaco-1060
+source: USACO Bronze 2020 December
+title: Daisy Chains
+author: Sathvik Chundru, Danh Ta Chi Thanh, Ryan Chou
+---
+
+[Official Analysis (Java)](http://www.usaco.org/current/data/sol_prob2_bronze_dec20.html)
+
+Due to the low constraints of the problem, we can iterate through every possible photo.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N^3)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+int main() {
+	int n;
+	cin >> n;
+
+	vector<int> flowers(n);
+	for (int &f : flowers) { cin >> f; }
+
+	int valid_photos = 0;
+	for (int i = 0; i < n; i++) {
+		for (int j = i; j < n; j++) {
+			// find the average petal # in the range i - j
+			double avg_petals = 0;
+			for (int f = i; f <= j; f++) { avg_petals += flowers[f]; }
+			avg_petals /= j - i + 1;
+
+			for (int index = i; index <= j; index++) {
+				if (flowers[index] == avg_petals) {
+					// we found an average flower
+					valid_photos++;
+					break;
+				}
+			}
+		}
+	}
+
+	cout << valid_photos << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class DaisyChains {
+	public static void main(String[] args) throws IOException {
+		BufferedReader read =
+		    new BufferedReader(new InputStreamReader(System.in));
+		int n = Integer.parseInt(read.readLine());
+
+		int[] flowers = new int[n];
+		StringTokenizer flowerST = new StringTokenizer(read.readLine());
+		for (int i = 0; i < n; i++) {
+			flowers[i] = Integer.parseInt(flowerST.nextToken());
+		}
+
+		int validPhotos = 0;
+		for (int i = 0; i < n; i++) {
+			for (int j = i; j < n; j++) {
+				// find the average petal # in the range i - j
+				double avgPetals = 0;
+				for (int f = i; f <= j; f++) { avgPetals += flowers[f]; }
+				avgPetals /= j - i + 1;
+
+				for (int index = i; index <= j; index++) {
+					if (flowers[index] == avgPetals) {
+						// we found an average flower
+						validPhotos++;
+						break;
+					}
+				}
+			}
+		}
+
+		System.out.println(validPhotos);
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+n = int(input())
+flowers = list(map(int, input().split()))
+
+valid_photos = 0
+for i in range(n):
+	for j in range(i, n):
+		# find the average petal # in the range i - j
+		avg_petals = sum(flowers[i : j + 1]) / (j - i + 1)
+
+		for index in range(i, j + 1):
+			if flowers[index] == avg_petals:
+				# we found an average flower
+				valid_photos += 1
+				break
+
+print(valid_photos)
+```
+
+</PySection>
+</LanguageSection>

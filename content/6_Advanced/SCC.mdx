@@ -32,76 +32,74 @@ The definition of a kingdom in this problem is equivalent to the definition of a
 	concise implementation of Kosaraju's Algorithm
 </Resource> -->
 
-<Spoiler title="Solution (Kosaraju's)">
+### Solution (Kosaraju's)
 
 <LanguageSection>
 
 <CPPSection>
 
 ```cpp
-#include <bits/stdc++.h> // see /general/running-code-locally
+#include <bits/stdc++.h>  // see /general/running-code-locally
 using namespace std;
 
 using vi = vector<int>;
 #define pb push_back
 
-const int mx = 1e5+1;
+const int mx = 1e5 + 1;
 
 // adj_t is the transpose of adj
 vi adj[mx], adj_t[mx], S;
 bool vis[mx];
 int id[mx];
- 
+
 void dfs(int x, int pass, int num = 0) {
 	vis[x] = true;
 	vi &ad = (pass == 1) ? adj[x] : adj_t[x];
-	for(const int &e : ad) {
-		if(!vis[e]) dfs(e, pass, num);
+	for (const int &e : ad) {
+		if (!vis[e]) dfs(e, pass, num);
 	}
 
 	S.pb(x);
-	if(pass == 2) id[x] = num;
+	if (pass == 2) id[x] = num;
 }
- 
+
 int main() {
 	cin.tie(0)->sync_with_stdio(0);
-	
+
 	int n, m;
 	cin >> n >> m;
- 
-	while(m--) {
-		int a, b; cin >> a >> b;
+
+	while (m--) {
+		int a, b;
+		cin >> a >> b;
 		adj[a].pb(b);
 		adj_t[b].pb(a);
 	}
- 
-	for(int i = 1; i <= n; i++) {
-		if(!vis[i]) dfs(i, 1);
+
+	for (int i = 1; i <= n; i++) {
+		if (!vis[i]) dfs(i, 1);
 	}
- 
+
 	memset(vis, false, sizeof vis);
- 
+
 	int components = 0;
- 
-	for(int i = n - 1; i >= 0; i--) {
-		if(!vis[S[i]]) {
+
+	for (int i = n - 1; i >= 0; i--) {
+		if (!vis[S[i]]) {
 			components++;
 			dfs(S[i], 2, components);
 		}
 	}
 
 	cout << components << "\n";
- 
-	for(int i = 1; i <= n; i++)
-		cout << id[i] << " ";
+
+	for (int i = 1; i <= n; i++) cout << id[i] << " ";
 }
 ```
 
 </CPPSection>
 
 </LanguageSection>
-
-</Spoiler>
 
 ### Tarjan's Algorithm
 
@@ -119,7 +117,7 @@ int main() {
 	concise implementation of Tarjan's Algorithm
 </Resource> -->
 
-<Spoiler title="Solution (Tarjan's)">
+### Solution (Tarjan's)
 
 <LanguageSection>
 
@@ -130,35 +128,37 @@ int main() {
 using namespace std;
 /**
  * Description: Tarjan's, DFS once to generate
- 	* strongly connected components in topological order. $a,b$
- 	* in same component if both $a\to b$ and $b\to a$ exist.
- 	* Uses less memory than Kosaraju b/c doesn't store reverse edges.
+ * strongly connected components in topological order. $a,b$
+ * in same component if both $a\to b$ and $b\to a$ exist.
+ * Uses less memory than Kosaraju b/c doesn't store reverse edges.
  * Time: O(N+M)
  * Source: KACTL
- 	* https://github.com/kth-competitive-programming/kactl/blob/master/content/graph/SCC.h
+ * https://github.com/kth-competitive-programming/kactl/blob/master/content/graph/SCC.h
  * Verification: https://cses.fi/problemset/task/1686/
-*/
+ */
 struct SCC {
-	int N, ti = 0; vector<vector<int>> adj;
+	int N, ti = 0;
+	vector<vector<int>> adj;
 	vector<int> disc, comp, st, comps;
 	void init(int _N) {
 		N = _N;
-		adj.resize(N), disc.resize(N), comp = vector<int>(N,-1);
+		adj.resize(N), disc.resize(N), comp = vector<int>(N, -1);
 	}
-	void ae(int x, int y) {
-		adj[x].push_back(y);
-	}
+	void ae(int x, int y) { adj[x].push_back(y); }
 	int dfs(int x) {
-		int low = disc[x] = ++ti; st.push_back(x); // disc[y] != 0 -> in stack
-		for(int y : adj[x]) if (comp[y] == -1) low = min(low, disc[y]?:dfs(y));
-		if (low == disc[x]) { // make new SCC, pop off stack until you find x
-			comps.push_back(x); for (int y = -1; y != x;)
-				comp[y = st.back()] = x, st.pop_back();
+		int low = disc[x] = ++ti;
+		st.push_back(x);  // disc[y] != 0 -> in stack
+		for (int y : adj[x])
+			if (comp[y] == -1) low = min(low, disc[y] ?: dfs(y));
+		if (low == disc[x]) {  // make new SCC, pop off stack until you find x
+			comps.push_back(x);
+			for (int y = -1; y != x;) comp[y = st.back()] = x, st.pop_back();
 		}
 		return low;
 	}
 	void gen() {
-		for(int i=0; i<N; i++) if (!disc[i]) dfs(i);
+		for (int i = 0; i < N; i++)
+			if (!disc[i]) dfs(i);
 		reverse(begin(comps), end(comps));
 	}
 };
@@ -169,21 +169,19 @@ int main() {
 
 	SCC graph;
 	graph.init(n);
-	while(m--) {
+	while (m--) {
 		cin >> a >> b;
 		graph.ae(--a, --b);
 	}
 	graph.gen();
 	int ID[200000]{};
 	int ids = 0;
-	for(int i=0; i<n; i++) {
-		if(!ID[graph.comp[i]]) {
-			ID[graph.comp[i]] = ++ids;
-		}
+	for (int i = 0; i < n; i++) {
+		if (!ID[graph.comp[i]]) { ID[graph.comp[i]] = ++ids; }
 	}
 	cout << ids << '\n';
-	for(int i=0; i<n; i++) {
-		cout << ID[graph.comp[i]] << " \n"[i==n-1];
+	for (int i = 0; i < n; i++) {
+		cout << ID[graph.comp[i]] << " \n"[i == n - 1];
 	}
 }
 ```
@@ -191,8 +189,6 @@ int main() {
 </CPPSection>
 
 </LanguageSection>
-
-</Spoiler>
 
 ### Problems
 
@@ -212,6 +208,8 @@ implementation
 
 <Resources>
 	<Resource source="CF" title="2-SAT" url="16205" />
+	<Resource source="cp-algo" title="2-SAT" url="https://cp-algorithms.com/graph/2SAT.html#algorithm" />
+	<Resource source="Algorithms Live!" title="2SAT" url="https://youtu.be/0nNYy3rltgA" />
 </Resources>
 
 <IncompleteSection>

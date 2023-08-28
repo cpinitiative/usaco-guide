@@ -2,7 +2,7 @@
 id: time-comp
 title: 'Time Complexity'
 author: Darren Yao, Benjamin Qi
-contributors: Ryan Chou
+contributors: Ryan Chou, Qi Wang
 description: 'Measuring the number of operations an algorithm performs.'
 ---
 
@@ -17,7 +17,7 @@ description: 'Measuring the number of operations an algorithm performs.'
 		More in-depth. In particular, 5.2 gives a formal definition of Big O.
 	</Resource>
 	<Resource
-		source="Youtube"
+		source="YouTube"
 		title="Introduction to Big-O"
 		url="https://www.youtube.com/watch?v=zUUkiEllHG0"
 	>
@@ -25,13 +25,6 @@ description: 'Measuring the number of operations an algorithm performs.'
 	</Resource>
 </Resources>
 
-<Optional title="P vs. NP">
-
-If you're interested in learning more about P vs. NP, check out this
-[Youtube video](https://www.youtube.com/watch?v=YX40hbAHx3s). If you're just
-starting out, you may want to skip this video for now.
-
-</Optional>
 
 <br />
 
@@ -49,7 +42,7 @@ constant factors are, don't worry -- we'll explain them below.</Asterisk>.
 We want a method to calculate how many operations it takes to run each
 algorithm, in terms of the input size $n$. Fortunately, this can be done
 relatively easily using
-[Big O Notation](https://en.wikipedia.org/wiki/Big_O_notation), which expresses
+[Big O notation](https://en.wikipedia.org/wiki/Big_O_notation), which expresses
 worst-case time complexity as a function of $n$ as $n$ gets arbitrarily large.
 Complexity is an upper bound for the number of steps an algorithm requires as a
 function of the input size. In Big O notation, we denote the complexity of a
@@ -139,12 +132,12 @@ while (i < n) {
 
 ```py
 for i in range(1, n + 1):
-	pass # constant time code here
+	pass  # constant time code here
 ```
 
 ```py
 i = 0
-while (i < n):
+while i < n:
 	# constant time code here
 	i += 1
 ```
@@ -190,10 +183,10 @@ for (int i = 1; i <= n + 457737; i++) {
 
 ```py
 for i in range(5 * n + 17):
-	pass # constant time code here
+	pass  # constant time code here
 
 for i in range(n + 457737):
-	pass # constant time code here
+	pass  # constant time code here
 ```
 
 </PySection>
@@ -231,7 +224,7 @@ for (int i = 1; i <= n; i++) {
 ```py
 for i in range(n):
 	for j in range(m):
-		pass # constant time code here
+		pass  # constant time code here
 ```
 
 </PySection>
@@ -273,7 +266,7 @@ for (int i = 1; i <= n; i++) {
 ```py
 for i in range(n):
 	for j in range(i, n):
-		pass # constant time code here
+		pass  # constant time code here
 ```
 
 </PySection>
@@ -288,7 +281,7 @@ $\mathcal{O}(n^2)$.
 
 ```cpp
 for (int i = 1; i <= n; i++) {
-	for(int j = 1; j <= n; j++) {
+	for (int j = 1; j <= n; j++) {
 		// constant time code here
 	}
 }
@@ -302,7 +295,7 @@ for (int i = 1; i <= n + 58834; i++) {
 
 ```java
 for (int i = 1; i <= n; i++) {
-	for(int j = 1; j <= n; j++) {
+	for (int j = 1; j <= n; j++) {
 		// constant time code here
 	}
 }
@@ -317,10 +310,10 @@ for (int i = 1; i <= n + 58834; i++) {
 ```py
 for i in range(n):
 	for j in range(n):
-		pass # constant time code here
+		pass  # constant time code here
 
 for i in range(n + 58834):
-	pass # more constant time code here
+	pass  # more constant time code here
 ```
 
 </PySection>
@@ -364,10 +357,10 @@ for (int i = 1; i <= m; i++) {
 ```py
 for i in range(n):
 	for j in range(n):
-		pass # constant time code here
+		pass  # constant time code here
 
 for i in range(m):
-	pass # more constant time code here
+	pass  # more constant time code here
 ```
 
 </PySection>
@@ -440,7 +433,7 @@ addition operations take a bit longer than a single addition operation. Another
 example is that although binary search on an array and insertion into an ordered
 set are both $\mathcal{O}(\log n)$, binary search is noticeably faster.
 
-**Constant factor** is entirely ignored in big-O notation. This is fine most of
+**Constant factor** is entirely ignored in Big O notation. This is fine most of
 the time, but if the time limit is particularly tight, you may receive time
 limit exceeded (TLE) with the intended complexity. When this happens, it is
 important to keep the constant factor in mind. For example, a piece of code that
@@ -448,10 +441,32 @@ iterates through all _ordered_ triplets runs in $\mathcal{O}(n^3)$ time might be
 sped up by a factor of $6$ if we only need to iterate through all _unordered_
 triplets.
 
-<!-- For example, if our code currently runs in $\mathcal{O}(n^2)$ time, perhaps we can modify our code to make it run in $\mathcal{O}(n^2/32)$ by using a bitset. (Of course, with big-O notation, $\mathcal{O}(n^2) = O(n^2/32)$.) -->
+<!-- For example, if our code currently runs in $\mathcal{O}(n^2)$ time, perhaps we can modify our code to make it run in $\mathcal{O}(n^2/32)$ by using a bitset. (Of course, with Big O notation, $\mathcal{O}(n^2) = O(n^2/32)$.) -->
 <!-- Bitsets are significantly faster (and so are bitwise operations vs iterating through bits). I don't want to make it sound insignificant -->
 
 For now, don't worry about optimizing constant factors -- just be aware of them.
+
+## Formal Definition of Big O notation
+
+Let $f$ and $g$ be non-negative functions from $\mathbb{R}_{\ge 0}$ to $\mathbb{R}_{\ge 0}$. If there exist
+positive constants $n_0$ and $c$ such that $f(n) \le c \cdot g(n)$ whenever $n \ge n_0$, we
+say that $f(n) = \mathcal{O}(g(n))$.
+
+Therefore, we *could* say that the time complexity of a linear function, $\mathcal{O}(n)$, is also $\mathcal{O}(n/2)$, $\mathcal{O}(2n)$, $\mathcal{O}(n^2)$, $\mathcal{O}(2^n)$, $\mathcal{O}(n^n)$, etc.
+However, we usually just write the simplest function out of those that are the most restrictive, which in the case of our linear function above, is $\mathcal{O}(n)$.
+
+<Optional title="P vs. NP">
+
+P refers to the class of problems that can be solved within polynomial time ($\mathcal{O}(n^2), \mathcal{O}(n^3), \mathcal{O}(n^{100}), \dots$).
+NP, short for nondeterministic polynomial time, is the set of problems with solutions that can be verified in polynomial time.
+
+A common example of a problem in NP is a generalized version of Sudoku, where a solution is easily verifiable in polynomial time, but it is unknown whether a solution is computable in polynomial time. "P vs. NP" is the classic unsolved problem that asks whether every problem that can be verified in polynomial time can also be solved in polynomial time.
+
+If you're interested in learning more about P vs. NP, check out this
+[YouTube video](https://www.youtube.com/watch?v=YX40hbAHx3s).
+
+
+</Optional>
 
 ## Quiz
 <Quiz>
@@ -472,7 +487,7 @@ For now, don't worry about optimizing constant factors -- just be aware of them.
     <Quiz.Answer>
       The time it takes you to solve a problem.
       <Quiz.Explanation>
-        
+
       </Quiz.Explanation>
     </Quiz.Answer>
   </Quiz.Question>
@@ -493,7 +508,7 @@ For now, don't worry about optimizing constant factors -- just be aware of them.
     <Quiz.Answer>
       $\mathcal{O}(N^2)$
       <Quiz.Explanation>
-        
+
       </Quiz.Explanation>
     </Quiz.Answer>
   </Quiz.Question>
@@ -505,7 +520,7 @@ For now, don't worry about optimizing constant factors -- just be aware of them.
     <Quiz.Answer correct>
       The worst case scenario.
       <Quiz.Explanation>
-     	Correct.   
+     	Correct.
       </Quiz.Explanation>
     </Quiz.Answer>
     <Quiz.Answer>
@@ -513,14 +528,14 @@ For now, don't worry about optimizing constant factors -- just be aware of them.
     </Quiz.Answer>
   </Quiz.Question>
   <Quiz.Question>
-    What's the time complexity of a for loop from 1 - N?
+    What's the most restrictive time complexity of a for loop from 1 - N?
     <Quiz.Answer correct>
       $\mathcal{O}(N)$
       <Quiz.Explanation>
-     	Correct.   
+     	Correct.
       </Quiz.Explanation>
     </Quiz.Answer>
-    
+
     <Quiz.Answer>
       $\mathcal{O}(1)$
     </Quiz.Answer>
@@ -528,5 +543,5 @@ For now, don't worry about optimizing constant factors -- just be aware of them.
       $\mathcal{O}(N^2)$
     </Quiz.Answer>
   </Quiz.Question>
-  
+
 </Quiz>

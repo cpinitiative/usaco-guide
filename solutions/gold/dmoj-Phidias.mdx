@@ -1,0 +1,138 @@
+---
+id: dmoj-phidias
+source: DMOJ
+title: Phidas
+author: Jesse Choe, Sofia Yang
+---
+
+Let $\texttt{dp}[i][j]$ be the minimum total wasted area with a rectangular slab size of $i\times j$. Initialize $\texttt{dp}[i][j]$ as $i \cdot j$ and set $\texttt{dp}[x_i][y_i]$ as 0, where $x_i, y_i$ are the width and heights of the desired plate sizes, respectively. Check every sub-rectangle with either $i$ or $j$ fixed (but not both) and store the minimum total area that must be wasted for the optimal sub-rectangle.
+
+**Time Complexity:** $\mathcal{O}(W\cdot H\cdot (W + H))$.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+using ll = long long;
+using vi = vector<int>;
+using pi = pair<int, int>;
+
+#define f first
+#define s second
+
+const int MAXN = 600;
+
+/*
+ * Let dp[i][j] be the minimum residual area with a
+ * rectangular slab size of i x j
+ */
+int dp[MAXN + 1][MAXN + 1];
+
+int main() {
+	// The width and height of the original slab.
+	int w, h;
+	cin >> w >> h;
+	int n;
+	cin >> n;
+	vector<pi> plates(n);
+	for (int i = 0; i < n; i++) {
+		// The width and height of the desired plates
+		cin >> plates[i].f >> plates[i].s;
+	}
+	for (int i = 1; i <= w; i++) {
+		for (int j = 1; j <= h; j++) {
+			dp[i][j] = i * j;  // Initialize dp[i][j] as i * j
+		}
+	}
+	for (int i = 0; i < n; i++) {
+		/*
+		 * Set dp[x_i][y_i] as 0, where x_i and y_i are the width
+		 * and heights of the desired plate sizes, respectively.
+		 */
+		dp[plates[i].f][plates[i].s] = 0;
+	}
+	/*
+	 * Visit all the possible rectangles from with a width of
+	 * i = 1...w and a height of j = 1...h
+	 */
+	for (int i = 1; i <= w; i++) {
+		for (int j = 1; j <= h; j++) {
+			for (int x = 1; x <= i; x++) {
+				/*
+				 * Fix the height of the rectangle and find the
+				 * optimal subrectangle with height j
+				 */
+				dp[i][j] = min(dp[i][j], dp[x][j] + dp[i - x][j]);
+			}
+			for (int y = 1; y <= j; y++) {
+				/*
+				 * Fix the width of the rectangle and find the
+				 * optimal subrectangle with width of i
+				 */
+				dp[i][j] = min(dp[i][j], dp[i][y] + dp[i][j - y]);
+			}
+		}
+	}
+	cout << dp[w][h] << endl;
+}
+```
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Phidias {
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio();
+		int W = io.nextInt();
+		int H = io.nextInt();
+		int N = io.nextInt();
+
+		// DP[i][j] is the minimum wasted space given an i * j rectangle.
+		int[][] dp = new int[W + 1][H + 1];
+
+		// In default, all the space on the slab is wasted.
+		for (int i = 0; i <= W; i++) {
+			for (int j = 0; j <= H; j++) { dp[i][j] = i * j; }
+		}
+
+		// 0 space is wasted if the slab is the same size as plates.
+		for (int i = 0; i < N; i++) {
+			int x = io.nextInt();
+			int y = io.nextInt();
+			dp[x][y] = 0;
+		}
+
+		/*
+		 * Loop through all possible slabs
+		 * with width from 1 to w and height from 1 to h.
+		 */
+		for (int i = 1; i <= W; i++) {
+			for (int j = 1; j <= H; j++) {
+				for (int a = 1; a <= i; a++) {
+					// Fix the vertical cut to calculate the minimum area
+					// wasted.
+					dp[i][j] = Math.min(dp[i][j], dp[a][j] + dp[i - a][j]);
+				}
+				for (int b = 1; b <= j; b++) {
+					// Fix the horizontal cut to calculate the minimum area
+					// wasted.
+					dp[i][j] = Math.min(dp[i][j], dp[i][b] + dp[i][j - b]);
+				}
+			}
+		}
+		System.out.println(dp[W][H]);
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+</JavaSection>
+
+</LanguageSection>

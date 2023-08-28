@@ -1,0 +1,358 @@
+---
+id: usaco-973
+source: USACO Platinum 2016 December
+title: Bessie's Snow Cow
+author: Kevin Sheng
+---
+
+[Official Analysis (C++)](http://usaco.org/current/data/sol_snowcow_platinum_dec19.html)
+
+## Explanation
+
+Since this problem involves the answering of a series of subtree queries, we should probably
+use a Euler tour of some sort to solve this problem.
+For the rest of this problem, $\texttt{start}[x]$ will be the first index at which the snowball
+appears in the tour, and $\texttt{end}[x]$ will be the second (and last) index at which
+the snowball appears in the tour.
+
+There's a couple of problems we have to address for each query:
+1. Detecting when a snowball has already been colored a certain color.
+   If we detect this, the query is meaningless and won't change anything, since the parent's
+   coloring already added the colors to all the subtree snowballs.
+2. Detecting when a snowball has children that have already been colored a certain color.
+   In this case, we should probably remove those children from consideration, since the current
+   query will cover all of them.
+3. Actually calculating the colorfulness of a subtree.
+
+### Issues 1 & 2
+
+The first two problems are solvable with our Euler tour arrays.
+For each color, we create a sorted map with the keys being $\texttt{start}[x]$ and the values
+being $x$, where $x$ represents a snowball.
+When we add a new snowball, we can use the map's
+[lower key and upper key functions](/silver/intro-sorted-sets#sorted-maps) to efficiently
+remove any children or detect a parent.
+
+### Issue 3
+
+After addressing those two problems, we have a map for each color, where no two
+*relevant snowballs of a color* are either parents or children of each other.
+Keep in mind that this only applies to each individual map: a snowball in color $c_1$'s map
+can still have a child in color $c_2$'s map.
+
+For each part, we can use a separate point update range query data structure like a
+binary indexed tree or segment tree.
+
+#### Parent Colorfulness
+
+This is the amount resulting from the parents' and current snowball's paint.
+
+When adding a snowball to our color map, we increment its index at $\texttt{start}[x]$
+by $1$ and decrement its index at $\texttt{end}[x]$ by 1. When removing it, we do the reverse.
+Now, if we perform a range query of the sum of all numbers from $0$ to $\texttt{start}[x]$,
+we can get the number of colors that result from parents.
+However, since these colors are applied to every snowball in the subtree,
+we need to multiply this by the subtree size of the current snowball as well.
+
+#### Child Colorfulness
+
+This is the amount resulting from children's paint.
+
+For this part, when adding a snowball, we add the current snowball's subtree size to
+$\texttt{start}[x]$ (and do the reverse when removing a snowball).
+Then, by performing a range query of the sum of all values from $\texttt{start}[x] + 1$ to
+$\texttt{end}[x]$, we get the subtree sizes of all the childrens' unique colors.
+
+By adding these two values together, we get our answer for the query.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N+Q\log N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <fstream>
+#include <iostream>
+#include <map>
+#include <vector>
+
+using std::cout;
+using std::endl;
+using std::vector;
+
+// BeginCodeSnip{Binary Indexed Tree}
+class BITree {
+  private:
+	vector<long long> bit;
+	int size;
+
+  public:
+	BITree(int size) : size(size), bit(size) {}
+
+	void increment(int ind, long long val) {
+		ind++;  // have the driver code not worry about 1-indexing
+		for (; ind <= size; ind += ind & -ind) { bit[ind] += val; }
+	}
+
+	long long query(int ind) {
+		ind++;
+		long long sum = 0;
+		for (; ind > 0; ind -= ind & -ind) { sum += bit[ind]; }
+		return sum;
+	}
+};
+// EndCodeSnip
+
+int main() {
+	std::ifstream read("snowcow.in");
+	int snowball_num;
+	int query_num;
+	read >> snowball_num >> query_num;
+
+	vector<vector<int>> neighbors(snowball_num);
+	for (int b = 0; b < snowball_num - 1; b++) {
+		int sb1, sb2;
+		read >> sb1 >> sb2;
+		sb1--;
+		sb2--;
+		neighbors[sb1].push_back(sb2);
+		neighbors[sb2].push_back(sb1);
+	}
+
+	// perform our euler tour- start & end are as described previously
+	vector<bool> processed(snowball_num);
+	vector<int> start(snowball_num);
+	vector<int> end(snowball_num);
+	int timer = 0;
+	vector<int> frontier{0};
+	while (!frontier.empty()) {
+		int curr = frontier.back();
+		frontier.pop_back();
+		if (processed[curr]) {
+			end[curr] = timer;
+			timer++;
+			continue;
+		}
+		start[curr] = timer;
+		frontier.push_back(curr);  // set a marker to record the outtime
+		processed[curr] = true;
+		for (int n : neighbors[curr]) {
+			if (!processed[n]) { frontier.push_back(n); }
+		}
+		timer++;
+	}
+
+	// calculate subtree sizes of all snowballs
+	vector<int> sub_size(snowball_num);
+	for (int s = 0; s < snowball_num; s++) {
+		sub_size[s] = (end[s] - start[s] + 1) / 2;
+	}
+
+	// the map for each color for tracking of parents & children
+	std::map<int, std::map<int, int>> colors;
+	// BIT for calculating the colorfulness due to parents & current snowball
+	BITree above_unique(snowball_num * 2);
+	// and for calculating the colorfulness due to colors of children
+	BITree below_unique(snowball_num * 2);
+	std::ofstream written("snowcow.out");
+	for (int q = 0; q < query_num; q++) {
+		int type;
+		int sb;
+		read >> type >> sb;
+		sb--;
+		if (type == 1) {
+			int color;
+			read >> color;
+
+			std::map<int, int> &painted = colors[color];
+			auto l_closest = painted.upper_bound(start[sb]);
+			/*
+			 * check if there's a parent of the snowball that's
+			 * already been painted with the color
+			 */
+			if (l_closest != painted.begin() &&
+			    end[sb] <= end[(--l_closest)->second]) {
+				continue;
+			}
+			// remove all children of the current snowball that are in the map
+			while (true) {
+				auto r_next = painted.upper_bound(start[sb]);
+				if (r_next == painted.end() || end[sb] <= end[r_next->second]) {
+					break;
+				}
+				int r_next_sb = r_next->second;
+				// undo the increments from when the child was added
+				above_unique.increment(start[r_next_sb], -1);
+				above_unique.increment(end[r_next_sb], 1);
+				below_unique.increment(start[r_next_sb], -sub_size[r_next_sb]);
+				painted.erase(r_next->first);
+			}
+
+			painted[start[sb]] = sb;
+			above_unique.increment(start[sb], 1);
+			above_unique.increment(end[sb], -1);
+			below_unique.increment(start[sb], sub_size[sb]);
+		} else if (type == 2) {
+			/*
+			 * the colors from parents influence every node in the subtree,
+			 * so multiply by the current subtree size
+			 */
+			long long above_colors =
+			    sub_size[sb] * above_unique.query(start[sb]);
+			long long below_colors =
+			    (below_unique.query(end[sb]) - below_unique.query(start[sb]));
+			written << above_colors + below_colors << '\n';
+		}
+	}
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class SnowCow {
+	public static void main(String[] args) throws IOException {
+		BufferedReader read = new BufferedReader(new FileReader("snowcow.in"));
+		StringTokenizer initial = new StringTokenizer(read.readLine());
+		int snowballNum = Integer.parseInt(initial.nextToken());
+		int queryNum = Integer.parseInt(initial.nextToken());
+
+		List<Integer>[] neighbors = new ArrayList[snowballNum];
+		// sb short for SnowBall
+		for (int sb = 0; sb < snowballNum; sb++) {
+			neighbors[sb] = new ArrayList<>();
+		}
+		for (int b = 0; b < snowballNum - 1; b++) {
+			StringTokenizer branch = new StringTokenizer(read.readLine());
+			int sb1 = Integer.parseInt(branch.nextToken()) - 1;
+			int sb2 = Integer.parseInt(branch.nextToken()) - 1;
+			neighbors[sb1].add(sb2);
+			neighbors[sb2].add(sb1);
+		}
+
+		// perform our euler tour- start & end are as described previously
+		boolean[] processed = new boolean[snowballNum];
+		int[] start = new int[snowballNum];
+		int[] end = new int[snowballNum];
+		int timer = 0;
+		ArrayDeque<Integer> frontier = new ArrayDeque<>();
+		frontier.add(0);
+		while (!frontier.isEmpty()) {
+			int curr = frontier.removeLast();
+			if (processed[curr]) {
+				end[curr] = timer;
+				timer++;
+				continue;
+			}
+			start[curr] = timer;
+			frontier.add(curr);  // set a marker to record the outtime
+			processed[curr] = true;
+			for (int n : neighbors[curr]) {
+				if (!processed[n]) { frontier.add(n); }
+			}
+			timer++;
+		}
+
+		// calculate subtree sizes of all snowballs
+		int[] subSize = new int[snowballNum];
+		for (int s = 0; s < snowballNum; s++) {
+			subSize[s] = (end[s] - start[s] + 1) / 2;
+		}
+
+		// the map for each color for tracking of parents & children
+		Map<Integer, TreeMap<Integer, Integer>> colors = new HashMap<>();
+		// BIT for calculating the colorfulness due to parents & current
+		// snowball
+		BITree aboveUnique = new BITree(snowballNum * 2);
+		// and for calculating the colorfulness due to colors of children
+		BITree belowUnique = new BITree(snowballNum * 2);
+		StringBuilder ans = new StringBuilder();
+		for (int q = 0; q < queryNum; q++) {
+			StringTokenizer query = new StringTokenizer(read.readLine());
+			int type = Integer.parseInt(query.nextToken());
+			int sb = Integer.parseInt(query.nextToken()) - 1;
+			if (type == 1) {
+				int color = Integer.parseInt(query.nextToken());
+				if (!colors.containsKey(color)) {
+					colors.put(color, new TreeMap<>());
+				}
+
+				TreeMap<Integer, Integer> painted = colors.get(color);
+				Integer lClosest = painted.floorKey(start[sb]);
+				/*
+				 * check if there's a parent of the snowball that's
+				 * already been painted with the color
+				 */
+				if (lClosest != null && end[sb] <= end[painted.get(lClosest)]) {
+					continue;
+				}
+				// remove all children of the current snowball that are in the
+				// map
+				while (true) {
+					Integer rNext = painted.higherKey(start[sb]);
+					if (rNext == null || end[sb] <= end[painted.get(rNext)]) {
+						break;
+					}
+					int rNextSB = painted.get(rNext);
+					// undo the increments from when the child was added
+					aboveUnique.increment(start[rNextSB], -1);
+					aboveUnique.increment(end[rNextSB], 1);
+					belowUnique.increment(start[rNextSB], -subSize[rNextSB]);
+					painted.remove(rNext);
+				}
+
+				painted.put(start[sb], sb);
+				aboveUnique.increment(start[sb], 1);
+				aboveUnique.increment(end[sb], -1);
+				belowUnique.increment(start[sb], subSize[sb]);
+			} else if (type == 2) {
+				/*
+				 * the colors from parents influence every node in the subtree,
+				 * so multiply by the current subtree size
+				 */
+				long aboveColors = subSize[sb] * aboveUnique.query(start[sb]);
+				long belowColors =
+				    (belowUnique.query(end[sb]) - belowUnique.query(start[sb]));
+				ans.append(aboveColors + belowColors).append('\n');
+			}
+		}
+
+		PrintWriter written = new PrintWriter("snowcow.out");
+		written.print(ans);
+		written.close();
+	}
+}
+
+// BeginCodeSnip{Binary Indexed Tree}
+class BITree {
+	private final long[] bit;
+	private final int size;
+
+	public BITree(int size) {
+		bit = new long[size + 1];
+		this.size = size;
+	}
+
+	public void increment(int ind, long val) {
+		ind++;  // have the driver code not worry about 1-indexing
+		for (; ind <= size; ind += ind & -ind) { bit[ind] += val; }
+	}
+
+	public long query(int ind) {  // the bound's inclusive
+		ind++;
+		long sum = 0;
+		for (; ind > 0; ind -= ind & -ind) { sum += bit[ind]; }
+		return sum;
+	}
+}
+// EndCodeSnip
+```
+
+</JavaSection>
+</LanguageSection>

@@ -39,7 +39,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
       name: 'General Resources',
       description: 'Useful for competitors of all levels.',
       items: [
-        'debugging-general',
+        'debugging-checklist',
         'practicing',
         'contest-strategy',
         'resources-cp',
@@ -54,8 +54,9 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
       items: [
         'running-code-locally',
         'cpp-command',
-        'debugging-lang',
         'fast-io',
+        'basic-debugging',
+        'debugging-cpp',
         'generic-code',
         'lambda-funcs',
       ],
@@ -70,27 +71,23 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
   bronze: [
     {
       name: 'Getting Started',
-      items: ['time-comp', 'rect-geo', 'intro-ds', 'simulation'],
+      items: ['time-comp', 'intro-ds', 'simulation', 'rect-geo'],
     },
     {
       name: 'Complete Search',
-      description:
-        'Solving Bronze problems by checking all possible cases in the solution space.',
       items: ['intro-complete', 'complete-rec'],
     },
     {
       name: 'Sorting & Sets',
-      description: '',
       items: ['intro-sorting', 'intro-sets'],
-      // It's not strictly necessary to know any data structures aside from arrays for Bronze, but it definitely helps.
     },
     {
       name: 'Additional',
-      description: 'Topics not strictly necessary to know to pass Bronze.',
       items: ['ad-hoc', 'intro-greedy', 'intro-graphs'],
     },
     {
       name: 'Conclusion',
+      description: 'Congratulations on making it this far!',
       items: ['bronze-conclusion'],
     },
   ],
@@ -113,23 +110,28 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
     {
       name: 'Graphs',
       description:
-        'Every (?) Silver - Plat contest has at least one graph problem.',
-      items: ['dfs', 'flood-fill', 'intro-tree', 'func-graphs'],
+        'Most Silver to Platinum contests have at least one graph problem.',
+      items: ['graph-traversal', 'flood-fill', 'intro-tree', 'func-graphs'],
+    },
+    {
+      name: 'Additional Topics',
+      items: ['intro-bitwise'],
     },
     {
       name: 'Conclusion',
+      description: 'Congratulations on making it this far!',
       items: ['silver-conclusion'],
     },
   ],
   gold: [
     {
-      name: 'Introductory Number Sense',
+      name: 'Math',
       items: ['divisibility', 'modular', 'combo'],
     },
     {
       name: 'Dynamic Programming',
       description:
-        'Every (?) Gold and Platinum contest has at least one DP problem.',
+        'Most Gold and Platinum contests have at least one DP problem.',
       items: [
         'intro-dp',
         'knapsack',
@@ -137,11 +139,20 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
         'lis',
         'dp-bitmasks',
         'dp-ranges',
+        'digit-dp',
       ],
     },
     {
       name: 'Graphs',
-      items: ['bfs', 'dsu', 'toposort', 'shortest-paths', 'mst'],
+      description:
+        'Most Silver to Platinum contests have at least one graph problem.',
+      items: [
+        'unweighted-shortest-paths',
+        'dsu',
+        'toposort',
+        'shortest-paths',
+        'mst',
+      ],
     },
     {
       name: 'Data Structures',
@@ -152,24 +163,19 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
       items: ['tree-euler', 'dp-trees', 'all-roots'],
     },
     {
-      name: 'Hashing',
-      description: 'Rarely required at this level, but still good to know.',
-      items: ['string-hashing', 'unordered-map', 'faster-hashmap'],
-    },
-    {
-      name: 'Misc. Topics',
-      items: ['meet-in-the-middle','intro-bitwise'],
+      name: 'Additional Topics',
+      description: 'Rarely required.',
+      items: ['string-hashing', 'hashmaps', 'meet-in-the-middle'],
     },
     {
       name: 'Conclusion',
+      description: 'Congratulations on making it this far!',
       items: ['gold-conclusion'],
     },
   ],
   plat: [
     {
       name: 'Range Queries',
-      description:
-        'It seems that no Platinum contest is complete without a segment tree ...',
       items: [
         'segtree-ext',
         'range-sweep',
@@ -182,12 +188,10 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
     },
     {
       name: 'Trees',
-      description: '... or a tree!',
       items: ['binary-jump', 'merging', 'hld', 'centroid'],
     },
     {
       name: 'Geometry',
-      description: 'More advanced concepts in computational geometry.',
       items: ['geo-pri', 'sweep-line', 'convex-hull', 'convex-hull-trick'],
     },
     {
@@ -279,12 +283,9 @@ export const SECTION_SEO_DESCRIPTION: { [key in SectionID]: string } = {
     'Topics for USACO Bronze include time complexity, data structures, sorting, simulation, complete search, ad hoc, greedy, graphs, rectangle geometry, sets and maps, and recursion.',
   silver:
     'Topics for USACO Silver include binary search on the answer, prefix sums, two pointers, dfs, floodfill, trees, custom comparators, greedy with sorting, and more!',
-  gold:
-    'Topics for USACO Gold include dynamic programming, union-find, shortest paths, point update range sum, topological sort, minimum spanning trees, euler tour, string hashing, and more!',
-  plat:
-    'Topics for USACO Platinum include segment trees, advanced tree techniques, advanced dynamic programming, computational geometry, matrix exponentiation, and more!',
-  adv:
-    'Topics usually outside the scope of most USACO contests include segment tree beats, treaps, slope trick, strongly connected components, max-flow, suffix arrays, fast fourier transform, and more!',
+  gold: 'Topics for USACO Gold include dynamic programming, union-find, shortest paths, point update range sum, topological sort, minimum spanning trees, euler tour, string hashing, and more!',
+  plat: 'Topics for USACO Platinum include segment trees, advanced tree techniques, advanced dynamic programming, computational geometry, matrix exponentiation, and more!',
+  adv: 'Topics usually outside the scope of most USACO contests include segment tree beats, treaps, slope trick, strongly connected components, max-flow, suffix arrays, fast fourier transform, and more!',
 };
 export const SECTION_SEO_TITLES: { [key in SectionID]: string } = {
   general: 'General USACO Information',

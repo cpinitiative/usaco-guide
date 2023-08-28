@@ -12,15 +12,14 @@ const options = [
   { label: 'Ignored', value: 'Ignored' },
 ];
 
-export default function Difficulty({ refine }): JSX.Element {
+export default function Status({ refine, problemIds }): JSX.Element {
   const darkMode = useDarkMode();
   const data = useContext(UserDataContext).userProgressOnProblems;
-
   const handleChange = e => {
     const refinements = [];
     for (const status of e) {
-      for (const key of Object.keys(data)) {
-        if (data[key] == status.label) {
+      for (const key of problemIds) {
+        if ((data[key] ?? 'Not Attempted') == status.label) {
           refinements.push(key);
         }
       }
