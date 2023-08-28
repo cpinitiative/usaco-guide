@@ -30,7 +30,7 @@ Let $l$ and $r$ represent the highest left bound and the lowest right bound, res
 
 First, if $\texttt{pos}$ is between $l$ and $r$, the number of valid subsegments with this $\texttt{mex}$ is zero since the $\texttt{mex}$ of this subsegment is greater than the $\texttt{mex}$ we are looking for.
 
-We need to find all subsegments of length $\leq 2 \cdot \texttt{mex}$ that contain $l \ldots r$ and don't include $\texttt{pos}$. Say $\texttt{pos}>r$, since we only need to change our approach slightly if $\texttt{pos} < l$. We can increment $r$ from $r$ to $\texttt{pos}-1$ fast enough, since each time we increment we increase the size of our subsegment by $1$, for a maximum of $N$ times.
+We need to find all subsegments of length $\leq 2 \cdot \texttt{mex}$ that contains $l \ldots r$ and omit $\texttt{pos}$. Say $\texttt{pos}>r$, since we only need to change our approach slightly if $\texttt{pos} < l$. We can increment $r$ from $r$ to $\texttt{pos}-1$ fast enough since each time we increment, we increase the size of our subsegment by $1$, for a maximum of $N$ times.
 
 Considering this new bound of $r$, we can find the number of possible values of $l$ that form a valid subsegment. We know that the $\texttt{mex}$ is correct for this subsegment, so we just need to find the number of positions $\leq l$ such that $r-l+1 \leq \texttt{mex} \cdot 2$. The lower
 bound of our smallest value of $l$ is $r-\texttt{mex} \cdot 2 + 1$, which we can find by rearranging the previous inequality.
