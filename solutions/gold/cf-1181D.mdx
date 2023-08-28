@@ -9,7 +9,7 @@ author: Chongtian Ma
 
 ## Explanation
 
-We can subtract $n$ from each of the queries, and answer them offline. Then, sort the cities by occurrences and queries by year. 
+We can subtract $n$ from each of the queries, and answer them offline. Then, sort the cities by occurrences and queries by year.
 
 Let city $i$ denote the $i$'th smallest city sorted by occurrences, and $occ_i$ denote the number of occurrences. We can loop  through each $i$ and track the number of years has gone by. Assume cities $1, 2, ...i$ already have $occ_i$ occurrences. For them to all end up with $occ_{i+1}$ occurrences, we need $i \cdot (occ_{i+1} - occ_i)$ more years. This means that for the next $i \cdot (occ_{i+1} - occ_i)$ years, cities $1, 2, ... i$ will be selected one after another.
 
@@ -41,11 +41,11 @@ template<typename T>
 using ordered_set = tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
 
 int main(){
-	int n, m, q; 
+	int n, m, q;
 	scanf("%d%d%d", &n, &m, &q);
 	vector<int> counter(m);
 	for(int i = 0; i < n; i++){
-		int x; 
+		int x;
 		scanf("%d", &x);
 		counter[--x]++;
 	}
@@ -71,7 +71,7 @@ int main(){
 		int query_low_index = lower_bound(all(query), make_pair(years, 0)) - query.begin();
 		for(int j = query_low_index; j < q && query[j].first < years_upper; j++){
 			ll qyears = query[j].first;
-			int qindex = query[j].second; 
+			int qindex = query[j].second;
 			qans[qindex] = *track_city.find_by_order((qyears - years) % (i + 1));
 		}
 		years = years_upper;
@@ -89,4 +89,3 @@ int main(){
 ```
 </CPPSection>
 </LanguageSection>
-
