@@ -179,7 +179,6 @@ Here is an animation of how it works:
 	<source src="/animations/cowsteeplechase.mp4" type="video/mp4"/>
 </video>
 
-
 ## Implementation
 
 Time complexity: $\mathcal{O}(n\log n)$.
@@ -341,8 +340,9 @@ int main() {
 
 <FocusProblem problem="manSam" />
 
-The key observation is that although there are many points, they are spread across a small surface i.e. $0 \leq x, y \le 1000$, so instead of using Kruskal's or Prim's
-algorithm, we can use Dijkstra's. Starting from an arbitrary point, run Dijkstra's algorithm with the priority queue that will sort the points after the distance to the MST.
+The key observation is that although there are many points, they're spread across a pretty small surface.
+Because of this, instead of using Kruskal's or Prim's algorithm, we can use Dijkstra's.
+Starting from an arbitrary point, we run Dijkstra's algorithm with a priority queue that will sort the points by their distance to the MST.
 
 *Time Complexity:* $\mathcal{O}(1)$
 
@@ -354,12 +354,12 @@ algorithm, we can use Dijkstra's. Starting from an arbitrary point, run Dijkstra
 
 using namespace std;
 
-const int MAX_GRID_SIZE = 1000;
+const int GRID_SZ = 1000;
 const int dx[4] = {-1, 0, 1, 0};
 const int dy[4] = {0, 1, 0, -1};
 
-int d[NMAX][NMAX];     // The distance from the starting point
-bool mat[NMAX][NMAX];  // mat[x][y] = if (x, y) point is in the input
+int d[GRID_SZ][GRID_SZ];     // The distance from the starting point
+bool mat[GRID_SZ][GRID_SZ];  // mat[x][y] = if (x, y) point is in the input
 
 int main() {
 	int n;
