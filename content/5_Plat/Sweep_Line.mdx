@@ -190,16 +190,14 @@ const int NMAX = 1000;
 const int dx[4] = {-1, 0, 1, 0};
 const int dy[4] = {0, 1, 0, -1};
 
-int d[NMAX][NMAX];
+int d[NMAX][NMAX]; // The distance from the starting point
 bool mat[NMAX][NMAX];  // mat[x][y] = if (x, y) point is in the input
 
 int main() {
 	int n;
 	cin >> n;
 	memset(d, -1, sizeof(d));
-	priority_queue<pair<int, pair<int, int>>, vector<pair<int, pair<int, int>>>,
-	               greater<pair<int, pair<int, int>>>>
-	    pq;
+	priority_queue<pair<int, pair<int, int>>, vector<pair<int, pair<int, int>>>, greater<pair<int, pair<int, int>>>> pq;
 
 	for (int i = 0; i < n; i++) {
 		int x, y;
@@ -236,8 +234,7 @@ int main() {
 			int newx = x + dx[dir];
 			int newy = y + dy[dir];
 			// Check if it's a new point or if the distance has improved
-			if (inside(newx, newy) &&
-			    (d[newx][newy] == -1 || dist + 1 < d[newx][newy])) {
+			if (inside(newx, newy) && (d[newx][newy] == -1 || dist + 1 < d[newx][newy])) {
 				d[newx][newy] = dist + 1;
 				pq.push({d[newx][newy], {newx, newy}});
 			}
