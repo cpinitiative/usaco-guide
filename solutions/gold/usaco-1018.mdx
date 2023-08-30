@@ -130,7 +130,7 @@ $$\text{\{the previous set of subsets\} } \cup \text{ \{the previous set of subs
 
 The sum of the complexities of the previous set of subsets is still $c_k$. However, adding $segment_{k+1}$ to each of them may merge lots of previously disjoint segments (if $segment_{k+1}$ happened to intersect all of them).
 
-To control this, **we first sort the segments by their left-ends**. This means that each new segment can only either merge itself into a previous segment (without merging previously disjoint segments) or form a new disjoint segment. 
+To control this, **we first sort the segments by their left-ends**. This means that each new segment can only either merge itself into a previous segment (without merging previously disjoint segments) or form a new disjoint segment.
 
 We also know that our new segment forms a new disjoint segment if and only if it merges with previous segments that doesn't intersect with it. Therefore, the transition formula is,
 
@@ -142,7 +142,7 @@ To count the $\text{number of previous segments that don't intsersect } segment_
 <LanguageSection>
 <CPPSection>
 ```cpp
-#include <bits/stdc++.h> 
+#include <bits/stdc++.h>
 using namespace std;
 
 // Importing indexed sets
@@ -155,14 +155,14 @@ using Tree =
 const int MOD = 1e9 + 7;
 
 // Binary exponentation
-int powermod (long long base, long long exp) {
+int powermod(long long base, long long exp) {
 	base %= MOD;
 	long long result = 1;
 	while (exp > 0) {
-		if (exp % 2 == 1) // if n is odd
+		if (exp % 2 == 1)  // if n is odd
 			result = result * base % MOD;
 		base = base * base % MOD;
-		exp /= 2; // divide by two
+		exp /= 2;  // divide by two
 	}
 	return result;
 }
@@ -170,20 +170,21 @@ int powermod (long long base, long long exp) {
 int N, tot = 0;
 vector<pair<int, int>> ranges;
 
-int main () {
+int main() {
 	ifstream fin("help.in");
 	ofstream fout("help.out");
 
 	fin >> N;
-	for (int i = 0; i < N; i ++) {
-		int a, b; fin >> a >> b;
+	for (int i = 0; i < N; i++) {
+		int a, b;
+		fin >> a >> b;
 		ranges.push_back({a, b});
 	}
 	// Sorting ranges by their left values
 	sort(ranges.begin(), ranges.end());
 
 	Tree<pair<int, int>> pastend;
-	for (int i = 0; i < N; i ++) {
+	for (int i = 0; i < N; i++) {
 		int left = ranges[i].first, right = ranges[i].second;
 
 		// Counting # of previous ranges that don't intersect
