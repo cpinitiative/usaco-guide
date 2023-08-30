@@ -270,6 +270,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
   const userSolutionTemplate = path.resolve(
     `./src/templates/userSolutionTemplate.tsx`
   );
+  let usaco_uids: string[] = [];
   problems.forEach(({ node }) => {
     let slug = getProblemURL(node);
     if (
@@ -318,7 +319,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
 
     // skipping usaco problems to be created with div_to_probs
     if (node.uniqueId.startsWith('usaco')) {
-      return;
+      usaco_uids.push(node.uniqueId);
     }
     problemSlugs[slug] = node.uniqueId;
     problemInfo[node.uniqueId] = node;
@@ -340,16 +341,18 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
       const name = problem[2];
       const path = `problems/${uniqueId}/user-solutions`;
 
-      createPage({
-        path: path,
-        component: userSolutionTemplate,
-        context: {
-          problem: {
-            uniqueId: uniqueId,
-            name: name,
+      if (!usaco_uids.includes(uniqueId)) {
+        createPage({
+          path: path,
+          component: userSolutionTemplate,
+          context: {
+            problem: {
+              uniqueId: uniqueId,
+              name: name,
+            },
           },
-        },
-      });
+        });
+      }
     });
   });
 
