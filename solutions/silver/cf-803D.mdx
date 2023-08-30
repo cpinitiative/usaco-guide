@@ -40,64 +40,62 @@ int max_lines;
 vector<int> word_lengths;
 string ad;
 
-// returns true if most optimized ad of given width doesn't use greater than max_lines
+// returns true if most optimized ad of given width doesn't use greater than
+// max_lines
 bool f(int width) {
-    int lines = 0;
-    int cur_width = 0;
+	int lines = 0;
+	int cur_width = 0;
 
-    for (int word_length : word_lengths) {
-        // if an individual word is wider than our ad width, we need a greater width
-        if (word_length > width)
-            return false;
+	for (int word_length : word_lengths) {
+		// if an individual word is wider than our ad width, we need a greater
+		// width
+		if (word_length > width) return false;
 
-        // if we overflow, we need a new line
-        if (cur_width + word_length > width) {
-            lines++;
-            cur_width = word_length;
-        }
-        // add word to current line
-        else {
-            cur_width += word_length;
-        }
-    }
-    if (cur_width > 0)
-        lines++;
-    return lines <= max_lines;
+		// if we overflow, we need a new line
+		if (cur_width + word_length > width) {
+			lines++;
+			cur_width = word_length;
+		}
+		// add word to current line
+		else {
+			cur_width += word_length;
+		}
+	}
+	if (cur_width > 0) lines++;
+	return lines <= max_lines;
 }
 
 int main() {
-    cin >> max_lines;
-    // ignore '\n' character before getline
-    cin.ignore();
-    getline(cin, ad);
+	cin >> max_lines;
+	// ignore '\n' character before getline
+	cin.ignore();
+	getline(cin, ad);
 
-    // get sizes of each word, including trailing spaces and trailing hyphens
-    word_lengths.push_back(0);
-    for (char i : ad) {
-        word_lengths.back()++;
-        // spaces and hyphens function the same, start new word after adding char
-        if (i == ' ' || i == '-') {
-            word_lengths.push_back(0);
-        }
-    }
+	// get sizes of each word, including trailing spaces and trailing hyphens
+	word_lengths.push_back(0);
+	for (char i : ad) {
+		word_lengths.back()++;
+		// spaces and hyphens function the same, start new word after adding
+		// char
+		if (i == ' ' || i == '-') { word_lengths.push_back(0); }
+	}
 
-    /*
-     * find the lowest width that doesn't use greater than max_lines
-     * binary search: https://usaco.guide/silver/binary-search?lang=cpp
-     */
-    int lo = 0, hi = (int)ad.size();
-    hi++;
-    while (lo < hi) {
-        int mid = lo + (hi - lo) / 2;
-        if (f(mid)) {
-            hi = mid;
-        } else {
-            lo = mid + 1;
-        }
-    }
+	/*
+	 * find the lowest width that doesn't use greater than max_lines
+	 * binary search: https://usaco.guide/silver/binary-search?lang=cpp
+	 */
+	int lo = 0, hi = (int)ad.size();
+	hi++;
+	while (lo < hi) {
+		int mid = lo + (hi - lo) / 2;
+		if (f(mid)) {
+			hi = mid;
+		} else {
+			lo = mid + 1;
+		}
+	}
 
-    cout << lo << endl;
-
+	cout << lo << endl;
 }
 ```
 
