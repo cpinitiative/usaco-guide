@@ -33,7 +33,6 @@ prefix and suffix minimums and maximums to calculate each possible solution in $
 We can also use a binary search tree instead of prefix/suffix minimums and maximums. To do this, we can create two ordered sets: a set representing the current enclosure,
 and a set representing the other enclosure. As we sweep across these coordinates, we'll add them to the current set and remove them from the other enclosure. To query, we'll fetch the minimum and maximum values from the sets.
 
-
 ## Implementation
 
 **Time Complexity:** $\mathcal{O}(N \log N)$
@@ -111,8 +110,101 @@ int main() {
 	cout << ans << endl;
 }
 ```
-</CPPSection>
 
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class SplittingTheField {
+	// returns updated min/maxs when considering a new coordinate
+	public static Pair upd(Pair a, long b) {
+		return new Pair(Math.min(a.first, b), Math.max(a.second, b));
+	}
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new FileReader("split.in"));
+		int n = Integer.parseInt(br.readLine());
+		Pair[] cows = new Pair[n];
+		for (int i = 0; i < n; i++) {
+			StringTokenizer st = new StringTokenizer(br.readLine());
+			long x = Long.parseLong(st.nextToken());
+			long y = Long.parseLong(st.nextToken());
+			cows[i] = new Pair(x, y);
+		}
+		br.close();
+
+		long ans = 0;
+
+		// finds the maximum area saved by testing splits along cows[i].first
+		for (int t = 0; t < 2; t++) {
+			Arrays.sort(cows);
+
+			Pair[] pref = new Pair[n];
+			Pair[] suf = new Pair[n];
+
+			// compute prefix/suffix minimums and maximums
+			pref[0] = new Pair(cows[0].second, cows[0].second);
+			for (int i = 1; i < n; i++) {
+				pref[i] = upd(pref[i - 1], cows[i].second);
+			}
+
+			suf[n - 1] = new Pair(cows[n - 1].second, cows[n - 1].second);
+			for (int i = n - 2; i >= 0; i--) {
+				suf[i] = upd(suf[i + 1], cows[i].second);
+			}
+
+			// initial area with one enclosure
+			long area = (cows[n - 1].first - cows[0].first) *
+			            (pref[n - 1].second - pref[n - 1].first);
+
+			long best = Long.MAX_VALUE;
+			for (int i = 0; i < n - 1; i++) {
+				// if it's possible to split
+				if (cows[i].first != cows[i + 1].first) {
+					long first_rect = (cows[i].first - cows[0].first) *
+					                  (pref[i].second - pref[i].first);
+					long second_rect = (cows[n - 1].first - cows[i + 1].first) *
+					                   (suf[i + 1].second - suf[i + 1].first);
+					best = Math.min(best, first_rect + second_rect);
+				}
+			}
+
+			ans = Math.max(ans, area - best);
+
+			// switch coordinates to find splits on y axis instead of x axis
+			for (int i = 0; i < n; i++) {
+				long temp = cows[i].first;
+				cows[i].first = cows[i].second;
+				cows[i].second = temp;
+			}
+		}
+
+		PrintWriter pw = new PrintWriter("split.out");
+		pw.println(ans);
+		pw.close();
+	}
+}
+
+// BeginCodeSnip{Pair}
+class Pair implements Comparable<Pair> {
+	public long first, second;
+	public Pair(long x, long y) {
+		first = x;
+		second = y;
+	}
+
+	public int compareTo(Pair o) {
+		if (o.first != first) { return (int)(first - o.first); }
+		return (int)(second - o.second);
+	}
+}
+// EndCodeSnip
+```
+
+</JavaSection>
 <PySection>
 
 ```py
@@ -170,5 +262,6 @@ ans = max(ans, search())
 
 print(ans, file=open("split.out", "w"))
 ```
+
 </PySection>
 </LanguageSection>
