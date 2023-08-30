@@ -5,7 +5,6 @@ title: Magazine Ad
 author: Alex Du
 ---
 
-## Explanation
 <Spoiler title="Hint 1">
 
 Can we check if there is a way to format an ad of a given width using less than or equal to the maximum number of lines?
@@ -13,6 +12,8 @@ Can we check if there is a way to format an ad of a given width using less than 
 </Spoiler>
 
 <Spoiler title="Solution">
+
+## Explanation
 
 [Official Analysis](https://codeforces.com/blog/entry/51768)
 
@@ -22,85 +23,80 @@ Note that spaces function identically to hyphens, so we can treat them the same 
 
 Given a width, we will add as many words as possible to each line, creating a new line when we run out of room. If the number of lines we use is less than or equal to the maximum number of lines, then our width is fine. Note that if any individual word is wider than our given width, we must use a greater width.
 
-
 ## Implementation
 
 **Time Complexity:** $\mathcal{O}(N \log N)$
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
 #include <bits/stdc++.h>
-
 using namespace std;
 
 int max_lines;
 vector<int> word_lengths;
 string ad;
 
-// returns true if most optimized ad of given width doesn't use greater than
-// max_lines
+// returns true if most optimized ad of given width doesn't use greater than max_lines
 bool f(int width) {
-	int lines = 0;
-	int cur_width = 0;
+    int lines = 0;
+    int cur_width = 0;
 
-	for (int word_length : word_lengths) {
-		// if an individual word is wider than our ad width, we need a greater
-		// width
-		if (word_length > width) return false;
+    for (int word_length : word_lengths) {
+        // if an individual word is wider than our ad width, we need a greater width
+        if (word_length > width) { return false; }
 
-		// if we overflow, we need a new line
-		if (cur_width + word_length > width) {
-			lines++;
-			cur_width = word_length;
-		}
-		// add word to current line
-		else {
-			cur_width += word_length;
-		}
-	}
-	if (cur_width > 0) lines++;
-	return lines <= max_lines;
+        // if we overflow, we need a new line
+        if (cur_width + word_length > width) {
+            lines++;
+            cur_width = word_length;
+        } else {
+            cur_width += word_length;  // add word to current line
+        }
+    }
+
+    if (cur_width > 0) { lines++; }
+    return lines <= max_lines;
 }
 
 int main() {
-	cin >> max_lines;
-	// ignore '\n' character before getline
-	cin.ignore();
-	getline(cin, ad);
+    cin >> max_lines;
+    // ignore '\n' character before getline
+    cin.ignore();
+    getline(cin, ad);
 
-	// get sizes of each word, including trailing spaces and trailing hyphens
-	word_lengths.push_back(0);
-	for (char i : ad) {
-		word_lengths.back()++;
-		// spaces and hyphens function the same, start new word after adding
-		// char
-		if (i == ' ' || i == '-') { word_lengths.push_back(0); }
-	}
+    // get sizes of each word, including trailing spaces and trailing hyphens
+    word_lengths.push_back(0);
+    for (char i : ad) {
+        word_lengths.back()++;
+        // spaces and hyphens function the same, start new word after adding char
+        if (i == ' ' || i == '-') {
+            word_lengths.push_back(0);
+        }
+    }
 
-	/*
-	 * find the lowest width that doesn't use greater than max_lines
-	 * binary search: https://usaco.guide/silver/binary-search?lang=cpp
-	 */
-	int lo = 0, hi = (int)ad.size();
-	hi++;
-	while (lo < hi) {
-		int mid = lo + (hi - lo) / 2;
-		if (f(mid)) {
-			hi = mid;
-		} else {
-			lo = mid + 1;
-		}
-	}
+    /*
+     * find the lowest width that doesn't use greater than max_lines
+     * binary search: https://usaco.guide/silver/binary-search
+     */
+    int lo = 0;
+    int hi = (int)ad.size();
+    hi++;
+    while (lo < hi) {
+        int mid = lo + (hi - lo) / 2;
+        if (f(mid)) {
+            hi = mid;
+        } else {
+            lo = mid + 1;
+        }
+    }
 
-	cout << lo << endl;
+    cout << lo << endl;
 }
 ```
 
 </CPPSection>
-
 </LanguageSection>
 
 </Spoiler>
