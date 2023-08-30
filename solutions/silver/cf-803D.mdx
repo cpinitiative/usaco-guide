@@ -38,15 +38,13 @@ int max_lines;
 vector<int> word_lengths;
 string ad;
 
-// returns true if most optimized ad of given width doesn't use greater than
-// max_lines
+/** @return if most optimized ad of given width satisfies constraints */
 bool f(int width) {
 	int lines = 0;
 	int cur_width = 0;
 
 	for (int word_length : word_lengths) {
-		// if an individual word is wider than our ad width, we need a greater
-		// width
+		// if individual word is wider than ad width, we need a greater width
 		if (word_length > width) { return false; }
 
 		// if we overflow, we need a new line
@@ -72,8 +70,7 @@ int main() {
 	word_lengths.push_back(0);
 	for (char i : ad) {
 		word_lengths.back()++;
-		// spaces and hyphens function the same, start new word after adding
-		// char
+		// spaces and hyphens work the same, start new word after adding char
 		if (i == ' ' || i == '-') { word_lengths.push_back(0); }
 	}
 
