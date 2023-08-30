@@ -2,11 +2,12 @@
 id: usaco-1018
 source: USACO Gold 2020 February
 title: Help Yourself
-author: Aakash Gokhale, Sriya Mudunuri
+author: Aakash Gokhale, Sriya Mudunuri, Daniel Ge
 ---
 
 [Official Analysis (C++)](http://www.usaco.org/current/data/sol_help_gold_feb20.html)
 
+<Spoiler title="Solution 1">
 ## Solution
 
 The brute force approach of this problem would be to iterate over all subsets and count the number of connected components for each subset.
@@ -111,3 +112,91 @@ print(ans, file=open("help.out", "w"))
 
 </PySection>
 </LanguageSection>
+</Spoiler>
+
+<Spoiler title="Solution 2">
+<Warning>
+This solution makes use of [indexed sets](https://usaco.guide/gold/PURS?lang=cpp#finding-the-k-th-element).
+</Warning>
+
+## Solution
+
+
+We process the segments one-by-one. Let the complexity sum of the the first $k$ segments be $c_k$. We'll use $c_k$ to calcualte $c_{k+1}$ in a process similar to dynamic programming. Our answer would then be $c_N$.
+
+From $c_k$ to $c_{k+1}$, our new set of subsets is,
+
+$$\text{\{the previous set of subsets\} } \cup \text{ \{the previous set of subsets with }segment_{k+1}\text{ added to each of them\}}$$
+
+The sum of the complexities of the previous set of subsets is still $c_k$. However, adding $segment_{k+1}$ to each of them may merge lots of previously disjoint segments (if $segment_{k+1}$ happened to intersect all of them).
+
+To control this, **we first sort the segments by their left-ends**. This means that each new segment can only either merge itself into a previous segment (without merging previously disjoint segments) or form a new disjoint segment. 
+
+We also know that our new segment forms a new disjoint segment if and only if it merges with previous segments that doesn't intersect with it. Therefore, the transition formula is,
+
+$c_{k+1} = c_k + 2^{\text{number of previous segments that don't intsersect } segment_k}$
+
+To count the $\text{number of previous segments that don't intsersect } segment_k$, we use an indexed set that stores the right endpoints of previous segments. We can use its order_of_key function to determine the number of previous segments that end before our left endpoint.
+
+## Implementation
+<LanguageSection>
+<CPPSection>
+```cpp
+#include <bits/stdc++.h> 
+using namespace std;
+
+// Importing indexed sets
+#include <ext/pb_ds/assoc_container.hpp>
+using namespace __gnu_pbds;
+template <class T>
+using Tree =
+    tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
+
+const int MOD = 1e9 + 7;
+
+// Binary exponentation
+int powermod (long long base, long long exp) {
+	base %= MOD;
+	long long result = 1;
+	while (exp > 0) {
+		if (exp % 2 == 1) // if n is odd
+			result = result * base % MOD;
+		base = base * base % MOD;
+		exp /= 2; // divide by two
+	}
+	return result;
+}
+
+int N, tot = 0;
+vector<pair<int, int>> ranges;
+
+int main () {
+	ifstream fin("help.in");
+	ofstream fout("help.out");
+
+	fin >> N;
+	for (int i = 0; i < N; i ++) {
+		int a, b; fin >> a >> b;
+		ranges.push_back({a, b});
+	}
+	// Sorting ranges by their left values
+	sort(ranges.begin(), ranges.end());
+
+	Tree<pair<int, int>> pastend;
+	for (int i = 0; i < N; i ++) {
+		int left = ranges[i].first, right = ranges[i].second;
+
+		// Counting # of previous ranges that don't intersect
+		int unaffiliated = pastend.order_of_key({left, -1});
+
+		tot = (2 * tot) % MOD + powermod(2, unaffiliated);
+		tot %= MOD;
+		pastend.insert({right, i});
+	}
+	fout << tot << endl;
+}
+```
+</CPPSection>
+</LanguageSection>
+
+</Spoiler>
