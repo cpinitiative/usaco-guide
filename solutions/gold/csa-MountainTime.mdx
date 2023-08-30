@@ -61,9 +61,7 @@ struct DSU {
 		iota(par.begin(), par.end(), 0);
 
 		comp = vector<vector<int>>(N);
-		for (int i = 0; i < N; i++) {
-			comp[i].push_back(i);
-		}
+		for (int i = 0; i < N; i++) { comp[i].push_back(i); }
 	}
 
 	// get root (uses path compression)
@@ -73,12 +71,9 @@ struct DSU {
 		int intermediate = grid[x];
 		x = get(x), y = get(y);
 
-		if (x == y) {
-			return;
-		}
+		if (x == y) { return; }
 
-		if (grid[x] > grid[y])
-			swap(x, y);
+		if (grid[x] > grid[y]) swap(x, y);
 
 		if (grid[y] > grid[x]) {
 			// we have the answer for the smaller component
@@ -90,13 +85,9 @@ struct DSU {
 			par[x] = y;
 		} else if (grid[x] == grid[y]) {
 			// merge the two components (small to large)
-			if ((int)comp[x].size() < (int)comp[y].size()) {
-				swap(x, y);
-			}
+			if ((int)comp[x].size() < (int)comp[y].size()) { swap(x, y); }
 
-			for (int &i : comp[y]) {
-				comp[x].push_back(i);
-			}
+			for (int &i : comp[y]) { comp[x].push_back(i); }
 			comp[y].clear();
 			par[y] = x;
 		}
@@ -130,19 +121,19 @@ int main() {
 		int idx = cur.second;
 
 		if (idx % m != 0 && grid[idx - 1] >= grid[idx]) {
-			dsu.unite(idx, idx - 1, grid, ans); // left
+			dsu.unite(idx, idx - 1, grid, ans);  // left
 		}
 
 		if (idx >= m && grid[idx - m] >= grid[idx]) {
-			dsu.unite(idx, idx - m, grid, ans); // up
+			dsu.unite(idx, idx - m, grid, ans);  // up
 		}
 
 		if (idx % m != m - 1 && grid[idx + 1] >= grid[idx]) {
-			dsu.unite(idx, idx + 1, grid, ans); // right
+			dsu.unite(idx, idx + 1, grid, ans);  // right
 		}
 
 		if (idx < (n * m) - m && grid[idx + m] >= grid[idx]) {
-			dsu.unite(idx, idx + m, grid, ans); // down
+			dsu.unite(idx, idx + m, grid, ans);  // down
 		}
 	}
 
@@ -150,7 +141,6 @@ int main() {
 		cout << ans[i] << " \n"[(i + 1) % m == 0];
 	}
 }
-
 ```
 
 </CPPSection>
