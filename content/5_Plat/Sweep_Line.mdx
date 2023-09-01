@@ -351,24 +351,24 @@ Starting from an arbitrary point, we run Dijkstra's algorithm with a priority qu
 
 ```cpp
 #include <bits/stdc++.h>
-
 using namespace std;
 
 const int GRID_SZ = 1000;
 const int dx[4] = {-1, 0, 1, 0};
 const int dy[4] = {0, 1, 0, -1};
 
-int d[GRID_SZ][GRID_SZ];     // The distance from the starting point
-bool mat[GRID_SZ][GRID_SZ];  // mat[x][y] = if (x, y) point is in the input
-
 int main() {
 	int n;
 	cin >> n;
-	memset(d, -1, sizeof(d));
+
+	// The distance from the starting point
+	vector<vector<int>> d(GRID_SZ, vector<int>(GRID_SZ, -1));
+	// mat[x][y] = if (x, y) point is in the input;
+	vector<vector<bool>> mat(GRID_SZ, vector<bool>(GRID_SZ));
+
 	priority_queue<pair<int, pair<int, int>>, vector<pair<int, pair<int, int>>>,
 	               greater<pair<int, pair<int, int>>>>
 	    pq;
-
 	for (int i = 0; i < n; i++) {
 		int x, y;
 		cin >> x >> y;
