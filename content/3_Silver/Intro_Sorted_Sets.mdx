@@ -2,7 +2,7 @@
 id: intro-sorted-sets
 title: 'More Operations on Sorted Sets'
 author: Darren Yao, Benjamin Qi, Andrew Wang
-contributors: Aadit Ambadkar
+contributors: Aadit Ambadkar, Jeffrey Hu
 prerequisites:
   - intro-sets
 description:
@@ -352,7 +352,6 @@ the number of elements in the priority queue. Priority queues are simpler and
 faster than sets, so you should use them instead whenever possible.
 
 <LanguageSection>
-
 <CPPSection>
 
 ### [C++](http://www.cplusplus.com/reference/queue/priority_queue/)
@@ -370,13 +369,11 @@ pq.push(6);                // [1, 2, 6]
 ```
 
 </CPPSection>
-
 <JavaSection>
 
 ### Java
 
-In Java, we delete and retrieve the element of **lowest** rather than highest
-priority.
+In Java (unlike in C++), we delete and retrieve the **lowest** element.
 
 ```java
 PriorityQueue<Integer> pq = new PriorityQueue<Integer>();
@@ -391,7 +388,43 @@ pq.add(6);                      // [7, 6, 5]
 ```
 
 </JavaSection>
+<PySection>
 
+### [Python](https://docs.python.org/3/library/heapq.html)
+
+In Python (unlike in C++), we delete and retrieve the **lowest** element.
+
+Note that Python's priority queue is not encapsulated; `heapq` operates on a provided list directly by turning it into a heap, then doing operations on the heap.
+
+<Warning>
+
+Because of a heap's structure, printing out `pq` will **not** print out the elements in sorted order in Python; instead, it will print out the list. The comments below are a **representation** of what the heap contains, **not** what the contents of `pq` actually are.
+
+</Warning>
+
+```py
+import heapq
+
+pq = []
+
+"""
+The following line is not necessary since pq starts as an empty list. However,
+for lists of length greater than 1, heapify is required to turn the list into a
+heap.
+"""
+heapq.heapify(pq)
+
+heapq.heappush(pq, 7)  # [7]
+heapq.heappush(pq, 2)  # [7, 2]
+heapq.heappush(pq, 1)  # [7, 2, 1]
+heapq.heappush(pq, 5)  # [7, 5, 2, 1]
+print(pq[0])  # 1
+heapq.heappop(pq)  # [7, 5, 2]
+heapq.heappop(pq)  # [7, 5]
+heapq.heappush(pq, 6)  # [7, 6, 5]
+```
+
+</PySection>
 </LanguageSection>
 
 ## Introductory Problems
