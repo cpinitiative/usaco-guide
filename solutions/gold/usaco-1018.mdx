@@ -150,7 +150,7 @@ To count the $\text{number of previous segments that don't intsersect } segment_
 #include <bits/stdc++.h>
 using namespace std;
 
-// Importing indexed sets
+// BeginCodeSnip{Importing indexed sets}
 #include <ext/pb_ds/assoc_container.hpp>
 using namespace __gnu_pbds;
 template <class T>
@@ -158,28 +158,30 @@ using Tree =
     tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
 
 const int MOD = 1e9 + 7;
+// EndCodeSnip
 
-// Binary exponentation
-int powermod(long long base, long long exp) {
-	base %= MOD;
-	long long result = 1;
-	while (exp > 0) {
-		if (exp % 2 == 1)  // if n is odd
-			result = result * base % MOD;
-		base = base * base % MOD;
-		exp /= 2;  // divide by two
+// BeginCodeSnip{Binary Exponentation}
+long long exp (long long x, long long n) {
+	assert(n >= 0);
+	x %= MOD;  // note: MOD * MOD must be less than 2^63 to avoid ll overflow
+	long long res = 1;
+	while (n > 0) {
+		if (n % 2 == 1) { res = res * x % MOD; }
+		x = x * x % MOD;
+		n /= 2;
 	}
-	return result;
+	return res;
 }
+// EndCodeSnip
 
-int N, tot = 0;
+int n;
 vector<pair<int, int>> ranges;
 
 int main() {
 	ifstream fin("help.in");
 
-	fin >> N;
-	for (int i = 0; i < N; i++) {
+	fin >> n;
+	for (int i = 0; i < n; i++) {
 		int a, b;
 		fin >> a >> b;
 		ranges.push_back({a, b});
@@ -189,13 +191,14 @@ int main() {
 	sort(ranges.begin(), ranges.end());
 
 	Tree<pair<int, int>> pastend;
-	for (int i = 0; i < N; i++) {
+	int tot = 0;
+	for (int i = 0; i < n; i++) {
 		int left = ranges[i].first, right = ranges[i].second;
 
 		// Counting # of previous ranges that don't intersect
 		int unaffiliated = pastend.order_of_key({left, -1});
 
-		tot = (2 * tot) % MOD + powermod(2, unaffiliated);
+		tot = (2 * tot) % MOD + exp(2, unaffiliated);
 		tot %= MOD;
 		pastend.insert({right, i});
 	}
