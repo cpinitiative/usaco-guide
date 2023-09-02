@@ -10,9 +10,9 @@ author: Andi Qu, Benjamin Qi, Andrew Wang
 ## Solution 1
 
 The largest rectangle must have the same height as the shortest bar that it
-contains. For each $i$, consider the largest rectangle with height $H[i]$ such
+contains. For each $i$, consider the largest rectangle with height $\text{heights}[i]$ such
 that bar $i$ is the shortest bar it contains. The answer is simply the largest
-of these $N$ rectangles.
+of these $n$ rectangles.
 
 Since the heights of these rectangles are fixed, we just want them to be as wide
 as possible. Notice how the rectangle of bar $i$ is bounded by the the closest
@@ -28,29 +28,44 @@ for more details.
 #include <bits/stdc++.h>
 using namespace std;
 
-class Solution {
-  public:
-	int largestRectangleArea(vector<int> &heights) {
-		int n = heights.size();
-		if (!n) return 0;
-		stack<int> stck;
-		vector<int> area(n, 0);
-		for (int i = 0; i < n; i++) {
-			while (stck.size() && heights[stck.top()] >= heights[i]) stck.pop();
-			int width = i - (stck.size() ? stck.top() : -1);
-			area[i] += width * heights[i];
-			stck.push(i);
-		}
-		while (stck.size()) stck.pop();
-		for (int i = n - 1; ~i; i--) {
-			while (stck.size() && heights[stck.top()] >= heights[i]) stck.pop();
-			int width = (stck.size() ? stck.top() : n) - i;
-			area[i] += (width - 1) * heights[i];
-			stck.push(i);
-		}
-		return *max_element(area.begin(), area.end());
+using ll = long long;
+
+int main() {
+	int n;
+	cin >> n;
+	vector<ll> heights(n);
+	for (ll& i : heights) {
+		cin >> i;
 	}
-};
+
+	stack<int> mono_stack;
+	vector<ll> area(n, 0);
+
+	// left to right
+	for (int i = 0; i < n; i++) {
+		while (!mono_stack.empty() && heights[mono_stack.top()] >= heights[i]) {
+			mono_stack.pop();
+		}
+		int width = i - (mono_stack.empty() ? -1 : mono_stack.top());
+		area[i] += width * heights[i];
+		mono_stack.push(i);
+	}
+	while (!mono_stack.empty()) {
+		mono_stack.pop();
+	}
+
+	// right to left
+	for (int i = n - 1; i >= 0; i--) {
+		while (!mono_stack.empty() && heights[mono_stack.top()] >= heights[i]) {
+			mono_stack.pop();
+		}
+		int width = (mono_stack.empty() ? n : mono_stack.top()) - i;
+		area[i] += (width - 1) * heights[i];
+		mono_stack.push(i);
+	}
+
+	cout << *max_element(area.begin(), area.end()) << endl;
+}
 ```
 
 ## Solution 2
