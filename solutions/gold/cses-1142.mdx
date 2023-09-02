@@ -5,7 +5,6 @@ title: Advertisement
 author: Andi Qu, Benjamin Qi, Andrew Wang
 ---
 
-**Time Complexity:** $\mathcal O(N)$.
 
 ## Solution 1
 
@@ -23,6 +22,12 @@ We can use a monotone stack twice to find the closest shorter bars on each side
 of each bar. See
 [the stacks module](/gold/stacks#application-nearest-smaller-element)
 for more details.
+
+**Time Complexity:** $\mathcal O(N)$.
+
+<LanguageSection>
+
+<CPPSection>
 
 ```cpp
 #include <bits/stdc++.h>
@@ -68,12 +73,22 @@ int main() {
 }
 ```
 
+</CPPSection>
+
+</LanguageSection>
+
 ## Solution 2
 
 Actually, we only need to go through the heights in one direction. When we see
 `(i, heights[i])`, we process all rectangles with right end at `i-1` and height
 greater than `heights[i]`. Note how we process the rectangles that end at the
 last height by emptying the stack.
+
+**Time Complexity:** $\mathcal O(N)$.
+
+<LanguageSection>
+
+<CPPSection>
 
 ```cpp
 #include <bits/stdc++.h>
@@ -113,8 +128,16 @@ int main() {
 }
 ```
 
+</CPPSection>
+
+</LanguageSection>
+
 Alternatively, one can add `-1` to the list of `heights` so we don't have
 to treat rectangles that end at the last height in `heights` as a special case.
+
+<LanguageSection>
+
+<CPPSection>
 
 ```cpp
 #include <bits/stdc++.h>
@@ -152,3 +175,7 @@ int main() {
 	cout << ans << endl;
 }
 ```
+
+</CPPSection>
+
+</LanguageSection>
