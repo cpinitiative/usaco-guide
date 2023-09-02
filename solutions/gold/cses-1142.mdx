@@ -63,33 +63,39 @@ last height by emptying the stack.
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
-#define pi pair<int, int>
-#define f first
-#define s second
-class Solution {
-  public:
-	int largestRectangleArea(vector<int> &heights) {
-		int N = heights.size();
-		int maxa = 0;
-		stack<pi> sta;
-		for (int i = 0; i < N; i++) {
-			int start = i;
-			while (!sta.empty() && heights[i] < sta.top().s) {
-				pi cur = sta.top();
-				sta.pop();
-				start = cur.f;
-				maxa = max(maxa, (i - cur.f) * cur.s);
-			}
-			sta.push(make_pair(start, heights[i]));
-		}
-		while (!sta.empty()) {
-			pi cur = sta.top();
-			sta.pop();
-			maxa = max(maxa, (N - cur.f) * cur.s);
-		}
-		return maxa;
+
+using ll = long long;
+
+int main() {
+	int n;
+	cin >> n;
+	vector<ll> heights(n);
+	for (ll& i : heights) {
+		cin >> i;
 	}
-};
+
+	ll ans = 0;
+	stack<pair<ll, ll>> mono_stack;
+	for (int i = 0; i < n; i++) {
+		int start = i;
+		while (!mono_stack.empty() && heights[i] < mono_stack.top().second) {
+			pair<ll, ll> cur = mono_stack.top();
+			mono_stack.pop();
+			start = cur.first;
+			ans = max(ans, (i - cur.first) * cur.second);
+		}
+		mono_stack.push({start, heights[i]});
+	}
+
+	// finish up the remaining rectangles
+	while (!mono_stack.empty()) {
+		pair<ll, ll> cur = mono_stack.top();
+		mono_stack.pop();
+		ans = max(ans, (n - cur.first) * cur.second);
+	}
+
+	cout << ans << endl;
+}
 ```
 
 Alternatively, one can add `-1` to the list of `heights` so we don't have
