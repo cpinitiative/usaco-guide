@@ -17,11 +17,13 @@ Is there a way to format an ad of a given width using less than or equal to the 
 
 [Official Analysis](https://codeforces.com/blog/entry/51768)
 
-If we can find whether formatting an ad with a given width within the line constraints is possible, we can binary search on the width, printing the minimum width that works.
+Is there a way to format an ad of a given width using less than or equal to the maximum number of lines?
 
-Since spaces function identically to hyphens, we can treat them similarly. We can break the ad into blocks of word lengths, with each word length including the word plus a space or hyphen. The only exception is the last word, which will have neither.
-
-Given a width, we will add as many words as possible to each line, creating a new line when we run out of room. If the number of lines we use is less than or equal to the maximum number of lines, then our width is fine. Note that if any word is wider than our given width, we must use a greater width.
+If we can format an ad using less than or equal to the maximum number of lines, we can binary search for the minimum width that works.
+ 
+We can break the ad into blocks of word lengths, with each word length including the word (except for the last word) plus a space or a hyphen since spaces and hyphens function similarly.
+  
+We will add as many words as possible to each line for each width, creating a new line when we run out of room. If the number of lines we use is less than or equal to the maximum number of lines, then our width works. If any word is longer than our given width, then our width doesn't work.
 
 ## Implementation
 
