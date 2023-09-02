@@ -39,9 +39,7 @@ int main() {
 	int n;
 	cin >> n;
 	vector<ll> heights(n);
-	for (ll& i : heights) {
-		cin >> i;
-	}
+	for (ll &i : heights) { cin >> i; }
 
 	stack<int> mono_stack;
 	vector<ll> area(n, 0);
@@ -55,9 +53,7 @@ int main() {
 		area[i] += width * heights[i];
 		mono_stack.push(i);
 	}
-	while (!mono_stack.empty()) {
-		mono_stack.pop();
-	}
+	while (!mono_stack.empty()) { mono_stack.pop(); }
 
 	// right to left
 	for (int i = n - 1; i >= 0; i--) {
@@ -100,9 +96,7 @@ int main() {
 	int n;
 	cin >> n;
 	vector<ll> heights(n);
-	for (ll& i : heights) {
-		cin >> i;
-	}
+	for (ll &i : heights) { cin >> i; }
 
 	ll ans = 0;
 	stack<pair<ll, ll>> mono_stack;
@@ -149,9 +143,7 @@ int main() {
 	int n;
 	cin >> n;
 	vector<ll> heights(n);
-	for (ll& i : heights) {
-		cin >> i;
-	}
+	for (ll &i : heights) { cin >> i; }
 	heights.push_back(-1);
 
 	stack<ll> mono_stack;
@@ -160,14 +152,12 @@ int main() {
 	ll ans = 0;
 	for (int i = 0; i <= n; i++) {
 		while (mono_stack.top() != -1 &&
-			   heights[mono_stack.top()] >= heights[i]) {
+		       heights[mono_stack.top()] >= heights[i]) {
 			int x = mono_stack.top();
 			mono_stack.pop();
 			// min height is heights[x]
 			ll new_area = (i - 1 - mono_stack.top()) * heights[x];
-			if (ans < new_area) {
-				ans = new_area;
-			}
+			if (ans < new_area) { ans = new_area; }
 		}
 		mono_stack.push(i);
 	}
