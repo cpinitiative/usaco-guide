@@ -5,12 +5,8 @@ title: Help Yourself
 author: Aakash Gokhale, Sriya Mudunuri, Daniel Ge
 ---
 
-<Spoiler title="Hint 1">
+<Spoiler title="Hint">
 We iterate over all the start and endpoints in sorted order. The idea is to count how much each segment contributes to the overall complexity.
-</Spoiler>
-
-<Spoiler title="Hint 2">
-To avoid overcounting, we only count it if our segment is the beginning of a connected component in any given subset.
 </Spoiler>
 
 <Spoiler title="Solution 1">
@@ -133,23 +129,26 @@ This solution makes use of [indexed sets](/gold/PURS?lang=cpp#finding-the-k-th-e
 
 ## Explanation
 
-We process the segments one-by-one. Let the complexity sum of the first $k$ segments be $c_k$. We'll use $c_k$ to calculate $c_{k+1}$ in a process similar to dynamic programming. Our answer would then be $c_N$.
+Let the complexity sum of the first $k$ segments be $c_k$. Use $c_k$ to calculate $c_{k+1}$ in a process similar to dynamic programming, and our final answer would be $c_N$.
 
 From $c_k$ to $c_{k+1}$, our new set of subsets is,
 
-$$\text{\{the previous set of subsets\} } \cup \text{ \{the previous set of subsets with }segment_{k+1}\text{ added to each of them\}}$$
+$$\text{\{the previous set of subsets\} } \cup \text{ \{the previous set of subsets with }\texttt{seg}_{k+1}\text{ added to each of them\}}$$
 
-The sum of the complexities of the previous set of subsets is still $c_k$. However, adding $segment_{k+1}$ to each of them may merge lots of previously disjoint segments (if $segment_{k+1}$ happened to intersect all of them).
+The sum of the complexities of the previous set of subsets is still $c_k$. However, adding $\texttt{seg}_{k+1}$ to each of them may merge lots of previously disjoint segments (if $\texttt{seg}_{k+1}$ happened to intersect all of them).
 
 To control this, **we first sort the segments by their left endpoints**. This means that each new segment can only either merge itself into a previous segment (without merging previously disjoint segments) or form a new disjoint segment.
 
 We also know that our new segment forms a new disjoint segment if and only if it merges with previous segments that don't intersect with it. Therefore, the transition formula is,
 
-$c_{k+1} = c_k + 2^{\text{number of previous segments that don't intsersect } segment_k}$
+If $x$ is the number of previous segments that don't intsersect $segment_k$,
+$c_{k+1} = c_k + 2^x$
 
-To count the $\text{number of previous segments that don't intersect} segment_k$, we use an indexed set that stores the right endpoints of previous segments. We can use its `order_of_key` function to determine the number of previous segments that end before our left endpoint.
+To count the $x$, we use an indexed set that stores the right endpoints of previous segments. We can use its `order_of_key` function to determine the number of previous segments that end before our left endpoint.
 
 ## Implementation
+
+**Time Complexity:** $\mathcal{O}(N \log N)$
 
 <LanguageSection>
 <CPPSection>
