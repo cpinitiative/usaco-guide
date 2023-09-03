@@ -496,4 +496,117 @@ int main() {
 		}
 	}
 }
+
+```
+## Solution 3
+ Dynamic Segment tree Solution 
+
+```cpp
+#include<iostream>
+#include<algorithm>
+#include<vector>
+#include<array>
+#define fastio() ios_base::sync_with_stdio(false);cin.tie(NULL);cout.tie(NULL)
+
+using namespace std;
+
+#define ll long long 
+
+struct node{
+  ll val;
+  node *left,*right; 
+  node(ll v){
+    val=v;
+    left=nullptr;
+    right=nullptr;
+  }
+};
+
+class DynamicSegTree{  
+  node *root;
+  public:
+  DynamicSegTree(){
+    root=new node(0);
+  }
+  void  addNode(ll index,int value,ll left,ll right,node *temp){
+    if(left==right){
+      temp->val+=value;
+      return ;
+    }
+    ll mid=(left+right)/2;
+    if(index>=left and index<=mid){
+      if(!temp->left)temp->left=new node(0);
+      addNode(index,value,left,mid,temp->left);
+    }else{
+      if(!temp->right)temp->right=new node(0);
+      addNode(index,value,mid+1,right,temp->right);
+    }
+    temp->val=0;
+    if(temp->left)temp->val+=temp->left->val;
+    if(temp->right)temp->val+=temp->right->val;
+  }
+  ll getSum(ll left,ll right,ll l,ll r,node *temp){
+    if(!temp)return 0;
+    if(l>right or r<left){
+      return 0;
+    }
+    if(l>=left and r<=right){
+      return temp->val;
+    }
+      ll mid=(l+r)/2;
+      return getSum(left,right,l,mid,temp->left)+getSum(left,right,mid+1,r,temp->right);
+  }
+  node * getRootNode(){
+    return root;
+  }
+  void removeNode(ll ind,ll l,ll r, node *temp){
+    if(!temp)return;
+    if(l==r){
+      temp->val--;
+      return;
+    }
+    ll mid=(l+r)>>1;
+    if(ind>=l and ind<=mid ){
+      removeNode(ind,l,mid,temp->left);
+      if(temp->left and temp->left->val==0 ){
+         delete temp->left;
+         temp->left=nullptr;
+      }
+    }else{
+       removeNode(ind,mid+1,r,temp->right);
+      if(temp->right and temp->right->val==0 ){
+        delete temp->right;
+        temp->right=nullptr;
+      }
+    }
+    temp->val=0;
+    if(temp->left)temp->val+=temp->left->val;
+    if(temp->right)temp->val+=temp->right->val;
+  }
+};
+
+
+int main() {
+  fastio();
+  int n,q,a,b;
+  char type;
+  cin>>n>>q;  
+  int salary[n+1];
+  DynamicSegTree tree;
+  node *root=tree.getRootNode();
+  for(int i=1;i<=n;i++){
+   cin>>salary[i];
+   tree.addNode(salary[i],1,1,1e9,root);
+  }
+  while(q--){
+    cin>>type>>a>>b;
+    if(type=='!'){
+      tree.removeNode(salary[a],1,1e9,root);
+      salary[a]=b;
+      tree.addNode(b,1,1,1e9,root);
+    }else{
+      cout<<tree.getSum(a,b,1,1e9,root)<<endl;
+    }
+  }
+}
 ```
