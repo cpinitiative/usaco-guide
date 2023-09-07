@@ -349,8 +349,8 @@ export const RestOfMembers: Member[] = [
   {
     photo: 'harsh_akunuri',
     name: 'Harsh Akunuri',
-    titles: [roles.clubCurriculum]
-  }
+    titles: [roles.clubCurriculum],
+  },
 ];
 
 export const NotPictured: Member[] = [
