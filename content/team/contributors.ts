@@ -346,6 +346,11 @@ export const RestOfMembers: Member[] = [
     name: 'Justin Huang',
     titles: ['Director of Software', roles.webdev],
   },
+  {
+    photo: 'harsh_akunuri',
+    name: 'Harsh Akunuri',
+    titles: [roles.clubCurriculum]
+  }
 ];
 
 export const NotPictured: Member[] = [
