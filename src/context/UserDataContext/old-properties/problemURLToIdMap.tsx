@@ -1,3 +1,7 @@
+// NO LONGER USED
+// before it was used to migrate old problem statuses, but
+// it's been long enough that we probably don't need to support it anymore
+
 export default {
   'http://www.usaco.org/index.php?page=viewproblem2&cpid=807': 'usaco-807',
   'http://www.usaco.org/index.php?page=viewproblem2&cpid=591': 'usaco-591',

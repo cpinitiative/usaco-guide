@@ -10,8 +10,8 @@ import {
   updateDoc,
   writeBatch,
 } from 'firebase/firestore';
-import { useContext } from 'react';
-import UserDataContext from '../../context/UserDataContext/UserDataContext';
+import { useSetProgressOnProblem } from '../../context/UserDataContext/properties/userProgress';
+import { useFirebaseUser } from '../../context/UserDataContext/UserDataContext';
 import { PostData } from '../../models/groups/posts';
 import { GroupProblemData } from '../../models/groups/problem';
 import { useFirebaseApp } from '../useFirebase';
@@ -33,8 +33,8 @@ export interface ProblemSubmissionRequestData {
 
 export function usePostActions(groupId: string) {
   const firebaseApp = useFirebaseApp();
-  const { firebaseUser, setUserProgressOnProblems } =
-    useContext(UserDataContext);
+  const firebaseUser = useFirebaseUser();
+  const setUserProgressOnProblems = useSetProgressOnProblem();
 
   const updatePost = async (postId: string, updatedData: Partial<PostData>) => {
     await updateDoc(

@@ -6,8 +6,13 @@ import 'tippy.js/themes/light.css';
 import ConfettiContext from '../../context/ConfettiContext';
 import { useDarkMode } from '../../context/DarkModeContext';
 import MarkdownLayoutContext from '../../context/MarkdownLayoutContext';
-import { replaceIllegalFirebaseCharacters } from '../../context/UserDataContext/properties/userProgressOnResources';
-import UserDataContext from '../../context/UserDataContext/UserDataContext';
+import {
+  replaceIllegalFirebaseCharacters,
+  useSetProgressOnModule,
+  useSetProgressOnResource,
+  useUserProgressOnModules,
+  useUserProgressOnResources,
+} from '../../context/UserDataContext/properties/userProgress';
 import {
   ResourceInfo,
   ResourceProgress,
@@ -20,7 +25,13 @@ const StyledTippy = styled(Tippy)`
   }
 `;
 
-const ProgressDropdown = ({ onProgressSelected, currentProgress }) => {
+const ProgressDropdown = ({
+  onProgressSelected,
+  currentProgress,
+}: {
+  onProgressSelected: (newProgress: ResourceProgress) => void;
+  currentProgress: ResourceProgress;
+}) => {
   const [activeProgress, setActiveProgress] =
     useState<ResourceProgress>(currentProgress);
 
@@ -137,10 +148,10 @@ export default function ResourcestatusCheckbox({
 }): JSX.Element {
   const darkMode = useDarkMode();
   const markdownLayoutContext = useContext(MarkdownLayoutContext);
-  const { userProgressOnModules, setModuleProgress } =
-    useContext(UserDataContext);
-  const { userProgressOnResources, setUserProgressOnResources } =
-    useContext(UserDataContext);
+  const userProgressOnModules = useUserProgressOnModules();
+  const setModuleProgress = useSetProgressOnModule();
+  const userProgressOnResources = useUserProgressOnResources();
+  const setUserProgressOnResources = useSetProgressOnResource();
   const updateResourceProgressToPracticing = () => {
     if (
       markdownLayoutContext === null ||
@@ -170,14 +181,15 @@ export default function ResourcestatusCheckbox({
   const showConfetti = useContext(ConfettiContext);
   return (
     <StyledTippy
-      onCreate={tippy => (tippyRef.current = tippy)}
+      onCreate={(tippy: any) => (tippyRef.current = tippy)}
       content={
         <div className="w-56 z-20">
           <ProgressDropdown
             onProgressSelected={progress => {
               tippyRef.current.hide();
               setUserProgressOnResources(resource.url, progress);
-              const Practicing = x => x == 'Complete' || x == 'Practicing';
+              const Practicing = (x: ResourceProgress) =>
+                x == 'Complete' || x == 'Practicing';
               if (progress == 'Reading' || Practicing(progress)) {
                 updateResourceProgressToPracticing();
               }

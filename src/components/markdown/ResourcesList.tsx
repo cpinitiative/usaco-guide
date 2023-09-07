@@ -1,6 +1,5 @@
 import * as React from 'react';
-import { useContext } from 'react';
-import UserDataContext from '../../context/UserDataContext/UserDataContext';
+import { useUserLangSetting } from '../../context/UserDataContext/properties/simpleProperties';
 import { ResourceInfo } from '../../models/resource';
 import { books } from '../../utils/books';
 import PGS from './PGS';
@@ -95,7 +94,7 @@ export function Resource({
   title?: string;
   children?: React.ReactNode;
 }): JSX.Element {
-  const userSettings = useContext(UserDataContext);
+  const lang = useUserLangSetting();
   source = source ?? '';
   sourceDescription = sourceDescription ?? '';
   if (source in books) {
@@ -115,7 +114,7 @@ export function Resource({
         return url;
       };
       if (source === 'IUSACO') {
-        if (userSettings.lang === 'java') {
+        if (lang === 'java') {
           url = getSec(
             'JAVA',
             'https://darrenyao.com/usacobook/java.pdf',

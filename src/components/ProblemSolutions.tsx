@@ -1,11 +1,14 @@
 import Filter from 'bad-words';
 import * as React from 'react';
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import ContactUsSlideover from '../components/ContactUsSlideover/ContactUsSlideover';
 import { useDarkMode } from '../context/DarkModeContext';
 import { SignInContext } from '../context/SignInContext';
-import { LANGUAGE_LABELS } from '../context/UserDataContext/properties/userLang';
-import UserDataContext from '../context/UserDataContext/UserDataContext';
+import {
+  LANGUAGE_LABELS,
+  useUserLangSetting,
+} from '../context/UserDataContext/properties/simpleProperties';
+import { useFirebaseUser } from '../context/UserDataContext/UserDataContext';
 import { useUserPermissions } from '../context/UserDataContext/UserPermissionsContext';
 import useUserProblemSolutionActions from '../hooks/useUserProblemSolutionActions';
 import useUserSolutionsForProblem from '../hooks/useUserSolutionsForProblem';
@@ -23,13 +26,14 @@ export default function ProblemSolutions({
     useUserSolutionsForProblem(problem);
   const { deleteSolution, upvoteSolution, undoUpvoteSolution, mutateSolution } =
     useUserProblemSolutionActions();
-  const { firebaseUser, lang } = useContext(UserDataContext);
+  const firebaseUser = useFirebaseUser();
+  const lang = useUserLangSetting();
   const [isContactUsActive, setIsContactUsActive] = useState(false);
   const { signIn } = React.useContext(SignInContext);
   const canModerate = useUserPermissions().canModerate;
   const isDarkMode = useDarkMode();
   const filter = new Filter();
-  const langArr = ['cpp', 'java', 'py'];
+  const langArr: ('cpp' | 'java' | 'py')[] = ['cpp', 'java', 'py'];
   langArr.sort(function (first, second) {
     if (first === lang && second !== lang) {
       return -1;

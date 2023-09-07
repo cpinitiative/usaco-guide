@@ -1,7 +1,10 @@
 import { graphql, useStaticQuery } from 'gatsby';
-import React, { useContext, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { moduleIDToURLMap } from '../../../../../content/ordering';
-import UserDataContext from '../../../../context/UserDataContext/UserDataContext';
+import {
+  useDivisionTableQuery,
+  useSetDivisionTableQuery,
+} from '../../../../context/UserDataContext/properties/simpleProperties';
 import { ProblemSolutionInfo } from '../../../../models/problem';
 import Transition from '../../../Transition';
 import { ProblemsList } from '../ProblemsList';
@@ -263,19 +266,18 @@ export function DivisionList(props): JSX.Element {
       divisionToSeasonToProbs[division][allYears].push(prob);
     }
   }
-  const userSettings = useContext(UserDataContext);
+
+  const divisionTableQuery = useDivisionTableQuery();
+  const setDivisionTableQuery = useSetDivisionTableQuery();
 
   const [divisionHash, setDivisionHash] = React.useState('');
   const [seasonHash, setSeasonHash] = React.useState('');
   let curDivision =
-    divisionHash ||
-    (userSettings.divisionTableQuery &&
-      userSettings.divisionTableQuery.division);
+    divisionHash || (divisionTableQuery && divisionTableQuery.division);
   if (!divisions.includes(curDivision)) curDivision = divisions[0];
 
   let curSeason =
-    seasonHash ||
-    (userSettings.divisionTableQuery && userSettings.divisionTableQuery.season);
+    seasonHash || (divisionTableQuery && divisionTableQuery.season);
   if (!seasons.includes(curSeason)) curSeason = seasons[seasons.length - 1];
 
   useEffect(() => {
@@ -320,7 +322,7 @@ export function DivisionList(props): JSX.Element {
             if (curDivision === newDivision) return;
             setDivisionHash('');
             setSeasonHash('');
-            userSettings.setDivisionTableQuery({
+            setDivisionTableQuery({
               division: newDivision,
               season: curSeason,
             });
@@ -333,7 +335,7 @@ export function DivisionList(props): JSX.Element {
             if (curSeason === newSeason) return;
             setDivisionHash('');
             setSeasonHash('');
-            userSettings.setDivisionTableQuery({
+            setDivisionTableQuery({
               division: curDivision,
               season: newSeason,
             });

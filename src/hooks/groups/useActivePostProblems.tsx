@@ -9,7 +9,7 @@ import {
 import * as React from 'react';
 import { ReactElement, ReactNode } from 'react';
 import toast from 'react-hot-toast';
-import UserDataContext from '../../context/UserDataContext/UserDataContext';
+import { useFirebaseUser } from '../../context/UserDataContext/UserDataContext';
 import { GroupProblemData } from '../../models/groups/problem';
 import { useFirebaseApp } from '../useFirebase';
 import { useActiveGroup } from './useActiveGroup';
@@ -29,7 +29,7 @@ export function ActivePostProblemsProvider({
   children: ReactNode;
 }): ReactElement {
   const activeGroup = useActiveGroup();
-  const { firebaseUser } = React.useContext(UserDataContext);
+  const firebaseUser = useFirebaseUser();
   const [activePostId, setActivePostId] = React.useState<string>();
   const [isLoading, setIsLoading] = React.useState(true);
   const [problems, setProblems] = React.useState<GroupProblemData[]>([]);
