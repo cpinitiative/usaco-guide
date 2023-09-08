@@ -82,7 +82,7 @@ type UserDataContextAPI = {
 export const assignDefaultsToUserData = (data: object): UserData => {
   return {
     consecutiveVisits: 1,
-    showTags: true,
+    showTags: false,
     hideDifficulty: false,
     hideModules: false,
     showIgnored: true,
