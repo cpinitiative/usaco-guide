@@ -6,219 +6,120 @@ import {
   onSnapshot,
   serverTimestamp,
   setDoc,
+  updateDoc,
 } from 'firebase/firestore';
 import * as React from 'react';
-import { createContext, ReactNode, useReducer, useState } from 'react';
+import { createContext, ReactNode, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
 import { useFirebaseApp } from '../../hooks/useFirebase';
-import AdSettingsProperty, {
-  AdSettingsAPI,
-} from './properties/adSettingsProperty';
-import DivisionTableQuery, {
-  DivisionTableQueryAPI,
-} from './properties/divisionTableQuery';
-import HideDifficulty, { HideDifficultyAPI } from './properties/hideDifficulty';
-import HideModules, { HideModulesAPI } from './properties/hideModules';
-import LastReadAnnouncement, {
-  LastReadAnnouncementAPI,
-} from './properties/lastReadAnnouncement';
-import LastViewedModule, {
-  LastViewedModuleAPI,
-} from './properties/lastViewedModule';
-import LastVisitProperty, { LastVisitAPI } from './properties/lastVisit';
-import ShowIgnored, { ShowIgnoredAPI } from './properties/showIgnored';
-import ShowTags, { ShowTagsAPI } from './properties/showTags';
-import ThemeProperty, { ThemePropertyAPI } from './properties/themeProperty';
-import UserLang, { UserLangAPI } from './properties/userLang';
-import UserProgressOnModulesProperty, {
-  UserProgressOnModulesAPI,
-} from './properties/userProgressOnModules';
-import UserProgressOnProblemsProperty, {
-  UserProgressOnProblemsAPI,
-} from './properties/userProgressOnProblems';
-import UserProgressOnResourcesProperty, {
-  UserProgressOnResourcesAPI,
-} from './properties/userProgressOnResources';
-import UserDataPropertyAPI from './userDataPropertyAPI';
+import { ModuleProgress } from '../../models/module';
+import { ProblemProgress } from '../../models/problem';
+import { ResourceProgress } from '../../models/resource';
+import runMigration from './migration';
+import { Language, Theme } from './properties/simpleProperties';
+import { getLangFromUrl, updateLangURL } from './userLangQueryVariableUtils';
 import { UserPermissionsContextProvider } from './UserPermissionsContext';
 
-// Object for counting online users
-// var Gathering = (function () {
-//   function Gathering(firebase) {
-//     this.firebase = firebase;
-//     this.db = firebase.database();
-//
-//     this.room = this.db.ref('gatherings/globe');
-//     this.user = null;
-//
-//     this.join = function (uid) {
-//       // this check doesn't work if this.join() is called back-to-back
-//       if (this.user) {
-//         console.error('Already joined.');
-//         return false;
-//       }
-//
-//       // Add user to presence list when online.
-//       var presenceRef = this.db.ref('.info/connected');
-//       presenceRef.on('value', snap => {
-//         if (snap.val()) {
-//           this.user = uid ? this.room.child(uid) : this.room.push();
-//
-//           this.user
-//             .onDisconnect()
-//             .remove()
-//             .then(() => {
-//               this.user.set(this.firebase.database.ServerValue.TIMESTAMP);
-//             });
-//         }
-//       });
-//       return true;
-//     };
-//
-//     this.onUpdated = function (callback) {
-//       if ('function' == typeof callback) {
-//         this.room.on('value', function (snap) {
-//           callback(snap.numChildren(), snap.val());
-//         });
-//       } else {
-//         console.error(
-//           'You have to pass a callback function to onUpdated(). That function will be called (with user count and hash of users as param) every time the user list changed.'
-//         );
-//       }
-//     };
-//   }
-//
-//   return Gathering;
-// })();
-
-/*
- * todo document how to add new API to user data context?
- *
- * for now looking in the `properties/` folder probably suffices...
- */
-
-const UserDataContextAPIs: UserDataPropertyAPI[] = [
-  new UserLang(),
-  new LastViewedModule(),
-  new ShowTags(),
-  new HideDifficulty(),
-  new HideModules(),
-  new DivisionTableQuery(),
-  new ShowIgnored(),
-  new ThemeProperty(),
-  new LastReadAnnouncement(),
-  new UserProgressOnModulesProperty(),
-  new UserProgressOnProblemsProperty(),
-  new UserProgressOnResourcesProperty(),
-  new LastVisitProperty(),
-  new AdSettingsProperty(),
-];
-
-type UserDataContextAPI = UserLangAPI &
-  LastViewedModuleAPI &
-  ShowTagsAPI &
-  HideDifficultyAPI &
-  HideModulesAPI &
-  DivisionTableQueryAPI &
-  ShowIgnoredAPI &
-  ThemePropertyAPI &
-  LastReadAnnouncementAPI &
-  UserProgressOnModulesAPI &
-  UserProgressOnProblemsAPI &
-  UserProgressOnResourcesAPI &
-  LastVisitAPI &
-  AdSettingsAPI & {
-    firebaseUser: User;
-    signOut: () => Promise<void>;
-    triggerUserDataContextRerender: () => void;
-    isLoaded: boolean;
-    onlineUsers: number;
-    getDataExport: () => Record<string, any>;
-    importUserData: (data: Record<string, any>) => boolean;
-  };
-
-const UserDataContext = createContext<UserDataContextAPI>({
-  consecutiveVisits: 0,
-  firebaseUser: null,
-  getDataExport: () => Promise.resolve(),
-  importUserData: () => true,
-  showTags: false,
-  hideDifficulty: false,
-  hideModules: false,
+// What's actually stored in local storage / firebase
+export type UserData = {
+  consecutiveVisits: number;
+  /** show tags on problems table */
+  showTags: boolean;
+  /** hide difficulty on problems table */
+  hideDifficulty: boolean;
+  /** hide modules in problems list (problems search page) */
+  hideModules: boolean;
+  /** show ignored modules in dashboard */
+  showIgnored: boolean;
+  /** used for usaco monthlies table (I think) */
   divisionTableQuery: {
-    division: '',
-    season: '',
-  },
+    division: string;
+    season: string;
+  };
+  lang: Language;
+  lastReadAnnouncement: string;
+  lastViewedModule: string;
+  lastVisitDate: number; // timestamp
+  numPageviews: number;
+  // mapping timestamp to pageviews
+  pageviewsPerDay: Record<number, number>;
+  theme: Theme;
+  // mapping module ID to progress
+  userProgressOnModules: Record<string, ModuleProgress>;
+  userProgressOnModulesActivity: {
+    timestamp: number;
+    moduleID: string;
+    moduleProgress: ModuleProgress;
+  }[];
+  userProgressOnProblems: Record<string, ProblemProgress>;
+  userProgressOnProblemsActivity: {
+    timestamp: number;
+    problemID: string;
+    problemProgress: ProblemProgress;
+  }[];
+  userProgressOnResources: Record<string, ResourceProgress>;
+};
+
+// What's exposed in the context
+type UserDataContextAPI = {
+  userData: UserData | null;
+  firebaseUser: User | null;
+  forceFirebaseUserRerender: () => void;
+  isLoaded: boolean;
+  /**
+   * See properties/hooks.ts for documentation on how this function works.
+   */
+  updateUserData: (
+    updateFunc: (prevUserData: UserData) => {
+      localStorageUpdate: Partial<UserData>;
+      firebaseUpdate: object;
+    }
+  ) => void;
+  importUserData: (data: Partial<UserData>) => boolean;
+  signOut: () => Promise<void>;
+};
+
+export const assignDefaultsToUserData = (data: object): UserData => {
+  return {
+    consecutiveVisits: 1,
+    showTags: false,
+    hideDifficulty: false,
+    hideModules: false,
+    showIgnored: true,
+    divisionTableQuery: {
+      division: '',
+      season: '',
+    },
+    lang: 'cpp',
+    lastReadAnnouncement: '',
+    lastViewedModule: '',
+    lastVisitDate: new Date().getTime(),
+    numPageviews: 0,
+    pageviewsPerDay: {},
+    theme: 'system',
+    userProgressOnModules: {},
+    userProgressOnModulesActivity: [],
+    userProgressOnProblems: {},
+    userProgressOnProblemsActivity: [],
+    userProgressOnResources: {},
+    ...data,
+  };
+};
+
+// localstorage key for theme. We need this to set light / dark theme the moment the page loads.
+export const themeKey = 'guide:userData:theme';
+
+const LOCAL_STORAGE_KEY = 'guide:userData:v100';
+
+// Todo figure out why we even need defaults
+const UserDataContext = createContext<UserDataContextAPI>({
+  userData: assignDefaultsToUserData({}),
+  updateUserData: _ => {},
+  signOut: () => Promise.resolve(),
+  firebaseUser: null,
+  forceFirebaseUserRerender: () => {},
+  importUserData: _ => false,
   isLoaded: true,
-  lang: 'cpp',
-  lastReadAnnouncement: 'open-source',
-  lastViewedModule: 'binary-search-sorted',
-  lastVisitDate: 1608324157466,
-  numPageviews: 130,
-  onlineUsers: -1,
-  pageviewsPerDay: {
-    1606896000000: 4,
-    1607068800000: 17,
-    1608192000000: 27,
-    1608278400000: 82,
-  },
-  theme: 'system',
-  setTheme: _x => {
-    // do nothing
-  },
-  setShowTags: _x => {
-    // do nothing
-  },
-  setHideDifficulty: _x => {
-    // do nothing
-  },
-  setHideModules: _x => {
-    // do nothing
-  },
-  setDivisionTableQuery: _x => {
-    // do nothing
-  },
-  setLang: _x => {
-    // do nothing
-  },
-  setLastReadAnnouncement: _x => {
-    // do nothing
-  },
-  setLastViewedModule: _x => {
-    // do nothing
-  },
-  setLastVisitDate: _x => {
-    // do nothing
-  },
-  setModuleProgress: (_moduleID, _progress) => {
-    // do nothing/
-  },
-  setShowIgnored: _x => {
-    // do nothing
-  },
-  setUserProgressOnProblems: (_problemId, _status) => {
-    // do nothing
-  },
-  setUserProgressOnResources: (_moduleId, _status) => {
-    // do nothing
-  },
-  showIgnored: false,
-  signOut: () => {
-    // do nothing
-    return Promise.resolve();
-  },
-  triggerUserDataContextRerender: () => {},
-  userProgressOnModules: {},
-  userProgressOnModulesActivity: [],
-  userProgressOnProblems: {},
-  userProgressOnProblemsActivity: [],
-  userProgressOnResources: {},
-  adSettings: {
-    hideMarch2021: false,
-  },
-  setAdSettings: () => {
-    // do nothing
-  },
 });
 
 export const UserDataProvider = ({
@@ -227,162 +128,277 @@ export const UserDataProvider = ({
   children: ReactNode;
 }): JSX.Element => {
   const firebaseApp = useFirebaseApp();
-
-  const [firebaseUser, setFirebaseUser] = useReducer((_, user) => {
-    // when the firebase user changes, update all the API's
-    const userDoc = user
-      ? doc(getFirestore(firebaseApp), 'users', user.uid)
-      : null;
-    UserDataContextAPIs.forEach(api => api.setFirebaseUserDoc(userDoc));
-
-    return user;
-  }, null);
-
-  const [isLoaded, setIsLoaded] = useState<boolean>(false);
-
-  // const [onlineUsers, setOnlineUsers] = useState(0);
-
-  const [, triggerRerender] = useReducer(cur => cur + 1, 0);
-  UserDataContextAPIs.forEach(api =>
-    api.setTriggerRerenderFunction(triggerRerender)
+  const [firebaseUser, setFirebaseUser] = useState<User | null>(null);
+  const [userData, setUserData] = React.useReducer(
+    (prevState: UserData, updates: Partial<UserData>): UserData => {
+      if (updates.lang && prevState.lang !== updates.lang) {
+        updateLangURL(updates.lang);
+      }
+      if (updates.theme && prevState.theme !== updates.theme) {
+        localStorage.setItem(themeKey, JSON.stringify(updates.theme));
+      }
+      return { ...prevState, ...updates };
+    },
+    null,
+    () => {
+      // These initial values are what's used during the initial SSG render
+      return assignDefaultsToUserData({
+        lang: 'showAll',
+      });
+    }
   );
+  const [isLoaded, setIsLoaded] = useState<boolean>(false);
+  const numPendingFirebaseWritesRef = useRef(0);
 
+  // Show a message warning the user their data isn't saved
+  // if they try to exit the page before firebase finishes writing
   React.useEffect(() => {
-    UserDataContextAPIs.forEach(api => api.setFirebaseApp(firebaseApp));
-  }, [firebaseApp]);
+    function beforeUnloadListener(this: Window, ev: BeforeUnloadEvent) {
+      if (numPendingFirebaseWritesRef.current !== 0) {
+        ev.preventDefault();
+        return (ev.returnValue = '');
+      }
+    }
+    addEventListener('beforeunload', beforeUnloadListener, { capture: true });
+    return () => {
+      removeEventListener('beforeunload', beforeUnloadListener, {
+        capture: true,
+      });
+    };
+  }, []);
 
   // Listen for firebase user sign in / sign out
   useFirebaseApp(firebase => {
+    // For the very first firestore data read, we should set the language property
+    // to whatever the URL query param is
+    let shouldUseLangQueryParam = true;
+
     const auth = getAuth(firebase);
-    onAuthStateChanged(auth, user => {
+    let snapshotUnsubscribe: null | (() => void) = null;
+    const authUnsubscribe = onAuthStateChanged(auth, user => {
+      if (snapshotUnsubscribe) {
+        snapshotUnsubscribe();
+        snapshotUnsubscribe = null;
+      }
+
       if (user == null) setIsLoaded(true);
       else setIsLoaded(false);
       setFirebaseUser(user);
-    });
-  });
 
-  // Count online users
-  // useFirebase(firebase => {
-  //   let online = new Gathering(firebase);
-  //   online.join();
-  //   // Temporarily remove online user count -- it's not very accurate
-  //   // online.onUpdated(function (count) {
-  //   //   setOnlineUsers(count);
-  //   // });
-  // });
+      // If the user is signed in, sync remote data with local data
+      if (user) {
+        const userDoc = doc(getFirestore(firebaseApp), 'users', user.uid);
 
-  // just once, ask all APIs to initialize their values from localStorage
-  React.useEffect(() => {
-    UserDataContextAPIs.forEach(api => api.initializeFromLocalStorage());
-  }, []);
-
-  const [CREATING_ACCOUNT_FOR_FIRST_TIME, setCREATING_ACCOUNT_FOR_FIRST_TIME] =
-    useState(undefined);
-
-  // If the user is signed in, sync remote data with local data
-  React.useEffect(() => {
-    if (firebaseUser) {
-      // firebaseUser.getIdToken(true).then(token => console.log(token));
-
-      const userDoc = doc(getFirestore(firebaseApp), 'users', firebaseUser.uid);
-      return onSnapshot(userDoc, {
-        next: snapshot => {
-          let data = snapshot.data();
-          if (!data) {
-            // sync all local data with firebase if the firebase account doesn't exist yet
-            // other APIs use updateDoc() so we need to initialize it with *something*
-            setDoc(
-              userDoc,
-              UserDataContextAPIs.reduce(
-                (acc, cur) => {
-                  return {
-                    ...acc,
-                    ...cur.exportValue(),
-                  };
-                },
+        snapshotUnsubscribe = onSnapshot(userDoc, {
+          next: snapshot => {
+            const data = snapshot.data();
+            if (!data) {
+              // sync all local data with firebase if the firebase account doesn't exist yet
+              // other APIs use updateDoc() so we need to initialize it with *something*
+              setDoc(
+                userDoc,
                 {
+                  ...userData,
+
                   // this is to prevent us from accidentally overriding the user data
                   // firebase security rules will have a check to make sure that this is actually the first time
                   // the user has logged in. occasionally, with poor internet, firebase will glitch and
                   // we will accidentally override user data.
                   // see https://github.com/cpinitiative/usaco-guide/issues/534
                   CREATING_ACCOUNT_FOR_FIRST_TIME: serverTimestamp(),
+                },
+                { merge: true }
+              );
+            } else {
+              const newUserData = assignDefaultsToUserData(data);
+              if (shouldUseLangQueryParam) {
+                const urlLang = getLangFromUrl();
+                if (urlLang) {
+                  newUserData.lang = urlLang;
                 }
-              ),
-              { merge: true }
-            );
-          }
-          data = data || {};
-          UserDataContextAPIs.forEach(api => api.importValueFromObject(data));
-          UserDataContextAPIs.forEach(api => api.writeValueToLocalStorage());
+              }
+              localStorage.setItem(
+                LOCAL_STORAGE_KEY,
+                JSON.stringify(newUserData)
+              );
+              console.log('got new fb data', newUserData);
+              setUserData(newUserData);
+            }
 
-          setCREATING_ACCOUNT_FOR_FIRST_TIME(
-            data['CREATING_ACCOUNT_FOR_FIRST_TIME']
-          );
-          setIsLoaded(true);
-          triggerRerender();
-        },
-        error: error => {
-          toast.error(error.message);
-          Sentry.captureException(error, {
-            extra: {
-              userId: firebaseUser.uid,
-            },
-          });
-        },
-      });
+            shouldUseLangQueryParam = false;
+            setIsLoaded(true);
+          },
+          error: error => {
+            toast.error(error.message);
+            Sentry.captureException(error, {
+              extra: {
+                userId: user.uid,
+              },
+            });
+          },
+        });
+      }
+    });
+    return () => {
+      authUnsubscribe();
+      if (snapshotUnsubscribe) snapshotUnsubscribe();
+    };
+  });
+
+  const initializeFromLocalStorage = (
+    { useURLLang } = { useURLLang: true }
+  ) => {
+    let localStorageData: Partial<UserData>;
+    try {
+      localStorageData = JSON.parse(
+        localStorage.getItem(LOCAL_STORAGE_KEY) ?? '{}'
+      );
+    } catch (e) {
+      localStorageData = {};
     }
-  }, [firebaseUser]);
 
-  const userData = {
+    if (useURLLang) {
+      const urlLang = getLangFromUrl();
+      if (urlLang) {
+        localStorageData.lang = urlLang;
+      }
+    }
+
+    const actualUserData = assignDefaultsToUserData(localStorageData);
+
+    // We should write back to local storage if either URL lang changed,
+    // or if some defaults were assigned. But being lazy, let's just
+    // write back all the time.
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(actualUserData));
+
+    setUserData(actualUserData);
+  };
+
+  // initialize from localstorage
+  React.useEffect(() => {
+    runMigration();
+    initializeFromLocalStorage();
+    // todo: does this actually run before isLoaded is set to true?
+  }, []);
+
+  const userDataAPI: UserDataContextAPI = {
+    userData,
+
     firebaseUser,
-    triggerUserDataContextRerender: triggerRerender,
+    /**
+     * Forces anything that depends on firebaseUser to rerender.
+     * Sometimes, such as when we just linked a Github account to a Google account,
+     * firebaseUser changes, but React doesn't know about the change so it doesn't rerender.
+     * This function forces React to update firebaseUser and trigger any rerenders
+     * that might be necessary. This funcation is used in SignInModal.tsx,
+     * when someone links a Google or Github account, causing firebaseUser to change,
+     * but onAuthStateChanged doesn't rereun.
+     */
+    forceFirebaseUserRerender: () => {
+      // todo: test to see whether this actually works lol
+      setFirebaseUser(getAuth(firebaseApp).currentUser);
+    },
+
+    isLoaded,
+
+    updateUserData: React.useCallback(
+      updateFunc => {
+        if (!isLoaded) {
+          throw new Error(
+            'updateUserData() can only be called after user data has been loaded.'
+          );
+        }
+
+        // In the localStorage path, this is guaranteed the latest copy of the data
+        // In the firestore path, this is probably still the latest copy of the data,
+        // since any time firestore updates, it writes to localStorage.
+        const latestUserData = JSON.parse(
+          // Since we write valid user data to local storage every time the page loads,
+          // just assume reading will be valid. If it isn't, the user can always reload
+          // the page to get a working version of user data.
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          localStorage.getItem(LOCAL_STORAGE_KEY)!
+        );
+
+        if (firebaseUser) {
+          // user is signed in to firebase, do the firebase update path
+          const userDoc = doc(
+            getFirestore(firebaseApp),
+            'users',
+            firebaseUser.uid
+          );
+
+          const changes = updateFunc(latestUserData).firebaseUpdate;
+          const firebaseUpdatePromise = updateDoc(userDoc, changes);
+
+          numPendingFirebaseWritesRef.current++;
+          firebaseUpdatePromise
+            .catch(err => {
+              console.error('Failed to sync to server', changes);
+              console.error(err);
+              toast.error(
+                'Failed to sync to server: ' +
+                  err +
+                  '. Please submit an error report on Github with developer console messages.',
+                {
+                  duration: Infinity,
+                }
+              );
+            })
+            .finally(() => {
+              numPendingFirebaseWritesRef.current--;
+            });
+
+          // After this update finishes, we don't have to do anything -- our
+          // onSnapshot listener will automatically be called with the updated data
+          // Also, firestore has optimistic updates, so the user will see changes immediately
+        } else {
+          // user isn't signed in, do the localStorage update path
+          const newUserData = {
+            ...latestUserData,
+            ...updateFunc(latestUserData).localStorageUpdate,
+          };
+
+          localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(newUserData));
+
+          setUserData(newUserData);
+        }
+      },
+      [firebaseApp, setUserData, isLoaded, !!firebaseUser]
+    ),
+
     signOut: (): Promise<void> => {
       return signOut(getAuth(firebaseApp)).then(() => {
-        UserDataContextAPIs.forEach(api => api.eraseFromLocalStorage());
-        UserDataContextAPIs.forEach(api => api.initializeFromLocalStorage());
+        localStorage.removeItem(LOCAL_STORAGE_KEY);
+        initializeFromLocalStorage({ useURLLang: false });
       });
     },
-    isLoaded,
-    onlineUsers: -1,
 
-    ...UserDataContextAPIs.reduce((acc, api) => {
-      return {
-        ...acc,
-        ...api.getAPI(),
-      };
-    }, {}),
-
-    getDataExport: (): Record<string, any> => {
-      return UserDataContextAPIs.reduce(
-        (acc, api) => ({ ...acc, ...api.exportValue() }),
-        {}
-      );
-    },
-
-    importUserData: (data: Record<string, any>): boolean => {
+    importUserData: (data: Partial<UserData>): boolean => {
       if (
         confirm(
           'Import user data (beta)? All existing data will be lost. Make sure to back up your data before proceeding.'
         )
       ) {
-        if (CREATING_ACCOUNT_FOR_FIRST_TIME !== undefined)
-          data['CREATING_ACCOUNT_FOR_FIRST_TIME'] =
-            CREATING_ACCOUNT_FOR_FIRST_TIME;
-        UserDataContextAPIs.forEach(api => api.importValueFromObject(data));
-        UserDataContextAPIs.forEach(api => api.writeValueToLocalStorage());
+        const updatedData = assignDefaultsToUserData(data);
+        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updatedData));
+        setUserData(updatedData);
         if (firebaseUser) {
-          setDoc(
-            doc(getFirestore(firebaseApp), 'users', firebaseUser.uid),
-            data
-          ).catch(err => {
+          // Stupid hack: if firebase user is set, userData will actually have
+          // the CREATING_ACCOUNT_FOR_FIRST_TIME property, since userData will
+          // be set from the Firebase doc.
+          const CREATING_ACCOUNT_FOR_FIRST_TIME = (userData as any)
+            .CREATING_ACCOUNT_FOR_FIRST_TIME;
+          setDoc(doc(getFirestore(firebaseApp), 'users', firebaseUser.uid), {
+            ...data,
+            CREATING_ACCOUNT_FOR_FIRST_TIME,
+          }).catch(err => {
             console.error(err);
             alert(
               `importUserData: Error setting firebase doc. Check console for details.`
             );
           });
         }
-        triggerRerender();
         return true;
       }
       return false;
@@ -390,7 +406,7 @@ export const UserDataProvider = ({
   };
 
   return (
-    <UserDataContext.Provider value={userData}>
+    <UserDataContext.Provider value={userDataAPI}>
       <UserPermissionsContextProvider>
         {children}
       </UserPermissionsContextProvider>
@@ -398,4 +414,34 @@ export const UserDataProvider = ({
   );
 };
 
-export default UserDataContext;
+export const useUserData = (): UserData => {
+  const userData = React.useContext(UserDataContext).userData;
+  if (!userData) {
+    throw new Error("userData was null, but it shouldn't be");
+  }
+  return userData;
+};
+
+export const useUpdateUserData = () => {
+  return React.useContext(UserDataContext).updateUserData;
+};
+
+export const useFirebaseUser = () => {
+  return React.useContext(UserDataContext).firebaseUser;
+};
+
+export const useIsUserDataLoaded = () => {
+  return React.useContext(UserDataContext).isLoaded;
+};
+
+export const useForceFirebaseUserRerender = () => {
+  return React.useContext(UserDataContext).forceFirebaseUserRerender;
+};
+
+export const useSignOutAction = () => {
+  return React.useContext(UserDataContext).signOut;
+};
+
+export const useImportUserDataAction = () => {
+  return React.useContext(UserDataContext).importUserData;
+};

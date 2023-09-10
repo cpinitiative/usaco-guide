@@ -1,0 +1,153 @@
+---
+id: csa-MountainTime
+source: CSA
+title: Mountain Time
+author: Ryan Chou
+---
+
+<Spoiler title="Hint 1">
+
+Instead of thinking of the problem as a grid, consider it a graph, where we're adding one cell at a time.
+
+Since we want to get the path with the highest mountains, we'll process them in decreasing order of height.
+
+</Spoiler>
+
+<Spoiler title="Hint 2">
+
+Whenever we process a cell, we'll want to merge it with all of its neighbors that have already been added (taller than it).
+
+What data structure should we use to efficiently merge two components?
+
+</Spoiler>
+
+<Spoiler title="Answer to Hint 2">
+
+We can use a [DSU](/gold/dsu) to solve the problem.
+
+</Spoiler>
+
+<Spoiler title="Solution">
+
+## Explanation
+
+Let's imagine we're currently at cell $x$, part of component $A$, and merging with some adjacent cell $y$, part of component $B$.
+
+We can break it into two cases.
+
+1. The tallest mountains in $A$ and $B$ are the **same** height. In this case, we'll combine all the cells into one component using small-to-large merging to minimize the number of cells we must update.
+
+2. The tallest mountains in $A$ and $B$ are of **different** heights. Without loss of generality, let's assume that mountain $A$ has the tallest mountain; we know the answer for the cells in component $B$ because $x$ is the tallest mountain that can connect them both.
+
+To simplify the process, we'll root each component at its maximal cell and store their corresponding indices in the DSU. Thus, we can easily iterate over the cells for which we've found the answer.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(NM\log{NM})$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+// BeginCodeSnip{DSU}
+struct DSU {
+	vector<int> par;
+	vector<vector<int>> comp;
+	DSU(int n) {
+		par = vector<int>(n);
+		// every node is its own parent initially
+		iota(par.begin(), par.end(), 0);
+
+		comp = vector<vector<int>>(n);
+		for (int i = 0; i < n; i++) { comp[i].push_back(i); }
+	}
+
+	// get root (uses path compression)
+	int get(int x) { return par[x] == x ? x : par[x] = get(par[x]); }
+
+	void unite(int x, int y, vector<int> &grid, vector<int> &ans) {
+		int intermediate = grid[x];
+		x = get(x), y = get(y);
+
+		if (x == y) { return; }
+
+		if (grid[x] > grid[y]) { swap(x, y); }
+
+		if (grid[y] > grid[x]) {
+			// we have the answer for the smaller component
+			for (int &i : comp[x]) {
+				ans[i] = intermediate > grid[i] ? 0 : grid[i] - intermediate;
+			}
+
+			comp[x].clear();
+			par[x] = y;
+		} else if (grid[x] == grid[y]) {
+			// merge the two components (small to large)
+			if ((int)comp[x].size() < (int)comp[y].size()) { swap(x, y); }
+
+			for (int &i : comp[y]) { comp[x].push_back(i); }
+			comp[y].clear();
+			par[y] = x;
+		}
+	}
+};
+// EndCodeSnip
+
+int main() {
+	int n, m;
+	cin >> n >> m;
+
+	vector<int> grid(n * m);
+	vector<int> ans(n * m);
+
+	DSU dsu(n * m);
+
+	vector<pair<int, int>> mountains;
+	for (int i = 0; i < n * m; i++) {
+		cin >> grid[i];
+		ans[i] = grid[i];
+
+		mountains.push_back({grid[i], i});
+	}
+
+	sort(mountains.begin(), mountains.end());
+
+	// iterate through all cells from tallest to shortest
+	while (!mountains.empty()) {
+		pair<int, int> cur = mountains.back();
+		mountains.pop_back();
+
+		int idx = cur.second;
+
+		// check all processed adjacent cells
+		if (idx % m != 0 && grid[idx - 1] >= grid[idx]) {
+			dsu.unite(idx, idx - 1, grid, ans);  // on left
+		}
+		if (idx >= m && grid[idx - m] >= grid[idx]) {
+			dsu.unite(idx, idx - m, grid, ans);  // on top
+		}
+		if (idx % m != m - 1 && grid[idx + 1] >= grid[idx]) {
+			dsu.unite(idx, idx + 1, grid, ans);  // on right
+		}
+		if (idx < (n * m) - m && grid[idx + m] >= grid[idx]) {
+			dsu.unite(idx, idx + m, grid, ans);  // on bottom
+		}
+	}
+
+	for (int i = 0; i < n * m; i++) {
+		if ((i + 1) % m == 0) {
+			cout << ans[i] << endl;
+		} else {
+			cout << ans[i] << ' ';
+		}
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
+</Spoiler>

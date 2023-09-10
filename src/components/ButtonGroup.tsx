@@ -1,17 +1,17 @@
 import classNames from 'classnames';
 import * as React from 'react';
 
-export default function ButtonGroup({
+export default function ButtonGroup<T extends string>({
   options,
   value,
   onChange,
   labelMap,
   disabled,
 }: {
-  options: string[];
-  value: string;
-  onChange: (string) => void;
-  labelMap?: { [key: string]: string };
+  options: T[];
+  value: T | null;
+  onChange: (newValue: T) => void;
+  labelMap?: { [key in T]: string };
   disabled?: boolean;
 }): JSX.Element {
   const leftButtonClasses = 'rounded-l-md';

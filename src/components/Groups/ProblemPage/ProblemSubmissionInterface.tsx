@@ -1,8 +1,11 @@
 import * as React from 'react';
 import { useReducer } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { LANGUAGE_LABELS } from '../../../context/UserDataContext/properties/userLang';
-import UserDataContext from '../../../context/UserDataContext/UserDataContext';
+import {
+  LANGUAGE_LABELS,
+  useUserLangSetting,
+} from '../../../context/UserDataContext/properties/simpleProperties';
+import { useFirebaseUser } from '../../../context/UserDataContext/UserDataContext';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import {
   ProblemSubmissionRequestData,
@@ -32,7 +35,8 @@ export default function ProblemSubmissionInterface({
 }: {
   problem: GroupProblemData;
 }) {
-  const { lang, firebaseUser } = React.useContext(UserDataContext);
+  const firebaseUser = useFirebaseUser();
+  const lang = useUserLangSetting();
   const emptySubmission: Partial<ProblemSubmissionRequestData> = {
     problemID: problem.id,
     sourceCode: '',
@@ -40,7 +44,7 @@ export default function ProblemSubmissionInterface({
   };
   const [submission, editSubmission] = useReducer(
     (
-      oldSubmission,
+      oldSubmission: Partial<ProblemSubmissionRequestData>,
       updates: Partial<ProblemSubmissionRequestData>
     ): Partial<ProblemSubmissionRequestData> => ({
       ...oldSubmission,
@@ -51,7 +55,7 @@ export default function ProblemSubmissionInterface({
   const [submissionLink, setSubmissionLink] = React.useState('');
   const activeGroup = useActiveGroup();
   const { submitSolution, submitSubmissionLink } = usePostActions(
-    activeGroup.activeGroupId
+    activeGroup.activeGroupId!
   );
 
   const { getRootProps, getInputProps, open, isDragActive } = useDropzone({

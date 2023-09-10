@@ -2,9 +2,11 @@ import { RouteComponentProps } from '@reach/router';
 import { getFunctions, httpsCallable } from 'firebase/functions';
 import { navigate } from 'gatsby';
 import * as React from 'react';
-import { useContext } from 'react';
 import { SignInContext } from '../../context/SignInContext';
-import UserDataContext from '../../context/UserDataContext/UserDataContext';
+import {
+  useFirebaseUser,
+  useIsUserDataLoaded,
+} from '../../context/UserDataContext/UserDataContext';
 import { useUserGroups } from '../../hooks/groups/useUserGroups';
 import { useFirebaseApp } from '../../hooks/useFirebase';
 import Layout from '../layout';
@@ -22,7 +24,8 @@ const getQuery = name => {
 };
 
 const JoinGroupPage = (props: RouteComponentProps) => {
-  const { firebaseUser, isLoaded } = useContext(UserDataContext);
+  const firebaseUser = useFirebaseUser();
+  const isLoaded = useIsUserDataLoaded();
   const { signIn } = React.useContext(SignInContext);
   const [groupName, setGroupName] = React.useState<string>(null);
   const [error, setError] = React.useState(null);

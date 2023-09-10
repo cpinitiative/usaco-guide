@@ -4,8 +4,11 @@ import { useContext } from 'react';
 import styled from 'styled-components';
 import tw from 'twin.macro';
 import MarkdownLayoutContext from '../../../context/MarkdownLayoutContext';
-import UserDataContext from '../../../context/UserDataContext/UserDataContext';
-import { ModuleLinkInfo } from '../../../models/module';
+import { useUserProgressOnModules } from '../../../context/UserDataContext/properties/userProgress';
+import {
+  MarkdownLayoutSidebarModuleLinkInfo,
+  ModuleLinkInfo,
+} from '../../../models/module';
 
 export const LinkWithProgress = styled.span`
   ${tw`block relative`}
@@ -93,7 +96,11 @@ const StyledLink = styled.span`
   }
 `;
 
-const ItemLink = ({ link }: { link: ModuleLinkInfo }) => {
+const ItemLink = ({
+  link,
+}: {
+  link: MarkdownLayoutSidebarModuleLinkInfo | ModuleLinkInfo;
+}) => {
   const { activeIDs } = useContext(MarkdownLayoutContext);
   const isActive = activeIDs.includes(link.id);
   const itemRef = React.useRef(null);
@@ -104,7 +111,7 @@ const ItemLink = ({ link }: { link: ModuleLinkInfo }) => {
     }
   }, [isActive]);
 
-  const { userProgressOnModules } = useContext(UserDataContext);
+  const userProgressOnModules = useUserProgressOnModules();
   const progress = userProgressOnModules[link.id] || 'Not Started';
 
   let lineColorStyle = tw`bg-gray-200`;

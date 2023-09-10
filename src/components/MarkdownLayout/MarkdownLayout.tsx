@@ -10,8 +10,11 @@ import { ContactUsSlideoverProvider } from '../../context/ContactUsSlideoverCont
 import MarkdownLayoutContext from '../../context/MarkdownLayoutContext';
 import { ProblemSolutionContext } from '../../context/ProblemSolutionContext';
 import { ProblemSuggestionModalProvider } from '../../context/ProblemSuggestionModalContext';
-import { updateLangURL } from '../../context/UserDataContext/properties/userLang';
-import UserDataContext from '../../context/UserDataContext/UserDataContext';
+import { useUserLangSetting } from '../../context/UserDataContext/properties/simpleProperties';
+import {
+  useSetProgressOnModule,
+  useUserProgressOnModules,
+} from '../../context/UserDataContext/properties/userProgress';
 import { ModuleInfo } from '../../models/module';
 import { SolutionInfo } from '../../models/solution';
 import ForumCTA from '../ForumCTA';
@@ -66,13 +69,10 @@ export default function MarkdownLayout({
   markdownData: ModuleInfo | SolutionInfo;
   children: React.ReactNode;
 }) {
-  const { userProgressOnModules, setModuleProgress, lang } =
-    useContext(UserDataContext);
-  React.useEffect(() => {
-    if (lang !== 'showAll') {
-      updateLangURL(lang);
-    }
-  }, [lang]);
+  const userProgressOnModules = useUserProgressOnModules();
+  const setModuleProgress = useSetProgressOnModule();
+  const lang = useUserLangSetting();
+
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const moduleProgress =
     (userProgressOnModules && userProgressOnModules[markdownData.id]) ||

@@ -3,13 +3,21 @@ import * as React from 'react';
 /**
  * A textarea that allow tabbing for indentation
  */
-export default function TabIndentableTextarea(props) {
-  const ref = React.useRef<HTMLTextAreaElement>();
+export default function TabIndentableTextarea(
+  props: React.DetailedHTMLProps<
+    React.TextareaHTMLAttributes<HTMLTextAreaElement>,
+    HTMLTextAreaElement
+  >
+) {
+  const ref = React.useRef<HTMLTextAreaElement | null>(null);
 
   React.useEffect(() => {
     if (ref.current) {
       // https://stackoverflow.com/questions/6637341/use-tab-to-indent-in-textarea
-      const handleKeydown = function (e) {
+      const handleKeydown: (
+        this: HTMLTextAreaElement,
+        ev: KeyboardEvent
+      ) => any = function (e) {
         if (e.key == 'Tab') {
           e.preventDefault();
           const start = this.selectionStart;
@@ -24,9 +32,11 @@ export default function TabIndentableTextarea(props) {
         }
       };
       ref.current.addEventListener('keydown', handleKeydown);
-      return () =>
-        ref.current &&
-        ref.current.removeEventListener('keydown', handleKeydown);
+      return () => {
+        if (ref.current) {
+          ref.current.removeEventListener('keydown', handleKeydown);
+        }
+      };
     }
   }, [ref.current]);
 

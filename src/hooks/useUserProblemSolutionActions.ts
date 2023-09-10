@@ -9,14 +9,13 @@ import {
   Timestamp,
   updateDoc,
 } from 'firebase/firestore';
-import { useContext } from 'react';
-import UserDataContext from '../context/UserDataContext/UserDataContext';
+import { useFirebaseUser } from '../context/UserDataContext/UserDataContext';
 import { UserSolutionForProblem } from '../models/userSolutionForProblem';
 import { useFirebaseApp } from './useFirebase';
 
 export default function useUserProblemSolutionActions() {
   const firebaseApp = useFirebaseApp();
-  const { firebaseUser } = useContext(UserDataContext);
+  const firebaseUser = useFirebaseUser();
 
   return {
     submitSolution: async (

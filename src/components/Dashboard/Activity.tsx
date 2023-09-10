@@ -1,8 +1,10 @@
 import * as React from 'react';
-import { useContext } from 'react';
 import CalendarHeatmap from 'react-calendar-heatmap';
 import 'react-calendar-heatmap/dist/styles.css';
-import UserDataContext from '../../context/UserDataContext/UserDataContext';
+import {
+  useUserProgressOnModulesActivity,
+  useUserProgressOnProblemsActivity,
+} from '../../context/UserDataContext/properties/userProgress';
 import './heatmap-styles.css';
 
 export default function Activity() {
@@ -15,8 +17,8 @@ export default function Activity() {
     setStartDate(d);
   }, []);
 
-  const { userProgressOnModulesActivity, userProgressOnProblemsActivity } =
-    useContext(UserDataContext);
+  const userProgressOnModulesActivity = useUserProgressOnModulesActivity();
+  const userProgressOnProblemsActivity = useUserProgressOnProblemsActivity();
 
   if (!startDate) return null;
 
