@@ -4,37 +4,20 @@ source: USACO Bronze 2022 February
 title: Watching Mooloo
 author: Chu Minjae
 ---
+
 [Official Analysis (C++, Java, Python)](http://www.usaco.org/current/data/sol_prob3_bronze_feb23.html)
 
 ## Explanation
 
-This question is solved through greedy algorithm.
+We solve this problem with a greedy algorithm by first sorting all the days Bessie wants to watch Mooloo.
 
-As the input varies from 1 to 10^14, it is better to use `long long` rather than `integer` types.
-
-Variable `s` is used to store the previous index in the source code.
-
-The array is used to store the days that Bessie will watch Mooloo.
-
-Variable `answer` will be used to store the minimum amount of money she needs to pay, and `n` and `k` are used for input.
-
-Next, the for loop gets the input starting from index 1 to reduce the possibility of confusion since this problem is related to date.
-
-Next, we start with putting `k +1` into the `answer` variable because when `n` equals 1,the subscription fee will be `k + 1` as she still needs to subscribe it for one day even if the `for loop` does not operate, making it easier to calculate the date as we need to add 1 after subtracting two dates to find out the number of dates passed.
-
-We start the `for loop` from 2 to find the value of the array at the current index and previous index.
-
-To achieve the minimum amount of money needed to pay, she needs to pay for each day if the cost of subscribing to watch Mooloo for consecutive days is bigger than paying each day.
-
-On the other hand, she needs to pay for consecutive days if the cost of subscribing for each day is more expensive than paying for consecutive days.
-
-If the consecutive days of two consecutive indexes of the array are bigger than k, it is better to subscribe for one day each.
-
-If it is not, it is better to subscribe for consecutive days. If `arr[i] - arr[s]` which is the number of consecutive days is bigger than k, it is better to subscribe each day for one day which is shown as `ans+= k + 1`.
-
-On the other hand, if it is not, it is better to subscribe for consecutive days which is shown as `ans+= arr[i] - arr[s]`.
-
-There is no need to add 1 because 1 is already added at the initial value of the answer variable. By repeating this logic through the for loop, we can get the minimum amount of money she needs to pay.
+Next, we iterate through all the days.
+On the first day, Bessie will always have to buy a new subscription.
+However, on subsequent days, there's two cases:
+1. It's better to extend the last subscription.
+   This occurs when the cost of extending the last subscription, calculated by 
+   subtracting the date of the last one from the current day, is less than $K$.
+2. If the previous condition isn't met, it's better to start a new subscription entirely.
 
 ## Implementation
 
@@ -46,39 +29,33 @@ There is no need to add 1 because 1 is already added at the initial value of the
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
+
 int main() {
 	int n;
-	int s = 1;
 	int k;
-	long long ans = 0;
-	vector<long long> days;
 	cin >> n >> k;
-	// initial push_back to start from 1.
-	days.push_back(0);
-	for (int i = 1; i <= n; i++) {
-		long long x;
-		cin >> x;
-		days.push_back(x);
-	}
-	ans = k + 1;  // answer represents the minimum value.
-	for (int i = 2; i <= n; i++) {
-		/* if paying by subscribing for consecutive day is expensive than paying
-		 * each day.
-		 */
-		if (days[i] - days[s] > k) {
-			ans += k + 1;  // pay of each day.
+
+	vector<long long> days(n);
+	for (long long& d : days) { cin >> d; }
+	
+	sort(days.begin(), days.end());
+
+	long long last_day = days[0];
+	long long cost = k + 1;  // Start the first subscription
+	for (long long d : days) {
+		// Should Bessie extend the most recent subscription?
+		if (d - last_day < k) {
+			cost += d - last_day;
+		} else {
+			// Or just start a new one entirely?
+			cost += k + 1;
 		}
-		// if paying each day is expensive than paying for each day.
-		else {
-			ans += days[i] - days[s];  // pay for consecutive days.
-		}
-		/* s is used to store the index of the array to find out the value of
-		 * the array at the current index minus value of the prior index.
-		 */
-		s = i;
+
+		// Store the date of the last subscription
+		last_day = d;
 	}
 
-	cout << ans;
+	cout << cost << endl;
 }
 ```
 
