@@ -1,18 +1,26 @@
 import * as React from 'react';
-import UserDataContext from '../../context/UserDataContext/UserDataContext';
+import {
+  useHideDifficultySetting,
+  useHideModulesSetting,
+  useSetHideDifficultySetting,
+  useSetHideModulesSetting,
+  useSetShowIgnoredSetting,
+  useSetShowTagsSetting,
+  useShowIgnoredSetting,
+  useShowTagsSetting,
+} from '../../context/UserDataContext/properties/simpleProperties';
 import Switch from '../elements/Switch';
 
 export default function General(): JSX.Element {
-  const {
-    showIgnored,
-    setShowIgnored,
-    showTags,
-    setShowTags,
-    hideDifficulty,
-    setHideDifficulty,
-    hideModules,
-    setHideModules,
-  } = React.useContext(UserDataContext);
+  // todo: I think we should actually just use one massive useUserSettings() hook lol
+  const showIgnored = useShowIgnoredSetting();
+  const setShowIgnored = useSetShowIgnoredSetting();
+  const showTags = useShowTagsSetting();
+  const setShowTags = useSetShowTagsSetting();
+  const hideDifficulty = useHideDifficultySetting();
+  const setHideDifficulty = useSetHideDifficultySetting();
+  const hideModules = useHideModulesSetting();
+  const setHideModules = useSetHideModulesSetting();
   const [isLongPolling, setIsLongPolling] = React.useState<boolean>(false);
   /**
    * For people behind proxies or with terrible internet - behold the power of long polling!

@@ -131,7 +131,7 @@ const CodeSnipButton = ({
 class CodeBlock extends React.Component<
   {
     children: string;
-    className: string;
+    className: string | undefined;
     isDarkMode: boolean;
     copyButton?: boolean;
   },

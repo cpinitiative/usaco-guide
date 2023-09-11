@@ -1,6 +1,6 @@
 import { graphql } from 'gatsby';
 import * as React from 'react';
-import { useContext, useEffect } from 'react';
+import { useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import { SECTION_LABELS } from '../../content/ordering';
 import Layout from '../components/layout';
@@ -9,17 +9,14 @@ import MarkdownLayout from '../components/MarkdownLayout/MarkdownLayout';
 import SEO from '../components/seo';
 import { ConfettiProvider } from '../context/ConfettiContext';
 import { MarkdownProblemListsProvider } from '../context/MarkdownProblemListsContext';
-import UserDataContext from '../context/UserDataContext/UserDataContext';
+import { useIsUserDataLoaded } from '../context/UserDataContext/UserDataContext';
 import { graphqlToModuleInfo } from '../utils/utils';
 
 export default function Template(props): JSX.Element {
   const { xdm, moduleProblemLists } = props.data; // data.markdownRemark holds your post data
   const { body } = xdm;
   const module = React.useMemo(() => graphqlToModuleInfo(xdm), [xdm]);
-  const { isLoaded, setLastViewedModule } = useContext(UserDataContext);
-  React.useEffect(() => {
-    setLastViewedModule(module.id);
-  }, []);
+  const isLoaded = useIsUserDataLoaded();
 
   useEffect(() => {
     // source: https://miguelpiedrafita.com/snippets/scrollToHash
@@ -37,7 +34,7 @@ export default function Template(props): JSX.Element {
   }, [isLoaded]);
 
   return (
-    <Layout>
+    <Layout setLastViewedModule={module.id}>
       <SEO title={`${module.title}`} description={module.description} />
       <Helmet>
         <script type="application/ld+json">{`

@@ -8,10 +8,9 @@ import StateItem from './StateItem';
  * the state. Rather, it is computed when needed (ie when .val is accessed).
  */
 export default class ShallowStateItem<
-  T extends
-    {
-      [key: string]: string;
-    },
+  T extends {
+    [key: string]: string;
+  },
 > extends StateItem<T> {
   protected block: Block<T>;
 

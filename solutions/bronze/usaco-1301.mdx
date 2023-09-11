@@ -1,0 +1,63 @@
+---
+id: usaco-1301
+source: USACO Bronze 2022 February
+title: Watching Mooloo
+author: Chu Minjae
+---
+
+[Official Analysis (C++, Java, Python)](http://www.usaco.org/current/data/sol_prob3_bronze_feb23.html)
+
+## Explanation
+
+We solve this problem with a greedy algorithm by first sorting all the days Bessie wants to watch Mooloo.
+
+Next, we iterate through all the days.
+On the first day, Bessie will always have to buy a new subscription.
+However, on subsequent days, there's two cases:
+1. It's better to extend the last subscription.
+   This occurs when the cost of extending the last subscription, calculated by
+   subtracting the date of the last one from the current day, is less than $K$.
+2. If the previous condition isn't met, it's better to start a new subscription entirely.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	int n;
+	int k;
+	cin >> n >> k;
+
+	vector<long long> days(n);
+	for (long long &d : days) { cin >> d; }
+
+	sort(days.begin(), days.end());
+
+	long long last_day = days[0];
+	long long cost = k + 1;  // Start the first subscription
+	for (long long d : days) {
+		// Should Bessie extend the most recent subscription?
+		if (d - last_day < k) {
+			cost += d - last_day;
+		} else {
+			// Or just start a new one entirely?
+			cost += k + 1;
+		}
+
+		// Store the date of the last subscription
+		last_day = d;
+	}
+
+	cout << cost << endl;
+}
+```
+
+</CPPSection>
+</LanguageSection>

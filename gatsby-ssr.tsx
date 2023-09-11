@@ -1,12 +1,12 @@
 import * as React from 'react';
 import { wrapRootElement as wrap } from './root-wrapper';
-import { themeKey } from './src/context/UserDataContext/properties/themeProperty';
+import { themeKey } from './src/context/UserDataContext/UserDataContext';
 
 export const wrapRootElement = wrap;
 
 // https://joshwcomeau.com/gatsby/dark-mode/
 const MagicScriptTag = () => {
-  // Note: see also src/context/UserDataContext/properties/themeProperty.ts if any of the below code needs to be changed.
+  // Note: see also src/context/UserDataContext/UserDataContext.ts if any of the below code needs to be changed.
   const codeToRunOnClient = `
   (function(){
     var dark = false;
@@ -26,5 +26,5 @@ const MagicScriptTag = () => {
   return <script dangerouslySetInnerHTML={{ __html: codeToRunOnClient }} />;
 };
 export const onRenderBody = ({ setPreBodyComponents }) => {
-  setPreBodyComponents(<MagicScriptTag />);
+  setPreBodyComponents(<MagicScriptTag key="magic-script-tag" />);
 };

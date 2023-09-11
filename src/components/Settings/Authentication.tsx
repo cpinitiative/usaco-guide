@@ -1,10 +1,9 @@
 import { CheckIcon, XIcon } from '@heroicons/react/solid';
 import * as React from 'react';
-import { useContext } from 'react';
-import UserDataContext from '../../context/UserDataContext/UserDataContext';
+import { useFirebaseUser } from '../../context/UserDataContext/UserDataContext';
 
 export default function Authentication() {
-  const { firebaseUser } = useContext(UserDataContext);
+  const firebaseUser = useFirebaseUser();
 
   let linkedWithGoogle = false;
   let linkedWithGithub = false;

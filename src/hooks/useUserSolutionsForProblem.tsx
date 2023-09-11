@@ -7,19 +7,22 @@ import {
   where,
 } from 'firebase/firestore';
 import * as React from 'react';
-import { useContext } from 'react';
 import toast from 'react-hot-toast';
-import UserDataContext from '../context/UserDataContext/UserDataContext';
-import { ProblemInfo } from '../models/problem';
+import { useFirebaseUser } from '../context/UserDataContext/UserDataContext';
+import { ProblemInfo, ShortProblemInfo } from '../models/problem';
 import { UserSolutionForProblem } from '../models/userSolutionForProblem';
 import { useFirebaseApp } from './useFirebase';
 
-export default function useUserSolutionsForProblem(problem: ProblemInfo) {
-  const [solutions, setSolutions] =
-    React.useState<UserSolutionForProblem[]>(null);
-  const [currentUserSolutions, setCurrentUserSolutions] =
-    React.useState<UserSolutionForProblem[]>(null);
-  const { firebaseUser } = useContext(UserDataContext);
+export default function useUserSolutionsForProblem(
+  problem: ProblemInfo | ShortProblemInfo
+) {
+  const [solutions, setSolutions] = React.useState<
+    UserSolutionForProblem[] | null
+  >(null);
+  const [currentUserSolutions, setCurrentUserSolutions] = React.useState<
+    UserSolutionForProblem[] | null
+  >(null);
+  const firebaseUser = useFirebaseUser();
 
   useFirebaseApp(
     firebaseApp => {

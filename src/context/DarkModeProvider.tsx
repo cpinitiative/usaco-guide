@@ -1,13 +1,11 @@
 import * as React from 'react';
 import { DarkModeContext } from './DarkModeContext';
-import UserDataContext from './UserDataContext/UserDataContext';
+import { useThemeSetting } from './UserDataContext/properties/simpleProperties';
+import { useIsUserDataLoaded } from './UserDataContext/UserDataContext';
 
 export function DarkModeProvider({ children }) {
-  const userData = React.useContext(UserDataContext);
-  if (!userData) {
-    throw new Error('DarkModeProvider must be used inside a UserDataProvider');
-  }
-  const theme = userData.theme;
+  const theme = useThemeSetting();
+  const isLoaded = useIsUserDataLoaded();
 
   const [darkMode, setDarkMode] = React.useReducer((prev, next) => {
     if (prev !== next) {
@@ -29,8 +27,7 @@ export function DarkModeProvider({ children }) {
   }, false);
 
   React.useEffect(() => {
-    if (theme === undefined) return;
-
+    if (!isLoaded) return;
     if (theme === 'system') {
       if (!window.matchMedia) {
         setDarkMode(false);
@@ -52,7 +49,7 @@ export function DarkModeProvider({ children }) {
       else if (theme === 'dark') setDarkMode(true);
       else throw new Error('Unknown theme ' + theme);
     }
-  }, [theme]);
+  }, [theme, isLoaded]);
 
   return (
     <DarkModeContext.Provider value={darkMode}>

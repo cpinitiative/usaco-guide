@@ -7,64 +7,6 @@ export default function ModuleFeedback({
 }: {
   markdownData: ModuleInfo | SolutionInfo;
 }) {
-  // const userSettings = useContext(UserDataContext);
-  // const [showErrors, setShowErrors] = useState(false);
-  // const [submitEnabled, setSubmitEnabled] = useState(true);
-  // const [message, setMessage] = useStickyState(
-  //   '',
-  //   'module_contact_form_message'
-  // );
-  // const [email, setEmail] = useState('');
-  // const [showSuccess, setShowSuccess] = useState(false);
-  //
-  // const { firebaseUser } = useContext(UserDataContext);
-  // useEffect(() => {
-  //   if (email === '' && firebaseUser?.email) setEmail(firebaseUser.email);
-  // }, [firebaseUser?.email]);
-  //
-  // const emailErrorMsg = showErrors
-  //   ? email === ''
-  //     ? 'This field is required.'
-  //     : !validateEmail(email)
-  //     ? 'Please enter a valid email address.'
-  //     : null
-  //   : null;
-  //
-  // const handleSubmit = async e => {
-  //   e.preventDefault();
-  //
-  //   setShowErrors(true);
-  //   if (message === '') return;
-  //   if (email === '' || !validateEmail(email)) return;
-  //
-  //   let data = new FormData();
-  //   data.append('email', email);
-  //   data.append('location', markdownData.title);
-  //   data.append('url', window.location.href);
-  //   data.append('lang', userSettings.lang);
-  //   data.append('topic', 'Module Feedback Form');
-  //   data.append('message', message);
-  //   data.append(
-  //     '_subject',
-  //     `[Module Feedback] ${markdownData.title} - ${email || 'Unknown Email'}`
-  //   );
-  //   setSubmitEnabled(false);
-  //   try {
-  //     await fetch('https://formsubmit.co/ajax/usacoguide@gmail.com', {
-  //       method: 'POST',
-  //       mode: 'no-cors',
-  //       body: data,
-  //     });
-  //     setMessage('');
-  //     setShowSuccess(true);
-  //   } catch (e) {
-  //     setSubmitEnabled(true);
-  //     alert('Form submission failed: ' + e.message);
-  //   } finally {
-  //     setShowErrors(false);
-  //   }
-  // };
-
   return (
     <>
       <h2 className="text-xl font-semibold mb-2">

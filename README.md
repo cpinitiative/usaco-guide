@@ -73,6 +73,7 @@ Content Authors to join our team to help us improve the Guide! Learn more
 - Chuyang Wang (Since August 2022)
 - Aakash Gokhale (Since August 2022)
 - Paul Chen (Since August 2022)
+- Daniel Ge (Since June 2023)
 - _This could be you!
   [Apply here](https://docs.google.com/document/d/13QpXqdiYQwjBLnywGL1FUG7GFdh8SM_1NigIkJl-A7k/edit)._
 

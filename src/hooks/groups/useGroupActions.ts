@@ -8,15 +8,14 @@ import {
   writeBatch,
 } from 'firebase/firestore';
 import { getFunctions, httpsCallable } from 'firebase/functions';
-import { useContext } from 'react';
-import UserDataContext from '../../context/UserDataContext/UserDataContext';
+import { useFirebaseUser } from '../../context/UserDataContext/UserDataContext';
 import { GroupData, JoinGroupLink } from '../../models/groups/groups';
 import { useFirebaseApp } from '../useFirebase';
 import { useUserGroups } from './useUserGroups';
 
 export function useGroupActions() {
   const firebaseApp = useFirebaseApp();
-  const { firebaseUser } = useContext(UserDataContext);
+  const firebaseUser = useFirebaseUser();
   const { invalidateData } = useUserGroups();
 
   const updateGroup = async (

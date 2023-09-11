@@ -9,8 +9,8 @@ import {
   signInWithCredential,
   signInWithPopup,
 } from 'firebase/auth';
-import React, { Fragment, useContext } from 'react';
-import UserDataContext from '../context/UserDataContext/UserDataContext';
+import React, { Fragment } from 'react';
+import { useForceFirebaseUserRerender } from '../context/UserDataContext/UserDataContext';
 import { useFirebaseApp } from '../hooks/useFirebase';
 import { LoadingSpinner } from './elements/LoadingSpinner';
 
@@ -24,7 +24,8 @@ export const SignInModal: React.FC<SignInModalProps> = ({
   onClose,
 }) => {
   const firebaseApp = useFirebaseApp();
-  const { triggerUserDataContextRerender } = useContext(UserDataContext);
+  // TODO: test to see whether this actually works
+  const forceFirebaseUserRerender = useForceFirebaseUserRerender();
   const [isSigningIn, setIsSigningIn] = React.useState(false);
   const [isLinking, setIsLinking] = React.useState(false);
   const [error, setError] = React.useState(null);
@@ -97,7 +98,7 @@ export const SignInModal: React.FC<SignInModalProps> = ({
       // that firebaseUser has changed and we should rerender things that depend on it.
       // In particular, without this, the "Linked Providers" section under "Sign In Methods"
       // in Settings will not update until the page is reloaded.
-      triggerUserDataContextRerender();
+      forceFirebaseUserRerender();
 
       onClose();
     } catch (e) {

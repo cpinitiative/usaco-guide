@@ -2,7 +2,7 @@
 id: cses-1619
 source: CSES
 title: Restaurant Customers
-author: Michael Cao, Neo Wang, Brad Ma
+author: Michael Cao, Neo Wang, Brad Ma, Alex Du, Aadit Ambadkar
 ---
 
 In this problem, we're given $n$ intervals with distinct start and end points,
@@ -176,7 +176,8 @@ int main() {
 </CPPSection>
 <JavaSection>
 
-If we use the same implementation as the C++ version, CSES will give a TLE verdict on test case 6.
+If we use the same implementation as the C++ version, CSES will give a TLE
+verdict on test case 6.
 
 ```java
 import java.io.*;
@@ -244,6 +245,64 @@ public class Customers {
 ```
 
 </JavaSection>
+<PySection>
+
+<Warning>
+
+Due to Python's high constant factor, this code may TLE on a couple test cases.
+
+</Warning>
+
+```py
+times = []
+for _ in range(int(input())):
+	start, end = map(int, input().split())
+	times.append((start, 1))
+	times.append((end, -1))
+
+times.sort()
+
+curr_ppl = 0
+max_ppl = 0
+
+for t in times:
+	curr_ppl += t[1]
+	max_ppl = max(max_ppl, curr_ppl)
+
+print(max_ppl)
+```
+
+Since all arrival and leaving times are distinct, we can store if a given time is an arrival or departure, and sort all the arrival and leaving times in one array.
+
+```py
+# Stores the change in the number of people at a specific time
+tmap = dict()
+times = []
+
+for _ in range(int(input())):
+	start, end = input().split()
+	start = int(start)
+	end = int(end)
+	# tmap is 1 when person enters, -1 when person leaves
+	tmap[start] = 1
+	tmap[end] = -1
+	times.append(start)
+	times.append(end)
+
+times.sort()
+
+curr_ppl = 0
+max_ppl = 0
+
+# Iterate through all times to see the maximum amount of people
+for t in times:
+	curr_ppl += tmap[t]
+	max_ppl = max(max_ppl, curr_ppl)
+
+print(max_ppl)
+```
+
+</PySection>
 </LanguageSection>
 
 ## Implementation 2
@@ -301,4 +360,51 @@ int main() {
 ```
 
 </CPPSection>
+<PySection>
+
+<Warning>
+
+Due to Python's big constant factor, this code may TLE on a couple test cases.
+
+</Warning>
+
+```py
+n = int(input())
+
+times = []
+
+for _ in range(n):
+	start, end = map(int, input().split())
+	times.append((start, 1))
+	times.append((end + 1, -1))
+
+times.sort()
+
+curr = 0
+at = 0
+
+# Stores how much the # of people in the restaurant changes each time step
+ppl_change = [0] * (2 * n)
+
+# Compress the starting & ending events into a single array
+for i in range(2 * n):
+	if i == 0:
+		times[i] = (0, times[i][1])
+	elif times[i][0] > curr:
+		at += 1
+		curr = times[i][0]
+	ppl_change[at] += times[i][1]
+
+# Build our prefix sum array
+ppl_amt = [0] * (2 * n + 1)
+for i in range(1, 2 * n + 1):
+	ppl_amt[i] = ppl_change[i - 1] + ppl_amt[i - 1]
+
+# Our answer is the maximum of the prefix sum array
+max_ppl = max(ppl_amt)
+
+print(max_ppl)
+```
+
+</PySection>
 </LanguageSection>

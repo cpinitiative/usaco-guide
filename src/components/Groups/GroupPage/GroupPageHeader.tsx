@@ -2,7 +2,7 @@ import { Transition } from '@headlessui/react';
 import { Link, navigate } from 'gatsby';
 import * as React from 'react';
 import { useRef, useState } from 'react';
-import UserDataContext from '../../../context/UserDataContext/UserDataContext';
+import { useFirebaseUser } from '../../../context/UserDataContext/UserDataContext';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import { useGroupActions } from '../../../hooks/groups/useGroupActions';
 import { usePostActions } from '../../../hooks/groups/usePostActions';
@@ -13,7 +13,7 @@ export default function GroupPageHeader(props: { group: GroupData }) {
   const { createNewPost } = usePostActions(props.group?.id);
   const [isActionsOpen, setIsActionsOpen] = useState(false);
   const { showAdminView, setInStudentView } = useActiveGroup();
-  const { firebaseUser } = React.useContext(UserDataContext);
+  const firebaseUser = useFirebaseUser();
   const ref = useRef<HTMLDivElement>();
 
   React.useEffect(() => {

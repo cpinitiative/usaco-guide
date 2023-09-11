@@ -2,7 +2,7 @@ import * as React from 'react';
 import { createContext, useContext, useState } from 'react';
 import ProblemSuggestionModal from '../components/ProblemSuggestionModal';
 import { EditorContext } from './EditorContext';
-import UserDataContext from './UserDataContext/UserDataContext';
+import { useFirebaseUser } from './UserDataContext/UserDataContext';
 
 const ProblemSuggestionModalContext = createContext<{
   openProblemSuggestionModal: (listName: string) => void;
@@ -21,7 +21,7 @@ export const ProblemSuggestionModalProvider = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [listName, setListName] = useState<string>(null);
-  const { firebaseUser } = useContext(UserDataContext);
+  const firebaseUser = useFirebaseUser();
   const { inEditor } = useContext(EditorContext);
   const openProblemSuggestionModal = (listName: string) => {
     if (!firebaseUser && !inEditor) {

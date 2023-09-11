@@ -1,6 +1,5 @@
 import { Link } from 'gatsby';
-import React, { useContext } from 'react';
-import UserDataContext from '../../../context/UserDataContext/UserDataContext';
+import React from 'react';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import { useActivePostProblems } from '../../../hooks/groups/useActivePostProblems';
 import { useUserLeaderboardData } from '../../../hooks/groups/useLeaderboardData';

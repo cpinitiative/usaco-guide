@@ -275,7 +275,7 @@ export const SECTION_LABELS: { [key in SectionID]: string } = {
   gold: 'Gold',
   plat: 'Platinum',
   adv: 'Advanced',
-};
+} as const;
 export const SECTION_SEO_DESCRIPTION: { [key in SectionID]: string } = {
   general:
     'General information for USACO and Competitive Programming. Includes resources to pick a language, set up an IDE, practice tips, and more!',
