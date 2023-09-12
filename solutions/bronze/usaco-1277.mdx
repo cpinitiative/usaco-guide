@@ -14,7 +14,7 @@ Only four cases are abled to be modified to $MOO$ considering the only choice of
 
 In the case of $"MOO"$ no modifications are needed. However, in the case of $MOM and OOO$ two modifications are made.
 
-In the case of $"OOM" only one modification is needed. 
+In the case of $"OOM" only one modification is needed.
 
 If the $numOfOperations$ does change from its original value, it means that no change can be made printing $-1.$
 
@@ -28,42 +28,33 @@ If the $numOfOperations$ does change from its original value, it means that no c
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
- int main(){
-        int n;
-        cin >> n;
-        for(int i = 0; i < n; i++){
-        int numOfOperations = INT_MAX;
-        string orginalText = "";
-        string modifiedText = "";
-        cin >> orginalText;
-        int k = orginalText.length();
-        for(int i = 0; i <= k - 3; i ++)
-        {
-            for(int j = i; j < i+ 3; j++)
-            {
-                modifiedText += orginalText[j];
-            }
-            if(modifiedText == "MOO"){
-                 numOfOperations= min(numOfOperations, k - 3);
-            }
-            else if(modifiedText == "MOM" || modifiedText == "OOO"){
-                numOfOperations = min(numOfOperations, k - 2);
-            }
-        else if(modifiedText == "OOM"){
-            numOfOperations = min(numOfOperations, k - 1);
-        }
-     modifiedText = "";
+int main() {
+	int n;
+	cin >> n;
+	for (int i = 0; i < n; i++) {
+		int numOfOperations = INT_MAX;
+		string orginalText = "";
+		string modifiedText = "";
+		cin >> orginalText;
+		int k = orginalText.length();
+		for (int i = 0; i <= k - 3; i++) {
+			for (int j = i; j < i + 3; j++) { modifiedText += orginalText[j]; }
+			if (modifiedText == "MOO") {
+				numOfOperations = min(numOfOperations, k - 3);
+			} else if (modifiedText == "MOM" || modifiedText == "OOO") {
+				numOfOperations = min(numOfOperations, k - 2);
+			} else if (modifiedText == "OOM") {
+				numOfOperations = min(numOfOperations, k - 1);
+			}
+			modifiedText = "";
+		}
+		if (numOfOperations != INT_MAX) {
+			cout << numOfOperations << "\n";
 
-    }
-    if(numOfOperations != INT_MAX){
-        cout << numOfOperations << "\n";
-
-    }
-    else{
-        cout << -1 << "\n";
-    }
-
-     }
+		} else {
+			cout << -1 << "\n";
+		}
+	}
 }
 ```
 
