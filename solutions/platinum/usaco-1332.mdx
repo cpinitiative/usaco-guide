@@ -18,28 +18,26 @@ Let $dp[i]$ be the number of positions of the string we have processed so far su
 using namespace std;
 
 int main() {
-  string s;
-  cin >> s;
-  int n = s.size();
-  s = '$' + s;
-  int64_t ans = 0;
-  vector<int64_t> dp(6);
-  for (int i = 1; i <= n; i++) {
-    vector<int64_t> ndp(6);
-    dp[0]++;
-    for (int j = 0; j < 6; j++) {
-      if (s[i] == "bessie"[j]) {
-        ndp[(j + 1) % 6] += dp[j];
-        if (j == 5) {
-          ans += (n - i + 1) * dp[j];
-        }
-      } else {
-        ndp[j] += dp[j];
-      }
-    }
-    swap(ndp, dp);
-  }
-  cout << ans << endl;
+	string s;
+	cin >> s;
+	int n = s.size();
+	s = '$' + s;
+	int64_t ans = 0;
+	vector<int64_t> dp(6);
+	for (int i = 1; i <= n; i++) {
+		vector<int64_t> ndp(6);
+		dp[0]++;
+		for (int j = 0; j < 6; j++) {
+			if (s[i] == "bessie"[j]) {
+				ndp[(j + 1) % 6] += dp[j];
+				if (j == 5) { ans += (n - i + 1) * dp[j]; }
+			} else {
+				ndp[j] += dp[j];
+			}
+		}
+		swap(ndp, dp);
+	}
+	cout << ans << endl;
 }
 ```
 
@@ -94,7 +92,7 @@ We can represent these linear reccurences with matrices (check the code). Now in
 
 The first column represents dp[0], second represent dp[1], ..., sixth column represents dp[5], seventh represents the answer, and eighth is just a constant 1 so we can add 1 to dp[0] at every index.
 
-Note that if the letter is $e$, we need to set mat[5][6] to be $n - i + 1$ so we can use it in the transitions. 
+Note that if the letter is $e$, we need to set mat[5][6] to be $n - i + 1$ so we can use it in the transitions.
 
 ## Implementation
 
@@ -119,78 +117,67 @@ const int sz = 8, N = 2e5 + 5;
 using mat = array<array<int64_t, 8>, 8>;
 
 mat operator*(mat const &a, mat const &b) {
-  mat r;
-  for (int i = 0; i < sz; i++) for (int j = 0; j < sz; j++) r[i][j] = 0;
-  for (int i = 0; i < sz; i++) {
-    for (int k = 0; k < sz; k++) {
-      if (a[i][k] == 0) continue;
-      for (int j = 0; j < sz; j++) {
-        r[i][j] += a[i][k] * b[k][j];
-      }
-    }
-  }
-  return r;
+	mat r;
+	for (int i = 0; i < sz; i++)
+		for (int j = 0; j < sz; j++) r[i][j] = 0;
+	for (int i = 0; i < sz; i++) {
+		for (int k = 0; k < sz; k++) {
+			if (a[i][k] == 0) continue;
+			for (int j = 0; j < sz; j++) { r[i][j] += a[i][k] * b[k][j]; }
+		}
+	}
+	return r;
 }
 
-mat b = {{
-  {{0, 1, 0, 0, 0, 0, 0, 0}},
-  {{0, 1, 0, 0, 0, 0, 0, 0}},
-  {{0, 0, 1, 0, 0, 0, 0, 0}},
-  {{0, 0, 0, 1, 0, 0, 0, 0}},
-  {{0, 0, 0, 0, 1, 0, 0, 0}},
-  {{0, 0, 0, 0, 0, 1, 0, 0}},
-  {{0, 0, 0, 0, 0, 0, 1, 0}},
-  {{1, 0, 0, 0, 0, 0, 0, 1}}
-}};
-mat e = {{
-  {{1, 0, 0, 0, 0, 0, 0, 0}},
-  {{0, 0, 1, 0, 0, 0, 0, 0}},
-  {{0, 0, 1, 0, 0, 0, 0, 0}},
-  {{0, 0, 0, 1, 0, 0, 0, 0}},
-  {{0, 0, 0, 0, 1, 0, 0, 0}},
-  {{1, 0, 0, 0, 0, 0, 0, 0}},
-  {{0, 0, 0, 0, 0, 0, 1, 0}},
-  {{1, 0, 0, 0, 0, 0, 0, 1}}
-}};
-mat s = {{
-  {{1, 0, 0, 0, 0, 0, 0, 0}},
-  {{0, 1, 0, 0, 0, 0, 0, 0}},
-  {{0, 0, 0, 1, 0, 0, 0, 0}},
-  {{0, 0, 0, 0, 1, 0, 0, 0}},
-  {{0, 0, 0, 0, 1, 0, 0, 0}},
-  {{0, 0, 0, 0, 0, 1, 0, 0}},
-  {{0, 0, 0, 0, 0, 0, 1, 0}},
-  {{1, 0, 0, 0, 0, 0, 0, 1}}
-}};
-mat i = {{
-  {{1, 0, 0, 0, 0, 0, 0, 0}},
-  {{0, 1, 0, 0, 0, 0, 0, 0}},
-  {{0, 0, 1, 0, 0, 0, 0, 0}},
-  {{0, 0, 0, 1, 0, 0, 0, 0}},
-  {{0, 0, 0, 0, 0, 1, 0, 0}},
-  {{0, 0, 0, 0, 0, 1, 0, 0}},
-  {{0, 0, 0, 0, 0, 0, 1, 0}},
-  {{1, 0, 0, 0, 0, 0, 0, 1}}
-}};
-mat identity {{
-  {{1, 0, 0, 0, 0, 0, 0, 0}},
-  {{0, 1, 0, 0, 0, 0, 0, 0}},
-  {{0, 0, 1, 0, 0, 0, 0, 0}},
-  {{0, 0, 0, 1, 0, 0, 0, 0}},
-  {{0, 0, 0, 0, 1, 0, 0, 0}},
-  {{0, 0, 0, 0, 0, 1, 0, 0}},
-  {{0, 0, 0, 0, 0, 0, 1, 0}},
-  {{1, 0, 0, 0, 0, 0, 0, 1}}
-}};
+mat b = {{{{0, 1, 0, 0, 0, 0, 0, 0}},
+          {{0, 1, 0, 0, 0, 0, 0, 0}},
+          {{0, 0, 1, 0, 0, 0, 0, 0}},
+          {{0, 0, 0, 1, 0, 0, 0, 0}},
+          {{0, 0, 0, 0, 1, 0, 0, 0}},
+          {{0, 0, 0, 0, 0, 1, 0, 0}},
+          {{0, 0, 0, 0, 0, 0, 1, 0}},
+          {{1, 0, 0, 0, 0, 0, 0, 1}}}};
+mat e = {{{{1, 0, 0, 0, 0, 0, 0, 0}},
+          {{0, 0, 1, 0, 0, 0, 0, 0}},
+          {{0, 0, 1, 0, 0, 0, 0, 0}},
+          {{0, 0, 0, 1, 0, 0, 0, 0}},
+          {{0, 0, 0, 0, 1, 0, 0, 0}},
+          {{1, 0, 0, 0, 0, 0, 0, 0}},
+          {{0, 0, 0, 0, 0, 0, 1, 0}},
+          {{1, 0, 0, 0, 0, 0, 0, 1}}}};
+mat s = {{{{1, 0, 0, 0, 0, 0, 0, 0}},
+          {{0, 1, 0, 0, 0, 0, 0, 0}},
+          {{0, 0, 0, 1, 0, 0, 0, 0}},
+          {{0, 0, 0, 0, 1, 0, 0, 0}},
+          {{0, 0, 0, 0, 1, 0, 0, 0}},
+          {{0, 0, 0, 0, 0, 1, 0, 0}},
+          {{0, 0, 0, 0, 0, 0, 1, 0}},
+          {{1, 0, 0, 0, 0, 0, 0, 1}}}};
+mat i = {{{{1, 0, 0, 0, 0, 0, 0, 0}},
+          {{0, 1, 0, 0, 0, 0, 0, 0}},
+          {{0, 0, 1, 0, 0, 0, 0, 0}},
+          {{0, 0, 0, 1, 0, 0, 0, 0}},
+          {{0, 0, 0, 0, 0, 1, 0, 0}},
+          {{0, 0, 0, 0, 0, 1, 0, 0}},
+          {{0, 0, 0, 0, 0, 0, 1, 0}},
+          {{1, 0, 0, 0, 0, 0, 0, 1}}}};
+mat identity{{{{1, 0, 0, 0, 0, 0, 0, 0}},
+              {{0, 1, 0, 0, 0, 0, 0, 0}},
+              {{0, 0, 1, 0, 0, 0, 0, 0}},
+              {{0, 0, 0, 1, 0, 0, 0, 0}},
+              {{0, 0, 0, 0, 1, 0, 0, 0}},
+              {{0, 0, 0, 0, 0, 1, 0, 0}},
+              {{0, 0, 0, 0, 0, 0, 1, 0}},
+              {{1, 0, 0, 0, 0, 0, 0, 1}}}};
 
 mat x;
 
 void get(char c, int p) {
-  if (c == 'b') x = b;
-  else if (c == 'e') x = e, x[5][6] = p;
-  else if (c == 's') x = s;
-  else if (c == 'i') x = i;
-  else x = identity;
+	if (c == 'b') x = b;
+	else if (c == 'e') x = e, x[5][6] = p;
+	else if (c == 's') x = s;
+	else if (c == 'i') x = i;
+	else x = identity;
 }
 
 mat st[4 * N];
@@ -198,43 +185,47 @@ string str;
 int n;
 
 void build(int v, int l, int r) {
-  if (l == r) {
-    get(str[l - 1], n - l + 1);
-    st[v] = x;
-  } else {
-    int m = (l + r) >> 1;
-    build(v * 2, l, m);
-    build(v * 2 + 1, m + 1, r);
-    st[v] = st[v * 2] * st[v * 2 + 1];
-  }
+	if (l == r) {
+		get(str[l - 1], n - l + 1);
+		st[v] = x;
+	} else {
+		int m = (l + r) >> 1;
+		build(v * 2, l, m);
+		build(v * 2 + 1, m + 1, r);
+		st[v] = st[v * 2] * st[v * 2 + 1];
+	}
 }
 
 void upd(int i, int v, int l, int r) {
-  if (i < l or i > r) {
-    return;
-  } else if (l == r) {
-    st[v] = x;
-  } else {
-    int m = (l + r) >> 1;
-    upd(i, v * 2, l, m);
-    upd(i, v * 2 + 1, m + 1, r);
-    st[v] = st[v * 2] * st[v * 2 + 1];
-  }
+	if (i < l or i > r) {
+		return;
+	} else if (l == r) {
+		st[v] = x;
+	} else {
+		int m = (l + r) >> 1;
+		upd(i, v * 2, l, m);
+		upd(i, v * 2 + 1, m + 1, r);
+		st[v] = st[v * 2] * st[v * 2 + 1];
+	}
 }
 
 signed main() {
-  ios::sync_with_stdio(0); cin.tie(0);
-  cin >> str;
-  n = str.size();
-  build(1, 1, n);
-  cout << st[1][0][6] + st[1][7][6] << '\n';
-  int t; cin >> t;
-  while (t --> 0) {
-    int p; char c; cin >> p >> c;
-    get(c, n - p + 1);
-    upd(p, 1, 1, n);
-    cout << st[1][0][6] + st[1][7][6] << '\n';
-  }
+	ios::sync_with_stdio(0);
+	cin.tie(0);
+	cin >> str;
+	n = str.size();
+	build(1, 1, n);
+	cout << st[1][0][6] + st[1][7][6] << '\n';
+	int t;
+	cin >> t;
+	while (t-- > 0) {
+		int p;
+		char c;
+		cin >> p >> c;
+		get(c, n - p + 1);
+		upd(p, 1, 1, n);
+		cout << st[1][0][6] + st[1][7][6] << '\n';
+	}
 }
 ```
 
