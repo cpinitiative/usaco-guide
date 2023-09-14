@@ -178,13 +178,16 @@ struct TwoEdgeCC {
 
 <Problems problems="bccSam" />
 
-note that BCCs contain EDGES not VERTICES
+An important observation is that if you can't go from node `a` to node `b` without passing through node `c`, it means that node `c` is a critical node (articulation point).
+Node `c` can split `a` and `b` into 2 different components if removed. This makes us think about biconnected components. 
 
-Related topics include
+Now we're left with to cases. If node `c` isn't a critical one it means that a path from `a` to `b` can avoid  the node. Otherwise, if node `c` is a critical one we 
+have to check if is on path from `a` to `b`. Here is a little tricky, on a simple graph it's not so easy to check, on the other hand, checking this on a tree can be much more easier.
+In order to do this, we tranform the graph into a [block-cut tree](https://en.wikipedia.org/wiki/Biconnected_component). 
 
-- Articulation Points
-- Bridges
-- Block-Cut Tree
+In a block-cut tree every articulation and biconnected component represents a node. Now that we have turned our graph into a tree how do we check if node the path
+from `a` to `b` passes through `c` ? Do do this we use LCA. You can find a good explanation [here](https://www.geeksforgeeks.org/check-whether-the-given-node-is-in-the-path-between-the-nodes-u-and-v/).
+
 
 <LanguageSection>
 <CPPSection>
@@ -310,8 +313,6 @@ int main() {
 		return false;
 	};
 
-	//for(int i = 0; i < n; i++) printf("%d ", id[i]);
-	//puts("");
 	while(q--) {
 		int a, b, c;
 		cin >> a >> b >> c;
