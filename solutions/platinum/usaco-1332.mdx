@@ -45,58 +45,58 @@ int main() {
 </CPPSection>
 </LanguageSection>
 
-Notice that we can represent the transition from dp to ndp as a system of linear reccurences which depend on the letter.
+Notice that we can represent the transition from $dp$ to $ndp$ as a system of linear reccurences which depend on the letter.
 
 B:
-$ndp[0] = 1$
-$ndp[1] = dp[0] + dp[1]$
-$ndp[2] = dp[2]$
-$ndp[3] = dp[3]$
-$ndp[4] = dp[4]$
-$ndp[5] = dp[5]$
-$ans = ans$
+$ndp[0] = 1 \\$
+$ndp[1] = dp[0] + dp[1] \\$
+$ndp[2] = dp[2] \\$
+$ndp[3] = dp[3] \\$
+$ndp[4] = dp[4] \\$
+$ndp[5] = dp[5] \\$
+$newans = ans \\$
 
 E:
-$ndp[0] = dp[0] + 1 + dp[5]$
-$ndp[1] = 0$
-$ndp[2] = dp[1] + dp[2]$
-$ndp[3] = dp[3]$
-$ndp[4] = dp[4]$
-$ndp[5] = 0$
-$ans = (n - i + 1) * dp[5]$
+$ndp[0] = dp[0] + 1 + dp[5] \\$
+$ndp[1] = 0 \\$
+$ndp[2] = dp[1] + dp[2] \\$
+$ndp[3] = dp[3] \\$
+$ndp[4] = dp[4] \\$
+$ndp[5] = 0 \\$
+$newans = (n - i + 1) * dp[5] \\$
 
 S:
-$ndp[0] = dp[0] + 1$
-$ndp[1] = dp[1]$
-$ndp[2] = 0$
-$ndp[3] = dp[2]$
-$ndp[4] = dp[3] + dp[4]$
-$ndp[5] = dp[5]$
-$ans = ans$
+$ndp[0] = dp[0] + 1 \\$
+$ndp[1] = dp[1] \\$
+$ndp[2] = 0 \\$
+$ndp[3] = dp[2] \\$
+$ndp[4] = dp[3] + dp[4] \\$
+$ndp[5] = dp[5] \\$
+$newans = ans \\$
 
 I:
-$ndp[0] = dp[0] + 1$
-$ndp[1] = dp[1]$
-$ndp[2] = dp[2]$
-$ndp[3] = dp[3]$
-$ndp[4] = 0$
-$ndp[5] = dp[4] + dp[5]$
-$ans = ans$
+$ndp[0] = dp[0] + 1 \\$
+$ndp[1] = dp[1] \\$
+$ndp[2] = dp[2] \\$
+$ndp[3] = dp[3] \\$
+$ndp[4] = 0 \\$
+$ndp[5] = dp[4] + dp[5] \\$
+$newans = ans \\$
 
 Identity (Any letter other than $b$, $e$, $s$, or $i$):
-$ndp[0] = dp[0] + 1$
-$ndp[1] = dp[1]$
-$ndp[2] = dp[2]$
-$ndp[3] = dp[3]$
-$ndp[4] = dp[4]$
-$ndp[5] = dp[5]$
-$ans = ans$
+$ndp[0] = dp[0] + 1 \\$
+$ndp[1] = dp[1] \\$
+$ndp[2] = dp[2] \\$
+$ndp[3] = dp[3] \\$
+$ndp[4] = dp[4] \\$
+$ndp[5] = dp[5] \\$
+$newans = ans \\$
 
 We can represent these linear reccurences with matrices (check the code). Now in order to perform updates quickly we can build a segtree on top of these matrices and update the according node with the respective matrix representing letter.
 
-The first column represents dp[0], second represent dp[1], ..., sixth column represents dp[5], seventh represents the answer, and eighth is just a constant 1 so we can add 1 to dp[0] at every index.
+The first column represents $dp[0]$, second represent $dp[1]$, ..., sixth column represents $dp[5]$, seventh represents the answer, and eighth is just a constant $1$ so we can add $1$ to $dp[0]$ at every index.
 
-Note that if the letter is $e$, we need to set mat[5][6] to be $n - i + 1$ so we can use it in the transitions.
+Note that if the letter is $e$, we need to set $mat[5][6]$ to be $n - i + 1$ so we can use it in the transitions.
 
 ## Implementation
 
