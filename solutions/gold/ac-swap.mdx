@@ -6,17 +6,19 @@ author: Ryan Chou
 ---
 
 <Spoiler title="Hint 1">
+
 $K \leq 10^9$ looks super large and unmanageable, but since $|S| \leq 30$, we should be able
 to construct a more reasonable upper bound.
 
 What's the maximum number of swaps such that we can get to every single possible string?
+
 </Spoiler>
 
-
 <Spoiler title="Answer to hint 1">
-In the worst case, we want to swap each letter from the back to the front of the string.
 
+In the worst case, we want to swap each letter from the back to the front of the string.
 Thus, $K \leq 30+29+28+\dots = \frac{30 \cdot 31}{2} = 465$.
+
 </Spoiler>
 
 <Spoiler title="Solution">
@@ -24,7 +26,6 @@ Thus, $K \leq 30+29+28+\dots = \frac{30 \cdot 31}{2} = 465$.
 [Official Analysis (Python)](https://atcoder.jp/contests/abc227/editorial/2920)
 
 ## Explanation
-
 
 Instead of calculating swaps from an end state, let's compute our answer by
 adding one letter at a time to our final string. This enables us to compute
@@ -46,27 +47,24 @@ Without loss of generality, let's assume that we want to place a `K` in our stri
 
 Then,
 
-$dp[\texttt{cost} + \texttt{between}, K + 1, E, Y] \mathrel{+}= dp[\texttt{cost},K,E,Y]$
+$$
+dp[\texttt{cost} + \texttt{between}, K + 1, E, Y] \mathrel{+}= dp[\texttt{cost},K,E,Y]
+$$
 
 where $\texttt{between}$ are the amount of characters between our current position and the next
 occurence of `K`.
-
 
 ## Implementation
 
 **Time Complexity:** $\mathcal{O}(S^3)$<Asterisk>Note that there is an additional constant
 factor of $465$ from the $\texttt{cost}$ state in our DP</Asterisk>
 
-
 <LanguageSection>
-
 <CPPSection>
-
 
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
-
 using ll = long long;
 
 const int LETTERS = 3;
@@ -79,7 +77,6 @@ int main() {
 	cin >> k;
 
 	int n = (int)s.size();
-
 	vector<int> count(LETTERS);
 	for (char &x : s) {
 		if (x == 'K') {
@@ -119,7 +116,6 @@ int main() {
 	// base case (one way to create an empty string)
 	dp[0][0][0][0] = 1;
 	long longj ans = 0;
-
 	for (int ks = 0; ks <= count[0]; ks++) {
 		for (int es = 0; es <= count[1]; es++) {
 			for (int ys = 0; ys <= count[2]; ys++) {
@@ -176,8 +172,8 @@ int main() {
 	cout << ans << endl;
 }
 ```
-</CPPSection>
 
+</CPPSection>
 </LanguageSection>
 
 </Spoiler>
