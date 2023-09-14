@@ -133,6 +133,7 @@ mat operator*(mat const &a, mat const &b) {
 	return r;
 }
 
+// BeginCodeSnip{Matrices}
 mat b = {{{{0, 1, 0, 0, 0, 0, 0, 0}},
           {{0, 1, 0, 0, 0, 0, 0, 0}},
           {{0, 0, 1, 0, 0, 0, 0, 0}},
@@ -166,27 +167,39 @@ mat i = {{{{1, 0, 0, 0, 0, 0, 0, 0}},
           {{0, 0, 0, 0, 0, 0, 1, 0}},
           {{1, 0, 0, 0, 0, 0, 0, 1}}}};
 mat identity = {{{{1, 0, 0, 0, 0, 0, 0, 0}},
-                 {{0, 1, 0, 0, 0, 0, 0, 0}},
-                 {{0, 0, 1, 0, 0, 0, 0, 0}},
-                 {{0, 0, 0, 1, 0, 0, 0, 0}},
-                 {{0, 0, 0, 0, 1, 0, 0, 0}},
-                 {{0, 0, 0, 0, 0, 1, 0, 0}},
-                 {{0, 0, 0, 0, 0, 0, 1, 0}},
-                 {{1, 0, 0, 0, 0, 0, 0, 1}}}};
+              {{0, 1, 0, 0, 0, 0, 0, 0}},
+              {{0, 0, 1, 0, 0, 0, 0, 0}},
+              {{0, 0, 0, 1, 0, 0, 0, 0}},
+              {{0, 0, 0, 0, 1, 0, 0, 0}},
+              {{0, 0, 0, 0, 0, 1, 0, 0}},
+              {{0, 0, 0, 0, 0, 0, 1, 0}},
+              {{1, 0, 0, 0, 0, 0, 0, 1}}}};
+// EndCodeSnip
+
 
 mat x;
-
+// Gets the appropriate matrix based on the letter and stores it in x.
+// If the letter is e, we set x[5][6] to the coefficient based on the position.
 void get(char c, int p) {
-	if (c == 'b') x = b;
-	else if (c == 'e') x = e, x[5][6] = p;
-	else if (c == 's') x = s;
-	else if (c == 'i') x = i;
-	else x = identity;
+	if (c == 'b') {
+		x = b;
+	} else if (c == 'e') {
+		x = e, x[5][6] = p;
+	} else if (c == 's') {
+		x = s;
+	} else if (c == 'i') {
+		x = i;
+	} else {
+		x = identity;
+	}
 }
 
-mat st[4 * N];
 string str;
 int n;
+
+// BeginCodeSnip{Segment Tree}
+
+mat st[4 * N];
 
 void build(int v, int l, int r) {
 	if (l == r) {
@@ -212,6 +225,7 @@ void upd(int i, int v, int l, int r) {
 		st[v] = st[v * 2] * st[v * 2 + 1];
 	}
 }
+// EndCodeSnip
 
 signed main() {
 	ios::sync_with_stdio(0);
