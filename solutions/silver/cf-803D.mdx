@@ -103,6 +103,58 @@ int main() {
 ```
 
 </CPPSection>
+<PySection>
+<Warning>
+
+Due to Python's big constant factor, this code will TLE on a couple of test cases.
+
+</Warning>
+```py
+def width_valid(width, word_lengths, max_lines):
+    lines = 0
+    cur_width = 0
+
+    for word_length in word_lengths:
+        # if individual word is wider than ad width, we need a greater width
+        if word_length > width:
+            return False
+
+        # if we overflow, we need a new line
+        if cur_width + word_length > width:
+            lines += 1
+            cur_width = word_length
+        else:
+            cur_width += word_length  # add word to the current line
+
+    if cur_width > 0:
+        lines += 1
+    return lines <= max_lines
+
+max_lines = int(input())
+ad = input()
+
+# get sizes of each word, including trailing spaces and trailing hyphens
+word_lengths = [0]
+for char in ad:
+    word_lengths[-1] += 1
+    # spaces and hyphens work the same, start a new word after adding a character
+    if char == ' ' or char == '-':
+        word_lengths.append(0)
+
+# find the lowest width that doesn't use greater than max_lines
+lo = 0
+hi = len(ad) + 1
+while lo < hi:
+    mid = lo + (hi - lo) // 2
+    if width_valid(mid, word_lengths, max_lines):
+        hi = mid
+    else:
+        lo = mid + 1
+
+print(lo)
+
+```
+</PySection>
 </LanguageSection>
 
 </Spoiler>
