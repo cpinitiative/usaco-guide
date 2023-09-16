@@ -69,27 +69,20 @@ int main() {
 	cin >> n;
 
 	vector<int> cows(n), stalls(n);
-	for (int &c : cows) {
-		cin >> c;
-	}
-	for (int &s : stalls) {
-		cin >> s;
-	}
+	for (int &c : cows) { cin >> c; }
+	for (int &s : stalls) { cin >> s; }
 
-	sort(cows.begin(),cows.end());
+	sort(cows.begin(), cows.end());
 	sort(stalls.begin(), stalls.end());
 
 	long long possibilities = 1;
 	int j = n - 1;
-	for (int i = n - 1; i >= 1; i--)
-	{
-		while (j >= 0 && stalls[j] >= cows[i]) {
-			j--;
-		}
+	for (int i = n - 1; i >= 1; i--) {
+		while (j >= 0 && stalls[j] >= cows[i]) { j--; }
 
 		possibilities *= i - j;
 	}
-	
+
 	cout << possibilities << endl;
 }
 ```
