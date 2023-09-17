@@ -49,22 +49,22 @@ string ad;
 /** @return if most optimized ad of given width satisfies constraints */
 bool width_valid(int width) {
 	int lines = 0;
-	int cur_width = 0;
+	int curr_width = 0;
 
 	for (int word_length : word_lengths) {
 		// if individual word is wider than ad width, we need a greater width
 		if (word_length > width) { return false; }
 
 		// if we overflow, we need a new line
-		if (cur_width + word_length > width) {
+		if (curr_width + word_length > width) {
 			lines++;
-			cur_width = word_length;
+			curr_width = word_length;
 		} else {
-			cur_width += word_length;  // add word to current line
+			curr_width += word_length;  // add word to current line
 		}
 	}
 
-	if (cur_width > 0) { lines++; }
+	if (curr_width > 0) { lines++; }
 	return lines <= max_lines;
 }
 
@@ -104,15 +104,18 @@ int main() {
 
 </CPPSection>
 <PySection>
+
 <Warning>
 
-Due to Python's big constant factor, this code will TLE on a couple of test cases.
+Due to Python's constant factor, this code will TLE on a couple of test cases.
 
 </Warning>
+
 ```py
 def width_valid(width, word_lengths, max_lines):
+	""":return if most optimized ad of given width satisfies constraints"""
 	lines = 0
-	cur_width = 0
+	curr_width = 0
 
 	for word_length in word_lengths:
 		# if individual word is wider than ad width, we need a greater width
@@ -120,13 +123,13 @@ def width_valid(width, word_lengths, max_lines):
 			return False
 
 		# if we overflow, we need a new line
-		if cur_width + word_length > width:
+		if curr_width + word_length > width:
 			lines += 1
-			cur_width = word_length
+			curr_width = word_length
 		else:
-			cur_width += word_length  # add word to the current line
+			curr_width += word_length  # add word to the current line
 
-	if cur_width > 0:
+	if curr_width > 0:
 		lines += 1
 	return lines <= max_lines
 
@@ -154,6 +157,7 @@ while lo < hi:
 
 print(lo)
 ```
+
 </PySection>
 </LanguageSection>
 
