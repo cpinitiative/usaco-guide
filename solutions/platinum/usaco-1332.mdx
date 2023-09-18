@@ -58,16 +58,16 @@ int main() {
 
 Notice that we can represent the transition from $dp$ to $ndp$ as a system of linear reccurences which depend on the letter.
 
-B:
-$ndp[0] = 1 \\$
-$ndp[1] = dp[0] + dp[1] \\$
+B:$\\$
+$ndp[0] = 0 \\$
+$ndp[1] = dp[0] + 1 + dp[1] \\$
 $ndp[2] = dp[2] \\$
 $ndp[3] = dp[3] \\$
 $ndp[4] = dp[4] \\$
 $ndp[5] = dp[5] \\$
 $newans = ans \\$
 
-E:
+E:$\\$
 $ndp[0] = dp[0] + 1 + dp[5] \\$
 $ndp[1] = 0 \\$
 $ndp[2] = dp[1] + dp[2] \\$
@@ -76,7 +76,7 @@ $ndp[4] = dp[4] \\$
 $ndp[5] = 0 \\$
 $newans = (n - i + 1) * dp[5] \\$
 
-S:
+S:$\\$
 $ndp[0] = dp[0] + 1 \\$
 $ndp[1] = dp[1] \\$
 $ndp[2] = 0 \\$
@@ -85,7 +85,7 @@ $ndp[4] = dp[3] + dp[4] \\$
 $ndp[5] = dp[5] \\$
 $newans = ans \\$
 
-I:
+I:$\\$
 $ndp[0] = dp[0] + 1 \\$
 $ndp[1] = dp[1] \\$
 $ndp[2] = dp[2] \\$
@@ -103,11 +103,13 @@ $ndp[4] = dp[4] \\$
 $ndp[5] = dp[5] \\$
 $newans = ans \\$
 
-We can represent these linear reccurences with matrices (check the code). Now in order to perform updates quickly we can build a segtree on top of these matrices and update the according node with the respective matrix representing letter.
+We can represent these linear reccurences with matrices (check the code). Multiplying all the matrices in the order from the one representing position $1$ to position $n$ would allow us to compute our answer. Now in order to perform updates quickly we can build a segtree on top of these matrices and update the according node with the respective matrix representing letter.
 
-The first column represents $dp[0]$, second represent $dp[1]$, ..., sixth column represents $dp[5]$, seventh represents the answer, and eighth is just a constant $1$ so we can add $1$ to $dp[0]$ at every index.
+The first column of each matrix represents $dp[0]$, second represent $dp[1]$, ..., sixth column represents $dp[5]$, seventh represents the answer, and eighth is just a constant $1$ so we can add $1$ with $dp[0]$ at every index.
 
 Note that if the letter is $e$, we need to set $mat[5][6]$ to be $n - i + 1$ so we can use it in the transitions.
+
+To extract the answer from our matrices, we can multiply the 1 x 6 matrix represnting the initial state of our dp ${0, 0, 0, 0, 0, 0, 1}$ (0 for each position of the string, 0 for the answer, and 1 for the constant representing 1) by the the product of all matrices and looking at the value in the $2$nd to last column. This is equivalent to the value located at mat[7][6] of the product matrix.
 
 ## Implementation
 
@@ -133,8 +135,11 @@ using mat = array<array<long long, 8>, 8>;
 
 mat operator*(mat const &a, mat const &b) {
 	mat r;
-	for (int i = 0; i < sz; i++)
-		for (int j = 0; j < sz; j++) r[i][j] = 0;
+	for (int i = 0; i < sz; i++) {
+		for (int j = 0; j < sz; j++) {
+			r[i][j] = 0;
+		}
+	}
 	for (int i = 0; i < sz; i++) {
 		for (int k = 0; k < sz; k++) {
 			if (a[i][k] == 0) continue;
@@ -152,7 +157,7 @@ mat b = {{{{0, 1, 0, 0, 0, 0, 0, 0}},
           {{0, 0, 0, 0, 1, 0, 0, 0}},
           {{0, 0, 0, 0, 0, 1, 0, 0}},
           {{0, 0, 0, 0, 0, 0, 1, 0}},
-          {{1, 0, 0, 0, 0, 0, 0, 1}}}};
+          {{0, 1, 0, 0, 0, 0, 0, 1}}}};
 mat e = {{{{1, 0, 0, 0, 0, 0, 0, 0}},
           {{0, 0, 1, 0, 0, 0, 0, 0}},
           {{0, 0, 1, 0, 0, 0, 0, 0}},
@@ -243,7 +248,7 @@ int main() {
 	cin >> str;
 	n = str.size();
 	build(1, 1, n);
-	cout << st[1][0][6] + st[1][7][6] << '\n';
+	cout << st[1][7][6] << '\n';
 	int t;
 	cin >> t;
 	for (int tt = 0; tt < t; tt++) {
@@ -252,9 +257,10 @@ int main() {
 		cin >> p >> c;
 		get(c, n - p + 1);
 		upd(p, 1, 1, n);
-		cout << st[1][0][6] + st[1][7][6] << '\n';
+		cout << st[1][7][6] << '\n';
 	}
 }
+
 ```
 
 </CPPSection>
