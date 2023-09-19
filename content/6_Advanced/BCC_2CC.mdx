@@ -25,7 +25,6 @@ frequency: 1
 
 <Problems problems="sam2" />
 
-
 <LanguageSection>
 <CPPSection>
 
@@ -188,32 +187,33 @@ In order to do this, we tranform the graph into a [block-cut tree](https://en.wi
 In a block-cut tree every articulation and biconnected component represents a node. Now that we have turned our graph into a tree how do we check if node the path
 from $a$ to $b$ passes through $c$ ? To do this we use LCA. You can find more about this [here](https://www.geeksforgeeks.org/check-whether-the-given-node-is-in-the-path-between-the-nodes-u-and-v/).
 
-
 <LanguageSection>
 <CPPSection>
+
 ```cpp
 #include <bits/stdc++.h>
-
 using namespace std;
 
-// Return the block-cut tree of a graph
+/** @return the block-cut tree of a graph */
 vector<vector<int>> biconnected_components(vector<vector<int>> &g,
                                            vector<bool> &is_cutpoint,
                                            vector<int> &id) {
 	int n = (int)g.size();
 
 	vector<vector<int>> comps;
-	vector<int> stk, num(n), low(n);
+	vector<int> stk;
+	vector<int> num(n);
+	vector<int> low(n);
 
 	is_cutpoint.resize(n);
 
-	// Find the biconnected components
+	// Finds the biconnected components
 	function<void(int, int, int &)> dfs = [&](int node, int parent,
 	                                          int &timer) {
 		num[node] = low[node] = ++timer;
 		stk.push_back(node);
 		for (int son : g[node]) {
-			if (son == parent) continue;
+			if (son == parent) { continue; }
 			if (num[son]) {
 				low[node] = min(low[node], num[son]);
 			} else {
@@ -259,6 +259,7 @@ vector<vector<int>> biconnected_components(vector<vector<int>> &g,
 		}
 		return t;
 	};
+
 	return build_tree();
 }
 
