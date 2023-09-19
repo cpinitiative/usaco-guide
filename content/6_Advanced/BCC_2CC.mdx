@@ -238,16 +238,16 @@ vector<vector<int>> biconnected_components(vector<vector<int>> &g,
 	// Build the block-cut tree
 	function<vector<vector<int>>()> build_tree = [&]() {
 		vector<vector<int>> t(1);
-		int cnt = 0;
+		int node_id = 0;
 		for (int node = 0; node < n; node++) {
 			if (is_cutpoint[node]) {
-				id[node] = cnt++;
+				id[node] = node_id++;
 				t.push_back({});
 			}
 		}
 
 		for (auto &comp : comps) {
-			int node = cnt++;
+			int node = node_id++;
 			t.push_back({});
 			for (int u : comp)
 				if (!is_cutpoint[u]) {
