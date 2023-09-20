@@ -105,17 +105,16 @@ $ndp[4] = dp[4] \\$
 $ndp[5] = dp[5] \\$
 $newans = ans \\$
 
-We can represent these linear reccurences with matrices (check the code). Multiplying all the matrices in the order from the one representing position $1$ to position $n$ would allow us to compute our answer. Now in order to perform updates quickly we can build a segtree on top of these matrices and update the according node with the respective matrix representing letter.
+Representing these linear recurrences with matrices and multiplying all the matrices in the order from the one representing position $1$ to position $n$ would allow us to compute our answer. We can optimize updates by building a segment tree on the matrices and updating each node with a respective matrix representing a given letter.
 
-The first column of each matrix represents $dp[0]$, second represent $dp[1]$, ..., sixth column represents $dp[5]$, seventh represents the answer, and eighth is just a constant $1$ so we can add $1$ with $dp[0]$ at every index.
-
-Note that if the letter is $e$, we need to set $mat[5][6]$ to be $n - i + 1$ so we can use it in the transitions.
-
-To extract the answer from our matrices, we can multiply the $1 \times 6$ matrix represnting the initial state of our dp $[0, 0, 0, 0, 0, 0, 1]$ ($0$ for each position of the string, $0$ for the answer, and $1$ for the constant representing $1$) by the the product of all matrices and looking at the value in the $2$nd to last column. This is equivalent to the value located at $mat[7][6]$ of the product matrix.
-
+The $i$-th column $(1 \leq i \leq 6)$ of each matrix represents $dp[i - 1]$, the seventh column of each matrix represents the answer, and the eighth column of each matrix is a constant $1$ so we can add $1$ to $dp[0]$ at every index.
+		
+Note that if the letter is $e$, we need to set $mat[5][6]$ as $n - i + 1$.
+		
+To extract the answer from our matrices, we can multiply the $1 \times 6$ matrix representing the initial state of our dp $[0, 0, 0, 0, 0, 0, 1]$ by the product of all the matrices and look at the value in the $2$nd to last column, which is equivalent to the value of $mat[7][6]$.
+		
 ## Implementation
-
-The constant factor for this solution is high so you may need to do some constant optimizations to speed it up to pass all testcases.
+The constant factor for this solution is high, so you may need to do some of the following optimizations to pass the test cases:
  - Use C++.
  - We can skip all $0$s while multiplying the matrices to speed up the multiplication.
  - Use fastio and '\n' instead of endl.
