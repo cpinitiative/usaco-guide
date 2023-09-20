@@ -108,11 +108,11 @@ $newans = ans \\$
 Representing these linear recurrences with matrices and multiplying all the matrices in the order from the one representing position $1$ to position $n$ would allow us to compute our answer. We can optimize updates by building a segment tree on the matrices and updating each node with a respective matrix representing a given letter.
 
 The $i$-th column $(1 \leq i \leq 6)$ of each matrix represents $dp[i - 1]$, the seventh column of each matrix represents the answer, and the eighth column of each matrix is a constant $1$ so we can add $1$ to $dp[0]$ at every index.
-		
+
 Note that if the letter is $e$, we need to set $mat[5][6]$ as $n - i + 1$.
-		
+
 To extract the answer from our matrices, we can multiply the $1 \times 6$ matrix representing the initial state of our dp $[0, 0, 0, 0, 0, 0, 1]$ by the product of all the matrices and look at the value in the $2$nd to last column, which is equivalent to the value of $mat[7][6]$.
-		
+
 ## Implementation
 The constant factor for this solution is high, so you may need to do some of the following optimizations to pass the test cases:
  - Use C++.
