@@ -61,27 +61,19 @@ void gen(int x) {
 	// Run topological sort.
 	queue<int> q;
 	for (int i = 0; i <= n[x]; i++) {
-		if (in_degree[i] == 0) { 
-			q.push(i);
-		}
+		if (in_degree[i] == 0) { q.push(i); }
 	}
 	while (!q.empty()) {
 		int node = q.front();
 		q.pop();
 		for (int next : g[x][node]) {
 			in_degree[next]--;
-			if (in_degree[next] == 0) {
-				q.push(next);
-			}
+			if (in_degree[next] == 0) { q.push(next); }
 		}
 
 		// `node` can be visited in `i + 1` steps if `before` can in `i` steps.
-		if (back[x][node].empty()) {
-			dp[x][node][0] = 1;
-		}
-		for (int before : back[x][node]) {
-			dp[x][node] |= dp[x][before] << 1;
-		}
+		if (back[x][node].empty()) { dp[x][node][0] = 1; }
+		for (int before : back[x][node]) { dp[x][node] |= dp[x][before] << 1; }
 	}
 }
 
@@ -148,23 +140,18 @@ public class QuantumSuperposition {
 		// Run topological sort.
 		Queue<Integer> q = new LinkedList<>();
 		for (int i = 0; i <= n[x]; i++) {
-			if (inDegree[i] == 0) {
-				q.add(i);
-			}
+			if (inDegree[i] == 0) { q.add(i); }
 		}
 		while (!q.isEmpty()) {
 			int node = q.poll();
 			for (int next : g[x][node]) {
 				inDegree[next]--;
-				if (inDegree[next] == 0) {
-					q.add(next);
-				}
+				if (inDegree[next] == 0) { q.add(next); }
 			}
 
-			// `node` can be visited in `i + 1` steps if `before` can in `i` steps.
-			if (back[x][node].isEmpty()) {
-				dp[x][node][0] = true;
-			}
+			// `node` can be visited in `i + 1` steps if `before` can in `i`
+			// steps.
+			if (back[x][node].isEmpty()) { dp[x][node][0] = true; }
 			for (int before : back[x][node]) {
 				for (int i = 0; i < MAX_Q + 1; i++) {
 					if (dp[x][before][i]) {
@@ -249,7 +236,7 @@ def gen(x):
 			in_degree[nxt] -= 1
 			if in_degree[nxt] == 0:
 				q.append(nxt)
-		
+
 		# `node` can be visited in `i + 1` steps if `before` can in `i` steps.
 		if not back[x][node]:
 			dp[x][node][0] = True
