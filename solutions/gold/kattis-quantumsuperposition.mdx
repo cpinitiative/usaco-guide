@@ -38,19 +38,19 @@ add them together.
 #include <vector>
 using namespace std;
 
-static const int MAX_N = 1001;
-static const int MAX_Q = 2001;
+static const int MAX_N = 1000;
+static const int MAX_Q = 2000;
 
 int n[2], m[2];
-vector<int> g[2][MAX_N];
-vector<int> back[2][MAX_N];
-bitset<MAX_Q> dp[2][MAX_N];
+vector<int> g[2][MAX_N + 1];
+vector<int> back[2][MAX_N + 1];
+bitset<MAX_Q + 1> dp[2][MAX_N + 1];
 
 /*
  * Generates the topological sort, filling in the DP array in the process.
  */
 void gen(int x) {
-	int in_degree[MAX_N] = {};
+	int in_degree[MAX_N + 1] = {};
 	for (int i = 0; i < m[x]; i++) {
 		int a, b;
 		cin >> a >> b;
@@ -95,8 +95,8 @@ int main() {
 
 	// Preprocess for all queries: ans[x] is true if the sum of steps
 	// in both universes can be equal to x.
-	bitset<MAX_Q> ans;
-	for (int i = 0; i < MAX_N; i++) {
+	bitset<MAX_Q + 1> ans;
+	for (int i = 0; i <= MAX_N; i++) {
 		if (dp[0][n[0]][i]) {
 			ans |= dp[1][n[1]] << i;
 		}
@@ -121,21 +121,21 @@ import java.io.*;
 import java.util.*;
 
 public class QuantumSuperposition {
-	static final int MAX_N = 1001;
-	static final int MAX_Q = 2001;
+	static final int MAX_N = 1000;
+	static final int MAX_Q = 2000;
 
 	static int[] n = new int[2];
 	static int[] m = new int[2];
-	static ArrayList<Integer>[][] g = new ArrayList[2][MAX_N];
-	static ArrayList<Integer>[][] back = new ArrayList[2][MAX_N];
-	static boolean[][][] dp = new boolean[2][MAX_N][MAX_Q];
+	static ArrayList<Integer>[][] g = new ArrayList[2][MAX_N + 1];
+	static ArrayList<Integer>[][] back = new ArrayList[2][MAX_N + 1];
+	static boolean[][][] dp = new boolean[2][MAX_N + 1][MAX_Q + 1];
 	static BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
 	/*
 	 * Generates the topological sort, filling in the DP array in the process.
 	 */
 	static void gen(int x) throws IOException {
-		int[] inDegree = new int[MAX_N];
+		int[] inDegree = new int[MAX_N + 1];
 		for (int i = 0; i < m[x]; i++) {
 			String[] inputs = reader.readLine().split(" ");
 			int a = Integer.parseInt(inputs[0]);
@@ -166,7 +166,7 @@ public class QuantumSuperposition {
 				dp[x][node][0] = true;
 			}
 			for (int before : back[x][node]) {
-				for (int i = 0; i < MAX_Q; i++) {
+				for (int i = 0; i < MAX_Q + 1; i++) {
 					if (dp[x][before][i]) {
 						dp[x][node][i + 1] = true;
 					}
@@ -183,7 +183,7 @@ public class QuantumSuperposition {
 		m[1] = Integer.parseInt(inputs[3]);
 
 		for (int x = 0; x < 2; x++) {
-			for (int i = 0; i < MAX_N; i++) {
+			for (int i = 0; i <= MAX_N; i++) {
 				g[x][i] = new ArrayList<>();
 				back[x][i] = new ArrayList<>();
 			}
@@ -194,10 +194,10 @@ public class QuantumSuperposition {
 
 		// Preprocess for all queries: ans[x] is true if the sum of steps
 		// in both universes can be equal to x.
-		boolean[] ans = new boolean[MAX_Q];
-		for (int i = 0; i < MAX_N; i++) {
+		boolean[] ans = new boolean[MAX_Q + 1];
+		for (int i = 0; i <= MAX_N; i++) {
 			if (dp[0][n[0]][i]) {
-				for (int j = 0; j < MAX_N; j++) {
+				for (int j = 0; j <= MAX_N; j++) {
 					if (dp[1][n[1]][j]) {
 						ans[i + j] = true;
 					}
@@ -218,20 +218,20 @@ public class QuantumSuperposition {
 <PySection>
 
 ```py
-MAX_N = 1001
-MAX_Q = 2001
+MAX_N = 1000
+MAX_Q = 2000
 
 from collections import deque
 
 n = [0, 0]
 m = [0, 0]
-g = [[[] for _ in range(MAX_N)] for _ in range(2)]
-back = [[[] for _ in range(MAX_N)] for _ in range(2)]
-dp = [[[False for _ in range(MAX_Q)] for _ in range(MAX_N)] for _ in range(2)]
+g = [[[] for _ in range(MAX_N + 1)] for _ in range(2)]
+back = [[[] for _ in range(MAX_N + 1)] for _ in range(2)]
+dp = [[[False for _ in range(MAX_Q + 1)] for _ in range(MAX_N + 1)] for _ in range(2)]
 
 # Generates the topological sort, filling in the DP array in the process.
 def gen(x):
-	in_degree = [0] * MAX_N
+	in_degree = [0] * (MAX_N + 1)
 	for _ in range(m[x]):
 		a, b = map(int, input().split())
 		g[x][a].append(b)
@@ -254,7 +254,7 @@ def gen(x):
 		if not back[x][node]:
 			dp[x][node][0] = True
 		for before in back[x][node]:
-			for i in range(MAX_Q):
+			for i in range(MAX_Q + 1):
 				if dp[x][before][i]:
 					dp[x][node][i + 1] = True
 
@@ -266,10 +266,10 @@ gen(1)
 
 # Preprocess for all queries: ans[x] is true if the sum of steps
 # in both universes can be equal to x.
-ans = [False for _ in range(MAX_Q)]
-for i in range(MAX_N):
+ans = [False for _ in range(MAX_Q + 1)]
+for i in range(MAX_N + 1):
 	if dp[0][n[0]][i]:
-		for j in range(MAX_N):
+		for j in range(MAX_N + 1):
 			if dp[1][n[1]][j]:
 				ans[i + j] = True
 
