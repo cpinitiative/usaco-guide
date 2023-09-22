@@ -89,9 +89,7 @@ int main() {
 	// in both universes can be equal to x.
 	bitset<MAX_Q + 1> ans;
 	for (int i = 0; i <= MAX_N; i++) {
-		if (dp[0][n[0]][i]) {
-			ans |= dp[1][n[1]] << i;
-		}
+		if (dp[0][n[0]][i]) { ans |= dp[1][n[1]] << i; }
 	}
 
 	int Q;
@@ -121,7 +119,8 @@ public class QuantumSuperposition {
 	static ArrayList<Integer>[][] g = new ArrayList[2][MAX_N + 1];
 	static ArrayList<Integer>[][] back = new ArrayList[2][MAX_N + 1];
 	static boolean[][][] dp = new boolean[2][MAX_N + 1][MAX_Q + 1];
-	static BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+	static BufferedReader reader =
+	    new BufferedReader(new InputStreamReader(System.in));
 
 	/*
 	 * Generates the topological sort, filling in the DP array in the process.
@@ -154,9 +153,7 @@ public class QuantumSuperposition {
 			if (back[x][node].isEmpty()) { dp[x][node][0] = true; }
 			for (int before : back[x][node]) {
 				for (int i = 0; i < MAX_Q + 1; i++) {
-					if (dp[x][before][i]) {
-						dp[x][node][i + 1] = true;
-					}
+					if (dp[x][before][i]) { dp[x][node][i + 1] = true; }
 				}
 			}
 		}
@@ -185,9 +182,7 @@ public class QuantumSuperposition {
 		for (int i = 0; i <= MAX_N; i++) {
 			if (dp[0][n[0]][i]) {
 				for (int j = 0; j <= MAX_N; j++) {
-					if (dp[1][n[1]][j]) {
-						ans[i + j] = true;
-					}
+					if (dp[1][n[1]][j]) { ans[i + j] = true; }
 				}
 			}
 		}
