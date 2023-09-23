@@ -105,7 +105,9 @@ $ndp[4] = dp[4] \\$
 $ndp[5] = dp[5] \\$
 $newans = ans \\$
 
-Representing these linear recurrences with matrices and multiplying all the matrices in the order from the one representing position $1$ to position $n$ would allow us to compute our answer. We can optimize updates by building a segment tree on the matrices and updating each node with a respective matrix representing a given letter.
+We can represent these linear recurrences with matrices where each letter of the string has its respective matrix. Now, multiplying all these matrices together will allow us to compute our answer. Note that since matrix multiplication is non commutative, we need to pay attention to the order of the two matrices that we are multiplying. In this case, we multiply matrices representing earlier indexes by matrices represting later indexes (rather than matrices representing later indexes by matrices represting later indexes).
+
+We can optimize updates by building a segment tree on the matrices and updating each node with the respective matrix based on the given letter.
 
 The $i$-th column $(1 \leq i \leq 6)$ of each matrix represents $dp[i - 1]$, the seventh column of each matrix represents the answer, and the eighth column of each matrix is a constant $1$ so we can add $1$ to $dp[0]$ at every index.
 
