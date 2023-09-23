@@ -39,7 +39,7 @@ export default function TopNavigationBar({
   transparent = false,
   linkLogoToIndex = false,
   currentSection = null,
-  hideClassesPromoBar = false,
+  hideClassesPromoBar = true,
 }) {
   const firebaseUser = useFirebaseUser();
   const signOut = useSignOutAction();
