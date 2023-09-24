@@ -20,7 +20,7 @@ using namespace std;
 using ll = long long;
 const ll MAX = 1e18;
 
-ll N, K;
+ll n, k;
 vector<ll> odds, evens;
 
 // The numbers possible using only prime divisors from A and B, respectively
@@ -33,14 +33,14 @@ bool test(ll x) {
 	ll opoint = lower_bound(onums.begin(), onums.end(), x) - onums.begin();
 	if (opoint == onums.size()) opoint--;
 
-	for (auto e : enums) {
+	for (ll e : enums) {
 		if (e > x) break;
 		while (onums[opoint] > x / e) {  // Written to prevent overflow
 			opoint--;
 		}
 		tot += opoint + 1;
 	}
-	return tot >= K;
+	return tot >= k;
 }
 
 ll first_true(ll lo, ll hi) {
@@ -57,39 +57,38 @@ ll first_true(ll lo, ll hi) {
 }
 
 // Run DFS to generate all possible products
-void dfsa(ll x, ll pos) {
+void odd_gen(ll x, ll pos) {
 	onums.push_back(x);
 	for (int i = pos; i < odds.size(); i++) {
 		if (MAX / x < odds[i]) break;  // prevent overflow
-		dfsa(x * odds[i], i);
+		odd_gen(x * odds[i], i);
 	}
 }
 
-void dfsb(ll x, ll pos) {
+void even_gen(ll x, ll pos) {
 	enums.push_back(x);
 	for (int i = pos; i < evens.size(); i++) {
-		if (MAX / x < evens[i]) break;  // prevent overflow
-		dfsb(x * evens[i], i);
+		if (MAX / x < evens[i]) { break; }  // prevent overflow
+		even_gen(x * evens[i], i);
 	}
 }
 
 int main() {
-	cin >> N;
-	for (int i = 0; i < N; i++) {
+	cin >> n;
+	for (int i = 0; i < n; i++) {
 		ll x;
 		cin >> x;
 		if (i % 2 == 0) odds.push_back(x);
 		else evens.push_back(x);
 	}
-	cin >> K;
+	cin >> k;
 
 	// Pre-generate everything
-	dfsa(1, 0);
-	dfsb(1, 0);
+	odd_gen(1, 0);
+	even_gen(1, 0);
 	sort(onums.begin(), onums.end());
 	sort(enums.begin(), enums.end());
 
-	test(9);
 	cout << first_true(1, MAX) << endl;
 }
 ```
