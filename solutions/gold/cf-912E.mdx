@@ -9,7 +9,9 @@ author: Daniel Ge
 
 ## Implementation
 
-**Time Complexity:** $\mathcal{O}(\log 10^{18} \cdot (|D(A)| + |D(B)|))$
+**Time Complexity:** $\mathcal{O}(\log \mathcal{M} \cdot (|D(A)| + |D(B)|))$
+
+$\mathcal{M}$ is the maximum possible answer.
 
 <LanguageSection>
 <CPPSection>
@@ -18,7 +20,7 @@ author: Daniel Ge
 using namespace std;
 
 using ll = long long;
-const ll MAX = 1e18;
+const ll MAX_ANSWER = 1e18;
 
 ll n, k;
 vector<ll> odds, evens;
@@ -43,6 +45,10 @@ bool test(ll x) {
 	return tot >= k;
 }
 
+/*
+ * Binary search code from its module,
+ * https://usaco.guide/silver/binary-search
+ */
 ll first_true(ll lo, ll hi) {
 	hi++;
 	while (lo < hi) {
@@ -60,7 +66,7 @@ ll first_true(ll lo, ll hi) {
 void odd_gen(ll x, ll pos) {
 	onums.push_back(x);
 	for (int i = pos; i < odds.size(); i++) {
-		if (MAX / x < odds[i]) break;  // prevent overflow
+		if (MAX_ANSWER / x < odds[i]) { break; }  // prevent overflow
 		odd_gen(x * odds[i], i);
 	}
 }
@@ -68,7 +74,7 @@ void odd_gen(ll x, ll pos) {
 void even_gen(ll x, ll pos) {
 	enums.push_back(x);
 	for (int i = pos; i < evens.size(); i++) {
-		if (MAX / x < evens[i]) { break; }  // prevent overflow
+		if (MAX_ANSWER / x < evens[i]) { break; }  // prevent overflow
 		even_gen(x * evens[i], i);
 	}
 }
@@ -78,18 +84,18 @@ int main() {
 	for (int i = 0; i < n; i++) {
 		ll x;
 		cin >> x;
-		if (i % 2 == 0) odds.push_back(x);
-		else evens.push_back(x);
+		if (i % 2 == 0) { odds.push_back(x); }
+		else { evens.push_back(x); }
 	}
 	cin >> k;
 
-	// Pre-generate everything
+	// Generate all numbers with only prime divisors from each list
 	odd_gen(1, 0);
 	even_gen(1, 0);
 	sort(onums.begin(), onums.end());
 	sort(enums.begin(), enums.end());
 
-	cout << first_true(1, MAX) << endl;
+	cout << first_true(1, MAX_ANSWER) << endl;
 }
 ```
 </CPPSection>
