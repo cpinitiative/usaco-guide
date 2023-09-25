@@ -32,11 +32,13 @@ export const useSetLastVisitDate = createUserDataMutation(
 
     if (timeSinceLastVisit >= oneDay && timeSinceLastVisit <= twoDays) {
       changes.localStorageUpdate['lastVisitDate'] = lastVisitDate;
+      changes.firebaseUpdate['lastVisitDate'] = lastVisitDate;
       changes.localStorageUpdate['consecutiveVisits'] =
         userData.consecutiveVisits + 1;
       changes.firebaseUpdate[`consecutiveVisits`] = increment(1);
     } else if (timeSinceLastVisit > twoDays) {
       changes.localStorageUpdate['lastVisitDate'] = lastVisitDate;
+      changes.firebaseUpdate['lastVisitDate'] = lastVisitDate;
       changes.localStorageUpdate['consecutiveVisits'] = 1;
       changes.firebaseUpdate[`consecutiveVisits`] = 1;
     }
