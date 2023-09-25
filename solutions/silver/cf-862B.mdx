@@ -127,23 +127,25 @@ adj = [[] for _ in range(MAX_N + 1)]
 c = 0
 uc = 0
 
+
 def dfs(node, parent, col):
 	global c, uc
 	# use iterative DFS with stack to avoid call stack overflow
 	stack = [(node, parent, col)]
 	while stack:
 		node, parent, col = stack.pop()
-		
+
 		if col:
 			c += 1
 		else:
 			uc += 1
-		
+
 		for u in adj[node]:
 			# if the adjacent node isn't the parent,
 			# push it onto the stack with the opposite color
 			if u != parent:
 				stack.append((u, node, not col))
+
 
 n = int(input())
 
