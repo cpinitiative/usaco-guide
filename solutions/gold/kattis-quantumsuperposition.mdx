@@ -28,6 +28,9 @@ Once we know all possible path lengths for each universe, we can find all
 possible sums of lengths. Just loop through both universe's route lengths and
 add them together.
 
+<LanguageSection>
+<CPPSection>
+
 ```cpp
 #include <bitset>
 #include <iostream>
@@ -35,13 +38,17 @@ add them together.
 #include <vector>
 using namespace std;
 
-int n[2], m[2];
-vector<int> g[2][1001];
-vector<int> back[2][1001];
-bitset<2001> dp[2][1001];
+static const int MAX_N = 1000;
+static const int MAX_Q = 2000;
 
+int n[2], m[2];
+vector<int> g[2][MAX_N + 1];
+vector<int> back[2][MAX_N + 1];
+bitset<MAX_Q + 1> dp[2][MAX_N + 1];
+
+/** Generates the topological sort, filling in the DP array in the process. */
 void gen(int x) {
-	int in_degree[1001] = {};
+	int in_degree[MAX_N + 1] = {};
 	for (int i = 0; i < m[x]; i++) {
 		int a, b;
 		cin >> a >> b;
@@ -49,7 +56,7 @@ void gen(int x) {
 		back[x][b].push_back(a);
 		in_degree[b]++;
 	}
-	// finding length of routes of first universe
+	// Run topological sort.
 	queue<int> q;
 	for (int i = 0; i <= n[x]; i++) {
 		if (in_degree[i] == 0) { q.push(i); }
@@ -57,13 +64,14 @@ void gen(int x) {
 	while (!q.empty()) {
 		int node = q.front();
 		q.pop();
-		// using dp while processing the nodes topologically
-		if (back[x][node].empty()) dp[x][node][0] = 1;
-		for (int before : back[x][node]) dp[x][node] |= dp[x][before] << 1;
 		for (int next : g[x][node]) {
 			in_degree[next]--;
-			if (in_degree[next] == 0) q.push(next);
+			if (in_degree[next] == 0) { q.push(next); }
 		}
+
+		// `node` can be visited in `i + 1` steps if `before` can in `i` steps.
+		if (back[x][node].empty()) { dp[x][node][0] = 1; }
+		for (int before : back[x][node]) { dp[x][node] |= dp[x][before] << 1; }
 	}
 }
 
@@ -71,23 +79,185 @@ int main() {
 	ios_base::sync_with_stdio(0);
 	cin.tie(0);
 	cin >> n[0] >> n[1] >> m[0] >> m[1];
+
 	gen(0);
 	gen(1);
-	// preprocessing all possible sums between the universes
-	bitset<2001> ans;
-	for (int i = 0; i < 1001; i++)
-		if (dp[0][n[0]][i]) ans |= dp[1][n[1]] << i;
-	int Q;
-	cin >> Q;
-	for (int i = 0; i < Q; i++) {
+
+	// Preprocess for all queries: ans[x] is true if the sum of steps
+	// in both universes can be equal to x.
+	bitset<MAX_Q + 1> ans;
+	for (int i = 0; i <= MAX_N; i++) {
+		if (dp[0][n[0]][i]) { ans |= dp[1][n[1]] << i; }
+	}
+
+	int q;
+	cin >> q;
+	for (int i = 0; i < q; i++) {
 		int a;
 		cin >> a;
-		if (ans[a]) {
-			cout << "Yes" << endl;
-		} else {
-			cout << "No" << endl;
-		}
+		cout << ((ans[a]) ? "Yes\n" : "No\n");
 	}
 	return 0;
 }
 ```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class QuantumSuperposition {
+	static final int MAX_N = 1000;
+	static final int MAX_Q = 2000;
+
+	static int[] n = new int[2];
+	static int[] m = new int[2];
+	static ArrayList<Integer>[][] g = new ArrayList[2][MAX_N + 1];
+	static ArrayList<Integer>[][] back = new ArrayList[2][MAX_N + 1];
+	static boolean[][][] dp = new boolean[2][MAX_N + 1][MAX_Q + 1];
+	static BufferedReader reader =
+	    new BufferedReader(new InputStreamReader(System.in));
+
+	/*
+	 * Generates the topological sort, filling in the DP array in the process.
+	 */
+	static void gen(int x) throws IOException {
+		int[] inDegree = new int[MAX_N + 1];
+		for (int i = 0; i < m[x]; i++) {
+			String[] inputs = reader.readLine().split(" ");
+			int a = Integer.parseInt(inputs[0]);
+			int b = Integer.parseInt(inputs[1]);
+			g[x][a].add(b);
+			back[x][b].add(a);
+			inDegree[b]++;
+		}
+
+		// Run topological sort.
+		Queue<Integer> q = new LinkedList<>();
+		for (int i = 0; i <= n[x]; i++) {
+			if (inDegree[i] == 0) { q.add(i); }
+		}
+		while (!q.isEmpty()) {
+			int node = q.poll();
+			for (int next : g[x][node]) {
+				inDegree[next]--;
+				if (inDegree[next] == 0) { q.add(next); }
+			}
+
+			// `node` can be visited in `i + 1` steps if `before` can in `i`
+			// steps.
+			if (back[x][node].isEmpty()) { dp[x][node][0] = true; }
+			for (int before : back[x][node]) {
+				for (int i = 0; i < MAX_Q + 1; i++) {
+					if (dp[x][before][i]) { dp[x][node][i + 1] = true; }
+				}
+			}
+		}
+	}
+
+	public static void main(String[] args) throws IOException {
+		String[] inputs = reader.readLine().split(" ");
+		n[0] = Integer.parseInt(inputs[0]);
+		n[1] = Integer.parseInt(inputs[1]);
+		m[0] = Integer.parseInt(inputs[2]);
+		m[1] = Integer.parseInt(inputs[3]);
+
+		for (int x = 0; x < 2; x++) {
+			for (int i = 0; i <= MAX_N; i++) {
+				g[x][i] = new ArrayList<>();
+				back[x][i] = new ArrayList<>();
+			}
+		}
+
+		gen(0);
+		gen(1);
+
+		// Preprocess for all queries: ans[x] is true if the sum of steps
+		// in both universes can be equal to x.
+		boolean[] ans = new boolean[MAX_Q + 1];
+		for (int i = 0; i <= MAX_N; i++) {
+			if (dp[0][n[0]][i]) {
+				for (int j = 0; j <= MAX_N; j++) {
+					if (dp[1][n[1]][j]) { ans[i + j] = true; }
+				}
+			}
+		}
+
+		int q = Integer.parseInt(reader.readLine());
+		for (int i = 0; i < q; i++) {
+			int a = Integer.parseInt(reader.readLine());
+			System.out.println(ans[a] ? "Yes" : "No");
+		}
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+MAX_N = 1000
+MAX_Q = 2000
+
+from collections import deque
+
+n = [0, 0]
+m = [0, 0]
+g = [[[] for _ in range(MAX_N + 1)] for _ in range(2)]
+back = [[[] for _ in range(MAX_N + 1)] for _ in range(2)]
+dp = [[[False for _ in range(MAX_Q + 1)] for _ in range(MAX_N + 1)] for _ in range(2)]
+
+
+def gen(x):
+	"""Generates the topological sort, filling in the DP array in the process."""
+	in_degree = [0] * (MAX_N + 1)
+	for _ in range(m[x]):
+		a, b = map(int, input().split())
+		g[x][a].append(b)
+		back[x][b].append(a)
+		in_degree[b] += 1
+
+	# Run topological sort.
+	q = deque()
+	for i in range(n[x] + 1):
+		if in_degree[i] == 0:
+			q.append(i)
+	while q:
+		node = q.popleft()
+		for nxt in g[x][node]:
+			in_degree[nxt] -= 1
+			if in_degree[nxt] == 0:
+				q.append(nxt)
+
+		# `node` can be visited in `i + 1` steps if `before` can in `i` steps.
+		if not back[x][node]:
+			dp[x][node][0] = True
+		for before in back[x][node]:
+			for i in range(MAX_Q + 1):
+				if dp[x][before][i]:
+					dp[x][node][i + 1] = True
+
+
+n[0], n[1], m[0], m[1] = map(int, input().split())
+
+gen(0)
+gen(1)
+
+# Preprocess for all queries: ans[x] is true if the sum of steps
+# in both universes can be equal to x.
+ans = [False for _ in range(MAX_Q + 1)]
+for i in range(MAX_N + 1):
+	if dp[0][n[0]][i]:
+		for j in range(MAX_N + 1):
+			if dp[1][n[1]][j]:
+				ans[i + j] = True
+
+for _ in range(int(input())):
+	a = int(input())
+	print("Yes" if ans[a] else "No")
+```
+
+</PySection>
+</LanguageSection>
