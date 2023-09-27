@@ -34,8 +34,8 @@ transitions in $\mathcal{O}(1)$ by swapping in the next letter of some type.
 ### State
 
 Our state will be $dp_{\texttt{cost}, K, E, Y} =$
-the number of ways to create a string with $K$ `K`s, $E$ `E`s, and
-$Y$ `Y`s, given that we've performed $\texttt{cost}$ swaps.
+the number of ways to create a string with $\texttt{nK}$ $K$s, $\texttt{nE}$ $E$s, and
+$\texttt{nY}$ $Y$s, given that we've performed $\texttt{cost}$ swaps.
 
 ### Base Case
 
@@ -43,16 +43,16 @@ There is one way to make an empty string, so $dp_{0,0,0,0} = 1$.
 
 ### Transitions
 
-Without loss of generality, let's assume that we want to place a `K` in our string next.
+Without loss of generality, let's assume that we want to place a $K$ in our string next.
 
 Then,
 
 $$
-dp[\texttt{cost} + \texttt{between}, K + 1, E, Y] \mathrel{+}= dp[\texttt{cost},K,E,Y]
+dp[\texttt{cost} + \texttt{between}, \texttt{nK} + 1, \texttt{nE}, \texttt{nY}] \mathrel{+}= dp[\texttt{cost},\texttt{nK},\texttt{nE},\texttt{nY}]
 $$
 
 where $\texttt{between}$ are the amount of characters between our current position and the next
-occurence of `K`.
+occurence of $K$.
 
 ## Implementation
 
