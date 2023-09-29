@@ -1,0 +1,107 @@
+---
+id: cf-912E
+source: CodeForces
+title: Prime Gift
+author: Daniel Ge
+---
+
+[Official Editorial (C++)](https://codeforces.com/blog/entry/56920)
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(\log \mathcal{M} \cdot (|D(A)| + |D(B)|))$
+
+$\mathcal{M}$ is the maximum possible answer.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using ll = long long;
+const ll MAX_ANSWER = 1e18;
+
+ll n, k;
+vector<ll> odds, evens;
+
+// The numbers possible using only prime divisors from A and B, respectively
+vector<ll> onums, enums;
+
+bool test(ll x) {
+	ll tot = 0;
+
+	// Two pointers
+	ll opoint = lower_bound(onums.begin(), onums.end(), x) - onums.begin();
+	if (opoint == onums.size()) opoint--;
+
+	for (ll e : enums) {
+		if (e > x) break;
+		while (onums[opoint] > x / e) {  // Written to prevent overflow
+			opoint--;
+		}
+		tot += opoint + 1;
+	}
+	return tot >= k;
+}
+
+/**
+ * Binary search code from its module,
+ * https://usaco.guide/silver/binary-search
+ */
+ll first_true(ll lo, ll hi) {
+	hi++;
+	while (lo < hi) {
+		ll mid = lo + (hi - lo) / 2;
+		if (test(mid)) {
+			hi = mid;
+		} else {
+			lo = mid + 1;
+		}
+	}
+	return lo;
+}
+
+// Run DFS to generate all possible products
+void odd_gen(ll x, ll pos) {
+	onums.push_back(x);
+	for (int i = pos; i < odds.size(); i++) {
+		if (MAX_ANSWER / x < odds[i]) { break; }  // prevent overflow
+		odd_gen(x * odds[i], i);
+	}
+}
+
+void even_gen(ll x, ll pos) {
+	enums.push_back(x);
+	for (int i = pos; i < evens.size(); i++) {
+		if (MAX_ANSWER / x < evens[i]) { break; }  // prevent overflow
+		even_gen(x * evens[i], i);
+	}
+}
+
+int main() {
+	cin >> n;
+	for (int i = 0; i < n; i++) {
+		ll x;
+		cin >> x;
+		if (i % 2 == 0) {
+			odds.push_back(x);
+		} else {
+			evens.push_back(x);
+		}
+	}
+
+	cin >> k;
+
+	// Generate all numbers with only prime divisors from each list
+	odd_gen(1, 0);
+	even_gen(1, 0);
+	sort(onums.begin(), onums.end());
+	sort(enums.begin(), enums.end());
+
+	cout << first_true(1, MAX_ANSWER) << endl;
+}
+```
+</CPPSection>
+</LanguageSection>
