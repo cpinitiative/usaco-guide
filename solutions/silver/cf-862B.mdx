@@ -124,34 +124,33 @@ uc = 0
 
 
 def dfs(node, parent, col):
-    global c, uc
-    # use iterative DFS with stack to avoid call stack overflow
-    stack = [(node, parent, col)]
-    while stack:
-        node, parent, col = stack.pop()
-        if col:
-            c += 1
-        else:
-            uc += 1
-        for u in adj[node]:
-            # if the adjacent node isn't the parent,
-            # push it onto the stack with the opposite color
-            if u != parent:
-                stack.append((u, node, not col))
+	global c, uc
+	# use iterative DFS with stack to avoid call stack overflow
+	stack = [(node, parent, col)]
+	while stack:
+		node, parent, col = stack.pop()
+		if col:
+			c += 1
+		else:
+			uc += 1
+		for u in adj[node]:
+			# if the adjacent node isn't the parent,
+			# push it onto the stack with the opposite color
+			if u != parent:
+				stack.append((u, node, not col))
 
 
 n = int(input())
 adj = [[] for _ in range(n + 1)]
 
 for _ in range(n - 1):
-    u, v = map(int, input().split())
-    adj[u].append(v)
-    adj[v].append(u)
+	u, v = map(int, input().split())
+	adj[u].append(v)
+	adj[v].append(u)
 
 dfs(1, 0, False)
 
 print(c * uc - (n - 1))
-
 ```
 </PySection>
 </LanguageSection>
