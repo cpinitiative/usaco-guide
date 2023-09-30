@@ -33,31 +33,31 @@ long long max_flow(vector<vector<long long>> g, int n, int source, int sink) {
 	auto reachable = [&]() -> bool {
 		queue<int> q;
 		q.push(source);
-		while(!q.empty()) {
+		while (!q.empty()) {
 			int node = q.front();
 			q.pop();
-			for(int son = 0; son < n; son++) {
+			for (int son = 0; son < n; son++) {
 				long long w = g[node][son];
-				if(w <= 0 || parent[son] != -1) continue ;
+				if (w <= 0 || parent[son] != -1) continue;
 				parent[son] = node;
 				q.push(son);
-			}			
+			}
 		}
 		return parent[sink] != -1;
 	};
 
 	// While there is a way from source to sink with non-negative capacities
-	while(reachable()) {
+	while (reachable()) {
 		int node = sink;
 
-		// The minimum capacity on the path from source to sink 
+		// The minimum capacity on the path from source to sink
 		long long curr_flow = LLONG_MAX;
-		while(node != source) {
+		while (node != source) {
 			curr_flow = min(curr_flow, g[parent[node]][node]);
 			node = parent[node];
 		}
 		node = sink;
-		while(node != source) {
+		while (node != source) {
 			// Substract the capacity from capacity edges
 			g[parent[node]][node] -= curr_flow;
 			// Add the current flow to flow backedges
@@ -74,14 +74,14 @@ vector<vector<long long>> capacity(NMAX, vector<long long>(NMAX, 0));
 int main() {
 	int n, m;
 	cin >> n >> m;
-	for(int i = 0; i < m; i++) {
+	for (int i = 0; i < m; i++) {
 		int x, y, c;
 		cin >> x >> y >> c;
 		x--, y--;
 		capacity[x][y] += c;
 	}
 
-	cout << max_flow(capacity, n, 0, n-1) << endl;
+	cout << max_flow(capacity, n, 0, n - 1) << endl;
 
 	return 0;
 }
