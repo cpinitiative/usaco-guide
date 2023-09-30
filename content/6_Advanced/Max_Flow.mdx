@@ -10,6 +10,85 @@ frequency: 1
 
 <Problems problems="maxSam" />
 
+## Solution 
+
+The code below uses the [Ford-Fulkerson](https://en.wikipedia.org/wiki/Ford%E2%80%93Fulkerson_algorithm) algorithm.
+
+The solution is a greedy approach. The download speed - the flow - can be improved as long as we can find a non-negative capacity path from the source - the server
+and the sink - Kotivalo's computer. After that we substract the minimum capacity on the found path from the edge capacities.
+
+<LanguageSection>
+<CPPSection>
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+const int NMAX = 500;
+
+long long max_flow(long long g[][NMAX], int n, int source, int sink) {
+	long long flow = 0;
+	vector<int> parent(n, -1);
+
+	// BFS for a path from source to sink with non-negetive capacities
+	auto reachable = [&]() -> bool {
+		queue<int> q;
+		q.push(source);
+		while(!q.empty()) {
+			int node = q.front();
+			q.pop();
+			for(int son = 0; son < n; son++) {
+				long long w = g[node][son];
+				if(w <= 0 || parent[son] != -1) continue ;
+				parent[son] = node;
+				q.push(son);
+			}			
+		}
+		return parent[sink] != -1;
+	};
+
+	// While there is a way from source to sink with non-negative capacities we can increase the downloading speed - the flow
+	while(reachable()) {
+		int node = sink;
+
+		// The minimum capacity on the path from source to sink 
+		long long curr_flow = LLONG_MAX;
+		while(node != source) {
+			curr_flow = min(curr_flow, g[parent[node]][node]);
+			node = parent[node];
+		}
+		node = sink;
+		while(node != source) {
+			// Substract the current flow from capacity edges
+			g[parent[node]][node] -= curr_flow;
+			// Add the current flow to flow backedges
+			g[node][parent[node]] += curr_flow;
+			node = parent[node];
+		}
+		flow += curr_flow;
+		fill(parent.begin(), parent.end(), -1);
+	}
+	return flow;
+}
+
+long long capacity[NMAX][NMAX];
+int main() {
+	int n, m;
+	cin >> n >> m;
+	for(int i = 0; i < m; i++) {
+		int x, y, c;
+		cin >> x >> y >> c;
+		x--, y--;
+		capacity[x][y] += c;
+	}
+
+	cout << max_flow(capacity, n, 0, n-1) << '\n';
+
+}
+```
+</CPPSection>
+</LanguageSection>
+
 ## Resources
 
 <Resources>
