@@ -39,7 +39,7 @@ export default function TopNavigationBar({
   transparent = false,
   linkLogoToIndex = false,
   currentSection = null,
-  hideClassesPromoBar = true,
+  hidePromoBar = false,
 }) {
   const firebaseUser = useFirebaseUser();
   const signOut = useSignOutAction();
@@ -134,22 +134,22 @@ export default function TopNavigationBar({
 
   return (
     <>
-      {!hideClassesPromoBar && (
+      {!hidePromoBar && (
         <div className="relative bg-blue-600">
           <div className="max-w-screen-xl mx-auto py-3 px-3 sm:px-6 lg:px-8">
             <div className="pr-16 sm:text-center sm:px-16">
               <p className="font-medium text-white">
                 <span className="md:inline">
-                  Registration for USACO classes now open!
+                  We're recruiting problem writers to write problems for our interclub competition!
                 </span>
                 <span className="block sm:ml-2 sm:inline-block">
                   <a
-                    href="https://joincpi.org/classes"
+                    href="https://docs.google.com/forms/d/e/1FAIpQLSfz-eHQWKu96ozKRC55tYxe3YAMqjj1vLZiY1ZGt1dSjz72Kw/viewform"
                     target="_blank"
                     rel="noreferrer"
                     className="text-white font-bold underline"
                   >
-                    Join here&rarr;
+                    Apply here &rarr;
                   </a>
                 </span>
               </p>
