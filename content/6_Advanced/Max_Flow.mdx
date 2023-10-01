@@ -14,7 +14,7 @@ frequency: 1
 
 The code below uses the [Ford-Fulkerson](https://en.wikipedia.org/wiki/Ford%E2%80%93Fulkerson_algorithm) algorithm.
 
-The solution is a greedy approach. The download speed - the flow - can be improved as long as we can find a non-negative capacity path from the source - the server and the sink - Kotivalo's computer. After that we substract the minimum capacity on the found path from the edge capacities.
+The solution is a greedy approach. The download speed (the flow) can be improved as long as we can find a non-negative capacity path from the source (the server) and the sink (Kotivalo's computer). After that we subtract the minimum capacity on the found path from the edge capacities.
 
 <LanguageSection>
 <CPPSection>
@@ -29,7 +29,7 @@ long long max_flow(vector<vector<long long>> g, int n, int source, int sink) {
 	long long flow = 0;
 	vector<int> parent(n, -1);
 
-	// Find a wat from source to sink with non-negetive capacities
+	// Find a way from source to sink with non-negetive capacities
 	auto reachable = [&]() -> bool {
 		queue<int> q;
 		q.push(source);
@@ -58,7 +58,7 @@ long long max_flow(vector<vector<long long>> g, int n, int source, int sink) {
 		}
 		node = sink;
 		while (node != source) {
-			// Substract the capacity from capacity edges
+			// Subtract the capacity from capacity edges
 			g[parent[node]][node] -= curr_flow;
 			// Add the current flow to flow backedges
 			g[node][parent[node]] += curr_flow;
