@@ -140,7 +140,8 @@ export default function TopNavigationBar({
             <div className="pr-16 sm:text-center sm:px-16">
               <p className="font-medium text-white">
                 <span className="md:inline">
-                  We're recruiting problem writers to write problems for our interclub competition!
+                  We're recruiting problem writers to write problems for our
+                  interclub competition!
                 </span>
                 <span className="block sm:ml-2 sm:inline-block">
                   <a
