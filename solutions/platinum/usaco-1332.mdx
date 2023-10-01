@@ -1,0 +1,268 @@
+---
+id: usaco-1332
+source: USACO Platinum 2023 March
+title: Pareidolia
+author: Aakash Gokhale
+---
+
+## Explanation
+
+Let's first try to solve the problem without updates on a single string.
+Notice that it is always optimal to take the earliest $b$ and then the earliest $e$ and then the earliest $s$ after that and so on because it maximizes the number of places you can search to find the next letter of "bessie".
+
+Now let's try to solve the problem without updates for all substrings.
+Let $dp[i]$ be the number of positions of the string we have processed so far such that if we apply the greedy strategy described above, the next character we need to add is the $i$th character ($0$ indexed) of the string "bessie". We also need to add the substring starting from the current index. If the current letter of the string is $b$, then the next letter we need to add is $e$ so in this case we add $1$ to $dp[1]$. In every other case, we need to add $1$ to $dp[0]$ because the next character we add to fill "bessie" is $b$.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	string s;
+	cin >> s;
+	int n = s.size();
+	s = '$' + s;
+	long long ans = 0;
+	vector<long long> dp(6);
+	for (int i = 1; i <= n; i++) {
+		vector<long long> ndp(6);
+		// substring starting from index i
+		dp[0]++;
+		for (int j = 0; j < 6; j++) {
+			if (s[i] == "bessie"[j]) {
+				// Adding new character to our bessie sequence
+				ndp[(j + 1) % 6] += dp[j];
+				/*
+				 * if we reach the end of a bessie, we need to count the number
+				 * of substrings that contain it. dp[5] is the number of
+				 * potential start positions (n - i + 1) is the number of
+				 * potential end positions (any position including or after
+				 * index i). We can multiply those to get the number of
+				 * substrings that contain this bessie and add it to the answer.
+				 */
+				if (j == 5) { ans += (n - i + 1) * dp[5]; }
+			} else {
+				// The case if we can't add new character
+				ndp[j] += dp[j];
+			}
+		}
+		swap(ndp, dp);
+	}
+	cout << ans << endl;
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
+Notice that we can represent the transition from $dp$ to $ndp$ as a system of linear reccurences which depend on the letter.
+
+B:$\\$
+$ndp[0] = 0 \\$
+$ndp[1] = dp[0] + 1 + dp[1] \\$
+$ndp[2] = dp[2] \\$
+$ndp[3] = dp[3] \\$
+$ndp[4] = dp[4] \\$
+$ndp[5] = dp[5] \\$
+$newans = ans \\$
+
+E:$\\$
+$ndp[0] = dp[0] + 1 + dp[5] \\$
+$ndp[1] = 0 \\$
+$ndp[2] = dp[1] + dp[2] \\$
+$ndp[3] = dp[3] \\$
+$ndp[4] = dp[4] \\$
+$ndp[5] = 0 \\$
+$newans = ans + (n - i + 1) * dp[5] \\$
+
+S:$\\$
+$ndp[0] = dp[0] + 1 \\$
+$ndp[1] = dp[1] \\$
+$ndp[2] = 0 \\$
+$ndp[3] = dp[2] \\$
+$ndp[4] = dp[3] + dp[4] \\$
+$ndp[5] = dp[5] \\$
+$newans = ans \\$
+
+I:$\\$
+$ndp[0] = dp[0] + 1 \\$
+$ndp[1] = dp[1] \\$
+$ndp[2] = dp[2] \\$
+$ndp[3] = dp[3] \\$
+$ndp[4] = 0 \\$
+$ndp[5] = dp[4] + dp[5] \\$
+$newans = ans \\$
+
+Identity (Any letter other than $b$, $e$, $s$, or $i$):$\\$
+$ndp[0] = dp[0] + 1 \\$
+$ndp[1] = dp[1] \\$
+$ndp[2] = dp[2] \\$
+$ndp[3] = dp[3] \\$
+$ndp[4] = dp[4] \\$
+$ndp[5] = dp[5] \\$
+$newans = ans \\$
+
+We can represent these linear recurrences with matrices where each letter of the string has its respective matrix. Now, multiplying all these matrices together will allow us to compute our answer. Note that since matrix multiplication is non commutative, we need to pay attention to the order of the two matrices that we are multiplying. In this case, we multiply matrices representing earlier indexes by matrices represting later indexes (rather than matrices representing later indexes by matrices represting later indexes).
+
+We can optimize updates by building a segment tree on the matrices and updating each node with the respective matrix based on the given letter.
+
+Note that if the letter is $e$, we need to set $mat[5][6]$ as $n - i + 1$.
+
+The $i$-th column $(1 \leq i \leq 6)$ of each matrix represents $dp[i - 1]$, the $7$th column of each matrix represents the answer, and the $8$th column of each matrix is a constant $1$ so we can add $1$ to $dp[0]$ or $dp[1]$ at every index.
+
+To extract the answer from the matrices, we can multiply the $1 \times 8$ matrix representing our initial state $[0, 0, 0, 0, 0, 0, 0, 1]$ by the product of all the matrices and look at the value in the $2$nd to last column, which we defined to be the answer.
+
+This ends up being equivalent to the value located at $mat[7][6]$ of the product of all the matrices.
+
+## Implementation
+The constant factor for this solution is high, so you may need to do some of the following optimizations to pass the test cases:
+ - Use C++.
+ - We can skip all $0$s while multiplying the matrices to speed up the multiplication.
+ - Use fastio and '\n' instead of endl.
+ - Build the segtree in $\mathcal{O}(N)$ rather than updating each index individually in $\mathcal{O}(N \log N)$.
+ - Use pragmas (Ofast, O3, unroll-loops, etc ...).
+
+**Time Complexity:** $\mathcal{O}(N + Q \log N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int sz = 8, N = 2e5 + 5;
+
+using mat = array<array<long long, 8>, 8>;
+
+mat operator*(mat const &a, mat const &b) {
+	mat r;
+	for (int i = 0; i < sz; i++) {
+		for (int j = 0; j < sz; j++) { r[i][j] = 0; }
+	}
+	for (int i = 0; i < sz; i++) {
+		for (int k = 0; k < sz; k++) {
+			if (a[i][k] == 0) continue;
+			for (int j = 0; j < sz; j++) { r[i][j] += a[i][k] * b[k][j]; }
+		}
+	}
+	return r;
+}
+
+// BeginCodeSnip{Matrices}
+mat b = {{{{0, 1, 0, 0, 0, 0, 0, 0}},
+          {{0, 1, 0, 0, 0, 0, 0, 0}},
+          {{0, 0, 1, 0, 0, 0, 0, 0}},
+          {{0, 0, 0, 1, 0, 0, 0, 0}},
+          {{0, 0, 0, 0, 1, 0, 0, 0}},
+          {{0, 0, 0, 0, 0, 1, 0, 0}},
+          {{0, 0, 0, 0, 0, 0, 1, 0}},
+          {{0, 1, 0, 0, 0, 0, 0, 1}}}};
+mat e = {{{{1, 0, 0, 0, 0, 0, 0, 0}},
+          {{0, 0, 1, 0, 0, 0, 0, 0}},
+          {{0, 0, 1, 0, 0, 0, 0, 0}},
+          {{0, 0, 0, 1, 0, 0, 0, 0}},
+          {{0, 0, 0, 0, 1, 0, 0, 0}},
+          {{1, 0, 0, 0, 0, 0, 0, 0}},
+          {{0, 0, 0, 0, 0, 0, 1, 0}},
+          {{1, 0, 0, 0, 0, 0, 0, 1}}}};
+mat s = {{{{1, 0, 0, 0, 0, 0, 0, 0}},
+          {{0, 1, 0, 0, 0, 0, 0, 0}},
+          {{0, 0, 0, 1, 0, 0, 0, 0}},
+          {{0, 0, 0, 0, 1, 0, 0, 0}},
+          {{0, 0, 0, 0, 1, 0, 0, 0}},
+          {{0, 0, 0, 0, 0, 1, 0, 0}},
+          {{0, 0, 0, 0, 0, 0, 1, 0}},
+          {{1, 0, 0, 0, 0, 0, 0, 1}}}};
+mat i = {{{{1, 0, 0, 0, 0, 0, 0, 0}},
+          {{0, 1, 0, 0, 0, 0, 0, 0}},
+          {{0, 0, 1, 0, 0, 0, 0, 0}},
+          {{0, 0, 0, 1, 0, 0, 0, 0}},
+          {{0, 0, 0, 0, 0, 1, 0, 0}},
+          {{0, 0, 0, 0, 0, 1, 0, 0}},
+          {{0, 0, 0, 0, 0, 0, 1, 0}},
+          {{1, 0, 0, 0, 0, 0, 0, 1}}}};
+mat identity = {{{{1, 0, 0, 0, 0, 0, 0, 0}},
+                 {{0, 1, 0, 0, 0, 0, 0, 0}},
+                 {{0, 0, 1, 0, 0, 0, 0, 0}},
+                 {{0, 0, 0, 1, 0, 0, 0, 0}},
+                 {{0, 0, 0, 0, 1, 0, 0, 0}},
+                 {{0, 0, 0, 0, 0, 1, 0, 0}},
+                 {{0, 0, 0, 0, 0, 0, 1, 0}},
+                 {{1, 0, 0, 0, 0, 0, 0, 1}}}};
+
+mat x;
+// Gets the appropriate matrix based on the letter and stores it in x.
+// If the letter is e, we set x[5][6] to the coefficient based on the position.
+void get(char c, int p) {
+	if (c == 'b') {
+		x = b;
+	} else if (c == 'e') {
+		x = e, x[5][6] = p;
+	} else if (c == 's') {
+		x = s;
+	} else if (c == 'i') {
+		x = i;
+	} else {
+		x = identity;
+	}
+}
+// EndCodeSnip
+
+string str;
+int n;
+
+// BeginCodeSnip{Segment Tree}
+mat st[4 * N];
+
+void build(int v, int l, int r) {
+	if (l == r) {
+		get(str[l - 1], n - l + 1);
+		st[v] = x;
+	} else {
+		int m = (l + r) >> 1;
+		build(v * 2, l, m);
+		build(v * 2 + 1, m + 1, r);
+		st[v] = st[v * 2] * st[v * 2 + 1];
+	}
+}
+
+void upd(int i, int v, int l, int r) {
+	if (i < l or i > r) {
+		return;
+	} else if (l == r) {
+		st[v] = x;
+	} else {
+		int m = (l + r) >> 1;
+		upd(i, v * 2, l, m);
+		upd(i, v * 2 + 1, m + 1, r);
+		st[v] = st[v * 2] * st[v * 2 + 1];
+	}
+}
+// EndCodeSnip
+
+int main() {
+	ios::sync_with_stdio(0);
+	cin.tie(0);
+	cin >> str;
+	n = str.size();
+	build(1, 1, n);
+	cout << st[1][7][6] << '\n';
+	int t;
+	cin >> t;
+	for (int tt = 0; tt < t; tt++) {
+		int p;
+		char c;
+		cin >> p >> c;
+		get(c, n - p + 1);
+		upd(p, 1, 1, n);
+		cout << st[1][7][6] << '\n';
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>
