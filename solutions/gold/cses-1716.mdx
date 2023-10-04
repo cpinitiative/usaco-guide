@@ -153,6 +153,43 @@ public class Main {
 ```
 </JavaSection>
 
+<PySection>
+
+```py
+MOD: int = int(1e9) + 7
+MAXN: int = int(2e6)
+
+fac: list = [1 for _ in range(MAXN)]
+inv: list = [1 for _ in range(MAXN)]
+
+def binpow(x: int,  n: int,  m: int) -> int:
+    x %= m
+    res: int = 1
+    while n > 0:
+        if (n % 2 == 1):
+            res = res * x % m
+        x = x * x % m
+        n //= 2
+    return res
+
+
+def binom(n: int, k: int) -> int:
+    return fac[n] * inv[k] % MOD * inv[n - k] % MOD
+
+
+for i in range(2, MAXN):
+    fac[i] = i * fac[i - 1] % MOD
+
+inv[MAXN - 1] = binpow(fac[MAXN - 1], MOD - 2, MOD)
+for i in reversed(range(1, MAXN - 1)):
+    inv[i] = (i + 1) * inv[i + 1] % MOD
+
+(n, m) = map(int, input().split())
+print(binom(n + m - 1, n - 1))
+```
+
+</PySection>
+
 </LanguageSection>
 
 </Spoiler>
