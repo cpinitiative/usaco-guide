@@ -103,12 +103,12 @@ int main() {
 <JavaSection>
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class Main {
-	static final long MOD = (long) 1e9 + 7;
-	static final int MAXN = (int) 2e6;
+	static final long MOD = (long)1e9 + 7;
+	static final int MAXN = (int)2e6;
 
 	static long[] fac = new long[MAXN];
 	static long[] inv = new long[MAXN];
@@ -117,9 +117,7 @@ public class Main {
 		x %= m;
 		long res = 1;
 		while (n > 0) {
-			if (n % 2 == 1) {
-				res = res * x % m;
-			}
+			if (n % 2 == 1) { res = res * x % m; }
 			x = x * x % m;
 			n /= 2;
 		}
@@ -132,9 +130,7 @@ public class Main {
 
 	public static void main(String[] args) throws IOException {
 		fac[0] = fac[1] = 1;
-		for (int i = 2; i < MAXN; i++) {
-			fac[i] = i * fac[i - 1] % MOD;
-		}
+		for (int i = 2; i < MAXN; i++) { fac[i] = i * fac[i - 1] % MOD; }
 
 		inv[0] = 1;
 		inv[MAXN - 1] = binpow(fac[MAXN - 1], MOD - 2, MOD);
@@ -142,7 +138,8 @@ public class Main {
 			inv[i] = (i + 1) * inv[i + 1] % MOD;
 		}
 
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader br =
+		    new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st = new StringTokenizer(br.readLine());
 		int n = Integer.parseInt(st.nextToken());
 		int m = Integer.parseInt(st.nextToken());
@@ -162,27 +159,28 @@ MAXN: int = int(2e6)
 fac: list = [1 for _ in range(MAXN)]
 inv: list = [1 for _ in range(MAXN)]
 
-def binpow(x: int,  n: int,  m: int) -> int:
-    x %= m
-    res: int = 1
-    while n > 0:
-        if (n % 2 == 1):
-            res = res * x % m
-        x = x * x % m
-        n //= 2
-    return res
+
+def binpow(x: int, n: int, m: int) -> int:
+	x %= m
+	res: int = 1
+	while n > 0:
+		if n % 2 == 1:
+			res = res * x % m
+		x = x * x % m
+		n //= 2
+	return res
 
 
 def binom(n: int, k: int) -> int:
-    return fac[n] * inv[k] % MOD * inv[n - k] % MOD
+	return fac[n] * inv[k] % MOD * inv[n - k] % MOD
 
 
 for i in range(2, MAXN):
-    fac[i] = i * fac[i - 1] % MOD
+	fac[i] = i * fac[i - 1] % MOD
 
 inv[MAXN - 1] = binpow(fac[MAXN - 1], MOD - 2, MOD)
 for i in reversed(range(1, MAXN - 1)):
-    inv[i] = (i + 1) * inv[i + 1] % MOD
+	inv[i] = (i + 1) * inv[i + 1] % MOD
 
 (n, m) = map(int, input().split())
 print(binom(n + m - 1, n - 1))
