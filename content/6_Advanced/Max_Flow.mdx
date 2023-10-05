@@ -18,9 +18,9 @@ The solution is a greedy approach. The download speed (the flow) can be improved
 
 <LanguageSection>
 <CPPSection>
+
 ```cpp
 #include <bits/stdc++.h>
-
 using namespace std;
 
 long long max_flow(vector<vector<long long>> g, int n, int source, int sink) {
@@ -65,6 +65,7 @@ long long max_flow(vector<vector<long long>> g, int n, int source, int sink) {
 		flow += curr_flow;
 		fill(parent.begin(), parent.end(), -1);
 	}
+
 	return flow;
 }
 
@@ -76,16 +77,13 @@ int main() {
 	for (int i = 0; i < m; i++) {
 		int x, y, c;
 		cin >> x >> y >> c;
-
-		x--;
-		y--;
-
-		capacity[x][y] += c;
+		capacity[--x][--y] += c;
 	}
 
 	cout << max_flow(capacity, n, 0, n - 1) << endl;
 }
 ```
+
 </CPPSection>
 </LanguageSection>
 
