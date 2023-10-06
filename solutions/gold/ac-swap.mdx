@@ -1,0 +1,177 @@
+---
+id: ac-swap
+source: AC
+title: Swap
+author: Ryan Chou
+---
+
+<Spoiler title="Hint 1">
+
+$K \leq 10^9$ looks super large and unmanageable, but since $|S| \leq 30$, we should be able
+to construct a more reasonable upper bound.
+
+What's the maximum number of swaps such that we can get to every single possible string?
+
+</Spoiler>
+
+<Spoiler title="Answer to hint 1">
+
+In the worst case, we want to swap each letter from the back to the front of the string.
+Thus, $K \leq 30+29+28+\dots = \frac{30 \cdot 31}{2} = 465$.
+
+</Spoiler>
+
+<Spoiler title="Solution">
+
+[Official Analysis (Python)](https://atcoder.jp/contests/abc227/editorial/2920)
+
+## Explanation
+
+Instead of calculating swaps from an end state, let's compute our answer by
+adding one letter at a time to our final string. This enables us to compute
+transitions in $\mathcal{O}(1)$ by swapping in the next letter of some type.
+
+### State
+
+Our state will be $dp_{\texttt{cost}, K, E, Y} =$
+the number of ways to create a string with $\texttt{nK}$ $K$s, $\texttt{nE}$ $E$s, and
+$\texttt{nY}$ $Y$s, given that we've performed $\texttt{cost}$ swaps.
+
+### Base Case
+
+There is one way to make an empty string, so $dp_{0,0,0,0} = 1$.
+
+### Transitions
+
+Without loss of generality, let's assume that we want to place a $K$ in our string next.
+
+Then,
+
+$$
+dp[\texttt{cost} + \texttt{between}, \texttt{nK} + 1, \texttt{nE}, \texttt{nY}] \mathrel{+}= dp[\texttt{cost},\texttt{nK},\texttt{nE},\texttt{nY}]
+$$
+
+where $\texttt{between}$ are the amount of characters between our current position and the next
+occurence of $K$.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(|S|^5)$<Asterisk>The $|S|^2$
+factor comes from the $\texttt{cost}$ state in our DP</Asterisk>
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int LETTERS = 3;
+const int MAX_SWAPS = 465;  // see hint above
+
+int main() {
+	string s;
+	cin >> s;
+	int k;
+	cin >> k;
+
+	int n = (int)s.size();
+	vector<int> count(LETTERS);
+	for (char &x : s) {
+		if (x == 'K') {
+			count[0]++;
+		} else if (x == 'E') {
+			count[1]++;
+		} else {
+			count[2]++;
+		}
+	}
+
+	// stores the number of occurences of a letter on a prefix
+	vector<vector<int>> pref(n + 1, vector<int>(LETTERS));
+	// stores the position of the ith letter
+	vector<vector<int>> pos(LETTERS);
+
+	for (int i = 0; i < n; i++) {
+		pref[i][0] = (i - 1 >= 0 ? pref[i - 1][0] : 0) + (s[i] == 'K');
+		pref[i][1] = (i - 1 >= 0 ? pref[i - 1][1] : 0) + (s[i] == 'E');
+		pref[i][2] = (i - 1 >= 0 ? pref[i - 1][2] : 0) + (s[i] == 'Y');
+
+		if (s[i] == 'K') {
+			pos[0].push_back(i);
+		} else if (s[i] == 'E') {
+			pos[1].push_back(i);
+		} else {
+			pos[2].push_back(i);
+		}
+	}
+
+	vector<vector<vector<vector<long long>>>> dp(
+	    MAX_SWAPS, vector<vector<vector<long long>>>(
+	                   count[0] + 1,
+	                   vector<vector<long long>>(
+	                       count[1] + 1, vector<long long>(count[2] + 1, 0))));
+
+	// base case (one way to create an empty string)
+	dp[0][0][0][0] = 1;
+	long longj ans = 0;
+	for (int ks = 0; ks <= count[0]; ks++) {
+		for (int es = 0; es <= count[1]; es++) {
+			for (int ys = 0; ys <= count[2]; ys++) {
+				for (int cur = 0; cur < MAX_SWAPS; cur++) {
+					// shift next 'K' into the string
+					if (ks < count[0]) {
+						// swap out letters in the way
+						int cost = max(0, pref[pos[0][ks]][1] - es) +
+						           max(0, pref[pos[0][ks]][2] - ys);
+
+						if (cur + cost < MAX_SWAPS) {
+							dp[cur + cost][ks + 1][es][ys] +=
+							    dp[cur][ks][es][ys];
+						}
+					}
+
+					// shift next 'E' into the string
+					if (es < count[1]) {
+						int next = pos[1][es];
+						// swap out letters in the way
+						int cost = max(0, pref[next][0] - ks) +
+						           max(0, pref[next][2] - ys);
+
+						if (cur + cost < MAX_SWAPS) {
+							dp[cur + cost][ks][es + 1][ys] +=
+							    dp[cur][ks][es][ys];
+						}
+					}
+
+					// shift next 'Y' into the string
+					if (ys < count[2]) {
+						int next = pos[2][ys];
+						// swap out letters in the way
+						int cost = max(0, pref[next][0] - ks) +
+						           max(0, pref[next][1] - es);
+
+						if (cur + cost < MAX_SWAPS) {
+							dp[cur + cost][ks][es][ys + 1] +=
+							    dp[cur][ks][es][ys];
+						}
+					}
+
+					// all letters have been used + we don't exceed swaps
+					if (ks == count[0] && es == count[1] && ys == count[2] &&
+					    cur <= k) {
+						ans += dp[cur][ks][es][ys];
+					}
+				}
+			}
+		}
+	}
+
+	cout << ans << endl;
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
+</Spoiler>
