@@ -128,7 +128,102 @@ to the maximum matching. We can now apply Edmonds-Karp or Ford-Fulkerson algorit
 <LanguageSection>
 <CPPSection>
 ```cpp
+#include <bits/stdc++.h>
 
+using namespace std;
+
+const int INF = INT_MAX;
+
+int n, m, k;
+vector<int> Pair, dist;
+vector<vector<int>> g;
+
+bool bfs() {
+	queue<int> q;
+	for(int node = 1; node <= n; node++) {
+		if(!Pair[node]) {
+			q.push(node);
+			dist[node] = 0;
+		} else {
+			dist[node] = INF;
+		}
+	}
+
+	dist[0] = INF;
+
+	while(!q.empty()) {
+		int node = q.front();
+		q.pop();
+		if(dist[node] >= dist[0]) continue;
+		for(auto son : g[node]) {
+			// If node son is unmatched
+			if(dist[Pair[son]] == INF) { 
+				dist[Pair[son]] = dist[node] + 1; 
+				q.push(Pair[son]);
+			}
+		}
+	}
+	
+	return dist[0] != INF;
+}
+
+bool dfs(int node) {
+	if(node == 0) return true;
+	for(auto son : g[node]) {
+		if(dist[Pair[son]] == dist[node] + 1 && dfs(Pair[son])) {
+			Pair[node] = son;
+			Pair[son] = node;
+			return true;
+		}
+	}
+	dist[node] = INF;
+	return false;
+}
+
+int Hopcroft_Karp() {
+	int match = 0;
+	// While there are unmatched nodes
+	while(bfs()) {
+		for(int i = 1; i <= n+m; i++) printf("%d ", dist[i]);
+		puts("");
+		for(int node = 1; node <= n; node++) {
+			// If node is unmatched but we can match it
+			if(!Pair[node] && dfs(node)) {
+				match++;
+			} 	
+		}
+	}
+	return match;
+}
+
+// Hopcroft-Karp algorithm
+int main() {
+	scanf("%d %d %d", &n, &m, &k);
+
+	dist.resize(n+m+1);
+	Pair.resize(n+m+1);
+	g.resize(n+m+1);
+
+	for(int i = 1; i <= k; i++) {
+		int x, y;
+		scanf("%d %d", &x, &y);
+
+		y += n;
+
+		g[x].push_back(y);
+		g[y].push_back(x);
+
+	}
+
+	printf("%d\n", Hopcroft_Karp());
+
+	for(int node = 1; node <= n; node++) {
+		if(Pair[node]) {
+			printf("%d %d\n", node, Pair[node] - n);
+		}
+	}
+	return 0;
+}
 ```
 </CPPSection>
 </LanguageSection>
