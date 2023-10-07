@@ -344,7 +344,7 @@ The key observation is that although there are many points, they're spread acros
 Because of this, instead of using Kruskal's or Prim's algorithm, we can use Dijkstra's.
 Starting from an arbitrary point, we run Dijkstra's algorithm with a priority queue that will sort the points by their distance to the MST.
 
-*Time Complexity:* $\mathcal{O}(S^2)$, where S is the grid size
+*Time Complexity:* $\mathcal{O}(S^3\log S)$, where S is the grid size
 
 <LanguageSection>
 <CPPSection>
@@ -373,14 +373,14 @@ int main() {
 		int x, y;
 		cin >> x >> y;
 		mat[x][y] = 1;
-		if (i != 0) {
+		if (i == 0) {
 			d[x][y] = 0;
 			pq.push({0, {x, y}});
 		}
 	}
 
 	auto inside = [&](int x, int y) {
-		return 0 <= x && 0 <= y && x <= GRID_SZ && y <= GRID_SZ;
+		return 0 <= x && 0 <= y && x < GRID_SZ && y < GRID_SZ;
 	};
 
 	// Dijkstra's algorithm
