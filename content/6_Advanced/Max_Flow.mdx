@@ -127,9 +127,15 @@ to the maximum matching. We can now apply Edmonds-Karp or Ford-Fulkerson algorit
 
 ### Solution 2
 
-We can achieve a better complexity than $\mathcal{O}(VE^2)$, but first let's define some properties.
+We can achieve a better complexity than $\mathcal{O}(VE^2)$, but first let's define some properties of matching algorithms
 
-Let's say the set $M$ contains all
+Let's say the set $M$ contains all the edges that the maximum matching consists of.
+
+We define an **alternating path** as a path whose edges are in the matching, $M$, and not in the matching, in an alternating fashion. An alternating path stars with an unmatched node and ends once it cannot append another edge while maintaining an alternating sequence.
+
+An **augmenting path** is built upon the alternating path and unmatched nodes at both ends - the nodes are not included in $M$.
+
+Tha maximum matching $M$ can be further improved if and only if an augmenting path is found in $M$, otherwise $M$ is the maximum matching. It may seem difficult to understand, but the main idea is: ``The maximum matching can be further improved as long as the alternating sequence can be extended ``. For a better understanding, you can imagine the shoelaces as an alternating path in a bipartite graph - or the sneakers.
 
 The algorithm described above is called the [Hopcroft-Karp algorithm](https://en.wikipedia.org/wiki/Hopcroft%E2%80%93Karp_algorithm).
 
