@@ -123,10 +123,17 @@ Now we have a flow network where every capacity is equal to 1.
 The reason we transformed our bipartite graph into a network flow is that the maximum network flow is equal
 to the maximum matching. We can now apply Edmonds-Karp or Ford-Fulkerson algorithm.
 
+**Time Complexity: $\mathcal{O}(VE^2)$**
+
 ### Solution 2
 
+We can achieve a better complexity than $\mathcal{O}(VE^2)$, but first let's define some properties.
+
+Let's say the set $M$ contains all
 
 The algorithm described above is called the [Hopcroft-Karp algorithm](https://en.wikipedia.org/wiki/Hopcroft%E2%80%93Karp_algorithm).
+
+**Time Complexity: $\mathcal{O}(E\sqrt{V})$**
 
 <LanguageSection>
 <CPPSection>
@@ -135,14 +142,16 @@ The algorithm described above is called the [Hopcroft-Karp algorithm](https://en
 
 using namespace std;
 
-const int INF = INT_MAX;
+const int INF = 1e9;
 
 int n, m, k;
+// dist[node] = the position of node in the alternating path
 vector<int> Pair, dist;
 vector<vector<int>> g;
 
 bool bfs() {
 	queue<int> q;
+	// The alternating path starts with unmatched nodes
 	for(int node = 1; node <= n; node++) {
 		if(!Pair[node]) {
 			q.push(node);
@@ -159,17 +168,18 @@ bool bfs() {
 		q.pop();
 		if(dist[node] >= dist[0]) continue;
 		for(auto son : g[node]) {
-			// If node son is unmatched
+			// If the pair of son is matched
 			if(dist[Pair[son]] == INF) { 
 				dist[Pair[son]] = dist[node] + 1; 
 				q.push(Pair[son]);
 			}
 		}
 	}
-	
+	// Returns true if an alternating path has been found
 	return dist[0] != INF;
 }
 
+// Returns true if an augmenting path has been found starting from vertex node
 bool dfs(int node) {
 	if(node == 0) return true;
 	for(auto son : g[node]) {
@@ -185,10 +195,10 @@ bool dfs(int node) {
 
 int Hopcroft_Karp() {
 	int match = 0;
-	// While there are unmatched nodes
+	// While there is an alternating path
 	while(bfs()) {
 		for(int node = 1; node <= n; node++) {
-			// If node is unmatched but we can match it
+			// If node is unmatched but we can match it using an augmenting path
 			if(!Pair[node] && dfs(node)) {
 				match++;
 			} 	
