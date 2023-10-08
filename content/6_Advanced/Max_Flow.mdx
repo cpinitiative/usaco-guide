@@ -164,8 +164,8 @@ vector<vector<int>> g;
 bool bfs() {
 	queue<int> q;
 	// The alternating path starts with unmatched nodes
-	for(int node = 1; node <= n; node++) {
-		if(!Pair[node]) {
+	for (int node = 1; node <= n; node++) {
+		if (!Pair[node]) {
 			q.push(node);
 			dist[node] = 0;
 		} else {
@@ -175,27 +175,27 @@ bool bfs() {
 
 	dist[0] = INF;
 
-	while(!q.empty()) {
+	while (!q.empty()) {
 		int node = q.front();
 		q.pop();
-		if(dist[node] >= dist[0]) continue;
-		for(auto son : g[node]) {
+		if (dist[node] >= dist[0]) continue;
+		for (auto son : g[node]) {
 			// If the pair of son is matched
-			if(dist[Pair[son]] == INF) { 
-				dist[Pair[son]] = dist[node] + 1; 
+			if (dist[Pair[son]] == INF) {
+				dist[Pair[son]] = dist[node] + 1;
 				q.push(Pair[son]);
 			}
 		}
 	}
 	// Returns true if an alternating path has been found
-	return dist[0] != INF;	
+	return dist[0] != INF;
 }
 
 // Returns true if an augmenting path has been found starting from vertex node
 bool dfs(int node) {
-	if(node == 0) return true;
-	for(auto son : g[node]) {
-		if(dist[Pair[son]] == dist[node] + 1 && dfs(Pair[son])) {
+	if (node == 0) return true;
+	for (auto son : g[node]) {
+		if (dist[Pair[son]] == dist[node] + 1 && dfs(Pair[son])) {
 			Pair[node] = son;
 			Pair[son] = node;
 			return true;
@@ -208,12 +208,10 @@ bool dfs(int node) {
 int Hopcroft_Karp() {
 	int match = 0;
 	// While there is an alternating path
-	while(bfs()) {
-		for(int node = 1; node <= n; node++) {
+	while (bfs()) {
+		for (int node = 1; node <= n; node++) {
 			// If node is unmatched but we can match it using an augmenting path
-			if(!Pair[node] && dfs(node)) {
-				match++;
-			} 	
+			if (!Pair[node] && dfs(node)) { match++; }
 		}
 	}
 	return match;
@@ -223,11 +221,11 @@ int Hopcroft_Karp() {
 int main() {
 	cin >> n >> m >> k;
 
-	dist.resize(n+m+1);
-	Pair.resize(n+m+1);
-	g.resize(n+m+1);
+	dist.resize(n + m + 1);
+	Pair.resize(n + m + 1);
+	g.resize(n + m + 1);
 
-	for(int i = 1; i <= k; i++) {
+	for (int i = 1; i <= k; i++) {
 		int x, y;
 		cin >> x >> y;
 
@@ -235,15 +233,12 @@ int main() {
 
 		g[x].push_back(y);
 		g[y].push_back(x);
-
 	}
 
 	cout << Hopcroft_Karp() << '\n';
 
-	for(int node = 1; node <= n; node++) {
-		if(Pair[node]) {
-			cout << node << ' ' << Pair[node] - n << '\n';
-		}
+	for (int node = 1; node <= n; node++) {
+		if (Pair[node]) { cout << node << ' ' << Pair[node] - n << '\n'; }
 	}
 	return 0;
 }
