@@ -116,9 +116,9 @@ It is more than recommended to solve the first problem - Download Speed - in the
 
 ### Solution 1
 
-A bipartite graph doesn't seem like to have anything in common with a flow network, but we can shift our point of view just by 
+A bipartite graph doesn't seem like to have anything in common with a flow network, but we can shift our point of view just by
 adding the source connected to the nodes in set $U$ and the sink connected to the nodes in set $V$. And that's all.
-Now we have a flow network where every capacity is equal to 1. 
+Now we have a flow network where every capacity is equal to 1.
 
 The reason we transformed our bipartite graph into a network flow is that the maximum network flow is equal
 to the maximum matching. We can now apply Edmonds-Karp or Ford-Fulkerson algorithm.
@@ -164,8 +164,8 @@ vector<vector<int>> g;
 bool bfs() {
 	queue<int> q;
 	// The alternating path starts with unmatched nodes
-	for(int node = 1; node <= n; node++) {
-		if(!Pair[node]) {
+	for (int node = 1; node <= n; node++) {
+		if (!Pair[node]) {
 			q.push(node);
 			dist[node] = 0;
 		} else {
@@ -175,14 +175,14 @@ bool bfs() {
 
 	dist[0] = INF;
 
-	while(!q.empty()) {
+	while (!q.empty()) {
 		int node = q.front();
 		q.pop();
-		if(dist[node] >= dist[0]) continue;
-		for(auto son : g[node]) {
+		if (dist[node] >= dist[0]) continue;
+		for (auto son : g[node]) {
 			// If the pair of son is matched
-			if(dist[Pair[son]] == INF) { 
-				dist[Pair[son]] = dist[node] + 1; 
+			if (dist[Pair[son]] == INF) {
+				dist[Pair[son]] = dist[node] + 1;
 				q.push(Pair[son]);
 			}
 		}
@@ -193,9 +193,9 @@ bool bfs() {
 
 // Returns true if an augmenting path has been found starting from vertex node
 bool dfs(int node) {
-	if(node == 0) return true;
-	for(auto son : g[node]) {
-		if(dist[Pair[son]] == dist[node] + 1 && dfs(Pair[son])) {
+	if (node == 0) return true;
+	for (auto son : g[node]) {
+		if (dist[Pair[son]] == dist[node] + 1 && dfs(Pair[son])) {
 			Pair[node] = son;
 			Pair[son] = node;
 			return true;
@@ -208,12 +208,10 @@ bool dfs(int node) {
 int Hopcroft_Karp() {
 	int match = 0;
 	// While there is an alternating path
-	while(bfs()) {
-		for(int node = 1; node <= n; node++) {
+	while (bfs()) {
+		for (int node = 1; node <= n; node++) {
 			// If node is unmatched but we can match it using an augmenting path
-			if(!Pair[node] && dfs(node)) {
-				match++;
-			} 	
+			if (!Pair[node] && dfs(node)) { match++; }
 		}
 	}
 	return match;
@@ -223,11 +221,11 @@ int Hopcroft_Karp() {
 int main() {
 	scanf("%d %d %d", &n, &m, &k);
 
-	dist.resize(n+m+1);
-	Pair.resize(n+m+1);
-	g.resize(n+m+1);
+	dist.resize(n + m + 1);
+	Pair.resize(n + m + 1);
+	g.resize(n + m + 1);
 
-	for(int i = 1; i <= k; i++) {
+	for (int i = 1; i <= k; i++) {
 		int x, y;
 		scanf("%d %d", &x, &y);
 
@@ -235,15 +233,12 @@ int main() {
 
 		g[x].push_back(y);
 		g[y].push_back(x);
-
 	}
 
 	printf("%d\n", Hopcroft_Karp());
 
-	for(int node = 1; node <= n; node++) {
-		if(Pair[node]) {
-			printf("%d %d\n", node, Pair[node] - n);
-		}
+	for (int node = 1; node <= n; node++) {
+		if (Pair[node]) { printf("%d %d\n", node, Pair[node] - n); }
 	}
 	return 0;
 }
