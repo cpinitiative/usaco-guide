@@ -112,7 +112,7 @@ int main() {
 
 <Problems problems="match" />
 
-Is's recommended that you solve the first problem - Download Speed - in the section before trying this one.
+It's recommended that you solve the first problem - Download Speed - in the section before trying this one.
 
 ### Solution 1
 
@@ -120,14 +120,16 @@ A bipartite graph doesn't seem like to have anything in common with a flow netwo
 adding the source connected to the nodes in set $U$ and the sink connected to the nodes in set $V$. And that's all.
 Now we have a flow network where every capacity is equal to 1.
 
-The reason we transformed our bipartite graph into a network flow is that the maximum network flow is equal
-to the maximum matching. We can now apply Edmonds-Karp or Ford-Fulkerson algorithm.
+We transformed our bipartite graph into a network flow so the maximum network flow is equal
+to the maximum matching.
+Now, we can apply our favorite max flow algorithm to solve the problem!
 
 **Time Complexity: $\mathcal{O}(VE^2)$**
 
 ### Solution 2
 
-We can achieve a better complexity than $\mathcal{O}(VE^2)$, but first let's define some properties of matching algorithms.
+However, we can do better than this.
+First let's define some properties of matching algorithms.
 
 Let's say the set $M$ contains all the edges that the maximum matching consists of.
 
@@ -139,19 +141,19 @@ Tha maximum matching $M$ can be further improved if and only if an augmenting pa
 
 The algorithm described above is called the [Hopcroft-Karp algorithm](https://en.wikipedia.org/wiki/Hopcroft%E2%80%93Karp_algorithm).
 
-**Time Complexity: $\mathcal{O}(E\sqrt{V})$**
-
-Here is an animation of how the code below works:
+Here's an animation of the algorithm if you're still a bit confused:
 
 <video width="960" height="720" controls>
 	<source src="/animations/Hopcroft-Karp.mp4" type="video/mp4"/>
 </video>
 
+**Time Complexity: $\mathcal{O}(E\sqrt{V})$**
+
 <LanguageSection>
 <CPPSection>
+
 ```cpp
 #include <bits/stdc++.h>
-
 using namespace std;
 
 const int INF = 1e9;
@@ -178,8 +180,8 @@ bool bfs() {
 	while (!q.empty()) {
 		int node = q.front();
 		q.pop();
-		if (dist[node] >= dist[0]) continue;
-		for (auto son : g[node]) {
+		if (dist[node] >= dist[0]) { continue; }
+		for (int son : g[node]) {
 			// If the pair of son is matched
 			if (dist[Pair[son]] == INF) {
 				dist[Pair[son]] = dist[node] + 1;
@@ -194,7 +196,7 @@ bool bfs() {
 // Returns true if an augmenting path has been found starting from vertex node
 bool dfs(int node) {
 	if (node == 0) { return true; }
-	for (auto son : g[node]) {
+	for (int son : g[node]) {
 		if (dist[Pair[son]] == dist[node] + 1 && dfs(Pair[son])) {
 			Pair[node] = son;
 			Pair[son] = node;
@@ -235,12 +237,12 @@ int main() {
 	}
 
 	cout << hopcroft_karp() << '\n';
-
 	for (int node = 1; node <= n; node++) {
 		if (Pair[node]) { cout << node << ' ' << Pair[node] - n << '\n'; }
 	}
 }
 ```
+
 </CPPSection>
 </LanguageSection>
 
