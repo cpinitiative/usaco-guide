@@ -112,7 +112,7 @@ int main() {
 
 <Problems problems="match" />
 
-It is more than recommended to solve the first problem - Download Speed - in the section before jumping to this one.
+Is's recommended that you solve the first problem - Download Speed - in the section before trying this one.
 
 ### Solution 1
 
@@ -193,7 +193,7 @@ bool bfs() {
 
 // Returns true if an augmenting path has been found starting from vertex node
 bool dfs(int node) {
-	if (node == 0) return true;
+	if (node == 0) { return true; }
 	for (auto son : g[node]) {
 		if (dist[Pair[son]] == dist[node] + 1 && dfs(Pair[son])) {
 			Pair[node] = son;
@@ -205,7 +205,7 @@ bool dfs(int node) {
 	return false;
 }
 
-int Hopcroft_Karp() {
+int hopcroft_karp() {
 	int match = 0;
 	// While there is an alternating path
 	while (bfs()) {
@@ -217,7 +217,6 @@ int Hopcroft_Karp() {
 	return match;
 }
 
-// Hopcroft-Karp algorithm
 int main() {
 	cin >> n >> m >> k;
 
@@ -235,7 +234,7 @@ int main() {
 		g[y].push_back(x);
 	}
 
-	cout << Hopcroft_Karp() << '\n';
+	cout << hopcroft_karp() << '\n';
 
 	for (int node = 1; node <= n; node++) {
 		if (Pair[node]) { cout << node << ' ' << Pair[node] - n << '\n'; }
