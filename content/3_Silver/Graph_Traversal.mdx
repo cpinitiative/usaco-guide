@@ -404,39 +404,46 @@ When implementing BFS, we often use a queue to track the next vertex to visit. L
 <JavaSection>
 
 ```java
-static final int MAX_N = (int)1e6;
+import java.util.*;
 
-public static void main(String[] args) throws IOException {
-	boolean[] visited = new boolean[MAX_N];
-	ArrayList<ArrayList<Integer>> adj = new ArrayList<ArrayList<Integer>>();
-	for (int i = 0; i < MAX_N; i++) adj.add(new ArrayList<Integer>());
+public class Main {
+    public static void main(String[] args) {
+        int n = 6;
+        boolean[] visited = new boolean[n];
+        List<Integer>[] adj = new ArrayList[6];
+        for (int i = 0; i < n; i++) {
+            adj[i] = new ArrayList<>();
+        }
+        adj[0] = new ArrayList<>(Arrays.asList(1, 2, 4));
+        adj[1] = new ArrayList<>(Arrays.asList(3, 4));
+        adj[2] = new ArrayList<>(Arrays.asList(5));
 
-	/*
-	 * Define adjacency list and read in problem-specific input
-	 *
-	 * In this example, we've provided "dummy input" that's
-	 * reflected in the GIF above to help illustrate the
-	 * order of the recrusive calls.
-	 */
+        /*
+        * Define adjacency list and read in problem-specific input
+        *
+        * In this example, we've provided "dummy input" that's
+        * reflected in the GIF above to help illustrate the
+        * order of the recrusive calls.
+        */
+        for (int i = 0; i < n; i++) {
+            // iterate over all connected components in the graph
+            if (!visited[i]) {
+                Queue<Integer> q = new LinkedList<Integer>();
+                q.add(i);
 
-	for (int i = 0; i < MAX_N; i++) {
-		// iterate over all connected components in the graph
-		if (!visited[i]) {
-			Queue<Integer> q = new LinkedList<Integer>();
-			q.add(i);
+                while (q.size() > 0) {
+                    int currentNode = q.peek();
+                    q.poll();
 
-			while (q.size() > 0) {
-				int currentNode = q.peek();
-				q.poll();
+                    visited[currentNode] = true;
 
-				visited[currentNode] = true;
-
-				for (int neighbor : adj.get(currentNode)) {
-					if (!visited[neighbor]) { q.add(neighbor); }
-				}
-			}
-		}
-	}
+                    for (int neighbor : adj[currentNode]) {
+                        if (!visited[neighbor]) { q.add(neighbor); }
+                    }
+                }
+            }
+        }
+    }
 }
 ```
 
@@ -444,11 +451,17 @@ public static void main(String[] args) throws IOException {
 <CPPSection>
 
 ```cpp
-int n = 6;
-vector<vector<int>> adj(n);
-vector<bool> visited(n);
+#include <vector>
+#include <queue>
+
+using std::vector;
+using std::queue;
 
 int main() {
+    int n = 6;
+    vector<vector<int>> adj(n);
+    vector<bool> visited(n);
+
 	/*
 	 * Define adjacency list and read in problem-specific input
 	 *
@@ -457,7 +470,8 @@ int main() {
 	 * order of the recrusive calls.
 	 */
 	adj[0] = {1, 2, 4};
-	adj[1] = {3, 4} adj[2].push_back(5);
+	adj[1] = {3, 4};
+    adj[2] = {5};
 
 	for (int i = 0; i < n; i++) {
 		// iterate over all connected components in the graph
@@ -1229,25 +1243,24 @@ else:
 		What's the main difference between DFS and BFS?
 
 		<Quiz.Answer>
-			$O(\log n)$
+			DFS is recursive, while BFS is iterative
+
+			<Quiz.Explanation>
+				Not really. Both algorithms can be implemented in both recursive and iterative fashion.
+			</Quiz.Explanation>
+		</Quiz.Answer>
+        <Quiz.Answer>
+			DFS is recursive, while BFS is iterative
 
 			<Quiz.Explanation>
 				Almost. Prefer $\mathcal{O}$ over $O$.
 			</Quiz.Explanation>
 		</Quiz.Answer>
-
-		<Quiz.Answer correct>
-			$\mathcal{O}(\log n)$
-
-			<Quiz.Explanation>
-				That's correct!
-			</Quiz.Explanation>
-		</Quiz.Answer>
-		<Quiz.Answer>
-			O(log n)
+        <Quiz.Answer>
+			DFS is recursive, while BFS is iterative
 
 			<Quiz.Explanation>
-				That's not right. Latex is important...
+				Almost. Prefer $\mathcal{O}$ over $O$.
 			</Quiz.Explanation>
 		</Quiz.Answer>
 	</Quiz.Question>
