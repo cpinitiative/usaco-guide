@@ -8,10 +8,10 @@ author: Chongtian Ma
 [Official Analysis](https://codeforces.com/blog/entry/115892)
 
 ## Implementation
+
 **Time Complexity:** $\mathcal{O}(n)$
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
@@ -21,11 +21,12 @@ using namespace std;
 int main(){
 	int test_num;
 	cin >> test_num;
+
 	for (int t = 0; t < test_num; t++) {
 		int n;
 		cin >> n;
 		vector<int> a(n);
-		for(int i = 0; i < n; i++) cin >> a[i];
+		for (int i = 0; i < n; i++) { cin >> a[i]; }
 
 		vector<int> pref_max(n), suff_max(n);
 		for (int i = 0; i < n; i++) {
@@ -44,13 +45,11 @@ int main(){
 		for (int i = 1; i < n - 1; i++) {
 			ans = max(ans, pref_max[i - 1] + a[i] + suff_max[i + 1]);
 		}
-		cout << ans << "\n";
+		cout << ans << '\n';
 	}
 }
 ```
-
 </CPPSection>
-
 <PySection>
 
 ```py
@@ -76,7 +75,5 @@ for _ in range(int(stdin.readline())):
 		ans = max(ans, pref[i - 1] + suff[i + 1] + a[i])
 	stdout.write(f'{ans}\n')
 ```
-
 </PySection>
-
 </LanguageSection>
