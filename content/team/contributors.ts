@@ -351,6 +351,11 @@ export const RestOfMembers: Member[] = [
     name: 'Harsh Akunuri',
     titles: [roles.clubCurriculum],
   },
+  {
+    photo: 'lokesh_pampatti',
+    name: 'Lokesh Pampatti',
+    titles: [roles.clubCurriculum],
+  },
 ];
 
 export const NotPictured: Member[] = [
