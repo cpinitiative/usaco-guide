@@ -153,7 +153,6 @@ Here's an animation of the algorithm if you're still a bit confused:
 
 <LanguageSection>
 <CPPSection>
-
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
@@ -162,89 +161,88 @@ const int INF = 1e9;
 
 int n, m, k;
 // dist[node] = the position of node in the alternating path
-vector<int> Pair, dist;
+vector<int> match, dist;
 vector<vector<int>> g;
 
 bool bfs() {
-	queue<int> q;
-	// The alternating path starts with unmatched nodes
-	for (int node = 1; node <= n; node++) {
-		if (!Pair[node]) {
-			q.push(node);
-			dist[node] = 0;
-		} else {
-			dist[node] = INF;
-		}
-	}
+    queue<int> q;
+    // The alternating path starts with unmatched nodes
+    for (int node = 1; node <= n; node++) {
+        if (!match[node]) {
+            q.push(node);
+            dist[node] = 0;
+        } else {
+            dist[node] = INF;
+        }
+    }
 
-	dist[0] = INF;
+    dist[0] = INF;
 
-	while (!q.empty()) {
-		int node = q.front();
-		q.pop();
-		if (dist[node] >= dist[0]) { continue; }
-		for (int son : g[node]) {
-			// If the pair of son is matched
-			if (dist[Pair[son]] == INF) {
-				dist[Pair[son]] = dist[node] + 1;
-				q.push(Pair[son]);
-			}
-		}
-	}
-	// Returns true if an alternating path has been found
-	return dist[0] != INF;
+    while (!q.empty()) {
+        int node = q.front();
+        q.pop();
+        if (dist[node] >= dist[0]) { continue; }
+        for (int son : g[node]) {
+            // If the match of son is matched
+            if (dist[match[son]] == INF) {
+                dist[match[son]] = dist[node] + 1;
+                q.push(match[son]);
+            }
+        }
+    }
+    // Returns true if an alternating path has been found
+    return dist[0] != INF;
 }
 
 // Returns true if an augmenting path has been found starting from vertex node
 bool dfs(int node) {
-	if (node == 0) { return true; }
-	for (int son : g[node]) {
-		if (dist[Pair[son]] == dist[node] + 1 && dfs(Pair[son])) {
-			Pair[node] = son;
-			Pair[son] = node;
-			return true;
-		}
-	}
-	dist[node] = INF;
-	return false;
+    if (node == 0) { return true; }
+    for (int son : g[node]) {
+        if (dist[match[son]] == dist[node] + 1 && dfs(match[son])) {
+            match[node] = son;
+            match[son] = node;
+            return true;
+        }
+    }
+    dist[node] = INF;
+    return false;
 }
 
 int hopcroft_karp() {
-	int match = 0;
-	// While there is an alternating path
-	while (bfs()) {
-		for (int node = 1; node <= n; node++) {
-			// If node is unmatched but we can match it using an augmenting path
-			if (!Pair[node] && dfs(node)) { match++; }
-		}
-	}
-	return match;
+    int cnt = 0;
+    // While there is an alternating path
+    while (bfs()) {
+        for (int node = 1; node <= n; node++) {
+            // If node is unmatched but we can match it using an augmenting path
+            if (!match[node] && dfs(node)) { cnt++; }
+        }
+    }
+    return cnt;
 }
 
 int main() {
-	cin >> n >> m >> k;
+    cin >> n >> m >> k;
 
-	dist.resize(n + m + 1);
-	Pair.resize(n + m + 1);
-	g.resize(n + m + 1);
+    dist.resize(n + m + 1);
+    match.resize(n + m + 1);
+    g.resize(n + m + 1);
 
-	for (int i = 1; i <= k; i++) {
-		int x, y;
-		cin >> x >> y;
+    for (int i = 1; i <= k; i++) {
+        int x, y;
+        cin >> x >> y;
 
-		y += n;
+        y += n;
 
-		g[x].push_back(y);
-		g[y].push_back(x);
-	}
+        g[x].push_back(y);
+        g[y].push_back(x);
+    }
 
-	cout << hopcroft_karp() << '\n';
-	for (int node = 1; node <= n; node++) {
-		if (Pair[node]) { cout << node << ' ' << Pair[node] - n << '\n'; }
-	}
+    cout << hopcroft_karp() << '\n';
+    for (int node = 1; node <= n; node++) {
+        if (match[node]) { cout << node << ' ' << match[node] - n << '\n'; }
+    }
 }
 ```
-
 </CPPSection>
 </LanguageSection>
 
