@@ -22,24 +22,24 @@ int main(){
 	int T;
 	cin >> T;
 	while(T--){
-		int N; 
+		int N;
 		cin >> N;
 		vector<int> A(N);
 		for(int i = 0; i < N; i++) cin >> A[i];
-		
+
 		vector<int> pref_max(N), suff_max(N);
 		for(int i = 0; i < N; i++){
 			pref_max[i] = A[i] + i;
 			suff_max[i] = A[i] - i;
 		}
-		
+
 		for(int i = 1; i < N; i++){
 			pref_max[i] = max(pref_max[i], pref_max[i - 1]);
 		}
 		for(int i = N - 2; i >= 0; i--){
 			suff_max[i] = max(suff_max[i], suff_max[i + 1]);
 		}
-		
+
 		int ans = 0;
 		for(int i = 1; i < N - 1; i++){
 			ans = max(ans, pref_max[i - 1] + A[i] + suff_max[i + 1]);
@@ -80,4 +80,3 @@ for _ in range(int(stdin.readline())):
 </PySection>
 
 </LanguageSection>
-
