@@ -407,43 +407,43 @@ When implementing BFS, we often use a queue to track the next vertex to visit. L
 import java.util.*;
 
 public class Main {
-    public static void main(String[] args) {
-        int n = 6;
-        boolean[] visited = new boolean[n];
-        List<Integer>[] adj = new ArrayList[6];
-        for (int i = 0; i < n; i++) {
-            adj[i] = new ArrayList<>();
-        }
-        adj[0] = new ArrayList<>(Arrays.asList(1, 2, 4));
-        adj[1] = new ArrayList<>(Arrays.asList(3, 4));
-        adj[2] = new ArrayList<>(Arrays.asList(5));
+	public static void main(String[] args) {
+		int n = 6;
+		boolean[] visited = new boolean[n];
+		List<Integer>[] adj = new ArrayList[6];
+		for (int i = 0; i < n; i++) {
+			adj[i] = new ArrayList<>();
+		}
+		adj[0] = new ArrayList<>(Arrays.asList(1, 2, 4));
+		adj[1] = new ArrayList<>(Arrays.asList(3, 4));
+		adj[2] = new ArrayList<>(Arrays.asList(5));
 
-        /*
-        * Define adjacency list and read in problem-specific input
-        *
-        * In this example, we've provided "dummy input" that's
-        * reflected in the GIF above to help illustrate the
-        * order of the recrusive calls.
-        */
-        for (int i = 0; i < n; i++) {
-            // iterate over all connected components in the graph
-            if (!visited[i]) {
-                Queue<Integer> q = new LinkedList<Integer>();
-                q.add(i);
+		/*
+		 * Define adjacency list and read in problem-specific input
+		 *
+		 * In this example, we've provided "dummy input" that's
+		 * reflected in the GIF above to help illustrate the
+		 * order of the recrusive calls.
+		 */
+		for (int i = 0; i < n; i++) {
+			// iterate over all connected components in the graph
+			if (!visited[i]) {
+				Queue<Integer> q = new LinkedList<Integer>();
+				q.add(i);
 
-                while (q.size() > 0) {
-                    int currentNode = q.peek();
-                    q.poll();
+				while (q.size() > 0) {
+					int currentNode = q.peek();
+					q.poll();
 
-                    visited[currentNode] = true;
+					visited[currentNode] = true;
 
-                    for (int neighbor : adj[currentNode]) {
-                        if (!visited[neighbor]) { q.add(neighbor); }
-                    }
-                }
-            }
-        }
-    }
+					for (int neighbor : adj[currentNode]) {
+						if (!visited[neighbor]) { q.add(neighbor); }
+					}
+				}
+			}
+		}
+	}
 }
 ```
 
@@ -458,9 +458,9 @@ using std::vector;
 using std::queue;
 
 int main() {
-    int n = 6;
-    vector<vector<int>> adj(n);
-    vector<bool> visited(n);
+	int n = 6;
+	vector<vector<int>> adj(n);
+	vector<bool> visited(n);
 
 	/*
 	 * Define adjacency list and read in problem-specific input
@@ -471,7 +471,7 @@ int main() {
 	 */
 	adj[0] = {1, 2, 4};
 	adj[1] = {3, 4};
-    adj[2] = {5};
+	adj[2] = {5};
 
 	for (int i = 0; i < n; i++) {
 		// iterate over all connected components in the graph
@@ -556,50 +556,49 @@ in a line.
 ```cpp
 #include <iostream>
 #include <vector>
+#include <deque>
 
 using namespace std;
 
-int N;
 vector<vector<int>> adj;
 vector<bool> visited;
-vector<int> rep;
 
 void dfs(int node) {
-	visited[node] = true;
-	for (int u : adj[node]) {
-		if (!visited[u]) { dfs(u); }
-	}
-}
-
-int count_components() {
-	int count = 0;
-	for (int i = 1; i <= N; i++) {
-		if (!visited[i]) {
-			count++;
-			rep.push_back(i);
-			dfs(i);
+	for (int n : adj[node]) {
+		if (!visited[n]) {
+			visited[n] = true;
+			dfs(n);
 		}
 	}
-	return count;
 }
 
 int main() {
-	int M;
-	cin >> N >> M;
-	adj.resize(N + 1);
-	visited.resize(N + 1);
-	for (int i = 0; i < M; i++) {
-		int u, v;
-		cin >> u >> v;
-		adj[u].push_back(v);
-		adj[v].push_back(u);
+	int n;
+	int m;
+	cin >> n >> m;
+	adj = vector<vector<int>>(n);
+	for (int i = 0; i < m; i++) {
+		int a, b;
+		cin >> a >> b;
+		adj[--a].push_back(--b);
+		adj[b].push_back(a);
 	}
-	
-	int ans = count_components();
 
-	cout << ans - 1 << endl;
-	for (int i = 1; i < ans; i++) {
-		cout << rep[i - 1] << " " << rep[i] << endl;
+	visited = vector<bool>(n);
+	vector<int> city_reps;
+	for (int i = 0; i < n; i++) {
+		if (visited[i]) {
+			continue;
+		}
+
+		visited[i] = true;
+		city_reps.push_back(i);
+		dfs(i);
+	}
+
+	cout << city_reps.size() - 1 << '\n';
+	for (int i = 0; i < city_reps.size() - 1; i++) {
+		cout << city_reps[i] + 1 << ' ' << city_reps[i + 1] + 1 << '\n';
 	}
 }
 ```
@@ -611,60 +610,57 @@ int main() {
 import java.io.*;
 import java.util.*;
 
-public class Main {
-	public static List<Integer>[] adj;
-	public static List<Integer> rep = new ArrayList<Integer>();
-	public static boolean[] visited;
-	
+public class BuildingRoads {
+	static List<Integer>[] adj;
+	static boolean[] visited;
+
 	public static void main(String[] args) throws IOException {
-		BufferedReader br =
-			new BufferedReader(new InputStreamReader(System.in));
-		
-		StringTokenizer st = new StringTokenizer(br.readLine());
-		int N = Integer.parseInt(st.nextToken());
-		int M = Integer.parseInt(st.nextToken());
-		adj = new ArrayList[N + 1];
-		visited = new boolean[N + 1];
-		
-		for (int i = 0; i <= N; i++) adj[i] = new ArrayList<Integer>();
-		for (int i = 0; i < M; i++) {
-			st = new StringTokenizer(br.readLine());
-			int u = Integer.parseInt(st.nextToken());
-			int v = Integer.parseInt(st.nextToken());
-			adj[u].add(v);
-			adj[v].add(u);
+		Kattio io = new Kattio();
+		int n = io.nextInt();
+		int m = io.nextInt();
+
+		adj = new ArrayList[n];
+		for (int i = 0; i < n; i++) {
+			adj[i] = new ArrayList<>();
+		}
+		for (int i = 0; i < m; i++) {
+			int a = io.nextInt() - 1;
+			int b = io.nextInt() - 1;
+			adj[a].add(b);
+			adj[b].add(a);
 		}
 
-		int ans = count_components();
-
-		PrintWriter out = new PrintWriter(System.out);
-		out.println(ans - 1);
-		for (int i = 1; i < ans; i++) {
-			out.println(rep.get(i - 1) + " " + rep.get(i));
+		visited = new boolean[n];
+		List<Integer> cityReps = new ArrayList<>();
+		for (int i = 0; i < n; i++) {
+			if (visited[i]) {
+				continue;
+			}
+	
+			visited[i] = true;
+			cityReps.add(i);
+			dfs(i);
 		}
-		out.close();
+
+		StringBuilder ans = new StringBuilder();
+		ans.append(cityReps.size() - 1).append('\n');
+		for (int i = 0; i < cityReps.size() - 1; i++) {
+			ans.append(cityReps.get(i) + 1).append(' ').append(cityReps.get(i + 1) + 1).append('\n');
+		}
+		io.println(ans);
+		io.close();
 	}
 
-	public static void dfs(int node) {
-		visited[node] = true;
-		for (int u : adj[node]) {
-			if (!visited[u]) {
-				dfs(u);
+	static void dfs(int node) {
+		for (int n : adj[node]) {
+			if (!visited[n]) {
+				visited[n] = true;
+				dfs(n);
 			}
 		}
 	}
 
-	public static int count_components() {
-		int count = 0;
-		for (int i = 1; i <= adj.length - 1; i++) {
-			if (!visited[i]) {
-				count++;
-				rep.add(i);
-				dfs(i);
-			}
-		}
-		return count;
-	}
+	// CodeSnip{Kattio}
 }
 ```
 
@@ -672,39 +668,41 @@ public class Main {
 <PySection>
 
 ```py
-def solve(n: int, adj: list):
-	unvisited = set(range(1, n + 1))
-	starts = set()
-
-	def dfs(current):
-		for next in adj[current]:
-			if next in unvisited:
-				unvisited.remove(next)
-				dfs(next)
-
-	while unvisited:
-		start = unvisited.pop()
-		starts.add(start)
-		dfs(start)
-
-	print(len(starts) - 1)
-	root = starts.pop()
-	for other in starts:
-		print(root, other)
-
+from collections import deque
 
 n, m = map(int, input().split())
-adj = [set() for _ in range(n + 1)]
-for _ in range(m):
-	u, v = map(int, input().split())
-	adj[u].add(v)
-	adj[v].add(u)
 
-solve(n, adj)
+adj = [[] for _ in range(n)]
+for _ in range(m):
+	a, b = map(int, input().split())
+	adj[a - 1].append(b - 1)
+	adj[b - 1].append(a - 1)
+
+
+def dfs(node: int) -> None:
+	for n in adj[node]:
+		if not visited[n]:
+			visited[n] = True
+			dfs(n)
+
+
+visited = [False for _ in range(n)]
+rep_cities = []
+for i in range(n):
+	if visited[i]:
+		continue
+	
+	visited[i] = True
+	rep_cities.append(i)
+	dfs(i)
+
+print(len(rep_cities) - 1)
+for i in range(len(rep_cities) - 1):
+	print(rep_cities[i] + 1, rep_cities[i + 1] + 1)
 ```
 
-However, this code causes a runtime error on five test cases. See the
-next subsection for how to fix this.
+However, this code causes a runtime error on nearly half the test cases.
+What could be going wrong?
 
 </PySection>
 </LanguageSection>
@@ -797,36 +795,95 @@ int main() {
 		adj[b].push_back(a);
 	}
 
-    vector<bool> visited(n);
-	vector<int> rep_cities;
+	vector<bool> visited(n);
+	vector<int> city_reps;
 	for (int i = 0; i < n; i++) {
 		if (visited[i]) {
 			continue;
 		}
 
 		visited[i] = true;
-		rep_cities.push_back(i);
-        deque<int> todo{i};
+		city_reps.push_back(i);
+		deque<int> todo{i};
 		while (!todo.empty()) {
 			int curr = todo.front();
 			todo.pop_front();
 			for (int next : adj[curr]) {
 				if (!visited[next]) {
-                    visited[next] = true;
-                    todo.push_back(next);
-                }
+					visited[next] = true;
+					todo.push_back(next);
+				}
 			}
 		}
 	}
 
-	cout << rep_cities.size() - 1 << '\n';
-    for (int i = 0; i < rep_cities.size() - 1; i++) {
-        cout << rep_cities[i] + 1 << ' ' << rep_cities[i + 1] + 1 << '\n';
-    }
+	cout << city_reps.size() - 1 << '\n';
+	for (int i = 0; i < city_reps.size() - 1; i++) {
+		cout << city_reps[i] + 1 << ' ' << city_reps[i + 1] + 1 << '\n';
+	}
 }
 ```
 
 </CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class BuildingRoads {
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio();
+		int n = io.nextInt();
+		int m = io.nextInt();
+
+		List<Integer>[] adj = new ArrayList[n];
+		for (int i = 0; i < n; i++) {
+			adj[i] = new ArrayList<>();
+		}
+		for (int i = 0; i < m; i++) {
+			int a = io.nextInt() - 1;
+			int b = io.nextInt() - 1;
+			adj[a].add(b);
+			adj[b].add(a);
+		}
+
+		boolean[] visited = new boolean[n];
+		List<Integer> cityReps = new ArrayList<>();
+		for (int i = 0; i < n; i++) {
+			if (visited[i]) {
+				continue;
+			}
+
+			visited[i] = true;
+			cityReps.add(i);
+			ArrayDeque<Integer> todo = new ArrayDeque<>();
+			todo.add(i);
+			while (!todo.isEmpty()) {
+				int curr = todo.poll();
+				for (int next : adj[curr]) {
+					if (!visited[next]) {
+						visited[next] = true;
+						todo.add(next);
+					}
+				}
+			}
+		}
+
+		StringBuilder ans = new StringBuilder();
+		ans.append(cityReps.size() - 1).append('\n');
+		for (int i = 0; i < cityReps.size() - 1; i++) {
+			ans.append(cityReps.get(i) + 1).append(' ').append(cityReps.get(i + 1) + 1).append('\n');
+		}
+		io.println(ans);
+		io.close();
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
 <PySection>
 
 ```py
@@ -836,29 +893,29 @@ n, m = map(int, input().split())
 
 adj = [[] for _ in range(n)]
 for _ in range(m):
-    a, b = map(int, input().split())
-    adj[a - 1].append(b - 1)
-    adj[b - 1].append(a - 1)
+	a, b = map(int, input().split())
+	adj[a - 1].append(b - 1)
+	adj[b - 1].append(a - 1)
 
 visited = [False for _ in range(n)]
-rep_cities = []
+city_reps = []
 for i in range(n):
-    if visited[i]:
-        continue
-    
-    visited[i] = True
-    rep_cities.append(i)
-    todo = deque([i])
-    while todo:
-        curr = todo.popleft()
-        for next_ in adj[curr]:
-            if not visited[next_]:
-                visited[next_] = True
-                todo.append(next_)
+	if visited[i]:
+		continue
+	
+	visited[i] = True
+	city_reps.append(i)
+	todo = deque([i])
+	while todo:
+		curr = todo.popleft()
+		for next_ in adj[curr]:
+			if not visited[next_]:
+				visited[next_] = True
+				todo.append(next_)
 
-print(len(rep_cities) - 1)
-for i in range(len(rep_cities) - 1):
-    print(rep_cities[i] + 1, rep_cities[i + 1] + 1)
+print(len(city_reps) - 1)
+for i in range(len(city_reps) - 1):
+	print(city_reps[i] + 1, city_reps[i + 1] + 1)
 ```
 
 </PySection>
@@ -1241,40 +1298,68 @@ else:
 				Not really. Both algorithms can be implemented in both recursive and iterative fashion.
 			</Quiz.Explanation>
 		</Quiz.Answer>
-        <Quiz.Answer correct>
+		<Quiz.Answer correct>
 			BFS visits the nodes in order of distance from the start, while DFS follows one path and only backtracks when it needs to.
 
 			<Quiz.Explanation>
 				Correct!
 			</Quiz.Explanation>
 		</Quiz.Answer>
-        <Quiz.Answer>
-			DFS is recursive, while BFS is iterative
+		<Quiz.Answer>
+			DFS visits the nodes in order of distance from the start, while BFS follows one path and only backtracks when it needs to.
 
 			<Quiz.Explanation>
-				Almost. Prefer $\mathcal{O}$ over $O$.
+				Incorrect. Perhaps you have the terms mixed up?
 			</Quiz.Explanation>
 		</Quiz.Answer>
 	</Quiz.Question>
 	<Quiz.Question>
-		What's the time complexity of these graph traversal algorithms?
+		What's the time complexity of these graph traversal algorithms, where $N$ is the number of nodes and $M$ is the number of edges?
 
-		<Quiz.Answer>
-			$O(\log n)$
+		<Quiz.Answer correct>
+			$\mathcal{O}(M+N)$
 
 			<Quiz.Explanation>
-				Almost. Prefer $\mathcal{O}$ over $O$.
+				Correct! We have to iterate over every node and every edge to perform a full search.
+			</Quiz.Explanation>
+		</Quiz.Answer>
+		<Quiz.Answer>
+			$\mathcal{O}(N)$
+
+			<Quiz.Explanation>
+				Sure, we have to iterate over every node, but what about the edges?
+			</Quiz.Explanation>
+		</Quiz.Answer>
+		<Quiz.Answer>
+			$\mathcal{O}(M)$
+
+			<Quiz.Explanation>
+				We do have to loop through all connections, but this expression neglects what the connections actually connect.
 			</Quiz.Explanation>
 		</Quiz.Answer>
 	</Quiz.Question>
 	<Quiz.Question>
-		
+		What collection data structures should we use to implement iterative DFS and BFS?
 
 		<Quiz.Answer>
-			$O(\log n)$
+			A deque and a stack respectively.
 
 			<Quiz.Explanation>
-				Almost. Prefer $\mathcal{O}$ over $O$.
+				Almost. While a deque does work for DFS, BFS needs something other than a stack.
+			</Quiz.Explanation>
+		</Quiz.Answer>
+		<Quiz.Answer correct>
+			A stack and a queue respectively.
+
+			<Quiz.Explanation>
+				Correct!
+			</Quiz.Explanation>
+		</Quiz.Answer>
+		<Quiz.Answer>
+			Queues work for both algorithms.
+
+			<Quiz.Explanation>
+				Incorrect. Think about what each algorithm needs in terms of complexity.
 			</Quiz.Explanation>
 		</Quiz.Answer>
 	</Quiz.Question>
