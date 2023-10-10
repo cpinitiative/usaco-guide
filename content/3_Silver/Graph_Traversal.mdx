@@ -779,51 +779,50 @@ To resolve this, we can implement a BFS solution, as shown below.
 <CPPSection>
 
 ```cpp
-#include <bits/stdc++.h>
+#include <iostream>
+#include <vector>
+#include <deque>
+
 using namespace std;
 
 int main() {
-	int n, m;
+	int n;
+	int m;
 	cin >> n >> m;
-
 	vector<vector<int>> adj(n);
 	for (int i = 0; i < m; i++) {
-		int u, v;
-		cin >> u >> v;
-		adj[--u].push_back(--v);
-		adj[v].push_back(u);
+		int a, b;
+		cin >> a >> b;
+		adj[--a].push_back(--b);
+		adj[b].push_back(a);
 	}
 
-	vector<bool> visited(n);
-	vector<int> rep;
+    vector<bool> visited(n);
+	vector<int> rep_cities;
+	for (int i = 0; i < n; i++) {
+		if (visited[i]) {
+			continue;
+		}
 
-	auto bfs = [&](int start) {
-		queue<int> todo;
-		todo.push(start);
-
+		visited[i] = true;
+		rep_cities.push_back(i);
+        deque<int> todo{i};
 		while (!todo.empty()) {
-			int current_node = todo.front();
-			todo.pop();
-			visited[current_node] = 1;
-
-			for (int u : adj[current_node]) {
-				if (!visited[u]) { todo.push(u); }
+			int curr = todo.front();
+			todo.pop_front();
+			for (int next : adj[curr]) {
+				if (!visited[next]) {
+                    visited[next] = true;
+                    todo.push_back(next);
+                }
 			}
 		}
-	};
-
-	for (int i = 0; i < n; i++) {
-		if (!visited[i]) {
-			rep.push_back(i);
-			bfs(i);
-		}
 	}
 
-	cout << (int)rep.size() - 1 << endl;
-
-	for (int i = 1; i < (int)rep.size(); i++) {
-		cout << rep[i - 1] + 1 << ' ' << rep[i] + 1 << endl;
-	}
+	cout << rep_cities.size() - 1 << '\n';
+    for (int i = 0; i < rep_cities.size() - 1; i++) {
+        cout << rep_cities[i] + 1 << ' ' << rep_cities[i + 1] + 1 << '\n';
+    }
 }
 ```
 
@@ -834,39 +833,32 @@ int main() {
 from collections import deque
 
 n, m = map(int, input().split())
+
 adj = [[] for _ in range(n)]
-
 for _ in range(m):
-	u, v = map(int, input().split())
+    a, b = map(int, input().split())
+    adj[a - 1].append(b - 1)
+    adj[b - 1].append(a - 1)
 
-	adj[u - 1].append(v - 1)
-	adj[v - 1].append(u - 1)
-
-visited = [False] * n
-rep = []
-
-
-def bfs(start):
-	# visit all nodes in the connected component
-	todo = deque([start])
-	while todo:
-		current_node = todo.popleft()
-		visited[current_node] = True
-
-		for u in adj[current_node]:
-			if not visited[u]:
-				todo.append(u)
-
-
+visited = [False for _ in range(n)]
+rep_cities = []
 for i in range(n):
-	if not visited[i]:
-		# i will represent this component
-		rep.append(i)
-		bfs(i)
+    if visited[i]:
+        continue
+    
+    visited[i] = True
+    rep_cities.append(i)
+    todo = deque([i])
+    while todo:
+        curr = todo.popleft()
+        for next_ in adj[curr]:
+            if not visited[next_]:
+                visited[next_] = True
+                todo.append(next_)
 
-print(len(rep) - 1)
-for i in range(1, len(rep)):
-	print(rep[i - 1] + 1, rep[i] + 1)
+print(len(rep_cities) - 1)
+for i in range(len(rep_cities) - 1):
+    print(rep_cities[i] + 1, rep_cities[i + 1] + 1)
 ```
 
 </PySection>
@@ -1243,17 +1235,17 @@ else:
 		What's the main difference between DFS and BFS?
 
 		<Quiz.Answer>
-			DFS is recursive, while BFS is iterative
+			DFS is recursive, while BFS is iterative.
 
 			<Quiz.Explanation>
 				Not really. Both algorithms can be implemented in both recursive and iterative fashion.
 			</Quiz.Explanation>
 		</Quiz.Answer>
-        <Quiz.Answer>
-			DFS is recursive, while BFS is iterative
+        <Quiz.Answer correct>
+			BFS visits the nodes in order of distance from the start, while DFS follows one path and only backtracks when it needs to.
 
 			<Quiz.Explanation>
-				Almost. Prefer $\mathcal{O}$ over $O$.
+				Correct!
 			</Quiz.Explanation>
 		</Quiz.Answer>
         <Quiz.Answer>
