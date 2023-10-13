@@ -72,6 +72,10 @@ const int MAXN = 2e6;
 vector<ll> fac(MAXN, 1);
 vector<ll> inv(MAXN, 1);
 
+/** 
+ * Computes x^n modulo m in O(log p) time.
+ * See also: https://usaco.guide/gold/modular 
+ */
 ll binpow(ll x, ll n, ll m) {
 	x %= m;
 	ll res = 1;
@@ -88,7 +92,9 @@ ll binom(int n, int k) { return fac[n] * inv[k] % MOD * inv[n - k] % MOD; }
 int main() {
 	for (int i = 2; i < MAXN; i++) { fac[i] = i * fac[i - 1] % MOD; }
 
+	// Calculate the modular inverse with exponentiation
 	inv[MAXN - 1] = binpow(fac[MAXN - 1], MOD - 2, MOD);
+	// Calculate the modular inverse with factorial definition
 	for (int i = MAXN - 2; i > 0; i--) { inv[i] = (i + 1) * inv[i + 1] % MOD; }
 
 	int n, m;
@@ -113,6 +119,10 @@ public class Main {
 	static long[] fac = new long[MAXN];
 	static long[] inv = new long[MAXN];
 
+	/** 
+	 * Computes x^n modulo m in O(log p) time.
+	 * See also: https://usaco.guide/gold/modular 
+	 */
 	static long binpow(long x, long n, long m) {
 		x %= m;
 		long res = 1;
@@ -133,7 +143,9 @@ public class Main {
 		for (int i = 2; i < MAXN; i++) { fac[i] = i * fac[i - 1] % MOD; }
 
 		inv[0] = 1;
+		// Calculate the modular inverse with exponentiation
 		inv[MAXN - 1] = binpow(fac[MAXN - 1], MOD - 2, MOD);
+		// Calculate the modular inverse with factorial definition
 		for (int i = MAXN - 2; i > 0; i--) {
 			inv[i] = (i + 1) * inv[i + 1] % MOD;
 		}
@@ -152,14 +164,18 @@ public class Main {
 <PySection>
 
 ```py
-MOD: int = int(1e9) + 7
-MAXN: int = int(2e6)
+MOD = int(1e9) + 7
+MAXN = int(2e6)
 
 fac: list = [1 for _ in range(MAXN)]
 inv: list = [1 for _ in range(MAXN)]
 
-
+	
 def binpow(x: int, n: int, m: int) -> int:
+	""" Computes x^n modulo m in O(log p) time.
+	See also: https://usaco.guide/gold/modular 
+	"""
+
 	x %= m
 	res: int = 1
 	while n > 0:
@@ -177,7 +193,9 @@ def binom(n: int, k: int) -> int:
 for i in range(2, MAXN):
 	fac[i] = i * fac[i - 1] % MOD
 
+# Calculate the modular inverse with exponentiation
 inv[MAXN - 1] = binpow(fac[MAXN - 1], MOD - 2, MOD)
+# Calculate the modular inverse with factorial definition
 for i in reversed(range(1, MAXN - 1)):
 	inv[i] = (i + 1) * inv[i + 1] % MOD
 
