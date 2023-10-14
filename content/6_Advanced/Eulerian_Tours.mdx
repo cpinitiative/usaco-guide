@@ -21,14 +21,66 @@ Mentioned in USACO Training ...
 
 ## Implementation
 
-<Resources>
-	<Resource
-		source="Benq (from KACTL)"
-		title="EulerPath"
-		url="https://github.com/bqi343/USACO/blob/07acbcfff3131445ecf89f781e80618b833cb592/Implementations/content/graphs%20(12)/DFS/EulerPath%20(12.2).h"
-	/>
-</Resources>
+<CodeSection>
+<CPPSection>
+```cpp 
+#include <bits/stdc++.h>
+using namespace std;
 
+int n, m;
+vector<vector<pair<int, int>>> g;
+vector<int> degree, path;
+vector<bool> seen;
+
+void dfs(int node) {
+    while(!g[node].empty()) {
+        auto [son, idx] = g[node].back();
+        g[node].pop_back();
+        if(seen[idx]) continue;
+        seen[idx] = true;
+        dfs(son);
+    }
+    path.push_back(node);
+}
+
+int main() {
+    cin >> n >> m;
+
+    g.resize(n);
+    degree.resize(n);
+    seen.resize(m);
+
+    for(int i = 0; i < m; i++) {
+        int x, y;
+        cin >> x >> y;
+        x--, y--;
+        g[x].push_back({y, i});
+        g[y].push_back({x, i});
+        degree[x]++;
+        degree[y]++;
+    }
+
+    for(int node = 0; node < n; node++) {
+        if(degree[node] % 2) {
+            cout << "IMPOSSIBLE";
+            return 0;
+        }
+    }
+
+    dfs(0);
+
+    if(path.size() != m+1) {
+        cout << "IMPOSSIBLE";
+    } else {
+        for(auto node : path) {
+            cout << node+1 << ' ';
+        }
+    }
+    return 0;
+}   
+```
+</CPPSection>
+</CodeSection>
 <IncompleteSection />
 
 ## Problems
