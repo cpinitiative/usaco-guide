@@ -112,6 +112,142 @@ int main() {
 
 <Problems problems="match" />
 
+It's recommended that you solve the first problem - Download Speed - in the section before trying this one.
+
+### Solution 1
+
+A bipartite graph doesn't seem like to have anything in common with a flow network, but we can shift our point of view just by
+adding the source connected to the nodes in set $U$ and the sink connected to the nodes in set $V$. And that's all.
+Now we have a flow network where every capacity is equal to 1.
+
+We transformed our bipartite graph into a network flow so the maximum network flow is equal
+to the maximum matching.
+Now, we can apply our favorite max flow algorithm to solve the problem!
+
+**Time Complexity: $\mathcal{O}(VE^2)$**
+
+### Solution 2
+
+However, we can do better than this.
+First let's define some properties of matching algorithms.
+
+Let's say the set $M$ contains all the edges that the maximum matching consists of.
+
+We define an **alternating path** as a path whose edges are in the matching, $M$, and not in the matching, in an alternating fashion. An alternating path stars with an unmatched node and ends once it cannot append another edge while maintaining an alternating sequence.
+
+An **augmenting path** is built upon the alternating path and unmatched nodes at both ends - the nodes are not included in $M$.
+
+Tha maximum matching $M$ can be further improved if and only if an augmenting path is found in $M$, otherwise $M$ is the maximum matching. It may seem difficult to understand, but the main idea is as follows:
+> The maximum matching can be further improved as long as the alternating sequence can be extended.
+For a better understanding, you can imagine the shoelaces as an alternating path in a bipartite graph - or the sneakers.
+
+The algorithm described above is called the [Hopcroft-Karp algorithm](https://en.wikipedia.org/wiki/Hopcroft%E2%80%93Karp_algorithm).
+
+Here's an animation of the algorithm if you're still a bit confused:
+
+<video width="960" height="720" controls>
+	<source src="/animations/hopcroft_karp.mp4" type="video/mp4"/>
+</video>
+
+**Time Complexity: $\mathcal{O}(E\sqrt{V})$**
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int INF = 1e9;
+
+int n, m, k;
+// dist[node] = the position of node in the alternating path
+vector<int> match, dist;
+vector<vector<int>> g;
+
+bool bfs() {
+	queue<int> q;
+	// The alternating path starts with unmatched nodes
+	for (int node = 1; node <= n; node++) {
+		if (!match[node]) {
+			q.push(node);
+			dist[node] = 0;
+		} else {
+			dist[node] = INF;
+		}
+	}
+
+	dist[0] = INF;
+
+	while (!q.empty()) {
+		int node = q.front();
+		q.pop();
+		if (dist[node] >= dist[0]) { continue; }
+		for (int son : g[node]) {
+			// If the match of son is matched
+			if (dist[match[son]] == INF) {
+				dist[match[son]] = dist[node] + 1;
+				q.push(match[son]);
+			}
+		}
+	}
+	// Returns true if an alternating path has been found
+	return dist[0] != INF;
+}
+
+// Returns true if an augmenting path has been found starting from vertex node
+bool dfs(int node) {
+	if (node == 0) { return true; }
+	for (int son : g[node]) {
+		if (dist[match[son]] == dist[node] + 1 && dfs(match[son])) {
+			match[node] = son;
+			match[son] = node;
+			return true;
+		}
+	}
+	dist[node] = INF;
+	return false;
+}
+
+int hopcroft_karp() {
+	int cnt = 0;
+	// While there is an alternating path
+	while (bfs()) {
+		for (int node = 1; node <= n; node++) {
+			// If node is unmatched but we can match it using an augmenting path
+			if (!match[node] && dfs(node)) { cnt++; }
+		}
+	}
+	return cnt;
+}
+
+int main() {
+	cin >> n >> m >> k;
+
+	dist.resize(n + m + 1);
+	match.resize(n + m + 1);
+	g.resize(n + m + 1);
+
+	for (int i = 1; i <= k; i++) {
+		int x, y;
+		cin >> x >> y;
+
+		y += n;
+
+		g[x].push_back(y);
+		g[y].push_back(x);
+	}
+
+	cout << hopcroft_karp() << '\n';
+	for (int node = 1; node <= n; node++) {
+		if (match[node]) { cout << node << ' ' << match[node] - n << '\n'; }
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
 ## Dinic's Algorithm
 
 <YouTube id="M6cm8UeeziI" />
