@@ -23,17 +23,23 @@ Mentioned in USACO Training ...
 
 ### Mail Delivery
 
-First let's define what is an **Eulerian** path: ``A path that goes through every edge once``. Similarly, an **Eulerian cycle** is an Eulerian path that starts and ends
+First let's define what an **Eulerian** path is
+
+> An Eulerian path is a path that goes through every edge once.
+
+Similarly, an **Eulerian cycle** is an Eulerian path that starts and ends
 with the same node.
 
-An important condition is that: ``A graph can be an Eulerian graph if and only if every node has an even degree.``
+An important condition is that a graph can be an Eulerian graph if and only if every node has an even degree.
 
-Now, to properly find the Eulerian cycle we run a slightly modified DFS. The DFS goes through only unvisited edges and the same edge can be processe multiple times throuoght the DFs, so we remove it from the graph at the first visit.
+Now, to properly find the Eulerian cycle we run a slightly modified DFS.
+The DFS goes through only unvisited edges and the same edge can be processe multiple times throuoght the DFs, so we remove it from the graph at the first visit.
 
-The algorithm described above is called the [Hierholzer's Algorithm](https://en.wikipedia.org/wiki/Eulerian_path).
+The algorithm described is [Hierholzer's Algorithm](https://en.wikipedia.org/wiki/Eulerian_path).
 
 <LanguageSection>
 <CPPSection>
+
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
@@ -47,7 +53,7 @@ void dfs(int node) {
 	while (!g[node].empty()) {
 		auto [son, idx] = g[node].back();
 		g[node].pop_back();
-		if (seen[idx]) continue;
+		if (seen[idx]) { continue; }
 		seen[idx] = true;
 		dfs(son);
 	}
@@ -85,9 +91,9 @@ int main() {
 	} else {
 		for (auto node : path) { cout << node + 1 << ' '; }
 	}
-	return 0;
 }
 ```
+
 </CPPSection>
 </LanguageSection>
 
