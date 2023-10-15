@@ -48,7 +48,7 @@ using namespace std;
 
 int n, m;
 vector<vector<pair<int, int>>> g;
-vector<int> degree, path;
+vector<int> path;
 vector<bool> seen;
 
 void dfs(int node) {
@@ -65,6 +65,7 @@ void dfs(int node) {
 int main() {
 	cin >> n >> m;
 
+	vector<int> degree(n, 0);
 	g.resize(n);
 	degree.resize(n);
 	seen.resize(m);
@@ -73,8 +74,8 @@ int main() {
 		int x, y;
 		cin >> x >> y;
 		x--, y--;
-		g[x].push_back({y, i});
-		g[y].push_back({x, i});
+		g[x].emplace_back({y, i});
+		g[y].emplace_back({x, i});
 		degree[x]++;
 		degree[y]++;
 	}
