@@ -34,7 +34,7 @@ The algorithm described above is called the [Hierholzer's Algorithm](https://en.
 
 <CodeSection>
 <CPPSection>
-```cpp 
+```cpp
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -44,51 +44,49 @@ vector<int> degree, path;
 vector<bool> seen;
 
 void dfs(int node) {
-    while(!g[node].empty()) {
-        auto [son, idx] = g[node].back();
-        g[node].pop_back();
-        if(seen[idx]) continue;
-        seen[idx] = true;
-        dfs(son);
-    }
-    path.push_back(node);
+	while (!g[node].empty()) {
+		auto [son, idx] = g[node].back();
+		g[node].pop_back();
+		if (seen[idx]) continue;
+		seen[idx] = true;
+		dfs(son);
+	}
+	path.push_back(node);
 }
 
 int main() {
-    cin >> n >> m;
+	cin >> n >> m;
 
-    g.resize(n);
-    degree.resize(n);
-    seen.resize(m);
+	g.resize(n);
+	degree.resize(n);
+	seen.resize(m);
 
-    for(int i = 0; i < m; i++) {
-        int x, y;
-        cin >> x >> y;
-        x--, y--;
-        g[x].push_back({y, i});
-        g[y].push_back({x, i});
-        degree[x]++;
-        degree[y]++;
-    }
+	for (int i = 0; i < m; i++) {
+		int x, y;
+		cin >> x >> y;
+		x--, y--;
+		g[x].push_back({y, i});
+		g[y].push_back({x, i});
+		degree[x]++;
+		degree[y]++;
+	}
 
-    for(int node = 0; node < n; node++) {
-        if(degree[node] % 2) {
-            cout << "IMPOSSIBLE";
-            return 0;
-        }
-    }
+	for (int node = 0; node < n; node++) {
+		if (degree[node] % 2) {
+			cout << "IMPOSSIBLE";
+			return 0;
+		}
+	}
 
-    dfs(0);
+	dfs(0);
 
-    if(path.size() != m+1) {
-        cout << "IMPOSSIBLE";
-    } else {
-        for(auto node : path) {
-            cout << node+1 << ' ';
-        }
-    }
-    return 0;
-}   
+	if (path.size() != m + 1) {
+		cout << "IMPOSSIBLE";
+	} else {
+		for (auto node : path) { cout << node + 1 << ' '; }
+	}
+	return 0;
+}
 ```
 </CPPSection>
 </CodeSection>
@@ -99,7 +97,7 @@ The condition of existance for an eulerian path in a directed graph is: At most 
 
 <CodeSection>
 <CPPSection>
-```cpp 
+```cpp
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -108,53 +106,49 @@ vector<vector<int>> g;
 vector<int> in, out, path;
 
 void dfs(int node) {
-    while(!g[node].empty()) {
-        int son = g[node].back();
-        g[node].pop_back();
-        dfs(son);
-    }
-    path.push_back(node);
+	while (!g[node].empty()) {
+		int son = g[node].back();
+		g[node].pop_back();
+		dfs(son);
+	}
+	path.push_back(node);
 }
 
 int main() {
-    cin >> n >> m;
+	cin >> n >> m;
 
-    g.resize(n+1);
-    in.resize(n+1);
-    out.resize(n+1);
+	g.resize(n + 1);
+	in.resize(n + 1);
+	out.resize(n + 1);
 
-    for(int i = 0; i < m; i++) {
-        int x, y;
-        cin >> x >> y;
-        g[x].push_back(y);
-        out[x]++;
-        in[y]++;
-    }
+	for (int i = 0; i < m; i++) {
+		int x, y;
+		cin >> x >> y;
+		g[x].push_back(y);
+		out[x]++;
+		in[y]++;
+	}
 
-    bool flag = true;
-    for(int node = 2; node < n && flag; node++) {
-        if(in[node] != out[node]) {
-            flag = false;
-        }
-    }
-    if(out[1] != in[1]+1 || out[n] != in[n]-1 || !flag) {
-        cout << "IMPOSSIBLE";
-        return 0;
-    }
+	bool flag = true;
+	for (int node = 2; node < n && flag; node++) {
+		if (in[node] != out[node]) { flag = false; }
+	}
+	if (out[1] != in[1] + 1 || out[n] != in[n] - 1 || !flag) {
+		cout << "IMPOSSIBLE";
+		return 0;
+	}
 
-    dfs(1);
-    
-    reverse(path.begin(), path.end());
-    if(path.size() != m+1 || path.back() != n) {
-        cout << "IMPOSSIBLE";
-    } else {
-        for(auto node : path) {
-            cout << node << ' ';
-        }
-    }
+	dfs(1);
 
-    return 0;
-}   
+	reverse(path.begin(), path.end());
+	if (path.size() != m + 1 || path.back() != n) {
+		cout << "IMPOSSIBLE";
+	} else {
+		for (auto node : path) { cout << node << ' '; }
+	}
+
+	return 0;
+}
 ```
 </CPPSection>
 </CodeSection>
