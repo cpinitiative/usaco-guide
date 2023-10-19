@@ -82,25 +82,21 @@ in the cycle after another $t$ queries.
 
 using std::cout;
 using std::endl;
-using std::vector;
 using std::pair;
- 
-vector<int> move_result(const vector<int>& to_move) {
+using std::vector;
+
+vector<int> move_result(const vector<int> &to_move) {
 	cout << "next ";
-	for (int i = 0; i < to_move.size() - 1; i++) {
-		cout << to_move[i] << ' ';
-	}
+	for (int i = 0; i < to_move.size() - 1; i++) { cout << to_move[i] << ' '; }
 	cout << to_move.back() << endl;
- 
+
 	int group_num;
 	std::cin >> group_num;
 	vector<int> groups(10);
 	for (int g = 0; g < group_num; g++) {
 		std::string group;
 		std::cin >> group;
-		for (char i : group) {
-			groups[i - '0'] = g;
-		}
+		for (char i : group) { groups[i - '0'] = g; }
 	}
 	return groups;
 }
@@ -112,11 +108,11 @@ int main() {
 		move_result({0, 1});
 		groups = move_result({1});
 	}
- 
+
 	while (groups[2] != groups[1]) {
 		groups = move_result({0, 1, 2, 3, 4, 5, 6, 7, 8, 9});
 	}
- 
+
 	cout << "done" << endl;
 }
 ```
@@ -129,7 +125,8 @@ import java.io.*;
 import java.util.*;
 
 public class CoopGame {
-	static BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
+	static BufferedReader read =
+	    new BufferedReader(new InputStreamReader(System.in));
 
 	public static void main(String[] args) throws IOException {
 		moveResult(new int[] {0, 1});
@@ -138,7 +135,7 @@ public class CoopGame {
 			moveResult(new int[] {0, 1});
 			groups = moveResult(new int[] {1});
 		}
-	 
+
 		while (groups[2] != groups[1]) {
 			groups = moveResult(new int[] {0, 1, 2, 3, 4, 5, 6, 7, 8, 9});
 		}
@@ -325,9 +322,9 @@ void dfs(int n) {
 		}
 		return;  // either way, this one's already been processed
 	}
-	
+
 	ans[n] = -1;  // set a marker for our dfs
-	
+
 	dfs(p[n]);
 	// check if we're back at the initial cycle node
 	if (ans[n] != -1) {
@@ -343,7 +340,7 @@ int main() {
 	int n;
 	std::cin >> n;
 	p = vector<int>(n);
-	for (int& i : p) {
+	for (int &i : p) {
 		std::cin >> i;
 		i--;
 	}
@@ -354,9 +351,7 @@ int main() {
 		dfs(i);
 	}
 
-	for (int i = 0; i < n; i++) {
-		cout << (ans[i] + 1) << " \n"[i == n - 1];
-	}
+	for (int i = 0; i < n; i++) { cout << (ans[i] + 1) << " \n"[i == n - 1]; }
 }
 ```
 
@@ -381,9 +376,9 @@ public class Badge {
 			}
 			return;  // either way, this one's already been processed
 		}
-		
+
 		ans[n] = -1;  // set a marker for our dfs
-		
+
 		dfs(p[n]);
 		// check if we're back at the initial cycle node
 		if (ans[n] != -1) {
@@ -396,8 +391,9 @@ public class Badge {
 	}
 
 	public static void main(String[] args) throws IOException {
-		BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-		
+		BufferedReader reader =
+		    new BufferedReader(new InputStreamReader(System.in));
+
 		int n = Integer.parseInt(reader.readLine());
 		p = new int[n];
 		StringTokenizer st = new StringTokenizer(reader.readLine());
@@ -427,7 +423,7 @@ public class Badge {
 ```py
 import sys
 
-sys.setrecursionlimit(10 ** 5)
+sys.setrecursionlimit(10**5)
 
 n = int(input())
 p = [int(i) - 1 for i in input().split()]
@@ -442,7 +438,7 @@ def dfs(n: int) -> None:
 			ans[n] = n
 
 		return
-	
+
 	ans[n] = -1
 
 	dfs(p[n])
@@ -586,7 +582,7 @@ public class Badge {
 
 	public static void main(String[] args) throws IOException {
 		BufferedReader in =
-			new BufferedReader(new InputStreamReader(System.in));
+		    new BufferedReader(new InputStreamReader(System.in));
 
 		int n = Integer.parseInt(in.readLine());
 		adj = new int[n];
@@ -600,15 +596,11 @@ public class Badge {
 			radj.add(new ArrayList<>());
 		}
 
-		for (int i = 0; i < n; i++) {
-			radj.get(adj[i]).add(i);
-		}
+		for (int i = 0; i < n; i++) { radj.get(adj[i]).add(i); }
 
 		for (int i = 0; i < n; i++) {
 			// run Floyd's algorithm on every connected component
-			if (ans[i] == -1) {
-				floyd(i);
-			}
+			if (ans[i] == -1) { floyd(i); }
 		}
 
 		for (int i = 0; i < n; i++) {
@@ -754,8 +746,11 @@ int next_node[MAXN];
 void dfs(int n) {
 	visited[n] = on_stack[n] = true;
 	int u = next_node[n];
-	if (on_stack[u]) { number_of_cycles++; }
-	else if (!visited[u]) { dfs(u); }
+	if (on_stack[u]) {
+		number_of_cycles++;
+	} else if (!visited[u]) {
+		dfs(u);
+	}
 	on_stack[n] = false;
 }
 
@@ -779,7 +774,7 @@ public class CountCycles {
 	static boolean[] onStack = new boolean[MAXN];
 	static int numberOfCycles = 0;
 	static int[] nextNode = new int[MAXN];
-	
+
 	public static void main(String[] args) throws IOException {
 		// Take in input
 		for (int i = 1; i != N; i++) {
@@ -790,8 +785,11 @@ public class CountCycles {
 	public static void dfs(int n) {
 		visited[n] = onStack[n] = true;
 		int u = nextNode[n];
-		if (onStack[u]) { numberOfCycles++; }
-		else if (!visited[u]) { dfs(u); }
+		if (onStack[u]) {
+			numberOfCycles++;
+		} else if (!visited[u]) {
+			dfs(u);
+		}
 		onStack[n] = false;
 	}
 }
