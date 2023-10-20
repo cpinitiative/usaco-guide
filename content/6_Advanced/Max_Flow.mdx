@@ -1,7 +1,7 @@
 ---
 id: max-flow
 title: 'Maximum Flow'
-authors: Benjamin Qi, Mihnea Brebenel
+author: Benjamin Qi, Mihnea Brebenel
 prerequisites:
   - unweighted-shortest-paths
 description: Introduces maximum flow as well as flow with lower bounds.
@@ -12,11 +12,13 @@ frequency: 1
 
 ## Solution
 
-The code below uses the [Edmonds-Karp](https://en.wikipedia.org/wiki/Edmonds%E2%80%93Karp_algorithm) algorithm.
+### Edmond's Karp Algorithm
 
 We can use a greedy approach to solve this.
 The download speed (the flow) can be improved as long as we can find a non-negative capacity path from the source (the server) and the sink (Kotivalo's computer).
 After that, we subtract the minimum capacity on the found path from the edge capacities.
+
+As the title says, above is described [Edmonds-Karp](https://en.wikipedia.org/wiki/Edmonds%E2%80%93Karp_algorithm) algorithm.
 
 <LanguageSection>
 <CPPSection>
@@ -88,6 +90,111 @@ int main() {
 
 </CPPSection>
 </LanguageSection>
+
+### Push-Relabel Algorithm 
+
+<LanguageSection>
+<CPPSection>
+```cpp
+#include <bits/stdc++.h>
+#define ll long long 
+
+using namespace std;
+
+const int NMAX = 5003;
+const ll INF = 1e15;
+
+int n, m, source, sink;
+ll capacity[NMAX][NMAX];
+ll flow[NMAX][NMAX];
+vector<ll> excess, height, next_son;
+queue<int> excess_vertexes;
+
+void relabel(int u) {
+    ll d = INF;
+    for(int i = 1; i <= n; i++) {
+        if(capacity[u][i] > flow[u][i]) {
+            d = min(d, height[i]);
+        }
+    }
+    if(d < INF) {
+        height[u] = d + 1;
+    }
+}
+
+// The the flow from node u to node v
+void push(int u, int v) {
+    // How much flow does the edge support
+    ll d = min(excess[u], capacity[u][v] - flow[u][v]);
+    flow[u][v] += d;
+    flow[v][u] -= d;
+    excess[u] -= d;
+    excess[v] += d;
+    if(d && excess[v] == d) {
+        excess_vertexes.push(v);
+    }
+}
+
+void discharge(int u) {
+    while(excess[u] > 0) {
+        if(next_son[u] <= n) {
+            int v = next_son[u];
+            if(capacity[u][v] - flow[u][v] > 0 && height[u] > height[v]) {
+                push(u, v);
+            } else {
+                next_son[u]++;
+            }
+        } else {
+            relabel(u);
+            next_son[u] = 1;
+        }
+    }
+}
+
+int main() {
+    ifstream in("maxflow.in");
+    ofstream out("maxflow.out");
+    in >> n >> m;
+
+    source = 1, sink = n;
+    excess.resize(n+1);
+    height.resize(n+1);
+    next_son.resize(n+1);
+
+    height[source] = n;
+    excess[source] = INF;
+
+    for(int i = 1; i <= m; i++) {
+        int x, y, cap;
+        in >> x >> y >> cap;
+        capacity[x][y] += cap;
+    }
+
+    for(int i = 1; i <= n; i++) {
+        if(i == source) continue;
+        push(source, i);
+    }
+
+    while(!excess_vertexes.empty()) {
+        int node = excess_vertexes.front();
+        excess_vertexes.pop();
+        if(node != source && node != sink) {
+            discharge(node);
+        }
+    }
+
+    ll max_flow = 0;
+    for(int node = 1; node <= n; node++) {
+        max_flow += flow[node][sink];
+    }
+
+    out << max_flow << '\n';
+
+    return 0;
+}   
+```
+</CPPSection>
+<LanguageSection>
 
 ## Resources
 
