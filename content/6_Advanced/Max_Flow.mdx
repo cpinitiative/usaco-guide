@@ -12,13 +12,13 @@ frequency: 1
 
 ## Solution
 
-### Edmond's Karp Algorithm
+### Edmonds-Karp Algorithm
 
 We can use a greedy approach to solve this.
 The download speed (the flow) can be improved as long as we can find a non-negative capacity path from the source (the server) and the sink (Kotivalo's computer).
 After that, we subtract the minimum capacity on the found path from the edge capacities.
 
-As the title says, above is described [Edmonds-Karp](https://en.wikipedia.org/wiki/Edmonds%E2%80%93Karp_algorithm) algorithm.
+As the title says, this is the [Edmonds-Karp](https://en.wikipedia.org/wiki/Edmonds%E2%80%93Karp_algorithm) algorithm.
 
 <LanguageSection>
 <CPPSection>
@@ -116,6 +116,7 @@ there are augmenting paths, while in the Push-Relabel there doesn't exist an aug
 
 <LanguageSection>
 <CPPSection>
+
 ```cpp
 #include <bits/stdc++.h>
 #define ll long long
@@ -128,7 +129,9 @@ const ll INF = 1e15;
 int n, m, source, sink;
 ll capacity[NMAX][NMAX];
 ll flow[NMAX][NMAX];
-vector<ll> excess, height, next_son;
+vector<ll> excess;
+vector<ll> height;
+vector<ll> next_son;
 queue<int> excess_vertexes;
 
 void relabel(int u) {
@@ -176,7 +179,8 @@ void discharge(int u) {
 int main() {
 	cin >> n >> m;
 
-	source = 1, sink = n;
+	source = 1;
+	sink = n;
 	excess.resize(n + 1);
 	height.resize(n + 1);
 	next_son.resize(n + 1);
@@ -191,7 +195,7 @@ int main() {
 	}
 
 	for (int i = 1; i <= n; i++) {
-		if (i == source) continue;
+		if (i == source) { continue; }
 		push(source, i);
 	}
 
@@ -204,9 +208,7 @@ int main() {
 	ll max_flow = 0;
 	for (int node = 1; node <= n; node++) { max_flow += flow[node][sink]; }
 
-	cout << max_flow << '\n';
-
-	return 0;
+	cout << max_flow << endl;
 }
 ```
 </CPPSection>
