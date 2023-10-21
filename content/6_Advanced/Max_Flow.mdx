@@ -97,7 +97,9 @@ To find the maximum flow we'll handle a **preflow** which satisfies all the cons
 
 Let's define the excess flow of node u as: $in_u - out_u$, where $in$ is the incoming flow and $out$ is the outgoing flow.
 
-The algorithm starts with an initial preflow where the source has an excess flow. Every stage it picks a node with excess flow and tries to push the excess to its neighbours, if the capacity supports it. The process stops when there are no more excess node left in the flow network. 
+The algorithm starts with an initial preflow where the source has an excess flow. Every stage it picks a node with excess flow and tries to **push** the excess to its neighbours, if the capacity supports it. 
+To push excess flow from node u to node v we define $\Delta = min(excess_u, capacity_{u,v} - flow_{u,v})$, where $\Delta$ is the maximum supported flow by the
+edge $(u, v)$. The process stops when there are no more excess node left in the flow network. 
 
 Another important feature of the algorithm is the **labeling** function $h$, also know as the height function, which assignes each node an 
 integer. One labeling in valid if satisfies the following conditions: $h_source = |V|$, $h_sink = 0$ and $h_u \le h_v + 1$ if there is an edge from node $u$
@@ -106,6 +108,8 @@ flows from top to bottom.
 
 To summarize: Start with a valid preflow and a valid labeling. In each step, for every excess node, try to push excess flow to node's neighbours. After each step 
 check if the flow and the labeling are still valid. If they are and there are no more path between the $source$ and the $sink$ it means it found the maximum flow.
+
+**Time complexity:** $\mathcal{O}(V^2E)$
 
 <LanguageSection>
 <CPPSection>
