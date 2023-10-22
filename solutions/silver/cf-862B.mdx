@@ -8,6 +8,7 @@ author: Ryan Chou
 [Official Editorial](https://codeforces.com/blog/entry/54590)
 
 ## Explanation
+
 Given the number of colored and uncolored nodes, the maximum number of edges that can exist is $c \cdot uc$ where $c$ represents the number of colored nodes, and $uc$ represents the number of uncolored nodes.
 
 This is because an edge can be drawn from each colored node to every other uncolored node. However, we already have $n - 1$ edges, so the answer is $(c \cdot uc) - (n - 1)$.
@@ -19,7 +20,50 @@ To find the number of colored and uncolored nodes, we can run a [DFS](/silver/gr
 **Time Complexity:** $\mathcal{O}(N + M)$
 
 <LanguageSection>
+<CPPSection>
 
+```cpp
+#include <iostream>
+#include <vector>
+using namespace std;
+
+const int MAX_N = 100000;
+
+// +1 for 1-indexed nodes
+vector<int> adj[MAX_N + 1];
+
+// counters for colored and uncolored nodes
+long long c = 0;
+long long uc = 0;
+
+void dfs(int node, int parent, bool col) {
+	(col ? c : uc)++;
+
+	for (int u : adj[node]) {
+		// if the adjacent node isn't the parent,
+		// visit that node with the opposite color
+		if (u != parent) { dfs(u, node, !col); }
+	}
+}
+
+int main() {
+	int n;
+	cin >> n;
+
+	for (int i = 0; i < n - 1; i++) {
+		int u, v;
+		cin >> u >> v;
+		adj[u].push_back(v);
+		adj[v].push_back(u);
+	}
+
+	dfs(1, 0, 0);
+
+	cout << c * uc - (n - 1) << endl;
+}
+```
+
+</CPPSection>
 <JavaSection>
 
 ```java
@@ -72,48 +116,50 @@ public class Bipartiteness {
 	// CodeSnip{Kattio}
 }
 ```
+
 </JavaSection>
-<CPPSection>
+<PySection>
 
-```cpp
-#include <iostream>
-#include <vector>
-using namespace std;
+```py
+# counters for colored and uncolored nodes
+c = 0
+uc = 0
 
-const int MAX_N = 100000;
 
-// +1 for 1-indexed nodes
-vector<int> adj[MAX_N + 1];
+def dfs(node: int, parent: int, col: bool) -> int:
+	global c, uc
+	"""
+	Iteratively DFS with a stack.
+	While we can increase the recursion depth with sys.setrecursionlimit,
+	using that still causes the stack to overflow.
+	"""
+	stack = [(node, parent, col)]
+	while stack:
+		node, parent, col = stack.pop()
 
-// counters for colored and uncolored nodes
-long long c = 0, uc = 0;
+		if col:
+			c += 1
+		else:
+			uc += 1
 
-void dfs(int node, int parent, bool col) {
-	(col ? c : uc)++;
+		for u in adj[node]:
+			# if the adjacent node isn't the parent,
+			# push it onto the stack with the opposite color
+			if u != parent:
+				stack.append((u, node, not col))
 
-	for (int u : adj[node]) {
-		// if the adjacent node isn't the parent,
-		// visit that node with the opposite color
-		if (u != parent) { dfs(u, node, !col); }
-	}
-}
 
-int main() {
-	int n;
-	cin >> n;
+n = int(input())
+adj = [[] for _ in range(n + 1)]
+for _ in range(n - 1):
+	u, v = map(int, input().split())
+	adj[u].append(v)
+	adj[v].append(u)
 
-	for (int i = 0; i < n - 1; i++) {
-		int u, v;
-		cin >> u >> v;
-		adj[u].push_back(v);
-		adj[v].push_back(u);
-	}
+dfs(1, 0, False)
 
-	dfs(1, 0, 0);
-
-	cout << c * uc - (n - 1) << "\n";
-}
+print(c * uc - (n - 1))
 ```
-</CPPSection>
 
+</PySection>
 </LanguageSection>
