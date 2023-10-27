@@ -97,11 +97,11 @@ The [Push-Relabel Algorithm](https://en.wikipedia.org/wiki/Push%E2%80%93relabel_
 To find the maximum flow, we'll handle a **preflow**.
 The only difference between this and a normal flow is that the incoming flow can exceed the outgoing flow.
 
-Let's define the excess flow of node u as: $in_u - out_u$, where $in$ is the incoming flow and $out$ is the outgoing flow.
+Let's define the excess flow of node u as $in_u - out_u$, where $in$ is the incoming flow and $out$ is the outgoing flow.
 
 The algorithm starts with an initial preflow where the source has an excess flow. At every stage, it picks a node with the excess flow and **pushes** the excess to its neighbors, if the capacity supports it.
 To push excess flow from node $u$ to node $v$, we define $\Delta = min(excess_u, capacity_{u,v} - flow_{u,v})$, where $\Delta$ is the maximum supported flow by the
-edge $(u, v)$. The process stops when there are no more excess nodes in the flow network.
+edge $(u, v)$. The process stops when no more excess nodes exist in the flow network.
 
 Another important feature of the algorithm is the **labeling** function $h$, also known as the height function, which assigns each node an
 integer. One labeling in valid if satisfies the following conditions: $h_{source} = |V|$, $h_{sink} = 0$, and $h_u \le h_v + 1$. If there is an edge from node $u$
