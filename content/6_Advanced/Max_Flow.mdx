@@ -1,7 +1,7 @@
 ---
 id: max-flow
 title: 'Maximum Flow'
-authors: Benjamin Qi, Mihnea Brebenel
+author: Benjamin Qi, Mihnea Brebenel
 prerequisites:
   - unweighted-shortest-paths
 description: Introduces maximum flow as well as flow with lower bounds.
@@ -12,9 +12,10 @@ frequency: 1
 
 ## Solution
 
-The code below uses the [Edmonds-Karp](https://en.wikipedia.org/wiki/Edmonds%E2%80%93Karp_algorithm) algorithm.
+### Edmonds-Karp Algorithm
 
-We can use a greedy approach to solve this.
+The [Edmonds-Karp](https://en.wikipedia.org/wiki/Edmonds%E2%80%93Karp_algorithm) algorithm uses a greedy approach to solve the maximum flow problem.
+
 The download speed (the flow) can be improved as long as we can find a non-negative capacity path from the source (the server) and the sink (Kotivalo's computer).
 After that, we subtract the minimum capacity on the found path from the edge capacities.
 
@@ -83,6 +84,132 @@ int main() {
 	}
 
 	cout << max_flow(capacity, n, 0, n - 1) << endl;
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
+### Push-Relabel Algorithm
+
+The [Push-Relabel Algorithm](https://en.wikipedia.org/wiki/Push%E2%80%93relabel_maximum_flow_algorithm) is an alternative solution to finding the maximum flow.
+
+To find the maximum flow, we'll handle a **preflow**.
+The only difference between this and a normal flow is that the incoming flow can exceed the outgoing flow.
+
+Let's define the excess flow of node u as $in_u - out_u$, where $in$ is the incoming flow and $out$ is the outgoing flow.
+
+The algorithm starts with an initial preflow where the source has an excess flow. At every stage, it picks a node with the excess flow and **pushes** the excess to its neighbors, if the capacity supports it.
+To push excess flow from node $u$ to node $v$, we define $\Delta = min(excess_u, capacity_{u,v} - flow_{u,v})$, where $\Delta$ is the maximum supported flow by the
+edge $(u, v)$. The process stops when no more excess nodes exist in the flow network.
+
+Another important feature of the algorithm is the **labeling** function $h$, also known as the height function, which assigns each node an
+integer. One labeling in valid if satisfies the following conditions: $h_{source} = |V|$, $h_{sink} = 0$, and $h_u \le h_v + 1$. If there is an edge from node $u$
+to node $v$ with positive capacity, i.e. it supports more flow. The height function tells us where to send the excess flow, and where it's needed. It's like water, it can only
+flow from top to bottom.
+
+To summarize: Start with a valid preflow and a valid labeling. In each step, for every excess node, try to push the excess flow to the node's neighbors. After each step check if the flow and the labeling are still valid. If they are and there are no more paths between the $source$ and the $sink$, it means the maximum flow has been found.
+
+The difference between the Edmonds-Karp (or Ford-Fulkerson) and the Push-Relabel algorithm is that the former keeps a valid flow all the time and improves it while
+there are augmenting paths, while in the Push-Relabel there doesn't exist an augmenting path at any time, and it improves the preflow until it reaches the maximum flow.
+
+**Time complexity:** $\mathcal{O}(V^2E)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+#define ll long long
+
+using namespace std;
+
+const int MAXN = 5000;
+const ll INF = 1e15;
+
+int n, m, source, sink;
+ll capacity[MAXN + 1][MAXN + 1];
+ll flow[MAXN + 1][MAXN + 1];
+vector<ll> excess;
+vector<ll> height;
+vector<ll> next_son;
+queue<int> excess_vertexes;
+
+void relabel(int u) {
+	ll d = INF;
+	for (int v = 1; v <= n; v++) {
+		// If the neighbour supports flow.
+		if (capacity[u][v] > flow[u][v]) { d = min(d, height[v]); }
+	}
+	if (d < INF) { height[u] = d + 1; }
+}
+
+// Push flow from node u to node v
+void push(int u, int v) {
+	// delta = How much flow does the edge support
+	ll d = min(excess[u], capacity[u][v] - flow[u][v]);
+	// Increase the flow from node u to v
+	flow[u][v] += d;
+	flow[v][u] -= d;
+	// Update the excess
+	excess[u] -= d;
+	excess[v] += d;
+	// If node's v excess is equal to delta it means it's the first time.
+	if (d && excess[v] == d) { excess_vertexes.push(v); }
+}
+
+void discharge(int u) {
+	// As long as there is excess flow to push
+	while (excess[u] > 0) {
+		// The following part can be written as well with a for loop
+		if (next_son[u] <= n) {
+			int v = next_son[u];
+			// If The edge supports more flow and can be pushed towards it
+			if (capacity[u][v] > flow[u][v] && height[u] > height[v]) {
+				push(u, v);
+			} else {
+				next_son[u]++;
+			}
+		} else {
+			relabel(u);
+			next_son[u] = 1;
+		}
+	}
+}
+
+int main() {
+	cin >> n >> m;
+
+	source = 1;
+	sink = n;
+	excess.resize(n + 1);
+	height.resize(n + 1);
+	next_son.resize(n + 1);
+
+	height[source] = n;
+	excess[source] = INF;
+
+	for (int i = 1; i <= m; i++) {
+		int x, y, cap;
+		cin >> x >> y >> cap;
+		capacity[x][y] += cap;
+	}
+
+	for (int i = 1; i <= n; i++) {
+		if (i == source) { continue; }
+		push(source, i);
+	}
+
+	while (!excess_vertexes.empty()) {
+		int node = excess_vertexes.front();
+		excess_vertexes.pop();
+		if (node != source && node != sink) { discharge(node); }
+	}
+
+	ll max_flow = 0;
+	for (int node = 1; node <= n; node++) { max_flow += flow[node][sink]; }
+
+	cout << max_flow << endl;
 }
 ```
 
