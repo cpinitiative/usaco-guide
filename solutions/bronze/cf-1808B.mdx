@@ -54,4 +54,54 @@ int main() {
 ```
 
 </CPPSection>
+
+<PySection>
+
+```py
+# using defaultdict from collections just to avoid silly error in flow of code
+import collections
+
+test = int(input())
+for t in range(test):
+
+	# taking input as a matrix
+
+	n, m = map(int, input().split())
+	matrix = []
+	for i in range(n):
+	    matrix.append(list(map(int, input().split())))
+
+	# Grouping columns using a dictionary 
+
+	hashmap = collections.defaultdict(list)
+	for i in range(n):
+	    for j in range(m):
+	        hashmap[j].append(matrix[i][j])
+
+	res = 0
+	for i in range(m):
+		"""
+		loop through every column and find the absolute difference value of the column
+		first sort the array in decreasing order
+		compute the suffix sum of the array
+		then the result is difference between
+		--> the number of elements after the current element times the current number and
+		--> the suffix sum value is subtracted
+		"""
+
+	    temp = hashmap[i]
+	    temp = sorted(temp, reverse = True)
+	    suf = [] 
+	    prev = 0
+	    for i in temp[::-1]:
+	        suf.append(prev)
+	        prev += i
+	    ans = 0
+	    for i in range(n):
+	        ans += (temp[i] * (n - i - 1) - suf[n - i - 1])
+	    res += ans
+	print(res)
+```
+
+</PySection>
 </LanguageSection>
