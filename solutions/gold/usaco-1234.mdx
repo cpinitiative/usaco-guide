@@ -1,0 +1,46 @@
+---
+id: usaco-1234
+source: USACO Gold 2022 Open
+title: Pair Programming
+author: Daniel Zhu
+---
+[Official Analysis](http://www.usaco.org/current/data/sol_prob2_gold_open22.html)
+
+Let $a_i$ be Bessie's ith instruction and $b_j$ be Elsie's jth instruction. Additionally, let $I(i, j)$ denote the set of unique expressions we can make by interleaving Bessie's first $i$ instructions and Elsie's first $j$ instructions. For example, in the sample:
+```
+3
+12+
++02
+```
+- $I(0, 0)$: $\{0\}$ (interleaving $[\ ]$ and $[\ ]$)
+- $I(0, 1)$: $\{+y\}$ (interleaving $[\ ]$ and $[+y]$)
+- $I(2, 1)$: $\{+y, +2y\}$ (interleaving $[*1, *2]$ and $[+y]$)
+- $I(3, 3)$: $\{0, +x, +2x\}$ (interleaving $[*1, *2, +x]$ and $[+y, *0, *2]$)
+<Info title="Notation">
+In the below solution:
+- $|S|$ denotes the number of elements in a set $S$
+- $S \cup T$ denotes the union of sets $S$ and $T$ (elements in either $S$ or $T$)
+- $S \cap T$ denotes the intersection of sets $S$ and $T$ (elements in both $S$ and $T$) 
+- $\text{set of expressions} \rightarrow \text{instruction}$ denotes applying that instruction to each expression in the set
+</Info>
+So, how do we calculate $|I(i, j)|$?
+
+When either $i$ or $j$ are 0, the interleaving is uniquely determined and thus $\boxed{|I(i, 0)| = |I(0, i)| = 1}$ for all $i \leq N$. 
+
+Great, but what if $i$ and $j$ are both nonzero? Evidently, any interleaving of Bessie's first $i$ instructions and Elsie's first $j$ instructions must either end with instruction $a_i$ or instruction $b_j$. We can thus rewrite the expressions that end with $a_i$ as $I(i - 1, j) \rightarrow a_i$ (let's denote this set as $A$) and the ones that end with $b_j$ as $I(i, j - 1) \rightarrow b_j$ (let's denote this set as $B$). We also have the following:
+
+1. As long as $a_i$ isn't $*0$, $\boxed{|A| = |I(i - 1, j)|}$
+2. As long as $b_j$ isn't $*0$, $\boxed{|B| = |I(i, j - 1)|}$
+3. $I(i, j) = A \cup B$
+
+Take some time to convince yourself of these, especially points 1 and 2!
+
+At this point, you may be tempted to conclude that:
+
+$|I(i, j)| = |A \cup B| = |A| + |B| = |I(i - 1, j)| + |I(i, j - 1)|$.
+
+Don't make this mistake! Remember the **Principle of Inclusion-Exclusion**:
+
+$\boxed{|S \cup T| = |S| + |T| - |S \cap T|}$
+
+*Quick example:* if $S = \{1, 2\}$ and $T = \{2, 3\}$, we overcount $2$ if we simply concatenate these two sets, so we need to subtract $|S \cap T|$, which, in this case, is $|\{2\}| = 1$.
