@@ -1,0 +1,83 @@
+---
+id: cf-1851F
+source: CF
+title: Lisa and the Martians
+author: Jeffrey Zhang
+---
+
+<Spoiler title="Hint">
+
+Come up with some random pairs of $a$ and $b$, and choose $x$ to masimize $(a \oplus x) \& (b \oplus x)$.
+Do you notice any patterns?
+This might be easier if you write everything in binary.
+
+</Spoiler>
+
+<Spoiler title="Solution">
+
+[Official Analysis (C++)](https://codeforces.com/blog/entry/118667)
+
+## Explanation
+
+To find the maximum $(a \oplus x) \& (b \oplus x)$ from two integers out of many, we can divide this task into two parts:
+- Finding the maximum of two given integers
+- Comparing the maximums and picking the highest
+
+#### Part 1
+
+Let us first focus our attention on figuring out the maximum $(a \oplus x) \& (b \oplus x)$ of two given integers $a$ and $b$. To people who are not quite familiar with bit operations this expression might seem daunting. But be not afraid, since all the bit operations are digits independent, we can simplify our case to single digit interactions.
+
+We see that if both $a$ and $b$ are 1 or 0, we can always make the final $\&$ sum to be 1 by manipulating our $x$. On the flip side, if both $a$ and $b$ are opposite, no matter what $x$ we choose, it will always come out to be 0.
+
+If we step back and look at the entire picture, then to choose $x$ to maximize $\&$ sum of the two, all we need to know is the number of digits they share a common bit with.
+
+#### Part 2
+
+Now the question we should ask ourselves is, given two pairs of integers $(a_1, b_1)$ and $(a_2, b_2)$, which maximum $\&$ sum is higher?
+
+This question is easy to answer. Since only the digits of two integers sharing a common bit can result in a 1 in the final $\&$ sum. Whichever pair shares a common bit earlier than the other from left to right have a higher $\&$ sum. In other words, their $\oplus$ sum is smaller of the two.
+
+Expanding this to $n$ ($\sim 10^5$) integers, we see that making $n^2$ pairs of integers and compare them all is unfeasible. So here we make the next important observation: we sort them. In a sorted list of integers, all we need to compare are the adjacent pairs of integers.
+
+Why is this true? Consider three integers $a, b, c$ in this sorted list. It is impossible for $a$ and $c$ to have a larger $\oplus$ sum than $a$ and $b$. Because $b$ will always share more earlier bits with $a$ than $c$ with $a$ due to the fact they are sorted.
+
+## Implementation
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	int test_num;
+	cin >> test_num;
+	for (int t = 0; t < test_num; t++) {
+		int n, k;
+		cin >> n >> k;
+		vector<pair<int, int>> nums(n);
+		for (int i = 0; i < n; i++) {
+			cin >> nums[i].first;
+			nums[i].second = i + 1;
+		}
+		sort(nums.begin(), nums.end());
+
+		int mins = INT_MAX;
+		int curr = 0;
+		for (int i = 0; i < n - 1; i++) {
+			if ((nums[i].first ^ nums[i + 1].first) < mins) {
+				mins = (nums[i].first ^ nums[i + 1].first);
+				curr = i;
+			}
+		}
+
+		cout << nums[curr].second << " " << nums[curr + 1].second << " ";
+		cout << (nums[curr].first ^ ((1 << k) - 1)) << "\n";
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>
+</Spoiler>
