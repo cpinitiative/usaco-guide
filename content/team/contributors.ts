@@ -356,6 +356,11 @@ export const RestOfMembers: Member[] = [
     name: 'Lokesh Pampatti',
     titles: [roles.clubCurriculum],
   },
+  {
+    photo: 'nathan_zhang',
+    name: 'Nathan Zhang',
+    titles: [roles.clubCurriculum]
+  }
 ];
 
 export const NotPictured: Member[] = [
