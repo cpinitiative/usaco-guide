@@ -54,26 +54,19 @@ int main() {
 ```
 
 </CPPSection>
-
 <PySection>
 
 ```py
-# using defaultdict from collections just to avoid silly error in flow of code
-import collections
+from collections import defaultdict
 
-test = int(input())
-for t in range(test):
-
-	# taking input as a matrix
-
+for _ in range(int(input()))
 	n, m = map(int, input().split())
 	matrix = []
-	for i in range(n):
+	for _ in range(n):
 		matrix.append(list(map(int, input().split())))
 
 	# Grouping columns using a dictionary
-
-	hashmap = collections.defaultdict(list)
+	hashmap = defaultdict(list)
 	for i in range(n):
 		for j in range(m):
 			hashmap[j].append(matrix[i][j])
@@ -84,13 +77,15 @@ for t in range(test):
 		temp = sorted(temp, reverse=True)
 		suf = []
 		prev = 0
-		for i in temp[::-1]:
+		for i in reversed(temp):
 			suf.append(prev)
 			prev += i
+
 		ans = 0
 		for i in range(n):
 			ans += temp[i] * (n - i - 1) - suf[n - i - 1]
 		res += ans
+
 	print(res)
 ```
 
