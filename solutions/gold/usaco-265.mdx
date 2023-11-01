@@ -145,9 +145,17 @@ public class CowRun {
 					int remaining = n - (j - i);
 
 					// consider if we want to go to the same or opposite side
-					dp[i][j][0] = Math.min(dp[i + 1][j][0] + (Math.abs(pos[i + 1] - pos[i]) * remaining), dp[i + 1][j][1] + (Math.abs(pos[j] - pos[i]) * remaining));
+					dp[i][j][0] = Math.min(
+					    dp[i + 1][j][0] +
+					        (Math.abs(pos[i + 1] - pos[i]) * remaining),
+					    dp[i + 1][j][1] +
+					        (Math.abs(pos[j] - pos[i]) * remaining));
 
-					dp[i][j][1] = Math.min(dp[i][j - 1][1] + (Math.abs(pos[j - 1] - pos[j]) * remaining), dp[i][j - 1][0] + (Math.abs(pos[j] - pos[i]) * remaining));
+					dp[i][j][1] = Math.min(
+					    dp[i][j - 1][1] +
+					        (Math.abs(pos[j - 1] - pos[j]) * remaining),
+					    dp[i][j - 1][0] +
+					        (Math.abs(pos[j] - pos[i]) * remaining));
 				}
 			}
 		}
