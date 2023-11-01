@@ -58,33 +58,36 @@ int main() {
 
 ```py
 from collections import defaultdict
+
 test = int(input())
 for t in range(test):
 	number_of_decks, cards_in_deck = map(int, input().split())
 	matrix = []
 	for i in range(number_of_decks):
-	    matrix.append(list(map(int, input().split())))
+		matrix.append(list(map(int, input().split())))
 
 	# Grouping columns using a dictionary
 
 	hashmap = collections.defaultdict(list)
 	for i in range(number_of_decks):
-	    for j in range(cards_in_deck):
-	        hashmap[j].append(matrix[i][j])
+		for j in range(cards_in_deck):
+			hashmap[j].append(matrix[i][j])
 
 	total_res = 0
 	for i in range(cards_in_deck):
-	    temp = hashmap[i]
-	    temp = sorted(temp, reverse = True)
-	    suf = []
-	    prev = 0
-	    for i in temp[::-1]:
-	        suf.append(prev)
-	        prev += i
-	    column_res = 0
-	    for i in range(number_of_decks):
-	        column_res += (temp[i] * (number_of_decks - i - 1) - suf[number_of_decks - i - 1])
-	    total_res += column_res
+		temp = hashmap[i]
+		temp = sorted(temp, reverse=True)
+		suf = []
+		prev = 0
+		for i in temp[::-1]:
+			suf.append(prev)
+			prev += i
+		column_res = 0
+		for i in range(number_of_decks):
+			column_res += (
+				temp[i] * (number_of_decks - i - 1) - suf[number_of_decks - i - 1]
+			)
+		total_res += column_res
 	print(total_res)
 ```
 
