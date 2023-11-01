@@ -2,7 +2,7 @@
 id: func-graphs
 title: Introduction to Functional Graphs
 author: Siyong Huang, Benjamin Qi, Andrew Wang
-contributors: Chuyang Wang
+contributors: Chuyang Wang, Ryan Chou
 prerequisites:
   - intro-tree
 description:
@@ -50,33 +50,6 @@ itself).
 
 <FocusProblem problem="sample_floyd" />
 
-<!-- <Spoiler title="Tortoise and Hare Algrotihm">
-
-```cpp
-// UNTESTED
-pair<int, int>
-detect_cycle(int *next,
-             int start_node)  // return pair(length of cycle, distance
-                              // from start node to in cycle)
-{
-	int t = start_node, h = start_node;  // tortoise and hare
-	do {
-		t = next[t], h = next[h];
-	} while (t != h)
-
-	    int dist = 0;
-	t = start_node;
-	while (t != h) ++dist, t = next[t], h = next[h];
-
-	int len = 1;
-	h = next[t];
-	while (h != t) ++len, h = next[h];
-	return make_pair(len, dist);
-}
-```
-
-</Spoiler> -->
-
 <Spoiler title="Hint 1">
 
 Solve the problem when there are exactly three friends.
@@ -85,7 +58,7 @@ Solve the problem when there are exactly three friends.
 
 <Spoiler title="Hint 2">
 
-Reread [CPH pg. 166](/CPH.pdf#page=166) a few more times.
+The trick lies somewhere within the algorithm of [CPH's page 166](/CPH.pdf#page=166).
 
 </Spoiler>
 
@@ -100,141 +73,131 @@ $2c\left\lceil \frac{t}{c}\right\rceil$ queries. Then we can find the first node
 in the cycle after another $t$ queries.
 
 <LanguageSection>
-<PySection>
-
-```py
-import sys
-
-pos = [0] * 10
-
-
-def qry(x: list) -> None:
-	print("next", end=" ")
-	for i in x:
-		print(i, end=" ")
-
-	print()
-	sys.stdout.flush()
-
-
-def process() -> None:
-	global pos
-
-	s = input().split()
-
-	for j in range(int(s[0])):
-		for k in s[j + 1]:
-			pos[int(k)] = j
-
-
-while True:  # at most c * ceil(t / c) times
-	qry([0, 1])
-	process()
-	qry([0])
-	process()
-
-	if pos[0] == pos[1]:
-		break
-
-while True:  # at most t times
-	qry([i for i in range(10)])
-	process()
-
-	if pos[0] == pos[2]:
-		break
-
-print("done")
-```
-</PySection>
-
 <CPPSection>
 
 ```cpp
-#include <cstdio>
+#include <iostream>
+#include <string>
 #include <vector>
 
-void out(const std::vector<int> &x) {
-	printf("next");
-	for (auto a : x) printf(" %d", a);
-	printf("\n");
-	fflush(stdout);
-}
-int N, g[20];
-char s[20];
-void read() {
-	scanf("%d", &N);
-	for (int i = 0; i < N; ++i) {
-		scanf(" %s", s);
-		for (int j = 0; s[j]; ++j) g[s[j] - '0'] = i;
+using std::cout;
+using std::endl;
+using std::pair;
+using std::vector;
+
+vector<int> move_result(const vector<int> &to_move) {
+	cout << "next ";
+	for (int i = 0; i < to_move.size() - 1; i++) { cout << to_move[i] << ' '; }
+	cout << to_move.back() << endl;
+
+	int group_num;
+	std::cin >> group_num;
+	vector<int> groups(10);
+	for (int g = 0; g < group_num; g++) {
+		std::string group;
+		std::cin >> group;
+		for (char i : group) { groups[i - '0'] = g; }
 	}
+	return groups;
 }
+
 int main() {
-	for (;;)  // c*ceil(t/c) times
-	{
-		out({0, 1});
-		read();
-		out({0});
-		read();
-		if (g[0] == g[1]) break;
+	move_result({0, 1});
+	vector<int> groups = move_result({1});
+	while (groups[0] != groups[1]) {
+		move_result({0, 1});
+		groups = move_result({1});
 	}
-	for (;;)  // t times
-	{
-		out({0, 1, 2, 3, 4, 5, 6, 7, 8, 9});
-		read();
-		if (g[0] == g[2]) break;
+
+	while (groups[2] != groups[1]) {
+		groups = move_result({0, 1, 2, 3, 4, 5, 6, 7, 8, 9});
 	}
-	printf("done\n");
-	return 0;
+
+	cout << "done" << endl;
 }
 ```
 
 </CPPSection>
-
 <JavaSection>
 
 ```java
 import java.io.*;
 import java.util.*;
 
-public class Cooperative {
-	public static int g[];
-	public static BufferedReader br =
+public class CoopGame {
+	static BufferedReader read =
 	    new BufferedReader(new InputStreamReader(System.in));
-	public static void out(int arr[]) {
-		System.out.print("next");
-		for (int a : arr) { System.out.print(" " + a); }
-		System.out.println();
-		System.out.flush();
-	}
-	public static void read() throws Exception {
-		StringTokenizer st = new StringTokenizer(br.readLine());
-		int N = Integer.parseInt(st.nextToken());
-		for (int i = 0; i < N; i++) {
-			String s = st.nextToken();
-			for (int j = 0; j < s.length(); j++) g[s.charAt(j) - '0'] = i;
+
+	public static void main(String[] args) throws IOException {
+		moveResult(new int[] {0, 1});
+		int[] groups = moveResult(new int[] {1});
+		while (groups[0] != groups[1]) {
+			moveResult(new int[] {0, 1});
+			groups = moveResult(new int[] {1});
 		}
-	}
-	public static void main(String[] args) throws Exception {
-		g = new int[20];
-		for (;;) {  // c*ceil(t/c) times
-			out(new int[] {0, 1});
-			read();
-			out(new int[] {0});
-			read();
-			if (g[0] == g[1]) break;
+
+		while (groups[2] != groups[1]) {
+			groups = moveResult(new int[] {0, 1, 2, 3, 4, 5, 6, 7, 8, 9});
 		}
-		for (;;) {  // t times
-			out(new int[] {0, 1, 2, 3, 4, 5, 6, 7, 8, 9});
-			read();
-			if (g[0] == g[2]) break;
-		}
+
 		System.out.println("done");
+	}
+
+	static int[] moveResult(int[] toMove) throws IOException {
+		System.out.print("next ");
+		for (int i = 0; i < toMove.length - 1; i++) {
+			System.out.print(toMove[i] + " ");
+		}
+		System.out.println(toMove[toMove.length - 1]);
+		System.out.flush();
+
+		StringTokenizer groupST = new StringTokenizer(read.readLine());
+		int groupNum = Integer.parseInt(groupST.nextToken());
+		int[] groups = new int[10];
+		for (int g = 0; g < groupNum; g++) {
+			String group = groupST.nextToken();
+			for (int i = 0; i < group.length(); i++) {
+				groups[group.charAt(i) - '0'] = g;
+			}
+		}
+		return groups;
 	}
 }
 ```
 
 </JavaSection>
+<PySection>
 
+```py
+def move_result(to_move):
+	"""
+	Type annotations break the grader for some reason,
+	so here's the signature of the function:
+	move_result(to_move: Iterable[int]) -> list[int]
+	"""
+	print(f"next {' '.join(str(i) for i in to_move)}", flush=True)
+
+	res = input().split()
+	groups = [0 for _ in range(10)]
+	for g in range(int(res[0])):
+		for i in res[g + 1]:
+			groups[int(i)] = g
+	return groups
+
+
+move_result([0, 1])
+groups = move_result([1])
+while groups[0] != groups[1]:
+	move_result([0, 1])
+	groups = move_result([1])
+
+while groups[2] != groups[1]:
+	groups = move_result(range(10))
+
+print("done")
+```
+
+</PySection>
 </LanguageSection>
 
 <br />
@@ -242,7 +205,6 @@ public class Cooperative {
 Do you see why this is equivalent to the code mentioned in CPH?
 
 <LanguageSection>
-
 <PySection>
 
 ```py
@@ -255,25 +217,12 @@ while a != b:
 ```
 
 </PySection>
-
-<CPPSection>
-
-```cpp
-a = succ(x);
-b = succ(succ(x));
-while (a != b) {
-	a = succ(a);
-	b = succ(succ(b));
-}
-```
-
-</CPPSection>
-
 <JavaSection>
 
 ```java
 a = succ(x);
 b = succ(succ(x));
+
 while (a != b) {
 	a = succ(a);
 	b = succ(succ(b));
@@ -281,7 +230,19 @@ while (a != b) {
 ```
 
 </JavaSection>
+<CPPSection>
 
+```cpp
+a = succ(x);
+b = succ(succ(x));
+
+while (a != b) {
+	a = succ(a);
+	b = succ(succ(b));
+}
+```
+
+</CPPSection>
 </LanguageSection>
 
 <br />
@@ -289,7 +250,6 @@ while (a != b) {
 $b$ corresponds to friend $1$ and $a$ corresponds to friend $0$.
 
 <LanguageSection>
-
 <PySection>
 
 ```py
@@ -301,7 +261,6 @@ first = a
 ```
 
 </PySection>
-
 <CPPSection>
 
 ```cpp
@@ -314,7 +273,6 @@ first = a;
 ```
 
 </CPPSection>
-
 <JavaSection>
 
 ```java
@@ -327,10 +285,7 @@ first = a;
 ```
 
 </JavaSection>
-
 </LanguageSection>
-
-<br />
 
 $a$ corresponds to friends $2\ldots 9$ and $b$ corresponds to friends $0$ and
 $1$.
@@ -339,138 +294,170 @@ $1$.
 
 <FocusProblem problem="sample" />
 
-<br />
-
-It's easy to solve the above problem in $\mathcal{O}(N^2)$ time. We'll solve it
-in $\mathcal{O}(N)$.
+While the constraints allow for a $\mathcal{O}(N^2)$ solution, it's possible to do this in just $\mathcal{O}(N)$!
 
 ### Solution 1
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
-#include <bits/stdc++.h>
+#include <iostream>
+#include <vector>
 
-using namespace std;
+using std::cout;
+using std::endl;
+using std::vector;
 
-int N;
-vector<int> P, ans;
-bool in_cycle;
+vector<int> p;
+vector<int> ans;
+bool in_cycle = false;
 
-void gen(int x) {
-	if (ans[x] != -2) {
-		if (ans[x] == -1) ans[x] = x, in_cycle = 1;  // found a cycle!
-		return;
+void dfs(int n) {
+	if (ans[n] != -2) {
+		// it seems we've come back to something we've visited- a cycle!
+		if (ans[n] == -1) {
+			in_cycle = true;
+			ans[n] = n;
+		}
+		return;  // either way, this one's already been processed
 	}
-	ans[x] = -1;
-	gen(P[x]);
-	if (ans[x] != -1) {
-		in_cycle = 0;
-		return;
+
+	ans[n] = -1;  // set a marker for our dfs
+
+	dfs(p[n]);
+	// check if we're back at the initial cycle node
+	if (ans[n] != -1) {
+		// if so, now we're no longer in the cycle
+		in_cycle = false;
+	} else {
+		// set our answer depending on if we're in a cycle or not
+		ans[n] = in_cycle ? n : ans[p[n]];
 	}
-	ans[x] = in_cycle ? x : ans[P[x]];
 }
 
 int main() {
-	cin >> N;
-	P.assign(N, 0);
-	for (int &x : P) cin >> x, --x;
-	ans.assign(N, -2);
-	for (int i = 0; i < N; ++i) gen(i);  // in_cycle is always reset to 0
-	for (int t : ans) cout << t + 1 << " ";
+	int n;
+	std::cin >> n;
+	p = vector<int>(n);
+	for (int &i : p) {
+		std::cin >> i;
+		i--;
+	}
+
+	ans = vector<int>(n, -2);  // -2 is our initial no-answer value
+	for (int i = 0; i < n; i++) {
+		// in_cycle is always reset to false at the end of each DFS
+		dfs(i);
+	}
+
+	for (int i = 0; i < n; i++) { cout << (ans[i] + 1) << " \n"[i == n - 1]; }
 }
 ```
 
 </CPPSection>
-
 <JavaSection>
 
 ```java
 import java.io.*;
 import java.util.*;
 
-public class badge {
-	static BufferedReader reader;
-	static PrintWriter writer;
-	public static final int MN = 1010;
-	public static int[] p, ans;
+public class Badge {
+	public static int[] p;
+	public static int[] ans;
 	public static boolean in_cycle;
+
 	public static void dfs(int n) {
-		if (ans[n] != 0) {
+		if (ans[n] != -2) {
+			// it seems we've come back to something we've visited- a cycle!
 			if (ans[n] == -1) {
 				in_cycle = true;
 				ans[n] = n;
-			}  // found a cycle!
-			return;
+			}
+			return;  // either way, this one's already been processed
 		}
-		ans[n] = -1;
-		dfs(p[n]);
-		if (ans[n] != -1) in_cycle = false;
-		else ans[n] = in_cycle ? n : ans[p[n]];
-	}
-	public static void main(String[] args) throws IOException {
-		reader = new BufferedReader(new InputStreamReader(System.in));
-		writer = new PrintWriter(System.out);
-		p = new int[MN];
-		ans = new int[MN];
 
-		int N = Integer.parseInt(reader.readLine());
+		ans[n] = -1;  // set a marker for our dfs
+
+		dfs(p[n]);
+		// check if we're back at the initial cycle node
+		if (ans[n] != -1) {
+			// if so, now we're no longer in the cycle
+			in_cycle = false;
+		} else {
+			// set our answer depending on if we're in a cycle or not
+			ans[n] = in_cycle ? n : ans[p[n]];
+		}
+	}
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader reader =
+		    new BufferedReader(new InputStreamReader(System.in));
+
+		int n = Integer.parseInt(reader.readLine());
+		p = new int[n];
 		StringTokenizer st = new StringTokenizer(reader.readLine());
-		for (int i = 1; i <= N; ++i) p[i] = Integer.parseInt(st.nextToken());
+		for (int i = 0; i < n; i++) {
+			p[i] = Integer.parseInt(st.nextToken()) - 1;
+		}
 		reader.close();
 
-		for (int i = 1; i <= N; ++i)
-			dfs(i);  // in_cycle is always reset to false
+		ans = new int[n];
+		Arrays.fill(ans, -2);  // -2 is our initial no-answer value
+		for (int i = 0; i < n; i++) {
+			// in_cycle is always reset to false at the end of each DFS
+			dfs(i);
+		}
 
-		for (int i = 1; i <= N; ++i) writer.print(ans[i] + " ");
-		writer.close();
+		for (int i = 0; i < n - 1; i++) {
+			System.out.print((ans[i] + 1) + " ");
+		}
+		System.out.println(ans[n - 1] + 1);
 	}
 }
 ```
 
 </JavaSection>
-
 <PySection>
 
 ```py
-N = int(input())
-p = list(map(int, input().split()))
-ans = [-1] * N
-in_cycle = False
+import sys
+
+sys.setrecursionlimit(10**5)
+
+n = int(input())
+p = [int(i) - 1 for i in input().split()]
+assert n == len(p)
 
 
-def dfs(x):
+def dfs(n: int) -> None:
 	global in_cycle
-	if ans[x] != -1:
-		if ans[x] == -2:  # found a cycle!
+	if ans[n] != -2:
+		if ans[n] == -1:
 			in_cycle = True
-			ans[x] = x
+			ans[n] = n
+
 		return
-	ans[x] = -2
-	dfs(p[x])
-	if ans[x] != -2:
+
+	ans[n] = -1
+
+	dfs(p[n])
+	if ans[n] != -1:
 		in_cycle = False
 	else:
-		ans[x] = x if in_cycle else ans[p[x]]
+		ans[n] = n if in_cycle else ans[p[n]]
 
 
-for i in range(N):
-	p[i] -= 1
-for i in range(N):
-	dfs(i)  # in_cycle is always reset to False
-for i in range(N):
-	ans[i] += 1
+in_cycle = False
+ans = [-2 for _ in range(n)]
+for i in range(n):
+	dfs(i)
 
-print(*ans)
+print(" ".join(str(i + 1) for i in ans))
 ```
 
 </PySection>
-
 </LanguageSection>
-
-<br />
 
 This code generates the answer independently for each connected component. Note
 that it uses 0-indexing, not 1-indexing.
@@ -488,23 +475,182 @@ Try simulating the algorithm on the following directed graph in CSAcademy's
 6 1
 ```
 
-- On the first step, we make the following recursive calls: `gen(0)` -> `gen(1)`
-  -> `gen(2)` -> `gen(3)` -> `gen(4)` -> `gen(2)`, at which point we stop since
+- On the first step, we make the following recursive calls: `dfs(0)` -> `dfs(1)`
+  -> `dfs(2)` -> `dfs(3)` -> `dfs(4)` -> `dfs(2)`, at which point we stop since
   `ans[2] = -1`. Since we have reached `2` for the second time, we know that `2`
   is part of a cycle and `ans[2] = 2`. Similarly, `ans[3] = 3` and `ans[4] = 4`
   since they are part of the cycle. On the other hand, `ans[0] = ans[1] = 2`
   since neither of them are part of the cycle.
 
 - Later, we make the following recursive calls when we start at vertex `5`:
-  `gen(5)` -> `gen(6)` -> `gen(1)`. We already know that `ans[1] = 2`, so
+  `dfs(5)` -> `dfs(6)` -> `dfs(1)`. We already know that `ans[1] = 2`, so
   `ans[5] = ans[6] = 2` as well.
 
 ### Solution 2
 
 `floyd(x)` generates answers for all vertices in the connected component containing
-`x`. Requires reverse adjacency lists (`radj`).
+`x`.
+Note that this requires reverse adjacency lists.
+In the code, these are stored in the variable `radj`.
 
 <LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int n;
+vector<int> adj, ans;
+vector<vector<int>> radj;
+
+void fill_radj(int x) {
+	for (auto &child : radj[x]) {
+		/*
+		 * As all nodes in the cycle are processed in function floyd,
+		 * the recursive call will only start at the nodes which
+		 * combine the cycle with the acyclic part of the connected component
+		 * where one of its outgoing arrows points to the node that is not
+		 * processed yet.
+		 */
+		if (ans[child] == -1) {
+			ans[child] = ans[x];
+			fill_radj(child);
+		}
+	}
+}
+
+void floyd(int x) {
+	int y = x;
+	do {  // find a cycle using Floyd's algorithm
+		x = adj[x];
+		y = adj[adj[y]];
+	} while (y != x);
+	do {  // set ans[x] = x for all x along cycle
+		ans[x] = x;
+		x = adj[x];
+	} while (y != x);
+	do {  // set ans'es for all x not along cycle
+		fill_radj(x);
+		x = adj[x];
+	} while (y != x);
+}
+
+int main() {
+	cin >> n;
+
+	adj.assign(n, -1);
+	for (auto &e : adj) {
+		cin >> e;
+		e--;
+	}
+
+	/*
+	 * For each node, we have to use a vector to store its children;
+	 * at nodes combining the cycle with other parts of the connected component,
+	 * there would be more than one outgoing arrow in the reversed adjacency
+	 * list
+	 */
+	radj.assign(n, {});
+	for (int i = 0; i < n; i++) radj[adj[i]].push_back(i);
+
+	ans.assign(n, -1);
+	// we run Floyd's algorithm for each connected component
+	for (int i = 0; i < n; i++)
+		if (ans[i] == -1) floyd(i);
+
+	for (auto &a : ans) cout << a + 1 << " ";
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Badge {
+	static int[] adj;
+	static int[] ans;
+	/*
+	 * For each node, we need a list to store its children; at nodes
+	 * combining the cycle with other part of the connected component, there
+	 * would be more than one outgoing arrow in the reversed adjacency list
+	 */
+	static List<List<Integer>> radj;
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader in =
+		    new BufferedReader(new InputStreamReader(System.in));
+
+		int n = Integer.parseInt(in.readLine());
+		adj = new int[n];
+		ans = new int[n];
+		radj = new ArrayList<>();
+
+		StringTokenizer st = new StringTokenizer(in.readLine());
+		for (int i = 0; i < n; i++) {
+			adj[i] = Integer.parseInt(st.nextToken()) - 1;
+			ans[i] = -1;
+			radj.add(new ArrayList<>());
+		}
+
+		for (int i = 0; i < n; i++) { radj.get(adj[i]).add(i); }
+
+		for (int i = 0; i < n; i++) {
+			// run Floyd's algorithm on every connected component
+			if (ans[i] == -1) { floyd(i); }
+		}
+
+		for (int i = 0; i < n; i++) {
+			cout << (ans[i] + 1) << " \n"[i == n - 1];
+		}
+	}
+
+	private static void floyd(int x) {
+		int a = adj[x];
+		int b = adj[adj[x]];
+
+		// find a cycle using Floyd's algorithm
+		while (a != b) {
+			a = adj[a];
+			b = adj[adj[b]];
+		}
+
+		// for each node a in the cycle, the answer ans[a] will be a as well
+		do {
+			ans[a] = a;
+			a = adj[a];
+		} while (a != b);
+
+		// for each node a that has outgoing arrow(s) pointing to the acyclic
+		// part we set their answers with fillRadj
+		do {
+			fillRadj(a);
+			a = adj[a];
+		} while (a != b);
+	}
+
+	private static void fillRadj(int x) {
+		for (int child : radj.get(x)) {
+			/*
+			 * As all nodes in the cycle are processed in method floyd, the
+			 * recursive call will only start at the nodes which combine the
+			 * cycle with the acyclic part of the connected component, where one
+			 * of its outgoing arrows points to the node that is not processed
+			 * yet
+			 */
+			if (ans[child] == -1) {
+				ans[child] = ans[x];
+				fillRadj(child);
+			}
+		}
+	}
+}
+```
+
+</JavaSection>
 <PySection>
 
 ```py
@@ -567,256 +713,104 @@ for i in range(n):
 	if ans[i] == -1:
 		floyd(i)
 
-for i in ans:
-	print(i + 1, end=" ")
+print(" ".join(str(i + 1) for i in ans))
 ```
+
 </PySection>
-<CPPSection>
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int N;
-vector<int> adj, ans;
-vector<vector<int>> radj;
-
-void fill_radj(int x) {
-	for (auto &child : radj[x]) {
-		/*
-		 * As all nodes in the cycle are processed in function floyd,
-		 * the recursive call will only start at the nodes which
-		 * combine the cycle with the acyclic part of the connected component
-		 * where one of its outgoing arrows points to the node that is not
-		 * processed yet.
-		 */
-		if (ans[child] == -1) {
-			ans[child] = ans[x];
-			fill_radj(child);
-		}
-	}
-}
-
-void floyd(int x) {
-	int y = x;
-	do {  // find a cycle using Floyd's algorithm
-		x = adj[x];
-		y = adj[adj[y]];
-	} while (y != x);
-	do {  // set ans[x] = x for all x along cycle
-		ans[x] = x;
-		x = adj[x];
-	} while (y != x);
-	do {  // set ans'es for all x not along cycle
-		fill_radj(x);
-		x = adj[x];
-	} while (y != x);
-}
-
-int main() {
-	cin.tie(0)->sync_with_stdio(false);
-	cin >> N;
-
-	adj.assign(N, -1);
-	for (auto &e : adj) {
-		cin >> e;
-		e--;
-	}
-
-	/*
-	 * For each node, we have to use a vector to store its children;
-	 * at nodes combining the cycle with other parts of the connected component,
-	 * there would be more than one outgoing arrow in the reversed adjacency
-	 * list
-	 */
-	radj.assign(N, {});
-	for (int i = 0; i < N; i++) radj[adj[i]].push_back(i);
-
-	ans.assign(N, -1);
-	// we run Floyd's algorithm for each connected component
-	for (int i = 0; i < N; i++)
-		if (ans[i] == -1) floyd(i);
-
-	for (auto &a : ans) cout << a + 1 << " ";
-}
-```
-
-</CPPSection>
-
-<JavaSection>
-
-```java
-import java.io.*;
-import java.util.*;
-
-public class Badge {
-	static Integer[] adj, ans;
-	/*
-	 * For each node, we need a list to store its children; at nodes
-	 * combining the cycle with other part of the connected component, there
-	 * would be more than one outgoing arrow in the reversed adjacency list
-	 */
-	static List<List<Integer>> radj;
-
-	public static void main(String[] args) throws IOException {
-		BufferedReader in =
-		    new BufferedReader(new InputStreamReader(System.in));
-
-		int N = Integer.parseInt(in.readLine());
-		adj = new Integer[N];
-		ans = new Integer[N];
-		radj = new ArrayList<>();
-
-		StringTokenizer st = new StringTokenizer(in.readLine());
-		for (int i = 0; i < N; i++) {
-			adj[i] = Integer.valueOf(st.nextToken()) - 1;
-			ans[i] = -1;
-			radj.add(new ArrayList<>());
-		}
-
-		for (int i = 0; i < N; i++) radj.get(adj[i]).add(Integer.valueOf(i));
-
-		for (int i = 0; i < N; i++) {
-			// run Floyd's algorithm on every connected component
-			if (ans[i] == -1) floyd(i);
-		}
-
-		for (Integer i : ans) {
-			System.out.print(i + 1);
-			System.out.print(" ");
-		}
-	}
-
-	private static void floyd(int x) {
-		int a = adj[x];
-		int b = adj[adj[x]];
-
-		// find a cycle using Floyd's algorithm
-		while (a != b) {
-			a = adj[a];
-			b = adj[adj[b]];
-		}
-
-		// for each node a in the cycle, the answer ans[a] will be a as well
-		do {
-			ans[a] = a;
-			a = adj[a];
-		} while (a != b);
-
-		// for each node a that has outgoing arrow(s) pointing to the acyclic
-		// part we set their answers with fillRadj
-		do {
-			fillRadj(a);
-			a = adj[a];
-		} while (a != b);
-	}
-
-	private static void fillRadj(int x) {
-		for (Integer child : radj.get(x)) {
-			/*
-			 * As all nodes in the cycle are processed in method floyd, the
-			 * recursive call will only start at the nodes which combine the
-			 * cycle with the acyclic part of the connected component, where one
-			 * of its outgoing arrows points to the node that is not processed
-			 * yet
-			 */
-			if (ans[child] == -1) {
-				ans[child] = ans[x];
-				fillRadj(child);
-			}
-		}
-	}
-}
-```
-
-</JavaSection>
-
 </LanguageSection>
 
 ## Count Cycles
 
-The following sample code counts the number of cycles in such a graph. The
+The following code counts the number of cycles in such a graph. The
 "stack" contains nodes that can reach the current node. If the current node
 points to a node `v` on the stack (`on_stack[v]` is true), then we know that a
 cycle has been created. However, if the current node points to a node `v` that
 has been previously visited but is not on the stack, then we know that the
 current chain of nodes points into a cycle that has already been considered.
 
-<LanguageSection>
+<Warning>
 
+The code below is untested. Use it at your own risk.
+
+</Warning>
+
+<LanguageSection>
 <CPPSection>
 
 ```cpp
-// UNTESTED
-// Each node points to next_node[node]
+bool visited[MAXN];
+bool on_stack[MAXN];
+int number_of_cycles = 0;
+int next_node[MAXN];
 
-bool visited[MAXN], on_stack[MAXN];
-int number_of_cycles = 0, next_node[MAXN];
 void dfs(int n) {
 	visited[n] = on_stack[n] = true;
 	int u = next_node[n];
-	if (on_stack[u]) number_of_cycles++;
-	else if (!visited[u]) dfs(u);
+	if (on_stack[u]) {
+		number_of_cycles++;
+	} else if (!visited[u]) {
+		dfs(u);
+	}
 	on_stack[n] = false;
 }
+
 int main() {
 	// read input, etc
-	for (int i = 1; i <= N; i++)
-		if (!visited[i]) dfs(i);
+	for (int i = 1; i <= N; i++) {
+		if (!visited[i]) { dfs(i); }
+	}
 }
 ```
 
 </CPPSection>
-
 <JavaSection>
 
 ```java
-// source: Mayank Kumar
 import java.io.*;
 import java.util.*;
-public class badge2 {
-	static boolean[] visited = new boolean[MAXN], onStack = new boolean[MAXN];
+
+public class CountCycles {
+	static boolean[] visited = new boolean[MAXN];
+	static boolean[] onStack = new boolean[MAXN];
 	static int numberOfCycles = 0;
 	static int[] nextNode = new int[MAXN];
+
 	public static void main(String[] args) throws IOException {
 		// Take in input
-		for (int i = 1; i != N; ++i)
-			if (!visited[i]) dfs(i);
-		System.out.println();
-		System.out.close();
+		for (int i = 1; i != N; i++) {
+			if (!visited[i]) { dfs(i); }
+		}
 	}
+
 	public static void dfs(int n) {
 		visited[n] = onStack[n] = true;
 		int u = nextNode[n];
-		if (onStack[u]) ++numberOfCycles;
-		else if (!visited[u]) dfs(u);
+		if (onStack[u]) {
+			numberOfCycles++;
+		} else if (!visited[u]) {
+			dfs(u);
+		}
 		onStack[n] = false;
 	}
 }
 ```
 
 </JavaSection>
-
 <PySection>
 
 ```py
-import sys
-
-# may need for large inputs
-sys.setrecursionlimit(1000000)
-
-vis = [0] * MAXN
-on_stack = [0] * MAXN
+vis = [False] * MAXN
+on_stack = [False] * MAXN
 next_node = [0] * MAXN
-num_of_cycles = 0
+number_of_cycles = 0
 
 
-def dfs(n: int):
-	global vis, on_stack
-	vis[n] = on_stack[n] = 1
+def dfs(n: int) -> None:
+	global number_of_cycles
+	vis[n] = on_stack[n] = True
 
 	if on_stack[next_node[n]]:
-		num_of_cycles += 1
+		number_of_cycles += 1
 	elif not vis[next_node[n]]:
 		dfs(next_node[n])
 
@@ -828,6 +822,7 @@ for i in range(MAXN):
 	if not vis[i]:
 		dfs(i)
 ```
+
 </PySection>
 </LanguageSection>
 
@@ -839,6 +834,120 @@ using **binary jumping**, given $\mathcal{O}(n \log u)$ time of preprocessing wh
 ## Problems
 
 <Problems problems="probs" />
+
+
+
+## Quiz
+<Quiz>
+  <Quiz.Question>
+    What's a functional graph (successor graph)?
+    <Quiz.Answer>
+      A graph with $N - 1$ edges, where $N$ is the number of nodes in the graph.
+      <Quiz.Explanation>
+        Incorrect.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer correct>
+      A graph where every node has exactly one edge that starts from it.
+      <Quiz.Explanation>
+        Correct.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      A graph without any cycles.
+      <Quiz.Explanation>
+        Incorrect.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      A graph without any multi-edges and self-loops.
+      <Quiz.Explanation>
+        Incorrect.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+  </Quiz.Question>
+  <Quiz.Question>
+    What's the main idea behind Floyd's Algorithm (Tortoise and Hare Algorithm)?
+    <Quiz.Answer correct>
+      An algorithm which searches a graph using two pointers, one which moves twice as fast as the other. If the two points meet, it means a cycle exists.
+      <Quiz.Explanation>
+        Correct.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      An algorithm which uses two passes of the graph to find the longest path.
+      <Quiz.Explanation>
+        Incorrect.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      Given a cycle length K, initialize two pointers on the graph, one which moves one node at a time, and one which moves K nodes at a time. If they don't meet, it means a cycle of length K exists.
+      <Quiz.Explanation>
+        Incorrect.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      An algorithm which initializes one point on a node and searches adjacent nodes until it reaches the same node again.
+      <Quiz.Explanation>
+        Incorrect.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+  </Quiz.Question>
+  <Quiz.Question>
+    What's the time complexity of Floyd's Algorithm (Tortoise and Hare)?
+    <Quiz.Answer>
+      $\mathcal{O}(N^2)$
+      <Quiz.Explanation>
+        Incorrect. Note that once we find the cycle, we can get the length and starting node in linear time.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      $\mathcal{O}(N \log N)$
+      <Quiz.Explanation>
+        Incorrect. There is no sorting or logarithmic operation needed to perform the search.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      $\mathcal{O}(N \cdot \frac{N(N-1)}{2})$
+      <Quiz.Explanation>
+        Incorrect. Remember that each node only has one edge coming out of it.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer correct>
+      $\mathcal{O}(N)$
+      <Quiz.Explanation>
+        Correct.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+  </Quiz.Question>
+  <Quiz.Question>
+    Define the "successor" of a node.
+    <Quiz.Answer>
+      The node that points to it.
+      <Quiz.Explanation>
+        Incorrect.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer correct>
+      The node that it points to.
+      <Quiz.Explanation>
+        Correct.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      The node that has the same degree in a different connected component.
+      <Quiz.Explanation>
+        Incorrect.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      The node furthest away from it.
+      <Quiz.Explanation>
+        Incorrect.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+  </Quiz.Question>
+</Quiz>
 
 Additional problems involving functional graphs can be found in the
 [Tree DP](/gold/dp-trees) and [Binary Jumping](/plat/bin-jump) modules.
