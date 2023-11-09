@@ -359,28 +359,25 @@ public class DRSQ {
 <CPPSection>
 ```cpp
 #include <bits/stdc++.h>
-
 using namespace std;
-
-const int NMAX = 3e5 + 1;
-const int VALMAX = 1e6 + 1;
 
 struct Query {
 	int l, r, idx;
 };
 
 int main() {
-	int n, q, different_values;
+	int n;
 	cin >> n;
-	vector<int> v(n, 0), values(n, 0);
+	vector<int> v(n);
 	for (int i = 0; i < n; i++) { cin >> v[i]; }
+
+	int q;
 	cin >> q;
 	vector<Query> queries;
 	for (int i = 1; i <= q; i++) {
 		int x, y;
 		cin >> x >> y;
-		x--, y--;
-		queries.push_back({x, y, i});
+		queries.push_back({--x, --y, i});
 	}
 
 	int block_size = (int)sqrt(n);
@@ -392,6 +389,8 @@ int main() {
 	};
 	sort(queries.begin(), queries.end(), mo_cmp);
 
+	vector<int> values(n);
+	int different_values = 0;
 	auto remove = [&](int idx) {
 		values[v[idx]]--;
 		if (values[v[idx]] == 0) { different_values--; }
@@ -402,7 +401,8 @@ int main() {
 		if (values[v[idx]] == 1) { different_values++; }
 	};
 
-	int mo_left = 0, mo_right = 0;
+	int mo_left = 0;
+	int mo_right = 0;
 	vector<int> ans(q, 0);
 	for (int i = 0; i < q; i++) {
 		int left = queries[i].l;
@@ -417,8 +417,6 @@ int main() {
 	}
 
 	for (int i = 0; i < q; i++) { cout << ans[i] << '\n'; }
-
-	return 0;
 }
 ```
 </CPPSection>
