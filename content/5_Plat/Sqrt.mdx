@@ -362,21 +362,21 @@ public class DRSQ {
 
 using namespace std;
 
-const int NMAX = 3e5+1;
-const int VALMAX = 1e6+1;
+const int NMAX = 3e5 + 1;
+const int VALMAX = 1e6 + 1;
 
-struct Query{ int l, r, idx; };
+struct Query {
+	int l, r, idx;
+};
 
 int main() {
 	int n, q, different_values;
 	cin >> n;
 	vector<int> v(n, 0), values(n, 0);
-	for(int i = 0; i < n; i++) {
-		cin >> v[i];
-	}
+	for (int i = 0; i < n; i++) { cin >> v[i]; }
 	cin >> q;
- 	vector<Query> queries;
-	for(int i = 1; i <= q; i++) {
+	vector<Query> queries;
+	for (int i = 1; i <= q; i++) {
 		int x, y;
 		cin >> x >> y;
 		x--, y--;
@@ -387,44 +387,36 @@ int main() {
 	auto mo_cmp = [&](Query a, Query b) {
 		int block_a = a.l / block_size;
 		int block_b = b.l / block_size;
-		if(block_a == block_b) {
-			return a.r < b.r;
-		}
+		if (block_a == block_b) { return a.r < b.r; }
 		return block_a < block_b;
 	};
 	sort(queries.begin(), queries.end(), mo_cmp);
 
 	auto remove = [&](int idx) {
 		values[v[idx]]--;
-		if(values[v[idx]] == 0) {
-			different_values--;
-		}
+		if (values[v[idx]] == 0) { different_values--; }
 	};
 
 	auto add = [&](int idx) {
 		values[v[idx]]++;
-		if(values[v[idx]] == 1) {
-			different_values++;
-		}
+		if (values[v[idx]] == 1) { different_values++; }
 	};
 
 	int mo_left = 0, mo_right = 0;
 	vector<int> ans(q, 0);
-	for(int i = 0; i < q; i++) {
+	for (int i = 0; i < q; i++) {
 		int left = queries[i].l;
-		int right = queries[i]. r;
+		int right = queries[i].r;
 
-		while(mo_left < left) { remove(mo_left++); }
-		while(mo_left > left) { add(--mo_left); }
-		while(mo_right < right) { add(++mo_right); }
-		while(mo_right > right) { remove(mo_right--); }
+		while (mo_left < left) { remove(mo_left++); }
+		while (mo_left > left) { add(--mo_left); }
+		while (mo_right < right) { add(++mo_right); }
+		while (mo_right > right) { remove(mo_right--); }
 
 		ans[queries[i].idx] = different_values;
 	}
 
-	for(int i = 0; i < q; i++) {
-		cout << ans[i] << '\n';
-	}
+	for (int i = 0; i < q; i++) { cout << ans[i] << '\n'; }
 
 	return 0;
 }
