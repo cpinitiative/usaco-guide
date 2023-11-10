@@ -360,29 +360,25 @@ public class DRSQ {
 
 ```cpp
 #include <bits/stdc++.h>
-
 using namespace std;
-
-const int NMAX = 3e5 + 1;
-const int VALMAX = 1e6 + 1;
 
 struct Query {
 	int l, r, idx;
 };
 
 int main() {
-	int n, q;
+	int n;
 	cin >> n;
 	vector<int> v(n);
 	for (int i = 0; i < n; i++) { cin >> v[i]; }
 
+	int q;
 	cin >> q;
 	vector<Query> queries;
 	for (int i = 0; i < q; i++) {
 		int x, y;
 		cin >> x >> y;
-		x--, y--;
-		queries.push_back({x, y, i});
+		queries.push_back({--x, --y, i});
 	}
 
 	int block_size = (int)sqrt(n);
@@ -395,7 +391,7 @@ int main() {
 	sort(queries.begin(), queries.end(), mo_cmp);
 
 	int different_values = 0;
-	vector<int> values(VALMAX, 0);
+	vector<int> values(VALMAX);
 	auto remove = [&](int idx) {
 		values[v[idx]]--;
 		if (values[v[idx]] == 0) { different_values--; }
@@ -407,7 +403,7 @@ int main() {
 
 	int mo_left = -1;
 	int mo_right = -1;
-	vector<int> ans(q, 0);
+	vector<int> ans(q);
 	for (int i = 0; i < q; i++) {
 		int left = queries[i].l;
 		int right = queries[i].r;
@@ -421,8 +417,6 @@ int main() {
 	}
 
 	for (int i = 0; i < q; i++) { cout << ans[i] << '\n'; }
-
-	return 0;
 }
 ```
 
