@@ -25,13 +25,14 @@ In the below solution,
 - $|S|$ denotes the number of elements in a set $S$
 - $S \cup T$ denotes the union of sets $S$ and $T$ (elements in either $S$ or $T$)
 - $S \cap T$ denotes the intersection of sets $S$ and $T$ (elements in both $S$ and $T$)
+- $E(i, j)$ denotes an arbitrary expression in $I(i, j)$
 - $\text{set of expressions} \rightarrow \text{instruction}$ denotes applying that instruction to each expression in the set
 
 </Info>
 
 So, how do we calculate $|I(i, j)|$?
 
-When either $i$ or $j$ are 0, the interleaving is uniquely determined and thus $\boxed{|I(i, 0)| = |I(0, i)| = 1}$ for all $i \leq N$.
+When either $i$ or $j$ are 0, either Bessie or Elsie's instruction set will be empty, meaning the interleaving is uniquely determined and thus $\boxed{|I(i, 0)| = |I(0, i)| = 1}$ for all $i \leq N$.
 
 Great, but what if $i$ and $j$ are both nonzero? Evidently, any interleaving of Bessie's first $i$ instructions and Elsie's first $j$ instructions must either end with instruction $a_i$ or instruction $b_j$.
 We can thus rewrite the expressions that end with $a_i$ as $I(i - 1, j) \rightarrow a_i$ (let's denote this set as $A$) and the ones that end with $b_j$ as $I(i, j - 1) \rightarrow b_j$ (let's denote this set as $B$).
@@ -42,6 +43,12 @@ We also have the following:
 
 Take some time to convince yourself of these, especially points 1 and 2!
 
+<Info title="Not Convinced?">
+
+Use the fact that if we apply the same, non-$*0$ operation to two distinct expressions, the results will still be distinct.
+
+</Info>
+
 At this point, you may be tempted to conclude that
 
 $$
@@ -49,8 +56,39 @@ $$
 $$
 
 Don't make this mistake!
-Remember the **Principle of Inclusion-Exclusion**:
+Remember the [**Principle of Inclusion-Exclusion**](https://en.wikipedia.org/wiki/Inclusion%E2%80%93exclusion_principle):
 
-$\boxed{|S \cup T| = |S| + |T| - |S \cap T|}$
+$$
+|S \cup T| = |S| + |T| - |S \cap T|
+$$
 
-For example, if $S = \{1, 2\}$ and $T = \{2, 3\}$, we overcount $2$ if we simply concatenate these two sets, so we need to subtract $|S \cap T|$, which, in this case, is $|\{2\}| = 1$.
+For example, if $S = \{1, 2\}$ and $T = \{2, 3\}$, we overcount $2$ if we simply concatenate these two sets, so we need to subtract $|S \cap T|$, which, in this case, is $|\{2\}| = 1$. 
+
+In our case, we overcount $|A \cap B|$. So which expressions are in this set? This is a crucial part of the solution, so make sure to spend some time thinking about it before reading the answer below! To make this easier, you may want to first assume neither Bessie nor Elsie has the $*0$ instruction, as it's not too hard to figure out whether $I(i, j)$ contains the $0$ expression and reduces the number of edge cases we need to consider.
+
+<Spoiler title="Hint">
+
+Think about the [Commutative Property](https://en.wikipedia.org/wiki/Commutative_property)!
+
+</Spoiler>
+
+<Spoiler title="Detailed Explanation">
+**Note**: This explanation presents the solution in a very abstract way, but it should be mostly intuitive!
+
+Consider the *properties* of an expression after an instruction is applied to it:
+- $*d$: all coefficients must be a multiple of $d$
+- $+x$: the coefficient of x is *exactly* $1$
+Let's call these the **traits** of that instruction, and let's say an instruction X is **violated** by a subsequent instruction Y if, after applying instruction Y, the traits of instruction X no longer hold. As an example, let instruction X be $*2$ and instruction Y be $+y$. After we apply instruction X to the expression $x$, we get $2x$, which satisfies the trait that all coefficients must be a multiple of 2. However, after applying instruction Y, we get $2x + y$, an expression whose coefficients are no longer all even; therefore, instruction Y violates instruction X. From these defintions, we get an important fact: **two operations that don't violate each other must be commutative** (try to see the intuition)!
+
+If an expression is contained in both sets $A$ and $B$, by definition it can be written as both $E(i - 1, j) \rightarrow a_i$ and $E(i, j - 1) \rightarrow b_j$, and therefore **must satisfy the traits of both $a_i$ and $b_j$**. Thus, we have that:
+1. $a_i$ and $b_j$ are commutative
+2. the expression can be written as $\text{[some expression]} \rightarrow a_i \rightarrow b_j$ (or $\text{[some expression]} \rightarrow b_j \rightarrow a_i$). 
+However, because this expression must still be in $I(i, j)$, we can see that $\text{[some expression]}$ must be in $I(i - 1, j - 1)$, as we've already placed both $a_i$ and $b_j$ at the end of the instruction sequence. Therefore, we have that $|A \cap B| = |I(i - 1, j - 1)|$ when $a_i$ and $b_j$ are commutative, and $0$ otherwise.
+
+</Spoiler>
+
+<Spoiler title="TL;DR">
+
+If $a_i$ and $b_j$ are commutative operations (i.e. $\rightarrow a_i \rightarrow b_j$ does the same thing as $\rightarrow b_j \rightarrow a_i$), we overcount the set $I(i - 1, j - 1) \rightarrow a_i \rightarrow b_j$. Make sure to remember the edge case of the $0$ expression as well (detailed more in code later)!
+
+</Spoiler>
