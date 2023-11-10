@@ -125,13 +125,13 @@ ll sb(ll &a, ll b) { return a = (((a - b) % MOD) + MOD) % MOD; }
 
 int main() {
 	int test_num;
-    cin >> test_num;
-    for (int t = 0; t < test_num; t++) {
+	cin >> test_num;
+	for (int t = 0; t < test_num; t++) {
 		int n;
 		cin >> n;
 		for (int i = 1; i <= n; i++) { cin >> a[i]; }
 		for (int i = 1; i <= n; i++) { cin >> b[i]; }
-		
+
 		// I(0, 0) = {0}
 		zero[0][0] = true;
 		for (int i = 0; i <= n; i++) {
@@ -149,7 +149,7 @@ int main() {
 
 		dp[0][0] = 0;
 		// |I(i, 0)| = |I(0, i)| = 1 ->
-		 // # of nonzero expressions = 1 - # of zero expressions
+		// # of nonzero expressions = 1 - # of zero expressions
 		for (int i = 1; i <= n; i++) {
 			dp[0][i] = !zero[0][i];
 			dp[i][0] = !zero[i][0];
@@ -171,7 +171,7 @@ int main() {
 				}
 			}
 		}
-		
+
 		cout << ad(dp[n][n], zero[n][n]) << '\n';
 	}
 }
