@@ -102,22 +102,13 @@ If $a_i$ and $b_j$ are commutative operations (i.e. $\rightarrow a_i \rightarrow
 <CPPSection>
 
 ```cpp
-#include <iostream>
+#include <bits/stdc++.h>
 using namespace std;
 
 using ll = long long;
 
 const int N = 2e3 + 1;
 const int MOD = 1e9 + 7;
-
-vector<char> a, b;
-
-// zero[i][j] -> whether 0 is in I(i, j)
-vector<vector<bool>> zero;
-
-// dp[i][j] -> number of nonzero expressions in I(i, j)
-vector<vector<ll>> dp;
-bool digit(char c) { return c >= '1' && c <= '9'; }
 
 // adding and subtracing under mod
 ll ad(ll &a, ll b) { return a = (a + b) % MOD; }
@@ -129,12 +120,12 @@ int main() {
 	for (int t = 0; t < test_num; t++) {
 		int n;
 		cin >> n;
-		a.resize(n + 1);
-		b.resize(n + 1);
+        vector<char> a(n + 1), b(n + 1);
 		for (int i = 1; i <= n; i++) { cin >> a[i]; }
 		for (int i = 1; i <= n; i++) { cin >> b[i]; }
 
-		zero.assign(n + 1, vector<bool>(n + 1));
+        // zero[i][j] -> whether 0 is in I(i, j)
+		vector<vector<bool>> zero(n + 1, vector<bool>(n + 1));
 		// I(0, 0) = {0}
 		zero[0][0] = true;
 		for (int i = 0; i <= n; i++) {
@@ -150,7 +141,8 @@ int main() {
 			}
 		}
 
-		dp.assign(n + 1, vector<ll>(n + 1));
+        // dp[i][j] -> number of nonzero expressions in I(i, j)
+        vector<vector<ll>> dp(n + 1, vector<ll>(n + 1));
 		dp[0][0] = 0;
 		// |I(i, 0)| = |I(0, i)| = 1 ->
 		// # of nonzero expressions = 1 - # of zero expressions
@@ -162,15 +154,15 @@ int main() {
 		for (int i = 1; i <= n; i++) {
 			for (int j = 1; j <= n; j++) {
 				dp[i][j] = 0;
-				if (a[i] != '0') ad(dp[i][j], dp[i - 1][j]);
-				if (a[i] == '+') ad(dp[i][j], zero[i - 1][j]);
-				if (b[j] != '0') ad(dp[i][j], dp[i][j - 1]);
-				if (b[j] == '+') ad(dp[i][j], zero[i][j - 1]);
+				if (a[i] != '0') { ad(dp[i][j], dp[i - 1][j]); }
+				if (a[i] == '+') { ad(dp[i][j], zero[i - 1][j]); }
+				if (b[j] != '0') { ad(dp[i][j], dp[i][j - 1]); }
+				if (b[j] == '+') { ad(dp[i][j], zero[i][j - 1]); }
 				// subtracting the intersection of A and B
 				if (a[i] == '+' && b[j] == '+' || a[i] == '1' && b[j] == '+' ||
 				    a[i] == '+' && b[j] == '1') {
 					sb(dp[i][j], dp[i - 1][j - 1] + zero[i - 1][j - 1]);
-				} else if (digit(a[i]) && digit(b[j])) {
+				} else if (isdigit(a[i]) && isdigit(b[j])) {
 					sb(dp[i][j], dp[i - 1][j - 1]);
 				}
 			}
