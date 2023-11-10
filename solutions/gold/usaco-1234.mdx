@@ -110,13 +110,13 @@ using ll = long long;
 const int N = 2e3 + 1;
 const int MOD = 1e9 + 7;
 
-char a[N], b[N];
+vector<char> a, b;
 
 // zero[i][j] -> whether 0 is in I(i, j)
-bool zero[N][N];
+vector<vector<bool>> zero;
 
-// number of nonzero expressions in I(i, j)
-ll dp[N][N];
+// dp[i][j] -> number of nonzero expressions in I(i, j)
+vector<vector<ll>> dp;
 bool digit(char c) { return c >= '1' && c <= '9'; }
 
 // adding and subtracing under mod
@@ -129,9 +129,12 @@ int main() {
 	for (int t = 0; t < test_num; t++) {
 		int n;
 		cin >> n;
+        a.resize(n + 1);
+        b.resize(n + 1);
 		for (int i = 1; i <= n; i++) { cin >> a[i]; }
 		for (int i = 1; i <= n; i++) { cin >> b[i]; }
 
+        zero.assign(n + 1, vector<bool>(n + 1));
 		// I(0, 0) = {0}
 		zero[0][0] = true;
 		for (int i = 0; i <= n; i++) {
@@ -146,7 +149,8 @@ int main() {
 				             j && zero[i][j - 1] && b[j] != '+';
 			}
 		}
-
+        
+        dp.assign(n + 1, vector<ll>(n + 1));
 		dp[0][0] = 0;
 		// |I(i, 0)| = |I(0, i)| = 1 ->
 		// # of nonzero expressions = 1 - # of zero expressions
