@@ -367,12 +367,11 @@ int main() {
 
 ```cpp
 #include <bits/stdc++.h>
-
 using namespace std;
 
 const int NMAX = 2e4;
 
-int n, m, timer;
+int timer;
 vector<int> low, id;
 vector<bool> visited, ap;
 vector<vector<int>> g(NMAX);
@@ -383,17 +382,15 @@ void dfs(int node, int parent) {
 
 	int children = 0;
 	for (int son : g[node]) {
-		if (son == parent) continue;
+		if (son == parent) { continue; }
 
 		if (!visited[son]) {
-
 			dfs(son, node);
 			low[node] = min(low[node], low[son]);
 			children++;
 
 			// Check if the current node is an articualation point
 			if (low[son] >= id[node] && parent != -1) { ap[node] = true; }
-
 		} else {
 			low[node] = min(low[node], id[son]);
 		}
@@ -403,9 +400,8 @@ void dfs(int node, int parent) {
 }
 
 int main() {
-
+	int n, m;
 	while (cin >> n >> m && n && m) {
-
 		id.assign(n, 0);
 		ap.assign(n, 0);
 		low.assign(n, 0);
@@ -413,12 +409,10 @@ int main() {
 		for (int i = 0; i < n; i++) { g[i].clear(); }
 
 		timer = 0;
-
 		for (int i = 0; i < m; i++) {
 			int x, y;
 			cin >> x >> y;
-			x--, y--;
-			g[x].push_back(y);
+			g[--x].push_back(--y);
 			g[y].push_back(x);
 		}
 
