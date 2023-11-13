@@ -295,8 +295,8 @@ export default function ContactUsSlideover({
                   ? email === ''
                     ? 'This field is required.'
                     : !validateEmail(email)
-                    ? 'Please enter a valid email address.'
-                    : null
+                      ? 'Please enter a valid email address.'
+                      : null
                   : null
               }
             />

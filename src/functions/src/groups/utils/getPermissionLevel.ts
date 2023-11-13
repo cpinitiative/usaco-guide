@@ -9,8 +9,8 @@ export default function getPermissionLevel(
   return groupData.ownerIds.includes(userId)
     ? 'OWNER'
     : groupData.adminIds.includes(userId)
-    ? 'ADMIN'
-    : groupData.memberIds.includes(userId)
-    ? 'MEMBER'
-    : 'NOT_MEMBER';
+      ? 'ADMIN'
+      : groupData.memberIds.includes(userId)
+        ? 'MEMBER'
+        : 'NOT_MEMBER';
 }

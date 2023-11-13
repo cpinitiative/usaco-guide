@@ -114,12 +114,12 @@ export default function EditProblemPage(props: Props) {
               getProblemURL(problemInfo),
             ]}/solution)`
           : problem.solution?.kind == 'link'
-          ? `See [${problem.solution.url}](${problem.solution.url})`
-          : problem.solution?.kind == 'label'
-          ? problem.solution.label
-          : problem.solution?.kind === 'sketch'
-          ? problem.solution.sketch
-          : '',
+            ? `See [${problem.solution.url}](${problem.solution.url})`
+            : problem.solution?.kind == 'label'
+              ? problem.solution.label
+              : problem.solution?.kind === 'sketch'
+                ? problem.solution.sketch
+                : '',
 
       source: problem.source,
       difficulty: problem.difficulty,

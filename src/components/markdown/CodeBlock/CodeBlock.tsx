@@ -109,12 +109,12 @@ const CodeSnipButton = ({
         (buttonDir == 'Up'
           ? ' rotate-180'
           : buttonDir == 'Down'
-          ? ''
-          : buttonDir == 'Left'
-          ? ' rotate-90'
-          : buttonDir == 'Right'
-          ? ' -rotate-90'
-          : '')
+            ? ''
+            : buttonDir == 'Left'
+              ? ' rotate-90'
+              : buttonDir == 'Right'
+                ? ' -rotate-90'
+                : '')
       }
       onClick={() => onShowSnipChange(snipID, !showSnip)}
     >

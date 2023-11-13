@@ -123,16 +123,16 @@ export const MainEditorInterface = ({ className }): JSX.Element => {
           activeFile === null
             ? 'NONE'
             : tab === 'content'
-            ? activeFile.path
-            : activeFile.path.replace(/\.mdx$/, '.problems.json')
+              ? activeFile.path
+              : activeFile.path.replace(/\.mdx$/, '.problems.json')
         }
         language={tab === 'content' ? 'custom-mdx' : 'json'}
         value={
           activeFile === null
             ? 'Open a file to begin'
             : tab === 'content'
-            ? markdown
-            : problems
+              ? markdown
+              : problems
         }
         onChange={(v, e) =>
           tab === 'content' ? setMarkdown(v) : setProblems(v)
