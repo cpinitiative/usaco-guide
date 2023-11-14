@@ -184,15 +184,15 @@ const ItemLink = ({
             isActive
               ? activeTextStyle
               : progress === 'Ignored'
-              ? tw`text-gray-400`
-              : tw`text-gray-600`
+                ? tw`text-gray-400`
+                : tw`text-gray-600`
           }
           $darkTextStyle={
             isActive
               ? darkActiveTextStyle
               : progress === 'Ignored'
-              ? tw`text-gray-600`
-              : tw`text-dark-med-emphasis`
+                ? tw`text-gray-600`
+                : tw`text-dark-med-emphasis`
           }
         >
           {link.title}

@@ -82,8 +82,8 @@ export default function Section({ refine }) {
                       backgroundColor: '#4d94ff',
                     }
                   : isSelected
-                  ? { backgroundColor: '#0063e6' }
-                  : {}),
+                    ? { backgroundColor: '#0063e6' }
+                    : {}),
               }),
             }
       }

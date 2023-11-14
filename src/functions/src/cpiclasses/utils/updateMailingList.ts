@@ -70,8 +70,8 @@ export default async function updateMailingList({
           preferredLanguage === 'java'
             ? 'Java'
             : preferredLanguage === 'cpp'
-            ? 'C++'
-            : 'Python',
+              ? 'C++'
+              : 'Python',
         BRVCJOINLK: joinLink,
       },
     };
