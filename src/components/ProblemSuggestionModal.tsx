@@ -282,8 +282,8 @@ export default function ProblemSuggestionModal({
                             backgroundColor: '#4d94ff',
                           }
                         : isSelected
-                        ? { backgroundColor: '#0063e6' }
-                        : {}),
+                          ? { backgroundColor: '#0063e6' }
+                          : {}),
                     }),
                   }
             }
@@ -506,8 +506,8 @@ export default function ProblemSuggestionModal({
                     {inEditor
                       ? 'Add Problem'
                       : loading
-                      ? 'Submitting...'
-                      : 'Submit Suggestion'}
+                        ? 'Submitting...'
+                        : 'Submit Suggestion'}
                   </button>
                 </span>
                 <span className="mt-3 flex w-full rounded-md shadow-sm sm:mt-0 sm:w-auto">

@@ -46,8 +46,8 @@ const AssignmentIcon = ({ pointsEarned, totalPoints }) => {
           (fullySolved
             ? 'bg-green-600'
             : inProgress
-            ? 'bg-orange-600'
-            : 'bg-light-blue-700') +
+              ? 'bg-orange-600'
+              : 'bg-light-blue-700') +
           ' rounded-full p-2 inline-flex items-center justify-center'
         }
       >

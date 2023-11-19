@@ -91,8 +91,8 @@ module.exports = (
       const captionOptions = Array.isArray(options.showCaptions)
         ? options.showCaptions
         : options.showCaptions === true
-        ? [`title`, `alt`]
-        : false;
+          ? [`title`, `alt`]
+          : false;
 
       if (captionOptions) {
         for (const option of captionOptions) {
