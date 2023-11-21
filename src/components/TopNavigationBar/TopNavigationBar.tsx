@@ -145,12 +145,12 @@ export default function TopNavigationBar({
                 </span>
                 <span className="block sm:ml-2 sm:inline-block">
                   <a
-                    href="https://forms.gle/LhGc6eQyFW77cG7v7"
+                    href="https://joincpi.org/workshops/ioi23"
                     target="_blank"
                     rel="noreferrer"
                     className="text-white font-bold underline"
                   >
-                    Apply here &rarr;
+                    Register here &rarr;
                   </a>
                 </span>
               </p>
