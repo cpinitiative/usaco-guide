@@ -140,7 +140,8 @@ export default function TopNavigationBar({
             <div className="pr-16 sm:text-center sm:px-16">
               <p className="font-medium text-white">
                 <span className="md:inline">
-                  Come to our Livesolve and Q&A workshop hosted by the USA's IOI team!
+                  Come to our Livesolve and Q&A workshop hosted by the USA's IOI
+                  team!
                 </span>
                 <span className="block sm:ml-2 sm:inline-block">
                   <a
