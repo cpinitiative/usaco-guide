@@ -140,17 +140,16 @@ export default function TopNavigationBar({
             <div className="pr-16 sm:text-center sm:px-16">
               <p className="font-medium text-white">
                 <span className="md:inline">
-                  We're recruiting problem writers to write problems for our
-                  interclub competition!
+                  Come to our Livesolve and Q&A workshop hosted by the USA's IOI team!
                 </span>
                 <span className="block sm:ml-2 sm:inline-block">
                   <a
-                    href="https://docs.google.com/forms/d/e/1FAIpQLSfz-eHQWKu96ozKRC55tYxe3YAMqjj1vLZiY1ZGt1dSjz72Kw/viewform"
+                    href="https://joincpi.org/workshops/ioi23"
                     target="_blank"
                     rel="noreferrer"
                     className="text-white font-bold underline"
                   >
-                    Apply here &rarr;
+                    Register here &rarr;
                   </a>
                 </span>
               </p>
