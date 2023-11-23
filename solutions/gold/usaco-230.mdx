@@ -22,7 +22,7 @@ From the hints, we'll separate the problem into $3$ sub-problems.
 3. Find best ordering of island visiting.
 
 
-For the examples below, $\texttt{grid}_{i, j} = 1$ for an island cell, $0$ for shallow water, and $-1$ for deep water. 
+For the examples below, $\texttt{grid}_{i, j} = 1$ for an island cell, $0$ for shallow water, and $-1$ for deep water.
 
 ---
 
@@ -51,8 +51,7 @@ auto identify = [&](int i, int j) {
 		for (int d = 0; d < 4; d++) {
 			int ni = top.first + dx[d], nj = top.second + dy[d];
 
-			if (ni < 0 || ni >= n || nj < 0 || nj >= m)
-				continue;
+			if (ni < 0 || ni >= n || nj < 0 || nj >= m) continue;
 
 			// part of same component
 			if (grid[ni][nj] == 1 && comp[ni][nj] == -1) {
@@ -71,7 +70,6 @@ for (int i = 0; i < n; i++) {
 		}
 	}
 }
-
 ```
 </CPPSection>
 </LanguageSection>
@@ -80,7 +78,7 @@ for (int i = 0; i < n; i++) {
 
 
 <Spoiler title="Find distances between islands.">
-Once again, we can afford to search through the entire grid for each island. 
+Once again, we can afford to search through the entire grid for each island.
 
 Let's perform a [0-1 BFS](/gold/unweighted-shortest-paths#extension---01-bfs) from every island, this time allowing us to step into cells with shallow water.
 
@@ -121,10 +119,8 @@ for (int to = 0; to < comp_number; to++) {
 			if (ncost < dist[nx][ny]) {
 				dist[nx][ny] = ncost;
 
-				if (grid[nx][ny] == 0)
-					todo.push_back({nx, ny});
-				else
-					todo.push_front({nx, ny});
+				if (grid[nx][ny] == 0) todo.push_back({nx, ny});
+				else todo.push_front({nx, ny});
 			}
 		}
 	}
@@ -133,9 +129,7 @@ for (int to = 0; to < comp_number; to++) {
 		int best = INF;
 		for (int i = 0; i < n; i++) {
 			for (int j = 0; j < m; j++) {
-				if (comp[i][j] == target) {
-					best = min(best, dist[i][j]);
-				}
+				if (comp[i][j] == target) { best = min(best, dist[i][j]); }
 			}
 		}
 
@@ -164,29 +158,24 @@ Our answer is the minimum element on $\texttt{dp}[2^n - 1]$.
 // ans[mask][i] = min cost if we visited mask & currently at i
 vector<vector<int>> ans(1 << comp_number, vector<int>(comp_number, INF));
 
-for (int i = 0; i < comp_number; i++) {
-	ans[1 << i][i] = 0;
-}
+for (int i = 0; i < comp_number; i++) { ans[1 << i][i] = 0; }
 
 for (int mask = 0; mask < (1 << comp_number); mask++) {
 	for (int to = 0; to < comp_number; to++) {
 		if (mask & (1 << to)) {
 			for (int from = 0; from < comp_number; from++) {
 				if (mask & (1 << from)) {
-					ans[mask][to] = min(
-						ans[mask][to],
-						ans[mask ^ (1 << to)][from] + cost[from][to]
-					);
+					ans[mask][to] =
+					    min(ans[mask][to],
+					        ans[mask ^ (1 << to)][from] + cost[from][to]);
 				}
 			}
 		}
 	}
 }
-cout << *min_element(
-			ans[(1 << comp_number) - 1].begin(),
-			ans[(1 << comp_number) - 1].end()
-		) << endl;
-
+cout << *min_element(ans[(1 << comp_number) - 1].begin(),
+                     ans[(1 << comp_number) - 1].end())
+     << endl;
 ```
 </CPPSection>
 </LanguageSection>
@@ -248,8 +237,7 @@ int main() {
 			for (int d = 0; d < 4; d++) {
 				int ni = top.first + dx[d], nj = top.second + dy[d];
 
-				if (ni < 0 || ni >= n || nj < 0 || nj >= m)
-					continue;
+				if (ni < 0 || ni >= n || nj < 0 || nj >= m) continue;
 
 				// part of same component
 				if (grid[ni][nj] == 1 && comp[ni][nj] == -1) {
@@ -292,7 +280,8 @@ int main() {
 			for (int d = 0; d < 4; d++) {
 				int nx = top.first + dx[d], ny = top.second + dy[d];
 
-				if (nx < 0 || nx >= n || ny < 0 || ny >= m || grid[nx][ny] == -1)
+				if (nx < 0 || nx >= n || ny < 0 || ny >= m ||
+				    grid[nx][ny] == -1)
 					continue;
 
 				// increase distance if we walk across shallow water
@@ -301,10 +290,8 @@ int main() {
 				if (ncost < dist[nx][ny]) {
 					dist[nx][ny] = ncost;
 
-					if (grid[nx][ny] == 0)
-						todo.push_back({nx, ny});
-					else
-						todo.push_front({nx, ny});
+					if (grid[nx][ny] == 0) todo.push_back({nx, ny});
+					else todo.push_front({nx, ny});
 				}
 			}
 		}
@@ -313,9 +300,7 @@ int main() {
 			int best = INF;
 			for (int i = 0; i < n; i++) {
 				for (int j = 0; j < m; j++) {
-					if (comp[i][j] == target) {
-						best = min(best, dist[i][j]);
-					}
+					if (comp[i][j] == target) { best = min(best, dist[i][j]); }
 				}
 			}
 
@@ -326,29 +311,24 @@ int main() {
 	// ans[mask][i] = min cost if we visited mask & currently at i
 	vector<vector<int>> ans(1 << comp_number, vector<int>(comp_number, INF));
 
-	for (int i = 0; i < comp_number; i++) {
-		ans[1 << i][i] = 0;
-	}
+	for (int i = 0; i < comp_number; i++) { ans[1 << i][i] = 0; }
 
 	for (int mask = 0; mask < (1 << comp_number); mask++) {
 		for (int to = 0; to < comp_number; to++) {
 			if (mask & (1 << to)) {
 				for (int from = 0; from < comp_number; from++) {
 					if (mask & (1 << from)) {
-						ans[mask][to] = min(
-							ans[mask][to],
-							ans[mask ^ (1 << to)][from] + cost[from][to]
-						);
+						ans[mask][to] =
+						    min(ans[mask][to],
+						        ans[mask ^ (1 << to)][from] + cost[from][to]);
 					}
 				}
 			}
 		}
 	}
-	cout << *min_element(
-				ans[(1 << comp_number) - 1].begin(),
-				ans[(1 << comp_number) - 1].end()
-			) << endl;
-
+	cout << *min_element(ans[(1 << comp_number) - 1].begin(),
+	                     ans[(1 << comp_number) - 1].end())
+	     << endl;
 }
 ```
 </CPPSection>
