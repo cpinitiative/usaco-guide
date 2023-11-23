@@ -1,0 +1,356 @@
+---
+id: usaco-230
+source: USACO Gold 2013 January
+title: Island Travels
+author: Ryan Chou
+---
+
+<Spoiler title="Hint 1">
+Let's break down the problem into multiple parts. We'll first identify all islands & the distances between them.
+</Spoiler>
+
+<Spoiler title="Solution">
+
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_island.html)
+
+## Explanation
+
+From the hints, we'll separate the problem into $3$ sub-problems.
+
+1. Identify all islands.
+2. Find distances between islands.
+3. Find best ordering of island visiting.
+
+
+For the examples below, $\texttt{grid}_{i, j} = 1$ for an island cell, $0$ for shallow water, and $-1$ for deep water. 
+
+---
+
+
+<Spoiler title="Identify all islands">
+Since the bounds are so low ($R, C \leq 50$), we can [floodfill](/silver/flood-fill) and label each island cell with a unique island number.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+vector<vector<int>> comp(n, vector<int>(m, -1));
+
+int comp_number = 0;
+auto identify = [&](int i, int j) {
+	queue<pair<int, int>> todo;
+	todo.push({i, j});
+
+	while (!todo.empty()) {
+		pair<int, int> top = todo.front();
+		todo.pop();
+
+		comp[top.first][top.second] = comp_number;
+
+		for (int d = 0; d < 4; d++) {
+			int ni = top.first + dx[d], nj = top.second + dy[d];
+
+			if (ni < 0 || ni >= n || nj < 0 || nj >= m)
+				continue;
+
+			// part of same component
+			if (grid[ni][nj] == 1 && comp[ni][nj] == -1) {
+				todo.push({ni, nj});
+			}
+		}
+	}
+};
+
+// visit all islands
+for (int i = 0; i < n; i++) {
+	for (int j = 0; j < m; j++) {
+		if (grid[i][j] == 1 && comp[i][j] == -1) {
+			identify(i, j);
+			comp_number++;
+		}
+	}
+}
+
+```
+</CPPSection>
+</LanguageSection>
+</Spoiler>
+
+
+
+<Spoiler title="Find distances between islands.">
+Once again, we can afford to search through the entire grid for each island. 
+
+Let's perform a [0-1 BFS](/gold/unweighted-shortest-paths#extension---01-bfs) from every island, this time allowing us to step into cells with shallow water.
+
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+// cost[i][j] = distance between island i and island j
+vector<vector<int>> cost(comp_number, vector<int>(comp_number, INF));
+for (int to = 0; to < comp_number; to++) {
+	// standard 0-1 BFS
+	deque<pair<int, int>> todo;
+
+	vector<vector<int>> dist(n, vector<int>(m, INF));
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < m; j++) {
+			if (comp[i][j] == to) {
+				todo.push_back({i, j});
+				dist[i][j] = 0;
+			}
+		}
+	}
+
+	while (!todo.empty()) {
+		auto top = todo.front();
+		todo.pop_front();
+
+		for (int d = 0; d < 4; d++) {
+			int nx = top.first + dx[d], ny = top.second + dy[d];
+
+			if (nx < 0 || nx >= n || ny < 0 || ny >= m || grid[nx][ny] == -1)
+				continue;
+
+			// increase distance if we walk across shallow water
+			int ncost = dist[top.first][top.second] + (grid[nx][ny] == 0);
+
+			if (ncost < dist[nx][ny]) {
+				dist[nx][ny] = ncost;
+
+				if (grid[nx][ny] == 0)
+					todo.push_back({nx, ny});
+				else
+					todo.push_front({nx, ny});
+			}
+		}
+	}
+
+	for (int target = 0; target < comp_number; target++) {
+		int best = INF;
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < m; j++) {
+				if (comp[i][j] == target) {
+					best = min(best, dist[i][j]);
+				}
+			}
+		}
+
+		cost[to][target] = best;
+	}
+}
+```
+</CPPSection>
+</LanguageSection>
+</Spoiler>
+
+
+
+<Spoiler title="Find best ordering of island visiting.  ">
+Note that the bound on islands ($N$) is $\leq 15$, so we can iterate over all subsets of islands ($2^{15} \le 10^6$).
+
+We'll use a DP state where $\texttt{dp}[\texttt{mask}][i] = $ the minimum cost such that we've visited the bits that are on in $\texttt{mask}$ and we end at island $i$.
+
+We can transition over the last step naively in $\mathcal{O}(N^2)$, which still fits inside the time limit.
+
+Our answer is the minimum element on $\texttt{dp}[2^n - 1]$.
+<LanguageSection>
+<CPPSection>
+
+```cpp
+// ans[mask][i] = min cost if we visited mask & currently at i
+vector<vector<int>> ans(1 << comp_number, vector<int>(comp_number, INF));
+
+for (int i = 0; i < comp_number; i++) {
+	ans[1 << i][i] = 0;
+}
+
+for (int mask = 0; mask < (1 << comp_number); mask++) {
+	for (int to = 0; to < comp_number; to++) {
+		if (mask & (1 << to)) {
+			for (int from = 0; from < comp_number; from++) {
+				if (mask & (1 << from)) {
+					ans[mask][to] = min(
+						ans[mask][to],
+						ans[mask ^ (1 << to)][from] + cost[from][to]
+					);
+				}
+			}
+		}
+	}
+}
+cout << *min_element(
+			ans[(1 << comp_number) - 1].begin(),
+			ans[(1 << comp_number) - 1].end()
+		) << endl;
+
+```
+</CPPSection>
+</LanguageSection>
+</Spoiler>
+
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N^2 \cdot 2^N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+// direction vectors
+const vector<int> dx = {1, 0, -1, 0}, dy = {0, 1, 0, -1};
+// arbitrarily large
+const int INF = 1e9;
+
+int main() {
+	freopen("island.in", "r", stdin);
+	freopen("island.out", "w", stdout);
+
+	int n, m;
+	cin >> n >> m;
+
+	vector<vector<int>> grid(n, vector<int>(m));
+	for (int i = 0; i < n; i++) {
+		string s;
+		cin >> s;
+		for (int j = 0; j < m; j++) {
+			if (s[j] == 'X') {
+				grid[i][j] = 1;
+			} else if (s[j] == 'S') {
+				grid[i][j] = 0;
+			} else {
+				grid[i][j] = -1;
+			}
+		}
+	}
+
+	// comp[i][j] = island number of (i, j)
+	vector<vector<int>> comp(n, vector<int>(m, -1));
+
+	int comp_number = 0;
+	auto identify = [&](int i, int j) {
+		queue<pair<int, int>> todo;
+		todo.push({i, j});
+
+		while (!todo.empty()) {
+			pair<int, int> top = todo.front();
+			todo.pop();
+
+			comp[top.first][top.second] = comp_number;
+
+			for (int d = 0; d < 4; d++) {
+				int ni = top.first + dx[d], nj = top.second + dy[d];
+
+				if (ni < 0 || ni >= n || nj < 0 || nj >= m)
+					continue;
+
+				// part of same component
+				if (grid[ni][nj] == 1 && comp[ni][nj] == -1) {
+					todo.push({ni, nj});
+				}
+			}
+		}
+	};
+
+	// visit all islands
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < m; j++) {
+			if (grid[i][j] == 1 && comp[i][j] == -1) {
+				identify(i, j);
+				comp_number++;
+			}
+		}
+	}
+
+	// cost[i][j] = distance between island i and island j
+	vector<vector<int>> cost(comp_number, vector<int>(comp_number, INF));
+	for (int to = 0; to < comp_number; to++) {
+		// standard 0-1 BFS
+		deque<pair<int, int>> todo;
+
+		vector<vector<int>> dist(n, vector<int>(m, INF));
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < m; j++) {
+				if (comp[i][j] == to) {
+					todo.push_back({i, j});
+					dist[i][j] = 0;
+				}
+			}
+		}
+
+		while (!todo.empty()) {
+			auto top = todo.front();
+			todo.pop_front();
+
+			for (int d = 0; d < 4; d++) {
+				int nx = top.first + dx[d], ny = top.second + dy[d];
+
+				if (nx < 0 || nx >= n || ny < 0 || ny >= m || grid[nx][ny] == -1)
+					continue;
+
+				// increase distance if we walk across shallow water
+				int ncost = dist[top.first][top.second] + (grid[nx][ny] == 0);
+
+				if (ncost < dist[nx][ny]) {
+					dist[nx][ny] = ncost;
+
+					if (grid[nx][ny] == 0)
+						todo.push_back({nx, ny});
+					else
+						todo.push_front({nx, ny});
+				}
+			}
+		}
+
+		for (int target = 0; target < comp_number; target++) {
+			int best = INF;
+			for (int i = 0; i < n; i++) {
+				for (int j = 0; j < m; j++) {
+					if (comp[i][j] == target) {
+						best = min(best, dist[i][j]);
+					}
+				}
+			}
+
+			cost[to][target] = best;
+		}
+	}
+
+	// ans[mask][i] = min cost if we visited mask & currently at i
+	vector<vector<int>> ans(1 << comp_number, vector<int>(comp_number, INF));
+
+	for (int i = 0; i < comp_number; i++) {
+		ans[1 << i][i] = 0;
+	}
+
+	for (int mask = 0; mask < (1 << comp_number); mask++) {
+		for (int to = 0; to < comp_number; to++) {
+			if (mask & (1 << to)) {
+				for (int from = 0; from < comp_number; from++) {
+					if (mask & (1 << from)) {
+						ans[mask][to] = min(
+							ans[mask][to],
+							ans[mask ^ (1 << to)][from] + cost[from][to]
+						);
+					}
+				}
+			}
+		}
+	}
+	cout << *min_element(
+				ans[(1 << comp_number) - 1].begin(),
+				ans[(1 << comp_number) - 1].end()
+			) << endl;
+
+}
+```
+</CPPSection>
+</LanguageSection>
+</Spoiler>
