@@ -6,7 +6,9 @@ author: Ryan Chou
 ---
 
 <Spoiler title="Hint 1">
+
 Let's break down the problem into multiple parts. We'll first identify all islands & the distances between them.
+
 </Spoiler>
 
 <Spoiler title="Solution">
@@ -21,17 +23,15 @@ From the hints, we'll separate the problem into $3$ sub-problems.
 2. Find distances between islands.
 3. Find best ordering of island visiting.
 
-
 For the examples below, $\texttt{grid}_{i, j} = 1$ for an island cell, $0$ for shallow water, and $-1$ for deep water.
 
 ---
 
-
 <Spoiler title="Identify all islands">
+
 Since the bounds are so low ($R, C \leq 50$), we can [floodfill](/silver/flood-fill) and label each island cell with a unique island number.
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
@@ -71,17 +71,17 @@ for (int i = 0; i < n; i++) {
 	}
 }
 ```
+
 </CPPSection>
 </LanguageSection>
+
 </Spoiler>
 
-
-
 <Spoiler title="Find distances between islands.">
+
 Once again, we can afford to search through the entire grid for each island.
 
 Let's perform a [0-1 BFS](/gold/unweighted-shortest-paths#extension---01-bfs) from every island, this time allowing us to step into cells with shallow water.
-
 
 <LanguageSection>
 <CPPSection>
@@ -137,13 +137,13 @@ for (int to = 0; to < comp_number; to++) {
 	}
 }
 ```
+
 </CPPSection>
 </LanguageSection>
 </Spoiler>
 
-
-
 <Spoiler title="Find best ordering of island visiting.  ">
+
 Note that the bound on islands ($N$) is $\leq 15$, so we can iterate over all subsets of islands ($2^{15} \le 10^6$).
 
 We'll use a DP state where $\texttt{dp}[\texttt{mask}][i] = $ the minimum cost such that we've visited the bits that are on in $\texttt{mask}$ and we end at island $i$.
@@ -151,6 +151,7 @@ We'll use a DP state where $\texttt{dp}[\texttt{mask}][i] = $ the minimum cost s
 We can transition over the last step naively in $\mathcal{O}(N^2)$, which still fits inside the time limit.
 
 Our answer is the minimum element on $\texttt{dp}[2^n - 1]$.
+
 <LanguageSection>
 <CPPSection>
 
@@ -177,10 +178,11 @@ cout << *min_element(ans[(1 << comp_number) - 1].begin(),
                      ans[(1 << comp_number) - 1].end())
      << endl;
 ```
+
 </CPPSection>
 </LanguageSection>
-</Spoiler>
 
+</Spoiler>
 
 ## Implementation
 
@@ -331,6 +333,7 @@ int main() {
 	     << endl;
 }
 ```
+
 </CPPSection>
 </LanguageSection>
 </Spoiler>
