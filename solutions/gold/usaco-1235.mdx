@@ -4,9 +4,11 @@ source: USACO Gold 2022 Open
 title: Balancing a Tree
 author: Daniel Zhu
 ---
+
 [Official Analysis](http://www.usaco.org/current/data/sol_prob2_gold_open22.html)
 
 Consider binary searching on the minimum imbalance. For a given imbalance $k$, how can we check whether a valid tree with imbalance $\leq k$ exists? We can try to construct the tree bottom-up, ensuring as we move up the tree that the value of each node is still within $k$ of the values of its descendants. Thus, we can store for each node the range of values it's allowed to take on: for a leaf $i$, this will simply be $[l_i, r_i]$, but this restricts its parent (and all ancestors) $p_i$ to the range $[l_i - k, r_i + k]$, in addition to $p_i$'s own restriction of $[l_{p_i}, r_{p_i}]$. If at any point a node is restricted to a degenerate range (i.e. $l > r$), we know a tree with imbalance $k$ cannot exist. Here's the snippet for this checker function:
+
 <LanguageSection>
 <CPPSection>
 
@@ -93,7 +95,6 @@ int main() {
 			for (int i = 1; i <= n; i++) cout << s[i] << " \n"[i == n];
 		}
 	}
-	return 0;
 }
 ```
 
