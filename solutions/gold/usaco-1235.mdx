@@ -14,21 +14,21 @@ Consider binary searching on the minimum imbalance. For a given imbalance $k$, h
 // L[i], R[i] -> original restrictions (from input) on i
 // l[i], r[i] -> restrictions on all ancestors of i
 bool ck(int k) {
-    for (int i = 1; i <= n; i++) {
-        // all ancestors of i are restricted to [l_i - k, r_i + k]
-        l[i] = L[i] - k;
-        r[i] = R[i] + k;
-    }
-    // this works because p_i < i
-    for (int i = n; i > 0; i--) {
-        // check for degenerate ranges
-        if (l[i] > r[i]) return false;
-        if (p[i] && (l[i] > R[p[i]] || r[i] < L[p[i]])) return false;
-        // propagate restrictions to parent
-        l[p[i]] = max(l[p[i]], l[i]);
-        r[p[i]] = min(r[p[i]], r[i]);
-    }
-    return true;
+	for (int i = 1; i <= n; i++) {
+		// all ancestors of i are restricted to [l_i - k, r_i + k]
+		l[i] = L[i] - k;
+		r[i] = R[i] + k;
+	}
+	// this works because p_i < i
+	for (int i = n; i > 0; i--) {
+		// check for degenerate ranges
+		if (l[i] > r[i]) return false;
+		if (p[i] && (l[i] > R[p[i]] || r[i] < L[p[i]])) return false;
+		// propagate restrictions to parent
+		l[p[i]] = max(l[p[i]], l[i]);
+		r[p[i]] = min(r[p[i]], r[i]);
+	}
+	return true;
 }
 ```
 
@@ -48,51 +48,52 @@ const int K = 1e9;
 int t, b, n, p[N], L[N], R[N], l[N], r[N], s[N];
 // for a more detailed explanation of ck and sl see above
 bool ck(int k) {
-    for (int i = 1; i <= n; i++) l[i] = L[i] - k, r[i] = R[i] + k;
-    for (int i = n; i > 0; i--) {
-        if (l[i] > r[i] || r[i] < l[i]) return false;
-        if (p[i] && (l[i] > R[p[i]] || r[i] < L[p[i]])) return false;
-        l[p[i]] = max(l[p[i]], l[i]);
-        r[p[i]] = min(r[p[i]], r[i]);
-    }
-    return true;
+	for (int i = 1; i <= n; i++) l[i] = L[i] - k, r[i] = R[i] + k;
+	for (int i = n; i > 0; i--) {
+		if (l[i] > r[i] || r[i] < l[i]) return false;
+		if (p[i] && (l[i] > R[p[i]] || r[i] < L[p[i]])) return false;
+		l[p[i]] = max(l[p[i]], l[i]);
+		r[p[i]] = min(r[p[i]], r[i]);
+	}
+	return true;
 }
 
 void sl(int k) {
-    ck(k);
-    for (int i = 0; i <= n; i++) {
-        L[p[i]] = max(L[p[i]], l[i]);
-        R[p[i]] = min(R[p[i]], r[i]);
-        l[i] = 0, r[i] = K;
-    }
-    for (int i = 1; i <= n; i++) {
-        s[i] = max(L[i], l[p[i]]);
-        l[i] = max(l[p[i]], s[i] - k);
-        r[i] = min(r[p[i]], s[i] + k);
-
-    }
+	ck(k);
+	for (int i = 0; i <= n; i++) {
+		L[p[i]] = max(L[p[i]], l[i]);
+		R[p[i]] = min(R[p[i]], r[i]);
+		l[i] = 0, r[i] = K;
+	}
+	for (int i = 1; i <= n; i++) {
+		s[i] = max(L[i], l[p[i]]);
+		l[i] = max(l[p[i]], s[i] - k);
+		r[i] = min(r[p[i]], s[i] + k);
+	}
 }
 
 int main() {
-    cin.tie(0)->sync_with_stdio(0);
-    cin >> t >> b;
-    while (t--) {
-        cin >> n;
-        for (int i = 2; i <= n; i++) cin >> p[i];
-        for (int i = 1; i <= n; i++) cin >> L[i] >> R[i];
-        int x = -1;
-        // binary search: https://usaco.guide/silver/binary-search?lang=cpp#implementation-2
-        for (int d = K; d > 0; d /= 2) {
-            while (x + d < K && !ck(x + d)) x += d;
-        }
-        cout << x + 1 << endl;
-        if (b) {
-            sl(x + 1);
-            // for whatever reason this problem has a really obnoxious whitespace checker
-            for (int i = 1; i <= n; i++) cout << s[i] << " \n"[i == n];
-        }
-    }
-    return 0;
+	cin.tie(0)->sync_with_stdio(0);
+	cin >> t >> b;
+	while (t--) {
+		cin >> n;
+		for (int i = 2; i <= n; i++) cin >> p[i];
+		for (int i = 1; i <= n; i++) cin >> L[i] >> R[i];
+		int x = -1;
+		// binary search:
+		// https://usaco.guide/silver/binary-search?lang=cpp#implementation-2
+		for (int d = K; d > 0; d /= 2) {
+			while (x + d < K && !ck(x + d)) x += d;
+		}
+		cout << x + 1 << endl;
+		if (b) {
+			sl(x + 1);
+			// for whatever reason this problem has a really obnoxious
+			// whitespace checker
+			for (int i = 1; i <= n; i++) cout << s[i] << " \n"[i == n];
+		}
+	}
+	return 0;
 }
 ```
 
