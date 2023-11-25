@@ -1,0 +1,100 @@
+---
+id: usaco-1235
+source: USACO Gold 2022 Open
+title: Balancing a Tree
+author: Daniel Zhu
+---
+[Official Analysis](http://www.usaco.org/current/data/sol_prob2_gold_open22.html)
+
+Consider binary searching on the minimum imbalance. For a given imbalance $k$, how can we check whether a valid tree with imbalance $\leq k$ exists? We can try to construct the tree bottom-up, ensuring as we move up the tree that the value of each node is still within $k$ of the values of its descendants. Thus, we can store for each node the range of values it's allowed to take on: for a leaf $i$, this will simply be $[l_i, r_i]$, but this restricts its parent (and all ancestors) $p_i$ to the range $[l_i - k, r_i + k]$, in addition to $p_i$'s own restriction of $[l_{p_i}, r_{p_i}]$. If at any point a node is restricted to a degenerate range (i.e. $l > r$), we know a tree with imbalance $k$ cannot exist. Here's the snippet for this checker function:
+<LanguageSection>
+<CPPSection>
+
+```cpp
+// L[i], R[i] -> original restrictions (from input) on i
+// l[i], r[i] -> restrictions on all ancestors of i
+bool ck(int k) {
+    for (int i = 1; i <= n; i++) {
+        // all ancestors of i are restricted to [l_i - k, r_i + k]
+        l[i] = L[i] - k;
+        r[i] = R[i] + k;
+    }
+    // this works because p_i < i
+    for (int i = n; i > 0; i--) {
+        // check for degenerate ranges
+        if (l[i] > r[i]) return false;
+        if (p[i] && (l[i] > R[p[i]] || r[i] < L[p[i]])) return false;
+        // propagate restrictions to parent
+        l[p[i]] = max(l[p[i]], l[i]);
+        r[p[i]] = min(r[p[i]], r[i]);
+    }
+    return true;
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
+Now that we have our minimum imbalance, all that's left to do is construct a solution! We can essentially reverse our process for checking: nodes will be more restricted than their descendants, with the root being the most restricted and the leaves being the least. Thus, we can build our solution top-down: starting at node 1, we can pick any value satisfying all restrictions found from the `ck` function (in the solution, we simply pick the left endpoint of the range of values for simplicity). Then, if this value of $x$, all descendants are restricted by $[x - k, x + k]$ (in addition to their own restrictions from `ck`). Here's the relevant snippet:
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+using namespace std;
+const int N = 1e5 + 1;
+const int K = 1e9;
+int t, b, n, p[N], L[N], R[N], l[N], r[N], s[N];
+// for a more detailed explanation of ck and sl see above
+bool ck(int k) {
+    for (int i = 1; i <= n; i++) l[i] = L[i] - k, r[i] = R[i] + k;
+    for (int i = n; i > 0; i--) {
+        if (l[i] > r[i] || r[i] < l[i]) return false;
+        if (p[i] && (l[i] > R[p[i]] || r[i] < L[p[i]])) return false;
+        l[p[i]] = max(l[p[i]], l[i]);
+        r[p[i]] = min(r[p[i]], r[i]);
+    }
+    return true;
+}
+
+void sl(int k) {
+    ck(k);
+    for (int i = 0; i <= n; i++) {
+        L[p[i]] = max(L[p[i]], l[i]);
+        R[p[i]] = min(R[p[i]], r[i]);
+        l[i] = 0, r[i] = K;
+    }
+    for (int i = 1; i <= n; i++) {
+        s[i] = max(L[i], l[p[i]]);
+        l[i] = max(l[p[i]], s[i] - k);
+        r[i] = min(r[p[i]], s[i] + k);
+
+    }
+}
+
+int main() {
+    cin.tie(0)->sync_with_stdio(0);
+    cin >> t >> b;
+    while (t--) {
+        cin >> n;
+        for (int i = 2; i <= n; i++) cin >> p[i];
+        for (int i = 1; i <= n; i++) cin >> L[i] >> R[i];
+        int x = -1;
+        // binary search: https://usaco.guide/silver/binary-search?lang=cpp#implementation-2
+        for (int d = K; d > 0; d /= 2) {
+            while (x + d < K && !ck(x + d)) x += d;
+        }
+        cout << x + 1 << endl;
+        if (b) {
+            sl(x + 1);
+            // for whatever reason this problem has a really obnoxious whitespace checker
+            for (int i = 1; i <= n; i++) cout << s[i] << " \n"[i == n];
+        }
+    }
+    return 0;
+}
+```
+
+</CPPSection>
+</LanguageSection>
