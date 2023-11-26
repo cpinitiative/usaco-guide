@@ -121,7 +121,8 @@ int main() {
 			// need a slash if it isn't a file
 			bool slash = !bessie[u].isFile;
 			bessie[v].nleaves += bessie[u].nleaves;
-			inside[v] += inside[u] + ((bessie[u].len + slash) * bessie[u].nleaves);
+			inside[v] +=
+			    inside[u] + ((bessie[u].len + slash) * bessie[u].nleaves);
 		}
 	};
 	search_inside(0);
@@ -129,20 +130,20 @@ int main() {
 	vector<long long> outside(n);
 	function<void(int)> search_outside = [&](int v) {
 		for (int u : bessie[v].children) {
-			long long same = (inside[v] - inside[u]) -
-									((bessie[u].len + !bessie[u].isFile) * (bessie[u].nleaves));
-			
+			long long same =
+			    (inside[v] - inside[u]) -
+			    ((bessie[u].len + !bessie[u].isFile) * (bessie[u].nleaves));
+
 			// add all ../s too
-			outside[u] = same + outside[v] + (3 * (total_leaves - bessie[u].nleaves));
+			outside[u] =
+			    same + outside[v] + (3 * (total_leaves - bessie[u].nleaves));
 			search_outside(u);
 		}
 	};
 	search_outside(0);
 
 	long long ans = LONG_LONG_MAX;
-	for (int i = 0; i < n; i++) {
-		ans = min(ans, outside[i] + inside[i]);
-	}
+	for (int i = 0; i < n; i++) { ans = min(ans, outside[i] + inside[i]); }
 
 	freopen("dirtraverse.out", "w", stdout);
 	cout << ans << endl;
