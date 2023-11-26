@@ -19,7 +19,7 @@ Here's the snippet for this checker function:
 ```cpp
 // L[i], R[i] -> original restrictions (from input) on i
 // l[i], r[i] -> restrictions on all ancestors of i
-bool ck(int k) {
+bool check(int k) {
 	for (int i = 1; i <= n; i++) {
 		// all ancestors of i are restricted to [l_i - k, r_i + k]
 		l[i] = L[i] - k;
@@ -45,7 +45,7 @@ bool ck(int k) {
 
 Now that we have our minimum imbalance, all that's left to do is construct a solution! We can essentially reverse our process for checking: nodes will be more restricted than their descendants, with the root being the most restricted and the leaves being the least.
 
-Thus, we can build our solution top-down: starting at node 1, we can pick any value satisfying all restrictions found from the `ck` function (in the solution, we simply pick the left endpoint of the range of values for simplicity). Then, if this value is $x$, all descendants are restricted by $[x - k, x + k]$ (in addition to their own restrictions from `ck`).
+Thus, we can build our solution top-down: starting at node 1, we can pick any value satisfying all restrictions found from the `check` function (in the solution, we simply pick the left endpoint of the range of values for simplicity). Then, if this value is $x$, all descendants are restricted by $[x - k, x + k]$ (in addition to their own restrictions from `check`).
 
 Here's the relevant snippet:
 
@@ -53,18 +53,18 @@ Here's the relevant snippet:
 <CPPSection>
 
 ```cpp
-void sl(int k) {
-	// we have to call ck again to reconstruct l[i] and r[i]
-	assert(ck(k));
-
-	// we repurpose l and r to be restrictions
-	// on i's descendants rather than ancestors
-	// (loop starts from 0 b/c p[1] = 0)
+void solve(int k) {
+	// we have to call check again to reconstruct l[i] and r[i]
+	assert(check(k));
 	for (int i = 0; i <= n; i++) {
+		// propagate `check` restrictions to ancestors
 		L[p[i]] = max(L[p[i]], l[i]);
 		R[p[i]] = min(R[p[i]], r[i]);
 		l[i] = 0, r[i] = K;
 	}
+	// we repurpose l and r to be restrictions
+	// on i's descendants rather than ancestors
+	// (loop above starts from 0 b/c p[1] = 0)
 
 	for (int i = 1; i <= n; i++) {
 		// pick s[i] to be left endpoint of valid range
@@ -95,8 +95,8 @@ const int K = 1e9;
 
 int n, p[N], L[N], R[N], l[N], r[N], s[N];
 
-// for a more detailed explanation of ck and sl see above
-bool ck(int k) {
+// for a more detailed explanation of check and solve see above
+bool check(int k) {
 	for (int i = 1; i <= n; i++) l[i] = L[i] - k, r[i] = R[i] + k;
 	for (int i = n; i > 0; i--) {
 		if (l[i] > r[i] || r[i] < l[i]) return false;
@@ -107,8 +107,8 @@ bool ck(int k) {
 	return true;
 }
 
-void sl(int k) {
-	assert(ck(k));
+void solve(int k) {
+	assert(check(k));
 	for (int i = 0; i <= n; i++) {
 		L[p[i]] = max(L[p[i]], l[i]);
 		R[p[i]] = min(R[p[i]], r[i]);
@@ -122,7 +122,6 @@ void sl(int k) {
 }
 
 int main() {
-	cin.tie(0)->sync_with_stdio(0);
 
 	int test_num;
 	int b;
@@ -136,12 +135,12 @@ int main() {
 		// binary search:
 		// https://usaco.guide/silver/binary-search?lang=cpp#implementation-2
 		for (int d = K; d > 0; d /= 2) {
-			while (x + d < K && !ck(x + d)) x += d;
+			while (x + d < K && !check(x + d)) x += d;
 		}
 		cout << x + 1 << endl;
 
 		if (b) {
-			sl(x + 1);
+			solve(x + 1);
 			// for whatever reason this problem has a really obnoxious
 			// whitespace checker
 			for (int i = 1; i <= n; i++) cout << s[i] << " \n"[i == n];
