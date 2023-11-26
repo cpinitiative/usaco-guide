@@ -73,7 +73,7 @@ This is because every outside node must be in the parent's subtree ($\texttt{ins
 using namespace std;
 
 struct Data {
-	bool isFile;  // is it a leaf
+	bool is_file;  // is it a leaf
 	int len;      // length of name
 	int nleaves;  // number of leaves in subtree
 	vector<int> children;
@@ -95,7 +95,7 @@ int main() {
 		bessie[i].len = (int)s.size();
 
 		if (m == 0) {
-			bessie[i].isFile = 1;
+			bessie[i].is_file = 1;
 			total_leaves++;
 		}
 
@@ -107,7 +107,7 @@ int main() {
 		}
 	}
 
-	// compute insides & then outsides
+	// compute insides
 	vector<long long> inside(n);
 	function<void(int)> search_inside = [&](int v) {
 		if (bessie[v].children.empty()) {
@@ -119,7 +119,7 @@ int main() {
 			search_inside(u);
 
 			// need a slash if it isn't a file
-			bool slash = !bessie[u].isFile;
+			bool slash = !bessie[u].is_file;
 			bessie[v].nleaves += bessie[u].nleaves;
 			inside[v] +=
 			    inside[u] + ((bessie[u].len + slash) * bessie[u].nleaves);
@@ -127,12 +127,13 @@ int main() {
 	};
 	search_inside(0);
 
+	// and then compute outsides
 	vector<long long> outside(n);
 	function<void(int)> search_outside = [&](int v) {
 		for (int u : bessie[v].children) {
 			long long same =
 			    (inside[v] - inside[u]) -
-			    ((bessie[u].len + !bessie[u].isFile) * (bessie[u].nleaves));
+			    ((bessie[u].len + !bessie[u].is_file) * (bessie[u].nleaves));
 
 			// add all ../s too
 			outside[u] =
