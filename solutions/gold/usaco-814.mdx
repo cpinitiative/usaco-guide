@@ -6,15 +6,19 @@ author: Ryan Chou
 ---
 
 <Spoiler title="Hint 1">
+
 If you're not sure where to start, think about what the directories and files represent. Then, you should be able to restructure the problem into one that seems easier to approach.
+
 </Spoiler>
 
 <Spoiler title="Answer to Hint 1">
+
 They form a tree where the lengths of the file/directory names represent the weights.
 
-Now, we can phrase the problem as:
+Now, we can phrase the problem as follows:
 
 > For each node in a tree, what's the minimum sum of path lengths from a node to all of the tree's leaves?
+
 </Spoiler>
 
 <Spoiler title="Solution">
@@ -34,15 +38,19 @@ For example, in the following tree, the inside distance for node $4$ would equal
 *Note: For the outside value, we also have to include the two `../`s that are required to backtrack.*
 
 <Optional title="Keep Thinking!">
+
 Now that you've made it here, try figuring out a way to calculate this by yourself. :)
+
 </Optional>
 
-
 <Spoiler title="Calculating inside distances">
-We can solve this with a simple [DFS](/silver/graph-traversal) through the tree since the inside value of the parent is just the inside value of the child (plus a slash).
+
+We can solve this with a [DFS](/silver/graph-traversal) through the tree since the inside value of the parent is just the inside value of the child (plus a slash).
+
 </Spoiler>
 
 <Spoiler title="Calculating outside distances">
+
 Surprisingly, we can also solve this with a DFS!
 
 Note that if we have already calculated the outside value for a node's parent, we have all the information we need to calculate itself as well.
@@ -50,6 +58,7 @@ Note that if we have already calculated the outside value for a node's parent, w
 This is because every outside node must be in the parent's subtree ($\texttt{inside}[p] - \texttt{inside}[n]$), or outside that parent's subtree ($\texttt{outside}[p]$). Here, $p$ represents the parent, and $n$ represents the current node.
 
 ![](usaco-814/outside.png)
+
 </Spoiler>
 
 ## Implementation
@@ -64,7 +73,7 @@ This is because every outside node must be in the parent's subtree ($\texttt{ins
 using namespace std;
 
 struct Data {
-	bool isFile;  // (is it a leaf)
+	bool isFile;  // is it a leaf
 	int len;      // length of name
 	int nleaves;  // number of leaves in subtree
 	vector<int> children;
@@ -72,7 +81,6 @@ struct Data {
 
 int main() {
 	freopen("dirtraverse.in", "r", stdin);
-	freopen("dirtraverse.out", "w", stdout);
 
 	int n;
 	cin >> n;
@@ -113,8 +121,7 @@ int main() {
 			// need a slash if it isn't a file
 			bool slash = !bessie[u].isFile;
 			bessie[v].nleaves += bessie[u].nleaves;
-			inside[v] +=
-			    inside[u] + ((bessie[u].len + slash) * bessie[u].nleaves);
+			inside[v] += inside[u] + ((bessie[u].len + slash) * bessie[u].nleaves);
 		}
 	};
 	search_inside(0);
@@ -122,23 +129,27 @@ int main() {
 	vector<long long> outside(n);
 	function<void(int)> search_outside = [&](int v) {
 		for (int u : bessie[v].children) {
-			long long same =
-			    (inside[v] - inside[u]) -
-			    ((bessie[u].len + !bessie[u].isFile) * (bessie[u].nleaves));
-
+			long long same = (inside[v] - inside[u]) -
+									((bessie[u].len + !bessie[u].isFile) * (bessie[u].nleaves));
+			
 			// add all ../s too
-			outside[u] =
-			    same + outside[v] + (3 * (total_leaves - bessie[u].nleaves));
+			outside[u] = same + outside[v] + (3 * (total_leaves - bessie[u].nleaves));
 			search_outside(u);
 		}
 	};
 	search_outside(0);
 
 	long long ans = LONG_LONG_MAX;
-	for (int i = 0; i < n; i++) { ans = min(ans, outside[i] + inside[i]); }
+	for (int i = 0; i < n; i++) {
+		ans = min(ans, outside[i] + inside[i]);
+	}
+
+	freopen("dirtraverse.out", "w", stdout);
 	cout << ans << endl;
 }
 ```
+
 </CPPSection>
 </LanguageSection>
+
 </Spoiler>
