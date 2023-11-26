@@ -25,6 +25,7 @@ bool ck(int k) {
 		l[i] = L[i] - k;
 		r[i] = R[i] + k;
 	}
+
 	// this works because p_i < i
 	for (int i = n; i > 0; i--) {
 		// check for degenerate ranges
@@ -34,6 +35,7 @@ bool ck(int k) {
 		l[p[i]] = max(l[p[i]], l[i]);
 		r[p[i]] = min(r[p[i]], r[i]);
 	}
+
 	return true;
 }
 ```
@@ -54,6 +56,7 @@ Here's the relevant snippet:
 void sl(int k) {
 	// we have to call ck again to reconstruct l[i] and r[i]
 	assert(ck(k));
+
 	// we repurpose l and r to be restrictions
 	// on i's descendants rather than ancestors
 	// (loop starts from 0 b/c p[1] = 0)
@@ -62,6 +65,7 @@ void sl(int k) {
 		R[p[i]] = min(R[p[i]], r[i]);
 		l[i] = 0, r[i] = K;
 	}
+
 	for (int i = 1; i <= n; i++) {
 		// pick s[i] to be left endpoint of valid range
 		// (intersection of [L_i, R_i] and [l_p[i], r_p[i]])
@@ -85,9 +89,12 @@ And here's the full code:
 #include <cassert>
 #include <iostream>
 using namespace std;
+
 const int N = 1e5 + 1;
 const int K = 1e9;
+
 int n, p[N], L[N], R[N], l[N], r[N], s[N];
+
 // for a more detailed explanation of ck and sl see above
 bool ck(int k) {
 	for (int i = 1; i <= n; i++) l[i] = L[i] - k, r[i] = R[i] + k;
@@ -116,19 +123,23 @@ void sl(int k) {
 
 int main() {
 	cin.tie(0)->sync_with_stdio(0);
-	int t, b;
-	cin >> t >> b;
-	while (t--) {
+
+	int test_num;
+	int b;
+	cin >> test_num >> b;
+	for (int t = 0; t < test_num; t++) {
 		cin >> n;
 		for (int i = 2; i <= n; i++) cin >> p[i];
 		for (int i = 1; i <= n; i++) cin >> L[i] >> R[i];
 		int x = -1;
+
 		// binary search:
 		// https://usaco.guide/silver/binary-search?lang=cpp#implementation-2
 		for (int d = K; d > 0; d /= 2) {
 			while (x + d < K && !ck(x + d)) x += d;
 		}
 		cout << x + 1 << endl;
+
 		if (b) {
 			sl(x + 1);
 			// for whatever reason this problem has a really obnoxious
