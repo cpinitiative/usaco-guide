@@ -21,24 +21,28 @@ Here's the snippet for this checker function:
 ```cpp
 // L[i], R[i] -> original restrictions (from input) on i
 // l[i], r[i] -> restrictions on all ancestors of i
-bool check(int k) {
+// returns all restrictions if valid
+// otherwise, returns an empty array
+vector<pair<int, int>> check(int k) {
+	vector<pair<int, int>> lr(n + 1);
 	for (int i = 1; i <= n; i++) {
 		// all ancestors of i are restricted to [l_i - k, r_i + k]
-		l[i] = L[i] - k;
-		r[i] = R[i] + k;
+		lr[i] = {L[i] - k, R[i] + k};
 	}
 
 	// this works because p_i < i
 	for (int i = n; i > 0; i--) {
 		// check for degenerate ranges
-		if (l[i] > r[i]) { return false; }
-		if (p[i] && (l[i] > R[p[i]] || r[i] < L[p[i]])) { return false; }
+		if (lr[i].first > lr[i].second) { return {}; }
+		if (p[i] && (lr[i].first > R[p[i]] || lr[i].second < L[p[i]])) { return {}; }
 		// propagate restrictions to parent
-		l[p[i]] = max(l[p[i]], l[i]);
-		r[p[i]] = min(r[p[i]], r[i]);
+		lr[p[i]] = {
+			max(l[p[i]], l[i]),
+			min(r[p[i]], r[i])
+		}
 	}
 
-	return true;
+	return {};
 }
 ```
 
@@ -57,17 +61,19 @@ Here's the relevant snippet:
 
 ```cpp
 void solve(int k) {
-	// we have to call check again to reconstruct l[i] and r[i]
-	assert(check(k));
+	// call check to get restrictions
+	auto lr = check(k);
 	for (int i = 0; i <= n; i++) {
 		// propagate `check` restrictions to ancestors
-		L[p[i]] = max(L[p[i]], l[i]);
-		R[p[i]] = min(R[p[i]], r[i]);
+		L[p[i]] = max(L[p[i]], lr[i].first);
+		R[p[i]] = min(R[p[i]], lr[i].second);
 		l[i] = 0, r[i] = K;
 	}
-	// we repurpose l and r to be restrictions
+
+	// l and r: restrictions
 	// on i's descendants rather than ancestors
-	// (loop above starts from 0 b/c p[1] = 0)
+	vector<int> l(n + 1, 0);
+	vector<int> r(n + 1, K);
 
 	for (int i = 1; i <= n; i++) {
 		// pick s[i] to be left endpoint of valid range
@@ -101,24 +107,33 @@ const int K = 1e9;
 int n, p[N], L[N], R[N], l[N], r[N], s[N];
 
 // for a more detailed explanation of check and solve see above
-bool check(int k) {
-	for (int i = 1; i <= n; i++) l[i] = L[i] - k, r[i] = R[i] + k;
-	for (int i = n; i > 0; i--) {
-		if (l[i] > r[i] || r[i] < l[i]) return false;
-		if (p[i] && (l[i] > R[p[i]] || r[i] < L[p[i]])) return false;
-		l[p[i]] = max(l[p[i]], l[i]);
-		r[p[i]] = min(r[p[i]], r[i]);
+vector<pair<int, int>> check(int k) {
+	vector<pair<int, int>> lr(n + 1);
+	for (int i = 1; i <= n; i++) {
+		lr[i] = {L[i] - k, R[i] + k};
 	}
-	return true;
+
+	for (int i = n; i > 0; i--) {
+		if (lr[i].first > lr[i].second) { return {}; }
+		if (p[i] && (lr[i].first > R[p[i]] || lr[i].second < L[p[i]])) { return {}; }
+		lr[p[i]] = {
+			max(l[p[i]], l[i]),
+			min(r[p[i]], r[i])
+		}
+	}
+
+	return {};
 }
 
 void solve(int k) {
-	assert(check(k));
+	auto lr = check(k);
 	for (int i = 0; i <= n; i++) {
-		L[p[i]] = max(L[p[i]], l[i]);
-		R[p[i]] = min(R[p[i]], r[i]);
+		L[p[i]] = max(L[p[i]], lr[i].first);
+		R[p[i]] = min(R[p[i]], lr[i].second);
 		l[i] = 0, r[i] = K;
 	}
+	vector<int> l(n + 1, 0);
+	vector<int> r(n + 1, K);
 	for (int i = 1; i <= n; i++) {
 		s[i] = max(L[i], l[p[i]]);
 		l[i] = max(l[p[i]], s[i] - k);
