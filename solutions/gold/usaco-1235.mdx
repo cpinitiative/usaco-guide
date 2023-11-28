@@ -37,8 +37,8 @@ vector<pair<int, int>> check(int k) {
 		if (p[i] && (lr[i].first > R[p[i]] || lr[i].second < L[p[i]])) { return {}; }
 		// propagate restrictions to parent
 		lr[p[i]] = {
-			max(l[p[i]], l[i]),
-			min(r[p[i]], r[i])
+			max(lr[p[i]].first, lr[i].first),
+			min(lr[p[i]].second, lr[i].second)
 		}
 	}
 
@@ -67,7 +67,6 @@ void solve(int k) {
 		// propagate `check` restrictions to ancestors
 		L[p[i]] = max(L[p[i]], lr[i].first);
 		R[p[i]] = min(R[p[i]], lr[i].second);
-		l[i] = 0, r[i] = K;
 	}
 
 	// l and r: restrictions
@@ -97,14 +96,14 @@ And here's the full code:
 <CPPSection>
 
 ```cpp
-#include <cassert>
 #include <iostream>
+#include <vector>
 using namespace std;
 
 const int N = 1e5 + 1;
 const int K = 1e9;
 
-int n, p[N], L[N], R[N], l[N], r[N], s[N];
+int n, p[N], L[N], R[N], s[N];
 
 // for a more detailed explanation of check and solve see above
 vector<pair<int, int>> check(int k) {
@@ -117,12 +116,12 @@ vector<pair<int, int>> check(int k) {
 		if (lr[i].first > lr[i].second) { return {}; }
 		if (p[i] && (lr[i].first > R[p[i]] || lr[i].second < L[p[i]])) { return {}; }
 		lr[p[i]] = {
-			max(l[p[i]], l[i]),
-			min(r[p[i]], r[i])
-		}
+			max(lr[p[i]].first, lr[i].first),
+			min(lr[p[i]].second, lr[i].second)
+		};
 	}
 
-	return {};
+	return lr;
 }
 
 void solve(int k) {
@@ -130,7 +129,6 @@ void solve(int k) {
 	for (int i = 0; i <= n; i++) {
 		L[p[i]] = max(L[p[i]], lr[i].first);
 		R[p[i]] = min(R[p[i]], lr[i].second);
-		l[i] = 0, r[i] = K;
 	}
 	vector<int> l(n + 1, 0);
 	vector<int> r(n + 1, K);
@@ -141,8 +139,7 @@ void solve(int k) {
 	}
 }
 
-int main() {
-
+signed main() {
 	int test_num;
 	int b;
 	cin >> test_num >> b;
@@ -155,7 +152,7 @@ int main() {
 		// binary search:
 		// https://usaco.guide/silver/binary-search?lang=cpp#implementation-2
 		for (int d = K; d > 0; d /= 2) {
-			while (x + d < K && !check(x + d)) x += d;
+			while (x + d < K && !check(x + d).size()) x += d;
 		}
 		cout << x + 1 << endl;
 
