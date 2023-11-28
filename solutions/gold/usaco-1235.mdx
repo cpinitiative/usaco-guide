@@ -19,11 +19,12 @@ Here's the snippet for this checker function:
 <CPPSection>
 
 ```cpp
-// L[i], R[i] -> original restrictions (from input) on i
-// l[i], r[i] -> restrictions on all ancestors of i
-// returns all restrictions if valid
-// otherwise, returns an empty array
+/**
+ * computes restrictions on each node in tree
+ * @return all restrictions if valid, otherwise empty array
+ */
 vector<pair<int, int>> check(int k) {
+	// L[i], R[i] -> original restrictions (from input) on i
 	vector<pair<int, int>> lr(n + 1);
 	for (int i = 1; i <= n; i++) {
 		// all ancestors of i are restricted to [l_i - k, r_i + k]
@@ -44,7 +45,7 @@ vector<pair<int, int>> check(int k) {
 		}
 	}
 
-	return {};
+	return lr;
 }
 ```
 
@@ -62,28 +63,26 @@ Here's the relevant snippet:
 <CPPSection>
 
 ```cpp
-void solve(int k) {
-	// call check to get restrictions
-	auto lr = check(k);
-	for (int i = 0; i <= n; i++) {
-		// propagate `check` restrictions to ancestors
-		L[p[i]] = max(L[p[i]], lr[i].first);
-		R[p[i]] = min(R[p[i]], lr[i].second);
-	}
+// call check to get restrictions
+auto lr = check(k);
+for (int i = 0; i <= n; i++) {
+	// propagate `check` restrictions to ancestors
+	L[p[i]] = max(L[p[i]], lr[i].first);
+	R[p[i]] = min(R[p[i]], lr[i].second);
+}
 
-	// l and r: restrictions
-	// on i's descendants rather than ancestors
-	vector<int> l(n + 1, 0);
-	vector<int> r(n + 1, K);
+// l and r: restrictions
+// on i's descendants rather than ancestors
+vector<int> l(n + 1, 0);
+vector<int> r(n + 1, K);
 
-	for (int i = 1; i <= n; i++) {
-		// pick s[i] to be left endpoint of valid range
-		// (intersection of [L_i, R_i] and [l_p[i], r_p[i]])
-		s[i] = max(L[i], l[p[i]]);
-		// restrict children of i to range [s_i - k, s_i + k]
-		l[i] = max(l[p[i]], s[i] - k);
-		r[i] = min(r[p[i]], s[i] + k);
-	}
+for (int i = 1; i <= n; i++) {
+	// pick s[i] to be left endpoint of valid range
+	// (intersection of [L_i, R_i] and [l_p[i], r_p[i]])
+	s[i] = max(L[i], l[p[i]]);
+	// restrict children of i to range [s_i - k, s_i + k]
+	l[i] = max(l[p[i]], s[i] - k);
+	r[i] = min(r[p[i]], s[i] + k);
 }
 ```
 
@@ -124,22 +123,7 @@ vector<pair<int, int>> check(int k) {
 	return lr;
 }
 
-void solve(int k) {
-	auto lr = check(k);
-	for (int i = 0; i <= n; i++) {
-		L[p[i]] = max(L[p[i]], lr[i].first);
-		R[p[i]] = min(R[p[i]], lr[i].second);
-	}
-	vector<int> l(n + 1, 0);
-	vector<int> r(n + 1, K);
-	for (int i = 1; i <= n; i++) {
-		s[i] = max(L[i], l[p[i]]);
-		l[i] = max(l[p[i]], s[i] - k);
-		r[i] = min(r[p[i]], s[i] + k);
-	}
-}
-
-signed main() {
+int main() {
 	int test_num;
 	int b;
 	cin >> test_num >> b;
@@ -152,15 +136,27 @@ signed main() {
 		// binary search:
 		// https://usaco.guide/silver/binary-search?lang=cpp#implementation-2
 		for (int d = K; d > 0; d /= 2) {
-			while (x + d < K && !check(x + d).size()) x += d;
+			while (x + d < K && !check(x + d).size()) { x += d; }
 		}
-		cout << x + 1 << endl;
+		cout << ++x << endl;
 
 		if (b) {
-			solve(x + 1);
-			// for whatever reason this problem has a really obnoxious
-			// whitespace checker
-			for (int i = 1; i <= n; i++) cout << s[i] << " \n"[i == n];
+			auto lr = check(x);
+			for (int i = 0; i <= n; i++) {
+				L[p[i]] = max(L[p[i]], lr[i].first);
+				R[p[i]] = min(R[p[i]], lr[i].second);
+			}
+			vector<int> l(n + 1, 0);
+			vector<int> r(n + 1, K);
+			for (int i = 1; i <= n; i++) {
+				s[i] = max(L[i], l[p[i]]);
+				l[i] = max(l[p[i]], s[i] - x);
+				r[i] = min(r[p[i]], s[i] + x);
+			}
+			// satisfy the whitespace checker
+			for (int i = 1; i <= n; i++) {
+				cout << s[i] << " \n"[i == n];
+			}
 		}
 	}
 }
