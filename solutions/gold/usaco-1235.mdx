@@ -10,7 +10,9 @@ author: Daniel Zhu
 Consider binary searching on the minimum imbalance. For a given imbalance $k$, how can we check whether a valid tree with imbalance $\leq k$ exists?
 
 </Spoiler>
+
 <Spoiler title="Solution">
+
 <Spoiler title="Part 1">
 
 We can try to construct the tree bottom-up, ensuring as we move up the tree that the value of each node is still within $k$ of the values of its descendants. Thus, we can store for each node the range of values it's allowed to take on: for a leaf $i$, this will simply be $[l_i, r_i]$, but this restricts its parent (and all ancestors) $p_i$ to the range $[l_i - k, r_i + k]$, in addition to $p_i$'s restriction of $[l_{p_i}, r_{p_i}]$. If at any point a node is restricted to a degenerate range (i.e. $l > r$), we know a tree with imbalance $k$ cannot exist.
@@ -46,6 +48,7 @@ vector<pair<int, int>> check(int k) {
 			min(lr[p[i]].second, lr[i].second)
 		}
 	}
+
 	// return a vector of all restrictions
 	// (lr[i] -> range to which node i is restricted)
 	return lr;
@@ -112,6 +115,7 @@ const int N = 1e5 + 1;
 const int K = 1e9;
 
 int n, p[N], L[N], R[N], s[N];
+
 /**
  * computes restrictions on each node in tree
  * @return all restrictions if valid, otherwise empty array
@@ -137,6 +141,7 @@ vector<pair<int, int>> check(int k) {
 			min(lr[p[i]].second, lr[i].second)
 		}
 	}
+
 	// return a vector of all restrictions
 	// (lr[i] -> range to which node i is restricted)
 	return lr;
