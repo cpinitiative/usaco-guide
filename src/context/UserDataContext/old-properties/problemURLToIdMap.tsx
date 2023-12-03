@@ -399,7 +399,7 @@ export default {
   'http://www.usaco.org/index.php?page=viewproblem2&cpid=838': 'usaco-838',
   'https://cses.fi/problemset/task/1757': 'cses-1757',
   'https://cses.fi/problemset/task/1739': 'cses-1739',
-  'https://dmoj.ca/problem/bfs17p6': 'dmoj-CrowdedCities',
+  'https://dmoj.ca/problem/bfs17p6': 'bfs-crowdedcities',
   'https://oj.uz/problem/view/IOI07_pairs': 'ioi-07-pairs',
   'https://dmoj.ca/problem/dmopc19c7p5': 'dmoj-SoriyasProgrammingProject',
   'http://www.usaco.org/index.php?page=viewproblem2&cpid=722': 'usaco-722',
@@ -945,7 +945,7 @@ export default {
   'https://csacademy.com/contest/archive/task/root-lca-queries':
     'csa-RootLCAQueries',
   'https://codeforces.com/contest/1000/problem/G': 'cf-1000G',
-  'https://dmoj.ca/problem/bts17p7': 'dmoj-HotCold',
+  'https://dmoj.ca/problem/bts17p7': 'bts-hotcold',
   'https://tlx.toki.id/contests/troc-12-div-1/problems/D':
     'tlx-FunctionalConstraint',
   'https://tlx.toki.id/contests/troc-13-div-1/problems/E':
@@ -992,5 +992,5 @@ export default {
   'https://cses.fi/problemset/task/1137': 'cses-1137',
   'https://judge.yosupo.jp/problem/staticrmq': 'ys-StaticRMQ',
   'https://cses.fi/problemset/task/1138': 'cses-1138',
-  'https://dmoj.ca/problem/dmopc20c1p5': 'dmoj-VictorTakesOverCanada',
+  'https://dmoj.ca/problem/dmopc20c1p5': 'dmopc-victortakesovercanada',
 };
