@@ -97,6 +97,7 @@ export const probSources = {
 export const olympiads = {
   CCC: ['DMOJ', 'Canadian Computing Competition'],
   CCO: ['DMOJ', 'Canadian Computing Olympiad'],
+  DMOPC: ['DMOJ', 'DMOJ Monthly Open Programming Competition'],
   APIO: ['oj.uz', 'Asia-Pacific Informatics Olympiad'],
   'Baltic OI': ['oj.uz', 'Baltic Olympiad in Informatics'],
   CEOI: ['oj.uz', 'Central European Olympiad in Informatics'],
