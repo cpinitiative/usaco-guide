@@ -14,7 +14,7 @@ Is there any way we can cut out a majority of these possible edges?
 
 <Spoiler title="Hint 2">
 
-Say you have a card with value $5$, and you have two other cards with values $12$ and $13$.  
+Say you have a card with value $5$, and you have two other cards with values $12$ and $13$.
 Is it *ever* optimal to link $5$ to $13$?
 
 </Spoiler>
@@ -59,33 +59,28 @@ using std::vector;
 
 // BeginCodeSnip{DSU (from the module)}
 class DisjointSets {
-	private:
-		vector<int> parents;
-		vector<int> sizes;
-	public:
-		DisjointSets(int size) : parents(size), sizes(size, 1) {
-			for (int i = 0; i < size; i++) {
-				parents[i] = i;
-			}
-		}
- 
-		int find(int n) {
-			return parents[n] == n ? n : (parents[n] = find(parents[n]));
-		}
- 
-		bool unite(int n1, int n2) {
-			n1 = find(n1);
-			n2 = find(n2);
-			if (n1 == n2) {
-				return false;
-			}
-			if (sizes[n1] < sizes[n2]) {
-				std::swap(n1, n2);
-			}
-			sizes[n1] += sizes[n2];
-			parents[n2] = n1;
-			return true;
-		}
+  private:
+	vector<int> parents;
+	vector<int> sizes;
+
+  public:
+	DisjointSets(int size) : parents(size), sizes(size, 1) {
+		for (int i = 0; i < size; i++) { parents[i] = i; }
+	}
+
+	int find(int n) {
+		return parents[n] == n ? n : (parents[n] = find(parents[n]));
+	}
+
+	bool unite(int n1, int n2) {
+		n1 = find(n1);
+		n2 = find(n2);
+		if (n1 == n2) { return false; }
+		if (sizes[n1] < sizes[n2]) { std::swap(n1, n2); }
+		sizes[n1] += sizes[n2];
+		parents[n2] = n1;
+		return true;
+	}
 };
 // EndCodeSnip
 
@@ -93,7 +88,7 @@ int main() {
 	int card_num;
 	std::cin >> card_num;
 	vector<int> cards(card_num);
-	for (int& c : cards) {
+	for (int &c : cards) {
 		std::cin >> c;
 		assert(c >= 1);
 	}
@@ -105,14 +100,10 @@ int main() {
 	int largest = cards.back();  // since we sorted the cards already
 	// next_largest[i] contains the index of lowest card value that's >= i
 	vector<int> next_largest(largest + 1, -1);
-	for (int i = 0; i < cards.size(); i++) {
-		next_largest[cards[i]] = i;
-	}
+	for (int i = 0; i < cards.size(); i++) { next_largest[cards[i]] = i; }
 	for (int c = largest - 1; c >= 0; c--) {
 		// if this isn't assigned yet, assign it the previous one
-		if (next_largest[c] == -1) {
-			next_largest[c] = next_largest[c + 1];
-		}
+		if (next_largest[c] == -1) { next_largest[c] = next_largest[c + 1]; }
 	}
 
 	vector<vector<pair<int, int>>> good_links(largest + 1);
@@ -128,7 +119,7 @@ int main() {
 	long long total_cost = 0;
 	DisjointSets linked_cards(cards.size());
 	for (int c = 0; c <= largest; c++) {
-		for (const pair<int, int>& link : good_links[c]) {
+		for (const pair<int, int> &link : good_links[c]) {
 			bool result = linked_cards.unite(link.first, link.second);
 			total_cost += c * result;
 		}
