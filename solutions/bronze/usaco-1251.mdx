@@ -64,20 +64,22 @@ int main() {
 
 ```py
 n = int(input())
-cows = list(map(int, input().split()))
+tuition = list(map(int, input().split()))
 
-cows.sort()
+tuition.sort()
 
-max_cost = -1
-max_profit = -1
-
+best_tuition = 0
+best_money = 0
 for i in range(n):
-	if cows[i] * (n - i) > max_profit:
-		max_profit = cows[i] * (n - i)
-		max_cost = cows[i]
+	# Apply the formula from the editorial
+	curr_tuition = tuition[i] * (n - i)
+	if curr_tuition > best_money:
+		best_tuition = tuition[i]
+		best_money = curr_tuition
 
-print(max_profit, max_cost)
+print(best_tuition, best_money)
 ```
 
 </PySection>
+
 </LanguageSection>
