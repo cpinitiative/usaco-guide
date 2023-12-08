@@ -32,7 +32,7 @@ However, the actual answer is
 5 10
 ```
 
-This is because the starting range in the solution was initialized as ($-\infty$, $\infty$) when in reality it should be (0, $\infty$).
+This is because the starting range in the solution was initialized as ($-\infty$, $\infty$) when in reality it should be [0, $\infty$).
 
 </Warning>
 
@@ -283,29 +283,29 @@ int main() {
 
 	ofstream fout("traffic.out");
 
-	// Below is the initial range (a,b). We will narrow/modify this range as
+	// Below is the initial range [a,b]. We will narrow/modify this range as
 	// we scan through the highway components from mile N to mile 1.
 	// The resulting range will be the range of possible initial traffic flows.
 	int a = 0, b = 999999999;
 
 	// Note that we are scanning backwards from mile N to mile 1 here.
 	for (int i = N - 1; i >= 0; i--) {
-		// if there is no ramp, the possible range (a,b) is
+		// if there is no ramp, the possible range [a,b] is
 		// narrowed to the range given by the senor.
 		if (T[i] == "none") {
 			a = max(a, A[i]);
 			b = min(b, B[i]);
 		}
 
-		// if there is an off-ramp with range (a',b'),
-		// the new range of possible traffic flows is (a+a',b+b')
+		// if there is an off-ramp with range [a',b'],
+		// the new range of possible traffic flows is [a+a',b+b']
 		if (T[i] == "off") {
 			a += A[i];
 			b += B[i];
 		}
 
-		// if there is an on-ramp with range (a',b'),
-		// the new range of possible traffic flows is (a-b',b-a')
+		// if there is an on-ramp with range [a',b'],
+		// the new range of possible traffic flows is [a-b',b-a']
 		if (T[i] == "on") {
 			a -= B[i];
 			b -= A[i];
@@ -316,27 +316,27 @@ int main() {
 	// Output the range of possible initial traffic flows.
 	fout << a << " " << b << "\n";
 
-	// Below is the inital range (a,b). We will narrow/modify this range as
+	// Below is the inital range [a,b]. We will narrow/modify this range as
 	// we scan through the highway components from mile 1 to mile N.
 	// The resulting range will be the range of possible final traffic flows.
 	a = 0, b = 999999999;
 	for (int i = 0; i < N; i++) {
-		// if there is no ramp, the possible range (a,b) is
+		// if there is no ramp, the possible range [a,b] is
 		// narrowed to the range given by the sensor.
 		if (T[i] == "none") {
 			a = max(a, A[i]);
 			b = min(b, B[i]);
 		}
 
-		// if there is an on-ramp with range (a',b'),
-		// the new range of possible traffic flows is (a+a',b+b')
+		// if there is an on-ramp with range [a',b'],
+		// the new range of possible traffic flows is [a+a',b+b']
 		if (T[i] == "on") {
 			a += A[i];
 			b += B[i];
 		}
 
-		// if there is an off-ramp with range (a',b'),
-		// the new range of possible traffic flows is (a-b',b-a')
+		// if there is an off-ramp with range [a',b'],
+		// the new range of possible traffic flows is [a-b',b-a']
 		if (T[i] == "off") {
 			a -= B[i];
 			b -= A[i];
@@ -371,7 +371,7 @@ public class traffic {
 		}
 		PrintWriter out = new PrintWriter("traffic.out");
 
-		// Below is the initial range (a,b). We will narrow/modify this range as
+		// Below is the initial range [a,b]. We will narrow/modify this range as
 		// we scan through the highway components from mile N to mile 1.
 		// The resulting range will be the range of possible initial traffic
 		// flows.
@@ -380,22 +380,22 @@ public class traffic {
 
 		// Note that we are scanning backwards from mile N to mile 1 here.
 		for (int i = N - 1; i >= 0; i--) {
-			// if there is no ramp, the possible range (a,b) is
+			// if there is no ramp, the possible range [a,b] is
 			// narrowed to the range given by the senor.
 			if (T[i].equals("none")) {
 				a = Math.max(a, A[i]);
 				b = Math.min(b, B[i]);
 			}
 
-			// if there is an off-ramp with range (a',b'),
-			// the new range of possible traffic flows is (a+a',b+b')
+			// if there is an off-ramp with range [a',b'],
+			// the new range of possible traffic flows is [a+a',b+b']
 			if (T[i].equals("off")) {
 				a += A[i];
 				b += B[i];
 			}
 
-			// if there is an on-ramp with range (a',b'),
-			// the new range of possible traffic flows is (a-b',b-a')
+			// if there is an on-ramp with range [a',b'],
+			// the new range of possible traffic flows is [a-b',b-a']
 			if (T[i].equals("on")) {
 				a -= B[i];
 				b -= A[i];
@@ -405,29 +405,29 @@ public class traffic {
 		// Output the range of possible initial traffic flows.
 		out.println(a + " " + b);
 
-		// Below is the inital range (a,b). We will narrow/modify this range as
+		// Below is the inital range [a,b]. We will narrow/modify this range as
 		// we scan through the highway components from mile 1 to mile N.
 		// The resulting range will be the range of possible final traffic
 		// flows.
 		a = 0;
 		b = 999999999;
 		for (int i = 0; i < N; i++) {
-			// if there is no ramp, the possible range (a,b) is
+			// if there is no ramp, the possible range [a,b] is
 			// narrowed to the range given by the sensor.
 			if (T[i].equals("none")) {
 				a = Math.max(a, A[i]);
 				b = Math.min(b, B[i]);
 			}
 
-			// if there is an on-ramp with range (a',b'),
-			// the new range of possible traffic flows is (a+a',b+b')
+			// if there is an on-ramp with range [a',b'],
+			// the new range of possible traffic flows is [a+a',b+b']
 			if (T[i].equals("on")) {
 				a += A[i];
 				b += B[i];
 			}
 
-			// if there is an off-ramp with range (a',b'),
-			// the new range of possible traffic flows is (a-b',b-a')
+			// if there is an off-ramp with range [a',b'],
+			// the new range of possible traffic flows is [a-b',b-a']
 			if (T[i].equals("off")) {
 				a -= B[i];
 				b -= A[i];
