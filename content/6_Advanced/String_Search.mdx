@@ -150,72 +150,78 @@ but instead finds the longest common prefix of a string and all of its suffixes.
 <FocusProblem problem="manacherFocus" />
 
 **Manacher's Algorithm** functions similarly to the **Z-Algorithm**. It
-determines the longest palindrome centered at each character. 
+determines the longest palindrome centered at each character.
 
 Let's denote $dp_i$ as the maximum diameter of a palindrome centered at $i$. Manacher's algorithm makes use of the previously determined $dp_j$, where $j < i$ in
 calculating $dp_i$. The main idea is that for a palindrome centered at $i$ with the borders $left$ and $right$ the $dp_j$ ($i < j \le right$) values are - probably - mirrors
-of the $dp_k$ ($left \le k < i$) values on the left side of the palindrome. Probably because for some $j$ the maximum palindrome might cross the right border. 
+of the $dp_k$ ($left \le k < i$) values on the left side of the palindrome. Probably because for some $j$ the maximum palindrome might cross the right border.
 This way the algorithm only considers the palindrome centers that could lead to the expansion of the maximum palindrome.
 
 **Time complexity:** $\mathcal{O}(N)$
 
 <LanguageSection>
 <CPPSection>
-```cpp 
+```cpp
 #include <bits/stdc++.h>
- 
+
 using namespace std;
- 
+
 string menacher(string s) {
 
 	// Preprocess the input so it can handle even length palindromes
 	string arr;
-	for(int i = 0; i < s.size(); i++) {
+	for (int i = 0; i < s.size(); i++) {
 		arr.push_back('#');
 		arr.push_back(s[i]);
 	}
 	arr.push_back('#');
- 	
- 	// dp[i] = palindrome's maximum diameter centered at i
+
+	// dp[i] = palindrome's maximum diameter centered at i
 	vector<int> dp(arr.size(), 0);
 	int left = 0, right = 0, lg_max = 0, idx = 0;
-	for(int i = 0; i < arr.size(); ) {
+	for (int i = 0; i < arr.size();) {
 
 		// Expand the palindrome around i
-		while(left > 0 && right < arr.size()-1 && arr[left-1] == arr[right+1]) {
+		while (left > 0 && right < arr.size() - 1 &&
+		       arr[left - 1] == arr[right + 1]) {
 			left--;
 			right++;
 		}
- 		
- 		// Update the diameter
+
+		// Update the diameter
 		dp[i] = right - left + 1;
- 		
- 		if(lg_max < dp[i]) {
- 			lg_max = dp[i];
- 			idx = i;
- 		}
 
- 		// We've already computed the values for [left, i] interval.
- 		// The values on the right side of the palindrome [i+1, right] we'll probably be the same as the ones on the left side.
- 		// Probably because some might even go beyond the current [left, right] palindrome.
+		if (lg_max < dp[i]) {
+			lg_max = dp[i];
+			idx = i;
+		}
 
-		int new_center = right + (i%2 == 0 ? 1 : 0);
-		for(int j = i + 1; j <= right; j++) {
-			// i - (j - i) represents the mirror of j on the left side of the palindrome.
-			// It's possible that the left mirror of j might go beyond the current palindrome - it crosses the left border.
-			// To avoid taking the wrong answer, take the minimum of the left mirror of j and the diameter of palindrome centered at j ending at right.
+		// We've already computed the values for [left, i] interval.
+		// The values on the right side of the palindrome [i+1, right] we'll
+		// probably be the same as the ones on the left side. Probably because
+		// some might even go beyond the current [left, right] palindrome.
+
+		int new_center = right + (i % 2 == 0 ? 1 : 0);
+		for (int j = i + 1; j <= right; j++) {
+			// i - (j - i) represents the mirror of j on the left side of the
+			// palindrome. It's possible that the left mirror of j might go
+			// beyond the current palindrome - it crosses the left border. To
+			// avoid taking the wrong answer, take the minimum of the left
+			// mirror of j and the diameter of palindrome centered at j ending
+			// at right.
 
 			dp[j] = min(dp[i - (j - i)], 2 * (right - j) + 1);
 
 			// Update the max diameter
-	 		if(lg_max < dp[i]) {
-	 			lg_max = dp[i];
-	 			idx = i;
-	 		}
+			if (lg_max < dp[i]) {
+				lg_max = dp[i];
+				idx = i;
+			}
 
-	 		// If the palindrome centered at j reaches the right bordes of the current palindrome it might go even beyond.
-			// Considering this make the new_center = j.	 		
-			if(j + dp[i - (j - i)] / 2 == right) {
+			// If the palindrome centered at j reaches the right bordes of the
+			// current palindrome it might go even beyond. Considering this make
+			// the new_center = j.
+			if (j + dp[i - (j - i)] / 2 == right) {
 				new_center = j;
 				break;
 			}
@@ -226,23 +232,20 @@ string menacher(string s) {
 		right = i + dp[i] / 2;
 		left = i - dp[i] / 2;
 	}
- 
+
 	int lg = 0;
 	string ans = "";
 
-	for(int j = idx - dp[idx]/2; j <= idx + dp[idx]/2; j++) {
-		if(arr[j] != '#') {
-			ans.push_back(arr[j]);
-		}
+	for (int j = idx - dp[idx] / 2; j <= idx + dp[idx] / 2; j++) {
+		if (arr[j] != '#') { ans.push_back(arr[j]); }
 	}
 	return ans;
- 
 }
- 
+
 int main() {
 	string s;
 	cin >> s;
- 
+
 	cout << menacher(s) << '\n';
 }
 ```
