@@ -150,9 +150,10 @@ but instead finds the longest common prefix of a string and all of its suffixes.
 **Manacher's Algorithm** functions similarly to the **Z-Algorithm**. It
 determines the longest palindrome centered at each character.
 
-Let's denote $dp_i$ as the maximum diameter of a palindrome centered at $i$. Manacher's algorithm makes use of the previously determined $dp_j$, where $j < i$ in
-calculating $dp_i$. The main idea is that for a palindrome centered at $i$ with the borders $left$ and $right$ the $dp_j$ ($i < j \le right$) values are - probably - mirrors
-of the $dp_k$ ($left \le k < i$) values on the left side of the palindrome. Probably because for some $j$ the maximum palindrome might cross the right border.
+Let's denote $dp_i$ as the maximum diameter of a palindrome centered at $i$. 
+Manacher's algorithm makes use of the previously determined $dp_j$, where $j < i$ incalculating $dp_i$. The main idea is that for a palindrome centered at $i$ with the borders $left$ and $right$ the $dp_j$ ($i < j \le right$) values are - probably - mirrors
+of the $dp_k$ ($left \le k < i$) values on the left side of the palindrome. 
+Probably because for some $j$ the maximum palindrome might cross the right border.
 This way the algorithm only considers the palindrome centers that could lead to the expansion of the maximum palindrome.
 
 **Time complexity:** $\mathcal{O}(N)$
@@ -174,7 +175,7 @@ string menacher(string s) {
 	arr.push_back('#');
 
 	// dp[i] = palindrome's maximum diameter centered at i
-	vector<int> dp(arr.size(), 0);
+	vector<int> dp(arr.size());
 	int left = 0;
 	int right = 0;
 	int lg_max = 0;
