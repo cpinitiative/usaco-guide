@@ -1,0 +1,140 @@
+---
+id: usaco-1180
+source: USACO Bronze 2022 January
+title: Non-Transitive Dice
+author: Nimeesh Sharma
+---
+
+[Official Analysis (C++, Java, Python)](http://www.usaco.org/current/data/sol_prob2_bronze_jan22.html)
+
+## Explanation
+
+To begin with this problem, we must first understand what it means for three dice to be transitive. Dice are transitive when dice $A$ beats dice $B$, dice $B$ beats dice $C$, and dice $C$ beats dice $A$. Dice $A$ beats dice $B$ when there are more pairs $(x, y)$ where $x$ is a side of dice $A$ and $y$ is a side on dice $B$ where $x > y$ compared to when $y < x$.
+
+Since each dice has four sides and there are ten possible values for each side, there are $10^4 = 10,000$ possible dice to test. This number is small enough that we can test every possible dice for non-transitivity via brute force.
+
+## Implementation
+
+**Time Complexity**: $\mathcal{O}(t \cdot 10^4)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using Die = array<int, 4>;
+
+/* Create method to calculate whether dice A beats dice B */
+bool beats(const Die& a, const Die& b) {
+	int wins = 0, losses = 0;
+	for(int i = 0; i < 4; i++) for(int j = 0; j < 4; j++) {
+		if (a[i] > b[j]) ++wins;
+		if (a[i] < b[j]) ++losses;
+	}
+	return wins > losses;
+}
+
+int main() {
+	int T;
+	cin >> T;
+	for(int i = 0; i < T; i++) {
+		Die A, B;
+		string ans = "no";
+		for(int j = 0; j < 4; j++) cin >> A[j];
+		for(int j = 0; j < 4; j++) cin >> B[j];
+		/* Iterate through all 10,000 possibilities and check if there is a possible transitive dice */
+		for(int a = 1; a <= 10; a++) for(int b = 1; b <= 10; b++) for(int c = 1; c <= 10; c++) for(int d = 1; d <= 10; d++) {
+			Die C{a,b,c,d};
+			if (beats(A,B) && beats(B,C) && beats(C,A)) ans = "yes";
+			if (beats(B,A) && beats(C,B) && beats(A,C)) ans = "yes";
+		}
+		cout << ans << "\n";
+	}
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+ 
+public class NonTransitiveDice {
+
+	// Create method to calculate whether dice A beats dice B
+	static boolean beats(int[] dice1, int[] dice2) {
+        int diff = 0;
+        for (int x : dice1) {
+            for (int y : dice2) {
+                diff += Integer.signum(x - y);
+            }
+        }
+        return diff > 0;
+    }
+
+    public static void main(String[] args) throws IOException {
+        BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+        StringBuilder out = new StringBuilder();
+        for (int n = Integer.parseInt(in.readLine()); n > 0; n--) {
+            StringTokenizer tokenizer = new StringTokenizer(in.readLine());
+            int[] diceA = new int[4];
+            for (int j = 0; j < 4; j++) {
+                diceA[j] = Integer.parseInt(tokenizer.nextToken());
+            }
+            int[] diceB = new int[4];
+            for (int j = 0; j < 4; j++) {
+                diceB[j] = Integer.parseInt(tokenizer.nextToken());
+            }
+            String ans = "no";
+            // Iterate through all 10,000 possibilities and check if there is a possible transitive dice
+			for (int w = 1; w <= 10; w++) {
+                for (int x = 1; x <= 10; x++) {
+                    for (int y = 1; y <= 10; y++) {
+                        for (int z = 1; z <= 10; z++) {
+                            int[] diceC = {w, x, y, z};
+                            if (beats(diceA, diceB) && beats(diceB, diceC) && beats(diceC, diceA)) ans = "yes";
+                            if (beats(diceB, diceA) && beats(diceA, diceC) && beats(diceC, diceB)) ans = "yes";
+                        }
+                    }
+                }
+            }
+            out.append(ans).append('\n');
+        }
+        System.out.print(out);
+    }
+
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+# Create method to calculate whether dice A beats dice B 
+def win(a, b):
+    return sum([x > y for x in a for y in b]) > sum([y > x for x in a for y in b])
+ 
+t = int(input())
+for _ in range(t):
+    l = [int(x) for x in input().split()]
+    a_die = l[0:4]
+    b_die = l[4:8]
+	ans = "no"
+	# Iterate through all 10,000 possibilities and check if there is a possible transitive dice
+    for a in range(1, 11):
+        for b in range(1, 11):
+            for c in range(1, 11):
+                for d in range(1, 11):
+                    c_die = [a, b, c, d]
+                    if win(a_die, b_die) and win(b_die, c_die) and win(c_die, a_die): ans = "yes"
+                    if win(b_die, a_die) and win(c_die, b_die) and win(a_die, c_die): ans = "yes"
+	print(ans)
+```
+
+</PySection>
+</LanguageSection>
