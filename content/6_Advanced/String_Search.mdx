@@ -78,7 +78,6 @@ In the second example above, we let $j = 2$.
 The only thing that remains is to be able to efficiently find all the $j$ that we might possibly need. To recap, if the position we're currently at is $j$, to handle transitions we need to find the largest index $k$ that satisfies the prefix property $S[:k - 1] \equiv S[j - k + 1 : j]$. Since $j < i$, this value is simply $\pi_S[j - 1]$, a value that has already been computed. All that remains is to handle the case where $j = 0$. If $S[0] = S[i + 1]$, $\pi_S[i + 1] = 1$, otherwise $\pi_S[i + 1] = 0$.
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
@@ -125,7 +124,6 @@ def pi(s: str) -> List[int]:
 
 <Problems problems="KMP" />
 
-
 ## Z Algorithm
 
 The **Z-Algorithm** is another linear time string comparison algorithm like KMP,
@@ -161,13 +159,12 @@ This way the algorithm only considers the palindrome centers that could lead to 
 
 <LanguageSection>
 <CPPSection>
+
 ```cpp
 #include <bits/stdc++.h>
-
 using namespace std;
 
 string menacher(string s) {
-
 	// Preprocess the input so it can handle even length palindromes
 	string arr;
 	for (int i = 0; i < s.size(); i++) {
@@ -235,20 +232,20 @@ string menacher(string s) {
 
 	int lg = 0;
 	string ans = "";
-
 	for (int j = idx - dp[idx] / 2; j <= idx + dp[idx] / 2; j++) {
 		if (arr[j] != '#') { ans.push_back(arr[j]); }
 	}
+
 	return ans;
 }
 
 int main() {
 	string s;
 	cin >> s;
-
-	cout << menacher(s) << '\n';
+	cout << menacher(s) << endl;
 }
 ```
+
 </CPPSection>
 </LanguageSection>
 
