@@ -71,7 +71,7 @@ ll fact[A], inv_fact[A], a[N];
 
 // binary exponentiation:
 // https://usaco.guide/gold/modular#modular-exponentiation
-ll P(ll x, ll n) {
+ll exp(ll x, ll n) {
 	x %= M;
 	ll res = 1;
 	while (n > 0) {
@@ -91,7 +91,7 @@ int main() {
 	for (int i = 1; i < A; i++) {
 		fact[i] = fact[i - 1] * i % M;
 		// inverse of x mod M = x^(M - 2) when M is prime
-		inv_fact[i] = P(fact[i], M - 2);
+		inv_fact[i] = exp(fact[i], M - 2);
 	}
 
 	cin >> n;
@@ -101,7 +101,7 @@ int main() {
 		a[i] /= 2;
 	}
 
-	ll ans = 1;  // C_{n - 1} -> 1 valid path
+	ll ans = 1;  // base case: C_{n - 1} = 1
 	for (int i = n - 2; i >= 0; i--) {
 		// calculate C_i
 		if (a[i] > a[i + 1]) {
