@@ -65,8 +65,6 @@ using ll = long long;
 const int A = 1e6 + 1;
 const int M = 1e9 + 7;
 const int N = 1e5;
-
-int n;
 ll fact[A], inv_fact[A], a[N];
 
 // binary exponentiation:
@@ -86,6 +84,7 @@ ll exp(ll x, ll n) {
 ll C(ll n, ll k) { return fact[n] * inv_fact[n - k] % M * inv_fact[k] % M; }
 
 int main() {
+	// precompute factorials and inverses
 	fact[0] = inv_fact[0] = 1;
 	// fact[i] = i!, inv_fact[i] = inverse of i!
 	for (int i = 1; i < A; i++) {
@@ -94,6 +93,7 @@ int main() {
 		inv_fact[i] = exp(fact[i], M - 2);
 	}
 
+	int n;
 	cin >> n;
 	for (int i = 0; i < n; i++) {
 		cin >> a[i];
