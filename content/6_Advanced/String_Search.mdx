@@ -196,19 +196,22 @@ string menacher(string s) {
 			idx = i;
 		}
 
-		/* We've already computed the values for [left, i] interval.
-		   The values on the right side of the palindrome [i+1, right] we'll
-		   probably be the same as the ones on the left side. Probably because
-		   some might even go beyond the current [left, right] palindrome. */
+		/*
+		 * We've already computed the values for [left, i] interval.
+		 * The values on the right side of the palindrome [i+1, right] will
+		 * probably be the same as the ones on the left side. Probably because
+		 * some might even go beyond the current [left, right] palindrome.
+		 */
 		int new_center = right + (i % 2 == 0 ? 1 : 0);
 		for (int j = i + 1; j <= right; j++) {
-			/* i - (j - i) represents the mirror of j on the left side of the
-			   palindrome. It's possible that the left mirror of j might go
-			   beyond the current palindrome - it crosses the left border. To
-			   avoid taking the wrong answer, take the minimum of the left
-			   mirror of j and the diameter of palindrome centered at j ending
-			   at right. */
-
+			/*
+			 * i - (j - i) represents the mirror of j on the left side of the
+			 * palindrome. It's possible that the left mirror of j might go
+			 * beyond the current palindrome - it crosses the left border. To
+			 * avoid taking the wrong answer, take the minimum of the left
+			 * mirror of j and the diameter of palindrome centered at j ending
+			 * at right.
+			 */
 			dp[j] = min(dp[i - (j - i)], 2 * (right - j) + 1);
 
 			// Update the max diameter
@@ -217,9 +220,11 @@ string menacher(string s) {
 				idx = i;
 			}
 
-			// If the palindrome centered at j reaches the right bordes of the
-			// current palindrome it might go even beyond. Considering this make
-			// the new_center = j.
+			/*
+			 * If the palindrome centered at j reaches the right border of the
+			 * current palindrome it might go even beyond.
+			 * Considering this make the new_center = j.
+			 */
 			if (j + dp[i - (j - i)] / 2 == right) {
 				new_center = j;
 				break;
