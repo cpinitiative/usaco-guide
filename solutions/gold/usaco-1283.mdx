@@ -5,6 +5,22 @@ title: Moo Route
 author: Daniel Zhu
 ---
 [Official Analysis (Python)](http://www.usaco.org/current/data/sol_prob3_gold_jan23.html)
-<Spoiler title="Hint">
+<Spoiler title="Hints">
+<Spoiler title="Hint 1">
+Try visualizing paths like this:
+![path visual](usaco-1283/hint1.jpg)
+</Spoiler>
+<Spoiler title="Hint 2">
 Consider recursively constructing a solution. If we construct a path that satisfies constraints $A_{i + 1}...A_n$, how can we get a path that satisfies $A_i...A_n$?
+</Spoiler>
+</Spoiler>
+<Spoiler title="Solution">
+Consider recursively constructing a solution. If we construct a path that satisfies constraints $A_{i + 1}...A_n$, how can we get a path that satisfies $A_i...A_n$? And if we know $C_{i + 1}$, the number of paths that satisfy $A_{i + 1}...A_n$, how do we get $C_i$?
+
+### Case 1: $A_i < A_{i + 1}$
+Let's say $A = [4, 6, 2]$. If we take a path that satisfies $A_1...A_2$ (*red*), how can we extend it to a path that satisfies $A_0...A_2$?
+![image](usaco-1283/1.jpeg)
+The moves in blue are mandatory: our path must start from 0 and end at 0. However, we need to pick two more gray moves to satisfy $A_0 = 4$. If we pick move 1, we must also pick move 2; otherwise, our path won't connect. Similarly, if we pick 3, we must also pick 4. Note that picking the gray paths doesn't increase the number of turns!
+
+To generalize, assuming that our constructed path for $A_{i + 1}...A_n$ minimizes turns, this also means any path we construct in the above way for $A_i...A_n$ will minimize turns as well. For $C_i$'s relationship to $C_{i + 1}$, note that in the above example, we have 2 "units" (moves 1, 2 and moves 3, 4) of which we need to pick 1: we already have 1 unit, the two blues, and we need $B_i = \frac{A_i}{2}$ units total. Thus in general, we will have to pick $B_i - 1$ units from $B_{i + 1} - 1$ units, which gives us that $\boxed{C_i = {B_{i + 1} - 1 \choose B_i - 1} * C_{i + 1}}$.
 </Spoiler>
