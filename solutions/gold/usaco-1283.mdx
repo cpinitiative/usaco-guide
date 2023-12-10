@@ -67,28 +67,31 @@ const int M = 1e9 + 7;
 const int N = 1e5;
 
 int n;
-ll F[A], I[A], a[N];
+ll fact[A], inv_fact[A], a[N];
 
 // binary exponentiation:
 // https://usaco.guide/gold/modular#modular-exponentiation
-ll P(ll x, ll y) {
-	ll r = 1;
-	for (y <<= 1; y >>= 1; x = x * x % M)
-		if (y & 1) r = r * x % M;
-	return r;
+ll P(ll x, ll n) {
+	x %= M;
+	ll res = 1;
+	while (n > 0) {
+		if (n % 2 == 1) { res = res * x % M; }
+		x = x * x % M;
+		n /= 2;
+	}
+	return res;
 }
 
 // n choose k = n!/[(n - k)!k!]
-ll C(ll n, ll k) { return F[n] * I[n - k] % M * I[k] % M; }
+ll C(ll n, ll k) { return fact[n] * inv_fact[n - k] % M * inv_fact[k] % M; }
 
-signed main() {
-	cin.tie(0)->sync_with_stdio(0);
-	F[0] = I[0] = 1;
-	// F[i] = i!, I[i] = inverse of i!
+int main() {
+	fact[0] = inv_fact[0] = 1;
+	// fact[i] = i!, inv_fact[i] = inverse of i!
 	for (int i = 1; i < A; i++) {
-		F[i] = F[i - 1] * i % M;
+		fact[i] = fact[i - 1] * i % M;
 		// inverse of x mod M = x^(M - 2) when M is prime
-		I[i] = P(F[i], M - 2);
+		inv_fact[i] = P(fact[i], M - 2);
 	}
 
 	cin >> n;
@@ -98,16 +101,17 @@ signed main() {
 		a[i] /= 2;
 	}
 
-	ll r = 1;
+	ll ans = 1;  // C_{n - 1} -> 1 valid path
 	for (int i = n - 2; i >= 0; i--) {
+		// calculate C_i
 		if (a[i] > a[i + 1]) {
-			r = r * C(a[i], a[i + 1]) % M;
+			ans = ans * C(a[i], a[i + 1]) % M;
 		} else {
-			r = r * C(a[i + 1] - 1, a[i] - 1) % M;
+			ans = ans * C(a[i + 1] - 1, a[i] - 1) % M;
 		}
 	}
 
-	cout << r << endl;
+	cout << ans << endl;
 }
 ```
 
