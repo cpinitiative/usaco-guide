@@ -29,27 +29,36 @@ using Die = array<int, 4>;
 /* Create method to calculate whether dice A beats dice B */
 bool beats(const Die &a, const Die &b) {
 	int wins = 0, losses = 0;
-	for (int i = 0; i < 4; i++)
+	for (int i = 0; i < 4; i++) {
 		for (int j = 0; j < 4; j++) {
-			if (a[i] > b[j]) ++wins;
-			if (a[i] < b[j]) ++losses;
+			if (a[i] > b[j]) {
+				wins++;
+			}
+			if (a[i] < b[j]) {
+				losses;
+			}
 		}
+	}
 	return wins > losses;
 }
 
 int main() {
-	int T;
-	cin >> T;
-	for (int i = 0; i < T; i++) {
+	int test_num;
+	cin >> test_num;
+	for (int i = 0; i < test_num; i++) {
 		Die A, B;
 		string ans = "no";
-		for (int j = 0; j < 4; j++) cin >> A[j];
-		for (int j = 0; j < 4; j++) cin >> B[j];
+		for (int j = 0; j < 4; j++) {
+			cin >> A[j];
+		}
+		for (int j = 0; j < 4; j++) {
+			cin >> B[j];
+		}
 		/* Iterate through all 10,000 possibilities and check if there is a
 		 * possible transitive dice */
-		for (int a = 1; a <= 10; a++)
-			for (int b = 1; b <= 10; b++)
-				for (int c = 1; c <= 10; c++)
+		for (int a = 1; a <= 10; a++) {
+			for (int b = 1; b <= 10; b++) {
+				for (int c = 1; c <= 10; c++) {
 					for (int d = 1; d <= 10; d++) {
 						Die C{a, b, c, d};
 						if (beats(A, B) && beats(B, C) && beats(C, A)) {
@@ -59,6 +68,9 @@ int main() {
 							ans = "yes";
 						}
 					}
+				}
+			}
+		}
 		cout << ans << "\n";
 	}
 }
@@ -130,12 +142,11 @@ public class NonTransitiveDice {
 
 ```py
 # Create method to calculate whether dice A beats dice B
-def win(a, b):
+def win(a: list[int], b: list[int]) -> bool:
+	""":return: whether dice A beats dice B."""
 	return sum([x > y for x in a for y in b]) > sum([y > x for x in a for y in b])
 
-
-t = int(input())
-for _ in range(t):
+for _ in range(int(input)):
 	l = [int(x) for x in input().split()]
 	a_die = l[0:4]
 	b_die = l[4:8]
