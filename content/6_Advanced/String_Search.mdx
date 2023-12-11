@@ -1,7 +1,7 @@
 ---
 id: string-search
 title: 'String Searching'
-author: Benjamin Qi, Siyong Huang, Dustin Miao
+author: Benjamin Qi, Siyong Huang, Dustin Miao, Mihnea Brebenel
 prerequisites:
   - graph-traversal
 description:
@@ -78,7 +78,6 @@ In the second example above, we let $j = 2$.
 The only thing that remains is to be able to efficiently find all the $j$ that we might possibly need. To recap, if the position we're currently at is $j$, to handle transitions we need to find the largest index $k$ that satisfies the prefix property $S[:k - 1] \equiv S[j - k + 1 : j]$. Since $j < i$, this value is simply $\pi_S[j - 1]$, a value that has already been computed. All that remains is to handle the case where $j = 0$. If $S[0] = S[i + 1]$, $\pi_S[i + 1] = 1$, otherwise $\pi_S[i + 1] = 0$.
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
@@ -125,7 +124,6 @@ def pi(s: str) -> List[int]:
 
 <Problems problems="KMP" />
 
-
 ## Z Algorithm
 
 The **Z-Algorithm** is another linear time string comparison algorithm like KMP,
@@ -152,6 +150,112 @@ but instead finds the longest common prefix of a string and all of its suffixes.
 **Manacher's Algorithm** functions similarly to the **Z-Algorithm**. It
 determines the longest palindrome centered at each character.
 
+Let's denote $dp_i$ as the maximum diameter of a palindrome centered at $i$.
+Manacher's algorithm makes use of the previously determined $dp_j$, where $j < i$ incalculating $dp_i$. The main idea is that for a palindrome centered at $i$ with the borders $left$ and $right$ the $dp_j$ ($i < j \le right$) values are - probably - mirrors
+of the $dp_k$ ($left \le k < i$) values on the left side of the palindrome.
+Probably because for some $j$ the maximum palindrome might cross the right border.
+This way the algorithm only considers the palindrome centers that could lead to the expansion of the maximum palindrome.
+
+**Time complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+string menacher(string s) {
+	// Preprocess the input so it can handle even length palindromes
+	string arr;
+	for (int i = 0; i < s.size(); i++) {
+		arr.push_back('#');
+		arr.push_back(s[i]);
+	}
+	arr.push_back('#');
+
+	// dp[i] = palindrome's maximum diameter centered at i
+	vector<int> dp(arr.size());
+	int left = 0;
+	int right = 0;
+	int lg_max = 0;
+	int idx = 0;
+	for (int i = 0; i < arr.size();) {
+		// Expand the palindrome around i
+		while (left > 0 && right < arr.size() - 1 &&
+		       arr[left - 1] == arr[right + 1]) {
+			left--;
+			right++;
+		}
+
+		// Update the diameter
+		dp[i] = right - left + 1;
+
+		if (lg_max < dp[i]) {
+			lg_max = dp[i];
+			idx = i;
+		}
+
+		/*
+		 * We've already computed the values for [left, i] interval.
+		 * The values on the right side of the palindrome [i+1, right] will
+		 * be the same as the ones on the left side execpt when some palindromes
+		 * go beyond the current [left, right] palindrome.
+		 */
+		int new_center = right + (i % 2 == 0 ? 1 : 0);
+		for (int j = i + 1; j <= right; j++) {
+			/*
+			 * i - (j - i) represents the mirror of j on the left side of the
+			 * palindrome. It's possible that the left mirror of j might go
+			 * beyond the current palindrome - it crosses the left border. To
+			 * avoid taking the wrong answer, take the minimum of the left
+			 * mirror of j and the diameter of palindrome centered at j ending
+			 * at right.
+			 */
+			dp[j] = min(dp[i - (j - i)], 2 * (right - j) + 1);
+
+			// Update the max diameter
+			if (lg_max < dp[i]) {
+				lg_max = dp[i];
+				idx = i;
+			}
+
+			/*
+			 * If the palindrome centered at j reaches the right border of the
+			 * current palindrome it might go even beyond.
+			 * Considering this make the new_center = j.
+			 */
+			if (j + dp[i - (j - i)] / 2 == right) {
+				new_center = j;
+				break;
+			}
+		}
+
+		// Move to the new_center and update the left and right borders.
+		i = new_center;
+		right = i + dp[i] / 2;
+		left = i - dp[i] / 2;
+	}
+
+	int lg = 0;
+	string ans = "";
+	for (int j = idx - dp[idx] / 2; j <= idx + dp[idx] / 2; j++) {
+		if (arr[j] != '#') { ans.push_back(arr[j]); }
+	}
+
+	return ans;
+}
+
+int main() {
+	string s;
+	cin >> s;
+	cout << menacher(s) << endl;
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
 <Resources>
 	<Resource
 		source="HR"
@@ -159,12 +263,11 @@ determines the longest palindrome centered at each character.
 		url="https://www.hackerrank.com/topics/manachers-algorithm"
 	 />
 	<Resource
-		source="CF"
-		title="adamant - Manacher's algorithm and code readability"
-		url="12143"
+		source="Medium"
+		title="Manacher’s Algorithm: Longest Palindromic Substring"
+		url="https://yuminlee2.medium.com/manachers-algorithm-longest-palindromic-substring-cc97fa615f8b"
 		starred
 	>
-		shorter code
 	</Resource>
 	<Resource
 		source="cp-algo"
