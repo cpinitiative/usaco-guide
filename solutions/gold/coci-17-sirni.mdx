@@ -37,11 +37,18 @@ No matter what other cards are in this example, it will always be optimal for $5
 To generalize this, say we have a card with value $n$, and we have some values in between $kn$ and $(k+1) \cdot n$, where $k$ is some random multiple.
 Among these values, it will always make sense for us to choose the one closest to $kn$, as that will give the least cost.
 
+<Info title="Too slow?">
+
+You might think that looping through all multiples is too slow, but since all numbers are distinct, the total number of iterations is somewhere around $\frac{P}{1}+\frac{P}{2}+\frac{P}{3}+\cdots+\frac{P}{P}$.
+This is the [harmonic series](https://en.wikipedia.org/wiki/Harmonic_series_(mathematics)), which is actually bounded by $\mathcal{O}(P \log{P})$!
+
+</Info>
+
 For us to apply this observation, we do have to do some precalculations to find the next greater value for each possible card value, but this is doable in linear time.
 
 ## Implementation
 
-**Time Complexity:** $\mathcal{O}(N \log{N})$
+**Time Complexity:** $\mathcal{O}(N \log{N} + P \log{P})$
 
 <LanguageSection>
 <CPPSection>
