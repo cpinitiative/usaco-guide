@@ -1,0 +1,193 @@
+---
+id: cf-104468H
+source: CF
+title: Ammar-utiful Array
+author: Kevin Sheng
+---
+
+<Spoiler title="Hint 1">
+
+The problem mentions prefixes of arrays; that should ring a couple bells in your head.
+
+</Spoiler>
+
+<Spoiler title="Hint 2">
+
+If a color's prefix of length $10$ isn't Ammar-utiful, will a prefix of $11$ ever be Ammar-utiful?
+
+</Spoiler>
+
+<Spoiler title="Solution">
+
+## Explanation
+
+First, we compute prefix sums for each color so we can figure out in $\mathcal{O}(1)$ time what all the prefixes for each color are.
+
+The queries of type $1$ are a bit trickier to handle because they add an amount to every element that's *not* a certain color.
+Because of this, simply keeping track of how much has been added to each color would be too slow.
+
+To work around this, we instead keep track of how much has *not* been added to each color along with a counter for the total amount added.
+
+For example, say we have the colors $1$, $2$, and $3$, along with the following queries:
+```
+1 1 2
+1 2 3
+```
+Our total amount added after this would be $5$.
+$2$ would have not been added to the color $1$, and $3$ would not have been added to the color $2$.
+
+To get how much was added for a specific color, we take the total counter and subtract how much was *not* added to that specific color.
+
+After all this, we can do a binary search on the maximum prefix for each query of type $2$.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$ for preprocessing and $\mathcal{O}(\log N)$ for each query
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <map>
+
+using std::cout;
+using std::endl;
+using std::vector;
+
+int main() {
+	std::ios::sync_with_stdio(false);
+	std::cin.tie(NULL);
+
+	int n;
+	std::cin >> n;
+	vector<int> arr(n);
+	for (int& i : arr) {
+		std::cin >> i;
+	}
+	vector<int> color(n);
+	for (int& c : color) {
+		std::cin >> c;
+	}
+
+	std::map<int, vector<long long>> col_prefs;
+	for (int i = 0; i < n; i++) {
+		int c = color[i];
+		if (!col_prefs.count(c)) {
+			col_prefs[c] = {0};
+		}
+		col_prefs[c].push_back(col_prefs[c].back() + arr[i]);
+	}
+
+	long long tot_inc = 0;
+	std::map<int, long long> col_exclude;
+
+	int query_num;
+	std::cin >> query_num;
+	for (int q = 0; q < query_num; q++) {
+		int q_type, col;
+		long long arg;
+		std::cin >> q_type >> col >> arg;
+
+		if (q_type == 1) {
+			tot_inc += arg;
+			col_exclude[col] += arg;
+		} else if (q_type == 2) {
+			int lo = 0;
+			int hi = col_prefs[col].size() - 1;
+			int valid = -1;
+			while (lo <= hi) {
+				int mid = (lo + hi) / 2;
+				long long init_val = col_prefs[col][mid];
+				long long to_add = (tot_inc - col_exclude[col]) * mid;
+				if (init_val + to_add <= arg) {
+					valid = mid;
+					lo = mid + 1;
+				} else {
+					hi = mid - 1;
+				}
+			}
+
+			cout << valid << '\n';
+		}
+	}
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class AmmarutilArray {
+	public static void main(String[] args) throws IOException {
+		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
+		
+		int n = Integer.parseInt(read.readLine());
+		StringTokenizer st = new StringTokenizer(read.readLine());
+		int[] arr = new int[n];
+		for (int i = 0; i < n; i++) {
+			arr[i] = Integer.parseInt(st.nextToken());
+		}
+		st = new StringTokenizer(read.readLine());
+		int[] color = new int[n];
+		for (int i = 0; i < n; i++) {
+			color[i] = Integer.parseInt(st.nextToken());
+		}
+
+		Map<Integer, List<Long>> colPrefs = new HashMap<>();
+		for (int i = 0; i < n; i++) {
+			int c = color[i];
+			if (!colPrefs.containsKey(c)) {
+				colPrefs.put(c, new ArrayList<>(Arrays.asList(0L)));
+			}
+			List<Long> pref = colPrefs.get(c);
+			pref.add(pref.get(pref.size() - 1) + arr[i]);
+		}
+
+		long totInc = 0;
+		Map<Integer, Long> colExclude = new HashMap<>();
+
+		StringBuilder ans = new StringBuilder();
+		int queryNum = Integer.parseInt(read.readLine());
+		for (int q = 0; q < queryNum; q++) {
+			StringTokenizer query = new StringTokenizer(read.readLine());
+			int qType = Integer.parseInt(query.nextToken());
+			int col = Integer.parseInt(query.nextToken());
+			long arg = Long.parseLong(query.nextToken());
+			
+			if (qType == 1) {
+				totInc += arg;
+				colExclude.put(col, colExclude.getOrDefault(col, 0L) + arg);
+			} else if (qType == 2) {
+				int lo = 0;
+				int hi = colPrefs.get(col).size() - 1;
+				int valid = -1;
+				while (lo <= hi) {
+					int mid = (lo + hi) / 2;
+					long initVal = colPrefs.get(col).get(mid);
+					long toAdd = (totInc - colExclude.getOrDefault(col, 0L)) * mid;
+					if (initVal + toAdd <= arg) {
+						valid = mid;
+						lo = mid + 1;
+					} else {
+						hi = mid - 1;
+					}
+				}
+
+				ans.append(valid).append('\n');
+			}
+		}
+
+		System.out.print(ans);
+	}
+}
+```
+
+</JavaSection>
+</LanguageSection>
+
+</Spoiler>
