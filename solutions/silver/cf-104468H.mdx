@@ -49,8 +49,8 @@ After all this, we can do a binary search on the maximum prefix for each query o
 
 ```cpp
 #include <iostream>
-#include <vector>
 #include <map>
+#include <vector>
 
 using std::cout;
 using std::endl;
@@ -63,20 +63,14 @@ int main() {
 	int n;
 	std::cin >> n;
 	vector<int> arr(n);
-	for (int& i : arr) {
-		std::cin >> i;
-	}
+	for (int &i : arr) { std::cin >> i; }
 	vector<int> color(n);
-	for (int& c : color) {
-		std::cin >> c;
-	}
+	for (int &c : color) { std::cin >> c; }
 
 	std::map<int, vector<long long>> col_prefs;
 	for (int i = 0; i < n; i++) {
 		int c = color[i];
-		if (!col_prefs.count(c)) {
-			col_prefs[c] = {0};
-		}
+		if (!col_prefs.count(c)) { col_prefs[c] = {0}; }
 		col_prefs[c].push_back(col_prefs[c].back() + arr[i]);
 	}
 
@@ -124,8 +118,9 @@ import java.util.*;
 
 public class AmmarutilArray {
 	public static void main(String[] args) throws IOException {
-		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
-		
+		BufferedReader read =
+		    new BufferedReader(new InputStreamReader(System.in));
+
 		int n = Integer.parseInt(read.readLine());
 		StringTokenizer st = new StringTokenizer(read.readLine());
 		int[] arr = new int[n];
@@ -158,7 +153,7 @@ public class AmmarutilArray {
 			int qType = Integer.parseInt(query.nextToken());
 			int col = Integer.parseInt(query.nextToken());
 			long arg = Long.parseLong(query.nextToken());
-			
+
 			if (qType == 1) {
 				totInc += arg;
 				colExclude.put(col, colExclude.getOrDefault(col, 0L) + arg);
@@ -169,7 +164,8 @@ public class AmmarutilArray {
 				while (lo <= hi) {
 					int mid = (lo + hi) / 2;
 					long initVal = colPrefs.get(col).get(mid);
-					long toAdd = (totInc - colExclude.getOrDefault(col, 0L)) * mid;
+					long toAdd =
+					    (totInc - colExclude.getOrDefault(col, 0L)) * mid;
 					if (initVal + toAdd <= arg) {
 						valid = mid;
 						lo = mid + 1;
