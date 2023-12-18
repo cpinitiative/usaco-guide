@@ -1,4 +1,6 @@
-require('dotenv').config();
+require('dotenv').config({
+  path: `.env.${process.env.NODE_ENV}`,
+});
 
 const flags = {
   FAST_DEV: true,
