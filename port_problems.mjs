@@ -18,21 +18,6 @@ const client = algoliasearch(
 );
 const index = client.initIndex('dev_problems');
 
-const objects = [
-  {
-    objectID: 'usaco-1307',
-  },
-];
-
-index.search('', { filters: `objectID: usaco-1306` }).then(({ hits }) => {
-  console.log('here');
-  console.log(hits);
-  console.log(!hits.length);
-});
-
-const { hits } = await index.search('', { filters: `objectID: usaco-1305` });
-console.log(hits);
-
 for (const division in div_to_probs) {
   for (const [id, contest, title] of div_to_probs[division]) {
     const { hits } = await index.search('', {
