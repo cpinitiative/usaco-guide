@@ -44,32 +44,50 @@ rl.question('Enter USACO ID: ', id => {
         },
       };
       console.log(newEntry);
-      extraProblems.EXTRA_PROBLEMS.push(newEntry);
-      writeFileSync(
-        './content/extraProblems.json',
-        await prettier.format(JSON.stringify(extraProblems, null, '\t'), {
-          parser: 'json',
-        }),
-        'utf8'
-      );
-      div_to_probs[division].push([id, `${year} ${month}`, title]);
-      writeFileSync(
-        './src/components/markdown/ProblemsList/DivisionList/div_to_probs.json',
-        await prettier.format(JSON.stringify(div_to_probs, null, '\t'), {
-          parser: 'json',
-        }),
-        'utf8'
-      );
-      id_to_sol[id] = `sol_prob${number}_${division.toLowerCase()}_${
-        month_to_id[month]
-      }${year.slice(2)}.html`;
-      writeFileSync(
-        './src/components/markdown/ProblemsList/DivisionList/id_to_sol.json',
-        await prettier.format(JSON.stringify(id_to_sol, null, '\t'), {
-          parser: 'json',
-        }),
-        'utf8'
-      );
+      if (
+        extraProblems.EXTRA_PROBLEMS.find(
+          problem => problem.uniqueId === newEntry.uniqueId
+        )
+      ) {
+        console.log('Problem already exists in extraProblems!');
+      } else {
+        extraProblems.EXTRA_PROBLEMS.push(newEntry);
+        writeFileSync(
+          './content/extraProblems.json',
+          await prettier.format(JSON.stringify(extraProblems, null, '\t'), {
+            parser: 'json',
+          }),
+          'utf8'
+        );
+        console.log('Problem added to extraProblems!');
+      }
+      if (div_to_probs[division].find(problem => problem[0] === id)) {
+        console.log('Problem already exists in div_to_probs!');
+      } else {
+        div_to_probs[division].push([id, `${year} ${month}`, title]);
+        writeFileSync(
+          './src/components/markdown/ProblemsList/DivisionList/div_to_probs.json',
+          await prettier.format(JSON.stringify(div_to_probs, null, '\t'), {
+            parser: 'json',
+          }),
+          'utf8'
+        );
+        console.log('Problem added to div_to_probs!');
+      }
+      if (id_to_sol[id]) {
+        console.log('Problem already exists in id_to_sol!');
+      } else {
+        id_to_sol[id] = `sol_prob${number}_${division.toLowerCase()}_${
+          month_to_id[month]
+        }${year.slice(2)}.html`;
+        writeFileSync(
+          './src/components/markdown/ProblemsList/DivisionList/id_to_sol.json',
+          await prettier.format(JSON.stringify(id_to_sol, null, '\t'), {
+            parser: 'json',
+          }),
+          'utf8'
+        );
+      }
       console.log('Problem added!');
       process.exit();
     })
