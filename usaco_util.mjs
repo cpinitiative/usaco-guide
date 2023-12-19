@@ -30,12 +30,15 @@ rl.question('Enter USACO ID: ', id => {
         month = contest[2],
         division = contest[3];
       console.log('Problem', number, title, year, month, division);
+      const difficulty = await new Promise(resolve => {
+        rl.question('What is the problem difficulty? ', resolve);
+      });
       const newEntry = {
         uniqueId: `usaco-${id}`,
         name: title,
         url: `http://usaco.org/index.php?page=viewproblem2&cpid=${id}`,
         source: division,
-        difficulty: 'Easy',
+        difficulty: difficulty,
         isStarred: false,
         tags: [],
         solutionMetadata: {
