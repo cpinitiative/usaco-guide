@@ -3,11 +3,11 @@ import styled, { css } from 'styled-components';
 import tw from 'twin.macro';
 import { olympiads, ProblemInfo, probSources } from '../../../models/problem';
 import { UsacoTableProgress } from '../../Dashboard/DashboardProgress';
-import Tooltip from '../../Tooltip/Tooltip';
+import DifficultyBox from '../../DifficultyBox';
 import TextTooltip from '../../Tooltip/TextTooltip';
+import Tooltip from '../../Tooltip/Tooltip';
 import ProblemsListItemDropdown from './ProblemsListItemDropdown';
 import ProblemStatusCheckbox from './ProblemStatusCheckbox';
-import DifficultyBox from '../../DifficultyBox';
 
 export type ProblemsListItemProps = {
   problem: any; // ProblemInfo | DivisionProblemInfo; @jeffrey todo. DivisionProblemInfo if is division table, otherwise ProblemInfo

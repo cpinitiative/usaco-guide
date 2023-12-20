@@ -598,12 +598,12 @@ exports.onCreateWebpackConfig = ({ actions, stage, loaders, plugins }) => {
         },
       ],
     },
-    plugins: [
-      new FilterWarningsPlugin({
-        exclude:
-          /mini-css-extract-plugin[^]*Conflicting order. Following module has been added:/,
-      }),
-    ],
+    // plugins: [
+    //   new FilterWarningsPlugin({
+    //     exclude:
+    //       /mini-css-extract-plugin[^]*Conflicting order. Following module has been added:/,
+    //   }),
+    // ],
   });
   if (stage === 'build-javascript' || stage === 'develop') {
     actions.setWebpackConfig({
