@@ -7,17 +7,17 @@ author: Kenneth Karaisz Jr.
 
 ## Explanation
 
-Let's consider the longest possible path the added edge could create. One way to find this path would be to use the two farthest nodes on each tree from the nodes the added edge connects. 
-Therefore, on each tree, the optimal node to connect the edge to is the node that has the shortest possible path to the farthest node. 
+Let's consider the longest possible path the added edge could create. One way to find this path would be to use the two farthest nodes on each tree from the nodes the added edge connects.
+Therefore, on each tree, the optimal node to connect the edge to is the node that has the shortest possible path to the farthest node.
 
-It turns out that this node is always the median of the tree's diameter. To help understand this, we can visualize the tree with its diameter as a horizontal line, and the other nodes 
+It turns out that this node is always the median of the tree's diameter. To help understand this, we can visualize the tree with its diameter as a horizontal line, and the other nodes
 'hanging' off of it:
 
 [!Tree graph with its diameter on a horizontal line, and other nodes hanging off the bottom](<cf-104536F/graph.png>)
 
 Moving the node to anything but 3 extends the longest path by the edge that was just used.
 
-Now it remains to calculate this resulting length. When the diameter's length is even, the longest path will use the longer of the 2 halves of the diameter, 
+Now it remains to calculate this resulting length. When the diameter's length is even, the longest path will use the longer of the 2 halves of the diameter,
 so we need to divide the diameters by 2, round up, and add 1 for the added edge itself (If you don't know how to find the diameter of a tree, see [CPH 14.2](/CPH.pdf#page=145)).
 
 This is, however, not necessarily the longest path. It's possible for the initial diameter of either of the two trees to be longer. So we need to compare the above value to these as well.
@@ -35,30 +35,29 @@ using namespace std;
 int max_length = 0, max_node;
 vector<vector<int>> tree1, tree2;
 
-void dfs(const vector<vector<int>>& tree, 
-	int node, int previous = 0, int length = 0) {
-	for (const auto& i : tree[node]) { 
-        if (i != previous) {
-		    dfs(tree, i, node, length + 1);
-        }
-    }
-    // This is >= to ensure max_node is changed at least once per root function call
-	if (length >= max_length) { 
+void dfs(const vector<vector<int>> &tree, int node, int previous = 0,
+         int length = 0) {
+	for (const auto &i : tree[node]) {
+		if (i != previous) { dfs(tree, i, node, length + 1); }
+	}
+	// This is >= to ensure max_node is changed at least once per root function
+	// call
+	if (length >= max_length) {
 		max_length = length;
 		max_node = node;
 	}
 }
 
-int farthest_node(const vector<vector<int>>& tree) {
-    max_length = 0;
-    dfs(tree, 1);
-    return max_node;
+int farthest_node(const vector<vector<int>> &tree) {
+	max_length = 0;
+	dfs(tree, 1);
+	return max_node;
 }
 
-int longest_path(const vector<vector<int>>& tree, int node) {
-    max_length = 0;
-    dfs(tree, node);
-    return max_length;
+int longest_path(const vector<vector<int>> &tree, int node) {
+	max_length = 0;
+	dfs(tree, node);
+	return max_length;
 }
 
 int main() {
@@ -85,11 +84,12 @@ int main() {
 	int tree1_start = farthest_node(tree1);
 	int tree2_start = farthest_node(tree2);
 	int tree1_diameter = longest_path(tree1, tree1_start);
-    int tree2_diameter = longest_path(tree2, tree2_start);
+	int tree2_diameter = longest_path(tree2, tree2_start);
 
-	cout << max({tree1_diameter, tree2_diameter, 
-		(tree1_diameter + 1) / 2 + (tree2_diameter + 1) / 2 + 1}) << '\n';
-    // (x + 1) / 2 divides by 2 and rounds up
+	cout << max({tree1_diameter, tree2_diameter,
+	             (tree1_diameter + 1) / 2 + (tree2_diameter + 1) / 2 + 1})
+	     << '\n';
+	// (x + 1) / 2 divides by 2 and rounds up
 }
 ```
 
