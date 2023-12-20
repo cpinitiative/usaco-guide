@@ -120,7 +120,7 @@ const plugins = [
       apiKey: process.env.ALGOLIA_API_KEY,
       queries: require('./src/utils/algolia-queries'),
       enablePartialUpdates: true,
-      skipIndexing: !process.env.ALGOLIA_APP_ID,
+      skipIndexing: !process.env.GATSBY_ALGOLIA_APP_ID,
     },
   },
   // devMode currently has some sketchy output

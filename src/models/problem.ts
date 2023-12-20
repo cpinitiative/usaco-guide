@@ -535,6 +535,7 @@ export const PROBLEM_PROGRESS_OPTIONS: ProblemProgress[] = [
 ];
 
 export type ProblemDifficulty =
+  | 'N/A'
   | 'Very Easy'
   | 'Easy'
   | 'Normal'

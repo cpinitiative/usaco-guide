@@ -8,12 +8,10 @@ import id_to_sol from './src/components/markdown/ProblemsList/DivisionList/id_to
 import * as prettier from 'prettier';
 import { config } from 'dotenv';
 import algoliasearch from 'algoliasearch';
-config({
-  path: '.env.production',
-});
+config();
 
 const client = algoliasearch(
-  process.env.ALGOLIA_APP_ID,
+  process.env.GATSBY_ALGOLIA_APP_ID,
   process.env.ALGOLIA_API_KEY
 );
 const index = client.initIndex('dev_problems');
@@ -30,7 +28,7 @@ for (const division in div_to_probs) {
         name: title,
         url: `http://usaco.org/index.php?page=viewproblem2&cpid=${id}`,
         source: division,
-        difficulty: 'Easy',
+        difficulty: 'N/A',
         isStarred: false,
         tags: [],
         solutionMetadata: {

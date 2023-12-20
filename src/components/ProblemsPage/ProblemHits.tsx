@@ -15,8 +15,10 @@ import {
   ProblemInfo,
   recentUsaco,
 } from '../../models/problem';
-import { difficultyClasses } from '../markdown/ProblemsList/ProblemsListItem';
+import { difficultyClasses } from '../DifficultyBox';
 import ProblemStatusCheckbox from '../markdown/ProblemsList/ProblemStatusCheckbox';
+import TextTooltip from '../Tooltip/TextTooltip';
+import DifficultyBox from '../DifficultyBox';
 
 interface ProblemHitProps {
   hit: AlgoliaProblemInfo;
@@ -133,16 +135,7 @@ function ProblemHit({ hit }: ProblemHitProps) {
       )}
 
       <div className="pt-4">
-        {!hideDifficulty && (
-          <span
-            className={
-              'mr-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium leading-4 ' +
-              difficultyClasses[hit.difficulty]
-            }
-          >
-            {hit.difficulty}
-          </span>
-        )}
+        {!hideDifficulty && <DifficultyBox difficulty={hit.difficulty} />}
         {showTags &&
           hit.tags?.map(tag => (
             <span
