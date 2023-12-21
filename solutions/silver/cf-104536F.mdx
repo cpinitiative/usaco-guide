@@ -34,19 +34,18 @@ This is, however, not necessarily the longest path. It's possible for the initia
 using namespace std;
 
 // Computes the farthest node from the node passed to the root call, and the
-// length of the path to it. Returns the node as the first value and the length as the second.
-pair<int, int> dfs(const vector<vector<int>> &tree, int node = 1, int previous = 0,
-         int length = 0) {
-    pair<int, int> max_path = {node, length};
+// length of the path to it. Returns the node as the first value and the length
+// as the second.
+pair<int, int> dfs(const vector<vector<int>> &tree, int node = 1,
+                   int previous = 0, int length = 0) {
+	pair<int, int> max_path = {node, length};
 	for (const int &i : tree[node]) {
-		if (i != previous) { 
+		if (i != previous) {
 			pair<int, int> other = dfs(tree, i, node, length + 1);
-            if (other.second > max_path.second) {
-				max_path = other;
-            }
-        }
+			if (other.second > max_path.second) { max_path = other; }
+		}
 	}
-    return max_path;
+	return max_path;
 }
 
 int main() {
