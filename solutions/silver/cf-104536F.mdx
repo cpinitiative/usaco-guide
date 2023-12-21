@@ -35,13 +35,12 @@ using namespace std;
 int max_length = 0, max_node;
 vector<vector<int>> tree1, tree2;
 
+// Computes the farthest node from the node passed to the root call, and the length of the path to it
 void dfs(const vector<vector<int>> &tree, int node, int previous = 0,
          int length = 0) {
 	for (const auto &i : tree[node]) {
 		if (i != previous) { dfs(tree, i, node, length + 1); }
 	}
-	// This is >= to ensure max_node is changed at least once per root function
-	// call
 	if (length >= max_length) {
 		max_length = length;
 		max_node = node;
@@ -85,11 +84,10 @@ int main() {
 	int tree2_start = farthest_node(tree2);
 	int tree1_diameter = longest_path(tree1, tree1_start);
 	int tree2_diameter = longest_path(tree2, tree2_start);
-
-	cout << max({tree1_diameter, tree2_diameter,
-	             (tree1_diameter + 1) / 2 + (tree2_diameter + 1) / 2 + 1})
-	     << '\n';
 	// (x + 1) / 2 divides by 2 and rounds up
+	int added_edge_diameter = (tree1_diameter + 1) / 2 + (tree2_diameter + 1) / 2 + 1;
+
+	cout << max({tree1_diameter, tree2_diameter, added_edge_diameter});
 }
 ```
 
