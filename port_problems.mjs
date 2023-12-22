@@ -1,13 +1,10 @@
 // run `node usaco_util.mjs`
+import algoliasearch from 'algoliasearch';
+import { config } from 'dotenv';
 import { writeFileSync } from 'fs';
-import * as readline from 'readline';
-import axios from 'axios';
+import * as prettier from 'prettier';
 import extraProblems from './content/extraProblems.json' assert { type: 'json' };
 import div_to_probs from './src/components/markdown/ProblemsList/DivisionList/div_to_probs.json' assert { type: 'json' };
-import id_to_sol from './src/components/markdown/ProblemsList/DivisionList/id_to_sol.json' assert { type: 'json' };
-import * as prettier from 'prettier';
-import { config } from 'dotenv';
-import algoliasearch from 'algoliasearch';
 config();
 
 const client = algoliasearch(
