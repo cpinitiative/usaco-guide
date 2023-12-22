@@ -23,7 +23,7 @@ import SEO from '../components/seo';
 import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
 import { searchClient } from '../utils/algoliaSearchClient';
 
-const indexName = `${process.env.GATSBY_ALGOLIA_INDEX_NAME}_problems`;
+const indexName = `${process.env.GATSBY_ALGOLIA_INDEX_NAME ?? 'dev'}_problems`;
 
 const CustomModuleSelection = connectRefinementList(Modules);
 const CustomDifficultySelection = connectRefinementList(Difficulty);
