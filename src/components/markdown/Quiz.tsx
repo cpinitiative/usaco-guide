@@ -1,6 +1,6 @@
 import { ArrowLeftIcon, ArrowRightIcon } from '@heroicons/react/solid';
 import classNames from 'classnames';
-import { atom, Provider, useAtom } from 'jotai';
+import { Provider, atom, useAtom } from 'jotai';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 import React from 'react';
 

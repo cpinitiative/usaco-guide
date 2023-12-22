@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { useContext } from 'react';
 import { SignInContext } from '../../context/SignInContext';
-import { useLastVisitInfo } from '../../context/UserDataContext/properties/lastVisit';
 import {
   useFirebaseUser,
   useIsUserDataLoaded,
 } from '../../context/UserDataContext/UserDataContext';
+import { useLastVisitInfo } from '../../context/UserDataContext/properties/lastVisit';
 // import styled from 'styled-components';
 
 // const Container = styled.div`

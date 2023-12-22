@@ -1,5 +1,4 @@
 import Tippy from '@tippyjs/react';
-import { navigate } from 'gatsby';
 import React from 'react';
 import { Instance } from 'tippy.js';
 import { useDarkMode } from '../../../context/DarkModeContext';
@@ -8,7 +7,6 @@ import { isUsaco, ProblemInfo } from '../../../models/problem';
 import TextTooltip from '../../Tooltip/TextTooltip';
 import ProblemListItemSolution from './ProblemListItemSolution';
 import { ProblemsListItemProps } from './ProblemsListItem';
-import { Link } from 'gatsby';
 
 function ViewSolutionsContent({
   problem,

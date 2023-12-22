@@ -1,7 +1,7 @@
 import * as admin from 'firebase-admin';
 import * as functions from 'firebase-functions';
-import updateMailingList from './utils/updateMailingList';
 import { classRegistrationAdministrators } from './utils/permissions';
+import updateMailingList from './utils/updateMailingList';
 
 if (admin.apps.length === 0) {
   admin.initializeApp();
