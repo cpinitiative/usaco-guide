@@ -41,10 +41,9 @@ async function addProblem(id) {
       tags: [],
       solutionMetadata: {
         kind: 'USACO',
-        usacoId: id,
+        usacoId: id.toString(),
       },
     };
-    // console.log(newEntry);
     if (
       extraProblems.EXTRA_PROBLEMS.find(
         problem => problem.uniqueId === newEntry.uniqueId
@@ -62,10 +61,10 @@ async function addProblem(id) {
       );
       console.log('Problem added to extraProblems!');
     }
-    if (div_to_probs[division].find(problem => problem[0] === id)) {
+    if (div_to_probs[division].find(problem => problem[0] == id)) {
       console.log('Problem already exists in div_to_probs!');
     } else {
-      div_to_probs[division].push([toString(id), `${year} ${month}`, title]);
+      div_to_probs[division].push([id.toString(), `${year} ${month}`, title]);
       writeFileSync(
         './src/components/markdown/ProblemsList/DivisionList/div_to_probs.json',
         await prettier.format(JSON.stringify(div_to_probs, null, '\t'), {
