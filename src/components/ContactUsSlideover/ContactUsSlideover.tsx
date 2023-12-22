@@ -2,8 +2,8 @@ import * as React from 'react';
 import { useContext, useEffect, useState } from 'react';
 import { SECTION_LABELS } from '../../../content/ordering';
 import MarkdownLayoutContext from '../../context/MarkdownLayoutContext';
-import { useUserLangSetting } from '../../context/UserDataContext/properties/simpleProperties';
 import { useFirebaseUser } from '../../context/UserDataContext/UserDataContext';
+import { useUserLangSetting } from '../../context/UserDataContext/properties/simpleProperties';
 import useContactFormAction from '../../hooks/useContactFormAction';
 import useStickyState from '../../hooks/useStickyState';
 import { ModuleInfo } from '../../models/module';
@@ -295,8 +295,8 @@ export default function ContactUsSlideover({
                   ? email === ''
                     ? 'This field is required.'
                     : !validateEmail(email)
-                      ? 'Please enter a valid email address.'
-                      : null
+                    ? 'Please enter a valid email address.'
+                    : null
                   : null
               }
             />

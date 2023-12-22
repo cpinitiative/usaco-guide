@@ -2,15 +2,15 @@ import { execSync } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 import * as freshOrdering from './content/ordering';
+import div_to_probs from './src/components/markdown/ProblemsList/DivisionList/div_to_probs.json';
 import { createXdmNode } from './src/gatsby/create-xdm-node';
 import {
+  ProblemMetadata,
+  ShortProblemInfo,
   checkInvalidUsacoMetadata,
   getProblemInfo,
   getProblemURL,
-  ShortProblemInfo,
-  ProblemMetadata,
 } from './src/models/problem';
-import div_to_probs from './src/components/markdown/ProblemsList/DivisionList/div_to_probs.json';
 // Questionable hack to get full commit history so that timestamps work
 try {
   execSync(

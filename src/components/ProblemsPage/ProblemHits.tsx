@@ -11,12 +11,12 @@ import {
 import { useUserProgressOnProblems } from '../../context/UserDataContext/properties/userProgress';
 import {
   AlgoliaProblemInfo,
-  getProblemURL,
   ProblemInfo,
+  getProblemURL,
   recentUsaco,
 } from '../../models/problem';
-import { difficultyClasses } from '../markdown/ProblemsList/ProblemsListItem';
 import ProblemStatusCheckbox from '../markdown/ProblemsList/ProblemStatusCheckbox';
+import { difficultyClasses } from '../markdown/ProblemsList/ProblemsListItem';
 
 interface ProblemHitProps {
   hit: AlgoliaProblemInfo;

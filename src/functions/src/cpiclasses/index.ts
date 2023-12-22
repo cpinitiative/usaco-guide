@@ -1,11 +1,11 @@
 import approveFinancialAid from './approveFinancialAid';
-import processRegistration from './processRegistration';
-import processLiveRegistration from './processLiveRegistration';
 import approveLiveFinancialAid from './approveLiveFinancialAid';
+import processLiveRegistration from './processLiveRegistration';
+import processRegistration from './processRegistration';
 
 export {
   approveFinancialAid,
-  processRegistration,
   approveLiveFinancialAid,
   processLiveRegistration,
+  processRegistration,
 };

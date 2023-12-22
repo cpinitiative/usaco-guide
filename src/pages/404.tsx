@@ -1,8 +1,8 @@
 import { Link } from 'gatsby';
 import * as React from 'react';
+import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
 import Layout from '../components/layout';
 import SEO from '../components/seo';
-import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
 
 export default function NotFoundPage() {
   return (

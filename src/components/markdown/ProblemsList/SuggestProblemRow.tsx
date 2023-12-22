@@ -1,5 +1,4 @@
 import { globalHistory } from '@reach/router';
-import { Link } from 'gatsby';
 import * as React from 'react';
 import { useContext } from 'react';
 import { EditorContext } from '../../../context/EditorContext';
