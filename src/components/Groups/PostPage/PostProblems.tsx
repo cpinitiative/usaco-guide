@@ -1,29 +1,29 @@
-import { navigate } from 'gatsby';
-import React, { useEffect } from 'react';
 import {
   DndContext,
-  closestCenter,
   KeyboardSensor,
   PointerSensor,
+  closestCenter,
   useSensor,
   useSensors,
 } from '@dnd-kit/core';
 import {
-  arrayMove,
   SortableContext,
+  arrayMove,
   sortableKeyboardCoordinates,
+  useSortable,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
-import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import { MenuIcon } from '@heroicons/react/solid';
+import { navigate } from 'gatsby';
+import React, { useEffect } from 'react';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import { useActivePostProblems } from '../../../hooks/groups/useActivePostProblems';
 import { usePostActions } from '../../../hooks/groups/usePostActions';
-import { PostData } from '../../../models/groups/posts';
-import ProblemListItem from '../ProblemListItem';
 import { GroupData } from '../../../models/groups/groups';
+import { PostData } from '../../../models/groups/posts';
 import { ProblemData } from '../../../models/groups/problem';
-import { MenuIcon } from '@heroicons/react/solid';
+import ProblemListItem from '../ProblemListItem';
 
 function SortableItem(props: {
   id: string;

@@ -16,11 +16,11 @@ const OnlineJudgeSubmission = ({
           (submission.verdict === 'CE'
             ? 'Compilation Error'
             : submission.verdict === 'IE'
-              ? 'Internal Error: ' +
-                submission.message +
-                ' ' +
-                submission.debugData
-              : 'Done')}
+            ? 'Internal Error: ' +
+              submission.message +
+              ' ' +
+              submission.debugData
+            : 'Done')}
       </div>
       {submission.verdict !== 'IE' && (
         <>

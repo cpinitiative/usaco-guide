@@ -1,8 +1,8 @@
 import { Dialog, Transition } from '@headlessui/react';
 import {
+  CollectionReference,
   arrayUnion,
   collection,
-  CollectionReference,
   doc,
   getDocs,
   getFirestore,

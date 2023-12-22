@@ -16,7 +16,6 @@ import {
   recentUsaco,
 } from '../../models/problem';
 import DifficultyBox from '../DifficultyBox';
-import ProblemStatusCheckbox from '../markdown/ProblemsList/ProblemStatusCheckbox';
 
 interface ProblemHitProps {
   hit: AlgoliaProblemInfo;

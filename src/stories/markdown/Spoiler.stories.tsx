@@ -1,8 +1,8 @@
 import { Story } from '@storybook/react';
 import React, { ComponentProps } from 'react';
 import HTMLComponents from '../../components/markdown/HTMLComponents';
-import markdownDecorator from '../../components/markdown/markdownDecoratorForStorybook';
 import Spoiler from '../../components/markdown/Spoiler';
+import markdownDecorator from '../../components/markdown/markdownDecoratorForStorybook';
 import MiscMarkdownContent from './MiscMarkdownContent';
 
 export default {

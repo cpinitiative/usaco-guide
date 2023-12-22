@@ -1,8 +1,8 @@
 import axios from 'axios';
 import * as crypto from 'crypto';
 import * as functions from 'firebase-functions';
-const MAILCHIMP_API_KEY = functions.config().mailchimp.apikey;
 import 'firebase-functions/lib/logger/compat';
+const MAILCHIMP_API_KEY = functions.config().mailchimp.apikey;
 
 export default async function updateMailingList({
   email,
@@ -70,8 +70,8 @@ export default async function updateMailingList({
           preferredLanguage === 'java'
             ? 'Java'
             : preferredLanguage === 'cpp'
-              ? 'C++'
-              : 'Python',
+            ? 'C++'
+            : 'Python',
         BRVCJOINLK: joinLink,
       },
     };
