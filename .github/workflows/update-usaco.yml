@@ -1,0 +1,19 @@
+on:
+  schedule:
+    - cron: '0 0 31 12,2,3 *'
+    - cron: '0 0 7 2 *'
+jobs:
+  scrape_usaco:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Run Node.js script
+        run: node usaco_util.mjs
+      - name: Commit and push changes
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add .
+          git commit -m "Update USACO"
+          git push
