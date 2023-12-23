@@ -7,13 +7,69 @@ author: Andi Qu, Kevin Sheng
 
 <Spoiler title="Hint 1">
 
+Can you first come up with an algorithm for a single query?
+It doesn't have to be crazy efficient; $\mathcal{O}(N)$ time is fine.
+
+</Spoiler>
+
+<Spoiler title="Answer to Hint 1">
+
+Let's iterate through the array in order and keep track of the largest element $m$ we've seen so far.
+For each element $x$, we first update $m$.
+Then, if the current one is smaller than $m$, we add $m-x$ to the total
+
 </Spoiler>
 
 <Spoiler title="Hint 2">
 
+Since we can't process each query like this, let's try to come up with the concept
+of a "contribution" of a certain element.
+
+Take the array $[10,4,11,3]$, for example.
+Try to think of how $10$ and $11$ in particular contribute to the answer.
+
 </Spoiler>
 
 <Spoiler title="Solution">
+
+## Explanation
+
+### Setup
+
+Let's follow the line of thought from Hint 2.
+Say we have an element of value $x$ at index $i$, and the next element strictly greater than $x$ is at index $j$.
+If there is no next greater element, let $j$ be one greater than the index of the final element.
+
+The contribution from $x$ to a query would be as follows:
+
+$$
+x \cdot (j-i) - \sum_{k=i}^{j-1} \texttt{arr}[k]
+$$
+
+The second term is the sum of all elements in the interval $[i,j-1)$.
+
+For example, in that array in Hint 2, $10$ contributes $10 \cdot (2-0)-(10+4)=6$, while $11$ contributes $11 \cdot (4-2)-(11+3)=8$ to the sum.
+
+Notice that this doesn't apply when an element's $j$ goes past the end of the query.
+If we only considered the first three elements of Hint 2's array, $11$ would not contribute anything.
+
+### Execution
+
+How do we utilize this?
+
+First, we have to iterate through the array in reverse.
+
+Let's also keep track of a stack of the values and indicies of all the maximums one would get when iterating from an index $i$ to the end of the array.
+
+Taking the array from Hint 2 again. If we were at index $1$, our stack would be $[(11, 2), (4, 1)]$, with the end of the array being the top of the stack.
+
+Each element in this stack would contribute the amount given by our formula above to a query's answers, *given that it's completely contained within said query*.
+
+Since the indices in the stack are always decreasing, we can use a binary search to find where the query lies within the stack.
+For the tail element that might not be completely contained within the query, we can compute the contribution manually and add it on at the end.
+
+To efficiently update contributions relative to the stack, we'll use a [BIT](/gold/PURS#solution---dynamic-range-sum-queries-with-a-bit).
+We also need a prefix sum array to efficiently calculate the second term of that contribution formula back there.
 
 ## Implementation
 
@@ -84,16 +140,20 @@ int main() {
 	vector<pair<int, int>> maxes;
 	BIT<ll> contrib(arr_size);
 	for (int i = arr_size - 1; i >= 0; i--) {
+		// update our stack
 		while (!maxes.empty() && arr[i] >= maxes.back().first) {
 			maxes.pop_back();
+			// no longer contributing anything- set it to 0
 			contrib.set(maxes.size(), 0);
 		}
 
+		// get the contribution of our new element
 		int len = (maxes.empty() ? arr_size : maxes.back().second) - i;
 		contrib.set(maxes.size(), (ll)arr[i] * len);
 		maxes.push_back({arr[i], i});
 
 		for (const auto& [end, q] : queries[i]) {
+			// binary search for where the query end is in the stack
 			int lo = 0;
 			int hi = maxes.size() - 1;
 			int valid = -1;
@@ -107,8 +167,11 @@ int main() {
 				}
 			}
 
+			// the contribution from most of the max elements
 			ll sum1 = contrib.pref_sum(maxes.size() - 1) - contrib.pref_sum(valid);
+			// the tail element mentioned in the editorial
 			ll sum2 = (ll)(end - maxes[valid].second + 1) * maxes[valid].first;
+			// the second term in the contribution formula
 			ll pref_sub = pref_arr[end + 1] - pref_arr[i];
 			ans[q] = sum1 + sum2 - pref_sub;
 		}
