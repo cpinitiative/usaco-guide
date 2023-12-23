@@ -532,10 +532,10 @@ template <class T> class BIT {
 	BIT(int size) : size(size), bit(size + 1), arr(size) {}
 
 	/** Sets the value at index ind to val. */
-	void set(int ind, int val) { add(ind, val - arr[ind]); }
+	void set(int ind, T val) { add(ind, val - arr[ind]); }
 
 	/** Adds val to the element at index ind. */
-	void add(int ind, int val) {
+	void add(int ind, T val) {
 		arr[ind] += val;
 		ind++;
 		for (; ind <= size; ind += ind & -ind) { bit[ind] += val; }

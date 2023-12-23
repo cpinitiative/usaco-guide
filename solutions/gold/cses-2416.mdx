@@ -2,106 +2,125 @@
 id: cses-2416
 source: CSES
 title: Increasing Array Queries
-author: Andi Qu
+author: Andi Qu, Kevin Sheng
 ---
+
+<Spoiler title="Hint 1">
+
+</Spoiler>
+
+<Spoiler title="Hint 2">
+
+</Spoiler>
+
+<Spoiler title="Solution">
+
+## Implementation
 
 **Time Complexity:** $\mathcal O((N + Q) \log N)$.
 
-In this problem, we can answer the queries offline (i.e. read in the queries and
-process them in a different order). More specifically, we process queries in
-order of their left endpoints.
-
-First, let's think about how we'd answer a single query $(l, r)$. Consider the
-following algorithm:
-
-- Let $\texttt{mx}_0 = 0$ and $j = 0$.
-- For each $i$ in $[l, r]$:
-  - If $x_i > \texttt{mx}_j$, then set $\texttt{mx}_{j + 1} = x_i$ and increment
-    $j$.
-  - Otherwise, add $\texttt{mx}_j - x_i$ to the answer.
-
-Notice how each $\texttt{mx}_j$ (except the last) contributes a fixed amount to
-the answer, regardless of $r$. If $\texttt{pref}$ is the prefix sum array of $x$
-and $\texttt{idx}_j$ is the index of $\texttt{mx}_j$ in $x$, then this amount is
-
-$$
-(\texttt{idx}_{j + 1} - 1 - \texttt{idx}_j) \cdot \texttt{mx}_j - (\texttt{pref}_{\texttt{idx}_{j + 1} - 1} - \texttt{pref}_{\texttt{idx}_j})
-$$
-
-This means that for a fixed $l$, we can compute each $\texttt{mx}_j$ and their
-contributions, and then use `std::upper_bound` and a BIT to answer queries with
-variable $r$!
-
-If we want to change $l$, notice how we can update $\texttt{mx}$ efficiently by
-using a monotone stack. Since each $\texttt{mx}_j$'s contribution depends on
-$x_i$ **after** it, the contributions of the old $\texttt{mx}_j$ don't change.
-
-Again, we use `std::upper_bound` and a BIT to answer queries.
-
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
-#include <bits/stdc++.h>
-typedef long long ll;
-using namespace std;
+#include <algorithm>
+#include <iostream>
+#include <vector>
 
-const ll INF = 1e18;
+using std::cout;
+using std::endl;
+using std::pair;
+using std::vector;
+using ll = long long;
 
-int n, q;
-ll x[200002], pref[200002], ans[200002];
-ll contrib[200002], bit[200002];
-vector<pair<int, int>> bckt[200001];
+// BeginCodeSnip{BIT (from the module)}
+template <class T> class BIT {
+  private:
+	int size;
+	vector<T> bit;
+	vector<T> arr;
 
-void update(int pos, ll val) {
-	for (; pos <= n; pos += pos & -pos) bit[pos] += val;
-}
+  public:
+	BIT(int size) : size(size), bit(size + 1), arr(size) {}
 
-ll query(int a, int b) {
-	ll ans = 0;
-	for (; b; b -= b & -b) ans += bit[b];
-	for (a--; a; a -= a & -a) ans -= bit[a];
-	return ans;
-}
+	void set(int ind, T val) { add(ind, val - arr[ind]); }
+
+	void add(int ind, T val) {
+		arr[ind] += val;
+		ind++;
+		for (; ind <= size; ind += ind & -ind) { bit[ind] += val; }
+	}
+
+	T pref_sum(int ind) {
+		ind++;
+		T total = 0;
+		for (; ind > 0; ind -= ind & -ind) { total += bit[ind]; }
+		return total;
+	}
+};
+// EndCodeSnip
 
 int main() {
-	cin.tie(0)->sync_with_stdio(0);
-	cin >> n >> q;
-	for (int i = 1; i <= n; i++) {
-		cin >> x[i];
-		pref[i] = pref[i - 1] + x[i];
+	int arr_size;
+	int query_num;
+	std::cin >> arr_size >> query_num;
+	vector<int> arr(arr_size);
+	for (int& i : arr) {
+		std::cin >> i;
 	}
-	x[n + 1] = INF;
-	pref[n + 1] = pref[n] + x[n + 1];
-	for (int i = 1; i <= q; i++) {
-		int a, b;
-		cin >> a >> b;
-		bckt[a].push_back({b, i});
+	vector<vector<pair<int, int>>> queries(arr_size);
+	for (int q = 0; q < query_num; q++) {
+		int start, end;
+		std::cin >> start >> end;
+		queries[--start].push_back({--end, q});
 	}
-	deque<int> stck = {n + 1};
-	for (int i = n; i; i--) {
-		while (stck.size() && x[i] >= x[stck.front()]) {
-			update(stck.front(), -contrib[stck.front()]);
-			stck.pop_front();
+
+	vector<ll> pref_arr(arr_size + 1);
+	for (int i = 0; i < arr_size; i++) {
+		pref_arr[i + 1] = pref_arr[i] + arr[i];
+	}
+
+	vector<ll> ans(query_num);
+	vector<pair<int, int>> maxes;
+	BIT<ll> contrib(arr_size);
+	for (int i = arr_size - 1; i >= 0; i--) {
+		while (!maxes.empty() && arr[i] >= maxes.back().first) {
+			maxes.pop_back();
+			contrib.set(maxes.size(), 0);
 		}
-		contrib[i] =
-		    (stck.front() - 1 - i) * x[i] - (pref[stck.front() - 1] - pref[i]);
-		update(i, contrib[i]);
-		stck.push_front(i);
-		for (pair<int, int> j : bckt[i]) {
-			int pos = upper_bound(stck.begin(), stck.end(), j.first) -
-			          stck.begin() - 1;
-			ans[j.second] = (pos ? query(i, stck[pos - 1]) : 0) +
-			                (j.first - stck[pos]) * x[stck[pos]] -
-			                (pref[j.first] - pref[stck[pos]]);
+
+		int len = (maxes.empty() ? arr_size : maxes.back().second) - i;
+		contrib.set(maxes.size(), (ll)arr[i] * len);
+		maxes.push_back({arr[i], i});
+
+		for (const auto& [end, q] : queries[i]) {
+			int lo = 0;
+			int hi = maxes.size() - 1;
+			int valid = -1;
+			while (lo <= hi) {
+				int mid = (lo + hi) / 2;
+				if (maxes[mid].second <= end) {
+					valid = mid;
+					hi = mid - 1;
+				} else {
+					lo = mid + 1;
+				}
+			}
+
+			ll sum1 = contrib.pref_sum(maxes.size() - 1) - contrib.pref_sum(valid);
+			ll sum2 = (ll)(end - maxes[valid].second + 1) * maxes[valid].first;
+			ll pref_sub = pref_arr[end + 1] - pref_arr[i];
+			ans[q] = sum1 + sum2 - pref_sub;
 		}
 	}
-	for (int i = 1; i <= q; i++) cout << ans[i] << '\n';
-	return 0;
+
+	for (ll a : ans) {
+		cout << a << '\n';
+	}
 }
 ```
 
 </CPPSection>
-
 </LanguageSection>
+
+</Spoiler>
