@@ -121,9 +121,7 @@ int main() {
 	int query_num;
 	std::cin >> arr_size >> query_num;
 	vector<int> arr(arr_size);
-	for (int& i : arr) {
-		std::cin >> i;
-	}
+	for (int &i : arr) { std::cin >> i; }
 	vector<vector<pair<int, int>>> queries(arr_size);
 	for (int q = 0; q < query_num; q++) {
 		int start, end;
@@ -152,7 +150,7 @@ int main() {
 		contrib.set(maxes.size(), (ll)arr[i] * len);
 		maxes.push_back({arr[i], i});
 
-		for (const auto& [end, q] : queries[i]) {
+		for (const auto &[end, q] : queries[i]) {
 			// binary search for where the query end is in the stack
 			int lo = 0;
 			int hi = maxes.size() - 1;
@@ -168,7 +166,8 @@ int main() {
 			}
 
 			// the contribution from most of the max elements
-			ll sum1 = contrib.pref_sum(maxes.size() - 1) - contrib.pref_sum(valid);
+			ll sum1 =
+			    contrib.pref_sum(maxes.size() - 1) - contrib.pref_sum(valid);
 			// the tail element mentioned in the editorial
 			ll sum2 = (ll)(end - maxes[valid].second + 1) * maxes[valid].first;
 			// the second term in the contribution formula
@@ -177,9 +176,7 @@ int main() {
 		}
 	}
 
-	for (ll a : ans) {
-		cout << a << '\n';
-	}
+	for (ll a : ans) { cout << a << '\n'; }
 }
 ```
 
