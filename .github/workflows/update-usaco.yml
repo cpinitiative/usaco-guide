@@ -27,6 +27,8 @@ jobs:
           ls
           npx ts-node --skipProject usaco-problems/add_problems ../ids.log ../content/extraProblems.json
           git add .
+          git config --global user.name github-actions[bot]
+          git config --global user.email github-actions[bot]@users.noreply.github.com
           git commit -m 'problem auto-updates'
           git push -f origin auto
           gh pr create --title 'Problem auto-updates' -F usaco-problems/out/report.txt
