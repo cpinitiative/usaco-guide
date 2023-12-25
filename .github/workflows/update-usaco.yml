@@ -33,3 +33,5 @@ jobs:
           git push -f origin auto
           gh pr close $(gh pr list --json number --jq '.[0].number' --author 'usaco-autofetch[bot]') || true
           gh pr create --title 'Problem auto-updates' -F usaco-problems/out/report.txt
+        env:
+          GH_TOKEN: ${{ github.token }}
