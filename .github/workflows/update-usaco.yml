@@ -11,8 +11,15 @@ jobs:
       - name: Checkout usaco-problems
         uses: actions/checkout@v2
         with:
-          repository: devo1ution/usaco-problems
+          repository: ${{ github.repository_owner }}/usaco-problems
           path: usaco-problems
+      - name: Generate a token
+        id: generate_token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
       - name: Build list of problem ids
         run: |
           git branch auto
@@ -27,10 +34,11 @@ jobs:
           ls
           npx ts-node --skipProject usaco-problems/add_problems ../ids.log ../content/extraProblems.json
           git add .
-          git config --global user.name github-actions[bot]
-          git config --global user.email github-actions[bot]@users.noreply.github.com
+          git config --global user.name usaco-autofetch[bot]
+          git config --global user.email usaco-autofetch[bot]@users.noreply.github.com
           git commit -m 'problem auto-updates'
           git push -f origin auto
+          gh pr close $(gh pr list --json number --jq '.[0].number' --author 'usaco-autofetch[bot]') || true
           gh pr create --title 'Problem auto-updates' -F usaco-problems/out/report.txt
         env:
-          GITHUB_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ steps.generate_token.outputs.token }}
