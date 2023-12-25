@@ -1,19 +1,28 @@
-on:
-  schedule:
-    - cron: '0 0 31 12,2,3 *'
-    - cron: '0 0 7 2 *'
+on: workflow_dispatch
+
 jobs:
-  scrape_usaco:
+  update_problems:
+    name: Update problems
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
+      - name: Checkout usaco-guide
         uses: actions/checkout@v2
-      - name: Run Node.js script
-        run: node usaco_util.mjs
-      - name: Commit and push changes
+      - name: Checkout usaco-problems
+        uses: actions/checkout@v2
+        with:
+          repository: usaco-guide/usaco-problems
+          path: usaco-problems
+      - name: Build list of problem ids
         run: |
-          git config --global user.name 'github-actions[bot]'
-          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git branch auto
+          git checkout auto
+          yarn
+          yarn build
+      - name: Add new problems
+        run: |
+          npx ts-node usaco-problems/add_problems ids.log content/extraProblems.json
           git add .
-          git commit -m "Update USACO"
-          git push
+          git commit -m 'problem auto-updates'
+          gh pr create --title 'Problem auto-updates' -F usaco-problems/out/report.txt
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
