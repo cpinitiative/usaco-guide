@@ -1,3 +1,4 @@
+name: Update problems
 on: workflow_dispatch
 
 jobs:
@@ -10,7 +11,7 @@ jobs:
       - name: Checkout usaco-problems
         uses: actions/checkout@v2
         with:
-          repository: usaco-guide/usaco-problems
+          repository: cpinitiative/usaco-problems
           path: usaco-problems
       - name: Build list of problem ids
         run: |
@@ -23,6 +24,7 @@ jobs:
           npx ts-node usaco-problems/add_problems ids.log content/extraProblems.json
           git add .
           git commit -m 'problem auto-updates'
+          git push -f origin auto
           gh pr create --title 'Problem auto-updates' -F usaco-problems/out/report.txt
         env:
           GITHUB_TOKEN: ${{ github.token }}
