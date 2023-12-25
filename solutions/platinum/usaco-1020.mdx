@@ -22,20 +22,22 @@ Note that this requires the number of unpaired lengths to be initially odd. If t
 **Time Complexity:** $\mathcal{O}(N \log^2 N)$
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
+
 const int N = 1e5;
+
 vector<int> g[N];
 int to_be_merged[N];
 
 // check if elements can be paired with sum >= k
 bool check(vector<int> &v, int remove, int k) {
 	assert(v.size() % 2 == 1);
-	int l = 0, r = v.size() - 1;
+	int l = 0;
+	int r = v.size() - 1;
 	while (l < r) {
 		if (l == remove) { l++; }
 		if (r == remove) { r++; }
@@ -58,7 +60,8 @@ bool dfs(int node, int p, int k) {
 	sort(v.begin(), v.end());
 
 	// binary search over the index we can remove
-	int l = -1, r = v.size();
+	int l = -1;
+	int r = v.size();
 	while (l < r - 1) {
 		int mid = l + (r - l) / 2;
 		// if we remove index mid, can we pair the rest?
@@ -78,18 +81,17 @@ bool dfs(int node, int p, int k) {
 
 int main() {
 	ifstream cin("deleg.in");
-	ofstream cout("deleg.out");
 	int n;
 	cin >> n;
 	for (int i = 0; i < n - 1; i++) {
 		int u, v;
 		cin >> u >> v;
-		--u;
-		--v;
-		g[u].push_back(v);
+		g[--u].push_back(--v);
 		g[v].push_back(u);
 	}
-	int l = 0, r = n + 1;
+
+	int l = 0;
+	int r = n + 1;
 	while (l < r - 1) {
 		int mid = l + (r - l) / 2;
 		fill(to_be_merged, to_be_merged + n, 0);
@@ -99,24 +101,32 @@ int main() {
 			r = mid;
 		}
 	}
-	cout << l << "\n";
+
+	ofstream("deleg.out") << l << endl;
+	cout << l << endl;
 }
 ```
 
 <Warning title="Bad Test Cases">
-The following code will also AC because USACO has poo poo test cases, but it is technically $\mathcal{O}(N^2 \log N)$. It exploits the fact that we can break early once we found an index to remove and loop linearly through all the children from high to low. It can be hacked with a suitable graph where one node has a large number of children.
+
+The following code will also AC due to weak test data, but it is technically $\mathcal{O}(N^2 \log N)$.
+It exploits the fact that we can break early once we found an index to remove and loop linearly through all the children from high to low.
+This solution can be hacked with a suitable graph where one node has a large number of children, though.
 
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
+
 const int N = 1e5;
+
 vector<int> g[N];
 int to_be_merged[N];
 
 // check if elements can be paired with sum >= k
 bool check(vector<int> &v, int remove, int k) {
 	assert(v.size() % 2 == 1);
-	int l = 0, r = v.size() - 1;
+	int l = 0;
+	int r = v.size() - 1;
 	while (l < r) {
 		if (l == remove) { l++; }
 		if (r == remove) { r--; }
@@ -128,8 +138,8 @@ bool check(vector<int> &v, int remove, int k) {
 bool dfs(int node, int p, int k) {
 	vector<int> v;  // all leftover path lengths from children
 	for (int i : g[node]) {
-		if (i == p) continue;
-		if (!dfs(i, node, k)) return false;
+		if (i == p) { continue; }
+		if (!dfs(i, node, k)) { return false; }
 		v.push_back(to_be_merged[i] + 1);
 	}
 	if (v.size() % 2 == 0) {
@@ -151,18 +161,17 @@ bool dfs(int node, int p, int k) {
 
 int main() {
 	ifstream cin("deleg.in");
-	ofstream cout("deleg.out");
 	int n;
 	cin >> n;
 	for (int i = 0; i < n - 1; i++) {
 		int u, v;
 		cin >> u >> v;
-		--u;
-		--v;
-		g[u].push_back(v);
+		g[--u].push_back(--v);
 		g[v].push_back(u);
 	}
-	int l = 0, r = n + 1;
+
+	int l = 0;
+	int r = n + 1;
 	while (l < r - 1) {
 		int mid = l + (r - l) / 2;
 		fill(to_be_merged, to_be_merged + n, 0);
@@ -172,11 +181,12 @@ int main() {
 			r = mid;
 		}
 	}
-	cout << l << "\n";
+
+	ofstream("deleg.out") << l << endl;
 }
 ```
+
 </Warning>
 
 </CPPSection>
-
 </LanguageSection>
