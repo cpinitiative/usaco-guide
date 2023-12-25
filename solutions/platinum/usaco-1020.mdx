@@ -13,7 +13,7 @@ Note that if we can split the tree into paths of at least $x$, then we can also 
 
 We can arbitrarily root the tree at node $1$. Let $\mathtt{toBeMerged[i]}$ store the length of the path passes through node $i$ and its length has not been paired yet. Since only one of such path can exist, all of the other paths which source from the subtrees of $i$ must be evenly paired with sum of lengths $\geq k$.
 
-We want to maximize $\mathtt{toBeMerged[i]}$ while evenly pairing all of the children with path lengths $\geq k$. To do this, we can run another binary search over the unpaired path lengths of the children and check if we can remove any of them and the condition  holds. If we removed one and the rest is still unpairable, then we return false.
+We want to maximize $\mathtt{toBeMerged[i]}$ while evenly pairing all of the children with path lengths $\geq k$. To do this, we can run another binary search over the unpaired path lengths of the children and check if we can remove any of them and the condition holds. If we removed one and the rest is still unpairable, then we return false.
 
 Note that this requires the number of unpaired lengths to be initially odd. If there are an even number of children, then we can append an arbitrary $0$. If our binary search returns $0$, then we know all the children are already evenly paired.
 
@@ -28,7 +28,7 @@ Note that this requires the number of unpaired lengths to be initially odd. If t
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
-const int N = 1e5 + 5;
+const int N = 1e5;
 vector<int> g[N];
 int to_be_merged[N];
 
@@ -37,8 +37,8 @@ bool check(vector<int> &v, int remove, int k) {
 	assert(v.size() % 2 == 1);
 	int l = 0, r = v.size() - 1;
 	while (l < r) {
-		if (l == remove) l++;
-		if (r == remove) r--;
+		if (l == remove) { l++; }
+		if (r == remove) { r++; }
 		if (v[l++] + v[r--] < k) { return false; }
 	}
 	return true;
@@ -69,10 +69,9 @@ bool dfs(int node, int p, int k) {
 		}
 	}
 
-	if (l == -1) {
-		// we cannot pair all paths even if we removed an index
-		return false;
-	}
+	// we cannot pair all paths even if we removed an index
+	if (l == -1) { return false; }
+
 	to_be_merged[node] = v[l];
 	return true;
 }
@@ -110,7 +109,7 @@ The following code will also AC because USACO has poo poo test cases, but it is 
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
-const int N = 1e5 + 5;
+const int N = 1e5;
 vector<int> g[N];
 int to_be_merged[N];
 
@@ -119,8 +118,8 @@ bool check(vector<int> &v, int remove, int k) {
 	assert(v.size() % 2 == 1);
 	int l = 0, r = v.size() - 1;
 	while (l < r) {
-		if (l == remove) l++;
-		if (r == remove) r--;
+		if (l == remove) { l++; }
+		if (r == remove) { r--; }
 		if (v[l++] + v[r--] < k) { return false; }
 	}
 	return true;
