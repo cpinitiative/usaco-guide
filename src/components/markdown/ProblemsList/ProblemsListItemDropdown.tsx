@@ -1,5 +1,4 @@
 import Tippy from '@tippyjs/react';
-import { navigate } from 'gatsby';
 import React from 'react';
 import { Instance } from 'tippy.js';
 import { useDarkMode } from '../../../context/DarkModeContext';
@@ -11,10 +10,8 @@ import { ProblemsListItemProps } from './ProblemsListItem';
 
 function ViewSolutionsContent({
   problem,
-  onViewProblemSolutions,
 }: {
   problem: ProblemInfo;
-  onViewProblemSolutions: () => void;
 }): JSX.Element {
   const { solutions, currentUserSolutions } =
     useUserSolutionsForProblem(problem);
@@ -45,13 +42,13 @@ function ViewSolutionsContent({
     );
   }
   return (
-    <button
-      type="button"
+    <a
       className="focus:outline-none block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900"
-      onClick={onViewProblemSolutions}
+      href={`/problems/${problem.uniqueId}/user-solutions`}
+      target="_blank"
     >
       {viewSolutionsContent}
-    </button>
+    </a>
   );
 }
 
@@ -74,14 +71,6 @@ export default function ProblemsListItemDropdown(
 
   const tippyRef = React.useRef<Instance>();
   const [isDropdownShown, setIsDropdownShown] = React.useState(false);
-  const onViewProblemSolutions = () => {
-    tippyRef.current.hide();
-    navigate('/problem-solutions/', {
-      state: {
-        problem,
-      },
-    });
-  };
 
   return (
     <Tippy
@@ -90,10 +79,7 @@ export default function ProblemsListItemDropdown(
         isDropdownShown ? (
           <div className="-mx-2 text-left">
             {solutionContent}
-            <ViewSolutionsContent
-              problem={problem}
-              onViewProblemSolutions={onViewProblemSolutions}
-            />
+            <ViewSolutionsContent problem={problem} />
             <button
               type="button"
               className="focus:outline-none block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900"

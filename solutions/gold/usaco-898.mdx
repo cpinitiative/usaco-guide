@@ -2,7 +2,7 @@
 id: usaco-898
 source: USACO Gold 2019 January
 title: Sleepy Cow Sorting
-author: Nathan Gong, Melody Yu (Video), Qi Wang
+author: Nathan Gong, Melody Yu (Video), Qi Wang, Daniel Ge
 ---
 
 [Official Analysis](http://www.usaco.org/current/data/sol_sleepy_gold_jan19.html)
@@ -10,7 +10,7 @@ author: Nathan Gong, Melody Yu (Video), Qi Wang
 ## Video Solution
 
 Note: The video solution might not be the same as other solutions. Code in C++.
-<Youtube id="6oyl7lTKdPY" />
+<YouTube id="6oyl7lTKdPY" />
 
 ## Implementation
 
@@ -19,7 +19,6 @@ Note: The video solution might not be the same as other solutions. Code in C++.
 ### Using Segment Tree
 
 <LanguageSection>
-
 <JavaSection>
 
 ```java
@@ -118,9 +117,7 @@ public class Sleepy {
 ```
 
 </JavaSection>
-
 </LanguageSection>
-
 
 ### Using Binary Indexed Tree
 
@@ -185,5 +182,58 @@ public class Sleepy {
 	}
 }
 ```
+
 </JavaSection>
+</LanguageSection>
+
+### Using Indexed Set
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+// Import indexed sets
+#include <ext/pb_ds/assoc_container.hpp>
+using namespace __gnu_pbds;
+template <class T>
+using Tree =
+    tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
+
+Tree<int> sorted;
+int n;
+vector<int> nums;
+
+int main() {
+	ifstream fin("sleepy.in");
+
+	fin >> n;
+	// Reading input and look for the longest suffix that is increasing
+	for (int i = 0; i < n; i++) {
+		int a;
+		fin >> a;
+		nums.push_back(a);
+		if (i > 0) {
+			if (nums[i - 1] > nums[i]) { sorted.clear(); }
+		}
+		sorted.insert(a);
+	}
+
+	// Need to sort everything except increasing suffix
+	int ls = sorted.size();
+
+	ofstream fout("sleepy.out");
+	fout << n - ls << endl;
+
+	for (int i = 0; i < n - ls; i++) {
+		if (i != 0) fout << " ";
+		sorted.insert(nums[i]);
+		fout << sorted.order_of_key(nums[i]) + (n - ls - i - 1);
+	}
+}
+```
+
+</CPPSection>
 </LanguageSection>

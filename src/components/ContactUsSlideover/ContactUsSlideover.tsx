@@ -2,7 +2,8 @@ import * as React from 'react';
 import { useContext, useEffect, useState } from 'react';
 import { SECTION_LABELS } from '../../../content/ordering';
 import MarkdownLayoutContext from '../../context/MarkdownLayoutContext';
-import UserDataContext from '../../context/UserDataContext/UserDataContext';
+import { useFirebaseUser } from '../../context/UserDataContext/UserDataContext';
+import { useUserLangSetting } from '../../context/UserDataContext/properties/simpleProperties';
 import useContactFormAction from '../../hooks/useContactFormAction';
 import useStickyState from '../../hooks/useStickyState';
 import { ModuleInfo } from '../../models/module';
@@ -72,7 +73,6 @@ export default function ContactUsSlideover({
   onClose: () => void;
   defaultLocation?: string;
 }): JSX.Element {
-  const userSettings = useContext(UserDataContext);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [location, setLocation] = useState(defaultLocation);
@@ -92,6 +92,7 @@ export default function ContactUsSlideover({
   const [showErrors, setShowErrors] = useState(false);
 
   const markdownContext = useContext(MarkdownLayoutContext);
+  const userLang = useUserLangSetting();
   const submitForm = useContactFormAction();
 
   React.useEffect(() => {
@@ -105,7 +106,7 @@ export default function ContactUsSlideover({
     }
   }, [markdownContext?.markdownLayoutInfo]);
 
-  const { firebaseUser } = useContext(UserDataContext);
+  const firebaseUser = useFirebaseUser();
   useEffect(() => {
     if (!firebaseUser) return;
     if (email === '') {
@@ -144,7 +145,7 @@ export default function ContactUsSlideover({
         email,
         moduleName: location,
         url: window.location.href,
-        lang: userSettings.lang,
+        lang: userLang,
         topic,
         message,
       });

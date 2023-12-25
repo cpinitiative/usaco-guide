@@ -1,0 +1,124 @@
+---
+id: cf-510C
+source: CF
+title: Fox And Names
+author: Daniel Ge
+---
+
+<Spoiler title="Hint 1">
+We can make the characters of the alphabet nodes in a directed graph and perform topological sort.
+</Spoiler>
+
+<Spoiler title="Hint 2">
+The direction of the edges of this graph are can be determined by adjacent pairs of words in our input.
+</Spoiler>
+
+<Spoiler title="Solution">
+## Explanation
+The key idea here is to perform topological sort on the characters of the alphabet.
+
+We compare each pair of consecutive strings to determine the relative placement of one pair of letters in the alphabet. When comparing two strings,
+we look at the first occurence of a different letters. In other words, we take the common prefix out and compare the first letters.
+
+For example, if we are given,
+```
+axcd
+axbe
+```
+We see that the common prefix is "ax", so the first pair of differing letters is 'c' and 'b'.
+Since "axcd" comes first, that means 'c' comes before 'b' in our modified alphabet.
+
+In the special case that one word is the prefix of the other such as the case with,
+```
+abc
+abcde
+```
+the lexicographically greater string is the longer string. If the two strings are the same, then we can just output "Impossible".
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(n\text{ |name}_i|)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+// Used for topological sort
+vector<int> indegree = vector<int>(26);
+vector<vector<int>> conn = vector<vector<int>>(26, vector<int>());
+vector<int> sorted;
+
+void topological_sort() {
+	queue<int> q;
+	for (int i = 0; i < 26; i++) {
+		if (indegree[i] == 0) { q.push(i); }
+	}
+	while (!q.empty()) {
+		int pos = q.front();
+		q.pop();
+		sorted.push_back(pos);
+		for (auto c : conn[pos]) {
+			if ((--indegree[c]) == 0) { q.push(c); }
+		}
+	}
+}
+
+int main() {
+	int n;
+	// We make sure each pair of consecutive strings are in the right order
+	string cur, prev;
+
+	/*
+	 * No previous string to compare the first string to,
+	 * so we read it directly into prev
+	 */
+	cin >> n >> prev;
+	for (int i = 1; i < n; i++) {
+		cin >> cur;
+
+		// Maximum length to compare
+		int leng = min(prev.length(), cur.length());
+		// How long the prefix has been the same for
+		int samed = 0;
+
+		while (samed < leng) {
+			if (prev[samed] != cur[samed]) {
+				/*
+				 * As soon as we see a difference, we make sure
+				 * the alphabetic follows the order presented
+				 */
+				int ncur = cur[samed] - 'a', nprev = prev[samed] - 'a';
+				indegree[ncur]++;
+				conn[nprev].push_back(ncur);
+				break;
+			}
+			samed++;
+		}
+		/*
+		 * If cur is a prefix of prev, then it is already impossible
+		 * for cur to be lexicographically more than prev
+		 */
+		if ((samed == leng) && (prev.length() > cur.length())) {
+			cout << "Impossible" << endl;
+			return 0;
+		}
+		prev = cur;
+	}
+
+	topological_sort();
+
+	// If topological sort not completeable, it's impossible
+	if (sorted.size() < 26) {
+		cout << "Impossible" << endl;
+	} else {
+		// Print out numbers converted back to characters
+		for (int s : sorted) { cout << char(s + 'a'); }
+	}
+}
+```
+</CPPSection>
+</LanguageSection>
+</Spoiler>

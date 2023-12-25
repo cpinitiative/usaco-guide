@@ -2,14 +2,15 @@ import { execSync } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 import * as freshOrdering from './content/ordering';
+import div_to_probs from './src/components/markdown/ProblemsList/DivisionList/div_to_probs.json';
 import { createXdmNode } from './src/gatsby/create-xdm-node';
 import {
+  ProblemMetadata,
+  ShortProblemInfo,
   checkInvalidUsacoMetadata,
   getProblemInfo,
   getProblemURL,
-  ProblemMetadata,
 } from './src/models/problem';
-
 // Questionable hack to get full commit history so that timestamps work
 try {
   execSync(
@@ -23,7 +24,7 @@ try {
 
 // ideally problems would be its own query with
 // source nodes: https://www.gatsbyjs.com/docs/reference/config-files/gatsby-node/#sourceNodes
-
+let stream = fs.createWriteStream('ids.log', { flags: 'a' });
 exports.onCreateNode = async api => {
   const { node, actions, loadNodeContent, createContentDigest, createNodeId } =
     api;
@@ -96,6 +97,7 @@ exports.onCreateNode = async api => {
       try {
         parsedContent[tableId].forEach((metadata: ProblemMetadata) => {
           checkInvalidUsacoMetadata(metadata);
+          stream.write(metadata.uniqueId + '\n');
           transformObject(
             {
               ...getProblemInfo(metadata, freshOrdering),
@@ -260,11 +262,16 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
     reporter.panicOnBuild('🚨 ERROR: Loading "createPages" query');
   }
   // Check to make sure problems with the same unique ID have consistent information, and that there aren't duplicate slugs
+  // Also creates user solution pages for each problem
   const problems = result.data.problems.edges;
   let problemSlugs = {}; // maps slug to problem unique ID
   let problemInfo = {}; // maps unique problem ID to problem info
   let problemURLToUniqueID = {}; // maps problem URL to problem unique ID
   let urlsThatCanHaveMultipleUniqueIDs = ['https://cses.fi/107/list/'];
+  const userSolutionTemplate = path.resolve(
+    `./src/templates/userSolutionTemplate.tsx`
+  );
+  let usaco_uids: string[] = [];
   problems.forEach(({ node }) => {
     let slug = getProblemURL(node);
     if (
@@ -310,10 +317,46 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
         }. Is this correct? (If this is correct, add the URL to \`urlsThatCanHaveMultipleUniqueIDs\` in gatsby-node.ts)`
       );
     }
+
+    // skipping usaco problems to be created with div_to_probs
+    if (node.uniqueId.startsWith('usaco')) {
+      usaco_uids.push(node.uniqueId);
+    }
     problemSlugs[slug] = node.uniqueId;
     problemInfo[node.uniqueId] = node;
     problemURLToUniqueID[node.url] = node.uniqueId;
+    const path = `problems/${node.uniqueId}/user-solutions`;
+    const problem = node as ShortProblemInfo;
+    createPage({
+      path: path,
+      component: userSolutionTemplate,
+      context: {
+        problem: problem,
+      },
+    });
   });
+  const divisions = ['Bronze', 'Silver', 'Gold', 'Platinum'];
+  divisions.forEach(division => {
+    div_to_probs[division].forEach(problem => {
+      const uniqueId = 'usaco-' + problem[0];
+      const name = problem[2];
+      const path = `problems/${uniqueId}/user-solutions`;
+
+      if (!usaco_uids.includes(uniqueId)) {
+        createPage({
+          path: path,
+          component: userSolutionTemplate,
+          context: {
+            problem: {
+              uniqueId: uniqueId,
+              name: name,
+            },
+          },
+        });
+      }
+    });
+  });
+
   // End problems check
   const moduleTemplate = path.resolve(`./src/templates/moduleTemplate.tsx`);
   const modules = result.data.modules.edges;
@@ -531,7 +574,7 @@ exports.createSchemaCustomization = ({ actions }) => {
   `;
   createTypes(typeDefs);
 };
-
+const FilterWarningsPlugin = require('webpack-filter-warnings-plugin');
 exports.onCreateWebpackConfig = ({ actions, stage, loaders, plugins }) => {
   actions.setWebpackConfig({
     resolve: {
@@ -556,6 +599,12 @@ exports.onCreateWebpackConfig = ({ actions, stage, loaders, plugins }) => {
         },
       ],
     },
+    // plugins: [
+    //   new FilterWarningsPlugin({
+    //     exclude:
+    //       /mini-css-extract-plugin[^]*Conflicting order. Following module has been added:/,
+    //   }),
+    // ],
   });
   if (stage === 'build-javascript' || stage === 'develop') {
     actions.setWebpackConfig({

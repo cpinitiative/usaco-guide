@@ -1,0 +1,28 @@
+on: workflow_dispatch
+
+jobs:
+  update_problems:
+    name: Update problems
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout usaco-guide
+        uses: actions/checkout@v2
+      - name: Checkout usaco-problems
+        uses: actions/checkout@v2
+        with:
+          repository: usaco-guide/usaco-problems
+          path: usaco-problems
+      - name: Build list of problem ids
+        run: |
+          git branch auto
+          git checkout auto
+          yarn
+          yarn build
+      - name: Add new problems
+        run: |
+          npx ts-node usaco-problems/add_problems ids.log content/extraProblems.json
+          git add .
+          git commit -m 'problem auto-updates'
+          gh pr create --title 'Problem auto-updates' -F usaco-problems/out/report.txt
+        env:
+          GITHUB_TOKEN: ${{ github.token }}

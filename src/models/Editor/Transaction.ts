@@ -1,14 +1,13 @@
-import { Timestamp } from 'firebase/firestore';
 import { Blob } from 'blob-polyfill';
+import { Timestamp } from 'firebase/firestore';
 
 /**
  * A transaction is a patch that describes the changes from one state to another state, as well as the time at which this change was made.
  */
 export default class Transaction<
-  T extends
-    {
-      [key: string]: string;
-    },
+  T extends {
+    [key: string]: string;
+  }
 > {
   /**
    * The numeric identifier of the transaction, which should be unique within a block.

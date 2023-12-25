@@ -1,0 +1,164 @@
+---
+id: cf-803D
+source: CF
+title: Magazine Ad
+author: Alex Du
+---
+
+<Spoiler title="Hint 1">
+
+If you know that some width is/isn't possible to format an ad with, what can you deduce from this?
+
+</Spoiler>
+
+<Spoiler title="Hint 2">
+
+Is there a way to format an ad of a given width using less than or equal to the maximum number of lines?
+
+</Spoiler>
+
+<Spoiler title="Solution">
+
+## Explanation
+
+[Official Analysis](https://codeforces.com/blog/entry/51768)
+
+Is there a way to format an ad of a given width using less than or equal to the maximum number of lines?
+
+If we can format an ad using less than or equal to the maximum number of lines with width $w$, then all widths $\geq w$ also work. Therefore, we can binary search for the minimum width that works.
+
+We can break the ad into individual words. We will store each word length plus a space or a hyphen (except for the last word), since spaces and hyphens function similarly.
+
+We will add as many words as possible to each line for each width, creating a new line when we run out of room. If the number of lines we use is less than or equal to the maximum number of lines, then our width works. If any word is longer than our given width, then our width doesn't work.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N \log N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int max_lines;
+vector<int> word_lengths;
+string ad;
+
+/** @return if most optimized ad of given width satisfies constraints */
+bool width_valid(int width) {
+	int lines = 0;
+	int curr_width = 0;
+
+	for (int word_length : word_lengths) {
+		// if individual word is wider than ad width, we need a greater width
+		if (word_length > width) { return false; }
+
+		// if we overflow, we need a new line
+		if (curr_width + word_length > width) {
+			lines++;
+			curr_width = word_length;
+		} else {
+			curr_width += word_length;  // add word to current line
+		}
+	}
+
+	if (curr_width > 0) { lines++; }
+	return lines <= max_lines;
+}
+
+int main() {
+	cin >> max_lines;
+	// ignore '\n' character before getline
+	cin.ignore();
+	getline(cin, ad);
+
+	// get sizes of each word, including trailing spaces and trailing hyphens
+	word_lengths.push_back(0);
+	for (char i : ad) {
+		word_lengths.back()++;
+		// spaces and hyphens work the same, start new word after adding char
+		if (i == ' ' || i == '-') { word_lengths.push_back(0); }
+	}
+
+	/*
+	 * find the lowest width that doesn't use greater than max_lines
+	 * binary search code: https://usaco.guide/silver/binary-search
+	 */
+	int lo = 0;
+	int hi = (int)ad.size();
+	hi++;
+	while (lo < hi) {
+		int mid = lo + (hi - lo) / 2;
+		if (width_valid(mid)) {
+			hi = mid;
+		} else {
+			lo = mid + 1;
+		}
+	}
+
+	cout << lo << endl;
+}
+```
+
+</CPPSection>
+<PySection>
+
+<Warning>
+
+Due to Python's constant factor, this code will TLE on a couple of test cases.
+
+</Warning>
+
+```py
+def width_valid(width, word_lengths, max_lines):
+	""":return: if most optimized ad of given width satisfies constraints"""
+	lines = 0
+	curr_width = 0
+
+	for word_length in word_lengths:
+		# if individual word is wider than ad width, we need a greater width
+		if word_length > width:
+			return False
+
+		# if we overflow, we need a new line
+		if curr_width + word_length > width:
+			lines += 1
+			curr_width = word_length
+		else:
+			curr_width += word_length  # add word to the current line
+
+	if curr_width > 0:
+		lines += 1
+	return lines <= max_lines
+
+
+max_lines = int(input())
+ad = input()
+
+# get sizes of each word, including trailing spaces and trailing hyphens
+word_lengths = [0]
+for char in ad:
+	word_lengths[-1] += 1
+	# spaces and hyphens work the same, start a new word after adding a character
+	if char == " " or char == "-":
+		word_lengths.append(0)
+
+# find the lowest width that doesn't use greater than max_lines
+lo = 0
+hi = len(ad) + 1
+while lo < hi:
+	mid = lo + (hi - lo) // 2
+	if width_valid(mid, word_lengths, max_lines):
+		hi = mid
+	else:
+		lo = mid + 1
+
+print(lo)
+```
+
+</PySection>
+</LanguageSection>
+
+</Spoiler>

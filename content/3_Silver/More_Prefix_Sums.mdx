@@ -650,3 +650,206 @@ for _ in range(query_num):
 ### Problems
 
 <Problems problems="cum2" hideSuggestProblemButton />
+
+## Quiz
+
+<Quiz>
+  <Quiz.Question>
+    For a grid with $N$ rows and $M$ columns, what's the ideal time complexity to compute a 2D prefix sum array of the grid.
+    <Quiz.Answer>
+      $\mathcal{O}(1)$
+      <Quiz.Explanation>
+        Incorrect. We have to iterate over every element.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      $\mathcal{O}(NM \log NM)$
+      <Quiz.Explanation>
+        Incorrect. We don't have to sort or do any other logarithmic operation on the grid.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer correct>
+      $\mathcal{O}(NM)$
+      <Quiz.Explanation>
+        Correct. We'll have to compute the cumulative sum for every single element.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      $\mathcal{O}(N + M)$
+      <Quiz.Explanation>
+        Incorrect. Iterating over every row **and then** every column will not accurately give us the sum for every element.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+  </Quiz.Question>
+  <Quiz.Question>
+    Given that $\texttt{pref}[i][j]$ gives us the sum of the grid for every element with $0 \leq x \leq i$ and $0 \leq y \leq j$, what would be the most optimal way to compute $\texttt{pref}[i][j]$ given only $\texttt{pref}[0 \leq x \le i][0 \leq y \le j]$?
+    <Quiz.Answer>
+      $\texttt{pref}[i][j]$ = $\texttt{pref}[i - 1][j] + \texttt{pref}[i][j - 1]$
+      <Quiz.Explanation>
+        Incorrect. We double count $\texttt{pref}[i - 1][j - 1]$.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      $\texttt{pref}[i][j] = \texttt{pref}[i - 1][j - 1] + \texttt{pref}[i][j - 1] + \texttt{pref}[i - 1][j]$
+      <Quiz.Explanation>
+        Incorrect. You should try visualizing the subgrids you're adding in the interactive example above.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      $\texttt{pref}[i][j] = \sum_{y=0}^{y < j} \sum_{x=0}^{x < i} \texttt{grid}[x][y]$
+      <Quiz.Explanation>
+        Incorrect. Note how this makes the time complexity $\mathcal{O}(NM^2)$.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer correct>
+      $\texttt{pref}[i][j] = \texttt{pref}[i][j - 1] + \texttt{pref}[i - 1][j] - \texttt{pref}[i - 1][j - 1]$
+      <Quiz.Explanation>
+        Correct. This accurately subtracts the double counted area.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+  </Quiz.Question>
+  <Quiz.Question>
+    Given the array shown below, what is the correct prefix sum construction? (assume the prefix sum is zero-indexed)
+    <table class="text-center">
+    <tbody>
+    <tr>
+    <td>1</td>
+    <td>2</td>
+    <td>3</td>
+    </tr>
+    <tr>
+    <td>4</td>
+    <td>5</td>
+    <td>6</td>
+    </tr>
+    <tr>
+    <td>1</td>
+    <td>2</td>
+    <td>3</td>
+    </tr></tbody>
+    </table>
+
+    <Quiz.Answer>
+      <table class="text-center">
+      <tbody>
+      <tr>
+      <td>1</td>
+      <td>3</td>
+      <td>6</td>
+      </tr>
+      <tr>
+      <td>4</td>
+      <td>9</td>
+      <td>15</td>
+      </tr>
+      <tr>
+      <td>1</td>
+      <td>3</td>
+      <td>6</td>
+      </tr></tbody>
+      </table>
+      <Quiz.Explanation>
+        Incorrect. This is the prefix sum if we compute each row independently.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      <table class="text-center">
+      <tbody>
+      <tr>
+      <td>1</td>
+      <td>3</td>
+      <td>6</td>
+      </tr>
+      <tr>
+      <td>5</td>
+      <td>13</td>
+      <td>25</td>
+      </tr>
+      <tr>
+      <td>6</td>
+      <td>21</td>
+      <td>46</td>
+      </tr></tbody>
+      </table>
+
+      <Quiz.Explanation>
+        Incorrect. We're over-counting each subgrid.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      <table class="text-center">
+      <tbody>
+      <tr>
+      <td>1</td>
+      <td>2</td>
+      <td>3</td>
+      </tr>
+      <tr>
+      <td>5</td>
+      <td>7</td>
+      <td>9</td>
+      </tr>
+      <tr>
+      <td>6</td>
+      <td>9</td>
+      <td>12</td>
+      </tr></tbody>
+      </table>
+
+      <Quiz.Explanation>
+        Incorrect. This is the prefix sum if we compute each column independently.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer correct>
+      <table class="text-center">
+      <tbody>
+      <tr>
+      <td>1</td>
+      <td>3</td>
+      <td>6</td>
+      </tr>
+      <tr>
+      <td>5</td>
+      <td>12</td>
+      <td>21</td>
+      </tr>
+      <tr>
+      <td>6</td>
+      <td>15</td>
+      <td>27</td>
+      </tr></tbody>
+      </table>
+
+      <Quiz.Explanation>
+        Correct.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+  </Quiz.Question>
+  <Quiz.Question>
+    What's the optimal time complexity to find the maximum subarray sum on an array?
+    <Quiz.Answer correct>
+      $\mathcal{O}(n)$
+      <Quiz.Explanation>
+        Correct. We can store the minimum prefix sum and the current prefix sum to find the minimum.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      $\mathcal{O}(n^2)$
+      <Quiz.Explanation>
+        Incorrect. This is the naive approach which involves fixing a start point and iterating over all subarrays.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      $\mathcal{O}(n \log n)$
+      <Quiz.Explanation>
+        Incorrect. Using any logarithmic operation is unnecessary here.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      $\mathcal{O}(\log n)$
+      <Quiz.Explanation>
+        Incorrect.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+  </Quiz.Question>
+</Quiz>

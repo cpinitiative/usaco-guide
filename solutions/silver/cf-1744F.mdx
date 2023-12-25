@@ -1,0 +1,156 @@
+---
+id: cf-1744F
+source: CF
+title: MEX vs MED
+author: Alex Du
+---
+
+<Spoiler title="Hint">
+
+For a subsegment of length $\leq 2 \cdot \texttt{mex}$, the condition $\texttt{mex} > \texttt{med}$ will be satisfied, since the median can be at most $\texttt{mex}-1$.
+
+</Spoiler>
+
+<Spoiler title="Solution">
+
+## Explanation
+
+[Official Analysis](https://codeforces.com/blog/entry/108101)
+
+We will iterate $\texttt{mex}$ from $1$ to $n-1$, finding all valid subsegments of that $\texttt{mex}$ at a time.
+
+Let $l$ and $r$ represent the highest left bound and the lowest right bound, respectively, of a subsegment that satisfies a given $\texttt{mex}$, and $\texttt{pos}$ represent the index of $\texttt{mex}$. If we know $l$, $r$, and $\texttt{pos}$, we can quickly count the subsegments for a given $\texttt{mex}$.
+
+We need to find all subsegments of length $\leq 2 \cdot \texttt{mex}$ that contains $l \ldots r$ and omit $\texttt{pos}$. First, let's solve for $\texttt{pos}>r$. Let's iterate $r$ to $\texttt{pos}-1$, finding all bounds of $l$ that satisfy the constraints for each $r$. This is not a time concern as long as we can find all possible values of $l$ in $\mathcal{O}(1)$, since each time we iterate we are increasing the size of the subsegment by $1$.
+
+Considering this new bound of $r$, we can find the number of possible values of $l$ that form a valid subsegment by finding the number of positions $\leq l$ such that $r-l+1 \leq \texttt{mex} \cdot 2$. The lower
+bound of our smallest value of $l$ is $r-\texttt{mex} \cdot 2 + 1$, which we can find by rearranging the previous inequality.
+
+After this, we know that all values between $l$ and the lower bound of $l$ are valid left bounds for our given $r$, so we can add $l-\texttt{smallest\_l} + 1$ to the answer. However, we must consider the lower bound of $l$ as $0$ if it's negative, and not add $l-\texttt{smallest\_l} + 1$ if it is negative.
+
+If $\texttt{pos} < l$, we can decrement from $l$ to $\texttt{pos}+1$, calculating all possible values of $r$ in a similar fashion.
+
+We can store the position of each integer, allowing us to find the position of the next $\texttt{mex}$ without having to search through the array.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+using ll = long long;
+
+int main() {
+	int test_num;
+	cin >> test_num;
+	for (int t = 0; t < test_num; t++) {
+		int n;
+		cin >> n;
+
+		// stores position of integer
+		vector<int> pos(n);
+
+		for (int i = 0; i < n; i++) {
+			int x;
+			cin >> x;
+			pos[x] = i;
+		}
+
+		// initialize left and right bounds for mex
+		int l = pos[0], r = pos[0];
+		ll ans = 1;
+
+		// mex represents the current mex l and r cover
+		for (int mex = 1; mex < n; mex++) {
+			int next_pos = pos[mex];
+
+			// skip if next_pos is already between l and r
+			if (l <= next_pos && next_pos <= r) { continue; }
+
+			// Since we can create a valid subsegment for a given mex up until
+			// size mex * 2, our max difference between l and r is mex * 2 - 1.
+			int max_diff = mex * 2 - 1;
+
+			if (next_pos < l) {
+				for (; l > next_pos; l--) {
+					int largest_r = min(l + max_diff, n - 1);
+					// add all possible right bounds that don't change the
+					// current mex
+					ans += max(largest_r - r + 1, 0);
+				}
+			} else {
+				for (; r < next_pos; r++) {
+					int smallest_l = max(r - max_diff, 0);
+					// add all possible left bounds that don't change the
+					// current mex
+					ans += max(l - smallest_l + 1, 0);
+				}
+			}
+		}
+
+		cout << ans << '\n';
+	}
+}
+```
+
+</CPPSection>
+<PySection>
+
+```py
+for _ in range(int(input())):
+	n = int(input())
+
+	# stores the position of integers
+	pos = [0] * n
+
+	data = list(map(int, input().split()))
+
+	for i in range(n):
+		x = data[i]
+		pos[x] = i
+
+	# initialize left and right bounds for mex
+	l = pos[0]
+	r = pos[0]
+	ans = 1
+
+	# mex represents the current mex l and r cover
+	for mex in range(1, n):
+		next_pos = pos[mex]
+
+		# Skip if next_pos is already between l and r
+		if l <= next_pos <= r:
+			continue
+
+		# Since we can create a valid subsegment for a given mex up until
+		# size mex * 2, our max difference between l and r is mex * 2 - 1.
+		max_diff = mex * 2 - 1
+
+		if next_pos < l:
+			while l > next_pos:
+				largest_r = min(l + max_diff, n - 1)
+
+				# Add all possible right bounds that don't change the current mex
+				ans += max(largest_r - r + 1, 0)
+				l -= 1
+		else:
+			while r < next_pos:
+				smallest_l = max(r - max_diff, 0)
+
+				# Add all possible left bounds that don't change the current mex
+				ans += max(l - smallest_l + 1, 0)
+				r += 1
+
+	print(ans)
+```
+
+</PySection>
+</LanguageSection>
+
+</Spoiler>

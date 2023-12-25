@@ -1,0 +1,104 @@
+---
+id: cf-1181D
+source: CF
+title: Irrigation
+author: Chongtian Ma
+---
+
+[Official Analysis](https://codeforces.com/blog/entry/67727)
+
+## Explanation
+
+We can subtract $n$ from each query, sort the cities by occurrences and the queries by year, and then answer the queries offline.
+
+Let city $i$ denote the $i$'th smallest city sorted by occurrences, and $occ_i$ represent the number of occurrences. We can loop through each $i$ and track the years that have passed.
+
+Assume cities $1, 2, \dots i$ already have $occ_i$ occurrences. For them to all end up with $occ_{i+1}$ occurrences, we need $i \cdot (occ_{i+1} - occ_i)$ more years, meaning that for the next $i \cdot (occ_{i+1} - occ_i)$ years, cities $1, 2, \dots i$ will be selected one after another.
+
+To answer individual years, we can use a BST to track the initial indices of each city $1, 2, 3 \dots i$. Note that initial indices, not the sorted ones, break the tie for occurrences.
+
+Let the current year be $y$. At each iteration, we can answer every query $q$ in the range of $y \leq q < y + i \cdot (occ_{i+1} - occ_i)$ and use binary search to obtain the indices of these queries. Since these cities are selected one after another, the answer to query $q$ is just the $(q - y) \% i$'th city sorted by initial indices.
+
+At this point, we know every city has the max occurrence, so the answer to remaining queries that ask for years after the final $y$ is just $(q - y) \% m$.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(m \log q \log m)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/detail/standard_policies.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
+using namespace std;
+using namespace __gnu_pbds;
+
+using ll = long long;
+#define all(x) x.begin(), x.end()
+
+template <typename T>
+using ordered_set =
+    tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
+
+int main() {
+	int n, m, q;
+	scanf("%d%d%d", &n, &m, &q);
+	vector<int> counter(m);
+	for (int i = 0; i < n; i++) {
+		int x;
+		scanf("%d", &x);
+		counter[--x]++;
+	}
+
+	vector<pair<ll, int>> query(q);  // {year, index}
+	for (int i = 0; i < q; i++) {
+		scanf("%lld", &query[i].first);
+		query[i].first -= n;
+		query[i].second = i;
+	}
+	sort(all(query));
+
+	vector<pair<ll, int>> occ(m);  // {occurrence, city}
+	for (int i = 0; i < m; i++) { occ[i] = {counter[i], i}; }
+	sort(all(occ));
+
+	vector<int> qans(q, -1);
+	// tracks the initial indicies of the cities so far in sorted order
+	ordered_set<int> track_city;
+
+	ll years = 1;
+	for (int i = 0; i < m - 1; i++) {
+		ll years_upper = years + (occ[i + 1].first - occ[i].first) * (i + 1);
+		track_city.insert(occ[i].second);
+
+		// beginning of query, sorted by year
+		int q_low_ind =
+		    lower_bound(all(query), make_pair(years, 0)) - query.begin();
+
+		for (int j = q_low_ind; j < q && query[j].first < years_upper; j++) {
+			ll qyears = query[j].first;
+			int qindex = query[j].second;
+
+			// retrieve the requested city by original query order
+			qans[qindex] =
+			    *track_city.find_by_order((qyears - years) % (i + 1));
+		}
+
+		years = years_upper;
+	}
+
+	// answer the rest of the queries that goes past max occurrence
+	for (int i = 0; i < q; i++) {
+		if (qans[query[i].second] == -1) {
+			qans[query[i].second] = (query[i].first - years) % m;
+		}
+	}
+
+	for (int i : qans) { printf("%d\n", i + 1); }
+}
+```
+</CPPSection>
+</LanguageSection>

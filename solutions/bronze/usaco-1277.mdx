@@ -1,0 +1,86 @@
+---
+id: usaco-1277
+source: USACO Bronze 2023 January
+title: Moo Operations
+author: Chu Minjae
+---
+
+<Spoiler title="Hint">
+
+When is it possible to reduce a string to "MOO"?
+When is it not?
+What's the key differentiating factor between these two cases?
+
+</Spoiler>
+
+<Spoiler title="Answer to Hint">
+
+It's possible to reduce any string to "MOO" as long as there's a substring
+of length 3 with an "O" in the middle.
+If there isn't, we can't get "MOO" because there's no way to change the middle character.
+
+</Spoiler>
+
+<Spoiler title="Solution">
+
+[Official Analysis (C++ and Java)](http://usaco.org/current/data/sol_prob3_bronze_jan23.html)
+
+## Explanation
+
+For each string, we go through all substrings of length 3 and try to make those the characters we preserve.
+
+What does that mean?
+
+Well, for any string longer than "MOO," we're going to have to delete some characters.
+For example, in the first sample input string "MOMMOM", an optimal solution is to preserve the first 3 and delete the last 3.
+For each of these length-3 substrings, we check if there's an "O" in the middle.
+
+If there is, it's possible to make this string "MOO"!
+We then check if the starting character and ending character need to be changed, as those are additional operations we have to take into account.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$ for each string, where $N$ is the length of the string.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	int str_num;
+	cin >> str_num;
+	for (int s = 0; s < str_num; s++) {
+		string str;
+		cin >> str;
+		// Handle the edge case where the string is shorter than "MOO"
+		if (str.size() < 3) {
+			cout << -1 << '\n';
+			continue;
+		}
+
+		// char_diff characters have to be removed regardless of the string
+		int char_diff = str.size() - 3;
+		int min_ops = INT32_MAX;
+		for (int i = 0; i < str.size() - 2; i++) {
+			// See if we can preserve this substring and make it "MOO"
+			if (str[i + 1] == 'O') {
+				// Check if we have to change the front and back
+				bool change_front = str[i] != 'M';
+				bool change_back = str[i + 2] != 'O';
+				// Update the min operations needed
+				min_ops = min(min_ops, char_diff + change_front + change_back);
+			}
+		}
+
+		cout << (min_ops == INT32_MAX ? -1 : min_ops) << '\n';
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
+</Spoiler>

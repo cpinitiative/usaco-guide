@@ -1,8 +1,5 @@
 import { navigate } from 'gatsby';
 import * as React from 'react';
-import UnderlinedTabs from '../components/elements/UnderlinedTabs';
-import Layout from '../components/layout';
-import SEO from '../components/seo';
 import AdminSettings from '../components/Settings/AdminSettings';
 import Authentication from '../components/Settings/Authentication';
 import DarkMode from '../components/Settings/DarkMode';
@@ -11,6 +8,9 @@ import Language from '../components/Settings/Language';
 import Profile from '../components/Settings/Profile';
 import UserData from '../components/Settings/UserData';
 import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
+import UnderlinedTabs from '../components/elements/UnderlinedTabs';
+import Layout from '../components/layout';
+import SEO from '../components/seo';
 import { useUserPermissions } from '../context/UserDataContext/UserPermissionsContext';
 
 /*

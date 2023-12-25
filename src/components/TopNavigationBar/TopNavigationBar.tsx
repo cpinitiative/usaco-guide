@@ -19,17 +19,19 @@ import {
 import classNames from 'classnames';
 import { Link } from 'gatsby';
 import * as React from 'react';
-import { Fragment, useContext, useState } from 'react';
-import MODULE_ORDERING from '../../../content/ordering';
+import { Fragment, useState } from 'react';
 import { SignInContext } from '../../context/SignInContext';
-import UserDataContext from '../../context/UserDataContext/UserDataContext';
-import { useUserGroups } from '../../hooks/groups/useUserGroups';
+import {
+  useFirebaseUser,
+  useIsUserDataLoaded,
+  useSignOutAction,
+} from '../../context/UserDataContext/UserDataContext';
 import ContactUsSlideover from '../ContactUsSlideover/ContactUsSlideover';
-import { LoadingSpinner } from '../elements/LoadingSpinner';
 import Logo from '../Logo';
 import LogoSquare from '../LogoSquare';
 import MobileMenuButtonContainer from '../MobileMenuButtonContainer';
 import SectionsDropdown from '../SectionsDropdown';
+import { LoadingSpinner } from '../elements/LoadingSpinner';
 import { SearchModal } from './SearchModal';
 import { UserAvatarMenu } from './UserAvatarMenu';
 
@@ -37,33 +39,15 @@ export default function TopNavigationBar({
   transparent = false,
   linkLogoToIndex = false,
   currentSection = null,
-  hideClassesPromoBar = false,
+  hidePromoBar = false,
 }) {
-  const { firebaseUser, signOut, isLoaded, userProgressOnModules } =
-    useContext(UserDataContext);
+  const firebaseUser = useFirebaseUser();
+  const signOut = useSignOutAction();
+  const isLoaded = useIsUserDataLoaded();
   const { signIn } = React.useContext(SignInContext);
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const [isContactUsActive, setIsContactUsActive] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const userGroups = useUserGroups();
-
-  const sections = {};
-  for (const section of Object.keys(MODULE_ORDERING)) {
-    let total = 0;
-    let completed = 0;
-    MODULE_ORDERING[section].forEach(chapter => {
-      chapter.items.forEach(module => {
-        total++;
-        if (Object.keys(userProgressOnModules).includes(module)) {
-          completed++;
-        }
-      });
-    });
-    sections[section] = {
-      total,
-      completed,
-    };
-  }
 
   const resources = [
     {
@@ -150,29 +134,30 @@ export default function TopNavigationBar({
 
   return (
     <>
-      {!hideClassesPromoBar && (
+      {/*       {!hidePromoBar && (
         <div className="relative bg-blue-600">
           <div className="max-w-screen-xl mx-auto py-3 px-3 sm:px-6 lg:px-8">
             <div className="pr-16 sm:text-center sm:px-16">
               <p className="font-medium text-white">
                 <span className="md:inline">
-                  We're looking for Content Authors!
+                  Come to our Livesolve and Q&A workshop hosted by the USA's IOI
+                  team!
                 </span>
                 <span className="block sm:ml-2 sm:inline-block">
                   <a
-                    href="https://forms.gle/YbPR1J3caZW3pV5r6"
+                    href="https://joincpi.org/workshops/ioi23"
                     target="_blank"
                     rel="noreferrer"
                     className="text-white font-bold underline"
                   >
-                    Apply here&rarr;
+                    Register here &rarr;
                   </a>
                 </span>
               </p>
             </div>
           </div>
         </div>
-      )}
+      )} */}
 
       <nav
         className={classNames(

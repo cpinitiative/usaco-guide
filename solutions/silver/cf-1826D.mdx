@@ -1,0 +1,82 @@
+---
+id: cf-1826D
+source: CF
+title: Running Miles
+author: Chongtian Ma
+---
+
+[Official Analysis](https://codeforces.com/blog/entry/115892)
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(n)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	int test_num;
+	cin >> test_num;
+
+	for (int t = 0; t < test_num; t++) {
+		int n;
+		cin >> n;
+		vector<int> a(n);
+		for (int i = 0; i < n; i++) { cin >> a[i]; }
+
+		vector<int> pref_max(n);
+		vector<int> suff_max(n);
+		for (int i = 0; i < n; i++) {
+			pref_max[i] = a[i] + i;
+			suff_max[i] = a[i] - i;
+		}
+
+		for (int i = 1; i < n; i++) {
+			pref_max[i] = max(pref_max[i], pref_max[i - 1]);
+		}
+		for (int i = n - 2; i >= 0; i--) {
+			suff_max[i] = max(suff_max[i], suff_max[i + 1]);
+		}
+
+		int ans = 0;
+		for (int i = 1; i < n - 1; i++) {
+			ans = max(ans, pref_max[i - 1] + a[i] + suff_max[i + 1]);
+		}
+
+		cout << ans << '\n';
+	}
+}
+```
+
+</CPPSection>
+<PySection>
+
+```py
+for _ in range(int(input())):
+	n = int(input())
+	a = list(map(int, input().split()))
+	pref = [0] * n
+	suff = [0] * n
+
+	for i in range(n):
+		pref[i] = a[i] + i
+		suff[i] = a[i] - i
+
+	for i in range(1, n):
+		pref[i] = max(pref[i], pref[i - 1])
+	for i in range(n - 2, -1, -1):
+		suff[i] = max(suff[i], suff[i + 1])
+
+	ans = 0
+	for i in range(1, n - 1):
+		ans = max(ans, pref[i - 1] + suff[i + 1] + a[i])
+
+	print(ans)
+```
+
+</PySection>
+</LanguageSection>

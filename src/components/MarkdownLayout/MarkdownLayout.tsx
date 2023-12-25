@@ -10,8 +10,11 @@ import { ContactUsSlideoverProvider } from '../../context/ContactUsSlideoverCont
 import MarkdownLayoutContext from '../../context/MarkdownLayoutContext';
 import { ProblemSolutionContext } from '../../context/ProblemSolutionContext';
 import { ProblemSuggestionModalProvider } from '../../context/ProblemSuggestionModalContext';
-import { updateLangURL } from '../../context/UserDataContext/properties/userLang';
-import UserDataContext from '../../context/UserDataContext/UserDataContext';
+import { useUserLangSetting } from '../../context/UserDataContext/properties/simpleProperties';
+import {
+  useSetProgressOnModule,
+  useUserProgressOnModules,
+} from '../../context/UserDataContext/properties/userProgress';
 import { ModuleInfo } from '../../models/module';
 import { SolutionInfo } from '../../models/solution';
 import ForumCTA from '../ForumCTA';
@@ -66,13 +69,10 @@ export default function MarkdownLayout({
   markdownData: ModuleInfo | SolutionInfo;
   children: React.ReactNode;
 }) {
-  const { userProgressOnModules, setModuleProgress, lang } =
-    useContext(UserDataContext);
-  React.useEffect(() => {
-    if (lang !== 'showAll') {
-      updateLangURL(lang);
-    }
-  }, [lang]);
+  const userProgressOnModules = useUserProgressOnModules();
+  const setModuleProgress = useSetProgressOnModule();
+  const lang = useUserLangSetting();
+
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const moduleProgress =
     (userProgressOnModules && userProgressOnModules[markdownData.id]) ||
@@ -84,23 +84,21 @@ export default function MarkdownLayout({
   const data = useStaticQuery(graphql`
     query {
       allXdm(filter: { fileAbsolutePath: { regex: "/content/" } }) {
-        edges {
-          node {
-            frontmatter {
-              title
-              id
-            }
+        nodes {
+          frontmatter {
+            title
+            id
           }
         }
       }
     }
   `);
   const moduleLinks = React.useMemo(() => {
-    return data.allXdm.edges.map(cur => ({
-      id: cur.node.frontmatter.id,
-      title: cur.node.frontmatter.title,
-      section: moduleIDToSectionMap[cur.node.frontmatter.id],
-      url: moduleIDToURLMap[cur.node.frontmatter.id],
+    return data.allXdm.nodes.map(cur => ({
+      id: cur.frontmatter.id,
+      title: cur.frontmatter.title,
+      section: moduleIDToSectionMap[cur.frontmatter.id],
+      url: moduleIDToURLMap[cur.frontmatter.id],
     }));
   }, [data.allXdm]);
   const showConfetti = useContext(ConfettiContext);

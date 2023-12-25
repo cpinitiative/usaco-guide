@@ -1,7 +1,7 @@
 ---
 id: max-flow
 title: 'Maximum Flow'
-author: Benjamin Qi
+author: Benjamin Qi, Mihnea Brebenel
 prerequisites:
   - unweighted-shortest-paths
 description: Introduces maximum flow as well as flow with lower bounds.
@@ -9,6 +9,212 @@ frequency: 1
 ---
 
 <Problems problems="maxSam" />
+
+## Solution
+
+### Edmonds-Karp Algorithm
+
+The [Edmonds-Karp](https://en.wikipedia.org/wiki/Edmonds%E2%80%93Karp_algorithm) algorithm uses a greedy approach to solve the maximum flow problem.
+
+The download speed (the flow) can be improved as long as we can find a non-negative capacity path from the source (the server) and the sink (Kotivalo's computer).
+After that, we subtract the minimum capacity on the found path from the edge capacities.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+long long max_flow(vector<vector<long long>> g, int n, int source, int sink) {
+	long long flow = 0;
+	vector<int> parent(n, -1);
+
+	// Find a way from the source to sink on a path with non-negative capacities
+	auto reachable = [&]() -> bool {
+		queue<int> q;
+		q.push(source);
+		while (!q.empty()) {
+			int node = q.front();
+			q.pop();
+			for (int son = 0; son < n; son++) {
+				long long w = g[node][son];
+				if (w <= 0 || parent[son] != -1) continue;
+				parent[son] = node;
+				q.push(son);
+			}
+		}
+		return parent[sink] != -1;
+	};
+
+	// While there is a way from source to sink with non-negative capacities
+	while (reachable()) {
+		int node = sink;
+
+		// The minimum capacity on the path from source to sink
+		long long curr_flow = LLONG_MAX;
+		while (node != source) {
+			curr_flow = min(curr_flow, g[parent[node]][node]);
+			node = parent[node];
+		}
+		node = sink;
+		while (node != source) {
+			// Subtract the capacity from capacity edges
+			g[parent[node]][node] -= curr_flow;
+			// Add the current flow to flow backedges
+			g[node][parent[node]] += curr_flow;
+			node = parent[node];
+		}
+		flow += curr_flow;
+		fill(parent.begin(), parent.end(), -1);
+	}
+
+	return flow;
+}
+
+int main() {
+	int n, m;
+	cin >> n >> m;
+
+	vector<vector<long long>> capacity(n, vector<long long>(n, 0));
+	for (int i = 0; i < m; i++) {
+		int x, y, c;
+		cin >> x >> y >> c;
+		capacity[--x][--y] += c;
+	}
+
+	cout << max_flow(capacity, n, 0, n - 1) << endl;
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
+### Push-Relabel Algorithm
+
+The [Push-Relabel Algorithm](https://en.wikipedia.org/wiki/Push%E2%80%93relabel_maximum_flow_algorithm) is an alternative solution to finding the maximum flow.
+
+To find the maximum flow, we'll handle a **preflow**.
+The only difference between this and a normal flow is that the incoming flow can exceed the outgoing flow.
+
+Let's define the excess flow of node u as $in_u - out_u$, where $in$ is the incoming flow and $out$ is the outgoing flow.
+
+The algorithm starts with an initial preflow where the source has an excess flow. At every stage, it picks a node with the excess flow and **pushes** the excess to its neighbors, if the capacity supports it.
+To push excess flow from node $u$ to node $v$, we define $\Delta = min(excess_u, capacity_{u,v} - flow_{u,v})$, where $\Delta$ is the maximum supported flow by the
+edge $(u, v)$. The process stops when no more excess nodes exist in the flow network.
+
+Another important feature of the algorithm is the **labeling** function $h$, also known as the height function, which assigns each node an
+integer. One labeling in valid if satisfies the following conditions: $h_{source} = |V|$, $h_{sink} = 0$, and $h_u \le h_v + 1$. If there is an edge from node $u$
+to node $v$ with positive capacity, i.e. it supports more flow. The height function tells us where to send the excess flow, and where it's needed. It's like water, it can only
+flow from top to bottom.
+
+To summarize: Start with a valid preflow and a valid labeling. In each step, for every excess node, try to push the excess flow to the node's neighbors. After each step check if the flow and the labeling are still valid. If they are and there are no more paths between the $source$ and the $sink$, it means the maximum flow has been found.
+
+The difference between the Edmonds-Karp (or Ford-Fulkerson) and the Push-Relabel algorithm is that the former keeps a valid flow all the time and improves it while
+there are augmenting paths, while in the Push-Relabel there doesn't exist an augmenting path at any time, and it improves the preflow until it reaches the maximum flow.
+
+**Time complexity:** $\mathcal{O}(V^2E)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+#define ll long long
+
+using namespace std;
+
+const int MAXN = 5000;
+const ll INF = 1e15;
+
+int n, m, source, sink;
+ll capacity[MAXN + 1][MAXN + 1];
+ll flow[MAXN + 1][MAXN + 1];
+vector<ll> excess;
+vector<ll> height;
+vector<ll> next_son;
+queue<int> excess_vertexes;
+
+void relabel(int u) {
+	ll d = INF;
+	for (int v = 1; v <= n; v++) {
+		// If the neighbour supports flow.
+		if (capacity[u][v] > flow[u][v]) { d = min(d, height[v]); }
+	}
+	if (d < INF) { height[u] = d + 1; }
+}
+
+// Push flow from node u to node v
+void push(int u, int v) {
+	// delta = How much flow does the edge support
+	ll d = min(excess[u], capacity[u][v] - flow[u][v]);
+	// Increase the flow from node u to v
+	flow[u][v] += d;
+	flow[v][u] -= d;
+	// Update the excess
+	excess[u] -= d;
+	excess[v] += d;
+	// If node's v excess is equal to delta it means it's the first time.
+	if (d && excess[v] == d) { excess_vertexes.push(v); }
+}
+
+void discharge(int u) {
+	// As long as there is excess flow to push
+	while (excess[u] > 0) {
+		// The following part can be written as well with a for loop
+		if (next_son[u] <= n) {
+			int v = next_son[u];
+			// If The edge supports more flow and can be pushed towards it
+			if (capacity[u][v] > flow[u][v] && height[u] > height[v]) {
+				push(u, v);
+			} else {
+				next_son[u]++;
+			}
+		} else {
+			relabel(u);
+			next_son[u] = 1;
+		}
+	}
+}
+
+int main() {
+	cin >> n >> m;
+
+	source = 1;
+	sink = n;
+	excess.resize(n + 1);
+	height.resize(n + 1);
+	next_son.resize(n + 1);
+
+	height[source] = n;
+	excess[source] = INF;
+
+	for (int i = 1; i <= m; i++) {
+		int x, y, cap;
+		cin >> x >> y >> cap;
+		capacity[x][y] += cap;
+	}
+
+	for (int i = 1; i <= n; i++) {
+		if (i == source) { continue; }
+		push(source, i);
+	}
+
+	while (!excess_vertexes.empty()) {
+		int node = excess_vertexes.front();
+		excess_vertexes.pop();
+		if (node != source && node != sink) { discharge(node); }
+	}
+
+	ll max_flow = 0;
+	for (int node = 1; node <= n; node++) { max_flow += flow[node][sink]; }
+
+	cout << max_flow << endl;
+}
+```
+
+</CPPSection>
+</LanguageSection>
 
 ## Resources
 
@@ -33,9 +239,145 @@ frequency: 1
 
 <Problems problems="match" />
 
+It's recommended that you solve the first problem - Download Speed - in the section before trying this one.
+
+### Solution 1
+
+A bipartite graph doesn't seem like to have anything in common with a flow network, but we can shift our point of view just by
+adding the source connected to the nodes in set $U$ and the sink connected to the nodes in set $V$. And that's all.
+Now we have a flow network where every capacity is equal to 1.
+
+We transformed our bipartite graph into a network flow so the maximum network flow is equal
+to the maximum matching.
+Now, we can apply our favorite max flow algorithm to solve the problem!
+
+**Time Complexity: $\mathcal{O}(VE^2)$**
+
+### Solution 2
+
+However, we can do better than this.
+First let's define some properties of matching algorithms.
+
+Let's say the set $M$ contains all the edges that the maximum matching consists of.
+
+We define an **alternating path** as a path whose edges are in the matching, $M$, and not in the matching, in an alternating fashion. An alternating path stars with an unmatched node and ends once it cannot append another edge while maintaining an alternating sequence.
+
+An **augmenting path** is built upon the alternating path and unmatched nodes at both ends - the nodes are not included in $M$.
+
+Tha maximum matching $M$ can be further improved if and only if an augmenting path is found in $M$, otherwise $M$ is the maximum matching. It may seem difficult to understand, but the main idea is as follows:
+> The maximum matching can be further improved as long as the alternating sequence can be extended.
+For a better understanding, you can imagine the shoelaces as an alternating path in a bipartite graph - or the sneakers.
+
+The algorithm described above is called the [Hopcroft-Karp algorithm](https://en.wikipedia.org/wiki/Hopcroft%E2%80%93Karp_algorithm).
+
+Here's an animation of the algorithm if you're still a bit confused:
+
+<video width="960" height="720" controls>
+	<source src="/animations/hopcroft_karp.mp4" type="video/mp4"/>
+</video>
+
+**Time Complexity: $\mathcal{O}(E\sqrt{V})$**
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int INF = 1e9;
+
+int n, m, k;
+// dist[node] = the position of node in the alternating path
+vector<int> match, dist;
+vector<vector<int>> g;
+
+bool bfs() {
+	queue<int> q;
+	// The alternating path starts with unmatched nodes
+	for (int node = 1; node <= n; node++) {
+		if (!match[node]) {
+			q.push(node);
+			dist[node] = 0;
+		} else {
+			dist[node] = INF;
+		}
+	}
+
+	dist[0] = INF;
+
+	while (!q.empty()) {
+		int node = q.front();
+		q.pop();
+		if (dist[node] >= dist[0]) { continue; }
+		for (int son : g[node]) {
+			// If the match of son is matched
+			if (dist[match[son]] == INF) {
+				dist[match[son]] = dist[node] + 1;
+				q.push(match[son]);
+			}
+		}
+	}
+	// Returns true if an alternating path has been found
+	return dist[0] != INF;
+}
+
+// Returns true if an augmenting path has been found starting from vertex node
+bool dfs(int node) {
+	if (node == 0) { return true; }
+	for (int son : g[node]) {
+		if (dist[match[son]] == dist[node] + 1 && dfs(match[son])) {
+			match[node] = son;
+			match[son] = node;
+			return true;
+		}
+	}
+	dist[node] = INF;
+	return false;
+}
+
+int hopcroft_karp() {
+	int cnt = 0;
+	// While there is an alternating path
+	while (bfs()) {
+		for (int node = 1; node <= n; node++) {
+			// If node is unmatched but we can match it using an augmenting path
+			if (!match[node] && dfs(node)) { cnt++; }
+		}
+	}
+	return cnt;
+}
+
+int main() {
+	cin >> n >> m >> k;
+
+	dist.resize(n + m + 1);
+	match.resize(n + m + 1);
+	g.resize(n + m + 1);
+
+	for (int i = 1; i <= k; i++) {
+		int x, y;
+		cin >> x >> y;
+
+		y += n;
+
+		g[x].push_back(y);
+		g[y].push_back(x);
+	}
+
+	cout << hopcroft_karp() << '\n';
+	for (int node = 1; node <= n; node++) {
+		if (match[node]) { cout << node << ' ' << match[node] - n << '\n'; }
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
 ## Dinic's Algorithm
 
-<Youtube id="M6cm8UeeziI" />
+<YouTube id="M6cm8UeeziI" />
 
 <Problems problems="dinic" />
 

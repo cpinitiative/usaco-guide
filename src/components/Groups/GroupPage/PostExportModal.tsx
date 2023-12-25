@@ -1,8 +1,8 @@
 import { Dialog, Transition } from '@headlessui/react';
 import {
+  CollectionReference,
   arrayUnion,
   collection,
-  CollectionReference,
   doc,
   getDocs,
   getFirestore,
@@ -10,8 +10,11 @@ import {
   serverTimestamp,
   writeBatch,
 } from 'firebase/firestore';
-import React, { Fragment, useContext, useState } from 'react';
-import UserDataContext from '../../../context/UserDataContext/UserDataContext';
+import React, { Fragment, useState } from 'react';
+import {
+  useFirebaseUser,
+  useIsUserDataLoaded,
+} from '../../../context/UserDataContext/UserDataContext';
 import { useUserGroups } from '../../../hooks/groups/useUserGroups';
 import { useFirebaseApp } from '../../../hooks/useFirebase';
 import { GroupData } from '../../../models/groups/groups';
@@ -25,7 +28,8 @@ export default function PostExportModal(props: {
   group: GroupData;
 }) {
   const firebaseApp = useFirebaseApp();
-  const { firebaseUser, isLoaded } = useContext(UserDataContext);
+  const firebaseUser = useFirebaseUser();
+  const isLoaded = useIsUserDataLoaded();
   const groups = useUserGroups();
   const [problems, setProblems] = React.useState<GroupProblemData[]>([]);
   const [groupsUsedMap, setGroupsUsedMap] = useState(new Map());

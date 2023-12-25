@@ -1,18 +1,21 @@
 import { navigate } from 'gatsby';
 import * as React from 'react';
-import { useContext } from 'react';
-import UserDataContext from '../../../context/UserDataContext/UserDataContext';
+import {
+  useFirebaseUser,
+  useIsUserDataLoaded,
+} from '../../../context/UserDataContext/UserDataContext';
 import { useUserPermissions } from '../../../context/UserDataContext/UserPermissionsContext';
 import { useGroupActions } from '../../../hooks/groups/useGroupActions';
 import { useUserGroups } from '../../../hooks/groups/useUserGroups';
+import TopNavigationBar from '../../TopNavigationBar/TopNavigationBar';
 import Layout from '../../layout';
 import SEO from '../../seo';
-import TopNavigationBar from '../../TopNavigationBar/TopNavigationBar';
 import AdminViewAllGroups from './AdminViewAllGroups';
 import { GroupCard } from './GroupCard';
 
 const GroupSelectPage = () => {
-  const { firebaseUser, isLoaded } = useContext(UserDataContext);
+  const firebaseUser = useFirebaseUser();
+  const isLoaded = useIsUserDataLoaded();
   const groups = useUserGroups();
   const { createNewGroup } = useGroupActions();
   const permissions = useUserPermissions();

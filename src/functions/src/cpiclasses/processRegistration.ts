@@ -1,9 +1,9 @@
 import * as checkoutNodeJssdk from '@paypal/checkout-server-sdk';
 import * as admin from 'firebase-admin';
 import * as functions from 'firebase-functions';
+import 'firebase-functions/lib/logger/compat';
 import * as payPalClient from './utils/payPalClient';
 import updateMailingList from './utils/updateMailingList';
-import 'firebase-functions/lib/logger/compat';
 
 if (admin.apps.length === 0) {
   admin.initializeApp();

@@ -1,55 +1,70 @@
 import { Link } from 'gatsby';
 import * as React from 'react';
-import { useContext } from 'react';
 import { Highlight } from 'react-instantsearch-dom';
 import { moduleIDToSectionMap } from '../../../content/ordering';
-import UserDataContext from '../../context/UserDataContext/UserDataContext';
+import { ConfettiProvider } from '../../context/ConfettiContext';
+import {
+  useHideDifficultySetting,
+  useHideModulesSetting,
+  useShowTagsSetting,
+} from '../../context/UserDataContext/properties/simpleProperties';
+import { useUserProgressOnProblems } from '../../context/UserDataContext/properties/userProgress';
 import {
   AlgoliaProblemInfo,
+  ProblemInfo,
   getProblemURL,
   recentUsaco,
 } from '../../models/problem';
-import { difficultyClasses } from '../markdown/ProblemsList/ProblemsListItem';
+import DifficultyBox from '../DifficultyBox';
+import ProblemStatusCheckbox from '../markdown/ProblemsList/ProblemStatusCheckbox';
 
 interface ProblemHitProps {
   hit: AlgoliaProblemInfo;
 }
 
 function ProblemHit({ hit }: ProblemHitProps) {
-  const { userProgressOnProblems, hideDifficulty, showTags, hideModules } =
-    useContext(UserDataContext);
+  const userProgressOnProblems = useUserProgressOnProblems();
+  const hideDifficulty = useHideDifficultySetting();
+  const showTags = useShowTagsSetting();
+  const hideModules = useHideModulesSetting();
   if (hit.problemModules.length == 0 && recentUsaco.includes(hit.source)) {
     hit.problemModules.push({
       id: 'usaco-monthlies',
       title: 'USACO Monthlies',
     });
   }
+  const problem = hit as any as ProblemInfo;
+  problem.uniqueId = hit.objectID;
   return (
-    <div className="bg-white dark:bg-gray-900 shadow p-4 sm:p-6 rounded-lg">
-      <span className="text-blue-700 dark:text-blue-400 font-medium text-sm">
-        {hit.source}
-      </span>
-      <p className="text-xl leading-6 mt-1 mb-2">
-        <a
-          href={hit.url}
-          target="_blank"
-          rel="noreferrer"
-          className="hover:underline"
-        >
-          <Highlight hit={hit} attribute="name" />
-        </a>
-        {hit.isStarred && (
-          <svg
-            className="h-6 w-4 text-blue-400 ml-2 pb-1 inline-block"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-          >
-            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-          </svg>
-        )}
-      </p>
-      <div className="text-gray-500 dark:text-dark-med-emphasis text-sm">
-        Status: {userProgressOnProblems[hit.objectID] ?? 'Not Attempted'}
+    <div className="bg-white dark:bg-gray-900 shadow p-4 sm:p-6 rounded-lg ">
+      <div className="flex flex-row justify-between w-full">
+        <span>
+          <span className="text-blue-700 dark:text-blue-400 font-medium text-sm">
+            {hit.source}
+          </span>
+          <p className="text-xl leading-6 mt-1 mb-2">
+            <a
+              href={hit.url}
+              target="_blank"
+              rel="noreferrer"
+              className="hover:underline"
+            >
+              <Highlight hit={hit} attribute="name" />
+            </a>
+            {hit.isStarred && (
+              <svg
+                className="h-6 w-4 text-blue-400 ml-2 pb-1 inline-block"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+              </svg>
+            )}
+          </p>
+        </span>
+        <ConfettiProvider>
+          <ProblemStatusCheckbox problem={problem} size="large" />
+        </ConfettiProvider>
       </div>
       {/* <div>
         <a
@@ -118,16 +133,7 @@ function ProblemHit({ hit }: ProblemHitProps) {
       )}
 
       <div className="pt-4">
-        {!hideDifficulty && (
-          <span
-            className={
-              'mr-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium leading-4 ' +
-              difficultyClasses[hit.difficulty]
-            }
-          >
-            {hit.difficulty}
-          </span>
-        )}
+        {!hideDifficulty && <DifficultyBox difficulty={hit.difficulty} />}
         {showTags &&
           hit.tags?.map(tag => (
             <span

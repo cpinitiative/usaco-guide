@@ -25,11 +25,14 @@ import PostLeaderboardPage from '../../components/Groups/PostLeaderboardPage/Pos
 import PostPage from '../../components/Groups/PostPage/PostPage';
 import ProblemPage from '../../components/Groups/ProblemPage/ProblemPage';
 import { ProblemSubmissionPopupProvider } from '../../components/Groups/ProblemSubmissionPopup';
+import TopNavigationBar from '../../components/TopNavigationBar/TopNavigationBar';
 import Layout from '../../components/layout';
 import SEO from '../../components/seo';
-import TopNavigationBar from '../../components/TopNavigationBar/TopNavigationBar';
 import { SignInContext } from '../../context/SignInContext';
-import UserDataContext from '../../context/UserDataContext/UserDataContext';
+import {
+  useFirebaseUser,
+  useIsUserDataLoaded,
+} from '../../context/UserDataContext/UserDataContext';
 import {
   ActiveGroupProvider,
   useActiveGroup,
@@ -53,8 +56,8 @@ const GroupPageWrapper = (props: GroupPageWrapperProps): ReactElement => {
 
   const { activeGroupId, setActiveGroupId, isLoading, groupData } =
     useActiveGroup();
-  const { firebaseUser, isLoaded: isUserLoaded } =
-    React.useContext(UserDataContext);
+  const firebaseUser = useFirebaseUser();
+  const isUserLoaded = useIsUserDataLoaded();
   const { signIn } = React.useContext(SignInContext);
   useEffect(() => {
     setActiveGroupId(props.groupId);

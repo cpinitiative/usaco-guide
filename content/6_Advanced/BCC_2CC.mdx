@@ -1,7 +1,7 @@
 ---
 id: BCC-2CC
 title: 'BCCs and 2CCs'
-author: Benjamin Qi
+author: Benjamin Qi, Mihnea Brebenel
 prerequisites:
   - graph-traversal
   - binary-jump
@@ -24,6 +24,77 @@ frequency: 1
 ## 2-Edge-Connected Components
 
 <Problems problems="sam2" />
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MAX_N = 3e5;
+
+int timer;  // Time of entry in node
+int scc;    // Number of strongly connected components
+int id[MAX_N];
+int low[MAX_N];  // Lowest ID in node's subtree in DFS tree
+vector<int> neighbors[MAX_N];
+vector<int> two_edge_components[MAX_N];
+stack<int> st;  // Keeps track of the path in our DFS
+
+void dfs(int node, int parent = -1) {
+	id[node] = low[node] = ++timer;
+	st.push(node);
+	bool multiple_edges = false;
+
+	for (int child : neighbors[node]) {
+		if (child == parent && !multiple_edges) {
+			multiple_edges = true;
+			continue;
+		}
+		if (!id[child]) {
+			dfs(child, node);
+			low[node] = min(low[node], low[child]);
+		} else {
+			low[node] = min(low[node], id[child]);
+		}
+	}
+
+	if (low[node] == id[node]) {
+		while (st.top() != node) {
+			two_edge_components[scc].push_back(st.top());
+			st.pop();
+		}
+		two_edge_components[scc++].push_back(st.top());
+		st.pop();
+	}
+}
+
+int main() {
+	int n, m;
+	cin >> n >> m;
+	for (int i = 0; i < m; i++) {
+		int x, y;
+		cin >> x >> y;
+		neighbors[x].push_back(y);
+		neighbors[y].push_back(x);
+	}
+
+	for (int node = 0; node < n; node++) {
+		if (id[node] != 0) { dfs(node); }
+	}
+
+	cout << scc << '\n';
+	for (int i = 0; i < scc; i++) {
+		cout << two_edge_components[i].size() << ' ';
+		for (int node : two_edge_components[i]) { cout << node << ' '; }
+		cout << '\n';
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>
 
 <IncompleteSection>
 
@@ -98,35 +169,266 @@ struct TwoEdgeCC {
 
 ### Problems
 
-<Problems problems="probs2" />
+<FocusProblem problem="probs2" />
 
 - SRM 787 1000
 
 ## [Biconnected Components](https://en.wikipedia.org/wiki/Biconnected_component)
 
-<Problems problems="bccSam" />
+<FocusProblem problem="bccSam" />
 
-note that BCCs contain EDGES not VERTICES
+An important observation is that if you can't go from node $a$ to node $b$ without passing through node $c$, node $c$ is a critical node (articulation point).
+Node $c$ can split $a$ and $b$ into 2 different components if removed. This makes us think about biconnected components.
 
-Related topics include
+Now we're left with two cases. If node $c$ isn't critical, a path from $a$ to $b$ can avoid  the node. Otherwise, if node $c$ is a critical one we
+have to check if is on path from $a$ to $b$. Here is a little tricky, on a simple graph, it's not so easy to check, on the other hand, checking this on a tree can be much easier.
+In order to do this, we transform the graph into a [block-cut tree](https://en.wikipedia.org/wiki/Biconnected_component).
 
-- Articulation Points
-- Bridges
-- Block-Cut Tree
+In a block-cut tree, every articulation and biconnected component represents a node. Now that we have turned our graph into a tree how do we check if node the path
+from $a$ to $b$ passes through $c$? To do this we use LCA. You can find more about this [here](https://www.geeksforgeeks.org/check-whether-the-given-node-is-in-the-path-between-the-nodes-u-and-v/).
 
-### Tutorial
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+/** @return the block-cut tree of a graph */
+vector<vector<int>> biconnected_components(vector<vector<int>> &g,
+                                           vector<bool> &is_cutpoint,
+                                           vector<int> &id) {
+	int n = (int)g.size();
+
+	vector<vector<int>> comps;
+	vector<int> stk;
+	vector<int> num(n);
+	vector<int> low(n);
+
+	is_cutpoint.resize(n);
+
+	// Finds the biconnected components
+	function<void(int, int, int &)> dfs = [&](int node, int parent,
+	                                          int &timer) {
+		num[node] = low[node] = ++timer;
+		stk.push_back(node);
+		for (int son : g[node]) {
+			if (son == parent) { continue; }
+			if (num[son]) {
+				low[node] = min(low[node], num[son]);
+			} else {
+				dfs(son, node, timer);
+				low[node] = min(low[node], low[son]);
+				if (low[son] >= num[node]) {
+					is_cutpoint[node] = (num[node] > 1 || num[son] > 2);
+					comps.push_back({node});
+					while (comps.back().back() != son) {
+						comps.back().push_back(stk.back());
+						stk.pop_back();
+					}
+				}
+			}
+		}
+	};
+
+	int timer = 0;
+	dfs(0, -1, timer);
+	id.resize(n);
+
+	// Build the block-cut tree
+	function<vector<vector<int>>()> build_tree = [&]() {
+		vector<vector<int>> t(1);
+		int node_id = 0;
+		for (int node = 0; node < n; node++) {
+			if (is_cutpoint[node]) {
+				id[node] = node_id++;
+				t.push_back({});
+			}
+		}
+
+		for (auto &comp : comps) {
+			int node = node_id++;
+			t.push_back({});
+			for (int u : comp)
+				if (!is_cutpoint[u]) {
+					id[u] = node;
+				} else {
+					t[node].push_back(id[u]);
+					t[id[u]].push_back(node);
+				}
+		}
+		return t;
+	};
+
+	return build_tree();
+}
+
+int main() {
+	int n, m, q;
+	cin >> n >> m >> q;
+
+	const int LOGMAX = (int)ceil(log2(n));
+	vector<vector<int>> g;
+	g.resize(n);
+	for (int i = 0; i < m; i++) {
+		int x, y;
+		cin >> x >> y;
+		x--, y--;
+		g[x].push_back(y);
+		g[y].push_back(x);
+	}
+
+	vector<int> id, depth(3 * n, 0);
+	vector<bool> is_cutpoint;
+	vector<vector<int>> up(3 * n, vector<int>(LOGMAX));
+	vector<vector<int>> blockcut_tree =
+	    biconnected_components(g, is_cutpoint, id);
+
+	// Compute the LCA
+	function<void(int, int)> dfs = [&](int node, int parent) {
+		if (parent != -1) {
+			depth[node] = depth[parent] + 1;
+			up[node][0] = parent;
+			for (int j = 1; j < LOGMAX; j++) {
+				up[node][j] = up[up[node][j - 1]][j - 1];
+			}
+		}
+		for (auto son : blockcut_tree[node]) {
+			if (son == parent) continue;
+			dfs(son, node);
+		}
+	};
+
+	auto find_lca = [&](int x, int y) {
+		if (depth[x] < depth[y]) { swap(x, y); }
+		int diff = depth[x] - depth[y];
+		for (int i = LOGMAX; i >= 0; i--) {
+			if ((1 << i) & diff) { x = up[x][i]; }
+		}
+		if (x == y) { return x; }
+		for (int i = LOGMAX; i >= 0; i--) {
+			if (up[x][i] != up[y][i]) {
+				x = up[x][i];
+				y = up[y][i];
+			}
+		}
+		return up[x][0];
+	};
+
+	// Check whether the node z is on path (x, y)
+	auto on_path = [&](int x, int y, int z) {
+		int lca = find_lca(x, y);
+		int lca1 = find_lca(x, z);
+		int lca2 = find_lca(y, z);
+
+		if (lca == z || (lca1 == lca && lca2 == z) ||
+		    (lca2 == lca && lca1 == z)) {
+			return true;
+		}
+		return false;
+	};
+
+	dfs(0, -1);
+
+	for (int i = 0; i < q; i++) {
+		int a, b, c;
+		cin >> a >> b >> c;
+		a--, b--, c--;
+		if (!is_cutpoint[c]) {
+			cout << "YES" << '\n';
+		} else if (on_path(id[a], id[b], id[c])) {
+			cout << "NO" << '\n';
+		} else {
+			cout << "YES" << '\n';
+		}
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
+### Articulation Points
+
+<FocusProblem problem="submerge" />
 
 <Resources>
 	<Resource
-		source="GFG"
+		source="CP2"
 		title="Articulation Points (aka Cut Vertices)"
-		url="articulation-points-or-cut-vertices-in-a-graph"
+		url="https://www.comp.nus.edu.sg/~stevenha/myteaching/competitive_programming/cp2.pdf#page=94"
 	>
 		maybe not completely correct
 	</Resource>
 </Resources>
 
-(implementation)
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int NMAX = 2e4;
+
+int timer;
+vector<int> low, id;
+vector<bool> visited, ap;
+vector<vector<int>> g(NMAX);
+
+void dfs(int node, int parent) {
+	visited[node] = true;
+	id[node] = low[node] = timer++;
+
+	int children = 0;
+	for (int son : g[node]) {
+		if (son == parent) { continue; }
+
+		if (!visited[son]) {
+			dfs(son, node);
+			low[node] = min(low[node], low[son]);
+			children++;
+
+			// Check if the current node is an articualation point
+			if (low[son] >= id[node] && parent != -1) { ap[node] = true; }
+		} else {
+			low[node] = min(low[node], id[son]);
+		}
+	}
+
+	if (parent == -1 && children > 1) { ap[node] = true; }
+}
+
+int main() {
+	int n, m;
+	while (cin >> n >> m && n && m) {
+		id.assign(n, 0);
+		ap.assign(n, 0);
+		low.assign(n, 0);
+		visited.assign(n, 0);
+		for (int i = 0; i < n; i++) { g[i].clear(); }
+
+		timer = 0;
+		for (int i = 0; i < m; i++) {
+			int x, y;
+			cin >> x >> y;
+			g[--x].push_back(--y);
+			g[y].push_back(x);
+		}
+
+		dfs(0, -1);
+
+		int articualation_points = 0;
+		for (int i = 0; i < n; i++) {
+			if (ap[i]) { articualation_points++; }
+		}
+		cout << articualation_points << '\n';
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>
 
 ### Problems
 

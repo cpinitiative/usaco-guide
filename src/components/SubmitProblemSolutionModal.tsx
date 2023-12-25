@@ -1,9 +1,9 @@
 import { Transition } from '@headlessui/react';
 import className from 'classnames';
 import * as React from 'react';
-import { LANGUAGE_LABELS } from '../context/UserDataContext/properties/userLang';
+import { LANGUAGE_LABELS } from '../context/UserDataContext/properties/simpleProperties';
 import useUserProblemSolutionActions from '../hooks/useUserProblemSolutionActions';
-import { ProblemInfo } from '../models/problem';
+import { ShortProblemInfo } from '../models/problem';
 import ButtonGroup from './ButtonGroup';
 import TabIndentableTextarea from './elements/TabIndentableTextarea';
 
@@ -14,10 +14,12 @@ export default function SubmitProblemSolutionModal({
 }: {
   isOpen: boolean;
   onClose: () => void;
-  problem: ProblemInfo;
+  problem: ShortProblemInfo;
 }) {
   const [solutionCode, setSolutionCode] = React.useState('');
-  const [codeLang, setCodeLang] = React.useState('');
+  const [codeLang, setCodeLang] = React.useState<'cpp' | 'java' | 'py' | null>(
+    null
+  );
   const [isCodePublic, setIsCodePublic] = React.useState(true);
   const [loading, setLoading] = React.useState(false);
   const [showSuccess, setShowSuccess] = React.useState(false);
@@ -33,7 +35,7 @@ export default function SubmitProblemSolutionModal({
     }
   }, [isOpen]);
 
-  const handleSubmit = event => {
+  const handleSubmit: React.FormEventHandler<HTMLFormElement> = event => {
     event.preventDefault();
 
     if (solutionCode.length < 10) {
@@ -50,7 +52,7 @@ export default function SubmitProblemSolutionModal({
       isPublic: isCodePublic,
       solutionCode,
       problemID: problem.uniqueId,
-      language: codeLang as any,
+      language: codeLang,
     })
       .then(() => setShowSuccess(true))
       .catch(e => alert('Error: ' + e.message))

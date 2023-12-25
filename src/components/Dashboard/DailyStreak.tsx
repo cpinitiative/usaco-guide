@@ -1,8 +1,8 @@
 import { graphql, useStaticQuery } from 'gatsby';
 import { GatsbyImage } from 'gatsby-plugin-image';
 import * as React from 'react';
-import { useContext, useState } from 'react';
-import UserDataContext from '../../context/UserDataContext/UserDataContext';
+import { useState } from 'react';
+import { useLastVisitInfo } from '../../context/UserDataContext/properties/lastVisit';
 
 // note: cows will be unlocked in lexicographical order
 
@@ -91,7 +91,7 @@ export default function DailyStreak({ streak }) {
       ({ node }) => node.childImageSharp.gatsbyImageData
     );
   }, []);
-  const { lastVisitDate } = useContext(UserDataContext);
+  const { lastVisitDate } = useLastVisitInfo();
 
   // we don't want to render streaks during Server-Side Generation
   const [firstRender, setFirstRender] = useState(true);

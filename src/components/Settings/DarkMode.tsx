@@ -1,9 +1,13 @@
 import * as React from 'react';
-import UserDataContext from '../../context/UserDataContext/UserDataContext';
+import {
+  useSetThemeSetting,
+  useThemeSetting,
+} from '../../context/UserDataContext/properties/simpleProperties';
 import RadioList from '../elements/RadioList';
 
 export default function DarkMode() {
-  const { theme, setTheme } = React.useContext(UserDataContext);
+  const theme = useThemeSetting();
+  const setTheme = useSetThemeSetting();
 
   return (
     <div>

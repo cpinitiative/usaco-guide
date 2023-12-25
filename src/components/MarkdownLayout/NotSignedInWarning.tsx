@@ -1,7 +1,11 @@
 import * as React from 'react';
 import { useContext } from 'react';
 import { SignInContext } from '../../context/SignInContext';
-import UserDataContext from '../../context/UserDataContext/UserDataContext';
+import {
+  useFirebaseUser,
+  useIsUserDataLoaded,
+} from '../../context/UserDataContext/UserDataContext';
+import { useLastVisitInfo } from '../../context/UserDataContext/properties/lastVisit';
 // import styled from 'styled-components';
 
 // const Container = styled.div`
@@ -12,7 +16,9 @@ import UserDataContext from '../../context/UserDataContext/UserDataContext';
 
 export default function NotSignedInWarning() {
   const { signIn } = useContext(SignInContext);
-  const { firebaseUser, isLoaded, numPageviews } = useContext(UserDataContext);
+  const firebaseUser = useFirebaseUser();
+  const isLoaded = useIsUserDataLoaded();
+  const { numPageviews } = useLastVisitInfo();
 
   if (isLoaded && !firebaseUser && numPageviews > 1) {
     return (
