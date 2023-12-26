@@ -167,7 +167,7 @@ const queries = [
       });
       return res;
     },
-    indexName: process.env.ALGOLIA_INDEX_NAME + '_problems',
+    indexName: (process.env.GATSBY_ALGOLIA_INDEX_NAME ?? 'dev') + '_problems',
     matchFields: [
       'source',
       'name',
