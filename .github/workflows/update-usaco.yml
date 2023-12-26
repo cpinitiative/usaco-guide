@@ -38,6 +38,12 @@ jobs:
           git config --global user.email usaco-autofetch[bot]@users.noreply.github.com
           git commit -m 'problem auto-updates'
           git push -f origin auto
-          gh pr edit $(gh pr list --json number --jq '.[0].number' --author 'usaco-autofetch[bot]') -F usaco-problems/out/report.txt || gh pr create --title 'Problem auto-updates' -F usaco-problems/out/report.txt
+          export pr_number=$(gh pr list --json number --jq '.[0].number')
+          if [ -z "$pr_number" ]
+          then
+            gh pr create --title 'Problem auto-updates' -F usaco-problems/out/report.txt
+          else
+            gh pr edit $pr_number -F usaco-problems/out/report.txt
+          fi
         env:
           GH_TOKEN: ${{ steps.generate_token.outputs.token }}
