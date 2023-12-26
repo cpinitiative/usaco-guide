@@ -45,24 +45,25 @@ queries.
 using namespace std;
 
 class fenwick_tree {
-private:
+  private:
 	int N;
 	vector<int> t;
-public:
+
+  public:
 	fenwick_tree(int sz) {
 		t.resize(sz + 1);
-		N = sz; 
+		N = sz;
 	}
 	void add(int x, int val) {
-		while(x <= N) {
+		while (x <= N) {
 			t[x] += val;
 			x += x & -x;
 		}
 	}
 	int get_sum(int x) {
 		int sum = 0;
-		while(x > 0) {
-			sum += t[x];	
+		while (x > 0) {
+			sum += t[x];
 			x -= x & -x;
 		}
 		return sum;
@@ -74,37 +75,36 @@ void test_case() {
 	cin >> n >> q;
 
 	fenwick_tree bit(n), bit2(n);
-	for(int i = 0; i < q; i++) {
+	for (int i = 0; i < q; i++) {
 		int type;
 		cin >> type;
 
-		if(type == 0) {
+		if (type == 0) {
 			int p, q, val;
 			cin >> p >> q >> val;
 
 			// Update the 2 fenwick trees
 			bit.add(p, val);
-			bit2.add(p,  val * (p - 1));
-			bit.add(q+1, -val);
-			bit2.add(q+1, -val * q);
+			bit2.add(p, val * (p - 1));
+			bit.add(q + 1, -val);
+			bit2.add(q + 1, -val * q);
 		} else {
 			int p, q;
 			cin >> p >> q;
-			cout << bit.get_sum(q) * q - bit2.get_sum(q) - (bit.get_sum(p-1) * (p - 1) - bit2.get_sum(p-1)) << '\n';
+			cout << bit.get_sum(q) * q - bit2.get_sum(q) -
+			            (bit.get_sum(p - 1) * (p - 1) - bit2.get_sum(p - 1))
+			     << '\n';
 		}
 	}
 }
 
-int main()
-{
+int main() {
 	int t;
 	cin >> t;
-	while(t--) {
-		test_case();
-	}
+	while (t--) { test_case(); }
 
-    return 0;
-} 
+	return 0;
+}
 ```
 </CPPSection>
 </LanguageSection>
