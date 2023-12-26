@@ -3,6 +3,7 @@ import styled, { css } from 'styled-components';
 import tw from 'twin.macro';
 import { olympiads, ProblemInfo, probSources } from '../../../models/problem';
 import { UsacoTableProgress } from '../../Dashboard/DashboardProgress';
+import DifficultyBox from '../../DifficultyBox';
 import TextTooltip from '../../Tooltip/TextTooltip';
 import Tooltip from '../../Tooltip/Tooltip';
 import ProblemsListItemDropdown from './ProblemsListItemDropdown';
@@ -38,16 +39,6 @@ const StyledProblemRow = styled.tr`
         `
       : null}
 `;
-
-export const difficultyClasses = {
-  'Very Easy': 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-100',
-  Easy: 'bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100',
-  Normal: 'bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-100',
-  Hard: 'bg-purple-100 text-purple-800 dark:bg-purple-800 dark:text-purple-100',
-  'Very Hard':
-    'bg-orange-100 text-orange-800 dark:bg-orange-800 dark:text-orange-100',
-  Insane: 'bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-100',
-};
 
 export default function ProblemsListItem(
   props: ProblemsListItemProps
@@ -148,16 +139,7 @@ export default function ProblemsListItem(
 
   const difficultyCol = (
     <td className={`py-4 whitespace-nowrap leading-5 pr-4 md:pr-6`}>
-      {problem.difficulty && (
-        <span
-          className={
-            'px-2 inline-flex text-xs leading-5 font-semibold rounded-full ' +
-            difficultyClasses[problem.difficulty]
-          }
-        >
-          {problem.difficulty}
-        </span>
-      )}
+      <DifficultyBox difficulty={problem.difficulty} />
     </td>
   );
 
