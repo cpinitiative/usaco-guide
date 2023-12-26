@@ -25,13 +25,11 @@ jobs:
           git branch auto
           git checkout auto
           yarn
-          yarn develop &
-          sleep 20
-          pkill -f 'yarn develop'
-          ls
+          yarn build
+          echo 'ids.log tail:'
+          cat -b ids.log | tail -n 10
       - name: Add new problems
         run: |
-          ls
           npx ts-node --skipProject usaco-problems/add_problems ../ids.log ../content/extraProblems.json
           git add .
           git config --global user.name usaco-autofetch[bot]
