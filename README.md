@@ -9,9 +9,8 @@ Thank you to the following companies:
 
 - [Vercel](https://vercel.com/?utm_source=cp-initiative&utm_campaign=oss),
   hosting & continuous deployment
+- [Microsoft for Nonprofits](https://microsoft.com/)
 - [Algolia](https://algolia.com/), search functionality
-- [DigitalOcean](https://m.do.co/c/a07c32d07394), forum hosting
-- [Chromatic](https://www.chromatic.com/), visual testing
 - And [more](docs/Companies.md)!
 
 ## Documentation + Contributing
@@ -29,62 +28,6 @@ The USACO Guide is run by the
 [Competitive Programming Initiative](https://joincpi.org/). We're looking for
 Content Authors to join our team to help us improve the Guide! Learn more
 [here](https://docs.google.com/document/d/13QpXqdiYQwjBLnywGL1FUG7GFdh8SM_1NigIkJl-A7k/edit).
-
-### Core Team
-
-- Nathan Wang
-- Maggie Liu (Since Aug 2021)
-- Melody Yu (Since Aug 2021)
-- Andi Qu
-- Siyong Huang
-- Darren Yao
-- Michael Cao
-
-### Content Managers
-
-- Qi Wang (Since Jun 2021)
-- Dong Liu (Since Jun 2021)
-- Neo Wang (Since Aug 2021)
-- Kevin Sheng (Since Oct 2021)
-
-### Former Core Team
-
-- Benjamin Qi
-- Andrew Wang
-- Nathan Chen
-
-### Current Content Authors
-
-- Jesse Choe (Since Feb 2021)
-- Sofia Yang (Since Apr 2021)
-- Nathan Gong (Since Apr 2021)
-- Timothy Gao (Since May 2021)
-- Sathvik Chundru (Since May 2021)
-- Brad Ma (Since Jun 2021)
-- Albert Ye (Since Jun 2021)
-- Arpan Banerjee (Since Jun 2021)
-- Ryan Chou (Since Jul 2021)
-- Aadit Ambadkar (Since Aug 2021)
-- Dustin Miao (Since Aug 2021)
-- Ben Dodge (Since Aug 2021)
-- Jeffrey Zhang (Since Feb 2022)
-- Chongtian Ma (Since May 2022)
-- Aditya Gupta (Since Jun 2022)
-- Chuyang Wang (Since August 2022)
-- Aakash Gokhale (Since August 2022)
-- Paul Chen (Since August 2022)
-- Daniel Ge (Since June 2023)
-- _This could be you!
-  [Apply here](https://docs.google.com/document/d/13QpXqdiYQwjBLnywGL1FUG7GFdh8SM_1NigIkJl-A7k/edit)._
-
-### Past Content Authors
-
-- Óscar Garries Urbina
-- Mrinall Umasudhan
-- Andrew Cheng
-- Zhixin Wang
-- Jeffrey Meng
-- Ananth Kashyap
 
 ## Tech Stack
 
