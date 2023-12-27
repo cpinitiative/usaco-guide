@@ -14,13 +14,13 @@ never be evenly partitioned. Thus, we only need to check divisors of $N - 1$.
 
 We can arbitrarily root the tree at node $1$. Let $\mathtt{toBeMerged[i]}$ store the length of the path passes through node $i$ and its length has not reached $K$ yet. Since only $1$ of such path exist, all of the other paths which source from the subtrees of $i$ must be evenly paired.
 
-For each node $j$ such that $j$ is a child of node $i$, there must be another node $k$ such that $\mathtt{toBeMerged[j]+toBeMerged[k]+2} = K$ in order to complete the path. If no such $k$ exist, then we will store the current length of the path in $\mathtt{toBeMerged[i]}$, but there can only be one such $j$.
+For each node $j$ such that $j$ is a child of node $i$, there must be another node $k$ such that $\mathtt{toBeMerged[j]+toBeMerged[k]} + 2 = K$ in order to complete the path. If no such $k$ exist, then we will store the current length of the path in $\mathtt{toBeMerged[i]}$, but there can only be one such $j$.
 
-Since the number of divisors for $N$ is around $\log N$, we will be iterating over all nodes only $\log N$ times. A table for an upper bound of the number of divisors can be found [here](https://wwwhomes.uni-bielefeld.de/achim/highly.txt).
+It can be proven the maximum number of divisors for an integer up to the constraints of $N$ will be small enough for us to run an linear time algorithm for each divisor (The upper bound is around $N^{o(1)}$, using the [little o notation](https://en.wikipedia.org/wiki/Big_O_notation#Little-o_notation), with the exact formula [here](https://math.stackexchange.com/questions/1053062/upper-limit-for-the-divisor-function/1053070#1053070). Additionally, a table for the upper bound of the number of divisors can be found [here](https://wwwhomes.uni-bielefeld.de/achim/highly.txt)).
 
 ## Implementation
 
-**Time Complexity:** $\mathcal{O}(N \log N)$
+**Time Complexity:** $\mathcal{O}(N \cdot N^{o(1)})$
 
 <LanguageSection>
 
