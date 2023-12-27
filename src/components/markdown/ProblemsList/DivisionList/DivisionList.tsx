@@ -8,13 +8,13 @@ import {
 import { ProblemSolutionInfo } from '../../../../models/problem';
 import Transition from '../../../Transition';
 import { ProblemsList } from '../ProblemsList';
-import { DivisionProblemInfo } from './DivisionProblemInfo';
 import contestToPoints from './contest_to_points.json';
+import { DivisionProblemInfo } from './DivisionProblemInfo';
 import divToProbs from './div_to_probs.json';
 import idToSol from './id_to_sol.json';
 
 const startYear = 2016;
-const endYear = 2023; // manually increment this for a new season
+const endYear = 2024; // manually increment this for a new season
 const allYears = `All (${startYear - 1} - ${endYear})`;
 const divisions = ['Bronze', 'Silver', 'Gold', 'Platinum'];
 
