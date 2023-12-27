@@ -9,10 +9,10 @@ import MarkdownLayoutContext from '../context/MarkdownLayoutContext';
 import useProblemSuggestionAction from '../hooks/useProblemSuggestionAction';
 import { ModuleInfo } from '../models/module';
 import {
-  PROBLEM_DIFFICULTY_OPTIONS,
-  ProblemMetadata,
   autoGenerateSolutionMetadata,
   generateProblemUniqueId,
+  ProblemMetadata,
+  PROBLEM_DIFFICULTY_OPTIONS,
   probSources,
 } from '../models/problem';
 import ButtonGroup from './ButtonGroup';
@@ -141,7 +141,7 @@ export default function ProblemSuggestionModal({
       Bronze: 'Recent USACO Bronze (Dec 2015 and Later)',
       Silver: 'Recent USACO Silver (Dec 2015 and Later)',
       Gold: 'Recent USACO Gold (Dec 2015 and Later)',
-      Plat: 'USACO Platinum',
+      Platinum: 'USACO Platinum',
     };
     if (map[source]) return map[source];
     return probSources[source][1];

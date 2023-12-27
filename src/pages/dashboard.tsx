@@ -287,7 +287,7 @@ export default function DashboardPage(props: PageProps) {
                 {/*      <SectionProgressBar title="Bronze" />*/}
                 {/*      <SectionProgressBar title="Silver" />*/}
                 {/*      <SectionProgressBar title="Gold" />*/}
-                {/*      <SectionProgressBar title="Plat" />*/}
+                {/*      <SectionProgressBar title="Platinum" />*/}
                 {/*      <SectionProgressBar title="Advanced" />*/}
                 {/*    </div>*/}
                 {/*  </div>*/}
@@ -299,17 +299,14 @@ export default function DashboardPage(props: PageProps) {
         </main>
       </div>
 
-      {parsedAnnouncements[0].id !== lastReadAnnouncement &&
-        numPageviews > 12 && (
-          <div className="h-12">
-            <AnnouncementBanner
-              announcement={parsedAnnouncements[0]}
-              onDismiss={() =>
-                setLastReadAnnouncement(parsedAnnouncements[0].id)
-              }
-            />
-          </div>
-        )}
+      {parsedAnnouncements[0].id !== lastReadAnnouncement && numPageviews > 12 && (
+        <div className="h-12">
+          <AnnouncementBanner
+            announcement={parsedAnnouncements[0]}
+            onDismiss={() => setLastReadAnnouncement(parsedAnnouncements[0].id)}
+          />
+        </div>
+      )}
     </Layout>
   );
 }

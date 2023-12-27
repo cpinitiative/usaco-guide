@@ -26,7 +26,7 @@ done = {}
 
 for y in x:
 	for p in y["problems"]:
-		if p["source"] in ["Bronze", "Silver", "Gold", "Plat"]:
+		if p["source"] in ["Bronze", "Silver", "Gold", "Platinum"]:
 			done[p["id"]] = y["frontmatter"]["id"]
 			# print(p["id"], p["source"], y["frontmatter"]["id"])
 

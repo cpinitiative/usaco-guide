@@ -8,8 +8,8 @@ import {
 import { ProblemSolutionInfo } from '../../../../models/problem';
 import Transition from '../../../Transition';
 import { ProblemsList } from '../ProblemsList';
-import { DivisionProblemInfo } from './DivisionProblemInfo';
 import contestToPoints from './contest_to_points.json';
+import { DivisionProblemInfo } from './DivisionProblemInfo';
 import divToProbs from './div_to_probs.json';
 import idToSol from './id_to_sol.json';
 
@@ -158,7 +158,7 @@ export function DivisionList(props): JSX.Element {
   const data = useStaticQuery(graphql`
     query {
       allProblemInfo(
-        filter: { source: { in: ["Bronze", "Silver", "Gold", "Plat"] } }
+        filter: { source: { in: ["Bronze", "Silver", "Gold", "Platinum"] } }
       ) {
         edges {
           node {
