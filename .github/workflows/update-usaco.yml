@@ -8,6 +8,8 @@ jobs:
     steps:
       - name: Checkout usaco-guide
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       - name: Checkout usaco-problems
         uses: actions/checkout@v2
         with:
@@ -31,11 +33,10 @@ jobs:
           export pr_number=$(gh pr list --author 'usaco-autofetch[bot]' --json number --jq '.[0].number')
           if [ -z "$pr_number" ]
           then
-            git checkout -b auto
+            git checkout -B auto
             git push -f origin auto
           else
-            git checkout origin/auto
-            git switch -c auto
+            git checkout auto
           fi
           npx ts-node --skipProject usaco-problems/add_problems
           git add .
