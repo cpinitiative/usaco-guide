@@ -39,12 +39,12 @@ queries.
 
 <LanguageSection>
 <CPPSection>
+
 ```cpp
 #include <bits/stdc++.h>
-
 using namespace std;
 
-// BeginCodeSnip{Fenwick Tree Code}
+// BeginCodeSnip{BIT Code (from PURS module)}
 template <class T> class BIT {
   private:
 	int size;
@@ -54,17 +54,14 @@ template <class T> class BIT {
   public:
 	BIT(int size) : size(size), bit(size + 1), arr(size) {}
 
-	/** Sets the value at index ind to val. */
 	void set(int ind, T val) { add(ind, val - arr[ind]); }
 
-	/** Adds val to the element at index ind. */
 	void add(int ind, T val) {
 		arr[ind] += val;
 		ind++;
 		for (; ind <= size; ind += ind & -ind) { bit[ind] += val; }
 	}
 
-	/** @return The sum of all values in [0, ind]. */
 	T pref_sum(int ind) {
 		ind++;
 		T total = 0;
@@ -75,9 +72,9 @@ template <class T> class BIT {
 // EndCodeSnip
 
 int main() {
-	int t;
-	cin >> t;
-	while (t--) {
+	int test_num;
+	cin >> test_num;
+	for (int t = 0; t < test_num; t++) {
 		int n, q;
 		cin >> n >> q;
 
@@ -108,6 +105,7 @@ int main() {
 	}
 }
 ```
+
 </CPPSection>
 </LanguageSection>
 
