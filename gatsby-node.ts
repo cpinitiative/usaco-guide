@@ -24,6 +24,7 @@ try {
 
 // ideally problems would be its own query with
 // source nodes: https://www.gatsbyjs.com/docs/reference/config-files/gatsby-node/#sourceNodes
+if (fs.existsSync('ids.log')) fs.rmSync('ids.log');
 let stream = fs.createWriteStream('ids.log', { flags: 'a' });
 exports.onCreateNode = async api => {
   const { node, actions, loadNodeContent, createContentDigest, createNodeId } =
