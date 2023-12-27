@@ -116,11 +116,11 @@ const plugins = [
     // This plugin must be placed last in your list of plugins to ensure that it can query all the GraphQL data
     resolve: 'gatsby-plugin-algolia',
     options: {
-      appId: process.env.GATSBY_ALGOLIA_APP_ID,
+      appId: process.env.ALGOLIA_APP_ID,
       apiKey: process.env.ALGOLIA_API_KEY,
       queries: require('./src/utils/algolia-queries'),
       enablePartialUpdates: true,
-      skipIndexing: !process.env.GATSBY_ALGOLIA_APP_ID,
+      skipIndexing: !process.env.ALGOLIA_APP_ID,
     },
   },
   // devMode currently has some sketchy output
