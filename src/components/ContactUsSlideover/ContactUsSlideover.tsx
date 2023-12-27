@@ -304,7 +304,7 @@ export default function ContactUsSlideover({
               }
             />
             <Field
-              label="Module (if applicable)"
+              label="Module or Solution (if applicable)"
               id="contact_module"
               value={location}
               onChange={e => setLocation(e.target.value)}
