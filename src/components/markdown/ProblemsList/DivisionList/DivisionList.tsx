@@ -158,7 +158,7 @@ export function DivisionList(props): JSX.Element {
   const data = useStaticQuery(graphql`
     query {
       allProblemInfo(
-        filter: { source: { in: ["Bronze", "Silver", "Gold", "Plat"] } }
+        filter: { source: { in: ["Bronze", "Silver", "Gold", "Platinum"] } }
       ) {
         edges {
           node {
