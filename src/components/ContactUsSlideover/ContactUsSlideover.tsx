@@ -7,6 +7,7 @@ import { useUserLangSetting } from '../../context/UserDataContext/properties/sim
 import useContactFormAction from '../../hooks/useContactFormAction';
 import useStickyState from '../../hooks/useStickyState';
 import { ModuleInfo } from '../../models/module';
+import { SolutionInfo } from '../../models/solution';
 import SlideoverForm from './SlideoverForm';
 
 // Warning: this file is insanely messy. This should be rewritten soon :)
@@ -102,6 +103,8 @@ export default function ContactUsSlideover({
         setLocation(
           `${SECTION_LABELS[activeModule.section]} - ${activeModule.title}`
         );
+      } else if (activeModule && activeModule instanceof SolutionInfo) {
+        setLocation(`Solution: ${activeModule.title}`);
       } else setLocation('');
     }
   }, [markdownContext?.markdownLayoutInfo]);
