@@ -16,25 +16,30 @@ To check the $P$ location towards the $P_1$ $P_2$ line we use following formula:
 If it's equal to $0$ it means that $P$, $P_1$ and $P_2$ are collinear. Otherwise the value's sign indicated if $P$ is under the line - negative - or above the line - positive.
 
 <Spoiler title="Demonstration">
+
 Let $m_1=\frac{P_1.y - P_2.y}{P_1.x - P_2.x}$ be the slope of the linear function that goes through the points $P_1$ and $P_2$ and
 $m_2=\frac{P_2.y - P.y}{P_2.x - P.x}$ be the slope of the linear function that goes through the points $P_2$ and $P$.
 
-The point are collinear if and only if the slopes are equal i.e. $m_1 = m_2 \Leftrightarrow \frac{P_1.y - P_2.y}{P_1.x - P_2.x} = \frac{P_2.y - P.y}{P_2.x - P.x}
+The points are collinear if and only if the slopes are equal i.e. $m_1 = m_2 \Leftrightarrow \frac{P_1.y - P_2.y}{P_1.x - P_2.x} = \frac{P_2.y - P.y}{P_2.x - P.x}
 \Leftrightarrow (P_1.y - P_2.y) * (P_2.x - P.x) = (P_1.x - P_2.x) * (P_1.x - P_2.x) \ Leftrightarrow (P_1.y - P_2.y) * (P_2.x - P.x) - (P_1.x - P_2.x) * (P_1.x - P_2.x) = 0$.
-And this way we obtained the previously mentioned formula. Now, this formula doesn't only tell us whether the points are collinear, but
-where the point $P$ is located too.
+And this way we obtained the previously mentioned formula.
+
+This formula doesn't only tell us whether the points are collinear, but where the point $P$ is located too.
 
 ![Dem](/assets/dem-collinear.png)
 
 </Spoiler>
 
+### Implementation
+
 <LanguageSection>
 <CPPSection>
+
 ```cpp
 #include <bits/stdc++.h>
-
 using namespace std;
 
+// BeginCodeSnip{Point Class}
 struct Point {
 	int x, y;
 	Point(int a = 0, int b = 0) : x(a), y(b) {}
@@ -45,6 +50,7 @@ struct Point {
 		return in;
 	}
 };
+// EndCodeSnip
 
 long long collinear(Point p, Point p1, Point p2) {
 	return 1LL * (p.y - p1.y) * (p2.x - p1.x) -
@@ -52,10 +58,9 @@ long long collinear(Point p, Point p1, Point p2) {
 }
 
 int main() {
-	int t;
-	cin >> t;
-
-	while (t--) {
+	int test_num;
+	cin >> test_num;
+	for (int t = 0; t < test_num; t++) {
 		Point p1, p2, p3;
 		cin >> p1 >> p2 >> p3;
 
@@ -69,6 +74,7 @@ int main() {
 	}
 }
 ```
+
 </CPPSection>
 </LanguageSection>
 
@@ -79,11 +85,12 @@ If it turns out the rectangles intersect then we just check if the segment's end
 
 <LanguageSection>
 <CPPSection>
+
 ```cpp
 #include <bits/stdc++.h>
-
 using namespace std;
 
+// BeginCodeSnip{Point Class}
 struct Point {
 	int x, y;
 	Point(int a = 0, int b = 0) : x(a), y(b) {}
@@ -94,6 +101,7 @@ struct Point {
 		return in;
 	}
 };
+// EndCodeSnip
 
 int sign(long long num) {
 	if (num < 0) {
@@ -131,10 +139,9 @@ bool check(Point p1, Point p2, Point p3, Point p4) {
 }
 
 int main() {
-	int t;
-	cin >> t;
-
-	while (t--) {
+	int test_num;
+	cin >> test_num;
+	for (int t = 0; t < test_num; t++) {
 		Point p1, p2, p3, p4;
 		cin >> p1 >> p2 >> p3 >> p4;
 
@@ -148,12 +155,13 @@ int main() {
 	}
 }
 ```
+
 </CPPSection>
 </LanguageSection>
 
 <FocusProblem problem="polygon" />
 
-To following algorithm uses the [Shoelace formula](https://en.wikipedia.org/wiki/Shoelace_formula).
+The following algorithm uses the [Shoelace formula](https://en.wikipedia.org/wiki/Shoelace_formula).
 
 <Spoiler title="Demonstration">
 To Do
@@ -161,11 +169,12 @@ To Do
 
 <LanguageSection>
 <CPPSection>
+
 ```cpp
 #include <bits/stdc++.h>
-
 using namespace std;
 
+// BeginCodeSnip{Point Class}
 struct Point {
 	int x, y;
 	Point(int a = 0, int b = 0) : x(a), y(b) {}
@@ -176,6 +185,7 @@ struct Point {
 		return in;
 	}
 };
+// EndCodeSnip
 
 int main() {
 	int n;
@@ -183,6 +193,7 @@ int main() {
 	vector<Point> points(n);
 	for (auto &p : points) { cin >> p; }
 	points.push_back(points[0]);
+
 	long long area = 0;
 	for (int i = 0; i < points.size(); i++) {
 		area += (1LL * points[i].x * points[i + 1].y -
@@ -190,11 +201,9 @@ int main() {
 	}
 }
 ```
+
 </CPPSection>
 </LanguageSection>
-
-
-
 
 <Problems problems="standard" />
 
