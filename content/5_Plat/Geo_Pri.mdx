@@ -26,7 +26,7 @@ struct Point {
 	int x, y;
 	Point(int a = 0, int b = 0) : x(a), y(b) {}
 
-	friend istream& operator>>(istream &in, Point &p) {
+	friend istream &operator>>(istream &in, Point &p) {
 		int x, y;
 		in >> p.x >> p.y;
 		return in;
@@ -34,26 +34,25 @@ struct Point {
 };
 
 long long collinear(Point p, Point p1, Point p2) {
-	return 1LL * (p.y - p1.y) * (p2.x - p1.x) - 1LL * (p.x - p1.x) * (p2.y - p1.y);
+	return 1LL * (p.y - p1.y) * (p2.x - p1.x) -
+	       1LL * (p.x - p1.x) * (p2.y - p1.y);
 }
 
-int main()
-{
+int main() {
 	int t;
 	cin >> t;
 
-	while(t--) {
+	while (t--) {
 		Point p1, p2, p3;
 		cin >> p1 >> p2 >> p3;
 
-		if(collinear(p1, p2, p3) == 0) {
+		if (collinear(p1, p2, p3) == 0) {
 			cout << "TOUCH" << '\n';
-		} else if(collinear(p1, p2, p3) < 0) {
+		} else if (collinear(p1, p2, p3) < 0) {
 			cout << "RIGHT" << '\n';
 		} else {
 			cout << "LEFT" << '\n';
 		}
-
 	}
 }
 ```
@@ -62,12 +61,12 @@ int main()
 
 <FocusProblem problem="line" />
 
-We can quickly dismiss the segment intersection by treating them as rectangles having the segments as diagonals which can be easily done. 
+We can quickly dismiss the segment intersection by treating them as rectangles having the segments as diagonals which can be easily done.
 If it turns out the rectangles intersect then we just check if the segment's ends are on different sides of the other segment.
 
 <LanguageSection>
 <CPPSection>
-```cpp 
+```cpp
 #include <bits/stdc++.h>
 
 using namespace std;
@@ -76,7 +75,7 @@ struct Point {
 	int x, y;
 	Point(int a = 0, int b = 0) : x(a), y(b) {}
 
-	friend istream& operator>>(istream &in, Point &p) {
+	friend istream &operator>>(istream &in, Point &p) {
 		int x, y;
 		in >> p.x >> p.y;
 		return in;
@@ -84,9 +83,9 @@ struct Point {
 };
 
 int sign(long long num) {
-	if(num < 0) {
+	if (num < 0) {
 		return -1;
-	} else if(num == 0) {
+	} else if (num == 0) {
 		return 0;
 	} else {
 		return 1;
@@ -94,7 +93,8 @@ int sign(long long num) {
 }
 
 long long trigonometric_sense(Point p, Point p1, Point p2) {
-	return sign(1LL * (p1.x - p.x) * (p2.y - p.y) - 1LL * (p2.x - p.x) * (p1.y - p.y));
+	return sign(1LL * (p1.x - p.x) * (p2.y - p.y) -
+	            1LL * (p2.x - p.x) * (p1.y - p.y));
 }
 
 // Check if the rectangles with [P1, P2] and [P3, P4] as diagonals intersect
@@ -108,30 +108,31 @@ bool quick_check(Point p1, Point p2, Point p3, Point p4) {
 }
 
 bool check(Point p1, Point p2, Point p3, Point p4) {
-	if(trigonometric_sense(p1, p2, p3) * trigonometric_sense(p1, p2, p4) > 0) { return false; }
-	if(trigonometric_sense(p3, p4, p1) * trigonometric_sense(p3, p4, p2) > 0) { return false; }
+	if (trigonometric_sense(p1, p2, p3) * trigonometric_sense(p1, p2, p4) > 0) {
+		return false;
+	}
+	if (trigonometric_sense(p3, p4, p1) * trigonometric_sense(p3, p4, p2) > 0) {
+		return false;
+	}
 	return true;
 }
 
-int main()
-{
+int main() {
 	int t;
 	cin >> t;
 
-	while(t--) {
+	while (t--) {
 		Point p1, p2, p3, p4;
 		cin >> p1 >> p2 >> p3 >> p4;
 
-		if(quick_check(p1, p2, p3, p4)) {
+		if (quick_check(p1, p2, p3, p4)) {
 			puts("NO");
-		} else if(check(p1, p2, p3, p4)){
+		} else if (check(p1, p2, p3, p4)) {
 			puts("YES");
 		} else {
 			puts("NO");
 		}
-
 	}
-
 }
 ```
 </CPPSection>
