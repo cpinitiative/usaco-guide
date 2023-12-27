@@ -44,66 +44,65 @@ queries.
 
 using namespace std;
 
-class fenwick_tree {
+template <class T> class BIT {
   private:
-	int N;
-	vector<int> t;
+	int size;
+	vector<T> bit;
+	vector<T> arr;
 
   public:
-	fenwick_tree(int sz) {
-		t.resize(sz + 1);
-		N = sz;
+	BIT(int size) : size(size), bit(size + 1), arr(size) {}
+
+	/** Sets the value at index ind to val. */
+	void set(int ind, T val) { add(ind, val - arr[ind]); }
+
+	/** Adds val to the element at index ind. */
+	void add(int ind, T val) {
+		arr[ind] += val;
+		ind++;
+		for (; ind <= size; ind += ind & -ind) { bit[ind] += val; }
 	}
-	void add(int x, int val) {
-		while (x <= N) {
-			t[x] += val;
-			x += x & -x;
-		}
-	}
-	int get_sum(int x) {
-		int sum = 0;
-		while (x > 0) {
-			sum += t[x];
-			x -= x & -x;
-		}
-		return sum;
+
+	/** @return The sum of all values in [0, ind]. */
+	T pref_sum(int ind) {
+		ind++;
+		T total = 0;
+		for (; ind > 0; ind -= ind & -ind) { total += bit[ind]; }
+		return total;
 	}
 };
 
-void test_case() {
-	int n, q;
-	cin >> n >> q;
-
-	fenwick_tree bit(n), bit2(n);
-	for (int i = 0; i < q; i++) {
-		int type;
-		cin >> type;
-
-		if (type == 0) {
-			int p, q, val;
-			cin >> p >> q >> val;
-
-			// Update the 2 fenwick trees
-			bit.add(p, val);
-			bit2.add(p, val * (p - 1));
-			bit.add(q + 1, -val);
-			bit2.add(q + 1, -val * q);
-		} else {
-			int p, q;
-			cin >> p >> q;
-			cout << bit.get_sum(q) * q - bit2.get_sum(q) -
-			            (bit.get_sum(p - 1) * (p - 1) - bit2.get_sum(p - 1))
-			     << '\n';
-		}
-	}
-}
-
-int main() {
+int main()
+{
 	int t;
 	cin >> t;
-	while (t--) { test_case(); }
+	while(t--) {
+		int n, q;
+		cin >> n >> q;
 
-	return 0;
+		BIT<long long> bit_values(n), bit_count(n);
+		for(int i = 0; i < q; i++) {
+			int type;
+			cin >> type;
+
+			if(type == 0) {
+				int p, q, val;
+				cin >> p >> q >> val;
+
+				// Update the 2 fenwick trees
+				bit_values.add(p-1, val);
+				bit_count.add(p-1,  val * (p - 1));
+				bit_values.add(q, -val);
+				bit_count.add(q, -val * q);
+			} else {
+				int p, q;
+				cin >> p >> q;
+				cout << 1LL * bit_values.pref_sum(q) * q - bit_count.pref_sum(q) - (1LL * bit_values.pref_sum(p-1) * (p - 1) - bit_count.pref_sum(p-1)) << '\n';
+			}
+		}
+	}
+
+
 }
 ```
 </CPPSection>
