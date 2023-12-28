@@ -55,8 +55,8 @@ bool dfs(int node, int p, int k) {
 	map<int, int> to_be_merged_count;
 
 	for (int i : g[node]) {
-		if (i == p) continue;
-		if (!dfs(i, node, k)) return false;
+		if (i == p) { continue; }
+		if (!dfs(i, node, k)) { return false; }
 		int cur_merge = to_be_merged[i] + 1;
 		if (cur_merge != k) { to_be_merged_count[cur_merge]++; }
 	}
@@ -86,22 +86,22 @@ bool dfs(int node, int p, int k) {
 			}
 		}
 	}
+
 	return true;
 }
 
 int main() {
 	ifstream cin("deleg.in");
-	ofstream cout("deleg.out");
 	int n;
 	cin >> n;
 	for (int i = 0; i < n - 1; i++) {
 		int u, v;
 		cin >> u >> v;
-		--u;
-		--v;
-		g[u].push_back(v);
+		g[--u].push_back(--v);
 		g[v].push_back(u);
 	}
+
+	ofstream cout("deleg.out");
 	for (int k = 1; k <= n - 1; k++) {
 		if ((n - 1) % k != 0) {
 			cout << 0;
