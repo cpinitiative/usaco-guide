@@ -99,9 +99,7 @@ public class CountingLiars {
 
 		@Override
 		public int compareTo(Cow c) {
-			if (pos != c.pos) {
-				return pos - c.pos;
-			}
+			if (pos != c.pos) { return pos - c.pos; }
 			return statement - c.statement;
 		}
 	}
@@ -109,14 +107,14 @@ public class CountingLiars {
 
 	public static void main(String[] args) throws IOException {
 		BufferedReader read =
-			new BufferedReader(new InputStreamReader(System.in));
+		    new BufferedReader(new InputStreamReader(System.in));
 		int n = Integer.parseInt(read.readLine());
 
 		Cow[] cows = new Cow[n];
 		for (int i = 0; i < n; i++) {
 			StringTokenizer cow = new StringTokenizer(read.readLine());
 			cows[i] = new Cow(cow.nextToken().charAt(0),
-							  Integer.parseInt(cow.nextToken()));
+			                  Integer.parseInt(cow.nextToken()));
 		}
 		read.close();
 
@@ -129,7 +127,8 @@ public class CountingLiars {
 			// Add up all the cows that are lying to the left of our pos.
 			lying_left[i] += lying_left[i - 1];
 
-			if (cows[i - 1].statement == 'L' && cows[i].pos >= cows[i - 1].pos) {
+			if (cows[i - 1].statement == 'L' &&
+			    cows[i].pos >= cows[i - 1].pos) {
 				/*
 				 * If the cow before says our position is to the left
 				 * but their position is strictly less than our position,
@@ -146,7 +145,8 @@ public class CountingLiars {
 		for (int i = n - 2; i >= 0; i--) {
 			lying_right[i] += lying_right[i + 1];
 
-			if (cows[i + 1].statement == 'G' && cows[i].pos <= cows[i + 1].pos) {
+			if (cows[i + 1].statement == 'G' &&
+			    cows[i].pos <= cows[i + 1].pos) {
 				lying_right[i]++;
 			}
 		}
