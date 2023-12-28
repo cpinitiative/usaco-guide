@@ -24,7 +24,6 @@ try {
 
 // ideally problems would be its own query with
 // source nodes: https://www.gatsbyjs.com/docs/reference/config-files/gatsby-node/#sourceNodes
-if (fs.existsSync('ids.log')) fs.rmSync('ids.log');
 let stream = fs.createWriteStream('ids.log', { flags: 'a' });
 exports.onCreateNode = async api => {
   const { node, actions, loadNodeContent, createContentDigest, createNodeId } =
@@ -98,7 +97,7 @@ exports.onCreateNode = async api => {
       try {
         parsedContent[tableId].forEach((metadata: ProblemMetadata) => {
           checkInvalidUsacoMetadata(metadata);
-          stream.write(metadata.uniqueId + '\n');
+          if (process.env.CI) stream.write(metadata.uniqueId + '\n');
           transformObject(
             {
               ...getProblemInfo(metadata, freshOrdering),
