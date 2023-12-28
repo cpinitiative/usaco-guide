@@ -141,7 +141,7 @@ export default function ProblemSuggestionModal({
       Bronze: 'Recent USACO Bronze (Dec 2015 and Later)',
       Silver: 'Recent USACO Silver (Dec 2015 and Later)',
       Gold: 'Recent USACO Gold (Dec 2015 and Later)',
-      Plat: 'USACO Platinum',
+      Platinum: 'USACO Platinum',
     };
     if (map[source]) return map[source];
     return probSources[source][1];
