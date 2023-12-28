@@ -41,35 +41,31 @@ int main() {
 
 	sort(cows.begin(), cows.end());
 
-	/*
-	 * lying_left[i] stores the number of cows to the left of cow i
-	 * that must be lying given that Bessie is at the position of cow i.
-	 */
+	// lying_left[i] stores the number of cows to the left of cow i
+	// that must be lying given that Bessie is at the position of cow i.
 	vector<int> lying_left(n);
 	for (int i = 1; i < n; i++) {
-		// Add up all the cows that are already lying to the left of our pos.
+		// Add up all the cows that are lying to the left of our position.
 		lying_left[i] += lying_left[i - 1];
 
-		if (cows[i - 1].second == 'L' && cows[i].first > cows[i - 1].first) {
+		if (cows[i - 1].second == 'L' && cows[i].first >= cows[i - 1].first) {
 			/*
 			 * If the cow before says our position is to the left
-			 * but their position is strictly less than our position,
-			 * they're lying.
+			 * but their position is strictly less than or equal to our
+			 * position, they're lying.
 			 */
 			lying_left[i]++;
 		}
 	}
 
-	/*
-	 * lying_right stores the same thing, but does it so for the cows
-	 * to the *right* of i.
-	 */
+	// lying_right stores the same thing, but does it so for the cows
+	// to the *right* of i.
 	vector<int> lying_right(n);
 	// Fill it up in much the same way.
 	for (int i = n - 2; i >= 0; i--) {
 		lying_right[i] += lying_right[i + 1];
 
-		if (cows[i + 1].second == 'G' && cows[i].first < cows[i + 1].first) {
+		if (cows[i + 1].second == 'G' && cows[i].first <= cows[i + 1].first) {
 			lying_right[i]++;
 		}
 	}
@@ -92,13 +88,19 @@ import java.util.*;
 
 public class CountingLiars {
 	// BeginCodeSnip{Cow Class}
-	static class Cow {
+	static class Cow implements Comparable<Cow> {
 		char statement;
 		int pos;
 
 		public Cow(char statement, int pos) {
 			this.statement = statement;
 			this.pos = pos;
+		}
+
+		@Override
+		public int compareTo(Cow c) {
+			if (pos != c.pos) { return pos - c.pos; }
+			return statement - c.statement;
 		}
 	}
 	// EndCodeSnip
@@ -116,19 +118,17 @@ public class CountingLiars {
 		}
 		read.close();
 
-		Arrays.sort(cows, Comparator.comparingInt(c -> c.pos));
+		Arrays.sort(cows);
 
-		/*
-		 * lying_left[i] stores the number of cows to the left of cow i
-		 * that must be lying given that Bessie is at the position of cow i.
-		 */
+		// lying_left[i] stores the number of cows to the left of cow i
+		// that must be lying given that Bessie is at the position of cow i.
 		int[] lying_left = new int[n];
 		for (int i = 1; i < n; i++) {
-			// Add up all the cows that are already lying to the left of our
-			// pos.
+			// Add up all the cows that are lying to the left of our position.
 			lying_left[i] += lying_left[i - 1];
 
-			if (cows[i - 1].statement == 'L' && cows[i].pos > cows[i - 1].pos) {
+			if (cows[i - 1].statement == 'L' &&
+			    cows[i].pos >= cows[i - 1].pos) {
 				/*
 				 * If the cow before says our position is to the left
 				 * but their position is strictly less than our position,
@@ -138,16 +138,15 @@ public class CountingLiars {
 			}
 		}
 
-		/*
-		 * lying_right stores the same thing, but does it so for the cows
-		 * to the *right* of i.
-		 */
+		// lying_right stores the same thing, but does it so for the cows
+		// to the *right* of i.
 		int[] lying_right = new int[n];
 		// Fill it up in much the same way.
 		for (int i = n - 2; i >= 0; i--) {
 			lying_right[i] += lying_right[i + 1];
 
-			if (cows[i + 1].statement == 'G' && cows[i].pos < cows[i + 1].pos) {
+			if (cows[i + 1].statement == 'G' &&
+			    cows[i].pos <= cows[i + 1].pos) {
 				lying_right[i]++;
 			}
 		}
@@ -180,35 +179,28 @@ for _ in range(n):
 	statement, pos = input().split()
 	cows.append(Cow(int(pos), statement))
 
-cows.sort(key=lambda c: c.pos)
+cows.sort(key=lambda c: (c.pos, c.statement))
 
-"""
-lying_left[i] stores the number of cows to the left of cow i
-that must be lying given that Bessie is at the position of cow i.
-"""
+# lying_left[i] stores the number of cows to the left of cow i
+# that must be lying given that Bessie is at the position of cow i.
 lying_left = [0 for _ in range(n)]
 for i in range(1, n):
-	# Add up all the cows that are already lying to the left of our pos.
+	# Add up all the cows that are lying to the left of our position.
 	lying_left[i] += lying_left[i - 1]
 
-	if cows[i - 1].statement == "L" and cows[i].pos > cows[i - 1].pos:
-		"""
-		If the cow before says our position is to the left
-		but their position is strictly less than our position,
-		they're lying.
-		"""
+	if cows[i - 1].statement == "L" and cows[i].pos >= cows[i - 1].pos:
+		# If the cow before says our position is to the left
+		# but their position is strictly less than or equal to our position, they're lying.
 		lying_left[i] += 1
 
-"""
-lying_right stores the same thing, but does it so for the cows
-to the *right* of i.
-"""
+# lying_right stores the same thing, but does it so for the cows
+# to the *right* of i.
 lying_right = [0 for _ in range(n)]
 # Fill it up in much the same way.
 for i in range(n - 2, -1, -1):
 	lying_right[i] += lying_right[i + 1]
 
-	if cows[i + 1].statement == "G" and cows[i].pos < cows[i + 1].pos:
+	if cows[i + 1].statement == "G" and cows[i].pos <= cows[i + 1].pos:
 		lying_right[i] += 1
 
 min_liars = n
