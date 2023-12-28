@@ -6,7 +6,7 @@ description: Basic setup for geometry problems.
 frequency: 1
 ---
 
-You should know basic operations like cross product and dot product.
+You should know operations such as the cross product and dot product.
 
 ## Standard Problems
 
@@ -82,6 +82,8 @@ int main() {
 
 We can quickly dismiss the segment intersection by treating them as rectangles having the segments as diagonals which can be easily done.
 If it turns out the rectangles intersect then we just check if the segment's ends are on different sides of the other segment.
+
+### Implementation
 
 <LanguageSection>
 <CPPSection>
@@ -163,6 +165,8 @@ int main() {
 
 The following algorithm uses the [Shoelace formula](https://en.wikipedia.org/wiki/Shoelace_formula).
 
+### Implementation
+
 <LanguageSection>
 <CPPSection>
 
@@ -203,17 +207,19 @@ int main() {
 
 <FocusProblem problem="polygon2" />
 
-The solution to cast a ray from the point $P$ going in any fixed direction - preferably to the right. If the point is located
-on the outside of the polygon the ray will intersect its edges an even number of times.  If the point is on the inside of the polygon then
-it will intersect the edge an odd number of times.
+We can cast a ray from the point $P$ going in any fixed direction (people usually go to the right).
+If the point is located on the outside of the polygon the ray will intersect its edges an even number of times. 
+If the point is on the inside of the polygon then it will intersect the edge an odd number of times.
 
-This approach is called [Ray casting algorithm](https://en.wikipedia.org/wiki/Point_in_polygon).
+This approach is called [ray casting](https://en.wikipedia.org/wiki/Point_in_polygon).
+
+### Implementation
 
 <LanguageSection>
 <CPPSection>
+
 ```cpp
 #include <bits/stdc++.h>
-
 using namespace std;
 
 const int INF = 2e9;
@@ -277,6 +283,7 @@ int main() {
 	// Polygon's edges
 	vector<Point> poly(n);
 	for (auto &p : poly) { cin >> p; }
+
 	poly.push_back(poly[0]);
 	for (int j = 0; j < m; j++) {
 		Point A;
@@ -296,10 +303,12 @@ int main() {
 			// Check the intersectio with the polygon's edge
 			if (check(A, B, poly[i], poly[i + 1])) { cnt++; }
 		}
+
 		if (!on_boundary) { cout << (cnt % 2 ? "INSIDE" : "OUTSIDE") << '\n'; }
 	}
 }
 ```
+
 </CPPSection>
 </LanguageSection>
 
