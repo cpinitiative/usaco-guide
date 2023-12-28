@@ -207,15 +207,15 @@ int main() {
 
 <FocusProblem problem="polygon2" />
 
-The solution to cast a ray from the point $P$ going in any fixed direction - preferably to the right. If the point is located 
-on the outside of the polygon the ray will intersect its edges an even number of times.  If the point is on the inside of the polygon then 
+The solution to cast a ray from the point $P$ going in any fixed direction - preferably to the right. If the point is located
+on the outside of the polygon the ray will intersect its edges an even number of times.  If the point is on the inside of the polygon then
 it will intersect the edge an odd number of times.
 
 This approach is called [Ray casting algorithm](https://en.wikipedia.org/wiki/Point_in_polygon).
 
 <LanguageSection>
 <CPPSection>
-```cpp 
+```cpp
 #include <bits/stdc++.h>
 
 using namespace std;
@@ -259,9 +259,7 @@ bool quick_check(Point p1, Point p2, Point p3, Point p4) {
 }
 
 bool check(Point p1, Point p2, Point p3, Point p4) {
-	if(quick_check(p1, p2, p3, p4)) {
-		return false;
-	}
+	if (quick_check(p1, p2, p3, p4)) { return false; }
 	if (trigonometric_sense(p1, p2, p3) * trigonometric_sense(p1, p2, p4) > 0) {
 		return false;
 	}
@@ -273,7 +271,8 @@ bool check(Point p1, Point p2, Point p3, Point p4) {
 
 bool collinear(Point p, Point p1, Point p2) {
 	return 1LL * (p.y - p1.y) * (p2.x - p1.x) -
-	       1LL * (p.x - p1.x) * (p2.y - p1.y) == 0;
+	           1LL * (p.x - p1.x) * (p2.y - p1.y) ==
+	       0;
 }
 
 int main() {
@@ -281,34 +280,27 @@ int main() {
 	cin >> n >> m;
 	// Polygon's edges
 	vector<Point> poly(n);
-	for(auto &p : poly) {
-		cin >> p;
-	}
+	for (auto &p : poly) { cin >> p; }
 	poly.push_back(poly[0]);
-	for(int j = 0; j < m; j++) {
+	for (int j = 0; j < m; j++) {
 		Point A;
 		cin >> A;
 		// The infinite casting ray from A
-		Point B = {INF , A.y};
+		Point B = {INF, A.y};
 		// Intersection count
-		int cnt = 0; 
+		int cnt = 0;
 		bool on_boundary = false;
-		for(int i = 1; i < poly.size() - 1; i++) {
+		for (int i = 1; i < poly.size() - 1; i++) {
 			// Check if point A is on the edge
-			if(collinear(A, poly[i], poly[i+1])) {
+			if (collinear(A, poly[i], poly[i + 1])) {
 				puts("BOUNDARY");
 				on_boundary = true;
 				break;
 			}
 			// Check the intersectio with the polygon's edge
-			if(check(A, B, poly[i], poly[i+1])) {
-				cnt++;	
-			}
+			if (check(A, B, poly[i], poly[i + 1])) { cnt++; }
 		}
-		if(!on_boundary) {
-			cout << (cnt%2 ? "INSIDE" : "OUTSIDE") << '\n';
-		}
-
+		if (!on_boundary) { cout << (cnt % 2 ? "INSIDE" : "OUTSIDE") << '\n'; }
 	}
 }
 ```
