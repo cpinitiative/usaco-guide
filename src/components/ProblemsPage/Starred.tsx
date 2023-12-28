@@ -71,8 +71,8 @@ export default function Starred({ items, refine }) {
                       backgroundColor: '#4d94ff',
                     }
                   : isSelected
-                    ? { backgroundColor: '#0063e6' }
-                    : {}),
+                  ? { backgroundColor: '#0063e6' }
+                  : {}),
               }),
             }
       }

@@ -69,8 +69,8 @@ export default function Difficulty({ items, refine }) {
                       backgroundColor: '#4d94ff',
                     }
                   : isSelected
-                    ? { backgroundColor: '#0063e6' }
-                    : {}),
+                  ? { backgroundColor: '#0063e6' }
+                  : {}),
               }),
             }
       }

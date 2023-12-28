@@ -11,11 +11,11 @@ import {
 import { useUserProgressOnProblems } from '../../context/UserDataContext/properties/userProgress';
 import {
   AlgoliaProblemInfo,
-  getProblemURL,
   ProblemInfo,
+  getProblemURL,
   recentUsaco,
 } from '../../models/problem';
-import { difficultyClasses } from '../markdown/ProblemsList/ProblemsListItem';
+import DifficultyBox from '../DifficultyBox';
 import ProblemStatusCheckbox from '../markdown/ProblemsList/ProblemStatusCheckbox';
 
 interface ProblemHitProps {
@@ -133,16 +133,7 @@ function ProblemHit({ hit }: ProblemHitProps) {
       )}
 
       <div className="pt-4">
-        {!hideDifficulty && (
-          <span
-            className={
-              'mr-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium leading-4 ' +
-              difficultyClasses[hit.difficulty]
-            }
-          >
-            {hit.difficulty}
-          </span>
-        )}
+        {!hideDifficulty && <DifficultyBox difficulty={hit.difficulty} />}
         {showTags &&
           hit.tags?.map(tag => (
             <span

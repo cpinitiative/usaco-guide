@@ -87,6 +87,7 @@ They will be covered in [platinum](/plat/seg-ext).
 ```cpp
 #include <algorithm>
 #include <iostream>
+#include <limits>
 #include <vector>
 
 using std::cout;
@@ -96,7 +97,7 @@ using std::vector;
 /** A data structure that can answer point update & range minimum queries. */
 template <class T> class MinSegmentTree {
   private:
-	const T DEFAULT = 1e18;  // Will overflow if T is an int
+	const T DEFAULT = std::numeric_limits<T>().max();
 
 	vector<T> segtree;
 	int len;
@@ -115,12 +116,12 @@ template <class T> class MinSegmentTree {
 
 	/** @return the minimum element in the range [start, end) */
 	T range_min(int start, int end) {
-		T sum = DEFAULT;
+		T min = DEFAULT;
 		for (start += len, end += len; start < end; start /= 2, end /= 2) {
-			if (start % 2 == 1) { sum = std::min(sum, segtree[start++]); }
-			if (end % 2 == 1) { sum = std::min(sum, segtree[--end]); }
+			if (start % 2 == 1) { min = std::min(min, segtree[start++]); }
+			if (end % 2 == 1) { min = std::min(min, segtree[--end]); }
 		}
-		return sum;
+		return min;
 	}
 };
 
@@ -283,6 +284,7 @@ using std::cout;
 using std::endl;
 using std::vector;
 
+// BeginCodeSnip{Segment Tree}
 template <class T> class SumSegmentTree {
   private:
 	const T DEFAULT = 0;
@@ -310,6 +312,7 @@ template <class T> class SumSegmentTree {
 		return sum;
 	}
 };
+// EndCodeSnip
 
 int main() {
 	int arr_len;
@@ -406,6 +409,7 @@ Compared to the previous problem, all we need to change is the way we aggregate
 values (from `min()` to '+'), and change the initial value to 0.
 
 ```py
+# BeginCodeSnip{Segment Tree}
 class SumSegmentTree:
 	def __init__(self, len_: int):
 		self.len = len_
@@ -434,6 +438,9 @@ class SumSegmentTree:
 			start //= 2
 			end //= 2
 		return total
+
+
+# EndCodeSnip
 
 
 arr_len, query_num = map(int, input().split())
@@ -501,8 +508,6 @@ first glance.
 	</Resource>
 </Resources>
 
-#### Solution 1
-
 ```cpp
 #include <cassert>
 #include <iostream>
@@ -527,10 +532,10 @@ template <class T> class BIT {
 	BIT(int size) : size(size), bit(size + 1), arr(size) {}
 
 	/** Sets the value at index ind to val. */
-	void set(int ind, int val) { add(ind, val - arr[ind]); }
+	void set(int ind, T val) { add(ind, val - arr[ind]); }
 
 	/** Adds val to the element at index ind. */
-	void add(int ind, int val) {
+	void add(int ind, T val) {
 		arr[ind] += val;
 		ind++;
 		for (; ind <= size; ind += ind & -ind) { bit[ind] += val; }

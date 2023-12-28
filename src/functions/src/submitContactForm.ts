@@ -31,7 +31,7 @@ const submitContactForm = functions.https.onCall(async data => {
   });
   const labels = [];
   if (
-    topic.includes('Minor Mistake') ||
+    topic.includes('Mistake') ||
     topic.includes('Unclear Explanation') ||
     topic.includes('Request')
   ) {

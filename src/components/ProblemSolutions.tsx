@@ -4,12 +4,12 @@ import { useState } from 'react';
 import ContactUsSlideover from '../components/ContactUsSlideover/ContactUsSlideover';
 import { useDarkMode } from '../context/DarkModeContext';
 import { SignInContext } from '../context/SignInContext';
+import { useFirebaseUser } from '../context/UserDataContext/UserDataContext';
+import { useUserPermissions } from '../context/UserDataContext/UserPermissionsContext';
 import {
   LANGUAGE_LABELS,
   useUserLangSetting,
 } from '../context/UserDataContext/properties/simpleProperties';
-import { useFirebaseUser } from '../context/UserDataContext/UserDataContext';
-import { useUserPermissions } from '../context/UserDataContext/UserPermissionsContext';
 import useUserProblemSolutionActions from '../hooks/useUserProblemSolutionActions';
 import useUserSolutionsForProblem from '../hooks/useUserSolutionsForProblem';
 import { ShortProblemInfo } from '../models/problem';

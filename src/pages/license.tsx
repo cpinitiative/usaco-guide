@@ -1,9 +1,9 @@
 // eslint-disable react/no-unescaped-entities
 import { Link, PageProps } from 'gatsby';
 import * as React from 'react';
+import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
 import Layout from '../components/layout';
 import SEO from '../components/seo';
-import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
 
 export default function LicensePage(props: PageProps) {
   return (

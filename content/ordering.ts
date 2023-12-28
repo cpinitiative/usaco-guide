@@ -306,8 +306,7 @@ SECTIONS.forEach(section => {
   });
 });
 
-export { moduleIDToSectionMap };
-export { moduleIDToURLMap };
+export { moduleIDToSectionMap, moduleIDToURLMap };
 
 const moduleIDToURLMap: { [key: string]: string } = {};
 
