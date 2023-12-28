@@ -99,6 +99,142 @@ int main() {
 
 </CPPSection>
 
+
+<JavaSection>
+
+```java
+
+import java.io.*;
+import java.util.*;
+
+public class Main {
+	static boolean[] vis;
+	static List<Integer>[] adj; // // Adjacency list of neighbor
+	static List<Integer>[] adj_t; // adj_t is the transpose of adj
+	static int[] id;  
+	static List<Integer> S; 
+	public static void main(String[] args) {
+		FastIO io = new FastIO();
+        int n = io.nextInt();
+        int m = io.nextInt();
+		adj = new ArrayList[n+1];
+		adj_t = new ArrayList[n+1]; 
+        vis = new boolean[n+1];
+        id = new int[n+1];
+		S = new ArrayList<>();
+		
+        for(int i=1;i<=n;i++){
+            adj[i] = new ArrayList<>();
+            adj_t[i] = new ArrayList<>();
+        }
+    
+		for (int i = 0; i < m; i++) {
+			int a = io.nextInt();
+			int b = io.nextInt();
+			adj[a].add(b);
+			adj_t[b].add(a);
+		}
+		
+		for(int i=1;i<=n;i++){
+		  if(!vis[i]) dfs(i,1,i);
+		}
+		
+		Arrays.fill(vis, false);
+    
+        int components = 0;
+        for (int i = n - 1; i >= 0; i--) {
+            if (!vis[S.get(i)]) {
+                components++;
+                dfs(S.get(i), 2, components);
+            }
+  	    }
+    
+        io.println(components);
+	    for (int i = 1; i <= n; i++) io.print(id[i]+" ");
+		io.close();	
+        
+	}
+	private static void dfs(int x, int pass, int num) {
+        vis[x] = true;
+        List<Integer> ad = (pass == 1) ? adj[x] : adj_t[x];
+        for (int e : ad) {
+            if (!vis[e]) {
+                dfs(e, pass, num);
+            }
+        }
+        S.add(x);
+        if (pass == 2) id[x] = num;
+    }
+
+	// BeginCodeSnip{FastIO}
+	private static class FastIO extends PrintWriter {
+		private InputStream stream;
+		private byte[] buf = new byte[1 << 16];
+		private int curChar, numChars;
+
+		// standard input
+		public FastIO() { this(System.in, System.out); }
+		public FastIO(InputStream i, OutputStream o) {
+			super(o);
+			stream = i;
+		}
+		// file input
+		public FastIO(String i, String o) throws IOException {
+			super(new FileWriter(o));
+			stream = new FileInputStream(i);
+		}
+
+		// throws InputMismatchException() if previously detected end of file
+		private int nextByte() {
+			if (numChars == -1) throw new InputMismatchException();
+			if (curChar >= numChars) {
+				curChar = 0;
+				try {
+					numChars = stream.read(buf);
+				} catch (IOException e) { throw new InputMismatchException(); }
+				if (numChars == -1) return -1;  // end of file
+			}
+			return buf[curChar++];
+		}
+
+		// to read in entire lines, replace c <= ' '
+		// with a function that checks whether c is a line break
+		public String next() {
+			int c;
+			do { c = nextByte(); } while (c <= ' ');
+			StringBuilder res = new StringBuilder();
+			do {
+				res.appendCodePoint(c);
+				c = nextByte();
+			} while (c > ' ');
+			return res.toString();
+		}
+		public int nextInt() {  // nextLong() would be implemented similarly
+			int c;
+			do { c = nextByte(); } while (c <= ' ');
+			int sgn = 1;
+			if (c == '-') {
+				sgn = -1;
+				c = nextByte();
+			}
+			int res = 0;
+			do {
+				if (c < '0' || c > '9') throw new InputMismatchException();
+				res = 10 * res + c - '0';
+				c = nextByte();
+			} while (c > ' ');
+			return res * sgn;
+		}
+		public double nextDouble() { return Double.parseDouble(next()); }
+	}
+	// EndCodeSnip
+}
+
+```
+
+</JavaSection>
+
+
 </LanguageSection>
 
 ### Tarjan's Algorithm
