@@ -1,6 +1,7 @@
 import argparse
 import json
 import urllib.request
+import os
 from typing import Iterable, Optional, Tuple
 
 from bs4 import BeautifulSoup
@@ -201,7 +202,12 @@ args = parser.parse_args()
 seasons = list(range(args.start_season, args.end_season + 1))
 logger.info(f"seasons = {seasons}")
 
-for f in [gen_contest_to_points, gen_div_to_probs, gen_id_to_sol]:
+# Get the directory path of the currently executing script
+current_dir = os.path.dirname(os.path.abspath(__file__))
+# Change the current working directory to the directory of the script
+os.chdir(current_dir)
+
+for f in [gen_contest_to_points]:
 	print(f.__name__)
 	init = None
 	if args.inplace:
