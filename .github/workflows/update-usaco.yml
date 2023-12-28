@@ -51,13 +51,16 @@ jobs:
           git add .
           git config --global user.name usaco-autofetch[bot]
           git config --global user.email usaco-autofetch[bot]@users.noreply.github.com
-          git commit -m 'problem auto-updates'
-          git push origin auto
-          if [ -z "$pr_number" ]
+          if git commit -m 'problem auto-updates'
           then
-            gh pr create --title 'Problem auto-updates' -F usaco-problems/out/report.txt
+            git push origin auto
+            if [ -z "$pr_number" ]
+            then
+              gh pr create --title 'Problem auto-updates' -F usaco-problems/out/report.txt
+            else
+              gh pr edit $pr_number -F usaco-problems/out/report.txt
           else
-            gh pr edit $pr_number -F usaco-problems/out/report.txt
+            echo 'Problems up to date!'
           fi
         env:
           GH_TOKEN: ${{ steps.generate_token.outputs.token }}
