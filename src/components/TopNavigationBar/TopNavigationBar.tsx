@@ -134,18 +134,18 @@ export default function TopNavigationBar({
 
   return (
     <>
-      {/*       {!hidePromoBar && (
+      {!hidePromoBar && (
         <div className="relative bg-blue-600">
           <div className="max-w-screen-xl mx-auto py-3 px-3 sm:px-6 lg:px-8">
             <div className="pr-16 sm:text-center sm:px-16">
               <p className="font-medium text-white">
                 <span className="md:inline">
-                  Come to our Livesolve and Q&A workshop hosted by the USA's IOI
-                  team!
+                  Join our livesolve workshop for the December 2023 USACO
+                  Contest!
                 </span>
                 <span className="block sm:ml-2 sm:inline-block">
                   <a
-                    href="https://joincpi.org/workshops/ioi23"
+                    href="https://joincpi.org/workshops/dec23"
                     target="_blank"
                     rel="noreferrer"
                     className="text-white font-bold underline"
@@ -157,7 +157,7 @@ export default function TopNavigationBar({
             </div>
           </div>
         </div>
-      )} */}
+      )}
 
       <nav
         className={classNames(
