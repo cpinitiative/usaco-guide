@@ -1,5 +1,6 @@
 import { Meta, Story } from '@storybook/react';
 import React from 'react';
+import seedrandom from 'seedrandom';
 import {
   ActivityHeatmap,
   ActivityHeatmapProps,
@@ -32,7 +33,8 @@ const orderedModuleActivities: { [key: number]: any[] } = {};
 const orderedProblemActivities: { [key: number]: any[] } = {};
 const randomModuleActivities: { [key: number]: any[] } = {};
 const randomProblemActivities: { [key: number]: any[] } = {};
-const rng = () => Math.floor(Math.random() * 5);
+const gen = seedrandom('42');
+const rng = () => Math.floor(gen() * 5);
 const squeeze = (i: number) =>
   Math.floor(
     (5 * (i - startDate.getTime())) / (endDate.getTime() - startDate.getTime())
