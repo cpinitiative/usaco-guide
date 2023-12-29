@@ -10,11 +10,6 @@ import './heatmap-styles.css';
 type ModuleActivity = ReturnType<typeof useUserProgressOnModulesActivity>[0];
 type ProblemActivity = ReturnType<typeof useUserProgressOnProblemsActivity>[0];
 
-export type HeatmapValue = {
-  date: Date;
-  count: number;
-};
-
 export type ActivityHeatmapProps = {
   moduleActivities: { [key: number]: ModuleActivity[] };
   problemActivities: { [key: number]: ProblemActivity[] };
@@ -29,8 +24,9 @@ export function ActivityHeatmap({
   const startDate: Date = new Date();
   startDate.setMonth(endDate.getMonth() - 10);
   const activityCount: { [key: number]: number } = {};
-  for (const t in moduleActivities)
+  for (const t in moduleActivities) {
     activityCount[t] = moduleActivities[t].length;
+  }
   for (const t in problemActivities) {
     if (activityCount[t]) activityCount[t] += problemActivities[t].length;
     else activityCount[t] = problemActivities[t].length;
@@ -51,10 +47,10 @@ export function ActivityHeatmap({
                 date: new Date(Number(d)),
                 count: activityCount[Number(d)],
               }))}
-              onMouseOver={(_ev: MouseEvent, value: HeatmapValue) => {
+              onMouseOver={(_ev, value) => {
                 setActiveDate(value.date);
               }}
-              classForValue={(value: HeatmapValue) => {
+              classForValue={value => {
                 if (!value || value.count === 0) {
                   return 'color-empty';
                 }
