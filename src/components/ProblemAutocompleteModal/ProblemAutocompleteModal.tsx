@@ -1,6 +1,6 @@
 import { Transition } from '@headlessui/react';
 import * as React from 'react';
-import { connectAutoComplete, InstantSearch } from 'react-instantsearch-dom';
+import { connectAutoComplete, InstantSearch } from 'react-instantsearch';
 import { AlgoliaProblemInfo } from '../../models/problem';
 import { searchClient } from '../../utils/algoliaSearchClient';
 import { ProblemAutocomplete } from './ProblemAutocomplete';

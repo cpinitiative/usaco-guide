@@ -5,7 +5,7 @@ import {
   Highlight,
   InstantSearch,
   PoweredBy,
-} from 'react-instantsearch-dom';
+} from 'react-instantsearch';
 import styled from 'styled-components';
 import tw from 'twin.macro';
 import { AlgoliaEditorFile } from '../../models/algoliaEditorFile';

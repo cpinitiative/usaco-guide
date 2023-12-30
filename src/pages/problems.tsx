@@ -1,14 +1,16 @@
 import { graphql, PageProps } from 'gatsby';
 import * as React from 'react';
+
 import {
-  connectHits,
-  connectRefinementList,
-  connectSearchBox,
   HitsPerPage,
   InstantSearch,
   Pagination,
   PoweredBy,
-} from 'react-instantsearch-dom';
+  useHits,
+  useRefinementList,
+  useSearchBox,
+} from 'react-instantsearch';
+
 import Layout from '../components/layout';
 import Difficulty from '../components/ProblemsPage/Difficulty';
 import Modules from '../components/ProblemsPage/Module';
@@ -116,11 +118,10 @@ export default function ProblemsPage(props: PageProps) {
                 <Pagination showLast={true} className="pr-4" />
                 <HitsPerPage
                   items={[
-                    { label: '24 hits per page', value: 24 },
+                    { label: '24 hits per page', value: 24, default: true },
                     { label: '32 hits per page', value: 32 },
                     { label: '48 hits per page', value: 48 },
                   ]}
-                  defaultRefinement={24}
                   className="mt-1 lg:mt-0"
                 />
               </div>
@@ -143,3 +144,36 @@ export const pageQuery = graphql`
     }
   }
 `;
+
+// TODO (Codemod generated): ensure your usage correctly maps the props from the connector to the hook
+function connectHits(Component) {
+  const Hits = props => {
+    const data = useHits(props);
+
+    return <Component {...props} {...data} />;
+  };
+
+  return Hits;
+}
+
+// TODO (Codemod generated): ensure your usage correctly maps the props from the connector to the hook
+function connectRefinementList(Component) {
+  const RefinementList = props => {
+    const data = useRefinementList(props);
+
+    return <Component {...props} {...data} />;
+  };
+
+  return RefinementList;
+}
+
+// TODO (Codemod generated): ensure your usage correctly maps the props from the connector to the hook
+function connectSearchBox(Component) {
+  const SearchBox = props => {
+    const data = useSearchBox(props);
+
+    return <Component {...props} {...data} />;
+  };
+
+  return SearchBox;
+}

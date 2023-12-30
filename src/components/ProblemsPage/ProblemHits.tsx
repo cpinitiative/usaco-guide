@@ -1,6 +1,6 @@
 import { Link } from 'gatsby';
 import * as React from 'react';
-import { Highlight } from 'react-instantsearch-dom';
+import { Highlight } from 'react-instantsearch';
 import { moduleIDToSectionMap } from '../../../content/ordering';
 import { ConfettiProvider } from '../../context/ConfettiContext';
 import {

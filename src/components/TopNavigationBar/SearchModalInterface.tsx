@@ -8,7 +8,7 @@ import {
   InstantSearch,
   PoweredBy,
   Snippet,
-} from 'react-instantsearch-dom';
+} from 'react-instantsearch';
 import styled from 'styled-components';
 import tw from 'twin.macro';
 import { moduleIDToURLMap, SECTION_LABELS } from '../../../content/ordering';
