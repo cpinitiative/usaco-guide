@@ -108,31 +108,27 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-	static boolean[] vis;
-	static List<Integer>[] adj;    // // Adjacency list of neighbor
-	static List<Integer>[] adj_t;  // adj_t is the transpose of adj
-	static int[] id;
-	static List<Integer> S;
+	static final int N = 100010;
+	static boolean[] vis = new boolean[N + 1];
+	static List<Integer>[] adj = new ArrayList[N + 1];   // Adjacency list of neighbor
+	static List<Integer>[] adjT = new ArrayList[N + 1];  // adjT is the transpose of adj
+	static int[] id = new int[N + 1];
+	static List<Integer> S = new ArrayList<>();
 	public static void main(String[] args) {
 		Kattio io = new Kattio();
 		int n = io.nextInt();
 		int m = io.nextInt();
-		adj = new ArrayList[n + 1];
-		adj_t = new ArrayList[n + 1];
-		vis = new boolean[n + 1];
-		id = new int[n + 1];
-		S = new ArrayList<>();
-
+		
 		for (int i = 1; i <= n; i++) {
 			adj[i] = new ArrayList<>();
-			adj_t[i] = new ArrayList<>();
+			adjT[i] = new ArrayList<>();
 		}
 
 		for (int i = 0; i < m; i++) {
 			int a = io.nextInt();
 			int b = io.nextInt();
 			adj[a].add(b);
-			adj_t[b].add(a);
+			adjT[b].add(a);
 		}
 
 		for (int i = 1; i <= n; i++) {
@@ -150,18 +146,22 @@ public class Main {
 		}
 
 		io.println(components);
-		for (int i = 1; i <= n; i++) io.print(id[i] + " ");
+		for (int i = 1; i <= n; i++){
+			io.print(id[i] + " ");
+		} 
 		io.close();
 	}
+
 	private static void dfs(int x, int pass, int num) {
 		vis[x] = true;
-		List<Integer> ad = (pass == 1) ? adj[x] : adj_t[x];
+		List<Integer> ad = (pass == 1) ? adj[x] : adjT[x];
 		for (int e : ad) {
 			if (!vis[e]) { dfs(e, pass, num); }
 		}
 		S.add(x);
 		if (pass == 2) id[x] = num;
 	}
+
 	// CodeSnip{Kattio}
 }
 ```
