@@ -35,11 +35,10 @@ The definition of a kingdom in this problem is equivalent to the definition of a
 ### Solution (Kosaraju's)
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
-#include <bits/stdc++.h>  // see /general/running-code-locally
+#include <bits/stdc++.h>
 using namespace std;
 
 using vi = vector<int>;
@@ -98,34 +97,30 @@ int main() {
 ```
 
 </CPPSection>
-
-
 <JavaSection>
 
 ```java
-
 import java.io.*;
 import java.util.*;
 
 public class Main {
 	static final int N = 100010;
 	static boolean[] vis = new boolean[N + 1];
-	static List<Integer>[] adj =
-	    new ArrayList[N + 1];  // Adjacency list of neighbor
-	static List<Integer>[] adjT =
-	    new ArrayList[N + 1];  // adjT is the transpose of adj
+	// Adjacency list of neighbor
+	static List<Integer>[] adj = new ArrayList[N + 1];
+	 // adjT is the transpose of adj
+	static List<Integer>[] adjT = new ArrayList[N + 1];
 	static int[] id = new int[N + 1];
 	static List<Integer> S = new ArrayList<>();
+
 	public static void main(String[] args) {
 		Kattio io = new Kattio();
 		int n = io.nextInt();
 		int m = io.nextInt();
-
 		for (int i = 1; i <= n; i++) {
 			adj[i] = new ArrayList<>();
 			adjT[i] = new ArrayList<>();
 		}
-
 		for (int i = 0; i < m; i++) {
 			int a = io.nextInt();
 			int b = io.nextInt();
@@ -134,11 +129,10 @@ public class Main {
 		}
 
 		for (int i = 1; i <= n; i++) {
-			if (!vis[i]) dfs(i, 1, i);
+			if (!vis[i]) { dfs(i, 1, i); }
 		}
 
 		Arrays.fill(vis, false);
-
 		int components = 0;
 		for (int i = n - 1; i >= 0; i--) {
 			if (!vis[S.get(i)]) {
@@ -159,7 +153,7 @@ public class Main {
 			if (!vis[e]) { dfs(e, pass, num); }
 		}
 		S.add(x);
-		if (pass == 2) id[x] = num;
+		if (pass == 2) { id[x] = num; }
 	}
 
 	// CodeSnip{Kattio}
