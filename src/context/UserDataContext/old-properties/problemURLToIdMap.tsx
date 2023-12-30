@@ -191,7 +191,7 @@ export default {
   'http://www.usaco.org/index.php?page=viewproblem2&cpid=715': 'usaco-715',
   'https://cses.fi/problemset/task/1650': 'cses-1650',
   'http://www.usaco.org/index.php?page=viewproblem2&cpid=104': 'usaco-104',
-  'https://codingcompetitions.withgoogle.com/kickstart/round/000000000019ff43/0000000000337b4d':
+  'https://zibada.guru/gcj/ks2020c/problems/#D':
     'ks-CandiesTestSet1',
   'https://atcoder.jp/contests/abc164/tasks/abc164_d': 'ac-MultipleOf2019',
   'https://atcoder.jp/contests/dp/tasks/dp_v': 'ac-subtree',
