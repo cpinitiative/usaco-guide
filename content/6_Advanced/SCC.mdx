@@ -104,14 +104,14 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-	static final int N = 100010;
+	static final int N = 100001;
 	static boolean[] vis = new boolean[N + 1];
 	// Adjacency list of neighbor
 	static List<Integer>[] adj = new ArrayList[N + 1];
 	// adjT is the transpose of adj
 	static List<Integer>[] adjT = new ArrayList[N + 1];
 	static int[] id = new int[N + 1];
-	static List<Integer> S = new ArrayList<>();
+	static List<Integer> dfsOrder = new ArrayList<>();
 
 	public static void main(String[] args) {
 		Kattio io = new Kattio();
@@ -135,9 +135,9 @@ public class Main {
 		Arrays.fill(vis, false);
 		int components = 0;
 		for (int i = n - 1; i >= 0; i--) {
-			if (!vis[S.get(i)]) {
+			if (!vis[dfsOrder.get(i)]) {
 				components++;
-				dfs(S.get(i), 2, components);
+				dfs(dfsOrder.get(i), 2, components);
 			}
 		}
 
@@ -152,7 +152,7 @@ public class Main {
 		for (int e : ad) {
 			if (!vis[e]) { dfs(e, pass, num); }
 		}
-		S.add(x);
+		dfsOrder.add(x);
 		if (pass == 2) { id[x] = num; }
 	}
 
