@@ -1,12 +1,13 @@
 import * as React from 'react';
-import { AlgoliaProblemInfo } from '../../models/problem';
+import { useHits, useSearchBox } from 'react-instantsearch';
+import { AlgoliaProblemInfoHit } from '../../models/problem';
 
 const ProblemAutocompleteHit = ({
   hit,
   onClick,
 }: {
-  hit: AlgoliaProblemInfo;
-  onClick: (problem: AlgoliaProblemInfo) => any;
+  hit: AlgoliaProblemInfoHit;
+  onClick: (problem: AlgoliaProblemInfoHit) => any;
 }) => {
   return (
     <li key={hit.objectID}>
@@ -37,43 +38,33 @@ const ProblemAutocompleteHit = ({
     </li>
   );
 };
-
-export const ProblemAutocomplete = ({
-  hits,
-  currentRefinement,
-  refine,
-  onProblemSelect,
-  modalIsOpen,
-}) => (
-  <div>
+export function ProblemAutocomplete({ onProblemSelect, modalIsOpen }) {
+  const { query, refine: setQuery } = useSearchBox();
+  const { hits } = useHits() as { hits: AlgoliaProblemInfoHit[] };
+  return (
     <div>
-      {modalIsOpen ? (
+      <div>
         <input
-          autoFocus
+          autoFocus={modalIsOpen}
           type="text"
           className="input"
           placeholder="Problem Name"
-          value={currentRefinement}
-          onChange={e => refine(e.currentTarget.value)}
+          value={query}
+          onChange={e => setQuery(e.currentTarget.value)}
         />
-      ) : (
-        <input
-          type="text"
-          className="input"
-          placeholder="Problem Name"
-          value={currentRefinement}
-          onChange={e => refine(e.currentTarget.value)}
-        />
-      )}
+      </div>
+      <ul
+        className="overflow-y-auto mt-2 space-y-2"
+        style={{ height: '40rem' }}
+      >
+        {hits.map(hit => (
+          <ProblemAutocompleteHit
+            hit={hit}
+            key={hit.objectID}
+            onClick={p => onProblemSelect(p)}
+          />
+        ))}
+      </ul>
     </div>
-    <ul className="overflow-y-auto mt-2 space-y-2" style={{ height: '40rem' }}>
-      {hits.map(hit => (
-        <ProblemAutocompleteHit
-          hit={hit}
-          key={hit.objectID}
-          onClick={p => onProblemSelect(p)}
-        />
-      ))}
-    </ul>
-  </div>
-);
+  );
+}

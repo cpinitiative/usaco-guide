@@ -3,15 +3,16 @@ import { Link } from 'gatsby';
 import React from 'react';
 import {
   Configure,
-  connectAutoComplete,
   Highlight,
   InstantSearch,
   PoweredBy,
   Snippet,
+  useHits,
+  useSearchBox,
 } from 'react-instantsearch';
 import styled from 'styled-components';
 import tw from 'twin.macro';
-import { moduleIDToURLMap, SECTION_LABELS } from '../../../content/ordering';
+import { SECTION_LABELS, moduleIDToURLMap } from '../../../content/ordering';
 import { searchClient } from '../../utils/algoliaSearchClient';
 
 const SearchResultDescription = styled.p`
@@ -41,7 +42,9 @@ const SearchResultsContainer = styled.div`
 const indexName =
   process.env.NODE_ENV === 'production' ? 'prod_modules' : 'dev_modules';
 
-const ModuleSearch = ({ hits, currentRefinement, refine }) => {
+const ModuleSearch = () => {
+  const { query, refine: setQuery } = useSearchBox();
+  const { hits } = useHits() as { hits: any[] };
   return (
     <div>
       <div className="flex items-center p-2">
@@ -49,8 +52,8 @@ const ModuleSearch = ({ hits, currentRefinement, refine }) => {
           type="search"
           placeholder="Search"
           className="focus:outline-none focus:ring-0 text-gray-700 dark:bg-dark-surface dark:text-gray-200 dark:placeholder-gray-400 border-0 flex-1"
-          value={currentRefinement}
-          onChange={e => refine(e.target.value)}
+          value={query}
+          onChange={e => setQuery(e.target.value)}
           autoComplete="off"
           autoFocus
         />
@@ -58,7 +61,7 @@ const ModuleSearch = ({ hits, currentRefinement, refine }) => {
           <SearchIcon className="h-5 w-5 text-gray-400 dark:text-gray-500" />
         </span>
       </div>
-      {currentRefinement !== '' && (
+      {query !== '' && (
         <div>
           <SearchResultsContainer>
             <div className="max-h-[20rem] sm:max-h-[40rem] overflow-y-auto border-t divide-y divide-gray-200 border-gray-200 dark:divide-gray-700 dark:border-gray-700">
@@ -91,13 +94,11 @@ const ModuleSearch = ({ hits, currentRefinement, refine }) => {
   );
 };
 
-const ConnectedModuleSearch = connectAutoComplete(ModuleSearch);
-
 const SearchModalInterface: React.FC = () => {
   return (
     <InstantSearch indexName={indexName} searchClient={searchClient}>
       <Configure hitsPerPage={10} attributesToSnippet={['content:30']} />
-      <ConnectedModuleSearch />
+      <ModuleSearch />
     </InstantSearch>
   );
 };

@@ -174,13 +174,7 @@ const mockHits = [
 ];
 
 const Template: Story<ComponentProps<typeof ProblemAutocomplete>> = args => (
-  <ProblemAutocomplete
-    modalIsOpen={true}
-    refine={() => {}}
-    currentRefinement="My Search"
-    hits={mockHits}
-    {...args}
-  />
+  <ProblemAutocomplete {...args} />
 );
 
 export const Default = Template.bind({});

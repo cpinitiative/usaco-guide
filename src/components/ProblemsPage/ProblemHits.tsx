@@ -9,7 +9,7 @@ import {
   useShowTagsSetting,
 } from '../../context/UserDataContext/properties/simpleProperties';
 import {
-  AlgoliaProblemInfo,
+  AlgoliaProblemInfoHit,
   ProblemInfo,
   getProblemURL,
   isUsaco,
@@ -19,7 +19,7 @@ import DifficultyBox from '../DifficultyBox';
 import ProblemStatusCheckbox from '../markdown/ProblemsList/ProblemStatusCheckbox';
 
 interface ProblemHitProps {
-  hit: AlgoliaProblemInfo;
+  hit: AlgoliaProblemInfoHit;
 }
 
 function ProblemHit({ hit }: ProblemHitProps) {
@@ -169,7 +169,11 @@ function ProblemHit({ hit }: ProblemHitProps) {
   );
 }
 
-export default function ProblemHits({ hits }: { hits: AlgoliaProblemInfo[] }) {
+export default function ProblemHits({
+  hits,
+}: {
+  hits: AlgoliaProblemInfoHit[];
+}) {
   return (
     <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
       {hits.map(hit => (
