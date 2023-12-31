@@ -23,7 +23,7 @@ export function ActivityHeatmap({
 }: ActivityHeatmapProps) {
   const [activeDate, setActiveDate] = React.useState<Date | null>(null);
   if (!endDate) endDate = new Date();
-  const startDate: Date = new Date();
+  const startDate = new Date(endDate);
   startDate.setMonth(endDate.getMonth() - 10);
   const activityCount: { [key: number]: number } = {};
   for (const t in moduleActivities) {

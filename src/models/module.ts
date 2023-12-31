@@ -1,3 +1,4 @@
+import { BaseHit, Hit } from 'instantsearch.js';
 import { SectionID } from '../../content/ordering';
 
 export type MarkdownLayoutSidebarModuleLinkInfo = {
@@ -81,3 +82,13 @@ export const ModuleProgressOptions: ModuleProgress[] = [
   'Skipped',
   'Ignored',
 ];
+
+export type AlgoliaModuleInfo = {
+  title: string;
+  description: string;
+  content: string;
+  id: string;
+  division: SectionID;
+};
+
+export type AlgoliaModuleInfoHit = Hit<BaseHit> & AlgoliaModuleInfo;

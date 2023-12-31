@@ -13,6 +13,7 @@ import {
 import styled from 'styled-components';
 import tw from 'twin.macro';
 import { SECTION_LABELS, moduleIDToURLMap } from '../../../content/ordering';
+import { AlgoliaModuleInfoHit } from '../../models/module';
 import { searchClient } from '../../utils/algoliaSearchClient';
 
 const SearchResultDescription = styled.p`
@@ -44,7 +45,7 @@ const indexName =
 
 const ModuleSearch = () => {
   const { query, refine: setQuery } = useSearchBox();
-  const { hits } = useHits() as { hits: any[] };
+  const { hits } = useHits() as { hits: AlgoliaModuleInfoHit[] };
   return (
     <div>
       <div className="flex items-center p-2">
