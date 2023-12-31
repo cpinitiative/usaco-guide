@@ -1,6 +1,11 @@
 import { Story } from '@storybook/react';
 import React, { ComponentProps } from 'react';
-import { ProblemAutocomplete } from '../../components/ProblemAutocompleteModal/ProblemAutocomplete';
+import { InstantSearch } from 'react-instantsearch';
+import {
+  indexName,
+  ProblemAutocomplete,
+} from '../../components/ProblemAutocompleteModal/ProblemAutocomplete';
+import { searchClient } from '../../utils/algoliaSearchClient';
 
 export default {
   title: 'Groups/ProblemAutocomplete',
@@ -174,7 +179,9 @@ const mockHits = [
 ];
 
 const Template: Story<ComponentProps<typeof ProblemAutocomplete>> = args => (
-  <ProblemAutocomplete {...args} />
+  <InstantSearch indexName={indexName} searchClient={searchClient}>
+    <ProblemAutocomplete {...args} />
+  </InstantSearch>
 );
 
 export const Default = Template.bind({});

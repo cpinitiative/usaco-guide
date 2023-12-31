@@ -3,10 +3,7 @@ import * as React from 'react';
 import { InstantSearch } from 'react-instantsearch';
 import { AlgoliaProblemInfo } from '../../models/problem';
 import { searchClient } from '../../utils/algoliaSearchClient';
-import { ProblemAutocomplete } from './ProblemAutocomplete';
-
-const indexName =
-  process.env.NODE_ENV === 'production' ? 'prod_problems' : 'dev_problems';
+import { indexName, ProblemAutocomplete } from './ProblemAutocomplete';
 
 export interface ProblemAutocompleteModalProps {
   isOpen: boolean;

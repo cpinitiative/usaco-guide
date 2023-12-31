@@ -16,9 +16,7 @@ const ProblemAutocompleteHit = ({
         onClick={() => onClick(hit)}
       >
         <div className="flex items-center justify-between">
-          <span className="font-medium">
-            {hit.source} {hit.name}
-          </span>
+          <span className="font-medium">{`${hit.source}: ${hit.name}`}</span>
           <span>
             {hit.isStarred ? 'Starred • ' : ''}
             {hit.difficulty}
@@ -38,6 +36,10 @@ const ProblemAutocompleteHit = ({
     </li>
   );
 };
+
+export const indexName =
+  process.env.NODE_ENV === 'production' ? 'prod_problems' : 'dev_problems';
+
 export function ProblemAutocomplete({ onProblemSelect, modalIsOpen }) {
   const { query, refine: setQuery } = useSearchBox();
   const { hits } = useHits() as { hits: AlgoliaProblemInfoHit[] };
