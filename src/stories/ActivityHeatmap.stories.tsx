@@ -16,7 +16,7 @@ const Template: Story<ActivityHeatmapProps> = args => (
 );
 
 const endDate = new Date(2023, 12);
-const startDate = new Date();
+const startDate = new Date(2023, 12);
 startDate.setMonth(endDate.getMonth() - 10);
 const dummyProblem = {
   timestamp: 0,
