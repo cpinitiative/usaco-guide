@@ -21,33 +21,29 @@ int t, n, k, h;
 int ans;
 int tmp;
 int limit;
-int main(){
-    cin >> t;
-    for(int i = 0; i < t; i++){
-        cin >> n >> k;
-        vector <int> a(n);
-        vector <int> b(n);
+int main() {
+	cin >> t;
+	for (int i = 0; i < t; i++) {
+		cin >> n >> k;
+		vector<int> a(n);
+		vector<int> b(n);
 		// farthest location of available quest
-        limit = min(n, k); 
-        for(int x =0; x < n; x++){
-            cin >> a[x];
-        }
-        for(int y =0; y < n; y++){
-            cin >> b[y];
-        }
-        int mx = b[0];
-        ans = a[0] + mx * (k - 1);
-        tmp = a[0];
-        for(int z = 1; z < limit; z++){
-            mx = max(mx, b[z]);
+		limit = min(n, k);
+		for (int x = 0; x < n; x++) { cin >> a[x]; }
+		for (int y = 0; y < n; y++) { cin >> b[y]; }
+		int mx = b[0];
+		ans = a[0] + mx * (k - 1);
+		tmp = a[0];
+		for (int z = 1; z < limit; z++) {
+			mx = max(mx, b[z]);
 			// compare experience point of completing one more quest or not
-            if(ans < tmp + a[z] + mx * (k - z - 1)){
-                ans = tmp +  a[z] + mx * (k - z - 1);
-            }
-            tmp += a[z];
-        }
-        cout << ans << "\n";
-    }
+			if (ans < tmp + a[z] + mx * (k - z - 1)) {
+				ans = tmp + a[z] + mx * (k - z - 1);
+			}
+			tmp += a[z];
+		}
+		cout << ans << "\n";
+	}
 }
 ```
 
