@@ -1,13 +1,11 @@
 import { graphql, PageProps } from 'gatsby';
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 
 import {
   HitsPerPage,
   InstantSearch,
   Pagination,
   PoweredBy,
-  useHits,
-  useRefinementList,
 } from 'react-instantsearch';
 
 import SECTIONS from '../../content/ordering';
@@ -25,9 +23,6 @@ import { searchClient } from '../utils/algoliaSearchClient';
 
 const indexName = `${process.env.GATSBY_ALGOLIA_INDEX_NAME ?? 'dev'}_problems`;
 
-const CustomHits = connectHits(ProblemHits);
-const CustomRefinementList = connectRefinementList(RefinementList);
-
 type DataProps = {
   allProblemInfo: {
     nodes: {
@@ -42,16 +37,6 @@ export default function ProblemsPage(props: PageProps<DataProps>) {
   } = props.data;
   const problemIds = problems.map(problem => problem.uniqueId);
   const userProgress = useUserProgressOnProblems();
-  const progressToIds = useRef<{ [key: string]: string[] }>({});
-  useEffect(() => {
-    for (const id of problemIds) {
-      const progress = userProgress[id] ?? 'Not Attempted';
-      if (!progressToIds.current[progress]) {
-        progressToIds.current[progress] = [];
-      }
-      progressToIds.current[progress].push(id);
-    }
-  }, []);
   const selectionMetadata: SelectionProps[] = [
     {
       attribute: 'difficulty',
@@ -127,9 +112,12 @@ export default function ProblemsPage(props: PageProps<DataProps>) {
         'Reviewing',
         'Skipped',
         'Ignored',
+        'Solved',
       ].map(label => ({
         label,
-        value: progressToIds.current[label] ?? [],
+        value: problemIds.filter(
+          id => (userProgress[id] ?? 'Not Attempted') == label
+        ),
       })),
     },
   ];
@@ -154,7 +142,7 @@ export default function ProblemsPage(props: PageProps<DataProps>) {
           </div>
           <div className="pt-3 px-9 pb-4 grid grid-cols-10">
             <div className="sm:col-span-4 md:col-span-3 lg:col-span-2 xl:col-span-2 col-span-5 overflow-y-auto">
-              <CustomRefinementList attribute="tags" limit={500} searchable />
+              <RefinementList />
             </div>
             <div className="py-0.5 px-1 sm:col-span-6 md:col-span-6 lg:col-span-6 xl:col-span-8 col-span-5 overflow-y-auto">
               <div className="mb-5 items-center grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-x-5 gap-y-3">
@@ -167,7 +155,7 @@ export default function ProblemsPage(props: PageProps<DataProps>) {
                   </div>
                 ))}
               </div>
-              <CustomHits />
+              <ProblemHits />
               <div className="mt-3 flex flex-wrap justify-center">
                 <Pagination showLast={true} className="pr-4" />
                 <HitsPerPage
@@ -196,23 +184,3 @@ export const pageQuery = graphql`
     }
   }
 `;
-
-function connectHits(Component) {
-  const Hits = props => {
-    const data = useHits(props);
-
-    return <Component {...props} {...data} />;
-  };
-
-  return Hits;
-}
-
-function connectRefinementList(Component) {
-  const RefinementList = props => {
-    const data = useRefinementList(props);
-
-    return <Component {...props} {...data} />;
-  };
-
-  return RefinementList;
-}

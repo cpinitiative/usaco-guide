@@ -1,6 +1,6 @@
 import { Link } from 'gatsby';
 import * as React from 'react';
-import { Highlight } from 'react-instantsearch';
+import { Highlight, useHits } from 'react-instantsearch';
 import { moduleIDToSectionMap } from '../../../content/ordering';
 import { ConfettiProvider } from '../../context/ConfettiContext';
 import {
@@ -169,11 +169,8 @@ function ProblemHit({ hit }: ProblemHitProps) {
   );
 }
 
-export default function ProblemHits({
-  hits,
-}: {
-  hits: AlgoliaProblemInfoHit[];
-}) {
+export default function ProblemHits() {
+  const { hits } = useHits() as { hits: AlgoliaProblemInfoHit[] };
   return (
     <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
       {hits.map(hit => (
