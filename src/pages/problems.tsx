@@ -1,5 +1,5 @@
 import { graphql, PageProps } from 'gatsby';
-import * as React from 'react';
+import React, { useEffect, useRef } from 'react';
 
 import {
   HitsPerPage,
@@ -8,42 +8,131 @@ import {
   PoweredBy,
   useHits,
   useRefinementList,
-  useSearchBox,
 } from 'react-instantsearch';
 
+import SECTIONS from '../../content/ordering';
 import Layout from '../components/layout';
-import Difficulty from '../components/ProblemsPage/Difficulty';
-import Modules from '../components/ProblemsPage/Module';
 import ProblemHits from '../components/ProblemsPage/ProblemHits';
 import RefinementList from '../components/ProblemsPage/RefinementList';
 import SearchBox from '../components/ProblemsPage/SearchBox';
-import Section from '../components/ProblemsPage/Section';
-import Source from '../components/ProblemsPage/Source';
-import Starred from '../components/ProblemsPage/Starred';
-import Status from '../components/ProblemsPage/Status';
+import Selection, {
+  SelectionProps,
+} from '../components/ProblemsPage/Selection';
 import SEO from '../components/seo';
 import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
+import { useUserProgressOnProblems } from '../context/UserDataContext/properties/userProgress';
 import { searchClient } from '../utils/algoliaSearchClient';
 
 const indexName = `${process.env.GATSBY_ALGOLIA_INDEX_NAME ?? 'dev'}_problems`;
 
-const CustomModuleSelection = connectRefinementList(Modules);
-const CustomDifficultySelection = connectRefinementList(Difficulty);
-const CustomStarredSelection = connectRefinementList(Starred);
-const CustomSectionSelection = connectRefinementList(Section);
-const CustomStatusSelection = connectRefinementList(Status);
-const CustomSourceSelection = connectRefinementList(Source);
-const CustomSearchBox = connectSearchBox(SearchBox);
 const CustomHits = connectHits(ProblemHits);
 const CustomRefinementList = connectRefinementList(RefinementList);
 
-export default function ProblemsPage(props: PageProps) {
-  const { problems } = props.data as any;
-  const problemIds = problems.edges.reduce((acc, cur) => {
-    const problem = cur.node;
-    acc.push(problem.uniqueId);
-    return acc;
+type DataProps = {
+  allProblemInfo: {
+    nodes: {
+      uniqueId: string;
+    }[];
+  };
+};
+
+export default function ProblemsPage(props: PageProps<DataProps>) {
+  const {
+    allProblemInfo: { nodes: problems },
+  } = props.data;
+  const problemIds = problems.map(problem => problem.uniqueId);
+  const userProgress = useUserProgressOnProblems();
+  const progressToIds = useRef<{ [key: string]: string[] }>({});
+  useEffect(() => {
+    for (const id of problemIds) {
+      const progress = userProgress[id] ?? 'Not Attempted';
+      if (!progressToIds.current[progress]) {
+        progressToIds.current[progress] = [];
+      }
+      progressToIds.current[progress].push(id);
+    }
   }, []);
+  const selectionMetadata: SelectionProps[] = [
+    {
+      attribute: 'difficulty',
+      limit: 500,
+      placeholder: 'Difficulty',
+      searchable: false,
+      isMulti: true,
+    },
+    {
+      attribute: 'problemModules.title',
+      limit: 500,
+      placeholder: 'Modules',
+      searchable: true,
+      isMulti: true,
+    },
+    {
+      attribute: 'source',
+      limit: 500,
+      placeholder: 'Source',
+      searchable: true,
+      isMulti: true,
+    },
+    {
+      attribute: 'isStarred',
+      limit: 500,
+      placeholder: 'Starred',
+      searchable: false,
+      transformLabel: label => (label == 'true' ? 'Yes' : 'No'),
+      isMulti: false,
+    },
+    {
+      attribute: 'problemModules.id',
+      limit: 500,
+      placeholder: 'Section',
+      searchable: false,
+      isMulti: true,
+      items: [
+        {
+          label: 'General',
+          value: SECTIONS.general.map(chapter => chapter.items).flat(),
+        },
+        {
+          label: 'Bronze',
+          value: SECTIONS.bronze.map(chapter => chapter.items).flat(),
+        },
+        {
+          label: 'Silver',
+          value: SECTIONS.silver.map(chapter => chapter.items).flat(),
+        },
+        {
+          label: 'Gold',
+          value: SECTIONS.gold.map(chapter => chapter.items).flat(),
+        },
+        {
+          label: 'Platinum',
+          value: SECTIONS.plat.map(chapter => chapter.items).flat(),
+        },
+        {
+          label: 'Advanced',
+          value: SECTIONS.adv.map(chapter => chapter.items).flat(),
+        },
+      ],
+    },
+    {
+      attribute: 'objectID',
+      limit: 500,
+      placeholder: 'Status',
+      searchable: false,
+      isMulti: true,
+      items: [
+        'Not Attempted',
+        'Solving',
+        'Reviewing',
+        'Skipped',
+        'Ignored',
+      ].map(label => ({
+        label,
+        value: progressToIds.current[label] ?? [],
+      })),
+    },
+  ];
   return (
     <Layout>
       <SEO title="All Problems" />
@@ -57,7 +146,7 @@ export default function ProblemsPage(props: PageProps) {
               <h1 className="text-center text-3xl sm:text-5xl font-bold text-white dark:text-dark-high-emphasis mb-6">
                 Problems (Beta)
               </h1>
-              <CustomSearchBox />
+              <SearchBox />
             </div>
           </div>
           <div className="flex mt-4 mb-1 mx-9 justify-center">
@@ -69,49 +158,14 @@ export default function ProblemsPage(props: PageProps) {
             </div>
             <div className="py-0.5 px-1 sm:col-span-6 md:col-span-6 lg:col-span-6 xl:col-span-8 col-span-5 overflow-y-auto">
               <div className="mb-5 items-center grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-x-5 gap-y-3">
-                <div className="sm:col-span-3 col-span-2 md:col-span-1 lg:col-span-2">
-                  <CustomDifficultySelection
-                    attribute="difficulty"
-                    limit={500}
-                    searchable
-                  />
-                </div>
-                <div className="sm:col-span-3 col-span-2 md:col-span-1 lg:col-span-2 tw-forms-disable-all-descendants">
-                  <CustomModuleSelection
-                    attribute="problemModules.title"
-                    limit={500}
-                    searchable
-                  />
-                </div>
-                <div className="sm:col-span-3 col-span-2 md:col-span-1 lg:col-span-2 tw-forms-disable-all-descendants">
-                  <CustomSourceSelection
-                    attribute="source"
-                    limit={500}
-                    searchable
-                  />
-                </div>
-                <div className="sm:col-span-3 col-span-2 md:col-span-1 lg:col-span-2">
-                  <CustomStarredSelection
-                    attribute="isStarred"
-                    limit={500}
-                    searchable
-                  />
-                </div>
-                <div className="sm:col-span-3 col-span-2 md:col-span-1 lg:col-span-2">
-                  <CustomSectionSelection
-                    attribute="problemModules.id"
-                    limit={500}
-                    searchable
-                  />
-                </div>
-                <div className="sm:col-span-3 col-span-2 md:col-span-1 lg:col-span-2 ">
-                  <CustomStatusSelection
-                    attribute="objectID"
-                    limit={500}
-                    searchable
-                    problemIds={problemIds}
-                  />
-                </div>
+                {selectionMetadata.map(props => (
+                  <div
+                    className="sm:col-span-3 col-span-2 md:col-span-1 lg:col-span-2 tw-forms-disable-all-descendants"
+                    key={props.attribute}
+                  >
+                    <Selection {...props} />
+                  </div>
+                ))}
               </div>
               <CustomHits />
               <div className="mt-3 flex flex-wrap justify-center">
@@ -135,17 +189,14 @@ export default function ProblemsPage(props: PageProps) {
 
 export const pageQuery = graphql`
   query {
-    problems: allProblemInfo {
-      edges {
-        node {
-          uniqueId
-        }
+    allProblemInfo {
+      nodes {
+        uniqueId
       }
     }
   }
 `;
 
-// TODO (Codemod generated): ensure your usage correctly maps the props from the connector to the hook
 function connectHits(Component) {
   const Hits = props => {
     const data = useHits(props);
@@ -156,7 +207,6 @@ function connectHits(Component) {
   return Hits;
 }
 
-// TODO (Codemod generated): ensure your usage correctly maps the props from the connector to the hook
 function connectRefinementList(Component) {
   const RefinementList = props => {
     const data = useRefinementList(props);
@@ -165,15 +215,4 @@ function connectRefinementList(Component) {
   };
 
   return RefinementList;
-}
-
-// TODO (Codemod generated): ensure your usage correctly maps the props from the connector to the hook
-function connectSearchBox(Component) {
-  const SearchBox = props => {
-    const data = useSearchBox(props);
-
-    return <Component {...props} {...data} />;
-  };
-
-  return SearchBox;
 }

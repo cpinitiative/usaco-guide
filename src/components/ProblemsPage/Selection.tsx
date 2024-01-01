@@ -1,29 +1,59 @@
-import * as React from 'react';
-import { useRefinementList } from 'react-instantsearch';
+import React, { useEffect, useState } from 'react';
+import {
+  UseRefinementListProps,
+  useClearRefinements,
+  useRefinementList,
+} from 'react-instantsearch';
 import Select from 'react-select';
 import { useDarkMode } from '../../context/DarkModeContext';
 
-export default function ModuleSelection() {
-  const { items, refine } = useRefinementList({
-    attribute: 'problemModules.title',
-  });
-  const darkMode = useDarkMode();
-  const handleChange = e => {
-    const refinements = [];
-    for (const module of e) {
-      refinements.push(module.label);
-    }
-    refine(refinements);
-  };
+export type SelectionProps = UseRefinementListProps & {
+  placeholder: string;
+  searchable: boolean;
+  isMulti: boolean;
+  transformLabel?: (label: string) => string;
+  items?: { label: string; value: string | string[] }[];
+};
 
+export default function Selection({
+  attribute,
+  limit,
+  placeholder,
+  searchable,
+  isMulti,
+  transformLabel: transform,
+  items,
+  ...props
+}: SelectionProps) {
+  const { items: refineItems, refine } = useRefinementList({
+    attribute,
+    limit,
+    ...props,
+  });
+  if (!items) items = refineItems;
+  const { refine: clearRefinements } = useClearRefinements();
+  const darkMode = useDarkMode();
+  const [refinements, setRefinements] = useState<string[]>([]);
+  useEffect(() => {
+    clearRefinements();
+    // refine(refinements.join(' OR '));
+    for (const refinement of refinements) refine(refinement);
+  }, [refinements]);
   return (
     <Select
-      onChange={handleChange}
+      onChange={(items: any) => {
+        if (isMulti) setRefinements(items.map(item => item.value).flat());
+        else if (items) setRefinements([items.value]);
+        else setRefinements([]);
+      }}
       isClearable
-      placeholder="Modules"
-      isMulti
-      isSearchable={true}
-      options={items.filter(item => item.isRefined == false)}
+      placeholder={placeholder}
+      isMulti={isMulti}
+      isSearchable={searchable}
+      options={items.map(item => ({
+        ...item,
+        label: transform ? transform(item.label) : item.label,
+      }))}
       className={!darkMode ? 'text-black' : 'text-white'}
       classNamePrefix="select"
       styles={

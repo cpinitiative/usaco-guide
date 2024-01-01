@@ -15,21 +15,20 @@ const options = [
 export default function Status({ refine, problemIds }): JSX.Element {
   const darkMode = useDarkMode();
   const data = useUserProgressOnProblems();
-  const handleChange = e => {
-    const refinements = [];
-    for (const status of e) {
-      for (const key of problemIds) {
-        if ((data[key] ?? 'Not Attempted') == status.label) {
-          refinements.push(key);
-        }
-      }
-    }
-    refine(refinements);
-  };
 
   return (
     <Select
-      onChange={handleChange}
+      onChange={e => {
+        const refinements = [];
+        for (const status of e) {
+          for (const key of problemIds) {
+            if ((data[key] ?? 'Not Attempted') == status.label) {
+              refinements.push(key);
+            }
+          }
+        }
+        refine(refinements);
+      }}
       isClearable
       placeholder="Status"
       isMulti
