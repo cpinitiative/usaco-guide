@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import {
   UseRefinementListProps,
-  useClearRefinements,
+  useInstantSearch,
   useRefinementList,
 } from 'react-instantsearch';
 import Select from 'react-select';
@@ -31,13 +31,17 @@ export default function Selection({
     ...props,
   });
   if (!items) items = refineItems;
-  const { refine: clearRefinements } = useClearRefinements();
   const darkMode = useDarkMode();
   const [refinements, setRefinements] = useState<string[]>([]);
+  const { setIndexUiState } = useInstantSearch();
   useEffect(() => {
-    clearRefinements();
-    // refine(refinements.join(' OR '));
-    for (const refinement of refinements) refine(refinement);
+    setIndexUiState(prevIndexUiState => ({
+      refinementList: {
+        ...prevIndexUiState.refinementList,
+        [attribute]: refinements,
+      },
+    }));
+    // for (const refinement of refinements) refine(refinement);
   }, [refinements]);
   return (
     <Select
