@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useRefinementList } from 'react-instantsearch';
 
-export default function RefinementList() {
+export default function TagsRefinementList() {
   const { items, refine, createURL } = useRefinementList({
     attribute: 'tags',
     limit: 500,

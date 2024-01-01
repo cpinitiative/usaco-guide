@@ -25,7 +25,7 @@ export default function Selection({
   items,
   ...props
 }: SelectionProps) {
-  const { items: refineItems, refine } = useRefinementList({
+  const { items: refineItems } = useRefinementList({
     attribute,
     limit,
     ...props,
@@ -41,7 +41,6 @@ export default function Selection({
         [attribute]: refinements,
       },
     }));
-    // for (const refinement of refinements) refine(refinement);
   }, [refinements]);
   return (
     <Select

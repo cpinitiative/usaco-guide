@@ -11,11 +11,11 @@ import {
 import SECTIONS from '../../content/ordering';
 import Layout from '../components/layout';
 import ProblemHits from '../components/ProblemsPage/ProblemHits';
-import RefinementList from '../components/ProblemsPage/RefinementList';
 import SearchBox from '../components/ProblemsPage/SearchBox';
 import Selection, {
   SelectionProps,
 } from '../components/ProblemsPage/Selection';
+import TagsRefinementList from '../components/ProblemsPage/TagsRefinementList';
 import SEO from '../components/seo';
 import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
 import { useUserProgressOnProblems } from '../context/UserDataContext/properties/userProgress';
@@ -142,7 +142,7 @@ export default function ProblemsPage(props: PageProps<DataProps>) {
           </div>
           <div className="pt-3 px-9 pb-4 grid grid-cols-10">
             <div className="sm:col-span-4 md:col-span-3 lg:col-span-2 xl:col-span-2 col-span-5 overflow-y-auto">
-              <RefinementList />
+              <TagsRefinementList />
             </div>
             <div className="py-0.5 px-1 sm:col-span-6 md:col-span-6 lg:col-span-6 xl:col-span-8 col-span-5 overflow-y-auto">
               <div className="mb-5 items-center grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-x-5 gap-y-3">
