@@ -40,8 +40,7 @@ const SearchResultsContainer = styled.div`
   }
 `;
 
-const indexName =
-  process.env.NODE_ENV === 'production' ? 'prod_modules' : 'dev_modules';
+const indexName = `${process.env.GATSBY_ALGOLIA_INDEX_NAME ?? 'dev'}_modules`;
 
 const ModuleSearch = () => {
   const { query, refine: setQuery } = useSearchBox();

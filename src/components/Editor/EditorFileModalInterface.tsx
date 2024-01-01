@@ -39,10 +39,9 @@ const SearchResultsContainer = styled.div`
   }
 `;
 
-const indexName =
-  process.env.NODE_ENV === 'production'
-    ? 'prod_editorFiles'
-    : 'dev_editorFiles';
+const indexName = `${
+  process.env.GATSBY_ALGOLIA_INDEX_NAME ?? 'dev'
+}_editorFiles`;
 
 const FileSearch = ({ onSelect }) => {
   const { query, refine: setQuery } = useSearchBox();

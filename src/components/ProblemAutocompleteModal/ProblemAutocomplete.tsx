@@ -37,8 +37,9 @@ const ProblemAutocompleteHit = ({
   );
 };
 
-export const indexName =
-  process.env.NODE_ENV === 'production' ? 'prod_problems' : 'dev_problems';
+export const indexName = `${
+  process.env.GATSBY_ALGOLIA_INDEX_NAME ?? 'dev'
+}_problems`;
 
 export function ProblemAutocomplete({ onProblemSelect, modalIsOpen }) {
   const { query, refine: setQuery } = useSearchBox();
