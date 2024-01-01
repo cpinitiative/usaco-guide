@@ -1,0 +1,201 @@
+---
+id: usaco-1235
+source: USACO Gold 2022 Open
+title: Balancing a Tree
+author: Daniel Zhu
+---
+
+[Official Analysis (C++ and Java)](http://www.usaco.org/current/data/sol_prob3_gold_open22.html)
+
+<Spoiler title="Hint">
+
+Consider binary searching on the minimum imbalance. For a given imbalance $k$, how can we check whether a valid tree with imbalance $\leq k$ exists?
+
+</Spoiler>
+
+<Spoiler title="Solution">
+
+<Spoiler title="Part 1">
+
+We can try to construct the tree bottom-up, ensuring as we move up the tree that the value of each node is still within $k$ of the values of its descendants. Thus, we can store for each node the range of values it's allowed to take on: for a leaf $i$, this will simply be $[l_i, r_i]$, but this restricts its parent (and all ancestors) $p_i$ to the range $[l_i - k, r_i + k]$, in addition to $p_i$'s restriction of $[l_{p_i}, r_{p_i}]$. If at any point a node is restricted to a degenerate range (i.e. $l > r$), we know a tree with imbalance $k$ cannot exist.
+
+Here's the snippet for this checker function:
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+/**
+ * computes restrictions on each node in tree
+ * @return all restrictions if valid, otherwise empty array
+ */
+vector<pair<int, int>> check(int k) {
+	// L[i], R[i] -> original restrictions (from input) on i
+	vector<pair<int, int>> lr(n + 1);
+	for (int i = 1; i <= n; i++) {
+		// all ancestors of i are restricted to [l_i - k, r_i + k]
+		lr[i] = {L[i] - k, R[i] + k};
+	}
+
+	// this works because p_i < i
+	for (int i = n; i > 0; i--) {
+		// check for degenerate ranges
+		if (lr[i].first > lr[i].second) { return {}; }
+		if (p[i] && (lr[i].first > R[p[i]] || lr[i].second < L[p[i]])) {
+			return {};
+		}
+		// propagate restrictions to parent
+		lr[p[i]] = {
+			max(lr[p[i]].first, lr[i].first),
+			min(lr[p[i]].second, lr[i].second)
+		}
+	}
+
+	// return a vector of all restrictions
+	// (lr[i] -> range to which node i is restricted)
+	return lr;
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
+</Spoiler>
+
+<Spoiler title="Part 2">
+
+Now that we have our minimum imbalance, all that's left to do is construct a solution! We can essentially reverse our process for checking: nodes will be more restricted than their descendants, with the root being the most restricted and the leaves being the least.
+
+Thus, we can build our solution top-down: starting at node 1, we can pick any value satisfying all restrictions found from the `check` function (in the solution, we simply pick the left endpoint of the range of values for simplicity). Then, if this value is $x$, all descendants are restricted by $[x - k, x + k]$ (in addition to their own restrictions from `check`).
+
+Here's the relevant snippet:
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+// call check to get restrictions
+auto lr = check(k);
+for (int i = 0; i <= n; i++) {
+	// propagate `check` restrictions to ancestors
+	L[p[i]] = max(L[p[i]], lr[i].first);
+	R[p[i]] = min(R[p[i]], lr[i].second);
+}
+
+// l and r: restrictions
+// on i's descendants rather than ancestors
+vector<int> l(n + 1, 0);
+vector<int> r(n + 1, K);
+vector<int> s(n + 1);
+for (int i = 1; i <= n; i++) {
+	// pick s[i] to be left endpoint of valid range
+	// (intersection of [L_i, R_i] and [l_p[i], r_p[i]])
+	s[i] = max(L[i], l[p[i]]);
+	// restrict children of i to range [s_i - k, s_i + k]
+	l[i] = max(l[p[i]], s[i] - k);
+	r[i] = min(r[p[i]], s[i] + k);
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
+</Spoiler>
+
+## Implementation
+**Time Complexity**: $\mathcal{O}(N\log{K})$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <vector>
+using namespace std;
+
+const int N = 1e5 + 1;
+const int K = 1e9;
+
+int n, p[N], L[N], R[N];
+
+/**
+ * computes restrictions on each node in tree
+ * @return all restrictions if valid, otherwise empty array
+ */
+vector<pair<int, int>> check(int k) {
+	// L[i], R[i] -> original restrictions (from input) on i
+	vector<pair<int, int>> lr(n + 1);
+	for (int i = 1; i <= n; i++) {
+		// all ancestors of i are restricted to [l_i - k, r_i + k]
+		lr[i] = {L[i] - k, R[i] + k};
+	}
+
+	// this works because p_i < i
+	for (int i = n; i > 0; i--) {
+		// check for degenerate ranges
+		if (lr[i].first > lr[i].second) { return {}; }
+		if (p[i] && (lr[i].first > R[p[i]] || lr[i].second < L[p[i]])) {
+			return {};
+		}
+		// propagate restrictions to parent
+		lr[p[i]] = {
+			max(lr[p[i]].first, lr[i].first),
+			min(lr[p[i]].second, lr[i].second)
+		}
+	}
+
+	// return a vector of all restrictions
+	// (lr[i] -> range to which node i is restricted)
+	return lr;
+}
+
+int main() {
+	int test_num;
+	int b;
+	cin >> test_num >> b;
+	for (int t = 0; t < test_num; t++) {
+		cin >> n;
+		for (int i = 2; i <= n; i++) { cin >> p[i]; }
+		for (int i = 1; i <= n; i++) { cin >> L[i] >> R[i]; }
+		int x = -1;
+
+		// binary search:
+		// https://usaco.guide/silver/binary-search?lang=cpp#implementation-2
+		for (int d = K; d > 0; d /= 2) {
+			while (x + d < K && !check(x + d).size()) { x += d; }
+		}
+		cout << ++x << endl;
+
+		if (b) {
+			// call check to get restrictions
+			auto lr = check(k);
+			for (int i = 0; i <= n; i++) {
+				// propagate `check` restrictions to ancestors
+				L[p[i]] = max(L[p[i]], lr[i].first);
+				R[p[i]] = min(R[p[i]], lr[i].second);
+			}
+
+			// l and r: restrictions
+			// on i's descendants rather than ancestors
+			vector<int> l(n + 1, 0);
+			vector<int> r(n + 1, K);
+			vector<int> s(n + 1);
+			for (int i = 1; i <= n; i++) {
+				// pick s[i] to be left endpoint of valid range
+				// (intersection of [L_i, R_i] and [l_p[i], r_p[i]])
+				s[i] = max(L[i], l[p[i]]);
+				// restrict children of i to range [s_i - k, s_i + k]
+				l[i] = max(l[p[i]], s[i] - k);
+				r[i] = min(r[p[i]], s[i] + k);
+			}
+			// satisfy the whitespace checker
+			for (int i = 1; i <= n; i++) { cout << s[i] << " \n"[i == n]; }
+		}
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
+</Spoiler>

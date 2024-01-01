@@ -116,7 +116,7 @@ const queries = [
       data.pages.edges
         .filter(x => x.node.frontmatter.id in moduleIDToSectionMap)
         .map(pageToAlgoliaRecord),
-    indexName: process.env.ALGOLIA_INDEX_NAME + '_modules',
+    indexName: (process.env.GATSBY_ALGOLIA_INDEX_NAME ?? 'dev') + '_modules',
     matchFields: ['title', 'description', 'content', 'id', 'division'],
   },
   {
@@ -167,7 +167,7 @@ const queries = [
       });
       return res;
     },
-    indexName: process.env.ALGOLIA_INDEX_NAME + '_problems',
+    indexName: (process.env.GATSBY_ALGOLIA_INDEX_NAME ?? 'dev') + '_problems',
     matchFields: [
       'source',
       'name',
@@ -242,7 +242,8 @@ const queries = [
         })),
       ];
     },
-    indexName: process.env.ALGOLIA_INDEX_NAME + '_editorFiles',
+    indexName:
+      (process.env.GATSBY_ALGOLIA_INDEX_NAME ?? 'dev') + '_editorFiles',
     matchFields: [
       'kind',
       'title',

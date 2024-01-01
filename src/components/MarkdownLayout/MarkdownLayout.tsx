@@ -84,23 +84,21 @@ export default function MarkdownLayout({
   const data = useStaticQuery(graphql`
     query {
       allXdm(filter: { fileAbsolutePath: { regex: "/content/" } }) {
-        edges {
-          node {
-            frontmatter {
-              title
-              id
-            }
+        nodes {
+          frontmatter {
+            title
+            id
           }
         }
       }
     }
   `);
   const moduleLinks = React.useMemo(() => {
-    return data.allXdm.edges.map(cur => ({
-      id: cur.node.frontmatter.id,
-      title: cur.node.frontmatter.title,
-      section: moduleIDToSectionMap[cur.node.frontmatter.id],
-      url: moduleIDToURLMap[cur.node.frontmatter.id],
+    return data.allXdm.nodes.map(cur => ({
+      id: cur.frontmatter.id,
+      title: cur.frontmatter.title,
+      section: moduleIDToSectionMap[cur.frontmatter.id],
+      url: moduleIDToURLMap[cur.frontmatter.id],
     }));
   }, [data.allXdm]);
   const showConfetti = useContext(ConfettiContext);

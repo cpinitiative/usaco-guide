@@ -287,7 +287,7 @@ export default function DashboardPage(props: PageProps) {
                 {/*      <SectionProgressBar title="Bronze" />*/}
                 {/*      <SectionProgressBar title="Silver" />*/}
                 {/*      <SectionProgressBar title="Gold" />*/}
-                {/*      <SectionProgressBar title="Plat" />*/}
+                {/*      <SectionProgressBar title="Platinum" />*/}
                 {/*      <SectionProgressBar title="Advanced" />*/}
                 {/*    </div>*/}
                 {/*  </div>*/}

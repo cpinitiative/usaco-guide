@@ -13,21 +13,21 @@ import classNames from 'classnames';
 import { Link } from 'gatsby';
 import { StaticImage } from 'gatsby-plugin-image';
 import * as React from 'react';
-import { GlowingRing } from '../components/elements/landing/GlowingRing';
-import { GlowingText } from '../components/elements/landing/GlowingText';
-import { GradientText } from '../components/elements/landing/GradientText';
-import { HighlightedText } from '../components/elements/landing/HighlightedText';
-import ContributorsSection from '../components/Index/ContributorsSection';
 import { CPIProjectCard } from '../components/Index/CPIProjectCard';
+import ContributorsSection from '../components/Index/ContributorsSection';
 import { Feature } from '../components/Index/Feature';
+import TrustedBy from '../components/Index/TrustedBy';
 import { ProblemsetsFeature } from '../components/Index/features/ProblemsetsFeature';
 import { ProgressTrackingFeature } from '../components/Index/features/ProgressTrackingFeature';
 import { ResourcesFeature } from '../components/Index/features/ResourcesFeature';
 import { EasyFunCoding, Vercel } from '../components/Index/sponsor-logos';
-import TrustedBy from '../components/Index/TrustedBy';
+import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
+import { GlowingRing } from '../components/elements/landing/GlowingRing';
+import { GlowingText } from '../components/elements/landing/GlowingText';
+import { GradientText } from '../components/elements/landing/GradientText';
+import { HighlightedText } from '../components/elements/landing/HighlightedText';
 import Layout from '../components/layout';
 import SEO from '../components/seo';
-import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
 
 const containerClasses = 'max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8';
 const headerClasses =

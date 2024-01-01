@@ -137,10 +137,7 @@ We present both approaches below.
 #### Push DP
 
 There are only two options: jumping once, or jumping twice. Define
-$\texttt{dp}[i]$ as the minimum cost to reach stone $i$. Therefore,
-$\texttt{dp}[i+1]$ must represent the next stone, and $\texttt{dp}[i+2]$ must
-represent the stone after that. Then, our transitions are as follows at stone
-$i$ must be:
+$\texttt{dp}[i]$ as the minimum cost to reach stone $i$. Then, our transitions are as follows:
 
 - Jump one stone, incurring a cost of $|\text{height}_i - \text{height}_{i+1}|$:
 
@@ -233,25 +230,26 @@ public class Main {
 <PySection>
 
 ```py
-N = int(input())
-height = [int(s) for s in input().split()]
+stone_num = int(input())
+# height is 1-indexed so it can match up with dp
+height = [0] + [int(s) for s in input().split()]
+assert stone_num == len(height) - 1
+
 """
 dp[N] is the minimum cost to get to the Nth stone
 (we initially set all values to INF)
 """
-dp = [float("inf") for _ in range(N)]
-# dp[0] = 0 is our base case since we're already at the first stone
-dp[0] = 0
+dp = [float("inf") for _ in range(stone_num + 1)]
+# dp[1] = 0 is our base case since we're already at the first stone
+dp[1] = 0
 
-# for each state, calculate the states it leads to
-for i in range(1, N - 1):
-	# jump one stone
-	dp[i + 1] = min(dp[i + 1], dp[i] + abs(height[i] - height[i + 1]))
-	# jump two stones
-	if i + 2 < N:
+for i in range(1, stone_num + 1):
+	if i + 1 <= stone_num:
+		dp[i + 1] = min(dp[i + 1], dp[i] + abs(height[i] - height[i + 1]))
+	if i + 2 <= stone_num:
 		dp[i + 2] = min(dp[i + 2], dp[i] + abs(height[i] - height[i + 2]))
 
-print(dp[N - 1])
+print(dp[stone_num])
 ```
 
 </PySection>

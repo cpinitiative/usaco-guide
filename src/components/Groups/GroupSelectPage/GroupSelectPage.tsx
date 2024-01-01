@@ -7,9 +7,9 @@ import {
 import { useUserPermissions } from '../../../context/UserDataContext/UserPermissionsContext';
 import { useGroupActions } from '../../../hooks/groups/useGroupActions';
 import { useUserGroups } from '../../../hooks/groups/useUserGroups';
+import TopNavigationBar from '../../TopNavigationBar/TopNavigationBar';
 import Layout from '../../layout';
 import SEO from '../../seo';
-import TopNavigationBar from '../../TopNavigationBar/TopNavigationBar';
 import AdminViewAllGroups from './AdminViewAllGroups';
 import { GroupCard } from './GroupCard';
 
