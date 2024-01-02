@@ -221,81 +221,78 @@ int main() {
 import java.io.*;
 import java.util.*;
 
-public class Main{
-    static final int N = 2501;
-    static int n, m;
-    static int[] parent = new int[N];
-    static long[] dist = new long[N];
-    static List<Edge> graph = new ArrayList<>();
-    static Kattio io = new Kattio();
-    
-    public static void main(String[] args) {
-        n = io.nextInt();
-        m = io.nextInt();
-        for(int i=1;i<=m;i++){
-            int a = io.nextInt();
-            int b = io.nextInt();
-            long c = (long)io.nextInt();
-            graph.add(new Edge(a, b, c));
-        }
-        bellmanFord(1);
-    }
+public class Main {
+	static final int N = 2501;
+	static int n, m;
+	static int[] parent = new int[N];
+	static long[] dist = new long[N];
+	static List<Edge> graph = new ArrayList<>();
+	static Kattio io = new Kattio();
 
-    private static void bellmanFord(int source){
-        for(int i=1;i<=n;i++){
-            parent[i] = 0;
-            dist[i] = Long.MAX_VALUE/2;
-        }
-        dist[source] = 0;
-        int lastNodeUpdated = -1;
-        for (int i = 1; i <= n; i++) {
-            lastNodeUpdated = -1;
-            for (Edge e : graph) {
-                if (dist[e.from] + e.weight < dist[e.to]) {
-                    dist[e.to] = dist[e.from] + e.weight;
-                    parent[e.to] = e.from;
-                    lastNodeUpdated = e.to;
-                }
-            }
-        }
+	public static void main(String[] args) {
+		n = io.nextInt();
+		m = io.nextInt();
+		for (int i = 1; i <= m; i++) {
+			int a = io.nextInt();
+			int b = io.nextInt();
+			long c = (long)io.nextInt();
+			graph.add(new Edge(a, b, c));
+		}
+		bellmanFord(1);
+	}
 
-        if (lastNodeUpdated == -1) {
-            io.println("NO");
-        } else {
-            io.println("YES");
-            List<Integer> cycle = new ArrayList<>();
-            for (int i = 0; i < n - 1; i++) {
-                lastNodeUpdated = parent[lastNodeUpdated];
-            }
-            do {
-                cycle.add(lastNodeUpdated);
-                lastNodeUpdated = parent[lastNodeUpdated];
-            } while (lastNodeUpdated != cycle.get(0));
-            cycle.add(lastNodeUpdated);
-            Collections.reverse(cycle);
-            for (int x : cycle) {
-                io.print(x + " ");
-            }
-            io.println();
-        }
-        io.close();
-    }
+	private static void bellmanFord(int source) {
+		for (int i = 1; i <= n; i++) {
+			parent[i] = 0;
+			dist[i] = Long.MAX_VALUE / 2;
+		}
+		dist[source] = 0;
+		int lastNodeUpdated = -1;
+		for (int i = 1; i <= n; i++) {
+			lastNodeUpdated = -1;
+			for (Edge e : graph) {
+				if (dist[e.from] + e.weight < dist[e.to]) {
+					dist[e.to] = dist[e.from] + e.weight;
+					parent[e.to] = e.from;
+					lastNodeUpdated = e.to;
+				}
+			}
+		}
 
-    // CodeSnip{Kattio}
+		if (lastNodeUpdated == -1) {
+			io.println("NO");
+		} else {
+			io.println("YES");
+			List<Integer> cycle = new ArrayList<>();
+			for (int i = 0; i < n - 1; i++) {
+				lastNodeUpdated = parent[lastNodeUpdated];
+			}
+			do {
+				cycle.add(lastNodeUpdated);
+				lastNodeUpdated = parent[lastNodeUpdated];
+			} while (lastNodeUpdated != cycle.get(0));
+			cycle.add(lastNodeUpdated);
+			Collections.reverse(cycle);
+			for (int x : cycle) { io.print(x + " "); }
+			io.println();
+		}
+		io.close();
+	}
+
+	// CodeSnip{Kattio}
 }
 
 class Edge {
-    int from;
-    int to;
-    long weight;
+	int from;
+	int to;
+	long weight;
 
-    public Edge(int from, int to, long weight) {
-        this.from = from;
-        this.to = to;
-        this.weight = weight;
-    }
+	public Edge(int from, int to, long weight) {
+		this.from = from;
+		this.to = to;
+		this.weight = weight;
+	}
 }
-
 ```
 
 </JavaSection>
