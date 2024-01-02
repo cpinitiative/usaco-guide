@@ -16,10 +16,6 @@ const ProblemAutocompleteModal = ({
   onClose,
   onProblemSelect,
 }: ProblemAutocompleteModalProps): JSX.Element => {
-  const handleSubmit = e => {
-    e.preventDefault();
-  };
-
   return (
     <Transition
       show={isOpen}
@@ -27,7 +23,7 @@ const ProblemAutocompleteModal = ({
     >
       <form
         className="flex items-end justify-center min-h-full pt-4 px-4 pb-12 text-center sm:block"
-        onSubmit={handleSubmit}
+        onSubmit={e => e.preventDefault()}
       >
         <Transition.Child
           className="fixed inset-0 transition-opacity"

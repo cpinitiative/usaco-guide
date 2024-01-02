@@ -1,5 +1,6 @@
 import { graphql, PageProps } from 'gatsby';
 import React from 'react';
+import { Chapter } from '../../content/ordering';
 
 import {
   HitsPerPage,
@@ -73,32 +74,19 @@ export default function ProblemsPage(props: PageProps<DataProps>) {
       placeholder: 'Section',
       searchable: false,
       isMulti: true,
-      items: [
-        {
-          label: 'General',
-          value: SECTIONS.general.map(chapter => chapter.items).flat(),
-        },
-        {
-          label: 'Bronze',
-          value: SECTIONS.bronze.map(chapter => chapter.items).flat(),
-        },
-        {
-          label: 'Silver',
-          value: SECTIONS.silver.map(chapter => chapter.items).flat(),
-        },
-        {
-          label: 'Gold',
-          value: SECTIONS.gold.map(chapter => chapter.items).flat(),
-        },
-        {
-          label: 'Platinum',
-          value: SECTIONS.plat.map(chapter => chapter.items).flat(),
-        },
-        {
-          label: 'Advanced',
-          value: SECTIONS.adv.map(chapter => chapter.items).flat(),
-        },
-      ],
+      items: (
+        [
+          ['General', SECTIONS.general],
+          ['Bronze', SECTIONS.bronze],
+          ['Silver', SECTIONS.silver],
+          ['Gold', SECTIONS.gold],
+          ['Platinum', SECTIONS.plat],
+          ['Advanced', SECTIONS.adv],
+        ] as unknown as [string, Chapter[]][]
+      ).map(([section, chapters]) => ({
+        label: section,
+        value: chapters.map(chapter => chapter.items).flat(),
+      })),
     },
     {
       attribute: 'objectID',

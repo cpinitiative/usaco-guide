@@ -7,7 +7,7 @@ const ProblemAutocompleteHit = ({
   onClick,
 }: {
   hit: AlgoliaProblemInfoHit;
-  onClick: (problem: AlgoliaProblemInfoHit) => any;
+  onClick: (problem: AlgoliaProblemInfoHit) => void;
 }) => {
   return (
     <li key={hit.objectID}>
@@ -41,7 +41,15 @@ export const indexName = `${
   process.env.GATSBY_ALGOLIA_INDEX_NAME ?? 'dev'
 }_problems`;
 
-export function ProblemAutocomplete({ onProblemSelect, modalIsOpen }) {
+export type ProblemAutocompleteProps = {
+  onProblemSelect: (problem: AlgoliaProblemInfoHit) => void;
+  modalIsOpen: boolean;
+};
+
+export function ProblemAutocomplete({
+  onProblemSelect,
+  modalIsOpen,
+}: ProblemAutocompleteProps) {
   const { query, refine: setQuery } = useSearchBox();
   const { hits } = useHits() as { hits: AlgoliaProblemInfoHit[] };
   return (

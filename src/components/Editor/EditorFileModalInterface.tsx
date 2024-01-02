@@ -43,7 +43,11 @@ const indexName = `${
   process.env.GATSBY_ALGOLIA_INDEX_NAME ?? 'dev'
 }_editorFiles`;
 
-const FileSearch = ({ onSelect }) => {
+const FileSearch = ({
+  onSelect,
+}: {
+  onSelect: (file: AlgoliaEditorFile) => void;
+}) => {
   const { query, refine: setQuery } = useSearchBox();
   const { hits } = useHits() as { hits: AlgoliaEditorFileHit[] };
   return (
