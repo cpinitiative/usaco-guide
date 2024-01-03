@@ -10,8 +10,8 @@ import {
   updateDoc,
   writeBatch,
 } from 'firebase/firestore';
-import { useSetProgressOnProblem } from '../../context/UserDataContext/properties/userProgress';
 import { useFirebaseUser } from '../../context/UserDataContext/UserDataContext';
+import { useSetProgressOnProblem } from '../../context/UserDataContext/properties/userProgress';
 import { PostData } from '../../models/groups/posts';
 import { GroupProblemData } from '../../models/groups/problem';
 import { useFirebaseApp } from '../useFirebase';

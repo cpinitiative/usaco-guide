@@ -2,7 +2,7 @@ import classNames from 'classnames';
 import React from 'react';
 import { ProblemDifficulty } from '../../../models/problem';
 
-import { difficultyClasses } from '../../markdown/ProblemsList/ProblemsListItem';
+import { difficultyClasses } from '../../DifficultyBox';
 
 const TableRow = ({
   source,

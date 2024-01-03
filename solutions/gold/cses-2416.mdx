@@ -2,106 +2,185 @@
 id: cses-2416
 source: CSES
 title: Increasing Array Queries
-author: Andi Qu
+author: Andi Qu, Kevin Sheng
 ---
+
+<Spoiler title="Hint 1">
+
+Can you first come up with an algorithm for a single query?
+It doesn't have to be crazy efficient; $\mathcal{O}(N)$ time is fine.
+
+</Spoiler>
+
+<Spoiler title="Answer to Hint 1">
+
+Let's iterate through the array in order and keep track of the largest element $m$ we've seen so far.
+For each element $x$, we first update $m$.
+Then, if the current one is smaller than $m$, we add $m-x$ to the total.
+
+</Spoiler>
+
+<Spoiler title="Hint 2">
+
+Since we can't process each query like this, let's try to come up with the concept
+of a "contribution" of a certain element.
+
+Take the array $[10,4,11,3]$, for example.
+Try to think of how $10$ and $11$ in particular contribute to the answer.
+
+</Spoiler>
+
+<Spoiler title="Solution">
+
+## Explanation
+
+### Setup
+
+Let's follow the line of thought from Hint 2.
+Say we have an element of value $x$ at index $i$, and the next element strictly greater than $x$ is at index $j$.
+If there is no next greater element, let $j$ be one greater than the index of the final element.
+
+The contribution from $x$ to a query would be as follows:
+
+$$
+x \cdot (j-i) - \sum_{k=i}^{j-1} \texttt{arr}[k]
+$$
+
+The second term is the sum of all elements in the interval $[i,j)$.
+
+For example, in that array in Hint 2, $10$ contributes $10 \cdot (2-0)-(10+4)=6$, while $11$ contributes $11 \cdot (4-2)-(11+3)=8$ to the sum.
+
+Notice that this doesn't apply when an element's $j$ goes past the end of the query.
+If we only considered the first three elements of Hint 2's array, $11$ would not contribute anything.
+
+### Execution
+
+How do we utilize this?
+
+First, we have to iterate through the array in reverse.
+
+Let's also keep track of a stack of the values and indices of all the maximums one would get when iterating from an index $i$ to the end of the array.
+
+Take the array from Hint 2 again. If we were at index $1$, our stack would be $[(11, 2), (4, 1)]$, with the end of the array being the top of the stack.
+
+Each element in this stack would contribute the amount given by our formula above to a query's answers, *given that it's completely contained within said query*.
+
+Since the indices in the stack are always decreasing, we can use a binary search to find where the query lies within the stack.
+For the tail element that might not be completely contained within the query, we can compute the contribution manually and add it on at the end.
+
+To efficiently update contributions relative to the stack, we'll use a [BIT](/gold/PURS#solution---dynamic-range-sum-queries-with-a-bit).
+We also need a prefix sum array to efficiently calculate the second term of that contribution formula back there.
+
+## Implementation
 
 **Time Complexity:** $\mathcal O((N + Q) \log N)$.
 
-In this problem, we can answer the queries offline (i.e. read in the queries and
-process them in a different order). More specifically, we process queries in
-order of their left endpoints.
-
-First, let's think about how we'd answer a single query $(l, r)$. Consider the
-following algorithm:
-
-- Let $\texttt{mx}_0 = 0$ and $j = 0$.
-- For each $i$ in $[l, r]$:
-  - If $x_i > \texttt{mx}_j$, then set $\texttt{mx}_{j + 1} = x_i$ and increment
-    $j$.
-  - Otherwise, add $\texttt{mx}_j - x_i$ to the answer.
-
-Notice how each $\texttt{mx}_j$ (except the last) contributes a fixed amount to
-the answer, regardless of $r$. If $\texttt{pref}$ is the prefix sum array of $x$
-and $\texttt{idx}_j$ is the index of $\texttt{mx}_j$ in $x$, then this amount is
-
-$$
-(\texttt{idx}_{j + 1} - 1 - \texttt{idx}_j) \cdot \texttt{mx}_j - (\texttt{pref}_{\texttt{idx}_{j + 1} - 1} - \texttt{pref}_{\texttt{idx}_j})
-$$
-
-This means that for a fixed $l$, we can compute each $\texttt{mx}_j$ and their
-contributions, and then use `std::upper_bound` and a BIT to answer queries with
-variable $r$!
-
-If we want to change $l$, notice how we can update $\texttt{mx}$ efficiently by
-using a monotone stack. Since each $\texttt{mx}_j$'s contribution depends on
-$x_i$ **after** it, the contributions of the old $\texttt{mx}_j$ don't change.
-
-Again, we use `std::upper_bound` and a BIT to answer queries.
-
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
-#include <bits/stdc++.h>
-typedef long long ll;
-using namespace std;
+#include <algorithm>
+#include <iostream>
+#include <vector>
 
-const ll INF = 1e18;
+using std::cout;
+using std::endl;
+using std::pair;
+using std::vector;
+using ll = long long;
 
-int n, q;
-ll x[200002], pref[200002], ans[200002];
-ll contrib[200002], bit[200002];
-vector<pair<int, int>> bckt[200001];
+// BeginCodeSnip{BIT (from the module)}
+template <class T> class BIT {
+  private:
+	int size;
+	vector<T> bit;
+	vector<T> arr;
 
-void update(int pos, ll val) {
-	for (; pos <= n; pos += pos & -pos) bit[pos] += val;
-}
+  public:
+	BIT(int size) : size(size), bit(size + 1), arr(size) {}
 
-ll query(int a, int b) {
-	ll ans = 0;
-	for (; b; b -= b & -b) ans += bit[b];
-	for (a--; a; a -= a & -a) ans -= bit[a];
-	return ans;
-}
+	void set(int ind, T val) { add(ind, val - arr[ind]); }
+
+	void add(int ind, T val) {
+		arr[ind] += val;
+		ind++;
+		for (; ind <= size; ind += ind & -ind) { bit[ind] += val; }
+	}
+
+	T pref_sum(int ind) {
+		ind++;
+		T total = 0;
+		for (; ind > 0; ind -= ind & -ind) { total += bit[ind]; }
+		return total;
+	}
+};
+// EndCodeSnip
 
 int main() {
-	cin.tie(0)->sync_with_stdio(0);
-	cin >> n >> q;
-	for (int i = 1; i <= n; i++) {
-		cin >> x[i];
-		pref[i] = pref[i - 1] + x[i];
+	int arr_size;
+	int query_num;
+	std::cin >> arr_size >> query_num;
+	vector<int> arr(arr_size);
+	for (int &i : arr) { std::cin >> i; }
+	vector<vector<pair<int, int>>> queries(arr_size);
+	for (int q = 0; q < query_num; q++) {
+		int start, end;
+		std::cin >> start >> end;
+		queries[start - 1].push_back({end - 1, q});
 	}
-	x[n + 1] = INF;
-	pref[n + 1] = pref[n] + x[n + 1];
-	for (int i = 1; i <= q; i++) {
-		int a, b;
-		cin >> a >> b;
-		bckt[a].push_back({b, i});
+
+	vector<ll> pref_arr(arr_size + 1);
+	for (int i = 0; i < arr_size; i++) {
+		pref_arr[i + 1] = pref_arr[i] + arr[i];
 	}
-	deque<int> stck = {n + 1};
-	for (int i = n; i; i--) {
-		while (stck.size() && x[i] >= x[stck.front()]) {
-			update(stck.front(), -contrib[stck.front()]);
-			stck.pop_front();
+
+	vector<ll> ans(query_num);
+	vector<pair<int, int>> maxes;
+	BIT<ll> contrib(arr_size);
+	for (int i = arr_size - 1; i >= 0; i--) {
+		// update our stack
+		while (!maxes.empty() && arr[i] >= maxes.back().first) {
+			maxes.pop_back();
+			// no longer contributing anything- set it to 0
+			contrib.set(maxes.size(), 0);
 		}
-		contrib[i] =
-		    (stck.front() - 1 - i) * x[i] - (pref[stck.front() - 1] - pref[i]);
-		update(i, contrib[i]);
-		stck.push_front(i);
-		for (pair<int, int> j : bckt[i]) {
-			int pos = upper_bound(stck.begin(), stck.end(), j.first) -
-			          stck.begin() - 1;
-			ans[j.second] = (pos ? query(i, stck[pos - 1]) : 0) +
-			                (j.first - stck[pos]) * x[stck[pos]] -
-			                (pref[j.first] - pref[stck[pos]]);
+
+		// get the contribution of our new element
+		int len = (maxes.empty() ? arr_size : maxes.back().second) - i;
+		contrib.set(maxes.size(), (ll)arr[i] * len);
+		maxes.push_back({arr[i], i});
+
+		for (const auto &[end, q] : queries[i]) {
+			// binary search for where the query end is in the stack
+			int lo = 0;
+			int hi = maxes.size() - 1;
+			int valid = -1;
+			while (lo <= hi) {
+				int mid = (lo + hi) / 2;
+				if (maxes[mid].second <= end) {
+					valid = mid;
+					hi = mid - 1;
+				} else {
+					lo = mid + 1;
+				}
+			}
+
+			// the contribution from most of the max elements
+			ll sum1 =
+			    contrib.pref_sum(maxes.size() - 1) - contrib.pref_sum(valid);
+			// the tail element mentioned in the editorial
+			ll sum2 = (ll)(end - maxes[valid].second + 1) * maxes[valid].first;
+			// the second term in the contribution formula
+			ll pref_sub = pref_arr[end + 1] - pref_arr[i];
+			ans[q] = sum1 + sum2 - pref_sub;
 		}
 	}
-	for (int i = 1; i <= q; i++) cout << ans[i] << '\n';
-	return 0;
+
+	for (ll a : ans) { cout << a << '\n'; }
 }
 ```
 
 </CPPSection>
-
 </LanguageSection>
+
+</Spoiler>

@@ -1,7 +1,7 @@
 ---
 id: BCC-2CC
 title: 'BCCs and 2CCs'
-author: Benjamin Qi
+author: Benjamin Qi, Mihnea Brebenel
 prerequisites:
   - graph-traversal
   - binary-jump
@@ -169,13 +169,13 @@ struct TwoEdgeCC {
 
 ### Problems
 
-<Problems problems="probs2" />
+<FocusProblem problem="probs2" />
 
 - SRM 787 1000
 
 ## [Biconnected Components](https://en.wikipedia.org/wiki/Biconnected_component)
 
-<Problems problems="bccSam" />
+<FocusProblem problem="bccSam" />
 
 An important observation is that if you can't go from node $a$ to node $b$ without passing through node $c$, node $c$ is a critical node (articulation point).
 Node $c$ can split $a$ and $b$ into 2 different components if removed. This makes us think about biconnected components.
@@ -348,19 +348,87 @@ int main() {
 </CPPSection>
 </LanguageSection>
 
-### Tutorial
+### Articulation Points
+
+<FocusProblem problem="submerge" />
 
 <Resources>
 	<Resource
-		source="GFG"
+		source="CP2"
 		title="Articulation Points (aka Cut Vertices)"
-		url="articulation-points-or-cut-vertices-in-a-graph"
+		url="https://www.comp.nus.edu.sg/~stevenha/myteaching/competitive_programming/cp2.pdf#page=94"
 	>
 		maybe not completely correct
 	</Resource>
 </Resources>
 
-(implementation)
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int NMAX = 2e4;
+
+int timer;
+vector<int> low, id;
+vector<bool> visited, ap;
+vector<vector<int>> g(NMAX);
+
+void dfs(int node, int parent) {
+	visited[node] = true;
+	id[node] = low[node] = timer++;
+
+	int children = 0;
+	for (int son : g[node]) {
+		if (son == parent) { continue; }
+
+		if (!visited[son]) {
+			dfs(son, node);
+			low[node] = min(low[node], low[son]);
+			children++;
+
+			// Check if the current node is an articualation point
+			if (low[son] >= id[node] && parent != -1) { ap[node] = true; }
+		} else {
+			low[node] = min(low[node], id[son]);
+		}
+	}
+
+	if (parent == -1 && children > 1) { ap[node] = true; }
+}
+
+int main() {
+	int n, m;
+	while (cin >> n >> m && n && m) {
+		id.assign(n, 0);
+		ap.assign(n, 0);
+		low.assign(n, 0);
+		visited.assign(n, 0);
+		for (int i = 0; i < n; i++) { g[i].clear(); }
+
+		timer = 0;
+		for (int i = 0; i < m; i++) {
+			int x, y;
+			cin >> x >> y;
+			g[--x].push_back(--y);
+			g[y].push_back(x);
+		}
+
+		dfs(0, -1);
+
+		int articualation_points = 0;
+		for (int i = 0; i < n; i++) {
+			if (ap[i]) { articualation_points++; }
+		}
+		cout << articualation_points << '\n';
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>
 
 ### Problems
 

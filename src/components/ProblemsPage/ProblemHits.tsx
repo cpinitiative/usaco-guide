@@ -8,14 +8,14 @@ import {
   useHideModulesSetting,
   useShowTagsSetting,
 } from '../../context/UserDataContext/properties/simpleProperties';
-import { useUserProgressOnProblems } from '../../context/UserDataContext/properties/userProgress';
 import {
   AlgoliaProblemInfo,
-  getProblemURL,
   ProblemInfo,
+  getProblemURL,
+  isUsaco,
   recentUsaco,
 } from '../../models/problem';
-import { difficultyClasses } from '../markdown/ProblemsList/ProblemsListItem';
+import DifficultyBox from '../DifficultyBox';
 import ProblemStatusCheckbox from '../markdown/ProblemsList/ProblemStatusCheckbox';
 
 interface ProblemHitProps {
@@ -23,7 +23,6 @@ interface ProblemHitProps {
 }
 
 function ProblemHit({ hit }: ProblemHitProps) {
-  const userProgressOnProblems = useUserProgressOnProblems();
   const hideDifficulty = useHideDifficultySetting();
   const showTags = useShowTagsSetting();
   const hideModules = useHideModulesSetting();
@@ -33,7 +32,7 @@ function ProblemHit({ hit }: ProblemHitProps) {
       title: 'USACO Monthlies',
     });
   }
-  const problem = hit as any as ProblemInfo;
+  const problem = hit as unknown as ProblemInfo;
   problem.uniqueId = hit.objectID;
   return (
     <div className="bg-white dark:bg-gray-900 shadow p-4 sm:p-6 rounded-lg ">
@@ -111,7 +110,29 @@ function ProblemHit({ hit }: ProblemHitProps) {
             </svg>
           </a>
         )}
-
+      {isUsaco(problem.source) && (
+        <>
+          <br />
+          <a
+            href={`https://ide.usaco.guide/usaco/${problem.uniqueId.substring(
+              problem.uniqueId.indexOf('-') + 1
+            )}`}
+            target="_blank"
+            rel="noreferrer"
+            className="text-gray-500 dark:text-dark-med-emphasis text-sm"
+          >
+            Open in IDE
+            <svg
+              viewBox="0 0 20 20"
+              fill="currentColor"
+              className="h-4 w-4 inline ml-0.5 mb-1"
+            >
+              <path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z" />
+              <path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z" />
+            </svg>
+          </a>
+        </>
+      )}
       {!hideModules && (
         <>
           <p className="text-sm text-gray-500 dark:text-dark-med-emphasis  mt-2">
@@ -133,16 +154,7 @@ function ProblemHit({ hit }: ProblemHitProps) {
       )}
 
       <div className="pt-4">
-        {!hideDifficulty && (
-          <span
-            className={
-              'mr-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium leading-4 ' +
-              difficultyClasses[hit.difficulty]
-            }
-          >
-            {hit.difficulty}
-          </span>
-        )}
+        {!hideDifficulty && <DifficultyBox difficulty={hit.difficulty} />}
         {showTags &&
           hit.tags?.map(tag => (
             <span
@@ -157,7 +169,7 @@ function ProblemHit({ hit }: ProblemHitProps) {
   );
 }
 
-export default function ProblemHits({ hits }) {
+export default function ProblemHits({ hits }: { hits: AlgoliaProblemInfo[] }) {
   return (
     <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
       {hits.map(hit => (

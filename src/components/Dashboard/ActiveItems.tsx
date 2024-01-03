@@ -1,6 +1,6 @@
 import { Link } from 'gatsby';
 import * as React from 'react';
-import { difficultyClasses } from '../markdown/ProblemsList/ProblemsListItem';
+import { difficultyClasses } from '../DifficultyBox';
 import DashboardCard from './DashboardCard';
 
 type ActiveItemStatus =

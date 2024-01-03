@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { DarkModeContext } from './DarkModeContext';
-import { useThemeSetting } from './UserDataContext/properties/simpleProperties';
 import { useIsUserDataLoaded } from './UserDataContext/UserDataContext';
+import { useThemeSetting } from './UserDataContext/properties/simpleProperties';
 
 export function DarkModeProvider({ children }) {
   const theme = useThemeSetting();

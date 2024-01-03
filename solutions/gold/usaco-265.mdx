@@ -103,4 +103,69 @@ int main() {
 ```
 
 </CPPSection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class CowRun {
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new FileReader("cowrun.in"));
+		int n = Integer.parseInt(br.readLine());
+
+		int[] pos = new int[n];
+		for (int i = 0; i < n; i++) {
+			pos[i] = Integer.parseInt(br.readLine());
+		}
+		Arrays.sort(pos);
+
+		/*
+		 * dp[i][j][k] = min cost of visiting all cows within the range
+		 * i = left endpoint (inclusive)
+		 * j = right endpoint (inclusive)
+		 * k (0/1) = current side
+		 */
+		int[][][] dp = new int[n + 1][n + 1][2];
+		for (int i = 0; i < n + 1; i++) {
+			for (int j = 0; j < n + 1; j++) {
+				dp[i][j][0] = Integer.MAX_VALUE;
+				dp[i][j][1] = Integer.MAX_VALUE;
+			}
+		}
+
+		for (int i = n - 1; i >= 0; i--) {
+			for (int j = i; j < n; j++) {
+				if (i == j) {
+					dp[i][j][0] = Math.abs(pos[i]) * n;
+					dp[i][j][1] = Math.abs(pos[j]) * n;
+				} else {
+					// the number of cows which the cost is inflicted upon
+					int remaining = n - (j - i);
+
+					// consider if we want to go to the same or opposite side
+					dp[i][j][0] = Math.min(
+					    dp[i + 1][j][0] +
+					        (Math.abs(pos[i + 1] - pos[i]) * remaining),
+					    dp[i + 1][j][1] +
+					        (Math.abs(pos[j] - pos[i]) * remaining));
+
+					dp[i][j][1] = Math.min(
+					    dp[i][j - 1][1] +
+					        (Math.abs(pos[j - 1] - pos[j]) * remaining),
+					    dp[i][j - 1][0] +
+					        (Math.abs(pos[j] - pos[i]) * remaining));
+				}
+			}
+		}
+
+		PrintWriter pw = new PrintWriter("cowrun.out");
+		pw.println(Math.min(dp[0][n - 1][0], dp[0][n - 1][1]));
+		pw.close();
+	}
+}
+```
+
+</JavaSection>
 </LanguageSection>
