@@ -9,9 +9,9 @@ import {
 } from '../../context/UserDataContext/UserDataContext';
 import { useUserGroups } from '../../hooks/groups/useUserGroups';
 import { useFirebaseApp } from '../../hooks/useFirebase';
-import TopNavigationBar from '../TopNavigationBar/TopNavigationBar';
 import Layout from '../layout';
 import SEO from '../seo';
+import TopNavigationBar from '../TopNavigationBar/TopNavigationBar';
 
 const getQuery = name => {
   const url = window.location.href;

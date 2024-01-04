@@ -10,9 +10,9 @@ import {
 } from '../../context/UserDataContext/properties/simpleProperties';
 import {
   AlgoliaProblemInfo,
-  ProblemInfo,
   getProblemURL,
   isUsaco,
+  ProblemInfo,
   recentUsaco,
 } from '../../models/problem';
 import DifficultyBox from '../DifficultyBox';

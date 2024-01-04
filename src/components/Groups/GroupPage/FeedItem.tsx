@@ -8,9 +8,9 @@ import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import { usePostActions } from '../../../hooks/groups/usePostActions';
 import { GroupData } from '../../../models/groups/groups';
 import {
-  PostData,
   getPostTimestampString,
   getTotalPointsOfPost,
+  PostData,
 } from '../../../models/groups/posts';
 import Tooltip from '../../Tooltip/Tooltip';
 import PostExportModal from './PostExportModal';

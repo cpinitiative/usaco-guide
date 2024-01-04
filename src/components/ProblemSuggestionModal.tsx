@@ -9,10 +9,10 @@ import MarkdownLayoutContext from '../context/MarkdownLayoutContext';
 import useProblemSuggestionAction from '../hooks/useProblemSuggestionAction';
 import { ModuleInfo } from '../models/module';
 import {
-  PROBLEM_DIFFICULTY_OPTIONS,
-  ProblemMetadata,
   autoGenerateSolutionMetadata,
   generateProblemUniqueId,
+  ProblemMetadata,
+  PROBLEM_DIFFICULTY_OPTIONS,
   probSources,
 } from '../models/problem';
 import ButtonGroup from './ButtonGroup';

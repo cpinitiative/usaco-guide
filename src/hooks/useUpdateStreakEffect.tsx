@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { useIsUserDataLoaded } from '../context/UserDataContext/UserDataContext';
 import { useSetLastVisitDate } from '../context/UserDataContext/properties/lastVisit';
+import { useIsUserDataLoaded } from '../context/UserDataContext/UserDataContext';
 
 export const useUpdateStreakEffect = ({
   setLastViewedModule,

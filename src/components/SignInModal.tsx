@@ -2,9 +2,9 @@ import { Dialog, Transition } from '@headlessui/react';
 import { XIcon } from '@heroicons/react/solid';
 import {
   AuthCredential,
+  getAuth,
   GithubAuthProvider,
   GoogleAuthProvider,
-  getAuth,
   linkWithCredential,
   signInWithCredential,
   signInWithPopup,

@@ -3,19 +3,19 @@ import * as React from 'react';
 import styled from 'styled-components';
 import tw from 'twin.macro';
 import {
+  moduleIDToSectionMap,
+  SectionID,
   SECTION_LABELS,
   SECTION_SEO_DESCRIPTION,
   SECTION_SEO_TITLES,
-  SectionID,
-  moduleIDToSectionMap,
 } from '../../content/ordering';
 import DashboardProgress, {
   DashboardProgressSmall,
 } from '../components/Dashboard/DashboardProgress';
 import ModuleLink from '../components/Dashboard/ModuleLink';
-import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
 import Layout from '../components/layout';
 import SEO from '../components/seo';
+import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
 import { ModuleLinkInfo } from '../models/module';
 // import UserDataContext from '../context/UserDataContext/UserDataContext';
 import {

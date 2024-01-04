@@ -1,12 +1,12 @@
 import { CheckIcon, XIcon } from '@heroicons/react/solid';
 import { RouteComponentProps } from '@reach/router';
 import {
-  Timestamp,
   collection,
   getDocs,
   getFirestore,
   limit,
   query,
+  Timestamp,
 } from 'firebase/firestore';
 import 'flatpickr/dist/themes/material_blue.css';
 import { Link, navigate } from 'gatsby';
@@ -22,14 +22,14 @@ import { useFirebaseApp } from '../../../hooks/useFirebase';
 import { GroupProblemData } from '../../../models/groups/problem';
 import {
   AlgoliaProblemInfo,
-  ProblemInfo,
   getProblemURL,
+  ProblemInfo,
 } from '../../../models/problem';
 import ButtonGroup from '../../ButtonGroup';
-import ProblemAutocompleteModal from '../../ProblemAutocompleteModal/ProblemAutocompleteModal';
-import TopNavigationBar from '../../TopNavigationBar/TopNavigationBar';
 import Layout from '../../layout';
+import ProblemAutocompleteModal from '../../ProblemAutocompleteModal/ProblemAutocompleteModal';
 import SEO from '../../seo';
+import TopNavigationBar from '../../TopNavigationBar/TopNavigationBar';
 import Breadcrumbs from '../Breadcrumbs';
 import MarkdownEditor from '../MarkdownEditor';
 import EditProblemHintSection from './EditProblemHintSection';

@@ -5,11 +5,11 @@ import * as freshOrdering from './content/ordering';
 import div_to_probs from './src/components/markdown/ProblemsList/DivisionList/div_to_probs.json';
 import { createXdmNode } from './src/gatsby/create-xdm-node';
 import {
-  ProblemMetadata,
-  ShortProblemInfo,
   checkInvalidUsacoMetadata,
   getProblemInfo,
   getProblemURL,
+  ProblemMetadata,
+  ShortProblemInfo,
 } from './src/models/problem';
 // Questionable hack to get full commit history so that timestamps work
 try {

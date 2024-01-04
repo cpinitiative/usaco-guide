@@ -5,9 +5,9 @@ import { Link } from 'gatsby';
 import * as React from 'react';
 import { Fragment, useContext } from 'react';
 import {
-  SECTION_LABELS,
   moduleIDToSectionMap,
   moduleIDToURLMap,
+  SECTION_LABELS,
 } from '../../../../content/ordering';
 import MarkdownLayoutContext from '../../../context/MarkdownLayoutContext';
 import { useMarkdownProblems } from '../../../context/MarkdownProblemListsContext';

@@ -4,9 +4,9 @@ import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import { useGroupActions } from '../../../hooks/groups/useGroupActions';
 import useGroupJoinLinks from '../../../hooks/groups/useGroupJoinLinks';
 import { JoinGroupLink } from '../../../models/groups/groups';
-import TopNavigationBar from '../../TopNavigationBar/TopNavigationBar';
 import Layout from '../../layout';
 import SEO from '../../seo';
+import TopNavigationBar from '../../TopNavigationBar/TopNavigationBar';
 import Breadcrumbs from '../Breadcrumbs';
 import EditJoinLinkModal from './EditJoinLinkModal';
 

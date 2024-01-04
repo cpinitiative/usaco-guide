@@ -1,9 +1,9 @@
 import { Link } from 'gatsby';
 import * as React from 'react';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
-import TopNavigationBar from '../../TopNavigationBar/TopNavigationBar';
 import Layout from '../../layout';
 import SEO from '../../seo';
+import TopNavigationBar from '../../TopNavigationBar/TopNavigationBar';
 import Feed from './Feed';
 import GroupPageHeader from './GroupPageHeader';
 import LeaderboardSidebar from './LeaderboardSidebar';
