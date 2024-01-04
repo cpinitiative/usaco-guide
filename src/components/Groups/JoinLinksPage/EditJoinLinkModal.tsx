@@ -4,8 +4,8 @@ import 'flatpickr/dist/themes/material_blue.css';
 import * as React from 'react';
 import Flatpickr from 'react-flatpickr';
 import { JoinGroupLink } from '../../../models/groups/groups';
-import Switch from '../../elements/Switch';
 import Tooltip from '../../Tooltip/Tooltip';
+import Switch from '../../elements/Switch';
 
 export default function EditJoinLinkModal({
   isOpen,

@@ -2,9 +2,9 @@ import { Timestamp } from 'firebase/firestore';
 import DeepStateItem from './DeepStateItem';
 import FirebaseBlockData from './FirebaseBlockData';
 import InitialTransaction from './InitialTransaction';
-import { applyPatch, makePatch } from './patchUtils';
 import ShallowStateItem from './ShallowStateItem';
 import Transaction from './Transaction';
+import { applyPatch, makePatch } from './patchUtils';
 
 export type Patches<T> = {
   [k in keyof T]: string;

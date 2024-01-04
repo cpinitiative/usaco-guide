@@ -3,10 +3,10 @@ import * as admin from 'firebase-admin';
 import * as functions from 'firebase-functions';
 import prettier from 'prettier';
 import {
+  PROBLEM_DIFFICULTY_OPTIONS,
+  ProblemMetadata,
   autoGenerateSolutionMetadata,
   generateProblemUniqueId,
-  ProblemMetadata,
-  PROBLEM_DIFFICULTY_OPTIONS,
 } from '../../models/problem';
 
 const problemSuggestionReviewers = {
