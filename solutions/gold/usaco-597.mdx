@@ -56,7 +56,6 @@ This works because just like our power, there exists a set point where a cow bei
 using namespace std;
 
 using ll = long long;
-#define all(x) begin(x), end(x)
 
 const int MAX_POS = 1e9;
 
@@ -71,7 +70,7 @@ int main() {
 		// to avoid floats, double all coordinates
 		bales[i] *= 2;
 	}
-	sort(all(bales));
+	sort(bales.begin(), bales.end());
 
 	/**
 	 * @returns whether it's possible to explode
@@ -82,33 +81,42 @@ int main() {
 	 * @param r current radius at our position
 	 * @param dir whether we're checking positions to the right/left
 	 */
-	function<bool(int, int, int, bool)> push = [&](int pos, int idx, int r,
-	                                               bool dir) {
+	function<bool(int, int, int, bool)> push = [&](int pos, int idx, int r,																								 									bool dir) {
 		// finished search
 		if (idx >= n - 1 && dir == 0) {
 			return (idx >= n || pos + r >= bales[idx]);
 		}
-		if (idx <= 0 && dir == 1) { return (idx < 0 || pos - r <= bales[idx]); }
+		if (idx <= 0 && dir == 1) {
+			return (idx < 0 || pos - r <= bales[idx]);
+		}
 
-		if (dir == 0) {  // go right
-			if (pos + r >= bales.back()) return true;
+		if (dir == 0) { // go right
+			if (pos + r >= bales.back())
+				return true;
 
 			int new_idx = idx;
-			while (new_idx < n && pos + r >= bales[new_idx]) { new_idx++; }
+			while (new_idx < n && pos + r >= bales[new_idx]) {
+				new_idx++;
+			}
 
 			// no progression
-			if (new_idx == idx) return false;
+			if (new_idx == idx)
+				return false;
 
 			return push(bales[new_idx - 1], new_idx, r - 2, dir);
 
-		} else {  // go left
-			if (pos - r <= bales[0]) return true;
+		} else { // go left
+			if (pos - r <= bales[0])
+				return true;
 
 			int new_idx = idx;
-			while (new_idx < n && pos - r <= bales[new_idx]) { new_idx--; }
+			while (new_idx < n && pos - r <= bales[new_idx]) {
+				new_idx--;
+			}
 
 			// no progression
-			if (new_idx == idx) return false;
+			if (new_idx == idx)
+				return false;
 
 			return push(bales[new_idx + 1], new_idx, r - 2, dir);
 		}
@@ -132,7 +140,7 @@ int main() {
 			int pos = pos_lo + (pos_hi - pos_lo + 1) / 2;
 
 			// get index of first haybale to our right
-			int close = lower_bound(all(bales), pos) - bales.begin();
+			int close = lower_bound(bales.begin(), bales.end(), pos) - bales.begin();
 
 			// is it possible to complete our explosions heading left?
 			if (close < n && push(pos, close, power, 1)) {
@@ -142,7 +150,7 @@ int main() {
 			}
 		}
 
-		int close = upper_bound(all(bales), pos_lo) - bales.begin();
+		int close = upper_bound(bales.begin(), bales.end(), pos_lo) - bales.begin();
 		// is it possible to complete our explosions heading right?
 		if (push(pos_lo, close, power, 0)) {
 			hi = power;
