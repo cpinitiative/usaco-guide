@@ -2,13 +2,27 @@
 id: usaco-597
 source: USACO Gold 2016 January
 title: Angry Cows
-author: Benjamin Qi
+author: Benjamin Qi, Ryan Chou
 ---
 
+
+<Spoiler title="Hint 1">
+For problems where we're asked to minimize/maximize some value, we can ask ourselves these questions:
+
+- How does the "validity" of the answer change as we increase/decrease it?
+- What conditions must be true of an optimal solution?
+</Spoiler>
+
+<Spoiler title="Answer to Hint 1">
+Note that for the minimum power that we launch a cow with is monotonic, since there is a set point where smaller values of $R$ will stop working.
+
+This implies a binary search on the power $R$.
+</Spoiler>
+
+<Spoiler title="Solution">
 [Official Analysis (C++ and Java)](http://www.usaco.org/current/data/sol_angry_gold_jan16.html)
 
 <Warning>
-
 The second and third solutions in the analysis fail on the following test case:
 
 ```
@@ -18,5 +32,140 @@ The second and third solutions in the analysis fail on the following test case:
 ```
 
 The second one gives the wrong answer, and the third gives runtime error.
-
 </Warning>
+
+From the hints, we'll start binary searching on the initial power $R$. Now, we've reduced the problem into checking if a fixed power $R$ works for our set of haybales.
+
+There are many ways to approach this (see the [Official Analysis](http://www.usaco.org/current/data/sol_angry_gold_jan16.html) for more information!), but perhaps the most straightforward way is running a second binary search on the maximum point we can place our cow.
+
+This works because just like our power, there exists a set point where a cow being launched at a coordinate will not knock out all the haybales to the left/right. Since $N \leq 5 \cdot 10^4$, we can simulate these explosions naively.
+
+
+## Implementation
+
+**Time Complexity**: $\mathcal{O}(N \log^2 N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using ll = long long;
+#define all(x) begin(x), end(x)
+
+const int MAX_POS = 1e9;
+
+int main() {
+	freopen("angry.in", "r", stdin);
+	freopen("angry.out", "w", stdout);
+
+	int n;
+	cin >> n;
+
+	vector<int> bales(n);
+
+	for (int i = 0; i < n; i++) {
+		cin >> bales[i];
+		// to avoid floats, double all coordinates
+		bales[i] *= 2;
+	}
+
+	sort(all(bales));
+
+	/**
+	 * @returns whether it's possible to explode
+	 * the rest of the haybales before/after idx
+	 *
+	 * @param pos position of our cow
+	 * @param idx furthest haybale we hit with our radius
+	 * @param r current radius at our position
+	 * @param dir whether we're checking positions to the right/left
+	 */
+	function<bool(int, int, int, bool)> push = [&](int pos, int idx, int r, bool dir) {
+		// finished search
+		if (idx >= n - 1 && dir == 0) {
+			return (idx >= n || pos + r >= bales[idx]);
+		}
+		if (idx <= 0 && dir == 1) {
+			return (idx < 0 || pos - r <= bales[idx]);
+		}
+
+		if (dir == 0) {  // go right
+			if (pos + r >= bales.back())
+				return true;
+
+			int new_idx = idx;
+			while (new_idx < n && pos + r >= bales[new_idx]) {
+				new_idx++;
+			}
+
+			// no progression
+			if (new_idx == idx)
+				return false;
+
+			return push(bales[new_idx - 1], new_idx, r - 2, dir);
+		
+		} else {  // go left
+			if (pos - r <= bales[0])
+				return true;
+
+			int new_idx = idx;
+			while (new_idx < n && pos - r <= bales[new_idx]) {
+				new_idx--;
+			}
+
+			// no progression
+			if (new_idx == idx)
+				return false;
+
+			return push(bales[new_idx + 1], new_idx, r - 2, dir);
+		}
+
+		return false;
+	};
+
+	int lo = 0, hi = MAX_POS * 2;
+
+	while (lo < hi) {
+		int power = lo + (hi - lo) / 2;
+
+		/*
+		 * finds the largest initial position such that
+		 * our explosions propagate all the way to the left
+		 */
+		int pos_lo = 0;
+		int pos_hi = MAX_POS * 2;
+
+		while (pos_lo < pos_hi) {
+			int pos = pos_lo + (pos_hi - pos_lo + 1) / 2;
+
+			// get index of first haybale to our right
+			int close = lower_bound(all(bales), pos) - bales.begin();
+
+			// is it possible to complete our explosions heading left?
+			if (close < n && push(pos, close, power, 1)) {
+				pos_lo = pos;
+			} else {
+				pos_hi = pos - 1;
+			}
+		}
+
+		int close = upper_bound(all(bales), pos_lo) - bales.begin();
+		// is it possible to complete our explosions heading right?
+		if (push(pos_lo, close, power, 0)) {
+			hi = power;
+		} else {
+			lo = power + 1;
+		}
+	}
+
+	// rescale our answer
+	cout << fixed << setprecision(1) << (double)(lo) / (double)(2.0) << endl;
+}
+```
+</CPPSection>
+</LanguageSection>
+
+</Spoiler>
