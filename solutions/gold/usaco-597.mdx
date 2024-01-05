@@ -62,19 +62,15 @@ const int MAX_POS = 1e9;
 
 int main() {
 	freopen("angry.in", "r", stdin);
-	freopen("angry.out", "w", stdout);
 
 	int n;
 	cin >> n;
-
 	vector<int> bales(n);
-
 	for (int i = 0; i < n; i++) {
 		cin >> bales[i];
 		// to avoid floats, double all coordinates
 		bales[i] *= 2;
 	}
-
 	sort(all(bales));
 
 	/**
@@ -120,8 +116,8 @@ int main() {
 		return false;
 	};
 
-	int lo = 0, hi = MAX_POS * 2;
-
+	int lo = 0;
+	int hi = MAX_POS * 2;
 	while (lo < hi) {
 		int power = lo + (hi - lo) / 2;
 
@@ -155,8 +151,9 @@ int main() {
 		}
 	}
 
+	freopen("angry.out", "w", stdout);
 	// rescale our answer
-	cout << fixed << setprecision(1) << (double)(lo) / (double)(2.0) << endl;
+	cout << fixed << setprecision(1) << (double)lo / 2 << endl;
 }
 ```
 
