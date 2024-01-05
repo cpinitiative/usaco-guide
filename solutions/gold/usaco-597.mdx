@@ -5,21 +5,25 @@ title: Angry Cows
 author: Benjamin Qi, Ryan Chou
 ---
 
-
 <Spoiler title="Hint 1">
+
 For problems where we're asked to minimize/maximize some value, we can ask ourselves these questions:
 
 - How does the "validity" of the answer change as we increase/decrease it?
 - What conditions must be true of an optimal solution?
+
 </Spoiler>
 
 <Spoiler title="Answer to Hint 1">
+
 Note that for the minimum power that we launch a cow with is monotonic, since there is a set point where smaller values of $R$ will stop working.
 
 This implies a binary search on the power $R$.
+
 </Spoiler>
 
 <Spoiler title="Solution">
+
 [Official Analysis (C++ and Java)](http://www.usaco.org/current/data/sol_angry_gold_jan16.html)
 
 <Warning>
@@ -31,7 +35,7 @@ The second and third solutions in the analysis fail on the following test case:
 1
 ```
 
-The second one gives the wrong answer, and the third gives runtime error.
+The second one gives the wrong answer, and the third errors.
 </Warning>
 
 From the hints, we'll start binary searching on the initial power $R$. Now, we've reduced the problem into checking if a fixed power $R$ works for our set of haybales.
@@ -39,7 +43,6 @@ From the hints, we'll start binary searching on the initial power $R$. Now, we'v
 There are many ways to approach this (see the [Official Analysis](http://www.usaco.org/current/data/sol_angry_gold_jan16.html) for more information!), but perhaps the most straightforward way is running a second binary search on the maximum point we can place our cow.
 
 This works because just like our power, there exists a set point where a cow being launched at a coordinate will not knock out all the haybales to the left/right. Since $N \leq 5 \cdot 10^4$, we can simulate these explosions naively.
-
 
 ## Implementation
 
@@ -165,6 +168,7 @@ int main() {
 	cout << fixed << setprecision(1) << (double)(lo) / (double)(2.0) << endl;
 }
 ```
+
 </CPPSection>
 </LanguageSection>
 
