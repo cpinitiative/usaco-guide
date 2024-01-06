@@ -5,34 +5,31 @@ title: Quests
 author: Chu Minjae
 ---
 
-## Implementation
+## Explanation
+
 We can find the maximum experience point available by comparing the largest available experience point gained by completing one more quest or not.
 
-**Time Complexity:** $\mathcal{O}(t \cdot \textbf{limit})$, where $t$ is the number of test cases and $\textbf{limit}$ as the farthest location of quest.
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(\min(n,k))$ for each test case
 
 <LanguageSection>
 <CPPSection>
 
 ```cpp
 #include <bits/stdc++.h>
-
 using namespace std;
 
 int main() {
-	int t;
-	cin >> t;
-
-	for (int i = 0; i < t; i++) {
+	int test_num;
+	cin >> test_num;
+	for (int t = 0; t < test_num; t++) {
 		int n;
 		int k;
-
 		cin >> n >> k;
 
 		vector<int> a(n);
 		vector<int> b(n);
-
-		// farthest location of available quest
-		int limit = min(n, k);
 		for (int x = 0; x < n; x++) { cin >> a[x]; }
 		for (int y = 0; y < n; y++) { cin >> b[y]; }
 
@@ -40,6 +37,8 @@ int main() {
 		int ans = a[0] + mx * (k - 1);
 		int tmp = a[0];
 
+		// farthest location of available quest
+		int limit = min(n, k);
 		for (int z = 1; z < limit; z++) {
 			mx = max(mx, b[z]);
 			// compare experience point of completing one more quest or not
@@ -48,6 +47,7 @@ int main() {
 			}
 			tmp += a[z];
 		}
+
 		cout << ans << "\n";
 	}
 }
