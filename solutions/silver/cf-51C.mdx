@@ -1,0 +1,74 @@
+---
+id: cf-51C
+source: CF
+title: Three Base Stations
+author: Kenneth Karaisz Jr.
+---
+
+## Explanation
+
+Let's binary search on the answer.
+
+Consider the leftmost house. We have to place a station within range of this
+house. Because there are no houses to the left, and therefore no reason for the
+station's range to extend to the left, an optimal place to put it is as far as
+possible to the right, at $\texttt{pos}+d$.
+
+When our first station's range runs out, we can use similar logic to place the
+next two—there's no need for the range to extend to the left of the leftmost
+uncovered house, so we can place the next station as far as possible to the
+right again.
+
+Our test function returns true if all the houses can be covered placing the
+stations in this manner.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N\log N)$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+int main() {
+    int n;
+    cin >> n;
+    vector<int> x(n);
+    for (int i = 0; i < n; i++) { cin >> x[i]; }
+    ranges::sort(x);
+
+    auto test = [&](long double d) -> optional<array<long double, 3>> {
+        int used = 0;
+        array<long double, 3> pos = {x[0] + d};
+        for (int i = 1; i < n; i++) {
+            if (x[i] - pos[used] > d) {
+                used++;
+                if (used == 3) { return nullopt; }
+                pos[used] = x[i] + d;
+            }
+        }
+        return pos;
+    };
+
+    long double lo = 0, hi = 1e9;
+    array<long double, 3> ans;
+    while (hi - lo > 1e-7) {
+        long double mid = midpoint(lo, hi);
+        if (auto res = test(mid); res){
+            hi = mid;
+            ans = *res;
+        }
+        else lo = mid;
+    }
+
+    cout << fixed << lo << "\n";
+    cout << ans[0] << " " << ans[1] << " " << ans[2] << "\n";
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
