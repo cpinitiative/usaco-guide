@@ -31,6 +31,9 @@ export default function Selection({
     ...props,
   });
   if (!items) items = refineItems;
+  for (const key in items) {
+    if (items[key].value instanceof Array) items[key].value.push('null');
+  }
   const darkMode = useDarkMode();
   const [refinements, setRefinements] = useState<string[]>([]);
   const { setIndexUiState } = useInstantSearch();
