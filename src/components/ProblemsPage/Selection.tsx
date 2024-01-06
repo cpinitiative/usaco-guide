@@ -32,7 +32,9 @@ export default function Selection({
   });
   if (!items) items = refineItems;
   for (const key in items) {
-    if (items[key].value instanceof Array) items[key].value.push('null');
+    if (items[key].value instanceof Array) {
+      (items[key].value as string[]).push('null');
+    }
   }
   const darkMode = useDarkMode();
   const [refinements, setRefinements] = useState<string[]>([]);
