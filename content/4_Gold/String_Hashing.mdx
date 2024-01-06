@@ -51,7 +51,7 @@ class HashedString {
 		}
 	}
 
-	long long getHash(int start, int end) {
+	long long get_hash(int start, int end) {
 		long long raw_val =
 		    (p_hash[end + 1] - (p_hash[start] * pow[end - start + 1]));
 		return (raw_val % M + M) % M;
@@ -267,7 +267,7 @@ class HashedString {
 		}
 	}
 
-	ll getHash(int start, int end) {
+	ll get_hash(int start, int end) {
 		ll raw_val =
 		    p_hash[end + 1] - mod_mul(p_hash[start], pow[end - start + 1]);
 		return (raw_val + M) % M;
@@ -306,10 +306,10 @@ int main() {
 		for (int j = 0; j < 26; j++) {
 			match &= freq_curr[j] == freq_target[j];
 		}
-		if (match) { good.insert(hs.getHash(i + 1 - n.size(), i)); }
+		if (match) { good.insert(hs.get_hash(i + 1 - n.size(), i)); }
 	}
 
-	cout << good.size() << '\n';
+	cout << good.size() << endl;
 }
 ```
 
@@ -372,7 +372,7 @@ class HashedString {
 		}
 	}
 
-	ll getHash(int start, int end) {
+	ll get_hash(int start, int end) {
 		ll raw_val =
 		    p_hash[end + 1] - mod_mul(p_hash[start], pow[end - start + 1]);
 		return (raw_val + M) % M;
@@ -419,7 +419,7 @@ int main() {
 			h_hsh = mod_mul(h_hsh, inv(B + h[i - n.size()] - 'a', M));
 			h_hsh = mod_mul(h_hsh, B + h[i] - 'a');
 		}
-		if (n_hsh == h_hsh) { good.insert(hs.getHash(i + 1 - n.size(), i)); }
+		if (n_hsh == h_hsh) { good.insert(hs.get_hash(i + 1 - n.size(), i)); }
 	}
 
 	cout << good.size() << '\n';
