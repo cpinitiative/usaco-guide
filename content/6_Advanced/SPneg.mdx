@@ -221,8 +221,9 @@ import java.io.*;
 import java.util.*;
 
 public class CyclesFinding {
-	static int[] parent = new int[2501];
-	static long[] dist = new long[2501];
+	static final int MAX_N = 2500;
+	static int[] parent = new int[MAX_N + 1];
+	static long[] dist = new long[MAX_N + 1];
 	static List<Edge> graph = new ArrayList<>();
 
 	// CodeSnip{Edge}
@@ -257,6 +258,7 @@ public class CyclesFinding {
 			io.println("YES");
 			for (int x : cycle) { io.print(x + " "); }
 		}
+
 		io.close();
 	}
 
@@ -266,6 +268,7 @@ public class CyclesFinding {
 			parent[i] = 0;
 			dist[i] = Long.MAX_VALUE / 2;
 		}
+
 		dist[source] = 0;
 		int lastNodeUpdated = -1;
 		for (int i = 1; i <= n; i++) {
