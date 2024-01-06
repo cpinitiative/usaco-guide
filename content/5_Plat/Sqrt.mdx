@@ -1,7 +1,7 @@
 ---
 id: sqrt
 title: 'Square Root Decomposition'
-author: Benjamin Qi, Neo Wang
+author: Benjamin Qi, Neo Wang, Mihnea Brebenel
 description: Splitting up data into smaller chunks to speed up processing.
 frequency: 1
 ---
@@ -196,6 +196,89 @@ public class DRSQ {
 </JavaSection>
 </LanguageSection>
 
+## Combining Algorithms
+
+<FocusProblem problem="ndcp" />
+
+One approach in $\mathcal{O}(N^2)$ is DP.
+<LanguageSection>
+<CPPSection>
+```cpp 
+vector<int> dp(n, 1);
+for(int i = n-1; i >= 0; i--) {
+	for(int x = i + a[i]; x <= n; x += a[i]) {
+		dp[i] = (dp[i] +  dp[x]) % MOD;
+	}
+}
+```
+</CPPSection>
+</LanguageSection>
+
+Another approach still in $\mathcal{O}(N^2)$ is prefix sums.
+<LanguageSection>
+<CPPSection>
+```cpp 
+for(int i = n-1; i >= 0; i--) {
+
+	dp[i] += s[a[i]][i % a[i]];
+	dp[i] %= MOD;
+
+	for(int j = 1; j <= x; j++) {
+		s[j][i % j] += dp[i];
+		s[j][i % j] %= MOD;
+	}
+}
+```
+</CPPSection>
+</LanguageSection>
+
+We can apply the first algorithm to those steps $A_i * x >= \sqrt(N)$, because the jump is bigger so 
+the for loop is faster, and the second one for $A_i * x < \sqrt(N)$ .
+
+This trick allows us to combine two $\mathcal{O}(N^2)$ algorithm into one $\mathcal{O}(N\sqrt(N))$ algorithm.
+
+Sometimes
+<LanguageSection>
+<CPPSection>
+```cpp 
+#include <bits/stdc++.h>
+
+using namespace std;
+
+const int MOD = 998244353;
+
+int main() {
+	int n;
+	cin >> n;
+	vector<int> a(n);
+	for(int i = 0; i < n; i++) {
+		cin >> a[i];
+	}
+	int x = (int)sqrt(n);
+	vector<int> dp(n, 1);
+	vector<vector<int>> s(x+1, vector<int>(x+1, 0));
+	for(int i = n-1; i >= 0; i--) {
+		if(a[i] > x) {
+			for(int j = i + a[i]; j < n; j += a[i]) {
+				dp[i] += dp[j];	
+				dp[i] %= MOD;
+			}
+		} else {
+			dp[i] += s[a[i]][i % a[i]];
+			dp[i] %= MOD;
+		}
+		for(int j = 1; j <= x; j++) {
+			s[j][i % j] += dp[i];
+			s[j][i % j] %= MOD;
+		}
+	}
+	cout << dp[0];
+
+	return 0;
+}
+```
+</CPPSection>
+</LanguageSection>
 ## Batching
 
 See the CPH section on [batch processing](/CPH.pdf#page=263).
