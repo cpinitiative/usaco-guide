@@ -221,12 +221,9 @@ import java.io.*;
 import java.util.*;
 
 public class CyclesFinding {
-	static final int N = 2500;
-	static int n, m;
-	static int[] parent = new int[N + 1];
-	static long[] dist = new long[N + 1];
+	static int[] parent = new int[2501];
+	static long[] dist = new long[2501];
 	static List<Edge> graph = new ArrayList<>();
-	static Kattio io = new Kattio();
 
 	// CodeSnip{Edge}
 	static class Edge {
@@ -243,8 +240,9 @@ public class CyclesFinding {
 	// EndCodeSnip
 
 	public static void main(String[] args) {
-		n = io.nextInt();
-		m = io.nextInt();
+		Kattio io = new Kattio();
+		int n = io.nextInt();
+		int m = io.nextInt();
 		for (int i = 1; i <= m; i++) {
 			int a = io.nextInt();
 			int b = io.nextInt();
@@ -252,7 +250,7 @@ public class CyclesFinding {
 			graph.add(new Edge(a, b, c));
 		}
 
-		List<Integer> cycle = bellmanFord(1);
+		List<Integer> cycle = bellmanFord(1, n);
 		if (cycle.size() == 0) {
 			io.println("NO");
 		} else {
@@ -262,7 +260,7 @@ public class CyclesFinding {
 		io.close();
 	}
 
-	private static List<Integer> bellmanFord(int source) {
+	private static List<Integer> bellmanFord(int source, int n) {
 		List<Integer> cycle = new ArrayList<>();
 		for (int i = 1; i <= n; i++) {
 			parent[i] = 0;
