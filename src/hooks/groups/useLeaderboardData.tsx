@@ -1,5 +1,4 @@
 import {
-  Timestamp,
   collection,
   doc,
   getDoc,
@@ -8,6 +7,7 @@ import {
   limit,
   orderBy,
   query,
+  Timestamp,
 } from 'firebase/firestore';
 import React from 'react';
 import { useFirebaseApp } from '../useFirebase';
