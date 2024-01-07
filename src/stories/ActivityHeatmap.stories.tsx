@@ -11,13 +11,14 @@ export default {
   component: ActivityHeatmap,
 } as Meta;
 
+const endDate = new Date(Date.UTC(2023, 12));
+const startDate = new Date(endDate);
+startDate.setMonth(endDate.getMonth() - 10);
+
 const Template: Story<ActivityHeatmapProps> = args => (
-  <ActivityHeatmap {...args} />
+  <ActivityHeatmap endDate={endDate} {...args} />
 );
 
-const endDate = new Date();
-const startDate = new Date();
-startDate.setMonth(endDate.getMonth() - 10);
 const dummyProblem = {
   timestamp: 0,
   problemID: 'dummy',

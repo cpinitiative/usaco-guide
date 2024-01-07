@@ -1,26 +1,67 @@
-import * as React from 'react';
+import React, { useEffect, useState } from 'react';
+import {
+  UseRefinementListProps,
+  useInstantSearch,
+  useRefinementList,
+} from 'react-instantsearch';
 import Select from 'react-select';
 import { useDarkMode } from '../../context/DarkModeContext';
 
-export default function Difficulty({ items, refine }) {
-  const darkMode = useDarkMode();
+export type SelectionProps = UseRefinementListProps & {
+  placeholder: string;
+  searchable: boolean;
+  isMulti: boolean;
+  transformLabel?: (label: string) => string;
+  items?: { label: string; value: string | string[] }[];
+};
 
-  const handleChange = e => {
-    const refinements = [];
-    for (const difficulty of e) {
-      refinements.push(difficulty.label);
+export default function Selection({
+  attribute,
+  limit,
+  placeholder,
+  searchable,
+  isMulti,
+  transformLabel: transform,
+  items,
+  ...props
+}: SelectionProps) {
+  const { items: refineItems } = useRefinementList({
+    attribute,
+    limit,
+    ...props,
+  });
+  if (!items) items = refineItems;
+  for (const key in items) {
+    if (items[key].value instanceof Array) {
+      (items[key].value as string[]).push('null');
     }
-    refine(refinements);
-  };
-
+  }
+  const darkMode = useDarkMode();
+  const [refinements, setRefinements] = useState<string[]>([]);
+  const { setIndexUiState } = useInstantSearch();
+  useEffect(() => {
+    setIndexUiState(prevIndexUiState => ({
+      refinementList: {
+        ...prevIndexUiState.refinementList,
+        [attribute]: refinements,
+      },
+    }));
+  }, [refinements]);
   return (
     <Select
-      onChange={handleChange}
+      onChange={(items: any) => {
+        if (isMulti) setRefinements(items.map(item => item.value).flat());
+        else if (items) setRefinements([items.value]);
+        else setRefinements([]);
+      }}
       isClearable
-      placeholder="Difficulty"
-      isMulti
-      isSearchable={false}
-      options={items.filter(item => item.isRefined == false)}
+      placeholder={placeholder}
+      isMulti={isMulti}
+      isSearchable={searchable}
+      options={items.map(item => ({
+        ...item,
+        label: transform ? transform(item.label) : item.label,
+      }))}
       className={!darkMode ? 'text-black' : 'text-white'}
       classNamePrefix="select"
       styles={

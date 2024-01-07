@@ -1,3 +1,4 @@
+import type { BaseHit, Hit } from 'instantsearch.js';
 import { ProblemSolutionInfo } from './problem';
 
 export type AlgoliaEditorModuleFile = {
@@ -25,3 +26,5 @@ export type AlgoliaEditorFile =
       kind: 'solution';
       objectID: string;
     } & AlgoliaEditorSolutionFile);
+
+export type AlgoliaEditorFileHit = Hit<BaseHit> & AlgoliaEditorFile;

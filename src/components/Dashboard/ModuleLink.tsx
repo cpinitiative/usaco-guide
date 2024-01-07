@@ -13,7 +13,7 @@ import ModuleFrequencyDots from '../MarkdownLayout/ModuleFrequencyDots';
 import { LinkWithProgress as SidebarLinkWithProgress } from '../MarkdownLayout/SidebarNav/ItemLink';
 import Tooltip from '../Tooltip/Tooltip';
 
-const LinkWithProgress = styled(SidebarLinkWithProgress)`
+const LinkWithProgress = styled(SidebarLinkWithProgress)<{ small: boolean }>`
   &&::after {
     ${({ small }) => css`
       // prettier-ignore
@@ -54,7 +54,7 @@ const LinkWithProgress = styled(SidebarLinkWithProgress)`
   }
 `;
 
-const StyledLink = styled.div`
+const StyledLink = styled.div<{ showDot?: boolean }>`
   ${tw`focus:outline-none transition ease-in-out duration-150 text-gray-800 hover:text-blue-700 text-xl leading-6 py-3`}
 
   &::before {
@@ -106,19 +106,10 @@ const FrequencyTextColors = [
 ];
 
 // https://stackoverflow.com/questions/3177836/how-to-format-time-since-xxx-e-g-4-minutes-ago-similar-to-stack-exchange-site
-function time_ago(time) {
-  switch (typeof time) {
-    case 'number':
-      break;
-    case 'string':
-      time = +new Date(time);
-      break;
-    case 'object':
-      if (time.constructor === Date) time = time.getTime();
-      break;
-    default:
-      time = +new Date();
-  }
+function time_ago(time: unknown): string {
+  if (typeof time == 'string') time = +new Date(time);
+  else if (time instanceof Date) time = time.getTime();
+  else time = +new Date();
   const time_formats = [
     [60, 'seconds', 1], // 60
     [120, '1 minute ago', '1 minute from now'], // 60*2
@@ -135,8 +126,8 @@ function time_ago(time) {
     [2903040000, 'years', 29030400], // 60*60*24*7*4*12*100, 60*60*24*7*4*12
     [5806080000, 'Last century', 'Next century'], // 60*60*24*7*4*12*100*2
     [58060800000, 'centuries', 2903040000], // 60*60*24*7*4*12*100*20, 60*60*24*7*4*12*100
-  ];
-  let seconds = (+new Date() - time) / 1000,
+  ] as [number, string, string | number][];
+  let seconds = (+new Date() - (time as number)) / 1000,
     token = 'ago',
     list_choice = 1;
 
@@ -155,16 +146,16 @@ function time_ago(time) {
     format;
   while ((format = time_formats[i++])) {
     if (seconds < format[0]) {
-      if (typeof format[2] == 'string') return format[list_choice];
+      if (typeof format[2] == 'string') return format[list_choice] as string;
       else {
         return Math.floor(seconds / format[2]) + ' ' + format[1] + ' ' + token;
       }
     }
   }
-  return time;
+  return time as string;
 }
 
-function timeAgoString(time): string {
+function timeAgoString(time: unknown): string {
   const res = time_ago(time);
   return res && `Updated: ${res}`;
 }
@@ -255,7 +246,7 @@ const ModuleLink = ({ link }: { link: ModuleLinkInfo }): JSX.Element => {
               ) : null}
             </span>
           </p>
-          {link.frequency !== null && (
+          {link.frequency && (
             <p className="text-sm flex items-center leading-4 mb-1">
               <ModuleFrequencyDots
                 count={link.frequency}

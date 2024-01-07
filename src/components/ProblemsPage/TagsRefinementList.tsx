@@ -1,6 +1,11 @@
 import * as React from 'react';
+import { useRefinementList } from 'react-instantsearch';
 
-export default function RefinementList({ items, refine, createURL }) {
+export default function TagsRefinementList() {
+  const { items, refine, createURL } = useRefinementList({
+    attribute: 'tags',
+    limit: 500,
+  });
   return (
     <div className="text-left ml-1">
       {items.map(item => (

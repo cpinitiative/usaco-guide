@@ -2,8 +2,7 @@
 
 // File taken from https://github.com/FormidableLabs/prism-react-renderer/issues/54
 
-import vsDark from 'prism-react-renderer/themes/vsDark';
-import vsLight from 'prism-react-renderer/themes/vsLight';
+import { themes } from 'prism-react-renderer';
 import * as React from 'react';
 import styled from 'styled-components';
 import { SpoilerContext } from '../Spoiler';
@@ -54,15 +53,14 @@ const CodeSnippetLineContent = styled(LineContent)`
   }
 `;
 
-const CopyButton = styled.button`
+const CopyButton = styled.button<{ isDarkMode: boolean; rightOffset: string }>`
   padding: 1.6px 8px 1.6px 8px;
-  color: ${(props: { isDarkMode: boolean }) =>
-    props.isDarkMode ? 'black' : 'white'};
-  background-color: ${(props: { isDarkMode: boolean }) =>
+  color: ${({ isDarkMode }) => (isDarkMode ? 'black' : 'white')};
+  background-color: ${props =>
     props.isDarkMode ? 'hsla(240, 20%, 88%, 1)' : 'hsla(60, 20%, 12%, 1)'};
   position: absolute;
   top: 0px;
-  right: calc(var(--right-offset) + var(--left-offset));
+  right: calc(${props => props.rightOffset} + var(--left-offset));
   z-index: 99;
   border-radius: 0px 0px 4px 4px;
   font-size: 12px;
@@ -70,7 +68,7 @@ const CopyButton = styled.button`
     'Liberation Mono', 'Courier New', monospace;
   /* copy from tailwind defaults */
   &:hover {
-    background-color: ${(props: { isDarkMode: boolean }) =>
+    background-color: ${props =>
       props.isDarkMode ? 'hsla(240, 20%, 75%, 1)' : 'hsla(60, 20%, 25%, 1)'};
   }
   /* -mx-4 sm:-mx-6 md:mx-0 */
@@ -358,9 +356,7 @@ class CodeBlock extends React.Component<
             onClick={() => {
               navigator.clipboard.writeText(code);
             }}
-            style={{
-              '--right-offset': rightOffset,
-            }}
+            rightOffset={rightOffset}
             className="focus:outline-none"
             isDarkMode={isDarkMode}
           >
@@ -371,7 +367,7 @@ class CodeBlock extends React.Component<
           Prism={Prism as any}
           code={code}
           language={language}
-          theme={isDarkMode ? vsDark : vsLight}
+          theme={isDarkMode ? themes.vsDark : themes.vsLight}
         >
           {({ className, style, tokens, getLineProps, getTokenProps }) => (
             <div
