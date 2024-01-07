@@ -309,6 +309,17 @@ int inv(int x) {
 
 The advantage of this approach is that we can precompute the inverse modular of numbers in range $[1, MOD)$ in $\mathcal{O}(MOD)$.
 
+<LanguageSection>
+<CPPSection>
+```cpp 
+inv[1] = 1;
+for(int i = 2; i < m; i++) {
+	inv[i] = m - m/i * inv[m%i] % m;
+}
+```
+<CPPSection>
+<LanguageSection>
+
 Because it takes $\mathcal{O}(\log p)$ time to compute a modular inverse modulo
 $p$, frequent use of division inside a loop can significantly increase the
 running time of a program. If the modular inverse of the same number(s) is/are
