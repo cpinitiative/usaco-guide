@@ -33,23 +33,19 @@ int main() {
 		for (int x = 0; x < n; x++) { cin >> a[x]; }
 		for (int y = 0; y < n; y++) { cin >> b[y]; }
 
-		int mx = b[0];
-		// ans here represents the case only completing the first
-		int ans = a[0] + mx * (k - 1);
-		// anotherQuest is used to calculate the case completing other quests
-		int another_Quest = a[0];
-		// farthest location of available quest
-		int limit = min(n, k);
-		for (int z = 1; z < limit; z++) {
-			mx = max(mx, b[z]);
+		int best_second = b[0];
+		int first_total = a[0];
+		int max_score = a[0] + best_second * (k - 1);
+		for (int z = 1; z < min(n, k); z++) {
+			best_second = max(best_second, b[z]);
 			// compare experience point of completing one more quest or not
-			if (ans < anotherQuest + a[z] + mx * (k - z - 1)) {
-				ans = anotherQuest + a[z] + mx * (k - z - 1);
+			if (max_score < first_total + a[z] + best_second * (k - z - 1)) {
+				max_score = first_total + a[z] + best_second * (k - z - 1);
 			}
-			anotherQuest += a[z];
+			first_total += a[z];
 		}
 
-		cout << ans << "\n";
+		cout << max_score << "\n";
 	}
 }
 ```
