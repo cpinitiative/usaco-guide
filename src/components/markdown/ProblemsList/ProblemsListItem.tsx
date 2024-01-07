@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import styled, { css } from 'styled-components';
 import tw from 'twin.macro';
 import { olympiads, ProblemInfo, probSources } from '../../../models/problem';
@@ -6,18 +6,28 @@ import { UsacoTableProgress } from '../../Dashboard/DashboardProgress';
 import DifficultyBox from '../../DifficultyBox';
 import TextTooltip from '../../Tooltip/TextTooltip';
 import Tooltip from '../../Tooltip/Tooltip';
+import { DivisionProblemInfo } from './DivisionList/DivisionProblemInfo';
 import ProblemsListItemDropdown from './ProblemsListItemDropdown';
 import ProblemStatusCheckbox from './ProblemStatusCheckbox';
 
 export type ProblemsListItemProps = {
-  problem: any; // ProblemInfo | DivisionProblemInfo; @jeffrey todo. DivisionProblemInfo if is division table, otherwise ProblemInfo
   showTags: boolean;
   showDifficulty: boolean;
   onShowSolutionSketch: (problem: ProblemInfo) => void;
-  isDivisionTable?: boolean; // only if is division table
-  modules?: boolean; // only if is division table
+  // modules?: boolean; // only if is division table
   showPercent?: boolean; // only if is division table
-};
+  // isDivisionTable?: boolean;
+} & (
+  | {
+      isDivisionTable: false;
+      problem: ProblemInfo;
+    }
+  | {
+      isDivisionTable: true;
+      problem: DivisionProblemInfo;
+      modules: boolean;
+    }
+);
 
 export const Anchor = styled.a`
   ${tw`text-blue-600 font-semibold`}
@@ -28,7 +38,7 @@ export const Anchor = styled.a`
 `;
 
 // https://stackoverflow.com/questions/45871439/before-and-after-pseudo-classes-used-with-styled-components
-const StyledProblemRow = styled.tr`
+const StyledProblemRow = styled.tr<{ isActive: boolean }>`
   ${({ isActive }) =>
     isActive
       ? css`
@@ -44,10 +54,8 @@ export default function ProblemsListItem(
   props: ProblemsListItemProps
 ): JSX.Element {
   const [isActive, setIsActive] = React.useState(false);
-  const { problem } = props;
+  const { isDivisionTable, problem } = props;
   const id = `problem-${problem.uniqueId}`;
-
-  const divisionTable = !!props.isDivisionTable;
 
   React.useEffect(() => {
     const hashHandler = (): void => {
@@ -72,21 +80,23 @@ export default function ProblemsListItem(
       </div>
     </td>
   );
-
-  const sourceTooltip = divisionTable
-    ? null
-    : problem?.sourceDescription ||
-      (probSources[problem.source]?.[1] ?? olympiads[problem.source]?.[1]);
+  if (isDivisionTable == false) console.log(problem.sourceDescription);
+  const sourceTooltip =
+    isDivisionTable == false
+      ? problem?.sourceDescription ||
+        (probSources[problem.source as keyof typeof probSources]?.[1] ??
+          olympiads[problem.source as keyof typeof olympiads]?.[1])
+      : null;
 
   let resultsUrl = ''; // used only for division tables
-  if (divisionTable) {
+  if (isDivisionTable) {
     const parts = problem.source.split(' ');
     parts[0] = parts[0].substring(2);
     if (parts[1] === 'US') parts[1] = 'open';
     else parts[1] = parts[1].toLowerCase().substring(0, 3);
     resultsUrl = `http://www.usaco.org/index.php?page=${parts[1]}${parts[0]}results`;
   }
-  const sourceCol = divisionTable ? (
+  const sourceCol = isDivisionTable ? (
     <td className="pl-4 md:pl-6 py-4 whitespace-nowrap text-sm leading-5 font-medium">
       <Anchor
         href={resultsUrl}
@@ -111,7 +121,7 @@ export default function ProblemsListItem(
   const nameCol = (
     <td className="pl-4 md:px-6 py-4 whitespace-nowrap text-sm leading-5 font-medium">
       <div className="flex items-center">
-        {problem.isStarred && (
+        {isDivisionTable == false && problem.isStarred && (
           <Tooltip content="We highly recommend you do all starred problems!">
             <svg
               className="h-4 w-4 text-blue-400"
@@ -125,7 +135,9 @@ export default function ProblemsListItem(
         <Anchor
           href={problem.url}
           className={
-            (problem.isStarred ? 'pl-1 sm:pl-2' : 'sm:pl-6') + ' truncate'
+            (isDivisionTable == false && problem.isStarred
+              ? 'pl-1 sm:pl-2'
+              : 'sm:pl-6') + ' truncate'
           }
           style={{ maxWidth: '20rem' }}
           target="_blank"
@@ -149,7 +161,7 @@ export default function ProblemsListItem(
       {sourceCol}
       {nameCol}
       {props.showDifficulty &&
-        (divisionTable
+        (isDivisionTable
           ? props.showPercent && (
               <td className="pl-4 md:pl-6 pr-4 md:pr-6 py-3 text-left text-xs leading-4 font-medium uppercase tracking-wider">
                 <UsacoTableProgress completed={problem.percentageSolved} />
@@ -167,7 +179,7 @@ export default function ProblemsListItem(
           </details>
         ) : null}
       </td>
-      {props.modules && (
+      {isDivisionTable && props.modules && (
         <td className="pl-4 md:pl-6 pr-4 md:pr-6 py-4 whitespace-nowrap text-sm font-medium leading-none">
           {problem.moduleLink ? (
             <Anchor href={problem.moduleLink} target="_blank" className="pl-6">

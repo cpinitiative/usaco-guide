@@ -13,15 +13,17 @@ type ProblemActivity = ReturnType<typeof useUserProgressOnProblemsActivity>[0];
 export type ActivityHeatmapProps = {
   moduleActivities: { [key: number]: ModuleActivity[] };
   problemActivities: { [key: number]: ProblemActivity[] };
+  endDate?: Date;
 };
 
 export function ActivityHeatmap({
   moduleActivities,
   problemActivities,
+  endDate,
 }: ActivityHeatmapProps) {
   const [activeDate, setActiveDate] = React.useState<Date | null>(null);
-  const endDate = new Date();
-  const startDate: Date = new Date();
+  if (!endDate) endDate = new Date();
+  const startDate = new Date(endDate);
   startDate.setMonth(endDate.getMonth() - 10);
   const activityCount: { [key: number]: number } = {};
   for (const t in moduleActivities) {
