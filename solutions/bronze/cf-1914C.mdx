@@ -36,17 +36,17 @@ int main() {
 		int mx = b[0];
 		// ans here represents the case only completing the first
 		int ans = a[0] + mx * (k - 1);
-		// ans1 is used to calculate the case completing other quests
-		int ans1 = a[0];
+		// anotherQuest is used to calculate the case completing other quests
+		int anotherQuest = a[0];
 		// farthest location of available quest
 		int limit = min(n, k);
 		for (int z = 1; z < limit; z++) {
 			mx = max(mx, b[z]);
 			// compare experience point of completing one more quest or not
-			if (ans < ans1 + a[z] + mx * (k - z - 1)) {
-				ans = ans1 + a[z] + mx * (k - z - 1);
+			if (ans < anotherQuest + a[z] + mx * (k - z - 1)) {
+				ans = anotherQuest + a[z] + mx * (k - z - 1);
 			}
-			ans1 += a[z];
+			anotherQuest += a[z];
 		}
 
 		cout << ans << "\n";
