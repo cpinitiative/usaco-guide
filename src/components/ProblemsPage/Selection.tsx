@@ -78,7 +78,6 @@ export default function Selection({
                 borderColor: '#374151',
                 borderWidth: '1px',
                 borderRadius: '6px',
-                overflowY: 'auto',
               }),
               menu: provided => ({
                 ...provided,
