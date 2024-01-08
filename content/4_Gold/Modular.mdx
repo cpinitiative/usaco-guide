@@ -289,30 +289,36 @@ assert 2 * x % MOD == 1
 
 ### With Euclidean Division
 
-We can also find the modular inverse from Euclidean Division. Given the prime modulus $m > a$ we have:
+We can also find modular inverses through Euclidean Division.
+Given the prime modulus $m > a$ we have:
 $m = k \cdot a + r$, where k = $floor(\frac{m}{a})$	and $r = m \mod a$. Then: $0 = k \cdot a + r \mod m \iff r = -k \cdot a \mod m
 \iff r \cdot a^-1 = -k \mod m \iff a^-1 = -k \mod m \cdot r^-1 \mod m$.
 
 Here is a short recursive implementation of the above formula:
+
 <LanguageSection>
 <CPPSection>
+
 ```cpp
 int inv(int x) {
 	if (x <= 1) { return x; }
 	return MOD - MOD / x * inv(MOD % x) % MOD;
 }
 ```
+
 </CPPSection>
 </LanguageSection>
 
-The advantage of this approach is that we can precompute the inverse modular of numbers in range $[1, MOD)$ in $\mathcal{O}(MOD)$.
+The advantage of this approach is that we can precompute the inverse modular of numbers in the range $[1, MOD)$ in $\mathcal{O}(MOD)$.
 
 <LanguageSection>
 <CPPSection>
+
 ```cpp
 inv[1] = 1;
 for (int i = 2; i < m; i++) { inv[i] = m - m / i * inv[m % i] % m; }
 ```
+
 </CPPSection>
 </LanguageSection>
 
