@@ -75,6 +75,7 @@ export default function FocusProblem({
                 showTags={true}
                 showDifficulty={true}
                 isFocusProblem={true}
+                isDivisionTable={false}
               />
             </div>
             <ProblemStatusCheckbox problem={problem} size="large" />

@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import tw from 'twin.macro';
 import useStickyState from '../../../hooks/useStickyState';
 
-const Container = styled.div`
+const Container = styled.div<{ isActive: boolean }>`
   &:last-of-type {
     ${tw`border-b`}
   }

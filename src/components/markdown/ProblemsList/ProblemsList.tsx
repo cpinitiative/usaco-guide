@@ -35,7 +35,7 @@ type AnnotatedProblemsListProps =
       tableName?: string;
       title?: string;
       children?: React.ReactChildren;
-      problems?: ProblemInfo[];
+      problems: ProblemInfo[];
       hideSuggestProblemButton?: boolean;
     }
   | {
@@ -52,7 +52,7 @@ export function ProblemsList(unannotatedProps: ProblemsListProps): JSX.Element {
   if (typeof unannotatedProps.problems === 'string') {
     problems = markdownProblems.find(
       list => list.listId === unannotatedProps.problems
-    )?.problems;
+    )!.problems;
     if (!problems) {
       throw new Error(
         "Couldn't find the problem list with name " + unannotatedProps.problems

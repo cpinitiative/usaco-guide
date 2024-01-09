@@ -1,6 +1,6 @@
 import { Link } from 'gatsby';
 import * as React from 'react';
-import { Highlight } from 'react-instantsearch-dom';
+import { Highlight, useHits } from 'react-instantsearch';
 import { moduleIDToSectionMap } from '../../../content/ordering';
 import { ConfettiProvider } from '../../context/ConfettiContext';
 import {
@@ -9,17 +9,18 @@ import {
   useShowTagsSetting,
 } from '../../context/UserDataContext/properties/simpleProperties';
 import {
-  AlgoliaProblemInfo,
+  AlgoliaProblemInfoHit,
   ProblemInfo,
   getProblemURL,
   isUsaco,
   recentUsaco,
 } from '../../models/problem';
 import DifficultyBox from '../DifficultyBox';
+import Info from '../markdown/Info';
 import ProblemStatusCheckbox from '../markdown/ProblemsList/ProblemStatusCheckbox';
 
 interface ProblemHitProps {
-  hit: AlgoliaProblemInfo;
+  hit: AlgoliaProblemInfoHit;
 }
 
 function ProblemHit({ hit }: ProblemHitProps) {
@@ -169,7 +170,16 @@ function ProblemHit({ hit }: ProblemHitProps) {
   );
 }
 
-export default function ProblemHits({ hits }: { hits: AlgoliaProblemInfo[] }) {
+export default function ProblemHits() {
+  const { hits } = useHits() as { hits: AlgoliaProblemInfoHit[] };
+  if (!hits.length) {
+    return (
+      <Info title="No Problems Found">
+        No problems were found matching your search criteria. Try changing your
+        search or filters.
+      </Info>
+    );
+  }
   return (
     <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
       {hits.map(hit => (
