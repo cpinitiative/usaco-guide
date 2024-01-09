@@ -134,7 +134,7 @@ export default function TopNavigationBar({
 
   return (
     <>
-      {!hidePromoBar && (
+      {/*       {!hidePromoBar && (
         <div className="relative bg-blue-600">
           <div className="max-w-screen-xl mx-auto py-3 px-3 sm:px-6 lg:px-8">
             <div className="pr-16 sm:text-center sm:px-16">
@@ -157,7 +157,7 @@ export default function TopNavigationBar({
             </div>
           </div>
         </div>
-      )}
+      )} */}
 
       <nav
         className={classNames(
