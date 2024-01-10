@@ -11,9 +11,10 @@ export default async function handler(
   request: VercelRequest,
   response: VercelResponse
 ) {
-  console.log(request.query.code);
-  const { authentication: token } = await app.createToken({
-    code: request.query.code as string,
+  const {
+    authentication: { token },
+  } = await app.createToken({
+    code: request.body.code as string,
   });
-  response.redirect(302, `/editor/pr?token=${token.token}`);
+  response.json({ token });
 }

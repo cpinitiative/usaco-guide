@@ -25,8 +25,9 @@ export const MainEditorInterface = ({ className }): JSX.Element => {
     activeFile && activeFile.path.startsWith('solutions');
   const tab = isEditingSolution ? 'content' : _tab;
 
-  const markdown: string | null = activeFile?.markdown;
+  const markdown: string | undefined = activeFile?.markdown;
   const setMarkdown = (x: string | ((prev: string) => string)) => {
+    if (!activeFile) return;
     if (typeof x === 'string') {
       saveFile({
         path: activeFile.path,
@@ -45,8 +46,9 @@ export const MainEditorInterface = ({ className }): JSX.Element => {
       });
     }
   };
-  const problems: string | null = activeFile?.problems;
+  const problems: string | undefined = activeFile?.problems;
   const setProblems = (x: string | ((prev: string) => string)) => {
+    if (!activeFile) return;
     if (typeof x === 'string') {
       saveFile({
         path: activeFile.path,
