@@ -11,7 +11,8 @@
 
 import { PageProps } from 'gatsby';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
-import * as React from 'react';
+import { Octokit } from 'octokit';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Split from 'react-split';
 import styled from 'styled-components';
 import {
@@ -54,7 +55,71 @@ function getQueryVariable(query, variable) {
 export default function EditorPage(props: PageProps): JSX.Element {
   const editor = useAtomValue(monacoEditorInstanceAtom);
   const openOrCreateExistingFile = useUpdateAtom(openOrCreateExistingFileAtom);
-
+  const [token, setToken] = useState<string | null>(null);
+  const [code, setCode] = useState<string | null>(null);
+  const [githubInfo, setGithubInfo] = useState<any>(null);
+  const octokit = useRef<any>(null);
+  useEffect(() => {
+    setCode(new URLSearchParams(props.location.search).get('code'));
+    history.replaceState({}, '', '/editor');
+  }, []);
+  useEffect(() => {
+    if (!code) return setToken(null);
+    console.log('fetching');
+    fetch('/api/get-token', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ code }),
+    }).then(async res => setToken((await res.json()).token));
+  }, [code]);
+  useEffect(() => {
+    if (token === null) return setGithubInfo(null);
+    octokit.current = new Octokit({ auth: token });
+    octokit.current
+      .request('GET /user', {
+        headers: {
+          'X-GitHub-Api-Version': '2022-11-28',
+        },
+      })
+      .then(res => setGithubInfo(res.data));
+    console.log('github info', githubInfo);
+  }, [token]);
+  const getGuideSha = useCallback(async () => {
+    const matchingRefs = await octokit.current.request(
+      'GET /repos/{owner}/{repo}/git/matching-refs/{ref}',
+      {
+        owner: 'cpinitiative',
+        repo: 'usaco-guide',
+        ref: 'heads/master',
+        headers: {
+          'X-GitHub-Api-Version': '2022-11-28',
+        },
+      }
+    );
+    console.log(matchingRefs);
+    return matchingRefs.data[0].object.sha;
+  }, []);
+  const createBranch = useCallback(
+    ({ branchName, sha }) => {
+      octokit.current
+        .request('POST /repos/{owner}/{repo}/git/refs', {
+          owner: githubInfo.login,
+          repo: 'usaco-guide',
+          ref: `refs/heads/${branchName}`,
+          sha: sha,
+          headers: {
+            'X-GitHub-Api-Version': '2022-11-28',
+          },
+        })
+        .then(
+          () => alert(`Created branch ${branchName}!`),
+          () => alert(`branch ${branchName} already exists!`)
+        );
+    },
+    [githubInfo]
+  );
   const filesList = useAtomValue(filesListAtom); // null if hasn't been loaded from storage yet
   React.useEffect(() => {
     const defaultFilePath =
@@ -91,7 +156,19 @@ export default function EditorPage(props: PageProps): JSX.Element {
               >
                 {/* https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.istandaloneeditorconstructionoptions.html */}
                 <div className="flex items-stretch">
-                  <EditorSidebar className="h-full flex-shrink-0" />
+                  <EditorSidebar
+                    className="h-full flex-shrink-0"
+                    token={token}
+                    user={githubInfo ? githubInfo.login : null}
+                    handleCreateBranch={async (branchName: string) => {
+                      createBranch({
+                        branchName,
+                        sha: await getGuideSha(),
+                      });
+                    }}
+                    handleLogOut={() => setCode(null)}
+                    loading={!!code}
+                  />
                   <MainEditorInterface className="h-full w-0 flex-1" />
                 </div>
                 <div className="flex flex-col">

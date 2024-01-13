@@ -1,6 +1,6 @@
 import { useAtom } from 'jotai';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
-import * as React from 'react';
+import React, { useRef } from 'react';
 import {
   activeFileAtom,
   closeFileAtom,
@@ -56,16 +56,47 @@ export const EditorSidebar = (props): JSX.Element => {
       createNewInternalSolutionFile(file as AlgoliaEditorSolutionFile);
     }
   };
-
+  const branchNameInput = useRef<HTMLInputElement>(null);
   return (
-    <FileListSidebar
-      {...props}
-      activeFile={activeFile}
-      files={files || []}
-      onOpenFile={handleOpenFile}
-      onCloseFile={handleCloseFile}
-      onCloseAllFiles={handleCloseAllFiles}
-      onNewFile={handleNewFile}
-    />
+    <div className="flex-col w-[250px]">
+      <FileListSidebar
+        {...props}
+        activeFile={activeFile}
+        files={files || []}
+        onOpenFile={handleOpenFile}
+        onCloseFile={handleCloseFile}
+        onCloseAllFiles={handleCloseAllFiles}
+        onNewFile={handleNewFile}
+      />
+      <div className="px-4 py-4">
+        {props.user ? (
+          <p>{`Logged in as: ${props.user}`}</p>
+        ) : props.loading ? (
+          <p>Logging in...</p>
+        ) : (
+          <a
+            href={`https://github.com/login/oauth/authorize?client_id=${process.env.GATSBY_EDITOR_CLIENT_ID}&redirect_uri=http://localhost:8000/editor`}
+            className="btn"
+          >
+            Login with GitHub &rarr;
+          </a>
+        )}
+        {props.user && (
+          <div className="flex flex-col items-start">
+            <input className="input" ref={branchNameInput} />
+            <button
+              onClick={() =>
+                props.handleCreateBranch(branchNameInput.current?.value)
+              }
+            >
+              Create Branch
+            </button>
+            <button className="btn" onClick={props.handleLogOut}>
+              Log Out
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
   );
 };
