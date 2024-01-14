@@ -1,6 +1,6 @@
 import { useAtom } from 'jotai';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
-import React from 'react';
+import React, { useCallback } from 'react';
 import {
   activeFileAtom,
   branchAtom,
@@ -8,6 +8,7 @@ import {
   createNewInternalSolutionFileAtom,
   filesListAtom,
   githubInfoAtom,
+  octokitAtom,
   openOrCreateExistingFileAtom,
 } from '../../../atoms/editor';
 import {
@@ -16,9 +17,44 @@ import {
 } from '../../../models/algoliaEditorFile';
 import { FileListSidebar } from './FileListSidebar';
 
-function GithubSidebar({ loading, ...props }: { loading: boolean } | any) {
+function GithubSidebar({ loading }: { loading: boolean }) {
   const githubInfo = useAtomValue(githubInfoAtom);
+  const octokit = useAtomValue(octokitAtom);
   const [branch, setBranch] = useAtom(branchAtom);
+  const createBranch = useCallback(
+    async branchName => {
+      if (!octokit || !githubInfo) return;
+      const masterSha = (
+        await octokit?.request(
+          'GET /repos/{owner}/{repo}/git/matching-refs/{ref}',
+          {
+            owner: 'cpinitiative',
+            repo: 'usaco-guide',
+            ref: 'heads/master',
+            headers: {
+              'X-GitHub-Api-Version': '2022-11-28',
+            },
+          }
+        )
+      ).data[0].object.sha;
+      octokit
+        .request('POST /repos/{owner}/{repo}/git/refs', {
+          owner: githubInfo.login,
+          repo: 'usaco-guide',
+          ref: `refs/heads/${branchName}`,
+          sha: masterSha,
+          headers: {
+            'X-GitHub-Api-Version': '2022-11-28',
+          },
+        })
+        .then(
+          () => alert(`Created branch ${branchName}!`),
+          () => alert(`Set branch to ${branchName}!`)
+        )
+        .then(() => setBranch(branchName));
+    },
+    [githubInfo, octokit]
+  );
   return (
     <div className="px-4 py-4">
       {!githubInfo ? (
@@ -51,7 +87,7 @@ function GithubSidebar({ loading, ...props }: { loading: boolean } | any) {
             <p>Branch not set</p>
           )}
           <button
-            // onClick={() => props.handleCreateBranch(prompt('Branch name?'))}
+            onClick={() => createBranch(prompt('Branch name?'))}
             className="btn"
           >
             Create/Set Branch

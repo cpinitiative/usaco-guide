@@ -1,5 +1,13 @@
+import { Buffer } from 'buffer';
 import classNames from 'classnames';
+import { useAtomValue } from 'jotai';
 import React from 'react';
+import {
+  activeFileAtom,
+  branchAtom,
+  githubInfoAtom,
+  octokitAtom,
+} from '../../atoms/editor';
 import { useQuizOpen } from '../../context/QuizGeneratorContext';
 
 export interface EditorTab {
@@ -24,6 +32,10 @@ const EditorTabBar: React.FC<EditorTabBarProps> = ({
   onFormatCode,
 }) => {
   const { setOpen } = useQuizOpen();
+  const githubInfo = useAtomValue(githubInfoAtom);
+  const activeFile = useAtomValue(activeFileAtom);
+  const octokit = useAtomValue(octokitAtom);
+  const branch = useAtomValue(branchAtom);
   return (
     <>
       <div className="flex bg-gray-900">
@@ -63,6 +75,33 @@ const EditorTabBar: React.FC<EditorTabBarProps> = ({
         >
           Format Code
         </button>
+        {githubInfo && octokit && activeFile && branch && (
+          <button
+            className={classNames(
+              'text-gray-400 hover:text-gray-300 hover:bg-gray-800 active:bg-gray-800',
+              'px-3 py-2 font-medium text-sm focus:outline-none transition'
+            )}
+            onClick={() => {
+              octokit.request('PUT /repos/{owner}/{repo}/contents/{path}', {
+                owner: githubInfo.login,
+                repo: 'usaco-guide',
+                path: activeFile.path,
+                message: `Update ${activeFile.path}`,
+                branch: branch,
+                committer: {
+                  name: githubInfo.name ?? 'editor',
+                  email: githubInfo.email ?? 'editor@noreply.com',
+                },
+                content: Buffer.from(activeFile.markdown).toString('base64'),
+                headers: {
+                  'X-GitHub-Api-Version': '2022-11-28',
+                },
+              });
+            }}
+          >
+            Commit Code
+          </button>
+        )}
       </div>
     </>
   );
