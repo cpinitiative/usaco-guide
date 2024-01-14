@@ -68,7 +68,7 @@ export const fetchForkAtom = atom(null, async (get, set) => {
     })
   )?.data;
   console.log(repos);
-  set(forkAtom, repos?.find(repo => repo.name === 'usaco-problems')?.name);
+  set(forkAtom, repos?.find(repo => repo.name === 'usaco-guide')?.name);
 });
 export const forkEffect = atomEffect((get, set) => {
   console.log('effect activated');

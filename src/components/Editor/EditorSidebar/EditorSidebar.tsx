@@ -84,7 +84,7 @@ function GithubActions() {
     octokit
       .request('POST /repos/{owner}/{repo}/forks', {
         owner: 'cpinitiative',
-        repo: 'usaco-problems',
+        repo: 'usaco-guide',
         headers: {
           'X-GitHub-Api-Version': '2022-11-28',
         },
