@@ -93,37 +93,35 @@ export default function EditorPage(props: PageProps): JSX.Element {
           <EditorTopNav />
 
           {typeof window !== 'undefined' && (
-            <React.Suspense
-              fallback={
-                <div className="text-center mt-6 font-bold text-2xl">
-                  Loading
-                </div>
-              }
+            // <React.Suspense
+            //   fallback={
+            //     <div className="text-center mt-6 font-bold text-2xl">
+            //       Loading
+            //     </div>
+            //   }
+            // >
+            <StyledSplit
+              className="h-full relative flex-1 overflow-hidden"
+              onDrag={() => {
+                if (editor.monaco !== null) editor.monaco.layout();
+              }}
+              minSize={[600, 10]}
             >
-              <StyledSplit
-                className="h-full relative flex-1 overflow-hidden"
-                onDrag={() => {
-                  if (editor.monaco !== null) editor.monaco.layout();
-                }}
-                minSize={[600, 10]}
-              >
-                {/* https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.istandaloneeditorconstructionoptions.html */}
-                <div className="flex items-stretch">
-                  <EditorSidebar
-                    className="h-full flex-shrink-0"
-                    loading={
-                      !!new URLSearchParams(props.location.search).get('code')
-                    }
-                  />
-                  <MainEditorInterface className="h-full w-0 flex-1" />
+              {/* https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.istandaloneeditorconstructionoptions.html */}
+              <div className="flex items-stretch">
+                <EditorSidebar
+                  className="h-full flex-shrink-0"
+                  loading={!!new URLSearchParams(location.search).get('code')}
+                />
+                <MainEditorInterface className="h-full w-0 flex-1" />
+              </div>
+              <div className="flex flex-col">
+                <div className="overflow-y-auto relative flex-1">
+                  <EditorOutput />
                 </div>
-                <div className="flex flex-col">
-                  <div className="overflow-y-auto relative flex-1">
-                    <EditorOutput />
-                  </div>
-                </div>
-              </StyledSplit>
-            </React.Suspense>
+              </div>
+            </StyledSplit>
+            // </React.Suspense>
           )}
         </div>
       </Layout>

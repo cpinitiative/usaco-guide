@@ -60,7 +60,7 @@ function GithubSidebar({ loading }: { loading: boolean }) {
     setPullState('Opening Pull Request...');
     octokit
       .request('POST /repos/{owner}/{repo}/pulls', {
-        owner: 'danielzsh',
+        owner: 'cpinitiative',
         repo: 'usaco-guide',
         title: prompt('What is the title of this PR?') ?? 'Updates from editor',
         head: `${githubInfo.login}:${branch}`,
@@ -177,7 +177,9 @@ export const EditorSidebar = (props): JSX.Element => {
         onCloseAllFiles={handleCloseAllFiles}
         onNewFile={handleNewFile}
       />
-      <GithubSidebar {...props} />
+      <React.Suspense fallback={<p className="px-4">Loading...</p>}>
+        <GithubSidebar {...props} />
+      </React.Suspense>
     </div>
   );
 };

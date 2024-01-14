@@ -58,20 +58,9 @@ export const prAtom = atomWithRefresh(async get => {
     githubInfo = get(githubInfoAtom),
     branch = get(branchAtom);
   if (!octokit || !githubInfo || !branch) return null;
-  console.log(
-    'getting prs: ',
-    await octokit.request('GET /repos/{owner}/{repo}/pulls', {
-      owner: 'danielzsh',
-      repo: 'usaco-guide',
-      head: `${githubInfo.login}:${branch}`,
-      headers: {
-        'X-GitHub-Api-Version': '2022-11-28',
-      },
-    })
-  );
   return (
     await octokit.request('GET /repos/{owner}/{repo}/pulls', {
-      owner: 'danielzsh',
+      owner: 'cpinitiative',
       repo: 'usaco-guide',
       head: `${githubInfo.login}:${branch}`,
       headers: {

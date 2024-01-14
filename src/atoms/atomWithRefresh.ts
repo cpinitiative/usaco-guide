@@ -1,3 +1,4 @@
+// https://jotai.org/docs/recipes/atom-with-refresh
 import { atom, Getter } from 'jotai';
 
 export function atomWithRefresh<T>(fn: (get: Getter) => T) {

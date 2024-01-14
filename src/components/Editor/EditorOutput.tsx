@@ -91,19 +91,23 @@ export const EditorOutput = (): JSX.Element => {
 
   return (
     <div className="markdown p-4">
-      <EditorContext.Provider
-        value={{
-          addProblem: handleAddProblem,
-          inEditor: true,
-        }}
-      >
-        <MarkdownProblemListsProvider value={markdownProblemListsProviderValue}>
-          <ProblemSuggestionModalProvider>
-            <RawMarkdownRenderer markdown={markdown} problems={problems} />
-            <QuizGeneratorModal />
-          </ProblemSuggestionModalProvider>
-        </MarkdownProblemListsProvider>
-      </EditorContext.Provider>
+      <React.Suspense fallback={<p>Loading...</p>}>
+        <EditorContext.Provider
+          value={{
+            addProblem: handleAddProblem,
+            inEditor: true,
+          }}
+        >
+          <MarkdownProblemListsProvider
+            value={markdownProblemListsProviderValue}
+          >
+            <ProblemSuggestionModalProvider>
+              <RawMarkdownRenderer markdown={markdown} problems={problems} />
+              <QuizGeneratorModal />
+            </ProblemSuggestionModalProvider>
+          </MarkdownProblemListsProvider>
+        </EditorContext.Provider>
+      </React.Suspense>
     </div>
   );
 };
