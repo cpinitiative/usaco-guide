@@ -1,12 +1,14 @@
-import { useAtom } from 'jotai';
-import { useAtomValue, useUpdateAtom } from 'jotai/utils';
+import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import React, { useCallback, useState } from 'react';
 import {
   activeFileAtom,
   branchAtom,
   closeFileAtom,
   createNewInternalSolutionFileAtom,
+  fetchForkAtom,
   filesListAtom,
+  forkAtom,
+  forkEffect,
   githubInfoAtom,
   octokitAtom,
   openOrCreateExistingFileAtom,
@@ -18,15 +20,19 @@ import {
 } from '../../../models/algoliaEditorFile';
 import { FileListSidebar } from './FileListSidebar';
 
-function GithubSidebar({ loading }: { loading: boolean }) {
+function GithubActions() {
+  const fork = useAtomValue(forkAtom);
+  const fetchFork = useSetAtom(fetchForkAtom);
+  useAtom(forkEffect);
   const githubInfo = useAtomValue(githubInfoAtom);
   const octokit = useAtomValue(octokitAtom);
   const [branch, setBranch] = useAtom(branchAtom);
   const [pullState, setPullState] = useState('Open Pull Request');
   const [pr, refreshPr] = useAtom(prAtom);
+  const [forkState, setForkState] = useState('Create Fork');
   const createBranch = useCallback(
     async branchName => {
-      if (!octokit || !githubInfo) return;
+      if (!octokit || !githubInfo || !fork) return;
       const masterSha = (
         await octokit?.request(
           'GET /repos/{owner}/{repo}/git/matching-refs/{ref}',
@@ -56,7 +62,7 @@ function GithubSidebar({ loading }: { loading: boolean }) {
     [githubInfo, octokit]
   );
   const openPR = useCallback(() => {
-    if (!octokit || !branch || !githubInfo) return;
+    if (!octokit || !branch || !githubInfo || !fork) return;
     setPullState('Opening Pull Request...');
     octokit
       .request('POST /repos/{owner}/{repo}/pulls', {
@@ -65,28 +71,40 @@ function GithubSidebar({ loading }: { loading: boolean }) {
         title: prompt('What is the title of this PR?') ?? 'Updates from editor',
         head: `${githubInfo.login}:${branch}`,
         base: 'master',
+        draft: true,
         headers: {
           'X-GitHub-Api-Version': '2022-11-28',
         },
       })
       .then(() => refreshPr());
   }, [octokit, branch, githubInfo]);
+  const createFork = useCallback(() => {
+    if (!octokit) return;
+    setForkState('Creating Fork...');
+    octokit
+      .request('POST /repos/{owner}/{repo}/forks', {
+        owner: 'cpinitiative',
+        repo: 'usaco-problems',
+        headers: {
+          'X-GitHub-Api-Version': '2022-11-28',
+        },
+      })
+      .then(() => setInterval(fetchFork, 5000));
+  }, [octokit]);
   return (
-    <div className="px-4 py-4">
-      {!githubInfo ? (
-        loading ? (
-          <p>Logging in...</p>
-        ) : (
-          <a
-            href={`https://github.com/login/oauth/authorize?client_id=${process.env.GATSBY_EDITOR_CLIENT_ID}&redirect_uri=http://localhost:8000/editor`}
-            className="btn"
-          >
-            Login with GitHub &rarr;
-          </a>
-        )
+    <>
+      {!fork ? (
+        <>
+          <p>No fork detected.</p>
+          <button className="btn mt-1" onClick={createFork}>
+            {forkState}
+          </button>
+          {forkState === 'Creating Fork...' && (
+            <em className="mt-1">This can take up to a minute...</em>
+          )}
+        </>
       ) : (
-        <div className="flex flex-col items-start">
-          <p>{`Welcome, ${githubInfo.login}!`}</p>
+        <>
           {branch ? (
             <p>
               Current branch:{' '}
@@ -118,6 +136,33 @@ function GithubSidebar({ loading }: { loading: boolean }) {
               {pr ? 'PR Opened!' : pullState}
             </button>
           )}
+        </>
+      )}
+    </>
+  );
+}
+
+function GithubSidebar({ loading }: { loading: boolean }) {
+  const githubInfo = useAtomValue(githubInfoAtom);
+  return (
+    <div className="px-4 py-4">
+      {!githubInfo ? (
+        loading ? (
+          <p>Logging in...</p>
+        ) : (
+          <a
+            href={`https://github.com/login/oauth/authorize?client_id=${process.env.GATSBY_EDITOR_CLIENT_ID}&redirect_uri=http://localhost:8000/editor`}
+            className="btn"
+          >
+            Login with GitHub &rarr;
+          </a>
+        )
+      ) : (
+        <div className="flex flex-col items-start">
+          <p>{`Welcome, ${githubInfo.login}!`}</p>
+          <React.Suspense fallback={<p>Loading...</p>}>
+            <GithubActions />
+          </React.Suspense>
         </div>
       )}
     </div>
@@ -127,11 +172,11 @@ function GithubSidebar({ loading }: { loading: boolean }) {
 export const EditorSidebar = (props): JSX.Element => {
   const files = useAtomValue(filesListAtom);
   const [activeFile, setActiveFile] = useAtom(activeFileAtom);
-  const openOrCreateExistingFile = useUpdateAtom(openOrCreateExistingFileAtom);
-  const createNewInternalSolutionFile = useUpdateAtom(
+  const openOrCreateExistingFile = useSetAtom(openOrCreateExistingFileAtom);
+  const createNewInternalSolutionFile = useSetAtom(
     createNewInternalSolutionFileAtom
   );
-  const closeFile = useUpdateAtom(closeFileAtom);
+  const closeFile = useSetAtom(closeFileAtom);
 
   const handleOpenFile = (file: string) => {
     setActiveFile(file);
@@ -177,7 +222,7 @@ export const EditorSidebar = (props): JSX.Element => {
         onCloseAllFiles={handleCloseAllFiles}
         onNewFile={handleNewFile}
       />
-      <React.Suspense fallback={<p className="px-4">Loading...</p>}>
+      <React.Suspense fallback={<p className="p-4">Loading...</p>}>
         <GithubSidebar {...props} />
       </React.Suspense>
     </div>

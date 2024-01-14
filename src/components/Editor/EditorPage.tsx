@@ -111,7 +111,9 @@ export default function EditorPage(props: PageProps): JSX.Element {
               <div className="flex items-stretch">
                 <EditorSidebar
                   className="h-full flex-shrink-0"
-                  loading={!!new URLSearchParams(location.search).get('code')}
+                  loading={
+                    !!new URLSearchParams(props.location.search).get('code')
+                  }
                 />
                 <MainEditorInterface className="h-full w-0 flex-1" />
               </div>

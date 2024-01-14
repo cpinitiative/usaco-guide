@@ -1,4 +1,4 @@
-import { useAtomValue, useUpdateAtom } from 'jotai/utils';
+import { useAtomValue, useSetAtom } from 'jotai';
 import babelParser from 'prettier/parser-babel';
 import prettier from 'prettier/standalone';
 import * as React from 'react';
@@ -19,7 +19,7 @@ const RawMarkdownRenderer = React.lazy(
 
 export const EditorOutput = (): JSX.Element => {
   const activeFile = useAtomValue(activeFileAtom);
-  const saveFile = useUpdateAtom(saveFileAtom);
+  const saveFile = useSetAtom(saveFileAtom);
 
   const markdown: string | null = activeFile?.markdown;
   const problems: string | null = activeFile?.problems;

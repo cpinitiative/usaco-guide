@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import { useAtomValue, useUpdateAtom } from 'jotai/utils';
+import { useAtomValue, useSetAtom } from 'jotai';
 import babelParser from 'prettier/parser-babel';
 import markdownParser from 'prettier/parser-markdown';
 import prettier from 'prettier/standalone';
@@ -18,8 +18,8 @@ const Editor = React.lazy(() => import('@monaco-editor/react'));
 
 export const MainEditorInterface = ({ className }): JSX.Element => {
   const activeFile = useAtomValue(activeFileAtom);
-  const saveFile = useUpdateAtom(saveFileAtom);
-  const setMonacoEditorInstance = useUpdateAtom(monacoEditorInstanceAtom);
+  const saveFile = useSetAtom(saveFileAtom);
+  const setMonacoEditorInstance = useSetAtom(monacoEditorInstanceAtom);
   const [_tab, setTab] = useState<'problems' | 'content'>('content');
   const isEditingSolution =
     activeFile && activeFile.path.startsWith('solutions');

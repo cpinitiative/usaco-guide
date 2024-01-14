@@ -1,6 +1,6 @@
 import { InformationCircleIcon } from '@heroicons/react/outline';
 import classNames from 'classnames';
-import { useAtomValue, useUpdateAtom } from 'jotai/utils';
+import { useAtomValue, useSetAtom } from 'jotai';
 import React from 'react';
 import { activeFileAtom, saveFileAtom } from '../../atoms/editor';
 import { useDarkMode } from '../../context/DarkModeContext';
@@ -15,7 +15,7 @@ import { fetchFileContent } from './editorUtils';
 
 export const EditorTopNav = (): JSX.Element => {
   const activeFile = useAtomValue(activeFileAtom);
-  const saveFile = useUpdateAtom(saveFileAtom);
+  const saveFile = useSetAtom(saveFileAtom);
   const isDarkMode = useDarkMode();
   const userLang = useUserLangSetting();
   const setUserLang = useSetUserLangSetting();

@@ -1,7 +1,6 @@
 import { ArrowLeftIcon, ArrowRightIcon } from '@heroicons/react/solid';
 import classNames from 'classnames';
-import { Provider, atom, useAtom } from 'jotai';
-import { useAtomValue, useUpdateAtom } from 'jotai/utils';
+import { Provider, atom, useAtom, useAtomValue, useSetAtom } from 'jotai';
 import React from 'react';
 
 const quizScope = Symbol();
@@ -97,7 +96,7 @@ const QuizMCAnswer = props => {
 QuizMCAnswer.displayName = 'QuizMCAnswer';
 
 const QuizQuestion = props => {
-  const setCorrectAnswers = useUpdateAtom(correctAnswersAtom, quizScope);
+  const setCorrectAnswers = useSetAtom(correctAnswersAtom, quizScope);
   React.useEffect(() => {
     const correctAnswers = [];
     let answerNum = 0;
@@ -136,7 +135,7 @@ const ActualQuiz = props => {
     quizScope
   );
   const finalAnswers = useAtomValue(finalAnswersAtom, quizScope);
-  const submitAnswer = useUpdateAtom(handleSubmittedAnswerAtom, quizScope);
+  const submitAnswer = useSetAtom(handleSubmittedAnswerAtom, quizScope);
   const [submitted, setSubmitted] = useAtom(submittedAtom, quizScope);
   const canMoveOn = submitted || selectedAnswer === null; //if you can move on to the next question
 
