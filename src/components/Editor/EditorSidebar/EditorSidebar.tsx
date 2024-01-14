@@ -1,6 +1,6 @@
 import { useAtom } from 'jotai';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import {
   activeFileAtom,
   branchAtom,
@@ -10,6 +10,7 @@ import {
   githubInfoAtom,
   octokitAtom,
   openOrCreateExistingFileAtom,
+  prAtom,
 } from '../../../atoms/editor';
 import {
   AlgoliaEditorFile,
@@ -21,6 +22,8 @@ function GithubSidebar({ loading }: { loading: boolean }) {
   const githubInfo = useAtomValue(githubInfoAtom);
   const octokit = useAtomValue(octokitAtom);
   const [branch, setBranch] = useAtom(branchAtom);
+  const [pullState, setPullState] = useState('Open Pull Request');
+  const [pr, refreshPr] = useAtom(prAtom);
   const createBranch = useCallback(
     async branchName => {
       if (!octokit || !githubInfo) return;
@@ -47,14 +50,27 @@ function GithubSidebar({ loading }: { loading: boolean }) {
             'X-GitHub-Api-Version': '2022-11-28',
           },
         })
-        .then(
-          () => alert(`Created branch ${branchName}!`),
-          () => alert(`Set branch to ${branchName}!`)
-        )
-        .then(() => setBranch(branchName));
+        .catch(() => {})
+        .finally(() => setBranch(branchName));
     },
     [githubInfo, octokit]
   );
+  const openPR = useCallback(() => {
+    if (!octokit || !branch || !githubInfo) return;
+    setPullState('Opening Pull Request...');
+    octokit
+      .request('POST /repos/{owner}/{repo}/pulls', {
+        owner: 'danielzsh',
+        repo: 'usaco-guide',
+        title: prompt('What is the title of this PR?') ?? 'Updates from editor',
+        head: `${githubInfo.login}:${branch}`,
+        base: 'master',
+        headers: {
+          'X-GitHub-Api-Version': '2022-11-28',
+        },
+      })
+      .then(() => refreshPr());
+  }, [octokit, branch, githubInfo]);
   return (
     <div className="px-4 py-4">
       {!githubInfo ? (
@@ -92,6 +108,16 @@ function GithubSidebar({ loading }: { loading: boolean }) {
           >
             Create/Set Branch
           </button>
+          {branch && (
+            <button
+              className="btn mt-4"
+              onClick={() => {
+                pr ? window.open(pr, '_blank') : openPR();
+              }}
+            >
+              {pr ? 'PR Opened!' : pullState}
+            </button>
+          )}
         </div>
       )}
     </div>

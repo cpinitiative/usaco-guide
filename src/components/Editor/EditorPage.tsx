@@ -10,17 +10,13 @@
 // }
 
 import { PageProps } from 'gatsby';
-import { useAtom } from 'jotai';
-import { useAtomValue, useUpdateAtom } from 'jotai/utils';
-import React, { useCallback, useEffect } from 'react';
+import { useAtomValue, useSetAtom } from 'jotai';
+import React, { useEffect } from 'react';
 import Split from 'react-split';
 import styled from 'styled-components';
 import {
-  branchAtom,
   filesListAtom,
-  githubInfoAtom,
   monacoEditorInstanceAtom,
-  octokitAtom,
   openOrCreateExistingFileAtom,
   tokenAtom,
 } from '../../atoms/editor';
@@ -58,11 +54,8 @@ function getQueryVariable(query, variable) {
 
 export default function EditorPage(props: PageProps): JSX.Element {
   const editor = useAtomValue(monacoEditorInstanceAtom);
-  const openOrCreateExistingFile = useUpdateAtom(openOrCreateExistingFileAtom);
-  const [token, setToken] = useAtom(tokenAtom);
-  const githubInfo = useAtomValue(githubInfoAtom);
-  const [branch, setBranch] = useAtom(branchAtom);
-  const octokit = useAtomValue(octokitAtom);
+  const openOrCreateExistingFile = useSetAtom(openOrCreateExistingFileAtom);
+  const setToken = useSetAtom(tokenAtom);
   useEffect(() => {
     const code = new URLSearchParams(props.location.search).get('code');
     if (!code) return;
@@ -72,45 +65,14 @@ export default function EditorPage(props: PageProps): JSX.Element {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ code }),
-    }).then(async res => setToken((await res.json()).token));
+    })
+      .then(res => res.json())
+      .then(json => {
+        console.log(json);
+        setToken(json.token);
+      });
     history.replaceState({}, '', '/editor');
   }, []);
-  const getGuideSha = useCallback(async () => {
-    const matchingRefs = await octokit?.request(
-      'GET /repos/{owner}/{repo}/git/matching-refs/{ref}',
-      {
-        owner: 'cpinitiative',
-        repo: 'usaco-guide',
-        ref: 'heads/master',
-        headers: {
-          'X-GitHub-Api-Version': '2022-11-28',
-        },
-      }
-    );
-    console.log(matchingRefs);
-    return matchingRefs?.data[0].object.sha;
-  }, []);
-  const createBranch = useCallback(
-    ({ branchName, sha }) => {
-      if (!octokit || !githubInfo) return;
-      octokit
-        .request('POST /repos/{owner}/{repo}/git/refs', {
-          owner: githubInfo.login,
-          repo: 'usaco-guide',
-          ref: `refs/heads/${branchName}`,
-          sha: sha,
-          headers: {
-            'X-GitHub-Api-Version': '2022-11-28',
-          },
-        })
-        .then(
-          () => alert(`Created branch ${branchName}!`),
-          () => alert(`branch ${branchName} already exists!`)
-        )
-        .then(() => setBranch(branchName));
-    },
-    [githubInfo]
-  );
   const filesList = useAtomValue(filesListAtom); // null if hasn't been loaded from storage yet
   React.useEffect(() => {
     const defaultFilePath =
@@ -149,12 +111,6 @@ export default function EditorPage(props: PageProps): JSX.Element {
                 <div className="flex items-stretch">
                   <EditorSidebar
                     className="h-full flex-shrink-0"
-                    handleCreateBranch={async (branchName: string) => {
-                      createBranch({
-                        branchName,
-                        sha: await getGuideSha(),
-                      });
-                    }}
                     loading={
                       !!new URLSearchParams(props.location.search).get('code')
                     }

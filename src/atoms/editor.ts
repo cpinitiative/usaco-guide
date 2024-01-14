@@ -4,6 +4,7 @@ import { Octokit } from 'octokit';
 import { fetchFileContent } from '../components/Editor/editorUtils';
 import { AlgoliaEditorSolutionFile } from '../models/algoliaEditorFile';
 import { formatProblems } from '../utils/prettierFormatter';
+import { atomWithRefresh } from './atomWithRefresh';
 
 export type EditorFile = {
   path: string;
@@ -52,6 +53,33 @@ export const tokenAtom = atom<string | null>(null);
 export const octokitAtom = atom(get =>
   get(tokenAtom) === null ? null : new Octokit({ auth: get(tokenAtom) })
 );
+export const prAtom = atomWithRefresh(async get => {
+  const octokit = get(octokitAtom),
+    githubInfo = get(githubInfoAtom),
+    branch = get(branchAtom);
+  if (!octokit || !githubInfo || !branch) return null;
+  console.log(
+    'getting prs: ',
+    await octokit.request('GET /repos/{owner}/{repo}/pulls', {
+      owner: 'danielzsh',
+      repo: 'usaco-guide',
+      head: `${githubInfo.login}:${branch}`,
+      headers: {
+        'X-GitHub-Api-Version': '2022-11-28',
+      },
+    })
+  );
+  return (
+    await octokit.request('GET /repos/{owner}/{repo}/pulls', {
+      owner: 'danielzsh',
+      repo: 'usaco-guide',
+      head: `${githubInfo.login}:${branch}`,
+      headers: {
+        'X-GitHub-Api-Version': '2022-11-28',
+      },
+    })
+  ).data[0]?.html_url;
+});
 export const githubInfoAtom = atom(
   async get => (await get(octokitAtom)?.request('GET /user'))?.data
 );

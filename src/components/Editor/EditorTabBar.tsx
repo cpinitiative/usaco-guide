@@ -1,7 +1,7 @@
 import { Buffer } from 'buffer';
 import classNames from 'classnames';
 import { useAtomValue } from 'jotai';
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import {
   activeFileAtom,
   branchAtom,
@@ -36,9 +36,11 @@ const EditorTabBar: React.FC<EditorTabBarProps> = ({
   const activeFile = useAtomValue(activeFileAtom);
   const octokit = useAtomValue(octokitAtom);
   const branch = useAtomValue(branchAtom);
+  const [commitState, setCommitState] = useState('Commit Code');
   const updateFile = useCallback(
     async activeFile => {
       if (!octokit || !githubInfo || !branch) return;
+      setCommitState('Committing...');
       let fileSha = null;
       try {
         fileSha = (
@@ -76,6 +78,7 @@ const EditorTabBar: React.FC<EditorTabBarProps> = ({
       );
       console.log('response: ', response);
       window.open(response.data.commit.html_url, '_blank');
+      setCommitState('Commit Code');
     },
     [octokit, githubInfo, branch]
   );
@@ -126,7 +129,7 @@ const EditorTabBar: React.FC<EditorTabBarProps> = ({
             )}
             onClick={() => updateFile(activeFile)}
           >
-            Commit Code
+            {commitState}
           </button>
         )}
       </div>
