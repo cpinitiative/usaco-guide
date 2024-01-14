@@ -1,7 +1,7 @@
 import { Buffer } from 'buffer';
 import classNames from 'classnames';
 import { useAtomValue } from 'jotai';
-import React from 'react';
+import React, { useCallback } from 'react';
 import {
   activeFileAtom,
   branchAtom,
@@ -36,6 +36,49 @@ const EditorTabBar: React.FC<EditorTabBarProps> = ({
   const activeFile = useAtomValue(activeFileAtom);
   const octokit = useAtomValue(octokitAtom);
   const branch = useAtomValue(branchAtom);
+  const updateFile = useCallback(
+    async activeFile => {
+      if (!octokit || !githubInfo || !branch) return;
+      let fileSha = null;
+      try {
+        fileSha = (
+          (await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
+            owner: githubInfo.login,
+            repo: 'usaco-guide',
+            path: activeFile.path,
+            ref: branch,
+            headers: {
+              'X-GitHub-Api-Version': '2022-11-28',
+            },
+          })) as any
+        ).data.sha;
+      } catch {
+        console.log("file doesn't exist yet");
+      }
+      const response = await octokit.request(
+        'PUT /repos/{owner}/{repo}/contents/{path}',
+        {
+          owner: githubInfo.login,
+          repo: 'usaco-guide',
+          path: activeFile.path,
+          message: `Update ${activeFile.path}`,
+          branch: branch,
+          committer: {
+            name: githubInfo.name ?? 'editor',
+            email: githubInfo.email ?? 'editor@noreply.com',
+          },
+          sha: fileSha,
+          content: Buffer.from(activeFile.markdown).toString('base64'),
+          headers: {
+            'X-GitHub-Api-Version': '2022-11-28',
+          },
+        }
+      );
+      console.log('response: ', response);
+      window.open(response.data.commit.html_url, '_blank');
+    },
+    [octokit, githubInfo, branch]
+  );
   return (
     <>
       <div className="flex bg-gray-900">
@@ -81,23 +124,7 @@ const EditorTabBar: React.FC<EditorTabBarProps> = ({
               'text-gray-400 hover:text-gray-300 hover:bg-gray-800 active:bg-gray-800',
               'px-3 py-2 font-medium text-sm focus:outline-none transition'
             )}
-            onClick={() => {
-              octokit.request('PUT /repos/{owner}/{repo}/contents/{path}', {
-                owner: githubInfo.login,
-                repo: 'usaco-guide',
-                path: activeFile.path,
-                message: `Update ${activeFile.path}`,
-                branch: branch,
-                committer: {
-                  name: githubInfo.name ?? 'editor',
-                  email: githubInfo.email ?? 'editor@noreply.com',
-                },
-                content: Buffer.from(activeFile.markdown).toString('base64'),
-                headers: {
-                  'X-GitHub-Api-Version': '2022-11-28',
-                },
-              });
-            }}
+            onClick={() => updateFile(activeFile)}
           >
             Commit Code
           </button>
