@@ -45,7 +45,6 @@ bool check(vector<int> &v, int remove, int k) {
 	return true;
 }
 
-
 bool dfs(int node, int p, int k) {
 	vector<int> v;  // all leftover path lengths from children
 	for (int i : g[node]) {
@@ -53,18 +52,16 @@ bool dfs(int node, int p, int k) {
 		if (!dfs(i, node, k)) return false;
 		v.push_back(to_be_merged[i] + 1);
 	}
-	
+
 	// root edge case
-	if(node == 0){
+	if (node == 0) {
 		// if it is the root, all paths must be evenly paired
 		// there must be an even number of paths initially
-		if (v.size() % 2 == 1) {
-			v.push_back(0);
-		}
+		if (v.size() % 2 == 1) { v.push_back(0); }
 		// return if possible if we do not remove any elements
 		return check(v, -1, k);
 	}
-	
+
 	if (v.size() % 2 == 0) {
 		// append dummy 0 (returned if perfectly paired)
 		v.push_back(0);
@@ -83,7 +80,7 @@ bool dfs(int node, int p, int k) {
 			r = mid;
 		}
 	}
-	
+
 	// we cannot pair all paths even if we removed an index
 	if (l == -1) { return false; }
 
@@ -101,7 +98,7 @@ int main() {
 		g[--u].push_back(--v);
 		g[v].push_back(u);
 	}
-	
+
 	int l = 0;
 	int r = n + 1;
 	while (l < r - 1) {
@@ -155,12 +152,10 @@ bool dfs(int node, int p, int k) {
 	}
 
 	// root edge case
-	if(node == 0){
+	if (node == 0) {
 		// if it is the root, all paths must be evenly paired
 		// there must be an even number of paths initially
-		if (v.size() % 2 == 1) {
-			v.push_back(0);
-		}
+		if (v.size() % 2 == 1) { v.push_back(0); }
 		// return if possible if we do not remove any elements
 		return check(v, -1, k);
 	}
