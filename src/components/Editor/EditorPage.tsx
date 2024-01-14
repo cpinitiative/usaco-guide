@@ -10,15 +10,19 @@
 // }
 
 import { PageProps } from 'gatsby';
+import { useAtom } from 'jotai';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
-import { Octokit } from 'octokit';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import Split from 'react-split';
 import styled from 'styled-components';
 import {
+  branchAtom,
   filesListAtom,
+  githubInfoAtom,
   monacoEditorInstanceAtom,
+  octokitAtom,
   openOrCreateExistingFileAtom,
+  tokenAtom,
 } from '../../atoms/editor';
 import QuizGeneratorProvider from '../../context/QuizGeneratorContext';
 import Layout from '../layout';
@@ -55,17 +59,13 @@ function getQueryVariable(query, variable) {
 export default function EditorPage(props: PageProps): JSX.Element {
   const editor = useAtomValue(monacoEditorInstanceAtom);
   const openOrCreateExistingFile = useUpdateAtom(openOrCreateExistingFileAtom);
-  const [token, setToken] = useState<string | null>(null);
-  const [code, setCode] = useState<string | null>(null);
-  const [githubInfo, setGithubInfo] = useState<any>(null);
-  const octokit = useRef<any>(null);
+  const [token, setToken] = useAtom(tokenAtom);
+  const githubInfo = useAtomValue(githubInfoAtom);
+  const [branch, setBranch] = useAtom(branchAtom);
+  const octokit = useAtomValue(octokitAtom);
   useEffect(() => {
-    setCode(new URLSearchParams(props.location.search).get('code'));
-    history.replaceState({}, '', '/editor');
-  }, []);
-  useEffect(() => {
-    if (!code) return setToken(null);
-    console.log('fetching');
+    const code = new URLSearchParams(props.location.search).get('code');
+    if (!code) return;
     fetch('/api/get-token', {
       method: 'POST',
       headers: {
@@ -73,21 +73,10 @@ export default function EditorPage(props: PageProps): JSX.Element {
       },
       body: JSON.stringify({ code }),
     }).then(async res => setToken((await res.json()).token));
-  }, [code]);
-  useEffect(() => {
-    if (token === null) return setGithubInfo(null);
-    octokit.current = new Octokit({ auth: token });
-    octokit.current
-      .request('GET /user', {
-        headers: {
-          'X-GitHub-Api-Version': '2022-11-28',
-        },
-      })
-      .then(res => setGithubInfo(res.data));
-    console.log('github info', githubInfo);
-  }, [token]);
+    history.replaceState({}, '', '/editor');
+  }, []);
   const getGuideSha = useCallback(async () => {
-    const matchingRefs = await octokit.current.request(
+    const matchingRefs = await octokit?.request(
       'GET /repos/{owner}/{repo}/git/matching-refs/{ref}',
       {
         owner: 'cpinitiative',
@@ -99,11 +88,12 @@ export default function EditorPage(props: PageProps): JSX.Element {
       }
     );
     console.log(matchingRefs);
-    return matchingRefs.data[0].object.sha;
+    return matchingRefs?.data[0].object.sha;
   }, []);
   const createBranch = useCallback(
     ({ branchName, sha }) => {
-      octokit.current
+      if (!octokit || !githubInfo) return;
+      octokit
         .request('POST /repos/{owner}/{repo}/git/refs', {
           owner: githubInfo.login,
           repo: 'usaco-guide',
@@ -116,7 +106,8 @@ export default function EditorPage(props: PageProps): JSX.Element {
         .then(
           () => alert(`Created branch ${branchName}!`),
           () => alert(`branch ${branchName} already exists!`)
-        );
+        )
+        .then(() => setBranch(branchName));
     },
     [githubInfo]
   );
@@ -158,16 +149,15 @@ export default function EditorPage(props: PageProps): JSX.Element {
                 <div className="flex items-stretch">
                   <EditorSidebar
                     className="h-full flex-shrink-0"
-                    token={token}
-                    user={githubInfo ? githubInfo.login : null}
                     handleCreateBranch={async (branchName: string) => {
                       createBranch({
                         branchName,
                         sha: await getGuideSha(),
                       });
                     }}
-                    handleLogOut={() => setCode(null)}
-                    loading={!!code}
+                    loading={
+                      !!new URLSearchParams(props.location.search).get('code')
+                    }
                   />
                   <MainEditorInterface className="h-full w-0 flex-1" />
                 </div>

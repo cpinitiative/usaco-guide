@@ -1,11 +1,13 @@
 import { useAtom } from 'jotai';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
-import React, { useRef } from 'react';
+import React from 'react';
 import {
   activeFileAtom,
+  branchAtom,
   closeFileAtom,
   createNewInternalSolutionFileAtom,
   filesListAtom,
+  githubInfoAtom,
   openOrCreateExistingFileAtom,
 } from '../../../atoms/editor';
 import {
@@ -13,6 +15,52 @@ import {
   AlgoliaEditorSolutionFile,
 } from '../../../models/algoliaEditorFile';
 import { FileListSidebar } from './FileListSidebar';
+
+function GithubSidebar({ loading, ...props }: { loading: boolean } | any) {
+  const githubInfo = useAtomValue(githubInfoAtom);
+  const [branch, setBranch] = useAtom(branchAtom);
+  return (
+    <div className="px-4 py-4">
+      {!githubInfo ? (
+        loading ? (
+          <p>Logging in...</p>
+        ) : (
+          <a
+            href={`https://github.com/login/oauth/authorize?client_id=${process.env.GATSBY_EDITOR_CLIENT_ID}&redirect_uri=http://localhost:8000/editor`}
+            className="btn"
+          >
+            Login with GitHub &rarr;
+          </a>
+        )
+      ) : (
+        <div className="flex flex-col items-start">
+          <p>{`Welcome, ${githubInfo.login}!`}</p>
+          {branch ? (
+            <p>
+              Current branch:{' '}
+              <a
+                href={`https://github.com/${githubInfo.login}/usaco-guide/tree/${branch}`}
+                target="_blank"
+                rel="noreferrer"
+                className="text-blue-500 hover:underline"
+              >
+                {branch}
+              </a>
+            </p>
+          ) : (
+            <p>Branch not set</p>
+          )}
+          <button
+            // onClick={() => props.handleCreateBranch(prompt('Branch name?'))}
+            className="btn"
+          >
+            Create/Set Branch
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
 
 export const EditorSidebar = (props): JSX.Element => {
   const files = useAtomValue(filesListAtom);
@@ -56,7 +104,6 @@ export const EditorSidebar = (props): JSX.Element => {
       createNewInternalSolutionFile(file as AlgoliaEditorSolutionFile);
     }
   };
-  const branchNameInput = useRef<HTMLInputElement>(null);
   return (
     <div className="flex-col w-[250px]">
       <FileListSidebar
@@ -68,35 +115,7 @@ export const EditorSidebar = (props): JSX.Element => {
         onCloseAllFiles={handleCloseAllFiles}
         onNewFile={handleNewFile}
       />
-      <div className="px-4 py-4">
-        {props.user ? (
-          <p>{`Logged in as: ${props.user}`}</p>
-        ) : props.loading ? (
-          <p>Logging in...</p>
-        ) : (
-          <a
-            href={`https://github.com/login/oauth/authorize?client_id=${process.env.GATSBY_EDITOR_CLIENT_ID}&redirect_uri=http://localhost:8000/editor`}
-            className="btn"
-          >
-            Login with GitHub &rarr;
-          </a>
-        )}
-        {props.user && (
-          <div className="flex flex-col items-start">
-            <input className="input" ref={branchNameInput} />
-            <button
-              onClick={() =>
-                props.handleCreateBranch(branchNameInput.current?.value)
-              }
-            >
-              Create Branch
-            </button>
-            <button className="btn" onClick={props.handleLogOut}>
-              Log Out
-            </button>
-          </div>
-        )}
-      </div>
+      <GithubSidebar {...props} />
     </div>
   );
 };
