@@ -115,7 +115,10 @@ function GithubActions() {
         },
       })
       .then(
-        res => setPr(res.data.html_url),
+        res => {
+          window.open(res.data.html_url, '_blank');
+          setPr(res.data.html_url);
+        },
         er => alert(er.message)
       )
       .then(() => setPullState('Open Pull Request'));

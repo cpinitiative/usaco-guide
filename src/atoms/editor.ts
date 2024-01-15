@@ -3,6 +3,7 @@ import { atomFamily, atomWithStorage } from 'jotai/utils';
 import { Octokit } from 'octokit';
 import { fetchFileContent } from '../components/Editor/editorUtils';
 import { AlgoliaEditorSolutionFile } from '../models/algoliaEditorFile';
+import { formatProblems } from '../utils/prettierFormatter';
 
 export type EditorFile = {
   path: string;
