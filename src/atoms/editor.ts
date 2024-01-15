@@ -12,7 +12,7 @@ export type EditorFile = {
 };
 
 export const filesFamily = atomFamily((path: string) => {
-  return atomWithStorage<EditorFile>(`guide:editor:files:${path}`, {
+  return atomWithStorage<EditorFile | null>(`guide:editor:files:${path}`, {
     path,
     markdown: '',
     problems: '',
@@ -36,7 +36,7 @@ export const saveFileAtom = atom(
   ) => {
     const file = update.hasOwnProperty('update')
       ? (update as { update: (f: EditorFile) => EditorFile }).update(
-          get(filesFamily(update.path))
+          get(filesFamily(update.path))!
         )
       : (update as EditorFile);
     set(filesFamily(file.path), file);
@@ -58,11 +58,11 @@ export const githubInfoAtom = atom(
   async get => (await get(octokitAtom)?.request('GET /user'))?.data
 );
 export const activeFileAtom = atom(
-  get =>
-    get(baseActiveFileAtom) === null
-      ? null
-      : get(filesFamily(get(baseActiveFileAtom))),
-  (get, set, nextActiveFilePath) => {
+  get => {
+    const baseActiveFile = get(baseActiveFileAtom);
+    return baseActiveFile === null ? null : get(filesFamily(baseActiveFile));
+  },
+  (get, set, nextActiveFilePath: string | null) => {
     set(baseActiveFileAtom, nextActiveFilePath);
   }
 );
@@ -77,13 +77,13 @@ export const openOrCreateExistingFileAtom = atom(
   async (get, set, filePath: string | null) => {
     if (get(filesListAtom).find(f => f === filePath)) {
       set(activeFileAtom, filePath);
-    } else {
+    } else if (filePath) {
       set(filesListAtom, prev => [...prev, filePath]);
       const data = await fetchFileContent(filePath);
       set(saveFileAtom, {
         path: filePath,
         markdown: data.markdown,
-        problems: data.problems,
+        problems: data.problems ?? '',
       });
       set(activeFileAtom, filePath);
     }
@@ -190,17 +190,19 @@ $\\texttt{func(var)}$
       file.problemModules.map(async module => {
         if (get(filesListAtom).find(file => file === module.path)) {
           const currentFile = get(filesFamily(module.path));
-          set(saveFileAtom, {
-            ...currentFile,
-            problems: updateProblemJSON(currentFile.problems),
-          });
+          if (currentFile) {
+            set(saveFileAtom, {
+              ...currentFile,
+              problems: updateProblemJSON(currentFile.problems),
+            });
+          }
           return;
         }
         const data = await fetchFileContent(module.path);
         set(saveFileAtom, {
           path: module.path,
           markdown: data.markdown,
-          problems: updateProblemJSON(data.problems),
+          problems: updateProblemJSON(data.problems ?? ''),
         });
       })
     );
@@ -222,7 +224,7 @@ export const closeFileAtom = atom(null, (get, set, filePath: string) => {
     filesListAtom,
     get(filesListAtom).filter(file => file !== filePath)
   );
-  if (get(activeFileAtom).path === filePath) {
+  if (get(activeFileAtom)?.path === filePath) {
     const remainingFiles = get(filesListAtom);
     set(activeFileAtom, remainingFiles.length > 0 ? remainingFiles[0] : null);
   }

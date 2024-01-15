@@ -72,7 +72,7 @@ export default function EditorPage(props: PageProps): JSX.Element {
         setToken(json.token);
       });
     history.replaceState({}, '', '/editor');
-  }, []);
+  }, [props.location.search, setToken]);
   const filesList = useAtomValue(filesListAtom); // null if hasn't been loaded from storage yet
   React.useEffect(() => {
     const defaultFilePath =
@@ -82,7 +82,7 @@ export default function EditorPage(props: PageProps): JSX.Element {
     if (defaultFilePath && filesList !== null) {
       openOrCreateExistingFile(defaultFilePath);
     }
-  }, [filesList]);
+  }, [filesList, openOrCreateExistingFile, props.location.search]);
 
   return (
     <QuizGeneratorProvider>
