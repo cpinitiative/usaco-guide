@@ -208,7 +208,13 @@ function GithubSidebar({ loading }: { loading: boolean }) {
           <p>Logging in...</p>
         ) : (
           <a
-            href={`https://github.com/login/oauth/authorize?client_id=${process.env.GATSBY_EDITOR_CLIENT_ID}&redirect_uri=http://localhost:8000/editor`}
+            href={`https://github.com/login/oauth/authorize?client_id=${
+              process.env.GATSBY_EDITOR_CLIENT_ID
+            }&redirect_uri=${
+              process.env.NODE_ENV === 'development'
+                ? 'http://localhost:8000/editor'
+                : ''
+            }`}
             className="btn"
           >
             Login with GitHub &rarr;
