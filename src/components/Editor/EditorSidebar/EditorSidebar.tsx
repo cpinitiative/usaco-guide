@@ -139,7 +139,10 @@ function GithubActions() {
   return (
     <>
       {!installed ? (
-        <a className="btn" href="https://github.com/apps/usaco-guide-editor">
+        <a
+          className="btn"
+          href="https://github.com/apps/usaco-guide-editor/installations/new"
+        >
           Install GitHub App
         </a>
       ) : (
