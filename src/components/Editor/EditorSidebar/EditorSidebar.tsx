@@ -32,6 +32,7 @@ function GithubActions() {
   const [forkState, setForkState] = useState('Create Fork');
   const createBranch = useCallback(
     async branchName => {
+      console.log(octokit, githubInfo, fork);
       if (!octokit || !githubInfo || !fork) return;
       const masterSha = (
         await octokit?.request(
@@ -59,7 +60,7 @@ function GithubActions() {
         .catch(() => {})
         .finally(() => setBranch(branchName));
     },
-    [githubInfo, octokit]
+    [githubInfo, octokit, fork, setBranch]
   );
   const openPR = useCallback(() => {
     if (!octokit || !branch || !githubInfo || !fork) return;
@@ -77,7 +78,7 @@ function GithubActions() {
         },
       })
       .then(() => refreshPr());
-  }, [octokit, branch, githubInfo]);
+  }, [octokit, branch, githubInfo, fork, refreshPr]);
   const createFork = useCallback(() => {
     if (!octokit) return;
     setForkState('Creating Fork...');
@@ -90,7 +91,7 @@ function GithubActions() {
         },
       })
       .then(() => setInterval(fetchFork, 5000));
-  }, [octokit]);
+  }, [octokit, fetchFork]);
   return (
     <>
       {!fork ? (
