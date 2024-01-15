@@ -1,14 +1,12 @@
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   activeFileAtom,
   branchAtom,
   closeFileAtom,
   createNewInternalSolutionFileAtom,
-  fetchForkAtom,
   filesListAtom,
   forkAtom,
-  forkEffect,
   githubInfoAtom,
   octokitAtom,
   openOrCreateExistingFileAtom,
@@ -21,14 +19,53 @@ import {
 import { FileListSidebar } from './FileListSidebar';
 
 function GithubActions() {
-  const fork = useAtomValue(forkAtom);
-  const fetchFork = useSetAtom(fetchForkAtom);
-  useAtom(forkEffect);
+  const [fork, setFork] = useAtom(forkAtom);
   const githubInfo = useAtomValue(githubInfoAtom);
   const octokit = useAtomValue(octokitAtom);
   const [branch, setBranch] = useAtom(branchAtom);
   const [pullState, setPullState] = useState('Open Pull Request');
-  const [pr, refreshPr] = useAtom(prAtom);
+  const [pr, setPr] = useAtom(prAtom);
+  const [installed, setInstalled] = useState(false);
+  useEffect(() => {
+    if (!octokit || !githubInfo) return;
+    console.log(branch);
+    console.log(githubInfo);
+    octokit
+      .request('GET /user/installations', {
+        headers: {
+          'X-GitHub-Api-Version': '2022-11-28',
+        },
+      })
+      .then(res =>
+        setInstalled(
+          !!res.data.installations.find(
+            installation => installation.account?.id === githubInfo.id
+          )
+        )
+      );
+    if (branch) {
+      octokit
+        .request('GET /repos/{owner}/{repo}/pulls', {
+          owner: 'cpinitiative',
+          repo: 'usaco-guide',
+          head: `${githubInfo?.login}:${branch}`,
+          headers: {
+            'X-GitHub-Api-Version': '2022-11-28',
+          },
+        })
+        .then(res => setPr(res.data[0]?.html_url));
+    }
+    octokit
+      .request('GET /user/repos', {
+        affiliation: 'owner',
+        headers: {
+          'X-GitHub-Api-Version': '2022-11-28',
+        },
+      })
+      .then(res =>
+        setFork(res.data.find(repo => repo.name === 'usaco-guide')?.html_url)
+      );
+  }, [githubInfo, branch, octokit, setPr, setFork]);
   const [forkState, setForkState] = useState('Create Fork');
   const createBranch = useCallback(
     async branchName => {
@@ -77,8 +114,12 @@ function GithubActions() {
           'X-GitHub-Api-Version': '2022-11-28',
         },
       })
-      .then(() => refreshPr());
-  }, [octokit, branch, githubInfo, fork, refreshPr]);
+      .then(
+        res => setPr(res.data.html_url),
+        er => alert(er.message)
+      )
+      .then(() => setPullState('Open Pull Request'));
+  }, [octokit, branch, githubInfo, fork, setPr]);
   const createFork = useCallback(() => {
     if (!octokit) return;
     setForkState('Creating Fork...');
@@ -90,52 +131,67 @@ function GithubActions() {
           'X-GitHub-Api-Version': '2022-11-28',
         },
       })
-      .then(() => setInterval(fetchFork, 5000));
-  }, [octokit, fetchFork]);
+      .then(res => setFork(res.data.html_url));
+  }, [octokit, setFork]);
   return (
     <>
-      {!fork ? (
-        <>
-          <p>No fork detected.</p>
-          <button className="btn mt-1" onClick={createFork}>
-            {forkState}
-          </button>
-          {forkState === 'Creating Fork...' && (
-            <em className="mt-1">This can take up to a minute...</em>
-          )}
-        </>
+      {!installed ? (
+        <a className="btn" href="https://github.com/apps/usaco-guide-editor">
+          Install GitHub App
+        </a>
       ) : (
         <>
-          {branch ? (
-            <p>
-              Current branch:{' '}
-              <a
-                href={`https://github.com/${githubInfo.login}/usaco-guide/tree/${branch}`}
-                target="_blank"
-                rel="noreferrer"
-                className="text-blue-500 hover:underline"
-              >
-                {branch}
-              </a>
-            </p>
+          {!fork ? (
+            <>
+              <p>No fork detected.</p>
+              <button className="btn mt-1" onClick={createFork}>
+                {forkState}
+              </button>
+            </>
           ) : (
-            <p>Branch not set</p>
-          )}
-          <button
-            onClick={() => createBranch(prompt('Branch name?'))}
-            className="btn"
-          >
-            Create/Set Branch
-          </button>
-          {branch && (
-            <button
-              className="btn mt-4"
-              onClick={() => {
-                pr ? window.open(pr, '_blank') : openPR();
-              }}
-            >
-              {pr ? 'PR Opened!' : pullState}
-            </button>
+            <>
+              <p>
+                <a
+                  href={fork}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-blue-500 hover:underline"
+                >
+                  Fork detected!
+                </a>
+              </p>
+              {branch ? (
+                <p>
+                  Current branch:{' '}
+                  <a
+                    href={`https://github.com/${githubInfo.login}/usaco-guide/tree/${branch}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-blue-500 hover:underline"
+                  >
+                    {branch}
+                  </a>
+                </p>
+              ) : (
+                <p>Branch not set</p>
+              )}
+              <button
+                onClick={() => createBranch(prompt('Branch name?'))}
+                className="btn"
+              >
+                Create/Set Branch
+              </button>
+              {branch && (
+                <button
+                  className="btn mt-4"
+                  onClick={() => {
+                    pr ? window.open(pr, '_blank') : openPR();
+                  }}
+                >
+                  {pr ? 'PR Opened!' : pullState}
+                </button>
+              )}
+            </>
           )}
         </>
       )}

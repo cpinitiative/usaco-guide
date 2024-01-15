@@ -65,10 +65,6 @@ const EditorTabBar: React.FC<EditorTabBarProps> = ({
           path: activeFile.path,
           message: `Update ${activeFile.path}`,
           branch: branch,
-          committer: {
-            name: githubInfo.name ?? 'editor',
-            email: githubInfo.email ?? 'editor@noreply.com',
-          },
           sha: fileSha,
           content: Buffer.from(activeFile.markdown).toString('base64'),
           headers: {

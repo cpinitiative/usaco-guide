@@ -1,11 +1,8 @@
 import { atom } from 'jotai';
-import { atomEffect } from 'jotai-effect';
 import { atomFamily, atomWithStorage } from 'jotai/utils';
 import { Octokit } from 'octokit';
 import { fetchFileContent } from '../components/Editor/editorUtils';
 import { AlgoliaEditorSolutionFile } from '../models/algoliaEditorFile';
-import { formatProblems } from '../utils/prettierFormatter';
-import { atomWithRefresh } from './atomWithRefresh';
 
 export type EditorFile = {
   path: string;
@@ -55,42 +52,7 @@ export const octokitAtom = atom(get =>
   get(tokenAtom) === null ? null : new Octokit({ auth: get(tokenAtom) })
 );
 export const forkAtom = atom<string | undefined>(undefined);
-export const fetchForkAtom = atom(null, async (get, set) => {
-  if (get(forkAtom)) return; // make sure we don't spam fetches
-  console.log('refreshing');
-  console.log(get(octokitAtom));
-  const repos = (
-    await get(octokitAtom)?.request('GET /user/repos', {
-      affiliation: 'owner',
-      headers: {
-        'X-GitHub-Api-Version': '2022-11-28',
-      },
-    })
-  )?.data;
-  console.log(repos);
-  set(forkAtom, repos?.find(repo => repo.name === 'usaco-guide')?.name);
-});
-export const forkEffect = atomEffect((get, set) => {
-  console.log('effect activated');
-  if (get(octokitAtom)) set(fetchForkAtom);
-});
-export const prAtom = atomWithRefresh(async get => {
-  const octokit = get(octokitAtom),
-    githubInfo = get(githubInfoAtom),
-    branch = get(branchAtom),
-    fork = get(forkAtom);
-  if (!octokit || !githubInfo || !branch || !fork) return null;
-  return (
-    await octokit.request('GET /repos/{owner}/{repo}/pulls', {
-      owner: 'cpinitiative',
-      repo: 'usaco-guide',
-      head: `${githubInfo.login}:${branch}`,
-      headers: {
-        'X-GitHub-Api-Version': '2022-11-28',
-      },
-    })
-  ).data[0]?.html_url;
-});
+export const prAtom = atom<string | null>(null);
 export const githubInfoAtom = atom(
   async get => (await get(octokitAtom)?.request('GET /user'))?.data
 );
