@@ -67,7 +67,7 @@ export default functions.https.onCall(
     const ref = admin
       .firestore()
       .collection('classes-registration')
-      .doc('2023april')
+      .doc('2024february')
       .collection('registrations')
       .doc();
     console.log(
