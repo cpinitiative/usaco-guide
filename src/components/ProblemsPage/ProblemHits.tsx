@@ -10,9 +10,10 @@ import {
   useShowTagsSetting,
 } from '../../context/UserDataContext/properties/simpleProperties';
 import {
-  ProblemInfo,
+  AlgoliaProblemInfo,
   getProblemURL,
   isUsaco,
+  ProblemInfo,
   recentUsaco,
 } from '../../models/problem';
 import DifficultyBox from '../DifficultyBox';
