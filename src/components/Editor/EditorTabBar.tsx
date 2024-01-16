@@ -41,10 +41,10 @@ const EditorTabBar: React.FC<EditorTabBarProps> = ({
     async activeFile => {
       if (!octokit || !githubInfo || !branch) return;
       setCommitState('Committing...');
-      let fileSha: string | null = null;
+      let fileSha = null;
       try {
-        const fileInfo = (
-          await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
+        fileSha = (
+          (await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
             owner: githubInfo.login,
             repo: 'usaco-guide',
             path: activeFile.path,
@@ -52,10 +52,8 @@ const EditorTabBar: React.FC<EditorTabBarProps> = ({
             headers: {
               'X-GitHub-Api-Version': '2022-11-28',
             },
-          })
-        ).data;
-        // satisfy typescript
-        if (!Array.isArray(fileInfo)) fileSha = fileInfo.sha;
+          })) as any
+        ).data.sha;
       } catch {
         console.log("file doesn't exist yet");
       }
@@ -67,7 +65,7 @@ const EditorTabBar: React.FC<EditorTabBarProps> = ({
           path: activeFile.path,
           message: `Update ${activeFile.path}`,
           branch: branch,
-          sha: fileSha ?? undefined,
+          sha: fileSha,
           content: Buffer.from(activeFile.markdown).toString('base64'),
           headers: {
             'X-GitHub-Api-Version': '2022-11-28',
