@@ -12,20 +12,27 @@ const NavBar = ({ alignNavButtonsRight = true }) => {
   const { markdownLayoutInfo, sidebarLinks } = moduleLayoutInfo;
 
   const sortedModuleLinks = React.useMemo(() => {
-    if (markdownLayoutInfo instanceof SolutionInfo) return null;
+    if (markdownLayoutInfo instanceof SolutionInfo) return undefined;
     const links: MarkdownLayoutSidebarModuleLinkInfo[] = [];
     for (const group of MODULE_ORDERING[markdownLayoutInfo.section]) {
       for (const id of group.items) {
-        links.push(sidebarLinks.find(x => x.id === id));
+        const link = sidebarLinks.find(x => x.id === id);
+        if (link) links.push(link);
       }
     }
     return links;
   }, [sidebarLinks]);
   const moduleIdx = React.useMemo(
-    () => sortedModuleLinks.findIndex(x => x.id === markdownLayoutInfo.id),
+    () => sortedModuleLinks?.findIndex(x => x.id === markdownLayoutInfo.id),
     [markdownLayoutInfo, sortedModuleLinks]
   );
-  if (markdownLayoutInfo instanceof SolutionInfo) return null;
+  if (
+    !sortedModuleLinks ||
+    !moduleIdx ||
+    markdownLayoutInfo instanceof SolutionInfo
+  ) {
+    return null;
+  }
   const prevModule = moduleIdx === 0 ? null : sortedModuleLinks[moduleIdx - 1];
   const nextModule =
     moduleIdx === sortedModuleLinks.length - 1
