@@ -37,12 +37,16 @@ export default function ModuleHeaders({
 
   const lang = getUserLangSetting();
   const setLang = useSetUserLangSetting();
-  const markdownProblems = useMarkdownProblems();
+  let problemIDs = [] as string[];
   // this is for modules
-  const problemIDs =
-    markdownData instanceof ModuleInfo
-      ? markdownProblems.map(problem => problem.uniqueId)
-      : [];
+  try {
+    const markdownProblems = useMarkdownProblems();
+    if (markdownData instanceof ModuleInfo) {
+      problemIDs = markdownProblems.map(problem => problem.uniqueId);
+    }
+  } catch (e) {
+    console.log(e);
+  }
   const problemsProgressInfo = getProblemsProgressInfo(problemIDs);
 
   // this is for solutions
