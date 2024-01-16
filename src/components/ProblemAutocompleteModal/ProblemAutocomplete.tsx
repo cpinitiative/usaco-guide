@@ -1,6 +1,9 @@
+import { BaseHit, Hit } from 'instantsearch.js';
 import * as React from 'react';
 import { useHits, useSearchBox } from 'react-instantsearch';
-import { AlgoliaProblemInfoHit } from '../../models/problem';
+import { AlgoliaProblemInfo } from '../../models/problem';
+
+type AlgoliaProblemInfoHit = Hit<BaseHit> & AlgoliaProblemInfo;
 
 const ProblemAutocompleteHit = ({
   hit,
