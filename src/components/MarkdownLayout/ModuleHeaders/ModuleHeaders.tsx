@@ -22,7 +22,7 @@ import { getProblemsProgressInfo } from '../../../utils/getProgressInfo';
 import { DashboardProgressSmall } from '../../Dashboard/DashboardProgress';
 import { Frequency } from '../../Frequency';
 import MarkCompleteButton from '../MarkCompleteButton';
-import getSuffix from '../TableOfContents/getSuffix';
+import useSuffix from '../TableOfContents/getSuffix';
 
 export default function ModuleHeaders({
   moduleLinks,
@@ -204,7 +204,7 @@ export default function ModuleHeaders({
           </Menu>
 
           <Link
-            to={`/editor?filepath=${getSuffix()}`}
+            to={`/editor?filepath=${useSuffix()}`}
             className="text-sm font-medium text-gray-600 hover:text-gray-900 my-0 dark:text-gray-400 dark:hover:text-gray-100 group inline-flex items-center space-x-1.5"
           >
             <span>Edit This Page</span>

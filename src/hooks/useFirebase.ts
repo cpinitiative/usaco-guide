@@ -14,7 +14,7 @@ function useFirebaseApp(
 ): FirebaseApp | undefined {
   const firebaseApp = React.useContext(FirebaseAppContext);
   React.useEffect(() => {
-    if (!firebaseApp) {
+    if (!firebaseApp || !fn) {
       return;
     }
     return fn(firebaseApp);
