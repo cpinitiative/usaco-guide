@@ -7,11 +7,11 @@ import ConfettiContext from '../../context/ConfettiContext';
 import { useDarkMode } from '../../context/DarkModeContext';
 import MarkdownLayoutContext from '../../context/MarkdownLayoutContext';
 import {
+  getUserProgressOnModules,
+  getUserProgressOnResources,
   replaceIllegalFirebaseCharacters,
   useSetProgressOnModule,
   useSetProgressOnResource,
-  useUserProgressOnModules,
-  useUserProgressOnResources,
 } from '../../context/UserDataContext/properties/userProgress';
 import {
   ResourceInfo,
@@ -148,9 +148,9 @@ export default function ResourcestatusCheckbox({
 }): JSX.Element {
   const darkMode = useDarkMode();
   const markdownLayoutContext = useContext(MarkdownLayoutContext);
-  const userProgressOnModules = useUserProgressOnModules();
+  const userProgressOnModules = getUserProgressOnModules();
   const setModuleProgress = useSetProgressOnModule();
-  const userProgressOnResources = useUserProgressOnResources();
+  const userProgressOnResources = getUserProgressOnResources();
   const setUserProgressOnResources = useSetProgressOnResource();
   const updateResourceProgressToPracticing = () => {
     if (

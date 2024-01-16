@@ -67,14 +67,13 @@ const GroupsCodeBlock = ({
   inline?: boolean;
 }) => {
   const value = children[0];
+  const isDarkMode = useDarkMode();
   if (className === 'language-video') {
     return <VideoComponent link={value} />;
   }
   if (inline) {
     return <code>{value}</code>;
   }
-
-  const isDarkMode = useDarkMode();
 
   return (
     <CodeBlock className={className} isDarkMode={isDarkMode}>

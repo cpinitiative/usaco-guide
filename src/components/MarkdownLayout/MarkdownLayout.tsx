@@ -10,10 +10,10 @@ import { ContactUsSlideoverProvider } from '../../context/ContactUsSlideoverCont
 import MarkdownLayoutContext from '../../context/MarkdownLayoutContext';
 import { ProblemSolutionContext } from '../../context/ProblemSolutionContext';
 import { ProblemSuggestionModalProvider } from '../../context/ProblemSuggestionModalContext';
-import { useUserLangSetting } from '../../context/UserDataContext/properties/simpleProperties';
+import { getUserLangSetting } from '../../context/UserDataContext/properties/simpleProperties';
 import {
+  getUserProgressOnModules,
   useSetProgressOnModule,
-  useUserProgressOnModules,
 } from '../../context/UserDataContext/properties/userProgress';
 import { ModuleInfo } from '../../models/module';
 import { SolutionInfo } from '../../models/solution';
@@ -69,9 +69,9 @@ export default function MarkdownLayout({
   markdownData: ModuleInfo | SolutionInfo;
   children: React.ReactNode;
 }) {
-  const userProgressOnModules = useUserProgressOnModules();
+  const userProgressOnModules = getUserProgressOnModules();
   const setModuleProgress = useSetProgressOnModule();
-  const lang = useUserLangSetting();
+  const lang = getUserLangSetting();
 
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const moduleProgress =
@@ -119,12 +119,11 @@ export default function MarkdownLayout({
   //   document.querySelector('html').style.scrollBehavior = 'smooth';
   //   return () => (document.querySelector('html').style.scrollBehavior = 'auto');
   // }, []);
-
+  const problemSolutionContext = React.useContext(ProblemSolutionContext);
   let activeIDs = [];
   if (markdownData instanceof ModuleInfo) {
     activeIDs.push(markdownData.id);
   } else {
-    const problemSolutionContext = React.useContext(ProblemSolutionContext);
     activeIDs = problemSolutionContext.modulesThatHaveProblem.map(x => x.id);
   }
 

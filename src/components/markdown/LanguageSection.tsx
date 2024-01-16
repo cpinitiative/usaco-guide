@@ -1,13 +1,13 @@
 import * as React from 'react';
 import {
-  Language,
   LANGUAGE_LABELS,
-  useUserLangSetting,
+  Language,
+  getUserLangSetting,
 } from '../../context/UserDataContext/properties/simpleProperties';
 import Danger from './Danger';
 
 const sectionFromLang = (sections: { [key in Language]?: React.ReactNode }) => {
-  const userLang = useUserLangSetting();
+  const userLang = getUserLangSetting();
   if (userLang === 'showAll') {
     return (
       <>

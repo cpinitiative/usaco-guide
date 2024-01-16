@@ -26,8 +26,8 @@ import {
   useShowIgnoredSetting,
 } from '../context/UserDataContext/properties/simpleProperties';
 import {
-  useUserProgressOnModules,
-  useUserProgressOnProblems,
+  getUserProgressOnModules,
+  getUserProgressOnProblems,
 } from '../context/UserDataContext/properties/userProgress';
 import { useFirebaseUser } from '../context/UserDataContext/UserDataContext';
 import {
@@ -87,8 +87,8 @@ export default function DashboardPage(props: PageProps) {
     return res;
   }, [problems]);
   const lastViewedModuleID = useLastViewedModule();
-  const userProgressOnModules = useUserProgressOnModules();
-  const userProgressOnProblems = useUserProgressOnProblems();
+  const userProgressOnModules = getUserProgressOnModules();
+  const userProgressOnProblems = getUserProgressOnProblems();
   const lastReadAnnouncement = useLastReadAnnouncement();
   const setLastReadAnnouncement = useSetLastReadAnnouncement();
   const firebaseUser = useFirebaseUser();

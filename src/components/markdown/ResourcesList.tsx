@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useUserLangSetting } from '../../context/UserDataContext/properties/simpleProperties';
+import { getUserLangSetting } from '../../context/UserDataContext/properties/simpleProperties';
 import { ResourceInfo } from '../../models/resource';
 import { books } from '../../utils/books';
 import PGS from './PGS';
@@ -94,7 +94,7 @@ export function Resource({
   title?: string;
   children?: React.ReactNode;
 }): JSX.Element {
-  const lang = useUserLangSetting();
+  const lang = getUserLangSetting();
   source = source ?? '';
   sourceDescription = sourceDescription ?? '';
   if (source in books) {

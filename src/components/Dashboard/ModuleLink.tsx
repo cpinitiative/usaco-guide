@@ -4,9 +4,9 @@ import styled, { css } from 'styled-components';
 import tw from 'twin.macro';
 import {
   LANGUAGE_LABELS,
-  useUserLangSetting,
+  getUserLangSetting,
 } from '../../context/UserDataContext/properties/simpleProperties';
-import { useUserProgressOnModules } from '../../context/UserDataContext/properties/userProgress';
+import { getUserProgressOnModules } from '../../context/UserDataContext/properties/userProgress';
 import { ModuleLinkInfo } from '../../models/module';
 import { FrequencyLabels } from '../Frequency';
 import ModuleFrequencyDots from '../MarkdownLayout/ModuleFrequencyDots';
@@ -161,7 +161,7 @@ function timeAgoString(time: unknown): string {
 }
 
 const ModuleLink = ({ link }: { link: ModuleLinkInfo }): JSX.Element => {
-  const userProgressOnModules = useUserProgressOnModules();
+  const userProgressOnModules = getUserProgressOnModules();
   const progress = userProgressOnModules[link.id] || 'Not Started';
 
   let lineColorStyle = tw`bg-gray-200`;
@@ -195,7 +195,7 @@ const ModuleLink = ({ link }: { link: ModuleLinkInfo }): JSX.Element => {
     darkLineColorStyle = tw`bg-gray-800`;
     darkDotColorStyle = tw`bg-gray-800`;
   }
-  const userLang = useUserLangSetting();
+  const userLang = getUserLangSetting();
   const maxLangOc = Math.max(link.cppOc, link.javaOc, link.pyOc);
   const langToOc = {
     cpp: link.cppOc,

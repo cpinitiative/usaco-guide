@@ -4,7 +4,7 @@ import { useDropzone } from 'react-dropzone';
 import { useFirebaseUser } from '../../../context/UserDataContext/UserDataContext';
 import {
   LANGUAGE_LABELS,
-  useUserLangSetting,
+  getUserLangSetting,
 } from '../../../context/UserDataContext/properties/simpleProperties';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import {
@@ -36,7 +36,7 @@ export default function ProblemSubmissionInterface({
   problem: GroupProblemData;
 }) {
   const firebaseUser = useFirebaseUser();
-  const lang = useUserLangSetting();
+  const lang = getUserLangSetting();
   const emptySubmission: Partial<ProblemSubmissionRequestData> = {
     problemID: problem.id,
     sourceCode: '',

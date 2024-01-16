@@ -6,9 +6,9 @@ import { activeFileAtom, saveFileAtom } from '../../atoms/editor';
 import { useDarkMode } from '../../context/DarkModeContext';
 import {
   LANGUAGE_LABELS,
+  getUserLangSetting,
   useSetThemeSetting,
   useSetUserLangSetting,
-  useUserLangSetting,
 } from '../../context/UserDataContext/properties/simpleProperties';
 import LogoSquare from '../LogoSquare';
 import { fetchFileContent } from './editorUtils';
@@ -17,7 +17,7 @@ export const EditorTopNav = (): JSX.Element => {
   const activeFile = useAtomValue(activeFileAtom);
   const saveFile = useUpdateAtom(saveFileAtom);
   const isDarkMode = useDarkMode();
-  const userLang = useUserLangSetting();
+  const userLang = getUserLangSetting();
   const setUserLang = useSetUserLangSetting();
   const setTheme = useSetThemeSetting();
 

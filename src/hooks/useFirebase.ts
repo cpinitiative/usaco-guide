@@ -13,15 +13,13 @@ function useFirebaseApp(
   dep: React.DependencyList = []
 ): FirebaseApp | undefined {
   const firebaseApp = React.useContext(FirebaseAppContext);
-
-  if (!fn) return firebaseApp;
-
   React.useEffect(() => {
     if (!firebaseApp) {
       return;
     }
     return fn(firebaseApp);
   }, [firebaseApp, ...dep]);
+  if (!fn) return firebaseApp;
 }
 
 export { useFirebaseApp };

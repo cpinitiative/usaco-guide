@@ -8,7 +8,7 @@ import { useFirebaseUser } from '../context/UserDataContext/UserDataContext';
 import { useUserPermissions } from '../context/UserDataContext/UserPermissionsContext';
 import {
   LANGUAGE_LABELS,
-  useUserLangSetting,
+  getUserLangSetting,
 } from '../context/UserDataContext/properties/simpleProperties';
 import useUserProblemSolutionActions from '../hooks/useUserProblemSolutionActions';
 import useUserSolutionsForProblem from '../hooks/useUserSolutionsForProblem';
@@ -27,7 +27,7 @@ export default function ProblemSolutions({
   const { deleteSolution, upvoteSolution, undoUpvoteSolution, mutateSolution } =
     useUserProblemSolutionActions();
   const firebaseUser = useFirebaseUser();
-  const lang = useUserLangSetting();
+  const lang = getUserLangSetting();
   const [isContactUsActive, setIsContactUsActive] = useState(false);
   const { signIn } = React.useContext(SignInContext);
   const canModerate = useUserPermissions().canModerate;

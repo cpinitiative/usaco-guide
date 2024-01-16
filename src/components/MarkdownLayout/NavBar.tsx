@@ -11,9 +11,8 @@ const NavBar = ({ alignNavButtonsRight = true }) => {
   const moduleLayoutInfo = useContext(MarkdownLayoutContext);
   const { markdownLayoutInfo, sidebarLinks } = moduleLayoutInfo;
 
-  if (markdownLayoutInfo instanceof SolutionInfo) return null;
-
   const sortedModuleLinks = React.useMemo(() => {
+    if (markdownLayoutInfo instanceof SolutionInfo) return null;
     const links: MarkdownLayoutSidebarModuleLinkInfo[] = [];
     for (const group of MODULE_ORDERING[markdownLayoutInfo.section]) {
       for (const id of group.items) {
@@ -26,6 +25,7 @@ const NavBar = ({ alignNavButtonsRight = true }) => {
     () => sortedModuleLinks.findIndex(x => x.id === markdownLayoutInfo.id),
     [markdownLayoutInfo, sortedModuleLinks]
   );
+  if (markdownLayoutInfo instanceof SolutionInfo) return null;
   const prevModule = moduleIdx === 0 ? null : sortedModuleLinks[moduleIdx - 1];
   const nextModule =
     moduleIdx === sortedModuleLinks.length - 1

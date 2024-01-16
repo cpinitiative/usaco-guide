@@ -4,21 +4,21 @@ import { ProblemProgress } from '../../../models/problem';
 import { ResourceProgress } from '../../../models/resource';
 import { createUserDataGetter, createUserDataMutation } from './hooks';
 
-export const useUserProgressOnModules = createUserDataGetter(
+export const getUserProgressOnModules = createUserDataGetter(
   userData => userData.userProgressOnModules
 );
-export const useUserProgressOnModulesActivity = createUserDataGetter(
+export const getUserProgressOnModulesActivity = createUserDataGetter(
   userData => userData.userProgressOnModulesActivity
 );
 
-export const useUserProgressOnProblemsActivity = createUserDataGetter(
+export const getUserProgressOnProblemsActivity = createUserDataGetter(
   userData => userData.userProgressOnProblemsActivity
 );
-export const useUserProgressOnProblems = createUserDataGetter(
+export const getUserProgressOnProblems = createUserDataGetter(
   userData => userData.userProgressOnProblems
 );
 
-export const useUserProgressOnResources = createUserDataGetter(
+export const getUserProgressOnResources = createUserDataGetter(
   userData => userData.userProgressOnResources
 );
 

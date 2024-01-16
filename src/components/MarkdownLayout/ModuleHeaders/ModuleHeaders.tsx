@@ -14,8 +14,8 @@ import { useMarkdownProblems } from '../../../context/MarkdownProblemListsContex
 import { ProblemSolutionContext } from '../../../context/ProblemSolutionContext';
 import {
   LANGUAGE_LABELS,
+  getUserLangSetting,
   useSetUserLangSetting,
-  useUserLangSetting,
 } from '../../../context/UserDataContext/properties/simpleProperties';
 import { ModuleInfo, ModuleLinkInfo } from '../../../models/module';
 import { getProblemsProgressInfo } from '../../../utils/getProgressInfo';
@@ -35,13 +35,13 @@ export default function ModuleHeaders({
     handleCompletionChange,
   } = useContext(MarkdownLayoutContext);
 
-  const lang = useUserLangSetting();
+  const lang = getUserLangSetting();
   const setLang = useSetUserLangSetting();
-
+  const markdownProblems = useMarkdownProblems();
   // this is for modules
   const problemIDs =
     markdownData instanceof ModuleInfo
-      ? useMarkdownProblems().map(problem => problem.uniqueId)
+      ? markdownProblems.map(problem => problem.uniqueId)
       : [];
   const problemsProgressInfo = getProblemsProgressInfo(problemIDs);
 

@@ -2,13 +2,13 @@ import * as React from 'react';
 import CalendarHeatmap from 'react-calendar-heatmap';
 import 'react-calendar-heatmap/dist/styles.css';
 import {
-  useUserProgressOnModulesActivity,
-  useUserProgressOnProblemsActivity,
+  getUserProgressOnModulesActivity,
+  getUserProgressOnProblemsActivity,
 } from '../../context/UserDataContext/properties/userProgress';
 import './heatmap-styles.css';
 
-type ModuleActivity = ReturnType<typeof useUserProgressOnModulesActivity>[0];
-type ProblemActivity = ReturnType<typeof useUserProgressOnProblemsActivity>[0];
+type ModuleActivity = ReturnType<typeof getUserProgressOnModulesActivity>[0];
+type ProblemActivity = ReturnType<typeof getUserProgressOnProblemsActivity>[0];
 
 export type ActivityHeatmapProps = {
   moduleActivities: { [key: number]: ModuleActivity[] };
@@ -88,8 +88,8 @@ export function ActivityHeatmap({
 }
 
 export default function Activity() {
-  const userProgressOnModulesActivity = useUserProgressOnModulesActivity();
-  const userProgressOnProblemsActivity = useUserProgressOnProblemsActivity();
+  const userProgressOnModulesActivity = getUserProgressOnModulesActivity();
+  const userProgressOnProblemsActivity = getUserProgressOnProblemsActivity();
   const activityCount: { [key: number]: number } = {};
   const moduleActivities: { [key: number]: ModuleActivity[] } = {};
   const problemActivities: { [key: number]: ProblemActivity[] } = {};

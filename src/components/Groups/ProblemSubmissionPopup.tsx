@@ -25,10 +25,9 @@ function ProblemSubmissionPopup() {
       ? useProblemSubmissionResult(submission?.submissionID)
       : null;
 
-  if (!submission) return null;
-
   const isDarkMode = useDarkMode();
 
+  if (!submission) return null;
   return (
     <Transition
       show={popupContext.showPopup}

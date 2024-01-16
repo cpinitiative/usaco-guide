@@ -1,6 +1,6 @@
 import {
-  useUserProgressOnModules,
-  useUserProgressOnProblems,
+  getUserProgressOnModules,
+  getUserProgressOnProblems,
 } from '../context/UserDataContext/properties/userProgress';
 // import { ProblemProgress } from '../models/problem';
 // import { ModuleProgress } from '../models/module';
@@ -31,7 +31,7 @@ const getProgressInfo = (
 };
 
 export function getModulesProgressInfo(moduleIDs: string[]) {
-  const userProgressOnModules = useUserProgressOnModules();
+  const userProgressOnModules = getUserProgressOnModules();
   return getProgressInfo(
     moduleIDs,
     userProgressOnModules,
@@ -43,7 +43,7 @@ export function getModulesProgressInfo(moduleIDs: string[]) {
 }
 
 export function getProblemsProgressInfo(problemIDs: string[]) {
-  const userProgressOnProblems = useUserProgressOnProblems();
+  const userProgressOnProblems = getUserProgressOnProblems();
   return getProgressInfo(
     problemIDs,
     userProgressOnProblems,
