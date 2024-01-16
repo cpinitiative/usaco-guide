@@ -21,10 +21,11 @@ const handleSubmittedAnswerAtom = atom(
   (get, set, answer_index: number) => {
     set(finalAnswersAtom, prv => {
       const i = get(currentQuestionAtom);
-      const finalAnswersClone = [...get(finalAnswersAtom)];
+      const finalAnswersClone = [...prv];
       finalAnswersClone[i] = answer_index;
       return finalAnswersClone;
       // code below doesn't work for some reason
+      // probably because it's not a deep clone
       // prv[get(currentQuestionAtom)] = answer_index;
       // return prv;
     });
