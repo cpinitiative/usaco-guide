@@ -1,4 +1,4 @@
-import { atom } from 'jotai';
+import { WritableAtom, atom } from 'jotai';
 import { atomFamily, atomWithStorage } from 'jotai/utils';
 import { Octokit } from 'octokit';
 import { fetchFileContent } from '../components/Editor/editorUtils';
@@ -47,13 +47,14 @@ const baseActiveFileAtom = atomWithStorage(
   'guide:editor:activeFile',
   null as string | null
 );
+export type Writable<T> = WritableAtom<T, any[], unknown>;
 export const branchAtom = atomWithStorage('guide:editor:branch', null);
-export const tokenAtom = atom<string | null>(null);
+export const tokenAtom = atom(null) as Writable<string | null>;
 export const octokitAtom = atom(get =>
   get(tokenAtom) === null ? null : new Octokit({ auth: get(tokenAtom) })
 );
-export const forkAtom = atom<string | undefined>(undefined);
-export const prAtom = atom<string | null>(null);
+export const forkAtom = atom(undefined) as Writable<string | undefined>;
+export const prAtom = atom(null) as Writable<string | null>;
 export const githubInfoAtom = atom(
   async get => (await get(octokitAtom)?.request('GET /user'))?.data
 );
