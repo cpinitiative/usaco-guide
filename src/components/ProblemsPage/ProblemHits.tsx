@@ -1,4 +1,5 @@
 import { Link } from 'gatsby';
+import { BaseHit, Hit } from 'instantsearch.js';
 import * as React from 'react';
 import { Highlight, useHits } from 'react-instantsearch';
 import { moduleIDToSectionMap } from '../../../content/ordering';
@@ -9,7 +10,7 @@ import {
   useShowTagsSetting,
 } from '../../context/UserDataContext/properties/simpleProperties';
 import {
-  AlgoliaProblemInfoHit,
+  AlgoliaProblemInfo,
   ProblemInfo,
   getProblemURL,
   isUsaco,
@@ -19,6 +20,7 @@ import DifficultyBox from '../DifficultyBox';
 import Info from '../markdown/Info';
 import ProblemStatusCheckbox from '../markdown/ProblemsList/ProblemStatusCheckbox';
 
+type AlgoliaProblemInfoHit = Hit<BaseHit> & AlgoliaProblemInfo;
 interface ProblemHitProps {
   hit: AlgoliaProblemInfoHit;
 }

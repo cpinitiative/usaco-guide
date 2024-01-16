@@ -1,5 +1,4 @@
 import { slug } from 'github-slugger';
-import { BaseHit, Hit } from 'instantsearch.js';
 import * as defaultOrdering from '../../content/ordering';
 import PGS from '../components/markdown/PGS';
 import id_to_sol from '../components/markdown/ProblemsList/DivisionList/id_to_sol.json';
@@ -176,8 +175,6 @@ export type AlgoliaProblemInfo = Omit<ProblemInfo, 'uniqueId'> & {
     title: string;
   }[];
 };
-
-export type AlgoliaProblemInfoHit = Hit<BaseHit> & AlgoliaProblemInfo;
 
 export type ProblemMetadata = Omit<ProblemInfo, 'solution'> & {
   solutionMetadata: ProblemSolutionMetadata;
