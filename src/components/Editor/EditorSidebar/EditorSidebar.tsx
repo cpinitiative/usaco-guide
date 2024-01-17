@@ -22,6 +22,12 @@ function GithubActions() {
   const githubInfo = useAtomValue(githubInfoAtom);
   const octokit = useAtomValue(octokitAtom);
   const [branch, setBranch] = useAtom(branchAtom);
+  const [branchState, setBranchState] = useState<
+    | 'Create/Set Branch'
+    | 'Creating Branch...'
+    | 'Setting Branch...'
+    | 'Detecting Branches...'
+  >('Create/Set Branch');
   const [installed, setInstalled] = useState<boolean | undefined>(undefined);
   useEffect(() => {
     if (!octokit || !githubInfo) return;
@@ -60,20 +66,20 @@ function GithubActions() {
       }
       console.log(octokit, githubInfo, fork);
       if (!octokit || !githubInfo || !fork) return;
+      setBranchState('Detecting Branches...');
+      // octokit.paginate has weird typing for some reason
+      const branches =
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        (await octokit.paginate('GET /repos/{owner}/{repo}/branches', {
+          owner: githubInfo.login,
+          repo: 'usaco-guide',
+          per_page: 100,
+          headers: {
+            'X-GitHub-Api-Version': '2022-11-28',
+          },
+        })) as { name: string }[];
       if (!branchName) {
-        // octokit.paginate has weird typing for some reason
-        const branches =
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          (await octokit.paginate('GET /repos/{owner}/{repo}/branches', {
-            owner: githubInfo.login,
-            repo: 'usaco-guide',
-            per_page: 100,
-            headers: {
-              'X-GitHub-Api-Version': '2022-11-28',
-            },
-          })) as { name: string }[];
-        console.log(branches);
         for (let i = 0; ; i++) {
           if (!branches.find(branch => branch.name === `patch${i}`)) {
             branchName = `patch${i}`;
@@ -81,6 +87,9 @@ function GithubActions() {
           }
         }
       }
+      if (branches.find(branch => branch.name === branchName)) {
+        setBranchState('Setting Branch...');
+      } else setBranchState('Creating Branch...');
       const masterSha = (
         await octokit?.request(
           'GET /repos/{owner}/{repo}/git/matching-refs/{ref}',
@@ -105,7 +114,10 @@ function GithubActions() {
           },
         })
         .catch(() => {})
-        .finally(() => setBranch(branchName));
+        .finally(() => {
+          setBranch(branchName);
+          setBranchState('Create/Set Branch');
+        });
     },
     [githubInfo, octokit, fork, setBranch]
   );
@@ -172,7 +184,7 @@ function GithubActions() {
                 }
                 className="btn"
               >
-                Create/Set Branch
+                {branchState}
               </button>
               {branch && (
                 <a
