@@ -75,7 +75,7 @@ export const trueFilePathAtom = atom(get => {
 export const trueFileAtom = atom(get => {
   const activeFile = get(activeFileAtom);
   return activeFile === null
-    ? null
+    ? 'Open a file to begin'
     : get(tabAtom) === 'content'
     ? activeFile.markdown
     : activeFile.problems;
