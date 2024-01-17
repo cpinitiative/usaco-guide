@@ -12,6 +12,8 @@ import {
   monacoEditorInstanceAtom,
   saveFileAtom,
   tabAtom,
+  trueFileAtom,
+  trueFilePathAtom,
 } from '../../atoms/editor';
 import EditorTabBar from './EditorTabBar';
 import { conf as mdxConf, language as mdxLang } from './mdx-lang';
@@ -26,7 +28,6 @@ export const MainEditorInterface = ({ className }): JSX.Element => {
   const isEditingSolution = useAtomValue(editingSolutionAtom);
   const tab = useAtomValue(tabAtom);
 
-  const markdown: string | undefined = activeFile?.markdown;
   const setMarkdown = (x: string | ((prev: string) => string)) => {
     if (!activeFile) return;
     if (typeof x === 'string') {
@@ -47,7 +48,6 @@ export const MainEditorInterface = ({ className }): JSX.Element => {
       });
     }
   };
-  const problems: string | undefined = activeFile?.problems;
   const setProblems = (x: string | ((prev: string) => string)) => {
     if (!activeFile) return;
     if (typeof x === 'string') {
@@ -114,7 +114,7 @@ export const MainEditorInterface = ({ className }): JSX.Element => {
     <div className={classNames('tw-forms-disable-all-descendants', className)}>
       <EditorTabBar
         tabs={tabs}
-        activeTab={tab === 'content' ? 'content' : 'problems'}
+        activeTab={tab}
         onTabSelect={tab =>
           setTab(tab.value === 'content' ? 'content' : 'problems')
         }
@@ -122,22 +122,10 @@ export const MainEditorInterface = ({ className }): JSX.Element => {
       />
       <Editor
         theme="vs-dark"
-        path={
-          activeFile === null
-            ? 'NONE'
-            : tab === 'content'
-            ? activeFile.path
-            : activeFile.path.replace(/\.mdx$/, '.problems.json')
-        }
+        path={useAtomValue(trueFilePathAtom)}
         language={tab === 'content' ? 'custom-mdx' : 'json'}
-        value={
-          activeFile === null
-            ? 'Open a file to begin'
-            : tab === 'content'
-            ? markdown
-            : problems
-        }
-        onChange={(v, e) =>
+        value={useAtomValue(trueFileAtom)}
+        onChange={v =>
           tab === 'content' ? setMarkdown(v ?? '') : setProblems(v ?? '')
         }
         options={{
