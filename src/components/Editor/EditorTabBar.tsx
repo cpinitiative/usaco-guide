@@ -3,10 +3,11 @@ import classNames from 'classnames';
 import { useAtomValue } from 'jotai';
 import React, { useCallback, useState } from 'react';
 import {
-  activeFileAtom,
   branchAtom,
   githubInfoAtom,
   octokitAtom,
+  trueFileAtom,
+  trueFilePathAtom,
 } from '../../atoms/editor';
 import { useQuizOpen } from '../../context/QuizGeneratorContext';
 
@@ -33,21 +34,22 @@ const EditorTabBar: React.FC<EditorTabBarProps> = ({
 }) => {
   const { setOpen } = useQuizOpen();
   const githubInfo = useAtomValue(githubInfoAtom);
-  const activeFile = useAtomValue(activeFileAtom);
   const octokit = useAtomValue(octokitAtom);
   const branch = useAtomValue(branchAtom);
   const [commitState, setCommitState] = useState('Commit Code');
+  const filePath = useAtomValue(trueFilePathAtom);
+  const file = useAtomValue(trueFileAtom);
   const updateFile = useCallback(
-    async activeFile => {
+    async file => {
       if (!octokit || !githubInfo || !branch) return;
       setCommitState('Committing...');
-      let fileSha = null;
+      let fileSha = undefined;
       try {
         fileSha = (
           (await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
             owner: githubInfo.login,
             repo: 'usaco-guide',
-            path: activeFile.path,
+            path: filePath,
             ref: branch,
             headers: {
               'X-GitHub-Api-Version': '2022-11-28',
@@ -62,11 +64,11 @@ const EditorTabBar: React.FC<EditorTabBarProps> = ({
         {
           owner: githubInfo.login,
           repo: 'usaco-guide',
-          path: activeFile.path,
-          message: `Update ${activeFile.path}`,
+          path: filePath,
+          message: `Update ${filePath}`,
           branch: branch,
           sha: fileSha,
-          content: Buffer.from(activeFile.markdown).toString('base64'),
+          content: Buffer.from(file ?? '').toString('base64'),
           headers: {
             'X-GitHub-Api-Version': '2022-11-28',
           },
@@ -76,7 +78,7 @@ const EditorTabBar: React.FC<EditorTabBarProps> = ({
       window.open(response.data.commit.html_url, '_blank');
       setCommitState('Commit Code');
     },
-    [octokit, githubInfo, branch]
+    [octokit, githubInfo, branch, filePath]
   );
   return (
     <>
@@ -117,13 +119,13 @@ const EditorTabBar: React.FC<EditorTabBarProps> = ({
         >
           Format Code
         </button>
-        {githubInfo && octokit && activeFile && branch && (
+        {githubInfo && octokit && file && branch && (
           <button
             className={classNames(
               'text-gray-400 hover:text-gray-300 hover:bg-gray-800 active:bg-gray-800',
               'px-3 py-2 font-medium text-sm focus:outline-none transition'
             )}
-            onClick={() => updateFile(activeFile)}
+            onClick={() => updateFile(file)}
           >
             {commitState}
           </button>

@@ -4,12 +4,14 @@ import babelParser from 'prettier/parser-babel';
 import markdownParser from 'prettier/parser-markdown';
 import prettier from 'prettier/standalone';
 import * as React from 'react';
-import { useState } from 'react';
 import problemsSchema from '../../../content/problems.schema.json';
 import {
   activeFileAtom,
+  baseTabAtom,
+  editingSolutionAtom,
   monacoEditorInstanceAtom,
   saveFileAtom,
+  tabAtom,
 } from '../../atoms/editor';
 import EditorTabBar from './EditorTabBar';
 import { conf as mdxConf, language as mdxLang } from './mdx-lang';
@@ -20,10 +22,9 @@ export const MainEditorInterface = ({ className }): JSX.Element => {
   const activeFile = useAtomValue(activeFileAtom);
   const saveFile = useSetAtom(saveFileAtom);
   const setMonacoEditorInstance = useSetAtom(monacoEditorInstanceAtom);
-  const [_tab, setTab] = useState<'problems' | 'content'>('content');
-  const isEditingSolution =
-    activeFile && activeFile.path.startsWith('solutions');
-  const tab = isEditingSolution ? 'content' : _tab;
+  const setTab = useSetAtom(baseTabAtom);
+  const isEditingSolution = useAtomValue(editingSolutionAtom);
+  const tab = useAtomValue(tabAtom);
 
   const markdown: string | undefined = activeFile?.markdown;
   const setMarkdown = (x: string | ((prev: string) => string)) => {
@@ -137,7 +138,7 @@ export const MainEditorInterface = ({ className }): JSX.Element => {
             : problems
         }
         onChange={(v, e) =>
-          tab === 'content' ? setMarkdown(v) : setProblems(v)
+          tab === 'content' ? setMarkdown(v ?? '') : setProblems(v ?? '')
         }
         options={{
           wordWrap: 'on',

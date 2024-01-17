@@ -22,7 +22,7 @@ function GithubActions() {
   const githubInfo = useAtomValue(githubInfoAtom);
   const octokit = useAtomValue(octokitAtom);
   const [branch, setBranch] = useAtom(branchAtom);
-  const [installed, setInstalled] = useState(false);
+  const [installed, setInstalled] = useState<boolean | undefined>(undefined);
   useEffect(() => {
     if (!octokit || !githubInfo) return;
     console.log(branch);
@@ -88,9 +88,13 @@ function GithubActions() {
   return (
     <>
       {!installed ? (
-        <a className="btn" href="https://github.com/apps/usaco-guide-editor">
-          Install GitHub App
-        </a>
+        installed === undefined ? (
+          <p>Detecting app installation...</p>
+        ) : (
+          <a className="btn" href="https://github.com/apps/usaco-guide-editor">
+            Install GitHub App
+          </a>
+        )
       ) : (
         <>
           {!fork ? (
