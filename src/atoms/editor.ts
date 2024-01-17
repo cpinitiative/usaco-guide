@@ -53,8 +53,7 @@ export const tokenAtom = atom(null) as Writable<string | null>;
 export const octokitAtom = atom(get =>
   get(tokenAtom) === null ? null : new Octokit({ auth: get(tokenAtom) })
 );
-export const forkAtom = atom(undefined) as Writable<string | undefined>;
-export const prAtom = atom(null) as Writable<string | null>;
+export const forkAtom = atom(undefined) as Writable<string | undefined | null>;
 export const githubInfoAtom = atom(
   async get => (await get(octokitAtom)?.request('GET /user'))?.data
 );

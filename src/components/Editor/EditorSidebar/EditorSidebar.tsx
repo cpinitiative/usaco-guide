@@ -10,7 +10,6 @@ import {
   githubInfoAtom,
   octokitAtom,
   openOrCreateExistingFileAtom,
-  prAtom,
 } from '../../../atoms/editor';
 import {
   AlgoliaEditorFile,
@@ -23,8 +22,6 @@ function GithubActions() {
   const githubInfo = useAtomValue(githubInfoAtom);
   const octokit = useAtomValue(octokitAtom);
   const [branch, setBranch] = useAtom(branchAtom);
-  const [pullState, setPullState] = useState('Open Pull Request');
-  const [pr, setPr] = useAtom(prAtom);
   const [installed, setInstalled] = useState(false);
   useEffect(() => {
     if (!octokit || !githubInfo) return;
@@ -43,18 +40,6 @@ function GithubActions() {
           )
         )
       );
-    if (branch) {
-      octokit
-        .request('GET /repos/{owner}/{repo}/pulls', {
-          owner: 'cpinitiative',
-          repo: 'usaco-guide',
-          head: `${githubInfo?.login}:${branch}`,
-          headers: {
-            'X-GitHub-Api-Version': '2022-11-28',
-          },
-        })
-        .then(res => setPr(res.data[0]?.html_url));
-    }
     octokit
       .request('GET /user/repos', {
         affiliation: 'owner',
@@ -63,10 +48,11 @@ function GithubActions() {
         },
       })
       .then(res =>
-        setFork(res.data.find(repo => repo.name === 'usaco-guide')?.html_url)
+        setFork(
+          res.data.find(repo => repo.name === 'usaco-guide')?.html_url ?? null
+        )
       );
-  }, [githubInfo, branch, octokit, setPr, setFork]);
-  const [forkState, setForkState] = useState('Create Fork');
+  }, [githubInfo, branch, octokit, setFork]);
   const createBranch = useCallback(
     async branchName => {
       console.log(octokit, githubInfo, fork);
@@ -99,61 +85,30 @@ function GithubActions() {
     },
     [githubInfo, octokit, fork, setBranch]
   );
-  const openPR = useCallback(() => {
-    if (!octokit || !branch || !githubInfo || !fork) return;
-    setPullState('Opening Pull Request...');
-    octokit
-      .request('POST /repos/{owner}/{repo}/pulls', {
-        owner: 'cpinitiative',
-        repo: 'usaco-guide',
-        title: prompt('What is the title of this PR?') ?? 'Updates from editor',
-        head: `${githubInfo.login}:${branch}`,
-        base: 'master',
-        draft: true,
-        headers: {
-          'X-GitHub-Api-Version': '2022-11-28',
-        },
-      })
-      .then(
-        res => {
-          window.open(res.data.html_url, '_blank');
-          setPr(res.data.html_url);
-        },
-        er => alert(er.message)
-      )
-      .then(() => setPullState('Open Pull Request'));
-  }, [octokit, branch, githubInfo, fork, setPr]);
-  const createFork = useCallback(() => {
-    if (!octokit) return;
-    setForkState('Creating Fork...');
-    octokit
-      .request('POST /repos/{owner}/{repo}/forks', {
-        owner: 'cpinitiative',
-        repo: 'usaco-guide',
-        headers: {
-          'X-GitHub-Api-Version': '2022-11-28',
-        },
-      })
-      .then(res => setFork(res.data.html_url));
-  }, [octokit, setFork]);
   return (
     <>
       {!installed ? (
-        <a
-          className="btn"
-          href="https://github.com/apps/usaco-guide-editor/installations/new"
-        >
+        <a className="btn" href="https://github.com/apps/usaco-guide-editor">
           Install GitHub App
         </a>
       ) : (
         <>
           {!fork ? (
-            <>
-              <p>No fork detected.</p>
-              <button className="btn mt-1" onClick={createFork}>
-                {forkState}
-              </button>
-            </>
+            fork === undefined ? (
+              <p>detecting fork...</p>
+            ) : (
+              <>
+                <p>No fork detected.</p>
+                <a
+                  className="btn mt-1"
+                  href="https://github.com/cpinitiative/usaco-guide/fork"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Create Fork
+                </a>
+              </>
+            )
           ) : (
             <>
               <p>
@@ -188,14 +143,14 @@ function GithubActions() {
                 Create/Set Branch
               </button>
               {branch && (
-                <button
+                <a
                   className="btn mt-4"
-                  onClick={() => {
-                    pr ? window.open(pr, '_blank') : openPR();
-                  }}
+                  href={`https://github.com/${githubInfo.login}/usaco-guide/pull/new/${branch}`}
+                  target="_blank"
+                  rel="noreferrer"
                 >
-                  {pr ? 'PR Opened!' : pullState}
-                </button>
+                  Open Pull Request
+                </a>
               )}
             </>
           )}
