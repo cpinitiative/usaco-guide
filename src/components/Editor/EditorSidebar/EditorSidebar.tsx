@@ -55,8 +55,28 @@ function GithubActions() {
   }, [githubInfo, branch, octokit, setFork]);
   const createBranch = useCallback(
     async branchName => {
+      if (/\s/.test(branchName)) {
+        return alert('Branch name cannot contain spaces!');
+      }
       console.log(octokit, githubInfo, fork);
       if (!octokit || !githubInfo || !fork) return;
+      if (!branchName) {
+        const branches = (
+          await octokit.request('GET /repos/{owner}/{repo}/branches', {
+            owner: githubInfo.login,
+            repo: 'usaco-guide',
+            headers: {
+              'X-GitHub-Api-Version': '2022-11-28',
+            },
+          })
+        ).data;
+        for (let i = 0; ; i++) {
+          if (!branches.find(branch => branch.name === `patch${i}`)) {
+            branchName = `patch${i}`;
+            break;
+          }
+        }
+      }
       const masterSha = (
         await octokit?.request(
           'GET /repos/{owner}/{repo}/git/matching-refs/{ref}',
@@ -141,7 +161,11 @@ function GithubActions() {
                 <p>Branch not set</p>
               )}
               <button
-                onClick={() => createBranch(prompt('Branch name?'))}
+                onClick={() =>
+                  createBranch(
+                    prompt('Branch name? (leave empty for auto-generated name)')
+                  )
+                }
                 className="btn"
               >
                 Create/Set Branch
