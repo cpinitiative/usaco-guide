@@ -61,15 +61,19 @@ function GithubActions() {
       console.log(octokit, githubInfo, fork);
       if (!octokit || !githubInfo || !fork) return;
       if (!branchName) {
-        const branches = (
-          await octokit.request('GET /repos/{owner}/{repo}/branches', {
+        // octokit.paginate has weird typing for some reason
+        const branches =
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          (await octokit.paginate('GET /repos/{owner}/{repo}/branches', {
             owner: githubInfo.login,
             repo: 'usaco-guide',
+            per_page: 100,
             headers: {
               'X-GitHub-Api-Version': '2022-11-28',
             },
-          })
-        ).data;
+          })) as { name: string }[];
+        console.log(branches);
         for (let i = 0; ; i++) {
           if (!branches.find(branch => branch.name === `patch${i}`)) {
             branchName = `patch${i}`;
