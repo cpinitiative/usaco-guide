@@ -1,16 +1,12 @@
 ---
 id: suffix-array
 title: 'Suffix Array'
-author: Benjamin Qi
-description: 'Quickly Sorting Suffixes of a String (and Applications)'
+author: Benjamin Qi, Kevin Sheng
+description: "Quickly sorting suffixes of a string and its applications"
 prerequisites:
   - string-hashing
 frequency: 1
 ---
-
-<FocusProblem problem="sample" />
-
-## Resources
 
 <Resources>
 	<Resource
@@ -35,7 +31,221 @@ frequency: 1
 	<Resource source="CP2" title="6.6 - Suffix Array and Applications"/>
 </Resources>
 
-### Implementations
+The suffix array of a string is the sorted array of all possible suffixes of the string.
+Each suffix is usually represented by its starting index.
+
+For example, if our string were `abcbcba`, the suffix array would be as follows:
+
+<center>
+
+| Suffix | String     |
+| ------ | ---------- |
+| 6      | `a`        |
+| 0      | `abcbcba`  |
+| 5      | `ba`       |
+| 3      | `bcba`     |
+| 1      | `bcbcba`   |
+| 4      | `cba`      |
+| 2      | `cbcba`    |
+
+</center>
+
+## Construction
+
+<FocusProblem problem="sample" />
+
+The general philosophy behind the construction of a suffix array is to sort incrementally.
+We first start by comparing the first character of each suffix, and then double the amount we compare until we're comparing the entire length of the string.
+If this sounds really abstract, don't worry!
+All the implementation details will be hammered out below.
+
+### Initial Transformation
+
+For convenience, let's start by appending a "null character" of sorts to the end of the string.
+This acts as a tiebreaker of sorts and will ensure we never hit the end of a suffix while comparing two suffixes.
+`$` or the space character are possible options, as the ASCII code of either are less than `a`.
+
+To avoid out of bounds issues, we'll also append the string to itself.
+Notice that since any comparisons would have stopped at the null character, this has no effect on the order of the suffix array.
+
+After implementing these two transformations, the strings we compare would look like this (still using `abcbcba` as an example):
+
+<center>
+
+| Suffix | String            |
+| ------ | ----------------- |
+| 7      | `$abcbcba`	     |
+| 6      | `a$abcbcba`       |
+| 0      | `abcbcba$abcbcba` |
+| 5      | `ba$abcbcba`      |
+| 3      | `bcba$abcbcba`    |
+| 1      | `bcbcba$abcbcba`  |
+| 4      | `cba$abcbcba`     |
+| 2      | `cbcba$abcbcba`   |
+
+</center>
+
+The last suffix that starts with `$` will *always* come first; it doesn't particularly matter.
+
+### Sorting
+
+As stated earlier, let's first just consider the first character in each substring and sort it:
+
+<center>
+
+| Suffix | String            |
+| ------ | ----------------- |
+| 7      | `$abcbcba`	     |
+| 0      | `abcbcba$abcbcba` |
+| 6      | `a$abcbcba`       |
+| 1      | `bcbcba$abcbcba`  |
+| 3      | `bcba$abcbcba`    |
+| 5      | `ba$abcbcba`      |
+| 2      | `cbcba$abcbcba`   |
+| 4      | `cba$abcbcba`     |
+
+</center>
+
+From here we start doubling the length of string we compare.
+To get to the point where we efficiently compare suffixes, let's first do some analysis.
+
+Say we just sorted all the suffixes by the first $2$ characters, we're now comparing two suffixes that start at $a$ and $b$ respectively, each of length $4$:
+
+<center>
+
+| Suffix | String |
+| ------ | ------ |
+| a      | `????` |
+| b      | `????` |
+
+</center>
+
+If the first $2$ characters of `a` are already less than or greater than those of `b`, then nothing changes, really.
+However, if the two are equal, we're going to have to compare the right half.
+
+How might we do this?
+Well, the cool thing is that since we just sorted *all* suffixes by the first $2$, we actually have information about the right halves already!
+
+To compare these half-suffixes, after each iteration of sorting we can assign each half-baked suffix a number representing its order in the array.
+If two half-baked suffixes are equal, then they would get the same number.
+
+Applying this augmentation to our array sorted by the first character, we would now have:
+
+<center>
+
+| Order | Suffix | String            |
+| ----- | ------ | ----------------- |
+| 0     | 7      | `$abcbcba`	     |
+| 1     | 0      | `abcbcba$abcbcba` |
+| 1     | 6      | `a$abcbcba`       |
+| 2     | 1      | `bcbcba$abcbcba`  |
+| 2     | 3      | `bcba$abcbcba`    |
+| 2     | 5      | `ba$abcbcba`      |
+| 3     | 2      | `cbcba$abcbcba`   |
+| 3     | 4      | `cba$abcbcba`     |
+
+</center>
+
+### Optimization
+
+Since we're doing $\mathcal{O}(N \log N)$ sorts $\log N$ times, our current algorithm as it stands is $\mathcal{O}(N \log^2 N)$.
+
+Although this is adequate, it can sometimes be a bit too slow especially when creating a suffix array is often just the first step in many problems.
+Fortunately, we can fix this!
+Since everything we're comparing is in the range $[0, N)$, we can use [radix sort](https://en.wikipedia.org/wiki/Radix_sort) to remove a log factor from our complexity.
+
+### Implementation
+
+**Time Complexity:** $\mathcal{O}(N \log N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <string>
+#include <algorithm>
+ 
+using std::cout;
+using std::endl;
+using std::vector;
+using std::pair;
+ 
+void radix_sort(vector<pair<pair<int, int>, int>>& arr) {
+	// with radix sort, we actually have to sort by the second element first
+	for (int i : vector<int>{2, 1}) {
+		auto key = [&] (const pair<pair<int, int>, int>& x) {
+			return i == 1 ? x.first.first : x.first.second;
+		};  
+		int max = 0;
+		for (const auto& i : arr) {
+			max = std::max(max, key(i));
+		}
+		vector<int> occs(max + 1);
+		for (const auto& i : arr) {
+			occs[key(i)]++;
+		}
+		vector<int> start(max + 1);
+		for (int i = 1; i <= max; i++) {
+			start[i] = start[i - 1] + occs[i - 1];
+		}
+ 
+		vector<pair<pair<int, int>, int>> new_arr(arr.size());
+		for (const auto& i : arr) {
+			new_arr[start[key(i)]] = i;
+			start[key(i)]++;
+		}
+		arr = new_arr;
+	}
+}
+ 
+int main() {
+	std::string str;
+	std::cin >> str;
+	str += ' ';
+	const int n = str.size();  // just a shorthand
+ 
+	vector<pair<pair<int, int>, int>> suffs(n);
+	for (int i = 0; i < n; i++) {
+		suffs[i] = {{str[i], str[i]}, i};
+	}
+	std::sort(suffs.begin(), suffs.end());
+	vector<int> equiv(n);
+	for (int i = 1; i < n; i++) {
+		auto [c_val, cs] = suffs[i];
+		auto [p_val, ps] = suffs[i - 1];
+		equiv[cs] = equiv[ps] + (c_val > p_val);
+	}
+ 
+	int cmp_amt = 1;
+	while (cmp_amt < n) {
+		for (auto& [val, s] : suffs) {
+			// the order numbers for the left half and right half respectively	
+			val = {equiv[s], equiv[(s + cmp_amt) % n]};
+		}
+		// without the radix sort optimization, we would use `std::sort`
+		radix_sort(suffs);
+ 
+		// assign numbers to the newly sorted suffixes
+		vector<int> nxt_eq = vector<int>(n);
+		for (int i = 1; i < n; i++) {
+			auto [c_val, cs] = suffs[i];
+			auto [p_val, ps] = suffs[i - 1];
+			nxt_eq[cs] = nxt_eq[ps] + (c_val > p_val);
+		}
+		equiv = nxt_eq;
+ 
+		cmp_amt *= 2;  // double the length we compare by
+	}
+ 
+	for (int i = 1; i < n; i++) {
+		cout << suffs[i].second << " \n"[i == n - 1];
+	}
+}
+```
+
+A more compact implementation is also below.
 
 <Resources>
 	<Resource
@@ -47,7 +257,107 @@ frequency: 1
 	</Resource>
 </Resources>
 
-(recommend that you also test against brute force for many small strings)
+</CPPSection>
+</LanguageSection>
+
+It's recommended that you also test your implementation against a brute force
+solution for many small strings.
+
+Here's a small script that outputs a test case and its answer:
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+using std::cout;
+using std::endl;
+using std::vector;
+
+int main() {
+	int n = 50;  // adjust n as you please
+	vector<char> str;
+	for (int i = 0; i < n; i++) {
+		str.push_back('a' + rand() % 26);
+	}
+
+	for (char c : str) {
+		cout << c;
+	}
+	cout << '\n';
+
+	vector<int> suffs(n);
+	for (int i = 0; i < n; i++) {
+		suffs[i] = i;
+	}
+	std::sort(suffs.begin(), suffs.end(), [&] (int a, int b) {
+		vector<char> a_vec(str.begin() + a, str.end());
+		vector<char> b_vec(str.begin() + b, str.end());
+		return a_vec < b_vec;
+	});
+
+	for (int i = 0; i < n; i++) {
+		cout << suffs[i] << " \n"[i == n - 1];
+	}
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Generator {
+	public static void main(String[] args) throws IOException {
+		Random rng = new Random();
+
+		int n = 50;  // adjust n as you please
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < n; i++) {
+			sb.append((char)('a' + rng.nextInt(26)));
+		}
+		String str = sb.toString();
+		System.out.println(str);
+		
+		Integer[] suffs = new Integer[n];  // Integer is needed for comparators
+		for (int i = 0; i < n; i++) {
+			suffs[i] = i;
+		}
+		Arrays.sort(suffs, Comparator.comparing(i -> str.substring(i, n)));
+
+		for (int i = 0; i < n; i++) {
+			System.out.print(suffs[i]);
+			System.out.print(i == n - 1 ? '\n' : ' ');
+		}
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+from random import choice
+from string import ascii_lowercase
+
+n = 50  # adjust n as you please
+str_ = [choice(ascii_lowercase) for _ in range(n)]
+
+print("".join(str_))
+
+suffs = list(range(n))
+suffs.sort(key=lambda s: str_[s:])
+
+print(" ".join(str(i) for i in suffs))
+```
+
+</PySection>
+</LanguageSection>
 
 ## LCP Array
 
