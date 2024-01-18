@@ -162,54 +162,48 @@ Since everything we're comparing is in the range $[0, N)$, we can use [radix sor
 <CPPSection>
 
 ```cpp
-#include <iostream>
-#include <vector>
-#include <string>
 #include <algorithm>
- 
+#include <iostream>
+#include <string>
+#include <vector>
+
 using std::cout;
 using std::endl;
-using std::vector;
 using std::pair;
- 
-void radix_sort(vector<pair<pair<int, int>, int>>& arr) {
+using std::vector;
+
+void radix_sort(vector<pair<pair<int, int>, int>> &arr) {
 	// with radix sort, we actually have to sort by the second element first
 	for (int i : vector<int>{2, 1}) {
-		auto key = [&] (const pair<pair<int, int>, int>& x) {
+		auto key = [&](const pair<pair<int, int>, int> &x) {
 			return i == 1 ? x.first.first : x.first.second;
-		};  
+		};
 		int max = 0;
-		for (const auto& i : arr) {
-			max = std::max(max, key(i));
-		}
+		for (const auto &i : arr) { max = std::max(max, key(i)); }
 		vector<int> occs(max + 1);
-		for (const auto& i : arr) {
-			occs[key(i)]++;
-		}
+		for (const auto &i : arr) { occs[key(i)]++; }
 		vector<int> start(max + 1);
 		for (int i = 1; i <= max; i++) {
 			start[i] = start[i - 1] + occs[i - 1];
 		}
- 
+
 		vector<pair<pair<int, int>, int>> new_arr(arr.size());
-		for (const auto& i : arr) {
+		for (const auto &i : arr) {
 			new_arr[start[key(i)]] = i;
 			start[key(i)]++;
 		}
 		arr = new_arr;
 	}
 }
- 
+
 int main() {
 	std::string str;
 	std::cin >> str;
 	str += ' ';
 	const int n = str.size();  // just a shorthand
- 
+
 	vector<pair<pair<int, int>, int>> suffs(n);
-	for (int i = 0; i < n; i++) {
-		suffs[i] = {{str[i], str[i]}, i};
-	}
+	for (int i = 0; i < n; i++) { suffs[i] = {{str[i], str[i]}, i}; }
 	std::sort(suffs.begin(), suffs.end());
 	vector<int> equiv(n);
 	for (int i = 1; i < n; i++) {
@@ -217,16 +211,16 @@ int main() {
 		auto [p_val, ps] = suffs[i - 1];
 		equiv[cs] = equiv[ps] + (c_val > p_val);
 	}
- 
+
 	int cmp_amt = 1;
 	while (cmp_amt < n) {
-		for (auto& [val, s] : suffs) {
-			// the order numbers for the left half and right half respectively	
+		for (auto &[val, s] : suffs) {
+			// the order numbers for the left half and right half respectively
 			val = {equiv[s], equiv[(s + cmp_amt) % n]};
 		}
 		// without the radix sort optimization, we would use `std::sort`
 		radix_sort(suffs);
- 
+
 		// assign numbers to the newly sorted suffixes
 		vector<int> nxt_eq = vector<int>(n);
 		for (int i = 1; i < n; i++) {
@@ -235,10 +229,10 @@ int main() {
 			nxt_eq[cs] = nxt_eq[ps] + (c_val > p_val);
 		}
 		equiv = nxt_eq;
- 
+
 		cmp_amt *= 2;  // double the length we compare by
 	}
- 
+
 	for (int i = 1; i < n; i++) {
 		cout << suffs[i].second << " \n"[i == n - 1];
 	}
@@ -269,9 +263,9 @@ Here's a small script that outputs a test case and its answer:
 <CPPSection>
 
 ```cpp
+#include <algorithm>
 #include <iostream>
 #include <vector>
-#include <algorithm>
 
 using std::cout;
 using std::endl;
@@ -280,28 +274,20 @@ using std::vector;
 int main() {
 	int n = 50;  // adjust n as you please
 	vector<char> str;
-	for (int i = 0; i < n; i++) {
-		str.push_back('a' + rand() % 26);
-	}
+	for (int i = 0; i < n; i++) { str.push_back('a' + rand() % 26); }
 
-	for (char c : str) {
-		cout << c;
-	}
+	for (char c : str) { cout << c; }
 	cout << '\n';
 
 	vector<int> suffs(n);
-	for (int i = 0; i < n; i++) {
-		suffs[i] = i;
-	}
-	std::sort(suffs.begin(), suffs.end(), [&] (int a, int b) {
+	for (int i = 0; i < n; i++) { suffs[i] = i; }
+	std::sort(suffs.begin(), suffs.end(), [&](int a, int b) {
 		vector<char> a_vec(str.begin() + a, str.end());
 		vector<char> b_vec(str.begin() + b, str.end());
 		return a_vec < b_vec;
 	});
 
-	for (int i = 0; i < n; i++) {
-		cout << suffs[i] << " \n"[i == n - 1];
-	}
+	for (int i = 0; i < n; i++) { cout << suffs[i] << " \n"[i == n - 1]; }
 }
 ```
 
@@ -323,11 +309,9 @@ public class Generator {
 		}
 		String str = sb.toString();
 		System.out.println(str);
-		
+
 		Integer[] suffs = new Integer[n];  // Integer is needed for comparators
-		for (int i = 0; i < n; i++) {
-			suffs[i] = i;
-		}
+		for (int i = 0; i < n; i++) { suffs[i] = i; }
 		Arrays.sort(suffs, Comparator.comparing(i -> str.substring(i, n)));
 
 		for (int i = 0; i < n; i++) {
