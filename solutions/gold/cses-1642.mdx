@@ -83,28 +83,29 @@ import java.util.Map;
 import java.util.Scanner;
 
 public class Main {
-    public static void main(String[] args) {
-        final Scanner s = new Scanner(System.in);
-        final int n = s.nextInt();
-        final int x = s.nextInt();
-        final int[] arr = new int[n+1];     // 1-indexed array for this problem
-        for (int i=1; i <= n; i++) arr[i] = s.nextInt();
+	public static void main(String[] args) {
+		final Scanner s = new Scanner(System.in);
+		final int n = s.nextInt();
+		final int x = s.nextInt();
+		final int[] arr = new int[n + 1];  // 1-indexed array for this problem
+		for (int i = 1; i <= n; i++) arr[i] = s.nextInt();
 
-        final Map<Integer, String> twoSum = new HashMap<>();
-        for (int i = 1; i <= n; i++) {
-            for (int j = i + 1; j <= n; j++) {
-                final int differenceToX = x - arr[i] - arr[j];
-                if (twoSum.containsKey(differenceToX)) {
-                    System.out.println(twoSum.get(differenceToX) + " " + i + " " + j);
-                    return;
-                }
-            }
-            for (int j=i-1; j >= 1; j--)
-                twoSum.put(arr[i] + arr[j], i + " " + j);
-        }
+		final Map<Integer, String> twoSum = new HashMap<>();
+		for (int i = 1; i <= n; i++) {
+			for (int j = i + 1; j <= n; j++) {
+				final int differenceToX = x - arr[i] - arr[j];
+				if (twoSum.containsKey(differenceToX)) {
+					System.out.println(twoSum.get(differenceToX) + " " + i +
+					                   " " + j);
+					return;
+				}
+			}
+			for (int j = i - 1; j >= 1; j--)
+				twoSum.put(arr[i] + arr[j], i + " " + j);
+		}
 
-        System.out.println("IMPOSSIBLE");
-    }
+		System.out.println("IMPOSSIBLE");
+	}
 }
 ```
 </JavaSection>
