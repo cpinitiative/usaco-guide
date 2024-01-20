@@ -153,7 +153,8 @@ export default function TopNavigationBar({
                   </a>
                 </span>
                 <span className="md:block">
-                  Registration for the USACO Guide Informatics Tournament is also open!
+                  Registration for the USACO Guide Informatics Tournament is
+                  also open!
                 </span>
                 <span className="block sm:ml-2 sm:inline">
                   <a
