@@ -76,37 +76,46 @@ int main() {
 ```
 
 </CPPSection>
+
 <JavaSection>
+
 ```java
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
+import java.io.*;
+import java.util.*;
 
 public class Main {
-	public static void main(String[] args) {
-		final Scanner s = new Scanner(System.in);
-		final int n = s.nextInt();
-		final int x = s.nextInt();
-		final int[] arr = new int[n + 1];  // 1-indexed array for this problem
-		for (int i = 1; i <= n; i++) arr[i] = s.nextInt();
+ 	// CodeSnip{Kattio}
 
-		final Map<Integer, String> twoSum = new HashMap<>();
-		for (int i = 1; i <= n; i++) {
-			for (int j = i + 1; j <= n; j++) {
-				final int differenceToX = x - arr[i] - arr[j];
-				if (twoSum.containsKey(differenceToX)) {
-					System.out.println(twoSum.get(differenceToX) + " " + i +
-					                   " " + j);
-					return;
-				}
-			}
-			for (int j = i - 1; j >= 1; j--)
-				twoSum.put(arr[i] + arr[j], i + " " + j);
-		}
+    public static void main(String[] args) {
+        Kattio io = new Kattio();
+        int n = io.nextInt();
+        int x = io.nextInt();
+        int[] arr = new int[n + 1];     // 1-indexed array for this problem
+        for (int i = 1; i <= n; i++) { arr[i] = io.nextInt(); }
 
-		System.out.println("IMPOSSIBLE");
-	}
+        Map<Integer, int[]> twoSum = new HashMap<>();
+        for (int i = 1; i <= n; i++) {
+            for (int j = i + 1; j <= n; j++) {
+                int differenceToX = x - arr[i] - arr[j];
+                if (twoSum.containsKey(differenceToX)) {
+                    int k = twoSum.get(differenceToX)[0];
+                    int l = twoSum.get(differenceToX)[1];
+                    io.printf("%d %d %d %d", i, j, k, l);
+                    io.close();
+                    return;
+                }
+            }
+            for (int j = 1; j <= i - 1; j++) {
+                twoSum.put(arr[j] + arr[i], new int[]{j, i});
+            }
+        }
+
+        io.println("IMPOSSIBLE");
+        io.close();
+    }
 }
 ```
+
 </JavaSection>
+
 </LanguageSection>
