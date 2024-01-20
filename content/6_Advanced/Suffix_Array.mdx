@@ -120,7 +120,7 @@ Say we just sorted all the suffixes by the first $2$ characters, we're now compa
 
 </center>
 
-If the first $2$ characters of `a` are already less than or greater than those of `b`, then nothing changes.
+If the first $2$ characters of `a` are already less than or greater than those of `b`, then nothing changes, really.
 However, if the two are equal, we're going to have to compare the right half.
 
 How might we do this?
@@ -514,94 +514,94 @@ using std::vector;
 
 // BeginCodeSnip{Radix Sort}
 void radix_sort(vector<pair<pair<int, int>, int>>& arr) {
-    for (int i : vector<int>{2, 1}) {
-        auto key = [&](const pair<pair<int, int>, int>& x) {
-            return i == 1 ? x.first.first : x.first.second;
-        };
-        int max = 0;
-        for (const auto& i : arr) {
-            max = std::max(max, key(i));
-        }
-        vector<int> occs(max + 1);
-        for (const auto& i : arr) {
-            occs[key(i)]++;
-        }
-        vector<int> start(max + 1);
-        for (int i = 1; i <= max; i++) {
-            start[i] = start[i - 1] + occs[i - 1];
-        }
+	for (int i : vector<int>{2, 1}) {
+		auto key = [&](const pair<pair<int, int>, int>& x) {
+			return i == 1 ? x.first.first : x.first.second;
+		};
+		int max = 0;
+		for (const auto& i : arr) {
+			max = std::max(max, key(i));
+		}
+		vector<int> occs(max + 1);
+		for (const auto& i : arr) {
+			occs[key(i)]++;
+		}
+		vector<int> start(max + 1);
+		for (int i = 1; i <= max; i++) {
+			start[i] = start[i - 1] + occs[i - 1];
+		}
 
-        vector<pair<pair<int, int>, int>> new_arr(arr.size());
-        for (const auto& i : arr) {
-            new_arr[start[key(i)]] = i;
-            start[key(i)]++;
-        }
-        arr = new_arr;
-    }
+		vector<pair<pair<int, int>, int>> new_arr(arr.size());
+		for (const auto& i : arr) {
+			new_arr[start[key(i)]] = i;
+			start[key(i)]++;
+		}
+		arr = new_arr;
+	}
 }
 // EndCodeSnip
 
 int main() {
-    string str;
-    std::cin >> str;
-    str += ' ';
-    const int n = str.size();
+	string str;
+	std::cin >> str;
+	str += ' ';
+	const int n = str.size();
 
-    // BeginCodeSnip{Suffix Array Computation}
-    vector<pair<pair<int, int>, int>> suffs(n);
-    for (int i = 0; i < n; i++) {
-        suffs[i] = {{str[i], str[i]}, i};
-    }
-    std::sort(suffs.begin(), suffs.end());
-    vector<vector<int>> equiv{vector<int>(n)};
-    for (int i = 1; i < n; i++) {
-        auto [c_val, cs] = suffs[i];
-        auto [p_val, ps] = suffs[i - 1];
-        equiv[0][cs] = equiv[0][ps] + (c_val > p_val);
-    }
+	// BeginCodeSnip{Suffix Array Computation}
+	vector<pair<pair<int, int>, int>> suffs(n);
+	for (int i = 0; i < n; i++) {
+		suffs[i] = {{str[i], str[i]}, i};
+	}
+	std::sort(suffs.begin(), suffs.end());
+	vector<vector<int>> equiv{vector<int>(n)};
+	for (int i = 1; i < n; i++) {
+		auto [c_val, cs] = suffs[i];
+		auto [p_val, ps] = suffs[i - 1];
+		equiv[0][cs] = equiv[0][ps] + (c_val > p_val);
+	}
 
-    int cmp_amt = 1;
-    while (cmp_amt < n) {
-        const vector<int>& prev = equiv.back();
-        for (auto& [val, s] : suffs) {
-            val = {prev[s], prev[(s + cmp_amt) % n]};
-        }
-        radix_sort(suffs);
+	int cmp_amt = 1;
+	while (cmp_amt < n) {
+		const vector<int>& prev = equiv.back();
+		for (auto& [val, s] : suffs) {
+			val = {prev[s], prev[(s + cmp_amt) % n]};
+		}
+		radix_sort(suffs);
 
-        vector<int> nxt_eq = vector<int>(n);
-        for (int i = 1; i < n; i++) {
-            auto [c_val, cs] = suffs[i];
-            auto [p_val, ps] = suffs[i - 1];
-            nxt_eq[cs] = nxt_eq[ps] + (c_val > p_val);
-        }
-        equiv.push_back(nxt_eq);
+		vector<int> nxt_eq = vector<int>(n);
+		for (int i = 1; i < n; i++) {
+			auto [c_val, cs] = suffs[i];
+			auto [p_val, ps] = suffs[i - 1];
+			nxt_eq[cs] = nxt_eq[ps] + (c_val > p_val);
+		}
+		equiv.push_back(nxt_eq);
 
-        cmp_amt *= 2;
-    }
-    // EndCodeSnip
+		cmp_amt *= 2;
+	}
+	// EndCodeSnip
 
-    vector<int> suff_ind(n);
-    for (int i = 0; i < n; i++) {
-        suff_ind[suffs[i].second] = i;
-    }
-    vector<int> lcp(n - 1);
-    int start_at = 0;  // the variable talked about in the explanation
-    for (int i = 0; i < n - 1; i++) {
-        int prev = suffs[suff_ind[i] - 1].second;
-        int curr_cmp = start_at;
-        while (str.charAt(i + curr_cmp) == str.charAt(prev + curr_cmp)) {
-            curr_cmp++;
-        }
-        lcp[suff_ind[i] - 1] = curr_cmp;
-        start_at = std::max(curr_cmp - 1, 0);
-    }
+	vector<int> suff_ind(n);
+	for (int i = 0; i < n; i++) {
+		suff_ind[suffs[i].second] = i;
+	}
+	vector<int> lcp(n - 1);
+	int start_at = 0;  // the variable talked about in the explanation
+	for (int i = 0; i < n - 1; i++) {
+		int prev = suffs[suff_ind[i] - 1].second;
+		int curr_cmp = start_at;
+		while (str.charAt(i + curr_cmp) == str.charAt(prev + curr_cmp)) {
+			curr_cmp++;
+		}
+		lcp[suff_ind[i] - 1] = curr_cmp;
+		start_at = std::max(curr_cmp - 1, 0);
+	}
 
-    long long diff_substrings = 0;
-    for (int i = 0; i < lcp.size(); i++) {
+	long long diff_substrings = 0;
+	for (int i = 0; i < lcp.size(); i++) {
 		// we subtract 1 bc of the null character
-        diff_substrings += n - 1 - i - lcp[i];
-    }
-    cout << diff_substrings << endl;
+		diff_substrings += n - 1 - i - lcp[i];
+	}
+	cout << diff_substrings << endl;
 }
 ```
 
@@ -620,112 +620,112 @@ import java.util.*;
 import java.util.function.Function;
 
 public class SuffixArray {
-    // BeginCodeSnip{Suffix Class}
-    static class Suffix implements Comparable<Suffix> {
-        public int start;
-        public int leftEq;
-        public int rightEq;
+	// BeginCodeSnip{Suffix Class}
+	static class Suffix implements Comparable<Suffix> {
+		public int start;
+		public int leftEq;
+		public int rightEq;
 
-        public Suffix(int start, int leftEq, int rightEq) {
-            this.start = start;
-            this.leftEq = leftEq;
-            this.rightEq = rightEq;
-        }
+		public Suffix(int start, int leftEq, int rightEq) {
+			this.start = start;
+			this.leftEq = leftEq;
+			this.rightEq = rightEq;
+		}
 
-        @Override
-        public int compareTo(Suffix o) {
-            return leftEq != o.leftEq ? leftEq - o.leftEq : rightEq - o.rightEq;
-        }
-    }
-    // EndCodeSnip
-    
-    public static void main(String[] args) throws IOException {
-        BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
-        String str = read.readLine() + ' ';
-        final int n = str.length();
-    
-        // BeginCodeSnip{Suffix Array Computation}
-        Suffix[] suffs = new Suffix[n];
-        for (int i = 0;  i < n; i++) {
-            suffs[i] = new Suffix(i, str.charAt(i), str.charAt(i));
-        }
-        Arrays.sort(suffs);
-        int[] equiv = new int[n];
-        for (int i = 1; i < n; i++) {
-            Suffix curr = suffs[i], prev = suffs[i - 1];
-            boolean gt = curr.compareTo(prev) > 0;
-            equiv[curr.start] = equiv[prev.start] + (gt ? 1 : 0);
-        }
+		@Override
+		public int compareTo(Suffix o) {
+			return leftEq != o.leftEq ? leftEq - o.leftEq : rightEq - o.rightEq;
+		}
+	}
+	// EndCodeSnip
+	
+	public static void main(String[] args) throws IOException {
+		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
+		String str = read.readLine() + ' ';
+		final int n = str.length();
+	
+		// BeginCodeSnip{Suffix Array Computation}
+		Suffix[] suffs = new Suffix[n];
+		for (int i = 0;  i < n; i++) {
+			suffs[i] = new Suffix(i, str.charAt(i), str.charAt(i));
+		}
+		Arrays.sort(suffs);
+		int[] equiv = new int[n];
+		for (int i = 1; i < n; i++) {
+			Suffix curr = suffs[i], prev = suffs[i - 1];
+			boolean gt = curr.compareTo(prev) > 0;
+			equiv[curr.start] = equiv[prev.start] + (gt ? 1 : 0);
+		}
 
-        for (int cmpAmt = 1; cmpAmt < n; cmpAmt *= 2) {
-            for (Suffix s : suffs) {
-                s.leftEq = equiv[s.start];
-                s.rightEq = equiv[(s.start + cmpAmt) % n];
-            }
-            radixSort(suffs);
+		for (int cmpAmt = 1; cmpAmt < n; cmpAmt *= 2) {
+			for (Suffix s : suffs) {
+				s.leftEq = equiv[s.start];
+				s.rightEq = equiv[(s.start + cmpAmt) % n];
+			}
+			radixSort(suffs);
 
-            for (int i = 1; i < n; i++) {
-                Suffix curr = suffs[i], prev = suffs[i - 1];
-                boolean gt = curr.compareTo(prev) > 0;
-                equiv[curr.start] = equiv[prev.start] + (gt ? 1 : 0);
-            }
-        }
-        // EndCodeSnip
+			for (int i = 1; i < n; i++) {
+				Suffix curr = suffs[i], prev = suffs[i - 1];
+				boolean gt = curr.compareTo(prev) > 0;
+				equiv[curr.start] = equiv[prev.start] + (gt ? 1 : 0);
+			}
+		}
+		// EndCodeSnip
 
-        int[] suffInd = new int[n];
-        for (int i = 0; i < n; i++) {
-            suffInd[suffs[i].start] = i;
-        }
-        int[] lcp = new int[n - 1];
-        int startAt = 0;  // the variable talked about in the explanation
-        for (int i = 0; i < n - 1; i++) {
-            int prev = suffs[suffInd[i] - 1].start;
-            int currCmp = startAt;
-            while (str.charAt(i + currCmp) == str.charAt(prev + currCmp)) {
-                currCmp++;
-            }
-            lcp[suffInd[i] - 1] = currCmp;
-            startAt = Math.max(currCmp - 1, 0);
-        }
+		int[] suffInd = new int[n];
+		for (int i = 0; i < n; i++) {
+			suffInd[suffs[i].start] = i;
+		}
+		int[] lcp = new int[n - 1];
+		int startAt = 0;  // the variable talked about in the explanation
+		for (int i = 0; i < n - 1; i++) {
+			int prev = suffs[suffInd[i] - 1].start;
+			int currCmp = startAt;
+			while (str.charAt(i + currCmp) == str.charAt(prev + currCmp)) {
+				currCmp++;
+			}
+			lcp[suffInd[i] - 1] = currCmp;
+			startAt = Math.max(currCmp - 1, 0);
+		}
 
-        long diffSubstrings = 0;
-        for (int i = 0; i < lcp.length; i++) {
-            // we subtract 1 bc of the null character
-            diffSubstrings += n - 1 - i - lcp[i];
-        }
-        System.out.println(diffSubstrings);
-    }
+		long diffSubstrings = 0;
+		for (int i = 0; i < lcp.length; i++) {
+			// we subtract 1 bc of the null character
+			diffSubstrings += n - 1 - i - lcp[i];
+		}
+		System.out.println(diffSubstrings);
+	}
 
-    // BeginCodeSnip{Radix Sort}
-    private static void radixSort(Suffix[] arr) {
-        for (int i : Arrays.asList(2, 1)) {
-            Function<Suffix, Integer> key = x -> (i == 1 ? x.leftEq : x.rightEq);
-            int max = 0;
-            for (Suffix s : arr) {
-                max = Math.max(max, key.apply(s));
-            }
+	// BeginCodeSnip{Radix Sort}
+	private static void radixSort(Suffix[] arr) {
+		for (int i : Arrays.asList(2, 1)) {
+			Function<Suffix, Integer> key = x -> (i == 1 ? x.leftEq : x.rightEq);
+			int max = 0;
+			for (Suffix s : arr) {
+				max = Math.max(max, key.apply(s));
+			}
 
-            int[] occs = new int[max + 1];
-            for (Suffix s : arr) {
-                occs[key.apply(s)]++;
-            }
-            int[] start = new int[max + 1];
-            for (int j = 1; j <= max; j++) {
-                start[j] = start[j - 1] + occs[j - 1];
-            }
+			int[] occs = new int[max + 1];
+			for (Suffix s : arr) {
+				occs[key.apply(s)]++;
+			}
+			int[] start = new int[max + 1];
+			for (int j = 1; j <= max; j++) {
+				start[j] = start[j - 1] + occs[j - 1];
+			}
 
-            Suffix[] newArr = new Suffix[arr.length];
-            for (Suffix s : arr) {
-                newArr[start[key.apply(s)]] = s;
-                start[key.apply(s)]++;
-            }
+			Suffix[] newArr = new Suffix[arr.length];
+			for (Suffix s : arr) {
+				newArr[start[key.apply(s)]] = s;
+				start[key.apply(s)]++;
+			}
 
-            for (int j = 0; j < arr.length; j++) {
-                arr[j] = newArr[j];
-            }
-        }
-    }
-    // EndCodeSnip
+			for (int j = 0; j < arr.length; j++) {
+				arr[j] = newArr[j];
+			}
+		}
+	}
+	// EndCodeSnip
 }
 ```
 
