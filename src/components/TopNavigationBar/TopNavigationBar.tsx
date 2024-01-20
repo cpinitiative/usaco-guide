@@ -152,6 +152,32 @@ export default function TopNavigationBar({
                     Register here &rarr;
                   </a>
                 </span>
+                <span className="md:block">
+                  Registration for the USACO Guide Informatics Tournament is also open!
+                </span>
+                <span className="block sm:ml-2 sm:inline">
+                  <a
+                    href="https://forms.gle/4vHJeGiYGLgHRv4E6"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-white font-bold underline"
+                  >
+                    Register here &rarr;
+                  </a>
+                </span>
+                <span className="md:block">
+                  Registration for the January USACO Workshop is also open!
+                </span>
+                <span className="block sm:ml-2 sm:inline">
+                  <a
+                    href="https://joincpi.org/workshops/jan24"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-white font-bold underline"
+                  >
+                    Register here &rarr;
+                  </a>
+                </span>
               </p>
             </div>
           </div>
