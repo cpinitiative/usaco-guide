@@ -135,6 +135,7 @@ export default function TopNavigationBar({
   return (
     <>
       {!hidePromoBar && (
+        <>
         <div className="relative bg-blue-600">
           <div className="max-w-screen-xl mx-auto py-3 px-3 sm:px-6 lg:px-8">
             <div className="pr-16 sm:text-center sm:px-16">
@@ -152,11 +153,19 @@ export default function TopNavigationBar({
                     Register here &rarr;
                   </a>
                 </span>
+              </p>
+            </div>
+          </div>
+        </div>
+        <div className="relative bg-blue-700">
+          <div className="max-w-screen-xl mx-auto py-3 px-3 sm:px-6 lg:px-8">
+            <div className="pr-16 sm:text-center sm:px-16">
+              <p className="font-medium text-white">
                 <span className="md:block">
                   Registration for the USACO Guide Informatics Tournament is
-                  also open!
+                  also open!{" "}
                 </span>
-                <span className="block sm:ml-2 sm:inline">
+                <span className="sm:ml-2 sm:inline">
                   <a
                     href="https://forms.gle/4vHJeGiYGLgHRv4E6"
                     target="_blank"
@@ -166,10 +175,18 @@ export default function TopNavigationBar({
                     Register here &rarr;
                   </a>
                 </span>
+              </p>
+            </div>
+          </div>
+        </div>
+        <div className="relative bg-blue-800">
+          <div className="max-w-screen-xl mx-auto py-3 px-3 sm:px-6 lg:px-8">
+            <div className="pr-16 sm:text-center sm:px-16">
+              <p className="font-medium text-white">
                 <span className="md:block">
-                  Registration for the January USACO Workshop is also open!
+                  Registration for the January USACO Workshop is also open!{" "}
                 </span>
-                <span className="block sm:ml-2 sm:inline">
+                <span className="sm:ml-2 sm:inline">
                   <a
                     href="https://joincpi.org/workshops/jan24"
                     target="_blank"
@@ -183,6 +200,7 @@ export default function TopNavigationBar({
             </div>
           </div>
         </div>
+        </>
       )}
 
       <nav
