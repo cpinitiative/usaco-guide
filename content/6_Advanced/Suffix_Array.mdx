@@ -278,14 +278,15 @@ public class SuffixArray {
 			return leftEq != o.leftEq ? leftEq - o.leftEq : rightEq - o.rightEq;
 		}
 	}
-	
+
 	public static void main(String[] args) throws IOException {
-		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader read =
+		    new BufferedReader(new InputStreamReader(System.in));
 		String str = read.readLine() + ' ';
 		final int n = str.length();  // just a shorthand
-	
+
 		Suffix[] suffs = new Suffix[n];
-		for (int i = 0;  i < n; i++) {
+		for (int i = 0; i < n; i++) {
 			suffs[i] = new Suffix(i, str.charAt(i), str.charAt(i));
 		}
 		Arrays.sort(suffs);
@@ -318,16 +319,13 @@ public class SuffixArray {
 
 	private static void radixSort(Suffix[] arr) {
 		for (int i : Arrays.asList(2, 1)) {
-			Function<Suffix, Integer> key = x -> (i == 1 ? x.leftEq : x.rightEq);
+			Function<Suffix, Integer> key =
+			    x -> (i == 1 ? x.leftEq : x.rightEq);
 			int max = 0;
-			for (Suffix s : arr) {
-				max = Math.max(max, key.apply(s));
-			}
+			for (Suffix s : arr) { max = Math.max(max, key.apply(s)); }
 
 			int[] occs = new int[max + 1];
-			for (Suffix s : arr) {
-				occs[key.apply(s)]++;
-			}
+			for (Suffix s : arr) { occs[key.apply(s)]++; }
 			int[] start = new int[max + 1];
 			for (int j = 1; j <= max; j++) {
 				start[j] = start[j - 1] + occs[j - 1];
@@ -339,9 +337,7 @@ public class SuffixArray {
 				start[key.apply(s)]++;
 			}
 
-			for (int j = 0; j < arr.length; j++) {
-				arr[j] = newArr[j];
-			}
+			for (int j = 0; j < arr.length; j++) { arr[j] = newArr[j]; }
 		}
 	}
 }
@@ -513,26 +509,22 @@ using std::string;
 using std::vector;
 
 // BeginCodeSnip{Radix Sort}
-void radix_sort(vector<pair<pair<int, int>, int>>& arr) {
+void radix_sort(vector<pair<pair<int, int>, int>> &arr) {
 	for (int i : vector<int>{2, 1}) {
-		auto key = [&](const pair<pair<int, int>, int>& x) {
+		auto key = [&](const pair<pair<int, int>, int> &x) {
 			return i == 1 ? x.first.first : x.first.second;
 		};
 		int max = 0;
-		for (const auto& i : arr) {
-			max = std::max(max, key(i));
-		}
+		for (const auto &i : arr) { max = std::max(max, key(i)); }
 		vector<int> occs(max + 1);
-		for (const auto& i : arr) {
-			occs[key(i)]++;
-		}
+		for (const auto &i : arr) { occs[key(i)]++; }
 		vector<int> start(max + 1);
 		for (int i = 1; i <= max; i++) {
 			start[i] = start[i - 1] + occs[i - 1];
 		}
 
 		vector<pair<pair<int, int>, int>> new_arr(arr.size());
-		for (const auto& i : arr) {
+		for (const auto &i : arr) {
 			new_arr[start[key(i)]] = i;
 			start[key(i)]++;
 		}
@@ -549,9 +541,7 @@ int main() {
 
 	// BeginCodeSnip{Suffix Array Computation}
 	vector<pair<pair<int, int>, int>> suffs(n);
-	for (int i = 0; i < n; i++) {
-		suffs[i] = {{str[i], str[i]}, i};
-	}
+	for (int i = 0; i < n; i++) { suffs[i] = {{str[i], str[i]}, i}; }
 	std::sort(suffs.begin(), suffs.end());
 	vector<vector<int>> equiv{vector<int>(n)};
 	for (int i = 1; i < n; i++) {
@@ -562,8 +552,8 @@ int main() {
 
 	int cmp_amt = 1;
 	while (cmp_amt < n) {
-		const vector<int>& prev = equiv.back();
-		for (auto& [val, s] : suffs) {
+		const vector<int> &prev = equiv.back();
+		for (auto &[val, s] : suffs) {
 			val = {prev[s], prev[(s + cmp_amt) % n]};
 		}
 		radix_sort(suffs);
@@ -581,9 +571,7 @@ int main() {
 	// EndCodeSnip
 
 	vector<int> suff_ind(n);
-	for (int i = 0; i < n; i++) {
-		suff_ind[suffs[i].second] = i;
-	}
+	for (int i = 0; i < n; i++) { suff_ind[suffs[i].second] = i; }
 	vector<int> lcp(n - 1);
 	int start_at = 0;  // the variable talked about in the explanation
 	for (int i = 0; i < n - 1; i++) {
@@ -638,15 +626,16 @@ public class SuffixArray {
 		}
 	}
 	// EndCodeSnip
-	
+
 	public static void main(String[] args) throws IOException {
-		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader read =
+		    new BufferedReader(new InputStreamReader(System.in));
 		String str = read.readLine() + ' ';
 		final int n = str.length();
-	
+
 		// BeginCodeSnip{Suffix Array Computation}
 		Suffix[] suffs = new Suffix[n];
-		for (int i = 0;  i < n; i++) {
+		for (int i = 0; i < n; i++) {
 			suffs[i] = new Suffix(i, str.charAt(i), str.charAt(i));
 		}
 		Arrays.sort(suffs);
@@ -673,9 +662,7 @@ public class SuffixArray {
 		// EndCodeSnip
 
 		int[] suffInd = new int[n];
-		for (int i = 0; i < n; i++) {
-			suffInd[suffs[i].start] = i;
-		}
+		for (int i = 0; i < n; i++) { suffInd[suffs[i].start] = i; }
 		int[] lcp = new int[n - 1];
 		int startAt = 0;  // the variable talked about in the explanation
 		for (int i = 0; i < n - 1; i++) {
@@ -699,16 +686,13 @@ public class SuffixArray {
 	// BeginCodeSnip{Radix Sort}
 	private static void radixSort(Suffix[] arr) {
 		for (int i : Arrays.asList(2, 1)) {
-			Function<Suffix, Integer> key = x -> (i == 1 ? x.leftEq : x.rightEq);
+			Function<Suffix, Integer> key =
+			    x -> (i == 1 ? x.leftEq : x.rightEq);
 			int max = 0;
-			for (Suffix s : arr) {
-				max = Math.max(max, key.apply(s));
-			}
+			for (Suffix s : arr) { max = Math.max(max, key.apply(s)); }
 
 			int[] occs = new int[max + 1];
-			for (Suffix s : arr) {
-				occs[key.apply(s)]++;
-			}
+			for (Suffix s : arr) { occs[key.apply(s)]++; }
 			int[] start = new int[max + 1];
 			for (int j = 1; j <= max; j++) {
 				start[j] = start[j - 1] + occs[j - 1];
@@ -720,9 +704,7 @@ public class SuffixArray {
 				start[key.apply(s)]++;
 			}
 
-			for (int j = 0; j < arr.length; j++) {
-				arr[j] = newArr[j];
-			}
+			for (int j = 0; j < arr.length; j++) { arr[j] = newArr[j]; }
 		}
 	}
 	// EndCodeSnip
