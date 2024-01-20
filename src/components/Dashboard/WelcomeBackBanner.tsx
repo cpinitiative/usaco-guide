@@ -6,18 +6,18 @@ export default function WelcomeBackBanner({
   lastViewedModuleLabel,
 }) {
   return (
-    <div className="bg-blue-700 dark:bg-blue-900 shadow hover:shadow-lg transition lg:rounded-lg w-full">
+    <div className="bg-white dark:bg-gray-800 shadow lg:rounded-lg w-full">
       <Link
         className="px-4 py-6 sm:p-8 block sm:flex sm:items-center sm:justify-between"
         to={lastViewedModuleURL || '/general/using-this-guide'}
       >
         <div>
-          <h3 className="text-xl sm:text-2xl leading-7 font-medium text-white dark:text-dark-high-emphasis">
+          <h3 className="text-xl sm:text-2xl leading-7 font-medium text-black dark:text-dark-high-emphasis">
             {lastViewedModuleURL
               ? 'Welcome Back!'
               : 'Welcome to the USACO Guide!'}
           </h3>
-          <div className="mt-2 text-teal-200 dark:text-teal-300">
+          <div className="mt-2 font-medium text-blue-600 dark:text-blue-300">
             <p>
               {lastViewedModuleURL
                 ? `Pick up where you left off. Your last viewed module was "${lastViewedModuleLabel}."`

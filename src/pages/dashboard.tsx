@@ -196,13 +196,21 @@ export default function DashboardPage(props: PageProps) {
                   )}
                 </div>
               </div>
-              <div className="flex overflow-x-auto">
-                <WelcomeBackBanner
-                  lastViewedModuleURL={lastViewedModuleURL}
-                  lastViewedModuleLabel={moduleIDToName[lastViewedModuleID]}
-                />
-              </div>
+              <WelcomeBackBanner
+                lastViewedModuleURL={lastViewedModuleURL}
+                lastViewedModuleLabel={moduleIDToName[lastViewedModuleID]}
+              />
             </div>
+          </div>
+          <header id="announcements">
+            <div className="max-w-7xl mx-auto px-4 sm:px-8 lg:px-10">
+              <h1 className="text-3xl font-bold leading-tight text-gray-900 dark:text-dark-high-emphasis">
+                Announcements
+              </h1>
+            </div>
+          </header>
+          <div className="max-w-7xl mx-auto mb-8">
+            <Announcements announcements={parsedAnnouncements} />
           </div>
           <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 lg:grid lg:grid-cols-2 lg:gap-8">
             {activeProblems.length > 0 && (
@@ -215,16 +223,6 @@ export default function DashboardPage(props: PageProps) {
                 <ActiveItems type="modules" items={activeModules} />
               </div>
             )}
-          </div>
-          <header id="announcements">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <h1 className="text-3xl font-bold leading-tight text-gray-900 dark:text-dark-high-emphasis">
-                Announcements
-              </h1>
-            </div>
-          </header>
-          <div className="max-w-7xl mx-auto mb-8">
-            <Announcements announcements={parsedAnnouncements} />
           </div>
           <header>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

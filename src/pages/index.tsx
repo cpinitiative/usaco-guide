@@ -10,7 +10,7 @@ import {
   UserGroupIcon,
 } from '@heroicons/react/outline';
 import classNames from 'classnames';
-import { Link } from 'gatsby';
+import { Link, navigate } from 'gatsby';
 import { StaticImage } from 'gatsby-plugin-image';
 import * as React from 'react';
 import { CPIProjectCard } from '../components/Index/CPIProjectCard';
@@ -26,6 +26,10 @@ import { GlowingRing } from '../components/elements/landing/GlowingRing';
 import { GlowingText } from '../components/elements/landing/GlowingText';
 import { GradientText } from '../components/elements/landing/GradientText';
 import { HighlightedText } from '../components/elements/landing/HighlightedText';
+import {
+  useFirebaseUser,
+  useIsUserDataLoaded,
+} from '../context/UserDataContext/UserDataContext';
 import Layout from '../components/layout';
 import SEO from '../components/seo';
 
@@ -46,6 +50,13 @@ const linkTextStyles =
   'text-blue-600 dark:text-blue-300 transition hover:text-purple-600 dark:hover:text-purple-300';
 
 export default function IndexPage(): JSX.Element {
+  const firebaseUser = useFirebaseUser();
+  const loading = useIsUserDataLoaded();
+  React.useEffect(() => {
+    if (firebaseUser) {
+      navigate('/dashboard');
+    }
+  }, [firebaseUser, loading]);
   return (
     <Layout>
       <SEO title={null} />
