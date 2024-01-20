@@ -109,22 +109,23 @@ As stated earlier, let's first just consider the first character in each substri
 From here we start doubling the length of string we compare.
 To get to the point where we efficiently compare suffixes, let's first do some analysis.
 
-Say we just sorted all the suffixes by the first $2$ characters, we're now comparing two suffixes that start at $a$ and $b$ respectively, each of length $4$:
-
+Say we just sorted all the suffixes by the first $2$ characters, and we're now comparing the first four characters of suffixes $2$ and $4$:
 <center>
 
 | Suffix | String |
 | ------ | ------ |
-| a      | `????` |
-| b      | `????` |
+| 2      | `cbcb` |
+| 4      | `cba$` |
 
 </center>
 
-If the first $2$ characters of `a` are already less than or greater than those of `b`, then nothing changes.
-However, if the two are equal, we're going to have to compare the right half.
+If the first $2$ characters of suffix $2$ were already less than or greater than those of suffix $4$, nothing changes.
+However, in this case they aren't; we're going to have to compare the right half.
 
 How might we do this?
 Well, the cool thing is that since we just sorted *all* suffixes by the first $2$, we actually have information about the right halves already!
+The right half of the first four characters of suffix $2$ is just the first two characters of suffix $4$.
+Similarly, the right half of suffix $4$ is the first two characters of suffix $6$.
 
 To compare these half-suffixes, after each iteration of sorting we can assign each half-baked suffix a number representing its position in the array.
 If two half-baked suffixes are equal, then they would get the same number.
