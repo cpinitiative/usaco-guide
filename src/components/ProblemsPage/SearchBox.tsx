@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { useEffect, useRef } from 'react';
-import { useSearchBox } from 'react-instantsearch';
+import { type UseSearchBoxProps, useSearchBox } from 'react-instantsearch';
 
-export default function SearchBox(): JSX.Element {
+export default function SearchBox(props: UseSearchBoxProps): JSX.Element {
   // https://stackoverflow.com/questions/53314857/how-to-focus-something-on-next-render-with-react-hooks
-  const { query, refine: setQuery } = useSearchBox();
+  const { query, refine: setQuery } = useSearchBox(props);
   const inputRef = useRef<HTMLInputElement>(null);
   useEffect(() => {
     if (inputRef.current) inputRef.current.focus();

@@ -7,6 +7,7 @@ import {
   InstantSearch,
   Pagination,
   PoweredBy,
+  type SearchBoxProps,
 } from 'react-instantsearch';
 
 import SECTIONS from '../../content/ordering';
@@ -32,16 +33,24 @@ type DataProps = {
   };
 };
 
-let timerId = undefined;
+let timerId: ReturnType<typeof setTimeout> = undefined;
 let timeout = 200;
 
-function queryHook(query, search) {
+const queryHook: SearchBoxProps['queryHook'] = (query, search) => {
   if (timerId) {
     clearTimeout(timerId);
   }
 
   timerId = setTimeout(() => search(query), timeout);
-}
+};
+
+// function queryHook(query: string, search: (value: string) => void) {
+//   if (timerId) {
+//     clearTimeout(timerId);
+//   }
+
+//   timerId = setTimeout(() => search(query), timeout);
+//}
 
 export default function ProblemsPage(props: PageProps<DataProps>) {
   const {
