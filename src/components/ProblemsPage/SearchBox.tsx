@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useEffect, useRef } from 'react';
-import { type UseSearchBoxProps, useSearchBox } from 'react-instantsearch';
+import { useSearchBox, type UseSearchBoxProps } from 'react-instantsearch';
 
 export default function SearchBox(props: UseSearchBoxProps): JSX.Element {
   // https://stackoverflow.com/questions/53314857/how-to-focus-something-on-next-render-with-react-hooks
