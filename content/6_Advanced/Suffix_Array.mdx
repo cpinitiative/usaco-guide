@@ -1,16 +1,12 @@
 ---
 id: suffix-array
 title: 'Suffix Array'
-author: Benjamin Qi
-description: 'Quickly Sorting Suffixes of a String (and Applications)'
+author: Benjamin Qi, Kevin Sheng
+description: "Quickly sorting suffixes of a string and its applications"
 prerequisites:
   - string-hashing
 frequency: 1
 ---
-
-<FocusProblem problem="sample" />
-
-## Resources
 
 <Resources>
 	<Resource
@@ -35,7 +31,212 @@ frequency: 1
 	<Resource source="CP2" title="6.6 - Suffix Array and Applications"/>
 </Resources>
 
-### Implementations
+The suffix array of a string is the sorted array of all possible suffixes of the string.
+Each suffix is usually represented by its starting index.
+
+For example, if our string were `abcbcba`, the suffix array would be as follows:
+
+<center>
+
+| Suffix | String     |
+| ------ | ---------- |
+| 6      | `a`        |
+| 0      | `abcbcba`  |
+| 5      | `ba`       |
+| 3      | `bcba`     |
+| 1      | `bcbcba`   |
+| 4      | `cba`      |
+| 2      | `cbcba`    |
+
+</center>
+
+## Construction
+
+<FocusProblem problem="sample" />
+
+The general philosophy behind the construction of a suffix array is to sort incrementally.
+We first start by comparing the first character of each suffix, and then double the amount we compare until we're comparing the entire length of the string.
+If this sounds really abstract, don't worry!
+All the implementation details will be hammered out below.
+
+### Initial Transformation
+
+For convenience, let's start by appending a "null character" of sorts to the end of the string.
+This acts as a tiebreaker and will ensure we never hit the end of a suffix while comparing two suffixes.
+`$` or the space character are possible options, as the ASCII code of either are less than `a`.
+
+To avoid out of bounds issues, we'll also append the string to itself.
+Notice that since any comparisons would have stopped at the null character, this has no effect on the order of the suffix array.
+
+After implementing these two transformations, the strings we compare would look like this (still using `abcbcba` as an example):
+
+<center>
+
+| Suffix | String            |
+| ------ | ----------------- |
+| 7      | `$abcbcba`	     |
+| 6      | `a$abcbcba`       |
+| 0      | `abcbcba$abcbcba` |
+| 5      | `ba$abcbcba`      |
+| 3      | `bcba$abcbcba`    |
+| 1      | `bcbcba$abcbcba`  |
+| 4      | `cba$abcbcba`     |
+| 2      | `cbcba$abcbcba`   |
+
+</center>
+
+The last suffix that starts with `$` will *always* come first; it doesn't particularly matter.
+
+### Sorting
+
+As stated earlier, let's first just consider the first character in each substring and sort it:
+
+<center>
+
+| Suffix | String            |
+| ------ | ----------------- |
+| 7      | `$abcbcba`	     |
+| 0      | `abcbcba$abcbcba` |
+| 6      | `a$abcbcba`       |
+| 1      | `bcbcba$abcbcba`  |
+| 3      | `bcba$abcbcba`    |
+| 5      | `ba$abcbcba`      |
+| 2      | `cbcba$abcbcba`   |
+| 4      | `cba$abcbcba`     |
+
+</center>
+
+From here we start doubling the length of string we compare.
+To get to the point where we efficiently compare suffixes, let's first do some analysis.
+
+Say we just sorted all the suffixes by the first $2$ characters, and we're now comparing the first four characters of suffixes $2$ and $4$:
+<center>
+
+| Suffix | String |
+| ------ | ------ |
+| 2      | `cbcb` |
+| 4      | `cba$` |
+
+</center>
+
+If the first $2$ characters of suffix $2$ were already less than or greater than those of suffix $4$, nothing changes.
+However, in this case they aren't; we're going to have to compare the right half.
+
+How might we do this?
+Well, the cool thing is that since we just sorted *all* suffixes by the first $2$, we actually have information about the right halves already!
+The right half of the first four characters of suffix $2$ is just the first two characters of suffix $4$.
+Similarly, the right half of suffix $4$ is the first two characters of suffix $6$.
+
+To compare these half-suffixes, after each iteration of sorting we can assign each half-baked suffix a number representing its position in the array.
+If two half-baked suffixes are equal, then they would get the same number.
+These numbers are usually called [equivalence classes](https://en.wikipedia.org/wiki/Equivalence_class).
+
+Applying this augmentation to our array sorted by the first character, we would now have:
+
+<center>
+
+| Eq. Class | Suffix | String            |
+| --------- | ------ | ----------------- |
+| 0         | 7      | `$abcbcba`        |
+| 1         | 0      | `abcbcba$abcbcba` |
+| 1         | 6      | `a$abcbcba`       |
+| 2         | 1      | `bcbcba$abcbcba`  |
+| 2         | 3      | `bcba$abcbcba`    |
+| 2         | 5      | `ba$abcbcba`      |
+| 3         | 2      | `cbcba$abcbcba`   |
+| 3         | 4      | `cba$abcbcba`     |
+
+</center>
+
+### Optimization
+
+Since we're doing $\mathcal{O}(N \log N)$ sorts $\log N$ times, our current algorithm as it stands is $\mathcal{O}(N \log^2 N)$.
+
+Although this is adequate, it can sometimes be a bit too slow especially when creating a suffix array is often just the first step in many problems.
+Fortunately, we can fix this!
+Since everything we're comparing is in the range $[0, N)$, we can use [radix sort](https://en.wikipedia.org/wiki/Radix_sort) to remove a log factor from our complexity.
+
+### Implementation
+
+**Time Complexity:** $\mathcal{O}(N \log N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <algorithm>
+#include <iostream>
+#include <string>
+#include <vector>
+
+using std::cout;
+using std::endl;
+using std::pair;
+using std::vector;
+
+void radix_sort(vector<pair<pair<int, int>, int>> &arr) {
+	// with radix sort, we actually have to sort by the second element first
+	for (int i : vector<int>{2, 1}) {
+		auto key = [&](const pair<pair<int, int>, int> &x) {
+			return i == 1 ? x.first.first : x.first.second;
+		};
+		int max = 0;
+		for (const auto &i : arr) { max = std::max(max, key(i)); }
+		vector<int> occs(max + 1);
+		for (const auto &i : arr) { occs[key(i)]++; }
+		vector<int> start(max + 1);
+		for (int i = 1; i <= max; i++) {
+			start[i] = start[i - 1] + occs[i - 1];
+		}
+
+		vector<pair<pair<int, int>, int>> new_arr(arr.size());
+		for (const auto &i : arr) {
+			new_arr[start[key(i)]] = i;
+			start[key(i)]++;
+		}
+		arr = new_arr;
+	}
+}
+
+int main() {
+	std::string str;
+	std::cin >> str;
+	str += '$';
+	const int n = str.size();  // just a shorthand
+
+	vector<pair<pair<int, int>, int>> suffs(n);
+	for (int i = 0; i < n; i++) { suffs[i] = {{str[i], str[i]}, i}; }
+	std::sort(suffs.begin(), suffs.end());
+	vector<int> equiv(n);
+	for (int i = 1; i < n; i++) {
+		auto [c_val, cs] = suffs[i];
+		auto [p_val, ps] = suffs[i - 1];
+		equiv[cs] = equiv[ps] + (c_val > p_val);
+	}
+
+	for (int cmp_amt = 1; cmp_amt < n; cmp_amt *= 2) {
+		for (auto &[val, s] : suffs) {
+			// the order numbers for the left half and right half respectively
+			val = {equiv[s], equiv[(s + cmp_amt) % n]};
+		}
+		// without the radix sort optimization, we would use `std::sort`
+		radix_sort(suffs);
+
+		// assign numbers to the newly sorted suffixes
+		for (int i = 1; i < n; i++) {
+			auto [c_val, cs] = suffs[i];
+			auto [p_val, ps] = suffs[i - 1];
+			equiv[cs] = equiv[ps] + (c_val > p_val);
+		}
+	}
+
+	for (int i = 1; i < n; i++) {
+		cout << suffs[i].second << " \n"[i == n - 1];
+	}
+}
+```
+
+A more compact implementation is also below.
 
 <Resources>
 	<Resource
@@ -47,15 +248,472 @@ frequency: 1
 	</Resource>
 </Resources>
 
-(recommend that you also test against brute force for many small strings)
+</CPPSection>
+<JavaSection>
+
+<Warning>
+
+The below implementation will TLE on some test cases due to Java's constant factor.
+
+</Warning>
+
+```java
+import java.io.*;
+import java.util.*;
+import java.util.function.Function;
+
+public class SuffixArray {
+	static class Suffix implements Comparable<Suffix> {
+		public int start;
+		public int leftEq;
+		public int rightEq;
+
+		public Suffix(int start, int leftEq, int rightEq) {
+			this.start = start;
+			this.leftEq = leftEq;
+			this.rightEq = rightEq;
+		}
+
+		@Override
+		public int compareTo(Suffix o) {
+			return leftEq != o.leftEq ? leftEq - o.leftEq : rightEq - o.rightEq;
+		}
+	}
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader read =
+		    new BufferedReader(new InputStreamReader(System.in));
+		String str = read.readLine() + '$';
+		final int n = str.length();  // just a shorthand
+
+		Suffix[] suffs = new Suffix[n];
+		for (int i = 0; i < n; i++) {
+			suffs[i] = new Suffix(i, str.charAt(i), str.charAt(i));
+		}
+		Arrays.sort(suffs);
+		int[] equiv = new int[n];
+		for (int i = 1; i < n; i++) {
+			Suffix curr = suffs[i], prev = suffs[i - 1];
+			boolean gt = curr.compareTo(prev) > 0;
+			equiv[curr.start] = equiv[prev.start] + (gt ? 1 : 0);
+		}
+
+		for (int cmpAmt = 1; cmpAmt < n; cmpAmt *= 2) {
+			for (Suffix s : suffs) {
+				s.leftEq = equiv[s.start];
+				s.rightEq = equiv[(s.start + cmpAmt) % n];
+			}
+			radixSort(suffs);
+
+			for (int i = 1; i < n; i++) {
+				Suffix curr = suffs[i], prev = suffs[i - 1];
+				boolean gt = curr.compareTo(prev) > 0;
+				equiv[curr.start] = equiv[prev.start] + (gt ? 1 : 0);
+			}
+		}
+
+		for (int i = 1; i < n; i++) {
+			System.out.print(suffs[i].start);
+			System.out.print(i == n - 1 ? '\n' : ' ');
+		}
+	}
+
+	private static void radixSort(Suffix[] arr) {
+		for (int i : Arrays.asList(2, 1)) {
+			Function<Suffix, Integer> key =
+			    x -> (i == 1 ? x.leftEq : x.rightEq);
+			int max = 0;
+			for (Suffix s : arr) { max = Math.max(max, key.apply(s)); }
+
+			int[] occs = new int[max + 1];
+			for (Suffix s : arr) { occs[key.apply(s)]++; }
+			int[] start = new int[max + 1];
+			for (int j = 1; j <= max; j++) {
+				start[j] = start[j - 1] + occs[j - 1];
+			}
+
+			Suffix[] newArr = new Suffix[arr.length];
+			for (Suffix s : arr) {
+				newArr[start[key.apply(s)]] = s;
+				start[key.apply(s)]++;
+			}
+
+			for (int j = 0; j < arr.length; j++) { arr[j] = newArr[j]; }
+		}
+	}
+}
+```
+
+</JavaSection>
+</LanguageSection>
+
+It's recommended that you also test your implementation against a brute force
+solution for many small strings.
+
+Here's a small script that outputs a test case and its answer:
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <algorithm>
+#include <iostream>
+#include <vector>
+
+using std::cout;
+using std::endl;
+using std::vector;
+
+int main() {
+	int n = 50;  // adjust n as you please
+	vector<char> str;
+	for (int i = 0; i < n; i++) { str.push_back('a' + rand() % 26); }
+
+	for (char c : str) { cout << c; }
+	cout << '\n';
+
+	vector<int> suffs(n);
+	for (int i = 0; i < n; i++) { suffs[i] = i; }
+	std::sort(suffs.begin(), suffs.end(), [&](int a, int b) {
+		vector<char> a_vec(str.begin() + a, str.end());
+		vector<char> b_vec(str.begin() + b, str.end());
+		return a_vec < b_vec;
+	});
+
+	for (int i = 0; i < n; i++) { cout << suffs[i] << " \n"[i == n - 1]; }
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Generator {
+	public static void main(String[] args) throws IOException {
+		Random rng = new Random();
+
+		int n = 50;  // adjust n as you please
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < n; i++) {
+			sb.append((char)('a' + rng.nextInt(26)));
+		}
+		String str = sb.toString();
+		System.out.println(str);
+
+		Integer[] suffs = new Integer[n];  // Integer is needed for comparators
+		for (int i = 0; i < n; i++) { suffs[i] = i; }
+		Arrays.sort(suffs, Comparator.comparing(i -> str.substring(i, n)));
+
+		for (int i = 0; i < n; i++) {
+			System.out.print(suffs[i]);
+			System.out.print(i == n - 1 ? '\n' : ' ');
+		}
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+from random import choice
+from string import ascii_lowercase
+
+n = 50  # adjust n as you please
+str_ = [choice(ascii_lowercase) for _ in range(n)]
+
+print("".join(str_))
+
+suffs = list(range(n))
+suffs.sort(key=lambda s: str_[s:])
+
+print(" ".join(str(i) for i in suffs))
+```
+
+</PySection>
+</LanguageSection>
 
 ## LCP Array
 
-<Problems problems="lcpSam" />
+The LCP array is a common auxiliary array based on the suffix array that stores the **longest common prefix** (LCP) between adjacent elements of the suffix array.
 
-Quickly compute longest common prefix of two suffixes.
+Taking our example string from above, such an array would look like this:
+<center>
 
-<Problems problems="lcp" />
+| LCP | Suffix | String            |
+| --- | ------ | ----------------- |
+| NA  | 7      | `$abcbcba`	     |
+| 0   | 0      | `abcbcba$abcbcba` |
+| 1   | 6      | `a$abcbcba`       |
+| 0   | 1      | `bcbcba$abcbcba`  |
+| 3   | 3      | `bcba$abcbcba`    |
+| 1   | 5      | `ba$abcbcba`      |
+| 0   | 2      | `cbcba$abcbcba`   |
+| 2   | 4      | `cba$abcbcba`     |
+
+</center>
+
+Each row contains the LCP between the row's string and that of the previous row.
+
+### Construction
+
+An algorithm often used to construct this LCP array starts by calculating the LCP for the suffix starting at $0$ and its previous suffix.
+It then calculates the LCP for the suffix starting at $1$ and *its* previous suffix, and so on and so forth.
+The reason for this calculation order is so that we can apply a clever optimization that is best described through our example.
+
+Say we just finished calculating the LCP for the row of suffix $3$.
+Our next step, then, would be to calculate the LCP for suffix $4$.
+
+One might think that we would have to start comparing the prefixes all over again for this suffix, but we actually don't have to!
+Remember that we just calculated the LCP of suffixes $3$ and $1$ to be $3$ characters, which means that the suffixes $4$ and $2$, and all the suffixes between them in the array (despite there not being any in our example) must have at least $2$ characters in common.
+
+What this means is that we can just start comparing from the third character to compute the LCP for the row of suffix $4$ instead of starting all over.
+
+In general, we keep a variable $\texttt{start\_at}$ which keeps the number of common characters we know the current suffix has with its predecessor in the suffix array.
+This variable tells us how many characters we can skip, as we know they're equal.
+After each computation of an LCP, we set this variable equal to its value minus one, except when the LCP is already $0$.
+
+You'll see an implementation of this algorithm in the next section.
+
+### Application
+
+Now that we've constructed this LCP array, let's see an application of it.
+
+<FocusProblem problem="lcpSam" />
+
+A crucial observation to be made for this problem is that every substring can be represented as a prefix of some suffix.
+We know that suffix $i$ has $N-i$ (recall that $N$ is the length of the string) possible prefixes.
+
+Notice that the number of prefixes of suffix $i$ that are duplicates is just the longest common prefix between $i$ and its predecessor.
+With this, we can iterate through the LCP array and calculate our answer in one fell swoop.
+
+### Implementation
+
+**Time Complexity:** $\mathcal{O}(N \log N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <algorithm>
+#include <iostream>
+#include <string>
+#include <vector>
+
+using std::cout;
+using std::endl;
+using std::pair;
+using std::string;
+using std::vector;
+
+// BeginCodeSnip{Radix Sort}
+void radix_sort(vector<pair<pair<int, int>, int>> &arr) {
+	for (int i : vector<int>{2, 1}) {
+		auto key = [&](const pair<pair<int, int>, int> &x) {
+			return i == 1 ? x.first.first : x.first.second;
+		};
+		int max = 0;
+		for (const auto &i : arr) { max = std::max(max, key(i)); }
+		vector<int> occs(max + 1);
+		for (const auto &i : arr) { occs[key(i)]++; }
+		vector<int> start(max + 1);
+		for (int i = 1; i <= max; i++) {
+			start[i] = start[i - 1] + occs[i - 1];
+		}
+
+		vector<pair<pair<int, int>, int>> new_arr(arr.size());
+		for (const auto &i : arr) {
+			new_arr[start[key(i)]] = i;
+			start[key(i)]++;
+		}
+		arr = new_arr;
+	}
+}
+// EndCodeSnip
+
+int main() {
+	string str;
+	std::cin >> str;
+	str += '$';
+	const int n = str.size();
+
+	// BeginCodeSnip{Suffix Array Computation}
+	vector<pair<pair<int, int>, int>> suffs(n);
+	for (int i = 0; i < n; i++) { suffs[i] = {{str[i], str[i]}, i}; }
+	std::sort(suffs.begin(), suffs.end());
+	vector<vector<int>> equiv{vector<int>(n)};
+	for (int i = 1; i < n; i++) {
+		auto [c_val, cs] = suffs[i];
+		auto [p_val, ps] = suffs[i - 1];
+		equiv[0][cs] = equiv[0][ps] + (c_val > p_val);
+	}
+
+	int cmp_amt = 1;
+	while (cmp_amt < n) {
+		const vector<int> &prev = equiv.back();
+		for (auto &[val, s] : suffs) {
+			val = {prev[s], prev[(s + cmp_amt) % n]};
+		}
+		radix_sort(suffs);
+
+		vector<int> nxt_eq = vector<int>(n);
+		for (int i = 1; i < n; i++) {
+			auto [c_val, cs] = suffs[i];
+			auto [p_val, ps] = suffs[i - 1];
+			nxt_eq[cs] = nxt_eq[ps] + (c_val > p_val);
+		}
+		equiv.push_back(nxt_eq);
+
+		cmp_amt *= 2;
+	}
+	// EndCodeSnip
+
+	vector<int> suff_ind(n);
+	for (int i = 0; i < n; i++) { suff_ind[suffs[i].second] = i; }
+	vector<int> lcp(n - 1);
+	int start_at = 0;  // the variable talked about in the explanation
+	for (int i = 0; i < n - 1; i++) {
+		int prev = suffs[suff_ind[i] - 1].second;
+		int curr_cmp = start_at;
+		while (str.charAt(i + curr_cmp) == str.charAt(prev + curr_cmp)) {
+			curr_cmp++;
+		}
+		lcp[suff_ind[i] - 1] = curr_cmp;
+		start_at = std::max(curr_cmp - 1, 0);
+	}
+
+	long long diff_substrings = 0;
+	for (int i = 0; i < lcp.size(); i++) {
+		// we subtract 1 bc of the null character
+		diff_substrings += n - 1 - i - lcp[i];
+	}
+	cout << diff_substrings << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+<Warning>
+
+This solution, like the previous one, will TLE for the same reason stated above.
+
+</Warning>
+
+```java
+import java.io.*;
+import java.util.*;
+import java.util.function.Function;
+
+public class SuffixArray {
+	// BeginCodeSnip{Suffix Class}
+	static class Suffix implements Comparable<Suffix> {
+		public int start;
+		public int leftEq;
+		public int rightEq;
+
+		public Suffix(int start, int leftEq, int rightEq) {
+			this.start = start;
+			this.leftEq = leftEq;
+			this.rightEq = rightEq;
+		}
+
+		@Override
+		public int compareTo(Suffix o) {
+			return leftEq != o.leftEq ? leftEq - o.leftEq : rightEq - o.rightEq;
+		}
+	}
+	// EndCodeSnip
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader read =
+		    new BufferedReader(new InputStreamReader(System.in));
+		String str = read.readLine() + '$';
+		final int n = str.length();
+
+		// BeginCodeSnip{Suffix Array Computation}
+		Suffix[] suffs = new Suffix[n];
+		for (int i = 0; i < n; i++) {
+			suffs[i] = new Suffix(i, str.charAt(i), str.charAt(i));
+		}
+		Arrays.sort(suffs);
+		int[] equiv = new int[n];
+		for (int i = 1; i < n; i++) {
+			Suffix curr = suffs[i], prev = suffs[i - 1];
+			boolean gt = curr.compareTo(prev) > 0;
+			equiv[curr.start] = equiv[prev.start] + (gt ? 1 : 0);
+		}
+
+		for (int cmpAmt = 1; cmpAmt < n; cmpAmt *= 2) {
+			for (Suffix s : suffs) {
+				s.leftEq = equiv[s.start];
+				s.rightEq = equiv[(s.start + cmpAmt) % n];
+			}
+			radixSort(suffs);
+
+			for (int i = 1; i < n; i++) {
+				Suffix curr = suffs[i], prev = suffs[i - 1];
+				boolean gt = curr.compareTo(prev) > 0;
+				equiv[curr.start] = equiv[prev.start] + (gt ? 1 : 0);
+			}
+		}
+		// EndCodeSnip
+
+		int[] suffInd = new int[n];
+		for (int i = 0; i < n; i++) { suffInd[suffs[i].start] = i; }
+		int[] lcp = new int[n - 1];
+		int startAt = 0;  // the variable talked about in the explanation
+		for (int i = 0; i < n - 1; i++) {
+			int prev = suffs[suffInd[i] - 1].start;
+			int currCmp = startAt;
+			while (str.charAt(i + currCmp) == str.charAt(prev + currCmp)) {
+				currCmp++;
+			}
+			lcp[suffInd[i] - 1] = currCmp;
+			startAt = Math.max(currCmp - 1, 0);
+		}
+
+		long diffSubstrings = 0;
+		for (int i = 0; i < lcp.length; i++) {
+			// we subtract 1 bc of the null character
+			diffSubstrings += n - 1 - i - lcp[i];
+		}
+		System.out.println(diffSubstrings);
+	}
+
+	// BeginCodeSnip{Radix Sort}
+	private static void radixSort(Suffix[] arr) {
+		for (int i : Arrays.asList(2, 1)) {
+			Function<Suffix, Integer> key =
+			    x -> (i == 1 ? x.leftEq : x.rightEq);
+			int max = 0;
+			for (Suffix s : arr) { max = Math.max(max, key.apply(s)); }
+
+			int[] occs = new int[max + 1];
+			for (Suffix s : arr) { occs[key.apply(s)]++; }
+			int[] start = new int[max + 1];
+			for (int j = 1; j <= max; j++) {
+				start[j] = start[j - 1] + occs[j - 1];
+			}
+
+			Suffix[] newArr = new Suffix[arr.length];
+			for (Suffix s : arr) {
+				newArr[start[key.apply(s)]] = s;
+				start[key.apply(s)]++;
+			}
+
+			for (int j = 0; j < arr.length; j++) { arr[j] = newArr[j]; }
+		}
+	}
+	// EndCodeSnip
+}
+```
+
+</JavaSection>
+</LanguageSection>
 
 ## Burrows-Wheeler Transform
 
@@ -69,7 +727,7 @@ Quickly compute longest common prefix of two suffixes.
 	</Resource>
 </Resources>
 
-<Problems problems="burSam" />
+<FocusProblem problem="burSam" />
 
 ## Run Enumerate
 
@@ -83,6 +741,14 @@ Quickly compute longest common prefix of two suffixes.
 	</Resource>
 </Resources>
 
-(describe how to do easily w/ suffix array)
+<FocusProblem problem="runSam" />
 
-<Problems problems="runSam" />
+<IncompleteSection>
+
+you can do this easily with a suffix array
+
+</IncompleteSection>
+
+## Problems
+
+<Problems problems="lcp" />
