@@ -80,9 +80,18 @@ export default function ActiveItems({
       <div className="px-4 py-5 sm:p-6">
         <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-dark-high-emphasis flex flex-row justify-between">
           <span>Active {type === 'problems' ? 'Problems' : 'Modules'}</span>
-          <button onClick={() => updateOpen(!open)}>{open ? "\u25B3" : "\u25BD"}</button>
+          <button onClick={() => updateOpen(!open)}>
+            {open ? '\u25B3' : '\u25BD'}
+          </button>
         </h3>
-        <div className={"mt-4 text-gray-500 " + (open ? "opacity-100 duration-300" : "opacity-0 pointer-events-none h-0")} >
+        <div
+          className={
+            'mt-4 text-gray-500 ' +
+            (open
+              ? 'opacity-100 duration-300'
+              : 'opacity-0 pointer-events-none h-0')
+          }
+        >
           {items.map((item, idx) => (
             <p className={idx === 0 ? '' : 'mt-2'} key={item.url}>
               <Link
