@@ -24,7 +24,6 @@ of our indices overlap.
 **Time Complexity:** $\mathcal{O}(N^2)$
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
@@ -63,7 +62,7 @@ int main() {
 			int idx = x - v[i] - v[j];
 			if (hm.find(idx) != hm.end()) {
 				cout << i + 1 << " " << j + 1 << " " << hm[idx].f + 1 << " "
-				     << hm[idx].s + 1;
+				     << hm[idx].s + 1 << endl;
 				return 0;
 			}
 		}
@@ -71,10 +70,49 @@ int main() {
 		for (int j = i + 1; j < n; j++) hm[v[i] + v[j]] = {i, j};
 	}
 
-	cout << "IMPOSSIBLE\n";
+	cout << "IMPOSSIBLE" << endl;
 }
 ```
 
 </CPPSection>
+<JavaSection>
 
+```java
+import java.io.*;
+import java.util.*;
+
+public class Main {
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
+		int n = io.nextInt();
+		int x = io.nextInt();
+		int[] arr = new int[n + 1];  // 1-indexed array for this problem
+		for (int i = 1; i <= n; i++) { arr[i] = io.nextInt(); }
+
+		Map<Integer, int[]> twoSum = new HashMap<>();
+		for (int i = 1; i <= n; i++) {
+			for (int j = i + 1; j <= n; j++) {
+				int differenceToX = x - arr[i] - arr[j];
+				if (twoSum.containsKey(differenceToX)) {
+					int k = twoSum.get(differenceToX)[0];
+					int l = twoSum.get(differenceToX)[1];
+					io.printf("%d %d %d %d", i, j, k, l);
+					io.close();
+					return;
+				}
+			}
+			for (int j = 1; j <= i - 1; j++) {
+				twoSum.put(arr[j] + arr[i], new int[] {j, i});
+			}
+		}
+
+		io.println("IMPOSSIBLE");
+		io.close();
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
 </LanguageSection>
