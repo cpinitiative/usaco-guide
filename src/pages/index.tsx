@@ -27,12 +27,12 @@ import { GlowingRing } from '../components/elements/landing/GlowingRing';
 import { GlowingText } from '../components/elements/landing/GlowingText';
 import { GradientText } from '../components/elements/landing/GradientText';
 import { HighlightedText } from '../components/elements/landing/HighlightedText';
+import Layout from '../components/layout';
+import SEO from '../components/seo';
 import {
   useFirebaseUser,
   useIsUserDataLoaded,
 } from '../context/UserDataContext/UserDataContext';
-import Layout from '../components/layout';
-import SEO from '../components/seo';
 
 const containerClasses = 'max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8';
 const headerClasses =
