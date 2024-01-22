@@ -13,6 +13,7 @@ import classNames from 'classnames';
 import { Link, navigate } from 'gatsby';
 import { StaticImage } from 'gatsby-plugin-image';
 import * as React from 'react';
+import { useLocation } from '@gatsbyjs/reach-router';
 import { CPIProjectCard } from '../components/Index/CPIProjectCard';
 import ContributorsSection from '../components/Index/ContributorsSection';
 import { Feature } from '../components/Index/Feature';
@@ -52,11 +53,21 @@ const linkTextStyles =
 export default function IndexPage(): JSX.Element {
   const firebaseUser = useFirebaseUser();
   const loading = useIsUserDataLoaded();
+  const location = useLocation();
   React.useEffect(() => {
-    if (firebaseUser) {
-      navigate('/dashboard');
+    try {
+      if (location.state.redirect) {
+        if (firebaseUser && !location.state.redirect) {
+          navigate('/dashboard');
+        }
+      }
+    } catch (e) {
+      if (firebaseUser) {
+        navigate('/dashboard');
+      }
     }
-  }, [firebaseUser, loading]);
+  }, [firebaseUser, loading, location]);
+
   return (
     <Layout>
       <SEO title={null} />

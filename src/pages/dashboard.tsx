@@ -40,7 +40,7 @@ import {
 } from '../utils/getProgressInfo';
 
 export default function DashboardPage(props: PageProps) {
-  const { modules, announcements, problems } = props.data as any;
+  const { navigate, modules, announcements, problems } = props.data as any;
   const moduleIDToName = modules.edges.reduce((acc, cur) => {
     acc[cur.node.frontmatter.id] = cur.node.frontmatter.title;
     return acc;
@@ -168,7 +168,7 @@ export default function DashboardPage(props: PageProps) {
       <SEO title="Dashboard" />
 
       <div className="min-h-screen bg-gray-100 dark:bg-dark-surface">
-        <TopNavigationBar linkLogoToIndex={true} />
+        <TopNavigationBar linkLogoToIndex={true} dashboard={true} />
 
         <main className="pb-12">
           <div className="max-w-7xl mx-auto mb-4">
