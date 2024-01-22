@@ -33,25 +33,6 @@ type DataProps = {
   };
 };
 
-let timerId: ReturnType<typeof setTimeout> = undefined;
-let timeout = 50;
-
-const queryHook: SearchBoxProps['queryHook'] = (query, search) => {
-  if (timerId) {
-    clearTimeout(timerId);
-  }
-
-  timerId = setTimeout(() => search(query), timeout);
-};
-
-// function queryHook(query: string, search: (value: string) => void) {
-//   if (timerId) {
-//     clearTimeout(timerId);
-//   }
-
-//   timerId = setTimeout(() => search(query), timeout);
-//}
-
 export default function ProblemsPage(props: PageProps<DataProps>) {
   const {
     allProblemInfo: { nodes: problems },
@@ -142,9 +123,7 @@ export default function ProblemsPage(props: PageProps<DataProps>) {
               <h1 className="text-center text-3xl sm:text-5xl font-bold text-white dark:text-dark-high-emphasis mb-6">
                 Problems (Beta)
               </h1>
-              <SearchBox
-              // queryHook={queryHook}
-              />
+              <SearchBox />
             </div>
           </div>
           <div className="flex mt-4 mb-1 mx-9 justify-center">
