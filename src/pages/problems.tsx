@@ -7,7 +7,6 @@ import {
   InstantSearch,
   Pagination,
   PoweredBy,
-  type SearchBoxProps,
 } from 'react-instantsearch';
 
 import SECTIONS from '../../content/ordering';
