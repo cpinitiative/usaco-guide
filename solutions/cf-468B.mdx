@@ -1,11 +1,11 @@
 ---
 id: cf-468B
-source: CF 
+source: CF
 title: Two Sets
 author: Chongtian Ma
 ---
 
-## Explanation 
+## Explanation
 
 We can treat each set as a graph with several connected components. For each $p_i$, if $a - p_i$ exists, then $p_i$ and $a - p_i$ are in the same connected component inside graph $A$, and similarly for $B$. Each number in the connected component must belong to one set. Therefore, our condradiction comes from if there is a number $x$ in the component such that only $a - x$ exists, and another $y$ in the component such that only $b - y$ exists, or vice cersa.
 
@@ -19,29 +19,25 @@ We can treat each set as a graph with several connected components. For each $p_
 
 <CPPSection>
 
-```cpp 
+```cpp
 #include <bits/stdc++.h>
 using namespace std;
 
 struct DSU {
 	vector<int> p, sz;
-	DSU(int n){ 
+	DSU(int n) {
 		p.resize(n);
 		sz.resize(n, 1);
 		iota(p.begin(), p.end(), 0);
 	}
-	int get(int x){
-		if(p[x] != x){
-			p[x] = get(p[x]);
-		}
+	int get(int x) {
+		if (p[x] != x) { p[x] = get(p[x]); }
 		return p[x];
 	}
-	void unite(int a, int b){
-		a = get(a); 
+	void unite(int a, int b) {
+		a = get(a);
 		b = get(b);
-		if (sz[a] < sz[b]) {
-			swap(a,b);
-		}
+		if (sz[a] < sz[b]) { swap(a, b); }
 		if (a != b) {
 			p[b] = a;
 			sz[a] += sz[b];
@@ -50,52 +46,48 @@ struct DSU {
 };
 
 int main() {
-	int n, a, b; cin >> n >> a >> b;
+	int n, a, b;
+	cin >> n >> a >> b;
 	vector<int> p(n);
-	for(int i = 0; i < n; i++){
-		cin >> p[i];
-	}
-	map<int,int> at;
-	for(int i = 0; i < n; i++){
-		at[p[i]] = i;
-	}
+	for (int i = 0; i < n; i++) { cin >> p[i]; }
+	map<int, int> at;
+	for (int i = 0; i < n; i++) { at[p[i]] = i; }
 	DSU dsu(n);
 	vector<int> can_A(n), can_B(n);
-	for(int i = 0; i < n; i++){
-		if(at.count(a - p[i])){
+	for (int i = 0; i < n; i++) {
+		if (at.count(a - p[i])) {
 			can_A[i] = true;
 			dsu.unite(i, at[a - p[i]]);
 		}
-		if(at.count(b - p[i])){
+		if (at.count(b - p[i])) {
 			can_B[i] = true;
 			dsu.unite(i, at[b - p[i]]);
 		}
-	} 
+	}
 	/*
 	first bit activated if all numbers in component i can reside in
 	graph A, and similarily the second bit for graph B
 	*/
 	vector<int> can_component(n, 3);
-	for(int i = 0; i < n; i++){
+	for (int i = 0; i < n; i++) {
 		int mask = 0;
-		if(can_A[i]) mask += 1;
-		if(can_B[i]) mask += 2;
+		if (can_A[i]) mask += 1;
+		if (can_B[i]) mask += 2;
 		can_component[dsu.get(i)] &= mask;
 	}
-	for(int i = 0; i < n; i++){
-		if(!can_component[i]){
+	for (int i = 0; i < n; i++) {
+		if (!can_component[i]) {
 			cout << "NO" << endl;
 			return 0;
 		}
 	}
 	cout << "YES" << endl;
-	for(int i = 0; i < n; i++){
+	for (int i = 0; i < n; i++) {
 		int comp_mask = can_component[dsu.get(i)];
-		if(comp_mask == 1){
+		if (comp_mask == 1) {
 			// only can be in set A
 			cout << 0 << " ";
-		}
-		else{
+		} else {
 			// can be in either set A or B
 			cout << 1 << " ";
 		}
