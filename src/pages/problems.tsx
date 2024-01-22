@@ -142,8 +142,8 @@ export default function ProblemsPage(props: PageProps<DataProps>) {
               <h1 className="text-center text-3xl sm:text-5xl font-bold text-white dark:text-dark-high-emphasis mb-6">
                 Problems (Beta)
               </h1>
-              <SearchBox 
-              // queryHook={queryHook} 
+              <SearchBox
+              // queryHook={queryHook}
               />
             </div>
           </div>
