@@ -169,7 +169,7 @@ export default function TopNavigationBar({
             <div className="flex px-2 lg:px-0">
               <Link
                 to={linkLogoToIndex ? '/' : '/dashboard'}
-                state={{ redirect: true }}
+                state={{ redirect: !dashboard }}
                 className="flex-shrink-0 flex items-center"
               >
                 <div className="block sm:hidden">

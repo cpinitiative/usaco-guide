@@ -56,10 +56,8 @@ export default function IndexPage(): JSX.Element {
   const location = useLocation();
   React.useEffect(() => {
     try {
-      if (location.state.redirect) {
-        if (firebaseUser && !location.state.redirect) {
-          navigate('/dashboard');
-        }
+      if (firebaseUser && location.state.redirect) {
+        navigate('/dashboard');
       }
     } catch (e) {
       if (firebaseUser) {
