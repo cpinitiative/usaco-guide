@@ -6,11 +6,15 @@ author: Chongtian Ma
 ---
 
 <Spoiler title="Hint 1">
+
 We can model the two sets as a graph, with $p_i$ and $a - p_i$ connected in graph $A$, and $p_i$ connected to $b - p_i$ in graph B.
+
 </Spoiler>
 
 <Spoiler title="Hint 2">
-How is there a contradiction in the connected components?
+
+How can there be a contradiction in the connected components?
+
 </Spoiler>
 
 ## Explanation
@@ -24,14 +28,13 @@ We can treat each set as a graph with several connected components. For each $p_
 **Time Complexity:** $\mathcal{O}(N\log N)$
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
 
-// BeginCodeSnip{Disjoint Set Union}
+// BeginCodeSnip{DSU}
 struct DSU {
 	vector<int> e;
 	DSU(int N) { e = vector<int>(N, -1); }
@@ -75,6 +78,7 @@ int main() {
 			dsu.unite(i, at[b - p[i]]);
 		}
 	}
+	
 	/*
 	 * first bit activated if all numbers in component i can reside in
 	 * graph A, and similarly the second bit for graph B
@@ -86,12 +90,14 @@ int main() {
 		if (can_B[i]) mask += 2;
 		can_component[dsu.get(i)] &= mask;
 	}
+
 	for (int i = 0; i < n; i++) {
 		if (!can_component[i]) {
 			cout << "NO" << endl;
 			return 0;
 		}
 	}
+
 	cout << "YES" << endl;
 	for (int i = 0; i < n; i++) {
 		int comp_mask = can_component[dsu.get(i)];
@@ -108,5 +114,4 @@ int main() {
 ```
 
 </CPPSection>
-
 </LanguageSection>
