@@ -40,7 +40,7 @@ export default function TopNavigationBar({
   linkLogoToIndex = false,
   currentSection = null,
   hidePromoBar = false,
-  dashboard = false,
+  redirectToDashboard = false,
 }) {
   const firebaseUser = useFirebaseUser();
   const signOut = useSignOutAction();
@@ -169,7 +169,7 @@ export default function TopNavigationBar({
             <div className="flex px-2 lg:px-0">
               <Link
                 to={linkLogoToIndex ? '/' : '/dashboard'}
-                state={{ redirect: !dashboard }}
+                state={{ redirect: redirectToDashboard }}
                 className="flex-shrink-0 flex items-center"
               >
                 <div className="block sm:hidden">
