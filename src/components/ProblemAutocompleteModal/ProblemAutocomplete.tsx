@@ -1,12 +1,16 @@
+import { BaseHit, Hit } from 'instantsearch.js';
 import * as React from 'react';
+import { useHits, useSearchBox } from 'react-instantsearch';
 import { AlgoliaProblemInfo } from '../../models/problem';
+
+type AlgoliaProblemInfoHit = Hit<BaseHit> & AlgoliaProblemInfo;
 
 const ProblemAutocompleteHit = ({
   hit,
   onClick,
 }: {
-  hit: AlgoliaProblemInfo;
-  onClick: (problem: AlgoliaProblemInfo) => any;
+  hit: AlgoliaProblemInfoHit;
+  onClick: (problem: AlgoliaProblemInfoHit) => void;
 }) => {
   return (
     <li key={hit.objectID}>
@@ -15,9 +19,7 @@ const ProblemAutocompleteHit = ({
         onClick={() => onClick(hit)}
       >
         <div className="flex items-center justify-between">
-          <span className="font-medium">
-            {hit.source} {hit.name}
-          </span>
+          <span className="font-medium">{`${hit.source}: ${hit.name}`}</span>
           <span>
             {hit.isStarred ? 'Starred • ' : ''}
             {hit.difficulty}
@@ -38,42 +40,45 @@ const ProblemAutocompleteHit = ({
   );
 };
 
-export const ProblemAutocomplete = ({
-  hits,
-  currentRefinement,
-  refine,
+export const indexName = `${
+  process.env.GATSBY_ALGOLIA_INDEX_NAME ?? 'dev'
+}_problems`;
+
+export type ProblemAutocompleteProps = {
+  onProblemSelect: (problem: AlgoliaProblemInfoHit) => void;
+  modalIsOpen: boolean;
+};
+
+export function ProblemAutocomplete({
   onProblemSelect,
   modalIsOpen,
-}) => (
-  <div>
+}: ProblemAutocompleteProps) {
+  const { query, refine: setQuery } = useSearchBox();
+  const { hits } = useHits() as { hits: AlgoliaProblemInfoHit[] };
+  return (
     <div>
-      {modalIsOpen ? (
+      <div>
         <input
-          autoFocus
+          autoFocus={modalIsOpen}
           type="text"
           className="input"
           placeholder="Problem Name"
-          value={currentRefinement}
-          onChange={e => refine(e.currentTarget.value)}
+          value={query}
+          onChange={e => setQuery(e.currentTarget.value)}
         />
-      ) : (
-        <input
-          type="text"
-          className="input"
-          placeholder="Problem Name"
-          value={currentRefinement}
-          onChange={e => refine(e.currentTarget.value)}
-        />
-      )}
+      </div>
+      <ul
+        className="overflow-y-auto mt-2 space-y-2"
+        style={{ height: '40rem' }}
+      >
+        {hits.map(hit => (
+          <ProblemAutocompleteHit
+            hit={hit}
+            key={hit.objectID}
+            onClick={p => onProblemSelect(p)}
+          />
+        ))}
+      </ul>
     </div>
-    <ul className="overflow-y-auto mt-2 space-y-2" style={{ height: '40rem' }}>
-      {hits.map(hit => (
-        <ProblemAutocompleteHit
-          hit={hit}
-          key={hit.objectID}
-          onClick={p => onProblemSelect(p)}
-        />
-      ))}
-    </ul>
-  </div>
-);
+  );
+}

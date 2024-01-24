@@ -2,7 +2,7 @@ import { Link } from 'gatsby';
 import * as React from 'react';
 import { useContext } from 'react';
 import styled from 'styled-components';
-import tw from 'twin.macro';
+import tw, { TwStyle } from 'twin.macro';
 import MarkdownLayoutContext from '../../../context/MarkdownLayoutContext';
 import { useUserProgressOnModules } from '../../../context/UserDataContext/properties/userProgress';
 import {
@@ -10,7 +10,12 @@ import {
   ModuleLinkInfo,
 } from '../../../models/module';
 
-export const LinkWithProgress = styled.span`
+export const LinkWithProgress = styled.span<{
+  dotColorStyle: TwStyle;
+  lineColorStyle: TwStyle;
+  darkDotColorStyle: TwStyle;
+  darkLineColorStyle: TwStyle;
+}>`
   ${tw`block relative`}
 
   &::after {
@@ -57,7 +62,11 @@ export const LinkWithProgress = styled.span`
   }
 `;
 
-const StyledLink = styled.span`
+const StyledLink = styled.span<{
+  $textStyle: TwStyle;
+  $darkTextStyle: TwStyle;
+  $isActive: boolean;
+}>`
   ${tw`focus:outline-none transition ease-in-out duration-150 hover:text-blue-700 hover:bg-blue-50 focus:bg-blue-100 flex items-center pl-12 pr-4 py-3 text-sm leading-5`}
 
   ${({ $textStyle }) => $textStyle}
@@ -103,10 +112,10 @@ const ItemLink = ({
 }) => {
   const { activeIDs } = useContext(MarkdownLayoutContext);
   const isActive = activeIDs.includes(link.id);
-  const itemRef = React.useRef(null);
+  const itemRef = React.useRef<HTMLSpanElement>(null);
 
   React.useEffect(() => {
-    if (isActive) {
+    if (isActive && itemRef.current) {
       itemRef.current.scrollIntoView({ block: `center` });
     }
   }, [isActive]);

@@ -1,0 +1,81 @@
+---
+id: cf-104536F
+source: CF
+title: Minimize the Diameter
+author: KJ Karaisz
+---
+
+## Explanation
+
+Let's consider the longest possible path the added edge could create. One way to find this path would be to use the two farthest nodes on each tree from the nodes the added edge connects.
+Therefore, on each tree, the optimal node to connect the edge to is the node that has the shortest possible path to the farthest node.
+
+It turns out that this node is always the middle of the tree's diameter. To help understand this, we can visualize the tree with its diameter as a horizontal line, and the other nodes
+'hanging' off of it:
+
+![Tree graph with its diameter on a horizontal line, and other nodes hanging off the bottom](<cf-104536F/graph.png>)
+
+Note how moving the node to anything but 3 extends the longest path by the edge that was just used.
+
+Now it remains to calculate this resulting length. When the diameter's length is even, the longest path will use the longer of the 2 halves of the diameter,
+so we need to divide the diameters by 2, round up, and add 1 for the added edge itself (If you don't know how to find the diameter of a tree, see [CPH 14.2](/CPH.pdf#page=145)).
+
+This is, however, not necessarily the longest path. It's possible for the initial diameter of either of the two trees to be longer. So we need to compare the above value to these as well.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+/** @return the farthest node and its distance from the given node. */
+pair<int, int> dfs(const vector<vector<int>> &tree, int node = 1,
+                   int previous = 0, int length = 0) {
+	pair<int, int> max_path = {node, length};
+	for (const int &i : tree[node]) {
+		if (i == previous) { continue; }
+		pair<int, int> other = dfs(tree, i, node, length + 1);
+		if (other.second > max_path.second) { max_path = other; }
+	}
+	return max_path;
+}
+
+int main() {
+	int n;
+	cin >> n;
+	vector<vector<int>> tree1(n + 1);
+	for (int i = 0; i < n - 1; i++) {
+		int u, v;
+		cin >> u >> v;
+		tree1[u].push_back(v);
+		tree1[v].push_back(u);
+	}
+	int m;
+	cin >> m;
+	vector<vector<int>> tree2(m + 1);
+	for (int i = 0; i < m - 1; i++) {
+		int u, v;
+		cin >> u >> v;
+		tree2[u].push_back(v);
+		tree2[v].push_back(u);
+	}
+
+	int tree1_start = dfs(tree1).first;
+	int tree2_start = dfs(tree2).first;
+	int tree1_diameter = dfs(tree1, tree1_start).second;
+	int tree2_diameter = dfs(tree2, tree2_start).second;
+	// (x + 1) / 2 divides by 2 and rounds up
+	int added_edge_diameter =
+	    (tree1_diameter + 1) / 2 + (tree2_diameter + 1) / 2 + 1;
+
+	cout << max({tree1_diameter, tree2_diameter, added_edge_diameter}) << endl;
+}
+```
+
+</CPPSection>
+</LanguageSection>

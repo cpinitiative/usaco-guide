@@ -4,7 +4,7 @@ import PGS from '../components/markdown/PGS';
 import id_to_sol from '../components/markdown/ProblemsList/DivisionList/id_to_sol.json';
 import { books } from '../utils/books';
 
-export const recentUsaco = ['Bronze', 'Silver', 'Gold', 'Plat'];
+export const recentUsaco = ['Bronze', 'Silver', 'Gold', 'Platinum'];
 
 // abbreviation -> [URL, description or full name, instructions to view solutions]
 export const probSources = {
@@ -20,7 +20,7 @@ export const probSources = {
     'http://www.usaco.org/index.php?page=viewproblem2&cpid=',
     'USACO 2015-16 to present',
   ],
-  Plat: [
+  Platinum: [
     'http://www.usaco.org/index.php?page=viewproblem2&cpid=',
     'USACO 2015-16 to present',
   ],
@@ -535,6 +535,7 @@ export const PROBLEM_PROGRESS_OPTIONS: ProblemProgress[] = [
 ];
 
 export type ProblemDifficulty =
+  | 'N/A'
   | 'Very Easy'
   | 'Easy'
   | 'Normal'

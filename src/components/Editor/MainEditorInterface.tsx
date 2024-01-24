@@ -1,15 +1,19 @@
 import classNames from 'classnames';
-import { useAtomValue, useUpdateAtom } from 'jotai/utils';
+import { useAtomValue, useSetAtom } from 'jotai';
 import babelParser from 'prettier/parser-babel';
 import markdownParser from 'prettier/parser-markdown';
 import prettier from 'prettier/standalone';
 import * as React from 'react';
-import { useState } from 'react';
 import problemsSchema from '../../../content/problems.schema.json';
 import {
   activeFileAtom,
+  baseTabAtom,
+  editingSolutionAtom,
   monacoEditorInstanceAtom,
   saveFileAtom,
+  tabAtom,
+  trueFileAtom,
+  trueFilePathAtom,
 } from '../../atoms/editor';
 import EditorTabBar from './EditorTabBar';
 import { conf as mdxConf, language as mdxLang } from './mdx-lang';
@@ -18,15 +22,14 @@ const Editor = React.lazy(() => import('@monaco-editor/react'));
 
 export const MainEditorInterface = ({ className }): JSX.Element => {
   const activeFile = useAtomValue(activeFileAtom);
-  const saveFile = useUpdateAtom(saveFileAtom);
-  const setMonacoEditorInstance = useUpdateAtom(monacoEditorInstanceAtom);
-  const [_tab, setTab] = useState<'problems' | 'content'>('content');
-  const isEditingSolution =
-    activeFile && activeFile.path.startsWith('solutions');
-  const tab = isEditingSolution ? 'content' : _tab;
+  const saveFile = useSetAtom(saveFileAtom);
+  const setMonacoEditorInstance = useSetAtom(monacoEditorInstanceAtom);
+  const setTab = useSetAtom(baseTabAtom);
+  const isEditingSolution = useAtomValue(editingSolutionAtom);
+  const tab = useAtomValue(tabAtom);
 
-  const markdown: string | null = activeFile?.markdown;
   const setMarkdown = (x: string | ((prev: string) => string)) => {
+    if (!activeFile) return;
     if (typeof x === 'string') {
       saveFile({
         path: activeFile.path,
@@ -45,8 +48,8 @@ export const MainEditorInterface = ({ className }): JSX.Element => {
       });
     }
   };
-  const problems: string | null = activeFile?.problems;
   const setProblems = (x: string | ((prev: string) => string)) => {
+    if (!activeFile) return;
     if (typeof x === 'string') {
       saveFile({
         path: activeFile.path,
@@ -111,7 +114,7 @@ export const MainEditorInterface = ({ className }): JSX.Element => {
     <div className={classNames('tw-forms-disable-all-descendants', className)}>
       <EditorTabBar
         tabs={tabs}
-        activeTab={tab === 'content' ? 'content' : 'problems'}
+        activeTab={tab}
         onTabSelect={tab =>
           setTab(tab.value === 'content' ? 'content' : 'problems')
         }
@@ -119,23 +122,11 @@ export const MainEditorInterface = ({ className }): JSX.Element => {
       />
       <Editor
         theme="vs-dark"
-        path={
-          activeFile === null
-            ? 'NONE'
-            : tab === 'content'
-            ? activeFile.path
-            : activeFile.path.replace(/\.mdx$/, '.problems.json')
-        }
+        path={useAtomValue(trueFilePathAtom)}
         language={tab === 'content' ? 'custom-mdx' : 'json'}
-        value={
-          activeFile === null
-            ? 'Open a file to begin'
-            : tab === 'content'
-            ? markdown
-            : problems
-        }
-        onChange={(v, e) =>
-          tab === 'content' ? setMarkdown(v) : setProblems(v)
+        value={useAtomValue(trueFileAtom)}
+        onChange={v =>
+          tab === 'content' ? setMarkdown(v ?? '') : setProblems(v ?? '')
         }
         options={{
           wordWrap: 'on',

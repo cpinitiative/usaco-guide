@@ -1,4 +1,4 @@
-import { useAtomValue, useUpdateAtom } from 'jotai/utils';
+import { useAtomValue, useSetAtom } from 'jotai';
 import babelParser from 'prettier/parser-babel';
 import prettier from 'prettier/standalone';
 import * as React from 'react';
@@ -19,7 +19,7 @@ const RawMarkdownRenderer = React.lazy(
 
 export const EditorOutput = (): JSX.Element => {
   const activeFile = useAtomValue(activeFileAtom);
-  const saveFile = useUpdateAtom(saveFileAtom);
+  const saveFile = useSetAtom(saveFileAtom);
 
   const markdown: string | null = activeFile?.markdown;
   const problems: string | null = activeFile?.problems;
@@ -91,19 +91,23 @@ export const EditorOutput = (): JSX.Element => {
 
   return (
     <div className="markdown p-4">
-      <EditorContext.Provider
-        value={{
-          addProblem: handleAddProblem,
-          inEditor: true,
-        }}
-      >
-        <MarkdownProblemListsProvider value={markdownProblemListsProviderValue}>
-          <ProblemSuggestionModalProvider>
-            <RawMarkdownRenderer markdown={markdown} problems={problems} />
-            <QuizGeneratorModal />
-          </ProblemSuggestionModalProvider>
-        </MarkdownProblemListsProvider>
-      </EditorContext.Provider>
+      <React.Suspense fallback={<p>Loading...</p>}>
+        <EditorContext.Provider
+          value={{
+            addProblem: handleAddProblem,
+            inEditor: true,
+          }}
+        >
+          <MarkdownProblemListsProvider
+            value={markdownProblemListsProviderValue}
+          >
+            <ProblemSuggestionModalProvider>
+              <RawMarkdownRenderer markdown={markdown} problems={problems} />
+              <QuizGeneratorModal />
+            </ProblemSuggestionModalProvider>
+          </MarkdownProblemListsProvider>
+        </EditorContext.Provider>
+      </React.Suspense>
     </div>
   );
 };

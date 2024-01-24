@@ -1,0 +1,211 @@
+---
+id: usaco-1020
+source: USACO Platinum 2020 February
+title: Delegation
+author: Chongtian Ma
+---
+
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_deleg_platinum_feb20.html)
+
+## Explanation
+
+Note that if we can split the tree into paths of at least $x$, then we can also split it into paths of at least $y$ where $y < x$. Thus, it suffices to binary search over the minimum path length.
+
+We can arbitrarily root the tree at node $1$. Let $\mathtt{toBeMerged[i]}$ store the length of the path passes through node $i$ and its length has not been paired yet. Since only one of such path can exist, all of the other paths which source from the subtrees of $i$ must be evenly paired with sum of lengths $\geq k$.
+
+We want to maximize $\mathtt{toBeMerged[i]}$ while evenly pairing all of the children with path lengths $\geq k$. To do this, we can run another binary search over the unpaired path lengths of the children and check if we can remove any of them and the condition holds. If we removed one and the rest is still unpairable, then we return false.
+
+Note that this requires the number of unpaired lengths to be initially odd. If there are an even number of children, then we can append an arbitrary $0$. If our binary search returns $0$, then we know all the children are already evenly paired.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N \log^2 N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 1e5;
+
+vector<int> g[N];
+int to_be_merged[N];
+
+// check if elements can be paired with sum >= k
+bool check(vector<int> &v, int remove, int k) {
+	int l = 0;
+	int r = v.size() - 1;
+	while (l < r) {
+		if (l == remove) { l++; }
+		if (r == remove) { r--; }
+		if (v[l++] + v[r--] < k) { return false; }
+	}
+	return true;
+}
+
+bool dfs(int node, int p, int k) {
+	vector<int> v;  // all leftover path lengths from children
+	for (int i : g[node]) {
+		if (i == p) continue;
+		if (!dfs(i, node, k)) return false;
+		v.push_back(to_be_merged[i] + 1);
+	}
+
+	// root edge case
+	if (node == 0) {
+		// if it is the root, all paths must be evenly paired
+		// there must be an even number of paths initially
+		if (v.size() % 2 == 1) { v.push_back(0); }
+		sort(v.begin(), v.end());
+		// return if possible if we do not remove any elements
+		return check(v, -1, k);
+	}
+
+	if (v.size() % 2 == 0) {
+		// append dummy 0 (returned if perfectly paired)
+		v.push_back(0);
+	}
+	sort(v.begin(), v.end());
+
+	// binary search over the index we can remove
+	int l = -1;
+	int r = v.size();
+	while (l < r - 1) {
+		int mid = l + (r - l) / 2;
+		// if we remove index mid, can we pair the rest?
+		if (check(v, mid, k)) {
+			l = mid;
+		} else {
+			r = mid;
+		}
+	}
+
+	// we cannot pair all paths even if we removed an index
+	if (l == -1) { return false; }
+
+	to_be_merged[node] = v[l];
+	return true;
+}
+
+int main() {
+	ifstream cin("deleg.in");
+	int n;
+	cin >> n;
+	for (int i = 0; i < n - 1; i++) {
+		int u, v;
+		cin >> u >> v;
+		g[--u].push_back(--v);
+		g[v].push_back(u);
+	}
+
+	int l = 0;
+	int r = n + 1;
+	while (l < r - 1) {
+		int mid = l + (r - l) / 2;
+		fill(to_be_merged, to_be_merged + n, 0);
+		if (dfs(0, 0, mid)) {
+			l = mid;
+		} else {
+			r = mid;
+		}
+	}
+
+	ofstream("deleg.out") << l << endl;
+}
+```
+
+<Warning title="Bad Test Cases">
+
+The following code will also AC due to weak test data, but it is technically $\mathcal{O}(N^2 \log N)$.
+It exploits the fact that we can break early once we found an index to remove and loop linearly through all the children from high to low.
+This solution can be hacked with a suitable graph where one node has a large number of children, though.
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 1e5;
+
+vector<int> g[N];
+int to_be_merged[N];
+
+// check if elements can be paired with sum >= k
+bool check(vector<int> &v, int remove, int k) {
+	int l = 0;
+	int r = v.size() - 1;
+	while (l < r) {
+		if (l == remove) { l++; }
+		if (r == remove) { r--; }
+		if (v[l++] + v[r--] < k) { return false; }
+	}
+	return true;
+}
+
+bool dfs(int node, int p, int k) {
+	vector<int> v;  // all leftover path lengths from children
+	for (int i : g[node]) {
+		if (i == p) { continue; }
+		if (!dfs(i, node, k)) { return false; }
+		v.push_back(to_be_merged[i] + 1);
+	}
+
+	// root edge case
+	if (node == 0) {
+		// if it is the root, all paths must be evenly paired
+		// there must be an even number of paths initially
+		if (v.size() % 2 == 1) { v.push_back(0); }
+		sort(v.begin(), v.end());
+		// return if possible if we do not remove any elements
+		return check(v, -1, k);
+	}
+
+	if (v.size() % 2 == 0) {
+		// append dummy 0 (returned if perfectly paired)
+		v.push_back(0);
+	}
+	sort(v.begin(), v.end());
+
+	// linearily search instead of binary searching
+	for (int i = v.size() - 1; i >= 0; i--) {
+		// check if we were to remove index i, can we pair the rest?
+		if (check(v, i, k)) {
+			to_be_merged[node] = v[i];
+			return true;
+		}
+	}
+	return false;
+}
+
+int main() {
+	ifstream cin("deleg.in");
+	int n;
+	cin >> n;
+	for (int i = 0; i < n - 1; i++) {
+		int u, v;
+		cin >> u >> v;
+		g[--u].push_back(--v);
+		g[v].push_back(u);
+	}
+
+	int l = 0;
+	int r = n + 1;
+	while (l < r - 1) {
+		int mid = l + (r - l) / 2;
+		fill(to_be_merged, to_be_merged + n, 0);
+		if (dfs(0, 0, mid)) {
+			l = mid;
+		} else {
+			r = mid;
+		}
+	}
+
+	ofstream("deleg.out") << l << endl;
+}
+```
+
+</Warning>
+
+</CPPSection>
+</LanguageSection>

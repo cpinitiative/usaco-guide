@@ -1,10 +1,15 @@
 import { ArrowLeftIcon, ArrowRightIcon } from '@heroicons/react/solid';
 import classNames from 'classnames';
-import { Provider, atom, useAtom } from 'jotai';
-import { useAtomValue, useUpdateAtom } from 'jotai/utils';
+import {
+  Provider,
+  atom,
+  useAtom,
+  useAtomValue,
+  useSetAtom,
+  useStore,
+} from 'jotai';
 import React from 'react';
 
-const quizScope = Symbol();
 const finalAnswersAtom = atom<number[]>([]); //saved previous answers
 
 const currentQuestionAtom = atom(0);
@@ -14,10 +19,16 @@ const correctAnswersAtom = atom([] as number[]); //correct selection(s) for curr
 const handleSubmittedAnswerAtom = atom(
   null,
   (get, set, answer_index: number) => {
-    const i = get(currentQuestionAtom);
-    const finalAnswersClone = [...get(finalAnswersAtom)];
-    finalAnswersClone[i] = answer_index;
-    set(finalAnswersAtom, finalAnswersClone);
+    set(finalAnswersAtom, prv => {
+      const i = get(currentQuestionAtom);
+      const finalAnswersClone = [...prv];
+      finalAnswersClone[i] = answer_index;
+      return finalAnswersClone;
+      // code below doesn't work for some reason
+      // probably because it's not a deep clone
+      // prv[get(currentQuestionAtom)] = answer_index;
+      // return prv;
+    });
   }
 ); //updates the finalAnswersArray upon question submit
 
@@ -33,13 +44,13 @@ const QuizAnswerExplanation = (props: { children?: React.ReactNode }) => {
 QuizAnswerExplanation.displayName = 'QuizAnswerExplanation';
 // Answer choice component
 const QuizMCAnswer = props => {
-  const [selectedAnswer, setSelectedAnswer] = useAtom(
-    selectedAnswerAtom,
-    quizScope
-  );
+  const store = useStore();
+  const [selectedAnswer, setSelectedAnswer] = useAtom(selectedAnswerAtom, {
+    store,
+  });
   const isSelected = selectedAnswer === props.number;
-  const [submitted, setSubmittedValue] = useAtom(submittedAtom, quizScope);
-  const correctAnswers = useAtomValue(correctAnswersAtom, quizScope);
+  const [submitted, setSubmittedValue] = useAtom(submittedAtom, { store });
+  const correctAnswers = useAtomValue(correctAnswersAtom, { store });
   const showVerdict =
     submitted && (isSelected || correctAnswers.includes(selectedAnswer)); //display correctness/explanation
   const isCorrect = submitted && correctAnswers.includes(selectedAnswer);
@@ -97,7 +108,8 @@ const QuizMCAnswer = props => {
 QuizMCAnswer.displayName = 'QuizMCAnswer';
 
 const QuizQuestion = props => {
-  const setCorrectAnswers = useUpdateAtom(correctAnswersAtom, quizScope);
+  const store = useStore();
+  const setCorrectAnswers = useSetAtom(correctAnswersAtom, { store });
   React.useEffect(() => {
     const correctAnswers = [];
     let answerNum = 0;
@@ -126,18 +138,17 @@ QuizQuestion.displayName = 'QuizQuestion';
 
 // needed to use scoped provider
 const ActualQuiz = props => {
-  const [currentQuestion, setCurrentQuestion] = useAtom(
-    currentQuestionAtom,
-    quizScope
-  );
+  const store = useStore();
+  const [currentQuestion, setCurrentQuestion] = useAtom(currentQuestionAtom, {
+    store,
+  });
 
-  const [selectedAnswer, setSelectedAnswer] = useAtom(
-    selectedAnswerAtom,
-    quizScope
-  );
-  const finalAnswers = useAtomValue(finalAnswersAtom, quizScope);
-  const submitAnswer = useUpdateAtom(handleSubmittedAnswerAtom, quizScope);
-  const [submitted, setSubmitted] = useAtom(submittedAtom, quizScope);
+  const [selectedAnswer, setSelectedAnswer] = useAtom(selectedAnswerAtom, {
+    store,
+  });
+  const finalAnswers = useAtomValue(finalAnswersAtom, { store });
+  const submitAnswer = useSetAtom(handleSubmittedAnswerAtom, { store });
+  const [submitted, setSubmitted] = useAtom(submittedAtom, { store });
   const canMoveOn = submitted || selectedAnswer === null; //if you can move on to the next question
 
   const handleQuestionChange = (newQuestionIndex: number) => {
@@ -198,7 +209,7 @@ const ActualQuiz = props => {
 
 const Quiz = (props): JSX.Element => {
   return (
-    <Provider scope={quizScope}>
+    <Provider>
       <ActualQuiz {...props} />
     </Provider>
   );

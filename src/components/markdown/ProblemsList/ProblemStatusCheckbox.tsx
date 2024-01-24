@@ -17,6 +17,7 @@ import {
   ProblemInfo,
   ProblemProgress,
 } from '../../../models/problem';
+import { DivisionProblemInfo } from './DivisionList/DivisionProblemInfo';
 
 const StyledTippy = styled(Tippy)`
   .tippy-content {
@@ -140,7 +141,7 @@ export default function ProblemStatusCheckbox({
   problem,
   size = 'small',
 }: {
-  problem: ProblemInfo;
+  problem: ProblemInfo | DivisionProblemInfo;
   size?: 'small' | 'large';
 }): JSX.Element {
   const darkMode = useDarkMode();

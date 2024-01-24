@@ -10,14 +10,15 @@
 // }
 
 import { PageProps } from 'gatsby';
-import { useAtomValue, useUpdateAtom } from 'jotai/utils';
-import * as React from 'react';
+import { useAtomValue, useSetAtom } from 'jotai';
+import React, { useEffect } from 'react';
 import Split from 'react-split';
 import styled from 'styled-components';
 import {
   filesListAtom,
   monacoEditorInstanceAtom,
   openOrCreateExistingFileAtom,
+  tokenAtom,
 } from '../../atoms/editor';
 import QuizGeneratorProvider from '../../context/QuizGeneratorContext';
 import Layout from '../layout';
@@ -53,8 +54,25 @@ function getQueryVariable(query, variable) {
 
 export default function EditorPage(props: PageProps): JSX.Element {
   const editor = useAtomValue(monacoEditorInstanceAtom);
-  const openOrCreateExistingFile = useUpdateAtom(openOrCreateExistingFileAtom);
-
+  const openOrCreateExistingFile = useSetAtom(openOrCreateExistingFileAtom);
+  const setToken = useSetAtom(tokenAtom);
+  useEffect(() => {
+    const code = new URLSearchParams(props.location.search).get('code');
+    if (!code) return;
+    fetch('/api/get-token', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ code }),
+    })
+      .then(res => res.json())
+      .then(json => {
+        console.log(json);
+        setToken(json.token);
+      });
+    history.replaceState({}, '', '/editor');
+  }, [props.location.search, setToken]);
   const filesList = useAtomValue(filesListAtom); // null if hasn't been loaded from storage yet
   React.useEffect(() => {
     const defaultFilePath =
@@ -64,7 +82,7 @@ export default function EditorPage(props: PageProps): JSX.Element {
     if (defaultFilePath && filesList !== null) {
       openOrCreateExistingFile(defaultFilePath);
     }
-  }, [filesList]);
+  }, [filesList, openOrCreateExistingFile, props.location.search]);
 
   return (
     <QuizGeneratorProvider>
@@ -75,32 +93,37 @@ export default function EditorPage(props: PageProps): JSX.Element {
           <EditorTopNav />
 
           {typeof window !== 'undefined' && (
-            <React.Suspense
-              fallback={
-                <div className="text-center mt-6 font-bold text-2xl">
-                  Loading
-                </div>
-              }
+            // <React.Suspense
+            //   fallback={
+            //     <div className="text-center mt-6 font-bold text-2xl">
+            //       Loading
+            //     </div>
+            //   }
+            // >
+            <StyledSplit
+              className="h-full relative flex-1 overflow-hidden"
+              onDrag={() => {
+                if (editor.monaco !== null) editor.monaco.layout();
+              }}
+              minSize={[600, 10]}
             >
-              <StyledSplit
-                className="h-full relative flex-1 overflow-hidden"
-                onDrag={() => {
-                  if (editor.monaco !== null) editor.monaco.layout();
-                }}
-                minSize={[600, 10]}
-              >
-                {/* https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.istandaloneeditorconstructionoptions.html */}
-                <div className="flex items-stretch">
-                  <EditorSidebar className="h-full flex-shrink-0" />
-                  <MainEditorInterface className="h-full w-0 flex-1" />
+              {/* https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.istandaloneeditorconstructionoptions.html */}
+              <div className="flex items-stretch">
+                <EditorSidebar
+                  className="h-full flex-shrink-0"
+                  loading={
+                    !!new URLSearchParams(props.location.search).get('code')
+                  }
+                />
+                <MainEditorInterface className="h-full w-0 flex-1" />
+              </div>
+              <div className="flex flex-col">
+                <div className="overflow-y-auto relative flex-1">
+                  <EditorOutput />
                 </div>
-                <div className="flex flex-col">
-                  <div className="overflow-y-auto relative flex-1">
-                    <EditorOutput />
-                  </div>
-                </div>
-              </StyledSplit>
-            </React.Suspense>
+              </div>
+            </StyledSplit>
+            // </React.Suspense>
           )}
         </div>
       </Layout>

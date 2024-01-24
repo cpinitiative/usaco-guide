@@ -1,14 +1,320 @@
 ---
 id: geo-pri
 title: 'Geometry Primitives'
-author: Benjamin Qi
+author: Mihnea Brebenel, Benjamin Qi
 description: Basic setup for geometry problems.
 frequency: 1
 ---
 
-You should know basic operations like cross product and dot product.
+You should know operations such as the cross product and dot product.
 
-## Tutorial
+## Standard Problems
+
+<FocusProblem problem="pointlocationtest" />
+
+To check the $P$ location towards the $P_1$ $P_2$ line we use following formula: $(P.y - P_1.y) * (P_2.x - P_1.x) - (P.x - P_1.x) * (P_2.y - P_1.y)$
+If it's equal to $0$ it means that $P$, $P_1$ and $P_2$ are collinear. Otherwise the value's sign indicated if $P$ is under the line - negative - or above the line - positive.
+
+<Spoiler title="Demonstration">
+
+Let $m_1=\frac{P_1.y - P_2.y}{P_1.x - P_2.x}$ be the slope of the linear function that goes through the points $P_1$ and $P_2$ and
+$m_2=\frac{P_2.y - P.y}{P_2.x - P.x}$ be the slope of the linear function that goes through the points $P_2$ and $P$.
+
+The points are collinear if and only if the slopes are equal i.e. $m_1 = m_2 \Leftrightarrow \frac{P_1.y - P_2.y}{P_1.x - P_2.x} = \frac{P_2.y - P.y}{P_2.x - P.x}
+\Leftrightarrow (P_1.y - P_2.y) * (P_2.x - P.x) = (P_1.x - P_2.x) * (P_1.x - P_2.x) \Leftrightarrow (P_1.y - P_2.y) * (P_2.x - P.x) - (P_1.x - P_2.x) * (P_1.x - P_2.x) = 0$.
+And this way we obtained the previously mentioned formula.
+
+This formula doesn't only tell us whether the points are collinear, but where the point $P$ is located too.
+
+![Dem](/assets/dem-collinear.png)
+
+</Spoiler>
+
+### Implementation
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+// BeginCodeSnip{Point Class}
+struct Point {
+	int x, y;
+	Point(int a = 0, int b = 0) : x(a), y(b) {}
+
+	friend istream &operator>>(istream &in, Point &p) {
+		int x, y;
+		in >> p.x >> p.y;
+		return in;
+	}
+};
+// EndCodeSnip
+
+long long collinear(Point p, Point p1, Point p2) {
+	return 1LL * (p.y - p1.y) * (p2.x - p1.x) -
+	       1LL * (p.x - p1.x) * (p2.y - p1.y);
+}
+
+int main() {
+	int test_num;
+	cin >> test_num;
+	for (int t = 0; t < test_num; t++) {
+		Point p1, p2, p3;
+		cin >> p1 >> p2 >> p3;
+
+		if (collinear(p1, p2, p3) == 0) {
+			cout << "TOUCH" << '\n';
+		} else if (collinear(p1, p2, p3) < 0) {
+			cout << "RIGHT" << '\n';
+		} else {
+			cout << "LEFT" << '\n';
+		}
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
+<FocusProblem problem="line" />
+
+We can quickly dismiss the segment intersection by treating them as rectangles having the segments as diagonals which can be easily done.
+If it turns out the rectangles intersect then we just check if the segment's ends are on different sides of the other segment.
+
+### Implementation
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+// BeginCodeSnip{Point Class}
+struct Point {
+	int x, y;
+	Point(int a = 0, int b = 0) : x(a), y(b) {}
+
+	friend istream &operator>>(istream &in, Point &p) {
+		int x, y;
+		in >> p.x >> p.y;
+		return in;
+	}
+};
+// EndCodeSnip
+
+int sign(long long num) {
+	if (num < 0) {
+		return -1;
+	} else if (num == 0) {
+		return 0;
+	} else {
+		return 1;
+	}
+}
+
+long long trigonometric_sense(Point p, Point p1, Point p2) {
+	return sign(1LL * (p1.x - p.x) * (p2.y - p.y) -
+	            1LL * (p2.x - p.x) * (p1.y - p.y));
+}
+
+// Check if the rectangles with [P1, P2] and [P3, P4] as diagonals intersect
+bool quick_check(Point p1, Point p2, Point p3, Point p4) {
+	int x1, x2, x3, x4, y1, y2, y3, y4;
+	x1 = min(p1.x, p2.x), x2 = max(p1.x, p2.x);
+	y1 = min(p1.y, p2.y), y2 = max(p1.y, p2.y);
+	x3 = min(p3.x, p4.x), x4 = max(p3.x, p4.x);
+	y3 = min(p3.y, p4.y), y4 = max(p3.y, p4.y);
+	return x2 < x3 || x4 < x1 || y2 < y3 || y4 < y1;
+}
+
+bool check(Point p1, Point p2, Point p3, Point p4) {
+	if (trigonometric_sense(p1, p2, p3) * trigonometric_sense(p1, p2, p4) > 0) {
+		return false;
+	}
+	if (trigonometric_sense(p3, p4, p1) * trigonometric_sense(p3, p4, p2) > 0) {
+		return false;
+	}
+	return true;
+}
+
+int main() {
+	int test_num;
+	cin >> test_num;
+	for (int t = 0; t < test_num; t++) {
+		Point p1, p2, p3, p4;
+		cin >> p1 >> p2 >> p3 >> p4;
+
+		if (quick_check(p1, p2, p3, p4)) {
+			puts("NO");
+		} else if (check(p1, p2, p3, p4)) {
+			puts("YES");
+		} else {
+			puts("NO");
+		}
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
+<FocusProblem problem="polygon" />
+
+The following algorithm uses the [Shoelace formula](https://en.wikipedia.org/wiki/Shoelace_formula).
+
+### Implementation
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+// BeginCodeSnip{Point Class}
+struct Point {
+	int x, y;
+	Point(int a = 0, int b = 0) : x(a), y(b) {}
+
+	friend istream &operator>>(istream &in, Point &p) {
+		int x, y;
+		in >> p.x >> p.y;
+		return in;
+	}
+};
+// EndCodeSnip
+
+int main() {
+	int n;
+	cin >> n;
+	vector<Point> points(n);
+	for (auto &p : points) { cin >> p; }
+	points.push_back(points[0]);
+
+	long long area = 0;
+	for (int i = 0; i < points.size(); i++) {
+		area += (1LL * points[i].x * points[i + 1].y -
+		         1LL * points[i].y * points[i + 1].x);
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
+<FocusProblem problem="polygon2" />
+
+We can cast a ray from the point $P$ going in any fixed direction (people usually go to the right).
+If the point is located on the outside of the polygon the ray will intersect its edges an even number of times.
+If the point is on the inside of the polygon then it will intersect the edge an odd number of times.
+
+This approach is called [ray casting](https://en.wikipedia.org/wiki/Point_in_polygon).
+
+### Implementation
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+// BeginCodeSnip{Point Class}
+struct Point {
+	int x, y;
+	Point(int a = 0, int b = 0) : x(a), y(b) {}
+
+	friend istream &operator>>(istream &in, Point &p) {
+		int x, y;
+		in >> p.x >> p.y;
+		return in;
+	}
+};
+// EndCodeSnip
+
+int sign(long long num) {
+	if (num < 0) {
+		return -1;
+	} else if (num == 0) {
+		return 0;
+	} else {
+		return 1;
+	}
+}
+
+long long trigonometric_sense(Point p, Point p1, Point p2) {
+	return sign(1LL * (p1.x - p.x) * (p2.y - p.y) -
+	            1LL * (p2.x - p.x) * (p1.y - p.y));
+}
+
+// Check if the rectangles with [P1, P2] and [P3, P4] as diagonals intersect
+bool quick_check(Point p1, Point p2, Point p3, Point p4) {
+	int x1, x2, x3, x4, y1, y2, y3, y4;
+	x1 = min(p1.x, p2.x), x2 = max(p1.x, p2.x);
+	y1 = min(p1.y, p2.y), y2 = max(p1.y, p2.y);
+	x3 = min(p3.x, p4.x), x4 = max(p3.x, p4.x);
+	y3 = min(p3.y, p4.y), y4 = max(p3.y, p4.y);
+	return x2 < x3 || x4 < x1 || y2 < y3 || y4 < y1;
+}
+
+bool check(Point p1, Point p2, Point p3, Point p4) {
+	if (quick_check(p1, p2, p3, p4)) { return false; }
+	if (trigonometric_sense(p1, p2, p3) * trigonometric_sense(p1, p2, p4) > 0) {
+		return false;
+	}
+	if (trigonometric_sense(p3, p4, p1) * trigonometric_sense(p3, p4, p2) > 0) {
+		return false;
+	}
+	return true;
+}
+
+bool collinear(Point p, Point p1, Point p2) {
+	return 1LL * (p.y - p1.y) * (p2.x - p1.x) -
+	           1LL * (p.x - p1.x) * (p2.y - p1.y) ==
+	       0;
+}
+
+int main() {
+	int n, m;
+	cin >> n >> m;
+	// Polygon's edges
+	vector<Point> poly(n);
+	for (auto &p : poly) { cin >> p; }
+
+	poly.push_back(poly[0]);
+	for (int j = 0; j < m; j++) {
+		Point A;
+		cin >> A;
+		// The infinite casting ray from A
+		Point B = {INT32_MAX, A.y};
+		// Intersection count
+		int cnt = 0;
+		bool on_boundary = false;
+		for (int i = 1; i < poly.size() - 1; i++) {
+			// Check if point A is on the edge
+			if (collinear(A, poly[i], poly[i + 1])) {
+				puts("BOUNDARY");
+				on_boundary = true;
+				break;
+			}
+			// Check the intersectio with the polygon's edge
+			if (check(A, B, poly[i], poly[i + 1])) { cnt++; }
+		}
+
+		if (!on_boundary) { cout << (cnt % 2 ? "INSIDE" : "OUTSIDE") << '\n'; }
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
+<Problems problems="standard" />
+
+## Resources
 
 <Resources>
 	<Resource source="CF" title="C++ - std::complex" url="22175" starred>
@@ -49,23 +355,6 @@ You should know basic operations like cross product and dot product.
 	</Resource> -->
 
 - [My Templates](<https://github.com/bqi343/USACO/tree/master/Implementations/content/geometry%20(13)/Primitives>)
-
-## Standard Problems
-
-<Warning>
-
-Dealing with edge cases (such as collinear points) can be a pain ...
-
-</Warning>
-
-<Resources>
-	<Resource
-		source="IUSACO"
-		title="14.2 - Checking If Two Segments Intersect"
-	 />
-</Resources>
-
-<Problems problems="standard" />
 
 ## Misc Problems
 

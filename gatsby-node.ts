@@ -5,11 +5,11 @@ import * as freshOrdering from './content/ordering';
 import div_to_probs from './src/components/markdown/ProblemsList/DivisionList/div_to_probs.json';
 import { createXdmNode } from './src/gatsby/create-xdm-node';
 import {
-  ProblemMetadata,
-  ShortProblemInfo,
   checkInvalidUsacoMetadata,
   getProblemInfo,
   getProblemURL,
+  ProblemMetadata,
+  ShortProblemInfo,
 } from './src/models/problem';
 // Questionable hack to get full commit history so that timestamps work
 try {
@@ -24,7 +24,7 @@ try {
 
 // ideally problems would be its own query with
 // source nodes: https://www.gatsbyjs.com/docs/reference/config-files/gatsby-node/#sourceNodes
-
+let stream = fs.createWriteStream('ids.log', { flags: 'a' });
 exports.onCreateNode = async api => {
   const { node, actions, loadNodeContent, createContentDigest, createNodeId } =
     api;
@@ -97,6 +97,7 @@ exports.onCreateNode = async api => {
       try {
         parsedContent[tableId].forEach((metadata: ProblemMetadata) => {
           checkInvalidUsacoMetadata(metadata);
+          if (process.env.CI) stream.write(metadata.uniqueId + '\n');
           transformObject(
             {
               ...getProblemInfo(metadata, freshOrdering),
@@ -573,7 +574,7 @@ exports.createSchemaCustomization = ({ actions }) => {
   `;
   createTypes(typeDefs);
 };
-
+const FilterWarningsPlugin = require('webpack-filter-warnings-plugin');
 exports.onCreateWebpackConfig = ({ actions, stage, loaders, plugins }) => {
   actions.setWebpackConfig({
     resolve: {
@@ -598,6 +599,12 @@ exports.onCreateWebpackConfig = ({ actions, stage, loaders, plugins }) => {
         },
       ],
     },
+    // plugins: [
+    //   new FilterWarningsPlugin({
+    //     exclude:
+    //       /mini-css-extract-plugin[^]*Conflicting order. Following module has been added:/,
+    //   }),
+    // ],
   });
   if (stage === 'build-javascript' || stage === 'develop') {
     actions.setWebpackConfig({

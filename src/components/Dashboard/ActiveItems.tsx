@@ -1,6 +1,6 @@
 import { Link } from 'gatsby';
 import * as React from 'react';
-import { difficultyClasses } from '../markdown/ProblemsList/ProblemsListItem';
+import { difficultyClasses } from '../DifficultyBox';
 import DashboardCard from './DashboardCard';
 
 type ActiveItemStatus =
@@ -77,7 +77,7 @@ export default function ActiveItems({
   return (
     <DashboardCard>
       <div className="px-4 py-5 sm:p-6">
-        <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-dark-high-emphasis">
+        <h3 className="text-lg leading-6 font-medium text-gray-800 dark:text-dark-high-emphasis">
           Active {type === 'problems' ? 'Problems' : 'Modules'}
         </h3>
         <div className="mt-4 text-gray-500">
