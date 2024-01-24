@@ -55,8 +55,11 @@ export default function IndexPage(): JSX.Element {
   const loading = useIsUserDataLoaded();
   const location = useLocation();
   React.useEffect(() => {
+    // User will normally be redirected to the dashboard if the user is logged in, but if user clicks the icon in the top left corner while on the dashboard, they will not be redirected.
     try {
       if (firebaseUser && location.state.redirect) {
+        /* Whether or not the user should be redirected to the dashboard is stored in location.state.redirect, but if the user opens a link straight 
+        to the landing page, location.state.redirect will be undefined, causing a typeerror, this try catch statements accounts for that */
         navigate('/dashboard');
       }
     } catch (e) {
