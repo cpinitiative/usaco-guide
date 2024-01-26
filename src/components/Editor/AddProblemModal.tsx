@@ -2,6 +2,7 @@ import { Dialog, Transition } from '@headlessui/react';
 import prettier from 'prettier';
 import babelParser from 'prettier/parser-babel';
 import React, { useRef, useState } from 'react';
+import CopyButton from './CopyButton';
 import parse from './parsers/parse';
 async function getHtml(url: string): Promise<string> {
   const res = await fetch('/api/fetch-html', {
@@ -42,11 +43,12 @@ async function addProblem(
     setStatus('Get Metadata');
   } catch (e) {
     alert(e);
+    setStatus('Get Metadata');
   }
 }
 export default function AddProblemModal({ isOpen, onClose }) {
   const linkRef = useRef<HTMLInputElement>(null);
-  const [metadata, setMetadata] = useState(null);
+  const [metadata, setMetadata] = useState('// metadata will appear here');
   const [status, setStatus] = useState('Get Metadata');
   return (
     <Transition appear show={isOpen} as={React.Fragment}>
@@ -90,8 +92,7 @@ export default function AddProblemModal({ isOpen, onClose }) {
 
                 <div className="mt-4">
                   <button
-                    type="button"
-                    className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                    className="btn"
                     onClick={() =>
                       addProblem(linkRef.current.value, setMetadata, setStatus)
                     }
@@ -99,10 +100,16 @@ export default function AddProblemModal({ isOpen, onClose }) {
                     {status}
                   </button>
                 </div>
-                <div className="mt-4">
+                <div className="mt-4 relative">
                   <pre className="bg-gray-900 p-4 rounded-md text-white text-xs whitespace-pre-wrap">
                     {metadata}
                   </pre>
+                  <CopyButton
+                    className="btn absolute top-2 right-2"
+                    onClick={() => {
+                      navigator.clipboard.writeText(metadata);
+                    }}
+                  />
                 </div>
               </Dialog.Panel>
             </Transition.Child>
