@@ -32,9 +32,9 @@ import LogoSquare from '../LogoSquare';
 import MobileMenuButtonContainer from '../MobileMenuButtonContainer';
 import SectionsDropdown from '../SectionsDropdown';
 import { LoadingSpinner } from '../elements/LoadingSpinner';
+import Banner from './PrettyBanner';
 import { SearchModal } from './SearchModal';
 import { UserAvatarMenu } from './UserAvatarMenu';
-import Banner from './PrettyBanner';
 
 export default function TopNavigationBar({
   transparent = false,
@@ -137,7 +137,10 @@ export default function TopNavigationBar({
     <>
       {!hidePromoBar && (
         <>
-        <Banner text='Registration for Spring 2024 USACO classes now open!' registerLink='https://joincpi.org/classes' />
+          <Banner
+            text="Registration for Spring 2024 USACO classes now open!"
+            registerLink="https://joincpi.org/classes"
+          />
           {/* <div className="relative bg-blue-600">
             <div className="max-w-screen-xl mx-auto py-3 px-3 sm:px-6 lg:px-8">
               <div className="pr-16 sm:text-center sm:px-16">
