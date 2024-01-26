@@ -1,9 +1,4 @@
 // source: https://codesandbox.io/p/sandbox/copy-to-clipboard-animation-qt8pf
-// organize-imports-ignore
-/** @jsxRuntime classic */
-/** @jsx jsx */
-import { colors } from '@primer/primitives';
-import { jsx } from '@emotion/react';
 import React from 'react';
 
 export default function CopyButton({ className, onClick }) {
@@ -23,44 +18,18 @@ export default function CopyButton({ className, onClick }) {
         setCopied(true);
         onClick();
       }}
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      css={{
-        appearance: 'none',
-        padding: 8,
-        border: 0,
-        outline: 0,
-        cursor: 'pointer',
-      }}
-      className={className}
+      className={`appearance-none p-2 border-0 outline-none cursor-pointer ${className}`}
     >
-      <div
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        css={{
-          position: 'relative',
-          height: 16,
-          width: 16,
-        }}
-      >
+      <div className="relative h-4 w-4">
         <Clippy
-          css={{
-            color: colors.gray[4],
-            position: 'absolute',
-            top: 0,
-            left: 0,
+          style={{
             strokeDasharray: 50,
             strokeDashoffset: copied ? -50 : 0,
             transition: 'all 300ms ease-in-out',
           }}
         />
         <Check
-          isVisible={copied}
-          css={{
-            color: colors.green[5],
-            position: 'absolute',
-            top: 0,
-            left: 0,
+          style={{
             strokeDasharray: 50,
             strokeDashoffset: copied ? 0 : -50,
             transition: 'all 300ms ease-in-out',
@@ -78,10 +47,9 @@ function Clippy(props) {
       height="16"
       viewBox="0 0 16 16"
       fill="none"
-      stroke="currentColor"
-      strokeWidth="1.5"
       strokeLinecap="round"
       strokeLinejoin="round"
+      className="stroke-gray-400 stroke-[1.5] absolute top-0 left-0"
       {...props}
     >
       <path d="M5.75 4.75H10.25V1.75H5.75V4.75Z" />
@@ -97,11 +65,10 @@ function Check(props) {
       height="16"
       viewBox="0 0 16 16"
       fill="none"
-      stroke="currentColor"
-      strokeWidth="1.5"
       strokeLinecap="round"
       strokeLinejoin="round"
       {...props}
+      className="stroke-green-500 stroke-[1.5] absolute top-0 left-0"
     >
       <path d="M13.25 4.75L6 12L2.75 8.75" />
     </svg>

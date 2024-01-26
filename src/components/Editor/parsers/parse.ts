@@ -1,12 +1,14 @@
 import parseCf from './cf';
 import parseUsaco from './usaco';
-
+export const parsers = {
+  'codeforces.com': parseCf,
+  'usaco.org': parseUsaco,
+};
 export default function parse(url: string, html: string) {
-  if (url.includes('codeforces.com')) {
-    return parseCf(url, html);
-  } else if (url.includes('usaco.org')) {
-    return parseUsaco(url, html);
-  } else {
-    throw new Error(`Problem source not supported yet :(`);
+  for (const [domain, parser] of Object.entries(parsers)) {
+    if (url.includes(domain)) {
+      return parser(url, html);
+    }
   }
+  throw new Error('No parser found for this URL');
 }

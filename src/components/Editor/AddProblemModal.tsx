@@ -3,7 +3,7 @@ import prettier from 'prettier';
 import babelParser from 'prettier/parser-babel';
 import React, { useRef, useState } from 'react';
 import CopyButton from './CopyButton';
-import parse from './parsers/parse';
+import parse, { parsers } from './parsers/parse';
 async function getHtml(url: string): Promise<string> {
   const res = await fetch('/api/fetch-html', {
     method: 'POST',
@@ -42,7 +42,13 @@ async function addProblem(
     );
     setStatus('Get Metadata');
   } catch (e) {
-    alert(e);
+    setMetadata(
+      `No parser found for this url.
+Available parsers:
+${Object.keys(parsers)
+  .map(key => `  - ${key}`)
+  .join('\n')}`
+    );
     setStatus('Get Metadata');
   }
 }
