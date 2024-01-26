@@ -94,6 +94,7 @@ export default function AddProblemModal({ isOpen, onClose }) {
                   <button
                     className="btn"
                     onClick={() =>
+                      linkRef.current &&
                       addProblem(linkRef.current.value, setMetadata, setStatus)
                     }
                   >
