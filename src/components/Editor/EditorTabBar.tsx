@@ -10,6 +10,7 @@ import {
   trueFilePathAtom,
 } from '../../atoms/editor';
 import { useQuizOpen } from '../../context/QuizGeneratorContext';
+import AddProblemModal from './AddProblemModal';
 
 export interface EditorTab {
   label: string;
@@ -39,6 +40,7 @@ const EditorTabBar: React.FC<EditorTabBarProps> = ({
   const [commitState, setCommitState] = useState('Commit Code');
   const filePath = useAtomValue(trueFilePathAtom);
   const file = useAtomValue(trueFileAtom);
+  const [dialogOpen, setDialogOpen] = useState(false);
   const updateFile = useCallback(
     async file => {
       if (!octokit || !githubInfo || !branch) return;
@@ -119,6 +121,15 @@ const EditorTabBar: React.FC<EditorTabBarProps> = ({
         >
           Format Code
         </button>
+        <button
+          className={classNames(
+            'text-gray-400 hover:text-gray-300 hover:bg-gray-800 active:bg-gray-800',
+            'px-3 py-2 font-medium text-sm focus:outline-none transition'
+          )}
+          onClick={() => setDialogOpen(true)}
+        >
+          Add Problem
+        </button>
         {githubInfo && octokit && file && branch && (
           <button
             className={classNames(
@@ -131,6 +142,10 @@ const EditorTabBar: React.FC<EditorTabBarProps> = ({
           </button>
         )}
       </div>
+      <AddProblemModal
+        isOpen={dialogOpen}
+        onClose={() => setDialogOpen(false)}
+      />
     </>
   );
 };
