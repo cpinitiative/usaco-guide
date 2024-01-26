@@ -6,6 +6,7 @@ import {
   branchAtom,
   githubInfoAtom,
   octokitAtom,
+  tabAtom,
   trueFileAtom,
   trueFilePathAtom,
 } from '../../atoms/editor';
@@ -121,15 +122,17 @@ const EditorTabBar: React.FC<EditorTabBarProps> = ({
         >
           Format Code
         </button>
-        <button
-          className={classNames(
-            'text-gray-400 hover:text-gray-300 hover:bg-gray-800 active:bg-gray-800',
-            'px-3 py-2 font-medium text-sm focus:outline-none transition'
-          )}
-          onClick={() => setDialogOpen(true)}
-        >
-          Add Problem
-        </button>
+        {useAtomValue(tabAtom) === 'problems' && (
+          <button
+            className={classNames(
+              'text-gray-400 hover:text-gray-300 hover:bg-gray-800 active:bg-gray-800',
+              'px-3 py-2 font-medium text-sm focus:outline-none transition'
+            )}
+            onClick={() => setDialogOpen(true)}
+          >
+            Add Problem
+          </button>
+        )}
         {githubInfo && octokit && file && branch && (
           <button
             className={classNames(
