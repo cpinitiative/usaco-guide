@@ -1,6 +1,11 @@
 import { Dialog, Transition } from '@headlessui/react';
 import React from 'react';
-export default function mModal({ children, isOpen, onClose }) {
+export default function mModal({
+  children,
+  isOpen,
+  onClose,
+  bg = 'bg-black/25',
+}) {
   return (
     <Transition appear show={isOpen} as={React.Fragment}>
       <Dialog as="div" className="relative z-10" onClose={onClose}>
@@ -13,7 +18,7 @@ export default function mModal({ children, isOpen, onClose }) {
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="fixed inset-0 bg-black/25" />
+          <div className={`fixed inset-0 ${bg}`} />
         </Transition.Child>
 
         <div className="fixed inset-0 overflow-y-auto">
