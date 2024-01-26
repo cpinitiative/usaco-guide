@@ -31,11 +31,11 @@ async function addProblem(
       difficulty: 'N/A',
       isStarred: false,
       tags: ['Add Tags'],
-      solutionMetadata: parsed.solutionMetadata,
+      solutionMetadata: { kind: 'internal' },
     };
     console.log(metadata);
     setMetadata(
-      await prettier.format(JSON.stringify(metadata), {
+      await prettier.format(JSON.stringify(metadata, null, 2), {
         parser: 'json',
         plugins: [babelParser],
       })

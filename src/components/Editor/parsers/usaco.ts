@@ -14,9 +14,5 @@ export default function parseUsaco(url: string, htmlContent: string) {
     uniqueId: `usaco-${id}`,
     name: title,
     source: division,
-    solutionMetadata: {
-      kind: 'USACO',
-      usacoId: +id,
-    },
   };
 }

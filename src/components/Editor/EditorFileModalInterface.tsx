@@ -50,6 +50,10 @@ const FileSearch = ({
 }) => {
   const { query, refine: setQuery } = useSearchBox();
   const { hits } = useHits() as { hits: AlgoliaEditorFileHit[] };
+  console.log(hits.map(hit => hit.__position));
+  if (!hits.find(hit => hit.id === 'none')) {
+    hits.push({ id: 'none' } as AlgoliaEditorFileHit); // blank hit
+  }
   return (
     <div>
       <div className="flex items-center p-2">
@@ -70,26 +74,40 @@ const FileSearch = ({
         <div>
           <SearchResultsContainer>
             <div className="max-h-[20rem] overflow-y-auto border-t divide-y divide-gray-200 border-gray-200 dark:divide-gray-700 dark:border-gray-700">
-              {hits.map(hit => (
-                <button
-                  className="block hover:bg-blue-100 dark:hover:bg-gray-700 py-3 px-5 transition focus:outline-none w-full text-left"
-                  key={hit.id}
-                  onClick={() => onSelect(hit)}
-                >
-                  <h3 className="text-gray-600 dark:text-gray-200 font-medium">
-                    <Highlight hit={hit} attribute="title" /> (
-                    {hit.kind === 'module' ? 'Module' : 'Solution'})
-                  </h3>
-                  <SearchResultDescription className="text-gray-700 dark:text-gray-400 text-sm">
-                    <Highlight hit={hit} attribute="id" /> -{' '}
-                    {hit.path == null ? (
-                      'Create New Internal Solution'
-                    ) : (
-                      <Highlight hit={hit} attribute="path" />
-                    )}
-                  </SearchResultDescription>
-                </button>
-              ))}
+              {hits.length
+                ? hits.map(hit => (
+                    <button
+                      className="block hover:bg-blue-100 dark:hover:bg-gray-700 py-3 px-5 transition focus:outline-none w-full text-left"
+                      key={hit.id}
+                      onClick={() => {
+                        let trueHit = hit;
+                        if (hit.id === 'none') {
+                          trueHit = {
+                            path: prompt('path?'),
+                          } as AlgoliaEditorFileHit;
+                        }
+                        if (trueHit.path) onSelect(trueHit);
+                      }}
+                    >
+                      <h3 className="text-gray-600 dark:text-gray-200 font-medium">
+                        {hit.title ? (
+                          <Highlight hit={hit} attribute="title" />
+                        ) : (
+                          'Add New Problem'
+                        )}{' '}
+                        ({hit.kind === 'module' ? 'Module' : 'Solution'})
+                      </h3>
+                      <SearchResultDescription className="text-gray-700 dark:text-gray-400 text-sm">
+                        <Highlight hit={hit} attribute="id" /> -{' '}
+                        {hit.path == null ? (
+                          'Create New Internal Solution'
+                        ) : (
+                          <Highlight hit={hit} attribute="path" />
+                        )}
+                      </SearchResultDescription>
+                    </button>
+                  ))
+                : 'test'}
             </div>
             <div className="px-5 py-3 border-t border-gray-200 dark:border-gray-700">
               <PoweredBy theme="dark" />

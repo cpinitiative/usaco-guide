@@ -14,14 +14,12 @@ export const FileListSidebar: React.FC<{
   onNewFile: (file: AlgoliaEditorFile) => void;
   token: string;
 }> = ({
-  className,
   files,
   activeFile,
   onOpenFile,
   onCloseFile,
   onCloseAllFiles,
   onNewFile,
-  token,
 }) => {
   const [isFileModalOpen, setIsFileModalOpen] = useState(false);
   const handleFileSelect = (file: AlgoliaEditorFile) => {
