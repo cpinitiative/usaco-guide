@@ -1,6 +1,8 @@
 // source: https://codesandbox.io/p/sandbox/copy-to-clipboard-animation-qt8pf
+// organize-imports-ignore
 /** @jsx jsx */
 import { colors } from '@primer/primitives';
+import { jsx } from '@emotion/react';
 import React from 'react';
 
 export default function CopyButton({ className, onClick }) {
