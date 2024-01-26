@@ -38,8 +38,8 @@ unfortunately is still too large for an exponential time solution. But it is
 
 ### Further Analysis
 
-To limit the maximum number of nodes to 20, we have to prove that a game can *always*
-end in $k$ moves if $k^2 \geq n$.
+To limit the maximum number of steps to a point where bitwise DP is feasible,
+we have to prove that a game can *always* end in $k$ moves if $k^2 \geq n$.
 
 Since each move results in breaking a tree down into a bunch of smaller trees,
 we can do a [proof by induction](https://en.wikipedia.org/wiki/Mathematical_induction).
@@ -98,7 +98,7 @@ n_{r+1} \leq (k-r)^2-2(k-r)=(k-r-1)^2
 $$
 
 And we're done! Since we've shown that any case where $k^2 \geq n$ will result in a win, we just
-have to handle the case where $N \leq 20$, for which
+have to handle the case where $k \lt 20$, for which
 [bitmask DP](/gold/dp-bitmasks) will suffice.
 
 ### Bitmask DP
@@ -125,7 +125,7 @@ yields a configuration that can cover up to the fifth leaf.
 
 ## Implementation
 
-**Time Complexity:** $\mathcal{O}(2^{\sqrt{N}} \cdot N)$
+**Time Complexity:** $\mathcal{O}(2^{\sqrt{n}} \cdot n)$
 
 <LanguageSection>
 <CPPSection>
