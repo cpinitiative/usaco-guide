@@ -1,5 +1,6 @@
 // source: https://codesandbox.io/p/sandbox/copy-to-clipboard-animation-qt8pf
 // organize-imports-ignore
+/** @jsxRuntime classic */
 /** @jsx jsx */
 import { colors } from '@primer/primitives';
 import { jsx } from '@emotion/react';
