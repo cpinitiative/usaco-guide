@@ -35,23 +35,30 @@ We can treat each set as a graph with several connected components. For each $p_
 using namespace std;
 
 // BeginCodeSnip{DSU}
-struct DSU {
-	vector<int> e;
-	DSU(int N) { e = vector<int>(N, -1); }
+class DisjointSets {
+  private:
+	vector<int> parents;
+	vector<int> sizes;
 
-	// get representive component (uses path compression)
-	int get(int x) { return e[x] < 0 ? x : e[x] = get(e[x]); }
+  public:
+	DisjointSets(int size) : parents(size), sizes(size, 1) {
+		for (int i = 0; i < size; i++) { parents[i] = i; }
+	}
 
-	bool same_set(int a, int b) { return get(a) == get(b); }
+	/** @return the "representative" node in x's component */
+	int get(int x) {
+		return parents[x] == x ? x : (parents[x] = get(parents[x]));
+	}
 
-	int size(int x) { return -e[get(x)]; }
+	/** @return whether the merge changed connectivity */
+	bool unite(int x, int y) {
+		int x_root = find(x);
+		int y_root = find(y);
+		if (x_root == y_root) { return false; }
 
-	bool unite(int x, int y) {  // union by size
-		x = get(x), y = get(y);
-		if (x == y) return false;
-		if (e[x] > e[y]) swap(x, y);
-		e[x] += e[y];
-		e[y] = x;
+		if (sizes[x_root] < sizes[y_root]) { swap(x_root, y_root); }
+		sizes[x_root] += sizes[y_root];
+		parents[y_root] = x_root;
 		return true;
 	}
 };
