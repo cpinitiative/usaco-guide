@@ -34,7 +34,7 @@ We can treat each set as a graph with several connected components. For each $p_
 #include <bits/stdc++.h>
 using namespace std;
 
-// BeginCodeSnip{DSU}
+// BeginCodeSnip{DSU (from the module)}
 class DSU {
   private:
 	vector<int> parents;
@@ -45,12 +45,10 @@ class DSU {
 		for (int i = 0; i < size; i++) { parents[i] = i; }
 	}
 
-	/** @return the "representative" node in x's component */
 	int get(int x) {
 		return parents[x] == x ? x : (parents[x] = get(parents[x]));
 	}
 
-	/** @return whether the merge changed connectivity */
 	bool unite(int x, int y) {
 		int x_root = find(x);
 		int y_root = find(y);
