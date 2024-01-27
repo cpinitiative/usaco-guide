@@ -45,8 +45,10 @@ const indexName = `${
 
 const FileSearch = ({
   onSelect,
+  openAddFile,
 }: {
   onSelect: (file: AlgoliaEditorFile) => void;
+  openAddFile: () => void;
 }) => {
   const { query, refine: setQuery } = useSearchBox();
   const { hits } = useHits() as { hits: AlgoliaEditorFileHit[] };
@@ -80,13 +82,11 @@ const FileSearch = ({
                       className="block hover:bg-blue-100 dark:hover:bg-gray-700 py-3 px-5 transition focus:outline-none w-full text-left"
                       key={hit.id}
                       onClick={() => {
-                        let trueHit = hit;
                         if (hit.id === 'none') {
-                          trueHit = {
-                            path: prompt('path?'),
-                          } as AlgoliaEditorFileHit;
+                          onSelect(undefined);
+                          openAddFile();
                         }
-                        if (trueHit.path) onSelect(trueHit);
+                        if (hit.path) onSelect(hit);
                       }}
                     >
                       <h3 className="text-gray-600 dark:text-gray-200 font-medium">
@@ -121,10 +121,11 @@ const FileSearch = ({
 
 const EditorFileModalInterface: React.FC<{
   onSelect: (file: AlgoliaEditorFile) => void;
-}> = ({ onSelect }) => {
+  openAddFile: () => void;
+}> = ({ onSelect, openAddFile }) => {
   return (
     <InstantSearch indexName={indexName} searchClient={searchClient}>
-      <FileSearch onSelect={onSelect} />
+      <FileSearch onSelect={onSelect} openAddFile={openAddFile} />
     </InstantSearch>
   );
 };

@@ -122,7 +122,9 @@ export const createNewInternalSolutionFileAtom = atom(
     console.log(file);
     const module = file.problemModules[0]?.path.split('/')[1];
     console.log(module);
-    const division = !module ? 'orphaned' : module.split('_')[1].toLowerCase();
+    const division =
+      file.division ||
+      (!module ? 'orphaned' : module.split('_')[1].toLowerCase());
     const newFile: EditorFile = {
       path: `solutions/${division}/${file.id}.mdx`,
       markdown: `---

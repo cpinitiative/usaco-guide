@@ -5,16 +5,6 @@ import React, { useRef, useState } from 'react';
 import Modal from '../Modal';
 import CopyButton from './CopyButton';
 import parse, { parsers } from './parsers/parse';
-async function getHtml(url: string): Promise<string> {
-  const res = await fetch('/api/fetch-html', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ url }),
-  }).then(res => res.json());
-  return res.data;
-}
 async function addProblem(
   url: string,
   setMetadata: (metadata: string) => void,
@@ -22,8 +12,7 @@ async function addProblem(
 ) {
   try {
     setStatus('Fetching metadata...');
-    const html = await getHtml(url);
-    const parsed = parse(url, html);
+    const parsed = await parse(url);
     const metadata = {
       uniqueId: parsed.uniqueId,
       name: parsed.name,

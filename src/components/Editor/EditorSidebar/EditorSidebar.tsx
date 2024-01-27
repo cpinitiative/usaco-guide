@@ -271,6 +271,7 @@ export const EditorSidebar = (props): JSX.Element => {
   };
 
   const handleNewFile = (file: AlgoliaEditorFile) => {
+    if (!file) return;
     if (file.path) {
       // this file already exists
       openOrCreateExistingFile(file.path);
