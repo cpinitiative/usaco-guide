@@ -1,0 +1,122 @@
+---
+id: cf-468B
+source: CF
+title: Two Sets
+author: Chongtian Ma
+---
+
+<Spoiler title="Hint 1">
+
+We can model the two sets as a graph, with $p_i$ and $a - p_i$ connected in graph $A$, and $p_i$ connected to $b - p_i$ in graph B.
+
+</Spoiler>
+
+<Spoiler title="Hint 2">
+
+How can there be a contradiction in the connected components?
+
+</Spoiler>
+
+## Explanation
+
+We can treat each set as a graph with several connected components. For each $p_i$, if $a - p_i$ exists, then $p_i$ and $a - p_i$ are in the same connected component inside graph $A$, and similarly for $B$. Each number in the connected component must belong to one set. Therefore, our condradiction comes from if there is a number $x$ in the component such that only $a - x$ exists, and another $y$ in the component such that only $b - y$ exists, or vice cersa.
+
+ We can check each component for the contradiction using DSU. The status of the whole component will be the intersection of what graph each number in the component can reside in.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N\log N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+// BeginCodeSnip{DSU (from the module)}
+class DSU {
+  private:
+	vector<int> parents;
+	vector<int> sizes;
+
+  public:
+	DSU(int size) : parents(size), sizes(size, 1) {
+		for (int i = 0; i < size; i++) { parents[i] = i; }
+	}
+
+	int get(int x) {
+		return parents[x] == x ? x : (parents[x] = get(parents[x]));
+	}
+
+	bool unite(int x, int y) {
+		int x_root = find(x);
+		int y_root = find(y);
+		if (x_root == y_root) { return false; }
+
+		if (sizes[x_root] < sizes[y_root]) { swap(x_root, y_root); }
+		sizes[x_root] += sizes[y_root];
+		parents[y_root] = x_root;
+		return true;
+	}
+};
+// EndCodeSnip
+
+int main() {
+	int n, a, b;
+	cin >> n >> a >> b;
+	vector<int> p(n);
+	for (int i = 0; i < n; i++) { cin >> p[i]; }
+
+	map<int, int> at;
+	for (int i = 0; i < n; i++) { at[p[i]] = i; }
+
+	DSU dsu(n);
+	vector<int> can_A(n), can_B(n);
+	for (int i = 0; i < n; i++) {
+		if (at.count(a - p[i])) {
+			can_A[i] = true;
+			dsu.unite(i, at[a - p[i]]);
+		}
+		if (at.count(b - p[i])) {
+			can_B[i] = true;
+			dsu.unite(i, at[b - p[i]]);
+		}
+	}
+
+	/*
+	 * first bit activated if all numbers in component i can reside in
+	 * graph A, and similarly the second bit for graph B
+	 */
+	vector<int> can_component(n, 3);
+	for (int i = 0; i < n; i++) {
+		int mask = 0;
+		if (can_A[i]) mask += 1;
+		if (can_B[i]) mask += 2;
+		can_component[dsu.get(i)] &= mask;
+	}
+
+	for (int i = 0; i < n; i++) {
+		if (!can_component[i]) {
+			cout << "NO" << endl;
+			return 0;
+		}
+	}
+
+	cout << "YES" << endl;
+	for (int i = 0; i < n; i++) {
+		int comp_mask = can_component[dsu.get(i)];
+		if (comp_mask == 1) {
+			// only can be in set A
+			cout << 0 << " ";
+		} else {
+			// can be in either set A or B
+			cout << 1 << " ";
+		}
+	}
+	cout << endl;
+}
+```
+
+</CPPSection>
+</LanguageSection>
