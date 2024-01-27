@@ -25,7 +25,6 @@ export default function QuizGeneratorModal(): JSX.Element {
   const [quiz, setQuiz] = React.useState<Question[]>([
     { question: '', answers: [] },
   ]);
-  const [copyText, setCopyText] = React.useState('Copy');
   const closeModal = () => {
     setOpen(false);
     setQuiz([{ question: '', answers: [] }]);

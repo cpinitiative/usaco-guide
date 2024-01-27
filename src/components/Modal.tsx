@@ -1,11 +1,17 @@
 import { Dialog, Transition } from '@headlessui/react';
 import React from 'react';
-export default function mModal({
+export type ModalProps = {
+  children: React.ReactNode;
+  isOpen: boolean;
+  onClose: () => void;
+  bg?: string;
+};
+export default function Modal({
   children,
   isOpen,
   onClose,
   bg = 'bg-black/25',
-}) {
+}: ModalProps) {
   return (
     <Transition appear show={isOpen} as={React.Fragment}>
       <Dialog as="div" className="relative z-10" onClose={onClose}>
