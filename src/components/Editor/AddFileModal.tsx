@@ -1,11 +1,11 @@
 import { Dialog } from '@headlessui/react';
 import { useSetAtom } from 'jotai';
 import React, { useContext, useRef, useState } from 'react';
-import Select from 'react-select';
 import { createNewInternalSolutionFileAtom } from '../../atoms/editor';
 import { DarkModeContext } from '../../context/DarkModeContext';
 import { AlgoliaEditorSolutionFile } from '../../models/algoliaEditorFile';
 import Modal from '../Modal';
+import Select from '../Select';
 import parse from './parsers/parse';
 export default function AddFileModal(props) {
   const darkMode = useContext(DarkModeContext);
@@ -39,54 +39,6 @@ export default function AddFileModal(props) {
               value: div.toLowerCase(),
             }))}
             onChange={e => setDivision(e.value)}
-            className="tw-forms-disable text-left"
-            styles={
-              !darkMode
-                ? undefined
-                : {
-                    control: provided => ({
-                      ...provided,
-                      backgroundColor: '#111827',
-                      borderColor: '#374151',
-                    }),
-                    menuList: provided => ({
-                      ...provided,
-                      borderColor: '#374151',
-                      borderWidth: '1px',
-                      borderRadius: '6px',
-                    }),
-                    menu: provided => ({
-                      ...provided,
-                      backgroundColor: '#111827',
-                    }),
-                    indicatorSeparator: provided => ({
-                      ...provided,
-                      backgroundColor: '#374151',
-                    }),
-                    indicatorsContainer: provided => ({
-                      ...provided,
-                      color: '#374151',
-                    }),
-                    singleValue: provided => ({
-                      ...provided,
-                      color: 'rgba(255, 255, 255, 0.87)',
-                    }),
-                    input: provided => ({
-                      ...provided,
-                      color: 'rgba(255, 255, 255, 0.87)',
-                    }),
-                    option: (provided, { isFocused, isSelected }) => ({
-                      ...provided,
-                      ...(isFocused
-                        ? {
-                            backgroundColor: '#4d94ff',
-                          }
-                        : isSelected
-                        ? { backgroundColor: '#0063e6' }
-                        : {}),
-                    }),
-                  }
-            }
           />
         </div>
         <button
