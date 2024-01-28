@@ -4,7 +4,7 @@ import babelParser from 'prettier/parser-babel';
 import React, { useRef, useState } from 'react';
 import Modal from '../Modal';
 import CopyButton from './CopyButton';
-import parse, { parsers } from './parsers/parse';
+import parse from './parsers/parse';
 async function addProblem(
   url: string,
   setMetadata: (metadata: string) => void,
@@ -32,13 +32,7 @@ async function addProblem(
     );
     setStatus('Get Metadata');
   } catch (e) {
-    setMetadata(
-      `No parser found for this url.
-Available parsers:
-${Object.keys(parsers)
-  .map(key => `  - ${key}`)
-  .join('\n')}`
-    );
+    setMetadata(e.toString());
     setStatus('Get Metadata');
   }
 }

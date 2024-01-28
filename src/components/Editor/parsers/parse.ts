@@ -25,5 +25,9 @@ export default async function parse(url: string) {
       return parser(url, html);
     }
   }
-  throw new Error('No parser found for this URL');
+  throw new Error(`No parser found for this url.
+Available parsers:
+${Object.keys(parsers)
+  .map(key => `  - ${key}`)
+  .join('\n')}`);
 }

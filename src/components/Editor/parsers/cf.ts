@@ -3,7 +3,9 @@
 // example gym url: https://codeforces.com/gym/102951/problem/A
 export default function parseCf(url: string, html: string) {
   const urlSplit = url.split('/');
-  const contestId = urlSplit.at(-2 - +url.includes('gym'));
+  const contestId = urlSplit.at(
+    -2 - +url.includes('gym') - +url.includes('contest')
+  );
   const problemId = urlSplit.at(-1);
   const titleRegex = /<div class="title">.*?\. (.*?)<\/div>/;
   return {

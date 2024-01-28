@@ -6,22 +6,23 @@ import { createNewInternalSolutionFileAtom } from '../../atoms/editor';
 import { DarkModeContext } from '../../context/DarkModeContext';
 import { AlgoliaEditorSolutionFile } from '../../models/algoliaEditorFile';
 import Modal from '../Modal';
+import parse from './parsers/parse';
 export default function AddFileModal(props) {
   const darkMode = useContext(DarkModeContext);
   const [division, setDivision] = useState('');
-  const fileNameRef = useRef<HTMLInputElement>(null);
+  const [fileStatus, setFileStatus] = useState('Create File');
+  const fileURLRef = useRef<HTMLInputElement>(null);
   const createSol = useSetAtom(createNewInternalSolutionFileAtom);
   console.log(division);
   return (
     <Modal {...props}>
       <Dialog.Panel className="bg-white dark:bg-black w-full max-w-xl dark:text-white p-5 rounded-lg shadow-lg flex flex-col items-start">
-        <h3 className="text-lg font-bold">Problem ID</h3>
-        <p>File Name</p>
+        <h3 className="text-lg font-bold">Enter Problem URL</h3>
         <input
-          type="text"
+          type="url"
           className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md dark:bg-gray-900 dark:border-gray-700"
-          placeholder="Unique id (e.g. usaco-1234)"
-          ref={fileNameRef}
+          placeholder="e.g. https://codeforces.com/contest/1920/problem/C"
+          ref={fileURLRef}
         />
         <p className="mt-2">Problem Division</p>
         <div className="mt-2 relative w-full dark:bg-black rounded-md shadow-sm">
@@ -90,16 +91,26 @@ export default function AddFileModal(props) {
         </div>
         <button
           className="btn mt-2"
-          onClick={() => {
-            props.onClose();
-            createSol({
-              id: fileNameRef.current.value,
-              division,
-              problemModules: [],
-            } as AlgoliaEditorSolutionFile);
+          onClick={async () => {
+            try {
+              setFileStatus('Creating File...');
+              const info = await parse(fileURLRef.current.value);
+              props.onClose();
+              createSol({
+                id: info.uniqueId,
+                title: info.name,
+                source: info.source,
+                division,
+                problemModules: [],
+              } as AlgoliaEditorSolutionFile);
+              setFileStatus('Create File');
+            } catch (e) {
+              alert(e);
+              setFileStatus('Create File');
+            }
           }}
         >
-          Add File
+          {fileStatus}
         </button>
       </Dialog.Panel>
     </Modal>
