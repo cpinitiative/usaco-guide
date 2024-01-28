@@ -105,8 +105,9 @@ export default function AddFileModal(props) {
               } as AlgoliaEditorSolutionFile);
               setFileStatus('Create File');
             } catch (e) {
-              alert(e);
               setFileStatus('Create File');
+              props.onClose();
+              alert(e);
             }
           }}
         >
