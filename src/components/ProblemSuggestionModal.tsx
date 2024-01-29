@@ -84,7 +84,6 @@ export default function ProblemSuggestionModal({
       try {
         generatedProblemId = generateProblemUniqueId(source, name, link);
       } catch (e) {
-        console.log(e);
         alert(
           'Error generating problem ID from URL. Check console for details.'
         );

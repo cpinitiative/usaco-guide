@@ -23,7 +23,6 @@ async function addProblem(
       tags: ['Add Tags'],
       solutionMetadata: parsed.solutionMetadata,
     };
-    console.log(metadata);
     setMetadata(
       await prettier.format(JSON.stringify(metadata, null, 2), {
         parser: 'json',

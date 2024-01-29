@@ -119,9 +119,7 @@ export const openOrCreateExistingFileAtom = atom(
 export const createNewInternalSolutionFileAtom = atom(
   null,
   async (get, set, file: AlgoliaEditorSolutionFile) => {
-    console.log(file);
     const module = file.problemModules[0]?.path.split('/')[1];
-    console.log(module);
     const division =
       file.division ||
       (!module ? 'orphaned' : module.split('_')[1].toLowerCase());
