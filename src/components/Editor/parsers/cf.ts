@@ -12,5 +12,9 @@ export default function parseCf(url: string, html: string) {
     uniqueId: `cf${url.includes('gym') ? 'gym' : ''}-${contestId}${problemId}`, // e.g. cf-1917D
     name: html.match(titleRegex)?.[1] ?? 'Unknown',
     source: 'CF',
+    solutionMetadata: {
+      kind: 'autogen-label-from-site',
+      site: 'CF',
+    },
   };
 }

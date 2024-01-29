@@ -21,7 +21,7 @@ async function addProblem(
       difficulty: 'N/A',
       isStarred: false,
       tags: ['Add Tags'],
-      solutionMetadata: { kind: 'internal' },
+      solutionMetadata: parsed.solutionMetadata,
     };
     console.log(metadata);
     setMetadata(

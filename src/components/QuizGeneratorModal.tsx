@@ -1,7 +1,7 @@
 import { Dialog } from '@headlessui/react';
 import { CheckCircleIcon, XCircleIcon } from '@heroicons/react/outline';
 import { XIcon } from '@heroicons/react/solid';
-import React from 'react';
+import React, { useCallback } from 'react';
 import { useDarkMode } from '../context/DarkModeContext';
 import { useQuizOpen } from '../context/QuizGeneratorContext';
 import CopyButton from './Editor/CopyButton';
@@ -93,7 +93,7 @@ export default function QuizGeneratorModal(): JSX.Element {
     });
   };
 
-  const getCode = () => {
+  const getCode = useCallback(() => {
     const code = `<Quiz>
   ${
     quiz
@@ -120,7 +120,7 @@ export default function QuizGeneratorModal(): JSX.Element {
   }
 </Quiz>`;
     return code;
-  };
+  }, [quiz]);
   return (
     <Modal isOpen={open} onClose={closeModal}>
       <Dialog.Panel className="px-4 text-center w-full max-w-4xl h-auto">

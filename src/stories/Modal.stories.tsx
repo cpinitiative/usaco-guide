@@ -10,9 +10,8 @@ export default {
 } as Meta;
 
 const Template: Story<ModalProps> = args => {
-  const [modalOpen, setModalOpen] = React.useState(false);
+  const [modalOpen, setModalOpen] = React.useState(args.isOpen ?? false);
   const darkMode = React.useContext(DarkModeContext);
-  console.log(darkMode);
   return (
     <div className="flex items-center justify-center">
       <button onClick={() => setModalOpen(true)} className="btn">
@@ -36,3 +35,7 @@ const Template: Story<ModalProps> = args => {
 };
 
 export const Default = Template.bind({});
+export const Open = Template.bind({});
+Open.args = {
+  isOpen: true,
+};
