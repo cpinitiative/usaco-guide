@@ -4,6 +4,7 @@ import { XIcon } from '@heroicons/react/solid';
 import React from 'react';
 import { useDarkMode } from '../context/DarkModeContext';
 import { useQuizOpen } from '../context/QuizGeneratorContext';
+import CopyButton from './Editor/CopyButton';
 import CodeBlock from './markdown/CodeBlock/CodeBlock';
 
 interface Answer {
@@ -127,19 +128,18 @@ export default function QuizGeneratorModal(): JSX.Element {
         className="fixed inset-0 z-20 overflow-y-auto"
         onClose={closeModal}
       >
-        <div className="min-h-screen px-4 text-center">
-          <Transition.Child
-            as={React.Fragment}
-            enter="ease-out duration-300"
-            enterFrom="opacity-0"
-            enterTo="opacity-100"
-            leave="ease-in duration-200"
-            leaveFrom="opacity-100"
-            leaveTo="opacity-0"
-          >
-            <Dialog.Overlay className="fixed inset-0 bg-black opacity-30" />
-          </Transition.Child>
-
+        <Transition.Child
+          as={React.Fragment}
+          enter="ease-out duration-300"
+          enterFrom="opacity-0"
+          enterTo="opacity-100"
+          leave="ease-in duration-200"
+          leaveFrom="opacity-100"
+          leaveTo="opacity-0"
+        >
+          <div className="fixed inset-0 bg-black/25" />
+        </Transition.Child>
+        <Dialog.Panel className="min-h-screen px-4 text-center">
           {/* This element is to trick the browser into centering the modal contents. */}
           <span
             className="inline-block h-screen align-middle"
@@ -297,18 +297,12 @@ export default function QuizGeneratorModal(): JSX.Element {
                   </div>
                 ))}
                 <div className={'relative text-sm'}>
-                  <button
+                  <CopyButton
                     onClick={() => {
                       navigator.clipboard.writeText(getCode());
-                      setCopyText('Copied!');
-                      setTimeout(() => {
-                        setCopyText('Copy');
-                      }, 3000);
                     }}
-                    className="bg-gray-200 dark:text-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600  focus:ring-blue-500 focus:ring-2 rounded-md focus:outline-none absolute right-3 top-2 px-2 py-1"
-                  >
-                    {copyText}
-                  </button>
+                    className="btn absolute right-3 top-2"
+                  />
                   <CodeBlock className="language-mdx" isDarkMode={isDarkMode}>
                     {getCode()}
                   </CodeBlock>
@@ -316,7 +310,7 @@ export default function QuizGeneratorModal(): JSX.Element {
               </div>
             </div>
           </Transition.Child>
-        </div>
+        </Dialog.Panel>
       </Dialog>
     </Transition>
   );
