@@ -1,15 +1,27 @@
 import * as React from 'react';
 import { AnnouncementInfo } from '../../models/announcement';
 import Markdown from '../markdown/Markdown';
+import { cn } from '../../utils/utils';
 
+/**
+ * 
+ * @param announcements List of information given to render
+ * @param className For overriding the default announcement container's styles
+ * @param filterFn To be used in case you don't want to display all announcements
+ * @returns 
+ */
 export default function Announcements({
   announcements,
+  className,
+  filterFn
 }: {
   announcements: AnnouncementInfo[];
+  className?: string;
+  filterFn?: (announcement: AnnouncementInfo) => boolean;
 }) {
   return (
-    <div className="flex overflow-x-auto sm:px-6 lg:px-8 py-4 grid lg:grid-cols-2 gap-8">
-      {announcements.map(announcement => (
+    <div className={cn("flex overflow-x-auto sm:px-6 lg:px-8 py-4 grid lg:grid-cols-2 gap-8", className)}>
+      {announcements.filter(filterFn ?? (() => true)).map(announcement => (
         <div
           className="bg-white dark:bg-gray-800 shadow transition sm:rounded-lg"
           key={announcement.id}
