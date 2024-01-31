@@ -8,7 +8,7 @@ import parse from './parsers/parse';
 async function addProblem(
   url: string,
   setMetadata: (metadata: string) => void,
-  setStatus: (status: string) => void
+  setStatus: (status: 'Get Metadata' | 'Fetching metadata...') => void
 ) {
   try {
     setStatus('Fetching metadata...');
@@ -41,7 +41,9 @@ export default function AddProblemModal(props: {
 }) {
   const linkRef = useRef<HTMLInputElement>(null);
   const [metadata, setMetadata] = useState('// metadata will appear here');
-  const [status, setStatus] = useState('Get Metadata');
+  const [status, setStatus] = useState<'Get Metadata' | 'Fetching metadata...'>(
+    'Get Metadata'
+  );
   return (
     <Modal {...props}>
       <Dialog.Panel className="w-full max-w-2xl transform overflow-hidden rounded-2xl bg-black text-white p-6 text-left align-middle shadow-xl transition-all">
@@ -61,6 +63,7 @@ export default function AddProblemModal(props: {
         <div className="mt-4">
           <button
             className="btn"
+            disabled={status === 'Fetching metadata...'}
             onClick={() =>
               linkRef.current &&
               addProblem(linkRef.current.value, setMetadata, setStatus)

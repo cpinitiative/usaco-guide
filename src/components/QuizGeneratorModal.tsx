@@ -1,7 +1,7 @@
 import { Dialog } from '@headlessui/react';
 import { CheckCircleIcon, XCircleIcon } from '@heroicons/react/outline';
 import { XIcon } from '@heroicons/react/solid';
-import React, { useCallback } from 'react';
+import React, { useMemo } from 'react';
 import { useDarkMode } from '../context/DarkModeContext';
 import { useQuizOpen } from '../context/QuizGeneratorContext';
 import CopyButton from './Editor/CopyButton';
@@ -93,7 +93,7 @@ export default function QuizGeneratorModal(): JSX.Element {
     });
   };
 
-  const getCode = useCallback(() => {
+  const code = useMemo(() => {
     const code = `<Quiz>
   ${
     quiz
@@ -262,12 +262,12 @@ export default function QuizGeneratorModal(): JSX.Element {
             <div className={'relative text-sm'}>
               <CopyButton
                 onClick={() => {
-                  navigator.clipboard.writeText(getCode());
+                  navigator.clipboard.writeText(code);
                 }}
                 className="btn absolute right-3 top-2"
               />
               <CodeBlock className="language-mdx" isDarkMode={isDarkMode}>
-                {getCode()}
+                {code}
               </CodeBlock>
             </div>
           </div>

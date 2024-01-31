@@ -1,19 +1,27 @@
 import { Dialog } from '@headlessui/react';
 import { useSetAtom } from 'jotai';
-import React, { useContext, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { createNewInternalSolutionFileAtom } from '../../atoms/editor';
-import { DarkModeContext } from '../../context/DarkModeContext';
 import { AlgoliaEditorSolutionFile } from '../../models/algoliaEditorFile';
 import Modal from '../Modal';
 import Select from '../Select';
 import parse from './parsers/parse';
+const divisions = [
+  'General',
+  'Bronze',
+  'Silver',
+  'Gold',
+  'Platinum',
+  'Advanced',
+] as const; // hack to allow typeof divisions[number] by marking array as readonly
 export default function AddFileModal(props) {
-  const darkMode = useContext(DarkModeContext);
-  const [division, setDivision] = useState('');
-  const [fileStatus, setFileStatus] = useState('Create File');
+  const [division, setDivision] =
+    useState<(typeof divisions)[number]>('General');
+  const [fileStatus, setFileStatus] = useState<
+    'Create File' | 'Creating File...'
+  >('Create File');
   const fileURLRef = useRef<HTMLInputElement>(null);
   const createSol = useSetAtom(createNewInternalSolutionFileAtom);
-  console.log(division);
   return (
     <Modal {...props}>
       <Dialog.Panel className="bg-white dark:bg-black w-full max-w-xl dark:text-white p-5 rounded-lg shadow-lg flex flex-col items-start">
@@ -43,6 +51,7 @@ export default function AddFileModal(props) {
         </div>
         <button
           className="btn mt-2"
+          disabled={fileStatus === 'Creating File...'}
           onClick={async () => {
             try {
               setFileStatus('Creating File...');
