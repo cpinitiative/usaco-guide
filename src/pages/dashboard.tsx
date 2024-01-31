@@ -1,4 +1,4 @@
-import { graphql, PageProps } from 'gatsby';
+import { graphql, Link, PageProps } from 'gatsby';
 import * as React from 'react';
 import {
   moduleIDToSectionMap,
@@ -207,10 +207,23 @@ export default function DashboardPage(props: PageProps) {
               <h1 className="text-3xl font-bold leading-tight text-gray-900 dark:text-dark-high-emphasis">
                 Announcements
               </h1>
+              <Link
+                to="/announcements"
+                className="hover:underline transition-all duration-300"
+              >
+                View all &rarr;
+              </Link>
             </div>
           </header>
           <div className="max-w-7xl mx-auto mb-8">
-            <Announcements announcements={parsedAnnouncements} />
+            {/* Only show announcements in the current year by passing in a filter function */}
+            <Announcements
+              filterFn={announcement =>
+                parseInt(announcement.date.split(', ')[1]) ===
+                new Date().getFullYear()
+              }
+              announcements={parsedAnnouncements}
+            />
           </div>
           <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 lg:grid lg:grid-cols-2 lg:gap-8">
             {activeProblems.length > 0 && (
