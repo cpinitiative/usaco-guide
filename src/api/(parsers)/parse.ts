@@ -12,7 +12,6 @@ export const parsers = {
 
 export default async function parse(url: string) {
   const html = (await axios.get(url)).data;
-  console.log(html);
   for (const [domain, parser] of Object.entries(parsers)) {
     if (url.includes(domain)) {
       return parser(url, html);

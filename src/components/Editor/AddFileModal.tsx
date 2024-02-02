@@ -63,7 +63,6 @@ export default function AddFileModal(props) {
                   body: JSON.stringify({ url: fileURLRef.current.value }),
                 }).then(res => res.json())
               ).data;
-              console.log(info);
               props.onClose();
               createSol({
                 id: info.uniqueId,
