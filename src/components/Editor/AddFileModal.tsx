@@ -5,7 +5,6 @@ import { createNewInternalSolutionFileAtom } from '../../atoms/editor';
 import { AlgoliaEditorSolutionFile } from '../../models/algoliaEditorFile';
 import Modal from '../Modal';
 import Select from '../Select';
-import parse from './parsers/parse';
 const divisions = [
   'General',
   'Bronze',
@@ -55,7 +54,16 @@ export default function AddFileModal(props) {
           onClick={async () => {
             try {
               setFileStatus('Creating File...');
-              const info = await parse(fileURLRef.current.value);
+              const info = (
+                await fetch('/api/fetch-metadata', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({ url: fileURLRef.current.value }),
+                }).then(res => res.json())
+              ).data;
+              console.log(info);
               props.onClose();
               createSol({
                 id: info.uniqueId,

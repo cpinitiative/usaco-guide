@@ -4,7 +4,6 @@ import babelParser from 'prettier/parser-babel';
 import React, { useRef, useState } from 'react';
 import Modal from '../Modal';
 import CopyButton from './CopyButton';
-import parse from './parsers/parse';
 async function addProblem(
   url: string,
   setMetadata: (metadata: string) => void,
@@ -12,7 +11,15 @@ async function addProblem(
 ) {
   try {
     setStatus('Fetching metadata...');
-    const parsed = await parse(url);
+    const parsed = (
+      await fetch('/api/fetch-metadata', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ url }),
+      }).then(res => res.json())
+    ).data;
     const metadata = {
       uniqueId: parsed.uniqueId,
       name: parsed.name,

@@ -1,3 +1,4 @@
+import axios from 'axios';
 import parseAc from './ac';
 import parseCf from './cf';
 import parseCses from './cses';
@@ -8,18 +9,10 @@ export const parsers = {
   'cses.fi': parseCses,
   'atcoder.jp': parseAc,
 };
-export async function getHtml(url: string): Promise<string> {
-  const res = await fetch('/api/fetch-html', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ url }),
-  }).then(res => res.json());
-  return res.data;
-}
+
 export default async function parse(url: string) {
-  const html = await getHtml(url);
+  const html = (await axios.get(url)).data;
+  console.log(html);
   for (const [domain, parser] of Object.entries(parsers)) {
     if (url.includes(domain)) {
       return parser(url, html);
