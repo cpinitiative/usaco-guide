@@ -1,7 +1,7 @@
 import { Dialog } from '@headlessui/react';
 import prettier from 'prettier';
 import babelParser from 'prettier/parser-babel';
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import Modal from '../Modal';
 import CopyButton from './CopyButton';
 async function addProblem(
@@ -46,7 +46,7 @@ export default function AddProblemModal(props: {
   isOpen: boolean;
   onClose: () => void;
 }) {
-  const linkRef = useRef<HTMLInputElement>(null);
+  const [link, setLink] = useState('');
   const [metadata, setMetadata] = useState('// metadata will appear here');
   const [status, setStatus] = useState<'Get Metadata' | 'Fetching metadata...'>(
     'Get Metadata'
@@ -62,8 +62,7 @@ export default function AddProblemModal(props: {
             type="text"
             className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md dark:bg-gray-900 dark:border-gray-700"
             placeholder="Enter Problem URL"
-            onChange={e => console.log(e.target.value)}
-            ref={linkRef}
+            onChange={e => setLink(e.target.value)}
           />
         </div>
 
@@ -71,10 +70,7 @@ export default function AddProblemModal(props: {
           <button
             className="btn"
             disabled={status === 'Fetching metadata...'}
-            onClick={() =>
-              linkRef.current &&
-              addProblem(linkRef.current.value, setMetadata, setStatus)
-            }
+            onClick={() => addProblem(link, setMetadata, setStatus)}
           >
             {status}
           </button>

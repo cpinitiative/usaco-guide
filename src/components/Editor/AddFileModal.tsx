@@ -1,6 +1,6 @@
 import { Dialog } from '@headlessui/react';
 import { useSetAtom } from 'jotai';
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { createNewInternalSolutionFileAtom } from '../../atoms/editor';
 import { AlgoliaEditorSolutionFile } from '../../models/algoliaEditorFile';
 import Modal from '../Modal';
@@ -19,7 +19,7 @@ export default function AddFileModal(props) {
   const [fileStatus, setFileStatus] = useState<
     'Create File' | 'Creating File...'
   >('Create File');
-  const fileURLRef = useRef<HTMLInputElement>(null);
+  const [fileURL, setFileURL] = useState('');
   const createSol = useSetAtom(createNewInternalSolutionFileAtom);
   return (
     <Modal {...props}>
@@ -29,7 +29,7 @@ export default function AddFileModal(props) {
           type="url"
           className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md dark:bg-gray-900 dark:border-gray-700"
           placeholder="e.g. https://codeforces.com/contest/1920/problem/C"
-          ref={fileURLRef}
+          onChange={e => setFileURL(e.target.value)}
         />
         <p className="mt-2">Problem Division</p>
         <div className="mt-2 relative w-full dark:bg-black rounded-md shadow-sm">
@@ -60,7 +60,7 @@ export default function AddFileModal(props) {
                   headers: {
                     'Content-Type': 'application/json',
                   },
-                  body: JSON.stringify({ url: fileURLRef.current.value }),
+                  body: JSON.stringify({ url: fileURL }),
                 }).then(res => res.json())
               ).data;
               props.onClose();

@@ -24,14 +24,14 @@ export default function CopyButton({ className, onClick }) {
         <Clippy
           style={{
             strokeDasharray: 50,
-            strokeDashoffset: copied ? -50 : 0,
+            strokeDashoffset: copied ? 50 : 0,
             transition: 'all 300ms ease-in-out',
           }}
         />
         <Check
           style={{
             strokeDasharray: 50,
-            strokeDashoffset: copied ? 0 : -50,
+            strokeDashoffset: copied ? 0 : 50,
             transition: 'all 300ms ease-in-out',
           }}
         />
