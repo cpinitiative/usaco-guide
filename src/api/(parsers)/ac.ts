@@ -7,8 +7,6 @@ export default function parseAc(url: string, html: string) {
     uniqueId,
     name,
     source: 'AC',
-    solutionMetadata: {
-      kind: 'CHANGE THIS',
-    },
+    solutionMetadata: { kind: 'none' },
   };
 }

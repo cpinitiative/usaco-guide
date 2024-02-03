@@ -7,8 +7,6 @@ export default function parseCses(url: string, html: string) {
     uniqueId: `cses-${problemId}`, // e.g. cses-1083
     name: html.match(titleRegex)?.[1] ?? 'Unknown',
     source: 'CSES',
-    solutionMetadata: {
-      kind: 'CHANGE THIS',
-    },
+    solutionMetadata: { kind: 'none' },
   };
 }
