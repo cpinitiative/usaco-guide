@@ -52,9 +52,6 @@ const FileSearch = ({
 }) => {
   const { query, refine: setQuery } = useSearchBox();
   const { hits } = useHits() as { hits: AlgoliaEditorFileHit[] };
-  if (!hits.find(hit => hit.id === 'none')) {
-    hits.push({ id: 'none' } as AlgoliaEditorFileHit); // blank hit
-  }
   return (
     <div>
       <div className="flex items-center p-2">
@@ -79,32 +76,32 @@ const FileSearch = ({
                 <button
                   className="block hover:bg-blue-100 dark:hover:bg-gray-700 py-3 px-5 transition focus:outline-none w-full text-left"
                   key={hit.id}
-                  onClick={() => {
-                    if (hit.id === 'none') {
-                      onSelect(undefined);
-                      openAddFile();
-                    }
-                    if (hit.path) onSelect(hit);
-                  }}
+                  onClick={() => onSelect(hit)}
                 >
                   <h3 className="text-gray-600 dark:text-gray-200 font-medium">
-                    {hit.title ? (
-                      <Highlight hit={hit} attribute="title" />
-                    ) : (
-                      'Add New Problem'
-                    )}{' '}
-                    ({hit.kind === 'module' ? 'Module' : 'Solution'})
+                    <Highlight hit={hit} attribute="title" /> (
+                    {hit.kind === 'module' ? 'Module' : 'Solution'})
                   </h3>
                   <SearchResultDescription className="text-gray-700 dark:text-gray-400 text-sm">
                     <Highlight hit={hit} attribute="id" /> -{' '}
-                    {hit.path == null ? (
-                      'Create New Internal Solution'
-                    ) : (
-                      <Highlight hit={hit} attribute="path" />
-                    )}
+                    <Highlight hit={hit} attribute="path" />
                   </SearchResultDescription>
                 </button>
               ))}
+              <button
+                className="block hover:bg-blue-100 dark:hover:bg-gray-700 py-3 px-5 transition focus:outline-none w-full text-left"
+                onClick={() => {
+                  onSelect(undefined);
+                  openAddFile();
+                }}
+              >
+                <h3 className="text-gray-600 dark:text-gray-200 font-medium">
+                  Add New Problem (Solution)
+                </h3>
+                <SearchResultDescription className="text-gray-700 dark:text-gray-400 text-sm">
+                  Create New Internal Solution
+                </SearchResultDescription>
+              </button>
             </div>
             <div className="px-5 py-3 border-t border-gray-200 dark:border-gray-700">
               <PoweredBy theme="dark" />
