@@ -1,5 +1,9 @@
 # Monthly Contest Table Generation
 
+Update 2/3/24: `div_to_probs.json` and `id_to_sol.json` are now updated
+automatically via the `usaco-problems` repo:
+https://github.com/cpinitiative/usaco-problems/tree/main
+
 For updating https://usaco.guide/general/usaco-monthlies after a USACO contest.
 
 ## Files
