@@ -1,6 +1,6 @@
 import { InformationCircleIcon } from '@heroicons/react/outline';
 import classNames from 'classnames';
-import { useAtomValue, useUpdateAtom } from 'jotai/utils';
+import { useAtomValue, useSetAtom } from 'jotai';
 import React from 'react';
 import { activeFileAtom, saveFileAtom } from '../../atoms/editor';
 import { useDarkMode } from '../../context/DarkModeContext';
@@ -15,7 +15,7 @@ import { fetchFileContent } from './editorUtils';
 
 export const EditorTopNav = (): JSX.Element => {
   const activeFile = useAtomValue(activeFileAtom);
-  const saveFile = useUpdateAtom(saveFileAtom);
+  const saveFile = useSetAtom(saveFileAtom);
   const isDarkMode = useDarkMode();
   const userLang = getUserLangSetting();
   const setUserLang = useSetUserLangSetting();
@@ -84,7 +84,7 @@ export const EditorTopNav = (): JSX.Element => {
 
         {activeFile?.path && (
           <button
-            className="inline-flex items-center space-x-2 text-gray-600 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 px-3 py-2 font-medium text-sm rounded-md focus:outline-none transition"
+            className="inline-flex items-center space-x-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 px-3 py-2 font-medium text-sm rounded-md focus:outline-none transition"
             onClick={handleReloadContent}
           >
             Reload Content from Github
@@ -96,7 +96,7 @@ export const EditorTopNav = (): JSX.Element => {
               activeFile?.path
             )}`}
             target="_blank"
-            className="inline-flex items-center space-x-2 text-gray-600 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 px-3 py-2 font-medium text-sm rounded-md focus:outline-none transition"
+            className="inline-flex items-center space-x-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 px-3 py-2 font-medium text-sm rounded-md focus:outline-none transition"
             rel="noreferrer"
           >
             View File on Github &rarr;

@@ -1,3 +1,4 @@
+import { useLocation } from '@gatsbyjs/reach-router';
 import {
   AcademicCapIcon,
   ChartBarIcon,
@@ -10,7 +11,7 @@ import {
   UserGroupIcon,
 } from '@heroicons/react/outline';
 import classNames from 'classnames';
-import { Link } from 'gatsby';
+import { Link, navigate } from 'gatsby';
 import { StaticImage } from 'gatsby-plugin-image';
 import * as React from 'react';
 import { CPIProjectCard } from '../components/Index/CPIProjectCard';
@@ -28,6 +29,10 @@ import { GradientText } from '../components/elements/landing/GradientText';
 import { HighlightedText } from '../components/elements/landing/HighlightedText';
 import Layout from '../components/layout';
 import SEO from '../components/seo';
+import {
+  useFirebaseUser,
+  useIsUserDataLoaded,
+} from '../context/UserDataContext/UserDataContext';
 
 const containerClasses = 'max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8';
 const headerClasses =
@@ -46,6 +51,24 @@ const linkTextStyles =
   'text-blue-600 dark:text-blue-300 transition hover:text-purple-600 dark:hover:text-purple-300';
 
 export default function IndexPage(): JSX.Element {
+  const firebaseUser = useFirebaseUser();
+  const loading = useIsUserDataLoaded();
+  const location = useLocation();
+  React.useEffect(() => {
+    // User will normally be redirected to the dashboard if the user is logged in, but if user clicks the icon in the top left corner while on the dashboard, they will not be redirected.
+    try {
+      if (firebaseUser && location.state.redirect) {
+        /* Whether or not the user should be redirected to the dashboard is stored in location.state.redirect, but if the user opens a link straight
+        to the landing page, location.state.redirect will be undefined, causing a typeerror, this try catch statements accounts for that */
+        navigate('/dashboard');
+      }
+    } catch (e) {
+      if (firebaseUser) {
+        navigate('/dashboard');
+      }
+    }
+  }, [firebaseUser, loading, location]);
+
   return (
     <Layout>
       <SEO title={null} />

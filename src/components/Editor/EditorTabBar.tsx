@@ -1,6 +1,17 @@
+import { Buffer } from 'buffer';
 import classNames from 'classnames';
-import React from 'react';
+import { useAtomValue } from 'jotai';
+import React, { useCallback, useState } from 'react';
+import {
+  branchAtom,
+  githubInfoAtom,
+  octokitAtom,
+  tabAtom,
+  trueFileAtom,
+  trueFilePathAtom,
+} from '../../atoms/editor';
 import { useQuizOpen } from '../../context/QuizGeneratorContext';
+import AddProblemModal from './AddProblemModal';
 
 export interface EditorTab {
   label: string;
@@ -24,6 +35,54 @@ const EditorTabBar: React.FC<EditorTabBarProps> = ({
   onFormatCode,
 }) => {
   const { setOpen } = useQuizOpen();
+  const githubInfo = useAtomValue(githubInfoAtom);
+  const octokit = useAtomValue(octokitAtom);
+  const branch = useAtomValue(branchAtom);
+  const [commitState, setCommitState] = useState('Commit Code');
+  const filePath = useAtomValue(trueFilePathAtom);
+  const file = useAtomValue(trueFileAtom);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const updateFile = useCallback(
+    async file => {
+      if (!octokit || !githubInfo || !branch) return;
+      setCommitState('Committing...');
+      let fileSha = undefined;
+      try {
+        fileSha = (
+          (await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
+            owner: githubInfo.login,
+            repo: 'usaco-guide',
+            path: filePath,
+            ref: branch,
+            headers: {
+              'X-GitHub-Api-Version': '2022-11-28',
+            },
+          })) as any
+        ).data.sha;
+      } catch {
+        console.log("file doesn't exist yet");
+      }
+      const response = await octokit.request(
+        'PUT /repos/{owner}/{repo}/contents/{path}',
+        {
+          owner: githubInfo.login,
+          repo: 'usaco-guide',
+          path: filePath,
+          message: `Update ${filePath}`,
+          branch: branch,
+          sha: fileSha,
+          content: Buffer.from(file ?? '').toString('base64'),
+          headers: {
+            'X-GitHub-Api-Version': '2022-11-28',
+          },
+        }
+      );
+      console.log('response: ', response);
+      window.open(response.data.commit.html_url, '_blank');
+      setCommitState('Commit Code');
+    },
+    [octokit, githubInfo, branch, filePath]
+  );
   return (
     <>
       <div className="flex bg-gray-900">
@@ -63,7 +122,33 @@ const EditorTabBar: React.FC<EditorTabBarProps> = ({
         >
           Format Code
         </button>
+        {useAtomValue(tabAtom) === 'problems' && (
+          <button
+            className={classNames(
+              'text-gray-400 hover:text-gray-300 hover:bg-gray-800 active:bg-gray-800',
+              'px-3 py-2 font-medium text-sm focus:outline-none transition'
+            )}
+            onClick={() => setDialogOpen(true)}
+          >
+            Add Problem
+          </button>
+        )}
+        {githubInfo && octokit && file && branch && (
+          <button
+            className={classNames(
+              'text-gray-400 hover:text-gray-300 hover:bg-gray-800 active:bg-gray-800',
+              'px-3 py-2 font-medium text-sm focus:outline-none transition'
+            )}
+            onClick={() => updateFile(file)}
+          >
+            {commitState}
+          </button>
+        )}
       </div>
+      <AddProblemModal
+        isOpen={dialogOpen}
+        onClose={() => setDialogOpen(false)}
+      />
     </>
   );
 };

@@ -120,7 +120,7 @@ export default function ProblemsPage(props: PageProps<DataProps>) {
           <div className="py-16 bg-blue-600 dark:bg-blue-900 px-5">
             <div className="max-w-3xl mx-auto mb-6">
               <h1 className="text-center text-3xl sm:text-5xl font-bold text-white dark:text-dark-high-emphasis mb-6">
-                Problems (Beta)
+                Problems
               </h1>
               <SearchBox />
             </div>

@@ -12,8 +12,8 @@ export const FileListSidebar: React.FC<{
   onCloseFile: (filePath: string) => void;
   onCloseAllFiles: () => void;
   onNewFile: (file: AlgoliaEditorFile) => void;
+  token: string;
 }> = ({
-  className,
   files,
   activeFile,
   onOpenFile,
@@ -22,7 +22,6 @@ export const FileListSidebar: React.FC<{
   onNewFile,
 }) => {
   const [isFileModalOpen, setIsFileModalOpen] = useState(false);
-
   const handleFileSelect = (file: AlgoliaEditorFile) => {
     setIsFileModalOpen(false);
     onNewFile(file);
@@ -30,10 +29,7 @@ export const FileListSidebar: React.FC<{
 
   return (
     <div
-      className={classNames(
-        className,
-        'w-[250px] bg-[#1E1E1E] border-r border-gray-800 overflow-y-auto'
-      )}
+      className={'w-full bg-[#1E1E1E] border-r border-gray-800 overflow-y-auto'}
     >
       <div className="text-gray-300 text-sm font-medium border-b border-gray-800 flex items-center justify-between">
         <span className="px-4 py-2">Files</span>
@@ -81,7 +77,6 @@ export const FileListSidebar: React.FC<{
       >
         Open File
       </button>
-
       <EditorFileModal
         isOpen={isFileModalOpen}
         onClose={() => setIsFileModalOpen(false)}

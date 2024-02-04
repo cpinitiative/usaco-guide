@@ -15,6 +15,7 @@ export type AlgoliaEditorSolutionFile = {
   path: string | null; // null if file doesn't yet exist
   problemModules: AlgoliaEditorModuleFile[];
   solutions: ProblemSolutionInfo[];
+  division?: string;
 };
 
 export type AlgoliaEditorFile =

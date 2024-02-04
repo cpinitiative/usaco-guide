@@ -334,10 +334,13 @@ int main() {
 		int a, b, c;
 		cin >> a >> b >> c;
 		a--, b--, c--;
-		if (!is_cutpoint[c]) {
-			cout << "YES" << '\n';
-		} else if (on_path(id[a], id[b], id[c])) {
-			cout << "NO" << '\n';
+		// The path does not exist in two cases:
+		// 1) a == c or b == c
+		// 2) c is a cutpoint and it lies on path between a and b in block-cut
+		// tree
+		if (a == c || b == c ||
+		    (is_cutpoint[c] && on_path(id[a], id[b], id[c]))) {
+			std::cout << "NO\n";
 		} else {
 			cout << "YES" << '\n';
 		}

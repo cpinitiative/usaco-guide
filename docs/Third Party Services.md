@@ -3,6 +3,8 @@
 The following is a list of third party services that the USACO Guide /
 Competitive Programming Initiative uses.
 
+Note: This may be out of date.
+
 ## USACO Guide
 
 - Hosted on Vercel (sponsored hosting, but the free hobby tier will likely
@@ -19,19 +21,16 @@ Competitive Programming Initiative uses.
     the free tier plan. Otherwise pay as you go.
   - No easy replacement. Without this, module search + problems search won't
     work.
-- Hotjar & Google analytics
 
 ## IDE
 
 - https://github.com/thecodingwizard/ide
-- Uses a [Judge0](https://github.com/judge0/judge0) instance hosted on
-  DigitalOcean at https://judge0.usaco.guide/
+- Our custom serverless online judge is hosted on AWS Lambda.
 
 ## Forum
 
-- Hosted on DigitalOcean (\$20/mo)
+- Hosted on Microsoft Azure
   - Can host on any VPS
-  - Hub for Good sponsorship -- \$250 in credits (yearly? may need to reapply)
 - Uses Discourse (open source, free)
   - One-click setup on DigitalOcean doesn't work -- manually configure app.yml
 - Uses Mailgun as email provider (currently on pay-as-you-go plan, may or may
@@ -51,11 +50,4 @@ Competitive Programming Initiative uses.
   - Google Ad Grant
 - Microsoft Nonprofits
 - Github Nonprofits
-- Canva for Nonprofits
-- Slido (nonprofit plan)
-- Mailchimp (free plan)
-
-## Services we no longer use
-
-- Freshdesk (free plan)
-  - Not necessary. We (sort of not really) use this just to manage emails.
+- Mailgun

@@ -1,9 +1,9 @@
-import { atom } from 'jotai';
-import { atomFamily } from 'jotai/utils';
+import { WritableAtom, atom } from 'jotai';
+import { atomFamily, atomWithStorage } from 'jotai/utils';
+import { Octokit } from 'octokit';
 import { fetchFileContent } from '../components/Editor/editorUtils';
 import { AlgoliaEditorSolutionFile } from '../models/algoliaEditorFile';
 import { formatProblems } from '../utils/prettierFormatter';
-import { atomWithStorage } from './atomWithStorage';
 
 export type EditorFile = {
   path: string;
@@ -47,6 +47,42 @@ const baseActiveFileAtom = atomWithStorage(
   'guide:editor:activeFile',
   null as string | null
 );
+// Writable type needed if strictNullChecks is false
+// TODO: remove this when strictNullChecks is true
+export type Writable<T> = WritableAtom<T, any[], unknown>;
+export const branchAtom = atomWithStorage('guide:editor:branch', null);
+export const tokenAtom = atom(null) as Writable<string | null>;
+export const octokitAtom = atom(get =>
+  get(tokenAtom) === null ? null : new Octokit({ auth: get(tokenAtom) })
+);
+export const forkAtom = atom(undefined) as Writable<string | undefined | null>;
+export const baseTabAtom = atom('content') as Writable<'content' | 'problems'>;
+export const editingSolutionAtom = atom(get => {
+  const activeFile = get(activeFileAtom);
+  return activeFile && activeFile.path.startsWith('solutions');
+});
+export const tabAtom = atom(get =>
+  get(editingSolutionAtom) ? 'content' : get(baseTabAtom)
+);
+export const trueFilePathAtom = atom(get => {
+  const activeFile = get(activeFileAtom);
+  return activeFile === null
+    ? 'NONE'
+    : get(tabAtom) === 'content'
+    ? activeFile.path
+    : activeFile.path.replace(/\.mdx$/, '.problems.json');
+});
+export const trueFileAtom = atom(get => {
+  const activeFile = get(activeFileAtom);
+  return activeFile === null
+    ? 'Open a file to begin'
+    : get(tabAtom) === 'content'
+    ? activeFile.markdown
+    : activeFile.problems;
+});
+export const githubInfoAtom = atom(
+  async get => (await get(octokitAtom)?.request('GET /user'))?.data
+);
 export const activeFileAtom = atom(
   get =>
     get(baseActiveFileAtom) === null
@@ -83,8 +119,12 @@ export const openOrCreateExistingFileAtom = atom(
 export const createNewInternalSolutionFileAtom = atom(
   null,
   async (get, set, file: AlgoliaEditorSolutionFile) => {
+    const module = file.problemModules[0]?.path.split('/')[1];
+    const division =
+      file.division ||
+      (!module ? 'orphaned' : module.split('_')[1].toLowerCase());
     const newFile: EditorFile = {
-      path: `solutions/${file.id}.mdx`,
+      path: `solutions/${division}/${file.id}.mdx`,
       markdown: `---
 id: ${file.id}
 source: ${

@@ -1,4 +1,4 @@
-import { graphql, PageProps } from 'gatsby';
+import { graphql, Link, PageProps } from 'gatsby';
 import * as React from 'react';
 import {
   moduleIDToSectionMap,
@@ -40,7 +40,7 @@ import {
 } from '../utils/getProgressInfo';
 
 export default function DashboardPage(props: PageProps) {
-  const { modules, announcements, problems } = props.data as any;
+  const { navigate, modules, announcements, problems } = props.data as any;
   const moduleIDToName = modules.edges.reduce((acc, cur) => {
     acc[cur.node.frontmatter.id] = cur.node.frontmatter.title;
     return acc;
@@ -168,7 +168,7 @@ export default function DashboardPage(props: PageProps) {
       <SEO title="Dashboard" />
 
       <div className="min-h-screen bg-gray-100 dark:bg-dark-surface">
-        <TopNavigationBar linkLogoToIndex={true} />
+        <TopNavigationBar linkLogoToIndex={true} redirectToDashboard={false} />
 
         <main className="pb-12">
           <div className="max-w-7xl mx-auto mb-4">
@@ -196,13 +196,34 @@ export default function DashboardPage(props: PageProps) {
                   )}
                 </div>
               </div>
-              <div className="flex overflow-x-auto">
-                <WelcomeBackBanner
-                  lastViewedModuleURL={lastViewedModuleURL}
-                  lastViewedModuleLabel={moduleIDToName[lastViewedModuleID]}
-                />
-              </div>
+              <WelcomeBackBanner
+                lastViewedModuleURL={lastViewedModuleURL}
+                lastViewedModuleLabel={moduleIDToName[lastViewedModuleID]}
+              />
             </div>
+          </div>
+          <header id="announcements">
+            <div className="max-w-7xl mx-auto px-4 sm:px-8 lg:px-10">
+              <h1 className="text-3xl font-bold leading-tight text-gray-900 dark:text-dark-high-emphasis">
+                Announcements
+              </h1>
+              <Link
+                to="/announcements"
+                className="hover:underline transition-all duration-300"
+              >
+                View all &rarr;
+              </Link>
+            </div>
+          </header>
+          <div className="max-w-7xl mx-auto mb-8">
+            {/* Only show announcements in the current year by passing in a filter function */}
+            <Announcements
+              filterFn={announcement =>
+                parseInt(announcement.date.split(', ')[1]) ===
+                new Date().getFullYear()
+              }
+              announcements={parsedAnnouncements}
+            />
           </div>
           <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 lg:grid lg:grid-cols-2 lg:gap-8">
             {activeProblems.length > 0 && (
@@ -215,16 +236,6 @@ export default function DashboardPage(props: PageProps) {
                 <ActiveItems type="modules" items={activeModules} />
               </div>
             )}
-          </div>
-          <header id="announcements">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <h1 className="text-3xl font-bold leading-tight text-gray-900 dark:text-dark-high-emphasis">
-                Announcements
-              </h1>
-            </div>
-          </header>
-          <div className="max-w-7xl mx-auto mb-8">
-            <Announcements announcements={parsedAnnouncements} />
           </div>
           <header>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
