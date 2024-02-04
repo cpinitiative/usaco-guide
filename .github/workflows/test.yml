@@ -33,6 +33,11 @@ jobs:
       - name: Install dependencies
         run: yarn
 
+      # we need to build the graphql types
+      - run: yarn build
+        env:
+          NODE_OPTIONS: --max-old-space-size=4096
+
       - name: Run tests
         run: yarn test --passWithNoTests
 
