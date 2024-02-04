@@ -246,7 +246,7 @@ const ModuleLink = ({ link }: { link: ModuleLinkInfo }): JSX.Element => {
               ) : null}
             </span>
           </p>
-          {link.frequency && (
+          {link.frequency !== null && (
             <p className="text-sm flex items-center leading-4 mb-1">
               <ModuleFrequencyDots
                 count={link.frequency}
