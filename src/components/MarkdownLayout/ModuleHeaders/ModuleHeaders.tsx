@@ -22,7 +22,7 @@ import { useProblemsProgressInfo } from '../../../utils/getProgressInfo';
 import { DashboardProgressSmall } from '../../Dashboard/DashboardProgress';
 import { Frequency } from '../../Frequency';
 import MarkCompleteButton from '../MarkCompleteButton';
-import useSuffix from '../TableOfContents/getSuffix';
+import useSuffix from '../TableOfContents/useSuffix';
 
 export default function ModuleHeaders({
   moduleLinks,

@@ -1,6 +1,6 @@
 import { Link } from 'gatsby';
 import * as React from 'react';
-import useSuffix from './getSuffix';
+import useSuffix from './useSuffix';
 
 const LinksToEdit = ({ className = null }) => {
   return (
