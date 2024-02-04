@@ -1,13 +1,13 @@
 import * as React from 'react';
 import {
   LANGUAGE_LABELS,
-  getUserLangSetting,
   useSetUserLangSetting,
+  useUserLangSetting,
 } from '../../context/UserDataContext/properties/simpleProperties';
 import RadioList from '../elements/RadioList';
 
 export default function Language() {
-  const lang = getUserLangSetting();
+  const lang = useUserLangSetting();
   const setLang = useSetUserLangSetting();
 
   return (

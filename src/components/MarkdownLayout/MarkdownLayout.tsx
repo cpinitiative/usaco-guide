@@ -10,10 +10,10 @@ import { ContactUsSlideoverProvider } from '../../context/ContactUsSlideoverCont
 import MarkdownLayoutContext from '../../context/MarkdownLayoutContext';
 import { ProblemSolutionContext } from '../../context/ProblemSolutionContext';
 import { ProblemSuggestionModalProvider } from '../../context/ProblemSuggestionModalContext';
-import { getUserLangSetting } from '../../context/UserDataContext/properties/simpleProperties';
+import { useUserLangSetting } from '../../context/UserDataContext/properties/simpleProperties';
 import {
-  getUserProgressOnModules,
   useSetProgressOnModule,
+  useUserProgressOnModules,
 } from '../../context/UserDataContext/properties/userProgress';
 import { ModuleInfo } from '../../models/module';
 import { SolutionInfo } from '../../models/solution';
@@ -69,9 +69,9 @@ export default function MarkdownLayout({
   markdownData: ModuleInfo | SolutionInfo;
   children: React.ReactNode;
 }) {
-  const userProgressOnModules = getUserProgressOnModules();
+  const userProgressOnModules = useUserProgressOnModules();
   const setModuleProgress = useSetProgressOnModule();
-  const lang = getUserLangSetting();
+  const lang = useUserLangSetting();
 
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const moduleProgress =

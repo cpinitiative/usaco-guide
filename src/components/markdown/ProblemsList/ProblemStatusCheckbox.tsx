@@ -7,10 +7,10 @@ import ConfettiContext from '../../../context/ConfettiContext';
 import { useDarkMode } from '../../../context/DarkModeContext';
 import MarkdownLayoutContext from '../../../context/MarkdownLayoutContext';
 import {
-  getUserProgressOnModules,
-  getUserProgressOnProblems,
   useSetProgressOnModule,
   useSetProgressOnProblem,
+  useUserProgressOnModules,
+  useUserProgressOnProblems,
 } from '../../../context/UserDataContext/properties/userProgress';
 import {
   PROBLEM_PROGRESS_OPTIONS,
@@ -146,9 +146,9 @@ export default function ProblemStatusCheckbox({
 }): JSX.Element {
   const darkMode = useDarkMode();
   const markdownLayoutContext = useContext(MarkdownLayoutContext);
-  const userProgressOnModules = getUserProgressOnModules();
+  const userProgressOnModules = useUserProgressOnModules();
   const setModuleProgress = useSetProgressOnModule();
-  const userProgressOnProblems = getUserProgressOnProblems();
+  const userProgressOnProblems = useUserProgressOnProblems();
   const setUserProgressOnProblems = useSetProgressOnProblem();
   const updateModuleProgressToPracticing = () => {
     if (

@@ -14,11 +14,11 @@ import { useMarkdownProblems } from '../../../context/MarkdownProblemListsContex
 import { ProblemSolutionContext } from '../../../context/ProblemSolutionContext';
 import {
   LANGUAGE_LABELS,
-  getUserLangSetting,
   useSetUserLangSetting,
+  useUserLangSetting,
 } from '../../../context/UserDataContext/properties/simpleProperties';
 import { ModuleInfo, ModuleLinkInfo } from '../../../models/module';
-import { getProblemsProgressInfo } from '../../../utils/getProgressInfo';
+import { useProblemsProgressInfo } from '../../../utils/getProgressInfo';
 import { DashboardProgressSmall } from '../../Dashboard/DashboardProgress';
 import { Frequency } from '../../Frequency';
 import MarkCompleteButton from '../MarkCompleteButton';
@@ -35,7 +35,7 @@ export default function ModuleHeaders({
     handleCompletionChange,
   } = useContext(MarkdownLayoutContext);
 
-  const lang = getUserLangSetting();
+  const lang = useUserLangSetting();
   const setLang = useSetUserLangSetting();
   let problemIDs = [] as string[];
   // this is for modules
@@ -47,7 +47,7 @@ export default function ModuleHeaders({
   } catch (e) {
     console.log(e);
   }
-  const problemsProgressInfo = getProblemsProgressInfo(problemIDs);
+  const problemsProgressInfo = useProblemsProgressInfo(problemIDs);
 
   // this is for solutions
   const problemSolutionContext = useContext(ProblemSolutionContext);

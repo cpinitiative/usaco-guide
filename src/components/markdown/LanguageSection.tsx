@@ -2,12 +2,14 @@ import * as React from 'react';
 import {
   LANGUAGE_LABELS,
   Language,
-  getUserLangSetting,
+  useUserLangSetting,
 } from '../../context/UserDataContext/properties/simpleProperties';
 import Danger from './Danger';
 
-const sectionFromLang = (sections: { [key in Language]?: React.ReactNode }) => {
-  const userLang = getUserLangSetting();
+const useSectionFromLang = (sections: {
+  [key in Language]?: React.ReactNode;
+}) => {
+  const userLang = useUserLangSetting();
   if (userLang === 'showAll') {
     return (
       <>
@@ -78,13 +80,13 @@ export const LanguageSection = (props: {
     const type = (child as any).type.name as keyof typeof typeToLang;
     sections[typeToLang[type]] = child;
   });
-  return sectionFromLang(sections);
+  return useSectionFromLang(sections);
 };
 
 export const CPPOnly = (props: {
   children?: React.ReactNode;
 }): React.ReactNode => {
-  return sectionFromLang({
+  return useSectionFromLang({
     cpp: props.children,
     java: <></>,
     py: <></>,
@@ -93,7 +95,7 @@ export const CPPOnly = (props: {
 export const JavaOnly = (props: {
   children?: React.ReactNode;
 }): React.ReactNode => {
-  return sectionFromLang({
+  return useSectionFromLang({
     cpp: <></>,
     java: props.children,
     py: <></>,
@@ -103,7 +105,7 @@ export const JavaOnly = (props: {
 export const PyOnly = (props: {
   children?: React.ReactNode;
 }): React.ReactNode => {
-  return sectionFromLang({
+  return useSectionFromLang({
     cpp: <></>,
     java: <></>,
     py: props.children,

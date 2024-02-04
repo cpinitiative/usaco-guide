@@ -67,7 +67,7 @@ export const LANGUAGE_LABELS: { [key in Language | 'unknown']: string } = {
 
 // Note: User Lang is synchronized with a URL query parameter
 // the logic to handle this synchronization is in UserDataContext.tsx
-export const getUserLangSetting = createUserDataGetter(
+export const useUserLangSetting = createUserDataGetter(
   userData => userData.lang
 );
 export const useSetUserLangSetting = createSimpleUserDataMutation(

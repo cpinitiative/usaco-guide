@@ -3,7 +3,7 @@ import { useContext, useEffect, useState } from 'react';
 import { SECTION_LABELS } from '../../../content/ordering';
 import MarkdownLayoutContext from '../../context/MarkdownLayoutContext';
 import { useFirebaseUser } from '../../context/UserDataContext/UserDataContext';
-import { getUserLangSetting } from '../../context/UserDataContext/properties/simpleProperties';
+import { useUserLangSetting } from '../../context/UserDataContext/properties/simpleProperties';
 import useContactFormAction from '../../hooks/useContactFormAction';
 import useStickyState from '../../hooks/useStickyState';
 import { ModuleInfo } from '../../models/module';
@@ -93,7 +93,7 @@ export default function ContactUsSlideover({
   const [showErrors, setShowErrors] = useState(false);
 
   const markdownContext = useContext(MarkdownLayoutContext);
-  const userLang = getUserLangSetting();
+  const userLang = useUserLangSetting();
   const submitForm = useContactFormAction();
 
   React.useEffect(() => {

@@ -26,8 +26,8 @@ import {
   useShowIgnoredSetting,
 } from '../context/UserDataContext/properties/simpleProperties';
 import {
-  getUserProgressOnModules,
-  getUserProgressOnProblems,
+  useUserProgressOnModules,
+  useUserProgressOnProblems,
 } from '../context/UserDataContext/properties/userProgress';
 import { useFirebaseUser } from '../context/UserDataContext/UserDataContext';
 import {
@@ -35,8 +35,8 @@ import {
   graphqlToAnnouncementInfo,
 } from '../models/announcement';
 import {
-  getModulesProgressInfo,
-  getProblemsProgressInfo,
+  useModulesProgressInfo,
+  useProblemsProgressInfo,
 } from '../utils/getProgressInfo';
 
 export default function DashboardPage(props: PageProps) {
@@ -87,8 +87,8 @@ export default function DashboardPage(props: PageProps) {
     return res;
   }, [problems]);
   const lastViewedModuleID = useLastViewedModule();
-  const userProgressOnModules = getUserProgressOnModules();
-  const userProgressOnProblems = getUserProgressOnProblems();
+  const userProgressOnModules = useUserProgressOnModules();
+  const userProgressOnProblems = useUserProgressOnProblems();
   const lastReadAnnouncement = useLastReadAnnouncement();
   const setLastReadAnnouncement = useSetLastReadAnnouncement();
   const firebaseUser = useFirebaseUser();
@@ -145,7 +145,7 @@ export default function DashboardPage(props: PageProps) {
   const moduleProgressIDs = Object.keys(moduleIDToName).filter(
     x => moduleIDToSectionMap[x] === lastViewedSection
   );
-  const allModulesProgressInfo = getModulesProgressInfo(moduleProgressIDs);
+  const allModulesProgressInfo = useModulesProgressInfo(moduleProgressIDs);
 
   const problemStatisticsIDs = React.useMemo(() => {
     return Object.keys(problemIDMap).filter(problemID =>
@@ -155,7 +155,7 @@ export default function DashboardPage(props: PageProps) {
       )
     );
   }, [problemIDMap, lastViewedSection]);
-  const allProblemsProgressInfo = getProblemsProgressInfo(problemStatisticsIDs);
+  const allProblemsProgressInfo = useProblemsProgressInfo(problemStatisticsIDs);
 
   const parsedAnnouncements: AnnouncementInfo[] = React.useMemo(() => {
     return announcements.edges.map(node =>

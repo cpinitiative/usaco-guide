@@ -4,7 +4,7 @@ import { useContext } from 'react';
 import styled from 'styled-components';
 import tw, { TwStyle } from 'twin.macro';
 import MarkdownLayoutContext from '../../../context/MarkdownLayoutContext';
-import { getUserProgressOnModules } from '../../../context/UserDataContext/properties/userProgress';
+import { useUserProgressOnModules } from '../../../context/UserDataContext/properties/userProgress';
 import {
   MarkdownLayoutSidebarModuleLinkInfo,
   ModuleLinkInfo,
@@ -120,7 +120,7 @@ const ItemLink = ({
     }
   }, [isActive]);
 
-  const userProgressOnModules = getUserProgressOnModules();
+  const userProgressOnModules = useUserProgressOnModules();
   const progress = userProgressOnModules[link.id] || 'Not Started';
 
   let lineColorStyle = tw`bg-gray-200`;

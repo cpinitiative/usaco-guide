@@ -5,7 +5,7 @@ import styled, { css } from 'styled-components';
 import { Instance } from 'tippy.js';
 import tw from 'twin.macro';
 import { useDarkMode } from '../../context/DarkModeContext';
-import { getUserLangSetting } from '../../context/UserDataContext/properties/simpleProperties';
+import { useUserLangSetting } from '../../context/UserDataContext/properties/simpleProperties';
 import { ResourceInfo } from '../../models/resource';
 import TextTooltip from '../Tooltip/TextTooltip';
 import Tooltip from '../Tooltip/Tooltip';
@@ -37,7 +37,7 @@ export default function ResourcesListItem({
 }: {
   resource: ResourceInfo;
 }): JSX.Element {
-  const userLang = getUserLangSetting();
+  const userLang = useUserLangSetting();
   const darkMode = useDarkMode();
   const [isActive, setIsActive] = React.useState(false);
   const id = `resource-${encodeURIComponent(resource.url)}`;
