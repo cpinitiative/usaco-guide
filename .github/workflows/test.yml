@@ -33,6 +33,12 @@ jobs:
       - name: Install dependencies
         run: yarn
 
+      # hack to build graphql types
+      - name: Build GraphQL types
+        run: grep -m 1 "Generating GraphQL and TypeScript types" <(yarn develop) | true
+        env:
+          NODE_OPTIONS: --max-old-space-size=4096
+
       - name: Run tests
         run: yarn test --passWithNoTests
 

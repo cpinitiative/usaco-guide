@@ -64,6 +64,7 @@ const a = ({ children, ...props }) => (
   </a>
 );
 const pre = ({ children, copyButton = true, ...props }) => {
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const isDarkMode = useDarkMode();
 
   return (

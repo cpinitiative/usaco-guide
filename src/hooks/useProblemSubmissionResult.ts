@@ -1,11 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
 import { ProblemSubmissionResult } from '../models/groups/problem';
 
-export default function useProblemSubmissionResult(submissionID: string) {
+export default function useProblemSubmissionResult(
+  submissionID: string | null
+) {
   const [result, setResult] = useState<ProblemSubmissionResult>(null);
   const currentSubmission = useRef(0);
 
   useEffect(() => {
+    if (!submissionID) return;
     const queryResult = async (curSubmission, submissionID) => {
       const res = await fetch(
         `https://ggzk2rm2ad.execute-api.us-west-1.amazonaws.com/Prod/submissions/${submissionID}`
@@ -20,18 +23,15 @@ export default function useProblemSubmissionResult(submissionID: string) {
         setTimeout(() => queryResult(curSubmission, submissionID), 1000);
       }
     };
-
-    if (submissionID) {
-      setResult(null);
-      queryResult(++currentSubmission.current, submissionID);
-    }
+    setResult(null);
+    queryResult(++currentSubmission.current, submissionID);
   }, [submissionID]);
 
   useEffect(() => {
     return () => {
-      currentSubmission.current = -1;
+      if (submissionID) currentSubmission.current = -1;
     };
-  }, []);
-
+  }, [submissionID]);
+  if (!submissionID) return null;
   return result;
 }
