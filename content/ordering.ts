@@ -83,7 +83,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
     },
     {
       name: 'Additional',
-      items: ['ad-hoc', 'rect-geo', 'intro-greedy', 'intro-graphs'],
+      items: ['ad-hoc', 'intro-greedy', 'intro-graphs', 'rect-geo'],
     },
     {
       name: 'Conclusion',
