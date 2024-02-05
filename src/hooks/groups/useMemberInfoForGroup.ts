@@ -15,7 +15,7 @@ let cachedData: {
   data: MemberInfo[];
 } = null;
 
-export default function getMemberInfoForGroup(group: GroupData) {
+export default function useMemberInfoForGroup(group: GroupData) {
   const [memberInfo, setMemberInfo] = React.useState<MemberInfo[]>(null);
 
   useFirebaseApp(

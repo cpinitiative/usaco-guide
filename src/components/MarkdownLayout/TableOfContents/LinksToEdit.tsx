@@ -1,11 +1,11 @@
 import { Link } from 'gatsby';
 import * as React from 'react';
-import getSuffix from './getSuffix';
+import useSuffix from './useSuffix';
 
 const LinksToEdit = ({ className = null }) => {
   return (
     <Link
-      to={`/editor/?filepath=${getSuffix()}`}
+      to={`/editor/?filepath=${useSuffix()}`}
       target="_blank"
       className={className}
     >

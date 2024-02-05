@@ -31,8 +31,6 @@ function GithubActions() {
   const [installed, setInstalled] = useState<boolean | undefined>(undefined);
   useEffect(() => {
     if (!octokit || !githubInfo) return;
-    console.log(branch);
-    console.log(githubInfo);
     octokit
       .request('GET /user/installations', {
         headers: {
@@ -64,7 +62,6 @@ function GithubActions() {
       if (/\s/.test(branchName)) {
         return alert('Branch name cannot contain spaces!');
       }
-      console.log(octokit, githubInfo, fork);
       if (!octokit || !githubInfo || !fork) return;
       setBranchState('Detecting Branches...');
       // octokit.paginate has weird typing for some reason
@@ -271,6 +268,7 @@ export const EditorSidebar = (props): JSX.Element => {
   };
 
   const handleNewFile = (file: AlgoliaEditorFile) => {
+    if (!file) return;
     if (file.path) {
       // this file already exists
       openOrCreateExistingFile(file.path);

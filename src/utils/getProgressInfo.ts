@@ -30,7 +30,7 @@ const getProgressInfo = (
   return res;
 };
 
-export function getModulesProgressInfo(moduleIDs: string[]) {
+export function useModulesProgressInfo(moduleIDs: string[]) {
   const userProgressOnModules = useUserProgressOnModules();
   return getProgressInfo(
     moduleIDs,
@@ -42,7 +42,7 @@ export function getModulesProgressInfo(moduleIDs: string[]) {
   );
 }
 
-export function getProblemsProgressInfo(problemIDs: string[]) {
+export function useProblemsProgressInfo(problemIDs: string[]) {
   const userProgressOnProblems = useUserProgressOnProblems();
   return getProgressInfo(
     problemIDs,
