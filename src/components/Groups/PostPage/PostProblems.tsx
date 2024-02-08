@@ -31,10 +31,10 @@ function SortableItem(props: {
   post: PostData;
   problem: ProblemData;
 }) {
-  if (!props.problem) return null;
-
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id: props.id });
+
+  if (!props.problem) return null;
 
   const style = {
     transform: CSS.Transform.toString(transform),

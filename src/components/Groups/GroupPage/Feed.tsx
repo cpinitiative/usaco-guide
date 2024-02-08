@@ -31,11 +31,11 @@ function SortableItem(props: {
   userPoints: number | null;
   isBeingDragged: boolean;
 }) {
-  // probably post was just deleted before items updated
-  if (!props.post) return null;
-
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id: props.id });
+
+  // probably post was just deleted before items updated
+  if (!props.post) return null;
 
   const style = {
     transform: CSS.Transform.toString(transform),

@@ -119,12 +119,11 @@ export default function MarkdownLayout({
   //   document.querySelector('html').style.scrollBehavior = 'smooth';
   //   return () => (document.querySelector('html').style.scrollBehavior = 'auto');
   // }, []);
-
+  const problemSolutionContext = React.useContext(ProblemSolutionContext);
   let activeIDs = [];
   if (markdownData instanceof ModuleInfo) {
     activeIDs.push(markdownData.id);
   } else {
-    const problemSolutionContext = React.useContext(ProblemSolutionContext);
     activeIDs = problemSolutionContext.modulesThatHaveProblem.map(x => x.id);
   }
 

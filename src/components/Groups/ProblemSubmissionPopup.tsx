@@ -20,15 +20,13 @@ const ProblemSubmissionPopupContext = React.createContext<{
 function ProblemSubmissionPopup() {
   const popupContext = useContext(ProblemSubmissionPopupContext);
   const submission = popupContext.submission;
-  const submissionResult =
-    submission && 'submissionID' in submission
-      ? useProblemSubmissionResult(submission?.submissionID)
-      : null;
-
-  if (!submission) return null;
+  const submissionResult = useProblemSubmissionResult(
+    submission && 'submissionID' in submission ? submission?.submissionID : null
+  );
 
   const isDarkMode = useDarkMode();
 
+  if (!submission) return null;
   return (
     <Transition
       show={popupContext.showPopup}

@@ -2,7 +2,7 @@ import { Link } from 'gatsby';
 import * as React from 'react';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import useLeaderboardData from '../../../hooks/groups/useLeaderboardData';
-import getMemberInfoForGroup from '../../../hooks/groups/useMemberInfoForGroup';
+import useMemberInfoForGroup from '../../../hooks/groups/useMemberInfoForGroup';
 import TopNavigationBar from '../../TopNavigationBar/TopNavigationBar';
 import Layout from '../../layout';
 import SEO from '../../seo';
@@ -10,7 +10,7 @@ import MemberDetail from './MemberDetail';
 
 export default function MembersPage(): JSX.Element {
   const activeGroup = useActiveGroup();
-  const memberInfo = getMemberInfoForGroup(activeGroup.groupData);
+  const memberInfo = useMemberInfoForGroup(activeGroup.groupData);
   const leaderboard = useLeaderboardData({
     groupId: activeGroup.activeGroupId,
     maxResults: 200,

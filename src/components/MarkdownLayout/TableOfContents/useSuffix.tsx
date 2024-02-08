@@ -2,7 +2,7 @@ import { useContext } from 'react';
 import MarkdownLayoutContext from '../../../context/MarkdownLayoutContext';
 import { ModuleInfo } from '../../../models/module';
 
-export default function getSuffix() {
+export default function useSuffix() {
   const moduleLayoutInfo = useContext(MarkdownLayoutContext);
   const markdownInfo = moduleLayoutInfo.markdownLayoutInfo;
   const relativePath = markdownInfo.fileRelativePath;
