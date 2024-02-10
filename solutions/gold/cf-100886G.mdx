@@ -6,73 +6,64 @@ author: Daniel Zhu
 ---
 
 <Spoiler title="Hint">
-</Spoiler>
-
-## Explanation
-
-### $l = 1$
-
 If $l = 1$, what will the best solution always be?
-Let's start with an example: $l = 1$ and $r = 875$. Observe that we really need to consider three numbers as viable answers: $875$, $799$, and $869$. Try to think about why, and how this generalizes!
-
+</Spoiler>
+## Explanation
+### $l = 1$
+Let's start with an example: $l = 1$ and $r = 875$. Observe that we really need to consider three numbers as viable answers: $875$, $799$, and $869$. Try to think about why, and how this generalizes! 
 ### $l \neq 1$
-
 We can apply a very similar approach when $l \neq 1$. In fact, it's almost identical, with one minor difference. Consider the case where $l = 855$ and $r = 875$, just as before. The only difference is we can no longer consider $799$ as a viable answer, as it is less than $l$. Again, try to think about how to generalize this!
 
 ## Implementation
 
-**Time Complexity:** $\mathcal{O}(D^2)$, where $D$ is the maximum number of digits (19).
+**Time Complexity:** $\mathcal{O}(D^2)$
+
+_Note:_ $D$ is the max number of digits (19).
 
 <LanguageSection>
+
 <CPPSection>
 
 ```cpp
 #include <bits/stdc++.h>
-#define sz(v) (int)v.size()
 using ll = long long;
-
 using namespace std;
-
 // gets product of digits of given string
 // and returns -1 for empty string
 ll prod(string s) {
 	if (!s.length()) return -1;
 	ll res = 1;
-	for (char c : s) res *= c - '0';
+	for (char c : s) { res *= c - '0'; }
 	return res;
 }
-
 int main() {
 	string l, r;
 	cin >> l >> r;
-
 	// pad beginning of l with zeros
 	// l = 12, r = 132 -> l = 012, r = 132
-	while (l.size() < r.size()) l.insert(l.begin(), '0');
+	while (l.length() < r.length()) { l.insert(l.begin(), '0'); }
 	string ans = "";
-
 	// i -> length of LCP (longest common prefix) of str and r
-	bool eq = true;  // whether l[0, i) = r[0, i)
-	for (int i = 0; i <= sz(r); i++) {
+	bool eq = true; // whether l[0, i) = r[0, i)
+	for (int i = 0; i <= r.length(); i++) {
 		string cur = r.substr(0, i);
 		eq = eq && l[i] == r[i];
-
 		// in this case, str[i] must equal r[i]
 		// and now the shared prefix has length i + 1
 		// which contradicts our assumption that the LCP has length i
-		if (i < sz(r) && eq) continue;
-		if (i < sz(r)) cur += char(r[i] - 1);
-
+		if (i < r.length() && eq) { continue; }
+		if (i < r.length()) { cur += char(r[i] - 1); }
 		// fill remaining digits with 9's
-		cur += string(sz(r) - cur.size(), '9');
-		if (prod(cur) > prod(ans)) ans = cur;
+		cur += string(r.length() - cur.length(), '9');
+		if (prod(cur) > prod(ans)) { ans = cur; }
 	}
-
 	// remove any leading zeros from ans
-	while (ans[0] == '0') ans.erase(ans.begin());
+	while (ans[0] == '0') { ans.erase(ans.begin()); }
 	cout << ans << endl;
 }
+
 ```
 
 </CPPSection>
+
 </LanguageSection>
