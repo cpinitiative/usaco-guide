@@ -359,16 +359,11 @@ struct Point {
 };
 // EndCodeSnip
 
-int gcd(long long x, long long y) {
-	if (!y) return x;
-	return gcd(y, x % y);
-}
-
 int main() {
 	int n;
 	cin >> n;
 	vector<Point> points(n);
-	for (auto &point : points) { cin >> point; }
+	for (Point &point : points) { cin >> point; }
 	points.push_back(points[0]);
 	long long area = 0;
 	for (int i = 0; i < n; i++) {
@@ -379,7 +374,7 @@ int main() {
 	long long boundary_points = 0;
 	for (int i = 0; i < n; i++) {
 		Point diff = points[i + 1] - points[i];
-		int g = gcd(abs(diff.x), abs(diff.y));
+		int g = __gcd(abs(diff.x), abs(diff.y));
 		boundary_points += g;
 	}
 	long long interior_points = (area - boundary_points) / 2 + 1;
