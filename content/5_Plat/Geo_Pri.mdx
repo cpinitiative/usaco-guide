@@ -314,6 +314,23 @@ int main() {
 
 <FocusProblem problem="latticepoints" />
 
+Let's first focus on the lattice points on the polygon's boundary. We'll process each edge individually. The number of intersections of a line with lattice points is the greatest
+common divisor of $P_1.x - P_2.x$ and $P_1.y - P_2.y$. 
+
+<Spoiler title="Demonstration">
+Using the linear function it can be proven. Denote the segment ends with $x_1, y1_$ and $x_2, y_2$. The function has the following
+form: &f(x) = ax + b&. The slope of $f(x)$, in our case $a$, is $\frac{y_1-y_2}{x_1-x_2}$, so $f(x)$ becomes $f(x) = \frac{y_1-y_2}{x_1-x_2} * x + b$.
+
+This means that every points along the line has the following form: $(x, f(x))$ which has become $(x, \frac{y_1-y_2}{x_1-x_2} * x + b)$. Number $x$ can 
+be any integer, but &f(x)& no. In order to be lattice point &f(x)& has to be an integer, by eliminating the fraction resulting in $x$ divisible by $x_1 - x_2$.
+
+</Spoiler>
+
+Now that we know the number of lattice points on the boundary we can find the number of lattice points inside the polygon using [Pick's theorem](https://en.wikipedia.org/wiki/Pick%27s_theorem).
+Let's denote $A$ polygon's area, $i$ the number of integer points inside and $b$ the number of integer points on its boundary. Then, according to Pick's theorem, we have the following
+equation: $A = i + b/2 - 1$. Changing the order a little bit to get $i = A - b/2 + 1$. We've found &b& and, as you've probably already solved [Polygon Area](https://cses.fi/problemset/task/2191) from above, 
+$A$ can be computed using cross-product.
+
 <LanguageSection>
 <CPPSection>
 ```cpp 
