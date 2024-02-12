@@ -10,6 +10,7 @@ You should know operations such as the cross product and dot product.
 
 ## Standard Problems
 
+### Location of a point
 <FocusProblem problem="pointlocationtest" />
 
 To check the $P$ location towards the $P_1$ $P_2$ line we use following formula: $(P.y - P_1.y) * (P_2.x - P_1.x) - (P.x - P_1.x) * (P_2.y - P_1.y)$
@@ -30,7 +31,7 @@ This formula doesn't only tell us whether the points are collinear, but where th
 
 </Spoiler>
 
-### Implementation
+#### Implementation
 
 <LanguageSection>
 <CPPSection>
@@ -78,12 +79,13 @@ int main() {
 </CPPSection>
 </LanguageSection>
 
+### Segment intersection
 <FocusProblem problem="line" />
 
 We can quickly dismiss the segment intersection by treating them as rectangles having the segments as diagonals which can be easily done.
 If it turns out the rectangles intersect then we just check if the segment's ends are on different sides of the other segment.
 
-### Implementation
+#### Implementation
 
 <LanguageSection>
 <CPPSection>
@@ -161,11 +163,12 @@ int main() {
 </CPPSection>
 </LanguageSection>
 
+### Polygon area
 <FocusProblem problem="polygon" />
 
 The following algorithm uses the [Shoelace formula](https://en.wikipedia.org/wiki/Shoelace_formula).
 
-### Implementation
+#### Implementation
 
 <LanguageSection>
 <CPPSection>
@@ -205,6 +208,8 @@ int main() {
 </CPPSection>
 </LanguageSection>
 
+### Point's location relative to polygon
+
 <FocusProblem problem="polygon2" />
 
 We can cast a ray from the point $P$ going in any fixed direction (people usually go to the right).
@@ -213,7 +218,7 @@ If the point is on the inside of the polygon then it will intersect the edge an 
 
 This approach is called [ray casting](https://en.wikipedia.org/wiki/Point_in_polygon).
 
-### Implementation
+#### Implementation
 
 <LanguageSection>
 <CPPSection>
@@ -312,6 +317,7 @@ int main() {
 </CPPSection>
 </LanguageSection>
 
+### Lattice points in polygon
 <FocusProblem problem="latticepoints" />
 
 Let's first focus on the lattice points on the polygon's boundary. We'll process each edge individually. The number of intersections of a line with lattice points is the greatest
@@ -330,6 +336,8 @@ Now that we know the number of lattice points on the boundary we can find the nu
 Let's denote $A$ polygon's area, $i$ the number of integer points inside and $b$ the number of integer points on its boundary. Then, according to Pick's theorem, we have the following
 equation: $A = i + b/2 - 1$. Changing the order a little bit to get $i = A - b/2 + 1$. We've found &b& and, as you've probably already solved [Polygon Area](https://cses.fi/problemset/task/2191) from above, 
 $A$ can be computed using cross-product.
+
+#### Implementation
 
 <LanguageSection>
 <CPPSection>
