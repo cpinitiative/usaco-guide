@@ -10,6 +10,7 @@ You should know operations such as the cross product and dot product.
 
 ## Standard Problems
 
+### Location of a point
 <FocusProblem problem="pointlocationtest" />
 
 To check the $P$ location towards the $P_1$ $P_2$ line we use following formula: $(P.y - P_1.y) * (P_2.x - P_1.x) - (P.x - P_1.x) * (P_2.y - P_1.y)$
@@ -30,7 +31,7 @@ This formula doesn't only tell us whether the points are collinear, but where th
 
 </Spoiler>
 
-### Implementation
+#### Implementation
 
 <LanguageSection>
 <CPPSection>
@@ -78,12 +79,13 @@ int main() {
 </CPPSection>
 </LanguageSection>
 
+### Segment intersection
 <FocusProblem problem="line" />
 
 We can quickly dismiss the segment intersection by treating them as rectangles having the segments as diagonals which can be easily done.
 If it turns out the rectangles intersect then we just check if the segment's ends are on different sides of the other segment.
 
-### Implementation
+#### Implementation
 
 <LanguageSection>
 <CPPSection>
@@ -161,11 +163,12 @@ int main() {
 </CPPSection>
 </LanguageSection>
 
+### Polygon area
 <FocusProblem problem="polygon" />
 
 The following algorithm uses the [Shoelace formula](https://en.wikipedia.org/wiki/Shoelace_formula).
 
-### Implementation
+#### Implementation
 
 <LanguageSection>
 <CPPSection>
@@ -205,6 +208,8 @@ int main() {
 </CPPSection>
 </LanguageSection>
 
+### Point's location relative to polygon
+
 <FocusProblem problem="polygon2" />
 
 We can cast a ray from the point $P$ going in any fixed direction (people usually go to the right).
@@ -213,7 +218,7 @@ If the point is on the inside of the polygon then it will intersect the edge an 
 
 This approach is called [ray casting](https://en.wikipedia.org/wiki/Point_in_polygon).
 
-### Implementation
+#### Implementation
 
 <LanguageSection>
 <CPPSection>
@@ -309,6 +314,73 @@ int main() {
 }
 ```
 
+</CPPSection>
+</LanguageSection>
+
+### Lattice points in polygon
+<FocusProblem problem="latticepoints" />
+
+Let's first focus on the lattice points on the polygon's boundary. We'll process each edge individually. The number of intersections of a line with lattice points is the greatest
+common divisor of $P_1.x - P_2.x$ and $P_1.y - P_2.y$.
+
+<Spoiler title="Demonstration">
+Using the linear function it can be proven. Denote the segment ends with ($x_1$,$y_1$) and ($x_2$, $y_2$). The function has the following
+form: &f(x) = ax + b&. The slope of $f(x)$, in our case $a$, is $\frac{y_1-y_2}{x_1-x_2}$, so $f(x)$ becomes $f(x) = \frac{y_1-y_2}{x_1-x_2} * x + b$.
+
+This means that every points along the line has the following form: $(x, f(x))$ which has become $(x, \frac{y_1-y_2}{x_1-x_2} * x + b)$. Number $x$ can
+be any integer, but &f(x)& no. In order to be lattice point &f(x)& has to be an integer, by eliminating the fraction resulting in $x$ divisible by $x_1 - x_2$.
+
+</Spoiler>
+
+Now that we know the number of lattice points on the boundary we can find the number of lattice points inside the polygon using [Pick's theorem](https://en.wikipedia.org/wiki/Pick%27s_theorem).
+Let's denote $A$ polygon's area, $i$ the number of integer points inside and $b$ the number of integer points on its boundary. Then, according to Pick's theorem, we have the following
+equation: $A = i + b/2 - 1$. Changing the order a little bit to get $i = A - b/2 + 1$. We've found $b$ and, as you've probably already solved [Polygon Area](https://cses.fi/problemset/task/2191) from above,
+$A$ can be computed using cross-product.
+
+#### Implementation
+
+<LanguageSection>
+<CPPSection>
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+// BeginCodeSnip{Point Class}
+struct Point {
+	int x, y;
+	Point(int a = 0, int b = 0) : x(a), y(b) {}
+	Point operator-(const Point &other) { return {x - other.x, y - other.y}; }
+	friend istream &operator>>(istream &in, Point &p) {
+		int x, y;
+		in >> p.x >> p.y;
+		return in;
+	}
+};
+// EndCodeSnip
+
+int main() {
+	int n;
+	cin >> n;
+	vector<Point> points(n);
+	for (Point &point : points) { cin >> point; }
+	points.push_back(points[0]);
+	long long area = 0;
+	for (int i = 0; i < n; i++) {
+		area += (1LL * points[i].x * points[i + 1].y -
+		         1LL * points[i].y * points[i + 1].x);
+	}
+	area = abs(area);
+	long long boundary_points = 0;
+	for (int i = 0; i < n; i++) {
+		Point diff = points[i + 1] - points[i];
+		int g = gcd(abs(diff.x), abs(diff.y));
+		boundary_points += g;
+	}
+	long long interior_points = (area - boundary_points) / 2 + 1;
+	cout << interior_points << ' ' << boundary_points;
+}
+```
 </CPPSection>
 </LanguageSection>
 
