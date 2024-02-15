@@ -240,6 +240,11 @@ export const RestOfMembers: Member[] = [
     titles: [roles.contentAuthor],
   },
   {
+    photo: 'alex_du',
+    name: 'Alex Du',
+    titles: [roles.contentAuthor],
+  },
+  {
     photo: 'andrew_xu',
     name: 'Andrew Xu',
     titles: [roles.liveInstructor],
