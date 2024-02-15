@@ -266,19 +266,19 @@ export const NotPictured: Member[] = [
   {
     name: 'KJ Karaisz',
     titles: [roles.contentAuthor],
-    github: 'IDON-TEXIST'
+    github: 'IDON-TEXIST',
   },
 ];
 
 export const FormerMembers: Member[] = [
-/*{
+  /*{
     photo: "egor",
     name: "Egor Gagushin",
     titles: [roles.videoInstructor],
     codeforces: "eggag32",
     github: "Eggag",
   },*/
-/*{
+  /*{
     photo: "ramit",
     name: "Ramit Goyal",
     titles: [roles.videoInstructor],
