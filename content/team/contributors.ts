@@ -226,7 +226,7 @@ export const RestOfMembers: Member[] = [
   },
   {
     photo: 'mihnea',
-    name: 'Brebenel Mihnea',
+    name: 'Mihnea Brebenel',
     titles: [roles.contentAuthor],
   },
   {
