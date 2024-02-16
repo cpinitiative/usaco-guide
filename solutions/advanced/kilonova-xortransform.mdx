@@ -19,7 +19,7 @@ Also, if $C(n, i)$ and $C(n, j)$ are odd, then $C(n, i|j)$ is odd as well, so we
 
 For each bit of the period, $SOS[i] = SOS[i - 2^{position}] \oplus SOS[i]$, if $i$ has the bit on position equal to $1$.
 
-For other approaches, you can also check out the user solutions on [Infoarena](https://infoarena.ro/monitor?task=xortransform), just make sure to press that popup you receive after you first click on a solution. Take note that the version used is slightly different from the actual version, as this problem was given as an interactive problem and Infoarena couldn't support interactive problems at the time. 
+For other approaches, you can also check out the user solutions on [Infoarena](https://infoarena.ro/monitor?task=xortransform), just make sure to press that popup you receive after you first click on a solution. Take note that the version used is slightly different from the actual version, as this problem was given as an interactive problem and Infoarena couldn't support interactive problems at the time.
 
 ## Implementation
 
@@ -30,8 +30,8 @@ For other approaches, you can also check out the user solutions on [Infoarena](h
 
 ```cpp
 // original kilonova version
-#include <bits/stdc++.h>
 #include "xortransform.h"
+#include <bits/stdc++.h>
 using namespace std;
 
 int n, m;
@@ -40,44 +40,36 @@ int lg_rows, lg_cols;
 vector<int> dp;
 
 int Logarithm(int n) {
-	n --;
+	n--;
 	int cnt = 0;
-	while(n)
-	{
+	while (n) {
 		n /= 2;
-		cnt ++;
+		cnt++;
 	}
 	return cnt;
-
 }
 
-void initialize(int _n, int _m, int ** _mat) {
+void initialize(int _n, int _m, int **_mat) {
 	n = _n, m = _m;
 	mat.resize(n);
-	for(auto &it : mat) it.resize(m);
+	for (auto &it : mat) it.resize(m);
 	for (int i = 0; i < n; ++i) {
-		for (int j = 0; j < m; ++j) {
-			mat[i][j] = _mat[i][j];
-		}
+		for (int j = 0; j < m; ++j) { mat[i][j] = _mat[i][j]; }
 	}
 
 	lg_rows = Logarithm(n);
 	lg_cols = Logarithm(m);
- 	dp.resize(1 << (lg_rows + lg_cols));
+	dp.resize(1 << (lg_rows + lg_cols));
 
 	for (int i = 0; i < n; ++i) {
-	    for (int j = 0; j < m; ++j) {
-	        dp[(i << lg_cols) + j] = mat[i][j];
-	    }
+		for (int j = 0; j < m; ++j) { dp[(i << lg_cols) + j] = mat[i][j]; }
 	}
- 
+
 	for (int iter = 0; iter < lg_rows + lg_cols; ++iter) {
-	    const int bit = 1 << iter;
-	    for (int mask = 0; mask < (1 << (lg_rows + lg_cols)); ++mask) {
-	        if (mask >> iter & 1) {
-	        	dp[mask] ^= dp[mask ^ bit];
-	        }
-	    }
+		const int bit = 1 << iter;
+		for (int mask = 0; mask < (1 << (lg_rows + lg_cols)); ++mask) {
+			if (mask >> iter & 1) { dp[mask] ^= dp[mask ^ bit]; }
+		}
 	}
 }
 
@@ -85,7 +77,8 @@ int quer = 0;
 
 int query(int state) {
 	quer++;
-	return dp[((state & ((1 << lg_rows) - 1)) << lg_cols) + (state & ((1 << lg_cols) - 1))];
+	return dp[((state & ((1 << lg_rows) - 1)) << lg_cols) +
+	          (state & ((1 << lg_cols) - 1))];
 }
 ```
 
