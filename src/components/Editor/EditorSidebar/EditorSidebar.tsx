@@ -278,7 +278,7 @@ export const EditorSidebar = (props): JSX.Element => {
     }
   };
   return (
-    <div className="flex-col w-[250px]">
+    <div className="flex-col w-[250px] border-r border-gray-200 dark:border-gray-800">
       <FileListSidebar
         {...props}
         activeFile={activeFile}
