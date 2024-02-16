@@ -15,6 +15,7 @@ import {
   trueFileAtom,
   trueFilePathAtom,
 } from '../../atoms/editor';
+import { DarkModeContext } from '../../context/DarkModeContext';
 import EditorTabBar from './EditorTabBar';
 import { conf as mdxConf, language as mdxLang } from './mdx-lang';
 
@@ -27,6 +28,7 @@ export const MainEditorInterface = ({ className }): JSX.Element => {
   const setTab = useSetAtom(baseTabAtom);
   const isEditingSolution = useAtomValue(editingSolutionAtom);
   const tab = useAtomValue(tabAtom);
+  const darkMode = React.useContext(DarkModeContext);
 
   const setMarkdown = (x: string | ((prev: string) => string)) => {
     if (!activeFile) return;
@@ -121,7 +123,7 @@ export const MainEditorInterface = ({ className }): JSX.Element => {
         onFormatCode={handleFormatCode}
       />
       <Editor
-        theme="vs-dark"
+        theme={darkMode ? 'vs-dark' : 'light'}
         path={useAtomValue(trueFilePathAtom)}
         language={tab === 'content' ? 'custom-mdx' : 'json'}
         value={useAtomValue(trueFileAtom)}
