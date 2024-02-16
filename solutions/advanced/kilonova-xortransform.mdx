@@ -47,10 +47,17 @@ int main() {
 		}
 	}
 	int mx = 1, stp = 1;
-	while (mx < n || mx < m) mx <<= 1, ++stp;
-	for (int i = 0; i < stp; ++i)
-		for (int j = 0; j < mx; ++j)
-			if (j & (1 << i)) sos[j] ^= sos[j - (1 << i)];
+	while (mx < n || mx < m) { 
+		mx <<= 1; 
+		++stp; 
+	}
+	for (int i = 0; i < stp; ++i) {
+		for (int j = 0; j < mx; ++j) {
+			if (j & (1 << i)) { 
+				sos[j] ^= sos[j - (1 << i)]; 
+			}
+		}
+	}
 	int prev_ans = 0;
 	for (int i = 0; i < q; i++) {
 		int nr;
