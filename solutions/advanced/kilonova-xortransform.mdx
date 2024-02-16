@@ -9,15 +9,15 @@ author: Stefan Dascalescu
 
 ## Explanation
 
-After running the brute force solution, one can observe that the period of how matrix looks like is $\min(2^i, 2^i \geq n && 2^i \geq m)$.
+After running the brute force solution, one can observe that the period of how matrix looks like is the smallest power of two such that it's greater than both $n$ and $m$. 
 
 Also, we can reduce the problem to finding the xor-sum of the elements in positions such that the number of roads from $(0, 0)$ to $(i, j)$ in $k$ steps is odd, where $k$ is the number of transformations done.
 
 This is equal to $C(k, i) \cdot C(k, j)$, where $C(n, k)$ is $n$ choose $k$. Also, if $C(n, k)$ is odd, then $n \& k = k$ (this can also be observed by brute-force).
 
-Also, if $C(n, i)$ and $C(n, j)$ are odd, then $C(n, i \OR j)$ is odd as well, so we can reduce the problem to SOS DP, where $SOS[i]$ = xorsum of elements which are in positions included by $i$.
+Also, if $C(n, i)$ and $C(n, j)$ are odd, then $C(n, i|j)$ is odd as well, so we can reduce the problem to SOS DP, where $SOS[i]$ = xorsum of elements which are in positions included by $i$.
 
-For each bit of the period, $SOS[i] = SOS[i - 2^position] \oplus SOS[i]$, if $i$ has the bit on position equal to $1$.
+For each bit of the period, $SOS[i] = SOS[i - 2^{position}] \oplus SOS[i]$, if $i$ has the bit on position equal to $1$.
 
 For other approaches, you can also check out the user solutions on [Infoarena](https://infoarena.ro/monitor?task=xortransform), just make sure to press that popup you receive after you first click on a solution.
 
