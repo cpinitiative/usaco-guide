@@ -35,36 +35,30 @@ using namespace std;
 ifstream f("xortransform.in");
 ofstream g("xortransform.out");
 int n, m, q, sos[5000002];
-int main()
-{
-    f >> n >> m >> q;
-    for(int i = 0; i < n; ++i)
-    {
-        for(int j = 0; j < m; ++j)
-        {
-            int nr;
-            f >> nr;
-            sos[i | j] ^= nr;
-        }
-    }
-    int mx = 1, stp = 1;
-    while(mx < n || mx < m)
-        mx <<= 1, ++stp;
-    for(int i = 0; i < stp; ++i)
-        for(int j = 0; j < mx; ++j)
-            if(j & (1<<i))
-                sos[j] ^= sos[j - (1<<i)];
-    int prev_ans = 0;
-    for(; q; --q)
-    {
-        int nr;
-        f >> nr;
-        nr ^= prev_ans;
-        nr &= (mx - 1);
-        prev_ans = sos[nr];
-        g << prev_ans << '\n';
-    }
-    return 0;
+int main() {
+	f >> n >> m >> q;
+	for (int i = 0; i < n; ++i) {
+		for (int j = 0; j < m; ++j) {
+			int nr;
+			f >> nr;
+			sos[i | j] ^= nr;
+		}
+	}
+	int mx = 1, stp = 1;
+	while (mx < n || mx < m) mx <<= 1, ++stp;
+	for (int i = 0; i < stp; ++i)
+		for (int j = 0; j < mx; ++j)
+			if (j & (1 << i)) sos[j] ^= sos[j - (1 << i)];
+	int prev_ans = 0;
+	for (; q; --q) {
+		int nr;
+		f >> nr;
+		nr ^= prev_ans;
+		nr &= (mx - 1);
+		prev_ans = sos[nr];
+		g << prev_ans << '\n';
+	}
+	return 0;
 }
 ```
 
