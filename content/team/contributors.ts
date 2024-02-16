@@ -173,11 +173,6 @@ export const OrderedFirstMembers: Member[] = [
 
 export const RestOfMembers: Member[] = [
   {
-    photo: 'nikhil',
-    name: 'Nikhil Chatterjee',
-    titles: [roles.liveInstructor, roles.videoInstructor, roles.clubCurriculum],
-  },
-  {
     photo: 'ryan',
     name: 'Ryan Chou',
     titles: [
@@ -190,13 +185,97 @@ export const RestOfMembers: Member[] = [
     website: 'https://www.ryanchou.dev/',
   },
   {
-    photo: 'dustin',
-    name: 'Dustin Miao',
-    titles: [roles.liveInstructor, roles.contentAuthor],
-    github: 'dutinmeow',
-    email: 'dutin20.meow@gmail.com',
-    codeforces: 'dutinmeow',
+    photo: 'jesse',
+    name: 'Jesse Choe',
+    titles: [
+      'Director of Classes',
+      'Content Manager',
+      roles.contentAuthor,
+      roles.liveInstructor,
+    ],
+    github: 'jessechoe10',
+    email: 'jessechoe10@gmail.com',
+    codeforces: 'YoRepi7',
   },
+  {
+    photo: 'paul',
+    name: 'Paul Chen',
+    titles: [roles.contentAuthor],
+    codeforces: '876pol',
+    github: '876pol',
+  },
+  {
+    photo: 'trisha',
+    name: 'Trisha Sabadra',
+    titles: ['Director of Classes', roles.liveInstructor],
+  },
+  {
+    photo: 'alex_wang',
+    name: 'Alex Wang',
+    titles: ['Director of Clubs'],
+  },
+  {
+    photo: 'aakash_gokhale',
+    name: 'Aakash Gokhale',
+    titles: ['Director of Contests'],
+  },
+  {
+    photo: 'justin_huang',
+    name: 'Justin Huang',
+    titles: ['Director of Software', roles.webdev],
+  },
+  {
+    photo: 'mihnea',
+    name: 'Mihnea Brebenel',
+    titles: [roles.contentAuthor],
+  },
+  {
+    photo: 'daniel_zhu',
+    name: 'Daniel Zhu',
+    titles: [roles.contentAuthor, roles.webdev],
+  },
+  {
+    photo: 'envy',
+    name: 'Chongtian Ma',
+    titles: [roles.contentAuthor],
+  },
+  {
+    photo: 'alex_du',
+    name: 'Alex Du',
+    titles: [roles.contentAuthor],
+  },
+  {
+    photo: 'andrew_xu',
+    name: 'Andrew Xu',
+    titles: [roles.liveInstructor],
+  },
+];
+
+export const NotPictured: Member[] = [
+  {
+    name: 'Kevin Sheng',
+    titles: [roles.contentAuthor],
+    github: 'sanspapyrus683',
+  },
+  {
+    name: 'Shreyas Thumathy',
+    titles: [roles.liveInstructor, roles.clubCurriculum],
+    github: 'therealshreyas',
+  },
+  {
+    name: 'Sathvik Chundru',
+    titles: [roles.contentAuthor],
+    github: 'sathu-beep',
+    codeforces: 'sus',
+  },
+  {
+    name: 'KJ Karaisz',
+    titles: [roles.contentAuthor],
+    github: 'IDON-TEXIST',
+  },
+];
+
+export const FormerMembers: Member[] = [
   /*{
     photo: "egor",
     name: "Egor Gagushin",
@@ -212,17 +291,24 @@ export const RestOfMembers: Member[] = [
     instagram: "ramit_goyal24",
   },*/
   {
-    photo: 'jesse',
-    name: 'Jesse Choe',
-    titles: [
-      'Director of Classes',
-      'Content Manager',
-      roles.contentAuthor,
-      roles.liveInstructor,
-    ],
-    github: 'jessechoe10',
-    email: 'jessechoe10@gmail.com',
-    codeforces: 'YoRepi7',
+    photo: 'nikhil',
+    name: 'Nikhil Chatterjee',
+    titles: [roles.liveInstructor, roles.videoInstructor, roles.clubCurriculum],
+  },
+  {
+    photo: 'dustin',
+    name: 'Dustin Miao',
+    titles: [roles.liveInstructor, roles.contentAuthor],
+    github: 'dutinmeow',
+    email: 'dutin20.meow@gmail.com',
+    codeforces: 'dutinmeow',
+  },
+  {
+    photo: 'jeffrey_zhang',
+    name: 'Jeffrey Zhang',
+    titles: [roles.contentAuthor],
+    github: 'RedBlueBird',
+    email: 'jiefu.zhang1226@gmail.com',
   },
   {
     photo: 'stanley',
@@ -231,13 +317,6 @@ export const RestOfMembers: Member[] = [
     titles: [roles.webdev],
     email: 'stanleyhzhao@gmail.com',
     website: 'https://szhao.dev/',
-  },
-  {
-    photo: 'jeffrey_zhang',
-    name: 'Jeffrey Zhang',
-    titles: [roles.contentAuthor],
-    github: 'RedBlueBird',
-    email: 'jiefu.zhang1226@gmail.com',
   },
   {
     photo: 'riley',
@@ -285,13 +364,6 @@ export const RestOfMembers: Member[] = [
     titles: [roles.clubCurriculum],
   },
   {
-    photo: 'paul',
-    name: 'Paul Chen',
-    titles: [roles.contentAuthor],
-    codeforces: '876pol',
-    github: '876pol',
-  },
-  {
     photo: 'danielge',
     name: 'Daniel Ge',
     titles: [roles.contentAuthor],
@@ -299,11 +371,6 @@ export const RestOfMembers: Member[] = [
     github: 'DenialRiver1434',
     email: 'mailto:shurongge@gmail.com',
     website: 'https://denialriver1434.github.io/',
-  },
-  {
-    photo: 'trisha',
-    name: 'Trisha Sabadra',
-    titles: ['Director of Classes', roles.liveInstructor],
   },
   {
     photo: 'advay',
@@ -332,19 +399,11 @@ export const RestOfMembers: Member[] = [
     titles: [roles.liveInstructor, roles.clubCurriculum],
   },
   {
-    photo: 'alex_wang',
-    name: 'Alex Wang',
-    titles: ['Director of Clubs'],
-  },
-  {
-    photo: 'aakash_gokhale',
-    name: 'Aakash Gokhale',
-    titles: ['Director of Contests'],
-  },
-  {
-    photo: 'justin_huang',
-    name: 'Justin Huang',
-    titles: ['Director of Software', roles.webdev],
+    photo: 'pranav',
+    name: 'Pranav Jadhav',
+    titles: ['Director of Clubs', roles.clubCurriculum],
+    github: 'pranavgithub1',
+    email: 'pra168109@gmail.com',
   },
   {
     photo: 'harsh_akunuri',
@@ -360,40 +419,6 @@ export const RestOfMembers: Member[] = [
     photo: 'nathan_zhang',
     name: 'Nathan Zhang',
     titles: [roles.clubCurriculum],
-  },
-  {
-    photo: 'andrew_xu',
-    name: 'Andrew Xu',
-    titles: [roles.liveInstructor],
-  },
-];
-
-export const NotPictured: Member[] = [
-  {
-    name: 'Kevin Sheng',
-    titles: [roles.contentAuthor],
-    github: 'sanspapyrus683',
-  },
-  {
-    name: 'Shreyas Thumathy',
-    titles: [roles.liveInstructor, roles.clubCurriculum],
-    github: 'therealshreyas',
-  },
-  {
-    name: 'Sathvik Chundru',
-    titles: [roles.contentAuthor],
-    github: 'sathu-beep',
-    codeforces: 'sus',
-  },
-];
-
-export const FormerMembers: Member[] = [
-  {
-    photo: 'pranav',
-    name: 'Pranav Jadhav',
-    titles: ['Director of Clubs', roles.clubCurriculum],
-    github: 'pranavgithub1',
-    email: 'pra168109@gmail.com',
   },
   {
     photo: 'neo',
