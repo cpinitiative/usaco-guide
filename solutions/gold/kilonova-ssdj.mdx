@@ -44,12 +44,11 @@ int main() {
 	int n;
 	f >> n;
 
-	int ss = 0;
+	int cnt = 0;
 	long long ans = 0;
 	vector<vector<char>> mat(n + 1, vector<char>(n + 1));
 	vector<vector<int>> lst(n + 2, vector<int>(n + 2));
 	vector<vector<int>> lst2(n + 2, vector<int>(n + 2));
-	vector<vector<bool>> pus(n + 2, vector<bool>(n + 2));
 	vector<int> d(n + 2);
 
 	for (int i = 1; i <= n; i++) {
@@ -57,53 +56,51 @@ int main() {
 	}
 	for (int i = 1; i <= n; i++) { lst2[n + 1][i] = n + 2; }
 	for (char i = 'z'; i >= 'a'; i--) {
-		for (int R = 1; R <= n; R++) {
-			ss = 0;
-			for (int S = 1; S <= n; S++) {
-				if (mat[R][S] >= i) {
-					lst[R][S] = R;
+		for (int row = 1; row <= n; row++) {
+			cnt = 0;
+			for (int col = 1; col <= n; col++) {
+				if (mat[row][col] >= i) {
+					lst[row][col] = row;
 				} else {
-					lst[R][S] = lst[R - 1][S];
+					lst[row][col] = lst[row - 1][col];
 				}
-				while (ss && lst[R - 1][S] >= lst[R][d[ss]]) { --ss; }
-				if (mat[R][S] == i) {
-					ans += ss;
-					if (ss && d[1] == S) { --ans; }
+				while (cnt && lst[row - 1][col] >= lst[row][d[cnt]]) { --cnt; }
+				if (mat[row][col] == i) {
+					ans += cnt;
+					if (cnt && d[1] == col) { --ans; }
 				}
-				while (ss && lst[R][S] >= lst[R][d[ss]]) { --ss; }
-				if (lst[R][S] <= (R - 1) && lst[R][S] != 0) { d[++ss] = S; }
+				while (cnt && lst[row][col] >= lst[row][d[cnt]]) { --cnt; }
+				if (lst[row][col] <= (row - 1) && lst[row][col] != 0) { d[++cnt] = col; }
 			}
 		}
 
-		for (int R = n; R >= 1; R--) {
-			ss = 0;
+		for (int row = n; row >= 1; row--) {
+			cnt = 0;
 			int hm = 0;
-			for (int S = n; S >= 1; S--) {
-				if (mat[R][S] >= i) {
-					lst2[R][S] = R;
+			for (int col = n; col >= 1; col--) {
+				if (mat[row][col] >= i) {
+					lst2[row][col] = row;
 				} else {
-					lst2[R][S] = lst2[R + 1][S];
+					lst2[row][col] = lst2[row + 1][col];
 				}
-				while (ss && lst2[R + 1][S] <= lst2[R][d[ss]]) {
-					if (mat[lst2[R][d[ss]]][d[ss]] == i) { hm--; }
-					ss--;
+				while (cnt && lst2[row + 1][col] <= lst2[row][d[cnt]]) {
+					if (mat[lst2[row][d[cnt]]][d[cnt]] == i) { hm--; }
+					cnt--;
 				}
-				if (mat[R][S] == i) {
-					int aa = ss;
-					ans += ss;
+				if (mat[row][col] == i) {
+					ans += cnt;
 					ans -= hm;
-					if (ss && d[ss] == S) {
+					if (cnt && d[cnt] == col) {
 						ans--;
-						aa--;
 					}
 				}
-				while (ss && lst2[R][S] <= lst2[R][d[ss]]) {
-					if (mat[lst2[R][d[ss]]][d[ss]] == i) { hm--; }
-					ss--;
+				while (cnt && lst2[row][col] <= lst2[row][d[cnt]]) {
+					if (mat[lst2[row][d[cnt]]][d[cnt]] == i) { hm--; }
+					cnt--;
 				}
-				if (lst2[R][S] >= (R + 1) && lst2[R][S] != (n + 2)) {
-					if (mat[lst2[R][S]][S] == i) { hm++; }
-					d[++ss] = S;
+				if (lst2[row][col] >= (row + 1) && lst2[row][col] != (n + 2)) {
+					if (mat[lst2[row][col]][col] == i) { hm++; }
+					d[++cnt] = col;
 				}
 			}
 		}
