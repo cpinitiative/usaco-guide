@@ -26,7 +26,6 @@ For other approaches, you can also check out the user solutions on [Infoarena](h
 **Time Complexity:** $\mathcal{O}(N \cdot M \cdot \log N)$
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
@@ -35,28 +34,31 @@ using namespace std;
 
 int main() {
 	ifstream f("xortransform.in");
-	ofstream g("xortransform.out");
 	int n, m, q;
 	f >> n >> m >> q;
 	vector<int> sos(n * m * 2 + 1);
-	for (int i = 0; i < n; ++i) {
-		for (int j = 0; j < m; ++j) {
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < m; j++) {
 			int nr;
 			f >> nr;
 			sos[i | j] ^= nr;
 		}
 	}
-	int mx = 1, stp = 1;
+
+	int mx = 1;
+	int stp = 1;
 	while (mx < n || mx < m) {
 		mx <<= 1;
-		++stp;
+		stp++;
 	}
-	for (int i = 0; i < stp; ++i) {
-		for (int j = 0; j < mx; ++j) {
+	for (int i = 0; i < stp; i++) {
+		for (int j = 0; j < mx; j++) {
 			if (j & (1 << i)) { sos[j] ^= sos[j - (1 << i)]; }
 		}
 	}
+
 	int prev_ans = 0;
+	ofstream g("xortransform.out");
 	for (int i = 0; i < q; i++) {
 		int nr;
 		f >> nr;
@@ -69,5 +71,4 @@ int main() {
 ```
 
 </CPPSection>
-
 </LanguageSection>
