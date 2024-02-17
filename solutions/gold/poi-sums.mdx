@@ -6,15 +6,25 @@ author: Daniel Zhu
 ---
 
 <Spoiler title="Hint 1">
+
 How can you solve the problem when $n = 2$? *Don't use Chicken McNugget Theorem!*
+
 </Spoiler>
+
 <Spoiler title="Hint 2">
+
 If we know we can make a number $x$, what other numbers will we be able to make?
+
 </Spoiler>
+
 <Spoiler title="Hint 3">
+
 Building off the previous hint, consider writing numbers in terms of $x$ and $a_0$.
+
 </Spoiler>
+
 ## Explanation
+
 A crucial observation: if we can make a number $x$, **we can make any number $x + k\cdot a_0$**, where k is a non-negative integer. We may be tempted to rewrite this as so: if we can make $x$, we can make all $y \equiv x \mod a_0$. If this is indeed the case, we can run a simple 0/1 DP to figure out what mods we can assemble, and to answer a query $b_i$, we can simply output $\texttt{dp}[b_i \mod a_0]$. However, this solution has a flaw; try to think about why before moving on!
 
 The issue occurs when $x > a_0$. For example, if $n = 2$ and $a = \{3, 5\}$, we
@@ -41,17 +51,20 @@ Here are a few optimizations I had to use:
 While reading the following code, it may be helpful to consider that our DP is equivalent to running a shortest-path algorithm on a graph where each node $i \in [0, a_0)$ has $n$ outgoing, weighted edges to $(i + a_j) \text{ \% }a_0$ with weight $a_j$, for each $j \in [0, n).$
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
+
 const int N = 5000;
 const int K = 50000;
 const int inf = 1e9;
+
 int a[N], d[K], vis[K];
+
 int smin(int &a, int b) { return a = min(a, b); }
+
 int main() {
 	cin.tie(0)->sync_with_stdio(0);
 	int n, k;
@@ -76,31 +89,15 @@ int main() {
 				}
 			}
 	}
+
 	cin >> k;
-	while (k--) {
+	for (int i = 0; i < k; i++) {
 		int x;
 		cin >> x;
-		if (d[x % a[0]] <= x) {
-			cout << "TAK\n";
-		} else {
-			cout << "NIE\n";
-		}
+		cout << (d[x % a[0]] <= x ? "TAK" : "NIE") << '\n';
 	}
 }
 ```
 
 </CPPSection>
-
-<PySection>
-
-(if you have Python code)
-
-</PySection>
-
-<JavaSection>
-
-(if you have Java code)
-
-</JavaSection>
-
 </LanguageSection>
