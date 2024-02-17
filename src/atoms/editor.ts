@@ -213,7 +213,7 @@ $\\texttt{func(var)}$
           }
         });
       });
-      return formatProblems(JSON.stringify(updated));
+      return formatProblems(JSON.stringify(updated, null, 2));
     };
 
     await Promise.all(
