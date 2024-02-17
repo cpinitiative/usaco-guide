@@ -18,8 +18,7 @@ import {
 import { DarkModeContext } from '../../context/DarkModeContext';
 import EditorTabBar from './EditorTabBar';
 import { conf as mdxConf, language as mdxLang } from './mdx-lang';
-
-const Editor = React.lazy(() => import('@monaco-editor/react'));
+const Editor = React.lazy(() => import('./BaseEditor'));
 
 export const MainEditorInterface = ({ className }): JSX.Element => {
   const activeFile = useAtomValue(activeFileAtom);
