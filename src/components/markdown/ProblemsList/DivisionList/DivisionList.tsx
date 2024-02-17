@@ -126,7 +126,7 @@ const DivisionButton = ({
               : 'origin-top-right'
           } right-0 absolute z-10 mt-2 rounded-md shadow-lg`} // w-36
         >
-          <div className="rounded-md bg-white shadow-xs">
+          <div className="rounded-md bg-white dark:bg-gray-900 shadow-xs">
             <div
               className="py-1"
               role="menu"
@@ -137,7 +137,7 @@ const DivisionButton = ({
                 <button
                   key={option}
                   onClick={() => handleSelect(option)}
-                  className="flex items-center w-full text-left px-3 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
+                  className="flex items-center w-full text-left px-3 py-2 text-sm leading-5 text-gray-700 dark:text-dark-high-emphasis hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-dark-high-emphasis focus:outline-none focus:bg-gray-100 focus:text-gray-900"
                   role="menuitem"
                 >
                   {getCircle(option)}
