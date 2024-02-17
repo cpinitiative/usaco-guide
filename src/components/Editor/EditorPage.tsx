@@ -93,13 +93,6 @@ export default function EditorPage(props: PageProps): JSX.Element {
           <EditorTopNav />
 
           {typeof window !== 'undefined' && (
-            // <React.Suspense
-            //   fallback={
-            //     <div className="text-center mt-6 font-bold text-2xl">
-            //       Loading
-            //     </div>
-            //   }
-            // >
             <StyledSplit
               className="h-full relative flex-1 overflow-hidden"
               onDrag={() => {
@@ -123,7 +116,6 @@ export default function EditorPage(props: PageProps): JSX.Element {
                 </div>
               </div>
             </StyledSplit>
-            // </React.Suspense>
           )}
         </div>
       </Layout>
