@@ -56,27 +56,27 @@ int main() {
 	for (int i = 1; i <= n; i++) { lst2[n + 1][i] = n + 2; }
 	for (char i = 'z'; i >= 'a'; i--) {
 		for (int row = 1; row <= n; row++) {
-			int cnt = 0;
+			int stackSize = 0;
 			for (int col = 1; col <= n; col++) {
 				if (mat[row][col] >= i) {
 					lst[row][col] = row;
 				} else {
 					lst[row][col] = lst[row - 1][col];
 				}
-				while (cnt && lst[row - 1][col] >= lst[row][d[cnt]]) { --cnt; }
+				while (stackSize && lst[row - 1][col] >= lst[row][d[stackSize]]) { --stackSize; }
 				if (mat[row][col] == i) {
-					ans += cnt;
-					if (cnt && d[1] == col) { --ans; }
+					ans += stackSize;
+					if (stackSize && d[1] == col) { --stackSize; }
 				}
-				while (cnt && lst[row][col] >= lst[row][d[cnt]]) { --cnt; }
+				while (stackSize && lst[row][col] >= lst[row][d[stackSize]]) { --stackSize; }
 				if (lst[row][col] <= (row - 1) && lst[row][col] != 0) {
-					d[++cnt] = col;
+					d[++stackSize] = col;
 				}
 			}
 		}
 
 		for (int row = n; row >= 1; row--) {
-			int cnt = 0;
+			int stackSize = 0;
 			int hm = 0;
 			for (int col = n; col >= 1; col--) {
 				if (mat[row][col] >= i) {
@@ -84,22 +84,22 @@ int main() {
 				} else {
 					lst2[row][col] = lst2[row + 1][col];
 				}
-				while (cnt && lst2[row + 1][col] <= lst2[row][d[cnt]]) {
-					if (mat[lst2[row][d[cnt]]][d[cnt]] == i) { hm--; }
-					cnt--;
+				while (stackSize && lst2[row + 1][col] <= lst2[row][d[stackSize]]) {
+					if (mat[lst2[row][d[stackSize]]][d[stackSize]] == i) { hm--; }
+					stackSize--;
 				}
 				if (mat[row][col] == i) {
-					ans += cnt;
+					ans += stackSize;
 					ans -= hm;
-					if (cnt && d[cnt] == col) { ans--; }
+					if (stackSize && d[stackSize] == col) { ans--; }
 				}
-				while (cnt && lst2[row][col] <= lst2[row][d[cnt]]) {
-					if (mat[lst2[row][d[cnt]]][d[cnt]] == i) { hm--; }
-					cnt--;
+				while (stackSize && lst2[row][col] <= lst2[row][d[stackSize]]) {
+					if (mat[lst2[row][d[stackSize]]][d[stackSize]] == i) { hm--; }
+					stackSize--;
 				}
 				if (lst2[row][col] >= (row + 1) && lst2[row][col] != (n + 2)) {
 					if (mat[lst2[row][col]][col] == i) { hm++; }
-					d[++cnt] = col;
+					d[++stackSize] = col;
 				}
 			}
 		}
