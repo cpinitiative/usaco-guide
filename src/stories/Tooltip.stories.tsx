@@ -22,12 +22,12 @@ const Template: Story<ComponentProps<typeof Tooltip>> = args => {
   const [show, setShow] = React.useState<boolean>(false);
   React.useEffect(() => {
     if (ref.current) setShow(true);
-  }, [ref.current]);
+  }, []);
 
   return (
     <div className="my-8" ref={ref}>
       {show && (
-        <Tooltip {...args} appendTo={() => ref.current} showOnCreate={true}>
+        <Tooltip {...args} appendTo={() => ref.current!} showOnCreate={true}>
           <span className="bg-gray-100 p-2 dark:bg-gray-700">
             Hover over me!
           </span>
@@ -67,7 +67,7 @@ const TextTooltipTemplate: Story<
   const [show, setShow] = React.useState<boolean>(false);
   React.useEffect(() => {
     if (ref.current) setShow(true);
-  }, [ref.current]);
+  }, []);
 
   return (
     <div className="my-8" ref={ref}>
@@ -121,7 +121,7 @@ const AsteriskTooltipTemplate: Story<
       {show && (
         <AsteriskComponent
           {...args}
-          appendTo={() => ref.current}
+          appendTo={() => ref.current!}
           showOnCreate={true}
         />
       )}

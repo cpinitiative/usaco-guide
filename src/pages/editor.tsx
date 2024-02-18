@@ -19,7 +19,7 @@ export default function EditorPageContainer(props: PageProps): JSX.Element {
     setHasMounted(true);
   }, []);
   if (!hasMounted) {
-    return null;
+    return <></>;
   }
   return <EditorPage {...props} />;
 }

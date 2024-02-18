@@ -495,7 +495,7 @@ exports.createSchemaCustomization = ({ actions }) => {
     type Xdm implements Node {
       body: String
       fileAbsolutePath: String
-      frontmatter: XdmFrontmatter
+      frontmatter: XdmFrontmatter!
       isIncomplete: Boolean
       cppOc: Int
       javaOc: Int
@@ -506,7 +506,7 @@ exports.createSchemaCustomization = ({ actions }) => {
 
     type XdmFrontmatter implements Node {
       id: String
-      title: String
+      title: String!
       author: String
       contributors: String
       description: String

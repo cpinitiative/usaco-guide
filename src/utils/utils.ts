@@ -17,7 +17,7 @@ export const getModulesForDivision = (
       }
       return {
         ...allModules[k2 as string],
-        slug: `/${division}/${allModules[k2 as string].frontmatter.id}`,
+        slug: `/${division}/${allModules[k2 as string].frontmatter?.id}`,
       };
     }),
     description: k.description,

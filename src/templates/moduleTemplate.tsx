@@ -25,6 +25,7 @@ export default function Template(props): JSX.Element {
     window.requestAnimationFrame(() => {
       try {
         const anchor = document.getElementById(hash.substring(1));
+        if (!anchor) throw new Error(`The anchor "${hash}" doesn't exist`);
         const offset = anchor.getBoundingClientRect().top + window.scrollY;
         window.scroll({ top: offset, left: 0 });
       } catch (e) {
