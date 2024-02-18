@@ -20,8 +20,8 @@ Therefore, we should construct a prefix sum array to perform these queries.
 <Spoiler title="Solution">
 
 Notice that we are trying to maximize $\textrm{pfx}[i] - \textrm{pfx}[j]$. Since
-$j$ is guaranteed to be within the window $[i-b,i]$, we can construct a sliding
-window of size b, and compute
+$j$ is guaranteed to be within the window $[i-b,i-a]$, we can construct a sliding
+window of size $b-a+1$, and compute
 $\max_{A\le i \le B}(\textrm{pfx}[i]-\textrm{pfx}[j])$.
 
 Implementation using a multiset in C++:
@@ -51,8 +51,8 @@ int main() {
 	ll ret = -LINF;
 	multiset<ll> ms;
 
-	// we can keep a sliding window of size B, then find the lowest pfx[j] using
-	// multiset
+	// we can keep a sliding window of size B - A + 1,
+	// then find the lowest pfx[j] using multiset
 	for (int i = A; i <= N; ++i) {
 		if (i > B)
 			ms.erase(ms.find(pfx[i - B - 1]));  // erase the element if size > B
