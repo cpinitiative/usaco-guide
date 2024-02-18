@@ -63,8 +63,6 @@ const int inf = 1e9;
 
 int a[N], d[K], vis[K];
 
-int smin(int &a, int b) { return a = min(a, b); }
-
 int main() {
 	cin.tie(0)->sync_with_stdio(0);
 	int n, k;
@@ -84,7 +82,7 @@ int main() {
 					if (d[k % a[0]] < d[min_index]) { min_index = k % a[0]; }
 				}
 				for (int k = min_index; vis[k] <= i; k = (k + a[i]) % a[0]) {
-					smin(d[(k + a[i]) % a[0]], d[k] + a[i]);
+					d[(k + a[i]) % a[0]] = min(d[(k + a[i]) % a[0]], d[k] + a[i]);
 					++vis[k];
 				}
 			}
