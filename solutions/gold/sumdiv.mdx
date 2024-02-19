@@ -5,13 +5,18 @@ title: Sum of divisors
 author: Mihnea Brebenel
 ---
 
-The sum of all divisors of the integer $N$ can be efficiently computed in $\mathcal{O}(\sqrt{N})$ using [Divisor function](https://en.wikipedia.org/wiki/Divisor_function). The complexity
-comes from the prime factorization of $N$.
+## Explanation
+
+The sum of all divisors of the integer $N$ can be efficiently computed in $\mathcal{O}(\sqrt{N})$ using the [divisor function](https://en.wikipedia.org/wiki/Divisor_function).
+The complexity comes from the prime factorization of $N$.
 
 The formula states that: Let $d_1^{p_1}, d_2^{p_2}, ..., d_k^{p_k}$ be the prime factorization of $N$, then the divisors' sum is $S = \prod_{i=1}^{k}\frac{d_i^{p_i+1} - 1}{d_i -1}$.
 
+## Implementation
+
 <LanguageSection>
 <CPPSection>
+
 ```cpp
 #include <bits/stdc++.h>
 #define ll long long
@@ -20,7 +25,7 @@ using namespace std;
 
 const int MOD = 9901;
 
-// BeginCodeSnip{Modular Arithmetic Functions}
+// BeginCodeSnip{Modular Arithmetic Functions (from the module)}
 ll exp(ll x, ll n, ll m) {
 	assert(n >= 0);
 	x %= m;  // note: m * m must be less than 2^63 to avoid ll overflow
@@ -43,7 +48,6 @@ int inv(int x) {
 
 int main() {
 	ifstream in("sumdiv.in");
-	ofstream out("sumdiv.out");
 
 	int n, m;
 	in >> n >> m;
@@ -68,8 +72,9 @@ int main() {
 		div_sum = div_sum * (exp(n, m + 1, MOD) + MOD - 1) * inv(n - 1) % MOD;
 	}
 
-	out << div_sum;
+	ofstream("sumdiv.out") << div_sum;
 }
 ```
+
 </CPPSection>
 </LanguageSection>
