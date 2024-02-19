@@ -412,6 +412,80 @@ print("\n".join(str(i) for i in ans))
 </PySection>
 </LanguageSection>
 
+## Sum of divisors
+
+<FocusProblem problem = "sumdiv"/>
+
+<LanguageSection>
+<CPPSection>
+```cpp 
+#include <bits/stdc++.h>
+
+using namespace std;
+
+ifstream in("sumdiv.in");
+ofstream out("sumdiv.out");
+
+const int MOD = 9901;
+
+int n, m;
+// BeginCodeSnip{Binary Exponentiation}
+int lgpow(int x, int y) {
+    int aux = x, div_sum = 1;
+    for(int bit = 0; (1<<bit) <= y; bit++) {
+        if((1<<bit) & y) {
+            div_sum = div_sum * aux % MOD;
+        }
+        aux = aux * aux % MOD;
+    }
+    return div_sum;
+}
+// EndCodeSnip
+
+// BeginCodeSnip{Modular Inverse}
+int inv(int x) {
+    if(x <= 1) { return x; }
+    return MOD - MOD/x * inv(MOD%x) % MOD;
+}
+// EndCodeSnip
+
+int main() {
+    in >> n >> m;
+
+    // Prime Factorization
+    long long div_sum = 1;
+    for(int d = 2; d * d <= n; d++) {
+        int p = 0;
+        while(n % d == 0) {
+            n /= d;
+            p++;
+        }
+
+        if(!p) { continue; }
+        p *= m;
+
+        if(d%MOD == 1) {
+            div_sum = div_sum * (lgpow(d, p*m+1) - 1) % MOD;
+        } else {
+            div_sum = div_sum * (lgpow(d, p*m+1) + MOD - 1) * inv(d-1) % MOD;
+        }
+    }
+
+    if(n > 1) {
+        if(n % MOD == 1) {
+            div_sum = div_sum * (lgpow(n, m+1) - 1) % MOD;
+        } else {
+            div_sum = div_sum * (lgpow(n, m+1) + MOD - 1) * inv(n-1) % MOD;
+        }
+    }
+
+    out << div_sum;
+
+    return 0;
+}
+```
+</CPPSection>
+</LanguageSection>
 ## GCD & LCM
 
 ### GCD
