@@ -435,18 +435,22 @@ const int MOD = 9901;
 
 int n, m;
 // BeginCodeSnip{Binary Exponentiation}
-int lgpow(int x, int y) {
-	int aux = x, div_sum = 1;
+int exp(int x, int y) {
+	int aux = x, ans = 1;
 	for (int bit = 0; (1 << bit) <= y; bit++) {
-		if ((1 << bit) & y) { div_sum = div_sum * aux % MOD; }
+		if ((1 << bit) & y) { 
+			ans = ans * aux % MOD; 
+		}
 		aux = aux * aux % MOD;
 	}
-	return div_sum;
+	return ans;
 }
 // EndCodeSnip
 
 // BeginCodeSnip{Modular Inverse}
 int inv(int x) {
+	// The Modular Inverse only exists if x % MOD != 0
+	if(x%MOD == 0) return 1;
 	if (x <= 1) { return x; }
 	return MOD - MOD / x * inv(MOD % x) % MOD;
 }
@@ -467,21 +471,12 @@ int main() {
 		if (!p) { continue; }
 		p *= m;
 
-		// The Modular Inverse only exists if d % MOD != 0
-		if (d % MOD == 1) {
-			div_sum = div_sum * (lgpow(d, p * m + 1) - 1) % MOD;
-		} else {
-			div_sum =
-			    div_sum * (lgpow(d, p * m + 1) + MOD - 1) * inv(d - 1) % MOD;
-		}
+		div_sum = div_sum * (lgpow(d, p * m + 1) + MOD - 1) * inv(d - 1) % MOD;
+		
 	}
 
 	if (n > 1) {
-		if (n % MOD == 1) {
-			div_sum = div_sum * (lgpow(n, m + 1) - 1) % MOD;
-		} else {
-			div_sum = div_sum * (lgpow(n, m + 1) + MOD - 1) * inv(n - 1) % MOD;
-		}
+		div_sum = div_sum * (lgpow(n, m + 1) + MOD - 1) * inv(n - 1) % MOD;
 	}
 
 	out << div_sum;
