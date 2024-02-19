@@ -425,6 +425,7 @@ The formula states that: Let $d_1^{p_1}, d_2^{p_2}, ..., d_k^{p_k}$ be the prime
 <CPPSection>
 ```cpp
 #include <bits/stdc++.h>
+#define ll long long 
 
 using namespace std;
 
@@ -435,13 +436,16 @@ const int MOD = 9901;
 
 int n, m;
 // BeginCodeSnip{Binary Exponentiation}
-int exp(int x, int y) {
-	int aux = x, ans = 1;
-	for (int bit = 0; (1 << bit) <= y; bit++) {
-		if ((1 << bit) & y) { ans = ans * aux % MOD; }
-		aux = aux * aux % MOD;
+ll exp(ll x, ll n, ll m) {
+	assert(n >= 0);
+	x %= m;  // note: m * m must be less than 2^63 to avoid ll overflow
+	ll res = 1;
+	while (n > 0) {
+		if (n % 2 == 1) { res = res * x % m; }
+		x = x * x % m;
+		n /= 2;
 	}
-	return ans;
+	return res;
 }
 // EndCodeSnip
 
@@ -469,11 +473,11 @@ int main() {
 		if (!p) { continue; }
 		p *= m;
 
-		div_sum = div_sum * (lgpow(d, p * m + 1) + MOD - 1) * inv(d - 1) % MOD;
+		div_sum = div_sum * (exp(d, p * m + 1, MOD) + MOD - 1) * inv(d - 1) % MOD;
 	}
 
 	if (n > 1) {
-		div_sum = div_sum * (lgpow(n, m + 1) + MOD - 1) * inv(n - 1) % MOD;
+		div_sum = div_sum * (exp(n, m + 1, MOD) + MOD - 1) * inv(n - 1) % MOD;
 	}
 
 	out << div_sum;
