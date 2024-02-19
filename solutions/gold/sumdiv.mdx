@@ -1,0 +1,71 @@
+## Explanation
+
+The sum of all divisors of the integer $N$ can be efficiently computed in $\mathcal{O}(\sqrt{N})$ using [Divisor function](https://en.wikipedia.org/wiki/Divisor_function). The complexity
+comes from the prime factorization of $N$.
+
+The formula states that: Let $d_1^{p_1}, d_2^{p_2}, ..., d_k^{p_k}$ be the prime factorization of $N$, then the divisors' sum is $S = \prod_{i=1}^{k}\frac{d_i^{p_i+1} - 1}{d_i -1}$.
+
+<LanguageSection>
+<CPPSection>
+```cpp
+#include <bits/stdc++.h>
+#define ll long long 
+
+using namespace std;
+
+ifstream in("sumdiv.in");
+ofstream out("sumdiv.out");
+
+const int MOD = 9901;
+
+int n, m;
+// BeginCodeSnip{Binary Exponentiation}
+ll exp(ll x, ll n, ll m) {
+	assert(n >= 0);
+	x %= m;  // note: m * m must be less than 2^63 to avoid ll overflow
+	ll res = 1;
+	while (n > 0) {
+		if (n % 2 == 1) { res = res * x % m; }
+		x = x * x % m;
+		n /= 2;
+	}
+	return res;
+}
+// EndCodeSnip
+
+// BeginCodeSnip{Modular Inverse}
+int inv(int x) {
+	// The Modular Inverse only exists if x % MOD != 0
+	if (x % MOD == 0) return 1;
+	if (x <= 1) { return x; }
+	return MOD - MOD / x * inv(MOD % x) % MOD;
+}
+// EndCodeSnip
+
+int main() {
+	in >> n >> m;
+
+	// Prime Factorization
+	long long div_sum = 1;
+	for (int d = 2; d * d <= n; d++) {
+		int p = 0;
+		while (n % d == 0) {
+			n /= d;
+			p++;
+		}
+
+		if (!p) { continue; }
+		p *= m;
+
+		div_sum = div_sum * (exp(d, p * m + 1, MOD) + MOD - 1) * inv(d - 1) % MOD;
+	}
+
+	if (n > 1) {
+		div_sum = div_sum * (exp(n, m + 1, MOD) + MOD - 1) * inv(n - 1) % MOD;
+	}
+
+	out << div_sum;
+}
+```
+</CPPSection>
+</LanguageSection>
