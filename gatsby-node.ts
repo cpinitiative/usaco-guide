@@ -544,9 +544,9 @@ exports.createSchemaCustomization = ({ actions }) => {
       source: String!
       sourceDescription: String
       isStarred: Boolean!
-      difficulty: String
-      tags: [String]
-      solution: ProblemSolutionInfo
+      difficulty: String!
+      tags: [String!]!
+      solution: ProblemSolutionInfo!
       inModule: Boolean!
       module: Xdm @link(by: "frontmatter.id")
     }
@@ -558,8 +558,8 @@ exports.createSchemaCustomization = ({ actions }) => {
       source: String!
       sourceDescription: String
       isStarred: Boolean!
-      difficulty: String
-      tags: [String]
+      difficulty: String!
+      tags: [String!]!
       solution: ProblemSolutionInfo
     }
 
