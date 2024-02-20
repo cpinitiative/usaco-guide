@@ -25,7 +25,10 @@ Building off the previous hint, consider writing numbers in terms of $x$ and $a_
 
 ## Explanation
 
-A crucial observation: if we can make a number $x$, **we can make any number $x + k\cdot a_0$**, where k is a non-negative integer. We may be tempted to rewrite this as so: if we can make $x$, we can make all $y \equiv x \mod a_0$. If this is indeed the case, we can run a simple 0/1 DP to figure out what mods we can assemble, and to answer a query $b_i$, we can simply output $\texttt{dp}[b_i \mod a_0]$. However, this solution has a flaw; try to think about why before moving on!
+A crucial observation is that if we can make a number $x$, **we can make any number $x + k\cdot a_0$**, where k is a non-negative integer.
+We may be tempted to rewrite this as so: if we can make $x$, we can make all $y \equiv x \mod a_0$.
+If this is indeed the case, we can run a simple 0/1 DP to figure out what mods we can assemble, and to answer a query $b_i$, we can simply output $\texttt{dp}[b_i \mod a_0]$.
+However, this solution has a flaw; try to think about why before moving on!
 
 The issue occurs when $x > a_0$. For example, if $n = 2$ and $a = \{3, 5\}$, we
 can construct 8, but we cannot construct 2, even though $2 \equiv 8 \mod a_0$.
@@ -36,8 +39,8 @@ yourself, but feel free to consult the below implementation if you get stuck!
 
 **Time Complexity:** $\mathcal{O}(NA)$
 
-Time limit is quite tight for this problem, as with $n$ going up to $5000$ and
-$a_i$ going to $50000$, we end up requiring around $2.5\text{e}8$ operations.
+The time limit is quite tight for this problem.
+With $n \leq 5000$ and $a_i \leq 50000$, we end up getting around $2.5\text{e}8$ operations.
 Here are a few optimizations I had to use:
 
 - I use a $\texttt{vis}$ array in my implementation, and clearing it on every iteration turned out to be too slow. So instead of simply storing true/false for whether an element is visisted, I stored how many times that element had been visited across all iterations instead, taking advantage of the fact that in each iteration, all elements will be visited exactly once, thus implying that after iteration $i$, each element should have been visited a total of $i$ times. Another alternative is simply inverting $\texttt{vis}$ on each subsequent iteration: i.e. on iteration 1, false = not visited, true =
@@ -61,7 +64,7 @@ const int N = 5000;
 const int K = 50000;
 const int INF = 1e9;
 
-int a[N], d[K], vis[K];
+int a[N], d[K], vis[K];  // arrays and fast IO are needed for the time limit
 
 int main() {
 	cin.tie(0)->sync_with_stdio(0);
