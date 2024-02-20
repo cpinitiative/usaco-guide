@@ -15,12 +15,12 @@ import { useFirebaseApp } from '../useFirebase';
 const UserGroupsContext = React.createContext<{
   isLoading: boolean;
   isSuccess: boolean;
-  data: null | GroupData[];
+  data: null | (GroupData | null)[];
   /**
    * Call when you want to re-fetch groups
    */
   invalidateData: () => void;
-}>(null);
+} | null>(null);
 
 const UserGroupsProvider = ({
   children,
@@ -29,7 +29,7 @@ const UserGroupsProvider = ({
 }): ReactElement => {
   const firebaseUser = useFirebaseUser();
   const [isLoading, setIsLoading] = React.useState(!!firebaseUser?.uid);
-  const [groups, setGroups] = React.useState<null | GroupData[]>(null);
+  const [groups, setGroups] = React.useState<null | (GroupData | null)[]>(null);
   const [updateCtr, setUpdateCtr] = React.useState(0);
 
   useFirebaseApp(
@@ -57,7 +57,7 @@ const UserGroupsProvider = ({
             where(key, 'array-contains', firebaseUser?.uid)
           )
         ).then(snap => {
-          queries[key] = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+          queries[key] = snap.docs.map(doc => ({ ...doc.data(), id: doc.id }));
 
           if (Object.keys(queries).every(x => queries[x] !== null)) {
             setGroups(Object.values(queries).flat());

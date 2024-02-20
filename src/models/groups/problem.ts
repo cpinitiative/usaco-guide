@@ -15,7 +15,7 @@ export interface ProblemData {
 export type GroupProblemData = ProblemData &
   (
     | {
-        usacoGuideId: string;
+        usacoGuideId: string | null;
         solutionReleaseMode: 'due-date' | 'now' | 'never';
       }
     | {

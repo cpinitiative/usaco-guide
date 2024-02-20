@@ -38,7 +38,7 @@ export type LeaderboardEntry = {
 
 export default function useLeaderboardData({
   groupId,
-  postId = null,
+  postId = undefined,
   maxResults = 10,
 }: {
   groupId: string;
@@ -60,11 +60,13 @@ export default function useLeaderboardData({
     let alive = true;
     getDocs(q).then(snap => {
       if (!alive) return;
-      const newData = [];
+      const newData: LeaderboardEntry[] = [];
       snap.forEach(doc => newData.push(doc.data()));
       setData(newData);
     });
-    return () => ((alive = false), null);
+    return () => {
+      alive = false;
+    };
   }, [firebaseApp, groupId, postId, maxResults]);
 
   return data;
@@ -88,7 +90,9 @@ export function useUserLeaderboardData(
       if (!alive) return;
       setData(snap.data() as LeaderboardEntry);
     });
-    return () => ((alive = false), null);
+    return () => {
+      alive = false;
+    };
   }, [firebaseApp, groupId, userId]);
 
   return data;

@@ -120,7 +120,7 @@ export function ActiveGroupProvider({ children }: { children: ReactNode }) {
 
   const isUserAdmin = isUserAdminOfGroup(
     groupData,
-    activeUserId ?? firebaseUser?.uid
+    activeUserId ?? firebaseUser!.uid
   );
   return (
     <ActiveGroupContext.Provider
@@ -135,7 +135,7 @@ export function ActiveGroupProvider({ children }: { children: ReactNode }) {
           setInStudentView(newVal);
           if (!newVal) setActiveUserId(undefined);
         },
-        activeUserId: activeUserId ?? firebaseUser?.uid,
+        activeUserId: activeUserId ?? firebaseUser!.uid,
         setActiveUserId,
       }}
     >
