@@ -8,7 +8,7 @@ import {
 import ConfettiContext from '../../context/ConfettiContext';
 import { ContactUsSlideoverProvider } from '../../context/ContactUsSlideoverContext';
 import MarkdownLayoutContext from '../../context/MarkdownLayoutContext';
-import { useProblemSolutions } from '../../context/ProblemSolutionContext';
+import { ProblemSolutionContext } from '../../context/ProblemSolutionContext';
 import { ProblemSuggestionModalProvider } from '../../context/ProblemSuggestionModalContext';
 import { useUserLangSetting } from '../../context/UserDataContext/properties/simpleProperties';
 import {
@@ -119,12 +119,12 @@ export default function MarkdownLayout({
   //   document.querySelector('html').style.scrollBehavior = 'smooth';
   //   return () => (document.querySelector('html').style.scrollBehavior = 'auto');
   // }, []);
-  const problemSolutionContext = useProblemSolutions();
+  const problemSolutionContext = useContext(ProblemSolutionContext);
   let activeIDs: string[] = [];
   if (markdownData instanceof ModuleInfo) {
     activeIDs.push(markdownData.id);
   } else {
-    activeIDs = problemSolutionContext.modulesThatHaveProblem.map(x => x.id);
+    activeIDs = problemSolutionContext!.modulesThatHaveProblem.map(x => x.id);
   }
 
   return (
