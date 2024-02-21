@@ -6,7 +6,6 @@ author: Isaac Noel, Arpan Banerjee
 ---
 
 ## Solution 1: Maintaining two multisets
-**Time Complexity:** $\mathcal{O}(N\log N)$
 
 To accomplish finding the sorted median of a sliding window, we can store the
 window within two sets: one containing the lower values of the window and the
@@ -24,6 +23,10 @@ median and place it in the upper set if it is greater than the median, put it in
 the lower set otherwise. If one set fills above its max size, transfer an
 element to the other set. Erasing is more simple, just find the element and
 erase it.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N\log N)$
 
 <LanguageSection>
 <CPPSection>
@@ -100,7 +103,6 @@ $$
 
 and find $k$ from there. Clearly, the values of the array would need to be compressed, as an array of size $10^9$ is infeasible. There will also be an extra $\log$ factor from using the Fenwick tree `sum` operation, yielding a total time complexity of $\mathcal{O}(n\log^2{n})$. Note that a more precise upper bound is $\mathcal{O}((n-k+1) \cdot \log^2{k} + n \log{n})$ (there are $(n-k+1)$ windows), but it's tricky to express the maximum value of this in terms of $n$ and $k$; therefore, $\mathcal{O}(n \log^2{n})$ is better.
 
-
 <LanguageSection>
 <CPPSection>
 
@@ -153,11 +155,10 @@ signed main() {
 </CPPSection>
 </LanguageSection>
 
+## Solution 3: Order Statistic Tree
 
 <LanguageSection>
 <CPPSection>
-
-## Solution 3: Order Statistic Tree
 
 We can directly use an [order statistic tree](https://codeforces.com/blog/entry/11080) (C++) to get the median while sliding the window across the array in $\mathcal{O}(n\log n)$ time.
 
@@ -191,10 +192,7 @@ int main() {
 ```
 
 </CPPSection>
-
 <JavaSection>
-
-## Solution 3: Order Statistic Multiset Tree
 
 We can use a modified [order statistic tree](https://en.wikipedia.org/wiki/Order_statistic_tree) to get the median while sliding the window across the array in $\mathcal{O}(n\log n)$ time.
 To correctly handle duplicates, we modify the standard CLRS implementation by storing the **count** of each value inside the node. We then use it when searching for an element of a specific rank:
@@ -209,7 +207,9 @@ OS-SELECT(x, i):
 ```
 
 <Warning>
+
 Due to the tight time constraints, the following Java solution still receives TLE on a few of the test cases.
+
 </Warning>
 
 ```java
