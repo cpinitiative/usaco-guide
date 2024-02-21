@@ -4,7 +4,6 @@ import {
   useInstantSearch,
   useRefinementList,
 } from 'react-instantsearch';
-import { useDarkMode } from '../../context/DarkModeContext';
 import Select from '../Select';
 
 export type SelectionProps = UseRefinementListProps & {
@@ -36,7 +35,6 @@ export default function Selection({
       (items[key].value as string[]).push('null');
     }
   }
-  const darkMode = useDarkMode();
   const [refinements, setRefinements] = useState<string[]>([]);
   const { setIndexUiState } = useInstantSearch();
   useEffect(() => {
@@ -62,7 +60,7 @@ export default function Selection({
         ...item,
         label: transform ? transform(item.label) : item.label,
       }))}
-      className={!darkMode ? 'text-black' : 'text-white'}
+      className="text-black dark:text-white"
       classNamePrefix="select"
     />
   );
