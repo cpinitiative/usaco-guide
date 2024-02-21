@@ -32,7 +32,7 @@ const ActiveGroupContext = React.createContext<{
    * (ie if parent wants to view child's progress, or if owner views member's progress)
    * it could be different
    */
-  activeUserId: string;
+  activeUserId: string | undefined;
   setActiveUserId: (id?: string) => void;
 } | null>(null);
 
@@ -120,7 +120,7 @@ export function ActiveGroupProvider({ children }: { children: ReactNode }) {
 
   const isUserAdmin = isUserAdminOfGroup(
     groupData,
-    activeUserId ?? firebaseUser!.uid
+    activeUserId ?? firebaseUser?.uid
   );
   return (
     <ActiveGroupContext.Provider
@@ -135,7 +135,7 @@ export function ActiveGroupProvider({ children }: { children: ReactNode }) {
           setInStudentView(newVal);
           if (!newVal) setActiveUserId(undefined);
         },
-        activeUserId: activeUserId ?? firebaseUser!.uid,
+        activeUserId: activeUserId ?? firebaseUser?.uid,
         setActiveUserId,
       }}
     >

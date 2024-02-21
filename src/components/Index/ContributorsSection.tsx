@@ -227,9 +227,8 @@ export default function ContributorsSection(): JSX.Element {
                   member={member}
                   key={member.name}
                   gatsbyImage={
-                    (data as any).allFile.edges.find(
-                      x => x.node.name === member.photo
-                    ).node.childImageSharp
+                    data.allFile.nodes.find(x => x.name === member.photo)!
+                      .childImageSharp
                   }
                 />
               ))}
