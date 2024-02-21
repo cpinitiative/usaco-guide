@@ -6,7 +6,6 @@ author: Isaac Noel, Arpan Banerjee
 ---
 
 ## Solution 1: Maintaining two multisets
-**Time Complexity:** $\mathcal{O}(N\log N)$
 
 To accomplish finding the sorted median of a sliding window, we can store the
 window within two sets: one containing the lower values of the window and the
@@ -24,6 +23,10 @@ median and place it in the upper set if it is greater than the median, put it in
 the lower set otherwise. If one set fills above its max size, transfer an
 element to the other set. Erasing is more simple, just find the element and
 erase it.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N\log N)$
 
 <LanguageSection>
 <CPPSection>
@@ -100,7 +103,6 @@ $$
 
 and find $k$ from there. Clearly, the values of the array would need to be compressed, as an array of size $10^9$ is infeasible. There will also be an extra $\log$ factor from using the Fenwick tree `sum` operation, yielding a total time complexity of $\mathcal{O}(n\log^2{n})$. Note that a more precise upper bound is $\mathcal{O}((n-k+1) \cdot \log^2{k} + n \log{n})$ (there are $(n-k+1)$ windows), but it's tricky to express the maximum value of this in terms of $n$ and $k$; therefore, $\mathcal{O}(n \log^2{n})$ is better.
 
-
 <LanguageSection>
 <CPPSection>
 
@@ -153,11 +155,10 @@ signed main() {
 </CPPSection>
 </LanguageSection>
 
+## Solution 3: Order Statistic Tree
 
 <LanguageSection>
 <CPPSection>
-
-## Solution 3: Order Statistic Tree
 
 We can directly use an [order statistic tree](https://codeforces.com/blog/entry/11080) (C++) to get the median while sliding the window across the array in $\mathcal{O}(n\log n)$ time.
 
@@ -191,4 +192,340 @@ int main() {
 ```
 
 </CPPSection>
+<JavaSection>
+
+We can use a modified [order statistic tree](https://en.wikipedia.org/wiki/Order_statistic_tree) to get the median while sliding the window across the array in $\mathcal{O}(n\log n)$ time.
+To correctly handle duplicates, we modify the standard CLRS implementation by storing the **count** of each value inside the node. We then use it when searching for an element of a specific rank:
+```
+OS-SELECT(x, i):
+    if (i < x.left.size + 1)
+	return OS-SELECT(x.left, i);
+    else if (i > x.left.size + x.count)
+	return OS-SELECT(x.right, i - x.left.size - x.count);
+    else
+	return x;
+```
+
+<Warning>
+
+Due to the tight time constraints, the following Java solution still receives TLE on a few of the test cases.
+
+</Warning>
+
+```java
+import java.io.*;
+
+public class Main {
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio();
+		int N = io.nextInt();
+		int K = io.nextInt();
+		int[] arr = new int[N];
+		for (int i = 0; i < N; i++) arr[i] = io.nextInt();
+
+		OrderedMultiset<Integer> slidingWindow = new OrderedMultiset<>();
+		for (int i = 0; i < K; i++) slidingWindow.insert(arr[i]);
+
+		final int medianRank = (int)Math.ceil(K / 2.0f);
+		io.print(slidingWindow.findByOrder(medianRank));
+
+		for (int i = K; i < N; i++) {
+			slidingWindow.erase(arr[i - K]);
+			slidingWindow.insert(arr[i]);
+
+			io.print(" " + slidingWindow.findByOrder(medianRank));
+		}
+
+		io.close();
+	}
+
+	// CodeSnip{Kattio}
+
+	// BeginCodeSnip{OrderedMultiset}
+	static class OrderedMultiset<K extends Comparable<K>> {
+		private class RBNode {
+			K key;
+			int count;
+			RBNode left, right;
+			RBNode parent;
+			boolean color;
+			int size;
+
+			static final boolean RED = true;
+			static final boolean BLACK = false;
+		}
+
+		private final RBNode nil = new RBNode();
+		private RBNode root = this.nil;
+
+		public void insert(final K k) { RB_INSERT(k, 1); }
+
+		public void erase(final K k) {
+			final RBNode found = TREE_SEARCH(this.root, k);
+			if (found != null) RB_DELETE(found, 1);
+		}
+
+		public K findByOrder(final int rank) {
+			return OS_SELECT(this.root, rank).key;
+		}
+
+		private RBNode TREE_SEARCH(final RBNode x, final K k) {
+			if (x == this.nil) return null;
+			if (x.key.equals(k)) return x;
+			if (x.key.compareTo(k) < 0) return TREE_SEARCH(x.right, k);
+
+			return TREE_SEARCH(x.left, k);
+		}
+
+		private RBNode TREE_MINIMUM(RBNode x) {
+			while (x.left != this.nil) x = x.left;
+
+			return x;
+		}
+
+		private void RB_INSERT(final K k, final int cnt) {
+			final RBNode z = new RBNode();
+			z.key = k;
+			z.count = cnt;
+			z.size = cnt;
+
+			RBNode x = this.root;
+			RBNode y = this.nil;
+			while (x != this.nil) {
+				x.size += cnt;
+				y = x;
+				if (x.key.compareTo(z.key) < 0) x = x.right;
+				else if (x.key.compareTo(z.key) > 0) x = x.left;
+				else {
+					x.count += cnt;
+					return;
+				}
+			}
+
+			z.parent = y;
+			if (y == this.nil) this.root = z;  // tree was empty
+			else if (y.key.compareTo(z.key) < 0) y.right = z;
+			else y.left = z;
+
+			z.left = z.right = this.nil;
+			z.color = RBNode.RED;
+			RB_INSERT_FIXUP(z);
+		}
+
+		private void RB_INSERT_FIXUP(RBNode z) {
+			while (z.parent.color == RBNode.RED) {
+				if (z.parent == z.parent.parent.left) {
+					final RBNode y = z.parent.parent.right;
+					if (y.color == RBNode.RED) {
+						z.parent.color = RBNode.BLACK;
+						y.color = RBNode.BLACK;
+						z.parent.parent.color = RBNode.RED;
+						z = z.parent.parent;
+					} else {
+						if (z == z.parent.right) {
+							z = z.parent;
+							LEFT_ROTATE(z);
+						}
+						z.parent.color = RBNode.BLACK;
+						z.parent.parent.color = RBNode.RED;
+						RIGHT_ROTATE(z.parent.parent);
+					}
+				} else {
+					final RBNode y = z.parent.parent.left;
+					if (y.color == RBNode.RED) {
+						z.parent.color = RBNode.BLACK;
+						y.color = RBNode.BLACK;
+						z.parent.parent.color = RBNode.RED;
+						z = z.parent.parent;
+					} else {
+						if (z == z.parent.left) {
+							z = z.parent;
+							RIGHT_ROTATE(z);
+						}
+						z.parent.color = RBNode.BLACK;
+						z.parent.parent.color = RBNode.RED;
+						LEFT_ROTATE(z.parent.parent);
+					}
+				}
+			}
+			this.root.color = RBNode.BLACK;
+		}
+
+		private void RB_TRANSPLANT(final RBNode u, final RBNode v) {
+			if (u.parent == this.nil) this.root = v;
+			else if (u == u.parent.left) u.parent.left = v;
+			else u.parent.right = v;
+
+			v.parent = u.parent;
+		}
+
+		private void RB_DELETE(final RBNode z, final int cnt) {
+			if (z.count > cnt) {
+				z.count -= cnt;
+				RBNode tmp = z;
+				while (tmp != this.nil) {
+					tmp.size -= cnt;
+					tmp = tmp.parent;
+				}
+				return;
+			}
+
+			RBNode x;
+			RBNode y = z;
+			boolean yOriginalColor = y.color;
+			if (z.left == this.nil) {
+				x = z.right;
+				RB_TRANSPLANT(z, z.right);  // Figure 12.4 (a)
+			} else if (z.right == this.nil) {
+				x = z.left;
+				RB_TRANSPLANT(z, z.left);  // Figure 12.4 (b)
+			} else {
+				y = TREE_MINIMUM(z.right);
+				yOriginalColor = y.color;
+				x = y.right;
+				if (y.parent == z) {
+					x.parent = y;
+				} else {  // Figure 12.4 (d)
+					RB_TRANSPLANT(y, y.right);
+					y.right = z.right;
+					y.right.parent = y;
+				}
+				RB_TRANSPLANT(z, y);  // Figure 12.4 (c)
+				y.size = z.size;
+				y.left = z.left;
+				y.left.parent = y;
+				y.color = z.color;
+			}
+
+			RBNode tmp = x.parent;
+			while (tmp != this.nil) {
+				tmp.size -= cnt;
+				tmp = tmp.parent;
+			}
+
+			if (yOriginalColor == RBNode.BLACK) RB_DELETE_FIXUP(x);
+		}
+
+		private void RB_DELETE_FIXUP(RBNode x) {
+			while (x != this.root && x.color == RBNode.BLACK) {
+				if (x == x.parent.left) {
+					// ***** x is a left child ******
+					RBNode w = x.parent.right;
+					if (w.color == RBNode.RED) {
+						x.parent.color = RBNode.RED;
+						w.color = RBNode.BLACK;
+						LEFT_ROTATE(x.parent);
+						w = x.parent.right;
+					}
+
+					if (w.left.color == RBNode.BLACK &&
+					    w.right.color == RBNode.BLACK) {
+						w.color = RBNode.RED;
+						x = x.parent;
+					} else {
+						if (w.right.color == RBNode.BLACK) {
+							w.left.color = RBNode.BLACK;
+							w.color = RBNode.RED;
+							RIGHT_ROTATE(w);
+							w = x.parent.right;
+						}
+						w.color = x.parent.color;
+						x.parent.color = RBNode.BLACK;
+						w.right.color = RBNode.BLACK;
+						LEFT_ROTATE(x.parent);
+						x = this.root;
+					}
+				} else {
+					// ***** x is a right child ******
+					RBNode w = x.parent.left;
+					if (w.color == RBNode.RED) {
+						x.parent.color = RBNode.RED;
+						w.color = RBNode.BLACK;
+						RIGHT_ROTATE(x.parent);
+						w = x.parent.left;
+					}
+
+					if (w.left.color == RBNode.BLACK &&
+					    w.right.color == RBNode.BLACK) {
+						w.color = RBNode.RED;
+						x = x.parent;
+					} else {
+						if (w.left.color == RBNode.BLACK) {
+							w.right.color = RBNode.BLACK;
+							w.color = RBNode.RED;
+							LEFT_ROTATE(w);
+							w = x.parent.left;
+						}
+						w.color = x.parent.color;
+						x.parent.color = RBNode.BLACK;
+						w.left.color = RBNode.BLACK;
+						RIGHT_ROTATE(x.parent);
+						x = this.root;
+					}
+				}
+			}
+			x.color = RBNode.BLACK;
+		}
+
+		private void LEFT_ROTATE(final RBNode x) {
+			final RBNode y = x.right;
+			x.right = y.left;
+			if (y.left != this.nil) y.left.parent = x;
+
+			y.parent = x.parent;
+
+			if (x.parent == this.nil) this.root = y;
+			else if (x == x.parent.left) x.parent.left = y;
+			else x.parent.right = y;
+
+			y.left = x;
+			x.parent = y;
+
+			y.size = x.size;
+			x.size = x.left.size + x.right.size + x.count;
+		}
+
+		private void RIGHT_ROTATE(final RBNode x) {
+			final RBNode y = x.left;
+			x.left = y.right;
+			if (y.right != this.nil) y.right.parent = x;
+
+			y.parent = x.parent;
+
+			if (x.parent == this.nil) this.root = y;
+			else if (x == x.parent.left) x.parent.left = y;
+			else x.parent.right = y;
+
+			y.right = x;
+			x.parent = y;
+
+			y.size = x.size;
+			x.size = x.left.size + x.right.size + x.count;
+		}
+
+		private RBNode OS_SELECT(final RBNode x, final int i) {
+			if (i < x.left.size + 1) return OS_SELECT(x.left, i);
+			else if (i > x.left.size + x.count)
+				return OS_SELECT(x.right, i - x.left.size - x.count);
+			else return x;
+		}
+
+		private int OS_RANK(final RBNode x) {
+			int rank = x.left.size + 1;
+			RBNode y = x;
+			while (y != this.root) {
+				if (y == y.parent.right)
+					rank += y.parent.left.size + y.parent.count;
+
+				y = y.parent;
+			}
+
+			return rank;
+		}
+	}
+	// EndCodeSnip
+}
+```
+
+</JavaSection>
 </LanguageSection>
