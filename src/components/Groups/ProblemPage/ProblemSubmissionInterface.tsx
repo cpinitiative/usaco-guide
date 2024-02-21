@@ -37,16 +37,17 @@ export default function ProblemSubmissionInterface({
 }) {
   const firebaseUser = useFirebaseUser();
   const lang = useUserLangSetting();
-  const emptySubmission: Partial<ProblemSubmissionRequestData> = {
+  const emptySubmission: ProblemSubmissionRequestData = {
+    filename: '',
     problemID: problem.id,
     sourceCode: '',
     language: lang === 'showAll' ? 'cpp' : lang,
   };
   const [submission, editSubmission] = useReducer(
     (
-      oldSubmission: Partial<ProblemSubmissionRequestData>,
+      oldSubmission: ProblemSubmissionRequestData,
       updates: Partial<ProblemSubmissionRequestData>
-    ): Partial<ProblemSubmissionRequestData> => ({
+    ): ProblemSubmissionRequestData => ({
       ...oldSubmission,
       ...updates,
     }),
@@ -67,9 +68,10 @@ export default function ProblemSubmissionInterface({
       const fileReader = new FileReader();
       fileReader.readAsText(file, 'UTF-8');
       fileReader.onload = e => {
-        editSubmission({
-          sourceCode: e.target.result.toString(),
-        });
+        e.target?.result &&
+          editSubmission({
+            sourceCode: e.target.result.toString(),
+          });
       };
     },
   });
@@ -135,14 +137,14 @@ export default function ProblemSubmissionInterface({
     try {
       const submissionID = await submitSolution(
         {
-          problemID: problem.usacoGuideId,
-          language: submission.language,
+          problemID: problem.usacoGuideId!,
+          language: submission.language!,
           filename: {
             cpp: 'main.cpp',
             java: 'Main.java',
             py: 'main.py',
-          }[submission.language],
-          sourceCode: submission.sourceCode,
+          }[submission.language!],
+          sourceCode: submission.sourceCode!,
         },
         problem.postId,
         problem.id

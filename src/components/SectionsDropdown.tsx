@@ -6,9 +6,9 @@ import * as React from 'react';
 import { SECTIONS, SECTION_LABELS } from '../../content/ordering';
 
 export default function SectionsDropdown({
-  currentSection = null,
+  currentSection = null as string | null,
   sidebarNav = false,
-  onSelect = null,
+  onSelect = null as ((section: string) => void) | null,
   noDarkMode = false,
 }): JSX.Element {
   return (
@@ -102,7 +102,7 @@ export default function SectionsDropdown({
                       {({ active }) => (
                         <button
                           onClick={() => {
-                            onSelect(section);
+                            if (onSelect) onSelect(section);
                           }}
                           className={classNames(
                             'w-full text-left block px-4 py-2 text-base font-medium leading-6 focus:outline-none',

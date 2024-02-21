@@ -13,7 +13,7 @@ export default function ProblemListItemSolution(
   props: ProblemListItemSolutionProps
 ): JSX.Element {
   const { problem } = props;
-  let contents: JSX.Element = null;
+  let contents: JSX.Element | null = null;
   if (!problem.solution) {
     contents = (
       <div className="px-4 py-2 text-sm text-gray-300 dark:text-gray-500">

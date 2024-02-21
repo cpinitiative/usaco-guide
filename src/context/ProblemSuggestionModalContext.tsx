@@ -7,9 +7,7 @@ import { useFirebaseUser } from './UserDataContext/UserDataContext';
 const ProblemSuggestionModalContext = createContext<{
   openProblemSuggestionModal: (listName: string) => void;
 }>({
-  openProblemSuggestionModal: (listName: string) => {
-    // Do Nothing
-  },
+  openProblemSuggestionModal: () => {},
 });
 
 export default ProblemSuggestionModalContext;
@@ -20,7 +18,7 @@ export const ProblemSuggestionModalProvider = ({
   children: React.ReactNode;
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [listName, setListName] = useState<string>(null);
+  const [listName, setListName] = useState<string>('');
   const firebaseUser = useFirebaseUser();
   const { inEditor } = useContext(EditorContext);
   const openProblemSuggestionModal = (listName: string) => {

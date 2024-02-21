@@ -6,7 +6,7 @@ import { getPostTimestampString, PostData } from '../../../models/groups/posts';
 
 export default function PostHeader({ post }: { post: PostData }) {
   const activeGroup = useActiveGroup();
-  const { updatePost } = usePostActions(activeGroup.groupData.id);
+  const { updatePost } = usePostActions(activeGroup.groupData!.id);
 
   return (
     <div className="md:flex md:items-center md:justify-between md:space-x-4 xl:border-b xl:pb-4 dark:border-gray-700">
@@ -36,7 +36,7 @@ export default function PostHeader({ post }: { post: PostData }) {
           <button
             type="button"
             onClick={() =>
-              updatePost(post.id, { isPublished: !post.isPublished })
+              updatePost(post.id!, { isPublished: !post.isPublished })
             }
             className="btn"
           >

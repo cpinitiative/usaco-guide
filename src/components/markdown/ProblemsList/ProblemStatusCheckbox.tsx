@@ -190,7 +190,7 @@ export default function ProblemStatusCheckbox({
                 updateModuleProgressToPracticing();
               }
               if (!solved(status) && solved(progress)) {
-                showConfetti();
+                showConfetti!();
               }
             }}
             currentProgress={status}

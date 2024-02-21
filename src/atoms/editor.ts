@@ -48,11 +48,11 @@ const baseActiveFileAtom = atomWithStorage(
   null as string | null
 );
 export const branchAtom = atomWithStorage('guide:editor:branch', null);
-export const tokenAtom = atom(null);
+export const tokenAtom = atom<string | null>(null);
 export const octokitAtom = atom(get =>
   get(tokenAtom) === null ? null : new Octokit({ auth: get(tokenAtom) })
 );
-export const forkAtom = atom(undefined);
+export const forkAtom = atom<string | undefined>(undefined);
 export const baseTabAtom = atom('content');
 export const editingSolutionAtom = atom(get => {
   const activeFile = get(activeFileAtom);
@@ -257,7 +257,7 @@ export const closeFileAtom = atom(null, (get, set, filePath: string) => {
   filesFamily.remove(filePath);
 });
 
-const baseMonacoEditorInstanceAtom = atom({ monaco: null });
+const baseMonacoEditorInstanceAtom = atom({ monaco: null as any });
 export const monacoEditorInstanceAtom = atom(
   get => get(baseMonacoEditorInstanceAtom),
   (get, _set, val: any) => {

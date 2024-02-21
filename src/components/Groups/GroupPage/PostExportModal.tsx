@@ -47,7 +47,7 @@ export default function PostExportModal(props: {
     );
 
     const snap = await getDocs(q);
-    setProblems(snap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+    setProblems(snap.docs.map(doc => ({ ...doc.data(), id: doc.id })));
 
     console.log(g.name);
     if (groupsUsedMap.has(g.id)) {
@@ -194,10 +194,11 @@ export default function PostExportModal(props: {
                       assignment to.
                       <div className="block">
                         {groups.isSuccess &&
-                          (groups.data?.length > 0 ? (
+                          (groups.data && groups.data.length > 0 ? (
                             groups.data.map(group =>
                               // group.ownerIds.includes(firebaseUser.uid)
-                              group.ownerIds.includes(firebaseUser.uid) ? (
+                              group &&
+                              group.ownerIds.includes(firebaseUser!.uid) ? (
                                 <div key={group.id}>
                                   <label className="inline-flex items-center">
                                     <input

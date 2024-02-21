@@ -20,7 +20,7 @@ import { PostData } from '../../models/groups/posts';
 import { useFirebaseApp } from '../useFirebase';
 
 const ActiveGroupContext = React.createContext<{
-  activeGroupId?: string;
+  activeGroupId: string;
   setActiveGroupId: React.Dispatch<React.SetStateAction<string | undefined>>;
   groupData?: GroupData;
   posts: PostData[];
@@ -39,7 +39,7 @@ const ActiveGroupContext = React.createContext<{
 export function ActiveGroupProvider({ children }: { children: ReactNode }) {
   const firebaseUser = useFirebaseUser();
   const isUserLoaded = useIsUserDataLoaded();
-  const [activeGroupId, setActiveGroupId] = React.useState<string>();
+  const [activeGroupId, setActiveGroupId] = React.useState<string>('');
   const [posts, setPosts] = React.useState<PostData[]>([]);
   const [inStudentView, setInStudentView] = React.useState(false);
   const [activeUserId, setActiveUserId] = React.useState<string>();
@@ -78,7 +78,7 @@ export function ActiveGroupProvider({ children }: { children: ReactNode }) {
         ),
         snap => {
           loadedPosts = true;
-          setPosts(snap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+          setPosts(snap.docs.map(doc => ({ ...doc.data(), id: doc.id })));
           if (loadedGroup && loadedPosts) setIsLoading(false);
         },
         error => {

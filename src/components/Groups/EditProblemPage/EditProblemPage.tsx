@@ -48,6 +48,7 @@ export default function EditProblemPage(props: Props) {
   const firebaseApp = useFirebaseApp();
   const activeGroup = useActiveGroup();
   const post = usePost(postId);
+  if (!post) throw new Error('Post not found');
   const originalProblem = useProblem(problemId);
   const [problem, editProblem] = useReducer(
     (oldProblem, updates: Partial<GroupProblemData>): GroupProblemData => ({
@@ -148,7 +149,7 @@ export default function EditProblemPage(props: Props) {
       <nav className="flex mt-6 mb-4" aria-label="Breadcrumb">
         <Breadcrumbs
           className="max-w-4xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-3 pb-4"
-          group={activeGroup.groupData}
+          group={activeGroup.groupData!}
           post={post}
         />
       </nav>

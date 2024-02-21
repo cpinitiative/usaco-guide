@@ -131,10 +131,10 @@ const SECTION_DESCRIPTION: { [key in SectionID]: React.ReactNode } = {
 
 export default function Template(props) {
   const data: Queries.SyllabusQuery = props.data;
-  const allModules = data.modules.edges.reduce((acc, cur) => {
-    acc[cur.node.frontmatter.id] = cur.node;
+  const allModules = data.modules.nodes.reduce((acc, cur) => {
+    acc[cur.frontmatter.id] = cur;
     return acc;
-  }, {} as { [key: string]: (typeof data.modules.edges)[0]['node'] });
+  }, {} as { [key: string]: (typeof data.modules.nodes)[0] });
 
   const { division } = props.pageContext;
 
@@ -271,22 +271,20 @@ export const pageQuery = graphql`
         fields: { division: { eq: $division } }
       }
     ) {
-      edges {
-        node {
+      nodes {
+        id
+        frontmatter {
+          title
           id
-          frontmatter {
-            title
-            id
-            description
-            frequency
-          }
-          isIncomplete
-          cppOc
-          javaOc
-          pyOc
-          fields {
-            gitAuthorTime
-          }
+          description
+          frequency
+        }
+        isIncomplete
+        cppOc
+        javaOc
+        pyOc
+        fields {
+          gitAuthorTime
         }
       }
     }

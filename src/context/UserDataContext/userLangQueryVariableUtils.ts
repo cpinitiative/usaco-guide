@@ -1,5 +1,5 @@
 // From https://stackoverflow.com/questions/2090551/parse-query-string-in-javascript
-function getQueryVariable(query, variable): string {
+function getQueryVariable(query, variable): string | null {
   const vars = query.split('&').filter(i => i);
   for (let i = 0; i < vars.length; i++) {
     const pair = vars[i].split('=');

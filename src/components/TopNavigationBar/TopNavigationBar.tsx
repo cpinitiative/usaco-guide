@@ -20,7 +20,7 @@ import classNames from 'classnames';
 import { Link } from 'gatsby';
 import * as React from 'react';
 import { Fragment, useState } from 'react';
-import { SignInContext } from '../../context/SignInContext';
+import { useSignIn } from '../../context/SignInContext';
 import {
   useFirebaseUser,
   useIsUserDataLoaded,
@@ -46,7 +46,7 @@ export default function TopNavigationBar({
   const firebaseUser = useFirebaseUser();
   const signOut = useSignOutAction();
   const isLoaded = useIsUserDataLoaded();
-  const { signIn } = React.useContext(SignInContext);
+  const { signIn } = useSignIn();
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const [isContactUsActive, setIsContactUsActive] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);

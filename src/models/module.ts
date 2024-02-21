@@ -33,7 +33,7 @@ export class ModuleLinkInfo {
   }
 }
 
-export type ModuleFrequency = null | 0 | 1 | 2 | 3 | 4;
+export type ModuleFrequency = 0 | 1 | 2 | 3 | 4;
 
 export type TOCHeading = {
   depth: number;

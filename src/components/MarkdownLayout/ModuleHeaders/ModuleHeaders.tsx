@@ -9,7 +9,7 @@ import {
   moduleIDToSectionMap,
   moduleIDToURLMap,
 } from '../../../../content/ordering';
-import MarkdownLayoutContext from '../../../context/MarkdownLayoutContext';
+import { useMarkdownLayout } from '../../../context/MarkdownLayoutContext';
 import { useMarkdownProblems } from '../../../context/MarkdownProblemListsContext';
 import { ProblemSolutionContext } from '../../../context/ProblemSolutionContext';
 import {
@@ -33,7 +33,7 @@ export default function ModuleHeaders({
     markdownLayoutInfo: markdownData,
     moduleProgress,
     handleCompletionChange,
-  } = useContext(MarkdownLayoutContext);
+  } = useMarkdownLayout();
 
   const lang = useUserLangSetting();
   const setLang = useSetUserLangSetting();
@@ -83,7 +83,7 @@ export default function ModuleHeaders({
         label: `${SECTION_LABELS[moduleIDToSectionMap[module.id]]} - ${
           module.title
         }`,
-        url: `${moduleIDToURLMap[module.id]}#problem-${problem.uniqueId}`,
+        url: `${moduleIDToURLMap[module.id]}#problem-${problem!.uniqueId}`,
       };
     });
   }

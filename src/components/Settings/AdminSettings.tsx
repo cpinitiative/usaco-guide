@@ -56,7 +56,7 @@ export default function AdminSettings() {
   const handleUpdateUserPermissions = async e => {
     e.preventDefault();
 
-    if (!userData.customClaims?.isAdmin && userPermissions.isAdmin) {
+    if (!userData.customClaims?.isAdmin && userPermissions?.isAdmin) {
       if (
         !confirm(
           'Are you sure you want to grant this user admin permissions? This will give the user complete control over the database!'

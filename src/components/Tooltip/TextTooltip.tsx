@@ -4,7 +4,11 @@ import classNames from 'classnames';
 import * as React from 'react';
 import Tooltip from './Tooltip';
 
-const TextTooltip = ({ children, className = null, ...props }) => {
+const TextTooltip = ({
+  children,
+  className = null as string | null,
+  ...props
+}) => {
   return (
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore

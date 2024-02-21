@@ -1,14 +1,13 @@
 import { Link } from 'gatsby';
 import * as React from 'react';
-import { useContext } from 'react';
 import MODULE_ORDERING from '../../../content/ordering';
-import MarkdownLayoutContext from '../../context/MarkdownLayoutContext';
+import { useMarkdownLayout } from '../../context/MarkdownLayoutContext';
 import { MarkdownLayoutSidebarModuleLinkInfo } from '../../models/module';
 import { SolutionInfo } from '../../models/solution';
 import Breadcrumbs from './Breadcrumbs';
 
 const NavBar = ({ alignNavButtonsRight = true }) => {
-  const moduleLayoutInfo = useContext(MarkdownLayoutContext);
+  const moduleLayoutInfo = useMarkdownLayout();
   const { markdownLayoutInfo, sidebarLinks } = moduleLayoutInfo;
 
   const sortedModuleLinks = React.useMemo(() => {

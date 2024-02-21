@@ -15,7 +15,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({
   // Dialog throws an error if there isn't something to focus on initially
   // But since we're lazy loading search modal, there will be a period of time
   // where we have to focus the loading text until the modal loads (and auto focuses the input).
-  const loadingFocusRef = React.useRef();
+  const loadingFocusRef = React.useRef(null);
 
   return (
     <Transition.Root show={isOpen} as={Fragment}>
