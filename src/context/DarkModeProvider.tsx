@@ -27,7 +27,9 @@ export function DarkModeProvider({ children }) {
   }, false);
 
   React.useEffect(() => {
-    if (!isLoaded) return;
+    if (!isLoaded) {
+      setDarkMode(document.documentElement.classList.contains('dark'));
+    }
     if (theme === 'system') {
       if (!window.matchMedia) {
         setDarkMode(false);
