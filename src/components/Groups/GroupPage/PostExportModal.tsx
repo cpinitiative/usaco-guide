@@ -11,10 +11,7 @@ import {
   writeBatch,
 } from 'firebase/firestore';
 import React, { Fragment, useState } from 'react';
-import {
-  useFirebaseUser,
-  useIsUserDataLoaded,
-} from '../../../context/UserDataContext/UserDataContext';
+import { useFirebaseUser } from '../../../context/UserDataContext/UserDataContext';
 import { useUserGroups } from '../../../hooks/groups/useUserGroups';
 import { useFirebaseApp } from '../../../hooks/useFirebase';
 import { GroupData } from '../../../models/groups/groups';
@@ -29,7 +26,6 @@ export default function PostExportModal(props: {
 }) {
   const firebaseApp = useFirebaseApp();
   const firebaseUser = useFirebaseUser();
-  const isLoaded = useIsUserDataLoaded();
   const groups = useUserGroups();
   const [problems, setProblems] = React.useState<GroupProblemData[]>([]);
   const [groupsUsedMap, setGroupsUsedMap] = useState(new Map());
