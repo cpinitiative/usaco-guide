@@ -61,7 +61,7 @@ export default function useLeaderboardData({
     getDocs(q).then(snap => {
       if (!alive) return;
       const newData: LeaderboardEntry[] = [];
-      snap.forEach(doc => newData.push(doc.data()));
+      snap.forEach(doc => newData.push(doc.data() as LeaderboardEntry));
       setData(newData);
     });
     return () => {

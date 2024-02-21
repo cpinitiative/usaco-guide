@@ -51,7 +51,7 @@ export default function PostLeaderboardPage(props) {
       ) as DocumentReference<FirebaseSubmission>
     )
       .then(doc => {
-        const submission = { ...doc.data(), id: doc.id };
+        const submission = { ...doc.data(), id: doc.id } as FirebaseSubmission;
         openProblemSubmissionPopup(submission);
       })
       .catch(e => {

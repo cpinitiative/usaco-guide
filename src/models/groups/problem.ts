@@ -83,6 +83,7 @@ export type ExecutionVerdict =
 
 export type FirebaseSubmission =
   | {
+      id?: string;
       language: string;
       problemID: string;
       score: number;
@@ -93,6 +94,7 @@ export type FirebaseSubmission =
       timestamp: any; // milliseconds
     }
   | {
+      id?: string;
       score: number;
       userID: string;
       type: 'submission-link';

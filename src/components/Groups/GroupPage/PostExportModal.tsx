@@ -37,7 +37,7 @@ export default function PostExportModal(props: {
         'groups',
         props.group.id,
         'posts',
-        props.post.id,
+        props.post.id!,
         'problems'
       ) as CollectionReference<GroupProblemData>
     );
