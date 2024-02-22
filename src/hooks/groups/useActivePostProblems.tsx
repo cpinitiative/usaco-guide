@@ -41,7 +41,7 @@ export function ActivePostProblemsProvider({
       if (!activePostId || !firebaseUser?.uid) {
         return;
       }
-      if (!activeGroup.activeGroupId) {
+      if (!activeGroup.activeGroupId!) {
         throw new Error(
           'Cannot get post problems without being in an active group'
         );
@@ -51,7 +51,7 @@ export function ActivePostProblemsProvider({
         collection(
           getFirestore(firebaseApp),
           'groups',
-          activeGroup.activeGroupId,
+          activeGroup.activeGroupId!,
           'posts',
           activePostId,
           'problems'
@@ -70,7 +70,7 @@ export function ActivePostProblemsProvider({
         },
       });
     },
-    [firebaseUser?.uid, activePostId, activeGroup.activeGroupId]
+    [firebaseUser?.uid, activePostId, activeGroup.activeGroupId!]
   );
 
   return (

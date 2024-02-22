@@ -11,7 +11,6 @@ import {
   writeBatch,
 } from 'firebase/firestore';
 import { useFirebaseUser } from '../../context/UserDataContext/UserDataContext';
-import { useSetProgressOnProblem } from '../../context/UserDataContext/properties/userProgress';
 import { PostData } from '../../models/groups/posts';
 import { GroupProblemData } from '../../models/groups/problem';
 import { useFirebaseApp } from '../useFirebase';
@@ -34,7 +33,6 @@ export interface ProblemSubmissionRequestData {
 export function usePostActions(groupId: string) {
   const firebaseApp = useFirebaseApp();
   const firebaseUser = useFirebaseUser();
-  const setUserProgressOnProblems = useSetProgressOnProblem();
 
   const updatePost = async (postId: string, updatedData: Partial<PostData>) => {
     await updateDoc(
@@ -95,13 +93,13 @@ export function usePostActions(groupId: string) {
           'groups',
           groupId,
           'posts',
-          post.id,
+          post.id!,
           'problems'
         )
       );
       const defaultProblem: GroupProblemData = {
         id: docRef.id,
-        postId: post.id,
+        postId: post.id!,
         name: 'Untitled Problem',
         body: '',
         source: '',
@@ -115,7 +113,7 @@ export function usePostActions(groupId: string) {
       };
       batch.set(docRef, defaultProblem);
       batch.update(
-        doc(getFirestore(firebaseApp), 'groups', groupId, 'posts', post.id),
+        doc(getFirestore(firebaseApp), 'groups', groupId, 'posts', post.id!),
         {
           [`pointsPerProblem.${docRef.id}`]: defaultProblem.points,
           [`problemOrdering`]: arrayUnion(docRef.id),
@@ -141,14 +139,14 @@ export function usePostActions(groupId: string) {
         'groups',
         groupId,
         'posts',
-        post.id,
+        post.id!,
         'problems',
         problem.id
       );
       // no clue why this throws a typescript error without it...
       batch.update(docRef, problem as any);
       batch.update(
-        doc(getFirestore(firebaseApp), 'groups', groupId, 'posts', post.id),
+        doc(getFirestore(firebaseApp), 'groups', groupId, 'posts', post.id!),
         {
           [`pointsPerProblem.${docRef.id}`]: problem.points,
         }
@@ -165,7 +163,7 @@ export function usePostActions(groupId: string) {
           'groups',
           groupId,
           'posts',
-          post.id,
+          post.id!,
           'problems',
           problemId
         ),
@@ -176,7 +174,7 @@ export function usePostActions(groupId: string) {
       batch.update(doc(firestore, 'groups', groupId), {
         [`leaderboard.${post.id}.${problemId}`]: deleteField(),
       });
-      batch.update(doc(firestore, 'groups', groupId, 'posts', post.id), {
+      batch.update(doc(firestore, 'groups', groupId, 'posts', post.id!), {
         [`pointsPerProblem.${problemId}`]: deleteField(),
         problemOrdering: arrayRemove(problemId),
       });
@@ -197,7 +195,7 @@ export function usePostActions(groupId: string) {
       postId: string,
       problemId: string
     ) => {
-      const idToken = await firebaseUser.getIdToken();
+      const idToken = await firebaseUser!.getIdToken();
       const reqData: ProblemSubmissionRequestData = {
         problemID: submission.problemID,
         language: submission.language,
@@ -206,7 +204,7 @@ export function usePostActions(groupId: string) {
         firebase: {
           collectionPath: `usaco-guide/databases/(default)/documents/groups/${groupId}/posts/${postId}/problems/${problemId}/submissions`,
           idToken,
-          userID: firebaseUser.uid,
+          userID: firebaseUser!.uid,
         },
       };
       const resp = await fetch(
@@ -244,7 +242,7 @@ export function usePostActions(groupId: string) {
         ),
         {
           score: 1,
-          userID: firebaseUser.uid,
+          userID: firebaseUser!.uid,
           type: 'submission-link',
           verdict: 'AC',
           timestamp: Date.now(),

@@ -2,7 +2,7 @@ import { RouteComponentProps } from '@reach/router';
 import { getFunctions, httpsCallable } from 'firebase/functions';
 import { navigate } from 'gatsby';
 import * as React from 'react';
-import { SignInContext } from '../../context/SignInContext';
+import { useSignIn } from '../../context/SignInContext';
 import {
   useFirebaseUser,
   useIsUserDataLoaded,
@@ -26,9 +26,12 @@ const getQuery = name => {
 const JoinGroupPage = (props: RouteComponentProps) => {
   const firebaseUser = useFirebaseUser();
   const isLoaded = useIsUserDataLoaded();
-  const { signIn } = React.useContext(SignInContext);
-  const [groupName, setGroupName] = React.useState<string>(null);
-  const [error, setError] = React.useState(null);
+  const { signIn } = useSignIn();
+  const [groupName, setGroupName] = React.useState<string | null>(null);
+  const [error, setError] = React.useState<{
+    errorCode: string | undefined;
+    message: string | undefined;
+  } | null>(null);
   const [isLoading, setIsLoading] = React.useState(true);
   const [isJoining, setIsJoining] = React.useState(false);
   const firebaseApp = useFirebaseApp();
@@ -60,7 +63,7 @@ const JoinGroupPage = (props: RouteComponentProps) => {
             };
           }) => {
             if (data.success) {
-              setGroupName(data.name);
+              setGroupName(data.name ?? null);
             } else {
               setError({ errorCode: data.errorCode, message: data.message });
             }

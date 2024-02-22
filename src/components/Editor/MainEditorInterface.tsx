@@ -64,7 +64,7 @@ export const MainEditorInterface = ({ className }): JSX.Element => {
         path: activeFile.path,
         update: prev => ({
           ...prev,
-          problems: x(prev.problems),
+          problems: x(prev.problems!),
         }),
       });
     }

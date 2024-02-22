@@ -21,13 +21,13 @@ export const EditorOutput = (): JSX.Element => {
   const activeFile = useAtomValue(activeFileAtom);
   const saveFile = useSetAtom(saveFileAtom);
 
-  const markdown: string | null = activeFile?.markdown;
-  const problems: string | null = activeFile?.problems;
+  const markdown: string = activeFile?.markdown ?? '';
+  const problems: string = activeFile?.problems ?? '';
 
   const [
     markdownProblemListsProviderValue,
     setMarkdownProblemListsProviderValue,
-  ] = useState([]);
+  ] = useState<{ listId: string; problems: any }[]>([]);
   React.useEffect(() => {
     try {
       const parsedProblems = JSON.parse(problems || '{}');
@@ -81,7 +81,7 @@ export const EditorOutput = (): JSX.Element => {
       plugins: [babelParser],
     });
     saveFile({
-      path: activeFile.path,
+      path: activeFile!.path,
       update: prev => ({
         ...prev,
         problems: formattedNewContent,

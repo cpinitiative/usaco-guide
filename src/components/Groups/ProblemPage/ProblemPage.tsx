@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import { Timestamp } from 'firebase/firestore';
 import { Link, navigate } from 'gatsby';
 import React from 'react';
 import toast from 'react-hot-toast';
@@ -25,20 +26,22 @@ export default function ProblemPage(props) {
   const activeGroup = useActiveGroup();
   const post = usePost(postId);
   const problem = useProblem(problemId);
-  const { deleteProblem } = usePostActions(activeGroup.groupData?.id);
+  const { deleteProblem } = usePostActions(activeGroup.groupData!.id);
 
-  if (!problem || post.type !== 'assignment' || activeGroup.isLoading) {
+  if (!problem || post?.type !== 'assignment' || activeGroup.isLoading) {
     return null;
   }
 
   return (
     <Layout>
-      <SEO title={`Problem: ${problem.name} · ${activeGroup.groupData.name}`} />
+      <SEO
+        title={`Problem: ${problem.name} · ${activeGroup.groupData!.name}`}
+      />
       <TopNavigationBar />
       <nav className="flex mt-6 mb-4" aria-label="Breadcrumb">
         <Breadcrumbs
           className="max-w-screen-xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-3 pb-4"
-          group={activeGroup.groupData}
+          group={activeGroup.groupData!}
           post={post}
         />
       </nav>
@@ -70,8 +73,13 @@ export default function ProblemPage(props) {
                         ) {
                           deleteProblem(post, problem.id)
                             .then(() => {
+                              if (!activeGroup.groupData!) {
+                                throw new Error('No group data');
+                              }
                               navigate(
-                                `/groups/${activeGroup.groupData.id}/post/${post.id}`,
+                                `/groups/${activeGroup.groupData!.id}/post/${
+                                  post.id
+                                }`,
                                 {
                                   replace: true,
                                 }
@@ -173,13 +181,15 @@ export default function ProblemPage(props) {
                           problem.solutionReleaseMode == 'custom') && (
                           <p className="text-gray-600 dark:text-gray-400 italic">
                             The problem solution will be released on{' '}
-                            {dayjs(
-                              (problem.solutionReleaseMode == 'due-date'
-                                ? post.dueTimestamp
-                                : problem.solutionReleaseMode == 'custom' &&
-                                  problem.solutionReleaseTimestamp
-                              ).toDate()
-                            ).format('MMMM DD h:mma')}
+                            {problem &&
+                              dayjs(
+                                (
+                                  (problem.solutionReleaseMode == 'due-date'
+                                    ? post.dueTimestamp
+                                    : problem.solutionReleaseMode == 'custom' &&
+                                      problem.solutionReleaseTimestamp) as Timestamp
+                                )?.toDate()
+                              ).format('MMMM DD h:mma')}
                             .
                           </p>
                         )

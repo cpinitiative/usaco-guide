@@ -2,13 +2,13 @@ import { Transition } from '@headlessui/react';
 import * as React from 'react';
 import { useContext } from 'react';
 import { SECTION_LABELS } from '../../content/ordering';
-import { useDarkMode } from '../context/DarkModeContext';
 import { EditorContext } from '../context/EditorContext';
 import MarkdownLayoutContext from '../context/MarkdownLayoutContext';
 import useProblemSuggestionAction from '../hooks/useProblemSuggestionAction';
 import { ModuleInfo } from '../models/module';
 import {
   PROBLEM_DIFFICULTY_OPTIONS,
+  ProblemDifficulty,
   ProblemMetadata,
   autoGenerateSolutionMetadata,
   generateProblemUniqueId,
@@ -28,12 +28,16 @@ export default function ProblemSuggestionModal({
 }): JSX.Element {
   const [name, setName] = React.useState('');
   const [link, setLink] = React.useState('');
-  const [difficulty, setDifficulty] = React.useState(null);
+  const [difficulty, setDifficulty] = React.useState<ProblemDifficulty | null>(
+    null
+  );
   const [tags, setTags] = React.useState('');
   const [additionalNotes, setAdditionalNotes] = React.useState('');
   const [source, setSource] = React.useState('');
   const [loading, setLoading] = React.useState(false);
-  const [createdIssueLink, setCreatedIssueLink] = React.useState(null);
+  const [createdIssueLink, setCreatedIssueLink] = React.useState<string | null>(
+    null
+  );
 
   const submitSuggestion = useProblemSuggestionAction();
   const editorActions = useContext(EditorContext);
@@ -43,8 +47,6 @@ export default function ProblemSuggestionModal({
   const markdownLayoutInfo = useContext(
     MarkdownLayoutContext
   )?.markdownLayoutInfo;
-
-  const darkMode = useDarkMode();
 
   React.useEffect(() => {
     if (isOpen) {
@@ -107,6 +109,7 @@ export default function ProblemSuggestionModal({
       onClose();
       return;
     }
+    if (!markdownLayoutInfo) throw new Error('No markdown layout info');
     const moduleName = `${
       SECTION_LABELS[(markdownLayoutInfo as ModuleInfo).section]
     } - ${markdownLayoutInfo.title}`;
@@ -324,7 +327,7 @@ export default function ProblemSuggestionModal({
               Thanks for helping to improve the USACO Guide. You can track the
               progress of your suggestion here:{' '}
               <a
-                href={createdIssueLink}
+                href={createdIssueLink ?? undefined}
                 target="_blank"
                 rel="noreferrer"
                 className="underline text-black dark:text-white"

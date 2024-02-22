@@ -53,7 +53,8 @@ function GithubActions() {
       })
       .then(res =>
         setFork(
-          res.data.find(repo => repo.name === 'usaco-guide')?.html_url ?? null
+          res.data.find(repo => repo.name === 'usaco-guide')?.html_url ??
+            undefined
         )
       );
   }, [githubInfo, branch, octokit, setFork]);
@@ -158,7 +159,7 @@ function GithubActions() {
                   Fork detected!
                 </a>
               </p>
-              {branch ? (
+              {branch && githubInfo ? (
                 <p>
                   Current branch:{' '}
                   <a
@@ -183,7 +184,7 @@ function GithubActions() {
               >
                 {branchState}
               </button>
-              {branch && (
+              {branch && githubInfo && (
                 <a
                   className="btn mt-4"
                   href={`https://github.com/${githubInfo.login}/usaco-guide/pull/new/${branch}`}

@@ -13,12 +13,13 @@ import CodeBlock from '../markdown/CodeBlock/CodeBlock';
 const ProblemSubmissionPopupContext = React.createContext<{
   showPopup: boolean;
   setShowPopup: (showPopup: boolean) => void;
-  submission: FirebaseSubmission;
+  submission: FirebaseSubmission | null;
   setSubmission: (submission: FirebaseSubmission) => void;
-}>(null);
+} | null>(null);
 
 function ProblemSubmissionPopup() {
   const popupContext = useContext(ProblemSubmissionPopupContext);
+  if (!popupContext) throw new Error('No ProblemSubmissionPopupContext');
   const submission = popupContext.submission;
   const submissionResult = useProblemSubmissionResult(
     submission && 'submissionID' in submission ? submission?.submissionID : null
@@ -118,7 +119,9 @@ function ProblemSubmissionPopup() {
 
 export function ProblemSubmissionPopupProvider({ children }) {
   const [showPopup, setShowPopup] = React.useState(false);
-  const [submission, setSubmission] = React.useState<FirebaseSubmission>(null);
+  const [submission, setSubmission] = React.useState<FirebaseSubmission | null>(
+    null
+  );
   return (
     <ProblemSubmissionPopupContext.Provider
       value={{

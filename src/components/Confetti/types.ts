@@ -1,7 +1,7 @@
 export type Particle = {
   birth: number;
-  initialPosition: [number, number];
-  currentPosition: [number, number];
+  initialPosition: { x: number; y: number };
+  currentPosition: { x: number; y: number };
   spinForce: number;
   twistForce: number;
   currentSpin: number;

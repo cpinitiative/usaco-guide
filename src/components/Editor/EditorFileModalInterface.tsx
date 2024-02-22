@@ -47,7 +47,7 @@ const FileSearch = ({
   onSelect,
   openAddFile,
 }: {
-  onSelect: (file: AlgoliaEditorFile) => void;
+  onSelect: (file: AlgoliaEditorFile | undefined) => void;
   openAddFile: () => void;
 }) => {
   const { query, refine: setQuery } = useSearchBox();

@@ -25,7 +25,7 @@ export const UserPermissionInformation: {
 
 const UserPermissionsContext = React.createContext<{
   permissions: { [key in UserPermissions]: boolean };
-}>(null);
+} | null>(null);
 
 export const UserPermissionsContextProvider = ({ children }) => {
   const defaultPermissions = {

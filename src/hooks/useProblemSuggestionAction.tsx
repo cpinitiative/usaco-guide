@@ -30,7 +30,7 @@ export default function useProblemSuggestionAction() {
       if (!firebaseApp) {
         throw new Error('Too fast! Please wait ten seconds and try again.');
       }
-      const submitProblemSuggestion = httpsCallable(
+      const submitProblemSuggestion = httpsCallable<any, any>(
         getFunctions(firebaseApp),
         'submitProblemSuggestion'
       );

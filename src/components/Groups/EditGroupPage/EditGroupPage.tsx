@@ -17,7 +17,7 @@ export default function EditGroupPage(props) {
   const activeGroup = useActiveGroup();
   const originalGroup = activeGroup?.groupData;
   const [group, editGroup] = useReducer(
-    (old, updates: Partial<GroupData>): GroupData => ({
+    (old, updates: Partial<GroupData>): GroupData | undefined => ({
       ...old,
       ...updates,
     }),
@@ -50,7 +50,7 @@ export default function EditGroupPage(props) {
       <nav className="flex mt-6 mb-4" aria-label="Breadcrumb">
         <Breadcrumbs
           className="max-w-4xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-3 pb-4"
-          group={activeGroup.groupData}
+          group={activeGroup.groupData!}
         />
       </nav>
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">

@@ -47,14 +47,14 @@ export default function PostPage(
 
   return (
     <Layout>
-      <SEO title={`${post.name} · ${activeGroup.groupData.name}`} />
+      <SEO title={`${post.name} · ${activeGroup.groupData!?.name}`} />
       <TopNavigationBar />
       <nav className="flex mt-6 mb-4" aria-label="Breadcrumb">
         <Breadcrumbs
           className={`${
             post.type === 'announcement' ? 'max-w-4xl' : 'max-w-7xl'
           } w-full mx-auto px-4 sm:px-6 lg:px-8 pt-3 pb-4`}
-          group={activeGroup.groupData}
+          group={activeGroup.groupData!}
         />
       </nav>
       <main

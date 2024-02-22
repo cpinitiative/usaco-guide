@@ -446,8 +446,8 @@ export function generateProblemUniqueId(
   } else if (source === 'CSES') {
     return `cses-${getTrailingCodeFromProblemURL(url)}`;
   } else if (source === 'CF') {
-    const num = url.match(/([0-9]+)/g)[0];
-    const char = url.match(/\/([A-z0-9]+)$/)[1];
+    const num = url.match(/([0-9]+)/g)![0];
+    const char = url.match(/\/([A-z0-9]+)$/)![1];
     if (url.indexOf('gym') !== -1) {
       return `cfgym-${num}${char}`;
     } else {

@@ -29,9 +29,10 @@ export type JoinGroupLink = {
 
 export const isUserAdminOfGroup = (
   group: GroupData | undefined,
-  userId: string
+  userId: string | undefined
 ): boolean => {
-  return (
-    !!group?.adminIds.includes(userId) || !!group?.ownerIds.includes(userId)
+  return !!(
+    userId &&
+    (!!group?.adminIds.includes(userId) || !!group?.ownerIds.includes(userId))
   );
 };

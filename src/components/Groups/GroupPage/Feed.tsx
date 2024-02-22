@@ -39,7 +39,7 @@ function SortableItem(props: {
 
   const style = {
     transform: CSS.Transform.toString(transform),
-    transition,
+    transition: transition ?? undefined,
   };
 
   return (
@@ -68,7 +68,7 @@ export default function Feed(): JSX.Element {
   const { updatePostOrdering } = useGroupActions();
 
   const [activeId, setActiveId] = useState(null);
-  const [items, setItems] = useState([]);
+  const [items, setItems] = useState<string[]>([]);
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
@@ -92,7 +92,7 @@ export default function Feed(): JSX.Element {
           })
           .sort(sortPostsComparator)
           .reverse()
-          .map(x => x.id)
+          .map(x => x.id!)
       );
     } else {
       setItems(group.groupData.postOrdering);
@@ -123,8 +123,8 @@ export default function Feed(): JSX.Element {
   };
 
   const userLeaderboardData = useUserLeaderboardData(
-    group.activeGroupId,
-    group.activeUserId
+    group.activeGroupId!,
+    group.activeUserId!
   );
 
   return (
@@ -147,8 +147,8 @@ export default function Feed(): JSX.Element {
                   <SortableItem
                     key={id}
                     id={id}
-                    group={group.groupData}
-                    post={group.posts.find(x => x.id === id)}
+                    group={group.groupData!}
+                    post={group.posts.find(x => x.id === id)!}
                     userPoints={userLeaderboardData?.[id]?.totalPoints ?? null}
                     isBeingDragged={activeId === id}
                   />
@@ -158,8 +158,8 @@ export default function Feed(): JSX.Element {
             <DragOverlay>
               {activeId ? (
                 <FeedItem
-                  group={group.groupData}
-                  post={group.posts.find(x => x.id === activeId)}
+                  group={group.groupData!}
+                  post={group.posts.find(x => x.id === activeId)!}
                   userPoints={
                     userLeaderboardData?.[activeId]?.totalPoints ?? null
                   }
@@ -176,11 +176,11 @@ export default function Feed(): JSX.Element {
           <div className="divide-y divide-solid divide-gray-200 dark:divide-gray-600 sm:divide-none sm:space-y-4">
             {items.map(id => {
               const post = group.posts.find(x => x.id === id);
-              if (!post.isPublished) return null;
+              if (!post!.isPublished) return null;
               return (
                 <FeedItem
-                  group={group.groupData}
-                  post={post}
+                  group={group.groupData!}
+                  post={post!}
                   userPoints={userLeaderboardData?.[id]?.totalPoints ?? null}
                   key={id}
                 />

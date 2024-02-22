@@ -14,9 +14,9 @@ const JoinLinksPage = () => {
   const activeGroup = useActiveGroup();
 
   const [isEditOpen, setIsEditOpen] = React.useState(false);
-  const [curLink, setCurLink] = React.useState<JoinGroupLink>(null);
+  const [curLink, setCurLink] = React.useState<JoinGroupLink | null>(null);
   const { createJoinLink, updateJoinLink } = useGroupActions();
-  const joinLinks = useGroupJoinLinks(activeGroup.activeGroupId);
+  const joinLinks = useGroupJoinLinks(activeGroup.activeGroupId!);
 
   if (!activeGroup.showAdminView) {
     return (
@@ -32,13 +32,13 @@ const JoinLinksPage = () => {
 
   return (
     <Layout>
-      <SEO title={`Join Links: ${activeGroup.groupData.name}`} />
+      <SEO title={`Join Links: ${activeGroup.groupData!.name}`} />
       <div className="bg-gray-100 dark:bg-dark-surface min-h-screen">
         <TopNavigationBar />
         <nav className="flex mt-6 mb-4" aria-label="Breadcrumb">
           <Breadcrumbs
             className={`max-w-2xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-3 pb-4`}
-            group={activeGroup.groupData}
+            group={activeGroup.groupData!}
           />
         </nav>
         <main className="max-w-2xl w-full mx-auto px-4 sm:px-6 lg:px-8">
@@ -55,7 +55,7 @@ const JoinLinksPage = () => {
                   className="btn"
                   onClick={async () => {
                     const link = await createJoinLink(
-                      activeGroup.activeGroupId
+                      activeGroup.activeGroupId!
                     );
                     setCurLink(link);
                     setIsEditOpen(true);
@@ -160,8 +160,8 @@ const JoinLinksPage = () => {
       <EditJoinLinkModal
         isOpen={isEditOpen}
         onClose={() => setIsEditOpen(false)}
-        onSave={link => updateJoinLink(link.id, link)}
-        link={curLink}
+        onSave={link => link && updateJoinLink(link.id, link)}
+        link={curLink!}
       />
     </Layout>
   );

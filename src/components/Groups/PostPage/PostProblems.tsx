@@ -38,7 +38,7 @@ function SortableItem(props: {
 
   const style = {
     transform: CSS.Transform.toString(transform),
-    transition,
+    transition: transition ?? undefined,
   };
 
   return (
@@ -68,11 +68,11 @@ export default function PostProblems({
 }): JSX.Element {
   const activeGroup = useActiveGroup();
   const { createNewProblem, updateProblemOrdering } = usePostActions(
-    activeGroup.activeGroupId
+    activeGroup.activeGroupId!
   );
   const { problems, isLoading } = useActivePostProblems();
 
-  const [items, setItems] = React.useState([]);
+  const [items, setItems] = React.useState<string[]>([]);
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
@@ -106,7 +106,7 @@ export default function PostProblems({
         const newIndex = items.indexOf(over.id);
 
         const newArr = arrayMove<string>(items, oldIndex, newIndex);
-        updateProblemOrdering(post.id, newArr);
+        updateProblemOrdering(post.id!, newArr);
         return newArr;
       });
     }
@@ -161,9 +161,9 @@ export default function PostProblems({
                           <SortableItem
                             key={problemId}
                             id={problemId}
-                            group={activeGroup.groupData}
+                            group={activeGroup.groupData!}
                             post={post}
-                            problem={problems.find(x => x.id === problemId)}
+                            problem={problems.find(x => x.id === problemId)!}
                           />
                         ))}
                       </div>
@@ -174,9 +174,9 @@ export default function PostProblems({
                     {items.map(problemId => (
                       <ProblemListItem
                         key={problemId}
-                        group={activeGroup.groupData}
+                        group={activeGroup.groupData!}
                         post={post}
-                        problem={problems.find(x => x.id === problemId)}
+                        problem={problems.find(x => x.id === problemId)!}
                       />
                     ))}
                   </div>

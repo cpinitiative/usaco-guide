@@ -13,10 +13,10 @@ export type MemberInfo = {
 let cachedData: {
   groupId: string;
   data: MemberInfo[];
-} = null;
+} | null = null;
 
 export default function useMemberInfoForGroup(group: GroupData) {
-  const [memberInfo, setMemberInfo] = React.useState<MemberInfo[]>(null);
+  const [memberInfo, setMemberInfo] = React.useState<MemberInfo[] | null>(null);
 
   useFirebaseApp(
     firebaseApp => {
@@ -31,7 +31,7 @@ export default function useMemberInfoForGroup(group: GroupData) {
       // if so, we should re-fetch member information.
       if (
         cachedData?.groupId !== group.id ||
-        group.memberIds.some(id => !cachedData.data.find(x => x.uid === id)) ||
+        group.memberIds.some(id => !cachedData?.data.find(x => x.uid === id)) ||
         cachedData.data.some(x => !group.memberIds.includes(x.uid))
       ) {
         httpsCallable<any, any>(

@@ -16,8 +16,9 @@ export default function useUserProblemSubmissions(
   postId: string,
   problemId: string
 ) {
-  const [submissions, setSubmissions] =
-    React.useState<FirebaseSubmission[]>(null);
+  const [submissions, setSubmissions] = React.useState<
+    FirebaseSubmission[] | null
+  >(null);
   const activeGroup = useActiveGroup();
 
   useFirebaseApp(
@@ -28,7 +29,7 @@ export default function useUserProblemSubmissions(
             collection(
               getFirestore(firebaseApp),
               'groups',
-              activeGroup.activeGroupId,
+              activeGroup.activeGroupId!,
               'posts',
               postId,
               'problems',
@@ -41,7 +42,7 @@ export default function useUserProblemSubmissions(
             next: snap => {
               setSubmissions(
                 snap.docs
-                  .map(doc => ({ id: doc.id, ...doc.data() }))
+                  .map(doc => ({ ...doc.data(), id: doc.id }))
                   .sort((a, b) => b.timestamp - a.timestamp)
               );
             },

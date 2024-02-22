@@ -57,7 +57,7 @@ const inlineCode = (props): JSX.Element => (
 );
 const a = ({ children, ...props }) => (
   <a
-    target={!props.href || props.href.startsWith('#') ? null : '_blank'}
+    target={!props.href || props.href.startsWith('#') ? undefined : '_blank'}
     {...props}
   >
     {children}
