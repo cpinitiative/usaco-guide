@@ -47,7 +47,7 @@ type AnnotatedProblemsListProps =
       modules?: boolean; // only if is division table
     };
 export function ProblemsList(unannotatedProps: ProblemsListProps): JSX.Element {
-  const markdownProblems = useMarkdownProblemLists();
+  const markdownProblems = useMarkdownProblemLists()!;
   let problems: ProblemInfo[] | DivisionProblemInfo[];
   if (typeof unannotatedProps.problems === 'string') {
     problems = markdownProblems.find(

@@ -20,19 +20,14 @@ export const MarkdownProblemListsProvider =
 
 export function useMarkdownProblemLists() {
   const problems = React.useContext(MarkdownProblemListsContext);
-  if (!problems) {
-    throw new Error(
-      'useMarkdownProblems() must be used within a MarkdownProblemListsProvider.'
-    );
-  }
   return problems;
 }
 
 export function useMarkdownProblems() {
   const lists = useMarkdownProblemLists();
-  const problems: ProblemInfo[] = React.useMemo(() => {
+  const problems = React.useMemo(() => {
     let all: ProblemInfo[] = [];
-    lists.forEach(list => {
+    lists?.forEach(list => {
       all = [...all, ...list.problems];
     });
     return all;
