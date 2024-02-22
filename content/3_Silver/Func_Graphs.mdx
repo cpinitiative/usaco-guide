@@ -717,19 +717,18 @@ print(" ".join(str(i + 1) for i in ans))
 </LanguageSection>
 
 ### Solution 3
+
 It's also possible to use `floyd(x)` to generate answers for all vertices in the connected component
 containing `x` without using adjacency lists.
+
 <LanguageSection>
 <JavaSection>
-```java
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.StringTokenizer;
 
-public class CodeforcesBadge {
+```java
+import java.io.*;
+import java.util.*;
+
+public class Badge {
 	static int ans[];
 	static int arr[];
 	public static void main(String[] args) throws IOException {
@@ -747,10 +746,13 @@ public class CodeforcesBadge {
 		for (int i = 1; i <= n; i++) {
 			if (ans[i] == -1) { floyd(i); }
 		}
+
 		StringBuilder output = new StringBuilder();
 		for (int i = 1; i <= n; i++) { output.append(ans[i]).append(" "); }
+		output.setLength(output.length() - 1);
 		System.out.println(output);
 	}
+
 	static void floyd(int curr) {
 		int a = arr[curr];
 		int b = arr[arr[curr]];
@@ -759,8 +761,7 @@ public class CodeforcesBadge {
 			b = arr[arr[b]];
 		}
 		a = curr;
-		// finds the entry cycle node, as well as, fills in the ans array of
-		// nodes in the cycle
+		// finds the entry cycle node and fills the ans array of nodes in the cycle
 		while (a != b) {
 			ans[b] = b;
 			a = arr[a];
