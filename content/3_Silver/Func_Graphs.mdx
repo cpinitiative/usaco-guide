@@ -716,6 +716,79 @@ print(" ".join(str(i + 1) for i in ans))
 </PySection>
 </LanguageSection>
 
+### Solution 3
+It's also possible to use `floyd(x)` to generate answers for all vertices in the connected component
+containing `x` without using adjacency lists.
+<LanguageSection>
+<JavaSection>
+```java
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.StringTokenizer;
+
+public class CodeforcesBadge {
+    static int ans[];
+    static int arr[];
+    public static void main(String[] args)throws IOException {
+        BufferedReader x=new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st=new StringTokenizer(x.readLine());
+        int n=Integer.parseInt(st.nextToken());
+        arr=new int[n+1];
+        st=new StringTokenizer(x.readLine());
+        for(int i=1;i<=n;i++){
+            arr[i]=Integer.parseInt(st.nextToken());
+        }
+
+        ans=new int[n+1];
+        Arrays.fill(ans, -1);
+        for(int i=1;i<=n;i++){
+            if(ans[i]==-1){
+                floyd(i);
+            }
+        }
+        StringBuilder output=new StringBuilder();
+        for(int i=1;i<=n;i++){
+            output.append(ans[i]).append(" ");
+        }
+        System.out.println(output);
+    }
+    static void floyd(int curr){
+        int a=arr[curr];
+        int b=arr[arr[curr]];
+        while(a!=b){
+            a=arr[a];
+            b=arr[arr[b]];
+        }
+        a=curr;
+        // finds the entry cycle node, as well as, fills in the ans array of nodes in the cycle
+        while(a!=b) {
+            ans[b]=b;
+            a=arr[a];
+            b=arr[b];
+        }
+        int cycleFirst=a;
+        ans[cycleFirst]=cycleFirst;
+        a=curr;
+        // fills the ans array of nodes, outside the cycle
+        while(a!=cycleFirst){
+            ans[a]=cycleFirst;
+            a=arr[a];
+        }
+    }
+    static void fillUp(int curr, int firstCycle){
+        while(curr!=firstCycle){
+            ans[curr]=ans[firstCycle];
+            curr=arr[curr];
+        }
+    }
+}
+```
+</JavaSection>
+</LanguageSection>
+
 ## Count Cycles
 
 The following code counts the number of cycles in such a graph. The
