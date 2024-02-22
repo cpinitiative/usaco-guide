@@ -98,7 +98,7 @@ export default function PostLeaderboardPage(props) {
               id: problem.id,
               tooltip: problem.name,
             }))}
-            rows={leaderboard!.map(item => ({
+            rows={leaderboard?.map(item => ({
               id: item.userInfo.uid,
               name: item.userInfo.displayName,
               points: item[postId]?.totalPoints ?? 0,

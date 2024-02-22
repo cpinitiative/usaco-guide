@@ -2,24 +2,20 @@ import React from 'react';
 import TextTooltip from '../../Tooltip/TextTooltip';
 
 export interface LeaderboardTableProps {
-  columns:
-    | {
-        id: string;
-        tooltip: string;
-      }[]
-    | null;
-  rows:
-    | {
-        id: string;
-        name: string;
-        points: number;
-        items: {
-          id: string;
-          value: string;
-          payload?: unknown;
-        }[];
-      }[]
-    | null;
+  columns?: {
+    id: string;
+    tooltip: string;
+  }[];
+  rows?: {
+    id: string;
+    name: string;
+    points: number;
+    items: {
+      id: string;
+      value: string;
+      payload?: unknown;
+    }[];
+  }[];
   onCellClick?: (personIndex: number, payload: unknown) => void;
 }
 

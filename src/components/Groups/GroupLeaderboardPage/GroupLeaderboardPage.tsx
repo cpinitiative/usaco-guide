@@ -64,11 +64,11 @@ export default function GroupLeaderboardPage(): JSX.Element {
 
         <div className="flex flex-col">
           <LeaderboardTable
-            columns={assignments!.map(post => ({
+            columns={assignments?.map(post => ({
               id: post!.id!,
               tooltip: post!.name!,
             }))}
-            rows={leaderboard!.map(item => ({
+            rows={leaderboard?.map(item => ({
               id: item.userInfo.uid,
               name: item.userInfo.displayName,
               points: item.totalPoints,
