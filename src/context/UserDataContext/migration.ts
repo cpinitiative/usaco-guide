@@ -24,26 +24,28 @@ export default function runMigration() {
   ) {
     // The user has a legacy version of user data. need to migrate it
     const storedUserData: UserData = {
-      consecutiveVisits: getLegacy('consecutiveVisits'),
-      showTags: getLegacy('showTags'),
-      hideDifficulty: getLegacy('hideDifficulty'),
-      hideModules: getLegacy('hideModules'),
-      showIgnored: getLegacy('showIgnored'),
-      divisionTableQuery: getLegacy('divisionTableQuery'),
-      lang: getLegacy('lang'),
-      lastReadAnnouncement: getLegacy('lastReadAnnouncement'),
-      lastViewedModule: getLegacy('lastViewedModule'),
-      lastVisitDate: getLegacy('lastVisitDate'),
-      numPageviews: getLegacy('numPageviews'),
-      pageviewsPerDay: getLegacy('pageviewsPerDay'),
-      theme: getLegacy('theme'),
-      userProgressOnModules: getLegacy('userProgressOnModules'),
-      userProgressOnModulesActivity: getLegacy('userProgressOnModulesActivity'),
-      userProgressOnProblems: getLegacy('userProgressOnProblems'),
+      consecutiveVisits: getLegacy('consecutiveVisits')!,
+      showTags: getLegacy('showTags')!,
+      hideDifficulty: getLegacy('hideDifficulty')!,
+      hideModules: getLegacy('hideModules')!,
+      showIgnored: getLegacy('showIgnored')!,
+      divisionTableQuery: getLegacy('divisionTableQuery')!,
+      lang: getLegacy('lang')!,
+      lastReadAnnouncement: getLegacy('lastReadAnnouncement')!,
+      lastViewedModule: getLegacy('lastViewedModule')!,
+      lastVisitDate: getLegacy('lastVisitDate')!,
+      numPageviews: getLegacy('numPageviews')!,
+      pageviewsPerDay: getLegacy('pageviewsPerDay')!,
+      theme: getLegacy('theme')!,
+      userProgressOnModules: getLegacy('userProgressOnModules')!,
+      userProgressOnModulesActivity: getLegacy(
+        'userProgressOnModulesActivity'
+      )!,
+      userProgressOnProblems: getLegacy('userProgressOnProblems')!,
       userProgressOnProblemsActivity: getLegacy(
         'userProgressOnProblemsActivity'
-      ),
-      userProgressOnResources: getLegacy('userProgressOnResources'),
+      )!,
+      userProgressOnResources: getLegacy('userProgressOnResources')!,
     };
 
     Object.keys(storedUserData).forEach(_key => {

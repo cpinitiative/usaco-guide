@@ -34,7 +34,7 @@ export default function UserData() {
     const fileReader = new FileReader();
     fileReader.readAsText(file, 'UTF-8');
     fileReader.onload = e => {
-      setFile(e.target.result as any);
+      setFile(e.target?.result as any);
     };
   };
 

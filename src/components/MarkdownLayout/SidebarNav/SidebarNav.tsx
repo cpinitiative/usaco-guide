@@ -19,7 +19,7 @@ export interface NavLinkGroup {
 export const SidebarNav = () => {
   const { markdownLayoutInfo, sidebarLinks, activeIDs } = useContext(
     MarkdownLayoutContext
-  );
+  )!;
 
   let oriSection =
     markdownLayoutInfo instanceof SolutionInfo
@@ -57,7 +57,7 @@ export const SidebarNav = () => {
           <SectionsDropdown
             currentSection={activeSection}
             sidebarNav={true}
-            onSelect={s => setActiveSection(s)}
+            onSelect={s => setActiveSection(s as any)}
           />
         </div>
       </div>

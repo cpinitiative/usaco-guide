@@ -196,14 +196,14 @@ const ModuleLink = ({ link }: { link: ModuleLinkInfo }): JSX.Element => {
     darkDotColorStyle = tw`bg-gray-800`;
   }
   const userLang = useUserLangSetting();
-  const maxLangOc = Math.max(link.cppOc, link.javaOc, link.pyOc);
+  const maxLangOc = Math.max(link.cppOc ?? 0, link.javaOc ?? 0, link.pyOc ?? 0);
   const langToOc = {
     cpp: link.cppOc,
     java: link.javaOc,
     py: link.pyOc,
     showAll: maxLangOc,
   };
-  const isMissingLang = langToOc[userLang] < maxLangOc;
+  const isMissingLang = langToOc[userLang] ?? 0 < maxLangOc;
   return (
     <LinkWithProgress
       lineColorStyle={lineColorStyle}
@@ -253,16 +253,16 @@ const ModuleLink = ({ link }: { link: ModuleLinkInfo }): JSX.Element => {
                 totalCount={4}
                 color={
                   'transition text-gray-400 ' +
-                  FrequencyCircleColors[link.frequency]
+                  FrequencyCircleColors[link.frequency ?? 0]
                 }
               />
               <span
                 className={
                   `ml-1 transition text-gray-500 ` +
-                  FrequencyTextColors[link.frequency]
+                  FrequencyTextColors[link.frequency ?? 0]
                 }
               >
-                {FrequencyLabels[link.frequency]}
+                {FrequencyLabels[link.frequency ?? 0]}
               </span>
             </p>
           )}

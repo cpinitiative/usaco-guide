@@ -15,7 +15,7 @@ export interface ProblemData {
 export type GroupProblemData = ProblemData &
   (
     | {
-        usacoGuideId: string;
+        usacoGuideId: string | null;
         solutionReleaseMode: 'due-date' | 'now' | 'never';
       }
     | {
@@ -83,6 +83,7 @@ export type ExecutionVerdict =
 
 export type FirebaseSubmission =
   | {
+      id?: string;
       language: string;
       problemID: string;
       score: number;
@@ -93,6 +94,7 @@ export type FirebaseSubmission =
       timestamp: any; // milliseconds
     }
   | {
+      id?: string;
       score: number;
       userID: string;
       type: 'submission-link';

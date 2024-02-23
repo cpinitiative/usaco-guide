@@ -28,7 +28,7 @@ import { ProblemSubmissionPopupProvider } from '../../components/Groups/ProblemS
 import TopNavigationBar from '../../components/TopNavigationBar/TopNavigationBar';
 import Layout from '../../components/layout';
 import SEO from '../../components/seo';
-import { SignInContext } from '../../context/SignInContext';
+import { useSignIn } from '../../context/SignInContext';
 import {
   useFirebaseUser,
   useIsUserDataLoaded,
@@ -58,7 +58,7 @@ const GroupPageWrapper = (props: GroupPageWrapperProps): ReactElement => {
     useActiveGroup();
   const firebaseUser = useFirebaseUser();
   const isUserLoaded = useIsUserDataLoaded();
-  const { signIn } = React.useContext(SignInContext);
+  const { signIn } = useSignIn();
   useEffect(() => {
     setActiveGroupId(props.groupId);
     //remove groupId on exit

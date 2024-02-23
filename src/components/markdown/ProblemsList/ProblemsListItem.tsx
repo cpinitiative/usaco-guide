@@ -80,7 +80,6 @@ export default function ProblemsListItem(
       </div>
     </td>
   );
-  if (isDivisionTable == false) console.log(problem.sourceDescription);
   const sourceTooltip =
     isDivisionTable == false
       ? problem?.sourceDescription ||

@@ -52,8 +52,8 @@ const QuizMCAnswer = props => {
   const [submitted, setSubmittedValue] = useAtom(submittedAtom, { store });
   const correctAnswers = useAtomValue(correctAnswersAtom, { store });
   const showVerdict =
-    submitted && (isSelected || correctAnswers.includes(selectedAnswer)); //display correctness/explanation
-  const isCorrect = submitted && correctAnswers.includes(selectedAnswer);
+    submitted && (isSelected || correctAnswers.includes(selectedAnswer ?? -1)); //display correctness/explanation
+  const isCorrect = submitted && correctAnswers.includes(selectedAnswer ?? -1);
   const Element = isCorrect ? 'div' : 'button';
   return (
     <Element
@@ -111,7 +111,7 @@ const QuizQuestion = props => {
   const store = useStore();
   const setCorrectAnswers = useSetAtom(correctAnswersAtom, { store });
   React.useEffect(() => {
-    const correctAnswers = [];
+    const correctAnswers: number[] = [];
     let answerNum = 0;
     React.Children.map(props.children, child => {
       if (child?.type?.displayName === 'QuizMCAnswer') {

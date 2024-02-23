@@ -17,7 +17,7 @@ import Layout from '../components/layout';
 import divToProbs from '../components/markdown/ProblemsList/DivisionList/div_to_probs.json';
 import SEO from '../components/seo';
 import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
-import { SignInContext } from '../context/SignInContext';
+import { useSignIn } from '../context/SignInContext';
 import { useLastVisitInfo } from '../context/UserDataContext/properties/lastVisit';
 import {
   useLastReadAnnouncement,
@@ -94,7 +94,7 @@ export default function DashboardPage(props: PageProps) {
   const firebaseUser = useFirebaseUser();
   const { consecutiveVisits, numPageviews } = useLastVisitInfo();
   const showIgnored = useShowIgnoredSetting();
-  const { signIn } = React.useContext(SignInContext);
+  const { signIn } = useSignIn();
 
   const lastViewedModuleURL = moduleIDToURLMap[lastViewedModuleID];
   const activeModules: ActiveItem[] = React.useMemo(() => {

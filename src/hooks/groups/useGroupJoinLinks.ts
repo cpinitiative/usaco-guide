@@ -11,7 +11,7 @@ import { JoinGroupLink } from '../../models/groups/groups';
 import { useFirebaseApp } from '../useFirebase';
 
 export default function useGroupJoinLinks(groupId: string) {
-  const [links, setLinks] = React.useState<JoinGroupLink[]>(null);
+  const [links, setLinks] = React.useState<JoinGroupLink[] | null>(null);
 
   useFirebaseApp(
     firebaseApp => {
@@ -28,7 +28,7 @@ export default function useGroupJoinLinks(groupId: string) {
         ),
         {
           next: snap => {
-            setLinks(snap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+            setLinks(snap.docs.map(doc => ({ ...doc.data(), id: doc.id })));
           },
         }
       );

@@ -131,10 +131,10 @@ const SECTION_DESCRIPTION: { [key in SectionID]: React.ReactNode } = {
 
 export default function Template(props) {
   const data: Queries.SyllabusQuery = props.data;
-  const allModules = data.modules.edges.reduce((acc, cur) => {
-    acc[cur.node.frontmatter.id] = cur.node;
+  const allModules = data.modules.nodes.reduce((acc, cur) => {
+    acc[cur.frontmatter.id] = cur;
     return acc;
-  }, {} as { [key: string]: (typeof data.modules.edges)[0]['node'] });
+  }, {} as { [key: string]: (typeof data.modules.nodes)[0] });
 
   const { division } = props.pageContext;
 
@@ -146,7 +146,7 @@ export default function Template(props) {
   );
   const moduleProgressInfo = useModulesProgressInfo(moduleIDs);
   const problemIDs = [
-    ...new Set(data.problems.edges.map(x => x.node.uniqueId) as string[]),
+    ...new Set(data.problems.nodes.map(x => x.uniqueId) as string[]),
   ];
   const problemsProgressInfo = useProblemsProgressInfo(problemIDs);
 
@@ -154,9 +154,9 @@ export default function Template(props) {
     const categoryModuleIDs = category.items.map(
       module => module.frontmatter.id
     );
-    const categoryProblemIDs = data.problems.edges
-      .filter(x => categoryModuleIDs.includes(x.node.module.frontmatter.id))
-      .map(x => x.node.uniqueId);
+    const categoryProblemIDs = data.problems.nodes
+      .filter(x => categoryModuleIDs.includes(x.module?.frontmatter.id ?? ''))
+      .map(x => x.uniqueId);
     const problemsProgressInfo = useProblemsProgressInfo(categoryProblemIDs);
     return (
       categoryProblemIDs.length > 1 && (
@@ -249,7 +249,7 @@ export default function Template(props) {
                           item.javaOc,
                           item.pyOc,
                           [],
-                          item.fields.gitAuthorTime
+                          item.fields?.gitAuthorTime
                         )
                       }
                     />
@@ -271,36 +271,32 @@ export const pageQuery = graphql`
         fields: { division: { eq: $division } }
       }
     ) {
-      edges {
-        node {
+      nodes {
+        id
+        frontmatter {
+          title
           id
-          frontmatter {
-            title
-            id
-            description
-            frequency
-          }
-          isIncomplete
-          cppOc
-          javaOc
-          pyOc
-          fields {
-            gitAuthorTime
-          }
+          description
+          frequency
+        }
+        isIncomplete
+        cppOc
+        javaOc
+        pyOc
+        fields {
+          gitAuthorTime
         }
       }
     }
     problems: allProblemInfo(
       filter: { module: { fields: { division: { eq: $division } } } }
     ) {
-      edges {
-        node {
-          uniqueId
-          name
-          module {
-            frontmatter {
-              id
-            }
+      nodes {
+        uniqueId
+        name
+        module {
+          frontmatter {
+            id
           }
         }
       }

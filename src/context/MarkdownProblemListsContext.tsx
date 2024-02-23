@@ -8,10 +8,11 @@ import { ProblemInfo } from '../models/problem';
  * ModuleHeaders uses this to display progress
  */
 const MarkdownProblemListsContext = React.createContext<
-  {
-    listId: string;
-    problems: ProblemInfo[];
-  }[]
+  | {
+      listId: string;
+      problems: ProblemInfo[];
+    }[]
+  | null
 >(null);
 
 export const MarkdownProblemListsProvider =
@@ -19,19 +20,14 @@ export const MarkdownProblemListsProvider =
 
 export function useMarkdownProblemLists() {
   const problems = React.useContext(MarkdownProblemListsContext);
-  if (!problems) {
-    throw new Error(
-      'useMarkdownProblems() must be used within a MarkdownProblemListsProvider.'
-    );
-  }
   return problems;
 }
 
 export function useMarkdownProblems() {
   const lists = useMarkdownProblemLists();
-  const problems: ProblemInfo[] = React.useMemo(() => {
-    let all = [];
-    lists.forEach(list => {
+  const problems = React.useMemo(() => {
+    let all: ProblemInfo[] = [];
+    lists?.forEach(list => {
       all = [...all, ...list.problems];
     });
     return all;

@@ -136,7 +136,7 @@ export function useGroupActions() {
         maxUses: null,
         expirationTime: null,
         usedBy: [],
-        author: firebaseUser.uid,
+        author: firebaseUser!.uid,
       };
       const linkDoc = doc(
         collection(getFirestore(firebaseApp), 'group-join-links')

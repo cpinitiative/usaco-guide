@@ -2,7 +2,10 @@ import { useEffect, useState } from 'react';
 
 // taken from https://github.com/gatsbyjs/gatsby/blob/3519e71ee6f94bfbdd936b5a7fa4cab36c970c4d/www/src/hooks/use-active-hash.js#L3
 
-export const useActiveHash = (itemIds, rootMargin = undefined) => {
+export const useActiveHash = (
+  itemIds,
+  rootMargin = undefined as string | undefined
+) => {
   const [activeHash, setActiveHash] = useState(``);
 
   useEffect(() => {
@@ -21,7 +24,7 @@ export const useActiveHash = (itemIds, rootMargin = undefined) => {
 
     itemIds.forEach(id => {
       if (document.getElementById(id) === null) return;
-      observer.observe(document.getElementById(id));
+      observer.observe(document.getElementById(id)!);
     });
 
     return () => {

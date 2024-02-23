@@ -44,7 +44,7 @@ export default function TrustedBy() {
             className={`order-1 text-4xl sm:text-5xl leading-normal sm:leading-normal font-extrabold text-blue-500 ${
               numUsers === -1 ? 'opacity-0' : 'opacity-100'
             } transition`}
-            title={numUsers !== -1 ? `${numUsers} registered users` : null}
+            title={numUsers !== -1 ? `${numUsers} registered users` : undefined}
           >
             {usersText}
           </dd>
@@ -57,7 +57,9 @@ export default function TrustedBy() {
             className={`order-1 text-4xl sm:text-5xl leading-normal sm:leading-normal font-extrabold text-blue-500 ${
               numPageviews === -1 ? 'opacity-0' : 'opacity-100'
             } transition`}
-            title={numPageviews !== -1 ? `${numPageviews} pageviews` : null}
+            title={
+              numPageviews !== -1 ? `${numPageviews} pageviews` : undefined
+            }
           >
             {pageviewsText}
           </dd>

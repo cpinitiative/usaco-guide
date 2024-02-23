@@ -5,7 +5,10 @@ import {
   useDivisionTableQuery,
   useSetDivisionTableQuery,
 } from '../../../../context/UserDataContext/properties/simpleProperties';
-import { ProblemSolutionInfo } from '../../../../models/problem';
+import {
+  ProblemDifficulty,
+  ProblemSolutionInfo,
+} from '../../../../models/problem';
 import Transition from '../../../Transition';
 import { ProblemsList } from '../ProblemsList';
 import { DivisionProblemInfo } from './DivisionProblemInfo';
@@ -19,7 +22,7 @@ const allYears = `All (${startYear - 1} - ${endYear})`;
 const divisions = ['Bronze', 'Silver', 'Gold', 'Platinum'];
 
 const getSeasons = () => {
-  const res = [];
+  const res: string[] = [];
   for (let i = startYear; i <= endYear; ++i) {
     res.push(`${i - 1} - ${i}`);
   }
@@ -64,10 +67,10 @@ const DivisionButton = ({
     setShow(false);
     onChange(option);
   };
-  const ref = React.useRef<HTMLDivElement>();
+  const ref = React.useRef<HTMLDivElement>(null);
   React.useEffect(() => {
     const handleClick = e => {
-      if (ref.current.contains(e.target)) return;
+      if (ref.current?.contains(e.target)) return;
       setShow(false);
     };
     document.addEventListener('mousedown', handleClick);
@@ -155,29 +158,27 @@ const DivisionButton = ({
 };
 
 export function DivisionList(props): JSX.Element {
-  const data = useStaticQuery(graphql`
-    query {
+  const data: Queries.DivisionListQuery = useStaticQuery(graphql`
+    query DivisionList {
       allProblemInfo(
         filter: { source: { in: ["Bronze", "Silver", "Gold", "Platinum"] } }
       ) {
-        edges {
-          node {
-            solution {
-              kind
-              label
-              labelTooltip
-              sketch
-              url
-              hasHints
-            }
-            uniqueId
+        nodes {
+          solution {
+            kind
+            label
+            labelTooltip
+            sketch
             url
-            tags
-            difficulty
-            module {
-              frontmatter {
-                id
-              }
+            hasHints
+          }
+          uniqueId
+          url
+          tags
+          difficulty
+          module {
+            frontmatter {
+              id
             }
           }
         }
@@ -187,21 +188,21 @@ export function DivisionList(props): JSX.Element {
   const probToLink: { [key: string]: string } = {};
   const probToURL: { [key: string]: string } = {};
   const probToTags: { [key: string]: string[] } = {};
-  const probToDifficulty: { [key: string]: string[] } = {};
+  const probToDifficulty: { [key: string]: ProblemDifficulty } = {};
   const probToSol: { [key: string]: ProblemSolutionInfo } = {};
-  for (const edge of data.allProblemInfo.edges) {
-    const problem = edge.node;
+  for (const node of data.allProblemInfo.nodes) {
+    const problem = node;
     const uniqueId = problem.uniqueId;
     probToLink[uniqueId] =
-      problem.module &&
+      problem.module! &&
       `${moduleIDToURLMap[problem.module.frontmatter.id]}/#problem-${uniqueId}`;
     probToURL[uniqueId] = problem.url;
     const prevTags = probToTags[uniqueId] || [];
     const allTags = prevTags.concat(problem.tags);
     probToTags[uniqueId] = [...new Set(allTags)];
-    probToDifficulty[uniqueId] = problem.difficulty;
+    probToDifficulty[uniqueId] = problem.difficulty as ProblemDifficulty;
     // https://stackoverflow.com/questions/9229645/remove-duplicate-values-from-js-array
-    probToSol[uniqueId] = problem.solution;
+    probToSol[uniqueId] = problem.solution as ProblemSolutionInfo;
   }
   const divisionToSeasonToProbs: {
     [key: string]: { [key: string]: DivisionProblemInfo[] };
@@ -228,9 +229,9 @@ export function DivisionList(props): JSX.Element {
   for (const division of divisions) {
     for (const probInfo of divToProbs[division]) {
       const contest = probInfo[1];
-      let fraction = null;
+      let fraction = 0;
       if (contest in contestToFraction[division]) {
-        fraction = contestToFraction[division][contest].shift();
+        fraction = contestToFraction[division][contest].shift()!;
       }
       const id = `usaco-${probInfo[0]}`;
       const prob: DivisionProblemInfo = {
@@ -244,7 +245,7 @@ export function DivisionList(props): JSX.Element {
         moduleLink: probToLink[id],
         percentageSolved: fraction,
         tags: probToTags[id],
-        difficulty: probToDifficulty[id] as any,
+        difficulty: probToDifficulty[id],
         url:
           probToURL[id] ||
           'http://www.usaco.org/index.php?page=viewproblem2&cpid=' +

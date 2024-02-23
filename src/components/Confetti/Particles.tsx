@@ -4,11 +4,11 @@ import { defaultShapes } from './confetti-shapes.js';
 import type { Particle, Shape } from './types';
 
 type State = {
-  particles: Array<Particle>;
+  particles: (Particle | null)[];
 };
 
 type ChildFnProps = {
-  particles: Array<Particle>;
+  particles: Particle[];
   generateParticles: () => void;
 };
 
@@ -78,7 +78,7 @@ class Particles extends React.PureComponent<Props, State> {
   };
 
   state = {
-    particles: [],
+    particles: [] as Particle[],
   };
 
   animationFrameId: number;

@@ -23,10 +23,11 @@ export default function PostLeaderboardPage(props) {
   };
   const activeGroup = useActiveGroup();
   const post = usePost(postId);
+  if (!post) throw new Error('Post not found');
   const { problems } = useActivePostProblems();
   const firebaseApp = useFirebaseApp();
   const leaderboard = useLeaderboardData({
-    groupId: activeGroup.activeGroupId,
+    groupId: activeGroup.activeGroupId!,
     postId: postId,
     maxResults: 50,
   });
@@ -40,7 +41,7 @@ export default function PostLeaderboardPage(props) {
       doc(
         getFirestore(firebaseApp),
         'groups',
-        activeGroup.activeGroupId,
+        activeGroup.activeGroupId!,
         'posts',
         postId,
         'problems',
@@ -50,7 +51,7 @@ export default function PostLeaderboardPage(props) {
       ) as DocumentReference<FirebaseSubmission>
     )
       .then(doc => {
-        const submission = { id: doc.id, ...doc.data() };
+        const submission = { ...doc.data(), id: doc.id } as FirebaseSubmission;
         openProblemSubmissionPopup(submission);
       })
       .catch(e => {
@@ -67,7 +68,7 @@ export default function PostLeaderboardPage(props) {
       <nav className="flex mt-6 mb-4" aria-label="Breadcrumb">
         <Breadcrumbs
           className={`max-w-5xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-3 pb-4`}
-          group={activeGroup.groupData}
+          group={activeGroup.groupData!}
           post={post}
         />
       </nav>

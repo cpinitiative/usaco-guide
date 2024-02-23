@@ -4,7 +4,7 @@ import { ProblemSubmissionResult } from '../models/groups/problem';
 export default function useProblemSubmissionResult(
   submissionID: string | null
 ) {
-  const [result, setResult] = useState<ProblemSubmissionResult>(null);
+  const [result, setResult] = useState<ProblemSubmissionResult | null>(null);
   const currentSubmission = useRef(0);
 
   useEffect(() => {

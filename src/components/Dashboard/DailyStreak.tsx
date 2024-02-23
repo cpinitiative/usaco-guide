@@ -59,7 +59,9 @@ const PhotoCard = ({ img, day, tomorrowMilliseconds, hiddenOnDesktop }) => {
             image={img}
             className="w-full object-cover"
             alt="Cow"
-            style={tomorrowMilliseconds >= 0 ? { filter: 'blur(60px)' } : null}
+            style={
+              tomorrowMilliseconds >= 0 ? { filter: 'blur(60px)' } : undefined
+            }
           />
         </div>
       </div>
@@ -68,27 +70,25 @@ const PhotoCard = ({ img, day, tomorrowMilliseconds, hiddenOnDesktop }) => {
 };
 
 export default function DailyStreak({ streak }) {
-  const data = useStaticQuery(graphql`
-    {
+  const data: Queries.DailyStreakQuery = useStaticQuery(graphql`
+    query DailyStreak {
       allFile(
         filter: { relativePath: { regex: "/^cows/.*/" } }
         sort: { fields: name }
       ) {
-        edges {
-          node {
-            childImageSharp {
-              gatsbyImageData(quality: 100, layout: CONSTRAINED, width: 592)
-            }
-            name
+        nodes {
+          childImageSharp {
+            gatsbyImageData(quality: 100, layout: CONSTRAINED, width: 592)
           }
+          name
         }
       }
     }
   `);
   // https://www.digitalocean.com/community/tutorials/react-usememo
   const cows = React.useMemo(() => {
-    return data.allFile.edges.map(
-      ({ node }) => node.childImageSharp.gatsbyImageData
+    return data.allFile.nodes.map(
+      node => node.childImageSharp!.gatsbyImageData
     );
   }, []);
   const { lastVisitDate } = useLastVisitInfo();
@@ -168,7 +168,7 @@ export default function DailyStreak({ streak }) {
   };
   const leftCows = () => {
     // 2-column format for desktop, so hide every other cow
-    const items = [];
+    const items: React.ReactElement[] = [];
     for (let i = maxInd; i >= 0; --i) {
       items.push(getComponent(i, (maxInd - i) % 2 == 1));
     }
@@ -176,7 +176,7 @@ export default function DailyStreak({ streak }) {
   };
   const rightCows = () => {
     // desktop-only
-    const items = [];
+    const items: React.ReactElement[] = [];
     for (let i = maxInd - 1; i >= 0; i -= 2) {
       items.push(getComponent(i, false));
     }

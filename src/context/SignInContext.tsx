@@ -3,8 +3,14 @@ import { SignInModal } from '../components/SignInModal';
 
 export const SignInContext = React.createContext<{
   signIn: () => void;
-}>(null);
-
+} | null>(null);
+export function useSignIn() {
+  const context = React.useContext(SignInContext);
+  if (!context) {
+    throw new Error('useSignInContext must be used within a SignInProvider');
+  }
+  return context;
+}
 export const SignInProvider = ({
   children,
 }: {

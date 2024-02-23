@@ -12,7 +12,7 @@ export default function FocusProblem({
 }) {
   const [isHovered, setIsHovered] = React.useState(false);
 
-  const problemLists = useMarkdownProblemLists();
+  const problemLists = useMarkdownProblemLists()!;
   const problemList = problemLists.find(x => x.listId === problemID);
 
   if (!problemList) {

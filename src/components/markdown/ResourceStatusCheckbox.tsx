@@ -167,7 +167,7 @@ export default function ResourcestatusCheckbox({
     setModuleProgress(markdownLayoutInfo.id, 'Reading');
   };
   const status: ResourceProgress =
-    userProgressOnResources[replaceIllegalFirebaseCharacters(resource.url)] ||
+    userProgressOnResources[replaceIllegalFirebaseCharacters(resource.url!)] ||
     'Not Started';
   const color: { [key in ResourceProgress]: string } = {
     'Not Started': 'bg-gray-200 dark:bg-gray-700',
@@ -187,14 +187,14 @@ export default function ResourcestatusCheckbox({
           <ProgressDropdown
             onProgressSelected={progress => {
               tippyRef.current.hide();
-              setUserProgressOnResources(resource.url, progress);
+              setUserProgressOnResources(resource.url!, progress);
               const Practicing = (x: ResourceProgress) =>
                 x == 'Complete' || x == 'Practicing';
               if (progress == 'Reading' || Practicing(progress)) {
                 updateResourceProgressToPracticing();
               }
               if (!Practicing(status) && Practicing(progress)) {
-                showConfetti();
+                showConfetti!();
               }
             }}
             currentProgress={status}

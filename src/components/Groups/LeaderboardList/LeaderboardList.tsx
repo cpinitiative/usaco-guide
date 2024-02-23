@@ -46,7 +46,7 @@ export default function LeaderboardList({
 }): JSX.Element {
   const activeGroup = useActiveGroup();
   const leaderboard = useLeaderboardData({
-    groupId: activeGroup.activeGroupId,
+    groupId: activeGroup.activeGroupId!,
     postId,
   });
 

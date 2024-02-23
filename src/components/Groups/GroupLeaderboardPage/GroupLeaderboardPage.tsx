@@ -11,22 +11,24 @@ export default function GroupLeaderboardPage(): JSX.Element {
   const activeGroup = useActiveGroup();
   const posts = activeGroup.posts;
   const leaderboard = useLeaderboardData({
-    groupId: activeGroup.activeGroupId,
+    groupId: activeGroup.activeGroupId!,
     maxResults: 50,
   });
 
   const assignments = React.useMemo(() => {
-    if (!posts || !activeGroup.groupData.postOrdering) return null;
-    return activeGroup.groupData.postOrdering
-      .map(postId => posts.find(post => post.id === postId))
-      .filter(post => post.type === 'assignment' && post.isPublished);
+    if (!posts || !activeGroup.groupData!.postOrdering) return null;
+    return activeGroup
+      .groupData!.postOrdering.map(postId =>
+        posts.find(post => post.id === postId)
+      )
+      .filter(post => post?.type === 'assignment' && post.isPublished);
   }, [posts]);
 
-  const fullWidth = assignments?.length > 10;
+  const fullWidth = assignments && assignments.length > 10;
 
   return (
     <Layout>
-      <SEO title={`Leaderboard: ${activeGroup.groupData.name}`} />
+      <SEO title={`Leaderboard: ${activeGroup.groupData!.name}`} />
 
       <TopNavigationBar />
 
@@ -35,7 +37,7 @@ export default function GroupLeaderboardPage(): JSX.Element {
           className={`${
             fullWidth ? '' : 'max-w-5xl w-full mx-auto'
           } px-4 sm:px-6 lg:px-8 pt-3 pb-4`}
-          group={activeGroup.groupData}
+          group={activeGroup.groupData!}
         />
       </nav>
 
@@ -45,7 +47,7 @@ export default function GroupLeaderboardPage(): JSX.Element {
         <div className="md:flex md:items-center md:justify-between">
           <div className="flex-1 min-w-0 px-4 sm:px-0">
             <h2 className="text-2xl font-bold leading-7 text-gray-900 dark:text-gray-100 sm:text-3xl sm:truncate">
-              Leaderboard: {activeGroup.groupData.name}
+              Leaderboard: {activeGroup.groupData!.name}
             </h2>
           </div>
           {/*<div className="mt-4 flex md:mt-0 md:ml-4">*/}
@@ -63,16 +65,16 @@ export default function GroupLeaderboardPage(): JSX.Element {
         <div className="flex flex-col">
           <LeaderboardTable
             columns={assignments?.map(post => ({
-              id: post.id,
-              tooltip: post.name,
+              id: post!.id!,
+              tooltip: post!.name!,
             }))}
             rows={leaderboard?.map(item => ({
               id: item.userInfo.uid,
               name: item.userInfo.displayName,
               points: item.totalPoints,
-              items: assignments.map(postData => ({
-                id: postData.id,
-                value: '' + (item[postData.id]?.totalPoints ?? 0),
+              items: assignments!.map(postData => ({
+                id: postData!.id!,
+                value: '' + (item[postData!.id!]?.totalPoints ?? 0),
               })),
             }))}
           />

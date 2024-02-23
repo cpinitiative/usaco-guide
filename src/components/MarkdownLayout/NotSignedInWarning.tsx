@@ -1,6 +1,5 @@
 import * as React from 'react';
-import { useContext } from 'react';
-import { SignInContext } from '../../context/SignInContext';
+import { useSignIn } from '../../context/SignInContext';
 import {
   useFirebaseUser,
   useIsUserDataLoaded,
@@ -15,7 +14,7 @@ import { useLastVisitInfo } from '../../context/UserDataContext/properties/lastV
 // `;
 
 export default function NotSignedInWarning() {
-  const { signIn } = useContext(SignInContext);
+  const { signIn } = useSignIn();
   const firebaseUser = useFirebaseUser();
   const isLoaded = useIsUserDataLoaded();
   const { numPageviews } = useLastVisitInfo();

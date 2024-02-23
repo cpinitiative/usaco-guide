@@ -110,7 +110,7 @@ const ItemLink = ({
 }: {
   link: MarkdownLayoutSidebarModuleLinkInfo | ModuleLinkInfo;
 }) => {
-  const { activeIDs } = useContext(MarkdownLayoutContext);
+  const { activeIDs } = useContext(MarkdownLayoutContext)!;
   const isActive = activeIDs.includes(link.id);
   const itemRef = React.useRef<HTMLSpanElement>(null);
 

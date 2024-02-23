@@ -12,7 +12,13 @@ import SlideoverForm from './SlideoverForm';
 
 // Warning: this file is insanely messy. This should be rewritten soon :)
 
-const Field = ({ label, id, value, onChange, errorMsg = null }) => {
+const Field = ({
+  label,
+  id,
+  value,
+  onChange,
+  errorMsg = null as string | null,
+}) => {
   return (
     <div className="space-y-1">
       <label
@@ -113,10 +119,10 @@ export default function ContactUsSlideover({
   useEffect(() => {
     if (!firebaseUser) return;
     if (email === '') {
-      setEmail(firebaseUser.email);
+      setEmail(firebaseUser.email!);
     }
     if (name === '') {
-      setName(firebaseUser.displayName);
+      setName(firebaseUser.displayName!);
     }
   }, [firebaseUser]);
 

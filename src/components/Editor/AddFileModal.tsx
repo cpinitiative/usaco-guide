@@ -70,7 +70,7 @@ export default function AddFileModal(props) {
                 source: info.source,
                 division,
                 problemModules: [],
-              } as AlgoliaEditorSolutionFile);
+              } as unknown as AlgoliaEditorSolutionFile);
               setFileStatus('Create File');
             } catch (e) {
               setFileStatus('Create File');

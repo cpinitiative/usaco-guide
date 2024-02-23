@@ -1,6 +1,5 @@
 import * as React from 'react';
-import { useContext } from 'react';
-import MarkdownLayoutContext from '../../context/MarkdownLayoutContext';
+import { useMarkdownLayout } from '../../context/MarkdownLayoutContext';
 import { ModuleInfo } from '../../models/module';
 import TextTooltip from '../Tooltip/TextTooltip';
 import MarkCompleteButton from './MarkCompleteButton';
@@ -10,7 +9,7 @@ export default function ModuleProgressUpdateBanner() {
     markdownLayoutInfo: markdownData,
     handleCompletionChange,
     moduleProgress,
-  } = useContext(MarkdownLayoutContext);
+  } = useMarkdownLayout();
 
   if (markdownData instanceof ModuleInfo) {
     return (
