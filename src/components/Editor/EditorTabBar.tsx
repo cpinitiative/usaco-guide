@@ -1,11 +1,12 @@
 import { Buffer } from 'buffer';
 import classNames from 'classnames';
-import { useAtomValue } from 'jotai';
+import { useAtomValue, useSetAtom } from 'jotai';
 import React, { useCallback, useState } from 'react';
 import {
   branchAtom,
   githubInfoAtom,
   octokitAtom,
+  saveFileAtom,
   tabAtom,
   trueFileAtom,
   trueFilePathAtom,
@@ -39,8 +40,11 @@ const EditorTabBar: React.FC<EditorTabBarProps> = ({
   const octokit = useAtomValue(octokitAtom);
   const branch = useAtomValue(branchAtom);
   const [commitState, setCommitState] = useState('Commit Code');
+  const [pullState, setPullState] = useState('Pull Code');
   const filePath = useAtomValue(trueFilePathAtom);
   const file = useAtomValue(trueFileAtom);
+  const saveFile = useSetAtom(saveFileAtom);
+  const tab = useAtomValue(tabAtom);
   const [dialogOpen, setDialogOpen] = useState(false);
   const updateFile = useCallback(
     async file => {
@@ -83,6 +87,39 @@ const EditorTabBar: React.FC<EditorTabBarProps> = ({
     },
     [octokit, githubInfo, branch, filePath]
   );
+  const pullCode = useCallback(async () => {
+    if (!octokit || !githubInfo || !branch) return;
+    setPullState('Pulling...');
+    const response = (
+      await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
+        owner: githubInfo.login,
+        repo: 'usaco-guide',
+        path: filePath,
+        ref: branch,
+        headers: {
+          'X-GitHub-Api-Version': '2022-11-28',
+        },
+      })
+    ).data;
+    if (!('type' in response) || response.type !== 'file') return; // should not happen
+    saveFile({
+      path: filePath,
+      update(f) {
+        if (tab == 'content') {
+          return {
+            ...f,
+            markdown: Buffer.from(response.content, 'base64').toString('utf-8'),
+          };
+        } else {
+          return {
+            ...f,
+            problems: Buffer.from(response.content, 'base64').toString('utf-8'),
+          };
+        }
+      },
+    });
+    setPullState('Pull Code');
+  }, [octokit, githubInfo, branch, filePath, tab, saveFile]);
   return (
     <>
       <div className="flex bg-gray-50 dark:bg-gray-950">
@@ -147,6 +184,17 @@ const EditorTabBar: React.FC<EditorTabBarProps> = ({
             onClick={() => updateFile(file)}
           >
             {commitState}
+          </button>
+        )}
+        {githubInfo && octokit && file && branch && (
+          <button
+            className={classNames(
+              'hover:text-gray-800 dark:hover:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-800 active:bg-gray-200 dark:active:bg-gray-800',
+              'px-3 py-2 font-medium text-sm focus:outline-none transition'
+            )}
+            onClick={() => pullCode()}
+          >
+            {pullState}
           </button>
         )}
       </div>
