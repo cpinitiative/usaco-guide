@@ -219,29 +219,35 @@ easier to understand, albeit significantly slower (same complexity, just worse c
 ```cpp
 struct BIT2D {
 	bool mode = 0;  // 0 -> offline, 1 -> initialized
-	vector<P> todo;
+	vector<pair<int, int>> todo;
 	vector<int> vals[N], bit[N];
 	void init() {
 		assert(!mode);
 		// sort points by y-coordinate
-		sort(todo.begin(), todo.end(),
-		     [](P a, P b) { return a.second < b.second; });
-		for (int i = 1; i <= n; i++) vals[i].push_back(0);
+		sort(todo.begin(), todo.end(),[](P a, P b) { 
+			return a.second < b.second; 
+		});
+		// ensures vals and bit are 1-indexed
+		for (int i = 1; i <= n; i++) { vals[i].push_back(0); }
 		for (auto [x, y] : todo) {
 			for (int z = x; z <= n; z += z & -z) {
 				if (vals[z].back() != y) { vals[z].push_back(y); }
 			}
 		}
-		for (int i = 1; i <= n; i++) bit[i].resize(vals[i].size());
+		for (int i = 1; i <= n; i++) { 
+			bit[i].resize(vals[i].size()); 
+		}
 		mode = 1;
 	}
-	void upd(int x, int y) {
+	void upd(int x, int y, int t = 1) {
 		if (!mode) todo.push_back({x, y});
 		else {
 			for (; x <= n; x += x & -x) {
 				int z = ind(vals[x], y);
 				assert(z && vals[x][z] == y);
-				for (; z < bit[x].size(); z += z & -z) { ++bit[x][z]; }
+				for (; z < bit[x].size(); z += z & -z) { 
+					bit[x][z] += t; 
+				}
 			}
 		}
 	}
@@ -258,10 +264,41 @@ struct BIT2D {
 	int query(int x1, int x2, int y1, int y2) {
 		if (x1 > x2 || y1 > y2) return 0;
 		else
-			return query(x2, y2) - query(x1 - 1, y2) - query(x2, y1 - 1) +
-			       query(x1 - 1, y1 - 1);
+			return (
+				+ query(x2, y2) 
+				- query(x1 - 1, y2) 
+				- query(x2, y1 - 1) 
+				+ query(x1 - 1, y1 - 1)
+			);
 	}
 };
+```
+</CPPSection>
+</LanguageSection>
+And you might use it like so:
+<LanguageSection>
+<CPPSection>
+```cpp
+// Soriya's Programming Project
+BIT2D bit;
+int main() {
+  cin >> n;
+  for (int i = 1; i <= n; i++) { cin >> a[i]; }
+  for (int i = 1; i <= n; i++) { cin >> p[i]; }
+  // register all updates offline
+  for (int i = 1; i <= n; i++) { bit.upd(i, a[i]); }
+  // initialize BIT (applies compressoin)
+  bit.init();
+  ll ans = 0;
+  // now we can update and query like normal
+  for (int i = 1; i <= n; i++) {
+    ans += bit.query(1, p[i], a[p[i]] + 1, n);
+    ans += bit.query(p[i], n, 1, a[p[i]] - 1);
+    cout << ans << "\n";
+    bit.upd(p[i], a[p[i]]);
+  }
+  return 0;
+}
 ```
 </CPPSection>
 </LanguageSection>
@@ -296,12 +333,12 @@ The idea is to first figure out which BIT values **along one dimension** each up
 	</tbody>
 </table>
 </center>
-We can now compress each row in the same fashion as an offline 1D BIT (remember, each row in a 2D BIT is another 1D BIT). For example, we can compress the second row to a BIT of size 2, and map queries with $y \in [1, 4)$ to a range query of $[1, 2)$, and queries with $y \in [4, \infty)$ to a range query of $[1, 3)$. Similarly, for row 4 (which becomes a BIT of size 3):
+We can now compress each row in the same fashion as an offline 1D BIT (remember, each row in a 2D BIT is another 1D BIT)! For example, we can compress the second row to a BIT of size 2, and map range queries $[1, y)$ with $y \in [1, 4)$ to a range query of $[1, 2)$, and queries with $y \in [4, \infty)$ to a range query of $[1, 3)$. Similarly, for row 4 (which becomes a BIT of size 3):
 - $y \in [1, 3)$ -> range query $[1, 2)$
 - $y \in [3, 4)$ -> range query $[1, 3)$
 - $y \in [4, \infty)$ -> range query $[1, 4)$
 <Info title="Implementation Note">
-As mentioned earlier, the above `BIT2D` implementation is significantly slower than Benq's `OffBIT2D` and, in fact, will get TLE on the Soriya's Programming Project. This is due to the large amount of `vector.resize` calls in `BIT2D`.
+As mentioned earlier, the above `BIT2D` implementation is significantly slower than Benq's `OffBIT2D` and, in fact, will get TLE on the Soriya's Programming Project; this is due to the large amount of calls to `vector.resize` it makes.
 </Info>
 
 It's a bit difficult to pass the above problem within the time limit. Make sure to use fast input (and not `endl`)!
