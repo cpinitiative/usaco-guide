@@ -226,9 +226,8 @@ struct BIT2D {
 	void init() {
 		assert(!mode);
 		// sort points by y-coordinate
-		sort(todo.begin(), todo.end(),[](P a, P b) { 
-			return a.second < b.second; 
-		});
+		sort(todo.begin(), todo.end(),
+		     [](P a, P b) { return a.second < b.second; });
 		// ensures vals and bit are 1-indexed
 		for (int i = 1; i <= n; i++) { vals[i].push_back(0); }
 		for (auto [x, y] : todo) {
@@ -236,9 +235,7 @@ struct BIT2D {
 				if (vals[z].back() != y) { vals[z].push_back(y); }
 			}
 		}
-		for (int i = 1; i <= n; i++) { 
-			bit[i].resize(vals[i].size()); 
-		}
+		for (int i = 1; i <= n; i++) { bit[i].resize(vals[i].size()); }
 		mode = 1;
 	}
 	/** adds t to the point (x, y) */
@@ -248,13 +245,12 @@ struct BIT2D {
 			for (; x <= n; x += x & -x) {
 				int z = ind(vals[x], y);
 				assert(z && vals[x][z] == y);
-				for (; z < bit[x].size(); z += z & -z) { 
-					bit[x][z] += t; 
-				}
+				for (; z < bit[x].size(); z += z & -z) { bit[x][z] += t; }
 			}
 		}
 	}
-	/** @returns returns sum of points in rectangle with top-right corner (x, y) */
+	/** @returns returns sum of points in rectangle with top-right corner (x, y)
+	 */
 	int query(int x, int y) {
 		assert(mode);
 		int tot = 0;
@@ -269,12 +265,8 @@ struct BIT2D {
 	int query(int x1, int x2, int y1, int y2) {
 		if (x1 > x2 || y1 > y2) return 0;
 		else
-			return (
-				+ query(x2, y2) 
-				- query(x1 - 1, y2) 
-				- query(x2, y1 - 1) 
-				+ query(x1 - 1, y1 - 1)
-			);
+			return (+query(x2, y2) - query(x1 - 1, y2) - query(x2, y1 - 1) +
+			        query(x1 - 1, y1 - 1));
 	}
 };
 ```
@@ -287,22 +279,22 @@ And you might use it like so:
 // Soriya's Programming Project
 BIT2D bit;
 int main() {
-  cin >> n;
-  for (int i = 1; i <= n; i++) { cin >> a[i]; }
-  for (int i = 1; i <= n; i++) { cin >> p[i]; }
-  // register all updates offline
-  for (int i = 1; i <= n; i++) { bit.upd(i, a[i]); }
-  // initialize BIT (applies compressoin)
-  bit.init();
-  ll ans = 0;
-  // now we can update and query like normal
-  for (int i = 1; i <= n; i++) {
-    ans += bit.query(1, p[i], a[p[i]] + 1, n);
-    ans += bit.query(p[i], n, 1, a[p[i]] - 1);
-    cout << ans << "\n";
-    bit.upd(p[i], a[p[i]]);
-  }
-  return 0;
+	cin >> n;
+	for (int i = 1; i <= n; i++) { cin >> a[i]; }
+	for (int i = 1; i <= n; i++) { cin >> p[i]; }
+	// register all updates offline
+	for (int i = 1; i <= n; i++) { bit.upd(i, a[i]); }
+	// initialize BIT (applies compressoin)
+	bit.init();
+	ll ans = 0;
+	// now we can update and query like normal
+	for (int i = 1; i <= n; i++) {
+		ans += bit.query(1, p[i], a[p[i]] + 1, n);
+		ans += bit.query(p[i], n, 1, a[p[i]] - 1);
+		cout << ans << "\n";
+		bit.upd(p[i], a[p[i]]);
+	}
+	return 0;
 }
 ```
 </CPPSection>
