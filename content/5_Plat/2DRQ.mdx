@@ -218,48 +218,49 @@ easier to understand, albeit significantly slower (same complexity, just worse c
 <CPPSection>
 ```cpp
 struct BIT2D {
-  bool mode = 0; // 0 -> offline, 1 -> initialized
-  vector<P> todo;
-  vector<int> vals[N], bit[N];
-  void init() {
-    assert(!mode);
-    // sort points by y-coordinate
-    sort(todo.begin(), todo.end(), [](P a, P b) { return a.second < b.second; });
-    for (int i = 1; i <= n; i++) vals[i].push_back(0);
-    for (auto [x, y] : todo) {
-      for (int z = x; z <= n; z += z & -z) {
-        if (vals[z].back() != y) { vals[z].push_back(y); }
-      }
-    }
-    for (int i = 1; i <= n; i++) bit[i].resize(vals[i].size());
-    mode = 1;
-  }
-  void upd(int x, int y) {
-    if (!mode) todo.push_back({x, y});
-    else {
-      for (; x <= n; x += x & -x) {
-        int z = ind(vals[x], y);
-        assert(z && vals[x][z] == y);
-        for (; z < bit[x].size(); z += z & -z) {
-          ++bit[x][z];
-        }
-      }
-    }
-  }
-  int query(int x, int y) {
-    assert(mode);
-    int tot = 0;
-    for (; x > 0; x -= x & -x) {
-      for (int z = ind(vals[x], y); z > 0; z -= z & -z) {
-        tot += bit[x][z];
-      }
-    }
-    return tot;
-  }
-  int query(int x1, int x2, int y1, int y2) { 
-    if (x1 > x2 || y1 > y2) return 0;
-    else return query(x2, y2) - query(x1 - 1, y2) - query(x2, y1 - 1) + query(x1 - 1, y1 - 1);
-  }
+	bool mode = 0;  // 0 -> offline, 1 -> initialized
+	vector<P> todo;
+	vector<int> vals[N], bit[N];
+	void init() {
+		assert(!mode);
+		// sort points by y-coordinate
+		sort(todo.begin(), todo.end(),
+		     [](P a, P b) { return a.second < b.second; });
+		for (int i = 1; i <= n; i++) vals[i].push_back(0);
+		for (auto [x, y] : todo) {
+			for (int z = x; z <= n; z += z & -z) {
+				if (vals[z].back() != y) { vals[z].push_back(y); }
+			}
+		}
+		for (int i = 1; i <= n; i++) bit[i].resize(vals[i].size());
+		mode = 1;
+	}
+	void upd(int x, int y) {
+		if (!mode) todo.push_back({x, y});
+		else {
+			for (; x <= n; x += x & -x) {
+				int z = ind(vals[x], y);
+				assert(z && vals[x][z] == y);
+				for (; z < bit[x].size(); z += z & -z) { ++bit[x][z]; }
+			}
+		}
+	}
+	int query(int x, int y) {
+		assert(mode);
+		int tot = 0;
+		for (; x > 0; x -= x & -x) {
+			for (int z = ind(vals[x], y); z > 0; z -= z & -z) {
+				tot += bit[x][z];
+			}
+		}
+		return tot;
+	}
+	int query(int x1, int x2, int y1, int y2) {
+		if (x1 > x2 || y1 > y2) return 0;
+		else
+			return query(x2, y2) - query(x1 - 1, y2) - query(x2, y1 - 1) +
+			       query(x1 - 1, y1 - 1);
+	}
 };
 ```
 </CPPSection>
