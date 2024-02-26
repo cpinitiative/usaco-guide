@@ -218,13 +218,13 @@ easier to understand, albeit significantly slower (same complexity, just worse c
 <CPPSection>
 ```cpp
 // see code example below for usage
-struct BIT2D {
+struct BIT2D<int N> {
 	vector<int> vals[N], bit[N];
 	/** initializes BIT with list of updates */
 	BIT2D(vector<pair<int, int>> todo) {
 		// sort points by y-coordinate
 		sort(todo.begin(), todo.end(),
-		     [](P a, P b) { return a.second < b.second; });
+		     [](pair<int, int> a, pair<int, int> b) { return a.second < b.second; });
 		// ensures vals and bit are 1-indexed
 		for (int i = 1; i <= n; i++) { vals[i].push_back(0); }
 		for (auto [x, y] : todo) {
@@ -233,7 +233,6 @@ struct BIT2D {
 			}
 		}
 		for (int i = 1; i <= n; i++) { bit[i].resize(vals[i].size()); }
-		mode = 1;
 	}
 	/** adds t to the point (x, y) */
 	void upd(int x, int y, int t = 1) {
@@ -272,6 +271,9 @@ And you might use it like so:
 <CPPSection>
 ```cpp
 // Soriya's Programming Project
+// ...insert BIT2D template
+const int N = 5e5 + 1;
+
 int main() {
 	cin >> n;
 	vector<pair<int, int>> updates;
@@ -281,7 +283,7 @@ int main() {
 		updates.push_back({i, a[i]});
 	}
 	// intialize BIT from list of updates
-	BIT2D bit(updates);
+	BIT2D bit<N>(updates);
 	for (int i = 1; i <= n; i++) { cin >> p[i]; }
 	ll ans = 0;
 	// now we can update and query like normal
