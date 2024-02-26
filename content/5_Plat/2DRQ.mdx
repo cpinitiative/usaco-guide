@@ -219,12 +219,9 @@ easier to understand, albeit significantly slower (same complexity, just worse c
 ```cpp
 // see code example below for usage
 struct BIT2D {
-	bool mode = 0;  // 0 -> offline, 1 -> initialized
-	vector<pair<int, int>> todo;
 	vector<int> vals[N], bit[N];
-	/** initializes BIT after all offline updates */
-	void init() {
-		assert(!mode);
+	/** initializes BIT with list of updates */
+	BIT2D(vector<pair<int, int>> todo) {
 		// sort points by y-coordinate
 		sort(todo.begin(), todo.end(),
 		     [](P a, P b) { return a.second < b.second; });
@@ -240,7 +237,6 @@ struct BIT2D {
 	}
 	/** adds t to the point (x, y) */
 	void upd(int x, int y, int t = 1) {
-		if (!mode) todo.push_back({x, y});
 		else {
 			for (; x <= n; x += x & -x) {
 				int z = ind(vals[x], y);
@@ -252,7 +248,6 @@ struct BIT2D {
 	/** @returns returns sum of points in rectangle with top-right corner (x, y)
 	 */
 	int query(int x, int y) {
-		assert(mode);
 		int tot = 0;
 		for (; x > 0; x -= x & -x) {
 			for (int z = ind(vals[x], y); z > 0; z -= z & -z) {
@@ -277,15 +272,17 @@ And you might use it like so:
 <CPPSection>
 ```cpp
 // Soriya's Programming Project
-BIT2D bit;
 int main() {
 	cin >> n;
-	for (int i = 1; i <= n; i++) { cin >> a[i]; }
+	vector<pair<int, int>> updates;
+	for (int i = 1; i <= n; i++) { 
+		cin >> a[i];
+		// register all updates offline
+		updates.push_back({i, a[i]});
+	}
+	// intialize BIT from list of updates
+	BIT2D bit(updates);
 	for (int i = 1; i <= n; i++) { cin >> p[i]; }
-	// register all updates offline
-	for (int i = 1; i <= n; i++) { bit.upd(i, a[i]); }
-	// initialize BIT (applies compression)
-	bit.init();
 	ll ans = 0;
 	// now we can update and query like normal
 	for (int i = 1; i <= n; i++) {
