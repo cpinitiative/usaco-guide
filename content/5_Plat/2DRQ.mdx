@@ -202,7 +202,6 @@ $\mathcal{O}(N\log^2N)$ memory and time and the constant factors for both are
 terrible; a better solution is to compress the points to be updated so that you only need
 $\mathcal{O}(N\log N)$ memory.
 
-
 The idea is to first figure out which BIT values **along one dimension** each update will affect.
 In the below table, the updates are $(1, 1), (3, 3),$ and $(4, 2)$, and the cells they affect are blue, red, and green respectively.
 
@@ -237,12 +236,17 @@ In the below table, the updates are $(1, 1), (3, 3),$ and $(4, 2)$, and the cell
 </table>
 </center>
 
-We can now compress each row in the same fashion as an offline 1D BIT (remember, each row in a 2D BIT is another 1D BIT)! For example, we can compress the second row to a BIT of size 2, and map range queries $[1, y)$ with $y \in [1, 4)$ to a range query of $[1, 2)$, and queries with $y \in [4, \infty)$ to a range query of $[1, 3)$. Similarly, for row 4 (which becomes a BIT of size 3):
+We can now compress each row in the same fashion as an offline 1D BIT (remember, each row in a 2D BIT is another 1D BIT)!
+For example, we can compress the second row to a BIT of size 2, and map range queries $[1, y)$ with $y \in [1, 4)$ to a range query of $[1, 2)$,
+and queries with $y \in [4, \infty)$ to a range query of $[1, 3)$.
+
+Similarly, for row 4 (which becomes a BIT of size 3):
 - $y \in [1, 3)$ -> range query $[1, 2)$
 - $y \in [3, 4)$ -> range query $[1, 3)$
 - $y \in [4, \infty)$ -> range query $[1, 4)$
 
 This only requires knowing the updates beforehand, not the queries!
+
 ### Implementation
 
 - [Benq's 1D offline BIT](<https://github.com/bqi343/USACO/blob/master/Implementations/content/data-structures/1D%20Range%20Queries%20(9.2)/BIToff.h>)
@@ -261,10 +265,8 @@ class BIT2D {
 	vector<vector<int>> vals, bit;
 
   public:
-	BIT2D(int n, vector<pair<int, int>> &todo) {
-		this.n = n;
-		vals.resize(n + 1);
-		bit.resize(n + 1);
+	BIT2D(int n, vector<pair<int, int>> &todo) : n(n), vals(n + 1), bit(n + 1) {
+		this.n = 
 		// sort points by y-coordinate
 		sort(todo.begin(), todo.end(), [](pair<int, int> a, pair<int, int> b) {
 			return a.second < b.second;
@@ -301,7 +303,7 @@ class BIT2D {
 
 	/** @returns sum of points with x in [x1, x2] and y in [y1, y2] */
 	int query(int x1, int x2, int y1, int y2) {
-		if (x1 > x2 || y1 > y2) return 0;
+		if (x1 > x2 || y1 > y2) { return 0; }
 		int tr = query(x2, y2);          // top-right
 		int tl = query(x1 - 1, y2);      // top-left
 		int br = query(x2, y1 - 1);      // bottom-right
@@ -330,11 +332,8 @@ class BIT2D {
 	vector<vector<int>> vals, bit;
 
   public:
-	/** initializes BIT with list of updates */
-	BIT2D(int n, vector<pair<int, int>> &todo) {
-		this.n = n;
-		vals.resize(n + 1);
-		bit.resize(n + 1);
+	BIT2D(int n, vector<pair<int, int>> &todo) : n(n), vals(n + 1), bit(n + 1) {
+		this.n = 
 		// sort points by y-coordinate
 		sort(todo.begin(), todo.end(), [](pair<int, int> a, pair<int, int> b) {
 			return a.second < b.second;
@@ -348,6 +347,7 @@ class BIT2D {
 		}
 		for (int i = 1; i <= n; i++) { bit[i].resize(vals[i].size()); }
 	}
+
 	/** adds t to the point (x, y) */
 	void upd(int x, int y, int t = 1) {
 		for (; x <= n; x += x & -x) {
@@ -356,8 +356,8 @@ class BIT2D {
 			for (; z < bit[x].size(); z += z & -z) { bit[x][z] += t; }
 		}
 	}
-	/** @returns returns sum of points in rectangle with top-right corner (x, y)
-	 */
+
+	/** @return sum of points in rectangle with top-right corner (x, y) */
 	int query(int x, int y) {
 		int tot = 0;
 		for (; x > 0; x -= x & -x) {
@@ -367,9 +367,10 @@ class BIT2D {
 		}
 		return tot;
 	}
+
 	/** @returns sum of points with x in [x1, x2] and y in [y1, y2] */
 	int query(int x1, int x2, int y1, int y2) {
-		if (x1 > x2 || y1 > y2) return 0;
+		if (x1 > x2 || y1 > y2) { return 0; }
 		int tr = query(x2, y2);          // top-right
 		int tl = query(x1 - 1, y2);      // top-left
 		int br = query(x2, y1 - 1);      // bottom-right
@@ -405,7 +406,6 @@ int main() {
 
 </CPPSection>
 </LanguageSection>
-
 
 <Warning title="Implementation Note">
 
