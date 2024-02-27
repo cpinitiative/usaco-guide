@@ -199,12 +199,10 @@ $\mathcal{O}(N^2)$ memory, which is too much.
 Since we know all of the updates and queries beforehand, we can reduce the
 memory usage while maintaining a decent constant factor.
 
-#### Idea 1 - Use an unordered map instead of a 2D array.
+We could use an unordered map instead of a 2D array, but this gives
+$\mathcal{O}(N\log^2N)$ memory and time and the constant factors for both are terrible.
 
-Bad idea ... This gives $\mathcal{O}(N\log^2N)$ memory and time and the constant
-factors for both are terrible.
-
-#### Idea 2 - Compress the points to be updated so that you only need $\mathcal{O}(N\log N)$ memory.
+A better idea is to compress the points to be updated so that you only need $\mathcal{O}(N\log N)$ memory.
 
 This doesn't require knowing the queries beforehand.
 
@@ -212,33 +210,35 @@ This doesn't require knowing the queries beforehand.
 - [Benq's 2D offline BIT](<https://github.com/bqi343/USACO/blob/master/Implementations/content/data-structures/2D%20Range%20Queries%20(15.2)/BIT2DOff%20(15.2).h>)
 
 Here's an implementation of the offline 2D BIT presented above that may be
-easier to understand, albeit significantly slower (same complexity, just worse constant factor):
+easier to understand, albeit significantly slower due to a high constant factor:
 
 <LanguageSection>
 <CPPSection>
+
 ```cpp
 // see code example below for usage
 struct BIT2D {
 	int n;
-	vector<vector<int>> vals, bit;
-	/** initializes BIT with list of updates */
-	BIT2D(int n, vector<pair<int, int>> todo) {
-		this.n = n;
-		vals.resize(n);
-		bit.resize(n);
+	vector<vector<int>> vals;
+	vector<vector<int>> bit;
+
+	BIT2D(int n, vector<pair<int, int>> todo) : n(n), vals(n), bit(n) {
 		// sort points by y-coordinate
 		sort(todo.begin(), todo.end(), [](pair<int, int> a, pair<int, int> b) {
 			return a.second < b.second;
 		});
+
 		// ensures vals and bit are 1-indexed
 		for (int i = 1; i <= n; i++) { vals[i].push_back(0); }
-		for (auto [x, y] : todo) {
+		for (const auto& [x, y] : todo) {
 			for (int z = x; z <= n; z += z & -z) {
 				if (vals[z].back() != y) { vals[z].push_back(y); }
 			}
 		}
+
 		for (int i = 1; i <= n; i++) { bit[i].resize(vals[i].size()); }
 	}
+
 	/** adds t to the point (x, y) */
 	void upd(int x, int y, int t = 1) {
 		else {
@@ -249,8 +249,8 @@ struct BIT2D {
 			}
 		}
 	}
-	/** @returns returns sum of points in rectangle with top-right corner (x, y)
-	 */
+
+	/** @return returns sum of points in rectangle with top-right corner (x, y) */
 	int query(int x, int y) {
 		int tot = 0;
 		for (; x > 0; x -= x & -x) {
@@ -260,7 +260,8 @@ struct BIT2D {
 		}
 		return tot;
 	}
-	/** @returns sum of points with x in [x1, x2] and y in [y1, y2] */
+
+	/** @return sum of points with x in [x1, x2] and y in [y1, y2] */
 	int query(int x1, int x2, int y1, int y2) {
 		if (x1 > x2 || y1 > y2) return 0;
 		else
@@ -269,9 +270,12 @@ struct BIT2D {
 	}
 };
 ```
+
 </CPPSection>
 </LanguageSection>
+
 And you might use it like so:
+
 <LanguageSection>
 <CPPSection>
 ```cpp
@@ -328,6 +332,7 @@ struct BIT2D {
 	}
 };
 // EndCodeSnip
+
 const int N = 5e5 + 1;
 
 int main() {
@@ -338,9 +343,11 @@ int main() {
 		// register all updates offline
 		updates.push_back({i, a[i]});
 	}
+	
 	// intialize BIT from list of updates
 	BIT2D bit(n, updates);
 	for (int i = 1; i <= n; i++) { cin >> p[i]; }
+	
 	ll ans = 0;
 	// now we can update and query like normal
 	for (int i = 1; i <= n; i++) {
@@ -349,12 +356,15 @@ int main() {
 		cout << ans << "\n";
 		bit.upd(p[i], a[p[i]]);
 	}
-	return 0;
 }
 ```
+
 </CPPSection>
 </LanguageSection>
-The idea is to first figure out which BIT values **along one dimension** each update will affect. In the below table, the updates are $(1, 1), (3, 3),$ and $(4, 2)$, and the cells they affect are blue, red, and green respectively.
+
+The idea is to first figure out which BIT values **along one dimension** each update will affect.
+In the below table, the updates are $(1, 1), (3, 3),$ and $(4, 2)$, and the cells they affect are blue, red, and green respectively.
+
 <center>
 <table className="text-center">
 	<tbody>
@@ -385,12 +395,16 @@ The idea is to first figure out which BIT values **along one dimension** each up
 	</tbody>
 </table>
 </center>
+
 We can now compress each row in the same fashion as an offline 1D BIT (remember, each row in a 2D BIT is another 1D BIT)! For example, we can compress the second row to a BIT of size 2, and map range queries $[1, y)$ with $y \in [1, 4)$ to a range query of $[1, 2)$, and queries with $y \in [4, \infty)$ to a range query of $[1, 3)$. Similarly, for row 4 (which becomes a BIT of size 3):
 - $y \in [1, 3)$ -> range query $[1, 2)$
 - $y \in [3, 4)$ -> range query $[1, 3)$
 - $y \in [4, \infty)$ -> range query $[1, 4)$
+
 <Info title="Implementation Note">
+
 As mentioned earlier, the above `BIT2D` implementation is significantly slower than Benq's `OffBIT2D` and, in fact, will get TLE on the Soriya's Programming Project; this is due to the large amount of calls to `vector.resize` it makes.
+
 </Info>
 
 It's a bit difficult to pass the above problem within the time limit. Make sure to use fast input (and not `endl`)!
