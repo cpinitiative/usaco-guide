@@ -7,8 +7,8 @@ from typing import Iterable, Optional, Tuple
 from bs4 import BeautifulSoup
 from loguru import logger
 
-INDEX_PREFIX = "http://www.usaco.org/index.php?page="
-DATA_PREFIX = "http://www.usaco.org/current/data/"
+INDEX_PREFIX = "https://www.usaco.org/index.php?page="
+DATA_PREFIX = "https://www.usaco.org/current/data/"
 DIVISIONS = ["Bronze", "Silver", "Gold", "Platinum"]
 CONTESTS_SHORT = ["dec", "jan", "feb", "open"]
 CONTESTS_LONG = ["December", "January", "February", "US Open"]
