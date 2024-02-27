@@ -222,10 +222,11 @@ easier to understand, albeit significantly slower due to a high constant factor:
 ```cpp
 // see code example below for usage
 class BIT2D {
-private:
+  private:
 	int n;  // max x-coordinate
 	vector<vector<int>> vals, bit;
-public:
+
+  public:
 	/** initializes BIT with list of updates */
 	BIT2D(int n, vector<pair<int, int>> &todo) {
 		this.n = n;
@@ -267,11 +268,8 @@ public:
 	int query(int x1, int x2, int y1, int y2) {
 		if (x1 > x2 || y1 > y2) return 0;
 		else {
-			return \
-				+ query(x2, y2) \
-				- query(x1 - 1, y2) \
-				- query(x2, y1 - 1) \
-				+ query(x1 - 1, y1 - 1);
+			return +query(x2, y2) - query(x1 - 1, y2) - query(x2, y1 - 1) +
+			       query(x1 - 1, y1 - 1);
 		}
 	}
 };
@@ -285,16 +283,18 @@ And you might use it like so:
 <LanguageSection>
 <CPPSection>
 ```cpp
+```cpp
 // Soriya's Programming Project
+#include <algorithm>
 #include <iostream>
 #include <vector>
-#include <algorithm>
 // BeginCodeSnip{BIT2D}
 class BIT2D {
-private:
+  private:
 	int n;  // max x-coordinate
 	vector<vector<int>> vals, bit;
-public:
+
+  public:
 	/** initializes BIT with list of updates */
 	BIT2D(int n, vector<pair<int, int>> &todo) {
 		this.n = n;
@@ -336,38 +336,34 @@ public:
 	int query(int x1, int x2, int y1, int y2) {
 		if (x1 > x2 || y1 > y2) return 0;
 		else {
-			return 
-				+ query(x2, y2) 
-				- query(x1 - 1, y2) 
-				- query(x2, y1 - 1) 
-				+ query(x1 - 1, y1 - 1);
+			return +query(x2, y2) - query(x1 - 1, y2) - query(x2, y1 - 1) +
+			       query(x1 - 1, y1 - 1);
 		}
 	}
 };
 // EndCodeSnip
 
-int main() { 
-	cin >> n; 
-	vector<pair<int, int>> updates; 
-	for (int i = 1; i <= n; i++) { 
-		cin >> a[i]; 
+int main() {
+	cin >> n;
+	vector<pair<int, int>> updates;
+	for (int i = 1; i <= n; i++) {
+		cin >> a[i];
 		// register all updates offline
-		updates.push_back({i, a[i]}); 
+		updates.push_back({i, a[i]});
 	}
 
-    // intialize BIT from list of updates
-    BIT2D bit(n, updates);
-    for (int i = 1; i <= n; i++) { cin >> p[i]; }
+	// intialize BIT from list of updates
+	BIT2D bit(n, updates);
+	for (int i = 1; i <= n; i++) { cin >> p[i]; }
 
-    ll ans = 0;
-    // now we can update and query like normal
-    for (int i = 1; i <= n; i++) {
-    	ans += bit.query(1, p[i], a[p[i]] + 1, n);
-    	ans += bit.query(p[i], n, 1, a[p[i]] - 1);
-    	cout << ans << "\n";
-    	bit.upd(p[i], a[p[i]]);
-    }
-
+	ll ans = 0;
+	// now we can update and query like normal
+	for (int i = 1; i <= n; i++) {
+		ans += bit.query(1, p[i], a[p[i]] + 1, n);
+		ans += bit.query(p[i], n, 1, a[p[i]] - 1);
+		cout << ans << "\n";
+		bit.upd(p[i], a[p[i]]);
+	}
 }
 
 ````
@@ -450,7 +446,6 @@ Here is an implementation of the above idea:
 
 <CPPSection>
 
-```cpp
 const int MAXN = 2e5, MAXSEG = (6e5 + 9) * 19 + 1;
 
 int cnt = 1, segtree[MAXSEG], left_c[MAXSEG], right_c[MAXSEG];
