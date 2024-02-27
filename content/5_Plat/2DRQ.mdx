@@ -200,9 +200,11 @@ Since we know all of the updates and queries beforehand, we can reduce the
 memory usage while maintaining a decent constant factor.
 
 We could use an unordered map instead of a 2D array, but this gives
-$\mathcal{O}(N\log^2N)$ memory and time and the constant factors for both are terrible.
+$\mathcal{O}(N\log^2N)$ memory and time and the constant factors for both are
+terrible.
 
-A better idea is to compress the points to be updated so that you only need $\mathcal{O}(N\log N)$ memory.
+A better idea is to compress the points to be updated so that you only need
+$\mathcal{O}(N\log N)$ memory.
 
 This doesn't require knowing the queries beforehand.
 
@@ -281,12 +283,15 @@ And you might use it like so:
 <CPPSection>
 ```cpp
 // Soriya's Programming Project
+#include <iostream>
+#include <vector>
+#include <algorithm>
 // BeginCodeSnip{BIT2D}
 struct BIT2D {
 	int n;  // max x-coordinate
 	vector<vector<int>> vals, bit;
 	/** initializes BIT with list of updates */
-	BIT2D(int n, vector<pair<int, int>> todo) {
+	BIT2D(int n, vector<pair<int, int>> &todo) {
 		this.n = n;
 		vals.resize(n + 1);
 		bit.resize(n + 1);
@@ -305,12 +310,10 @@ struct BIT2D {
 	}
 	/** adds t to the point (x, y) */
 	void upd(int x, int y, int t = 1) {
-		else {
-			for (; x <= n; x += x & -x) {
-				int z = ind(vals[x], y);
-				assert(z && vals[x][z] == y);
-				for (; z < bit[x].size(); z += z & -z) { bit[x][z] += t; }
-			}
+		for (; x <= n; x += x & -x) {
+			int z = ind(vals[x], y);
+			assert(z && vals[x][z] == y);
+			for (; z < bit[x].size(); z += z & -z) { bit[x][z] += t; }
 		}
 	}
 	/** @returns returns sum of points in rectangle with top-right corner (x, y)
@@ -327,38 +330,39 @@ struct BIT2D {
 	/** @returns sum of points with x in [x1, x2] and y in [y1, y2] */
 	int query(int x1, int x2, int y1, int y2) {
 		if (x1 > x2 || y1 > y2) return 0;
-		else
-			return (+query(x2, y2) - query(x1 - 1, y2) - query(x2, y1 - 1) +
-			        query(x1 - 1, y1 - 1));
+		else {
+			return 
+				+ query(x2, y2) 
+				- query(x1 - 1, y2) 
+				- query(x2, y1 - 1) 
+				+ query(x1 - 1, y1 - 1);
+		}
 	}
 };
 // EndCodeSnip
 
 const int N = 5e5 + 1;
 
-int main() {
-	cin >> n;
-	vector<pair<int, int>> updates;
-	for (int i = 1; i <= n; i++) {
-		cin >> a[i];
-		// register all updates offline
-		updates.push_back({i, a[i]});
-	}
+int main() { cin >> n; vector<pair<int, int>> updates; for (int i = 1; i <= n;
+i++) { cin >> a[i]; // register all updates offline updates.push_back({i,
+a[i]}); }
 
-	// intialize BIT from list of updates
-	BIT2D bit(n, updates);
-	for (int i = 1; i <= n; i++) { cin >> p[i]; }
+    // intialize BIT from list of updates
+    BIT2D bit(n, updates);
+    for (int i = 1; i <= n; i++) { cin >> p[i]; }
 
-	ll ans = 0;
-	// now we can update and query like normal
-	for (int i = 1; i <= n; i++) {
-		ans += bit.query(1, p[i], a[p[i]] + 1, n);
-		ans += bit.query(p[i], n, 1, a[p[i]] - 1);
-		cout << ans << "\n";
-		bit.upd(p[i], a[p[i]]);
-	}
+    ll ans = 0;
+    // now we can update and query like normal
+    for (int i = 1; i <= n; i++) {
+    	ans += bit.query(1, p[i], a[p[i]] + 1, n);
+    	ans += bit.query(p[i], n, 1, a[p[i]] - 1);
+    	cout << ans << "\n";
+    	bit.upd(p[i], a[p[i]]);
+    }
+
 }
-```
+
+````
 
 </CPPSection>
 </LanguageSection>
@@ -481,7 +485,7 @@ struct Segtree {
 		       query(a, b, right_c[node], mid + 1, r);
 	}
 };
-```
+````
 
 </CPPSection>
 
