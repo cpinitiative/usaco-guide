@@ -1,0 +1,105 @@
+---
+id: poi-sums
+source: POI
+title: Sums
+author: Daniel Zhu
+---
+
+<Spoiler title="Hint 1">
+
+How can you solve the problem when $n = 2$? *Don't use Chicken McNugget Theorem!*
+
+</Spoiler>
+
+<Spoiler title="Hint 2">
+
+If we know we can make a number $x$, what other numbers will we be able to make?
+
+</Spoiler>
+
+<Spoiler title="Hint 3">
+
+Building off the previous hint, consider writing numbers in terms of $x$ and $a_0$.
+
+</Spoiler>
+
+## Explanation
+
+A crucial observation is that if we can make a number $x$, **we can make any number $x + k\cdot a_0$**, where k is a non-negative integer.
+We may be tempted to rewrite this as so: if we can make $x$, we can make all $y \equiv x \mod a_0$.
+If this is indeed the case, we can run a simple 0/1 DP to figure out what mods we can assemble, and to answer a query $b_i$, we can simply output $\texttt{dp}[b_i \mod a_0]$.
+However, this solution has a flaw; try to think about why before moving on!
+
+The issue occurs when $x > a_0$. For example, if $n = 2$ and $a = \{3, 5\}$, we
+can construct 8, but we cannot construct 2, even though $2 \equiv 8 \mod a_0$.
+Fortunately, this only requires a minor fix for our DP. Try to think of it
+yourself, but feel free to consult the below implementation if you get stuck!
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(NA)$
+
+The time limit is quite tight for this problem.
+With $n \leq 5000$ and $a_i \leq 50000$, we end up getting around $2.5\text{e}8$ operations.
+Here are a few optimizations I had to use:
+
+- I use a $\texttt{vis}$ array in my implementation, and clearing it on every iteration turned out to be too slow. So instead of simply storing true/false for whether an element is visisted, I stored how many times that element had been visited across all iterations instead, taking advantage of the fact that in each iteration, all elements will be visited exactly once, thus implying that after iteration $i$, each element should have been visited a total of $i$ times. Another alternative is simply inverting $\texttt{vis}$ on each subsequent iteration: i.e. on iteration 1, false = not visited, true =
+  visisted; but on iteration 2, false = visited, true = not visited; etc.
+- Theoretically, all the $a_0$'s in the above editorial can be replaced with an
+  arbitrary $a_i$; in fact, the condition that $a$ is sorted doesn't even
+  matter. However, we choose it simply for being the smallest value, which
+  marginally boosts execution time; using $a_1$ instead actually causes TLE for
+  the following code.
+
+While reading the following code, it may be helpful to consider that our DP is equivalent to running a shortest-path algorithm on a graph where each node $i \in [0, a_0)$ has $n$ outgoing, weighted edges to $(i + a_j) \text{ \% }a_0$ with weight $a_j$, for each $j \in [0, n).$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 5000;
+const int K = 50000;
+const int INF = 1e9;
+
+int a[N], d[K], vis[K];  // arrays and fast IO are needed for the time limit
+
+int main() {
+	cin.tie(0)->sync_with_stdio(0);
+	int n, k;
+	cin >> n;
+	for (int i = 0; i < n; i++) { cin >> a[i]; }
+	// d[i] -> min value we can make congruent to i (mod a[0])
+	fill(d, d + a[0], INF);
+	d[0] = 0;
+	for (int i = 0; i < n; i++) {
+		// important observation: edges of a single weight will form several
+		// disjoint cycles
+		for (int j = 0; j < a[0]; j++)
+			if (vis[j] <= i) {
+				// index of min d[j] value in this cycle
+				int min_index = j;
+				for (int k = j; k == j || (k - j) % a[0]; k += a[i]) {
+					if (d[k % a[0]] < d[min_index]) { min_index = k % a[0]; }
+				}
+				for (int k = min_index; vis[k] <= i; k = (k + a[i]) % a[0]) {
+					d[(k + a[i]) % a[0]] =
+					    min(d[(k + a[i]) % a[0]], d[k] + a[i]);
+					++vis[k];
+				}
+			}
+	}
+
+	cin >> k;
+	for (int i = 0; i < k; i++) {
+		int x;
+		cin >> x;
+		cout << (d[x % a[0]] <= x ? "TAK" : "NIE") << '\n';
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>
