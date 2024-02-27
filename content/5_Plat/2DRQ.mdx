@@ -230,7 +230,7 @@ struct BIT2D {
 
 		// ensures vals and bit are 1-indexed
 		for (int i = 1; i <= n; i++) { vals[i].push_back(0); }
-		for (const auto& [x, y] : todo) {
+		for (const auto &[x, y] : todo) {
 			for (int z = x; z <= n; z += z & -z) {
 				if (vals[z].back() != y) { vals[z].push_back(y); }
 			}
@@ -250,7 +250,8 @@ struct BIT2D {
 		}
 	}
 
-	/** @return returns sum of points in rectangle with top-right corner (x, y) */
+	/** @return returns sum of points in rectangle with top-right corner (x, y)
+	 */
 	int query(int x, int y) {
 		int tot = 0;
 		for (; x > 0; x -= x & -x) {
@@ -343,11 +344,11 @@ int main() {
 		// register all updates offline
 		updates.push_back({i, a[i]});
 	}
-	
+
 	// intialize BIT from list of updates
 	BIT2D bit(n, updates);
 	for (int i = 1; i <= n; i++) { cin >> p[i]; }
-	
+
 	ll ans = 0;
 	// now we can update and query like normal
 	for (int i = 1; i <= n; i++) {
