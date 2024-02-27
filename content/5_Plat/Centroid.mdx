@@ -200,17 +200,17 @@ The implementation by
 (ll. 20-21) leads to a segmentation fault due to an invalidated iterator in the range-based for loop after erasing the element. Instead, you can store an `is_removed` array and check it before visiting children (this approach is presented below). Alternatively, the following code in the Carpanese article (line 3 is the problematic one):
 ```cpp
 for (auto v : tree[centroid])
-			tree[centroid].erase(v), // remove the edge to disconnect
-			tree[v].erase(centroid), // the component from the tree
-			build(v, centroid);
+	tree[centroid].erase(v),      // remove the edge to disconnect
+	    tree[v].erase(centroid),  // the component from the tree
+	    build(v, centroid);
 ```
 Can be rewritten like so:
 ```cpp
-  for(auto v : tree[centroid]) {
-    tree[v].erase(centroid);
-    build(v, centroid);
-  }
-  tree[centroid].clear();
+for (auto v : tree[centroid]) {
+	tree[v].erase(centroid);
+	build(v, centroid);
+}
+tree[centroid].clear();
 ```
 The article also mentions an update complexity of $\mathcal{O}(\log^2n)$ because it assumes an additional factor of $\mathcal{O}(\log n)$ to calculate the distance between a node and a given centroid ancestor. However, we can precompute these (as demonstrated in the code below) to reduce update complexity to $\mathcal{O}(\log n)$ and overall complexity to $\mathcal{O}((N + Q)\log n)$.
 
