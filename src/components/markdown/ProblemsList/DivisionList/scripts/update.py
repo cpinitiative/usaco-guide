@@ -1,6 +1,6 @@
 import argparse
 import json
-import urllib.request
+import urllib.request, ssl
 import os
 from typing import Iterable, Optional, Tuple
 
@@ -16,7 +16,8 @@ YEAR_OFFSETS = [0, 1, 1, 1]
 
 
 def parse(url: str) -> BeautifulSoup:
-	page = urllib.request.urlopen(url)
+	req = urllib.request.Request(url, headers={"User-Agent": "Magic Browser"})
+	page = urllib.request.urlopen(req)
 	return BeautifulSoup(page, "html.parser")
 
 
