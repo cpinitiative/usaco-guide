@@ -2,6 +2,7 @@
 id: 2DRQ
 title: '2D Range Queries'
 author: Benjamin Qi, Andi Qu
+contributors: Daniel Zhu
 prerequisites:
   - sparse-segtree
 description: 'Extending Range Queries to 2D (and beyond).'
@@ -166,6 +167,9 @@ int main() {
 
 </LanguageSection>
 
+Also see
+[Benq's implementations](<https://github.com/bqi343/USACO/tree/master/Implementations/content/data-structures/2D%20Range%20Queries%20(15.2)>).
+
 ### Problems
 
 <Problems problems="bit" />
@@ -181,41 +185,254 @@ details.
 
 </Optional>
 
-## 2D Offline Sum Queries
-
-See
-[my implementations](<https://github.com/bqi343/USACO/tree/master/Implementations/content/data-structures/2D%20Range%20Queries%20(15.2)>).
-
 <FocusProblem problem="offSam" />
+
+## Offline 2D BIT
 
 The intended complexity is $\mathcal{O}(N\log^2 N)$ with a good constant factor.
 This requires updating points and querying rectangle sums $N$ times for points
 with coordinates in the range $[1,N]$. However, the 2D BITs mentioned above use
 $\mathcal{O}(N^2)$ memory, which is too much.
 
-### Solution - Soriya's Programming Project
-
 Since we know all of the updates and queries beforehand, we can reduce the
 memory usage while maintaining a decent constant factor.
 
-#### Idea 1 - Use an unordered map instead of a 2D array.
+We could use an unordered map instead of a 2D array, but this gives
+$\mathcal{O}(N\log^2N)$ memory and time and the constant factors for both are
+terrible; a better solution is to compress the points to be updated so that you only need
+$\mathcal{O}(N\log N)$ memory.
 
-Bad idea ... This gives $\mathcal{O}(N\log^2N)$ memory and time and the constant
-factors for both are terrible.
+The idea is to first figure out which BIT values **along one dimension** each update will affect.
+In the below table, the updates are $(1, 1), (3, 3),$ and $(4, 2)$, and the cells they affect are blue, red, and green respectively.
 
-#### Idea 2 - Compress the points to be updated so that you only need $\mathcal{O}(N\log N)$ memory.
+<center>
+<table className="text-center">
+	<tbody>
+		<tr>
+			<td className="bg-blue-400 dark:bg-blue-600">(1, 1)</td>
+			<td>(1, 2)</td>
+			<td>(1, 3)</td>
+			<td>(1, 4)</td>
+		</tr>
+		<tr>
+			<td className="bg-blue-200 dark:bg-blue-900">(2, 1)</td>
+			<td>(2, 2)</td>
+			<td>(2, 3)</td>
+			<td className="bg-green-400 dark:bg-green-700">(2, 4)</td>
+		</tr>
+		<tr>
+			<td>(3, 1)</td>
+			<td>(3, 2)</td>
+			<td className="bg-red-400 dark:bg-red-700">(3, 3)</td>
+			<td>(3, 4)</td>
+		</tr>
+		<tr>
+			<td className="bg-blue-200 dark:bg-blue-900">(4, 1)</td>
+			<td>(4, 2)</td>
+			<td className="bg-red-200 dark:bg-red-900">(4, 3)</td>
+			<td className="bg-green-200 dark:bg-green-900">(4, 4)</td>
+		</tr>
+	</tbody>
+</table>
+</center>
 
-This doesn't require knowing the queries beforehand.
+We can now compress each row in the same fashion as an offline 1D BIT (remember, each row in a 2D BIT is another 1D BIT)!
+For example, we can compress the second row to a BIT of size 2, and map range queries $[1, y)$ with $y \in [1, 4)$ to a range query of $[1, 2)$,
+and queries with $y \in [4, \infty)$ to a range query of $[1, 3)$.
 
-- [my 1D offline BIT](<https://github.com/bqi343/USACO/blob/master/Implementations/content/data-structures/1D%20Range%20Queries%20(9.2)/BIToff.h>)
-- [my 2D offline BIT](<https://github.com/bqi343/USACO/blob/master/Implementations/content/data-structures/2D%20Range%20Queries%20(15.2)/BIT2DOff%20(15.2).h>)
+Similarly, for row 4 (which becomes a BIT of size 3):
+- $y \in [1, 3)$ -> range query $[1, 2)$
+- $y \in [3, 4)$ -> range query $[1, 3)$
+- $y \in [4, \infty)$ -> range query $[1, 4)$
 
-It's a bit difficult to pass the above problem within the time limit. Make sure
-to use fast input (and not `endl`)!
+This only requires knowing the updates beforehand, not the queries!
+
+### Implementation
+
+- [Benq's 1D offline BIT](<https://github.com/bqi343/USACO/blob/master/Implementations/content/data-structures/1D%20Range%20Queries%20(9.2)/BIToff.h>)
+- [Benq's 2D offline BIT](<https://github.com/bqi343/USACO/blob/master/Implementations/content/data-structures/2D%20Range%20Queries%20(15.2)/BIT2DOff%20(15.2).h>)
+
+Here's an implementation of the offline 2D BIT presented above that may be
+easier to understand, albeit significantly slower due to a high constant factor:
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+// index of largest value <= x in v (sorted)
+// if v = [1, 2, 4], ind(v, 3) would return 1
+int ind(vector<int> v, int x) {
+	return upper_bound(v.begin(), v.end(), x) - v.begin() - 1;
+}
+
+class BIT2D {
+  private:
+	int n;  // max x-coordinate
+	vector<vector<int>> vals, bit;
+
+  public:
+	BIT2D(int n, vector<pair<int, int>> &todo) : n(n), vals(n + 1), bit(n + 1) {
+		// sort points by y-coordinate
+		sort(todo.begin(), todo.end(), [](pair<int, int> a, pair<int, int> b) {
+			return a.second < b.second;
+		});
+		// ensures vals and bit are 1-indexed
+		for (int i = 1; i <= n; i++) { vals[i].push_back(0); }
+		for (auto [x, y] : todo) {
+			for (int z = x; z <= n; z += z & -z) {
+				if (vals[z].back() != y) { vals[z].push_back(y); }
+			}
+		}
+		for (int i = 1; i <= n; i++) { bit[i].resize(vals[i].size()); }
+	}
+
+	/** adds t to the point (x, y) */
+	void upd(int x, int y, int t = 1) {
+		for (; x <= n; x += x & -x) {
+			int z = ind(vals[x], y);
+			assert(z && vals[x][z] == y);
+			for (; z < bit[x].size(); z += z & -z) { bit[x][z] += t; }
+		}
+	}
+
+	/** @return sum of points in rectangle with top-right corner (x, y) */
+	int query(int x, int y) {
+		int tot = 0;
+		for (; x > 0; x -= x & -x) {
+			for (int z = ind(vals[x], y); z > 0; z -= z & -z) {
+				tot += bit[x][z];
+			}
+		}
+		return tot;
+	}
+
+	/** @returns sum of points with x in [x1, x2] and y in [y1, y2] */
+	int query(int x1, int x2, int y1, int y2) {
+		if (x1 > x2 || y1 > y2) { return 0; }
+		int tr = query(x2, y2);          // top-right
+		int tl = query(x1 - 1, y2);      // top-left
+		int br = query(x2, y1 - 1);      // bottom-right
+		int bl = query(x1 - 1, y1 - 1);  // bottom-left
+		return tr - tl - br + bl;
+	}
+};
+```
+
+</CPPSection>
+</LanguageSection>
+
+And you might use it like so:
+
+<LanguageSection>
+<CPPSection>
+```cpp
+#include <algorithm>
+#include <cassert>
+#include <iostream>
+#include <vector>
+using namespace std;
+using ll = long long;
+
+// BeginCodeSnip{BIT2D}
+// index of largest value <= x in v (sorted)
+// if v = [1, 2, 4], ind(v, 3) would return 1
+int ind(vector<int> v, int x) {
+	return upper_bound(v.begin(), v.end(), x) - v.begin() - 1;
+}
+
+class BIT2D {
+  private:
+	int n;  // max x-coordinate
+	vector<vector<int>> vals, bit;
+
+  public:
+	BIT2D(int n, vector<pair<int, int>> &todo) : n(n), vals(n + 1), bit(n + 1) {
+		// sort points by y-coordinate
+		sort(todo.begin(), todo.end(), [](pair<int, int> a, pair<int, int> b) {
+			return a.second < b.second;
+		});
+		// ensures vals and bit are 1-indexed
+		for (int i = 1; i <= n; i++) { vals[i].push_back(0); }
+		for (auto [x, y] : todo) {
+			for (int z = x; z <= n; z += z & -z) {
+				if (vals[z].back() != y) { vals[z].push_back(y); }
+			}
+		}
+		for (int i = 1; i <= n; i++) { bit[i].resize(vals[i].size()); }
+	}
+
+	/** adds t to the point (x, y) */
+	void upd(int x, int y, int t = 1) {
+		for (; x <= n; x += x & -x) {
+			int z = ind(vals[x], y);
+			assert(z && vals[x][z] == y);
+			for (; z < bit[x].size(); z += z & -z) { bit[x][z] += t; }
+		}
+	}
+
+	/** @return sum of points in rectangle with top-right corner (x, y) */
+	int query(int x, int y) {
+		int tot = 0;
+		for (; x > 0; x -= x & -x) {
+			for (int z = ind(vals[x], y); z > 0; z -= z & -z) {
+				tot += bit[x][z];
+			}
+		}
+		return tot;
+	}
+
+	/** @returns sum of points with x in [x1, x2] and y in [y1, y2] */
+	int query(int x1, int x2, int y1, int y2) {
+		if (x1 > x2 || y1 > y2) { return 0; }
+		int tr = query(x2, y2);          // top-right
+		int tl = query(x1 - 1, y2);      // top-left
+		int br = query(x2, y1 - 1);      // bottom-right
+		int bl = query(x1 - 1, y1 - 1);  // bottom-left
+		return tr - tl - br + bl;
+	}
+};
+// EndCodeSnip
+
+int main() {
+	int n;
+	cin >> n;
+	vector<int> a(n + 1), p(n + 1);
+	vector<pair<int, int>> updates;
+	for (int i = 1; i <= n; i++) {
+		cin >> a[i];
+		// register all updates offline
+		updates.push_back({i, a[i]});
+	}
+
+	// intialize BIT from list of updates
+	BIT2D bit(n, updates);
+	for (int i = 1; i <= n; i++) { cin >> p[i]; }
+
+	ll ans = 0;
+	// now we can update and query like normal
+	for (int i = 1; i <= n; i++) {
+		ans += bit.query(1, p[i], a[p[i]] + 1, n);
+		ans += bit.query(p[i], n, 1, a[p[i]] - 1);
+		cout << ans << "\n";
+		bit.upd(p[i], a[p[i]]);
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
+<Warning title="Implementation Note">
+
+As mentioned earlier, the above `BIT2D` implementation is significantly slower than Benq's `OffBIT2D` and, in fact, will get TLE on the Soriya's Programming Project; this is due to the large amount of calls to `vector.resize` it makes.
+
+</Warning>
+
+It's a bit difficult to pass the above problem within the time limit. Make sure to use fast input (and not `endl`)!
 
 - [thecodingwizard's implementation with 2D offline BIT above](https://github.com/thecodingwizard/competitive-programming/blob/master/DMOJ/Soriyas%20Programming%20Project.cpp)
 
-#### Idea 3 - Use divide & conquer with a 1D BIT
+##  1D BIT + Divide & Conquer
 
 The fastest way.
 
@@ -241,7 +458,6 @@ Here is an implementation of the above idea:
 
 <CPPSection>
 
-```cpp
 const int MAXN = 2e5, MAXSEG = (6e5 + 9) * 19 + 1;
 
 int cnt = 1, segtree[MAXSEG], left_c[MAXSEG], right_c[MAXSEG];
