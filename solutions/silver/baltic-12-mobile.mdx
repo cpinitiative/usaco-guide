@@ -64,7 +64,6 @@ a sorted list and still get the correct answer!
 This gets rid of the $\log N$ factor in our original complexity and so the final
 complexity is $\mathcal{O}(N \log L)$, which is good enough for 100 points.
 
-
 ## Implementation
 
 ```cpp
@@ -117,6 +116,7 @@ The key observation is that not all stations contribute to the answer. If we eve
 In fact, we can also ignore some points on the highway! Once we have this list of key stations, the number of points can be bounded by the number of key stations.
 
 <Spoiler title="How?">
+
 Let's say that we're looking for the point on the highway (excluding the endpoints) with the maximum distance to the nearest station, where there are only two stations, $a$ and $b$.
 
 Then, we can imagine a line perpendicular to the line segment formed by these two stations that passes through the midpoint. Everything on the left side is closer to $a$, and everything on the right side is closer to $b$.
@@ -128,6 +128,7 @@ Thus, the maximum point is at the point where the perpendicular line intersects 
 This intersection can be represented by $\frac{b_x^2 + b_y^2 - a_x^2 - a_y^2}{2(b_x - a_x)}$.
 
 From here on, we'll refer to this point as $p(a, b)$, where $a$ and $b$ are stations.
+
 </Spoiler>
 
 Now, let's consider cases where there exist unnecessary stations.
@@ -137,6 +138,7 @@ Without loss of generality, let's assume all points are above the y-axis, and $a
 ### Case 1: $p(a, b) < p(b, c)$
 
 In this arrangement, all stations are the closest to some points on the highway, so we should keep them.
+
 ![Case 1](<baltic-12-mobile/case1.png>)
 
 ### Case 2: $p(a, b) > p(b, c)$
@@ -148,6 +150,7 @@ Note how this creates a cross, which makes $b$ useless. All points on the highwa
 Since we only remove the most recent stations, this motivates the use of a [stack](/gold/stacks) to perform these removals/additions in $\mathcal{O}(1)$.
 
 ## Implementation
+
 **Time Complexity**: $\mathcal{O}(N)$
 
 <LanguageSection>
@@ -164,17 +167,15 @@ struct Point {
 };
 
 /**
- * @returns the intersection of the perpendicular line that
+ * @return the intersection of the perpendicular line that
  * crosses the midpoint of Points a & b with the highway
  */
-double max_point(Point a, Point b) {
+double max_point(const Point& a, const Point& b) {
 	return (b.x * b.x + b.y * b.y - a.x * a.x - a.y * a.y) /
 	       (2 * b.x - 2 * a.x);
 }
-/**
- * @returns the euclidean distance between Points a & b
- */
-double dist(Point a, Point b) {
+/** @return the euclidean distance between points a & b */
+double dist(const Point& a, const Point& b) {
 	return sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y));
 }
 
@@ -225,6 +226,8 @@ int main() {
 	cout << fixed << setprecision(6) << ans << endl;
 }
 ```
+
 </CPPSection>
 </LanguageSection>
+
 </Spoiler>
