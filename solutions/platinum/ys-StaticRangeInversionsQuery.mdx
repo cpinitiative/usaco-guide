@@ -23,6 +23,7 @@ using P = pair<int, int>;
 const int N = 1e5 + 1;
 const int S = 300;
 
+// BeginCodeSnip{BIT (from PURS module)}
 template <class T> class BIT {
   private:
 	int size;
@@ -50,6 +51,7 @@ template <class T> class BIT {
 		return total;
 	}
 };
+// EndCodeSnip
 
 struct Query {
 	int l, r, i;
@@ -80,7 +82,6 @@ int main() {
 	});
 
 	ll res = 0;
-
 	BIT<int> bit(n);
 	// left -> whether we're modifying on the left
 	auto edit = [&](int id, int x, bool left) {
@@ -92,13 +93,14 @@ int main() {
 
 	vector<ll> ans(k);
 	for (int i = 0; i < q.size(); i++) {
-		if (i) ans[q[i].i] = res;
-		if (i + 1 >= q.size()) break;
+		if (i) { ans[q[i].i] = res; }
+		if (i + 1 >= q.size()) { break; }
 		while (q[i].l > q[i + 1].l) { edit(id(--q[i].l), 1, true); }
 		while (q[i].r < q[i + 1].r) { edit(id(q[i].r++), 1, false); }
 		while (q[i].l < q[i + 1].l) { edit(id(q[i].l++), -1, true); }
 		while (q[i].r > q[i + 1].r) { edit(id(--q[i].r), -1, false); }
 	}
+
 	for (int i = 0; i < k; i++) { cout << ans[i] << '\n'; }
 }
 ```
