@@ -84,7 +84,9 @@ int main() {
 	BIT<int> bit(n);
 	// left -> whether we're modifying on the left
 	auto edit = [&](int id, int x, bool left) {
-		res += (left ? bit.pref_sum(id - 1) : bit.pref_sum(n - 1) - bit.pref_sum(id)) * x;
+		res += (left ? bit.pref_sum(id - 1)
+		             : bit.pref_sum(n - 1) - bit.pref_sum(id)) *
+		       x;
 		bit.add(id, x);
 	};
 
