@@ -160,8 +160,6 @@ Since we only remove the most recent stations, this motivates the use of a [stac
 #include <bits/stdc++.h>
 using namespace std;
 
-#define sz(x) (int)x.size()
-
 struct Point {
 	double x, y;
 };
@@ -190,7 +188,7 @@ int main() {
 		cur.y = abs(cur.y);
 
 		// always take the one with the lowest y coord
-		if (sz(stck) && stck.back().x == cur.x) {
+		if ((int)stck.size() && stck.back().x == cur.x) {
 			if (cur.y >= stck.back().y) {
 				continue;
 			} else if (cur.y < stck.back().y) {
@@ -199,8 +197,7 @@ int main() {
 		}
 
 		// find "crosses"
-		while (sz(stck) > 1 && max_point(stck[sz(stck) - 2], stck.back()) >
-		                           max_point(stck.back(), cur)) {
+		while ((int)stck.size() > 1 && max_point(stck[(int)stck.size() - 2], stck.back()) > max_point(stck.back(), cur)) {
 			stck.pop_back();
 		}
 
@@ -208,17 +205,24 @@ int main() {
 	}
 
 	// out of bounds
-	while (sz(stck) > 1 && max_point(stck[0], stck[1]) < 0) stck.pop_front();
-	while (sz(stck) > 1 && max_point(stck[sz(stck) - 2], stck.back()) > l)
+	while ((int)stck.size() > 1 && max_point(stck[0], stck[1]) < 0) {
+		stck.pop_front();
+	}
+
+	while ((int)stck.size() > 1 && max_point(stck[(int)stck.size() - 2], stck.back()) > l) {
 		stck.pop_back();
+	}
 
 	double ans = 0;
-	for (int x = 0; x < sz(stck); x++) {
-		Point left = {(x ? max_point(stck[x], stck[x - 1]) : 0), 0};
-		Point right = {(x < sz(stck) - 1 ? max_point(stck[x], stck[x + 1]) : l),
-		               0};
+	for (int x = 0; x < (int)stck.size(); x++) {
+		// get critical points stck[x] is in charge of 
+		Point left = {0, 0};
+		Point right {l, 0};
 
-		if (left.x < 0 || right.x > l || right.x < 0 || left.x > l) continue;
+		if (x) { left.x = max_point(stck[x], stck[x - 1]); }
+		if (x < (int)stck.size() - 1) { right.x = max_point(stck[x], stck[x + 1]); }
+		
+		if (left.x < 0 || right.x > l || right.x < 0 || left.x > l) { continue; }
 
 		ans = max({ans, dist(stck[x], left), dist(stck[x], right)});
 	}
