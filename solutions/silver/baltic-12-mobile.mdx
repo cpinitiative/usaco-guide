@@ -2,7 +2,7 @@
 id: baltic-12-mobile
 source: Baltic OI 2012
 title: Mobile
-author: Andi Qu
+author: Andi Qu, Ryan Chou
 ---
 
 [Official Analysis](https://boi.cses.fi/files/boi2012_solutions.zip)
@@ -64,7 +64,6 @@ a sorted list and still get the correct answer!
 This gets rid of the $\log N$ factor in our original complexity and so the final
 complexity is $\mathcal{O}(N \log L)$, which is good enough for 100 points.
 
-(There is also an $\mathcal{O}(N)$ solution - try to come up with it yourself!)
 
 ## Implementation
 
@@ -100,3 +99,131 @@ int main() {
 	return 0;
 }
 ```
+
+---
+
+<Info title="Faster Solution">
+
+Although not necessary for full credit, there also exists an $\mathcal{O}(N)$ solution.
+
+Try to come up with it yourself before moving on!
+
+</Info>
+
+<Spoiler title="Faster Solution">
+
+The key observation is that not all stations contribute to the answer. If we ever have a station that isn't the closest to any point on the highway, we can simply ignore it.
+
+In fact, we can also ignore some points on the highway! Once we have this list of key stations, the number of points can be bounded by the number of key stations.
+
+<Spoiler title="How?">
+Let's say that we're looking for the point on the highway (excluding the endpoints) with the maximum distance to the nearest station, where there are only two stations, $a$ and $b$.
+
+Then, we can imagine a line perpendicular to the line segment formed by these two stations that passes through the midpoint. Everything on the left side is closer to $a$, and everything on the right side is closer to $b$.
+
+Thus, the maximum point is at the point where the perpendicular line intersects the highway! We only have to get the answer from these critical points, and since there are only two stations that could be closest to it, we can compute them in $\mathcal{O}(1)$.
+
+![Maximum Point](<baltic-12-mobile/perpendicular.png>)
+
+This intersection can be represented by $\frac{b_x^2 + b_y^2 - a_x^2 - a_y^2}{2(b_x - a_x)}$.
+
+From here on, we'll refer to this point as $p(a, b)$, where $a$ and $b$ are stations.
+</Spoiler>
+
+Now, let's consider cases where there exist unnecessary stations.
+
+Without loss of generality, let's assume all points are above the y-axis, and $a_x < b_x < c_x$.
+
+### Case 1: $p(a, b) < p(b, c)$
+
+In this arrangement, all stations are the closest to some points on the highway, so we should keep them.
+![Case 1](<baltic-12-mobile/case1.png>)
+
+### Case 2: $p(a, b) > p(b, c)$
+
+Note how this creates a cross, which makes $b$ useless. All points on the highway are now closer to $a$ or $c$. To find the maximum point here, we can just remove $b$, and recalculate for $p(a, c)$.
+
+![Case 2](<baltic-12-mobile/case2.png>)
+
+Since we only remove the most recent stations, this motivates the use of a [stack](/gold/stacks) to perform these removals/additions in $\mathcal{O}(1)$.
+
+## Implementation
+**Time Complexity**: $\mathcal{O}(N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+#define sz(x) (int)x.size()
+
+struct Point {
+	double x, y;
+};
+
+/**
+ * @returns the intersection of the perpendicular line that
+ * crosses the midpoint of Points a & b with the highway
+ */
+double max_point(Point a, Point b) {
+	return (b.x * b.x + b.y * b.y - a.x * a.x - a.y * a.y) / (2 * b.x - 2 * a.x);
+}
+/**
+ * @returns the euclidean distance between Points a & b
+ */
+double dist(Point a, Point b) {
+	return sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y));
+}
+
+int main() {
+	int n, l;
+	cin >> n >> l;
+
+	deque<Point> stck;
+	for (int i = 0; i < n; i++) {
+		Point cur;
+		cin >> cur.x >> cur.y;
+		cur.y = abs(cur.y);
+
+		// always take the one with the lowest y coord
+		if (sz(stck) && stck.back().x == cur.x) {
+			if (cur.y >= stck.back().y) {
+				continue;
+			} else if (cur.y < stck.back().y) {
+				stck.pop_back();
+			}
+		}
+
+		// find "crosses"
+		while (sz(stck) > 1 && max_point(stck[sz(stck) - 2], stck.back()) > max_point(stck.back(), cur)) {
+			stck.pop_back();
+		}
+
+		stck.push_back(cur);
+	}
+
+	// out of bounds
+	while (sz(stck) > 1 && max_point(stck[0], stck[1]) < 0)
+		stck.pop_front();
+	while (sz(stck) > 1 && max_point(stck[sz(stck) - 2], stck.back()) > l)
+		stck.pop_back();
+
+	double ans = 0;
+	for (int x = 0; x < sz(stck); x++) {
+		Point left = {(x ? max_point(stck[x], stck[x - 1]) : 0), 0};
+		Point right = {(x < sz(stck) - 1 ? max_point(stck[x], stck[x + 1]) : l), 0};
+
+		if (left.x < 0 || right.x > l || right.x < 0 || left.x > l)
+			continue;
+
+		ans = max({ans, dist(stck[x], left), dist(stck[x], right)});
+	}
+
+	cout << fixed << setprecision(6) << ans << endl;
+}
+```
+</CPPSection>
+</LanguageSection>
+</Spoiler>
