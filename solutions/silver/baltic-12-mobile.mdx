@@ -168,7 +168,8 @@ struct Point {
  * crosses the midpoint of Points a & b with the highway
  */
 double max_point(Point a, Point b) {
-	return (b.x * b.x + b.y * b.y - a.x * a.x - a.y * a.y) / (2 * b.x - 2 * a.x);
+	return (b.x * b.x + b.y * b.y - a.x * a.x - a.y * a.y) /
+	       (2 * b.x - 2 * a.x);
 }
 /**
  * @returns the euclidean distance between Points a & b
@@ -197,7 +198,8 @@ int main() {
 		}
 
 		// find "crosses"
-		while (sz(stck) > 1 && max_point(stck[sz(stck) - 2], stck.back()) > max_point(stck.back(), cur)) {
+		while (sz(stck) > 1 && max_point(stck[sz(stck) - 2], stck.back()) >
+		                           max_point(stck.back(), cur)) {
 			stck.pop_back();
 		}
 
@@ -205,18 +207,17 @@ int main() {
 	}
 
 	// out of bounds
-	while (sz(stck) > 1 && max_point(stck[0], stck[1]) < 0)
-		stck.pop_front();
+	while (sz(stck) > 1 && max_point(stck[0], stck[1]) < 0) stck.pop_front();
 	while (sz(stck) > 1 && max_point(stck[sz(stck) - 2], stck.back()) > l)
 		stck.pop_back();
 
 	double ans = 0;
 	for (int x = 0; x < sz(stck); x++) {
 		Point left = {(x ? max_point(stck[x], stck[x - 1]) : 0), 0};
-		Point right = {(x < sz(stck) - 1 ? max_point(stck[x], stck[x + 1]) : l), 0};
+		Point right = {(x < sz(stck) - 1 ? max_point(stck[x], stck[x + 1]) : l),
+		               0};
 
-		if (left.x < 0 || right.x > l || right.x < 0 || left.x > l)
-			continue;
+		if (left.x < 0 || right.x > l || right.x < 0 || left.x > l) continue;
 
 		ans = max({ans, dist(stck[x], left), dist(stck[x], right)});
 	}
