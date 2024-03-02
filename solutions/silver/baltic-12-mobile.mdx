@@ -181,57 +181,57 @@ int main() {
 	int n, l;
 	cin >> n >> l;
 
-	deque<Point> stck;
+	deque<Point> needed;
 	for (int i = 0; i < n; i++) {
 		Point cur;
 		cin >> cur.x >> cur.y;
 		cur.y = abs(cur.y);
 
 		// always take the one with the lowest y coord
-		if ((int)stck.size() && stck.back().x == cur.x) {
-			if (cur.y >= stck.back().y) {
+		if ((int)needed.size() && needed.back().x == cur.x) {
+			if (cur.y >= needed.back().y) {
 				continue;
-			} else if (cur.y < stck.back().y) {
-				stck.pop_back();
+			} else if (cur.y < needed.back().y) {
+				needed.pop_back();
 			}
 		}
 
 		// find "crosses"
-		while ((int)stck.size() > 1 &&
-		       max_point(stck[(int)stck.size() - 2], stck.back()) >
-		           max_point(stck.back(), cur)) {
-			stck.pop_back();
+		while ((int)needed.size() > 1 &&
+		       max_point(needed[(int)needed.size() - 2], needed.back()) >
+		           max_point(needed.back(), cur)) {
+			needed.pop_back();
 		}
 
-		stck.push_back(cur);
+		needed.push_back(cur);
 	}
 
 	// out of bounds
-	while ((int)stck.size() > 1 && max_point(stck[0], stck[1]) < 0) {
-		stck.pop_front();
+	while ((int)needed.size() > 1 && max_point(needed[0], needed[1]) < 0) {
+		needed.pop_front();
 	}
 
-	while ((int)stck.size() > 1 &&
-	       max_point(stck[(int)stck.size() - 2], stck.back()) > l) {
-		stck.pop_back();
+	while ((int)needed.size() > 1 &&
+	       max_point(needed[(int)needed.size() - 2], needed.back()) > l) {
+		needed.pop_back();
 	}
 
 	double ans = 0;
-	for (int x = 0; x < (int)stck.size(); x++) {
-		// get critical points stck[x] is in charge of
+	for (int x = 0; x < (int)needed.size(); x++) {
+		// get critical points needed[x] is in charge of
 		Point left = {0, 0};
 		Point right{l, 0};
 
-		if (x) { left.x = max_point(stck[x], stck[x - 1]); }
-		if (x < (int)stck.size() - 1) {
-			right.x = max_point(stck[x], stck[x + 1]);
+		if (x) { left.x = max_point(needed[x], needed[x - 1]); }
+		if (x < (int)needed.size() - 1) {
+			right.x = max_point(needed[x], needed[x + 1]);
 		}
 
 		if (left.x < 0 || right.x > l || right.x < 0 || left.x > l) {
 			continue;
 		}
 
-		ans = max({ans, dist(stck[x], left), dist(stck[x], right)});
+		ans = max({ans, dist(needed[x], left), dist(needed[x], right)});
 	}
 
 	cout << fixed << setprecision(6) << ans << endl;
