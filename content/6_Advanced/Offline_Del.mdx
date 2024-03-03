@@ -172,15 +172,15 @@ const int MAXN = 3e5 + 5;
 
 DSU dsu(MAXN);
 
-struct query {
+struct Query{
 	int t, u, v, x;
 };
 
-vector<query> tree[MAXN * 4];
+vector<Query> tree[MAXN * 4];
 
-void update(query &q, int v, int l, int r, int L, int R) {
-	if (l > R || r < L) return;
-	if (l <= L && r >= R) {
+void update(Query& q, int v, int l, int r, int L, int R){
+	if(l > R || r < L) return;
+	if(l <= L && r >= R){
 		tree[v].push_back(q);
 		return;
 	}
@@ -189,19 +189,27 @@ void update(query &q, int v, int l, int r, int L, int R) {
 	update(q, v * 2 + 1, l, r, m + 1, R);
 }
 
-void dfs(int v, int l, int r, vector<ll> &ans) {
+
+void dfs(int v, int l, int r, vector<ll>& ans){
 	int snapshot = dsu.snapshot();
 	// perform all available operations upon entering
-	for (query &q : tree[v]) {
-		if (q.t == 1) { dsu.unite(q.u, q.v); }
-		if (q.t == 2) { dsu.add(q.v, q.x); }
-	}
-	if (l == r) {
-		// answer type 3 query if we have one
-		for (query &q : tree[v]) {
-			if (q.t == 3) { ans[l] = dsu.sum[dsu.get(q.v)]; }
+	for(Query& q: tree[v]){
+		if(q.t == 1){
+			dsu.unite(q.u, q.v);
 		}
-	} else {
+		if(q.t == 2){
+			dsu.add(q.v, q.x);
+		}
+	}	
+	if(l == r){
+		// answer type 3 query if we have one
+		for(Query& q: tree[v]){
+			if(q.t == 3){
+				ans[l] = dsu.sum[dsu.get(q.v)]; 
+			}
+		}
+	}
+	else{
 		// go deeper into the tree
 		int m = (l + r) / 2;
 		dfs(2 * v, l, m, ans);
@@ -212,57 +220,55 @@ void dfs(int v, int l, int r, vector<ll> &ans) {
 }
 
 int main() {
-	cin.tie(0)->sync_with_stdio(0);
-	int n, q;
-	cin >> n >> q;
-	for (int i = 0; i < n; i++) {
-		ll x;
-		cin >> x;
+	cin.tie(0) -> sync_with_stdio(0);
+	int n, q; cin >> n >> q;
+	for(int i = 0; i < n; i++){
+		ll x; cin >> x;
 		dsu.sum[i] = x;
 	}
 	map<pair<int, int>, int> index_added;
-	for (int i = 0; i < q; i++) {
-		int t;
-		cin >> t;
-		if (t == 0) {
-			int u, v;
-			cin >> u >> v;
-			if (u > v) swap(u, v);
+	for(int i = 0; i < q; i++){
+		int t; cin >> t;
+		if(t == 0){
+			int u, v; cin >> u >> v;
+			if(u > v) swap(u, v);
 			// store index this edge is added, marks beginning of interval
 			index_added[{u, v}] = i;
-		} else if (t == 1) {
-			int u, v;
-			cin >> u >> v;
-			if (u > v) swap(u, v);
-			query cur_q = {1, u, v};
+		}
+		else if(t == 1){
+			int u, v; cin >> u >> v;
+			if(u > v) swap(u, v);
+			Query cur_q = {1, u, v};
 			// add all edges that are deleted to interval [index added, i - 1]
 			update(cur_q, 1, index_added[{u, v}], i - 1, 0, q - 1);
 			index_added[{u, v}] = -1;
-		} else if (t == 2) {
-			int v, x;
-			cin >> v >> x;
-			query cur_q = {2, -1, v, x};
+		}
+		else if(t == 2){
+			int v, x; cin >> v >> x;
+			Query cur_q = {2, -1, v, x};
 			// add all sum queries to interval [i, q - 1]
 			update(cur_q, 1, i, q - 1, 0, q - 1);
-		} else {
-			int v;
-			cin >> v;
-			query cur_q = {3, -1, v};
+		}
+		else{
+			int v; cin >> v;
+			Query cur_q = {3, -1, v};
 			// add all output queries to interval [i, i]
 			update(cur_q, 1, i, i, 0, q - 1);
 		}
 	}
 	// add all edges that are not deleted to interval [index added, q - 1]
-	for (auto [edge, index] : index_added) {
-		if (index != -1) {
-			query cur_q = {1, edge.first, edge.second};
+	for(auto [edge, index]: index_added){
+		if(index != -1){
+			Query cur_q = {1, edge.first, edge.second};
 			update(cur_q, 1, index, q - 1, 0, q - 1);
 		}
 	}
 	vector<ll> ans(q, -1);
 	dfs(1, 0, q - 1, ans);
-	for (int i = 0; i < q; i++) {
-		if (ans[i] != -1) { cout << ans[i] << "\n"; }
+	for(int i = 0; i < q; i++){
+		if(ans[i] != -1){
+			cout << ans[i] << "\n";
+		}
 	}
 }
 ```
