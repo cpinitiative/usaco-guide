@@ -198,13 +198,6 @@ export const RestOfMembers: Member[] = [
     codeforces: 'YoRepi7',
   },
   {
-    photo: 'paul',
-    name: 'Paul Chen',
-    titles: [roles.contentAuthor],
-    codeforces: '876pol',
-    github: '876pol',
-  },
-  {
     photo: 'trisha',
     name: 'Trisha Sabadra',
     titles: ['Director of Classes', roles.liveInstructor],
@@ -309,6 +302,13 @@ export const FormerMembers: Member[] = [
     titles: [roles.contentAuthor],
     github: 'RedBlueBird',
     email: 'jiefu.zhang1226@gmail.com',
+  },
+  {
+    photo: 'paul',
+    name: 'Paul Chen',
+    titles: [roles.contentAuthor],
+    codeforces: '876pol',
+    github: '876pol',
   },
   {
     photo: 'stanley',
