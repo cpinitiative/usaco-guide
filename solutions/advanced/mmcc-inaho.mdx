@@ -1,6 +1,6 @@
 ---
 id: mmcc-inaho
-source: MMCC 
+source: MMCC
 title: Inaho
 author: Chongtian Ma
 ---
@@ -13,20 +13,22 @@ To easily test your code from samples, copy and paste the following main functio
 <CPPSection>
 
 ```cpp
-int main(){
-	int n, q; cin >> n >> q;
+int main() {
+	int n, q;
+	cin >> n >> q;
 	Init(n);
-	while(q--){
-		int t; cin >> t;
-		if(t == 1){
-			int u, v; cin >> u >> v;
+	while (q--) {
+		int t;
+		cin >> t;
+		if (t == 1) {
+			int u, v;
+			cin >> u >> v;
 			AddEdge(u, v);
 		}
-		if(t == 2){
-			RemoveLastEdge();
-		}
-		if(t == 3){
-			int u; cin >> u;
+		if (t == 2) { RemoveLastEdge(); }
+		if (t == 3) {
+			int u;
+			cin >> u;
 			cout << GetSize(u) << endl;
 		}
 	}
@@ -61,7 +63,7 @@ Expected Output:
 </LanguageSection>
 </Info>
 
-## Implementation 
+## Implementation
 
 This is a standard test of your DSU with rollback template.
 
@@ -75,10 +77,10 @@ using namespace std;
 
 struct DSU {
 	vector<int> p, sz;
-	
+
 	// stores history
-	vector<pair<int&, int>> psnap, szsnap;
-	
+	vector<pair<int &, int>> psnap, szsnap;
+
 	DSU(int n) {
 		p.resize(n);
 		sz.resize(n, 1);
@@ -91,7 +93,7 @@ struct DSU {
 		a = get(a);
 		b = get(b);
 		if (sz[a] < sz[b]) { swap(a, b); }
-		
+
 		// add to history
 		szsnap.push_back({sz[a], sz[a]});
 		psnap.push_back({p[b], p[b]});
@@ -113,21 +115,13 @@ struct DSU {
 const int MAXN = 500000;
 DSU dsu(MAXN);
 
-void Init(int n){
-	
-}
+void Init(int n) {}
 
-void AddEdge(int u, int v){
-	dsu.unite(--u, --v);
-}
+void AddEdge(int u, int v) { dsu.unite(--u, --v); }
 
-void RemoveLastEdge(){
-	dsu.rollback();
-}
+void RemoveLastEdge() { dsu.rollback(); }
 
-int GetSize(int u){
-	return dsu.sz[dsu.get(--u)];
-}
+int GetSize(int u) { return dsu.sz[dsu.get(--u)]; }
 ```
 
 </CPPSection>
