@@ -1,0 +1,135 @@
+---
+id: mmcc-inaho
+source: MMCC 
+title: Inaho
+author: Chongtian Ma
+---
+
+<Info title="Samples">
+To easily test your code from samples, copy and paste the following main function to the bottom of your code.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+int main(){
+	int n, q; cin >> n >> q;
+	Init(n);
+	while(q--){
+		int t; cin >> t;
+		if(t == 1){
+			int u, v; cin >> u >> v;
+			AddEdge(u, v);
+		}
+		if(t == 2){
+			RemoveLastEdge();
+		}
+		if(t == 3){
+			int u; cin >> u;
+			cout << GetSize(u) << endl;
+		}
+	}
+}
+```
+
+Input:
+```
+5 10
+1 1 2
+3 1
+1 2 3
+3 2
+1 3 4
+3 3
+1 4 5
+3 4
+2
+3 1
+```
+
+Expected Output:
+```
+2
+3
+4
+5
+4
+```
+</CPPSection>
+
+</LanguageSection>
+</Info>
+
+## Implementation 
+
+This is a standard test of your DSU with rollback template.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+struct DSU {
+	vector<int> p, sz;
+	
+	// stores history
+	vector<pair<int&, int>> psnap, szsnap;
+	
+	DSU(int n) {
+		p.resize(n);
+		sz.resize(n, 1);
+		iota(p.begin(), p.end(), 0);
+	}
+
+	int get(int x) { return (p[x] == x) ? x : get(p[x]); }
+
+	void unite(int a, int b) {
+		a = get(a);
+		b = get(b);
+		if (sz[a] < sz[b]) { swap(a, b); }
+		
+		// add to history
+		szsnap.push_back({sz[a], sz[a]});
+		psnap.push_back({p[b], p[b]});
+
+		if (a != b) {
+			p[b] = a;
+			sz[a] += sz[b];
+		}
+	}
+
+	void rollback() {
+		szsnap.back().first = szsnap.back().second;
+		szsnap.pop_back();
+		psnap.back().first = psnap.back().second;
+		psnap.pop_back();
+	}
+};
+
+const int MAXN = 500000;
+DSU dsu(MAXN);
+
+void Init(int n){
+	
+}
+
+void AddEdge(int u, int v){
+	dsu.unite(--u, --v);
+}
+
+void RemoveLastEdge(){
+	dsu.rollback();
+}
+
+int GetSize(int u){
+	return dsu.sz[dsu.get(--u)];
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
