@@ -1,14 +1,14 @@
 import argparse
 import json
-import urllib.request
+import urllib.request, ssl
 import os
 from typing import Iterable, Optional, Tuple
 
 from bs4 import BeautifulSoup
 from loguru import logger
 
-INDEX_PREFIX = "http://www.usaco.org/index.php?page="
-DATA_PREFIX = "http://www.usaco.org/current/data/"
+INDEX_PREFIX = "https://www.usaco.org/index.php?page="
+DATA_PREFIX = "https://www.usaco.org/current/data/"
 DIVISIONS = ["Bronze", "Silver", "Gold", "Platinum"]
 CONTESTS_SHORT = ["dec", "jan", "feb", "open"]
 CONTESTS_LONG = ["December", "January", "February", "US Open"]
@@ -16,7 +16,8 @@ YEAR_OFFSETS = [0, 1, 1, 1]
 
 
 def parse(url: str) -> BeautifulSoup:
-	page = urllib.request.urlopen(url)
+	req = urllib.request.Request(url, headers={"User-Agent": "Magic Browser"})
+	page = urllib.request.urlopen(req)
 	return BeautifulSoup(page, "html.parser")
 
 

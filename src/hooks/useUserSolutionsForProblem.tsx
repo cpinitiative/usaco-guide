@@ -43,7 +43,7 @@ export default function useUserSolutionsForProblem(
           {
             next: snap => {
               setSolutions(
-                snap.docs.map(doc => ({ id: doc.id, ...doc.data() }))
+                snap.docs.map(doc => ({ ...doc.data(), id: doc.id }))
               );
             },
             error: error => {
@@ -64,7 +64,7 @@ export default function useUserSolutionsForProblem(
               {
                 next: snap => {
                   setCurrentUserSolutions(
-                    snap.docs.map(doc => ({ id: doc.id, ...doc.data() }))
+                    snap.docs.map(doc => ({ ...doc.data(), id: doc.id }))
                   );
                 },
                 error: error => {

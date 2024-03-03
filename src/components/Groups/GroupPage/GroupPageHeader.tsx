@@ -14,11 +14,11 @@ export default function GroupPageHeader(props: { group: GroupData }) {
   const [isActionsOpen, setIsActionsOpen] = useState(false);
   const { showAdminView, setInStudentView } = useActiveGroup();
   const firebaseUser = useFirebaseUser();
-  const ref = useRef<HTMLDivElement>();
+  const ref = useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
     const handleClick = e => {
-      if (ref.current.contains(e.target)) return;
+      if (ref.current?.contains(e.target)) return;
       setIsActionsOpen(false);
     };
     document.addEventListener('mousedown', handleClick);
@@ -127,17 +127,20 @@ export default function GroupPageHeader(props: { group: GroupData }) {
                     </Link>
                   </>
                 )}
-                {isUserAdminOfGroup(props.group, firebaseUser?.uid) && (
-                  <button
-                    type="button"
-                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
-                    onClick={() => {
-                      setInStudentView(showAdminView);
-                    }}
-                  >
-                    {showAdminView ? 'Enter Student View' : 'Exit Student View'}
-                  </button>
-                )}
+                {firebaseUser &&
+                  isUserAdminOfGroup(props.group, firebaseUser.uid) && (
+                    <button
+                      type="button"
+                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
+                      onClick={() => {
+                        setInStudentView(showAdminView);
+                      }}
+                    >
+                      {showAdminView
+                        ? 'Enter Student View'
+                        : 'Exit Student View'}
+                    </button>
+                  )}
                 <button
                   type="button"
                   className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
@@ -150,11 +153,11 @@ export default function GroupPageHeader(props: { group: GroupData }) {
                       ) &&
                       prompt(
                         'Are you REALLY sure? Please type "Yes I am sure I want to leave"'
-                      )
+                      )!
                         .toLowerCase()
                         .indexOf('yes i am sure i want to leave') > -1
                     ) {
-                      leaveGroup(groupId, firebaseUser?.uid)
+                      leaveGroup(groupId, firebaseUser!.uid)
                         .then(() => navigate(`/groups/`))
                         .catch(e => {
                           console.log(e);

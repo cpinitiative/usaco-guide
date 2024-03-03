@@ -20,7 +20,7 @@ export const UserAvatarMenu: React.FC<UserAvatarMenuProps> = props => {
               <span className="sr-only">Open user menu</span>
               <img
                 className="h-8 w-8 rounded-full"
-                src={props.firebaseUser.photoURL}
+                src={props.firebaseUser.photoURL ?? undefined}
                 alt="User photo URL"
               />
             </Menu.Button>

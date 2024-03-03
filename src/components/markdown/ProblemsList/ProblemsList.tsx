@@ -47,7 +47,7 @@ type AnnotatedProblemsListProps =
       modules?: boolean; // only if is division table
     };
 export function ProblemsList(unannotatedProps: ProblemsListProps): JSX.Element {
-  const markdownProblems = useMarkdownProblemLists();
+  const markdownProblems = useMarkdownProblemLists()!;
   let problems: ProblemInfo[] | DivisionProblemInfo[];
   if (typeof unannotatedProps.problems === 'string') {
     problems = markdownProblems.find(
@@ -72,12 +72,12 @@ export function ProblemsList(unannotatedProps: ProblemsListProps): JSX.Element {
   const showTags = useShowTagsSetting();
   const showDifficulty = !useHideDifficultySetting();
 
-  const [problem, setProblem] = React.useState(null);
+  const [problem, setProblem] = React.useState<ProblemInfo | null>(null);
   const [showModal, setShowModal] = React.useState(false);
 
   const shouldShowSolvePercentage =
     props.isDivisionTable &&
-    props.problems.some(problem => !!problem.percentageSolved);
+    props.problems!.some(problem => !!problem.percentageSolved);
 
   const path = globalHistory.location.pathname || '';
 
@@ -103,13 +103,13 @@ export function ProblemsList(unannotatedProps: ProblemsListProps): JSX.Element {
                   showPlatinumSolvePercentageMessage={
                     props.isDivisionTable
                       ? props.division === 'Platinum'
-                      : undefined
+                      : (undefined as any)
                   }
                 />
               </thead>
               <tbody className="table-alternating-stripes">
                 {props.isDivisionTable === true &&
-                  props.problems.map((problem: DivisionProblemInfo) => {
+                  props.problems!.map((problem: DivisionProblemInfo) => {
                     return (
                       <ProblemsListItem
                         key={problem.uniqueId}
@@ -121,7 +121,7 @@ export function ProblemsList(unannotatedProps: ProblemsListProps): JSX.Element {
                           setShowModal(true);
                         }}
                         isDivisionTable={props.isDivisionTable}
-                        modules={props.modules}
+                        modules={props.modules!}
                         showPercent={shouldShowSolvePercentage}
                       />
                     );
@@ -144,7 +144,7 @@ export function ProblemsList(unannotatedProps: ProblemsListProps): JSX.Element {
                     ))}
                     {!props.hideSuggestProblemButton &&
                       path.includes('conclusion') && (
-                        <SuggestProblemRow listName={props.tableName} />
+                        <SuggestProblemRow listName={props.tableName!} />
                       )}
                   </>
                 )}
@@ -208,19 +208,21 @@ export function ProblemsList(unannotatedProps: ProblemsListProps): JSX.Element {
                   </svg>
                 </button>
               </div>
-              <div className="sm:flex sm:items-start">
-                <div className="text-left">
-                  <h3
-                    className="text-lg leading-6 font-medium text-gray-900"
-                    id="modal-headline"
-                  >
-                    Solution Sketch: {problem?.name}
-                  </h3>
-                  <div className="mt-4">
-                    <p className="text-gray-700">{problem?.solution?.sketch}</p>
+              {problem?.solution?.kind === 'sketch' && (
+                <div className="sm:flex sm:items-start">
+                  <div className="text-left">
+                    <h3
+                      className="text-lg leading-6 font-medium text-gray-900"
+                      id="modal-headline"
+                    >
+                      Solution Sketch: {problem?.name}
+                    </h3>
+                    <div className="mt-4">
+                      <p className="text-gray-700">{problem.solution.sketch}</p>
+                    </div>
                   </div>
                 </div>
-              </div>
+              )}
             </div>
           </Transition>
         </div>

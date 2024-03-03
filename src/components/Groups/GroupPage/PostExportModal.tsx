@@ -11,10 +11,7 @@ import {
   writeBatch,
 } from 'firebase/firestore';
 import React, { Fragment, useState } from 'react';
-import {
-  useFirebaseUser,
-  useIsUserDataLoaded,
-} from '../../../context/UserDataContext/UserDataContext';
+import { useFirebaseUser } from '../../../context/UserDataContext/UserDataContext';
 import { useUserGroups } from '../../../hooks/groups/useUserGroups';
 import { useFirebaseApp } from '../../../hooks/useFirebase';
 import { GroupData } from '../../../models/groups/groups';
@@ -29,7 +26,6 @@ export default function PostExportModal(props: {
 }) {
   const firebaseApp = useFirebaseApp();
   const firebaseUser = useFirebaseUser();
-  const isLoaded = useIsUserDataLoaded();
   const groups = useUserGroups();
   const [problems, setProblems] = React.useState<GroupProblemData[]>([]);
   const [groupsUsedMap, setGroupsUsedMap] = useState(new Map());
@@ -41,13 +37,13 @@ export default function PostExportModal(props: {
         'groups',
         props.group.id,
         'posts',
-        props.post.id,
+        props.post.id!,
         'problems'
       ) as CollectionReference<GroupProblemData>
     );
 
     const snap = await getDocs(q);
-    setProblems(snap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+    setProblems(snap.docs.map(doc => ({ ...doc.data(), id: doc.id })));
 
     console.log(g.name);
     if (groupsUsedMap.has(g.id)) {
@@ -194,10 +190,11 @@ export default function PostExportModal(props: {
                       assignment to.
                       <div className="block">
                         {groups.isSuccess &&
-                          (groups.data?.length > 0 ? (
+                          (groups.data && groups.data.length > 0 ? (
                             groups.data.map(group =>
                               // group.ownerIds.includes(firebaseUser.uid)
-                              group.ownerIds.includes(firebaseUser.uid) ? (
+                              group &&
+                              group.ownerIds.includes(firebaseUser!.uid) ? (
                                 <div key={group.id}>
                                   <label className="inline-flex items-center">
                                     <input

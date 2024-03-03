@@ -19,7 +19,7 @@ function useFirebaseApp(
     }
     return fn(firebaseApp);
   }, [firebaseApp, ...dep]);
-  if (!fn) return firebaseApp;
+  if (!fn) return firebaseApp ?? undefined;
 }
 
 export { useFirebaseApp };

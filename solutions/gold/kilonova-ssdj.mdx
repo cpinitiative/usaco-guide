@@ -1,0 +1,123 @@
+---
+id: kilonova-ssdj
+source: Romania IOI selection test 2014
+title: ssdj
+author: Stefan Dascalescu
+---
+
+[Official Analysis (in Romanian)](https://github.com/roalgo-discord/Romanian-Olympiad-Solutions/blob/main/Baraj%20%2B%20Lot%20Seniori%20(IOI%20team%20selection%20tests)/2014/Lot%201/sol-ssdj.pdf)
+
+## Explanation
+
+Let's start from a more simple case, when the grid will only contain letters `a` and `b`. Let's associate for each letter a value corresponding to its position in the alphabet (for now, `a` equals $0$ and `b` equals $1$). Now we will have to find the number of submatrices such that we have ones in the top left and bottom right corners we have $1$ and we have $0$ everywhere else.
+
+Let's construct another grid of size $n \times n$ where $b(i, j)$ stores the number of consecutive $0$ on the column $j$ above the position $(i, j)$.
+
+Now for each line from $2$ to $n$, for a given position $(i, j)$ which is equal to $1$ (we will consider this the bottom-right corner), we will move from right to left on that line to find the values equal to $1$ placed at coordinates $(i, k)$ where $k < j$ such that $b(i, k) > 0$ and $b(i, k)$ strictly smaller than all values $b(i, p)$ with $p$ between $k+1$ and $j$.
+
+The complexity of this approach is $\mathcal{O}(n^2)$.
+
+Now we need to generalize for the entire grid, which has all lowercase letters of the alphabet. At each step, we fix a letter, let's call it $ch$.
+
+For that letter, we will now create a grid where the positions corresponding to all the letters which are smaller than $ch$ will be equal to $0$, all letters equal to $ch$ will be equal to $1$ and all letters greater than $ch$ will be equal to $2$.
+
+Just like we did it for the binary grid, we will count how many submatrices have values equal to $0$ except for the two corners aforementioned. In order to avoid overcounting, we will only count the submatrices such that they contain $1$ in at least a corner. Now, when we process a position $(i, j)$ we will do as such: if on that position we have $1$, we will count the number of previous position which correspond to both $1$ and $2$, and if on the same position we have $2$, we will only count the previous positions that are equal to $1$.
+
+The complexity of this approach is still $\mathcal{O}(n^2)$ for each letter, which gives us an overall complexity of $\mathcal{O}(sigma \times n^2)$, where $sigma = 26$ is the length of the alphabet.
+
+For other approaches, you can also check out the user solutions on [Infoarena](https://infoarena.ro/monitor?task=ssdj), just make sure to press that popup you receive after you first click on a solution.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(26 \cdot N^2)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	ifstream f("ssdj.in");
+
+	int n;
+	f >> n;
+
+	long long ans = 0;
+	vector<vector<char>> mat(n + 1, vector<char>(n + 1));
+	vector<vector<int>> lst(n + 2, vector<int>(n + 2));
+	vector<vector<int>> lst2(n + 2, vector<int>(n + 2));
+	vector<int> d(n + 2);
+
+	for (int i = 1; i <= n; i++) {
+		for (int j = 1; j <= n; j++) { f >> mat[i][j]; }
+	}
+	for (int i = 1; i <= n; i++) { lst2[n + 1][i] = n + 2; }
+	for (char i = 'z'; i >= 'a'; i--) {
+		for (int row = 1; row <= n; row++) {
+			int stackSize = 0;
+			for (int col = 1; col <= n; col++) {
+				if (mat[row][col] >= i) {
+					lst[row][col] = row;
+				} else {
+					lst[row][col] = lst[row - 1][col];
+				}
+				while (stackSize &&
+				       lst[row - 1][col] >= lst[row][d[stackSize]]) {
+					--stackSize;
+				}
+				if (mat[row][col] == i) {
+					ans += stackSize;
+					if (stackSize && d[1] == col) { --stackSize; }
+				}
+				while (stackSize && lst[row][col] >= lst[row][d[stackSize]]) {
+					--stackSize;
+				}
+				if (lst[row][col] <= (row - 1) && lst[row][col] != 0) {
+					d[++stackSize] = col;
+				}
+			}
+		}
+
+		for (int row = n; row >= 1; row--) {
+			int stackSize = 0;
+			int hm = 0;
+			for (int col = n; col >= 1; col--) {
+				if (mat[row][col] >= i) {
+					lst2[row][col] = row;
+				} else {
+					lst2[row][col] = lst2[row + 1][col];
+				}
+				while (stackSize &&
+				       lst2[row + 1][col] <= lst2[row][d[stackSize]]) {
+					if (mat[lst2[row][d[stackSize]]][d[stackSize]] == i) {
+						hm--;
+					}
+					stackSize--;
+				}
+				if (mat[row][col] == i) {
+					ans += stackSize;
+					ans -= hm;
+					if (stackSize && d[stackSize] == col) { ans--; }
+				}
+				while (stackSize && lst2[row][col] <= lst2[row][d[stackSize]]) {
+					if (mat[lst2[row][d[stackSize]]][d[stackSize]] == i) {
+						hm--;
+					}
+					stackSize--;
+				}
+				if (lst2[row][col] >= (row + 1) && lst2[row][col] != (n + 2)) {
+					if (mat[lst2[row][col]][col] == i) { hm++; }
+					d[++stackSize] = col;
+				}
+			}
+		}
+	}
+
+	ofstream("ssdj.out") << ans << endl;
+}
+```
+
+</CPPSection>
+</LanguageSection>

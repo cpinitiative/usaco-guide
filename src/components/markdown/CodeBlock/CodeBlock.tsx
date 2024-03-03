@@ -138,7 +138,12 @@ class CodeBlock extends React.Component<
     codeSnipShow: boolean[];
   }
 > {
-  codeSnips = [];
+  codeSnips = [] as {
+    begin: number;
+    end: number;
+    value: string;
+    indentation: string;
+  }[];
   static contextType = SpoilerContext;
   // can't declare context because otherwise storybook / gatsby build will fail
   // and I can't figure out why
@@ -171,7 +176,7 @@ class CodeBlock extends React.Component<
     let prev = -1;
     let prevVal = '';
     let prevIndentation = '';
-    const codeSnipShowDefault = [];
+    const codeSnipShowDefault: boolean[] = [];
     const code = this.getCode();
     for (const line of code.split('\n')) {
       if (prev == -1) {
@@ -321,7 +326,7 @@ class CodeBlock extends React.Component<
 
     let language = className?.replace(/language-/, '');
     if (language == 'py') language = 'python';
-    if (!['cpp', 'java', 'python'].includes(language)) {
+    if (!['cpp', 'java', 'python'].includes(language ?? '')) {
       // no styling, just a regular pre tag
       return (
         <pre className="-mx-4 sm:-mx-6 md:mx-0 md:rounded bg-gray-100 p-4 mb-4 whitespace-pre-wrap break-all dark:bg-gray-900">
@@ -347,7 +352,7 @@ class CodeBlock extends React.Component<
     // }
 
     const collapsed = this.state.collapsed;
-    const rightOffset = String(language.length * 8 + 40) + 'px';
+    const rightOffset = String(language!.length * 8 + 40) + 'px';
     return (
       <RelativeDiv>
         {this.props.copyButton ? (
@@ -423,7 +428,7 @@ class CodeBlock extends React.Component<
                                 ? 'linear-gradient(0deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%)'
                                 : 'linear-gradient(0deg, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 100%)',
                             }
-                          : null
+                          : undefined
                       }
                     >
                       <svg

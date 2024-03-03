@@ -1,12 +1,11 @@
 import { Link } from 'gatsby';
 import * as React from 'react';
-import { useContext } from 'react';
 import { SECTION_LABELS } from '../../../content/ordering';
-import MarkdownLayoutContext from '../../context/MarkdownLayoutContext';
+import { useMarkdownLayout } from '../../context/MarkdownLayoutContext';
 import { SolutionInfo } from '../../models/solution';
 
 const Breadcrumbs = () => {
-  const moduleLayoutInfo = useContext(MarkdownLayoutContext);
+  const moduleLayoutInfo = useMarkdownLayout();
   const module = moduleLayoutInfo.markdownLayoutInfo;
   if (module instanceof SolutionInfo) return null;
   return (

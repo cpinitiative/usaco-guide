@@ -1,4 +1,4 @@
-import { WritableAtom, atom } from 'jotai';
+import { atom } from 'jotai';
 import { atomFamily, atomWithStorage } from 'jotai/utils';
 import { Octokit } from 'octokit';
 import { fetchFileContent } from '../components/Editor/editorUtils';
@@ -8,7 +8,7 @@ import { formatProblems } from '../utils/prettierFormatter';
 export type EditorFile = {
   path: string;
   markdown: string;
-  problems: string;
+  problems?: string;
 };
 
 export const filesFamily = atomFamily((path: string) => {
@@ -47,16 +47,13 @@ const baseActiveFileAtom = atomWithStorage(
   'guide:editor:activeFile',
   null as string | null
 );
-// Writable type needed if strictNullChecks is false
-// TODO: remove this when strictNullChecks is true
-export type Writable<T> = WritableAtom<T, any[], unknown>;
 export const branchAtom = atomWithStorage('guide:editor:branch', null);
-export const tokenAtom = atom(null) as Writable<string | null>;
+export const tokenAtom = atom<string | null>(null);
 export const octokitAtom = atom(get =>
   get(tokenAtom) === null ? null : new Octokit({ auth: get(tokenAtom) })
 );
-export const forkAtom = atom(undefined) as Writable<string | undefined | null>;
-export const baseTabAtom = atom('content') as Writable<'content' | 'problems'>;
+export const forkAtom = atom<string | undefined>(undefined);
+export const baseTabAtom = atom<'content' | 'problems'>('content');
 export const editingSolutionAtom = atom(get => {
   const activeFile = get(activeFileAtom);
   return activeFile && activeFile.path.startsWith('solutions');
@@ -84,10 +81,10 @@ export const githubInfoAtom = atom(
   async get => (await get(octokitAtom)?.request('GET /user'))?.data
 );
 export const activeFileAtom = atom(
-  get =>
-    get(baseActiveFileAtom) === null
-      ? null
-      : get(filesFamily(get(baseActiveFileAtom))),
+  get => {
+    const activeFile = get(baseActiveFileAtom);
+    return activeFile ? get(filesFamily(activeFile)) : null;
+  },
   (get, set, nextActiveFilePath) => {
     set(baseActiveFileAtom, nextActiveFilePath);
   }
@@ -100,7 +97,7 @@ export const filesListAtom = atomWithStorage<string[]>(
 
 export const openOrCreateExistingFileAtom = atom(
   null,
-  async (get, set, filePath: string | null) => {
+  async (get, set, filePath: string) => {
     if (get(filesListAtom).find(f => f === filePath)) {
       set(activeFileAtom, filePath);
     } else {
@@ -201,7 +198,8 @@ $\\texttt{func(var)}$
       problems: '',
     };
 
-    const updateProblemJSON = (json: string) => {
+    const updateProblemJSON = (json: string | undefined) => {
+      if (!json) return undefined;
       const updated = JSON.parse(json);
       Object.keys(updated).forEach(key => {
         if (key === 'MODULE_ID') return;
@@ -252,17 +250,17 @@ export const closeFileAtom = atom(null, (get, set, filePath: string) => {
     filesListAtom,
     get(filesListAtom).filter(file => file !== filePath)
   );
-  if (get(activeFileAtom).path === filePath) {
+  if (get(activeFileAtom)?.path === filePath) {
     const remainingFiles = get(filesListAtom);
     set(activeFileAtom, remainingFiles.length > 0 ? remainingFiles[0] : null);
   }
-  set(filesFamily(filePath), null);
+  filesFamily.remove(filePath);
 });
 
-const baseMonacoEditorInstanceAtom = atom({ monaco: null });
+const baseMonacoEditorInstanceAtom = atom({ monaco: null as any });
 export const monacoEditorInstanceAtom = atom(
   get => get(baseMonacoEditorInstanceAtom),
-  (get, _set, val) => {
+  (get, _set, val: any) => {
     get(baseMonacoEditorInstanceAtom).monaco = val;
   }
 );

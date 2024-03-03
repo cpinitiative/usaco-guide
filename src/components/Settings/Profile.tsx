@@ -17,6 +17,7 @@ export default function Profile(): JSX.Element {
   }, [firebaseUser?.displayName]);
 
   const handleSubmit = e => {
+    if (!firebaseUser) throw new Error('User not logged in');
     e.preventDefault();
     updateProfile(firebaseUser, { displayName: name });
 
@@ -46,7 +47,7 @@ export default function Profile(): JSX.Element {
                 name="display_name"
                 id="display_name"
                 className="input"
-                value={name}
+                value={name ?? undefined}
                 onChange={e => setName(e.target.value)}
               />
             </div>

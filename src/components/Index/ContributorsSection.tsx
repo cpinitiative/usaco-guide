@@ -168,22 +168,20 @@ const MemberCard = ({
 };
 
 export default function ContributorsSection(): JSX.Element {
-  const data = useStaticQuery(graphql`
-    {
+  const data: Queries.ContributorsQuery = useStaticQuery(graphql`
+    query Contributors {
       allFile(filter: { relativePath: { regex: "/^team/images/.*/" } }) {
-        edges {
-          node {
-            childImageSharp {
-              gatsbyImageData(
-                width: 112
-                height: 112
-                quality: 100
-                transformOptions: { cropFocus: CENTER }
-                layout: FIXED
-              )
-            }
-            name
+        nodes {
+          childImageSharp {
+            gatsbyImageData(
+              width: 112
+              height: 112
+              quality: 100
+              transformOptions: { cropFocus: CENTER }
+              layout: FIXED
+            )
           }
+          name
         }
       }
     }
@@ -213,9 +211,8 @@ export default function ContributorsSection(): JSX.Element {
                   member={member}
                   key={member.name}
                   gatsbyImage={
-                    (data as any).allFile.edges.find(
-                      x => x.node.name === member.photo
-                    ).node.childImageSharp
+                    data.allFile.nodes.find(x => x.name === member.photo)
+                      ?.childImageSharp
                   }
                 />
               ))}
@@ -230,9 +227,8 @@ export default function ContributorsSection(): JSX.Element {
                   member={member}
                   key={member.name}
                   gatsbyImage={
-                    (data as any).allFile.edges.find(
-                      x => x.node.name === member.photo
-                    ).node.childImageSharp
+                    data.allFile.nodes.find(x => x.name === member.photo)!
+                      .childImageSharp
                   }
                 />
               ))}

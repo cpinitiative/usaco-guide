@@ -13,13 +13,13 @@ import { PageProps } from 'gatsby';
 import React, { useEffect, useState } from 'react';
 import EditorPage from '../components/Editor/EditorPage';
 
-export default function EditorPageContainer(props: PageProps): JSX.Element {
+export default function EditorPageContainer(
+  props: PageProps
+): JSX.Element | null {
   const [hasMounted, setHasMounted] = useState(false);
   useEffect(() => {
     setHasMounted(true);
   }, []);
-  if (!hasMounted) {
-    return null;
-  }
+  if (!hasMounted) return null;
   return <EditorPage {...props} />;
 }

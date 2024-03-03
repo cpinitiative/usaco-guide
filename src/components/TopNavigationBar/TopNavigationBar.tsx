@@ -20,7 +20,7 @@ import classNames from 'classnames';
 import { Link } from 'gatsby';
 import * as React from 'react';
 import { Fragment, useState } from 'react';
-import { SignInContext } from '../../context/SignInContext';
+import { useSignIn } from '../../context/SignInContext';
 import {
   useFirebaseUser,
   useIsUserDataLoaded,
@@ -46,7 +46,7 @@ export default function TopNavigationBar({
   const firebaseUser = useFirebaseUser();
   const signOut = useSignOutAction();
   const isLoaded = useIsUserDataLoaded();
-  const { signIn } = React.useContext(SignInContext);
+  const { signIn } = useSignIn();
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const [isContactUsActive, setIsContactUsActive] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -138,8 +138,8 @@ export default function TopNavigationBar({
       {!hidePromoBar && (
         <>
           <Banner
-            text="Registration for Spring 2024 USACO classes now open!"
-            registerLink="https://joincpi.org/classes"
+            text="February 2024 USACO workshop will be held with X-Camp on February 24th!"
+            registerLink="https://joincpi.org/workshops/feb24"
           />
           {/* <div className="relative bg-blue-600">
             <div className="max-w-screen-xl mx-auto py-3 px-3 sm:px-6 lg:px-8">

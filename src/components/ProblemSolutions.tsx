@@ -3,7 +3,7 @@ import * as React from 'react';
 import { useState } from 'react';
 import ContactUsSlideover from '../components/ContactUsSlideover/ContactUsSlideover';
 import { useDarkMode } from '../context/DarkModeContext';
-import { SignInContext } from '../context/SignInContext';
+import { useSignIn } from '../context/SignInContext';
 import { useFirebaseUser } from '../context/UserDataContext/UserDataContext';
 import { useUserPermissions } from '../context/UserDataContext/UserPermissionsContext';
 import {
@@ -29,7 +29,7 @@ export default function ProblemSolutions({
   const firebaseUser = useFirebaseUser();
   const lang = useUserLangSetting();
   const [isContactUsActive, setIsContactUsActive] = useState(false);
-  const { signIn } = React.useContext(SignInContext);
+  const { signIn } = useSignIn();
   const canModerate = useUserPermissions().canModerate;
   const isDarkMode = useDarkMode();
   const filter = new Filter();

@@ -2,11 +2,11 @@ import { Link } from 'gatsby';
 import * as React from 'react';
 import { useContext } from 'react';
 import ContactUsSlideoverContext from '../../context/ContactUsSlideoverContext';
-import MarkdownLayoutContext from '../../context/MarkdownLayoutContext';
+import { useMarkdownLayout } from '../../context/MarkdownLayoutContext';
 
 const SidebarBottomButtons = () => {
   const { setIsContactUsSlideoverOpen } = useContext(ContactUsSlideoverContext);
-  const { setIsMobileNavOpen } = useContext(MarkdownLayoutContext);
+  const { setIsMobileNavOpen } = useMarkdownLayout();
   return (
     <>
       <div className="flex-shrink-0 border-t border-gray-200 dark:border-gray-800 flex">

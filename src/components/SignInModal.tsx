@@ -28,9 +28,11 @@ export const SignInModal: React.FC<SignInModalProps> = ({
   const forceFirebaseUserRerender = useForceFirebaseUserRerender();
   const [isSigningIn, setIsSigningIn] = React.useState(false);
   const [isLinking, setIsLinking] = React.useState(false);
-  const [error, setError] = React.useState(null);
+  const [error, setError] = React.useState<any>(null);
   const [email, setEmail] = React.useState('');
-  const [credential, setCredential] = React.useState<AuthCredential>(null);
+  const [credential, setCredential] = React.useState<AuthCredential | null>(
+    null
+  );
 
   const diffCredentialMessage = 'auth/account-exists-with-different-credential';
   const handleSignInWithGoogle = () => {
@@ -79,6 +81,7 @@ export const SignInModal: React.FC<SignInModalProps> = ({
 
   // links account from credential with the account from other provider (either Google or Github)
   const handleLinkAccounts = async () => {
+    if (!credential) return;
     try {
       let otherProvider: GoogleAuthProvider | GithubAuthProvider;
       if (credential.signInMethod === 'github.com') {
@@ -90,7 +93,7 @@ export const SignInModal: React.FC<SignInModalProps> = ({
       }
       otherProvider.setCustomParameters({ login_hint: email });
       await signInWithPopup(getAuth(firebaseApp), otherProvider);
-      await linkWithCredential(getAuth(firebaseApp).currentUser, credential);
+      await linkWithCredential(getAuth(firebaseApp).currentUser!, credential);
       await signInWithCredential(getAuth(firebaseApp), credential);
 
       // At this point, getAuth(firebaseApp).currentUser is updated with the latest credentials

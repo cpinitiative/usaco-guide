@@ -5,7 +5,7 @@ import { ModuleInfo } from '../models/module';
 
 export const getModulesForDivision = (
   allModules: {
-    [key: string]: Queries.SyllabusQuery['modules']['edges'][0]['node'];
+    [key: string]: Queries.SyllabusQuery['modules']['nodes'][0];
   },
   division: keyof typeof MODULE_ORDERING
 ) => {

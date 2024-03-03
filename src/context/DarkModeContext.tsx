@@ -2,7 +2,7 @@ import * as React from 'react';
 
 // Note: this is separate from DarkModeProvider.tsx because this is imported by Storybook.
 
-export const DarkModeContext = React.createContext<boolean>(null);
+export const DarkModeContext = React.createContext<boolean | null>(null);
 
 export const useDarkMode = (): boolean => {
   const context = React.useContext(DarkModeContext);

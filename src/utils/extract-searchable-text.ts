@@ -24,7 +24,7 @@ export default function extractSearchableText(node) {
 }
 
 function all(values) {
-  const result = [];
+  const result: string[] = [];
   const length = values.length;
   let index = -1;
 

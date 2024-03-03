@@ -23,13 +23,13 @@ const ProblemListItem = ({
 }): JSX.Element => {
   const { activeUserId } = useActiveGroup();
   // todo optimize reads...?
-  const userLeaderboardData = useUserLeaderboardData(group.id, activeUserId);
+  const userLeaderboardData = useUserLeaderboardData(group.id, activeUserId!);
   const bestSubmission =
-    userLeaderboardData?.details?.[post.id]?.[problem.id] || null;
+    userLeaderboardData?.details?.[post.id!]?.[problem.id] || null;
   const pointsEarned = bestSubmission?.bestScore || 0;
   const status = bestSubmission?.bestScoreStatus || 'WA';
 
-  if (!problem) return null; // this shouldn't happen...
+  if (!problem) throw new Error('No problem found'); // this shouldn't happen...
 
   return (
     <div className="flex items-center bg-white dark:bg-dark-surface">

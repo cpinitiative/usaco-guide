@@ -20,16 +20,16 @@ frequency: 2
 ### Solution - Max Subarray Sum
 
 Consider the prefix sum array $p$. The subarray sum $a_i \dots a_{j-1}$, where
-$i\leq j$ is $p[j]-p[i]$. Thus, we are looking for the maximum possible value of
-$p[j]-p[i]$ over $0 \leq i \leq j \leq N$.
+$i < j$ is $p[j]-p[i]$. Thus, we are looking for the maximum possible value of
+$p[j]-p[i]$ over $0 \leq i < j \leq N$.
 
 For a fixed right bound $j$, the maximum subarray sum is
 
 $$
-p[j]-\min_{i\leq j}{p[i]}
+p[j]-\min_{i < j}{p[i]}
 $$
 
-Thus, we can keep a running minimum to store $\min\limits_{i\leq j}{p[i]}$ as we
+Thus, we can keep a running minimum to store $\min\limits_{i < j}{p[i]}$ as we
 iterate through $j$. This yields the maximum subarray sum for each possible
 right bound, and the maximum over all these values is our answer.
 
@@ -66,6 +66,7 @@ int main() {
 	cout << max_subarray_sum << endl;
 }
 ```
+
 </CPPSection>
 <JavaSection>
 

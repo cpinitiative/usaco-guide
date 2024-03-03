@@ -15,7 +15,7 @@ export default function ProblemSidebar({
   post: PostData;
   problem: GroupProblemData;
 }) {
-  const submissions = useUserProblemSubmissions(post.id, problem.id);
+  const submissions = useUserProblemSubmissions(post.id!, problem.id);
 
   if (!submissions) return null;
 

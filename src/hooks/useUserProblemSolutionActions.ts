@@ -28,8 +28,8 @@ export default function useUserProblemSolutionActions() {
         collection(getFirestore(firebaseApp), 'userProblemSolutions'),
         {
           ...solution,
-          userID: firebaseUser.uid,
-          userName: firebaseUser.displayName,
+          userID: firebaseUser?.uid,
+          userName: firebaseUser?.displayName,
           upvotes: [],
           timestamp: Timestamp.now(),
         }
@@ -53,7 +53,7 @@ export default function useUserProblemSolutionActions() {
       await updateDoc(
         doc(getFirestore(firebaseApp), 'userProblemSolutions', solutionID),
         {
-          upvotes: arrayUnion(firebaseUser.uid),
+          upvotes: arrayUnion(firebaseUser?.uid),
         }
       );
     },
@@ -61,7 +61,7 @@ export default function useUserProblemSolutionActions() {
       await updateDoc(
         doc(getFirestore(firebaseApp), 'userProblemSolutions', solutionID),
         {
-          upvotes: arrayRemove(firebaseUser.uid),
+          upvotes: arrayRemove(firebaseUser?.uid),
         }
       );
     },

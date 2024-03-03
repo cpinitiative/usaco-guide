@@ -16,8 +16,10 @@ const PrefixSumInteractive = ({ demo2 = false }) => {
     a = 2,
     b = 2;
   // [x0, y0, x1, y1, weight?]
-  const [highlightRect, setHighlightRect] = React.useState(null);
-  const [rectangles, setRectangles] = React.useState([]);
+  const [highlightRect, setHighlightRect] = React.useState<number[] | null>(
+    null
+  );
+  const [rectangles, setRectangles] = React.useState<any[]>([]);
 
   const renderCell = (i, j, v) => {
     const classes = [

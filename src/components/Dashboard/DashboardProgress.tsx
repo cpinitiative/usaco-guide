@@ -32,7 +32,7 @@ const FancyNumber = ({
   text,
   textColor,
   bgColor,
-  subTextColor = null,
+  subTextColor = null as string | null,
 }) => (
   <div className="text-center">
     <span
@@ -104,7 +104,13 @@ export default function DashboardProgress({
   );
 }
 
-const ProgressBarSmall = ({ className = null, text, green, yellow, blue }) => {
+const ProgressBarSmall = ({
+  className = undefined as string | undefined,
+  text,
+  green,
+  yellow,
+  blue,
+}) => {
   return (
     <div className={className}>
       <div className="inline-block">

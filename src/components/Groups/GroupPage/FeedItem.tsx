@@ -81,7 +81,7 @@ export default function FeedItem({
   const { updatePost, deletePost } = usePostActions(group.id);
   const [showDropdown, setShowDropdown] = useState(false);
   const [showExportModal, setShowExportModal] = useState(false);
-  const ref = React.useRef<HTMLDivElement>();
+  const ref = React.useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
     const handleClick = e => {
@@ -188,7 +188,7 @@ export default function FeedItem({
                   <button
                     type="button"
                     onClick={() =>
-                      updatePost(post.id, { isPublished: !post.isPublished })
+                      updatePost(post.id!, { isPublished: !post.isPublished })
                     }
                     className="w-full flex px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
                     role="menuitem"
@@ -217,7 +217,7 @@ export default function FeedItem({
                       if (
                         confirm('Are you sure you want to delete this post?')
                       ) {
-                        deletePost(post.id).catch(e => toast.error(e.message));
+                        deletePost(post.id!).catch(e => toast.error(e.message));
                       }
                     }}
                     className="w-full flex px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"

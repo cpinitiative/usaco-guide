@@ -20,8 +20,8 @@ export default function PostSidebar({
   const { problems } = useActivePostProblems();
   const activeGroup = useActiveGroup();
   const userLeaderboardData = useUserLeaderboardData(
-    activeGroup.activeGroupId,
-    activeGroup.activeUserId
+    activeGroup.activeGroupId!,
+    activeGroup.activeUserId!
   );
 
   return (
@@ -42,7 +42,7 @@ export default function PostSidebar({
             />
           </svg>
           <span className="text-green-700 dark:text-green-400 text-sm font-medium">
-            {userLeaderboardData?.[post.id]?.totalPoints ?? 0} /{' '}
+            {userLeaderboardData?.[post.id!]?.totalPoints ?? 0} /{' '}
             {problems && getTotalPointsFromProblems(problems)} points earned
           </span>
         </div>
