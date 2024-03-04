@@ -203,7 +203,7 @@ const ModuleLink = ({ link }: { link: ModuleLinkInfo }): JSX.Element => {
     py: link.pyOc,
     showAll: maxLangOc,
   };
-  const isMissingLang = langToOc[userLang] ?? 0 < maxLangOc;
+  const isMissingLang = (langToOc[userLang] ?? 0) < maxLangOc;
   return (
     <LinkWithProgress
       lineColorStyle={lineColorStyle}
