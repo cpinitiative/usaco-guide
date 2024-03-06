@@ -353,7 +353,7 @@ export const pageQuery = graphql`
     }
     announcements: allXdm(
       filter: { fileAbsolutePath: { regex: "/announcements/" } }
-      sort: { order: DESC, fields: frontmatter___order }
+      sort: { frontmatter: { order: DESC } }
     ) {
       edges {
         node {
