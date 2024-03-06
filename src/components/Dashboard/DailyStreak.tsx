@@ -16,7 +16,7 @@ const ComeBackTimer = ({ tomorrowMilliseconds }) => {
       setMilliseconds(tomorrowMilliseconds - Date.now());
     }, 1000);
     return () => clearInterval(interval);
-  }, []);
+  }, [tomorrowMilliseconds]);
 
   const days = Math.floor(milliseconds / 1000 / 60 / 60 / 24);
   const hours = Math.floor((milliseconds / 1000 / 60 / 60) % 24);
@@ -74,7 +74,7 @@ export default function DailyStreak({ streak }) {
     query DailyStreak {
       allFile(
         filter: { relativePath: { regex: "/^cows/.*/" } }
-        sort: { fields: name }
+        sort: { name: ASC }
       ) {
         nodes {
           childImageSharp {
@@ -88,9 +88,9 @@ export default function DailyStreak({ streak }) {
   // https://www.digitalocean.com/community/tutorials/react-usememo
   const cows = React.useMemo(() => {
     return data.allFile.nodes.map(
-      node => node.childImageSharp!.gatsbyImageData
+      node => node.childImageSharp?.gatsbyImageData
     );
-  }, []);
+  }, [data.allFile.nodes]);
   const { lastVisitDate } = useLastVisitInfo();
 
   // we don't want to render streaks during Server-Side Generation
