@@ -53,7 +53,7 @@ export const octokitAtom = atom(get =>
   get(tokenAtom) === null ? null : new Octokit({ auth: get(tokenAtom) })
 );
 export const forkAtom = atom<string | undefined>(undefined);
-export const baseTabAtom = atom('content');
+export const baseTabAtom = atom<'content' | 'problems'>('content');
 export const editingSolutionAtom = atom(get => {
   const activeFile = get(activeFileAtom);
   return activeFile && activeFile.path.startsWith('solutions');
