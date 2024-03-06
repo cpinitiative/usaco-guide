@@ -728,81 +728,82 @@ import java.util.HashSet;
 import java.util.StringTokenizer;
 
 /*
- * inside the floyd(a) function, a vertex has already been calculated(whose ans[b]!=-1), then, there are 2 cases:
- * either, that node:b is the first node to a cycle
- * or, non cycle node, which when followed, leads to a cycle
- * for both the cases, ans for the nodes from a to b, is ans[b] itself
- * this operation, happens in function fillup(a,b)- a being the user's input and b being the vertex, whose answer has already been generated
+ * inside the floyd(a) function, a vertex has already been calculated(whose
+ * ans[b]!=-1), then, there are 2 cases: either, that node:b is the first node
+ * to a cycle or, non cycle node, which when followed, leads to a cycle for both
+ * the cases, ans for the nodes from a to b, is ans[b] itself this operation,
+ * happens in function fillup(a,b)- a being the user's input and b being the
+ * vertex, whose answer has already been generated
  */
 
 public class CodeforcesBadge {
-    static int ans[];
-    static int arr[];
-    public static void main(String[] args)throws IOException {
-        BufferedReader x=new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st=new StringTokenizer(x.readLine());
-        int n=Integer.parseInt(st.nextToken());
-        arr=new int[n+1];
-        st=new StringTokenizer(x.readLine());
-        for(int i=1;i<=n;i++){
-            arr[i]=Integer.parseInt(st.nextToken());
-        }
+	static int ans[];
+	static int arr[];
+	public static void main(String[] args) throws IOException {
+		BufferedReader x = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(x.readLine());
+		int n = Integer.parseInt(st.nextToken());
+		arr = new int[n + 1];
+		st = new StringTokenizer(x.readLine());
+		for (int i = 1; i <= n; i++) {
+			arr[i] = Integer.parseInt(st.nextToken());
+		}
 
-        ans=new int[n+1];
-        Arrays.fill(ans, -1);
-        for(int i=1;i<=n;i++){
-            if(ans[i]==-1){
-                floyd(i);
-            }
-        }
-        StringBuilder output=new StringBuilder();
-        for(int i=1;i<=n;i++){
-            output.append(ans[i]).append(" ");
-        }
-        System.out.println(output);
-    }
-    static void fillUp(int curr, int firstCycle){
-        while(curr!=firstCycle){
-		// fillup from curr to the vertex, whose answer has already been calculated
-            ans[curr]=ans[firstCycle];
-            curr=arr[curr];
-        }
-    }
-    static int floyd(int curr){
-        int a=arr[curr];
-        int b=arr[arr[curr]];
+		ans = new int[n + 1];
+		Arrays.fill(ans, -1);
+		for (int i = 1; i <= n; i++) {
+			if (ans[i] == -1) { floyd(i); }
+		}
+		StringBuilder output = new StringBuilder();
+		for (int i = 1; i <= n; i++) { output.append(ans[i]).append(" "); }
+		System.out.println(output);
+	}
+	static void fillUp(int curr, int firstCycle) {
+		while (curr != firstCycle) {
+			// fillup from curr to the vertex, whose answer has already been
+			// calculated
+			ans[curr] = ans[firstCycle];
+			curr = arr[curr];
+		}
+	}
+	static int floyd(int curr) {
+		int a = arr[curr];
+		int b = arr[arr[curr]];
 		// find cycle using Floyd's algo
-        while(a!=b){
-			/* 
-			 * while finding cycle, if a node is found out to be already calculated, go to the fillUp function, where, the answer from vertex curr to this vertex a is ans[a]
+		while (a != b) {
+			/*
+			 * while finding cycle, if a node is found out to be already
+			 * calculated, go to the fillUp function, where, the answer from
+			 * vertex curr to this vertex a is ans[a]
 			 */
-            if(ans[a]!=-1){
-                fillUp(curr, a);
-                return 0;
-            }
-            a=arr[a];
-            b=arr[arr[b]];
-        }
-        a=curr;
-        while(a!=b) {
-            a=arr[a];
-            b=arr[b];
-        }
-        int cycleFirst=a;
-        a=curr;
-		// from a to the first node joining cycle and non cycle, we fill ans with that vertex
-        while(a!=cycleFirst){
-            ans[a]=cycleFirst;
-            a=arr[a];
-        }
-        a=cycleFirst;
+			if (ans[a] != -1) {
+				fillUp(curr, a);
+				return 0;
+			}
+			a = arr[a];
+			b = arr[arr[b]];
+		}
+		a = curr;
+		while (a != b) {
+			a = arr[a];
+			b = arr[b];
+		}
+		int cycleFirst = a;
+		a = curr;
+		// from a to the first node joining cycle and non cycle, we fill ans
+		// with that vertex
+		while (a != cycleFirst) {
+			ans[a] = cycleFirst;
+			a = arr[a];
+		}
+		a = cycleFirst;
 		// for each node in the cycle, the answer would be itself
-        do{
-            ans[a]=a;
-            a=arr[a];
-        }while(a!=cycleFirst);
-        return 0;
-    }
+		do {
+			ans[a] = a;
+			a = arr[a];
+		} while (a != cycleFirst);
+		return 0;
+	}
 }
 ```
 </JavaSection>
