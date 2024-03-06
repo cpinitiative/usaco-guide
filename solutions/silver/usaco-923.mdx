@@ -2,8 +2,40 @@
 id: usaco-923
 source: USACO Gold 2019 February
 title: Painting the Barn
-author: Kevin Sheng
+author: Kevin Sheng, KJ Karaisz
 ---
+
+<Warning title="Prior Knowledge">
+
+This editorial assumes one already has a firm grasp of the
+[silver](http://www.usaco.org/current/data/sol_paintbarn_silver_feb19.html)
+version of this problem.
+
+</Warning>
+
+<Spoiler title="Hint 1">
+
+Say FJ could only paint one rectangle of paint over the barn.
+Then, this problem would turn into finding the
+[maximum sum of a submatrix](https://stackoverflow.com/a/18220549/12128483).
+
+</Spoiler>
+
+<Spoiler title="Hint 2">
+
+So you have your one rectangle now. How do you make this algorithm work for two?
+
+Try to think about how you can guarantee disjoint rectangles!
+
+</Spoiler>
+
+<Spoiler title="Answer to Hint 2">
+
+If two rectangles are disjoint, there can always be a horizontal or vertical line separating them.
+
+</Spoiler>
+
+<Spoiler title="Solution">
 
 [Official Analysis (C++)](http://www.usaco.org/current/data/sol_paintbarn_gold_feb19.html)
 
@@ -11,22 +43,17 @@ author: Kevin Sheng
 
 ### Initial Observations
 
-**Note:** This solution assumes one has already had a firm grasp of the
-[silver](http://www.usaco.org/current/data/sol_paintbarn_silver_feb19.html)
-version of this problem.
-
 We start off by calculating the layers of paint over each cell of the barn with
 prefix sums, but from there it's a bit hard to determine which layers we should
-paint. It's hard to directly calculate it from this array, but notice that there's
-two general states a cell can be in.
+paint. It's hard to directly calculate it from this array, but notice that
+there's two general states a cell can be in.
 
-1. If it's painted over, it will either add $1$ to the optimal area
-   (because it initially has $K-1$ layers of paint)
-   or subtract $1$ from the optimal area
+1. If it's painted over, it will either add $1$ to the optimal area (because it
+   initially has $K-1$ layers of paint) or subtract $1$ from the optimal area
    (because it already has $K$ layers of paint).
-3. Nothing will happen to the optimal area if it's painted over.
+2. Nothing will happen to the optimal area if it's painted over.
 
-Since FJ must paint two *disjoint* rectangles, we don't have to consider the
+Since FJ must paint two _disjoint_ rectangles, we don't have to consider the
 cells that need two layers of paint to become optimal.
 
 Let's call this array $\texttt{leftovers}$. With our example input, it would
@@ -52,14 +79,15 @@ $200\times200$ matrix):
 ### Using Kadane's
 
 Now, we've reduced this problem to finding the max submatrix sum on a matrix,
-given that we can have two disjoint submatrices.
-Though it's a tall talk, let's try and tackle this bit by bit, first by considering
-if there's only *1* matrix we can paint.
+given that we can have two disjoint submatrices. Though it's a tall task, let's
+try and tackle this bit by bit, first by considering if there's only _1_ matrix
+we can paint.
 
 To do that, we use a 2D version of
 [Kadane's Algorithm](https://en.wikipedia.org/wiki/Maximum_subarray_problem#Kadane's_algorithm).
 
 The $\mathcal{O}(N)$ 1D version can be implemented by the following code:
+
 <LanguageSection>
 <CPPSection>
 
@@ -106,13 +134,14 @@ def max_subarray(arr: List[int]) -> int:
 </PySection>
 </LanguageSection>
 
-We can extend this to the second dimension
-(albeit with an extra $N^2$ factor in the complexity)
-by iterating through all ranges of columns in the matrix and running a 1D Kadane's
-where the sum of each element is the subarray is the sum of the column range of a row.
+We can extend this to the second dimension (albeit with an extra $N^2$ factor in
+the complexity) by iterating through all ranges of columns in the matrix and
+running a 1D Kadane's where the sum of each element is the subarray is the sum
+of the column range of a row.
 
-For example, if our current column range was $[0,2]$, then we'd run our 1D Kadane's
-on the following array:
+For example, if our current column range was $[0,2]$, then we'd run our 1D
+Kadane's on the following array:
+
 $$
 [0,2,0,0,1,1,1,0,0,0]
 $$
@@ -120,35 +149,43 @@ $$
 ### Solving the Second Matrix
 
 The key to getting the max with two submatrices is noticing that there will
-always be a line, vertical or horizontal, that can divide the grid such that
-one rectangle is in one section and the other rectangle is in the other section.
+always be a line, vertical or horizontal, that can divide the grid such that one
+rectangle is in one section and the other rectangle is in the other section.
 
 Building on this observation, we can go through all the lines we can draw
-through the matrix and get the max subarray on both sides.
-After this, we can take the max of the results of these lines and add it
-to the number of cells that were initially painted with the optimal number
-of layers of paint to get our final answer.
+through the matrix and get the max subarray on both sides. After this, we can
+take the max of the results of these lines and add it to the number of cells
+that were initially painted with the optimal number of layers of paint to get
+our final answer.
 
 We need a method to efficiently calculate the max submatrices for all the split
-regions, though.
-To start off, let's define four arrays which will have the following
-***initial*** values:
+regions, though. To start off, let's define four arrays which will have the
+following **_initial_** values:
 
-* $\texttt{top\_best[i]}$: the best matrix whose ***lower*** side is the $i$th row.
-* $\texttt{bottom\_best[i]}$: the best matrix whose ***upper*** side is the $i$th row.
-* $\texttt{left\_best[i]}$: the best matrix whose ***right*** side is the $i$th column.
-* $\texttt{right\_best[i]}$: the best matrix whose ***left*** side is the $i$th column.
+- $\texttt{top\_best[i]}$: the best matrix whose **_lower_** side is the $i$th
+  row.
+- $\texttt{bottom\_best[i]}$: the best matrix whose **_upper_** side is the
+  $i$th row.
+- $\texttt{left\_best[i]}$: the best matrix whose **_right_** side is the $i$th
+  column.
+- $\texttt{right\_best[i]}$: the best matrix whose **_left_** side is the $i$th
+  column.
 
 We fill these arrays by running a 2D Kadane's starting from the top, bottom,
-left, or right, and updating the corresponding arrays with the max submatrix value.
+left, or right, and updating the corresponding arrays with the max submatrix
+value.
 
-Next, we do a cumulative maximum from the start or from the end depending on the array
-to get the arrays with the following updated values:
+Next, we do a cumulative maximum from the start or from the end depending on the
+array to get the arrays with the following updated values:
 
-* $\texttt{top\_best[i]}$: the best matrix that lies ***at or above*** the $i$th row.
-* $\texttt{bottom\_best[i]}$: the best matrix that lies ***at or below*** $i$th row.
-* $\texttt{left\_best[i]}$: the best matrix that's ***at or to the left of*** the $i$th column.
-* $\texttt{right\_best[i]}$: the best matrix that's ***at or to the right of*** the $i$th column.
+- $\texttt{top\_best[i]}$: the best matrix that lies **_at or above_** the $i$th
+  row.
+- $\texttt{bottom\_best[i]}$: the best matrix that lies **_at or below_** $i$th
+  row.
+- $\texttt{left\_best[i]}$: the best matrix that's **_at or to the left of_**
+  the $i$th column.
+- $\texttt{right\_best[i]}$: the best matrix that's **_at or to the right of_**
+  the $i$th column.
 
 ## Implementation
 
@@ -407,3 +444,4 @@ public final class PaintBarn {
 
 </JavaSection>
 </LanguageSection>
+</Spoiler>
