@@ -759,10 +759,12 @@ public class Badge {
 		System.out.println(output);
 	}
 
+	/* 
+	 * fillup all the vertex from curr to firstCycle,
+	 * whose answer has already been calculated
+	 */
 	static void fillUp(int curr, int firstCycle) {
 		while (curr != firstCycle) {
-			// fillup from curr to the vertex, whose answer has already been
-			// calculated
 			ans[curr] = ans[firstCycle];
 			curr = arr[curr];
 		}
@@ -792,8 +794,10 @@ public class Badge {
 		}
 		int cycleFirst = a;
 		a = curr;
-		// finds the entry cycle node and fills the ans array of nodes in the
-		// cycle
+		/*
+		 * finds the entry cycle node and fills the ans array of nodes in the
+		 * cycle
+		 */
 		while (a != cycleFirst) {
 			ans[a] = cycleFirst;
 			a = arr[a];
