@@ -716,16 +716,15 @@ print(" ".join(str(i + 1) for i in ans))
 </PySection>
 </LanguageSection>
 ### Solution 3
-Without using any adjacency lists. `floyd(x)` generates answers for all connected vertices. `fillup(a,b)` fills up the vertices, from `a` to `b`, `b` being the coordinate, whose `ans[b]` has already been calculated `floyd(x)`
+
+Without using any adjacency lists `floyd(x)` generates answers for all connected vertices. `fillup(a,b)` fills up the vertices, from `a` to `b`, `b` being the coordinate, whose `ans[b]` has already been calculated `floyd(x)`
+
 <LanguageSection>
 <JavaSection>
+
 ```java
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.StringTokenizer;
+import java.io.*;
+import java.util.*;
 
 /*
  * inside the floyd(a) function, a vertex has already been calculated(whose
@@ -736,7 +735,7 @@ import java.util.StringTokenizer;
  * vertex, whose answer has already been generated
  */
 
-public class CodeforcesBadge {
+public class Badge {
 	static int ans[];
 	static int arr[];
 	public static void main(String[] args) throws IOException {
@@ -748,6 +747,7 @@ public class CodeforcesBadge {
 		for (int i = 1; i <= n; i++) {
 			arr[i] = Integer.parseInt(st.nextToken());
 		}
+
 		ans = new int[n + 1];
 		Arrays.fill(ans, -1);
 		for (int i = 1; i <= n; i++) {
@@ -755,8 +755,10 @@ public class CodeforcesBadge {
 		}
 		StringBuilder output = new StringBuilder();
 		for (int i = 1; i <= n; i++) { output.append(ans[i]).append(" "); }
+		output.setLength(output.length() - 1);
 		System.out.println(output);
 	}
+
 	static void fillUp(int curr, int firstCycle) {
 		while (curr != firstCycle) {
 			// fillup from curr to the vertex, whose answer has already been
@@ -765,6 +767,7 @@ public class CodeforcesBadge {
 			curr = arr[curr];
 		}
 	}
+
 	static int floyd(int curr) {
 		int a = arr[curr];
 		int b = arr[arr[curr]];
@@ -789,8 +792,7 @@ public class CodeforcesBadge {
 		}
 		int cycleFirst = a;
 		a = curr;
-		// from a to the first node joining cycle and non cycle, we fill ans
-		// with that vertex
+		// finds the entry cycle node and fills the ans array of nodes in the cycle
 		while (a != cycleFirst) {
 			ans[a] = cycleFirst;
 			a = arr[a];
