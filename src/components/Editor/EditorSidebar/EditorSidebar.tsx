@@ -89,7 +89,7 @@ function GithubActions() {
         setBranchState('Setting Branch...');
       } else setBranchState('Creating Branch...');
       const masterSha = (
-        await octokit?.request(
+        await octokit.request(
           'GET /repos/{owner}/{repo}/git/matching-refs/{ref}',
           {
             owner: 'cpinitiative',

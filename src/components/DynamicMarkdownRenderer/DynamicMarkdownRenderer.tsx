@@ -1,7 +1,5 @@
 import * as React from 'react';
 import { useEffect, useRef, useState } from 'react';
-// eslint-disable-next-line
-// @ts-ignore
 import { Fragment, jsx, jsxs } from 'react/jsx-runtime';
 import { MarkdownProblemListsProvider } from '../../context/MarkdownProblemListsContext';
 import { components } from '../markdown/MDXComponents';

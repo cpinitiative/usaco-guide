@@ -50,7 +50,7 @@ const EditorTabBar: React.FC<EditorTabBarProps> = ({
     async file => {
       if (!octokit || !githubInfo || !branch) return;
       setCommitState('Committing...');
-      let fileSha = undefined;
+      let fileSha: string | undefined;
       try {
         fileSha = (
           (await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
@@ -61,7 +61,7 @@ const EditorTabBar: React.FC<EditorTabBarProps> = ({
             headers: {
               'X-GitHub-Api-Version': '2022-11-28',
             },
-          })) as any
+          })) as { data: { sha: string } }
         ).data.sha;
       } catch {
         console.log("file doesn't exist yet");
