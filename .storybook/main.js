@@ -41,9 +41,9 @@ const config = {
     //config.module.rules[0].exclude = [/core-js/];
 
     // Use babel-plugin-remove-graphql-queries to remove static queries from components when rendering in storybook
-    config.module.rules[0].use[0].options.plugins.push(
-      require.resolve('babel-plugin-remove-graphql-queries')
-    );
+    config.module.rules[0].use[0].options.plugins = [
+      require.resolve('babel-plugin-remove-graphql-queries'),
+    ];
     config.resolve.mainFields = ['browser', 'module', 'main'];
     return config;
   },
