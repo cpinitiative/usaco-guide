@@ -37,8 +37,8 @@ export const language = {
   tokenPostfix: '.mdx',
 
   // escape codes
-  control: /[\\`*_[\]{}()#+\-.!]/,
-  noncontrol: /[^\\`*_[\]{}()#+\-.!]/,
+  control: /[\\`*_\[\]{}()#+\-\.!]/,
+  noncontrol: /[^\\`*_\[\]{}()#+\-\.!]/,
   escapes: /\\(?:@control)/,
 
   // escape codes for javascript/CSS strings
@@ -73,16 +73,16 @@ export const language = {
       ],
 
       // headers (with =)
-      [/^\s*(=+|-+)\s*$/, 'keyword'],
+      [/^\s*(=+|\-+)\s*$/, 'keyword'],
 
       // headers (with ***)
-      [/^\s*((\* ?)+)\s*$/, 'meta.separator'],
+      [/^\s*((\*[ ]?)+)\s*$/, 'meta.separator'],
 
       // quote
       [/^\s*>+/, 'comment'],
 
       // list (starting with * or number)
-      [/^\s*([*\-+:]|\d+\.)\s/, 'keyword'],
+      [/^\s*([\*\-+:]|\d+\.)\s/, 'keyword'],
 
       // code block (4 spaces indent)
       // [/^(\t|[ ]{4})[^ ].*$/, 'string'],
@@ -92,7 +92,7 @@ export const language = {
 
       // github style code blocks (with backticks and language)
       [
-        /^\s*```\s*((?:\w|[/\-#])+).*$/,
+        /^\s*```\s*((?:\w|[\/\-#])+).*$/,
         { token: 'string', next: '@codeblockgh', nextEmbedded: '$1' },
       ],
 
@@ -105,15 +105,15 @@ export const language = {
 
     table_header: [
       { include: '@table_common' },
-      [/[^|]+/, 'keyword.table.header'], // table header
+      [/[^\|]+/, 'keyword.table.header'], // table header
     ],
 
     table_body: [{ include: '@table_common' }, { include: '@linecontent' }],
 
     table_common: [
-      [/\s*[-:]+\s*/, { token: 'keyword', switchTo: 'table_body' }], // header-divider
+      [/\s*[\-:]+\s*/, { token: 'keyword', switchTo: 'table_body' }], // header-divider
       [/^\s*\|/, 'keyword.table.left'], // opening |
-      [/^\s*[^|]/, '@rematch', '@pop'], // exiting
+      [/^\s*[^\|]/, '@rematch', '@pop'], // exiting
       [/^\s*$/, '@rematch', '@pop'], // exiting
       [
         /\|/,
@@ -154,12 +154,12 @@ export const language = {
       [/`([^\\`]|@escapes)+`/, 'variable'],
 
       // links
-      [/\{+[^}]+}+/, 'string.target'],
+      [/\{+[^}]+\}+/, 'string.target'],
       [
-        /(!?\[)((?:[^\]\\]|@escapes)*)(]\([^)]+\))/,
+        /(!?\[)((?:[^\]\\]|@escapes)*)(\]\([^\)]+\))/,
         ['string.link', '', 'string.link'],
       ],
-      [/(!?\[)((?:[^\]\\]|@escapes)*)(])/, 'string.link'],
+      [/(!?\[)((?:[^\]\\]|@escapes)*)(\])/, 'string.link'],
 
       // or html
       { include: 'html' },
@@ -188,10 +188,10 @@ export const language = {
     ],
 
     comment: [
-      [/[^<-]+/, 'comment.content'],
+      [/[^<\-]+/, 'comment.content'],
       [/-->/, 'comment', '@pop'],
       [/<!--/, 'comment.content.invalid'],
-      [/[<-]/, 'comment.content'],
+      [/[<\-]/, 'comment.content'],
     ],
 
     // Almost full HTML tag matching, complete with embedded scripts & styles
