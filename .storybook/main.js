@@ -1,6 +1,6 @@
-const React = require('react');
+import React from 'react';
 
-module.exports = {
+const config = {
   stories: ['../src/**/*.stories.mdx', '../src/**/*.stories.@(js|jsx|ts|tsx)'],
   addons: [
     '@storybook/addon-links',
@@ -54,3 +54,5 @@ module.exports = {
     ? { typescript: { reactDocgen: 'react-docgen' } }
     : {}),
 };
+
+export default config;
