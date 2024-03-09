@@ -1,4 +1,4 @@
-import { Story } from '@storybook/react';
+import { StoryFn } from '@storybook/react';
 import React, { ComponentProps } from 'react';
 import {
   Resource,
@@ -12,7 +12,7 @@ export default {
   decorators: [markdownDecorator],
 };
 
-const Template: Story<ComponentProps<typeof ResourcesList>> = args => (
+const Template: StoryFn<ComponentProps<typeof ResourcesList>> = args => (
   <ResourcesList {...args} />
 );
 

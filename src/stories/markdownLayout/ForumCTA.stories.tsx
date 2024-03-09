@@ -1,10 +1,10 @@
-import { ComponentMeta, ComponentStory } from '@storybook/react';
+import { Meta, StoryFn } from '@storybook/react';
 import React from 'react';
 import ForumCTA from '../../components/ForumCTA';
 
 export default {
   title: 'MarkdownLayout/ForumCTA',
   component: ForumCTA,
-} as ComponentMeta<typeof ForumCTA>;
+} as Meta<typeof ForumCTA>;
 
-export const Default: ComponentStory<typeof ForumCTA> = () => <ForumCTA />;
+export const Default: StoryFn<typeof ForumCTA> = () => <ForumCTA />;

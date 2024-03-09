@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import { DarkModeContext } from '../src/context/DarkModeContext';
 import '../src/styles/main.css';
 import './storybook.css';

@@ -85,7 +85,7 @@ export function ProblemsList(unannotatedProps: ProblemsListProps): JSX.Element {
     <div
       className="-mx-4 sm:-mx-6 lg:mx-0"
       id={`problemlist-${
-        props.isDivisionTable === false
+        !props.isDivisionTable
           ? props.tableName
           : 'division-' + props.division
       }`}
@@ -108,7 +108,7 @@ export function ProblemsList(unannotatedProps: ProblemsListProps): JSX.Element {
                 />
               </thead>
               <tbody className="table-alternating-stripes">
-                {props.isDivisionTable === true &&
+                {props.isDivisionTable &&
                   props.problems!.map((problem: DivisionProblemInfo) => {
                     return (
                       <ProblemsListItem
@@ -126,7 +126,7 @@ export function ProblemsList(unannotatedProps: ProblemsListProps): JSX.Element {
                       />
                     );
                   })}
-                {props.isDivisionTable === false && (
+                {!props.isDivisionTable && (
                   <>
                     {props.problems.map((problem: ProblemInfo) => (
                       <ProblemsListItem
