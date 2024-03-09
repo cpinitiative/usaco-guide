@@ -511,7 +511,6 @@ exports.onCreateWebpackConfig = ({ actions, stage, loaders, plugins }) => {
         perf_hooks: false,
         tty: false,
         module: false,
-        "object.assign/polyfill": false,
       },
     },
     module: {
