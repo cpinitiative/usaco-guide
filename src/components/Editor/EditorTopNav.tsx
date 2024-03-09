@@ -47,7 +47,7 @@ export const EditorTopNav = (): JSX.Element => {
         </div>
         {/*<button className="inline-flex items-center space-x-2 text-gray-600 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 px-3 py-2 font-medium text-sm rounded-md focus:outline-none transition">*/}
         {/*  /!*<ArchiveIcon className="h-4 w-4" />*!/*/}
-        {/*  <span>HiStoryFn</span>*/}
+        {/*  <span>History</span>*/}
         {/*</button>*/}
         {/*<button className="inline-flex items-center space-x-2 text-gray-600 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 px-3 py-2 font-medium text-sm rounded-md focus:outline-none transition">*/}
         {/*  /!*<ShareIcon className="h-4 w-4" />*!/*/}
