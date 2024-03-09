@@ -85,9 +85,7 @@ export function ProblemsList(unannotatedProps: ProblemsListProps): JSX.Element {
     <div
       className="-mx-4 sm:-mx-6 lg:mx-0"
       id={`problemlist-${
-        !props.isDivisionTable
-          ? props.tableName
-          : 'division-' + props.division
+        !props.isDivisionTable ? props.tableName : 'division-' + props.division
       }`}
     >
       <div className="flex flex-col">

@@ -10,7 +10,9 @@ export default {
   decorators: [markdownDecorator],
 };
 
-const Template: StoryFn<ComponentProps<typeof Info>> = args => <Info {...args} />;
+const Template: StoryFn<ComponentProps<typeof Info>> = args => (
+  <Info {...args} />
+);
 
 export const Default = Template.bind({});
 Default.args = {

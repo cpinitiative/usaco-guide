@@ -3,7 +3,7 @@ import type { StorybookConfig } from '@storybook/react-webpack5';
 const config: StorybookConfig = {
   framework: {
     name: '@storybook/react-webpack5',
-    options: {}
+    options: {},
   },
 
   stories: ['../src/**/*.stories.mdx', '../src/**/*.stories.@(js|jsx|ts|tsx)'],
@@ -37,7 +37,7 @@ const config: StorybookConfig = {
 
       module: false,
       perf_hooks: false,
-      v8: false
+      v8: false,
     };
     return config;
   },
@@ -49,8 +49,8 @@ const config: StorybookConfig = {
     : {}),
 
   docs: {
-    autodocs: true
-  }
+    autodocs: true,
+  },
 };
 
 export default config;
