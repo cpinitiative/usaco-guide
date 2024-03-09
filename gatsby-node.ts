@@ -503,6 +503,15 @@ exports.onCreateWebpackConfig = ({ actions, stage, loaders, plugins }) => {
       },
       fallback: {
         fs: false,
+        path: false,
+        crypto: false,
+        os: false,
+        v8: false,
+        vm: false,
+        perf_hooks: false,
+        tty: false,
+        module: false,
+        "object.assign/polyfill": false,
       },
     },
     module: {
