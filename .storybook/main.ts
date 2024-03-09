@@ -20,7 +20,7 @@ const config: StorybookConfig = {
       },
     },
     '@storybook/addon-a11y',
-    'storybook-addon-gatsby',
+    // 'storybook-addon-gatsby',
   ],
 
   async webpackFinal(config) {
