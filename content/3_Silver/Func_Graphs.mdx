@@ -727,78 +727,78 @@ import java.io.*;
 import java.util.*;
 
 public class Badge {
-    static int[] ans;
-    static int[] arr;
-    public static void main(String[] args) throws IOException {
-        BufferedReader x = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer(x.readLine());
-        int n = Integer.parseInt(st.nextToken());
-        arr = new int[n + 1];
-        st = new StringTokenizer(x.readLine());
-        for (int i = 1; i <= n; i++) {
-            arr[i] = Integer.parseInt(st.nextToken());
-        }
+	static int[] ans;
+	static int[] arr;
+	public static void main(String[] args) throws IOException {
+		BufferedReader x = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(x.readLine());
+		int n = Integer.parseInt(st.nextToken());
+		arr = new int[n + 1];
+		st = new StringTokenizer(x.readLine());
+		for (int i = 1; i <= n; i++) {
+			arr[i] = Integer.parseInt(st.nextToken());
+		}
 
-        ans = new int[n + 1];
-        Arrays.fill(ans, -1);
-        for (int i = 1; i <= n; i++) {
-            if (ans[i] == -1) { floyd(i); }
-        }
+		ans = new int[n + 1];
+		Arrays.fill(ans, -1);
+		for (int i = 1; i <= n; i++) {
+			if (ans[i] == -1) { floyd(i); }
+		}
 
-        StringBuilder output = new StringBuilder();
-        for (int i = 1; i <= n; i++) { output.append(ans[i]).append(" "); }
-        output.setLength(output.length() - 1);
-        System.out.println(output);
-    }
+		StringBuilder output = new StringBuilder();
+		for (int i = 1; i <= n; i++) { output.append(ans[i]).append(" "); }
+		output.setLength(output.length() - 1);
+		System.out.println(output);
+	}
 
-    /**
-     * fills up all vertices from curr to firstCycle,
-     * whose answer has already been calculated
-     */
-    static void fillUp(int curr, int firstCycle) {
-        while (curr != firstCycle) {
-            ans[curr] = ans[firstCycle];
-            curr = arr[curr];
-        }
-    }
+	/**
+	 * fills up all vertices from curr to firstCycle,
+	 * whose answer has already been calculated
+	 */
+	static void fillUp(int curr, int firstCycle) {
+		while (curr != firstCycle) {
+			ans[curr] = ans[firstCycle];
+			curr = arr[curr];
+		}
+	}
 
-    static int floyd(int curr) {
-        int a = arr[curr];
-        int b = arr[arr[curr]];
-        // find cycle using Floyd's algo
-        while (a != b) {
-            /*
-             * while finding cycle, if a node is found out to be already
-             * calculated, go to the fillUp function, where, the answer from
-             * vertex curr to this vertex a is ans[a]
-             */
-            if (ans[a] != -1) {
-                fillUp(curr, a);
-                return 0;
-            }
-            a = arr[a];
-            b = arr[arr[b]];
-        }
-        a = curr;
-        while (a != b) {
-            a = arr[a];
-            b = arr[b];
-        }
-        int cycleFirst = a;
-        a = curr;
+	static int floyd(int curr) {
+		int a = arr[curr];
+		int b = arr[arr[curr]];
+		// find cycle using Floyd's algo
+		while (a != b) {
+			/*
+			 * while finding cycle, if a node is found out to be already
+			 * calculated, go to the fillUp function, where, the answer from
+			 * vertex curr to this vertex a is ans[a]
+			 */
+			if (ans[a] != -1) {
+				fillUp(curr, a);
+				return 0;
+			}
+			a = arr[a];
+			b = arr[arr[b]];
+		}
+		a = curr;
+		while (a != b) {
+			a = arr[a];
+			b = arr[b];
+		}
+		int cycleFirst = a;
+		a = curr;
 
-        while (a != cycleFirst) {
-            ans[a] = cycleFirst;
-            a = arr[a];
-        }
-        a = cycleFirst;
-        // for each node in the cycle, the answer would be itself
-        do {
-            ans[a] = a;
-            a = arr[a];
-        } while (a != cycleFirst);
-        return 0;
-    }
+		while (a != cycleFirst) {
+			ans[a] = cycleFirst;
+			a = arr[a];
+		}
+		a = cycleFirst;
+		// for each node in the cycle, the answer would be itself
+		do {
+			ans[a] = a;
+			a = arr[a];
+		} while (a != cycleFirst);
+		return 0;
+	}
 }
 ```
 </JavaSection>
