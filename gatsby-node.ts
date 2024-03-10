@@ -1,5 +1,6 @@
 import { execSync } from 'child_process';
 import fs from 'fs';
+import type { GatsbyNode } from 'gatsby';
 import path from 'path';
 import * as freshOrdering from './content/ordering';
 import { typeDefs } from './graphql-types';
@@ -26,7 +27,8 @@ try {
 // ideally problems would be its own query with
 // source nodes: https://www.gatsbyjs.com/docs/reference/config-files/gatsby-node/#sourceNodes
 let stream = fs.createWriteStream('ids.log', { flags: 'a' });
-exports.onCreateNode = async api => {
+
+export const onCreateNode: GatsbyNode['onCreateNode'] = async api => {
   const { node, actions, loadNodeContent, createContentDigest, createNodeId } =
     api;
   const { createNodeField, createNode, createParentChildLink } = actions;
@@ -57,14 +59,16 @@ exports.onCreateNode = async api => {
     createNode(problemInfoNode);
     createParentChildLink({ parent: node, child: problemInfoNode });
   }
+
+  const isContent =
+    node.internal.mediaType === 'application/json' &&
+    node.sourceInstanceName === 'content';
   const isExtraProblems =
-    node.internal.mediaType === 'application/json' &&
-    node.sourceInstanceName === 'content' &&
-    node.relativePath.endsWith('extraProblems.json');
+    isContent && (node.relativePath as string).endsWith('extraProblems.json');
   if (
-    node.internal.mediaType === 'application/json' &&
-    node.sourceInstanceName === 'content' &&
-    (node.relativePath.endsWith('.problems.json') || isExtraProblems)
+    isContent &&
+    ((node.relativePath as string).endsWith('.problems.json') ||
+      isExtraProblems)
   ) {
     const content = await loadNodeContent(node);
     let parsedContent;
@@ -82,6 +86,7 @@ exports.onCreateNode = async api => {
         'Module ID not found in problem JSON file: ' + node.absolutePath
       );
     }
+
     //const freshOrdering = importFresh<any>(
     //  path.join(__dirname, './content/ordering.ts')
     //);
@@ -93,6 +98,7 @@ exports.onCreateNode = async api => {
           node.absolutePath
       );
     }
+
     Object.keys(parsedContent).forEach(tableId => {
       if (tableId === 'MODULE_ID') return;
       try {
@@ -117,6 +123,7 @@ exports.onCreateNode = async api => {
         throw new Error(e);
       }
     });
+
     if (moduleId) {
       // create a node that contains all of a module's problems
       const id = createNodeId(`${node.id} >>> ModuleProblemLists`);
@@ -149,22 +156,23 @@ exports.onCreateNode = async api => {
     }
   } else if (
     node.internal.type === 'Xdm' &&
-    node.fileAbsolutePath.includes('content')
+    (node.fileAbsolutePath as string).includes('content')
   ) {
     // const ordering = importFresh<any>('./content/ordering.ts');
-    if (!(node.frontmatter.id in freshOrdering.moduleIDToSectionMap)) {
+    // @ts-ignore gatsby is like smoking something i swear
+    const frontId = node.frontmatter.id as string;
+    if (!(frontId in freshOrdering.moduleIDToSectionMap)) {
       throw new Error(
-        'module id does not show up in ordering: ' +
-          node.frontmatter.id +
-          ', path: ' +
-          node.absolutePath
+        `module id does not show up in ordering:  ${frontId}, path: ${node.absolutePath}`
       );
     }
+
     createNodeField({
       name: 'division',
       node,
-      value: freshOrdering.moduleIDToSectionMap[node.frontmatter.id],
+      value: freshOrdering.moduleIDToSectionMap[frontId],
     });
+
     // https://angelos.dev/2019/09/add-support-for-modification-times-in-gatsby/
     const gitAuthorTime = execSync(
       `git log -1 --pretty=format:%aI ${node.fileAbsolutePath}`
@@ -177,8 +185,13 @@ exports.onCreateNode = async api => {
   }
 };
 
-exports.createPages = async ({ graphql, actions, reporter }) => {
+export const createPages: GatsbyNode['createPages'] = async ({
+  graphql,
+  actions,
+  reporter,
+}) => {
   const { createPage, createRedirect } = actions;
+
   fs.readFile('./src/redirects.txt', (err, data) => {
     if (err) throw new Error('error: ' + err);
     (data + '')
@@ -201,8 +214,9 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
         });
       });
   });
+
   const result = await graphql(`
-    query stuff {
+    query guideInfo {
       modules: allXdm(filter: { fileAbsolutePath: { regex: "/content/" } }) {
         edges {
           node {
@@ -262,8 +276,12 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
   if (result.errors) {
     reporter.panicOnBuild('🚨 ERROR: Loading "createPages" query');
   }
-  // Check to make sure problems with the same unique ID have consistent information, and that there aren't duplicate slugs
-  // Also creates user solution pages for each problem
+
+  /*
+   * Check to make sure problems with the same unique ID have consistent info,
+   * and that there aren't duplicate slugs
+   * Also creates user solution pages for each problem
+   */
   const problems = result.data.problems.edges;
   let problemSlugs = {}; // maps slug to problem unique ID
   let problemInfo = {}; // maps unique problem ID to problem info
@@ -272,9 +290,9 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
   const userSolutionTemplate = path.resolve(
     `./src/templates/userSolutionTemplate.tsx`
   );
-  let usaco_uids: string[] = [];
+  let usacoIds: string[] = [];
   problems.forEach(({ node }) => {
-    let slug = getProblemURL(node);
+    const slug = getProblemURL(node);
     if (
       problemSlugs.hasOwnProperty(slug) &&
       problemSlugs[slug] !== node.uniqueId
@@ -305,6 +323,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
         );
       }
     }
+
     if (
       problemURLToUniqueID.hasOwnProperty(node.url) &&
       problemURLToUniqueID[node.url] !== node.uniqueId &&
@@ -321,7 +340,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
 
     // skipping usaco problems to be created with div_to_probs
     if (node.uniqueId.startsWith('usaco')) {
-      usaco_uids.push(node.uniqueId);
+      usacoIds.push(node.uniqueId);
     }
     problemSlugs[slug] = node.uniqueId;
     problemInfo[node.uniqueId] = node;
@@ -336,6 +355,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
       },
     });
   });
+
   const divisions = ['Bronze', 'Silver', 'Gold', 'Platinum'];
   divisions.forEach(division => {
     div_to_probs[division].forEach(problem => {
@@ -343,7 +363,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
       const name = problem[2];
       const path = `problems/${uniqueId}/user-solutions`;
 
-      if (!usaco_uids.includes(uniqueId)) {
+      if (!usacoIds.includes(uniqueId)) {
         createPage({
           path: path,
           component: userSolutionTemplate,
