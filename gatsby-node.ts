@@ -1,6 +1,7 @@
 import { execSync } from 'child_process';
 import fs from 'fs';
 import type { GatsbyNode } from 'gatsby';
+import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import path from 'path';
 import * as freshOrdering from './content/ordering';
 import { typeDefs } from './graphql-types';
@@ -13,6 +14,7 @@ import {
   ProblemMetadata,
   ShortProblemInfo,
 } from './src/models/problem';
+
 // Questionable hack to get full commit history so that timestamps work
 try {
   execSync(
@@ -435,6 +437,7 @@ export const createPages: GatsbyNode['createPages'] = async ({
             '. If this problem is no longer in any module, add it to content/extraProblems.json.'
         );
       }
+
       // let's also check that every problem has this as its internal solution -- if an internal solution exists, we should always use it
       const problemsThatAreMissingInternalSolution =
         problemsForThisSolution.filter(
@@ -487,6 +490,7 @@ export const createPages: GatsbyNode['createPages'] = async ({
       throw e;
     }
   });
+
   problems
     .filter(x => x.node.solution?.kind === 'internal')
     .forEach(({ node: problemNode }) => {
@@ -496,7 +500,8 @@ export const createPages: GatsbyNode['createPages'] = async ({
         );
       }
     });
-  // Generate Syllabus Pages //
+
+  // Generate Syllabus Pages
   const syllabusTemplate = path.resolve(`./src/templates/syllabusTemplate.tsx`);
   freshOrdering.SECTIONS.forEach(division => {
     createPage({
@@ -507,20 +512,22 @@ export const createPages: GatsbyNode['createPages'] = async ({
       },
     });
   });
-  // End Generate Syllabus Pages //
 };
 
-exports.createSchemaCustomization = ({ actions }) => {
-  const { createTypes } = actions;
-  createTypes(typeDefs);
-};
-const FilterWarningsPlugin = require('webpack-filter-warnings-plugin');
-exports.onCreateWebpackConfig = ({ actions, stage, loaders, plugins }) => {
+export const createSchemaCustomization: GatsbyNode['createSchemaCustomization'] =
+  ({ actions }) => {
+    const { createTypes } = actions;
+    createTypes(typeDefs);
+  };
+
+export const onCreateWebpackConfig: GatsbyNode['onCreateWebpackConfig'] = ({
+  actions,
+  stage,
+  loaders,
+  plugins,
+}) => {
   actions.setWebpackConfig({
     resolve: {
-      alias: {
-        path: path.resolve('path-browserify'),
-      },
       fallback: {
         fs: false,
         path: false,
@@ -547,12 +554,11 @@ exports.onCreateWebpackConfig = ({ actions, stage, loaders, plugins }) => {
         },
       ],
     },
-    // plugins: [
-    //   new FilterWarningsPlugin({
-    //     exclude:
-    //       /mini-css-extract-plugin[^]*Conflicting order. Following module has been added:/,
-    //   }),
-    // ],
+    plugins: [
+      new MiniCssExtractPlugin({
+        ignoreOrder: true,
+      }),
+    ],
   });
   if (stage === 'build-javascript' || stage === 'develop') {
     actions.setWebpackConfig({
