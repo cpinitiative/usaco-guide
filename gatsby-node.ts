@@ -1,7 +1,6 @@
 import { execSync } from 'child_process';
 import fs from 'fs';
 import type { GatsbyNode } from 'gatsby';
-// import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import path from 'path';
 import * as freshOrdering from './content/ordering';
 import { typeDefs } from './graphql-types';
@@ -554,11 +553,6 @@ export const onCreateWebpackConfig: GatsbyNode['onCreateWebpackConfig'] = ({
         },
       ],
     },
-    plugins: [
-      // new MiniCssExtractPlugin({
-      //   ignoreOrder: true,
-      // }),
-    ],
   });
   if (stage === 'build-javascript' || stage === 'develop') {
     actions.setWebpackConfig({
