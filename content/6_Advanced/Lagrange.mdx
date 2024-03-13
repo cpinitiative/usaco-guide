@@ -74,9 +74,19 @@ This idea almost works but there are still some very important caveats and condi
 
 Let $f(x)$ be the maximal sum if we use at most $x$ subarrays. We want to find $f(K)$. 
 
-The first condition is that $f(x)$ **must be concave or convex**. Since $f(x)$ is increasing in this problem, the means that we want $f(c)$ to be concave: $f(x) - f(x - 1) \ge f(x + 1) - f(x)$. Intuitively speaking, this means that the more subarrays we add, the less we increase our answer by.
+The first condition is that $f(x)$ **must be concave or convex**. Since $f(x)$ is increasing in this problem, the means that we need $f(x)$ to be concave: $f(x) - f(x - 1) \ge f(x + 1) - f(x)$. In other words, this means that the more subarrays we add, the less we increase our answer by. We can intuitively see that this is true.
 
 <Spoiler title="Proof that our function is concave">
+
+We construct a flow graph with source $S$, sink $T$, and $N+1$ additional vertices numbered $1$ to $N+1$. We will have the following edges.
+
+- A directed edge from $S$ to $i$ ($1 \le i \le N+1$) with weight $0$ and capacity $1$.
+
+- A directed edge from $i$ ($1 \le i \le N+1$) to $T$ with weight $0$ and capacity $1$.
+
+- A bidirectional edge from $i$ ($1 \le i \le N$) to $i+1$ with weight $A[i]$ and capacity $1$.
+
+$f(x)$ will be the maximum cost $x$-flow through the graph. We can repeatidly find the maximum cost augmenting path $x$ times to get our answer. Because the maximum cost as a function of flow is concave, $f(x)$ will be concave. You can read more about simulating cost flows [here](https://codeforces.com/blog/entry/118391).
 
 </Spoiler>
 
