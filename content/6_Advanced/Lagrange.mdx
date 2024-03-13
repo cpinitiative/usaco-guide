@@ -1,18 +1,14 @@
 ---
 id: lagrange
 title: 'Lagrangian Relaxation'
-author: Benjamin Qi
+author: Benjamin Qi, Alex Liang, Dong Liu
 description: 'aka Aliens Trick'
 prerequisites:
   - convex-hull
 frequency: 1
 ---
 
-adding lambda\*smth
-
-<Problems problems="sample" />
-
-## Tutorial
+## Resources
 
 <Resources>
 	<Resource
@@ -27,6 +23,139 @@ adding lambda\*smth
 	 />
 </Resources>
 
+## Lagrangian Relaxation
+
+Lagrangian Relaxation involves transforming a constraint on a variable into a cost $\lambda$ and binary searching for the optimal $\lambda$. 
+
+<FocusProblem problem="sample" />
+
+The problem gives us a length $N$ ($1 \le N \le 3 \cdot 10^5$) array of integers in the range $[-10^9,10^9]$. We are given some $K$ ($1 \le K \le N$) and are asked to choose at most $K$ disjoint subarrays such that the sum of elements included in a subarray is maximized.
+
+### Intuition
+
+The main bottleneck of any dynamic programming solution to this problem is having to store the number of subarrays we have created so far. 
+
+Let's try to find a way around this. Instead of storing the number of subarrays we have created so far, we assign a penalty of $\lambda$ for creating a new subarray (i.e. everytime we create a subarray we penalize our sum by $\lambda$). 
+
+This leads us to the sub-problem of finding the maximal sum and number of subarrays used if creating a new subarray costs $\lambda$. We can solve this in $\mathcal{O}(N)$ time with dynamic programming.
+
+<Spoiler title="Dynamic Programming Solution">
+Let's have $\texttt{dp}[i][j:\{0,1\}]$ represent the maximum sum if we consider the first $i$ elements, given that $j=0/1$ implies whether
+element $i$ is part of a subarray. Let $\texttt{cnt}[i][j]$ represent the number of
+people used in an optimal arrangement of $\texttt{dp}[i][j]$.
+
+For our $\texttt{dp}$ transitions, we have
+
+$$
+\{\texttt{dp}[i][0], \texttt{cnt}[i][0]\} =
+\max\begin{cases} \{\texttt{dp}[i - 1][0], \texttt{cnt}[i - 1][0]\}\\
+\{\texttt{dp}[i - 1][1], \texttt{cnt}[i - 1][1]\}
+\end{cases}
+$$
+
+and
+
+$$
+\{\texttt{dp}[i][1], \texttt{cnt}[i][1]\} =
+\max\begin{cases}\{\texttt{dp}[i - 1][0] + A[i] - \lambda, \texttt{cnt}[i - 1][0] + 1\}\\
+\{\texttt{dp}[i - 1][1] + A[i], \texttt{cnt}[i - 1][1]\}\end{cases}
+$$
+
+because we either begin a new subarray or we continue an existing subarray.
+</Spoiler>
+
+Let $v$ be the maximal achievable sum with $\lambda$ penalty and $c$ be the number of subarrays used to achieve $v$. Then the **maximal possible sum achievable if we use exactly $c$ subarrays is $v+\lambda c$**. Note that we add $\lambda c$ to undo the penalty.
+
+Our goal is to find some $\lambda$ such that $c=k$. As we increase $\lambda$, it makes sense for $c$ to decrease since we are penalizing subarrays more. Thus, we can try to binary search for $\lambda$ to make $c=k$ and set our answer to be $v+\lambda c$ at the optimal $\lambda$.
+
+This idea almost works but there are still some very important caveats and conditions that we have not considered.
+
+### Geometry
+
+Let $f(x)$ be the maximal sum if we use at most $x$ subarrays. We want to find $f(K)$. 
+
+The first condition is that $f(x)$ **must be concave or convex**. Since $f(x)$ is increasing in this problem, the means that we want $f(c)$ to be concave: $f(x) - f(x - 1) \ge f(x + 1) - f(x)$. Intuitively speaking, this means that the more subarrays we add, the less we increase our answer by.
+
+<Spoiler title="Proof that our function is concave">
+
+</Spoiler>
+
+Consider the following graphs of $f(x)$ and $f(x)-\lambda x$. In this example, we have $\lambda=5$.
+
+<iframe
+	src="https://www.desmos.com/calculator/ydynwc2fej?embed"
+	width="500px"
+	height="300px"
+	frameborder="0"
+/>
+
+Here is where the fact that $f(x)$ is concave comes in. Because the slope is non-increasing, we know that $f(x) - \lambda x$ will first increase, then stay the same, and finally decrease.
+
+Let $v(\lambda)$ be the optimal maximal achievable sum with $\lambda$ penalty and $c(\lambda)$ be the number of subarrays used to achieve $v(\lambda)$ (note that if there are multiple such possibilities, we set $c$ to be the **minimal** number of subarrays to achieve $v$). These values can be calculated in $\mathcal{O}(N)$ time using the dynamic programming approach described above.
+
+When we assign the penalty of $\lambda$, we are trying to find the maximal sum if creating a subarray reduces our sum by $\lambda$. In other words, **we are trying to find the maximum of $f(x) - \lambda x$**. 
+
+Without loss of generality, suppose there exists a slope equal to $\lambda$. Given the shape of $f(x) - \lambda x$, we know that $f(x) - \lambda x$ will be maximized at the points where $\lambda$ is equal to the slope of $f(x)$ (these points are red in the graph above). This means that $c(\lambda)$ will be the point at which $\lambda$ is equal to the slope of $f(x)$ (if there are multiple such points, then $c(\lambda)$ will be the leftmost one).
+
+Now we know exactly what $\lambda$ represents: $\lambda$ is the slope and $c(\lambda)$ is the position with slope equal to $\lambda$ (if there are multiple such positions then $c(\lambda)$ is the leftmost one).
+
+We binary search for $\lambda$ and find the highest $\lambda$ such that $c(\lambda) \le K$. Let the optimal value be $\lambda_{\texttt{opt}}$. Then our answer is $v(\lambda_{\texttt{opt}}) + \lambda_{\texttt{opt}} K$. Note that this works even if $c(\lambda_{\texttt{opt}}) \neq K$ since  $c(\lambda_{\texttt{opt}})$ and $K$ will be on the same line with slope $\lambda_{\texttt{opt}}$.
+
+Because calculating $v(\lambda)$ and $c(\lambda)$ with the dynamic programming solution described above will take $\mathcal{O}(N)$ time, this solution runs in $\mathcal{O}(N\log{\sum A[i]})$ time.
+
+```cpp 
+#include <bits/stdc++.h>
+using namespace std;
+ 
+#define ll long long
+#define pll pair<ll, ll>
+#define f first
+#define s second
+ 
+const int MAX = 3e5 + 5;
+
+int n, k, A[MAX]; pll dp[MAX][2];
+ 
+pll better(pll a, pll b){
+    if (a.f == b.f) 
+        return (a.s < b.s ? a : b);
+
+    return (a.f > b.f ? a : b);
+}
+
+bool solve(ll lmb){
+    dp[0][0] = {0, 0}; 
+    dp[0][1] = {-1e18, 0};
+ 
+    for (int i = 1; i <= n; i++){
+        dp[i][0] = better(dp[i - 1][0], dp[i - 1][1]);
+
+        dp[i][1] = better(
+            {dp[i - 1][0].f + A[i] - lmb, dp[i - 1][0].s + 1}, 
+            {dp[i - 1][1].f + A[i], dp[i - 1][1].s}
+        );
+    }
+    return better(dp[n][0], dp[n][1]).s <= k;
+}
+ 
+int main(){
+    ios_base::sync_with_stdio; cin.tie(0);
+    cin >> n >> k;
+
+    for (int i = 1; i <= n; i++) 
+        cin >> A[i];
+ 
+    ll L = 0, H = 1e15;
+
+    while (L < H){
+        ll M = (L + H) / 2;
+        solve(M) ? H = M : L = M + 1;
+    }
+    solve(L);
+    
+    cout<<better(dp[n][0], dp[n][1]).f + L * k<<"\n";
+}
+```
 ## Problems
 
 <Problems problems="probs" />
