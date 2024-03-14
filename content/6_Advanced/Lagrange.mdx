@@ -116,51 +116,50 @@ Because calculating $v(\lambda)$ and $c(\lambda)$ with the dynamic programming s
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
- 
+
 #define ll long long
 
 const int MAX = 3e5 + 5;
 
-int n, k, A[MAX]; pair<ll, ll> dp[MAX][2];
- 
-pair<ll, ll> better(pair<ll, ll> a, pair<ll, ll> b){
-    if (a.first == b.first) 
-        return (a.second < b.second ? a : b);
+int n, k, A[MAX];
+pair<ll, ll> dp[MAX][2];
 
-    return (a.first > b.first ? a : b);
+pair<ll, ll> better(pair<ll, ll> a, pair<ll, ll> b) {
+	if (a.first == b.first) return (a.second < b.second ? a : b);
+
+	return (a.first > b.first ? a : b);
 }
 
-bool solve(ll lmb){
-    dp[0][0] = {0, 0}; 
-    dp[0][1] = {-1e18, 0};
- 
-    for (int i = 1; i <= n; i++){
-        dp[i][0] = better(dp[i - 1][0], dp[i - 1][1]);
+bool solve(ll lmb) {
+	dp[0][0] = {0, 0};
+	dp[0][1] = {-1e18, 0};
 
-        dp[i][1] = better(
-            {dp[i - 1][0].first + A[i] - lmb, dp[i - 1][0].second + 1}, 
-            {dp[i - 1][1].first + A[i], dp[i - 1][1].second}
-        );
-    }
-    return better(dp[n][0], dp[n][1]).second <= k;
+	for (int i = 1; i <= n; i++) {
+		dp[i][0] = better(dp[i - 1][0], dp[i - 1][1]);
+
+		dp[i][1] =
+		    better({dp[i - 1][0].first + A[i] - lmb, dp[i - 1][0].second + 1},
+		           {dp[i - 1][1].first + A[i], dp[i - 1][1].second});
+	}
+	return better(dp[n][0], dp[n][1]).second <= k;
 }
- 
-int main(){
-    ios_base::sync_with_stdio; cin.tie(0);
-    cin >> n >> k;
 
-    for (int i = 1; i <= n; i++) 
-        cin >> A[i];
- 
-    ll L = 0, H = 1e15;
+int main() {
+	ios_base::sync_with_stdio;
+	cin.tie(0);
+	cin >> n >> k;
 
-    while (L < H){
-        ll M = (L + H) / 2;
-        solve(M) ? H = M : L = M + 1;
-    }
-    solve(L);
-    
-    cout << better(dp[n][0], dp[n][1]).first + L * k << "\n";
+	for (int i = 1; i <= n; i++) cin >> A[i];
+
+	ll L = 0, H = 1e15;
+
+	while (L < H) {
+		ll M = (L + H) / 2;
+		solve(M) ? H = M : L = M + 1;
+	}
+	solve(L);
+
+	cout << better(dp[n][0], dp[n][1]).first + L * k << "\n";
 }
 ```
 ## Problems
