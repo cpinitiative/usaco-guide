@@ -149,5 +149,7 @@ module.exports = {
   flags,
   siteMetadata,
   plugins,
-  graphqlTypegen: true,
+  graphqlTypegen: {
+    generateOnBuild: true,
+  },
 };
