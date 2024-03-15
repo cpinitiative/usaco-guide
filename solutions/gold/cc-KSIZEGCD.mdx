@@ -7,13 +7,13 @@ author: Ryan Chou
 
 <Spoiler title="Hint 1">
 
-Can we upper bound the number of times the GCD changes?
+Can we upper bound the number of times the GCD changes when extending a singular subarray?
 
 </Spoiler>
 
 <Spoiler title="Answer to Hint 1">
 
-Note that the GCD can only decrease, and it will always remove some factor from the current GCD.
+Note that the GCD can only decrease as we add more elements, and it will always remove some factor from the current GCD.
 The smallest factor we can remove is $2$, and $a_i \leq 10^9$, so the GCD can only change at most
 $log_2(10^9) \approx 30$ times.
 
@@ -26,7 +26,7 @@ $log_2(10^9) \approx 30$ times.
 Since we know that the larger the subarray is, the GCD will never increase, we can create a list of hashmaps where
 $\texttt{max\_size}_{i, \text{gcd}} =$ the maximum size of the subarray ending at $i$ with a GCD of $\text{gcd}$.
 
-Then, we can perform updates in $\mathcal{O}(\log N)$ by extending subarrays that ended at index $i - 1$ to index $i$.
+Then, we can perform updates in $\mathcal{O}(\log N)$ time by extending subarrays that ended at index $i - 1$ to index $i$.
 
 The answer for length $\texttt{len}$ will be the maximum $\text{gcd}$ for which $\texttt{max\_size}_{i, \text{gcd}} = \texttt{len}$
 
