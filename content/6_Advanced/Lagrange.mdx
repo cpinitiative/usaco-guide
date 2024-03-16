@@ -122,37 +122,37 @@ using namespace std;
 
 const ll INF = (ll)300000 * 1000000000;
 
-int main(){
-    int n, k;
-    cin >> n >> k;
+int main() {
+	int n, k;
+	cin >> n >> k;
 
-    int a[n + 1];
-    for (int i = 1; i <= n; i++) cin >> a[i];
+	int a[n + 1];
+	for (int i = 1; i <= n; i++) cin >> a[i];
 
-    auto solveLambda = [&](ll lmb){
-        pair<ll, ll> dp[n + 1][2];
+	auto solveLambda = [&](ll lmb) {
+		pair<ll, ll> dp[n + 1][2];
 
-        dp[0][0] = {0, 0}; 
-        dp[0][1] = {-INF, 0};
-    
-        for (int i = 1; i <= n; i++){
-            dp[i][0] = max(dp[i - 1][0], dp[i - 1][1]);
+		dp[0][0] = {0, 0};
+		dp[0][1] = {-INF, 0};
 
-            dp[i][1] = max(
-                make_pair(dp[i - 1][0].first + a[i] - lmb, dp[i - 1][0].second + 1), 
-                make_pair(dp[i - 1][1].first + a[i], dp[i - 1][1].second)
-            );
-        }
-        return max(dp[n][0], dp[n][1]);
-    };
-    
-    ll lo = 0, hi = INF;
+		for (int i = 1; i <= n; i++) {
+			dp[i][0] = max(dp[i - 1][0], dp[i - 1][1]);
 
-    while (lo < hi){
-        ll mid = (lo + hi) / 2;
-        solveLambda(mid).second <= k ? hi = mid : lo = mid + 1;
-    }    
-    cout << solveLambda(lo).first + lo * k << endl;
+			dp[i][1] =
+			    max(make_pair(dp[i - 1][0].first + a[i] - lmb,
+			                  dp[i - 1][0].second + 1),
+			        make_pair(dp[i - 1][1].first + a[i], dp[i - 1][1].second));
+		}
+		return max(dp[n][0], dp[n][1]);
+	};
+
+	ll lo = 0, hi = INF;
+
+	while (lo < hi) {
+		ll mid = (lo + hi) / 2;
+		solveLambda(mid).second <= k ? hi = mid : lo = mid + 1;
+	}
+	cout << solveLambda(lo).first + lo * k << endl;
 }
 ```
 
