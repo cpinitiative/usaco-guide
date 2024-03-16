@@ -74,7 +74,7 @@ This idea almost works but there are still some very important caveats and condi
 
 Let $f(x)$ be the maximal sum if we use at most $x$ subarrays. We want to find $f(K)$.
 
-The first condition is that $f(x)$ **must be concave or convex**. Since $f(x)$ is increasing in this problem, the means that we need $f(x)$ to be concave: $f(x) - f(x - 1) \ge f(x + 1) - f(x)$. In other words, this means that the more subarrays we add, the less we increase our answer by. We can intuitively see that this is true.
+The first condition is that $f(x)$ **must be concave or convex**. Since $f(x)$ is increasing in this problem, the means that we need $f(x)$ to be concave: $f(x) - f(x - 1) \ge f(x + 1) - f(x)$. In other words, this means that the more subarrays we add, the less we increase the sum by. We can intuitively see that this is true.
 
 <Spoiler title="Proof that our function is concave">
 
@@ -99,15 +99,16 @@ Consider the following graphs of $f(x)$ and $f(x)-\lambda x$. In this example, w
 	frameborder="0"
 />
 
-Here is where the fact that $f(x)$ is concave comes in. Because the slope is non-increasing, we know that $f(x) - \lambda x$ will first increase, then stay the same, and finally decrease.
+Here is where the fact that $f(x)$ is concave comes in. Because the slope is non-increasing, we know that $f(x) - \lambda x$ will **first increase, then stay the same, and finally decrease**.
 
-Let $v(\lambda)$ be the optimal maximal achievable sum with $\lambda$ penalty and $c(\lambda)$ be the number of subarrays used to achieve $v(\lambda)$ (note that if there are multiple such possibilities, we set $c$ to be the **minimal** number of subarrays to achieve $v$). These values can be calculated in $\mathcal{O}(N)$ time using the dynamic programming approach described above.
+Let $v(\lambda)$ be the optimal maximal achievable sum with $\lambda$ penalty and $c(\lambda)$ be the number of subarrays used to achieve $v(\lambda)$ (note that if there are multiple such possibilities, we set $c(\lambda)$ to be the **maximal** number of subarrays to achieve $v(\lambda)$). These values can be calculated in $\mathcal{O}(N)$ time using the dynamic programming approach described above.
 
-When we assign the penalty of $\lambda$, we are trying to find the maximal sum if creating a subarray reduces our sum by $\lambda$. In other words, **we are trying to find the maximum of $f(x) - \lambda x$**.
+When we assign the penalty of $\lambda$, we are trying to find the maximal sum if creating a subarray reduces our sum by $\lambda$. So $v(\lambda)$ will be the **maximum** of $f(x) - \lambda x$ and $c(\lambda)$ will equal to the rightmost $x$ that **maximizes** $f(x) - \lambda x$. 
 
-Without loss of generality, suppose there exists a slope equal to $\lambda$. Given the shape of $f(x) - \lambda x$, we know that $f(x) - \lambda x$ will be maximized at the points where $\lambda$ is equal to the slope of $f(x)$ (these points are red in the graph above). This means that $c(\lambda)$ will be the point at which $\lambda$ is equal to the slope of $f(x)$ (if there are multiple such points, then $c(\lambda)$ will be the leftmost one).
+Given the shape of $f(x) - \lambda x$, we know that $f(x) - \lambda x$ will be maximized at all points where $\lambda$ is equal to the slope of $f(x)$ (these points are red in the graph above). If there are no such points it will be maximized at the rightmost point where the slope is less than $\lambda$. So this means that $c(\lambda)$ will be the rightmost $x$ at which the slope of $f(x)$ is still greater or equal to $\lambda$.
 
-Now we know exactly what $\lambda$ represents: $\lambda$ is the slope and $c(\lambda)$ is the position with slope equal to $\lambda$ (if there are multiple such positions then $c(\lambda)$ is the leftmost one).
+
+Now we know exactly what $\lambda$ represents: $\lambda$ is the slope and $c(\lambda)$ is the rightmost $x$ at which the slope of $f(x)$ is still greater or equal to $\lambda$.
 
 We binary search for $\lambda$ and find the highest $\lambda$ such that $c(\lambda) \le K$. Let the optimal value be $\lambda_{\texttt{opt}}$. Then our answer is $v(\lambda_{\texttt{opt}}) + \lambda_{\texttt{opt}} K$. Note that this works even if $c(\lambda_{\texttt{opt}}) \neq K$ since  $c(\lambda_{\texttt{opt}})$ and $K$ will be on the same line with slope $\lambda_{\texttt{opt}}$ in that case.
 
@@ -119,49 +120,42 @@ using namespace std;
 
 #define ll long long
 
-const int MAX = 3e5 + 5;
+const int MAX = 300000;
+const ll INF = (ll)300000 * 1000000000;
 
-int n, k, A[MAX];
-pair<ll, ll> dp[MAX][2];
+int n, k, A[MAX + 1]; 
+pair<ll, ll> dp[MAX + 1][2];
+ 
+pair<ll, ll> solveLambda(ll lmb){
+    dp[0][0] = {0, 0}; 
+    dp[0][1] = {-INF, 0};
+ 
+    for (int i = 1; i <= n; i++){
+        dp[i][0] = max(dp[i - 1][0], dp[i - 1][1]);
 
-pair<ll, ll> better(pair<ll, ll> a, pair<ll, ll> b) {
-	if (a.first == b.first) return (a.second < b.second ? a : b);
-
-	return (a.first > b.first ? a : b);
+        dp[i][1] = max(
+            make_pair(dp[i - 1][0].first + A[i] - lmb, dp[i - 1][0].second + 1), 
+            make_pair(dp[i - 1][1].first + A[i], dp[i - 1][1].second)
+        );
+    }
+    return max(dp[n][0], dp[n][1]);
 }
 
-bool solve(ll lmb) {
-	dp[0][0] = {0, 0};
-	dp[0][1] = {-1e18, 0};
+int main(){
+    cin >> n >> k;
 
-	for (int i = 1; i <= n; i++) {
-		dp[i][0] = better(dp[i - 1][0], dp[i - 1][1]);
+    for (int i = 1; i <= n; i++) cin >> A[i];
 
-		dp[i][1] =
-		    better({dp[i - 1][0].first + A[i] - lmb, dp[i - 1][0].second + 1},
-		           {dp[i - 1][1].first + A[i], dp[i - 1][1].second});
-	}
-	return better(dp[n][0], dp[n][1]).second <= k;
-}
+    ll lo = 0, hi = INF;
 
-int main() {
-	ios_base::sync_with_stdio;
-	cin.tie(0);
-	cin >> n >> k;
-
-	for (int i = 1; i <= n; i++) cin >> A[i];
-
-	ll L = 0, H = 1e15;
-
-	while (L < H) {
-		ll M = (L + H) / 2;
-		solve(M) ? H = M : L = M + 1;
-	}
-	solve(L);
-
-	cout << better(dp[n][0], dp[n][1]).first + L * k << "\n";
+    while (lo < hi){
+        ll M = (lo + hi) / 2;
+        solveLambda(M).second <= k ? hi = M : lo = M + 1;
+    }    
+    cout << solveLambda(lo).first + lo * k << endl;
 }
 ```
+
 ## Problems
 
 <Problems problems="probs" />
