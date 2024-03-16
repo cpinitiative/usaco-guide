@@ -103,7 +103,7 @@ Here is where the fact that $f(x)$ is concave comes in. Because the slope is non
 
 Let $v(\lambda)$ be the optimal maximal achievable sum with $\lambda$ penalty and $c(\lambda)$ be the number of subarrays used to achieve $v(\lambda)$ (note that if there are multiple such possibilities, we set $c(\lambda)$ to be the **maximal** number of subarrays to achieve $v(\lambda)$). These values can be calculated in $\mathcal{O}(N)$ time using the dynamic programming approach described above.
 
-When we assign the penalty of $\lambda$, we are trying to find the maximal sum if creating a subarray reduces our sum by $\lambda$. So $v(\lambda)$ will be the **maximum** of $f(x) - \lambda x$ and $c(\lambda)$ will equal to the rightmost $x$ that **maximizes** $f(x) - \lambda x$. 
+When we assign the penalty of $\lambda$, we are trying to find the maximal sum if creating a subarray reduces our sum by $\lambda$. So $v(\lambda)$ will be the **maximum** of $f(x) - \lambda x$ and $c(\lambda)$ will equal to the rightmost $x$ that **maximizes** $f(x) - \lambda x$.
 
 Given the shape of $f(x) - \lambda x$, we know that $f(x) - \lambda x$ will be maximized at all points where $\lambda$ is equal to the slope of $f(x)$ (these points are red in the graph above). If there are no such points it will be maximized at the rightmost point where the slope is less than $\lambda$. So this means that $c(\lambda)$ will be the rightmost $x$ at which the slope of $f(x)$ is still greater or equal to $\lambda$.
 
@@ -123,36 +123,35 @@ using namespace std;
 const int MAX = 300000;
 const ll INF = (ll)300000 * 1000000000;
 
-int n, k, A[MAX + 1]; 
+int n, k, A[MAX + 1];
 pair<ll, ll> dp[MAX + 1][2];
- 
-pair<ll, ll> solveLambda(ll lmb){
-    dp[0][0] = {0, 0}; 
-    dp[0][1] = {-INF, 0};
- 
-    for (int i = 1; i <= n; i++){
-        dp[i][0] = max(dp[i - 1][0], dp[i - 1][1]);
 
-        dp[i][1] = max(
-            make_pair(dp[i - 1][0].first + A[i] - lmb, dp[i - 1][0].second + 1), 
-            make_pair(dp[i - 1][1].first + A[i], dp[i - 1][1].second)
-        );
-    }
-    return max(dp[n][0], dp[n][1]);
+pair<ll, ll> solveLambda(ll lmb) {
+	dp[0][0] = {0, 0};
+	dp[0][1] = {-INF, 0};
+
+	for (int i = 1; i <= n; i++) {
+		dp[i][0] = max(dp[i - 1][0], dp[i - 1][1]);
+
+		dp[i][1] = max(
+		    make_pair(dp[i - 1][0].first + A[i] - lmb, dp[i - 1][0].second + 1),
+		    make_pair(dp[i - 1][1].first + A[i], dp[i - 1][1].second));
+	}
+	return max(dp[n][0], dp[n][1]);
 }
 
-int main(){
-    cin >> n >> k;
+int main() {
+	cin >> n >> k;
 
-    for (int i = 1; i <= n; i++) cin >> A[i];
+	for (int i = 1; i <= n; i++) cin >> A[i];
 
-    ll lo = 0, hi = INF;
+	ll lo = 0, hi = INF;
 
-    while (lo < hi){
-        ll M = (lo + hi) / 2;
-        solveLambda(M).second <= k ? hi = M : lo = M + 1;
-    }    
-    cout << solveLambda(lo).first + lo * k << endl;
+	while (lo < hi) {
+		ll M = (lo + hi) / 2;
+		solveLambda(M).second <= k ? hi = M : lo = M + 1;
+	}
+	cout << solveLambda(lo).first + lo * k << endl;
 }
 ```
 
