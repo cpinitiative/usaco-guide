@@ -173,7 +173,7 @@ export const OrderedFirstMembers: Member[] = [
     photo: 'tatha',
     name: 'Tatha Pandey',
     titles: [roles.liveInstructor],
-    github: 'tathap'
+    github: 'tathap',
   },
 ];
 
