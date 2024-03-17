@@ -172,8 +172,8 @@ export const OrderedFirstMembers: Member[] = [
   {
     photo: 'tatha',
     name: 'Tatha Pandey',
-    titles: [roles.liveInstructor]
-  }
+    titles: [roles.liveInstructor],
+  },
 ];
 
 export const RestOfMembers: Member[] = [
