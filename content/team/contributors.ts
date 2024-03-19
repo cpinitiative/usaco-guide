@@ -169,6 +169,12 @@ export const OrderedFirstMembers: Member[] = [
     codeforces: 'sanspapyrus683',
     reddit: 'sanspapyrus683',
   },
+  {
+    photo: 'tatha',
+    name: 'Tatha Pandey',
+    titles: [roles.liveInstructor],
+    github: 'tathap',
+  },
 ];
 
 export const RestOfMembers: Member[] = [
