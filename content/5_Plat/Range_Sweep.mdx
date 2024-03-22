@@ -105,15 +105,15 @@ $\texttt{dist}(a, b) = x_1[b] + y_1[b] - x_2[a] - y_2[a]$
 
 Then, the transitions are:
 
-$\texttt{ans}[i] = \min\limits_{j < i, x_2[j] \le x_1[i], y_2[j] \le y_1[i]}(ans[j] + \texttt{dist}(j, i))$ 
+$\texttt{ans}[i] = \min\limits_{j < i, x_2[j] \le x_1[i], y_2[j] \le y_1[i]}(ans[j] + \texttt{dist}(j, i))$
 
 **Full Solution:** $\mathcal{O}(P \log P)$
 
 Optimizing the DP involves the use of a min point update range query segment tree. Let's first expand $dist(i, j)$ in the transition formula.
 
-$\texttt{ans}[i] = \min\limits_{j < i, x_2[j] \le x_1[i], y_2[j] \le y_1[i]}(\texttt{ans}[j] + x_1[i] + y_1[i] - x_2[j] - y_2[j])$ 
+$\texttt{ans}[i] = \min\limits_{j < i, x_2[j] \le x_1[i], y_2[j] \le y_1[i]}(\texttt{ans}[j] + x_1[i] + y_1[i] - x_2[j] - y_2[j])$
 
-$\texttt{ans}[i] = x_1[i] + y_1[i] + \min\limits_{j < i, x_2[j] \le x_1[i], y_2[j] \le y_1[i]}(\texttt{ans}[j] - x_2[j] - y_2[j])$ 
+$\texttt{ans}[i] = x_1[i] + y_1[i] + \min\limits_{j < i, x_2[j] \le x_1[i], y_2[j] \le y_1[i]}(\texttt{ans}[j] - x_2[j] - y_2[j])$
 
 We notice that everything inside the $\min$ statement only depends on $j$. The segment tree stores $\texttt{ans}[j] - x_2[j] - y_2[j]$ at index $y_2[j]$. We can seperate the start and end of springboards to create two seperate events for each springboard, still sorting by $(x, y)$. When the event is the start of a springboard, update $ans[i]$ through a segment tree query. When the event is the end of a springboard, update the segment tree.
 
@@ -127,15 +127,16 @@ using namespace std;
 #define f first
 #define s second
 #define pb push_back
-#define rep(i, a, b) for(int i = a; i < (b); ++i)
+#define rep(i, a, b) for (int i = a; i < (b); ++i)
 #define all(x) begin(x), end(x)
 #define sz(x) (int)(x).size()
 typedef long long ll;
 typedef pair<int, int> pii;
 typedef vector<int> vi;
 
-template<class T> bool ckmin(T& a, const T& b) {
-	return b < a ? a = b, 1 : 0; } // set a = min(a,b)
+template <class T> bool ckmin(T &a, const T &b) {
+	return b < a ? a = b, 1 : 0;
+}  // set a = min(a,b)
 
 /**
  * Description: 1D point update, range query where \texttt{comb} is
@@ -185,7 +186,8 @@ int y_index(int y) {
 }
 
 int main() {
-	ios_base::sync_with_stdio(0); cin.tie(0);
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
 	freopen("boards.in", "r", stdin);
 	freopen("boards.out", "w", stdout);
 	cin >> N >> P;
@@ -210,7 +212,9 @@ int main() {
 			ins(y_index(t.f.s), ans[t.s.f] - t.f.f - t.f.s);
 		}
 	}
-	cout << query_min(2 * P - 1) + 2 * N; // adds 2N to include the transition from the last springboard to the endpoint
+	cout << query_min(2 * P - 1) +
+	            2 * N;  // adds 2N to include the transition from the last
+	                    // springboard to the endpoint
 }
 ```
 
