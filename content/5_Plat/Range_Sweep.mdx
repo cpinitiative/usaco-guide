@@ -97,7 +97,7 @@ int main() {
 
 The first step is to create a DP to solve the first subtask. The states are the springboards and the transitions are between springboards. First, sort the springboards by the pair $(x_1, y_1)$ in increasing order. It is possible to show that for all $i$, $j$, where $i < j$, Bessie cannot use springboard $j$ then $i$ later.
 
-For each springboard $A_i$, let $ans[i]$ denote the minimum distance needed to walk to the start point of springboard $i$.
+For each springboard $i$, let $ans[i]$ denote the minimum distance needed to walk to the start point of springboard $i$.
 
 Let $dist(a, b)$ be the walking distance from the end of springboard $a$ and the start of springboard $b$.
 
@@ -115,7 +115,7 @@ $ans[i] = \min\limits_{j < i, x_2[j] \le x_1[i], y_2[j] \le y_1[i]}(ans[j] + x_1
 
 $ans[i] = x_1[i] + y_1[i] + \min\limits_{j < i, x_2[j] \le x_1[i], y_2[j] \le y_1[i]}(ans[j] - x_2[j] - y_2[j])$ 
 
-We notice that everything inside the $\min$ statement only depends on $j$. The segment tree stores $ans[j] - x_2[j] - y_2[j]$ at index $y_2[j]$. We can seperate the start and end of springboards to create two seperate events from them, still sorting by $(x, y)$. When the event is the start of a springboard, update $ans[i]$ through a segment tree query. When the event is the end of a springboard, update the segment tree.
+We notice that everything inside the $\min$ statement only depends on $j$. The segment tree stores $ans[j] - x_2[j] - y_2[j]$ at index $y_2[j]$. We can seperate the start and end of springboards to create two seperate events for each springboard, still sorting by $(x, y)$. When the event is the start of a springboard, update $ans[i]$ through a segment tree query. When the event is the end of a springboard, update the segment tree.
 
 By processing in order, the first two conditions in the $\min$ statement are always satisfied. The third is where the segment tree comes into play, where querying the range $[0, y_1[i]]$ is sufficent to satisfy all constraints.
 
@@ -179,35 +179,38 @@ vi distinct_y;
 
 int query_min(int ind) { return S.query(0, ind); }
 void ins(int ind, int val) { S.upd(ind, val); }
-int y_index(int y) { return lower_bound(all(distinct_y), y) - begin(distinct_y); }
+// gets the coordinate compressed y
+int y_index(int y) {
+	return lower_bound(all(distinct_y), y) - begin(distinct_y);
+}
 
 int main() {
 	ios_base::sync_with_stdio(0); cin.tie(0);
 	freopen("boards.in", "r", stdin);
 	freopen("boards.out", "w", stdout);
 	cin >> N >> P;
-	vector<pair<pair<int, int>, pair<int, int>>> ev;
+	vector<pair<pair<int, int>, pair<int, int>>> events;
 	for (int i = 0; i < P; ++i) {
 		pair<int, int> a, b;
 		cin >> a.f >> a.s >> b.f >> b.s;
-		ev.pb({a, {i, -1}});  // start point
-		ev.pb({b, {i, 1}});   // end point
+		events.pb({a, {i, -1}});  // start point
+		events.pb({b, {i, 1}});   // end point
 		distinct_y.pb(a.s);
 		distinct_y.pb(b.s);
 	}
 
 	sort(all(distinct_y));
-	sort(begin(ev), end(ev));
+	sort(all(events));
 	S.init(2 * P);
 	ins(0, 0);
-	for (auto &t : ev) {
+	for (auto &t : events) {
 		if (t.s.s == -1) {
 			ans[t.s.f] = t.f.f + t.f.s + query_min(y_index(t.f.s));
 		} else {
 			ins(y_index(t.f.s), ans[t.s.f] - t.f.f - t.f.s);
 		}
 	}
-	cout << query_min(2 * P - 1) + 2 * N;
+	cout << query_min(2 * P - 1) + 2 * N; // adds 2N to include the transition from the last springboard to the endpoint
 }
 ```
 
