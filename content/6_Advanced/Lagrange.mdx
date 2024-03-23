@@ -1,18 +1,14 @@
 ---
 id: lagrange
 title: 'Lagrangian Relaxation'
-author: Benjamin Qi
+author: Benjamin Qi, Alex Liang, Dong Liu
 description: 'aka Aliens Trick'
 prerequisites:
   - convex-hull
 frequency: 1
 ---
 
-adding lambda\*smth
-
-<Problems problems="sample" />
-
-## Tutorial
+## Resources
 
 <Resources>
 	<Resource
@@ -26,6 +22,144 @@ adding lambda\*smth
 		url="https://web.archive.org/web/20210511092429/http://www.serbanology.com/"
 	 />
 </Resources>
+
+## Lagrangian Relaxation
+
+Lagrangian Relaxation involves transforming a constraint on a variable into a cost $\lambda$ and binary searching for the optimal $\lambda$.
+
+<FocusProblem problem="sample" />
+
+The problem gives us a length $N$ ($1 \le N \le 3 \cdot 10^5$) array of integers in the range $[-10^9,10^9]$. We are given some $K$ ($1 \le K \le N$) and are asked to choose at most $K$ disjoint subarrays such that the sum of elements included in a subarray is maximized.
+
+### Intuition
+
+The main bottleneck of any dynamic programming solution to this problem is having to store the number of subarrays we have created so far.
+
+Let's try to find a way around this. Instead of storing the number of subarrays we have created so far, we assign a penalty of $\lambda$ for creating a new subarray (i.e. every time we create a subarray we penalize our sum by $\lambda$).
+
+This leads us to the sub-problem of finding the maximal sum and number of subarrays used if creating a new subarray costs $\lambda$. We can solve this in $\mathcal{O}(N)$ time with dynamic programming.
+
+<Spoiler title="Dynamic Programming Solution">
+Let's have $\texttt{dp}[i][j:\{0,1\}]$ represent the maximum sum if we consider the first $i$ elements, given that $j=0/1$ implies whether
+element $i$ is part of a subarray. Let $\texttt{cnt}[i][j]$ represent the number of
+people used in an optimal arrangement of $\texttt{dp}[i][j]$.
+
+For our $\texttt{dp}$ transitions, we have
+
+$$
+\{\texttt{dp}[i][0], \texttt{cnt}[i][0]\} =
+\max\begin{cases} \{\texttt{dp}[i - 1][0], \texttt{cnt}[i - 1][0]\}\\
+\{\texttt{dp}[i - 1][1], \texttt{cnt}[i - 1][1]\}
+\end{cases}
+$$
+
+and
+
+$$
+\{\texttt{dp}[i][1], \texttt{cnt}[i][1]\} =
+\max\begin{cases}\{\texttt{dp}[i - 1][0] + A[i] - \lambda, \texttt{cnt}[i - 1][0] + 1\}\\
+\{\texttt{dp}[i - 1][1] + A[i], \texttt{cnt}[i - 1][1]\}\end{cases}
+$$
+
+because we either begin a new subarray or we continue an existing subarray.
+</Spoiler>
+
+Let $v$ be the maximal achievable sum with $\lambda$ penalty and $c$ be the number of subarrays used to achieve $v$. Then the **maximal possible sum achievable if we use exactly $c$ subarrays is $v+\lambda c$**. Note that we add $\lambda c$ to undo the penalty.
+
+Our goal is to find some $\lambda$ such that $c=K$ (assuming $K$ is at most the number of positive elements). As we increase $\lambda$, it makes sense for $c$ to decrease since we are penalizing subarrays more. Thus, we can try to binary search for $\lambda$ to make $c=K$ and set our answer to be $v+\lambda c$ at the optimal $\lambda$.
+
+This idea almost works but there are still some very important caveats and conditions that we have not considered.
+
+### Geometry
+
+Let $f(x)$ be the maximal sum if we use at most $x$ subarrays. We want to find $f(K)$.
+
+The first condition is that $f(x)$ **must be concave or convex**. Since $f(x)$ is increasing in this problem, the means that we need $f(x)$ to be concave: $f(x) - f(x - 1) \ge f(x + 1) - f(x)$. In other words, this means that the more subarrays we add, the less we increase the sum by. We can intuitively see that this is true.
+
+<Spoiler title="Proof that our function is concave">
+
+We construct a flow graph with source $S$, sink $T$, and $N+1$ additional vertices numbered $1$ to $N+1$. We will have the following edges.
+
+- A directed edge from $S$ to $i$ ($1 \le i \le N+1$) with weight $0$ and capacity $1$.
+
+- A directed edge from $i$ ($1 \le i \le N+1$) to $T$ with weight $0$ and capacity $1$.
+
+- A bidirectional edge from $i$ ($1 \le i \le N$) to $i+1$ with weight $A[i]$ and capacity $1$.
+
+$f(x)$ will be the maximum cost $x$-flow through the graph. We can repeatedly find the maximum cost augmenting path $x$ times to get our answer. Because the maximum cost as a function of flow is concave, $f(x)$ will be concave. You can read more about simulating cost flows [here](https://codeforces.com/blog/entry/118391).
+
+</Spoiler>
+
+Consider the following graphs of $f(x)$ and $f(x)-\lambda x$. In this example, we have $\lambda=5$.
+
+<iframe
+	src="https://www.desmos.com/calculator/ydynwc2fej?embed"
+	width="500px"
+	height="300px"
+	frameborder="0"
+/>
+
+Here is where the fact that $f(x)$ is concave comes in. Because the slope is non-increasing, we know that $f(x) - \lambda x$ will **first increase, then stay the same, and finally decrease**.
+
+Let $v(\lambda)$ be the optimal maximal achievable sum with $\lambda$ penalty and $c(\lambda)$ be the number of subarrays used to achieve $v(\lambda)$ (note that if there are multiple such possibilities, we set $c(\lambda)$ to be the **maximal** number of subarrays to achieve $v(\lambda)$). These values can be calculated in $\mathcal{O}(N)$ time using the dynamic programming approach described above.
+
+When we assign the penalty of $\lambda$, we are trying to find the maximal sum if creating a subarray reduces our sum by $\lambda$. So $v(\lambda)$ will be the **maximum** of $f(x) - \lambda x$ and $c(\lambda)$ will equal to the rightmost $x$ that **maximizes** $f(x) - \lambda x$.
+
+Given the shape of $f(x) - \lambda x$, we know that $f(x) - \lambda x$ will be maximized at all points where $\lambda$ is equal to the slope of $f(x)$ (these points are red in the graph above). If there are no such points it will be maximized at the rightmost point where the slope is less than $\lambda$. So this means that $c(\lambda)$ will be the rightmost $x$ at which the slope of $f(x)$ is still greater or equal to $\lambda$.
+
+
+Now we know exactly what $\lambda$ represents: $\lambda$ is the slope and $c(\lambda)$ is the rightmost $x$ at which the slope of $f(x)$ is still greater or equal to $\lambda$.
+
+We binary search for $\lambda$ and find the highest $\lambda$ such that $c(\lambda) \ge K$. Let the optimal value be $\lambda_{\texttt{opt}}$. Then our answer is $v(\lambda_{\texttt{opt}}) + \lambda_{\texttt{opt}} K$. Note that this works even if $c(\lambda_{\texttt{opt}}) \neq K$ since  $c(\lambda_{\texttt{opt}})$ and $K$ will be on the same line with slope $\lambda_{\texttt{opt}}$ in that case.
+
+Because calculating $v(\lambda)$ and $c(\lambda)$ with the dynamic programming solution described above will take $\mathcal{O}(N)$ time, this solution runs in $\mathcal{O}(N\log{\sum A[i]})$ time.
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+#define ll long long
+
+int main() {
+	int n, k;
+	cin >> n >> k;
+
+	int a[n];
+	for (int &i : a) { cin >> i; }
+
+	/**
+	 * @return the maximum sum along with the number of subarrays used
+	 * if creating a subarray penalizes the sum by "lmb" and
+	 * there is no limit to the number of subarrays you can create
+	 */
+	auto solve_lambda = [&](ll lmb) {
+		pair<ll, ll> dp[n][2];
+
+		dp[0][0] = {0, 0};
+		dp[0][1] = {a[0] - lmb, 1};
+
+		for (int i = 1; i < n; i++) {
+			dp[i][0] = max(dp[i - 1][0], dp[i - 1][1]);
+
+			dp[i][1] =
+			    max(make_pair(dp[i - 1][0].first + a[i] - lmb,
+			                  dp[i - 1][0].second + 1),
+			        make_pair(dp[i - 1][1].first + a[i], dp[i - 1][1].second));
+		}
+
+		return max(dp[n - 1][0], dp[n - 1][1]);
+	};
+
+	ll lo = 0;
+	ll hi = 1e18;
+	while (lo < hi) {
+		ll mid = (lo + hi + 1) / 2;
+		solve_lambda(mid).second >= k ? lo = mid : hi = mid - 1;
+	}
+
+	cout << solve_lambda(lo).first + lo * k << endl;
+}
+```
 
 ## Problems
 
