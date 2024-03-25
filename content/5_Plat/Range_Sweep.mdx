@@ -131,9 +131,7 @@ Due to the large $N$, coordinate compression is required in the code.
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
-template <class T> bool ckmin(T &a, const T &b) {
-	return b < a ? a = b, 1 : 0;
-}
+template <class T> bool ckmin(T &a, const T &b) { return b < a ? a = b, 1 : 0; }
 
 /**
  * Description: 1D point update, range query where \texttt{comb} is
@@ -179,11 +177,13 @@ int query_min(int ind) { return S.query(0, ind); }
 void ins(int ind, int val) { S.upd(ind, val); }
 // gets the coordinate compressed y
 int y_index(int y) {
-	return lower_bound(begin(distinct_y), end(distinct_y), y) - begin(distinct_y);
+	return lower_bound(begin(distinct_y), end(distinct_y), y) -
+	       begin(distinct_y);
 }
 
 int main() {
-	ios_base::sync_with_stdio(0); cin.tie(0);
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
 	freopen("boards.in", "r", stdin);
 	freopen("boards.out", "w", stdout);
 	cin >> N >> P;
@@ -208,8 +208,9 @@ int main() {
 			ins(y_index(y), ans[i] - x - y);
 		}
 	}
-	// adds 2N to include the transition from the last springboard to the endpoint
-	cout << query_min(2 * P - 1) + 2 * N; 
+	// adds 2N to include the transition from the last springboard to the
+	// endpoint
+	cout << query_min(2 * P - 1) + 2 * N;
 }
 ```
 
