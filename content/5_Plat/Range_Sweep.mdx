@@ -170,7 +170,7 @@ template <class T> struct Seg {  // comb(ID,b) = b
 struct Point {
 	int x, y, i, type;
 	Point(int x, int y, int i, int type) : x(x), y(y), i(i), type(type) {}
-	bool operator < (const Point &p) {
+	bool operator<(const Point &p) {
 		if (x == p.x) return y < p.y;
 		return x < p.x;
 	}
@@ -182,11 +182,13 @@ int N, P;
 int ans[MX];
 vector<int> distinct_y;
 int y_index(int y) {
-	return lower_bound(begin(distinct_y), end(distinct_y), y) - begin(distinct_y);
+	return lower_bound(begin(distinct_y), end(distinct_y), y) -
+	       begin(distinct_y);
 }
 
 int main() {
-	ios_base::sync_with_stdio(0); cin.tie(0);
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
 	freopen("boards.in", "r", stdin);
 	freopen("boards.out", "w", stdout);
 	cin >> N >> P;
@@ -213,7 +215,7 @@ int main() {
 	}
 	// adds 2N to include the transition from the last springboard to the
 	// endpoint
-	cout << S.query(0, 2 * P - 1) + 2 * N; 
+	cout << S.query(0, 2 * P - 1) + 2 * N;
 }
 ```
 
