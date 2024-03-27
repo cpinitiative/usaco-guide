@@ -80,7 +80,6 @@ def problem_stats(url: str) -> Tuple[float, float, float]:
 	html = parse(url).html
 	is_plat = "plat" in url
 	tables = html.find_all("table")
-	assert len(tables) == 3, "expected three tables"
 	return problem_table_stats(tables[1], is_plat)
 
 
