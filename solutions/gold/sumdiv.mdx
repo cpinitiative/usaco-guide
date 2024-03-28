@@ -18,9 +18,9 @@ $S = \prod_{i=1}^{k}\frac{d_i^{p_i+1} - 1}{d_i -1}$.
 For this problem we need to compute sum of divisors of $A^B$. If the prime
 factorization of $A$ is $d_1^{p_1} \cdot d_2^{p_2} \cdot ... \cdot d_k^{p_k}$
 then the prime factorization of $A^B$ will be
-$d_1^{B*p_1} \cdot d_2^{B*p_2} \cdot ... \cdot d_k^{B*p_k}$ and we can compute
+$d_1^{B\cdot p_1} \cdot d_2^{B\cdot p_2} \cdot ... \cdot d_k^{B\cdot p_k}$ and we can compute
 the sum of divisors using the above formula,
-$S = \prod_{i=1}^{k}\frac{d_i^{B*p_i+1} - 1}{d_i -1}$.
+$S = \prod_{i=1}^{k}\frac{d_i^{B\cdot p_i+1} - 1}{d_i -1}$.
 
 To compute the above sum we will have to find multiplicative inverse of
 $(d_i-1)$ modulo $10^9+7$, for cases when $(d_i-1)$ is not relatively prime with
@@ -28,9 +28,9 @@ $10^9+7$ we can notice that we wish to find the value of the following series
 modulo $10^9+7$,
 
 for each $1 \le i \le k$,
-$\frac{d_i^{B*p_i+1} - 1}{d_i -1} = 1+d_i + d_i^2 + ... + d_i^{B*p_i}$.
+$\frac{d_i^{B\cdot p_i+1} - 1}{d_i -1} = 1+d_i + d_i^2 + ... + d_i^{B\cdot p_i}$.
 
-which is equal to $(B+1)\%(10^9+7)$, whenever, $d_i\%(10^9+7)=0$
+which is equal to $(B\cdot p_i+1)\%(10^9+7)$, whenever, $d_i\%(10^9+7)=0$
 
 We do need to compute the prime factors of $A$, but thankfully this can be done
 in $\mathcal{O}(\sqrt{A})$ time.
@@ -41,7 +41,7 @@ $10^9+7$.
 
 ## Implementation
 
-**Time Complexity:** $\mathcal{O}(\sqrt{A}*logB)$
+**Time Complexity:** $\mathcal{O}(\sqrt{A}\cdot logB)$
 
 <LanguageSection>
 <CPPSection>
