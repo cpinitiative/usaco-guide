@@ -53,76 +53,78 @@ using namespace std;
 
 #define ll long long int
 
-const int mod = 1e9+7;
+const int mod = 1e9 + 7;
 
 // BeginCodeSnip{Modular Inverse and Binary Exponentiation functions}
-ll pw(ll a, ll b, ll m){
+ll pw(ll a, ll b, ll m) {
 	ll res = 1;
-	a%=m; // to avoid overflows when a > 1e9
-	while (b){
-		if (b&1){
-			res = (res * a) % m;
-		}
+	a %= m;  // to avoid overflows when a > 1e9
+	while (b) {
+		if (b & 1) { res = (res * a) % m; }
 		a = (a * a) % m;
-		b/=2;
+		b /= 2;
 	}
 	return res;
 }
 
-void ext(ll a, ll b, ll &x, ll &y){ // Extended euclidean gcd algorithm to find modular inverse
-	if (b==0){
+void ext(ll a, ll b, ll &x,
+         ll &y) {  // Extended euclidean gcd algorithm to find modular inverse
+	if (b == 0) {
 		x = 1, y = 0;
 	} else {
-		ext(b, a%b, x, y);
+		ext(b, a % b, x, y);
 		ll tem = x;
 		x = y;
-		y = tem - (a/b)*y;
+		y = tem - (a / b) * y;
 	}
 }
 
-ll inv(ll a, ll m){  // finds multiplicative inverse modulo m given, gcd(a,m)=1
+ll inv(ll a, ll m) {  // finds multiplicative inverse modulo m given, gcd(a,m)=1
 	ll x = 0, y = 0;
 	ext(a, m, x, y);
-	return (x+m)%m;
+	return (x + m) % m;
 }
 
 // EndCodeSnip
 
-int main(){
+int main() {
 	ifstream fin("sumdiv.in");
 	ofstream fout("sumdiv.out");
-	ll a, b; fin>>a>>b;
-	if (b==0){
+	ll a, b;
+	fin >> a >> b;
+	if (b == 0) {
 		// a^0 = 1
-		fout<<"1\n";
+		fout << "1\n";
 	} else {
 		ll ans = 1;
-		for (ll i = 2; i*i<=a; i++){
-			if (a%i==0){
+		for (ll i = 2; i * i <= a; i++) {
+			if (a % i == 0) {
 				// if i divides a then it is always prime in this case
 				// maximum power of i which divides a
 				ll co = 0;
-				while (a%i==0){
+				while (a % i == 0) {
 					co++;
-					a/=i;
+					a /= i;
 				}
 				// find the value of d-1 and (d^k - 1) modulo (10^9+7)
 				ll d_1 = inv((i - 1 + mod) % mod, mod);
-				ll dk_1 = (pw(i, (co * (b % (mod - 1)) + 1)%(mod - 1), mod) - 1 + mod) % mod;
+				ll dk_1 = (pw(i, (co * (b % (mod - 1)) + 1) % (mod - 1), mod) -
+				           1 + mod) %
+				          mod;
 				ans = (ans * ((d_1 * dk_1) % mod)) % mod;
 			}
 		}
-		if (a > 1 && ((a-1) % mod) != 0){
+		if (a > 1 && ((a - 1) % mod) != 0) {
 			// if a is greater than 1 and is coprime to 10^9+7
 			// finds the value of d-1 and (d^k - 1) modulo (10^9+7)
 			ll d_1 = inv((a - 1 + mod) % mod, mod);
 			ll dk_1 = (pw(a, (b + 1) % (mod - 1), mod) - 1 + mod) % mod;
 			ans = (ans * ((d_1 * dk_1) % mod)) % mod;
-		} else if (a > 1){
+		} else if (a > 1) {
 			// if a is not coprime to 10^9+7 , we can just multiply by (b+1)
-			ans = (ans * ((b + 1) % mod))%mod;
+			ans = (ans * ((b + 1) % mod)) % mod;
 		}
-		fout<<ans<<'\n';
+		fout << ans << '\n';
 	}
 	return 0;
 }
