@@ -9,11 +9,9 @@ author: Nathan Gong
 
 ## Implementation
 
-**Time Complexity:** $\mathcal{O}(NM\log R)$, where $R$ denotes the maximum
-height difference between any two cells
+**Time Complexity:** $\mathcal{O}(NM\log R)$, where $R$ denotes the maximum height difference between any two cells
 
 <LanguageSection>
-
 <JavaSection>
 
 ```java
@@ -122,20 +120,24 @@ public class CrossCountrySkiing {
 ```
 
 </JavaSection>
-
 <CPPSection>
 
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
-int dy[] = {-1, 0, 1, 0};
-int dx[] = {0, -1, 0, 1};
-int m, n, wy, wx;
-vector<vector<int>> grid(501, vector<int>(501));
-vector<vector<int>> wp(501, vector<int>(501));
-vector<vector<int>> mark(501, vector<int>(501));
 
-// floodfill with BFS within elevation difference d
+const int dy[] = {-1, 0, 1, 0};
+const int dx[] = {0, -1, 0, 1};
+constexpr int MAX_N = 500;
+
+int m, n;
+int wy, wx;
+
+vector<vector<int>> grid(MAX_N, vector<int>(MAX_N));
+vector<vector<bool>> wp(MAX_N, vector<bool>(MAX_N));
+vector<vector<bool>> mark(MAX_N, vector<bool>(MAX_N));
+
+/** Floodfill all nodes that can be reached given a value of D */
 void floodfill(int d) {
 	queue<pair<int, int>> q;
 
@@ -150,24 +152,25 @@ void floodfill(int d) {
 			int ny = p.first + dy[i];
 			int nx = p.second + dx[i];
 			if (ny >= 0 && ny < m && nx >= 0 && nx < n) {
-				/* if the target cell is not visited before
+				/*
+				 * if the target cell is not visited before
 				 * and the elevation difference is within D
 				 * push the cell into the queue
 				 */
 				if (!mark[ny][nx] &&
-				    abs(grid[p.first][p.second] - grid[ny][nx]) <= d) {
+					abs(grid[p.first][p.second] - grid[ny][nx]) <= d) {
 					q.push(make_pair(ny, nx));
-					mark[ny][nx] = 1;
+					mark[ny][nx] = true;
 				}
 			}
 		}
 	}
 }
 
-// check if all waypoints are reachable with elevation difference D
+/** Checks if all waypoints are reachable within the given D */
 bool reachable(int d) {
 	// reset the grid that keeps the reachable points
-	mark = vector<vector<int>>(m, vector<int>(n, 0));
+	mark = vector<vector<bool>>(m, vector<bool>(n));
 
 	floodfill(d);
 
@@ -182,14 +185,16 @@ bool reachable(int d) {
 
 int main() {
 	freopen("ccski.in", "r", stdin);
-	freopen("ccski.out", "w", stdout);
 	cin >> m >> n;
 	for (int i = 0; i < m; i++) {
 		for (int j = 0; j < n; j++) { cin >> grid[i][j]; }
 	}
+
 	for (int i = 0; i < m; i++) {
 		for (int j = 0; j < n; j++) {
-			cin >> wp[i][j];
+			int is_waypoint;
+			cin >> is_waypoint;
+			wp[i][j] = is_waypoint != 0;
 			// keep one of the waypoints as the starting point
 			if (wp[i][j]) {
 				wy = i;
@@ -197,8 +202,10 @@ int main() {
 			}
 		}
 	}
-	// binary search
-	int l = 0, r = 1e9;
+	
+	// binary search for the elevation difference
+	int l = 0;
+	int r = INT32_MAX;
 	while (l < r) {
 		int d = (l + r) / 2;
 		if (reachable(d)) {
@@ -208,10 +215,10 @@ int main() {
 		}
 	}
 
+	freopen("ccski.out", "w", stdout);
 	cout << l << endl;
 }
 ```
 
 </CPPSection>
-
 </LanguageSection>
