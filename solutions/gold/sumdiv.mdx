@@ -53,7 +53,7 @@ using namespace std;
 
 #define ll long long
 
-const int mod = 1e9 + 7;
+const int MOD = 1e9 + 7;
 
 // BeginCodeSnip{Modular Inverse and Binary Exponentiation functions}
 ll pw(ll a, ll b, ll m) {
@@ -67,8 +67,9 @@ ll pw(ll a, ll b, ll m) {
 	return res;
 }
 
+// Extended euclidean gcd algorithm to find modular inverse
 void ext(ll a, ll b, ll &x,
-         ll &y) {  // Extended euclidean gcd algorithm to find modular inverse
+         ll &y) {
 	if (b == 0) {
 		x = 1, y = 0;
 	} else {
@@ -79,7 +80,8 @@ void ext(ll a, ll b, ll &x,
 	}
 }
 
-ll inv(ll a, ll m) {  // finds multiplicative inverse modulo m given, gcd(a,m)=1
+// Finds multiplicative inverse modulo m given, gcd(a,m)=1
+ll inv(ll a, ll m) {
 	ll x = 0, y = 0;
 	ext(a, m, x, y);
 	return (x + m) % m;
@@ -107,26 +109,25 @@ int main() {
 					a /= i;
 				}
 				// find the value of d-1 and (d^k - 1) modulo (10^9+7)
-				ll d_1 = inv((i - 1 + mod) % mod, mod);
-				ll dk_1 = (pw(i, (co * (b % (mod - 1)) + 1) % (mod - 1), mod) -
-				           1 + mod) %
-				          mod;
-				ans = (ans * ((d_1 * dk_1) % mod)) % mod;
+				ll d_1 = inv((i - 1 + MOD) % MOD, MOD);
+				ll dk_1 = (pw(i, (co * (b % (MOD - 1)) + 1) % (MOD - 1), MOD) -
+				           1 + MOD) %
+				          MOD;
+				ans = (ans * ((d_1 * dk_1) % MOD)) % MOD;
 			}
 		}
-		if (a > 1 && ((a - 1) % mod) != 0) {
+		if (a > 1 && ((a - 1) % MOD) != 0) {
 			// if a is greater than 1 and is coprime to 10^9+7
 			// finds the value of d-1 and (d^k - 1) modulo (10^9+7)
-			ll d_1 = inv((a - 1 + mod) % mod, mod);
-			ll dk_1 = (pw(a, (b + 1) % (mod - 1), mod) - 1 + mod) % mod;
-			ans = (ans * ((d_1 * dk_1) % mod)) % mod;
+			ll d_1 = inv((a - 1 + MOD) % MOD, MOD);
+			ll dk_1 = (pw(a, (b + 1) % (MOD - 1), MOD) - 1 + MOD) % MOD;
+			ans = (ans * ((d_1 * dk_1) % MOD)) % MOD;
 		} else if (a > 1) {
 			// if a is not coprime to 10^9+7 , we can just multiply by (b+1)
-			ans = (ans * ((b + 1) % mod)) % mod;
+			ans = (ans * ((b + 1) % MOD)) % MOD;
 		}
 		fout << ans << '\n';
 	}
-	return 0;
 }
 ```
 
