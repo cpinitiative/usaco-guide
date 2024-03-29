@@ -2,79 +2,132 @@
 id: sumdiv
 source: Kilonova
 title: Sum of divisors
-author: Mihnea Brebenel
+author: Mihnea Brebenel, Harshit Lohar
 ---
 
 ## Explanation
 
-The sum of all divisors of the integer $N$ can be efficiently computed using the [divisor function](https://en.wikipedia.org/wiki/Divisor_function).
+For an integer $A$, the sum of all divisors of the $A$ can be efficiently
+computed using the
+[divisor function](https://en.wikipedia.org/wiki/Divisor_function).
 
-The formula states that if $d_1^{p_1} \cdot d_2^{p_2} \cdot ... \cdot d_k^{p_k}$ is the prime factorization of $N$, then the divisors' sum is $S = \prod_{i=1}^{k}\frac{d_i^{p_i+1} - 1}{d_i -1}$.
+The formula states that if $d_1^{p_1} \cdot d_2^{p_2} \cdot ... \cdot d_k^{p_k}$
+is the prime factorization of $A$, then the divisors' sum is
+$S = \prod_{i=1}^{k}\frac{d_i^{p_i+1} - 1}{d_i -1}$.
 
-We do need to compute the prime factors of $N$, but thankfully this can be done in $\mathcal{O}(\sqrt{N})$ time.
+For this problem we need to compute sum of divisors of $A^B$. If the prime
+factorization of $A$ is $d_1^{p_1} \cdot d_2^{p_2} \cdot ... \cdot d_k^{p_k}$
+then the prime factorization of $A^B$ will be
+$d_1^{B\cdot p_1} \cdot d_2^{B\cdot p_2} \cdot ... \cdot d_k^{B\cdot p_k}$ and we can compute
+the sum of divisors using the above formula,
+$S = \prod_{i=1}^{k}\frac{d_i^{B\cdot p_i+1} - 1}{d_i -1}$.
+
+To compute the above sum we will have to find multiplicative inverse of
+$(d_i-1)$ modulo $10^9+7$, for cases when $(d_i-1)$ is not relatively prime with
+$10^9+7$ we can notice that we wish to find the value of the following series
+modulo $10^9+7$,
+
+for each $1 \le i \le k$,
+$\frac{d_i^{B\cdot p_i+1} - 1}{d_i -1} = 1+d_i + d_i^2 + ... + d_i^{B\cdot p_i}$.
+
+which is equal to $(B\cdot p_i+1)\%(10^9+7)$, whenever, $d_i\%(10^9+7)=0$
+
+We do need to compute the prime factors of $A$, but thankfully this can be done
+in $\mathcal{O}(\sqrt{A})$ time.
+
+Since, $B$ can be as large as $10^{18}$, to avoid overflows we can use Euler's
+totient function and binary exponentiation to compute the powers modulo
+$10^9+7$.
 
 ## Implementation
 
-**Time Complexity:** $\mathcal{O}(\sqrt{N})$
+**Time Complexity:** $\mathcal{O}(\sqrt{A}\cdot logB)$
 
 <LanguageSection>
 <CPPSection>
 
 ```cpp
-#include <bits/stdc++.h>
-#define ll long long
+#include <fstream>
 
 using namespace std;
 
-const int MOD = 9901;
+#define ll long long
 
-// BeginCodeSnip{Modular Arithmetic Functions (from the module)}
-ll exp(ll x, ll n, ll m) {
-	assert(n >= 0);
-	x %= m;  // note: m * m must be less than 2^63 to avoid ll overflow
+const int MOD = 1e9 + 7;
+
+// BeginCodeSnip{Modular Inverse and Binary Exponentiation functions}
+ll pow(ll a, ll b, ll m) {
 	ll res = 1;
-	while (n > 0) {
-		if (n % 2 == 1) { res = res * x % m; }
-		x = x * x % m;
-		n /= 2;
+	a %= m;  // to avoid overflows when a > 1e9
+	while (b) {
+		if (b & 1) { res = (res * a) % m; }
+		a = (a * a) % m;
+		b /= 2;
 	}
 	return res;
 }
 
-int inv(int x) {
-	// The Modular Inverse only exists if x % MOD != 0
-	if (x % MOD == 0) return 1;
-	if (x <= 1) { return x; }
-	return MOD - MOD / x * inv(MOD % x) % MOD;
+/** The extended Euclidean algorithm used to find the inverse */
+void ext(ll a, ll b, ll &x, ll &y) {
+	if (b == 0) {
+		x = 1, y = 0;
+	} else {
+		ext(b, a % b, x, y);
+		ll tem = x;
+		x = y;
+		y = tem - (a / b) * y;
+	}
+}
+
+/** @return the modular inverse of a mod m */
+ll inv(ll a, ll m) {
+	ll x = 0, y = 0;
+	ext(a, m, x, y);
+	return (x + m) % m;
 }
 // EndCodeSnip
 
 int main() {
-	ifstream in("sumdiv.in");
-	int n, m;
-	in >> n >> m;
+	ifstream fin("sumdiv.in");
+	ll a, b;
+	fin >> a >> b;
 
-	// find the prime factors
-	long long div_sum = 1;
-	for (int d = 2; d * d <= n; d++) {
-		int p = 0;
-		while (n % d == 0) {
-			n /= d;
-			p++;
+	ofstream fout("sumdiv.out");
+	if (b == 0) {
+		fout << '1' << '\n';  // a^0 = 1
+	} else {
+		ll ans = 1;
+		for (ll i = 2; i * i <= a; i++) {
+			if (a % i == 0) {
+				// if i divides a then it is always prime in this case
+				// maximum power of i which divides a
+				ll co = 0;
+				while (a % i == 0) {
+					co++;
+					a /= i;
+				}
+				// find the value of d-1 and (d^k - 1) modulo (10^9+7)
+				ll d_1 = inv((i - 1 + MOD) % MOD, MOD);
+				ll dk_1 = (pow(i, (co * (b % (MOD - 1)) + 1) % (MOD - 1), MOD) -
+				           1 + MOD) %
+				          MOD;
+				ans = (ans * ((d_1 * dk_1) % MOD)) % MOD;
+			}
 		}
 
-		if (p == 0) { continue; }
-		p *= m;
+		if (a > 1 && ((a - 1) % MOD) != 0) {
+			// if a is greater than 1 and is coprime to 10^9+7
+			// finds the value of d-1 and (d^k - 1) modulo (10^9+7)
+			ll d_1 = inv((a - 1 + MOD) % MOD, MOD);
+			ll dk_1 = (pow(a, (b + 1) % (MOD - 1), MOD) - 1 + MOD) % MOD;
+			ans = (ans * ((d_1 * dk_1) % MOD)) % MOD;
+		} else if (a > 1) {
+			// if a is not coprime to 10^9+7 , we can just multiply by (b+1)
+			ans = (ans * ((b + 1) % MOD)) % MOD;
+		}
 
-		div_sum =
-		    div_sum * (exp(d, p * m + 1, MOD) + MOD - 1) * inv(d - 1) % MOD;
+		fout << ans << '\n';
 	}
-
-	if (n > 1) {
-		div_sum = div_sum * (exp(n, m + 1, MOD) + MOD - 1) * inv(n - 1) % MOD;
-	}
-
-	ofstream("sumdiv.out") << div_sum;
 }
 ```
 
