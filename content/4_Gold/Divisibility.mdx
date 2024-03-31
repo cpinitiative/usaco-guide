@@ -507,6 +507,103 @@ $$
 \gcd(a_1, a_2, a_3, a_4) = \gcd(a_1, \gcd(a_2, \gcd(a_3, a_4))).
 $$
 
+## Euler's Totient Function
+
+<FocusProblem problem="gcdex" />
+
+<Resources>
+	<Resource
+		source="CP Algorithms"
+		title="Euler's Totient Function"
+		url="https://cp-algorithms.com/algebra/phi-function.html"
+		starred
+	> Theory and Exercises
+	</Resource>
+	<Resource
+		source="codeforces"
+		title="Euler's phi function, its properties, and how to compute it"
+		url="https://codeforces.com/blog/entry/106851"
+	> Well-covered article
+	</Resource>
+</Resources>
+
+The queries ask us: what is the sum of the greatest common divisor between all the numbers smaller than $n$ ? The following solution will illustrate the usefulness of
+[Euler's totient function](https://en.wikipedia.org/wiki/Euler%27s_totient_function) in problems involving divisibility, greatest common divisor and lowest common multiple.
+
+Let's start by defining a function $f(n, d)$ as how many pairs of numbers less or equal than $n$ have the greatest common divisor equal to $d$. i.e. $gcd(a, b)=d$. 
+Defining the function this way gives us the following equation: $f(n,d)=f(\frac{n}{d}, 1)$. The reasong why is simple: By choosing two coprime numbers $a$ and $b$ with 
+$a,b \le \frac{n}{d}$ guarantees us that $a \dot d, b \dot d \le n$ and $gcd(a \dot d, b \dot d) = d$, thus contributing to the global answer. Shifting away to our 
+new function $f(\frac{n}{d}, 1)$ allows us to compute $f(n, d)$ more easily using a slightly modified phi function preprocessing. To find the sum simply multiply 
+$f(n, d)$ with $d$.
+
+This way the global answer for a query is $\sum_{d=1}^{n}d \dot f(n, d) = \sum_{d=1}^{n}d \dot f(\frac{n}{d}, 1)$.
+
+<LanguageSection>
+<CPPSection>
+```cpp 
+#include <bits/stdc++.h>
+
+using namespace std;
+
+const int NMAX = 1e6 + 1;
+// phi[i] = how many pairs of numbers <=i are coprime
+long long phi[NMAX];
+// Store the values found to speed up the recursion process
+unordered_map<int, long long> memo;
+
+long long solve(long long n) {
+	if(n < NMAX) {
+		return phi[n];
+	}
+	if(memo.count(n)) {
+		return memo[n];
+	}
+	long long d = sqrt(n), ans = 1LL * n * (n + 1) / 2;
+	for(int i = 2; n / i > d; i++) {
+		ans -= solve(n / i);
+	}
+	for(int i = d; i >= 1; i--) {
+		ans -= 1LL * (n / i - n / (i+1)) * solve(i);
+	}
+	memo[n] = ans;
+	return ans;
+}
+
+int main() {
+	for(int i = 1; i < NMAX; i++) {
+		phi[i] = i;
+	}
+	for(int i = 2; i < NMAX; i++) {
+		// If i is prime
+		if(phi[i] == i) { 
+			phi[i]--;
+			for(int j = i+i; j < NMAX; j += i) {
+				phi[j] = phi[j] / i * (i - 1);
+			}
+		}
+	}
+	// Prefix sums of phi
+	for(int i = 2; i < NMAX; i++) {
+		phi[i] += phi[i - 1];
+	}
+
+	int n;
+	while(in >> n) {
+		if(n == 0) { break; }
+		long long ans = 0;
+		for(int d = 1; d <= n; d++) {
+			ans += d * (solve(n/d) - 1);
+		}
+		out << ans << '\n';
+	}
+	
+
+	return 0;
+}
+```
+</CPPSection>
+</LanguageSection>
+
 ## Problems
 
 <Problems problems="general" />
