@@ -527,6 +527,27 @@ $$
 	</Resource>
 </Resources>
 
+### Properties 
+
+Euler's totient function - written using phi $\phi(n)$ -  counts the number of positive integers in the interval $[1,n]$ which are coprime to $n$. Two numbers $a$ and $b$
+are coprime if their greatest common divisor is equal to 1 i.e. $gcd(a,b)=1$.
+
+The totient function is **multiplicative** meaning that $\phi(nm)=\phi(n) \cdot \phi(m)$, where $n$ and $m$ are coprime - $gcd(n, m)=1$
+
+Let's take a look at some edge cases for $\phi(n)$:
+- If n is a prime number then $\phi(n)=n-1$ because $gcd(n, x)=1$ for all $1 \leq x \le n$
+- If n is a power of a prime number, $n=p^q$ where p is a prime number and $1 \leq q$ then there are exactly $p^{q-1}$ numbers divisible by $p$, so 
+$\phi(p^q)=p^{q} - p^{q-1} = p^{q-1}(p - 1)$
+
+
+Using the multiplicative property and the last edge case we can compute the value of $\phi(n)$ from the factorization of number $n$.
+Let the factorization be $n=p_1^{q_1} \cdot p_2^{q_2} \cdot ... \cdot p_k^(q_k)$ where $p_i$ are prime factor of $n$, then:
+$$\phi(n)=\phi(p_1^{q_1}) \cdot \phi(p_2^{q_2}) \cdot ... \cdot \phi(p_k^(q_k)) 
+= p_1^{q_1-1}(p_1 - 1) \cdot p_2^{q_2-1}(p_2 - 1) \cdot .. \cdot p_k^{q_k-1}(q_k - 1) $$
+
+
+### Solution 
+
 The queries ask us: what is the sum of the greatest common divisor between all the numbers smaller than $n$ ? The following solution will illustrate the usefulness of
 [Euler's totient function](https://en.wikipedia.org/wiki/Euler%27s_totient_function) in problems involving divisibility, greatest common divisor and lowest common multiple.
 
