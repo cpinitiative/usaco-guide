@@ -527,7 +527,7 @@ $$
 	</Resource>
 </Resources>
 
-### Properties 
+### Properties
 
 Euler's totient function - written using phi $\phi(n)$ -  counts the number of positive integers in the interval $[1,n]$ which are coprime to $n$. Two numbers $a$ and $b$
 are coprime if their greatest common divisor is equal to 1 i.e. $gcd(a,b)=1$.
@@ -545,13 +545,13 @@ The totient function is **multiplicative** meaning that $\phi(nm)=\phi(n) \cdot 
 
 Let's take a look at some edge cases for $\phi(n)$:
 - If n is a prime number then $\phi(n)=n-1$ because $gcd(n, x)=1$ for all $1 \leq x \le n$
-- If n is a power of a prime number, $n=p^q$ where p is a prime number and $1 \leq q$ then there are exactly $p^{q-1}$ numbers divisible by $p$, so 
+- If n is a power of a prime number, $n=p^q$ where p is a prime number and $1 \leq q$ then there are exactly $p^{q-1}$ numbers divisible by $p$, so
 $\phi(p^q)=p^{q} - p^{q-1} = p^{q-1}(p - 1)$
 
 
 Using the multiplicative property and the last edge case we can compute the value of $\phi(n)$ from the factorization of number $n$.
 Let the factorization be $n=p_1^{q_1} \cdot p_2^{q_2} \cdot \ldots \cdot p_k^{q_k}$ where $p_i$ is a prime factor of $n$, then:
-$$\phi(n)=\phi(p_1^{q_1}) \cdot \phi(p_2^{q_2}) \cdot \dots \cdot \phi(p_k^{q_k}) 
+$$\phi(n)=\phi(p_1^{q_1}) \cdot \phi(p_2^{q_2}) \cdot \dots \cdot \phi(p_k^{q_k})
 = p_1^{q_1-1}(p_1 - 1) \cdot p_2^{q_2-1}(p_2 - 1) \cdot \ldots \cdot p_k^{q_k-1}(q_k - 1) $$
 
 Below is an implementation for factorization in $\mathcal{o}(\sqrt{n})$. It can be a little bit tricky to understand why we substract $and/p$ from $ans$. For example
@@ -560,20 +560,16 @@ $p_q \cdot x - p_{q-1} \cdot x = p_{q-1} \cdot x \cdot (p - 1)$ which is exactly
 
 <LanguageSection>
 <CPPSection>
-```cpp 
+```cpp
 int phi(int n) {
 	int ans = n;
-	for(int p = 2; p * p <= n; p++) {
-		if(n % p == 0) {
-			while(n % p == 0) {
-				n /= p;
-			}
-			ans -= ans / p;		
+	for (int p = 2; p * p <= n; p++) {
+		if (n % p == 0) {
+			while (n % p == 0) { n /= p; }
+			ans -= ans / p;
 		}
 	}
-	if(n > 1) {
-		ans -= ans / n;
-	}
+	if (n > 1) { ans -= ans / n; }
 	return ans;
 }
 ```
@@ -585,40 +581,35 @@ Sieve of Eratosthenes. Since it's almost the same with the Sieve of Eratosthenes
 
 <LanguageSection>
 <CPPSection>
-```cpp 
+```cpp
 void precompute() {
-	for(int i = 1; i < NMAX; i++) {
-		phi[i] = i;
-	}
-	for(int i = 2; i < NMAX; i++) {
+	for (int i = 1; i < NMAX; i++) { phi[i] = i; }
+	for (int i = 2; i < NMAX; i++) {
 		// If i prime
-		if(phi[i] == i) { 
-			for(int j = i; j < NMAX; j += i) {
-				phi[j] -= phi[j] / i;
-			}
+		if (phi[i] == i) {
+			for (int j = i; j < NMAX; j += i) { phi[j] -= phi[j] / i; }
 		}
 	}
 }
-
 ```
 <\CPPSection>
 <\LanguageSection>
-### Solution 
+### Solution
 
 The queries ask us: what is the sum of the greatest common divisor between all the numbers smaller than $n$ ? The following solution will illustrate the usefulness of
 [Euler's totient function](https://en.wikipedia.org/wiki/Euler%27s_totient_function) in problems involving divisibility, greatest common divisor and lowest common multiple.
 
-Let's start by defining a function $f(n, d)$ as how many pairs of numbers less or equal than $n$ have the greatest common divisor equal to $d$. i.e. $gcd(a, b)=d$. 
-Defining the function this way gives us the following equation: $f(n,d)=f(\frac{n}{d}, 1)$. The reasong why is simple: By choosing two coprime numbers $a$ and $b$ with 
-$a,b \le \frac{n}{d}$ guarantees us that $a \cdot d, b \cdot d \le n$ and $gcd(a \cdot d, b \cdot d) = d$, thus contributing to the global answer. Shifting away to our 
-new function $f(\frac{n}{d}, 1)$ allows us to compute $f(n, d)$ more easily using a slightly modified phi function preprocessing. To find the sum simply multiply 
+Let's start by defining a function $f(n, d)$ as how many pairs of numbers less or equal than $n$ have the greatest common divisor equal to $d$. i.e. $gcd(a, b)=d$.
+Defining the function this way gives us the following equation: $f(n,d)=f(\frac{n}{d}, 1)$. The reasong why is simple: By choosing two coprime numbers $a$ and $b$ with
+$a,b \le \frac{n}{d}$ guarantees us that $a \cdot d, b \cdot d \le n$ and $gcd(a \cdot d, b \cdot d) = d$, thus contributing to the global answer. Shifting away to our
+new function $f(\frac{n}{d}, 1)$ allows us to compute $f(n, d)$ more easily using a slightly modified phi function preprocessing. To find the sum simply multiply
 $f(n, d)$ with $d$.
 
 This way the global answer for a query is $\sum_{d=1}^{n}d \cdot f(n, d) = \sum_{d=1}^{n}d \cdot f(\frac{n}{d}, 1)$.
 
 <LanguageSection>
 <CPPSection>
-```cpp 
+```cpp
 #include <bits/stdc++.h>
 
 using namespace std;
@@ -630,51 +621,38 @@ long long phi[NMAX];
 unordered_map<int, long long> memo;
 
 long long solve(long long n) {
-	if(n < NMAX) {
-		return phi[n];
-	}
-	if(memo.count(n)) {
-		return memo[n];
-	}
+	if (n < NMAX) { return phi[n]; }
+	if (memo.count(n)) { return memo[n]; }
 	long long d = sqrt(n), ans = 1LL * n * (n + 1) / 2;
-	for(int i = 2; n / i > d; i++) {
-		ans -= solve(n / i);
-	}
-	for(int i = d; i >= 1; i--) {
-		ans -= 1LL * (n / i - n / (i+1)) * solve(i);
+	for (int i = 2; n / i > d; i++) { ans -= solve(n / i); }
+	for (int i = d; i >= 1; i--) {
+		ans -= 1LL * (n / i - n / (i + 1)) * solve(i);
 	}
 	memo[n] = ans;
 	return ans;
 }
 
 int main() {
-	for(int i = 1; i < NMAX; i++) {
-		phi[i] = i;
-	}
-	for(int i = 2; i < NMAX; i++) {
+	for (int i = 1; i < NMAX; i++) { phi[i] = i; }
+	for (int i = 2; i < NMAX; i++) {
 		// If i is prime
-		if(phi[i] == i) { 
+		if (phi[i] == i) {
 			phi[i]--;
-			for(int j = i+i; j < NMAX; j += i) {
+			for (int j = i + i; j < NMAX; j += i) {
 				phi[j] = phi[j] / i * (i - 1);
 			}
 		}
 	}
 	// Prefix sums of phi
-	for(int i = 2; i < NMAX; i++) {
-		phi[i] += phi[i - 1];
-	}
+	for (int i = 2; i < NMAX; i++) { phi[i] += phi[i - 1]; }
 
 	int n;
-	while(in >> n) {
-		if(n == 0) { break; }
+	while (in >> n) {
+		if (n == 0) { break; }
 		long long ans = 0;
-		for(int d = 1; d <= n; d++) {
-			ans += d * (solve(n/d) - 1);
-		}
+		for (int d = 1; d <= n; d++) { ans += d * (solve(n / d) - 1); }
 		out << ans << '\n';
 	}
-	
 
 	return 0;
 }
