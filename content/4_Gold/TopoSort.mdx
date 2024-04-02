@@ -64,9 +64,9 @@ involving BFS.
 <CPPSection>
 
 ```cpp
+#include <algorithm>
 #include <iostream>
 #include <vector>
-#include <algorithm>
 
 using std::cout;
 using std::endl;
@@ -87,7 +87,7 @@ void dfs(int node) {
 }
 
 int main() {
-    int n, m;  // The number of nodes and edges respectively
+	int n, m;  // The number of nodes and edges respectively
 	std::cin >> n >> m;
 
 	graph = vector<vector<int>>(n);
@@ -107,9 +107,7 @@ int main() {
 	std::reverse(top_sort.begin(), top_sort.end());
 
 	vector<int> ind(n);
-	for (int i = 0; i < n; i++) {
-		ind[top_sort[i]] = i;
-	}
+	for (int i = 0; i < n; i++) { ind[top_sort[i]] = i; }
 
 	// Check if the topological sort is valid
 	bool valid = true;
@@ -121,12 +119,10 @@ int main() {
 			}
 		}
 	}
-	end:;
+end:;
 
 	if (valid) {
-		for (int i = 0; i < n - 1; i++) {
-			cout << top_sort[i] + 1 << ' ';
-		}
+		for (int i = 0; i < n - 1; i++) { cout << top_sort[i] + 1 << ' '; }
 		cout << top_sort.back() + 1 << endl;
 	} else {
 		cout << "IMPOSSIBLE" << endl;
@@ -143,71 +139,68 @@ import java.util.*;
 
 public class CourseSchedule {
 	private static List<Integer>[] graph;
-    private static List<Integer> topSort = new ArrayList<>();
-    private static boolean[] visited;
+	private static List<Integer> topSort = new ArrayList<>();
+	private static boolean[] visited;
 
-    public static void main(String[] args) throws IOException {
-        BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer(read.readLine());
-        int n = Integer.parseInt(st.nextToken());  // the number of nodes
-        int m = Integer.parseInt(st.nextToken());  // and the number of edges
+	public static void main(String[] args) throws IOException {
+		BufferedReader read =
+		    new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(read.readLine());
+		int n = Integer.parseInt(st.nextToken());  // the number of nodes
+		int m = Integer.parseInt(st.nextToken());  // and the number of edges
 
-        graph = new ArrayList[n];
-        for (int i = 0; i < n; i++) {
-            graph[i] = new ArrayList<>();
-        }
-        for (int i = 0; i < m; i++) {
-            st = new StringTokenizer(read.readLine());
-            int a = Integer.parseInt(st.nextToken()) - 1;
-            int b = Integer.parseInt(st.nextToken()) - 1;
-            graph[a].add(b);
-        }
+		graph = new ArrayList[n];
+		for (int i = 0; i < n; i++) { graph[i] = new ArrayList<>(); }
+		for (int i = 0; i < m; i++) {
+			st = new StringTokenizer(read.readLine());
+			int a = Integer.parseInt(st.nextToken()) - 1;
+			int b = Integer.parseInt(st.nextToken()) - 1;
+			graph[a].add(b);
+		}
 
-        visited = new boolean[n];
-        for (int i = 0; i < n; i++) {
-            if (!visited[i]) {
-                visited[i] = true;
-                dfs(i);
-            }
-        }
-        Collections.reverse(topSort);
-        
-        int[] ind = new int[n];
-        for (int i = 0; i < n; i++) {
-            ind[topSort.get(i)] = i;
-        }
+		visited = new boolean[n];
+		for (int i = 0; i < n; i++) {
+			if (!visited[i]) {
+				visited[i] = true;
+				dfs(i);
+			}
+		}
+		Collections.reverse(topSort);
 
-        // Check if the topological sort is valid
-        boolean valid = true;
-        checkSort:
-        for (int i = 0; i < n; i++) {
-            for (int j : graph[i]) {
-                if (ind[j] <= ind[i]) {
-                    valid = false;
-                    break checkSort;
-                }
-            }
-        }
+		int[] ind = new int[n];
+		for (int i = 0; i < n; i++) { ind[topSort.get(i)] = i; }
 
-        if (!valid) {
-            System.out.println("IMPOSSIBLE");
-        } else {
-            StringBuilder ans = new StringBuilder();
-            topSort.forEach(node -> ans.append(node + 1).append(' '));
-            ans.setLength(ans.length() - 1);
-            System.out.println(ans);
-        }
-    }
+		// Check if the topological sort is valid
+		boolean valid = true;
+	checkSort:
+		for (int i = 0; i < n; i++) {
+			for (int j : graph[i]) {
+				if (ind[j] <= ind[i]) {
+					valid = false;
+					break checkSort;
+				}
+			}
+		}
 
-    private static void dfs(int node) {
-        for (int n : graph[node]) {
-            if (!visited[n]) {
-                visited[n] = true;
-                dfs(n);
-            }
-        }
-        topSort.add(node);
-    }
+		if (!valid) {
+			System.out.println("IMPOSSIBLE");
+		} else {
+			StringBuilder ans = new StringBuilder();
+			topSort.forEach(node -> ans.append(node + 1).append(' '));
+			ans.setLength(ans.length() - 1);
+			System.out.println(ans);
+		}
+	}
+
+	private static void dfs(int node) {
+		for (int n : graph[node]) {
+			if (!visited[n]) {
+				visited[n] = true;
+				dfs(n);
+			}
+		}
+		topSort.add(node);
+	}
 }
 ```
 
@@ -279,17 +272,17 @@ The BFS version is known as
 <CPPSection>
 
 ```cpp
-#include <iostream>
-#include <vector>
-#include <queue>
 #include <algorithm>
+#include <iostream>
+#include <queue>
+#include <vector>
 
 using std::cout;
 using std::endl;
 using std::vector;
 
 int main() {
-    int n, m;
+	int n, m;
 	std::cin >> n >> m;
 
 	vector<vector<int>> graph(n);
@@ -300,17 +293,13 @@ int main() {
 	}
 
 	vector<int> in_degree(n);
-	for (const vector<int>& nodes : graph) {
-		for (int node : nodes) {
-			in_degree[node]++;
-		}
+	for (const vector<int> &nodes : graph) {
+		for (int node : nodes) { in_degree[node]++; }
 	}
 
 	std::queue<int> queue;
 	for (int i = 0; i < n; i++) {
-		if (in_degree[i] == 0) {
-			queue.push(i);
-		}
+		if (in_degree[i] == 0) { queue.push(i); }
 	}
 	vector<int> top_sort;
 	while (!queue.empty()) {
@@ -318,16 +307,12 @@ int main() {
 		queue.pop();
 		top_sort.push_back(curr);
 		for (int next : graph[curr]) {
-			if (--in_degree[next] == 0) {
-				queue.push(next);
-			}
+			if (--in_degree[next] == 0) { queue.push(next); }
 		}
 	}
 
 	if (top_sort.size() == n) {
-		for (int i = 0; i < n - 1; i++) {
-			cout << top_sort[i] + 1 << ' ';
-		}
+		for (int i = 0; i < n - 1; i++) { cout << top_sort[i] + 1 << ' '; }
 		cout << top_sort.back() + 1 << endl;
 	} else {
 		cout << "IMPOSSIBLE" << endl;
@@ -343,56 +328,49 @@ import java.io.*;
 import java.util.*;
 
 public class CourseSchedule {
-    public static void main(String[] args) throws IOException {
-        BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer(read.readLine());
-        int n = Integer.parseInt(st.nextToken());
-        int m = Integer.parseInt(st.nextToken());
+	public static void main(String[] args) throws IOException {
+		BufferedReader read =
+		    new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(read.readLine());
+		int n = Integer.parseInt(st.nextToken());
+		int m = Integer.parseInt(st.nextToken());
 
-        List<Integer>[] graph = new ArrayList[n];
-        for (int i = 0; i < n; i++) {
-            graph[i] = new ArrayList<>();
-        }
-        for (int i = 0; i < m; i++) {
-            st = new StringTokenizer(read.readLine());
-            int a = Integer.parseInt(st.nextToken()) - 1;
-            int b = Integer.parseInt(st.nextToken()) - 1;
-            graph[a].add(b);
-        }
-        
-        int[] inDegree = new int[n];
-        for (List<Integer> nodes : graph) {
-            for (int node : nodes) {
-                inDegree[node]++;
-            }
-        }
+		List<Integer>[] graph = new ArrayList[n];
+		for (int i = 0; i < n; i++) { graph[i] = new ArrayList<>(); }
+		for (int i = 0; i < m; i++) {
+			st = new StringTokenizer(read.readLine());
+			int a = Integer.parseInt(st.nextToken()) - 1;
+			int b = Integer.parseInt(st.nextToken()) - 1;
+			graph[a].add(b);
+		}
 
-        ArrayDeque<Integer> queue = new ArrayDeque<>();
-        List<Integer> topSort = new ArrayList<>();
-        for (int i = 0; i < n; i++) {
-            if (inDegree[i] == 0) {
-                queue.add(i);
-            }
-        }
-        while (!queue.isEmpty()) {
-            int curr = queue.poll();
-            topSort.add(curr);
-            for (int next : graph[curr]) {
-                if (--inDegree[next] == 0) {
-                    queue.add(next);
-                }
-            }
-        }
+		int[] inDegree = new int[n];
+		for (List<Integer> nodes : graph) {
+			for (int node : nodes) { inDegree[node]++; }
+		}
 
-        if (topSort.size() == n) {
-            StringBuilder ans = new StringBuilder();
-            topSort.forEach(node -> ans.append(node + 1).append(' '));
-            ans.setLength(ans.length() - 1);
-            System.out.println(ans);
-        } else {
-            System.out.println("IMPOSSIBLE");
-        }
-    }
+		ArrayDeque<Integer> queue = new ArrayDeque<>();
+		List<Integer> topSort = new ArrayList<>();
+		for (int i = 0; i < n; i++) {
+			if (inDegree[i] == 0) { queue.add(i); }
+		}
+		while (!queue.isEmpty()) {
+			int curr = queue.poll();
+			topSort.add(curr);
+			for (int next : graph[curr]) {
+				if (--inDegree[next] == 0) { queue.add(next); }
+			}
+		}
+
+		if (topSort.size() == n) {
+			StringBuilder ans = new StringBuilder();
+			topSort.forEach(node -> ans.append(node + 1).append(' '));
+			ans.setLength(ans.length() - 1);
+			System.out.println(ans);
+		} else {
+			System.out.println("IMPOSSIBLE");
+		}
+	}
 }
 ```
 
@@ -405,29 +383,28 @@ from collections import deque
 n, m = map(int, input().split())
 graph = [[] for _ in range(n)]
 for _ in range(m):
-    a, b = map(int, input().split())
-    graph[a - 1].append(b - 1)
+	a, b = map(int, input().split())
+	graph[a - 1].append(b - 1)
 
 in_degree = [0 for _ in range(n)]
 for nodes in graph:
-    for node in nodes:
-        in_degree[node] += 1
+	for node in nodes:
+		in_degree[node] += 1
 
 queue = deque([i for i, in_deg in enumerate(in_degree) if in_deg == 0])
 top_sort = []
 while queue:
-    curr = queue.popleft()
-    top_sort.append(curr)
-    for next_ in graph[curr]:
-        in_degree[next_] -= 1
-        if in_degree[next_] == 0:
-            queue.append(next_)
+	curr = queue.popleft()
+	top_sort.append(curr)
+	for next_ in graph[curr]:
+		in_degree[next_] -= 1
+		if in_degree[next_] == 0:
+			queue.append(next_)
 
 if len(top_sort) == n:
-    print(*[x + 1 for x in top_sort])
+	print(*[x + 1 for x in top_sort])
 else:
-    print("IMPOSSIBLE")
-
+	print("IMPOSSIBLE")
 ```
 
 </PySection>
@@ -527,18 +504,14 @@ int main() {
 
 	visited = vector<bool>(n);
 	on_stack = vector<bool>(n);
-	for (int i = 0; cycle.empty() && i < n; i++) {
-		dfs(i);
-	}
+	for (int i = 0; cycle.empty() && i < n; i++) { dfs(i); }
 
 	if (cycle.empty()) {
 		cout << "IMPOSSIBLE" << endl;
 	} else {
 		reverse(cycle.begin(), cycle.end());
 		cout << cycle.size() + 1 << "\n";
-		for (int n : cycle) {
-			cout << n + 1 << " ";
-		}
+		for (int n : cycle) { cout << n + 1 << " "; }
 		cout << cycle[0] + 1 << endl;
 	}
 }
@@ -552,73 +525,68 @@ import java.io.*;
 import java.util.*;
 
 public class RoundTripII {
-    private static List<Integer>[] graph;
-    private static boolean[] visited, onStack;
-    private static List<Integer> cycle = new ArrayList<>();
+	private static List<Integer>[] graph;
+	private static boolean[] visited, onStack;
+	private static List<Integer> cycle = new ArrayList<>();
 
-    public static void main(String[] args) throws IOException {
-        BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer(read.readLine());
-        int n = Integer.parseInt(st.nextToken());
-        int m = Integer.parseInt(st.nextToken());
+	public static void main(String[] args) throws IOException {
+		BufferedReader read =
+		    new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(read.readLine());
+		int n = Integer.parseInt(st.nextToken());
+		int m = Integer.parseInt(st.nextToken());
 
-        graph = new ArrayList[n];
-        for (int i = 0; i < n; i++) {
-            graph[i] = new ArrayList<>();
-        }
-        for (int i = 0; i < m; i++) {
-            st = new StringTokenizer(read.readLine());
-            int a = Integer.parseInt(st.nextToken()) - 1;
-            int b = Integer.parseInt(st.nextToken()) - 1;
-            graph[a].add(b);
-        }
-        
-        visited = new boolean[n];
-        onStack = new boolean[n];
-        for (int i = 0; cycle.isEmpty() && i < n; i++) {
-            dfs(i);
-        }
+		graph = new ArrayList[n];
+		for (int i = 0; i < n; i++) { graph[i] = new ArrayList<>(); }
+		for (int i = 0; i < m; i++) {
+			st = new StringTokenizer(read.readLine());
+			int a = Integer.parseInt(st.nextToken()) - 1;
+			int b = Integer.parseInt(st.nextToken()) - 1;
+			graph[a].add(b);
+		}
 
-        if (cycle.isEmpty()) {
-            System.out.println("IMPOSSIBLE");
-        } else {
-            Collections.reverse(cycle);
-            System.out.println(cycle.size() + 1);
-            for (int node : cycle) {
-                System.out.print((node + 1)  + " ");
-            }
-            System.out.println(cycle.get(0) + 1);
-        }
-    }
+		visited = new boolean[n];
+		onStack = new boolean[n];
+		for (int i = 0; cycle.isEmpty() && i < n; i++) { dfs(i); }
 
-    private static boolean dfs(int node) {
-        visited[node] = onStack[node] = true;
-        for (int n : graph[node]) {
-            if (onStack[n]) {
-                cycle.add(node);  // start cycle
-                onStack[node] = onStack[n] = false;
-                return true;
-            } else if (!visited[n]) {
-                if (dfs(n)) {  // continue cycle
-                    if (onStack[node]) {
-                        cycle.add(node);
-                        onStack[node] = false;
-                        return true;
-                    } else {  // found u again
-                        cycle.add(node);
-                        return false;
-                    }
-                }
-    
-                if (!cycle.isEmpty()) {
-                    return false;  // finished with cycle
-                }
-            }
-        }
-    
-        onStack[node] = false;
-        return false;
-    }
+		if (cycle.isEmpty()) {
+			System.out.println("IMPOSSIBLE");
+		} else {
+			Collections.reverse(cycle);
+			System.out.println(cycle.size() + 1);
+			for (int node : cycle) { System.out.print((node + 1) + " "); }
+			System.out.println(cycle.get(0) + 1);
+		}
+	}
+
+	private static boolean dfs(int node) {
+		visited[node] = onStack[node] = true;
+		for (int n : graph[node]) {
+			if (onStack[n]) {
+				cycle.add(node);  // start cycle
+				onStack[node] = onStack[n] = false;
+				return true;
+			} else if (!visited[n]) {
+				if (dfs(n)) {  // continue cycle
+					if (onStack[node]) {
+						cycle.add(node);
+						onStack[node] = false;
+						return true;
+					} else {  // found u again
+						cycle.add(node);
+						return false;
+					}
+				}
+
+				if (!cycle.isEmpty()) {
+					return false;  // finished with cycle
+				}
+			}
+		}
+
+		onStack[node] = false;
+		return false;
+	}
 }
 ```
 
@@ -649,7 +617,7 @@ def dfs(node: int) -> bool:
 				else:  # found u again
 					cycle.append(node)
 					return False
-		
+
 			if cycle:
 				return False  # finished with cycle
 
@@ -676,7 +644,6 @@ if cycle:
 	print(cycle[0] + 1, *[i + 1 for i in cycle[::-1]])
 else:
 	print("IMPOSSIBLE")
-
 ```
 
 </PySection>
@@ -722,17 +689,17 @@ topological sorting:
 <CPPSection>
 
 ```cpp
-#include <iostream>
-#include <vector>
-#include <queue>
 #include <algorithm>
+#include <iostream>
+#include <queue>
+#include <vector>
 
 using std::cout;
 using std::endl;
 using std::vector;
 
 int main() {
-    int city_num, flight_num;
+	int city_num, flight_num;
 	std::cin >> city_num >> flight_num;
 
 	vector<vector<int>> flights(city_num);
@@ -746,17 +713,13 @@ int main() {
 
 	// Use Kahn's algorithm to do a topological sort
 	vector<int> in_degree(city_num);
-	for (const vector<int>& nodes : flights) {
-		for (int node : nodes) {
-			in_degree[node]++;
-		}
+	for (const vector<int> &nodes : flights) {
+		for (int node : nodes) { in_degree[node]++; }
 	}
 
 	std::queue<int> queue;
 	for (int i = 0; i < city_num; i++) {
-		if (in_degree[i] == 0) {
-			queue.push(i);
-		}
+		if (in_degree[i] == 0) { queue.push(i); }
 	}
 	vector<int> top_sort;
 	while (!queue.empty()) {
@@ -764,9 +727,7 @@ int main() {
 		queue.pop();
 		top_sort.push_back(curr);
 		for (int next : flights[curr]) {
-			if (--in_degree[next] == 0) {
-				queue.push(next);
-			}
+			if (--in_degree[next] == 0) { queue.push(next); }
 		}
 	}
 
@@ -781,7 +742,7 @@ int main() {
 				dist[b] = dist[prev] + 1;
 				parent[b] = prev;
 			}
- 		}
+		}
 	}
 
 	if (dist[city_num - 1] < 0) {
@@ -819,94 +780,89 @@ import java.io.*;
 import java.util.*;
 
 public class LongestFlight {
-    public static void main(String[] args) throws IOException {
-        BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer(read.readLine());
-        int cityNum = Integer.parseInt(st.nextToken());
-        int flightNum = Integer.parseInt(st.nextToken());
+	public static void main(String[] args) throws IOException {
+		BufferedReader read =
+		    new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(read.readLine());
+		int cityNum = Integer.parseInt(st.nextToken());
+		int flightNum = Integer.parseInt(st.nextToken());
 
-        List<Integer>[] flights = new ArrayList[cityNum];
-        List<Integer>[] backEdge = new ArrayList[cityNum];
-        for (int i = 0; i < cityNum; i++) {
-            flights[i] = new ArrayList<>();
-            backEdge[i] = new ArrayList<>();
-        }
-        for (int i = 0; i < flightNum; i++) {
-            st = new StringTokenizer(read.readLine());
-            int a = Integer.parseInt(st.nextToken()) - 1;
-            int b = Integer.parseInt(st.nextToken()) - 1;
-            flights[a].add(b);
-            backEdge[b].add(a);
-        }
+		List<Integer>[] flights = new ArrayList[cityNum];
+		List<Integer>[] backEdge = new ArrayList[cityNum];
+		for (int i = 0; i < cityNum; i++) {
+			flights[i] = new ArrayList<>();
+			backEdge[i] = new ArrayList<>();
+		}
+		for (int i = 0; i < flightNum; i++) {
+			st = new StringTokenizer(read.readLine());
+			int a = Integer.parseInt(st.nextToken()) - 1;
+			int b = Integer.parseInt(st.nextToken()) - 1;
+			flights[a].add(b);
+			backEdge[b].add(a);
+		}
 
-        // Use Kahn's algorithm to do a topological sort
-        int[] inDegree = new int[cityNum];
-        for (List<Integer> nodes : flights) {
-            for (int node : nodes) {
-                inDegree[node]++;
-            }
-        }
+		// Use Kahn's algorithm to do a topological sort
+		int[] inDegree = new int[cityNum];
+		for (List<Integer> nodes : flights) {
+			for (int node : nodes) { inDegree[node]++; }
+		}
 
-        ArrayDeque<Integer> queue = new ArrayDeque<>();
-        List<Integer> topSort = new ArrayList<>();
-        for (int i = 0; i < cityNum; i++) {
-            if (inDegree[i] == 0) {
-                queue.add(i);
-            }
-        }
-        while (!queue.isEmpty()) {
-            int curr = queue.poll();
-            topSort.add(curr);
-            for (int next : flights[curr]) {
-                if (--inDegree[next] == 0) {
-                    queue.add(next);
-                }
-            }
-        }
+		ArrayDeque<Integer> queue = new ArrayDeque<>();
+		List<Integer> topSort = new ArrayList<>();
+		for (int i = 0; i < cityNum; i++) {
+			if (inDegree[i] == 0) { queue.add(i); }
+		}
+		while (!queue.isEmpty()) {
+			int curr = queue.poll();
+			topSort.add(curr);
+			for (int next : flights[curr]) {
+				if (--inDegree[next] == 0) { queue.add(next); }
+			}
+		}
 
-        // Compute the dist array in topological order
-        int[] parent = new int[cityNum];
-        Arrays.fill(parent, -1);
-        int[] dist = new int[cityNum];
-        Arrays.fill(dist, Integer.MIN_VALUE);
-        dist[0] = 1;
-        for (int i = 0; i < topSort.size(); i++) {
-            int b = topSort.get(i);
-            for (int prev : backEdge[b]) {
-                if (dist[prev] + 1 > dist[b]) {
-                    dist[b] = dist[prev] + 1;
-                    parent[b] = prev;
-                }
-            }
-        }
+		// Compute the dist array in topological order
+		int[] parent = new int[cityNum];
+		Arrays.fill(parent, -1);
+		int[] dist = new int[cityNum];
+		Arrays.fill(dist, Integer.MIN_VALUE);
+		dist[0] = 1;
+		for (int i = 0; i < topSort.size(); i++) {
+			int b = topSort.get(i);
+			for (int prev : backEdge[b]) {
+				if (dist[prev] + 1 > dist[b]) {
+					dist[b] = dist[prev] + 1;
+					parent[b] = prev;
+				}
+			}
+		}
 
-        if (dist[cityNum - 1] < 0) {
-            System.out.println("IMPOSSIBLE");
-        } else {
-            // dist[city_num - 1] denotes the length of the longest path
-            // ending at the final city. i.e. Lehmälä
-            System.out.println(dist[cityNum - 1]);
+		if (dist[cityNum - 1] < 0) {
+			System.out.println("IMPOSSIBLE");
+		} else {
+			// dist[city_num - 1] denotes the length of the longest path
+			// ending at the final city. i.e. Lehmälä
+			System.out.println(dist[cityNum - 1]);
 
-            // Begin from the final city, trace the parent pointer
-            // to construct the entire path backward
-            int at = cityNum - 1;
-            List<Integer> route = new ArrayList<>();
-            while (parent[at] != -1) {
-                route.add(at);
-                at = parent[at];
-            }
-            route.add(0);
+			// Begin from the final city, trace the parent pointer
+			// to construct the entire path backward
+			int at = cityNum - 1;
+			List<Integer> route = new ArrayList<>();
+			while (parent[at] != -1) {
+				route.add(at);
+				at = parent[at];
+			}
+			route.add(0);
 
-            // Print the route in the correct order
-            Collections.reverse(route);
-            StringBuilder ans = new StringBuilder();
-            for (int i = 0; i < route.size() - 1; i++) {
-                ans.append(route.get(i) + 1).append(' ');
-            }
-            ans.append(route.get(route.size() - 1) + 1);
-            System.out.println(ans);
-        }
-    }
+			// Print the route in the correct order
+			Collections.reverse(route);
+			StringBuilder ans = new StringBuilder();
+			for (int i = 0; i < route.size() - 1; i++) {
+				ans.append(route.get(i) + 1).append(' ');
+			}
+			ans.append(route.get(route.size() - 1) + 1);
+			System.out.println(ans);
+		}
+	}
 }
 ```
 
@@ -928,18 +884,18 @@ for _ in range(flight_num):
 # Use Kahn's algorithm to do a topological sort
 in_degree = [0] * city_num
 for nodes in flights:
-    for node in nodes:
-        in_degree[node] += 1
+	for node in nodes:
+		in_degree[node] += 1
 
 queue = deque([i for i, in_deg in enumerate(in_degree) if in_deg == 0])
 top_sort = []
 while queue:
-    curr = queue.popleft()
-    top_sort.append(curr)
-    for next_ in flights[curr]:
-        in_degree[next_] -= 1
-        if in_degree[next_] == 0:
-            queue.append(next_)
+	curr = queue.popleft()
+	top_sort.append(curr)
+	for next_ in flights[curr]:
+		in_degree[next_] -= 1
+		if in_degree[next_] == 0:
+			queue.append(next_)
 
 # Compute the dist array in topological order
 parent = [-1] * city_num
