@@ -61,64 +61,80 @@ involving BFS.
 </Resources>
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
-#include <bits/stdc++.h>
-using namespace std;
+#include <iostream>
+#include <vector>
+#include <algorithm>
 
-#define pb push_back
+using std::cout;
+using std::endl;
+using std::vector;
 
-int N;                                // Number of nodes
-vector<int> graph[100000], top_sort;  // Assume that this graph is a DAG
-bool visited[100000];
+vector<int> top_sort;
+vector<vector<int>> graph;
+vector<bool> visited;
 
 void dfs(int node) {
-	for (int i : graph[node]) {
-		if (!visited[i]) {
-			visited[i] = true;
-			dfs(i);
+	for (int n : graph[node]) {
+		if (!visited[n]) {
+			visited[n] = true;
+			dfs(n);
 		}
 	}
-	top_sort.pb(node);
-}
-
-void compute() {
-	for (int i = 0; i < N; i++) {
-		if (!visited[i]) {
-			visited[i] = true;
-			dfs(i);
-		}
-	}
-	reverse(begin(top_sort), end(top_sort));
-	// The vector `top_sort` is now topologically sorted
+	top_sort.push_back(node);
 }
 
 int main() {
-	int M;
-	cin >> N >> M;
-	for (int i = 0; i < M; ++i) {
+    int n, m;  // The number of nodes and edges respectively
+	std::cin >> n >> m;
+
+	graph = vector<vector<int>>(n);
+	for (int i = 0; i < m; i++) {
 		int a, b;
-		cin >> a >> b;
-		graph[a - 1].pb(b - 1);
+		std::cin >> a >> b;
+		graph[a - 1].push_back(b - 1);
 	}
-	compute();
-	vector<int> ind(N);
-	for (int i = 0; i < N; i++) ind[top_sort[i]] = i;
-	for (int i = 0; i < N; i++)
-		for (int j : graph[i])
+
+	visited = vector<bool>(n);
+	for (int i = 0; i < n; i++) {
+		if (!visited[i]) {
+			visited[i] = true;
+			dfs(i);
+		}
+	}
+	std::reverse(top_sort.begin(), top_sort.end());
+
+	vector<int> ind(n);
+	for (int i = 0; i < n; i++) {
+		ind[top_sort[i]] = i;
+	}
+
+	// Check if the topological sort is valid
+	bool valid = true;
+	for (int i = 0; i < n; i++) {
+		for (int j : graph[i]) {
 			if (ind[j] <= ind[i]) {
-				cout << "IMPOSSIBLE\n";  // topological sort wasn't valid
-				exit(0);
+				valid = false;
+				goto end;
 			}
-	for (int i : top_sort) cout << i + 1 << " ";
-	cout << "\n";
+		}
+	}
+	end:;
+
+	if (valid) {
+		for (int i = 0; i < n - 1; i++) {
+			cout << top_sort[i] + 1 << ' ';
+		}
+		cout << top_sort.back() + 1 << endl;
+	} else {
+		cout << "IMPOSSIBLE" << endl;
+	}
 }
 ```
 
 </CPPSection>
-
 <JavaSection>
 
 ```java
@@ -126,57 +142,72 @@ import java.io.*;
 import java.util.*;
 
 public class CourseSchedule {
-	static List<Integer>[] graph;
-	static List<Integer> topo = new ArrayList<Integer>();
-	static int N;
-	static boolean[] visited;
-	public static void main(String[] args) throws Exception {
-		BufferedReader br =
-		    new BufferedReader(new InputStreamReader(System.in));
-		StringTokenizer st = new StringTokenizer(br.readLine());
-		N = Integer.parseInt(st.nextToken());
-		int M = Integer.parseInt(st.nextToken());
-		graph = new List[N];
-		visited = new boolean[N];
-		for (int i = 0; i < N; i++) { graph[i] = new ArrayList<Integer>(); }
-		for (int m = 0; m < M; m++) {
-			st = new StringTokenizer(br.readLine());
-			int a = Integer.parseInt(st.nextToken()) - 1;
-			int b = Integer.parseInt(st.nextToken()) - 1;
-			graph[a].add(b);
-		}
+	private static List<Integer>[] graph;
+    private static List<Integer> topSort = new ArrayList<>();
+    private static boolean[] visited;
 
-		compute();
-		int[] ind = new int[N];
+    public static void main(String[] args) throws IOException {
+        BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(read.readLine());
+        int n = Integer.parseInt(st.nextToken());  // the number of nodes
+        int m = Integer.parseInt(st.nextToken());  // and the number of edges
 
-		for (int i = 0; i < N; i++) ind[topo.get(i)] = i;
-		for (int i = 0; i < N; i++)
-			for (int j : graph[i])
-				if (ind[j] <= ind[i]) {
-					System.out.println(
-					    "IMPOSSIBLE");  // topological sort wasn't valid
-					System.exit(0);
-				}
-		for (int i : topo) System.out.print(i + 1 + " ");
-	}
-	public static void compute() {
-		for (int i = 0; i < N; i++) {
-			if (!visited[i]) {
-				visited[i] = true;
-				dfs(i);
-			}
-		}
-		Collections.reverse(topo);
-	}
-	public static void dfs(int v) {  // not always lexicographically least
-		for (Integer e : graph[v]) {
-			if (!visited[e]) {
-				visited[e] = true;
-				dfs(e);
-			}
-		}
-		topo.add(v);
-	}
+        graph = new ArrayList[n];
+        for (int i = 0; i < n; i++) {
+            graph[i] = new ArrayList<>();
+        }
+        for (int i = 0; i < m; i++) {
+            st = new StringTokenizer(read.readLine());
+            int a = Integer.parseInt(st.nextToken()) - 1;
+            int b = Integer.parseInt(st.nextToken()) - 1;
+            graph[a].add(b);
+        }
+
+        visited = new boolean[n];
+        for (int i = 0; i < n; i++) {
+            if (!visited[i]) {
+                visited[i] = true;
+                dfs(i);
+            }
+        }
+        Collections.reverse(topSort);
+        
+        int[] ind = new int[n];
+        for (int i = 0; i < n; i++) {
+            ind[topSort.get(i)] = i;
+        }
+
+        // Check if the topological sort is valid
+        boolean valid = true;
+        checkSort:
+        for (int i = 0; i < n; i++) {
+            for (int j : graph[i]) {
+                if (ind[j] <= ind[i]) {
+                    valid = false;
+                    break checkSort;
+                }
+            }
+        }
+
+        if (!valid) {
+            System.out.println("IMPOSSIBLE");
+        } else {
+            StringBuilder ans = new StringBuilder();
+            topSort.forEach(node -> ans.append(node + 1).append(' '));
+            ans.setLength(ans.length() - 1);
+            System.out.println(ans);
+        }
+    }
+
+    private static void dfs(int node) {
+        for (int n : graph[node]) {
+            if (!visited[n]) {
+                visited[n] = true;
+                dfs(n);
+            }
+        }
+        topSort.add(node);
+    }
 }
 ```
 
@@ -190,264 +221,54 @@ MAX_N = 10**5
 sys.setrecursionlimit(MAX_N)
 
 
-def dfs(node):
-	for i in graph[node]:
-		if not visited[i]:
-			visited[i] = True
-			dfs(i)
+def dfs(node: int) -> None:
+	for n in graph[node]:
+		if not visited[n]:
+			visited[n] = True
+			dfs(n)
 	top_sort.append(node)
 
 
-# N is number of nodes
-# M is number of edges
-N, M = map(int, input().strip().split())
-graph = [[] for _ in range(N)]
+# The number of nodes and edges respectively
+n, m = map(int, input().strip().split())
+graph = [[] for _ in range(n)]
+
+for _ in range(m):
+	a, b = map(int, input().strip().split())
+	graph[a - 1].append(b - 1)
+
+visited = [False] * n
 top_sort = []
-ind = [0] * N
-
-for i in range(M):
-	u, v = map(int, input().strip().split())
-	graph[u - 1].append(v - 1)
-
-visited = [False] * N
-for i in range(N):
+for i in range(n):
 	if not visited[i]:
 		visited[i] = True
 		dfs(i)
-
 top_sort = top_sort[::-1]
-for i in range(N):
+
+ind = [0] * n
+for i in range(n):
 	ind[top_sort[i]] = i
 
 # Check if the topological sort is valid
-flag = 0
-for i in range(N):
+valid = True
+for i in range(n):
 	for j in graph[i]:
 		if ind[j] <= ind[i]:
-			flag = 1
-			print("IMPOSSIBLE")
+			valid = False
 			break
 
-	if flag == 1:
+	if not valid:
 		break
 
-top_sort = [x + 1 for x in top_sort]
-if flag == 0:
-	print(*top_sort)
-```
-
-</PySection>
-
-</LanguageSection>
-
-### Finding a Cycle
-
-<FocusProblem problem="dir" />
-
-We can modify the algorithm above to return a directed cycle in the case where a
-topological sort does not exist. To find the cycle, we add each node we visit
-onto the stack until we detect a node already on the stack.
-
-For example, suppose that our stack currently consists of $s_1,s_2,\ldots,s_i$
-and we then visit $u=s_j$ for some $j\le i$. Then
-$s_j\to s_{j+1}\to \cdots\to s_i\to s_j$ is a cycle. We can reconstruct the
-cycle without explicitly storing the stack by marking $u$ as not part of the
-stack and recursively backtracking until $u$ is reached again.
-
-<LanguageSection>
-
-<CPPSection>
-
-```cpp
-#include <algorithm>
-#include <iostream>
-#include <vector>
-using namespace std;
-
-bool visited[(int)1e5 + 5], on_stack[(int)1e5 + 5];
-vector<int> adj[(int)1e5 + 5];
-vector<int> cycle;
-int N, M;
-bool dfs(int n) {
-	visited[n] = on_stack[n] = true;
-	for (int u : adj[n]) {
-		if (on_stack[u]) {
-			cycle.push_back(n);  // start cycle
-			on_stack[n] = on_stack[u] = false;
-			return true;
-		} else if (!visited[u]) {
-			if (dfs(u)) {  // continue cycle
-				if (on_stack[n]) {
-					cycle.push_back(n);
-					on_stack[n] = false;
-					return true;
-				} else {  // found u again
-					cycle.push_back(n);
-					return false;
-				}
-			}
-			if (!cycle.empty())  // finished with cycle
-				return false;
-		}
-	}
-	on_stack[n] = false;
-	return false;
-}
-int main() {
-	// take input, etc
-	cin >> N >> M;
-	for (int i = 0; i < M; i++) {
-		int a, b;
-		cin >> a >> b;
-		adj[a].push_back(b);
-	}
-	for (int i = 1; cycle.empty() && i <= N; i++) dfs(i);
-	if (cycle.empty()) cout << "IMPOSSIBLE";
-	else {
-		reverse(cycle.begin(), cycle.end());
-		cout << cycle.size() + 1 << "\n";
-		for (int n : cycle) cout << n << " ";
-		cout << cycle.at(0);
-	}
-}
-```
-
-</CPPSection>
-
-<JavaSection>
-
-```java
-import java.io.*;
-import java.util.*;
-
-public class cycle {
-	static List<Integer>[] adj;
-	static boolean[] visited, onStack;
-	static List<Integer> cycle;
-	static int N, M;
-	public static void main(String[] args) throws IOException {
-		BufferedReader sc =
-		    new BufferedReader(new InputStreamReader(System.in));
-		PrintWriter out = new PrintWriter(System.out);
-		StringTokenizer st = new StringTokenizer(sc.readLine());
-		N = Integer.parseInt(st.nextToken());
-		M = Integer.parseInt(st.nextToken());
-		adj = new List[N + 1];
-		cycle = new ArrayList<Integer>();
-		visited = new boolean[N + 1];
-		onStack = new boolean[N + 1];
-		for (int i = 0; i <= N; i++) { adj[i] = new ArrayList<Integer>(); }
-		for (int i = 0; i < M; i++) {
-			st = new StringTokenizer(sc.readLine());
-			int a = Integer.parseInt(st.nextToken());
-			int b = Integer.parseInt(st.nextToken());
-			adj[a].add(b);
-		}
-		for (int i = 1; cycle.isEmpty() && i <= N; i++) { dfs(i); }
-		if (cycle.isEmpty()) out.println("IMPOSSIBLE");
-		else {
-			Collections.reverse(cycle);
-			out.println(cycle.size() + 1);
-			for (int n : cycle) out.print(n + " ");
-			out.print(cycle.get(0));
-		}
-		out.close();
-	}
-
-	public static boolean dfs(int n) {
-		visited[n] = onStack[n] = true;
-		for (int u : adj[n]) {
-			if (onStack[u]) {
-				cycle.add(n);
-				onStack[n] = onStack[u] = false;
-				return true;
-			} else if (!visited[u]) {
-				if (dfs(u)) {
-					if (onStack[n]) {
-						cycle.add(n);
-						onStack[n] = false;
-						return true;
-					} else {
-						cycle.add(n);
-						return false;
-					}
-				}
-				if (!cycle.isEmpty()) return false;
-			}
-		}
-		onStack[n] = false;
-		return false;
-	}
-}
-```
-
-</JavaSection>
-<PySection>
-
-```py
-import sys
-
-MAX_N = 10**5
-sys.setrecursionlimit(MAX_N)
-
-
-def dfs(node):
-	visited[node], on_stack[node] = True, True
-	for u in adj[node]:
-		if on_stack[u]:
-			cycle.append(node)
-			on_stack[node], on_stack[u] = False, False
-			return True
-
-		elif not visited[u]:
-			if dfs(u):
-				if on_stack[node]:
-					cycle.append(node)
-					on_stack[node] = False
-					return True
-				else:
-					cycle.append(node)
-					return False
-
-			if not cycle:
-				return False
-	on_stack[node] = False
-	return False
-
-
-N, M = map(int, input().split())
-adj = [[] for _ in range(N)]
-cycle = []
-visited = [False] * N
-on_stack = [False] * N
-
-for i in range(M):
-	u, v = map(int, input().split())
-	adj[u - 1].append(v - 1)
-
-for i in range(0, N):
-	if not cycle:
-		dfs(i)
-	else:
-		break
-
-if not cycle:
-	print("IMPOSSIBLE")
+if valid:
+	print(*[i + 1 for i in top_sort])
 else:
-	print(len(cycle) + 1)
-	cycle = [x + 1 for x in cycle]
-	print(cycle[0], *cycle[::-1])
+	print("IMPOSSIBLE")
 ```
 
 </PySection>
-
 </LanguageSection>
 
-<Warning>
-
-This code assumes that there are no self-loops.
-
-</Warning>
 
 ## BFS
 
@@ -455,138 +276,161 @@ The BFS version is known as
 [Kahn's Algorithm](https://en.wikipedia.org/wiki/Topological_sorting#Kahn's_algorithm).
 
 <LanguageSection>
-
 <CPPSection>
-
-### Course Schedule Solution
 
 ```cpp
 #include <iostream>
-#include <queue>
 #include <vector>
-using namespace std;
+#include <queue>
+#include <algorithm>
 
-const int MAX_N = 100000;
+using std::cout;
+using std::endl;
+using std::vector;
 
 int main() {
-	int n, m;
-	cin >> n >> m;
-	vector<int> graph[MAX_N];
-	int indegree[MAX_N]{};
-	queue<int> q;
+    int n, m;
+	std::cin >> n >> m;
+
+	vector<vector<int>> graph(n);
 	for (int i = 0; i < m; i++) {
 		int a, b;
-		cin >> a >> b;
+		std::cin >> a >> b;
 		graph[a - 1].push_back(b - 1);
-		indegree[b - 1]++;
 	}
-	for (int i = 0; i < n; i++) {
-		// locate the nodes with indegree 0 and push them into the queue
-		if (indegree[i] == 0) { q.push(i); }
-	}
-	vector<int> order;
-	while (!q.empty()) {
-		int curr = q.front();
-		q.pop();
-		// add the current node to the order
-		order.push_back(curr);
-		for (int next : graph[curr]) {
-			// remove the current node from the graph
-			indegree[next]--;
-			// push any new nodes with indegree 0 into the queue
-			if (indegree[next] == 0) { q.push(next); }
+
+	vector<int> in_degree(n);
+	for (const vector<int>& nodes : graph) {
+		for (int node : nodes) {
+			in_degree[node]++;
 		}
 	}
-	// if there isn't a valid topological sorting
-	if (order.size() != n) {
-		cout << "IMPOSSIBLE" << endl;
-		return 0;
+
+	std::queue<int> queue;
+	for (int i = 0; i < n; i++) {
+		if (in_degree[i] == 0) {
+			queue.push(i);
+		}
 	}
-	cout << order[0] + 1;
-	for (int i = 1; i < n; i++) { cout << " " << order[i] + 1; }
-	cout << endl;
-	return 0;
+	vector<int> top_sort;
+	while (!queue.empty()) {
+		int curr = queue.front();
+		queue.pop();
+		top_sort.push_back(curr);
+		for (int next : graph[curr]) {
+			if (--in_degree[next] == 0) {
+				queue.push(next);
+			}
+		}
+	}
+
+	if (top_sort.size() == n) {
+		for (int i = 0; i < n - 1; i++) {
+			cout << top_sort[i] + 1 << ' ';
+		}
+		cout << top_sort.back() + 1 << endl;
+	} else {
+		cout << "IMPOSSIBLE" << endl;
+	}
 }
 ```
 
 </CPPSection>
-
 <JavaSection>
 
 ```java
-public class TopoSort {
-	static int[] inDegree;
-	static List<Integer>[] edge;  // adjacency list
+import java.io.*;
+import java.util.*;
 
-	static int N;  // number of nodes
+public class CourseSchedule {
+    public static void main(String[] args) throws IOException {
+        BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(read.readLine());
+        int n = Integer.parseInt(st.nextToken());
+        int m = Integer.parseInt(st.nextToken());
 
-	static void topological_sort() {
-		Queue<Integer> q = new LinkedList<>();
-		for (int i = 0; i < N; i++) {
-			if (inDegree[i] == 0) { q.add(i); }
-		}
+        List<Integer>[] graph = new ArrayList[n];
+        for (int i = 0; i < n; i++) {
+            graph[i] = new ArrayList<>();
+        }
+        for (int i = 0; i < m; i++) {
+            st = new StringTokenizer(read.readLine());
+            int a = Integer.parseInt(st.nextToken()) - 1;
+            int b = Integer.parseInt(st.nextToken()) - 1;
+            graph[a].add(b);
+        }
+        
+        int[] inDegree = new int[n];
+        for (List<Integer> nodes : graph) {
+            for (int node : nodes) {
+                inDegree[node]++;
+            }
+        }
 
-		while (!q.isEmpty()) {
-			int node = q.poll();
+        ArrayDeque<Integer> queue = new ArrayDeque<>();
+        List<Integer> topSort = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            if (inDegree[i] == 0) {
+                queue.add(i);
+            }
+        }
+        while (!queue.isEmpty()) {
+            int curr = queue.poll();
+            topSort.add(curr);
+            for (int next : graph[curr]) {
+                if (--inDegree[next] == 0) {
+                    queue.add(next);
+                }
+            }
+        }
 
-			for (int next : edge[node]) {
-				inDegree[next]--;
-				if (inDegree[next] == 0) q.add(next);
-			}
-
-			// Put problem-specific processing here
-			// Push in value to current ordering if no need for processing
-		}
-	}
+        if (topSort.size() == n) {
+            StringBuilder ans = new StringBuilder();
+            topSort.forEach(node -> ans.append(node + 1).append(' '));
+            ans.setLength(ans.length() - 1);
+            System.out.println(ans);
+        } else {
+            System.out.println("IMPOSSIBLE");
+        }
+    }
 }
 ```
 
 </JavaSection>
-
 <PySection>
 
 ```py
 from collections import deque
 
-# The code is in a function so it can run faster.
-def main():
-	N, M = map(int, input().split())
-	adj = [[] for _ in range(N)]
-	for _ in range(M):
-		a, b = map(int, input().split())
-		a -= 1
-		b -= 1
-		adj[a].append(b)
+n, m = map(int, input().split())
+graph = [[] for _ in range(n)]
+for _ in range(m):
+    a, b = map(int, input().split())
+    graph[a - 1].append(b - 1)
 
-	topo_order = []
-	in_degree = [0 for _ in range(N)]
-	for nodes in adj:
-		for node in nodes:
-			in_degree[node] += 1
+in_degree = [0 for _ in range(n)]
+for nodes in graph:
+    for node in nodes:
+        in_degree[node] += 1
 
-	count = 0
-	queue = deque([node for node in range(N) if in_degree[node] == 0])
-	while queue:
-		cur_node = queue.popleft()
-		topo_order.append(cur_node)
-		for neigh_node in adj[cur_node]:
-			in_degree[neigh_node] -= 1
-			if in_degree[neigh_node] == 0:
-				queue.append(neigh_node)
-		count += 1
+queue = deque([i for i, in_deg in enumerate(in_degree) if in_deg == 0])
+top_sort = []
+while queue:
+    curr = queue.popleft()
+    top_sort.append(curr)
+    for next_ in graph[curr]:
+        in_degree[next_] -= 1
+        if in_degree[next_] == 0:
+            queue.append(next_)
 
-	if count != N:
-		print("IMPOSSIBLE")
-	else:
-		print(" ".join(map(str, [node + 1 for node in topo_order])))
+if len(top_sort) == n:
+    print(*[x + 1 for x in top_sort])
+else:
+    print("IMPOSSIBLE")
 
-
-if __name__ == "__main__":
-	main()
 ```
 
 </PySection>
-
 </LanguageSection>
 
 <Info title="Pro Tip">
@@ -605,6 +449,238 @@ Although the above code does not do this, one can simply replace the `queue`
 with a `priority_queue` to implement this extension.
 
 </Optional>
+
+### Finding a Cycle
+
+<FocusProblem problem="dir" />
+
+We can modify the DFS algorithm above to return a directed cycle in the case where a
+topological sort does not exist.
+To find the cycle, we add each node we visit onto the stack
+until we detect a node already on the stack.
+
+For example, suppose that our stack currently consists of $s_1,s_2,\ldots,s_i$
+and we then visit $u=s_j$ for some $j\le i$.
+If that's the case, then $s_j\to s_{j+1}\to \cdots\to s_i\to s_j$ is a cycle.
+We can reconstruct the cycle without explicitly storing the stack b
+marking $u$ as not part of the stack and recursively backtracking
+until $u$ is reached again.
+
+<Warning>
+
+This code assumes that there are no self-loops, i.e. no edges from a node to itself.
+
+</Warning>
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <algorithm>
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+vector<vector<int>> graph;
+vector<bool> visited, on_stack;
+vector<int> cycle;
+
+bool dfs(int node) {
+	visited[node] = on_stack[node] = true;
+	for (int n : graph[node]) {
+		if (on_stack[n]) {
+			cycle.push_back(node);  // start cycle
+			on_stack[node] = on_stack[n] = false;
+			return true;
+		} else if (!visited[n]) {
+			if (dfs(n)) {  // continue cycle
+				if (on_stack[node]) {
+					cycle.push_back(node);
+					on_stack[node] = false;
+					return true;
+				} else {  // found u again
+					cycle.push_back(node);
+					return false;
+				}
+			}
+
+			if (!cycle.empty()) {
+				return false;  // finished with cycle
+			}
+		}
+	}
+
+	on_stack[node] = false;
+	return false;
+}
+
+int main() {
+	int n, m;
+	cin >> n >> m;
+	graph = vector<vector<int>>(n);
+	for (int i = 0; i < m; i++) {
+		int a, b;
+		cin >> a >> b;
+		graph[a - 1].push_back(b - 1);
+	}
+
+	visited = vector<bool>(n);
+	on_stack = vector<bool>(n);
+	for (int i = 0; cycle.empty() && i < n; i++) {
+		dfs(i);
+	}
+
+	if (cycle.empty()) {
+		cout << "IMPOSSIBLE" << endl;
+	} else {
+		reverse(cycle.begin(), cycle.end());
+		cout << cycle.size() + 1 << "\n";
+		for (int n : cycle) {
+			cout << n + 1 << " ";
+		}
+		cout << cycle[0] + 1 << endl;
+	}
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class RoundTripII {
+    private static List<Integer>[] graph;
+    private static boolean[] visited, onStack;
+    private static List<Integer> cycle = new ArrayList<>();
+
+    public static void main(String[] args) throws IOException {
+        BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(read.readLine());
+        int n = Integer.parseInt(st.nextToken());
+        int m = Integer.parseInt(st.nextToken());
+
+        graph = new ArrayList[n];
+        for (int i = 0; i < n; i++) {
+            graph[i] = new ArrayList<>();
+        }
+        for (int i = 0; i < m; i++) {
+            st = new StringTokenizer(read.readLine());
+            int a = Integer.parseInt(st.nextToken()) - 1;
+            int b = Integer.parseInt(st.nextToken()) - 1;
+            graph[a].add(b);
+        }
+        
+        visited = new boolean[n];
+        onStack = new boolean[n];
+        for (int i = 0; cycle.isEmpty() && i < n; i++) {
+            dfs(i);
+        }
+
+        if (cycle.isEmpty()) {
+            System.out.println("IMPOSSIBLE");
+        } else {
+            Collections.reverse(cycle);
+            System.out.println(cycle.size() + 1);
+            for (int node : cycle) {
+                System.out.print((node + 1)  + " ");
+            }
+            System.out.println(cycle.get(0) + 1);
+        }
+    }
+
+    private static boolean dfs(int node) {
+        visited[node] = onStack[node] = true;
+        for (int n : graph[node]) {
+            if (onStack[n]) {
+                cycle.add(node);  // start cycle
+                onStack[node] = onStack[n] = false;
+                return true;
+            } else if (!visited[n]) {
+                if (dfs(n)) {  // continue cycle
+                    if (onStack[node]) {
+                        cycle.add(node);
+                        onStack[node] = false;
+                        return true;
+                    } else {  // found u again
+                        cycle.add(node);
+                        return false;
+                    }
+                }
+    
+                if (!cycle.isEmpty()) {
+                    return false;  // finished with cycle
+                }
+            }
+        }
+    
+        onStack[node] = false;
+        return false;
+    }
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+import sys
+
+MAX_N = 10**5
+sys.setrecursionlimit(MAX_N)
+
+
+def dfs(node: int) -> bool:
+	visited[node] = on_stack[node] = True
+	for n in graph[node]:
+		if on_stack[n]:
+			cycle.append(node)  # start cycle
+			on_stack[node] = on_stack[n] = False
+			return True
+
+		elif not visited[n]:
+			if dfs(n):  # continue cycle
+				if on_stack[node]:
+					cycle.append(node)
+					on_stack[node] = False
+					return True
+				else:  # found u again
+					cycle.append(node)
+					return False
+		
+			if cycle:
+				return False  # finished with cycle
+
+	on_stack[node] = False
+	return False
+
+
+n, m = map(int, input().strip().split())
+graph = [[] for _ in range(n)]
+for _ in range(m):
+	a, b = map(int, input().strip().split())
+	graph[a - 1].append(b - 1)
+
+visited = [False] * n
+on_stack = [False] * n
+cycle = []
+for i in range(n):
+	dfs(i)
+	if cycle:
+		break
+
+if cycle:
+	print(len(cycle) + 1)
+	print(cycle[0] + 1, *[i + 1 for i in cycle[::-1]])
+else:
+	print("IMPOSSIBLE")
+
+```
+
+</PySection>
+</LanguageSection>
 
 ## Dynamic Programming
 
@@ -643,286 +719,194 @@ Note that the implementation of this idea below uses Kahn's algorithm for
 topological sorting:
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
-#include <bits/stdc++.h>
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <algorithm>
 
-using namespace std;
+using std::cout;
+using std::endl;
+using std::vector;
 
-int prev_flight[100000];
-int dist[100000];
-int in_degree[100000];
-vector<int> edge[100000];
-vector<int> backEdge[100000];
+int main() {
+    int city_num, flight_num;
+	std::cin >> city_num >> flight_num;
 
-int N, M;
-
-// Does a topological sort
-void compute() {
-	queue<int> q;
-	for (int i = 0; i < N; i++) {
-		if (in_degree[i] == 0) { q.push(i); }
+	vector<vector<int>> flights(city_num);
+	vector<vector<int>> back_edge(city_num);
+	for (int i = 0; i < flight_num; i++) {
+		int a, b;
+		std::cin >> a >> b;
+		flights[--a].push_back(--b);
+		back_edge[b].push_back(a);
 	}
 
-	while (!q.empty()) {
-		int node = q.front();
-		q.pop();
-
-		for (int next : edge[node]) {
-			in_degree[next]--;
-			if (in_degree[next] == 0) q.push(next);
+	// Use Kahn's algorithm to do a topological sort
+	vector<int> in_degree(city_num);
+	for (const vector<int>& nodes : flights) {
+		for (int node : nodes) {
+			in_degree[node]++;
 		}
+	}
 
-		// The below block computes the DP
-		int mx = -999999999;
-		int mx_node = -1;
-		for (int prev : backEdge[node]) {
-			if (dist[prev] + 1 > mx) {
-				mx = dist[prev] + 1;
-				mx_node = prev;
+	std::queue<int> queue;
+	for (int i = 0; i < city_num; i++) {
+		if (in_degree[i] == 0) {
+			queue.push(i);
+		}
+	}
+	vector<int> top_sort;
+	while (!queue.empty()) {
+		int curr = queue.front();
+		queue.pop();
+		top_sort.push_back(curr);
+		for (int next : flights[curr]) {
+			if (--in_degree[next] == 0) {
+				queue.push(next);
 			}
 		}
-
-		dist[node] = mx;
-		if (node == 0) dist[node] = 1;
-		prev_flight[node] = mx_node;
-	}
-}
-
-int main() {  // See "General - Fast I/O" for more information about the first
-	          // two lines in the main function
-	ios_base::sync_with_stdio(false);
-	cin.tie(NULL);
-
-	cin >> N >> M;
-
-	for (int i = 0; i < N; i++) {
-		prev_flight[i] = -1;
-		dist[i] = -999999999;
-		in_degree[i] = 0;
 	}
 
-	for (int i = 0; i < M; i++) {
-		int a, b;
-		cin >> a >> b;
-		a--, b--;
-		in_degree[b]++;
-		edge[a].push_back(b);
-
-		backEdge[b].push_back(a);
+	// Compute the dist array in topological order
+	vector<int> parent(city_num, -1);
+	vector<int> dist(city_num, INT32_MIN);
+	dist[0] = 1;
+	for (int i = 0; i < top_sort.size(); i++) {
+		int b = top_sort[i];
+		for (int prev : back_edge[b]) {
+			if (dist[prev] + 1 > dist[b]) {
+				dist[b] = dist[prev] + 1;
+				parent[b] = prev;
+			}
+ 		}
 	}
 
-	compute();
-
-	stack<int> answer;
-	int temp = N - 1;
-
-	bool contains0 = false;
-	if (temp == 0) contains0 = true;
-
-	while (temp != -1 && dist[temp] >= 0) {
-		answer.push(temp);
-		temp = prev_flight[temp];
-		if (temp == 0) contains0 = true;
-	}
-
-	if (contains0) {
-		cout << dist[N - 1] << "\n";
-		while (!answer.empty()) {
-			cout << answer.top() + 1;
-			answer.pop();
-			if (!answer.empty()) cout << " ";
-		}
-		cout << "\n";
+	if (dist[city_num - 1] < 0) {
+		cout << "IMPOSSIBLE" << endl;
 	} else {
-		cout << "IMPOSSIBLE\n";
-	}
+		// dist[city_num - 1] denotes the length of the longest path
+		// ending at the final city. i.e. Lehmälä
+		cout << dist[city_num - 1] << endl;
 
-	return 0;
+		// Begin from the final city, trace the parent pointer
+		// to construct the entire path backward
+		int at = city_num - 1;
+		vector<int> route;
+		while (parent[at] != -1) {
+			route.push_back(at);
+			at = parent[at];
+		}
+		route.push_back(0);
+
+		// Print the route in the correct order
+		std::reverse(route.begin(), route.end());
+		for (int i = 0; i < route.size() - 1; i++) {
+			cout << route[i] + 1 << ' ';
+		}
+		cout << route.back() + 1 << endl;
+	}
 }
 ```
 
 </CPPSection>
-
 <JavaSection>
 
 ```java
 import java.io.*;
 import java.util.*;
 
-// longest_path
-public class Main {
-	static int[] prevFlight, dist, inDegree;
-	static List<Integer>[] edge;
-	static List<Integer>[] backEdge;
-	static int N, M;
+public class LongestFlight {
+    public static void main(String[] args) throws IOException {
+        BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(read.readLine());
+        int cityNum = Integer.parseInt(st.nextToken());
+        int flightNum = Integer.parseInt(st.nextToken());
 
-	// does a topological sort
-	static void compute() {
-		Queue<Integer> q = new ArrayDeque<Integer>();
-		for (int i = 0; i < N; i++) {
-			if (inDegree[i] == 0) { q.add(i); }
-		}
+        List<Integer>[] flights = new ArrayList[cityNum];
+        List<Integer>[] backEdge = new ArrayList[cityNum];
+        for (int i = 0; i < cityNum; i++) {
+            flights[i] = new ArrayList<>();
+            backEdge[i] = new ArrayList<>();
+        }
+        for (int i = 0; i < flightNum; i++) {
+            st = new StringTokenizer(read.readLine());
+            int a = Integer.parseInt(st.nextToken()) - 1;
+            int b = Integer.parseInt(st.nextToken()) - 1;
+            flights[a].add(b);
+            backEdge[b].add(a);
+        }
 
-		while (!q.isEmpty()) {
-			int node = q.poll();
+        // Use Kahn's algorithm to do a topological sort
+        int[] inDegree = new int[cityNum];
+        for (List<Integer> nodes : flights) {
+            for (int node : nodes) {
+                inDegree[node]++;
+            }
+        }
 
-			for (int next : edge[node]) {
-				inDegree[next]--;
-				if (inDegree[next] == 0) q.add(next);
-			}
+        ArrayDeque<Integer> queue = new ArrayDeque<>();
+        List<Integer> topSort = new ArrayList<>();
+        for (int i = 0; i < cityNum; i++) {
+            if (inDegree[i] == 0) {
+                queue.add(i);
+            }
+        }
+        while (!queue.isEmpty()) {
+            int curr = queue.poll();
+            topSort.add(curr);
+            for (int next : flights[curr]) {
+                if (--inDegree[next] == 0) {
+                    queue.add(next);
+                }
+            }
+        }
 
-			// The below block computes the DP
-			int mx = -999999999;
-			int mx_node = -1;
-			for (int prev : backEdge[node]) {
-				if (dist[prev] + 1 > mx) {
-					mx = dist[prev] + 1;
-					mx_node = prev;
-				}
-			}
+        // Compute the dist array in topological order
+        int[] parent = new int[cityNum];
+        Arrays.fill(parent, -1);
+        int[] dist = new int[cityNum];
+        Arrays.fill(dist, Integer.MIN_VALUE);
+        dist[0] = 1;
+        for (int i = 0; i < topSort.size(); i++) {
+            int b = topSort.get(i);
+            for (int prev : backEdge[b]) {
+                if (dist[prev] + 1 > dist[b]) {
+                    dist[b] = dist[prev] + 1;
+                    parent[b] = prev;
+                }
+            }
+        }
 
-			dist[node] = mx;
-			if (node == 0) dist[node] = 1;
-			prevFlight[node] = mx_node;
-		}
-	}
+        if (dist[cityNum - 1] < 0) {
+            System.out.println("IMPOSSIBLE");
+        } else {
+            // dist[city_num - 1] denotes the length of the longest path
+            // ending at the final city. i.e. Lehmälä
+            System.out.println(dist[cityNum - 1]);
 
-	public static void main(String[] args) throws Exception {
-		FastIO sc =
-		    new FastIO(System.in);  // View "General - Fast I/O" for more
-		                            // information about the "FastIO" class
+            // Begin from the final city, trace the parent pointer
+            // to construct the entire path backward
+            int at = cityNum - 1;
+            List<Integer> route = new ArrayList<>();
+            while (parent[at] != -1) {
+                route.add(at);
+                at = parent[at];
+            }
+            route.add(0);
 
-		N = sc.nextInt();
-		M = sc.nextInt();
-
-		prevFlight = new int[N];
-		dist = new int[N];
-		inDegree = new int[N];
-		edge = new List[N];
-		backEdge = new List[N];
-
-		for (int i = 0; i < N; i++) {
-			prevFlight[i] = -1;
-			dist[i] = -999999999;
-			inDegree[i] = 0;
-			edge[i] = new ArrayList<>();
-			backEdge[i] = new ArrayList<>();
-		}
-
-		for (int i = 0; i < M; i++) {
-			int a = sc.nextInt() - 1;
-			int b = sc.nextInt() - 1;
-
-			inDegree[b]++;
-			edge[a].add(b);
-			backEdge[b].add(a);
-		}
-
-		compute();
-
-		PrintWriter pw = new PrintWriter(System.out);
-
-		ArrayDeque<Integer> answer = new ArrayDeque<>();  // Acts as a Stack
-		int temp = N - 1;
-
-		boolean contains0 = false;
-		if (temp == 0) contains0 = true;
-
-		while (temp != -1 && dist[temp] >= 0) {
-			answer.push(temp);
-			temp = prevFlight[temp];
-			if (temp == 0) contains0 = true;
-		}
-
-		if (contains0) {
-			pw.println(dist[N - 1]);
-			while (!answer.isEmpty()) {
-				pw.print(answer.peekFirst() + 1);
-				answer.pop();
-				if (!answer.isEmpty()) pw.print(" ");
-			}
-			pw.println();
-		} else {
-			pw.println("IMPOSSIBLE\n");
-		}
-		pw.close();
-	}
-
-	// BeginCodeSnip{FastIO}
-	// practically a necessity for Java users on CSES
-	static class FastIO {
-
-		InputStream dis;
-		byte[] buffer = new byte[1 << 17];
-		int pointer = 0;
-
-		public FastIO(String fileName) throws Exception {
-			dis = new FileInputStream(fileName);
-		}
-
-		public FastIO(InputStream is) throws Exception { dis = is; }
-
-		int nextInt() throws Exception {
-			int ret = 0;
-
-			byte b;
-			do { b = nextByte(); } while (b <= ' ');
-			boolean negative = false;
-			if (b == '-') {
-				negative = true;
-				b = nextByte();
-			}
-			while (b >= '0' && b <= '9') {
-				ret = 10 * ret + b - '0';
-				b = nextByte();
-			}
-
-			return (negative) ? -ret : ret;
-		}
-
-		long nextLong() throws Exception {
-			long ret = 0;
-
-			byte b;
-			do { b = nextByte(); } while (b <= ' ');
-			boolean negative = false;
-			if (b == '-') {
-				negative = true;
-				b = nextByte();
-			}
-			while (b >= '0' && b <= '9') {
-				ret = 10 * ret + b - '0';
-				b = nextByte();
-			}
-
-			return (negative) ? -ret : ret;
-		}
-
-		byte nextByte() throws Exception {
-			if (pointer == buffer.length) {
-				dis.read(buffer, 0, buffer.length);
-				pointer = 0;
-			}
-			return buffer[pointer++];
-		}
-
-		String next() throws Exception {
-			StringBuffer ret = new StringBuffer();
-
-			byte b;
-			do { b = nextByte(); } while (b <= ' ');
-			while (b > ' ') {
-				ret.appendCodePoint(b);
-				b = nextByte();
-			}
-
-			return ret.toString();
-		}
-	}
-	// EndCodeSnip
+            // Print the route in the correct order
+            Collections.reverse(route);
+            StringBuilder ans = new StringBuilder();
+            for (int i = 0; i < route.size() - 1; i++) {
+                ans.append(route.get(i) + 1).append(' ');
+            }
+            ans.append(route.get(route.size() - 1) + 1);
+            System.out.println(ans);
+        }
+    }
 }
 ```
 
@@ -930,67 +914,64 @@ public class Main {
 <PySection>
 
 ```py
-from collections import defaultdict, deque
+from collections import deque
 
+city_num, flight_num = list(map(int, input().split(" ")))
+flights = [[] for _ in range(city_num)]
+back_edge = [[] for _ in range(city_num)]
+for _ in range(flight_num):
+	a, b = list(map(int, input().split(" ")))
+	a, b = a - 1, b - 1
+	flights[a].append(b)
+	back_edge[b].append(a)
 
-def main():
-	"""This code is put in a function for performance reasons."""
-	cities, flights = list(map(int, input().split(" ")))
-	edge = defaultdict(list)
-	back_edge = defaultdict(list)
-	in_degree = [0] * cities
+# Use Kahn's algorithm to do a topological sort
+in_degree = [0] * city_num
+for nodes in flights:
+    for node in nodes:
+        in_degree[node] += 1
 
-	for _ in range(flights):
-		u, v = list(map(int, input().split(" ")))
-		u, v = u - 1, v - 1
-		edge[u].append(v)
-		in_degree[v] += 1
-		back_edge[v].append(u)
+queue = deque([i for i, in_deg in enumerate(in_degree) if in_deg == 0])
+top_sort = []
+while queue:
+    curr = queue.popleft()
+    top_sort.append(curr)
+    for next_ in flights[curr]:
+        in_degree[next_] -= 1
+        if in_degree[next_] == 0:
+            queue.append(next_)
 
-	# Use Kahn's algorithm to do a topological sort
-	topo_order = []
-	queue = deque([i for i, v in enumerate(in_degree) if v == 0])
-	while queue:
-		cur_node = queue.popleft()
-		topo_order.append(cur_node)
-		for neigh_node in edge[cur_node]:
-			in_degree[neigh_node] -= 1
-			if in_degree[neigh_node] == 0:
-				queue.append(neigh_node)
+# Compute the dist array in topological order
+parent = [-1] * city_num
+dist = [-float("inf")] * city_num
+dist[0] = 1
+for i in range(len(top_sort)):
+	b = top_sort[i]
+	for prev in back_edge[b]:
+		if dist[prev] + 1 > dist[b]:
+			dist[b] = dist[prev] + 1
+			parent[b] = prev
 
-	# Compute the dist array in topological order
-	parent = [-1] * cities
-	dist = [-float("inf")] * cities
-	dist[0] = 1
-	for i in range(len(topo_order)):
-		v = topo_order[i]
-		for prev in back_edge[v]:
-			if dist[prev] + 1 > dist[v]:
-				dist[v] = dist[prev] + 1
-				parent[v] = prev
+if dist[city_num - 1] == -float("inf"):
+	print("IMPOSSIBLE")
+else:
+	# dist[city_num - 1] denotes the length of the longest path
+	# ending at the final city. i.e. Lehmälä
+	print(dist[city_num - 1])
 
-	if dist[-1] == -float("inf"):
-		print("IMPOSSIBLE")
-	else:
-		# dist[-1] denotes the length of the longest path
-		# ending at the final city. i.e. Lehmälä
-		print(dist[-1])
+	# Begin from the final city, trace the parent pointer
+	# to construct the entire path backward
+	at = city_num - 1
+	route = []
+	while parent[at] != -1:
+		route.append(at)
+		at = parent[at]
+	route.append(0)
 
-		# Begin from the final city, trace the parent pointer
-		# to construct the entire path backward
-		cursor = cities - 1
-		path = []
-		while parent[cursor] != -1:
-			path.append(cursor + 1)
-			cursor = parent[cursor]
-		path.append(1)
-
-		# Print the path in the correct order
-		print(*path[::-1])
-
-
-main()
+	# Print the route in the correct order
+	print(*[c + 1 for c in route[::-1]])
 ```
+
 </PySection>
 </LanguageSection>
 
