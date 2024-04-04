@@ -200,195 +200,116 @@ int main() {
 
 </CPPSection>
 <JavaSection>
+
 ```java
 
-import java.io.DataInputStream;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
+import java.util.StringTokenizer;
 
 public class PlanetQueries2 {
-	static FastReader x = new FastReader();
-	static PrintWriter pw = new PrintWriter(System.out);
-	static int n;
-	static int q;
-	static int arr[];
-	static int binaryLifting[][];
-	static int len[];
+    static Kattio x=new Kattio();
+    static PrintWriter pw=new PrintWriter(System.out);
+    static int n;
+    static int q;
+    static int arr[];
+    static int binaryLifting[][];
+    static int len[];
 
-	public static void main(String[] args) {
-		getInputForPresprocessing();
-		binaryLifting = new int[n + 1][20];
-		len = new int[n + 1];
-		preprocess();
-		query();
-		pw.close();
-	}
-	static void preprocess() {
-		for (int i = 1; i <= n; i++) { binaryLifting[i][0] = arr[i]; }
-		boolean visited[] = new boolean[n + 1];
-		for (int i = 1; i <= n; i++) {
-			if (!visited[i]) { dfs(i, visited); }
-		}
-	}
-	static void dfs(int node, boolean visited[]) {
-		if (visited[node]) { return; }
-		visited[node] = true;
-		dfs(arr[node], visited);
-		len[node] = len[binaryLifting[node][0]] + 1;
-		for (int level = 1; level < 20; level++) {
-			binaryLifting[node][level] =
-			    binaryLifting[binaryLifting[node][level - 1]][level - 1];
-		}
-	}
-	static void query() {
-		StringBuilder output = new StringBuilder();
-		for (int i = 0; i < q; i++) {
-			int a = x.nextInt();
-			int b = x.nextInt();
-			int aa = jump(a, len[a]);  // in case, a is in front of b
-			if (jump(a, len[a] - len[b]) == b) {
-				pw.println(len[a] - len[b]);
-			} else if (jump(aa, len[aa] - len[b]) == b) {
-				pw.println((len[aa] - len[b]) + len[a]);
-			} else {
-				pw.println(-1);
-			}
-		}
-	}
-	static int jump(int a, int dist) {
-		if (dist < 0) return -1;
-		int level = 0;
-		while (dist != 0) {
-			if ((dist & 1) == 1) { a = binaryLifting[a][level]; }
-			++level;
-			dist = dist >> 1;
-		}
-		return a;
-	}
-	static void getInputForPresprocessing() {
-		n = x.nextInt();
-		q = x.nextInt();
-		arr = new int[n + 1];
-		for (int i = 1; i <= n; i++) { arr[i] = x.nextInt(); }
-	}
-	static class FastReader {
-		final private int BUFFER_SIZE = 1 << 16;
-		private DataInputStream din;
-		private byte[] buffer;
-		private int bufferPointer, bytesRead;
+    public static void main(String[] args) {
+        getInputForPresprocessing();
+        binaryLifting=new int[n+1][20];
+        len=new int[n+1];
+        preprocess();
+        query();
+        pw.close();
+    }
+    static void preprocess(){
+        for(int i=1;i<=n;i++){
+            binaryLifting[i][0]=arr[i];
+        }
+        boolean visited[]=new boolean[n+1];
+        for(int i=1;i<=n;i++){
+            if(!visited[i]){
+                dfs(i,visited);
+            }
+        }
+    }
+    static void dfs(int node, boolean visited[]){
+        if(visited[node]){
+            return;
+        }
+        visited[node]=true;
+        dfs(arr[node],visited);
+        len[node]=len[binaryLifting[node][0]]+1;
+        for(int level=1;level<20;level++){
+            binaryLifting[node][level]=binaryLifting[binaryLifting[node][level-1]][level-1];
+        }
+    }
+    static void query(){
+        StringBuilder output=new StringBuilder();
+        for(int i=0;i<q;i++){
+            int a=x.nextInt();
+            int b=x.nextInt();
+            int aa=jump(a,len[a]);  // in case, a is in front of b
+            if(jump(a,len[a]-len[b])==b){
+                pw.println(len[a]-len[b]);
+            }
+            else if(jump(aa,len[aa]-len[b])==b){
+                pw.println((len[aa]-len[b])+len[a]);
+            }
+            else{
+                pw.println(-1);
+            }
+        }
+    }
+    static int jump(int a, int dist){
+        if(dist<0)return -1;
+        int level=0;
+        while(dist!=0){
+            if((dist&1)==1){
+                a=binaryLifting[a][level];
+            }
+            ++level;
+            dist=dist>>1;
+        }
+        return a;
+    }
+    static void getInputForPresprocessing(){
+        n=x.nextInt();
+        q=x.nextInt();
+        arr=new int[n+1];
+        for(int i=1;i<=n;i++){
+            arr[i]=x.nextInt();
+        }
+    }
 
-		public FastReader() {
-			din = new DataInputStream(System.in);
-			buffer = new byte[BUFFER_SIZE];
-			bufferPointer = bytesRead = 0;
-		}
-
-		public FastReader(String file_name) throws IOException {
-			din = new DataInputStream(new FileInputStream(file_name));
-			buffer = new byte[BUFFER_SIZE];
-			bufferPointer = bytesRead = 0;
-		}
-
-		public String nextLine() {
-			try {
-				byte[] buf = new byte[10000000];  // line length
-				int cnt = 0, c;
-				while ((c = read()) != -1) {
-					if (c == '\n') break;
-					buf[cnt++] = (byte)c;
-				}
-				return new String(buf, 0, cnt);
-			} catch (Exception e) {
-				System.out.println(e.getMessage());
-				return null;
-			}
-		}
-
-		public int nextInt() {
-			int ret = 0;
-			try {
-				byte c = read();
-				while (c <= ' ') c = read();
-				boolean neg = (c == '-');
-				if (neg) c = read();
-				do {
-					ret = ret * 10 + c - '0';
-				} while ((c = read()) >= '0' && c <= '9');
-
-				if (neg) return -ret;
-				return ret;
-			} catch (Exception e) {
-				System.out.println(e.getMessage());
-				return -1;
-			}
-		}
-
-		public long nextLong() {
-
-			try {
-				long ret = 0;
-				byte c = read();
-				while (c <= ' ') c = read();
-				boolean neg = (c == '-');
-				if (neg) c = read();
-				do {
-					ret = ret * 10 + c - '0';
-				} while ((c = read()) >= '0' && c <= '9');
-				if (neg) return -ret;
-				return ret;
-			} catch (Exception e) {
-				System.out.println(e.getMessage());
-				return -1;
-			}
-		}
-
-		public double nextDouble() {
-
-			try {
-				double ret = 0, div = 1;
-				byte c = read();
-				while (c <= ' ') c = read();
-				boolean neg = (c == '-');
-				if (neg) c = read();
-
-				do {
-					ret = ret * 10 + c - '0';
-				} while ((c = read()) >= '0' && c <= '9');
-				if (c == '.') {
-					while ((c = read()) >= '0' && c <= '9') {
-						ret += (c - '0') / (div *= 10);
-					}
-				}
-
-				if (neg) return -ret;
-				return ret;
-			} catch (Exception e) {
-				System.out.println(e.getMessage());
-				return -1;
-			}
-		}
-
-		private void fillBuffer() throws IOException {
-			bytesRead = din.read(buffer, bufferPointer = 0, BUFFER_SIZE);
-			if (bytesRead == -1) buffer[0] = -1;
-		}
-
-		private byte read() throws IOException {
-			try {
-				if (bufferPointer == bytesRead) fillBuffer();
-				return buffer[bufferPointer++];
-			} catch (Exception e) {
-				System.out.println(e.getMessage());
-				return -1;
-			}
-		}
-
-		public void close() throws IOException {
-			if (din == null) return;
-			din.close();
-		}
-	}
+    static class Kattio extends PrintWriter {
+        private BufferedReader r;
+        private StringTokenizer st;
+        // standard input
+        public Kattio() { this(System.in, System.out); }
+        public Kattio(InputStream i, OutputStream o) {
+            super(o);
+            r = new BufferedReader(new InputStreamReader(i));
+        }
+        // USACO-style file input
+        public Kattio(String problemName) throws IOException {
+            super(problemName + ".out");
+            r = new BufferedReader(new FileReader(problemName + ".in"));
+        }
+        // returns null if no more input
+        public String next() {
+            try {
+                while (st == null || !st.hasMoreTokens())
+                    st = new StringTokenizer(r.readLine());
+                return st.nextToken();
+            } catch (Exception e) {}
+            return null;
+        }
+        public int nextInt() { return Integer.parseInt(next()); }
+        public double nextDouble() { return Double.parseDouble(next()); }
+        public long nextLong() { return Long.parseLong(next()); }
+    }
 }
 ```
 
