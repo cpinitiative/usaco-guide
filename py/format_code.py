@@ -154,7 +154,9 @@ if __name__ == "__main__":
 	"""
 	Args: paths of files to format
 	"""
-	# raise ValueError(sys.argv[1:])
+	from importlib.metadata import version
+
+	print(f"Clang-Format Version = {version('clang-format')}")
 	paths = sys.argv[1:]
 	print(f"Formatting {len(paths)} paths")
 	for path in paths:
