@@ -211,9 +211,9 @@ public class PlanetQueries2 {
 	static PrintWriter pw = new PrintWriter(System.out);
 	static int n;
 	static int q;
-	static int arr[];
-	static int binaryLifting[][];
-	static int len[];
+	static int[] arr;
+	static int[][] binaryLifting;
+	static int[] len;
 
 	public static void main(String[] args) {
 		n = x.nextInt();
@@ -224,36 +224,14 @@ public class PlanetQueries2 {
 		len = new int[n + 1];
 		/*
 		 * in preprocess, doing dfs, for each node, to ensure to covering
-		 *  more than one connected component
+		 * more than one connected component
 		 */
-		preprocess();
-		query();
-		pw.close();
-	}
-	static void preprocess() {
 		for (int i = 1; i <= n; i++) { binaryLifting[i][0] = arr[i]; }
 		// visited array ensures to cover more than one connected components
 		boolean visited[] = new boolean[n + 1];
 		for (int i = 1; i <= n; i++) {
 			if (!visited[i]) { dfs(i, visited); }
 		}
-	}
-	static void dfs(int node, boolean visited[]) {
-		if (visited[node]) { return; }
-		visited[node] = true;
-		dfs(arr[node], visited);
-		/*
-		 * head recursion is being used here, in order to start counting the
-		 * height of the graph, from the left nodes of the tree (if one
-		 * exists...)
-		 */
-		len[node] = len[binaryLifting[node][0]] + 1;
-		for (int level = 1; level < 20; level++) {
-			binaryLifting[node][level] =
-			    binaryLifting[binaryLifting[node][level - 1]][level - 1];
-		}
-	}
-	static void query() {
 		StringBuilder output = new StringBuilder();
 		for (int i = 0; i < q; i++) {
 			int a = x.nextInt();
@@ -271,6 +249,22 @@ public class PlanetQueries2 {
 			 * v is in tree u will never be able to "jump" to v, and this is
 			 * precisely being checked in the above if conditions.
 			 */
+		}
+		pw.close();
+	}
+	static void dfs(int node, boolean visited[]) {
+		if (visited[node]) { return; }
+		visited[node] = true;
+		dfs(arr[node], visited);
+		/*
+		 * head recursion is being used here, in order to start counting the
+		 * height of the graph, from the left nodes of the tree (if one
+		 * exists...)
+		 */
+		len[node] = len[binaryLifting[node][0]] + 1;
+		for (int level = 1; level < 20; level++) {
+			binaryLifting[node][level] =
+			    binaryLifting[binaryLifting[node][level - 1]][level - 1];
 		}
 	}
 	static int jump(int a, int dist) {
