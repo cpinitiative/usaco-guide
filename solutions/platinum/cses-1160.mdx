@@ -202,7 +202,6 @@ int main() {
 <JavaSection>
 
 ```java
-
 import java.io.PrintWriter;
 
 public class PlanetQueries2 {
@@ -210,15 +209,15 @@ public class PlanetQueries2 {
 	static int[][] binaryLifting;
 	static int[] arr;
 	static int[] len;
+
 	public static void main(String[] args) {
-		Kattio x = new Kattio();
+		Kattio io = new Kattio();
 		PrintWriter pw = new PrintWriter(System.out);
-		int n;
-		int q;
-		n = x.nextInt();
-		q = x.nextInt();
+		int n = io.nextInt();
+		int q = io.nextInt();
 		arr = new int[n + 1];
-		for (int i = 1; i <= n; i++) { arr[i] = x.nextInt(); }
+		for (int i = 1; i <= n; i++) { arr[i] = io.nextInt(); }
+
 		binaryLifting = new int[n + 1][MAX_HEIGHT];
 		len = new int[n + 1];
 		/*
@@ -226,14 +225,16 @@ public class PlanetQueries2 {
 		 * more than one connected component
 		 */
 		for (int i = 1; i <= n; i++) { binaryLifting[i][0] = arr[i]; }
+
 		// visited array ensures to cover more than one connected components
-		boolean visited[] = new boolean[n + 1];
+		boolean[] visited = new boolean[n + 1];
 		for (int i = 1; i <= n; i++) {
 			if (!visited[i]) { dfs(i, visited); }
 		}
+
 		for (int i = 0; i < q; i++) {
-			int a = x.nextInt();
-			int b = x.nextInt();
+			int a = io.nextInt();
+			int b = io.nextInt();
 			int aa = jump(a, len[a]);  // in case, a is in front of b
 			if (jump(a, len[a] - len[b]) == b) {
 				pw.println(len[a] - len[b]);
@@ -242,22 +243,17 @@ public class PlanetQueries2 {
 			} else {
 				pw.println(-1);
 			}
-			/*
-			 * in any of the edge cases, for example, (u,v) u being in cycle and
-			 * v is in tree u will never be able to "jump" to v, and this is
-			 * precisely being checked in the above if conditions.
-			 */
 		}
 		pw.close();
 	}
-	static void dfs(int node, boolean visited[]) {
+
+	private static void dfs(int node, boolean[] visited) {
 		if (visited[node]) { return; }
 		visited[node] = true;
 		dfs(arr[node], visited);
 		/*
 		 * head recursion is being used here, in order to start counting the
-		 * height of the graph, from the left nodes of the tree (if one
-		 * exists...)
+		 * height of the graph, from the left nodes of the tree (if one exists)
 		 */
 		len[node] = len[binaryLifting[node][0]] + 1;
 		for (int level = 1; level < MAX_HEIGHT; level++) {
@@ -265,7 +261,8 @@ public class PlanetQueries2 {
 			    binaryLifting[binaryLifting[node][level - 1]][level - 1];
 		}
 	}
-	static int jump(int a, int dist) {
+
+	private static int jump(int a, int dist) {
 		if (dist < 0) return -1;
 		int level = 0;
 		while (dist != 0) {
