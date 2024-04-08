@@ -36,7 +36,7 @@ involving BFS.
 		source="CSA"
 		title="Topological Sorting"
 		url="topological_sorting"
-		starred
+		starredr
 	>
 		interactive, both versions
 	</Resource>
@@ -77,10 +77,10 @@ vector<vector<int>> graph;
 vector<bool> visited;
 
 void dfs(int node) {
-	for (int n : graph[node]) {
-		if (!visited[n]) {
-			visited[n] = true;
-			dfs(n);
+	for (int next : graph[node]) {
+		if (!visited[next]) {
+			visited[next] = true;
+			dfs(next);
 		}
 	}
 	top_sort.push_back(node);
@@ -193,10 +193,10 @@ public class CourseSchedule {
 	}
 
 	private static void dfs(int node) {
-		for (int n : graph[node]) {
-			if (!visited[n]) {
-				visited[n] = true;
-				dfs(n);
+		for (int next : graph[node]) {
+			if (!visited[next]) {
+				visited[next] = true;
+				dfs(next);
 			}
 		}
 		topSort.add(node);
@@ -215,10 +215,10 @@ sys.setrecursionlimit(MAX_N)
 
 
 def dfs(node: int) -> None:
-	for n in graph[node]:
-		if not visited[n]:
-			visited[n] = True
-			dfs(n)
+	for next_ in graph[node]:
+		if not visited[next_]:
+			visited[next_] = True
+			dfs(next_)
 	top_sort.append(node)
 
 
@@ -465,13 +465,13 @@ vector<int> cycle;
 
 bool dfs(int node) {
 	visited[node] = on_stack[node] = true;
-	for (int n : graph[node]) {
-		if (on_stack[n]) {
+	for (int next : graph[node]) {
+		if (on_stack[next]) {
 			cycle.push_back(node);  // start cycle
-			on_stack[node] = on_stack[n] = false;
+			on_stack[node] = on_stack[next] = false;
 			return true;
-		} else if (!visited[n]) {
-			if (dfs(n)) {  // continue cycle
+		} else if (!visited[next]) {
+			if (dfs(next)) {  // continue cycle
 				if (on_stack[node]) {
 					cycle.push_back(node);
 					on_stack[node] = false;
@@ -511,7 +511,7 @@ int main() {
 	} else {
 		reverse(cycle.begin(), cycle.end());
 		cout << cycle.size() + 1 << "\n";
-		for (int n : cycle) { cout << n + 1 << " "; }
+		for (int node : cycle) { cout << node + 1 << " "; }
 		cout << cycle[0] + 1 << endl;
 	}
 }
@@ -561,13 +561,13 @@ public class RoundTripII {
 
 	private static boolean dfs(int node) {
 		visited[node] = onStack[node] = true;
-		for (int n : graph[node]) {
-			if (onStack[n]) {
+		for (int next : graph[node]) {
+			if (onStack[next]) {
 				cycle.add(node);  // start cycle
-				onStack[node] = onStack[n] = false;
+				onStack[node] = onStack[next] = false;
 				return true;
-			} else if (!visited[n]) {
-				if (dfs(n)) {  // continue cycle
+			} else if (!visited[next]) {
+				if (dfs(next)) {  // continue cycle
 					if (onStack[node]) {
 						cycle.add(node);
 						onStack[node] = false;
@@ -588,6 +588,7 @@ public class RoundTripII {
 		return false;
 	}
 }
+
 ```
 
 </JavaSection>
@@ -602,14 +603,14 @@ sys.setrecursionlimit(MAX_N)
 
 def dfs(node: int) -> bool:
 	visited[node] = on_stack[node] = True
-	for n in graph[node]:
-		if on_stack[n]:
+	for next_ in graph[node]:
+		if on_stack[next_]:
 			cycle.append(node)  # start cycle
-			on_stack[node] = on_stack[n] = False
+			on_stack[node] = on_stack[next_] = False
 			return True
 
-		elif not visited[n]:
-			if dfs(n):  # continue cycle
+		elif not visited[next_]:
+			if dfs(next_):  # continue cycle
 				if on_stack[node]:
 					cycle.append(node)
 					on_stack[node] = False
