@@ -116,18 +116,18 @@ A naive implementation of this would use a recursive formula, like below:
 
 
 ```cpp
-/** Computes nCk mod p using naive recursion */
+/** @return nCk mod p using naive recursion */
 int binomial(int n, int k, int p) {
 	if (k == 0 || k == n) { return 1; }
 	return (binomial(n - 1, k - 1, p) + binomial(n - 1, k, p)) % p;
 }
 ```
-</CPPSection>
 
+</CPPSection>
 <JavaSection>
 
 ```java
-/** Computes nCk mod p using naive recursion */
+/** @return nCk mod p using naive recursion */
 public static int binomial(int n, int k, int p) {
 	if (k == 0 || k == n) { return 1; }
 	return (binomial(n - 1, k - 1, p) + binomial(n - 1, k, p)) % p;
@@ -135,12 +135,11 @@ public static int binomial(int n, int k, int p) {
 ```
 
 </JavaSection>
-
 <PySection>
 
 ```py
 def binomial(n: int, k: int, p: int) -> int:
-	"""Computes nCk mod p using naive recursion"""
+	""":return: nCk mod p using naive recursion"""
 	if k == 0 or k == n:
 		return 1
 	return (binomial(n - 1, k - 1, p) + binomial(n - 1, k, p)) % p
@@ -158,7 +157,7 @@ The code below shows a bottom-up implementation of this.
 <CPPSection>
 
 ```cpp
-/** Computes nCk mod p using dynamic programming */
+/** @return nCk mod p using dynamic programming */
 int binomial(int n, int k, int p) {
 	// dp[i][j] stores iCj
 	vector<vector<int>> dp(n + 1, vector<int>(k + 1, 0));
@@ -196,7 +195,7 @@ int binomial(int n, int k, int p) {
 <JavaSection>
 
 ```java
-/** Computes nCk mod p using dynamic programming */
+/** @return nCk mod p using dynamic programming */
 public static int binomial(int n, int k, int p) {
 	// dp[i][j] stores iCj
 	int[][] dp = new int[n + 1][k + 1];
@@ -235,7 +234,7 @@ public static int binomial(int n, int k, int p) {
 
 ```py
 def binomial(n: int, k, p):
-	"""Computes nCk mod p using dynamic programming"""
+	""":return: nCk mod p using dynamic programming"""
 	# dp[i][j] stores iCj
 	dp = [[0] * (k + 1) for _ in range(n + 1)]
 
@@ -650,20 +649,18 @@ which can be done in linear time.
 
 ```cpp
 #include <bits/stdc++.h>
-
-// https://atcoder.github.io/ac-library/document_en/modint.html
-// (included in grader for this problem)
 #include <atcoder/modint>
-using mint = atcoder::modint;
 
 using namespace std;
+using mint = atcoder::modint;
 
 int main() {
-	int N, M;
-	cin >> N >> M;
-	mint::set_mod(M);
+	int n, m;
+	cin >> n >> m;
+	mint::set_mod(m);
+	
 	mint c = 1;
-	for (int i = 1; i <= N; i++) {
+	for (int i = 1; i <= n; i++) {
 		c = (c * i) + (i % 2 == 1 ? -1 : 1);
 		cout << c.val() << ' ';
 	}
@@ -680,15 +677,15 @@ import java.util.Scanner;
 public class Main {
 	public static void main(String[] args) {
 		Scanner scanner = new Scanner(System.in);
-		int N = scanner.nextInt();
-		int M = scanner.nextInt();
+		int n = scanner.nextInt();
+		int m = scanner.nextInt();
 
 		long c = 1;
-		for (int i = 1; i <= N; i++) {
+		for (int i = 1; i <= n; i++) {
 			c = (c * i) + (i % 2 == 1 ? -1 : 1);
-			c %= M;
-			c += M;
-			c %= M;
+			c %= m;
+			c += m;
+			c %= m;
 			System.out.print(c + " ");
 		}
 		System.out.println();
@@ -700,13 +697,13 @@ public class Main {
 <PySection>
 
 ```py
-N, M = map(int, input().split())
+n, m = map(int, input().split())
 c = 1
-for i in range(1, N + 1):
+for i in range(1, n + 1):
 	c = (c * i) + (-1 if i % 2 == 1 else 1)
-	c %= M
-	c += M
-	c %= M
+	c %= m
+	c += m
+	c %= m
 	print(c, end=" ")
 
 print()
@@ -741,21 +738,20 @@ $!0 = 1$ and $!1 = 0$.
 
 ```cpp
 #include <bits/stdc++.h>
-
-// https://atcoder.github.io/ac-library/document_en/modint.html (included in
-// grader)
 #include <atcoder/modint>
-using mint = atcoder::modint;
 
 using namespace std;
+using mint = atcoder::modint;
 
 int main() {
-	int N, M;
-	cin >> N >> M;
-	mint::set_mod(M);
+	int n, m;
+	cin >> n >> m;
+	mint::set_mod(m);
+
 	mint a = 1, b = 0;
 	cout << 0 << ' ';
-	for (int i = 2; i <= N; i++) {
+	
+	for (int i = 2; i <= n; i++) {
 		mint c = (i - 1) * (a + b);
 		cout << c.val() << ' ';
 		a = b;
@@ -773,16 +769,16 @@ import java.util.Scanner;
 
 public class Main {
 	public static void main(String[] args) {
-		Scanner sc = new Scanner(System.in);
-		int N = sc.nextInt();
-		int M = sc.nextInt();
+		Scanner scanner = new Scanner(System.in);
+		int n = scanner.nextInt();
+		int m = scanner.nextInt();
 
 		int a = 1;
 		int b = 0;
 
 		System.out.print("0 ");
-		for (int i = 2; i <= N; i++) {
-			int c = (int)(((long)(i - 1) * (a + b)) % M);
+		for (int i = 2; i <= n; i++) {
+			int c = (int)(((long)(i - 1) * (a + b)) % m);
 			System.out.print(c + " ");
 			a = b;
 			b = c;
@@ -796,12 +792,12 @@ public class Main {
 <PySection>
 
 ```py
-N, M = map(int, input().split())
+n, m = map(int, input().split())
 a, b = 1, 0
 
 print(0, end=" ")
-for i in range(2, N + 1):
-	c = (i - 1) * (a + b) % M
+for i in range(2, n + 1):
+	c = (i - 1) * (a + b) % m
 	print(c, end=" ")
 	a, b = b, c
 
