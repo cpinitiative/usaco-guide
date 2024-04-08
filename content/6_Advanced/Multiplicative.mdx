@@ -1,7 +1,7 @@
 ---
 id: multiplicative
 title: 'Prefix Sums of Multiplicative Functions'
-author: Tianqin Meng & Benjamin Qi, 
+author: Tianqin Meng & Benjamin Qi,
 description: Rare
 frequency: 0
 ---
@@ -9,8 +9,8 @@ frequency: 0
 
 _Definition of multiplicative functions_
 
-1. If a function f(n) maps positive integers to complex numbers (f: ℤ⁺ → ℂ), it's an arithmetic function. 
-2. If f(n) is an arithmetic function, f(1) = 1 and f(p⋅q) = f(p)⋅f(q) for any coprime positive integers p,q, it's a multiplicative function. 
+1. If a function f(n) maps positive integers to complex numbers (f: ℤ⁺ → ℂ), it's an arithmetic function.
+2. If f(n) is an arithmetic function, f(1) = 1 and f(p⋅q) = f(p)⋅f(q) for any coprime positive integers p,q, it's a multiplicative function.
 3. Further, if f(n) is multiplicative and f(p⋅q) = f(p)⋅f(q) for any positive integers p,q, it's a completely multiplicative function.
 
 _Properties and Examples of Multiplicative Functions_
@@ -29,7 +29,7 @@ _Properties and Examples of Multiplicative Functions_
 	- $$[n=1] = \sum_{d|n} \mu(d)$$, Interpreting $\mu(d)$ as the coefficients of the inclusion-exclusion principle proves it.
     - $$ n = \sum_{d|n} \varphi(d) $$. To prove it, we can count the number of occurrences of $$\frac{1}{n}(1 \leq i \leq n$$) in its simplest fraction form.
 
-3. If $f(n)$ is a multiplicative function, then for a positive integer $n = \prod_{i=1}^{k} p_i^{k_i}$, we have $$f(n) = \prod_{i=1}^{k} f(p_i^{k_i})$$; If $f(n)$ is a completely multiplicative function, then for a positive integer $n = \prod_{i=1}^{k} p_i^{k_i}$, we have: $$f(n) = \prod_{i=1}^{k} f(p_i)^{k_i}$$ 
+3. If $f(n)$ is a multiplicative function, then for a positive integer $n = \prod_{i=1}^{k} p_i^{k_i}$, we have $$f(n) = \prod_{i=1}^{k} f(p_i^{k_i})$$; If $f(n)$ is a completely multiplicative function, then for a positive integer $n = \prod_{i=1}^{k} p_i^{k_i}$, we have: $$f(n) = \prod_{i=1}^{k} f(p_i)^{k_i}$$
 
 
 _Dirichlet Convolution and Möbius Inversion_
@@ -58,7 +58,7 @@ Similarly, the sum of the number of divisors for the first $n$ positive integers
 
 Another thing to note is that $\sum_{i=1}^{n}\left\lfloor\frac{n}{i}\right\rfloor\cdot i=\sum_{i=1}^{n}\left\lfloor\frac{n}{i}\right\rfloor\cdot\frac{(\left\lfloor\frac{n}{i}\right\rfloor+1)}{2}$. This is also a common representation form.
 
-### Focus problem # 2 
+### Focus problem # 2
 Now let's increase the difficulty a bit. We want to find the sum of Euler's totient function for the first $n$ positive integers, i.e., $\sum_{i=1}^{n} \varphi(i)$, where $n \leq 10^{11}$.
 
 _Approach:_
@@ -70,14 +70,14 @@ This formula can also be seen as $\varphi(n)=n-\sum_{d|n, d<n}\varphi(d)$. Let's
 $$
 \phi(n)=∑_{i=1}^n\varphi(i)=∑_{i=1}^n i−∑_{d|i,d<i}\varphi(d)=\frac{n\cdot(n+1)}{2}−∑_{i=2}^n\sum_{d|i,d<i}\varphi(d)=\frac{n\cdot(n+1)}{2}−\sum_{i=2}^{n}\sum_{d=1}^{\left\lfloor\frac{n}{\left(\frac{i}{d}\right)}\right\rfloor}\varphi(d)
 $$
- 
+
 $$
 n \cdot \frac{(n+1)}{2} - \sum_{i=2}^{n} \sum_{d=1}^{\lfloor \frac{n}{i} \rfloor} \phi(d) = n \cdot \frac{(n+1)}{2} - \sum_{i=2}^{n} \phi(\lfloor \frac{n}{i} \rfloor)
 $$
 
-So as long as you calculate the values of $\phi(\lfloor \frac{n}{i} \rfloor$ for $O(\sqrt{n})$ times, you can compute $\phi(n)$. What about the complexity of such an operation? 
+So as long as you calculate the values of $\phi(\lfloor \frac{n}{i} \rfloor$ for $O(\sqrt{n})$ times, you can compute $\phi(n)$. What about the complexity of such an operation?
 
-Suppose the complexity of calculating $\phi(n)$ is $T(n)$, then we have $T(n) = O(\sqrt{n}) + \sum_{i=1}^{\sqrt{n}} T(i) + T(n/i)$. **Here, we only expand one layer because deeper complexities are higher-order terms**. 
+Suppose the complexity of calculating $\phi(n)$ is $T(n)$, then we have $T(n) = O(\sqrt{n}) + \sum_{i=1}^{\sqrt{n}} T(i) + T(n/i)$. **Here, we only expand one layer because deeper complexities are higher-order terms**.
 So, we have $T(n) = \sum_{i=1}^{\sqrt{n}} O(\sqrt{i}) + O(\sqrt{\frac{n}{i}}) = O(n^{3/4})$.
 
 Since $\phi(n)$ is a prefix sum of a multiplicative function, the sieve method can preprocess a portion. Assuming the preprocessing includes the first $k$ positive integers' $\phi(n)$ where $k \geq \sqrt{n}$, the complexity becomes $T(n) = \sum_{i=1}^{k} {\sqrt{\frac{n}{i}}} = O({\frac{n}{\sqrt{k}}})$. When $k = O(n^{2/3})$, we can achieve a good complexity of $T(n) = O(n^{2/3})$.
@@ -88,7 +88,7 @@ $$
 \frac{n \cdot (n+1)}{2} = \sum_{i=1}^{n} i = \sum_{i=1}^{n} \sum_{d} [d|i]\varphi(d) = \sum_{i=2}^{n} \sum_{d=1}^{\left\lfloor \frac{n}{\left(\frac{i}{d}\right)} \right\rfloor} \varphi(d) = \sum_{i=1}^{n} \phi(\left\lfloor \frac{n}{i} \right\rfloor)
 $$
 
-**If we can construct a function through Dirichlet convolution that computes prefix sums more efficiently and if another function suitable for convolution is also easy to calculate, we can simplify the calculation process.** For example, in the above problem, we used the property of $\varphi * I = id$. But remember, not all problems of this type can be easily solved by just pairing with an identity function $I$. Sometimes, a more careful observation is needed. 
+**If we can construct a function through Dirichlet convolution that computes prefix sums more efficiently and if another function suitable for convolution is also easy to calculate, we can simplify the calculation process.** For example, in the above problem, we used the property of $\varphi * I = id$. But remember, not all problems of this type can be easily solved by just pairing with an identity function $I$. Sometimes, a more careful observation is needed.
 
 ### More information below left over by Benjamin Qi
 
@@ -156,8 +156,6 @@ int main() {
 
 ### Problems
 
-Here are some practice problems for everyone to understand the methods mentioned above. Such problems are relatively few, so if you have other sources of problems, please feel free to share.  
+Here are some practice problems for everyone to understand the methods mentioned above. Such problems are relatively few, so if you have other sources of problems, please feel free to share.
 
 <!-- <Problems problems="general" /> -->
-
- 
