@@ -131,19 +131,7 @@ Due to the large $N$, coordinate compression is required in the code.
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
-#define f first
-#define s second
-#define pb push_back
-#define rep(i, a, b) for (int i = a; i < (b); ++i)
-#define all(x) begin(x), end(x)
-#define sz(x) (int)(x).size()
-typedef long long ll;
-typedef pair<int, int> pii;
-typedef vector<int> vi;
-
-template <class T> bool ckmin(T &a, const T &b) {
-	return b < a ? a = b, 1 : 0;
-}  // set a = min(a,b)
+template <class T> bool ckmin(T &a, const T &b) { return b < a ? a = b, 1 : 0; }
 
 /**
  * Description: 1D point update, range query where \texttt{comb} is
@@ -179,17 +167,23 @@ template <class T> struct Seg {  // comb(ID,b) = b
 	}
 };
 
-const int MX = 1e5;
+struct Point {
+	int x, y, i, type;
+	Point(int x, int y, int i, int type) : x(x), y(y), i(i), type(type) {}
+	bool operator<(const Point &p) {
+		if (x == p.x) return y < p.y;
+		return x < p.x;
+	}
+};
+
+const int MX = 1e5 + 5;
 Seg<int> S;
 int N, P;
 int ans[MX];
-vi distinct_y;
-
-int query_min(int ind) { return S.query(0, ind); }
-void ins(int ind, int val) { S.upd(ind, val); }
-// gets the coordinate compressed y
+vector<int> distinct_y;
 int y_index(int y) {
-	return lower_bound(all(distinct_y), y) - begin(distinct_y);
+	return lower_bound(begin(distinct_y), end(distinct_y), y) -
+	       begin(distinct_y);
 }
 
 int main() {
@@ -198,30 +192,30 @@ int main() {
 	freopen("boards.in", "r", stdin);
 	freopen("boards.out", "w", stdout);
 	cin >> N >> P;
-	vector<pair<pair<int, int>, pair<int, int>>> events;
+	vector<Point> events;
 	for (int i = 0; i < P; ++i) {
-		pair<int, int> a, b;
-		cin >> a.f >> a.s >> b.f >> b.s;
-		events.pb({a, {i, -1}});  // start point
-		events.pb({b, {i, 1}});   // end point
-		distinct_y.pb(a.s);
-		distinct_y.pb(b.s);
+		int x1, y1, x2, y2;
+		cin >> x1 >> y1 >> x2 >> y2;
+		events.emplace_back(x1, y1, i, -1);  // start point
+		events.emplace_back(x2, y2, i, 1);   // end point
+		distinct_y.push_back(y1);
+		distinct_y.push_back(y2);
 	}
 
-	sort(all(distinct_y));
-	sort(all(events));
+	sort(begin(distinct_y), end(distinct_y));
+	sort(begin(events), end(events));
 	S.init(2 * P);
-	ins(0, 0);
-	for (auto &t : events) {
-		if (t.s.s == -1) {
-			ans[t.s.f] = t.f.f + t.f.s + query_min(y_index(t.f.s));
+	S.upd(0, 0);
+	for (Point p : events) {
+		if (p.type == -1) {
+			ans[p.i] = p.x + p.y + S.query(0, y_index(p.y));
 		} else {
-			ins(y_index(t.f.s), ans[t.s.f] - t.f.f - t.f.s);
+			S.upd(y_index(p.y), ans[p.i] - p.x - p.y);
 		}
 	}
-	cout << query_min(2 * P - 1) +
-	            2 * N;  // adds 2N to include the transition from the last
-	                    // springboard to the endpoint
+	// adds 2N to include the transition from the last springboard to the
+	// endpoint
+	cout << S.query(0, 2 * P - 1) + 2 * N;
 }
 ```
 
