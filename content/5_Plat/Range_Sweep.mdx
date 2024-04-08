@@ -176,7 +176,7 @@ struct Point {
 	}
 };
 
-const int MX = 1e5 + 5;
+const int MX = 1e5;
 Seg<int> S;
 int N, P;
 int ans[MX];
@@ -187,8 +187,6 @@ int y_index(int y) {
 }
 
 int main() {
-	ios_base::sync_with_stdio(0);
-	cin.tie(0);
 	freopen("boards.in", "r", stdin);
 	freopen("boards.out", "w", stdout);
 	cin >> N >> P;
@@ -213,9 +211,11 @@ int main() {
 			S.upd(y_index(p.y), ans[p.i] - p.x - p.y);
 		}
 	}
-	// adds 2N to include the transition from the last springboard to the
-	// endpoint
-	cout << S.query(0, 2 * P - 1) + 2 * N;
+	
+	cout << S.query(0, 2 * P - 1) +
+	            2 * N;  // adds 2N to include the transition from the last
+	                    // springboard to the endpoint
+}
 }
 ```
 
