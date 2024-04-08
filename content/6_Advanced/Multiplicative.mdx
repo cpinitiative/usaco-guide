@@ -9,8 +9,8 @@ frequency: 0
 
 _Definition of multiplicative functions_
 
-1. If a function f(n) maps positive integers to complex numbers (f: ℤ⁺ → ℂ), it's an arithmetic function. 
-2. If f(n) is an arithmetic function, f(1) = 1 and f(p⋅q) = f(p)⋅f(q) for any coprime positive integers p,q, it's a multiplicative function. 
+1. If a function f(n) maps positive integers to complex numbers (f: ℤ⁺ → ℂ), it's an arithmetic function.
+2. If f(n) is an arithmetic function, f(1) = 1 and f(p⋅q) = f(p)⋅f(q) for any coprime positive integers p,q, it's a multiplicative function.
 3. Further, if f(n) is multiplicative and f(p⋅q) = f(p)⋅f(q) for any positive integers p,q, it's a completely multiplicative function.
 
 _Properties and Examples of Multiplicative Functions_
@@ -29,7 +29,7 @@ _Properties and Examples of Multiplicative Functions_
 	- $$[n=1] = \sum_{d|n} \mu(d)$$, Interpreting $\mu(d)$ as the coefficients of the inclusion-exclusion principle proves it.
     - $$ n = \sum_{d|n} \varphi(d) $$. To prove it, we can count the number of occurrences of $$\frac{1}{n}(1 \leq i \leq n$$) in its simplest fraction form.
 
-3. If $f(n)$ is a multiplicative function, then for a positive integer $n = \prod_{i=1}^{k} p_i^{k_i}$, we have $$f(n) = \prod_{i=1}^{k} f(p_i^{k_i})$$; If $f(n)$ is a completely multiplicative function, then for a positive integer $n = \prod_{i=1}^{k} p_i^{k_i}$, we have: $$f(n) = \prod_{i=1}^{k} f(p_i)^{k_i}$$ 
+3. If $f(n)$ is a multiplicative function, then for a positive integer $n = \prod_{i=1}^{k} p_i^{k_i}$, we have $$f(n) = \prod_{i=1}^{k} f(p_i^{k_i})$$; If $f(n)$ is a completely multiplicative function, then for a positive integer $n = \prod_{i=1}^{k} p_i^{k_i}$, we have: $$f(n) = \prod_{i=1}^{k} f(p_i)^{k_i}$$
 
 
 _Dirichlet Convolution and Möbius Inversion_
@@ -56,24 +56,21 @@ _Constraints_
 
 _Approach:_
 
-First a review on linear sieve, this will be used in both focus problem 1 and 3: 
+First a review on linear sieve, this will be used in both focus problem 1 and 3:
 <LanguageSection>
 <CPPSection>
 ```cpp
-void get_prime(int n)
-{
-    for( int i = 2 ; i <= n; i++ )
-    {
-        if(!st[i]) primes[++cnt] = i;
-        for( int j = 1 ; primes[j] <= n / i ; j++ )
-        {
-            st[i * primes[j]] = true;
-            if( i % primes[j] == 0 ) break; 
-        }
-    }
+void get_prime(int n) {
+	for (int i = 2; i <= n; i++) {
+		if (!st[i]) primes[++cnt] = i;
+		for (int j = 1; primes[j] <= n / i; j++) {
+			st[i * primes[j]] = true;
+			if (i % primes[j] == 0) break;
+		}
+	}
 }
 ```
-</CPPSection>  
+</CPPSection>
 </LanguageSection>
 Focus problem 1 requires finding the count of prime numbers not exceeding a given integer N and then calculating the sum of primes based on specific conditions. The provided solution employs the Sieve of Eratosthenes algorithm, which efficiently finds prime numbers up to a given limit. Here's how the solution works:
 
@@ -87,40 +84,38 @@ Focus problem 1 requires finding the count of prime numbers not exceeding a give
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
-constexpr int N(5e8),M(3.2e7);
-int p[M],pc;
+constexpr int N(5e8), M(3.2e7);
+int p[M], pc;
 void sieve(int n) {
-  if(n<2) return;
-  vector<bool> np(n+1);
-  p[pc++]=2;
-  int i;
-  for(i=3;1ll*i*i<=n;i+=2) {
-    if(!np[i]) {
-      p[pc++]=i;
-      for(int j=i*i;j<=n;j+=i)
-        np[j]=1;
-    }
-  }
-  for(;i<=n;i+=2) {
-    if(!np[i]) p[pc++]=i;
-  }
+	if (n < 2) return;
+	vector<bool> np(n + 1);
+	p[pc++] = 2;
+	int i;
+	for (i = 3; 1ll * i * i <= n; i += 2) {
+		if (!np[i]) {
+			p[pc++] = i;
+			for (int j = i * i; j <= n; j += i) np[j] = 1;
+		}
+	}
+	for (; i <= n; i += 2) {
+		if (!np[i]) p[pc++] = i;
+	}
 }
 
 int main() {
-  ios::sync_with_stdio(false);
-  cin.tie(nullptr);
-  int n,a,b,x;
-  vector<int>ans;
-  cin>>n>>a>>b;
-  sieve(n);
-  x=pc/a+(pc%a>b);
-  cout<<pc<<' '<<x<<'\n';
-  for(int i=b;i<pc;i+=a)
-    cout<<p[i]<<" \n"[i+a>=pc];
-  return 0;
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
+	int n, a, b, x;
+	vector<int> ans;
+	cin >> n >> a >> b;
+	sieve(n);
+	x = pc / a + (pc % a > b);
+	cout << pc << ' ' << x << '\n';
+	for (int i = b; i < pc; i += a) cout << p[i] << " \n"[i + a >= pc];
+	return 0;
 }
 ```
-</CPPSection>  
+</CPPSection>
 </LanguageSection>
 
 ### Focus problem # 2
@@ -145,38 +140,37 @@ Another thing to note is that $\sum_{i=1}^{n}\left\lfloor\frac{n}{i}\right\rfloo
 <CPPSection>
 
 ```cpp
-#include <cstdio>
 #include <algorithm>
+#include <cstdio>
 #include <cstring>
 using namespace std;
- 
-long long n,i,a,b;
+
+long long n, i, a, b;
 long long sum;
- 
-int main(){
-	scanf("%lld",&n);
-	//sum = 0;
-	//for(i=1;i<=n;i++)
+
+int main() {
+	scanf("%lld", &n);
+	// sum = 0;
+	// for(i=1;i<=n;i++)
 	//	sum += i * (n / i);
-	//printf("n = %lld\n",n);
-	//printf("%lld\n",sum);
+	// printf("n = %lld\n",n);
+	// printf("%lld\n",sum);
 	sum = 0;
-	for(i=1;i*i<=n;i++){
+	for (i = 1; i * i <= n; i++) {
 		sum += i * (n / i);
-		b = n/i;
-		a = n/(i+1)+1;
-		//if (i==1) printf("%lld %lld\n",a,b);
-		sum += (a+b) * (b-a+1) / 2 * i;
+		b = n / i;
+		a = n / (i + 1) + 1;
+		// if (i==1) printf("%lld %lld\n",a,b);
+		sum += (a + b) * (b - a + 1) / 2 * i;
 	}
 	i--;
-	if (i == n / i)
-		sum -= i * (n / i);
-	printf("%lld\n",sum);
+	if (i == n / i) sum -= i * (n / i);
+	printf("%lld\n", sum);
 	return 0;
 }
 ```
 
-</CPPSection>  
+</CPPSection>
 </LanguageSection>
 ### Focus problem # 3
 Now let's increase the difficulty a bit. We want to find the sum of Euler's totient function for the first $n$ positive integers, i.e., $\sum_{i=1}^{n} \varphi(i)$, where $n \leq 10^{11}$.
@@ -190,14 +184,14 @@ This formula can also be seen as $\varphi(n)=n-\sum_{d|n, d<n}\varphi(d)$. Let's
 $$
 \phi(n)=∑_{i=1}^n\varphi(i)=∑_{i=1}^n i−∑_{d|i,d<i}\varphi(d)=\frac{n\cdot(n+1)}{2}−∑_{i=2}^n\sum_{d|i,d<i}\varphi(d)=\frac{n\cdot(n+1)}{2}−\sum_{i=2}^{n}\sum_{d=1}^{\left\lfloor\frac{n}{\left(\frac{i}{d}\right)}\right\rfloor}\varphi(d)
 $$
- 
+
 $$
 n \cdot \frac{(n+1)}{2} - \sum_{i=2}^{n} \sum_{d=1}^{\lfloor \frac{n}{i} \rfloor} \phi(d) = n \cdot \frac{(n+1)}{2} - \sum_{i=2}^{n} \phi(\lfloor \frac{n}{i} \rfloor)
 $$
 
-So as long as you calculate the values of $\phi(\lfloor \frac{n}{i} \rfloor$ for $O(\sqrt{n})$ times, you can compute $\phi(n)$. What about the complexity of such an operation? 
+So as long as you calculate the values of $\phi(\lfloor \frac{n}{i} \rfloor$ for $O(\sqrt{n})$ times, you can compute $\phi(n)$. What about the complexity of such an operation?
 
-Suppose the complexity of calculating $\phi(n)$ is $T(n)$, then we have $T(n) = O(\sqrt{n}) + \sum_{i=1}^{\sqrt{n}} T(i) + T(n/i)$. **Here, we only expand one layer because deeper complexities are higher-order terms**. 
+Suppose the complexity of calculating $\phi(n)$ is $T(n)$, then we have $T(n) = O(\sqrt{n}) + \sum_{i=1}^{\sqrt{n}} T(i) + T(n/i)$. **Here, we only expand one layer because deeper complexities are higher-order terms**.
 So, we have $T(n) = \sum_{i=1}^{\sqrt{n}} O(\sqrt{i}) + O(\sqrt{\frac{n}{i}}) = O(n^{3/4})$.
 
 Since $\phi(n)$ is a prefix sum of a multiplicative function, the sieve method can preprocess a portion. Assuming the preprocessing includes the first $k$ positive integers' $\phi(n)$ where $k \geq \sqrt{n}$, the complexity becomes $T(n) = \sum_{i=1}^{k} {\sqrt{\frac{n}{i}}} = O({\frac{n}{\sqrt{k}}})$. When $k = O(n^{2/3})$, we can achieve a good complexity of $T(n) = O(n^{2/3})$.
@@ -208,58 +202,52 @@ $$
 \frac{n \cdot (n+1)}{2} = \sum_{i=1}^{n} i = \sum_{i=1}^{n} \sum_{d} [d|i]\varphi(d) = \sum_{i=2}^{n} \sum_{d=1}^{\left\lfloor \frac{n}{\left(\frac{i}{d}\right)} \right\rfloor} \varphi(d) = \sum_{i=1}^{n} \phi(\left\lfloor \frac{n}{i} \right\rfloor)
 $$
 
-**If we can construct a function through Dirichlet convolution that computes prefix sums more efficiently and if another function suitable for convolution is also easy to calculate, we can simplify the calculation process.** For example, in the above problem, we used the property of $\varphi * I = id$. But remember, not all problems of this type can be easily solved by just pairing with an identity function $I$. Sometimes, a more careful observation is needed. 
+**If we can construct a function through Dirichlet convolution that computes prefix sums more efficiently and if another function suitable for convolution is also easy to calculate, we can simplify the calculation process.** For example, in the above problem, we used the property of $\varphi * I = id$. But remember, not all problems of this type can be easily solved by just pairing with an identity function $I$. Sometimes, a more careful observation is needed.
 
 
 <LanguageSection>
 <CPPSection>
 ```cpp
-#include <iostream>
 #include <cstring>
+#include <iostream>
 
 using namespace std;
 typedef long long ll;
-const int N = 1e6+10;
+const int N = 1e6 + 10;
 int primes[N];
 ll phi[N];
 bool st[N];
 int cnt;
 int n;
 
-ll get_oular(int n)
-{
-    ll res = 0;
-    phi[1] = 1;
-    for (int i = 2; i <= n; ++i){
-        if(!st[i])
-        {
-            primes[cnt++] = i;
-            phi[i] = i - 1;
-        } 
-        for (int j = 0; primes[j] <= n / i; ++j){
-            st[primes[j] * i] = true;
-            if(i % primes[j] == 0) 
-            {
-                phi[primes[j] * i] = primes[j] * phi[i];
-                break;
-            }
-            phi[primes[j] * i] = (primes[j] - 1) * phi[i];
-        }
-    }
-    for (int i = 1; i <= n; ++i){
-        res += phi[i];
-    }
-    return res;
+ll get_oular(int n) {
+	ll res = 0;
+	phi[1] = 1;
+	for (int i = 2; i <= n; ++i) {
+		if (!st[i]) {
+			primes[cnt++] = i;
+			phi[i] = i - 1;
+		}
+		for (int j = 0; primes[j] <= n / i; ++j) {
+			st[primes[j] * i] = true;
+			if (i % primes[j] == 0) {
+				phi[primes[j] * i] = primes[j] * phi[i];
+				break;
+			}
+			phi[primes[j] * i] = (primes[j] - 1) * phi[i];
+		}
+	}
+	for (int i = 1; i <= n; ++i) { res += phi[i]; }
+	return res;
 }
 
-int main()
-{
-    cin >> n;
-    cout << get_oular(n);
-    return 0;
+int main() {
+	cin >> n;
+	cout << get_oular(n);
+	return 0;
 }
 ```
-</CPPSection>  
+</CPPSection>
 </LanguageSection>
 
 <!-- </CPPSection>    -->
@@ -330,8 +318,6 @@ int main() {
 
 ### Problems
 
-Here are some practice problems for everyone to understand the methods mentioned above. Such problems are relatively few, so if you have other sources of problems, please feel free to share.  
+Here are some practice problems for everyone to understand the methods mentioned above. Such problems are relatively few, so if you have other sources of problems, please feel free to share.
 
 <Problems problems="general" />
-
- 
