@@ -3,7 +3,7 @@ id: divisibility
 redirects:
   - /gold/divis
 title: 'Divisibility'
-author: Darren Yao, Michael Cao, Andi Qu, Kevin Sheng
+author: Darren Yao, Michael Cao, Andi Qu, Kevin Sheng, Mihnea Brebenel
 contributors: Juheon Rhee
 prerequisites:
 description: Using the information that one integer evenly divides another.
@@ -506,6 +506,178 @@ a time, in any order. For example,
 $$
 \gcd(a_1, a_2, a_3, a_4) = \gcd(a_1, \gcd(a_2, \gcd(a_3, a_4))).
 $$
+
+## Euler's Totient Function
+
+<Resources>
+	<Resource
+		source="CP Algorithms"
+		title="Euler's Totient Function"
+		url="https://cp-algorithms.com/algebra/phi-function.html"
+		starred
+	>
+	Theory and Exercises
+	</Resource>
+	<Resource
+		source="codeforces"
+		title="Euler's phi function, its properties, and how to compute it"
+		url="https://codeforces.com/blog/entry/106851"
+	>
+	Well-covered article
+	</Resource>
+</Resources>
+
+### Properties
+
+Euler's totient function - written using phi $\phi(n)$ -  counts the number of positive integers in the interval $[1,n]$ which are coprime to $n$. Two numbers $a$ and $b$
+are coprime if their greatest common divisor is equal to 1 i.e. $gcd(a,b)=1$.
+
+Here are the values of $\phi(n)$ for the first 20 numbers:
+
+<center>
+
+| n         | 1   | 2   | 3   | 4   | 5   | 6   | 7   | 8   | 9   | 10  | 11  | 12  | 13  | 14  | 15  | 16  | 17  | 18  | 19  | 20  |
+| --------- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| $\phi(n)$ | 1   | 1   | 2   | 2   | 4   | 2   | 6   | 4   | 6   | 4   | 10  | 4   | 12  | 6   | 8   | 8   | 16  | 6   | 18  | 8   |
+
+</center>
+
+The totient function is **multiplicative** meaning that $\phi(nm)=\phi(n) \cdot \phi(m)$, where $n$ and $m$ are coprime - $gcd(n, m)=1$. For example $\phi(15)=\phi(3 \cdot 5)=\phi(3) \cdot \phi(5) = 2 \cdot 4 = 8$.
+
+Let's take a look at some edge cases for $\phi(n)$:
+- If n is a prime number then $\phi(n)=n-1$ because $gcd(n, x)=1$ for all $1 \leq x \le n$
+- If n is a power of a prime number, $n=p^q$ where p is a prime number and $1 \leq q$ then\
+  there are exactly $p^{q-1}$ numbers divisible by $p$, so
+  $\phi(p^q)=p^{q} - p^{q-1} = p^{q-1}(p - 1)$
+
+Using the multiplicative property and the last edge case we can compute the value of $\phi(n)$ from the factorization of number $n$.
+Let the factorization be $n=p_1^{q_1} \cdot p_2^{q_2} \cdot \ldots \cdot p_k^{q_k}$ where $p_i$ is a prime factor of $n$, then:
+
+$$
+\phi(n)=\phi(p_1^{q_1}) \cdot \phi(p_2^{q_2}) \cdot \ldots \cdot \phi(p_k^{q_k}) = p_1^{q_1-1}(p_1 - 1) \cdot p_2^{q_2-1}(p_2 - 1) \cdot \ldots \cdot p_k^{q_k-1}(q_k - 1)
+$$
+
+Below is an implementation for factorization in $\mathcal{o}(\sqrt{n})$. It can be a little bit tricky to understand why we substract $and/p$ from $ans$. For example
+$ans=p_q \cdot x$ ,where $p$ is a prime factor and $x$ is the rest of the prime factorization. By substracting $\frac{ans}{p}=p_{q-1} \cdot x$ we end up with:
+$p_q \cdot x - p_{q-1} \cdot x = p_{q-1} \cdot x \cdot (p - 1)$ which is exactly the form of $\phi(n)$ described a few linew above.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+int phi(int n) {
+	int ans = n;
+	for (int p = 2; p * p <= n; p++) {
+		if (n % p == 0) {
+			while (n % p == 0) { n /= p; }
+			ans -= ans / p;
+		}
+	}
+	if (n > 1) { ans -= ans / n; }
+	return ans;
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
+Usually in problems we need to precompute the totient of all numbers between $1$ and $n$, then factorizing is not efficient. The idea is the same as the
+Sieve of Eratosthenes. Since it's almost the same with the Sieve of Eratosthenes the time complexity will be: $\mathcal{n\log{n}\log{n}}$.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+void precompute() {
+	for (int i = 1; i < MAX_N; i++) { phi[i] = i; }
+	for (int i = 2; i < MAX_N; i++) {
+		// If i is prime
+		if (phi[i] == i) {
+			for (int j = i; j < NMAX; j += i) { phi[j] -= phi[j] / i; }
+		}
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
+<FocusProblem problem="gcdex" />
+
+### Solution
+
+The queries ask us for the sum of the greatest common divisor between all the numbers smaller than $n$.
+
+Let's start by defining a function $f(n, d)$ as how many pairs of numbers less or equal than $n$ have the greatest common divisor equal to $d$. i.e. $gcd(a, b)=d$.
+
+Defining the function this way gives us the following equation: $f(n,d)=f(\frac{n}{d}, 1)$.
+The reasong why is simple: By choosing two coprime numbers $a$ and $b$ such that $a,b \le \frac{n}{d}$,
+we can make sure $a \cdot d, b \cdot d \le n$ and $gcd(a \cdot d, b \cdot d) = d$, thus contributing to the global answer.
+
+Shifting away to our new function $f(\frac{n}{d}, 1)$ allows us to compute $f(n, d)$ more easily using a slightly modified phi function preprocessing.
+To find the sum we multiply $f(n, d)$ with $d$.
+
+This way the answer for a query is $\sum_{d=1}^{n}d \cdot f(n, d) = \sum_{d=1}^{n}d \cdot f(\frac{n}{d}, 1)$.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MAX_N = 1e6;
+// phi[i] = how many pairs of numbers <=i are coprime
+long long phi[MAX_N + 1];
+// Store the values found to speed up the recursion process
+unordered_map<int, long long> memo;
+
+long long solve(long long n) {
+	if (n <= MAX_N) { return phi[n]; }
+	if (memo.count(n)) { return memo[n]; }
+
+	long long d = sqrt(n);
+	long long ans = 1LL * n * (n + 1) / 2;
+	for (int i = 2; n / i > d; i++) { ans -= solve(n / i); }
+
+	for (int i = d; i >= 1; i--) {
+		ans -= 1LL * (n / i - n / (i + 1)) * solve(i);
+	}
+	memo[n] = ans;
+
+	return ans;
+}
+
+int main() {
+	// Precompute the values of phi as previously shown
+	for (int i = 1; i <= MAX_N; i++) { phi[i] = i; }
+	for (int i = 2; i <= MAX_N; i++) {
+		// If i is prime
+		if (phi[i] == i) {
+			phi[i]--;
+			for (int j = i + i; j <= MAX_N; j += i) {
+				phi[j] = phi[j] / i * (i - 1);
+			}
+		}
+	}
+
+	// Prefix sums of phi
+	for (int i = 2; i <= MAX_N; i++) { phi[i] += phi[i - 1]; }
+
+	int n;
+	while (cin >> n) {
+		if (n == 0) { break; }
+
+		long long ans = 0;
+		for (int d = 1; d <= n; d++) { ans += d * (solve(n / d) - 1); }
+
+		cout << ans << '\n';
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>
 
 ## Problems
 
