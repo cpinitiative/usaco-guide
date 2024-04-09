@@ -14,7 +14,7 @@ frequency: 1
 
 ### Edmonds-Karp Algorithm
 
-The [Edmonds-Karp](https://brilliant.org/wiki/edmonds-karp-algorithm/) algorithm uses a greedy approach to solve the maximum flow problem. 
+The [Edmonds-Karp](https://brilliant.org/wiki/edmonds-karp-algorithm/) algorithm uses a greedy approach to solve the maximum flow problem.
 
 The download speed (the flow) can be improved as long as we can find a non-negative capacity path from the source (the server) and the sink (Kotivalo's computer).
 After that, we subtract the minimum capacity on the found path from the edge capacities.
@@ -29,7 +29,8 @@ After that, we subtract the minimum capacity on the found path from the edge cap
 #include <bits/stdc++.h>
 using namespace std;
 
-long long max_flow(vector<vector<int>> adj, vector<vector<long long>> capacity, int n, int source, int sink) {
+long long max_flow(vector<vector<int>> adj, vector<vector<long long>> capacity,
+                   int n, int source, int sink) {
 	long long flow = 0;
 	vector<int> parent(n, -1);
 
@@ -40,7 +41,7 @@ long long max_flow(vector<vector<int>> adj, vector<vector<long long>> capacity, 
 		while (!q.empty()) {
 			int node = q.front();
 			q.pop();
-			for(auto son: adj[node]) {
+			for (auto son : adj[node]) {
 				long long w = capacity[node][son];
 				if (w <= 0 || parent[son] != -1) continue;
 				parent[son] = node;
