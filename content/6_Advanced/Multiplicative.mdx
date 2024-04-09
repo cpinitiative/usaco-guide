@@ -82,34 +82,31 @@ const int M = 4e7;
 int p[M], pc;
 
 void sieve(int n) {
-    if (n < 2) {
-		  return;
+	if (n < 2) { return; }
+	vector<bool> np(n + 1);
+	p[pc++] = 2;
+	int i;
+	for (i = 3; 1ll * i * i <= n; i += 2) {
+		if (!np[i]) {
+			p[pc++] = i;
+			for (int j = i * i; j <= n; j += i) np[j] = 1;
 		}
-    vector<bool> np(n + 1);
-    p[pc++] = 2;
-    int i;
-    for (i = 3; 1ll * i * i <= n; i += 2) {
-        if (!np[i]) {
-            p[pc++] = i;
-            for (int j = i * i; j <= n; j += i) np[j] = 1;
-        }
-    }
-    for (; i <= n; i += 2) {
-        if (!np[i]) p[pc++] = i;
-    }
+	}
+	for (; i <= n; i += 2) {
+		if (!np[i]) p[pc++] = i;
+	}
 }
 
-int main() { 
-    int n, a, b, x;
-    vector<int> ans;
-    cin >> n >> a >> b;
-    sieve(n);
-    x = pc / a + (pc % a > b);
-    cout << pc << ' ' << x << '\n';
-    for (int i = b; i < pc; i += a) cout << p[i] << " \n"[i + a >= pc];
-    return 0;
+int main() {
+	int n, a, b, x;
+	vector<int> ans;
+	cin >> n >> a >> b;
+	sieve(n);
+	x = pc / a + (pc % a > b);
+	cout << pc << ' ' << x << '\n';
+	for (int i = b; i < pc; i += a) cout << p[i] << " \n"[i + a >= pc];
+	return 0;
 }
-
 ```
 </CPPSection>
 </LanguageSection>
