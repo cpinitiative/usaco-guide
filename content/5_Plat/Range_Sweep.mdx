@@ -41,11 +41,7 @@ Our answer would be the sum of all the queries.
 #include <bits/stdc++.h>
 using namespace std;
 
-/**
- * Short for "binary indexed tree",
- * this data structure supports point update and range sum
- * queries like a segment tree.
- */
+// BeginCodeSnip{BIT (from the PURS module)}
 template <class T> class BIT {
   private:
 	int size;
@@ -73,12 +69,14 @@ template <class T> class BIT {
 		return total;
 	}
 };
+// EndCodeSnip
 
 // max coordinate
 const int X = 1e6;
 int n;
 vector<array<int, 4>> v;
 BIT<int> bit(2 * X + 1);
+
 int main() {
 	cin.tie(0)->sync_with_stdio(0);
 	cin >> n;
@@ -166,7 +164,8 @@ Due to the large $N$, coordinate compression is required in the code.
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
-/** A data structure that can answer point update & range minimum queries. */
+
+// BeginCodeSnip{Segment Tree (from the PURS module)}
 template <class T> class MinSegmentTree {
   private:
 	const T DEFAULT = std::numeric_limits<T>().max();
@@ -196,6 +195,7 @@ template <class T> class MinSegmentTree {
 		return min;
 	}
 };
+// EndCodeSnip
 
 struct Point {
 	int x, y, i, type;
