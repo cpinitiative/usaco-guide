@@ -195,7 +195,8 @@ struct Point {
 	int i;
 	bool is_start;
 
-	Point(int x, int y, int i, bool is_start) : x(x), y(y), i(i), is_start(is_start) {}
+	Point(int x, int y, int i, bool is_start)
+	    : x(x), y(y), i(i), is_start(is_start) {}
 
 	bool operator<(const Point &p) {
 		if (x == p.x) { return y < p.y; }
@@ -219,8 +220,8 @@ int main() {
 	for (int i = 0; i < p; ++i) {
 		int x1, y1, x2, y2;
 		cin >> x1 >> y1 >> x2 >> y2;
-		events.emplace_back(x1, y1, i, true);  // start point
-		events.emplace_back(x2, y2, i, false);   // end point
+		events.emplace_back(x1, y1, i, true);   // start point
+		events.emplace_back(x2, y2, i, false);  // end point
 		distinct_y.push_back(y1);
 		distinct_y.push_back(y2);
 	}
@@ -231,7 +232,7 @@ int main() {
 	vector<int> ans(p);
 	MinSegmentTree<int> segtree(2 * p);
 	segtree.set(0, 0);
-	for (const Point& p : events) {
+	for (const Point &p : events) {
 		if (p.is_start) {
 			ans[p.i] = p.x + p.y + segtree.range_min(0, y_index(p.y) + 1);
 		} else {
