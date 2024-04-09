@@ -45,7 +45,9 @@ _Dirichlet Convolution and Möbius Inversion_
 
 _Approach:_
 
-First a review on linear sieve, this will be used in both focus problem 1 and 3:
+Recall the old O(n Log(n)) sieve in [our old guide on divisibility](https://usaco.guide/gold/divisibility?lang=cpp#solution---counting-divisors), let's improve upon that real quick. Below is the implementation of linear sieve, which will be used in both focus problem 1 and 3:
+For further information, check [this CF blog entry](https://codeforces.com/blog/entry/54090).
+
 <LanguageSection>
 <CPPSection>
 ```cpp
@@ -73,36 +75,41 @@ Focus problem 1 requires finding the count of prime numbers not exceeding a give
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
-constexpr int N(5e8), M(3.2e7);
+
+const int N = 5e8;
+const int M = 4e7;
+
 int p[M], pc;
+
 void sieve(int n) {
-	if (n < 2) return;
-	vector<bool> np(n + 1);
-	p[pc++] = 2;
-	int i;
-	for (i = 3; 1ll * i * i <= n; i += 2) {
-		if (!np[i]) {
-			p[pc++] = i;
-			for (int j = i * i; j <= n; j += i) np[j] = 1;
+    if (n < 2) {
+		  return;
 		}
-	}
-	for (; i <= n; i += 2) {
-		if (!np[i]) p[pc++] = i;
-	}
+    vector<bool> np(n + 1);
+    p[pc++] = 2;
+    int i;
+    for (i = 3; 1ll * i * i <= n; i += 2) {
+        if (!np[i]) {
+            p[pc++] = i;
+            for (int j = i * i; j <= n; j += i) np[j] = 1;
+        }
+    }
+    for (; i <= n; i += 2) {
+        if (!np[i]) p[pc++] = i;
+    }
 }
 
-int main() {
-	ios::sync_with_stdio(false);
-	cin.tie(nullptr);
-	int n, a, b, x;
-	vector<int> ans;
-	cin >> n >> a >> b;
-	sieve(n);
-	x = pc / a + (pc % a > b);
-	cout << pc << ' ' << x << '\n';
-	for (int i = b; i < pc; i += a) cout << p[i] << " \n"[i + a >= pc];
-	return 0;
+int main() { 
+    int n, a, b, x;
+    vector<int> ans;
+    cin >> n >> a >> b;
+    sieve(n);
+    x = pc / a + (pc % a > b);
+    cout << pc << ' ' << x << '\n';
+    for (int i = b; i < pc; i += a) cout << p[i] << " \n"[i + a >= pc];
+    return 0;
 }
+
 ```
 </CPPSection>
 </LanguageSection>
