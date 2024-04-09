@@ -13,7 +13,6 @@ frequency: 2
 
 <FocusProblem problem="sample2" />
 
-
 ## Solution - Intersection Points
 
 We can sweep from bottom to top (by the $y$ coordinate); storing two events for
@@ -36,7 +35,6 @@ upper $x$ coordinate of the segment.
 Our answer would be the sum of all the queries.
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
@@ -62,10 +60,13 @@ vector<array<int, 4>> v;
 int main() {
 	cin.tie(0)->sync_with_stdio(0);
 	cin >> n;
-	// types of events (order for if some y values are equal):
-	// 1 -> start of vertical segment
-	// 2 -> horizontal segment
-	// 3 -> end of vertical segment
+
+	/*
+	 * types of events (order for if some y values are equal):
+	 * 1 -> start of vertical segment
+	 * 2 -> horizontal segment
+	 * 3 -> end of vertical segment
+	 */
 	for (int i = 0, x1, y1, x2, y2; i < n; ++i) {
 		cin >> x1 >> y1 >> x2 >> y2;
 		if (y1 == y2) v.push_back({y1, 2, x1, x2});
@@ -78,17 +79,22 @@ int main() {
 
 	long long ans = 0;
 	for (auto [y, type, x1, x2] : v) {
-		x1 += X, x2 += X;
-		if (type == 1) update(x1, 1);
-		else if (type == 2) ans += query(x2) - query(x1 - 1);
-		else update(x1, -1);
+		x1 += X;
+		x2 += X;
+		if (type == 1) {
+			update(x1, 1);
+		} else if (type == 2) {
+			ans += query(x2) - query(x1 - 1);
+		} else {
+			update(x1, -1);
+		}
 	}
-	cout << ans << '\n';
+
+	cout << ans << endl;
 }
 ```
 
 </CPPSection>
-
 </LanguageSection>
 
 ## Solution - Springboards
@@ -127,6 +133,13 @@ We notice that everything inside the $\min$ statement only depends on $j$. The s
 By processing in order, the first two conditions in the $\min$ statement are always satisfied. The third is where the segment tree comes into play, where querying the range $[0, y_1[i]]$ is sufficent to satisfy all constraints.
 
 Due to the large $N$, coordinate compression is required in the code.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(what)$
+
+<LanguageSection>
+<CPPSection>
 
 ```cpp
 #include <bits/stdc++.h>
@@ -171,7 +184,7 @@ struct Point {
 	int x, y, i, type;
 	Point(int x, int y, int i, int type) : x(x), y(y), i(i), type(type) {}
 	bool operator<(const Point &p) {
-		if (x == p.x) return y < p.y;
+		if (x == p.x) { return y < p.y; }
 		return x < p.x;
 	}
 };
@@ -181,6 +194,7 @@ Seg<int> S;
 int N, P;
 int ans[MX];
 vector<int> distinct_y;
+
 int y_index(int y) {
 	return lower_bound(begin(distinct_y), end(distinct_y), y) -
 	       begin(distinct_y);
@@ -212,11 +226,14 @@ int main() {
 		}
 	}
 
-	cout << S.query(0, 2 * P - 1) +
-	            2 * N;  // adds 2N to include the transition from the last
-	                    // springboard to the endpoint
+	// adds 2N to include the transition from the last springboard to the endpoint
+	cout << S.query(0, 2 * P - 1) + 2 * N;
 }
 ```
+
+
+</CPPSection>
+</LanguageSection>
 
 Bonus: Rather than thinking of this problem as minimizing the distance walked, think of this problem as maximizing the distance covered by springboards to simplify the DP transition.
 
@@ -231,6 +248,7 @@ operations:
    $a\le x$.
 
 This solution is described in the [official editorial](https://usaco.org/current/data/sol_boards_gold_jan20.html) and the [other module](/adv/springboards).
+
 ## Problems
 
 <Problems problems="sweep" />
