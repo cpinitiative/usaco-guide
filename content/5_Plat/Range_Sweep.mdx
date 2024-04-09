@@ -49,17 +49,14 @@ template <class T> class BIT {
   public:
 	BIT(int size) : size(size), bit(size + 1), arr(size) {}
 
-	/** Sets the value at index ind to val. */
 	void set(int ind, T val) { add(ind, val - arr[ind]); }
 
-	/** Adds val to the element at index ind. */
 	void add(int ind, T val) {
 		arr[ind] += val;
 		ind++;
 		for (; ind <= size; ind += ind & -ind) { bit[ind] += val; }
 	}
 
-	/** @return The sum of all values in [0, ind]. */
 	T pref_sum(int ind) {
 		ind++;
 		T total = 0;
@@ -174,7 +171,6 @@ template <class T> class MinSegmentTree {
   public:
 	MinSegmentTree(int len) : len(len), segtree(len * 2, DEFAULT) {}
 
-	/** Sets the value at ind to val. */
 	void set(int ind, T val) {
 		ind += len;
 		segtree[ind] = min(segtree[ind], val);
@@ -183,7 +179,6 @@ template <class T> class MinSegmentTree {
 		}
 	}
 
-	/** @return the minimum element in the range [start, end) */
 	T range_min(int start, int end) {
 		T min = DEFAULT;
 		for (start += len, end += len; start < end; start /= 2, end /= 2) {
