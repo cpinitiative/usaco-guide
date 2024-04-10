@@ -408,9 +408,12 @@ string s;
 int nodes = 1;
 int trie[NMAX][SIGMA];
 int fail[NMAX], seen[NMAX], ans[NMAX];
+
+/* leaf[node] stores the indices of the words ending in node */
 vector<int> leaf[NMAX];
 vector<int> g[NMAX];
 
+/* Add a word to the trie */
 void add_word(const string &word, const int &idx) {
 	int node = 1;
 	for(auto ch : word) {
@@ -422,6 +425,7 @@ void add_word(const string &word, const int &idx) {
 	leaf[node].push_back(idx);
 }
  
+/* BFS for building the failure and suffix links */
 void build() {
 	queue<int> q;
 	int node = 1;
@@ -472,11 +476,6 @@ int dfs(int node) {
  }
 
 int main() {
-	#ifndef ONLINE_JUDGE
-		freopen("in", "r", stdin);
-		freopen("out", "w", stdout);
-	#endif 
- 
 	cin >> s >> n;
  
 	vector<string> words(n);
@@ -489,20 +488,13 @@ int main() {
 	search();
  	dfs(1);
 
- 	// for(int i = 1; i <= nodes; i++) {
- 	// 	cout << i << " -> ";
- 	// 	for(auto son : g[i]) {
- 	// 		cout << son << ' ';
- 	// 	}
- 	// 	cout << '\n';
- 	// }
  
 	for(int i = 0; i < n; i++) {
 		cout << (ans[i] ? "YES" : "NO") << '\n';
 	}
- 
-	return 0;
+
 }
+
 ```
 </CPPSection>
 </LanguageSection>
