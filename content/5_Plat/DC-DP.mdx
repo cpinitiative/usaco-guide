@@ -14,9 +14,9 @@ $$
 dp(i,j) = \min_{0\leq k \leq j} ( dp(i-1, k-1) + C(k,j)),
 $$
 
-where $C(i,j)$ is a cost function and you can compute it in $O(1)$ time. Furthermore, $dp(i,j) =0$ for $j<0$. The straightforward implementation gives a runtime of $O(MN^2)$ if $0\leq i <  M$ and $0\leq j < N$. Divide & Conquer DP allows this to be optimized to $O(M N \log N)$. 
+where $C(i,j)$ is a cost function and you can compute it in $O(1)$ time. Furthermore, $dp(i,j) =0$ for $j<0$. The straightforward implementation gives a runtime of $O(MN^2)$ if $0\leq i <  M$ and $0\leq j < N$. Divide & Conquer DP allows this to be optimized to $O(M N \log N)$.
 
-For each $i,j$, let $\text{opt}(i,j)$ be the value of $k$ that minimizes the right hand side of the equation. Divide & Conquer DP **only applies if** 
+For each $i,j$, let $\text{opt}(i,j)$ be the value of $k$ that minimizes the right hand side of the equation. Divide & Conquer DP **only applies if**
 
 $$
 \text{opt}(i,j) \leq \text{opt}(i,j+1).
@@ -26,7 +26,7 @@ Often, proving this with the given cost function is challenging, but if the cost
 
 We can then apply the idea behind Divide & Conquer. Fix a given $i$. First, compute $\text{opt}(i,n/2)$. Then compute $\text{opt}(i, n/4)$ using the fact that it is less than or equal to $\text{opt}(i, n/2)$. Similarly, we can compute $\text{opt}(i, 3n/4)$ and recursively split the ranges in half, keeping track on the lower and upper bounds.
 
-Since each possible value of $\text{opt}(i, j)$ appears $O(\log n)$ times, this gives a final runtime of $O(mn \log n)$.  
+Since each possible value of $\text{opt}(i, j)$ appears $O(\log n)$ times, this gives a final runtime of $O(mn \log n)$.
 
 ## Tutorial
 
