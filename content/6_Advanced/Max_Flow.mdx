@@ -14,11 +14,14 @@ frequency: 1
 
 ### Edmonds-Karp Algorithm
 
-The [Edmonds-Karp](https://brilliant.org/wiki/edmonds-karp-algorithm/) algorithm uses a greedy approach to solve the maximum flow problem.
+The [Edmonds-Karp](https://en.wikipedia.org/wiki/Edmonds%E2%80%93Karp_algorithm) algorithm uses a greedy approach to solve the maximum flow problem. 
 
-The download speed (the flow) can be improved as long as we can find a non-negative capacity path from the source (the server) and the sink (Kotivalo's computer).
-After that, we subtract the minimum capacity on the found path from the edge capacities.
+The download speed (the flow) can be improved as long as we can find a non-negative capacity augmenting path from the source (the server) to the sink (Kotivalo's computer). We use BFS to find this path.
 
+Then, we update the weights of the edges along this augmenting path: Each edge $u$, $v$ loses weight equivalent to its capacity in the augmenting path. Each reverse edge
+$v$, $u$ gains this weight.
+
+It can be [proven](https://brilliant.org/wiki/edmonds-karp-algorithm/#:~:text=the%20source%20vertex.-,Complexity%20Proof,-Edmonds%2DKarp%20relies) that the total number of flow augmentations(BFS calls) is $\mathcal{O}(VE)$. And each BFS call requires $\mathcal{O}(E)$ time.
 
 **Time complexity:** $\mathcal{O}(VE^2)$
 
@@ -29,11 +32,9 @@ After that, we subtract the minimum capacity on the found path from the edge cap
 #include <bits/stdc++.h>
 using namespace std;
 
-long long max_flow(vector<vector<int>> adj, vector<vector<long long>> capacity,
-                   int source, int sink) {
+long long max_flow(vector<vector<int>> adj, vector<vector<long long>> capacity, int source, int sink) {
 	int n = adj.size();
 	vector<int> parent(n, -1);
-
 	// Find a way from the source to sink on a path with non-negative capacities
 	auto reachable = [&]() -> bool {
 		queue<int> q;
@@ -41,7 +42,7 @@ long long max_flow(vector<vector<int>> adj, vector<vector<long long>> capacity,
 		while (!q.empty()) {
 			int node = q.front();
 			q.pop();
-			for (auto son : adj[node]) {
+			for (auto son: adj[node]) {
 				long long w = capacity[node][son];
 				if (w <= 0 || parent[son] != -1) continue;
 				parent[son] = node;
@@ -50,13 +51,10 @@ long long max_flow(vector<vector<int>> adj, vector<vector<long long>> capacity,
 		}
 		return parent[sink] != -1;
 	};
-
 	long long flow = 0;
-
 	// While there is a way from source to sink with non-negative capacities
 	while (reachable()) {
 		int node = sink;
-
 		// The minimum capacity on the path from source to sink
 		long long curr_flow = LLONG_MAX;
 		while (node != source) {
@@ -74,14 +72,12 @@ long long max_flow(vector<vector<int>> adj, vector<vector<long long>> capacity,
 		flow += curr_flow;
 		fill(parent.begin(), parent.end(), -1);
 	}
-
 	return flow;
 }
 
 int main() {
 	int n, m;
 	cin >> n >> m;
-
 	vector<vector<long long>> capacity(n, vector<long long>(n, 0));
 	vector<vector<int>> adj(n);
 	for (int i = 0; i < m; i++) {
@@ -93,7 +89,6 @@ int main() {
 		adj[b].push_back(a);
 		capacity[a][b] += c;
 	}
-
 	cout << max_flow(adj, capacity, 0, n - 1) << endl;
 }
 ```
@@ -239,6 +234,11 @@ int main() {
 	<Resource
 		source="CP2"
 		title="4.6, 4.7.4 - Max Flow, Bipartite Graphs"
+	 />
+	<Resource
+		source="Brilliant"
+		title="Time Complexity Proof for Edmonds-Karp"
+		url = "https://brilliant.org/wiki/edmonds-karp-algorithm/#:~:text=the%20source%20vertex.-,Complexity%20Proof,-Edmonds%2DKarp%20relies"
 	 />
 </Resources>
 
