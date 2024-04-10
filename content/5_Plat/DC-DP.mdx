@@ -8,11 +8,25 @@ prerequisites:
   - convex-hull-trick
 ---
 
-Consider a problem that requires you to compute a two dimensional dp which satisfies the following property: 
+Consider a dynamic programming problem with the following formula
+
 $$
-dp[i][j] = \min_{0\le k \le j}( dp[i-1][j-1] + C(k,i))
+dp(i,j) = \min_{0\leq k \leq j} ( dp(i-1, k-1) + C(k,j)),
 $$
-Allows you to reduce $\mathcal{O}(N^2)$ to $\mathcal{O}(N\log N)$.
+
+where $C(i,j)$ is a cost function and you can compute it in $O(1)$ time. Furthermore, $dp(i,j) =0$ for $j<0$. The straightforward implementation gives a runtime of $O(MN^2)$ if $0\leq i <  M$ and $0\leq j < N$. Divide & Conquer DP allows this to be optimized to $O(M N \log N)$. 
+
+For each $i,j$, let $\text{opt}(i,j)$ be the value of $k$ that minimizes the right hand side of the equation. Divide & Conquer DP **only applies if** 
+
+$$
+\text{opt}(i,j) \leq \text{opt}(i,j+1).
+$$
+
+Often, proving this with the given cost function is challenging, but if the cost function satisfies the [quadrangle inequality](https://codeforces.com/blog/entry/86306), the condition holds.
+
+We can then apply the idea behind Divide & Conquer. Fix a given $i$. First, compute $\text{opt}(i,n/2)$. Then compute $\text{opt}(i, n/4)$ using the fact that it is less than or equal to $\text{opt}(i, n/2)$. Similarly, we can compute $\text{opt}(i, 3n/4)$ and recursively split the ranges in half, keeping track on the lower and upper bounds.
+
+Since each possible value of $\text{opt}(i, j)$ appears $O(\log n)$ times, this gives a final runtime of $O(mn \log n)$.  
 
 ## Tutorial
 
@@ -36,14 +50,14 @@ Allows you to reduce $\mathcal{O}(N^2)$ to $\mathcal{O}(N\log N)$.
 
 You should already be familiar with the [CHT solution](/plat/convex-hull-trick#problems).
 
-<IncompleteSection>
+We iterate through the possibilities of the location of the first door. For each of the first doors, we can now view the barn linearly. All further calculations will be done assuming the barn is a linear sequence of doors starting at the first opened door.
 
-Add analysis later.
+Let $dp(i,k)$ denote the location of the last door if we place $k$ doors optimally among the first $i$ rooms. The idea is that $dp(i,k) \leq dp(i+1, k)$. Assume this was not true for the sake of contradiction. Then $dp(i,k) > dp(i+1,k)$, so we also have $dp(i+1,k) \leq i$. But then we could have used the best possible setup for $(i+1,k)$ in the $(i,k)$ setup as well, since all open doors are among the first $i$ rooms anyways.
 
-</IncompleteSection>
+Since the monotonicity condition is held, we can now perform Divide & Conquer DP. Fix the value of $k$ and compute $dp(n/2, k)$. Then compute it for the left and right halves of the array. This leads to a runtime of $O(nk \log n)$. Since we need to check $n$ rooms for the optimal first barn position, the overall runtime is $O(n^2 k \log n)$.
 
 Check the
-[official editorial](http://www.usaco.org/current/data/sol_cbarn_platinum_feb16.html).
+[official editorial](http://www.usaco.org/current/data/sol_cbarn_platinum_feb16.html) for an implementation.
 
 ## Problems
 
