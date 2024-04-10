@@ -109,7 +109,6 @@ Finally, since $x ^ y$ for some $y \neq 1$ equals $x ^ {y - 1}$, and $x$ otherwi
 ### Solution - Exponentiation
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
@@ -142,7 +141,6 @@ int main() {
 ```
 
 </CPPSection>
-
 <JavaSection>
 
 ```java
@@ -179,10 +177,10 @@ public class Exponentation {
 ```
 
 </JavaSection>
-
 <PySection>
 
 We can use Python's builtin `pow` function to efficently compute modulo powers.
+
 ```py
 MOD = 10**9 + 7
 
@@ -192,7 +190,6 @@ for _ in range(int(input())):
 ```
 
 </PySection>
-
 </LanguageSection>
 
 ## Modular Inverse
@@ -212,13 +209,16 @@ For example, $10i\equiv 5\pmod{10^9+7}$.
 
 <!-- #### Example: Sprinkers 2
 
-There aren't many good examples of Modular Inverses in USACO. One problem where it was useful was the platinum problem "Sprinkers 2".
+There aren't many good examples of Modular Inverses in USACO.
+One problem where it was useful was the platinum problem "Sprinkers 2".
 
 <FocusProblem problem="dp[2]" />
 
-For the sake of example, we'll skip the details of this problem. Also, if you want to attempt it yourself, you should probably do that first. In this problem, our DP transition relies on dividing our answer at some state by $2$, under a prime moduli.
+We'll be skipping the other details of this problem to focus more on the modular arithmetic, so try to figure the other parts out yoruself first.
 
-To perform this, we'll instead multiply by $500000004$ or the modular inverse of $2$, and take it under the prime moduli for the same result.
+In this problem, our DP transition relies on dividing our answer at some state by $2$, under a prime moduli.
+
+To perform this, we'll multiply by $500000004$ (the modular inverse of $2$), and take it under the prime moduli for the same result.
  -->
 
 <!-- To find a modular inverse of some number modulo $p$, simply raise it to the power of $p-2$. -->
@@ -243,7 +243,6 @@ $a^{p-2} \cdot a \equiv 1 \pmod{p}$. Therefore, $a^{p - 2}$ is a modular inverse
 of $a$ modulo $p$.
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
@@ -257,7 +256,6 @@ int main() {
 ```
 
 </CPPSection>
-
 <JavaSection>
 
 ```java
@@ -272,7 +270,6 @@ public class Main {
 ```
 
 </JavaSection>
-
 <PySection>
 
 ```py
@@ -284,7 +281,6 @@ assert 2 * x % MOD == 1
 ```
 
 </PySection>
-
 </LanguageSection>
 
 ### With Euclidean Division
@@ -300,13 +296,27 @@ Here is a short recursive implementation of the above formula:
 <CPPSection>
 
 ```cpp
-int inv(int x) {
-	if (x <= 1) { return x; }
-	return MOD - MOD / x * inv(MOD % x) % MOD;
-}
+int inv(int x) { return x <= 1 ? x : MOD - MOD / x * inv(MOD % x) % MOD; }
 ```
 
 </CPPSection>
+<JavaSection>
+
+```
+static int inv(int x) {
+	return x <= 1 ? x : MOD - MOD / x * inv(MOD % x) % MOD;
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+def inv(x: int) -> int:
+	return x if x <= 1 else MOD - MOD // x * inv(MOD % x) % MOD
+```
+
+</PySection>
 </LanguageSection>
 
 The advantage of this approach is that we can precompute the inverse modular of numbers in the range $[1, MOD)$ in $\mathcal{O}(MOD)$.
@@ -315,11 +325,28 @@ The advantage of this approach is that we can precompute the inverse modular of 
 <CPPSection>
 
 ```cpp
-inv[1] = 1;
-for (int i = 2; i < m; i++) { inv[i] = m - m / i * inv[m % i] % m; }
+inv[1] = 1;  // assume we already defined this array
+for (int i = 2; i < MOD; i++) { inv[i] = MOD - MOD / i * inv[MOD % i] % MOD; }
 ```
 
 </CPPSection>
+<JavaSection>
+
+```java
+inv[1] = 1;  // assume we already defined this array
+for (int i = 2; i < MOD; i++) { inv[i] = MOD - MOD / i * inv[MOD % i] % MOD; }
+```
+
+</JavaSection>
+<PySection>
+
+```py
+inv[1] = 1  # assume we already defined this array
+for i in range(2, MOD):
+	inv[i] = MOD - MOD / i * inv[MOD % i] % MOD
+```
+
+</PySection>
 </LanguageSection>
 
 Because it takes $\mathcal{O}(\log p)$ time to compute a modular inverse modulo
@@ -429,6 +456,8 @@ And one using AtCoder's:
 #include <bits/stdc++.h>
 using namespace std;
 
+// https://atcoder.github.io/ac-library/document_en/modint.html
+// (included in atcoder grading)
 #include <atcoder/modint>
 using mint = atcoder::modint;
 
