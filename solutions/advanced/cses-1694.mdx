@@ -19,7 +19,8 @@ The code below uses Edmond Karp's max flow algorithm.
 #include <bits/stdc++.h>
 using namespace std;
 
-long long max_flow(vector<vector<int>> adj, vector<vector<long long>> capacity, int source, int sink) {
+long long max_flow(vector<vector<int>> adj, vector<vector<long long>> capacity,
+                   int source, int sink) {
 	int n = adj.size();
 	vector<int> parent(n, -1);
 
@@ -30,7 +31,7 @@ long long max_flow(vector<vector<int>> adj, vector<vector<long long>> capacity, 
 		while (!q.empty()) {
 			int node = q.front();
 			q.pop();
-			for(auto son: adj[node]) {
+			for (auto son : adj[node]) {
 				long long w = capacity[node][son];
 				if (w <= 0 || parent[son] != -1) continue;
 				parent[son] = node;
