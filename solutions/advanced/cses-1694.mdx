@@ -19,9 +19,8 @@ The code below uses Edmond Karp's max flow algorithm.
 #include <bits/stdc++.h>
 using namespace std;
 
-long long max_flow(vector<vector<int>> adj, vector<vector<long long>> capacity,
-                   int n, int source, int sink) {
-	long long flow = 0;
+long long max_flow(vector<vector<int>> adj, vector<vector<long long>> capacity, int source, int sink) {
+	int n = adj.size();
 	vector<int> parent(n, -1);
 
 	// Find a way from the source to sink on a path with non-negative capacities
@@ -31,7 +30,7 @@ long long max_flow(vector<vector<int>> adj, vector<vector<long long>> capacity,
 		while (!q.empty()) {
 			int node = q.front();
 			q.pop();
-			for (auto son : adj[node]) {
+			for(auto son: adj[node]) {
 				long long w = capacity[node][son];
 				if (w <= 0 || parent[son] != -1) continue;
 				parent[son] = node;
@@ -40,6 +39,8 @@ long long max_flow(vector<vector<int>> adj, vector<vector<long long>> capacity,
 		}
 		return parent[sink] != -1;
 	};
+
+	long long flow = 0;
 
 	// While there is a way from source to sink with non-negative capacities
 	while (reachable()) {
@@ -82,7 +83,7 @@ int main() {
 		capacity[a][b] += c;
 	}
 
-	cout << max_flow(adj, capacity, n, 0, n - 1) << endl;
+	cout << max_flow(adj, capacity, 0, n - 1) << endl;
 }
 ```
 
