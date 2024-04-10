@@ -391,14 +391,121 @@ int main() {
 
 ## Aho-Corasick
 
-**Aho-Corasick** is the combination of **trie** and **KMP**. It is essentially a
-trie with KMP's "fail" array.
+<FocusProblem problem="finding-patterns" />
 
-<Warning>
+<LanguageSection>
+<CPPSection>
+```cpp 
+#include <bits/stdc++.h>
+ 
+using namespace std;
+ 
+const int NMAX = 6e5;
+const int SIGMA = 26;
+ 
+int n;
+string s;
+int nodes = 1;
+int trie[NMAX][SIGMA];
+int fail[NMAX], seen[NMAX], ans[NMAX];
+vector<int> leaf[NMAX];
+vector<int> g[NMAX];
 
-Build the entire trie first, and then run a _BFS_ to construct the fail array.
+void add_word(const string &word, const int &idx) {
+	int node = 1;
+	for(auto ch : word) {
+		if(trie[node][ch - 'a'] == 0) {
+			trie[node][ch - 'a'] = ++nodes;
+		} 
+		node = trie[node][ch - 'a'];
+	}
+	leaf[node].push_back(idx);
+}
+ 
+void build() {
+	queue<int> q;
+	int node = 1;
+	fail[node] = 1;
+	for(int i = 0; i < SIGMA; i++) {
+		if(trie[node][i]) {
+			fail[trie[node][i]] = node;
+			q.push(trie[node][i]);
+		} else {
+			trie[node][i] = 1;
+		}
+	}
+	while(!q.empty()) {
+		int node = q.front();
+		q.pop();
+		for(int i = 0; i < SIGMA; i++) {
+			if(trie[node][i]) {
+				fail[trie[node][i]] = trie[fail[node]][i];
+				q.push(trie[node][i]);
+			} else {
+				trie[node][i] = trie[fail[node]][i];
+			}
+		}
+	}
+	for(int i = 2; i <= nodes; i++) {
+		g[fail[i]].push_back(i);
+	}
+}
+ 
+ 
+void search() {
+	int node = 1;
+	for(auto ch : s) {
+		node = trie[node][ch - 'a'];
+		seen[node]++;
+	}
+}
+ 
+int dfs(int node) {
+	int sol = seen[node];
+	for(auto son : g[node]) {
+		sol += dfs(son);
+	}
+	for(auto idx : leaf[node]) {
+		ans[idx] = sol;
+	}
+	return sol;
+ }
 
-</Warning>
+int main() {
+	#ifndef ONLINE_JUDGE
+		freopen("in", "r", stdin);
+		freopen("out", "w", stdout);
+	#endif 
+ 
+	cin >> s >> n;
+ 
+	vector<string> words(n);
+	for(int i = 0; i < n; i++) {
+		cin >> words[i];
+		add_word(words[i], i);
+	}
+ 
+	build();
+	search();
+ 	dfs(1);
+
+ 	// for(int i = 1; i <= nodes; i++) {
+ 	// 	cout << i << " -> ";
+ 	// 	for(auto son : g[i]) {
+ 	// 		cout << son << ' ';
+ 	// 	}
+ 	// 	cout << '\n';
+ 	// }
+ 
+	for(int i = 0; i < n; i++) {
+		cout << (ans[i] ? "YES" : "NO") << '\n';
+	}
+ 
+	return 0;
+}
+```
+</CPPSection>
+</LanguageSection>
 
 <Resources>
 	<Resource
