@@ -1,7 +1,7 @@
 ---
 id: max-flow
 title: 'Maximum Flow'
-author: Benjamin Qi, Mihnea Brebenel
+author: Benjamin Qi, Mihnea Brebenel, Ahmet Ala
 prerequisites:
   - unweighted-shortest-paths
 description: Introduces maximum flow as well as flow with lower bounds.
@@ -12,12 +12,27 @@ frequency: 1
 
 ## Solution
 
-### Edmonds-Karp Algorithm
+### Explanation
 
-The [Edmonds-Karp](https://en.wikipedia.org/wiki/Edmonds%E2%80%93Karp_algorithm) algorithm uses a greedy approach to solve the maximum flow problem.
+The [Edmonds-Karp](https://en.wikipedia.org/wiki/Edmonds%E2%80%93Karp_algorithm)
+algorithm uses a greedy approach to solve the maximum flow problem.
 
-The download speed (the flow) can be improved as long as we can find a non-negative capacity path from the source (the server) and the sink (Kotivalo's computer).
-After that, we subtract the minimum capacity on the found path from the edge capacities.
+The download speed (the flow) can be improved as long as we can find
+a non-negative capacity augmenting path from the source (the server) to the sink (Kotivalo's computer).
+We use BFS to find this path.
+
+Then, we update the weights of the edges along this augmenting path.
+Each edge $u$, $v$ loses weight equivalent to its capacity in the augmenting path,
+while each reverse edge $v$, $u$ gains this weight.
+
+It can be
+[proven](https://brilliant.org/wiki/edmonds-karp-algorithm)
+that the total number of flow augmentations(BFS calls) is $\mathcal{O}(VE)$
+and that each BFS call requires $\mathcal{O}(E)$ time.
+
+### Implementation
+
+**Time complexity:** $\mathcal{O}(VE^2)$
 
 <LanguageSection>
 <CPPSection>
@@ -26,10 +41,10 @@ After that, we subtract the minimum capacity on the found path from the edge cap
 #include <bits/stdc++.h>
 using namespace std;
 
-long long max_flow(vector<vector<long long>> g, int n, int source, int sink) {
-	long long flow = 0;
+long long max_flow(vector<vector<int>> adj, vector<vector<long long>> capacity,
+                   int source, int sink) {
+	int n = adj.size();
 	vector<int> parent(n, -1);
-
 	// Find a way from the source to sink on a path with non-negative capacities
 	auto reachable = [&]() -> bool {
 		queue<int> q;
@@ -37,8 +52,8 @@ long long max_flow(vector<vector<long long>> g, int n, int source, int sink) {
 		while (!q.empty()) {
 			int node = q.front();
 			q.pop();
-			for (int son = 0; son < n; son++) {
-				long long w = g[node][son];
+			for (int son : adj[node]) {
+				long long w = capacity[node][son];
 				if (w <= 0 || parent[son] != -1) continue;
 				parent[son] = node;
 				q.push(son);
@@ -47,22 +62,22 @@ long long max_flow(vector<vector<long long>> g, int n, int source, int sink) {
 		return parent[sink] != -1;
 	};
 
+	long long flow = 0;
 	// While there is a way from source to sink with non-negative capacities
 	while (reachable()) {
 		int node = sink;
-
 		// The minimum capacity on the path from source to sink
 		long long curr_flow = LLONG_MAX;
 		while (node != source) {
-			curr_flow = min(curr_flow, g[parent[node]][node]);
+			curr_flow = min(curr_flow, capacity[parent[node]][node]);
 			node = parent[node];
 		}
 		node = sink;
 		while (node != source) {
 			// Subtract the capacity from capacity edges
-			g[parent[node]][node] -= curr_flow;
+			capacity[parent[node]][node] -= curr_flow;
 			// Add the current flow to flow backedges
-			g[node][parent[node]] += curr_flow;
+			capacity[node][parent[node]] += curr_flow;
 			node = parent[node];
 		}
 		flow += curr_flow;
@@ -76,14 +91,17 @@ int main() {
 	int n, m;
 	cin >> n >> m;
 
-	vector<vector<long long>> capacity(n, vector<long long>(n, 0));
+	vector<vector<long long>> capacity(n, vector<long long>(n));
+	vector<vector<int>> adj(n);
 	for (int i = 0; i < m; i++) {
-		int x, y, c;
-		cin >> x >> y >> c;
-		capacity[--x][--y] += c;
+		int a, b, c;
+		cin >> a >> b >> c;
+		adj[--a].push_back(--b);
+		adj[b].push_back(a);
+		capacity[a][b] += c;
 	}
 
-	cout << max_flow(capacity, n, 0, n - 1) << endl;
+	cout << max_flow(adj, capacity, 0, n - 1) << endl;
 }
 ```
 
