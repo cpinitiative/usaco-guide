@@ -60,17 +60,15 @@ Here is an implementation of the above algorithm.
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
-#define int long long
-#define V vector
-#define vi V<int>
-
-const int INF = 1e18;
+#define ll long long
+const ll INF = 1e18;
 
 // most array sizes will be doubled to prevent out of bounds
-
-V<vi> calc(2000, vi(1001, 0));  // calc[i][j] stores the # of steps to get all
+const int maxn = 1000;
+const int maxk = 7;
+vector<vector<ll>> calc(2*maxn, vector<ll>(maxn+1, 0));  // calc[i][j] stores the # of steps to get all
                                 // cows distance j away to door i
-V<vi> dp(8, vi(1001, INF));
+vector<vector<ll>> dp(maxk+1, vector<ll>(maxn+1, INF));
 int rot;
 
 void compdp(int k, int begin, int end, int rl, int rr) {
@@ -78,11 +76,11 @@ void compdp(int k, int begin, int end, int rl, int rr) {
 	// bounds on the last door used
 	int mid = (begin + end) / 2;
 
-	int bestcost = INF;
+	ll bestcost = INF;
 	int last = -1;
 	// bestcost is min amount moved, last is the last door used
 	for (int lst = rl; lst <= min(mid, rr); lst++) {
-		int cost = dp[k - 1][lst - 1] + calc[lst + rot][mid - lst + 1];
+		ll cost = dp[k - 1][lst - 1] + calc[lst + rot][mid - lst + 1];
 		if (cost < bestcost) {
 			bestcost = cost;
 			last = lst;
@@ -95,10 +93,12 @@ void compdp(int k, int begin, int end, int rl, int rr) {
 	compdp(k, begin, mid, rl, last);
 	compdp(k, mid + 1, end, last, rr);
 }
-signed main() {
+int main() {
+	freopen("cbarn.in", "r", stdin);
+	freopen("cbarn.out", "w", stdout);
 	int n, k;
 	cin >> n >> k;
-	vi a(2 * n);
+	vector<int> a(2 * n);
 	for (int i = 0; i < n; i++) {
 		cin >> a[i];
 		a[i + n] = a[i];
@@ -107,23 +107,27 @@ signed main() {
 	for (int i = 0; i < n; i++)
 		for (int j = 1; j <= n; j++) {
 			calc[i][j] = calc[i + n][j] =
-			    calc[i][j - 1] + a[i + j - 1] * (j - 1);
+			    calc[i][j - 1] + (ll)a[i + j - 1] * (j - 1);
 		}
 
 	// dp[i][j] stores the answer for doors 0,1,.., j and i doors open
 
 	// rotate stores where we start in the linear representation
-	int ans = INF;
+	ll ans = INF;
 	for (rot = 0; rot < n; rot++) {
-		for (int i = 0; i < n; i++) { dp[0][i] = calc[rot][i + 1]; }
+		for (int i = 0; i < n; i++) { 
+			dp[0][i] = calc[rot][i + 1]; 
+		}
 		for (int i = 1; i < k; i++) {
-			for (int j = 0; j < n; j++) dp[i][j] = INF;
+			for (int j = 0; j < n; j++){
+				dp[i][j] = INF;
+			}
 			compdp(i, i, n - 1, i, n - 1);
 		}
 		ans = min(ans, dp[k - 1][n - 1]);
 	}
 	cout << ans << endl;
-}
+}t
 ```
 ## Problems
 
