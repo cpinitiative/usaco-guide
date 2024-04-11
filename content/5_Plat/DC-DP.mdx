@@ -66,9 +66,11 @@ const ll INF = 1e18;
 // most array sizes will be doubled to prevent out of bounds
 const int maxn = 1000;
 const int maxk = 7;
-vector<vector<ll>> calc(2*maxn, vector<ll>(maxn+1, 0));  // calc[i][j] stores the # of steps to get all
-                                // cows distance j away to door i
-vector<vector<ll>> dp(maxk+1, vector<ll>(maxn+1, INF));
+vector<vector<ll>>
+    calc(2 * maxn,
+         vector<ll>(maxn + 1, 0));  // calc[i][j] stores the # of steps to get
+                                    // all cows distance j away to door i
+vector<vector<ll>> dp(maxk + 1, vector<ll>(maxn + 1, INF));
 int rot;
 
 void compdp(int k, int begin, int end, int rl, int rr) {
@@ -115,19 +117,16 @@ int main() {
 	// rotate stores where we start in the linear representation
 	ll ans = INF;
 	for (rot = 0; rot < n; rot++) {
-		for (int i = 0; i < n; i++) { 
-			dp[0][i] = calc[rot][i + 1]; 
-		}
+		for (int i = 0; i < n; i++) { dp[0][i] = calc[rot][i + 1]; }
 		for (int i = 1; i < k; i++) {
-			for (int j = 0; j < n; j++){
-				dp[i][j] = INF;
-			}
+			for (int j = 0; j < n; j++) { dp[i][j] = INF; }
 			compdp(i, i, n - 1, i, n - 1);
 		}
 		ans = min(ans, dp[k - 1][n - 1]);
 	}
 	cout << ans << endl;
-}t
+}
+t
 ```
 ## Problems
 
