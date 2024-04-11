@@ -56,9 +56,73 @@ Let $dp(i,k)$ denote the location of the last door if we place $k$ doors optimal
 
 Since the monotonicity condition is held, we can now perform Divide & Conquer DP. Fix the value of $k$ and compute $dp(n/2, k)$. Then compute it for the left and right halves of the array. This leads to a runtime of $O(nk \log n)$. Since we need to check $n$ rooms for the optimal first barn position, the overall runtime is $O(n^2 k \log n)$.
 
-Check the
-[official editorial](http://www.usaco.org/current/data/sol_cbarn_platinum_feb16.html) for an implementation.
+Here is an implementation of the above algorithm.
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+#define int long long
+#define V vector
+#define vi V<int>
 
+const int INF = 1e18;
+
+// most array sizes will be doubled to prevent out of bounds
+
+V<vi> calc(2000, vi(1001,0)); // calc[i][j] stores the # of steps to get all cows distance j away to door i
+V<vi> dp(8, vi(1001,INF));
+int rot;
+
+void compdp(int k, int begin, int end, int rl, int rr){
+	// fixed k, begin and end are the ends of the array, rl and rr are the bounds on the last door used
+	int mid = (begin+end)/2;
+	
+	int bestcost = INF;
+	int last = -1;
+	// bestcost is min amount moved, last is the last door used
+	for(int lst= rl; lst<=min(mid,rr); lst++){
+		int cost = dp[k-1][lst-1] + calc[lst+rot][mid-lst+1];
+		if(cost < bestcost){
+			bestcost = cost;
+			last = lst;
+		}else if(cost==bestcost && lst < last){
+			last = lst;
+		}
+	}
+	dp[k][mid] = bestcost;
+	if(begin==end) return;
+	compdp(k, begin, mid, rl, last);
+	compdp(k, mid+1, end, last, rr);
+}
+signed main(){
+	int n,k;
+	cin >> n >> k;
+	vi a(2*n); 
+	for(int i=0; i<n; i++){
+		cin >> a[i];
+		a[i+n] = a[i];
+	}
+	
+	for(int i=0; i<n; i++)for(int j=1; j<=n; j++){
+		calc[i][j] = calc[i+n][j] = calc[i][j-1] + a[i+j-1]*(j-1);
+	}
+	
+	// dp[i][j] stores the answer for doors 0,1,.., j and i doors open
+	
+	// rotate stores where we start in the linear representation
+	int ans = INF;
+	for(rot=0; rot<n; rot++){
+		for(int i=0; i<n; i++){
+			dp[0][i] = calc[rot][i+1];
+		}
+		for(int i=1; i<k; i++){
+			for(int j=0; j<n; j++) dp[i][j] = INF;
+			compdp(i, i, n-1, i, n-1);
+		}
+		ans = min(ans, dp[k-1][n-1]);
+	}
+	cout<<ans<<endl;
+}
+```
 ## Problems
 
 <Problems problems="dnc_general" />
