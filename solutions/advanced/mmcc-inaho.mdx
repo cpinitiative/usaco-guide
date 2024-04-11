@@ -76,41 +76,48 @@ This is a standard test of your DSU with rollback template.
 using namespace std;
 
 // BeginCodeSnip{DSU (from the module)}
-struct DSU {
-	vector<int> p, sz;
-
-	// stores history
-	vector<pair<int &, int>> psnap, szsnap;
-
-	DSU(int n) {
-		p.resize(n);
-		sz.resize(n, 1);
-		iota(p.begin(), p.end(), 0);
-	}
-
-	int get(int x) { return (p[x] == x) ? x : get(p[x]); }
-
-	void unite(int a, int b) {
-		a = get(a);
-		b = get(b);
-		if (sz[a] < sz[b]) { swap(a, b); }
-
-		// add to history
-		szsnap.push_back({sz[a], sz[a]});
-		psnap.push_back({p[b], p[b]});
-
-		if (a != b) {
-			p[b] = a;
-			sz[a] += sz[b];
+class DSU {
+	private:
+		vector<int> p, sz;
+		// stores previous unites
+		vector<pair<int &, int>> history;
+	
+	public:
+		DSU(int n) {
+			p.resize(n);
+			sz.resize(n, 1);
+			iota(p.begin(), p.end(), 0);
 		}
-	}
-
-	void rollback() {
-		szsnap.back().first = szsnap.back().second;
-		szsnap.pop_back();
-		psnap.back().first = psnap.back().second;
-		psnap.pop_back();
-	}
+	
+		int get(int x) { return x == p[x] ? x : get(p[x]); }
+		
+		int get_size(int x){
+			return sz[get(x)];
+		}
+	
+		void unite(int a, int b) {
+			a = get(a);
+			b = get(b);
+			if (sz[a] < sz[b]) { swap(a, b); }
+	
+			// save this unite operation
+			history.push_back({sz[a], sz[a]});
+			history.push_back({p[b], p[b]});
+		
+			if(a != b){
+				p[b] = a;
+				sz[a] += sz[b];
+			}
+		}
+		
+		void rollback() {
+			// roll back parent
+			history.back().first = history.back().second;
+			history.pop_back();
+			// roll back size
+			history.back().first = history.back().second;
+			history.pop_back();
+		}
 };
 // EndCodeSnip
 
@@ -123,7 +130,7 @@ void AddEdge(int u, int v) { dsu.unite(--u, --v); }
 
 void RemoveLastEdge() { dsu.rollback(); }
 
-int GetSize(int u) { return dsu.sz[dsu.get(--u)]; }
+int GetSize(int u) { return dsu.get_size(--u); }
 ```
 
 </CPPSection>
