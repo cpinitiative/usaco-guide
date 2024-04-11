@@ -46,9 +46,7 @@ class DSU {
 	vector<pair<int &, int>> history;
 
   public:
-	DSU(int n) {
-		p.resize(n);
-		sz.resize(n, 1);
+	DSU(int n) : p(n), sz(n, 1) {
 		iota(p.begin(), p.end(), 0);
 	}
 
@@ -128,17 +126,14 @@ class DSU {
   private:
 	vector<ll> p, sz, sum;
 	// stores all history info related to merges
-	vector<pair<ll &, ll>> history;
+	vector<pair<ll&, ll>> history;
 
   public:
-	DSU(int n) {
-		p.resize(n);
-		sz.resize(n, 1);
-		sum.resize(n);
+	DSU(int n) : p(n), sz(n, 1), sum(n) {
 		iota(p.begin(), p.end(), 0);
 	}
 
-	void init_sum(vector<ll> &a) {
+	void init_sum(const vector<ll> a) {
 		for (int i = 0; i < (int)a.size(); i++) { sum[i] = a[i]; }
 	}
 
