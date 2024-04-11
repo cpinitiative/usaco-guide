@@ -407,7 +407,7 @@ int main() {
 	 />
 </Resources>
 
-The Aho-Corasick algorithm stores the pattern words in a trie, described above. It uses the trie to transition from a state to anoother. Similarly to KMP algorithm we want to reuse the information
+The Aho-Corasick algorithm stores the pattern words in a trie structure, described above. It uses the trie to transition from a state to anoother. Similarly to KMP algorithm we want to reuse the information
 we have already processed. A **suffix link** or **failure link** for a node $u$ is a special edge that points to the longest proper suffix of the string corresponding to node $u$.
 The suffix links for the root and all its immediate children point to the root node. For all other nodes $u$ with parent $p$ and letter $c$ on the edge $p \rightarrow u$ the suffix link
 can be computed by following $p$'s failure link and transitioning to letter $c$ from there.
@@ -424,8 +424,8 @@ The image below depicts how the structure looks like for the wordlist: a, ag, c,
 <i> An Aho-Corasick trie with failure links as light edges. </i>
 </center>
 
-There is a special case when some words are substring of other words in the wordlist. This could lead to some problems depending on the implementation. To solve this problem you could encounter the term [dictionary likes](https://www.youtube.com/watch?v=OFKxWFew_L0)
-which act like suffix links that point to the first suffix that is also a word in the wordlist. The code below constructs the structure using a BFS.
+There is a special case when some words are substring of other words in the wordlist. This could lead to some problems depending on the implementation. [Dictionary links](https://www.youtube.com/watch?v=OFKxWFew_L0) can solve this problem.
+They act like suffix links that point to the first suffix that is also a word in the wordlist. The code below constructs the structure using a BFS.
 
 **Time Complexity:** $\mathcal{O}(m\sigma)$ - where $m$ is the size of the alphaber and $\sigma$ the size of the alphabet
 
