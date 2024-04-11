@@ -12,16 +12,25 @@ frequency: 1
 
 ## Solution
 
-### Edmonds-Karp Algorithm
+### Explanation
 
-The [Edmonds-Karp](https://en.wikipedia.org/wiki/Edmonds%E2%80%93Karp_algorithm) algorithm uses a greedy approach to solve the maximum flow problem.
+The [Edmonds-Karp](https://en.wikipedia.org/wiki/Edmonds%E2%80%93Karp_algorithm)
+algorithm uses a greedy approach to solve the maximum flow problem.
 
-The download speed (the flow) can be improved as long as we can find a non-negative capacity augmenting path from the source (the server) to the sink (Kotivalo's computer). We use BFS to find this path.
+The download speed (the flow) can be improved as long as we can find
+a non-negative capacity augmenting path from the source (the server) to the sink (Kotivalo's computer).
+We use BFS to find this path.
 
-Then, we update the weights of the edges along this augmenting path: Each edge $u$, $v$ loses weight equivalent to its capacity in the augmenting path. Each reverse edge
-$v$, $u$ gains this weight.
+Then, we update the weights of the edges along this augmenting path.
+Each edge $u$, $v$ loses weight equivalent to its capacity in the augmenting path,
+while each reverse edge $v$, $u$ gains this weight.
 
-It can be [proven](https://brilliant.org/wiki/edmonds-karp-algorithm/#:~:text=the%20source%20vertex.-,Complexity%20Proof,-Edmonds%2DKarp%20relies) that the total number of flow augmentations(BFS calls) is $\mathcal{O}(VE)$. And each BFS call requires $\mathcal{O}(E)$ time.
+It can be
+[proven](https://brilliant.org/wiki/edmonds-karp-algorithm)
+that the total number of flow augmentations(BFS calls) is $\mathcal{O}(VE)$
+and that each BFS call requires $\mathcal{O}(E)$ time.
+
+### Implementation
 
 **Time complexity:** $\mathcal{O}(VE^2)$
 
@@ -43,7 +52,7 @@ long long max_flow(vector<vector<int>> adj, vector<vector<long long>> capacity,
 		while (!q.empty()) {
 			int node = q.front();
 			q.pop();
-			for (auto son : adj[node]) {
+			for (int son : adj[node]) {
 				long long w = capacity[node][son];
 				if (w <= 0 || parent[son] != -1) continue;
 				parent[son] = node;
@@ -52,6 +61,7 @@ long long max_flow(vector<vector<int>> adj, vector<vector<long long>> capacity,
 		}
 		return parent[sink] != -1;
 	};
+
 	long long flow = 0;
 	// While there is a way from source to sink with non-negative capacities
 	while (reachable()) {
@@ -73,23 +83,24 @@ long long max_flow(vector<vector<int>> adj, vector<vector<long long>> capacity,
 		flow += curr_flow;
 		fill(parent.begin(), parent.end(), -1);
 	}
+
 	return flow;
 }
 
 int main() {
 	int n, m;
 	cin >> n >> m;
-	vector<vector<long long>> capacity(n, vector<long long>(n, 0));
+
+	vector<vector<long long>> capacity(n, vector<long long>(n));
 	vector<vector<int>> adj(n);
 	for (int i = 0; i < m; i++) {
 		int a, b, c;
 		cin >> a >> b >> c;
-		--a;
-		--b;
-		adj[a].push_back(b);
+		adj[--a].push_back(--b);
 		adj[b].push_back(a);
 		capacity[a][b] += c;
 	}
+
 	cout << max_flow(adj, capacity, 0, n - 1) << endl;
 }
 ```
