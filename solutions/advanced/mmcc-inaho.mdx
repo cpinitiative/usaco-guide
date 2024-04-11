@@ -77,47 +77,45 @@ using namespace std;
 
 // BeginCodeSnip{DSU (from the module)}
 class DSU {
-	private:
-		vector<int> p, sz;
-		// stores previous unites
-		vector<pair<int &, int>> history;
-	
-	public:
-		DSU(int n) {
-			p.resize(n);
-			sz.resize(n, 1);
-			iota(p.begin(), p.end(), 0);
+  private:
+	vector<int> p, sz;
+	// stores previous unites
+	vector<pair<int &, int>> history;
+
+  public:
+	DSU(int n) {
+		p.resize(n);
+		sz.resize(n, 1);
+		iota(p.begin(), p.end(), 0);
+	}
+
+	int get(int x) { return x == p[x] ? x : get(p[x]); }
+
+	int get_size(int x) { return sz[get(x)]; }
+
+	void unite(int a, int b) {
+		a = get(a);
+		b = get(b);
+		if (sz[a] < sz[b]) { swap(a, b); }
+
+		// save this unite operation
+		history.push_back({sz[a], sz[a]});
+		history.push_back({p[b], p[b]});
+
+		if (a != b) {
+			p[b] = a;
+			sz[a] += sz[b];
 		}
-	
-		int get(int x) { return x == p[x] ? x : get(p[x]); }
-		
-		int get_size(int x){
-			return sz[get(x)];
-		}
-	
-		void unite(int a, int b) {
-			a = get(a);
-			b = get(b);
-			if (sz[a] < sz[b]) { swap(a, b); }
-	
-			// save this unite operation
-			history.push_back({sz[a], sz[a]});
-			history.push_back({p[b], p[b]});
-		
-			if(a != b){
-				p[b] = a;
-				sz[a] += sz[b];
-			}
-		}
-		
-		void rollback() {
-			// roll back parent
-			history.back().first = history.back().second;
-			history.pop_back();
-			// roll back size
-			history.back().first = history.back().second;
-			history.pop_back();
-		}
+	}
+
+	void rollback() {
+		// roll back parent
+		history.back().first = history.back().second;
+		history.pop_back();
+		// roll back size
+		history.back().first = history.back().second;
+		history.pop_back();
+	}
 };
 // EndCodeSnip
 
