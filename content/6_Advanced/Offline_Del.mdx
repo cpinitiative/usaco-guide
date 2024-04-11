@@ -189,15 +189,15 @@ struct Query {
 
 vector<Query> tree[MAXN * 4];
 
-void update(Query &q, int v, int l, int r, int L, int R) {
-	if (l > R || r < L) { return; }
-	if (l <= L && r >= R) {
+void update(Query &q, int v, int query_l, int query_r, int tree_l, int tree_r) {
+	if (query_l > tree_r || query_r < tree_l) return;
+	if (query_l <= tree_l && query_r >= tree_r) {
 		tree[v].push_back(q);
 		return;
 	}
-	int m = (L + R) / 2;
-	update(q, v * 2, l, r, L, m);
-	update(q, v * 2 + 1, l, r, m + 1, R);
+	int m = (tree_l + tree_r) / 2;
+	update(q, v * 2, query_l, query_r, tree_l, m);
+	update(q, v * 2 + 1, query_l, query_r, m + 1, tree_r);
 }
 
 void dfs(int v, int l, int r, vector<ll> &ans) {
