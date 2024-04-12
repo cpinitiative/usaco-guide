@@ -82,12 +82,13 @@ using namespace std;
 const ll INF = 1e18;
 
 // to make implementing a cyclic array easier, we double the size
-const int maxn = 1000;
-const int maxk = 7;
+const int MAX_N = 1000;
+const int MAX_K = 7;
 
 // calc[i][j] stores the # of steps to get all cows distance j away to door i
-vector<vector<ll>> calc(2 * maxn, vector<ll>(maxn + 1, 0));
-vector<vector<ll>> dp(maxk + 1, vector<ll>(maxn + 1, INF));
+vector<vector<ll>> calc(2 * MAX_N, vector<ll>(MAX_N + 1, 0));
+// dp[i][j] stores the answer for doors 0,1,.., j and i doors open
+vector<vector<ll>> dp(MAX_K + 1, vector<ll>(MAX_N + 1, INF));
 int rot;
 
 void compdp(int k, int begin, int end, int rl, int rr) {
@@ -95,20 +96,22 @@ void compdp(int k, int begin, int end, int rl, int rr) {
 	// bounds on the last door used
 	int mid = (begin + end) / 2;
 
-	ll bestcost = INF;
+	ll best = INF;
 	int last = -1;
-	// bestcost is min amount moved, last is the last door used
+	// best is min amount moved, last is the last door used
 	for (int lst = rl; lst <= min(mid, rr); lst++) {
 		ll cost = dp[k - 1][lst - 1] + calc[lst + rot][mid - lst + 1];
-		if (cost < bestcost) {
-			bestcost = cost;
+		if (cost < best) {
+			best = cost;
 			last = lst;
-		} else if (cost == bestcost && lst < last) {
+		} else if (cost == best && lst < last) {
 			last = lst;
 		}
 	}
-	dp[k][mid] = bestcost;
-	if (begin == end) return;
+	dp[k][mid] = best;
+	if (begin == end){
+		return;
+	}
 	compdp(k, begin, mid, rl, last);
 	compdp(k, mid + 1, end, last, rr);
 }
@@ -129,8 +132,6 @@ int main() {
 			calc[i][j] = calc[i + n][j] =
 			    calc[i][j - 1] + (ll)a[i + j - 1] * (j - 1);
 		}
-
-	// dp[i][j] stores the answer for doors 0,1,.., j and i doors open
 
 	// rotate stores where we start in the linear representation
 	ll ans = INF;
