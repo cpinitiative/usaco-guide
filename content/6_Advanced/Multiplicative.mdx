@@ -58,7 +58,8 @@ Similarly,  $g(n) = \sum_{n|d} f(d) \rightarrow f(n) = \sum_{n|d} g(d) \cdot \mu
 
 Binomial inversion is also a similar technique. An example illustrates the relationship between the Euler function and the Möbius function: since $\sum_{d|n} \varphi(d) = n$，then $\varphi(n) = \sum_{d|n} \mu(d) \cdot \frac{n}{d}$，which implies $\frac{\varphi(n)}{n} = \sum_{d|n} \frac{\mu(d)}{d}$
 
-## Focus problem 1
+## Example - Sum of Divisors
+
 <FocusProblem problem="f1" />
 
 ### Explanation
@@ -93,30 +94,23 @@ long long sum;
 
 int main() {
 	scanf("%lld", &n);
-	// sum = 0;
-	// for(i=1;i<=n;i++)
-	//	sum += i * (n / i);
-	// printf("n = %lld\n",n);
-	// printf("%lld\n",sum);
 	sum = 0;
 	for (i = 1; i * i <= n; i++) {
 		sum += i * (n / i);
 		b = n / i;
 		a = n / (i + 1) + 1;
-		// if (i==1) printf("%lld %lld\n",a,b);
 		sum += (a + b) * (b - a + 1) / 2 * i;
 	}
 	i--;
 	if (i == n / i) sum -= i * (n / i);
 	printf("%lld\n", sum);
-	return 0;
 }
 ```
 
 </CPPSection>
 </LanguageSection>
 
-## Focus problem 2
+## Example - Totient Sum
 
 <FocusProblem problem="f2" />
 
@@ -127,7 +121,7 @@ Currently, the formulas related to Euler's totient function mentioned in this ar
 This formula can also be seen as $\varphi(n)=n-\sum_{d|n, d<n}\varphi(d)$. Let's denote $\phi(n)=\sum_{i=1}^n \varphi(i)$, then we have:
 
 $$
-\phi(n)=∑_{i=1}^n\varphi(i)=∑_{i=1}^n i−∑_{d|i,d<i}\varphi(d)=\frac{n\cdot(n+1)}{2}−∑_{i=2}^n\sum_{d|i,d<i}\varphi(d)=\frac{n\cdot(n+1)}{2}−\sum_{i=2}^{n}\sum_{d=1}^{\left\lfloor\frac{n}{\left(\frac{i}{d}\right)}\right\rfloor}\varphi(d)
+\phi(n)=\sum_{i=1}^n\varphi(i)=\sum_{i=1}^n i−\sum_{d|i,d<i}\varphi(d)=\frac{n\cdot(n+1)}{2}−\sum_{i=2}^n\sum_{d|i,d<i}\varphi(d)=\frac{n\cdot(n+1)}{2}−\sum_{i=2}^{n}\sum_{d=1}^{\left\lfloor\frac{n}{\left(\frac{i}{d}\right)}\right\rfloor}\varphi(d)
 $$
 
 $$
@@ -203,7 +197,7 @@ int main() {
 </CPPSection>
 </LanguageSection>
 
-## Focus problem 3
+## Example - Enumerate Primes
 
 <FocusProblem problem="f3" />
 
@@ -286,13 +280,14 @@ int main() {
 </CPPSection>
 </LanguageSection>
 
-## Focus problem 4
+## Example - Counting Primes
 
 <FocusProblem problem="f4" />
 
 ## Explanation
 
-The function prime_count takes an integer N as input and returns the count of prime numbers not greater than N. The algorithm employed here is a combination of prime counting methods, including the Sieve of Eratosthenes and Euler's totient function.
+The function `prime_count` takes an integer N as input and returns the count of prime numbers not greater than N.
+The algorithm employed here is a combination of prime counting methods, including the Sieve of Eratosthenes and Euler's totient function.
 
 Here's a breakdown of the algorithm:
 1. The variable y is calculated as the integer part of the cube root of N raised to the power of 1. This heuristic value helps in partitioning the range of numbers up to N.
