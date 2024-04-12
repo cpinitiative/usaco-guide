@@ -8,6 +8,8 @@ prerequisites:
   - convex-hull-trick
 ---
 
+## Overview
+
 Consider a dynamic programming problem with the following formula
 
 $$
@@ -50,16 +52,28 @@ Since each possible value of $\text{opt}(i, j)$ appears $O(\log n)$ times, this 
 
 You should already be familiar with the [CHT solution](/plat/convex-hull-trick#problems).
 
-We iterate through the possibilities of the location of the first door. For each of the first doors, we can now view the barn linearly. All further calculations will be done assuming the barn is a linear sequence of doors starting at the first opened door.
+### Explanation
 
-Let $dp(i,k)$ denote the location of the last door if we place $k$ doors optimally among the first $i$ rooms. The idea is that $dp(i,k) \leq dp(i+1, k)$. Assume this was not true for the sake of contradiction. Then $dp(i,k) > dp(i+1,k)$, so we also have $dp(i+1,k) \leq i$. But then we could have used the best possible setup for $(i+1,k)$ in the $(i,k)$ setup as well, since all open doors are among the first $i$ rooms anyways.
+We iterate through the possibilities of the location of the first door.
+For each of the first doors, we can now view the barn linearly.
+All further calculations will be done assuming the barn is a linear sequence of doors starting at the first opened door.
 
-Since the monotonicity condition is held, we can now perform Divide & Conquer DP. Fix the value of $k$ and compute $dp(n/2, k)$. Then compute it for the left and right halves of the array. This leads to a runtime of $O(nk \log n)$. Since we need to check $n$ rooms for the optimal first barn position, the overall runtime is $O(n^2 k \log n)$.
+Let $dp(i,k)$ denote the location of the last door if we place $k$ doors optimally among the first $i$ rooms.
+The idea is that $dp(i,k) \leq dp(i+1, k)$.
+Assume this was not true for the sake of contradiction.
+Then $dp(i,k) > dp(i+1,k)$, so we also have $dp(i+1,k) \leq i$.
+But then we could have used the best possible setup for $(i+1,k)$ in the $(i,k)$ setup as well, since all open doors are among the first $i$ rooms anyways.
 
-Here is an implementation of the above algorithm.
+Since the monotonicity condition is held, we can now perform Divide & Conquer DP.
+Fix the value of $k$ and compute $dp(n/2, k)$.
+Then compute it for the left and right halves of the array.
+
+### Implementation
+
+**Time Complexity:** $\mathcal{O}(n^2 k \log n)$, since we need to check $n$ rooms for the optimal first barn position.
+
 <LanguageSection>
 <CPPSection>
-
 
 ```cpp
 #include <bits/stdc++.h>
@@ -70,10 +84,9 @@ const ll INF = 1e18;
 // to make implementing a cyclic array easier, we double the size
 const int maxn = 1000;
 const int maxk = 7;
-vector<vector<ll>>
-    calc(2 * maxn,
-         vector<ll>(maxn + 1, 0));  // calc[i][j] stores the # of steps to get
-                                    // all cows distance j away to door i
+
+// calc[i][j] stores the # of steps to get all cows distance j away to door i
+vector<vector<ll>> calc(2 * maxn, vector<ll>(maxn + 1, 0));
 vector<vector<ll>> dp(maxk + 1, vector<ll>(maxn + 1, INF));
 int rot;
 
@@ -99,6 +112,7 @@ void compdp(int k, int begin, int end, int rl, int rr) {
 	compdp(k, begin, mid, rl, last);
 	compdp(k, mid + 1, end, last, rr);
 }
+
 int main() {
 	freopen("cbarn.in", "r", stdin);
 	freopen("cbarn.out", "w", stdout);
@@ -128,6 +142,7 @@ int main() {
 		}
 		ans = min(ans, dp[k - 1][n - 1]);
 	}
+
 	cout << ans << endl;
 }
 ```
