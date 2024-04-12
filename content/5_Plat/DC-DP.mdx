@@ -80,14 +80,15 @@ Then compute it for the left and right halves of the array.
 using namespace std;
 #define ll long long
 
-// to make implementing a cyclic array easier, we double the size
 const int MAX_N = 1000;
 const int MAX_K = 7;
 
 // calc[i][j] stores the # of steps to get all cows distance j away to door i
+// to make implementing a cyclic array easier, we double the size
 vector<vector<ll>> calc(2 * MAX_N, vector<ll>(MAX_N + 1, 0));
 // dp[i][j] stores the answer for doors 0,1,.., j and i doors open
 vector<vector<ll>> dp(MAX_K + 1, vector<ll>(MAX_N + 1, INT64_MAX));
+
 int rot;
 
 void compdp(int k, int begin, int end, int rl, int rr) {
@@ -115,20 +116,21 @@ void compdp(int k, int begin, int end, int rl, int rr) {
 
 int main() {
 	freopen("cbarn.in", "r", stdin);
-	freopen("cbarn.out", "w", stdout);
 	int n, k;
 	cin >> n >> k;
+
 	vector<int> a(2 * n);
 	for (int i = 0; i < n; i++) {
 		cin >> a[i];
 		a[i + n] = a[i];
 	}
 
-	for (int i = 0; i < n; i++)
+	for (int i = 0; i < n; i++) {
 		for (int j = 1; j <= n; j++) {
 			calc[i][j] = calc[i + n][j] =
 			    calc[i][j - 1] + (ll)a[i + j - 1] * (j - 1);
 		}
+	}
 
 	// rotate stores where we start in the linear representation
 	ll ans = INT64_MAX;
@@ -141,6 +143,7 @@ int main() {
 		ans = min(ans, dp[k - 1][n - 1]);
 	}
 
+	freopen("cbarn.out", "w", stdout);
 	cout << ans << endl;
 }
 ```
