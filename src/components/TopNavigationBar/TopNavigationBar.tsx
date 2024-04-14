@@ -138,8 +138,8 @@ export default function TopNavigationBar({
       {!hidePromoBar && (
         <>
           <Banner
-            text="US Open 2024 USACO workshop will be held with X-Camp on March 21st!"
-            registerLink="https://joincpi.org/workshops/open24"
+            text="Looking for new web developers!"
+            registerLink="https://docs.google.com/forms/d/e/1FAIpQLSed_EHivwc1Z3LoaqQZhu813_3uNNousvN1QWmNt_q-6I6b8A/viewform"
           />
           {/* <div className="relative bg-blue-600">
             <div className="max-w-screen-xl mx-auto py-3 px-3 sm:px-6 lg:px-8">
