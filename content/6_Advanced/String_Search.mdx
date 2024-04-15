@@ -138,50 +138,63 @@ def pi(s: str) -> List[int]:
 	<Resource source="CF" title="Z Algorithm" url="3107" />
 </Resources>
 
-The Z-algorithm is very similar to KMP, but the z-algorithm uses a different function than $\pi$ and it has an interesting different application than string matching. As I've mentioned
-z-algorithm doesn't use $\pi$ function, instead it uses the **z-function** defined as: $Z_i$ = the length of the longest string that is both the prefix of string $S$ and $S_{i...n}$ - the suffix
-starting from $i$.
+### Explanation
 
-Here are the values of the z-function for some strings:
-- aabxaayaab $\rightarrow$ $Z=[0,1,0,0,2,1,0,3,1,0]$
-- aabxaabxcaabxaabxay $\rightarrow$ $Z=[0,1,0,0,4,1,0,0,0,8,1,0,0,5,1,0,0,1,0]$
-Taking a closer look at the second example for $Z_9=8$:
+The Z-algorithm is very similar to KMP, but it uses a different function than $\pi$ and it has an interesting different application than string matching.
 
-<center>
-$S_{9...}$ = **aabxaabx**ay
-<br/>
-$S$ = **aabxaabxcaabx**aabxay
-</center>
+Instead of using $\pi$, it uses the **z-function**.
+Given a position, this function gives the length of the longest string that's both the prefix of $S$
+and of the suffix of $S$ starting at the given position.
 
-To efficiently compute the z-array, we maintain the $[l, r]$ interval such that $S_{l...r}$ is also a prefix, i.e. $Z_l=r-l+1$. Let's denote $i \in [l, r]$ an arbitrary position, this gives us the following cases:
+Here's some examples of what this function might look like:
+- `aabxaayaab` $\rightarrow$ $Z=[0,1,0,0,2,1,0,3,1,0]$
+- `aabxaabxcaabxaabxay` $\rightarrow$ $Z=[0,1,0,0,4,1,0,0,0,8,1,0,0,5,1,0,0,1,0]$
+
+Let's also take a closer look at $Z_9=8$ (0-indexed) for the second string.
+The value for this position if $8$ because that's the longest common prefix
+between the string itself **aabxaabxcaabx**aabxay and the suffix starting
+at position $9$ **aabxaabx**ay (also 0-indexed).
+
+To efficiently compute this array, we maintain the $[l, r]$ interval such that $S_{l...r}$ is also a prefix, i.e. $Z_l=r-l+1$.
+
+Say we have a position $i$ anywhere in $[l,r]$.
+We would then have these two cases:
+
 1. If $i + Z_{i-l} < r$ then we know that $Z_i = Z_{i-l}$
 2. Otherwise $i + Z_{i-l} \geq r$, meaning that the answer can expand beyond $r$, thus we compare character by character from there on.
+
+### Implementation
 
 **Time Complexity:** $\mathcal{O}(N)$
 
 <LanguageSection>
 <CPPSection>
+
 ```cpp
 #include <bits/stdc++.h>
-
 using namespace std;
 
 int main() {
 	string s;
 	cin >> s;
 	vector<int> z(s.size());
-	for (int i = 1, l = 0, r = 0; i < (int)s.size(); i++) {
+	
+	for (int i = 1, l = 0, r = 0; i < s.size(); i++) {
 		z[i] = max(0, min(z[i - l], r - i + 1));
-		while (i + z[i] < (int)s.size() && s[z[i]] == s[i + z[i]]) {
+		
+		while (i + z[i] < s.size() && s[z[i]] == s[i + z[i]]) {
 			l = i;
 			r = i + z[i];
 			z[i]++;
 		}
-		if (z[i] + i == (int)s.size()) { cout << i << ' '; }
+		
+		if (z[i] + i == s.size()) { cout << i << ' '; }
 	}
-	cout << (int)s.size();
+
+	cout << s.size() << endl;
 }
 ```
+
 </CPPSection>
 </LanguageSection>
 
