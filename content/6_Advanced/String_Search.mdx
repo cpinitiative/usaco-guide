@@ -138,7 +138,7 @@ def pi(s: str) -> List[int]:
 	<Resource source="CF" title="Z Algorithm" url="3107" />
 </Resources>
 
-The Z-algorithm is very similar to KMP, but the z-algorithm uses a different function than $\pi$ and it has an interesting different application than string matching. As I've mentioned 
+The Z-algorithm is very similar to KMP, but the z-algorithm uses a different function than $\pi$ and it has an interesting different application than string matching. As I've mentioned
 z-algorithm doesn't use $\pi$ function, instead it uses the **z-function** defined as: $Z_i$ = the length of the longest string that is both the prefix of string $S$ and $S_{i...n}$ - the suffix
 starting from $i$.
 
@@ -150,23 +150,21 @@ Here are the values of the z-function for some strings:
 <CPPSection>
 ```cpp
 #include <bits/stdc++.h>
- 
+
 using namespace std;
- 
+
 int main() {
 	string s;
 	cin >> s;
 	vector<int> z(s.size());
-	for(int i = 1, l = 0, r = 0; i < (int)s.size(); i++) {
-		z[i] = max(0, min(z[i-l], r-i+1));
-		while(i+z[i] < (int)s.size() && s[z[i]] == s[i+z[i]]) {
+	for (int i = 1, l = 0, r = 0; i < (int)s.size(); i++) {
+		z[i] = max(0, min(z[i - l], r - i + 1));
+		while (i + z[i] < (int)s.size() && s[z[i]] == s[i + z[i]]) {
 			l = i;
 			r = i + z[i];
 			z[i]++;
 		}
-		if(z[i]+i == (int)s.size()) {
-			cout << i << ' ';
-		}
+		if (z[i] + i == (int)s.size()) { cout << i << ' '; }
 	}
 	cout << (int)s.size();
 }
