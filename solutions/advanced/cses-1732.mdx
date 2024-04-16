@@ -17,36 +17,3 @@ The approach involves constructing a prefix function \( p[] \), which stores the
 **Space Complexity:** \( O(n) \)
 
 ```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    string s;
-    cin >> s;
-    int n = s.length();
-
-    int p[n] = {0};
-    int j = 0, i = 1;
-    while (i < n) {
-        if (s[i] == s[j]) {
-            p[i] = ++j;
-            i++;
-        } else if (j == 0) {
-            i++;
-        } else {
-            j = p[j - 1];
-        }
-    }
-
-    int curr = p[n - 1];
-    vector<int> v;
-    while (curr > 0) {
-        v.push_back(curr);
-        curr = p[curr - 1];
-    }
-    sort(v.begin(), v.end());
-    for (int jj : v) {
-        cout << jj << " ";
-    }
-    return 0;
-}
