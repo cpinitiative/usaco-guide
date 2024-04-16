@@ -1,0 +1,52 @@
+---
+id: border-lengths
+source: Custom
+title: Finding Border Lengths of a String
+author: Pratik Bhagat
+---
+
+## Explanation
+
+In this problem, we are tasked with finding all border lengths of a given string. A border of a string is a prefix that is also a suffix of the string but not the whole string. We employ a variation of the Knuth-Morris-Pratt algorithm to efficiently solve this problem.
+
+The approach involves constructing a prefix function \( p[] \), which stores the length of the longest proper border ending at each position in the string. We iterate through the string and update \( p[] \) accordingly, taking care to handle cases where the characters encountered do not match. Finally, we traverse \( p[] \) backwards to find all border lengths, as they represent the lengths of the longest proper borders ending at each position.
+
+## Implementation
+
+**Time Complexity:** \( O(n) \)
+**Space Complexity:** \( O(n) \)
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    string s;
+    cin >> s;
+    int n = s.length();
+
+    int p[n] = {0};
+    int j = 0, i = 1;
+    while (i < n) {
+        if (s[i] == s[j]) {
+            p[i] = ++j;
+            i++;
+        } else if (j == 0) {
+            i++;
+        } else {
+            j = p[j - 1];
+        }
+    }
+
+    int curr = p[n - 1];
+    vector<int> v;
+    while (curr > 0) {
+        v.push_back(curr);
+        curr = p[curr - 1];
+    }
+    sort(v.begin(), v.end());
+    for (int jj : v) {
+        cout << jj << " ";
+    }
+    return 0;
+}
