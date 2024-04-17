@@ -1,6 +1,6 @@
 ---
 id: eulerian-tours
-title: 'Eulerian Tours'
+title: 'Eulerian & Hamiltonian Tours'
 author: Benjamin Qi, Mihnea Brebenel
 prerequisites:
   - graph-traversal
@@ -108,6 +108,7 @@ geaph the exception are the start node and the end node.
 
 <LanguageSection>
 <CPPSection>
+
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
@@ -159,6 +160,63 @@ int main() {
 	}
 }
 ```
+
+</CPPSection>
+</LanguageSection>
+
+## De Bruijn Sequences
+
+<FocusProblem problem="dr-bruijn-sequence" />
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int n;
+vector<vector<int>> g;
+stack<int> st;
+vector<int> path;
+
+void dfs() {
+    st.push(0);
+    while(!st.empty()) {
+        int node = st.top();
+        if(!g[node].empty()) {
+            st.push(g[node].back());
+            g[node].pop_back();
+        } else {
+            path.push_back(node & 1);
+            st.pop();
+        }
+    }
+    for(int i = 0; i < n-2; i++) {
+        path.push_back(0);
+    }
+}
+
+int main() {
+    cin >> n;
+    if(n == 1) {
+        cout << "10";
+        return 0;
+    }
+    g.resize(1 << (n-1));
+    for(int node = 0; node < (1<<(n-1)); node++) {
+        int son = (node<<1) % (1<<(n-1));
+        g[node].push_back(son);
+        g[node].push_back(son | 1);
+    }
+    dfs();
+    for(int digit : path) {
+        cout << digit;
+    }
+}
+```
+
 </CPPSection>
 </LanguageSection>
 
