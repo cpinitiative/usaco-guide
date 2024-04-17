@@ -168,7 +168,8 @@ int main() {
 
 <FocusProblem problem="de-bruijn-sequence" />
 
-A **De Bruijn sequece** is a string of minimum length that contains every string  of length $n$ exactly once as a substring, for a fixed alphabet with $k$ letters. In our case $k=2$ because we only have $0$ and $1$.
+A **De Bruijn sequece** is a string of minimum length that contains every string of length $n$ exactly once as a substring, for a fixed alphabet with $k$ letters.
+In our case $k=2$ because we only have $0$ and $1$.
 
 Let's take a look at some particular cases:
 1. $n=2$ $\rightarrow$ `00110`
@@ -188,7 +189,6 @@ An eulerian path in the above graph represents a valid solution. The starting no
 
 ```cpp
 #include <bits/stdc++.h>
-
 using namespace std;
 
 int n;
@@ -214,9 +214,10 @@ void dfs() {
 int main() {
 	cin >> n;
 	if (n == 1) {
-		cout << "10";
+		cout << "10" << endl;
 		return 0;
 	}
+
 	g.resize(1 << (n - 1));
 	for (int node = 0; node < (1 << (n - 1)); node++) {
 		int son = (node << 1) % (1 << (n - 1));
@@ -224,7 +225,9 @@ int main() {
 		g[node].push_back(son | 1);
 	}
 	dfs();
+
 	for (int digit : path) { cout << digit; }
+	cout << endl;
 }
 ```
 
