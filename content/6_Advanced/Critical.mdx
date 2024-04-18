@@ -40,6 +40,85 @@ frequency: 1
 
 ### Solution 
 
+Critical nodes in a DAG are commonly known as **dominators**. Let's define $Dom(u)$ as the set of nodes that dominate node $u$.
+
+The dominator of the starting node is itself. The set of dominators for any other node $u$ is the intersection of the set of dominators for all ancestors
+$p$ of node $u$.
+
+$$
+Dom(u)=
+\begin{cases}
+u,\text{ if u is the starting point}\\ 
+{u}  \cup (\cap_{p \in ancestor(u)} Dom(p)) 
+\end{cases}
+$$
+
+The following code uses the above rucerrence.
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+ 
+using namespace std;
+ 
+const int NMAX = 1e5;
+ 
+int n, m;
+vector<int> g[NMAX];
+vector<bitset<NMAX>> dom;
+bool seen[NMAX];
+ 
+void get_dominant_verticies(int node, int parent) {
+	if(!seen[node]) {
+		dom[node] = ~dom[node];
+		seen[node] = true;
+	}
+ 
+	dom[node] &= dom[parent];
+	dom[node][node] = true;
+ 
+	for(auto son : g[node]) {
+		get_dominant_verticies(son, node);
+	} 
+}
+ 
+int main() {
+	cin >> n >> m;
+	dom.resize(n+1);
+	for(int i = 1; i <= m; i++) {
+		int x, y;
+		cin >> x >> y;
+		g[x].push_back(y);
+	}
+ 
+	dom[1] = 1;
+	seen[1] = true;
+	get_dominant_verticies(1, 0);
+ 
+	set<int> dominators = {n};
+	for(int i = 1; i <= n; i++) {
+		for(int j = 1; j < i; j++) {
+			if(dom[i][j]) {
+				dominators.insert(j);
+			}
+		}
+	}
+ 
+	cout << (int)dominators.size() << '\n';
+	for(auto node : dominators) {
+		cout << node << ' ';
+	}
+ 
+	return 0;
+}
+
+```
+
+</CPPSection>
+</LanguageSection>
+
+Unfortunately, this is too slow.
 
 ## Cycles
 
