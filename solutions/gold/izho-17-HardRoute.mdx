@@ -5,9 +5,13 @@ title: Hard Route
 author: Justin Ji
 ---
 
-## Solution:
+## Explanation
 
-Assume there is some hard route that goes from vertex $u$ to vertex $v$. Let the node that the path from $u$ to $v$ and the furthest node from the hard route meet be node $x$. Use rerooting DP to calculate the hardest route and the number of such hardest routes for every node $x$.
+Assume there is some hard route that goes from vertex $u$ to vertex $v$.
+Let the node that the path from $u$ to $v$ and the furthest node from the hard route meet be node $x$.
+Use rerooting DP to calculate the hardest route and the number of such hardest routes for every node $x$.
+
+## Implementation
 
 **Time Complexity:** $\mathcal{O}(N\log{N})$
 
@@ -19,67 +23,70 @@ using namespace std;
 using ll = long long;
 
 int main() {
-    int n; 
-    cin >> n;
-    vector<vector<int>> adj(n);
-    for (int i = 1; i < n; i++) {
-        int x, y; 
-        cin >> x >> y;
-        --x, --y;
-        adj[x].push_back(y);
-        adj[y].push_back(x);
-    }
+	int n;
+	cin >> n;
+	vector<vector<int>> adj(n);
+	for (int i = 1; i < n; i++) {
+		int x, y;
+		cin >> x >> y;
+		--x, --y;
+		adj[x].push_back(y);
+		adj[y].push_back(x);
+	}
 
-    vector<int> max_length(n), path_count(n);
-    function<void(int, int)> dfs = [&](int u, int p) {
+	vector<int> max_length(n), path_count(n);
+	function<void(int, int)> dfs = [&](int u, int p) {
 		/**
-         * Calculates the longest path from vertex u,
-         * and the number of such paths.
-        */
-        max_length[u] = 0;
-        path_count[u] = 1;
-        for (int v : adj[u]) if (v != p) {
-            dfs(v, u);
-            if (max_length[u] < max_length[v] + 1) {
-                max_length[u] = max_length[v] + 1;
-                path_count[u] = path_count[v];
-            } else if (max_length[v] + 1 == max_length[u]) {
-                path_count[u] += path_count[v];
-            }
-        }
-    }; 
-    dfs(0, -1);
+		 * Calculates the longest path from vertex u,
+		 * and the number of such paths.
+		 */
+		max_length[u] = 0;
+		path_count[u] = 1;
+		for (int v : adj[u])
+			if (v != p) {
+				dfs(v, u);
+				if (max_length[u] < max_length[v] + 1) {
+					max_length[u] = max_length[v] + 1;
+					path_count[u] = path_count[v];
+				} else if (max_length[v] + 1 == max_length[u]) {
+					path_count[u] += path_count[v];
+				}
+			}
+	};
+	dfs(0, -1);
 
     ll max_hardness = 0;
     ll hardest_path_count = 1; 
     function<void(int, int, ll, ll)> dfs2 = [&](int u, int p, ll parDist, ll parCnt) {
+	ll max_hardness = 0, hardest_path_count = 1;
+	function<void(int, int, ll, ll)> dfs2 = [&](int u, int p, ll parDist,
+	                                            ll parCnt) {
 		/**
-         * Performs the rerooting, to count the hardest
-         * path and the # of such paths at this vertex.
-        */
-        vector<array<ll, 2>> paths; // {distance, count}
-        if (u > 0 || (int) adj[u].size() == 1) {
-            paths.push_back({parDist, parCnt});
-        }
-        for (int v : adj[u]) if (v != p) {
-            paths.push_back({max_length[v] + 1, path_count[v]});
-        }
-        sort(paths.begin(), paths.end(), greater<>());
+		 * Performs the rerooting, to count the hardest
+		 * path and the # of such paths at this vertex.
+		 */
+		vector<array<ll, 2>> paths;  // {distance, count}
+		if (u > 0 || (int)adj[u].size() == 1) {
+			paths.push_back({parDist, parCnt});
+		}
+		for (int v : adj[u])
+			if (v != p) { paths.push_back({max_length[v] + 1, path_count[v]}); }
+		sort(paths.begin(), paths.end(), greater<>());
 
-        if ((int) adj[u].size() >= 3) { // can form a nonzero hardness route
-            /**
-             * Let the 3 longest path lengths be a, b, c, with a > b > c.
-             * The optimal hard route "hardness" is a * (b + c).
-            */
-            ll a = paths[0][0];
+		if ((int)adj[u].size() >= 3) {  // can form a nonzero hardness route
+			/**
+			 * Let the 3 longest path lengths be a, b, c, with a > b > c.
+			 * The optimal hard route "hardness" is a * (b + c).
+			 */
+			ll a = paths[0][0];
             ll b = paths[1][0];
             ll c = paths[2][0];
-            ll cur = a * (b + c);
+			ll cur = a * (b + c);
             ll num = 0;
             ll ties = 0;
-            for (auto [len, cnt] : paths) {
-                if (len == c) ties += cnt;
-            }
+			for (auto [len, cnt] : paths) {
+				if (len == c) ties += cnt;
+			}
 
             if (a != b && b != c) {
                 // case 1: all are distinct.
@@ -87,8 +94,8 @@ int main() {
             } else if (a == b && b == c) {
                 // case 2: all are the same.
                 num = ties * ties;
-				for (auto [k, v] : paths) {
-					if (k == a) num -= v * v;
+				for (auto [len, cnt] : paths) {
+					if (len == a) num -= cnt * cnt;
 				}
 				num /= 2; // avoiding double counting
             } else if (a == b) {
@@ -97,8 +104,8 @@ int main() {
             } else {
                 // case 4: last two are the same.
                	num = ties * ties;
-				for (auto [k, v] : paths) {
-					if (k == c) num -= v * v;
+				for (auto [len, cnt] : paths) {
+					if (len == c) num -= cnt * cnt;
 				}
 				num /= 2; // avoiding double counting
             }
