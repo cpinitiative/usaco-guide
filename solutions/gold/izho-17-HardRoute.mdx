@@ -29,12 +29,12 @@ int main() {
 	for (int i = 1; i < n; i++) {
 		int x, y;
 		cin >> x >> y;
-		--x, --y;
-		adj[x].push_back(y);
+		adj[--x].push_back(--y);
 		adj[y].push_back(x);
 	}
 
-	vector<int> max_length(n), path_count(n);
+	vector<int> max_length(n);
+	vector<int> path_count(n);
 	function<void(int, int)> dfs = [&](int u, int p) {
 		/**
 		 * Calculates the longest path from vertex u,
