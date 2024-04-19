@@ -18,11 +18,115 @@ Assume there is some hard route that goes from vertex $u$ to vertex $v$. Let the
 using namespace std;
 using ll = long long;
 
+const int N = 5e5 + 1;
+int max_length[N], path_count[N];
+vector<int> adj[N];
+ll max_hardness = 0, hardest_path_count = 1;
+void dfs(int u, int p) {
+    /**
+     * Calculates the longest path from vertex u,
+     * and the number of such paths.
+    */
+    max_length[u] = 0;
+    path_count[u] = 1;
+    for (int v : adj[u]) if (v != p) {
+        dfs(v, u);
+        if (max_length[u] < max_length[v] + 1) {
+            max_length[u] = max_length[v] + 1;
+            path_count[u] = path_count[v];
+        } else if (max_length[v] + 1 == max_length[u]) {
+            path_count[u] += path_count[v];
+        }
+    }
+}
+void dfs2(int u, int p, ll parDist, ll parCnt) {
+    /**
+     * Performs the rerooting, to count the hardest
+     * path and the # of such paths at this vertex.
+    */
+    vector<array<ll, 2>> paths; // {distance, count}
+    if (u > 0 || (int) adj[u].size() == 1) {
+        paths.push_back({parDist, parCnt});
+    }
+    for (int v : adj[u]) if (v != p) {
+        paths.push_back({max_length[v] + 1, path_count[v]});
+    }
+    sort(paths.begin(), paths.end(), greater<>());
+    if ((int) adj[u].size() >= 3) { // can form a nonzero hard route
+        /**
+         * Let the 3 longest path lengths be a, b, c, with a > b > c.
+         * The optimal hard route "hardness" is a * (b + c).
+        */
+        ll a = paths[0][0];
+        ll b = paths[1][0];
+        ll c = paths[2][0];
+        ll cur = a * (b + c);
+        ll num = 0;
+        ll ties = 0;
+        for (auto [k, v] : paths) {
+            if (k == c) ties += v;
+        }
+
+        if (a != b && b != c) {
+            // case 1: all are distinct.
+            num = paths[1][1] * ties;
+        } else if (a == b && b == c) {
+            // case 2: all are the same.
+            num = ties * ties;
+            for (auto [k, v] : paths) {
+                if (k == a) num -= v * v;
+            }
+            num /= 2; // avoiding double counting
+        } else if (a == b) {
+            // case 3: first two are the same.
+            num = (paths[0][1] + paths[1][1]) * ties;
+        } else {
+            // case 4: last two are the same.
+            num = ties * ties;
+            for (auto [k, v] : paths) {
+                if (k == c) num -= v * v;
+            }
+            num /= 2; // avoiding double counting
+        }
+
+        if (max_hardness < cur) {
+            max_hardness = cur;
+            hardest_path_count = num;
+        } else if (max_hardness == cur) {
+            hardest_path_count += num;
+        }
+    }
+    // processing parent dist and parent count.
+    ll longest1 = 0;
+    ll longest2 = 0;
+    ll count1 = 0;
+    ll count2 = 0;
+    for (auto [k, v] : paths) {
+        if (k + 1 > longest1) {
+            swap(longest1, longest2);
+            swap(count1, count2);
+            longest1 = k + 1, count1 = v;
+        } else if (k + 1 == longest1) {
+            count1 += v;
+        } else if (k + 1 > longest2) {
+            longest2 = k + 1, count2 = v;
+        } else if (k + 1 == longest2) {
+            count2 += v;
+        }
+    }
+    for (int v : adj[u]) if (v != p) {
+        // using the best parent hardness and parent count possible.
+        if (max_length[v] + 2 == longest1) {
+            (path_count[v] == count1) ? dfs2(v, u, longest2, count2) :
+                                        dfs2(v, u, longest1, count1 - path_count[v]);
+        } else {
+            dfs2(v, u, longest1, count1);
+        }
+    }
+}
 int main() {
-    cin.tie(0) -> sync_with_stdio(0);
     int n; 
     cin >> n;
-    vector<vector<int>> adj(n);
     for (int i = 1; i < n; i++) {
         int x, y; 
         cin >> x >> y;
@@ -31,107 +135,9 @@ int main() {
         adj[y].push_back(x);
     }
 
-    vector<int> max_length(n), path_count(n);
-    auto dfs = [&](int u, int p, auto&& dfs) -> void {
-		/**
-         * Calculates the longest path from vertex u,
-         * and the number of such paths.
-        */
-        max_length[u] = 0;
-        path_count[u] = 1;
-        for (int v : adj[u]) if (v != p) {
-            dfs(v, u, dfs);
-            if (max_length[u] < max_length[v] + 1) {
-                max_length[u] = max_length[v] + 1;
-                path_count[u] = path_count[v];
-            } else if (max_length[v] + 1 == max_length[u]) {
-                path_count[u] += path_count[v];
-            }
-        }
-    }; 
-    dfs(0, -1, dfs);
+    dfs(0, -1);
+    dfs2(0, -1, 0, 1);
 
-    ll hard = 0, cnt = 1;
-    auto dfs2 = [&](int u, int p, ll parDist, ll parCnt, 
-                    auto&& dfs2) -> void {
-		/**
-         * Performs the rerooting, to count the hardest
-         * path and the # of such paths at this vertex.
-        */
-        vector<array<ll, 2>> paths; // {distance, count}
-        if (u > 0 || (int) adj[u].size() == 1) {
-            paths.push_back({parDist, parCnt});
-        }
-        for (int v : adj[u]) if (v != p) {
-            paths.push_back({max_length[v] + 1, path_count[v]});
-        }
-        sort(paths.begin(), paths.end(), greater<>());
-        if ((int) adj[u].size() >= 3) { // can form a nonzero hard route
-            /**
-             * Let the 3 longest path lengths be a, b, c, with a > b > c.
-             * The optimal hard route "hardness" is a * (b + c).
-            */
-            ll a = paths[0][0], b = paths[1][0], c = paths[2][0];
-            ll cur = a * (b + c), num = 0, ties = 0;
-            for (auto [k, v] : paths) {
-                if (k == c) ties += v;
-            }
-
-            // case 1: all are distinct.
-            if (a != b && b != c) {
-                num = paths[1][1] * ties;
-            }
-            // case 2: all are the same.
-            else if (a == b && b == c) {
-                num = ties * ties;
-				for (auto [k, v] : paths) {
-					if (k == a) num -= v * v;
-				}
-				num /= 2; // avoiding double counting
-            }
-            // case 3: first two are the same.
-            else if (a == b) {
-                num = (paths[0][1] + paths[1][1]) * ties;
-            }
-            // case 4: last two are the same.
-            else {
-               	num = ties * ties;
-				for (auto [k, v] : paths) {
-					if (k == c) num -= v * v;
-				}
-				num /= 2;
-            }
-            if (hard < cur) {
-                hard = cur, cnt = num;
-            } else if (hard == cur) {
-                cnt += num;
-            }
-        }
-        // processing parent dist and parent count.
-        ll l1 = 0, l2 = 0, cnt1 = 0, cnt2 = 0;
-        for (auto [k, v] : paths) {
-            if (k + 1 > l1) {
-                swap(l1, l2);
-                swap(cnt1, cnt2);
-                l1 = k + 1, cnt1 = v;
-            } else if (k + 1 == l1) {
-                cnt1 += v;
-            } else if (k + 1 > l2) {
-                l2 = k + 1, cnt2 = v;
-            } else if (k + 1 == l2) {
-                cnt2 += v;
-            }
-        }
-        for (int v : adj[u]) if (v != p) {
-            // using the best parent hardness and parent count possible.
-            if (max_length[v] + 2 == l1) {
-                (path_count[v] == cnt1) ? dfs2(v, u, l2, cnt2, dfs2) :
-                            	          dfs2(v, u, l1, cnt1 - path_count[v], dfs2);
-            } else {
-                dfs2(v, u, l1, cnt1, dfs2);
-            }
-        }
-    }; dfs2(0, -1, 0, 1, dfs2);
-    cout << hard << ' ' << cnt << '\n';
+    cout << max_hardness << ' ' << hardest_path_count << '\n';
 }
 ```
