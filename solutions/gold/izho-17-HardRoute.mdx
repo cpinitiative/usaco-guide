@@ -50,7 +50,8 @@ int main() {
     }; 
     dfs(0, -1);
 
-    ll max_hardness = 0, hardest_path_count = 1; 
+    ll max_hardness = 0;
+    ll hardest_path_count = 1; 
     function<void(int, int, ll, ll)> dfs2 = [&](int u, int p, ll parDist, ll parCnt) {
 		/**
          * Performs the rerooting, to count the hardest
@@ -64,15 +65,20 @@ int main() {
             paths.push_back({max_length[v] + 1, path_count[v]});
         }
         sort(paths.begin(), paths.end(), greater<>());
-        if ((int) adj[u].size() >= 3) { // can form a nonzero hard route
+
+        if ((int) adj[u].size() >= 3) { // can form a nonzero hardness route
             /**
              * Let the 3 longest path lengths be a, b, c, with a > b > c.
              * The optimal hard route "hardness" is a * (b + c).
             */
-            ll a = paths[0][0], b = paths[1][0], c = paths[2][0];
-            ll cur = a * (b + c), num = 0, ties = 0;
-            for (auto [k, v] : paths) {
-                if (k == c) ties += v;
+            ll a = paths[0][0];
+            ll b = paths[1][0];
+            ll c = paths[2][0];
+            ll cur = a * (b + c);
+            ll num = 0;
+            ll ties = 0;
+            for (auto [len, cnt] : paths) {
+                if (len == c) ties += cnt;
             }
 
             if (a != b && b != c) {
@@ -96,6 +102,7 @@ int main() {
 				}
 				num /= 2; // avoiding double counting
             }
+
             if (max_hardness < cur) {
                 max_hardness = cur;
                 hardest_path_count = num;
@@ -108,17 +115,19 @@ int main() {
         ll longest2 = 0;
         ll count1 = 0;
         ll count2 = 0;
-        for (auto [k, v] : paths) {
-            if (k + 1 > longest1) {
+        for (auto [len, cnt] : paths) {
+            if (len + 1 > longest1) {
                 swap(longest1, longest2);
                 swap(count1, count2);
-                longest1 = k + 1, count1 = v;
-            } else if (k + 1 == longest1) {
-                count1 += v;
-            } else if (k + 1 > longest2) {
-                longest2 = k + 1, count2 = v;
-            } else if (k + 1 == longest2) {
-                count2 += v;
+                longest1 = len + 1;
+                count1 = cnt;
+            } else if (len + 1 == longest1) {
+                count1 += cnt;
+            } else if (len + 1 > longest2) {
+                longest2 = len + 1;
+                count2 = cnt;
+            } else if (len + 1 == longest2) {
+                count2 += cnt;
             }
         }
         for (int v : adj[u]) if (v != p) {
