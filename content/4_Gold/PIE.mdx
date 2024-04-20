@@ -15,3 +15,58 @@ frequency: 2
     <Resource source="CP Algorithm" title="the Inclusion-Exclusion Principle" url="https://cp-algorithms.com/combinatorics/inclusion-exclusion.html" starred> Well-covered article </Resource>
     <Resource sorce="wiki" title="Inclusion-exclusion  principle" url="https://en.wikipedia.org/wiki/Inclusion%E2%80%93exclusion_principle"></Resource>
 </Resources>
+
+## Applications
+
+### SQFREE
+
+<FocusProblem problem="SQRFEE" />
+
+<LanguageSection>
+<CPPSection>
+
+```cpp 
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+const int VALMAX = 2e7;
+
+int mobius[VALMAX];
+
+void precompute() {
+    mobius[1] = -1;
+    for(int i = 1; i < VALMAX; i++) {
+        if(mobius[i]) {
+            mobius[i] = -mobius[i];
+            for(int j = 2 * i; j < VALMAX;j += i) {
+                mobius[j] += mobius[i];
+            }
+        }
+    }
+}
+
+void test_case() {
+    long long n;
+    cin >> n;
+    long long cnt = 0;
+    for(int i = 1; 1LL * i * i <= n; i++) {
+        cnt += mobius[i] * n / (1LL * i * i);
+    }
+    cout << cnt << '\n';
+}
+
+int main() {
+    int t;
+    cin >> t;
+    precompute();
+    while(t--) {
+        test_case();
+    }
+    return 0;
+}
+```
+
+</CPPSection>
+</LanguageSection>
