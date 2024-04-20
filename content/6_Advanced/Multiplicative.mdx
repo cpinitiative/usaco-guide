@@ -215,19 +215,15 @@ Check out [this CF blog entry](https://codeforces.com/blog/entry/54090) for furt
 <CPPSection>
 
 ```cpp
-bool NotPrime[MaxN + 5];
-int Prs[MaxN / 20], Prc;
+std::vector <int> prime;
+bool is_composite[MAXN];
 
-void linearSieve(int n) {
-	NotPrime[1] = true;
-	for (int i = 2; i <= n; ++i) {
-		if (NotPrime[i] == false) Prs[++Prc] = i;
-		for (int j = 1; j <= Prc; ++j) {
-			int k = i * Prs[j];
-			if (k > n) break;
-			NotPrime[k] = true;
-			if (i % Prs[j] == 0) break;
-		}
+void sieve (int n) {
+	std::fill (is_composite, is_composite + n, false);
+	for (int i = 2; i < n; ++i) {
+		if (!is_composite[i]) prime.push_back (i);
+		for (int j = 2; i * j < n; ++j)
+			is_composite[i * j] = true;
 	}
 }
 ```
@@ -249,39 +245,41 @@ This problem requires finding the count of prime numbers not exceeding $N$ and t
 <CPPSection>
 
 ```cpp
-#include <cstdio>
+#include <bits/stdc++.h>
+using namespace std;
+const int MAXN = 500000000;
 
-const int MaxN = 500000000;
+using ll = long long;
 
-int N, A, B;
-bool NotPrime[MaxN + 5];
-int Prs[MaxN / 20], Prc;
 
-void linearSieve(int n) {
-	NotPrime[1] = true;
-	for (int i = 2; i <= n; ++i) {
-		if (NotPrime[i] == false) Prs[++Prc] = i;
-		for (int j = 1; j <= Prc; ++j) {
-			int k = i * Prs[j];
-			if (k > n) break;
-			NotPrime[k] = true;
-			if (i % Prs[j] == 0) break;
-		}
+vector<int> prime;
+bool is_composite[MAXN];
+
+void sieve (int n) {
+	fill (is_composite, is_composite + n, false);
+	for (int i = 2; i < n; ++i) {
+		if (!is_composite[i]) prime.push_back (i);
+		for (int j = 2; i * j < n; ++j)
+			is_composite[i * j] = true;
 	}
 }
 
-void solve() {
-	linearSieve(N);
-	int x = Prc / A + (Prc % A >= B + 1);
-	printf("%d %d\n", Prc, x);
-	for (int i = B + 1, cnt = 1; i <= Prc; i += A, ++cnt)
-		printf("%d%c", Prs[i], " \n"[cnt == x]);
-}
+int main()
+{
+    cin.tie(0)->sync_with_stdio(false);
 
-int main() {
-	scanf("%d %d %d", &N, &A, &B);
-	solve();
-	return 0;
+    int n, a, b; cin >> n >> a >> b;
+    sieve(n);
+    
+    
+    
+    int c = 0;
+    while(a*c+b < prime.size()) c++;
+
+    cout << prime.size() << ' ' << c << '\n';
+    c = 0;
+    while(a*c+b < prime.size()) cout << prime[a*c+b] << ' ', c++;
+    cout << '\n';
 }
 ```
 
