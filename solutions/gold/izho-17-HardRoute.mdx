@@ -35,11 +35,11 @@ int main() {
 
 	vector<int> max_length(n);
 	vector<int> path_count(n);
+	/**
+	 * Calculates the longest path from vertex u,
+	 * and the number of such paths.
+	 */
 	function<void(int, int)> dfs = [&](int u, int p) {
-		/**
-		 * Calculates the longest path from vertex u,
-		 * and the number of such paths.
-		 */
 		max_length[u] = 0;
 		path_count[u] = 1;
 		for (int v : adj[u])
@@ -53,22 +53,24 @@ int main() {
 				}
 			}
 	};
+
 	dfs(0, -1);
 
 	ll max_hardness = 0;
 	ll hardest_path_count = 1;
+	/**
+	 * Performs the rerooting, to count the hardest
+	 * path and the # of such paths at this vertex.
+	 */
 	function<void(int, int, ll, ll)> dfs2 = [&](int u, int p, ll parDist,
 	                                            ll parCnt) {
-		/**
-		 * Performs the rerooting, to count the hardest
-		 * path and the # of such paths at this vertex.
-		 */
 		vector<array<ll, 2>> paths;  // {distance, count}
 		if (u > 0 || (int)adj[u].size() == 1) {
 			paths.push_back({parDist, parCnt});
 		}
 		for (int v : adj[u])
 			if (v != p) { paths.push_back({max_length[v] + 1, path_count[v]}); }
+
 		sort(paths.begin(), paths.end(), greater<>());
 
 		if ((int)adj[u].size() >= 3) {  // can form a nonzero hardness route
@@ -115,6 +117,7 @@ int main() {
 				hardest_path_count += num;
 			}
 		}
+
 		// processing parent dist and parent count.
 		ll longest1 = 0;
 		ll longest2 = 0;
@@ -135,6 +138,7 @@ int main() {
 				count2 += cnt;
 			}
 		}
+
 		for (int v : adj[u])
 			if (v != p) {
 				// using the best parent hardness and parent count possible.
@@ -147,6 +151,7 @@ int main() {
 				}
 			}
 	};
+
 	dfs2(0, -1, 0, 1);
 
 	cout << max_hardness << ' ' << hardest_path_count << '\n';
