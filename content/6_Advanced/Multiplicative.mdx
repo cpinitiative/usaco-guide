@@ -215,15 +215,14 @@ Check out [this CF blog entry](https://codeforces.com/blog/entry/54090) for furt
 <CPPSection>
 
 ```cpp
-std::vector <int> prime;
+std::vector<int> prime;
 bool is_composite[MAXN];
 
-void sieve (int n) {
-	std::fill (is_composite, is_composite + n, false);
+void sieve(int n) {
+	std::fill(is_composite, is_composite + n, false);
 	for (int i = 2; i < n; ++i) {
-		if (!is_composite[i]) prime.push_back (i);
-		for (int j = 2; i * j < n; ++j)
-			is_composite[i * j] = true;
+		if (!is_composite[i]) prime.push_back(i);
+		for (int j = 2; i * j < n; ++j) is_composite[i * j] = true;
 	}
 }
 ```
@@ -251,35 +250,31 @@ const int MAXN = 500000000;
 
 using ll = long long;
 
-
 vector<int> prime;
 bool is_composite[MAXN];
 
-void sieve (int n) {
-	fill (is_composite, is_composite + n, false);
+void sieve(int n) {
+	fill(is_composite, is_composite + n, false);
 	for (int i = 2; i < n; ++i) {
-		if (!is_composite[i]) prime.push_back (i);
-		for (int j = 2; i * j < n; ++j)
-			is_composite[i * j] = true;
+		if (!is_composite[i]) prime.push_back(i);
+		for (int j = 2; i * j < n; ++j) is_composite[i * j] = true;
 	}
 }
 
-int main()
-{
-    cin.tie(0)->sync_with_stdio(false);
+int main() {
+	cin.tie(0)->sync_with_stdio(false);
 
-    int n, a, b; cin >> n >> a >> b;
-    sieve(n);
-    
-    
-    
-    int c = 0;
-    while(a*c+b < prime.size()) c++;
+	int n, a, b;
+	cin >> n >> a >> b;
+	sieve(n);
 
-    cout << prime.size() << ' ' << c << '\n';
-    c = 0;
-    while(a*c+b < prime.size()) cout << prime[a*c+b] << ' ', c++;
-    cout << '\n';
+	int c = 0;
+	while (a * c + b < prime.size()) c++;
+
+	cout << prime.size() << ' ' << c << '\n';
+	c = 0;
+	while (a * c + b < prime.size()) cout << prime[a * c + b] << ' ', c++;
+	cout << '\n';
 }
 ```
 
