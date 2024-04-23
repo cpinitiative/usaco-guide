@@ -2,96 +2,174 @@
 id: poi-10-frog
 source: POI 2010
 title: Frog
-author: Benjamin Qi
+author: Benjamin Qi, Justin Ji
 ---
 
+## Explanation
+To calculate the k-th closest rock from a certain location,
+we maintain a sliding window of size $k+1$. Essentially, we sweep
+left to right, and keep on moving the window right until either:
+
+$1.$ The window cannot be moved right any further.
+
+$2.$ Moving the window to the right would increase the maximum distance from this current location.
+
+However, directly calculating binary lifts would take up too much memory. From here, there are two ways to proceed:
+
+## Solution 1 
+Iterate over the power of two we are lifting on in increasing order. Similar to binary exponentiation,
+we calculate the $2^{i}$-th next location at every step, and check if we need to use this current lift.
+
+**Time Complexity:** $\mathcal{O}(N\log M)$
+
+**Space Complexity:** $\mathcal{O}(N)$
+
+## Solution 2 
+Observe that a functional graph is constructed through these jumps. After $n$ jumps, any node that 
+you start from will end up being inside a cycle. Thus, we can calculate our binary lifts like normal,
+and calculate the number of jumps, modulo the cycle size.
+
+**Time Complexity:** $\mathcal{O}(N\log N)$
+
+**Space Complexity:** $\mathcal{O}(N\log N)$
+
+## Implementation #1
 ```cpp
 #include <bits/stdc++.h>
-#include <ext/pb_ds/assoc_container.hpp>
-
 using namespace std;
-using namespace __gnu_pbds;
-
-typedef long long ll;
-typedef vector<int> vi;
-typedef pair<int, int> pii;
-template <class T>
-using Tree =
-    tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
-
-#define FOR(i, a, b) for (int i = a; i < (b); i++)
-#define F0R(i, a) for (int i = 0; i < (a); i++)
-#define FORd(i, a, b) for (int i = (b) - 1; i >= a; i--)
-#define F0Rd(i, a) for (int i = (a) - 1; i >= 0; i--)
-
-#define sz(x) (int)(x).size()
-#define mp make_pair
-#define pb push_back
-#define f first
-#define s second
-#define lb lower_bound
-#define ub upper_bound
-#define all(x) x.begin(), x.end()
-
-const int MOD = 1000000007;
-const int MX = 1000001;
-
-int n, k, sz[MX], nex[MX][20];
-ll m;
-
-int get(int x, int lef) {
-	F0Rd(i, 20) if (lef & (1 << i)) x = nex[x][i];
-	return x;
-}
-
-void solve(int x) {
-	if (m <= n) cout << get(x, m) << " ";
-	else {
-		x = get(x, n);
-		cout << get(x, (m - n) % sz[x]) << " ";
-	}
-}
-
-ll p[MX];
-
-void genNex() {
-	pii cur = {1, k + 1};
-	FOR(i, 1, n + 1) {
-		while (cur.s < n && p[cur.s + 1] - p[i] < p[i] - p[cur.f])
-			cur.f++, cur.s++;
-		if (p[i] - p[cur.f] >= p[cur.s] - p[i]) nex[i][0] = cur.f;
-		else nex[i][0] = cur.s;
-	}
-}
-
-int vis[MX];
-
-void cycSize() {
-	FOR(i, 1, n + 1) {
-		int I = i;
-		for (; vis[I] == 0; I = nex[I][0]) vis[I] = i;
-		if (vis[I] != i) continue;
-
-		int cur = 0;
-		for (; vis[I] == i; I = nex[I][0]) {
-			cur++;
-			vis[I] += n;
-		}
-		for (; vis[I] == i + n; I = nex[I][0]) {
-			sz[I] = cur;
-			vis[I] += n;
-		}
-	}
-}
+using ll = long long;
 
 int main() {
-	ios_base::sync_with_stdio(0);
-	cin.tie(0);
-	cin >> n >> k >> m;
-	FOR(i, 1, n + 1) cin >> p[i];
-	genNex();
-	FOR(i, 1, 20) FOR(j, 1, n + 1) nex[j][i] = nex[nex[j][i - 1]][i - 1];
-	cycSize();
-	FOR(i, 1, n + 1) solve(i);
+    cin.tie(0) -> sync_with_stdio(0);
+    int n, k; 
+    ll m;
+    cin >> n >> k >> m;
+    vector<ll> rocks(n);
+    for (ll &i : rocks) {
+        cin >> i;
+    }
+    vector<int> next_stone(n);
+    /*
+     * Maintain a sliding window of
+     * size k + 1 to calculate the next stone
+     * the frog will jump to.
+    */
+    int l = 0, r = k;
+    for (int i = 0; i < n; i++) {
+        while (r + 1 < n && rocks[r + 1] - rocks[i] < rocks[i] - rocks[l]) {
+            ++l, ++r;
+        }
+        next_stone[i] = (rocks[i] - rocks[l] >= rocks[r] - rocks[i]) ? l : r;
+    }
+    const int LOG = 64 - __builtin_clzll(m);
+    vector<int> res(n);
+    iota(begin(res), end(res), 0);
+    /*
+     * Calculate the 2^i-th bit at every step,
+     * and check if we need to make this "lift".
+    */
+    for (int i = 0; i < LOG; i++) {
+        if ((m >> i) & 1) {
+            for (int j = 0; j < n; j++) {
+                res[j] = next_stone[res[j]];
+            }
+        }
+        vector<int> nxt_t(n);
+        for (int j = 0; j < n; j++) {
+            nxt_t[j] = next_stone[next_stone[j]];
+        }
+        next_stone = nxt_t;
+    }
+    for (int i = 0; i < n; i++) {
+        cout << res[i] + 1 << " \n"[i == n - 1];
+    }
+	return 0;
+}
+```
+
+## Implementation #2 
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+
+int main() {
+    cin.tie(0) -> sync_with_stdio(0);
+    int n, k;
+    ll m;
+    cin >> n >> k >> m;
+    vector<ll> rocks(n);
+    for (ll &i : rocks) {
+        cin >> i;
+    }
+    const int LOG = 32 - __builtin_clz(n);
+    vector<vector<int>> lift(n, vector<int>(LOG));
+    /*
+     * Maintain a sliding window of
+     * size k + 1 to calculate the next stone
+     * the frog will jump to.
+    */
+    int l = 0, r = k;
+    for (int i = 0; i < n; i++) {
+        while (r + 1 < n && rocks[r + 1] - rocks[i] < rocks[i] - rocks[l]) {
+            ++l, ++r;
+        }
+        lift[i][0] = (rocks[i] - rocks[l] >= rocks[r] - rocks[i]) ? l : r;
+    }
+    for (int i = 1; i < LOG; i++) {
+        for (int j = 0; j < n; j++) {
+            lift[j][i] = lift[lift[j][i - 1]][i - 1];
+        }
+    }
+    /**
+     * Calculate the size of the cycles formed.
+    */
+    vector<int> cycle_size(n);
+    vector<int> prev_node(n, -1);
+    for (int i = 0; i < n; i++) {
+        int ptr = i;
+        while (prev_node[ptr] == -1) {
+            prev_node[ptr] = i;
+            ptr = lift[ptr][0];
+        }
+        if (prev_node[ptr] != i) 
+            continue;
+        int cur_size = 0;
+        while (prev_node[ptr] == i) {
+            ++cur_size;
+            prev_node[ptr] += n;
+            ptr = lift[ptr][0];
+        }
+        while (prev_node[ptr] == i + n) {
+            cycle_size[ptr] = cur_size;
+            prev_node[ptr] += n;
+            ptr = lift[ptr][0];
+        }
+    }
+    auto jump = [&](int idx, int dist) -> int {
+        for (int i = LOG - 1; i >= 0; i--) {
+            if ((dist >> i) & 1) 
+                idx = lift[idx][i];
+        }
+        return idx;
+    };
+    /**
+     * If m <= n, then we can just binary lift on our answer.
+     * Otherwise, observe that after n jumps, the current location
+     * will be inside some cycle. Thus, we can calculate the binary lift,
+     * modulo the cycle's size.
+    */
+    for (int i = 0; i < n; i++) {
+        int res = -1;
+        if (m <= n) {
+            res = jump(i, m);
+        } else {
+            int cycle_node = jump(i, n);
+            int jumps = (m - n) % cycle_size[cycle_node];
+            res = jump(cycle_node, jumps);
+        }
+        cout << res + 1 << " \n"[i == n - 1];
+    }
+    return 0;
 }
 ```
