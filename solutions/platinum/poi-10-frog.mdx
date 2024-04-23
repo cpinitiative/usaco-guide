@@ -6,7 +6,7 @@ author: Benjamin Qi, Justin Ji
 ---
 
 ## Explanation
-To calculate the k-th closest rock from a certain location,
+To calculate the $k$-th closest rock from a certain location,
 we maintain a sliding window of size $k+1$. Essentially, we sweep
 left to right, and keep on moving the window right until either:
 
@@ -14,7 +14,8 @@ $1.$ The window cannot be moved right any further.
 
 $2.$ Moving the window to the right would increase the maximum distance from this current location.
 
-However, directly calculating binary lifts would take up too much memory. From here, there are two ways to proceed:
+Afterwards, we can proceed to binary lift to get our answer. However, directly calculating binary lifts 
+the traditional way would take up too much memory. From here, there are two ways to proceed:
 
 ## Solution 1 
 Iterate over the power of two we are lifting on in increasing order. Similar to binary exponentiation,
@@ -26,7 +27,7 @@ we calculate the $2^{i}$-th next location at every step, and check if we need to
 
 ## Solution 2 
 Observe that a functional graph is constructed through these jumps. After $n$ jumps, any node that 
-you start from will end up being inside a cycle. Thus, we can calculate our binary lifts like normal,
+we start from will end up being inside a cycle. Thus, we can calculate our binary lifts like normal,
 and calculate the number of jumps, modulo the cycle size.
 
 **Time Complexity:** $\mathcal{O}(N\log N)$
