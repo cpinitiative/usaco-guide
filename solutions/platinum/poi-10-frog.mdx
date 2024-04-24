@@ -49,7 +49,7 @@ int main() {
 		}
 		next_stone[i] = (rocks[i] - rocks[l] >= rocks[r] - rocks[i]) ? l : r;
 	}
-	const int LOG = (int) log2l(m) + 1;
+	const int LOG = (int)log2l(m) + 1;
 	vector<int> res(n);
 	iota(begin(res), end(res), 0);
 	/*
@@ -90,10 +90,10 @@ int main() {
 	cin >> n >> k >> m;
 	vector<ll> rocks(n);
 	for (ll &i : rocks) { cin >> i; }
-	const int LOG = (int) log2(n) + 1;
+	const int LOG = (int)log2(n) + 1;
 	vector<vector<int>> lift(n, vector<int>(LOG));
 	// Maintain a sliding window of size k + 1 to
-    // calculate the next stone the frog will jump to.
+	// calculate the next stone the frog will jump to.
 	int l = 0, r = k;
 	for (int i = 0; i < n; i++) {
 		while (r + 1 < n && rocks[r + 1] - rocks[i] < rocks[i] - rocks[l]) {
@@ -115,9 +115,7 @@ int main() {
 			prev_node[ptr] = i;
 			ptr = lift[ptr][0];
 		}
-		if (prev_node[ptr] != i) {
-            continue;
-        }
+		if (prev_node[ptr] != i) { continue; }
 		int cur_size = 0;
 		while (prev_node[ptr] == i) {
 			cur_size++;
