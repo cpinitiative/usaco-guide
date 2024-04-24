@@ -54,12 +54,11 @@ int main() {
 		next_stone[i] = (rocks[i] - rocks[l] >= rocks[r] - rocks[i]) ? l : r;
 	}
 
-	const int LOG = (int)log2l(m) + 1;
 	vector<int> res(n);
 	iota(begin(res), end(res), 0);
 	// Calculate the 2^i-th bit at every step,
 	// and check if we need to make this "lift".
-	for (int i = 0; i < LOG; i++) {
+	for (int i = 0; i <= (int)log2l(m); i++) {
 		if ((m >> i) & 1) {
 			for (int j = 0; j < n; j++) { res[j] = next_stone[res[j]]; }
 		}
