@@ -25,16 +25,7 @@ we calculate the $2^{i}$-th next location at every step, and check if we need to
 
 **Space Complexity:** $\mathcal{O}(N)$
 
-## Solution 2
-Observe that a functional graph is constructed through these jumps. After $n$ jumps, any node that
-we start from will end up being inside a cycle. Thus, we can calculate our binary lifts like normal,
-and calculate the number of jumps, modulo the cycle size.
-
-**Time Complexity:** $\mathcal{O}(N\log N)$
-
-**Space Complexity:** $\mathcal{O}(N\log N)$
-
-## Implementation #1
+## Implementation
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
@@ -56,11 +47,11 @@ int main() {
 	int l = 0, r = k;
 	for (int i = 0; i < n; i++) {
 		while (r + 1 < n && rocks[r + 1] - rocks[i] < rocks[i] - rocks[l]) {
-			++l, ++r;
+			l++, r++;
 		}
 		next_stone[i] = (rocks[i] - rocks[l] >= rocks[r] - rocks[i]) ? l : r;
 	}
-	const int LOG = 64 - __builtin_clzll(m);
+	const int LOG = (int) log2l(m) + 1;
 	vector<int> res(n);
 	iota(begin(res), end(res), 0);
 	/*
@@ -76,11 +67,19 @@ int main() {
 		next_stone = nxt_t;
 	}
 	for (int i = 0; i < n; i++) { cout << res[i] + 1 << " \n"[i == n - 1]; }
-	return 0;
 }
 ```
 
-## Implementation #2
+## Solution 2
+Observe that a functional graph is constructed through these jumps. After $n$ jumps, any node that
+we start from will end up being inside a cycle. Thus, we can calculate our binary lifts like normal,
+and calculate the number of jumps, modulo the cycle size.
+
+**Time Complexity:** $\mathcal{O}(N\log N)$
+
+**Space Complexity:** $\mathcal{O}(N\log N)$
+
+## Implementation
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
@@ -93,17 +92,14 @@ int main() {
 	cin >> n >> k >> m;
 	vector<ll> rocks(n);
 	for (ll &i : rocks) { cin >> i; }
-	const int LOG = 32 - __builtin_clz(n);
+	const int LOG = (int) log2(n) + 1;
 	vector<vector<int>> lift(n, vector<int>(LOG));
-	/*
-	 * Maintain a sliding window of
-	 * size k + 1 to calculate the next stone
-	 * the frog will jump to.
-	 */
+	// Maintain a sliding window of size k + 1 to
+    // calculate the next stone the frog will jump to.
 	int l = 0, r = k;
 	for (int i = 0; i < n; i++) {
 		while (r + 1 < n && rocks[r + 1] - rocks[i] < rocks[i] - rocks[l]) {
-			++l, ++r;
+			l++, r++;
 		}
 		lift[i][0] = (rocks[i] - rocks[l] >= rocks[r] - rocks[i]) ? l : r;
 	}
@@ -112,9 +108,7 @@ int main() {
 			lift[j][i] = lift[lift[j][i - 1]][i - 1];
 		}
 	}
-	/**
-	 * Calculate the size of the cycles formed.
-	 */
+	// Calculate the sizes of the cycles formed.
 	vector<int> cycle_size(n);
 	vector<int> prev_node(n, -1);
 	for (int i = 0; i < n; i++) {
@@ -123,10 +117,12 @@ int main() {
 			prev_node[ptr] = i;
 			ptr = lift[ptr][0];
 		}
-		if (prev_node[ptr] != i) continue;
+		if (prev_node[ptr] != i) {
+            continue;
+        }
 		int cur_size = 0;
 		while (prev_node[ptr] == i) {
-			++cur_size;
+			cur_size++;
 			prev_node[ptr] += n;
 			ptr = lift[ptr][0];
 		}
@@ -142,7 +138,7 @@ int main() {
 		}
 		return idx;
 	};
-	/**
+	/*
 	 * If m <= n, then we can just binary lift on our answer.
 	 * Otherwise, observe that after n jumps, the current location
 	 * will be inside some cycle. Thus, we can calculate the binary lift,
@@ -159,6 +155,5 @@ int main() {
 		}
 		cout << res + 1 << " \n"[i == n - 1];
 	}
-	return 0;
 }
 ```
