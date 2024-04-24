@@ -26,6 +26,8 @@ we calculate the $2^{i}$-th next location at every step, and check if we need to
 
 **Space Complexity:** $\mathcal{O}(N)$
 
+<LanguageSection>
+<CPPSection>
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
@@ -42,7 +44,8 @@ int main() {
 	vector<int> next_stone(n);
 	// Maintain a sliding window of size k + 1 to
 	// calculate the next stone the frog will jump to.
-	int l = 0, r = k;
+	int l = 0;
+	int r = k;
 	for (int i = 0; i < n; i++) {
 		while (r + 1 < n && rocks[r + 1] - rocks[i] < rocks[i] - rocks[l]) {
 			l++, r++;
@@ -68,6 +71,9 @@ int main() {
 }
 ```
 
+</CPPSection>
+</LanguageSection>
+
 ## Implementation 2
 
 Observe that a functional graph is constructed through these jumps. After $n$ jumps, any node that
@@ -77,6 +83,9 @@ and calculate the number of jumps, modulo the cycle size.
 **Time Complexity:** $\mathcal{O}(N\log N)$
 
 **Space Complexity:** $\mathcal{O}(N\log N)$
+
+<LanguageSection>
+<CPPSection>
 
 ```cpp
 #include <bits/stdc++.h>
@@ -158,3 +167,6 @@ int main() {
 	}
 }
 ```
+
+</CPPSection>
+</LanguageSection>
