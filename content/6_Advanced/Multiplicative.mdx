@@ -148,18 +148,19 @@ int main() {
 	long long n;
 	scanf("%lld", &n);  // Taking input for n
 	long long sum = 0;
-	int i; // Initializing i globally to keep its value after the loop
+	int i;  // Initializing i globally to keep its value after the loop
 	for (i = 1; i * i <= n; i++) {  // Looping until i * i <= n
 		sum += i * (n / i);         // Adding i * (n / i) to the sum
 		int b = n / i;
 		int a = n / (i + 1) + 1;
-		sum += (a + b) * (b - a + 1) / 2 * i;  // Adding the sum of elements from 'a' to 'b'
+		sum += (a + b) * (b - a + 1) / 2 *
+		       i;  // Adding the sum of elements from 'a' to 'b'
 	}
 	i--;  // Decrementing i to match the last value used in the loop
 	if (i == n / i) {
 		sum -= i * (n / i);  // Adjusting the sum if n is a perfect square
 	}
-	printf("%lld\n", sum);  
+	printf("%lld\n", sum);
 }
 ```
 
@@ -290,15 +291,14 @@ information.
 <CPPSection>
 
 ```cpp
-std::vector <int> prime;
+std::vector<int> prime;
 bool is_composite[MAXN];
 
-void sieve (int n) {
-	std::fill (is_composite, is_composite + n, false);
+void sieve(int n) {
+	std::fill(is_composite, is_composite + n, false);
 	for (int i = 2; i < n; ++i) {
-		if (!is_composite[i]) prime.push_back (i);
-		for (int j = 2; i * j < n; ++j)
-			is_composite[i * j] = true;
+		if (!is_composite[i]) prime.push_back(i);
+		for (int j = 2; i * j < n; ++j) is_composite[i * j] = true;
 	}
 }
 ```
@@ -334,32 +334,29 @@ const int MAXN = 500000000;
 
 using ll = long long;
 
-
 vector<int> prime;
 bool is_composite[MAXN];
 
-void sieve (int n) {
-	fill (is_composite, is_composite + n, false);
+void sieve(int n) {
+	fill(is_composite, is_composite + n, false);
 	for (int i = 2; i < n; ++i) {
-		if (!is_composite[i]) prime.push_back (i);
-		for (int j = 2; i * j < n; ++j)
-			is_composite[i * j] = true;
+		if (!is_composite[i]) prime.push_back(i);
+		for (int j = 2; i * j < n; ++j) is_composite[i * j] = true;
 	}
 }
 
-int main()
-{
-    int n, a, b; cin >> n >> a >> b;
-    sieve(n);
+int main() {
+	int n, a, b;
+	cin >> n >> a >> b;
+	sieve(n);
 
+	int c = 0;
+	while (a * c + b < prime.size()) c++;
 
-    int c = 0;
-    while(a*c+b < prime.size()) c++;
-
-    cout << prime.size() << ' ' << c << '\n';
-    c = 0;
-    while(a*c+b < prime.size()) cout << prime[a*c+b] << ' ', c++;
-    cout << '\n';
+	cout << prime.size() << ' ' << c << '\n';
+	c = 0;
+	while (a * c + b < prime.size()) cout << prime[a * c + b] << ' ', c++;
+	cout << '\n';
 }
 ```
 
@@ -370,7 +367,7 @@ int main()
 
 <FocusProblem problem="f4" />
 
-## Explanation 
+## Explanation
 This solution offers two approaches to efficiently count prime numbers up to $N$:
 
 1. **Complexity $O(N^{3/4})$**: Utilizes a dynamic programming approach based on a recursion relation derived from sieving. The algorithm iteratively reduces the count of numbers that are not divisible by primes, utilizing a recursive formula. It achieves a complexity of $O(N^{3/4}\log^{1/2}N)$.
@@ -392,42 +389,41 @@ https://codeforces.com/blog/entry/91632
 ```cpp
 using ll = long long;
 ll count_primes(ll n) {
-    vector<ll> v;
-    for (ll k = 1; k * k <= n; ++k) {
-        v.push_back(n / k);
-        v.push_back(k);
-    }
-    sort(v.begin(), v.end());
-    v.erase(unique(v.begin(), v.end()), v.end());
+	vector<ll> v;
+	for (ll k = 1; k * k <= n; ++k) {
+		v.push_back(n / k);
+		v.push_back(k);
+	}
+	sort(v.begin(), v.end());
+	v.erase(unique(v.begin(), v.end()), v.end());
 
-    // return i such that v[i] = x
-    // since v[i] = i + 1 for i <= sqrt(n) and v[v.size() - i] = n / i for i <= sqrt(n),
-    // we can calculate index in O(1)
-    ll sq = sqrt(n);
-    auto geti = [&](ll x) {
-        if (x <= sq) return (int)x - 1;
-        else         return (int)(v.size() - (n / x));
-    };
+	// return i such that v[i] = x
+	// since v[i] = i + 1 for i <= sqrt(n) and v[v.size() - i] = n / i for i <=
+	// sqrt(n), we can calculate index in O(1)
+	ll sq = sqrt(n);
+	auto geti = [&](ll x) {
+		if (x <= sq) return (int)x - 1;
+		else return (int)(v.size() - (n / x));
+	};
 
-    vector<ll> dp(v.size());
+	vector<ll> dp(v.size());
 
-    // S(n, 0) = n
-    for (int i = 0; i < v.size(); ++i)
-        dp[i] = v[i];
+	// S(n, 0) = n
+	for (int i = 0; i < v.size(); ++i) dp[i] = v[i];
 
-    int a = 0;
-    for (ll p = 2; p * p <= n; ++p) {
-        // this condition is true for primes
-        if (dp[geti(p)] != dp[geti(p - 1)]) {
-            ++a;
-            for (int i = (int)v.size() - 1; i >= 0; --i) {
-                if (v[i] < p * p) break;
-                dp[i] -= dp[geti(v[i] / p)] - a;
-            }
-        }
-    }
+	int a = 0;
+	for (ll p = 2; p * p <= n; ++p) {
+		// this condition is true for primes
+		if (dp[geti(p)] != dp[geti(p - 1)]) {
+			++a;
+			for (int i = (int)v.size() - 1; i >= 0; --i) {
+				if (v[i] < p * p) break;
+				dp[i] -= dp[geti(v[i] / p)] - a;
+			}
+		}
+	}
 
-    return dp[geti(n)] - 1;
+	return dp[geti(n)] - 1;
 }
 ```
 
@@ -442,111 +438,105 @@ ll count_primes(ll n) {
 ```cpp
 using ll = long long;
 struct _count_primes_struct_t_ {
-    vector<int> primes;
-    vector<int> mnprimes;
-    ll ans;
-    ll y;
-    vector<pair<pair<ll, int>, char>> queries;
+	vector<int> primes;
+	vector<int> mnprimes;
+	ll ans;
+	ll y;
+	vector<pair<pair<ll, int>, char>> queries;
 
-    ll count_primes(ll n) {
-        // this y is actually n/y
-        // also no logarithms, welcome to reality, this y is the best for n=10^12 or n=10^13
-        y = pow(n, 0.64);
-        if (n < 100) y = n;
+	ll count_primes(ll n) {
+		// this y is actually n/y
+		// also no logarithms, welcome to reality, this y is the best for
+		// n=10^12 or n=10^13
+		y = pow(n, 0.64);
+		if (n < 100) y = n;
 
-        // linear sieve
-        primes.clear();
-        mnprimes.assign(y + 1, -1);
-        ans = 0;
-        for (int i = 2; i <= y; ++i) {
-            if (mnprimes[i] == -1) {
-                mnprimes[i] = primes.size();
-                primes.push_back(i);
-            }
-            for (int k = 0; k < primes.size(); ++k) {
-                int j = primes[k];
-                if (i * j > y) break;
-                mnprimes[i * j] = k;
-                if (i % j == 0) break;
-            }
-        }
-        if (n < 100) return primes.size();
-        ll s = n / y;
+		// linear sieve
+		primes.clear();
+		mnprimes.assign(y + 1, -1);
+		ans = 0;
+		for (int i = 2; i <= y; ++i) {
+			if (mnprimes[i] == -1) {
+				mnprimes[i] = primes.size();
+				primes.push_back(i);
+			}
+			for (int k = 0; k < primes.size(); ++k) {
+				int j = primes[k];
+				if (i * j > y) break;
+				mnprimes[i * j] = k;
+				if (i % j == 0) break;
+			}
+		}
+		if (n < 100) return primes.size();
+		ll s = n / y;
 
-        for (int p : primes) {
-            if (p > s) break;
-            ans++;
-        }
-        // pi(n / y)
-        int ssz = ans;
+		for (int p : primes) {
+			if (p > s) break;
+			ans++;
+		}
+		// pi(n / y)
+		int ssz = ans;
 
-        // F with two pointers
-        int ptr = primes.size() - 1;
-        for (int i = ssz; i < primes.size(); ++i) {
-            while (ptr >= i && (ll)primes[i] * primes[ptr] > n)
-                --ptr;
-            if (ptr < i) break;
-            ans -= ptr - i + 1;
-        }
+		// F with two pointers
+		int ptr = primes.size() - 1;
+		for (int i = ssz; i < primes.size(); ++i) {
+			while (ptr >= i && (ll)primes[i] * primes[ptr] > n) --ptr;
+			if (ptr < i) break;
+			ans -= ptr - i + 1;
+		}
 
-        // phi, store all queries 
-        phi(n, ssz - 1);
+		// phi, store all queries
+		phi(n, ssz - 1);
 
-        sort(queries.begin(), queries.end());
-        int ind = 2;
-        int sz = primes.size();
+		sort(queries.begin(), queries.end());
+		int ind = 2;
+		int sz = primes.size();
 
-        // the order in fenwick will be reversed, because prefix sum in a fenwick is just one query
-        fenwick fw(sz);
-        for (auto [na, sign] : queries) {
-            auto [n, a] = na;
-            while (ind <= n)
-                fw.add(sz - 1 - mnprimes[ind++], 1);
-            ans += (fw.ask(sz - a - 2) + 1) * sign;
-        }
-        queries.clear();
-        return ans - 1;
-    }
+		// the order in fenwick will be reversed, because prefix sum in a
+		// fenwick is just one query
+		fenwick fw(sz);
+		for (auto [na, sign] : queries) {
+			auto [n, a] = na;
+			while (ind <= n) fw.add(sz - 1 - mnprimes[ind++], 1);
+			ans += (fw.ask(sz - a - 2) + 1) * sign;
+		}
+		queries.clear();
+		return ans - 1;
+	}
 
-    void phi(ll n, int a, int sign = 1) {
-        if (n == 0) return;
-        if (a == -1) {
-            ans += n * sign;
-            return;
-        }
-        if (n <= y) {
-            queries.emplace_back(make_pair(n, a), sign);
-            return;
-        }
-        phi(n, a - 1, sign);
-        phi(n / primes[a], a - 1, -sign);
-    }
+	void phi(ll n, int a, int sign = 1) {
+		if (n == 0) return;
+		if (a == -1) {
+			ans += n * sign;
+			return;
+		}
+		if (n <= y) {
+			queries.emplace_back(make_pair(n, a), sign);
+			return;
+		}
+		phi(n, a - 1, sign);
+		phi(n / primes[a], a - 1, -sign);
+	}
 
-    struct fenwick {
-        vector<int> tree;
-        int n;
+	struct fenwick {
+		vector<int> tree;
+		int n;
 
-        fenwick(int n = 0) : n(n) {
-            tree.assign(n, 0);
-        }
+		fenwick(int n = 0) : n(n) { tree.assign(n, 0); }
 
-        void add(int i, int k) {
-            for (; i < n; i = (i | (i + 1)))
-                tree[i] += k;
-        }
+		void add(int i, int k) {
+			for (; i < n; i = (i | (i + 1))) tree[i] += k;
+		}
 
-        int ask(int r) {
-            int res = 0;
-            for (; r >= 0; r = (r & (r + 1)) - 1)
-                res += tree[r];
-            return res;
-        }
-    };
+		int ask(int r) {
+			int res = 0;
+			for (; r >= 0; r = (r & (r + 1)) - 1) res += tree[r];
+			return res;
+		}
+	};
 } _count_primes_struct_;
 
-ll count_primes(ll n) {
-    return _count_primes_struct_.count_primes(n);
-}
+ll count_primes(ll n) { return _count_primes_struct_.count_primes(n); }
 ```
 </CPPSection>
 </LanguageSection>
