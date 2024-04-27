@@ -476,15 +476,15 @@ int main() {
 		if (!visited[i]) {
 			queue<int> q;
 			q.push(i);
-
+			visited[i] = true;
 			while (!q.empty()) {
 				int current_node = q.front();
 				q.pop();
-
-				visited[current_node] = true;
-
 				for (int neighbor : adj[current_node]) {
-					if (!visited[neighbor]) { q.push(neighbor); }
+					if (!visited[neighbor]) { 
+						visited[neighbor] = true;
+						q.push(neighbor); 
+					}
 				}
 			}
 		}
