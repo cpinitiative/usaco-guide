@@ -390,16 +390,16 @@ It achieves a complexity of $O(N^{3/4}\log^{1/2}N)$.
 <CPPSection>
 
 ```cpp
-#include <iostream>
-#include <vector>
 #include <algorithm>
 #include <cmath>
+#include <iostream>
+#include <vector>
 
 using ll = long long;
-using std::vector;
-using std::pair;
 using std::cout;
 using std::endl;
+using std::pair;
+using std::vector;
 
 ll count_primes(ll n) {
 	vector<ll> v;
@@ -434,9 +434,7 @@ ll count_primes(ll n) {
 		if (dp[geti(p)] != dp[geti(p - 1)]) {
 			a++;
 			for (int i = (int)v.size() - 1; i >= 0; --i) {
-				if (v[i] < p * p) {
-					break;
-				}
+				if (v[i] < p * p) { break; }
 				dp[i] -= dp[geti(v[i] / p)] - a;
 			}
 		}
@@ -469,16 +467,16 @@ It involves a combination of linear sieving and recursive calculation, achieving
 <CPPSection>
 
 ```cpp
-#include <iostream>
-#include <vector>
 #include <algorithm>
 #include <cmath>
+#include <iostream>
+#include <vector>
 
 using ll = long long;
-using std::vector;
-using std::pair;
 using std::cout;
 using std::endl;
+using std::pair;
+using std::vector;
 
 // BeginCodeSnip{BIT (from PURS module)}
 template <class T> class BIT {
@@ -524,9 +522,7 @@ struct PrimeCounter {
 		 * n=10^12 or n=10^13
 		 */
 		y = std::pow(n, 0.64);
-		if (n < 100) {
-			y = n;
-		}
+		if (n < 100) { y = n; }
 
 		// linear sieve
 		primes.clear();
@@ -582,9 +578,7 @@ struct PrimeCounter {
 	}
 
 	void phi(ll n, int a, int sign = 1) {
-		if (n == 0) {
-			return;
-		}
+		if (n == 0) { return; }
 		if (a == -1) {
 			ans += n * sign;
 			return;
@@ -601,7 +595,7 @@ struct PrimeCounter {
 int main() {
 	ll n;
 	std::cin >> n;
-	
+
 	cout << prime_counter.count_primes(n) << endl;
 }
 ```
