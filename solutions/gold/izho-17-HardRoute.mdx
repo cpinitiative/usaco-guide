@@ -1,0 +1,159 @@
+---
+id: izho-17-HardRoute
+source: IZhO 2017
+title: Hard Route
+author: Justin Ji
+---
+
+## Explanation
+
+Assume there is some hard route that goes from vertex $u$ to vertex $v$.
+Let the node that the path from $u$ to $v$ and the furthest node from the hard route meet be node $x$.
+Use rerooting DP to calculate the hardest route and the number of such hardest routes for every node $x$.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N\log{N})$
+
+## Implementation
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+
+int main() {
+	int n;
+	cin >> n;
+	vector<vector<int>> adj(n);
+	for (int i = 1; i < n; i++) {
+		int x, y;
+		cin >> x >> y;
+		adj[--x].push_back(--y);
+		adj[y].push_back(x);
+	}
+
+	vector<int> max_length(n);
+	vector<int> path_count(n);
+	/**
+	 * Calculates the longest path from vertex u,
+	 * and the number of such paths.
+	 */
+	function<void(int, int)> dfs = [&](int u, int p) {
+		max_length[u] = 0;
+		path_count[u] = 1;
+		for (int v : adj[u])
+			if (v != p) {
+				dfs(v, u);
+				if (max_length[u] < max_length[v] + 1) {
+					max_length[u] = max_length[v] + 1;
+					path_count[u] = path_count[v];
+				} else if (max_length[v] + 1 == max_length[u]) {
+					path_count[u] += path_count[v];
+				}
+			}
+	};
+
+	dfs(0, -1);
+
+	ll max_hardness = 0;
+	ll hardest_path_count = 1;
+	/**
+	 * Performs the rerooting, to count the hardest
+	 * path and the # of such paths at this vertex.
+	 */
+	function<void(int, int, ll, ll)> dfs2 = [&](int u, int p, ll parent_dist,
+	                                            ll parent_count) {
+		vector<array<ll, 2>> paths;  // {distance, count}
+		if (u > 0 || (int)adj[u].size() == 1) {
+			paths.push_back({parent_dist, parent_count});
+		}
+		for (int v : adj[u])
+			if (v != p) { paths.push_back({max_length[v] + 1, path_count[v]}); }
+
+		sort(paths.begin(), paths.end(), greater<>());
+
+		if ((int)adj[u].size() >= 3) {  // can form a nonzero hardness route
+			/*
+			 * Let the 3 longest path lengths be a, b, c, with a > b > c.
+			 * The optimal hard route "hardness" is a * (b + c).
+			 */
+			ll a = paths[0][0];
+			ll b = paths[1][0];
+			ll c = paths[2][0];
+			ll current_hardness = a * (b + c);
+			ll current_path_count = 0;
+			ll ties = 0;
+			for (auto [len, amt] : paths) {
+				if (len == c) { ties += amt; }
+			}
+
+			if (a != b && b != c) {
+				// case 1: all are distinct.
+				current_path_count = paths[1][1] * ties;
+			} else if (a == b && b == c) {
+				// case 2: all are the same.
+				current_path_count = ties * ties;
+				for (auto [len, amt] : paths) {
+					if (len == a) { current_path_count -= amt * amt; }
+				}
+				current_path_count /= 2;  // avoiding double counting
+			} else if (a == b) {
+				// case 3: first two are the same.
+				current_path_count = (paths[0][1] + paths[1][1]) * ties;
+			} else {
+				// case 4: last two are the same.
+				current_path_count = ties * ties;
+				for (auto [len, amt] : paths) {
+					if (len == c) { current_path_count -= amt * amt; }
+				}
+				current_path_count /= 2;  // avoiding double counting
+			}
+
+			if (max_hardness < current_hardness) {
+				max_hardness = current_hardness;
+				hardest_path_count = current_path_count;
+			} else if (max_hardness == current_hardness) {
+				hardest_path_count += current_path_count;
+			}
+		}
+
+		// processing parent dist and parent count.
+		ll longest1 = 0;
+		ll longest2 = 0;
+		ll count1 = 0;
+		ll count2 = 0;
+		for (auto [len, amt] : paths) {
+			if (len + 1 > longest1) {
+				swap(longest1, longest2);
+				swap(count1, count2);
+				longest1 = len + 1;
+				count1 = amt;
+			} else if (len + 1 == longest1) {
+				count1 += amt;
+			} else if (len + 1 > longest2) {
+				longest2 = len + 1;
+				count2 = amt;
+			} else if (len + 1 == longest2) {
+				count2 += amt;
+			}
+		}
+
+		for (int v : adj[u])
+			if (v != p) {
+				// using the best parent hardness and parent count possible.
+				if (max_length[v] + 2 == longest1) {
+					(path_count[v] == count1)
+					    ? dfs2(v, u, longest2, count2)
+					    : dfs2(v, u, longest1, count1 - path_count[v]);
+				} else {
+					dfs2(v, u, longest1, count1);
+				}
+			}
+	};
+
+	dfs2(0, -1, 0, 1);
+
+	cout << max_hardness << ' ' << hardest_path_count << '\n';
+}
+```
