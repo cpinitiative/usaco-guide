@@ -146,7 +146,7 @@ using namespace std;
 
 int main() {
 	long long n;
-	scanf("%lld", &n);  // Taking input for n
+	cin >> n;  // Taking input for n
 	long long sum = 0;
 	int i;  // Initializing i globally to keep its value after the loop
 	for (i = 1; i * i <= n; i++) {
@@ -160,7 +160,7 @@ int main() {
 	if (i == n / i) {
 		sum -= i * (n / i);  // Adjusting the sum if n is a perfect square
 	}
-	printf("%lld\n", sum);
+	cout << sum << endl;
 }
 ```
 
@@ -297,8 +297,10 @@ bool is_composite[MAXN];
 void sieve(int n) {
 	std::fill(is_composite, is_composite + n, false);
 	for (int i = 2; i < n; ++i) {
-		if (!is_composite[i]) prime.push_back(i);
-		for (int j = 2; i * j < n; ++j) is_composite[i * j] = true;
+		if (!is_composite[i]) { prime.push_back(i); }
+		for (int j = 2; i * j < n; ++j) {
+			is_composite[i * j] = true;
+		}
 	}
 }
 ```
@@ -340,8 +342,10 @@ bool is_composite[MAXN];
 void sieve(int n) {
 	fill(is_composite, is_composite + n, false);
 	for (int i = 2; i < n; ++i) {
-		if (!is_composite[i]) prime.push_back(i);
-		for (int j = 2; i * j < n; ++j) is_composite[i * j] = true;
+		if (!is_composite[i]) { prime.push_back(i); }
+		for (int j = 2; i * j < n; ++j) {
+			is_composite[i * j] = true;
+		}
 	}
 }
 
@@ -354,8 +358,11 @@ int main() {
 	while (a * c + b < prime.size()) c++;
 
 	cout << prime.size() << ' ' << c << '\n';
+	
 	c = 0;
-	while (a * c + b < prime.size()) cout << prime[a * c + b] << ' ', c++;
+	while (a * c + b < prime.size()) {
+		cout << prime[a * c + b] << ' ', c++;
+	}	
 	cout << '\n';
 }
 ```
@@ -397,14 +404,17 @@ ll count_primes(ll n) {
 	sort(v.begin(), v.end());
 	v.erase(unique(v.begin(), v.end()), v.end());
 	/*
-	return i such that v[i] = x
-	since v[i] = i + 1 for i <= sqrt(n) and v[v.size() - i] = n / i for i <=
-	sqrt(n), we can calculate index in O(1)
-	*/
+	 * return i such that v[i] = x
+	 * since v[i] = i + 1 for i <= sqrt(n) and v[v.size() - i] = n / i for i <=
+	 * sqrt(n), we can calculate index in O(1)
+	 */
 	ll sq = sqrt(n);
 	auto geti = [&](ll x) {
-		if (x <= sq) return (int)x - 1;
-		else return (int)(v.size() - (n / x));
+		if (x <= sq) {
+			return (int)x - 1;
+		} else {
+			return (int)(v.size() - (n / x));
+		}
 	};
 
 	vector<ll> dp(v.size());
@@ -447,9 +457,11 @@ struct count_primes_struct_t {
 	vector<pair<pair<ll, int>, char>> queries;
 
 	ll count_primes(ll n) {
-		// this y is actually n/y
-		// also no logarithms, welcome to reality, this y is the best for
-		// n=10^12 or n=10^13
+		/*
+		 * this y is actually n / y
+		 * also no logarithms, welcome to reality, this y is the best for
+		 * n=10^12 or n=10^13
+		 */
 		y = pow(n, 0.64);
 		if (n < 100) y = n;
 
@@ -464,16 +476,16 @@ struct count_primes_struct_t {
 			}
 			for (int k = 0; k < primes.size(); ++k) {
 				int j = primes[k];
-				if (i * j > y) break;
+				if (i * j > y) { break; }
 				mnprimes[i * j] = k;
-				if (i % j == 0) break;
+				if (i % j == 0) { break; }
 			}
 		}
-		if (n < 100) return primes.size();
+		if (n < 100) { return primes.size(); }
 		ll s = n / y;
 
 		for (int p : primes) {
-			if (p > s) break;
+			if (p > s) { break; }
 			ans++;
 		}
 		// pi(n / y)
@@ -482,7 +494,7 @@ struct count_primes_struct_t {
 		// F with two pointers
 		int ptr = primes.size() - 1;
 		for (int i = ssz; i < primes.size(); ++i) {
-			while (ptr >= i && (ll)primes[i] * primes[ptr] > n) --ptr;
+			while (ptr >= i && (ll)primes[i] * primes[ptr] > n) { --ptr };
 			if (ptr < i) break;
 			ans -= ptr - i + 1;
 		}
@@ -499,7 +511,7 @@ struct count_primes_struct_t {
 		fenwick fw(sz);
 		for (auto [na, sign] : queries) {
 			auto [n, a] = na;
-			while (ind <= n) fw.add(sz - 1 - mnprimes[ind++], 1);
+			while (ind <= n) { fw.add(sz - 1 - mnprimes[ind++], 1); }
 			ans += (fw.ask(sz - a - 2) + 1) * sign;
 		}
 		queries.clear();
@@ -527,12 +539,12 @@ struct count_primes_struct_t {
 		fenwick(int n = 0) : n(n) { tree.assign(n, 0); }
 
 		void add(int i, int k) {
-			for (; i < n; i = (i | (i + 1))) tree[i] += k;
+			for (; i < n; i = (i | (i + 1))) { tree[i] += k; }
 		}
 
 		int ask(int r) {
 			int res = 0;
-			for (; r >= 0; r = (r & (r + 1)) - 1) res += tree[r];
+			for (; r >= 0; r = (r & (r + 1)) - 1) { res += tree[r]; }
 			return res;
 		}
 	};
