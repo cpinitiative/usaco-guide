@@ -21,7 +21,7 @@ The inclusion-exclusion principle relates to finding the size of the union of so
 Verbally it can be expressed as following:
 <center>
 
-`Sum the sizes of the sets separately, substract the sizes of all pairwise intersections of the sets, add back the sizes of intersections of triples of the sets, substract the size of quadruples of the sets, ...`
+Sum the sizes of the sets separately, substract the sizes of all pairwise intersections of the sets, add back the sizes of intersections of triples of the sets, substract the size of quadruples of the sets, ...
 
 </center>
 
@@ -47,6 +47,25 @@ Belowe you can see the first $20$ values of $\mu(n)$:
 | ---| ---|-|-  | - | - | - | - | - | - | -  | -  |  - | -  |  - | -  | -  | -  | -  | -- |
 | $\mu(n)$ | 1 | -1 | -1 | 0 | -1 | 1 | -1 | 0 | 0 | 1 | -1 | 0 | -1 | 1 | 1 | 0 | -1 | 0 | -1|
 
+Let's take a look at how the mobius function can be precomputed with a slightly modified sieve.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp 
+mobius[1] = -1;
+for(int i = 1; i < VALMAX; i++) {
+    if(mobius[i]) {
+        mobius[i] = -mobius[i];
+        for(int j = 2 * i; j < VALMAX;j += i) {
+            mobius[j] += mobius[i];
+        }
+    }
+}
+```
+
+</CPPSection>
+<LanguageSection>
 
 ## Applications
 
