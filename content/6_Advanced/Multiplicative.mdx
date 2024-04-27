@@ -292,7 +292,7 @@ information.
 
 ```cpp
 std::vector<int> prime;
-bool is_composite[MAXN];
+bool is_composite[MAX_N];
 
 void sieve(int n) {
 	std::fill(is_composite, is_composite + n, false);
@@ -330,12 +330,13 @@ then calculating the sum of primes based on specific conditions.
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
-const int MAXN = 500000000;
+
+const int MAX_N = 500000000;
 
 using ll = long long;
 
 vector<int> prime;
-bool is_composite[MAXN];
+bool is_composite[MAX_N];
 
 void sieve(int n) {
 	fill(is_composite, is_composite + n, false);
@@ -357,7 +358,7 @@ int main() {
 
 	c = 0;
 	while (a * c + b < prime.size()) { cout << prime[a * c + b] << ' ', c++; }
-	cout << '\n';
+	cout << endl;
 }
 ```
 
@@ -368,19 +369,20 @@ int main() {
 
 <FocusProblem problem="f4" />
 
-## Explanation
-This solution offers two approaches to efficiently count prime numbers up to $N$:
+There's two ways to do this problem.
+The first solution has a higher time complexity but a less complex implementation,
+while the second has a lower time complexity at the cost of a more complex implementation.
 
-1. **Complexity $O(N^{3/4})$**: Utilizes a dynamic programming approach based on a recursion relation derived from sieving. The algorithm iteratively reduces the count of numbers that are not divisible by primes, utilizing a recursive formula. It achieves a complexity of $O(N^{3/4}\log^{1/2}N)$.
+For a more complete explanation of these algorithms, refer to [this CF blog post](https://codeforces.com/blog/entry/91632).
 
-2. **Complexity $O(N^{2/3})$**: Introduces a modified version of the prime counting function, considering the number of integers not divisible by primes up to a certain threshold. It involves a combination of linear sieving and recursive calculation, achieving a complexity of $O(N^{2/3}\log^{1/3}N)$.
+## Explanation 1
 
-Both approaches offer efficient ways to compute prime counts within their respective complexities, providing different trade-offs between runtime and implementation complexity.
+Utilizes a dynamic programming approach based on a recursion relation derived from sieving.
 
-For the complete explanation of the solution, please refer to
-https://codeforces.com/blog/entry/91632
+The algorithm iteratively reduces the count of numbers that are not divisible by primes, utilizing a recursive formula.
+It achieves a complexity of $O(N^{3/4}\log^{1/2}N)$.
 
-### Implementation 1
+### Implementation
 
 **Time Complexity: $\mathcal{O}(n^{3/4})$**
 
@@ -388,15 +390,26 @@ https://codeforces.com/blog/entry/91632
 <CPPSection>
 
 ```cpp
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <cmath>
+
 using ll = long long;
+using std::vector;
+using std::pair;
+using std::cout;
+using std::endl;
+
 ll count_primes(ll n) {
 	vector<ll> v;
-	for (ll k = 1; k * k <= n; ++k) {
+	for (ll k = 1; k * k <= n; k++) {
 		v.push_back(n / k);
 		v.push_back(k);
 	}
 	sort(v.begin(), v.end());
-	v.erase(unique(v.begin(), v.end()), v.end());
+	v.erase(std::unique(v.begin(), v.end()), v.end());
+
 	/*
 	 * return i such that v[i] = x
 	 * since v[i] = i + 1 for i <= sqrt(n) and v[v.size() - i] = n / i for i <=
@@ -412,17 +425,18 @@ ll count_primes(ll n) {
 	};
 
 	vector<ll> dp(v.size());
-
 	// S(n, 0) = n
-	for (int i = 0; i < v.size(); ++i) { dp[i] = v[i]; }
+	for (int i = 0; i < v.size(); i++) { dp[i] = v[i]; }
 
 	int a = 0;
-	for (ll p = 2; p * p <= n; ++p) {
+	for (ll p = 2; p * p <= n; p++) {
 		// this condition is true for primes
 		if (dp[geti(p)] != dp[geti(p - 1)]) {
-			++a;
+			a++;
 			for (int i = (int)v.size() - 1; i >= 0; --i) {
-				if (v[i] < p * p) break;
+				if (v[i] < p * p) {
+					break;
+				}
 				dp[i] -= dp[geti(v[i] / p)] - a;
 			}
 		}
@@ -430,20 +444,73 @@ ll count_primes(ll n) {
 
 	return dp[geti(n)] - 1;
 }
+
+int main() {
+	ll n;
+	std::cin >> n;
+	cout << count_primes(n) << endl;
+}
 ```
 
 </CPPSection>
 </LanguageSection>
 
-### Implementation 2
+## Explanation 2
+
+Introduces a modified version of the prime counting function, considering the number of integers not divisible by primes up to a certain threshold.
+
+It involves a combination of linear sieving and recursive calculation, achieving a complexity of $O(N^{2/3}\log^{1/3}N)$.
+
+### Implementation
+
 **Time Complexity: $\mathcal{O}(n^{2/3})$**
 
 <LanguageSection>
 <CPPSection>
 
 ```cpp
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <cmath>
+
 using ll = long long;
-struct count_primes_struct_t {
+using std::vector;
+using std::pair;
+using std::cout;
+using std::endl;
+
+// BeginCodeSnip{BIT (from PURS module)}
+template <class T> class BIT {
+  private:
+	int size;
+	vector<T> bit;
+	vector<T> arr;
+
+  public:
+	BIT(int size) : size(size), bit(size + 1), arr(size) {}
+
+	/** Sets the value at index ind to val. */
+	void set(int ind, T val) { add(ind, val - arr[ind]); }
+
+	/** Adds val to the element at index ind. */
+	void add(int ind, T val) {
+		arr[ind] += val;
+		ind++;
+		for (; ind <= size; ind += ind & -ind) { bit[ind] += val; }
+	}
+
+	/** @return The sum of all values in [0, ind]. */
+	T pref_sum(int ind) {
+		ind++;
+		T total = 0;
+		for (; ind > 0; ind -= ind & -ind) { total += bit[ind]; }
+		return total;
+	}
+};
+// EndCodeSnip
+
+struct PrimeCounter {
 	vector<int> primes;
 	vector<int> mnprimes;
 	ll ans;
@@ -456,8 +523,10 @@ struct count_primes_struct_t {
 		 * also no logarithms, welcome to reality, this y is the best for
 		 * n=10^12 or n=10^13
 		 */
-		y = pow(n, 0.64);
-		if (n < 100) y = n;
+		y = std::pow(n, 0.64);
+		if (n < 100) {
+			y = n;
+		}
 
 		// linear sieve
 		primes.clear();
@@ -488,8 +557,8 @@ struct count_primes_struct_t {
 		// F with two pointers
 		int ptr = primes.size() - 1;
 		for (int i = ssz; i < primes.size(); ++i) {
-			while (ptr >= i && (ll)primes[i] * primes[ptr] > n) { --ptr };
-			if (ptr < i) break;
+			while (ptr >= i && (ll)primes[i] * primes[ptr] > n) { ptr--; }
+			if (ptr < i) { break; }
 			ans -= ptr - i + 1;
 		}
 
@@ -502,54 +571,43 @@ struct count_primes_struct_t {
 
 		// the order in fenwick will be reversed, because prefix sum in a
 		// fenwick is just one query
-		fenwick fw(sz);
+		BIT<int> fw(sz);
 		for (auto [na, sign] : queries) {
 			auto [n, a] = na;
 			while (ind <= n) { fw.add(sz - 1 - mnprimes[ind++], 1); }
-			ans += (fw.ask(sz - a - 2) + 1) * sign;
+			ans += (fw.pref_sum(sz - a - 2) + 1) * sign;
 		}
 		queries.clear();
 		return ans - 1;
 	}
 
 	void phi(ll n, int a, int sign = 1) {
-		if (n == 0) return;
+		if (n == 0) {
+			return;
+		}
 		if (a == -1) {
 			ans += n * sign;
 			return;
 		}
 		if (n <= y) {
-			queries.emplace_back(make_pair(n, a), sign);
+			queries.emplace_back(pair<int, int>{n, a}, sign);
 			return;
 		}
 		phi(n, a - 1, sign);
 		phi(n / primes[a], a - 1, -sign);
 	}
+} prime_counter;
 
-	struct fenwick {
-		vector<int> tree;
-		int n;
-
-		fenwick(int n = 0) : n(n) { tree.assign(n, 0); }
-
-		void add(int i, int k) {
-			for (; i < n; i = (i | (i + 1))) { tree[i] += k; }
-		}
-
-		int ask(int r) {
-			int res = 0;
-			for (; r >= 0; r = (r & (r + 1)) - 1) { res += tree[r]; }
-			return res;
-		}
-	};
-} count_primes_struct;
-
-ll count_primes(ll n) { return count_primes_struct.count_primes(n); }
+int main() {
+	ll n;
+	std::cin >> n;
+	
+	cout << prime_counter.count_primes(n) << endl;
+}
 ```
+
 </CPPSection>
 </LanguageSection>
-
-
 
 ## Problems
 
