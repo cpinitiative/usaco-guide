@@ -60,15 +60,13 @@ Let's take a look at how the mobius function can be precomputed with a slightly 
 <LanguageSection>
 <CPPSection>
 
-```cpp 
+```cpp
 mobius[1] = -1;
-for(int i = 1; i < VALMAX; i++) {
-    if(mobius[i]) {
-        mobius[i] = -mobius[i];
-        for(int j = 2 * i; j < VALMAX;j += i) {
-            mobius[j] += mobius[i];
-        }
-    }
+for (int i = 1; i < VALMAX; i++) {
+	if (mobius[i]) {
+		mobius[i] = -mobius[i];
+		for (int j = 2 * i; j < VALMAX; j += i) { mobius[j] += mobius[i]; }
+	}
 }
 ```
 
@@ -86,7 +84,7 @@ A perfect application for inclusion-exclusion principle and mobius function. In 
 <LanguageSection>
 <CPPSection>
 
-```cpp 
+```cpp
 #include <iostream>
 #include <vector>
 
@@ -97,35 +95,31 @@ const int VALMAX = 2e7;
 int mobius[VALMAX];
 
 void precompute() {
-    mobius[1] = -1;
-    for(int i = 1; i < VALMAX; i++) {
-        if(mobius[i]) {
-            mobius[i] = -mobius[i];
-            for(int j = 2 * i; j < VALMAX;j += i) {
-                mobius[j] += mobius[i];
-            }
-        }
-    }
+	mobius[1] = -1;
+	for (int i = 1; i < VALMAX; i++) {
+		if (mobius[i]) {
+			mobius[i] = -mobius[i];
+			for (int j = 2 * i; j < VALMAX; j += i) { mobius[j] += mobius[i]; }
+		}
+	}
 }
 
 void test_case() {
-    long long n;
-    cin >> n;
-    long long cnt = 0;
-    for(int i = 1; 1LL * i * i <= n; i++) {
-        cnt += mobius[i] * n / (1LL * i * i);
-    }
-    cout << cnt << '\n';
+	long long n;
+	cin >> n;
+	long long cnt = 0;
+	for (int i = 1; 1LL * i * i <= n; i++) {
+		cnt += mobius[i] * n / (1LL * i * i);
+	}
+	cout << cnt << '\n';
 }
 
 int main() {
-    int t;
-    cin >> t;
-    precompute();
-    while(t--) {
-        test_case();
-    }
-    return 0;
+	int t;
+	cin >> t;
+	precompute();
+	while (t--) { test_case(); }
+	return 0;
 }
 ```
 
@@ -145,61 +139,53 @@ int main() {
 using namespace std;
 
 int test_case(vector<int> &primes) {
-    int n, k;
-    cin >> n >> k;
-    vector<int> v(k);
-    for(int &prime : v) {
-        cin >> prime;
-    }
-    int cnt = 0;
-    for(int mask = 0; mask < (1 << k); mask++) {
-        int x = 1;
-        for(int i = 0; i < k && x <= n; i++) {
-            if((1 << i) & mask) {
-                x *= v[i];
-            }
-        }
-        if(__builtin_popcount(mask) & 1) {
-            cnt -= n / x;
-        } else {
-            cnt += n / x;
-        }
-    }
-    for(int &p : v) {
-        if(p <= n) {
-            cnt++;
-        }
-    }
-    cnt -= primes[n];
-    return cnt;
+	int n, k;
+	cin >> n >> k;
+	vector<int> v(k);
+	for (int &prime : v) { cin >> prime; }
+	int cnt = 0;
+	for (int mask = 0; mask < (1 << k); mask++) {
+		int x = 1;
+		for (int i = 0; i < k && x <= n; i++) {
+			if ((1 << i) & mask) { x *= v[i]; }
+		}
+		if (__builtin_popcount(mask) & 1) {
+			cnt -= n / x;
+		} else {
+			cnt += n / x;
+		}
+	}
+	for (int &p : v) {
+		if (p <= n) { cnt++; }
+	}
+	cnt -= primes[n];
+	return cnt;
 }
 
 vector<int> precompute() {
-    const int NMAX = 2e6;
-    bitset<NMAX> sieve;
-    vector<int> primes(NMAX, 0);
-    sieve.set();
-    primes[1] = 1;
-    for(int i = 2; i < NMAX; i++) {
-        primes[i] = primes[i - 1];
-        if(sieve[i]) {
-            for(int j = 2 * i; j < NMAX; j += i) {
-                sieve[j] = false;
-            }
-            primes[i]++;
-        }
-    }
-    return primes;
+	const int NMAX = 2e6;
+	bitset<NMAX> sieve;
+	vector<int> primes(NMAX, 0);
+	sieve.set();
+	primes[1] = 1;
+	for (int i = 2; i < NMAX; i++) {
+		primes[i] = primes[i - 1];
+		if (sieve[i]) {
+			for (int j = 2 * i; j < NMAX; j += i) { sieve[j] = false; }
+			primes[i]++;
+		}
+	}
+	return primes;
 }
 
 int main() {
-    int T;
-    cin >> T;
-    vector<int> primes = precompute();
-    for(int t = 1; t <= T; t++) {
-        cout << "Case " << t << ":" << ' ' << test_case(primes) << endl;
-    }
-    return 0;
+	int T;
+	cin >> T;
+	vector<int> primes = precompute();
+	for (int t = 1; t <= T; t++) {
+		cout << "Case " << t << ":" << ' ' << test_case(primes) << endl;
+	}
+	return 0;
 }
 ```
 
@@ -222,44 +208,42 @@ In this particular case the set $A_i$ - previously mentioned in the tutorial sec
 using namespace std;
 
 void precompute(vector<int> &mobius, vector<int> &comb) {
-    mobius[1] = -1;
-    for(int i = 1; i < (int)mobius.size(); i++) {
-        if(mobius[i]) {
-            mobius[i] = -mobius[i];
-            for(int j = 2 * i; j < (int)mobius.size(); j += i) {
-                mobius[j] += mobius[i];
-            }
-        }
-    }
-    comb[4] = 1;
-    for(int i = 5; i < (int)comb.size(); i++) {
-        comb[i] = comb[i - 1] * i / (i - 4);
-    }
+	mobius[1] = -1;
+	for (int i = 1; i < (int)mobius.size(); i++) {
+		if (mobius[i]) {
+			mobius[i] = -mobius[i];
+			for (int j = 2 * i; j < (int)mobius.size(); j += i) {
+				mobius[j] += mobius[i];
+			}
+		}
+	}
+	comb[4] = 1;
+	for (int i = 5; i < (int)comb.size(); i++) {
+		comb[i] = comb[i - 1] * i / (i - 4);
+	}
 }
 
 int main() {
-    const int MAX_N = 1e5 + 1;
-    vector<int> mobius(MAX_N, 0), comb(MAX_N, 0);
-    precompute(mobius, comb);
-    int n;
-    while(cin >> n) {
-        vector<int> v(n);
-        int max_val = 0;
-        for(int &num : v) {
-            cin >> num;
-            max_val = max(max_val, num);
-        }
-        long long cnt = 0;
-        for(int i = 1; i <= max_val; i++) {
-            int x = 0;
-            for(int num : v) {
-                x += (num % i == 0);
-            }
-            cnt += mobius[i] * comb[x];
-        }
-        cout << cnt << endl;
-    }
-    return 0;
+	const int MAX_N = 1e5 + 1;
+	vector<int> mobius(MAX_N, 0), comb(MAX_N, 0);
+	precompute(mobius, comb);
+	int n;
+	while (cin >> n) {
+		vector<int> v(n);
+		int max_val = 0;
+		for (int &num : v) {
+			cin >> num;
+			max_val = max(max_val, num);
+		}
+		long long cnt = 0;
+		for (int i = 1; i <= max_val; i++) {
+			int x = 0;
+			for (int num : v) { x += (num % i == 0); }
+			cnt += mobius[i] * comb[x];
+		}
+		cout << cnt << endl;
+	}
+	return 0;
 }
 ```
 
@@ -270,7 +254,7 @@ int main() {
 
 <FocusProblem problem="patterns" />
 
-A dynamic programming approach with bitmasking would look like this: $dp[i][mask] = \text{the number of strings of length i that match all the patterns in set, but none other patterns. } $ The recurrence is: 
+A dynamic programming approach with bitmasking would look like this: $dp[i][mask] = \text{the number of strings of length i that match all the patterns in set, but none other patterns. } $ The recurrence is:
 $$
 dp[i][mask \& j]=dp[i-1][j]\text{ where j is a set of patterns that match charachter c at position i}
 $$
@@ -281,31 +265,31 @@ The following code illustrates this:
 
 ```cpp
 int howMany(vector<string> patterns, int k) {
-    vector<vector<int>> dp(50, vector<int>((1 << (int)patterns.size()), 0));
-    for(int i = 0; i < (int)patterns[0].size(); i++) {
-        for(char c = 'a'; c <= 'z'; c++) {
-            int mask = 0;
-            for(int j = 0; j < (int)patterns.size(); j++) {
-                if(patterns[j][i] == c || patterns[j][i] == '?') {
-                    mask |= (1 << j);
-                }
-            }
-            if(i == 0) {
-                dp[i][mask]++;
-            } else {
-                for(int j = 0; j < (1 << (int)patterns.size()); j++) {
-                    dp[i][j & mask] = (dp[i][j & mask] + dp[i - 1][j]) % MOD;
-                }
-            }
-        }
-    }
-    int ans = 0;
-    for(int mask = 0; mask < (1 << (int)patterns.size()); mask++) {
-        if(__builtin_popcount(mask) == k) {
-            ans = (ans + dp[(int)patterns[0].size() - 1][mask]) % MOD;
-        }
-    }
-    return ans;
+	vector<vector<int>> dp(50, vector<int>((1 << (int)patterns.size()), 0));
+	for (int i = 0; i < (int)patterns[0].size(); i++) {
+		for (char c = 'a'; c <= 'z'; c++) {
+			int mask = 0;
+			for (int j = 0; j < (int)patterns.size(); j++) {
+				if (patterns[j][i] == c || patterns[j][i] == '?') {
+					mask |= (1 << j);
+				}
+			}
+			if (i == 0) {
+				dp[i][mask]++;
+			} else {
+				for (int j = 0; j < (1 << (int)patterns.size()); j++) {
+					dp[i][j & mask] = (dp[i][j & mask] + dp[i - 1][j]) % MOD;
+				}
+			}
+		}
+	}
+	int ans = 0;
+	for (int mask = 0; mask < (1 << (int)patterns.size()); mask++) {
+		if (__builtin_popcount(mask) == k) {
+			ans = (ans + dp[(int)patterns[0].size() - 1][mask]) % MOD;
+		}
+	}
+	return ans;
 }
 ```
 
@@ -316,13 +300,13 @@ The problem can also be solved using the inclusion exclusion principle.
 
 An important observation is that we can easily count the strings that satisfy some specific patterns. Simply iterate through the positions of all patterns. If all the patterns contain $?$ then we can use any letter from $a$ to $z$ giving us $26$ solution, otherwise we can only put the fixed letter contained by a pattern. The answer is the product.
 
-Iterate over subsets - denoted by $A$ - of patterns consisting of exactly $k$ strings. For this specific subset count the number of string that can only match all the patterns in subset $A$. Apply the inclusion-exclusion principle over all supersets $B$ such that $A \subset B$. 
+Iterate over subsets - denoted by $A$ - of patterns consisting of exactly $k$ strings. For this specific subset count the number of string that can only match all the patterns in subset $A$. Apply the inclusion-exclusion principle over all supersets $B$ such that $A \subset B$.
 
 $$
 solve(A) = \sum_{B \supseteq A} (-1)^{|B|-k} \cdot f(B)
 $$
 
-$f(B)$ denotes the number of strings matching _at leat_ set $B$ 
+$f(B)$ denotes the number of strings matching _at leat_ set $B$
 
 The global answer is:
 $$
@@ -334,42 +318,43 @@ $$
 
 ```cpp
 int howMany(vector<string> patterns, int k) {
-    int ans = 0;
-    for(int mask = 0; mask < (1 << (int)patterns.size()); mask++) {
-        if(__builtin_popcount(mask) == k) {
-            for(int supermask = mask; supermask < (1 << (int)patterns.size()); supermask++) {
-                if((mask & supermask) == mask) {
-                    int sign = ((__builtin_popcount(supermask) - k) & 1 ? -1 : 1);
-                    int cnt = 1;
-                    for(int i = 0; i < (int)patterns[0].size(); i++) {
-                        bool flag = true;
-                        int j = 0, last_letter = -1;
-                        for( ; j < (int)patterns.size(); j++) {
-                            if(((1 << j) & supermask) == 0) { continue; }
-                            if(patterns[j][i] != '?') {
-                                flag = false;
-                                if(last_letter == -1) {
-                                    last_letter = j;
-                                } else {
-                                    break;
-                                }
-                            }
-                        }
-                        if(flag) {
-                            cnt = cnt * 26 % MOD;
-                        } else if(j < (int)patterns.size()) {
-                            cnt *= 0;
-                        }
-                    }
-                    ans = ( ans + sign * cnt) % MOD;
-                }
-            }
-        }
-    }
-    return ans;
+	int ans = 0;
+	for (int mask = 0; mask < (1 << (int)patterns.size()); mask++) {
+		if (__builtin_popcount(mask) == k) {
+			for (int supermask = mask; supermask < (1 << (int)patterns.size());
+			     supermask++) {
+				if ((mask & supermask) == mask) {
+					int sign =
+					    ((__builtin_popcount(supermask) - k) & 1 ? -1 : 1);
+					int cnt = 1;
+					for (int i = 0; i < (int)patterns[0].size(); i++) {
+						bool flag = true;
+						int j = 0, last_letter = -1;
+						for (; j < (int)patterns.size(); j++) {
+							if (((1 << j) & supermask) == 0) { continue; }
+							if (patterns[j][i] != '?') {
+								flag = false;
+								if (last_letter == -1) {
+									last_letter = j;
+								} else {
+									break;
+								}
+							}
+						}
+						if (flag) {
+							cnt = cnt * 26 % MOD;
+						} else if (j < (int)patterns.size()) {
+							cnt *= 0;
+						}
+					}
+					ans = (ans + sign * cnt) % MOD;
+				}
+			}
+		}
+	}
+	return ans;
 }
 ```
 
 </CPPSection>
 </LanguageSection>
-
