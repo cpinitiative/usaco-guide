@@ -105,6 +105,8 @@ int main() {
 
 ### KPRIMESB
 
+<FocusProblem problem="KPRIMESB" />
+
 <LanguageSection>
 <CPPSection>
 
@@ -177,7 +179,7 @@ int main() {
 
 ### MSKYCODE
 
-<ProblemFocus problem="MSKYCODE" />
+<FocusProblem problem="MSKYCODE" />
 
 <LanguageSection>
 <CPPSection>
@@ -232,3 +234,74 @@ int main() {
 
 </CPPSection>
 </LanguageSection>
+
+### The number of strings that match a certain pattern
+
+<FocusProblem problem="patterns" />
+
+A dynamic programming approach with bitmasking would look like this: $dp[i][mask]= \text{the number of strings of length i that match all the patterns in set, but none other patterns } $.
+The recurrence is: $dp[i][mask \& j] \text{+=} dp[i-1][j] \text{ where j is a set of patterns that match charachter c at position i}$. The code below is the implementation.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+int howMany(vector<string> patterns, int k) {
+    vector<vector<int>> dp(50, vector<int>((1 << (int)patterns.size()), 0));
+    for(int i = 0; i < (int)patterns[0].size(); i++) {
+        for(char c = 'a'; c <= 'z'; c++) {
+            int mask = 0;
+            for(int j = 0; j < (int)patterns.size(); j++) {
+                if(patterns[j][i] == c || patterns[j][i] == '?') {
+                    mask |= (1 << j);
+                }
+            }
+            if(i == 0) {
+                dp[i][mask]++;
+            } else {
+                for(int j = 0; j < (1 << (int)patterns.size()); j++) {
+                    dp[i][j & mask] = (dp[i][j & mask] + dp[i - 1][j]) % MOD;
+                }
+            }
+        }
+    }
+    int ans = 0;
+    for(int mask = 0; mask < (1 << (int)patterns.size()); mask++) {
+        if(__builtin_popcount(mask) == k) {
+            ans = (ans + dp[(int)patterns[0].size() - 1][mask]) % MOD;
+        }
+    }
+    return ans;
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
+The problem can also be solved using the inclusion exclusion principle.
+
+An important observation is that we can easily count the strings that satisfy some specific patterns. Simply iterate through the positions of all patterns. If all the patterns contain $?$ then we can use any letter from $a$ to $z$ giving us $26$ solution, otherwise we can only put the fixed letter contained by a pattern. The answer is the product.
+
+Iterate over subsets - denoted by $A$ - of patterns consisting of exactly $k$ strings. For this specific subset count the number of string that can only match all the patterns in subset $A$. Apply the inclusion-exclusion principle over all supersets $B$ such that $A \subset B$. 
+
+$$
+solve(A) = \sum_{B \supseteq A} (-1)^{|B|-k} \cdot f(B)
+$$
+
+$f(B)$ denotes the number of strings matching _at leat_ set $B$ 
+
+The global answer is:
+$$
+ans = \sum_{A:|A|=k} solve(A)
+$$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+
+```
+
+</CPPSection>
+</LanguageSection>
+
