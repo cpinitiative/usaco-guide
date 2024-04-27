@@ -161,3 +161,61 @@ int main() {
 
 </CPPSection>
 </LanguageSection>
+
+### MSKYCODE
+
+<ProblemFocus problem="MSKYCODE" />
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+void precompute(vector<int> &mobius, vector<int> &comb) {
+    mobius[1] = -1;
+    for(int i = 1; i < (int)mobius.size(); i++) {
+        if(mobius[i]) {
+            mobius[i] = -mobius[i];
+            for(int j = 2 * i; j < (int)mobius.size(); j += i) {
+                mobius[j] += mobius[i];
+            }
+        }
+    }
+    comb[4] = 1;
+    for(int i = 5; i < (int)comb.size(); i++) {
+        comb[i] = comb[i - 1] * i / (i - 4);
+    }
+}
+
+int main() {
+    const int MAX_N = 1e5 + 1;
+    vector<int> mobius(MAX_N, 0), comb(MAX_N, 0);
+    precompute(mobius, comb);
+    int n;
+    while(cin >> n) {
+        vector<int> v(n);
+        int max_val = 0;
+        for(int &num : v) {
+            cin >> num;
+            max_val = max(max_val, num);
+        }
+        long long cnt = 0;
+        for(int i = 1; i <= max_val; i++) {
+            int x = 0;
+            for(int num : v) {
+                x += (num % i == 0);
+            }
+            cnt += mobius[i] * comb[x];
+        }
+        cout << cnt << endl;
+    }
+    return 0;
+}
+```
+
+</CPPSection>
+</LanguageSection>
