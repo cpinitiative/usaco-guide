@@ -335,6 +335,7 @@ const int MAX_N = 500000000;
 
 using ll = long long;
 
+// BeginCodeSnip{Sieve Implementation}
 vector<int> prime;
 bool is_composite[MAX_N];
 
@@ -345,6 +346,7 @@ void sieve(int n) {
 		for (int j = 2; i * j < n; ++j) { is_composite[i * j] = true; }
 	}
 }
+// EndCodeSnip
 
 int main() {
 	int n, a, b;
@@ -390,16 +392,16 @@ It achieves a complexity of $O(N^{3/4}\log^{1/2}N)$.
 <CPPSection>
 
 ```cpp
-#include <algorithm>
-#include <cmath>
 #include <iostream>
 #include <vector>
+#include <algorithm>
+#include <cmath>
 
 using ll = long long;
+using std::vector;
+using std::pair;
 using std::cout;
 using std::endl;
-using std::pair;
-using std::vector;
 
 ll count_primes(ll n) {
 	vector<ll> v;
@@ -434,7 +436,9 @@ ll count_primes(ll n) {
 		if (dp[geti(p)] != dp[geti(p - 1)]) {
 			a++;
 			for (int i = (int)v.size() - 1; i >= 0; --i) {
-				if (v[i] < p * p) { break; }
+				if (v[i] < p * p) {
+					break;
+				}
 				dp[i] -= dp[geti(v[i] / p)] - a;
 			}
 		}
@@ -467,16 +471,16 @@ It involves a combination of linear sieving and recursive calculation, achieving
 <CPPSection>
 
 ```cpp
-#include <algorithm>
-#include <cmath>
 #include <iostream>
 #include <vector>
+#include <algorithm>
+#include <cmath>
 
 using ll = long long;
+using std::vector;
+using std::pair;
 using std::cout;
 using std::endl;
-using std::pair;
-using std::vector;
 
 // BeginCodeSnip{BIT (from PURS module)}
 template <class T> class BIT {
@@ -488,17 +492,14 @@ template <class T> class BIT {
   public:
 	BIT(int size) : size(size), bit(size + 1), arr(size) {}
 
-	/** Sets the value at index ind to val. */
 	void set(int ind, T val) { add(ind, val - arr[ind]); }
 
-	/** Adds val to the element at index ind. */
 	void add(int ind, T val) {
 		arr[ind] += val;
 		ind++;
 		for (; ind <= size; ind += ind & -ind) { bit[ind] += val; }
 	}
 
-	/** @return The sum of all values in [0, ind]. */
 	T pref_sum(int ind) {
 		ind++;
 		T total = 0;
@@ -522,7 +523,9 @@ struct PrimeCounter {
 		 * n=10^12 or n=10^13
 		 */
 		y = std::pow(n, 0.64);
-		if (n < 100) { y = n; }
+		if (n < 100) {
+			y = n;
+		}
 
 		// linear sieve
 		primes.clear();
@@ -578,7 +581,9 @@ struct PrimeCounter {
 	}
 
 	void phi(ll n, int a, int sign = 1) {
-		if (n == 0) { return; }
+		if (n == 0) {
+			return;
+		}
 		if (a == -1) {
 			ans += n * sign;
 			return;
@@ -595,7 +600,7 @@ struct PrimeCounter {
 int main() {
 	ll n;
 	std::cin >> n;
-
+	
 	cout << prime_counter.count_primes(n) << endl;
 }
 ```
