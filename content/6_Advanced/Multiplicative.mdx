@@ -466,32 +466,44 @@ It involves a combination of linear sieving and recursive calculation, achieving
 <CPPSection>
 
 ```cpp
-#include <algorithm>
-#include <cmath>
 #include <iostream>
 #include <vector>
+#include <algorithm>
+#include <cmath>
 
 using ll = long long;
+using std::vector;
+using std::pair;
 using std::cout;
 using std::endl;
-using std::pair;
-using std::vector;
-struct fenwick {
-	vector<int> tree;
-	int n;
 
-	fenwick(int n = 0) : n(n) { tree.assign(n, 0); }
+// BeginCodeSnip{BIT (from PURS module)}
+template <class T> class BIT {
+  private:
+	int size;
+	vector<T> bit;
+	vector<T> arr;
 
-	void add(int i, int k) {
-		for (; i < n; i = (i | (i + 1))) tree[i] += k;
+  public:
+	BIT(int size) : size(size), bit(size + 1), arr(size) {}
+
+	void set(int ind, T val) { add(ind, val - arr[ind]); }
+
+	void add(int ind, T val) {
+		arr[ind] += val;
+		ind++;
+		for (; ind <= size; ind += ind & -ind) { bit[ind] += val; }
 	}
 
-	int ask(int r) {
-		int res = 0;
-		for (; r >= 0; r = (r & (r + 1)) - 1) res += tree[r];
-		return res;
+	T pref_sum(int ind) {
+		ind++;
+		T total = 0;
+		for (; ind > 0; ind -= ind & -ind) { total += bit[ind]; }
+		return total;
 	}
-} fw;
+};
+// EndCodeSnip
+
 struct PrimeCounter {
 	vector<int> primes;
 	vector<int> mnprimes;
@@ -506,7 +518,9 @@ struct PrimeCounter {
 		 * n=10^12 or n=10^13
 		 */
 		y = std::pow(n, 0.64);
-		if (n < 100) { y = n; }
+		if (n < 100) {
+			y = n;
+		}
 
 		// linear sieve
 		primes.clear();
@@ -551,17 +565,20 @@ struct PrimeCounter {
 
 		// the order in fenwick will be reversed, because prefix sum in a
 		// fenwick is just one query
+		BIT<int> fw(sz);
 		for (auto [na, sign] : queries) {
 			auto [n, a] = na;
 			while (ind <= n) { fw.add(sz - 1 - mnprimes[ind++], 1); }
-			ans += (fw.ask(sz - a - 2) + 1) * sign;
+			ans += (fw.pref_sum(sz - a - 2) + 1) * sign;
 		}
 		queries.clear();
 		return ans - 1;
 	}
 
 	void phi(ll n, int a, int sign = 1) {
-		if (n == 0) { return; }
+		if (n == 0) {
+			return;
+		}
 		if (a == -1) {
 			ans += n * sign;
 			return;
@@ -573,13 +590,11 @@ struct PrimeCounter {
 		phi(n, a - 1, sign);
 		phi(n / primes[a], a - 1, -sign);
 	}
-
 } prime_counter;
 
 int main() {
 	ll n;
 	std::cin >> n;
-
 	cout << prime_counter.count_primes(n) << endl;
 }
 ```
