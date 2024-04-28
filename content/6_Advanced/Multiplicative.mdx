@@ -63,11 +63,8 @@ are:
 
 - $$[n=1] = \sum_{d|n} \mu(d)$$, Interpreting $\mu(d)$ as the coefficients of
   the inclusion-exclusion principle proves it.
-- $$
-  n = \sum\_{d|n} \varphi(d)
-  $$. To prove it, we can count the number of occurrences of $$\frac{1}{n}(1 \leq i \leq n$$)
-  in its simplest fraction form.
-  $$
+- $$ n = \sum_{d|n} \varphi(d) $$. To prove it, we can count the number of occurrences of $$\frac{1}{n}(1 \leq i \leq n)$$ in its simplest fraction form.
+
 
 ### Dirichlet Convolution
 
@@ -479,34 +476,26 @@ using std::cout;
 using std::endl;
 using std::pair;
 using std::vector;
+struct fenwick {
+	vector<int> tree;
+	int n;
 
-// BeginCodeSnip{BIT (from PURS module)}
-template <class T> class BIT {
-  private:
-	int size;
-	vector<T> bit;
-	vector<T> arr;
-
-  public:
-	BIT(int size) : size(size), bit(size + 1), arr(size) {}
-
-	void set(int ind, T val) { add(ind, val - arr[ind]); }
-
-	void add(int ind, T val) {
-		arr[ind] += val;
-		ind++;
-		for (; ind <= size; ind += ind & -ind) { bit[ind] += val; }
+	fenwick(int n = 0) : n(n) {
+		tree.assign(n, 0);
 	}
 
-	T pref_sum(int ind) {
-		ind++;
-		T total = 0;
-		for (; ind > 0; ind -= ind & -ind) { total += bit[ind]; }
-		return total;
+	void add(int i, int k) {
+		for (; i < n; i = (i | (i + 1)))
+			tree[i] += k;
 	}
-};
-// EndCodeSnip
 
+	int ask(int r) {
+		int res = 0;
+		for (; r >= 0; r = (r & (r + 1)) - 1)
+			res += tree[r];
+		return res;
+	}
+}fw;
 struct PrimeCounter {
 	vector<int> primes;
 	vector<int> mnprimes;
@@ -565,12 +554,11 @@ struct PrimeCounter {
 		int sz = primes.size();
 
 		// the order in fenwick will be reversed, because prefix sum in a
-		// fenwick is just one query
-		BIT<int> fw(sz);
+		// fenwick is just one query 
 		for (auto [na, sign] : queries) {
 			auto [n, a] = na;
 			while (ind <= n) { fw.add(sz - 1 - mnprimes[ind++], 1); }
-			ans += (fw.pref_sum(sz - a - 2) + 1) * sign;
+			ans += (fw.ask(sz - a - 2) + 1) * sign;
 		}
 		queries.clear();
 		return ans - 1;
@@ -589,6 +577,7 @@ struct PrimeCounter {
 		phi(n, a - 1, sign);
 		phi(n / primes[a], a - 1, -sign);
 	}
+	
 } prime_counter;
 
 int main() {
