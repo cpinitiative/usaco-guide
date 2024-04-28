@@ -5,31 +5,24 @@ title: Sum of XOR Functions
 author: Justin Ji
 ---
 
-<Warning title="Be careful with integer overflow!">
-
-Because we are working with very large numbers, the problem statement asks us to
-take the answer by some very large modulo. For more details on how to handle modular
-arithmetic, you can read the [Modular Arithmetic](https://usaco.guide/gold/modular)
-on this guide.
-
-</Warning>
-
 [Official Analysis (C++)](https://codeforces.com/blog/entry/120773)
 
 ## Explanation
 
 Let's try to simplify the problem. Consider processing the array bit by bit.
 The $x$'th least significant bit contributes $2^x \cdot \sum_{l=1}^{n} \sum_{r=l}^{n} p \cdot
-(r - l + 1)$ to the answer, where $p$ is the parity of this bit's occurrences. This is because if we perform xor on the same number an even number of times, the xor operations will evenly cancel out.
-Because of this, it becomes apparent that we need to find the sum of subarray
-lengths for all subarrays that have this bit show up an odd amount of times.
+(r - l + 1)$ to the answer, where $p$ is the parity of this bit's occurrences. 
+This is because if we perform xor on the same number an even number of times, 
+the xor operations will evenly cancel out. Because of this, it becomes apparent 
+that we need to find the sum of subarray lengths for all subarrays that have this 
+bit show up an odd amount of times.
 
 For an index $i$, we want to find the sum of subarray lengths for all relevant
 subarrays that end with $i$. This sum can be expressed as
-$ \sum_{l=1}^{x} i-v[l]+1$, where $v$ is the set of all valid left
-endpoints, and $x$ is the number of such endpoints. This expression is easily
-turned into $i \cdot x - \sum_{l=1}^{x}v[l]-1$, which can easily be calculated in
-$\mathcal{O}(1)$ if we sweep from right to left.
+$ \sum_{l=1}^{y} i-v[l]+1$, where $v$ is the set of all valid left
+endpoints, and $y$ is the number of such endpoints. This expression can be
+turned into $i \cdot y - \sum_{l=1}^{y}v[l]-1$, which can be calculated in
+$\mathcal{O}(1)$ if we sweep from left to right.
 
 ## Implementation
 
@@ -47,11 +40,12 @@ const int MOD = 998244353;
 int main() {
 	int n;
 	cin >> n;
-	vector<int> a(n + 1);
+	vector<int> a(n + 1); // 1 indexing simplifies the math a bit
 	for (int i = 1; i <= n; i++) { cin >> a[i]; }
 
 	ll res = 0;
-	for (int bit = 0; bit < 32; bit++) {
+    // sizeof(int) * 8 is the # of bits in an int
+	for (int bit = 0; bit < sizeof(int) * 8; bit++) {
 		ll len_sum = 0;                      // total subarray length sum
 		vector<array<ll, 2>> parity_sum(2);  // {index sum, # of this parity}
 		parity_sum[0] = {0, 1};
