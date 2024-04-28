@@ -90,14 +90,14 @@ no edges are counted twice, we cannot "accidentally" count $n-1$ edges.
 </Resources>
 
 ```cpp
+#include <algorithm>
 #include <iostream>
 #include <vector>
-#include <algorithm>
 
-using std::vector;
-using std::pair;
 using std::cout;
 using std::endl;
+using std::pair;
+using std::vector;
 
 // BeginCodeSnip{DSU (from the module)}
 class DisjointSets {
@@ -133,30 +133,30 @@ int main() {
 	int city_num;
 	int road_num;
 	std::cin >> city_num >> road_num;
- 
+
 	struct Road {
 		int c1, c2;
 		int cost;
 	};
 	vector<Road> roads(road_num);
-	for (Road& r : roads) {
+	for (Road &r : roads) {
 		std::cin >> r.c1 >> r.c2 >> r.cost;
 		r.c1--;
 		r.c2--;
 	}
-	std::sort(roads.begin(), roads.end(), [&] (const Road& e1, const Road& e2) {
+	std::sort(roads.begin(), roads.end(), [&](const Road &e1, const Road &e2) {
 		return e1.cost < e2.cost;
 	});
- 
+
 	DisjointSets cities(city_num);
 	long long min_cost = 0;
 	int added = 0;
-	for (Road& r : roads) {
+	for (Road &r : roads) {
 		bool status = cities.unite(r.c1, r.c2);
 		min_cost += status * r.cost;
 		added += status;
 	}
-	
+
 	if (added != city_num - 1) {
 		cout << "IMPOSSIBLE" << endl;
 	} else {
@@ -177,7 +177,7 @@ public class RoadReparation {
 	static class Road {
 		int c1, c2;
 		int cost;
-		
+
 		public Road(int c1, int c2, int cost) {
 			this.c1 = c1;
 			this.c2 = c2;
@@ -187,7 +187,8 @@ public class RoadReparation {
 	// EndCodeSnip
 
 	public static void main(String[] args) throws IOException {
-		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader read =
+		    new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer initial = new StringTokenizer(read.readLine());
 		int cityNum = Integer.parseInt(initial.nextToken());
 		int roadNum = Integer.parseInt(initial.nextToken());
@@ -195,11 +196,9 @@ public class RoadReparation {
 		Road[] roads = new Road[roadNum];
 		for (int r = 0; r < roadNum; r++) {
 			StringTokenizer road = new StringTokenizer(read.readLine());
-			roads[r] = new Road(
-				Integer.parseInt(road.nextToken()) - 1,
-				Integer.parseInt(road.nextToken()) - 1,
-				Integer.parseInt(road.nextToken())
-			);
+			roads[r] = new Road(Integer.parseInt(road.nextToken()) - 1,
+			                    Integer.parseInt(road.nextToken()) - 1,
+			                    Integer.parseInt(road.nextToken()));
 		}
 		Arrays.sort(roads, Comparator.comparingInt(r -> r.cost));
 
@@ -294,6 +293,8 @@ class DisjointSets:
 
 	def connected(self, x: int, y: int) -> bool:
 		return self.find(x) == self.find(y)
+
+
 # EndCodeSnip
 
 
@@ -359,18 +360,18 @@ graphs (in which $E \approx V^2$).
 ```cpp
 #include <algorithm>
 #include <iostream>
-#include <vector>
-#include <queue>
 #include <limits>
+#include <queue>
+#include <vector>
 
 using std::cout;
 using std::endl;
 using std::pair;
 using std::vector;
 
-long long prim(const vector<vector<pair<int, int>>>& neighbors) {
+long long prim(const vector<vector<pair<int, int>>> &neighbors) {
 	const int n = neighbors.size();  // just a shorthand
-	
+
 	long long min_cost = 0;
 	vector<long long> dist(n, std::numeric_limits<long long>().max());
 	dist[0] = 0;
@@ -379,27 +380,23 @@ long long prim(const vector<vector<pair<int, int>>>& neighbors) {
 	vector<bool> visited(n);
 	int added = 0;
 	while (added < n) {
-		if (q.empty()) {
-			return -1;
-		}
+		if (q.empty()) { return -1; }
 		auto [curr_cost, v] = q.top();
 		q.pop();
 		curr_cost *= -1;
-		if (dist[v] < curr_cost) {
-			continue;
-		}
+		if (dist[v] < curr_cost) { continue; }
 
 		added++;
 		visited[v] = true;
 		min_cost += curr_cost;
-		for (auto& [next, n_cost] : neighbors[v]) {
+		for (auto &[next, n_cost] : neighbors[v]) {
 			if (!visited[next] && n_cost < dist[next]) {
 				dist[next] = n_cost;
 				q.push({-n_cost, next});
 			}
 		}
 	}
-	
+
 	return min_cost;
 }
 
@@ -441,15 +438,14 @@ import java.util.*;
 
 public class RoadReparation {
 	public static void main(String[] args) throws IOException {
-		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader read =
+		    new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer initial = new StringTokenizer(read.readLine());
 		int cityNum = Integer.parseInt(initial.nextToken());
 		int roadNum = Integer.parseInt(initial.nextToken());
 
 		List<int[]>[] neighbors = new ArrayList[cityNum];
-		for (int c = 0; c < cityNum; c++) {
-			neighbors[c] = new ArrayList<>();
-		}
+		for (int c = 0; c < cityNum; c++) { neighbors[c] = new ArrayList<>(); }
 		for (int r = 0; r < roadNum; r++) {
 			StringTokenizer road = new StringTokenizer(read.readLine());
 			int a = Integer.parseInt(road.nextToken()) - 1;
@@ -479,14 +475,10 @@ public class RoadReparation {
 		boolean[] visited = new boolean[n];
 		int added = 0;
 		while (added < n) {
-			if (q.isEmpty()) {
-				return -1;
-			}
+			if (q.isEmpty()) { return -1; }
 
 			LongIntPair curr = q.poll();
-			if (dist[curr.second] < curr.first) {
-				continue;
-			}
+			if (dist[curr.second] < curr.first) { continue; }
 
 			added++;
 			visited[curr.second] = true;
@@ -514,9 +506,7 @@ class LongIntPair implements Comparable<LongIntPair> {
 
 	@Override
 	public int compareTo(LongIntPair other) {
-		if (first != other.first) {
-			return (int)(first - other.first);
-		}
+		if (first != other.first) { return (int)(first - other.first); }
 		return second - other.second;
 	}
 }
