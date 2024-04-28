@@ -11,10 +11,10 @@ author: Justin Ji
 
 Let's try to simplify the problem. Consider processing the array bit by bit.
 The $x$'th least significant bit contributes $2^x \cdot \sum_{l=1}^{n} \sum_{r=l}^{n} p \cdot
-(r - l + 1)$ to the answer, where $p$ is the parity of this bit's occurrences. 
-This is because if we perform xor on the same number an even number of times, 
-the xor operations will evenly cancel out. Because of this, it becomes apparent 
-that we need to find the sum of subarray lengths for all subarrays that have this 
+(r - l + 1)$ to the answer, where $p$ is the parity of this bit's occurrences.
+This is because if we perform xor on the same number an even number of times,
+the xor operations will evenly cancel out. Because of this, it becomes apparent
+that we need to find the sum of subarray lengths for all subarrays that have this
 bit show up an odd amount of times.
 
 For an index $i$, we want to find the sum of subarray lengths for all relevant
@@ -40,11 +40,11 @@ const int MOD = 998244353;
 int main() {
 	int n;
 	cin >> n;
-	vector<int> a(n + 1); // 1 indexing simplifies the math a bit
+	vector<int> a(n + 1);  // 1 indexing simplifies the math a bit
 	for (int i = 1; i <= n; i++) { cin >> a[i]; }
 
 	ll res = 0;
-    // sizeof(int) * 8 is the # of bits in an int
+	// sizeof(int) * 8 is the # of bits in an int
 	for (int bit = 0; bit < sizeof(int) * 8; bit++) {
 		ll len_sum = 0;                      // total subarray length sum
 		vector<array<ll, 2>> parity_sum(2);  // {index sum, # of this parity}
