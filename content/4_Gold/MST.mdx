@@ -41,93 +41,25 @@ To review a couple of terms:
 </Resources>
 
 <!--  <Resource source="PAPS" title="12.4 - Kruskal's">
-    description, example, explanation of correctness
+	description, example, explanation of correctness
   </Resource> -->
 
 **Kruskal's Algorithm** finds the MST by greedily adding edges. For all edges
 not yet in the MST, we can repeatedly add the edge of minimum weight to the MST
 except when adding edges that would forms a cycle. This can be done by sorting
-the edges in order of non-decreasing weight. Furthermore, we can easily
-determine whether adding an edge will create a cycle in constant time using
-[Union Find](/gold/dsu). Note that since the most expensive operation is sorting
-the edges, the computational complexity of Kruskal's Algorithm is
-$\mathcal{O}(E \log E)$.
+the edges in order of non-decreasing weight.
+
+Furthermore, we can determine whether adding an edge will create a cycle in
+constant time using a [DSU](/gold/dsu).
+
+Note that since the most expensive operation is sorting the edges,
+the computational complexity of Kruskal's Algorithm is $\mathcal{O}(E \log E)$.
 
 Here's an animation of how the algorithm works:
+
 <video width="960" height="720" controls>
 	<source src="/animations/kruskal.mp4" type="video/mp4"/>
 </video>
-
-### Implementation
-
-<LanguageSection>
-<CPPSection>
-
-<Resources>
-	<Resource
-		source="Benq (from KACTL)"
-		url="https://github.com/bqi343/USACO/blob/master/Implementations/content/graphs%20(12)/DSU/DSU%20(7.6).h"
-		title="DSU"
-	>
-		Disjoint Set Union + Kruskal
-	</Resource>
-</Resources>
-
-```cpp
-#include "DSU.h"
-
-template <class T> T kruskal(int N, vector<pair<T, pi>> ed) {
-	sort(all(ed));
-	T ans = 0;
-	DSU D;
-	D.init(N);  // edges that unite are in MST
-	trav(a, ed) if (D.unite(a.s.f, a.s.s)) ans += a.f;
-	return ans;
-}
-```
-
-</CPPSection>
-
-<JavaSection>
-
-```java
-public static HashMap<Integer, ArrayList<Integer>> MST;
-public static PriorityQueue<Edge> pq;  // contains all edges
-
-// Assumes that DSU code is included
-public static void kruskal() {
-	while (!pq.isEmpty()) {
-		Edge e = pq.poll();
-		if (find(e.start) != find(e.end)) {
-			MST.get(e.start).add(e.end);
-			MST.get(e.end).add(e.start);
-			union(e.start, e.end);
-		}
-	}
-}
-
-static class Edge implements Comparable<Edge> {
-	int start, end, weight;
-	public Edge(int s, int e, int w) {
-		start = s;
-		end = e;
-		weight = w;
-	}
-	public int compareTo(Edge o) {
-		if (this.weight > o.weight) {
-			return 1;
-		} else if (this.weight == o.weight) {
-			return 0;
-		} else {
-			return -1;
-		}
-	}
-}
-```
-
-</JavaSection>
-
-</LanguageSection>
 
 ### Solution - Road Reparation
 
@@ -145,156 +77,246 @@ tree properly. Furthermore, since our minimum spanning tree algorithm gurantees
 no edges are counted twice, we cannot "accidentally" count $n-1$ edges.
 
 <LanguageSection>
-
 <CPPSection>
+
+<Resources>
+	<Resource
+		source="Benq (from KACTL)"
+		url="https://github.com/bqi343/USACO/blob/master/Implementations/content/graphs%20(12)/DSU/DSU%20(7.6).h"
+		title="DSU"
+	>
+		Disjoint Set Union + Kruskal
+	</Resource>
+</Resources>
 
 ```cpp
 #include <algorithm>
 #include <iostream>
-#include <limits>
 #include <vector>
 
-using namespace std;
+using std::cout;
+using std::endl;
+using std::pair;
+using std::vector;
 
-struct DSU {
-	vector<int> e;
+// BeginCodeSnip{DSU (from the module)}
+class DisjointSets {
+  private:
+	vector<int> parents;
+	vector<int> sizes;
 
-	DSU(int N) : e(N, -1) {}
+  public:
+	DisjointSets(int size) : parents(size), sizes(size, 1) {
+		for (int i = 0; i < size; i++) { parents[i] = i; }
+	}
 
-	int get(int x) { return e[x] < 0 ? x : e[x] = get(e[x]); }
-
-	bool connected(int a, int b) { return get(a) == get(b); }
-
-	int size(int x) { return -e[get(x)]; }
+	int find(int x) {
+		return parents[x] == x ? x : (parents[x] = find(parents[x]));
+	}
 
 	bool unite(int x, int y) {
-		x = get(x), y = get(y);
-		if (x == y) { return false; }
-		if (e[x] > e[y]) { swap(x, y); }
-		e[x] += e[y];
-		e[y] = x;
+		int x_root = find(x);
+		int y_root = find(y);
+		if (x_root == y_root) { return false; }
+
+		if (sizes[x_root] < sizes[y_root]) { std::swap(x_root, y_root); }
+		sizes[x_root] += sizes[y_root];
+		parents[y_root] = x_root;
 		return true;
 	}
-};
 
-template <class T> T kruskal(int N, vector<pair<T, pair<int, int>>> edges) {
-	sort(edges.begin(), edges.end());
-	T ans = 0;
-	DSU D(N + 1);  // edges that unite are in MST
-	for (pair<T, pair<int, int>> &e : edges) {
-		if (D.unite(e.second.first, e.second.second)) { ans += e.first; }
-	}
-	// -1 if the graph is not connected, otherwise the sum of the edge lengths
-	return (D.size(1) == N ? ans : -1);
-}
+	bool connected(int x, int y) { return find(x) == find(y); }
+};
+// EndCodeSnip
 
 int main() {
-	ios_base::sync_with_stdio(0);
-	cin.tie(0);
-	int n, m;
-	cin >> n >> m;
-	vector<pair<long long, pair<int, int>>> edges;
-	for (int i = 0; i < m; i++) {
-		int a, b;
-		long long c;
-		cin >> a >> b >> c;
-		edges.push_back({c, {a, b}});
+	int city_num;
+	int road_num;
+	std::cin >> city_num >> road_num;
+
+	struct Road {
+		int c1, c2;
+		int cost;
+	};
+	vector<Road> roads(road_num);
+	for (Road &r : roads) {
+		std::cin >> r.c1 >> r.c2 >> r.cost;
+		r.c1--;
+		r.c2--;
+	}
+	std::sort(roads.begin(), roads.end(), [&](const Road &e1, const Road &e2) {
+		return e1.cost < e2.cost;
+	});
+
+	DisjointSets cities(city_num);
+	long long min_cost = 0;
+	int added = 0;
+	for (Road &r : roads) {
+		bool status = cities.unite(r.c1, r.c2);
+		min_cost += status * r.cost;
+		added += status;
 	}
 
-	long long ans = kruskal(n, edges);
-	if (ans >= 0) {
-		cout << ans;
+	if (added != city_num - 1) {
+		cout << "IMPOSSIBLE" << endl;
 	} else {
-		cout << "IMPOSSIBLE";
+		cout << min_cost << endl;
 	}
 }
 ```
 
 </CPPSection>
-
 <JavaSection>
 
 ```java
 import java.io.*;
 import java.util.*;
 
-class Kruskal {
-	static int comp;
-	static int disjoint[];
-	static int size[];
+public class RoadReparation {
+	// BeginCodeSnip{Road Class}
+	static class Road {
+		int c1, c2;
+		int cost;
+
+		public Road(int c1, int c2, int cost) {
+			this.c1 = c1;
+			this.c2 = c2;
+			this.cost = cost;
+		}
+	}
+	// EndCodeSnip
+
 	public static void main(String[] args) throws IOException {
-		BufferedReader sc =
+		BufferedReader read =
 		    new BufferedReader(new InputStreamReader(System.in));
-		PrintWriter out = new PrintWriter(System.out);
-		StringTokenizer st = new StringTokenizer(sc.readLine());
-		int N = Integer.parseInt(st.nextToken());
-		int M = Integer.parseInt(st.nextToken());
+		StringTokenizer initial = new StringTokenizer(read.readLine());
+		int cityNum = Integer.parseInt(initial.nextToken());
+		int roadNum = Integer.parseInt(initial.nextToken());
 
-		PriorityQueue<Edge> pq = new PriorityQueue<Edge>();
-		for (int m = 0; m < M; m++) {
-			st = new StringTokenizer(sc.readLine());
-			int a = Integer.parseInt(st.nextToken());
-			int b = Integer.parseInt(st.nextToken());
-			int w = Integer.parseInt(st.nextToken());
+		Road[] roads = new Road[roadNum];
+		for (int r = 0; r < roadNum; r++) {
+			StringTokenizer road = new StringTokenizer(read.readLine());
+			roads[r] = new Road(Integer.parseInt(road.nextToken()) - 1,
+			                    Integer.parseInt(road.nextToken()) - 1,
+			                    Integer.parseInt(road.nextToken()));
+		}
+		Arrays.sort(roads, Comparator.comparingInt(r -> r.cost));
 
-			pq.add(new Edge(a, b, w));
+		DisjointSets cities = new DisjointSets(cityNum);
+		long minCost = 0;
+		int added = 0;
+		for (Road r : roads) {
+			int status = cities.unite(r.c1, r.c2) ? 1 : 0;
+			minCost += status * r.cost;
+			added += status;
 		}
-		comp = N;
-		long ans = 0;
-		disjoint = new int[N + 1];
-		Arrays.fill(disjoint, -1);
-		size = new int[N + 1];
-		Arrays.fill(size, 0);
-		while (!pq.isEmpty()) {
-			Edge e = pq.poll();
-			if (find(e.start) != find(e.end)) {
-				union(e.start, e.end);
-				ans += e.weight;
-			}
-		}
-		out.println((comp == 1) ? ans : "IMPOSSIBLE");
-		out.close();
-	}
-	public static int find(int v) {
-		if (disjoint[v] == -1) { return v; }
-		disjoint[v] = find(disjoint[v]);
-		return disjoint[v];
-	}
-	public static void union(int u, int v) {
-		int uroot = find(u);
-		int vroot = find(v);
-		if (uroot == vroot) { return; }
-		if (size[uroot] < size[vroot]) {
-			disjoint[uroot] = vroot;
-			size[vroot] = size[uroot] + size[vroot];
-			comp--;
+
+		if (added != cityNum - 1) {
+			System.out.println("IMPOSSIBLE");
 		} else {
-			disjoint[vroot] = uroot;
-			size[uroot] = size[uroot] + size[vroot];
-			comp--;
+			System.out.println(minCost);
 		}
 	}
 }
-class Edge implements Comparable<Edge> {
-	public int start, end, weight;
-	public Edge(int s, int e, int w) {
-		start = s;
-		end = e;
-		weight = w;
-	}
-	public int compareTo(Edge o) {
-		if (this.weight < o.weight) {
-			return -1;
-		} else if (this.weight == o.weight) {
-			return 0;
-		} else {
-			return 1;
+
+// BeginCodeSnip{DSU (from the module)}
+class DisjointSets {
+	int[] parents;
+	int[] sizes;
+
+	public DisjointSets(int size) {
+		parents = new int[size];
+		sizes = new int[size];
+		for (int i = 0; i < size; i++) {
+			parents[i] = i;
+			sizes[i] = -1;
 		}
 	}
+
+	/** @return the "representative" node in x's component */
+	public int find(int x) {
+		return parents[x] == x ? x : (parents[x] = find(parents[x]));
+	}
+
+	/** @return whether the merge changed connectivity */
+	public boolean unite(int x, int y) {
+		int xRoot = find(x);
+		int yRoot = find(y);
+		if (xRoot == yRoot) { return false; }
+
+		if (sizes[xRoot] < sizes[yRoot]) { return unite(yRoot, xRoot); }
+		parents[yRoot] = xRoot;
+		sizes[xRoot] += sizes[yRoot];
+		return true;
+	}
+
+	/** @return whether x and y are in the same connected component */
+	public boolean connected(int x, int y) { return find(x) == find(y); }
 }
+// EndCodeSnip
 ```
 
 </JavaSection>
+<PySection>
+
+<Warning title="Constant Factor">
+
+Due to Python's constant factor, the below code will TLE on a couple of test cases.
+
+</Warning>
+
+```py
+# BeginCodeSnip{DSU (from the module)}
+class DisjointSets:
+	def __init__(self, size: int) -> None:
+		self.parents = [i for i in range(size)]
+		self.sizes = [1 for _ in range(size)]
+
+	def find(self, x: int) -> int:
+		if self.parents[x] == x:
+			return x
+		self.parents[x] = self.find(self.parents[x])
+		return self.parents[x]
+
+	def unite(self, x: int, y: int) -> bool:
+		x_root = self.find(x)
+		y_root = self.find(y)
+		if x_root == y_root:
+			return False
+
+		if self.sizes[x_root] < self.sizes[y_root]:
+			x_root, y_root = y_root, x_root
+
+		self.parents[y_root] = x_root
+		self.sizes[x_root] += self.sizes[y_root]
+		return True
+
+	def connected(self, x: int, y: int) -> bool:
+		return self.find(x) == self.find(y)
+
+
+# EndCodeSnip
+
+
+city_num, road_num = map(int, input().split())
+roads = []
+for _ in range(road_num):
+	a, b, cost = map(int, input().split())
+	roads.append((cost, a - 1, b - 1))
+roads.sort()
+
+cities = DisjointSets(city_num)
+min_cost = 0
+added = 0
+for cost, c1, c2 in roads:
+	status = cities.unite(c1, c2)
+	min_cost += status * cost
+	added += status
+
+print("IMPOSSIBLE" if added != city_num - 1 else min_cost)
+```
+
+</PySection>
 </LanguageSection>
 
 ## Prim's
@@ -333,201 +355,222 @@ graphs (in which $E \approx V^2$).
 ### Solution - Road Reparation
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
-#include <bits/stdc++.h>
-using namespace std;
+#include <algorithm>
+#include <iostream>
+#include <limits>
+#include <queue>
+#include <vector>
 
-long long prim(int n, const vector<vector<pair<long long, int>>> &adj) {
-	long long weight = 0;
-	vector<long long> dist(n, numeric_limits<long long>::max());
+using std::cout;
+using std::endl;
+using std::pair;
+using std::vector;
+
+long long prim(const vector<vector<pair<int, int>>> &neighbors) {
+	const int n = neighbors.size();  // just a shorthand
+
+	long long min_cost = 0;
+	vector<long long> dist(n, std::numeric_limits<long long>().max());
 	dist[0] = 0;
-	set<pair<long long, int>> q;
-	// {cost, vertex}
-	q.insert({0, 0});
-	vector<bool> visited(n, false);
-	for (int i = 0; i < n; ++i) {
+	std::priority_queue<pair<long long, int>> q;
+	q.push({0, 0});
+	vector<bool> visited(n);
+	int added = 0;
+	while (added < n) {
 		if (q.empty()) { return -1; }
-		int v = q.begin()->second;
-		visited[v] = true;
-		weight += q.begin()->first;
-		q.erase(q.begin());
+		auto [curr_cost, v] = q.top();
+		q.pop();
+		curr_cost *= -1;
+		if (dist[v] < curr_cost) { continue; }
 
-		for (auto &[cost, child] : adj[v]) {
-			if (!visited[child] && cost < dist[child]) {
-				q.erase({dist[child], child});
-				dist[child] = cost;
-				q.insert({cost, child});
+		added++;
+		visited[v] = true;
+		min_cost += curr_cost;
+		for (auto &[next, n_cost] : neighbors[v]) {
+			if (!visited[next] && n_cost < dist[next]) {
+				dist[next] = n_cost;
+				q.push({-n_cost, next});
 			}
 		}
 	}
-	return weight;
+
+	return min_cost;
 }
+
 int main() {
-	ios_base::sync_with_stdio(false);
-	cin.tie(0);
-	int n, m;
-	cin >> n >> m;
+	int city_num;
+	int road_num;
+	std::cin >> city_num >> road_num;
 
-	vector<vector<pair<long long, int>>> adj(n);
-	for (int i = 0; i < m; i++) {
+	vector<vector<pair<int, int>>> neighbors(city_num);
+	for (int r = 0; r < road_num; r++) {
 		int a, b;
-		long long c;
-		cin >> a >> b >> c;
-		a--;
-		b--;
-		adj[a].push_back({c, b});
-		adj[b].push_back({c, a});
+		int cost;
+		std::cin >> a >> b >> cost;
+		neighbors[--a].push_back({--b, cost});
+		neighbors[b].push_back({a, cost});
 	}
 
-	long long ans = prim(n, adj);
-	if (ans == -1) {
-		cout << "IMPOSSIBLE";
+	long long min_cost = prim(neighbors);
+	if (min_cost == -1) {
+		cout << "IMPOSSIBLE" << endl;
 	} else {
-		cout << ans;
+		cout << min_cost << endl;
 	}
-	cout << endl;
 }
 ```
 
 </CPPSection>
-
 <JavaSection>
+
+<Warning title="Constant Factor">
+
+Due to Java's constant factor, the below code will TLE on a couple of test cases.
+
+</Warning>
 
 ```java
 import java.io.*;
 import java.util.*;
 
-class Prim {
-	static Map<Integer, ArrayList<Edge>> tree;
-	static int N, ct;
-	static long[] dist;
-	static long max = 10000000000000000L;
+public class RoadReparation {
 	public static void main(String[] args) throws IOException {
-		BufferedReader sc =
+		BufferedReader read =
 		    new BufferedReader(new InputStreamReader(System.in));
-		PrintWriter out = new PrintWriter(System.out);
-		StringTokenizer st = new StringTokenizer(sc.readLine());
-		N = Integer.parseInt(st.nextToken());
-		int M = Integer.parseInt(st.nextToken());
+		StringTokenizer initial = new StringTokenizer(read.readLine());
+		int cityNum = Integer.parseInt(initial.nextToken());
+		int roadNum = Integer.parseInt(initial.nextToken());
 
-		tree = new HashMap<Integer, ArrayList<Edge>>();
-		for (int i = 1; i <= N; i++) { tree.put(i, new ArrayList<Edge>()); }
-		for (int m = 0; m < M; m++) {
-			st = new StringTokenizer(sc.readLine());
-			int a = Integer.parseInt(st.nextToken());
-			int b = Integer.parseInt(st.nextToken());
-			int w = Integer.parseInt(st.nextToken());
-
-			tree.get(a).add(new Edge(a, b, w));
-			tree.get(b).add(new Edge(b, a, w));
+		List<int[]>[] neighbors = new ArrayList[cityNum];
+		for (int c = 0; c < cityNum; c++) { neighbors[c] = new ArrayList<>(); }
+		for (int r = 0; r < roadNum; r++) {
+			StringTokenizer road = new StringTokenizer(read.readLine());
+			int a = Integer.parseInt(road.nextToken()) - 1;
+			int b = Integer.parseInt(road.nextToken()) - 1;
+			int cost = Integer.parseInt(road.nextToken());
+			neighbors[a].add(new int[] {b, cost});
+			neighbors[b].add(new int[] {a, cost});
 		}
-		long ans = prim(1);
-		out.println((ct == N) ? ans : "IMPOSSIBLE");
-		out.close();
+
+		long minCost = prim(neighbors);
+		if (minCost == -1) {
+			System.out.println("IMPOSSIBLE");
+		} else {
+			System.out.println(minCost);
+		}
 	}
-	static long prim(int source) {
-		dist = new long[N + 1];
-		boolean[] visited = new boolean[N + 1];
-		PriorityQueue<Pair> pq = new PriorityQueue<Pair>();
-		Arrays.fill(dist, max);
-		dist[source] = 0;
-		long ret = 0;
-		pq.add(new Pair(0, source));
-		while (!pq.isEmpty()) {
-			Pair p = pq.poll();
-			int v = p.b;
-			if (visited[v]) { continue; }
-			visited[v] = true;
-			ct++;
-			ret += dist[v];
-			for (Edge e : tree.get(v)) {
-				if (e.weight < dist[e.end] && !visited[e.end]) {
-					dist[e.end] = e.weight;
-					pq.add(new Pair(dist[e.end], e.end));
+
+	static long prim(List<int[]>[] neighbors) {
+		final int n = neighbors.length;  // just a shorthand
+
+		long minCost = 0;
+		long[] dist = new long[n];
+		Arrays.fill(dist, Long.MAX_VALUE);
+		dist[0] = 0;
+		PriorityQueue<LongIntPair> q = new PriorityQueue<>();  // {cost, vertex}
+		q.add(new LongIntPair(0, 0));
+		boolean[] visited = new boolean[n];
+		int added = 0;
+		while (added < n) {
+			if (q.isEmpty()) { return -1; }
+
+			LongIntPair curr = q.poll();
+			if (dist[curr.second] < curr.first) { continue; }
+
+			added++;
+			visited[curr.second] = true;
+			minCost += curr.first;
+			for (int[] next : neighbors[curr.second]) {
+				if (!visited[next[0]] && next[1] < dist[next[0]]) {
+					dist[next[0]] = next[1];
+					q.add(new LongIntPair(next[1], next[0]));
 				}
 			}
 		}
-		return ret;
+
+		return minCost;
 	}
 }
-class Edge {
-	public int start, end, weight;
-	public Edge(int s, int e, int w) {
-		start = s;
-		end = e;
-		weight = w;
+
+class LongIntPair implements Comparable<LongIntPair> {
+	long first;
+	int second;
+
+	public LongIntPair(long first, int second) {
+		this.first = first;
+		this.second = second;
 	}
-}
-class Pair implements Comparable<Pair> {
-	public long a;
-	public int b;
-	public Pair(long a, int b) {
-		this.a = a;
-		this.b = b;
-	}
-	public int compareTo(Pair o) {
-		if (this.a > o.a) {
-			return 1;
-		} else if (this.a == o.a) {
-			return 0;
-		} else {
-			return -1;
-		}
+
+	@Override
+	public int compareTo(LongIntPair other) {
+		if (first != other.first) { return (int)(first - other.first); }
+		return second - other.second;
 	}
 }
 ```
 
 </JavaSection>
-
 <PySection>
 
 ```py
+from typing import List, Tuple
 import heapq
 
 
-def prim(n, G):
-	used = [False for _ in range(n)]
-	pq = [(0, 0)]
-	total_weight = 0
-	count = 0
-	while pq:
-		weight, node = heapq.heappop(pq)
-		if used[node]:
+def prim(neighbors: List[Tuple[int, int]]) -> int:
+	n = len(neighbors)  # just a shorthand
+
+	min_cost = 0
+	dist = [float("inf") for _ in range(n)]
+	dist[0] = 0
+	q = [(0, 0)]
+	visited = [False for _ in range(n)]
+	added = 0
+	while added < n:
+		if not q:
+			return -1
+
+		curr_cost, v = heapq.heappop(q)
+		if dist[v] < curr_cost:
 			continue
-		used[node] = True
-		total_weight += weight
-		count += 1
-		for (neigh_weight, neigh_node) in G[node]:
-			if not used[neigh_node]:
-				heapq.heappush(pq, (neigh_weight, neigh_node))
-	return total_weight if count == n else -1
+
+		added += 1
+		visited[v] = True
+		min_cost += curr_cost
+		for next_, n_cost in neighbors[v]:
+			if not visited[next_] and n_cost < dist[next_]:
+				dist[next_] = n_cost
+				heapq.heappush(q, (n_cost, next_))
+	return min_cost
 
 
-n, m = map(int, input().split())
-G = [[] for _ in range(n)]
-for _ in range(m):
-	a, b, c = map(int, input().split())
+city_num, road_num = map(int, input().split())
+neighbors = [[] for _ in range(city_num)]
+for _ in range(road_num):
+	a, b, cost = map(int, input().split())
 	a -= 1
 	b -= 1
-	G[a].append((c, b))
-	G[b].append((c, a))
+	neighbors[a].append((b, cost))
+	neighbors[b].append((a, cost))
 
-ans = prim(n, G)
-print("IMPOSSIBLE" if ans == -1 else ans)
+
+min_cost = prim(neighbors)
+print("IMPOSSIBLE" if min_cost == -1 else min_cost)
 ```
 
 </PySection>
-
 </LanguageSection>
 
 ## Problems
 
-<Problems problems="general" />
-
 <Info>
+
 The original problem statement for "Inheritance" is in Japanese. You can find a user-translated
 version of the problem [here](https://gist.github.com/SansPapyrus683/a17f37a4a938e13000e281e4843b73bc).
+
 </Info>
+
+<Problems problems="general" />
