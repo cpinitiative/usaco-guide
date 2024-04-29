@@ -26,13 +26,10 @@ $f(l, r)$ include a given bit?
 
 ## Explanation
 
-Let's try to simplify the problem. Consider processing the array bit by bit.
-The $x$'th least significant bit contributes $2^x \cdot \sum_{l=1}^{n} \sum_{r=l}^{n} p \cdot
-(r - l + 1)$ to the answer, where $p$ is the parity of this bit's occurrences.
-This is because if we perform xor on the same number an even number of times,
+If we perform xor on the same number an even number of times,
 the xor operations will evenly cancel out. Because of this, it becomes apparent
-that we need to find the sum of subarray lengths for all subarrays that have this
-bit show up an odd amount of times.
+that we need to find the sum of subarray lengths for all subarrays that have
+this current bit show up an odd amount of times.
 
 For an index $i$, we want to find the sum of subarray lengths for all relevant
 subarrays that end with $i$. This sum can be expressed as
@@ -70,10 +67,14 @@ int main() {
 		int parity = 0;
 
 		for (int i = 1; i <= n; i++) {
+            // checking if the parity of bit occurences changed
 			if ((a[i] >> bit) & 1) { parity = (parity + 1) & 1; }
+            // all previous prefixes we use must have opposite endpoints
 			auto [dist, occ] = parity_sum[!parity];
+            // evaluating all subarrays ending at index i
 			len_sum = (len_sum + occ * i - dist) % MOD;
 			if (len_sum < 0) { len_sum += MOD; }
+            // updating the parity sums w/ this current index
 			parity_sum[parity][0] += i;
 			parity_sum[parity][1]++;
 		}
