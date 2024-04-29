@@ -2,7 +2,7 @@
 id: multiplicative
 title: 'Prefix Sums of Multiplicative Functions'
 author: Tianqin Meng,  Benjamin Qi
-description: The module covers prefix sums for multiplicative functions, defining arithmetic, multiplicative, and completely multiplicative functions. It explains Dirichlet convolution, Möbius inversion, and binomial inversion, with examples like summing divisors, totient calculations, enumerating primes, and counting primes, along with detailed explanations and implementations.
+description: Covering Dirichlet convolution, Möbius inversion, and binomial inversion.
 frequency: 0
 ---
 
@@ -95,12 +95,6 @@ $g \cdot \mu = f \cdot I \cdot \mu = f \cdot e = f$，and
 $f(n) = \sum_{d|n} g(d) \cdot \mu\left(\frac{n}{d}\right)$. Similarly,
 $g(n) = \sum_{n|d} f(d) \rightarrow f(n) = \sum_{n|d} g(d) \cdot \mu\left(\frac{d}{n}\right)$，
 
-Binomial inversion is also a similar technique. An example illustrates the
-relationship between the Euler function and the Möbius function: since
-$\sum_{d|n} \varphi(d) = n$，then
-$\varphi(n) = \sum_{d|n} \mu(d) \cdot \frac{n}{d}$，which implies
-$\frac{\varphi(n)}{n} = \sum_{d|n} \frac{\mu(d)}{d}$
-
 ## Example - Sum of Divisors
 
 <FocusProblem problem="f1" />
@@ -186,7 +180,7 @@ $$
 n \cdot \frac{(n+1)}{2} - \sum_{i=2}^{n} \sum_{d=1}^{\lfloor \frac{n}{i} \rfloor} \phi(d) = n \cdot \frac{(n+1)}{2} - \sum_{i=2}^{n} \phi(\lfloor \frac{n}{i} \rfloor)
 $$
 
-So as long as you calculate the values of $\phi(\lfloor \frac{n}{i} \rfloor$ for
+So as long as you calculate the values of $\phi(\lfloor \frac{n}{i} \rfloor$) for
 $O(\sqrt{n})$ times, you can compute $\phi(n)$. What about the complexity of
 such an operation?
 
@@ -218,7 +212,7 @@ identity function $I$. Sometimes, a more careful observation is needed.
 
 ### Implementation
 
-**Time Complexity: $\mathcal{O}(n^{3/4})$**
+**Time Complexity: $\mathcal{O}(n^{2/3})$**
 
 <LanguageSection>
 <CPPSection>
@@ -270,100 +264,6 @@ int main() {
 </CPPSection>
 </LanguageSection>
 
-## Example - Enumerate Primes
-
-<FocusProblem problem="f3" />
-
-### Explanation
-
-Remember the old $\mathcal{O}(N \log N)$ Eratosthenes' sieve
-[here](https://usaco.guide/gold/divisibility?lang=cpp#solution---counting-divisors)?
-
-To solve this problem, we have to improve the complexity of the sieve to
-$\mathcal{O}(N)$. Check out
-[this CF blog entry](https://codeforces.com/blog/entry/54090) for further
-information.
-
-<LanguageSection>
-<CPPSection>
-
-```cpp
-std::vector<int> prime;
-bool is_composite[MAX_N];
-
-void sieve(int n) {
-	std::fill(is_composite, is_composite + n, false);
-	for (int i = 2; i < n; ++i) {
-		if (!is_composite[i]) { prime.push_back(i); }
-		for (int j = 2; i * j < n; ++j) { is_composite[i * j] = true; }
-	}
-}
-```
-
-</CPPSection>
-</LanguageSection>
-
-This problem requires finding the count of prime numbers not exceeding $N$ and
-then calculating the sum of primes based on specific conditions.
-
-1. We first run our sieve to get all the prime numbers not exceeding $N$.
-2. Input and Initialization: The program reads input values N, A, and B, and
-   initializes arrays to store prime numbers (p) and their count (pc).
-3. Counting and Summing Primes: After sieving for prime numbers up to N, the
-   program calculates the count of terms (x) in the sum $\sum_{i} p_{Ai+B}$ that
-   do not exceed N. It does this by considering the quotient of the total count
-   of prime numbers divided by A, adjusting for the remainder.
-4. Output: The program prints the count of prime numbers (pc) and the count of
-   terms in the sum (x). Then, it outputs the prime numbers contributing to the
-   sum, starting from index B and skipping A elements each time.
-
-## Implementation
-
-**Time Complexity: $\mathcal{O}(n)$**
-
-<LanguageSection>
-<CPPSection>
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const int MAX_N = 500000000;
-
-using ll = long long;
-
-// BeginCodeSnip{Sieve Implementation}
-vector<int> prime;
-bool is_composite[MAX_N];
-
-void sieve(int n) {
-	fill(is_composite, is_composite + n, false);
-	for (int i = 2; i < n; ++i) {
-		if (!is_composite[i]) { prime.push_back(i); }
-		for (int j = 2; i * j < n; ++j) { is_composite[i * j] = true; }
-	}
-}
-// EndCodeSnip
-
-int main() {
-	int n, a, b;
-	cin >> n >> a >> b;
-	sieve(n);
-
-	int c = 0;
-	while (a * c + b < prime.size()) c++;
-
-	cout << prime.size() << ' ' << c << '\n';
-
-	c = 0;
-	while (a * c + b < prime.size()) { cout << prime[a * c + b] << ' ', c++; }
-	cout << endl;
-}
-```
-
-</CPPSection>
-</LanguageSection>
-
 ## Example - Counting Primes
 
 <FocusProblem problem="f4" />
@@ -379,11 +279,11 @@ For a more complete explanation of these algorithms, refer to [this CF blog post
 Utilizes a dynamic programming approach based on a recursion relation derived from sieving.
 
 The algorithm iteratively reduces the count of numbers that are not divisible by primes, utilizing a recursive formula.
-It achieves a complexity of $O(N^{3/4}\log^{1/2}N)$.
+It achieves a complexity of $O(\frac{N^{3/4}}{\sqrt{\log N}})$.
 
 ### Implementation
 
-**Time Complexity: $\mathcal{O}(n^{3/4})$**
+**Time Complexity: $O(\frac{N^{3/4}}{\sqrt{\log N}})$**
 
 <LanguageSection>
 <CPPSection>
@@ -454,11 +354,11 @@ int main() {
 
 ## Explanation 2
 
-There exists a faster way to compute primes in O(n^2/3), see [Maksim1744’s Codeforces Blog](https://codeforces.com/blog/entry/91632) for more details. Below is the implementation using the fenwick code snippet from the [PURS module](https://usaco.guide/gold/PURS?lang=cpp#solution---dynamic-range-sum-queries-with-a-bit)
+There exist an $O(\frac{n^{2/3}}{\sqrt[3]{\log n}})$ implementation, see [Maksim1744’s Codeforces Blog](https://codeforces.com/blog/entry/91632) for more details. Below is the implementation using the fenwick code snippet from the [PURS module](https://usaco.guide/gold/PURS?lang=cpp#solution---dynamic-range-sum-queries-with-a-bit). Note that the fastest solutions to this library checker problem look like they run in $O(\frac{N^{3/4}}{\sqrt{\log N}})$
 
 ### Implementation
 
-**Time Complexity: $\mathcal{O}(n^{2/3})$**
+**Time Complexity: $O(\frac{n^{2/3}}{\sqrt[3]{\log n}})$**
 
 <LanguageSection>
 <CPPSection>
