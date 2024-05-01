@@ -94,7 +94,10 @@ const int VALMAX = 2e7;
 
 int mobius[VALMAX];
 
-void precompute() {
+int main() {
+	int test_num;
+	cin >> test_num;
+
 	mobius[1] = -1;
 	for (int i = 1; i < VALMAX; i++) {
 		if (mobius[i]) {
@@ -102,21 +105,16 @@ void precompute() {
 			for (int j = 2 * i; j < VALMAX; j += i) { mobius[j] += mobius[i]; }
 		}
 	}
-}
 
-int main() {
-	int t;
-	cin >> t;
-	precompute();
-	while (t--) {
-		long long n, cnt = 0;
+	for (int t = 0; t < test_num; t++) {
+		long long n;
+		long long ans = 0;
 		cin >> n;
 		for (int i = 1; 1LL * i * i <= n; i++) {
-			cnt += mobius[i] * n / (1LL * i * i);
+			ans += mobius[i] * n / ((long long)i * i);
 		}
-		cout << cnt << '\n';
+		cout << ans << '\n';
 	}
-	return 0;
 }
 ```
 
@@ -142,9 +140,9 @@ using namespace std;
 
 int main() {
 	ifstream in("cowpatibility.in");
-	ofstream out("cowpatibility.out");
 	int n;
 	in >> n;
+
 	map<vector<int>, int> subsets;
 	for (int i = 1; i <= n; i++) {
 		vector<int> v(5);
@@ -158,11 +156,13 @@ int main() {
 			subsets[subset]++;
 		}
 	}
-	long long cnt = 1LL * n * (n - 1) / 2;
+
+	long long ans = (long long)n * (n - 1) / 2;
 	for (const auto &[subset, freq] : subsets) {
-		cnt -= ((int)subset.size() % 2 ? 1LL : -1LL) * freq * (freq - 1) / 2;
+		ans -= ((int)subset.size() % 2 == 1 ? 1LL : -1LL) * freq * (freq - 1) / 2;
 	}
-	out << cnt << '\n';
+
+	ofstream("cowpatibility.out") << cnt << '\n';
 }
 ```
 
@@ -184,7 +184,7 @@ The following code illustrates this:
 
 ```cpp
 int howMany(vector<string> patterns, int k) {
-	vector<vector<int>> dp(50, vector<int>((1 << (int)patterns.size()), 0));
+	vector<vector<int>> dp(50, vector<int>((1 << (int)patterns.size())));
 	for (int i = 0; i < (int)patterns[0].size(); i++) {
 		for (char c = 'a'; c <= 'z'; c++) {
 			int mask = 0;
@@ -202,12 +202,14 @@ int howMany(vector<string> patterns, int k) {
 			}
 		}
 	}
+
 	int ans = 0;
 	for (int mask = 0; mask < (1 << (int)patterns.size()); mask++) {
 		if (__builtin_popcount(mask) == k) {
 			ans = (ans + dp[(int)patterns[0].size() - 1][mask]) % MOD;
 		}
 	}
+
 	return ans;
 }
 ```
@@ -271,6 +273,7 @@ int howMany(vector<string> patterns, int k) {
 			}
 		}
 	}
+
 	return ans;
 }
 ```
