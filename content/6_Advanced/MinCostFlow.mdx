@@ -245,7 +245,8 @@ From Wikipedia (which is then copied from e-maxx):
  * or -1 if the worker is not assigned
  */
 template <class T> vector<T> hungarian(const vector<vector<T>> &C) {
-	const int J = (int)size(C), W = (int)size(C[0]);
+        int J = C.size();
+        int W = C[0].size();
 	assert(J <= W);
 
 	// job[w] = job assigned to w-th worker, or -1 if no job assigned
@@ -277,8 +278,12 @@ template <class T> vector<T> hungarian(const vector<vector<T>> &C) {
 						edge -= C[job[w_cur]][w_cur] - h[w_cur];
 						assert(edge >= 0);
 					}
-					if (ckmin(dist[w], dist[w_cur] + edge)) prv[w] = w_cur;
-					if (ckmin(min_dist, dist[w])) w_next = w;
+					if (ckmin(dist[w], dist[w_cur] + edge)) {
+                                                prv[w] = w_cur;
+                                        }
+					if (ckmin(min_dist, dist[w])) {
+                                                w_next = w;
+                                        }
 				}
 			}
 			w_cur = w_next;
