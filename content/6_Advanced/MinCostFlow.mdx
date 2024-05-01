@@ -240,6 +240,8 @@ time, the overall time complexity is $O(J W^2)$.
 From Wikipedia (which is then copied from e-maxx):
 
 ```cpp
+/** @return the jobs of each worker in the optimal assignment,
+  * or -1 if the worker is not assigned */
 template <class T> vector<T> hungarian(const vector<vector<T>> &C) {
 	const int J = (int)size(C), W = (int)size(C[0]);
 	assert(J <= W);
@@ -248,8 +250,6 @@ template <class T> vector<T> hungarian(const vector<vector<T>> &C) {
 
 	vector<int> job(W + 1, -1);
 	vector<T> h(W);  // Johnson potentials
-	vector<T> answers;
-	T ans_cur = 0;
 	const T inf = numeric_limits<T>::max();
 
 	// assign j_cur-th job using Dijkstra with potentials
@@ -273,7 +273,7 @@ template <class T> vector<T> hungarian(const vector<vector<T>> &C) {
 					T edge = C[job[w_cur]][w] - h[w];
 					if (w_cur != W) {
 						edge -= C[job[w_cur]][w_cur] - h[w_cur];
-						assert(edge >= 0);  // consequence of Johnson potentials
+						assert(edge >= 0);
 					}
 					if (ckmin(dist[w], dist[w_cur] + edge)) prv[w] = w_cur;
 					if (ckmin(min_dist, dist[w])) w_next = w;
@@ -287,14 +287,12 @@ template <class T> vector<T> hungarian(const vector<vector<T>> &C) {
 			h[w] += dist[w];
 		}
 
-		ans_cur += h[w_cur];
-		while (w_cur != W) {
+		while (w_cur != W) { // update job assignment
 			job[w_cur] = job[prv[w_cur]];
 			w_cur = prv[w_cur];
 		}
-		answers.push_back(ans_cur);
 	}
-	return answers;
+	return job;
 }
 ```
 
