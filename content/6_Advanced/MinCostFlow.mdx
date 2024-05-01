@@ -245,15 +245,18 @@ template <class T> vector<T> hungarian(const vector<vector<T>> &C) {
 	assert(J <= W);
 	// job[w] = job assigned to w-th worker, or -1 if no job assigned
 	// note: a W-th worker was added for convenience
+
 	vector<int> job(W + 1, -1);
 	vector<T> h(W);  // Johnson potentials
 	vector<T> answers;
 	T ans_cur = 0;
 	const T inf = numeric_limits<T>::max();
+
 	// assign j_cur-th job using Dijkstra with potentials
 	for (int j_cur = 0; j_cur < J; ++j_cur) {
 		int w_cur = W;  // unvisited worker with minimum distance
 		job[w_cur] = j_cur;
+
 		vector<T> dist(W + 1, inf);  // Johnson-reduced distances
 		dist[W] = 0;
 		vector<bool> vis(W + 1);     // whether visited yet
@@ -262,6 +265,7 @@ template <class T> vector<T> hungarian(const vector<vector<T>> &C) {
 			T min_dist = inf;
 			vis[w_cur] = true;
 			int w_next = -1;  // next unvisited worker with minimum distance
+
 			// consider extending shortest path by w_cur -> job[w_cur] -> w
 			for (int w = 0; w < W; ++w) {
 				if (!vis[w]) {
@@ -277,12 +281,17 @@ template <class T> vector<T> hungarian(const vector<vector<T>> &C) {
 			}
 			w_cur = w_next;
 		}
+
 		for (int w = 0; w < W; ++w) {  // update potentials
 			ckmin(dist[w], dist[w_cur]);
 			h[w] += dist[w];
 		}
+
 		ans_cur += h[w_cur];
-		for (int w; w_cur != W; w_cur = w) job[w_cur] = job[w = prv[w_cur]];
+                while(w_cur != W) {
+                        job[w_cur] = job[prv[w_cur]];
+                        w_cur = prv[w_cur];
+                }
 		answers.push_back(ans_cur);
 	}
 	return answers;
