@@ -213,7 +213,7 @@ and
 
 The assignment problem is best understood as a MCMF problem. In our formulation,
 we will assign $W$ workers to $J$ jobs, $J \ge W$, and the cost of assigning the
-$i$th job to the $j$th worker is $A_{i,j}$.
+$i$th job to the $j$th worker is $C_{i,j}$.
 
 We will create a flow network with a source node $S$, job nodes $J_i$, worker
 nodes $W_j$, and a sink node $E$.
@@ -221,12 +221,12 @@ nodes $W_j$, and a sink node $E$.
 We will have the following edges:
 
 - $(S, J_i)$ with $(capacity, cost) = (1, 0)$
-- $(J_i, W_j)$ with $(1, A_{i,j})$
+- $(J_i, W_j)$ with $(1, C_{i,j})$
 - $(W_j, E)$ with $(1, 0)$
 
 The answer will be the minimum cost of the max flow of the graph.
 
-To solve this, we will use the MCMF algorithm detailed above. In every iteration
+To solve this, we will use the min cost max flow algorithm detailed above. In every iteration
 of the algorithm, we will assign a job to a worker. In each iteration, we will
 first assign the job to an auxilary worker, then we will try to find an
 augmenting path with minimum cost. To optimize this, we will only run Dijkstra
@@ -234,6 +234,8 @@ on the worker nodes. For details, refer to the code.
 
 Since there are $J$ iterations (for each job) and each iteration takes $O(W^2)$
 time, the overall time complexity is $O(J W^2)$.
+
+![Hungarian Algorithm Flows Diagram](./hungarian_algo_graph.png)
 
 ### Implementation
 
