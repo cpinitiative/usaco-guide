@@ -40,6 +40,8 @@ frequency: 1
 
 ### Solution 
 
+### Naive approach
+
 Critical nodes in a DAG are commonly known as **dominators**. Let's define $Dom(u)$ as the set of nodes that dominate node $u$.
 
 The dominator of the starting node is itself. The set of dominators for any other node $u$ is the intersection of the set of dominators for all ancestors
@@ -118,7 +120,24 @@ int main() {
 </CPPSection>
 </LanguageSection>
 
-Unfortunately, this is too slow.
+**Time complexity:** $\mathcal{O}(N \cdot M)$.
+
+Unfortunately, this is too slow. 
+
+### A faster approach
+
+Let's begin by defining a structure, called semi-dominators written as $sdom$, upon which we'll construct the solution.
+
+$$
+e(u) = \text{the entry time in node u during a DFS}
+$$
+$$
+sdom(u)= min(v \vert \text{there is a path from v to u: } v = v_0 \rightarrow v_1 \rightarrow v_2 \rightarrow v_3 \dots \rightarrow v_k = u \text{ such that } e(v_i)<e(u), \forall i \in [1,k]) 
+$$
+
+The following graph depicts the semi-dominator for every node.
+
+**Time complexity:** $\mathcal{O}((N+M) \cdot \log{N})$
 
 ## Cycles
 
