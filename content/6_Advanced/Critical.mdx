@@ -190,12 +190,11 @@ int main() {
     }
     int timer = 0;
     vector<int> sdom(n, 0), e(n, -1), parent(n, 0), inv(n, 0), dsu(n, 0), label(n, 0), dom_parent(n, 0);
+    // Precompute values
     function<void(int)> dfs = [&](int node) {
         e[node] = timer;
         inv[timer] = node;
-        sdom[timer] = timer;
-        dsu[timer] = timer;
-        label[timer] = timer;
+        sdom[timer] = dsu[timer] = label[timer] = timer;
         timer++;
         for(int son : g[node]) {
             if(e[son] == -1) {
@@ -205,6 +204,7 @@ int main() {
             rg[e[son]].push_back(e[node]);
         }
     };
+    // DSU function
     function<int(int, int)> Find = [&](int u, int v) {
         if(u == dsu[u]) { return v ? -1 : u; }
         int comp = Find(dsu[u], v+1);
