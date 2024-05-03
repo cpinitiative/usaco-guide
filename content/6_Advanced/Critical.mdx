@@ -148,11 +148,14 @@ The following graph depicts the semi-dominator for every node. The full-color ed
 
 #### Important properties
 
+If you're interested in seeing proofs scroll down to the final section.
+
 1. If $u \neq S$, then $sdom(u)$ is a proper ancestor of $u$ is the DFS tree.
 2. If $u \neq S$, then idom(u) is an ancestor - not necessarily proper - of $u$ in the DFS tree.
 3. Let $u \neq S$. If, for every vertex $x$ which is an ancestor of $u$ and has sdom(u) as its proper ancestor, $sdom(x) \geq sdom(u)$ then $idom(u)=sdom(u)$.
 4. Let $w \neq S$. Let u be a vertex for which $sdom(u)$ is minimum among all vertices u satisfying “$sdom(w)$ is a proper ancestor of $u$ and $u$ is an ancestor of $w$”.  If $sdom(u) \leq sdom(w)$ then $idom(w) = idom(u)$.
-5. Let $w \neq S$. Let $u$ be a vertex for which $sdom(u)$ is minimum among all vertices $u$ satisfying “$sdom(w)$ is a proper ancestor of $u$ and $u$ is an ancestor of $w$”.  Then:
+5. Let $u \neq S$ and &v& be a vertex for which $sdom(v)$ is minimum among all vertices $u$ satisfying: $sdom(u)$ is a proper ancestor of $v$ and $v$ is an ancestor of u.  If $sdom(v) \le sdom(u)$ then $idom(u) = idom(v)$.
+6. Let $w \neq S$. Let $u$ be a vertex for which $sdom(u)$ is minimum among all vertices $u$ satisfying “$sdom(w)$ is a proper ancestor of $u$ and $u$ is an ancestor of $w$”. Then:
 
 $$
 idom(w)=\begin{cases}
@@ -177,6 +180,7 @@ In other words, $sdom(u)$ is the minimum node in the intersection of the followi
 #### Implementation
 
 1. Precompute using a DFS the new mapping of the tree, i.e. the new labels of the nodes are their entry time $u = e[u]$.
+
 2. Compute $sdom$ for all nodes by applying the formula mentioned in the previous section. Iterate over node in decreasing order, maintaining the visited nodes in a DSU. Also, the DSU is slightly modified:
 
 - $Find(u)$ = Let $x$ be the root of the components
@@ -189,29 +193,37 @@ In order to process node $u$ we iterate over all incoming edges $(v, u):$
 
 The 2 cases cover precisely the definition $(2)$.
 
-3. Compute the $idom$ for all nodes by applying the $5$-th property of $sdoms$ previously mentioned.
+3. Compute the $idom$ for all nodes by applying $(1)$.
 
 In this step, store nodes in buckets of their own $sdom$ and iterate over them updating the $idom$ value using $(1)$.
+
+This snippet of code combines steps $2$ and $3$:
 
 <LanguageSection>
 <CPPSection>
 
 ```cpp
+// Iterate decreasingly
 for(int i = n-1; i >= 0; i--) {
+    // Iterat over incoming edges applying (2)
     for(int p : rg[i]) {  sdom[i] = min(sdom[i], sdom[Find(p, 0)]); }
+    // Insert i into it's bucket after sdom[i]
     if(i > 0) { bucket[sdom[i]].push_back(i); }
+    // Apply (1) for nodes in bucket
     for(int node : bucket[i]) {
         int p = Find(node, 0);
         if(sdom[p] == sdom[node]) { dom[node] = sdom[node]; } 
         else { dom[node] = p; }
     }
+    // Mark i as seen
     if(i > 0) {  Unite(parent[i], i); }
 }
 ```
 
 </CPPSection>
 </LanguageSection>
-4. After steps $2$ and $3$, the $idom$ value has been set, for every node $u$, or it has been set to an ancestor $v$ of $u$ and $idom(u)=idom(v)$. Now if we start processing nodes after (0) increasingly, then for any vertex $u$:
+
+4. After steps $2$ and $3$, the $idom$ value has been set ($=sdom$), for every node $u$, or it has been set to an ancestor $v$ of $u$ and $idom(u)=idom(v)$. Now if we start processing nodes after (0) increasingly, then for any vertex $u$:
 
 $$
 \text{If } sdom(u) \neq idom(u) \text{ then } idom(u) = idom(idom(u)) \\
@@ -322,6 +334,8 @@ int main() {
 </LanguageSection>
 
 **Time complexity:** $\mathcal{O}((N+M) \cdot \log{N})$
+
+### Proofs
 
 ## Cycles
 
