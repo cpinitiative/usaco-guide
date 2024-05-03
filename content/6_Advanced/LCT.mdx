@@ -54,7 +54,7 @@ complexity of $\mathcal{O}(\log N)$:
   to make a new tree
 - Find the root of the tree that a node belongs to
 
-These operations all use the $\textup{access}(v)$ subroutine, which creates a preferred path from the root of the represented tree to vertex $v$, making a corresponding auxiliary splay tree with $v$ as the root.
+These operations all use the $\text{access}(v)$ subroutine, which creates a preferred path from the root of the represented tree to vertex $v$, making a corresponding auxiliary splay tree with $v$ as the root.
 
 ### Tutorial
 
@@ -411,26 +411,6 @@ using namespace std;
 typedef long long ll;
 
 // BeginCodeSnip{Benq Link Cut Tree}
-/**
- * Description: Link-Cut Tree. Given a function $f(1\ldots N)\to 1\ldots N,$
- * evaluates $f^b(a)$ for any $a,b.$ \texttt{sz} is for path queries;
- * \texttt{sub}, \texttt{vsub} are for subtree queries. \texttt{x->access()}
- * brings \texttt{x} to the top and propagates it; its left subtree will be
- * the path from \texttt{x} to the root and its right subtree will be empty.
- * Then \texttt{sub} will be the number of nodes in the connected component
- * of \texttt{x} and \texttt{vsub} will be the number of nodes under \texttt{x}.
- * Use \texttt{makeRoot} for arbitrary path queries.
- * Time: O(\log N)
- * Usage: FOR(i,1,N+1)LCT[i]=new snode(i); link(LCT[1],LCT[2],1);
- * Source: Dhruv Rohatgi, Eric Zhang
- * https://sites.google.com/site/kc97ble/container/splay-tree/splaytree-cpp-3
- * https://codeforces.com/blog/entry/67637
- * Verification: (see README for links)
- * ekzhang Balanced Tokens
- * Dynamic Tree Test (Easy)
- * https://probgate.org/viewproblem.php?pid=578 (The Applicant)
- */
-
 typedef struct snode *sn;
 struct snode {         //////// VARIABLES
 	sn p, c[2];        // parent, children
@@ -580,8 +560,8 @@ struct snode {         //////// VARIABLES
 };
 // EndCodeSnip
 
-const int maxn = 2e5 + 5;
-sn LCT[maxn];
+const int MAX_N = 2e5;
+sn LCT[MAX_N];
 
 int main() {
 	int n, q;
@@ -659,7 +639,7 @@ int main() {
 
 ### Implementation
 
-We can also maintain information about subtrees by keeping track of values for the virtual subtrees of a node. When querying for information such as the subtree sum, we call $\textup{access}()$ on the node so that all of its children in the represented tree are part of virtual subtrees and then retrieve the desired value.
+We can also maintain information about subtrees by keeping track of values for the virtual subtrees of a node. When querying for information such as the subtree sum, we call $\text{access}()$ on the node so that all of its children in the represented tree are part of virtual subtrees and then retrieve the desired value.
 
 ```cpp
 #include <bits/stdc++.h>
@@ -668,26 +648,6 @@ using namespace std;
 typedef long long ll;
 
 // BeginCodeSnip{Benq Link Cut Tree}
-/**
- * Description: Link-Cut Tree. Given a function $f(1\ldots N)\to 1\ldots N,$
- * evaluates $f^b(a)$ for any $a,b.$ \texttt{sz} is for path queries;
- * \texttt{sub}, \texttt{vsub} are for subtree queries. \texttt{x->access()}
- * brings \texttt{x} to the top and propagates it; its left subtree will be
- * the path from \texttt{x} to the root and its right subtree will be empty.
- * Then \texttt{sub} will be the number of nodes in the connected component
- * of \texttt{x} and \texttt{vsub} will be the number of nodes under \texttt{x}.
- * Use \texttt{makeRoot} for arbitrary path queries.
- * Time: O(\log N)
- * Usage: FOR(i,1,N+1)LCT[i]=new snode(i); link(LCT[1],LCT[2],1);
- * Source: Dhruv Rohatgi, Eric Zhang
- * https://sites.google.com/site/kc97ble/container/splay-tree/splaytree-cpp-3
- * https://codeforces.com/blog/entry/67637
- * Verification: (see README for links)
- * ekzhang Balanced Tokens
- * Dynamic Tree Test (Easy)
- * https://probgate.org/viewproblem.php?pid=578 (The Applicant)
- */
-
 typedef struct snode *sn;
 struct snode {         //////// VARIABLES
 	sn p, c[2];        // parent, children
@@ -834,8 +794,8 @@ struct snode {         //////// VARIABLES
 };
 // EndCodeSnip
 
-const int maxn = 2e5 + 5;
-sn LCT[maxn];
+const int MAX_N = 2e5;
+sn LCT[MAX_N];
 
 int main() {
 	int n, q;
