@@ -38,7 +38,7 @@ frequency: 1
     </Resource>
 </Resources>
 
-### Solution 
+### Solution
 
 ### Naive approach
 
@@ -50,8 +50,8 @@ $p$ of node $u$.
 $$
 Dom(u)=
 \begin{cases}
-u,\text{ if u is the starting point}\\ 
-{u}  \cup (\cap_{p \in ancestor(u)} Dom(p)) 
+u,\text{ if u is the starting point}\\
+{u}  \cup (\cap_{p \in ancestor(u)} Dom(p))
 \end{cases}
 $$
 
@@ -61,60 +61,53 @@ The following code uses the above rucerrence.
 
 ```cpp
 #include <bits/stdc++.h>
- 
+
 using namespace std;
- 
+
 const int NMAX = 1e5;
- 
+
 int n, m;
 vector<int> g[NMAX];
 vector<bitset<NMAX>> dom;
 bool seen[NMAX];
- 
+
 void get_dominant_verticies(int node, int parent) {
-	if(!seen[node]) {
+	if (!seen[node]) {
 		dom[node] = ~dom[node];
 		seen[node] = true;
 	}
- 
+
 	dom[node] &= dom[parent];
 	dom[node][node] = true;
- 
-	for(auto son : g[node]) {
-		get_dominant_verticies(son, node);
-	} 
+
+	for (auto son : g[node]) { get_dominant_verticies(son, node); }
 }
- 
+
 int main() {
 	cin >> n >> m;
-	dom.resize(n+1);
-	for(int i = 1; i <= m; i++) {
+	dom.resize(n + 1);
+	for (int i = 1; i <= m; i++) {
 		int x, y;
 		cin >> x >> y;
 		g[x].push_back(y);
 	}
- 
+
 	dom[1] = 1;
 	seen[1] = true;
 	get_dominant_verticies(1, 0);
- 
+
 	set<int> dominators = {n};
-	for(int i = 1; i <= n; i++) {
-		for(int j = 1; j < i; j++) {
-			if(dom[i][j]) {
-				dominators.insert(j);
-			}
+	for (int i = 1; i <= n; i++) {
+		for (int j = 1; j < i; j++) {
+			if (dom[i][j]) { dominators.insert(j); }
 		}
 	}
- 
+
 	cout << (int)dominators.size() << '\n';
-	for(auto node : dominators) {
-		cout << node << ' ';
-	}
- 
+	for (auto node : dominators) { cout << node << ' '; }
+
 	return 0;
 }
-
 ```
 
 </CPPSection>
@@ -122,7 +115,7 @@ int main() {
 
 **Time complexity:** $\mathcal{O}(N \cdot M)$.
 
-Unfortunately, this is too slow. 
+Unfortunately, this is too slow.
 
 ### A faster approach
 
@@ -135,7 +128,7 @@ e(u) = \text{the entry time in node u during a DFS}
 \tag{0}
 $$
 $$
-sdom(u)= min(v \vert \text{there is a path from v to u: } v = v_0 \rightarrow v_1 \rightarrow v_2 \rightarrow v_3 \dots \rightarrow v_k = u \\ \text{ such that } e(v_i)<e(u), \forall i \in [1,k]) 
+sdom(u)= min(v \vert \text{there is a path from v to u: } v = v_0 \rightarrow v_1 \rightarrow v_2 \rightarrow v_3 \dots \rightarrow v_k = u \\ \text{ such that } e(v_i)<e(u), \forall i \in [1,k])
 $$
 
 The following graph depicts the semi-dominator for every node. The full-color edges represent the edges part of the DFS tree.
@@ -171,7 +164,7 @@ sdom(u) = min((y \vert (y, u) \in E \text{ and } y \le u) \cup (sdom(x) \vert x>
 $$
 In other words, $sdom(u)$ is the minimum node in the intersection of the following groups:
 1. All the nodes $y$ with $y \le u \text{ and } (y,u) \in E$
-2. $sdom(x)$ where $x > u \text{ and } (u, y) \in E$ 
+2. $sdom(x)$ where $x > u \text{ and } (u, y) \in E$
 
 #### Implementation
 
@@ -185,7 +178,7 @@ In other words, $sdom(u)$ is the minimum node in the intersection of the followi
 
 In order to process node $u$ we iterate over all incoming edges $(v, u):$
 - If $v < u$, $v$ is an ancestor of $u$, $v$ would not have been processed till now, thus $Find(v)$ would return v.
-- If $v > w$ then $v$ would have already been processed and $Find(v)$ would return a node $x$ lying on the path from $v$ to root in the DSU tree having minimum sdom. 
+- If $v > w$ then $v$ would have already been processed and $Find(v)$ would return a node $x$ lying on the path from $v$ to root in the DSU tree having minimum sdom.
 
 The 2 cases cover precisely the definition $(2)$.
 
@@ -200,19 +193,22 @@ This snippet of code combines steps $2$ and $3$:
 
 ```cpp
 // Iterate decreasingly
-for(int i = n-1; i >= 0; i--) {
-    // Iterat over incoming edges applying (2)
-    for(int p : rg[i]) {  sdom[i] = min(sdom[i], sdom[Find(p, 0)]); }
-    // Insert i into it's bucket after sdom[i]
-    if(i > 0) { bucket[sdom[i]].push_back(i); }
-    // Apply (1) for nodes in bucket
-    for(int node : bucket[i]) {
-        int p = Find(node, 0);
-        if(sdom[p] == sdom[node]) { dom[node] = sdom[node]; } 
-        else { dom[node] = p; }
-    }
-    // Mark i as seen
-    if(i > 0) {  Unite(parent[i], i); }
+for (int i = n - 1; i >= 0; i--) {
+	// Iterat over incoming edges applying (2)
+	for (int p : rg[i]) { sdom[i] = min(sdom[i], sdom[Find(p, 0)]); }
+	// Insert i into it's bucket after sdom[i]
+	if (i > 0) { bucket[sdom[i]].push_back(i); }
+	// Apply (1) for nodes in bucket
+	for (int node : bucket[i]) {
+		int p = Find(node, 0);
+		if (sdom[p] == sdom[node]) {
+			dom[node] = sdom[node];
+		} else {
+			dom[node] = p;
+		}
+	}
+	// Mark i as seen
+	if (i > 0) { Unite(parent[i], i); }
 }
 ```
 
@@ -230,99 +226,89 @@ $$
 <CPPSection>
 
 ```cpp
-#include <iostream>
-#include <vector>
-#include <stack>
 #include <functional>
+#include <iostream>
 #include <set>
+#include <stack>
+#include <vector>
 
 using namespace std;
 
 int main() {
-    int n, m;
-    vector<vector<int>> g, rg, bucket;
-    cin >> n >> m;
-    g.resize(n);
-    rg.resize(n);
-    bucket.resize(n);
-    for(int i = 0; i < m; i++) {
-        int x, y;
-        cin >> x >> y;
-        x--, y--;
-        g[x].push_back(y);
-    }
-    int timer = 0;
-    vector<int> sdom(n, 0), e(n, -1), parent(n, 0), inv(n, 0), dsu(n, 0), label(n, 0), dom_parent(n, 0);
-    function<void(int)> dfs = [&](int node) {
-        // Entry time in node
-        e[node] = timer;
-        // Map entry time - node
-        inv[timer] = node;
-        sdom[timer] = dsu[timer] = label[timer] = timer;
-        timer++;
-        for(int son : g[node]) {
-            if(e[son] == -1) {
-                dfs(son);
-                // Store the parent of son in DFS tree
-                parent[e[son]] = e[node];
-            }
-            // Store the reverse graph
-            rg[e[son]].push_back(e[node]);
-        }
-    };
-    // DSU function
-    function<int(int, int)> Find = [&](int u, int v) {
-        if(u == dsu[u]) { return v ? -1 : u; }
-        int comp = Find(dsu[u], v+1);
-        if(comp < 0) { return u; }
-        if(sdom[label[dsu[u]]] < sdom[label[u]])
-            label[u] = label[dsu[u]];
-        dsu[u] = comp;
-        return v ? comp : label[u];
-    };
-    auto Unite = [&](int x, int y) {
-        dsu[y] = x;
-    };
-    dfs(0);
-    vector<int> dom(n);
-    for(int i = n-1; i >= 0; i--) {
-        // Compute sdom 
-        for(int p : rg[i]) {
-            sdom[i] = min(sdom[i], sdom[Find(p, 0)]);
-        }
-        if(i > 0) {
-            bucket[sdom[i]].push_back(i);
-        }
-        for(int node : bucket[i]) {
-            int p = Find(node, 0);
-            if(sdom[p] == sdom[node]) {
-                dom[node] = sdom[node];
-            } else {
-                dom[node] = p;
-            }
-        }
-        if(i > 0) {
-            Unite(parent[i], i);
-        }
-    }
-    // Compute the idoms and set each node's parent in the dominator tree
-    for(int i = 1; i < n; i++) {
-        if(dom[i] != sdom[i]) {
-            dom[i] = dom[dom[i]];
-        }
-        dom_parent[inv[i]] = inv[dom[i]];
-    }
-    // Get the ancestors of node n in the dominator tree
-    vector<int> dominators;
-    int node = n-1;
-    while(node != 0) {
-        dominators.push_back(node+1);
-        node = dom_parent[node];
-    }
-    dominators.push_back(1);
-    cout << (int)dominators.size() << '\n';
-    reverse(dominators.begin(), dominators.end());
-    for(int node : dominators) { cout << node << ' '; }
+	int n, m;
+	vector<vector<int>> g, rg, bucket;
+	cin >> n >> m;
+	g.resize(n);
+	rg.resize(n);
+	bucket.resize(n);
+	for (int i = 0; i < m; i++) {
+		int x, y;
+		cin >> x >> y;
+		x--, y--;
+		g[x].push_back(y);
+	}
+	int timer = 0;
+	vector<int> sdom(n, 0), e(n, -1), parent(n, 0), inv(n, 0), dsu(n, 0),
+	    label(n, 0), dom_parent(n, 0);
+	function<void(int)> dfs = [&](int node) {
+		// Entry time in node
+		e[node] = timer;
+		// Map entry time - node
+		inv[timer] = node;
+		sdom[timer] = dsu[timer] = label[timer] = timer;
+		timer++;
+		for (int son : g[node]) {
+			if (e[son] == -1) {
+				dfs(son);
+				// Store the parent of son in DFS tree
+				parent[e[son]] = e[node];
+			}
+			// Store the reverse graph
+			rg[e[son]].push_back(e[node]);
+		}
+	};
+	// DSU function
+	function<int(int, int)> Find = [&](int u, int v) {
+		if (u == dsu[u]) { return v ? -1 : u; }
+		int comp = Find(dsu[u], v + 1);
+		if (comp < 0) { return u; }
+		if (sdom[label[dsu[u]]] < sdom[label[u]]) label[u] = label[dsu[u]];
+		dsu[u] = comp;
+		return v ? comp : label[u];
+	};
+	auto Unite = [&](int x, int y) { dsu[y] = x; };
+	dfs(0);
+	vector<int> dom(n);
+	for (int i = n - 1; i >= 0; i--) {
+		// Compute sdom
+		for (int p : rg[i]) { sdom[i] = min(sdom[i], sdom[Find(p, 0)]); }
+		if (i > 0) { bucket[sdom[i]].push_back(i); }
+		for (int node : bucket[i]) {
+			int p = Find(node, 0);
+			if (sdom[p] == sdom[node]) {
+				dom[node] = sdom[node];
+			} else {
+				dom[node] = p;
+			}
+		}
+		if (i > 0) { Unite(parent[i], i); }
+	}
+	// Compute the idoms and set each node's parent in the dominator tree
+	for (int i = 1; i < n; i++) {
+		if (dom[i] != sdom[i]) { dom[i] = dom[dom[i]]; }
+		dom_parent[inv[i]] = inv[dom[i]];
+	}
+	// Get the ancestors of node n in the dominator tree
+	vector<int> dominators;
+	int node = n - 1;
+	while (node != 0) {
+		dominators.push_back(node + 1);
+		node = dom_parent[node];
+	}
+	dominators.push_back(1);
+	cout << (int)dominators.size() << '\n';
+	reverse(dominators.begin(), dominators.end());
+	for (int node : dominators) { cout << node << ' '; }
 }
 ```
 
