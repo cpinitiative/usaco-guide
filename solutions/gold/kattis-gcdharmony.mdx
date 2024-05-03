@@ -83,7 +83,6 @@ This is far more efficient than the previous approach!
 
 ```cpp
 #include <algorithm>
-#include <cassert>
 #include <cstdint>
 #include <iostream>
 #include <map>
@@ -93,8 +92,8 @@ using std::cout;
 using std::endl;
 using std::vector;
 
-constexpr int MAX_VAL = 100;
-const int MAX_POSS = 2 * 5e3;
+constexpr int MAX_VAL = 100;  // the largest value a node can have
+const int MAX_POSS = 2 * 5e3;  // defined as 2 * (max # of nodes)
 
 const vector<int> PRIMES = {2,  3,  5,  7,  11, 13, 17, 19, 23, 29, 31, 37, 41,
                             43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97};
@@ -177,11 +176,9 @@ class GCDTree {
 int main() {
 	int node_num;
 	std::cin >> node_num;
-	assert(2 * node_num <= MAX_POSS);
 	vector<int> vals(node_num);
 	for (int &v : vals) {
 		std::cin >> v;
-		assert(v <= MAX_VAL);
 	}
 	vector<vector<int>> neighbors(node_num);
 	for (int i = 0; i < node_num - 1; i++) {
