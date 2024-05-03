@@ -126,7 +126,9 @@ Unfortunately, this is too slow.
 
 ### A faster approach
 
-Let's begin by defining a structure, called semi-dominators written as $sdom$, upon which we'll construct the solution.
+In this approach we attempt building the [dominator tree](https://en.wikipedia.org/wiki/Dominator_(graph_theory)) of the graph. A dominator tree is a tree where each node's children are thos nodes it immediately dominates. The start node is the root of the tree. The immediate dominator - or shortly **idom** - of a node $u$ is a node $v$ that strictly dominates node $u$ and every other dominator of node $u$ strictly dominates node $v$. The definition of the dominator tree gives us the following property: If node $v$ dominates node $u$, then node $v$ is an ancestor of node $u$, thus the answe of the problem is the path from the root to node $n$ in the dominator tree.
+
+From now on, we'll discuss the construction of the dominator tree, but first we need to precompute some helpful values:
 
 $$
 e(u) = \text{the entry time in node u during a DFS}
@@ -136,6 +138,17 @@ sdom(u)= min(v \vert \text{there is a path from v to u: } v = v_0 \rightarrow v_
 $$
 
 The following graph depicts the semi-dominator for every node.
+
+<div class="slideshow-container">
+  <div class="slide">
+    <img src="assets/dom_tree.png" alt="Image 1">
+  </div>
+  <div class="slide">
+    <img src="assets/dom_tree_sdom.png" alt="Image 2">
+  </div>
+  <a class="prev" onclick="prevSlide()">&#10094;</a>
+  <a class="next" onclick="nextSlide()">&#10095;</a>
+</div>
 
 <LanguageSection>
 <CPPSection>
