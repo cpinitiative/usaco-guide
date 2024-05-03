@@ -126,8 +126,7 @@ def pi(s: str) -> List[int]:
 
 ## Z Algorithm
 
-The **Z-Algorithm** is another linear time string comparison algorithm like KMP,
-but instead finds the longest common prefix of a string and all of its suffixes.
+<FocusProblem problem="finding-periods" />
 
 <Resources>
 	<Resource
@@ -138,6 +137,67 @@ but instead finds the longest common prefix of a string and all of its suffixes.
 	<Resource source="CPH" title="26.4 - Z-algorithm" />
 	<Resource source="CF" title="Z Algorithm" url="3107" />
 </Resources>
+
+### Explanation
+
+The Z-algorithm is very similar to KMP, but it uses a different function than $\pi$ and it has an interesting different application than string matching.
+
+Instead of using $\pi$, it uses the **z-function**.
+Given a position, this function gives the length of the longest string that's both the prefix of $S$
+and of the suffix of $S$ starting at the given position.
+
+Here's some examples of what this function might look like:
+- `aabxaayaab` $\rightarrow$ $Z=[10,1,0,0,2,1,0,3,1,0]$
+- `aabxaabxcaabxaabxay` $\rightarrow$ $Z=[18,1,0,0,4,1,0,0,0,8,1,0,0,5,1,0,0,1,0]$
+
+Let's also take a closer look at $Z_9=8$ (0-indexed) for the second string.
+The value for this position if $8$ because that's the longest common prefix
+between the string itself **aabxaabxcaabx**aabxay and the suffix starting
+at position $9$ **aabxaabx**ay (also 0-indexed).
+
+To efficiently compute this array, we maintain the $[l, r]$ interval such that $S_{l...r}$ is also a prefix, i.e. $Z_l=r-l+1$.
+
+Say we have a position $i$ anywhere in $[l,r]$.
+We would then have these two cases:
+
+1. If $i + Z_{i-l} < r$, we know that $Z_i = Z_{i-l}$.
+2. Otherwise, $i + Z_{i-l} \geq r$, meaning that the answer can expand beyond $r$.
+   Thus, we compare character by character from there on.
+
+### Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	string s;
+	cin >> s;
+	vector<int> z(s.size());
+
+	for (int i = 1, l = 0, r = 0; i < s.size(); i++) {
+		z[i] = max(0, min(z[i - l], r - i + 1));
+
+		while (i + z[i] < s.size() && s[z[i]] == s[i + z[i]]) {
+			l = i;
+			r = i + z[i];
+			z[i]++;
+		}
+
+		if (z[i] + i == s.size()) { cout << i << ' '; }
+	}
+
+	cout << s.size() << endl;
+}
+```
+
+</CPPSection>
+</LanguageSection>
 
 <Problems problems="Z" />
 
@@ -391,14 +451,7 @@ int main() {
 
 ## Aho-Corasick
 
-**Aho-Corasick** is the combination of **trie** and **KMP**. It is essentially a
-trie with KMP's "fail" array.
-
-<Warning>
-
-Build the entire trie first, and then run a _BFS_ to construct the fail array.
-
-</Warning>
+<FocusProblem problem="aho-corasick" />
 
 <Resources>
 	<Resource
@@ -413,6 +466,132 @@ Build the entire trie first, and then run a _BFS_ to construct the fail array.
 		url="aho-corasick-algorithm-pattern-searching"
 	 />
 </Resources>
+
+The Aho-Corasick algorithm stores the pattern words in a trie structure, described above.
+It uses the trie to transition from a state to anoother.
+Similar to KMP algorithm, we want to reuse the information we have already processed.
+
+A **suffix link** or **failure link** for a node $u$ is a special edge that points to the longest proper suffix of the string corresponding to node $u$.
+The suffix links for the root and all its immediate children point to the root node.
+For all other nodes $u$ with parent $p$ and letter $c$ on the edge $p \rightarrow u$ the suffix link
+can be computed by following $p$'s failure link and transitioning to letter $c$ from there.
+
+While processing the string $S$ the algorithm maintains the current node in the trie such that word
+formed in the node is equal to the longest suffix ending in $i$.
+
+For example, when transitioning from $i$ to $i+1$ in $S$ there only are two choices:
+1. If $node$ does have an outgoing edge with letter $S_{i+1}$, then move down the edge.
+2. Otherwise, follow the failure link of $S_i$ and transition to letter $S_{i+1}$ from there.
+
+The image below depicts how the structure looks like for the words $[a, ag, c, caa, gag, gc]$.
+
+<center>
+![Trie](./Trie.png)
+<i> An Aho-Corasick trie with failure links as light edges. </i>
+</center>
+
+There is a special case when some words are substring of other words in the wordlist. This could lead to some problems depending on the implementation. [Dictionary links](https://www.youtube.com/watch?v=OFKxWFew_L0) can solve this problem.
+They act like suffix links that point to the first suffix that is also a word in the wordlist. The code below constructs the structure using a BFS.
+
+**Time Complexity:** $\mathcal{O}(m\sigma)$ - where $m$ is the size of the alphaber and $\sigma$ the size of the alphabet
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+const int MAX_N = 6e5;
+const int SIGMA = 26;
+
+int n;
+string s;
+// The number of nodes in trie
+int nodes = 1;
+int trie[MAX_N][SIGMA];
+int fail[MAX_N];  // fail[u] = the failure link for node
+int seen[MAX_N];  // check if a node has been visited in trie
+int ans[MAX_N];   // ans[i] = the number of occurrences of word i
+
+// leaf[node] stores the indices of the words ending in node
+vector<int> leaf[MAX_N];
+vector<int> g[MAX_N];
+
+/** Add a word to the trie */
+void add_word(const string &word, const int &idx) {
+	int node = 1;
+	for (char ch : word) {
+		if (trie[node][ch - 'a'] == 0) { trie[node][ch - 'a'] = ++nodes; }
+		node = trie[node][ch - 'a'];
+	}
+	leaf[node].push_back(idx);
+}
+
+/** BFS to building the failure and suffix links */
+void build() {
+	queue<int> q;
+	int node = 1;
+	fail[node] = 1;
+	for (int i = 0; i < SIGMA; i++) {
+		if (trie[node][i]) {
+			fail[trie[node][i]] = node;
+			q.push(trie[node][i]);
+		} else {
+			trie[node][i] = 1;
+		}
+	}
+
+	while (!q.empty()) {
+		int node = q.front();
+		q.pop();
+		for (int i = 0; i < SIGMA; i++) {
+			if (trie[node][i]) {
+				fail[trie[node][i]] = trie[fail[node]][i];
+				q.push(trie[node][i]);
+			} else {
+				trie[node][i] = trie[fail[node]][i];
+			}
+		}
+	}
+	for (int i = 2; i <= nodes; i++) { g[fail[i]].push_back(i); }
+}
+
+void search() {
+	int node = 1;
+	for (char ch : s) {
+		node = trie[node][ch - 'a'];
+		seen[node]++;
+	}
+}
+
+int dfs(int node) {
+	int sol = seen[node];
+	for (int son : g[node]) { sol += dfs(son); }
+	for (int idx : leaf[node]) { ans[idx] = sol; }
+	return sol;
+}
+
+int main() {
+	cin >> s >> n;
+
+	vector<string> words(n);
+	for (int i = 0; i < n; i++) {
+		cin >> words[i];
+		add_word(words[i], i);
+	}
+
+	build();
+	search();
+	dfs(1);
+
+	for (int i = 0; i < n; i++) { cout << (ans[i] ? "YES" : "NO") << '\n'; }
+}
+```
+
+</CPPSection>
+</LanguageSection>
 
 <Problems problems="aho" />
 

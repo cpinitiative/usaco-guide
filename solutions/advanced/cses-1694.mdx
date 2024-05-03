@@ -2,10 +2,10 @@
 id: cses-1694
 source: CSES
 title: Download Speed
-author: Dong Liu
+author: Dong Liu, Ahmet Ala
 ---
 
-**Time Complexity**: $\mathcal O(N^2 \cdot M)$
+**Time Complexity**: $\mathcal O(N \cdot M^2)$
 
 Just find the max flow of the graph using your favourite max flow algorithm.
 
@@ -13,69 +13,78 @@ Just find the max flow of the graph using your favourite max flow algorithm.
 
 <CPPSection>
 
-The code below uses Dinic's maxflow algorithm.
+The code below uses Edmond Karp's max flow algorithm.
 
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
 
-using ll = long long;
-using vi = vector<int>;
-#define f first
-#define s second
-#define pb push_back
-#define all(x) begin(x), end(x)
+long long max_flow(vector<vector<int>> adj, vector<vector<long long>> capacity,
+                   int source, int sink) {
+	int n = adj.size();
+	vector<int> parent(n, -1);
 
-#define F0R(i, a) for (int i = 0; i < (a); i++)
-#define FOR(i, a, b) for (int i = (a); i <= (b); i++)
-#define R0F(i, a) for (int i = (a) - 1; i >= 0; i--)
-#define ROF(i, a, b) for (int i = (b); i >= a; i--)
-#define trav(a, x) for (auto &a : x)
+	// Find a way from the source to sink on a path with non-negative capacities
+	auto reachable = [&]() -> bool {
+		queue<int> q;
+		q.push(source);
+		while (!q.empty()) {
+			int node = q.front();
+			q.pop();
+			for (auto son : adj[node]) {
+				long long w = capacity[node][son];
+				if (w <= 0 || parent[son] != -1) continue;
+				parent[son] = node;
+				q.push(son);
+			}
+		}
+		return parent[sink] != -1;
+	};
 
-int n, m;
-ll adj[501][501], oadj[501][501];
+	long long flow = 0;
 
-ll flow[501];
-bool V[501];
-int pa[501];
+	// While there is a way from source to sink with non-negative capacities
+	while (reachable()) {
+		int node = sink;
 
-bool reachable() {
-	memset(V, false, sizeof(V));
-	queue<int> Q;
-	Q.push(1);
-	V[1] = 1;
-	while (!Q.empty()) {
-		int i = Q.front();
-		Q.pop();
-		FOR(j, 1, n) if (adj[i][j] && !V[j]) V[j] = 1, pa[j] = i, Q.push(j);
+		// The minimum capacity on the path from source to sink
+		long long curr_flow = LLONG_MAX;
+		while (node != source) {
+			curr_flow = min(curr_flow, capacity[parent[node]][node]);
+			node = parent[node];
+		}
+		node = sink;
+		while (node != source) {
+			// Subtract the capacity from capacity edges
+			capacity[parent[node]][node] -= curr_flow;
+			// Add the current flow to flow backedges
+			capacity[node][parent[node]] += curr_flow;
+			node = parent[node];
+		}
+		flow += curr_flow;
+		fill(parent.begin(), parent.end(), -1);
 	}
-	return V[n];
+
+	return flow;
 }
 
 int main() {
+	int n, m;
 	cin >> n >> m;
-	FOR(i, 1, n) FOR(j, 1, n) adj[i][j] = 0;
-	F0R(i, m) {
-		ll a, b, c;
+
+	vector<vector<long long>> capacity(n, vector<long long>(n, 0));
+	vector<vector<int>> adj(n);
+	for (int i = 0; i < m; i++) {
+		int a, b, c;
 		cin >> a >> b >> c;
-		adj[a][b] += c;
+		--a;
+		--b;
+		adj[a].push_back(b);
+		adj[b].push_back(a);
+		capacity[a][b] += c;
 	}
-	int v, u;
-	ll maxflow = 0;
-	while (reachable()) {
-		ll flow = 1e18;
-		for (v = n; v != 1; v = pa[v]) {
-			u = pa[v];
-			flow = min(flow, adj[u][v]);
-		}
-		maxflow += flow;
-		for (v = n; v != 1; v = pa[v]) {
-			u = pa[v];
-			adj[u][v] -= flow;
-			adj[v][u] += flow;
-		}
-	}
-	cout << maxflow << '\n';
+
+	cout << max_flow(adj, capacity, 0, n - 1) << endl;
 }
 ```
 

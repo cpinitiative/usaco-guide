@@ -1,0 +1,70 @@
+---
+id: spoj-kprimesb
+source: SPOJ
+title: KPRIMESB - Almost Prime Numbers Again
+author: Mihnea Brebenel
+---
+
+In this particular case $A_i$ - previously mentioned in the tutorial section - denotes how many numbers are divisible with $V_i$, the prime numbers from the input.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int test_case(vector<int> &primes) {
+	int n, k;
+	cin >> n >> k;
+	vector<int> v(k);
+	for (int &prime : v) { cin >> prime; }
+	int cnt = 0;
+	for (int mask = 0; mask < (1 << k); mask++) {
+		int x = 1;
+		for (int i = 0; i < k && x <= n; i++) {
+			if ((1 << i) & mask) { x *= v[i]; }
+		}
+		if (__builtin_popcount(mask) & 1) {
+			cnt -= n / x;
+		} else {
+			cnt += n / x;
+		}
+	}
+	for (int &p : v) {
+		if (p <= n) { cnt++; }
+	}
+	cnt -= primes[n];
+	return cnt;
+}
+
+vector<int> precompute() {
+	const int NMAX = 2e6;
+	bitset<NMAX> sieve;
+	vector<int> primes(NMAX, 0);
+	sieve.set();
+	primes[1] = 1;
+	for (int i = 2; i < NMAX; i++) {
+		primes[i] = primes[i - 1];
+		if (sieve[i]) {
+			for (int j = 2 * i; j < NMAX; j += i) { sieve[j] = false; }
+			primes[i]++;
+		}
+	}
+	return primes;
+}
+
+int main() {
+	int T;
+	cin >> T;
+	vector<int> primes = precompute();
+	for (int t = 1; t <= T; t++) {
+		cout << "Case " << t << ":" << ' ' << test_case(primes) << endl;
+	}
+	return 0;
+}
+```
+
+</CPPSection>
+</LanguageSection>

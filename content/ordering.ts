@@ -196,7 +196,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
     },
     {
       name: 'Misc. Topics',
-      items: ['matrix-expo', 'bitsets', 'DC-DP'],
+      items: ['PIE', 'matrix-expo', 'bitsets', 'DC-DP'],
     },
     {
       name: 'Conclusion',

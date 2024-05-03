@@ -1,100 +1,275 @@
 ---
 id: offline-del
 title: 'Offline Deletion'
-author: Benjamin Qi, Siyong Huang
+author: Benjamin Qi, Siyong Huang, Chongtian Ma
 prerequisites:
   - dsu
 description: 'Erasing from non-amortized insert-only data structures.'
 frequency: 0
 ---
 
-## Offline Deleting from a Data Structure
-
 Using a persistent data structure or rollbacking, you are able to simulate
 deleting from a data structure while only using insertion operations.
 
-<Resources>
-	<Resource
-		source="CP-Algorithms"
-		title="Deleting from a data structure in O(T(n) log n)"
-		url="https://cp-algorithms.com/data_structures/deleting_in_log_n.html"
-		starred
-	>
-		includes code (but no explanation) for dynamic connectivity
-	</Resource>
-</Resources>
+## DSU With Rollback
 
-## Dynamic Connectivity
-
-<Resources>
-	<Resource source="GCP" title="15.5.4 - Dynamic Connectivity"/>
-</Resources>
-
-**Dynamic Connectivity** is the most common problem using the deleting trick.
-The problem is to determine whether pairs of nodes are in the same connected
-component while edges are being inserted and removed.
-
-<Problems problems="sam" />
-
-### DSU With Rollback
-
-**DSU with rollback** is a subproblem required to solve the above task.
+**DSU with Rollback** is an extension to DSU that saves merges and can undo the previous $k$ merges.
 
 <Problems problems="rollback" />
 
-<IncompleteSection>
-
-explanation? check Guide to CP?
-
-</IncompleteSection>
-
 <Warning title="Watch Out!">
 
-Because path compression is amortized, it does not guarauntee
-$\mathcal{O}(N \log^2 N)$ runtime. You _must_ use merging by rank.
+Because path compression is amortized, it does not guarantee
+$\mathcal{O}(N \log^2 N)$ runtime. You _must_ use merging by rank. An explanation is given [here](https://codeforces.com/blog/entry/90340?#comment-787571).
 
 </Warning>
 
 ### Implementation
 
-<LanguageSection>
+Adding on to the usual DSU, we can store the parent
+and sizes of nodes that are being merged before each merge. This allows us revert each node to their parents before the merge so that the rollback function can use the information to undo the merges.
 
+We can store each state of the DSU using an integer, captured by the snapshot function which returns the number of old merges that has not been rolled back. It's similar taking a picture of something, and years later going back into your photo album and scrolling up until you find this picture.
+
+For example, if history array stores $\{(1, 2), (3, 4), (1, 3)\}$, this means that before our most recent unite, the representative element for component $3$ is $1$, and before that the representative element for component $4$ is $3$. If we want to roll back two unites, we would pop the last two elements of the history array and update the representative elements in order.
+
+Furthermore, we can extend this array to roll back component sizes or anything else our DSU may track!
+
+<LanguageSection>
 <CPPSection>
 
-<!-- verified at https://codeforces.com/contest/1217/submission/62335472 -->
+```cpp
+class DSU {
+  private:
+	vector<int> p, sz;
+	// stores previous unites
+	vector<pair<int &, int>> history;
+
+  public:
+	DSU(int n) : p(n), sz(n, 1) { iota(p.begin(), p.end(), 0); }
+
+	int get(int x) { return x == p[x] ? x : get(p[x]); }
+
+	void unite(int a, int b) {
+		a = get(a);
+		b = get(b);
+		if (a == b) { return; }
+		if (sz[a] < sz[b]) { swap(a, b); }
+
+		// save this unite operation
+		history.push_back({sz[a], sz[a]});
+		history.push_back({p[b], p[b]});
+
+		p[b] = a;
+		sz[a] += sz[b];
+	}
+
+	int snapshot() { return history.size(); }
+
+	void rollback(int until) {
+		while (snapshot() > until) {
+			history.back().first = history.back().second;
+			history.pop_back();
+		}
+	}
+};
+```
+
+</CPPSection>
+</LanguageSection>
+
+## Dynamic Connectivity
+
+**Dynamic Connectivity** is the most common problem using the deleting trick.
+These types of problems involve determining whether pairs of nodes are in the same connected component while edges are being inserted and removed.
+
+<Resources>
+	<Resource source="CP-Algorithms"
+		title="Deleting from a data structure in O(T(n) log n)"
+		url="https://cp-algorithms.com/data_structures/deleting_in_log_n.html"
+		starred = "true"
+	/>
+	<Resource source="GCP" title="15.5.4 - Dynamic Connectivity"/>
+	<Resource source="CF"
+		title="Dynamic Connectivity Contest"
+		url="https://codeforces.com/gym/100551"
+		starred="true"
+		/>
+	<Resource source="Vivek Gupta"
+	title="Dynamic Connectivity Video Explanation"
+	url="https://www.youtube.com/watch?v=7gqFcunrFH0"
+	/>
+</Resources>
+
+<FocusProblem problem="sam" />
+
+## Solution - Vertex Add Component Sum
+
+For dynamic connectivity problems, we say for every query, there's an interval $[l, r]$ where it's active. Obviously, for each edge add/remove query, $l = $ (the index of the query which adds the edge), and $r = $ (the index of the query which removes the edge) $-1$. If an edge never gets removed, then $r = q - 1$. Note that we assign intervals such that for queries outside the interval, they are completely unaffected by this query. We can use similar reasoning to construct intervals for type $2$ and $3$ queries.
+
+We can now construct a query tree. If our interval is encapsulated by the the tree's interval, then we can add our query to the node corresponding to the interval. When answering queries, as we enter the interval, we can process all the operations inside the interval. As we exit the interval, we need to undo them. If we are at a leaf, we can answer type $3$ queries since we have processed all queries outside this interval $[i, i]$. Since we are processing intevals by halves each time, the depth is at most $\log n$, similar to divide and conquer.
+
+See the code below for implementation details. Note that similar to unite operations, we can also perform and undo operations of type $2$!
+
+<LanguageSection>
+<CPPSection>
 
 ```cpp
-int p[MN], r[MN];
-int *t[MN * 40], v[MN * 40], X;
-int setv(int *a, int b) {
-	if (*a != b) t[X] = a, v[X] = *a, *a = b, ++X;
-	return b;
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+
+// BeginCodeSnip{DSU}
+class DSU {
+  private:
+	vector<ll> p, sz, sum;
+	// stores all history info related to merges
+	vector<pair<ll &, ll>> history;
+
+  public:
+	DSU(int n) : p(n), sz(n, 1), sum(n) { iota(p.begin(), p.end(), 0); }
+
+	void init_sum(const vector<ll> a) {
+		for (int i = 0; i < (int)a.size(); i++) { sum[i] = a[i]; }
+	}
+
+	int get(int x) { return (p[x] == x) ? x : get(p[x]); }
+
+	ll get_sum(int x) { return sum[get(x)]; }
+
+	void unite(int a, int b) {
+		a = get(a);
+		b = get(b);
+		if (a == b) { return; }
+		if (sz[a] < sz[b]) { swap(a, b); }
+
+		// add to history
+		history.push_back({p[b], p[b]});
+		history.push_back({sz[a], sz[a]});
+		history.push_back({sum[a], sum[a]});
+
+		p[b] = a;
+		sz[a] += sz[b];
+		sum[a] += sum[b];
+	}
+
+	void add(int x, ll v) {
+		x = get(x);
+		history.push_back({sum[x], sum[x]});
+		sum[x] += v;
+	}
+
+	int snapshot() { return history.size(); }
+
+	void rollback(int until) {
+		while (snapshot() > until) {
+			history.back().first = history.back().second;
+			history.pop_back();
+		}
+	}
+};
+// EndCodeSnip
+
+const int MAXN = 3e5;
+
+DSU dsu(MAXN);
+
+struct Query {
+	int t, u, v, x;
+};
+
+vector<Query> tree[MAXN * 4];
+
+void update(Query &q, int v, int query_l, int query_r, int tree_l, int tree_r) {
+	if (query_l > tree_r || query_r < tree_l) { return; }
+	if (query_l <= tree_l && query_r >= tree_r) {
+		tree[v].push_back(q);
+		return;
+	}
+	int m = (tree_l + tree_r) / 2;
+	update(q, v * 2, query_l, query_r, tree_l, m);
+	update(q, v * 2 + 1, query_l, query_r, m + 1, tree_r);
 }
-void rollback(int x) {
-	for (; X > x;) --X, *t[X] = v[X];
+
+void dfs(int v, int l, int r, vector<ll> &ans) {
+	int snapshot = dsu.snapshot();
+	// perform all available operations upon entering
+	for (Query &q : tree[v]) {
+		if (q.t == 1) { dsu.unite(q.u, q.v); }
+		if (q.t == 2) { dsu.add(q.v, q.x); }
+	}
+	if (l == r) {
+		// answer type 3 query if we have one
+		for (Query &q : tree[v]) {
+			if (q.t == 3) { ans[l] = dsu.get_sum(q.v); }
+		}
+	} else {
+		// go deeper into the tree
+		int m = (l + r) / 2;
+		dfs(2 * v, l, m, ans);
+		dfs(2 * v + 1, m + 1, r, ans);
+	}
+	// undo operations upon exiting
+	dsu.rollback(snapshot);
 }
-int find(int n) { return p[n] ? find(p[n]) : n; }
-bool merge(int a, int b) {
-	a = find(a), b = find(b);
-	if (a == b) return 0;
-	if (r[b] > r[a]) std::swap(a, b);
-	if (r[a] == r[b]) setv(r + a, r[a] + 1);
-	return setv(p + b, a), 1;
+
+int main() {
+	int n, q;
+	cin >> n >> q;
+	vector<ll> a(n);
+	for (int i = 0; i < n; i++) { cin >> a[i]; }
+	dsu.init_sum(a);
+
+	map<pair<int, int>, int> index_added;
+	for (int i = 0; i < q; i++) {
+		int t;
+		cin >> t;
+		if (t == 0) {
+			int u, v;
+			cin >> u >> v;
+			if (u > v) swap(u, v);
+			// store index this edge is added, marks beginning of interval
+			index_added[{u, v}] = i;
+		} else if (t == 1) {
+			int u, v;
+			cin >> u >> v;
+			if (u > v) swap(u, v);
+			Query cur_q = {1, u, v};
+			// add all edges that are deleted to interval [index added, i - 1]
+			update(cur_q, 1, index_added[{u, v}], i - 1, 0, q - 1);
+			index_added[{u, v}] = -1;
+		} else if (t == 2) {
+			int v, x;
+			cin >> v >> x;
+			Query cur_q = {2, -1, v, x};
+			// add all sum queries to interval [i, q - 1]
+			update(cur_q, 1, i, q - 1, 0, q - 1);
+		} else if (t == 3) {
+			int v;
+			cin >> v;
+			Query cur_q = {3, -1, v};
+			// add all output queries to interval [i, i]
+			update(cur_q, 1, i, i, 0, q - 1);
+		}
+	}
+
+	// add all edges that are not deleted to interval [index added, q - 1]
+	for (auto [edge, index] : index_added) {
+		if (index != -1) {
+			Query cur_q = {1, edge.first, edge.second};
+			update(cur_q, 1, index, q - 1, 0, q - 1);
+		}
+	}
+
+	vector<ll> ans(q, -1);
+	dfs(1, 0, q - 1, ans);
+	for (int i = 0; i < q; i++) {
+		if (ans[i] != -1) { cout << ans[i] << "\n"; }
+	}
 }
 ```
 
 </CPPSection>
-
 </LanguageSection>
 
-## Problems
-
 <Problems problems="res" />
-
-<!-- ## Dynamic Insertion
-
-mention sqrt
-
-(online Aho-Corasick)
-
-<Problems problems={"ins"} /> -->
