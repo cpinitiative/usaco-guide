@@ -1,0 +1,189 @@
+---
+id: bts-hotcold
+source: Back to School 2017
+title: Hot & Cold
+author: Justin Ji
+---
+
+## Explanation
+
+Let $a$, $b$, and $t$ be the nodes given in each query, and $p$ be 
+the LCA of $a$ and $b$. Directly updating the path from $a$ 
+to $b$ is difficult to do, so breaking up the path into smaller segments
+is necessary. To do that, we use some casework.
+
+**Case 1: $p$ is equal to $t$, or $t$ is not inside $p$'s subtree.**
+
+In this case, we just update the path from $a$ to $p$ and 
+$b$ to $p$. Note that if $p$ is equal to either $a$ or $b$,
+then this case must be handled slightly differently.
+
+**Case 2: $p$ is equal to either $a$ or $b$.**
+
+Let the first ancestor of $t$ that is on the path from $a$ to $b$
+be $l$. WLOG, let $b$ be equal to $p$. Then, we update the path from 
+$a$ to $l$ and the path from $l$ to $b$.
+
+**Case 3: The LCA of $t$ with $a$ and $b$ is the same as $p$.**
+
+Handle this case similarly to case 1.
+
+**Case 4: Either the LCA of $t$ and $a$ or the LCA of $t$ and $b$ lie on the path from $a$ to $b$.**
+
+In this case, split the path updates into 3 segments. Let the lower of the two LCAs mentioned
+be $l$, and the node which is an ancestor of $l$ be $a$. Then, just update the path from 
+$a$ to $l$, $l$ to $p$, and the path from $b$ to $p$.
+
+**Handling Path Updates**
+
+Note that based on how we did our casework on the paths, that all path updates are between a given
+node and its ancestor. Also, note that the path updates are just adding distances which either increase 
+or decrease by a fixed amount every time. So, we can sort of do a difference array on a tree, where we DFS 
+down the tree and apply the differences while walking back up the tree.
+
+**Time Complexity:** $\mathcal{O}(N\log{N})$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+
+int main() {
+    int n, s; 
+    cin >> n >> s;
+    // 1 indexing makes updates easier
+    vector<vector<int>> adj(n + 1);
+    for (int i = 1; i < n; i++) {
+        int u, v;
+        cin >> u >> v;
+        adj[u].push_back(v);
+        adj[v].push_back(u);
+    }
+
+    // perform Euler tour and binary lifts
+    const int LOG = 1 + (int) log2(n);
+    vector<vector<int>> lift(LOG, vector<int>(n + 1));
+    vector<int> tin(n + 1);
+    vector<int> tout(n + 1);
+    vector<int> depth(n + 1);
+    int timer = 0;
+    function<void(int, int)> tour = [&](int u, int p) {
+        tin[u] = timer++;
+        lift[0][u] = p;
+        depth[u] = depth[p] + 1;
+        for (int i = 1; i < LOG; i++) {
+            lift[i][u] = lift[i - 1][lift[i - 1][u]];
+        }
+        for (int v : adj[u]) {
+            if (v != p) { tour(v, u); }
+        }
+        tout[u] = timer - 1;
+    };
+    tour(1, 0);
+    tin[0] = -1, tout[0] = n + 1; // so LCA works
+
+    // just some helper methods to simplify the code
+    auto isAnc = [&](int u, int v) -> bool {
+        return tin[u] <= tin[v] && tout[v] <= tout[u];
+    };
+    auto lca = [&](int u, int v) -> int {
+        if (isAnc(u, v)) return u;
+        if (isAnc(v, u)) return v;
+        for (int i = LOG - 1; i >= 0; i--) {
+            if (!isAnc(lift[i][u], v)) {
+                u = lift[i][u];
+            }
+        }
+        return lift[0][u];
+    };
+    auto dist = [&](int a, int b, int anc = -1) -> int {
+        if (anc == -1) { anc = lca(a, b); }
+        return depth[a] + depth[b] - 2 * depth[anc];
+    };
+
+    // calculating difference array updates
+    vector<array<ll, 2>> diff(n + 1, {0, 0});
+    auto upd = [&](int u, int v, int initial, int change) -> void {
+        /*
+         * Precondition: v is an ancestor of u, or equal to u.
+         *
+         * Updates path from u to v, excluding v. When walking up from
+         * u to v, the added initial value is updated with the "change".
+        */
+        diff[u][0] += initial;
+        diff[u][1] += change;
+        if (change > 0) {
+            diff[v][0] -= initial + (depth[u] - depth[v]);
+        } else {
+            diff[v][0] -= initial - (depth[u] - depth[v]);
+        }
+        diff[v][1] -= change;
+    };
+    auto qry = [&](int a, int b, int t) -> void {
+        int anc = lca(a, b);
+        if (anc == t || !isAnc(anc, t)) {
+            // t is either the LCA, or not inside the subtree of the LCA
+            if (anc == a || anc == b) {
+                if (anc == a) { swap(a, b); }
+                upd(a, lift[0][b], dist(a, t), -1);
+            } else {
+                upd(a, anc, dist(a, t), -1);
+                upd(b, lift[0][anc], dist(b, t), -1);
+            }
+        } else {
+            // split_1 and split_2 are candidates for the locations where
+            // the path updates go from increasing to decreasing (or vice versa)
+            int split_1 = lca(a, t);
+            int split_2 = lca(b, t);
+            if (anc == a || anc == b) {
+                // path from a to be is just a walk upward
+                if (anc == a) {
+                    swap(a, b);
+                    swap(split_1, split_2);
+                }
+                upd(a, split_1, dist(a, t, split_1), -1);
+                upd(split_1, lift[0][b], dist(t, split_1, split_1), 1);
+            } else if (split_1 == anc && split_2 == anc) {
+                // lca(a, t) and lca(b, t) are both lca(a, b)
+                upd(a, anc, dist(a, t, anc), -1);
+                upd(b, lift[0][anc], dist(b, t, anc), -1);
+            } else {
+                // lca(a, b) != lca(a, t), or lca(a, b) != lca(b, t)
+                if (depth[split_1] < depth[split_2]) {
+                    swap(split_1, split_2), swap(a, b);
+                }
+                upd(a, split_1, dist(a, t, split_1), -1);
+                upd(split_1, anc, dist(split_1, t, split_1), 1);
+                upd(b, lift[0][anc], dist(b, t, anc), -1);
+            }
+        }
+    };
+    while (s--) {
+        int a, b, t;
+        cin >> a >> b >> t;
+        qry(a, b, t);
+    }
+    
+    // calculate the final result using the difference arrays
+    function<void(int, int)> dfs = [&](int u, int p) {
+        for (int v : adj[u]) {
+            if (v == p) { continue; }
+            dfs(v, u);
+            diff[u][0] += diff[v][0] + diff[v][1];
+            diff[u][1] += diff[v][1];
+        }
+    };
+    dfs(1, 0);
+    for (int i = 1; i <= n; i++) {
+        cout << diff[i][0] << " \n"[i == n];
+    }
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
