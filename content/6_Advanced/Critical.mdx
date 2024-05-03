@@ -137,18 +137,31 @@ $$
 sdom(u)= min(v \vert \text{there is a path from v to u: } v = v_0 \rightarrow v_1 \rightarrow v_2 \rightarrow v_3 \dots \rightarrow v_k = u \text{ such that } e(v_i)<e(u), \forall i \in [1,k]) 
 $$
 
-The following graph depicts the semi-dominator for every node.
+The following graph depicts the semi-dominator for every node. The full-color edges represent the edges part of the DFS tree.
 
-<div class="slideshow-container">
-  <div class="slide">
-    <img src="assets/dom_tree.png" alt="Image 1" />
-  </div>
-  <div class="slide">
-    <img src="assets/dom_tree_sdom.png" alt="Image 2" />
-  </div>
-  <a class="prev" onclick="prevSlide()">&#10094;</a>
-  <a class="next" onclick="nextSlide()">&#10095;</a>
-</div>
+#### Important properties
+1. If $u \neq S$, then $sdom(u)$ is a proper ancestor of $u$ is the DFS tree.
+2. If $u \neq S$, then idom(u) is an ancestor - not necessarily proper - of $u$ in the DFS tree.
+3. Let $u \neq S$. If, for every vertex $x$ which is an ancestor of $u$ and has sdom(u) as its proper ancestor, $sdom(x) \geq sdom(u)$ then $idom(u)=sdom(u)$.
+4. Let $w \neq S$. Let u be a vertex for which $sdom(u)$ is minimum among all vertices u satisfying “$sdom(w)$ is a proper ancestor of $u$ and $u$ is an ancestor of $w$”.  If $sdom(u) \leq sdom(w)$ then $idom(w) = idom(u)$.
+5. Let $w \neq S$. Let $u$ be a vertex for which $sdom(u)$ is minimum among all vertices $u$ satisfying “$sdom(w)$ is a proper ancestor of $u$ and $u$ is an ancestor of $w$”.  Then:
+
+$$
+idom(w)=\begin{cases}
+sdom(w), & \text{ If } sdom(u)=sdom(w),\\
+idom(w), & \text{otherwise}.
+\end{cases}
+$$
+
+#### Precompute Sdom
+
+The following identity enables us the compute $sdom$:
+$$
+sdom(u) = min((y \vert (y, u) \in E \text{ and } y \le u) \cup (sdom(x) \vert x>u \\\text{ and there is and edge (x, y) such that x is ancestor of y}) )
+$$
+In other words, $sdom(u)$ is the minimum node in the intersection of the following groups:
+1. All the nodes $y$ with $y \le u \text{ and } (y,u) \in E$
+2. $sdom(x)$ where $x > u \text{ and } (u, y) \in E$ 
 
 <LanguageSection>
 <CPPSection>
@@ -241,9 +254,6 @@ int main() {
     cout << (int)dominators.size() << '\n';
     reverse(dominators.begin(), dominators.end());
     for(int node : dominators) { cout << node << ' '; }
-
-
-    return 0;
 }
 ```
 
