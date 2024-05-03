@@ -38,13 +38,13 @@ frequency: 1
     </Resource>
 </Resources>
 
-### Solution
+## Solution
 
-### Naive approach
+## Naive approach
 
 Critical nodes in a DAG are commonly known as **dominators**. Let's define $Dom(u)$ as the set of nodes that dominate node $u$.
 
-The dominator of the starting node is itself. The set of dominators for any other node $u$ is the intersection of the set of dominators for all ancestors
+The dominator of the starting node $1$ is itself. The set of dominators for any other node $u$ is the intersection of the set of dominators for all ancestors
 $p$ of node $u$.
 
 $$
@@ -55,7 +55,10 @@ u,\text{ if u is the starting point}\\
 \end{cases}
 $$
 
-The following code uses the above rucerrence.
+The following code uses the above rucurrence.
+
+**Time complexity:** $\mathcal{O}(N \cdot M)$.
+
 <LanguageSection>
 <CPPSection>
 
@@ -113,11 +116,9 @@ int main() {
 </CPPSection>
 </LanguageSection>
 
-**Time complexity:** $\mathcal{O}(N \cdot M)$.
-
 Unfortunately, this is too slow.
 
-### A faster approach
+## A faster approach
 
 In this approach, we are going to build the [dominator tree](https://en.wikipedia.org/wiki/Dominator_(graph_theory)) of the graph. A dominator tree is a tree where each node's children are those nodes it immediately dominates. The start node is the root of the tree. The immediate dominator - or shortly **idom** - of a node $u$ is a node $v$ that strictly dominates node $u$ and every other dominator of node $u$ strictly dominates node $v$. The definition of the dominator tree gives us the following property: If node $v$ dominates node $u$, then node $v$ is an ancestor of node $u$, thus the answe of the problem is the path from the root to node $n$ in the dominator tree.
 
@@ -154,7 +155,7 @@ idom(w), & \text{otherwise}.
 \tag{1}
 $$
 
-#### Precompute Sdom
+## Precompute Sdom
 
 The following identity enables us the compute $sdom$:
 $$
@@ -166,7 +167,7 @@ In other words, $sdom(u)$ is the minimum node in the intersection of the followi
 1. All the nodes $y$ with $y \le u \text{ and } (y,u) \in E$
 2. $sdom(x)$ where $x > u \text{ and } (u, y) \in E$
 
-#### Implementation
+## Implementation
 
 1. Precompute using a DFS the new mapping of the tree, i.e. the new labels of the nodes are their entry time $u = e[u]$.
 
