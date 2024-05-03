@@ -227,10 +227,10 @@ $$
 <CPPSection>
 
 ```cpp
-#include <algorithm>
 #include <functional>
 #include <iostream>
 #include <vector>
+#include <set>
 
 using namespace std;
 
@@ -299,15 +299,14 @@ int main() {
 		dom_parent[inv[i]] = inv[dom[i]];
 	}
 	// Get the ancestors of node n in the dominator tree
-	vector<int> dominators;
+	set<int> dominators;
 	int node = n - 1;
 	while (node != 0) {
-		dominators.push_back(node + 1);
+		dominators.insert(node + 1);
 		node = dom_parent[node];
 	}
-	dominators.push_back(1);
+	dominators.insert(1);
 	cout << (int)dominators.size() << '\n';
-	reverse(dominators.begin(), dominators.end());
 	for (int node : dominators) { cout << node << ' '; }
 }
 ```
