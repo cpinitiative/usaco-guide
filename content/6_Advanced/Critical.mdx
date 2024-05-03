@@ -5,6 +5,7 @@ author: Benjamin Qi, Mihnea Brebenel
 description: 'CSES Critical Cities and Extensions'
 prerequisites:
   - Gold - Cycle Finding
+  - dsu
 frequency: 1
 ---
 
@@ -132,6 +133,7 @@ From now on, we'll discuss the construction of the dominator tree, but first we 
 
 $$
 e(u) = \text{the entry time in node u during a DFS}
+\tag{0}
 $$
 $$
 sdom(u)= min(v \vert \text{there is a path from v to u: } v = v_0 \rightarrow v_1 \rightarrow v_2 \rightarrow v_3 \dots \rightarrow v_k = u \text{ such that } e(v_i)<e(u), \forall i \in [1,k]) 
@@ -157,19 +159,64 @@ idom(w)=\begin{cases}
 sdom(w), & \text{ If } sdom(u)=sdom(w),\\
 idom(w), & \text{otherwise}.
 \end{cases}
+\tag{1}
 $$
 
 #### Precompute Sdom
 
 The following identity enables us the compute $sdom$:
 $$
+
 sdom(u) = min((y \vert (y, u) \in E \text{ and } y \le u) \cup (sdom(x) \vert x>u \\\text{ and there is and edge (x, y) such that x is ancestor of y}) )
+\tag{2}
 $$
 In other words, $sdom(u)$ is the minimum node in the intersection of the following groups:
 1. All the nodes $y$ with $y \le u \text{ and } (y,u) \in E$
 2. $sdom(x)$ where $x > u \text{ and } (u, y) \in E$ 
 
 #### Implementation
+
+1. Precompute using a DFS the new mapping of the tree, i.e. the new labels of the nodes are their entry time $u = e[u]$.
+2. Compute $sdom$ for all nodes by applying the formula mentioned in the previous section. Iterate over node in decreasing order, maintaining the visited nodes in a DSU. Also, the DSU is slightly modified:
+
+- $Find(u)$ = Let $x$ be the root of the components
+    - If $u=x$, return $x$;
+    - else return a node $v$ with minimum sdom, lying on path from $u$ to $x$.
+
+In order to process node $u$ we iterate over all incoming edges $(v, u):$
+- If $v < u$, $v$ is an ancestor of $u$, $v$ would not have been processed till now, thus $Find(v)$ would return v.
+- If $v > w$ then $v$ would have already been processed and $Find(v)$ would return a node $x$ lying on the path from $v$ to root in the DSU tree having minimum sdom. 
+
+The 2 cases cover precisely the definition $(2)$.
+
+3. Compute the $idom$ for all nodes by applying the $5$-th property of $sdoms$ previously mentioned.
+
+In this step, store nodes in buckets of their own $sdom$ and iterate over them updating the $idom$ value using $(1)$.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+for(int i = n-1; i >= 0; i--) {
+    for(int p : rg[i]) {  sdom[i] = min(sdom[i], sdom[Find(p, 0)]); }
+    if(i > 0) { bucket[sdom[i]].push_back(i); }
+    for(int node : bucket[i]) {
+        int p = Find(node, 0);
+        if(sdom[p] == sdom[node]) { dom[node] = sdom[node]; } 
+        else { dom[node] = p; }
+    }
+    if(i > 0) {  Unite(parent[i], i); }
+}
+```
+
+</CPPSection>
+</LanguageSection>
+4. After steps $2$ and $3$, the $idom$ value has been set, for every node $u$, or it has been set to an ancestor $v$ of $u$ and $idom(u)=idom(v)$. Now if we start processing nodes after (0) increasingly, then for any vertex $u$:
+
+$$
+\text{If } sdom(u) \neq idom(u) \text{ then } idom(u) = idom(idom(u)) \\
+\text{else } idom(u) = sdom(u)
+$$
 
 <LanguageSection>
 <CPPSection>
@@ -198,17 +245,20 @@ int main() {
     }
     int timer = 0;
     vector<int> sdom(n, 0), e(n, -1), parent(n, 0), inv(n, 0), dsu(n, 0), label(n, 0), dom_parent(n, 0);
-    // Precompute values
     function<void(int)> dfs = [&](int node) {
+        // Entry time in node
         e[node] = timer;
+        // Map entry time - node
         inv[timer] = node;
         sdom[timer] = dsu[timer] = label[timer] = timer;
         timer++;
         for(int son : g[node]) {
             if(e[son] == -1) {
                 dfs(son);
+                // Store the parent of son in DFS tree
                 parent[e[son]] = e[node];
             }
+            // Store the reverse graph
             rg[e[son]].push_back(e[node]);
         }
     };
@@ -228,6 +278,7 @@ int main() {
     dfs(0);
     vector<int> dom(n);
     for(int i = n-1; i >= 0; i--) {
+        // Compute sdom 
         for(int p : rg[i]) {
             sdom[i] = min(sdom[i], sdom[Find(p, 0)]);
         }
@@ -246,12 +297,14 @@ int main() {
             Unite(parent[i], i);
         }
     }
+    // Compute the idoms and set each node's parent in the dominator tree
     for(int i = 1; i < n; i++) {
         if(dom[i] != sdom[i]) {
             dom[i] = dom[dom[i]];
         }
         dom_parent[inv[i]] = inv[dom[i]];
     }
+    // Get the ancestors of node n in the dominator tree
     vector<int> dominators;
     int node = n-1;
     while(node != 0) {
