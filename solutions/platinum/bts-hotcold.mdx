@@ -57,7 +57,7 @@ using ll = long long;
 class Tree {
   private:
 	const int n;
-	const int log2dist;         // max height of the tree
+	const int log2dist;         // # of bits needed for binary lift
 	vector<vector<int>> &adj;   // reference to adjacency list
 	vector<vector<int>> lift;   // for binary lifting
 	vector<array<ll, 2>> diff;  // difference array updates
@@ -68,16 +68,7 @@ class Tree {
 	vector<int> tout;
 	int timer = 0;
 
-  public:
-	Tree(int n, vector<vector<int>> &adj)
-	    : n(n), log2dist((int)log2(n) + 1), adj(adj),
-	      lift(log2dist, vector<int>(n)), depth(n), tin(n), tout(n), diff(n) {
-		tin[0] = -1;
-		tout[0] = n + 1;  // ensures that LCA works
-		build(1, 0);
-	}
-
-	void build(int u, int p) {
+    void tour(int u, int p) {
 		tin[u] = timer++;
 		lift[0][u] = p;
 		depth[u] = depth[p] + 1;
@@ -85,9 +76,18 @@ class Tree {
 			lift[i][u] = lift[i - 1][lift[i - 1][u]];
 		}
 		for (int v : adj[u]) {
-			if (v != p) { build(v, u); }
+			if (v != p) { tour(v, u); }
 		}
 		tout[u] = timer - 1;
+	}
+
+  public:
+	Tree(int n, vector<vector<int>> &adj)
+	    : n(n), log2dist((int)log2(n) + 1), adj(adj),
+	      lift(log2dist, vector<int>(n)), diff(n), depth(n), tin(n), tout(n) {
+		tin[0] = -1;
+		tout[0] = n + 1;  // ensures that LCA works
+		tour(1, 0);
 	}
 
 	bool is_ancestor(int u, int v) {
