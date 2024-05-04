@@ -56,28 +56,30 @@ using ll = long long;
 
 class Tree {
     private:
-        const int n, LOG;
-        vector<vector<int>> adj, lift;
-        vector<int> depth, tin, tout;
+        const int n, log2dist;
+        vector<vector<int>> &adj;
+        vector<vector<int>> lift;
         vector<array<ll, 2>> diff;
+        vector<int> depth;
+        vector<int> tin;
+        vector<int> tout;
         int timer = 0;
     public:
-        Tree(int _n) : n(_n), LOG((int) log2(n) + 1), adj(n), 
-                       lift(LOG, vector<int>(n)), depth(n), 
-                       tin(n), tout(n), diff(n) {
+        Tree(int n, vector<vector<int>> &adj) 
+            : n(n), log2dist((int) log2(n) + 1), adj(adj), 
+              lift(log2dist, vector<int>(n)), depth(n), 
+            tin(n), tout(n), diff(n) {
             tin[0] = -1;
             tout[0] = n + 1;
             // ^ ensures that LCA works
+            build(1, 0);
         }
-        void addEdge(int u, int v) {
-            adj[u].push_back(v);
-            adj[v].push_back(u);
-        }
+
         void build(int u, int p) {
             tin[u] = timer++;
             lift[0][u] = p;
             depth[u] = depth[p] + 1;
-            for (int i = 1; i < LOG; i++) {
+            for (int i = 1; i < log2dist; i++) {
                 lift[i][u] = lift[i - 1][lift[i - 1][u]];
             }
             for (int v : adj[u]) {
@@ -85,23 +87,27 @@ class Tree {
             }
             tout[u] = timer - 1;
         }
-        bool isAncestor(int u, int v) {
+
+        bool is_ancestor(int u, int v) {
             return tin[u] <= tin[v] && tout[v] <= tout[u];
         }
+
         int lca(int u, int v) {
-            if (isAncestor(u, v)) { return u; }
-            if (isAncestor(v, u)) { return v; }
-            for (int i = LOG - 1; i >= 0; i--) {
-                if (!isAncestor(lift[i][u], v)) {
+            if (is_ancestor(u, v)) { return u; }
+            if (is_ancestor(v, u)) { return v; }
+            for (int i = log2dist - 1; i >= 0; i--) {
+                if (!is_ancestor(lift[i][u], v)) {
                     u = lift[i][u];
                 }
             }
             return lift[0][u];
         }
+        
         int dist(int u, int v, int anc = -1) {
             if (anc == -1) { anc = lca(u, v); }
             return depth[u] + depth[v] - 2 * depth[anc];
         }
+
         void update(int u, int v, int initial, int change) {
             diff[u][0] += initial;
             diff[u][1] += change;
@@ -112,9 +118,10 @@ class Tree {
             }
             diff[v][1] -= change;
         }
+
         void query(int a, int b, int t) {
             int anc = lca(a, b);
-            if (anc == t || !isAncestor(anc, t)) {
+            if (anc == t || !is_ancestor(anc, t)) {
                 // t is either the LCA, or not inside the subtree of the LCA
                 if (anc == a || anc == b) {
                     if (anc == a) { swap(a, b); }
@@ -151,6 +158,7 @@ class Tree {
                 }
             }
         }
+
         void dfs(int u, int p) {
             for (int v : adj[u]) {
                 if (v == p) { continue; }
@@ -159,7 +167,8 @@ class Tree {
                 diff[u][1] += diff[v][1];
             }
         }
-        vector<ll> result() {
+
+        vector<ll> calculate_result() {
             dfs(1, 0);
             vector<ll> res(n + 1);
             for (int i = 1; i <= n; i++) {
@@ -171,19 +180,20 @@ class Tree {
 int main() {
     int n, s; 
     cin >> n >> s;
-    Tree tree(n + 1);
+    vector<vector<int>> adj(n + 1);
     for (int i = 1; i < n; i++) {
         int u, v;
         cin >> u >> v;
-        tree.addEdge(u, v);
+        adj[u].push_back(v);
+        adj[v].push_back(u);
     }
-    tree.build(1, 0);
+    Tree tree(n + 1, adj);
     for (int i = 0; i < s; i++) {
         int a, b, t;
         cin >> a >> b >> t;
         tree.query(a, b, t);
     }
-    vector<ll> res = tree.result();
+    vector<ll> res = tree.calculate_result();
     for (int i = 1; i <= n; i++) {
         cout << res[i] << " \n"[i == n];
     }
