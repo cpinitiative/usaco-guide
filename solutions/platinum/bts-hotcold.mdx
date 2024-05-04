@@ -86,101 +86,97 @@ int main() {
 	tour(1, 0);
 	tin[0] = -1, tout[0] = n + 1;  // so LCA works
 
-    // just some helper methods to simplify the code
-    auto isAncestor = [&](int u, int v) -> bool {
-        return tin[u] <= tin[v] && tout[v] <= tout[u];
-    };
-    auto lca = [&](int u, int v) -> int {
-        if (isAncestor(u, v)) { return u; }
-        if (isAncestor(v, u)) { return v; }
-        for (int i = LOG - 1; i >= 0; i--) {
-            if (!isAncestor(lift[i][u], v)) {
-                u = lift[i][u];
-            }
-        }
-        return lift[0][u];
-    };
-    auto dist = [&](int a, int b, int anc = -1) -> int {
-        if (anc == -1) { anc = lca(a, b); }
-        return depth[a] + depth[b] - 2 * depth[anc];
-    };
+	// just some helper methods to simplify the code
+	auto isAncestor = [&](int u, int v) -> bool {
+		return tin[u] <= tin[v] && tout[v] <= tout[u];
+	};
+	auto lca = [&](int u, int v) -> int {
+		if (isAncestor(u, v)) { return u; }
+		if (isAncestor(v, u)) { return v; }
+		for (int i = LOG - 1; i >= 0; i--) {
+			if (!isAncestor(lift[i][u], v)) { u = lift[i][u]; }
+		}
+		return lift[0][u];
+	};
+	auto dist = [&](int a, int b, int anc = -1) -> int {
+		if (anc == -1) { anc = lca(a, b); }
+		return depth[a] + depth[b] - 2 * depth[anc];
+	};
 
-    // calculating difference array updates
-    vector<array<ll, 2>> diff(n + 1, {0, 0});
-    auto upd = [&](int u, int v, int initial, int change) -> void {
-        /*
-         * Precondition: v is an ancestor of u, or equal to u.
-         *
-         * Updates path from u to v, excluding v. When walking up from
-         * u to v, the added initial value is updated with the "change".
-        */
-        diff[u][0] += initial;
-        diff[u][1] += change;
-        if (change > 0) {
-            diff[v][0] -= initial + (depth[u] - depth[v]);
-        } else {
-            diff[v][0] -= initial - (depth[u] - depth[v]);
-        }
-        diff[v][1] -= change;
-    };
-    auto qry = [&](int a, int b, int t) -> void {
-        int anc = lca(a, b);
-        if (anc == t || !isAncestor(anc, t)) {
-            // t is either the LCA, or not inside the subtree of the LCA
-            if (anc == a || anc == b) {
-                if (anc == a) { swap(a, b); }
-                upd(a, lift[0][b], dist(a, t), -1);
-            } else {
-                upd(a, anc, dist(a, t), -1);
-                upd(b, lift[0][anc], dist(b, t), -1);
-            }
-        } else {
-            // split_1 and split_2 are candidates for the locations where
-            // the path updates go from increasing to decreasing (or vice versa)
-            int split_1 = lca(a, t);
-            int split_2 = lca(b, t);
-            if (anc == a || anc == b) {
-                // path from a to be is just a walk upward
-                if (anc == a) {
-                    swap(a, b);
-                    swap(split_1, split_2);
-                }
-                upd(a, split_1, dist(a, t, split_1), -1);
-                upd(split_1, lift[0][b], dist(t, split_1, split_1), 1);
-            } else if (split_1 == anc && split_2 == anc) {
-                // lca(a, t) and lca(b, t) are both lca(a, b)
-                upd(a, anc, dist(a, t, anc), -1);
-                upd(b, lift[0][anc], dist(b, t, anc), -1);
-            } else {
-                // lca(a, b) != lca(a, t), or lca(a, b) != lca(b, t)
-                if (depth[split_1] < depth[split_2]) {
-                    swap(split_1, split_2), swap(a, b);
-                }
-                upd(a, split_1, dist(a, t, split_1), -1);
-                upd(split_1, anc, dist(split_1, t, split_1), 1);
-                upd(b, lift[0][anc], dist(b, t, anc), -1);
-            }
-        }
-    };
-    for (int i = 0; i < s; i++) {
-        int a, b, t;
-        cin >> a >> b >> t;
-        qry(a, b, t);
-    }
-    
-    // calculate the final result using the difference arrays
-    function<void(int, int)> dfs = [&](int u, int p) {
-        for (int v : adj[u]) {
-            if (v == p) { continue; }
-            dfs(v, u);
-            diff[u][0] += diff[v][0] + diff[v][1];
-            diff[u][1] += diff[v][1];
-        }
-    };
-    dfs(1, 0);
-    for (int i = 1; i <= n; i++) {
-        cout << diff[i][0] << " \n"[i == n];
-    }
+	// calculating difference array updates
+	vector<array<ll, 2>> diff(n + 1, {0, 0});
+	auto upd = [&](int u, int v, int initial, int change) -> void {
+		/*
+		 * Precondition: v is an ancestor of u, or equal to u.
+		 *
+		 * Updates path from u to v, excluding v. When walking up from
+		 * u to v, the added initial value is updated with the "change".
+		 */
+		diff[u][0] += initial;
+		diff[u][1] += change;
+		if (change > 0) {
+			diff[v][0] -= initial + (depth[u] - depth[v]);
+		} else {
+			diff[v][0] -= initial - (depth[u] - depth[v]);
+		}
+		diff[v][1] -= change;
+	};
+	auto qry = [&](int a, int b, int t) -> void {
+		int anc = lca(a, b);
+		if (anc == t || !isAncestor(anc, t)) {
+			// t is either the LCA, or not inside the subtree of the LCA
+			if (anc == a || anc == b) {
+				if (anc == a) { swap(a, b); }
+				upd(a, lift[0][b], dist(a, t), -1);
+			} else {
+				upd(a, anc, dist(a, t), -1);
+				upd(b, lift[0][anc], dist(b, t), -1);
+			}
+		} else {
+			// split_1 and split_2 are candidates for the locations where
+			// the path updates go from increasing to decreasing (or vice versa)
+			int split_1 = lca(a, t);
+			int split_2 = lca(b, t);
+			if (anc == a || anc == b) {
+				// path from a to be is just a walk upward
+				if (anc == a) {
+					swap(a, b);
+					swap(split_1, split_2);
+				}
+				upd(a, split_1, dist(a, t, split_1), -1);
+				upd(split_1, lift[0][b], dist(t, split_1, split_1), 1);
+			} else if (split_1 == anc && split_2 == anc) {
+				// lca(a, t) and lca(b, t) are both lca(a, b)
+				upd(a, anc, dist(a, t, anc), -1);
+				upd(b, lift[0][anc], dist(b, t, anc), -1);
+			} else {
+				// lca(a, b) != lca(a, t), or lca(a, b) != lca(b, t)
+				if (depth[split_1] < depth[split_2]) {
+					swap(split_1, split_2), swap(a, b);
+				}
+				upd(a, split_1, dist(a, t, split_1), -1);
+				upd(split_1, anc, dist(split_1, t, split_1), 1);
+				upd(b, lift[0][anc], dist(b, t, anc), -1);
+			}
+		}
+	};
+	for (int i = 0; i < s; i++) {
+		int a, b, t;
+		cin >> a >> b >> t;
+		qry(a, b, t);
+	}
+
+	// calculate the final result using the difference arrays
+	function<void(int, int)> dfs = [&](int u, int p) {
+		for (int v : adj[u]) {
+			if (v == p) { continue; }
+			dfs(v, u);
+			diff[u][0] += diff[v][0] + diff[v][1];
+			diff[u][1] += diff[v][1];
+		}
+	};
+	dfs(1, 0);
+	for (int i = 1; i <= n; i++) { cout << diff[i][0] << " \n"[i == n]; }
 }
 ```
 
