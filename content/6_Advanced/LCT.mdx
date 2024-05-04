@@ -13,11 +13,6 @@ frequency: 1
 
 ## Splay Tree
 
-A type of self-balancing binary search tree that supports efficient
-implementation of operations such as finding an element, deleting an element, splitting a tree, and joining two trees. When a node in a splay tree is accessed, a splay operation is performed on the node that moves it too the root of the tree while also roughly balancing the tree.
-
-### Tutorial
-
 <Resources>
 	<Resource
 		starred
@@ -42,23 +37,12 @@ implementation of operations such as finding an element, deleting an element, sp
 	/>
 </Resources>
 
+A type of self-balancing binary search tree that supports efficient
+implementation of operations such as finding an element, deleting an element, splitting a tree, and joining two trees. When a node in a splay tree is accessed, a splay operation is performed on the node that moves it too the root of the tree while also roughly balancing the tree.
+
 ## Link Cut Tree
 
-A data structure that uses splay trees to represent a forest of rooted trees and
-can perform the following operations with an amortized upper bound time
-complexity of $\mathcal{O}(\log N)$:
-
-- Linking a tree with a node by making the root of the tree a child of any node
-  of another tree
-- Deleting the edge between a node and its parent, detaching the node's subtree
-  to make a new tree
-- Find the root of the tree that a node belongs to
-
-These operations all use the $\texttt{access}(v)$ subroutine,
-which creates a preferred path from the root of the represented tree to vertex $v$,
-making a corresponding auxiliary splay tree with $v$ as the root.
-
-### Tutorial
+<FocusProblem problem="conSam" />
 
 <Resources>
 	<Resource
@@ -90,13 +74,29 @@ making a corresponding auxiliary splay tree with $v$ as the root.
 	/>
 </Resources>
 
-## Dynamic Connectivity
+A data structure that uses splay trees to represent a forest of rooted trees and
+can perform the following operations with an amortized upper bound time
+complexity of $\mathcal{O}(\log N)$:
 
-<FocusProblem problem="conSam" />
+- Linking a tree with a node by making the root of the tree a child of any node
+  of another tree
+- Deleting the edge between a node and its parent, detaching the node's subtree
+  to make a new tree
+- Find the root of the tree that a node belongs to
 
-### Solution With Link Cut Tree
+These operations all use the $\texttt{access}(v)$ subroutine,
+which creates a preferred path from the root of the represented tree to vertex $v$,
+making a corresponding auxiliary splay tree with $v$ as the root.
 
-We can use Link Cut Tree to process each type of query $\mathcal{O}(\log N)$ time. Adding an edge or removing an edge between two vertices are standard features of the link cut tree. To check if there is a path between two nodes is the same as checking if they are part of the same tree. To check if two nodes are part of the same tree, we can just check if the roots of the trees of the two nodes are the same.
+## Solution
+
+### With Link Cut Tree
+
+We can use a link cut tree to process each type of query $\mathcal{O}(\log N)$ time.
+Adding an edge or removing an edge between two vertices are standard features of the link cut tree.
+
+Checking if there's a path between two nodes is the same as checking if they're part of the same tree.
+To check if two nodes are part of the same tree, we can check if the roots of the trees of the two nodes are the same.
 
 ```cpp
 #include <bits/stdc++.h>
@@ -233,7 +233,7 @@ int main() {
 }
 ```
 
-### Solution With Euler Tour Tree
+### With Euler Tour Tree
 
 An alternative solution is to use the Euler Tour Tree (ETT) technique.
 
@@ -388,9 +388,9 @@ int main() {
 }
 ```
 
-## Link Cut Tree - Connectivity
+## Finding Connectivity
 
-Link Cut Tree can be used to solve problems that deal with queries updating trees and querying for connectivity.
+The link cut tree can be used to solve problems that deal with queries updating trees and querying for connectivity.
 
 ### Problems
 
