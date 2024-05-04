@@ -55,7 +55,7 @@ u,\text{ if u is the starting point}\\
 \end{cases}
 $$
 
-The following code uses the above rucurrence.
+The following code uses the above recurrence.
 
 **Time complexity:** $\mathcal{O}(N \cdot M)$.
 
@@ -195,7 +195,7 @@ This snippet of code combines steps $2$ and $3$:
 ```cpp
 // Iterate decreasingly
 for (int i = n - 1; i >= 0; i--) {
-	// Iterat over incoming edges applying (2)
+	// Iterate over incoming edges applying (2)
 	for (int p : rg[i]) { sdom[i] = min(sdom[i], sdom[Find(p, 0)]); }
 	// Insert i into it's bucket after sdom[i]
 	if (i > 0) { bucket[sdom[i]].push_back(i); }
@@ -247,9 +247,11 @@ int main() {
 		x--, y--;
 		g[x].push_back(y);
 	}
+
 	int timer = 0;
 	vector<int> sdom(n, 0), e(n, -1), parent(n, 0), inv(n, 0), dsu(n, 0),
 	    label(n, 0), dom_parent(n, 0);
+
 	function<void(int)> dfs = [&](int node) {
 		// Entry time in node
 		e[node] = timer;
@@ -267,37 +269,42 @@ int main() {
 			rg[e[son]].push_back(e[node]);
 		}
 	};
+
 	// DSU function
-	function<int(int, int)> Find = [&](int u, int v) {
+	function<int(int, int)> find = [&](int u, int v) {
 		if (u == dsu[u]) { return v ? -1 : u; }
-		int comp = Find(dsu[u], v + 1);
+		int comp = find(dsu[u], v + 1);
 		if (comp < 0) { return u; }
 		if (sdom[label[dsu[u]]] < sdom[label[u]]) label[u] = label[dsu[u]];
 		dsu[u] = comp;
 		return v ? comp : label[u];
 	};
-	auto Unite = [&](int x, int y) { dsu[y] = x; };
+
+	auto unite = [&](int x, int y) { dsu[y] = x; };
+
 	dfs(0);
 	vector<int> dom(n);
 	for (int i = n - 1; i >= 0; i--) {
 		// Compute sdom
-		for (int p : rg[i]) { sdom[i] = min(sdom[i], sdom[Find(p, 0)]); }
+		for (int p : rg[i]) { sdom[i] = min(sdom[i], sdom[find(p, 0)]); }
 		if (i > 0) { bucket[sdom[i]].push_back(i); }
 		for (int node : bucket[i]) {
-			int p = Find(node, 0);
+			int p = find(node, 0);
 			if (sdom[p] == sdom[node]) {
 				dom[node] = sdom[node];
 			} else {
 				dom[node] = p;
 			}
 		}
-		if (i > 0) { Unite(parent[i], i); }
+		if (i > 0) { unite(parent[i], i); }
 	}
+
 	// Compute the idoms and set each node's parent in the dominator tree
 	for (int i = 1; i < n; i++) {
 		if (dom[i] != sdom[i]) { dom[i] = dom[dom[i]]; }
 		dom_parent[inv[i]] = inv[dom[i]];
 	}
+	
 	// Get the ancestors of node n in the dominator tree
 	set<int> dominators;
 	int node = n - 1;
