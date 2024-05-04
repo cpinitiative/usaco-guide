@@ -7,21 +7,21 @@ author: Justin Ji
 
 ## Explanation
 
-Let $a$, $b$, and $t$ be the nodes given in each query, and $p$ be 
-the LCA of $a$ and $b$. Directly updating the path from $a$ 
+Let $a$, $b$, and $t$ be the nodes given in each query, and $p$ be
+the LCA of $a$ and $b$. Directly updating the path from $a$
 to $b$ is difficult to do, so breaking up the path into smaller segments
 is necessary. To do that, we use some casework.
 
 **Case 1: $p$ is equal to $t$, or $t$ is not inside $p$'s subtree.**
 
-In this case, we just update the path from $a$ to $p$ and 
+In this case, we just update the path from $a$ to $p$ and
 $b$ to $p$. Note that if $p$ is equal to either $a$ or $b$,
 then this case must be handled slightly differently.
 
 **Case 2: $p$ is equal to either $a$ or $b$.**
 
 Let the first ancestor of $t$ that is on the path from $a$ to $b$
-be $l$. WLOG, let $b$ be equal to $p$. Then, we update the path from 
+be $l$. WLOG, let $b$ be equal to $p$. Then, we update the path from
 $a$ to $l$ and the path from $l$ to $b$.
 
 **Case 3: The LCA of $t$ with $a$ and $b$ is the same as $p$.**
@@ -31,14 +31,14 @@ Handle this case similarly to case 1.
 **Case 4: Either the LCA of $t$ and $a$ or the LCA of $t$ and $b$ lie on the path from $a$ to $b$.**
 
 In this case, split the path updates into 3 segments. Let the lower of the two LCAs mentioned
-be $l$, and the node which is an ancestor of $l$ be $a$. Then, just update the path from 
+be $l$, and the node which is an ancestor of $l$ be $a$. Then, just update the path from
 $a$ to $l$, $l$ to $p$, and the path from $b$ to $p$.
 
 **Handling Path Updates**
 
 Note that based on how we did our casework on the paths, that all path updates are between a given
-node and its ancestor. Also, note that the path updates are just adding distances which either increase 
-or decrease by a fixed amount every time. So, we can sort of do a difference array on a tree, where we DFS 
+node and its ancestor. Also, note that the path updates are just adding distances which either increase
+or decrease by a fixed amount every time. So, we can sort of do a difference array on a tree, where we DFS
 down the tree and apply the differences while walking back up the tree.
 
 **Time Complexity:** $\mathcal{O}(N\log{N})$
@@ -53,38 +53,38 @@ using namespace std;
 using ll = long long;
 
 int main() {
-    int n, s; 
-    cin >> n >> s;
-    // 1 indexing makes updates easier
-    vector<vector<int>> adj(n + 1);
-    for (int i = 1; i < n; i++) {
-        int u, v;
-        cin >> u >> v;
-        adj[u].push_back(v);
-        adj[v].push_back(u);
-    }
+	int n, s;
+	cin >> n >> s;
+	// 1 indexing makes updates easier
+	vector<vector<int>> adj(n + 1);
+	for (int i = 1; i < n; i++) {
+		int u, v;
+		cin >> u >> v;
+		adj[u].push_back(v);
+		adj[v].push_back(u);
+	}
 
-    // perform Euler tour and binary lifts
-    const int LOG = 1 + (int) log2(n);
-    vector<vector<int>> lift(LOG, vector<int>(n + 1));
-    vector<int> tin(n + 1);
-    vector<int> tout(n + 1);
-    vector<int> depth(n + 1);
-    int timer = 0;
-    function<void(int, int)> tour = [&](int u, int p) {
-        tin[u] = timer++;
-        lift[0][u] = p;
-        depth[u] = depth[p] + 1;
-        for (int i = 1; i < LOG; i++) {
-            lift[i][u] = lift[i - 1][lift[i - 1][u]];
-        }
-        for (int v : adj[u]) {
-            if (v != p) { tour(v, u); }
-        }
-        tout[u] = timer - 1;
-    };
-    tour(1, 0);
-    tin[0] = -1, tout[0] = n + 1; // so LCA works
+	// perform Euler tour and binary lifts
+	const int LOG = 1 + (int)log2(n);
+	vector<vector<int>> lift(LOG, vector<int>(n + 1));
+	vector<int> tin(n + 1);
+	vector<int> tout(n + 1);
+	vector<int> depth(n + 1);
+	int timer = 0;
+	function<void(int, int)> tour = [&](int u, int p) {
+		tin[u] = timer++;
+		lift[0][u] = p;
+		depth[u] = depth[p] + 1;
+		for (int i = 1; i < LOG; i++) {
+			lift[i][u] = lift[i - 1][lift[i - 1][u]];
+		}
+		for (int v : adj[u]) {
+			if (v != p) { tour(v, u); }
+		}
+		tout[u] = timer - 1;
+	};
+	tour(1, 0);
+	tin[0] = -1, tout[0] = n + 1;  // so LCA works
 
     // just some helper methods to simplify the code
     auto isAncestor = [&](int u, int v) -> bool {
