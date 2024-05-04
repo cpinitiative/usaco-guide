@@ -87,14 +87,14 @@ int main() {
     tin[0] = -1, tout[0] = n + 1; // so LCA works
 
     // just some helper methods to simplify the code
-    auto isAnc = [&](int u, int v) -> bool {
+    auto isAncestor = [&](int u, int v) -> bool {
         return tin[u] <= tin[v] && tout[v] <= tout[u];
     };
     auto lca = [&](int u, int v) -> int {
-        if (isAnc(u, v)) return u;
-        if (isAnc(v, u)) return v;
+        if (isAncestor(u, v)) { return u; }
+        if (isAncestor(v, u)) { return v; }
         for (int i = LOG - 1; i >= 0; i--) {
-            if (!isAnc(lift[i][u], v)) {
+            if (!isAncestor(lift[i][u], v)) {
                 u = lift[i][u];
             }
         }
@@ -125,7 +125,7 @@ int main() {
     };
     auto qry = [&](int a, int b, int t) -> void {
         int anc = lca(a, b);
-        if (anc == t || !isAnc(anc, t)) {
+        if (anc == t || !isAncestor(anc, t)) {
             // t is either the LCA, or not inside the subtree of the LCA
             if (anc == a || anc == b) {
                 if (anc == a) { swap(a, b); }
@@ -162,7 +162,7 @@ int main() {
             }
         }
     };
-    while (s--) {
+    for (int i = 0; i < s; i++) {
         int a, b, t;
         cin >> a >> b >> t;
         qry(a, b, t);
