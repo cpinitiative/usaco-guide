@@ -37,7 +37,7 @@ frequency: 1
 	/>
 </Resources>
 
-A type of self-balancing binary search tree that supports efficient
+A splay tree is a type of self-balancing binary search tree that supports efficient
 implementation of operations such as finding an element, deleting an element, splitting a tree, and joining two trees. When a node in a splay tree is accessed, a splay operation is performed on the node that moves it too the root of the tree while also roughly balancing the tree.
 
 ## Link Cut Tree
@@ -74,7 +74,7 @@ implementation of operations such as finding an element, deleting an element, sp
 	/>
 </Resources>
 
-A data structure that uses splay trees to represent a forest of rooted trees and
+A link cut tree is a data structure that uses splay trees to represent a forest of rooted trees and
 can perform the following operations with an amortized upper bound time
 complexity of $\mathcal{O}(\log N)$:
 
@@ -99,7 +99,6 @@ Checking if there's a path between two nodes is the same as checking if they're 
 To check if two nodes are part of the same tree, we can check if the roots of the trees of the two nodes are the same.
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
@@ -212,30 +211,28 @@ struct LCT {
 };
 // EndCodeSnip
 
-int N, M;
-
 int main() {
 	cin.tie(0)->sync_with_stdio(0);
 
-	cin >> N >> M;
+	int n;
+	int m;
+	cin >> n >> m;
+	LCT lc(n);
 
-	LCT lc(N);
-
-	while (M--) {
+	for (int i = 0; i < m; i++>) {
 		string a;
 		cin >> a;
 		int b, c;
 		cin >> b >> c;
 		if (a == "add") { lc.link(b, c); }
-
 		if (a == "rem") { lc.cut(b, c); }
-
 		if (a == "conn") {
 			cout << (lc.connected(b, c) ? "YES" : "NO") << "\n";
 		}
 	}
 }
 ```
+
 </CPPSection>
 </LanguageSection>
 
@@ -257,7 +254,6 @@ An alternative solution is to use the Euler Tour Tree (ETT) technique.
 </Resources>
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
@@ -414,14 +410,17 @@ The link cut tree can be used to solve problems that deal with queries updating 
 
 ### Explanation
 
-Link Cut Tree can also calculate the aggregate (max, min, sum, etc.) of the weights of the edges or nodes on a path. To do this, we can define a function that will return an aggregate for the path from the root of the tree to the provided vertex. We can augment the auxiliary splay trees with the value(s) we want to keep track of. The aggregate for the path from the root of a tree to a vertex can be found by retrieving the value(s) from the splay tree created after accessing the vertex.
+An LC Tree can also calculate the aggregate (max, min, sum, etc.) of the weights of the edges or nodes on a path.
+
+To do this, we can define a function that will return an aggregate for the path from the root of the tree to the provided vertex.
+We can augment the auxiliary splay trees with the value(s) we want to keep track of.
+The aggregate for the path from the root of a tree to a vertex can be found by retrieving the value(s) from the splay tree created after accessing the vertex.
 
 ### Implementation
 
 **Time Complexity:** $\mathcal{O}(Q\log N)$
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
@@ -623,6 +622,7 @@ int main() {
 	}
 }
 ```
+
 </CPPSection>
 </LanguageSection>
 
@@ -667,7 +667,6 @@ We can also maintain information about subtrees by keeping track of values for t
 **Time Complexity:** $\mathcal{O}(Q\log N)$
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
@@ -863,6 +862,7 @@ int main() {
 	}
 }
 ```
+
 </CPPSection>
 </LanguageSection>
 
