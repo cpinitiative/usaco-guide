@@ -1,0 +1,196 @@
+---
+id: kattis-gcdharmony
+source: Kattis
+title: GCD Harmony
+author: Kevin Sheng
+---
+
+[Solution Outline](https://www.youtube.com/watch?v=gQS74eoGegk)
+
+<Spoiler title="Hint 1">
+
+Let each node contain a DP array with the lowest cost of making that node's subtree harmonious if the node itself had to be a certain value.
+
+</Spoiler>
+
+<Spoiler title="Hint 2">
+
+If you're getting WA with the above DP state, consider a tree with two long branches,
+one with all values of 97, and another with all values of 89.
+The root is 1.
+
+Would your program work on such a case?
+
+</Spoiler>
+
+<Spoiler title="Answer to Hint 2">
+
+If you're only taking values from 2 to 100, the DP won't work-
+it has to account for values *much* higher than that.
+How might we go about doing this without exceeding the time limit?
+
+</Spoiler>
+
+<Spoiler title="Solution">
+
+## Explanation
+
+### Initial DP
+
+Let's keep a DP array (called $dp$) for each node with the definition given in the hints.
+
+$dp$ starts out with the initial value for just changing the node to each starting value.
+For example, if a node's initial value was $5$, then $dp[5]=0$, while $dp[7]=7$.
+
+To flesh out this array, we recursively iterate through all the children and then
+check what their lowest cost value is that is still compatible with each element of the current node's $dp$.
+For example, if we consider $dp[3]$, we would check the *children's* $dp[3]$, $dp[6]$, and so on.
+
+### Refinement
+
+As stated in the hints, just keeping values from 2 to 100 won't work.
+The maximum cost of making a tree harmonious is $2 \cdot 5000=10^4$,
+so we have to keep values all the way up til that.
+
+How do we transition, then, with such large states?
+
+Notice first that it would never make sense for a node to have a final value with a prime factor greater than 100.
+This is true because why would we ever want to change a node to a value with, say, 101 as a prime factor?
+Since a node's initial value can never exceed 100, this extra factor adds additional cost without allowing the node
+to harmonize with any other adjacent nodes.
+
+We can then, for each node, keep track of the minimum cost associated with each prime factor in addition to $dp$.
+For example, the value $7$ in this map would keep track of the minimum cost across $dp[7]$, $dp[14]$, etc.
+We can calculate this map after our $dp$ has been fleshed out, so it won't take too much time.
+
+Then, when fleshing out $dp$, instead of going through all $10^4$ possible child values, we
+look at all the prime factors of the current node value as well as the child's auxiliary map
+to calculate the best cost for the child efficiently.
+
+To see why this saves time, let's say we're calculating $dp[51]$ for a certain node.
+If we stuck with the old transition, we would have to iterate through all $10^4$ values
+for each child and check if they were harmonious with $51$.
+With this new transition, we can get our answer by doing two map lookups for each child:
+one for the $3$ and another for $17$.
+This is far more efficient than the previous approach!
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(n^2 \pi(v))$, where $\pi(v)$ denotes the number of primes less than or equal to $v$.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <algorithm>
+#include <cstdint>
+#include <iostream>
+#include <map>
+#include <vector>
+
+using std::cout;
+using std::endl;
+using std::vector;
+
+const int MAX_VAL = 100;       // the largest value a node can have
+const int MAX_POSS = 2 * 5e3;  // defined as 2 * (max # of nodes)
+
+const vector<int> PRIMES = {2,  3,  5,  7,  11, 13, 17, 19, 23, 29, 31, 37, 41,
+                            43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97};
+
+class PrimeLog {
+  private:
+	vector<vector<int>> rel_factors;
+
+  public:
+	PrimeLog(int n) : rel_factors(n + 1) {
+		for (int i = 2; i <= n; i++) {
+			for (int p : PRIMES) {
+				if (i % p == 0) { rel_factors[i].push_back(p); }
+			}
+		}
+	}
+
+	/** @return the relevant prime factors of n */
+	const vector<int> &get_factors(int n) { return rel_factors[n]; }
+} factors(MAX_POSS);
+
+class GCDTree {
+  private:
+	const vector<vector<int>> &neighbors;
+	const vector<int> &vals;
+	vector<vector<int>> min_cost;  // contains the dp array for each node
+	vector<std::map<int, int>> factor_best;  // the map discussed above
+
+	void dfs(int at, int prev) {
+		min_cost[at] = vector<int>(MAX_POSS + 1);  // indices 0 & 1 not used
+		for (int i = 2; i <= MAX_POSS; i++) {
+			if (i != vals[at]) { min_cost[at][i] = i; }
+			// primes greater than 100 are irrelevant
+			if (factors.get_factors(i).empty()) { min_cost[at][i] = INT32_MAX; }
+		}
+
+		for (int n : neighbors[at]) {
+			if (n == prev) { continue; }
+
+			dfs(n, at);
+			for (int i = 2; i <= MAX_POSS; i++) {
+				if (factors.get_factors(i).empty()) { continue; }
+				int n_min_cost = INT32_MAX;
+				// using the old approach, this loop would take MAX_POSS
+				// iterations to run as well- far too slow!
+				for (int p : factors.get_factors(i)) {
+					n_min_cost = std::min(n_min_cost, factor_best[n][p]);
+				}
+				min_cost[at][i] += n_min_cost;
+			}
+		}
+
+		// fill up our map now that the array has been fleshed out
+		for (int p : PRIMES) {
+			int p_best = INT32_MAX;
+			for (int i = p; i <= MAX_POSS; i += p) {
+				p_best = std::min(p_best, min_cost[at][i]);
+			}
+			factor_best[at][p] = p_best;
+		}
+	}
+
+  public:
+	GCDTree(const vector<vector<int>> &neighbors, const vector<int> &vals)
+	    : neighbors(neighbors), vals(vals), min_cost(neighbors.size()),
+	      factor_best(neighbors.size()) {
+		dfs(0, 0);
+	}
+
+	int min_adjustment() const {
+		int res = INT32_MAX;
+		// brute force all possible values for the root
+		for (int i = 2; i <= MAX_POSS; i++) {
+			res = std::min(res, min_cost[0][i]);
+		}
+		return res;
+	}
+};
+
+int main() {
+	int node_num;
+	std::cin >> node_num;
+	vector<int> vals(node_num);
+	for (int &v : vals) { std::cin >> v; }
+	vector<vector<int>> neighbors(node_num);
+	for (int i = 0; i < node_num - 1; i++) {
+		int a, b;
+		std::cin >> a >> b;
+		neighbors[--a].push_back(--b);
+		neighbors[b].push_back(a);
+	}
+
+	cout << GCDTree(neighbors, vals).min_adjustment() << endl;
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
+</Spoiler>
