@@ -55,148 +55,142 @@ using namespace std;
 using ll = long long;
 
 class Tree {
-    private:
-        const int n, log2dist;
-        vector<vector<int>> &adj;
-        vector<vector<int>> lift;
-        vector<array<ll, 2>> diff;
-        vector<int> depth;
-        vector<int> tin;
-        vector<int> tout;
-        int timer = 0;
-    public:
-        Tree(int n, vector<vector<int>> &adj) 
-            : n(n), log2dist((int) log2(n) + 1), adj(adj), 
-              lift(log2dist, vector<int>(n)), depth(n), 
-            tin(n), tout(n), diff(n) {
-            tin[0] = -1;
-            tout[0] = n + 1;
-            // ^ ensures that LCA works
-            build(1, 0);
-        }
+  private:
+	const int n, log2dist;
+	vector<vector<int>> &adj;
+	vector<vector<int>> lift;
+	vector<array<ll, 2>> diff;
+	vector<int> depth;
+	vector<int> tin;
+	vector<int> tout;
+	int timer = 0;
 
-        void build(int u, int p) {
-            tin[u] = timer++;
-            lift[0][u] = p;
-            depth[u] = depth[p] + 1;
-            for (int i = 1; i < log2dist; i++) {
-                lift[i][u] = lift[i - 1][lift[i - 1][u]];
-            }
-            for (int v : adj[u]) {
-                if (v != p) { build(v, u); }
-            }
-            tout[u] = timer - 1;
-        }
+  public:
+	Tree(int n, vector<vector<int>> &adj)
+	    : n(n), log2dist((int)log2(n) + 1), adj(adj),
+	      lift(log2dist, vector<int>(n)), depth(n), tin(n), tout(n), diff(n) {
+		tin[0] = -1;
+		tout[0] = n + 1;
+		// ^ ensures that LCA works
+		build(1, 0);
+	}
 
-        bool is_ancestor(int u, int v) {
-            return tin[u] <= tin[v] && tout[v] <= tout[u];
-        }
+	void build(int u, int p) {
+		tin[u] = timer++;
+		lift[0][u] = p;
+		depth[u] = depth[p] + 1;
+		for (int i = 1; i < log2dist; i++) {
+			lift[i][u] = lift[i - 1][lift[i - 1][u]];
+		}
+		for (int v : adj[u]) {
+			if (v != p) { build(v, u); }
+		}
+		tout[u] = timer - 1;
+	}
 
-        int lca(int u, int v) {
-            if (is_ancestor(u, v)) { return u; }
-            if (is_ancestor(v, u)) { return v; }
-            for (int i = log2dist - 1; i >= 0; i--) {
-                if (!is_ancestor(lift[i][u], v)) {
-                    u = lift[i][u];
-                }
-            }
-            return lift[0][u];
-        }
-        
-        int dist(int u, int v, int anc = -1) {
-            if (anc == -1) { anc = lca(u, v); }
-            return depth[u] + depth[v] - 2 * depth[anc];
-        }
+	bool is_ancestor(int u, int v) {
+		return tin[u] <= tin[v] && tout[v] <= tout[u];
+	}
 
-        void update(int u, int v, int initial, int change) {
-            diff[u][0] += initial;
-            diff[u][1] += change;
-            if (change > 0) {
-                diff[v][0] -= initial + (depth[u] - depth[v]);
-            } else {
-                diff[v][0] -= initial - (depth[u] - depth[v]);
-            }
-            diff[v][1] -= change;
-        }
+	int lca(int u, int v) {
+		if (is_ancestor(u, v)) { return u; }
+		if (is_ancestor(v, u)) { return v; }
+		for (int i = log2dist - 1; i >= 0; i--) {
+			if (!is_ancestor(lift[i][u], v)) { u = lift[i][u]; }
+		}
+		return lift[0][u];
+	}
 
-        void query(int a, int b, int t) {
-            int anc = lca(a, b);
-            if (anc == t || !is_ancestor(anc, t)) {
-                // t is either the LCA, or not inside the subtree of the LCA
-                if (anc == a || anc == b) {
-                    if (anc == a) { swap(a, b); }
-                    update(a, lift[0][b], dist(a, t), -1);
-                } else {
-                    update(a, anc, dist(a, t), -1);
-                    update(b, lift[0][anc], dist(b, t), -1);
-                }
-            } else {
-                // split_1 and split_2 are candidates for the locations where
-                // the path updates go from increasing to decreasing (or vice versa)
-                int split_1 = lca(a, t);
-                int split_2 = lca(b, t);
-                if (anc == a || anc == b) {
-                    // path from a to be is just a walk upward
-                    if (anc == a) {
-                        swap(a, b);
-                        swap(split_1, split_2);
-                    }
-                    update(a, split_1, dist(a, t, split_1), -1);
-                    update(split_1, lift[0][b], dist(t, split_1, split_1), 1);
-                } else if (split_1 == anc && split_2 == anc) {
-                    // lca(a, t) and lca(b, t) are both lca(a, b)
-                    update(a, anc, dist(a, t, anc), -1);
-                    update(b, lift[0][anc], dist(b, t, anc), -1);
-                } else {
-                    // lca(a, b) != lca(a, t), or lca(a, b) != lca(b, t)
-                    if (depth[split_1] < depth[split_2]) {
-                        swap(split_1, split_2), swap(a, b);
-                    }
-                    update(a, split_1, dist(a, t, split_1), -1);
-                    update(split_1, anc, dist(split_1, t, split_1), 1);
-                    update(b, lift[0][anc], dist(b, t, anc), -1);
-                }
-            }
-        }
+	int dist(int u, int v, int anc = -1) {
+		if (anc == -1) { anc = lca(u, v); }
+		return depth[u] + depth[v] - 2 * depth[anc];
+	}
 
-        void dfs(int u, int p) {
-            for (int v : adj[u]) {
-                if (v == p) { continue; }
-                dfs(v, u);
-                diff[u][0] += diff[v][0] + diff[v][1];
-                diff[u][1] += diff[v][1];
-            }
-        }
+	void update(int u, int v, int initial, int change) {
+		diff[u][0] += initial;
+		diff[u][1] += change;
+		if (change > 0) {
+			diff[v][0] -= initial + (depth[u] - depth[v]);
+		} else {
+			diff[v][0] -= initial - (depth[u] - depth[v]);
+		}
+		diff[v][1] -= change;
+	}
 
-        vector<ll> calculate_result() {
-            dfs(1, 0);
-            vector<ll> res(n + 1);
-            for (int i = 1; i <= n; i++) {
-                res[i] = diff[i][0];
-            }
-            return res;
-        }
+	void query(int a, int b, int t) {
+		int anc = lca(a, b);
+		if (anc == t || !is_ancestor(anc, t)) {
+			// t is either the LCA, or not inside the subtree of the LCA
+			if (anc == a || anc == b) {
+				if (anc == a) { swap(a, b); }
+				update(a, lift[0][b], dist(a, t), -1);
+			} else {
+				update(a, anc, dist(a, t), -1);
+				update(b, lift[0][anc], dist(b, t), -1);
+			}
+		} else {
+			// split_1 and split_2 are candidates for the locations where
+			// the path updates go from increasing to decreasing (or vice versa)
+			int split_1 = lca(a, t);
+			int split_2 = lca(b, t);
+			if (anc == a || anc == b) {
+				// path from a to be is just a walk upward
+				if (anc == a) {
+					swap(a, b);
+					swap(split_1, split_2);
+				}
+				update(a, split_1, dist(a, t, split_1), -1);
+				update(split_1, lift[0][b], dist(t, split_1, split_1), 1);
+			} else if (split_1 == anc && split_2 == anc) {
+				// lca(a, t) and lca(b, t) are both lca(a, b)
+				update(a, anc, dist(a, t, anc), -1);
+				update(b, lift[0][anc], dist(b, t, anc), -1);
+			} else {
+				// lca(a, b) != lca(a, t), or lca(a, b) != lca(b, t)
+				if (depth[split_1] < depth[split_2]) {
+					swap(split_1, split_2), swap(a, b);
+				}
+				update(a, split_1, dist(a, t, split_1), -1);
+				update(split_1, anc, dist(split_1, t, split_1), 1);
+				update(b, lift[0][anc], dist(b, t, anc), -1);
+			}
+		}
+	}
+
+	void dfs(int u, int p) {
+		for (int v : adj[u]) {
+			if (v == p) { continue; }
+			dfs(v, u);
+			diff[u][0] += diff[v][0] + diff[v][1];
+			diff[u][1] += diff[v][1];
+		}
+	}
+
+	vector<ll> calculate_result() {
+		dfs(1, 0);
+		vector<ll> res(n + 1);
+		for (int i = 1; i <= n; i++) { res[i] = diff[i][0]; }
+		return res;
+	}
 };
 int main() {
-    int n, s; 
-    cin >> n >> s;
-    vector<vector<int>> adj(n + 1);
-    for (int i = 1; i < n; i++) {
-        int u, v;
-        cin >> u >> v;
-        adj[u].push_back(v);
-        adj[v].push_back(u);
-    }
-    Tree tree(n + 1, adj);
-    for (int i = 0; i < s; i++) {
-        int a, b, t;
-        cin >> a >> b >> t;
-        tree.query(a, b, t);
-    }
-    vector<ll> res = tree.calculate_result();
-    for (int i = 1; i <= n; i++) {
-        cout << res[i] << " \n"[i == n];
-    }
+	int n, s;
+	cin >> n >> s;
+	vector<vector<int>> adj(n + 1);
+	for (int i = 1; i < n; i++) {
+		int u, v;
+		cin >> u >> v;
+		adj[u].push_back(v);
+		adj[v].push_back(u);
+	}
+	Tree tree(n + 1, adj);
+	for (int i = 0; i < s; i++) {
+		int a, b, t;
+		cin >> a >> b >> t;
+		tree.query(a, b, t);
+	}
+	vector<ll> res = tree.calculate_result();
+	for (int i = 1; i <= n; i++) { cout << res[i] << " \n"[i == n]; }
 }
 ```
 
