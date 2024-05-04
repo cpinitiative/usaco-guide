@@ -398,13 +398,15 @@ The link cut tree can be used to solve problems that deal with queries updating 
 
 ## Link Cut Tree - Paths
 
-### Sample Problem
+<FocusProblem problem="pathSam" />
 
-<Problems problems="pathSam" />
+### Explanation
+
+Link Cut Tree can also calculate the aggregate (max, min, sum, etc.) of the weights of the edges or nodes on a path. To do this, we can define a function that will return an aggregate for the path from the root of the tree to the provided vertex. We can augment the auxiliary splay trees with the value(s) we want to keep track of. The aggregate for the path from the root of a tree to a vertex can be found by retrieving the value(s) from the splay tree created after accessing the vertex.
 
 ### Implementation
 
-Link Cut Tree can also calculate the aggregate (max, min, sum, etc.) of the weights of the edges or nodes on a path. To do this, we can define a function that will return an aggregate for the path from the root of the tree to the provided vertex. We can augment the auxiliary splay trees with the value(s) we want to keep track of. The aggregate for the path from the root of a tree to a vertex can be found by retrieving the value(s) from the splay tree created after accessing the vertex.
+**Time Complexity:** $\mathcal{O}(?)$
 
 ```cpp
 #include <bits/stdc++.h>
@@ -566,18 +568,21 @@ const int MAX_N = 2e5;
 sn LCT[MAX_N];
 
 int main() {
-	int n, q;
+	int n;
+	int q;
 	cin >> n >> q;
 	for (int i = 0; i < n; i++) {
 		int a;
 		cin >> a;
 		LCT[i] = new snode(a);
 	}
+	\
 	for (int i = 0; i < n - 1; i++) {
 		int u, v;
 		cin >> u >> v;
 		link(LCT[u], LCT[v], 1);
 	}
+
 	for (int i = 0; i < q; i++) {
 		int t;
 		cin >> t;
@@ -626,8 +631,6 @@ int main() {
 
 <FocusProblem problem="subSam" />
 
-### Tutorial
-
 <Resources>
 	<Resource
 		source="CF"
@@ -637,9 +640,13 @@ int main() {
 	/>
 </Resources>
 
+### Explanation
+
+We can also maintain information about subtrees by keeping track of values for the virtual subtrees of a node. When querying for information such as the subtree sum, we call `access` on the node so that all of its children in the represented tree are part of virtual subtrees and then retrieve the desired value.
+
 ### Implementation
 
-We can also maintain information about subtrees by keeping track of values for the virtual subtrees of a node. When querying for information such as the subtree sum, we call $\text{access}()$ on the node so that all of its children in the represented tree are part of virtual subtrees and then retrieve the desired value.
+**Time Complexity:** $\mathcal{O}(?)$
 
 ```cpp
 #include <bits/stdc++.h>
