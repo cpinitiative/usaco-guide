@@ -68,7 +68,7 @@ class Tree {
 	vector<int> tout;
 	int timer = 0;
 
-    void tour(int u, int p) {
+	void tour(int u, int p) {
 		tin[u] = timer++;
 		lift[0][u] = p;
 		depth[u] = depth[p] + 1;
@@ -81,6 +81,15 @@ class Tree {
 		tout[u] = timer - 1;
 	}
 
+	void dfs(int u, int p) {
+		for (int v : adj[u]) {
+			if (v == p) { continue; }
+			dfs(v, u);
+			diff[u][0] += diff[v][0] + diff[v][1];
+			diff[u][1] += diff[v][1];
+		}
+	}
+
   public:
 	Tree(int n, vector<vector<int>> &adj)
 	    : n(n), log2dist((int)log2(n) + 1), adj(adj),
@@ -90,11 +99,11 @@ class Tree {
 		tour(1, 0);
 	}
 
-	bool is_ancestor(int u, int v) {
+	bool is_ancestor(int u, int v) const {
 		return tin[u] <= tin[v] && tout[v] <= tout[u];
 	}
 
-	int lca(int u, int v) {
+	int lca(int u, int v) const {
 		if (is_ancestor(u, v)) { return u; }
 		if (is_ancestor(v, u)) { return v; }
 		for (int i = log2dist - 1; i >= 0; i--) {
@@ -105,7 +114,7 @@ class Tree {
 
 	// calculates distance from u to anc, and then anc to v 
 	// if anc is not provided, anc is set to lca(u, v)
-	int dist(int u, int v, int anc = -1) {
+	int dist(int u, int v, int anc = -1) const {
 		if (anc == -1) { anc = lca(u, v); }
 		return depth[u] + depth[v] - 2 * depth[anc];
 	}
@@ -158,15 +167,6 @@ class Tree {
 				update(split_1, anc, dist(split_1, t, split_1), 1);
 				update(b, lift[0][anc], dist(b, t, anc), -1);
 			}
-		}
-	}
-
-	void dfs(int u, int p) {
-		for (int v : adj[u]) {
-			if (v == p) { continue; }
-			dfs(v, u);
-			diff[u][0] += diff[v][0] + diff[v][1];
-			diff[u][1] += diff[v][1];
 		}
 	}
 
