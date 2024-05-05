@@ -81,6 +81,17 @@ class Tree {
 		tout[u] = timer - 1;
 	}
 
+	void update(int u, int v, int initial, int change) {
+		diff[u][0] += initial;
+		diff[u][1] += change;
+		if (change > 0) {
+			diff[v][0] -= initial + (depth[u] - depth[v]);
+		} else {
+			diff[v][0] -= initial - (depth[u] - depth[v]);
+		}
+		diff[v][1] -= change;
+	}
+
 	void dfs(int u, int p) {
 		for (int v : adj[u]) {
 			if (v == p) { continue; }
@@ -119,17 +130,6 @@ class Tree {
 	int dist(int u, int v, int anc = -1) const {
 		if (anc == -1) { anc = lca(u, v); }
 		return depth[u] + depth[v] - 2 * depth[anc];
-	}
-
-	void update(int u, int v, int initial, int change) {
-		diff[u][0] += initial;
-		diff[u][1] += change;
-		if (change > 0) {
-			diff[v][0] -= initial + (depth[u] - depth[v]);
-		} else {
-			diff[v][0] -= initial - (depth[u] - depth[v]);
-		}
-		diff[v][1] -= change;
 	}
 
 	void query(int a, int b, int t) {
