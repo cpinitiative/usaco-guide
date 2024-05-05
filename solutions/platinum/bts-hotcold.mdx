@@ -1,0 +1,208 @@
+---
+id: bts-hotcold
+source: Back to School 2017
+title: Hot & Cold
+author: Justin Ji
+---
+
+## Explanation
+
+Let $a$, $b$, and $t$ be the nodes given in each query, and $p$ be
+the LCA of $a$ and $b$. Directly updating the path from $a$
+to $b$ is difficult to do, so breaking up the path into smaller segments
+is necessary. To do that, we use some casework.
+
+**Case 1: $p$ is equal to $t$, or $t$ is not inside $p$'s subtree.**
+
+In this case, we update the path from $a$ to $p$ and
+$b$ to $p$. Note that if $p$ is equal to either $a$ or $b$,
+then this case must be handled slightly differently.
+
+**Case 2: $p$ is equal to either $a$ or $b$.**
+
+Let the first ancestor of $t$ that is on the path from $a$ to $b$
+be $l$. WLOG, let $b$ be equal to $p$. Then, we update the path from
+$a$ to $l$ and the path from $l$ to $b$.
+
+**Case 3: The LCA of $t$ with $a$ and $b$ is the same as $p$.**
+
+Like how we handled case 1, for this case we update the path from $a$ to
+$p$ and the path from $b$ to $p$.
+
+**Case 4: Either the LCA of $t$ and $a$ or the LCA of $t$ and $b$ lie on the path from $a$ to $b$.**
+
+In this case, split the path updates into 3 segments. Let the lower of the two LCAs mentioned
+be $l$, and the node which is an ancestor of $l$ be $a$. Then, just update the path from
+$a$ to $l$, $l$ to $p$, and the path from $b$ to $p$.
+
+### Handling Path Updates
+
+Note that based on how we did our casework on the paths, that all path updates are between a given
+node and its ancestor. Also, note that the path updates are just adding distances which either increase
+or decrease by a fixed amount every time. So, we can sort of do a difference array on a tree, where we DFS
+down the tree and apply the differences while walking back up the tree.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N\log{N})$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+
+class Tree {
+  private:
+	const int n;
+	const int log2dist;         // # of bits needed for binary lift
+	vector<vector<int>> &adj;   // reference to adjacency list
+	vector<vector<int>> lift;   // for binary lifting
+	vector<array<ll, 2>> diff;  // difference array updates
+	vector<int> depth;          // depth of each node
+
+	// these are for Euler tour
+	vector<int> tin;
+	vector<int> tout;
+	int timer = 0;
+
+	void tour(int u, int p) {
+		tin[u] = timer++;
+		lift[0][u] = p;
+		depth[u] = depth[p] + 1;
+		for (int i = 1; i < log2dist; i++) {
+			lift[i][u] = lift[i - 1][lift[i - 1][u]];
+		}
+		for (int v : adj[u]) {
+			if (v != p) { tour(v, u); }
+		}
+		tout[u] = timer - 1;
+	}
+
+	void update(int u, int v, int initial, int change) {
+		diff[u][0] += initial;
+		diff[u][1] += change;
+		if (change > 0) {
+			diff[v][0] -= initial + (depth[u] - depth[v]);
+		} else {
+			diff[v][0] -= initial - (depth[u] - depth[v]);
+		}
+		diff[v][1] -= change;
+	}
+
+	void dfs(int u, int p) {
+		for (int v : adj[u]) {
+			if (v == p) { continue; }
+			dfs(v, u);
+			diff[u][0] += diff[v][0] + diff[v][1];
+			diff[u][1] += diff[v][1];
+		}
+	}
+
+  public:
+	Tree(int n, vector<vector<int>> &adj)
+	    : n(n), log2dist((int)log2(n) + 1), adj(adj),
+	      lift(log2dist, vector<int>(n)), diff(n), depth(n), tin(n), tout(n) {
+		tin[0] = -1;
+		tout[0] = n + 1;  // ensures that LCA works
+		tour(1, 0);
+	}
+
+	bool is_ancestor(int u, int v) const {
+		return tin[u] <= tin[v] && tout[v] <= tout[u];
+	}
+
+	int lca(int u, int v) const {
+		if (is_ancestor(u, v)) { return u; }
+		if (is_ancestor(v, u)) { return v; }
+		for (int i = log2dist - 1; i >= 0; i--) {
+			if (!is_ancestor(lift[i][u], v)) { u = lift[i][u]; }
+		}
+		return lift[0][u];
+	}
+
+	/**
+	 * @return the distance from u to anc, and then anc to v
+	 * if anc is not provided, it's set to lca(u, v)
+	 */
+	int dist(int u, int v, int anc = -1) const {
+		if (anc == -1) { anc = lca(u, v); }
+		return depth[u] + depth[v] - 2 * depth[anc];
+	}
+
+	void query(int a, int b, int t) {
+		int anc = lca(a, b);
+		if (anc == t || !is_ancestor(anc, t)) {
+			// t is either the LCA, or not inside the subtree of the LCA
+			if (anc == a || anc == b) {
+				if (anc == a) { swap(a, b); }
+				update(a, lift[0][b], dist(a, t), -1);
+			} else {
+				update(a, anc, dist(a, t), -1);
+				update(b, lift[0][anc], dist(b, t), -1);
+			}
+		} else {
+			// split_1 and split_2 are candidates for the locations where
+			// the path updates go from increasing to decreasing (or vice versa)
+			int split_1 = lca(a, t);
+			int split_2 = lca(b, t);
+			if (anc == a || anc == b) {
+				// path from a to be is just a walk upward
+				if (anc == a) {
+					swap(a, b);
+					swap(split_1, split_2);
+				}
+				update(a, split_1, dist(a, t, split_1), -1);
+				update(split_1, lift[0][b], dist(t, split_1, split_1), 1);
+			} else if (split_1 == anc && split_2 == anc) {
+				// lca(a, t) and lca(b, t) are both lca(a, b)
+				update(a, anc, dist(a, t, anc), -1);
+				update(b, lift[0][anc], dist(b, t, anc), -1);
+			} else {
+				// lca(a, b) != lca(a, t), or lca(a, b) != lca(b, t)
+				if (depth[split_1] < depth[split_2]) {
+					swap(split_1, split_2), swap(a, b);
+				}
+				update(a, split_1, dist(a, t, split_1), -1);
+				update(split_1, anc, dist(split_1, t, split_1), 1);
+				update(b, lift[0][anc], dist(b, t, anc), -1);
+			}
+		}
+	}
+
+	vector<ll> calculate_result() {
+		dfs(1, 0);
+		vector<ll> res(n + 1);
+		for (int i = 1; i <= n; i++) { res[i] = diff[i][0]; }
+		return res;
+	}
+};
+
+int main() {
+	int n;
+	int s;
+	cin >> n >> s;
+	vector<vector<int>> adj(n + 1);
+	for (int i = 0; i < n - 1; i++) {
+		int u, v;
+		cin >> u >> v;
+		adj[u].push_back(v);
+		adj[v].push_back(u);
+	}
+
+	Tree tree(n + 1, adj);
+	for (int i = 0; i < s; i++) {
+		int a, b, t;
+		cin >> a >> b >> t;
+		tree.query(a, b, t);
+	}
+
+	vector<ll> res = tree.calculate_result();
+	for (int i = 1; i <= n; i++) { cout << res[i] << " \n"[i == n]; }
+}
+```
+
+</CPPSection>
+</LanguageSection>

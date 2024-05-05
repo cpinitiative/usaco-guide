@@ -1,0 +1,131 @@
+---
+id: mmcc-inaho
+source: MMCC
+title: Inaho
+author: Chongtian Ma
+---
+
+<Info title="Samples">
+
+To easily test your code from samples, copy and paste the following main function to the bottom of your code.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+int main() {
+	int n, q;
+	cin >> n >> q;
+	Init(n);
+	for (int i = 0; i < q; i++) {
+		int t;
+		cin >> t;
+		if (t == 1) {
+			int u, v;
+			cin >> u >> v;
+			AddEdge(u, v);
+		}
+		if (t == 2) { RemoveLastEdge(); }
+		if (t == 3) {
+			int u;
+			cin >> u;
+			cout << GetSize(u) << endl;
+		}
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
+Input:
+```
+5 10
+1 1 2
+3 1
+1 2 3
+3 2
+1 3 4
+3 3
+1 4 5
+3 4
+2
+3 1
+```
+
+Expected Output:
+```
+2
+3
+4
+5
+4
+```
+
+</Info>
+
+## Implementation
+
+This is a standard test of your DSU with rollback template.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+// BeginCodeSnip{DSU (from the module)}
+class DSU {
+  private:
+	vector<int> p, sz;
+	// stores previous unites
+	vector<pair<int &, int>> history;
+
+  public:
+	DSU(int n) : p(n), sz(n, 1) { iota(p.begin(), p.end(), 0); }
+
+	int get(int x) { return x == p[x] ? x : get(p[x]); }
+
+	int get_size(int x) { return sz[get(x)]; }
+
+	void unite(int a, int b) {
+		a = get(a);
+		b = get(b);
+		if (sz[a] < sz[b]) { swap(a, b); }
+
+		// save this unite operation
+		history.push_back({sz[a], sz[a]});
+		history.push_back({p[b], p[b]});
+
+		if (a != b) {
+			p[b] = a;
+			sz[a] += sz[b];
+		}
+	}
+
+	void rollback() {
+		// roll back parent
+		history.back().first = history.back().second;
+		history.pop_back();
+		// roll back size
+		history.back().first = history.back().second;
+		history.pop_back();
+	}
+};
+// EndCodeSnip
+
+const int MAXN = 500000;
+DSU dsu(MAXN);
+
+void Init(int n) {}
+
+void AddEdge(int u, int v) { dsu.unite(--u, --v); }
+
+void RemoveLastEdge() { dsu.rollback(); }
+
+int GetSize(int u) { return dsu.get_size(--u); }
+```
+
+</CPPSection>
+</LanguageSection>
