@@ -98,7 +98,7 @@ int main() {
     vector<int> region_id(r, -1);
     function<void(int, int, int)> dfs = [&](int u, int parent_region, 
                                             int parent_count) -> void {
-        if (region[u] == parent_region) ++parent_count;
+        if (region[u] == parent_region) { parent_count++; }
         calc[region_id[parent_region]][region[u]] += parent_count;
         for (int v : adj[u]) {
             dfs(v, parent_region, parent_count);
