@@ -9,46 +9,46 @@ author: Justin Ji
 
 <Spoiler title = "Hint #1">
 
-Consider precalculating all the answers to queries involving some 
+Consider precalculating all the answers to queries involving some
 parent region $r_1$.
 
 </Spoiler>
 
 <Spoiler title = "Hint #2">
 
-We can answer all queries in $\mathcal{O}(S\log{N})$, where $S$ is the size of 
-the parent region $r_1$. How should we choose the regions that we choose to 
+We can answer all queries in $\mathcal{O}(S\log{N})$, where $S$ is the size of
+the parent region $r_1$. How should we choose the regions that we choose to
 precalculate, given this information?
 
 </Spoiler>
 
 <Spoiler title = "Answer to Hint #2">
 
-Precalculate the answer for all queries involving regions of 
+Precalculate the answer for all queries involving regions of
 size greater than $\sqrt{N}$.
 
 </Spoiler>
 
 <Spoiler title = "Explanation">
 
-As mentioned in the hints, we will precalculate the answer for all parent 
-regions of size greater than $\sqrt{N}$. Then, we answer our queries either by 
+As mentioned in the hints, we will precalculate the answer for all parent
+regions of size greater than $\sqrt{N}$. Then, we answer our queries either by
 calculating the answer online or by using a precalculated answer.
 
-To precalculate all answers for a given parent region, we DFS down the tree. 
-While traversing down the tree, keep track of the number of times we've seen an 
-employee that is a part of this current parent region. This number keeps track 
-of the occurences of the parent region as a supervisor of the region of our 
-current employee. With this information, we can save these answers in an array 
-$calc[r_1][r_2]$, where $r_1$ is our parent region and $r_2$ is any other 
-region. Note that because we are only precalculating at most $\sqrt{N}$ values 
+To precalculate all answers for a given parent region, we DFS down the tree.
+While traversing down the tree, keep track of the number of times we've seen an
+employee that is a part of this current parent region. This number keeps track
+of the occurences of the parent region as a supervisor of the region of our
+current employee. With this information, we can save these answers in an array
+$calc[r_1][r_2]$, where $r_1$ is our parent region and $r_2$ is any other
+region. Note that because we are only precalculating at most $\sqrt{N}$ values
 of $r_1$, the space complexity is $\mathcal{O}(N\sqrt{N})$.
 
 For parent regions of size smaller than $\sqrt{N}$, we answer the queries online.
-Before answering queries, run an Euler tour traversal of the tree. For each node 
-inside this current parent region, we count the number of nodes in the child 
+Before answering queries, run an Euler tour traversal of the tree. For each node
+inside this current parent region, we count the number of nodes in the child
 region. Because each node's subtree contains a range of nodes (when labeled by
-their Euler tour traversal times), we can use binary search to count the number 
+their Euler tour traversal times), we can use binary search to count the number
 of such child nodes.
 
 ## Implementation
