@@ -80,7 +80,7 @@ int main() {
 	// Calculating Euler tour indices.
 	vector<int> tin(n);
 	vector<int> tout(n);
-	vector<int> tin_node(n); // tin[tin_node[i]] = i
+	vector<int> tin_node(n);  // tin[tin_node[i]] = i
 	vector<vector<int>> comp(r);
 	int timer = 0;
 	function<void(int)> tour = [&](int u) -> void {
@@ -124,9 +124,10 @@ int main() {
 		} else {
 			int tot = 0;
 			for (int u : comp[e1]) {
-				tot +=
-				    lower_bound(begin(comp[e2]), end(comp[e2]), tout[tin_node[u]]) -
-				    lower_bound(begin(comp[e2]), end(comp[e2]), tin[tin_node[u]]);
+				tot += lower_bound(begin(comp[e2]), end(comp[e2]),
+				                   tout[tin_node[u]]) -
+				       lower_bound(begin(comp[e2]), end(comp[e2]),
+				                   tin[tin_node[u]]);
 			}
 			cout << tot << "\n";
 		}
