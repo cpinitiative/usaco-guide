@@ -80,20 +80,20 @@ int main() {
 	// Calculating Euler tour indices.
 	vector<int> tin(n);
 	vector<int> tout(n);
-	vector<int> mp(n);
+	vector<int> tin_node(n); // tin[tin_node[i]] = i
 	vector<vector<int>> comp(r);
 	int timer = 0;
 	function<void(int)> tour = [&](int u) -> void {
 		tin[u] = timer++;
-		mp[tin[u]] = u;
+		tin_node[tin[u]] = u;
 		comp[region[u]].push_back(tin[u]);
 		for (int v : adj[u]) { tour(v); }
 		tout[u] = timer;
 	};
 	tour(0);
 
-	// Precalculating the answer for parent regions with
-	// >= sqrt(n) members.
+	// Precalculating the answer for parent regions
+	// with >= sqrt(n) members.
 	const int BLOCK = sqrt(n);
 	vector<vector<int>> calc;
 	vector<int> region_id(r, -1);
@@ -125,8 +125,8 @@ int main() {
 			int tot = 0;
 			for (int u : comp[e1]) {
 				tot +=
-				    lower_bound(begin(comp[e2]), end(comp[e2]), tout[mp[u]]) -
-				    lower_bound(begin(comp[e2]), end(comp[e2]), tin[mp[u]]);
+				    lower_bound(begin(comp[e2]), end(comp[e2]), tout[tin_node[u]]) -
+				    lower_bound(begin(comp[e2]), end(comp[e2]), tin[tin_node[u]]);
 			}
 			cout << tot << "\n";
 		}
