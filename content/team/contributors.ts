@@ -175,6 +175,18 @@ export const OrderedFirstMembers: Member[] = [
     titles: [roles.liveInstructor],
     github: 'tathap',
   },
+  {
+    photo: 'justin_ji',
+    name: 'Justin Ji',
+    titles: [roles.contentAuthor],
+    github: 'TheGamingMousse',
+  },
+  {
+    photo: 'tianqin',
+    name: 'Tianqin Meng',
+    titles: [roles.contentAuthor],
+    github: 'tqmsh',
+  },
 ];
 
 export const RestOfMembers: Member[] = [

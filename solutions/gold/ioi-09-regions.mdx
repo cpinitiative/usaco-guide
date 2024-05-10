@@ -1,0 +1,141 @@
+---
+id: ioi-09-regions
+source: IOI 2009
+title: 2009 - Regions
+author: Justin Ji
+---
+
+[Official Analysis](https://ioinformatics.org/files/ioi2009solutions.pdf)
+
+<Spoiler title = "Hint #1">
+
+Consider precalculating all the answers to queries involving some
+parent region $r_1$.
+
+</Spoiler>
+
+<Spoiler title = "Hint #2">
+
+We can answer all queries in $\mathcal{O}(S\log{N})$, where $S$ is the size of
+the parent region $r_1$. How should we choose the regions that we choose to
+precalculate, given this information?
+
+</Spoiler>
+
+<Spoiler title = "Answer to Hint #2">
+
+Precalculate the answer for all queries involving regions of
+size greater than $\sqrt{N}$.
+
+</Spoiler>
+
+<Spoiler title = "Explanation">
+
+As mentioned in the hints, we will precalculate the answer for all parent
+regions of size greater than $\sqrt{N}$. Then, we answer our queries either by
+calculating the answer online or by using a precalculated answer.
+
+To precalculate all answers for a given parent region, we DFS down the tree.
+While traversing down the tree, keep track of the number of times we've seen an
+employee that is a part of this current parent region. This number keeps track
+of the occurences of the parent region as a supervisor of the region of our
+current employee. With this information, we can save these answers in an array
+$calc[r_1][r_2]$, where $r_1$ is our parent region and $r_2$ is any other
+region. Note that because we are only precalculating at most $\sqrt{N}$ values
+of $r_1$, the space complexity is $\mathcal{O}(N\sqrt{N})$.
+
+For parent regions of size smaller than $\sqrt{N}$, we answer the queries online.
+Before answering queries, run an Euler tour traversal of the tree. For each node
+inside this current parent region, we count the number of nodes in the child
+region. Because each node's subtree contains a range of nodes (when labeled by
+their Euler tour traversal times), we can use binary search to count the number
+of such child nodes.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N\sqrt{N}+Q\sqrt{N}\log{N})$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	int n, r, q;
+	cin >> n >> r >> q;
+	vector<int> region(n);
+	cin >> region[0];
+	region[0]--;
+	vector<vector<int>> adj(n);
+	for (int i = 1; i < n; i++) {
+		int p, h;
+		cin >> p >> h;
+		p--, h--;
+		adj[p].push_back(i);
+		region[i] = h;
+	}
+
+	// Calculating Euler tour indices.
+	vector<int> tin(n);
+	vector<int> tout(n);
+	vector<int> tin_node(n);  // tin[tin_node[i]] = i
+	vector<vector<int>> comp(r);
+	int timer = 0;
+	function<void(int)> tour = [&](int u) -> void {
+		tin[u] = timer++;
+		tin_node[tin[u]] = u;
+		comp[region[u]].push_back(tin[u]);
+		for (int v : adj[u]) { tour(v); }
+		tout[u] = timer;
+	};
+	tour(0);
+
+	// Precalculating the answer for parent regions
+	// with >= sqrt(n) members.
+	const int BLOCK = sqrt(n);
+	vector<vector<int>> calc;
+	vector<int> region_id(r, -1);
+	function<void(int, int, int)> dfs = [&](int u, int parent_region,
+	                                        int parent_count) -> void {
+		if (region[u] == parent_region) { parent_count++; }
+		calc[region_id[parent_region]][region[u]] += parent_count;
+		for (int v : adj[u]) { dfs(v, parent_region, parent_count); }
+	};
+
+	int current_id = 0;
+	for (int i = 0; i < r; i++) {
+		if ((int)comp[i].size() >= BLOCK) {
+			region_id[i] = current_id++;
+			calc.push_back(vector<int>(r));
+			dfs(0, i, 0);
+		}
+	}
+
+	// Answering the queries, either with the precalculated
+	// values or by using Euler tour + binary search.
+	for (int i = 0; i < q; i++) {
+		int e1, e2;
+		cin >> e1 >> e2;
+		e1--, e2--;
+		if ((int)comp[e1].size() >= BLOCK) {
+			cout << calc[region_id[e1]][e2] << "\n";
+		} else {
+			int total = 0;
+			for (int u : comp[e1]) {
+				total += lower_bound(begin(comp[e2]), end(comp[e2]),
+				                     tout[tin_node[u]]) -
+				         lower_bound(begin(comp[e2]), end(comp[e2]),
+				                     tin[tin_node[u]]);
+			}
+			cout << total << '\n';
+		}
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
+</Spoiler>
