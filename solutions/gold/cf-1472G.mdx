@@ -7,9 +7,9 @@ author: Justin Ji
 
 <Spoiler title = "Hint #1">
 
-After precalculating all the distances from the capital, consider two types of 
-edges: edges that go from lower to higher distance nodes from the capital, and 
-edges that go from higher to lower (or equal) distance nodes. Try writing a 
+After precalculating all the distances from the capital, consider two types of
+edges: edges that go from lower to higher distance nodes from the capital, and
+edges that go from higher to lower (or equal) distance nodes. Try writing a
 DP recurrence for each type of edge.
 
 </Spoiler>
@@ -29,14 +29,14 @@ We need to process the nodes in descending order of distance from the capital.
 
 <Spoiler title = "Explanation">
 
-Let $dist$ store the distances from the capital for each node, and $dp$ store the 
+Let $dist$ store the distances from the capital for each node, and $dp$ store the
 closest that each node can get to the capital. For a given node, the DP relation is:
 
 1. $dp[u] = min(dp[u], dp[v])$, if $dist[u] < dist[v]$.
 2. $dp[u] = min(dp[u], dist[v])$, if $dist[u] \ge dist[v]$.
 
-Because the only time the value of $dp[u]$ depends on its children is when 
-$dist[u] < dist[v]$, we have to process the nodes in descending order of distance 
+Because the only time the value of $dp[u]$ depends on its children is when
+$dist[u] < dist[v]$, we have to process the nodes in descending order of distance
 from the capital.
 
 ## Implementation
@@ -51,63 +51,53 @@ from the capital.
 using namespace std;
 
 void solve() {
-    int n, m;
-    cin >> n >> m;
-    vector<vector<int>> adj(n);
-    for (int i = 0; i < m; i++) {
-        int u, v;
-        cin >> u >> v;
-        --u, --v;
-        adj[u].push_back(v);
-    }
+	int n, m;
+	cin >> n >> m;
+	vector<vector<int>> adj(n);
+	for (int i = 0; i < m; i++) {
+		int u, v;
+		cin >> u >> v;
+		--u, --v;
+		adj[u].push_back(v);
+	}
 
-    // calculate distance from the capital
-    vector<int> capital_dist(n, -1);
-    queue<array<int, 2>> q;
-    q.push({0, 0});
-    while (!q.empty()) {
-        auto [u, t] = q.front();
-        q.pop();
-        if (capital_dist[u] != -1) {
-            continue;
-        }
-        capital_dist[u] = t;
-        for (int v : adj[u]) {
-            if (capital_dist[v] == -1) {
-                q.push({v, t + 1});
-            }
-        }
-    }
+	// calculate distance from the capital
+	vector<int> capital_dist(n, -1);
+	queue<array<int, 2>> q;
+	q.push({0, 0});
+	while (!q.empty()) {
+		auto [u, t] = q.front();
+		q.pop();
+		if (capital_dist[u] != -1) { continue; }
+		capital_dist[u] = t;
+		for (int v : adj[u]) {
+			if (capital_dist[v] == -1) { q.push({v, t + 1}); }
+		}
+	}
 
-    // order the nodes by distance from capital
-    vector<int> order(n);
-    iota(begin(order), end(order), 0);
-    sort(begin(order), end(order), 
-        [&](int i, int j) { 
-        return capital_dist[i] > capital_dist[j]; 
-    });
+	// order the nodes by distance from capital
+	vector<int> order(n);
+	iota(begin(order), end(order), 0);
+	sort(begin(order), end(order),
+	     [&](int i, int j) { return capital_dist[i] > capital_dist[j]; });
 
-    // calculate the DP
-    vector<int> min_dist = capital_dist;
-    for (int node_1 : order) {
-        for (int node_2 : adj[node_1]) {
-            if (capital_dist[node_1] < capital_dist[node_2]) {
-                min_dist[node_1] = min(min_dist[node_1], min_dist[node_2]);
-            } else {
-                min_dist[node_1] = min(min_dist[node_1], capital_dist[node_2]);
-            }
-        }
-    }
-    for (int i = 0; i < n; i++) {
-        cout << min_dist[i] << " \n"[i == n - 1];
-    }
+	// calculate the DP
+	vector<int> min_dist = capital_dist;
+	for (int node_1 : order) {
+		for (int node_2 : adj[node_1]) {
+			if (capital_dist[node_1] < capital_dist[node_2]) {
+				min_dist[node_1] = min(min_dist[node_1], min_dist[node_2]);
+			} else {
+				min_dist[node_1] = min(min_dist[node_1], capital_dist[node_2]);
+			}
+		}
+	}
+	for (int i = 0; i < n; i++) { cout << min_dist[i] << " \n"[i == n - 1]; }
 }
 int main() {
-    int t; 
-    cin >> t;
-    while (t--) { 
-        solve(); 
-    }
+	int t;
+	cin >> t;
+	while (t--) { solve(); }
 }
 ```
 
