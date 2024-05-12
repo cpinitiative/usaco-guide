@@ -3,7 +3,7 @@ id: link-cut-tree
 redirects:
   - /adv/LCT
 title: 'Link Cut Tree'
-author: Benjamin Qi, Neo Wang
+author: Benjamin Qi, Neo Wang, Gabriel Xu
 description: 'Dynamic operations on a rooted forest'
 prerequisites:
   - offline-del
@@ -12,8 +12,6 @@ frequency: 1
 ---
 
 ## Splay Tree
-
-### Tutorial
 
 <Resources>
 	<Resource
@@ -39,7 +37,15 @@ frequency: 1
 	/>
 </Resources>
 
+A splay tree is a type of self-balancing binary search tree that supports efficient
+implementation of operations such as finding an element, deleting an element,
+splitting a tree, and joining two trees.
+
+When a node in a splay tree is accessed, a splay operation is performed on the node that moves it too the root of the tree while also roughly balancing the tree.
+
 ## Link Cut Tree
+
+<FocusProblem problem="conSam" />
 
 <Resources>
 	<Resource
@@ -61,8 +67,8 @@ frequency: 1
 	/>
 	<Resource
 		source="CF"
-		title="Euler Tour Tree"
-		url="https://codeforces.com/blog/entry/18369"
+		title="Link Cut Tree Tutorial"
+		url="https://codeforces.com/blog/entry/80383"
 	/>
 	<Resource
 		source="Benq"
@@ -71,14 +77,32 @@ frequency: 1
 	/>
 </Resources>
 
-## Dynamic Connectivity
+A link cut tree is a data structure that uses splay trees to represent a forest of rooted trees and
+can perform the following operations with an amortized upper bound time
+complexity of $\mathcal{O}(\log N)$:
 
-<FocusProblem problem="conSam" />
+- Linking a tree with a node by making the root of the tree a child of any node
+  of another tree
+- Deleting the edge between a node and its parent, detaching the node's subtree
+  to make a new tree
+- Find the root of the tree that a node belongs to
 
-### With Link-Cut Tree
+These operations all use the $\texttt{access}(v)$ subroutine,
+which creates a preferred path from the root of the represented tree to vertex $v$,
+making a corresponding auxiliary splay tree with $v$ as the root.
 
-<!-- We can use a Link-Cut Tree to process dynamic connectivity queries in -->
-<!-- $\mathcal{O}(\log N)$ time. -->
+## Solution
+
+### With Link Cut Tree
+
+We can use a link cut tree to process each type of query $\mathcal{O}(\log N)$ time.
+Adding an edge or removing an edge between two vertices are standard features of the link cut tree.
+
+Checking if there's a path between two nodes is the same as checking if they're part of the same tree.
+To check if two nodes are part of the same tree, we can check if the roots of the trees of the two nodes are the same.
+
+<LanguageSection>
+<CPPSection>
 
 ```cpp
 #include <bits/stdc++.h>
@@ -190,24 +214,19 @@ struct LCT {
 };
 // EndCodeSnip
 
-int N, M;
-
 int main() {
-	cin.tie(0)->sync_with_stdio(0);
+	int n;
+	int m;
+	cin >> n >> m;
+	LCT lc(n);
 
-	cin >> N >> M;
-
-	LCT lc(N);
-
-	while (M--) {
+	for (int i = 0; i < m; i++) {
 		string a;
 		cin >> a;
 		int b, c;
 		cin >> b >> c;
 		if (a == "add") { lc.link(b, c); }
-
 		if (a == "rem") { lc.cut(b, c); }
-
 		if (a == "conn") {
 			cout << (lc.connected(b, c) ? "YES" : "NO") << "\n";
 		}
@@ -215,7 +234,30 @@ int main() {
 }
 ```
 
-### With Euler-Tour Tree
+</CPPSection>
+</LanguageSection>
+
+### With Euler Tour Tree
+
+An alternative solution is to use the Euler Tour Tree (ETT) technique,
+which builds upon our existing [Euler tour technique](/gold/tree-euler)
+by storing the Euler Tour of the tree in a balanced binary search tree instead of an array.
+
+<Resources>
+	<Resource
+		source="CF"
+		title="Euler Tour Tree Introduction"
+		url="https://codeforces.com/blog/entry/18369"
+	/>
+	<Resource
+		source="CF"
+		title="Euler Tour Tree Tutorial"
+		url="https://codeforces.com/blog/entry/102087"
+	/>
+</Resources>
+
+<LanguageSection>
+<CPPSection>
 
 ```cpp
 // CodeSnip{Benq Template}
@@ -354,16 +396,435 @@ int main() {
 	}
 }
 ```
+</CPPSection>
+</LanguageSection>
 
-## Link Cut Tree - Connectivity
+## Finding Connectivity
 
-<Problems problems="con" />
+The link cut tree can be used to solve problems that deal with queries updating trees and querying for connectivity.
+
+<FocusProblem problem="con" />
+
+### Explanation
+
+The lowest common ancestor of two nodes is found by first making a preferred path from the root to one node and then the other. After we splay the first node, the lowest common ancestor is just the first node's parent.
+
+### Implementation
+
+**Time Complexity:** $\mathcal{O}(N\log N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+typedef long long ll;
+
+// BeginCodeSnip{Benq Link Cut Tree}
+typedef struct snode *sn;
+struct snode {         //////// VARIABLES
+	sn p, c[2];        // parent, children
+	bool flip = 0;     // subtree flipped or not
+	int sz;            // # nodes in current splay tree
+	ll sub, vsub = 0;  // vsub stores sum of virtual children
+	ll val;            // value in node
+	snode(int _val) : val(_val) {
+		p = c[0] = c[1] = NULL;
+		calc();
+	}
+	friend int getSz(sn x) { return x ? x->sz : 0; }
+	friend ll getSub(sn x) { return x ? x->sub : 0; }
+	void prop() {  // lazy prop
+		if (!flip) return;
+		swap(c[0], c[1]);
+		flip = 0;
+		for (int i = 0; i < 2; i++)
+			if (c[i]) c[i]->flip ^= 1;
+	}
+	void calc() {  // recalc vals
+		for (int i = 0; i < 2; i++)
+			if (c[i]) c[i]->prop();
+		sz = 1 + getSz(c[0]) + getSz(c[1]);
+		sub = val + getSub(c[0]) + getSub(c[1]) + vsub;
+	}
+	//////// SPLAY TREE OPERATIONS
+	int dir() {
+		if (!p) return -2;
+		for (int i = 0; i < 2; i++)
+			if (p->c[i] == this) return i;
+		return -1;  // p is path-parent pointer
+	}  // -> not in current splay tree
+	// test if root of current splay tree
+	bool isRoot() { return dir() < 0; }
+	friend void setLink(sn x, sn y, int d) {
+		if (y) y->p = x;
+		if (d >= 0) x->c[d] = y;
+	}
+	void rot() {  // assume p and p->p propagated
+		assert(!isRoot());
+		int x = dir();
+		sn pa = p;
+		setLink(pa->p, this, pa->dir());
+		setLink(pa, c[x ^ 1], x);
+		setLink(this, pa, x ^ 1);
+		pa->calc();
+	}
+	void splay() {
+		while (!isRoot() && !p->isRoot()) {
+			p->p->prop(), p->prop(), prop();
+			dir() == p->dir() ? p->rot() : rot();
+			rot();
+		}
+		if (!isRoot()) p->prop(), prop(), rot();
+		prop();
+		calc();
+	}
+	sn fbo(int b) {  // find by order
+		prop();
+		int z = getSz(c[0]);  // of splay tree
+		if (b == z) {
+			splay();
+			return this;
+		}
+		return b < z ? c[0]->fbo(b) : c[1]->fbo(b - z - 1);
+	}
+	//////// BASE OPERATIONS
+	void access() {  // bring this to top of tree, propagate
+		for (sn v = this, pre = NULL; v; v = v->p) {
+			v->splay();  // now switch virtual children
+			if (pre) v->vsub -= pre->sub;
+			if (v->c[1]) v->vsub += v->c[1]->sub;
+			v->c[1] = pre;
+			v->calc();
+			pre = v;
+		}
+		splay();
+		assert(!c[1]);  // right subtree is empty
+	}
+	void makeRoot() {
+		access();
+		flip ^= 1;
+		access();
+		assert(!c[0] && !c[1]);
+	}
+	//////// QUERIES
+	friend sn lca(sn x, sn y) {
+		if (x == y) return x;
+		x->access(), y->access();
+		if (!x->p) return NULL;
+		x->splay();
+		return x->p ?: x;  // y was below x in latter case
+	}  // access at y did not affect x -> not connected
+	friend bool connected(sn x, sn y) { return lca(x, y); }
+	// # nodes above
+	int distRoot() {
+		access();
+		return getSz(c[0]);
+	}
+	sn getRoot() {  // get root of LCT component
+		access();
+		sn a = this;
+		while (a->c[0]) a = a->c[0], a->prop();
+		a->access();
+		return a;
+	}
+	sn getPar(int b) {  // get b-th parent on path to root
+		access();
+		b = getSz(c[0]) - b;
+		assert(b >= 0);
+		return fbo(b);
+	}  // can also get min, max on path to root, etc
+	//////// MODIFICATIONS
+	void set(int v) {
+		access();
+		val = v;
+		calc();
+	}
+	friend void link(sn x, sn y, bool force = 0) {
+		assert(!connected(x, y));
+		if (force) y->makeRoot();  // make x par of y
+		else {
+			y->access();
+			assert(!y->c[0]);
+		}
+		x->access();
+		setLink(y, x, 0);
+		y->calc();
+	}
+	friend void cut(sn y) {  // cut y from its parent
+		y->access();
+		assert(y->c[0]);
+		y->c[0]->p = NULL;
+		y->c[0] = NULL;
+		y->calc();
+	}
+	friend void cut(sn x, sn y) {  // if x, y adj in tree
+		x->makeRoot();
+		y->access();
+		assert(y->c[0] == x && !x->c[0] && !x->c[1]);
+		cut(y);
+	}
+};
+// EndCodeSnip
+
+const int MAX_N = 1e5;
+sn LCT[MAX_N];
+
+int main() {
+	int n;
+	int q;
+	cin >> n >> q;
+	for (int i = 0; i < n; i++) { LCT[i] = new snode(i + 1); }
+
+	for (int i = 0; i < q; i++) {
+		string t;
+		cin >> t;
+		if (t == "link") {
+			int u, v;
+			cin >> u >> v;
+			u--, v--;
+			link(LCT[v], LCT[u], 1);
+		} else if (t == "cut") {
+			int u;
+			cin >> u;
+			u--;
+			cut(LCT[u]);
+		} else if (t == "lca") {
+			int u, v;
+			cin >> u >> v;
+			u--, v--;
+			cout << lca(LCT[u], LCT[v])->val << "\n";
+		}
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>
 
 ## Link Cut Tree - Paths
 
-<Problems problems="pathSam" />
+<FocusProblem problem="pathSam" />
+
+### Explanation
+
+An LC Tree can also calculate the aggregate (max, min, sum, etc.) of the weights of the edges or nodes on a path.
+
+To do this, we can define a function that will return an aggregate for the path from the root of the tree to the provided vertex.
+We can augment the auxiliary splay trees with the value(s) we want to keep track of.
+The aggregate for the path from the root of a tree to a vertex can be found by retrieving the value(s) from the splay tree created after accessing the vertex.
 
 ### Implementation
+
+**Time Complexity:** $\mathcal{O}(Q\log N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+typedef long long ll;
+
+// BeginCodeSnip{Benq Link Cut Tree}
+typedef struct snode *sn;
+struct snode {         //////// VARIABLES
+	sn p, c[2];        // parent, children
+	bool flip = 0;     // subtree flipped or not
+	int sz;            // # nodes in current splay tree
+	ll sub, vsub = 0;  // vsub stores sum of virtual children
+	ll val;            // value in node
+	ll sum;
+	snode(int _val) : val(_val) {
+		p = c[0] = c[1] = NULL;
+		calc();
+	}
+	friend int getSz(sn x) { return x ? x->sz : 0; }
+	friend ll getSub(sn x) { return x ? x->sub : 0; }
+	friend ll getSum(sn x) { return x ? x->sum : 0; }
+	void prop() {  // lazy prop
+		if (!flip) return;
+		swap(c[0], c[1]);
+		flip = 0;
+		for (int i = 0; i < 2; i++)
+			if (c[i]) c[i]->flip ^= 1;
+	}
+	void calc() {  // recalc vals
+		for (int i = 0; i < 2; i++)
+			if (c[i]) c[i]->prop();
+		sz = 1 + getSz(c[0]) + getSz(c[1]);
+		sub = val + getSub(c[0]) + getSub(c[1]) + vsub;
+		sum = val + getSum(c[0]) + getSum(c[1]);
+	}
+	//////// SPLAY TREE OPERATIONS
+	int dir() {
+		if (!p) return -2;
+		for (int i = 0; i < 2; i++)
+			if (p->c[i] == this) return i;
+		return -1;  // p is path-parent pointer
+	}  // -> not in current splay tree
+	// test if root of current splay tree
+	bool isRoot() { return dir() < 0; }
+	friend void setLink(sn x, sn y, int d) {
+		if (y) y->p = x;
+		if (d >= 0) x->c[d] = y;
+	}
+	void rot() {  // assume p and p->p propagated
+		assert(!isRoot());
+		int x = dir();
+		sn pa = p;
+		setLink(pa->p, this, pa->dir());
+		setLink(pa, c[x ^ 1], x);
+		setLink(this, pa, x ^ 1);
+		pa->calc();
+	}
+	void splay() {
+		while (!isRoot() && !p->isRoot()) {
+			p->p->prop(), p->prop(), prop();
+			dir() == p->dir() ? p->rot() : rot();
+			rot();
+		}
+		if (!isRoot()) p->prop(), prop(), rot();
+		prop();
+		calc();
+	}
+	sn fbo(int b) {  // find by order
+		prop();
+		int z = getSz(c[0]);  // of splay tree
+		if (b == z) {
+			splay();
+			return this;
+		}
+		return b < z ? c[0]->fbo(b) : c[1]->fbo(b - z - 1);
+	}
+	//////// BASE OPERATIONS
+	void access() {  // bring this to top of tree, propagate
+		for (sn v = this, pre = NULL; v; v = v->p) {
+			v->splay();  // now switch virtual children
+			if (pre) v->vsub -= pre->sub;
+			if (v->c[1]) v->vsub += v->c[1]->sub;
+			v->c[1] = pre;
+			v->calc();
+			pre = v;
+		}
+		splay();
+		assert(!c[1]);  // right subtree is empty
+	}
+	void makeRoot() {
+		access();
+		flip ^= 1;
+		access();
+		assert(!c[0] && !c[1]);
+	}
+	//////// QUERIES
+	friend sn lca(sn x, sn y) {
+		if (x == y) return x;
+		x->access(), y->access();
+		if (!x->p) return NULL;
+		x->splay();
+		return x->p ?: x;  // y was below x in latter case
+	}  // access at y did not affect x -> not connected
+	friend bool connected(sn x, sn y) { return lca(x, y); }
+	// # nodes above
+	int distRoot() {
+		access();
+		return getSz(c[0]);
+	}
+	sn getRoot() {  // get root of LCT component
+		access();
+		sn a = this;
+		while (a->c[0]) a = a->c[0], a->prop();
+		a->access();
+		return a;
+	}
+	sn getPar(int b) {  // get b-th parent on path to root
+		access();
+		b = getSz(c[0]) - b;
+		assert(b >= 0);
+		return fbo(b);
+	}  // can also get min, max on path to root, etc
+	//////// MODIFICATIONS
+	void set(int v) {
+		access();
+		val = v;
+		calc();
+	}
+	friend void link(sn x, sn y, bool force = 0) {
+		assert(!connected(x, y));
+		if (force) y->makeRoot();  // make x par of y
+		else {
+			y->access();
+			assert(!y->c[0]);
+		}
+		x->access();
+		setLink(y, x, 0);
+		y->calc();
+	}
+	friend void cut(sn y) {  // cut y from its parent
+		y->access();
+		assert(y->c[0]);
+		y->c[0]->p = NULL;
+		y->c[0] = NULL;
+		y->calc();
+	}
+	friend void cut(sn x, sn y) {  // if x, y adj in tree
+		x->makeRoot();
+		y->access();
+		assert(y->c[0] == x && !x->c[0] && !x->c[1]);
+		cut(y);
+	}
+};
+// EndCodeSnip
+
+const int MAX_N = 2e5;
+sn LCT[MAX_N];
+
+int main() {
+	int n;
+	int q;
+	cin >> n >> q;
+	for (int i = 0; i < n; i++) {
+		int a;
+		cin >> a;
+		LCT[i] = new snode(a);
+	}
+
+	for (int i = 0; i < n - 1; i++) {
+		int u, v;
+		cin >> u >> v;
+		link(LCT[u], LCT[v], 1);
+	}
+
+	for (int i = 0; i < q; i++) {
+		int t;
+		cin >> t;
+		if (t == 0) {
+			int u, v, w, x;
+			cin >> u >> v >> w >> x;
+			cut(LCT[u], LCT[v]);
+			link(LCT[w], LCT[x], 1);
+		} else if (t == 1) {
+			int p, x;
+			cin >> p >> x;
+			LCT[p]->access();
+			LCT[p]->val += x;
+			LCT[p]->calc();
+		} else if (t == 2) {
+			int u, v;
+			cin >> u >> v;
+			LCT[u]->makeRoot();
+			LCT[v]->access();
+			cout << LCT[v]->sum << "\n";
+		}
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>
 
 ### Problems
 
@@ -386,9 +847,7 @@ int main() {
 
 ## Link Cut Tree - Subtrees
 
-<Problems problems="subSam" />
-
-### Tutorial
+<FocusProblem problem="subSam" />
 
 <Resources>
 	<Resource
@@ -398,6 +857,214 @@ int main() {
 		starred
 	/>
 </Resources>
+
+### Explanation
+
+We can also maintain information about subtrees by keeping track of values for the virtual subtrees of a node. When querying for information such as the subtree sum, we call `access` on the node so that all of its children in the represented tree are part of virtual subtrees and then retrieve the desired value.
+
+### Implementation
+
+**Time Complexity:** $\mathcal{O}(Q\log N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+typedef long long ll;
+
+// BeginCodeSnip{Benq Link Cut Tree}
+typedef struct snode *sn;
+struct snode {         //////// VARIABLES
+	sn p, c[2];        // parent, children
+	bool flip = 0;     // subtree flipped or not
+	int sz;            // # nodes in current splay tree
+	ll sub, vsub = 0;  // vsub stores sum of virtual children
+	ll val;            // value in node
+	snode(int _val) : val(_val) {
+		p = c[0] = c[1] = NULL;
+		calc();
+	}
+	friend int getSz(sn x) { return x ? x->sz : 0; }
+	friend ll getSub(sn x) { return x ? x->sub : 0; }
+	void prop() {  // lazy prop
+		if (!flip) return;
+		swap(c[0], c[1]);
+		flip = 0;
+		for (int i = 0; i < 2; i++)
+			if (c[i]) c[i]->flip ^= 1;
+	}
+	void calc() {  // recalc vals
+		for (int i = 0; i < 2; i++)
+			if (c[i]) c[i]->prop();
+		sz = 1 + getSz(c[0]) + getSz(c[1]);
+		sub = val + getSub(c[0]) + getSub(c[1]) + vsub;
+	}
+	//////// SPLAY TREE OPERATIONS
+	int dir() {
+		if (!p) return -2;
+		for (int i = 0; i < 2; i++)
+			if (p->c[i] == this) return i;
+		return -1;  // p is path-parent pointer
+	}  // -> not in current splay tree
+	// test if root of current splay tree
+	bool isRoot() { return dir() < 0; }
+	friend void setLink(sn x, sn y, int d) {
+		if (y) y->p = x;
+		if (d >= 0) x->c[d] = y;
+	}
+	void rot() {  // assume p and p->p propagated
+		assert(!isRoot());
+		int x = dir();
+		sn pa = p;
+		setLink(pa->p, this, pa->dir());
+		setLink(pa, c[x ^ 1], x);
+		setLink(this, pa, x ^ 1);
+		pa->calc();
+	}
+	void splay() {
+		while (!isRoot() && !p->isRoot()) {
+			p->p->prop(), p->prop(), prop();
+			dir() == p->dir() ? p->rot() : rot();
+			rot();
+		}
+		if (!isRoot()) p->prop(), prop(), rot();
+		prop();
+		calc();
+	}
+	sn fbo(int b) {  // find by order
+		prop();
+		int z = getSz(c[0]);  // of splay tree
+		if (b == z) {
+			splay();
+			return this;
+		}
+		return b < z ? c[0]->fbo(b) : c[1]->fbo(b - z - 1);
+	}
+	//////// BASE OPERATIONS
+	void access() {  // bring this to top of tree, propagate
+		for (sn v = this, pre = NULL; v; v = v->p) {
+			v->splay();  // now switch virtual children
+			if (pre) v->vsub -= pre->sub;
+			if (v->c[1]) v->vsub += v->c[1]->sub;
+			v->c[1] = pre;
+			v->calc();
+			pre = v;
+		}
+		splay();
+		assert(!c[1]);  // right subtree is empty
+	}
+	void makeRoot() {
+		access();
+		flip ^= 1;
+		access();
+		assert(!c[0] && !c[1]);
+	}
+	//////// QUERIES
+	friend sn lca(sn x, sn y) {
+		if (x == y) return x;
+		x->access(), y->access();
+		if (!x->p) return NULL;
+		x->splay();
+		return x->p ?: x;  // y was below x in latter case
+	}  // access at y did not affect x -> not connected
+	friend bool connected(sn x, sn y) { return lca(x, y); }
+	// # nodes above
+	int distRoot() {
+		access();
+		return getSz(c[0]);
+	}
+	sn getRoot() {  // get root of LCT component
+		access();
+		sn a = this;
+		while (a->c[0]) a = a->c[0], a->prop();
+		a->access();
+		return a;
+	}
+	sn getPar(int b) {  // get b-th parent on path to root
+		access();
+		b = getSz(c[0]) - b;
+		assert(b >= 0);
+		return fbo(b);
+	}  // can also get min, max on path to root, etc
+	//////// MODIFICATIONS
+	void set(int v) {
+		access();
+		val = v;
+		calc();
+	}
+	friend void link(sn x, sn y, bool force = 0) {
+		assert(!connected(x, y));
+		if (force) y->makeRoot();  // make x par of y
+		else {
+			y->access();
+			assert(!y->c[0]);
+		}
+		x->access();
+		setLink(y, x, 0);
+		y->calc();
+	}
+	friend void cut(sn y) {  // cut y from its parent
+		y->access();
+		assert(y->c[0]);
+		y->c[0]->p = NULL;
+		y->c[0] = NULL;
+		y->calc();
+	}
+	friend void cut(sn x, sn y) {  // if x, y adj in tree
+		x->makeRoot();
+		y->access();
+		assert(y->c[0] == x && !x->c[0] && !x->c[1]);
+		cut(y);
+	}
+};
+// EndCodeSnip
+
+const int MAX_N = 2e5;
+sn LCT[MAX_N];
+
+int main() {
+	int n, q;
+	cin >> n >> q;
+	for (int i = 0; i < n; i++) {
+		int a;
+		cin >> a;
+		LCT[i] = new snode(a);
+	}
+	for (int i = 0; i < n - 1; i++) {
+		int u, v;
+		cin >> u >> v;
+		link(LCT[u], LCT[v], 1);
+	}
+	for (int i = 0; i < q; i++) {
+		int t;
+		cin >> t;
+		if (t == 0) {
+			int u, v, w, x;
+			cin >> u >> v >> w >> x;
+			cut(LCT[u], LCT[v]);
+			link(LCT[w], LCT[x], 1);
+		} else if (t == 1) {
+			int p, x;
+			cin >> p >> x;
+			LCT[p]->access();
+			LCT[p]->val += x;
+			LCT[p]->calc();
+		} else if (t == 2) {
+			int v, p;
+			cin >> v >> p;
+			LCT[p]->makeRoot();
+			LCT[v]->access();
+			cout << LCT[v]->vsub + LCT[v]->val << "\n";
+		}
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>
 
 ### Problems
 
