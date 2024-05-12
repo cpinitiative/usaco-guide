@@ -3,7 +3,7 @@ id: lambda-funcs
 redirects:
   - /general/lambda
 title: (Optional) C++ - Lambda Expressions
-author: Benjamin Qi, Dong Liu
+author: Benjamin Qi, Dong Liu, Justin Ji
 description: 'Defining anonymous function objects.'
 ---
 
@@ -48,7 +48,64 @@ description: 'Defining anonymous function objects.'
 	 />
 </Resources>
 
+## Why Use Lambdas?
+Lambdas allow us to write simple and anonymous functions in place.
+This allows us to write smaller functions while keeping code local and 
+organized. In addition, lambdas can capture their surrounding variables, which
+is often convenient when writing helper functions.
+
+In addition, the C++ standard library has good support for lambdas, with functions 
+like `std::sort` and `std::lower_bound` allowing you to pass custom functions 
+to act as a comparator of objects. 
+
+## General Form
+Lambdas have the following form:
+
+`[capture_list](parameters) -> trailing_return_type { 
+	// function body 
+}`
+
+The parameters, return type, and function body are all pretty straightforward. 
+In competitive programming contexts, we typically use the following capture types:
+
+`[]`: Does not anything in the local scope.
+
+`[&]`: Captures everything in the local scope by reference.
+
+`[=]`: Captures everything in the local scope by copy.
+
+**The lambda's local scope is the scope where it is defined, not the scope where it is
+used.** 
+
+You can also specify what variables to capture, but this typically is not necessary.
+
+For an example of a lambda, say we want to write a function returns the square 
+of a given number. We can write the following lambda expression:
+
+```cpp
+auto square = [](int x) -> long long {
+	return (long long) x * x;
+};
+```
+
+Then, you can call the lambda like a normal function.
+```cpp
+cout << square(10) << '\n'; // prints out 100
+```
+
 ## Recursive Lambdas
+
+Let's say we want to write a recursive GCD function. With a lambda, the most 
+straightfoward way to write it would be like this:
+
+```cpp
+auto gcd = [](int a, int b) -> int {
+	return b == 0 ? a : gcd(b, a % b);
+};
+```
+
+Unfortunately, this does not work, because a lambda cannot directly reference 
+itself in its definition. However, there are workarounds to this issue. 
 
 ### With `y_combinator`
 
@@ -101,7 +158,7 @@ int main() {
 }
 ```
 
-### With [`function`](https://en.cppreference.com/w/cpp/utility/functional/function)
+### With [`std::function`](https://en.cppreference.com/w/cpp/utility/functional/function)
 
 Instead of `auto`, use `function<return_type(param)>`.
 
@@ -111,5 +168,18 @@ int main() {
 		return b == 0 ? a : gcd(b, a % b);
 	};
 	cout << gcd(20, 30) << '\n';  // outputs 10
+}
+```
+
+### With `auto` as a parameter:
+The main issue with recursive lambdas is that a lambda typically cannot access 
+itself. To fix this, we pass the lambda into itself. 
+
+```cpp
+int main() {
+	auto gcd = [&](int a, int b, auto&& gcd) -> int {
+		return b == 0 ? a : gcd(b, a % b, gcd);
+	};
+	cout << gcd(20, 30, gcd) << '\n'; // outputs 10
 }
 ```
