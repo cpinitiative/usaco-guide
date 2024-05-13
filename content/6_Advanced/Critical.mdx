@@ -1,327 +1,447 @@
 ---
 id: critical
 title: 'Critical'
-author: Benjamin Qi, Mihnea Brebenel
-description: 'CSES Critical Cities and Extensions'
+author: Benjamin Qi, Mihnea Brebenel, Kevin Sheng
+description: 'Finding nodes that must be visited along any path.'
 prerequisites:
   - Gold - Cycle Finding
 frequency: 1
 ---
 
-## Paths
-
 <FocusProblem problem="critical" />
 
 <Resources>
 	<Resource
+		source="Princeton"
+		title="Dominator slides"
+		url="https://www.cs.princeton.edu/courses/archive/spr11/cos423/Lectures/DominatorsA.pdf#page=18"
+		starred
+	>
+		Made by the creator of the algorithm himself!
+	</Resource>
+	<Resource
 		source="Wiki"
 		title="Dominator"
 		url="https://en.wikipedia.org/wiki/Dominator_(graph_theory)"
-		starred
 	>
-  	Wiki Definition
+		Wiki Definition
  	</Resource>
 	<Resource
 		source="Blog"
 		title="Dominator Tree"
 		url="https://tanujkhattar.wordpress.com/2016/01/11/dominator-tree-of-a-directed-graph/"
-	>
-    Well-covered article
-    </Resource>
+	/>
 	<Resource
 		source="Blog"
 		title="Visualizing Dominators"
 		url="https://sbaziotis.com/compilers/visualizing-dominators.html"
 		starred
-	>
-    Well-covered article
-    </Resource>
+	/>
 </Resources>
 
-## Solution
+## Initial Approach
 
-## Naive approach
+These critical nodes that the problem talks about are commonly known as **dominators**.
+Let's define $\texttt{dom}(u)$ as the set of nodes that dominate node $u$.
 
-Critical nodes in a DAG are commonly known as **dominators**. Let's define $Dom(u)$ as the set of nodes that dominate node $u$.
-
-The dominator of the starting node $1$ is itself. The set of dominators for any other node $u$ is the intersection of the set of dominators for all ancestors
-$p$ of node $u$.
+The dominator of the starting node is itself, and the set of dominators
+for any other node $u$ is the intersection of the set of dominators for all ancestors $p$ of node $u$.
 
 $$
-Dom(u)=
+\texttt{dom}(u)=
 \begin{cases}
-u,\text{ if u is the starting point}\\
-{u}  \cup (\cap_{p \in ancestor(u)} Dom(p))
+  u\quad\text{ if } u \text{ is the starting point} \\
+  {u}\cup \left(\bigcap_{p \in \texttt{ancestor}(u)} \texttt{dom}(p)\right)\quad\text{otherwise}
 \end{cases}
 $$
+
+### Implementation
 
 The following code uses the above recurrence.
+However, it both is too slow and uses too much memory.
+We'll try to optimize this moving on!
 
-**Time complexity:** $\mathcal{O}(N \cdot M)$.
-
-<LanguageSection>
-<CPPSection>
-
-```cpp
-#include <bits/stdc++.h>
-
-using namespace std;
-
-const int NMAX = 1e5;
-
-int n, m;
-vector<int> g[NMAX];
-vector<bitset<NMAX>> dom;
-bool seen[NMAX];
-
-void get_dominant_verticies(int node, int parent) {
-	if (!seen[node]) {
-		dom[node] = ~dom[node];
-		seen[node] = true;
-	}
-
-	dom[node] &= dom[parent];
-	dom[node][node] = true;
-
-	for (auto son : g[node]) { get_dominant_verticies(son, node); }
-}
-
-int main() {
-	cin >> n >> m;
-	dom.resize(n + 1);
-	for (int i = 1; i <= m; i++) {
-		int x, y;
-		cin >> x >> y;
-		g[x].push_back(y);
-	}
-
-	dom[1] = 1;
-	seen[1] = true;
-	get_dominant_verticies(1, 0);
-
-	set<int> dominators;
-	for (int i = 1; i <= n; i++) {
-		if (dom[n][i]) { dominators.insert(i); }
-	}
-
-	cout << (int)dominators.size() << '\n';
-	for (auto node : dominators) { cout << node << ' '; }
-
-	return 0;
-}
-```
-
-</CPPSection>
-</LanguageSection>
-
-Unfortunately, this is too slow.
-
-## A faster approach
-
-In this approach, we are going to build the [dominator tree](https://en.wikipedia.org/wiki/Dominator_(graph_theory)) of the graph. A dominator tree is a tree where each node's children are those nodes it immediately dominates. The start node is the root of the tree. The immediate dominator - or shortly **idom** - of a node $u$ is a node $v$ that strictly dominates node $u$ and every other dominator of node $u$ strictly dominates node $v$. The definition of the dominator tree gives us the following property: If node $v$ dominates node $u$, then node $v$ is an ancestor of node $u$, thus the answe of the problem is the path from the root to node $n$ in the dominator tree.
-
-From now on, we'll discuss the construction of the dominator tree, but first we need to precompute some helpful values:
-
-$$
-e(u) = \text{the entry time in node u during a DFS}
-\tag{0}
-$$
-$$
-sdom(u)= min(v \vert \text{there is a path from v to u: } v = v_0 \rightarrow v_1 \rightarrow v_2 \rightarrow v_3 \dots \rightarrow v_k = u \\ \text{ such that } e(v_i) \geq e(u), \forall i \in (1,k))
-$$
-
-The following graph depicts the semi-dominator for every node. The full-color edges represent the edges part of the DFS tree.
-
-![Graph2](./assets/dom_tree_sdom.png)
-<center><i>Illustrated dominators</i></center>
-#### Important properties
-
-If you're interested in seeing proofs scroll down to the final section.
-
-1. If $u \neq S$, then $sdom(u)$ is a proper ancestor of $u$ is the DFS tree.
-2. If $u \neq S$, then idom(u) is an ancestor - not necessarily proper - of $u$ in the DFS tree.
-3. Let $u \neq S$. If, for every vertex $x$ which is an ancestor of $u$ and has sdom(u) as its proper ancestor, $sdom(x) \geq sdom(u)$ then $idom(u)=sdom(u)$.
-4. Let $w \neq S$. Let u be a vertex for which $sdom(u)$ is minimum among all vertices u satisfying “$sdom(w)$ is a proper ancestor of $u$ and $u$ is an ancestor of $w$”.  If $sdom(u) \leq sdom(w)$ then $idom(w) = idom(u)$.
-5. Let $u \neq S$ and &v& be a vertex for which $sdom(v)$ is minimum among all vertices $u$ satisfying: $sdom(u)$ is a proper ancestor of $v$ and $v$ is an ancestor of u.  If $sdom(v) \le sdom(u)$ then $idom(u) = idom(v)$.
-6. Let $w \neq S$. Let $u$ be a vertex for which $sdom(u)$ is minimum among all vertices $u$ satisfying “$sdom(w)$ is a proper ancestor of $u$ and $u$ is an ancestor of $w$”. Then:
-
-$$
-idom(w)=\begin{cases}
-sdom(w), & \text{ If } sdom(u)=sdom(w),\\
-idom(w), & \text{otherwise}.
-\end{cases}
-\tag{1}
-$$
-
-## Precompute Sdom
-
-The following identity enables us the compute $sdom$:
-$$
-
-sdom(u) = min((y \vert (y, u) \in E \text{ and } y \le u) \cup (sdom(x) \vert x>u \\\text{ and there is and edge (x, y) such that x is ancestor of y}) )
-\tag{2}
-$$
-In other words, $sdom(u)$ is the minimum node in the intersection of the following groups:
-1. All the nodes $y$ with $y \le u \text{ and } (y,u) \in E$
-2. $sdom(x)$ where $x > u \text{ and } (u, y) \in E$
-
-## Implementation
-
-1. Precompute using a DFS the new mapping of the tree, i.e. the new labels of the nodes are their entry time $u = e[u]$.
-
-2. Compute $sdom$ for all nodes by applying the formula mentioned in the previous section. Iterate over node in decreasing order, maintaining the visited nodes in a DSU. Also, the DSU is slightly modified:
-
-- $Find(u)$ = Let $x$ be the root of the components
-    - If $u=x$, return $x$;
-    - else return a node $v$ with minimum sdom, lying on path from $u$ to $x$.
-
-In order to process node $u$ we iterate over all incoming edges $(v, u):$
-- If $v < u$, $v$ is an ancestor of $u$, $v$ would not have been processed till now, thus $Find(v)$ would return v.
-- If $v > w$ then $v$ would have already been processed and $Find(v)$ would return a node $x$ lying on the path from $v$ to root in the DSU tree having minimum sdom.
-
-The 2 cases cover precisely the definition $(2)$.
-
-3. Compute the $idom$ for all nodes by applying $(1)$.
-
-In this step, store nodes in buckets of their own $sdom$ and iterate over them updating the $idom$ value using $(1)$.
-
-This snippet of code combines steps $2$ and $3$:
+**Time complexity:** $\mathcal{O}(N^2)$.
 
 <LanguageSection>
 <CPPSection>
 
 ```cpp
-// Iterate decreasingly
-for (int i = n - 1; i >= 0; i--) {
-	// Iterate over incoming edges applying (2)
-	for (int p : rg[i]) { sdom[i] = min(sdom[i], sdom[Find(p, 0)]); }
-	// Insert i into it's bucket after sdom[i]
-	if (i > 0) { bucket[sdom[i]].push_back(i); }
-	// Apply (1) for nodes in bucket
-	for (int node : bucket[i]) {
-		int p = Find(node, 0);
-		if (sdom[p] == sdom[node]) {
-			dom[node] = sdom[node];
-		} else {
-			dom[node] = p;
-		}
-	}
-	// Mark i as seen
-	if (i > 0) { Unite(parent[i], i); }
-}
-```
-
-</CPPSection>
-</LanguageSection>
-
-4. After steps $2$ and $3$, the $idom$ value has been set ($=sdom$), for every node $u$, or it has been set to an ancestor $v$ of $u$ and $idom(u)=idom(v)$. Now if we start processing nodes after (0) increasingly, then for any vertex $u$:
-
-$$
-\text{If } sdom(u) \neq idom(u) \text{ then } idom(u) = idom(idom(u)) \\
-\text{else } idom(u) = sdom(u)
-$$
-
-<LanguageSection>
-<CPPSection>
-
-```cpp
-#include <functional>
+#include <bitset>
 #include <iostream>
-#include <set>
 #include <vector>
 
-using namespace std;
+using std::cout;
+using std::endl;
+using std::vector;
+using std::bitset;
+
+const int MAX_N = 1e5;
 
 int main() {
-	int n, m;
-	vector<vector<int>> g, rg, bucket;
-	cin >> n >> m;
-	g.resize(n);
-	rg.resize(n);
-	bucket.resize(n);
-	for (int i = 0; i < m; i++) {
-		int x, y;
-		cin >> x >> y;
-		x--, y--;
-		g[x].push_back(y);
-	}
+    int city_num;
+    int flight_num;
+    std::cin >> city_num >> flight_num;
+    vector<vector<int>> rev_adj(city_num);
+    for (int f = 0; f < flight_num; f++) {
+        int a, b;
+        std::cin >> a >> b;
+        // notice that we need the edges in reverse
+        rev_adj[--b].push_back(--a);
+    }
 
-	int timer = 0;
-	vector<int> sdom(n, 0), e(n, -1), parent(n, 0), inv(n, 0), dsu(n, 0),
-	    label(n, 0), dom_parent(n, 0);
+    vector<bitset<MAX_N>> dom(city_num);
+    dom[0].set(0);  // the dominator of the starting node is itself
+    for (int c = 1; c < city_num; c++) {
+        dom[c].set();
+    }
 
-	function<void(int)> dfs = [&](int node) {
-		// Entry time in node
-		e[node] = timer;
-		// Map entry time - node
-		inv[timer] = node;
-		sdom[timer] = dsu[timer] = label[timer] = timer;
-		timer++;
-		for (int son : g[node]) {
-			if (e[son] == -1) {
-				dfs(son);
-				// Store the parent of son in DFS tree
-				parent[e[son]] = e[node];
-			}
-			// Store the reverse graph
-			rg[e[son]].push_back(e[node]);
-		}
-	};
+    bool changed;
+    // iteratively update the dom sets of each node
+    do {
+        changed = false;
 
-	// DSU function
-	function<int(int, int)> find = [&](int u, int v) {
-		if (u == dsu[u]) { return v ? -1 : u; }
-		int comp = find(dsu[u], v + 1);
-		if (comp < 0) { return u; }
-		if (sdom[label[dsu[u]]] < sdom[label[u]]) label[u] = label[dsu[u]];
-		dsu[u] = comp;
-		return v ? comp : label[u];
-	};
+        // make a new vector where the updated doms reside
+        vector<bitset<MAX_N>> new_dom(city_num);
+        new_dom[0].set(0);
+        for (int c = 1; c < city_num; c++) {
+            bitset<MAX_N> updated = bitset<MAX_N>().set();
+            for (int prev : rev_adj[c]) {
+                updated &= dom[prev];
+            }
+            updated.set(c);
 
-	auto unite = [&](int x, int y) { dsu[y] = x; };
+            if (updated != dom[c]) {
+                changed = true;
+            }
+            new_dom[c] = updated;
+        }
 
-	dfs(0);
-	vector<int> dom(n);
-	for (int i = n - 1; i >= 0; i--) {
-		// Compute sdom
-		for (int p : rg[i]) { sdom[i] = min(sdom[i], sdom[find(p, 0)]); }
-		if (i > 0) { bucket[sdom[i]].push_back(i); }
-		for (int node : bucket[i]) {
-			int p = find(node, 0);
-			if (sdom[p] == sdom[node]) {
-				dom[node] = sdom[node];
-			} else {
-				dom[node] = p;
-			}
-		}
-		if (i > 0) { unite(parent[i], i); }
-	}
+        dom = new_dom;
+    } while (changed);
 
-	// Compute the idoms and set each node's parent in the dominator tree
-	for (int i = 1; i < n; i++) {
-		if (dom[i] != sdom[i]) { dom[i] = dom[dom[i]]; }
-		dom_parent[inv[i]] = inv[dom[i]];
-	}
+    vector<int> critical;
+    for (int c = 0; c < city_num; c++) {
+        if (dom[city_num - 1][c]) {
+            critical.push_back(c);
+        }
+    }
 
-	// Get the ancestors of node n in the dominator tree
-	set<int> dominators;
-	int node = n - 1;
-	while (node != 0) {
-		dominators.insert(node + 1);
-		node = dom_parent[node];
-	}
-	dominators.insert(1);
-	cout << (int)dominators.size() << '\n';
-	for (int node : dominators) { cout << node << ' '; }
+    cout << critical.size() << '\n';
+    for (int i = 0; i < critical.size(); i++) {
+        cout << critical[i] + 1 << " \n"[i == critical.size() - 1];
+    }
 }
 ```
 
 </CPPSection>
 </LanguageSection>
 
-**Time complexity:** $\mathcal{O}((N+M) \cdot \log{N})$
+## Optimizing With Trees
 
-### Proofs
+In this approach, we are going to build the [dominator tree](https://en.wikipedia.org/wiki/Dominator_(graph_theory)) of the graph.
+
+Before we discuss this though, let's set up some terms we're going to use throughout this module:
+
+* A node $u$ **strictly dominates** another node $v$ if $u$ dominates $v$ and $u \ne v$.
+* Let the **immediate dominator** of $u$, or $\texttt{idom}(u)$, be the unique node $v$ such that it strictly dominates node $u$ and every other dominator of node $u$ strictly dominates node $v$.
+* Let $e(u)$ be the entry time in node $u$ doing a [Euler tour](/gold/tree-euler).
+* Let the **semi-dominator** of $u$, or $\texttt{sdom}(u)$, be a $v$ such that there's a path from $v$ to $u$
+  and $e(i) \ge e(u)$ for every intermediate node $i$ along the path from $u$ to $v$, excluding the ends.
+  If there's multiple nodes that satisfy this requirement, we take the node $v$ with the smallest $e(v)$.
+* Let the **relative dominator** of $u$, or $\texttt{rdom}(u)$, be the vertex $x \ne \texttt{sdom}(u)$ on the path from $\texttt{sdom}(u)$ to $u$ in the Euler tour tree with the lowest sdom node number.
+  Unlike with the sdom, ties in this function can be broken arbitrarily.
+
+A dominator tree is a tree where each node's children are those nodes it immediately dominates. The start node is the root of the tree.
+
+Given this definition, we can see that if a node dominates another, then the former is
+an ancestor of the latter in the dominator tree.
+Thus, the answer to the CSES problem is the set of all nodes that lie on the path from the root to node $n$ in the tree.
+
+The following graph shows the sdom for every node.
+The full-color edges represent the edges part of the DFS tree.
+
+![Graph2](./assets/dom_tree_sdom.png)
+
+### Important properties
+
+Proofs of these properties are located later in the module.
+For all of these properties, let $u$ be a node that isn't the starting node.
+
+1. $\texttt{sdom}(u)$ is a proper ancestor of $u$ is the DFS tree.
+2. If $\texttt{rdom}(u)=u$, then $\texttt{idom}(u)=\texttt{sdom}(u)$.
+3. If not, then $\texttt{idom}(u)=\texttt{idom}(\texttt{rdom}(u))$
+
+## Algorithm Overview
+
+Before we get into the nitty-gritty, here's a brief outline of how exactly we're going to build up this dominator tree.
+
+1. Compute the sdom of every node besides the start.
+2. Compute the *rdom* of every node besides the start.
+3. Visit all the vertices in the DFS tree and calculate their immediate dominator using the second and third properties that were listed above.
+   Notice that due to how we defined the rdom of a node, a preorder traversal will always visit the rdom of a node before the node itself if the two aren't the same.
+
+The first and second steps are awfully vague- let's clear those up now, shall we?
+
+### Computing $\texttt{sdom}$
+
+We can compute $\texttt{sdom}(u)$ as the minimum node in the intersection of the following groups:
+1. All the nodes $y$ such that there's an edge from $y$ to $u$ and $e(y) \le e(u)$.
+2. All the values of $\texttt{sdom}(x)$ where $x$ is any node such that there's an edge from $u$ to $x$ and $e(x) > e(u)$.
+   To be more mathematically precise, we can define this group as
+   $$
+   \{\texttt{sdom}(x)\ |\ (u, x) \in E\text{ and }e(x)>e(u)\}
+   $$
+
+The proof of why this works is beyond the scope of this module.
+
+### Implementing $\texttt{sdom}$
+
+We first perform a preorder DFS traversal of the graph from the source node and keep track of all the entry times of the nodes.
+
+Then, we compute the sdom for all nodes by applying the formula mentioned in the previous section. 
+To do this, we iterate over the traversal in *reverse order* and maintain the nodes we've gone over in a [DSU](/gold/dsu).
+
+However, the DSU we use for this algorithm is going to be a little different.
+We unite nodes as usual, but the `find` function differs.
+
+Say $x$ is the root of the component we're calling `find` on.
+The node we're calling `find` on happens to be `x`, then we return `x` as usual.
+However, if it's some other node, then we return a node with the minimum sdom that lies on the path from $u$ to $x$.
+
+To process node $u$ we iterate over all nodes $v$ that have an edge directed towards it.
+If $v$ comes before $u$ in the preorder traversal, then $v$ is an ancestor of $u$ and would not have been processed till now.
+In that case, `find(v)` would return $v$ itself.
+
+If not, then `find(v)` would return a node $x$ lying on the path from $v$ to the root in its DSU component with the smallest sdom.
+
+If you're still a bit confused by this explanation, psuedocode for it is located
+on slide 33 of the Princeton slides given at the start of this module.
+
+### Computing $\texttt{rdom}$
+
+The rdom of a node is the node with the sdom that comes earliest in the traversal.
+Since this reduces to finding the minimum of a value along a certain path in a tree,
+we can implement this using an augmentation of [binary jumping](/plat/binary-jump).
+
+### Implementation
+
+**Time Complexity:** $\mathcal(O)((N+M) \cdot \log N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <cassert>
+#include <cmath>
+#include <cstdint>
+#include <functional>
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+using std::cout;
+using std::endl;
+using std::vector;
+
+// BeginCodeSnip{Tree Class for rdom}
+template <typename T>
+class Tree {
+   private:
+    const int root = 0;
+    const vector<int>& parents;
+    const vector<T>& vals;
+    const int log2dist;
+    vector<vector<int>> pow2ends;
+    vector<vector<T>> pow2mins;
+    vector<int> depth;
+
+   public:
+    Tree(const vector<int>& parents, const vector<T>& vals)
+        : parents(parents),
+          vals(vals),
+          log2dist(std::ceil(std::log2(parents.size() + 1))),
+          pow2ends(parents.size(), vector<int>(log2dist + 1)),
+          pow2mins(parents.size(), vector<T>(log2dist + 1)) {
+        assert(parents[root] == -1);
+
+        vector<vector<int>> children(parents.size());
+        for (int n = 0; n < parents.size(); n++) {
+            if (parents[n] != -1) {
+                children[parents[n]].push_back(n);
+            }
+        }
+        depth = vector<int>(parents.size());
+        vector<int> frontier{root};
+        while (!frontier.empty()) {
+            int curr = frontier.back();
+            frontier.pop_back();
+            for (int n : children[curr]) {
+                depth[n] = depth[curr] + 1;
+                frontier.push_back(n);
+            }
+        }
+
+        for (int n = 0; n < parents.size(); n++) {
+            pow2mins[n][0] = vals[n];
+            pow2ends[n][0] = parents[n];
+        }
+        for (int p = 1; p <= log2dist; p++) {
+            for (int n = 0; n < parents.size(); n++) {
+                int halfway = pow2ends[n][p - 1];
+                if (halfway == -1) {
+                    pow2ends[n][p] = -1;
+                    pow2mins[n][p] = pow2mins[n][p - 1];
+                } else {
+                    pow2ends[n][p] = pow2ends[halfway][p - 1];
+                    pow2mins[n][p] =
+                        std::min(pow2mins[n][p - 1], pow2mins[halfway][p - 1]);
+                }
+            }
+        }
+    }
+
+    /**
+     * @return the min value on the path from the ancestor to its descendant,
+     *         not including the ancestor.
+     */
+    T min_val(int ancestor, int desc) {
+        int dist = depth[desc] - depth[ancestor];
+        T ret = vals[desc];
+        int at = desc;
+        for (int pow = 0; pow <= log2dist; pow++) {
+            if ((dist & (1 << pow)) != 0) {
+                ret = std::min(ret, pow2mins[at][pow]);
+                at = pow2ends[at][pow];
+            }
+        }
+        assert(at == ancestor);
+        return ret;
+    }
+};
+// EndCodeSnip
+
+int main() {
+    int city_num;
+    int flight_num;
+    std::cin >> city_num >> flight_num;
+    vector<vector<int>> adj(city_num);
+    vector<vector<int>> rev_adj(city_num);
+    for (int f = 0; f < flight_num; f++) {
+        int a, b;
+        std::cin >> a >> b;
+        adj[--a].push_back(--b);
+        rev_adj[b].push_back(a);
+    }
+
+    // Variables used for the Euler Tour
+    vector<int> visit_order;
+    // visit_time is initialized with INF so nodes that aren't reachable
+    // during the DFS won't mess up our sdom calculation
+    vector<int> visit_time(city_num, INT32_MAX);
+    vector<int> visit_parent(city_num, -1);
+    vector<bool> visited(city_num, false);
+    std::function<void(int, int)> dfs;
+    dfs = [&](int at, int prev) {
+        if (visited[at]) {
+            return;
+        }
+        visited[at] = true;
+
+        visit_time[at] = visit_order.size();
+        visit_order.push_back(at);
+        visit_parent[at] = prev;
+        for (int next : adj[at]) {
+            dfs(next, at);
+        }
+    };
+    dfs(0, -1);
+
+    // We use a function-based interface instead of a class-based one due to
+    // heavy reliance on previously calculated values
+    vector<int> dsu_parent(city_num, -1);
+    vector<int> dsu_min(city_num, INT32_MAX);
+    std::function<int(int)> find;
+    find = [&](int x) {
+        if (dsu_parent[x] == -1) {
+            return x;
+        }
+        if (dsu_parent[dsu_parent[x]] != -1) {
+            int parent_res = find(dsu_parent[x]);
+            if (visit_time[parent_res] < visit_time[dsu_min[x]]) {
+                dsu_min[x] = parent_res;
+            }
+            dsu_parent[x] = dsu_parent[dsu_parent[x]];
+        }
+        assert(dsu_min[x] != INT32_MAX);
+        return dsu_min[x];
+    };
+
+    vector<int> sdom(city_num, -1);
+    for (int i = visit_order.size() - 1; i > 0; i--) {
+        int c = visit_order[i];
+        // Iterate over all nodes with a directed edge to c
+        for (int from : rev_adj[c]) {
+            int find_res = find(from);
+            // Take the node with the earliest visit time in the traversal
+            if (sdom[c] == -1 || visit_time[find_res] < visit_time[sdom[c]]) {
+                sdom[c] = find_res;
+            }
+        }
+
+        // Link c to its parent in the DFS tree
+        dsu_parent[c] = visit_parent[c];
+        dsu_min[c] = sdom[c];
+    }
+
+    // Initialize the values in the tree
+    vector<std::pair<int, int>> sdom_times(city_num, {INT32_MAX, -1});
+    for (int c : visit_order) {
+        if (c != 0) {
+            // The tree takes the minimum of these pairs, but what we
+            // really want is the node itself- therefore, we store both
+            sdom_times[c] = {visit_time[sdom[c]], c};
+        }
+    }
+    Tree tree(visit_parent, sdom_times);
+
+    vector<int> rdom(city_num, -1);
+    for (int c : visit_order) {
+        if (c != 0) {
+            // Use the definition of the rdom
+            rdom[c] = tree.min_val(sdom[c], c).second;
+        }
+    }
+
+    // Use the properties previously given to compute the idom
+    vector<int> idom(city_num, -1);
+    for (int c : visit_order) {
+        if (c != 0) {
+            idom[c] = rdom[c] == c ? sdom[c] : idom[rdom[c]];
+        }
+    }
+
+    // Trace the idom tree from the finish node to the start node,
+    // finding all dominators along the way
+    vector<int> critical{0};
+    int at = city_num - 1;
+    while (at != 0) {
+        critical.push_back(at);
+        at = idom[at];
+    }
+
+    std::sort(critical.begin(), critical.end());
+
+    cout << critical.size() << '\n';
+    for (int i = 0; i < critical.size() - 1; i++) {
+        cout << critical[i] + 1 << ' ';
+    }
+    cout << critical.back() + 1 << endl;
+}
+```
+
+</CPPSection>
+</LanguageSection>
 
 ## Cycles
 
