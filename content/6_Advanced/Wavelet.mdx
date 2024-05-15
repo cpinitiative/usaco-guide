@@ -1,40 +1,164 @@
 ---
 id: wavelet
 title: 'Wavelet Tree'
-author: Benjamin Qi
+author: Benjamin Qi, Crafticat
 prerequisites:
   - RURQ
-description: "?"
+description: Segment tree over values"
 frequency: 0
 ---
 
-## Wavelet Tree
+# Wavelet Tree
 
 <FocusProblem problem="waveletSam" />
-
-Like a segment tree on values rather than indices.
-
 <Resources>
-	<Resource
-		source = "IOI"
-		title = "Wavelet Trees for Competitive Programming"
-		url = "https://ioinformatics.org/journal/v10_2016_19_37.pdf"
-		starred
-	>
-		Introduces Wavelet Tree
-	</Resource>
-	<Resource
-		source="CF"
-		title="Intro to New DS: Wavelet Trees"
-		url="52854"
-	>
-		Link in blog post is broken, check my comment.
-	</Resource>
+  <Resource
+    source = "IOI"
+    title = "Wavelet Trees for Competitive Programming"
+    url = "https://ioinformatics.org/journal/v10_2016_19_37.pdf"
+    starred
+  >
+    Introduces Wavelet Tree
+  </Resource>
+  <Resource
+    source="CF"
+    title="Intro to New DS: Wavelet Trees"
+    url="52854"
+  >
+    Link in blog post is broken, check my comment.
+  </Resource>
 </Resources>
 
-### Solution - Range K-th Smallest
+Suppose you want to support the following queries:
+  - Given a range l, r count number of occurrences of value x.
+  - Given a range l, r find the k smallest element
 
-<IncompleteSection />
+With wavelet tree you can easily support those queries in log(n) time.
+<Info title="Additional information">
+  It is possible to support with updates in log(n)^2
+</Info>
+
+## Solving the First Type of Query (Given a range l, r count number of occurrences of value x.)
+
+To calculate the number of occurrences from 𝑙 to 𝑟, we can use the following formula:
+$$
+\begin{aligned}
+occurrences(l, r) = occurrences(r) - occurrences(l)
+\end{aligned}
+$$
+This reduces the problem to counting the number of occurrences in a prefix.
+
+### Approaching the Solution
+
+One way to solve the problem is to go to the leaf node
+and perform a binary search for the number of indices less than 𝑥
+However, let's explore a different approach that can also be extended to the second type of query.
+
+### A different way to find the Index of 𝑟 in the List of Vertices
+Instead of binary searching on the leaf, we update 𝑟 as we recurse down the tree.
+If we are able to determine the position (index) of 𝑟 in the left and right children of a node
+We can recurse down the tree and determine its position in the leaf node.
+
+### Determining the Position in Child Nodes
+To find the position of 𝑟 in a node's left and right children, we need to determine how many indices are smaller than the middle value (mid) and precede 𝑟.
+This can be done using a prefix sum.
+
+Let's define:
+c[i] = as 1 if index[i] is smaller than mid otherwise 0
+prefixB[i] as prefix sum of c[i]
+
+Formally
+$$
+c[i] = index[i] < mid ? 1 : 0;
+prefixB[i] = prefixB[i - 1] + c[i]
+$$
+
+### Updating 𝑟 as We Recurse
+To know the value of 𝑟 if we recurse left, we use prefixB[r]
+If we recurse right, we use 𝑟 - prefixB[r]
+
+## Solving the second type of query (Given a range l, r find the k smallest element)
+We will determine whether the answer for a given node is in the left or the right segment.
+We can calculate how many times the elements within the segments' ranges appear in our range (l, r) using our first type of query.
+Note that this also works for non-leaf nodes using the following formula:
+$$
+occurrences(l, r) = r - l
+$$
+
+Therefore, the occurrences of the left node is
+$$
+left_occurrences = prefixB[r] - prefixB[l]
+$$
+  - If left_occurrences is less than k, it means the k-th smallest element is in the left subtree. Therefore, we update our range and recurse into the left child
+  - If left_occurrences left_occurrences is greater or equal to k it means the k-th smallest element is in the right subtree. We adjust k by subtracting left_occurrences from k, update our range, and recurse into the right child
+
+<Info title="Notice">
+  Notice we still update l, r accordingly when we go left or right
+</Info>
+
+the answer then will be the value of the node we end up on (leaf)
+
+## implemention
+
+<CPPSection>
+
+  ```cpp
+  struct Segment {
+  Segment *left = nullptr, *right = nullptr;
+  int l, r, mid;
+  bool children = false;
+  vector<pair<int,int>> indices; // Index, Value
+  vector<int> prefixB;
+
+  Segment(int l, int r, vector<pair<int,int>> indices) :l(l), r(r), mid((r + l) / 2), indices(std::move(indices)) {
+  calculateB();
+}
+
+  void update() {
+  if (children) return;
+  children = true;
+  if (r - l > 1) {
+  // Split the indices for left and right child
+  vector<pair<int,int>> leftIndices, rightIndices;
+  for (auto [ind, val] : indices)
+  if (val < mid)
+  leftIndices.emplace_back(ind,val);
+  else
+  rightIndices.emplace_back(ind,val);
+
+
+  left = new Segment(l,mid, leftIndices);
+  right = new Segment(mid,r, rightIndices);
+}
+}
+
+  // Calculates the prefix B
+  void calculateB() {
+  int i = 1;
+  int j = 0;
+  prefixB.resize(indices.size() + 1);
+  for (auto [ind, val] : indices) {
+  if (val < mid) j++;
+  prefixB[i++] = j;
+}
+}
+
+  int findKSmallest(int a, int b, int k) {
+  update();
+  if (r - l <= 1) return l;
+
+  int lb = prefixB[a];
+  int lr = prefixB[b];
+  int inLeft = lr - lb;
+
+  if (k <= inLeft) return left->findKSmallest(lb,lr,k);
+  else return right->findKSmallest(a - lb,b - lr, k - inLeft);
+}
+};
+  ```
+
+</CPPSection>
+
 
 ### Problems
 
