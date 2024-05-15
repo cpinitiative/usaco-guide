@@ -431,8 +431,8 @@ int main() {
 <CPPSection>
 
 ```cpp
-#include <iostream>
 #include <functional>
+#include <iostream>
 #include <unordered_set>
 #include <vector>
 
@@ -443,71 +443,72 @@ const int NMAX = 1e5;
 unordered_set<int> in[NMAX], out[NMAX];
 
 int main() {
-    ::std::ios::sync_with_stdio(false); ::std::cin.tie(0); ::std::cout.tie(0);
-    int n, m;
-    scanf("%d %d", &n, &m);
-    for(int i = 0; i < m; i++) {
-        int x, y;
-        scanf("%d %d", &x, &y);
-        x--; y--;
-        out[x].insert(y);
-        in[y].insert(x);
-    }
-    function<void(int)> dfs = [&](int node) {
-        if(!out[node].empty()) { return; }
-        for(int p : in[node]) {
-            out[p].erase(node);
-            dfs(p);
-        }
-        in[node].clear();
-    };
-    function<void()> reduce = [&]() {
-        vector<int> st;
-        vector<bool> seen(n, false);
-        for(int i = 0; i < n; i++) {
-            if((int)out[i].size() == 1) {
-                st.push_back(i);
-                seen[i] = true;
-            }
-        }
-        while(!st.empty()) {
-            int node = st.back(), next = *out[node].begin();
-            st.pop_back();
-            if(node == next) { continue; }
-            in[next].erase(node);
-            in[next].insert(in[node].begin(), in[node].end());
-            for(int p : in[node]) {
-                out[p].erase(node);
-                out[p].insert(next);
-                if((int)out[p].size() == 1 && !seen[p]) {
-                    st.push_back(p);
-                    seen[p] = true;
-                }
-            }
-            out[node].clear();
-            in[node].clear();
-        }
-    };
-    
-    for(int i = 0; i < n; i++) {
-        if(out[i].empty()) {
-            dfs(i);
-        }   
-    }
-    reduce();
-    int ans = -1;
-    for(int i = 0; i < n; i++) {
-        if(!out[i].empty()) {
-            if(ans == -1) {
-                ans = i + 1;
-            } else {
-                ans = -1;
-                break;
-            }
-        }
-    }
-    printf("%d", ans);
-    return 0;
+	::std::ios::sync_with_stdio(false);
+	::std::cin.tie(0);
+	::std::cout.tie(0);
+	int n, m;
+	scanf("%d %d", &n, &m);
+	for (int i = 0; i < m; i++) {
+		int x, y;
+		scanf("%d %d", &x, &y);
+		x--;
+		y--;
+		out[x].insert(y);
+		in[y].insert(x);
+	}
+	function<void(int)> dfs = [&](int node) {
+		if (!out[node].empty()) { return; }
+		for (int p : in[node]) {
+			out[p].erase(node);
+			dfs(p);
+		}
+		in[node].clear();
+	};
+	function<void()> reduce = [&]() {
+		vector<int> st;
+		vector<bool> seen(n, false);
+		for (int i = 0; i < n; i++) {
+			if ((int)out[i].size() == 1) {
+				st.push_back(i);
+				seen[i] = true;
+			}
+		}
+		while (!st.empty()) {
+			int node = st.back(), next = *out[node].begin();
+			st.pop_back();
+			if (node == next) { continue; }
+			in[next].erase(node);
+			in[next].insert(in[node].begin(), in[node].end());
+			for (int p : in[node]) {
+				out[p].erase(node);
+				out[p].insert(next);
+				if ((int)out[p].size() == 1 && !seen[p]) {
+					st.push_back(p);
+					seen[p] = true;
+				}
+			}
+			out[node].clear();
+			in[node].clear();
+		}
+	};
+
+	for (int i = 0; i < n; i++) {
+		if (out[i].empty()) { dfs(i); }
+	}
+	reduce();
+	int ans = -1;
+	for (int i = 0; i < n; i++) {
+		if (!out[i].empty()) {
+			if (ans == -1) {
+				ans = i + 1;
+			} else {
+				ans = -1;
+				break;
+			}
+		}
+	}
+	printf("%d", ans);
+	return 0;
 }
 ```
 
