@@ -427,6 +427,10 @@ int main() {
 
 <FocusProblem problem="cycles-critical" />
 
+The problem asks as to find the an intersection node of all cycles, if such exists. Firstly, let's remove all the nodes that don't belong to any cycle. To achieve this, 
+recursivelly remove the nodes without any outgoing edge; i.e. after finishing with a node check it's parents for no outgoing edges. Now our graph is formed out of cycles.
+Assuming that the intersection of all cycles is not empty, start start reducing the cycles node by node. The last node standing should be the intersection.
+
 <LanguageSection>
 <CPPSection>
 
@@ -456,6 +460,7 @@ int main() {
 		out[x].insert(y);
 		in[y].insert(x);
 	}
+	// Recursivelly remove nodes without outgoing edges
 	function<void(int)> dfs = [&](int node) {
 		if (!out[node].empty()) { return; }
 		for (int p : in[node]) {
@@ -464,6 +469,7 @@ int main() {
 		}
 		in[node].clear();
 	};
+	// Reduce cycles by popping out nodes
 	function<void()> reduce = [&]() {
 		vector<int> st;
 		vector<bool> seen(n, false);
@@ -491,11 +497,12 @@ int main() {
 			in[node].clear();
 		}
 	};
-
+	// Check for nodes with no outgoing edges
 	for (int i = 0; i < n; i++) {
 		if (out[i].empty()) { dfs(i); }
 	}
 	reduce();
+	// Get the last node standing. If there are multiple nodes, then there is no intersection
 	int ans = -1;
 	for (int i = 0; i < n; i++) {
 		if (!out[i].empty()) {
