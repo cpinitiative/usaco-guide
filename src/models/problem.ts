@@ -566,4 +566,5 @@ export type ProblemFeedback = {
 export type ShortProblemInfo = {
   uniqueId: string;
   name: string;
+  url: string;
 };
