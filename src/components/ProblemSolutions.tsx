@@ -1,6 +1,12 @@
+import { ExternalLinkIcon } from '@heroicons/react/solid';
 import Filter from 'bad-words';
 import * as React from 'react';
 import { useState } from 'react';
+import {
+  SECTION_LABELS,
+  moduleIDToSectionMap,
+  moduleIDToURLMap,
+} from '../../content/ordering';
 import ContactUsSlideover from '../components/ContactUsSlideover/ContactUsSlideover';
 import { useDarkMode } from '../context/DarkModeContext';
 import { useSignIn } from '../context/SignInContext';
@@ -14,19 +20,13 @@ import useUserProblemSolutionActions from '../hooks/useUserProblemSolutionAction
 import useUserSolutionsForProblem from '../hooks/useUserSolutionsForProblem';
 import { ShortProblemInfo } from '../models/problem';
 import CodeBlock from './markdown/CodeBlock/CodeBlock';
-import { ExternalLinkIcon } from '@heroicons/react/solid';
-import { 
-  SECTION_LABELS, 
-  moduleIDToURLMap,
-  moduleIDToSectionMap 
-} from '../../content/ordering';
 
 export default function ProblemSolutions({
   modulesThatHaveProblem,
   showSubmitSolutionModal,
   problem,
 }: {
-  modulesThatHaveProblem: {title: string, id: string}[],
+  modulesThatHaveProblem: { title: string; id: string }[];
   showSubmitSolutionModal: () => void;
   problem: ShortProblemInfo;
 }): JSX.Element {
@@ -57,11 +57,12 @@ export default function ProblemSolutions({
 
   publicSolutions?.sort((a, b) => b.upvotes.length - a.upvotes.length);
 
-  
   const moduleHeaderLinks: { label: string; url?: string }[] =
     modulesThatHaveProblem.map(module => {
       return {
-        label: `${SECTION_LABELS[moduleIDToSectionMap[module.id]]} - ${module.title}`,
+        label: `${SECTION_LABELS[moduleIDToSectionMap[module.id]]} - ${
+          module.title
+        }`,
         url: `${moduleIDToURLMap[module.id]}#problem-${problem!.uniqueId}`,
       };
     });
@@ -113,18 +114,18 @@ export default function ProblemSolutions({
           )}
 
           {problem.url && (
-          <div>
-            <div className="h-4 sm:h-6" />
-            <a
-              href={problem.url}
-              target="_blank"
-              rel="noreferrer"
-              className="text-sm font-medium text-gray-800 hover:text-gray-900 my-0 dark:text-gray-200 dark:hover:text-gray-100 group inline-flex items-center space-x-1.5"
-            >
-              <span>View Problem Statement</span>
-              <ExternalLinkIcon className="h-5 w-5 text-gray-400 group-hover:text-gray-600 dark:text-gray-400 dark:group-hover:text-gray-300" />
-            </a>
-          </div>
+            <div>
+              <div className="h-4 sm:h-6" />
+              <a
+                href={problem.url}
+                target="_blank"
+                rel="noreferrer"
+                className="text-sm font-medium text-gray-800 hover:text-gray-900 my-0 dark:text-gray-200 dark:hover:text-gray-100 group inline-flex items-center space-x-1.5"
+              >
+                <span>View Problem Statement</span>
+                <ExternalLinkIcon className="h-5 w-5 text-gray-400 group-hover:text-gray-600 dark:text-gray-400 dark:group-hover:text-gray-300" />
+              </a>
+            </div>
           )}
         </div>
 

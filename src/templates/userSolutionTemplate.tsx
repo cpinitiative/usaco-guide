@@ -1,4 +1,4 @@
-import { navigate, graphql } from 'gatsby';
+import { graphql, navigate } from 'gatsby';
 import * as React from 'react';
 import ProblemSolutions from '../components/ProblemSolutions';
 import SubmitProblemSolutionModal from '../components/SubmitProblemSolutionModal';
