@@ -168,13 +168,16 @@ public class ConcertTickets {
 ```py
 import sys
 from bisect import *
+
 sys.setrecursionlimit(200000)
 
+
 def get_endpoint(idx: int) -> int:
-    if idx == -1 or idx == endpoints[idx]:  # idx is the root
-        return idx
-    endpoints[idx] = get_endpoint(endpoints[idx])  # find the root of its parent
-    return endpoints[idx]
+	if idx == -1 or idx == endpoints[idx]:  # idx is the root
+		return idx
+	endpoints[idx] = get_endpoint(endpoints[idx])  # find the root of its parent
+	return endpoints[idx]
+
 
 n, m = map(int, input().split())
 h = sorted(int(i) for i in input().split())  # price of tickets
