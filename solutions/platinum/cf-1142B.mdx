@@ -7,28 +7,28 @@ author: Justin Ji
 
 <Spoiler title = "Hint 1">
 
-For each location in the array $a$, calculate the index of the next value 
+For each location in the array $a$, calculate the index of the next value
 needed in the permutation.
 
 </Spoiler>
 
 <Spoiler title = "Hint 2">
 
-For each left endpoint, calculate the minimum right endpoint for a range that 
+For each left endpoint, calculate the minimum right endpoint for a range that
 has a suitable subsequence.
 
 </Spoiler>
 
 <Spoiler title = "Explanation">
 
-As mentioned in the hints, we calculate the index of the next value needed in 
+As mentioned in the hints, we calculate the index of the next value needed in
 the permutation. With this information, we can store an array $lift[x][y]$,
 that stores the minimum index to have $2^{x}$ values of our permutation covered,
 if we start at index $y$ in array $a$.
 
-After precalculating our binary lifts, we utilize binary lifting to calculate 
+After precalculating our binary lifts, we utilize binary lifting to calculate
 the minimum right endpoint for a cyclic shift of our permutation for each left
-endpoint. To calculate the best answer in the range $[l, r]$, we either use 
+endpoint. To calculate the best answer in the range $[l, r]$, we either use
 RMQ or store the prefix/suffix minimums of the answers.
 
 ## Implementation
@@ -43,40 +43,38 @@ RMQ or store the prefix/suffix minimums of the answers.
 using namespace std;
 
 int main() {
-    int n, m, q;
-    cin >> n >> m >> q;
-    vector<int> p(n);
-    vector<int> p_index(n);
-    for (int i = 0; i < n; i++) {
-        cin >> p[i], --p[i];
-        p_index[p[i]] = i;
-    }
-    vector<int> a(m);
-    for (int i = 0; i < m; i++) {
-        cin >> a[i], --a[i];
-    }
-    const int LOG = __lg(n) + 1;
-    vector<vector<int>> lift(LOG, vector<int>(m + 1, m));
-    vector<int> last_occ(n, m);
-    vector<int> res(m + 1, m);
-    for (int i = m - 1; i >= 0; i--) {
-        int nxt = p[(p_index[a[i]] + 1) % n];
-        lift[0][i] = last_occ[nxt];
-        last_occ[a[i]] = i;
-        for (int j = 1; j < LOG; j++) {
-            lift[j][i] = lift[j - 1][lift[j - 1][i]];
-        }
-        int idx = i;
-        for (int j = LOG - 1; j >= 0; j--) {
-            if (((n - 1) >> j) & 1) { idx = lift[j][idx]; }
-        }
-        res[i] = min(idx, res[i + 1]);
-    }
-    for (int i = 0; i < q; i++) {
-        int l, r; 
-        cin >> l >> r;
-        cout << (res[l - 1] < r);
-    }
+	int n, m, q;
+	cin >> n >> m >> q;
+	vector<int> p(n);
+	vector<int> p_index(n);
+	for (int i = 0; i < n; i++) {
+		cin >> p[i], --p[i];
+		p_index[p[i]] = i;
+	}
+	vector<int> a(m);
+	for (int i = 0; i < m; i++) { cin >> a[i], --a[i]; }
+	const int LOG = __lg(n) + 1;
+	vector<vector<int>> lift(LOG, vector<int>(m + 1, m));
+	vector<int> last_occ(n, m);
+	vector<int> res(m + 1, m);
+	for (int i = m - 1; i >= 0; i--) {
+		int nxt = p[(p_index[a[i]] + 1) % n];
+		lift[0][i] = last_occ[nxt];
+		last_occ[a[i]] = i;
+		for (int j = 1; j < LOG; j++) {
+			lift[j][i] = lift[j - 1][lift[j - 1][i]];
+		}
+		int idx = i;
+		for (int j = LOG - 1; j >= 0; j--) {
+			if (((n - 1) >> j) & 1) { idx = lift[j][idx]; }
+		}
+		res[i] = min(idx, res[i + 1]);
+	}
+	for (int i = 0; i < q; i++) {
+		int l, r;
+		cin >> l >> r;
+		cout << (res[l - 1] < r);
+	}
 }
 ```
 
