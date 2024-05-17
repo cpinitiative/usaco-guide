@@ -58,7 +58,7 @@ int main() {
 		a[i]--;
 	}
 
-	const int log_n = 1 + (int) log2(n);
+	const int log_n = 1 + (int)log2(n);
 	vector<vector<int>> lift(log_n, vector<int>(m + 1, m));
 	vector<int> last_occ(n, m);
 
@@ -71,15 +71,15 @@ int main() {
 		}
 	}
 
-    vector<int> res(m + 1, m);
-    for (int i = m - 1; i >= 0; i--) {
-        int cur_idx = i;
-        for (int j = log_n - 1; j >= 0; j--) {
-            if (((n - 1) >> j) & 1) { cur_idx = lift[j][cur_idx]; }
-        }
-        res[i] = min(cur_idx, res[i + 1]);
-    }
-	
+	vector<int> res(m + 1, m);
+	for (int i = m - 1; i >= 0; i--) {
+		int cur_idx = i;
+		for (int j = log_n - 1; j >= 0; j--) {
+			if (((n - 1) >> j) & 1) { cur_idx = lift[j][cur_idx]; }
+		}
+		res[i] = min(cur_idx, res[i + 1]);
+	}
+
 	for (int i = 0; i < q; i++) {
 		int l, r;
 		cin >> l >> r;
