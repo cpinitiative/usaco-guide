@@ -48,11 +48,13 @@ int main() {
 	vector<int> p(n);
 	vector<int> p_index(n);
 	for (int i = 0; i < n; i++) {
-		cin >> p[i], --p[i];
-		p_index[p[i]] = i;
+		cin >> p[i];
+		p_index[--p[i]] = i;
 	}
+
 	vector<int> a(m);
-	for (int i = 0; i < m; i++) { cin >> a[i], --a[i]; }
+	for (int i = 0; i < m; i++) { cin >> a[i]; a[i]--; }
+
 	const int LOG = __lg(n) + 1;
 	vector<vector<int>> lift(LOG, vector<int>(m + 1, m));
 	vector<int> last_occ(n, m);
@@ -70,6 +72,7 @@ int main() {
 		}
 		res[i] = min(idx, res[i + 1]);
 	}
+
 	for (int i = 0; i < q; i++) {
 		int l, r;
 		cin >> l >> r;
