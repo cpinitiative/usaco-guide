@@ -19,7 +19,7 @@ has a suitable subsequence.
 
 </Spoiler>
 
-<Spoiler title = "Explanation">
+<Spoiler title = "Solution">
 
 As mentioned in the hints, we calculate the index of the next value needed in
 the permutation. With this information, we can store an array $lift[x][y]$,
@@ -43,7 +43,9 @@ RMQ or store the prefix/suffix minimums of the answers.
 using namespace std;
 
 int main() {
-	int n, m, q;
+	int n;
+	int m;
+	int q;
 	cin >> n >> m >> q;
 	vector<int> p(n);
 	vector<int> p_index(n);
@@ -61,7 +63,6 @@ int main() {
 	const int log_n = 1 + (int)log2(n);
 	vector<vector<int>> lift(log_n, vector<int>(m + 1, m));
 	vector<int> last_occ(n, m);
-
 	for (int i = m - 1; i >= 0; i--) {
 		int nxt = p[(p_index[a[i]] + 1) % n];
 		lift[0][i] = last_occ[nxt];
