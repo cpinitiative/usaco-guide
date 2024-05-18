@@ -390,6 +390,188 @@ int main() {
 
 ### Initial Approach
 
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <functional>
+#include <unordered_set>
+#include <vector>
+
+using namespace std;
+
+struct point { int x, y, idx; };
+
+// BeginCodeSnip{DSU}
+class DisjointSets {
+private:
+	vector<int> parents;
+	vector<int> sizes;
+public:
+	DisjointSets(int size) : parents(size), sizes(size, 1) {
+		for (int i = 0; i < size; i++) { parents[i] = i; }
+	}
+
+	/** @return the "representative" node in x's component */
+	int find(int x) {
+		return parents[x] == x ? x : (parents[x] = find(parents[x]));
+	}
+
+	/** @return whether the merge changed connectivity */
+	bool unite(int x, int y) {
+		int x_root = find(x);
+		int y_root = find(y);
+		if (x_root == y_root) { return false; }
+
+		if (sizes[x_root] < sizes[y_root]) { swap(x_root, y_root); }
+		sizes[x_root] += sizes[y_root];
+		parents[y_root] = x_root;
+		return true;
+	}
+
+	/** @return whether x and y are in the same connected component */
+	bool connected(int x, int y) { return find(x) == find(y); }
+};
+// EncCodeSnip
+
+
+// BeginCodeSnip{Binary jumping}
+class BinaryJumping {
+private:
+    const int MAX_LOG = 20;
+    vector<vector<int>> up;
+    vector<vector<int>> val;
+    vector<int> depth;
+public:
+    BinaryJumping(vector<vector<pair<int, int>>> &tree) {
+        up.resize((int)tree.size());
+        depth.resize((int)tree.size());
+        val.resize((int)tree.size());
+        for(int i = 0; i < (int)tree.size(); i++) {
+            up[i].resize(MAX_LOG);
+            val[i].resize(MAX_LOG);
+        }
+        dfs(0, 0, tree);
+    }
+    void dfs(int node, int parent, vector<vector<pair<int, int>>> &tree) {
+        depth[node] = depth[parent] + 1;
+        up[node][0] = parent;
+        for(int i = 1; i < MAX_LOG; i++) {
+            up[node][i] = up[up[node][i - 1]][i - 1];
+            val[node][i] = max(val[node][i - 1], val[up[node][i - 1]][i - 1]);
+        }
+        for(auto [son, dist] : tree[node]) {
+            if(son == parent) { continue; }
+            val[son][0] = dist;
+            dfs(son, node, tree);
+        }
+    }
+    int jump(int x, int d) {
+        for(int i = 0; (1 << i) <= d; i++) {
+            if((1 << i) & d) {
+                x = up[x][i];
+            }
+        }
+        return x;
+    }
+    int get_lca(int x, int y) {
+        if(depth[x] < depth[y]) { swap(x, y); }
+        x = jump(x, depth[x] - depth[y]);
+        if(x == y) { return x; }
+        for(int i = MAX_LOG; i >= 0; i--){
+            if(up[x][i] != up[y][i]) {
+                x = up[x][i];
+                y = up[y][i];
+            }
+        }
+        return up[x][1];
+    }
+    int query(int x, int y) {
+        int z = get_lca(x, y), ans = 0, d;
+        d = depth[x] - depth[z];
+        for(int i = 0; (1 << i) <= d; i++){
+            if((1 << i) & d) {
+                ans = max(ans, val[x][i]);
+                x = up[x][i];
+            }
+        }
+        d = depth[y] - depth[z];
+        for(int i = 0; (1 << i) <= d; i++){
+            if((1 << i) & d) {
+                ans = max(ans, val[y][i]);
+                y = up[y][i];
+            }
+        }
+        return ans;
+    }
+};
+// EndCodeSnip
+
+// Manhattan distance
+int dist(const point &a, const point &b) {
+    return abs(a.x - b.x) + abs(a.y - b.y);
+}
+
+vector<pair<point, point>> compute_mst(vector<pair<point, point>> edges) {
+    sort(edges.begin(), edges.end(), [&](pair<point, point> a, pair<point, point> b) {
+        return dist(a.first, a.second) < dist(b.first, b.second);
+    });
+    DisjointSets ds((int)edges.size());
+    vector<pair<point, point>> mst;
+    for(int i = 0; i < (int)edges.size(); i++) {
+        if(ds.connected(edges[i].first.idx, edges[i].second.idx)) { continue; }
+        ds.unite(edges[i].first.idx, edges[i].second.idx);
+        mst.push_back(edges[i]);
+    }
+    return mst;
+}
+
+void test_case() {
+    int n;
+    cin >> n;
+    vector<point> points;
+    for(int i = 0; i < n; i++) {
+        int x, y;
+        cin >> x >> y;
+        points.push_back({x, y, i});
+    }
+    vector<pair<point, point>> mst;
+    for(int i = 0; i < n; i++) {
+        for(int j = i + 1; j < n; j++) {
+            mst.push_back({points[i], points[j]});
+        }
+    }
+    mst = compute_mst(mst);
+    vector<vector<pair<int, int>>> tree(n);
+    for(pair<point, point> edge : mst) {
+        tree[edge.first.idx].push_back({edge.second.idx, dist(points[edge.first.idx], points[edge.second.idx])});
+        tree[edge.second.idx].push_back({edge.first.idx, dist(points[edge.first.idx], points[edge.second.idx])});
+        // cout << edge.first.idx << ' ' << edge.second.idx << '\n';
+    }
+    int q;
+    BinaryJumping lca(tree);
+    cin >> q;
+    while (q--) {
+        int x, y;
+        cin >> x >> y;
+        x--; y--;
+        cout << lca.query(x, y) << '\n';
+    }
+    
+}
+
+int main() {
+    int t;
+    cin >> t;
+    while(t--) { test_case(); }
+    return 0;
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
 ### Algorithms Overview
 
 <Problems problems="standard" />
