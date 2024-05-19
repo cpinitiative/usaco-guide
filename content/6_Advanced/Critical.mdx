@@ -427,9 +427,21 @@ int main() {
 
 <FocusProblem problem="cycles-critical" />
 
-The problem asks as to find the an intersection node of all cycles, if such exists. Firstly, let's remove all the nodes that don't belong to any cycle. To achieve this,
-recursivelly remove the nodes without any outgoing edge; i.e. after finishing with a node check it's parents for no outgoing edges. Now our graph is formed out of cycles.
-Assuming that the intersection of all cycles is not empty, start start reducing the cycles node by node. The last node standing should be the intersection.
+### Explanation
+
+The problem asks as to find the an intersection node of all cycles, if it exists.
+
+First, let's remove the nodes that don't belong to any cycle.
+To todo this, we can recursively remove the nodes without any outgoing edge.
+By "recursively," we mean that after finishing with a node we can check its parents to see if the parents have no outgoing edges as well.
+
+Now our graph is basically a bunch of cycles.
+Assuming that the intersection of all cycles is not empty, we reduce the cycles node by node.
+The last node standing is be the intersection.
+
+### Implementation
+
+**Time Complexity:** $\mathcal{O}(?)$
 
 <LanguageSection>
 <CPPSection>
@@ -442,81 +454,87 @@ Assuming that the intersection of all cycles is not empty, start start reducing 
 
 using namespace std;
 
-const int NMAX = 1e5;
-
-unordered_set<int> in[NMAX], out[NMAX];
-
 int main() {
-	::std::ios::sync_with_stdio(false);
-	::std::cin.tie(0);
-	::std::cout.tie(0);
-	int n, m;
-	scanf("%d %d", &n, &m);
-	for (int i = 0; i < m; i++) {
-		int x, y;
-		scanf("%d %d", &x, &y);
-		x--;
-		y--;
-		out[x].insert(y);
-		in[y].insert(x);
-	}
-	// Recursivelly remove nodes without outgoing edges
-	function<void(int)> dfs = [&](int node) {
-		if (!out[node].empty()) { return; }
-		for (int p : in[node]) {
-			out[p].erase(node);
-			dfs(p);
-		}
-		in[node].clear();
-	};
-	// Reduce cycles by popping out nodes
-	function<void()> reduce = [&]() {
-		vector<int> st;
-		vector<bool> seen(n, false);
-		for (int i = 0; i < n; i++) {
-			if ((int)out[i].size() == 1) {
-				st.push_back(i);
-				seen[i] = true;
-			}
-		}
-		while (!st.empty()) {
-			int node = st.back(), next = *out[node].begin();
-			st.pop_back();
-			if (node == next) { continue; }
-			in[next].erase(node);
-			in[next].insert(in[node].begin(), in[node].end());
-			for (int p : in[node]) {
-				out[p].erase(node);
-				out[p].insert(next);
-				if ((int)out[p].size() == 1 && !seen[p]) {
-					st.push_back(p);
-					seen[p] = true;
-				}
-			}
-			out[node].clear();
-			in[node].clear();
-		}
-	};
-	// Check for nodes with no outgoing edges
-	for (int i = 0; i < n; i++) {
-		if (out[i].empty()) { dfs(i); }
-	}
-	reduce();
-	// Get the last node standing. If there are multiple nodes, then there is no
-	// intersection
-	int ans = -1;
-	for (int i = 0; i < n; i++) {
-		if (!out[i].empty()) {
-			if (ans == -1) {
-				ans = i + 1;
-			} else {
-				ans = -1;
-				break;
-			}
-		}
-	}
-	printf("%d", ans);
-	return 0;
+    ios::sync_with_stdio(false);
+    cin.tie(NULL);
+
+    int n, m;
+    cin >> n >> m;
+
+    vector<unordered_set<int>> in(n), out(n);
+    for (int i = 0; i < m; i++) {
+        int x, y;
+        cin >> x >> y;
+        out[--x].insert(--y);
+        in[y].insert(x);
+    }
+
+    // Recursivelly remove nodes without outgoing edges
+    function<void(int)> dfs = [&](int node) {
+        if (!out[node].empty()) {
+            return;
+        }
+        for (int p : in[node]) {
+            out[p].erase(node);
+            dfs(p);
+        }
+        in[node].clear();
+    };
+    // Check for nodes with no outgoing edges
+    for (int i = 0; i < n; i++) {
+        if (out[i].empty()) {
+            dfs(i);
+        }
+    }
+
+    // Reduce cycles by popping out nodes
+    vector<int> todo;
+    vector<bool> seen(n);
+    for (int i = 0; i < n; i++) {
+        if ((int)out[i].size() == 1) {
+            todo.push_back(i);
+            seen[i] = true;
+        }
+    }
+    while (!todo.empty()) {
+        int node = todo.back();
+        todo.pop_back();
+
+        int next = *out[node].begin();
+        if (node == next) {
+            continue;
+        }
+
+        in[next].erase(node);
+        in[next].insert(in[node].begin(), in[node].end());
+        for (int p : in[node]) {
+            out[p].erase(node);
+            out[p].insert(next);
+            if ((int)out[p].size() == 1 && !seen[p]) {
+                todo.push_back(p);
+                seen[p] = true;
+            }
+        }
+
+        out[node].clear();
+        in[node].clear();
+    }
+
+    // Get the last node standing.
+    // If there are multiple nodes, then there is no intersection
+    int ans = -1;
+    for (int i = 0; i < n; i++) {
+        if (!out[i].empty()) {
+            if (ans == -1) {
+                ans = i + 1;
+            } else {
+                ans = -1;
+                break;
+            }
+        }
+    }
+
+    cout << ans << endl;
 }
 ```
 
