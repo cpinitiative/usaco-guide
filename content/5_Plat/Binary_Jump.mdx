@@ -73,34 +73,30 @@ implementation - (as long as it's reasonable)!
 <CPPSection>
 
 ```cpp
-#include<bits/stdc++.h>
+#include <bits/stdc++.h>
 using namespace std;
- 
+
 const int MAX = 2e5 + 1;
 const int LOG = 18;
 int up[LOG][MAX];
 int kth(int x, int d) {
-    for (int i = LOG - 1; i >= 0; i--) {
-        if ((d >> i) & 1) { x = up[i][x]; }
-    }
-    return x ?: -1;
+	for (int i = LOG - 1; i >= 0; i--) {
+		if ((d >> i) & 1) { x = up[i][x]; }
+	}
+	return x ?: -1;
 }
 int main() {
-    int n, q; 
-    cin >> n >> q;
-    for (int i = 2; i <= n; i++) {
-        cin >> up[0][i];
-    }
-    for (int i = 1; i < LOG; i++) {
-        for (int j = 1; j <= n; j++) {
-            up[i][j] = up[i - 1][up[i - 1][j]];
-        }
-    }
-    while (q--) {
-        int x, k; 
-	cin >> x >> k;
-        cout << kth(x, k) << "\n";
-    }
+	int n, q;
+	cin >> n >> q;
+	for (int i = 2; i <= n; i++) { cin >> up[0][i]; }
+	for (int i = 1; i < LOG; i++) {
+		for (int j = 1; j <= n; j++) { up[i][j] = up[i - 1][up[i - 1][j]]; }
+	}
+	while (q--) {
+		int x, k;
+		cin >> x >> k;
+		cout << kth(x, k) << "\n";
+	}
 }
 ```
 
@@ -144,50 +140,48 @@ end, the parent of either node is the LCA of the two.
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
- 
+
 const int MAX = 2e5;
 const int LOG = 19;
 int up[LOG][MAX], depth[MAX];
 vector<int> adj[MAX];
 void dfs(int node, int prev, int dist) {
-    depth[node] = dist;
-    if (prev != -1) { up[0][node] = prev; }
-    for (int i = 1; i < LOG; i++) {
-        up[i][node] = up[i - 1][up[i - 1][node]];
-    }
-    for (int nxt : adj[node]) {
-        if (nxt != prev) { dfs(nxt, node, dist + 1); }
-    }
+	depth[node] = dist;
+	if (prev != -1) { up[0][node] = prev; }
+	for (int i = 1; i < LOG; i++) { up[i][node] = up[i - 1][up[i - 1][node]]; }
+	for (int nxt : adj[node]) {
+		if (nxt != prev) { dfs(nxt, node, dist + 1); }
+	}
 }
 int lca(int a, int b) {
-    if (depth[a] < depth[b]) { swap(a, b); }
-    int dist = depth[a] - depth[b];
-    for (int i = LOG - 1; i >= 0; i--) {
-        if ((dist >> i) & 1) { a = up[i][a]; }
-    }
-    if (a == b) { return a; }
-    for (int i = LOG - 1; i >= 0; i--) {
-        if (up[i][a] != up[i][b]) {
-            a = up[i][a];
-            b = up[i][b];
-        }
-    }
-    return up[0][a];
+	if (depth[a] < depth[b]) { swap(a, b); }
+	int dist = depth[a] - depth[b];
+	for (int i = LOG - 1; i >= 0; i--) {
+		if ((dist >> i) & 1) { a = up[i][a]; }
+	}
+	if (a == b) { return a; }
+	for (int i = LOG - 1; i >= 0; i--) {
+		if (up[i][a] != up[i][b]) {
+			a = up[i][a];
+			b = up[i][b];
+		}
+	}
+	return up[0][a];
 }
 int main() {
-    int n, q; 
-    cin >> n >> q;
-    for (int i = 1; i < n; i++) {
-        int b;
-        cin >> b;
-        adj[--b].push_back(i);
-    }
-    dfs(0, -1, 0);
-    for (int i = 0; i < q; i++) {
-        int x, y; 
-        cin >> x >> y;
-        cout << lca(--x, --y) + 1 << "\n";
-    }
+	int n, q;
+	cin >> n >> q;
+	for (int i = 1; i < n; i++) {
+		int b;
+		cin >> b;
+		adj[--b].push_back(i);
+	}
+	dfs(0, -1, 0);
+	for (int i = 0; i < q; i++) {
+		int x, y;
+		cin >> x >> y;
+		cout << lca(--x, --y) + 1 << "\n";
+	}
 }
 ```
 
@@ -224,47 +218,42 @@ using namespace std;
 
 const int MAX = 2e5;
 const int LOG = 19;
-int timer = 0, up[LOG][MAX],
-    tin[MAX], tout[MAX];
+int timer = 0, up[LOG][MAX], tin[MAX], tout[MAX];
 vector<int> adj[MAX];
 void dfs(int node, int prev) {
-    tin[node] = timer++;
-    if (prev != -1) { up[0][node] = prev; }
-    for (int i = 1; i < LOG; i++) {
-        up[i][node] = up[i - 1][up[i - 1][node]];
-    }
-    for (int nxt : adj[node]) {
-        if (nxt != prev) { dfs(nxt, node); }
-    }
-    tout[node] = timer - 1;
+	tin[node] = timer++;
+	if (prev != -1) { up[0][node] = prev; }
+	for (int i = 1; i < LOG; i++) { up[i][node] = up[i - 1][up[i - 1][node]]; }
+	for (int nxt : adj[node]) {
+		if (nxt != prev) { dfs(nxt, node); }
+	}
+	tout[node] = timer - 1;
 }
 bool is_ancestor(int a, int b) {
-    return tin[a] <= tin[b] && tout[b] <= tout[a];
+	return tin[a] <= tin[b] && tout[b] <= tout[a];
 }
 int lca(int a, int b) {
-    if (is_ancestor(a, b)) { return a; }
-    if (is_ancestor(b, a)) { return b; }
-    for (int i = LOG - 1; i >= 0; i--) {
-        if (!is_ancestor(up[i][a], b)) {
-            a = up[i][a];
-        }
-    }
-    return up[0][a];
+	if (is_ancestor(a, b)) { return a; }
+	if (is_ancestor(b, a)) { return b; }
+	for (int i = LOG - 1; i >= 0; i--) {
+		if (!is_ancestor(up[i][a], b)) { a = up[i][a]; }
+	}
+	return up[0][a];
 }
 int main() {
-    int n, q; 
-    cin >> n >> q;
-    for (int i = 1; i < n; i++) {
-        int b;
-        cin >> b;
-        adj[--b].push_back(i);
-    }
-    dfs(0, -1);
-    for (int i = 0; i < q; i++) {
-        int x, y; 
-        cin >> x >> y;
-        cout << lca(--x, --y) + 1 << "\n";
-    }
+	int n, q;
+	cin >> n >> q;
+	for (int i = 1; i < n; i++) {
+		int b;
+		cin >> b;
+		adj[--b].push_back(i);
+	}
+	dfs(0, -1);
+	for (int i = 0; i < q; i++) {
+		int x, y;
+		cin >> x >> y;
+		cout << lca(--x, --y) + 1 << "\n";
+	}
 }
 ```
 
@@ -290,9 +279,7 @@ const int MAX = 2e5 + 1;
 bool vis[MAX];
 int lca[MAX], fa[MAX];
 vector<array<int, 2>> adj[MAX], qry[MAX];
-int find(int u) { 
-	return (fa[u] == u) ? u : fa[u] = find(fa[u]); 
-}
+int find(int u) { return (fa[u] == u) ? u : fa[u] = find(fa[u]); }
 void tarjan(int node) {
 	vis[node] = true;
 	for (auto [nxt, id] : adj[node]) {
@@ -321,9 +308,7 @@ int main() {
 		qry[b].push_back({a, i});
 	}
 	tarjan(1);
-	for (int i = 0; i < m; i++) {
-		cout << lca[i] << "\n";
-	}
+	for (int i = 0; i < m; i++) { cout << lca[i] << "\n"; }
 }
 ```
 
@@ -359,54 +344,50 @@ $\texttt{depth}[a] + \texttt{depth}[b] - 2 \cdot \texttt{depth}[\textrm{lca}(a, 
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
- 
+
 const int MAX = 2e5;
 const int LOG = 19;
 int up[LOG][MAX], depth[MAX];
 vector<int> adj[MAX];
 void dfs(int node, int prev, int dist) {
-    depth[node] = dist;
-    if (prev != -1) { up[0][node] = prev; }
-    for (int i = 1; i < LOG; i++) {
-        up[i][node] = up[i - 1][up[i - 1][node]];
-    }
-    for (int nxt : adj[node]) {
-        if (nxt != prev) { dfs(nxt, node, dist + 1); }
-    }
+	depth[node] = dist;
+	if (prev != -1) { up[0][node] = prev; }
+	for (int i = 1; i < LOG; i++) { up[i][node] = up[i - 1][up[i - 1][node]]; }
+	for (int nxt : adj[node]) {
+		if (nxt != prev) { dfs(nxt, node, dist + 1); }
+	}
 }
 int lca(int a, int b) {
-    if (depth[a] < depth[b]) { swap(a, b); }
-    int dist = depth[a] - depth[b];
-    for (int i = LOG - 1; i >= 0; i--) {
-        if ((dist >> i) & 1) { a = up[i][a]; }
-    }
-    if (a == b) { return a; }
-    for (int i = LOG - 1; i >= 0; i--) {
-        if (up[i][a] != up[i][b]) {
-            a = up[i][a];
-            b = up[i][b];
-        }
-    }
-    return up[0][a];
+	if (depth[a] < depth[b]) { swap(a, b); }
+	int dist = depth[a] - depth[b];
+	for (int i = LOG - 1; i >= 0; i--) {
+		if ((dist >> i) & 1) { a = up[i][a]; }
+	}
+	if (a == b) { return a; }
+	for (int i = LOG - 1; i >= 0; i--) {
+		if (up[i][a] != up[i][b]) {
+			a = up[i][a];
+			b = up[i][b];
+		}
+	}
+	return up[0][a];
 }
-int query(int a, int b) {
-	return depth[a] + depth[b] - 2 * depth[lca(a, b)];
-}
+int query(int a, int b) { return depth[a] + depth[b] - 2 * depth[lca(a, b)]; }
 int main() {
-    int n, q; 
-    cin >> n >> q;
-    for (int i = 1; i < n; i++) {
-        int u, v;
-	cin >> u >> v;
-	adj[--u].push_back(--v);
-	adj[v].push_back(u);
-    }
-    dfs(0, -1, 0);
-    for (int i = 0; i < q; i++) {
-        int x, y; 
-        cin >> x >> y;
-        cout << query(--x, --y) << "\n";
-    }
+	int n, q;
+	cin >> n >> q;
+	for (int i = 1; i < n; i++) {
+		int u, v;
+		cin >> u >> v;
+		adj[--u].push_back(--v);
+		adj[v].push_back(u);
+	}
+	dfs(0, -1, 0);
+	for (int i = 0; i < q; i++) {
+		int x, y;
+		cin >> x >> y;
+		cout << query(--x, --y) << "\n";
+	}
 }
 ```
 
