@@ -1,13 +1,12 @@
 import { Link } from 'gatsby';
 import * as React from 'react';
 import Logo from '../Logo';
+import Transition from '../Transition';
 import SidebarBottomButtons from './SidebarBottomButtons';
 import { SidebarNav } from './SidebarNav/SidebarNav';
-import Transition from '../Transition';
-import { useMarkdownLayout } from '../../context/MarkdownLayoutContext';
 
 export default function DesktopSidebar() {
-  const [ isOpen, setIsOpen ] = React.useState(true);
+  const [isOpen, setIsOpen] = React.useState(true);
 
   return (
     <div
@@ -24,10 +23,7 @@ export default function DesktopSidebar() {
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <div
-              className="fixed inset-0"
-              onClick={() => setIsOpen(false)}
-            >
+            <div className="fixed inset-0" onClick={() => setIsOpen(false)}>
               <div className="absolute inset-0 bg-gray-600 dark:bg-gray-800 opacity-75" />
             </div>
           </Transition>
