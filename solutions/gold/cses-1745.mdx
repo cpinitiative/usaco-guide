@@ -123,4 +123,27 @@ public class MoneySums {
 
 </JavaSection>
 
+<PySection>
+```py
+n = int(input())
+money = list(map(int, input().split()))
+
+max_sum = n * 1000
+Dp = [[False] * (max_sum + 1) for _ in range(n + 1)]
+Dp[0][0] = True
+
+for i in range(1, n + 1):
+	for j in range(max_sum + 1):
+		Dp[i][j] = Dp[i - 1][j]
+		left = j - money[i - 1]
+		if left >= 0 and Dp[i - 1][left]:
+			Dp[i][j] = True
+
+res = [i for i in range(1, max_sum + 1) if Dp[n][i]]
+
+print(len(res))
+print(*res)
+```
+</PySection>
+
 </LanguageSection>
