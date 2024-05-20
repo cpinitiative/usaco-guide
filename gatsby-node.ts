@@ -333,6 +333,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
       component: userSolutionTemplate,
       context: {
         problem: problem,
+        id: problem.uniqueId,
       },
     });
   });
@@ -352,6 +353,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
               uniqueId: uniqueId,
               name: name,
             },
+            id: uniqueId,
           },
         });
       }

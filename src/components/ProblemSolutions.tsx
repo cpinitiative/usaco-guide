@@ -1,6 +1,12 @@
+import { ExternalLinkIcon } from '@heroicons/react/solid';
 import Filter from 'bad-words';
 import * as React from 'react';
 import { useState } from 'react';
+import {
+  SECTION_LABELS,
+  moduleIDToSectionMap,
+  moduleIDToURLMap,
+} from '../../content/ordering';
 import ContactUsSlideover from '../components/ContactUsSlideover/ContactUsSlideover';
 import { useDarkMode } from '../context/DarkModeContext';
 import { useSignIn } from '../context/SignInContext';
@@ -16,9 +22,11 @@ import { ShortProblemInfo } from '../models/problem';
 import CodeBlock from './markdown/CodeBlock/CodeBlock';
 
 export default function ProblemSolutions({
+  modulesThatHaveProblem,
   showSubmitSolutionModal,
   problem,
 }: {
+  modulesThatHaveProblem: { title: string; id: string }[];
   showSubmitSolutionModal: () => void;
   problem: ShortProblemInfo;
 }): JSX.Element {
@@ -49,6 +57,16 @@ export default function ProblemSolutions({
 
   publicSolutions?.sort((a, b) => b.upvotes.length - a.upvotes.length);
 
+  const moduleHeaderLinks: { label: string; url?: string }[] =
+    modulesThatHaveProblem.map(module => {
+      return {
+        label: `${SECTION_LABELS[moduleIDToSectionMap[module.id]]} - ${
+          module.title
+        }`,
+        url: `${moduleIDToURLMap[module.id]}#problem-${problem!.uniqueId}`,
+      };
+    });
+
   return (
     <div className="w-full rounded-lg overflow-hidden max-w-5xl mx-auto">
       <div className="bg-white dark:bg-dark-surface px-4 pt-5 pb-4 sm:p-6 sm:pb-4 mt-6">
@@ -58,10 +76,58 @@ export default function ProblemSolutions({
         >
           User Solutions for {problem?.name}
         </h3>
+
         <p className="mt-1 text-gray-500 dark:text-gray-400">
           Below are user-submitted solutions for {problem?.name}. If you notice
           any of them are incorrect, submit the contact form below.
         </p>
+
+        <div className="rounded-md bg-gray-50 dark:bg-gray-900 px-4 py-5 sm:p-6 mt-4">
+          {moduleHeaderLinks?.length > 0 && (
+            <div>
+              <h3 className="text-sm leading-5 font-medium text-gray-800 my-0 dark:text-gray-200">
+                Appears In
+              </h3>
+              <div className="text-sm leading-5 text-gray-700 mt-1 no-y-margin dark:text-gray-300">
+                <ul className="list-disc list-inside pl-3 space-y-1">
+                  {moduleHeaderLinks.map(link => (
+                    <li key={link.url ?? link.label}>
+                      {link.url ? (
+                        <a
+                          href={link.url}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="underline text-black dark:text-gray-200"
+                        >
+                          {link.label}
+                        </a>
+                      ) : (
+                        <span className="text-black dark:text-gray-200">
+                          {link.label}
+                        </span>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          )}
+
+          {problem.url && (
+            <div>
+              <div className="h-4 sm:h-6" />
+              <a
+                href={problem.url}
+                target="_blank"
+                rel="noreferrer"
+                className="text-sm font-medium text-gray-800 hover:text-gray-900 my-0 dark:text-gray-200 dark:hover:text-gray-100 group inline-flex items-center space-x-1.5"
+              >
+                <span>View Problem Statement</span>
+                <ExternalLinkIcon className="h-5 w-5 text-gray-400 group-hover:text-gray-600 dark:text-gray-400 dark:group-hover:text-gray-300" />
+              </a>
+            </div>
+          )}
+        </div>
 
         <button
           className="my-4 btn-primary"
@@ -80,6 +146,7 @@ export default function ProblemSolutions({
           onClose={() => setIsContactUsActive(false)}
           defaultLocation={`Problem Solution - ${problem?.name} (ID: ${problem?.uniqueId})`}
         />
+
         <div className="h-8" />
         <h3 className="text-lg font-semibold pb-2 mb-4 border-b border-gray-200 dark:border-gray-800">
           My Solutions
