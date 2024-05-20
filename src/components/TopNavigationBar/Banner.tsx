@@ -2,10 +2,12 @@ import * as React from 'react';
 
 export default function Banner({
   text,
-  registerLink,
+  action,
+  link,
 }: {
   text: string;
-  registerLink: string;
+  action: string | null;
+  link: string | null;
 }) {
   return (
     <div className="relative isolate flex items-center gap-x-6 overflow-hidden bg-gray-50 dark:bg-[rgb(17_24_39)] px-6 py-2.5 sm:px-3.5 sm:before:flex-1">
@@ -33,24 +35,27 @@ export default function Banner({
           }}
         />
       </div>
+
       <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
         <p className="text-sm leading-6 text-gray-900 dark:text-white">
-          {/* <strong className="font-semibold">GeneriCon 2023</strong> */}
-          <svg
-            viewBox="0 0 2 2"
-            className="mx-2 inline h-0.5 w-0.5 fill-current"
-            aria-hidden="true"
-          >
-            <circle cx={1} cy={1} r={1} />
-          </svg>
           {text}
         </p>
-        <a
-          href={registerLink}
-          className="flex-none rounded-full bg-gray-900 px-3.5 py-1 text-sm font-semibold text-white shadow-sm hover:bg-gray-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-900"
-        >
-          Apply now <span aria-hidden="true">&rarr;</span>
-        </a>
+
+        {action && link ? (
+        <>
+          <svg
+            viewBox="0 0 2 2"
+            className="inline h-0.5 w-0.5 fill-current"
+            aria-hidden="true">
+            <circle cx={1} cy={1} r={1} />
+          </svg>
+
+          <a
+            href={link}
+            className="flex-none rounded-full bg-gray-900 px-3.5 py-1 text-sm font-semibold text-white shadow-sm hover:bg-gray-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-900">
+            {action} <span aria-hidden="true">&rarr;</span>
+          </a>
+        </>) : <></>}
       </div>
       <div className="flex flex-1 justify-end">
         <span className="sr-only">Dismiss</span>
