@@ -47,7 +47,7 @@ export default function PostPage(
 
   return (
     <Layout>
-      <SEO title={`${post.name} · ${activeGroup.groupData!?.name}`} />
+      <SEO title={`${post.name} · ${activeGroup.groupData?.name}`} />
       <TopNavigationBar />
       <nav className="flex mt-6 mb-4" aria-label="Breadcrumb">
         <Breadcrumbs
