@@ -404,7 +404,7 @@ will run on $n^2$ edges, which causes TLE.
 
 using namespace std;
 
-struct point {
+struct Point {
 	int x, y, idx;
 };
 
@@ -513,17 +513,17 @@ class BinaryJumping {
 // EndCodeSnip
 
 // Manhattan distance
-int dist(const point &a, const point &b) {
+int dist(const Point &a, const Point &b) {
 	return abs(a.x - b.x) + abs(a.y - b.y);
 }
 
-vector<pair<point, point>> compute_mst(vector<pair<point, point>> edges) {
+vector<pair<Point, Point>> compute_mst(vector<pair<Point, Point>> edges) {
 	sort(edges.begin(), edges.end(),
-	     [&](pair<point, point> a, pair<point, point> b) {
+	     [&](pair<Point, Point> a, pair<Point, Point> b) {
 		     return dist(a.first, a.second) < dist(b.first, b.second);
 	     });
 	DisjointSets ds((int)edges.size());
-	vector<pair<point, point>> mst;
+	vector<pair<Point, Point>> mst;
 	for (int i = 0; i < (int)edges.size(); i++) {
 		if (ds.connected(edges[i].first.idx, edges[i].second.idx)) { continue; }
 		ds.unite(edges[i].first.idx, edges[i].second.idx);
@@ -535,28 +535,27 @@ vector<pair<point, point>> compute_mst(vector<pair<point, point>> edges) {
 void test_case() {
 	int n;
 	cin >> n;
-	vector<point> points;
+	vector<Point> Points;
 	for (int i = 0; i < n; i++) {
 		int x, y;
 		cin >> x >> y;
-		points.push_back({x, y, i});
+		Points.push_back({x, y, i});
 	}
-	vector<pair<point, point>> mst;
+	vector<pair<Point, Point>> mst;
 	for (int i = 0; i < n; i++) {
 		for (int j = i + 1; j < n; j++) {
-			mst.push_back({points[i], points[j]});
+			mst.push_back({Points[i], Points[j]});
 		}
 	}
 	mst = compute_mst(mst);
 	vector<vector<pair<int, int>>> tree(n);
-	for (pair<point, point> edge : mst) {
+	for (pair<Point, Point> edge : mst) {
 		tree[edge.first.idx].push_back(
 		    {edge.second.idx,
-		     dist(points[edge.first.idx], points[edge.second.idx])});
+		     dist(Points[edge.first.idx], Points[edge.second.idx])});
 		tree[edge.second.idx].push_back(
 		    {edge.first.idx,
-		     dist(points[edge.first.idx], points[edge.second.idx])});
-		// cout << edge.first.idx << ' ' << edge.second.idx << '\n';
+		     dist(Points[edge.first.idx], Points[edge.second.idx])});
 	}
 	int q;
 	BinaryJumping lca(tree);
