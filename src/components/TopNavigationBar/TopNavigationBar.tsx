@@ -32,7 +32,7 @@ import LogoSquare from '../LogoSquare';
 import MobileMenuButtonContainer from '../MobileMenuButtonContainer';
 import SectionsDropdown from '../SectionsDropdown';
 import { LoadingSpinner } from '../elements/LoadingSpinner';
-import Banner from './PrettyBanner';
+import Banner from './Banner';
 import { SearchModal } from './SearchModal';
 import { UserAvatarMenu } from './UserAvatarMenu';
 
@@ -138,73 +138,10 @@ export default function TopNavigationBar({
       {!hidePromoBar && (
         <>
           <Banner
-            text="Looking for new web developers!"
-            registerLink="https://docs.google.com/forms/d/e/1FAIpQLSed_EHivwc1Z3LoaqQZhu813_3uNNousvN1QWmNt_q-6I6b8A/viewform"
+            text="Registration for Summer Semester Live Classes Open"
+            action="Register"
+            link="https://joincpi.org/classes"
           />
-          {/* <div className="relative bg-blue-600">
-            <div className="max-w-screen-xl mx-auto py-3 px-3 sm:px-6 lg:px-8">
-              <div className="pr-16 sm:text-center sm:px-16">
-                <p className="font-medium text-white">
-                  <span className="md:inline">
-                    Registration for USACO classes now open!
-                  </span>
-                  <span className="block sm:ml-2 sm:inline-block">
-                    <a
-                      href="https://joincpi.org/classes"
-                      target="_blank"
-                      rel="noreferrer"
-                      className="text-white font-bold underline"
-                    >
-                      Register here &rarr;
-                    </a>
-                  </span>
-                </p>
-              </div>
-            </div>
-          </div>
-          <div className="relative bg-blue-700">
-            <div className="max-w-screen-xl mx-auto py-3 px-3 sm:px-6 lg:px-8">
-              <div className="pr-16 sm:text-center sm:px-16">
-                <p className="font-medium text-white">
-                  <span className="md:block">
-                    Registration for the USACO Guide Informatics Tournament is
-                    also open!{' '}
-                  </span>
-                  <span className="sm:ml-2 sm:inline">
-                    <a
-                      href="https://forms.gle/4vHJeGiYGLgHRv4E6"
-                      target="_blank"
-                      rel="noreferrer"
-                      className="text-white font-bold underline"
-                    >
-                      Register here &rarr;
-                    </a>
-                  </span>
-                </p>
-              </div>
-            </div>
-          </div>
-          <div className="relative bg-blue-800">
-            <div className="max-w-screen-xl mx-auto py-3 px-3 sm:px-6 lg:px-8">
-              <div className="pr-16 sm:text-center sm:px-16">
-                <p className="font-medium text-white">
-                  <span className="md:block">
-                    Registration for the January USACO Workshop is also open!{' '}
-                  </span>
-                  <span className="sm:ml-2 sm:inline">
-                    <a
-                      href="https://joincpi.org/workshops/jan24"
-                      target="_blank"
-                      rel="noreferrer"
-                      className="text-white font-bold underline"
-                    >
-                      Register here &rarr;
-                    </a>
-                  </span>
-                </p>
-              </div>
-            </div>
-          </div> */}
         </>
       )}
 
