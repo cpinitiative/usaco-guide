@@ -159,6 +159,54 @@ $$
 <CPPSection>
 
 ```cpp
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+bool solve(const vector<int> &v, const vector<int> &vals) {
+	vector<int> nimber(*max_element(v.begin(), v.end()) + 1);
+	for(int i = 0; i < (int)nimber.size(); i++) {
+		vector<bool> seen(i+1, false);
+		for(int val : vals) {
+			if(i >= val) {
+				seen[nimber[i - val]] = true;
+			}
+		}
+		int cnt = 0;
+		while(seen[cnt]) {
+			cnt++;
+		}
+		nimber[i] = cnt;
+	}
+	int s = 0;
+	for(int x : v) {
+		s ^= nimber[x];
+	}
+	return s == 0;
+}
+
+int main() { 
+	int k;
+	cin >> k;
+	vector<int> a(k);
+	for(int &val : a) {
+		cin >> val;
+	}
+	int t;
+	cin >> t;
+	while(t--) {
+		int n;
+		cin >> n;
+		vector<int> v(n);
+		for(int &val : v) {
+			cin >> val;
+		}
+		cout << (solve(v, a) ? 'L' : 'W');
+	}
+	return 0;
+}
 
 ```
 
