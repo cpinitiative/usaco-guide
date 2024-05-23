@@ -115,6 +115,37 @@ int main() {
 	/>
 </Resources>
 
+The [Sprague-Grundy theorem](https://en.wikipedia.org/wiki/Sprague%E2%80%93Grundy_theorem) defines nimber (or grundy) values as:
+
+$$
+\tag{1}
+n(x) = \text{mex}\{\text{all reachable nimber values}\}
+$$
+
+Here $\text{mex}$ - minimum excludant - is the smallest non-negative integer not found in the given set. 
+
+This means that every state of the game can be assigned a nimber value. Let's take a look at a particular case of the NIM game, a game with just one pile of stones and you can only remove ** 1, 2 or 3 stones** in one move, and how the nimber values behave in practice:
+
+![alt text](./assets/nim.png)
+
+According to $(1)$ the nimber value is the $\text{mex}$ of the reachable nimber values, in this case it is the $\text{mex}$ of the previous $3$ values, because we can only remove 1, 2 or 3 stones in one move, so the values are computed as following:
+
+- $n(0) = 0$
+- $n(1) = \text{mex}\{0\} = 1$
+- $n(2) = \text{mex}\{0, 1\} = 2$
+- $n(3) = \text{mex}\{0, 1, 2\} = 3$
+- $n(4) = \text{mex}\{1, 2, 3\} = 0$
+- $n(5) = \text{mex}\{2, 3, 0\} = 1$
+- $n(6) = \text{mex}\{3, 0, 1\} = 2$
+- $n(7) = \text{mex}\{0, 1, 2\} = 3$
+
+A nimber values equal to $0$ represents a losing state of the game; see $n(4)$ and $n(7)$.
+
+**Proof:** Recall that a winning state means that in one move you can reach push the other player in a losing state. For example, $n(4)=0$ because we can't reach another losing state, like $n(0)$. Similarly $n(8) = 0$, because we can't reach $n(4)$ removing 1, 2 or 3 stones in one move. 
+
+
+#### Applications
+
 ## Problems
 
 <Problems problems="general" />
