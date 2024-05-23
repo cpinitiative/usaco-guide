@@ -1,7 +1,7 @@
 ---
 id: game-theory
 title: 'Game Theory'
-author: Benjamin Qi
+author: Benjamin Qi, Mihnea Brebenel
 contributors: Salma J
 description: 'Solving games that are usually two-player to find the winner.'
 frequency: 0
@@ -141,8 +141,15 @@ According to $(1)$ the nimber value is the $\text{mex}$ of the reachable nimber 
 
 A nimber values equal to $0$ represents a losing state of the game; see $n(4)$ and $n(7)$.
 
-**Proof:** Recall that a winning state means that in one move you can reach push the other player in a losing state. For example, $n(4)=0$ because we can't reach another losing state, like $n(0)$. Similarly $n(8) = 0$, because we can't reach $n(4)$ removing 1, 2 or 3 stones in one move. 
+<Spoiler title="Demonstration">
+- Recall that a winning state means that in one move you can reach push the other player in a losing state. For example, $n(4)=0$ because we can't reach another losing state, like $n(0)$. Similarly $n(8) = 0$, because we can't reach $n(4)$ removing 1, 2 or 3 stones in one move. 
+</Spoiler>
 
+The single-pile game was a particular case, let's try extending the theorem to multiple piles of rocks. From the previous section we know that state is a losing state if the xor-sum of the piles is $0$. We can apply the same logic with the nimber values, so the nimber value of the game is equal to the xor-sum of individual games - piles- and if it's $0$, then it means the state of the game is a losing state. Mathematically this would be written as:
+
+$$
+n(\sum{p_i})=\oplus n(p_i)
+$$
 
 #### Applications
 
