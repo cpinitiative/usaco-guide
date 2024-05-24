@@ -44,7 +44,7 @@ frequency: 0
 
 ### Game description
 
-The most well-known impartial game is the NIM game. In this game there are considered $n$ piles with stones. At every step, a player removes a non-zero number of stone from a pile. 
+The most well-known impartial game is the NIM game. In this game there are considered $n$ piles with stones. At every step, a player removes a non-zero number of stone from a pile.
 The game continues while there are stones left. The winner is the player that makes the last move.
 
 Let's denote a state of the game as ${x_1, x_2, x_3, \ldots, x_n}$, where $x_i$ is the number of stones left in pile $i$. Then the winning strategy is as following:
@@ -63,13 +63,13 @@ In some cases there could be allowed to also **add** stones to a chosen pile, so
 
 To demonstrate this theory we have to show that from a state with xor-sum $0$ (losing), whatever the move is, we can only reach a state with non-zero xox-sum (winning), and from a winning state we can reach a losing state.
 
-We will assume that from a state with sum-xor $0$ we can also reach another state with xor-sum $0$. Let's pick an arbitrary pile with $y$ stones and we would like to remove $x$ stones ($x \in [1, y]$). 
-Denote $s$ as the xor-sum of the other $n-1$ piles, then we have $s \oplus y = 0 \iff s = y$. By removing $x$ stones from the pile, to reach a zero xor-sum state, means that $s \oplus (y - x) = 0 \iff s = y - x$. We demonstrated that $s = y$ so $s = y - x \iff y = y - x \iff x = 0$ which is false, because we can't remove $0$ stones i.e $x \in [1,y]$. 
+We will assume that from a state with sum-xor $0$ we can also reach another state with xor-sum $0$. Let's pick an arbitrary pile with $y$ stones and we would like to remove $x$ stones ($x \in [1, y]$).
+Denote $s$ as the xor-sum of the other $n-1$ piles, then we have $s \oplus y = 0 \iff s = y$. By removing $x$ stones from the pile, to reach a zero xor-sum state, means that $s \oplus (y - x) = 0 \iff s = y - x$. We demonstrated that $s = y$ so $s = y - x \iff y = y - x \iff x = 0$ which is false, because we can't remove $0$ stones i.e $x \in [1,y]$.
 
 It remains to demonstrate that from a winning state we can bring the other player in a losing state. Let $s$ be the xor-sum of all the pile sizes. If there is a pile with $y$ stone such that $y \gt y \oplus s$, then we can remove $y - y \oplus s$ stones from this pile, remaining $y - (y - y \oplus s) = y \oplus s$. Now the pile has $y \oplus s$ stones and the new xor-sum is obtained by removing $y$ and adding $y \oplus s$ i.e. $s \oplus y \oplus y \oplus s = 0$. Consequently, if there is such a pile with the property previously mentioned we can reach a losing state from a winning state. But are we guaranteed that there is always such a pile? Let $p$ be position of the most significant bit in $s$, then there should be at least one pile $x_i$ that has the bit flipped on at position $p$. The two $1$ bits cancel each other, because $1 \oplus 1 = 0$ (1). Thereby there always exists a pile satisfying: $y > y \oplus s$ i.
 
 $$
-\begin{array}{c}	\tag{1}	
+\begin{array}{c}	\tag{1}
 	y &\quad 	b_m \ldots b_{p+1} \text{ 1 }b_{p-1} \ldots b_0 \\
 	s &\quad  	0\ldots\ldots 0 \;\; \text{ 1 } c_{p-1} \ldots c_0 \\
 	y \oplus s &\quad  b_m \ldots b_{p+1} \text{ 0 } d_{p-1} \ldots d_0
@@ -85,13 +85,13 @@ $$
 
 using namespace std;
 
-int main() { 
+int main() {
 	int t;
 	cin >> t;
-	while(t--) {
+	while (t--) {
 		int n, s = 0;
 		cin >> n;
-		for(int i = 0; i < n; i++) {
+		for (int i = 0; i < n; i++) {
 			int x;
 			cin >> x;
 			s ^= x;
@@ -127,7 +127,7 @@ $$
 n(x) = \text{mex}\{\text{all reachable nimber values}\}
 $$
 
-Here $\text{mex}$ - minimum excludant - is the smallest non-negative integer not found in the given set. 
+Here $\text{mex}$ - minimum excludant - is the smallest non-negative integer not found in the given set.
 
 This means that every state of the game can be assigned a nimber value. Let's take a look at a particular case of the NIM game, a game with just one pile of stones and you can only remove ** 1, 2 or 3 stones** in one move, and how the nimber values behave in practice:
 
@@ -147,7 +147,7 @@ According to $(1)$ the nimber value is the $\text{mex}$ of the reachable nimber 
 A nimber values equal to $0$ represents a losing state of the game; see $n(4)$ and $n(7)$.
 
 <Spoiler title="Demonstration">
-- Recall that a winning state means that in one move you can reach push the other player in a losing state. For example, $n(4)=0$ because we can't reach another losing state, like $n(0)$. Similarly $n(8) = 0$, because we can't reach $n(4)$ removing 1, 2 or 3 stones in one move. 
+- Recall that a winning state means that in one move you can reach push the other player in a losing state. For example, $n(4)=0$ because we can't reach another losing state, like $n(0)$. Similarly $n(8) = 0$, because we can't reach $n(4)$ removing 1, 2 or 3 stones in one move.
 </Spoiler>
 
 The single-pile game was a particular case, let's try extending the theorem to multiple piles of rocks. From the previous section we know that state is a losing state if the xor-sum of the piles is $0$. We can apply the same logic with the nimber values, so the nimber value of the game is equal to the xor-sum of individual games - piles- and if it's $0$, then it means the state of the game is a losing state. Mathematically this would be written as:
@@ -161,7 +161,7 @@ $$
 
 ### Applications
 
-#### Snim 
+#### Snim
 
 <FocusProblem problem="snim" />
 
@@ -171,55 +171,44 @@ This problem is a direct application of $(2)$. Compute the nimber values for sin
 <CPPSection>
 
 ```cpp
+#include <algorithm>
 #include <iostream>
 #include <vector>
-#include <algorithm>
 
 using namespace std;
 
 bool solve(const vector<int> &v, const vector<int> &vals) {
 	vector<int> nimber(*max_element(v.begin(), v.end()) + 1);
-	for(int i = 0; i < (int)nimber.size(); i++) {
-		vector<bool> seen(i+1, false);
-		for(int val : vals) {
-			if(i >= val) {
-				seen[nimber[i - val]] = true;
-			}
+	for (int i = 0; i < (int)nimber.size(); i++) {
+		vector<bool> seen(i + 1, false);
+		for (int val : vals) {
+			if (i >= val) { seen[nimber[i - val]] = true; }
 		}
 		int cnt = 0;
-		while(seen[cnt]) {
-			cnt++;
-		}
+		while (seen[cnt]) { cnt++; }
 		nimber[i] = cnt;
 	}
 	int s = 0;
-	for(int x : v) {
-		s ^= nimber[x];
-	}
+	for (int x : v) { s ^= nimber[x]; }
 	return s == 0;
 }
 
-int main() { 
+int main() {
 	int k;
 	cin >> k;
 	vector<int> a(k);
-	for(int &val : a) {
-		cin >> val;
-	}
+	for (int &val : a) { cin >> val; }
 	int t;
 	cin >> t;
-	while(t--) {
+	while (t--) {
 		int n;
 		cin >> n;
 		vector<int> v(n);
-		for(int &val : v) {
-			cin >> val;
-		}
+		for (int &val : v) { cin >> val; }
 		cout << (solve(v, a) ? 'L' : 'W');
 	}
 	return 0;
 }
-
 ```
 
 </CPPSection>
@@ -230,7 +219,7 @@ int main() {
 <FocusProblem problem="strange-nim" />
 
 We can apply the Sprague-Grundy theorem $(2)$. Let $g(n,k)$ be the nimber value for a particular pile. To speed up the algorithm, a few observations are necessary:
-1. $g(n, k) = n/k \iff k \mid n$ 
+1. $g(n, k) = n/k \iff k \mid n$
 2. $g(n, k) = g(n - \lfloor n/k \rfloor - 1, k)$
 
 <Info title="Pattern in nimber values">
@@ -246,17 +235,15 @@ When dealing with bigger values, it may be helpful to look after certain pattern
 using namespace std;
 
 int nimber(int n, int k) {
-	if(n % k == 0) {
-		return n / k;
-	}
+	if (n % k == 0) { return n / k; }
 	int d = n / k + 1;
 	return nimber(n - (n % k + d - 1) / d * d, k);
 }
 
-int main() { 
+int main() {
 	int t, s = 0;
 	cin >> t;
-	for(int i = 0; i < t; i++) {
+	for (int i = 0; i < t; i++) {
 		int n, k;
 		cin >> n >> k;
 		s ^= nimber(n, k);
@@ -264,7 +251,6 @@ int main() {
 	cout << (s ? "Takahashi" : "Aoki") << '\n';
 	return 0;
 }
-
 ```
 
 </CPPSection>
