@@ -268,16 +268,16 @@ games - a chessboard with a single coin. The reachable states from $(x, y)$ are:
 - $(x-2,y-1)$
 - $(x+1,y-2)$
 - $(x-1,y-2)$
-Thereby the nimber value of a state is the $\text{mex}$ of the above state's nimber values. 
+Thereby the nimber value of a state is the $\text{mex}$ of the above state's nimber values.
 
 <LanguageSection>
 <CPPSection>
 
 ```cpp
+#include <functional>
 #include <iostream>
 #include <map>
 #include <set>
-#include <functional>
 
 using namespace std;
 
@@ -286,40 +286,31 @@ void test_case() {
 	cin >> n;
 	map<pair<int, int>, int> memo;
 	function<int(int, int)> nimber = [&](int x, int y) -> int {
-		if(x < 1 || y < 1 || x > 15 || y > 15) {
-			return -1;
-		}
-		if(memo.count({x, y})) {
-			return memo[{x, y}];
-		}
+		if (x < 1 || y < 1 || x > 15 || y > 15) { return -1; }
+		if (memo.count({x, y})) { return memo[{x, y}]; }
 		set<int> reachable;
 		reachable.insert(nimber(x - 1, y - 2));
 		reachable.insert(nimber(x + 1, y - 2));
 		reachable.insert(nimber(x - 2, y + 1));
 		reachable.insert(nimber(x - 2, y - 1));
 		int cnt = 0;
-		while(reachable.count(cnt)) {
-			cnt++;
-		}
+		while (reachable.count(cnt)) { cnt++; }
 		memo[{x, y}] = cnt;
 		return cnt;
 	};
 	int s = 0;
-	for(int i = 0; i < n; i++) {
+	for (int i = 0; i < n; i++) {
 		int x, y;
 		cin >> x >> y;
 		s ^= nimber(x, y);
 	}
 	cout << (s ? "First" : "Second") << '\n';
-
 }
 
-int main() { 
+int main() {
 	int t;
 	cin >> t;
-	while(t--) {
-		test_case();
-	}
+	while (t--) { test_case(); }
 	return 0;
 }
 ```
