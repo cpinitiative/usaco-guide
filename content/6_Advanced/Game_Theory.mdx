@@ -61,7 +61,7 @@ To demonstrate this theory we have to show that from a state with xor-sum $0$ (l
 We will assume that from a state with sum-xor $0$ we can also reach another state with xor-sum $0$. Let's pick an arbitrary pile with $y$ stones and we would like to remove $x$ stones ($x \in [1, y]$). 
 Denote $s$ as the xor-sum of the other $n-1$ piles, then we have $s \oplus y = 0 \iff s = y$. By removing $x$ stones from the pile, to reach a zero xor-sum state, means that $s \oplus (y - x) = 0 \iff s = y - x$. We demonstrated that $s = y$ so $s = y - x \iff y = y - x \iff x = 0$ which is false, because we can't remove $0$ stones i.e $x \in [1,y]$. 
 
-It remains to demonstrate that from a winning state we can bring the other player in a losing state. Let $s$ be the xor-sum of all the pile sizes. If there is a pile with $y$ stone such that $y \gt y \oplus s$, then we can remove $y - y \oplus s$ stones from this pile, remaining $y - (y - y \oplus s) = y \oplus s$. Now the pile has $y \oplus s$ stones and the new xor-sum is obtained by removing $y$ and adding $y \oplus s$ i.e. $s \oplus y \oplus y \plus s = 0$. Consequently, if there is such a pile with the property previously mentioned we can reach a losing state from a winning state. But are we guaranteed that there is always such a pile? Let $p$ be position of the most significant bit in $s$, then there should be at least one pile $x_i$ that has the bit flipped on at position $p$. The two $1$ bits cancel each other, because $1 \oplus 1 = 0$ (1). Thereby there always exists a pile satisfying: $y > y \oplus s$ i.
+It remains to demonstrate that from a winning state we can bring the other player in a losing state. Let $s$ be the xor-sum of all the pile sizes. If there is a pile with $y$ stone such that $y \gt y \oplus s$, then we can remove $y - y \oplus s$ stones from this pile, remaining $y - (y - y \oplus s) = y \oplus s$. Now the pile has $y \oplus s$ stones and the new xor-sum is obtained by removing $y$ and adding $y \oplus s$ i.e. $s \oplus y \oplus y \oplus s = 0$. Consequently, if there is such a pile with the property previously mentioned we can reach a losing state from a winning state. But are we guaranteed that there is always such a pile? Let $p$ be position of the most significant bit in $s$, then there should be at least one pile $x_i$ that has the bit flipped on at position $p$. The two $1$ bits cancel each other, because $1 \oplus 1 = 0$ (1). Thereby there always exists a pile satisfying: $y > y \oplus s$ i.
 
 $$
 \begin{array}{c}	\tag{1}	
@@ -100,7 +100,7 @@ int main() {
 </CPPSection>
 </LanguageSection>
 
-### Sprague-Grundy theorem
+## Sprague-Grundy theorem
 
 <Resources>
 	<Resource
@@ -148,12 +148,19 @@ A nimber values equal to $0$ represents a losing state of the game; see $n(4)$ a
 The single-pile game was a particular case, let's try extending the theorem to multiple piles of rocks. From the previous section we know that state is a losing state if the xor-sum of the piles is $0$. We can apply the same logic with the nimber values, so the nimber value of the game is equal to the xor-sum of individual games - piles- and if it's $0$, then it means the state of the game is a losing state. Mathematically this would be written as:
 
 $$
+\tag{2}
 n(\sum{p_i})=\oplus n(p_i)
 $$
 
-#### Applications
+###
+
+### Applications
+
+#### Snim 
 
 <ProblemFocus problem="snim" />
+
+This problem is a direct application of $(2)$. Compute the nimber values for single piles and combine them using xor-sum.
 
 <LanguageSection>
 <CPPSection>
@@ -212,6 +219,52 @@ int main() {
 
 </CPPSection>
 </LanguageSection>
+
+#### Strange Nim
+
+<FocusProblem problem="strange-nim" />
+
+We can apply the Sprague-Grundy theorem $(2)$. Let $g(n,k)$ be the nimber value for a particular pile. To speed up the algorithm, a few observations are necessary:
+1. $g(n, k) = n/k \iff k \mid n$ 
+2. $g(n, k) = g(n - \lfloor n/k \rfloor - 1, k)$
+
+<Info title="Pattern in nimber values">
+When dealing with bigger values, it may be helpful to look after certain patterns in the nimber values table of the game. This way you can speed up the algorithm and not compute every time the $\text{mex}$ function. The pattern could be periodicity or a specific relation, which is the case in this problem.
+</Info>
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+
+using namespace std;
+
+int nimber(int n, int k) {
+	if(n % k == 0) {
+		return n / k;
+	}
+	int d = n / k + 1;
+	return nimber(n - (n % k + d - 1) / d * d, k);
+}
+
+int main() { 
+	int t, s = 0;
+	cin >> t;
+	for(int i = 0; i < t; i++) {
+		int n, k;
+		cin >> n >> k;
+		s ^= nimber(n, k);
+	}
+	cout << (s ? "Takahashi" : "Aoki") << '\n';
+	return 0;
+}
+
+```
+
+</CPPSection>
+</LanguageSection>
+
 ## Problems
 
 <Problems problems="general" />
