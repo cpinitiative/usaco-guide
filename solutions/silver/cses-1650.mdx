@@ -32,14 +32,9 @@ is exactly what we're looking for.
 
 ## Implementation
 
-**Time Complexity:** $\mathcal{O}(n+q)$
-
-<Info title="Implementation Note:">
-The operator for XOR in C++, Java, and Python is `^`.
-</Info>
+**Time Complexity:** $\mathcal{O}(N+Q)$
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
@@ -68,7 +63,6 @@ int main() {
 ```
 
 </CPPSection>
-
 <JavaSection>
 
 ```java
@@ -102,5 +96,20 @@ public class RangeXorQueries {
 ```
 
 </JavaSection>
+<PySection>
 
+```py
+n, q = map(int, input().split())
+arr = list(map(int, input().split()))
+
+xor_arr = [0] * (n + 1)
+for i in range(1, n + 1):
+	xor_arr[i] = arr[i - 1] ^ xor_arr[i - 1]
+
+for _ in range(q):
+	a, b = map(int, input().split())
+	print(xor_arr[b] ^ xor_arr[a - 1])
+```
+
+</PySection>
 </LanguageSection>
