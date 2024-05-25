@@ -384,14 +384,18 @@ int main() {
 </CPPSection>
 </LanguageSection>
 
-### Euclidean minimum spanning tree - EMST
+### Euclidean MST
 
 <FocusProblem problem="emst"/>
 
 #### Initial Approach
 
-The problem is a combination of EMST - euclidean minimum spanning tree - and LCA. We can compute the EMST using Kruskal's or Prim's algorithm. Using this approach, the algorithm
-will run on $n^2$ edges, which causes TLE.
+This problem combines the Euclidean MST (EMST) with lowest common ancestor queries.
+
+We can compute the EMST with a normal MST algorithm with Kruskal's or Prim's, but
+unfortunately they're too slow for the given bounds.
+
+**Time Complexity:** $\mathcal{O}(?)$
 
 <LanguageSection>
 <CPPSection>
@@ -408,7 +412,7 @@ struct Point {
 	int x, y, idx;
 };
 
-// BeginCodeSnip{DSU}
+// BeginCodeSnip{DSU (from the module)}
 class DisjointSets {
   private:
 	vector<int> parents;
@@ -419,12 +423,10 @@ class DisjointSets {
 		for (int i = 0; i < size; i++) { parents[i] = i; }
 	}
 
-	/** @return the "representative" node in x's component */
 	int find(int x) {
 		return parents[x] == x ? x : (parents[x] = find(parents[x]));
 	}
 
-	/** @return whether the merge changed connectivity */
 	bool unite(int x, int y) {
 		int x_root = find(x);
 		int y_root = find(y);
@@ -436,10 +438,9 @@ class DisjointSets {
 		return true;
 	}
 
-	/** @return whether x and y are in the same connected component */
 	bool connected(int x, int y) { return find(x) == find(y); }
 };
-// EncCodeSnip
+// EndCodeSnip
 
 // BeginCodeSnip{Binary jumping}
 class BinaryJumping {
@@ -481,7 +482,8 @@ class BinaryJumping {
 		}
 		return x;
 	}
-	// Lca for x and y
+	
+	/** @return the LCA of x and y */
 	int get_lca(int x, int y) {
 		if (depth[x] < depth[y]) { swap(x, y); }
 		x = jump(x, depth[x] - depth[y]);
@@ -494,7 +496,8 @@ class BinaryJumping {
 		}
 		return up[x][1];
 	}
-	// Query for max values on chain x - ... - y
+
+	/** @return the max value on the path from x to y */
 	int query(int x, int y) {
 		int z = get_lca(x, y), ans = 0, d;
 		d = depth[x] - depth[z];
@@ -516,11 +519,12 @@ class BinaryJumping {
 };
 // EndCodeSnip
 
-// Manhattan distance
+/** @return the Manhattan distance from point a to b */
 int dist(const Point &a, const Point &b) {
 	return abs(a.x - b.x) + abs(a.y - b.y);
 }
 
+/** @return the set of points that make up the MST of the given edges */
 vector<pair<Point, Point>> compute_mst(vector<pair<Point, Point>> edges) {
 	sort(edges.begin(), edges.end(),
 	     [&](pair<Point, Point> a, pair<Point, Point> b) {
@@ -536,51 +540,46 @@ vector<pair<Point, Point>> compute_mst(vector<pair<Point, Point>> edges) {
 	return mst;
 }
 
-void test_case() {
-	int n;
-	cin >> n;
-	vector<Point> Points;
-	for (int i = 0; i < n; i++) {
-		int x, y;
-		cin >> x >> y;
-		Points.push_back({x, y, i});
-	}
-
-	vector<pair<Point, Point>> mst;
-	for (int i = 0; i < n; i++) {
-		for (int j = i + 1; j < n; j++) {
-			mst.push_back({Points[i], Points[j]});
+int main() {
+	int test_num;
+	cin >> test_num;
+	for (int t = 0; t < test_num; t++) {
+		int n;
+		cin >> n;
+		vector<Point> Points;
+		for (int i = 0; i < n; i++) {
+			int x, y;
+			cin >> x >> y;
+			Points.push_back({x, y, i});
+		}
+	
+		vector<pair<Point, Point>> mst;
+		for (int i = 0; i < n; i++) {
+			for (int j = i + 1; j < n; j++) {
+				mst.push_back({Points[i], Points[j]});
+			}
+		}
+	
+		mst = compute_mst(mst);
+		vector<vector<pair<int, int>>> tree(n);
+		for (pair<Point, Point> edge : mst) {
+			tree[edge.first.idx].push_back(
+			    {edge.second.idx,
+			     dist(Points[edge.first.idx], Points[edge.second.idx])});
+			tree[edge.second.idx].push_back(
+			    {edge.first.idx,
+			     dist(Points[edge.first.idx], Points[edge.second.idx])});
+		}
+	
+		BinaryJumping lca(tree);
+		int query_num;
+		cin >> query_num;
+		for (int q = 0; q < query_num; q++) {
+			int x, y;
+			cin >> x >> y;
+			cout << lca.query(--x, --y) << '\n';
 		}
 	}
-
-	mst = compute_mst(mst);
-	vector<vector<pair<int, int>>> tree(n);
-	for (pair<Point, Point> edge : mst) {
-		tree[edge.first.idx].push_back(
-		    {edge.second.idx,
-		     dist(Points[edge.first.idx], Points[edge.second.idx])});
-		tree[edge.second.idx].push_back(
-		    {edge.first.idx,
-		     dist(Points[edge.first.idx], Points[edge.second.idx])});
-	}
-
-	int q;
-	BinaryJumping lca(tree);
-	cin >> q;
-	while (q--) {
-		int x, y;
-		cin >> x >> y;
-		x--;
-		y--;
-		cout << lca.query(x, y) << '\n';
-	}
-}
-
-int main() {
-	int t;
-	cin >> t;
-	while (t--) { test_case(); }
-	return 0;
 }
 ```
 
