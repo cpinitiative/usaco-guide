@@ -546,17 +546,17 @@ int main() {
 	for (int t = 0; t < test_num; t++) {
 		int n;
 		cin >> n;
-		vector<Point> Points;
+		vector<Point> points;
 		for (int i = 0; i < n; i++) {
 			int x, y;
 			cin >> x >> y;
-			Points.push_back({x, y, i});
+			points.push_back({x, y, i});
 		}
 
 		vector<pair<Point, Point>> mst;
 		for (int i = 0; i < n; i++) {
 			for (int j = i + 1; j < n; j++) {
-				mst.push_back({Points[i], Points[j]});
+				mst.push_back({points[i], points[j]});
 			}
 		}
 
@@ -565,10 +565,10 @@ int main() {
 		for (pair<Point, Point> edge : mst) {
 			tree[edge.first.idx].push_back(
 			    {edge.second.idx,
-			     dist(Points[edge.first.idx], Points[edge.second.idx])});
+			     dist(points[edge.first.idx], points[edge.second.idx])});
 			tree[edge.second.idx].push_back(
 			    {edge.first.idx,
-			     dist(Points[edge.first.idx], Points[edge.second.idx])});
+			     dist(points[edge.first.idx], points[edge.second.idx])});
 		}
 
 		BinaryJumping lca(tree);
