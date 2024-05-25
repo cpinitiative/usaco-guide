@@ -36,15 +36,19 @@ frequency: 1
 
 <FocusProblem problem="xorqueries" />
 
-You are given a tree consisting of $n$ vertices. There is an integer written on each vertex; the $i$-th vertex has integer $$a_i$$ written on it. You have to process $q$ queries. The $i$-th query consists of three integers $$x_i$$, $$y_i$$ and $$k_i$$. For this query, you have to answer if it is possible to choose a set of vertices $v1,v2,…,vm$ (possibly empty) such that:
+You are given a tree consisting of $n$ vertices. There is an integer written on each vertex; the $i$-th vertex has integer $$a_i$$ written on it. You have to process $q$ queries. The $i$-th query consists of three integers $$x_i$$, $$y_i$$ and $$k_i$$. For this query, you have to answer if it is possible to choose a set of vertices $v_1,v_2,…,v_m$ (possibly empty) such that:
 - every vertex $$v_j$$ is on the simple path between $$x_i$$ and $$y_i$$ (endpoints can be used as well);
 - $$a_{v_1} \oplus a_{v_2} \oplus \dots \oplus a_{v_m} = k_i$$, where $\oplus$ denotes the bitwise XOR operator.
 
-### Solution
+## Solution - Trees and XOR Queries Again
 
-[Official Tutorial](https://codeforces.com/blog/entry/122951)
+<!-- [Official Tutorial](https://codeforces.com/blog/entry/122951) -->
 
-<!-- https://codeforces.com/contest/1902/submission/235594491 -->
+To efficiently compute XOR bases on paths in a tree, we use a method involving tree rooting, **Lowest Common Ancestor (LCA)**, and properties of **XOR bases**. The process begins by rooting the tree and using LCA to split any path into two vertical paths. For each vertex $$v$$, we maintain a list of "interesting" vertices that significantly influence the XOR base when traversing from $$v$$ to the root. Due to the properties of XOR bases, these lists are small, with a maximum size of 20.
+
+The core idea is to build these lists for all vertices efficiently. For a vertex $$v$$, its list is derived from its parent's list. If $$v$$ adds a new element to the XOR base of its parent's list, $$v$$ is added to its list; otherwise, one element in the parent's list is replaced. This propagation ensures that the size of each list remains manageable and enables efficient construction of these lists in $\mathcal{O}(nB^2)$ time, where $$B$$ is the size of the XOR base, typically 20.
+
+When answering a query, the XOR base for any path is obtained by combining the lists from the two vertical paths derived from the LCA. This merging and computation can be done in $\mathcal{O}(B^2 + \log n)$ time per query, providing an efficient solution for the problem.
 
 <LanguageSection>
 
@@ -52,205 +56,134 @@ You are given a tree consisting of $n$ vertices. There is an integer written on 
 
 ```cpp
 #include <bits/stdc++.h>
+using namespace std;
 
-using i64 = long long;
-struct HLD {
-    int n;
-    std::vector<int> siz, top, dep, parent, in, out, seq;
-    std::vector<std::vector<int>> adj;
-    int cur;
-    
-    HLD() {}
-    HLD(int n) {
-        init(n);
+const int N = 200005, K = 20;
+vector<int> arr(N), tin(N, 0), tout(N, 0), up[N];
+vector<int> adj[N];
+vector<vector<int>> p(N, vector<int> (K, 0));
+int T = 0;
+
+int reduce(array<int, K> &b, int x) {
+    for (int i = K - 1; i >= 0; i--) {
+        if (x & (1 << i)) {
+            x ^= b[i];
+        }
     }
-    void init(int n) {
-        this->n = n;
-        siz.resize(n);
-        top.resize(n);
-        dep.resize(n);
-        parent.resize(n);
-        in.resize(n);
-        out.resize(n);
-        seq.resize(n);
-        cur = 0;
-        adj.assign(n, {});
+    return x;
+}
+
+bool add(array<int, K> &b, int x) {
+    x = reduce(b, x);
+    if (x != 0) {
+        for (int i = K - 1; i >= 0; i--) {
+            if (x & (1 << i)) {
+                b[i] = x;
+                return true;
+            }
+        }
     }
-    void addEdge(int u, int v) {
+    return false;
+}
+
+bool check(array<int, K> &b, int x) {
+    return (reduce(b, x) == 0);
+}
+
+vector<int> rebuild_path(const vector<int> &path, int v) {
+    array<int, K> b {0};
+    vector<int> res;
+    if (add(b, arr[v])) {
+        res.push_back(v);
+    }
+    for (auto x : path) {
+        if (add(b, arr[x])) {
+            res.push_back(x);
+        }
+    }
+    return res;
+}
+
+void dfs(int v, int u) {
+    tin[v] = T++;
+    if (u == v) {
+        up[v] = rebuild_path(vector<int>(0), v);
+    } else {
+        up[v] = rebuild_path(up[u], v);
+    }
+
+    p[v][0] = u;
+    for (int i = 1; i < K; i++) {
+        p[v][i] = p[p[v][i - 1]][i - 1];
+    }
+
+    for (int i = 0; i < (int)adj[v].size(); i++) {
+        if (adj[v][i] != u) {
+            dfs(adj[v][i], v);
+        }
+    }
+    tout[v] = T++;
+}
+
+bool is_ancestor(int u, int v) {
+    return (tin[u] <= tin[v] && tout[u] >= tout[v]);
+}
+
+int LCA(int x, int y) {
+    if (is_ancestor(x, y)) {
+        return x;
+    }
+    for (int i = K - 1; i >= 0; i--) {
+        if (!is_ancestor(p[x][i], y)) {
+            x = p[x][i];
+        }
+    }
+    return p[x][0];
+}
+
+bool query(int x, int y, int k) {
+    array<int, K> b {0};
+    int lca = LCA(x, y);
+    for (auto v : up[x]) {
+        if (!is_ancestor(v, y)) {
+            add(b, arr[v]);
+        }
+    } 
+
+    for (auto v : up[y]) {
+        if (!is_ancestor(v, x)) {
+            add(b, arr[v]);
+        }
+    }
+
+    add(b, arr[lca]);
+    return check(b, k);
+}
+
+int main() {
+    int n, q;
+    cin >> n;
+    for (int i = 0; i < n; i++) {
+        cin >> arr[i];
+    }
+
+    for (int i = 0; i < n - 1; i++) {
+        int u, v;
+        cin >> u >> v;
+        u--,v--;
         adj[u].push_back(v);
         adj[v].push_back(u);
     }
-    void work(int root = 0) {
-        top[root] = root;
-        dep[root] = 0;
-        parent[root] = -1;
-        dfs1(root);
-        dfs2(root);
-    }
-    void dfs1(int u) {
-        if (parent[u] != -1) {
-            adj[u].erase(std::find(adj[u].begin(), adj[u].end(), parent[u]));
-        }
-        
-        siz[u] = 1;
-        for (auto &v : adj[u]) {
-            parent[v] = u;
-            dep[v] = dep[u] + 1;
-            dfs1(v);
-            siz[u] += siz[v];
-            if (siz[v] > siz[adj[u][0]]) {
-                std::swap(v, adj[u][0]);
-            }
-        }
-    }
-    void dfs2(int u) {
-        in[u] = cur++;
-        seq[in[u]] = u;
-        for (auto v : adj[u]) {
-            top[v] = v == adj[u][0] ? top[u] : v;
-            dfs2(v);
-        }
-        out[u] = cur;
-    }
-    int lca(int u, int v) {
-        while (top[u] != top[v]) {
-            if (dep[top[u]] > dep[top[v]]) {
-                u = parent[top[u]];
-            } else {
-                v = parent[top[v]];
-            }
-        }
-        return dep[u] < dep[v] ? u : v;
-    }
-    
-    int dist(int u, int v) {
-        return dep[u] + dep[v] - 2 * dep[lca(u, v)];
-    }
-    
-    int jump(int u, int k) {
-        if (dep[u] < k) {
-            return -1;
-        }
-        
-        int d = dep[u] - k;
-        
-        while (dep[top[u]] > d) {
-            u = parent[top[u]];
-        }
-        
-        return seq[in[u] - dep[u] + d];
-    }
-    
-    bool isAncester(int u, int v) {
-        return in[u] <= in[v] && in[v] < out[u];
-    }
-    
-    int rootedParent(int u, int v) {
-        std::swap(u, v);
-        if (u == v) {
-            return u;
-        }
-        if (!isAncester(u, v)) {
-            return parent[u];
-        }
-        auto it = std::upper_bound(adj[u].begin(), adj[u].end(), v, [&](int x, int y) {
-            return in[x] < in[y];
-        }) - 1;
-        return *it;
-    }
-    
-    int rootedSize(int u, int v) {
-        if (u == v) {
-            return n;
-        }
-        if (!isAncester(v, u)) {
-            return siz[v];
-        }
-        return n - siz[rootedParent(u, v)];
-    }
-    
-    int rootedLca(int a, int b, int c) {
-        return lca(a, b) ^ lca(b, c) ^ lca(c, a);
-    }
-};
 
-struct Basis {
-    int a[20] {};
-    int t[20] {};
-    
-    Basis() {
-        std::fill(t, t + 20, -1);
-    }
-    
-    void add(int x, int y = 1E9) {
-        for (int i = 0; i < 20; i++) {
-            if (x >> i & 1) {
-                if (y > t[i]) {
-                    std::swap(a[i], x);
-                    std::swap(t[i], y);
-                }
-                x ^= a[i];
-            }
-        }
-    }
-    
-    bool query(int x, int y = 0) {
-        for (int i = 0; i < 20; i++) {
-            if ((x >> i & 1) && t[i] >= y) {
-                x ^= a[i];
-            }
-        }
-        return x == 0;
-    }
-};
-
-int main() {
-    std::ios::sync_with_stdio(false);
-    std::cin.tie(nullptr);
-    
-    int n;
-    std::cin >> n;
-    
-    std::vector<int> a(n);
-    for (int i = 0; i < n; i++) {
-        std::cin >> a[i];
-    }
-    
-    HLD t(n);
-    for (int i = 1; i < n; i++) {
-        int u, v;
-        std::cin >> u >> v;
-        u--, v--;
-        t.addEdge(u, v);
-    }
-    t.work();
-    
-    std::vector<Basis> basis(n);
-    auto dfs = [&](auto self, int x) -> void {
-        basis[x].add(a[x], t.dep[x]);
-        for (auto y : t.adj[x]) {
-            basis[y] = basis[x];
-            self(self, y);
-        }
-    };
-    dfs(dfs, 0);
-    
-    int q;
-    std::cin >> q;
-    while (q--) {
+    dfs(0, 0);
+    cin >> q;
+    for (int i = 0; i < q; i++) {
         int x, y, k;
-        std::cin >> x >> y >> k;
-        x--, y--;
-        int l = t.lca(x, y);
-        auto bas = basis[x];
-        for (int i = 0; i < 20; i++) {
-            if (basis[y].t[i] >= t.dep[l]) {
-                bas.add(basis[y].a[i]);
-            }
-        }
-        std::cout << (bas.query(k, t.dep[l]) ? "YES" : "NO") << "\n";
+        cin >> x >> y >> k;
+        x--,y--;
+        cout << (query(x, y, k) ? "YES" : "NO") << '\n';
     }
-    
+
     return 0;
 }
 ```
