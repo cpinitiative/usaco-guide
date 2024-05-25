@@ -715,6 +715,72 @@ preprocessing and query in $\mathcal{O}(1)$ time.
 
 <FocusProblem problem="rmqSample" />
 
+The following is an example implementation of a sparse table and code that
+answers LCA queries. Build time is $\mathcal{O}(N\log N)$, and queries are 
+$\mathcal{O}(1)$.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp 
+template<class T> struct RMQ {
+    int n, log2dist;
+    vector<vector<T>> st;
+    int lvl(int x) { return 31 - __builtin_clz(x); }
+    void init(vector<T> &v) {
+        n = (int) v.size();
+        log2dist = lvl(n) + 1;
+        st.resize(log2dist);
+        st[0] = v;
+        for (int i = 1; i < log2dist; i++) {
+            st[i].resize(n - (1 << i) + 1);
+            for (int j = 0; j + (1 << i) <= n; j++) {
+                st[i][j] = min(st[i - 1][j], st[i - 1][j + (1 << (i - 1))]);
+            }
+        }
+    }
+    T query(int l, int r) { // RMQ on [l, r]
+        int i = lvl(r - l + 1);
+        return min(st[i][l], st[i][r - (1 << i) + 1]);
+    }
+};
+class LCA {
+    private:
+        const int n;
+        const vector<vector<int>> &adj;
+        RMQ<array<int, 2>> rmq;
+        vector<int> tin, et, dep;
+        int timer = 0;
+        void dfs(int u, int p) {
+            tin[u] = timer;
+            et[timer++] = u;
+            for (int v : adj[u]) {
+                if (v == p) { continue; }
+                dep[v] = dep[u] + 1;
+                dfs(v, u);
+                et[timer++] = u;
+            }
+        }
+    public:
+        LCA(int _n, vector<vector<int>> &_adj) 
+            : n(_n), adj(_adj), tin(n), et(2 * n), dep(n) {
+            dfs(0, -1);
+            vector<array<int, 2>> arr(2 * n);
+            for (int i = 0; i < 2 * n; i++) {
+                arr[i] = {dep[et[i]], et[i]};
+            }
+            rmq.init(arr);
+        }
+        int query(int a, int b) {
+            if (tin[a] > tin[b]) { swap(a, b); }
+            return rmq.query(tin[a], tin[b])[1];
+        }
+};
+```
+
+</CPPSection>
+</LanguageSection>
+
 ### Resources
 
 <Resources>
