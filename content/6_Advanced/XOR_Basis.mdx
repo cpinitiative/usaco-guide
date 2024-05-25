@@ -61,153 +61,129 @@ using namespace std;
 const int N = 200005, K = 20;
 vector<int> arr(N), tin(N, 0), tout(N, 0), up[N];
 vector<int> adj[N];
-vector<vector<int>> p(N, vector<int> (K, 0));
+vector<vector<int>> p(N, vector<int>(K, 0));
 int T = 0;
 
 int reduce(array<int, K> &b, int x) {
-    for (int i = K - 1; i >= 0; i--) {
-        if (x & (1 << i)) {
-            x ^= b[i];
-        }
-    }
-    return x;
+	for (int i = K - 1; i >= 0; i--) {
+		if (x & (1 << i)) { x ^= b[i]; }
+	}
+	return x;
 }
 
 bool add(array<int, K> &b, int x) {
-    x = reduce(b, x);
-    if (x != 0) {
-        for (int i = K - 1; i >= 0; i--) {
-            if (x & (1 << i)) {
-                b[i] = x;
-                return true;
-            }
-        }
-    }
-    return false;
+	x = reduce(b, x);
+	if (x != 0) {
+		for (int i = K - 1; i >= 0; i--) {
+			if (x & (1 << i)) {
+				b[i] = x;
+				return true;
+			}
+		}
+	}
+	return false;
 }
 
-bool check(array<int, K> &b, int x) {
-    return (reduce(b, x) == 0);
-}
+bool check(array<int, K> &b, int x) { return (reduce(b, x) == 0); }
 
 vector<int> rebuild_path(const vector<int> &path, int v) {
-    array<int, K> b {0};
-    vector<int> res;
-    if (add(b, arr[v])) {
-        res.push_back(v);
-    }
-    for (auto x : path) {
-        if (add(b, arr[x])) {
-            res.push_back(x);
-        }
-    }
-    return res;
+	array<int, K> b{0};
+	vector<int> res;
+	if (add(b, arr[v])) { res.push_back(v); }
+	for (auto x : path) {
+		if (add(b, arr[x])) { res.push_back(x); }
+	}
+	return res;
 }
 
 void dfs(int v, int u) {
-    tin[v] = T++;
-    if (u == v) {
-        up[v] = rebuild_path(vector<int>(0), v);
-    } else {
-        up[v] = rebuild_path(up[u], v);
-    }
+	tin[v] = T++;
+	if (u == v) {
+		up[v] = rebuild_path(vector<int>(0), v);
+	} else {
+		up[v] = rebuild_path(up[u], v);
+	}
 
-    p[v][0] = u;
-    for (int i = 1; i < K; i++) {
-        p[v][i] = p[p[v][i - 1]][i - 1];
-    }
+	p[v][0] = u;
+	for (int i = 1; i < K; i++) { p[v][i] = p[p[v][i - 1]][i - 1]; }
 
-    for (int i = 0; i < (int)adj[v].size(); i++) {
-        if (adj[v][i] != u) {
-            dfs(adj[v][i], v);
-        }
-    }
-    tout[v] = T++;
+	for (int i = 0; i < (int)adj[v].size(); i++) {
+		if (adj[v][i] != u) { dfs(adj[v][i], v); }
+	}
+	tout[v] = T++;
 }
 
 bool is_ancestor(int u, int v) {
-    return (tin[u] <= tin[v] && tout[u] >= tout[v]);
+	return (tin[u] <= tin[v] && tout[u] >= tout[v]);
 }
 
 int LCA(int x, int y) {
-    if (is_ancestor(x, y)) {
-        return x;
-    }
-    for (int i = K - 1; i >= 0; i--) {
-        if (!is_ancestor(p[x][i], y)) {
-            x = p[x][i];
-        }
-    }
-    return p[x][0];
+	if (is_ancestor(x, y)) { return x; }
+	for (int i = K - 1; i >= 0; i--) {
+		if (!is_ancestor(p[x][i], y)) { x = p[x][i]; }
+	}
+	return p[x][0];
 }
 
 bool query(int x, int y, int k) {
-    array<int, K> b {0};
-    int lca = LCA(x, y);
-    for (auto v : up[x]) {
-        if (!is_ancestor(v, y)) {
-            add(b, arr[v]);
-        }
-    } 
+	array<int, K> b{0};
+	int lca = LCA(x, y);
+	for (auto v : up[x]) {
+		if (!is_ancestor(v, y)) { add(b, arr[v]); }
+	}
 
-    for (auto v : up[y]) {
-        if (!is_ancestor(v, x)) {
-            add(b, arr[v]);
-        }
-    }
+	for (auto v : up[y]) {
+		if (!is_ancestor(v, x)) { add(b, arr[v]); }
+	}
 
-    add(b, arr[lca]);
-    return check(b, k);
+	add(b, arr[lca]);
+	return check(b, k);
 }
 
 int main() {
-    std::ios::sync_with_stdio(false);
-    std::cin.tie(nullptr);
-    
-    int n;
-    std::cin >> n;
-    
-    std::vector<int> a(n);
-    for (int i = 0; i < n; i++) {
-        std::cin >> a[i];
-    }
-    
-    HLD t(n);
-    for (int i = 1; i < n; i++) {
-        int u, v;
-        std::cin >> u >> v;
-        u--, v--;
-        t.addEdge(u, v);
-    }
-    t.work();
-    
-    std::vector<Basis> basis(n);
-    auto dfs = [&](auto self, int x) -> void {
-        basis[x].add(a[x], t.dep[x]);
-        for (auto y : t.adj[x]) {
-            basis[y] = basis[x];
-            self(self, y);
-        }
-    };
-    dfs(dfs, 0);
-    
-    int q;
-    std::cin >> q;
-    while (q--) {
-        int x, y, k;
-        std::cin >> x >> y >> k;
-        x--, y--;
-        int l = t.lca(x, y);
-        auto bas = basis[x];
-        for (int i = 0; i < 20; i++) {
-            if (basis[y].t[i] >= t.dep[l]) {
-                bas.add(basis[y].a[i]);
-            }
-        }
-        std::cout << (bas.query(k, t.dep[l]) ? "YES" : "NO") << "\n";
-    }
-    
-    return 0;
+	std::ios::sync_with_stdio(false);
+	std::cin.tie(nullptr);
+
+	int n;
+	std::cin >> n;
+
+	std::vector<int> a(n);
+	for (int i = 0; i < n; i++) { std::cin >> a[i]; }
+
+	HLD t(n);
+	for (int i = 1; i < n; i++) {
+		int u, v;
+		std::cin >> u >> v;
+		u--, v--;
+		t.addEdge(u, v);
+	}
+	t.work();
+
+	std::vector<Basis> basis(n);
+	auto dfs = [&](auto self, int x) -> void {
+		basis[x].add(a[x], t.dep[x]);
+		for (auto y : t.adj[x]) {
+			basis[y] = basis[x];
+			self(self, y);
+		}
+	};
+	dfs(dfs, 0);
+
+	int q;
+	std::cin >> q;
+	while (q--) {
+		int x, y, k;
+		std::cin >> x >> y >> k;
+		x--, y--;
+		int l = t.lca(x, y);
+		auto bas = basis[x];
+		for (int i = 0; i < 20; i++) {
+			if (basis[y].t[i] >= t.dep[l]) { bas.add(basis[y].a[i]); }
+		}
+		std::cout << (bas.query(k, t.dep[l]) ? "YES" : "NO") << "\n";
+	}
+
+	return 0;
 }
 ```
 
