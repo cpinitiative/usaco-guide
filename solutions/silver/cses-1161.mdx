@@ -74,8 +74,6 @@ public class StickDivision {
 		StringTokenizer st = new StringTokenizer(in.readLine());
 
 		// with our algorithm the variable x will not be used at all
-		// since it is guaranteed by problem constraints that all values add up
-		// to x
 		int x = Integer.parseInt(st.nextToken());
 		int n = Integer.parseInt(st.nextToken());
 		Queue<Integer> sticks = new PriorityQueue<Integer>();
@@ -99,5 +97,24 @@ public class StickDivision {
 ```
 
 </JavaSection>
+<PySection>
 
+```py
+import heapq
+
+x, n = map(int, input().split())
+d = list(map(int, input().split()))
+
+heapq.heapify(d)
+res = 0
+for _ in range(n - 1):
+	a = heapq.heappop(d)
+	b = heapq.heappop(d)
+	res += a + b
+	heapq.heappush(d, a + b)
+
+print(res)
+```
+
+</PySection>
 </LanguageSection>
