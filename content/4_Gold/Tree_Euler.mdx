@@ -726,7 +726,9 @@ $\mathcal{O}(1)$.
 template <class T> struct RMQ {
 	int n, log2dist;
 	vector<vector<T>> st;
+
 	int lvl(int x) { return 31 - __builtin_clz(x); }
+
 	void init(vector<T> &v) {
 		n = (int)v.size();
 		log2dist = lvl(n) + 1;
@@ -739,11 +741,13 @@ template <class T> struct RMQ {
 			}
 		}
 	}
+
 	T query(int l, int r) {  // RMQ on [l, r]
 		int i = lvl(r - l + 1);
 		return min(st[i][l], st[i][r - (1 << i) + 1]);
 	}
 };
+
 class LCA {
   private:
 	const int n;
@@ -751,6 +755,7 @@ class LCA {
 	RMQ<array<int, 2>> rmq;
 	vector<int> tin, et, dep;
 	int timer = 0;
+
 	void dfs(int u, int p) {
 		tin[u] = timer;
 		et[timer++] = u;
@@ -770,6 +775,7 @@ class LCA {
 		for (int i = 0; i < 2 * n; i++) { arr[i] = {dep[et[i]], et[i]}; }
 		rmq.init(arr);
 	}
+
 	int query(int a, int b) {
 		if (tin[a] > tin[b]) { swap(a, b); }
 		return rmq.query(tin[a], tin[b])[1];
