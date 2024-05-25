@@ -482,7 +482,7 @@ class BinaryJumping {
 		}
 		return x;
 	}
-	
+
 	/** @return the LCA of x and y */
 	int get_lca(int x, int y) {
 		if (depth[x] < depth[y]) { swap(x, y); }
@@ -552,14 +552,14 @@ int main() {
 			cin >> x >> y;
 			Points.push_back({x, y, i});
 		}
-	
+
 		vector<pair<Point, Point>> mst;
 		for (int i = 0; i < n; i++) {
 			for (int j = i + 1; j < n; j++) {
 				mst.push_back({Points[i], Points[j]});
 			}
 		}
-	
+
 		mst = compute_mst(mst);
 		vector<vector<pair<int, int>>> tree(n);
 		for (pair<Point, Point> edge : mst) {
@@ -570,7 +570,7 @@ int main() {
 			    {edge.first.idx,
 			     dist(Points[edge.first.idx], Points[edge.second.idx])});
 		}
-	
+
 		BinaryJumping lca(tree);
 		int query_num;
 		cin >> query_num;
