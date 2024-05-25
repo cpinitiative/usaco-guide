@@ -161,52 +161,29 @@ bool query(int x, int y, int k) {
 }
 
 int main() {
-    std::ios::sync_with_stdio(false);
-    std::cin.tie(nullptr);
-    
-    int n;
-    std::cin >> n;
-    
-    std::vector<int> a(n);
+    int n, q;
+    cin >> n;
     for (int i = 0; i < n; i++) {
-        std::cin >> a[i];
+        cin >> arr[i];
     }
-    
-    HLD t(n);
-    for (int i = 1; i < n; i++) {
+
+    for (int i = 0; i < n - 1; i++) {
         int u, v;
-        std::cin >> u >> v;
-        u--, v--;
-        t.addEdge(u, v);
+        cin >> u >> v;
+        u--,v--;
+        adj[u].push_back(v);
+        adj[v].push_back(u);
     }
-    t.work();
-    
-    std::vector<Basis> basis(n);
-    auto dfs = [&](auto self, int x) -> void {
-        basis[x].add(a[x], t.dep[x]);
-        for (auto y : t.adj[x]) {
-            basis[y] = basis[x];
-            self(self, y);
-        }
-    };
-    dfs(dfs, 0);
-    
-    int q;
-    std::cin >> q;
-    while (q--) {
+
+    dfs(0, 0);
+    cin >> q;
+    for (int i = 0; i < q; i++) {
         int x, y, k;
-        std::cin >> x >> y >> k;
-        x--, y--;
-        int l = t.lca(x, y);
-        auto bas = basis[x];
-        for (int i = 0; i < 20; i++) {
-            if (basis[y].t[i] >= t.dep[l]) {
-                bas.add(basis[y].a[i]);
-            }
-        }
-        std::cout << (bas.query(k, t.dep[l]) ? "YES" : "NO") << "\n";
+        cin >> x >> y >> k;
+        x--,y--;
+        cout << (query(x, y, k) ? "YES" : "NO") << '\n';
     }
-    
+
     return 0;
 }
 ```
