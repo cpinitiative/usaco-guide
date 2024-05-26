@@ -727,6 +727,7 @@ template <class T> struct RMQ {
 	int n, log2dist;
 	vector<vector<T>> st;
 	/** constructor for the class */
+
 	RMQ(const vector<T> &v) {
 		n = (int)v.size();
 		log2dist = 1 + (int)log2(n);
@@ -739,12 +740,14 @@ template <class T> struct RMQ {
 			}
 		}
 	}
+
 	/** @return minimum on the range [l, r] */
 	T query(int l, int r) {
 		int i = (int)log2(r - l + 1);
 		return min(st[i][l], st[i][r - (1 << i) + 1]);
 	}
 };
+
 class LCA {
   private:
 	const int n;
@@ -752,6 +755,7 @@ class LCA {
 	RMQ<pair<int, int>> rmq;
 	vector<int> tin, et, dep;
 	int timer = 0;
+
 	/** prepares tin, et, dep arrays */
 	void dfs(int u, int p) {
 		tin[u] = timer;
@@ -774,6 +778,7 @@ class LCA {
 		for (int i = 0; i < 2 * n; i++) { arr[i] = {dep[et[i]], et[i]}; }
 		rmq = RMQ<pair<int, int>>(arr);
 	}
+	
 	/** @return LCA of nodes a and b */
 	int query(int a, int b) {
 		if (tin[a] > tin[b]) { swap(a, b); }
