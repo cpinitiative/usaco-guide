@@ -63,7 +63,7 @@ In some cases there could be allowed to also **add** stones to a chosen pile, so
 
 To demonstrate this theory we have to show that from a state with xor-sum $0$ (losing), whatever the move is, we can only reach a state with non-zero xox-sum (winning), and from a winning state we can reach a losing state.
 
-We will assume that from a state with sum-xor $0$ we can also reach another state with xor-sum $0$. Let's pick an arbitrary pile with $y$ stones and we would like to remove $x$ stones ($x \in [1, y]$).
+We will assume that from a state with xor-sum $0$ we can also reach another state with xor-sum $0$. Let's pick an arbitrary pile with $y$ stones and we would like to remove $x$ stones ($x \in [1, y]$).
 Denote $s$ as the xor-sum of the other $n-1$ piles, then we have $s \oplus y = 0 \iff s = y$. By removing $x$ stones from the pile, to reach a zero xor-sum state, means that $s \oplus (y - x) = 0 \iff s = y - x$. We demonstrated that $s = y$ so $s = y - x \iff y = y - x \iff x = 0$ which is false, because we can't remove $0$ stones i.e $x \in [1,y]$.
 
 It remains to demonstrate that from a winning state we can bring the other player in a losing state. Let $s$ be the xor-sum of all the pile sizes. If there is a pile with $y$ stone such that $y \gt y \oplus s$, then we can remove $y - y \oplus s$ stones from this pile, remaining $y - (y - y \oplus s) = y \oplus s$. Now the pile has $y \oplus s$ stones and the new xor-sum is obtained by removing $y$ and adding $y \oplus s$ i.e. $s \oplus y \oplus y \oplus s = 0$. Consequently, if there is such a pile with the property previously mentioned we can reach a losing state from a winning state. But are we guaranteed that there is always such a pile? Let $p$ be position of the most significant bit in $s$, then there should be at least one pile $x_i$ that has the bit flipped on at position $p$. The two $1$ bits cancel each other, because $1 \oplus 1 = 0$ (1). Thereby there always exists a pile satisfying: $y > y \oplus s$ i.
@@ -145,6 +145,7 @@ According to $(1)$ the nimber value is the $\text{mex}$ of the reachable nimber 
 - $n(5) = \text{mex}\{2, 3, 0\} = 1$
 - $n(6) = \text{mex}\{3, 0, 1\} = 2$
 - $n(7) = \text{mex}\{0, 1, 2\} = 3$
+- $n(i) = \text{mex}\{ n(i-1, n(i-2), n(i-3))\}$
 
 A nimber values equal to $0$ represents a losing state of the game; see $n(4)$ and $n(7)$.
 
