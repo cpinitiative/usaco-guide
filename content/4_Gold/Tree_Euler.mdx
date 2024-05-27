@@ -726,11 +726,13 @@ $\mathcal{O}(1)$.
 #include <bits/stdc++.h>
 using namespace std;
 
-template <typename T> struct RMQ {
+template<typename T> class SparseTable {
+  private:
 	int n, log2dist;
 	vector<vector<T>> st;
-
-	RMQ(const vector<T> &v) {
+	
+  public:
+	SparseTable(const vector<T> &v) {
 		n = (int)v.size();
 		log2dist = 1 + (int)log2(n);
 		st.resize(log2dist);
@@ -754,7 +756,7 @@ class LCA {
   private:
 	const int n;
 	const vector<vector<int>> &adj;
-	RMQ<pair<int, int>> rmq;
+	SparseTable<pair<int, int>> rmq;
 	vector<int> tin, et, dep;
 	int timer = 0;
 
@@ -771,13 +773,14 @@ class LCA {
 	}
 
   public:
-	LCA(int _n, vector<vector<int>> &_adj)
-	    : n(_n), adj(_adj), tin(n), et(2 * n), dep(n),
+	// make sure the adjacency list is 0 indexed
+	LCA(vector<vector<int>> &_adj)
+	    : n((int) _adj.size()), adj(_adj), tin(n), et(2 * n), dep(n),
 	      rmq(vector<pair<int, int>>(1)) {
 		dfs(0, -1);
 		vector<pair<int, int>> arr(2 * n);
 		for (int i = 0; i < 2 * n; i++) { arr[i] = {dep[et[i]], et[i]}; }
-		rmq = RMQ<pair<int, int>>(arr);
+		rmq = SparseTable<pair<int, int>>(arr);
 	}
 
 	/** @return LCA of nodes a and b */
