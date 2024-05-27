@@ -40,7 +40,7 @@ An XOR basis is a minimal set of linearly independent binary vectors that can re
 XOR basis involves two parts:
 - Represent each given number in its base 2 form, considering it as a vector in the $${\mathbb{Z_2^d}}$$ vector space, where $d$ is the maximum possible number of bits. The XOR operation on these numbers is equivalent to the addition of the corresponding vectors in the vector space $${\mathbb{Z_2^d}}$$.
 
-- Relate the answers to the queries of the second type with the basis of the vectors found in Part 1. 
+- Relate the answers to the queries of the second type with the basis of the vectors found in Part 1.
 By constructing an XOR basis from the set of vectors, we can efficiently answer various queries about linear independence, redundancy, and other properties related to the XOR combinations of the given numbers. This basis provides a compact representation that allows for quick computation and manipulation of the vector space.
 
 ### Important terms
@@ -48,7 +48,7 @@ By constructing an XOR basis from the set of vectors, we can efficiently answer 
 #### Vector Space $${\mathbb{Z_2^d}}$$
 $${\mathbb{Z_2}}$$: $${\mathbb{Z_m}}$$ is the set of remainders upon division by m. Therefore, $${\mathbb{Z_2}}$$ is the set of remainders upon division by 2. Hence $${\mathbb{Z_2}}$$ is simply the set $$\{0, 1\}$$.
 
-$${\mathbb{Z_2^d}}$$:  It represents the set of all binary vectors of length $d$, where each component of the vector belongs to the field 
+$${\mathbb{Z_2^d}}$$:  It represents the set of all binary vectors of length $d$, where each component of the vector belongs to the field
 $${\mathbb{Z_2}}$$, which consists of two elements: 0 and 1.
 
 #### Linear Span
@@ -87,28 +87,24 @@ using namespace std;
 vector<i23> basis;
 
 void Add(i23 x) {
-    for (int i = 0; i < (int)basis.size(); i++) {
-        x = min(x, x ^ basis[i]);
-    }
+	for (int i = 0; i < (int)basis.size(); i++) { x = min(x, x ^ basis[i]); }
 
-    if (x != 0) {
-        basis.push_back(x);
-    }
+	if (x != 0) { basis.push_back(x); }
 }
 
 int main() {
-    int n;
-    cin >> n;
-    vector<i23> arr(n);
-    for (auto &x : arr) {
-        cin >> x;
-        Add(x);
-    }
+	int n;
+	cin >> n;
+	vector<i23> arr(n);
+	for (auto &x : arr) {
+		cin >> x;
+		Add(x);
+	}
 
-    i23 res = (1LL << (int)basis.size()) - n;
-    cout << res << '\n';
+	i23 res = (1LL << (int)basis.size()) - n;
+	cout << res << '\n';
 
-    return 0;
+	return 0;
 }
 ```
 </CPPSection>
@@ -141,103 +137,83 @@ using namespace std;
 const int N = 200005, K = 20;
 vector<int> arr(N), tin(N, 0), tout(N, 0), up[N];
 vector<int> adj[N];
-vector<vector<int>> p(N, vector<int> (K, 0));
+vector<vector<int>> p(N, vector<int>(K, 0));
 int T = 0;
 
 int reduce(array<int, K> &b, int x) {
-    for (int i = K - 1; i >= 0; i--) {
-        if (x & (1 << i)) {
-            x ^= b[i];
-        }
-    }
-    return x;
+	for (int i = K - 1; i >= 0; i--) {
+		if (x & (1 << i)) { x ^= b[i]; }
+	}
+	return x;
 }
 
 bool add(array<int, K> &b, int x) {
-    x = reduce(b, x);
-    if (x != 0) {
-        for (int i = K - 1; i >= 0; i--) {
-            if (x & (1 << i)) {
-                b[i] = x;
-                return true;
-            }
-        }
-    }
-    return false;
+	x = reduce(b, x);
+	if (x != 0) {
+		for (int i = K - 1; i >= 0; i--) {
+			if (x & (1 << i)) {
+				b[i] = x;
+				return true;
+			}
+		}
+	}
+	return false;
 }
 
-bool check(array<int, K> &b, int x) {
-    return (reduce(b, x) == 0);
-}
+bool check(array<int, K> &b, int x) { return (reduce(b, x) == 0); }
 
 vector<int> rebuild_path(const vector<int> &path, int v) {
-    array<int, K> b {0};
-    vector<int> res;
-    if (add(b, arr[v])) {
-        res.push_back(v);
-    }
-    for (auto x : path) {
-        if (add(b, arr[x])) {
-            res.push_back(x);
-        }
-    }
-    return res;
+	array<int, K> b{0};
+	vector<int> res;
+	if (add(b, arr[v])) { res.push_back(v); }
+	for (auto x : path) {
+		if (add(b, arr[x])) { res.push_back(x); }
+	}
+	return res;
 }
 
 void dfs(int v, int u) {
-    tin[v] = T++;
-    if (u == v) {
-        up[v] = rebuild_path(vector<int>(0), v);
-    } else {
-        up[v] = rebuild_path(up[u], v);
-    }
+	tin[v] = T++;
+	if (u == v) {
+		up[v] = rebuild_path(vector<int>(0), v);
+	} else {
+		up[v] = rebuild_path(up[u], v);
+	}
 
-    p[v][0] = u;
-    for (int i = 1; i < K; i++) {
-        p[v][i] = p[p[v][i - 1]][i - 1];
-    }
+	p[v][0] = u;
+	for (int i = 1; i < K; i++) { p[v][i] = p[p[v][i - 1]][i - 1]; }
 
-    for (int i = 0; i < (int)adj[v].size(); i++) {
-        if (adj[v][i] != u) {
-            dfs(adj[v][i], v);
-        }
-    }
-    tout[v] = T++;
+	for (int i = 0; i < (int)adj[v].size(); i++) {
+		if (adj[v][i] != u) { dfs(adj[v][i], v); }
+	}
+	tout[v] = T++;
 }
 
 bool is_ancestor(int u, int v) {
-    return (tin[u] <= tin[v] && tout[u] >= tout[v]);
+	return (tin[u] <= tin[v] && tout[u] >= tout[v]);
 }
 
 int LCA(int x, int y) {
-    if (is_ancestor(x, y)) {
-        return x;
-    }
-    for (int i = K - 1; i >= 0; i--) {
-        if (!is_ancestor(p[x][i], y)) {
-            x = p[x][i];
-        }
-    }
-    return p[x][0];
+	if (is_ancestor(x, y)) { return x; }
+	for (int i = K - 1; i >= 0; i--) {
+		if (!is_ancestor(p[x][i], y)) { x = p[x][i]; }
+	}
+	return p[x][0];
 }
 
 bool query(int x, int y, int k) {
-    array<int, K> b {0};
-    int lca = LCA(x, y);
-    for (auto v : up[x]) {
-        if (!is_ancestor(v, y)) {
-            add(b, arr[v]);
-        }
-    } 
+	array<int, K> b{0};
+	int lca = LCA(x, y);
+	for (auto v : up[x]) {
+		if (!is_ancestor(v, y)) { add(b, arr[v]); }
+	}
 
-    for (auto v : up[y]) {
-        if (!is_ancestor(v, x)) {
-            add(b, arr[v]);
-        }
-    }
+	for (auto v : up[y]) {
+		if (!is_ancestor(v, x)) { add(b, arr[v]); }
+	}
 
-    add(b, arr[lca]);
-    return check(b, k);
+	add(b, arr[lca]);
+	return check(b, k);
 }
 
 int main() {
