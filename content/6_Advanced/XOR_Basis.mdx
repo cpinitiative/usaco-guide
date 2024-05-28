@@ -79,7 +79,9 @@ using namespace std;
 vector<i23> basis;
 
 void add(i23 x) {
-	for (int i = 0; i < (int)basis.size(); i++) { x = min(x, x ^ basis[i]); }
+	for (int i = 0; i < (int)basis.size(); i++) { // reduce x using the current basis vectors
+        x = min(x, x ^ basis[i]); 
+    }
 
 	if (x != 0) { basis.push_back(x); }
 }
@@ -132,19 +134,21 @@ vector<int> adj[N];
 vector<vector<int>> p(N, vector<int>(K, 0));
 int T = 0;
 
-int reduce(array<int, K> &b, int x) {
+int reduce(array<int, K> &b, int x) { // reducing x using basis vectors b
 	for (int i = K - 1; i >= 0; i--) {
-		if (x & (1 << i)) { x ^= b[i]; }
+		if (x & (1 << i)) { // check if the ith bit is set
+            x ^= b[i]; 
+        }
 	}
 	return x;
 }
 
 bool add(array<int, K> &b, int x) {
-	x = reduce(b, x);
+	x = reduce(b, x); // reduce x using current basis
 	if (x != 0) {
 		for (int i = K - 1; i >= 0; i--) {
 			if (x & (1 << i)) {
-				b[i] = x;
+				b[i] = x; // add x to the basis if it is independent
 				return true;
 			}
 		}
@@ -152,60 +156,80 @@ bool add(array<int, K> &b, int x) {
 	return false;
 }
 
-bool check(array<int, K> &b, int x) { return (reduce(b, x) == 0); }
+
+bool check(array<int, K> &b, int x) { 
+    return (reduce(b, x) == 0); // if x reduces to 0, it can be represented by the basis
+}
 
 vector<int> rebuild_path(const vector<int> &path, int v) {
 	array<int, K> b{0};
 	vector<int> res;
-	if (add(b, arr[v])) { res.push_back(v); }
+	if (add(b, arr[v])) { 
+        res.push_back(v); // add v to the result if it is independent
+    }
 	for (auto x : path) {
-		if (add(b, arr[x])) { res.push_back(x); }
+		if (add(b, arr[x])) { 
+            res.push_back(x); // add x to the result if it is independent
+        }
 	}
 	return res;
 }
 
+// Depth First Search to set up LCA and basis paths
 void dfs(int v, int u) {
-	tin[v] = T++;
+	tin[v] = T++; // set in-time for the current node
 	if (u == v) {
-		up[v] = rebuild_path(vector<int>(0), v);
+		up[v] = rebuild_path(vector<int>(0), v); // root node case
 	} else {
-		up[v] = rebuild_path(up[u], v);
+		up[v] = rebuild_path(up[u], v); // rebuild path for the current node
 	}
 
-	p[v][0] = u;
-	for (int i = 1; i < K; i++) { p[v][i] = p[p[v][i - 1]][i - 1]; }
+	p[v][0] = u; // set direct path in ancestor table
+	for (int i = 1; i < K; i++) { 
+        p[v][i] = p[p[v][i - 1]][i - 1]; // fill ancestor table for LCA
+    }
 
 	for (int i = 0; i < (int)adj[v].size(); i++) {
-		if (adj[v][i] != u) { dfs(adj[v][i], v); }
+		if (adj[v][i] != u) { 
+            dfs(adj[v][i], v); // recursively call dfs for children
+        }
 	}
-	tout[v] = T++;
+	tout[v] = T++; // set out-time for the current node
 }
 
 bool is_ancestor(int u, int v) {
-	return (tin[u] <= tin[v] && tout[u] >= tout[v]);
+	return (tin[u] <= tin[v] && tout[u] >= tout[v]); // check if u is an ancestor of v
 }
 
 int LCA(int x, int y) {
-	if (is_ancestor(x, y)) { return x; }
+	if (is_ancestor(x, y)) { 
+        return x; // return x if it is an ancestor of y
+    }
 	for (int i = K - 1; i >= 0; i--) {
-		if (!is_ancestor(p[x][i], y)) { x = p[x][i]; }
+		if (!is_ancestor(p[x][i], y)) { 
+            x = p[x][i]; // move x up in the tree
+        }
 	}
-	return p[x][0];
+	return p[x][0]; // return the parent of x as the LCA
 }
 
 bool query(int x, int y, int k) {
 	array<int, K> b{0};
 	int lca = LCA(x, y);
 	for (auto v : up[x]) {
-		if (!is_ancestor(v, y)) { add(b, arr[v]); }
+		if (!is_ancestor(v, y)) { 
+            add(b, arr[v]); // add vector to basis if not an ancestor of y
+        }
 	}
 
 	for (auto v : up[y]) {
-		if (!is_ancestor(v, x)) { add(b, arr[v]); }
+		if (!is_ancestor(v, x)) { 
+            add(b, arr[v]); // Add vector to basis if not an ancestor of x
+        }
 	}
 
-	add(b, arr[lca]);
-	return check(b, k);
+	add(b, arr[lca]); // add LCA's value to basis
+	return check(b, k); // // check if k can be represented by the basis
 }
 
 int main() {
