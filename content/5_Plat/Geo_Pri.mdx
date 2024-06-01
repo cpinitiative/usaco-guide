@@ -593,9 +593,13 @@ run on fewer edges, thus speeding up the computation. There several ways of redu
 
 We'll continue to discuss the second approach. The image below depicts the octants with an arbitrary point $P$ at the centre. Let's take a closer look at the octant containing points
 $Q$ and $R$. Point $Q$ is the closest point in the octant - the dashed line traverses point with equal manhattan distance to point $P$. We'll assume that $PR$ is considered for
-the spanning tree. According to the image $|PQ| < |PR|$
+the spanning tree. According to the image $|PQ| < |PR| \iff |PQ| + |QR| < |PR| + |QR|$, thus the minimum spanning tree will contain edges $PQ$ and $QR$. Consequently, edge $PR$ can be ignored or removed.
 
 ![Illustration of Octants](./assets/octants.png)
+
+This approach significantly reduces the number of edges. This reduces the problem to that of finding the nearest neighbour in each octant. We'll analyze the same octant; the other can be computer similarly. The closest point in the octant is the one with the maximum value of $x-y$
+
+
 
 </CPPSection>
 </LanguageSection>
