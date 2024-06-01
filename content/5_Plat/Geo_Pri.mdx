@@ -341,6 +341,7 @@ $A$ can be computed using cross-product.
 
 <LanguageSection>
 <CPPSection>
+
 ```cpp
 #include <bits/stdc++.h>
 
@@ -582,6 +583,19 @@ int main() {
 	}
 }
 ```
+
+#### Solution
+
+To improve the previous discussed algorithm we'll reduce the complete graph - with $N^2$ edges - to a much smaller one; this way the $\mathcal{O}(N \codt \log{N})$ Kruskal algorithms will
+run on fewer edges, thus speeding up the computation. There several ways of reducing the number of edges; two of them are:
+- [Delaunay Triangulation](https://en.wikipedia.org/wiki/Delaunay_triangulation) has a nice property: the minimum spanning tree is a subster of the triangulation, which consists of triangles whose circumcircle do not contain any other of the points.
+- Only consider the nearest point in each of the $8$ octants of the plane.
+
+We'll continue to discuss the second approach. The image below depicts the octants with an arbitrary point $P$ at the centre. Let's take a closer look at the octant containing points
+$Q$ and $R$. Point $Q$ is the closest point in the octant - the dashed line traverses point with equal manhattan distance to point $P$. We'll assume that $PR$ is considered for
+the spanning tree. According to the image $|PQ| < |PR|$
+
+![Illustration of Octants](./assets/octants.png)
 
 </CPPSection>
 </LanguageSection>
