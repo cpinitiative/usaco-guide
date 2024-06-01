@@ -38,45 +38,94 @@ frequency: 0
     />
 </Resources>
 
-## NIM Game
+## Nim
 
 <FocusProblem problem="nim" />
 
 ### Game description
 
-The most well-known impartial game is the NIM game. In this game there are considered $n$ piles with stones. At every step, a player removes a non-zero number of stone from a pile.
-The game continues while there are stones left. The winner is the player that makes the last move.
+Nim might be one of the most well-known examples in game theory.
+In this game there are considered $n$ piles of some item.
+The problem uses sticks, while some others use stones; we'll be using sticks to stay
+consistent with the CSES problem.
+Regardless, players take turns removing a nonzero number of sticks from a certain pile,
+and the player who takes the last stick wins.
 
-Let's denote a state of the game as ${x_1, x_2, x_3, \ldots, x_n}$, where $x_i$ is the number of stones left in pile $i$. Then the winning strategy is as following:
-$$
-\text{The current player has a winning strategy if and only if the xor0sum of the pile sizes is not } 0
-$$
+Let's represent the current state of the piles with $[x_1, x_2, x_3, \ldots, x_n]$,
+where $x_i$ is the number of sticks in pile $i$.
+You'll soon see that it doesn't matter whether we include empty piles in our array.
 
-The xor sum is $x_1 \oplus x_2 \oplus x_3 \ldots \oplus x_n$, where $\oplus$ denotes the [bitwise exclusive xor](/adv/xor-basis).
+We now propose something that may seem unintuitive at first:
 
-<Info title="NIM game with increases">
-In some cases there could be allowed to also **add** stones to a chosen pile, so when a turn comes, you can remove or add stones. It turns out that adding doesn't change the how winning and losing states are determined i.e. adding operation doesn't affect the outcome of the game.
-</Info>
+> The player who moves first can always win if the xor-sum of the sizes of the piles is nonzero.
 
+### Proof
 
-### Demonstration
+For our own sanity, we'll refer to a state with a xor-sum of 0 as a "losing state"
+and a state with a nonzero xor-sum as a "winning state."
 
-To demonstrate this theory we have to show that from a state with xor-sum $0$ (losing), whatever the move is, we can only reach a state with non-zero xox-sum (winning), and from a winning state we can reach a losing state.
+To prove this, we have to show that from a losing state, any move we make
+will result in a winning state and vice versa.
+Notice that when we make our move, the game switches to a "sub-game" of sorts
+where the second player becomes the first player.
+Thus, moving to a winning state for the next turn means that they win and we lose.
 
-We will assume that from a state with xor-sum $0$ we can also reach another state with xor-sum $0$. Let's pick an arbitrary pile with $y$ stones and we would like to remove $x$ stones ($x \in [1, y]$).
-Denote $s$ as the xor-sum of the other $n-1$ piles, then we have $s \oplus y = 0 \iff s = y$. By removing $x$ stones from the pile, to reach a zero xor-sum state, means that $s \oplus (y - x) = 0 \iff s = y - x$. We demonstrated that $s = y$ so $s = y - x \iff y = y - x \iff x = 0$ which is false, because we can't remove $0$ stones i.e $x \in [1,y]$.
+However, it's probably good to prove our base cases first.
+$[0]$ is a losing state, since the first player can't make any moves and thus loses.
+On the other hand, $[x]$ where $x$ is any positive integer is a winning state since
+we can take $x$ sticks from the only pile.
+As we can see, the first state has a xor-sum of $0$ while the second has a xor-sum of $x$ which is nonzero.
 
-It remains to demonstrate that from a winning state we can bring the other player in a losing state. Let $s$ be the xor-sum of all the pile sizes. If there is a pile with $y$ stone such that $y \gt y \oplus s$, then we can remove $y - y \oplus s$ stones from this pile, remaining $y - (y - y \oplus s) = y \oplus s$. Now the pile has $y \oplus s$ stones and the new xor-sum is obtained by removing $y$ and adding $y \oplus s$ i.e. $s \oplus y \oplus y \oplus s = 0$. Consequently, if there is such a pile with the property previously mentioned we can reach a losing state from a winning state. But are we guaranteed that there is always such a pile? Let $p$ be position of the most significant bit in $s$, then there should be at least one pile $x_i$ that has the bit flipped on at position $p$. The two $1$ bits cancel each other, because $1 \oplus 1 = 0$ (1). Thereby there always exists a pile satisfying: $y > y \oplus s$ i.
+#### Losing $\rightarrow$ Winning
 
-$$
-\begin{array}{c}	\tag{1}
-	y &\quad 	b_m \ldots b_{p+1} \text{ 1 }b_{p-1} \ldots b_0 \\
-	s &\quad  	0\ldots\ldots 0 \;\; \text{ 1 } c_{p-1} \ldots c_0 \\
-	y \oplus s &\quad  b_m \ldots b_{p+1} \text{ 0 } d_{p-1} \ldots d_0
-\end{array}
-$$
+Let's first prove that any losing state will move to a winning state for the other player.
+
+Since XOR is a commutative and associative operation, we can assume WLOG that the move we make is on pile $1$.
+
+The current xor-sum of the state is $x_1 \oplus x_2 \oplus \cdots x_n=0$.
+Notice that this can be thought of $x_1$ XOR the xor-sum of the rest of the numbers.
+Let's call that xor-sum of everything else $y$.
+
+Since the xor-sum is $0$, $x_1=y$.
+Removing any number of sticks from $x_1$ will break this equality and turn
+$x_1 \oplus y$ nonzero, which is precisely the definition for our winning state.
+
+#### Winning $\rightarrow$ Losing
+
+Now we have to prove that any *winning* state can move to a losing state for the other player.
+Notice the use of *can* instead of *will* in our statement due to how these games work.
+
+This time, let's define $y$ as the xor-sum of *all* the piles instead of all except for one.
+Then, say we have an $x_i$ such that $x_i > y \oplus x_i$.
+Note that $y \oplus x_i$ is the xor-sum of all the other elements, since XOR is its own inverse.
+
+With this, we can take $x_i - (y \oplus x_i)$ sticks from $x_i$, then makes it equivalent to $y \oplus x_i$
+and the xor-sum of the whole board will be $0$, thus forming a losing state for the second player.
+
+But all of this hinges on the existence of an $x_i$ such that $x_i > y \oplus x_i$.
+Does it *always* exist?
+
+Suppose that $p$ is the position of the most significant bit in $y$.
+Then, we know that there must exist some $x_i$ with a set bit at $p$ as well.
+Whether $p$ is the most significant bit in $x_i$ or not, XOR-ing the two gives
+a result with a $0$ at bit $p$.
+This then guarantees that there exists an $x_i > y \oplus x_i$.
+
+<center>
+
+| Variable | Value |
+|------|------|
+| $y$    | `0...01?...?` |
+| $x_i$ | `?...?1?...?` |
+| $y \oplus x_i$ | `?...?0?...?` |
+
+*Since the first part of $y$ is all `0`s, the first parts of $x_i$ and $y \oplus x_i$ are the same.*
+
+</center>
 
 ### Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
 
 <LanguageSection>
 <CPPSection>
@@ -85,27 +134,87 @@ $$
 #include <iostream>
 #include <vector>
 
-using namespace std;
+using std::cout;
+using std::endl;
+using std::vector;
 
 int main() {
-	int t;
-	cin >> t;
-	while (t--) {
-		int n, s = 0;
-		cin >> n;
-		for (int i = 0; i < n; i++) {
-			int x;
-			cin >> x;
-			s ^= x;
+	int test_num;
+	std::cin >> test_num;
+	for (int t = 0; t < test_num; t++) {
+		int pile_num;
+		std::cin >> pile_num;
+		vector<int> piles(pile_num);
+		for (int& p : piles) {
+			std::cin >> p;
 		}
-		cout << (s == 0 ? "second" : "first") << '\n';
+
+		int xor_sum = 0;
+		for (int p : piles) {
+			xor_sum ^= p;
+		}
+
+		cout << (xor_sum != 0 ? "first" : "second") << '\n';
 	}
-	return 0;
 }
 ```
 
 </CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Main {
+	public static void main(String[] args) throws IOException {
+		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
+		int testNum = Integer.parseInt(read.readLine());
+		for (int t = 0; t < testNum; t++) {
+			int pileNum = Integer.parseInt(read.readLine());
+			StringTokenizer pileST = new StringTokenizer(read.readLine());
+			int[] piles = new int[pileNum];
+			for (int p = 0; p < pileNum; p++) {
+				piles[p] = Integer.parseInt(pileST.nextToken());
+			}
+
+			int xorSum = 0;
+			for (int p : piles) {
+				xorSum ^= p;
+			}
+
+			System.out.println(xorSum != 0 ? "first" : "second");
+		}
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+for _ in range(int(input())):
+	pile_num = int(input())
+	sizes = [int(p) for p in input().split()]
+	assert pile_num == len(sizes)
+
+	xor_sum = 0
+	for s in sizes:
+		xor_sum ^= s
+	
+	print("first" if xor_sum != 0 else "second")
+```
+
+</PySection>
 </LanguageSection>
+
+<Optional title="What if we could add?">
+
+In some cases, players may be allowed to add sticks as well as remove them.
+Funnily enough, this doesn't change how the winning and losing states are determined,
+i.e. the outcome of the game.
+
+</Optional>
 
 ## Sprague-Grundy theorem
 
@@ -122,7 +231,7 @@ int main() {
 	/>
 </Resources>
 
-The [Sprague-Grundy theorem](https://en.wikipedia.org/wiki/Sprague%E2%80%93Grundy_theorem) defines nimber (or grundy) values as:
+The [Sprague-Grundy theorem](https://en.wikipedia.org/wiki/Sprague%E2%80%93Grundy_theorem) defines "nimbers" or "grundy values" as
 
 $$
 \tag{1}
@@ -145,7 +254,6 @@ According to $(1)$ the nimber value is the $\text{mex}$ of the reachable nimber 
 - $n(5) = \text{mex}\{2, 3, 0\} = 1$
 - $n(6) = \text{mex}\{3, 0, 1\} = 2$
 - $n(7) = \text{mex}\{0, 1, 2\} = 3$
-- $n(i) = \text{mex}\{ n(i-1, n(i-2), n(i-3))\}$
 
 A nimber values equal to $0$ represents a losing state of the game; see $n(4)$ and $n(7)$.
 
