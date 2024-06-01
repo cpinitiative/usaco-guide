@@ -310,7 +310,7 @@ export default function DashboardPage(props: PageProps) {
         </main>
       </div>
 
-      {parsedAnnouncements[0].id !== lastReadAnnouncement &&
+      {/* {parsedAnnouncements[0].id !== lastReadAnnouncement &&
         numPageviews > 12 && (
           <div className="h-12">
             <AnnouncementBanner
@@ -320,7 +320,7 @@ export default function DashboardPage(props: PageProps) {
               }
             />
           </div>
-        )}
+        )} */}
     </Layout>
   );
 }
