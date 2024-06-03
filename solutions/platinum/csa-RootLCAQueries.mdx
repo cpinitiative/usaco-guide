@@ -58,6 +58,76 @@ subtrees from our answer.
 #include <bits/stdc++.h>
 using namespace std;
 
+class Tree {
+  private: 
+    const int n, log2dist;
+    const vector<vector<int>> &adj;
+    vector<vector<int>> lift;
+    vector<int> dep, sub;
+
+    /** calculates lift, dep, and sub arrays */
+    void dfs(int u, int p) {
+        for (int v : adj[u]) {
+			if (v == p) continue;
+			dep[v] = dep[u] + 1;
+			lift[0][v] = u;
+			for (int p = 1; p < log2dist; p++) {
+				lift[p][v] = lift[p - 1][lift[p - 1][v]];
+			}
+			dfs(v, u);
+			sub[u] += sub[v];
+		}
+    }
+
+    /** @return d-th ancestor of u */
+    int jump(int u, int d) {
+        for (int i = log2dist - 1; i >= 0; i--) {
+			if ((d >> i) & 1) { u = lift[i][u]; }
+		}
+		return u;
+    }
+
+    /** @return LCA of nodes u and v */
+    int lca(int u, int v) {
+        if (dep[u] < dep[v]) { swap(u, v); }
+		u = jump(u, dep[u] - dep[v]);
+		if (u == v) { return u; }
+		for (int i = log2dist - 1; i >= 0; i--) {
+			if (lift[i][u] != lift[i][v]) {
+				u = lift[i][u];
+				v = lift[i][v];
+			}
+		}
+		return lift[0][u];
+    }
+
+  public:
+    Tree(vector<vector<int>> &_adj) 
+        : n((int) _adj.size()), log2dist(1 + (int) log2(n)), adj(_adj), 
+          lift(log2dist, vector<int>(n)), dep(n), sub(n, 1) {
+        dfs(0, -1);
+    }
+
+    /** @return # of suitable roots for this query */
+    int query(int a, int b, int c) {
+        int anc = lca(a, b);
+		if (c == anc) {
+			return n - sub[jump(a, dep[a] - dep[anc] - 1)]
+			         - sub[jump(b, dep[b] - dep[anc] - 1)];
+		}
+		if (dep[c] < dep[anc]) { return 0; }
+        if (dep[c] > max(dep[a], dep[b])) { return 0; }
+		int low = -1;  // child of c that's on the path
+		for (int x : {a, b}) {
+			if (jump(x, dep[x] - dep[c]) == c) {
+				low = jump(x, dep[x] - dep[c] - 1);
+			}
+		}
+		if (low == -1) { return 0; }
+		return sub[c] - sub[low];
+    }
+};
+
 int main() {
 	int n, q;
 	cin >> n >> q;
@@ -69,68 +139,12 @@ int main() {
 		adj[v].push_back(u);
 	}
 
-	const int log2dist = 1 + (int)log2(n);
-	vector<int> dep(n);
-	vector<int> sub(n, 1);
-	vector<vector<int>> lift(log2dist, vector<int>(n));
-	function<void(int, int)> dfs = [&](int u, int p) {
-		for (int v : adj[u]) {
-			if (v == p) continue;
-			dep[v] = dep[u] + 1;
-			lift[0][v] = u;
-			for (int p = 1; p < log2dist; p++) {
-				lift[p][v] = lift[p - 1][lift[p - 1][v]];
-			}
-			dfs(v, u);
-			sub[u] += sub[v];
-		}
-	};
-	dfs(0, -1);
-
-	/** @return d-th ancestor of node u */
-	auto jump = [&](int u, int d) -> int {
-		for (int i = log2dist - 1; i >= 0; i--) {
-			if ((d >> i) & 1) { u = lift[i][u]; }
-		}
-		return u;
-	};
-
-	/* @return the LCA of nodes a and b* */
-	auto lca = [&](int a, int b) -> int {
-		if (dep[a] < dep[b]) { swap(a, b); }
-		a = jump(a, dep[a] - dep[b]);
-		if (a == b) { return a; }
-		for (int i = log2dist - 1; i >= 0; i--) {
-			if (lift[i][a] != lift[i][b]) {
-				a = lift[i][a];
-				b = lift[i][b];
-			}
-		}
-		return lift[0][a];
-	};
-
-	/** @return the # of suitable roots */
-	auto qry = [&](int a, int b, int c) -> int {
-		int anc = lca(a, b);
-		if (c == anc) {
-			return n - sub[jump(a, dep[a] - dep[anc] - 1)] -
-			       sub[jump(b, dep[b] - dep[anc] - 1)];
-		}
-		if (dep[c] < dep[anc]) { return 0; }
-		int low = -1;  // child of c that's on the path
-		for (int x : {a, b}) {
-			if (jump(x, dep[x] - dep[c]) == c) {
-				low = jump(x, dep[x] - dep[c] - 1);
-			}
-		}
-		if (low == -1) { return 0; }
-		return sub[c] - sub[low];
-	};
+	Tree tree(adj);
 
 	for (int i = 0; i < q; i++) {
 		int a, b, c;
 		cin >> a >> b >> c;
-		cout << qry(--a, --b, --c) << "\n";
+		cout << tree.query(--a, --b, --c) << "\n";
 	}
 }
 ```
