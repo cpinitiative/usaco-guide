@@ -809,65 +809,65 @@ print()
 
 ## Catalan Numbers
 
-The [Catalan numbers](https://en.wikipedia.org/wiki/Catalan_number) are a sequence of positive integers that can be very useful in counting problems in combinatorics. Some of the well-known applications are: count certain types of lattice path in a grid, counting binary trees, number of valid paranthesis strings of length $n$, and many more. The $n$-th Catalan can be expressed as following using binomial coeffiecients:
+The [Catalan numbers](https://en.wikipedia.org/wiki/Catalan_number) are a sequence of positive integers that can be very useful in counting problems in combinatorics.
+The $n$-th Catalan can be expressed as following using binomial coeffiecients:
 
 $$
 C_n=\frac{1}{n+1}\cdot \binom{2n}{n}=\frac{(2n)!}{(n+1)!\,n!}
 $$
 
-The Catalan numbers has the recurrence formula:
-
+They also have the recurrence formula
 $$
 C_n= \sum^{n}_{i=1}{C_i \cdot C_{n-i}} \,\,\, \text{ for } n>0 \\
 $$
-
-Which can also be expressed as:
-
+which can also be expressed as
 $$
 C_n=\frac{2(2n-1)}{n+1} \cdot C_{n-1}
 $$
 
-The first $5$ Catalan numbers are:
-
+The first $5$ Catalan numbers are
 | n | 0| 1 | 2 | 3 | 4 | 5 |
 |---| -| - | - | - | - | - |
 | $C_n$| 1 | 1 | 2 | 5 | 14| 42 |
 
 ### Applications
 
-- Number of valid paranthesis epressions
+The Catalan numbers can be used to represent a wide variety of things.
 
-The number of valid strings paranthesis expresions of size $2n$ consisting of $n$ left brackets and $n$ right brackets is equal to $C_n$. For example, $C_3=5$ and there are
-$5$ valid expressions of size $6$ (i.e. $2n = 2 \cdot 3 = 6$):
-- `()()()`
-- `(())()`
-- `()(())`
-- `((()))`
-- `(()())`
+For example, $C_n$ is equal to the number of valid parenthesis expressions of length $2n$.
+Take, for instance, $C_3=5$ a:
+* `()()()`
+* `(())()`
+* `()(())`
+* `((()))`
+* `(()())`
 
-In a more formal way, we can rewrite this as: Considering right paranthesis $+1$ and left paranthesis $-1$, then the number of strings of length $2n$ encompassing $n$ values of $+1$ and $n$ values of $-1$ satisfying: $\sum_{i=1}^{2n}v_i \,\,\,\,, \forall i \in[1,2n]$ is equal to $C_n$.
-
-- The number of full binary trees with $n+1$ leaves is equal to $C_n$. The following image shows the $5$ cases for binary trees with $4$ leaves:
+It's also equal to the number of full binary trees with $n+1$ leaves.
+The following image shows the $5$ binary trees with $4$ leaves:
 
 ![binary-trees](./assets/catalan-binary-trees.png)
 
-- The number of monotonic lattice paths along the edges of a $n \times n$ grid, that don't pass above the diagonal, is $C_n$. The paths start in the lower left corner and ends in the upper right corner. For example, there are $C_4=14$ paths in a $4 \times 4 grid$:
+$C_n$ is also the number of monotonic lattice paths along the edges of a $n \times n$ grid that don't pass above the diagonal.
+The paths start in the lower left corner and ends in the upper right corner.
+
+For example, there are $C_4=14$ paths in a $4 \times 4 grid$:
 
 ![lattice points](./assets/catalan-lattice-paths.png)
 
-- Consider a convex polygon with $n+2$ sides divided into $n$ triangles by connecting vertices with non-intersecting lines. The number of different ways to divide the polygon in this way is equal to $C_n$. Let's take a look, for example, at the particular case for $n=3$ in which we have $C_4=$:
+The next two examples are a bit more niche, but they're still interesting to think about.
+
+Consider a convex polygon with $n+2$ sides divided into $n$ triangles by connecting vertices with non-intersecting lines.
+The number of different ways to divide the polygon in this way is equal to $C_n$.
+
+Here's the particular case for $n=3$ in which we have $C_4=$:
 
 ![polygons](./assets/catalan-polygons.png)
 
-- The number of mountain ranges - see [Dyck words](https://en.wikipedia.org/wiki/Dyck_language) - of length $2n$ consisting of $n$ upstrokes and $n$ downstrokes is equal to $C_n$
+$C_n$ is also equal to the number of mountain ranges - see [Dyck words](https://en.wikipedia.org/wiki/Dyck_language) - of length $2n$ consisting of $n$ upstrokes and $n$ downstrokes.
 
 ![mountains](./assets/catalan-mountain-strokes.png)
 
-#### Skyline
-
 <FocusProblem problem="sample3" />
-
-
 
 <LanguageSection>
 <CPPSection>
@@ -881,7 +881,7 @@ const int MOD = 1e6;
 const int MAX_N = 2e3;
 
 int main() {
-	int n, comb[MAX_N][MAX_N];
+	int comb[MAX_N][MAX_N];
 	for (int i = 1; i < MAX_N; i++) {
 		for (int j = 0; j <= i; j++) {
 			if (j == 0) {
@@ -891,11 +891,12 @@ int main() {
 			}
 		}
 	}
+
+	int n;
 	while (cin >> n) {
 		if (n == 0) { break; }
 		cout << comb[n][n] << '\n';
 	}
-	return 0;
 }
 ```
 
