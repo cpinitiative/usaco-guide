@@ -827,6 +827,12 @@ $$
 C_n=\frac{2(2n-1)}{n+1} \cdot C_{n-1}
 $$
 
+The first $5$ Catalan values are:
+
+| n | 0| 1 | 2 | 3 | 4 | 5 | 
+|---| -| - | - | - | - | - |
+| $C_n$| 1 | 1 | 2 | 5 | 14| 42 |
+
 ### Applications
 
 - Number of valid paranthesis epressions
@@ -848,6 +854,53 @@ In a more formal way, we can rewrite this as: Considering right paranthesis $+1$
 - The number of monotonic lattice paths along the edges of a $n \times n$ grid, that don't pass above the diagonal, is $C_n$. The paths start in the lower left corner and ends in the upper right corner. For example, there are $C_4=14$ paths in a $4 \times 4 grid$:
 
 ![lattice points](./assets/catalan-lattice-paths.png)
+
+- Consider a convex polygon with $n+2$ sides divided into $n$ triangles by connecting vertices with non-intersecting lines. The number of different ways to divide the polygon in this way is
+equal to $C_n$. Let's take a look, for example, at the particular case $n=3$:
+
+![polygons](./assets/catalan-polygons.png)
+
+- The number of mountain ranges - see [Dyck words](https://en.wikipedia.org/wiki/Dyck_language) - of length $2n$ with $n$ upstrokes and $n$ downstrokes is equal to $C_n$
+
+![mountains](./assets/catalan-mountain-strokes.png)
+
+#### Skyline
+
+<FocusProblem problem="sample3" />
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+
+using namespace std;
+
+const int MOD = 1e6;
+const int MAX_N = 2e3;
+
+int main() {
+	int n, comb[MAX_N][MAX_N];
+	for(int i = 1; i < MAX_N; i++) {
+		for(int j = 0; j <= i; j++) {
+			if(j == 0) { 
+				comb[i][j] = 1; 
+			} else { 
+				comb[i][j] = (comb[i][j - 1] + comb[i - 1][j]) % MOD; 
+			}
+		}
+	}
+	while(cin >> n) {
+		if(n == 0) { break; }
+		cout << comb[n][n] << '\n';
+	}
+	return 0;
+}
+
+```
+
+</CPPSection>
+</LanguageSection>
 
 ## Problems
 
