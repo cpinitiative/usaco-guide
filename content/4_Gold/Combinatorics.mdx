@@ -829,7 +829,7 @@ $$
 
 The first $5$ Catalan values are:
 
-| n | 0| 1 | 2 | 3 | 4 | 5 | 
+| n | 0| 1 | 2 | 3 | 4 | 5 |
 |---| -| - | - | - | - | - |
 | $C_n$| 1 | 1 | 2 | 5 | 14| 42 |
 
@@ -881,22 +881,21 @@ const int MAX_N = 2e3;
 
 int main() {
 	int n, comb[MAX_N][MAX_N];
-	for(int i = 1; i < MAX_N; i++) {
-		for(int j = 0; j <= i; j++) {
-			if(j == 0) { 
-				comb[i][j] = 1; 
-			} else { 
-				comb[i][j] = (comb[i][j - 1] + comb[i - 1][j]) % MOD; 
+	for (int i = 1; i < MAX_N; i++) {
+		for (int j = 0; j <= i; j++) {
+			if (j == 0) {
+				comb[i][j] = 1;
+			} else {
+				comb[i][j] = (comb[i][j - 1] + comb[i - 1][j]) % MOD;
 			}
 		}
 	}
-	while(cin >> n) {
-		if(n == 0) { break; }
+	while (cin >> n) {
+		if (n == 0) { break; }
 		cout << comb[n][n] << '\n';
 	}
 	return 0;
 }
-
 ```
 
 </CPPSection>
