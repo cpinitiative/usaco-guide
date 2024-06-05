@@ -859,7 +859,7 @@ The next two examples are a bit more niche, but they're still interesting to thi
 Consider a convex polygon with $n+2$ sides divided into $n$ triangles by connecting vertices with non-intersecting lines.
 The number of different ways to divide the polygon in this way is equal to $C_n$.
 
-Here's the particular case for $n=3$ in which we have $C_4=$:
+Here's the particular case for $n=3$ in which we have $C_3=5$:
 
 ![polygons](./assets/catalan-polygons.png)
 
@@ -881,13 +881,13 @@ const int MOD = 1e6;
 const int MAX_N = 2e3;
 
 int main() {
-	int comb[MAX_N][MAX_N];
+	int catalan[MAX_N][MAX_N];
 	for (int i = 1; i < MAX_N; i++) {
 		for (int j = 0; j <= i; j++) {
 			if (j == 0) {
-				comb[i][j] = 1;
+				catalan[i][j] = 1;
 			} else {
-				comb[i][j] = (comb[i][j - 1] + comb[i - 1][j]) % MOD;
+				catalan[i][j] = (catalan[i][j - 1] + catalan[i - 1][j]) % MOD;
 			}
 		}
 	}
@@ -895,7 +895,7 @@ int main() {
 	int n;
 	while (cin >> n) {
 		if (n == 0) { break; }
-		cout << comb[n][n] << '\n';
+		cout << catalan[n][n] << '\n';
 	}
 }
 ```
