@@ -79,6 +79,13 @@ class Tree {
 		}
 	}
 
+  public:
+	Tree(vector<vector<int>> &_adj)
+	    : n((int)_adj.size()), log2dist(1 + (int)log2(n)), adj(_adj),
+	      lift(log2dist, vector<int>(n)), dep(n), sub(n, 1) {
+		dfs(0, -1);
+	}
+
 	/** @return d-th ancestor of u */
 	int jump(int u, int d) {
 		for (int i = log2dist - 1; i >= 0; i--) {
@@ -100,14 +107,6 @@ class Tree {
 		}
 		return lift[0][u];
 	}
-
-  public:
-	Tree(vector<vector<int>> &_adj)
-	    : n((int)_adj.size()), log2dist(1 + (int)log2(n)), adj(_adj),
-	      lift(log2dist, vector<int>(n)), dep(n), sub(n, 1) {
-		dfs(0, -1);
-	}
-
 	/** @return # of suitable roots for this query */
 	int query(int a, int b, int c) {
 		int anc = lca(a, b);
