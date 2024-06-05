@@ -7,7 +7,6 @@ import {
 } from '../../content/ordering';
 import ActiveItems, { ActiveItem } from '../components/Dashboard/ActiveItems';
 import Activity from '../components/Dashboard/Activity';
-import AnnouncementBanner from '../components/Dashboard/AnnouncementBanner';
 import Announcements from '../components/Dashboard/Announcements';
 import DailyStreak from '../components/Dashboard/DailyStreak';
 import Card from '../components/Dashboard/DashboardCard';
@@ -310,7 +309,7 @@ export default function DashboardPage(props: PageProps) {
         </main>
       </div>
 
-      {parsedAnnouncements[0].id !== lastReadAnnouncement &&
+      {/* {parsedAnnouncements[0].id !== lastReadAnnouncement &&
         numPageviews > 12 && (
           <div className="h-12">
             <AnnouncementBanner
@@ -320,7 +319,7 @@ export default function DashboardPage(props: PageProps) {
               }
             />
           </div>
-        )}
+        )} */}
     </Layout>
   );
 }
