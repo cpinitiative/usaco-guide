@@ -71,72 +71,69 @@ we're definitely at the root.
 <CPPSection>
 
 ```cpp
+#include <cmath>
 #include <iostream>
 #include <vector>
-#include <cmath>
- 
+
 using std::cout;
 using std::endl;
 using std::vector;
- 
+
 class Tree {
-	private:
-		const int log2dist;
-		vector<int> par;
-		vector<vector<int>> pow2ends;
-	public:
-		Tree(const vector<int>& parents)
-				: log2dist(std::ceil(std::log2(parents.size() + 1))),
-				  par(parents.size() + 1),
-				  pow2ends(par.size(), vector<int>(log2dist + 1)) {
-			par[0] = -1;
-			for (int i = 0; i < parents.size(); i++) {
-				par[i + 1] = parents[i];
-			}
- 
-			// pow2ends[n][k] contains the 2^kth parent of node n
-			// if there is no 2^kth parent, the value is -1
+  private:
+	const int log2dist;
+	vector<int> par;
+	vector<vector<int>> pow2ends;
+
+  public:
+	Tree(const vector<int> &parents)
+	    : log2dist(std::ceil(std::log2(parents.size() + 1))),
+	      par(parents.size() + 1),
+	      pow2ends(par.size(), vector<int>(log2dist + 1)) {
+		par[0] = -1;
+		for (int i = 0; i < parents.size(); i++) { par[i + 1] = parents[i]; }
+
+		// pow2ends[n][k] contains the 2^kth parent of node n
+		// if there is no 2^kth parent, the value is -1
+		for (int n = 0; n < par.size(); n++) { pow2ends[n][0] = par[n]; }
+		for (int p = 1; p <= log2dist; p++) {
 			for (int n = 0; n < par.size(); n++) {
-				pow2ends[n][0] = par[n];
-			}
-			for (int p = 1; p <= log2dist; p++) {
-				for (int n = 0; n < par.size(); n++) {
-					int halfway = pow2ends[n][p - 1];
-					if (halfway == -1) {
-						pow2ends[n][p] = -1;
-					} else {
-						pow2ends[n][p] = pow2ends[halfway][p - 1];
-					}
+				int halfway = pow2ends[n][p - 1];
+				if (halfway == -1) {
+					pow2ends[n][p] = -1;
+				} else {
+					pow2ends[n][p] = pow2ends[halfway][p - 1];
 				}
 			}
 		}
- 
-		/** @return the kth parent of node n */
-		int kth_parent(int n, int k) {
-			int at = n;
-			// break down k into powers of 2 by looping through its bits
-			for (int pow = 0; pow <= log2dist; pow++) {
-				if ((k & (1 << pow)) != 0) {
-					at = pow2ends[at][pow];
-					if (at == -1) {
-						break;  // stop when we're past the root
-					}
+	}
+
+	/** @return the kth parent of node n */
+	int kth_parent(int n, int k) {
+		int at = n;
+		// break down k into powers of 2 by looping through its bits
+		for (int pow = 0; pow <= log2dist; pow++) {
+			if ((k & (1 << pow)) != 0) {
+				at = pow2ends[at][pow];
+				if (at == -1) {
+					break;  // stop when we're past the root
 				}
 			}
-			return at;
 		}
+		return at;
+	}
 };
- 
+
 int main() {
 	int employee_num;
 	int query_num;
 	std::cin >> employee_num >> query_num;
 	vector<int> bosses(employee_num - 1);
-	for (int& b : bosses) {
+	for (int &b : bosses) {
 		std::cin >> b;
 		b--;
 	}
- 
+
 	Tree tree(bosses);
 	for (int q = 0; q < query_num; q++) {
 		int employee;
@@ -195,10 +192,10 @@ using std::endl;
 using std::vector;
 
 class Tree {
-   private:
+  private:
 	const int root = 0;
 
-	const vector<vector<int>>& adj;
+	const vector<vector<int>> &adj;
 	const int log2dist;
 	vector<int> par;
 	vector<vector<int>> pow2ends;
@@ -215,19 +212,14 @@ class Tree {
 		}
 	}
 
-   public:
-	Tree(const vector<vector<int>>& adj)
-		: adj(adj),
-		  log2dist(std::ceil(std::log2(adj.size()))),
-		  par(adj.size()),
-		  pow2ends(par.size(), vector<int>(log2dist + 1)),
-		  depth(adj.size()) {
+  public:
+	Tree(const vector<vector<int>> &adj)
+	    : adj(adj), log2dist(std::ceil(std::log2(adj.size()))), par(adj.size()),
+	      pow2ends(par.size(), vector<int>(log2dist + 1)), depth(adj.size()) {
 		par[root] = depth[root] = -1;
 		process(root, root);
 
-		for (int n = 0; n < par.size(); n++) {
-			pow2ends[n][0] = par[n];
-		}
+		for (int n = 0; n < par.size(); n++) { pow2ends[n][0] = par[n]; }
 		for (int p = 1; p <= log2dist; p++) {
 			for (int n = 0; n < par.size(); n++) {
 				int halfway = pow2ends[n][p - 1];
@@ -242,16 +234,12 @@ class Tree {
 
 	/** @return the kth parent of node n */
 	int kth_parent(int n, int k) {
-		if (k > par.size()) {
-			return -1;
-		}
+		if (k > par.size()) { return -1; }
 		int at = n;
 		for (int pow = 0; pow <= log2dist; pow++) {
 			if ((k & (1 << pow)) != 0) {
 				at = pow2ends[at][pow];
-				if (at == -1) {
-					break;
-				}
+				if (at == -1) { break; }
 			}
 		}
 		return at;
@@ -259,9 +247,7 @@ class Tree {
 
 	/** @return the LCA of nodes n1 and n2 */
 	int lca(int n1, int n2) {
-		if (depth[n1] < depth[n2]) {
-			return lca(n2, n1);
-		}
+		if (depth[n1] < depth[n2]) { return lca(n2, n1); }
 		// lift n1 up to the same height as n2
 		n1 = kth_parent(n1, depth[n1] - depth[n2]);
 		if (n1 == n2) {
@@ -348,10 +334,10 @@ using std::endl;
 using std::vector;
 
 class Tree {
-   private:
+  private:
 	const int root = 0;
 
-	const vector<vector<int>>& adj;
+	const vector<vector<int>> &adj;
 	const int log2dist;
 	vector<vector<int>> pow2ends;
 	vector<int> start, end;
@@ -370,32 +356,26 @@ class Tree {
 
 		start[at] = timer++;
 		for (int n : adj[at]) {
-			if (n != prev) {
-				process(n, at);
-			}
+			if (n != prev) { process(n, at); }
 		}
 		end[at] = timer;
 	}
 
-   public:
-	Tree(const vector<vector<int>>& adj)
-		: adj(adj),
-		  log2dist(std::ceil(std::log2(adj.size()))),
-		  pow2ends(adj.size(), vector<int>(log2dist + 1)),
-		  start(adj.size()),
-		  end(adj.size()) {
+  public:
+	Tree(const vector<vector<int>> &adj)
+	    : adj(adj), log2dist(std::ceil(std::log2(adj.size()))),
+	      pow2ends(adj.size(), vector<int>(log2dist + 1)), start(adj.size()),
+	      end(adj.size()) {
 		process(root, -1);
 	}
 
-	bool is_ancestor(int n1, int n2) { return start[n1] <= start[n2] && end[n2] <= end[n1]; }
+	bool is_ancestor(int n1, int n2) {
+		return start[n1] <= start[n2] && end[n2] <= end[n1];
+	}
 
 	int lca(int n1, int n2) {
-		if (is_ancestor(n1, n2)) {
-			return n1;
-		}
-		if (is_ancestor(n2, n1)) {
-			return n2;
-		}
+		if (is_ancestor(n1, n2)) { return n1; }
+		if (is_ancestor(n2, n1)) { return n2; }
 		for (int i = log2dist; i >= 0; i--) {
 			if (pow2ends[n1][i] != -1 && !is_ancestor(pow2ends[n1][i], n2)) {
 				n1 = pow2ends[n1][i];
@@ -505,7 +485,7 @@ int main() {
 
 ### Explanation
 
-Since we have the depth of all the nodes, the distance between two nodes $a$ and $b$ is 
+Since we have the depth of all the nodes, the distance between two nodes $a$ and $b$ is
 $\texttt{depth}[a] + \texttt{depth}[b] - 2 \cdot \texttt{depth}[\textrm{lca}(a, b)]$.
 
 Here's some intuition if you're confused about how this formula works.
@@ -533,10 +513,10 @@ using std::vector;
 
 // BeginCodeSnip{LCA Tree}
 class Tree {
-   private:
+  private:
 	const int root = 0;
 
-	const vector<vector<int>>& adj;
+	const vector<vector<int>> &adj;
 	const int log2dist;
 	vector<int> par;
 	vector<vector<int>> pow2ends;
@@ -552,19 +532,14 @@ class Tree {
 		}
 	}
 
-   public:
-	Tree(const vector<vector<int>>& adj)
-		: adj(adj),
-		  log2dist(std::ceil(std::log2(adj.size()))),
-		  par(adj.size()),
-		  pow2ends(par.size(), vector<int>(log2dist + 1)),
-		  depth(adj.size()) {
+  public:
+	Tree(const vector<vector<int>> &adj)
+	    : adj(adj), log2dist(std::ceil(std::log2(adj.size()))), par(adj.size()),
+	      pow2ends(par.size(), vector<int>(log2dist + 1)), depth(adj.size()) {
 		par[root] = depth[root] = -1;
 		process(root, root);
 
-		for (int n = 0; n < par.size(); n++) {
-			pow2ends[n][0] = par[n];
-		}
+		for (int n = 0; n < par.size(); n++) { pow2ends[n][0] = par[n]; }
 		for (int p = 1; p <= log2dist; p++) {
 			for (int n = 0; n < par.size(); n++) {
 				int halfway = pow2ends[n][p - 1];
@@ -578,29 +553,21 @@ class Tree {
 	}
 
 	int kth_parent(int n, int k) {
-		if (k > par.size()) {
-			return -1;
-		}
+		if (k > par.size()) { return -1; }
 		int at = n;
 		for (int pow = 0; pow <= log2dist; pow++) {
 			if ((k & (1 << pow)) != 0) {
 				at = pow2ends[at][pow];
-				if (at == -1) {
-					break;
-				}
+				if (at == -1) { break; }
 			}
 		}
 		return at;
 	}
 
 	int lca(int n1, int n2) {
-		if (depth[n1] < depth[n2]) {
-			return lca(n2, n1);
-		}
+		if (depth[n1] < depth[n2]) { return lca(n2, n1); }
 		n1 = kth_parent(n1, depth[n1] - depth[n2]);
-		if (n1 == n2) {
-			return n2;
-		}
+		if (n1 == n2) { return n2; }
 
 		for (int i = log2dist; i >= 0; i--) {
 			if (pow2ends[n1][i] != pow2ends[n2][i]) {
@@ -611,7 +578,7 @@ class Tree {
 
 		return pow2ends[n1][0];
 	}
-// EndCodeSnip
+	// EndCodeSnip
 
 	/** @return the distance between nodes n1 and n2  */
 	int distance(int n1, int n2) {
