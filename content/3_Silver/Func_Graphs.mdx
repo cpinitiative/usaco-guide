@@ -720,6 +720,81 @@ It's also possible to use `floyd(x)` to generate answers for all vertices in the
 containing `x` without using adjacency lists.
 
 <LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+vector<int> res;
+vector<int> arr;
+
+void fillUp(int curr, int firstCycle) {
+    while (curr != firstCycle) {
+        res[curr] = res[firstCycle];
+        curr = arr[curr];
+    }
+}
+
+int floyd(int curr) {
+    int a = arr[curr];
+    int b = arr[arr[curr]];
+
+    while (a != b) {
+        if (res[a] != -1) {
+            fillUp(curr, a);
+            return 0;
+        }
+        a = arr[a];
+        b = arr[arr[b]];
+    }
+
+    a = curr;
+    while (a != b) {
+        a = arr[a];
+        b = arr[b];
+    }
+
+    int cycleFirst = a;
+    a = curr;
+    while (a != cycleFirst) {
+        res[a] = cycleFirst;
+        a = arr[a];
+    }
+    
+    a = cycleFirst;
+    do {
+        res[a] = a;
+        a = arr[a];
+    } while (a != cycleFirst);
+
+    return 0;
+}
+
+int main() {    
+    int n;
+    cin >> n;
+    arr.resize(n + 1);
+    for (int i = 1; i <= n; i++) {
+        cin >> arr[i];
+    }
+    
+    res.resize(n + 1, -1);
+    for (int i = 1; i <= n; i++) {
+        if (res[i] == -1) {
+            floyd(i);
+        }
+    }
+
+    for (int i = 1; i <= n; i++) {
+        cout << res[i] << " \n"[i == n];
+    }
+    return 0;
+}
+
+```
+
+</CPPSection>
 <JavaSection>
 
 ```java
