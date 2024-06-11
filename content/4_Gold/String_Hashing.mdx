@@ -43,7 +43,7 @@ class HashedString {
 
   public:
 	HashedString(const string &s) : p_hash(s.size() + 1) {
-		while (pow.size() < s.size()) { pow.push_back((pow.back() * B) % M); }
+		while (pow.size() <= s.size()) { pow.push_back((pow.back() * B) % M); }
 
 		p_hash[0] = 0;
 		for (int i = 0; i < s.size(); i++) {
@@ -80,7 +80,7 @@ public class HashedString {
 
 	public HashedString(String s) {
 		if (pow.isEmpty()) { pow.add(1L); }
-		while (pow.size() < s.length()) {
+		while (pow.size() <= s.length()) {
 			pow.add((pow.get(pow.size() - 1) * B) % M);
 		}
 
@@ -112,7 +112,7 @@ class HashedString:
 	_pow = [1]
 
 	def __init__(self, s: str):
-		while len(self._pow) < len(s):
+		while len(self._pow) <= len(s):
 			self._pow.append((self._pow[-1] * self.B) % self.M)
 
 		# p_hash[i] is the hash of the first i characters of the given string
