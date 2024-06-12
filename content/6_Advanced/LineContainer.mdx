@@ -103,103 +103,116 @@ So, as an overview of the algorithm:
 #### Implementation
 
 ```cpp
+#include <climits>
+#include <deque>
+#include <vector>
+#include <algorithm>
+
 const long double eps = 1e-9;
 const int inf = INT32_MAX;
 
 struct Point {
-	long double x, y;
-	explicit Point(long double x = 0, long double y = 0) : x(x), y(y) {}
+    long double x, y;
+    explicit Point(long double x = 0, long double y = 0) : x(x), y(y) {}
 
-	friend Point operator+(const Point &p, const Point &q) {
-		return Point(p.x + q.x, p.y + q.y);
-	}
+    friend Point operator + (const Point& p, const Point& q) {
+        return Point(p.x + q.x, p.y + q.y);
+    }
 
-	friend Point operator-(const Point &p, const Point &q) {
-		return Point(p.x - q.x, p.y - q.y);
-	}
+    friend Point operator - (const Point& p, const Point& q) {
+        return Point(p.x - q.x, p.y - q.y);
+    }
 
-	friend Point operator*(const Point &p, const long double &k) {
-		return Point(p.x * k, p.y * k);
-	}
+    friend Point operator * (const Point& p, const long double& k) {
+        return Point(p.x * k, p.y * k);
+    }
 
-	friend long double cross(const Point &p, const Point &q) {
-		return p.x * q.y - p.y * q.x;
-	}
+    friend long double cross(const Point& p, const Point& q) {
+        return p.x * q.y - p.y * q.x;
+    }
 };
 
 struct Halfplane {
-	Point p, pq;
-	long double angle;
+    Point p, pq;
+    long double angle;
 
-	Halfplane() {}
-	Halfplane(const Point &a, const Point &b) : p(a), pq(b - a) {
-		angle = atan2l(pq.y, pq.x);
-	}
+    Halfplane() {}
+    Halfplane(const Point& a, const Point& b) : p(a), pq(b - a) {
+        angle = atan2l(pq.y, pq.x);
+    }
 
-	bool out(const Point &r) { return cross(pq, r - p) < -eps; }
+    bool out(const Point& r) {
+        return cross(pq, r - p) < -eps;
+    }
 
-	bool operator<(const Halfplane &e) const {
-		if (fabsl(angle - e.angle) < eps) return cross(pq, e.p - p) < 0;
-		return angle < e.angle;
-	}
+    bool operator < (const Halfplane& e) const {
+        if (fabsl(angle - e.angle) < eps) return cross(pq, e.p - p) < 0;
+        return angle < e.angle;
+    }
 
-	bool operator==(const Halfplane &e) const {
-		return fabsl(angle - e.angle) < eps;
-	}
+    bool operator == (const Halfplane& e) const {
+        return fabsl(angle - e.angle) < eps;
+    }
 
-	friend Point inter(const Halfplane &s, const Halfplane &t) {
-		long double alpha = cross((t.p - s.p), t.pq) / cross(s.pq, t.pq);
-		return s.p + (s.pq * alpha);
-	}
+    friend Point inter(const Halfplane& s, const Halfplane& t) {
+        long double alpha = cross((t.p - s.p), t.pq) / cross(s.pq, t.pq);
+        return s.p + (s.pq * alpha);
+    }
 };
 
-// Actual algorithm
-vector<Point> hp_intersect(vector<Halfplane> &H) {
+// Actual algorithm: Computes the intersection of a set of halfplanes
+std::vector<Point> halfplane_intersect(std::vector<Halfplane>& halfplanes) {
+    Point box[4] = {
+        Point(inf, inf),
+        Point(-inf, inf),
+        Point(-inf, -inf),
+        Point(inf, -inf)
+    };
 
-	Point box[4] = {Point(inf, inf), Point(-inf, inf), Point(-inf, -inf),
-	                Point(inf, -inf)};
+    // Add bounding box halfplanes
+    for(int i = 0; i < 4; i++) {
+        Halfplane aux(box[i], box[(i + 1) % 4]);
+        halfplanes.push_back(aux);
+    }
 
-	for (int i = 0; i < 4; i++) {
-		Halfplane aux(box[i], box[(i + 1) % 4]);
-		H.push_back(aux);
-	}
+    std::sort(halfplanes.begin(), halfplanes.end());
+    halfplanes.erase(std::unique(halfplanes.begin(), halfplanes.end()), halfplanes.end());
 
-	sort(H.begin(), H.end());
-	H.erase(unique(H.begin(), H.end()), H.end());
+    std::deque<Halfplane> active_halfplanes;
+    int len = 0;
+    for(int i = 0; i < int(halfplanes.size()); i++) {
+        while (len > 1 && halfplanes[i].out(inter(active_halfplanes[len - 1], active_halfplanes[len - 2]))) {
+            active_halfplanes.pop_back();
+            len--;
+        }
 
-	deque<Halfplane> dq;
-	int len = 0;
-	for (int i = 0; i < int(H.size()); i++) {
-		while (len > 1 && H[i].out(inter(dq[len - 1], dq[len - 2]))) {
-			dq.pop_back();
-			--len;
-		}
+        while (len > 1 && halfplanes[i].out(inter(active_halfplanes[0], active_halfplanes[1]))) {
+            active_halfplanes.pop_front();
+            len--;
+        }
 
-		while (len > 1 && H[i].out(inter(dq[0], dq[1]))) {
-			dq.pop_front();
-			--len;
-		}
+        active_halfplanes.push_back(halfplanes[i]);
+        len++;
+    }
 
-		dq.push_back(H[i]);
-		++len;
-	}
+    while (len > 2 && active_halfplanes[0].out(inter(active_halfplanes[len - 1], active_halfplanes[len - 2]))) {
+        active_halfplanes.pop_back();
+        len--;
+    }
 
-	while (len > 2 && dq[0].out(inter(dq[len - 1], dq[len - 2]))) {
-		dq.pop_back();
-		--len;
-	}
+    while (len > 2 && active_halfplanes[len - 1].out(inter(active_halfplanes[0], active_halfplanes[1]))) {
+        active_halfplanes.pop_front();
+        len--;
+    }
 
-	while (len > 2 && dq[len - 1].out(inter(dq[0], dq[1]))) {
-		dq.pop_front();
-		--len;
-	}
+    if (len < 3) return std::vector<Point>();
 
-	if (len < 3) return vector<Point>();
-
-	vector<Point> ret(len);
-	for (int i = 0; i + 1 < len; i++) { ret[i] = inter(dq[i], dq[i + 1]); }
-	ret.back() = inter(dq[len - 1], dq[0]);
-	return ret;
+    std::vector<Point> intersection_points(len);
+    for(int i = 0; i + 1 < len; i++) {
+        intersection_points[i] = inter(active_halfplanes[i], active_halfplanes[i + 1]);
+    }
+    intersection_points.back() = inter(active_halfplanes[len - 1], active_halfplanes[0]);
+    return intersection_points;
 }
 ```
 
