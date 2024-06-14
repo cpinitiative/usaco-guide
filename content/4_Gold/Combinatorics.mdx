@@ -1,7 +1,7 @@
 ---
 id: combo
 title: 'Combinatorics'
-author: Jesse Choe, Aadit Ambadkar, Dustin Miao
+author: Jesse Choe, Aadit Ambadkar, Dustin Miao, Mihnea Brebenel
 prerequisites:
   - divisibility
   - modular
@@ -805,6 +805,122 @@ print()
 ```
 
 </PySection>
+</LanguageSection>
+
+## Catalan Numbers
+
+<Resources>
+	<Resource
+		source="cp-algo"
+		title="Catalan Numbers"
+		url="https://cp-algorithms.com/combinatorics/catalan-numbers.html"
+		starred
+	>
+		Well documented article.
+	</Resource>
+</Resources>
+
+The [Catalan numbers](https://en.wikipedia.org/wiki/Catalan_number) are a sequence of positive integers that can be very useful in counting problems in combinatorics.
+The $n$-th Catalan can be expressed as following using binomial coeffiecients:
+
+$$
+C_n=\frac{1}{n+1}\cdot \binom{2n}{n}=\frac{(2n)!}{(n+1)!\,n!}
+$$
+
+They also have the recurrence formula
+$$
+C_n= \sum^{n}_{i=1}{C_i \cdot C_{n-i}} \,\,\, \text{ for } n>0 \\
+$$
+which can also be expressed as
+$$
+C_n=\frac{2(2n-1)}{n+1} \cdot C_{n-1}
+$$
+
+The first $5$ Catalan numbers are
+
+<center>
+
+| n | 0| 1 | 2 | 3 | 4 | 5 |
+|---| -| - | - | - | - | - |
+| $C_n$| 1 | 1 | 2 | 5 | 14| 42 |
+
+</center>
+
+### Applications
+
+The Catalan numbers can be used to represent a wide variety of things.
+
+For example, $C_n$ is equal to the number of valid parenthesis expressions of length $2n$.
+Take, for instance, $C_3=5$:
+* `()()()`
+* `(())()`
+* `()(())`
+* `((()))`
+* `(()())`
+
+It's also equal to the number of full binary trees with $n+1$ leaves.
+The following image shows the $5$ binary trees with $4$ leaves:
+
+![binary-trees](./assets/catalan-binary-trees.png)
+
+$C_n$ is also the number of monotonic lattice paths along the edges of a $n \times n$ grid that don't pass above the diagonal.
+The paths start in the lower left corner and ends in the upper right corner.
+
+For example, there are $C_4=14$ paths in a $4 \times 4 grid$:
+
+![lattice points](./assets/catalan-lattice-paths.png)
+
+The next two examples are a bit more niche, but they're still interesting to think about.
+
+Consider a convex polygon with $n+2$ sides divided into $n$ triangles by connecting vertices with non-intersecting lines.
+The number of different ways to divide the polygon in this way is equal to $C_n$.
+
+Here's the particular case for $n=3$ in which we have $C_3=5$:
+
+![polygons](./assets/catalan-polygons.png)
+
+$C_n$ is also equal to the number of [mountain ranges](https://mathcircle.berkeley.edu/sites/default/files/BMC6/pdf0607/catalan.pdf#page=2) of length $2n$ consisting of $n$ upstrokes and $n$ downstrokes.
+
+![mountains](./assets/catalan-mountain-strokes.png)
+
+<FocusProblem problem="sample3" />
+
+### Implementation
+
+**Time Complexity:** $\mathcal{O}(N^2)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+
+using namespace std;
+
+const int MOD = 1e6;
+const int MAX_N = 2e3;
+
+int main() {
+	int catalan[MAX_N][MAX_N];
+	for (int i = 1; i < MAX_N; i++) {
+		for (int j = 0; j <= i; j++) {
+			if (j == 0) {
+				catalan[i][j] = 1;
+			} else {
+				catalan[i][j] = (catalan[i][j - 1] + catalan[i - 1][j]) % MOD;
+			}
+		}
+	}
+
+	int n;
+	while (cin >> n) {
+		if (n == 0) { break; }
+		cout << catalan[n][n] << '\n';
+	}
+}
+```
+
+</CPPSection>
 </LanguageSection>
 
 ## Problems
