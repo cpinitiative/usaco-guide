@@ -11,7 +11,7 @@ prerequisites:
 frequency: 1
 ---
 
-## Half-Plane Intersection
+# Half-Plane Intersection
 
 <Resources>
 	<Resource
@@ -44,19 +44,19 @@ We can state that $N$ is the number of half-planes in our set. We represent line
 This half-plane has an equation $y = 2x -2$ and can be represented as $P = (1,0)$ with the direction vector $PQ$ as $(1,2)$.
 I will now describe various ways of solving this problem, explaining algorithms in increasing efficiency:
 
-### Explanation
+## Explanation
 
-#### Brute Force
+### Brute Force
 This problem can be solved using brute force by computing the intersection point of the lines and all pairs of half-planes and then, for every point, checking if it is inside all of the other half-planes. There are $\mathcal{O}(N^2)$ intersection points that need to be checked against $\mathcal{O}(N)$ half-planes, resulting in the final complexity being $\mathcal{O}(N^3)$. We can then create a convex hull on the set of intersection points which were also included in the half-planes. The vertices of this convex hull are the intersection points of the half-plane lines, as they, of course, would mean they are points in every half-plane since it is points of intersection. This approach works to gain a solution; however, it's impractical to apply in a real-world scenario due to its extremely poor efficiency.
 
-#### Incremental
+### Incremental
 A slightly faster approach to this problem would be to incrementally construct the intersection of the half-planes one by one. We cut the convex polygon by a line $N$ amount of times, removing the redundant planes each time.
 
 If we represent the convex polygon as a set of line segments, we can cut it with a half-plane by finding the points of intersection of the segments with the half-plane line, replacing all the line segments in the middle with a new segment corresponding to a half-plane. This can be implemented in $\mathcal{O}(N)$ time, and decrease the bounding box with each half-plane, resulting in an $\mathcal{O}(N^2)$ complexity.
 
 This is much better than our initial approach. However, it's still relatively inefficient as we still have to loop over $\mathcal{O}(N)$ half-planes with every iteration. We will make some alterations to this algorithm in the next approach for a more reasonable solution.
 
-#### Sort and Increment Algorithm
+### Sort and Increment Algorithm
 We can use some properties of the output of the previous algorithm to optimize it. We know that the resulting region of the intersection of half-planes is convex, therefore it will consist of some segments of half-planes in order of their angles. In other words, if we incrementally intersect the half-planes in the order of their angles, storing them in a double-ended queue, we will only need to remove half-planes from the front and the back of the queue.
 
 Let's say that the half-plane angles are sorted from $-π$ to $π$ and that we are about to start the $k$-th step of the algorithm. We can say that we have already constructed the intersection of the half-planes up to $k-1$. Because the half-planes are sorted by angle, we can be sure that $k$ will form a convex turn with the $k-1$ half-plane. From this, we can say:
@@ -100,7 +100,7 @@ So, as an overview of the algorithm:
 * Iterate over the set. For each, perform incrementation and pop either from the front or back of the double-ended queue as necessary; it takes linear time since every half-plane can only be added or removed once.
 * Once this has been completed, the convex polygon that results from the intersection can be obtained by computing the intersection points of adjacent half-planes in the double-ended queue. It will take linear time. This results in our final complexity as $\{O}(NlogN)$. In a special case where the half-planes are pre-sorted, this algorithm could be completed in $\{O}(N)$. However, for the majority of cases, we will be looking at $\{O}(NlogN)$, most of which is coming from the sorting by angle.
 
-### Implementation
+## Implementation
 
 ```cpp
 #include <algorithm>
@@ -220,7 +220,7 @@ std::vector<Point> halfplane_intersect(std::vector<Halfplane> &halfplanes) {
 
 <Problems problems="half" />
 
-## LineContainer (aka $\mathcal{O}(N \log N)$ CHT)
+# LineContainer (aka $\mathcal{O}(N \log N)$ CHT)
 
 <Problems problems="sample" />
 
@@ -251,11 +251,11 @@ std::vector<Point> halfplane_intersect(std::vector<Halfplane> &halfplanes) {
 		Code
 	</Resource> -->
 
-### Example Problem
+## Example Problem
 
 <FocusProblem problem="sample_cht" />
 
-#### Analysis
+### Analysis
 
 Instead of focusing on the pillars that should be destroyed, let's instead focus
 on the pillars that remain.
