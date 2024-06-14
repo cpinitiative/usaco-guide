@@ -186,32 +186,73 @@ fix one as the center node. Having precomputed the two groups of subsets (ingoin
 [Inclusion-Exclusion](/plat/PIE) count for a given set in the first group the number of sets in the second group with one common element. The upperbound for the number of sets is
 $\binom{100}{4} \cdot 100 = 4 \cdot 10^8$.
 
-
+**Time Complexity:** $\mathcal{O}(N(\binom{N}{4}+N))$
 
 <LanguageSection>
 <CPPSection>
 
 ```cpp
-#include <functional>
 #include <iostream>
-#include <unordered_map>
 #include <vector>
+#include <array>
+#include <unordered_map>
+#include <algorithm>
+#include <numeric>
 
 using namespace std;
 
+typedef array<char, 4> State;
+
+unordered_map<string, int> artistmap;
+unordered_map<long long, int> from[2][100];
+vector<State> states[2][100];
+vector<int> g[2][100];
+vector<int> names;
+
+long long getid(const State &state) {
+	long long id = 0;
+	for (int i = 0; i < 4; i++) { id |= ((long long)state[i] << (i * 8)); }
+	return id;
+};
+
+void dfs(State state, int node, int dist, int rev) {
+	if (dist == 4) { return; }
+	state[0] = names[node];
+	sort(state.begin(), state.end());
+	long long id = getid(state);
+	for (int son : g[rev][node]) {
+		if (find(state.begin(), state.end(), names[son]) == state.end() &&
+			!from[rev][son].count(id)) {
+			if (dist == 3) { states[rev][son].push_back(state); }
+			from[rev][son][id] = node;
+			dfs(state, son, dist + 1, rev);
+		}
+	}
+};
+void reconstruct(State state, int node, bool rev) {
+		vector<int> path;
+		for (int i = 0; i < 4; i++) {
+			int parent = from[rev][node][getid(state)];
+			for (int j = 0; j < 4; j++) {
+				if (state[j] == names[parent]) { state[j] = 0; }
+			}
+			sort(state.begin(), state.end());
+			path.push_back(parent + 1);
+			node = parent;
+		}
+		if (!rev) { reverse(path.begin(), path.end()); }
+		for (auto node : path) { cout << node << ' '; }
+	};
 int main() {
 	int n;
 	cin >> n;
 
-	unordered_map<string, int> artistmap;
-	unordered_map<long long, int> from[2][100];
-	vector<vector<int>> states[2][100];
-	vector<int> g[2][100];
-	vector<int> names(n);
+	names.resize(n);
 
 	for (int i = 0; i < n; i++) {
 		string name;
 		cin >> name;
+		// Associate to each artist a number
 		if (!artistmap.count(name)) { artistmap[name] = artistmap.size() + 1; }
 		names[i] = artistmap[name];
 		int k;
@@ -220,56 +261,27 @@ int main() {
 			int node;
 			cin >> node;
 			node--;
-			g[0][i].push_back(node);
-			g[1][node].push_back(i);
-		}
-	}
-
-	function<long long(vector<int>)> getid = [](const vector<int> &state) {
-		long long id = 0;
-		for (int i = 0; i < 4; i++) { id |= ((long long)state[i] << (i * 8)); }
-		return id;
-	};
-
-	function<void(vector<int>, int, int, int)> dfs = [&](vector<int> state,
-	                                                     int node, int dist,
-	                                                     int rev) {
-		if (dist == 4) { return; }
-		state[0] = names[node];
-		sort(state.begin(), state.end());
-		long long id = getid(state);
-		for (int son : g[rev][node]) {
-			if (find(state.begin(), state.end(), names[son]) == state.end() &&
-			    !from[rev][son].count(id)) {
-				if (dist == 3) { states[rev][son].push_back(state); }
-				from[rev][son][id] = node;
-				dfs(state, son, dist + 1, rev);
+			// If the next sogn has the same artist, it won't be considered
+			if(names[i] != names[node]) {
+				g[0][i].push_back(node);
+				g[1][node].push_back(i);
 			}
+
 		}
-	};
-
-	function<void(vector<int>, int, bool)> reconstruct =
-	    [&](vector<int> state, int node, bool rev) {
-		    vector<int> path;
-		    for (int i = 0; i < 4; i++) {
-			    int parent = from[rev][node][getid(state)];
-			    for (int j = 0; j < 4; j++) {
-				    if (state[j] == names[parent]) { state[j] = 0; }
-			    }
-			    sort(state.begin(), state.end());
-			    path.push_back(parent + 1);
-			    node = parent;
-		    }
-		    if (!rev) { reverse(path.begin(), path.end()); }
-		    for (auto node : path) { cout << node << ' '; }
-	    };
-
-	for (int i = 0; i < n; i++) {
-		dfs({0, 0, 0, 0}, i, 0, 0);
-		dfs({0, 0, 0, 0}, i, 0, 1);
 	}
 
+	// Compute the 4-length chains starting from node i
 	for (int i = 0; i < n; i++) {
+		dfs({}, i, 0, 0);
+		dfs({}, i, 0, 1);
+	}
+
+	// Optimization trick
+    vector<int> order(n, 0);
+    iota(order.begin(), order.end(), 0);
+    random_shuffle(order.begin(), order.end());
+
+	for (int i : order) {
 		unordered_map<long long, int> m;
 		for (auto state : states[0][i]) {
 			for (int j = 0; j < 16; j++) {
@@ -293,6 +305,7 @@ int main() {
 					}
 				}
 				sort(s.begin(), s.end());
+				// Inclusion-Exclusion on sets
 				cnt += (1 - 2 * odd) * m[getid(s)];
 			}
 			if (cnt) {
@@ -307,8 +320,10 @@ int main() {
 						}
 					}
 					if (!found) { continue; }
+					// Reconstruct the first part of the path 
 					reconstruct(t, i, false);
 					cout << i + 1 << ' ';
+					// Reconstruct the second part of the path
 					reconstruct(state, i, true);
 					cout << '\n';
 					return 0;
