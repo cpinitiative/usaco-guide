@@ -192,12 +192,12 @@ $\binom{100}{4} \cdot 100 = 4 \cdot 10^8$.
 <CPPSection>
 
 ```cpp
-#include <iostream>
-#include <vector>
-#include <array>
-#include <unordered_map>
 #include <algorithm>
+#include <array>
+#include <iostream>
 #include <numeric>
+#include <unordered_map>
+#include <vector>
 
 using namespace std;
 
@@ -222,7 +222,7 @@ void dfs(State state, int node, int dist, int rev) {
 	long long id = getid(state);
 	for (int son : g[rev][node]) {
 		if (find(state.begin(), state.end(), names[son]) == state.end() &&
-			!from[rev][son].count(id)) {
+		    !from[rev][son].count(id)) {
 			if (dist == 3) { states[rev][son].push_back(state); }
 			from[rev][son][id] = node;
 			dfs(state, son, dist + 1, rev);
@@ -230,19 +230,19 @@ void dfs(State state, int node, int dist, int rev) {
 	}
 };
 void reconstruct(State state, int node, bool rev) {
-		vector<int> path;
-		for (int i = 0; i < 4; i++) {
-			int parent = from[rev][node][getid(state)];
-			for (int j = 0; j < 4; j++) {
-				if (state[j] == names[parent]) { state[j] = 0; }
-			}
-			sort(state.begin(), state.end());
-			path.push_back(parent + 1);
-			node = parent;
+	vector<int> path;
+	for (int i = 0; i < 4; i++) {
+		int parent = from[rev][node][getid(state)];
+		for (int j = 0; j < 4; j++) {
+			if (state[j] == names[parent]) { state[j] = 0; }
 		}
-		if (!rev) { reverse(path.begin(), path.end()); }
-		for (auto node : path) { cout << node << ' '; }
-	};
+		sort(state.begin(), state.end());
+		path.push_back(parent + 1);
+		node = parent;
+	}
+	if (!rev) { reverse(path.begin(), path.end()); }
+	for (auto node : path) { cout << node << ' '; }
+};
 int main() {
 	int n;
 	cin >> n;
@@ -262,11 +262,10 @@ int main() {
 			cin >> node;
 			node--;
 			// If the next sogn has the same artist, it won't be considered
-			if(names[i] != names[node]) {
+			if (names[i] != names[node]) {
 				g[0][i].push_back(node);
 				g[1][node].push_back(i);
 			}
-
 		}
 	}
 
@@ -277,9 +276,9 @@ int main() {
 	}
 
 	// Optimization trick
-    vector<int> order(n, 0);
-    iota(order.begin(), order.end(), 0);
-    random_shuffle(order.begin(), order.end());
+	vector<int> order(n, 0);
+	iota(order.begin(), order.end(), 0);
+	random_shuffle(order.begin(), order.end());
 
 	for (int i : order) {
 		unordered_map<long long, int> m;
@@ -320,7 +319,7 @@ int main() {
 						}
 					}
 					if (!found) { continue; }
-					// Reconstruct the first part of the path 
+					// Reconstruct the first part of the path
 					reconstruct(t, i, false);
 					cout << i + 1 << ' ';
 					// Reconstruct the second part of the path
