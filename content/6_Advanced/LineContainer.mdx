@@ -47,9 +47,11 @@ I will now describe various ways of solving this problem, explaining algorithms 
 ## Explanation
 
 ### Brute Force
+
 This problem can be solved using brute force by computing the intersection point of the lines and all pairs of half-planes and then, for every point, checking if it is inside all of the other half-planes. There are $\mathcal{O}(N^2)$ intersection points that need to be checked against $\mathcal{O}(N)$ half-planes, resulting in the final complexity being $\mathcal{O}(N^3)$. We can then create a convex hull on the set of intersection points which were also included in the half-planes. The vertices of this convex hull are the intersection points of the half-plane lines, as they, of course, would mean they are points in every half-plane since it is points of intersection. This approach works to gain a solution; however, it's impractical to apply in a real-world scenario due to its extremely poor efficiency.
 
 ### Incremental
+
 A slightly faster approach to this problem would be to incrementally construct the intersection of the half-planes one by one. We cut the convex polygon by a line $N$ amount of times, removing the redundant planes each time.
 
 If we represent the convex polygon as a set of line segments, we can cut it with a half-plane by finding the points of intersection of the segments with the half-plane line, replacing all the line segments in the middle with a new segment corresponding to a half-plane. This can be implemented in $\mathcal{O}(N)$ time, and decrease the bounding box with each half-plane, resulting in an $\mathcal{O}(N^2)$ complexity.
@@ -218,11 +220,11 @@ std::vector<Point> halfplane_intersect(std::vector<Halfplane> &halfplanes) {
 }
 ```
 
+## Problems
+
 <Problems problems="half" />
 
 # LineContainer (aka $\mathcal{O}(N \log N)$ CHT)
-
-<Problems problems="sample" />
 
 <Resources>
 	<Resource
@@ -251,11 +253,9 @@ std::vector<Point> halfplane_intersect(std::vector<Halfplane> &halfplanes) {
 		Code
 	</Resource> -->
 
-## Example Problem
-
 <FocusProblem problem="sample_cht" />
 
-### Explanation
+## Explanation
 
 Instead of focusing on the pillars that should be destroyed, let's instead focus
 on the pillars that remain.
@@ -296,7 +296,7 @@ we must settle with $\mathcal{O}(N \log N)$.
 I implemented CHT using a `std::set` here, but other implementations using
 things like the Li-Chao tree should work similarly.
 
-### Implementation
+## Implementation
 
 ```cpp
 #include <bits/stdc++.h>
@@ -388,5 +388,7 @@ int main() {
 ```
 
 ## Problems
+
+<Problems problems="sample" />
 
 <Problems problems="lc_probs" />
