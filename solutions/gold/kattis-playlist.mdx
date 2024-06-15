@@ -117,10 +117,10 @@ int main() {
 				m[getid(s)]++;
 			}
 		}
-		for (const State &state : states[1][i]) {
-			int cnt = (int)states[0][i].size();
+		for (const State &state_path : states[1][i]) {
+			int cnt_paths = (int)states[0][i].size();
 			for (int j = 0; j < 15; j++) {
-				State s = state;
+				State s = state_path;
 				int odd = 0;
 				for (int k = 0; k < 4; k++) {
 					if (j & (1 << k)) {
@@ -130,12 +130,12 @@ int main() {
 				}
 				sort(s.begin(), s.end());
 				// Inclusion-Exclusion on sets
-				cnt += (1 - 2 * odd) * m[getid(s)];
+				cnt_paths += (1 - 2 * odd) * m[getid(s)];
 			}
-			if (cnt) {
+			if (cnt_paths) {
 				for (const State &t : states[0][i]) {
 					bool found = true;
-					for (char c : state) {
+					for (char c : state_path) {
 						for (char cc : t) {
 							if (c == cc) {
 								found = false;
