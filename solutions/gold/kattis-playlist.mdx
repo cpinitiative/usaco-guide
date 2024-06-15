@@ -109,7 +109,7 @@ int main() {
 		unordered_map<long long, int> m;
 		for (State state : states[0][i]) {
 			for (int j = 0; j < 16; j++) {
-				auto s = state;
+				State s = state;
 				for (int k = 0; k < 4; k++) {
 					if (j & (1 << k)) { s[k] = 0; }
 				}
@@ -118,7 +118,7 @@ int main() {
 			}
 		}
 		for (const State &state_path : states[1][i]) {
-			int cnt_paths = (int)states[0][i].size();
+			int path_count = (int)states[0][i].size();
 			for (int j = 0; j < 15; j++) {
 				State s = state_path;
 				int odd = 0;
@@ -130,9 +130,9 @@ int main() {
 				}
 				sort(s.begin(), s.end());
 				// Inclusion-Exclusion on sets
-				cnt_paths += (1 - 2 * odd) * m[getid(s)];
+				path_count += (1 - 2 * odd) * m[getid(s)];
 			}
-			if (cnt_paths) {
+			if (path_count) {
 				for (const State &t : states[0][i]) {
 					bool found = true;
 					for (char c : state_path) {
