@@ -7,7 +7,7 @@ author: Chongtian Ma
 
 ## Explanation
 
-Let's solve the $q = 1$ subtask first. Let's reverse the graph so that in this query, we are solving for the longest path from $t$ to an unblocked node. Here, we can just use DP compute the longest path to every possible node $s$. If $\texttt{dp}_i$ stores the longest path from $t$ to $i$, then $\texttt{dp}_v = \max(\texttt{dp}_v, \texttt{dp}_u + 1)$, over all $v$ where $u$ and $v$ are connected by an edge and is reachable from $t$ in the reverse graph. Since it is guaranteed $v < u$, this can be done with a single sweep.
+Let's solve the $q = 1$ subtask first. Let's reverse the graph so that in this query, we are solving for the longest path from $t$ to an unblocked node. Here, we can just use DP to compute the longest path to every possible node $s$. If $\texttt{dp}_i$ stores the longest path from $t$ to $i$, then $\texttt{dp}_v = \max(\texttt{dp}_v, \texttt{dp}_u + 1)$, over all $v$ where $u$ and $v$ are connected by an edge and is reachable from $t$ in the reverse graph. Since it is guaranteed $v < u$, this can be done with a single sweep.
 
 Now, let's bring in sqrt decomposition. The variable in question is the number of blocked nodes, denoted as $y$. Let's denote $B = \sqrt{10^5}$ and suppose all queries have $y \geq B$. Since the sum of $y$ over all queries is bounded by $10^5$, there can be no more than $\frac{10^5}{B} = B$ queries. The number of queries is small enough that  we can run an $\mathcal{O}(n)$ DP algorithm each time, leading to a $\mathcal{O}({Bn})$ runtime.
 
