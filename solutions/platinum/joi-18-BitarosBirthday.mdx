@@ -14,16 +14,16 @@ Now, let's bring in sqrt decomposition. The variable in question is the number o
 To handle queries with $y < B$, we have to do some preprocessing. For each node, we can store the $B$ longest paths that ends at that node, each originating from a different initial node. This needs to be done with careful pruning of paths with different lengths originating from the same node. This precomputation is approximately $\mathcal{O}(Bm + n \log(Bn))$, since we need to sort the longest paths after we process each node. To answer queries, we can just loop through the $B$ longest paths of $t$, and find the longest one  starting at an unblocked node. This will also take $\mathcal{O}({Bn})$ time.
 
 <Warning title="Choosing B">
-We do not want to choose $B$ such that it equals $\sqrt{10^5}$ exactly! It is apparent that the latter case is much more memory and runtime heavy than the former case, so we need to weigh down $B$ to minimize the effects of the second case. In my code, I use $B = 100$.
-</Warning>
 
+We do not want to choose $B$ such that it equals $\sqrt{10^5}$ exactly! It is apparent that the latter case is much more memory and runtime heavy than the former case, so we need to weigh down $B$ to minimize the effects of the second case. In my code, I use $B = 100$.
+
+</Warning>
 
 ## Implementation
 
 **Time Complexity:** $\mathcal{O}(Bm + n \log(Bn) + Bn)$
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
@@ -81,8 +81,7 @@ int main() {
 		vector<int> c(y);
 		for (int i = 0; i < y; i++) {
 			cin >> c[i];
-			c[i]--;
-			blocked[c[i]] = true;
+			blocked[--c[i]] = true;
 		}
 
 		int ans = -1;
@@ -112,5 +111,4 @@ int main() {
 ```
 
 </CPPSection>
-
 </LanguageSection>
