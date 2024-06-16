@@ -59,6 +59,7 @@ If we represent the convex polygon as a set of line segments, we can cut it with
 This is much better than our initial approach. However, it's still relatively inefficient as we still have to loop over $\mathcal{O}(N)$ half-planes with every iteration. We will make some alterations to this algorithm in the next approach for a more reasonable solution.
 
 ### Sort and Increment Algorithm
+
 We can use some properties of the output of the previous algorithm to optimize it. We know that the resulting region of the intersection of half-planes is convex, therefore it will consist of some segments of half-planes in order of their angles. In other words, if we incrementally intersect the half-planes in the order of their angles, storing them in a double-ended queue, we will only need to remove half-planes from the front and the back of the queue.
 
 Let's say that the half-plane angles are sorted from $-π$ to $π$ and that we are about to start the $k$-th step of the algorithm. We can say that we have already constructed the intersection of the half-planes up to $k-1$. Because the half-planes are sorted by angle, we can be sure that $k$ will form a convex turn with the $k-1$ half-plane. From this, we can say:
@@ -104,8 +105,9 @@ So, as an overview of the algorithm:
 
 ## Implementation
 
-<LanguageSection>
+**Time Complexity: $\mathcal{O}(N \log N)$**
 
+<LanguageSection>
 <CPPSection>
 
 ```cpp
@@ -225,9 +227,6 @@ std::vector<Point> halfplane_intersect(std::vector<Halfplane> &halfplanes) {
 ```
 
 </CPPSection>
-
-**time complexity: $\mathcal{O}(N \log N)$**
-
 </LanguageSection>
 
 ## Problems
@@ -308,8 +307,9 @@ things like the Li-Chao tree should work similarly.
 
 ## Implementation
 
-<LanguageSection>
+**Time Complexity: $\mathcal{O}(N \log N)$**
 
+<LanguageSection>
 <CPPSection>
 
 ```cpp
@@ -402,9 +402,6 @@ int main() {
 ```
 
 </CPPSection>
-
-**time complexity: $\mathcal{O}(N \log N)$**
-
 </LanguageSection>
 
 ## Problems
