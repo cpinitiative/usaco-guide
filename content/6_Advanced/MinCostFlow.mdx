@@ -247,7 +247,7 @@ From Wikipedia (which is then copied from e-maxx):
 #include <bits/stdc++.h>
 using namespace std;
 
-int ckmin(int& a, int b) { return a > b ? ((a = b), true) : false;}
+int ckmin(int &a, int b) { return a > b ? ((a = b), true) : false; }
 
 /**
  * @return the jobs of each worker in the optimal assignment,
@@ -308,27 +308,21 @@ template <class T> vector<T> hungarian(const vector<vector<T>> &C) {
 	return job;
 }
 
-int main()
-{
-        int n;cin>>n;
-        vector c(n,vector<int>(n));
+int main() {
+	int n;
+	cin >> n;
+	vector c(n, vector<int>(n));
 
-        for(int i=0;i<n;i++) {
-            for(int j=0;j<n;j++) {
-                cin>>c[i][j];
-            }
-        }
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) { cin >> c[i][j]; }
+	}
 
-        auto mat = hungarian(c);
-        int cost=0;
-        for(int i=0;i<n;i++) {
-                cost += c[mat[i]][i];
-        }
-        printf("%d\n",cost);
-        for(int i=0;i<n;i++)
-                printf("%d %d\n", mat[i]+1, 1+i);
+	auto mat = hungarian(c);
+	int cost = 0;
+	for (int i = 0; i < n; i++) { cost += c[mat[i]][i]; }
+	printf("%d\n", cost);
+	for (int i = 0; i < n; i++) printf("%d %d\n", mat[i] + 1, 1 + i);
 }
-
 ```
 
 <Resources>
