@@ -944,10 +944,10 @@ int main() {
 
 <FocusProblem problem="sample4" />
 
-### Explanation  
+### Explanation
 
-[Stars and Bars](https://en.wikipedia.org/wiki/Stars_and_bars_(combinatorics)) is a useful method in combinatorics that involves 
-grouping indistinguishable objects into distinguishable boxes. The number ways to put $n$ indistinguishable objects into 
+[Stars and Bars](https://en.wikipedia.org/wiki/Stars_and_bars_(combinatorics)) is a useful method in combinatorics that involves
+grouping indistinguishable objects into distinguishable boxes. The number ways to put $n$ indistinguishable objects into
 $k$ distinguishable boxes is:
 
 $$
@@ -956,7 +956,7 @@ $$
 
 The second binomial coefficient from above can be derived from the property of binomial coefficients: $\binom{n}{k}=\binom{n}{n-k}$.
 
-Let's take a look at a particular example for $n=3$ and $k=2$ that has $4$ possibilities. As the name implies, the visualisation is usually done with stars 
+Let's take a look at a particular example for $n=3$ and $k=2$ that has $4$ possibilities. As the name implies, the visualisation is usually done with stars
 separated into groups by bars:
 
 $$
@@ -967,41 +967,38 @@ $$
 $$
 
 As you've probably noticed, there can be empty boxes - when we put all the stars in the first or second box. There may be cases in
-which the all the boxes should be non-empty. In that case, the number of ways to put $n$ indistinguishable objects into $k$ 
+which the all the boxes should be non-empty. In that case, the number of ways to put $n$ indistinguishable objects into $k$
 distinguishable **non-empty** boxes is: $\binom{n-1}{k-1}$
 
 ### Implementation
 
-For this problem we should think the other way around: let's say that the $k$ colors from which we choose are in fact boxes and instead of choosing $n$ marbles we put them 
-in the respective boxes. The problem has the restriction that we should pick at least one marble of all kinds, which means in our new perspective that all the boxes should be 
+For this problem we should think the other way around: let's say that the $k$ colors from which we choose are in fact boxes and instead of choosing $n$ marbles we put them
+in the respective boxes. The problem has the restriction that we should pick at least one marble of all kinds, which means in our new perspective that all the boxes should be
 non-empty. Thus, the answer is obtained by the second formula: $\binom{n-1}{k-1}$
 
 <LanguageSection>
 <CPPSection>
 
-```cpp 
+```cpp
 #include <iostream>
 
 using namespace std;
 
-int main() { 
+int main() {
 	int T;
 	cin >> T;
 	auto comb = [](int n, int k) -> long long {
-		if(k > n - k) k = n - k;
+		if (k > n - k) k = n - k;
 		long long ans = 1;
-		for(int i = 0; i < k; i++) {
-			ans = ans * (n - i) / (i + 1);
-		}
+		for (int i = 0; i < k; i++) { ans = ans * (n - i) / (i + 1); }
 		return ans;
 	};
-	for(int t = 0; t < T; t++) {
+	for (int t = 0; t < T; t++) {
 		int n, k;
 		cin >> n >> k;
 		cout << comb(n - 1, k - 1) << '\n';
 	}
 }
-
 ```
 
 </CPPSection>
