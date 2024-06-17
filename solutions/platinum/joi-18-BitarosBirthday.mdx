@@ -1,0 +1,114 @@
+---
+id: joi-18-BitarosBirthday
+source: JOI 2018
+title: 2018 - Bitaro's Birthday
+author: Chongtian Ma
+---
+
+## Explanation
+
+Let's solve the $q = 1$ subtask first. Let's reverse the graph so that in this query, we are solving for the longest path from $t$ to an unblocked node. Here, we can just use DP to compute the longest path to every possible node $s$. If $\texttt{dp}_i$ stores the longest path from $t$ to $i$, then $\texttt{dp}_v = \max(\texttt{dp}_v, \texttt{dp}_u + 1)$, over all $v$ where $u$ and $v$ are connected by an edge and is reachable from $t$ in the reverse graph. Since it is guaranteed $v < u$, this can be done with a single sweep.
+
+Now, let's bring in sqrt decomposition. The variable in question is the number of blocked nodes, denoted as $y$. Let's denote $B = \sqrt{10^5}$ and suppose all queries have $y \geq B$. Since the sum of $y$ over all queries is bounded by $10^5$, there can be no more than $\frac{10^5}{B} = B$ queries. The number of queries is small enough that  we can run an $\mathcal{O}(n)$ DP algorithm each time, leading to a $\mathcal{O}({Bn})$ runtime.
+
+To handle queries with $y < B$, we have to do some preprocessing. For each node, we can store the $B$ longest paths that ends at that node, each originating from a different initial node. This needs to be done with careful pruning of paths with different lengths originating from the same node. This precomputation is approximately $\mathcal{O}(Bm + n \log(Bn))$, since we need to sort the longest paths after we process each node. To answer queries, we can just loop through the $B$ longest paths of $t$, and find the longest one  starting at an unblocked node. This will also take $\mathcal{O}({Bn})$ time.
+
+<Warning title="Choosing B">
+
+We do not want to choose $B$ such that it equals $\sqrt{10^5}$ exactly! It is apparent that the latter case is much more memory and runtime heavy than the former case, so we need to weigh down $B$ to minimize the effects of the second case. In my code, I use $B = 100$.
+
+</Warning>
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(Bm + n \log(Bn) + Bn)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+const int SQ = 100;  // cutoff for sqrt decomp
+
+int main() {
+	cin.tie(0)->sync_with_stdio(0);
+	int n, m, q;
+	cin >> n >> m >> q;
+	vector<vector<int>> rg(n);
+	for (int i = 0; i < m; i++) {
+		int u, v;
+		cin >> u >> v;
+		rg[--v].push_back(--u);
+	}
+
+	// stores the 100 longest paths ending at i
+	vector<vector<pair<int, int>>> path_sizes(n);
+	vector<int> from(n, -1);  // longest path starting at that node
+
+	for (int i = 0; i < n; i++) {
+		path_sizes[i].push_back({0, i});
+		vector<int> from_indicies;
+
+		for (int j : rg[i]) {
+			for (auto [dist, idx] : path_sizes[j]) {
+				if (from[idx] == -1) {
+					// if we haven't gotten a path from this index yet
+					from_indicies.push_back(idx);
+					from[idx] = dist + 1;
+				} else {
+					// take max with already processed dist
+					from[idx] = max(from[idx], dist + 1);
+				}
+			}
+		}
+
+		for (int j : from_indicies) { path_sizes[i].push_back({from[j], j}); }
+		sort(path_sizes[i].rbegin(), path_sizes[i].rend());
+		// pop until sqrt paths
+		while (path_sizes[i].size() > SQ) { path_sizes[i].pop_back(); }
+
+		// reset
+		for (int j : from_indicies) { from[j] = -1; }
+	}
+
+	vector<bool> blocked(n);
+	for (int query = 0; query < q; query++) {
+		int t, y;
+		cin >> t >> y;
+		t--;
+
+		vector<int> c(y);
+		for (int i = 0; i < y; i++) {
+			cin >> c[i];
+			blocked[--c[i]] = true;
+		}
+
+		int ans = -1;
+		if (y >= SQ) {
+			// brute force dp since number of queries is bounded by sqrt
+			vector<int> dp(t + 1, -1);  // dp[i] stores longest path ending at i
+			dp[t] = 0;
+			for (int i = t; i >= 0; i--) {
+				if (dp[i] == -1) { continue; }
+				if (!blocked[i]) { ans = max(ans, dp[i]); }
+				for (int j : rg[i]) { dp[j] = max(dp[j], dp[i] + 1); }
+			}
+		} else {
+			for (auto [dist, idx] : path_sizes[t]) {
+				if (!blocked[idx]) {
+					ans = dist;
+					break;
+				}
+			}
+		}
+
+		cout << ans << "\n";
+
+		for (int i : c) { blocked[i] = false; }
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>
