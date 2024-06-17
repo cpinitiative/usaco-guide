@@ -211,9 +211,11 @@ and
 
 ### Assignment Problem
 
-The assignment problem is best understood as a min cost max flow problem. In our formulation,
-we will assign $W$ workers to $J$ jobs, $J \ge W$, and the cost of assigning the
-$i$th job to the $j$th worker is $C_{i,j}$.
+<FocusProblem problem="assignment" />
+
+The assignment problem is best understood as a min cost max flow problem. In our
+formulation, we will assign $W$ workers to $J$ jobs, $J \ge W$, and the cost of
+assigning the $i$th job to the $j$th worker is $C_{i,j}$.
 
 We will create a flow network with a source node $S$, job nodes $J_i$, worker
 nodes $W_j$, and a sink node $E$.
@@ -228,11 +230,11 @@ The answer will be the minimum cost of the max flow of the graph. An example:
 
 ![Hungarian Algorithm Flows Diagram](./hungarian_algo_graph.png)
 
-To solve this, we will use the min cost max flow algorithm detailed above. In every iteration
-of the algorithm, we will assign a job to a worker. In each iteration, we will
-first assign the job to an auxilary worker, then we will try to find an
-augmenting path with minimum cost. To optimize this, we will only run Dijkstra
-on the worker nodes. For details, refer to the code.
+To solve this, we will use the min cost max flow algorithm detailed above. In
+every iteration of the algorithm, we will assign a job to a worker. In each
+iteration, we will first assign the job to an auxilary worker, then we will try
+to find an augmenting path with minimum cost. To optimize this, we will only run
+Dijkstra on the worker nodes. For details, refer to the code.
 
 Since there are $J$ iterations (for each job) and each iteration takes $O(W^2)$
 time, the overall time complexity is $O(J W^2)$.
@@ -242,6 +244,11 @@ time, the overall time complexity is $O(J W^2)$.
 From Wikipedia (which is then copied from e-maxx):
 
 ```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int ckmin(int& a, int b) { return a > b ? ((a = b), true) : false;}
+
 /**
  * @return the jobs of each worker in the optimal assignment,
  * or -1 if the worker is not assigned
@@ -300,6 +307,28 @@ template <class T> vector<T> hungarian(const vector<vector<T>> &C) {
 
 	return job;
 }
+
+int main()
+{
+        int n;cin>>n;
+        vector c(n,vector<int>(n));
+
+        for(int i=0;i<n;i++) {
+            for(int j=0;j<n;j++) {
+                cin>>c[i][j];
+            }
+        }
+
+        auto mat = hungarian(c);
+        int cost=0;
+        for(int i=0;i<n;i++) {
+                cost += c[mat[i]][i];
+        }
+        printf("%d\n",cost);
+        for(int i=0;i<n;i++)
+                printf("%d %d\n", mat[i]+1, 1+i);
+}
+
 ```
 
 <Resources>
@@ -322,11 +351,5 @@ template <class T> vector<T> hungarian(const vector<vector<T>> &C) {
  />
 
 </Resources>
-
-<IncompleteSection>
-
-More hungarian algorithm problems
-
-</IncompleteSection>
 
 <Problems problems="appl" />
