@@ -923,6 +923,90 @@ int main() {
 </CPPSection>
 </LanguageSection>
 
+## Stars and Bars
+
+<Resources>
+	<Resource
+		source="cp-algo"
+		title="Stars and bars"
+		url="https://cp-algorithms.com/combinatorics/stars_and_bars.html"
+		starred
+	>
+	</Resource>
+	<Resource
+		source="Medium"
+		title="The Stars and Bars Formula"
+		url="https://medium.com/statistics-theory/the-stars-and-bars-formula-b1c09c2b27b4"
+	>
+		Well documented article.
+	</Resource>
+</Resources>
+
+[Stars and Bars](https://en.wikipedia.org/wiki/Stars_and_bars_(combinatorics)) is a useful method in combinatorics that involves
+grouping indistinguishable objects into distinguishable boxes. The number ways to put $n$ indistinguishable objects into
+$k$ distinguishable boxes is:
+
+$$
+\binom{n+k-1}{n}=\binom{n+k-1}{k-1}
+$$
+
+The second binomial coefficient from above can be derived from the property of binomial coefficients: $\binom{n}{k}=\binom{n}{n-k}$.
+
+Let's take a look at a particular example for $n=3$ and $k=2$ that has $4$ possibilities. As the name implies, the visualization is usually done with stars
+separated into groups by bars:
+
+$$
+||\bigstar \bigstar \bigstar  \\
+|\bigstar |\bigstar \bigstar  \\
+|\bigstar \bigstar| \bigstar  \\
+\bigstar \bigstar \bigstar ||  \\
+$$
+
+As you've probably noticed, there can be empty boxes - when we put all the stars in the first or second box. There may be cases in
+which the all the boxes should be non-empty. In that case, the number of ways to put $n$ indistinguishable objects into $k$
+distinguishable **non-empty** boxes is: $\binom{n-1}{k-1}$
+
+<FocusProblem problem="sample4" />
+
+### Explanation
+
+For this problem we should think the other way around: let's say that the $k$ colors from which we choose are in fact boxes and instead of choosing $n$ marbles we put them
+in the respective boxes. The problem has the restriction that we should pick at least one marble of all kinds, which means in our new perspective that all the boxes should be
+non-empty. Thus, the answer is obtained by the second formula: $\binom{n-1}{k-1}$
+
+### Implementation
+
+**Time Complexity:** $\mathcal(O)(T \cdot K)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+
+using namespace std;
+
+long long comb(int n, int k) {
+	if (k > n - k) { k = n - k; }
+	long long ans = 1;
+	for (int i = 0; i < k; i++) { ans = ans * (n - i) / (i + 1); }
+	return ans;
+}
+
+int main() {
+	int test_num;
+	cin >> test_num;
+	for (int t = 0; t < test_num; t++) {
+		int n, k;
+		cin >> n >> k;
+		cout << comb(n - 1, k - 1) << '\n';
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
 ## Problems
 
 <Problems problems="general" />
