@@ -942,10 +942,6 @@ int main() {
 	</Resource>
 </Resources>
 
-<FocusProblem problem="sample4" />
-
-### Explanation
-
 [Stars and Bars](https://en.wikipedia.org/wiki/Stars_and_bars_(combinatorics)) is a useful method in combinatorics that involves
 grouping indistinguishable objects into distinguishable boxes. The number ways to put $n$ indistinguishable objects into
 $k$ distinguishable boxes is:
@@ -970,13 +966,17 @@ As you've probably noticed, there can be empty boxes - when we put all the stars
 which the all the boxes should be non-empty. In that case, the number of ways to put $n$ indistinguishable objects into $k$
 distinguishable **non-empty** boxes is: $\binom{n-1}{k-1}$
 
-### Implementation
+<FocusProblem problem="sample4" />
+
+### Explanation
 
 For this problem we should think the other way around: let's say that the $k$ colors from which we choose are in fact boxes and instead of choosing $n$ marbles we put them
 in the respective boxes. The problem has the restriction that we should pick at least one marble of all kinds, which means in our new perspective that all the boxes should be
 non-empty. Thus, the answer is obtained by the second formula: $\binom{n-1}{k-1}$
 
-**Time Complexity:** $\mathcal(O)(?)$
+### Implementation
+
+**Time Complexity:** $\mathcal(O)(T \cdot K)$
 
 <LanguageSection>
 <CPPSection>
@@ -986,14 +986,14 @@ non-empty. Thus, the answer is obtained by the second formula: $\binom{n-1}{k-1}
 
 using namespace std;
 
-int main() {
-	auto comb = [](int n, int k) -> long long {
-		if (k > n - k) k = n - k;
-		long long ans = 1;
-		for (int i = 0; i < k; i++) { ans = ans * (n - i) / (i + 1); }
-		return ans;
-	};
+long long comb(int n, int k) {
+	if (k > n - k) k = n - k;
+	long long ans = 1;
+	for (int i = 0; i < k; i++) { ans = ans * (n - i) / (i + 1); }
+	return ans;
+}
 
+int main() {
 	int T;
 	cin >> T;
 	for (int t = 0; t < T; t++) {
