@@ -1,0 +1,165 @@
+---
+id: kattis-playlist
+source: Kattis
+title: Playlist
+author: Mihnea Brebenel
+---
+
+## Explanation
+
+We apply meet in the middle technique by splitting the continuous chain of $9$ songs into chains of four songs and the center one. We'll compute for each node all the subsets of four different
+artists such that there is a path going into the this node. Similarly, by reversing the graph, compute the paths going out of the node. In the combining step, loop through all nodes and
+fix one as the center node. Having precomputed the two groups of subsets (ingoing and outgoing paths), we want to find two sets that are disjoint, i.e no common element. Using
+[Inclusion-Exclusion](/plat/PIE) count for a given set in the first group the number of sets in the second group with one common element. The upperbound for the number of sets is
+$\binom{100}{4} \cdot 100 = 4 \cdot 10^8$.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N(\binom{N}{4}+N))$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <algorithm>
+#include <array>
+#include <iostream>
+#include <numeric>
+#include <unordered_map>
+#include <vector>
+
+using namespace std;
+
+typedef array<char, 4> State;
+
+unordered_map<string, int> artistmap;
+unordered_map<long long, int> from[2][100];
+vector<State> states[2][100];
+vector<int> g[2][100];
+vector<int> names;
+
+long long getid(const State &state) {
+	long long id = 0;
+	for (int i = 0; i < 4; i++) { id |= ((long long)state[i] << (i * 8)); }
+	return id;
+};
+
+void dfs(State state, int node, int dist, int rev) {
+	if (dist == 4) { return; }
+	state[0] = names[node];
+	sort(state.begin(), state.end());
+	long long id = getid(state);
+	for (int son : g[rev][node]) {
+		if (find(state.begin(), state.end(), names[son]) == state.end() &&
+		    !from[rev][son].count(id)) {
+			if (dist == 3) { states[rev][son].push_back(state); }
+			from[rev][son][id] = node;
+			dfs(state, son, dist + 1, rev);
+		}
+	}
+};
+
+void reconstruct(State state, int node, bool rev) {
+	vector<int> path;
+	for (int i = 0; i < 4; i++) {
+		int parent = from[rev][node][getid(state)];
+		for (int j = 0; j < 4; j++) {
+			if (state[j] == names[parent]) { state[j] = 0; }
+		}
+		sort(state.begin(), state.end());
+		path.push_back(parent + 1);
+		node = parent;
+	}
+	if (!rev) { reverse(path.begin(), path.end()); }
+	for (int node : path) { cout << node << ' '; }
+};
+
+int main() {
+	int n;
+	cin >> n;
+
+	names.resize(n);
+	for (int i = 0; i < n; i++) {
+		string name;
+		cin >> name;
+		// Associate to each artist a number
+		if (!artistmap.count(name)) { artistmap[name] = artistmap.size() + 1; }
+		names[i] = artistmap[name];
+		int k;
+		cin >> k;
+		for (int j = 0; j < k; j++) {
+			int node;
+			cin >> node;
+			node--;
+			// If the next sogn has the same artist, it won't be considered
+			if (names[i] != names[node]) {
+				g[0][i].push_back(node);
+				g[1][node].push_back(i);
+			}
+		}
+	}
+
+	// Compute the 4-length chains starting from node i
+	for (int i = 0; i < n; i++) {
+		dfs({}, i, 0, 0);
+		dfs({}, i, 0, 1);
+	}
+
+	for (int i = 0; i < n; i++) {
+		unordered_map<long long, int> m;
+		for (State state : states[0][i]) {
+			for (int j = 0; j < 16; j++) {
+				State s = state;
+				for (int k = 0; k < 4; k++) {
+					if (j & (1 << k)) { s[k] = 0; }
+				}
+				sort(s.begin(), s.end());
+				m[getid(s)]++;
+			}
+		}
+		for (const State &state_path : states[1][i]) {
+			int path_count = (int)states[0][i].size();
+			for (int j = 0; j < 15; j++) {
+				State s = state_path;
+				int odd = 0;
+				for (int k = 0; k < 4; k++) {
+					if (j & (1 << k)) {
+						s[k] = 0;
+						odd ^= 1;
+					}
+				}
+				sort(s.begin(), s.end());
+				// Inclusion-Exclusion on sets
+				path_count += (1 - 2 * odd) * m[getid(s)];
+			}
+			if (path_count) {
+				for (const State &t : states[0][i]) {
+					bool found = true;
+					for (char c : state_path) {
+						for (char cc : t) {
+							if (c == cc) {
+								found = false;
+								break;
+							}
+						}
+					}
+
+					if (!found) { continue; }
+					// Reconstruct the first part of the path
+					reconstruct(t, i, false);
+					cout << i + 1 << ' ';
+					// Reconstruct the second part of the path
+					reconstruct(state_path, i, true);
+					cout << '\n';
+					return 0;
+				}
+			}
+		}
+	}
+
+	cout << "fail" << endl;
+}
+```
+
+</CPPSection>
+</LanguageSection>
