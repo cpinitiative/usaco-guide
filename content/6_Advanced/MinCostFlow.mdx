@@ -253,7 +253,7 @@ int ckmin(int &a, int b) { return a > b ? ((a = b), true) : false; }
  * @return the jobs of each worker in the optimal assignment,
  * or -1 if the worker is not assigned
  */
-template <class T> vector<T> hungarian(const vector<vector<T>> &C) {
+template <class T> vector<int> hungarian(const vector<vector<T>> &C) {
 	int J = C.size();
 	int W = C[0].size();
 	assert(J <= W);
@@ -311,17 +311,17 @@ template <class T> vector<T> hungarian(const vector<vector<T>> &C) {
 int main() {
 	int n;
 	cin >> n;
-	vector c(n, vector<int>(n));
+	vector<vector<int>> c(n, vector<int>(n));
 
 	for (int i = 0; i < n; i++) {
 		for (int j = 0; j < n; j++) { cin >> c[i][j]; }
 	}
 
-	auto mat = hungarian(c);
+	vector<int> mat = hungarian(c);
 	int cost = 0;
 	for (int i = 0; i < n; i++) { cost += c[mat[i]][i]; }
-	printf("%d\n", cost);
-	for (int i = 0; i < n; i++) printf("%d %d\n", mat[i] + 1, 1 + i);
+        cout << cost << endl;
+        for(int i = 0; i < n; i++) { cout << mat[i] + 1 << i + 1 << endl; }
 }
 ```
 
