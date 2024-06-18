@@ -976,6 +976,8 @@ For this problem we should think the other way around: let's say that the $k$ co
 in the respective boxes. The problem has the restriction that we should pick at least one marble of all kinds, which means in our new perspective that all the boxes should be
 non-empty. Thus, the answer is obtained by the second formula: $\binom{n-1}{k-1}$
 
+**Time Complexity:** $\mathcal(O)(?)$
+
 <LanguageSection>
 <CPPSection>
 
@@ -985,14 +987,15 @@ non-empty. Thus, the answer is obtained by the second formula: $\binom{n-1}{k-1}
 using namespace std;
 
 int main() {
-	int T;
-	cin >> T;
 	auto comb = [](int n, int k) -> long long {
 		if (k > n - k) k = n - k;
 		long long ans = 1;
 		for (int i = 0; i < k; i++) { ans = ans * (n - i) / (i + 1); }
 		return ans;
 	};
+
+	int T;
+	cin >> T;
 	for (int t = 0; t < T; t++) {
 		int n, k;
 		cin >> n >> k;
