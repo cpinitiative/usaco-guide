@@ -4,18 +4,22 @@ redirects:
   - /plat/bin-jump
 title: 'Binary Jumping'
 author: Benjamin Qi, Neo Wang, Qi Wang
+contributors: Kevin Sheng, Mihnea Brebenel
 description:
-  'Introduces the problems of finding level ancestors in a tree and computing
-  the lowest common ancestors.'
+  'Efficiently finding ancestors of a node.'
 frequency: 3
 prerequisites:
 ---
 
+<Info title="Terminology">
+
+Binary jumping is more commonly referred to as "binary lifting".
+
+</Info>
+
 ## Binary Jumping
 
 <FocusProblem problem="sample" />
-
-### Tutorial
 
 <Resources>
 	<Resource source="CPH" title="18.1 - Finding Ancestors" />
@@ -31,77 +35,117 @@ prerequisites:
 	/>
 </Resources>
 
-<Info title="Pro Tip">
+### Explanation
 
-Binary jumping is more commonly referred to as "binary lifting."
+Binary lifting consists of calculating the $2^k$-th ancestor of each node
+for all relevant values of $k$ and storing them in a table.
 
-</Info>
+With this table, we can then efficiently answer queries regarding
+the $k$-th ancestor of all nodes.
+This is because any $k$ can be broken down into a sum of powers of $2$
+with its binary representation.
 
-### Solution
+This way, instead of directly computing, say, the $13$th ancestor of a node,
+we can go to the $8$th, then $4$th, then $1$st ancestor of the node.
+This results in a logarithmic complexity for computing the $k$th parent.
 
-To solve this problem, we can use a standard binary lifting implementation where
-`jmp(int x, int d)` corresponds to the $d$-th ancestor of $x$.
+Here's an animation of how we jump if you're still confused:
 
-In our `jmp(int x, int d)` if our final value of $x$ is $0$, then such a node
-does not exist and we can simply return $-1$. This is because the lowest number
-a node can be is $1$ (the root of the tree).
+<video width="960" height="720" controls>
+	<source src="/animations/binary_jumping.mp4" type="video/mp4"/>
+</video>
 
-In our implementation, we test if we jump in powers of two by using the $\&$
-operator. If the $i$th bit on the right is toggled, then we jump. For example, a
-jump of $13$ would correspond to the binary number $1101$. We would jump 3 times
-on bits $0, 2, 3$ (in that order) counting from the right.
+To actually compute our binary jumping table, we start with the $2^0=1$st
+parents of each node, which is their direct parent.
+We then move on and calculate $2^1=2$nd parents, using the fact that
+the $2$nd parent can be calculated as the $1$st parent of the $1$st parent.
+Using similar logic, we move on to $2^2$, $2^3$, and so on.
+We stop when $2^n$ is greater than the size of the tree, since at that point
+we're definitely at the root.
 
-<Spoiler title="Illustration of the jump method">
+### Implementation
 
-![Binary Lifting Diagram](./assets/binaryliftingjump.png)
-
-</Spoiler>
-
-To calculate the rows required for the `int up[MS][MX]` array, use the formula
-$\lceil \log_2{N} \rceil$ which in our case simplifies to
-$\lceil \log_2{(2\cdot 10^5)}\rceil = 18$.
-
-<Info title="Pro Tip">
-
-It never hurts to add additional rows - or columns, depending on your
-implementation - (as long as it's reasonable)!
-
-</Info>
+**Time Complexity:** $\mathcal{O}((N+Q)\log N)$
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
-#include <bits/stdc++.h>
-using namespace std;
+#include <cmath>
+#include <iostream>
+#include <vector>
 
-const int MAX = 2e5 + 1;
-const int LOG = 18;
-int up[LOG][MAX];
-int kth(int x, int d) {
-	for (int i = LOG - 1; i >= 0; i--) {
-		if ((d >> i) & 1) { x = up[i][x]; }
+using std::cout;
+using std::endl;
+using std::vector;
+
+class Tree {
+  private:
+	const int log2dist;
+	vector<int> par;
+	vector<vector<int>> pow2ends;
+
+  public:
+	Tree(const vector<int> &parents)
+	    : log2dist(std::ceil(std::log2(parents.size() + 1))),
+	      par(parents.size() + 1),
+	      pow2ends(par.size(), vector<int>(log2dist + 1)) {
+		par[0] = -1;
+		for (int i = 0; i < parents.size(); i++) { par[i + 1] = parents[i]; }
+
+		// pow2ends[n][k] contains the 2^kth parent of node n
+		// if there is no 2^kth parent, the value is -1
+		for (int n = 0; n < par.size(); n++) { pow2ends[n][0] = par[n]; }
+		for (int p = 1; p <= log2dist; p++) {
+			for (int n = 0; n < par.size(); n++) {
+				int halfway = pow2ends[n][p - 1];
+				if (halfway == -1) {
+					pow2ends[n][p] = -1;
+				} else {
+					pow2ends[n][p] = pow2ends[halfway][p - 1];
+				}
+			}
+		}
 	}
-	return x ?: -1;
-}
+
+	/** @return the kth parent of node n */
+	int kth_parent(int n, int k) {
+		int at = n;
+		// break down k into powers of 2 by looping through its bits
+		for (int pow = 0; pow <= log2dist; pow++) {
+			if ((k & (1 << pow)) != 0) {
+				at = pow2ends[at][pow];
+				if (at == -1) {
+					break;  // stop when we're past the root
+				}
+			}
+		}
+		return at;
+	}
+};
+
 int main() {
-	int n, q;
-	cin >> n >> q;
-	for (int i = 2; i <= n; i++) { cin >> up[0][i]; }
-	for (int i = 1; i < LOG; i++) {
-		for (int j = 1; j <= n; j++) { up[i][j] = up[i - 1][up[i - 1][j]]; }
+	int employee_num;
+	int query_num;
+	std::cin >> employee_num >> query_num;
+	vector<int> bosses(employee_num - 1);
+	for (int &b : bosses) {
+		std::cin >> b;
+		b--;
 	}
-	while (q--) {
-		int x, k;
-		cin >> x >> k;
-		cout << kth(x, k) << "\n";
+
+	Tree tree(bosses);
+	for (int q = 0; q < query_num; q++) {
+		int employee;
+		int dist;
+		std::cin >> employee >> dist;
+		int kth_boss = tree.kth_parent(--employee, dist);
+		cout << (kth_boss != -1 ? kth_boss + 1 : -1) << '\n';
 	}
 }
 ```
 
 </CPPSection>
-
 </LanguageSection>
 
 ### Problems
@@ -111,10 +155,6 @@ int main() {
 ## Lowest Common Ancestor
 
 <FocusProblem problem="lca" />
-
-<FocusProblem problem="lca2" />
-
-### Solution (Company Queries II)
 
 <Resources>
 	<Resource source="CPH" title="18.3 - LCA Method 1">
@@ -129,146 +169,257 @@ int main() {
 	</Resource>
 </Resources>
 
+### Explanation 1
+
 To find $\textrm{lca}(a, b)$, we can first lift the lower node of $a$ and $b$ to
 the same depth as the other. Then, we lift both nodes up decrementally. At the
 end, the parent of either node is the LCA of the two.
 
-<LanguageSection>
+### Implementation
 
+**Time Complexity:** $\mathcal{O}((N+Q)\log N)$
+
+<LanguageSection>
 <CPPSection>
 
 ```cpp
-#include <bits/stdc++.h>
-using namespace std;
+#include <cmath>
+#include <iostream>
+#include <vector>
 
-const int MAX = 2e5;
-const int LOG = 19;
-int up[LOG][MAX], depth[MAX];
-vector<int> adj[MAX];
-void dfs(int node, int prev, int dist) {
-	depth[node] = dist;
-	if (prev != -1) { up[0][node] = prev; }
-	for (int i = 1; i < LOG; i++) { up[i][node] = up[i - 1][up[i - 1][node]]; }
-	for (int nxt : adj[node]) {
-		if (nxt != prev) { dfs(nxt, node, dist + 1); }
-	}
-}
-int lca(int a, int b) {
-	if (depth[a] < depth[b]) { swap(a, b); }
-	int dist = depth[a] - depth[b];
-	for (int i = LOG - 1; i >= 0; i--) {
-		if ((dist >> i) & 1) { a = up[i][a]; }
-	}
-	if (a == b) { return a; }
-	for (int i = LOG - 1; i >= 0; i--) {
-		if (up[i][a] != up[i][b]) {
-			a = up[i][a];
-			b = up[i][b];
+using std::cout;
+using std::endl;
+using std::vector;
+
+class Tree {
+  private:
+	const int root = 0;
+
+	const vector<vector<int>> &adj;
+	const int log2dist;
+	vector<int> par;
+	vector<vector<int>> pow2ends;
+	vector<int> depth;
+
+	/** use DFS to calculate the depths and parents of each node */
+	void process(int at, int prev) {
+		depth[at] = depth[prev] + 1;
+		for (int n : adj[at]) {
+			if (n != prev) {
+				process(n, at);
+				par[n] = at;
+			}
 		}
 	}
-	return up[0][a];
-}
-int main() {
-	int n, q;
-	cin >> n >> q;
-	for (int i = 1; i < n; i++) {
-		int b;
-		cin >> b;
-		adj[--b].push_back(i);
+
+  public:
+	Tree(const vector<vector<int>> &adj)
+	    : adj(adj), log2dist(std::ceil(std::log2(adj.size()))), par(adj.size()),
+	      pow2ends(par.size(), vector<int>(log2dist + 1)), depth(adj.size()) {
+		par[root] = depth[root] = -1;
+		process(root, root);
+
+		for (int n = 0; n < par.size(); n++) { pow2ends[n][0] = par[n]; }
+		for (int p = 1; p <= log2dist; p++) {
+			for (int n = 0; n < par.size(); n++) {
+				int halfway = pow2ends[n][p - 1];
+				if (halfway == -1) {
+					pow2ends[n][p] = -1;
+				} else {
+					pow2ends[n][p] = pow2ends[halfway][p - 1];
+				}
+			}
+		}
 	}
-	dfs(0, -1, 0);
-	for (int i = 0; i < q; i++) {
-		int x, y;
-		cin >> x >> y;
-		cout << lca(--x, --y) + 1 << "\n";
+
+	/** @return the kth parent of node n */
+	int kth_parent(int n, int k) {
+		if (k > par.size()) { return -1; }
+		int at = n;
+		for (int pow = 0; pow <= log2dist; pow++) {
+			if ((k & (1 << pow)) != 0) {
+				at = pow2ends[at][pow];
+				if (at == -1) { break; }
+			}
+		}
+		return at;
+	}
+
+	/** @return the LCA of nodes n1 and n2 */
+	int lca(int n1, int n2) {
+		if (depth[n1] < depth[n2]) { return lca(n2, n1); }
+		// lift n1 up to the same height as n2
+		n1 = kth_parent(n1, depth[n1] - depth[n2]);
+		if (n1 == n2) {
+			return n2;  // in this case, n2 is a direct ancestor of n1
+		}
+
+		// move the nodes up as long as they don't meet
+		for (int i = log2dist; i >= 0; i--) {
+			if (pow2ends[n1][i] != pow2ends[n2][i]) {
+				n1 = pow2ends[n1][i];
+				n2 = pow2ends[n2][i];
+			}
+		}
+		// at this point, the lca will be the parent of either node
+		return pow2ends[n1][0];
+	}
+};
+
+int main() {
+	int employee_num;
+	int query_num;
+	std::cin >> employee_num >> query_num;
+	vector<vector<int>> adj(employee_num);
+	for (int e = 1; e < employee_num; e++) {
+		int boss;
+		std::cin >> boss;
+		adj[--boss].push_back(e);
+		adj[e].push_back(boss);
+	}
+
+	Tree tree(adj);
+	for (int q = 0; q < query_num; q++) {
+		int e1, e2;
+		std::cin >> e1 >> e2;
+		cout << tree.lca(--e1, --e2) + 1 << '\n';
 	}
 }
 ```
 
 </CPPSection>
-
 </LanguageSection>
 
-### Alternative Solution (Company Queries II)
+### Explanation 2
 
-As mentioned in the [Euler Tour Technique](/gold/tree-euler) module, let
-$\texttt{st}, \texttt{en}, \texttt{up}$ be the time-in, time-out, and ancestor
-table for all nodes in the tree.
+We can also use an [Euler tour](/gold/tree-euler) of the tree to help us
+compute the LCAs as well.
 
-These can be filled with a DFS traversal. $\texttt{up}$ can be generated because
-DFS allows the ancestors to be filled first before traversing the current node.
+Let $\texttt{start}$ and $\texttt{end}$ be the time-in and time-out table
+for the nodes in the tree.
+They'll be filled up in the exact same way the Euler tour module does it.
 
-With this information, we can declare node $a$ an ancestor of $b$ if
-$\texttt{st}[a] \le \texttt{st}[b]$ and $\texttt{en}[a] \ge \texttt{en}[b]$.
+The cool thing is that while we're filling up $\texttt{start}$ and $\texttt{end}$,
+we can also calculate our binary jumping table in the exact same way
+we did in the previous solution!
+We can do this because in a DFS, we're guaranteed to have processed all of
+a node's parents before the node itself, so all the tables of any node's
+ancestors will have been filled when we reach the node.
 
-We know that if $a$ is an ancestor of $b$ or $b$ is an ancestor of $a$, the
-answer will be $a$ or $b$ respectively. Otherwise, we lift one of the nodes up
-(in this case, $a$) decrementally while it is not the ancestor of $b$.
-Therefore, if $\texttt{up}[a][i]$ is not an ancestor of $b$, then we can set $a$
-to be $\texttt{up}[a][i]$, else, we will decrement $i$ and try to find a lower
-common ancestor. Afterwards, our answer is the parent of $a$.
+Now, to actually calculate the LCA without the depths of the nodes,
+we can use the fact that node $a$ is an ancestor of node $b$
+if $\texttt{start}[a] \le \texttt{start}[b]$ and $\texttt{end}[b] \le \texttt{end}[a]$.
+
+In our LCA function, we first check
+if one node is already an ancestor of the other.
+In that case, we return the ancestor.
+If it isn't, then we lift up one of the nodes until its an ancestor of the other
+in a method that's basically the same as our previous binary jumping algorithm.
+After that, our answer is the parent of the node we lift up.
+
+### Implementation
+
+**Time Complexity:** $\mathcal{O}((N+Q)\log N)$
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
-#include <bits/stdc++.h>
-using namespace std;
+#include <cmath>
+#include <iostream>
+#include <vector>
 
-const int MAX = 2e5;
-const int LOG = 19;
-int timer = 0, up[LOG][MAX], tin[MAX], tout[MAX];
-vector<int> adj[MAX];
-void dfs(int node, int prev) {
-	tin[node] = timer++;
-	if (prev != -1) { up[0][node] = prev; }
-	for (int i = 1; i < LOG; i++) { up[i][node] = up[i - 1][up[i - 1][node]]; }
-	for (int nxt : adj[node]) {
-		if (nxt != prev) { dfs(nxt, node); }
+using std::cout;
+using std::endl;
+using std::vector;
+
+class Tree {
+  private:
+	const int root = 0;
+
+	const vector<vector<int>> &adj;
+	const int log2dist;
+	vector<vector<int>> pow2ends;
+	vector<int> start, end;
+	int timer = 0;
+
+	void process(int at, int prev) {
+		pow2ends[at][0] = prev;
+		for (int p = 1; p <= log2dist; p++) {
+			int halfway = pow2ends[at][p - 1];
+			if (halfway == -1) {
+				pow2ends[at][p] = -1;
+			} else {
+				pow2ends[at][p] = pow2ends[halfway][p - 1];
+			}
+		}
+
+		start[at] = timer++;
+		for (int n : adj[at]) {
+			if (n != prev) { process(n, at); }
+		}
+		end[at] = timer;
 	}
-	tout[node] = timer - 1;
-}
-bool is_ancestor(int a, int b) {
-	return tin[a] <= tin[b] && tout[b] <= tout[a];
-}
-int lca(int a, int b) {
-	if (is_ancestor(a, b)) { return a; }
-	if (is_ancestor(b, a)) { return b; }
-	for (int i = LOG - 1; i >= 0; i--) {
-		if (!is_ancestor(up[i][a], b)) { a = up[i][a]; }
+
+  public:
+	Tree(const vector<vector<int>> &adj)
+	    : adj(adj), log2dist(std::ceil(std::log2(adj.size()))),
+	      pow2ends(adj.size(), vector<int>(log2dist + 1)), start(adj.size()),
+	      end(adj.size()) {
+		process(root, -1);
 	}
-	return up[0][a];
-}
+
+	bool is_ancestor(int n1, int n2) {
+		return start[n1] <= start[n2] && end[n2] <= end[n1];
+	}
+
+	int lca(int n1, int n2) {
+		if (is_ancestor(n1, n2)) { return n1; }
+		if (is_ancestor(n2, n1)) { return n2; }
+		for (int i = log2dist; i >= 0; i--) {
+			if (pow2ends[n1][i] != -1 && !is_ancestor(pow2ends[n1][i], n2)) {
+				n1 = pow2ends[n1][i];
+			}
+		}
+		return pow2ends[n1][0];
+	}
+};
+
 int main() {
-	int n, q;
-	cin >> n >> q;
-	for (int i = 1; i < n; i++) {
-		int b;
-		cin >> b;
-		adj[--b].push_back(i);
+	int employee_num;
+	int query_num;
+	std::cin >> employee_num >> query_num;
+	vector<vector<int>> adj(employee_num);
+	for (int e = 1; e < employee_num; e++) {
+		int boss;
+		std::cin >> boss;
+		adj[--boss].push_back(e);
+		adj[e].push_back(boss);
 	}
-	dfs(0, -1);
-	for (int i = 0; i < q; i++) {
-		int x, y;
-		cin >> x >> y;
-		cout << lca(--x, --y) + 1 << "\n";
+
+	Tree tree(adj);
+	for (int q = 0; q < query_num; q++) {
+		int e1, e2;
+		std::cin >> e1 >> e2;
+		cout << tree.lca(--e1, --e2) + 1 << '\n';
 	}
 }
 ```
 
 </CPPSection>
-
 </LanguageSection>
 
-### Alternate Solution II (Company Queries II)
+### Explanation 3
 
-We can also find the LCA of two nodes using the Tarjan's Offline LCA algorithm. By taking advantage of the DFS traversal, we
-can precompute the answers to the queries through forming subtrees and calculating the common parent with a similar structure
+We can also find the LCA of two nodes using Tarjan's Offline LCA algorithm.
+
+By taking advantage of the DFS traversal, we
+can precompute the answers to the queries through forming subtrees and calculated the common parent with a similar structure
 as Disjoint-Set Union.
 
-<LanguageSection>
+### Implementation
 
+<LanguageSection>
 <CPPSection>
 
 ```cpp
@@ -313,7 +464,6 @@ int main() {
 ```
 
 </CPPSection>
-
 </LanguageSection>
 
 <Resources>
@@ -331,68 +481,136 @@ int main() {
 
 </Optional>
 
-### Solution (Distance Queries)
+<FocusProblem problem="lca2" />
 
-Find LCA of node $a$ and $b$ as described above. Then, the distance between the
-two nodes would be the
+### Explanation
+
+Since we have the depth of all the nodes, the distance between two nodes $a$ and $b$ is
 $\texttt{depth}[a] + \texttt{depth}[b] - 2 \cdot \texttt{depth}[\textrm{lca}(a, b)]$.
 
-<LanguageSection>
+Here's some intuition if you're confused about how this formula works.
+To get from node $a$ to $b$, one way would be to go to the root of the tree
+and then to $b$. This gives us a distance of $\texttt{depth}[a] + \texttt{depth}[b]$.
+However, notice that we're passing through all the nodes above the LCA
+*twice*.
+Thus, we have to subtract off twice the depth of the LCA, giving us our final expression.
 
+### Implementation
+
+**Time Complexity:** $\mathcal{O}((N+Q)\log N)$
+
+<LanguageSection>
 <CPPSection>
 
 ```cpp
-#include <bits/stdc++.h>
-using namespace std;
+#include <cmath>
+#include <iostream>
+#include <vector>
 
-const int MAX = 2e5;
-const int LOG = 19;
-int up[LOG][MAX], depth[MAX];
-vector<int> adj[MAX];
-void dfs(int node, int prev, int dist) {
-	depth[node] = dist;
-	if (prev != -1) { up[0][node] = prev; }
-	for (int i = 1; i < LOG; i++) { up[i][node] = up[i - 1][up[i - 1][node]]; }
-	for (int nxt : adj[node]) {
-		if (nxt != prev) { dfs(nxt, node, dist + 1); }
-	}
-}
-int lca(int a, int b) {
-	if (depth[a] < depth[b]) { swap(a, b); }
-	int dist = depth[a] - depth[b];
-	for (int i = LOG - 1; i >= 0; i--) {
-		if ((dist >> i) & 1) { a = up[i][a]; }
-	}
-	if (a == b) { return a; }
-	for (int i = LOG - 1; i >= 0; i--) {
-		if (up[i][a] != up[i][b]) {
-			a = up[i][a];
-			b = up[i][b];
+using std::cout;
+using std::endl;
+using std::vector;
+
+// BeginCodeSnip{LCA Tree}
+class Tree {
+  private:
+	const int root = 0;
+
+	const vector<vector<int>> &adj;
+	const int log2dist;
+	vector<int> par;
+	vector<vector<int>> pow2ends;
+	vector<int> depth;
+
+	void process(int at, int prev) {
+		depth[at] = depth[prev] + 1;
+		for (int n : adj[at]) {
+			if (n != prev) {
+				process(n, at);
+				par[n] = at;
+			}
 		}
 	}
-	return up[0][a];
-}
-int query(int a, int b) { return depth[a] + depth[b] - 2 * depth[lca(a, b)]; }
-int main() {
-	int n, q;
-	cin >> n >> q;
-	for (int i = 1; i < n; i++) {
-		int u, v;
-		cin >> u >> v;
-		adj[--u].push_back(--v);
-		adj[v].push_back(u);
+
+  public:
+	Tree(const vector<vector<int>> &adj)
+	    : adj(adj), log2dist(std::ceil(std::log2(adj.size()))), par(adj.size()),
+	      pow2ends(par.size(), vector<int>(log2dist + 1)), depth(adj.size()) {
+		par[root] = depth[root] = -1;
+		process(root, root);
+
+		for (int n = 0; n < par.size(); n++) { pow2ends[n][0] = par[n]; }
+		for (int p = 1; p <= log2dist; p++) {
+			for (int n = 0; n < par.size(); n++) {
+				int halfway = pow2ends[n][p - 1];
+				if (halfway == -1) {
+					pow2ends[n][p] = -1;
+				} else {
+					pow2ends[n][p] = pow2ends[halfway][p - 1];
+				}
+			}
+		}
 	}
-	dfs(0, -1, 0);
-	for (int i = 0; i < q; i++) {
-		int x, y;
-		cin >> x >> y;
-		cout << query(--x, --y) << "\n";
+
+	int kth_parent(int n, int k) {
+		if (k > par.size()) { return -1; }
+		int at = n;
+		for (int pow = 0; pow <= log2dist; pow++) {
+			if ((k & (1 << pow)) != 0) {
+				at = pow2ends[at][pow];
+				if (at == -1) { break; }
+			}
+		}
+		return at;
+	}
+
+	int lca(int n1, int n2) {
+		if (depth[n1] < depth[n2]) { return lca(n2, n1); }
+		n1 = kth_parent(n1, depth[n1] - depth[n2]);
+		if (n1 == n2) { return n2; }
+
+		for (int i = log2dist; i >= 0; i--) {
+			if (pow2ends[n1][i] != pow2ends[n2][i]) {
+				n1 = pow2ends[n1][i];
+				n2 = pow2ends[n2][i];
+			}
+		}
+
+		return pow2ends[n1][0];
+	}
+	// EndCodeSnip
+
+	/** @return the distance between nodes n1 and n2  */
+	int distance(int n1, int n2) {
+		return depth[n1] + depth[n2] - depth[lca(n1, n2)] * 2;
+	}
+};
+
+int main() {
+	std::ios::sync_with_stdio(false);
+	std::cin.tie(NULL);
+
+	int node_num;
+	int query_num;
+	std::cin >> node_num >> query_num;
+	vector<vector<int>> adj(node_num);
+	for (int e = 0; e < node_num - 1; e++) {
+		int a, b;
+		std::cin >> a >> b;
+		adj[--a].push_back(--b);
+		adj[b].push_back(a);
+	}
+
+	Tree tree(adj);
+	for (int q = 0; q < query_num; q++) {
+		int n1, n2;
+		std::cin >> n1 >> n2;
+		cout << tree.distance(--n1, --n2) << '\n';
 	}
 }
 ```
 
 </CPPSection>
-
 </LanguageSection>
 
 ### Problems
@@ -404,9 +622,3 @@ int main() {
 #### General
 
 <Problems problems="general" />
-
-<IncompleteSection>
-
-figure out a better way to order these, difficulties aren't really accurate
-
-</IncompleteSection>
