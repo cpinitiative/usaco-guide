@@ -365,12 +365,11 @@ Pascal's triangle of height five are: $1,4,6,4,1$. We can think of these values 
 In the above image, value $A$ will be xored one time in the result, while value $B$ will be xored four times in the result. Therefore,
 the parity of the frequency tells us that value $A$ contributes to the result, whil value $B$ is cancels out itself.
 
-
-### Implementation
-
 Because we are only interested in the parity of the binomial coefficient, there is no need of computing its actual value. We can simply check the parity by
 counting the power of two in $\binom{n}{k}=\frac{n!}{k! \cdot (n-k)!}$. With this in mind, precompute $pref_i=p$ where $p$ is the power of two in $i!$ factorization.
 Therefore, the binomial coefficient is odd if: $pref_n-pref_k-pref_{n-k}=0$.
+
+### Implementation
 
 **Time complexity:** $\mathcal{O}(N)$
 
@@ -386,12 +385,12 @@ using namespace std;
 int main() {
 	int n;
 	cin >> n;
-	vector<int> pref(n + 1, 0);
+	vector<int> pref(n + 1);
 	for (int i = 2; i <= n; i++) {
-		int cnt = i;
-		while (cnt % 2 == 0) {
+		int num = i;
+		while (num % 2 == 0) {
 			pref[i]++;
-			cnt /= 2;
+			num /= 2;
 		}
 		pref[i] += pref[i - 1];
 	}
@@ -401,9 +400,7 @@ int main() {
 		cin >> num;
 		if (pref[n - 1] - pref[i] - pref[n - i - 1] == 0) { ans ^= num; }
 	}
-	cout << ans << '\n';
-
-	return 0;
+	cout << ans;
 }
 ```
 
