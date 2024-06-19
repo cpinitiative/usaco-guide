@@ -8,6 +8,7 @@ description: Segment tree over values"
 frequency: 0
 ---
 
+
 # Wavelet Tree
 
 <FocusProblem problem="waveletSam" />
@@ -37,12 +38,28 @@ Suppose you want to support the following queries:
 With wavelet tree you can easily support those queries in log(n) time.
 
 <Info title="Additional information">
-  It is possible to support with updates in log(n)^2
+  It is possible to support with updates in $\mathcal{O}(\log n^2)$
 </Info>
 
-#The datastructor
-We are going to create a segment tree but instead of on indices on values.
-such that a segment between l and r denotes all indices who has a value between l and r.
+## Wavelet Tree Structure
+
+A wavelet tree is a binary tree where each node represents a range of values.  
+The root node covers the entire range, and each subsequent level splits the
+range into two halves.
+
+## First lets define our Data Structures
+
+We are going to maintain a segment tree over values instead of indices.  
+Each segment contains indices whose values lie within the segment's range.  
+Let's save those indicies in a vector.  
+Notice that a index can be in at most log(N) segments
+
+<Spoiler title="Wavelet tree Visualization">
+
+Lets say our array is: [3,5,3,1,2,2,3,4,5,5]
+
+![Wavelet tree Visualization](https://imgur.com/Z7fpTFy.png)
+</Spoiler>
 
 ## Solving the First Type of Query (Given a range l, r count number of occurrences of value x.)
 
@@ -60,11 +77,11 @@ This reduces the problem to counting the number of occurrences in a prefix.
 ### Approaching the Solution
 
 One way to solve the problem is to go to the leaf node  
-and perform a binary search for the number of indices less than 𝑥  
+and perform a binary search for the number of indices less than 𝑟  
 However, let's explore a different approach that can also be extended to the
 second type of query.
 
-### A different way to find the Index of 𝑟 in the List of Vertices
+### A different way to find the Index of 𝑟 in the list of Vertices
 
 Instead of binary searching on the leaf, we update 𝑟 as we recurse down the
 tree.  
@@ -106,6 +123,9 @@ Note that this also works for non-leaf nodes using the following formula:
 $$
 occurrences(l, r) = r - l
 $$
+<Info title="Simular">
+This is simular to counting how many times a value appears up to index 𝑅 in our previous query. We did this by using the new 𝑅 value at the leaf node. But now, we consider the difference between the updated 𝑅 and 𝐿
+</Info>
 
 Therefore, the occurrences of the left node is
 
@@ -113,10 +133,15 @@ $$
 left_occurrences = prefixB[r] - prefixB[l]
 $$
 
-- If left_occurrences is less than k, it means the k-th smallest element is in
+<Info title="Left occurrences">
+  Note that left_occurrences is the amount of indices between l and r that their value is less than mid  
+
+</Info>
+
+- If left_occurrences left_occurrences is greater or equal to k, it means the k-th smallest element is in
   the left subtree. Therefore, we update our range and recurse into the left
   child
-- If left_occurrences left_occurrences is greater or equal to k it means the
+- If left_occurrences is less than k, it means the
   k-th smallest element is in the right subtree. We adjust k by subtracting
   left_occurrences from k, update our range, and recurse into the right child
 
@@ -184,6 +209,30 @@ struct Segment {
     }
 };
 ```
+
+## Supporting updates
+
+Lets support updates of type:
+	- change value at index i to y 
+
+What we can do is recurse down to your leaf in order to remove the old element. And also recurse down to add the new element.
+
+So what do the updates change?   
+ - 
+ Our indicies vector
+ Our prefix vector
+
+### Changing the indicies vector
+What we can do is instead of storing a vector use a set.   
+Then erasing and adding values becomes easy.
+
+### Changing the prefix vector
+Since each update could change our prefix vector a lot, we cant maintain just he normal vector.   
+What we could do use use a sparse segment tree.   
+	- erasing and inserting can be done by just setting the value to 0 or 1 at the specific index
+	- quering for a prefix can be done by quering the segment tree from 0 till i
+This approach is not really memory effient and also requires the implemention of a segment tree.  
+A more friendly approach would be using an order statistics tree.
 
 </CPPSection>
 
