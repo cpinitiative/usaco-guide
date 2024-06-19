@@ -343,7 +343,7 @@ def prod(a: int, b: int) -> int:
 
 ## XOR Operation 
 
-Perhaps one of the most common binary operation in practice is[bitwise xor](https://en.wikipedia.org/wiki/Bitwise_operation#XOR).
+Perhaps one of the most common binary operation in practice is [bitwise xor](https://en.wikipedia.org/wiki/Bitwise_operation#XOR).
 The special property that differenciates it from the other bitwise operations is that xor is its own inverse, i.e. $x \oplus x = 0$.
 
 <FocusProblem problem = "sample2" />
@@ -351,8 +351,8 @@ The special property that differenciates it from the other bitwise operations is
 ### Explanation
 
 Simulating the process, similarly to the [Pascal's triangle](https://en.wikipedia.org/wiki/Pascal%27s_triangle), isn't efficient, 
-because of $n$ being too large. One good practice when dealing such problems is analyzing how the answer is affected by each single value. Keeping in mind that xor is its 
-own inverse operation, a value $x$ xored with itself an **even** number of times will result in $0$, thus cancelling each other out; on the other hand, the value $x$ xored 
+because of $n$ being too large. One good practice when dealing with such problems is analyzing how the answer is affected by each single value. Keeping in mind that xor is its 
+own inverse, a value $x$ xored with itself an **even** number of times will result in $0$, thus cancelling each other out; on the other hand, the value $x$ xored 
 with itself and **odd** number of times will simply result in $x$. Consequently, we can shift our focus to finding for each bottom value the number of times it will affect
 in the top value. 
 
@@ -360,16 +360,16 @@ Let's take a look at how bottom values modify the final result.
 
 ![pyramid](./assets/xor-pyramid.png)
 
-As you can see, the values $B$ does not appear in the final result, thus it can be ignore. Additionally, the bottom row values in
+As you can see, the value $B$ does not appear in the final result, thus it can be ignore. Additionally, the bottom row values in
 Pascal's triangle of height five are: $1,4,6,4,1$. We can think of these values as the number of occurrences of each bottom row value.
 In the above image, value $A$ will be xored one time in the result, while value $B$ will be xored four times in the result. Therefore,
-the parity of the frequency tells us that value $A$ contributes to the result, while. value $B$ is cancelled out.
+the parity of the frequency tells us that value $A$ contributes to the result, whil value $B$ is cancels out itself.
 
 
 ### Implementation
 
-Because we are only interested in the parity of the binomial coefficient, there is no need of computing it. We can simply check the parity by
-counting the power of two in $\binom{n}{k}=\frac{n!}{k! \cdot (n-k)!}$. With this in mid, precompute $pref_i=p$ where $p$ is the power of two in $i!$ factorization.
+Because we are only interested in the parity of the binomial coefficient, there is no need of computing its actual value. We can simply check the parity by
+counting the power of two in $\binom{n}{k}=\frac{n!}{k! \cdot (n-k)!}$. With this in mind, precompute $pref_i=p$ where $p$ is the power of two in $i!$ factorization.
 Therefore, the binomial coefficient is odd if: $pref_n-pref_k-pref_{n-k}=0$.
 
 **Time complexity:** $\mathcal{O}(N)$
