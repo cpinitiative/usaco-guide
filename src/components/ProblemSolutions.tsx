@@ -51,7 +51,7 @@ export default function ProblemSolutions({
     return 0;
   });
 
-  const publicSolutions = solutions?.filter(
+  const publicSolutions = (solutions ?? []).filter(
     submission => submission.userID !== firebaseUser?.uid
   );
 
@@ -191,16 +191,23 @@ export default function ProblemSolutions({
           ))}
           {currentUserSolutions?.length === 0 && <span>No solutions yet!</span>}
         </div>
-        {langArr.map(lang => (
-          <React.Fragment key={lang}>
-            <div className="h-8" />
-            <h4 className="text-lg font-semibold pb-2 mb-4 border-b border-gray-200 dark:border-gray-800">
-              Public {LANGUAGE_LABELS[lang]} Solutions
-            </h4>
-            <div className="space-y-6">
-              {publicSolutions
-                ?.filter(submission => submission.language == lang)
-                .map(submission => (
+        {langArr.map(lang => {
+          const filteredSubmissions = publicSolutions.filter(submission => {
+            return (
+              submission.language == lang &&
+              !filter.isProfane(submission.solutionCode) &&
+              !filter.isProfane(submission.userName ?? 'Unknown User')
+            );
+          });
+          return (
+            <React.Fragment key={lang}>
+              <div className="h-8" />
+              <h4 className="text-lg font-semibold pb-2 mb-4 border-b border-gray-200 dark:border-gray-800">
+                Public {LANGUAGE_LABELS[lang]} Solutions (
+                {filteredSubmissions.length})
+              </h4>
+              <div className="space-y-6">
+                {filteredSubmissions.map(submission => (
                   <div key={submission.id}>
                     <h4 className="mb-2 text-gray-700 dark:text-gray-100">
                       {submission.userName ?? 'Unknown User'} | Votes:{' '}
@@ -267,19 +274,18 @@ export default function ProblemSolutions({
                         }
                         isDarkMode={isDarkMode}
                       >
-                        {filter.isProfane(submission.solutionCode)
-                          ? filter.clean(submission.solutionCode)
-                          : submission.solutionCode}
+                        {submission.solutionCode}
                       </CodeBlock>
                     </div>
                   </div>
                 ))}
-              {publicSolutions?.filter(
-                submission => submission.language == lang
-              ).length === 0 && <span>No solutions yet!</span>}
-            </div>
-          </React.Fragment>
-        ))}
+                {filteredSubmissions.length === 0 && (
+                  <span>No solutions yet!</span>
+                )}
+              </div>
+            </React.Fragment>
+          );
+        })}
       </div>
     </div>
   );
