@@ -323,10 +323,10 @@ We can compute the nimber values of each pile with the mex definition and then c
 <CPPSection>
 
 ```cpp
-#include <iostream>
-#include <vector>
-#include <set>
 #include <algorithm>
+#include <iostream>
+#include <set>
+#include <vector>
 
 using std::cout;
 using std::endl;
@@ -335,20 +335,16 @@ using std::vector;
 const int MAX_PILE = 1e4;
 
 int main() {
-    int move_num;
+	int move_num;
 	std::cin >> move_num;
 	vector<int> can_remove(move_num);
-	for (int& n : can_remove) {
-		std::cin >> n;
-	}
+	for (int &n : can_remove) { std::cin >> n; }
 
 	vector<int> nimbers(MAX_PILE + 1);
 	for (int i = 1; i <= MAX_PILE; i++) {
 		std::set<int> reachable;
 		for (int n : can_remove) {
-			if (i - n >= 0) {
-				reachable.insert(nimbers[i - n]);
-			}
+			if (i - n >= 0) { reachable.insert(nimbers[i - n]); }
 		}
 
 		for (int n = 0; n <= MAX_PILE; n++) {
@@ -365,7 +361,7 @@ int main() {
 	for (int g = 0; g < game_num; g++) {
 		int pile_num;
 		std::cin >> pile_num;
-		
+
 		int xor_sum = 0;
 		for (int p = 0; p < pile_num; p++) {
 			int pile;
@@ -376,9 +372,7 @@ int main() {
 		wins[g] = xor_sum == 0 ? 'L' : 'W';
 	}
 
-	for (const char& w : wins) {
-		cout << w;
-	}
+	for (const char &w : wins) { cout << w; }
 	cout << endl;
 }
 ```
@@ -387,27 +381,27 @@ int main() {
 <PySection>
 
 ```py
-MAX_PILE = 10 ** 4
+MAX_PILE = 10**4
 
 can_remove = [int(i) for i in input().split()][1:]
 
 nimbers = [0 for _ in range(MAX_PILE + 1)]
 for i in range(1, MAX_PILE + 1):
-    reachable = {nimbers[i - n] for n in can_remove if i - n >= 0}
-    for n in range(MAX_PILE + 1):
-        if n not in reachable:
-            nimbers[i] = n
-            break
+	reachable = {nimbers[i - n] for n in can_remove if i - n >= 0}
+	for n in range(MAX_PILE + 1):
+		if n not in reachable:
+			nimbers[i] = n
+			break
 
 wins = []
 for _ in range(int(input())):
-    piles = [int(i) for i in input().split()][1:]
-    
-    xor_sum = 0
-    for p in piles:
-        xor_sum ^= nimbers[p]
-    
-    wins.append("L" if xor_sum == 0 else "W")
+	piles = [int(i) for i in input().split()][1:]
+
+	xor_sum = 0
+	for p in piles:
+		xor_sum ^= nimbers[p]
+
+	wins.append("L" if xor_sum == 0 else "W")
 
 print("".join(wins))
 ```
@@ -438,9 +432,9 @@ coins, and then combine them at the end with a xor-sum
 
 ```cpp
 #include <iostream>
-#include <vector>
-#include <set>
 #include <map>
+#include <set>
+#include <vector>
 
 using std::cout;
 using std::endl;
@@ -451,25 +445,17 @@ const int BOARD_LEN = 15;
 /** @return The nimber value of a coin at a single position. */
 int nimber(int r, int c) {
 	static std::map<std::pair<int, int>, int> cache;
-	if (cache.count({r, c})) {
-		return cache[{r, c}];
-	}
+	if (cache.count({r, c})) { return cache[{r, c}]; }
 
 	if (r < 0 || BOARD_LEN <= r || c < 0 || BOARD_LEN <= c) {
 		return -1;  // return -1 to not interfere with the mex operations
 	}
 
-	std::set<int> reachable{
-		nimber(r - 2, c + 1),
-		nimber(r - 2, c - 1),
-		nimber(r + 1, c - 2),
-		nimber(r - 1, c - 2)
-	};
+	std::set<int> reachable{nimber(r - 2, c + 1), nimber(r - 2, c - 1),
+	                        nimber(r + 1, c - 2), nimber(r - 1, c - 2)};
 
 	int ret = 0;
-	while (reachable.count(ret)) {
-		ret++;
-	}
+	while (reachable.count(ret)) { ret++; }
 
 	return cache[{r, c}] = ret;
 }
@@ -486,7 +472,7 @@ int main() {
 			std::cin >> r >> c;
 			coin_xor ^= nimber(r - 1, c - 1);
 		}
-	
+
 		cout << (coin_xor == 0 ? "Second" : "First") << '\n';
 	}
 }
@@ -503,27 +489,27 @@ BOARD_LEN = 15
 
 @lru_cache
 def nimber(r: int, c: int) -> int:
-    """:return: The nimber value of a coin at a single position"""
-    if not (0 <= r < BOARD_LEN and 0 <= c < BOARD_LEN):
-        return -1  # Return -1 to not interfere with the mex operation
-    
-    reachable = set()
-    for dr, dc in [(-2, 1), (-2, -1), (1, -2), (-1, -2)]:
-        reachable.add(nimber(r + dr, c + dc))
-    
-    ret = 0
-    while ret in reachable:
-        ret += 1
-    return ret
+	""":return: The nimber value of a coin at a single position"""
+	if not (0 <= r < BOARD_LEN and 0 <= c < BOARD_LEN):
+		return -1  # Return -1 to not interfere with the mex operation
+
+	reachable = set()
+	for dr, dc in [(-2, 1), (-2, -1), (1, -2), (-1, -2)]:
+		reachable.add(nimber(r + dr, c + dc))
+
+	ret = 0
+	while ret in reachable:
+		ret += 1
+	return ret
 
 
 for _ in range(int(input())):
-    coin_xor = 0
-    for _ in range(int(input())):
-        r, c = [int(i) - 1 for i in input().split()]
-        coin_xor ^= nimber(r, c)
+	coin_xor = 0
+	for _ in range(int(input())):
+		r, c = [int(i) - 1 for i in input().split()]
+		coin_xor ^= nimber(r, c)
 
-    print("Second" if coin_xor == 0 else "First")
+	print("Second" if coin_xor == 0 else "First")
 ```
 
 </PySection>
@@ -582,22 +568,22 @@ int main() {
 ```py
 from sys import setrecursionlimit
 
-setrecursionlimit(10 ** 5)
+setrecursionlimit(10**5)
 
 
 def nimber(n: int, k: int) -> int:
-    """This is what we referred to as g in the explanation."""
-    if n % k == 0:
-        return n // k
-    
-    d = n // k + 1
-    return nimber(n - (n % k + d - 1) // d * d, k)
+	"""This is what we referred to as g in the explanation."""
+	if n % k == 0:
+		return n // k
+
+	d = n // k + 1
+	return nimber(n - (n % k + d - 1) // d * d, k)
 
 
 xor_sum = 0
 for _ in range(int(input())):
-    n, k = [int(i) for i in input().split()]
-    xor_sum ^= nimber(n, k)
+	n, k = [int(i) for i in input().split()]
+	xor_sum ^= nimber(n, k)
 
 print("Aoki" if xor_sum == 0 else "Takahashi")
 ```
