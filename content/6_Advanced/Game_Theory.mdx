@@ -42,7 +42,7 @@ frequency: 0
 
 <FocusProblem problem="nim" />
 
-### Game description
+### Rules
 
 Nim might be one of the most well-known examples in game theory.
 In this game there are considered $n$ piles of some item.
@@ -226,111 +226,325 @@ i.e. the outcome of the game.
 	/>
 </Resources>
 
-The [Sprague-Grundy theorem](https://en.wikipedia.org/wiki/Sprague%E2%80%93Grundy_theorem) defines "nimbers" or "grundy values" of any impartial game as the unique one-pile NIM game that the state of the game - let it be $s$ - is equivalent to, taking into account the **reachable** states denoted as $s_i \,\,, i \in [1, k]$. These values can be computed using the recursive formula:
+Before we get into this theorem, we first have to define what "nimbers" (sometimes referred to as "grundy values") are.
+Each nimber — say 0, 3, or 4 — represents a one-pile game of Nim
+with that many stones.
+Notice that for any positive nimber, the first player always wins since they can take all the stones from the pile and leave none for the second.
+On the other hand, the nimber 0 is a losing state, since the first player can't take any more stones.
+
+What the [Sprague-Grundy theorem](https://en.wikipedia.org/wiki/Sprague%E2%80%93Grundy_theorem)
+allows us to do is to reduce the state of certain types of games into a nimber.
+
+The way we do this is with a recursive definition.
+If we can compute the nimbers of all states $r_i$ reachable from a certain state $s$, then $s$ itself can be reduced to the nimber
 
 $$
-\tag{1}
-n(x) = \text{mex}\{\text{s_1, s_2, s_3, ..., s_k}\}
+n(s)=\text{mex}(r_1, r_2, \cdots, r_k)
 $$
 
-Here $\text{mex}$ - minimum excludant - is the smallest non-negative integer not found in the given set.
+For convenience, we have defined $n$ as the function that reduces game states to nimbers.
 
-This means that every state of the game can be assigned a nimber value. Let's take a look at a particular case of the NIM game, a game with just one pile of stones and you can only remove ** 1, 2 or 3 stones** in one move, and how the nimber values behave in practice:
+The $\text{mex}$ function takes a list of numbers and returns the biggest non-negative integer that is *not* included in the list.
+Notice that the name is a portmanteau of "max" and "excluded".
 
-![alt text](./assets/nim.png)
+### One-pile Example
 
-According to $(1)$ the nimber value is the $\text{mex}$ of the reachable nimber values, in this case it is the $\text{mex}$ of the previous $3$ values, because we can only remove 1, 2 or 3 stones in one move, so the values are computed as following:
+Let's take a look at an altered version case of Nim.
+Here's there's only one pile, but each player can only remove 1, 2, or 3 stones.
+
+According to the theorem, the nimber value is the $\text{mex}$ of the reachable nimber value.
+In the case of this game, each state can reach the previous $3$ values because we can only remove 1, 2 or 3 stones in one move.
+
+Here's how the values are computed:
 
 - $n(0) = 0$
-- $n(1) = \text{mex}\{0\} = 1$
-- $n(2) = \text{mex}\{0, 1\} = 2$
-- $n(3) = \text{mex}\{0, 1, 2\} = 3$
-- $n(4) = \text{mex}\{1, 2, 3\} = 0$
-- $n(5) = \text{mex}\{2, 3, 0\} = 1$
-- $n(6) = \text{mex}\{3, 0, 1\} = 2$
-- $n(7) = \text{mex}\{0, 1, 2\} = 3$
+- $n(1) = \text{mex}(0) = 1$
+- $n(2) = \text{mex}(0, 1) = 2$
+- $n(3) = \text{mex}(0, 1, 2) = 3$
+- $n(4) = \text{mex}(1, 2, 3) = 0$
+- $n(5) = \text{mex}(2, 3, 0) = 1$
+- $n(6) = \text{mex}(3, 0, 1) = 2$
+- $n(7) = \text{mex}(0, 1, 2) = 3$
 
-A nimber values equal to $0$ represents a losing state of the game; see $n(4)$ and $n(7)$.
+This gives us the following table of nimber values:
 
+Here's the table of nimber values:
 
-Recall that a winning state means that in one move you can reach push the other player in a losing state. For example, $n(4)=0$ because we can't reach another losing state, like $n(0)$. Similarly $n(8) = 0$, because we can't reach $n(4)$ removing 1, 2 or 3 stones in one move.
+![Nimber table](./assets/nim.png)
 
+All nimber reductions that are equal to 0 are losing states; see $n(0)$ and $n(4)$.
 
-The single-pile game was a particular case, let's try extending the theorem to multiple piles of rocks. From the previous section we know that state is a losing state if the xor-sum of the piles is $0$. We can apply the same logic with the nimber values, so the nimber value of the game is equal to the xor-sum of individual games - piles- and if it's $0$, then it means the state of the game is a losing state. Mathematically this would be written as:
+Recall that a winning state means that you can put the other player in a losing state.
+On the other hand, a losing state means that every move results in a winning state for the opponent.
+For example, $n(4)=0$ because $1$, $2$, and $3$ are winning.
+Similarly, $n(8) = 0$, because we can't reach $4$ in a single move.
+
+### Multiple-pile Example
+
+How about we try reducing multiple-pile Nim games with this theorem?
+
+We know that a state is a losing state if the xor-sum is 0.
+This matches up exactly with how our nimbers work, as the 0
+nimber represents a losing state.
+
+Thus, to reduce a Nim game of multiple piles to a nimber,
+we can take the xor-sum of the nimbers of the single piles.
+Notice that the nimber of only one pile is the size of the pile.
+
+This is
+[equivalent to the formula using mex](https://en.wikipedia.org/wiki/Nimber#Addition),
+but a proof of that is beyond the scope of this module.
+We merely try to give some intuition for why this is true.
 
 $$
-\tag{2}
-n(\sum{p_i})=\oplus n(p_i)
+n([p_1, \cdots, p_n])=\bigoplus_{i=1}^n n(p_i)
 $$
 
-###
+This xor-sum reduction can be extended to more things than just Nim.
+If we can decompose a game into multiple disjoint parts where
+one player makes a chooses a subgame then makes a move,
+then the nimbers of these games can be combined with the xor-sum.
 
-### Applications
+## Applications
 
-#### Snim
+### S-NIM
 
 <FocusProblem problem="snim" />
 
-This problem is a direct application of $(2)$. Compute the nimber values for single piles and combine them using xor-sum.
+#### Explanation
+
+We can compute the nimber values of each pile with the mex definition and then combine them using the XOR operator.
+
+#### Implementation
+
+**Time Complexity:** $\mathcal{O}(PK+ML)$, where $P$ is the maximum pile size.
 
 <LanguageSection>
 <CPPSection>
 
 ```cpp
-#include <algorithm>
 #include <iostream>
 #include <vector>
+#include <set>
+#include <algorithm>
 
-using namespace std;
+using std::cout;
+using std::endl;
+using std::vector;
 
-bool solve(const vector<int> &v, const vector<int> &vals) {
-	vector<int> nimber(*max_element(v.begin(), v.end()) + 1);
-	for (int i = 0; i < (int)nimber.size(); i++) {
-		vector<bool> seen(i + 1, false);
-		for (int val : vals) {
-			if (i >= val) { seen[nimber[i - val]] = true; }
-		}
-		int cnt = 0;
-		while (seen[cnt]) { cnt++; }
-		nimber[i] = cnt;
-	}
-	int s = 0;
-	for (int x : v) { s ^= nimber[x]; }
-	return s == 0;
-}
+const int MAX_PILE = 1e4;
 
 int main() {
-	int k;
-	cin >> k;
-	vector<int> a(k);
-	for (int &val : a) { cin >> val; }
-	int t;
-	cin >> t;
-	while (t--) {
-		int n;
-		cin >> n;
-		vector<int> v(n);
-		for (int &val : v) { cin >> val; }
-		cout << (solve(v, a) ? 'L' : 'W');
+    int move_num;
+	std::cin >> move_num;
+	vector<int> can_remove(move_num);
+	for (int& n : can_remove) {
+		std::cin >> n;
 	}
-	return 0;
+
+	vector<int> nimbers(MAX_PILE + 1);
+	for (int i = 1; i <= MAX_PILE; i++) {
+		std::set<int> reachable;
+		for (int n : can_remove) {
+			if (i - n >= 0) {
+				reachable.insert(nimbers[i - n]);
+			}
+		}
+
+		for (int n = 0; n <= MAX_PILE; n++) {
+			if (!reachable.count(n)) {
+				nimbers[i] = n;
+				break;
+			}
+		}
+	}
+
+	int game_num;
+	std::cin >> game_num;
+	vector<char> wins(game_num);
+	for (int g = 0; g < game_num; g++) {
+		int pile_num;
+		std::cin >> pile_num;
+		
+		int xor_sum = 0;
+		for (int p = 0; p < pile_num; p++) {
+			int pile;
+			std::cin >> pile;
+			xor_sum ^= nimbers[pile];
+		}
+
+		wins[g] = xor_sum == 0 ? 'L' : 'W';
+	}
+
+	for (const char& w : wins) {
+		cout << w;
+	}
+	cout << endl;
 }
 ```
 
 </CPPSection>
+<PySection>
+
+```py
+MAX_PILE = 10 ** 4
+
+can_remove = [int(i) for i in input().split()][1:]
+
+nimbers = [0 for _ in range(MAX_PILE + 1)]
+for i in range(1, MAX_PILE + 1):
+    reachable = {nimbers[i - n] for n in can_remove if i - n >= 0}
+    for n in range(MAX_PILE + 1):
+        if n not in reachable:
+            nimbers[i] = n
+            break
+
+wins = []
+for _ in range(int(input())):
+    piles = [int(i) for i in input().split()][1:]
+    
+    xor_sum = 0
+    for p in piles:
+        xor_sum ^= nimbers[p]
+    
+    wins.append("L" if xor_sum == 0 else "W")
+
+print("".join(wins))
+```
+
+</PySection>
 </LanguageSection>
 
-#### Strange Nim
+### Chessboard Game, Again!
+
+<FocusProblem problem="chessboard-games" />
+
+#### Explanation
+
+Here we see a case of using the xor-sum to combine things that aren't straight Nim games.
+
+In this problem, we can decompose each game into a bunch of subgames, where each subgame is a single coin.
+Players choose the subgame (coin) and then make a move.
+
+We first apply the mex formula to calculate nimbers for individual
+coins, and then combine them at the end with a xor-sum
+
+#### Implementation
+
+**Time Complexity:** $\mathcal{O}(TK)$, since the board is constant size.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <set>
+#include <map>
+
+using std::cout;
+using std::endl;
+using std::vector;
+
+const int BOARD_LEN = 15;
+
+/** @return The nimber value of a coin at a single position. */
+int nimber(int r, int c) {
+	static std::map<std::pair<int, int>, int> cache;
+	if (cache.count({r, c})) {
+		return cache[{r, c}];
+	}
+
+	if (r < 0 || BOARD_LEN <= r || c < 0 || BOARD_LEN <= c) {
+		return -1;  // return -1 to not interfere with the mex operations
+	}
+
+	std::set<int> reachable{
+		nimber(r - 2, c + 1),
+		nimber(r - 2, c - 1),
+		nimber(r + 1, c - 2),
+		nimber(r - 1, c - 2)
+	};
+
+	int ret = 0;
+	while (reachable.count(ret)) {
+		ret++;
+	}
+
+	return cache[{r, c}] = ret;
+}
+
+int main() {
+	int test_num;
+	std::cin >> test_num;
+	for (int t = 0; t < test_num; t++) {
+		int coin_xor = 0;
+		int coin_num;
+		std::cin >> coin_num;
+		for (int i = 0; i < coin_num; i++) {
+			int r, c;
+			std::cin >> r >> c;
+			coin_xor ^= nimber(r - 1, c - 1);
+		}
+	
+		cout << (coin_xor == 0 ? "Second" : "First") << '\n';
+	}
+}
+```
+
+</CPPSection>
+<PySection>
+
+```py
+from functools import lru_cache
+
+BOARD_LEN = 15
+
+
+@lru_cache
+def nimber(r: int, c: int) -> int:
+    """:return: The nimber value of a coin at a single position"""
+    if not (0 <= r < BOARD_LEN and 0 <= c < BOARD_LEN):
+        return -1  # Return -1 to not interfere with the mex operation
+    
+    reachable = set()
+    for dr, dc in [(-2, 1), (-2, -1), (1, -2), (-1, -2)]:
+        reachable.add(nimber(r + dr, c + dc))
+    
+    ret = 0
+    while ret in reachable:
+        ret += 1
+    return ret
+
+
+for _ in range(int(input())):
+    coin_xor = 0
+    for _ in range(int(input())):
+        r, c = [int(i) - 1 for i in input().split()]
+        coin_xor ^= nimber(r, c)
+
+    print("Second" if coin_xor == 0 else "First")
+```
+
+</PySection>
+</LanguageSection>
+
+### Strange Nim
 
 <FocusProblem problem="strange-nim" />
 
-We can apply the Sprague-Grundy theorem $(2)$. Let $g(n,k)$ be the nimber value for a particular pile. Additionally, I highly recommend taking a particular case and analyzing the patterns in the grundy values. Two observation can be inferred from the pattern:
+#### Explanation
+
+Sometimes, we have to make a clever observation or two to be able to apply the formula in a feasible manner.
+These observations may involve periodicity or special cases, and the latter is what we'll use.
+
+Let $g(n, k)$ be the nimber value for a particular pile with $n$ stones and an associated integer of $k$.
+Notice the two following things:
+
 1. $g(n, k) = n/k \iff k \mid n$
 2. $g(n, k) = g(n - \lfloor n/k \rfloor - 1, k)$
 
-<Info title="Pattern in nimber values">
-When dealing with bigger values, it may be helpful to look after certain patterns in the nimber values table of the game. This way you can speed up the algorithm and not compute every time the $\text{mex}$ function. The pattern could be periodicity or a specific relation, which is the case in this problem.
-</Info>
+#### Implementation
 
 <LanguageSection>
 <CPPSection>
@@ -338,7 +552,8 @@ When dealing with bigger values, it may be helpful to look after certain pattern
 ```cpp
 #include <iostream>
 
-using namespace std;
+using std::cout;
+using std::endl;
 
 int nimber(int n, int k) {
 	if (n % k == 0) { return n / k; }
@@ -347,79 +562,47 @@ int nimber(int n, int k) {
 }
 
 int main() {
-	int t, s = 0;
-	cin >> t;
-	for (int i = 0; i < t; i++) {
-		int n, k;
-		cin >> n >> k;
-		s ^= nimber(n, k);
+	int pile_num;
+	std::cin >> pile_num;
+	int xor_sum = 0;
+	for (int p = 0; p < pile_num; p++) {
+		int n;
+		int k;
+		std::cin >> n >> k;
+		xor_sum ^= nimber(n, k);
 	}
-	cout << (s ? "Takahashi" : "Aoki") << '\n';
-	return 0;
+
+	cout << (xor_sum == 0 ? "Aoki" : "Takahashi") << endl;
 }
 ```
 
 </CPPSection>
-</LanguageSection>
+<PySection>
 
-### Chessboard Game, Again!
+```py
+from sys import setrecursionlimit
 
-<FocusProblem problem="chessboard-games" />
+setrecursionlimit(10 ** 5)
 
-We can apply the Sprague-Grundy theorem $(2)$. In this case, the nimber values will be computed recursively. The grundy value of the game is the xor-sum of the grundy values of particular
-games - a chessboard with a single coin. The reachable states from $(x, y)$ are:
-- $(x-2,y+1)$
-- $(x-2,y-1)$
-- $(x+1,y-2)$
-- $(x-1,y-2)$
-Thereby the nimber value of a state is the $\text{mex}$ of the above state's nimber values.
 
-<LanguageSection>
-<CPPSection>
+def nimber(n: int, k: int) -> int:
+    """This is what we referred to as g in the explanation."""
+    if n % k == 0:
+        return n // k
+    
+    d = n // k + 1
+    return nimber(n - (n % k + d - 1) // d * d, k)
 
-```cpp
-#include <functional>
-#include <iostream>
-#include <map>
-#include <set>
 
-using namespace std;
+xor_sum = 0
+for _ in range(int(input())):
+    n, k = [int(i) for i in input().split()]
+    xor_sum ^= nimber(n, k)
 
-void test_case() {
-	int n;
-	cin >> n;
-	map<pair<int, int>, int> memo;
-	function<int(int, int)> nimber = [&](int x, int y) -> int {
-		if (x < 1 || y < 1 || x > 15 || y > 15) { return -1; }
-		if (memo.count({x, y})) { return memo[{x, y}]; }
-		set<int> reachable;
-		reachable.insert(nimber(x - 1, y - 2));
-		reachable.insert(nimber(x + 1, y - 2));
-		reachable.insert(nimber(x - 2, y + 1));
-		reachable.insert(nimber(x - 2, y - 1));
-		int cnt = 0;
-		while (reachable.count(cnt)) { cnt++; }
-		memo[{x, y}] = cnt;
-		return cnt;
-	};
-	int s = 0;
-	for (int i = 0; i < n; i++) {
-		int x, y;
-		cin >> x >> y;
-		s ^= nimber(x, y);
-	}
-	cout << (s ? "First" : "Second") << '\n';
-}
-
-int main() {
-	int t;
-	cin >> t;
-	while (t--) { test_case(); }
-	return 0;
-}
+print("Aoki" if xor_sum == 0 else "Takahashi")
 ```
 
-</CPPSection>
+</PySection>
 </LanguageSection>
 
 ## Problems
