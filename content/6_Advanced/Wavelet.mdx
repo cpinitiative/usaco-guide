@@ -8,8 +8,8 @@ description: Segment tree over values"
 frequency: 0
 ---
 
-
 # Wavelet Tree
+Segment trees over indices.
 
 <FocusProblem problem="waveletSam" />
 <Resources>
@@ -32,10 +32,10 @@ frequency: 0
 
 Suppose you want to support the following queries:
 
-- Given a range l, r count number of occurrences of value x.
-- Given a range l, r find the k smallest element
+- Given a range $l$, $r$ count number of occurrences of value $x$.
+- Given a range $l$, $r$ find the $k$ smallest element
 
-With wavelet tree you can easily support those queries in log(n) time.
+With wavelet tree you can easily support those queries in $log(n)$ time.
 
 <Info title="Additional information">
   It is possible to support with updates in $\mathcal{O}(\log n^2)$
@@ -43,27 +43,28 @@ With wavelet tree you can easily support those queries in log(n) time.
 
 ## Wavelet Tree Structure
 
-A wavelet tree is a binary tree where each node represents a range of values.
+A wavelet tree is a binary tree where each node represents a range of values.  
 The root node covers the entire range, and each subsequent level splits the
 range into two halves.
 
-## First lets define our Data Structures
+## Defining the structure
 
-We are going to maintain a segment tree over values instead of indices.
-Each segment contains indices whose values lie within the segment's range.
-Let's save those indicies in a vector.
-Notice that a index can be in at most log(N) segments
+We are going to maintain a segment tree over values instead of indices.  
+Each segment contains indices whose values lie within the segment's range.  
+Let's save those indicies in a vector.  
+Notice that a index can be in at most $log(N)$ segments
 
 <Spoiler title="Wavelet tree Visualization">
 
-Lets say our array is: [3,5,3,1,2,2,3,4,5,5]
+Lets say our array is: $[3,5,3,1,2,2,3,4,5,5]$
 
-![Wavelet tree Visualization](https://imgur.com/Z7fpTFy.png)
+![Wavelet Tree Visualization](./assets/diagram.png)
 </Spoiler>
 
-## Solving the First Type of Query (Given a range l, r count number of occurrences of value x.)
+## Solving the First Type of query
+**Given a range l, r count number of occurrences of value x.**
 
-To calculate the number of occurrences from 𝑙 to 𝑟, we can use the following
+To calculate the number of occurrences from $𝑙$ to $𝑟$, we can use the following
 formula:
 
 $$
@@ -76,29 +77,30 @@ This reduces the problem to counting the number of occurrences in a prefix.
 
 ### Approaching the Solution
 
-One way to solve the problem is to go to the leaf node
-and perform a binary search for the number of indices less than 𝑟
+One way to solve the problem is to go to the leaf node  
+and perform a binary search for the number of indices less than $𝑟$  
 However, let's explore a different approach that can also be extended to the
 second type of query.
 
-### A different way to find the Index of 𝑟 in the list of Vertices
+### A different way
+**A different way to find the Index of $𝑟$ in the list of vertices**
 
-Instead of binary searching on the leaf, we update 𝑟 as we recurse down the
-tree.
-If we are able to determine the position (index) of 𝑟 in the left and right
-children of a node
+Instead of binary searching on the leaf, we update $𝑟$ as we recurse down the
+tree.  
+If we are able to determine the position (index) of $𝑟$ in the left and right
+children of a node  
 We can recurse down the tree and determine its position in the leaf node.
 
 ### Determining the Position in Child Nodes
 
-To find the position of 𝑟 in a node's left and right children, we need to
+To find the position of $𝑟$ in a node's left and right children, we need to
 determine how many indices are smaller than the middle value (mid) and precede
-𝑟.
+$𝑟$.  
 This can be done using a prefix sum.
 
-Let's define:
-c[i] = as 1 if index[i] is smaller than mid otherwise 0
-prefixB[i] as prefix sum of c[i]
+Let's define:  
+- $c[i]$ = as 1 if $index[i]$ is smaller than mid otherwise 0  
+- $prefixB[i]$ as prefix sum of $c[i]$
 
 Formally
 
@@ -107,17 +109,18 @@ c[i] = index[i] < mid ? 1 : 0;
 prefixB[i] = prefixB[i - 1] + c[i]
 $$
 
-### Updating 𝑟 as We Recurse
+### Updating $𝑟$ as We Recurse
 
-To know the value of 𝑟 if we recurse left, we use prefixB[r]
+To know the value of 𝑟 if we recurse left, we use prefixB[r]  
 If we recurse right, we use 𝑟 - prefixB[r]
 
-## Solving the second type of query (Given a range l, r find the k smallest element)
+## Solving the second type of query
+**Given a range l, r find the k smallest element**
 
 We will determine whether the answer for a given node is in the left or the
-right segment.
+right segment.  
 We can calculate how many times the elements within the segments' ranges appear
-in our range (l, r) using our first type of query.
+in our range $(l, r)$ using our first type of query.  
 Note that this also works for non-leaf nodes using the following formula:
 
 $$
@@ -134,102 +137,135 @@ left_occurrences = prefixB[r] - prefixB[l]
 $$
 
 <Info title="Left occurrences">
-  Note that left_occurrences is the amount of indices between l and r that their value is less than mid
+  Note that left_occurrences is the amount of indices between l and r that their value is less than mid  
 
 </Info>
 
-- If left_occurrences left_occurrences is greater or equal to k, it means the k-th smallest element is in
+- If left_occurrences left_occurrences is greater or equal to $k$, it means the $k$-th smallest element is in
   the left subtree. Therefore, we update our range and recurse into the left
   child
-- If left_occurrences is less than k, it means the
-  k-th smallest element is in the right subtree. We adjust k by subtracting
-  left_occurrences from k, update our range, and recurse into the right child
+- If left_occurrences is less than $k$, it means the
+  $k$-th smallest element is in the right subtree. We adjust k by subtracting
+  left_occurrences from $k$, update our range, and recurse into the right child
 
 <Info title="Notice">
-  Notice we still update l, r accordingly when we go left or right
+  Notice we still update $l, r$ accordingly when we go left or right
 </Info>
 
 the answer then will be the value of the node we end up on (leaf)
+
+## Time complexity
+For each query, we traverse left or right, meaning the number of nodes visited is proportional to the height of the tree.  
+For each node, we compute the $l$ or $r$  using prefix sums, which is $\mathcal{O}(1)$  for each query.  
+Hence, the overall time complexity is $\mathcal{O}(\log n)$
 
 ## implemention
 
 <CPPSection>
 
 ```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
 struct Segment {
-	Segment *left = nullptr, *right = nullptr;
-	int l, r, mid;
-	bool children = false;
-	vector<pair<int, int>> indices;  // Index, Value
-	vector<int> prefixB;
+    Segment *left = nullptr, *right = nullptr;
+    int l, r, mid;
+    bool children = false;
+    vector<pair<int,int>> indices; // Index, Value
+    vector<int> prefixB;
 
-	Segment(int l, int r, vector<pair<int, int>> indices)
-	    : l(l), r(r), mid((r + l) / 2), indices(std::move(indices)) {
-		calculateB();
-	}
+    Segment(int l, int r,const vector<pair<int,int>> &indices) :l(l), r(r), mid((r + l) / 2), indices(indices) {
+        calculate_b();
+    }
 
-	void update() {
-		if (children) return;
-		children = true;
-		if (r - l > 1) {
-			// Split the indices for left and right child
-			vector<pair<int, int>> leftIndices, rightIndices;
-			for (auto [ind, val] : indices)
-				if (val < mid) leftIndices.emplace_back(ind, val);
-				else rightIndices.emplace_back(ind, val);
+    // Sparse since values can go up to 1e9
+    void update() {
+        if (children) return;
+        children = true;
+        if (r - l > 1) {
+            // Split the indices for left and right child
+            vector<pair<int, int>> leftIndices, rightIndices;
+            partition_copy(indices.begin(), indices.end(), leftIndices.begin(),rightIndices.begin(),
+                           [this](const pair<int, int>& elem) {
+                return elem.second < mid;
+            });
 
-			left = new Segment(l, mid, leftIndices);
-			right = new Segment(mid, r, rightIndices);
-		}
-	}
+            left = new Segment(l,mid, leftIndices);
+            right = new Segment(mid,r, rightIndices);
+        }
+    }
 
-	// Calculates the prefix B
-	void calculateB() {
-		int i = 1;
-		int j = 0;
-		prefixB.resize(indices.size() + 1);
-		for (auto [ind, val] : indices) {
-			if (val < mid) j++;
-			prefixB[i++] = j;
-		}
-	}
+    // Calculates the prefix B
+    void calculate_b() {
+        int i = 1;
+        int j = 0;
+        prefixB.resize(indices.size() + 1);
+        for (auto [ind, val] : indices) {
+            if (val < mid) j++;
+            prefixB[i++] = j;
+        }
+    }
 
-	int findKSmallest(int a, int b, int k) {
-		update();
-		if (r - l <= 1) return l;
+    int find_k_smallest(int a, int b, int k) {
+        update();
+        if (r - l <= 1) return l;
 
-		int lb = prefixB[a];
-		int lr = prefixB[b];
-		int inLeft = lr - lb;
+        int lb = prefixB[a];
+        int lr = prefixB[b];
+        int inLeft = lr - lb; // Amount of values in range (a,b) that are less the mid
 
-		if (k <= inLeft) return left->findKSmallest(lb, lr, k);
-		else return right->findKSmallest(a - lb, b - lr, k - inLeft);
-	}
+        if (k <= inLeft)
+            return left->find_k_smallest(lb,lr,k); // Appears in left
+        else
+            return right->find_k_smallest(a - lb,b - lr, k - inLeft); // Appears in right
+    }
 };
+
+
+int main() {
+    int n, q; cin >> n >> q;
+
+    vector<pair<int,int>> indices;
+    for (int i = 0; i < n; ++i) {
+        int v; cin >> v;
+        indices.emplace_back(i,v);
+    }
+    Segment seg(0,1e9 + 2,indices);
+
+    for (int i = 0; i < q; ++i) {
+        int a, b, k; cin >> a >> b >> k;
+        k++;
+        cout << seg.find_k_smallest(a,b,k) << " ";
+    }
+
+    return 0;
+}
+
 ```
 
 ## Supporting updates
 
 Lets support updates of type:
-	- change value at index i to y
+	- change value at index $i$ to $y$ 
 
 What we can do is recurse down to your leaf in order to remove the old element. And also recurse down to add the new element.
 
-So what do the updates change?
- -
+So what do the updates change?   
+ - 
  Our indicies vector
  Our prefix vector
 
 ### Changing the indicies vector
-What we can do is instead of storing a vector use a set.
+What we can do is instead of storing a vector use a set.   
 Then erasing and adding values becomes easy.
 
 ### Changing the prefix vector
-Since each update could change our prefix vector a lot, we cant maintain just he normal vector.
-What we could do use use a sparse segment tree.
+Since each update could change our prefix vector a lot, we cant maintain just he normal vector.   
+What we could do use use a sparse segment tree.   
 	- erasing and inserting can be done by just setting the value to 0 or 1 at the specific index
-	- quering for a prefix can be done by quering the segment tree from 0 till i
-This approach is not really memory effient and also requires the implemention of a segment tree.
+	- quering for a prefix can be done by quering the segment tree from 0 till $i$
+This approach is not really memory effient and also requires the implemention of a segment tree.  
 A more friendly approach would be using an order statistics tree.
 
 </CPPSection>
