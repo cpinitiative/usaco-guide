@@ -36,6 +36,7 @@ The program processes the corpus in chunks, accumulating counts for each query s
 #include <vector>
 using namespace std;
 
+
 #define rep(i, from, to) for (int i = from; i < (to); ++i)
 #define trav(a, x) for (auto &a : x)
 #define all(x) x.begin(), x.end()
@@ -48,7 +49,7 @@ typedef vector<int> vi;
 const int SIMD_BITS = 256;
 const int MAXQ = 100'000;
 
-typedef __m256i mi;
+typedef __m256i mi; // Define shorthand for AVX2 256-bit integer vector
 
 // Sets a specific bit in a 256-bit vector (mi type) at the given index (ind)
 void set_bit(mi &m, size_t ind) {
@@ -72,27 +73,24 @@ void printm(mi m) {
 	cout << endl;
 }
 
-mi active[MAXQ / SIMD_BITS + 1][26 * 26 + 1]{};  // ~26*26 * MAXQ / 8 bytes
+// Initialize a 2D array to store active bits for each query and character pair
+mi active[MAXQ / SIMD_BITS + 1][26 * 26 + 1]{};
 
 int main() {
-	cin.sync_with_stdio(false);   // Disable synchronization with C stdio
-	cin.exceptions(cin.failbit);  // Enable exceptions on input failure
+	cin.sync_with_stdio(false); // Disable synchronization with C stdio
+	cin.exceptions(cin.failbit); // Enable exceptions on input failure
 	int N, Q, K;
 	cin >> N >> Q >> K;
 	string str, s;
 	cin >> str;
 	N--;
-	int padN = (N + 31) & -32;        // Pad N to the nearest multiple of 32
-	int qchunks = Q / SIMD_BITS + 1;  // Calculate number of query chunks
-	vector<short> pairs(padN);        // Vector to store character pairs
+	int qchunks = Q / SIMD_BITS + 1; // Calculate number of query chunks
+	vector<short> pairs(N); // Vector to store character pairs
 	rep(i, 0, N) {
 		int a = str[i] - 'a';
 		int b = str[i + 1] - 'a';
 		pairs[i] = (short)((26 * a + b) * sizeof(mi));
 	}
-	rep(i, N, padN) {
-		pairs[i] = 26 * 26 * sizeof(mi);
-	}  // Fill remaining pairs with a default value
 
 	// Process each query and set the corresponding bits in the active array
 	rep(i, 0, Q) {
@@ -104,139 +102,42 @@ int main() {
 		}
 	}
 
-	vi res(qchunks * SIMD_BITS);
+	vi res(qchunks * SIMD_BITS); // Vector to store the results
 	rep(k, 0, qchunks) {
 		char *act = (char *)active[k];
-		int i = 0;
 		mi zero = _mm256_setzero_si256();
-		mi acc0 = zero, acc1 = zero, acc2 = zero, acc3 = zero, acc4 = zero;
+		mi carry = zero;
 		mi accs[30]{}, ts[30]{};
 		mi picked = zero;
-		mi carry;
-#define SET0                                                                   \
-	carry = picked = _mm256_andnot_si256(picked, *(mi *)(act + pairs[i++]))
-#define ADD2(t, acc)                                                           \
-	{                                                                          \
-		mi x = t ^ carry, y = (x & acc) | (t & carry);                         \
-		acc = x ^ acc, carry = y;                                              \
-	}  // (carry, acc) = (t + acc + carry)
-#define ADD(ind) ADD2(t##ind, acc##ind)
 
-		// Loop to process the pairs and accumulate the results
-		while (i < padN) {
-			mi t0, t1, t2, t3, t4;
-			SET0;
-			t0 = carry;
-			SET0;
-			ADD(0);
-			t1 = carry;
-			SET0;
-			t0 = carry;
-			SET0;
-			ADD(0);
-			ADD(1);
-			t2 = carry;
-			SET0;
-			t0 = carry;
-			SET0;
-			ADD(0);
-			t1 = carry;
-			SET0;
-			t0 = carry;
-			SET0;
-			ADD(0);
-			ADD(1);
-			ADD(2);
-			t3 = carry;
-			SET0;
-			t0 = carry;
-			SET0;
-			ADD(0);
-			t1 = carry;
-			SET0;
-			t0 = carry;
-			SET0;
-			ADD(0);
-			ADD(1);
-			t2 = carry;
-			SET0;
-			t0 = carry;
-			SET0;
-			ADD(0);
-			t1 = carry;
-			SET0;
-			t0 = carry;
-			SET0;
-			ADD(0);
-			ADD(1);
-			ADD(2);
-			ADD(3);
-			t4 = carry;
-			SET0;
-			t0 = carry;
-			SET0;
-			ADD(0);
-			t1 = carry;
-			SET0;
-			t0 = carry;
-			SET0;
-			ADD(0);
-			ADD(1);
-			t2 = carry;
-			SET0;
-			t0 = carry;
-			SET0;
-			ADD(0);
-			t1 = carry;
-			SET0;
-			t0 = carry;
-			SET0;
-			ADD(0);
-			ADD(1);
-			ADD(2);
-			t3 = carry;
-			SET0;
-			t0 = carry;
-			SET0;
-			ADD(0);
-			t1 = carry;
-			SET0;
-			t0 = carry;
-			SET0;
-			ADD(0);
-			ADD(1);
-			t2 = carry;
-			SET0;
-			t0 = carry;
-			SET0;
-			ADD(0);
-			t1 = carry;
-			SET0;
-			t0 = carry;
-			SET0;
-			ADD(0);
-			ADD(1);
-			ADD(2);
-			ADD(3);
-			ADD(4);
+#define SET0 \
+	carry = picked = _mm256_andnot_si256(picked, *(mi *)(act + pairs[0]))
+#define ADD2(t, acc) \
+	{ \
+		mi x = t ^ carry, y = (x & acc) | (t & carry); \
+		acc = x ^ acc, carry = y; \
+	} // (carry, acc) = (t + acc + carry)
 
-			int ind = 5;
+		
+		for (int i = 0; i < N; ++i) {
+			mi t = zero;
+			SET0;
+			t = carry;
+			ADD2(t, accs[0]);
+
+			// Manage carry and accumulation for higher indices
+			int ind = 0;
 			while (!(i & (1 << ind))) {
 				ADD2(ts[ind], accs[ind]);
 				ind++;
 			}
 			ts[ind] = carry;
 		}
-		accs[0] = acc0;
-		accs[1] = acc1;
-		accs[2] = acc2;
-		accs[3] = acc3;
-		accs[4] = acc4;
 
 		// Final accumulation across all indices
 		carry = zero;
 		rep(ind, 0, 30) {
-			mi val = (padN & (1 << ind) ? ts[ind] : zero);
+			mi val = (N & (1 << ind) ? ts[ind] : zero);
 			ADD2(val, accs[ind]);
 		}
 
