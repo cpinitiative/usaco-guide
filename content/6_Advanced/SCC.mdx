@@ -283,7 +283,7 @@ After identifying the SCCs, we check for consistency. Specifically, we need to e
 
 If the graph passes the consistency check, we proceed to determine a satisfying assignment for the variables. This is done by processing the SCCs in topologically sorted order. [Topological sorting](https://en.wikipedia.org/wiki/Topological_sorting) of the SCCs respects the direction of the implications, ensuring that dependencies are correctly managed. Starting from any SCC with no incoming edges, we assign a truth value to one variable in each SCC. Typically, we set variables to true initially and then propagate this assignment through the graph, ensuring that all implications are satisfied. If a variable is already assigned a truth value due to previous propagations, we skip it to avoid conflicts.
 
-For example, in the formula 
+For example, in the formula
 $
 (\lnot x_1 \lor x_2) \land (x_1 \lor \lnot x_2) \land (\lnot x_1 \lor \lnot x_2) \land (x_1 \lor \lnot x_3)
 $, the implication graph would have edges $(\lnot x_1 \rightarrow \lnot x_2), (x_1 \rightarrow x_2), (x_1 \rightarrow \lnot x_2), (\lnot x_1 \rightarrow \lnot x_3), (x_2 \rightarrow x_1), (\lnot x_2 \rightarrow \lnot x_1), (x_2 \rightarrow \lnot x_1)$ and $(x_3 \rightarrow x_1)$.
@@ -306,12 +306,12 @@ Below is the implementation of the solution for the 2-SAT problem, utilizing the
 <CPPSection>
 ```cpp
 struct TwoSatSolver {
-    int n_vars;
-    int n_vertices;
-    vector<vector<int>> adj, adj_t;
-    vector<bool> used;
-    vector<int> order, comp;
-    vector<bool> assignment;
+	int n_vars;
+	int n_vertices;
+	vector<vector<int>> adj, adj_t;
+	vector<bool> used;
+	vector<int> order, comp;
+	vector<bool> assignment;
 
     TwoSatSolver(int _n_vars) : n_vars(_n_vars), n_vertices(2 * n_vars), adj(n_vertices), adj_t(n_vertices), used(n_vertices), order(), comp(n_vertices, -1), assignment(n_vars) {
         order.reserve(n_vertices);
@@ -413,12 +413,12 @@ using namespace std;
 
 // BeginCodeSnip{2SAT}
 struct TwoSatSolver {
-    int n_vars;
-    int n_vertices;
-    vector<vector<int>> adj, adj_t;
-    vector<bool> used;
-    vector<int> order, comp;
-    vector<bool> assignment;
+	int n_vars;
+	int n_vertices;
+	vector<vector<int>> adj, adj_t;
+	vector<bool> used;
+	vector<int> order, comp;
+	vector<bool> assignment;
 
     TwoSatSolver(int _n_vars) : n_vars(_n_vars), n_vertices(2 * n_vars), adj(n_vertices), adj_t(n_vertices), used(n_vertices), order(), comp(n_vertices, -1), assignment(n_vars) {
         order.reserve(n_vertices);
@@ -495,17 +495,17 @@ struct TwoSatSolver {
 // EndCodeSnip
 
 int main() {
-    int n, m;
-    cin >> n >> m;
-    TwoSatSolver solver(m);
+	int n, m;
+	cin >> n >> m;
+	TwoSatSolver solver(m);
 
-    for (int i = 1; i <= n; i++) {
-        int tops1, tops2;
-        char pref1, pref2;
-        cin >> pref1 >> tops1 >> pref2 >> tops2;
-        tops1--, tops2--;
-        solver.add_disjunction(tops1, pref1 == '+', tops2, pref2 == '+');
-    }
+	for (int i = 1; i <= n; i++) {
+		int tops1, tops2;
+		char pref1, pref2;
+		cin >> pref1 >> tops1 >> pref2 >> tops2;
+		tops1--, tops2--;
+		solver.add_disjunction(tops1, pref1 == '+', tops2, pref2 == '+');
+	}
 
     if (!solver.solve()) {
         cout << "IMPOSSIBLE" << '\n';
@@ -522,7 +522,7 @@ int main() {
 ## Problems
 <Problems problems="2SAT" />
 
-<!-- 
+<!--
 <IncompleteSection>
 
 mention KACTL - at most one
