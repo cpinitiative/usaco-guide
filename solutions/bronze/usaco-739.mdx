@@ -339,53 +339,46 @@ public class BovineGenomics {
 </JavaSection>
 <PySection>
 
-<Warning>
-
-Due to Python's slow speed, the below code TLEs on a couple test cases.
-
-</Warning>
-
 ```py
-GENOME_ID = {"A": 0, "T": 1, "C": 2, "G": 3}
+# The major takeaway here is that tuples are hashable! Meaning we can check for them in sets in constant time!
+# This code passes all tests!
+# A particular kind of set of 3 genes will gives us a gene-tuple.
+# Any gene-tuple should only be in either spotted or plain cows, else we wont be able to come to a comclusion.
 
-with open("cownomics.in") as read:
-	cow_num, genome_len = [int(i) for i in read.readline().split()]
+import sys
+from math import ceil,floor,log,inf
+from collections import Counter
 
-	spotted = []
-	for _ in range(cow_num):
-		genome_str = read.readline()
-		genome = []
-		for g in range(genome_len):
-			# A -> 0, C -> 1, T -> 2, G -> 3
-			genome.append(GENOME_ID[genome_str[g]])
-		spotted.append(genome)
+sys.stdin = open("cownomics.in", "r")
+sys.stdout = open("cownomics.out", "w")
 
-	plain = []
-	for _ in range(cow_num):
-		genome_str = read.readline()
-		genome = []
-		for g in range(genome_len):
-			genome.append(GENOME_ID[genome_str[g]])
-		plain.append(genome)
-
-valid_sets = 0
-for a in range(genome_len):
-	for b in range(a + 1, genome_len):
-		for c in range(b + 1, genome_len):
-			spotted_ids = [False for _ in range(64)]
-			for sc in range(cow_num):
-				total = spotted[sc][a] * 16 + spotted[sc][b] * 4 + spotted[sc][c] * 1
-				spotted_ids[total] = True
-
-			for pc in range(cow_num):
-				total = plain[pc][a] * 16 + plain[pc][b] * 4 + plain[pc][c] * 1
-				if spotted_ids[total]:
-					break
-			else:
-				valid_sets += 1
-
-print(valid_sets, file=open("cownomics.out", "w"))
+n,m = map(int,(input().split())) 
+s = []
+p = []
+for i in range(n):
+    s.append(list(str(input())))   
+for i in range(n):
+    p.append(list(str(input())))   
+ans=0
+for i in range(m):
+    for j in range(i+1,m):
+        for k in range(j+1,m):
+            s1=set();p1=set();t= 0
+            for w in range(n):
+                sn = tuple([s[w][i],s[w][j],s[w][k]])
+                pn = tuple([p[w][i],p[w][j],p[w][k]])
+		# Check if this particular combination of "ATGC" have apperared at this location in any other cows of the opposite kind.
+                if((sn in p1) or (pn in s1) or (sn==pn)):
+                    t=1
+                    break
+                else:
+                    s1.add(tuple([s[w][i],s[w][j],s[w][k]]))
+                    p1.add(tuple([p[w][i],p[w][j],p[w][k]]))
+            if(t==0):
+                ans+=1
+print(ans)
 ```
+Code submitted by PenguinSlayer
 
 </PySection>
 </LanguageSection>
