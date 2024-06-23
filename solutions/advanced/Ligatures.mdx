@@ -36,7 +36,6 @@ The program processes the corpus in chunks, accumulating counts for each query s
 #include <vector>
 using namespace std;
 
-
 #define rep(i, from, to) for (int i = from; i < (to); ++i)
 #define trav(a, x) for (auto &a : x)
 #define all(x) x.begin(), x.end()
@@ -49,7 +48,7 @@ typedef vector<int> vi;
 const int SIMD_BITS = 256;
 const int MAXQ = 100'000;
 
-typedef __m256i mi; // Define shorthand for AVX2 256-bit integer vector
+typedef __m256i mi;  // Define shorthand for AVX2 256-bit integer vector
 
 // Sets a specific bit in a 256-bit vector (mi type) at the given index (ind)
 void set_bit(mi &m, size_t ind) {
@@ -77,15 +76,15 @@ void printm(mi m) {
 mi active[MAXQ / SIMD_BITS + 1][26 * 26 + 1]{};
 
 int main() {
-	cin.sync_with_stdio(false); // Disable synchronization with C stdio
-	cin.exceptions(cin.failbit); // Enable exceptions on input failure
+	cin.sync_with_stdio(false);   // Disable synchronization with C stdio
+	cin.exceptions(cin.failbit);  // Enable exceptions on input failure
 	int N, Q, K;
 	cin >> N >> Q >> K;
 	string str, s;
 	cin >> str;
 	N--;
-	int qchunks = Q / SIMD_BITS + 1; // Calculate number of query chunks
-	vector<short> pairs(N); // Vector to store character pairs
+	int qchunks = Q / SIMD_BITS + 1;  // Calculate number of query chunks
+	vector<short> pairs(N);           // Vector to store character pairs
 	rep(i, 0, N) {
 		int a = str[i] - 'a';
 		int b = str[i + 1] - 'a';
@@ -102,7 +101,7 @@ int main() {
 		}
 	}
 
-	vi res(qchunks * SIMD_BITS); // Vector to store the results
+	vi res(qchunks * SIMD_BITS);  // Vector to store the results
 	rep(k, 0, qchunks) {
 		char *act = (char *)active[k];
 		mi zero = _mm256_setzero_si256();
@@ -110,15 +109,14 @@ int main() {
 		mi accs[30]{}, ts[30]{};
 		mi picked = zero;
 
-#define SET0 \
+#define SET0                                                                   \
 	carry = picked = _mm256_andnot_si256(picked, *(mi *)(act + pairs[0]))
-#define ADD2(t, acc) \
-	{ \
-		mi x = t ^ carry, y = (x & acc) | (t & carry); \
-		acc = x ^ acc, carry = y; \
-	} // (carry, acc) = (t + acc + carry)
+#define ADD2(t, acc)                                                           \
+	{                                                                          \
+		mi x = t ^ carry, y = (x & acc) | (t & carry);                         \
+		acc = x ^ acc, carry = y;                                              \
+	}  // (carry, acc) = (t + acc + carry)
 
-		
 		for (int i = 0; i < N; ++i) {
 			mi t = zero;
 			SET0;
