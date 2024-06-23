@@ -273,7 +273,7 @@ The 2-Satisfiability (2-SAT) problem is a specific type of [Boolean satisfiabili
 To solve a 2-SAT problem, consider a Boolean formula in Conjunctive Normal Form (CNF) where each clause contains exactly two literals, such as
 
 $$ 
-(\lnot x_1 \lor x_2) \land (x_1 \lor \lnot x_2) \land (\lnot x_2 \lor x_3)
+(\lnot x_1 \lor x_2) \land (x_1 \lor \lnot x_2) \land (\lnot x_1 \lor \lnot x_2) \land (x_1 \lor \lnot x_3)
 $$
 The algorithm proceeds by constructing an implication graph, a directed graph where each variable $x_i$ and its negation $\lnot x_i$ are represented as nodes. For each clause $(a \lor b)$, we add two directed edges: $\lnot a \rightarrow b$ and $\lnot b \rightarrow a$. These edges reflect the logical implications necessary to satisfy each clause.
 
@@ -285,8 +285,11 @@ If the graph passes the consistency check, we proceed to determine a satisfying 
 
 For example, in the formula 
 $
-(\lnot x_1 \lor x_2) \land (x_1 \lor \lnot x_2) \land (\lnot x_2 \lor x_3)
-$, the implication graph would have edges $(\lnot x_1 \rightarrow x_2), (\lnot x_2 \rightarrow x_1), (x_1 \rightarrow \lnot x_2), (x_2 \rightarrow \lnot x_1), (\lnot x_2 \rightarrow x_3)$ and ($\lnot x_3 \rightarrow x_2)$. After constructing the graph and finding the SCCs, we check for consistency. Assuming no contradictions are found, we then assign truth values based on the topological order of the SCCs.
+(\lnot x_1 \lor x_2) \land (x_1 \lor \lnot x_2) \land (\lnot x_1 \lor \lnot x_2) \land (x_1 \lor \lnot x_3)
+$, the implication graph would have edges $(\lnot x_1 \rightarrow \lnot x_2), (x_1 \rightarrow x_2), (x_1 \rightarrow \lnot x_2), (\lnot x_1 \rightarrow \lnot x_3), (x_2 \rightarrow x_1), (\lnot x_2 \rightarrow \lnot x_1), (x_2 \rightarrow \lnot x_1)$ and $(x_3 \rightarrow x_1)$.
+![](graph.png)
+After constructing the graph and finding the SCCs, we check for consistency. Assuming no contradictions are found, we then assign truth values based on the topological order of the SCCs.
+
 
 This approach ensures that the 2-SAT problem can be solved efficiently, in linear time relative to the number of variables and clauses, leveraging the properties of directed graphs and the power of SCCs to manage logical dependencies and implications systematically. This makes the 2-SAT problem a notable example of a problem that is solvable in polynomial time, despite being a specific case of the generally intractable Boolean satisfiability problem.
 
@@ -313,58 +316,75 @@ struct TwoSatSolver {
     TwoSatSolver(int _n_vars) : n_vars(_n_vars), n_vertices(2 * n_vars), adj(n_vertices), adj_t(n_vertices), used(n_vertices), order(), comp(n_vertices, -1), assignment(n_vars) {
         order.reserve(n_vertices);
     }
+
+	// Depth-first search for the first pass in Kosaraju's algorithm
     void dfs1(int v) {
         used[v] = true;
         for (int u : adj[v]) {
-            if (!used[u])
+            if (!used[u]) {
                 dfs1(u);
+			}
         }
-        order.push_back(v);
+        order.push_back(v); // Append node to order list after visiting all reachable nodes
     }
 
+	// Depth-first search for the second pass in Kosaraju's algorithm
     void dfs2(int v, int cl) {
         comp[v] = cl;
         for (int u : adj_t[v]) {
-            if (comp[u] == -1)
+            if (comp[u] == -1) {
                 dfs2(u, cl);
+			}
         }
     }
 
-    bool solve_2SAT() {
+    bool solve() {
         order.clear();
         used.assign(n_vertices, false);
         for (int i = 0; i < n_vertices; ++i) {
-            if (!used[i])
-                dfs1(i);
+            if (!used[i]) {
+				dfs1(i);
+			}
         }
 
         comp.assign(n_vertices, -1);
         for (int i = 0, j = 0; i < n_vertices; ++i) {
             int v = order[n_vertices - i - 1];
-            if (comp[v] == -1)
+            if (comp[v] == -1) {
                 dfs2(v, j++);
+			}
         }
 
         assignment.assign(n_vars, false);
         for (int i = 0; i < n_vertices; i += 2) {
-            if (comp[i] == comp[i + 1])
-                return false;
-            assignment[i / 2] = comp[i] > comp[i + 1];
+            if (comp[i] == comp[i + 1]) {
+                return false; // If variable and its negation are in the same component, unsatisfiable
+			}
+            assignment[i / 2] = comp[i] > comp[i + 1]; // Assign true/false based on component ids
         }
-        return true;
+        return true; // Satisfiable
     }
 
-    void add_disjunction(int a, bool na, int b, bool nb) {
-        // na and nb signify whether a and b are to be negated 
+    void add_disjunction(int a, int na, int b, int nb) {
+        // na and nb signify whether a and b are to be negated
+
+		// Convert variable index and negation to node index 
         a = 2 * a ^ na;
         b = 2 * b ^ nb;
+
+		// Get the negation node index
         int neg_a = a ^ 1;
         int neg_b = b ^ 1;
+
+		// Add implication from negation
         adj[neg_a].push_back(b);
         adj[neg_b].push_back(a);
+
+		// Add reverse implication for the transposed graph
         adj_t[b].push_back(neg_a);
         adj_t[a].push_back(neg_b);
     }
+};
 
     static void example_usage() {
         TwoSatSolver solver(3); // a, b, c
@@ -372,7 +392,7 @@ struct TwoSatSolver {
         solver.add_disjunction(0, true, 1, true);   // not a  v  not b
         solver.add_disjunction(1, false, 2, false); //     b  v      c
         solver.add_disjunction(0, false, 0, false); //     a  v      a
-        assert(solver.solve_2SAT() == true);
+        assert(solver.solve() == true);
         auto expected = vector<bool>(True, False, True);
         assert(solver.assignment == expected);
     }
@@ -391,6 +411,7 @@ It is a straightforward 2SAT problem. Each topping corresponds to a variable. Wh
 #include <bits/stdc++.h>
 using namespace std;
 
+// BeginCodeSnip{2SAT}
 struct TwoSatSolver {
     int n_vars;
     int n_vertices;
@@ -402,59 +423,76 @@ struct TwoSatSolver {
     TwoSatSolver(int _n_vars) : n_vars(_n_vars), n_vertices(2 * n_vars), adj(n_vertices), adj_t(n_vertices), used(n_vertices), order(), comp(n_vertices, -1), assignment(n_vars) {
         order.reserve(n_vertices);
     }
+
+	// Depth-first search for the first pass in Kosaraju's algorithm
     void dfs1(int v) {
         used[v] = true;
         for (int u : adj[v]) {
-            if (!used[u])
+            if (!used[u]) {
                 dfs1(u);
+			}
         }
-        order.push_back(v);
+        order.push_back(v); // Append node to order list after visiting all reachable nodes
     }
 
+	// Depth-first search for the second pass in Kosaraju's algorithm
     void dfs2(int v, int cl) {
         comp[v] = cl;
         for (int u : adj_t[v]) {
-            if (comp[u] == -1)
+            if (comp[u] == -1) {
                 dfs2(u, cl);
+			}
         }
     }
 
-    bool solve_2SAT() {
+    bool solve() {
         order.clear();
         used.assign(n_vertices, false);
         for (int i = 0; i < n_vertices; ++i) {
-            if (!used[i])
-                dfs1(i);
+            if (!used[i]) {
+				dfs1(i);
+			}
         }
 
         comp.assign(n_vertices, -1);
         for (int i = 0, j = 0; i < n_vertices; ++i) {
             int v = order[n_vertices - i - 1];
-            if (comp[v] == -1)
+            if (comp[v] == -1) {
                 dfs2(v, j++);
+			}
         }
 
         assignment.assign(n_vars, false);
         for (int i = 0; i < n_vertices; i += 2) {
-            if (comp[i] == comp[i + 1])
-                return false;
-            assignment[i / 2] = comp[i] > comp[i + 1];
+            if (comp[i] == comp[i + 1]) {
+                return false; // If variable and its negation are in the same component, unsatisfiable
+			}
+            assignment[i / 2] = comp[i] > comp[i + 1]; // Assign true/false based on component ids
         }
-        return true;
+        return true; // Satisfiable
     }
 
     void add_disjunction(int a, int na, int b, int nb) {
-        // na and nb signify whether a and b are to be negated 
+        // na and nb signify whether a and b are to be negated
+
+		// Convert variable index and negation to node index 
         a = 2 * a ^ na;
         b = 2 * b ^ nb;
+
+		// Get the negation node index
         int neg_a = a ^ 1;
         int neg_b = b ^ 1;
+
+		// Add implication from negation
         adj[neg_a].push_back(b);
         adj[neg_b].push_back(a);
+
+		// Add reverse implication for the transposed graph
         adj_t[b].push_back(neg_a);
         adj_t[a].push_back(neg_b);
     }
 };
+// EndCodeSnip
 
 int main() {
     int n, m;
@@ -469,7 +507,7 @@ int main() {
         solver.add_disjunction(tops1, pref1 == '+', tops2, pref2 == '+');
     }
 
-    if (!solver.solve_2SAT()) {
+    if (!solver.solve()) {
         cout << "IMPOSSIBLE" << '\n';
     } else {
         for (int i = 0; i < m; i++) {
