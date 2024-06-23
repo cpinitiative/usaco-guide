@@ -210,16 +210,16 @@ void printm(mi m) {
 mi active[MAXQ / SIMD_BITS + 1][26 * 26 + 1]{};  // ~26*26 * MAXQ / 8 bytes
 
 int main() {
-	cin.sync_with_stdio(false); // Disable synchronization with C stdio
-	cin.exceptions(cin.failbit); // Enable exceptions on input failure
+	cin.sync_with_stdio(false);   // Disable synchronization with C stdio
+	cin.exceptions(cin.failbit);  // Enable exceptions on input failure
 	int N, Q, K;
 	cin >> N >> Q >> K;
 	string str, s;
 	cin >> str;
 	N--;
-	int padN = (N + 31) & -32; // Pad N to the nearest multiple of 32
-	int qchunks = Q / SIMD_BITS + 1; // Calculate number of query chunks
-	vector<short> pairs(padN); // Vector to store character pairs
+	int padN = (N + 31) & -32;        // Pad N to the nearest multiple of 32
+	int qchunks = Q / SIMD_BITS + 1;  // Calculate number of query chunks
+	vector<short> pairs(padN);        // Vector to store character pairs
 	rep(i, 0, N) {
 		int a = str[i] - 'a';
 		int b = str[i + 1] - 'a';
