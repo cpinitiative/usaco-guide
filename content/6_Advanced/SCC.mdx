@@ -367,33 +367,39 @@ struct TwoSatSolver {
 	void add_disjunction(int a, int na, int b, int nb) {
 		// na and nb signify whether a and b are to be negated
 
-        comp.assign(n_vertices, -1);
-        for (int i = 0, j = 0; i < n_vertices; ++i) {
-            int v = order[n_vertices - i - 1];
-            if (comp[v] == -1) {
-                dfs2(v, j++);
+		comp.assign(n_vertices, -1);
+		for (int i = 0, j = 0; i < n_vertices; ++i) {
+			int v = order[n_vertices - i - 1];
+			if (comp[v] == -1) { dfs2(v, j++); }
+		}
+
+		assignment.assign(n_vars, false);
+		for (int i = 0; i < n_vertices; i += 2) {
+			if (comp[i] == comp[i + 1]) {
+				return false;  // If variable and its negation are in the same
+				               // component, unsatisfiable
 			}
-        }
+			assignment[i / 2] =
+			    comp[i] >
+			    comp[i + 1];  // Assign true/false based on component ids
+		}
+		return true;  // Satisfiable
+	}
 
-        assignment.assign(n_vars, false);
-        for (int i = 0; i < n_vertices; i += 2) {
-            if (comp[i] == comp[i + 1]) {
-                return false; // If variable and its negation are in the same component, unsatisfiable
-			}
-            assignment[i / 2] = comp[i] > comp[i + 1]; // Assign true/false based on component ids
-        }
-        return true; // Satisfiable
-    }
+	/*
+	'add_disjunction' is responsible for adding a clause of the form (𝑎 ∨ 𝑏) to
+	the 2-SAT problem. In the context of 2-SAT, each clause specifies a logical
+	disjunction of two literals, and the task is to determine if there is a way
+	to assign truth values to the variables so that all clauses are satisfied.
+	The 'add_disjunction function translates each clause into implications and
+	updates the implication graph accordingly.
+	*/
+	void add_disjunction(int a, int na, int b, int nb) {
+		// na and nb signify whether a and b are to be negated
 
-/*
-'add_disjunction' is responsible for adding a clause of the form (𝑎 ∨ 𝑏) to the 2-SAT problem. In the context of 2-SAT, each clause specifies a logical disjunction of two literals, and the task is to determine if there is a way to assign truth values to the variables so that all clauses are satisfied. The 'add_disjunction function translates each clause into implications and updates the implication graph accordingly.
-*/
-    void add_disjunction(int a, int na, int b, int nb) {
-        // na and nb signify whether a and b are to be negated
-
-		// Convert variable index and negation to node index 
-        a = 2 * a ^ na;
-        b = 2 * b ^ nb;
+		// Convert variable index and negation to node index
+		a = 2 * a ^ na;
+		b = 2 * b ^ nb;
 
 		// Get the negation node index
 		int neg_a = a ^ 1;
@@ -497,33 +503,39 @@ struct TwoSatSolver {
 	void add_disjunction(int a, int na, int b, int nb) {
 		// na and nb signify whether a and b are to be negated
 
-        comp.assign(n_vertices, -1);
-        for (int i = 0, j = 0; i < n_vertices; ++i) {
-            int v = order[n_vertices - i - 1];
-            if (comp[v] == -1) {
-                dfs2(v, j++);
+		comp.assign(n_vertices, -1);
+		for (int i = 0, j = 0; i < n_vertices; ++i) {
+			int v = order[n_vertices - i - 1];
+			if (comp[v] == -1) { dfs2(v, j++); }
+		}
+
+		assignment.assign(n_vars, false);
+		for (int i = 0; i < n_vertices; i += 2) {
+			if (comp[i] == comp[i + 1]) {
+				return false;  // If variable and its negation are in the same
+				               // component, unsatisfiable
 			}
-        }
+			assignment[i / 2] =
+			    comp[i] >
+			    comp[i + 1];  // Assign true/false based on component ids
+		}
+		return true;  // Satisfiable
+	}
 
-        assignment.assign(n_vars, false);
-        for (int i = 0; i < n_vertices; i += 2) {
-            if (comp[i] == comp[i + 1]) {
-                return false; // If variable and its negation are in the same component, unsatisfiable
-			}
-            assignment[i / 2] = comp[i] > comp[i + 1]; // Assign true/false based on component ids
-        }
-        return true; // Satisfiable
-    }
+	/*
+	'add_disjunction' is responsible for adding a clause of the form (𝑎 ∨ 𝑏) to
+	the 2-SAT problem. In the context of 2-SAT, each clause specifies a logical
+	disjunction of two literals, and the task is to determine if there is a way
+	to assign truth values to the variables so that all clauses are satisfied.
+	The 'add_disjunction function translates each clause into implications and
+	updates the implication graph accordingly.
+	*/
+	void add_disjunction(int a, int na, int b, int nb) {
+		// na and nb signify whether a and b are to be negated
 
-/*
-'add_disjunction' is responsible for adding a clause of the form (𝑎 ∨ 𝑏) to the 2-SAT problem. In the context of 2-SAT, each clause specifies a logical disjunction of two literals, and the task is to determine if there is a way to assign truth values to the variables so that all clauses are satisfied. The 'add_disjunction function translates each clause into implications and updates the implication graph accordingly.
-*/
-    void add_disjunction(int a, int na, int b, int nb) {
-        // na and nb signify whether a and b are to be negated
-
-		// Convert variable index and negation to node index 
-        a = 2 * a ^ na;
-        b = 2 * b ^ nb;
+		// Convert variable index and negation to node index
+		a = 2 * a ^ na;
+		b = 2 * b ^ nb;
 
 		// Get the negation node index
 		int neg_a = a ^ 1;
