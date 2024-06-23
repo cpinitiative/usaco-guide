@@ -346,36 +346,38 @@ public class BovineGenomics {
 # Any gene-tuple should only be in either spotted or plain cows, else we wont be able to come to a comclusion.
 
 import sys
-from math import ceil,floor,log,inf
+from math import ceil, floor, log, inf
 from collections import Counter
 
 sys.stdin = open("cownomics.in", "r")
 sys.stdout = open("cownomics.out", "w")
 
-n,m = map(int,(input().split())) 
+n, m = map(int, (input().split()))
 s = []
 p = []
 for i in range(n):
-    s.append(list(str(input())))   
+	s.append(list(str(input())))
 for i in range(n):
-    p.append(list(str(input())))   
-ans=0
+	p.append(list(str(input())))
+ans = 0
 for i in range(m):
-    for j in range(i+1,m):
-        for k in range(j+1,m):
-            s1=set();p1=set();t= 0
-            for w in range(n):
-                sn = tuple([s[w][i],s[w][j],s[w][k]])
-                pn = tuple([p[w][i],p[w][j],p[w][k]])
-		# Check if this particular combination of "ATGC" have apperared at this location in any other cows of the opposite kind.
-                if((sn in p1) or (pn in s1) or (sn==pn)):
-                    t=1
-                    break
-                else:
-                    s1.add(tuple([s[w][i],s[w][j],s[w][k]]))
-                    p1.add(tuple([p[w][i],p[w][j],p[w][k]]))
-            if(t==0):
-                ans+=1
+	for j in range(i + 1, m):
+		for k in range(j + 1, m):
+			s1 = set()
+			p1 = set()
+			t = 0
+			for w in range(n):
+				sn = tuple([s[w][i], s[w][j], s[w][k]])
+				pn = tuple([p[w][i], p[w][j], p[w][k]])
+				# Check if this particular combination of "ATGC" have apperared at this location in any other cows of the opposite kind.
+				if (sn in p1) or (pn in s1) or (sn == pn):
+					t = 1
+					break
+				else:
+					s1.add(tuple([s[w][i], s[w][j], s[w][k]]))
+					p1.add(tuple([p[w][i], p[w][j], p[w][k]]))
+			if t == 0:
+				ans += 1
 print(ans)
 ```
 Code submitted by PenguinSlayer
