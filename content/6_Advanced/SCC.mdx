@@ -272,7 +272,7 @@ The 2-Satisfiability (2-SAT) problem is a specific type of [Boolean satisfiabili
 ## Algorithm
 To solve a 2-SAT problem, consider a Boolean formula in Conjunctive Normal Form (CNF) where each clause contains exactly two literals, such as
 
-$$ 
+$$
 (\lnot x_1 \lor x_2) \land (x_1 \lor \lnot x_2) \land (\lnot x_1 \lor \lnot x_2) \land (x_1 \lor \lnot x_3)
 $$
 The algorithm proceeds by constructing an implication graph, a directed graph where each variable $x_i$ and its negation $\lnot x_i$ are represented as nodes. For each clause $(a \lor b)$, we add two directed edges: $\lnot a \rightarrow b$ and $\lnot b \rightarrow a$. These edges reflect the logical implications necessary to satisfy each clause.
@@ -313,39 +313,59 @@ struct TwoSatSolver {
 	vector<int> order, comp;
 	vector<bool> assignment;
 
-    TwoSatSolver(int _n_vars) : n_vars(_n_vars), n_vertices(2 * n_vars), adj(n_vertices), adj_t(n_vertices), used(n_vertices), order(), comp(n_vertices, -1), assignment(n_vars) {
-        order.reserve(n_vertices);
-    }
+	TwoSatSolver(int _n_vars)
+	    : n_vars(_n_vars), n_vertices(2 * n_vars), adj(n_vertices),
+	      adj_t(n_vertices), used(n_vertices), order(), comp(n_vertices, -1),
+	      assignment(n_vars) {
+		order.reserve(n_vertices);
+	}
 
 	// Depth-first search for the first pass in Kosaraju's algorithm
-    void dfs1(int v) {
-        used[v] = true;
-        for (int u : adj[v]) {
-            if (!used[u]) {
-                dfs1(u);
-			}
-        }
-        order.push_back(v); // Append node to order list after visiting all reachable nodes
-    }
+	void dfs1(int v) {
+		used[v] = true;
+		for (int u : adj[v]) {
+			if (!used[u]) { dfs1(u); }
+		}
+		order.push_back(
+		    v);  // Append node to order list after visiting all reachable nodes
+	}
 
 	// Depth-first search for the second pass in Kosaraju's algorithm
-    void dfs2(int v, int cl) {
-        comp[v] = cl;
-        for (int u : adj_t[v]) {
-            if (comp[u] == -1) {
-                dfs2(u, cl);
-			}
-        }
-    }
+	void dfs2(int v, int cl) {
+		comp[v] = cl;
+		for (int u : adj_t[v]) {
+			if (comp[u] == -1) { dfs2(u, cl); }
+		}
+	}
 
-    bool solve() {
-        order.clear();
-        used.assign(n_vertices, false);
-        for (int i = 0; i < n_vertices; ++i) {
-            if (!used[i]) {
-				dfs1(i);
+	bool solve() {
+		order.clear();
+		used.assign(n_vertices, false);
+		for (int i = 0; i < n_vertices; ++i) {
+			if (!used[i]) { dfs1(i); }
+		}
+
+		comp.assign(n_vertices, -1);
+		for (int i = 0, j = 0; i < n_vertices; ++i) {
+			int v = order[n_vertices - i - 1];
+			if (comp[v] == -1) { dfs2(v, j++); }
+		}
+
+		assignment.assign(n_vars, false);
+		for (int i = 0; i < n_vertices; i += 2) {
+			if (comp[i] == comp[i + 1]) {
+				return false;  // If variable and its negation are in the same
+				               // component, unsatisfiable
 			}
-        }
+			assignment[i / 2] =
+			    comp[i] >
+			    comp[i + 1];  // Assign true/false based on component ids
+		}
+		return true;  // Satisfiable
+	}
+
+	void add_disjunction(int a, int na, int b, int nb) {
+		// na and nb signify whether a and b are to be negated
 
         comp.assign(n_vertices, -1);
         for (int i = 0, j = 0; i < n_vertices; ++i) {
@@ -376,30 +396,31 @@ struct TwoSatSolver {
         b = 2 * b ^ nb;
 
 		// Get the negation node index
-        int neg_a = a ^ 1;
-        int neg_b = b ^ 1;
+		int neg_a = a ^ 1;
+		int neg_b = b ^ 1;
 
 		// Add implication from negation
-        adj[neg_a].push_back(b);
-        adj[neg_b].push_back(a);
+		adj[neg_a].push_back(b);
+		adj[neg_b].push_back(a);
 
 		// Add reverse implication for the transposed graph
-        adj_t[b].push_back(neg_a);
-        adj_t[a].push_back(neg_b);
-    }
+		adj_t[b].push_back(neg_a);
+		adj_t[a].push_back(neg_b);
+	}
 };
 
-    static void example_usage() {
-        TwoSatSolver solver(3); // a, b, c
-        solver.add_disjunction(0, false, 1, true);  //     a  v  not b
-        solver.add_disjunction(0, true, 1, true);   // not a  v  not b
-        solver.add_disjunction(1, false, 2, false); //     b  v      c
-        solver.add_disjunction(0, false, 0, false); //     a  v      a
-        assert(solver.solve() == true);
-        auto expected = vector<bool>(True, False, True);
-        assert(solver.assignment == expected);
-    }
-};
+static void example_usage() {
+	TwoSatSolver solver(3);                      // a, b, c
+	solver.add_disjunction(0, false, 1, true);   //     a  v  not b
+	solver.add_disjunction(0, true, 1, true);    // not a  v  not b
+	solver.add_disjunction(1, false, 2, false);  //     b  v      c
+	solver.add_disjunction(0, false, 0, false);  //     a  v      a
+	assert(solver.solve() == true);
+	auto expected = vector<bool>(True, False, True);
+	assert(solver.assignment == expected);
+}
+}
+;
 ```
 </CPPSection>
 </LanguageSection>
@@ -422,39 +443,59 @@ struct TwoSatSolver {
 	vector<int> order, comp;
 	vector<bool> assignment;
 
-    TwoSatSolver(int _n_vars) : n_vars(_n_vars), n_vertices(2 * n_vars), adj(n_vertices), adj_t(n_vertices), used(n_vertices), order(), comp(n_vertices, -1), assignment(n_vars) {
-        order.reserve(n_vertices);
-    }
+	TwoSatSolver(int _n_vars)
+	    : n_vars(_n_vars), n_vertices(2 * n_vars), adj(n_vertices),
+	      adj_t(n_vertices), used(n_vertices), order(), comp(n_vertices, -1),
+	      assignment(n_vars) {
+		order.reserve(n_vertices);
+	}
 
 	// Depth-first search for the first pass in Kosaraju's algorithm
-    void dfs1(int v) {
-        used[v] = true;
-        for (int u : adj[v]) {
-            if (!used[u]) {
-                dfs1(u);
-			}
-        }
-        order.push_back(v); // Append node to order list after visiting all reachable nodes
-    }
+	void dfs1(int v) {
+		used[v] = true;
+		for (int u : adj[v]) {
+			if (!used[u]) { dfs1(u); }
+		}
+		order.push_back(
+		    v);  // Append node to order list after visiting all reachable nodes
+	}
 
 	// Depth-first search for the second pass in Kosaraju's algorithm
-    void dfs2(int v, int cl) {
-        comp[v] = cl;
-        for (int u : adj_t[v]) {
-            if (comp[u] == -1) {
-                dfs2(u, cl);
-			}
-        }
-    }
+	void dfs2(int v, int cl) {
+		comp[v] = cl;
+		for (int u : adj_t[v]) {
+			if (comp[u] == -1) { dfs2(u, cl); }
+		}
+	}
 
-    bool solve() {
-        order.clear();
-        used.assign(n_vertices, false);
-        for (int i = 0; i < n_vertices; ++i) {
-            if (!used[i]) {
-				dfs1(i);
+	bool solve() {
+		order.clear();
+		used.assign(n_vertices, false);
+		for (int i = 0; i < n_vertices; ++i) {
+			if (!used[i]) { dfs1(i); }
+		}
+
+		comp.assign(n_vertices, -1);
+		for (int i = 0, j = 0; i < n_vertices; ++i) {
+			int v = order[n_vertices - i - 1];
+			if (comp[v] == -1) { dfs2(v, j++); }
+		}
+
+		assignment.assign(n_vars, false);
+		for (int i = 0; i < n_vertices; i += 2) {
+			if (comp[i] == comp[i + 1]) {
+				return false;  // If variable and its negation are in the same
+				               // component, unsatisfiable
 			}
-        }
+			assignment[i / 2] =
+			    comp[i] >
+			    comp[i + 1];  // Assign true/false based on component ids
+		}
+		return true;  // Satisfiable
+	}
+
+	void add_disjunction(int a, int na, int b, int nb) {
+		// na and nb signify whether a and b are to be negated
 
         comp.assign(n_vertices, -1);
         for (int i = 0, j = 0; i < n_vertices; ++i) {
@@ -485,17 +526,17 @@ struct TwoSatSolver {
         b = 2 * b ^ nb;
 
 		// Get the negation node index
-        int neg_a = a ^ 1;
-        int neg_b = b ^ 1;
+		int neg_a = a ^ 1;
+		int neg_b = b ^ 1;
 
 		// Add implication from negation
-        adj[neg_a].push_back(b);
-        adj[neg_b].push_back(a);
+		adj[neg_a].push_back(b);
+		adj[neg_b].push_back(a);
 
 		// Add reverse implication for the transposed graph
-        adj_t[b].push_back(neg_a);
-        adj_t[a].push_back(neg_b);
-    }
+		adj_t[b].push_back(neg_a);
+		adj_t[a].push_back(neg_b);
+	}
 };
 
 int main() {
@@ -511,13 +552,13 @@ int main() {
 		solver.add_disjunction(tops1, pref1 == '+', tops2, pref2 == '+');
 	}
 
-    if (!solver.solve()) {
-        cout << "IMPOSSIBLE" << '\n';
-    } else {
-        for (int i = 0; i < m; i++) {
-            cout << (!solver.assignment[i] ? '+' : '-') << " \n"[i == m - 1];
-        }
-    }
+	if (!solver.solve()) {
+		cout << "IMPOSSIBLE" << '\n';
+	} else {
+		for (int i = 0; i < m; i++) {
+			cout << (!solver.assignment[i] ? '+' : '-') << " \n"[i == m - 1];
+		}
+	}
 }
 ```
 </CPPSection>
