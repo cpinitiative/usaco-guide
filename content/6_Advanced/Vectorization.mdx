@@ -179,11 +179,13 @@ typedef long long ll;
 typedef pair<int, int> pii;
 typedef vector<int> vi;
 
+// Sets up the environment for using SIMD operations with AVX2 instructions
 const int SIMD_BITS = 256;
 const int MAXQ = 100'000;
 
 typedef __m256i mi;
 
+// Sets a specific bit in a 256-bit vector (mi type) at the given index (ind)
 void set_bit(mi &m, size_t ind) {
 	union {
 		mi m;
@@ -194,6 +196,7 @@ void set_bit(mi &m, size_t ind) {
 	m = u.m;
 }
 
+// Prints the binary representation of a 256-bit vector (mi type)
 void printm(mi m) {
 	union {
 		mi m;
@@ -207,23 +210,26 @@ void printm(mi m) {
 mi active[MAXQ / SIMD_BITS + 1][26 * 26 + 1]{};  // ~26*26 * MAXQ / 8 bytes
 
 int main() {
-	cin.sync_with_stdio(false);
-	cin.exceptions(cin.failbit);
+	cin.sync_with_stdio(false); // Disable synchronization with C stdio
+	cin.exceptions(cin.failbit); // Enable exceptions on input failure
 	int N, Q, K;
 	cin >> N >> Q >> K;
 	string str, s;
 	cin >> str;
 	N--;
-	int padN = (N + 31) & -32;
-	int qchunks = Q / SIMD_BITS + 1;
-	vector<short> pairs(padN);
+	int padN = (N + 31) & -32; // Pad N to the nearest multiple of 32
+	int qchunks = Q / SIMD_BITS + 1; // Calculate number of query chunks
+	vector<short> pairs(padN); // Vector to store character pairs
 	rep(i, 0, N) {
 		int a = str[i] - 'a';
 		int b = str[i + 1] - 'a';
 		pairs[i] = (short)((26 * a + b) * sizeof(mi));
 	}
-	rep(i, N, padN) { pairs[i] = 26 * 26 * sizeof(mi); }
+	rep(i, N, padN) {
+		pairs[i] = 26 * 26 * sizeof(mi);
+	}  // Fill remaining pairs with a default value
 
+	// Process each query and set the corresponding bits in the active array
 	rep(i, 0, Q) {
 		cin >> s;
 		rep(j, 0, K) {
@@ -250,6 +256,8 @@ int main() {
 		acc = x ^ acc, carry = y;                                              \
 	}  // (carry, acc) = (t + acc + carry)
 #define ADD(ind) ADD2(t##ind, acc##ind)
+
+		// Loop to process the pairs and accumulate the results
 		while (i < padN) {
 			mi t0, t1, t2, t3, t4;
 			SET0;
@@ -360,12 +368,14 @@ int main() {
 		accs[3] = acc3;
 		accs[4] = acc4;
 
+		// Final accumulation across all indices
 		carry = zero;
 		rep(ind, 0, 30) {
 			mi val = (padN & (1 << ind) ? ts[ind] : zero);
 			ADD2(val, accs[ind]);
 		}
 
+		// Convert results to a 32-bit integer format
 		mi low32 = _mm256_set1_epi32(1);
 		rep(j, 0, 32) {
 			mi mval = zero, p2 = low32;
@@ -386,7 +396,7 @@ int main() {
 			}
 		}
 	}
-
+	// Output the results for each query
 	rep(i, 0, Q) cout << res[i] << '\n';
 }
 ```
