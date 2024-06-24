@@ -211,19 +211,128 @@ and
 
 ### Assignment Problem
 
-<IncompleteSection>
+<FocusProblem problem="assignment" />
 
-Better resources? I honestly just found some that came up in a google search.
+The assignment problem is best understood as a min cost max flow problem. In our
+formulation, we will assign $W$ workers to $J$ jobs, $J \ge W$, and the cost of
+assigning the $i$th job to the $j$th worker is $C_{i,j}$.
 
-</IncompleteSection>
+We will create a flow network with a source node $S$, job nodes $J_i$, worker
+nodes $W_j$, and a sink node $E$.
+
+We will have the following edges:
+
+- $(S, J_i)$ with $(capacity, cost) = (1, 0)$
+- $(J_i, W_j)$ with $(1, C_{i,j})$
+- $(W_j, E)$ with $(1, 0)$
+
+The answer will be the minimum cost of the max flow of the graph. An example:
+
+![Hungarian Algorithm Flows Diagram](./hungarian_algo_graph.png)
+
+To solve this, we will use the min cost max flow algorithm detailed above. In
+every iteration of the algorithm, we will assign a job to a worker. In each
+iteration, we will first assign the job to an auxiliary worker, then we will try
+to find an augmenting path with minimum cost. To optimize this, we will only run
+Dijkstra on the worker nodes. For details, refer to the code.
+
+Since there are $J$ iterations (for each job) and each iteration takes $O(W^2)$
+time, the overall time complexity is $O(J W^2)$.
+
+### Implementation
+
+From Wikipedia (which is then copied from e-maxx):
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int ckmin(int &a, int b) { return a > b ? ((a = b), true) : false; }
+
+/**
+ * @return the jobs of each worker in the optimal assignment,
+ * or -1 if the worker is not assigned
+ */
+template <class T> vector<int> hungarian(const vector<vector<T>> &C) {
+	int J = C.size();
+	int W = C[0].size();
+	assert(J <= W);
+
+	// job[w] = job assigned to w-th worker, or -1 if no job assigned
+	// note: a W-th worker was added for convenience
+	vector<int> job(W + 1, -1);
+	vector<T> h(W);  // Johnson potentials
+
+	const T inf = numeric_limits<T>::max();
+	// assign j_cur-th job using Dijkstra with potentials
+	for (int j_cur = 0; j_cur < J; j_cur++) {
+		int w_cur = W;  // unvisited worker with minimum distance
+		job[w_cur] = j_cur;
+
+		vector<T> dist(W + 1, inf);  // Johnson-reduced distances
+		dist[W] = 0;
+		vector<bool> vis(W + 1);     // whether visited yet
+		vector<int> prv(W + 1, -1);  // previous worker on shortest path
+		while (job[w_cur] != -1) {   // Dijkstra step: pop min worker from heap
+			T min_dist = inf;
+			vis[w_cur] = true;
+			int w_next = -1;  // next unvisited worker with minimum distance
+
+			// consider extending shortest path by w_cur -> job[w_cur] -> w
+			for (int w = 0; w < W; w++) {
+				if (!vis[w]) {
+					// sum of reduced edge weights w_cur -> job[w_cur] -> w
+					T edge = C[job[w_cur]][w] - h[w];
+					if (w_cur != W) {
+						edge -= C[job[w_cur]][w_cur] - h[w_cur];
+						assert(edge >= 0);
+					}
+					if (ckmin(dist[w], dist[w_cur] + edge)) { prv[w] = w_cur; }
+					if (ckmin(min_dist, dist[w])) { w_next = w; }
+				}
+			}
+			w_cur = w_next;
+		}
+
+		for (int w = 0; w < W; w++) {  // update potentials
+			ckmin(dist[w], dist[w_cur]);
+			h[w] += dist[w];
+		}
+
+		while (w_cur != W) {  // update job assignment
+			job[w_cur] = job[prv[w_cur]];
+			w_cur = prv[w_cur];
+		}
+	}
+
+	return job;
+}
+
+int main() {
+	int n;
+	cin >> n;
+	vector<vector<int>> c(n, vector<int>(n));
+
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) { cin >> c[i][j]; }
+	}
+
+	vector<int> mat = hungarian(c);
+	int cost = 0;
+	for (int i = 0; i < n; i++) { cost += c[mat[i]][i]; }
+	cout << cost << endl;
+	for (int i = 0; i < n; i++) { cout << mat[i] + 1 << ' ' << i + 1 << endl; }
+}
+```
 
 <Resources>
 
 <Resource
 	source="Wikipedia"
-	title="Assignment Problem"
-	url="https://en.wikipedia.org/wiki/Assignment_problem"
- />
+	title="Hungarian Algorithm"
+	url="https://en.wikipedia.org/wiki/Hungarian_algorithm#Connection_to_successive_shortest_paths"
+	starred>
+</Resource>
 <Resource
 	source="YouTube - Algorithms Thread"
 	title="Hungarian for non Hungarians"
@@ -233,15 +342,8 @@ Better resources? I honestly just found some that came up in a google search.
 	source="Topcoder"
 	title="Assignment Problem and Hungarian Algorthm"
 	url="https://www.topcoder.com/community/competitive-programming/tutorials/assignment-problem-and-hungarian-algorithm/"
-	starred
  />
 
 </Resources>
-
-<IncompleteSection>
-
-More hungarian alg problems
-
-</IncompleteSection>
 
 <Problems problems="appl" />

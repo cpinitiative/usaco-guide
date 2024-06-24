@@ -339,7 +339,7 @@ export const UserDataProvider = ({
               toast.error(
                 'Failed to sync to server: ' +
                   err +
-                  '. Please submit an error report on Github with developer console messages.',
+                  '. Please submit an error report on GitHub with developer console messages.',
                 {
                   duration: Infinity,
                 }
