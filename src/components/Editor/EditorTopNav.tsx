@@ -23,7 +23,7 @@ export const EditorTopNav = (): JSX.Element => {
 
   const handleReloadContent = async () => {
     if (!activeFile) return;
-    if (confirm('Reload file from Github? Your local changes will be lost.')) {
+    if (confirm('Reload file from GitHub? Your local changes will be lost.')) {
       const data = await fetchFileContent(activeFile.path);
       // note: we can't use setMarkdown / setProblems in sequence because setProblems would override setMarkdown
       saveFile({
@@ -87,7 +87,7 @@ export const EditorTopNav = (): JSX.Element => {
             className="inline-flex items-center space-x-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 px-3 py-2 font-medium text-sm rounded-md focus:outline-none transition"
             onClick={handleReloadContent}
           >
-            Reload Content from Github
+            Reload Content from GitHub
           </button>
         )}
         {activeFile?.path && (
@@ -99,7 +99,7 @@ export const EditorTopNav = (): JSX.Element => {
             className="inline-flex items-center space-x-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 px-3 py-2 font-medium text-sm rounded-md focus:outline-none transition"
             rel="noreferrer"
           >
-            View File on Github &rarr;
+            View File on GitHub &rarr;
           </a>
         )}
       </div>
