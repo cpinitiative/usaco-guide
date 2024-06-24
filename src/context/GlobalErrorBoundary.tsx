@@ -30,7 +30,7 @@ const GlobalErrorBoundary = ({ children }) => {
               className="text-blue-600 underline dark:text-blue-400"
               rel="noreferrer"
             >
-              opening a Github issue
+              opening a GitHub issue
             </a>
             . Include steps to reproduce + the stack trace above.
           </p>
