@@ -49,7 +49,7 @@ const useSectionFromLang = (sections: {
           target="_blank"
           rel="noreferrer"
         >
-          Github
+          GitHub
         </a>{' '}
         to help add support for {LANGUAGE_LABELS[userLang]} would be
         appreciated!
