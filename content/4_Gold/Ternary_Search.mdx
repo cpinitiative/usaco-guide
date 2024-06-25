@@ -21,7 +21,7 @@ Ternary search is the equivalent of binary searching for the zero on the
 derivative function. The most basic function can be represented by the standard
 form of a parabola: $ax^2+bx+c$. Depending on if $a$ is positive or negative,
 you are searching for the local minimum or maximum of the function,
-respectively. Note that the function must be unimodal (i.e. change directions in exactly one place)! If not, you probably need to use [Convex Hull Trick](https://usaco.guide/plat/convex-hull-trick).
+respectively. Note that the function must be unimodal (i.e. change directions in exactly one place)!
 
 Unlike binary search where a checking function $f(x)$ only needs to return true
 or false, we need $f(x)$ to output an integer. Between the bounds of $[l, r]$,
@@ -104,7 +104,7 @@ int main() {
 		ll left, right;
 		cin >> left >> right;
 
-		auto calc_cost = [&](ll x) -> ll {
+		auto f = [&](ll x) -> ll {
 			int low_idx = lower_bound(a.begin(), a.end(), x) - a.begin() - 1;
 			ll left_cost = (ll)(low_idx + 1) * x - cum[low_idx + 1];
 
@@ -119,7 +119,7 @@ int main() {
 		while (r - l > 3) {
 			ll mid1 = l + (r - l) / 3;
 			ll mid2 = r - (r - l) / 3;
-			if (calc_cost(mid1) > calc_cost(mid2)) {
+			if (f(mid1) > f(mid2)) {
 				l = mid1;
 			} else {
 				r = mid2;
@@ -127,7 +127,7 @@ int main() {
 		}
 
 		ll ans = 1e18;
-		for (int i = l; i <= r; i++) { ans = min(ans, calc_cost(i)); }
+		for (int i = l; i <= r; i++) { ans = min(ans, f(i)); }
 		cout << ans << "\n";
 	}
 }
