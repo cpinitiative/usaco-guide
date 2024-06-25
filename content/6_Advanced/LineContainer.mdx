@@ -110,38 +110,38 @@ struct Halfplane {
 
 	Halfplane() {}
 	Halfplane(const Point &a, const Point &b) : p(a), pq(b - a) {
-		angle = atan2l(pq.y, pq.x); //Compute angle of direction vector
+		angle = atan2l(pq.y, pq.x);  // Compute angle of direction vector
 	}
 
-	//Check if a point r is outside the half-plane
+	// Check if a point r is outside the half-plane
 	bool out(const Point &r) { return cross(pq, r - p) < -eps; }
 };
 
-//Compute the intersection of a set of half-planes
+// Compute the intersection of a set of half-planes
 std::vector<Point> halfplane_intersect(std::vector<Halfplane> &halfplanes) {
 	Point box[4] = {Point(inf, inf), Point(-inf, inf), Point(-inf, -inf),
 	                Point(inf, -inf)};
-	//Define a bounding box as 4 half-planes
+	// Define a bounding box as 4 half-planes
 
-	//Add bounding box halfplanes to the input set
+	// Add bounding box halfplanes to the input set
 	for (int i = 0; i < 4; i++) {
 		Halfplane aux(box[i], box[(i + 1) % 4]);
 		halfplanes.push_back(aux);
 	}
 
-	//Sort half-planes by angle (counter-clockwise)
+	// Sort half-planes by angle (counter-clockwise)
 	std::sort(halfplanes.begin(), halfplanes.end());
 
-	//Remove duplicates (half-planes with same direction)
+	// Remove duplicates (half-planes with same direction)
 	halfplanes.erase(std::unique(halfplanes.begin(), halfplanes.end()),
 	                 halfplanes.end());
 
 	std::deque<Halfplane> active_halfplanes;
 	int len = 0;
 
-	//Process each sorted half-plane
+	// Process each sorted half-plane
 	for (int i = 0; i < int(halfplanes.size()); i++) {
-		//Remove invalid half-planes from the end of active set
+		// Remove invalid half-planes from the end of active set
 		while (len > 1 &&
 		       halfplanes[i].out(inter(active_halfplanes[len - 1],
 		                               active_halfplanes[len - 2]))) {
@@ -149,21 +149,22 @@ std::vector<Point> halfplane_intersect(std::vector<Halfplane> &halfplanes) {
 			len--;
 		}
 
-		//Remove invalid half-planes from the beginning of active set
-		while (len > 1 && halfplanes[i].out(inter(active_halfplanes[0], active_halfplanes[1]))) {
+		// Remove invalid half-planes from the beginning of active set
+		while (len > 1 && halfplanes[i].out(inter(active_halfplanes[0],
+		                                          active_halfplanes[1]))) {
 			active_halfplanes.pop_front();
 			len--;
 		}
 
-		//Add current half-plane to active set
+		// Add current half-plane to active set
 		active_halfplanes.push_back(halfplanes[i]);
 		len++;
 	}
 
-	//Check if there are less than 3 valid half-planes
+	// Check if there are less than 3 valid half-planes
 	if (len < 3) return std::vector<Point>();
 
-	//Compute intersection points of active half-planes
+	// Compute intersection points of active half-planes
 	std::vector<Point> intersection_points(len);
 	for (int i = 0; i < len - 1; i++) {
 		intersection_points[i] =
