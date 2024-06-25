@@ -1,0 +1,81 @@
+---
+id: cf-1520F1
+source: CF
+title: Guess the K-th Zero (Easy Version)
+author: Rameez Parwez
+---
+
+[Official Editorial (C++)](https://codeforces.com/blog/entry/90342)
+
+## Explanation
+
+We use binary search to find the location of the $k$th zero.
+
+To do this, we set a midpoint and then check if the number of zeros in the left half is greater than or equal to or strictly less than $k$.
+This allows us to narrow the location of the $k$th zero to either the left or right half.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(\log N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int query(int r, int k) {
+	int res;
+	cout << "? " << 1 << " " << r << '\n';
+	cin >> res;
+	return r - res <= k;
+}
+
+int main() {
+	int n, t, k;
+	cin >> n >> t >> k;
+	k--;
+
+	int lo = 0;
+	int hi = n;
+	while (hi - lo > 1) {
+		int mid = (lo + hi) >> 1;
+		if (query(mid, k)) {
+			lo = mid;
+		} else {
+			hi = mid;
+		}
+	}
+
+	cout << "! " << hi << '\n';
+}
+```
+
+</CPPSection>
+<PySection>
+
+```py
+def query(r: int, k: int) -> bool:
+	print(f"? 1 {r}")
+	res = int(input())
+	return r - res <= k
+
+
+n, t = map(int, input().split())
+k = int(input()) - 1
+
+lo = 0
+hi = n
+while hi - lo > 1:
+	mid = (lo + hi) // 2
+	if query(mid, k):
+		lo = mid
+	else:
+		hi = mid
+
+print(f"! {hi}")
+```
+
+</PySection>
+</LanguageSection>
