@@ -74,7 +74,7 @@ Say we want to intersect it with a new half-plane $F$; it may make some existing
 
 We can see $F$ here represented in orange. It makes the half-planes $A$ and $E$ redundant. Therefore, we can remove them from the front and back of the queue and add $F$ at the end. Then, we obtain a new intersection between $H = B,C,D,F$ with $P = q,r,t,u$. This can be shown below:
 
-![image4](./halfplane4.png)
+![halfplane4](https://github.com/cpinitiative/usaco-guide/assets/145281030/c2662dd6-433c-43f0-b3c4-5064e58f878e)
 
 This is the main principle of the algorithm. However, there are a few special cases we should cover. In the case of parallel half-planes, there are 2 possible scenarios, either two that are parallel with the same direction or different directions. We should approach parallel lines with different directions the same as if we have to increase the size of the bounding box, since there will have to be at least one of the half-planes within the bounding box in between the two since they are sorted by angle. This means that the only case we have to deal with is where there are two half-planes with the same angle. To do this is straightforward: simply keep the leftmost half-plane and erase the rest since the others will eventually become redundant anyway.
 
