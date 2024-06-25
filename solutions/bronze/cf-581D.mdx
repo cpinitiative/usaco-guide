@@ -2,7 +2,7 @@
 id: cf-581D
 source: CF
 title: Three Logos
-author: Chongtian Ma
+author: Chongtian Ma, Ayush Shukla
 ---
 
 [Official Editorial](https://codeforces.com/blog/entry/20508)
@@ -89,4 +89,146 @@ int main() {
 ```
 
 </CPPSection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Logos {
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
+		int logos[] = new int[6];
+		for(int i = 0; i < logos.length; i++) {
+			logos[i] = io.nextInt();
+		}
+		int k;
+		for(int i = 0; i < logos.length; i += 2) {
+			if(logos[i] < logos[i+1]){
+				k = logos[i];
+				logos[i] = logos[i+1];
+				logos[i+1] = k;
+			}
+		}				
+		if( logos[0] == logos[2] && logos[4] == logos[2] && (logos[1] + logos[3] + logos[5]) == logos[0]) {
+			int n = logos[0];
+			char c = 'A';
+			io.println(n);
+			k = 0;
+			for(int j, i = 1; i < 6; i += 2, c++){
+				for(j = 0; j < logos[i]; j++){
+					for(k = 0; k < n; k++) {
+						io.print(c);
+					}
+					io.println();
+				}
+			}
+			io.flush();
+			io.close();
+			return;
+		}		
+
+		int n = Math.max(logos[0], Math.max(logos[2], logos[4]));
+		int h = -1;
+
+		char let[]  = new char[]{'A', 'B', 'C'};
+		for(int i = 0; i < 6; i += 2) {
+			if(logos[i] == n) {
+				h = logos[i+1];
+				char _t = let[2];
+				let[2] = let[i/2];
+				let[i/2] = _t;
+				logos[i] = logos[4];
+				logos[i+1] = logos[5];
+				logos[4] = -1;
+				logos[5] = -1;
+				break;
+			}
+		}
+		if(h == -1) {
+			io.println(-1);
+			io.flush();
+			io.close();
+			return;
+		}
+		boolean ok=false;
+		int p =- 1;
+		if (logos[0] == logos[2] && logos[0] == n - h && logos[1] + logos[3] == n) {
+			ok = true;
+			p = logos[1];
+		} else if(logos[0] == logos[3] && logos[0] == n - h && logos[1] + logos[2] == n) {
+			ok = true;
+			p = logos[1];
+		} else if(logos[1] == logos[2] && logos[1] == n - h && logos[0] + logos[3] == n) {
+			ok = true;
+			p = logos[0];
+		} else if(logos[1] == logos[3] && logos[1] == n - h && logos[0] + logos[2] == n) {
+			ok=true;
+			p=logos[0];
+		}
+		if(!ok) {
+			io.println(-1);
+			io.flush();
+			io.close();
+			return;
+		}
+		io.println(n);
+		k=0;
+		for(int j = 0; j < h; j++) {
+			for(k = 0; k < n; k++) {
+				io.print(let[2]);
+			}
+			io.println();
+		}
+		k=0;
+		for(int j = h; j < n; j++) {
+			for(k = 0; k < p; k++) {
+				io.print(let[0]);
+			}
+			for(k = p; k < n; k++) {
+				io.print(let[1]);
+			}
+			io.println();
+		}
+		io.flush();
+		io.close();
+	}
+	//CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+
+<PySection>
+```py
+
+a, b, c, d, e, f = list(map(int, input().split()))
+n, n2 = 1, a * b + c * d + e * f
+while n ** 2 < n2:
+    n += 1
+if n ** 2 > n2:
+    print(-1)
+    exit()
+l = sorted([[max(a, b), min(a, b), 'A'], [max(c, d), min(c, d), 'B'], [max(e, f), min(e, f), 'C']])
+if l[2][0] != n:
+    print(-1)
+    exit()
+v = str(n) + '\n' + (l[2][2] * n + '\n') * l[2][1]
+if l[0][0] == n and l[1][0] == n:
+    for i in range(2):
+        v += (l[i][2] * n + '\n') * l[i][1]
+else:
+    s = n - l[2][1]
+    if s not in l[0] or s not in l[1]:
+        print(-1)
+        exit()
+    logos, y = l[0][1] if l[0][0] == s else l[0][0], l[1][1] if l[1][0] == s else l[1][0]
+    v += (l[0][2] * logos + l[1][2] * y + '\n') * s
+print(v)
+
+```
+
+</PySection>
+
 </LanguageSection>
