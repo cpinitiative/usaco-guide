@@ -29,26 +29,26 @@ By following this iterative strategy, we continuously refine our search segment 
 using namespace std;
 
 int f(int r, int k) {
-    int res;
-    cout << "? " << 1 << " " << r << '\n';
-    cin >> res;
-    return (r - res <= k);
+	int res;
+	cout << "? " << 1 << " " << r << '\n';
+	cin >> res;
+	return (r - res <= k);
 }
 
 int main() {
-    int n, t, k;
-    cin >> n >> t >> k;
-    k--;
-    int lo = 0, hi = n;
-    while (hi - lo > 1) {
-        int mid = (lo + hi) >> 1;
-        if (f(mid, k)) {
-            lo = mid;
-        } else {
-            hi = mid;
-        }
-    }
-    cout << "! " << hi << '\n';
+	int n, t, k;
+	cin >> n >> t >> k;
+	k--;
+	int lo = 0, hi = n;
+	while (hi - lo > 1) {
+		int mid = (lo + hi) >> 1;
+		if (f(mid, k)) {
+			lo = mid;
+		} else {
+			hi = mid;
+		}
+	}
+	cout << "! " << hi << '\n';
 }
 ```
 </CPPSection>
@@ -57,20 +57,21 @@ int main() {
 
 ```py
 def f(r: int, k: int) -> bool:
-    print(f"? 1 {r}")
-    res = int(input())
-    return r - res <= k
+	print(f"? 1 {r}")
+	res = int(input())
+	return r - res <= k
 
-n, t= map(int, input().split())
+
+n, t = map(int, input().split())
 k = int(input())
 k = k - 1
 lo, hi = 0, n
 while hi - lo > 1:
-    mid = (lo + hi) // 2
-    if f(mid, k):
-        lo = mid
-    else:
-        hi = mid
+	mid = (lo + hi) // 2
+	if f(mid, k):
+		lo = mid
+	else:
+		hi = mid
 
 print(f"! {hi}")
 ```
