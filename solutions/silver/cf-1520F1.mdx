@@ -5,9 +5,10 @@ title: Guess the K-th Zero (Easy Version)
 author: Rameez Parwez
 ---
 
-[Official Editorial](https://codeforces.com/blog/entry/90342?locale=en)
+[Official Editorial (C++)](https://codeforces.com/blog/entry/90342)
 
-## Implementation
+## Explanation
+
 To efficiently locate the $k$-th zero within a segment $[l, r]$, we utilize a binary search strategy. Initially, our segment encompasses the entire range $[l, r]$. The objective is to gradually narrow down this segment until we pinpoint the exact position of the $k$-th zero.
 
 We start by defining the midpoint of the current segment as $m = \frac{l+r}{2}$. This allows us to divide the segment into two halves: $[l, m]$ and $[m+1, r]$.
@@ -18,10 +19,11 @@ Next, we perform a query to determine the number of zeros within the left half $
 
 By following this iterative strategy, we continuously refine our search segment based on whether the $k$-th zero is expected to be in the left or right half. This systematic approach allows us to gradually narrow down the range $[l, r]$ until we pinpoint the exact position of the $k$-th zero.
 
-**Time Complexity:** $\mathcal{O}(\log n)$
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(\log N)$
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
@@ -32,14 +34,16 @@ int f(int r, int k) {
 	int res;
 	cout << "? " << 1 << " " << r << '\n';
 	cin >> res;
-	return (r - res <= k);
+	return r - res <= k;
 }
 
 int main() {
 	int n, t, k;
 	cin >> n >> t >> k;
 	k--;
-	int lo = 0, hi = n;
+
+	int lo = 0;
+	int hi = n;
 	while (hi - lo > 1) {
 		int mid = (lo + hi) >> 1;
 		if (f(mid, k)) {
@@ -48,12 +52,12 @@ int main() {
 			hi = mid;
 		}
 	}
+
 	cout << "! " << hi << '\n';
-	return 0;
 }
 ```
-</CPPSection>
 
+</CPPSection>
 <PySection>
 
 ```py
@@ -64,9 +68,10 @@ def f(r: int, k: int) -> bool:
 
 
 n, t = map(int, input().split())
-k = int(input())
-k = k - 1
-lo, hi = 0, n
+k = int(input()) - 1
+
+lo = 0
+hi = n
 while hi - lo > 1:
 	mid = (lo + hi) // 2
 	if f(mid, k):
@@ -78,5 +83,4 @@ print(f"! {hi}")
 ```
 
 </PySection>
-
 </LanguageSection>
