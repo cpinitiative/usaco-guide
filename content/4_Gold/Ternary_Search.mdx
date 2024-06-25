@@ -25,7 +25,7 @@ Ternary search is the equivalent of binary searching for the zero on the
 derivative function. The most basic function can be represented by the standard
 form of a parabola: $ax^2+bx+c$. Depending on if $a$ is positive or negative,
 you are searching for the local minimum or maximum of the function,
-respectively. Note that the function must be unimodal (i.e. change directions in exactly one place)! If not, you probably need to use [Convex Hull Trick](https://usaco.guide/plat/convex-hull-trick). 
+respectively. Note that the function must be unimodal (i.e. change directions in exactly one place)! If not, you probably need to use [Convex Hull Trick](https://usaco.guide/plat/convex-hull-trick).
 
 Unlike binary search where a checking function $f(x)$ only needs to return true
 or false, we need $f(x)$ to output an integer. Between the bounds of $[l, r]$,
@@ -92,51 +92,46 @@ prefix sums. For more details, refer to the implementation.
 using namespace std;
 using ll = long long;
 
-int main(){
+int main() {
 	int n;
 	cin >> n;
 	vector<ll> a(n);
-	for(int i = 0; i < n; i++){
-		cin >> a[i];
-	}
+	for (int i = 0; i < n; i++) { cin >> a[i]; }
 	sort(a.begin(), a.end());
 
-	vector<ll> cum(n + 1); // cumulative sums for a
-	for(int i = 1; i <= n; i++){
-		cum[i] = a[i - 1] + cum[i - 1];
-	}
+	vector<ll> cum(n + 1);  // cumulative sums for a
+	for (int i = 1; i <= n; i++) { cum[i] = a[i - 1] + cum[i - 1]; }
 
 	int q;
 	cin >> q;
-	for(int query = 0; query < q; query++){
-		ll left, right; cin >> left >> right;
+	for (int query = 0; query < q; query++) {
+		ll left, right;
+		cin >> left >> right;
 
 		auto calc_cost = [&](ll x) -> ll {
 			int low_idx = lower_bound(a.begin(), a.end(), x) - a.begin() - 1;
-			ll left_cost = (ll) (low_idx + 1) * x - cum[low_idx + 1];
+			ll left_cost = (ll)(low_idx + 1) * x - cum[low_idx + 1];
 
 			int high_idx = low_idx + 1;
-			ll right_cost = (ll) (cum[n] - cum[high_idx]) - (ll) (n - high_idx) * x;
+			ll right_cost =
+			    (ll)(cum[n] - cum[high_idx]) - (ll)(n - high_idx) * x;
 
 			return left * left_cost + right * right_cost;
 		};
 
 		ll l = 0, r = 1e6;
-		while(r - l > 3){
+		while (r - l > 3) {
 			ll mid1 = l + (r - l) / 3;
 			ll mid2 = r - (r - l) / 3;
-			if(calc_cost(mid1) > calc_cost(mid2)){
+			if (calc_cost(mid1) > calc_cost(mid2)) {
 				l = mid1;
-			}
-			else{
+			} else {
 				r = mid2;
 			}
 		}
 
 		ll ans = 1e18;
-		for(int i = l; i <= r; i++){
-			ans = min(ans, calc_cost(i));
-		}
+		for (int i = l; i <= r; i++) { ans = min(ans, calc_cost(i)); }
 		cout << ans << "\n";
 	}
 }
