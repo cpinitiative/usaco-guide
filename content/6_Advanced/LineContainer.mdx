@@ -113,15 +113,15 @@ struct Halfplane {
 		angle = atan2l(pq.y, pq.x);  // Compute angle of direction vector
 	}
 
-	// Check if a point r is outside the half-plane
+	/** @return if a point r is outside the half-plane */
 	bool out(const Point &r) { return cross(pq, r - p) < -eps; }
 };
 
-// Compute the intersection of a set of half-planes
+/** @return the intersection of a set of half-planes */
 std::vector<Point> halfplane_intersect(std::vector<Halfplane> &halfplanes) {
+	// Define a bounding box as 4 half-planes
 	Point box[4] = {Point(inf, inf), Point(-inf, inf), Point(-inf, -inf),
 	                Point(inf, -inf)};
-	// Define a bounding box as 4 half-planes
 
 	// Add bounding box halfplanes to the input set
 	for (int i = 0; i < 4; i++) {
