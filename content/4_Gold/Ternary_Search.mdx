@@ -1,0 +1,151 @@
+---
+id: ternary-search
+title: Ternary Search
+author: Chongtian Ma
+prerequisites:
+  - /silver/binary-search
+redirects:
+  - /bronze/ternary-search
+  - /gold/ternary-search
+  - /plat/ternary-search
+description: Searching for a peak in a unimodal function.
+frequency: 1
+---
+
+<Resources>
+	<Resource
+		source="CP-Algorithms"
+		title="Ternary Search"
+		url="https://cp-algorithms.com/num_methods/ternary_search.html"
+		starred
+	/>
+</Resources>
+
+Ternary search is the equivalent of binary searching for the zero on the
+derivative function. The most basic function can be represented by the standard
+form of a parabola: $ax^2+bx+c$. Depending on if $a$ is positive or negative,
+you are searching for the local minimum or maximum of the function,
+respectively. Note that the function must be unimodal (i.e. change directions in exactly one place)! If not, you probably need to use [Convex Hull Trick](https://usaco.guide/plat/convex-hull-trick). 
+
+Unlike binary search where a checking function $f(x)$ only needs to return true
+or false, we need $f(x)$ to output an integer. Between the bounds of $[l, r]$,
+we need to compare the integer output of $f(m_1)$ with $f(m_2)$ where
+$l < m_1 < m_2 < r$ to determine how $l$ and $r$ should be moved.
+
+For example, if the function has a local maximum between $[l, r]$ and
+$f(m_1) < f(m_2)$, then we know the local maximum cannot be between $[l, m_1]$,
+so we continue searching in $[m_1, r]$. For a mini-proof, consider the following
+cases:
+
+- Let's denote the local maximum as $g$. If $m_1$ and $m_2$ are less than $g$,
+  this means that $f(m_1)$ and $f(m_2)$ are both on the increasing side of the
+  function. Therefore, we know $m_2 < g < r$, so we must keep searching between
+  $[m_2, r]$.
+
+- If $m_1 < g$ and $m_2 > g$, then $m_1 < g < m_2$. Therefore, we must keep
+  searching betwen $[m_1, m_2]$.
+
+- Note that $g < m_1 < m_2$ can never happen, becuase the function had to be
+  strictly decreasing after $g$.
+
+Since $[m_1, m_2] \cup [m_2, r] = [m_1, r]$, we cover all cases if we set $l$ to
+$m_1$. A similar proof can be given for $f(m_1) \geq f(m_2)$ or if we are
+searching for a local minimum.
+
+It is usually optimal to set $m_1$ and $m_2$ equidistant to each other and to
+the endpoints, so we can maximize the amount of distance we eliminate per
+search. We can set $m_1 = l + \frac{r-l}{3}$ and $m_2 = r - \frac{r-l}{3}$ so
+the intervals $[l, m_1], [m_1, m_2],$ and $[m_2,r]$ have roughly equal length.
+
+# Sample Problem - Haybale Distribution
+
+<FocusProblem problem="sample" />
+
+## Solution - Haybale Distribution
+
+Consider the function $f(y)$, which returns the number of haybales wasted if $y$
+is the chosen integer point. The problem asks for the local minimum for $f(y)$
+in the range of integers $[0, 10^6]$. It can be shown the function is unimodal
+because:
+
+- If we assume $y'$ is the optimal value of $y$ (i.e. the local minimum), it
+  holds that $f(x) \leq f(x+1)$ for all $x \in [0, y'-1]$. Similarily,
+  $f(x) \geq f(x-1)$ for all $x \in [y'+1, 10^6]$. In simpler terms, as you
+  slide $x$ away from $y'$, you are pulling away from the optimal value.
+
+Therefore, we can run a ternary search to find the local minimum. If
+$f(m_1) < f(m_2)$, then we can move the search range to $[l, m_2]$, otherwise,
+our search range is $[m_1, r]$.
+
+All that's left is computing $f(y)$. Let's sort the haybales first. We can
+obtain the greatest $i$ such that $x_i < f(y)$ using binary search. Then, we can
+obtain the sum of the piecewise function for haybales in the range $[1, i]$ and
+$[i+1, n]$ separately, using $a$ and $b$ respectively. This can be done with
+prefix sums. For more details, refer to the implementation.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+
+int main(){
+	int n;
+	cin >> n;
+	vector<ll> a(n);
+	for(int i = 0; i < n; i++){
+		cin >> a[i];
+	}
+	sort(a.begin(), a.end());
+
+	vector<ll> cum(n + 1); // cumulative sums for a
+	for(int i = 1; i <= n; i++){
+		cum[i] = a[i - 1] + cum[i - 1];
+	}
+
+	int q;
+	cin >> q;
+	for(int query = 0; query < q; query++){
+		ll left, right; cin >> left >> right;
+
+		auto calc_cost = [&](ll x) -> ll {
+			int low_idx = lower_bound(a.begin(), a.end(), x) - a.begin() - 1;
+			ll left_cost = (ll) (low_idx + 1) * x - cum[low_idx + 1];
+
+			int high_idx = low_idx + 1;
+			ll right_cost = (ll) (cum[n] - cum[high_idx]) - (ll) (n - high_idx) * x;
+
+			return left * left_cost + right * right_cost;
+		};
+
+		ll l = 0, r = 1e6;
+		while(r - l > 3){
+			ll mid1 = l + (r - l) / 3;
+			ll mid2 = r - (r - l) / 3;
+			if(calc_cost(mid1) > calc_cost(mid2)){
+				l = mid1;
+			}
+			else{
+				r = mid2;
+			}
+		}
+
+		ll ans = 1e18;
+		for(int i = l; i <= r; i++){
+			ans = min(ans, calc_cost(i));
+		}
+		cout << ans << "\n";
+	}
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
+
+<Problems problems="probs" />
+
+Extra: Check out [Nested Ternary Search](https://en.wikipedia.org/wiki/Golden-section_search) and [Multidimensional Ternary Search](https://codeforces.com/blog/entry/98524).
