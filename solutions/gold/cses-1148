@@ -12,9 +12,18 @@ prerequisites:
 Precompute $r_{i,j}$ as the number of continuous free cells starting from $(i, j)$ ending at $(i, j + r_{i, j})$, 
 Similarly to [Maximum Buildin I](https://cses.fi/problemset/task/1147) apply monotonic stacks to find:
 - $u_{i, j}$ , the last line above $i$ with cell $(x, j)$ such that $r_{x, j} > r_{i, j}$
-- $d_{i, j}$ , the last line under $i$ with cell $(y, j)$ such that $r_{y, j} > r_{i, j}$
+- $d_{i, j}$ , the last line under $i$ with cell $(y, j)$ such that $r_{y, j} \ge r_{i, j}$
 
+Using [prefix sums](/silver/more-prefix-sums#2d-prefix-sums) and [difference arrays](https://medium.com/@ishankkatiyar162/understanding-difference-array-the-underrated-constant-time-range-update-algorithm-part-1-e432ada7f1f5) we can effitiently update the answer matrix. 
+Having $r_{i,j}$, $u_{i,j}$ and $d_{i,j}$ precomputed, we know the upperbound and the lowerbound of the rectangle
+of of width $r_{i,j}$ i.e. how much it can expand up above and below line $i$ maintaing width $r_{i, j}$. 
+We'll do difference arrays on each column independently. Therefore, the updates of the answer matrix look like this:
+- $ans[1][r_{i,j}]++$
+- $ans[i - u_{i, j} + 2][r_{i,j}]--$ , the upperbound
+- $ans[d_{i,j} - i + 2][r_{i, j}]]--$ , the lowerbound
+- $ans[d_{i,j} - u_{i,j} + 3][r_{i,j}]++$
 
+Finally, add $ans[i][j]$ to $ans[i][j-1]$ i.e. a submatrix of size $i \times j$ will contains a submatrix of size $i \times (j-1)$.
 
 ## Implementation
 
@@ -92,7 +101,6 @@ int main() {
 		}
 		cout << '\n';
 	}
-	return 0;
 }
 
 ```
