@@ -272,12 +272,16 @@ public class Main {
 
 <PySection>
 
+In Python you can use [itertools.accumulate](https://docs.python.org/3.6/library/itertools.html#itertools.accumulate). Note that you have to call list() since accumulate returns a [generator](https://wiki.python.org/moin/Generators). The first value returned is that of the  iterable passed, so we add a zero in the front (in newer versions you can give the optional parameter of initial=0).
+
 ```py
+# import itertools
+
 def psum(a):
 	psum = [0]
 	for i in a:
 		psum.append(psum[-1] + i)  # psum[-1] is the last element in the list
-	return psum
+	return psum # Or with itertools.accumulate: [0] + list(itertools.accumulate(a))
 
 
 N, Q = map(int, input().split())
