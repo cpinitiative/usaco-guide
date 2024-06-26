@@ -239,7 +239,7 @@ export const SignInModal: React.FC<SignInModalProps> = ({
                         </g>
                       </g>
                     </svg>
-                    <span className="ml-3">Sign In With Github</span>
+                    <span className="ml-3">Sign In With GitHub</span>
                   </button>
                   {isSigningIn && <LoadingSpinner />}
                 </div>
