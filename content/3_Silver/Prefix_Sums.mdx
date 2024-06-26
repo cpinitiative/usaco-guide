@@ -185,7 +185,6 @@ These are also known as
 ## Solution - Static Range Sum
 
 <LanguageSection>
-
 <CPPSection>
 
 In C++ we can use
@@ -223,7 +222,6 @@ int main() {
 ```
 
 </CPPSection>
-
 <JavaSection>
 
 ```java
@@ -269,10 +267,7 @@ public class Main {
 ```
 
 </JavaSection>
-
 <PySection>
-
-In Python you can use [itertools.accumulate](https://docs.python.org/3.6/library/itertools.html#itertools.accumulate). Note that you have to call list() since accumulate returns a [generator](https://wiki.python.org/moin/Generators). The first value returned is that of the  iterable passed, so we add a zero in the front (in newer versions you can give the optional parameter of initial=0).
 
 ```py
 # import itertools
@@ -281,8 +276,8 @@ In Python you can use [itertools.accumulate](https://docs.python.org/3.6/library
 def psum(a):
 	psum = [0]
 	for i in a:
-		psum.append(psum[-1] + i)  # psum[-1] is the last element in the list
-	return psum  # Or with itertools.accumulate: [0] + list(itertools.accumulate(a))
+		psum.append(psum[-1] + i)
+	return psum
 
 
 N, Q = map(int, input().split())
@@ -294,8 +289,31 @@ for i in range(Q):
 	print(p[r] - p[l])
 ```
 
-</PySection>
+An alternative approach is to use [`itertools.accumulate`](https://docs.python.org/3/library/itertools.html#itertools.accumulate).
 
+The first value returned is that of the iterable passed, so we add a zero in the front.
+Note that in newer versions you can give the optional parameter `initial=0`.
+
+```py
+import itertools
+
+
+def psum(a):
+	return [0] + list(itertools.accumulate(a))
+
+
+# BeginCodeSnip{Same code as above}
+N, Q = map(int, input().split())
+a = list(map(int, input().split()))
+p = psum(a)
+
+for i in range(Q):
+	l, r = map(int, input().split())
+	print(p[r] - p[l])
+# EndCodeSnip
+```
+
+</PySection>
 </LanguageSection>
 
 ## Problems
@@ -304,8 +322,8 @@ for i in range(Q):
 
 <Warning>
 
-"Haybale Stacking" isn't submittable on the USACO website. Use
-[this link](https://www.spoj.com/problems/HAYBALE/) to submit.
+"Haybale Stacking" isn't submittable on the USACO website;
+Use [this link](https://www.spoj.com/problems/HAYBALE/) to submit instead.
 
 </Warning>
 
