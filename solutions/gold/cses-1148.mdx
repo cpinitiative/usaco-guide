@@ -1,0 +1,109 @@
+---
+id: cses-1148
+source: CSES
+title: Maximum Building II
+author: Mihnea Brebenel
+prerequisites:
+  - prefix-sums
+---
+
+## Explanation
+
+Precompute $r_{i,j}$ as the maximum number of continuous free cells on line $i$ starting from $(i, j)$ to the right.
+Similarly to [Maximum Building I](https://cses.fi/problemset/task/1147) apply monotonic stacks to find:
+- $u_{i, j}$ , the last line above $i$ with cell $(x, j)$ such that $r_{x, j} > r_{i, j}$
+- $d_{i, j}$ , the last line under $i$ with cell $(y, j)$ such that $r_{y, j} \ge r_{i, j}$
+
+Using [prefix sums](/silver/more-prefix-sums#2d-prefix-sums) and [difference arrays](https://codeforces.com/blog/entry/78762) 
+we can efficiently update the answer matrix. Having $r_{i,j}$, $u_{i,j}$ and $d_{i,j}$ precomputed, we know the upperbound 
+and the lowerbound of the rectangle of of width $r_{i,j}$ i.e. how much it can expand above and below line $i$ maintaing width $r_{i, j}$. 
+We'll do difference arrays on each column independently. Accordingly, the updates of the answer matrix look like this:
+- $ans[1][r_{i,j}]++$
+- $ans[i - u_{i, j} + 2][r_{i,j}]--$ , the upperbound
+- $ans[d_{i,j} - i + 2][r_{i, j}]]--$ , the lowerbound
+- $ans[d_{i,j} - u_{i,j} + 3][r_{i,j}]++$
+
+Finally, add $ans[i][j]$ to $ans[i][j-1]$ i.e. a submatrix of size $i \times j$ contains a submatrix of size $i \times (j-1)$.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N \cdot M)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <stack>
+
+using namespace std;
+
+int main() { 
+	int n, m;
+	cin >> n >> m;
+	vector<vector<int>> r(n + 2, vector<int>(m + 2));
+	vector<vector<int>> u(n + 2, vector<int>(m + 2));
+	vector<vector<int>> d(n + 2, vector<int>(m + 2));
+	vector<vector<int>> ans(n + 3, vector<int>(m + 3));
+	vector<vector<char>> mat(n + 2, vector<char>(m + 2));
+	for(int i = 1; i <= n; i++) {
+		for(int j = 1; j <= m; j++) {
+			cin >> mat[i][j];
+		}
+		for(int j = m; j >= 1; j--) {
+			if(mat[i][j] == '*') {
+				r[i][j] = 0;
+			} else {
+				r[i][j] = r[i][j + 1] + 1;
+			}
+		}
+	}
+	stack<int> st;
+	for(int j = 1; j <= m; j++) {
+		while(!st.empty()) { st.pop(); }
+		for(int i = 1; i <= n; i++) {
+			while(!st.empty() && r[i][j] < r[st.top()][j]) { st.pop(); }
+			u[i][j] = st.empty() ? 1 : (st.top() + 1);
+			st.push(i);
+		}
+		while(!st.empty()) { st.pop(); }
+		for(int i = n; i >= 1; i--) {
+			while(!st.empty() && r[i][j] <= r[st.top()][j]) { st.pop(); }
+			d[i][j] = st.empty() ? n : (st.top() - 1);
+			st.push(i);
+		}
+	}
+	for(int i = 1; i <= n; i++) {
+		for(int j = 1; j <= m; j++) {
+			ans[1][r[i][j]]++;
+			ans[i - u[i][j] + 2][r[i][j]]--;
+			ans[d[i][j] - i + 2][r[i][j]]--;
+			ans[d[i][j] - u[i][j] + 3][r[i][j]]++;
+		}
+	}
+	for(int j = 1; j <= m; ++j) {
+		for(int i = 1; i <= n; ++i) {
+			ans[i][j] += ans[i - 1][j];
+		}
+		for(int i = 1; i <= n; ++i) {
+			ans[i][j] += ans[i - 1][j];
+		}
+	}
+	for(int i = n; i >= 1; --i) {
+		for(int j = m; j >= 2; --j) {
+		ans[i][j - 1] += ans[i][j];
+		}
+	}
+	for(int i = 1; i <= n; ++i) {
+		for(int j = 1; j <= m; ++j) {
+			cout << ans[i][j] << " ";
+		}
+		cout << '\n';
+	}
+}
+
+```
+
+</CPPSection>
+</LanguageSection>
