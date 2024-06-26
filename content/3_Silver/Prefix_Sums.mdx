@@ -185,7 +185,6 @@ These are also known as
 ## Solution - Static Range Sum
 
 <LanguageSection>
-
 <CPPSection>
 
 In C++ we can use
@@ -223,7 +222,6 @@ int main() {
 ```
 
 </CPPSection>
-
 <JavaSection>
 
 ```java
@@ -269,14 +267,13 @@ public class Main {
 ```
 
 </JavaSection>
-
 <PySection>
 
 ```py
 def psum(a):
 	psum = [0]
 	for i in a:
-		psum.append(psum[-1] + i)  # psum[-1] is the last element in the list
+		psum.append(psum[-1] + i)
 	return psum
 
 
@@ -289,8 +286,30 @@ for i in range(Q):
 	print(p[r] - p[l])
 ```
 
-</PySection>
+An alternative approach is to use [`itertools.accumulate`](https://docs.python.org/3/library/itertools.html#itertools.accumulate).
+Notice that we need to add a $0$ to the front of the array.
+If using a newer version, you can use the optional parameter `initial=0` as well.
 
+```py
+import itertools
+
+
+def psum(a):
+	return [0] + list(itertools.accumulate(a))
+
+
+# BeginCodeSnip{Same code as above}
+N, Q = map(int, input().split())
+a = list(map(int, input().split()))
+p = psum(a)
+
+for i in range(Q):
+	l, r = map(int, input().split())
+	print(p[r] - p[l])
+# EndCodeSnip
+```
+
+</PySection>
 </LanguageSection>
 
 ## Problems
@@ -299,8 +318,8 @@ for i in range(Q):
 
 <Warning>
 
-"Haybale Stacking" isn't submittable on the USACO website. Use
-[this link](https://www.spoj.com/problems/HAYBALE/) to submit.
+"Haybale Stacking" isn't submittable on the USACO website;
+Use [this link](https://www.spoj.com/problems/HAYBALE/) to submit instead.
 
 </Warning>
 
