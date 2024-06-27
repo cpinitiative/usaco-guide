@@ -20,10 +20,10 @@ i.e. how much it can expand above and below line $i$ maintaing width $r_{i, j}$.
 
 We'll do difference arrays on each column independently.
 Accordingly, the updates of the answer matrix look like this:
-- $\texttt{ans}[1][r_{i,j}]++$
-- $\texttt{ans}[i - u_{i, j} + 2][r_{i,j}]--$ , the upperbound
-- $\texttt{ans}[d_{i,j} - i + 2][r_{i, j}]]--$ , the lowerbound
-- $\texttt{ans}[d_{i,j} - u_{i,j} + 3][r_{i,j}]++$
+- increment $\texttt{ans}[1][r_{i,j}]$ by $1$
+- decrement $\texttt{ans}[i - u_{i, j} + 2][r_{i,j}]$ by $1$
+- decrement $\texttt{ans}[d_{i,j} - i + 2][r_{i, j}]]$ by $1$
+- increment $\texttt{ans}[d_{i,j} - u_{i,j} + 3][r_{i,j}]$ by $1$
 
 Finally, we add $ans[i][j]$ to $ans[i][j-1]$ i.e. a submatrix of size
 $i \times j$ contains a submatrix of size $i \times (j-1)$.
