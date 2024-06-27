@@ -654,7 +654,25 @@ for _ in range(query_num):
 
 ## Difference Arrays 
 
+<Resources>
+	<Resource source="Codeforces" title="An Introduction To Difference Arrays" starred />
+</Resources>
+
 <FocusProblem problem="sample3" />
+
+### Explanation
+
+We need to know how many times each operation is applied i.e. how many times is contained within a query interval.
+For this, maintain a frequency array $s$; $s[i]$ is the number of times operation $i$ is applied. The important
+step is how the frequency array is updated. Instead of iterationg through the interval $[l, r]$ and increase
+each value by $1$, which would result in $\mathcal{O}(K \cdot M)$ time complexity, we could just simply add $1$
+to $s[l]$, the left bound, and subtract $1$ from $s[r+1]$, the next cell after the right bound. After the queries,
+we obtain the frequency array by doing prefix sums on $s$, resulting in $\mathcal{O}(M)$ time complexity. The second part,
+applying the operatios, can be done exactly the same way. This technique is called difference array and has linear time complexity.
+
+### Implementation
+
+**Time Complexity:** $\mathcal{O}(N+M)$
 
 <LanguageSection>
 <CPPSection>
