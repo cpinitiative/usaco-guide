@@ -652,7 +652,7 @@ for _ in range(query_num):
 
 <Problems problems="cum2" hideSuggestProblemButton />
 
-## Difference Arrays 
+## Difference Arrays
 
 <Resources>
 	<Resource source="Codeforces" title="An Introduction To Difference Arrays" starred />
@@ -668,7 +668,7 @@ step is how the frequency array is updated. Instead of iterationg through the in
 each value by one, which would result in $\mathcal{O}(K \cdot M)$ time complexity, we could just increment
 $s[l]$ by one, the left bound, and decrement by one $s[r+1]$, the cell next to the right bound. After processing the queries
 we obtain the frequency array by doing prefix sums on $s$, resulting in $\mathcal{O}(M)$ time complexity. The second part,
-applying the operations, can be done exactly the same way. This technique is called difference array and has linear time complexity 
+applying the operations, can be done exactly the same way. This technique is called difference array and has linear time complexity
 coming from interating through the array for making prefix sums.
 
 ### Implementation
@@ -678,37 +678,35 @@ coming from interating through the array for making prefix sums.
 <LanguageSection>
 <CPPSection>
 
-```cpp 
+```cpp
 #include <iostream>
-#include <vector>
 #include <tuple>
+#include <vector>
 
 using namespace std;
 
-int main() { 
+int main() {
 	int n, m, k;
 	cin >> n >> m >> k;
 	vector<int> a(n + 1);
-	for(int i = 1; i <= n; i++) {
-		cin >> a[i];
-	}
+	for (int i = 1; i <= n; i++) { cin >> a[i]; }
 	vector<tuple<int, int, int>> updates(m);
-	for(tuple<int, int, int> &update : updates) {
+	for (tuple<int, int, int> &update : updates) {
 		cin >> get<0>(update) >> get<1>(update) >> get<2>(update);
 	}
 	vector<long long> s(m + 2, 0), add(n + 2, 0);
-	for(int i = 0; i < k; i++) {
+	for (int i = 0; i < k; i++) {
 		int x, y;
 		cin >> x >> y;
 		s[x]++;
 		s[y + 1]--;
 	}
-	for(int i = 1; i <= m; i++) {
+	for (int i = 1; i <= m; i++) {
 		s[i] += s[i - 1];
 		add[get<0>(updates[i - 1])] += s[i] * get<2>(updates[i - 1]);
 		add[get<1>(updates[i - 1]) + 1] -= s[i] * get<2>(updates[i - 1]);
 	}
-	for(int i = 1; i <= n; i++) {
+	for (int i = 1; i <= n; i++) {
 		add[i] += add[i - 1];
 		cout << a[i] + add[i] << ' ';
 	}
@@ -718,7 +716,7 @@ int main() {
 </CPPSection>
 </LanguageSection>
 
-### Problems 
+### Problems
 
 <Problems problems="difference-arrays-problemset" />
 
