@@ -1,0 +1,136 @@
+---
+id: cf-1254D
+source: CF
+title: Tree Queries
+author: Rameez Parwez
+---
+
+<LanguageSection>
+<CPPSection>
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N;
+struct Fenwick {
+
+    void add(int x, int y) {
+        while (x <= N) {
+            bit[x] = (bit[x] + y) % mod;
+            x += x & -x;
+        }
+    }
+
+    void add(int l, int r, int x) {
+        add(l + 1, x);
+        add(r + 1, P - x);
+    }
+
+    int get(int x) {
+        ++x;
+        int res = 0;
+        while (x > 0) {
+            res = (res + bit[x]) % mod;
+            x -= x & -x;
+        }
+        return res;
+    }
+};
+
+int power(int a, int b) {
+    int res = 1;
+    while (b) {
+        if (b & 1) {
+            res = 1LL * res * a % mod;
+        }
+        a = 1LL * a * a % mod;
+        b >>= 1;
+    }
+    return res;
+}
+
+void dfs_sz(int u) {
+    sz[u] = 1;
+    if (parent[u] != -1) {
+        e[u].erase(find(e[u].begin(), e[u].end(), parent[u]));
+    }
+
+    for (auto &v : e[u]) {
+        dep[v] = dep[u] + 1;
+        parent[v] = u;
+        dfs_sz(v);
+        sz[u] += sz[v];
+        if (sz[v] > sz[e[u][0]]) {
+            swap(v, e[u][0]);
+        }
+    }
+}
+
+void dfs_hld(int u) {
+    in[u] = dfs_now++;
+    for (auto v : e[u]) {
+        top[v] = (v == e[u][0] ? top[u] : v);
+        dfs_hld(v);
+    }
+    out[u] = dfs_now;
+}
+
+void modify(int v, int d) {
+    add(0, in[v], 1LL * d * sz[v] % mod);
+    add(out[v], n, 1LL * d * sz[v] % mod);
+    add(in[v], in[v] + 1, 1LL * d * n % mod);
+
+    if (!e[v].empty()) {
+        int u = e[v][0];
+        add(in[u], out[u], 1LL * d * (n - sz[u]) % mod);
+    }
+    sum[v] = (sum[v] + d) % mod;
+}
+
+int query(int v) {
+    int res = get(in[v]);
+    while (v != -1) {
+        v = top[v];
+        if (parent[v] != -1) {
+            res = (res + 1LL * sum[parent[v]] * (n - sz[v])) % mod;
+        }
+        v = parent[v];
+    }
+    return res;
+}
+
+int main() {
+    int n, q;
+    cin >> n >> q;
+    for (int i = 0; i < n - 1; i++) {
+        int u, v;
+        cin >> u >> v;
+        u--, v--;
+        e[u].push_back(v);
+        e[v].push_back(u);
+    }
+
+    parent[0] = -1;
+    dfs_sz(0);
+    dfs_hld(0);
+
+    int inv = power(n, mod - 2);
+    while (q--) {
+        int op;
+        cin >> op;
+        if (op == 1) {
+            int v, d;
+            cin >> v >> d;
+            --v;
+            modify(v, d);
+        } else {
+            int v;
+            cin >> v;
+            v--;
+            cout << 1LL * query(v) * inv % mod << '\n';
+        }
+    }
+}
+```
+</CPPSection>
+</LanguageSection>

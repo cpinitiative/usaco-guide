@@ -1,0 +1,110 @@
+---
+id: spoj-QueryOnATreeAgain
+source: SPOJ
+title: Query on a tree again!
+author: Rameez Parwez
+---
+
+<LanguageSection>
+<CPPSection>
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 100001;
+vector<int> adj[N];
+set<int> tree[N];
+
+int heavy[N], par[N], weight[N], pos[N], chain[N], head[N], chains, id;
+int color[N], arr[N];
+
+void dfsHeavy(int u) {
+    weight[u] = 1;
+    heavy[u] = -1;
+    for (int i = 0; i < (int)adj[u].size(); i++) {
+        int v = adj[u][i];
+        if (v != par[u]) {
+            par[v] = u;
+            dfsHeavy(v);
+            if (heavy[u] == -1 or weight[heavy[u]] < weight[v]) {
+                heavy[u] = v;
+            }
+            weight[u] += weight[v];
+        }
+    }
+}
+
+void dfsLight(int u) {
+    if (head[chains] == -1) {
+        tree[chains].clear();
+        head[chains] = u;
+    }
+
+    pos[u] = id;
+    chain[u] = chains;
+    arr[id++] = u;
+    if (heavy[u] != -1) {
+        dfsLight(heavy[u]);
+    }
+
+    for (int i = 0; i < adj[u].size(); i++) {
+        int v = adj[u][i];
+        if (v != par[u] && v != heavy[u]) {
+            chains++;
+            dfsLight(v);
+        }
+    }
+}
+
+void hld(int root, int n) {
+    for (int i = 0; i < n; i++) {
+        par[i] = head[i] = -1;
+    }
+    chains = 0;
+    id = 0;
+    dfsHeavy(root);
+    dfsLight(root);
+    chains++;
+}
+
+int query(int u) {
+    int ans = -1;
+    while (u != -1) {
+        if (!tree[chain[u]].empty() and *tree[chain[u]].begin() <= pos[u]) {
+            ans = arr[*tree[chain[u]].begin()] + 1;
+        }
+        u = par[head[chain[u]]];
+    }
+    return ans;
+}
+
+int main() {
+    int n, q;
+    cin >> n >> q;
+    for (int i = 1; i < n; i++) {
+        int a, b;
+        cin >> a >> b;
+        a--, b--;
+        adj[a].push_back(b);
+        adj[b].push_back(a);
+    }
+    
+    hld(0, n);
+    while (q--) {
+        int a, b;
+        cin >> a >> b;
+        b--;
+        if (a > 0) {
+            cout << query(b) << '\n';
+        }  else {
+            if (color[b] ^= 1) {
+                tree[chain[b]].insert(pos[b]);
+            } else {
+                tree[chain[b]].erase(pos[b]);
+            }
+        }
+    }
+}
+```
+</CPPSection>
+</LanguageSection>
