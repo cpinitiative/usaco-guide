@@ -1,7 +1,7 @@
 ---
 id: hld
 title: 'Heavy-Light Decomposition'
-author: Benjamin Qi, Andrew Cheng
+author: Benjamin Qi, Andrew Cheng, Rameez Parwez
 prerequisites:
   - tree-euler
   - RURQ
@@ -252,9 +252,8 @@ set problems where $\Theta(Q\sqrt N\log N)$ is intended ...
 	</Resource>
 </Resources>
 
-<IncompleteSection />
 
-## Heavy-Light Decomposition
+### Implementation 1 - Basic Heavy-Light Decomposition
 In practical implementation, HLD begins with representing the tree using adjacency lists or matrices `adj`, establishing parent-child relationships crucial for traversal and manipulation, and initializing several essential data structures. These include arrays for storing the parent of each node `par`, identifying the heavy child for each node `heavy`, storing the depth of each node `depth`, marking the root of the heavy path to which each node belongs `root`, and mapping nodes to their positions in the Segment Tree `pos`. Additionally, a [Segment Tree](https://usaco.guide/gold/PURS?lang=cpp) `st` is initialized to handle range maximum queries and point updates effectively.
 
 The next step involves performing a Depth-First Search (DFS) starting from the root node to calculate the size of each subtree. During this traversal, the heavy child for each node is identified as the child with the largest subtree size. This is crucial because heavy paths are constructed using these heavy children. The DFS also records the depth of each node and its parent, which are essential for the subsequent steps in the decomposition process.
@@ -391,7 +390,7 @@ struct Segtree  {
 </LanguageSection>
 </Spoiler>
 
-## Heavy-Light Decomposition with Subtree Queries
+### Implementation 2 - Heavy-Light Decomposition with Subtree Queries
 If we conduct an Euler tour of the tree, prioritizing the visit to the heavy child first, we continue to depict heavy paths as uninterrupted segments within the array. This approach preserves the fundamental property that a subtree remains a contiguous segment within the array, which is the essence of the Euler tour. By recording the exit time of each node, we can efficiently query subtrees as well. This method can be complemented with a lazy segment tree to facilitate updates and queries on subtrees and paths.
 
 Let's understand this with the help of a problem.
@@ -621,3 +620,4 @@ int main() {
 [this link](https://www.acmicpc.net/problem/5916) to submit.
 
 </Warning>
+

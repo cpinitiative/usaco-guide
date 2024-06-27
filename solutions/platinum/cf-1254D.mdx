@@ -5,37 +5,45 @@ title: Tree Queries
 author: Rameez Parwez
 ---
 
+## Explanation
+
+We can solve this problem using Heavy-Light Decomposition (HLD) combined with a Fenwick Tree (BIT). The tree is first decomposed into heavy and light edges, and then each node's size and depth are calculated. The HLD allows efficient range updates and queries within subtrees. When updating a node, contributions are added using the BIT, ensuring $\mathcal{O} (\log N)$ complexity per update. Queries compute the expected value by aggregating contributions from light vertices and iterating over heavy vertices.
+
+## Implementation
+
 <LanguageSection>
 <CPPSection>
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
 
-const int N;
-struct Fenwick {
+const int N = 150001, mod = 998244353;
+vector<int> adj[N], sum(N);
+vector<int> top(N), in(N), parent(N), depth(N), out(N), sz(N);
+int T, n, q;
 
-    void add(int x, int y) {
-        while (x <= N) {
-            bit[x] = (bit[x] + y) % mod;
-            x += x & -x;
-        }
+vector<int> bit(N);
+void add(int x, int y) {
+    while (x <= N) {
+        bit[x] = (bit[x] + y) % mod;
+        x += x & -x;
     }
+}
 
-    void add(int l, int r, int x) {
-        add(l + 1, x);
-        add(r + 1, P - x);
-    }
+void add(int l, int r, int x) {
+    add(l + 1, x);
+    add(r + 1, mod - x);
+}
 
-    int get(int x) {
-        ++x;
-        int res = 0;
-        while (x > 0) {
-            res = (res + bit[x]) % mod;
-            x -= x & -x;
-        }
-        return res;
+int get(int x) {
+    ++x;
+    int res = 0;
+    while (x > 0) {
+        res = (res + bit[x]) % mod;
+        x -= x & -x;
     }
-};
+    return res;
+}
 
 int power(int a, int b) {
     int res = 1;
@@ -49,30 +57,33 @@ int power(int a, int b) {
     return res;
 }
 
+// DFS to calculate subtree sizes and prepare for HLD
 void dfs_sz(int u) {
     sz[u] = 1;
     if (parent[u] != -1) {
-        e[u].erase(find(e[u].begin(), e[u].end(), parent[u]));
+        adj[u].erase(find(adj[u].begin(), adj[u].end(), parent[u]));
     }
 
-    for (auto &v : e[u]) {
-        dep[v] = dep[u] + 1;
+    for (auto &v : adj[u]) {
+        depth[v] = depth[u] + 1;
         parent[v] = u;
         dfs_sz(v);
         sz[u] += sz[v];
-        if (sz[v] > sz[e[u][0]]) {
-            swap(v, e[u][0]);
+        // Ensuring heavy child is the first child
+        if (sz[v] > sz[adj[u][0]]) {
+            swap(v, adj[u][0]);
         }
     }
 }
 
+// DFS to assign in and out times for HLD
 void dfs_hld(int u) {
-    in[u] = dfs_now++;
-    for (auto v : e[u]) {
-        top[v] = (v == e[u][0] ? top[u] : v);
+    in[u] = T++;
+    for (auto v : adj[u]) {
+        top[v] = (v == adj[u][0] ? top[u] : v);
         dfs_hld(v);
     }
-    out[u] = dfs_now;
+    out[u] = T;
 }
 
 void modify(int v, int d) {
@@ -80,8 +91,8 @@ void modify(int v, int d) {
     add(out[v], n, 1LL * d * sz[v] % mod);
     add(in[v], in[v] + 1, 1LL * d * n % mod);
 
-    if (!e[v].empty()) {
-        int u = e[v][0];
+    if (!adj[v].empty()) {
+        int u = adj[v][0];
         add(in[u], out[u], 1LL * d * (n - sz[u]) % mod);
     }
     sum[v] = (sum[v] + d) % mod;
@@ -100,14 +111,13 @@ int query(int v) {
 }
 
 int main() {
-    int n, q;
     cin >> n >> q;
     for (int i = 0; i < n - 1; i++) {
         int u, v;
         cin >> u >> v;
         u--, v--;
-        e[u].push_back(v);
-        e[v].push_back(u);
+        adj[u].push_back(v);
+        adj[v].push_back(u);
     }
 
     parent[0] = -1;
@@ -131,6 +141,7 @@ int main() {
         }
     }
 }
+
 ```
 </CPPSection>
 </LanguageSection>
