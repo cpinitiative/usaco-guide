@@ -660,7 +660,40 @@ for _ in range(query_num):
 <CPPSection>
 
 ```cpp 
+#include <iostream>
+#include <vector>
+#include <tuple>
 
+using namespace std;
+
+int main() { 
+	int n, m, k;
+	cin >> n >> m >> k;
+	vector<int> a(n + 1);
+	for(int i = 1; i <= n; i++) {
+		cin >> a[i];
+	}
+	vector<tuple<int, int, int>> updates(m);
+	for(tuple<int, int, int> &update : updates) {
+		cin >> get<0>(update) >> get<1>(update) >> get<2>(update);
+	}
+	vector<long long> s(m + 2, 0), add(n + 2, 0);
+	for(int i = 0; i < k; i++) {
+		int x, y;
+		cin >> x >> y;
+		s[x]++;
+		s[y + 1]--;
+	}
+	for(int i = 1; i <= m; i++) {
+		s[i] += s[i - 1];
+		add[get<0>(updates[i - 1])] += s[i] * get<2>(updates[i - 1]);
+		add[get<1>(updates[i - 1]) + 1] -= s[i] * get<2>(updates[i - 1]);
+	}
+	for(int i = 1; i <= n; i++) {
+		add[i] += add[i - 1];
+		cout << a[i] + add[i] << ' ';
+	}
+}
 ```
 
 </CPPSection>
