@@ -12,16 +12,21 @@ Similarly to [Maximum Building I](https://cses.fi/problemset/task/1147) apply mo
 - $u_{i, j}$ , the last line above $i$ with cell $(x, j)$ such that $r_{x, j} > r_{i, j}$
 - $d_{i, j}$ , the last line under $i$ with cell $(y, j)$ such that $r_{y, j} \ge r_{i, j}$
 
-Using [prefix sums](/silver/more-prefix-sums#2d-prefix-sums) and [difference arrays](https://codeforces.com/blog/entry/78762)
-we can efficiently update the answer matrix. Having $r_{i,j}$, $u_{i,j}$ and $d_{i,j}$ precomputed, we know the upperbound
-and the lowerbound of the rectangle of width $r_{i,j}$ i.e. how much it can expand above and below line $i$ maintaing width $r_{i, j}$.
-We'll do difference arrays on each column independently. Accordingly, the updates of the answer matrix look like this:
+We can efficiently update the answer matrix with [prefix sums](/silver/more-prefix-sums#2d-prefix-sums)
+and [difference arrays](https://codeforces.com/blog/entry/78762).
+Having $r_{i,j}$, $u_{i,j}$ and $d_{i,j}$ precomputed, we know the upper bound
+and the lower bound of the rectangle of width $r_{i,j}$,
+i.e. how much it can expand above and below line $i$ maintaing width $r_{i, j}$.
+
+We'll do difference arrays on each column independently.
+Accordingly, the updates of the answer matrix look like this:
 - $ans[1][r_{i,j}]++$
 - $ans[i - u_{i, j} + 2][r_{i,j}]--$ , the upperbound
 - $ans[d_{i,j} - i + 2][r_{i, j}]]--$ , the lowerbound
 - $ans[d_{i,j} - u_{i,j} + 3][r_{i,j}]++$
 
-Finally, add $ans[i][j]$ to $ans[i][j-1]$ i.e. a submatrix of size $i \times j$ contains a submatrix of size $i \times (j-1)$.
+Finally, we add $ans[i][j]$ to $ans[i][j-1]$ i.e. a submatrix of size
+$i \times j$ contains a submatrix of size $i \times (j-1)$.
 
 ## Implementation
 
@@ -55,6 +60,7 @@ int main() {
 			}
 		}
 	}
+
 	stack<int> st;
 	// Precompute u[i][j] and d[i][j]
 	for (int j = 1; j <= m; j++) {
@@ -71,6 +77,7 @@ int main() {
 			st.push(i);
 		}
 	}
+
 	// Make difference array on each column independently
 	for (int i = 1; i <= n; i++) {
 		for (int j = 1; j <= m; j++) {
@@ -87,6 +94,7 @@ int main() {
 	for (int i = n; i >= 1; --i) {
 		for (int j = m; j >= 2; --j) { ans[i][j - 1] += ans[i][j]; }
 	}
+
 	for (int i = 1; i <= n; ++i) {
 		for (int j = 1; j <= m; ++j) { cout << ans[i][j] << " "; }
 		cout << '\n';
