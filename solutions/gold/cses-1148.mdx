@@ -7,10 +7,11 @@ author: Mihnea Brebenel
 
 ## Explanation
 
-Precompute $r_{i,j}$ as the maximum number of continuous free cells on line $i$ starting from $(i, j)$ to the right.
-Similarly to [Maximum Building I](https://cses.fi/problemset/task/1147) apply monotonic stacks to find:
-- $u_{i, j}$ , the last line above $i$ with cell $(x, j)$ such that $r_{x, j} > r_{i, j}$
-- $d_{i, j}$ , the last line under $i$ with cell $(y, j)$ such that $r_{y, j} \ge r_{i, j}$
+Let $r_{i,j}$ be the maximum number of continuous free cells on line $i$ starting from $(i, j)$ to the right.
+This can be precomputed.
+Similarly to [Maximum Building I](https://cses.fi/problemset/task/1147), we can also apply monotonic stacks to find
+1. $u_{i, j}$, the last line above $i$ with cell $(x, j)$ such that $r_{x, j} > r_{i, j}$
+2. $d_{i, j}$, the last line under $i$ with cell $(y, j)$ such that $r_{y, j} \ge r_{i, j}$
 
 We can efficiently update the answer matrix with [prefix sums](/silver/more-prefix-sums#2d-prefix-sums)
 and [difference arrays](https://codeforces.com/blog/entry/78762).
