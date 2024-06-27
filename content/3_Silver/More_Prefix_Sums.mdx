@@ -662,14 +662,14 @@ for _ in range(query_num):
 
 ### Explanation
 
-We need to know how many times each operation is applied i.e. how many times is contained within a query interval.
+We need to know how many times each operation is applied, i.e. how many times is contained within a query interval.
 For this, maintain a frequency array $s$; $s[i]$ is the number of times operation $i$ is applied. The important
-step is how the frequency array is updated. Instead of iterationg through the interval $[l, r]$ and incrementing
+step is how the frequency array is updated. Instead of iterating through the interval $[l, r]$ and incrementing
 each value by one, which would result in $\mathcal{O}(K \cdot M)$ time complexity, we could just increment
 $s[l]$ by one, the left bound, and decrement by one $s[r+1]$, the cell next to the right bound. After processing the queries
 we obtain the frequency array by doing prefix sums on $s$, resulting in $\mathcal{O}(M)$ time complexity. The second part,
 applying the operations, can be done exactly the same way. This technique is called difference array and has linear time complexity
-coming from interating through the array for making prefix sums.
+coming from iterating through the array for making prefix sums.
 
 ### Implementation
 
