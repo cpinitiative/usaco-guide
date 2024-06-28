@@ -270,75 +270,69 @@ Updating the value of a node in HLD is straightforward. The corresponding positi
 <CPPSection>
 ```cpp
 struct HLD {
-    int n;
-    vector<int> par, heavy, depth, root, pos;
-    Segtree st;
+	int n;
+	vector<int> par, heavy, depth, root, pos;
+	Segtree st;
 
 	// dfs of the tree
-    int dfs(int u, int p, vector<vector<int>> &adj) {
-        int sz = 1, m = 0;
-        for (auto v : adj[u]) {
-            if (v == p) {
-                continue;
-            }
-            depth[v] = depth[u] + 1;
-            par[v] = u;
-            int t = dfs(v, u, adj);
-            if (t > m) {
-                heavy[u] = v;
-            }
-            sz += t;
-        }
-        return sz;
-    }
+	int dfs(int u, int p, vector<vector<int>> &adj) {
+		int sz = 1, m = 0;
+		for (auto v : adj[u]) {
+			if (v == p) { continue; }
+			depth[v] = depth[u] + 1;
+			par[v] = u;
+			int t = dfs(v, u, adj);
+			if (t > m) { heavy[u] = v; }
+			sz += t;
+		}
+		return sz;
+	}
 
 	// construncting the heavy paths
-/**
-We iterate through all the nodes. If a node is not the heavy child of another node, then the edge to its parent is a light edge, making the node the root of a heavy path. We then continue descending to the heavy children until we reach a leaf. This guarantees that all heavy paths are continuous segments of the array.
-**/
-    HLD(int n, vector<int> &v, vector<vector<int>> &adj) {
-        this->n = n;
-        heavy.assign(n + 1, 0);
-        depth.assign(n + 1, 0);
-        root.assign(n + 1, 0);
-        pos.assign(n + 1, 0);
-        par.assign(n + 1, 0);
-        par[1] = 1;
-        dfs(1, 1, adj);
-        vector<int> a;
-        for (int i = 1, t = 1; i <= n; ++i) {
-            if (i == 1 or heavy[par[i]] != i) {
-                for (int j = i; j; j = heavy[j]) {
-                    root[j] = i;
-                    pos[j] = t++;
-                    a.push_back(v[j]); 
-                }
-            }
-        }
-        st.init(n, a);
-    }
+	/**
+	We iterate through all the nodes. If a node is not the heavy child of
+	another node, then the edge to its parent is a light edge, making the node
+	the root of a heavy path. We then continue descending to the heavy children
+	until we reach a leaf. This guarantees that all heavy paths are continuous
+	segments of the array.
+	**/
+	HLD(int n, vector<int> &v, vector<vector<int>> &adj) {
+		this->n = n;
+		heavy.assign(n + 1, 0);
+		depth.assign(n + 1, 0);
+		root.assign(n + 1, 0);
+		pos.assign(n + 1, 0);
+		par.assign(n + 1, 0);
+		par[1] = 1;
+		dfs(1, 1, adj);
+		vector<int> a;
+		for (int i = 1, t = 1; i <= n; ++i) {
+			if (i == 1 or heavy[par[i]] != i) {
+				for (int j = i; j; j = heavy[j]) {
+					root[j] = i;
+					pos[j] = t++;
+					a.push_back(v[j]);
+				}
+			}
+		}
+		st.init(n, a);
+	}
 
 	// path queries
-    int query(int a, int b) {
-        int s = 0;
-        while (root[a] != root[b]) {
-            if (depth[root[a]] > depth[root[b]]) {
-                swap(a, b);
-            }
-            s = max(s, st.query(pos[root[b]], pos[b]));
-            b = par[root[b]];
-        }
-        if (depth[a] > depth[b]) {
-            swap(a, b);
-        }
-        s = max(s, st.query(pos[a], pos[b]));
-        return s;
-    }
+	int query(int a, int b) {
+		int s = 0;
+		while (root[a] != root[b]) {
+			if (depth[root[a]] > depth[root[b]]) { swap(a, b); }
+			s = max(s, st.query(pos[root[b]], pos[b]));
+			b = par[root[b]];
+		}
+		if (depth[a] > depth[b]) { swap(a, b); }
+		s = max(s, st.query(pos[a], pos[b]));
+		return s;
+	}
 
 	// update queries
-    void update(int n, int v) {
-        st.update(pos[n], v);
-    }
+	void update(int n, int v) { st.update(pos[n], v); }
 };
 ```
 </CPPSection>
@@ -348,42 +342,36 @@ We iterate through all the nodes. If a node is not the heavy child of another no
 <LanguageSection>
 <CPPSection>
 ```cpp
-struct Segtree  {
-    int n;
-    vector<int> st;
+struct Segtree {
+	int n;
+	vector<int> st;
 
-    void init(int a, vector<int> &v) {
-        n = a;
-        st.assign(2 * n, 0);
-        for (int i = n; i < 2 * n; ++i) {
-            st[i] = v[i - n];
-        }
-        for (int i = n - 1; i > 0; --i) {
-            st[i] = max(st[2 * i], st[2 * i + 1]);
-        }
-    }
+	void init(int a, vector<int> &v) {
+		n = a;
+		st.assign(2 * n, 0);
+		for (int i = n; i < 2 * n; ++i) { st[i] = v[i - n]; }
+		for (int i = n - 1; i > 0; --i) {
+			st[i] = max(st[2 * i], st[2 * i + 1]);
+		}
+	}
 
-    int query(int a, int b) {
-        int s = 0;
-        a += n - 1;
-        b += n - 1;
-        while (a <= b) {
-            if (a % 2 == 1) {
-                s = max(s, st[a++]);
-            }
-            if (b % 2 == 0) {
-                s = max(s, st[b--]);
-            }
-            a /= 2, b /= 2;
-        }
-        return s;
-    }
+	int query(int a, int b) {
+		int s = 0;
+		a += n - 1;
+		b += n - 1;
+		while (a <= b) {
+			if (a % 2 == 1) { s = max(s, st[a++]); }
+			if (b % 2 == 0) { s = max(s, st[b--]); }
+			a /= 2, b /= 2;
+		}
+		return s;
+	}
 
-    void update(int p, int v) {
-        for (st[p += n - 1] = v; p > 1; p /= 2) {
-            st[p / 2] = max(st[p], st[p ^ 1]);
-        }
-    }
+	void update(int p, int v) {
+		for (st[p += n - 1] = v; p > 1; p /= 2) {
+			st[p / 2] = max(st[p], st[p ^ 1]);
+		}
+	}
 };
 ```
 </CPPSection>
@@ -415,76 +403,64 @@ using namespace std;
 const int N = 1e5 + 9, LG = 18, inf = 1e9 + 9;
 // BeginCodeSnip{Lazy Segment Tree}
 struct LST {
-    #define lc (n << 1)
-    #define rc ((n << 1) | 1)
-    int t[4 * N], lazy[4 * N];
+#define lc (n << 1)
+#define rc ((n << 1) | 1)
+	int t[4 * N], lazy[4 * N];
 
-    LST() {
-        fill(t, t + 4 * N, -inf);
-        fill(lazy, lazy + 4 * N, 0);
-    }
-    
-    inline void push(int n, int b, int e) {
-        if (lazy[n] == 0) {
-            return;
-        }
-        t[n] = t[n] + lazy[n];
-        if (b != e) {
-            lazy[lc] = lazy[lc] + lazy[n];
-            lazy[rc] = lazy[rc] + lazy[n];
-        }
-        lazy[n] = 0;
-    }
+	LST() {
+		fill(t, t + 4 * N, -inf);
+		fill(lazy, lazy + 4 * N, 0);
+	}
 
-    inline int combine(int a, int b) {
-        return max(a, b);
-    }
+	inline void push(int n, int b, int e) {
+		if (lazy[n] == 0) { return; }
+		t[n] = t[n] + lazy[n];
+		if (b != e) {
+			lazy[lc] = lazy[lc] + lazy[n];
+			lazy[rc] = lazy[rc] + lazy[n];
+		}
+		lazy[n] = 0;
+	}
 
-    inline void pull(int n) {
-        t[n] = max(t[lc], t[rc]);
-    }
+	inline int combine(int a, int b) { return max(a, b); }
 
-    void build(int n, int b, int e) {
-        if (b == e) {
-            t[n] = 0;
-            return;
-        }
+	inline void pull(int n) { t[n] = max(t[lc], t[rc]); }
 
-        int mid = (b + e) >> 1;
-        build(lc, b, mid);
-        build(rc, mid + 1, e);
-        pull(n);
-    }
+	void build(int n, int b, int e) {
+		if (b == e) {
+			t[n] = 0;
+			return;
+		}
 
-    void upd(int n, int b, int e, int i, int j, int v) {
-        push(n, b, e);
-        if (j < b or e < i) {
-            return;
-        }
+		int mid = (b + e) >> 1;
+		build(lc, b, mid);
+		build(rc, mid + 1, e);
+		pull(n);
+	}
 
-        if (i <= b and e <= j) {
-            lazy[n] += v;
-            push(n, b, e);
-            return;
-        }
+	void upd(int n, int b, int e, int i, int j, int v) {
+		push(n, b, e);
+		if (j < b or e < i) { return; }
 
-        int mid = (b + e) >> 1;
-        upd(lc, b, mid, i, j, v);
-        upd(rc, mid + 1, e, i, j, v);
-        pull(n);
-    }
+		if (i <= b and e <= j) {
+			lazy[n] += v;
+			push(n, b, e);
+			return;
+		}
 
-    int query(int n, int b, int e, int i, int j) {
-        push(n, b, e);
-        if (i > e or b > j) {
-            return -inf;
-        }
-        if (i <= b and e <= j) {
-            return t[n];
-        }
-        int mid = (b + e) >> 1;
-        return combine(query(lc, b, mid, i, j), query(rc, mid + 1, e, i, j));
-    }
+		int mid = (b + e) >> 1;
+		upd(lc, b, mid, i, j, v);
+		upd(rc, mid + 1, e, i, j, v);
+		pull(n);
+	}
+
+	int query(int n, int b, int e, int i, int j) {
+		push(n, b, e);
+		if (i > e or b > j) { return -inf; }
+		if (i <= b and e <= j) { return t[n]; }
+		int mid = (b + e) >> 1;
+		return combine(query(lc, b, mid, i, j), query(rc, mid + 1, e, i, j));
+	}
 } lseg;
 // EndCodeSnip
 
@@ -492,120 +468,102 @@ vector<int> adj[N];
 int par[N][LG + 1], dep[N], sz[N];
 
 void dfs_sz(int u, int p = 0) {
-    par[u][0] = p;
-    dep[u] = dep[p] + 1;
-    sz[u] = 1;
-    for (int i = 1; i <= LG; i++) {
-        par[u][i] = par[par[u][i - 1]][i - 1];
-    }
-    if (p) {
-        adj[u].erase(find(adj[u].begin(), adj[u].end(), p));
-    }
+	par[u][0] = p;
+	dep[u] = dep[p] + 1;
+	sz[u] = 1;
+	for (int i = 1; i <= LG; i++) { par[u][i] = par[par[u][i - 1]][i - 1]; }
+	if (p) { adj[u].erase(find(adj[u].begin(), adj[u].end(), p)); }
 
-    for (auto &v : adj[u]) {
-        if (v != p) {
-            dfs_sz(v, u);
-            sz[u] += sz[v];
-            if (sz[v] > sz[adj[u][0]]) {
-                swap(v, adj[u][0]);
-            }
-        }
-    }
+	for (auto &v : adj[u]) {
+		if (v != p) {
+			dfs_sz(v, u);
+			sz[u] += sz[v];
+			if (sz[v] > sz[adj[u][0]]) { swap(v, adj[u][0]); }
+		}
+	}
 }
 
 int lca(int u, int v) {
-    if (dep[u] < dep[v]) {
-        swap(u, v);
-    }
-    for (int k = LG; k >= 0; k--) {
-        if (dep[par[u][k]] >= dep[v]) {
-            u = par[u][k];
-        }
-    }
+	if (dep[u] < dep[v]) { swap(u, v); }
+	for (int k = LG; k >= 0; k--) {
+		if (dep[par[u][k]] >= dep[v]) { u = par[u][k]; }
+	}
 
-    if (u == v) {
-        return u;
-    }
+	if (u == v) { return u; }
 
-    for (int k = LG; k >= 0; k--) {
-        if (par[u][k] != par[v][k]) {
-            u = par[u][k];
-            v = par[v][k];
-        }
-    }
-    return par[u][0];
+	for (int k = LG; k >= 0; k--) {
+		if (par[u][k] != par[v][k]) {
+			u = par[u][k];
+			v = par[v][k];
+		}
+	}
+	return par[u][0];
 }
 
 int kth(int u, int k) {
-    assert(k >= 0);
-    for (int i = 0; i <= LG; i++) {
-        if (k & (1 << i)) {
-            u = par[u][i];
-        }
-    }
-    return u;
+	assert(k >= 0);
+	for (int i = 0; i <= LG; i++) {
+		if (k & (1 << i)) { u = par[u][i]; }
+	}
+	return u;
 }
 
 int T, head[N], st[N], en[N];
 int n;
 void dfs_hld(int u) {
-    st[u] = ++T;
-    for (auto v : adj[u]) {
-        head[v] = (v == adj[u][0] ? head[u] : v);
-        dfs_hld(v);
-    }
-    en[u] = T;
+	st[u] = ++T;
+	for (auto v : adj[u]) {
+		head[v] = (v == adj[u][0] ? head[u] : v);
+		dfs_hld(v);
+	}
+	en[u] = T;
 }
 
 int query_up(int u, int v) {
-    int res = -inf;
-    while (head[u] != head[v]) {
-        res = max(res, lseg.query(1, 1, n, st[head[u]], st[u]));
-        u = par[head[u]][0];
-    }
-    res = max(res, lseg.query(1, 1, n, st[v], st[u]));
-    return res;
+	int res = -inf;
+	while (head[u] != head[v]) {
+		res = max(res, lseg.query(1, 1, n, st[head[u]], st[u]));
+		u = par[head[u]][0];
+	}
+	res = max(res, lseg.query(1, 1, n, st[v], st[u]));
+	return res;
 }
 
 int query(int u, int v) {
-    int l = lca(u, v);
-    int res = query_up(u, l);
-    if (v != l) {
-        res = max(res, query_up(v, kth(v, dep[v] - dep[l] - 1)));
-    }
+	int l = lca(u, v);
+	int res = query_up(u, l);
+	if (v != l) { res = max(res, query_up(v, kth(v, dep[v] - dep[l] - 1))); }
 
-    return res;
+	return res;
 }
 
 int main() {
-    cin >> n;
-    for (int i = 1; i < n; i++) {
-        int u, v;
-        cin >> u >> v;
-        adj[u].push_back(v);
-        adj[v].push_back(u);
-    }
-    dfs_sz(1);
-    head[1] = 1;
-    dfs_hld(1);
+	cin >> n;
+	for (int i = 1; i < n; i++) {
+		int u, v;
+		cin >> u >> v;
+		adj[u].push_back(v);
+		adj[v].push_back(u);
+	}
+	dfs_sz(1);
+	head[1] = 1;
+	dfs_hld(1);
 
-    int q;
-    cin >> q;
-    lseg.build(1, 1, n);
-    while (q--) {
-        string type;
-        int u, v;
-        cin >> type >> u >> v;
-        if (type == "add") {
-            lseg.upd(1, 1, n, st[u], en[u], v);
-        } else {
-            cout << query(u, v) << '\n';
-        }
-    }
-    return 0;
+	int q;
+	cin >> q;
+	lseg.build(1, 1, n);
+	while (q--) {
+		string type;
+		int u, v;
+		cin >> type >> u >> v;
+		if (type == "add") {
+			lseg.upd(1, 1, n, st[u], en[u], v);
+		} else {
+			cout << query(u, v) << '\n';
+		}
+	}
+	return 0;
 }
-
-
 ```
 </CPPSection>
 </LanguageSection>
@@ -620,4 +578,3 @@ int main() {
 [this link](https://www.acmicpc.net/problem/5916) to submit.
 
 </Warning>
-

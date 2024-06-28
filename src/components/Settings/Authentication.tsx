@@ -98,7 +98,7 @@ export default function Authentication() {
                 </svg>
                 <div className="min-w-0 flex-1 text-sm">
                   <label className="font-medium text-gray-700 dark:text-gray-100">
-                    Github
+                    GitHub
                   </label>
                 </div>
                 <div className="ml-3 flex items-center h-5">

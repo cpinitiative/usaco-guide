@@ -22,125 +22,112 @@ During queries, the segment tree uses the start and end indices of the nodes to 
 #include <bits/stdc++.h>
 using namespace std;
 #define int long long
- 
+
 // BeginCodeSnip{Segment Tree}
 struct segment_tree {
-    int sz;
-    vector<pair<int, int>> sum;
-    void init(int n) {
-        sz = 1;
-        while (sz < n) {
-            sz *= 2;
-        }
-        sum.assign(2 * sz, {0, 0});
-    }
- 
-    void build(vector<pair<int, int>> &a) {
-        build(a, 0, 0, sz);
-    }
- 
-    void build(vector<pair<int, int>> &a, int x, int lb, int hb) {
-        if (hb - lb == 1) {
-            if (lb < (int)a.size()) {
-                sum[x] = {a[lb].first, a[lb].second};
-            }
-            return;
-        }   
- 
-        int mid = (lb + hb) >> 1;
-        build(a, 2 * x + 1, lb, mid);
-        build(a, 2 * x + 2, mid, hb);
- 
-        if (sum[2 * x + 1].first < sum[2 * x + 2].first) {
-            sum[x] = sum[2 * x + 1];
-        } else {
-            sum[x] = sum[2 * x + 2];
-        }
-    }
- 
-    pair<int, int> query(int l, int r) {
-        return query(l, r, 0, 0, sz);
-    }
- 
-    pair<int, int> query(int l, int r, int x, int lb, int hb) {
-        if (r <= lb or hb <= l) {
-            return {1000000000,1000000000};
-        }
-        if (l <= lb and hb <= r) {
-            return sum[x];
-        }
- 
-        int mid = (lb + hb) >> 1;
-        pair<int, int> p1 = query(l, r, 2 * x + 1, lb, mid);
-        pair<int, int> p2 = query(l, r, 2 * x + 2, mid, hb);
- 
-        return (p1.first < p2.first ? p1 : p2);
-    }
+	int sz;
+	vector<pair<int, int>> sum;
+	void init(int n) {
+		sz = 1;
+		while (sz < n) { sz *= 2; }
+		sum.assign(2 * sz, {0, 0});
+	}
+
+	void build(vector<pair<int, int>> &a) { build(a, 0, 0, sz); }
+
+	void build(vector<pair<int, int>> &a, int x, int lb, int hb) {
+		if (hb - lb == 1) {
+			if (lb < (int)a.size()) { sum[x] = {a[lb].first, a[lb].second}; }
+			return;
+		}
+
+		int mid = (lb + hb) >> 1;
+		build(a, 2 * x + 1, lb, mid);
+		build(a, 2 * x + 2, mid, hb);
+
+		if (sum[2 * x + 1].first < sum[2 * x + 2].first) {
+			sum[x] = sum[2 * x + 1];
+		} else {
+			sum[x] = sum[2 * x + 2];
+		}
+	}
+
+	pair<int, int> query(int l, int r) { return query(l, r, 0, 0, sz); }
+
+	pair<int, int> query(int l, int r, int x, int lb, int hb) {
+		if (r <= lb or hb <= l) { return {1000000000, 1000000000}; }
+		if (l <= lb and hb <= r) { return sum[x]; }
+
+		int mid = (lb + hb) >> 1;
+		pair<int, int> p1 = query(l, r, 2 * x + 1, lb, mid);
+		pair<int, int> p2 = query(l, r, 2 * x + 2, mid, hb);
+
+		return (p1.first < p2.first ? p1 : p2);
+	}
 };
 // EndCodeSnip{}
 
 const int N = 200005;
-vector<int> adj[N], order;  
+vector<int> adj[N], order;
 int start[N], sz[N], depth[N], vis[N];
- 
+
 void dfs(int x) {
-    vis[x] = true;
-    order.push_back(x);
-    start[x] = (int)order.size() - 1;
-    sz[x] = 1;
-    for (auto v : adj[x]) {
-        if (!vis[v]) {
-            depth[v] = depth[x] + 1;
-            dfs(v);
-            order.push_back(x);
-            sz[x] += sz[v];
-        }
-    }
-}
- 
-int32_t main() {
-    ios_base :: sync_with_stdio(false);
-    cin.tie(nullptr);
-    cout.tie(0);
-    cin.exceptions(ios :: badbit | ios :: failbit);
-    int n, q;
-    cin >> n >> q;
-    segment_tree st;
-    st.init(2 * n - 1);
- 
-    for (int i = 2; i <= n; i++) {
-        int u;
-        cin >> u;
-        adj[u].push_back(i);
-        adj[i].push_back(u);
-    }
- 
-    depth[1] = 0;
-    dfs(1);
-    vector<pair<int, int>> a;
-    for (int i = 0; i < (int)order.size(); i++) {
-        a.push_back({depth[order[i]], order[i]});
-    }
- 
-    st.build(a);
-    while (q--) {
-        int a, b;
-        cin >> a >> b;
- 
-        int l, r;
-        if (start[a] < start[b]) {
-            l = start[a];
-            r = start[b];
-        } else {
-            r = start[a];
-            l = start[b];
-        }
- 
-        pair<int, int> res = st.query(l, r + 1);
-        cout << res.second << '\n';
-    }
+	vis[x] = true;
+	order.push_back(x);
+	start[x] = (int)order.size() - 1;
+	sz[x] = 1;
+	for (auto v : adj[x]) {
+		if (!vis[v]) {
+			depth[v] = depth[x] + 1;
+			dfs(v);
+			order.push_back(x);
+			sz[x] += sz[v];
+		}
+	}
 }
 
+int32_t main() {
+	ios_base ::sync_with_stdio(false);
+	cin.tie(nullptr);
+	cout.tie(0);
+	cin.exceptions(ios ::badbit | ios ::failbit);
+	int n, q;
+	cin >> n >> q;
+	segment_tree st;
+	st.init(2 * n - 1);
+
+	for (int i = 2; i <= n; i++) {
+		int u;
+		cin >> u;
+		adj[u].push_back(i);
+		adj[i].push_back(u);
+	}
+
+	depth[1] = 0;
+	dfs(1);
+	vector<pair<int, int>> a;
+	for (int i = 0; i < (int)order.size(); i++) {
+		a.push_back({depth[order[i]], order[i]});
+	}
+
+	st.build(a);
+	while (q--) {
+		int a, b;
+		cin >> a >> b;
+
+		int l, r;
+		if (start[a] < start[b]) {
+			l = start[a];
+			r = start[b];
+		} else {
+			r = start[a];
+			l = start[b];
+		}
+
+		pair<int, int> res = st.query(l, r + 1);
+		cout << res.second << '\n';
+	}
+}
 ```
 </CPPSection>
 </LanguageSection>
