@@ -2,7 +2,7 @@
 id: cf-1914C
 source: CF
 title: Quests
-author: Chu Minjae
+author: Chu Minjae, Ankit Seth
 ---
 
 ## Explanation
@@ -51,4 +51,99 @@ int main() {
 ```
 
 </CPPSection>
+<PySection>
+
+```py
+def main():
+    import sys
+    input = sys.stdin.read
+    data = input().split()
+    
+    index = 0
+    test_num = int(data[index])
+    index += 1
+    results = []
+    
+    for _ in range(test_num):
+        n = int(data[index])
+        k = int(data[index + 1])
+        index += 2
+
+        a = list(map(int, data[index:index + n]))
+        b = list(map(int, data[index + n:index + 2 * n]))
+        index += 2 * n
+        
+        best_second = b[0]
+        first_total = a[0]
+        max_score = a[0] + best_second * (k - 1)
+        
+        for z in range(1, min(n, k)):
+            best_second = max(best_second, b[z])
+			# compare experience point of completing one more quest or not
+            if max_score < first_total + a[z] + best_second * (k - z - 1):
+                max_score = first_total + a[z] + best_second * (k - z - 1)
+            first_total += a[z]
+        
+        results.append(max_score)
+    
+    for result in results:
+        print(result)
+
+if __name__ == "__main__":
+    main()
+```
+</PySection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Main {
+    public static void main(String[] args) throws IOException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        PrintWriter writer = new PrintWriter(new BufferedOutputStream(System.out));
+        
+        int test_num = Integer.parseInt(reader.readLine());
+        
+        for (int t = 0; t < test_num; t++) {
+            String[] nk = reader.readLine().split(" ");
+            int n = Integer.parseInt(nk[0]);
+            int k = Integer.parseInt(nk[1]);
+            
+            int[] a = new int[n];
+            int[] b = new int[n];
+            
+            String[] a_values = reader.readLine().split(" ");
+            String[] b_values = reader.readLine().split(" ");
+            
+            for (int x = 0; x < n; x++) {
+                a[x] = Integer.parseInt(a_values[x]);
+            }
+            for (int y = 0; y < n; y++) {
+                b[y] = Integer.parseInt(b_values[y]);
+            }
+            
+            int best_second = b[0];
+            int first_total = a[0];
+            int max_score = a[0] + best_second * (k - 1);
+            
+            for (int z = 1; z < Math.min(n, k); z++) {
+                best_second = Math.max(best_second, b[z]);
+				// compare experience point of completing one more quest or not
+                if (max_score < first_total + a[z] + best_second * (k - z - 1)) {
+                    max_score = first_total + a[z] + best_second * (k - z - 1);
+                }
+                first_total += a[z];
+            }
+            
+            writer.println(max_score);
+        }
+        
+        writer.close();
+        reader.close();
+    }
+}
+```
+</JavaSection>
 </LanguageSection>
