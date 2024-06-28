@@ -44,82 +44,89 @@ frequency: 0
 
 ### Rules
 
-Nim might be one of the most well-known examples in game theory.
-In this game there are considered $n$ piles of some item.
-The problem uses sticks, while some others use stones; we'll be using sticks to stay
-consistent with the CSES problem.
-Regardless, players take turns removing a nonzero number of sticks from a certain pile,
-and the player who takes the last stick wins.
+Nim might be one of the most well-known examples in game theory. In this game
+there are considered $n$ piles of some item. The problem uses sticks, while some
+others use stones; we'll be using sticks to stay consistent with the CSES
+problem. Regardless, players take turns removing a nonzero number of sticks from
+a certain pile, and the player who takes the last stick wins.
 
-Let's represent the current state of the piles with $[x_1, x_2, x_3, \ldots, x_n]$,
-where $x_i$ is the number of sticks in pile $i$.
-You'll soon see that it doesn't matter whether we include empty piles in our array.
+Let's represent the current state of the piles with
+$[x_1, x_2, x_3, \ldots, x_n]$, where $x_i$ is the number of sticks in pile $i$.
+You'll soon see that it doesn't matter whether we include empty piles in our
+array.
 
 We now propose something that may seem unintuitive at first:
 
-> The player who moves first can always win if the xor-sum of the sizes of the piles is nonzero.
+> The player who moves first can always win if the xor-sum of the sizes of the
+> piles is nonzero.
 
 ### Proof
 
-For our own sanity, we'll refer to a state with a xor-sum of 0 as a "losing state"
-and a state with a nonzero xor-sum as a "winning state."
+For our own sanity, we'll refer to a state with a xor-sum of 0 as a "losing
+state" and a state with a nonzero xor-sum as a "winning state."
 
-To prove this, we have to show that from a losing state, any move we make
-will result in a winning state and vice versa.
-Notice that when we make our move, the game switches to a "sub-game" of sorts
-where the second player becomes the first player.
-Thus, moving to a winning state for the next turn means that they win and we lose.
+To prove this, we have to show that from a losing state, any move we make will
+result in a winning state and vice versa. Notice that when we make our move, the
+game switches to a "sub-game" of sorts where the second player becomes the first
+player. Thus, moving to a winning state for the next turn means that they win
+and we lose.
 
-However, it's probably good to prove our base cases first.
-$[0]$ is a losing state, since the first player can't make any moves and thus loses.
-On the other hand, $[x]$ where $x$ is any positive integer is a winning state since
-we can take $x$ sticks from the only pile.
-As we can see, the first state has a xor-sum of $0$ while the second has a xor-sum of $x$ which is nonzero.
+However, it's probably good to prove our base cases first. $[0]$ is a losing
+state, since the first player can't make any moves and thus loses. On the other
+hand, $[x]$ where $x$ is any positive integer is a winning state since we can
+take $x$ sticks from the only pile. As we can see, the first state has a xor-sum
+of $0$ while the second has a xor-sum of $x$ which is nonzero.
 
 #### Losing $\rightarrow$ Winning
 
-Let's first prove that any losing state will move to a winning state for the other player.
+Let's first prove that any losing state will move to a winning state for the
+other player.
 
-Since XOR is a commutative and associative operation, we can assume WLOG that the move we make is on pile $1$.
+Since XOR is a commutative and associative operation, we can assume WLOG that
+the move we make is on pile $1$.
 
-The current xor-sum of the state is $x_1 \oplus x_2 \oplus \cdots x_n=0$.
-Notice that this can be thought of $x_1$ XOR the xor-sum of the rest of the numbers.
+The current xor-sum of the state is $x_1 \oplus x_2 \oplus \cdots x_n=0$. Notice
+that this can be thought of $x_1$ XOR the xor-sum of the rest of the numbers.
 Let's call that xor-sum of everything else $y$.
 
-Since the xor-sum is $0$, $x_1=y$.
-Removing any number of sticks from $x_1$ will break this equality and turn
-$x_1 \oplus y$ nonzero, which is precisely the definition for our winning state.
+Since the xor-sum is $0$, $x_1=y$. Removing any number of sticks from $x_1$ will
+break this equality and turn $x_1 \oplus y$ nonzero, which is precisely the
+definition for our winning state.
 
 #### Winning $\rightarrow$ Losing
 
-Now we have to prove that any *winning* state can move to a losing state for the other player.
-Notice the use of *can* instead of *will* in our statement due to how these games work.
+Now we have to prove that any _winning_ state can move to a losing state for the
+other player. Notice the use of _can_ instead of _will_ in our statement due to
+how these games work.
 
-This time, let's define $y$ as the xor-sum of *all* the piles instead of all except for one.
-Then, say we have an $x_i$ such that $x_i > y \oplus x_i$.
-Note that $y \oplus x_i$ is the xor-sum of all the other elements, since XOR is its own inverse.
+This time, let's define $y$ as the xor-sum of _all_ the piles instead of all
+except for one. Then, say we have an $x_i$ such that $x_i > y \oplus x_i$. Note
+that $y \oplus x_i$ is the xor-sum of all the other elements, since XOR is its
+own inverse.
 
-With this, we can take $x_i - (y \oplus x_i)$ sticks from $x_i$, then makes it equivalent to $y \oplus x_i$
-and the xor-sum of the whole board will be $0$, thus forming a losing state for the second player.
+With this, we can take $x_i - (y \oplus x_i)$ sticks from $x_i$, then makes it
+equivalent to $y \oplus x_i$ and the xor-sum of the whole board will be $0$,
+thus forming a losing state for the second player.
 
-But all of this hinges on the existence of an $x_i$ such that $x_i > y \oplus x_i$.
-Does it *always* exist?
+But all of this hinges on the existence of an $x_i$ such that
+$x_i > y \oplus x_i$. Does it _always_ exist?
 
-Suppose that $p$ is the position of the most significant bit in $y$.
-Then, we know that there must exist some $x_i$ with a set bit at $p$ as well.
-Whether $p$ is the most significant bit in $x_i$ or not, XOR-ing the two gives
-a result with a $0$ at bit $p$.
-This then guarantees that there exists an $x_i > y \oplus x_i$.
+Suppose that $p$ is the position of the most significant bit in $y$. Then, we
+know that there must exist some $x_i$ with a set bit at $p$ as well. Whether $p$
+is the most significant bit in $x_i$ or not, XOR-ing the two gives a result with
+a $0$ at bit $p$. This then guarantees that there exists an
+$x_i > y \oplus x_i$.
 
 <center>
 
-| Variable | Value |
-|------|------|
-| $y$    | `0...01?...?` |
-| $x_i$ | `?...?1?...?` |
+| Variable       | Value         |
+| -------------- | ------------- |
+| $y$            | `0...01?...?` |
+| $x_i$          | `?...?1?...?` |
 | $y \oplus x_i$ | `?...?0?...?` |
 
-*Since the first part of $y$ is all `0`s, the first parts of $x_i$ and $y \oplus x_i$ are the same.*
+_Since the first part of $y$ is all `0`s, the first parts of $x_i$ and
+$y \oplus x_i$ are the same._
 
 </center>
 
@@ -206,8 +213,8 @@ for _ in range(int(input())):
 <Optional title="What if we could add?">
 
 In some cases, players may be allowed to add sticks as well as remove them.
-Funnily enough, this doesn't change how the winning and losing states are determined,
-i.e. the outcome of the game.
+Funnily enough, this doesn't change how the winning and losing states are
+determined, i.e. the outcome of the game.
 
 </Optional>
 
@@ -226,34 +233,40 @@ i.e. the outcome of the game.
 	/>
 </Resources>
 
-Before we get into this theorem, we first have to define what "nimbers" (sometimes referred to as "grundy values") are.
-Each nimber — say 0, 3, or 4 — represents a one-pile game of Nim
-with that many stones.
-Notice that for any positive nimber, the first player always wins since they can take all the stones from the pile and leave none for the second.
-On the other hand, the nimber 0 is a losing state, since the first player can't take any more stones.
+Before we get into this theorem, we first have to define what "nimbers"
+(sometimes referred to as "grundy values") are. Each nimber — say 0, 3, or 4 —
+represents a one-pile game of Nim with that many stones. Notice that for any
+positive nimber, the first player always wins since they can take all the stones
+from the pile and leave none for the second. On the other hand, the nimber 0 is
+a losing state, since the first player can't take any more stones.
 
-What the [Sprague-Grundy theorem](https://en.wikipedia.org/wiki/Sprague%E2%80%93Grundy_theorem)
+What the
+[Sprague-Grundy theorem](https://en.wikipedia.org/wiki/Sprague%E2%80%93Grundy_theorem)
 allows us to do is to reduce the state of certain types of games into a nimber.
 
-The way we do this is with a recursive definition.
-If we can compute the nimbers of all states $r_i$ reachable from a certain state $s$, then $s$ itself can be reduced to the nimber
+The way we do this is with a recursive definition. If we can compute the nimbers
+of all states $r_i$ reachable from a certain state $s$, then $s$ itself can be
+reduced to the nimber
 
 $$
 n(s)=\text{mex}(r_1, r_2, \cdots, r_k)
 $$
 
-For convenience, we have defined $n$ as the function that reduces game states to nimbers.
+For convenience, we have defined $n$ as the function that reduces game states to
+nimbers.
 
-The $\text{mex}$ function takes a list of numbers and returns the biggest non-negative integer that is *not* included in the list.
-Notice that the name is a portmanteau of "max" and "excluded".
+The $\text{mex}$ function takes a list of numbers and returns the biggest
+non-negative integer that is _not_ included in the list. Notice that the name is
+a portmanteau of "max" and "excluded".
 
 ### One-pile Example
 
-Let's take a look at an altered version case of Nim.
-Here's there's only one pile, but each player can only remove 1, 2, or 3 stones.
+Let's take a look at an altered version case of Nim. Here's there's only one
+pile, but each player can only remove 1, 2, or 3 stones.
 
-According to the theorem, the nimber value is the $\text{mex}$ of the reachable nimber value.
-In the case of this game, each state can reach the previous $3$ values because we can only remove 1, 2 or 3 stones in one move.
+According to the theorem, the nimber value is the $\text{mex}$ of the reachable
+nimber value. In the case of this game, each state can reach the previous $3$
+values because we can only remove 1, 2 or 3 stones in one move.
 
 Here's how the values are computed:
 
@@ -272,38 +285,38 @@ Here's the table of nimber values:
 
 ![Nimber table](./assets/nim.png)
 
-All nimber reductions that are equal to 0 are losing states; see $n(0)$ and $n(4)$.
+All nimber reductions that are equal to 0 are losing states; see $n(0)$ and
+$n(4)$.
 
-Recall that a winning state means that you can put the other player in a losing state.
-On the other hand, a losing state means that every move results in a winning state for the opponent.
-For example, $n(4)=0$ because $1$, $2$, and $3$ are winning.
-Similarly, $n(8) = 0$, because we can't reach $4$ in a single move.
+Recall that a winning state means that you can put the other player in a losing
+state. On the other hand, a losing state means that every move results in a
+winning state for the opponent. For example, $n(4)=0$ because $1$, $2$, and $3$
+are winning. Similarly, $n(8) = 0$, because we can't reach $4$ in a single move.
 
 ### Multiple-pile Example
 
 How about we try reducing multiple-pile Nim games with this theorem?
 
-We know that a state is a losing state if the xor-sum is 0.
-This matches up exactly with how our nimbers work, as the 0
-nimber represents a losing state.
+We know that a state is a losing state if the xor-sum is 0. This matches up
+exactly with how our nimbers work, as the 0 nimber represents a losing state.
 
-Thus, to reduce a Nim game of multiple piles to a nimber,
-we can take the xor-sum of the nimbers of the single piles.
-Notice that the nimber of only one pile is the size of the pile.
+Thus, to reduce a Nim game of multiple piles to a nimber, we can take the
+xor-sum of the nimbers of the single piles. Notice that the nimber of only one
+pile is the size of the pile.
 
 This is
 [equivalent to the formula using mex](https://en.wikipedia.org/wiki/Nimber#Addition),
-but a proof of that is beyond the scope of this module.
-We merely try to give some intuition for why this is true.
+but a proof of that is beyond the scope of this module. We merely try to give
+some intuition for why this is true.
 
 $$
 n([p_1, \cdots, p_n])=\bigoplus_{i=1}^n n(p_i)
 $$
 
-This xor-sum reduction can be extended to more things than just Nim.
-If we can decompose a game into multiple disjoint parts where
-one player makes a chooses a subgame then makes a move,
-then the nimbers of these games can be combined with the xor-sum.
+This xor-sum reduction can be extended to more things than just Nim. If we can
+decompose a game into multiple disjoint parts where one player makes a chooses a
+subgame then makes a move, then the nimbers of these games can be combined with
+the xor-sum.
 
 ## Applications
 
@@ -313,7 +326,8 @@ then the nimbers of these games can be combined with the xor-sum.
 
 #### Explanation
 
-We can compute the nimber values of each pile with the mex definition and then combine them using the XOR operator.
+We can compute the nimber values of each pile with the mex definition and then
+combine them using the XOR operator.
 
 #### Implementation
 
@@ -415,13 +429,15 @@ print("".join(wins))
 
 #### Explanation
 
-Here we see a case of using the xor-sum to combine things that aren't straight Nim games.
+Here we see a case of using the xor-sum to combine things that aren't straight
+Nim games.
 
-In this problem, we can decompose each game into a bunch of subgames, where each subgame is a single coin.
-Players choose the subgame (coin) and then make a move.
+In this problem, we can decompose each game into a bunch of subgames, where each
+subgame is a single coin. Players choose the subgame (coin) and then make a
+move.
 
-We first apply the mex formula to calculate nimbers for individual
-coins, and then combine them at the end with a xor-sum
+We first apply the mex formula to calculate nimbers for individual coins, and
+then combine them at the end with a xor-sum
 
 #### Implementation
 
@@ -510,85 +526,6 @@ for _ in range(int(input())):
 		coin_xor ^= nimber(r, c)
 
 	print("Second" if coin_xor == 0 else "First")
-```
-
-</PySection>
-</LanguageSection>
-
-### Strange Nim
-
-<FocusProblem problem="strange-nim" />
-
-#### Explanation
-
-Sometimes, we have to make a clever observation or two to be able to apply the formula in a feasible manner.
-These observations may involve periodicity or special cases, and the latter is what we'll use.
-
-Let $g(n, k)$ be the nimber value for a particular pile with $n$ stones and an associated integer of $k$.
-Notice the two following things:
-
-1. $g(n, k) = n/k \iff k \mid n$ which can be inferred from the fact that the preceding values of $g(n, k)$:
-$g(n-\frac{n}{k}, k), g(n-\frac{n}{k}+1){k}, \ldots, g(n-1, k)$ form, not necessarily continuously, the increasing sequence: $0, 1, 2, \ldots, \frac{n-k}{k}$.
-Consequently, taking $\text{mex}$ of these values results exactly in $\frac{n}{k}$.
-
-2. $g(n, k) = g(n - \lfloor n/k \rfloor - 1, k)$; it can be seen as a [sliding window](/gold/sliding-window) on the nimber values. Any window of length $g(\frac{n}{k},k)$ with the right boundary in the range $[n-\frac{n}{k},n)$ will encompass the values: $1, 2, \ldots, \frac{n-k}{k}$.
-
-#### Implementation
-
-<LanguageSection>
-<CPPSection>
-
-```cpp
-#include <iostream>
-
-using std::cout;
-using std::endl;
-
-int nimber(int n, int k) {
-	if (n % k == 0) { return n / k; }
-	int d = n / k + 1;
-	return nimber(n - (n % k + d - 1) / d * d, k);
-}
-
-int main() {
-	int pile_num;
-	std::cin >> pile_num;
-	int xor_sum = 0;
-	for (int p = 0; p < pile_num; p++) {
-		int n;
-		int k;
-		std::cin >> n >> k;
-		xor_sum ^= nimber(n, k);
-	}
-
-	cout << (xor_sum == 0 ? "Aoki" : "Takahashi") << endl;
-}
-```
-
-</CPPSection>
-<PySection>
-
-```py
-from sys import setrecursionlimit
-
-setrecursionlimit(10**5)
-
-
-def nimber(n: int, k: int) -> int:
-	"""This is what we referred to as g in the explanation."""
-	if n % k == 0:
-		return n // k
-
-	d = n // k + 1
-	return nimber(n - (n % k + d - 1) // d * d, k)
-
-
-xor_sum = 0
-for _ in range(int(input())):
-	n, k = [int(i) for i in input().split()]
-	xor_sum ^= nimber(n, k)
-
-print("Aoki" if xor_sum == 0 else "Takahashi")
 ```
 
 </PySection>
