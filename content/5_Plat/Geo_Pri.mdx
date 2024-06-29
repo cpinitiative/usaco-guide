@@ -8,7 +8,48 @@ frequency: 1
 
 You should know operations such as the cross product and dot product.
 
-# Location of a point
+<Resources>
+	<Resource source="CF" title="C++ - std::complex" url="22175" starred>
+		short description of operations
+	</Resource>
+	<Resource source="CPH" title="29 - Geometry" starred>
+		Complex #s, Points & Lines, Polygons, Distances
+	</Resource>
+	<Resource source="CF" title="Point Struct" url="48122" starred>
+		code, examples
+	</Resource>
+	<Resource
+		source="cp-algo"
+		title="Geometry - Elementary Operations"
+		url="https://cp-algorithms.com/"
+		starred
+	 />
+	<Resource source="CPC" title="12 - geometry" url="12_geometry" starred>
+		basics, polygon area, point in polygon
+	</Resource>
+	<Resource
+		source="CF"
+		title="vlecomte - Geometry Handbook"
+		url="59129"
+		starred
+	>
+		some material is quite advanced
+	</Resource>
+	<Resource source="CP2" title="7.2, 7.3 - Basic Geo, Polygons"/>
+</Resources>
+
+<!-- 	<Resource
+		source="TC"
+		title="Basic Geometry Concepts Pts 1,2"
+		url="geometry-concepts-basic-concepts"
+	>
+		broken code format
+	</Resource> -->
+
+- [My Templates](<https://github.com/bqi343/USACO/tree/master/Implementations/content/geometry%20(13)/Primitives>)
+
+# Location of a Point
+
 <FocusProblem problem="pointlocationtest" />
 
 ## Explanation
@@ -79,10 +120,12 @@ int main() {
 </CPPSection>
 </LanguageSection>
 
-# Segment intersection
+# Segment Intersection
+
 <FocusProblem problem="line" />
 
 ## Explanation
+
 We can quickly dismiss the segment intersection by treating them as rectangles having the segments as diagonals which can be easily done.
 If it turns out the rectangles intersect then we just check if the segment's ends are on different sides of the other segment.
 
@@ -164,13 +207,13 @@ int main() {
 </CPPSection>
 </LanguageSection>
 
-# Polygon area
+# Polygon Area
 
 <FocusProblem problem="polygon" />
 
 ## Explanation
 
-The following algorithm uses the [Shoelace formula](https://en.wikipedia.org/wiki/Shoelace_formula).
+We can use the [Shoelace formula](https://en.wikipedia.org/wiki/Shoelace_formula).
 
 ## Implementation
 
@@ -212,7 +255,7 @@ int main() {
 </CPPSection>
 </LanguageSection>
 
-# Point's location relative to polygon
+# Point's Location Relative to Polygon
 
 <FocusProblem problem="polygon2" />
 
@@ -325,6 +368,7 @@ $A$ can be computed using cross-product.
 
 <LanguageSection>
 <CPPSection>
+
 ```cpp
 #include <bits/stdc++.h>
 
@@ -365,52 +409,11 @@ int main() {
 	cout << interior_points << ' ' << boundary_points;
 }
 ```
+
 </CPPSection>
 </LanguageSection>
 
 <Problems problems="standard" />
-
-## Resources
-
-<Resources>
-	<Resource source="CF" title="C++ - std::complex" url="22175" starred>
-		short description of operations
-	</Resource>
-	<Resource source="CPH" title="29 - Geometry" starred>
-		Complex #s, Points & Lines, Polygons, Distances
-	</Resource>
-	<Resource source="CF" title="Point Struct" url="48122" starred>
-		code, examples
-	</Resource>
-	<Resource
-		source="cp-algo"
-		title="Geometry - Elementary Operations"
-		url="https://cp-algorithms.com/"
-		starred
-	 />
-	<Resource source="CPC" title="12 - geometry" url="12_geometry" starred>
-		basics, polygon area, point in polygon
-	</Resource>
-	<Resource
-		source="CF"
-		title="vlecomte - Geometry Handbook"
-		url="59129"
-		starred
-	>
-		some material is quite advanced
-	</Resource>
-	<Resource source="CP2" title="7.2, 7.3 - Basic Geo, Polygons"/>
-</Resources>
-
-<!-- 	<Resource
-		source="TC"
-		title="Basic Geometry Concepts Pts 1,2"
-		url="geometry-concepts-basic-concepts"
-	>
-		broken code format
-	</Resource> -->
-
-- [My Templates](<https://github.com/bqi343/USACO/tree/master/Implementations/content/geometry%20(13)/Primitives>)
 
 # Angles
 
@@ -456,12 +459,14 @@ class Solution {
 			// Take the arctg in radians
 			angles.push_back(atan2(p[1] - location[1], p[0] - location[0]));
 		}
+
 		// Sort agngles
 		sort(angles.begin(), angles.end());
 		// Duplicate the array and add 2*PI to the angles
 		for (int i = 0; i < (int)points.size(); i++) {
 			angles.push_back(angles[i] + 2 * M_PI);
 		}
+
 		int ans = 0;
 		double angle_radians = M_PI * angle / 180;
 		// Sliding window
@@ -470,6 +475,7 @@ class Solution {
 			while (angles[r] - angles[l] > angle_radians) { l++; }
 			ans = max(ans, r - l + 1);
 		}
+
 		return ans + extra;
 	}
 };
