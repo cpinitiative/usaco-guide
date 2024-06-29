@@ -29,9 +29,11 @@ strongly connected component. We can compute these components using either
 </Resources>
 
 ## Explanation
-Kosaraju's algorithm is an efficient method for finding the strongly connected components (SCCs) of a directed grpahs. The algorithm works in two main phase. In first phase, it performs the DFS on the original graphs $G$ and record the exit time (i.e. reversed topological sort of graph $G$).
+Kosaraju's algorithm is an efficient method for finding the strongly connected components (SCCs) of a directed grpahs. The algorithm works in two main phase. In the first phase, it performs a DFS on the original graph to determine the exit times of vertices (i.e. topological sort). The vertices are pushed onto a stack as they finish processing. This ensures that when we process nodes later, we process them in decreasing order of their finish times. The idea here is to capture the order in which nodes should be processed to identify the SCCs effectively.
 
-In the second phase, the graph is transposed, meaning all the edges are reversed. A new DFS is performed, but this time it processes nodes in the order defined by the topological sort from the first phase. By reversing the edges and processing nodes in this specific order, each DFS run in this phase will identify all vertices of one SCC before moving to the next SCC. This is because in the transposed graph, the SCCs are still strongly connected, and the exit times help in isolating them during the DFS.
+In the second phase, the DFS is performed on the transposed graph, but this time it processes nodes in the order defined by the stack from the first phase. By reversing the edges and processing nodes in this specific order, each DFS run in this phase will identify all vertices of one SCC before moving to the next SCC.
+
+Please refer to the [this](https://www.topcoder.com/thrive/articles/kosarajus-algorithm-for-strongly-connected-components) pictorial representation for clarity.
 
 ## Implementation
 
