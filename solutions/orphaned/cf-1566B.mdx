@@ -7,8 +7,7 @@ author: Ryan Chou
 
 [Official Editorial](https://codeforces.com/blog/entry/94803)
 
-
-# Explanation
+## Explanation
 
 Since the MEX can be at most 2 when there is a substring that contains a 0 and 1, there's only 3 possible cases. If there are no zeros, then the MEX is 0, since all substrings would be missing a 0.  If all zeros are adjacent to one another, we can cut the entire sequence out, leaving a MEX of 1. The other groups, all comprised of ones would have a MEX of 0. Leaving the answer to be $max(0, 1) = 1$. Lastly, if there are zeros and they're not adjacent to one another, then a substring like ${0, 1}$ must exist, resulting in a MEX of 2.
 
@@ -33,74 +32,66 @@ int main() {
 		// find the number of zeros
 		int zeros = count(s.begin(), s.end(), '0');
 
-		// no zeros, the answer is 0
 		if (zeros == 0) {
-			cout << 0 << endl;
+			cout << 0 << endl;  // no zeros, the answer is 0
 		} else {
 			// first and last occurences of zero
 			int l = s.find('0');
 			int r = s.rfind('0');
-
-			// if they're all adjacent to one another.
+			// if they're all adjacent to one another
 			cout << ((r - l + 1 == zeros) ? 1 : 2) << endl;
 		}
 	}
 }
 ```
-</CPPSection>
 
+</CPPSection>
 <JavaSection>
 
 ```java
-
 import java.io.*;
-import java.util.*;
 
-public class Mex {
-	public static void main(String[] args) {
-		Kattio io = new Kattio();
-		int t = io.nextInt();
-		while (t-- > 0) {
-			String s = io.next();
-			int zero = 0;
-			for (char ch : s.toCharArray()) {
-				if (ch == '0') zero++;
-			}
-
-			if (zero == 0) {
-				io.println(0);
-				continue;
-			}
-
-			int first = s.indexOf('0');
-			int last = s.lastIndexOf('0');
-
-			if ((last - first + 1) == zero) io.println(1);
-			else io.println(2);
-		}
-		io.close();
-	}
-	// CodeSnip{Kattio}
+public class MinMexCut {
+    public static void main(String[] args) throws IOException {
+        BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
+        int t = Integer.parseInt(read.readLine());
+        for (int i = 0; i < t; i++) {
+            String s = read.readLine();
+            // find the number of zeros
+            int zeros = s.length() - s.replace("0", "").length();
+            
+            if (zeros == 0) {
+                System.out.println(0);  // no zeros, the answer is 0
+            } else {
+                // first and last occurences of zero
+                int l = s.indexOf('0');
+                int r = s.lastIndexOf('0');
+                // if they're all adjacent to one another
+                System.out.println((r - l + 1 == zeros) ? 1 : 2);
+            }
+        }
+    }
 }
 ```
 
 </JavaSection>
-
-
 <PySection>
 
 ```py
 for _ in range(int(input())):
 	s = input()
+	# find the number of zeros
 	zeros = s.count("0")
 
 	if zeros == 0:
-		print(0)
+		print(0)  # no zeros, the answer is 0
 	else:
+		# first and last occurences of zero
 		l = s.find("0")
 		r = s.rfind("0")
-
+		# if they're all adjacent to one another
 		print(1 if r - l + 1 == zeros else 2)
 ```
+
 </PySection>
 </LanguageSection>
