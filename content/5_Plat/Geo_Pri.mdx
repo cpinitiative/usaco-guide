@@ -403,7 +403,7 @@ int main() {
 
 - [My Templates](<https://github.com/bqi343/USACO/tree/master/Implementations/content/geometry%20(13)/Primitives>)
 
-## Angles 
+## Angles
 
 ### Maximum Number of Visible Points
 
@@ -411,8 +411,8 @@ int main() {
 
 Working with angles only makes sense in the context of lines and segments. Therefore, let's consider the segments
 connecting the initial position and each dot: $(pos_x, pos_y)-(x, y)$. One such segment is inside the field of
-view if and only if it's slope is bigger than the lower bound and smaller than the upper bound. Since we're 
-working with angles, we'll convert the slopes into radians. 
+view if and only if it's slope is bigger than the lower bound and smaller than the upper bound. Since we're
+working with angles, we'll convert the slopes into radians.
 
 Consider $\alpha$ as the angle formed by one line with the $\texttt{ox}$ axis. Then we have:
 $$
@@ -421,25 +421,26 @@ $$
 $$
 
 The movement of the field of view can be seen as a [sliding window](/gold/sliding-window) applied
-on the sorted angles of the points. The angle of the field of vies could be large enough to see 
+on the sorted angles of the points. The angle of the field of vies could be large enough to see
 points from the beginning of the sorted array, thus the array of angles should be duplicated - cyclic array.
 
-#### Implementation 
+#### Implementation
 
 **Time Complexity:** $\mathcal{O}(N)$
 
 <LanguageSection>
 <CPPSection>
 
-```cpp 
+```cpp
 class Solution {
-public:
-    int visiblePoints(vector<vector<int>>& points, int angle, vector<int>& location) {
-        int cnt = 0;
+  public:
+	int visiblePoints(vector<vector<int>> &points, int angle,
+	                  vector<int> &location) {
+		int cnt = 0;
 		vector<double> angles;
-		for(const vector<int> &p : points) {
+		for (const vector<int> &p : points) {
 			// Ignore points identical to location
-			if(p == location) {
+			if (p == location) {
 				cnt++;
 				continue;
 			}
@@ -449,21 +450,19 @@ public:
 		// Sort agngles
 		sort(angles.begin(), angles.end());
 		// Duplicate the array and add 2*PI to the angles
-		for(int i = 0; i < (int)points.size(); i++) {
+		for (int i = 0; i < (int)points.size(); i++) {
 			angles.push_back(angles[i] + 2 * M_PI);
 		}
 		int ans = 0;
 		double angle_radians = M_PI * angle / 180;
 		// Sliding window
-		for(int r = 0, l = 0; r < (int)angles.size(); r++) {
+		for (int r = 0, l = 0; r < (int)angles.size(); r++) {
 			// Pop all the points out of the field of view
-			while(angles[r] - angles[l] > angle_radians) {
-				l++;
-			}
+			while (angles[r] - angles[l] > angle_radians) { l++; }
 			ans = max(ans, r - l + 1);
 		}
 		return ans + cnt;
-    }
+	}
 };
 ```
 
