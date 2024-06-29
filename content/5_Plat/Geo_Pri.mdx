@@ -405,12 +405,17 @@ int main() {
 
 ## Radians and Angles
 
+<FocusProblem problem="radians" />
 
-<FocusProblem problem="" />
+
+
+The movement of the field of view can be seen as a [sliding window](/gold/sliding-window) applied
+on the sorted angles of the points.
 
 #### Implementation 
 
 **Time Complexity:** $\mathcal{O}()$
+
 <LanguageSection>
 <CPPSection>
 
@@ -433,7 +438,9 @@ public:
 		}
 		int ans = 0;
 		double angle_radians = M_PI * angle / 180;
+		// Sliding window
 		for(int r = 0, l = 0; r < (int)angles.size(); r++) {
+			// Pop all the points out of the field of view
 			while(angles[r] - angles[l] > angle_radians) {
 				l++;
 			}
