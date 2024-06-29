@@ -256,15 +256,13 @@ set problems where $\Theta(Q\sqrt N\log N)$ is intended ...
 ### Implementation 1 - Basic Heavy-Light Decomposition
 In practical implementation, HLD begins with representing the tree using adjacency lists or matrices `adj`, establishing parent-child relationships crucial for traversal and manipulation, and initializing several essential data structures. These include arrays for storing the parent of each node `par`, identifying the heavy child for each node `heavy`, storing the depth of each node `depth`, marking the root of the heavy path to which each node belongs `root`, and mapping nodes to their positions in the Segment Tree `pos`. Additionally, a [Segment Tree](https://usaco.guide/gold/PURS?lang=cpp) `st` is initialized to handle range maximum queries and point updates effectively.
 
-The next step involves performing a Depth-First Search (DFS) starting from the root node to calculate the size of each subtree. During this traversal, the heavy child for each node is identified as the child with the largest subtree size. This is crucial because heavy paths are constructed using these heavy children. The DFS also records the depth of each node and its parent, which are essential for the subsequent steps in the decomposition process.
+At first it performs a Depth-First Search (DFS) starting from the root node to calculate the size of each subtree. During this traversal, the heavy child for each node is identified as the child with the largest subtree size. This is crucial because heavy paths are constructed using these heavy children. The DFS also records the depth of each node and its parent, which are essential for the subsequent steps in the decomposition process.
 
 Once the DFS is complete, the decomposition of the tree into heavy paths and light edges begins. By iterating through all nodes, we determine which nodes are the roots of new heavy paths. If a node is not the heavy child of its parent, it signifies the start of a new heavy path. From each heavy path root, we traverse down through the heavy children, marking the entire path. Each node in a heavy path is assigned a position in the segment tree, ensuring that heavy paths are continuous in the segment tree.
 
 With the heavy paths determined, the segment tree is initialized with values corresponding to the positions of nodes in these paths. This setup allows for efficient range queries and updates within the segment tree. The segment tree's structure supports operations that are critical for answering path queries and performing updates efficiently.
 
 The query operation in Heavy-Light Decomposition (HLD) involves finding the maximum value on the path between two nodes. This is achieved by repeatedly moving up from the deeper node to the shallower node along the heavy paths. The segment tree is used to get the maximum value for each segment of the heavy path traversed. If the nodes belong to the same heavy path, the segment tree is directly queried for the range between their positions, ensuring an efficient query process.
-
-Updating the value of a node in HLD is straightforward. The corresponding position in the segment tree is updated, which allows changes to propagate efficiently through the segment tree. This ensures that subsequent queries reflect the updated values, maintaining the efficiency and correctness of the HLD structure.
 
 <LanguageSection>
 <CPPSection>
@@ -282,7 +280,10 @@ struct HLD {
 			depth[v] = depth[u] + 1;
 			par[v] = u;
 			int t = dfs(v, u, adj);
-			if (t > m) { heavy[u] = v; }
+			if (t > m) {
+				heavy[u] = v;
+				m = t;
+			}
 			sz += t;
 		}
 		return sz;
@@ -310,7 +311,7 @@ struct HLD {
 			if (i == 1 or heavy[par[i]] != i) {
 				for (int j = i; j; j = heavy[j]) {
 					root[j] = i;
-					pos[j] = t++;
+					pos[j] = t++; // it defines which segment it belongs to in tree
 					a.push_back(v[j]);
 				}
 			}
