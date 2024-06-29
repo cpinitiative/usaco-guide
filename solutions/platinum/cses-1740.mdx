@@ -7,7 +7,7 @@ author: Mihnea Brebenel
 
 ## Explanation
 
-Transform both endpoints of each line into events and sort them after the ordinate - the $y$ coordinate. 
+Transform both endpoints of each line into events and sort them after the ordinate - the $y$ coordinate.
 While sweeping through the events, maintain the active points into a [BIT](https://usaco.guide/gold/PURS#binary-indexed-tree).
 
 ## Implementation
@@ -17,14 +17,16 @@ While sweeping through the events, maintain the active points into a [BIT](https
 <LanguageSection>
 <CPPSection>
 
-```cpp 
+```cpp
 #include <algorithm>
 #include <iostream>
 #include <vector>
 
 using namespace std;
 
-struct Event { int type, y, a, b; };
+struct Event {
+	int type, y, a, b;
+};
 
 // BeginCodeSnip{Binary Indexed Tree}
 
@@ -58,38 +60,37 @@ template <class T> class BIT {
 
 // EndCodeSnip
 
-int main() { 
+int main() {
 	const int MAX_X = 1e6;
 	int n;
 	cin >> n;
 	vector<Event> events;
-	for(int i = 0; i < n; i++) {
+	for (int i = 0; i < n; i++) {
 		int a, b, x, y;
 		cin >> a >> b >> x >> y;
 		// Avoid negative coordinates by adding MAX_X
-		if(a == x) {
+		if (a == x) {
 			// Vertical line
 			events.push_back({2, b, a + MAX_X, -1});
 			events.push_back({3, y, a + MAX_X, -1});
 		} else {
 			// Horizontal line
 			events.push_back({1, b, a + MAX_X, x + MAX_X});
-
 		}
 	}
 
-    // Sort after the ordinate
-	sort(events.begin(), events.end(), [](const Event &a, const Event &b) {
-		return a.y < b.y;
-	});
+	// Sort after the ordinate
+	sort(events.begin(), events.end(),
+	     [](const Event &a, const Event &b) { return a.y < b.y; });
 
 	long long ans = 0;
 	BIT<long long> bit(2 * MAX_X);
-	for(const Event &e : events) {
-		if(e.type == 1) {
-            // Check how many vertical lines intersect the current horizontal line
+	for (const Event &e : events) {
+		if (e.type == 1) {
+			// Check how many vertical lines intersect the current horizontal
+			// line
 			ans += bit.pref_sum(e.b) - bit.pref_sum(e.a - 1);
-		} else if(e.type == 2) {
+		} else if (e.type == 2) {
 			bit.add(e.a, 1);
 		} else {
 			bit.add(e.a, -1);
@@ -97,7 +98,6 @@ int main() {
 	}
 	cout << ans << '\n';
 }
-
 ```
 
 </CPPSection>
