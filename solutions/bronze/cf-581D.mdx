@@ -95,88 +95,84 @@ int main() {
 import java.util.*;
 
 public class Main {
-    private static final int N = 3;
+	private static final int N = 3;
 
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        int[][] logos = new int[N][2];
-        for (int i = 0; i < N; i++) {
-            logos[i][0] = scanner.nextInt();
-            logos[i][1] = scanner.nextInt();
-        }
+	public static void main(String[] args) {
+		Scanner scanner = new Scanner(System.in);
+		int[][] logos = new int[N][2];
+		for (int i = 0; i < N; i++) {
+			logos[i][0] = scanner.nextInt();
+			logos[i][1] = scanner.nextInt();
+		}
 
-        long area = 0;
-        for (int[] p : logos) {
-            area += p[0] * p[1];
-        }
+		long area = 0;
+		for (int[] p : logos) { area += p[0] * p[1]; }
 
-        // if area is not a perfect square, then it's already invalid
-        int len = 1;
-        while (len * len < area) {
-            len++;
-        }
+		// if area is not a perfect square, then it's already invalid
+		int len = 1;
+		while (len * len < area) { len++; }
 
-        if (len * len != area) {
-            System.out.println("-1");
-            return;
-        }
+		if (len * len != area) {
+			System.out.println("-1");
+			return;
+		}
 
-        // loop through all rotations of each rectangle
-        for (int rotateMask = 0; rotateMask < (1 << N); rotateMask++) {
-            char[][] grid = new char[len][len];
-            for (int i = 0; i < len; i++) {
-                Arrays.fill(grid[i], 'Z');  // 'Z' represents an empty space in the grid
-            }
-            int numPlaced = 0;
+		// loop through all rotations of each rectangle
+		for (int rotateMask = 0; rotateMask < (1 << N); rotateMask++) {
+			char[][] grid = new char[len][len];
+			for (int i = 0; i < len; i++) {
+				Arrays.fill(grid[i],
+				            'Z');  // 'Z' represents an empty space in the grid
+			}
+			int numPlaced = 0;
 
-            outerLoop:
-            for (int i = 0; i < len; i++) {
-                for (int j = 0; j < len; j++) {
-                    if (grid[i][j] == 'Z') {
-                        if (numPlaced == N) {
-                            // we have already placed all the logos
-                            break outerLoop;
-                        }
+		outerLoop:
+			for (int i = 0; i < len; i++) {
+				for (int j = 0; j < len; j++) {
+					if (grid[i][j] == 'Z') {
+						if (numPlaced == N) {
+							// we have already placed all the logos
+							break outerLoop;
+						}
 
-                        int w = logos[numPlaced][0];
-                        int h = logos[numPlaced][1];
+						int w = logos[numPlaced][0];
+						int h = logos[numPlaced][1];
 
-                        if ((rotateMask & (1 << numPlaced)) != 0) {
-                            // rotate 90 degrees
-                            int temp = w;
-                            w = h;
-                            h = temp;
-                        }
+						if ((rotateMask & (1 << numPlaced)) != 0) {
+							// rotate 90 degrees
+							int temp = w;
+							w = h;
+							h = temp;
+						}
 
-                        // place configuration
-                        for (int r = i; r < i + h; r++) {
-                            for (int c = j; c < j + w; c++) {
-                                if (r >= len || c >= len || grid[r][c] != 'Z') {
-                                    // out of bounds or already a logo here
-                                    continue outerLoop;
-                                }
-                                grid[r][c] = (char) (numPlaced + 'A');
-                            }
-                        }
+						// place configuration
+						for (int r = i; r < i + h; r++) {
+							for (int c = j; c < j + w; c++) {
+								if (r >= len || c >= len || grid[r][c] != 'Z') {
+									// out of bounds or already a logo here
+									continue outerLoop;
+								}
+								grid[r][c] = (char)(numPlaced + 'A');
+							}
+						}
 
-                        numPlaced++;
-                    }
-                }
-            }
+						numPlaced++;
+					}
+				}
+			}
 
-            // at this point, all logos must be placed
-            if (numPlaced == N) {
-                System.out.println(len);
-                for (int i = 0; i < len; i++) {
-                    System.out.println(new String(grid[i]));
-                }
-                return;
-            }
-        }
-        System.out.println("-1");
-    }
+			// at this point, all logos must be placed
+			if (numPlaced == N) {
+				System.out.println(len);
+				for (int i = 0; i < len; i++) {
+					System.out.println(new String(grid[i]));
+				}
+				return;
+			}
+		}
+		System.out.println("-1");
+	}
 }
-
 ```
 
 </JavaSection>
@@ -184,72 +180,78 @@ public class Main {
 
 ```py
 def main():
-    import sys
-    input = sys.stdin.read
-    data = input().split()
+	import sys
 
-    N = 3
-    logos = [(int(data[i * 2]), int(data[i * 2 + 1])) for i in range(N)]
+	input = sys.stdin.read
+	data = input().split()
 
-    area = sum(p[0] * p[1] for p in logos)
+	N = 3
+	logos = [(int(data[i * 2]), int(data[i * 2 + 1])) for i in range(N)]
 
-    # if area is not a perfect square, then it's already invalid
-    len_side = 1
-    while len_side * len_side < area:
-        len_side += 1
+	area = sum(p[0] * p[1] for p in logos)
 
-    if len_side * len_side != area:
-        print("-1")
-        return
+	# if area is not a perfect square, then it's already invalid
+	len_side = 1
+	while len_side * len_side < area:
+		len_side += 1
 
-    # loop through all rotations of each rectangle
-    for rotate_mask in range(1 << N):
-        grid = [['Z' for _ in range(len_side)] for _ in range(len_side)]  # temporary grid
-        # 'Z' represents an empty space in the grid
-        num_placed = 0
+	if len_side * len_side != area:
+		print("-1")
+		return
 
-        for i in range(len_side):
-            for j in range(len_side):
-                if grid[i][j] == 'Z':
-                    if num_placed == N:
-                        # we have already placed all the logos
-                        goto_outer = True
-                        break
+	# loop through all rotations of each rectangle
+	for rotate_mask in range(1 << N):
+		grid = [
+			["Z" for _ in range(len_side)] for _ in range(len_side)
+		]  # temporary grid
+		# 'Z' represents an empty space in the grid
+		num_placed = 0
 
-                    w, h = logos[num_placed]
+		for i in range(len_side):
+			for j in range(len_side):
+				if grid[i][j] == "Z":
+					if num_placed == N:
+						# we have already placed all the logos
+						goto_outer = True
+						break
 
-                    if rotate_mask & (1 << num_placed):
-                        # rotate 90 degrees
-                        w, h = h, w
+					w, h = logos[num_placed]
 
-                    # place configuration
-                    if all(0 <= r < len_side and 0 <= c < len_side and grid[r][c] == 'Z'
-                           for r in range(i, i + h) for c in range(j, j + w)):
-                        for r in range(i, i + h):
-                            for c in range(j, j + w):
-                                grid[r][c] = chr(num_placed + ord('A'))
+					if rotate_mask & (1 << num_placed):
+						# rotate 90 degrees
+						w, h = h, w
 
-                        num_placed += 1
-                    else:
-                        goto_outer = True
-                        break
-            else:
-                continue
-            break
-        else:
-            # at this point, all logos must be placed
-            assert num_placed == N
+					# place configuration
+					if all(
+						0 <= r < len_side and 0 <= c < len_side and grid[r][c] == "Z"
+						for r in range(i, i + h)
+						for c in range(j, j + w)
+					):
+						for r in range(i, i + h):
+							for c in range(j, j + w):
+								grid[r][c] = chr(num_placed + ord("A"))
 
-            print(len_side)
-            for row in grid:
-                print("".join(row))
-            return
+						num_placed += 1
+					else:
+						goto_outer = True
+						break
+			else:
+				continue
+			break
+		else:
+			# at this point, all logos must be placed
+			assert num_placed == N
 
-    print("-1")
+			print(len_side)
+			for row in grid:
+				print("".join(row))
+			return
+
+	print("-1")
+
 
 if __name__ == "__main__":
-    main()
-
+	main()
 ```
 
 </PySection>
