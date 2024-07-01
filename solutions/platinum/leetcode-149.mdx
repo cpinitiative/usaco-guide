@@ -1,0 +1,41 @@
+---
+id: leetcode-149
+source: Leetcode
+title: Max Points on a Line
+author: Mihnea Brebenel
+---
+
+## Explanation 
+
+
+
+## Implementation 
+
+**Time Complexity:** $\mathcal{O}(N^3)$
+<LanguageSection>
+<CPPSection>
+
+```cpp 
+class Solution {
+public:
+    int maxPoints(vector<vector<int>>& points) {
+        if((int)points.size() <= 2) { return (int)points.size(); }
+		int ans = 0;
+		for(int i = 0; i < (int)points.size(); i++) {
+			for(int j = i + 1; j < (int)points.size(); j++) {
+				int p = 0;
+				for(int k = j + 1; k < (int)points.size(); k++) {
+					if((points[j][1]-points[i][1])*(points[i][0]-points[k][0])==(points[i][1]-points[k][1])*(points[j][0]-points[i][0])) {
+						p++;
+					}
+				}
+				ans = max(ans, p);
+			}
+		}
+		return ans;
+    }
+};
+```
+
+</CPPSection>
+</LanguageSection>
