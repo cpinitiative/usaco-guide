@@ -227,8 +227,8 @@ class TarjanSolver {
 	const vector<vector<int>> &adj;
 
 	TarjanSolver(const vector<vector<int>> &adj)
-		: adj(adj), rev_adj(adj.size()), post(adj.size()), comp(adj.size()),
-		  visited(adj.size()) {
+	    : adj(adj), rev_adj(adj.size()), post(adj.size()), comp(adj.size()),
+	      visited(adj.size()) {
 		vector<int> nodes(adj.size());
 		for (int n = 0; n < adj.size(); n++) {
 			nodes[n] = n;
@@ -239,7 +239,7 @@ class TarjanSolver {
 			if (!visited[n]) { fill_post(n); }
 		}
 		std::sort(nodes.begin(), nodes.end(),
-				  [&](int n1, int n2) { return post[n1] > post[n2]; });
+		          [&](int n1, int n2) { return post[n1] > post[n2]; });
 
 		visited.assign(adj.size(), false);
 		for (int n : nodes) {
@@ -361,7 +361,7 @@ using std::vector;
 
 // BeginCodeSnip{SCC Solver}
 class TarjanSolver {
-   private:
+  private:
 	vector<vector<int>> rev_adj;
 	vector<int> post;
 	vector<int> comp;
@@ -373,9 +373,7 @@ class TarjanSolver {
 	void fill_post(int at) {
 		visited[at] = true;
 		for (int n : rev_adj[at]) {
-			if (!visited[n]) {
-				fill_post(n);
-			}
+			if (!visited[n]) { fill_post(n); }
 		}
 		post[at] = timer++;
 	}
@@ -384,35 +382,26 @@ class TarjanSolver {
 		visited[at] = true;
 		comp[at] = id;
 		for (int n : adj[at]) {
-			if (!visited[n]) {
-				find_comp(n);
-			}
+			if (!visited[n]) { find_comp(n); }
 		}
 	}
 
-   public:
-	const vector<vector<int>>& adj;
-	TarjanSolver(const vector<vector<int>>& adj)
-		: adj(adj),
-		  rev_adj(adj.size()),
-		  post(adj.size()),
-		  comp(adj.size()),
-		  visited(adj.size()) {
+  public:
+	const vector<vector<int>> &adj;
+	TarjanSolver(const vector<vector<int>> &adj)
+	    : adj(adj), rev_adj(adj.size()), post(adj.size()), comp(adj.size()),
+	      visited(adj.size()) {
 		vector<int> nodes(adj.size());
 		for (int n = 0; n < adj.size(); n++) {
 			nodes[n] = n;
-			for (int next : adj[n]) {
-				rev_adj[next].push_back(n);
-			}
+			for (int next : adj[n]) { rev_adj[next].push_back(n); }
 		}
 
 		for (int n = 0; n < adj.size(); n++) {
-			if (!visited[n]) {
-				fill_post(n);
-			}
+			if (!visited[n]) { fill_post(n); }
 		}
 		std::sort(nodes.begin(), nodes.end(),
-				  [&](int n1, int n2) { return post[n1] > post[n2]; });
+		          [&](int n1, int n2) { return post[n1] > post[n2]; });
 
 		visited.assign(adj.size(), false);
 		for (int n : nodes) {
@@ -430,7 +419,7 @@ class TarjanSolver {
 // EndCodeSnip
 
 struct Clause {
-	int var1;  // id of the first variable
+	int var1;   // id of the first variable
 	bool neg1;  // is it negated?
 	int var2;
 	bool neg2;
@@ -440,10 +429,10 @@ struct Clause {
  * @return a vector of booleans that satisfy the given clauses,
  * or an empty vector if no such set of booleans exist
  */
-vector<int> solve_sat(const vector<Clause>& clauses, int var_num) {
+vector<int> solve_sat(const vector<Clause> &clauses, int var_num) {
 	vector<vector<int>> adj(2 * var_num);
 	// 2 * var is the variable, while 2 * var + 1 is its negation
-	for (const Clause& c : clauses) {
+	for (const Clause &c : clauses) {
 		// falseness of the first implies the truth of the second
 		adj[2 * c.var1 + !c.neg1].push_back(2 * c.var2 + c.neg2);
 		// and vice versa
@@ -455,9 +444,7 @@ vector<int> solve_sat(const vector<Clause>& clauses, int var_num) {
 	vector<vector<int>> comps(scc.comp_num());
 	for (int i = 0; i < 2 * var_num; i += 2) {
 		// do a node and its negation share the same component?
-		if (scc.get_comp(i) == scc.get_comp(i + 1)) {
-			return {};
-		}
+		if (scc.get_comp(i) == scc.get_comp(i + 1)) { return {}; }
 		comps[scc.get_comp(i)].push_back(i);
 		comps[scc.get_comp(i + 1)].push_back(i + 1);
 	}
@@ -468,7 +455,7 @@ vector<int> solve_sat(const vector<Clause>& clauses, int var_num) {
 	 * starting from comp 0 and going up process the graph
 	 * in reverse topological order- neat, huh?
 	 */
-	for (const vector<int>& comp : comps) {
+	for (const vector<int> &comp : comps) {
 		int set_to = 1;  // set all to true by default
 		// check if any values have had their negations set yet
 		for (int v : comp) {
@@ -479,16 +466,12 @@ vector<int> solve_sat(const vector<Clause>& clauses, int var_num) {
 			}
 		}
 
-		for (int v : comp) {
-			val[v] = set_to;
-		}
+		for (int v : comp) { val[v] = set_to; }
 	}
-	
+
 	vector<int> actual_val(var_num);
-	for (int i = 0; i < var_num; i++) {
-		actual_val[i] = val[2 * i];
-	}
-	
+	for (int i = 0; i < var_num; i++) { actual_val[i] = val[2 * i]; }
+
 	return actual_val;
 }
 
@@ -497,7 +480,7 @@ int main() {
 	int topping_num;
 	std::cin >> req_num >> topping_num;
 	vector<Clause> clauses(req_num);
-	for (Clause& c : clauses) {
+	for (Clause &c : clauses) {
 		char neg1, neg2;
 		std::cin >> neg1 >> c.var1 >> neg2 >> c.var2;
 		c.var1--;
