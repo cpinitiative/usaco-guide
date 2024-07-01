@@ -14,8 +14,31 @@ The idea is to maintain two pointers, `i` and `j`, which will initially point to
 <LanguageSection>
 <CPPSection>
 ```cpp
-
-
+#include <bits/stdc++.h>
+#define int long long
+ 
+int32_t main() {
+    int n, x;
+    std::cin >> n >> x;
+    std::vector<int> arr(n);
+    for (int i = 0; i < n; i++) {
+        std::cin >> arr[i];
+    }
+ 
+    int i = 0, j = 0;
+    int res = 0, sum = 0;
+    while (j < n) {
+        sum += arr[j];
+        while (sum > x) {
+            sum -= arr[i];
+            i++;
+        }
+        res += (sum == x);
+        j++;
+    }
+    std::cout << res << '\n';
+    return 0;
+}
 ```
 </CPPSection>
 
