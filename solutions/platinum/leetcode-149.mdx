@@ -5,9 +5,9 @@ title: Max Points on a Line
 author: Mihnea Brebenel
 ---
 
-## Explanation 
+## Explanation
 
-Because $n \le 300$ we can choose two points and check if other point are collinear. 
+Because $n \le 300$ we can choose two points and check if other point are collinear.
 Three points $A$, $B$, and $c$ are collinear if and only if $AB$ has the same slope as $BC$:
 
 $$
@@ -16,24 +16,27 @@ $$
 
 In practice you'll find this formula in a product form to avoid dealing with floating-point values.
 
-## Implementation 
+## Implementation
 
 **Time Complexity:** $\mathcal{O}(n^3)$
 
 <LanguageSection>
 <CPPSection>
 
-```cpp 
+```cpp
 class Solution {
-public:
-    int maxPoints(vector<vector<int>>& points) {
-        if((int)points.size() <= 2) { return (int)points.size(); }
+  public:
+	int maxPoints(vector<vector<int>> &points) {
+		if ((int)points.size() <= 2) { return (int)points.size(); }
 		int ans = 0;
-		for(int i = 0; i < (int)points.size(); i++) {
-			for(int j = i + 1; j < (int)points.size(); j++) {
+		for (int i = 0; i < (int)points.size(); i++) {
+			for (int j = i + 1; j < (int)points.size(); j++) {
 				int p = 0;
-				for(int k = j + 1; k < (int)points.size(); k++) {
-					if((points[j][1]-points[i][1])*(points[i][0]-points[k][0])==(points[i][1]-points[k][1])*(points[j][0]-points[i][0])) {
+				for (int k = j + 1; k < (int)points.size(); k++) {
+					if ((points[j][1] - points[i][1]) *
+					        (points[i][0] - points[k][0]) ==
+					    (points[i][1] - points[k][1]) *
+					        (points[j][0] - points[i][0])) {
 						p++;
 					}
 				}
@@ -41,7 +44,7 @@ public:
 			}
 		}
 		return ans;
-    }
+	}
 };
 ```
 
