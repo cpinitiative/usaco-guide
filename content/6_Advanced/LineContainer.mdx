@@ -120,7 +120,9 @@ struct Halfplane {
 /** @return the intersection of a set of half-planes */
 std::vector<Point> halfplane_intersect(std::vector<Halfplane> &halfplanes) {
 	// Define a bounding box as 4 half-planes
-	Point box[4] = {Point(inf, inf), Point(-inf, inf), Point(-inf, -inf),
+	Point box[4] = {Point(inf, inf),
+			Point(-inf, inf),
+			Point(-inf, -inf),
 	                Point(inf, -inf)};
 
 	// Add bounding box halfplanes to the input set
@@ -134,7 +136,7 @@ std::vector<Point> halfplane_intersect(std::vector<Halfplane> &halfplanes) {
 
 	// Remove duplicates (half-planes with same direction)
 	halfplanes.erase(std::unique(halfplanes.begin(), halfplanes.end()),
-	                 halfplanes.end());
+	halfplanes.end());
 
 	std::deque<Halfplane> active_halfplanes;
 	int len = 0;
@@ -142,9 +144,8 @@ std::vector<Point> halfplane_intersect(std::vector<Halfplane> &halfplanes) {
 	// Process each sorted half-plane
 	for (int i = 0; i < int(halfplanes.size()); i++) {
 		// Remove invalid half-planes from the end of active set
-		while (len > 1 &&
-		       halfplanes[i].out(inter(active_halfplanes[len - 1],
-		                               active_halfplanes[len - 2]))) {
+		while (len > 1 && halfplanes[i].out(inter(active_halfplanes[len - 1],
+							  active_halfplanes[len - 2]))) {
 			active_halfplanes.pop_back();
 			len--;
 		}
