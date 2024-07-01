@@ -11,7 +11,7 @@ Because $n \le 300$ we can use a brute-force approach: choose two points and che
 Three points $A$, $B$, and $c$ are collinear if and only if $AB$ has the same slope as $BC$:
 
 $$
-\frac{A.y-B.y}{A.x-B.x}=\frac{B.y-C.y}{B.x-C.x}
+\frac{A_y-B_y}{A_x-B_x}=\frac{B_y-C_y}{B_x-C_x}
 $$
 
 In practice you'll find this formula in a product form to avoid dealing with floating-point values.
@@ -25,28 +25,27 @@ In practice you'll find this formula in a product form to avoid dealing with flo
 
 ```cpp
 class Solution {
-  public:
-	int maxPoints(vector<vector<int>> &points) {
-		if (points.size() <= 2) { return (int)points.size(); }
-
+public:
+    int maxPoints(vector<vector<int>>& points) {
+        if((int)points.size() <= 2) { return (int)points.size(); }
 		int ans = 0;
-		for (int i = 0; i < points.size(); i++) {
-			for (int j = i + 1; j < points.size(); j++) {
-				int p = 0;
-				for (int k = j + 1; k < points.size(); k++) {
-					if ((points[j][1] - points[i][1]) *
-					        (points[i][0] - points[k][0]) ==
-					    (points[i][1] - points[k][1]) *
-					        (points[j][0] - points[i][0])) {
+		for(int i = 0; i < (int)points.size(); i++) {
+			for(int j = i + 1; j < (int)points.size(); j++) {
+				int p = 2;
+				for(int k = j + 1; k < (int)points.size(); k++) {
+					int dx1 = points[i][0] - points[k][0], dx2 = points[j][0] - points[i][0];
+					int dy1 = points[i][1] - points[k][1], dy2 = points[j][1] - points[i][1];
+					// Check if dy1 / dx1 = dy2 / dx2
+					// Which is the same as: dy1 * dx2 = dy2 * dx1
+					if(dy1 * dx2 == dy2 * dx1) {
 						p++;
 					}
 				}
 				ans = max(ans, p);
 			}
 		}
-
 		return ans;
-	}
+    }
 };
 ```
 
