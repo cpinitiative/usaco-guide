@@ -7,7 +7,7 @@ author: Mihnea Brebenel
 
 ## Explanation
 
-The problem asks us to find the maximum number of collinear equally-spaced points.
+The problem asks us to find the maximum number of collinear, equally-spaced points.
 Because $N \le 5000$ we can try finding for every pair of points - that
 doesn't continue with a point at an equal distance to the left - all the
 equally-spaced points to the right.
@@ -56,7 +56,7 @@ int main() {
 		cin >> p;
 		seen[hash(p)] = true;
 	}
-	// Check if points lies inside the grid
+	// Check if point lies inside the grid
 	auto inside = [&](const Point &p) -> bool {
 		return 1 <= p.x && 1 <= p.y && p.x <= r && p.y <= c;
 	};
@@ -67,7 +67,7 @@ int main() {
 		for (int j = i + 1; j < (int)points.size(); j++) {
 			// The distance between the equally-spaced points
 			Point diff = points[j] - points[i];
-			// Check if the left points lies outside the grid
+			// Check if the left point lies outside the grid
 			// This way we avoid processing multiple times the same line
 			Point left = points[i] - diff;
 			if (inside(left)) { continue; }
