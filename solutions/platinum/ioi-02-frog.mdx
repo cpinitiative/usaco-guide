@@ -50,10 +50,13 @@ int main() {
 	int r, c, n;
 	cin >> r >> c >> n;
 	vector<Point> points(n);
-	array<array<bool, 5000>, 5000> seen;
+	array<bool, 100000000> seen;
+	auto hash = [&](const Point &p) -> int {
+		return p.x * 10000 + p.y;
+	};
 	for (Point &p : points) {
 		cin >> p;
-		seen[p.x][p.y] = true;
+		seen[hash(p)] = true;
 	}
 	// Check if points lies inside the grid
 	auto inside = [&](const Point &p) -> bool {
@@ -73,7 +76,7 @@ int main() {
 			// The point that continues the line
 			Point right = points[j] + diff;
 			int hops = 2;
-			while (seen[right.x][right.y]) {
+			while (seen[hash(right)]) {
 				right = right + diff;
 				hops++;
 			}
