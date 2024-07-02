@@ -428,7 +428,7 @@ export default function ProblemSuggestionModal({
                   rel="noreferrer"
                   className="text-blue-600 dark:text-blue-300 underline"
                 >
-                  Github pull request
+                  GitHub pull request
                 </a>
                 .
               </p>

@@ -738,7 +738,7 @@ export default function IndexPage(): JSX.Element {
                         rel="noreferrer"
                         className="text-blue-600 dark:text-blue-400 underline"
                       >
-                        Github Repository
+                        GitHub Repository
                       </a>
                       .
                     </p>
