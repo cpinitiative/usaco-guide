@@ -16,6 +16,72 @@ author: Mihnea Brebenel
 <CPPSection>
 
 ```cpp 
+#include <algorithm>
+#include <iostream>
+#include <vector>
+#include <map>
+
+using namespace std;
+
+struct Point {
+	int x, y;
+	Point(int a = 0, int b = 0) : x(a), y(b) {}
+	Point operator-(const Point &other) {
+		return {x - other.x, y - other.y};
+	}
+	Point operator+(const Point &other) {
+		return {x + other.x, y + other.y};
+	}
+	bool operator<(const Point &other) const {
+		return x < other.x || (x == other.x && y < other.y);
+	}
+	friend istream &operator>>(istream &in, Point &p) {
+		int x, y;
+		in >> p.x >> p.y;
+		return in;
+	}
+};
+
+int main() { 
+	int r, c, n;
+	cin >> r >> c >> n;
+	vector<Point> points(n);
+	array<bool, 100000000> seen;
+	auto hash = [&](const Point &p) -> int {
+		return p.x * 10000 + p.y;
+	};
+	for(Point &p : points) {
+		cin >> p;
+		seen[hash(p)] = true;
+	}
+
+	auto inside = [&](const Point &p) -> bool {
+		return 1 <= p.x && 1 <= p.y && p.x <= r && p.y <= c;
+	};
+
+	sort(points.begin(), points.end());
+	int ans = 0;
+	for(int i = 0; i < (int)points.size(); i++) {
+		for(int j = i + 1; j < (int)points.size(); j++) {
+			Point diff = points[j] - points[i];
+			Point left = points[i] - diff;
+			if(inside(left)) { continue; }
+			Point right = points[j] + diff;
+			int hops = 2;
+			while(seen[hash(right)]) {
+				right = right + diff;
+				hops++;
+			}
+			if(!inside(right) && hops > 2) {
+				ans = max(ans, hops);
+			}
+		}
+	}
+	cout << ans << '\n';
+
+	return 0;
+}
+
 ```
 
 </CPPSection>
