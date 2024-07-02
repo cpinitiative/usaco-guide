@@ -1,0 +1,171 @@
+---
+id: kattis-ligatures
+source: Kattis
+title: Ligatures
+author: Alexis Tao
+---
+
+### Explanation
+
+The problem involves counting the occurrences of specific pairs of characters (ligatures) in a given text corpus based on multiple sets of suggested ligatures. The primary challenge is efficiently handling large input sizes and ensuring that the counting process respects the rule that ligatures can't overlap.
+
+### Solution
+
+This solution to the problem uses [SIMD](https://codeforces.com/blog/entry/94152?#comment-1162758) (Single Instruction, Multiple Data) parallelism to efficiently count the occurrences of suggested ligatures within a large corpus:
+
+**Overview**
+1. **Preprocessing the Corpus**:
+	- The corpus is preprocessed to identify all pairs of consecutive characters, which are stored in a pairs vector.
+2. **Setting Up Bitmasks**:
+	- A bitmask array active is set up where each bit represents whether a specific ligature is part of a query.
+The bitmask for each query is configured such that each suggested ligature toggles a specific bit.
+<!-- <IncompleteSection>
+3. **Counting Occurrences Using SIMD**:
+	- The core of the solution utilizes SIMD instructions to parallelize the counting process.
+The program processes the corpus in chunks, accumulating counts for each query simultaneously using AVX2 intrinsics.
+</IncompleteSection> -->
+
+**Time Complexity:** $\mathcal{O}(Q(N+K))$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#pragma GCC target("avx2")
+#include <immintrin.h>
+#include <iostream>
+#include <string>
+#include <vector>
+using namespace std;
+
+#define rep(i, from, to) for (int i = from; i < (to); ++i)
+#define trav(a, x) for (auto &a : x)
+#define all(x) x.begin(), x.end()
+#define sz(x) (int)(x).size()
+typedef long long ll;
+typedef pair<int, int> pii;
+typedef vector<int> vi;
+
+// Sets up the environment for using SIMD operations with AVX2 instructions
+const int SIMD_BITS = 256;
+const int MAXQ = 100'000;
+
+typedef __m256i mi;  // Define shorthand for AVX2 256-bit integer vector
+
+// Sets a specific bit in a 256-bit vector (mi type) at the given index (ind)
+void set_bit(mi &m, size_t ind) {
+	union {
+		mi m;
+		uint32_t ar[SIMD_BITS / 32];
+	} u;
+	u.m = m;
+	u.ar[ind / 32] = (uint32_t)(u.ar[ind / 32] | (1 << (ind % 32)));
+	m = u.m;
+}
+
+// Prints the binary representation of a 256-bit vector (mi type)
+void printm(mi m) {
+	union {
+		mi m;
+		uint32_t ar[SIMD_BITS / 32];
+	} u;
+	u.m = m;
+	rep(i, 0, SIMD_BITS) { cout << ((u.ar[i / 32] >> (i % 32)) & 1); }
+	cout << endl;
+}
+
+// Initialize a 2D array to store active bits for each query and character pair
+mi active[MAXQ / SIMD_BITS + 1][26 * 26 + 1]{};
+
+int main() {
+	cin.sync_with_stdio(false);   // Disable synchronization with C stdio
+	cin.exceptions(cin.failbit);  // Enable exceptions on input failure
+	int N, Q, K;
+	cin >> N >> Q >> K;
+	string str, s;
+	cin >> str;
+	N--;
+	int qchunks = Q / SIMD_BITS + 1;  // Calculate number of query chunks
+	vector<short> pairs(N);           // Vector to store character pairs
+	rep(i, 0, N) {
+		int a = str[i] - 'a';
+		int b = str[i + 1] - 'a';
+		pairs[i] = (short)((26 * a + b) * sizeof(mi));
+	}
+
+	// Process each query and set the corresponding bits in the active array
+	rep(i, 0, Q) {
+		cin >> s;
+		rep(j, 0, K) {
+			int a = s[2 * j] - 'a';
+			int b = s[2 * j + 1] - 'a';
+			set_bit(active[i / SIMD_BITS][26 * a + b], i % SIMD_BITS);
+		}
+	}
+
+	vi res(qchunks * SIMD_BITS);  // Vector to store the results
+	rep(k, 0, qchunks) {
+		char *act = (char *)active[k];
+		mi zero = _mm256_setzero_si256();
+		mi carry = zero;
+		mi accs[30]{}, ts[30]{};
+		mi picked = zero;
+
+#define SET0                                                                   \
+	carry = picked = _mm256_andnot_si256(picked, *(mi *)(act + pairs[0]))
+#define ADD2(t, acc)                                                           \
+	{                                                                          \
+		mi x = t ^ carry, y = (x & acc) | (t & carry);                         \
+		acc = x ^ acc, carry = y;                                              \
+	}  // (carry, acc) = (t + acc + carry)
+
+		for (int i = 0; i < N; ++i) {
+			mi t = zero;
+			SET0;
+			t = carry;
+			ADD2(t, accs[0]);
+
+			// Manage carry and accumulation for higher indices
+			int ind = 0;
+			while (!(i & (1 << ind))) {
+				ADD2(ts[ind], accs[ind]);
+				ind++;
+			}
+			ts[ind] = carry;
+		}
+
+		// Final accumulation across all indices
+		carry = zero;
+		rep(ind, 0, 30) {
+			mi val = (N & (1 << ind) ? ts[ind] : zero);
+			ADD2(val, accs[ind]);
+		}
+
+		// Convert results to a 32-bit integer format
+		mi low32 = _mm256_set1_epi32(1);
+		rep(j, 0, 32) {
+			mi mval = zero, p2 = low32;
+			rep(ind, 0, 30) {
+				mval = _mm256_add_epi32(
+				    mval, _mm256_and_si256(
+				              _mm256_sub_epi32(zero, accs[ind] & low32), p2));
+				accs[ind] = _mm256_srli_epi32(accs[ind], 1);
+				p2 = _mm256_slli_epi32(p2, 1);
+			}
+			union {
+				mi m;
+				uint32_t ar[SIMD_BITS / 32];
+			} u;
+			u.m = mval;
+			rep(l, 0, SIMD_BITS / 32) {
+				res[k * SIMD_BITS + l * 32 + j] = u.ar[l];
+			}
+		}
+	}
+	// Output the results for each query
+	rep(i, 0, Q) cout << res[i] << '\n';
+}
+```
+
+</CPPSection>
+</LanguageSection>
