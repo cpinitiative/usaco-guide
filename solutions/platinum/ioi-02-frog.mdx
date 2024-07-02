@@ -7,10 +7,14 @@ author: Mihnea Brebenel
 
 ## Explanation
 
+The problem asks us the maximum number of collinear equally-spaced points.
+Because $N \le 5000$ we can try finding for every pair of points - that 
+doesn't continue with a point at an equal distance to the left - all the 
+equally-spaced points to the right.
 
 ## Implementation
 
-**Time Complexity:** $\mathcal{O}(N^2)$
+**Time Complexity:** $\mathcal{O}(N^3)$
 
 <LanguageSection>
 <CPPSection>
@@ -22,6 +26,8 @@ author: Mihnea Brebenel
 #include <map>
 
 using namespace std;
+
+// BeginCodeSnip{Point Struct}
 
 struct Point {
 	int x, y;
@@ -42,44 +48,50 @@ struct Point {
 	}
 };
 
+// EndCodeSnip
+
 int main() { 
 	int r, c, n;
 	cin >> r >> c >> n;
 	vector<Point> points(n);
-	array<bool, 100000000> seen;
-	auto hash = [&](const Point &p) -> int {
-		return p.x * 10000 + p.y;
-	};
+	array<array<bool, 5000>, 5000> seen;
 	for(Point &p : points) {
 		cin >> p;
-		seen[hash(p)] = true;
+		seen[p.x][p.y] = true;
 	}
-
+    // Check if points lies inside the grid
 	auto inside = [&](const Point &p) -> bool {
 		return 1 <= p.x && 1 <= p.y && p.x <= r && p.y <= c;
 	};
-
+    // Sort the points
 	sort(points.begin(), points.end());
 	int ans = 0;
 	for(int i = 0; i < (int)points.size(); i++) {
 		for(int j = i + 1; j < (int)points.size(); j++) {
+            // The distance between the equally-spaced points
 			Point diff = points[j] - points[i];
+            // Check if the left points lies outside the grid
+            // This way we avoid processing multiple times the same line
 			Point left = points[i] - diff;
 			if(inside(left)) { continue; }
+            // The point that continues the line
 			Point right = points[j] + diff;
 			int hops = 2;
-			while(seen[hash(right)]) {
+			while(seen[right.x][right.y]) {
 				right = right + diff;
 				hops++;
 			}
+            /* 
+              If the final point lies outside the grid
+              it means that the frog left the grid,
+              making the line valid
+            */
 			if(!inside(right) && hops > 2) {
 				ans = max(ans, hops);
 			}
 		}
 	}
 	cout << ans << '\n';
-
-	return 0;
 }
 
 ```
