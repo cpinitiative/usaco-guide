@@ -22,31 +22,31 @@ No matter what their respective rewards are, it's always optimal to complete the
 <CPPSection>
 
 ```cpp
+#include <algorithm>
 #include <iostream>
 #include <vector>
-#include <algorithm>
 
 using std::cout;
 using std::endl;
 
 int main() {
-    int task_num;
-    std::cin >> task_num;
-    std::vector<std::pair<int, int>> tasks(task_num);
-    for (auto& [duration, deadline] : tasks) {
-        std::cin >> duration >> deadline;
-    }
+	int task_num;
+	std::cin >> task_num;
+	std::vector<std::pair<int, int>> tasks(task_num);
+	for (auto &[duration, deadline] : tasks) {
+		std::cin >> duration >> deadline;
+	}
 
-    std::sort(tasks.begin(), tasks.end());
- 
-    long long time = 0;
-    long long reward = 0;
-    for (const auto& [duration, deadline] : tasks) {
-        time += duration;
-        reward += deadline - time;
-    }
+	std::sort(tasks.begin(), tasks.end());
 
-    cout << reward << endl;
+	long long time = 0;
+	long long reward = 0;
+	for (const auto &[duration, deadline] : tasks) {
+		time += duration;
+		reward += deadline - time;
+	}
+
+	cout << reward << endl;
 }
 ```
 
@@ -58,29 +58,30 @@ import java.io.*;
 import java.util.*;
 
 public class TasksNDeadlines {
-    public static void main(String[] args) throws IOException {
-        BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
-        int taskNum = Integer.parseInt(read.readLine());
-        int[][] tasks = new int[taskNum][];
-        for (int t = 0; t < taskNum; t++) {
-            StringTokenizer task = new StringTokenizer(read.readLine());
-            tasks[t] = new int[] {
-                Integer.parseInt(task.nextToken()),  // duration
-                Integer.parseInt(task.nextToken())  // deadline
-            };
-        }
+	public static void main(String[] args) throws IOException {
+		BufferedReader read =
+		    new BufferedReader(new InputStreamReader(System.in));
+		int taskNum = Integer.parseInt(read.readLine());
+		int[][] tasks = new int[taskNum][];
+		for (int t = 0; t < taskNum; t++) {
+			StringTokenizer task = new StringTokenizer(read.readLine());
+			tasks[t] = new int[] {
+			    Integer.parseInt(task.nextToken()),  // duration
+			    Integer.parseInt(task.nextToken())   // deadline
+			};
+		}
 
-        Arrays.sort(tasks, Comparator.comparingInt(t -> t[0]));
+		Arrays.sort(tasks, Comparator.comparingInt(t -> t[0]));
 
-        long time = 0;
-        long reward = 0;
-        for (int[] t : tasks) {
-            time += t[0];
-            reward += t[1] - time;
-        }
+		long time = 0;
+		long reward = 0;
+		for (int[] t : tasks) {
+			time += t[0];
+			reward += t[1] - time;
+		}
 
-        System.out.println(reward);
-    }
+		System.out.println(reward);
+	}
 }
 ```
 
@@ -96,16 +97,16 @@ Due to Python's constant factor, the below code may TLE on a couple of test case
 ```py
 tasks = []
 for _ in range(int(input())):
-    duration, deadline = [int(i) for i in input().split()]
-    tasks.append((duration, deadline))
+	duration, deadline = [int(i) for i in input().split()]
+	tasks.append((duration, deadline))
 
 tasks.sort()
 
 time = 0
 reward = 0
 for duration, deadline in tasks:
-    time += duration
-    reward += deadline - time
+	time += duration
+	reward += deadline - time
 
 print(reward)
 ```
