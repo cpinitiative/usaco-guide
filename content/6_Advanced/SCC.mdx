@@ -1,7 +1,7 @@
 ---
 id: SCC
 title: 'Strongly Connected Components'
-author: Benjamin Qi, Dong Liu, Neo Wang
+author: Benjamin Qi, Dong Liu, Neo Wang, Rameez Parwez
 prerequisites:
   - toposort
   - BCC-2CC
@@ -11,28 +11,30 @@ description:
 frequency: 1
 ---
 
-## SCCs
+# Strongly Connected Components (SCCs)
 
 <FocusProblem problem="ex" />
 
-The definition of a kingdom in this problem is equivalent to the definition of a strongly connected component. We can compute these components using either **Kosaraju's** or **Tarjan's** algorithms, both of which are described below.
+The definition of a kingdom in this problem is equivalent to the definition of a
+strongly connected component. We can compute these components using either
+**Kosaraju's** or **Tarjan's** algorithms, both of which are described below.
 
-### Kosaraju's Algorithm
+## Kosaraju's Algorithm
 
 <Resources>
 	<Resource source="CPH" title="17 - Strong Connectivity" />
 	<Resource source="Wikipedia" title="Kosaraju's Algorithm" url="https://en.wikipedia.org/wiki/Kosaraju%27s_algorithm" />
 </Resources>
 
-<!-- <Resource
-	source="Benq"
-	title="Kosaraju's Implementation"
-	url="https://github.com/bqi343/USACO/blob/master/Implementations/content/graphs%20(12)/DFS/SCCK.h"
->
-	concise implementation of Kosaraju's Algorithm
-</Resource> -->
+<IncompleteSection>
 
-### Solution (Kosaraju's)
+in-house explanation?
+
+</IncompleteSection>
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N+M)$
 
 <LanguageSection>
 <CPPSection>
@@ -163,7 +165,7 @@ public class Main {
 </JavaSection>
 </LanguageSection>
 
-### Tarjan's Algorithm
+## Tarjan's Algorithm
 
 <Resources>
 	<Resource source="CPC" title="7 - Graphs 1" url="07_graphs_1" />
@@ -171,102 +173,116 @@ public class Main {
 	<Resource source="Wikipedia" title="Tarjan's SCC Algorithm" url="https://en.wikipedia.org/wiki/Tarjan%27s_strongly_connected_components_algorithm" />
 </Resources>
 
-<!-- <Resource
-	source="Benq"
-	title="Tarjan's Implementation"
-	url="https://github.com/bqi343/USACO/blob/master/Implementations/content/graphs%20(12)/DFS/SCCT.h"
->
-	concise implementation of Tarjan's Algorithm
-</Resource> -->
+<IncompleteSection>
 
-### Solution (Tarjan's)
+link to dpv in resources and just tell them to look at that, no way we're
+beating that explanation
+
+</IncompleteSection>
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N+M)$
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
-#include <bits/stdc++.h>
-using namespace std;
-/**
- * Description: Tarjan's, DFS once to generate
- * strongly connected components in topological order. $a,b$
- * in same component if both $a\to b$ and $b\to a$ exist.
- * Uses less memory than Kosaraju b/c doesn't store reverse edges.
- * Time: O(N+M)
- * Source: KACTL
- * https://github.com/kth-competitive-programming/kactl/blob/master/content/graph/SCC.h
- * Verification: https://cses.fi/problemset/task/1686/
- */
-struct SCC {
-	int N, ti = 0;
-	vector<vector<int>> adj;
-	vector<int> disc, comp, st, comps;
-	void init(int _N) {
-		N = _N;
-		adj.resize(N), disc.resize(N), comp = vector<int>(N, -1);
-	}
-	void ae(int x, int y) { adj[x].push_back(y); }
-	int dfs(int x) {
-		int low = disc[x] = ++ti;
-		st.push_back(x);  // disc[y] != 0 -> in stack
-		for (int y : adj[x])
-			if (comp[y] == -1) low = min(low, disc[y] ?: dfs(y));
-		if (low == disc[x]) {  // make new SCC, pop off stack until you find x
-			comps.push_back(x);
-			for (int y = -1; y != x;) comp[y = st.back()] = x, st.pop_back();
+#include <algorithm>
+#include <iostream>
+#include <vector>
+
+using std::cout;
+using std::endl;
+using std::vector;
+
+/** Takes in an adjacency list and calculates the SCCs of the graph. */
+class TarjanSolver {
+  private:
+	vector<vector<int>> rev_adj;
+	vector<int> post;
+	vector<int> comp;
+
+	vector<bool> visited;
+	int timer = 0;
+	int id = 0;
+
+	void fill_post(int at) {
+		visited[at] = true;
+		for (int n : rev_adj[at]) {
+			if (!visited[n]) { fill_post(n); }
 		}
-		return low;
+		post[at] = timer++;
 	}
-	void gen() {
-		for (int i = 0; i < N; i++)
-			if (!disc[i]) dfs(i);
-		reverse(begin(comps), end(comps));
+
+	void find_comp(int at) {
+		visited[at] = true;
+		comp[at] = id;
+		for (int n : adj[at]) {
+			if (!visited[n]) { find_comp(n); }
+		}
 	}
+
+  public:
+	const vector<vector<int>> &adj;
+
+	TarjanSolver(const vector<vector<int>> &adj)
+	    : adj(adj), rev_adj(adj.size()), post(adj.size()), comp(adj.size()),
+	      visited(adj.size()) {
+		vector<int> nodes(adj.size());
+		for (int n = 0; n < adj.size(); n++) {
+			nodes[n] = n;
+			for (int next : adj[n]) { rev_adj[next].push_back(n); }
+		}
+
+		for (int n = 0; n < adj.size(); n++) {
+			if (!visited[n]) { fill_post(n); }
+		}
+		std::sort(nodes.begin(), nodes.end(),
+		          [&](int n1, int n2) { return post[n1] > post[n2]; });
+
+		visited.assign(adj.size(), false);
+		for (int n : nodes) {
+			if (!visited[n]) {
+				find_comp(n);
+				id++;
+			}
+		}
+	}
+
+	int comp_num() const { return id; }
+
+	int get_comp(int n) const { return comp[n]; }
 };
 
 int main() {
-	int n, m, a, b;
-	cin >> n >> m;
+	int planet_num;
+	int tele_num;
+	std::cin >> planet_num >> tele_num;
+	vector<vector<int>> adj(planet_num);
+	for (int t = 0; t < tele_num; t++) {
+		int from, to;
+		std::cin >> from >> to;
+		adj[--from].push_back(--to);
+	}
 
-	SCC graph;
-	graph.init(n);
-	while (m--) {
-		cin >> a >> b;
-		graph.ae(--a, --b);
+	TarjanSolver scc(adj);
+	cout << scc.comp_num() << '\n';
+	for (int p = 0; p < planet_num - 1; p++) {
+		cout << scc.get_comp(p) + 1 << ' ';
 	}
-	graph.gen();
-	int ID[200000]{};
-	int ids = 0;
-	for (int i = 0; i < n; i++) {
-		if (!ID[graph.comp[i]]) { ID[graph.comp[i]] = ++ids; }
-	}
-	cout << ids << '\n';
-	for (int i = 0; i < n; i++) {
-		cout << ID[graph.comp[i]] << " \n"[i == n - 1];
-	}
+	cout << scc.get_comp(planet_num - 1) + 1 << endl;
 }
 ```
 
 </CPPSection>
-
 </LanguageSection>
 
-### Problems
+## Problems
 
 <Problems problems="general" />
 
-## 2-SAT
-
-<FocusProblem problem="satEx" />
-
-<IncompleteSection>
-
-implementation
-
-</IncompleteSection>
-
-### Tutorial
+# 2-SAT
 
 <Resources>
 	<Resource source="CF" title="2-SAT" url="16205" />
@@ -274,8 +290,227 @@ implementation
 	<Resource source="Algorithms Live!" title="2SAT" url="https://youtu.be/0nNYy3rltgA" />
 </Resources>
 
-<IncompleteSection>
+<FocusProblem problem="satEx" />
 
-mention KACTL - at most one
+## Explanation
 
-</IncompleteSection>
+### Introduction
+
+The CSES problem already gives us a boolean formula in conjunctive normal form
+(CNF) that consists of a series of logical OR clauses ANDed together like so:
+
+$$
+(\lnot x_1 \lor x_2) \land (x_1 \lor \lnot x_2) \land (\lnot x_1 \lor \lnot x_2) \land (x_1 \lor \lnot x_3)
+$$
+
+Before we proceed, try linking this to graph theory. Hint: represent a variable
+and its negation with two nodes.
+
+### Construction
+
+Like the hint says, we can construct a graph with each variable having two
+nodes: one for itself and one for its negation. We're going to try to proceed by
+assigning each node a truth value. Note that the value of one of the variable's
+nodes determines the other, since if we know the value of one node, the other is
+the negation of that value.
+
+Now, for each clause $(a \lor b)$, we add two directed edges:
+$\lnot a \rightarrow b$ and $\lnot b \rightarrow a$. What this means for us is
+that if $a$ was false, then $b$ must be true, and vice versa.
+
+With these edges, an SCC implies a group of values that all have to have the
+same truth value.
+
+### Solving the Graph
+
+The only way for there to be an impossible assignment of truth values is if a
+node and its negation are in the same SCC, since this means that a boolean and
+its negation have to both be true, which is impossible.
+
+If the graph is consistent and there are no impossible configurations, we can
+start assigning truth values, starting from the SCCs that have no outgoing edges
+to other SCCs and proceeding backwards. With the initial SCCs, we set them all
+to true. As for other SCCs, if a value has already been assigned due to its
+negation being in a previously processed component, we have to assign all other
+values in the component to that value.
+
+Due to
+[certain properties about the graph we've constructed](https://en.wikipedia.org/wiki/2-satisfiability#Strongly_connected_components),
+we can guarantee that the resulting assignment of the variables does not have
+any "true" SCCs leading to "false" SCCs. A proof of this is beyond the scope of
+this module.
+
+## Implementation
+
+We use Tarjan's algorithm as it already provides us with a topological order to
+process the nodes in. However, it is also possible to use Kosaraju's algorithm.
+
+**Time Complexity:** $\mathcal{O}(N+M)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <algorithm>
+#include <iostream>
+#include <vector>
+
+using std::cout;
+using std::endl;
+using std::vector;
+
+// BeginCodeSnip{SCC Solver}
+class TarjanSolver {
+  private:
+	vector<vector<int>> rev_adj;
+	vector<int> post;
+	vector<int> comp;
+
+	vector<bool> visited;
+	int timer = 0;
+	int id = 0;
+
+	void fill_post(int at) {
+		visited[at] = true;
+		for (int n : rev_adj[at]) {
+			if (!visited[n]) { fill_post(n); }
+		}
+		post[at] = timer++;
+	}
+
+	void find_comp(int at) {
+		visited[at] = true;
+		comp[at] = id;
+		for (int n : adj[at]) {
+			if (!visited[n]) { find_comp(n); }
+		}
+	}
+
+  public:
+	const vector<vector<int>> &adj;
+	TarjanSolver(const vector<vector<int>> &adj)
+	    : adj(adj), rev_adj(adj.size()), post(adj.size()), comp(adj.size()),
+	      visited(adj.size()) {
+		vector<int> nodes(adj.size());
+		for (int n = 0; n < adj.size(); n++) {
+			nodes[n] = n;
+			for (int next : adj[n]) { rev_adj[next].push_back(n); }
+		}
+
+		for (int n = 0; n < adj.size(); n++) {
+			if (!visited[n]) { fill_post(n); }
+		}
+		std::sort(nodes.begin(), nodes.end(),
+		          [&](int n1, int n2) { return post[n1] > post[n2]; });
+
+		visited.assign(adj.size(), false);
+		for (int n : nodes) {
+			if (!visited[n]) {
+				find_comp(n);
+				id++;
+			}
+		}
+	}
+
+	int comp_num() const { return id; }
+
+	int get_comp(int n) const { return comp[n]; }
+};
+// EndCodeSnip
+
+struct Clause {
+	int var1;   // id of the first variable
+	bool neg1;  // is it negated?
+	int var2;
+	bool neg2;
+};
+
+class SATSolver {
+  private:
+	vector<vector<int>> adj;
+	bool valid = true;
+	vector<int> val;
+
+	/** @return the negation of the variable v */
+	int get_neg(int v) { return v % 2 == 1 ? v - 1 : v + 1; }
+
+  public:
+	SATSolver(const vector<Clause> &clauses, int var_num)
+	    : adj(2 * var_num), val(2 * var_num, -1) {
+		// 2 * var is the variable, while 2 * var + 1 is its negation
+		for (const Clause &c : clauses) {
+			// falseness of the first implies the truth of the second
+			adj[2 * c.var1 + !c.neg1].push_back(2 * c.var2 + c.neg2);
+			// and vice versa
+			adj[2 * c.var2 + !c.neg2].push_back(2 * c.var1 + c.neg1);
+		}
+
+		TarjanSolver scc(adj);
+		// a list of all the components in the graph
+		vector<vector<int>> comps(scc.comp_num());
+		for (int i = 0; i < 2 * var_num; i += 2) {
+			// do a node and its negation share the same component?
+			if (scc.get_comp(i) == scc.get_comp(i + 1)) {
+				valid = false;
+				return;
+			}
+			comps[scc.get_comp(i)].push_back(i);
+			comps[scc.get_comp(i + 1)].push_back(i + 1);
+		}
+
+		/*
+		 * because of how our tarjan solver works, starting from
+		 * starting from comp 0 and going up process the graph
+		 * in reverse topological order- neat, huh?
+		 */
+		for (const vector<int> &comp : comps) {
+			int set_to = 1;  // set all to true by default
+			// check if any values have had their negations set yet
+			for (int v : comp) {
+				if (val[get_neg(v)] != -1) {
+					set_to = !val[get_neg(v)];
+					break;
+				}
+			}
+
+			for (int v : comp) { val[v] = set_to; }
+		}
+	}
+
+	bool is_valid() const { return valid; }
+
+	bool get_var(int var) const { return val[2 * var]; }
+};
+
+int main() {
+	int req_num;
+	int topping_num;
+	std::cin >> req_num >> topping_num;
+	vector<Clause> clauses(req_num);
+	for (Clause &c : clauses) {
+		char neg1, neg2;
+		std::cin >> neg1 >> c.var1 >> neg2 >> c.var2;
+		c.var1--;
+		c.var2--;
+		c.neg1 = neg1 == '-';
+		c.neg2 = neg2 == '-';
+	}
+
+	SATSolver sat(clauses, topping_num);
+	if (!sat.is_valid()) {
+		cout << "IMPOSSIBLE" << endl;
+	} else {
+		for (int t = 0; t < topping_num; t++) {
+			cout << (sat.get_var(t) ? '+' : '-') << ' ';
+		}
+		cout << endl;
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
+## Problems
+
+<Problems problems="2SAT" />
