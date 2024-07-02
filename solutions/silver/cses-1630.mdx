@@ -6,32 +6,107 @@ author: Rameez Parwez
 ---
 
 ## Explanation
-Sort the array in increasing order of duration to maximize the reward. The reason for this is that if we process a longer task before a shorter one, we won't be able to maximize our reward. However, if we swap them and process the shorter task first, our reward will increase significantly.
+
+Notice that the meta is to process shorter tasks before longer tasks.
+
+For some intuition regarding this, think of two tasks that take $5$ and $7$ time units to complete.
+No matter what their respective rewards are, it's always optimal to complete the shorter task first.
 
 ## Implementation
-**Time complexity:** $\mathcal{O} (n \log n)$
+
+**Time complexity:** $\mathcal{O} (N \log N)$
 
 <LanguageSection>
 <CPPSection>
+
 ```cpp
-#include <bits/stdc++.h>
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+using std::cout;
+using std::endl;
 
 int main() {
-	int n;
-	std::cin >> n;
-	std::vector<std::pair<int, int>> arr(n);
-	for (int i = 0; i < n; i++) { std::cin >> arr[i].first >> arr[i].second; }
+    int task_num;
+    std::cin >> task_num;
+    std::vector<std::pair<int, int>> tasks(task_num);
+    for (auto& [duration, deadline] : tasks) {
+        std::cin >> duration >> deadline;
+    }
 
-	std::sort(begin(arr), end(arr));
-	long long res = 0, pref = 0;
-	for (int i = 0; i < n; i++) {
-		pref += arr[i].first;
-		res += arr[i].second - pref;
-	}
+    std::sort(tasks.begin(), tasks.end());
+ 
+    long long time = 0;
+    long long reward = 0;
+    for (const auto& [duration, deadline] : tasks) {
+        time += duration;
+        reward += deadline - time;
+    }
 
-	std::cout << res << '\n';
-	return 0;
+    cout << reward << endl;
 }
 ```
+
 </CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class TasksNDeadlines {
+    public static void main(String[] args) throws IOException {
+        BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
+        int taskNum = Integer.parseInt(read.readLine());
+        int[][] tasks = new int[taskNum][];
+        for (int t = 0; t < taskNum; t++) {
+            StringTokenizer task = new StringTokenizer(read.readLine());
+            tasks[t] = new int[] {
+                Integer.parseInt(task.nextToken()),  // duration
+                Integer.parseInt(task.nextToken())  // deadline
+            };
+        }
+
+        Arrays.sort(tasks, Comparator.comparingInt(t -> t[0]));
+
+        long time = 0;
+        long reward = 0;
+        for (int[] t : tasks) {
+            time += t[0];
+            reward += t[1] - time;
+        }
+
+        System.out.println(reward);
+    }
+}
+```
+
+</JavaSection>
+<PySection>
+
+<Warning>
+
+Due to Python's constant factor, the below code may TLE on a couple of test cases.
+
+</Warning>
+
+```py
+tasks = []
+for _ in range(int(input())):
+    duration, deadline = [int(i) for i in input().split()]
+    tasks.append((duration, deadline))
+
+tasks.sort()
+
+time = 0
+reward = 0
+for duration, deadline in tasks:
+    time += duration
+    reward += deadline - time
+
+print(reward)
+```
+
+</PySection>
 </LanguageSection>
