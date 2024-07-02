@@ -8,8 +8,8 @@ author: Mihnea Brebenel
 ## Explanation
 
 The problem asks us the maximum number of collinear equally-spaced points.
-Because $N \le 5000$ we can try finding for every pair of points - that 
-doesn't continue with a point at an equal distance to the left - all the 
+Because $N \le 5000$ we can try finding for every pair of points - that
+doesn't continue with a point at an equal distance to the left - all the
 equally-spaced points to the right.
 
 ## Implementation
@@ -19,11 +19,11 @@ equally-spaced points to the right.
 <LanguageSection>
 <CPPSection>
 
-```cpp 
+```cpp
 #include <algorithm>
 #include <iostream>
-#include <vector>
 #include <map>
+#include <vector>
 
 using namespace std;
 
@@ -32,12 +32,8 @@ using namespace std;
 struct Point {
 	int x, y;
 	Point(int a = 0, int b = 0) : x(a), y(b) {}
-	Point operator-(const Point &other) {
-		return {x - other.x, y - other.y};
-	}
-	Point operator+(const Point &other) {
-		return {x + other.x, y + other.y};
-	}
+	Point operator-(const Point &other) { return {x - other.x, y - other.y}; }
+	Point operator+(const Point &other) { return {x + other.x, y + other.y}; }
 	bool operator<(const Point &other) const {
 		return x < other.x || (x == other.x && y < other.y);
 	}
@@ -50,50 +46,47 @@ struct Point {
 
 // EndCodeSnip
 
-int main() { 
+int main() {
 	int r, c, n;
 	cin >> r >> c >> n;
 	vector<Point> points(n);
 	array<array<bool, 5000>, 5000> seen;
-	for(Point &p : points) {
+	for (Point &p : points) {
 		cin >> p;
 		seen[p.x][p.y] = true;
 	}
-    // Check if points lies inside the grid
+	// Check if points lies inside the grid
 	auto inside = [&](const Point &p) -> bool {
 		return 1 <= p.x && 1 <= p.y && p.x <= r && p.y <= c;
 	};
-    // Sort the points
+	// Sort the points
 	sort(points.begin(), points.end());
 	int ans = 0;
-	for(int i = 0; i < (int)points.size(); i++) {
-		for(int j = i + 1; j < (int)points.size(); j++) {
-            // The distance between the equally-spaced points
+	for (int i = 0; i < (int)points.size(); i++) {
+		for (int j = i + 1; j < (int)points.size(); j++) {
+			// The distance between the equally-spaced points
 			Point diff = points[j] - points[i];
-            // Check if the left points lies outside the grid
-            // This way we avoid processing multiple times the same line
+			// Check if the left points lies outside the grid
+			// This way we avoid processing multiple times the same line
 			Point left = points[i] - diff;
-			if(inside(left)) { continue; }
-            // The point that continues the line
+			if (inside(left)) { continue; }
+			// The point that continues the line
 			Point right = points[j] + diff;
 			int hops = 2;
-			while(seen[right.x][right.y]) {
+			while (seen[right.x][right.y]) {
 				right = right + diff;
 				hops++;
 			}
-            /* 
-              If the final point lies outside the grid
-              it means that the frog left the grid,
-              making the line valid
-            */
-			if(!inside(right) && hops > 2) {
-				ans = max(ans, hops);
-			}
+			/*
+			  If the final point lies outside the grid
+			  it means that the frog left the grid,
+			  making the line valid
+			*/
+			if (!inside(right) && hops > 2) { ans = max(ans, hops); }
 		}
 	}
 	cout << ans << '\n';
 }
-
 ```
 
 </CPPSection>
