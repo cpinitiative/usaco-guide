@@ -24,13 +24,18 @@ strongly connected component. We can compute these components using either
 <Resources>
 	<Resource source="CPH" title="17 - Strong Connectivity" />
 	<Resource source="Wikipedia" title="Kosaraju's Algorithm" url="https://en.wikipedia.org/wiki/Kosaraju%27s_algorithm" />
+	<Resource source="TC" title="Kosaraju's Algorithm for SCCs"
+	url="https://www.topcoder.com/thrive/articles/kosarajus-algorithm-for-strongly-connected-components"/>
 </Resources>
 
-<IncompleteSection>
+## Explanation
+Kosaraju's algorithm is a highly efficient method for identifying the strongly connected components (SCCs) of directed graphs. The process unfolds in two main phases.
 
-in-house explanation?
+In the first phase, the algorithm performs a depth-first search (DFS) on the original graph to determine the exit times of vertices, akin to creating a topological sort. As each vertex finishes processing, it is pushed onto a stack. This stacking ensures that, in the next phase, nodes are processed in the order of their decreasing finish times. This order is crucial for effectively identifying the SCCs.
 
-</IncompleteSection>
+In the second phase, the algorithm conducts another DFS, this time on the transposed graph, where all edges are reversed. The DFS processes nodes according to the order defined by the stack from the first phase. By reversing the edges and following this specific order, each DFS run in this phase can identify all vertices of one SCC before moving on to the next. This ensures that the SCCs are accurately and efficiently determined.
+
+For a visual representation that clarifies this process, please refer to [this guide](https://www.topcoder.com/thrive/articles/kosarajus-algorithm-for-strongly-connected-components).
 
 ## Implementation
 
@@ -41,60 +46,61 @@ in-house explanation?
 
 ```cpp
 #include <bits/stdc++.h>
-using namespace std;
 
-using vi = vector<int>;
-#define pb push_back
-
-const int mx = 1e5 + 1;
+const int N = 1e5 + 1;
 
 // adj_t is the transpose of adj
-vi adj[mx], adj_t[mx], S;
-bool vis[mx];
-int id[mx];
+std::vector<int> adj[N], adj_t[N];
+std::vector<int> order;
+std::vector<int> vis(N), id(N);
 
-void dfs(int x, int pass, int num = 0) {
-	vis[x] = true;
-	vi &ad = (pass == 1) ? adj[x] : adj_t[x];
-	for (const int &e : ad) {
-		if (!vis[e]) dfs(e, pass, num);
+void dfs1(int v) {
+	vis[v] = true;
+	for (int u : adj[v]) {
+		if (!vis[u]) { dfs1(u); }
 	}
+	order.push_back(v);
+}
 
-	S.pb(x);
-	if (pass == 2) id[x] = num;
+void dfs2(int x, int comp) {
+	vis[x] = true;
+
+	for (int u : adj_t[x]) {
+		if (!vis[u]) { dfs2(u, comp); }
+	}
+	id[x] = comp;
 }
 
 int main() {
-	cin.tie(0)->sync_with_stdio(0);
-
 	int n, m;
-	cin >> n >> m;
+	std::cin >> n >> m;
 
-	while (m--) {
-		int a, b;
-		cin >> a >> b;
-		adj[a].pb(b);
-		adj_t[b].pb(a);
+	for (int i = 1; i <= m; i++) {
+		int u, v;
+		std::cin >> u >> v;
+		adj[u].push_back(v);
+		adj_t[v].push_back(u);
 	}
+
+	vis.assign(N, false);
 
 	for (int i = 1; i <= n; i++) {
-		if (!vis[i]) dfs(i, 1);
+		if (!vis[i]) { dfs1(i); }
 	}
 
-	memset(vis, false, sizeof vis);
-
-	int components = 0;
-
-	for (int i = n - 1; i >= 0; i--) {
-		if (!vis[S[i]]) {
-			components++;
-			dfs(S[i], 2, components);
+	vis.assign(N, false);
+	std::reverse(begin(order), end(order));
+	int comps = 0;
+	for (auto v : order) {
+		if (!vis[v]) {
+			comps++;
+			dfs2(v, comps);
 		}
 	}
 
-	cout << components << "\n";
+	std::cout << "Total number of components: " << comps << '\n';
 
-	for (int i = 1; i <= n; i++) cout << id[i] << " ";
+	for (int i = 1; i <= n; i++) { std::cout << id[i] << " \n"[i == n]; }
 }
 ```
 
@@ -171,6 +177,8 @@ public class Main {
 	<Resource source="CPC" title="7 - Graphs 1" url="07_graphs_1" />
 	<Resource source="CP2" title="4.2.9 - Finding SCCs"/>
 	<Resource source="Wikipedia" title="Tarjan's SCC Algorithm" url="https://en.wikipedia.org/wiki/Tarjan%27s_strongly_connected_components_algorithm" />
+	<Resource source="TC" title="Tarjan's Algorithm for SCCs"
+	url="https://www.topcoder.com/thrive/articles/tarjans-algorithm-for-strongly-connected-components"/>
 </Resources>
 
 <IncompleteSection>
