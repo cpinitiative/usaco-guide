@@ -7,10 +7,10 @@ author: Mihnea Brebenel
 
 ## Explanation
 
-The problem asks us to find the maximum number of collinear, equally-spaced points.
-Because $N \le 5000$ we can try finding for every pair of points - that
-doesn't continue with a point at an equal distance to the left - all the
-equally-spaced points to the right.
+Since $N \le 5000$ we can try iterate through every pair of points.
+To avoid processing the same set of points multiple times, we'll only
+search for the pairs that don't have an collinear point of equal distance to the left.
+Once this check succeeds, we'll see how many equally-spaced points to the right there are.
 
 ## Implementation
 
@@ -28,7 +28,6 @@ equally-spaced points to the right.
 using namespace std;
 
 // BeginCodeSnip{Point Struct}
-
 struct Point {
 	int x, y;
 	Point(int a = 0, int b = 0) : x(a), y(b) {}
@@ -43,7 +42,6 @@ struct Point {
 		return in;
 	}
 };
-
 // EndCodeSnip
 
 int main() {
@@ -56,21 +54,25 @@ int main() {
 		cin >> p;
 		seen[hash(p)] = true;
 	}
+
 	// Check if point lies inside the grid
 	auto inside = [&](const Point &p) -> bool {
 		return 1 <= p.x && 1 <= p.y && p.x <= r && p.y <= c;
 	};
+
 	// Sort the points
 	sort(points.begin(), points.end());
 	int ans = 0;
-	for (int i = 0; i < (int)points.size(); i++) {
-		for (int j = i + 1; j < (int)points.size(); j++) {
+	for (int i = 0; i < points.size(); i++) {
+		for (int j = i + 1; j < points.size(); j++) {
 			// The distance between the equally-spaced points
 			Point diff = points[j] - points[i];
+
 			// Check if the left point lies outside the grid
-			// This way we avoid processing multiple times the same line
+			// This way we avoid processing the same line multiple times
 			Point left = points[i] - diff;
 			if (inside(left)) { continue; }
+
 			// The point that continues the line
 			Point right = points[j] + diff;
 			int hops = 2;
@@ -78,15 +80,17 @@ int main() {
 				right = right + diff;
 				hops++;
 			}
+
 			/*
-			  If the final point lies outside the grid
-			  it means that the frog left the grid,
-			  making the line valid
-			*/
+			 * If the final point lies outside the grid
+			 * it means that the frog left the grid,
+			 * making the line valid
+			 */
 			if (!inside(right) && hops > 2) { ans = max(ans, hops); }
 		}
 	}
-	cout << ans << '\n';
+
+	cout << ans << endl;
 }
 ```
 
