@@ -1,0 +1,40 @@
+---
+id: cses-1630
+source: cses
+title: Tasks and Deadlines
+author: Rameez Parwez
+---
+
+## Explanation
+Sort the array in increasing order of duration to maximize the reward. The reason for this is that if we process a longer task before a shorter one, we won't be able to maximize our reward. However, if we swap them and process the shorter task first, our reward will increase significantly.
+
+## Implementation
+**Time complexity:** \mathcal{O} (n \log n)
+
+<LanguageSection>
+<CPPSection>
+```cpp
+#include <bits/stdc++.h>
+ 
+int main() {
+    int n;
+    std::cin >> n;
+    std::vector<std::pair<int, int>> arr(n);
+    for (int i = 0; i < n; i++) {
+        std::cin >> arr[i].first >> arr[i].second;
+    }
+ 
+    std::sort(begin(arr), end(arr));
+    long long res = 0, pref = 0;
+    for (int i = 0; i < n; i++) {
+        pref += arr[i].first;
+        res += arr[i].second - pref;
+    }
+ 
+    std::cout << res << '\n';
+    return 0;
+}
+
+```
+</CPPSection>
+</LanguageSection>
