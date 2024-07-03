@@ -2,7 +2,7 @@
 id: cf-1914C
 source: CF
 title: Quests
-author: Chu Minjae
+author: Chu Minjae, Ankit Seth
 ---
 
 ## Explanation
@@ -39,9 +39,8 @@ int main() {
 		for (int z = 1; z < min(n, k); z++) {
 			best_second = max(best_second, b[z]);
 			// compare experience point of completing one more quest or not
-			if (max_score < first_total + a[z] + best_second * (k - z - 1)) {
-				max_score = first_total + a[z] + best_second * (k - z - 1);
-			}
+			max_score =
+			    max(max_score, first_total + a[z] + best_second * (k - z - 1));
 			first_total += a[z];
 		}
 
@@ -51,4 +50,65 @@ int main() {
 ```
 
 </CPPSection>
+<PySection>
+
+```py
+for _ in range(int(input())):
+	n, k = [int(i) for i in input().split()]
+	a = [int(i) for i in input().split()]
+	b = [int(i) for i in input().split()]
+
+	best_second = b[0]
+	first_total = a[0]
+	max_score = a[0] + best_second * (k - 1)
+	for z in range(1, min(n, k)):
+		best_second = max(best_second, b[z])
+		# compare experience point of completing one more quest or not
+		max_score = max(max_score, first_total + a[z] + best_second * (k - z - 1))
+		first_total += a[z]
+
+	print(max_score)
+```
+
+</PySection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Quests {
+	public static void main(String[] args) throws IOException {
+		BufferedReader read =
+		    new BufferedReader(new InputStreamReader(System.in));
+		int testNum = Integer.parseInt(read.readLine());
+		for (int t = 0; t < testNum; t++) {
+			StringTokenizer initial = new StringTokenizer(read.readLine());
+			int n = Integer.parseInt(initial.nextToken());
+			int k = Integer.parseInt(initial.nextToken());
+			int[] a = Arrays.stream(read.readLine().split(" "))
+			              .mapToInt(Integer::parseInt)
+			              .toArray();
+			int[] b = Arrays.stream(read.readLine().split(" "))
+			              .mapToInt(Integer::parseInt)
+			              .toArray();
+
+			int best_second = b[0];
+			int first_total = a[0];
+			int max_score = a[0] + best_second * (k - 1);
+			for (int z = 1; z < Math.min(n, k); z++) {
+				best_second = Math.max(best_second, b[z]);
+				// compare experience point of completing one more quest or not
+				max_score = Math.max(max_score, first_total + a[z] +
+				                                    best_second * (k - z - 1));
+				first_total += a[z];
+			}
+
+			System.out.println(max_score);
+		}
+	}
+}
+```
+
+</JavaSection>
 </LanguageSection>
