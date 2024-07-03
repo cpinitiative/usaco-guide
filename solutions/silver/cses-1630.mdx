@@ -12,45 +12,27 @@ author: Rameez Parwez
 Notice that the meta is to process shorter tasks before longer tasks.
 
 For some intuition regarding this, think of two tasks that take $5$ and $7$ time units to complete.
-No matter what their respective rewards are, it's always optimal to complete the shorter task first.
+Notice that no matter what the deadlines are,
+it's always optimal to complete the shorter task first.
 
-<Spoiler title="Example">
-Let's consider an example, where we are given 3 durations and deadlines and we need to find the maximum reward:
+To prove this more concretely, let's take $n$ tasks,
+with durations $t_1, t_2, \cdots, t_n$ and deadlines $d_1, d_2, \cdots, d_n$.
+Say we complete them in an order such that $a_i$ is the number of the $i$th
+task completed, making $a_1, a_2, \cdots, a_n$ a permutation of $1$ through $n$.
 
-<center>
-| Duration | Deadline |
-| -------- | -------- |
-|  6	   |	10	  |
-|  8	   |	15	  |
-|  5	   |	12	  |
-
-</center>
-
-From our intuition, the formula for calculating the maximum reward will look something like this:
-
+The final reward is then
 $$
-(\scriptsize{currentDeadline_1 - prefixSumDuration_1}) + \scriptsize{(currentDeadline_2 - prefixSumDuration_2)} + .... + \scriptsize{(currentDeadline_n - prefixSumDuration_n})
+(d_{a_1}-t_{a_1})+(d_{a_2}-(t_{a_1}+t_{a_2}))+\cdots+\left(d_{a_n}-\sum_{i=1}^n t_{a_i}\right)
 $$
 
-There are three scenarios to consider:
+Rearranging the formula, we can get
+$$
+\sum_{i=1}^n d_{a_i} - \sum_{i=1}^n t_{a_i}(n+1-i)
+$$
+Try expanding them to see why these two are equal!
 
-- If we don't sort them and process them as they are, then our reward will be:
-   $$
-   (10 - 6) + (15 - 14) + (12 - 19) = -4
-   $$
-
-- If we sort them in decreasing order of duration, then our reward will be:
-	$$
-	(15 - 8) + (10 - 14) + (12 - 19) = -4
-	$$
-
-- If we sort them in increasing order of duration, then our reward will be:
-    $$
-	(12 - 5) + (10 - 11) + (15 - 19) = 2
-	$$
-
-Thus, from the above scenarios, we conclude that to get the maximum reward, we must sort them in increasing order of duration.
-</Spoiler>
+From this, we can see that we must minimize smaller values of $i$,
+which is then equivalent to processing shorter tasks first.
 
 ## Implementation
 
