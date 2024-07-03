@@ -91,89 +91,125 @@ So, as an overview of the algorithm:
 <CPPSection>
 
 ```cpp
+#include <iostream>
 #include <algorithm>
 #include <climits>
 #include <deque>
 #include <vector>
+#include <cmath>
 
 const long double eps = 1e-9;
-const int inf = INT32_MAX;  // shorthand
+const int inf = INT_MAX;
 
 struct Point {
-	long double x, y;
-	explicit Point(long double x = 0, long double y = 0) : x(x), y(y) {}
+    long double x, y;
+    explicit Point(long double x = 0, long double y = 0) : x(x), y(y) {}
 };
+
+// Cross product of two vectors
+long double cross(const Point& a, const Point& b) {
+    return a.x * b.y - a.y * b.x;
+}
 
 struct Halfplane {
-	Point p, pq;
-	long double angle;
+    Point p, pq;
+    long double angle;
 
-	Halfplane() {}
-	Halfplane(const Point &a, const Point &b) : p(a), pq(b - a) {
-		angle = atan2l(pq.y, pq.x);  // Compute angle of direction vector
-	}
+    Halfplane() {}
+    Halfplane(const Point& a, const Point& b) : p(a), pq(b - a) {
+        angle = atan2l(pq.y, pq.x);  // Compute angle of direction vector
+    }
 
-	/** @return if a point r is outside the half-plane */
-	bool out(const Point &r) { return cross(pq, r - p) < -eps; }
+    // Check if a point r is outside the half-plane
+    bool out(const Point& r) const {
+        return cross(pq, r - p) < -eps;
+    }
+
+    // Comparator for sorting half-planes by angle
+    bool operator<(const Halfplane& rhs) const {
+        return angle < rhs.angle;
+    }
 };
 
-/** @return the intersection of a set of half-planes */
-std::vector<Point> halfplane_intersect(std::vector<Halfplane> &halfplanes) {
-	// Define a bounding box as 4 half-planes
-	Point box[4] = {Point(inf, inf), Point(-inf, inf), Point(-inf, -inf),
-	                Point(inf, -inf)};
+// Function to compute the intersection of a set of half-planes
+std::vector<Point> halfplane_intersect(std::vector<Halfplane>& halfplanes) {
+    // Define a bounding box as 4 half-planes
+    Point box[4] = {Point(inf, inf), Point(-inf, inf), Point(-inf, -inf), Point(inf, -inf)};
+    
+    // Add bounding box halfplanes to the input set
+    for (int i = 0; i < 4; i++) {
+        Halfplane aux(box[i], box[(i + 1) % 4]);
+        halfplanes.push_back(aux);
+    }
 
-	// Add bounding box halfplanes to the input set
-	for (int i = 0; i < 4; i++) {
-		Halfplane aux(box[i], box[(i + 1) % 4]);
-		halfplanes.push_back(aux);
-	}
+    // Sort half-planes by angle (counter-clockwise)
+    std::sort(halfplanes.begin(), halfplanes.end());
 
-	// Sort half-planes by angle (counter-clockwise)
-	std::sort(halfplanes.begin(), halfplanes.end());
+    // Remove duplicates (half-planes with same direction)
+    halfplanes.erase(std::unique(halfplanes.begin(), halfplanes.end()), halfplanes.end());
 
-	// Remove duplicates (half-planes with same direction)
-	halfplanes.erase(std::unique(halfplanes.begin(), halfplanes.end()),
-	                 halfplanes.end());
+    std::deque<Halfplane> active_halfplanes;
+    int len = 0;
 
-	std::deque<Halfplane> active_halfplanes;
-	int len = 0;
+    // Process each sorted half-plane
+    for (int i = 0; i < int(halfplanes.size()); i++) {
+        // Remove invalid half-planes from the end of active set
+        while (len > 1 && halfplanes[i].out(intersection(active_halfplanes[len - 1], active_halfplanes[len - 2]))) {
+            active_halfplanes.pop_back();
+            len--;
+        }
 
-	// Process each sorted half-plane
-	for (int i = 0; i < int(halfplanes.size()); i++) {
-		// Remove invalid half-planes from the end of active set
-		while (len > 1 &&
-		       halfplanes[i].out(inter(active_halfplanes[len - 1],
-		                               active_halfplanes[len - 2]))) {
-			active_halfplanes.pop_back();
-			len--;
-		}
+        // Remove invalid half-planes from the beginning of active set
+        while (len > 1 && halfplanes[i].out(intersection(active_halfplanes[0], active_halfplanes[1]))) {
+            active_halfplanes.pop_front();
+            len--;
+        }
 
-		// Remove invalid half-planes from the beginning of active set
-		while (len > 1 && halfplanes[i].out(inter(active_halfplanes[0],
-		                                          active_halfplanes[1]))) {
-			active_halfplanes.pop_front();
-			len--;
-		}
+        // Add current half-plane to active set
+        active_halfplanes.push_back(halfplanes[i]);
+        len++;
+    }
 
-		// Add current half-plane to active set
-		active_halfplanes.push_back(halfplanes[i]);
-		len++;
-	}
+    // Check if there are less than 3 valid half-planes
+    if (len < 3) return std::vector<Point>();
 
-	// Check if there are less than 3 valid half-planes
-	if (len < 3) return std::vector<Point>();
+    // Compute intersection points of active half-planes
+    std::vector<Point> intersection_points(len);
+    for (int i = 0; i < len - 1; i++) {
+        intersection_points[i] = intersection(active_halfplanes[i], active_halfplanes[i + 1]);
+    }
+    intersection_points.back() = intersection(active_halfplanes[len - 1], active_halfplanes[0]);
 
-	// Compute intersection points of active half-planes
-	std::vector<Point> intersection_points(len);
-	for (int i = 0; i < len - 1; i++) {
-		intersection_points[i] =
-		    inter(active_halfplanes[i], active_halfplanes[i + 1]);
-	}
-	intersection_points.back() =
-	    inter(active_halfplanes[len - 1], active_halfplanes[0]);
+    return intersection_points;
+}
 
-	return intersection_points;
+// Function to compute intersection of two half-planes
+Point intersection(const Halfplane& h1, const Halfplane& h2) {
+    long double den = cross(h1.pq, h2.pq);
+    long double num1 = cross(h2.pq, h1.p - h2.p);
+    
+    // Calculate intersection point
+    return Point(h1.p.x + (num1 / den) * h1.pq.x, h1.p.y + (num1 / den) * h1.pq.y);
+}
+
+int main() {
+    std::vector<Halfplane> halfplanes;
+
+    // Example: Adding half-planes (adjust as needed)
+    halfplanes.emplace_back(Point(1, 1), Point(1, -1));
+    halfplanes.emplace_back(Point(1, -1), Point(-1, -1));
+    halfplanes.emplace_back(Point(-1, -1), Point(-1, 1));
+    halfplanes.emplace_back(Point(-1, 1), Point(1, 1));
+
+    // Compute intersection points of half-planes
+    std::vector<Point> intersection_points = halfplane_intersect(halfplanes);
+
+    // Output intersection points
+    for (const auto& point : intersection_points) {
+        std::cout << point.x << " " << point.y << "\n";
+    }
+
+    return 0;
 }
 ```
 
