@@ -8,10 +8,51 @@ frequency: 1
 
 You should know operations such as the cross product and dot product.
 
-## Standard Problems
+<Resources>
+	<Resource source="CF" title="C++ - std::complex" url="22175" starred>
+		short description of operations
+	</Resource>
+	<Resource source="CPH" title="29 - Geometry" starred>
+		Complex #s, Points & Lines, Polygons, Distances
+	</Resource>
+	<Resource source="CF" title="Point Struct" url="48122" starred>
+		code, examples
+	</Resource>
+	<Resource
+		source="cp-algo"
+		title="Geometry - Elementary Operations"
+		url="https://cp-algorithms.com/"
+		starred
+	 />
+	<Resource source="CPC" title="12 - geometry" url="12_geometry" starred>
+		basics, polygon area, point in polygon
+	</Resource>
+	<Resource
+		source="CF"
+		title="vlecomte - Geometry Handbook"
+		url="59129"
+		starred
+	>
+		some material is quite advanced
+	</Resource>
+	<Resource source="CP2" title="7.2, 7.3 - Basic Geo, Polygons"/>
+</Resources>
 
-### Location of a point
+<!-- 	<Resource
+		source="TC"
+		title="Basic Geometry Concepts Pts 1,2"
+		url="geometry-concepts-basic-concepts"
+	>
+		broken code format
+	</Resource> -->
+
+- [My Templates](<https://github.com/bqi343/USACO/tree/master/Implementations/content/geometry%20(13)/Primitives>)
+
+# Location of a Point
+
 <FocusProblem problem="pointlocationtest" />
+
+## Explanation
 
 To check the $P$ location towards the $P_1$ $P_2$ line we use following formula: $(P.y - P_1.y) * (P_2.x - P_1.x) - (P.x - P_1.x) * (P_2.y - P_1.y)$
 If it's equal to $0$ it means that $P$, $P_1$ and $P_2$ are collinear. Otherwise the value's sign indicated if $P$ is under the line - negative - or above the line - positive.
@@ -31,7 +72,7 @@ This formula doesn't only tell us whether the points are collinear, but where th
 
 </Spoiler>
 
-#### Implementation
+## Implementation
 
 <LanguageSection>
 <CPPSection>
@@ -79,13 +120,16 @@ int main() {
 </CPPSection>
 </LanguageSection>
 
-### Segment intersection
+# Segment Intersection
+
 <FocusProblem problem="line" />
+
+## Explanation
 
 We can quickly dismiss the segment intersection by treating them as rectangles having the segments as diagonals which can be easily done.
 If it turns out the rectangles intersect then we just check if the segment's ends are on different sides of the other segment.
 
-#### Implementation
+## Implementation
 
 <LanguageSection>
 <CPPSection>
@@ -163,12 +207,15 @@ int main() {
 </CPPSection>
 </LanguageSection>
 
-### Polygon area
+# Polygon Area
+
 <FocusProblem problem="polygon" />
 
-The following algorithm uses the [Shoelace formula](https://en.wikipedia.org/wiki/Shoelace_formula).
+## Explanation
 
-#### Implementation
+We can use the [Shoelace formula](https://en.wikipedia.org/wiki/Shoelace_formula).
+
+## Implementation
 
 <LanguageSection>
 <CPPSection>
@@ -208,9 +255,11 @@ int main() {
 </CPPSection>
 </LanguageSection>
 
-### Point's location relative to polygon
+# Point's Location Relative to Polygon
 
 <FocusProblem problem="polygon2" />
+
+## Explanation
 
 We can cast a ray from the point $P$ going in any fixed direction (people usually go to the right).
 If the point is located on the outside of the polygon the ray will intersect its edges an even number of times.
@@ -218,7 +267,7 @@ If the point is on the inside of the polygon then it will intersect the edge an 
 
 This approach is called [ray casting](https://en.wikipedia.org/wiki/Point_in_polygon).
 
-#### Implementation
+## Implementation
 
 <LanguageSection>
 <CPPSection>
@@ -292,8 +341,11 @@ int main() {
 </CPPSection>
 </LanguageSection>
 
-### Lattice points in polygon
+# Lattice points in polygon
+
 <FocusProblem problem="latticepoints" />
+
+## Explanation
 
 Let's first focus on the lattice points on the polygon's boundary. We'll process each edge individually. The number of intersections of a line with lattice points is the greatest
 common divisor of $P_1.x - P_2.x$ and $P_1.y - P_2.y$.
@@ -312,10 +364,11 @@ Let's denote $A$ polygon's area, $i$ the number of integer points inside and $b$
 equation: $A = i + b/2 - 1$. Changing the order a little bit to get $i = A - b/2 + 1$. We've found $b$ and, as you've probably already solved [Polygon Area](https://cses.fi/problemset/task/2191) from above,
 $A$ can be computed using cross-product.
 
-#### Implementation
+## Implementation
 
 <LanguageSection>
 <CPPSection>
+
 ```cpp
 #include <bits/stdc++.h>
 
@@ -356,52 +409,80 @@ int main() {
 	cout << interior_points << ' ' << boundary_points;
 }
 ```
+
 </CPPSection>
 </LanguageSection>
 
 <Problems problems="standard" />
 
-## Resources
+# Angles
 
-<Resources>
-	<Resource source="CF" title="C++ - std::complex" url="22175" starred>
-		short description of operations
-	</Resource>
-	<Resource source="CPH" title="29 - Geometry" starred>
-		Complex #s, Points & Lines, Polygons, Distances
-	</Resource>
-	<Resource source="CF" title="Point Struct" url="48122" starred>
-		code, examples
-	</Resource>
-	<Resource
-		source="cp-algo"
-		title="Geometry - Elementary Operations"
-		url="https://cp-algorithms.com/"
-		starred
-	 />
-	<Resource source="CPC" title="12 - geometry" url="12_geometry" starred>
-		basics, polygon area, point in polygon
-	</Resource>
-	<Resource
-		source="CF"
-		title="vlecomte - Geometry Handbook"
-		url="59129"
-		starred
-	>
-		some material is quite advanced
-	</Resource>
-	<Resource source="CP2" title="7.2, 7.3 - Basic Geo, Polygons"/>
-</Resources>
+<FocusProblem problem="radians" />
 
-<!-- 	<Resource
-		source="TC"
-		title="Basic Geometry Concepts Pts 1,2"
-		url="geometry-concepts-basic-concepts"
-	>
-		broken code format
-	</Resource> -->
+## Explanation
 
-- [My Templates](<https://github.com/bqi343/USACO/tree/master/Implementations/content/geometry%20(13)/Primitives>)
+Working with angles only makes sense in the context of lines and segments. Therefore, let's consider the segments
+connecting the initial position and each dot: $(pos_x, pos_y)-(x, y)$. One such segment is inside the field of
+view if and only if its slope is bigger than the lower bound and smaller than the upper bound. Since we're
+working with angles, we'll convert the slopes into radians.
+
+Consider $\alpha$ as the angle formed by one line with the $\texttt{ox}$ axis. Then we have:
+$$
+\texttt{slope}=\frac{\Delta y}{\Delta x}=\tg{\alpha} \\
+\alpha=\arctg{\frac{\Delta y}{\Delta x}}
+$$
+
+The movement of the field of view can be seen as a [sliding window](/gold/sliding-window) applied
+on the sorted angles of the points. The angle of the field of vies could be large enough to see
+points from the beginning of the sorted array, thus the array of angles should be duplicated - cyclic array.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+class Solution {
+  public:
+	int visiblePoints(vector<vector<int>> &points, int angle,
+	                  vector<int> &location) {
+		int extra = 0;
+		vector<double> angles;
+		for (const vector<int> &p : points) {
+			// Ignore points identical to location
+			if (p == location) {
+				extra++;
+				continue;
+			}
+			// Take the arctg in radians
+			angles.push_back(atan2(p[1] - location[1], p[0] - location[0]));
+		}
+
+		// Sort agngles
+		sort(angles.begin(), angles.end());
+		// Duplicate the array and add 2*PI to the angles
+		for (int i = 0; i < (int)points.size(); i++) {
+			angles.push_back(angles[i] + 2 * M_PI);
+		}
+
+		int ans = 0;
+		double angle_radians = M_PI * angle / 180;
+		// Sliding window
+		for (int r = 0, l = 0; r < (int)angles.size(); r++) {
+			// Pop all the points out of the field of view
+			while (angles[r] - angles[l] > angle_radians) { l++; }
+			ans = max(ans, r - l + 1);
+		}
+
+		return ans + extra;
+	}
+};
+```
+
+</CPPSection>
+</LanguageSection>
 
 ## Misc Problems
 
