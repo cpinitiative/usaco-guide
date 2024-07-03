@@ -48,11 +48,8 @@ int main() {
 	int r, c, n;
 	cin >> r >> c >> n;
 	vector<Point> points(n);
-	/*
-	 *	Instead of using a map - adding this way logN to the complexity -
-	 *  use a simple hashtable. The coordinates' small values allows us
-	 *  to simply concatenate the abscissa and ordinate.
-	 */
+
+	// Hashing a struct is too complicated, so let's use a boolean array
 	array<bool, 100000000> seen;
 	auto hash = [&](const Point &p) -> int { return p.x * 10000 + p.y; };
 	for (Point &p : points) {
