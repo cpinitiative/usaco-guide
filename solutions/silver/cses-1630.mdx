@@ -14,6 +14,44 @@ Notice that the meta is to process shorter tasks before longer tasks.
 For some intuition regarding this, think of two tasks that take $5$ and $7$ time units to complete.
 No matter what their respective rewards are, it's always optimal to complete the shorter task first.
 
+<Spoiler title="Example">
+Let's consider an example, where we are given 3 durations and deadlines and we need to find the maximum reward:
+
+<center>
+| Duration | Deadline |
+| -------- | -------- |
+|  6	   |	10	  |
+|  8	   |	15	  |
+|  5	   |	12	  |
+
+</center>
+
+From our intuition, the formula for calculating the maximum reward will look something like this:
+
+$$
+(currentDeadline_1 - prefixSumDuration_1) + (currentDeadline_2 - prefixSumDuration_2) + .... + (currentDeadline_n - prefixSumDuration_n) 
+$$
+
+There are three scenarios to consider:
+
+- If we don't sort them and process them as they are, then our reward will be:
+   $$
+   (10 - 6) + (15 - 14) + (12 - 19) = -4
+   $$
+
+- If we sort them in decreasing order of duration, then our reward will be:
+	$$
+	(15 - 8) + (10 - 14) + (12 - 19) = -4
+	$$
+
+- If we sort them in increasing order of duration, then our reward will be:
+    $$
+	(12 - 5) + (10 - 11) + (15 - 19) = 2
+	$$
+
+Thus, from the above scenarios, we conclude that to get the maximum reward, we must sort them in increasing order of duration.
+</Spoiler>
+
 ## Implementation
 
 **Time complexity:** $\mathcal{O} (N \log N)$
