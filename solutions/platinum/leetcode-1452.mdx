@@ -9,3 +9,51 @@ author: Mihnea Brebenel
 
 
 ## Implementation
+
+<LanguageSection>
+<CPPSection>
+
+```cpp 
+class Solution {
+public:
+    int numPoints(vector<vector<int>>& darts, int r) {
+        vector<vector<double>> dist((int)darts.size(), vector<double>((int)darts.size()));
+		// Compute the distance between points
+		for(int i = 0; i < (int)darts.size(); i++) {
+			for(int j = i + 1; j < (int)darts.size(); j++) {
+				int dx = darts[i][0] - darts[j][0];
+				int dy = darts[i][1] - darts[j][1];
+				dist[i][j] = dist[j][i] = sqrt(dx * dx + dy * dy);
+			}
+		}
+		int ans = 1;
+		for(int i = 0; i < (int)darts.size(); i++) {
+			// Store the angles of other points relative to darts[i]
+			vector<pair<double, bool>> angles;
+			for(int j = 0; j < (int)darts.size(); j++) {
+				// Continue if it's the same point or if it lies outside any circle
+				if(i == j || dist[i][j] > 2 * r) { continue; }
+				double a = atan2(darts[j][1] - darts[i][1], darts[j][0] - darts[i][0]);
+                double b = acos(dist[i][j] / (2.0*r));
+				double alpha = a - b, beta = a + b;
+				// The angle at which the point enters the circle
+				angles.push_back({alpha, false});
+				// The angle at which the point leaves the circle
+				angles.push_back({beta, true});
+			}
+			// Sort all the angles
+			sort(angles.begin(), angles.end());
+			int active_points = 1;
+			for(const pair<double, int> &angle : angles) {
+                if(angle.second == false) active_points++;
+                else active_points--;
+				ans = max(ans, active_points);	
+			}
+		}
+		return ans;
+    }
+};
+```
+
+</CPPSection>
+</LanguageSection>
