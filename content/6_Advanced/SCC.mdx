@@ -35,6 +35,12 @@ In the first phase, the algorithm performs a depth-first search (DFS) on the ori
 
 In the second phase, the algorithm conducts another DFS, this time on the transposed graph, where all edges are reversed. The DFS processes nodes according to the order defined by the stack from the first phase. By reversing the edges and following this specific order, each DFS run in this phase can identify all vertices of one SCC before moving on to the next. This ensures that the SCCs are accurately and efficiently determined.
 
+**Reason:** The transposed graph will have the same SCCs as the original because reversing an edge doesn't change the reachability between two nodes. Since each SCC is maximal and disjoint, reversing edges doesn't break any connections in the original graph.
+
+During the second DFS, we process the vertices in the order determined by the stack from the first phase. This ensures that we start with the vertex that finished last in the initial DFS, which is guaranteed to be part of an SCC with no outgoing edges to other SCCs—essentially making it a "sink" in the transposed graph.
+
+By processing the vertices in this specific order, we fully explore all vertices within the current SCC before moving on to the next one. SCCs are maximal subgraphs where every vertex can reach every other vertex within the same subgraph, so the DFS will traverse through all nodes in an SCC, isolating it completely. Once the entire SCC is processed, we move to the next highest exit time vertex that hasn’t been visited yet, ensuring that each SCC is handled independently and thoroughly.
+
 For a visual representation that clarifies this process, please refer to [this guide](https://www.topcoder.com/thrive/articles/kosarajus-algorithm-for-strongly-connected-components).
 
 ## Implementation
