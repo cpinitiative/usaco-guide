@@ -6,15 +6,21 @@ author: Rameez Parwez
 ---
 
 ## Explanation
-The idea is to maintain two pointers, `i` and `j`, which will initially point to the first array element. Pointer `j` will iterate through the array until it reaches `n`, and during this process, we will keep incrementing the sum by `arr[j]`. If the sum becomes greater than $x$, we will keep decrementing the sum by `arr[i]` and keep incrementing `i` until the sum becomes less than or equal to $x$. Finally, we will increment our result if the sum becomes equal to $x$.
+
+This problem can be solved with two pointers.
+We increment the left pointer when the sum is too large, and increment the right one when it's too small.
+When we have a valid subarray during an iteration, we add one to our answer.
 
 ## Implementation
-**Time complexity:** $\mathcal{O} (n)$
+
+**Time Complexity:** $\mathcal{O}(N)$
 
 <LanguageSection>
 <CPPSection>
+
 ```cpp
-#include <bits/stdc++.h>
+#include <iostream>
+#include <vector>
 
 int main() {
 	int n, x;
@@ -34,13 +40,14 @@ int main() {
 		res += (sum == x);
 		j++;
 	}
-	std::cout << res << '\n';
-	return 0;
+
+	std::cout << res << std::endl;
 }
 ```
-</CPPSection>
 
+</CPPSection>
 <PySection>
+
 ```py
 n, x = map(int, input().split())
 arr = list(map(int, input().split()))
@@ -59,5 +66,6 @@ while j < n:
 
 print(res)
 ```
+
 </PySection>
 </LanguageSection>
