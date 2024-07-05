@@ -57,11 +57,11 @@ or *disk partial covering problem*.
 class Solution {
   public:
 	int numPoints(vector<vector<int>> &darts, int r) {
-		vector<vector<double>> dist((int)darts.size(),
-		                            vector<double>((int)darts.size()));
+		vector<vector<double>> dist(darts.size(),
+		                            vector<double>(darts.size()));
 		// Compute the distance between points
-		for (int i = 0; i < (int)darts.size(); i++) {
-			for (int j = i + 1; j < (int)darts.size(); j++) {
+		for (int i = 0; i < darts.size(); i++) {
+			for (int j = i + 1; j < darts.size(); j++) {
 				int dx = darts[i][0] - darts[j][0];
 				int dy = darts[i][1] - darts[j][1];
 				dist[i][j] = dist[j][i] = sqrt(dx * dx + dy * dy);
@@ -69,10 +69,10 @@ class Solution {
 		}
 
 		int ans = 1;
-		for (int i = 0; i < (int)darts.size(); i++) {
+		for (int i = 0; i < darts.size(); i++) {
 			// Store the angles of other points relative to darts[i]
 			vector<pair<double, bool>> angles;
-			for (int j = 0; j < (int)darts.size(); j++) {
+			for (int j = 0; j < darts.size(); j++) {
 				// Continue if it's the same point or if it lies outside any
 				// circle
 				if (i == j || dist[i][j] > 2 * r) { continue; }
@@ -96,6 +96,7 @@ class Solution {
 				ans = max(ans, active_points);
 			}
 		}
+
 		return ans;
 	}
 };
