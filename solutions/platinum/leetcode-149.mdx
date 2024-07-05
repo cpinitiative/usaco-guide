@@ -53,4 +53,35 @@ class Solution {
 ```
 
 </CPPSection>
+<JavaSection>
+
+```java
+class Solution {
+	public int maxPoints(int[][] points) {
+		if (points.length <= 2) { return points.length; }
+
+		int ans = 0;
+		for (int i = 0; i < points.length; i++) {
+			for (int j = i + 1; j < points.length; j++) {
+				int p = 2;  // the 2 points are collinear with themselves
+				for (int k = j + 1; k < points.length; k++) {
+					int dx1 = points[i][0] - points[k][0];
+					int dx2 = points[j][0] - points[i][0];
+					int dy1 = points[i][1] - points[k][1];
+					int dy2 = points[j][1] - points[i][1];
+					// Check if dy1 / dx1 = dy2 / dx2
+					// Which is the same as: dy1 * dx2 = dy2 * dx1
+					if (dy1 * dx2 == dy2 * dx1) { p++; }
+				}
+
+				ans = Math.max(ans, p);
+			}
+		}
+
+		return ans;
+	}
+}
+```
+
+</JavaSection>
 </LanguageSection>

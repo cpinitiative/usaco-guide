@@ -1,0 +1,135 @@
+---
+id: cses-1630
+source: cses
+title: Tasks & Deadlines
+author: Rameez Parwez
+---
+
+[Unofficial Analysis](https://usaco.guide/CPH.pdf#p=70)
+
+## Explanation
+
+Notice that the meta is to process shorter tasks before longer tasks.
+
+For some intuition regarding this, think of two tasks that take $5$ and $7$ time units to complete.
+Notice that no matter what the deadlines are,
+it's always optimal to complete the shorter task first.
+
+To prove this more concretely, let's take $n$ tasks,
+with durations $t_1, t_2, \cdots, t_n$ and deadlines $d_1, d_2, \cdots, d_n$.
+Say we complete them in an order such that $a_i$ is the number of the $i$th
+task completed, making $a_1, a_2, \cdots, a_n$ a permutation of $1$ through $n$.
+
+The final reward is then
+$$
+(d_{a_1}-t_{a_1})+(d_{a_2}-(t_{a_1}+t_{a_2}))+\cdots+\left(d_{a_n}-\sum_{i=1}^n t_{a_i}\right)
+$$
+
+Rearranging the formula, we can get
+$$
+\sum_{i=1}^n d_{a_i} - \sum_{i=1}^n t_{a_i}(n+1-i)
+$$
+Try expanding them to see why these two are equal!
+
+From this, we can see that we must minimize smaller values of $i$,
+which is then equivalent to processing shorter tasks first.
+
+## Implementation
+
+**Time complexity:** $\mathcal{O} (N \log N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <algorithm>
+#include <iostream>
+#include <vector>
+
+using std::cout;
+using std::endl;
+
+int main() {
+	int task_num;
+	std::cin >> task_num;
+	std::vector<std::pair<int, int>> tasks(task_num);
+	for (auto &[duration, deadline] : tasks) {
+		std::cin >> duration >> deadline;
+	}
+
+	std::sort(tasks.begin(), tasks.end());
+
+	long long time = 0;
+	long long reward = 0;
+	for (const auto &[duration, deadline] : tasks) {
+		time += duration;
+		reward += deadline - time;
+	}
+
+	cout << reward << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class TasksNDeadlines {
+	public static void main(String[] args) throws IOException {
+		BufferedReader read =
+		    new BufferedReader(new InputStreamReader(System.in));
+		int taskNum = Integer.parseInt(read.readLine());
+		int[][] tasks = new int[taskNum][];
+		for (int t = 0; t < taskNum; t++) {
+			StringTokenizer task = new StringTokenizer(read.readLine());
+			tasks[t] = new int[] {
+			    Integer.parseInt(task.nextToken()),  // duration
+			    Integer.parseInt(task.nextToken())   // deadline
+			};
+		}
+
+		Arrays.sort(tasks, Comparator.comparingInt(t -> t[0]));
+
+		long time = 0;
+		long reward = 0;
+		for (int[] t : tasks) {
+			time += t[0];
+			reward += t[1] - time;
+		}
+
+		System.out.println(reward);
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+<Warning>
+
+Due to Python's constant factor, the below code may TLE on a couple of test cases.
+
+</Warning>
+
+```py
+tasks = []
+for _ in range(int(input())):
+	duration, deadline = [int(i) for i in input().split()]
+	tasks.append((duration, deadline))
+
+tasks.sort()
+
+time = 0
+reward = 0
+for duration, deadline in tasks:
+	time += duration
+	reward += deadline - time
+
+print(reward)
+```
+
+</PySection>
+</LanguageSection>
