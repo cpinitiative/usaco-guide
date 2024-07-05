@@ -67,6 +67,7 @@ class Solution {
 				dist[i][j] = dist[j][i] = sqrt(dx * dx + dy * dy);
 			}
 		}
+
 		int ans = 1;
 		for (int i = 0; i < (int)darts.size(); i++) {
 			// Store the angles of other points relative to darts[i]
@@ -75,8 +76,7 @@ class Solution {
 				// Continue if it's the same point or if it lies outside any
 				// circle
 				if (i == j || dist[i][j] > 2 * r) { continue; }
-				double a =
-				    atan2(darts[j][1] - darts[i][1], darts[j][0] - darts[i][0]);
+				double a = atan2(darts[j][1] - darts[i][1], darts[j][0] - darts[i][0]);
 				double b = acos(dist[i][j] / (2.0 * r));
 				double alpha = a - b, beta = a + b;
 				// The angle at which the point enters the circle
@@ -84,8 +84,10 @@ class Solution {
 				// The angle at which the point leaves the circle
 				angles.push_back({beta, true});
 			}
+
 			// Sort all the angles
 			sort(angles.begin(), angles.end());
+
 			int active_points = 1;
 			for (const pair<double, int> &angle : angles) {
 				if (angle.second == false) active_points++;
