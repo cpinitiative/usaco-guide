@@ -15,7 +15,26 @@ how the sweeping works:
 ![angular-sweep](./leetcode-1453/angular-sweep.png)
 
 The sweeping around point $p$ can be done in $\mathcal{o}(N \cdot \log{N})$ by 
-computing of each point the angle of entering and exiting the circle.
+computing of each point the angle of entering and exiting the circle and then
+traverse the sorted array of angles. The considered angles will be relative 
+to the center of the circle. Let's analyze how to find the entrace angle for
+a point:
+
+![angular-sweep](./leetcode-1453/angular-sweep-enter.png)
+<i><center>$O$ - circle's center; $Q$- arbitrary chosen point; $r$ - radius of circle; $a, b, \alpha$ - angles</center></i>
+
+We'll express the values of the angles in radians. The angle of entering in this case is $\alpha$
+which can be expressed as: $\alpha = b - a$. Angle $a$ is right above the x-axis so it's just take $\arctg$.
+Consider that $b=\angle{QPO}$ is an angle in the right triangle $\triangleQPL$, where $L$ is the dimetral opposite point of $P$ on the 
+circle, therefore $\angle{PQL}=90\degree$. In this case, knowing that $PL=2 \cdot r$ - diameter - and $PQ=\texttt{dist}(P,Q)$, the angles $B$
+can be conveniently expressed
+Thus, The angles $a, b$ have the following formulas:
+
+$$
+a=\arctg{\frac{Q_y-P_y}{Q_x-P_x}}\\
+b=\arccos{\frac{dist(P,Q)}{2 \cdot r}}
+$$
+
 
 This algorithm is called [angular sweep](https://www.geeksforgeeks.org/angular-sweep-maximum-points-can-enclosed-circle-given-radius/).
 
