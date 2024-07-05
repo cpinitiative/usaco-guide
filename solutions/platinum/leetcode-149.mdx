@@ -57,30 +57,29 @@ class Solution {
 ```java
 
 class Solution {
-    public int maxPoints(int[][] points) {
-        int n = points.length;
-        if(n<=2) { return n; }
+	public int maxPoints(int[][] points) {
+		int n = points.length;
+		if (n <= 2) { return n; }
 
-        int ans = 0;
-        for(int i = 0;i<n;i++){
-            for(int j = i+1;j<n;j++){
-                int p = 2; // the 2 points are collinear with themselves
-                for(int k = j+1;k<n;k++){
-                    int dx1 = points[i][0] - points[k][0];
-                    int dx2 = points[j][0] - points[i][0];
-                    int dy1 = points[i][1] - points[k][1];
+		int ans = 0;
+		for (int i = 0; i < n; i++) {
+			for (int j = i + 1; j < n; j++) {
+				int p = 2;  // the 2 points are collinear with themselves
+				for (int k = j + 1; k < n; k++) {
+					int dx1 = points[i][0] - points[k][0];
+					int dx2 = points[j][0] - points[i][0];
+					int dy1 = points[i][1] - points[k][1];
 					int dy2 = points[j][1] - points[i][1];
-                    // Check if dy1 / dx1 = dy2 / dx2
+					// Check if dy1 / dx1 = dy2 / dx2
 					// Which is the same as: dy1 * dx2 = dy2 * dx1
-                    if (dy1 * dx2 == dy2 * dx1) { p++; }
-                }
-                ans = Math.max(ans,p);
-            }
-        }
-        return ans;
-    }
+					if (dy1 * dx2 == dy2 * dx1) { p++; }
+				}
+				ans = Math.max(ans, p);
+			}
+		}
+		return ans;
+	}
 }
-
 ```
 </JavaSection>
 </LanguageSection>
