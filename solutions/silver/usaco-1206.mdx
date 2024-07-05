@@ -55,7 +55,7 @@ void dfs(int node) {
 	path.push_back(node);
 }
 
-void dfs2(int node, vector<int>& comp_nodes) {
+void dfs2(int node, vector<int> &comp_nodes) {
 	vis2[node] = true;
 	for (int i : revgraph[node]) {
 		if (!vis2[i]) { dfs2(i, comp_nodes); }
@@ -96,19 +96,17 @@ int main() {
 			 * If a gift is found in its preference and also in the SCC,
 			 * just assign the it to the cow.
 			 */
-			for (int j: comp_nodes) {
+			for (int j : comp_nodes) {
 				if (comp[j]) {
 					for (int k : graph[j]) {
 						if (comp[k]) {
 							ans[j] = k;
 							break;
 						}
-					}	
+					}
 				}
 			}
-			for (int j: comp_nodes) {
-				comp[j] = false;
-			}
+			for (int j : comp_nodes) { comp[j] = false; }
 		}
 	}
 
