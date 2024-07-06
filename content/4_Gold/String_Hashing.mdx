@@ -448,7 +448,7 @@ int main() {
   <Resource source="CF" title="XOR Hashing [TUTORIAL]" url = "https://codeforces.com/blog/entry/85900"></Resource>
 </Resources>
 
-Hashing can also be used to check if sets of elements are equal. To do this, we first randomly generate a hash value for each unique element. Typically, the hash value is an integer in the range $[0, 2^{63}-1]$ since $2^{63}-1$ is the maximum value of a 64-bit signed integer. The hash of a set $S$ is the XOR sum of the hash values of all the elements in $S$. Since $x \oplus x = 0$ for all $x$, we can delete an element $s$ from set $S$ by applying the hash value of $s$ again on the hash.
+Hashing can also be used to check if sets of elements are equal. To do this, we first randomly generate a hash value for each unique element. Typically, the hash value is an integer in the range $[0, 2^{63}-1]$ since $2^{63}-1$ is the maximum value of a 64-bit signed integer. The hash of a set $S$ is the XOR sum of the hash values of all the elements in $S$. Since $x \oplus x = 0$ for all $x$, we can delete an element $s$ from set $S$ by applying the hash value of $s$ again on the hash. The probability of a collision of $N$ sets is approximately $\frac{N^2}{M}$, where $M$ is the maximum possible hash value.
 
 <FocusProblem problem="exxor" />
 
@@ -459,6 +459,7 @@ To deal with duplicate elements, we set $\texttt{hasha}[i] = 0$ if the first occ
 
 Let $\texttt{prefa}$ and $\texttt{prefb}$ be the prefix XOR array of $\texttt{hasha}$ and $\texttt{hashb}$, respectively. Answering queries now just requires checking if $\texttt{prefa}[x] = \texttt{prefb}[y]$.
 
+**Time Complexity:** $\mathcal{O}(N\log N + Q)$
 <LanguageSection>
 
 <CPPSection>
