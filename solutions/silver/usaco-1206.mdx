@@ -27,7 +27,7 @@ because it must contain at least one outgoing edge from $i$. If a cow does not b
 
 [Kosaraju's algorithm](https://en.wikipedia.org/wiki/Kosaraju's_algorithm) can be used to find all SCCs in the graph. At the end, it is optimal to just go down cow $i$'s preference list and assign the first gift belonging in the SCC.
 
-**Time Complexity:** $\mathcal{O}(N^3)$
+**Time Complexity:** $\mathcal{O}(N^2)$
 
 <LanguageSection>
 <CPPSection>
@@ -43,8 +43,8 @@ vector<int> graph[N], revgraph[N];
 vector<bool> vis(N), vis2(N);
 vector<int> path;
 
-// Stores all nodes in a SCC
-set<int> comp;
+// comp[i] = true if i is in component
+vector<bool> comp(N);
 
 // DFS functions for Kosaraju's
 void dfs(int node) {
@@ -55,12 +55,13 @@ void dfs(int node) {
 	path.push_back(node);
 }
 
-void dfs2(int node) {
+void dfs2(int node, vector<int> &comp_nodes) {
 	vis2[node] = true;
 	for (int i : revgraph[node]) {
-		if (!vis2[i]) { dfs2(i); }
+		if (!vis2[i]) { dfs2(i, comp_nodes); }
 	}
-	comp.insert(node);
+	comp[node] = true;
+	comp_nodes.push_back(node);
 }
 
 int main() {
@@ -88,21 +89,22 @@ int main() {
 	vector<int> ans(n + 1);
 	for (int i : path) {
 		if (!vis2[i]) {
-			dfs2(i);
+			vector<int> comp_nodes;
+			dfs2(i, comp_nodes);
 			/*
 			 * Loop over all cows in the SCC and its preference list.
 			 * If a gift is found in its preference and also in the SCC,
 			 * just assign the it to the cow.
 			 */
-			for (int j : comp) {
+			for (int j : comp_nodes) {
 				for (int k : graph[j]) {
-					if (comp.count(k)) {
+					if (comp[k]) {
 						ans[j] = k;
 						break;
 					}
 				}
 			}
-			comp.clear();
+			for (int j : comp_nodes) { comp[j] = false; }
 		}
 	}
 
