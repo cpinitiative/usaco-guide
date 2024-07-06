@@ -470,71 +470,59 @@ Let $\texttt{prefa}$ and $\texttt{prefb}$ be the prefix XOR array of $\texttt{ha
 using namespace std;
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 long long rnd() {
-    return uniform_int_distribution<long long>(0, LLONG_MAX)(rng);
+	return uniform_int_distribution<long long>(0, LLONG_MAX)(rng);
 }
 
 void solve() {
-    int N, Q;
-    cin >> N;
-    vector<long long> hasha(N), hashb(N);
-    map<int, long long> hashval;
-    set<int> s;
-    for (int i = 0; i < N; i++) {
-        int x;
-        cin >> x;
-        if (!hashval.contains(x)) {
-            hashval[x] = rnd();
-        }
+	int N, Q;
+	cin >> N;
+	vector<long long> hasha(N), hashb(N);
+	map<int, long long> hashval;
+	set<int> s;
+	for (int i = 0; i < N; i++) {
+		int x;
+		cin >> x;
+		if (!hashval.contains(x)) { hashval[x] = rnd(); }
 
-        if (!s.contains(x)) {
-            hasha[i] = hashval[x];
-        }
+		if (!s.contains(x)) { hasha[i] = hashval[x]; }
 
-        if (i != 0) {
-            hasha[i] ^= hasha[i - 1];
-        }
+		if (i != 0) { hasha[i] ^= hasha[i - 1]; }
 
-        s.insert(x);
-    }
+		s.insert(x);
+	}
 
-    s.clear();
-    for (int i = 0; i < N; i++) {
-        int x;
-        cin >> x;
-        if (!hashval.contains(x)) {
-            hashval[x] = rnd();
-        }
+	s.clear();
+	for (int i = 0; i < N; i++) {
+		int x;
+		cin >> x;
+		if (!hashval.contains(x)) { hashval[x] = rnd(); }
 
-        if (!s.contains(x)) {
-            hashb[i] = hashval[x];
-        }
+		if (!s.contains(x)) { hashb[i] = hashval[x]; }
 
-        if (i != 0) {
-            hashb[i] ^= hashb[i - 1];
-        }
+		if (i != 0) { hashb[i] ^= hashb[i - 1]; }
 
-        s.insert(x);
-    }
+		s.insert(x);
+	}
 
-    cin >> Q;
-    for (int i = 0; i < Q; i++) {
-        int x, y;
-        cin >> x >> y;
-        x--, y--;
-        if (hasha[x] == hashb[y]) {
-            cout << "Yes\n";
-        }
+	cin >> Q;
+	for (int i = 0; i < Q; i++) {
+		int x, y;
+		cin >> x >> y;
+		x--, y--;
+		if (hasha[x] == hashb[y]) {
+			cout << "Yes\n";
+		}
 
-        else {
-            cout << "No\n";
-        }
-    }
+		else {
+			cout << "No\n";
+		}
+	}
 }
 
 int32_t main() {
-    std::ios::sync_with_stdio(false);
-    cin.tie(NULL);
-    solve();
+	std::ios::sync_with_stdio(false);
+	cin.tie(NULL);
+	solve();
 }
 ```
 ## Problems
