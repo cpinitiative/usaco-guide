@@ -7,10 +7,10 @@ author: Mihnea Brebenel
 
 ## Explanation
 
-The general idea is the following: place each point on the circle boundary,
-then sweep - or rotate - the circle around the point to see the maximum
-number of points that can be inside the circle. The picture below depicts
-how the sweep works:
+The general idea is the following: we can try finding the answer for each 
+point by placing it on the circle's boundary, then sweep - or rotate - 
+the circle around the point to see the maximum number of points that can be inside the circle. 
+The picture below depicts how the sweep works:
 
 ![angular-sweep](./leetcode-1453/angular-sweep.png)
 
@@ -41,7 +41,7 @@ With the same notations as the previous one - $a, b$ having the same formulas - 
 ![angular-sweep-exit](./leetcode-1453/angular-sweep-exit.png)
 <i><center>$O$ - circle's center; $Q$- arbitrary chosen point; $r$ - radius of circle; $a, b, \alpha$ - angles</center></i>
 
-It can be easily observed that: $\beta = a + b$.
+It can be observed that: $\beta = a + b$.
 
 This algorithm is known as [angular sweep](https://www.geeksforgeeks.org/angular-sweep-maximum-points-can-enclosed-circle-given-radius/)
 or *disk partial covering problem*.
@@ -90,8 +90,11 @@ class Solution {
 
 			int active_points = 1;
 			for (const pair<double, int> &angle : angles) {
-				if (angle.second == false) active_points++;
-				else active_points--;
+				if (angle.second == false) {
+					active_points++;
+				} else {
+					active_points--;
+				}
 				ans = max(ans, active_points);
 			}
 		}
