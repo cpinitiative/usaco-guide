@@ -1,15 +1,17 @@
 ---
-id: string-hashing
-title: 'String Hashing'
-author: Benjamin Qi, Andi Qu
+id: hashing
+title: 'Hashing'
+author: Benjamin Qi, Andi Qu, Peng Bai
 contributors: Andrew Wang, Kevin Sheng
 description:
-  'Quickly testing equality of substrings with a small probability of failure.'
+  'Quickly testing equality of substrings or sets with a small probability of failure.'
 frequency: 1
 prerequisites:
   - modular
+  - intro-bitwise
 ---
 
+## String Hashing
 ## Tutorial
 
 <Resources>
@@ -440,6 +442,106 @@ int main() {
 ## Problems
 
 <Problems problems="general" />
+## XOR Hashing/Zobrist Hashing
+## Tutorial
+<Resources>
+  <Resource source="CF" title="XOR Hashing [TUTORIAL]" url = "https://codeforces.com/blog/entry/85900"></Resource>
+</Resources>
+
+Hashing can also be used to check if sets of elements are equal. To do this, we first randomly generate a hash value for each unique element. Typically, the hash value is an integer in the range $[0, 2^{63}-1]$ since $2^{63}-1$ is the maximum value of a 64-bit signed integer. The hash of a set $S$ is the XOR sum of the hash values of all the elements in $S$. Since $x \oplus x = 0$ for all $x$, we can delete an element $s$ from set $S$ by applying the hash value of $s$ again on the hash.
+
+<FocusProblem problem="exxor" />
+
+### Solution
+We first generate hash values for all values in $a$ and $b$ and store this in a map to make sure equal elements have the same value. Using this map, we can build arrays $\texttt{hasha}$ and $\texttt{hashb}$, corresponding to the hash values at each index for arrays $a$ and $b$, respectively.
+
+To deal with duplicate elements, we set $\texttt{hasha}[i] = 0$ if the first occurrence of $a[i]$ is not at index $i$ in $a$ and $\texttt{hashb}[i] = 0$ if the first occurrence of $b[i]$ is not at index $i$ in $b$ for all $i$. This can be done by maintaining a set of values already encountered.
+
+Let $\texttt{prefa}$ and $\texttt{prefb}$ be the prefix XOR array of $\texttt{hasha}$ and $\texttt{hashb}$, respectively. Answering queries now just requires checking if $\texttt{prefa}[x] = \texttt{prefb}[y]$.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+
+#include "bits/stdc++.h"
+using namespace std;
+mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
+long long rnd() {
+    return uniform_int_distribution<long long>(0, LLONG_MAX)(rng);
+}
+
+void solve() {
+    int N, Q;
+    cin >> N;
+    vector<long long> hasha(N), hashb(N);
+    map<int, long long> hashval;
+    set<int> s;
+    for (int i = 0; i < N; i++) {
+        int x;
+        cin >> x;
+        if (!hashval.contains(x)) {
+            hashval[x] = rnd();
+        }
+
+        if (!s.contains(x)) {
+            hasha[i] = hashval[x];
+        }
+
+        if (i != 0) {
+            hasha[i] ^= hasha[i - 1];
+        }
+
+        s.insert(x);
+    }
+
+    s.clear();
+    for (int i = 0; i < N; i++) {
+        int x;
+        cin >> x;
+        if (!hashval.contains(x)) {
+            hashval[x] = rnd();
+        }
+
+        if (!s.contains(x)) {
+            hashb[i] = hashval[x];
+        }
+
+        if (i != 0) {
+            hashb[i] ^= hashb[i - 1];
+        }
+
+        s.insert(x);
+    }
+
+    cin >> Q;
+    for (int i = 0; i < Q; i++) {
+        int x, y;
+        cin >> x >> y;
+        x--, y--;
+        if (hasha[x] == hashb[y]) {
+            cout << "Yes\n";
+        }
+
+        else {
+            cout << "No\n";
+        }
+    }
+}
+
+int32_t main() {
+    std::ios::sync_with_stdio(false);
+    cin.tie(NULL);
+    solve();
+}
+```
+## Problems
+
+<Problems problems="generalxor" />
+</CPPSection>
+
+</LanguageSection>
 
 <!-- <Warning>
 
