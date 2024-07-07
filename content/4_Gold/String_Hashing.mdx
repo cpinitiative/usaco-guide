@@ -451,11 +451,16 @@ Hashing can also be used to check if sets of elements are equal. To do this, we 
 
 ## Explanation
 
-We first generate hash values for all values in $a$ and $b$ and store this in a map to make sure equal elements have the same value. Using this map, we can build arrays $\texttt{hasha}$ and $\texttt{hashb}$, corresponding to the hash values at each index for arrays $a$ and $b$, respectively.
+For each distinct numerical value in the arrays, we generate a random positive 64-bit integer.
+With this map, we can build the prefix XOR hashes for $a$ and $b$.
 
-To deal with duplicate elements, we set $\texttt{hasha}[i] = 0$ if the first occurrence of $a[i]$ is not at index $i$ in $a$ and $\texttt{hashb}[i] = 0$ if the first occurrence of $b[i]$ is not at index $i$ in $b$ for all $i$. This can be done by maintaining a set of values already encountered.
+An issue we have to deal with is duplicate elements, as XORing an element with
+itself will result in a value of $0$ and will be equivalent it never having
+existed in the first place.
+To fix this, we use a set to detect duplicate subsequent values and only XOR
+an element with the prefix hash if it's new.
 
-Let $\texttt{prefa}$ and $\texttt{prefb}$ be the prefix XOR array of $\texttt{hasha}$ and $\texttt{hashb}$, respectively. Answering queries now just requires checking if $\texttt{prefa}[x] = \texttt{prefb}[y]$.
+Now, to answer a query, we check if the XOR hashes at the given indices are the same.
 
 ## Implementation
 
@@ -465,59 +470,78 @@ Let $\texttt{prefa}$ and $\texttt{prefb}$ be the prefix XOR array of $\texttt{ha
 <CPPSection>
 
 ```cpp
-#include <bits/stdc++.h>
-using namespace std;
+#include <chrono>
+#include <iostream>
+#include <map>
+#include <random>
+#include <set>
+#include <vector>
 
-mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
-long long rnd() {
-	return uniform_int_distribution<long long>(0, LLONG_MAX)(rng);
+using std::cout;
+using std::endl;
+using std::vector;
+
+/** @return a random integer between 0 and INT64_MAX */
+long long rng() {
+    static std::mt19937 gen(std::chrono::steady_clock::now().time_since_epoch().count());
+	return std::uniform_int_distribution<long long>(0, INT64_MAX)(gen);
 }
 
 int main() {
-	std::ios::sync_with_stdio(false);
-	cin.tie(NULL);
+    int len;
+    std::cin >> len;
 
-	int N, Q;
-	cin >> N;
-	vector<long long> hasha(N), hashb(N);
-	map<int, long long> hashval;
-	set<int> s;
-	for (int i = 0; i < N; i++) {
-		int x;
-		cin >> x;
-		if (!hashval.contains(x)) { hashval[x] = rnd(); }
+    std::map<int, long long> hash_vals;
+    vector<int> a(len);
+    for (int& i : a) {
+        std::cin >> i;
+		// assign a hash value to each unique number in the array
+        if (!hash_vals.count(i)) {
+            hash_vals[i] = rng();
+        }
+    }
+    vector<int> b(len);
+    for (int& i : b) {
+        std::cin >> i;
+        if (!hash_vals.count(i)) {
+            hash_vals[i] = rng();
+        }
+    }
 
-		if (!s.contains(x)) { hasha[i] = hashval[x]; }
+    std::set<int> seen;
+    vector<long long> a_xor(len);
+    for (int i = 0; i < len; i++) {
+		// only add to prefix xor if not encountered before
+        if (!seen.count(a[i])) {
+            a_xor[i] = hash_vals[a[i]];
+            seen.insert(a[i]);
+        }
+        if (i > 0) {
+            a_xor[i] ^= a_xor[i - 1];
+        }
+    }
 
-		if (i != 0) { hasha[i] ^= hasha[i - 1]; }
+    seen.clear();
+	// do the same thing for b
+    vector<long long> b_xor(len);
+    for (int i = 0; i < len; i++) {
+        if (!seen.count(b[i])) {
+            b_xor[i] = hash_vals[b[i]];
+            seen.insert(b[i]);
+        }
+        if (i > 0) {
+            b_xor[i] ^= b_xor[i - 1];
+        }
+    }
 
-		s.insert(x);
-	}
-
-	s.clear();
-	for (int i = 0; i < N; i++) {
-		int x;
-		cin >> x;
-		if (!hashval.contains(x)) { hashval[x] = rnd(); }
-
-		if (!s.contains(x)) { hashb[i] = hashval[x]; }
-
-		if (i != 0) { hashb[i] ^= hashb[i - 1]; }
-
-		s.insert(x);
-	}
-
-	cin >> Q;
-	for (int i = 0; i < Q; i++) {
-		int x, y;
-		cin >> x >> y;
-		x--, y--;
-		if (hasha[x] == hashb[y]) {
-			cout << "Yes\n";
-		} else {
-			cout << "No\n";
-		}
-	}
+    int query_num;
+    std::cin >> query_num;
+    for (int q = 0; q < query_num; q++) {
+        int a_set, b_set;
+        std::cin >> a_set >> b_set;
+		// check if the prefix xors are equal
+        cout << (a_xor[--a_set] == b_xor[--b_set] ? "Yes" : "No") << '\n';
+    }
 }
 ```
 
