@@ -165,7 +165,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
     {
       name: 'Additional Topics',
       description: 'Rarely required.',
-      items: ['string-hashing', 'hashmaps', 'meet-in-the-middle'],
+      items: ['hashing', 'hashmaps', 'meet-in-the-middle'],
     },
     {
       name: 'Conclusion',
@@ -283,7 +283,7 @@ export const SECTION_SEO_DESCRIPTION: { [key in SectionID]: string } = {
     'Topics for USACO Bronze include time complexity, data structures, sorting, simulation, complete search, ad hoc, greedy, graphs, rectangle geometry, sets and maps, and recursion.',
   silver:
     'Topics for USACO Silver include binary search on the answer, prefix sums, two pointers, dfs, floodfill, trees, custom comparators, greedy with sorting, and more!',
-  gold: 'Topics for USACO Gold include dynamic programming, union-find, shortest paths, point update range sum, topological sort, minimum spanning trees, euler tour, string hashing, and more!',
+  gold: 'Topics for USACO Gold include dynamic programming, union-find, shortest paths, point update range sum, topological sort, minimum spanning trees, euler tour, hashing, and more!',
   plat: 'Topics for USACO Platinum include segment trees, advanced tree techniques, advanced dynamic programming, computational geometry, matrix exponentiation, and more!',
   adv: 'Topics usually outside the scope of most USACO contests include segment tree beats, treaps, slope trick, strongly connected components, max-flow, suffix arrays, fast fourier transform, and more!',
 };

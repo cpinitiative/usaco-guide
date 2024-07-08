@@ -1,0 +1,71 @@
+---
+id: cses-1660
+source: cses
+title: Subarray Sums I
+author: Rameez Parwez
+---
+
+## Explanation
+
+This problem can be solved with two pointers.
+We increment the left pointer when the sum is too large, and increment the right one when it's too small.
+When we have a valid subarray during an iteration, we add one to our answer.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <vector>
+
+int main() {
+	int n, x;
+	std::cin >> n >> x;
+	std::vector<int> arr(n);
+	for (int i = 0; i < n; i++) { std::cin >> arr[i]; }
+
+	int i = 0, j = 0;
+	int res = 0;
+	long long sum = 0;
+	while (j < n) {
+		sum += arr[j];
+		while (sum > x) {
+			sum -= arr[i];
+			i++;
+		}
+		res += (sum == x);
+		j++;
+	}
+
+	std::cout << res << std::endl;
+}
+```
+
+</CPPSection>
+<PySection>
+
+```py
+n, x = map(int, input().split())
+arr = list(map(int, input().split()))
+
+i = 0
+j = 0
+sum, res = 0, 0
+while j < n:
+	sum += arr[j]
+	while sum > x:
+		sum -= arr[i]
+		i = i + 1
+
+	res += sum == x
+	j = j + 1
+
+print(res)
+```
+
+</PySection>
+</LanguageSection>
