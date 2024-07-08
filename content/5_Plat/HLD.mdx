@@ -381,6 +381,199 @@ The next important step is to find the Lowest Common Ancestor(LCA) of the two no
 
 We can calculate maximum of the node values over the path from $a$ to $b$ by first calculating maximum over the ranges of heavy paths that are between $a$ and $b$, and then calculating the maximums of these values and those of the light edges, obtaining the result we seek.
 
+[This](https://github.com/freakin23/CSES/blob/main/Tree%20Algorithms/2134.cpp) is the code for "Path Queries II" using the above template.
+
+<FocusProblem problem = "sample3"/>
+
+Given a rooted tree of $N$ nodes, where each node is uniquely numbered in between $[1...N]$. The node $1$ is the root of the tree. Each node has an integer value which is initially $0$.
+
+You need to perform the following two kinds of queries on the tree:
+- $add$ $t$ $value$: Add $value$ to all nodes in subtree rooted at $t$
+- $max$ $a$ $b$: Report maximum value on the path from $a$ to $b$
+
+## Intuition
+
+From the question statement, it is clear that this is a Heavy-Light Decomposition(HLD). To handle the query operations, we will combine HLD with Lazy Segment Tree.
+
+The explanation is similar to the one mentioned [above](#template).
+
+## Implementation
+
+<LanguageSection>
+<CPPSection>
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 1e5 + 9, LG = 18, inf = 1e9 + 9;
+// BeginCodeSnip{Lazy Segment Tree}
+struct LST {
+#define lc (n << 1)
+#define rc ((n << 1) | 1)
+	int t[4 * N], lazy[4 * N];
+
+	LST() {
+		fill(t, t + 4 * N, -inf);
+		fill(lazy, lazy + 4 * N, 0);
+	}
+
+	inline void push(int n, int b, int e) {
+		if (lazy[n] == 0) { return; }
+		t[n] = t[n] + lazy[n];
+		if (b != e) {
+			lazy[lc] = lazy[lc] + lazy[n];
+			lazy[rc] = lazy[rc] + lazy[n];
+		}
+		lazy[n] = 0;
+	}
+
+	inline int combine(int a, int b) { return max(a, b); }
+
+	inline void pull(int n) { t[n] = max(t[lc], t[rc]); }
+
+	void build(int n, int b, int e) {
+		if (b == e) {
+			t[n] = 0;
+			return;
+		}
+
+		int mid = (b + e) >> 1;
+		build(lc, b, mid);
+		build(rc, mid + 1, e);
+		pull(n);
+	}
+
+	void upd(int n, int b, int e, int i, int j, int v) {
+		push(n, b, e);
+		if (j < b or e < i) { return; }
+
+		if (i <= b and e <= j) {
+			lazy[n] += v;
+			push(n, b, e);
+			return;
+		}
+
+		int mid = (b + e) >> 1;
+		upd(lc, b, mid, i, j, v);
+		upd(rc, mid + 1, e, i, j, v);
+		pull(n);
+	}
+
+	int query(int n, int b, int e, int i, int j) {
+		push(n, b, e);
+		if (i > e or b > j) { return -inf; }
+		if (i <= b and e <= j) { return t[n]; }
+		int mid = (b + e) >> 1;
+		return combine(query(lc, b, mid, i, j), query(rc, mid + 1, e, i, j));
+	}
+} lseg;
+// EndCodeSnip
+
+vector<int> adj[N];
+int par[N][LG + 1], dep[N], sz[N];
+
+void dfs_sz(int u, int p = 0) {
+	par[u][0] = p;
+	dep[u] = dep[p] + 1;
+	sz[u] = 1;
+	for (int i = 1; i <= LG; i++) { par[u][i] = par[par[u][i - 1]][i - 1]; }
+	if (p) { adj[u].erase(find(adj[u].begin(), adj[u].end(), p)); }
+
+	for (auto &v : adj[u]) {
+		if (v != p) {
+			dfs_sz(v, u);
+			sz[u] += sz[v];
+			if (sz[v] > sz[adj[u][0]]) { swap(v, adj[u][0]); }
+		}
+	}
+}
+
+int lca(int u, int v) {
+	if (dep[u] < dep[v]) { swap(u, v); }
+	for (int k = LG; k >= 0; k--) {
+		if (dep[par[u][k]] >= dep[v]) { u = par[u][k]; }
+	}
+
+	if (u == v) { return u; }
+
+	for (int k = LG; k >= 0; k--) {
+		if (par[u][k] != par[v][k]) {
+			u = par[u][k];
+			v = par[v][k];
+		}
+	}
+	return par[u][0];
+}
+
+int kth(int u, int k) {
+	assert(k >= 0);
+	for (int i = 0; i <= LG; i++) {
+		if (k & (1 << i)) { u = par[u][i]; }
+	}
+	return u;
+}
+
+int T, head[N], st[N], en[N];
+int n;
+void dfs_hld(int u) {
+	st[u] = ++T;
+	for (auto v : adj[u]) {
+		head[v] = (v == adj[u][0] ? head[u] : v);
+		dfs_hld(v);
+	}
+	en[u] = T;
+}
+
+int query_up(int u, int v) {
+	int res = -inf;
+	while (head[u] != head[v]) {
+		res = max(res, lseg.query(1, 1, n, st[head[u]], st[u]));
+		u = par[head[u]][0];
+	}
+	res = max(res, lseg.query(1, 1, n, st[v], st[u]));
+	return res;
+}
+
+int query(int u, int v) {
+	int l = lca(u, v);
+	int res = query_up(u, l);
+	if (v != l) { res = max(res, query_up(v, kth(v, dep[v] - dep[l] - 1))); }
+
+	return res;
+}
+
+int main() {
+	cin >> n;
+	for (int i = 1; i < n; i++) {
+		int u, v;
+		cin >> u >> v;
+		adj[u].push_back(v);
+		adj[v].push_back(u);
+	}
+	dfs_sz(1);
+	head[1] = 1;
+	dfs_hld(1);
+
+	int q;
+	cin >> q;
+	lseg.build(1, 1, n);
+	while (q--) {
+		string type;
+		int u, v;
+		cin >> type >> u >> v;
+		if (type == "add") {
+			lseg.upd(1, 1, n, st[u], en[u], v);
+		} else {
+			cout << query(u, v) << '\n';
+		}
+	}
+	return 0;
+}
+```
+</CPPSection>
+</LanguageSection>
+
+This way, we can combine HLD with various data structures depending on the query operations.
 ## Problems
 
 <Problems problems="general" />
