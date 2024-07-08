@@ -254,6 +254,133 @@ set problems where $\Theta(Q\sqrt N\log N)$ is intended ...
 
 <IncompleteSection />
 
+The heavy-light decomposition algorithm is versatile and can be combined with other data structures like segment trees, binary indexed trees, and range minimum query data structures to solve a wide range of complex tree-related problems.
+
+## Template
+
+<LanguageSection>
+<CPPSection>
+```cpp
+
+// BeginCodeSnip{Segment Tree}
+struct Segtree {
+	int n;
+	vector<int> st;
+
+	void init(int a, vector<int> &v) {
+		n = a;
+		st.assign(2 * n, 0);
+		for (int i = n; i < 2 * n; ++i) { st[i] = v[i - n]; }
+		for (int i = n - 1; i > 0; --i) {
+			st[i] = max(st[2 * i], st[2 * i + 1]);
+		}
+	}
+
+	int query(int a, int b) {
+		int s = 0;
+		a += n - 1;
+		b += n - 1;
+		while (a <= b) {
+			if (a % 2 == 1) { s = max(s, st[a++]); }
+			if (b % 2 == 0) { s = max(s, st[b--]); }
+			a /= 2, b /= 2;
+		}
+		return s;
+	}
+
+	void update(int p, int v) {
+		for (st[p += n - 1] = v; p > 1; p /= 2) {
+			st[p / 2] = max(st[p], st[p ^ 1]);
+		}
+	}
+};
+// EndCodeSnip
+
+struct HLD {
+	int n;
+	vector<int> par, heavy, depth, root, pos;
+	Segtree st;
+
+	// DFS to calculate sizes of subtrees and identify heavy children
+	int dfs(int u, int p, vector<vector<int>> &adj) {
+		int sz = 1, m = 0;  // size of subtree and max size of child subtree
+		for (auto v : adj[u]) {
+			if (v == p) { continue; }
+			depth[v] = depth[u] + 1;
+			par[v] = u;  // set parent of the child node
+			int t = dfs(v, u, adj);
+			if (t > m) {
+				heavy[u] = v;  // update heavy child if this child has the
+				               // largest subtree
+				m = t;         // update max size
+			}
+			sz += t;
+		}
+		return sz;
+	}
+
+	// construncting the heavy paths
+	/**
+	We iterate through all the nodes. If a node is not the heavy child of
+	another node, then the edge to its parent is a light edge, making the node
+	the root of a heavy path. We then continue descending to the heavy children
+	until we reach a leaf. This guarantees that all heavy paths are continuous
+	segments of the array.
+	**/
+	HLD(int n, vector<int> &v, vector<vector<int>> &adj) {
+		this->n = n;
+		heavy.assign(n + 1, 0);
+		depth.assign(n + 1, 0);
+		root.assign(n + 1, 0);
+		pos.assign(n + 1, 0);
+		par.assign(n + 1, 0);
+		par[1] = 1;
+		dfs(1, 1, adj);
+
+		// Decomposition part begins here
+		vector<int> a;  // to store the values in the segment tree
+		for (int i = 1, curr_pos = 1; i <= n; ++i) {
+			if (i == 1 or heavy[par[i]] != i) {
+				for (int j = i; j; j = heavy[j]) {
+					root[j] = i;
+					pos[j] = curr_pos++;  // assign position in the segment tree
+					a.push_back(v[j]);
+				}
+			}
+		}
+		st.init(n, a);
+	}
+
+	// path queries
+	int query(int a, int b) {
+		int s = 0;
+		while (root[a] != root[b]) {
+			if (depth[root[a]] > depth[root[b]]) { swap(a, b); }
+			s = max(s, st.query(pos[root[b]], pos[b]));
+			b = par[root[b]];
+		}
+		if (depth[a] > depth[b]) { swap(a, b); }
+		s = max(s, st.query(pos[a], pos[b]));
+		return s;
+	}
+
+	// update queries
+	void update(int n, int v) { st.update(pos[n], v); }
+};
+```
+</CPPSection>
+</LanguageSection>
+
+<Info title = "Note">
+The above-mentioned template is about finding the maximum value along the path between $a$ and $b$. For other operations, we can modify our segment tree to find the solution to the queries involving the sum, minimum value between two nodes, etc.
+</Info>
+
+At first, we choose an arbitrary root, ususally the node with index $1$ (or $0$ if you use $0$-based indexing), and start a DFS over the tree to find, for each node, its depth and subtree size. After this, we will decompose the tree to eventually create one large segment tree where we can calculate the maximum of the node values over a range of the path, ordering the values of the nodes based on their positions in the path.
+
+The next important step is to find the Lowest Common Ancestor(LCA) of the two nodes for which we will move node $a$ and node $b$ up the tree until both of them are in the same heavy path. We also need to ensure that we are always moving the deeper node, for which we need to swap $a$ and $b$ in case depths of the roots of $a$ and $b$ are different. Once $a$ and $b$ are on the same chain, the higher pointer of $a$ and $b$ is the LCA.
+
+We can calculate maximum of the node values over the path from $a$ to $b$ by first calculating maximum over the ranges of heavy paths that are between $a$ and $b$, and then calculating the maximums of these values and those of the light edges, obtaining the result we seek.
+
 ## Problems
 
 <Problems problems="general" />
