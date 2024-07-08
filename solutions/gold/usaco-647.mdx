@@ -21,7 +21,7 @@ Let us define $dp[i][j]$ as the subarray of $A$ (with $i$ and $j$ inclusive and 
 1. If $i == j$, $dp[i][j] = a[i]$ (base case).
 2. Otherwise, if $dp[i][k] \neq -1$ and $dp[i][k] == dp[k+1][j]$, then $dp[i][j] = dp[i][k] + 1$.
 
-We are looking for two adjacent ranges which can be turned into the same single element, which can then be merged to form a bigger range whose value, will be 1 plus the value of either of the two ranges. If we find such ranges we can set $dp[i][j]$ as 1 plus the value of those ranges that are equal. It can be helpful to notice that a range that can be merged into a single element will only merge into a particular number. Hence, it is not necessary to write the transitions as $dp[i][j] = \max(dp[i][j], dp[i][k] + 1)$, as it can only be one number, if it cannot be merged it will remain as $-1$.
+If we find two ranges that are equal and adjacent, we can merge them for a value of 1 plus the value of either of the two ranges. It can also be helpful to notice that a range can only merge into a particular number. Hence, it is not necessary to write the transitions as $dp[i][j] = \max(dp[i][j], dp[i][k] + 1)$.
 
 
 
