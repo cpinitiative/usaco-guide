@@ -16,12 +16,12 @@ Note: The video solution might not be the same as other solutions. Code in C++.
 
 Consider a range $A[i..j]$ and think about the ways in which we can proceed. Since elements need to be adjacent to be merged into one larger element, and the elements we are merging could in return be the result of a merging process of a subarray, it is natural to think about subarrays of the subarray $A[i..j]$. Along with the constraint on $N$ being less than 248, this hints towards range DP.
 
-Let us define $dp[i][j]$ as the subarray of $A$ (with $i$ and $j$ inclusive and 0-based) such that $dp[i][j]$ is the element it can be merged into as a single element. If it cannot be merged into a single element, let it be \(-1\). For an $k$ from $i$ to $j-1$ inclusive, we can check for the following transitions:
+Let us define $dp[i][j]$ as the subarray of $A$ (with $i$ and $j$ inclusive and 0-based) such that $dp[i][j]$ is the element it can be merged into as a single element. If it cannot be merged into a single element, let it be \(-1\). For a $k$ from $i$ to $j-1$ inclusive, we can check for the following transitions:
 
 1. If $i == j$, $dp[i][j] = a[i]$ (base case).
 2. Otherwise, if $dp[i][k] \neq -1$ and $dp[i][k] == dp[k+1][j]$, then $dp[i][j] = dp[i][k] + 1$.
 
-For every range $i..j$, we are checking if it can be merged into a single element or not, which can be determined by considering parts of the range that can be turned into the same number. Then set $dp[i][j]$ as 1 plus the value of those ranges that are equal. It can be helpful to notice that a range that can be merged into a single element will only merge into a particular number. Hence, it is not necessary to write the transitions as $dp[i][j] = \max(dp[i][j], dp[i][k] + 1)$, as it can only be one number, if at all.
+We are looking for two adjacent ranges which can be turned into the same single element, which can then be merged to form a bigger range whose value, will be 1 plus the value of either of the two ranges. If we find such ranges we can set $dp[i][j]$ as 1 plus the value of those ranges that are equal. It can be helpful to notice that a range that can be merged into a single element will only merge into a particular number. Hence, it is not necessary to write the transitions as $dp[i][j] = \max(dp[i][j], dp[i][k] + 1)$, as it can only be one number, if it cannot be merged it will remain as $-1$.
 
 
 
@@ -36,25 +36,20 @@ For every range $i..j$, we are checking if it can be merged into a single elemen
 #include <bits/stdc++.h>
 
 using namespace std;
-using i64 = long long;
-
-void setIO(string name = "") {
-	if (!name.empty()) {
-		freopen((name + ".in").c_str(), "r", stdin);
-		freopen((name + ".out").c_str(), "w", stdout);
-	}
-}
 
 int main() {
-	setIO("248");
+	string name = "248";
+	freopen((name + ".in").c_str(), "r", stdin);
+	freopen((name + ".out").c_str(), "w", stdout);
 	int n;
 	cin >> n;
 	vector<int> a(n);
-	for (int i = 0; i < n; ++i) { cin >> a[i]; }
-	vector<vector<int>> dp(
-	    n, vector<int>(n, -1));  // dp[i][j] = final element the range i..j can
-	                             // be merged into as a single element, -1 if it
-	                             // cannot be merged into a single element
+	for (int i = 0; i < n; ++i) { 
+		cin >> a[i]; 
+	}
+	vector<vector<int>> dp(n, vector<int>(n, -1));  // dp[i][j] = final element the range i..j can  
+													// be merged into as a single element, -1 if it	 
+	          										// cannot be merged into a single element				                   
 	int ans = 0;
 	for (int i = n - 1; i >= 0; --i) {
 		for (int j = i; j < n; ++j) {
