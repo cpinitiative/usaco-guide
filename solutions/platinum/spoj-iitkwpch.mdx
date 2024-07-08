@@ -9,3 +9,57 @@ author: Mihnea Brebenel
 
 ## Implementation
 
+**Time Complexity:** $\mathcal{O}()$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp 
+#include <algorithm>
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+int main() { 
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    cout.tie(NULL);
+	int t;
+	cin >> t;
+	while(t--) {
+		int n;
+		cin >> n;
+		vector<long long> v(n);
+		for(long long &x : v) {
+			cin >> x;
+		}
+		vector<int> freq(1 << 10);
+		for(const long long &x : v) {
+			int mask = 0;
+			long long num = x;
+			while(num) {
+				int digit = num % 10;
+				mask |= (1 << digit);
+				num /= 10;
+			}
+			freq[mask]++;
+		}
+		long long ans = 0;
+		for(int mask = 0; mask < (1 << 10); mask++) {
+			ans += freq[mask] * (freq[mask] - 1) / 2;
+			for(int mask2 = mask + 1; mask2 < (1 << 10); mask2++) {
+				if(mask & mask2) {
+					ans += 1LL * freq[mask] * freq[mask2];
+				}
+			}
+		}
+		cout << ans << '\n';
+	}
+	return 0;
+}
+
+```
+
+</CPPSection>
+</LanguageSection>
