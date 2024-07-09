@@ -61,11 +61,12 @@ class Tree {
     vector<pair<int, int>> diameter;
     vector<int> root;
     vector<int> dep;
-    
     int cur = -1;
+
   public:
     Tree(int _q) : q(_q), log2dist(1 + (int) log2(q)),
         up(log2dist, vector<int>(q)), diameter(q), root(q), dep(q) {}
+
     int lca(int u, int v) {
         if (dep[u] < dep[v]) { swap(u, v); }
         for (int i = log2dist - 1; i >= 0; i--) {
@@ -82,9 +83,11 @@ class Tree {
         }
         return up[0][u];
     }
+
     int dist(int u, int v) {
         return dep[u] + dep[v] - 2 * dep[lca(u, v)];
     }
+
     void add(int par) {
         ++cur;
         if (par == -2) {
@@ -111,6 +114,7 @@ class Tree {
             }
         }
     }
+
     int qry(int u) {
         const auto [a, b] = diameter[root[u]];
         return max(dist(u, a), dist(u, b));
@@ -119,7 +123,8 @@ class Tree {
 int main() {
     freopen("newbarn.in", "r", stdin);
     freopen("newbarn.out", "w", stdout);
-    int q; cin >> q;
+    int q; 
+    cin >> q;
     Tree tree(q);
     for (int i = 0; i < q; i++) {
         char type;
