@@ -85,4 +85,185 @@ int main() {
 
 </CPPSection>
 
+<JavaSection>
+```java
+import java.util.*;
+
+public class PoliceChase {
+	static final int N = 505;
+	static int n, m;
+	static int[] lev = new int[N];
+	static int[][] c = new int[N][N];
+	static int[] seen = new int[N];
+	static Queue<Integer> q = new LinkedList<>();
+
+	// BFS to find level of each node
+	static boolean bfs() {
+		Arrays.fill(lev, 1, n + 1, -1);
+		lev[1] = 0;
+		q.add(1);
+		while (!q.isEmpty()) {
+			int u = q.poll();
+			for (int v = 1; v <= n; ++v) {
+				if (lev[v] == -1 && c[u][v] > 0) {
+					lev[v] = lev[u] + 1;
+					q.add(v);
+				}
+			}
+		}
+		return lev[n] != -1;
+	}
+
+	// DFS to find augmenting paths
+	static boolean dfs(int u) {
+		if (u == n)
+			return true;
+		for (; seen[u] <= n; ++seen[u]) {
+			int v = seen[u];
+			if (lev[v] == lev[u] + 1 && c[u][v] > 0 && dfs(v)) {
+				c[u][v]--;
+				c[v][u]++;
+				return true;
+			}
+		}
+		return false;
+	}
+
+	// DFS to mark reachable nodes
+	static void dfs2(int u) {
+		lev[u] = 1;
+		for (int v = 1; v <= n; ++v) {
+			if (lev[v] == 0 && c[u][v] > 0) {
+				dfs2(v);
+			}
+		}
+	}
+
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		n = sc.nextInt();
+		m = sc.nextInt();
+
+		for (int i = 0; i < m; ++i) {
+			int u = sc.nextInt();
+			int v = sc.nextInt();
+			c[u][v]++;
+			c[v][u]++;
+		}
+
+		while (bfs()) {
+			Arrays.fill(seen, 1, n + 1, 1);
+			while (dfs(1))
+				;
+		}
+
+		Arrays.fill(lev, 1, n + 1, 0);
+		dfs2(1);
+
+		List<int[]> rem = new ArrayList<>();
+		for (int i = 1; i <= n; ++i) {
+			for (int j = 1; j <= n; ++j) {
+				if (lev[i] == 1 && lev[j] == 0 && c[j][i] > 0) {
+					rem.add(new int[] { i, j });
+				}
+			}
+		}
+
+		System.out.println(rem.size());
+		for (int[] p : rem) {
+			System.out.println(p[0] + " " + p[1]);
+		}
+		sc.close();
+	}
+}
+```
+</JavaSection>
+
+<PySection>
+```py
+from collections import deque
+
+N = 505
+
+# Initialize variables
+n, m = 0, 0
+lev = [-1] * N
+c = [[0] * N for _ in range(N)]
+seen = [0] * N
+q = deque()
+
+def bfs():
+    # Reset levels
+    for i in range(1, n + 1):
+        lev[i] = -1
+    lev[1] = 0
+    q.append(1)
+    while q:
+        u = q.popleft()
+        for v in range(1, n + 1):
+            if lev[v] == -1 and c[u][v] > 0:
+                lev[v] = lev[u] + 1
+                q.append(v)
+    return lev[n] != -1
+
+def dfs(u):
+    if u == n:
+        return True
+    for v in range(seen[u], n + 1):
+        seen[u] = v
+        if lev[v] == lev[u] + 1 and c[u][v] > 0 and dfs(v):
+            c[u][v] -= 1
+            c[v][u] += 1
+            return True
+    return False
+
+def dfs2(u):
+    lev[u] = 1
+    for v in range(1, n + 1):
+        if lev[v] == 0 and c[u][v] > 0:
+            dfs2(v)
+
+def main():
+    global n, m
+    import sys
+    input = sys.stdin.read
+    data = input().split()
+    n = int(data[0])
+    m = int(data[1])
+
+    index = 2
+    for _ in range(m):
+        u = int(data[index])
+        v = int(data[index + 1])
+        index += 2
+        c[u][v] += 1
+        c[v][u] += 1
+
+    while bfs():
+        for i in range(1, n + 1):
+            seen[i] = 1
+        while dfs(1):
+            pass
+
+    for i in range(1, n + 1):
+        lev[i] = 0
+    dfs2(1)
+
+    rem = []
+    for i in range(1, n + 1):
+        for j in range(1, n + 1):
+            if lev[i] == 1 and lev[j] == 0 and c[j][i] > 0:
+                rem.append((i, j))
+
+    print(len(rem))
+    for u, v in rem:
+        print(u, v)
+
+if __name__ == "__main__":
+    main()
+
+```
+</PySection>
+
+
 </LanguageSection>
