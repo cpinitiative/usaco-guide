@@ -116,8 +116,7 @@ public class PoliceChase {
 
 	// DFS to find augmenting paths
 	static boolean dfs(int u) {
-		if (u == n)
-			return true;
+		if (u == n) return true;
 		for (; seen[u] <= n; ++seen[u]) {
 			int v = seen[u];
 			if (lev[v] == lev[u] + 1 && c[u][v] > 0 && dfs(v)) {
@@ -133,9 +132,7 @@ public class PoliceChase {
 	static void dfs2(int u) {
 		lev[u] = 1;
 		for (int v = 1; v <= n; ++v) {
-			if (lev[v] == 0 && c[u][v] > 0) {
-				dfs2(v);
-			}
+			if (lev[v] == 0 && c[u][v] > 0) { dfs2(v); }
 		}
 	}
 
@@ -153,8 +150,7 @@ public class PoliceChase {
 
 		while (bfs()) {
 			Arrays.fill(seen, 1, n + 1, 1);
-			while (dfs(1))
-				;
+			while (dfs(1));
 		}
 
 		Arrays.fill(lev, 1, n + 1, 0);
@@ -164,15 +160,13 @@ public class PoliceChase {
 		for (int i = 1; i <= n; ++i) {
 			for (int j = 1; j <= n; ++j) {
 				if (lev[i] == 1 && lev[j] == 0 && c[j][i] > 0) {
-					rem.add(new int[] { i, j });
+					rem.add(new int[] {i, j});
 				}
 			}
 		}
 
 		System.out.println(rem.size());
-		for (int[] p : rem) {
-			System.out.println(p[0] + " " + p[1]);
-		}
+		for (int[] p : rem) { System.out.println(p[0] + " " + p[1]); }
 		sc.close();
 	}
 }
@@ -192,76 +186,81 @@ c = [[0] * N for _ in range(N)]
 seen = [0] * N
 q = deque()
 
+
 def bfs():
-    # Reset levels
-    for i in range(1, n + 1):
-        lev[i] = -1
-    lev[1] = 0
-    q.append(1)
-    while q:
-        u = q.popleft()
-        for v in range(1, n + 1):
-            if lev[v] == -1 and c[u][v] > 0:
-                lev[v] = lev[u] + 1
-                q.append(v)
-    return lev[n] != -1
+	# Reset levels
+	for i in range(1, n + 1):
+		lev[i] = -1
+	lev[1] = 0
+	q.append(1)
+	while q:
+		u = q.popleft()
+		for v in range(1, n + 1):
+			if lev[v] == -1 and c[u][v] > 0:
+				lev[v] = lev[u] + 1
+				q.append(v)
+	return lev[n] != -1
+
 
 def dfs(u):
-    if u == n:
-        return True
-    for v in range(seen[u], n + 1):
-        seen[u] = v
-        if lev[v] == lev[u] + 1 and c[u][v] > 0 and dfs(v):
-            c[u][v] -= 1
-            c[v][u] += 1
-            return True
-    return False
+	if u == n:
+		return True
+	for v in range(seen[u], n + 1):
+		seen[u] = v
+		if lev[v] == lev[u] + 1 and c[u][v] > 0 and dfs(v):
+			c[u][v] -= 1
+			c[v][u] += 1
+			return True
+	return False
+
 
 def dfs2(u):
-    lev[u] = 1
-    for v in range(1, n + 1):
-        if lev[v] == 0 and c[u][v] > 0:
-            dfs2(v)
+	lev[u] = 1
+	for v in range(1, n + 1):
+		if lev[v] == 0 and c[u][v] > 0:
+			dfs2(v)
+
 
 def main():
-    global n, m
-    import sys
-    input = sys.stdin.read
-    data = input().split()
-    n = int(data[0])
-    m = int(data[1])
+	global n, m
+	import sys
 
-    index = 2
-    for _ in range(m):
-        u = int(data[index])
-        v = int(data[index + 1])
-        index += 2
-        c[u][v] += 1
-        c[v][u] += 1
+	input = sys.stdin.read
+	data = input().split()
+	n = int(data[0])
+	m = int(data[1])
 
-    while bfs():
-        for i in range(1, n + 1):
-            seen[i] = 1
-        while dfs(1):
-            pass
+	index = 2
+	for _ in range(m):
+		u = int(data[index])
+		v = int(data[index + 1])
+		index += 2
+		c[u][v] += 1
+		c[v][u] += 1
 
-    for i in range(1, n + 1):
-        lev[i] = 0
-    dfs2(1)
+	while bfs():
+		for i in range(1, n + 1):
+			seen[i] = 1
+		while dfs(1):
+			pass
 
-    rem = []
-    for i in range(1, n + 1):
-        for j in range(1, n + 1):
-            if lev[i] == 1 and lev[j] == 0 and c[j][i] > 0:
-                rem.append((i, j))
+	for i in range(1, n + 1):
+		lev[i] = 0
+	dfs2(1)
 
-    print(len(rem))
-    for u, v in rem:
-        print(u, v)
+	rem = []
+	for i in range(1, n + 1):
+		for j in range(1, n + 1):
+			if lev[i] == 1 and lev[j] == 0 and c[j][i] > 0:
+				rem.append((i, j))
+
+	print(len(rem))
+	for u, v in rem:
+		print(u, v)
+
 
 if __name__ == "__main__":
-    main()
-
+	main()
 ```
 </PySection>
 
