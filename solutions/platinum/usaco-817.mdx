@@ -31,7 +31,7 @@ new diameter, then the other endpoint of our new diameter is one of the endpoint
 of our old diameter. To understand why this is the case, consider laying out
 the tree in the following manner:
 
-![](<usaco-817/Diameter.png>)
+![Example Graph](<usaco-817/diameter.png>)
 
 Say we add a child to node 11. We now have a new diameter starting from that
 child, and need to find a suitable endpoint. Note that it is always optimal
@@ -64,10 +64,11 @@ class Tree {
 	int cur = -1;
 
   public:
-	Tree(int _q)
-	    : q(_q), log2dist(1 + (int)log2(q)), up(log2dist, vector<int>(q)),
+	Tree(int q)
+	    : q(q), log2dist(1 + (int)log2(q)), up(log2dist, vector<int>(q)),
 	      diameter(q), root(q), dep(q) {}
 
+    /** @return the LCA of nodes u and v */
 	int lca(int u, int v) {
 		if (dep[u] < dep[v]) { swap(u, v); }
 		for (int i = log2dist - 1; i >= 0; i--) {
@@ -83,10 +84,12 @@ class Tree {
 		return up[0][u];
 	}
 
+    /** @return the distance betweens nodes u and v */
 	int dist(int u, int v) { return dep[u] + dep[v] - 2 * dep[lca(u, v)]; }
 
-	void add(int par) {
-		++cur;
+    /** adds the given node into the tree it belongs to */
+	void add_node(int par) {
+		cur++;
 		if (par == -2) {
 			diameter[cur] = {cur, cur};
 			for (int i = 0; i < log2dist; i++) { up[i][cur] = cur; }
@@ -110,7 +113,8 @@ class Tree {
 		}
 	}
 
-	int qry(int u) {
+    /** @return the furthest distance from node u */
+	int query_dist(int u) {
 		const auto [a, b] = diameter[root[u]];
 		return max(dist(u, a), dist(u, b));
 	}
@@ -127,9 +131,9 @@ int main() {
 		cin >> type >> node;
 		--node;
 		if (type == 'B') {
-			tree.add(node);
+			tree.add_node(node);
 		} else {
-			cout << tree.qry(node) << "\n";
+			cout << tree.query_dist(node) << "\n";
 		}
 	}
 }
