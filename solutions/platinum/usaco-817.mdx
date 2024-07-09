@@ -68,7 +68,7 @@ class Tree {
 	    : q(q), log2dist(1 + (int)log2(q)), up(log2dist, vector<int>(q)),
 	      diameter(q), root(q), dep(q) {}
 
-    /** @return the LCA of nodes u and v */
+	/** @return the LCA of nodes u and v */
 	int lca(int u, int v) {
 		if (dep[u] < dep[v]) { swap(u, v); }
 		for (int i = log2dist - 1; i >= 0; i--) {
@@ -84,10 +84,10 @@ class Tree {
 		return up[0][u];
 	}
 
-    /** @return the distance betweens nodes u and v */
+	/** @return the distance betweens nodes u and v */
 	int dist(int u, int v) { return dep[u] + dep[v] - 2 * dep[lca(u, v)]; }
 
-    /** adds the given node into the tree it belongs to */
+	/** adds the given node into the tree it belongs to */
 	void add_node(int par) {
 		cur++;
 		if (par == -2) {
@@ -113,7 +113,7 @@ class Tree {
 		}
 	}
 
-    /** @return the furthest distance from node u */
+	/** @return the furthest distance from node u */
 	int query_dist(int u) {
 		const auto [a, b] = diameter[root[u]];
 		return max(dist(u, a), dist(u, b));
