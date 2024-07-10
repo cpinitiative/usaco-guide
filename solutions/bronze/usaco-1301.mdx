@@ -67,43 +67,42 @@ import java.io.*;
 import java.util.*;
 
 public class WatchingMooloo {
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        PrintWriter pw = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)));
+	public static void main(String[] args) throws IOException {
+		BufferedReader br =
+		    new BufferedReader(new InputStreamReader(System.in));
+		PrintWriter pw = new PrintWriter(
+		    new BufferedWriter(new OutputStreamWriter(System.out)));
 
-        String[] input = br.readLine().split(" ");
-        int n = Integer.parseInt(input[0]);
-        int k = Integer.parseInt(input[1]);
+		String[] input = br.readLine().split(" ");
+		int n = Integer.parseInt(input[0]);
+		int k = Integer.parseInt(input[1]);
 
-        long[] days = new long[n];
-        String[] daysInput = br.readLine().split(" ");
-        for (int i = 0; i < n; i++) {
-            days[i] = Long.parseLong(daysInput[i]);
-        }
+		long[] days = new long[n];
+		String[] daysInput = br.readLine().split(" ");
+		for (int i = 0; i < n; i++) { days[i] = Long.parseLong(daysInput[i]); }
 
-        Arrays.sort(days);
+		Arrays.sort(days);
 
-        long lastDay = days[0];
-        long cost = k + 1;  // Start the first subscription
-        for (long d : days) {
-            // Should Bessie extend the most recent subscription?
-            if (d - lastDay < k + 1) {
-                cost += d - lastDay;
-            } else {
-                // Or just start a new one entirely?
-                cost += k + 1;
-            }
+		long lastDay = days[0];
+		long cost = k + 1;  // Start the first subscription
+		for (long d : days) {
+			// Should Bessie extend the most recent subscription?
+			if (d - lastDay < k + 1) {
+				cost += d - lastDay;
+			} else {
+				// Or just start a new one entirely?
+				cost += k + 1;
+			}
 
-            // Store the date of the last subscription
-            lastDay = d;
-        }
+			// Store the date of the last subscription
+			lastDay = d;
+		}
 
-        pw.println(cost);
-        pw.close();
-        br.close();
-    }
+		pw.println(cost);
+		pw.close();
+		br.close();
+	}
 }
-
 ```
 
 </JavaSection>
