@@ -2,13 +2,49 @@
 id: usaco-950
 source: USACO Platinum 2019 Open
 title: Valleys
-author: Benjamin Qi
+author: Benjamin Qi, Alexis Tao
 ---
+
+## Explanation
+
+In this problem, Bessie is looking for valleys in an N×N grid where each cell has a specific height. A valley is defined as a contiguous, non-holey region where every cell within the region is lower in height than any cell on the border of the region. The task is to find all such valleys in the grid and compute the sum of their sizes.
+
+Key concepts:
+1. **Edgewise-Contiguous**: A set of cells where one can move from any cell to any other using up, down, left, or right moves.
+2. **Pointwise-Contiguous**: A set of cells where one can move from any cell to any other using up, down, left, right, or diagonal moves.
+3. **Region**: A non-empty, edgewise-contiguous set of cells.
+4. **Holey Region**: A region where the complement of the region is not pointwise-contiguous with the infinite cells outside the grid.
+5. **Border**: Cells that are orthogonally adjacent to the region but are not part of the region.
+6. **Valley**: A non-holey region where all cells in the region are lower in height than any cells on the border of the region.
 
 No need to measure "curvature" ... Just maintain # of holes in each region with
 two DSUs.
 
-<IncompleteSection />
+### Applying Euler's Formula
+
+Euler's formula for planar graphs is $V−E+F=2$ where $V$ is the number of vertices, $E$ is the number of edges and $F$ is the number of faces.
+Here’s how to identify and calculate each variable:
+
+1. The vertices are the individual cells in the $N×N$ grid. Thus, $V=N×N$
+2. Each cell can potentially connect to 4 neighbors (up, down, left, right). However, cells on the boundary of the grid will have fewer connections.
+For an $N×N$ grid:
+	- Internal cells (not on the border) each have 4 edges.
+	- Border cells (not corners) each have 3 edges.
+	- Corner cells each have 2 edges.
+3. Faces correspond to the contiguous regions.
+
+**Solving the Problem**:
+- Initialization and Input Reading: The grid size $N$ and the heights of the cells are read from the input file valleys.in. The heights are stored in a 2D array h.
+- Data Structures: Two disjoint-set union (DSU) structures A and B are initialized. A is used to keep track of the components and their merging process based on height. B is used to track the holey regions and valley sizes.
+- Sorting Cells by Height: A vector v of cell coordinates is created and sorted based on the height of the cells.
+- Identifying Components (Faces) Using DSU A: Iterate through the sorted cells in reverse order (from highest to lowest height). For each cell, increment the number of components in A. Attempt to unite the cell with its valid neighbors if their heights are greater than the current cell's height. If the neighbor is out of bounds, unite the cell with a special cell representing the outside.
+- Recording Component Changes: Maintain a record of the number of components after processing each cell. This record helps in tracking the changes in the number of components during the process.
+- Finding Valleys Using DSU B: Iterate through the cells in the original order (from lowest to highest height).
+For each cell, attempt to unite it with its valid neighbors if their heights are less than the current cell's height. Update the number of holes in the current component based on the recorded component changes.
+If the number of holes in the current component is zero, add the size of the component to the result.
+-The sum of the sizes of all valleys is printed. Additionally, we can verify our count using Euler's formula to ensure our region counting is correct
+
+## Implementation
 
 ```cpp
 #include <bits/stdc++.h>
