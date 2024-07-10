@@ -61,7 +61,7 @@ class Tree {
 	vector<pair<int, int>> diameter;
 	vector<int> root;
 	vector<int> dep;
-	int cur = -1;
+	int curr = -1;
 
   public:
 	Tree(int q)
@@ -89,26 +89,26 @@ class Tree {
 
 	/** adds the given node into the tree it belongs to */
 	void add_node(int par) {
-		cur++;
+		curr++;
 		if (par == -2) {
-			diameter[cur] = {cur, cur};
-			for (int i = 0; i < log2dist; i++) { up[i][cur] = cur; }
-			root[cur] = cur;
+			diameter[curr] = {curr, curr};
+			for (int i = 0; i < log2dist; i++) { up[i][curr] = curr; }
+			root[curr] = curr;
 		} else {
-			up[0][cur] = par;
+			up[0][curr] = par;
 			for (int i = 1; i < log2dist; i++) {
-				up[i][cur] = up[i - 1][up[i - 1][cur]];
+				up[i][curr] = up[i - 1][up[i - 1][curr]];
 			}
-			root[cur] = root[par];
-			dep[cur] = dep[par] + 1;
-			const auto [a, b] = diameter[root[cur]];
-			int dist_a = dist(cur, a);
-			int dist_b = dist(cur, b);
+			root[curr] = root[par];
+			dep[curr] = dep[par] + 1;
+			const auto [a, b] = diameter[root[curr]];
+			int dist_a = dist(curr, a);
+			int dist_b = dist(curr, b);
 			int cur_dist = dist(a, b);
 			if (dist_a > cur_dist) {
-				diameter[root[cur]] = {a, cur};
+				diameter[root[curr]] = {a, curr};
 			} else if (dist_b > cur_dist) {
-				diameter[root[cur]] = {b, cur};
+				diameter[root[curr]] = {b, curr};
 			}
 		}
 	}
