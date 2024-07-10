@@ -125,6 +125,55 @@ int main() {
 
 </CPPSection>
 
+<PySection>
+
+```py
+import sys
+input = sys.stdin.read
+
+MAX_N = 20
+MOD = 10**9 + 7
+
+dp = [[0] * MAX_N for _ in range(1 << MAX_N)]
+come_from = [[] for _ in range(MAX_N)]
+
+def main():
+    data = input().split()
+    city_num = int(data[0])
+    flight_num = int(data[1])
+    
+    index = 2
+    for _ in range(flight_num):
+        start = int(data[index]) - 1
+        end = int(data[index + 1]) - 1
+        come_from[end].append(start)
+        index += 2
+    
+    dp[1][0] = 1
+    for s in range(2, 1 << city_num):
+        if not (s & (1 << 0)):
+            continue
+        if (s & (1 << (city_num - 1))) and s != ((1 << city_num) - 1):
+            continue
+        
+        for end in range(city_num):
+            if not (s & (1 << end)):
+                continue
+            
+            prev = s - (1 << end)
+            for j in come_from[end]:
+                if s & (1 << j):
+                    dp[s][end] += dp[prev][j]
+                    dp[s][end] %= MOD
+    
+    print(dp[(1 << city_num) - 1][city_num - 1])
+
+if __name__ == "__main__":
+    main()
+```
+
+</PySection>
+
 </LanguageSection>
 
 ### Problems
