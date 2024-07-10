@@ -96,47 +96,47 @@ import java.io.*;
 import java.util.*;
 
 public class PlayingInCasino {
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        PrintWriter pw = new PrintWriter(new OutputStreamWriter(System.out));
-        
-        int t = Integer.parseInt(br.readLine());
-        for (int i = 0; i < t; i++) {
-            String[] dimensions = br.readLine().split(" ");
-            int n = Integer.parseInt(dimensions[0]);
-            int m = Integer.parseInt(dimensions[1]);
-            int[][] a = new int[n][m];
-            for (int j = 0; j < n; j++) {
-                String[] row = br.readLine().split(" ");
-                for (int k = 0; k < m; k++) {
-                    a[j][k] = Integer.parseInt(row[k]);
-                }
-            }
-			
-            long ans = 0;
-            for (int j = 0; j < m; j++) {
-                List<Long> temp = new ArrayList<>();
-                long sum = 0;
-                for (int k = 0; k < n; k++) {
-                    temp.add((long) a[k][j]);
-                    sum += a[k][j];
-                }
-                long curr = 0;
-                Collections.sort(temp);
-                for (int k = 0; k < n; k++) {
-                    curr += temp.get(k);
-                    ans += Math.abs((sum - curr) - (n - 1 - k) * temp.get(k));
-                }
-            }
+	public static void main(String[] args) throws IOException {
+		BufferedReader br =
+		    new BufferedReader(new InputStreamReader(System.in));
+		PrintWriter pw = new PrintWriter(new OutputStreamWriter(System.out));
 
-            pw.println(ans);
-        }
+		int t = Integer.parseInt(br.readLine());
+		for (int i = 0; i < t; i++) {
+			String[] dimensions = br.readLine().split(" ");
+			int n = Integer.parseInt(dimensions[0]);
+			int m = Integer.parseInt(dimensions[1]);
+			int[][] a = new int[n][m];
+			for (int j = 0; j < n; j++) {
+				String[] row = br.readLine().split(" ");
+				for (int k = 0; k < m; k++) {
+					a[j][k] = Integer.parseInt(row[k]);
+				}
+			}
 
-        pw.close();
-        br.close();
-    }
+			long ans = 0;
+			for (int j = 0; j < m; j++) {
+				List<Long> temp = new ArrayList<>();
+				long sum = 0;
+				for (int k = 0; k < n; k++) {
+					temp.add((long)a[k][j]);
+					sum += a[k][j];
+				}
+				long curr = 0;
+				Collections.sort(temp);
+				for (int k = 0; k < n; k++) {
+					curr += temp.get(k);
+					ans += Math.abs((sum - curr) - (n - 1 - k) * temp.get(k));
+				}
+			}
+
+			pw.println(ans);
+		}
+
+		pw.close();
+		br.close();
+	}
 }
-
 ```
 </JavaSection>
 </LanguageSection>
