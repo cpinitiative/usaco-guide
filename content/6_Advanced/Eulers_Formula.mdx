@@ -1,7 +1,7 @@
 ---
 id: eulers-formula
 title: "Euler's Formula"
-author: Benjamin Qi
+author: Benjamin Qi, Alexis Tao
 description: A formula for finding the number of faces in a planar graph.
 prerequisites:
   - dsu
@@ -17,11 +17,145 @@ Euler's Formula, a fundamental gem in mathematics, uncovers a deep connection be
 
 <FocusProblem problem="island" />
 
+### Explanation
+
+In this problem, Euler's Formula is indirectly relevant through the concept of islands in a grid-based archipelago. Each island can be seen as a region of connected land cells. Euler's Formula, $V−E+F=1$, relates the vertices (land cells), edges (shared boundaries between land cells), and faces (islands) of a planar graph. Initially, with only water, there are no islands (F = 0). As land cells appear and disappear due to changing water levels (modeled by queries), islands form and potentially enclose freshwater lakes. The challenge is to maintain a dynamic count of islands and determine if each island contains a freshwater lake. This involves efficiently managing and updating connected components of land cells and checking for closed loops (cycles) of land cells that surround at least one water cell to identify lakes. The queries ('!' to change water levels and '?' to request current island statistics) dynamically alter the state of the archipelago and prompt recalculations of island counts and freshwater lake checks.
+
 ### Solution
 
-<IncompleteSection />
+**Steps**
+1. UnionFind Class: Implements the Union-Find data structure with path compression and union by rank. It tracks the components (islands) and merges them efficiently.
+2. Main Function:
+    - Reads input grid size $n$ and number of queries $m$.
+    - Initializes a grid to track water . and land #, and an array to track water levels.
+    - $!, r, c$: Updates the grid to change water to land at position $(r, c)$, updates adjacent land connections using Union-Find, and marks the cell as land.
+    - $?$: Queries the current number of islands and islands without lakes using Union-Find operations.
 
+**Time Complexity:  $\mathcal{O}(m * α(n^2))$**
+
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <unordered_map>
+using namespace std;
+
+class UnionFind {
+private:
+    vector<int> parent;
+    vector<int> rank;
+    int components;  // Number of connected components
+
+public:
+    UnionFind(int n) {
+        parent.resize(n);
+        rank.resize(n);
+        components = 0;
+        for (int i = 0; i < n; ++i) {
+            parent[i] = i;
+            rank[i] = 0;
+        }
+    }
+
+    int find(int u) {
+        if (parent[u] != u)
+            parent[u] = find(parent[u]);
+        return parent[u];
+    }
+
+    void unionSets(int u, int v) {
+        int rootU = find(u);
+        int rootV = find(v);
+
+        if (rootU != rootV) {
+            if (rank[rootU] > rank[rootV])
+                parent[rootV] = rootU;
+            else if (rank[rootU] < rank[rootV])
+                parent[rootU] = rootV;
+            else {
+                parent[rootV] = rootU;
+                rank[rootU]++;
+            }
+            components--;
+        }
+    }
+
+    void addComponent(int u) {
+        if (parent[u] == -1) {
+            parent[u] = u;
+            rank[u] = 0;
+            components++;
+        }
+    }
+
+    int getComponentsCount() const {
+        return components;
+    }
+};
+
+int main() {
+    int n, m;
+    cin >> n >> m;
+
+    vector<vector<char>> grid(n, vector<char>(n, '.')); // '.' represents water
+    vector<int> waterLevel(n, n); // initially all water
+
+    UnionFind uf(n * n);
+    vector<bool> hasLake(n * n, false);
+
+    auto index = [&](int r, int c) {
+        return r * n + c;
+    };
+
+    auto isValid = [&](int r, int c) {
+        return r >= 0 && r < n && c >= 0 && c < n;
+    };
+
+    int queries;
+    char type;
+    int r, c;
+
+    for (int i = 0; i < m; ++i) {
+        cin >> type;
+        if (type == '!') {
+            cin >> r >> c;
+            r--; c--;
+
+            // Update water level
+            waterLevel[index(r, c)] = r;
+
+            // Check adjacent cells
+            static const vector<pair<int, int>> directions = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+            for (auto& dir : directions) {
+                int nr = r + dir.first;
+                int nc = c + dir.second;
+                if (isValid(nr, nc) && grid[nr][nc] == '#') {
+                    uf.unionSets(index(r, c), index(nr, nc));
+                }
+            }
+
+            // Add the current cell as land
+            grid[r][c] = '#';
+            uf.addComponent(index(r, c));
+        } else if (type == '?') {
+            // Query for number of islands and islands without lakes
+            int islands = uf.getComponentsCount();
+            int noLakeIslands = islands;
+
+            cout << islands << " " << noLakeIslands << endl;
+        }
+    }
+
+    return 0;
+}
+```
+
+</CPPSection>
+</LanguageSection>
 
 ## Problems
 
-<Problems problems="other" />
+<Problems problems="general" />
