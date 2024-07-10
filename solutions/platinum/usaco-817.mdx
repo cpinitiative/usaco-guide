@@ -99,8 +99,10 @@ class Tree {
 			for (int i = 1; i < log2dist; i++) {
 				up[i][cur] = up[i - 1][up[i - 1][cur]];
 			}
+
 			root[cur] = root[par];
 			dep[cur] = dep[par] + 1;
+
 			const auto [a, b] = diameter[root[cur]];
 			int dist_a = dist(cur, a);
 			int dist_b = dist(cur, b);
@@ -119,6 +121,7 @@ class Tree {
 		return max(dist(u, a), dist(u, b));
 	}
 };
+
 int main() {
 	freopen("newbarn.in", "r", stdin);
 	freopen("newbarn.out", "w", stdout);
@@ -129,7 +132,7 @@ int main() {
 		char type;
 		int node;
 		cin >> type >> node;
-		--node;
+		node--;
 		if (type == 'B') {
 			tree.add_node(node);
 		} else {
