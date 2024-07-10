@@ -386,6 +386,104 @@ public class Odometer {
 
 </JavaSection>
 
+<PySection>
+
+```py
+def solve_dp(pos, k, under, started, targ, targ2, dp, num):
+    # base case: the sequence has reached the maximal length
+    if pos == len(num):
+        # edge case: the sequence only contains zeros, i.e. did not start
+        if not started:
+            return 0
+        
+        # If we are interested in finding out whether the sequence contains
+        # exactly half digits of targ and half digits of targ2.
+        if targ2 != -1:
+            if k == 20:
+                return 1
+            else:
+                return 0
+        
+        # Otherwise, the sequence is interesting if at least half of the digits
+        # are our target number targ.
+        if k >= 20:
+            return 1
+        else:
+            return 0
+    
+    if dp[pos][k][under][started] != -1:
+        return dp[pos][k][under][started]
+    
+    ans = 0
+    digit_diff = int(num[pos])
+    for i in range(10):
+        # If the sequence will be larger than the upperbound, then we can terminate
+        if not under and i > digit_diff:
+            break
+        
+        # If the new digit is smaller than the one in the upperbound, then any
+        # child sequence can't be larger than the upperbound as this digit is
+        # more significant than any following one.
+        is_under = under
+        if i < digit_diff:
+            is_under = True
+        
+        # The sequence has started if any digits until pos is other than 0.
+        is_started = started or i != 0
+        
+        # If we want to count how many sequences have exactly half digits of
+        # targ and half of targ2, then any other number than targ or targ2 doesn't matter.
+        if is_started and targ2 != -1 and i != targ and i != targ2:
+            continue
+        
+        # The count for target digit targ is increased by one if i is targ, or
+        # decreased by one otherwise.
+        new_k = k
+        if is_started:
+            if targ == i:
+                new_k = k + 1
+            else:
+                new_k = k - 1
+        
+        ans += solve_dp(pos + 1, new_k, is_under, is_started, targ, targ2, dp, num)
+    
+    dp[pos][k][under][started] = ans
+    return ans
+
+def count_interesting_to(ubound):
+    num = str(ubound)
+    ans = 0
+    dp = [[[[ -1 for _ in range(2)] for _ in range(50)] for _ in range(19)] for _ in range(2)]
+    
+    for i in range(10):
+        ans += solve_dp(0, 20, False, False, i, -1, dp, num)
+    
+    # If a sequence's digits consist of exactly half i and half j, then it will
+    # be counted twice. We have to subtract duplicates to avoid overcount.
+    duplicates = 0
+    for i in range(10):
+        for j in range(10):
+            duplicates += solve_dp(0, 20, False, False, i, j, dp, num)
+    
+    return ans - (duplicates // 2)
+
+import sys
+input = sys.stdin.read
+output = sys.stdout.write
+
+def main():
+    input_data = input().split()
+    X = int(input_data[0])
+    Y = int(input_data[1])
+    result = count_interesting_to(Y) - count_interesting_to(X - 1)
+    output(str(result) + '\n')
+
+if __name__ == '__main__':
+    main()
+```
+
+</PySection>
+
 </LanguageSection>
 
 ## Problems
