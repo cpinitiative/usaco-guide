@@ -39,117 +39,112 @@ In this problem, Euler's Formula is indirectly relevant through the concept of i
 
 ```cpp
 #include <iostream>
-#include <vector>
 #include <unordered_map>
+#include <vector>
 using namespace std;
 
 class UnionFind {
-private:
-    vector<int> parent;
-    vector<int> rank;
-    int components;  // Number of connected components
+  private:
+	vector<int> parent;
+	vector<int> rank;
+	int components;  // Number of connected components
 
-public:
-    UnionFind(int n) {
-        parent.resize(n);
-        rank.resize(n);
-        components = 0;
-        for (int i = 0; i < n; ++i) {
-            parent[i] = i;
-            rank[i] = 0;
-        }
-    }
+  public:
+	UnionFind(int n) {
+		parent.resize(n);
+		rank.resize(n);
+		components = 0;
+		for (int i = 0; i < n; ++i) {
+			parent[i] = i;
+			rank[i] = 0;
+		}
+	}
 
-    int find(int u) {
-        if (parent[u] != u)
-            parent[u] = find(parent[u]);
-        return parent[u];
-    }
+	int find(int u) {
+		if (parent[u] != u) parent[u] = find(parent[u]);
+		return parent[u];
+	}
 
-    void unionSets(int u, int v) {
-        int rootU = find(u);
-        int rootV = find(v);
+	void unionSets(int u, int v) {
+		int rootU = find(u);
+		int rootV = find(v);
 
-        if (rootU != rootV) {
-            if (rank[rootU] > rank[rootV])
-                parent[rootV] = rootU;
-            else if (rank[rootU] < rank[rootV])
-                parent[rootU] = rootV;
-            else {
-                parent[rootV] = rootU;
-                rank[rootU]++;
-            }
-            components--;
-        }
-    }
+		if (rootU != rootV) {
+			if (rank[rootU] > rank[rootV]) parent[rootV] = rootU;
+			else if (rank[rootU] < rank[rootV]) parent[rootU] = rootV;
+			else {
+				parent[rootV] = rootU;
+				rank[rootU]++;
+			}
+			components--;
+		}
+	}
 
-    void addComponent(int u) {
-        if (parent[u] == -1) {
-            parent[u] = u;
-            rank[u] = 0;
-            components++;
-        }
-    }
+	void addComponent(int u) {
+		if (parent[u] == -1) {
+			parent[u] = u;
+			rank[u] = 0;
+			components++;
+		}
+	}
 
-    int getComponentsCount() const {
-        return components;
-    }
+	int getComponentsCount() const { return components; }
 };
 
 int main() {
-    int n, m;
-    cin >> n >> m;
+	int n, m;
+	cin >> n >> m;
 
-    vector<vector<char>> grid(n, vector<char>(n, '.')); // '.' represents water
-    vector<int> waterLevel(n, n); // initially all water
+	vector<vector<char>> grid(n, vector<char>(n, '.'));  // '.' represents water
+	vector<int> waterLevel(n, n);                        // initially all water
 
-    UnionFind uf(n * n);
-    vector<bool> hasLake(n * n, false);
+	UnionFind uf(n * n);
+	vector<bool> hasLake(n * n, false);
 
-    auto index = [&](int r, int c) {
-        return r * n + c;
-    };
+	auto index = [&](int r, int c) { return r * n + c; };
 
-    auto isValid = [&](int r, int c) {
-        return r >= 0 && r < n && c >= 0 && c < n;
-    };
+	auto isValid = [&](int r, int c) {
+		return r >= 0 && r < n && c >= 0 && c < n;
+	};
 
-    int queries;
-    char type;
-    int r, c;
+	int queries;
+	char type;
+	int r, c;
 
-    for (int i = 0; i < m; ++i) {
-        cin >> type;
-        if (type == '!') {
-            cin >> r >> c;
-            r--; c--;
+	for (int i = 0; i < m; ++i) {
+		cin >> type;
+		if (type == '!') {
+			cin >> r >> c;
+			r--;
+			c--;
 
-            // Update water level
-            waterLevel[index(r, c)] = r;
+			// Update water level
+			waterLevel[index(r, c)] = r;
 
-            // Check adjacent cells
-            static const vector<pair<int, int>> directions = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
-            for (auto& dir : directions) {
-                int nr = r + dir.first;
-                int nc = c + dir.second;
-                if (isValid(nr, nc) && grid[nr][nc] == '#') {
-                    uf.unionSets(index(r, c), index(nr, nc));
-                }
-            }
+			// Check adjacent cells
+			static const vector<pair<int, int>> directions = {
+			    {-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+			for (auto &dir : directions) {
+				int nr = r + dir.first;
+				int nc = c + dir.second;
+				if (isValid(nr, nc) && grid[nr][nc] == '#') {
+					uf.unionSets(index(r, c), index(nr, nc));
+				}
+			}
 
-            // Add the current cell as land
-            grid[r][c] = '#';
-            uf.addComponent(index(r, c));
-        } else if (type == '?') {
-            // Query for number of islands and islands without lakes
-            int islands = uf.getComponentsCount();
-            int noLakeIslands = islands;
+			// Add the current cell as land
+			grid[r][c] = '#';
+			uf.addComponent(index(r, c));
+		} else if (type == '?') {
+			// Query for number of islands and islands without lakes
+			int islands = uf.getComponentsCount();
+			int noLakeIslands = islands;
 
-            cout << islands << " " << noLakeIslands << endl;
-        }
-    }
+			cout << islands << " " << noLakeIslands << endl;
+		}
+	}
 
-    return 0;
+	return 0;
 }
 ```
 
