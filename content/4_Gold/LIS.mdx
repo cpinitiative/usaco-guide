@@ -591,31 +591,34 @@ class PCB {
 
 ```py
 import sys
+
 input = sys.stdin.read
 
+
 def find_lis_length():
-    lis = 0
-    a = []
-    s = set()
+	lis = 0
+	a = []
+	s = set()
 
-    lines = input().strip().split('\n')
-    n = int(lines[0].strip())
-    for i in range(1, n+1):
-        x, y = map(int, lines[i].strip().split())
-        a.append((x, y))
-    a.sort(reverse=True, key=lambda x: x[1])
+	lines = input().strip().split("\n")
+	n = int(lines[0].strip())
+	for i in range(1, n + 1):
+		x, y = map(int, lines[i].strip().split())
+		a.append((x, y))
+	a.sort(reverse=True, key=lambda x: x[1])
 
-    for i in range(n):
-        if not s or max(s) < a[i][1]:
-            lis += 1
-        else:
-            s.discard(next(x for x in s if x > a[i][1]))
-        s.add(a[i][1])
+	for i in range(n):
+		if not s or max(s) < a[i][1]:
+			lis += 1
+		else:
+			s.discard(next(x for x in s if x > a[i][1]))
+		s.add(a[i][1])
 
-    return lis
+	return lis
+
 
 if __name__ == "__main__":
-    print(find_lis_length())
+	print(find_lis_length())
 ```
 
 </PySection>
