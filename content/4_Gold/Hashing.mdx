@@ -1,16 +1,17 @@
 ---
-id: string-hashing
-title: 'String Hashing'
-author: Benjamin Qi, Andi Qu
+id: hashing
+title: 'Hashing'
+author: Benjamin Qi, Andi Qu, Peng Bai
 contributors: Andrew Wang, Kevin Sheng
 description:
-  'Quickly testing equality of substrings with a small probability of failure.'
+  'Quickly testing equality of substrings or sets with a small probability of failure.'
 frequency: 1
 prerequisites:
   - modular
+  - intro-bitwise
 ---
 
-## Tutorial
+# String Hashing
 
 <Resources>
   <Resource source="CPH" title="26.3 - String Hashing"></Resource>
@@ -19,13 +20,12 @@ prerequisites:
   <Resource source="rng-58" title="Hashing and Probability of Collision" url="http://rng-58.blogspot.com/2017/02/hashing-and-probability-of-collision.html" starred></Resource>
 </Resources>
 
-## Implementation
+## Template
 
 As mentioned in the articles above, there is no need to calculate modular
 inverses.
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
@@ -61,7 +61,6 @@ vector<long long> HashedString::pow = {1};
 ```
 
 </CPPSection>
-
 <JavaSection>
 
 ```java
@@ -201,16 +200,11 @@ const ll B = uniform_int_distribution<ll>(0, M - 1)(rng);
 </LanguageSection>
 
 
-## Example Problem - Searching For Strings
+## Searching For Strings
 
 <FocusProblem problem="ex" />
 
-### Solution - One Hash
-
-**Time Complexity:** $\mathcal O((|N| + |H|) \cdot \Sigma)$, where $\Sigma$ is
-the size of the alphabet.
-
-**Failure Probability:** $\mathcal O\left(\frac{|N||H|^2}{M}\right)$
+### Explanation - One Hash
 
 We'll use a [sliding window](/gold/sliding) over $H$ to find the "matches" with
 $N$.
@@ -232,8 +226,14 @@ hashes. The answer would simply be the size of that set at the end.
 Using a relatively small modulus such as $M=10^9+9$ will not pass (see the
 note above regarding the birthday paradox). Instead, we use $M=2^{61}-1$.
 
-<LanguageSection>
+### Implementation
 
+**Time Complexity:** $\mathcal O((|N| + |H|) \cdot \Sigma)$, where $\Sigma$ is
+the size of the alphabet.
+
+**Failure Probability:** $\mathcal O\left(\frac{|N||H|^2}{M}\right)$
+
+<LanguageSection>
 <CPPSection>
 
 ```cpp
@@ -314,14 +314,9 @@ int main() {
 ```
 
 </CPPSection>
-
 </LanguageSection>
 
-### Solution - Two Hashes
-
-**Time Complexity:** $\mathcal O((|N| + |H|) \log M)$
-
-**Failure Probability:** $\mathcal O\left(\frac{|N||H|^2}{M}\right)$
+### Explanation - Two Hashes
 
 An alternative solution without frequency tables would be to hash the substrings
 that we're trying to match. Since order doesn't matter, we need to modify our
@@ -338,8 +333,13 @@ over the choice of $B$.
 Since this hash requires the modular inverse, there's an extra $\log M$ factor
 in the time complexity.
 
-<LanguageSection>
+### Implementation
 
+**Time Complexity:** $\mathcal O((|N| + |H|) \log M)$
+
+**Failure Probability:** $\mathcal O\left(\frac{|N||H|^2}{M}\right)$
+
+<LanguageSection>
 <CPPSection>
 
 ```cpp
@@ -427,15 +427,7 @@ int main() {
 ```
 
 </CPPSection>
-
 </LanguageSection>
-
-<!-- ## Adjacency Lists
-
-(elaborate)
-
-<Problems problems={"adj"} />
- -->
 
 ## Problems
 
@@ -446,3 +438,109 @@ int main() {
 Constraints for "Bull in a China Shop" are incorrect, should say $R,C\le 500$. Also, time + memory limits are unnecessarily tight ...
 
 </Warning> -->
+
+# XOR Hashing/Zobrist Hashing
+
+<Resources>
+  <Resource source="CF" title="XOR Hashing" url="https://codeforces.com/blog/entry/85900"/>
+</Resources>
+
+Hashing can also be used to check if sets of elements are equal. To do this, we first randomly generate a hash value for each unique element. Typically, the hash value is an integer in the range $[0, 2^{63}-1]$ since $2^{63}-1$ is the maximum value of a 64-bit signed integer. The hash of a set $S$ is the XOR sum of the hash values of all the elements in $S$. Since $x \oplus x = 0$ for all $x$, we can delete an element $s$ from set $S$ by applying the hash value of $s$ again on the hash. The probability of a collision of $N$ sets is approximately $\frac{N^2}{M}$, where $M$ is the maximum possible hash value.
+
+<FocusProblem problem="exxor" />
+
+## Explanation
+
+For each distinct numerical value in the arrays, we generate a random positive 64-bit integer.
+With this map, we can build the prefix XOR hashes for $a$ and $b$.
+
+An issue we have to deal with is duplicate elements, as XORing an element with
+itself will result in a value of $0$ and will be equivalent it never having
+existed in the first place.
+To fix this, we use a set to detect duplicate subsequent values and only XOR
+an element with the prefix hash if it's new.
+
+Now, to answer a query, we check if the XOR hashes at the given indices are the same.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N\log N + Q)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <chrono>
+#include <iostream>
+#include <map>
+#include <random>
+#include <set>
+#include <vector>
+
+using std::cout;
+using std::endl;
+using std::vector;
+
+/** @return a random integer between 0 and INT64_MAX */
+long long rng() {
+	static std::mt19937 gen(
+	    std::chrono::steady_clock::now().time_since_epoch().count());
+	return std::uniform_int_distribution<long long>(0, INT64_MAX)(gen);
+}
+
+int main() {
+	int len;
+	std::cin >> len;
+
+	std::map<int, long long> hash_vals;
+	vector<int> a(len);
+	for (int &i : a) {
+		std::cin >> i;
+		// assign a hash value to each unique number in the array
+		if (!hash_vals.count(i)) { hash_vals[i] = rng(); }
+	}
+	vector<int> b(len);
+	for (int &i : b) {
+		std::cin >> i;
+		if (!hash_vals.count(i)) { hash_vals[i] = rng(); }
+	}
+
+	std::set<int> seen;
+	vector<long long> a_xor(len);
+	for (int i = 0; i < len; i++) {
+		// only add to prefix xor if not encountered before
+		if (!seen.count(a[i])) {
+			a_xor[i] = hash_vals[a[i]];
+			seen.insert(a[i]);
+		}
+		if (i > 0) { a_xor[i] ^= a_xor[i - 1]; }
+	}
+
+	seen.clear();
+	// do the same thing for b
+	vector<long long> b_xor(len);
+	for (int i = 0; i < len; i++) {
+		if (!seen.count(b[i])) {
+			b_xor[i] = hash_vals[b[i]];
+			seen.insert(b[i]);
+		}
+		if (i > 0) { b_xor[i] ^= b_xor[i - 1]; }
+	}
+
+	int query_num;
+	std::cin >> query_num;
+	for (int q = 0; q < query_num; q++) {
+		int a_set, b_set;
+		std::cin >> a_set >> b_set;
+		// check if the prefix xors are equal
+		cout << (a_xor[--a_set] == b_xor[--b_set] ? "Yes" : "No") << '\n';
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
+## Problems
+
+<Problems problems="generalxor" />
