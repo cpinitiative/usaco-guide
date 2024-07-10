@@ -5,15 +5,11 @@ title: Subtrees & Paths
 author: Rameez Parwez
 ---
 
-Given a rooted tree of $N$ nodes, where each node is uniquely numbered in between $[1...N]$. The node $1$ is the root of the tree. Each node has an integer value which is initially $0$.
-
-You need to perform the following two kinds of queries on the tree:
-- $add$ $t$ $value$: Add $value$ to all nodes in subtree rooted at $t$
-- $max$ $a$ $b$: Report maximum value on the path from $a$ to $b$
+[Official Editorial](https://www.hackerrank.com/challenges/subtrees-and-paths/editorial)
 
 ## Intuition
 
-From the question statement, it is clear that this is a Heavy-Light Decomposition(HLD). To handle the query operations, we will combine HLD with Lazy Segment Tree.
+The problem requires us to perform two operations: adding a value $x$ to all nodes in the subtree rooted at $t$, and finding the maximum value on the path from $a$ to $b$. From the [Tutorial](https://usaco.guide/plat/hld?lang=cpp#tutorial) we know that Heavy-Light Decomposition(HLD) handles both operations efficiently. Therefore we will use HLD along with a Lazy Segment Tree for the query operations.
 
 The explanation is similar to the one mentioned [here](https://usaco.guide/plat/hld?lang=cpp#template).
 
@@ -25,16 +21,16 @@ The explanation is similar to the one mentioned [here](https://usaco.guide/plat/
 #include <bits/stdc++.h>
 using namespace std;
 
-const int N = 1e5 + 9, LG = 18, inf = 1e9 + 9;
+const int MAX_N = 1e5 + 1, LG = 18, INF = 1e9 + 9;
 // BeginCodeSnip{Lazy Segment Tree}
 struct LST {
 #define lc (n << 1)
 #define rc ((n << 1) | 1)
-	int t[4 * N], lazy[4 * N];
+	int t[4 * MAX_N], lazy[4 * MAX_N];
 
 	LST() {
-		fill(t, t + 4 * N, -inf);
-		fill(lazy, lazy + 4 * N, 0);
+		fill(t, t + 4 * MAX_N, -INF);
+		fill(lazy, lazy + 4 * MAX_N, 0);
 	}
 
 	inline void push(int n, int b, int e) {
@@ -81,7 +77,7 @@ struct LST {
 
 	int query(int n, int b, int e, int i, int j) {
 		push(n, b, e);
-		if (i > e or b > j) { return -inf; }
+		if (i > e or b > j) { return -INF; }
 		if (i <= b and e <= j) { return t[n]; }
 		int mid = (b + e) >> 1;
 		return combine(query(lc, b, mid, i, j), query(rc, mid + 1, e, i, j));
@@ -89,8 +85,8 @@ struct LST {
 } lseg;
 // EndCodeSnip
 
-vector<int> adj[N];
-int par[N][LG + 1], dep[N], sz[N];
+vector<int> adj[MAX_N];
+int par[MAX_N][LG + 1], dep[MAX_N], sz[MAX_N];
 
 void dfs_sz(int u, int p = 0) {
 	par[u][0] = p;
@@ -133,7 +129,7 @@ int kth(int u, int k) {
 	return u;
 }
 
-int T, head[N], st[N], en[N];
+int T, head[MAX_N], st[MAX_N], en[MAX_N];
 int n;
 void dfs_hld(int u) {
 	st[u] = ++T;
@@ -145,7 +141,7 @@ void dfs_hld(int u) {
 }
 
 int query_up(int u, int v) {
-	int res = -inf;
+	int res = -INF;
 	while (head[u] != head[v]) {
 		res = max(res, lseg.query(1, 1, n, st[head[u]], st[u]));
 		u = par[head[u]][0];
