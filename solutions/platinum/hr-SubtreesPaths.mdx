@@ -24,10 +24,8 @@ using namespace std;
 const int MAX_N = 1e5 + 1, LG = 18, INF = 1e9 + 9;
 // BeginCodeSnip{Lazy Segment Tree}
 struct LST {
-#define lc (n << 1)
-#define rc ((n << 1) | 1)
-	int t[4 * MAX_N], lazy[4 * MAX_N];
 
+	int t[4 * MAX_N], lazy[4 * MAX_N];
 	LST() {
 		fill(t, t + 4 * MAX_N, -INF);
 		fill(lazy, lazy + 4 * MAX_N, 0);
@@ -37,15 +35,15 @@ struct LST {
 		if (lazy[n] == 0) { return; }
 		t[n] = t[n] + lazy[n];
 		if (b != e) {
-			lazy[lc] = lazy[lc] + lazy[n];
-			lazy[rc] = lazy[rc] + lazy[n];
+			lazy[2 * n] = lazy[2 * n] + lazy[n];
+			lazy[2 * n + 1] = lazy[2 * n + 1] + lazy[n];
 		}
 		lazy[n] = 0;
 	}
 
 	inline int combine(int a, int b) { return max(a, b); }
 
-	inline void pull(int n) { t[n] = max(t[lc], t[rc]); }
+	inline void pull(int n) { t[n] = max(t[2 * n], t[2 * n + 1]); }
 
 	void build(int n, int b, int e) {
 		if (b == e) {
@@ -54,8 +52,8 @@ struct LST {
 		}
 
 		int mid = (b + e) >> 1;
-		build(lc, b, mid);
-		build(rc, mid + 1, e);
+		build(2 * n, b, mid);
+		build(2 * n + 1, mid + 1, e);
 		pull(n);
 	}
 
@@ -70,8 +68,8 @@ struct LST {
 		}
 
 		int mid = (b + e) >> 1;
-		upd(lc, b, mid, i, j, v);
-		upd(rc, mid + 1, e, i, j, v);
+		upd(2 * n, b, mid, i, j, v);
+		upd(2 * n + 1, mid + 1, e, i, j, v);
 		pull(n);
 	}
 
@@ -80,7 +78,7 @@ struct LST {
 		if (i > e or b > j) { return -INF; }
 		if (i <= b and e <= j) { return t[n]; }
 		int mid = (b + e) >> 1;
-		return combine(query(lc, b, mid, i, j), query(rc, mid + 1, e, i, j));
+		return combine(query(2 * n, b, mid, i, j), query(2 * n + 1, mid + 1, e, i, j));
 	}
 } lseg;
 // EndCodeSnip
