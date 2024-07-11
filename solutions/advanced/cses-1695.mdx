@@ -183,3 +183,85 @@ public class PoliceChase {
 
 <PySection>
 ```py
+from collections import deque
+
+# Maximum number of nodes
+N = 500
+
+# Initialize variables
+n, m = 0, 0
+lev = [-1] * N
+c = [[0] * N for _ in range(N)]
+seen = [0] * N
+q = deque()
+
+
+def bfs():
+    # Reset levels
+    for i in range(n):
+        lev[i] = -1
+    lev[0] = 0
+    q.append(0)
+    while q:
+        u = q.popleft()
+        for v in range(n):
+            if lev[v] == -1 and c[u][v] > 0:
+                lev[v] = lev[u] + 1
+                q.append(v)
+    return lev[n - 1] != -1
+
+def dfs(u):
+    if u == n - 1:
+        return True
+    for v in range(seen[u], n):
+        seen[u] = v
+        if lev[v] == lev[u] + 1 and c[u][v] > 0 and dfs(v):
+            c[u][v] -= 1
+            c[v][u] += 1
+            return True
+    return False
+
+def dfs2(u):
+    lev[u] = 1
+    for v in range(n):
+        if lev[v] == 0 and c[u][v] > 0:
+            dfs2(v)
+
+def main():
+	global n, m
+	import sys
+
+    index = 2
+    for _ in range(m):
+        u = int(data[index]) - 1
+        v = int(data[index + 1]) - 1
+        index += 2
+        c[u][v] += 1
+        c[v][u] += 1
+
+    while bfs():
+        for i in range(n):
+            seen[i] = 0
+        while dfs(0):
+            pass
+
+    for i in range(n):
+        lev[i] = 0
+    dfs2(0)
+
+    rem = []
+    for i in range(n):
+        for j in range(n):
+            if lev[i] == 1 and lev[j] == 0 and c[j][i] > 0:
+                rem.append((i + 1, j + 1))
+
+
+if __name__ == "__main__":
+    main()
+
+
+````
+
+</PySection>
+
+</LanguageSection>
