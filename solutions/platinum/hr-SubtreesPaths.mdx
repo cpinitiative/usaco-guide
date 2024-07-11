@@ -11,7 +11,16 @@ author: Rameez Parwez
 
 The problem requires us to perform two operations: adding a value $x$ to all nodes in the subtree rooted at $t$, and finding the maximum value on the path from $a$ to $b$. From the [Tutorial](https://usaco.guide/plat/hld?lang=cpp#tutorial) we know that Heavy-Light Decomposition(HLD) handles both operations efficiently. Therefore we will use HLD along with a Lazy Segment Tree for the query operations.
 
-The explanation is similar to the one mentioned [here](https://usaco.guide/plat/hld?lang=cpp#template).
+## Explanation
+At first, we choose an arbitrary root (i.e., node 1) and start a DFS over the tree to calculate the depth and subtree size for each node. Afterward, the decomposition is performed, which transforms the tree into a structure suitable for Lazy Segment Tree operations by assigning linearized positions to nodes and identifying heavy paths.
+
+The subtree update operation needs to be performed efficiently. During the update, we first handle any pending updates for the current segment tree node to ensure that all the previous changes are applied correctly before handling the new update. If the current segment is entirely within the update range, we add the update value to the node's lazy value. Additionally, if the node is not a leaf node, the update is also propagated to its children. This propagation ensures that future operations on the children will account for the update.
+
+To find the maximum value on the path from $a$ to $b$, instead of traversing directly from $a$ to $b$ and finding the maximum value in linear time, we first calculate the Lowest Common Ancestor(LCA) and split the path into two segments
+- $a$ to $LCA(a, b)$
+- $b$ to $LCA(a, b)$
+
+After splitting the path, we will use Lazy Segment Tree to calculate the maximum value in each segment, which operates in logarithmic time for each segment. Once we have computed the maximum values for both segments, combining these results gives us the maximum value along the entire path from $a$ to $b$.
 
 ## Implementation
 **Time Complexity:** $\mathcal{O} ((N + Q) \log^2(N))$
