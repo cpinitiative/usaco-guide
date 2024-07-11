@@ -35,7 +35,7 @@ Suppose you want to support the following queries:
 - Given a range $l$, $r$ count the number of occurrences of value $x$.
 - Given a range $l$, $r$ find the $k$ smallest element
 
-With wavelet tree, you can easily support those queries in $log(M)$ time.
+With a wavelet tree, you can easily support those queries in $log(M)$ time.
 when M is the maximum value in the array.
 
 ## Wavelet Tree Structure
@@ -65,7 +65,7 @@ $$
 \end{aligned}
 $$
 
-This reduces the problem to counting the number of occurrences in a prefix.
+This reduces the problem of counting the number of occurrences in a prefix.
 
 One way to solve the problem is to go to the leaf node
 and perform a binary search for the number of indices less than $𝑟$
@@ -87,7 +87,7 @@ $𝑟$.
 This can be done using a prefix sum.
 
 Let's define:
-- $c[i]$ = as 1 if $index[i]$ is smaller than mid otherwise 0
+- $c[i]$ as 1 if $index[i]$ is smaller than mid otherwise 0
 - $prefixB[i]$ as prefix sum of $c[i]$
 
 Formally
@@ -114,7 +114,7 @@ Note that this also works for non-leaf nodes using the following formula:
 $$
 \texttt{occurrences}(l, r) = r - l
 $$
-<Info title="Simular">
+<Info title="Similar">
 This is similar to counting how many times a value appears up to index 𝑅 in our previous query. We did this by using the new 𝑅 value at the leaf node. But now, we consider the difference between the updated 𝑅 and 𝐿
 </Info>
 
@@ -230,8 +230,6 @@ int main() {
 		k++;
 		cout << seg.find_k_smallest(a, b, k) << " ";
 	}
-
-	return 0;
 }
 ```
 </CPPSection>
@@ -244,20 +242,17 @@ int main() {
 Let's support updates of type:
 	- change value at index $i$ to $y$
 
-We can traverse down to the leaf to remove the old element and also traverse down to add the new element.
+We can traverse down to the leaf to remove the old element and traverse again to add the new element. These updates only change our indices vector and prefix vector.
 
-So what do the updates change?
- -
- Our indices vector
- Our prefix vector
+To make erasing and adding values easier, we can have the indices vector store sets instead of vectors.
 
-To change the indices vector, what we can do is, instead of storing a vector, use a set.
-Then erasing and adding values becomes easy.
+On the other hand, to change the prefix vector, since each update could change our prefix vector a lot, we can't maintain just the normal vector.
 
-On the other hand, To change the prefix vector, since each update could change our prefix vector a lot, we can't maintain just the normal vector. What we could do is use a sparse segment tree.
+Instead, we can use a sparse segment tree. These support the operations:
 	- erasing and inserting can be done by just setting the value to 0 or 1 at the specific index
 	- querying for a prefix can be done by querying the segment tree from 0 to $i$
-This approach is not memory efficient and requires a segment tree's implementation.
+
+This approach is not memory efficient and requires a segment tree implementation.
 A more friendly approach would be using an order statistics tree.
 
 ### Problems
