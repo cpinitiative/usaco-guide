@@ -59,9 +59,9 @@ struct LST {
 
 	void upd(int n, int b, int e, int i, int j, int v) {
 		push(n, b, e);
-		if (j < b or e < i) { return; }
+		if (j < b || e < i) { return; }
 
-		if (i <= b and e <= j) {
+		if (i <= b && e <= j) {
 			lazy[n] += v;
 			push(n, b, e);
 			return;
@@ -75,8 +75,8 @@ struct LST {
 
 	int query(int n, int b, int e, int i, int j) {
 		push(n, b, e);
-		if (i > e or b > j) { return -INF; }
-		if (i <= b and e <= j) { return t[n]; }
+		if (i > e || b > j) { return -INF; }
+		if (i <= b && e <= j) { return t[n]; }
 		int mid = (b + e) >> 1;
 		return combine(query(2 * n, b, mid, i, j),
 		               query(2 * n + 1, mid + 1, e, i, j));
