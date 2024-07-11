@@ -302,7 +302,7 @@ struct HLD {
 	vector<int> par, heavy, depth, root, pos;
 	Segtree st;
 
-	// DFS to calculate sizes of subtrees and identify heavy children
+	// calculates sizes of subtrees and identify heavy children
 	int dfs(int u, int p, vector<vector<int>> &adj) {
 		int sz = 1, m = 0;  // size of subtree and max size of child subtree
 		for (auto v : adj[u]) {
@@ -321,13 +321,13 @@ struct HLD {
 	}
 
 	// construncting the heavy paths
-	/**
-	We iterate through all the nodes. If a node is not the heavy child of
-	another node, then the edge to its parent is a light edge, making the node
-	the root of a heavy path. We then continue descending to the heavy children
-	until we reach a leaf. This guarantees that all heavy paths are continuous
-	segments of the array.
-	**/
+	/*
+	 * We iterate through all the nodes. If a node is not the heavy child of
+	 * another node, then the edge to its parent is a light edge, making the node
+	 * the root of a heavy path. We then continue descending to the heavy children
+	 * until we reach a leaf. This guarantees that all heavy paths are continuous
+	 * segments of the array.
+	*/
 	HLD(int n, vector<int> &v, vector<vector<int>> &adj) {
 		this->n = n;
 		heavy.assign(n + 1, 0);
