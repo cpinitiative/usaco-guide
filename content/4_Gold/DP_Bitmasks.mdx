@@ -125,64 +125,6 @@ int main() {
 
 </CPPSection>
 
-<JavaSection>
-
-```java
-import java.util.*;
-
-public class Main {
-
-	static final int MAX_N = 20;
-	static final long MOD = 1000000007;
-
-	static long[][] dp = new long[1 << MAX_N][MAX_N];
-	// come_from[i] contains the cities that can fly to i
-	static List<Integer>[] come_from = new List[MAX_N];
-
-	public static void main(String[] args) {
-		Scanner scanner = new Scanner(System.in);
-
-		int city_num = scanner.nextInt();
-		int flight_num = scanner.nextInt();
-
-		for (int i = 0; i < MAX_N; i++) { come_from[i] = new ArrayList<>(); }
-
-		for (int f = 0; f < flight_num; f++) {
-			int start = scanner.nextInt();
-			int end = scanner.nextInt();
-			come_from[end - 1].add(start - 1);
-		}
-
-		dp[1][0] = 1;
-		for (int s = 2; s < (1 << city_num); s++) {
-			// only consider subsets that have the first city
-			if ((s & (1 << 0)) == 0) continue;
-			// also only consider subsets with the last city if it's the full
-			// subset
-			if ((s & (1 << (city_num - 1))) == 0 && s != ((1 << city_num) - 1))
-				continue;
-
-			for (int end = 0; end < city_num; end++) {
-				if ((s & (1 << end)) == 0) continue;
-
-				// the subset that doesn't include the current end
-				int prev = s - (1 << end);
-				for (int j : come_from[end]) {
-					if ((s & (1 << j)) != 0) {
-						dp[s][end] += dp[prev][j];
-						dp[s][end] %= MOD;
-					}
-				}
-			}
-		}
-
-		System.out.println(dp[(1 << city_num) - 1][city_num - 1]);
-	}
-}
-```
-
-</JavaSection>
-
 <PySection>
 
 ```py
