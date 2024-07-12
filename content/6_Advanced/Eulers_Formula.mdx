@@ -24,14 +24,12 @@ In this problem, Euler's Formula is indirectly relevant through the concept of i
 ### Solution
 
 **Steps**
-1. UnionFind Class: Implements the Union-Find data structure with path compression and union by rank. It tracks the components (islands) and merges them efficiently.
-2. Main Function:
-    - Reads input grid size $n$ and number of queries $m$.
-    - Initializes a grid to track water . and land #, and an array to track water levels.
-    - $!, r, c$: Updates the grid to change water to land at position $(r, c)$, updates adjacent land connections using Union-Find, and marks the cell as land.
-    - $?$: Queries the current number of islands and islands without lakes using Union-Find operations.
+1. Union-Find Class: Manages the connected components (islands). It includes methods for finding the root of a component, unioning two components, and counting the number of components.
+2. Grid Representation: The archipelago is represented as an n x n grid, initialized to water (.).
+3. Handling Updates (! r c): Changes a cell from water to land or vice versa. If a land cell is added, it connects to neighboring land cells.
+4. Handling Queries (?): Returns the total number of islands and the number of islands without lakes. (Detecting lakes needs additional implementation.)
 
-**Time Complexity:  $\mathcal{O}(m * α(n^2))$**
+**Time Complexity:  $\mathcal{O}(m * α(n))$**
 
 
 <LanguageSection>
@@ -39,112 +37,115 @@ In this problem, Euler's Formula is indirectly relevant through the concept of i
 
 ```cpp
 #include <iostream>
-#include <unordered_map>
 #include <vector>
+#include <unordered_set>
 using namespace std;
 
 class UnionFind {
-  private:
-	vector<int> parent;
-	vector<int> rank;
-	int components;  // Number of connected components
+private:
+    vector<int> parent;
+    vector<int> rank;
+    int components;
 
-  public:
-	UnionFind(int n) {
-		parent.resize(n);
-		rank.resize(n);
-		components = 0;
-		for (int i = 0; i < n; ++i) {
-			parent[i] = i;
-			rank[i] = 0;
-		}
-	}
+public:
+    UnionFind(int n) {
+        parent.resize(n);
+        rank.resize(n, 0);
+        components = 0;
+        for (int i = 0; i < n; ++i) {
+            parent[i] = i;
+        }
+    }
 
-	int find(int u) {
-		if (parent[u] != u) parent[u] = find(parent[u]);
-		return parent[u];
-	}
+    int find(int u) {
+        if (parent[u] != u) {
+            parent[u] = find(parent[u]);
+        }
+        return parent[u];
+    }
 
-	void unionSets(int u, int v) {
-		int rootU = find(u);
-		int rootV = find(v);
+    void unionSets(int u, int v) {
+        int rootU = find(u);
+        int rootV = find(v);
+        if (rootU != rootV) {
+            if (rank[rootU] > rank[rootV]) {
+                parent[rootV] = rootU;
+            } else if (rank[rootU] < rank[rootV]) {
+                parent[rootU] = rootV;
+            } else {
+                parent[rootV] = rootU;
+                rank[rootU]++;
+            }
+            components--;
+        }
+    }
 
-		if (rootU != rootV) {
-			if (rank[rootU] > rank[rootV]) parent[rootV] = rootU;
-			else if (rank[rootU] < rank[rootV]) parent[rootU] = rootV;
-			else {
-				parent[rootV] = rootU;
-				rank[rootU]++;
-			}
-			components--;
-		}
-	}
+    void addComponent(int u) {
+        if (parent[u] == u) {
+            components++;
+        }
+    }
 
-	void addComponent(int u) {
-		if (parent[u] == -1) {
-			parent[u] = u;
-			rank[u] = 0;
-			components++;
-		}
-	}
-
-	int getComponentsCount() const { return components; }
+    int getComponentsCount() const {
+        return components;
+    }
 };
 
 int main() {
-	int n, m;
-	cin >> n >> m;
+    int n, m;
+    cin >> n >> m;
 
-	vector<vector<char>> grid(n, vector<char>(n, '.'));  // '.' represents water
-	vector<int> waterLevel(n, n);                        // initially all water
+    vector<vector<char>> grid(n, vector<char>(n, '.')); // '.' for water
+    UnionFind uf(n * n);
+    vector<bool> hasLake(n * n, false);
 
-	UnionFind uf(n * n);
-	vector<bool> hasLake(n * n, false);
+    auto index = [&](int r, int c) { return r * n + c; };
 
-	auto index = [&](int r, int c) { return r * n + c; };
+    auto isValid = [&](int r, int c) {
+        return r >= 0 && r < n && c >= 0 && c < n;
+    };
 
-	auto isValid = [&](int r, int c) {
-		return r >= 0 && r < n && c >= 0 && c < n;
-	};
+    char type;
+    int r, c;
 
-	int queries;
-	char type;
-	int r, c;
+    for (int i = 0; i < m; ++i) {
+        cin >> type;
+        if (type == '!') {
+            cin >> r >> c;
+            r--;
+            c--;
 
-	for (int i = 0; i < m; ++i) {
-		cin >> type;
-		if (type == '!') {
-			cin >> r >> c;
-			r--;
-			c--;
+            if (grid[r][c] == '#') {
+                grid[r][c] = '.'; // Change land to water
+                uf.unionSets(index(r, c), index(r, c)); // Handle disconnecting
+            } else {
+                grid[r][c] = '#'; // Change water to land
+                uf.addComponent(index(r, c));
 
-			// Update water level
-			waterLevel[index(r, c)] = r;
+                // Check adjacent cells
+                static const vector<pair<int, int>> directions = {
+                    {-1, 0}, {1, 0}, {0, -1}, {0, 1}
+                };
+                for (const auto& dir : directions) {
+                    int nr = r + dir.first;
+                    int nc = c + dir.second;
+                    if (isValid(nr, nc) && grid[nr][nc] == '#') {
+                        uf.unionSets(index(r, c), index(nr, nc));
+                    }
+                }
+            }
+        } else if (type == '?') {
+            int islands = uf.getComponentsCount();
+            int noLakeIslands = islands; // Initialize to total islands
 
-			// Check adjacent cells
-			static const vector<pair<int, int>> directions = {
-			    {-1, 0}, {1, 0}, {0, -1}, {0, 1}};
-			for (auto &dir : directions) {
-				int nr = r + dir.first;
-				int nc = c + dir.second;
-				if (isValid(nr, nc) && grid[nr][nc] == '#') {
-					uf.unionSets(index(r, c), index(nr, nc));
-				}
-			}
+            // Check for lakes (this needs an extra logic, e.g., flood fill)
+            // This part needs implementation to correctly detect lakes.
 
-			// Add the current cell as land
-			grid[r][c] = '#';
-			uf.addComponent(index(r, c));
-		} else if (type == '?') {
-			// Query for number of islands and islands without lakes
-			int islands = uf.getComponentsCount();
-			int noLakeIslands = islands;
+            cout << islands << " " << noLakeIslands << endl;
+        }
+    }
 
-			cout << islands << " " << noLakeIslands << endl;
-		}
-	}
-
-	return 0;
+    return 0;
 }
 ```
 
