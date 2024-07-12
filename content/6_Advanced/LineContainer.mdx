@@ -32,14 +32,14 @@ frequency: 1
 
 <FocusProblem problem="HPIsam" />
 
-A half-plane can be defined as a planar region that consists of all points on one side of an infinite straight line, and none on the other side. We can apply computational geometry here, as an intersection can be represented as a convex polygon, where every point inside it is also inside all half-planes. If we can construct this polygon, we can retrieve the intersections.
+A half-plane is a planar region consisting of all points on one side of an infinite straight line, and none on the other. We can apply computational geometry here, as an intersection can be represented as a convex polygon, where every point inside it is also inside all half-planes. If we can construct this polygon, we can retrieve the intersections.
 
 We can state that $N$ is the number of half-planes in our set. We represent lines and half-planes by a point and a vector, or in other terms, any point that lies on said line and the direction vector of the line. Each half-plane allows the region to the left of its direction vector. We can define the angle of a given half-plane as the polar coordinates of its direction vector. We can also state that a resulting intersection is always either bounded or empty, in cases where this doesn't hold, we can add 4 more half-planes which increase the size of the bounding box. For now, we shall also assume that parallel half-planes will not be present. To get a more visual representation of this, see the image below:
 
 ![halfplane1](https://github.com/cpinitiative/usaco-guide/assets/145281030/bf54b84b-038f-47bd-a7e7-2f17ed8b8504)
 
 This half-plane has an equation $y = 2x -2$ and can be represented as $P = (1,0)$ with the direction vector $PQ$ as $(1,2)$.
-I will now describe various ways of solving this problem, explaining algorithms in increasing efficiency:
+Let's now look at various ways of solving this problem, optimizing as we continue.
 
 ## Explanation
 
@@ -51,7 +51,7 @@ This problem can be solved using brute force by computing the intersection point
 
 A slightly faster approach to this problem would be to incrementally construct the intersection of the half-planes one by one. We cut the convex polygon by a line $N$ amount of times, removing the redundant planes each time.
 
-If we represent the convex polygon as a set of line segments, we can cut it with a half-plane by finding the points of intersection of the segments with the half-plane line, replacing all the line segments in the middle with a new segment corresponding to a half-plane. This can be implemented in $\mathcal{O}(N)$ time, and decrease the bounding box with each half-plane, resulting in an $\mathcal{O}(N^2)$ complexity.
+Suppose we represent the convex polygon as a set of line segments. In that case, we can cut it with a half-plane by finding the points of intersection of the segments with the half-plane line, replacing all the line segments in the middle with a new segment corresponding to a half-plane. This can be implemented in $\mathcal{O}(N)$ time, and decrease the bounding box with each half-plane, resulting in an $\mathcal{O}(N^2)$ complexity.
 
 This is much better than our initial approach. However, it's still relatively inefficient as we still have to loop over $\mathcal{O}(N)$ half-planes with every iteration. We will make some alterations to this algorithm in the next approach for a more reasonable solution.
 
@@ -64,7 +64,7 @@ Let's say that the half-plane angles are sorted from $-π$ to $π$ and that we a
 * Some of the half-planes that are located at the front of the intersection may become redundant, in which case we shall pop from the queue from the back of the double-ended queue.
 * The intersection may become empty from this, in which case we shall simply terminate the algorithm and return the intersection as empty.
 
-In this case, redundant means that it doesn't change the intersection, or the half-plane could be removed and the intersection wouldn't change.
+In this case, redundant means that it doesn't change the intersection or the half-plane could be removed and the intersection wouldn't change.
 
 To visualize this, we shall let $H = A,B,C,D,E$. This is the set of half-planes that are currently present in the intersection. For the points, we can define them as $P = p,q,r,s$ which are intersection points of adjacent half-planes from $H$. This could be represented as such below:
 
