@@ -181,7 +181,6 @@ public class PoliceChase {
 ```py
 from collections import deque
 
-# Maximum number of nodes
 N = 500
 
 # Initialize variables
@@ -190,7 +189,6 @@ lev = [-1] * N
 c = [[0] * N for _ in range(N)]
 seen = [0] * N
 q = deque()
-
 
 def bfs():
     # Reset levels
@@ -204,10 +202,10 @@ def bfs():
             if lev[v] == -1 and c[u][v] > 0:
                 lev[v] = lev[u] + 1
                 q.append(v)
-    return lev[n - 1] != -1
+    return lev[n-1] != -1
 
 def dfs(u):
-    if u == n - 1:
+    if u == n-1:
         return True
     for v in range(seen[u], n):
         seen[u] = v
@@ -223,38 +221,40 @@ def dfs2(u):
         if lev[v] == 0 and c[u][v] > 0:
             dfs2(v)
 
-def main():
-	global n, m
-	import sys
+# Read input
+import sys
+input = sys.stdin.read
+data = input().split()
+n = int(data[0])
+m = int(data[1])
 
-    index = 2
-    for _ in range(m):
-        u = int(data[index]) - 1
-        v = int(data[index + 1]) - 1
-        index += 2
-        c[u][v] += 1
-        c[v][u] += 1
+index = 2
+for _ in range(m):
+    u = int(data[index]) - 1
+    v = int(data[index + 1]) - 1
+    index += 2
+    c[u][v] += 1
+    c[v][u] += 1
 
-    while bfs():
-        for i in range(n):
-            seen[i] = 0
-        while dfs(0):
-            pass
-
+while bfs():
     for i in range(n):
-        lev[i] = 0
-    dfs2(0)
+        seen[i] = 0
+    while dfs(0):
+        pass
 
-    rem = []
-    for i in range(n):
-        for j in range(n):
-            if lev[i] == 1 and lev[j] == 0 and c[j][i] > 0:
-                rem.append((i + 1, j + 1))
+for i in range(n):
+    lev[i] = 0
+dfs2(0)
 
+rem = []
+for i in range(n):
+    for j in range(n):
+        if lev[i] == 1 and lev[j] == 0 and c[j][i] > 0:
+            rem.append((i, j))
 
-if __name__ == "__main__":
-    main()
-
+print(len(rem))
+for u, v in rem:
+    print(u + 1, v + 1)  # Adjust back to 1-indexed for output
 
 ```
 
