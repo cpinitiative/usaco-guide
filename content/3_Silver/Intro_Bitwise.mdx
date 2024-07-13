@@ -406,6 +406,39 @@ int main() {
 ```
 
 </CPPSection>
+
+<PySection>
+
+```py
+def main():
+    import sys
+    input = sys.stdin.read
+    data = input().split()
+    
+    n = int(data[0])
+    pref = [0] * (n + 1)
+    
+    for i in range(2, n + 1):
+        num = i
+        while num % 2 == 0:
+            pref[i] += 1
+            num //= 2
+        pref[i] += pref[i - 1]
+    
+    ans = 0
+    for i in range(n):
+        num = int(data[i + 1])
+        if pref[n - 1] - pref[i] - pref[n - i - 1] == 0:
+            ans ^= num
+    
+    print(ans)
+ 
+if __name__ == "__main__":
+    main()
+```
+
+</PySection>
+
 </LanguageSection>
 
 <Problems problems="probs" />
