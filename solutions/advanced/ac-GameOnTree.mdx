@@ -1,1 +1,55 @@
+---
+id: ac-GameOnTree
+source: AtCoder Grand Contest
+title: Game On Tree
+author: Aakash Gokhale
+---
 
+[Official Editorial (Japanese)](https://atcoder.jp/contests/agc017/editorial)
+
+Since the game in the problem seems similar to nim, let's try to use sprague grundy numbers.
+
+To solve the problem, for a certain root with subtees, $s_1, s_2, ..., s_k$, we can try to convert all these subtrees into a stack of some size.
+Then, by xoring all these stack sizes, we can tell whether we win or lose on this subtree.
+
+We can recursively solve the problem.
+
+Notice that when we get the grundy numbers for each subtree we need to add $1$ to all of them before xoring.
+This is because each stack's size increases by $1$ when you consider the edge from the root of $s_i$ to the root of the entire tree.
+
+## Implementation
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+  ios::sync_with_stdio(0);
+  cin.tie(0);
+  int n;
+  cin >> n;
+  vector<vector<int>> g(n + 1);
+  for (int i = 0; i < n - 1; i++) {
+    int u, v;
+    cin >> u >> v;
+    g[u].push_back(v);
+    g[v].push_back(u);
+  }
+  auto dfs = [&] (auto self, int u, int p = 0) -> int {
+    // Calculating the sg number (or stack size)
+    int sg = 0;
+    for (int v : g[u]) if (v ^ p) {
+      // Adding 1 because the edge from u to v increases the size of each stack by 1
+      sg ^= self(self, v, u) + 1;
+    }
+    return sg;
+  };
+  cout << (dfs(dfs, 1) ? "Alice" : "Bob") << endl;
+}
+```
+</CPPSection>
+</LanguageSection>
