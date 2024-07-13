@@ -89,95 +89,91 @@ int main() {
 ```java
 import java.util.*;
 
-public class PoliceChase { 
-	static final int N = 505;
-	static int n, m;
-	static int[] lev = new int[N];
-	static int[][] c = new int[N][N];
-	static int[] seen = new int[N];
-	static Queue<Integer> q = new LinkedList<>();
+public class PoliceChase {
+    static final int N = 500;
+    static int n, m;
+    static int[] lev = new int[N];
+    static int[][] c = new int[N][N];
+    static int[] seen = new int[N];
+    static Queue<Integer> q = new LinkedList<>();
 
     // BFS to find level of each node
     static boolean bfs() {
-    	Arrays.fill(lev, 1, n + 1, -1);
-    	lev[1] = 0;
-    	q.add(1);
-    	while (!q.isEmpty()) {
-    		int u = q.poll();
-    		for (int v = 1; v <= n; ++v) {
-    			if (lev[v] == -1 && c[u][v] > 0) {
-    				lev[v] = lev[u] + 1;
-    				q.add(v);
-    			}
-    		}
-    	}
-    	return lev[n] != -1;
+        Arrays.fill(lev, 0, n, -1);  // Reset levels
+        lev[0] = 0;
+        q.add(0);
+        while (!q.isEmpty()) {
+            int u = q.poll();
+            for (int v = 0; v < n; ++v) {
+                if (lev[v] == -1 && c[u][v] > 0) {
+                    lev[v] = lev[u] + 1;
+                    q.add(v);
+                }
+            }
+        }
+        return lev[n - 1] != -1;
     }
 
     // DFS to find augmenting paths
     static boolean dfs(int u) {
-    	if (u == n)
-    		return true;
-    	for (; seen[u] <= n; ++seen[u]) {
-    		int v = seen[u];
-    		if (lev[v] == lev[u] + 1 && c[u][v] > 0 && dfs(v)) {
-    			c[u][v]--;
-    			c[v][u]++;
-    			return true;
-    		}
-    	}
-    	return false;
+        if (u == n - 1) return true;
+        for (; seen[u] < n; ++seen[u]) {
+            int v = seen[u];
+            if (lev[v] == lev[u] + 1 && c[u][v] > 0 && dfs(v)) {
+                c[u][v]--;
+                c[v][u]++;
+                return true;
+            }
+        }
+        return false;
     }
 
     // DFS to mark reachable nodes
     static void dfs2(int u) {
-    	lev[u] = 1;
-    	for (int v = 1; v <= n; ++v) {
-    		if (lev[v] == 0 && c[u][v] > 0) {
-    			dfs2(v);
-    		}
-    	}
+        lev[u] = 1;
+        for (int v = 0; v < n; ++v) {
+            if (lev[v] == 0 && c[u][v] > 0) {
+                dfs2(v);
+            }
+        }
     }
 
     public static void main(String[] args) {
-    	Scanner sc = new Scanner(System.in);
-    	n = sc.nextInt();
-    	m = sc.nextInt();
+        Scanner sc = new Scanner(System.in);
+        n = sc.nextInt();
+        m = sc.nextInt();
 
-    	for (int i = 0; i < m; ++i) {
-    		int u = sc.nextInt();
-    		int v = sc.nextInt();
-    		c[u][v]++;
-    		c[v][u]++;
-    	}
+        for (int i = 0; i < m; ++i) {
+            int u = sc.nextInt() - 1;
+            int v = sc.nextInt() - 1;
+            c[u][v]++;
+            c[v][u]++;
+        }
 
-    	while (bfs()) {
-    		Arrays.fill(seen, 1, n + 1, 1);
-    		while (dfs(1))
-    			;
-    	}
+        while (bfs()) {
+            Arrays.fill(seen, 0, n, 0);
+            while (dfs(0));
+        }
 
-    	Arrays.fill(lev, 1, n + 1, 0);
-    	dfs2(1);
+        Arrays.fill(lev, 0, n, 0);
+        dfs2(0);
 
-    	List<int[]> rem = new ArrayList<>();
-    	for (int i = 1; i <= n; ++i) {
-    		for (int j = 1; j <= n; ++j) {
-    			if (lev[i] == 1 && lev[j] == 0 && c[j][i] > 0) {
-    				rem.add(new int[] { i, j });
-    			}
-    		}
-    	}
+        List<int[]> rem = new ArrayList<>();
+        for (int i = 0; i < n; ++i) {
+            for (int j = 0; j < n; ++j) {
+                if (lev[i] == 1 && lev[j] == 0 && c[j][i] > 0) {
+                    rem.add(new int[]{i, j});
+                }
+            }
+        }
 
-    	System.out.println(rem.size());
-    	for (int[] p : rem) {
-    		System.out.println(p[0] + " " + p[1]);
-    	}
-    	sc.close();
+        System.out.println(rem.size());
+		for (int[] p : rem) {
+			System.out.println((p[0] + 1) + " " + (p[1] + 1));
+		}
+		sc.close();
     }
-
 }
-
 ```
 </JavaSection>
 
