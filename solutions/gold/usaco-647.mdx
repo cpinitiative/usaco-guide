@@ -49,15 +49,15 @@ int main() {
 	vector<vector<int>> dp(n, vector<int>(n, -1));
 
 	int ans = 0;
-	for (int l = n - 1; l >= 0; --l) {
-		dp[l][l] = a[l];
-		for (int r = l; r < n; ++r) {
-			for (int k = l; k < r; ++k) {
-				if (dp[l][k] != -1 and dp[l][k] == dp[k + 1][r]) {
-					dp[l][r] = dp[l][k] + 1;
+	for (int len = n - 1; len >= 0; --len) {
+		dp[len][len] = a[len];
+		for (int r = len; r < n; ++r) {
+			for (int k = len; k < r; ++k) {
+				if (dp[len][k] != -1 and dp[len][k] == dp[k + 1][r]) {
+					dp[len][r] = dp[len][k] + 1;
 				}
 			}
-			ans = max(ans, dp[l][r]);
+			ans = max(ans, dp[len][r]);
 		}
 	}
 	cout << ans << '\n';
