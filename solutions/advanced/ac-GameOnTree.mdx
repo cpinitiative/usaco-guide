@@ -28,27 +28,29 @@ This is because each stack's size increases by $1$ when you consider the edge fr
 using namespace std;
 
 int main() {
-  ios::sync_with_stdio(0);
-  cin.tie(0);
-  int n;
-  cin >> n;
-  vector<vector<int>> g(n + 1);
-  for (int i = 0; i < n - 1; i++) {
-    int u, v;
-    cin >> u >> v;
-    g[u].push_back(v);
-    g[v].push_back(u);
-  }
-  auto dfs = [&] (auto self, int u, int p = 0) -> int {
-    // Calculating the sg number (or stack size)
-    int sg = 0;
-    for (int v : g[u]) if (v ^ p) {
-      // Adding 1 because the edge from u to v increases the size of each stack by 1
-      sg ^= self(self, v, u) + 1;
-    }
-    return sg;
-  };
-  cout << (dfs(dfs, 1) ? "Alice" : "Bob") << endl;
+	ios::sync_with_stdio(0);
+	cin.tie(0);
+	int n;
+	cin >> n;
+	vector<vector<int>> g(n + 1);
+	for (int i = 0; i < n - 1; i++) {
+		int u, v;
+		cin >> u >> v;
+		g[u].push_back(v);
+		g[v].push_back(u);
+	}
+	auto dfs = [&](auto self, int u, int p = 0) -> int {
+		// Calculating the sg number (or stack size)
+		int sg = 0;
+		for (int v : g[u])
+			if (v ^ p) {
+				// Adding 1 because the edge from u to v increases the size of
+				// each stack by 1
+				sg ^= self(self, v, u) + 1;
+			}
+		return sg;
+	};
+	cout << (dfs(dfs, 1) ? "Alice" : "Bob") << endl;
 }
 ```
 </CPPSection>
