@@ -108,6 +108,66 @@ int main() {
 ```
 
 </CPPSection>
+
+<PySection>
+
+```py
+class BIT:
+    def __init__(self, size):
+        self.size = size
+        self.bit = [0] * (size + 1)
+        self.arr = [0] * size
+ 
+    def set(self, ind, val):
+        self.add(ind, val - self.arr[ind])
+ 
+    def add(self, ind, val):
+        self.arr[ind] += val
+        ind += 1
+        while ind <= self.size:
+            self.bit[ind] += val
+            ind += ind & -ind
+ 
+    def pref_sum(self, ind):
+        ind += 1
+        total = 0
+        while ind > 0:
+            total += self.bit[ind]
+            ind -= ind & -ind
+        return total
+ 
+MAX_POS = 10**6
+ 
+if __name__ == "__main__":
+    n = int(input().strip())
+ 
+    events = []
+    for _ in range(n):
+        x1, y1, x2, y2 = map(int, input().strip().split())
+        if y1 == y2:
+            events.append((y1, 2, x1, x2))
+        else:
+            events.append((y1, 1, x1, 1))
+            events.append((y2, 3, x1, 1))
+    
+    events.sort()
+ 
+    bit = BIT(2 * MAX_POS + 1)
+    ans = 0
+    for y, type, x1, x2 in events:
+        x1 += MAX_POS
+        x2 += MAX_POS
+        if type == 1:
+            bit.add(x1, 1)
+        elif type == 2:
+            ans += bit.pref_sum(x2) - bit.pref_sum(x1 - 1)
+        elif type == 3:
+            bit.add(x1, -1)
+ 
+    print(ans)
+```
+
+</PySection>
 </LanguageSection>
 
 <FocusProblem problem="sample2" />
