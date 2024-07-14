@@ -43,6 +43,22 @@ This makes sense because whichever edge that Alice chooses, Bob can choose the o
 
 using namespace std;
 
+const int N = 1e5 + 5;
+vector<vector<int>> g(N);
+
+int dfs(int u, int p = 0) {
+	int sg = 0;
+	for (int v : g[u])
+		if (v ^ p) {
+			/*
+			 * Adding 1 because the edge from u to v increases the size of
+			 * each stack by 1
+			 */
+			sg ^= dfs(v, u) + 1;
+		}
+	return sg;
+}
+
 int main() {
 	int n;
 	cin >> n;
@@ -53,22 +69,7 @@ int main() {
 		g[u].push_back(v);
 		g[v].push_back(u);
 	}
-
-	auto dfs = [&](auto self, int u, int p = 0) -> int {
-		// Calculating the sg number (or stack size)
-		int sg = 0;
-		for (int v : g[u])
-			if (v ^ p) {
-				/*
-				 * Adding 1 because the edge from u to v increases the size of
-				 * each stack by 1
-				 */
-				sg ^= self(self, v, u) + 1;
-			}
-		return sg;
-	};
-
-	cout << (dfs(dfs, 1) ? "Alice" : "Bob") << endl;
+	cout << (dfs(1) ? "Alice" : "Bob") << endl;
 }
 ```
 </CPPSection>
