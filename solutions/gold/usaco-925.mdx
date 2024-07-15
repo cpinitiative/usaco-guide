@@ -9,7 +9,7 @@ author: Justin Ji
 
 <Spoiler title = "Hint 1">
 
-The graph is a forest, and we are only allowed to pick one path from each tree 
+The graph is a forest, and we are only allowed to pick one path from each tree
 to reach our total. How can we write a knapsack DP to find our answer?
 
 </Spoiler>
@@ -17,26 +17,26 @@ to reach our total. How can we write a knapsack DP to find our answer?
 <Spoiler title = "Hint 2">
 
 The issue with directly writing a knapsack is that there is no bound on
-how long we can make our path. However, note how all paths of length $\ge Y$ can 
+how long we can make our path. However, note how all paths of length $\ge Y$ can
 be compressed because they already reach the threshold.
 
 </Spoiler>
 
 <Spoiler title = "Explanation">
 
-We can first ignore the part about ordering the trees, and think of the problem 
-from a knapsack DP perspective. Our goal is to choose a path from each tree that 
-sums up to something $\ge Y$. 
+We can first ignore the part about ordering the trees, and think of the problem
+from a knapsack DP perspective. Our goal is to choose a path from each tree that
+sums up to something $\ge Y$.
 
-For each tree, we can compress all the paths into $(length, frequency)$ pairs. 
+For each tree, we can compress all the paths into $(length, frequency)$ pairs.
 Then, we can knapsack as usual. However, note that because we are compressing
-all paths of length $\ge Y$, we need to explicitly store the sum of the paths 
+all paths of length $\ge Y$, we need to explicitly store the sum of the paths
 when writing our knapsack.
 
-Our DP state would be keep track of both the sum of the path lengths and 
-the number of such paths, for each possible length of our path. 
+Our DP state would be keep track of both the sum of the path lengths and
+the number of such paths, for each possible length of our path.
 
-Let $k$ be the number of trees in our forest. To account for the possible ways 
+Let $k$ be the number of trees in our forest. To account for the possible ways
 of ordering our paths, we need to multiply our initial sum of paths by
 $2^{k} * k!$. However, cyclic rotations and also reversed paths are considered
 to be the same, so we only multiply by $2^{k - 1} * (k - 1)!$.
@@ -55,74 +55,69 @@ using ll = long long;
 
 constexpr int MOD = 1e9 + 7;
 int main() {
-    freopen("mooriokart.in", "r", stdin);
-    freopen("mooriokart.out", "w", stdout);
-    int n, m, x, y;
-    cin >> n >> m >> x >> y;
-    vector<vector<array<int, 2>>> adj(n);
-    for (int i = 0; i < m; i++) {
-        int u, v, d;
-        cin >> u >> v >> d;
-        adj[--u].push_back({--v, d});
-        adj[v].push_back({u, d});
-    }
-	
-    vector<bool> vis(n);
-    vector<int> comp;
-    function<void(int, int)> dfs1 = [&](int u, int p) {
-        vis[u] = true;
-        comp.push_back(u);
-        for (auto [v, w] : adj[u]) {
-            if (v == p) { continue; }
-            dfs1(v, u);
-        }
-    };
+	freopen("mooriokart.in", "r", stdin);
+	freopen("mooriokart.out", "w", stdout);
+	int n, m, x, y;
+	cin >> n >> m >> x >> y;
+	vector<vector<array<int, 2>>> adj(n);
+	for (int i = 0; i < m; i++) {
+		int u, v, d;
+		cin >> u >> v >> d;
+		adj[--u].push_back({--v, d});
+		adj[v].push_back({u, d});
+	}
 
-    map<int, array<int, 2>> occ;
-    function<void(int, int, int, int)> dfs2 = [&](int u, int p, int d, int s) {
-        for (auto [v, w] : adj[u]) {
-            if (v == p) { continue; }
-            if (v < s) {
+	vector<bool> vis(n);
+	vector<int> comp;
+	function<void(int, int)> dfs1 = [&](int u, int p) {
+		vis[u] = true;
+		comp.push_back(u);
+		for (auto [v, w] : adj[u]) {
+			if (v == p) { continue; }
+			dfs1(v, u);
+		}
+	};
+
+	map<int, array<int, 2>> occ;
+	function<void(int, int, int, int)> dfs2 = [&](int u, int p, int d, int s) {
+		for (auto [v, w] : adj[u]) {
+			if (v == p) { continue; }
+			if (v < s) {
 				auto &[sum, freq] = occ[min(y, d + w)];
 				sum = (sum + d + w) % MOD;
 				freq++;
-            }
+			}
 			dfs2(v, u, d + w, s);
-        }
-    };
+		}
+	};
 
-    vector<array<ll, 2>> dp(y + 1);
-    // dp[path_len] = {len_sum, num_paths}
-    int k = n - m;
-    dp[min(y, k * x)] = {k * x, 1};
-    for (int i = 0; i < n; i++) {
-        if (vis[i]) { continue; }
-        dfs1(i, -1);
-        for (int v : comp) {
-            dfs2(v, -1, 0, v);
-        }
+	vector<array<ll, 2>> dp(y + 1);
+	// dp[path_len] = {len_sum, num_paths}
+	int k = n - m;
+	dp[min(y, k * x)] = {k * x, 1};
+	for (int i = 0; i < n; i++) {
+		if (vis[i]) { continue; }
+		dfs1(i, -1);
+		for (int v : comp) { dfs2(v, -1, 0, v); }
 
-        vector<array<ll, 2>> dp_t(y + 1);
-        for (auto [val, arr] : occ) {
-            const auto [sum, freq] = arr;
-            for (int j = 0; j <= y; j++) {
-                int nxt = min(y, j + val);
-                dp_t[nxt] = {
-                    (dp_t[nxt][0] + dp[j][1] * sum + dp[j][0] * freq) % MOD,
-                    (dp_t[nxt][1] + dp[j][1] * freq) % MOD
-                };
-            }
-        }
+		vector<array<ll, 2>> dp_t(y + 1);
+		for (auto [val, arr] : occ) {
+			const auto [sum, freq] = arr;
+			for (int j = 0; j <= y; j++) {
+				int nxt = min(y, j + val);
+				dp_t[nxt] = {(dp_t[nxt][0] + dp[j][1] * sum + dp[j][0] * freq) %
+				                 MOD,
+				             (dp_t[nxt][1] + dp[j][1] * freq) % MOD};
+			}
+		}
 
-        comp.clear();
-        occ.clear();
-        dp = move(dp_t);
-    }
+		comp.clear();
+		occ.clear();
+		dp = move(dp_t);
+	}
 
-    for (int i = 1; i < k; i++) {
-		dp[y][0] = (dp[y][0] * 2 * i) % MOD;
-    }
-    cout << dp[y][0] << "\n";
+	for (int i = 1; i < k; i++) { dp[y][0] = (dp[y][0] * 2 * i) % MOD; }
+	cout << dp[y][0] << "\n";
 }
 ```
 
