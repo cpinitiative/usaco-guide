@@ -81,7 +81,7 @@ We can see $F$ here represented in orange. It makes the half-planes $A$ and $E$ 
 This is the main principle of the algorithm. However, there are a few special cases we should cover. In the case of parallel half-planes, there are 2 possible scenarios, either two that are parallel with the same direction or different directions. We should approach parallel lines with different directions the same as if we have to increase the size of the bounding box, since there will have to be at least one of the half-planes within the bounding box in between the two since they are sorted by angle. This means that the only case we have to deal with is where there are two half-planes with the same angle. To do this is straightforward: simply keep the leftmost half-plane and erase the rest since the others will eventually become redundant anyway.
 
 So, as an overview of the algorithm:
-* Sort the set of half-planes by angle; it takes $\mathcal{O}(N\logN)$ time.
+* Sort the set of half-planes by angle; it takes $\mathcal{O}(N\log N)$ time.
 * Iterate over the set. For each, perform incrementation and pop either from the front or back of the double-ended queue as necessary; it takes linear time since every half-plane can only be added or removed once.
 * Once this has been completed, the convex polygon that results from the intersection can be obtained by computing the intersection points of adjacent half-planes in the double-ended queue. It will take linear time. This results in our final complexity as $\mathcal{O}(NlogN)$. In a special case where the half-planes are pre-sorted, this algorithm could be completed in $\mathcal{O}(N)$. However, for the majority of cases, we will be looking at $\mathcal{O}(N \log N)$, most of which is coming from the sorting by angle.
 
