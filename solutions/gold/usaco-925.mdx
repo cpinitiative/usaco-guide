@@ -74,9 +74,10 @@ int main() {
 		}
 	};
 
-    // path_info[len] = {sum of path lengths, # of paths}
+	// path_info[len] = {sum of path lengths, # of paths}
 	map<int, array<int, 2>> path_info;
-	function<void(int, int, int, int)> calc_path_info = [&](int u, int p, int d, int s) {
+	function<void(int, int, int, int)> calc_path_info = [&](int u, int p, int d,
+	                                                        int s) {
 		for (auto [v, w] : adj[u]) {
 			if (v == p) { continue; }
 			if (v < s) {
@@ -88,7 +89,7 @@ int main() {
 		}
 	};
 
-    // dp[path_len] = {len_sum, num_paths}
+	// dp[path_len] = {len_sum, num_paths}
 	vector<array<ll, 2>> dp(y + 1);
 	int k = n - m;
 	dp[min(y, k * x)] = {k * x, 1};
@@ -102,9 +103,9 @@ int main() {
 			const auto [sum, freq] = arr;
 			for (int j = 0; j <= y; j++) {
 				int nxt = min(y, j + val);
-				new_dp[nxt] = {(new_dp[nxt][0] + dp[j][1] * sum + dp[j][0] * freq) %
-				                 MOD,
-				             (new_dp[nxt][1] + dp[j][1] * freq) % MOD};
+				new_dp[nxt] = {
+				    (new_dp[nxt][0] + dp[j][1] * sum + dp[j][0] * freq) % MOD,
+				    (new_dp[nxt][1] + dp[j][1] * freq) % MOD};
 			}
 		}
 
