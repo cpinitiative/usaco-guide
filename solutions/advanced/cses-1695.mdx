@@ -104,7 +104,7 @@ public class PoliceChase {
         q.add(0);
         while (!q.isEmpty()) {
             int u = q.poll();
-            for (int v = 0; v < n; ++v) {
+            for (int v = 0; v < n; v++) {
                 if (lev[v] == -1 && c[u][v] > 0) {
                     lev[v] = lev[u] + 1;
                     q.add(v);
@@ -116,8 +116,10 @@ public class PoliceChase {
 
     // DFS to find augmenting paths
     static boolean dfs(int u) {
-        if (u == n - 1) return true;
-        for (; seen[u] < n; ++seen[u]) {
+        if (u == n - 1) {
+            return true;
+        }
+        for (; seen[u] < n; seen[u]++) {
             int v = seen[u];
             if (lev[v] == lev[u] + 1 && c[u][v] > 0 && dfs(v)) {
                 c[u][v]--;
@@ -131,7 +133,7 @@ public class PoliceChase {
     // DFS to mark reachable nodes
     static void dfs2(int u) {
         lev[u] = 1;
-        for (int v = 0; v < n; ++v) {
+        for (int v = 0; v < n; v++) {
             if (lev[v] == 0 && c[u][v] > 0) {
                 dfs2(v);
             }
@@ -143,7 +145,7 @@ public class PoliceChase {
         n = sc.nextInt();
         m = sc.nextInt();
 
-        for (int i = 0; i < m; ++i) {
+        for (int i = 0; i < m; i++) {
             int u = sc.nextInt() - 1;
             int v = sc.nextInt() - 1;
             c[u][v]++;
@@ -159,8 +161,8 @@ public class PoliceChase {
         dfs2(0);
 
         List<int[]> rem = new ArrayList<>();
-        for (int i = 0; i < n; ++i) {
-            for (int j = 0; j < n; ++j) {
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
                 if (lev[i] == 1 && lev[j] == 0 && c[j][i] > 0) {
                     rem.add(new int[]{i, j});
                 }
