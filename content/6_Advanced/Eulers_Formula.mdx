@@ -19,132 +19,167 @@ Euler's Formula, a fundamental gem in mathematics, uncovers a deep connection be
 
 In this problem, Euler's Formula is indirectly relevant through the concept of islands in a grid-based archipelago. Each island can be seen as a region of connected land cells. Euler's Formula, $V−E+F=1$, relates the vertices (land cells), edges (shared boundaries between land cells), and faces (islands) of a planar graph. Initially, with only water, there are no islands (F = 0). As land cells appear and disappear due to changing water levels (modeled by queries), islands form and potentially enclose freshwater lakes. The challenge is to maintain a dynamic count of islands and determine if each island contains a freshwater lake. This involves efficiently managing and updating connected components of land cells and checking for closed loops (cycles) of land cells that surround at least one water cell to identify lakes. The queries ('!' to change water levels and '?' to request current island statistics) dynamically alter the state of the archipelago and prompt recalculations of island counts and freshwater lake checks.
 
-### Implementation
+## Implementation
 
 **Steps**
-1. Union-Find Class: Manages the connected components (islands). It includes methods for finding the root of a component, unioning two components, and counting the number of components.
-2. Grid Representation: The archipelago is represented as an n x n grid, initialized to water (.).
-3. Handling Updates (! r c): Changes a cell from water to land or vice versa. If a land cell is added, it connects to neighboring land cells.
-4. Handling Queries (?): Returns the total number of islands and the number of islands without lakes. (Detecting lakes needs additional implementation.)
+1. DisjointSets: Implement a union-find structure to manage connected components (islands) efficiently using path compression and union by size.
+2. Grid Representation: Use a 2D boolean vector to represent the archipelago, where true indicates land and false indicates water. Each cell can be accessed via a 1D index for the DSU.
+3. Handling Updates (! r c): If converting water to land, increase the island count and unite with neighboring land cells. Check for lakes. If converting land to water, decrease the island count and mark the component as having no lake.
+4. Handling Queries (?): Returns the total number of islands and the number of islands without lakes. 
 
-**Time Complexity:  $\mathcal{O}(m * α(n))$**
+**Time Complexity:  $\mathcal{O}(m * α * (n^2))$**
 
 
 <LanguageSection>
 <CPPSection>
 
 ```cpp
-#include <iostream>
-#include <unordered_set>
-#include <vector>
+#include <bits/stdc++.h>
 using namespace std;
 
-class UnionFind {
+// Class for Disjoint Set Union (DSU) with path compression and union by size
+class DisjointSets {
   private:
-	vector<int> parent;
-	vector<int> rank;
-	int components;
+    vector<int> parents;
+    vector<int> sizes;
 
   public:
-	UnionFind(int n) {
-		parent.resize(n);
-		rank.resize(n, 0);
-		components = 0;
-		for (int i = 0; i < n; ++i) { parent[i] = i; }
-	}
+    DisjointSets(int size) : parents(size), sizes(size, 1) {
+        for (int i = 0; i < size; i++) { parents[i] = i; }
+    }
 
-	int find(int u) {
-		if (parent[u] != u) { parent[u] = find(parent[u]); }
-		return parent[u];
-	}
+    /** @return the "representative" node in x's component */
+    int find(int x) {
+        return parents[x] == x ? x : (parents[x] = find(parents[x]));
+    }
 
-	void unionSets(int u, int v) {
-		int rootU = find(u);
-		int rootV = find(v);
-		if (rootU != rootV) {
-			if (rank[rootU] > rank[rootV]) {
-				parent[rootV] = rootU;
-			} else if (rank[rootU] < rank[rootV]) {
-				parent[rootU] = rootV;
-			} else {
-				parent[rootV] = rootU;
-				rank[rootU]++;
-			}
-			components--;
-		}
-	}
+    /** @return whether the merge changed connectivity */
+    bool unite(int x, int y) {
+        int x_root = find(x);
+        int y_root = find(y);
+        if (x_root == y_root) { return false; }
 
-	void addComponent(int u) {
-		if (parent[u] == u) { components++; }
-	}
+        if (sizes[x_root] < sizes[y_root]) { swap(x_root, y_root); }
+        sizes[x_root] += sizes[y_root];
+        parents[y_root] = x_root;
+        return true;
+    }
 
-	int getComponentsCount() const { return components; }
+    /** @return whether x and y are in the same connected component */
+    bool connected(int x, int y) { return find(x) == find(y); }
 };
 
+// Direction vectors for moving up, down, left, and right
+const int dr[4] = {-1, 1, 0, 0};
+const int dc[4] = {0, 0, -1, 1};
+
+// Check if the given coordinates are within the grid boundaries
+bool isInGrid(int n, int r, int c) {
+    return r >= 0 && r < n && c >= 0 && c < n;
+}
+
+// Convert a 1D index to a 2D grid coordinate (row, column)
+pair<int, int> indexToPair(int n, int idx) {
+    return {idx / n, idx % n};
+}
+
+// Convert a 2D grid coordinate (row, column) to a 1D index
+int pairToIndex(int n, int r, int c) {
+    return r * n + c;
+}
+
+// Check if the water cell at (r, c) is a lake (completely surrounded by land)
+bool isLake(int n, const vector<vector<bool>>& grid, int r, int c) {
+    vector<vector<bool>> visited(n, vector<bool>(n, false));
+    queue<pair<int, int>> q;
+    q.push({r, c});
+    visited[r][c] = true;
+    bool touchesBoundary = false;
+
+    while (!q.empty()) {
+        auto [cr, cc] = q.front();
+        q.pop();
+        for (int d = 0; d < 4; ++d) {
+            int nr = cr + dr[d], nc = cc + dc[d];
+            if (!isInGrid(n, nr, nc)) {
+                touchesBoundary = true;
+            } else if (grid[nr][nc] == false && !visited[nr][nc]) {
+                visited[nr][nc] = true;
+                q.push({nr, nc});
+            }
+        }
+    }
+
+    return !touchesBoundary;
+}
+
 int main() {
-	int n, m;
-	cin >> n >> m;
+    ios::sync_with_stdio(false);
+    cin.tie(0);
 
-	vector<vector<char>> grid(n, vector<char>(n, '.'));  // '.' for water
-	UnionFind uf(n * n);
-	vector<bool> hasLake(n * n, false);
+    int n, m;
+    cin >> n >> m;
+    vector<vector<bool>> grid(n, vector<bool>(n, false)); // Initialize the grid with all water
+    DisjointSets dsu(n * n); // Initialize DSU for the grid cells
 
-	auto index = [&](int r, int c) { return r * n + c; };
+    int islandCount = 0; // Current number of islands
+    int islandsWithoutLakeCount = 0; // Number of islands without freshwater lakes
+    vector<bool> hasLake(n * n, false); // Tracks if each component has a lake
 
-	auto isValid = [&](int r, int c) {
-		return r >= 0 && r < n && c >= 0 && c < n;
-	};
+    for (int i = 0; i < m; ++i) {
+        char query;
+        cin >> query;
 
-	char type;
-	int r, c;
+        if (query == '?') {
+            // Report the current number of islands and islands without lakes
+            cout << islandCount << " " << islandsWithoutLakeCount << "\n";
+        } else if (query == '!') {
+            int r, c;
+            cin >> r >> c;
+            --r; --c; // Convert to 0-based indexing
 
-	for (int i = 0; i < m; ++i) {
-		cin >> type;
-		if (type == '!') {
-			cin >> r >> c;
-			r--;
-			c--;
+            int idx = pairToIndex(n, r, c);
 
-			if (grid[r][c] == '#') {
-				grid[r][c] = '.';                        // Change land to water
-				uf.unionSets(index(r, c), index(r, c));  // Handle disconnecting
-			} else {
-				grid[r][c] = '#';  // Change water to land
-				uf.addComponent(index(r, c));
+            if (grid[r][c]) {
+                // Change land to water
+                grid[r][c] = false;
+                dsu.parents[idx] = idx;
+                dsu.sizes[idx] = 1;
+                --islandCount;
+                if (!hasLake[idx]) {
+                    --islandsWithoutLakeCount;
+                }
+                hasLake[idx] = false;
+            } else {
+                // Change water to land
+                grid[r][c] = true;
+                ++islandCount;
+                bool lake = false;
+                for (int d = 0; d < 4; ++d) {
+                    int nr = r + dr[d], nc = c + dc[d];
+                    if (isInGrid(n, nr, nc) && grid[nr][nc]) {
+                        if (dsu.unite(pairToIndex(n, nr, nc), idx)) {
+                            --islandCount;
+                        }
+                        lake |= hasLake[dsu.find(pairToIndex(n, nr, nc))];
+                    }
+                }
+                if (!lake && isLake(n, grid, r, c)) {
+                    hasLake[dsu.find(idx)] = true;
+                }
+                if (!hasLake[dsu.find(idx)]) {
+                    ++islandsWithoutLakeCount;
+                }
+            }
+        }
+    }
 
-				// Check adjacent cells
-				static const vector<pair<int, int>> directions = {
-				    {-1, 0}, {1, 0}, {0, -1}, {0, 1}};
-				for (const auto &dir : directions) {
-					int nr = r + dir.first;
-					int nc = c + dir.second;
-					if (isValid(nr, nc) && grid[nr][nc] == '#') {
-						uf.unionSets(index(r, c), index(nr, nc));
-					}
-				}
-			}
-		} else if (type == '?') {
-			int islands = uf.getComponentsCount();
-			int noLakeIslands = islands;  // Initialize to total islands
-
-			// Check for lakes (this needs an extra logic, e.g., flood fill)
-			// This part needs implementation to correctly detect lakes.
-
-			cout << islands << " " << noLakeIslands << endl;
-		}
-	}
-
-	return 0;
+    return 0;
 }
 ```
 
 </CPPSection>
 </LanguageSection>
-
-## Valleys
-
-<Problems problems="valleys" />
-
 
 
 ## Problems
