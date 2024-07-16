@@ -65,18 +65,18 @@ int main() {
 
 	vector<bool> vis(n);
 	vector<int> tree_nodes;
-	function<void(int, int)> dfs1 = [&](int u, int p) {
+	function<void(int, int)> get_tree_nodes = [&](int u, int p) {
 		vis[u] = true;
 		tree_nodes.push_back(u);
 		for (auto [v, w] : adj[u]) {
 			if (v == p) { continue; }
-			dfs1(v, u);
+			get_tree_nodes(v, u);
 		}
 	};
 
-	// path_info[len] = {sum of path lengths, # of paths}
+    // path_info[len] = {sum of path lengths, # of paths}
 	map<int, array<int, 2>> path_info;
-	function<void(int, int, int, int)> dfs2 = [&](int u, int p, int d, int s) {
+	function<void(int, int, int, int)> calc_path_info = [&](int u, int p, int d, int s) {
 		for (auto [v, w] : adj[u]) {
 			if (v == p) { continue; }
 			if (v < s) {
@@ -84,27 +84,27 @@ int main() {
 				sum = (sum + d + w) % MOD;
 				freq++;
 			}
-			dfs2(v, u, d + w, s);
+			calc_path_info(v, u, d + w, s);
 		}
 	};
 
-	// dp[path_len] = {len_sum, num_paths}
+    // dp[path_len] = {len_sum, num_paths}
 	vector<array<ll, 2>> dp(y + 1);
 	int k = n - m;
 	dp[min(y, k * x)] = {k * x, 1};
 	for (int i = 0; i < n; i++) {
 		if (vis[i]) { continue; }
-		dfs1(i, -1);
-		for (int v : tree_nodes) { dfs2(v, -1, 0, v); }
+		get_tree_nodes(i, -1);
+		for (int v : tree_nodes) { calc_path_info(v, -1, 0, v); }
 
 		vector<array<ll, 2>> new_dp(y + 1);
 		for (auto [val, arr] : path_info) {
 			const auto [sum, freq] = arr;
 			for (int j = 0; j <= y; j++) {
 				int nxt = min(y, j + val);
-				new_dp[nxt] = {
-				    (new_dp[nxt][0] + dp[j][1] * sum + dp[j][0] * freq) % MOD,
-				    (new_dp[nxt][1] + dp[j][1] * freq) % MOD};
+				new_dp[nxt] = {(new_dp[nxt][0] + dp[j][1] * sum + dp[j][0] * freq) %
+				                 MOD,
+				             (new_dp[nxt][1] + dp[j][1] * freq) % MOD};
 			}
 		}
 
