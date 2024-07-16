@@ -10,28 +10,24 @@ author: Justin Ji
 <Spoiler title = "Hint 1">
 
 The graph is a forest, and we are only allowed to pick one path from each tree
-to reach our total. How can we write a knapsack DP to find our answer?
-
-</Spoiler>
-
-<Spoiler title = "Hint 2">
+to reach our total. This seems like knapsack!
 
 The issue with directly writing a knapsack is that there is no bound on
-how long we can make our path. However, note how all paths of length $\ge Y$ can
-be compressed because they already reach the threshold.
+how long we can make our path. Notice that all tracks and paths of length $\ge Y$ 
+behave the same because they are already long enough. How can this simplify our DP?
 
 </Spoiler>
 
 <Spoiler title = "Explanation">
 
-We can first ignore the part about ordering the trees, and think of the problem
-from a knapsack DP perspective. Our goal is to choose a path from each tree that
-sums up to something $\ge Y$.
+The key observation to make is that we can compress all paths and tracks of 
+length $\ge Y$ because they all are treated the same, in that they result in a 
+track of sufficient length.
 
 For each tree, we can compress all the paths into $(length, frequency)$ pairs.
 Then, we can knapsack as usual. However, note that because we are compressing
-all paths of length $\ge Y$, we need to explicitly store the sum of the paths
-when writing our knapsack.
+all paths of length $\ge Y$, we need to explicitly store the sum of the path 
+lengths as well.
 
 Our DP state would keep track of both the sum of the path lengths and
 the number of such paths, for each possible length of our path.
@@ -53,7 +49,7 @@ to be the same, so we only multiply by $2^{k - 1} * (k - 1)!$.
 using namespace std;
 using ll = long long;
 
-constexpr int MOD = 1e9 + 7;
+const int MOD = 1e9 + 7;
 int main() {
 	freopen("mooriokart.in", "r", stdin);
 	freopen("mooriokart.out", "w", stdout);
@@ -68,22 +64,23 @@ int main() {
 	}
 
 	vector<bool> vis(n);
-	vector<int> comp;
+	vector<int> tree_nodes;
 	function<void(int, int)> dfs1 = [&](int u, int p) {
 		vis[u] = true;
-		comp.push_back(u);
+		tree_nodes.push_back(u);
 		for (auto [v, w] : adj[u]) {
 			if (v == p) { continue; }
 			dfs1(v, u);
 		}
 	};
 
-	map<int, array<int, 2>> occ;
+    // path_info[len] = {sum of path lengths, # of paths}
+	map<int, array<int, 2>> path_info;
 	function<void(int, int, int, int)> dfs2 = [&](int u, int p, int d, int s) {
 		for (auto [v, w] : adj[u]) {
 			if (v == p) { continue; }
 			if (v < s) {
-				auto &[sum, freq] = occ[min(y, d + w)];
+				auto &[sum, freq] = path_info[min(y, d + w)];
 				sum = (sum + d + w) % MOD;
 				freq++;
 			}
@@ -91,33 +88,33 @@ int main() {
 		}
 	};
 
+    // dp[path_len] = {len_sum, num_paths}
 	vector<array<ll, 2>> dp(y + 1);
-	// dp[path_len] = {len_sum, num_paths}
 	int k = n - m;
 	dp[min(y, k * x)] = {k * x, 1};
 	for (int i = 0; i < n; i++) {
 		if (vis[i]) { continue; }
 		dfs1(i, -1);
-		for (int v : comp) { dfs2(v, -1, 0, v); }
+		for (int v : tree_nodes) { dfs2(v, -1, 0, v); }
 
-		vector<array<ll, 2>> dp_t(y + 1);
-		for (auto [val, arr] : occ) {
+		vector<array<ll, 2>> new_dp(y + 1);
+		for (auto [val, arr] : path_info) {
 			const auto [sum, freq] = arr;
 			for (int j = 0; j <= y; j++) {
 				int nxt = min(y, j + val);
-				dp_t[nxt] = {(dp_t[nxt][0] + dp[j][1] * sum + dp[j][0] * freq) %
+				new_dp[nxt] = {(new_dp[nxt][0] + dp[j][1] * sum + dp[j][0] * freq) %
 				                 MOD,
-				             (dp_t[nxt][1] + dp[j][1] * freq) % MOD};
+				             (new_dp[nxt][1] + dp[j][1] * freq) % MOD};
 			}
 		}
 
-		comp.clear();
-		occ.clear();
-		dp = move(dp_t);
+		tree_nodes.clear();
+		path_info.clear();
+		dp = move(new_dp);
 	}
 
 	for (int i = 1; i < k; i++) { dp[y][0] = (dp[y][0] * 2 * i) % MOD; }
-	cout << dp[y][0] << "\n";
+	cout << dp[y][0] << endl;
 }
 ```
 
