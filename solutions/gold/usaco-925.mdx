@@ -13,20 +13,20 @@ The graph is a forest, and we are only allowed to pick one path from each tree
 to reach our total. This seems like knapsack!
 
 The issue with directly writing a knapsack is that there is no bound on
-how long we can make our path. Notice that all tracks and paths of length $\ge Y$ 
+how long we can make our path. Notice that all tracks and paths of length $\ge Y$
 behave the same because they are already long enough. How can this simplify our DP?
 
 </Spoiler>
 
 <Spoiler title = "Explanation">
 
-The key observation to make is that we can compress all paths and tracks of 
-length $\ge Y$ because they all are treated the same, in that they result in a 
+The key observation to make is that we can compress all paths and tracks of
+length $\ge Y$ because they all are treated the same, in that they result in a
 track of sufficient length.
 
 For each tree, we can compress all the paths into $(length, frequency)$ pairs.
 Then, we can knapsack as usual. However, note that because we are compressing
-all paths of length $\ge Y$, we need to explicitly store the sum of the path 
+all paths of length $\ge Y$, we need to explicitly store the sum of the path
 lengths as well.
 
 Our DP state would keep track of both the sum of the path lengths and
@@ -74,7 +74,7 @@ int main() {
 		}
 	};
 
-    // path_info[len] = {sum of path lengths, # of paths}
+	// path_info[len] = {sum of path lengths, # of paths}
 	map<int, array<int, 2>> path_info;
 	function<void(int, int, int, int)> dfs2 = [&](int u, int p, int d, int s) {
 		for (auto [v, w] : adj[u]) {
@@ -88,7 +88,7 @@ int main() {
 		}
 	};
 
-    // dp[path_len] = {len_sum, num_paths}
+	// dp[path_len] = {len_sum, num_paths}
 	vector<array<ll, 2>> dp(y + 1);
 	int k = n - m;
 	dp[min(y, k * x)] = {k * x, 1};
@@ -102,9 +102,9 @@ int main() {
 			const auto [sum, freq] = arr;
 			for (int j = 0; j <= y; j++) {
 				int nxt = min(y, j + val);
-				new_dp[nxt] = {(new_dp[nxt][0] + dp[j][1] * sum + dp[j][0] * freq) %
-				                 MOD,
-				             (new_dp[nxt][1] + dp[j][1] * freq) % MOD};
+				new_dp[nxt] = {
+				    (new_dp[nxt][0] + dp[j][1] * sum + dp[j][0] * freq) % MOD,
+				    (new_dp[nxt][1] + dp[j][1] * freq) % MOD};
 			}
 		}
 
