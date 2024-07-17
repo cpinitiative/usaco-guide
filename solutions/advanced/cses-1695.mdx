@@ -90,91 +90,87 @@ int main() {
 import java.util.*;
 
 public class PoliceChase {
-    static final int MAX_N = 500;
-    static int n, m;
-    static int[] lev = new int[MAX_N];
-    static int[][] c = new int[MAX_N][MAX_N];
-    static int[] seen = new int[MAX_N];
-    static Queue<Integer> q = new LinkedList<>();
+	static final int MAX_N = 500;
+	static int n, m;
+	static int[] lev = new int[MAX_N];
+	static int[][] c = new int[MAX_N][MAX_N];
+	static int[] seen = new int[MAX_N];
+	static Queue<Integer> q = new LinkedList<>();
 
-    // BFS to find level of each node
-    static boolean bfs() {
-        Arrays.fill(lev, 0, n, -1);  // Reset levels
-        lev[0] = 0;
-        q.add(0);
-        while (!q.isEmpty()) {
-            int u = q.poll();
-            for (int v = 0; v < n; v++) {
-                if (lev[v] == -1 && c[u][v] > 0) {
-                    lev[v] = lev[u] + 1;
-                    q.add(v);
-                }
-            }
-        }
-        return lev[n - 1] != -1;
-    }
+	// BFS to find level of each node
+	static boolean bfs() {
+		Arrays.fill(lev, 0, n, -1);  // Reset levels
+		lev[0] = 0;
+		q.add(0);
+		while (!q.isEmpty()) {
+			int u = q.poll();
+			for (int v = 0; v < n; v++) {
+				if (lev[v] == -1 && c[u][v] > 0) {
+					lev[v] = lev[u] + 1;
+					q.add(v);
+				}
+			}
+		}
+		return lev[n - 1] != -1;
+	}
 
-    // DFS to find augmenting paths
-    static boolean dfs(int u) {
-        if (u == n - 1) {
-            return true;
-        }
-        for (; seen[u] < n; seen[u]++) {
-            int v = seen[u];
-            if (lev[v] == lev[u] + 1 && c[u][v] > 0 && dfs(v)) {
-                c[u][v]--;
-                c[v][u]++;
-                return true;
-            }
-        }
-        return false;
-    }
+	// DFS to find augmenting paths
+	static boolean dfs(int u) {
+		if (u == n - 1) { return true; }
+		for (; seen[u] < n; seen[u]++) {
+			int v = seen[u];
+			if (lev[v] == lev[u] + 1 && c[u][v] > 0 && dfs(v)) {
+				c[u][v]--;
+				c[v][u]++;
+				return true;
+			}
+		}
+		return false;
+	}
 
-    // DFS to mark reachable nodes
-    static void dfs2(int u) {
-        lev[u] = 1;
-        for (int v = 0; v < n; v++) {
-            if (lev[v] == 0 && c[u][v] > 0) {
-                dfs2(v);
-            }
-        }
-    }
+	// DFS to mark reachable nodes
+	static void dfs2(int u) {
+		lev[u] = 1;
+		for (int v = 0; v < n; v++) {
+			if (lev[v] == 0 && c[u][v] > 0) { dfs2(v); }
+		}
+	}
 
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        n = sc.nextInt();
-        m = sc.nextInt();
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		n = sc.nextInt();
+		m = sc.nextInt();
 
-        for (int i = 0; i < m; i++) {
-            int u = sc.nextInt() - 1;
-            int v = sc.nextInt() - 1;
-            c[u][v]++;
-            c[v][u]++;
-        }
+		for (int i = 0; i < m; i++) {
+			int u = sc.nextInt() - 1;
+			int v = sc.nextInt() - 1;
+			c[u][v]++;
+			c[v][u]++;
+		}
 
-        while (bfs()) {
-            Arrays.fill(seen, 0, n, 0);
-            while (dfs(0));
-        }
+		while (bfs()) {
+			Arrays.fill(seen, 0, n, 0);
+			while (dfs(0));
+		}
 
-        Arrays.fill(lev, 0, n, 0);
-        dfs2(0);
+		Arrays.fill(lev, 0, n, 0);
+		dfs2(0);
 
-        List<int[]> rem = new ArrayList<>();
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                if (lev[i] == 1 && lev[j] == 0 && c[j][i] > 0) {
-                    rem.add(new int[]{i, j});
-                }
-            }
-        }
+		List<int[]> rem = new ArrayList<>();
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
+				if (lev[i] == 1 && lev[j] == 0 && c[j][i] > 0) {
+					rem.add(new int[] {i, j});
+				}
+			}
+		}
 
-        System.out.println(rem.size());
+		System.out.println(rem.size());
 		for (int[] p : rem) {
 			System.out.println((p[0] + 1) + " " + (p[1] + 1));
 		}
 		sc.close();
-    }
+	}
 }
 ```
 </JavaSection>
@@ -193,67 +189,71 @@ q = deque()
 
 # BFS to find level of each node
 def bfs():
-    # Reset levels
-    for i in range(n):
-        lev[i] = -1
-    lev[0] = 0
-    q.append(0)
-    while q:
-        u = q.popleft()
-        for v in range(n):
-            if lev[v] == -1 and c[u][v] > 0:
-                lev[v] = lev[u] + 1
-                q.append(v)
-    return lev[n-1] != -1
+	# Reset levels
+	for i in range(n):
+		lev[i] = -1
+	lev[0] = 0
+	q.append(0)
+	while q:
+		u = q.popleft()
+		for v in range(n):
+			if lev[v] == -1 and c[u][v] > 0:
+				lev[v] = lev[u] + 1
+				q.append(v)
+	return lev[n - 1] != -1
+
 
 # DFS to find augmenting paths
 def dfs(u):
-    if u == n-1:
-        return True
-    for v in range(seen[u], n):
-        seen[u] = v
-        if lev[v] == lev[u] + 1 and c[u][v] > 0 and dfs(v):
-            c[u][v] -= 1
-            c[v][u] += 1
-            return True
-    return False
+	if u == n - 1:
+		return True
+	for v in range(seen[u], n):
+		seen[u] = v
+		if lev[v] == lev[u] + 1 and c[u][v] > 0 and dfs(v):
+			c[u][v] -= 1
+			c[v][u] += 1
+			return True
+	return False
+
 
 # DFS to mark reachable nodes
 def dfs2(u):
-    lev[u] = 1
-    for v in range(n):
-        if lev[v] == 0 and c[u][v] > 0:
-            dfs2(v)
+	lev[u] = 1
+	for v in range(n):
+		if lev[v] == 0 and c[u][v] > 0:
+			dfs2(v)
+
 
 import sys
-n,m = map(int,input().split())
+
+n, m = map(int, input().split())
 
 for _ in range(0, m, 1):
-    u,v = map(int,input().split())
-    u-=1
-    v-=1
-    c[u][v] += 1
-    c[v][u] += 1
+	u, v = map(int, input().split())
+	u -= 1
+	v -= 1
+	c[u][v] += 1
+	c[v][u] += 1
 
 while bfs():
-    for i in range(n):
-        seen[i] = 0
-    while dfs(0):
-        pass
+	for i in range(n):
+		seen[i] = 0
+	while dfs(0):
+		pass
 
 for i in range(n):
-    lev[i] = 0
+	lev[i] = 0
 dfs2(0)
 
 rem = []
 for i in range(n):
-    for j in range(n):
-        if lev[i] == 1 and lev[j] == 0 and c[j][i] > 0:
-            rem.append((i, j))
+	for j in range(n):
+		if lev[i] == 1 and lev[j] == 0 and c[j][i] > 0:
+			rem.append((i, j))
 
 print(len(rem))
 for u, v in rem:
-    print(u + 1, v + 1)  # Adjust back to 1-indexed for output
+	print(u + 1, v + 1)  # Adjust back to 1-indexed for output
 ```
 
 </PySection>
