@@ -90,11 +90,11 @@ int main() {
 import java.util.*;
 
 public class PoliceChase {
-    static final int N = 500;
+    static final int MAX_N = 500;
     static int n, m;
-    static int[] lev = new int[N];
-    static int[][] c = new int[N][N];
-    static int[] seen = new int[N];
+    static int[] lev = new int[MAX_N];
+    static int[][] c = new int[MAX_N][MAX_N];
+    static int[] seen = new int[MAX_N];
     static Queue<Integer> q = new LinkedList<>();
 
     // BFS to find level of each node
@@ -183,15 +183,15 @@ public class PoliceChase {
 ```py
 from collections import deque
 
-N = 500
+MAX_N = 500
 
-# Initialize variables
 n, m = 0, 0
-lev = [-1] * N
-c = [[0] * N for _ in range(N)]
-seen = [0] * N
+lev = [-1] * MAX_N
+c = [[0] * MAX_N for _ in range(MAX_N)]
+seen = [0] * MAX_N
 q = deque()
 
+# BFS to find level of each node
 def bfs():
     # Reset levels
     for i in range(n):
@@ -206,6 +206,7 @@ def bfs():
                 q.append(v)
     return lev[n-1] != -1
 
+# DFS to find augmenting paths
 def dfs(u):
     if u == n-1:
         return True
@@ -217,13 +218,13 @@ def dfs(u):
             return True
     return False
 
+# DFS to mark reachable nodes
 def dfs2(u):
     lev[u] = 1
     for v in range(n):
         if lev[v] == 0 and c[u][v] > 0:
             dfs2(v)
 
-# Read input
 import sys
 n,m = map(int,input().split())
 
