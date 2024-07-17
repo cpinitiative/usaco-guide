@@ -113,59 +113,68 @@ int main() {
 
 ```py
 class BIT:
-	def __init__(self, size):
-		self.size = size
-		self.bit = [0] * (size + 1)
-		self.arr = [0] * size
 
-	def set(self, ind, val):
-		self.add(ind, val - self.arr[ind])
+# BeginCodeSnip{BIT Operations}
 
-	def add(self, ind, val):
-		self.arr[ind] += val
-		ind += 1
-		while ind <= self.size:
-			self.bit[ind] += val
-			ind += ind & -ind
+    def __init__(self, size):
+        self.size = size
+        self.bit = [0] * (size + 1)  # Binary Indexed Tree (BIT) array initialized with zeros
+        self.arr = [0] * size  # Auxiliary array to track updates
+ 
+    def set(self, ind, val):
+        # Update element at index ind in the original array to val
+        self.add(ind, val - self.arr[ind])
+ 
+    def add(self, ind, val):
+        # Add val to element at index ind in the original array and update BIT accordingly
+        self.arr[ind] += val
+        ind += 1
+        while ind <= self.size:
+            self.bit[ind] += val
+            ind += ind & -ind  # Move to the next index that covers the current index
+ 
+    def pref_sum(self, ind):
+        # Compute prefix sum up to index ind in the BIT
+        ind += 1
+        total = 0
+        while ind > 0:
+            total += self.bit[ind]
+            ind -= ind & -ind  # Move to the previous index that contributes to the current index
+        return total
 
-	def pref_sum(self, ind):
-		ind += 1
-		total = 0
-		while ind > 0:
-			total += self.bit[ind]
-			ind -= ind & -ind
-		return total
+
+# EndCodeSnip
 
 
-MAX_POS = 10**6
-
+MAX_POS = 10**6  # Maximum possible position
+ 
 if __name__ == "__main__":
-	n = int(input().strip())
-
-	events = []
-	for _ in range(n):
-		x1, y1, x2, y2 = map(int, input().strip().split())
-		if y1 == y2:
-			events.append((y1, 2, x1, x2))
-		else:
-			events.append((y1, 1, x1, 1))
-			events.append((y2, 3, x1, 1))
-
-	events.sort()
-
-	bit = BIT(2 * MAX_POS + 1)
-	ans = 0
-	for y, type, x1, x2 in events:
-		x1 += MAX_POS
-		x2 += MAX_POS
-		if type == 1:
-			bit.add(x1, 1)
-		elif type == 2:
-			ans += bit.pref_sum(x2) - bit.pref_sum(x1 - 1)
-		elif type == 3:
-			bit.add(x1, -1)
-
-	print(ans)
+    n = int(input().strip())  # Number of events
+ 
+    events = []
+    for _ in range(n):
+        x1, y1, x2, y2 = map(int, input().strip().split())
+        if y1 == y2:
+            events.append((y1, 2, x1, x2))  # Horizontal line event
+        else:
+            events.append((y1, 1, x1, 1))   # Start of a vertical line segment
+            events.append((y2, 3, x1, 1))   # End of a vertical line segment
+    
+    events.sort()  # Sort events based on y-coordinate
+ 
+    bit = BIT(2 * MAX_POS + 1)  # Create BIT to cover all possible x-coordinates
+    ans = 0
+    for y, type, x1, x2 in events:
+        x1 += MAX_POS  # Shift x-coordinates to avoid negative indices in BIT
+        x2 += MAX_POS
+        if type == 1:
+            bit.add(x1, 1)  # Add a vertical segment's start point to BIT
+        elif type == 2:
+            ans += bit.pref_sum(x2) - bit.pref_sum(x1 - 1)  # Calculate sum of horizontal range using BIT
+        elif type == 3:
+            bit.add(x1, -1)  # Remove a vertical segment's end point from BIT
+ 
+    print(ans)  # Output the total covered horizontal length
 ```
 
 </PySection>
