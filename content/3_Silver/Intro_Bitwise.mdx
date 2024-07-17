@@ -410,33 +410,34 @@ int main() {
 <PySection>
 
 ```py
-def main():
-	import sys
-
-	input = sys.stdin.read
-	data = input().split()
-
-	n = int(data[0])
-	pref = [0] * (n + 1)
-
-	for i in range(2, n + 1):
-		num = i
-		while num % 2 == 0:
-			pref[i] += 1
-			num //= 2
-		pref[i] += pref[i - 1]
-
-	ans = 0
-	for i in range(n):
-		num = int(data[i + 1])
-		if pref[n - 1] - pref[i] - pref[n - i - 1] == 0:
-			ans ^= num
-
-	print(ans)
-
-
-if __name__ == "__main__":
-	main()
+# Read the value of n from input
+n = int(input().strip())
+ 
+# Initialize prefix array pref with zeros
+pref = [0] * (n + 1)
+ 
+# Calculate the number of trailing zeros in each number up to n
+for i in range(2, n + 1):
+    num = i
+    while num % 2 == 0:
+        pref[i] += 1
+        num //= 2
+    pref[i] += pref[i - 1]
+ 
+# Initialize answer variable
+ans = 0
+ 
+# Read the sequence of integers
+data = list(map(int, input().strip().split()))
+ 
+# Calculate the result using XOR
+for i in range(n):
+    num = data[i]
+    if pref[n - 1] - pref[i] - pref[n - i - 1] == 0:
+        ans ^= num
+ 
+# Print the result
+print(ans)
 ```
 
 </PySection>
