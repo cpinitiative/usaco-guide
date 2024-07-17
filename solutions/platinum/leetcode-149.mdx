@@ -1,0 +1,87 @@
+---
+id: leetcode-149
+source: Leetcode
+title: Max Points on a Line
+author: Mihnea Brebenel
+---
+
+## Explanation
+
+Because $n \le 300$ we can naively go through all pairs of points and check how many other points are collinear with them.
+Three points $A$, $B$, and $C$ are collinear if and only if $AB$ has the same slope as $BC$:
+
+$$
+\frac{A_y-B_y}{A_x-B_x}=\frac{B_y-C_y}{B_x-C_x}
+$$
+
+In practice you'll find this formula in a product form to avoid dealing with floating-point values.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(n^3)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+class Solution {
+  public:
+	int maxPoints(vector<vector<int>> &points) {
+		if (points.size() <= 2) { return points.size(); }
+
+		int ans = 0;
+		for (int i = 0; i < points.size(); i++) {
+			for (int j = i + 1; j < points.size(); j++) {
+				int p = 2;  // the 2 points are collinear with themselves
+				for (int k = j + 1; k < points.size(); k++) {
+					int dx1 = points[i][0] - points[k][0],
+					    dx2 = points[j][0] - points[i][0];
+					int dy1 = points[i][1] - points[k][1],
+					    dy2 = points[j][1] - points[i][1];
+					// Check if dy1 / dx1 = dy2 / dx2
+					// Which is the same as: dy1 * dx2 = dy2 * dx1
+					if (dy1 * dx2 == dy2 * dx1) { p++; }
+				}
+
+				ans = max(ans, p);
+			}
+		}
+
+		return ans;
+	}
+};
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+class Solution {
+	public int maxPoints(int[][] points) {
+		if (points.length <= 2) { return points.length; }
+
+		int ans = 0;
+		for (int i = 0; i < points.length; i++) {
+			for (int j = i + 1; j < points.length; j++) {
+				int p = 2;  // the 2 points are collinear with themselves
+				for (int k = j + 1; k < points.length; k++) {
+					int dx1 = points[i][0] - points[k][0];
+					int dx2 = points[j][0] - points[i][0];
+					int dy1 = points[i][1] - points[k][1];
+					int dy2 = points[j][1] - points[i][1];
+					// Check if dy1 / dx1 = dy2 / dx2
+					// Which is the same as: dy1 * dx2 = dy2 * dx1
+					if (dy1 * dx2 == dy2 * dx1) { p++; }
+				}
+
+				ans = Math.max(ans, p);
+			}
+		}
+
+		return ans;
+	}
+}
+```
+
+</JavaSection>
+</LanguageSection>
