@@ -60,4 +60,46 @@ int main() {
 ```
 
 </CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class WatchingMooloo {
+	public static void main(String[] args) throws IOException {
+		BufferedReader br =
+		    new BufferedReader(new InputStreamReader(System.in));
+		String[] input = br.readLine().split(" ");
+		int n = Integer.parseInt(input[0]);
+		int k = Integer.parseInt(input[1]);
+
+		long[] days = new long[n];
+		String[] daysInput = br.readLine().split(" ");
+		br.close();
+		for (int i = 0; i < n; i++) { days[i] = Long.parseLong(daysInput[i]); }
+
+		Arrays.sort(days);
+
+		long lastDay = days[0];
+		long cost = k + 1;  // Start the first subscription
+		for (long d : days) {
+			// Should Bessie extend the most recent subscription?
+			if (d - lastDay < k + 1) {
+				cost += d - lastDay;
+			} else {
+				// Or just start a new one entirely?
+				cost += k + 1;
+			}
+
+			// Store the date of the last subscription
+			lastDay = d;
+		}
+
+		System.out.println(cost);
+	}
+}
+```
+
+</JavaSection>
 </LanguageSection>
