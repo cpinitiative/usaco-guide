@@ -469,15 +469,22 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
       throw e;
     }
   });
+  let claimsInternalSol = false;
   problems
     .filter(x => x.node.solution?.kind === 'internal')
     .forEach(({ node: problemNode }) => {
       if (!problemsWithInternalSolutions.has(problemNode.uniqueId)) {
+        claimsInternalSol = true;
         console.error(
           `Problem ${problemNode.uniqueId} claims to have an internal solution but doesn't`
         );
       }
     });
+  if (claimsInternalSol) {
+    throw new Error(
+      "A problem claims to have an internal solution but doesn't."
+    );
+  }
   // Generate Syllabus Pages //
   const syllabusTemplate = path.resolve(`./src/templates/syllabusTemplate.tsx`);
   freshOrdering.SECTIONS.forEach(division => {
