@@ -9,16 +9,16 @@ author: Justin Ji
 
 <Spoiler title = "Hint 1">
 
-Choosing two companions per task is equivalent to excluding one companion 
-per task. 
+Choosing two companions per task is equivalent to excluding one companion
+per task.
 
 </Spoiler>
 
 <Spoiler title = "Hint 2">
 
 Let's say we have a pair $(a, b)$ and $(c, d)$. If we want $a + c$ to equal $b + d$,
-then $a - b$ must be equal to $d - c$. How can this help us perform MITM on the 
-array? 
+then $a - b$ must be equal to $d - c$. How can this help us perform MITM on the
+array?
 
 </Spoiler>
 
@@ -26,12 +26,12 @@ array?
 
 ## Explanation
 
-With the information given in the hints, we can do MITM and consider every possible 
+With the information given in the hints, we can do MITM and consider every possible
 way to choose companions to exclude in our left and right subarrays.
 
-Given the information in Hint 2, we can efficiently join results from the 
-left and right sides. In a valid answer, the adjacent attitudes from the left side 
-must be the opposite of the adjacent differences from the right side. 
+Given the information in Hint 2, we can efficiently join results from the
+left and right sides. In a valid answer, the adjacent attitudes from the left side
+must be the opposite of the adjacent differences from the right side.
 With this observation, we can find the best pairing for each possible
 result from the left side in $\mathcal{O}(\log{N})$.
 
@@ -48,30 +48,24 @@ result from the left side in $\mathcal{O}(\log{N})$.
 using namespace std;
 
 int main() {
-	int n; 
+	int n;
 	cin >> n;
 	vector<array<int, 3>> tasks(n);
 	for (int i = 0; i < n; i++) {
-		for (int j = 0; j < 3; j++) {
-			cin >> tasks[i][j];
-		}
+		for (int j = 0; j < 3; j++) { cin >> tasks[i][j]; }
 	}
 
 	/** calculates all possible final attitudes on [l, r) */
 	const auto calc_subarray = [&](int l, int r) -> vector<array<int, 4>> {
 		array<int, 3> attitude = {0, 0, 0};
 		for (int i = l; i < r; i++) {
-			for (int j = 0; j < 3; j++) {
-				attitude[j] += tasks[i][j];
-			}
+			for (int j = 0; j < 3; j++) { attitude[j] += tasks[i][j]; }
 		}
 
 		// we are masking in base 3
 		int len = r - l;
 		int max_mask = 1;
-		for (int i = 0; i < len; i++) {
-			max_mask *= 3;
-		}
+		for (int i = 0; i < len; i++) { max_mask *= 3; }
 
 		// if our final attitudes for a mask are (a, b, c), then
 		// res[i] = {b - a, c - b, a, mask}
@@ -86,7 +80,8 @@ int main() {
 			for (int j = 0; j < 3; j++) {
 				subtracted[j] = attitude[j] - subtracted[j];
 			}
-			res[i] = {subtracted[1] - subtracted[0], subtracted[2] - subtracted[1], subtracted[0], i};
+			res[i] = {subtracted[1] - subtracted[0],
+			          subtracted[2] - subtracted[1], subtracted[0], i};
 		}
 		return res;
 	};
@@ -95,11 +90,11 @@ int main() {
 	sort(begin(right), end(right));
 
 	const int INF = 1e9;
-	/** @return final attitude toward the hero, or -INF if they aren't all the same */
-	const auto calc_attitude = [](const array<int, 4> &x, const array<int, 4> &y) -> int {
-		if (x[0] != -y[0] || x[1] != -y[1]) {
-			return -INF;
-		}
+	/** @return final attitude toward the hero, or -INF if they aren't all the
+	 * same */
+	const auto calc_attitude = [](const array<int, 4> &x,
+	                              const array<int, 4> &y) -> int {
+		if (x[0] != -y[0] || x[1] != -y[1]) { return -INF; }
 		return x[2] + y[2];
 	};
 	int mask1 = -1;
@@ -108,8 +103,8 @@ int main() {
 	for (auto &i : left) {
 		const auto [diff_1, diff_2, fi, mask] = i;
 		// finding the "complement" for this result
-		auto it = lower_bound(begin(right), end(right), 
-													array<int, 4>{-diff_1, -diff_2, INF, 0});
+		auto it = lower_bound(begin(right), end(right),
+		                      array<int, 4>{-diff_1, -diff_2, INF, 0});
 		if (it == begin(right)) { continue; }
 		it = prev(it);
 		int cand = calc_attitude(i, *it);
@@ -117,13 +112,13 @@ int main() {
 			res = cand;
 			mask1 = mask;
 			mask2 = (*it)[3];
-		}   
+		}
 	}
 	if (res == -INF) {
 		cout << "Impossible" << "\n";
 		return 0;
 	}
-	
+
 	// ignored[i] = string to print if we ignore companion i
 	array<string, 3> ignored = {"MW", "LW", "LM"};
 	for (int i = 0; i < n / 2; i++) {
