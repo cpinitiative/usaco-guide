@@ -35,6 +35,11 @@ using namespace std;
 
 /** @return the product of the given string's digits (-1 if empty) */
 ll prod(string s) {
+	// remove leading zeros
+	int i = 0;
+	while (s[i] == '0') { i++; }
+	s = s.substr(i);
+
 	if (!s.length()) { return -1; }
 	ll res = 1;
 	for (char c : s) { res *= c - '0'; }

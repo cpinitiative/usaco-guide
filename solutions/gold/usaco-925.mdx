@@ -1,0 +1,127 @@
+---
+id: usaco-925
+source: USACO Platinum 2019 February
+title: Mooriokart
+author: Justin Ji
+---
+
+[Official Editorial (C++)](https://usaco.org/current/data/sol_mooriokart_platinum_feb19.html)
+
+<Spoiler title = "Hint">
+
+The graph is a forest, and we are only allowed to pick one path from each tree
+to reach our total. This seems like knapsack!
+
+The issue with directly writing a knapsack is that there is no bound on
+how long we can make our path. Notice that all tracks and paths of length $\ge Y$
+behave the same because they are already long enough. How can this simplify our DP?
+
+</Spoiler>
+
+<Spoiler title = "Explanation">
+
+The key observation to make is that we can compress all paths and tracks of
+length $\ge Y$ because they all are treated the same, in that they result in a
+track of sufficient length.
+
+For each tree, we can compress all the paths into $(length, frequency)$ pairs.
+Then, we can knapsack as usual. However, note that because we are compressing
+all paths of length $\ge Y$, we need to explicitly store the sum of the path
+lengths as well.
+
+Our DP state would keep track of both the sum of the path lengths and
+the number of such paths, for each possible length of our path.
+
+Let $k$ be the number of trees in our forest. To account for the possible ways
+of ordering our paths, we need to multiply our initial sum of paths by
+$2^{k} * k!$. However, cyclic rotations and reversed paths are considered
+to be the same, so we divide by $2k$: $2^{k - 1} * (k - 1)!$.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(NY^{\frac{3}{2}})$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+
+const int MOD = 1e9 + 7;
+
+int main() {
+	freopen("mooriokart.in", "r", stdin);
+	int n, m, x, y;
+	cin >> n >> m >> x >> y;
+	vector<vector<array<int, 2>>> adj(n);
+	for (int i = 0; i < m; i++) {
+		int u, v, d;
+		cin >> u >> v >> d;
+		adj[--u].push_back({--v, d});
+		adj[v].push_back({u, d});
+	}
+
+	vector<bool> vis(n);
+	vector<int> tree_nodes;
+	function<void(int, int)> get_tree_nodes = [&](int u, int p) {
+		vis[u] = true;
+		tree_nodes.push_back(u);
+		for (auto [v, w] : adj[u]) {
+			if (v == p) { continue; }
+			get_tree_nodes(v, u);
+		}
+	};
+
+	// path_info[len] = {sum of path lengths, # of paths}
+	map<int, array<int, 2>> path_info;
+	function<void(int, int, int, int)> calc_path_info = [&](int u, int p, int d,
+	                                                        int s) {
+		for (auto [v, w] : adj[u]) {
+			if (v == p) { continue; }
+			if (v < s) {
+				auto &[sum, freq] = path_info[min(y, d + w)];
+				sum = (sum + d + w) % MOD;
+				freq++;
+			}
+			calc_path_info(v, u, d + w, s);
+		}
+	};
+
+	// dp[path_len] = {len_sum, num_paths}
+	vector<array<ll, 2>> dp(y + 1);
+	int k = n - m;
+	dp[min(y, k * x)] = {k * x, 1};
+	for (int i = 0; i < n; i++) {
+		if (vis[i]) { continue; }
+		get_tree_nodes(i, -1);
+		for (int v : tree_nodes) { calc_path_info(v, -1, 0, v); }
+
+		vector<array<ll, 2>> new_dp(y + 1);
+		for (auto [val, arr] : path_info) {
+			const auto [sum, freq] = arr;
+			for (int j = 0; j <= y; j++) {
+				int nxt = min(y, j + val);
+				new_dp[nxt] = {
+				    (new_dp[nxt][0] + dp[j][1] * sum + dp[j][0] * freq) % MOD,
+				    (new_dp[nxt][1] + dp[j][1] * freq) % MOD};
+			}
+		}
+
+		tree_nodes.clear();
+		path_info.clear();
+		dp = move(new_dp);
+	}
+
+	for (int i = 1; i < k; i++) { dp[y][0] = (dp[y][0] * 2 * i) % MOD; }
+
+	freopen("mooriokart.out", "w", stdout);
+	cout << dp[y][0] << endl;
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
+</Spoiler>
