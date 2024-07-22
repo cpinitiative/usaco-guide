@@ -499,7 +499,7 @@ int main() {
 	>
 	</Resource>
 	<Resource
-		source="C.M.U."
+		source="CMU."
 		title="Chinese Remainder Theorem"
 		url="https://www.math.cmu.edu/~mradclif/teaching/127S19/Notes/ChineseRemainderTheorem.pdf"
 	>
@@ -508,8 +508,8 @@ int main() {
 
 <FocusProblem problem="CRT" />
 
-The [Chinese Remainder Theorem](https://en.wikipedia.org/wiki/Chinese_remainder_theorem) - also reffered to as CRT - yields an unique
-solution to a system of simultaneous modular congruences with pairwise coprime moduli. More specifically, C.R.T. determines a number $x$ that
+The [Chinese Remainder Theorem](https://en.wikipedia.org/wiki/Chinese_remainder_theorem) - also referred to as CRT - yields a unique
+solution to a system of simultaneous modular congruences with pairwise coprime moduli. More specifically, CRT determines a number $x$ that
 when divided by the given divisors leaves the given remainders. Mathematically, it solves the following system of modular congruences:
 
 $$
@@ -571,9 +571,8 @@ array<ll, 3> extend_euclid(ll a, ll b) {
 	array<ll, 3> x = {1, 0, a};
 	array<ll, 3> y = {0, 1, b};
 
-	// run extended Euclidean algo
 	while (y[2] > 0) {
-		// keep subtracting multiple of one equation from the other
+		// keep subtracting the multiple of one equation from the other
 		ll k = x[2] / y[2];
 		for (int i = 0; i < 3; i++) { x[i] -= k * y[i]; }
 		swap(x, y);
@@ -589,8 +588,8 @@ ll inv(ll x, ll y) {
 
 // General code for multiple congruences in a system
 ll crt(const vector<ll> &remainders, const vector<ll> &moduli) {
-	ll MOD = accumulate(moduli.begin(), moduli.end(), 1LL, multiplies<ll>()),
-	   x = 0;
+	ll MOD = accumulate(moduli.begin(), moduli.end(), 1LL, multiplies<ll>());
+	ll x = 0;
 	for (int i = 0; i < (int)moduli.size(); i++) {
 		ll a = remainders[i] * inv(MOD / moduli[i], moduli[i]) % moduli[i];
 		x = (x + a * (MOD / moduli[i])) % MOD;
