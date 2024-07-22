@@ -547,7 +547,7 @@ It satisfies both equations:
 Now that we have a solution $x \pmod{M}$ it only remains to show that it is indeed the only valid
 solution modulo $m_1 \cdot m_2$. Assuming that there is a different valid solution $y$ we have: $m_1 | y-x, m_2 | y-x, 
 m_3 | y-x, \ldots, m_k | y-x$, then it follows that $m_1 \cdot m_2 \cdots m_k$ divides $y-x$, since $m_1, m_2, \ldots, m_k$ are relatively
-coprime. This means that: $y \equiv x \pmod{m_1 \cdot m_2 \cdots m_k}$
+coprime. This means that: $y \equiv x \pmod{m_1 \cdot m_2 \cdots m_k}$.
 
 **Time Complexity:** $\mathcal{O}(T \cdot \log{MN})$
 
@@ -565,7 +565,7 @@ using namespace std;
 
 typedef long long ll;
 
-// Extended Euclidean Algorithm template
+// Extended Euclidean Algorithm
 array<ll, 3> extend_euclid(ll a, ll b) {
     // we know that (1 * a) + (0 * b) = a and (0 * a) + (1 * b) = b
     array<ll, 3> x = {1, 0, a};
@@ -581,7 +581,7 @@ array<ll, 3> extend_euclid(ll a, ll b) {
     return x;  // x[0] * a + x[1] * b = x[2], x[2] = gcd(a, b)
 }
 
-// The modular inverse of x mod y
+// The Modular Inverse 
 ll inv(ll x, ll y) {
     ll m = extend_euclid(x, y)[0] % y;
     return (m < 0 ? m + y : m );
