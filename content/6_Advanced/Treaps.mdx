@@ -548,50 +548,53 @@ void split(Node *treap, Node *&l, Node *&r, int val) {
 	pull(treap);
 }
 
-Node *treap = nullptr;  // global treap
-void insert(int i, int x) {
-	Node *l, *r;
-	split(treap, l, r, i);
-	auto v = new Node(x);
-	merge(l, l, v);
-	merge(treap, l, r);
-}
-void del(int i) {
-	Node *l, *r;
-	split(treap, l, r, i);
-	split(r, treap, r, 1);
-	merge(treap, l, r);
-}
+struct Treap {
+	Node *root = nullptr;  // root of this treap
+	void insert(int i, int x) {
+		Node *l, *r;
+		split(root, l, r, i);
+		auto v = new Node(x);
+		merge(l, l, v);
+		merge(root, l, r);
+	}
+	void del(int i) {
+		Node *l, *r;
+		split(root, l, r, i);
+		split(r, root, r, 1);
+		merge(root, l, r);
+	}
 
-void upd(int l, int r, function<void(Node *)> f) {  // updates range [l, r)
-	Node *a, *b, *c;  // a: [0, l); b: [l, r); c: [r, )
-	split(treap, a, b, l);
-	split(b, b, c, r - l);
-	if (b) { f(b); }
-	// merge all the splits back into the main treap
-	merge(treap, a, b);
-	merge(treap, treap, c);
-}
+	void upd(int l, int r, function<void(Node *)> f) {  // updates range [l, r)
+		Node *a, *b, *c;  // a: [0, l); b: [l, r); c: [r, )
+		split(root, a, b, l);
+		split(b, b, c, r - l);
+		if (b) { f(b); }
+		// merge all the splits back into the main treap
+		merge(root, a, b);
+		merge(root, root, c);
+	}
 
-template <typename R>
-R query(int l, int r, function<R(Node *)> f) {  // queries range [l, r)
-	Node *a, *b, *c;  // a: [0, l); b: [l, r); c: [r, )
-	split(treap, a, b, l);
-	split(b, b, c, r - l);
-	assert(b);
-	R x = f(b);
-	merge(treap, a, b);
-	merge(treap, treap, c);
-	return x;
-}
+	template <typename R>
+	R query(int l, int r, function<R(Node *)> f) {  // queries range [l, r)
+		Node *a, *b, *c;  // a: [0, l); b: [l, r); c: [r, )
+		split(root, a, b, l);
+		split(b, b, c, r - l);
+		assert(b);
+		R x = f(b);
+		merge(root, a, b);
+		merge(root, root, c);
+		return x;
+	}
+};
 
 int main() {
 	int n, q;
 	cin >> n >> q;
+	Treap treap;
 	for (int i = 0; i < n; i++) {
 		int x;
 		cin >> x;
-		insert(i, x);
+		treap.insert(i, x);
 	}
 	for (int tc = 0; tc < q; tc++) {
 		int t;
@@ -600,23 +603,23 @@ int main() {
 		switch (t) {
 		case 0:
 			cin >> i >> x;
-			insert(i, x);
+			treap.insert(i, x);
 			break;
 		case 1:
 			cin >> i;
-			del(i);
+			treap.del(i);
 			break;
 		case 2:
 			cin >> l >> r;
-			upd(l, r, [](Node *x) { x->rev ^= true; });
+			treap.upd(l, r, [](Node *x) { x->rev ^= true; });
 			break;
 		case 3:
 			cin >> l >> r >> w >> b;
-			upd(l, r, [=](Node *x) { x->f = Line{w, b}(x->f); });
+			treap.upd(l, r, [=](Node *x) { x->f = Line{w, b}(x->f); });
 			break;
 		case 4:
 			cin >> l >> r;
-			cout << query<mint>(l, r, [](Node *x) { return x->sum; }) << endl;
+			cout << treap.query<mint>(l, r, [](Node *x) { return x->sum; }) << endl;
 			break;
 		}
 	}
