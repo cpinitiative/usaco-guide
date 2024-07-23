@@ -430,7 +430,6 @@ This code solves the above problem, but also provides a generalizable template f
 **Time complexity:** $\mathcal{O}((N + Q) \log N)$
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
@@ -497,7 +496,9 @@ struct Node {
 };
 
 int size(Node *treap) { return treap ? treap->size : 0; }
+
 mint sum(Node *treap) { return treap ? treap->sum : 0; }
+
 void push(Node *treap) {
 	if (!treap) { return; }
 	if (treap->rev) {  // need to reverse this range
@@ -550,6 +551,7 @@ void split(Node *treap, Node *&l, Node *&r, int val) {
 
 struct Treap {
 	Node *root = nullptr;  // root of this treap
+
 	void insert(int i, int x) {
 		Node *l, *r;
 		split(root, l, r, i);
@@ -557,6 +559,7 @@ struct Treap {
 		merge(l, l, v);
 		merge(root, l, r);
 	}
+
 	void del(int i) {
 		Node *l, *r;
 		split(root, l, r, i);
@@ -564,7 +567,8 @@ struct Treap {
 		merge(root, l, r);
 	}
 
-	void upd(int l, int r, function<void(Node *)> f) {  // updates range [l, r)
+	/** updates the range [l, r) */
+	void upd(int l, int r, function<void(Node *)> f) {
 		Node *a, *b, *c;  // a: [0, l); b: [l, r); c: [r, )
 		split(root, a, b, l);
 		split(b, b, c, r - l);
@@ -574,8 +578,9 @@ struct Treap {
 		merge(root, root, c);
 	}
 
+	/** @return the result of the query on [l, r) */
 	template <typename R>
-	R query(int l, int r, function<R(Node *)> f) {  // queries range [l, r)
+	R query(int l, int r, function<R(Node *)> f) {
 		Node *a, *b, *c;  // a: [0, l); b: [l, r); c: [r, )
 		split(root, a, b, l);
 		split(b, b, c, r - l);
@@ -596,7 +601,8 @@ int main() {
 		cin >> x;
 		treap.insert(i, x);
 	}
-	for (int tc = 0; tc < q; tc++) {
+
+	for (int query = 0; query < q; query++) {
 		int t;
 		cin >> t;
 		int i, x, l, r, w, b;
@@ -628,7 +634,6 @@ int main() {
 ```
 
 </CPPSection>
-
 </LanguageSection>
 
 ## Problems
