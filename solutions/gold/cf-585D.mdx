@@ -1,0 +1,143 @@
+---
+id: cf-585D
+source: CF
+title: Lizard Era Beginning
+author: Justin Ji
+---
+
+[Official Analysis](https://codeforces.com/blog/entry/20898)
+
+<Spoiler title = "Hint 1">
+
+Choosing two companions per task is equivalent to excluding one companion
+per task.
+
+</Spoiler>
+
+<Spoiler title = "Hint 2">
+
+Let's say we have a pair $(a, b)$ and $(c, d)$. If we want $a + c$ to equal $b + d$,
+then $a - b$ must be equal to $d - c$. How can this help us perform meet-in-the-middle on the
+array?
+
+</Spoiler>
+
+<Spoiler title = "Explanation">
+
+## Explanation
+
+With the information given in the hints, we can do meet-in-the-middle and consider every possible
+way to choose companions to exclude in our left and right subarrays.
+
+Given the information in hint 2, we can efficiently join results from the
+left and right sides. In a valid answer, the adjacent differences in attitudes from the
+left side must be the opposite of the adjacent differences from the right side.
+With this observation, we can find the best pairing for each possible
+result from the left side in $\mathcal{O}(\log{N})$.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(3^{\left \lfloor{\frac{N}{2}}\right \rfloor}\log\left({3^{\left \lceil{\frac{N}{2}}\right \rceil}}\right))$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	int n;
+	cin >> n;
+
+	vector<array<int, 3>> tasks(n);
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < 3; j++) { cin >> tasks[i][j]; }
+	}
+
+	/** calculates all possible final attitudes on [l, r) */
+	const auto calc_subarray = [&](int l, int r) -> vector<array<int, 4>> {
+		array<int, 3> attitude = {0, 0, 0};
+		for (int i = l; i < r; i++) {
+			for (int j = 0; j < 3; j++) { attitude[j] += tasks[i][j]; }
+		}
+
+		// we are masking in base 3
+		int len = r - l;
+		int max_mask = 1;
+		for (int i = 0; i < len; i++) { max_mask *= 3; }
+
+		// if our final attitudes for a mask are (a, b, c), then
+		// res[i] = {b - a, c - b, a, mask}
+		vector<array<int, 4>> res(max_mask);
+		for (int i = 0; i < max_mask; i++) {
+			int cur_mask = i;
+			array<int, 3> subtracted = {0, 0, 0};
+
+			for (int j = 0; j < len; j++) {
+				subtracted[cur_mask % 3] += tasks[l + j][cur_mask % 3];
+				cur_mask /= 3;
+			}
+
+			for (int j = 0; j < 3; j++) {
+				subtracted[j] = attitude[j] - subtracted[j];
+			}
+
+			res[i] = {subtracted[1] - subtracted[0],
+			          subtracted[2] - subtracted[1], subtracted[0], i};
+		}
+		return res;
+	};
+
+	/** @return final attitude toward the hero, or -INF if they aren't all the
+	 * same */
+	const auto calc_attitude = [](const array<int, 4> &x,
+	                              const array<int, 4> &y) -> int {
+		if (x[0] != -y[0] || x[1] != -y[1]) { return INT32_MIN; }
+		return x[2] + y[2];
+	};
+
+	vector<array<int, 4>> left = calc_subarray(0, n / 2);
+	vector<array<int, 4>> right = calc_subarray(n / 2, n);
+	sort(begin(right), end(right));
+
+	int mask1 = -1;
+	int mask2 = -1;
+	int res = INT32_MIN;
+	for (array<int, 4> &i : left) {
+		const auto [diff_1, diff_2, fi, mask] = i;
+
+		// finding the "complement" for this result
+		auto it = lower_bound(begin(right), end(right),
+		                      array<int, 4>{-diff_1, -diff_2, INT32_MAX, 0});
+		if (it == begin(right)) { continue; }
+		it = prev(it);
+
+		int cand = calc_attitude(i, *it);
+		if (res < cand) {
+			res = cand;
+			mask1 = mask;
+			mask2 = (*it)[3];
+		}
+	}
+
+	if (res == INT32_MIN) {
+		cout << "Impossible" << "\n";
+		return 0;
+	}
+
+	// ignored[i] = string to print if we ignore companion i
+	array<string, 3> ignored = {"MW", "LW", "LM"};
+	for (int i = 0; i < n / 2; i++) {
+		cout << ignored[mask1 % 3] << "\n";
+		mask1 /= 3;
+	}
+	for (int i = 0; i < (n + 1) / 2; i++) {
+		cout << ignored[mask2 % 3] << "\n";
+		mask2 /= 3;
+	}
+}
+```
+</CPPSection>
+</LanguageSection>
+</Spoiler>
