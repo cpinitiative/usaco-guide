@@ -127,92 +127,90 @@ int main() {
 The Java solution is slightly different from the above approach. For each subset of ACs, we store how cooled each of the stalls is in a static array. To check if a solution is valid, we iterate through all stalls and compare how cooled each stall is relative to how cooled each stall needs to be.
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 class Air_Cownditioning_II {
-    // Holds how cool each of the 100 stalls needs to be
-    static int[] cowNeeds;
-    // Holds each AC unit as an array of 4 numbers {a, b, p, m}
-    static int[][] ac;
+	// Holds how cool each of the 100 stalls needs to be
+	static int[] cowNeeds;
+	// Holds each AC unit as an array of 4 numbers {a, b, p, m}
+	static int[][] ac;
 
-    // How cool each of the 100 stalls is
-    static final int[] currCooled = new int[100];
-    static int currCost = 0;
+	// How cool each of the 100 stalls is
+	static final int[] currCooled = new int[100];
+	static int currCost = 0;
 
-    /*
-     * Creates subsets of all ACs, and stores the cost and 
-     * cooling amount of current subset
-     */
-    static int searchAC(int i) {
-        if (i == ac.length) {
-            // Check if a complete subset is valid
-            int stallToCheck = 0;
-            for (int need : cowNeeds) {
-                if (currCooled[stallToCheck] < need) {
-                    // If invalid, return arbitrarily high cost
-                    return Integer.MAX_VALUE;
-                }
-                stallToCheck++;
-            }
-            // If valid, return cost of subset
-            return currCost;  
-        }
+	/*
+	 * Creates subsets of all ACs, and stores the cost and
+	 * cooling amount of current subset
+	 */
+	static int searchAC(int i) {
+		if (i == ac.length) {
+			// Check if a complete subset is valid
+			int stallToCheck = 0;
+			for (int need : cowNeeds) {
+				if (currCooled[stallToCheck] < need) {
+					// If invalid, return arbitrarily high cost
+					return Integer.MAX_VALUE;
+				}
+				stallToCheck++;
+			}
+			// If valid, return cost of subset
+			return currCost;
+		}
 
-        // Add AC to subset
-        currCost += ac[i][3];
-        for (int stall = ac[i][0]; stall <= ac[i][1]; stall++) {
-            currCooled[stall] += ac[i][2];
-        }
-        int push = searchAC(i+1);
+		// Add AC to subset
+		currCost += ac[i][3];
+		for (int stall = ac[i][0]; stall <= ac[i][1]; stall++) {
+			currCooled[stall] += ac[i][2];
+		}
+		int push = searchAC(i + 1);
 
-        // Remove AC from subset
-        currCost -= ac[i][3];
-        for (int stall = ac[i][0]; stall <= ac[i][1]; stall++) {
-            currCooled[stall] -= ac[i][2];
-        }
-        int pop = searchAC(i+1);
+		// Remove AC from subset
+		currCost -= ac[i][3];
+		for (int stall = ac[i][0]; stall <= ac[i][1]; stall++) {
+			currCooled[stall] -= ac[i][2];
+		}
+		int pop = searchAC(i + 1);
 
-        // Return minimum cost
-        return Math.min(push, pop);
-    }  
-	  
-    
-    public static void main(String[] args) throws IOException{
-        BufferedReader f = new BufferedReader(new InputStreamReader(System.in));
-        PrintWriter out = new PrintWriter(System.out);        
-        StringTokenizer st = new StringTokenizer(f.readLine()); 
+		// Return minimum cost
+		return Math.min(push, pop);
+	}
 
-        int n = Integer.parseInt(st.nextToken());
-        int m = Integer.parseInt(st.nextToken());
-        
-        
-        // Create cowNeeds array
-        cowNeeds = new int[100];
-        for (int i = 0; i < n; i++) {
-            st = new StringTokenizer(f.readLine());
-            int start = Integer.parseInt(st.nextToken());
-            int fin = Integer.parseInt(st.nextToken());
-            int neededCool = Integer.parseInt(st.nextToken());
-            for (int stall = start; stall <= fin; stall++) {
-                cowNeeds[stall] = neededCool;
-            }
-        }
-        
-        // Create ac array
-        ac = new int[m][4];
-        for (int i = 0; i < m; i++) {
-            st = new StringTokenizer(f.readLine());
-            for (int j = 0; j < 4; j++) {
-                ac[i][j] = Integer.parseInt(st.nextToken());
-            }
-        }
+	public static void main(String[] args) throws IOException {
+		BufferedReader f = new BufferedReader(new InputStreamReader(System.in));
+		PrintWriter out = new PrintWriter(System.out);
+		StringTokenizer st = new StringTokenizer(f.readLine());
 
-        // Create subsets and return minimum cost
-        out.println(searchAC(0));
-        f.close();
-        out.close(); 
-    }
+		int n = Integer.parseInt(st.nextToken());
+		int m = Integer.parseInt(st.nextToken());
+
+		// Create cowNeeds array
+		cowNeeds = new int[100];
+		for (int i = 0; i < n; i++) {
+			st = new StringTokenizer(f.readLine());
+			int start = Integer.parseInt(st.nextToken());
+			int fin = Integer.parseInt(st.nextToken());
+			int neededCool = Integer.parseInt(st.nextToken());
+			for (int stall = start; stall <= fin; stall++) {
+				cowNeeds[stall] = neededCool;
+			}
+		}
+
+		// Create ac array
+		ac = new int[m][4];
+		for (int i = 0; i < m; i++) {
+			st = new StringTokenizer(f.readLine());
+			for (int j = 0; j < 4; j++) {
+				ac[i][j] = Integer.parseInt(st.nextToken());
+			}
+		}
+
+		// Create subsets and return minimum cost
+		out.println(searchAC(0));
+		f.close();
+		out.close();
+	}
 }
 ```
 
