@@ -103,7 +103,7 @@ void dfs_sz(int u, int p = 0) {
 	for (int i = 1; i <= LG; i++) { par[u][i] = par[par[u][i - 1]][i - 1]; }
 	if (p) { adj[u].erase(find(adj[u].begin(), adj[u].end(), p)); }
 
-	for (auto &v : adj[u]) {
+	for (int &v : adj[u]) {
 		if (v != p) {
 			dfs_sz(v, u);
 			sz[u] += sz[v];
@@ -141,7 +141,7 @@ int T, head[MAX_N], st[MAX_N], en[MAX_N];
 int n;
 void dfs_hld(int u) {
 	st[u] = ++T;
-	for (auto v : adj[u]) {
+	for (int v : adj[u]) {
 		head[v] = (v == adj[u][0] ? head[u] : v);
 		dfs_hld(v);
 	}
