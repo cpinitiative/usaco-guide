@@ -1,0 +1,67 @@
+---
+id: cses-2064
+source: CSES
+title: Bracket Sequences I
+author: Mihnea Brebenel
+---
+
+## Explanation 
+
+The problem is a direct application of Catalan numbers. The answer for $N$ is the $N/2$ Catalan Number.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N \cdot \log{N})$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp 
+#include <iostream>
+ 
+using namespace std;
+ 
+int main() {
+    const int MOD = 1e9 + 7;
+
+    int N;
+    cin >> N;
+    
+    if(N & 1) {
+        cout << 0;
+        return 0;
+    }
+
+    auto exp = [&](int x, int y) -> int {
+        int ans = 1, aux = x;
+        for(int i = 0; (1LL<<i) <= y; i++) {
+            if((1LL<<i) & y) {
+                ans = 1LL * ans * aux % MOD;
+            }
+            aux = 1LL * aux * aux % MOD;
+        }
+        return ans;
+    };
+
+    auto inv = [&](int x) -> int {
+        return exp(x, MOD - 2);
+    };
+
+    auto fact = [&](int x) -> int {
+        int ans = 1;
+        for(int i = 1; i <= x; i++) {
+            ans = 1LL * ans * i % MOD;
+        }
+        return ans;
+    };
+
+    auto comb = [&](int n, int k) {
+        return 1LL * fact(n) * inv(fact(k)) % MOD * inv(fact(n - k)) % MOD;
+    };
+
+    cout << 1LL * inv(N/2+1) * comb(N, N/2) % MOD;
+}
+```
+
+</CPPSection>
+</LanguageSection>
