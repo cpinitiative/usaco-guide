@@ -26,7 +26,8 @@ For a modification, we first check if vertex $v$ has some subtree. If it does, w
 
 const int MAX_N = 150005, MOD = 998244353;
 std::vector<int> adj[MAX_N];
-int grand_parent[MAX_N], parent[MAX_N], child[MAX_N], sz[MAX_N], tin[MAX_N], tout[MAX_N];
+int grand_parent[MAX_N], parent[MAX_N], child[MAX_N], sz[MAX_N], tin[MAX_N],
+    tout[MAX_N];
 int T = 1, n;
 
 int bit[2 * MAX_N], val[MAX_N];
@@ -50,9 +51,7 @@ int power(int a, int b) {
 	int res = 1;
 	a %= MOD;
 	while (b) {
-		if (b & 1) {
-			res = 1LL * res * a % MOD;
-		}
+		if (b & 1) { res = 1LL * res * a % MOD; }
 		a = 1LL * a * a % MOD;
 		b /= 2;
 	}
@@ -69,13 +68,9 @@ void dfs1(int v, int par) {
 	sz[v] = 1;
 	tin[v] = T++;
 	for (int u : adj[v]) {
-		if (u == par) {
-			continue;
-		}
+		if (u == par) { continue; }
 		dfs1(u, v);
-		if (sz[u] > sz[child[v]]) {
-			child[v] = u;
-		}
+		if (sz[u] > sz[child[v]]) { child[v] = u; }
 		sz[v] += sz[u];
 	}
 	tout[v] = T++;
@@ -84,9 +79,7 @@ void dfs1(int v, int par) {
 void dfs2(int v, int par, int gpar) {
 	grand_parent[v] = gpar;
 	for (int u : adj[v]) {
-		if (u == par) {
-			continue;
-		}
+		if (u == par) { continue; }
 		if (u == child[v]) {
 			dfs2(u, v, gpar);
 		} else {
@@ -99,9 +92,7 @@ void modify(int v, int d) {
 	add_subtree(v, 1LL * d * (n - sz[v]) % MOD);
 	add_subtree(1, 1LL * d * sz[v] % MOD);
 
-	if (child[v]) {
-		add_subtree(child[v], MOD - 1LL * d * sz[child[v]] % MOD);
-	}
+	if (child[v]) { add_subtree(child[v], MOD - 1LL * d * sz[child[v]] % MOD); }
 }
 
 int query(int v) {
@@ -113,7 +104,7 @@ int query(int v) {
 	}
 	res %= MOD;
 	return res;
-} 
+}
 
 int main() {
 	int q;
@@ -141,9 +132,7 @@ int main() {
 			int v;
 			std::cin >> v;
 			int res = 1LL * query(v) * inv % MOD;
-			if (res < 0) {
-				(res += MOD);
-			}
+			if (res < 0) { (res += MOD); }
 			std::cout << res << '\n';
 		}
 	}
