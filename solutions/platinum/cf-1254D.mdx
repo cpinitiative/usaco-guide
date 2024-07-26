@@ -23,126 +23,128 @@ For a modification, we first check if vertex $v$ has some subtree. If it does, w
 <CPPSection>
 ```cpp
 #include <bits/stdc++.h>
-using namespace std;
 
-const int MAX_N = 150001, MOD = 998244353;
-vector<int> adj[MAX_N], sum(MAX_N);
-vector<int> top(MAX_N), in(MAX_N), parent(MAX_N), depth(MAX_N), out(MAX_N),
-    sz(MAX_N);
-int T, n, q;
+const int MAX_N = 150005, MOD = 998244353;
+std::vector<int> adj[MAX_N];
+int grand_parent[MAX_N], parent[MAX_N], child[MAX_N], sz[MAX_N], tin[MAX_N], tout[MAX_N];
+int T = 1, n;
 
-vector<int> bit(MAX_N);
-void add(int x, int y) {
-	while (x <= MAX_N) {
-		bit[x] = (bit[x] + y) % MOD;
-		x += x & -x;
+int bit[2 * MAX_N], val[MAX_N];
+void add(int x, int v) {
+	while (x < 2 * MAX_N) {
+		(bit[x] += v % MOD) %= MOD;
+		x += x & (-x);
 	}
 }
 
-void add(int l, int r, int x) {
-	add(l + 1, x);
-	add(r + 1, MOD - x);
-}
-
 int get(int x) {
-	++x;
 	int res = 0;
 	while (x > 0) {
-		res = (res + bit[x]) % MOD;
-		x -= x & -x;
+		(res += bit[x] % MOD) %= MOD;
+		x -= x & (-x);
 	}
 	return res;
 }
 
 int power(int a, int b) {
 	int res = 1;
+	a %= MOD;
 	while (b) {
-		if (b & 1) { res = 1LL * res * a % MOD; }
+		if (b & 1) {
+			res = 1LL * res * a % MOD;
+		}
 		a = 1LL * a * a % MOD;
-		b >>= 1;
+		b /= 2;
 	}
 	return res;
 }
 
-// calculates depth and subtree size for each node
-void dfs_sz(int u) {
-	sz[u] = 1;
-	if (parent[u] != -1) {
-		adj[u].erase(find(adj[u].begin(), adj[u].end(), parent[u]));
-	}
-
-	for (int &v : adj[u]) {
-		depth[v] = depth[u] + 1;
-		parent[v] = u;
-		dfs_sz(v);
-		sz[u] += sz[v];
-		// Ensuring heavy child is the first child
-		if (sz[v] > sz[adj[u][0]]) { swap(v, adj[u][0]); }
-	}
+void add_subtree(int v, int x) {
+	add(tin[v], x);
+	add(tout[v], MOD - x);
 }
 
-// decomposition of the tree into a suitable structure for range operations
-void dfs_hld(int u) {
-	in[u] = T++;
-	for (int v : adj[u]) {
-		top[v] = (v == adj[u][0] ? top[u] : v);
-		dfs_hld(v);
+void dfs1(int v, int par) {
+	parent[v] = par;
+	sz[v] = 1;
+	tin[v] = T++;
+	for (int u : adj[v]) {
+		if (u == par) {
+			continue;
+		}
+		dfs1(u, v);
+		if (sz[u] > sz[child[v]]) {
+			child[v] = u;
+		}
+		sz[v] += sz[u];
 	}
-	out[u] = T;
+	tout[v] = T++;
+}
+
+void dfs2(int v, int par, int gpar) {
+	grand_parent[v] = gpar;
+	for (int u : adj[v]) {
+		if (u == par) {
+			continue;
+		}
+		if (u == child[v]) {
+			dfs2(u, v, gpar);
+		} else {
+			dfs2(u, v, u);
+		}
+	}
 }
 
 void modify(int v, int d) {
-	add(0, in[v], 1LL * d * sz[v] % MOD);
-	add(out[v], n, 1LL * d * sz[v] % MOD);
-	add(in[v], in[v] + 1, 1LL * d * n % MOD);
+	add_subtree(v, 1LL * d * (n - sz[v]) % MOD);
+	add_subtree(1, 1LL * d * sz[v] % MOD);
 
-	if (!adj[v].empty()) {
-		int u = adj[v][0];
-		add(in[u], out[u], 1LL * d * (n - sz[u]) % MOD);
+	if (child[v]) {
+		add_subtree(child[v], MOD - 1LL * d * sz[child[v]] % MOD);
 	}
-	sum[v] = (sum[v] + d) % MOD;
 }
 
 int query(int v) {
-	int res = get(in[v]);
-	while (v != -1) {
-		v = top[v];
-		if (parent[v] != -1) {
-			res = (res + 1LL * sum[parent[v]] * (n - sz[v])) % MOD;
-		}
-		v = parent[v];
+	int res = get(tin[v]);
+	v = grand_parent[v];
+	while (v != 1) {
+		(res -= 1LL * val[parent[v]] * sz[v] % MOD) %= MOD;
+		v = grand_parent[parent[v]];
 	}
+	res %= MOD;
 	return res;
-}
+} 
 
 int main() {
-	cin >> n >> q;
+	int q;
+	std::cin >> n >> q;
 	for (int i = 0; i < n - 1; i++) {
 		int u, v;
-		cin >> u >> v;
-		u--, v--;
+		std::cin >> u >> v;
 		adj[u].push_back(v);
 		adj[v].push_back(u);
 	}
 
-	parent[0] = -1;
-	dfs_sz(0);
-	dfs_hld(0);
+	dfs1(1, 0);
+	dfs2(1, 0, 1);
 
 	int inv = power(n, MOD - 2);
 	while (q--) {
-		int op;
-		cin >> op;
-		if (op == 1) {
+		int type;
+		std::cin >> type;
+		if (type == 1) {
 			int v, d;
-			cin >> v >> d;
-			v--;
+			std::cin >> v >> d;
+			(val[v] += d) %= MOD;
 			modify(v, d);
 		} else {
 			int v;
-			cin >> v;
-			v--;
-			cout << 1LL * query(v) * inv % MOD << '\n';
+			std::cin >> v;
+			int res = 1LL * query(v) * inv % MOD;
+			if (res < 0) {
+				(res += MOD);
+			}
+			std::cout << res << '\n';
 		}
 	}
 }
