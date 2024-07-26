@@ -101,7 +101,6 @@ void dfs_sz(int u, int p = 0) {
 	dep[u] = dep[p] + 1;
 	sz[u] = 1;
 	for (int i = 1; i <= LG; i++) { par[u][i] = par[par[u][i - 1]][i - 1]; }
-	if (p) { adj[u].erase(find(adj[u].begin(), adj[u].end(), p)); }
 
 	for (int &v : adj[u]) {
 		if (v != p) {
@@ -139,13 +138,29 @@ int kth(int u, int k) {
 
 int T, head[MAX_N], st[MAX_N], en[MAX_N];
 int n;
-void dfs_hld(int u) {
-	st[u] = ++T;
-	for (int v : adj[u]) {
-		head[v] = (v == adj[u][0] ? head[u] : v);
-		dfs_hld(v);
-	}
-	en[u] = T;
+
+void dfs_hld(int u, int chain) {
+    int k = 0;
+    T++;
+    st[u] = T;
+    head[u] = chain;
+    for (int v : adj[u]) {
+        if (dep[v] > dep[u] and sz[v] > sz[k]) {
+            k = v;
+        }
+    }
+
+    if (k == 0) {
+        en[u] = T;
+        return;
+    }
+    dfs_hld(k, chain);
+    for (int v : adj[u]) {
+        if (dep[v] > dep[u] and k != v) {
+            dfs_hld(v, v);
+        }
+    }
+    en[u] = T;
 }
 
 int query_up(int u, int v) {
@@ -176,7 +191,7 @@ int main() {
 	}
 	dfs_sz(1);
 	head[1] = 1;
-	dfs_hld(1);
+	dfs_hld(1, 1);
 
 	int q;
 	cin >> q;
