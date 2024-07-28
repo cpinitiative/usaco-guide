@@ -34,16 +34,16 @@ int main() {
 		std::cin >> n >> d >> h;
 		std::vector<int> y(n);
 
-		for (int i = 0; i < n; i++) {
-			std::cin >> y[i];
-		}
+		for (int i = 0; i < n; i++) { std::cin >> y[i]; }
 
 		std::cout << std::fixed << std::setprecision(16);
 		long double res = 0;
 		for (int i = 0; i < n; i++) {
-			if (i == n - 1 || (i + 1 < n && y[i] + h <= y[i + 1])) { // non-intersecting traingles
+			if (i == n - 1 ||
+			    (i + 1 < n &&
+			     y[i] + h <= y[i + 1])) {  // non-intersecting traingles
 				res += (double)(1LL * d * h) / 2;
-			} else { // intersecting traingles
+			} else {  // intersecting traingles
 				int new_h = y[i + 1] - y[i];
 				double p = (double)(h - new_h) / h;
 				double dtop = 1LL * d * p;
@@ -61,21 +61,23 @@ int main() {
 ```py
 test = int(input())
 for _ in range(test):
-    n, d, h = map(int, input().split())
-    y = list(map(int, input().split()))
+	n, d, h = map(int, input().split())
+	y = list(map(int, input().split()))
 
-    res: float = 0
-    for i in range(n):
-        if i == n - 1 or (i + 1 < n and y[i] + h <= y[i + 1]): # non-intersecting triangles
-            res = res + d * h / 2
+	res: float = 0
+	for i in range(n):
+		if i == n - 1 or (
+			i + 1 < n and y[i] + h <= y[i + 1]
+		):  # non-intersecting triangles
+			res = res + d * h / 2
 
-        else: # intersecting triangles
-            new_h = y[i + 1] - y[i]
-            p = (h - new_h) / h
-            dtop = d * p
-            res = res + new_h * (d + dtop) / 2
-    
-    print(res)
+		else:  # intersecting triangles
+			new_h = y[i + 1] - y[i]
+			p = (h - new_h) / h
+			dtop = d * p
+			res = res + new_h * (d + dtop) / 2
+
+	print(res)
 ```
 
 </PySection>
