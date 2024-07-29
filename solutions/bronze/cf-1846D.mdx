@@ -30,10 +30,10 @@ For each branch, there's two cases:
 <CPPSection>
 
 ```cpp
-#include <iostream>
-#include <vector>
 #include <algorithm>
 #include <iomanip>
+#include <iostream>
+#include <vector>
 
 using std::cout;
 using std::endl;
@@ -56,9 +56,7 @@ int main() {
 		std::cin >> branch_num >> base >> height;
 
 		vector<int> offsets(branch_num);
-		for (int& o : offsets) {
-			std::cin >> o;
-		}
+		for (int &o : offsets) { std::cin >> o; }
 		std::sort(offsets.begin(), offsets.end());
 
 		double total_area = 0;
@@ -85,14 +83,14 @@ int main() {
 ```py
 def trap_area(base1: float, base2: float, height: float) -> float:
 	""":return: the area of a trapezoid with the given base lens and height"""
-	return height * (base1 + base2) / 2;
+	return height * (base1 + base2) / 2
 
 
 for _ in range(int(input())):
 	branch_num, base, height = [int(i) for i in input().split()]
 	offsets = sorted(int(i) for i in input().split())
 	assert branch_num == len(offsets)
-	
+
 	total_area = 0
 	slope = base / height
 	for b in range(branch_num):
@@ -100,9 +98,9 @@ for _ in range(int(input())):
 			total_area += base * height / 2
 			continue
 
-		height_diff = offsets[b + 1] - offsets[b];
-		new_base = base - slope * height_diff;
-		total_area += trap_area(base, new_base, height_diff);
+		height_diff = offsets[b + 1] - offsets[b]
+		new_base = base - slope * height_diff
+		total_area += trap_area(base, new_base, height_diff)
 
 	print(total_area)
 ```
