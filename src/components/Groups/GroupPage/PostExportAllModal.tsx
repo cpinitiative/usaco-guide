@@ -1,7 +1,6 @@
 import { Dialog, Transition } from '@headlessui/react';
 import {
   CollectionReference,
-  arrayUnion,
   collection,
   doc,
   getDocs,
@@ -16,7 +15,6 @@ import { useUserGroups } from '../../../hooks/groups/useUserGroups';
 import { useFirebaseApp } from '../../../hooks/useFirebase';
 import { GroupData } from '../../../models/groups/groups';
 import { PostData } from '../../../models/groups/posts';
-import { GroupProblemData } from '../../../models/groups/problem';
 
 export default function PostExportAllModal(props: {
   showExportModal: boolean;
@@ -26,13 +24,18 @@ export default function PostExportAllModal(props: {
   const firebaseApp = useFirebaseApp();
   const firebaseUser = useFirebaseUser();
   const groups = useUserGroups();
-  const [groupsUsedMap, setGroupsUsedMap] = useState(new Map<string, MapData>());
+  const [groupsUsedMap, setGroupsUsedMap] = useState(
+    new Map<string, MapData>()
+  );
 
   async function handleGroupExportChange(g: GroupData) {
     if (groupsUsedMap.has(g.id)) {
       setGroupsUsedMap(
         new Map(
-          groupsUsedMap.set(g.id, new MapData(!groupsUsedMap.get(g.id)?.used, g))
+          groupsUsedMap.set(
+            g.id,
+            new MapData(!groupsUsedMap.get(g.id)?.used, g)
+          )
         )
       );
     } else {
@@ -43,27 +46,54 @@ export default function PostExportAllModal(props: {
   async function exportAllPosts() {
     const firestore = getFirestore(firebaseApp);
     const postsQuery = query(
-      collection(firestore, 'groups', props.group.id, 'posts') as CollectionReference<PostData>
+      collection(
+        firestore,
+        'groups',
+        props.group.id,
+        'posts'
+      ) as CollectionReference<PostData>
     );
     const postsSnapshot = await getDocs(postsQuery);
-    const posts = postsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    const posts = postsSnapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
 
     for (const [groupId, mapData] of groupsUsedMap.entries()) {
       if (mapData.used) {
         const batch = writeBatch(firestore);
         for (const post of posts) {
-          const newPostRef = doc(collection(firestore, 'groups', groupId, 'posts'));
+          const newPostRef = doc(
+            collection(firestore, 'groups', groupId, 'posts')
+          );
           batch.set(newPostRef, { ...post, timestamp: serverTimestamp() });
 
           const problemsQuery = query(
-            collection(firestore, 'groups', props.group.id, 'posts', post.id, 'problems')
+            collection(
+              firestore,
+              'groups',
+              props.group.id,
+              'posts',
+              post.id,
+              'problems'
+            )
           );
           const problemsSnapshot = await getDocs(problemsQuery);
-          const problems = problemsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+          const problems = problemsSnapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
 
           for (const problem of problems) {
             const newProblemRef = doc(
-              collection(firestore, 'groups', groupId, 'posts', newPostRef.id, 'problems')
+              collection(
+                firestore,
+                'groups',
+                groupId,
+                'posts',
+                newPostRef.id,
+                'problems'
+              )
             );
             batch.set(newProblemRef, { ...problem });
           }
@@ -132,7 +162,8 @@ export default function PostExportAllModal(props: {
                       Export All Posts
                     </Dialog.Title>
                     <div className="mt-2 text-gray-500">
-                      Please select the groups you would like to export all posts to.
+                      Please select the groups you would like to export all
+                      posts to.
                       <div className="block">
                         {groups.isSuccess &&
                           (groups.data && groups.data.length > 0 ? (
@@ -144,7 +175,9 @@ export default function PostExportAllModal(props: {
                                     <input
                                       type="checkbox"
                                       className="form-checkbox"
-                                      onChange={() => handleGroupExportChange(group)}
+                                      onChange={() =>
+                                        handleGroupExportChange(group)
+                                      }
                                     />
                                     <span className="ml-2 text-gray-500">
                                       {group.name}
@@ -190,4 +223,3 @@ export default function PostExportAllModal(props: {
 class MapData {
   constructor(public used: boolean, public group: GroupData) {}
 }
-
