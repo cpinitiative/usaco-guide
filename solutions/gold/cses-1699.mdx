@@ -1,0 +1,119 @@
+---
+id: cses-1699
+source: CSES
+title: Flight Route Requests
+author: Mihnea Brebenel
+---
+
+## Explanation
+
+We can determine the answer for each individual connected component of the graph consisting of routes that should be possible. Let $\texttt{sz}$ denote the size of the connected component. There are always two optimal constructions of the graph for a connected component:
+
+- If there are no cycles, the nodes can be arranged in a continuous chain, using  $\texttt{sz}-1$ edges.
+- If there is a cycle, the nodes can be arranged in a cycle, using $\texttt{sz}$ edges.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N \cdot \log^*{N})$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp 
+#include <functional>
+#include <iostream>
+#include <vector>
+#include <map>
+
+using namespace std;
+
+// BeginCodeSnip{DSU Template}
+class DisjointSets {
+  private:
+	vector<int> parents;
+	vector<int> sizes;
+
+  public:
+	DisjointSets(int size) : parents(size), sizes(size, 1) {
+		for (int i = 0; i < size; i++) { parents[i] = i; }
+	}
+
+	/** @return the "representative" node in x's component */
+	int find(int x) {
+		return parents[x] == x ? x : (parents[x] = find(parents[x]));
+	}
+
+	/** @return whether the merge changed connectivity */
+	bool unite(int x, int y) {
+		int x_root = find(x);
+		int y_root = find(y);
+		if (x_root == y_root) { return false; }
+
+		if (sizes[x_root] < sizes[y_root]) { swap(x_root, y_root); }
+		sizes[x_root] += sizes[y_root];
+		parents[y_root] = x_root;
+		return true;
+	}
+
+	/** @return whether x and y are in the same connected component */
+	bool connected(int x, int y) { return find(x) == find(y); }
+};
+// EndCodeSnip
+
+int main() { 
+    int n, m;
+    cin >> n >> m;
+    DisjointSets dsu(n);
+    vector<vector<int>> g(n), t(n);
+    for(int i = 0; i < m; i++) {
+        int x, y;
+        cin >> x >> y;
+        x--; y--;
+        dsu.unite(x, y);
+        g[x].push_back(y);        
+    }
+
+    // Compute connected components
+    map<int, int> id;
+    int components = 0;
+    for(int i = 0; i < n; i++) {
+        int node = dsu.find(i);
+        if(!id.count(node)) { id[node] = components++; }
+        t[id[node]].push_back(i);
+    }
+
+    // Check for cycles
+    vector<int> seen(n);
+    function<bool(int)> dfs = [&](int node) -> bool {
+        seen[node] = -1;
+        bool flag = false;
+        for(int son : g[node]) {
+            if(seen[son] == -1) {
+                return true;
+            } 
+            flag |= dfs(son);
+        }
+        seen[node] = 1;
+        return flag;
+    };
+
+    int ans = 0;
+    for(int i = 0; i < components; i++) {
+        int sz = (int)t[i].size();
+        bool has_cycle = false;
+        for(int node : t[i]) {
+            if(!has_cycle && seen[node] == 0) {
+                has_cycle |= dfs(node);
+            }
+        }
+        ans += (has_cycle ? sz : sz - 1);
+    }
+    cout << ans << '\n';
+
+    return 0;
+}
+
+```
+
+</CPPSection>
+</LanguageSection>
