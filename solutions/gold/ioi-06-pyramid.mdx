@@ -86,6 +86,7 @@ int main() {
 			}
 			rmq.push_back({col_best[j].front(), j});
 		}
+
 		// iterating over our chosen pyramid and finding the best answer
 		for (int j = 1; j + b - 1 <= m; j++) {
 			// computing the answer for this pyramid location
@@ -102,6 +103,7 @@ int main() {
 			}
 			rmq.push_back({col_best[nxt].front(), nxt});
 		}
+
 		// updating the col_best array for our next iteration
 		for (int j = 2; j + d - 1 < m; j++) {
 			if (!col_best[j].empty() && col_best[j].front() <= i + 1) {
@@ -115,6 +117,7 @@ int main() {
 			col_best[j].push_back(nxt);
 		}
 	}
+
 	swap(res[1], res[2]);
 	swap(res[3], res[4]);
 	for (int i = 1; i < 5; i++) { cout << res[i] << " \n"[i % 2 == 0]; }
