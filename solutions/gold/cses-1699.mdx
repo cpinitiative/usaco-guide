@@ -19,11 +19,11 @@ We can determine the answer for each individual connected component of the graph
 <LanguageSection>
 <CPPSection>
 
-```cpp 
+```cpp
 #include <functional>
 #include <iostream>
-#include <vector>
 #include <map>
+#include <vector>
 
 using namespace std;
 
@@ -60,59 +60,55 @@ class DisjointSets {
 };
 // EndCodeSnip
 
-int main() { 
-    int n, m;
-    cin >> n >> m;
-    DisjointSets dsu(n);
-    vector<vector<int>> g(n), t(n);
-    for(int i = 0; i < m; i++) {
-        int x, y;
-        cin >> x >> y;
-        x--; y--;
-        dsu.unite(x, y);
-        g[x].push_back(y);        
-    }
+int main() {
+	int n, m;
+	cin >> n >> m;
+	DisjointSets dsu(n);
+	vector<vector<int>> g(n), t(n);
+	for (int i = 0; i < m; i++) {
+		int x, y;
+		cin >> x >> y;
+		x--;
+		y--;
+		dsu.unite(x, y);
+		g[x].push_back(y);
+	}
 
-    // Compute connected components
-    map<int, int> id;
-    int components = 0;
-    for(int i = 0; i < n; i++) {
-        int node = dsu.find(i);
-        if(!id.count(node)) { id[node] = components++; }
-        t[id[node]].push_back(i);
-    }
+	// Compute connected components
+	map<int, int> id;
+	int components = 0;
+	for (int i = 0; i < n; i++) {
+		int node = dsu.find(i);
+		if (!id.count(node)) { id[node] = components++; }
+		t[id[node]].push_back(i);
+	}
 
-    // Check for cycles
-    vector<int> seen(n);
-    function<bool(int)> dfs = [&](int node) -> bool {
-        seen[node] = -1;
-        bool flag = false;
-        for(int son : g[node]) {
-            if(seen[son] == -1) {
-                return true;
-            } 
-            flag |= dfs(son);
-        }
-        seen[node] = 1;
-        return flag;
-    };
+	// Check for cycles
+	vector<int> seen(n);
+	function<bool(int)> dfs = [&](int node) -> bool {
+		seen[node] = -1;
+		bool flag = false;
+		for (int son : g[node]) {
+			if (seen[son] == -1) { return true; }
+			flag |= dfs(son);
+		}
+		seen[node] = 1;
+		return flag;
+	};
 
-    int ans = 0;
-    for(int i = 0; i < components; i++) {
-        int sz = (int)t[i].size();
-        bool has_cycle = false;
-        for(int node : t[i]) {
-            if(!has_cycle && seen[node] == 0) {
-                has_cycle |= dfs(node);
-            }
-        }
-        ans += (has_cycle ? sz : sz - 1);
-    }
-    cout << ans << '\n';
+	int ans = 0;
+	for (int i = 0; i < components; i++) {
+		int sz = (int)t[i].size();
+		bool has_cycle = false;
+		for (int node : t[i]) {
+			if (!has_cycle && seen[node] == 0) { has_cycle |= dfs(node); }
+		}
+		ans += (has_cycle ? sz : sz - 1);
+	}
+	cout << ans << '\n';
 
-    return 0;
+	return 0;
 }
-
 ```
 
 </CPPSection>
