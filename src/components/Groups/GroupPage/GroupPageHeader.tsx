@@ -7,11 +7,13 @@ import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import { useGroupActions } from '../../../hooks/groups/useGroupActions';
 import { usePostActions } from '../../../hooks/groups/usePostActions';
 import { GroupData, isUserAdminOfGroup } from '../../../models/groups/groups';
+import PostExportAllModal from './PostExportAllModal';
 
 export default function GroupPageHeader(props: { group: GroupData }) {
   const { leaveGroup } = useGroupActions();
   const { createNewPost } = usePostActions(props.group?.id);
   const [isActionsOpen, setIsActionsOpen] = useState(false);
+  const [showExportModal, setShowExportModal] = useState(false); 
   const { showAdminView, setInStudentView } = useActiveGroup();
   const firebaseUser = useFirebaseUser();
   const ref = useRef<HTMLDivElement>(null);
@@ -24,6 +26,10 @@ export default function GroupPageHeader(props: { group: GroupData }) {
     document.addEventListener('mousedown', handleClick);
     return () => document.removeEventListener('mousedown', handleClick);
   }, []);
+
+  const handleExportAllPosts = () => {
+    setShowExportModal(true); 
+  };
 
   return (
     <header className="py-6 sm:py-12 bg-gradient-to-r from-light-blue-800 to-cyan-600">
@@ -129,17 +135,26 @@ export default function GroupPageHeader(props: { group: GroupData }) {
                 )}
                 {firebaseUser &&
                   isUserAdminOfGroup(props.group, firebaseUser.uid) && (
-                    <button
-                      type="button"
-                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
-                      onClick={() => {
-                        setInStudentView(showAdminView);
-                      }}
-                    >
-                      {showAdminView
-                        ? 'Enter Student View'
-                        : 'Exit Student View'}
-                    </button>
+                    <>
+                      <button
+                        type="button"
+                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
+                        onClick={() => {
+                          setInStudentView(showAdminView);
+                        }}
+                      >
+                        {showAdminView
+                          ? 'Enter Student View'
+                          : 'Exit Student View'}
+                      </button>
+                      <button
+                        type="button"
+                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
+                        onClick={handleExportAllPosts}
+                      >
+                        Export All Posts
+                      </button>
+                    </>
                   )}
                 <button
                   type="button"
@@ -173,6 +188,14 @@ export default function GroupPageHeader(props: { group: GroupData }) {
           </div>
         </div>
       </div>
+      {showExportModal && (
+        <PostExportAllModal
+          showExportModal={showExportModal}
+          onClose={() => setShowExportModal(false)}
+          group={props.group}
+        />
+      )}
     </header>
   );
 }
+
