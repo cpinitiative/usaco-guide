@@ -14,11 +14,23 @@ We want to find the chamber inside our pyramid's base with the smallest sum of
 heights.
 
 This boils down to doing a 2D range minimum query on every possible upper left
-corner of our chamber. The sliding window approach is as follows: when iterating
-over each row, we maintain an array of monotonic deques for
-each column that allows us to find the best chamber for each column. Then,
-we keep another monotonic deque that keeps track of the best possible result
-from our sliding window of columns.
+corner of our chamber. When iterating over each row, we maintain an array of 
+monotonic deques indexed by column. Each monotonic deque allows us to find the 
+best chamber in the sliding window of rows that can have an upper left corner 
+for a chamber. To maintain our monotonic queue, we pop the front element if 
+its row index is too small to be a suitable chamber. When adding to the back 
+of the monotonic deque, we first pop any elements greater than or equal to this 
+current element. Then, the sliding window minimum is the value at the front of 
+the deque.
+
+Now, when iterating on every column that our pyramid's upper left corner can be 
+at, we maintain a monotonic deque that allows us to find the best chamber possible
+for our pyramid. This monotonic deque keeps track of the best chamber in our sliding
+window of possible columns for our chamber. We maintain it in a similar fashion 
+as described before: pop the front element if its column index 
+is too small, and pop all bigger elements when pushing to the back. This deque 
+is guaranteed to have the best result at the front because the elements
+we are pushing into the deque are the best results in each column.
 
 Note that in order to achieve $\mathcal{O}(NM)$ time complexity, 2D prefix sums
 are required.
@@ -83,7 +95,7 @@ int main() {
 		// initializing the sliding window
 		for (int j = 2; j + d - 1 < b; j++) {
 			while (!rmq.empty() && c_sum(col_best[j].front(), j) <=
-			                           c_sum(rmq.back()[0], rmq.back()[1])) {
+			                       c_sum(rmq.back()[0], rmq.back()[1])) {
 				rmq.pop_back();
 			}
 			rmq.push_back({col_best[j].front(), j});
@@ -100,7 +112,7 @@ int main() {
 			int nxt = j + b - d;
 			if (nxt + d - 1 >= m) { break; }
 			while (!rmq.empty() && c_sum(col_best[nxt].front(), nxt) <=
-			                           c_sum(rmq.back()[0], rmq.back()[1])) {
+			                       c_sum(rmq.back()[0], rmq.back()[1])) {
 				rmq.pop_back();
 			}
 			rmq.push_back({col_best[nxt].front(), nxt});
