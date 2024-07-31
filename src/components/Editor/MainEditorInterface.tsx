@@ -158,7 +158,7 @@ export const MainEditorInterface = ({ className }): JSX.Element => {
             label: 'Insert Code',
             contextMenuGroupId: 'navigation',
             run: function (ed) {
-              ed.trigger('keyboard', 'type', {
+              ed.trigger('keyboard', 'paste', {
                 text: `
 <LanguageSection>
 
