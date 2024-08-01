@@ -61,9 +61,7 @@ struct DSU {
 		iota(par.begin(), par.end(), 0);
 
 		comp = vector<list<int>>(n);
-		for (int i = 0; i < n; i++) {
-			comp[i].push_back(i);
-		}
+		for (int i = 0; i < n; i++) { comp[i].push_back(i); }
 	}
 
 	// get root (uses path compression)
@@ -73,27 +71,19 @@ struct DSU {
 		int intermediate = grid[x];
 		x = get(x), y = get(y);
 
-		if (x == y) {
-			return;
-		}
+		if (x == y) { return; }
 
-		if (grid[x] > grid[y]) {
-			swap(x, y);
-		}
+		if (grid[x] > grid[y]) { swap(x, y); }
 
 		if (grid[y] > grid[x]) {
 			// we have the answer for the smaller component
-			for (int &i : comp[x]) {
-				ans[i] = grid[i] - intermediate;
-			}
+			for (int &i : comp[x]) { ans[i] = grid[i] - intermediate; }
 
 			comp[x].clear();
 			par[x] = y;
 		} else if (grid[x] == grid[y]) {
 			// merge the two components (small to large)
-			if ((int)comp[x].size() < (int)comp[y].size()) {
-				swap(x, y);
-			}
+			if ((int)comp[x].size() < (int)comp[y].size()) { swap(x, y); }
 
 			comp[x].splice(comp[x].end(), comp[y]);
 			comp[y].clear();
@@ -130,16 +120,16 @@ int main() {
 
 		// check all processed adjacent cells
 		if (idx % m != 0 && grid[idx - 1] >= grid[idx]) {
-			dsu.unite(idx, idx - 1, grid, ans); // on left
+			dsu.unite(idx, idx - 1, grid, ans);  // on left
 		}
 		if (idx >= m && grid[idx - m] >= grid[idx]) {
-			dsu.unite(idx, idx - m, grid, ans); // on top
+			dsu.unite(idx, idx - m, grid, ans);  // on top
 		}
 		if (idx % m != m - 1 && grid[idx + 1] >= grid[idx]) {
-			dsu.unite(idx, idx + 1, grid, ans); // on right
+			dsu.unite(idx, idx + 1, grid, ans);  // on right
 		}
 		if (idx < (n * m) - m && grid[idx + m] >= grid[idx]) {
-			dsu.unite(idx, idx + m, grid, ans); // on bottom
+			dsu.unite(idx, idx + m, grid, ans);  // on bottom
 		}
 	}
 
