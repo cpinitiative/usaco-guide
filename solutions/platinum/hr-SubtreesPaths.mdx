@@ -142,27 +142,23 @@ int T, head[MAX_N], st[MAX_N], en[MAX_N];
 int n;
 
 void dfs_hld(int u, int chain) {
-    int k = 0;
-    T++;
-    st[u] = T;
-    head[u] = chain;
-    for (int v : adj[u]) {
-        if (dep[v] > dep[u] and sz[v] > sz[k]) {
-            k = v;
-        }
-    }
+	int k = 0;
+	T++;
+	st[u] = T;
+	head[u] = chain;
+	for (int v : adj[u]) {
+		if (dep[v] > dep[u] and sz[v] > sz[k]) { k = v; }
+	}
 
-    if (k == 0) {
-        en[u] = T;
-        return;
-    }
-    dfs_hld(k, chain);
-    for (int v : adj[u]) {
-        if (dep[v] > dep[u] and k != v) {
-            dfs_hld(v, v);
-        }
-    }
-    en[u] = T;
+	if (k == 0) {
+		en[u] = T;
+		return;
+	}
+	dfs_hld(k, chain);
+	for (int v : adj[u]) {
+		if (dep[v] > dep[u] and k != v) { dfs_hld(v, v); }
+	}
+	en[u] = T;
 }
 
 /** @return maximum value on the path from u to the root of the chain containing v
