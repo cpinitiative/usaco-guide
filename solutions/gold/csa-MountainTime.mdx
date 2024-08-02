@@ -52,16 +52,15 @@ To simplify the process, we'll root each component at its maximal cell and store
 #include <bits/stdc++.h>
 using namespace std;
 
-// BeginCodeSnip{DSU}
 struct DSU {
 	vector<int> par;
-	vector<vector<int>> comp;
+	vector<list<int>> comp;
 	DSU(int n) {
 		par = vector<int>(n);
 		// every node is its own parent initially
 		iota(par.begin(), par.end(), 0);
 
-		comp = vector<vector<int>>(n);
+		comp = vector<list<int>>(n);
 		for (int i = 0; i < n; i++) { comp[i].push_back(i); }
 	}
 
@@ -77,10 +76,12 @@ struct DSU {
 		if (grid[x] > grid[y]) { swap(x, y); }
 
 		if (grid[y] > grid[x]) {
-			// we have the answer for the smaller component
-			for (int &i : comp[x]) {
-				ans[i] = intermediate > grid[i] ? 0 : grid[i] - intermediate;
-			}
+			/*
+			 * since every element in comp[x] < comp[y] and they're connected by
+			 * intermediate, we can set the answer for all elements in this
+			 * component.
+			 */
+			for (int i : comp[x]) { ans[i] = grid[i] - intermediate; }
 
 			comp[x].clear();
 			par[x] = y;
@@ -88,13 +89,11 @@ struct DSU {
 			// merge the two components (small to large)
 			if ((int)comp[x].size() < (int)comp[y].size()) { swap(x, y); }
 
-			for (int &i : comp[y]) { comp[x].push_back(i); }
-			comp[y].clear();
+			comp[x].splice(comp[x].end(), comp[y]);
 			par[y] = x;
 		}
 	}
 };
-// EndCodeSnip
 
 int main() {
 	int n, m;
@@ -149,5 +148,4 @@ int main() {
 
 </CPPSection>
 </LanguageSection>
-
 </Spoiler>
