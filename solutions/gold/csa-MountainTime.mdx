@@ -76,7 +76,10 @@ struct DSU {
 		if (grid[x] > grid[y]) { swap(x, y); }
 
 		if (grid[y] > grid[x]) {
-			// we have the answer for the smaller component
+			/*
+			 * since every element in comp[x] < comp[y] and they're connected by
+			 * intermediate, we can set the answer for all elements in this component.
+			 */
 			for (int i : comp[x]) { ans[i] = grid[i] - intermediate; }
 
 			comp[x].clear();
