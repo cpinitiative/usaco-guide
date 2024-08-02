@@ -96,6 +96,7 @@ struct LST {
 vector<int> adj[MAX_N];
 int par[MAX_N][LG + 1], dep[MAX_N], sz[MAX_N];
 
+// compute the size of each subtree and set parent relationships
 void dfs_sz(int u, int p = 0) {
 	par[u][0] = p;
 	dep[u] = dep[p] + 1;
@@ -111,6 +112,7 @@ void dfs_sz(int u, int p = 0) {
 	}
 }
 
+/** @return lowest common ancestor of nodes $u$ and $v$ */
 int lca(int u, int v) {
 	if (dep[u] < dep[v]) { swap(u, v); }
 	for (int k = LG; k >= 0; k--) {
@@ -163,6 +165,7 @@ void dfs_hld(int u, int chain) {
     en[u] = T;
 }
 
+/** @return maximum value on the path from u to the root of the chain containing v
 int query_up(int u, int v) {
 	int res = -INF;
 	while (head[u] != head[v]) {
@@ -173,6 +176,7 @@ int query_up(int u, int v) {
 	return res;
 }
 
+/** @return  maximum value on the path from u to v  */
 int query(int u, int v) {
 	int l = lca(u, v);
 	int res = query_up(u, l);
