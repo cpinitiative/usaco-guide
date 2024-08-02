@@ -74,7 +74,6 @@ class HashedString {
 	vector<long long> p_hash;
 
   public:
-	HashedString() {}
 	HashedString(const string &s) : p_hash(s.size() + 1) {
 		while (pow.size() <= s.size()) { pow.push_back((pow.back() * B) % M); }
 
@@ -114,28 +113,27 @@ int main() {
 				}
 			}
 		} else {
-			vector<HashedString> hashed(n);
-			for (int i = 0; i < n; i++) { hashed[i] = HashedString(s[i]); }
+			vector<HashedString> hashed;
+			for (int i = 0; i < n; i++) { hashed.push_back(HashedString(s[i])); }
 
 			for (int i = 0; i < k; i++) {
 				for (int j = i + 1; j < k; j++) {
-					vector<array<long long, 4>> intervals(n);
+					vector<array<long long, 4>> hashes(n);
 					for (int x = 0; x < n; x++) {
 						long long hash_1 = hashed[x].get_hash(0, i - 1);
 						long long hash_2 = hashed[x].get_hash(i + 1, j - 1);
 						long long hash_3 = hashed[x].get_hash(j + 1, k - 1);
-						intervals[x] = {hash_1, hash_2, hash_3, x};
+						hashes[x] = {hash_1, hash_2, hash_3, x};
 					}
 
-					sort(begin(intervals), end(intervals));
+					sort(begin(hashes), end(hashes));
 					for (int x = 1; x < n; x++) {
 						bool works = true;
 						for (int y = 0; y < 3; y++) {
-							works &= intervals[x - 1][y] == intervals[x][y];
+							works &= hashes[x - 1][y] == hashes[x][y];
 						}
 						if (works) {
-							res[intervals[x - 1][3]] = res[intervals[x][3]] =
-							    true;
+							res[hashes[x - 1][3]] = res[hashes[x][3]] = true;
 						}
 					}
 				}
