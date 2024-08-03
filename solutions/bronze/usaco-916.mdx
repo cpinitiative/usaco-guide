@@ -285,5 +285,66 @@ print("".join(map(str, ans)))
 ```
 
 </PySection>
+
+<CPPSection>
+
+```cpp
+
+#include <cstdio>
+#include <bits/stdc++.h>
+
+using namespace std;
+
+
+int main(){
+
+  freopen("revegetate.in","r",stdin);
+  freopen("revegetate.out", "w", stdout);
+
+  int n,m; cin >> n >> m;
+  vector<int> colours(n, 1); //set current pasture colours to 1
+  vector<int> adj[n];
+
+  // take input
+  for(int i = 0; i < m; i++){
+    int a,b; cin >> a >> b;
+    a--; b--;
+    adj[a].push_back(b);
+    adj[b].push_back(a);
+  }
+
+  //start from lowest digit and increment up
+  for(int i = 0; i < n; i++){
+    for(int k: adj[i]){
+      // if connected pasture has the same colour
+      // then increment the colour of the connected pasture as
+      // it has the higher digit in the final answer
+      if(colours[k] == colours[i]){
+        colours[k]++;
+
+        // check for if this is change impacts the colourings of the previous pastures
+        // since the solution was valid before the current node i and j is not equal to i (since j < i)
+        // g must then be equal to k and so we increment k, since k > i > j
+        for(int j = 0; j < i; j++){
+          for(int g: adj[j]){
+            if(colours[g] == colours[j]) colours[k]++;
+          }
+        }
+
+      }
+    }
+  }
+
+  // print out solution
+  for(int i: colours){
+    cout << i;
+  }
+  cout << "\n";
+}
+
+```
+
+</CPPSection>
+
 </LanguageSection>
 </Spoiler>
