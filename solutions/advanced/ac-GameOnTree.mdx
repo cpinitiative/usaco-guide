@@ -36,26 +36,10 @@ This makes sense because whichever edge that Alice chooses, Bob can choose the o
 <CPPSection>
 
 ```cpp
+#include <functional>
 #include <iostream>
 #include <vector>
-
 using namespace std;
-
-const int N = 1e5 + 5;
-vector<vector<int>> g(N);
-
-int dfs(int u, int p = 0) {
-	int sg = 0;
-	for (int v : g[u])
-		if (v ^ p) {
-			/*
-			 * Adding 1 because the edge from u to v increases the size of
-			 * each stack by 1
-			 */
-			sg ^= dfs(v, u) + 1;
-		}
-	return sg;
-}
 
 int main() {
 	int n;
@@ -67,7 +51,19 @@ int main() {
 		g[u].push_back(v);
 		g[v].push_back(u);
 	}
-	cout << (dfs(1) ? "Alice" : "Bob") << endl;
+	function<int(int, int)> dfs = [&] (int u, int p) {
+		int sg = 0;
+		for (int v : g[u])
+			if (v ^ p) {
+				/*
+				 * Adding 1 because the edge from u to v increases the size of
+				 * each stack by 1
+				 */
+				sg ^= dfs(v, u) + 1;
+			}
+		return sg;
+	};
+	cout << (dfs(1, 0) ? "Alice" : "Bob") << endl;
 }
 ```
 </CPPSection>
