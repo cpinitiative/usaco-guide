@@ -51,9 +51,10 @@ int main() {
 		g[u].push_back(v);
 		g[v].push_back(u);
 	}
+
 	function<int(int, int)> dfs = [&](int u, int p) {
 		int sg = 0;
-		for (int v : g[u])
+		for (int v : g[u]) {
 			if (v ^ p) {
 				/*
 				 * Adding 1 because the edge from u to v increases the size of
@@ -61,8 +62,10 @@ int main() {
 				 */
 				sg ^= dfs(v, u) + 1;
 			}
+		}
 		return sg;
 	};
+
 	cout << (dfs(1, 0) ? "Alice" : "Bob") << endl;
 }
 ```
