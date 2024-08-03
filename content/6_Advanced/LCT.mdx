@@ -56,103 +56,103 @@ When a node in a splay tree is accessed, a splay operation is performed on the n
 #include <vector>
 using namespace std;
 
-typedef struct Node * T;
+typedef struct Node *T;
 struct Node {
-  int val;
-  T l = nullptr, r = nullptr;
-  // search stack -> will allow us to find parents of nodes without explicitly storing them
-  static inline vector<T> st = {};
-  // performs a single rotation
-  void rotate(T p, T g) {
-    assert(this == p->l || this == p->r);
-    if (this == p->l) p->l = r, r = p;
-    else p->r = l, l = p;
-    if (g) {
-      if (p == g->l) g->l = this;
-      else g->r = this;
-    }
-  }
-  // gets top of search stack, which will contain the path from root (bottom) to the current node (top)
-  T top() {
-    if (!st.size()) return nullptr;
-    T x = st.back(); st.pop_back();
-    return x;
-  }
-  // performs a single splay-step
-  bool step() {
-    T x = top(), p = top(), g = top(), a = top();
-    if (!p) return false;
-    assert(x == this && p);
-    if (!g) rotate(p, g);
-    else if ((this == p->l) == (p == g->l)) p->rotate(g, a), rotate(p, a);
-    else rotate(p, g), rotate(g, a);
-    if (a) st.push_back(a);
-    st.push_back(x);
-    assert(!a || a->l == x || a->r == x);
-    return true;
-  }
-  T splay(int x) { // splays and returns new root
-    st.push_back(this);
-    if (x < val) return l->splay(x);
-    else if (x > val) return r->splay(x);
-    else { // we found the element, so splay it up to root
-      while (step());
-      return this;
-    }
-  }
-  void insert(int x) {
-	  T &c = (x < val ? l : r);
-	  if (!c) c = new Node{x}; 
-    else if (x != val) c->insert(x);
-  }
-  // gets max value in this subtree
-  int max() {
-    return ::max({l ? l->max() : 0, r ? r->max() : 0, val});
-  }
-  friend ostream& operator<<(ostream& os, T s) {
-    if (!s) return os;
-    os << s->l;
-    os << s->val << " ";
-    return os << s->r;
-  }
+	int val;
+	T l = nullptr, r = nullptr;
+	// search stack -> will allow us to find parents of nodes without explicitly
+	// storing them
+	static inline vector<T> st = {};
+	// performs a single rotation
+	void rotate(T p, T g) {
+		assert(this == p->l || this == p->r);
+		if (this == p->l) p->l = r, r = p;
+		else p->r = l, l = p;
+		if (g) {
+			if (p == g->l) g->l = this;
+			else g->r = this;
+		}
+	}
+	// gets top of search stack, which will contain the path from root (bottom)
+	// to the current node (top)
+	T top() {
+		if (!st.size()) return nullptr;
+		T x = st.back();
+		st.pop_back();
+		return x;
+	}
+	// performs a single splay-step
+	bool step() {
+		T x = top(), p = top(), g = top(), a = top();
+		if (!p) return false;
+		assert(x == this && p);
+		if (!g) rotate(p, g);
+		else if ((this == p->l) == (p == g->l)) p->rotate(g, a), rotate(p, a);
+		else rotate(p, g), rotate(g, a);
+		if (a) st.push_back(a);
+		st.push_back(x);
+		assert(!a || a->l == x || a->r == x);
+		return true;
+	}
+	T splay(int x) {  // splays and returns new root
+		st.push_back(this);
+		if (x < val) return l->splay(x);
+		else if (x > val) return r->splay(x);
+		else {  // we found the element, so splay it up to root
+			while (step());
+			return this;
+		}
+	}
+	void insert(int x) {
+		T &c = (x < val ? l : r);
+		if (!c) c = new Node{x};
+		else if (x != val) c->insert(x);
+	}
+	// gets max value in this subtree
+	int max() { return ::max({l ? l->max() : 0, r ? r->max() : 0, val}); }
+	friend ostream &operator<<(ostream &os, T s) {
+		if (!s) return os;
+		os << s->l;
+		os << s->val << " ";
+		return os << s->r;
+	}
 };
 
 struct Splay {
 	T root = nullptr;
-	void splay(int x) { 
-	  // make sure search stack is emtpy
-	  assert(!Node::st.size()); 
-	  root = root->splay(x); 
+	void splay(int x) {
+		// make sure search stack is emtpy
+		assert(!Node::st.size());
+		root = root->splay(x);
 	}
 	void insert(int x) {
-    if (!root) root = new Node{x};
-    else {
-      root->insert(x);
-      splay(x);
-    }
-  }
-  Splay join(Splay o) {
-    if (!root) return root = o.root, *this;
-    splay(root->max());
-    root->r = o.root;
-    return *this;
-  }
-  void del(int i) {
-    splay(i);
-    root = Splay{root->l}.join(Splay{root->r}).root;
-  }
-  friend ostream& operator<<(ostream& os, Splay s) { return os << s.root; }
+		if (!root) root = new Node{x};
+		else {
+			root->insert(x);
+			splay(x);
+		}
+	}
+	Splay join(Splay o) {
+		if (!root) return root = o.root, *this;
+		splay(root->max());
+		root->r = o.root;
+		return *this;
+	}
+	void del(int i) {
+		splay(i);
+		root = Splay{root->l}.join(Splay{root->r}).root;
+	}
+	friend ostream &operator<<(ostream &os, Splay s) { return os << s.root; }
 } splay;
 
 int main() {
-  cin.tie(0)->sync_with_stdio(0);
-  for (int i = 1; i <= 10; i++) splay.insert(i);
-  cout << splay << endl; // 1 2 3 4 5 6 7 8 9 10 
-  splay.del(3); 
-  splay.del(7);
-  cout << splay << endl; // 1 2 4 5 6 8 9 10
+	cin.tie(0)->sync_with_stdio(0);
+	for (int i = 1; i <= 10; i++) splay.insert(i);
+	cout << splay << endl;  // 1 2 3 4 5 6 7 8 9 10
+	splay.del(3);
+	splay.del(7);
+	cout << splay << endl;  // 1 2 4 5 6 8 9 10
 }
-
 ```
 </CPPSection>
 </LanguageSection>
@@ -216,179 +216,191 @@ struct mint {
 // EndCodeSnip
 
 struct Line {
-  mint w = 1, b = 0;
-  mint operator()(mint x) { return w * x + b; }
-  Line operator()(Line f) { return Line{w * f.w, w * f.b + b}; }
-  operator bool() const { return w.v != 1 || b.v != 0; }
+	mint w = 1, b = 0;
+	mint operator()(mint x) { return w * x + b; }
+	Line operator()(Line f) { return Line{w * f.w, w * f.b + b}; }
+	operator bool() const { return w.v != 1 || b.v != 0; }
 };
 
-typedef struct Node * T;
+typedef struct Node *T;
 struct Node {
-  mint val, s; // value, sum
-  int sz;
-  T l, r;
-  Line f;
-  bool rev;
-  // search stack -> will allow us to find parents of nodes without explicitly storing them
-  static inline vector<T> st = {};
-  Node(ll v, T l = nullptr, T r = nullptr) : val(v), s(v), sz(0), l(l), r(r), rev(false) { pull(); }
-  static int size(T x) { return x ? x->sz : 0; }
-  static mint sum(T x) { return x ? x->s : 0; }
-  void push() {
-    if (rev) {
-      rev = false;
-      swap(l, r);
-      if (l) l->rev ^= true;
-      if (r) r->rev ^= true;
-    }
-    if (f) {
-      val = f(val);
-      s = f.w * s + f.b * sz;
-      if (l) l->f = f(l->f);
-      if (r) r->f = f(r->f);
-      f = Line{1, 0};
-    }
-  }
-  void pull() {
-    assert(!f);
-    if (l) l->push();
-    if (r) r->push();
-    sz = size(l) + size(r) + 1;
-    s = sum(l) + sum(r) + val;
-  }
-  void rotate(T p, T g) {
-    int o = p->sz;
-    p->push(), push();
-    assert(this == p->l || this == p->r);
-    if (this == p->l) p->l = r, r = p;
-    else p->r = l, l = p;
-    if (g) {
-      if (p == g->l) g->l = this;
-      else g->r = this;
-    }
-    p->pull(), pull();
-    assert(sz == o);
-  }
-  T top() {
-    if (!st.size()) return nullptr;
-    T x = st.back(); st.pop_back();
-    return x;
-  }
-  bool step() {
-    T x = top(), p = top(), g = top(), a = top();
-    if (!p) return false;
-    assert(x == this && p);
-    if (!g) rotate(p, g);
-    else if ((this == p->l) == (p == g->l)) p->rotate(g, a), rotate(p, a);
-    else rotate(p, g), rotate(g, a);
-    if (a) st.push_back(a);
-    st.push_back(x);
-    assert(!a || a->l == x || a->r == x);
-    return true;
-  }
-  T splay(int x) { // splays and returns new root
-    st.push_back(this);
-    push();
-    assert(x < sz);
-    if (x < size(l)) return l->splay(x);
-    else if (x > size(l)) return r->splay(x - size(l) - 1);
-    else { // we found the element
-      while (step());
-      return this;
-    }
-  }
-  friend ostream& operator<<(ostream& os, T s) {
-    if (!s) return os;
-    os << s->l;
-    os << s->val << " ";
-    return os << s->r;
-  }
+	mint val, s;  // value, sum
+	int sz;
+	T l, r;
+	Line f;
+	bool rev;
+	// search stack -> will allow us to find parents of nodes without explicitly
+	// storing them
+	static inline vector<T> st = {};
+	Node(ll v, T l = nullptr, T r = nullptr)
+	    : val(v), s(v), sz(0), l(l), r(r), rev(false) {
+		pull();
+	}
+	static int size(T x) { return x ? x->sz : 0; }
+	static mint sum(T x) { return x ? x->s : 0; }
+	void push() {
+		if (rev) {
+			rev = false;
+			swap(l, r);
+			if (l) l->rev ^= true;
+			if (r) r->rev ^= true;
+		}
+		if (f) {
+			val = f(val);
+			s = f.w * s + f.b * sz;
+			if (l) l->f = f(l->f);
+			if (r) r->f = f(r->f);
+			f = Line{1, 0};
+		}
+	}
+	void pull() {
+		assert(!f);
+		if (l) l->push();
+		if (r) r->push();
+		sz = size(l) + size(r) + 1;
+		s = sum(l) + sum(r) + val;
+	}
+	void rotate(T p, T g) {
+		int o = p->sz;
+		p->push(), push();
+		assert(this == p->l || this == p->r);
+		if (this == p->l) p->l = r, r = p;
+		else p->r = l, l = p;
+		if (g) {
+			if (p == g->l) g->l = this;
+			else g->r = this;
+		}
+		p->pull(), pull();
+		assert(sz == o);
+	}
+	T top() {
+		if (!st.size()) return nullptr;
+		T x = st.back();
+		st.pop_back();
+		return x;
+	}
+	bool step() {
+		T x = top(), p = top(), g = top(), a = top();
+		if (!p) return false;
+		assert(x == this && p);
+		if (!g) rotate(p, g);
+		else if ((this == p->l) == (p == g->l)) p->rotate(g, a), rotate(p, a);
+		else rotate(p, g), rotate(g, a);
+		if (a) st.push_back(a);
+		st.push_back(x);
+		assert(!a || a->l == x || a->r == x);
+		return true;
+	}
+	T splay(int x) {  // splays and returns new root
+		st.push_back(this);
+		push();
+		assert(x < sz);
+		if (x < size(l)) return l->splay(x);
+		else if (x > size(l)) return r->splay(x - size(l) - 1);
+		else {  // we found the element
+			while (step());
+			return this;
+		}
+	}
+	friend ostream &operator<<(ostream &os, T s) {
+		if (!s) return os;
+		os << s->l;
+		os << s->val << " ";
+		return os << s->r;
+	}
 };
 
 struct Splay {
-  T root = nullptr;
-  void splay(int x) { assert(!Node::st.size()); root = root->splay(x); }
-  auto split(int i) { // splits into {[0, i), [i, )}
-    if (i == (root ? root->sz : 0)) return make_pair(Splay{root}, Splay{nullptr});
-    splay(i);
-    T l = root->l;
-    root->l = nullptr;
-    root->pull();
-    return make_pair(Splay{l}, Splay{root});
-  }
-  Splay join(Splay o) {
-    if (!root) return root = o.root, *this;
-    splay(root->sz - 1);
-    root->r = o.root;
-    root->pull();
-    return *this;
-  }
-  void insert(int i, ll x) {
-    auto [l, r] = split(i);
-    root = new Node(x, l.root, r.root);
-  }
-  void del(int i) {
-    splay(i);
-    root = Splay{root->l}.join(Splay{root->r}).root;
-  }
-  mint query(int l, int r) { // query range [l, r)
-    Splay a, b, c;
-    tie(a, b) = split(l);
-    tie(b, c) = b.split(r - l);
-    mint R = b.root->s;
-    root = a.join(b).join(c).root;
-    return R;
-  }
-  void upd(int l, int r, function<void(T)> f) {
-    Splay a, b, c;
-    tie(a, b) = split(l);
-    tie(b, c) = b.split(r - l);
-    f(b.root);
-    root = a.join(b).join(c).root;
-  }
-  friend ostream& operator<<(ostream& os, Splay s) { return os << s.root; }
+	T root = nullptr;
+	void splay(int x) {
+		assert(!Node::st.size());
+		root = root->splay(x);
+	}
+	auto split(int i) {  // splits into {[0, i), [i, )}
+		if (i == (root ? root->sz : 0))
+			return make_pair(Splay{root}, Splay{nullptr});
+		splay(i);
+		T l = root->l;
+		root->l = nullptr;
+		root->pull();
+		return make_pair(Splay{l}, Splay{root});
+	}
+	Splay join(Splay o) {
+		if (!root) return root = o.root, *this;
+		splay(root->sz - 1);
+		root->r = o.root;
+		root->pull();
+		return *this;
+	}
+	void insert(int i, ll x) {
+		auto [l, r] = split(i);
+		root = new Node(x, l.root, r.root);
+	}
+	void del(int i) {
+		splay(i);
+		root = Splay{root->l}.join(Splay{root->r}).root;
+	}
+	mint query(int l, int r) {  // query range [l, r)
+		Splay a, b, c;
+		tie(a, b) = split(l);
+		tie(b, c) = b.split(r - l);
+		mint R = b.root->s;
+		root = a.join(b).join(c).root;
+		return R;
+	}
+	void upd(int l, int r, function<void(T)> f) {
+		Splay a, b, c;
+		tie(a, b) = split(l);
+		tie(b, c) = b.split(r - l);
+		f(b.root);
+		root = a.join(b).join(c).root;
+	}
+	friend ostream &operator<<(ostream &os, Splay s) { return os << s.root; }
 } splay;
 
 int main() {
-  cin.tie(0)->sync_with_stdio(0);
-  int n, q; cin >> n >> q;
-  for (int i = 0; i < n; i++) {
-    int x; cin >> x;
-    splay.insert(i, x);
-  }
-  while (q--) {
-    int t; cin >> t;
-    ll i, x, l, r, w, b;
-    switch (t) {
-      case 0:
-        cin >> i >> x; splay.insert(i, x);
-        break;
-      case 1:
-        cin >> i; splay.del(i);
-        break;
-      case 2:
-        cin >> l >> r;
-        splay.upd(l, r, [](T x) { x->rev ^= true; });
-        break;
-      case 3:
-        cin >> l >> r >> w >> b;
-        splay.upd(l, r, [=](T x) { x->f = Line{w, b}(x->f); });
-        break;
-      case 4:
-        cin >> l >> r;
-        cout << splay.query(l, r) << endl;
-        break;
-    }
-
-  }
+	cin.tie(0)->sync_with_stdio(0);
+	int n, q;
+	cin >> n >> q;
+	for (int i = 0; i < n; i++) {
+		int x;
+		cin >> x;
+		splay.insert(i, x);
+	}
+	while (q--) {
+		int t;
+		cin >> t;
+		ll i, x, l, r, w, b;
+		switch (t) {
+		case 0:
+			cin >> i >> x;
+			splay.insert(i, x);
+			break;
+		case 1:
+			cin >> i;
+			splay.del(i);
+			break;
+		case 2:
+			cin >> l >> r;
+			splay.upd(l, r, [](T x) { x->rev ^= true; });
+			break;
+		case 3:
+			cin >> l >> r >> w >> b;
+			splay.upd(l, r, [=](T x) { x->f = Line{w, b}(x->f); });
+			break;
+		case 4:
+			cin >> l >> r;
+			cout << splay.query(l, r) << endl;
+			break;
+		}
+	}
 }
-
 ```
 
 </CPPSection>
 </LanguageSection>
-  
-  
+
+
 
 ## Link Cut Tree
 
