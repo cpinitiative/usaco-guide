@@ -1,0 +1,142 @@
+---
+id: ioi-06-pyramid
+source: IOI 2006
+title: Pyramid
+author: Justin Ji
+---
+
+[Official Analysis](https://dmoj.ca/problem/ioi06p2/editorial)
+
+## Explanation
+
+Consider iterating over every possible upper left corner of our pyramid's base.
+We want to find the chamber inside our pyramid's base with the smallest sum of
+heights.
+
+This boils down to doing a 2D range minimum query on every possible upper left
+corner of our chamber. When iterating over each row, we maintain an array of
+monotonic deques indexed by column. Each monotonic deque allows us to find the
+best chamber in the sliding window of rows that can have an upper left corner
+for a chamber. To maintain our monotonic queue, we pop the front element if
+its row index is too small to be a suitable chamber. When adding to the back
+of the monotonic deque, we first pop any elements greater than or equal to this
+current element. Then, the sliding window minimum is the value at the front of
+the deque.
+
+Now, when iterating on every column that our pyramid's upper left corner can be
+at, we maintain a monotonic deque that allows us to find the best chamber possible
+for our pyramid. This monotonic deque keeps track of the best chamber in our sliding
+window of possible columns for our chamber. We maintain it in a similar fashion
+as described before: pop the front element if its column index
+is too small, and pop all bigger elements when pushing to the back. This deque
+is guaranteed to have the best result at the front because the elements
+we are pushing into the deque are the best results in each column.
+
+Note that in order to achieve $\mathcal{O}(NM)$ time complexity, 2D prefix sums
+are required.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(NM)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	int m, n, b, a, d, c;
+	cin >> m >> n >> b >> a >> d >> c;
+	vector<vector<int>> grid_sum(n + 1, vector<int>(m + 1));
+	for (int i = 1; i <= n; i++) {
+		for (int j = 1; j <= m; j++) {
+			cin >> grid_sum[i][j];
+			grid_sum[i][j] += grid_sum[i - 1][j] + grid_sum[i][j - 1] -
+			                  grid_sum[i - 1][j - 1];
+		}
+	}
+
+	/** @return sum of rectangle with corners at (r1, c1) and (r2, c2) */
+	const auto rect_sum = [&](int row_1, int col_1, int row_2,
+	                          int col_2) -> int {
+		return grid_sum[row_2][col_2] - grid_sum[row_2][col_1 - 1] -
+		       grid_sum[row_1 - 1][col_2] + grid_sum[row_1 - 1][col_1 - 1];
+	};
+	/** @return sum of pyramid rectangle with upper left corner at (r, c) */
+	const auto p_sum = [&](int row, int col) -> int {
+		return rect_sum(row, col, row + a - 1, col + b - 1);
+	};
+	/** @return sum of chamber rectangle with upper left corner at (r, c) */
+	const auto c_sum = [&](int row, int col) -> int {
+		return rect_sum(row, col, row + c - 1, col + d - 1);
+	};
+
+	// col_best[i] = best chambers from column i
+	vector<deque<int>> col_best(m + 1);
+	for (int i = 2; i + d - 1 < m; i++) {
+		for (int j = 2; j + c - 1 < a; j++) {
+			while (!col_best[i].empty() &&
+			       c_sum(j, i) <= c_sum(col_best[i].front(), i)) {
+				col_best[i].pop_front();
+			}
+			col_best[i].push_back(j);
+		}
+	}
+
+	// res = {sum, pyramid corner, chamber corner}
+	array<int, 5> res = {-1, -1, -1, -1, -1};
+	for (int i = 1; i + a - 1 <= n; i++) {
+		// rmq stores the best chambers from each column in a
+		// monotonic-deque, so we can find the sliding window min
+		deque<array<int, 2>> rmq;
+
+		// initializing the sliding window
+		for (int j = 2; j + d - 1 < b; j++) {
+			while (!rmq.empty() && c_sum(col_best[j].front(), j) <=
+			                           c_sum(rmq.back()[0], rmq.back()[1])) {
+				rmq.pop_back();
+			}
+			rmq.push_back({col_best[j].front(), j});
+		}
+
+		// iterating over our chosen pyramid and finding the best answer
+		for (int j = 1; j + b - 1 <= m; j++) {
+			// computing the answer for this pyramid location
+			const auto [row, col] = rmq.front();
+			int cur = p_sum(i, j) - c_sum(row, col);
+			res = max(res, {cur, i, j, row, col});
+			// updating the RMQ deque for the next iteration
+			if (col == j + 1) { rmq.pop_front(); }
+			int nxt = j + b - d;
+			if (nxt + d - 1 >= m) { break; }
+			while (!rmq.empty() && c_sum(col_best[nxt].front(), nxt) <=
+			                           c_sum(rmq.back()[0], rmq.back()[1])) {
+				rmq.pop_back();
+			}
+			rmq.push_back({col_best[nxt].front(), nxt});
+		}
+
+		// updating the col_best array for our next iteration
+		for (int j = 2; j + d - 1 < m; j++) {
+			if (!col_best[j].empty() && col_best[j].front() <= i + 1) {
+				col_best[j].pop_front();
+			}
+			int nxt = i + a - c;
+			while (!col_best[j].empty() &&
+			       c_sum(nxt, j) <= c_sum(col_best[j].back(), j)) {
+				col_best[j].pop_back();
+			}
+			col_best[j].push_back(nxt);
+		}
+	}
+
+	swap(res[1], res[2]);
+	swap(res[3], res[4]);
+	for (int i = 1; i < 5; i++) { cout << res[i] << " \n"[i % 2 == 0]; }
+}
+```
+
+</CPPSection>
+</LanguageSection>
