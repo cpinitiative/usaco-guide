@@ -2,9 +2,10 @@
 id: link-cut-tree
 redirects:
   - /adv/LCT
-title: 'Link Cut Tree'
+title: Link Cut Tree
 author: Benjamin Qi, Neo Wang, Gabriel Xu
-description: 'Dynamic operations on a rooted forest'
+contributors: Daniel Zhu
+description: Dynamic operations on a rooted forest.
 prerequisites:
   - offline-del
   - treaps
@@ -31,139 +32,45 @@ frequency: 1
 		url="https://www.cs.cmu.edu/~sleator/papers/self-adjusting.pdf"
 	/>
 	<Resource
+		source="CMU"
+		title="Splay Tree Proof"
+		url="https://github.com/Bibeknam/algorithmtutorprograms/blob/master/data-structures/splay-trees/SplayTree.cpp"
+	>
+		Uses less math than standard proof
+	</Resource>
+	<Resource
 		source="GH"
 		title="Splay Tree Implementation"
 		url="https://github.com/Bibeknam/algorithmtutorprograms/blob/master/data-structures/splay-trees/SplayTree.cpp"
 	/>
 </Resources>
 
-A splay tree is a type of self-balancing binary search tree that supports efficient
-implementation of operations such as finding an element, deleting an element,
-splitting a tree, and joining two trees.
+A splay tree is a type of self-balancing binary search tree that supports
+efficient implementation of operations such as finding an element, deleting an
+element, splitting a tree, and joining two trees.
 
-When a node in a splay tree is accessed, a splay operation is performed on the node that moves it to the root of the tree while also roughly balancing the tree.
+When a node in a splay tree is accessed, a splay operation is performed on the
+node that moves it to the root of the tree while also roughly balancing the
+tree. In one splay operation on $x$, the depths of the nodes on the path from
+the root to $x$ are roughly halved (as seen in the animations below).
 
-### Implementation
-**Time Complexity:** $\mathcal{O}(N\log N)$
+<video width="960" height="720" controls>
+	<source src="/animations/splay.mp4" type="video/mp4" />
+</video>
 
-<LanguageSection>
+Unfortunately, this observation alone is not enough to prove the amortized
+$\mathcal{O}(\log n)$ complexity; the full proof remains quite involved.
 
-<CPPSection>
+## Implicit Splays
 
-```cpp
-#include <cassert>
-#include <iostream>
-#include <vector>
-using namespace std;
+<FocusProblem problem="dsrars" />
 
-typedef struct Node *T;
-struct Node {
-	int val;
-	T l = nullptr, r = nullptr;
-	// search stack -> will allow us to find parents of nodes without explicitly
-	// storing them
-	static inline vector<T> st = {};
-	// performs a single rotation
-	void rotate(T p, T g) {
-		assert(this == p->l || this == p->r);
-		if (this == p->l) p->l = r, r = p;
-		else p->r = l, l = p;
-		if (g) {
-			if (p == g->l) g->l = this;
-			else g->r = this;
-		}
-	}
-	// gets top of search stack, which will contain the path from root (bottom)
-	// to the current node (top)
-	T top() {
-		if (!st.size()) return nullptr;
-		T x = st.back();
-		st.pop_back();
-		return x;
-	}
-	// performs a single splay-step
-	bool step() {
-		T x = top(), p = top(), g = top(), a = top();
-		if (!p) return false;
-		assert(x == this && p);
-		if (!g) rotate(p, g);
-		else if ((this == p->l) == (p == g->l)) p->rotate(g, a), rotate(p, a);
-		else rotate(p, g), rotate(g, a);
-		if (a) st.push_back(a);
-		st.push_back(x);
-		assert(!a || a->l == x || a->r == x);
-		return true;
-	}
-	T splay(int x) {  // splays and returns new root
-		st.push_back(this);
-		if (x < val) return l->splay(x);
-		else if (x > val) return r->splay(x);
-		else {  // we found the element, so splay it up to root
-			while (step());
-			return this;
-		}
-	}
-	void insert(int x) {
-		T &c = (x < val ? l : r);
-		if (!c) c = new Node{x};
-		else if (x != val) c->insert(x);
-	}
-	// gets max value in this subtree
-	int max() { return ::max({l ? l->max() : 0, r ? r->max() : 0, val}); }
-	friend ostream &operator<<(ostream &os, T s) {
-		if (!s) return os;
-		os << s->l;
-		os << s->val << " ";
-		return os << s->r;
-	}
-};
-
-struct Splay {
-	T root = nullptr;
-	void splay(int x) {
-		// make sure search stack is emtpy
-		assert(!Node::st.size());
-		root = root->splay(x);
-	}
-	void insert(int x) {
-		if (!root) root = new Node{x};
-		else {
-			root->insert(x);
-			splay(x);
-		}
-	}
-	Splay join(Splay o) {
-		if (!root) return root = o.root, *this;
-		splay(root->max());
-		root->r = o.root;
-		return *this;
-	}
-	void del(int i) {
-		splay(i);
-		root = Splay{root->l}.join(Splay{root->r}).root;
-	}
-	friend ostream &operator<<(ostream &os, Splay s) { return os << s.root; }
-} splay;
-
-int main() {
-	cin.tie(0)->sync_with_stdio(0);
-	for (int i = 1; i <= 10; i++) splay.insert(i);
-	cout << splay << endl;  // 1 2 3 4 5 6 7 8 9 10
-	splay.del(3);
-	splay.del(7);
-	cout << splay << endl;  // 1 2 4 5 6 8 9 10
-}
-```
-</CPPSection>
-</LanguageSection>
-
-<FocusProblem problem="dsrars"/>
-
-Much like [implicit treaps](https://usaco.guide/adv/treaps#implicit-treaps), implicit splays also exist.
+Much like [implicit treaps](https://usaco.guide/adv/treaps#implicit-treaps),
+implicit splays also exist.
 
 ### Implementation
+
 **Time Complexity:** $\mathcal{O}((N + Q)\log N)$
-
 
 <LanguageSection>
 
@@ -173,234 +80,208 @@ Much like [implicit treaps](https://usaco.guide/adv/treaps#implicit-treaps), imp
 #include <cassert>
 #include <functional>
 #include <iostream>
-#include <vector>
-using ll = long long;
+#define int long long
 using namespace std;
 
-// BeginCodeSnip{ModInt class}
-// operations under mod
 struct mint {
-	const static int M = 998244353;
-	ll v = 0;
-	mint() {}
-	mint(ll v) { this->v = (v % M + M) % M; }
-	mint operator+(const mint &o) const { return v + o.v; }
-	mint &operator+=(const mint &o) {
-		v = (v + o.v) % M;
-		return *this;
-	}
-	mint operator*(const mint &o) const { return v * o.v; }
-	mint operator-(const mint &o) const { return v - o.v; }
-	mint &operator-=(const mint &o) {
-		mint t = v - o.v;
-		v = t.v;
-		return *this;
-	}
-	mint operator^(int y) const {
-		mint r = 1, x = v;
-		for (y <<= 1; y >>= 1; x = x * x)
-			if (y & 1) r = r * x;
-		return r;
-	}
-	mint inv() const {
-		assert(v);
-		return *this ^ M - 2;
-	}
-	friend istream &operator>>(istream &s, mint &v) {
-		return s >> v.v;
-		return s;
-	}
-	friend ostream &operator<<(ostream &s, const mint &v) { return s << v.v; }
-	mint operator/(mint o) { return *this * o.inv(); }
-};
-// EndCodeSnip
-
-struct Line {
-	mint w = 1, b = 0;
-	mint operator()(mint x) { return w * x + b; }
-	Line operator()(Line f) { return Line{w * f.w, w * f.b + b}; }
-	operator bool() const { return w.v != 1 || b.v != 0; }
+  const static int M = 998244353;
+  int v = 0;
+  mint() {}
+  mint(int v) { this->v = (v % M + M) % M; }
+  mint operator+(const mint &o) const { return v + o.v; }
+  mint& operator+=(const mint& o) { v = (v + o.v) % M; return *this; }
+  mint operator*(const mint &o) const { return v * o.v; }
+  mint operator-(const mint &o) const { return v - o.v; }
+  mint& operator-=(const mint& o) { mint t = v - o.v; v = t.v; return *this; }
+  friend istream& operator>>(istream& s, mint& v) { s >> v.v; return s; }
+  friend ostream& operator<<(ostream& s, const mint& v) { s << v.v; return s; }
 };
 
-typedef struct Node *T;
+struct F {
+  mint w = 1, b = 0;
+  mint operator()(mint x) { return w * x + b; }
+  F operator()(F f) { return F{w * f.w, w * f.b + b}; }
+  operator bool() const { return w.v != 1 || b.v != 0; }
+};
+
+const int N = 5e5 + 1;
+struct Node;
+typedef struct Node * T;
 struct Node {
-	mint val, s;  // value, sum
-	int sz;
-	T l, r;
-	Line f;
-	bool rev;
-	// search stack -> will allow us to find parents of nodes without explicitly
-	// storing them
-	static inline vector<T> st = {};
-	Node(ll v, T l = nullptr, T r = nullptr)
-	    : val(v), s(v), sz(0), l(l), r(r), rev(false) {
-		pull();
-	}
-	static int size(T x) { return x ? x->sz : 0; }
-	static mint sum(T x) { return x ? x->s : 0; }
-	void push() {
-		if (rev) {
-			rev = false;
-			swap(l, r);
-			if (l) l->rev ^= true;
-			if (r) r->rev ^= true;
-		}
-		if (f) {
-			val = f(val);
-			s = f.w * s + f.b * sz;
-			if (l) l->f = f(l->f);
-			if (r) r->f = f(r->f);
-			f = Line{1, 0};
-		}
-	}
-	void pull() {
-		assert(!f);
-		if (l) l->push();
-		if (r) r->push();
-		sz = size(l) + size(r) + 1;
-		s = sum(l) + sum(r) + val;
-	}
-	void rotate(T p, T g) {
-		int o = p->sz;
-		p->push(), push();
-		assert(this == p->l || this == p->r);
-		if (this == p->l) p->l = r, r = p;
-		else p->r = l, l = p;
-		if (g) {
-			if (p == g->l) g->l = this;
-			else g->r = this;
-		}
-		p->pull(), pull();
-		assert(sz == o);
-	}
-	T top() {
-		if (!st.size()) return nullptr;
-		T x = st.back();
-		st.pop_back();
-		return x;
-	}
-	bool step() {
-		T x = top(), p = top(), g = top(), a = top();
-		if (!p) return false;
-		assert(x == this && p);
-		if (!g) rotate(p, g);
-		else if ((this == p->l) == (p == g->l)) p->rotate(g, a), rotate(p, a);
-		else rotate(p, g), rotate(g, a);
-		if (a) st.push_back(a);
-		st.push_back(x);
-		assert(!a || a->l == x || a->r == x);
-		return true;
-	}
-	T splay(int x) {  // splays and returns new root
-		st.push_back(this);
-		push();
-		assert(x < sz);
-		if (x < size(l)) return l->splay(x);
-		else if (x > size(l)) return r->splay(x - size(l) - 1);
-		else {  // we found the element
-			while (step());
-			return this;
-		}
-	}
-	friend ostream &operator<<(ostream &os, T s) {
-		if (!s) return os;
-		os << s->l;
-		os << s->val << " ";
-		return os << s->r;
-	}
+  mint v, s;
+  int sz;
+  inline static int n = 0;
+  static Node t[2 * N];
+  array<T, 2> c{};
+  T p{};
+  F f{};
+  bool rev = false;
+  Node() {}
+  Node(int v) : v(v), s(v), sz(1), rev(false) {}
+  static T init(int v, T l = nullptr, T r = nullptr) {
+    t[n] = Node(v);
+    t[n].attach(0, l);
+    t[n].attach(1, r);
+    t[n].pull();
+    return &t[n++];
+  }
+  static int size(T x) { return x ? x->sz : 0; }
+  static mint sum(T x) { return x ? x->s : 0; }
+  int ind() { return this - t; }
+  void push() {
+    if (rev) {
+      swap(c[0], c[1]);
+      for (int i = 0; i < 2; i++) if (c[i]) c[i]->rev ^= rev;
+      rev = false;
+    }
+    if (f) {
+      v = f(v);
+      s = f.w * s + f.b * sz;
+      for (int i = 0; i < 2; i++) if (c[i]) c[i]->f = f(c[i]->f);
+      f = F{1, 0};
+    }
+  }
+  void pull() {
+    assert(!f);
+    for (int i = 0; i < 2; i++) if (c[i]) c[i]->push();
+    sz = size(c[0]) + size(c[1]) + 1;
+    s = sum(c[0]) + sum(c[1]) + v;
+  }
+  bool side() { return p->c[1] == this; }
+  void attach(int i, T x) {
+    if (x) x->p = this;
+    if (x) assert(x->p == this);
+    c[i] = x;
+    push();
+    pull();
+  }
+  T detach(int i) {
+    push();
+    T t = c[i];
+    if (c[i]) c[i]->p = nullptr;
+    c[i] = nullptr;
+    pull(); return t;
+  }
+  void rotate() {
+    T p = this->p, g = p->p;
+    p->push(), push();
+    int i = side();
+    if (g) g->attach(p->side(), this);
+    else this->p = nullptr;
+    assert(this == p->c[i]);
+    p->attach(i, c[!i]);
+    attach(!i, p);
+  }
+  void splay() {
+    for (;p;rotate()) {
+      if (p->p) {
+        (side() == p->side()) ? p->rotate() : rotate();
+      }
+    }
+  }
+  T find(int i) {
+    if (c[0]) assert(c[0]->p == this);
+    if (c[1]) assert(c[1]->p == this);
+    assert(i <= sz);
+    push();
+    if (i < size(c[0])) return c[0]->find(i);
+    else if (i > size(c[0])) return c[1]->find(i - size(c[0]) - 1);
+    else return this;
+  }
+  friend ostream& operator<<(ostream& os, T s) {
+    if (!s) return os;
+    os << s->c[0];
+    os << s->v << " ";
+    return os << s->c[1];
+  }
 };
+
+Node Node::t[2 * N];
 
 struct Splay {
-	T root = nullptr;
-	void splay(int x) {
-		assert(!Node::st.size());
-		root = root->splay(x);
-	}
-	auto split(int i) {  // splits into {[0, i), [i, )}
-		if (i == (root ? root->sz : 0))
-			return make_pair(Splay{root}, Splay{nullptr});
-		splay(i);
-		T l = root->l;
-		root->l = nullptr;
-		root->pull();
-		return make_pair(Splay{l}, Splay{root});
-	}
-	Splay join(Splay o) {
-		if (!root) return root = o.root, *this;
-		splay(root->sz - 1);
-		root->r = o.root;
-		root->pull();
-		return *this;
-	}
-	void insert(int i, ll x) {
-		auto [l, r] = split(i);
-		root = new Node(x, l.root, r.root);
-	}
-	void del(int i) {
-		splay(i);
-		root = Splay{root->l}.join(Splay{root->r}).root;
-	}
-	mint query(int l, int r) {  // query range [l, r)
-		Splay a, b, c;
-		tie(a, b) = split(l);
-		tie(b, c) = b.split(r - l);
-		mint R = b.root->s;
-		root = a.join(b).join(c).root;
-		return R;
-	}
-	void upd(int l, int r, function<void(T)> f) {
-		Splay a, b, c;
-		tie(a, b) = split(l);
-		tie(b, c) = b.split(r - l);
-		f(b.root);
-		root = a.join(b).join(c).root;
-	}
-	friend ostream &operator<<(ostream &os, Splay s) { return os << s.root; }
+  T root = nullptr;
+  T splay(int x) {
+    T t = root->find(x);
+    t->splay();
+    assert(Node::size(t->c[0]) == x);
+    return root = t;
+  }
+  pair<Splay, Splay> split(int i) { // splits into {[0, i), [i, )}
+    if (i == (root ? root->sz : 0)) return make_pair(Splay{root}, Splay{nullptr});
+    T t = splay(i)->detach(0);
+    assert(root->c[0] == nullptr);
+    return make_pair(Splay{t}, Splay{root});
+  }
+  Splay join(Splay o) {
+    if (!root) return root = o.root, *this;
+    splay(root->sz - 1);
+    assert(root->c[1] == nullptr);
+    root->attach(1, o.root);
+    return *this;
+  }
+  void insert(int i, int x) {
+    auto [l, r] = split(i);
+    root = Node::init(x, l.root, r.root);
+  }
+  void del(int i) {
+    assert(i < root->sz);
+    splay(i);
+    root = Splay{root->detach(0)}.join(Splay{root->detach(1)}).root;
+  }
+  mint query(int l, int r) { // query range [l, r)
+    Splay a, b, c;
+    tie(a, b) = split(l);
+    tie(b, c) = b.split(r - l);
+    mint R = b.root->s;
+    root = a.join(b).join(c).root;
+    return R;
+  }
+  void upd(int l, int r, function<void(T)> f) {
+    Splay a, b, c;
+    tie(a, b) = split(l);
+    tie(b, c) = b.split(r - l);
+    f(b.root);
+    root = a.join(b).join(c).root;
+  }
+  friend ostream& operator<<(ostream& os, Splay s) { return os << s.root; }
 } splay;
 
-int main() {
-	cin.tie(0)->sync_with_stdio(0);
-	int n, q;
-	cin >> n >> q;
-	for (int i = 0; i < n; i++) {
-		int x;
-		cin >> x;
-		splay.insert(i, x);
-	}
-	while (q--) {
-		int t;
-		cin >> t;
-		ll i, x, l, r, w, b;
-		switch (t) {
-		case 0:
-			cin >> i >> x;
-			splay.insert(i, x);
-			break;
-		case 1:
-			cin >> i;
-			splay.del(i);
-			break;
-		case 2:
-			cin >> l >> r;
-			splay.upd(l, r, [](T x) { x->rev ^= true; });
-			break;
-		case 3:
-			cin >> l >> r >> w >> b;
-			splay.upd(l, r, [=](T x) { x->f = Line{w, b}(x->f); });
-			break;
-		case 4:
-			cin >> l >> r;
-			cout << splay.query(l, r) << endl;
-			break;
-		}
-	}
+signed main() {
+  cin.tie(0)->sync_with_stdio(0);
+  int n, q; cin >> n >> q;
+  for (int i = 0; i < n; i++) {
+    int x; cin >> x;
+    splay.insert(i, x);
+  }
+  while (q--) {
+    int t; cin >> t;
+    int i, x, l, r, w, b;
+    switch (t) {
+      case 0:
+        cin >> i >> x; splay.insert(i, x);
+        break;
+      case 1:
+        cin >> i; splay.del(i);
+        break;
+      case 2:
+        cin >> l >> r;
+        splay.upd(l, r, [](T x) { x->rev ^= true; });
+        break;
+      case 3:
+        cin >> l >> r >> w >> b;
+        splay.upd(l, r, [=](T x) { x->f = F{w, b}(x->f); });
+        break;
+      case 4:
+        cin >> l >> r;
+        cout << splay.query(l, r) << endl;
+        break;
+    }
+  }
 }
 ```
 
 </CPPSection>
 </LanguageSection>
-
-
 
 ## Link Cut Tree
 
@@ -441,9 +322,9 @@ int main() {
 	/>
 </Resources>
 
-A link cut tree is a data structure that uses splay trees to represent a forest of rooted trees and
-can perform the following operations with an amortized upper bound time
-complexity of $\mathcal{O}(\log N)$:
+A link cut tree is a data structure that uses splay trees to represent a forest
+of rooted trees and can perform the following operations with an amortized upper
+bound time complexity of $\mathcal{O}(\log N)$:
 
 - Linking a tree with a node by making the root of the tree a child of any node
   of another tree
@@ -451,19 +332,21 @@ complexity of $\mathcal{O}(\log N)$:
   to make a new tree
 - Find the root of the tree that a node belongs to
 
-These operations all use the $\texttt{access}(v)$ subroutine,
-which creates a preferred path from the root of the represented tree to vertex $v$,
-making a corresponding auxiliary splay tree with $v$ as the root.
+These operations all use the $\texttt{access}(v)$ subroutine, which creates a
+preferred path from the root of the represented tree to vertex $v$, making a
+corresponding auxiliary splay tree with $v$ as the root.
 
 ## Solution
 
 ### With Link Cut Tree
 
-We can use a link cut tree to process each type of query $\mathcal{O}(\log N)$ time.
-Adding an edge or removing an edge between two vertices are standard features of the link cut tree.
+We can use a link cut tree to process each type of query $\mathcal{O}(\log N)$
+time. Adding an edge or removing an edge between two vertices are standard
+features of the link cut tree.
 
-Checking if there's a path between two nodes is the same as checking if they're part of the same tree.
-To check if two nodes are part of the same tree, we can check if the roots of the trees of the two nodes are the same.
+Checking if there's a path between two nodes is the same as checking if they're
+part of the same tree. To check if two nodes are part of the same tree, we can
+check if the roots of the trees of the two nodes are the same.
 
 ### Implementation
 
@@ -605,9 +488,9 @@ int main() {
 
 ### With Euler Tour Tree
 
-An alternative solution is to use the Euler Tour Tree (ETT) technique,
-which builds upon our existing [Euler tour technique](/gold/tree-euler)
-by storing the Euler Tour of the tree in a balanced binary search tree instead of an array.
+An alternative solution is to use the Euler Tour Tree (ETT) technique, which
+builds upon our existing [Euler tour technique](/gold/tree-euler) by storing the
+Euler Tour of the tree in a balanced binary search tree instead of an array.
 
 <Resources>
 	<Resource
@@ -762,18 +645,22 @@ int main() {
 	}
 }
 ```
+
 </CPPSection>
 </LanguageSection>
 
 ## Finding Connectivity
 
-The link cut tree can be used to solve problems that deal with queries updating trees and querying for connectivity.
+The link cut tree can be used to solve problems that deal with queries updating
+trees and querying for connectivity.
 
 <FocusProblem problem="con" />
 
 ### Explanation
 
-The lowest common ancestor of two nodes is found by first making a preferred path from the root to one node and then the other. After we splay the first node, the lowest common ancestor is just the first node's parent.
+The lowest common ancestor of two nodes is found by first making a preferred
+path from the root to one node and then the other. After we splay the first
+node, the lowest common ancestor is just the first node's parent.
 
 ### Implementation
 
@@ -976,11 +863,14 @@ int main() {
 
 ### Explanation
 
-An LC Tree can also calculate the aggregate (max, min, sum, etc.) of the weights of the edges or nodes on a path.
+An LC Tree can also calculate the aggregate (max, min, sum, etc.) of the weights
+of the edges or nodes on a path.
 
-To do this, we can define a function that will return an aggregate for the path from the root of the tree to the provided vertex.
-We can augment the auxiliary splay trees with the value(s) we want to keep track of.
-The aggregate for the path from the root of a tree to a vertex can be found by retrieving the value(s) from the splay tree created after accessing the vertex.
+To do this, we can define a function that will return an aggregate for the path
+from the root of the tree to the provided vertex. We can augment the auxiliary
+splay trees with the value(s) we want to keep track of. The aggregate for the
+path from the root of a tree to a vertex can be found by retrieving the value(s)
+from the splay tree created after accessing the vertex.
 
 ### Implementation
 
@@ -1226,7 +1116,11 @@ int main() {
 
 ### Explanation
 
-We can also maintain information about subtrees by keeping track of values for the virtual subtrees of a node. When querying for information such as the subtree sum, we call `access` on the node so that all of its children in the represented tree are part of virtual subtrees and then retrieve the desired value.
+We can also maintain information about subtrees by keeping track of values for
+the virtual subtrees of a node. When querying for information such as the
+subtree sum, we call `access` on the node so that all of its children in the
+represented tree are part of virtual subtrees and then retrieve the desired
+value.
 
 ### Implementation
 
