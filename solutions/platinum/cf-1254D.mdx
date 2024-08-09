@@ -1,0 +1,142 @@
+---
+id: cf-1254D
+source: CF
+title: Tree Queries
+author: Rameez Parwez
+---
+
+[Official Editorial (C++)](https://codeforces.com/blog/entry/71594)
+
+## Explanation
+
+The idea is to use Heavy-Light Decomposition(HLD) for its efficiency in dividing the tree into chains and ensuring that paths between any two nodes pass through a limited number of chains, along with Binary Indexed Tree(BIT) to efficiently manage cumulative sums and range updates operations.
+
+At first, the DFS is performed starting from node $0$ to calculate the depth and subtree size. Afterwards, the decomposition is performed to transform the tree into a structure suitable for BIT operations.
+
+For a modification, we first check if vertex $v$ has some subtree. If it does, we want to add a tag to $v$ which increase the subtree of every light child $u$ of $v$ by $(n - x) * d$. When handling the query, we find its value on BIT and sum of all tags on its path to the root.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O} (N + Q \log(N))$
+
+<LanguageSection>
+<CPPSection>
+```cpp
+#include <bits/stdc++.h>
+
+const int MAX_N = 150005, MOD = 998244353;
+std::vector<int> adj[MAX_N];
+int grand_parent[MAX_N], parent[MAX_N], child[MAX_N], sz[MAX_N], tin[MAX_N],
+    tout[MAX_N];
+int T = 1, n;
+
+int bit[2 * MAX_N], val[MAX_N];
+void add(int x, int v) {
+	while (x < 2 * MAX_N) {
+		(bit[x] += v % MOD) %= MOD;
+		x += x & (-x);
+	}
+}
+
+int get(int x) {
+	int res = 0;
+	while (x > 0) {
+		(res += bit[x] % MOD) %= MOD;
+		x -= x & (-x);
+	}
+	return res;
+}
+
+int power(int a, int b) {
+	int res = 1;
+	a %= MOD;
+	while (b) {
+		if (b & 1) { res = 1LL * res * a % MOD; }
+		a = 1LL * a * a % MOD;
+		b /= 2;
+	}
+	return res;
+}
+
+void add_subtree(int v, int x) {
+	add(tin[v], x);
+	add(tout[v], MOD - x);
+}
+
+void dfs1(int v, int par) {
+	parent[v] = par;
+	sz[v] = 1;
+	tin[v] = T++;
+	for (int u : adj[v]) {
+		if (u == par) { continue; }
+		dfs1(u, v);
+		if (sz[u] > sz[child[v]]) { child[v] = u; }
+		sz[v] += sz[u];
+	}
+	tout[v] = T++;
+}
+
+void dfs2(int v, int par, int gpar) {
+	grand_parent[v] = gpar;
+	for (int u : adj[v]) {
+		if (u == par) { continue; }
+		if (u == child[v]) {
+			dfs2(u, v, gpar);
+		} else {
+			dfs2(u, v, u);
+		}
+	}
+}
+
+void modify(int v, int d) {
+	add_subtree(v, 1LL * d * (n - sz[v]) % MOD);
+	add_subtree(1, 1LL * d * sz[v] % MOD);
+
+	if (child[v]) { add_subtree(child[v], MOD - 1LL * d * sz[child[v]] % MOD); }
+}
+
+int query(int v) {
+	int res = get(tin[v]);
+	v = grand_parent[v];
+	while (v != 1) {
+		(res -= 1LL * val[parent[v]] * sz[v] % MOD) %= MOD;
+		v = grand_parent[parent[v]];
+	}
+	res %= MOD;
+	return res;
+}
+
+int main() {
+	int q;
+	std::cin >> n >> q;
+	for (int i = 0; i < n - 1; i++) {
+		int u, v;
+		std::cin >> u >> v;
+		adj[u].push_back(v);
+		adj[v].push_back(u);
+	}
+
+	dfs1(1, 0);
+	dfs2(1, 0, 1);
+
+	int inv = power(n, MOD - 2);
+	while (q--) {
+		int type;
+		std::cin >> type;
+		if (type == 1) {
+			int v, d;
+			std::cin >> v >> d;
+			(val[v] += d) %= MOD;
+			modify(v, d);
+		} else {
+			int v;
+			std::cin >> v;
+			int res = 1LL * query(v) * inv % MOD;
+			if (res < 0) { (res += MOD); }
+			std::cout << res << '\n';
+		}
+	}
+}
+```
+</CPPSection>
+</LanguageSection>
