@@ -67,11 +67,14 @@ larger one of size $n$ takes $\mathcal{O}(m\log n)$ time.
 
 **Claim:** The solution runs in $\mathcal{O}(N\log^2N)$ time.
 
-**Proof:** When merging two sets, you move from the smaller set to the larger
-set. If the size of the smaller set is $X$, then the size of the resulting set
-is at least $2X$. Thus, an element that has been moved $Y$ times will be in a
-set of size at least $2^Y$, and since the maximum size of a set is $N$ (the
-root), each element will be moved at most $\mathcal{O}(\log N$) times.
+**Proof:** Suppose that you always merge from the smaller subtree into the
+larger subtree. Then, each element will be merged at most $O(\log N)$ times,
+because the subtree size will double every time the element is merged into a
+larger subtree. In total, we process at most $O(N\log N)$ elements.
+
+Note that when we use the merging technique in the code, each merge will take
+less time than in our proof. So, we will process at most $O(N \log N)$ elements,
+each taking at most $O(\log N)$ time.
 
 ### Full Code
 
