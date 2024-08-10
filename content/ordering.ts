@@ -252,6 +252,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
       name: 'Misc. Topics',
       items: [
         'extend-euclid',
+        'catalan',
         'xor-basis',
         'fracturing-search',
         'game-theory',
