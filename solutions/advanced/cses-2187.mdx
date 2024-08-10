@@ -7,7 +7,14 @@ author: Rameez Parwez
 
 ## Explanation
 
-The idea is to calculate all the possible ways to arrange remaining pairs of parenthesis and then subtract the count of invalid ways (which is by taking more opening brackets than closing ones).
+First, we check whether the prefix itself is valid or not. If, at any point in the prefix, the number of closing 
+brackets exceeds the number of opening brackets, then the prefix is invalid. Additionally, we already know 
+that if $n$ is odd, the result will be zero.
+
+Once we calculated the number of opening and closing brackets in the substring, we can determine our answer by subtracting the number of invalid arrangements from the total number of ways to arrange the remaining substring. An invalid arrangement occurs when the number of opening brackets is strictly greater than the number of closing brackets, or vice versa.
+$$
+\binom{n - k}{c} - \binom{n - k}{c + 1}
+$$
 
 ## Implementation
 
