@@ -170,44 +170,55 @@ inv = [0] * (MAXN + 1)
 
 # BeginCodeSnip{Combinatorics Functions (from the module)}
 """return x^n modulo m in O(log n) time"""
+
+
 def exp(x: int, n: int, m: int) -> int:
-    x %= m
-    res = 1
-    while n > 0:
-        if n % 2 == 1:
-            res = res * x % m
-        x = x * x % m
-        n //= 2
-    return res
+	x %= m
+	res = 1
+	while n > 0:
+		if n % 2 == 1:
+			res = res * x % m
+		x = x * x % m
+		n //= 2
+	return res
+
 
 """Precomputes n! from 0 to MAXN."""
+
+
 def factorial(p: int) -> None:
-    fac[0] = 1
-    for i in range(1, MAXN + 1):
-        fac[i] = fac[i - 1] * i % p
+	fac[0] = 1
+	for i in range(1, MAXN + 1):
+		fac[i] = fac[i - 1] * i % p
+
 
 """Precomputes modular inverses of factorials from 0 to MAXN in O(n + log p) time."""
+
+
 def inverses(p: int) -> None:
-    inv[MAXN] = exp(fac[MAXN], p - 2, p)
-    for i in range(MAXN, 0, -1):
-        inv[i - 1] = inv[i] * i % p
+	inv[MAXN] = exp(fac[MAXN], p - 2, p)
+	for i in range(MAXN, 0, -1):
+		inv[i - 1] = inv[i] * i % p
+
 
 """returns nCr mod p"""
+
+
 def choose(n: int, r: int, p: int) -> int:
-    return fac[n] * inv[r] % p * inv[n - r] % p
+	return fac[n] * inv[r] % p * inv[n - r] % p
+
 
 # EndCodeSnip
 
 n = int(input())
 
 if n % 2 != 0:
-    print(0)
+	print(0)
 else:
-    factorial(MOD)
-    inverses(MOD)
-    result = exp(n // 2 + 1, MOD - 2, MOD) * choose(n, n // 2, MOD) % MOD
-    print(result)
-
+	factorial(MOD)
+	inverses(MOD)
+	result = exp(n // 2 + 1, MOD - 2, MOD) * choose(n, n // 2, MOD) % MOD
+	print(result)
 ```
 </PySection>
 
