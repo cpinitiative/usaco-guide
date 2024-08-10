@@ -282,3 +282,118 @@ print(*ans)
   - UVa 10901 - Ferry Loading III
   - UVa 11034 - Ferry Loading IV
  -->
+
+## Quiz
+
+<Quiz>
+	<Quiz.Question>
+		What is the output of the following code?
+		<LanguageSection>
+
+	`	<CPPSection>
+
+		```cpp
+		stack<int> s;
+		s.push(9);
+		s.push(5);
+		s.pop();
+		s.push(8);
+		s.pop();
+		s.push(7);
+		s.push(3);
+		s.push(9);
+		s.push(8);
+		s.pop();
+		cout << s.top() << endl;   
+		s.pop();                   
+		cout << s.size() << endl;  
+		```
+
+		</CPPSection>
+
+		</LanguageSection>
+		<Quiz.Answer correct>
+			Add the current node to the list, and then run DFS on all child nodes of the current node from left to right.
+			<Quiz.Explanation>
+				Correct! Adding the current node first is preorder traversal. Adding it between the two child nodes is inorder, and adding it after the two child nodes is postorder.
+			</Quiz.Explanation>
+		</Quiz.Answer>
+		<Quiz.Answer>
+			Run DFS on the left node, add the current node to the list, and then run DFS on the right node.
+			<Quiz.Explanation>
+				Incorrect. This is inorder traversal.
+			</Quiz.Explanation>
+		</Quiz.Answer>
+		<Quiz.Answer>
+			Run DFS on the right node, add the current node to the list, and then run DFS on the left node.
+			<Quiz.Explanation>
+				Incorrect. This is neither preorder, inorder, or postorder traversal.
+			</Quiz.Explanation>
+		</Quiz.Answer>
+		<Quiz.Answer>
+			Run DFS on all child nodes of the current node from left to right, then add the current node to the list.
+			<Quiz.Explanation>
+				Incorrect. This is postorder traversal.
+			</Quiz.Explanation>
+		</Quiz.Answer>
+	</Quiz.Question>
+	<Quiz.Question>
+		What is the diameter of a tree?
+		<Quiz.Answer>
+			The length of the longest path from root to leaf node
+			<Quiz.Explanation>
+				False. The diameter of a tree is the maximum distance between two nodes, which usually isn't the longest distance between the root and the leaf. The only exception is if the root is a leaf along the longest path of a tree.
+			</Quiz.Explanation>
+		</Quiz.Answer>
+		<Quiz.Answer>
+			The length of the longest path that exists in the tree
+			<Quiz.Explanation>
+				This statement is true, but 3 is also true.
+			</Quiz.Explanation>
+		</Quiz.Answer>
+		<Quiz.Answer>
+			The length of the longest path from two leaf nodes
+			<Quiz.Explanation>
+				This statement is true, but 2 is also true.
+			</Quiz.Explanation>
+		</Quiz.Answer>
+		<Quiz.Answer correct>
+			Both 2 and 3
+			<Quiz.Explanation>
+				Correct! The diameter is the longest path between two nodes in a tree, but the longest path must be a path between two leaf nodes. If we have a path between two nodes that are not leaves, it can't be the longest because we can extend our path further down the tree in either direction.
+			</Quiz.Explanation>
+		</Quiz.Answer>
+	</Quiz.Question>
+	<Quiz.Question>
+		What would be a valid function header for DFS on an undirected tree to work in linear time *without* any other variables?
+		<Quiz.Answer correct>
+			`void dfs(int v, int p, vector<vector<int>>& adj)`
+			<Quiz.Explanation>
+				Correct! For a tree, we do not need a visited array. We only need to check if we are revisiting the parent node, so `v` as a current node and `p` as a parent node would work.
+
+				Calling `adj` as a `vector<vector<int>>&` instead of just `vector<vector<int>>` ensures that the reference (instead of the entire list) is copied over each time, which takes constant instead of linear time. Therefore, the entire DFS would take linear time.
+			</Quiz.Explanation>
+		</Quiz.Answer>
+		<Quiz.Answer>
+			`void dfs(int v, int p, vector<vector<int>> adj)`
+			<Quiz.Explanation>
+				Incorrect. This would not work in linear time because `adj` would be copied in $O(n)$ time every time DFS is called. As DFS is called $n$ times, this runs in $O(n^2)$.
+			</Quiz.Explanation>
+		</Quiz.Answer>
+		<Quiz.Answer>
+			`void dfs(int v, vector<vector<int>> adj)`
+			<Quiz.Explanation>
+				Incorrect. This DFS function cannot check for a parent node, and therefore would never terminate.
+			</Quiz.Explanation>
+		</Quiz.Answer>
+		<Quiz.Answer>
+			`void dfs(vector<vector<int>>& adj)`
+			<Quiz.Explanation>
+				Incorrect. This DFS function cannot track the current node, therefore it cannot even run.
+			</Quiz.Explanation>
+		</Quiz.Answer>
+	</Quiz.Question>
+</Quiz>
+
+
+
