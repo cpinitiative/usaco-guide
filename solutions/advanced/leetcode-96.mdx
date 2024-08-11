@@ -10,6 +10,7 @@ author: Rameez Parwez
 The number of structurally unique Binary Search Trees (BST) for $n$ nodes is the $n^{th}$ catalan number.
 
 <Spoiler title = "Proof">
+
 Let's consider a binary search tree(BST) with $k$ as the root. In this case:
 - The left subtree will have $k - 1$ nodes with values less than $k$.
 - The right subtree will have $n - k$ nodes with values greater than $k$.
@@ -30,7 +31,7 @@ $$
 C_n=\frac{1}{n+1}\cdot \binom{2n}{n}
 $$
 
-Thus, the number of structurally unique BSTs with $n$ nodes corresponds to the $n^{th}$ Catalan number.
+Thus, the number of structurally unique BSTs with $n$ nodes corresponds to the $n$th Catalan number.
 
 </Spoiler>
 
@@ -39,15 +40,13 @@ Thus, the number of structurally unique BSTs with $n$ nodes corresponds to the $
 **Time Complexity:** $\mathcal{O}(N)$
 
 <LanguageSection>
-
 <CPPSection>
+
 ```cpp
 class Solution {
   public:
-#define i23 long long
-
-	i23 nCr(int n, int k) {
-		i23 res = 1;
+	long long nCr(int n, int k) {
+		long long res = 1;
 
 		// since C(n, k) = C(n, n - k)
 		if (k > n - k) { k = n - k; }
@@ -59,15 +58,16 @@ class Solution {
 
 		return res;
 	}
+
 	int numTrees(int n) {
-		int res = nCr(2 * n, n) / (n + 1);
-		return res;
+		return nCr(2 * n, n) / (n + 1);
 	}
 };
 ```
-</CPPSection>
 
+</CPPSection>
 <PySection>
+
 ```py
 import math
 
@@ -77,6 +77,6 @@ class Solution:
 		res = math.comb(2 * n, n) // (n + 1)
 		return res
 ```
-</PySection>
 
+</PySection>
 </LanguageSection>
