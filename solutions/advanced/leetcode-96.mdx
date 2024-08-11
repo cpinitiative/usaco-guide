@@ -7,31 +7,24 @@ author: Rameez Parwez
 
 ## Explanation
 
-The number of structurally unique Binary Search Trees (BST) for $n$ nodes is the $n^{th}$ catalan number.
+The crucial observation here is that the answer the answer for $n$ nodes is the $n$th Catalan number.
 
 <Spoiler title = "Proof">
 
-Let's consider a binary search tree(BST) with $k$ as the root. In this case:
+Let's consider a binary search tree(BST) with $k$ as the root.
+In this case:
 - The left subtree will have $k - 1$ nodes with values less than $k$.
 - The right subtree will have $n - k$ nodes with values greater than $k$.
 
-As a result, the problem of counting the number of unique BSTs with $n$ nodes can be simplified to counting the number of unique BSTs that can be built with $k - 1$ nodes in the left subtree and $n - k$ nodes in the right subtree.
+As a result, the problem of counting the number of unique BSTs with $n$ nodes can be simplified to
+counting the number of unique BSTs that can be built with $k - 1$ nodes in the left subtree and $n - k$ nodes in the right subtree.
 
 Let $C_n$ be the number of unique BSTs that can be formed with $n$ nodes.
-
-Since the the root of the tree can be any one of the $n$ values, the total number of BSTs with $n$ nodes is the sum of the number of BSTs formed by combining all possible left and right subtrees:
-
+Since the the root of the tree can be any of the $n$ values, we can get the following recurrence relation:
 $$
 C_n= \sum^{n}_{k=1}{C_{k - 1} \cdot C_{n - k}}
 $$
-
-This recursive formula is identical to the recursive definition of the Catalan number:
-
-$$
-C_n=\frac{1}{n+1}\cdot \binom{2n}{n}
-$$
-
-Thus, the number of structurally unique BSTs with $n$ nodes corresponds to the $n$th Catalan number.
+which by inspection, is identical to the definition of the $n$th Catalan number.
 
 </Spoiler>
 
