@@ -7,10 +7,12 @@ author: Mihnea Brebenel
 
 ## Explanation
 
-First, it would be helpful to know how many open and closed brackets should be in the remaining sequence; let $c$ and $n$
-denote the number of closed brackets and the length of the remaining sequence. Then, the number of possible endings -
-not necessarily valid - is ${n \choose c}$.
+Given the prefix, we first calculate the number of open and closing brackets in the rest of the sequence.
+If there's $c$ closing brackets and $n$ characters left, the number of possible endings is $\binom{n}{c}$,
+though not all of them have to be valid.
 
+To get our true answer, we subtract the number of invalid bracket combinations by instead thinking
+of a bracket sequence as a path on a grid.
 You can read an in-depth exaplanation [here](https://en.wikipedia.org/wiki/Catalan_number#Second_proof).
 
 ## Implementation
@@ -93,6 +95,7 @@ int main() {
 		cout << 0 << endl;
 		return 0;
 	}
+
 	// Get the size of the remaining string
 	n -= s.size();
 
@@ -102,11 +105,11 @@ int main() {
 
 	// Count the # of remaining open brackets in the suffix
 	int remaining_closed = (n + open - closed) / 2;
+
+	long long total_combs = choose(n, remaining_closed, MOD);
+	long long bad_combs = choose(n, remaining_closed + 1, MOD);
 	// Substract from the total # of valid string the # of invalid strings
-	cout << (choose(n, remaining_closed, MOD) -
-	         choose(n, remaining_closed + 1, MOD) + MOD) %
-	            MOD
-	     << endl;
+	cout << (total_combs - bad_combs + MOD) % MOD << endl;
 }
 ```
 
