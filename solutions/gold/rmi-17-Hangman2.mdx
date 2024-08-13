@@ -1,0 +1,156 @@
+---
+id: rmi-17-Hangman2
+source: RMI 2017 Day 1
+title: Hangman 2
+author: Justin Ji
+---
+
+<Spoiler title = "Hint 1">
+
+Note how the problem only gives a bound on $n \cdot k$. What is the bound on
+$min(n, k)$, with respect to $n \cdot k$?
+
+</Spoiler>
+
+<Spoiler title = "Hint 2">
+
+Break the problem into two cases: $n < k$ and $n \geq k$.
+
+</Spoiler>
+
+<Spoiler title = "Explanation">
+
+First, note that $min(n, k) \leq \sqrt{nk}$ because
+$min(n, k) \cdot min(n, k) \leq n \cdot k$. This will be important for
+analyzing the time complexity of our solution. Now, let's consider the two
+cases given in the second hint.
+
+### Case 1: $n < k$
+Because $n < \sqrt{nk}$, we can brute force each pair of strings and check if
+they differ by no more than two characters. This takes $\mathcal{O}(N^2K)$ time,
+which is equivalent to $\mathcal{O}(NK\sqrt{NK})$ time.
+
+### Case 2: $n \geq k$
+Let's compare two strings. Note how allowing at most two characters to be
+different is equivalent to ignoring two characters in both strings and checking
+for equality. Thus, we can brute force on every pair of characters that we are
+ignoring, and then check for equality between strings.
+
+Let the pair of characters we are brute forcing be $(i, j)$. Then,
+we have the following intervals that need to be identical in both strings:
+
+$[0, i - 1], [i + 1, j - 1], [j + 1, k - 1]$
+
+Now, if we want to compare our two strings, then we just need the substrings to
+be equal. This can be checked using string hashing.
+
+For each string in our list, we need to find another string that has the same
+hashes. This is best done by sorting all the tuples of hashes, and then checking
+adjacent items and seeing if the hashes are equal.
+
+Overall, this takes $\mathcal{O}(NK^2\log({N}))$ time. With a bit more analysis,
+you can reach the time complexity of $\mathcal{O}(NK\sqrt{NK}\log(\sqrt{NK}))$.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(NK\sqrt{NK}\log(\sqrt{NK}))$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+// BeginCodeSnip{String Hashing Template (from the module)}
+class HashedString {
+  private:
+	// change M and B if you want
+	static const long long M = 1e9 + 9;
+	static const long long B = 9973;
+
+	// pow[i] contains B^i % M
+	static vector<long long> pow;
+
+	// p_hash[i] is the hash of the first i characters of the given string
+	vector<long long> p_hash;
+
+  public:
+	HashedString(const string &s) : p_hash(s.size() + 1) {
+		while (pow.size() <= s.size()) { pow.push_back((pow.back() * B) % M); }
+
+		p_hash[0] = 0;
+		for (int i = 0; i < (int)s.size(); i++) {
+			p_hash[i + 1] = ((p_hash[i] * B) % M + s[i]) % M;
+		}
+	}
+
+	long long get_hash(int start, int end) {
+		long long raw_val =
+		    (p_hash[end + 1] - (p_hash[start] * pow[end - start + 1]));
+		return (raw_val % M + M) % M;
+	}
+};
+vector<long long> HashedString::pow = {1};
+// EndCodeSnip
+
+int main() {
+	int test_num;
+	cin >> test_num;
+	for (int t = 0; t < test_num; t++) {
+		int n, k;
+		cin >> n >> k;
+		vector<string> s(n);
+		for (string &i : s) { cin >> i; }
+
+		vector<bool> res(n);
+		if (n < k) {
+			for (int i = 0; i < n; i++) {
+				for (int j = i + 1; j < n; j++) {
+					int diff_chars = 0;
+					for (int x = 0; x < k; x++) {
+						diff_chars += (s[i][x] != s[j][x]);
+					}
+					if (diff_chars <= 2) { res[i] = res[j] = true; }
+				}
+			}
+		} else {
+			vector<HashedString> hashed;
+			for (int i = 0; i < n; i++) {
+				hashed.push_back(HashedString(s[i]));
+			}
+
+			for (int i = 0; i < k; i++) {
+				for (int j = i + 1; j < k; j++) {
+					vector<array<long long, 4>> hashes(n);
+					for (int x = 0; x < n; x++) {
+						long long hash_1 = hashed[x].get_hash(0, i - 1);
+						long long hash_2 = hashed[x].get_hash(i + 1, j - 1);
+						long long hash_3 = hashed[x].get_hash(j + 1, k - 1);
+						hashes[x] = {hash_1, hash_2, hash_3, x};
+					}
+
+					sort(begin(hashes), end(hashes));
+					for (int x = 1; x < n; x++) {
+						bool works = true;
+						for (int y = 0; y < 3; y++) {
+							works &= hashes[x - 1][y] == hashes[x][y];
+						}
+						if (works) {
+							res[hashes[x - 1][3]] = res[hashes[x][3]] = true;
+						}
+					}
+				}
+			}
+		}
+
+		for (int i = 0; i < n; i++) { cout << res[i]; }
+		cout << "\n";
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
+</Spoiler>
