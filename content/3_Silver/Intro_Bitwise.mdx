@@ -362,34 +362,33 @@ xor-sum non-zero in an array formed by the bits in same position in all value.
 <LanguageSection>
 <CPPSection>
 
-```cpp 
+```cpp
 #include <iostream>
-#include <vector>
 #include <numeric>
+#include <vector>
 
 using namespace std;
 
-int main() { 
+int main() {
 	int n;
 	cin >> n;
 	vector<int> v(n);
-	for(int &a : v) {
-		cin >> a;
-	}
+	for (int &a : v) { cin >> a; }
 	long long ans = -accumulate(v.begin(), v.end(), 0LL);
-	// Check for every bit position if it's set on in the xor-sum of every subsequence
-	for(int i = 0; i < 30; i++) {
+	// Check for every bit position if it's set on in the xor-sum of every
+	// subsequence
+	for (int i = 0; i < 30; i++) {
 		int s = 0;
-		// Count the prefix sums 
+		// Count the prefix sums
 		vector<int> pref = {1, 0};
-		for(int a : v) {
-			s ^= (a >> i) & 1; 
+		for (int a : v) {
+			s ^= (a >> i) & 1;
 			/*
-			 * Count the # of sequences ending at this position with xor-sum non-zero
-			 * by counting the prefixes of the inversed bit, i.e. pref[i] ^ pref[j] = 1.
-			 * Update the answer by adding the # of such sequnces multiplied by the respective
-			 * power of two.
- 			 */
+			 * Count the # of sequences ending at this position with xor-sum
+			 * non-zero by counting the prefixes of the inversed bit, i.e.
+			 * pref[i] ^ pref[j] = 1. Update the answer by adding the # of such
+			 * sequnces multiplied by the respective power of two.
+			 */
 			ans += pref[s ^ 1] * 1LL << i;
 			// Update the prexies
 			pref[s]++;
@@ -397,7 +396,6 @@ int main() {
 	}
 	cout << ans << endl;
 }
-
 ```
 
 </CPPSection>
