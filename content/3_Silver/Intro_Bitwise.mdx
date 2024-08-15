@@ -347,7 +347,61 @@ The special property that differentiates it from the other bitwise operations is
 
 <FocusProblem problem = "sample2" />
 
+### Explanation
 
+One good practice for the xor operation is analyzing how the bits are
+set in the final answer. In this case, we'll check for every bit position, i.e.
+for every power of two, whether or not it's set on in every subsequence xor-sum.
+This way, we transformed the problem into counting the number of subsequences with
+xor-sum non-zero in an array formed by the bits in same position in all value.
+
+### Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp 
+#include <iostream>
+#include <vector>
+#include <numeric>
+
+using namespace std;
+
+int main() { 
+	int n;
+	cin >> n;
+	vector<int> v(n);
+	for(int &a : v) {
+		cin >> a;
+	}
+	long long ans = -accumulate(v.begin(), v.end(), 0LL);
+	// Check for every bit position if it's set on in the xor-sum of every subsequence
+	for(int i = 0; i < 30; i++) {
+		int s = 0;
+		// Count the prefix sums 
+		vector<int> pref = {1, 0};
+		for(int a : v) {
+			s ^= (a >> i) & 1; 
+			/*
+			 * Count the # of sequences ending at this position with xor-sum non-zero
+			 * by counting the prefixes of the inversed bit, i.e. pref[i] ^ pref[j] = 1.
+			 * Update the answer by adding the # of such sequnces multiplied by the respective
+			 * power of two.
+ 			 */
+			ans += pref[s ^ 1] * 1LL << i;
+			// Update the prexies
+			pref[s]++;
+		}
+	}
+	cout << ans << endl;
+}
+
+```
+
+</CPPSection>
+</LanguageSection>
 
 <Problems problems="probs" />
 
