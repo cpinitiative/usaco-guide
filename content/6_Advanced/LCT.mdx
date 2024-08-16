@@ -112,7 +112,7 @@ struct mint {
 // EndCodeSnip
 
 // represents a function f(x) = w * x + b
-struct Line { 
+struct Line {
 	mint w = 1, b = 0;
 	mint operator()(mint x) { return w * x + b; }
 	Line operator()(Line f) { return Line{w * f.w, w * f.b + b}; }
@@ -128,7 +128,7 @@ struct Node {
 	// prevent MLE
 	static Node t[2 * N];
 	// c[0] -> left child; c[1] -> right child
-	array<Node*, 2> c{};
+	array<Node *, 2> c{};
 	Node *p{};
 	Line f{};
 	bool rev = false;
@@ -143,7 +143,7 @@ struct Node {
 		t[n].pull();
 		return &t[n++];
 	}
-	
+
 	static int size(Node *x) { return x ? x->sz : 0; }
 
 	static mint sum(Node *x) { return x ? x->s : 0; }
@@ -279,7 +279,7 @@ struct SplayTree {
 	}
 
 	// update range [l, r) using given function f (see below for examples)
-	void upd(int l, int r, function<void(Node*)> f) {
+	void upd(int l, int r, function<void(Node *)> f) {
 		SplayTree a, b, c;
 		tie(a, b) = split(l);
 		tie(b, c) = b.split(r - l);
