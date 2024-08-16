@@ -111,7 +111,8 @@ struct mint {
 };
 // EndCodeSnip
 
-struct Line {
+// represents a function f(x) = w * x + b
+struct Line { 
 	mint w = 1, b = 0;
 	mint operator()(mint x) { return w * x + b; }
 	Line operator()(Line f) { return Line{w * f.w, w * f.b + b}; }
@@ -119,8 +120,6 @@ struct Line {
 };
 
 const int N = 5e5;
-struct Node;
-typedef struct Node *T;
 struct Node {
 	mint v, s;
 	int sz;
@@ -129,44 +128,44 @@ struct Node {
 	// prevent MLE
 	static Node t[2 * N];
 	// c[0] -> left child; c[1] -> right child
-	array<T, 2> c{};
-	T p{};
+	array<Node*, 2> c{};
+	Node *p{};
 	Line f{};
 	bool rev = false;
 
 	Node() {}
 	Node(int v) : v(v), s(v), sz(1), rev(false) {}
 
-	static T init(int v, T l = nullptr, T r = nullptr) {
+	static Node *init(int v, Node *l = nullptr, Node *r = nullptr) {
 		t[n] = Node(v);
 		t[n].attach(0, l);
 		t[n].attach(1, r);
 		t[n].pull();
 		return &t[n++];
 	}
+	
+	static int size(Node *x) { return x ? x->sz : 0; }
 
-	static int size(T x) { return x ? x->sz : 0; }
-
-	static mint sum(T x) { return x ? x->s : 0; }
+	static mint sum(Node *x) { return x ? x->s : 0; }
 
 	void push() {
 		if (rev) {
 			swap(c[0], c[1]);
-			for (T x : c)
+			for (Node *x : c)
 				if (x) { x->rev ^= rev; }
 			rev = false;
 		}
 		if (f) {
 			v = f(v);
 			s = f.w * s + f.b * sz;
-			for (T x : c)
+			for (Node *x : c)
 				if (x) { x->f = f(x->f); }
 			f = Line{1, 0};
 		}
 	}
 
 	void pull() {
-		for (T x : c)
+		for (Node *x : c)
 			if (x) { x->push(); }
 		sz = size(c[0]) + size(c[1]) + 1;
 		s = sum(c[0]) + sum(c[1]) + v;
@@ -174,15 +173,15 @@ struct Node {
 
 	bool side() { return p->c[1] == this; }
 
-	void attach(int i, T x) {
+	void attach(int i, Node *x) {
 		if (x) { x->p = this; }
 		c[i] = x;
 		push();
 		pull();
 	}
-	T detach(int i) {
+	Node *detach(int i) {
 		push();
-		T t = c[i];
+		Node *t = c[i];
 		if (c[i]) { c[i]->p = nullptr; }
 		c[i] = nullptr;
 		pull();
@@ -190,8 +189,8 @@ struct Node {
 	}
 
 	void rotate() {
-		T p = this->p;  // parent
-		T g = p->p;     // grandparent
+		Node *p = this->p;  // parent
+		Node *g = p->p;     // grandparent
 		p->push();
 		push();
 		int i = side();
@@ -215,7 +214,7 @@ struct Node {
 		}
 	}
 
-	T find(int i) {
+	Node *find(int i) {
 		push();
 		if (i < size(c[0])) {
 			return c[0]->find(i);
@@ -226,7 +225,7 @@ struct Node {
 		}
 	}
 
-	friend ostream &operator<<(ostream &os, T s) {
+	friend ostream &operator<<(ostream &os, Node *s) {
 		if (!s) return os;
 		os << s->c[0];
 		os << s->v << " ";
@@ -237,9 +236,9 @@ struct Node {
 Node Node::t[2 * N];
 
 struct SplayTree {
-	T root = nullptr;
-	T splay(int x) {
-		T t = root->find(x);
+	Node *root = nullptr;
+	Node *splay(int x) {
+		Node *t = root->find(x);
 		t->splay();
 		return root = t;
 	}
@@ -248,7 +247,7 @@ struct SplayTree {
 		if (i == (root ? root->sz : 0)) {
 			return make_pair(SplayTree{root}, SplayTree{nullptr});
 		}
-		T t = splay(i)->detach(0);
+		Node *t = splay(i)->detach(0);
 		return make_pair(SplayTree{t}, SplayTree{root});
 	}
 
@@ -280,7 +279,7 @@ struct SplayTree {
 	}
 
 	// update range [l, r) using given function f (see below for examples)
-	void upd(int l, int r, function<void(T)> f) {
+	void upd(int l, int r, function<void(Node*)> f) {
 		SplayTree a, b, c;
 		tie(a, b) = split(l);
 		tie(b, c) = b.split(r - l);
@@ -317,11 +316,11 @@ int main() {
 			break;
 		case 2:
 			cin >> l >> r;
-			splay.upd(l, r, [](T x) { x->rev ^= true; });
+			splay.upd(l, r, [](Node *x) { x->rev ^= true; });
 			break;
 		case 3:
 			cin >> l >> r >> w >> b;
-			splay.upd(l, r, [=](T x) { x->f = Line{w, b}(x->f); });
+			splay.upd(l, r, [=](Node *x) { x->f = Line{w, b}(x->f); });
 			break;
 		case 4:
 			cin >> l >> r;
