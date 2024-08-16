@@ -351,9 +351,10 @@ The special property that differentiates it from the other bitwise operations is
 
 One good practice for the xor operation is analyzing how the bits are
 set in the final answer. In this case, we'll check for every bit position, i.e.
-for every power of two, whether or not it's set on in every subsequence xor-sum.
+for every power of two, whether or not it's set in every contiguous subsequence xor-sum.
 This way, we transformed the problem into counting the number of subsequences with
-xor-sum non-zero in an array formed by the bits in same position in all value.
+non-zero xor-sum; this will be applied on the array form by the bits on the same position
+in all the values.
 
 ### Implementation
 
@@ -375,7 +376,7 @@ int main() {
 	vector<int> v(n);
 	for (int &a : v) { cin >> a; }
 	long long ans = -accumulate(v.begin(), v.end(), 0LL);
-	// Check for every bit position if it's set on in the xor-sum of every
+	// For every bit position, check if it's set on in the xor-sum of every
 	// subsequence
 	for (int i = 0; i < 30; i++) {
 		int s = 0;
