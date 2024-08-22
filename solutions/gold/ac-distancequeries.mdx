@@ -1,0 +1,185 @@
+---
+id: ac-distancequeries
+source: AC Beginner Contest 294
+title: Distance Queries on a Tree
+author: Justin Ji
+---
+
+<Spoiler title = "Hint">
+
+Root the tree. For an edge from $u$ -> $v$, where $u$ is 
+the parent, we place the edge weight at node $u$.
+
+</Spoiler>
+
+<Spoiler title = "Hint 2">
+
+Given the previous hint, we can efficiently calculate the distance from the root 
+to any node in the tree. How can we use this to find the distance from any pair 
+of nodes?
+
+</Spoiler>
+
+<Spoiler title = "Answer to Hint 2">
+
+The distance between any pair of nodes $(u, v)$ is 
+$dist(u) + dist(v) - 2 \cdot dist(lca(u, v))$,
+where $dist(x)$ equals the distance from node $x$ to the 
+root.
+
+</Spoiler>
+
+<Spoiler title = "Explanation">
+
+As mentioned in the hints, we push the weights onto each node. To find the distance from any node to the root, 
+we use the same approach as in [this problem](https://usaco.guide/problems/cses-1138-path-queries/solution). Each weight $w$ at each node $i$ increases the distances of every node in the subtree of $i$ by $w$, so we can use a BIT to process range additions and point queries.
+
+The solution below uses [binary jumping](https://usaco.guide/plat/binary-jump) to find the LCA between two nodes. However, the approach described in this module will also suffice.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}((N + Q)\log{N})$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp 
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+
+// BeginCodeSnip{Binary Indexed Tree (Click to expand)}
+template <class T> class BIT {
+  private:
+    int size;
+    vector<T> bit;
+    vector<T> arr;
+
+  public:
+    BIT(int size) : size(size), bit(size + 1), arr(size) {}
+
+    /** Sets the value at index ind to val. */
+    void set(int ind, T val) { add(ind, val - arr[ind]); }
+
+    /** Adds val to the element at index ind. */
+    void add(int ind, T val) {
+        arr[ind] += val;
+        ind++;
+        for (; ind <= size; ind += ind & -ind) { bit[ind] += val; }
+    }
+
+    /** @return The sum of all values in [0, ind]. */
+    T pref_sum(int ind) {
+        ind++;
+        T total = 0;
+        for (; ind > 0; ind -= ind & -ind) { total += bit[ind]; }
+        return total;
+    }
+};
+// EndCodeSnip
+
+class Tree {
+  private:
+    const int n, log2dist;
+    BIT<ll> bit;
+    vector<int> tin, tout;
+    vector<array<int, 3>> edges;
+    vector<vector<array<int, 2>>> adj;
+    vector<vector<int>> up;
+    int timer = 0;
+
+    void dfs(int u, int p) {
+        tin[u] = timer++;
+        for (auto [v, w] : adj[u]) {
+            if (v == p) { continue; }
+            up[0][v] = u;
+            for (int i = 1; i < log2dist; i++) {
+                up[i][v] = up[i - 1][up[i - 1][v]];
+            }
+            dfs(v, u);
+            bit.add(tin[v], w);
+            bit.add(tout[v] + 1, -w);
+        }
+        tout[u] = timer - 1;
+    }
+
+  public:
+    Tree(int n, vector<array<int, 3>> &edges) 
+        : n(n), log2dist(1 + (int)log2(n)), bit(n + 3), 
+          tin(n), tout(n), edges(edges), adj(n) {
+        for (auto [u, v, w] : edges) {
+            adj[u].push_back({v, w});
+            adj[v].push_back({u, w});
+        }
+        up = vector<vector<int>>(log2dist, vector<int>(n));
+        dfs(0, -1);
+    }
+
+    bool is_ancestor(int u, int v) {
+        return tin[u] <= tin[v] && tout[v] <= tout[u];
+    }
+
+    int lca(int u, int v) {
+        if (is_ancestor(u, v)) { return u; }
+        if (is_ancestor(v, u)) { return v; }
+        for (int i = log2dist - 1; i >= 0; i--) {
+            if (!is_ancestor(up[i][u], v)) {
+                u = up[i][u];
+            }
+        }
+        return up[0][u];
+    }
+
+    void update(int i, int w) {
+        auto [u, v, prev_wt] = edges[i];
+        if (up[0][u] == v) { swap(u, v); }
+        bit.add(tin[v], w - prev_wt);
+        bit.add(tout[v] + 1, prev_wt - w);
+        edges[i][2] = w;
+    }
+
+    ll dist(int u) {
+        return bit.pref_sum(tin[u]);
+    }
+
+    ll query(int u, int v) {
+        return dist(u) + dist(v) - 2ll * dist(lca(u, v));
+    }
+};
+
+int main() {
+    int n;
+    cin >> n;
+    vector<array<int, 3>> edges(n - 1);
+    for (int i = 0; i < n - 1; i++) {
+        int u, v, w;
+        cin >> u >> v >> w;
+        u--, v--;
+        edges[i] = {u, v, w};
+    }
+    Tree tree(n, edges);
+
+    int q;
+    cin >> q;
+    for (int i = 0; i < q; i++) {
+        int type;
+        cin >> type;
+        if (type == 1) {
+            int idx, weight;
+            cin >> idx >> weight;
+            idx--;
+            tree.update(idx, weight);
+        } else {
+            int node_1, node_2;
+            cin >> node_1 >> node_2;
+            node_1--, node_2--;
+            cout << tree.query(node_1, node_2) << "\n";
+        }
+    }
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
+</Spoiler>
