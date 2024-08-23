@@ -48,7 +48,7 @@ The solution below uses [binary jumping](https://usaco.guide/plat/binary-jump) t
 using namespace std;
 using ll = long long;
 
-// BeginCodeSnip{Binary Indexed Tree (Click to expand)}
+// BeginCodeSnip{BIT (from the module)}
 template <class T> class BIT {
   private:
 	int size;
@@ -58,17 +58,14 @@ template <class T> class BIT {
   public:
 	BIT(int size) : size(size), bit(size + 1), arr(size) {}
 
-	/** Sets the value at index ind to val. */
 	void set(int ind, T val) { add(ind, val - arr[ind]); }
 
-	/** Adds val to the element at index ind. */
 	void add(int ind, T val) {
 		arr[ind] += val;
 		ind++;
 		for (; ind <= size; ind += ind & -ind) { bit[ind] += val; }
 	}
 
-	/** @return The sum of all values in [0, ind]. */
 	T pref_sum(int ind) {
 		ind++;
 		T total = 0;
@@ -88,6 +85,7 @@ class Tree {
 	vector<vector<int>> up;
 	int timer = 0;
 
+	/** calculates Euler Tour arrays and binary lifting array */
 	void dfs(int u, int p) {
 		tin[u] = timer++;
 		for (auto [v, w] : adj[u]) {
@@ -115,10 +113,12 @@ class Tree {
 		dfs(0, -1);
 	}
 
+	/** @return if node u is an ancestor of node v */
 	bool is_ancestor(int u, int v) {
 		return tin[u] <= tin[v] && tout[v] <= tout[u];
 	}
 
+	/** @return the least common ancestor of nodes u and v */
 	int lca(int u, int v) {
 		if (is_ancestor(u, v)) { return u; }
 		if (is_ancestor(v, u)) { return v; }
@@ -128,6 +128,7 @@ class Tree {
 		return up[0][u];
 	}
 
+	/** sets the weight of edge i to w */
 	void update(int i, int w) {
 		auto [u, v, prev_wt] = edges[i];
 		if (up[0][u] == v) { swap(u, v); }
@@ -136,8 +137,10 @@ class Tree {
 		edges[i][2] = w;
 	}
 
+	/** @return distance from the root to node u */
 	ll dist(int u) { return bit.pref_sum(tin[u]); }
 
+	/** @return distance from node u to node v */ 
 	ll query(int u, int v) { return dist(u) + dist(v) - 2ll * dist(lca(u, v)); }
 };
 
