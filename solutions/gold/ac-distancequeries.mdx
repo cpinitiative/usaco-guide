@@ -107,24 +107,24 @@ class Tree {
   private:
 	const int n;
 	BIT<ll> bit;
-    SparseTable<array<int, 2>> rmq;
-	vector<int> tin, tout;        // Euler Tour arrays
-    vector<int> tin_2, et, depth; // LCA arrays
+	SparseTable<array<int, 2>> rmq;
+	vector<int> tin, tout;         // Euler Tour arrays
+	vector<int> tin_2, et, depth;  // LCA arrays
 	vector<array<int, 3>> edges;
 	vector<vector<array<int, 2>>> adj;
 	int timer_1 = 0;
-    int timer_2 = 0;
+	int timer_2 = 0;
 
 	/** calculates Euler Tour arrays and LCA stuff */
 	void dfs(int u, int p) {
 		tin[u] = timer_1++;
-        tin_2[u] = timer_2;
-        et[timer_2++] = u;
+		tin_2[u] = timer_2;
+		et[timer_2++] = u;
 		for (auto [v, w] : adj[u]) {
 			if (v == p) { continue; }
-            depth[v] = depth[u] + 1;
+			depth[v] = depth[u] + 1;
 			dfs(v, u);
-            et[timer_2++] = u;
+			et[timer_2++] = u;
 			bit.add(tin[v], w);
 			bit.add(tout[v] + 1, -w);
 		}
@@ -140,11 +140,9 @@ class Tree {
 			adj[v].push_back({u, w});
 		}
 		dfs(0, -1);
-        vector<array<int, 2>> arr(2 * n);
-        for (int i = 0; i < 2 * n; i++) {
-            arr[i] = {depth[et[i]], et[i]};
-        }
-        rmq = SparseTable(arr);
+		vector<array<int, 2>> arr(2 * n);
+		for (int i = 0; i < 2 * n; i++) { arr[i] = {depth[et[i]], et[i]}; }
+		rmq = SparseTable(arr);
 	}
 
 	/** @return the lowest common ancestor of nodes u and v */
