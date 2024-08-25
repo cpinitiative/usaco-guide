@@ -1,0 +1,117 @@
+---
+id: ioi-05-garden
+source: IOI 2005
+title: Garden
+author: Justin Ji
+---
+
+[Official Analysis](https://ioinformatics.org/files/ioi2005solutions.pdf)
+
+## Explanation
+
+Note that between any two disjoint rectangles, we can draw either a vertical
+or horizontal line between these two rectangles. We can consider every possible
+vertical and horizontal line, and find the two best rectangles between the
+lines.
+
+Let's first consider every vertical line. Consider fixing the two rows of our
+rectangle. If we can calculate the best rectangle perimeter for
+every prefix and suffix of our available columns, we can find our answer by
+sweeping over the splitting point. The implementation below iterates on the
+right column and then uses two pointers to find the best left column.
+Similar logic can be applied to find the best result for every horizontal line.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(l^{2}w + w^{2}l)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	int l, w;
+	cin >> l >> w;
+	int n, k;
+	cin >> n >> k;
+	vector<vector<int>> grid(l + 1, vector<int>(w + 1));
+	for (int i = 0; i < n; i++) {
+		int x, y;
+		cin >> x >> y;
+		grid[x][y]++;
+	}
+
+	// we use 1e9 as INF to prevent overflow on line 66
+	const int INF = 1e9;
+	int res = INF;
+	/*
+	 * We first calculate the answer for every possible vertical line,
+	 * then we rotate the grid and perform the same calculation to get
+	 * the answer for every horizontal line.
+	 */
+	for (int _ = 0; _ < 2; _++) {
+		vector<int> pref_min(w + 1, INF);
+		vector<int> suff_min(w + 1, INF);
+		for (int row_1 = 1; row_1 <= l; row_1++) {
+			vector<int> col_sum(w + 1);
+			for (int row_2 = row_1; row_2 <= l; row_2++) {
+				int ptr = 0;
+				int rect_sum = 0;
+				for (int col = 1; col <= w; col++) {
+					col_sum[col] += grid[row_2][col];
+					rect_sum += col_sum[col];
+
+					// keep on moving the left column until rect_sum < k
+					// then, we compensate so the sum >= k at the end
+					while (rect_sum >= k) {
+						rect_sum -= col_sum[ptr++];
+						if (rect_sum < k) {
+							rect_sum += col_sum[--ptr];
+							break;
+						}
+					}
+
+					if (rect_sum == k) {
+						// update the prefix and suffix minimum array
+						int perimeter = 2 * (row_2 - row_1 + 1 + col - ptr + 1);
+						pref_min[col] = min(pref_min[col], perimeter);
+						suff_min[ptr] = min(suff_min[ptr], perimeter);
+					}
+				}
+			}
+		}
+
+		// calculating prefix and suffix minimums
+		for (int i = 2; i <= w; i++) {
+			pref_min[i] = min(pref_min[i], pref_min[i - 1]);
+		}
+		for (int i = w - 1; i >= 1; i--) {
+			suff_min[i] = min(suff_min[i], suff_min[i + 1]);
+		}
+
+		// sweep on a splitting point between our two rectangles
+		for (int i = 2; i <= w; i++) {
+			res = min(res, pref_min[i - 1] + suff_min[i]);
+		}
+
+		vector<vector<int>> rotated_grid(w + 1, vector<int>(l + 1));
+		for (int i = 1; i <= l; i++) {
+			for (int j = 1; j <= w; j++) { rotated_grid[j][i] = grid[i][j]; }
+		}
+		grid = move(rotated_grid);
+		swap(l, w);
+	}
+
+	if (res < INF) {
+		cout << res << endl;
+	} else {
+		cout << "NO" << endl;
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>

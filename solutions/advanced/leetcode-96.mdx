@@ -1,0 +1,73 @@
+---
+id: leetcode-96
+source: Leetcode
+title: Unique Binary Search Trees
+author: Rameez Parwez
+---
+
+## Explanation
+
+The crucial observation here is that the answer for $n$ nodes is the $n$th Catalan number.
+
+<Spoiler title = "Proof">
+
+Let's consider a binary search tree(BST) with $k$ as the root.
+In this case:
+- The left subtree will have $k - 1$ nodes with values less than $k$.
+- The right subtree will have $n - k$ nodes with values greater than $k$.
+
+As a result, the problem of counting the number of unique BSTs with $n$ nodes can be simplified to
+counting the number of unique BSTs that can be built with $k - 1$ nodes in the left subtree and $n - k$ nodes in the right subtree.
+
+Let $C_n$ be the number of unique BSTs that can be formed with $n$ nodes.
+Since the root of the tree can be any of the $n$ values, we can get the following recurrence relation:
+$$
+C_n= \sum^{n}_{k=1}{C_{k - 1} \cdot C_{n - k}}
+$$
+which by inspection, is identical to the definition of the $n$th Catalan number.
+
+</Spoiler>
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+class Solution {
+  public:
+	long long nCr(int n, int k) {
+		long long res = 1;
+
+		// since C(n, k) = C(n, n - k)
+		if (k > n - k) { k = n - k; }
+
+		for (int i = 0; i < k; i++) {
+			res *= (n - i);
+			res /= (i + 1);
+		}
+
+		return res;
+	}
+
+	int numTrees(int n) { return nCr(2 * n, n) / (n + 1); }
+};
+```
+
+</CPPSection>
+<PySection>
+
+```py
+import math
+
+
+class Solution:
+	def numTrees(self, n: int) -> int:
+		res = math.comb(2 * n, n) // (n + 1)
+		return res
+```
+
+</PySection>
+</LanguageSection>

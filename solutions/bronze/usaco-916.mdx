@@ -285,5 +285,62 @@ print("".join(map(str, ans)))
 ```
 
 </PySection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int main() {
+	freopen("revegetate.in", "r", stdin);
+	freopen("revegetate.out", "w", stdout);
+
+	int n, m;
+	cin >> n >> m;
+	vector<int> colors(n, 1);  // initially, all pastures have grass type one
+	vector<vector<int>> adj(n);
+
+	for (int i = 0; i < m; i++) {
+		int a, b;
+		cin >> a >> b;
+
+		// zero-index
+		adj[--a].push_back(--b);
+		adj[b].push_back(a);
+	}
+
+	// we want to assign the smallest grass types to the pastures at the front
+	for (int i = 0; i < n; i++) {
+		for (int k : adj[i]) {
+			/*
+			 * if they have the same grass type, increment the greater
+			 * pasture to minimize the answer. (earlier digits have more weight)
+			 */
+			if (colors[k] == colors[i]) {
+				colors[k]++;
+
+				/*
+				 * check if we've broken any of the "fixed" colorings.
+				 * once again, since j < i < k, we want to make sure
+				 * that we increment the greatest pasture.
+				 */
+				for (int j = 0; j < i; j++) {
+					for (int g : adj[j]) {
+						if (colors[g] == colors[j]) { colors[k]++; }
+					}
+				}
+			}
+		}
+	}
+
+	for (int i : colors) { cout << i; }
+	cout << "\n";
+}
+```
+
+</CPPSection>
+
 </LanguageSection>
 </Spoiler>

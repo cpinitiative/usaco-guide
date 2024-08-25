@@ -1,0 +1,110 @@
+---
+id: cses-2187
+source: CSES
+title: Bracket Sequences II
+author: Mihnea Brebenel
+---
+
+## Explanation
+
+Given the prefix, we first calculate the number of open and closing brackets in the rest of the sequence.
+If there's $c$ closing brackets and $n$ characters left, the number of possible endings is $\binom{n}{c}$,
+though not all of them have to be valid.
+
+To get our true answer, we subtract the number of invalid bracket combinations by instead thinking
+of a bracket sequence as a path on a grid.
+You can read an in-depth exaplanation [here](https://en.wikipedia.org/wiki/Catalan_number#Second_proof).
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+
+using namespace std;
+
+const int MAXN = 1e6;
+const int MOD = 1e9 + 7;
+
+// BeginCodeSnip{Combinatorics Functions (from module)}
+long long fac[MAXN + 1];
+long long inv[MAXN + 1];
+
+long long exp(long long x, long long n, long long m) {
+	x %= m;
+	long long res = 1;
+	while (n > 0) {
+		if (n % 2 == 1) { res = res * x % m; }
+		x = x * x % m;
+		n /= 2;
+	}
+	return res;
+}
+
+void factorial(long long p) {
+	fac[0] = 1;
+	for (int i = 1; i <= MAXN; i++) { fac[i] = fac[i - 1] * i % p; }
+}
+
+void inverses(long long p) {
+	inv[MAXN] = exp(fac[MAXN], p - 2, p);
+	for (int i = MAXN; i >= 1; i--) { inv[i - 1] = inv[i] * i % p; }
+}
+
+long long choose(long long n, long long r, long long p) {
+	return fac[n] * inv[r] % p * inv[n - r] % p;
+}
+// EndCodeSnip
+
+int main() {
+	int n;
+	string s;
+	cin >> n >> s;
+
+	// Odd length strings have no solution
+	if (n % 2) {
+		cout << 0 << endl;
+		return 0;
+	}
+
+	// Count the open/closed brackets
+	int closed = 0, open = 0;
+	for (int i = 0; i < s.size(); i++) {
+		closed += (s[i] == ')');
+		open += (s[i] == '(');
+		// The string becomes invalid
+		if (closed > open) {
+			cout << 0 << endl;
+			return 0;
+		}
+	}
+
+	// Too many open brackets
+	if (2 * open > n) {
+		cout << 0 << endl;
+		return 0;
+	}
+
+	// Get the size of the remaining string
+	n -= s.size();
+
+	// Precompute combinatorial values
+	factorial(MOD);
+	inverses(MOD);
+
+	// Count the # of remaining open brackets in the suffix
+	int remaining_closed = (n + open - closed) / 2;
+
+	long long total_combs = choose(n, remaining_closed, MOD);
+	long long bad_combs = choose(n, remaining_closed + 1, MOD);
+	// Substract from the total # of valid string the # of invalid strings
+	cout << (total_combs - bad_combs + MOD) % MOD << endl;
+}
+```
+
+</CPPSection>
+</LanguageSection>

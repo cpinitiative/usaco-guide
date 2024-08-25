@@ -1,0 +1,74 @@
+---
+id: ac-GameOnTree
+source: AtCoder Grand Contest
+title: Game On Tree
+author: Aakash Gokhale
+---
+
+[Official Editorial (Japanese)](https://atcoder.jp/contests/agc017/editorial)
+
+Since the game in the problem seems similar to Nim, let's try to use Sprague-Grundy numbers.
+
+To solve the problem, for a certain root with subtrees, $s_1, s_2, ..., s_k$, we can try to convert all these subtrees into a stack of some size.
+Then, by xoring all these stack sizes (like we do in Nim), we can tell whether we win or lose on this tree.
+
+To compute the size of the stack for a subtree, we can recursively solve the problem.
+For a subtree with $1$ node, the size of the stack will be $0$ because there are no edges that can be deleted.
+
+If the grundy value of the root is positive, then Alice wins, otherwise if the grundy value of the root is $0$, Bob wins.
+
+Notice that when we get the grundy numbers for each subtree we need to add $1$ to all of them before xoring.
+This is because each stack's size increases by $1$ when you consider the edge from the root of $s_i$ to the root of the entire tree.
+
+For example consider the tree:
+
+![](ac-GameOnTree/gameontree.png)
+
+For the subtrees rooted at $2$ and $3$, the grundy values will be $0$.
+For the tree rooted at $1$, the grundy value will be $(1 + 0) \oplus (1 + 0) = 0$.
+This makes sense because whichever edge that Alice chooses, Bob can choose the other one leaving Alice with no edge to delete and she will lose.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <functional>
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int main() {
+	int n;
+	cin >> n;
+	vector<vector<int>> g(n + 1);
+	for (int i = 0; i < n - 1; i++) {
+		int u, v;
+		cin >> u >> v;
+		g[u].push_back(v);
+		g[v].push_back(u);
+	}
+
+	function<int(int, int)> dfs = [&](int u, int p) {
+		int sg = 0;
+		for (int v : g[u]) {
+			if (v ^ p) {
+				/*
+				 * Adding 1 because the edge from u to v increases the size of
+				 * each stack by 1
+				 */
+				sg ^= dfs(v, u) + 1;
+			}
+		}
+		return sg;
+	};
+
+	cout << (dfs(1, 0) ? "Alice" : "Bob") << endl;
+}
+```
+
+</CPPSection>
+</LanguageSection>

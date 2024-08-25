@@ -153,6 +153,44 @@ export const MainEditorInterface = ({ className }): JSX.Element => {
         onMount={e => {
           setMonacoEditorInstance(e);
           e.getModel().updateOptions({ insertSpaces: false });
+          e.addAction({
+            id: 'insert-code',
+            label: 'Insert Code',
+            contextMenuGroupId: 'navigation',
+            run: function (ed) {
+              ed.trigger('keyboard', 'paste', {
+                text: `
+<LanguageSection>
+
+<CPPSection>
+
+\`\`\`cpp
+// code here
+\`\`\`
+
+</CPPSection>
+
+<PySection>
+
+\`\`\`py
+# code here
+\`\`\`
+
+</PySection>
+
+<JavaSection>
+
+\`\`\`java
+// code here
+\`\`\`
+
+</JavaSection>
+
+</LanguageSection>
+  `,
+              });
+            },
+          });
 
           setTimeout(() => {
             e.layout();

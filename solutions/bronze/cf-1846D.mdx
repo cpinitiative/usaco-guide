@@ -1,0 +1,109 @@
+---
+id: cf-1846D
+source: CF
+title: Rudolph and Christmas Tree
+author: Rameez Parwez, Kevin Sheng
+---
+
+[Official Editorial (C++)](https://codeforces.com/blog/entry/118044)
+
+## Explanation
+
+We process the branches from lowest to highest, calculating for each branch
+the amount of area it has that is not covered by a subsequent one.
+Looking at the image of the sample case given in the problem statement, we would
+be calculating the area outlined in black for each branch.
+
+For each branch, there are two cases:
+1. No branch covers the current one.
+   In this case, we add $\frac{dh}{2}$ to the total, as that is the formula for the area of a triangle.
+2. A branch covers the current one, turning it into a trapezoid.
+   In this case, we need to use the formula for the area of a trapezoid,
+   which is $\frac{h(b_1+b_2)}{2}$, where $b_1$ and $b_2$ are the lengths
+   of the top and bottom bases.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <algorithm>
+#include <iomanip>
+#include <iostream>
+#include <vector>
+
+using std::cout;
+using std::endl;
+using std::vector;
+
+/** @return the area of a trapezoid with the given base lens and height */
+double trap_area(double base1, double base2, double height) {
+	return height * (base1 + base2) / 2;
+}
+
+int main() {
+	int test_num;
+	std::cin >> test_num;
+
+	cout << std::setprecision(17);
+	for (int t = 0; t < test_num; t++) {
+		int branch_num;
+		int base;
+		int height;
+		std::cin >> branch_num >> base >> height;
+
+		vector<int> offsets(branch_num);
+		for (int &o : offsets) { std::cin >> o; }
+		std::sort(offsets.begin(), offsets.end());
+
+		double total_area = 0;
+		double slope = (double)base / height;
+		for (int b = 0; b < branch_num; b++) {
+			if (b == branch_num - 1 || offsets[b] + height <= offsets[b + 1]) {
+				total_area += (double)base * height / 2;
+				continue;
+			}
+
+			int height_diff = offsets[b + 1] - offsets[b];
+			double new_base = (double)base - slope * height_diff;
+			total_area += trap_area(base, new_base, height_diff);
+		}
+
+		cout << std::setprecision(17) << total_area << '\n';
+	}
+}
+```
+
+</CPPSection>
+<PySection>
+
+```py
+def trap_area(base1: float, base2: float, height: float) -> float:
+	""":return: the area of a trapezoid with the given base lens and height"""
+	return height * (base1 + base2) / 2
+
+
+for _ in range(int(input())):
+	branch_num, base, height = [int(i) for i in input().split()]
+	offsets = sorted(int(i) for i in input().split())
+	assert branch_num == len(offsets)
+
+	total_area = 0
+	slope = base / height
+	for b in range(branch_num):
+		if b == branch_num - 1 or offsets[b] + height <= offsets[b + 1]:
+			total_area += base * height / 2
+			continue
+
+		height_diff = offsets[b + 1] - offsets[b]
+		new_base = base - slope * height_diff
+		total_area += trap_area(base, new_base, height_diff)
+
+	print(total_area)
+```
+
+</PySection>
+</LanguageSection>
