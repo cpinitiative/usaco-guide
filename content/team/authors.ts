@@ -107,7 +107,7 @@ export const Authors: Author[] = [
     name: 'Nathan Chen',
     title: 'Co-Founder',
     blurb:
-      'Nathan Chen is a two-time USACO Finalist who competes in both Java and C++ fluently.',
+      'Nathan Chen is a two-time USACO Finalist who competes in both Java and C++.',
     codeforces: 'nchn27',
     github: 'nchn27',
     email: 'nchn27@gmail.com',
@@ -135,30 +135,9 @@ export const Authors: Author[] = [
     youtube: 'https://www.youtube.com/channel/UC6je-w-ygZqxRsG76HtMceQ',
   },
   {
-    photo: 'Harry',
-    name: 'Qi Wang',
-    title: 'Content Manager',
-    blurb:
-      'Qi Wang is a competitive programmer that participates in USACO with multiple languages. He is also a regular website developer.',
-    github: 'HarryWangATX',
-    website: 'https://harrycodes.com/',
-    email: 'harrynicomama@gmail.com',
-    youtube: 'https://www.youtube.com/c/RandomCoder',
-  },
-  {
-    photo: 'neo',
-    name: 'Neo Wang',
-    title: 'Content Manager',
-    blurb:
-      'Neo Wang is a competitive programmer who also writes contests, creates websites, and competes in robotics.',
-    github: 'nwatx',
-    website: 'https://nwatx.me',
-    email: 'neowangatx@gmail.com',
-  },
-  {
     photo: 'kevin',
     blurb:
-      'Kevin Sheng is a junior who likes coding & solving random problems.',
+      'Kevin Sheng is a college sophomore who likes coding & solving random problems.',
     name: 'Kevin Sheng',
     title: 'Content Manager',
     github: 'sanspapyrus683',
