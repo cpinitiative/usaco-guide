@@ -67,13 +67,6 @@ export const Authors: Author[] = [
     github: 'andrewwangva',
     email: 'andrewwangva.biz@gmail.com',
   },
-  // {
-  //   photo: 'briancdean',
-  //   name: 'Brian C. Dean',
-  //   title: 'Content Director',
-  //   blurb: 'Brian Christopher Dean is the director of USACO.',
-  //   email: 'bcdean@clemson.edu',
-  // },
   {
     photo: 'michael',
     name: 'Michael Cao',
