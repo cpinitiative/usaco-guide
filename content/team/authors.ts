@@ -135,6 +135,27 @@ export const Authors: Author[] = [
     youtube: 'https://www.youtube.com/channel/UC6je-w-ygZqxRsG76HtMceQ',
   },
   {
+    photo: 'Harry',
+    name: 'Qi Wang',
+    title: 'Content Manager',
+    blurb:
+      'Qi Wang is a competitive programmer that participates in USACO with multiple languages. He is also a regular website developer.',
+    github: 'HarryWangATX',
+    website: 'https://harrycodes.com/',
+    email: 'harrynicomama@gmail.com',
+    youtube: 'https://www.youtube.com/c/RandomCoder',
+  },
+  {
+    photo: 'neo',
+    name: 'Neo Wang',
+    title: 'Content Manager',
+    blurb:
+      'Neo Wang is a competitive programmer who also writes contests, creates websites, and competes in robotics.',
+    github: 'nwatx',
+    website: 'https://nwatx.me',
+    email: 'neowangatx@gmail.com',
+  },
+  {
     photo: 'kevin',
     blurb:
       'Kevin Sheng is a college sophomore who likes coding & solving random problems.',
