@@ -47,16 +47,16 @@ After that, we get the answer by sorting this new array.
 <CPPSection>
 
 ```cpp
+#include <algorithm>
 #include <iostream>
 #include <vector>
-#include <algorithm>
 
 using std::cout;
 using std::endl;
 using std::vector;
 
 /** Same as the code in the LIS module besides the usage of upper_bound. */
-int find_lis(const vector<int>& a) {
+int find_lis(const vector<int> &a) {
 	vector<int> dp;
 	for (int i : a) {
 		int pos = std::upper_bound(dp.begin(), dp.end(), i) - dp.begin();
@@ -98,7 +98,8 @@ import java.util.*;
 
 public class Studentsko {
 	public static void main(String[] args) throws IOException {
-		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader read =
+		    new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer initial = new StringTokenizer(read.readLine());
 		int len = Integer.parseInt(initial.nextToken());
 		int blockSize = Integer.parseInt(initial.nextToken());
@@ -111,9 +112,7 @@ public class Studentsko {
 
 		Arrays.sort(arr, Comparator.comparingInt(i -> i[0]));
 		int[] blockArr = new int[len];
-		for (int i = 0; i < len; i++) {
-			blockArr[arr[i][1]] = i / blockSize;
-		}
+		for (int i = 0; i < len; i++) { blockArr[arr[i][1]] = i / blockSize; }
 
 		System.out.println(len - findLis(blockArr));
 	}
@@ -166,9 +165,9 @@ def find_lis(arr: List[int]) -> int:
 	min_endings = []
 	for i in arr:
 		pos = bisect_right(min_endings, i)
-		if pos == len(min_endings): 
+		if pos == len(min_endings):
 			min_endings.append(i)
-		else: 
+		else:
 			min_endings[pos] = i
 	return len(min_endings)
 
@@ -178,7 +177,7 @@ arr = sorted((int(i), v) for v, i in enumerate(input().split()))
 
 block_arr = [-1 for _ in range(size)]
 for i in range(size):
-    block_arr[arr[i][1]] = i // block_size
+	block_arr[arr[i][1]] = i // block_size
 
 print(size - find_lis(block_arr))
 ```
