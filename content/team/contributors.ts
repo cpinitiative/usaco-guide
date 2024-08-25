@@ -256,10 +256,10 @@ export const RestOfMembers: Member[] = [
     titles: [roles.liveInstructor],
   },
   {
-    photo: "peng_bai",
-    name: "Peng Bai",
-    titles: [roles.contentAuthor]
-  }
+    photo: 'peng_bai',
+    name: 'Peng Bai',
+    titles: [roles.contentAuthor],
+  },
 ];
 
 export const NotPictured: Member[] = [
