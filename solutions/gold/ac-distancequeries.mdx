@@ -1,0 +1,202 @@
+---
+id: ac-distancequeries
+source: AC
+title: Distance Queries on a Tree
+author: Justin Ji
+---
+
+<Spoiler title = "Hint">
+
+Root the tree. For an edge from $u \rightarrow v$, where $u$ is
+the parent, we place the edge weight at node $u$.
+
+</Spoiler>
+
+<Spoiler title = "Hint 2">
+
+Given the previous hint, we can efficiently calculate the distance from the root
+to any node in the tree. How can we use this to find the distance from any pair
+of nodes?
+
+</Spoiler>
+
+<Spoiler title = "Answer to Hint 2">
+
+The distance between any pair of nodes $(u, v)$ is
+$dist(u) + dist(v) - 2 \cdot dist(lca(u, v))$,
+where $dist(x)$ equals the distance from node $x$ to the
+root.
+
+</Spoiler>
+
+<Spoiler title = "Explanation">
+
+As mentioned in the hints, we push the weights onto each node. To find the distance from any node to the root,
+we use the same approach as in [this problem](/problems/cses-1138-path-queries/solution). Each weight $w$ at each node $i$ increases the distances of every node in the subtree of $i$ by $w$, so we can use a BIT to process range additions and point queries.
+
+The code below uses the RMQ based method of finding the LCA in $\mathcal{O}(1)$, although methods using [binary jumping](/plat/binary-jump) will also suffice.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}((N + Q)\log{N})$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+
+// BeginCodeSnip{BIT (from the module)}
+template <class T> class BIT {
+  private:
+	int size;
+	vector<T> bit;
+	vector<T> arr;
+
+  public:
+	BIT(int size) : size(size), bit(size + 1), arr(size) {}
+
+	void set(int ind, T val) { add(ind, val - arr[ind]); }
+
+	void add(int ind, T val) {
+		arr[ind] += val;
+		ind++;
+		for (; ind <= size; ind += ind & -ind) { bit[ind] += val; }
+	}
+
+	T pref_sum(int ind) {
+		ind++;
+		T total = 0;
+		for (; ind > 0; ind -= ind & -ind) { total += bit[ind]; }
+		return total;
+	}
+};
+// EndCodeSnip
+
+// BeginCodeSnip{Sparse Table (from the module)}
+template <typename T> class SparseTable {
+  private:
+	int n, log2dist;
+	vector<vector<T>> st;
+
+  public:
+	SparseTable(const vector<T> &v) {
+		n = (int)v.size();
+		log2dist = 1 + (int)log2(n);
+		st.resize(log2dist);
+		st[0] = v;
+		for (int i = 1; i < log2dist; i++) {
+			st[i].resize(n - (1 << i) + 1);
+			for (int j = 0; j + (1 << i) <= n; j++) {
+				st[i][j] = min(st[i - 1][j], st[i - 1][j + (1 << (i - 1))]);
+			}
+		}
+	}
+
+	/** @return minimum on the range [l, r] */
+	T query(int l, int r) {
+		int i = (int)log2(r - l + 1);
+		return min(st[i][l], st[i][r - (1 << i) + 1]);
+	}
+};
+// EndCodeSnip
+
+class Tree {
+  private:
+	const int n;
+	BIT<ll> bit;
+	SparseTable<array<int, 2>> rmq;
+	vector<int> tin, tout;         // Euler Tour arrays
+	vector<int> tin_2, et, depth;  // LCA arrays
+	vector<array<int, 3>> edges;
+	vector<vector<array<int, 2>>> adj;
+	int timer_1 = 0;
+	int timer_2 = 0;
+
+	/** calculates Euler Tour arrays and LCA stuff */
+	void dfs(int u, int p) {
+		tin[u] = timer_1++;
+		tin_2[u] = timer_2;
+		et[timer_2++] = u;
+		for (auto [v, w] : adj[u]) {
+			if (v == p) { continue; }
+			depth[v] = depth[u] + 1;
+			dfs(v, u);
+			et[timer_2++] = u;
+			bit.add(tin[v], w);
+			bit.add(tout[v] + 1, -w);
+		}
+		tout[u] = timer_1 - 1;
+	}
+
+  public:
+	Tree(int n, vector<array<int, 3>> &edges)
+	    : n(n), bit(n + 1), rmq(vector<array<int, 2>>(1)), tin(n), tout(n),
+	      tin_2(n), et(2 * n), depth(n), edges(edges), adj(n) {
+		for (auto [u, v, w] : edges) {
+			adj[u].push_back({v, w});
+			adj[v].push_back({u, w});
+		}
+		dfs(0, -1);
+		vector<array<int, 2>> arr(2 * n);
+		for (int i = 0; i < 2 * n; i++) { arr[i] = {depth[et[i]], et[i]}; }
+		rmq = SparseTable(arr);
+	}
+
+	/** @return the lowest common ancestor of nodes u and v */
+	int lca(int u, int v) {
+		if (tin_2[u] > tin_2[v]) { swap(u, v); }
+		return rmq.query(tin_2[u], tin_2[v])[1];
+	}
+
+	/** sets the weight of edge i to w */
+	void update(int i, int w) {
+		auto [u, v, prev_wt] = edges[i];
+		if (depth[u] > depth[v]) { swap(u, v); }
+		bit.add(tin[v], w - prev_wt);
+		bit.add(tout[v] + 1, prev_wt - w);
+		edges[i][2] = w;
+	}
+
+	/** @return distance from the root to node u */
+	ll dist(int u) { return bit.pref_sum(tin[u]); }
+
+	/** @return distance from node u to node v */
+	ll query(int u, int v) { return dist(u) + dist(v) - 2ll * dist(lca(u, v)); }
+};
+
+int main() {
+	int n;
+	cin >> n;
+	vector<array<int, 3>> edges(n - 1);
+	for (int i = 0; i < n - 1; i++) {
+		int u, v, w;
+		cin >> u >> v >> w;
+		edges[i] = {--u, --v, w};
+	}
+	Tree tree(n, edges);
+
+	int q;
+	cin >> q;
+	for (int i = 0; i < q; i++) {
+		int type;
+		cin >> type;
+		if (type == 1) {
+			int idx, weight;
+			cin >> idx >> weight;
+			tree.update(--idx, weight);
+		} else {
+			int node_1, node_2;
+			cin >> node_1 >> node_2;
+			cout << tree.query(--node_1, --node_2) << "\n";
+		}
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
+</Spoiler>

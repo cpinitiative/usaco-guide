@@ -24,13 +24,27 @@ strongly connected component. We can compute these components using either
 <Resources>
 	<Resource source="CPH" title="17 - Strong Connectivity" />
 	<Resource source="Wikipedia" title="Kosaraju's Algorithm" url="https://en.wikipedia.org/wiki/Kosaraju%27s_algorithm" />
+	<Resource source="TC" title="Kosaraju's Algorithm for SCCs"
+	url="https://www.topcoder.com/thrive/articles/kosarajus-algorithm-for-strongly-connected-components"/>
 </Resources>
 
-<IncompleteSection>
+## Explanation
 
-in-house explanation?
+In the first phase, the algorithm performs a depth-first search (DFS) on the original graph to determine the exit times of vertices; that is, the node that is processed last will be at the top of the stack (reverse topological sort). As each vertex finishes processing, it is pushed onto a stack. In the next phase, nodes are processed off the stack in the order of their decreasing finish times. This ordering will be used in the second phase.
 
-</IncompleteSection>
+In the second phase, the algorithm conducts another DFS, this time on the transposed graph, where all edges are reversed. The DFS processes nodes according to the order defined by the stack from the first phase. By reversing the edges and following this specific order, each DFS run in this phase can identify all vertices of one SCC before moving on to the next.
+
+We know that the transposed graph will have the same strongly connected components (SCCs) as the original because reversing an edge doesn't change the reachability within the components. Since each SCC is both maximal and disjoint. This means that within an SCC, every pair of vertices is mutually reachable; you can get from any vertex $u$ to any other vertex $v$, and vice versa. The term "maximal" indicates that you can't add any more vertices to an SCC without losing its strongly connected property. Furthermore, SCCs are disjoint, which means that no vertex can belong to more than one SCC. If a vertex were part of two SCCs, those SCCs would actually merge into a single, larger SCC. Therefore, reversing edges doesn't affect the undirected connections in the original graph.
+
+During the second DFS, we process the vertices in the order determined by the stack from the first phase. This ensures that we start with the vertex that finished last in the initial DFS, which is guaranteed to be part of an SCC with no outgoing edges to other SCCs — essentially making it a "[sink](https://en.wikipedia.org/wiki/Sink_(computing)#:~:text=In%20graph%20theory,-Main%20article%3A%20Directed&text=In%20a%20Directed%20acyclic%20graph,neural%20networks%20and%20data%20compression.)" in the transposed graph.
+
+By processing the vertices in this specific order, we fully explore all vertices within the current SCC before moving on to the next one. SCCs are maximal subgraphs where every vertex can reach every other vertex within the same subgraph, so the DFS will traverse through all nodes in an SCC, isolating it completely. Once the entire SCC is processed, we move to the next highest exit time vertex that hasn’t been visited yet, ensuring that each SCC is handled independently and thoroughly, so no vertices from another SCC will be mistakenly included in the current one.
+
+For visualization, refer to the TopCoder resource mentioned [here](https://www.topcoder.com/thrive/articles/kosarajus-algorithm-for-strongly-connected-components).
+
+<Info title="Sink">
+A node is considered a sink in a graph if it has out-degree of 0 (except for the source node).
+</Info>
 
 ## Implementation
 
@@ -41,60 +55,66 @@ in-house explanation?
 
 ```cpp
 #include <bits/stdc++.h>
-using namespace std;
 
-using vi = vector<int>;
-#define pb push_back
-
-const int mx = 1e5 + 1;
+const int N = 1e5 + 1;
 
 // adj_t is the transpose of adj
-vi adj[mx], adj_t[mx], S;
-bool vis[mx];
-int id[mx];
+std::vector<int> adj[N], adj_t[N];
+std::vector<int> order;
+std::vector<int> vis(N), id(N);
 
-void dfs(int x, int pass, int num = 0) {
-	vis[x] = true;
-	vi &ad = (pass == 1) ? adj[x] : adj_t[x];
-	for (const int &e : ad) {
-		if (!vis[e]) dfs(e, pass, num);
+// calculates the order in which nodes are processed
+void dfs1(int v) {
+	vis[v] = true;
+	for (int u : adj[v]) {
+		if (!vis[u]) { dfs1(u); }
 	}
+	order.push_back(v);
+}
 
-	S.pb(x);
-	if (pass == 2) id[x] = num;
+/*
+ * traverse one SCC at a time and
+ * assign component ID to all nodes in one SCC
+ */
+void dfs2(int x, int comp) {
+	vis[x] = true;
+
+	for (int u : adj_t[x]) {
+		if (!vis[u]) { dfs2(u, comp); }
+	}
+	id[x] = comp;
 }
 
 int main() {
-	cin.tie(0)->sync_with_stdio(0);
-
 	int n, m;
-	cin >> n >> m;
+	std::cin >> n >> m;
 
-	while (m--) {
-		int a, b;
-		cin >> a >> b;
-		adj[a].pb(b);
-		adj_t[b].pb(a);
+	for (int i = 1; i <= m; i++) {
+		int u, v;
+		std::cin >> u >> v;
+		adj[u].push_back(v);
+		adj_t[v].push_back(u);
 	}
+
+	vis.assign(N, false);
 
 	for (int i = 1; i <= n; i++) {
-		if (!vis[i]) dfs(i, 1);
+		if (!vis[i]) { dfs1(i); }
 	}
 
-	memset(vis, false, sizeof vis);
-
-	int components = 0;
-
-	for (int i = n - 1; i >= 0; i--) {
-		if (!vis[S[i]]) {
-			components++;
-			dfs(S[i], 2, components);
+	vis.assign(N, false);
+	std::reverse(begin(order), end(order));
+	int comps = 0;
+	for (int v : order) {
+		if (!vis[v]) {
+			comps++;  // counter for SCC
+			dfs2(v, comps);
 		}
 	}
 
-	cout << components << "\n";
+	std::cout << comps << '\n';
 
-	for (int i = 1; i <= n; i++) cout << id[i] << " ";
+	for (int i = 1; i <= n; i++) { std::cout << id[i] << " \n"[i == n]; }
 }
 ```
 
