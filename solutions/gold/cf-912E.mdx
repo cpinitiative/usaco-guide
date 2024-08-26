@@ -80,9 +80,7 @@ vector<long long> naive_search(vector<int> primes) {
 		ret.push_back(prod);
 		for (int i = at; i < primes.size(); i++) {
 			// use division in comparison to prevent overflow
-			if (MAX_ANSWER / primes[i] < prod) {
-				break;
-			}
+			if (MAX_ANSWER / primes[i] < prod) { break; }
 			dfs(prod * primes[i], i);
 		}
 	};
@@ -118,18 +116,13 @@ int main() {
 		ll tot = 0;
 
 		// Two pointers
-		ll o_pt = lower_bound(odd_nums.begin(), odd_nums.end(), x) - odd_nums.begin();
-		if (o_pt == odd_nums.size()) {
-			o_pt--;
-		}
+		ll o_pt =
+		    lower_bound(odd_nums.begin(), odd_nums.end(), x) - odd_nums.begin();
+		if (o_pt == odd_nums.size()) { o_pt--; }
 
 		for (ll e : even_nums) {
-			if (e > x) {
-				break;
-			}
-			while (odd_nums[o_pt] > x / e) {
-				o_pt--;
-			}
+			if (e > x) { break; }
+			while (odd_nums[o_pt] > x / e) { o_pt--; }
 			tot += o_pt + 1;
 		}
 
