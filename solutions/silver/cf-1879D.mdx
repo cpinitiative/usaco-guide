@@ -94,47 +94,42 @@ int main() {
 import java.util.*;
 
 public class SumofXORFunctions {
-    static int MOD = 998244353;
-    public static void main (String[] args) {
-        Scanner sc = new Scanner(System.in);
+	static int MOD = 998244353;
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
 
-        int n = sc.nextInt();
-        int[] a = new int[n + 1]; // 1-indexing simplifies the math a bit
-        for (int i = 1; i <= n; i++) {
-            a[i] = sc.nextInt();
-        }
+		int n = sc.nextInt();
+		int[] a = new int[n + 1];  // 1-indexing simplifies the math a bit
+		for (int i = 1; i <= n; i++) { a[i] = sc.nextInt(); }
 
-        long res = 0;
-        // 32 is the number of bits in an int
-        for (int bit = 0; bit < 32; bit += 1) {
-            long len_sum = 0; // total subarray length sum
-            long parity_sum[][] = {{0, 1}, {0, 0}}; // {index sum, # of this parity}
-            int parity = 0;
- 
-            for (int i = 1; i <= n; i++) {
-                // checking if the parity of bit occurrences changed
-                if (((a[i] >> bit) & 1) != 0) {
-                    parity = (parity + 1) & 1;
-                }
+		long res = 0;
+		// 32 is the number of bits in an int
+		for (int bit = 0; bit < 32; bit += 1) {
+			long len_sum = 0;  // total subarray length sum
+			long parity_sum[][] = {{0, 1},
+			                       {0, 0}};  // {index sum, # of this parity}
+			int parity = 0;
 
-                // all previous prefixes we use must have opposite endpoints
-                long dist = parity_sum[1 - parity][0];
-                long occ = parity_sum[1 - parity][1];
+			for (int i = 1; i <= n; i++) {
+				// checking if the parity of bit occurrences changed
+				if (((a[i] >> bit) & 1) != 0) { parity = (parity + 1) & 1; }
 
-                // evaluating all subarrays ending at index i
-                len_sum = (len_sum + occ * i - dist) % MOD;
-                if (len_sum < 0) {
-                    len_sum += MOD;
-                }
+				// all previous prefixes we use must have opposite endpoints
+				long dist = parity_sum[1 - parity][0];
+				long occ = parity_sum[1 - parity][1];
 
-                // updating the parity sums with this current index
-                parity_sum[parity][0] += i;
-                parity_sum[parity][1]++;
-            }
-            res = (res + len_sum * (1L << bit)) % MOD;
-        }
-        System.out.println(res);
-    }
+				// evaluating all subarrays ending at index i
+				len_sum = (len_sum + occ * i - dist) % MOD;
+				if (len_sum < 0) { len_sum += MOD; }
+
+				// updating the parity sums with this current index
+				parity_sum[parity][0] += i;
+				parity_sum[parity][1]++;
+			}
+			res = (res + len_sum * (1L << bit)) % MOD;
+		}
+		System.out.println(res);
+	}
 }
 ```
 
@@ -150,26 +145,26 @@ a = [*map(int, input().split())]
 res = 0
 # 32 is the number of bits in an int
 for bit in range(32):
-    len_sum = 0 # total subarray length sum
-    parity_sum = [[0, 1], [0, 0]] # {index sum, number of this parity}
-    parity = 0
-    for i in range(n):
-        if ((a[i] >> bit) & 1): # checking if the parity of bit occurences changed
-            parity = (parity + 1) & 1
+	len_sum = 0  # total subarray length sum
+	parity_sum = [[0, 1], [0, 0]]  # {index sum, number of this parity}
+	parity = 0
+	for i in range(n):
+		if (a[i] >> bit) & 1:  # checking if the parity of bit occurences changed
+			parity = (parity + 1) & 1
 
-        # all previous prefixes we use must have opposite endpoints
-        dist, occ = parity_sum[not parity][0], parity_sum[not parity][1]
+		# all previous prefixes we use must have opposite endpoints
+		dist, occ = parity_sum[not parity][0], parity_sum[not parity][1]
 
-        # evaluating all subarrays ending at index i
-        len_sum = (len_sum + occ * (i + 1) - dist) % MOD
-        if len_sum < 0:
-            len_sum += MOD
-        
-        # updating the parity sums with this current index
-        parity_sum[parity][0] += (i + 1)
-        parity_sum[parity][1] += 1
+		# evaluating all subarrays ending at index i
+		len_sum = (len_sum + occ * (i + 1) - dist) % MOD
+		if len_sum < 0:
+			len_sum += MOD
 
-    res = (res + len_sum * (1 << bit)) % MOD
+		# updating the parity sums with this current index
+		parity_sum[parity][0] += i + 1
+		parity_sum[parity][1] += 1
+
+	res = (res + len_sum * (1 << bit)) % MOD
 
 print(res)
 ```
