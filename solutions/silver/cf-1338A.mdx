@@ -73,23 +73,32 @@ import java.util.*;
 public class PoweredAddition {
     public static void main (String[] args) {
         Scanner sc = new Scanner(System.in);
-        int t = sc.nextInt();
-        while (t-- > 0) {
-            int n = sc.nextInt();
-            int Arr[] = new int[n];
-            for (int i = 0; i < n; i++) {
-                Arr[i] = sc.nextInt();
+        int testNum = sc.nextInt();
+        for (int t = 0; t < testNum; t++) {
+            int size = sc.nextInt();
+            int arr[] = new int[size];
+            for (int i = 0; i < size; i++) {
+                arr[i] = sc.nextInt();
             }
 
-            int prev = Arr[0];
-            int res = 0;
-            for (int i = 1; i < n; i++) {
-                if (prev > Arr[i]) {
-                    res = Math.max(res, (int)(Math.log(prev - Arr[i]) / Math.log(2)) + 1);
+            List<Integer> target = new ArrayList<>();
+            target.add(arr[0]);
+            List<Integer> toAdd = new ArrayList<>();
+
+            for (int i = 1; i < size; i++) {
+                if (target.get(target.size() - 1) > arr[i]) {
+                    toAdd.add(target.get(target.size() - 1) - arr[i]);
+                    target.add(target.get(target.size() - 1));
+                } else {
+                    target.add(arr[i]);
                 }
-                prev = Math.max(prev, Arr[i]);
             }
-            System.out.println(res);
+
+            int minTime = 0;
+            for (int a : toAdd) {
+                minTime = Math.max(minTime, (int)(Math.log(a) / Math.log(2)) + 1);
+            }
+            System.out.println(minTime);
         }
     }
 }
