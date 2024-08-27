@@ -71,36 +71,35 @@ int main() {
 import java.util.*;
 
 public class PoweredAddition {
-    public static void main (String[] args) {
-        Scanner sc = new Scanner(System.in);
-        int testNum = sc.nextInt();
-        for (int t = 0; t < testNum; t++) {
-            int size = sc.nextInt();
-            int arr[] = new int[size];
-            for (int i = 0; i < size; i++) {
-                arr[i] = sc.nextInt();
-            }
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int testNum = sc.nextInt();
+		for (int t = 0; t < testNum; t++) {
+			int size = sc.nextInt();
+			int arr[] = new int[size];
+			for (int i = 0; i < size; i++) { arr[i] = sc.nextInt(); }
 
-            List<Integer> target = new ArrayList<>();
-            target.add(arr[0]);
-            List<Integer> toAdd = new ArrayList<>();
+			List<Integer> target = new ArrayList<>();
+			target.add(arr[0]);
+			List<Integer> toAdd = new ArrayList<>();
 
-            for (int i = 1; i < size; i++) {
-                if (target.get(target.size() - 1) > arr[i]) {
-                    toAdd.add(target.get(target.size() - 1) - arr[i]);
-                    target.add(target.get(target.size() - 1));
-                } else {
-                    target.add(arr[i]);
-                }
-            }
+			for (int i = 1; i < size; i++) {
+				if (target.get(target.size() - 1) > arr[i]) {
+					toAdd.add(target.get(target.size() - 1) - arr[i]);
+					target.add(target.get(target.size() - 1));
+				} else {
+					target.add(arr[i]);
+				}
+			}
 
-            int minTime = 0;
-            for (int a : toAdd) {
-                minTime = Math.max(minTime, (int)(Math.log(a) / Math.log(2)) + 1);
-            }
-            System.out.println(minTime);
-        }
-    }
+			int minTime = 0;
+			for (int a : toAdd) {
+				minTime =
+				    Math.max(minTime, (int)(Math.log(a) / Math.log(2)) + 1);
+			}
+			System.out.println(minTime);
+		}
+	}
 }
 ```
 </JavaSection>
