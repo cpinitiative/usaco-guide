@@ -868,22 +868,25 @@ non-empty. Thus, the answer is obtained by the second formula: $\binom{n-1}{k-1}
 ```cpp
 #include <iostream>
 
-using namespace std;
-
+/** @return n choose k, computed naively since the problem has no overflow */
 long long comb(int n, int k) {
 	if (k > n - k) { k = n - k; }
-	long long ans = 1;
-	for (int i = 0; i < k; i++) { ans = ans * (n - i) / (i + 1); }
-	return ans;
+	long long ret = 1;
+	for (int i = 0; i < k; i++) {
+		// this is done instead of *= for divisibility issues
+		ret = ret * (n - i) / (i + 1);
+	}
+	return ret;
 }
 
 int main() {
 	int test_num;
-	cin >> test_num;
+	std::cin >> test_num;
 	for (int t = 0; t < test_num; t++) {
-		int n, k;
-		cin >> n >> k;
-		cout << comb(n - 1, k - 1) << '\n';
+		int marble_num;
+		int color_num;
+		std::cin >> marble_num >> color_num;
+		std::cout << comb(marble_num - 1, color_num - 1) << '\n';
 	}
 }
 ```
@@ -932,6 +935,20 @@ int32_t main() {
 ```
 
 </CPPSection>
+<PySection>
+
+```py
+from math import comb
+
+ans = []
+for _ in range(int(input())):
+	marble_num, color_num = [int(i) for i in input().split()]
+	ans.append(str(comb(marble_num - 1, color_num - 1)))
+
+print("\n".join(ans))
+```
+
+</PySection>
 </LanguageSection>
 
 ## Problems
