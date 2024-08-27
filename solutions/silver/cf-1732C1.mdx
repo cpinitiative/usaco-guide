@@ -111,60 +111,60 @@ int main() {
 import java.util.*;
 
 public class Sheikh {
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        int tc = sc.nextInt();
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int tc = sc.nextInt();
 
-        for (int t = 0; t < tc; t++) {
-            int n = sc.nextInt();
-            int q = sc.nextInt();
-            long[] prefSum = new long[n + 1];
-            long[] prefXor = new long[n + 1];
+		for (int t = 0; t < tc; t++) {
+			int n = sc.nextInt();
+			int q = sc.nextInt();
+			long[] prefSum = new long[n + 1];
+			long[] prefXor = new long[n + 1];
 
-            for (int i = 0; i < n; i++) {
-                int x = sc.nextInt();
-                prefSum[i + 1] = x + prefSum[i];
-                prefXor[i + 1] = x ^ prefXor[i];
-            }
+			for (int i = 0; i < n; i++) {
+				int x = sc.nextInt();
+				prefSum[i + 1] = x + prefSum[i];
+				prefXor[i + 1] = x ^ prefXor[i];
+			}
 
-            int L = sc.nextInt();
-            int R = sc.nextInt();
+			int L = sc.nextInt();
+			int R = sc.nextInt();
 
-            long bestCost = cost(1, n, prefSum, prefXor);
+			long bestCost = cost(1, n, prefSum, prefXor);
 
-            // binary search on length 
-            int lo = 1, hi = n;
-            while (lo < hi) {
-                int mid = lo + (hi - lo) / 2;
-                boolean possible = false;
+			// binary search on length
+			int lo = 1, hi = n;
+			while (lo < hi) {
+				int mid = lo + (hi - lo) / 2;
+				boolean possible = false;
 
-                for (int i = 1; i + mid - 1 <= n; i++) {
-                    // if this segment has the most optimal cost
-                    if (cost(i, i + mid - 1, prefSum, prefXor) == bestCost) {
-                        possible = true;
-                        break;
-                    }
-                }
+				for (int i = 1; i + mid - 1 <= n; i++) {
+					// if this segment has the most optimal cost
+					if (cost(i, i + mid - 1, prefSum, prefXor) == bestCost) {
+						possible = true;
+						break;
+					}
+				}
 
-                if (possible) {
-                    hi = mid;
-                } else {
-                    lo = mid + 1;
-                }
-            }
+				if (possible) {
+					hi = mid;
+				} else {
+					lo = mid + 1;
+				}
+			}
 
-            for (int i = 1; i + lo - 1 <= n; i++) {
-                if (cost(i, i + lo - 1, prefSum, prefXor) == bestCost) {
-                    System.out.println(i + " " + (i + lo - 1));
-                    break;
-                }
-            }
-        }
-    }
+			for (int i = 1; i + lo - 1 <= n; i++) {
+				if (cost(i, i + lo - 1, prefSum, prefXor) == bestCost) {
+					System.out.println(i + " " + (i + lo - 1));
+					break;
+				}
+			}
+		}
+	}
 
-    private static long cost(int l, int r, long[] prefSum, long[] prefXor) {
-        return (prefSum[r] - prefSum[l - 1]) - (prefXor[r] ^ prefXor[l - 1]);
-    }
+	private static long cost(int l, int r, long[] prefSum, long[] prefXor) {
+		return (prefSum[r] - prefSum[l - 1]) - (prefXor[r] ^ prefXor[l - 1]);
+	}
 }
 ```
 
