@@ -104,13 +104,76 @@ int main() {
 }
 ```
 </CPPSection>
+<JavaSection>
 
+```java
+import java.io.*;
+import java.util.*;
+
+public class Sheikh {
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
+		int tc = io.nextInt();
+		for (int t = 0; t < tc; t++) {
+			int n = io.nextInt();
+			int q = io.nextInt();
+			long[] prefSum = new long[n + 1];
+			long[] prefXor = new long[n + 1];
+
+			for (int i = 0; i < n; i++) {
+				int x = io.nextInt();
+				prefSum[i + 1] = x + prefSum[i];
+				prefXor[i + 1] = x ^ prefXor[i];
+			}
+
+			int L = io.nextInt();
+			int R = io.nextInt();
+
+			long bestCost = cost(1, n, prefSum, prefXor);
+
+			// binary search on length
+			int lo = 1, hi = n;
+			while (lo < hi) {
+				int mid = lo + (hi - lo) / 2;
+				boolean possible = false;
+
+				for (int i = 1; i + mid - 1 <= n; i++) {
+					// if this segment has the most optimal cost
+					if (cost(i, i + mid - 1, prefSum, prefXor) == bestCost) {
+						possible = true;
+						break;
+					}
+				}
+
+				if (possible) {
+					hi = mid;
+				} else {
+					lo = mid + 1;
+				}
+			}
+
+			for (int i = 1; i + lo - 1 <= n; i++) {
+				if (cost(i, i + lo - 1, prefSum, prefXor) == bestCost) {
+					System.out.println(i + " " + (i + lo - 1));
+					break;
+				}
+			}
+		}
+	}
+
+	private static long cost(int l, int r, long[] prefSum, long[] prefXor) {
+		return (prefSum[r] - prefSum[l - 1]) - (prefXor[r] ^ prefXor[l - 1]);
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
 <PySection>
 
 ```py
-tc = int(input())
-
-for _ in range(tc):
+for _ in range(int(input())):
 	n, q = map(int, input().split())
 
 	pref_sum = [0] * (n + 1)
