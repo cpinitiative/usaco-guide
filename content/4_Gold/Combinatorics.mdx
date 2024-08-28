@@ -1,7 +1,7 @@
 ---
 id: combo
 title: 'Combinatorics'
-author: Jesse Choe, Aadit Ambadkar, Dustin Miao, Mihnea Brebenel
+author: Jesse Choe, Aadit Ambadkar, Dustin Miao, Mihnea Brebenel, Peng Bai
 prerequisites:
   - divisibility
   - modular
@@ -928,6 +928,80 @@ int32_t main() {
 	std::ios::sync_with_stdio(false);
 	cin.tie(NULL);
 	solve();
+}
+```
+
+## Linearity of Expectation
+Linearity of expectation states that $E[X + Y] = E[X] + E[Y]$ no matter if $X$ and $Y$ are independent from each other. For example, if on a certain day Alice goes to the gym with a probability of $\frac{1}{10}$ and her husband Bob goes to the gym with a probability of $\frac{3}{10}$, the expected number of visits to the gym on a certain day amongst the couple is $\frac{1}{10} + \frac{3}{10} = \frac{2}{5}$. This works even though the decisions of one person may affect the other.
+
+This can be generalized to a sequence of random variables $X_1, X_2, \dots, X_n$ and arbitrary constants $c_1, c_2, \dots, c_n$:
+$$
+E\left[\sum_{i = 1}^{n} c_iX_i \right] = \sum_{i = 1}^{n}c_i \cdot E[ X_i]
+$$
+
+<FocusProblem problem="sample6" />
+
+### Explanation
+
+While this may seem impossible at first glance given the amount of different sequences of operations, linearity of expectation allows us to break down the expected value into the sum of smaller parts.
+
+Let $E[X_u]$ be the probability that node $u$ is chosen in a sequence of operations. Let's consider how an operation affects node $u$.
+1. All nodes $v$ that cannot reach $u$ will not affect $u$ if chosen in an operation.
+2. All nodes $v$ that can reach $u$ will immediately delete $u$ if chosen in an operation.
+Therefore, $E[X_u]$ is the probability (in this case probability and expected value go hand in hand) that $u$ is chosen before any node $v \neq u$, which is $\frac{1}{a_u}$, where $a_u$ is the number of nodes $v$ that can reach $u$.
+
+From linearity of expectation, $E[X_1 + X_2 + \dots + X_n] = E[X_1] + E[X_2] + \dots + E[X_n]$, solving the problem.
+
+### Implementation
+
+**Time Complexity:** $\mathcal{O}(n^3)$ using a naive DFS or BFS.
+
+```cpp
+#include "bits/stdc++.h"
+using namespace std;
+const int N = 100;
+bool adj[N][N], vis[N];
+int a[N];
+int n;
+// adding 1 to a[i] for all nodes i that are reachable from node u 
+void dfs(int u) {
+    vis[u] = 1, a[u]++;
+    for (int v = 0; v < n; v++) {
+        if (!vis[v] && adj[u][v]) {
+            dfs(v);
+        }
+    }
+}
+
+void solve() {
+    cin >> n;
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            char c;
+            cin >> c;
+            adj[i][j] = c - '0';
+        }
+    }
+
+    for (int i = 0; i < n; i++) {
+        dfs(i);
+        memset(vis, 0, sizeof(vis));
+    }
+
+    double out = 0;
+    for (int i = 0; i < n; i++) {
+        out += 1.0 / a[i];
+    }
+
+    // must be set high to be precise enough to pass
+    cout << setprecision(15);
+    cout << out << "\n";
+}
+
+int32_t main() {
+    std::ios::sync_with_stdio(false);
+    cin.tie(NULL);
+    solve();
 }
 ```
 
