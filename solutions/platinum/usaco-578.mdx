@@ -98,13 +98,13 @@ struct LazySegtree {
 
 int main() {
 	freopen("haybales.in", "r", stdin);
-	freopen("haybales.out", "w", stdout);
 	int n, q;
 	cin >> n >> q;
 	vector<int> a(n);
 	for (int &i : a) { cin >> i; }
-	LazySegtree st(a);
 
+	LazySegtree st(a);
+	freopen("haybales.out", "w", stdout);
 	for (int t = 0; t < q; t++) {
 		char type;
 		cin >> type;
@@ -116,7 +116,7 @@ int main() {
 			int a, b;
 			cin >> a >> b;
 			const auto [sum, mn] = st.qry(--a, --b);
-			cout << (type == 'M' ? mn : sum) << "\n";
+			cout << (type == 'M' ? mn : sum) << '\n';
 		}
 	}
 }
