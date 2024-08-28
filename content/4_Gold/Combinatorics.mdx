@@ -868,28 +868,27 @@ non-empty. Thus, the answer is obtained by the second formula: $\binom{n-1}{k-1}
 ```cpp
 #include <iostream>
 
-/** @return n choose k, computed naively since the problem has no overflow */
+using namespace std;
+
 long long comb(int n, int k) {
 	if (k > n - k) { k = n - k; }
-	long long ret = 1;
-	for (int i = 0; i < k; i++) {
-		// this is done instead of *= for divisibility issues
-		ret = ret * (n - i) / (i + 1);
-	}
-	return ret;
+	long long ans = 1;
+	for (int i = 0; i < k; i++) { ans = ans * (n - i) / (i + 1); }
+	return ans;
 }
 
 int main() {
 	int test_num;
-	std::cin >> test_num;
+	cin >> test_num;
 	for (int t = 0; t < test_num; t++) {
-		int marble_num;
-		int color_num;
-		std::cin >> marble_num >> color_num;
-		std::cout << comb(marble_num - 1, color_num - 1) << '\n';
+		int n, k;
+		cin >> n >> k;
+		cout << comb(n - 1, k - 1) << '\n';
 	}
 }
 ```
+</CPPSection>
+</LanguageSection>
 ## Expected Value
 
 An expected value is the theoretical mean of a probability distribution. A **random variable** is used to represent a possible probability distribution. Let $X$ be a random variable and $P(X = x)$ be the probability that the result of the random variable $X$ is $x$. Then, the expected value of $X$, denoted as $E[X]$, is
@@ -910,6 +909,9 @@ Therefore, $P(X = x) = (\frac{x}{k})^n - (\frac{x - 1}{k})^n$, allowing us to ea
 ### Implementation
 
 **Time Complexity:** $\mathcal{O}(nk)$ using naive exponentiation or $\mathcal{O}(k \log n)$ using binary exponentiation or std::pow.
+
+<LanguageSection>
+<CPPSection>
 
 ```cpp
 #include <bits/stdc++.h>
@@ -933,6 +935,8 @@ int32_t main() {
 	solve();
 }
 ```
+</CPPSection>
+</LanguageSection>
 
 ## Linearity of Expectation
 Linearity of expectation states that $E[X + Y] = E[X] + E[Y]$ no matter if $X$ and $Y$ are independent from each other. For example, if on a certain day Alice goes to the gym with a probability of $\frac{1}{10}$ and her husband Bob goes to the gym with a probability of $\frac{3}{10}$, the expected number of visits to the gym on a certain day amongst the couple is $\frac{1}{10} + \frac{3}{10} = \frac{2}{5}$. This works even though the decisions of one person may affect the other.
@@ -959,6 +963,9 @@ From linearity of expectation, $E[X_1 + X_2 + \dots + X_n] = E[X_1] + E[X_2] + \
 
 **Time Complexity:** $\mathcal{O}(n^3)$ using a naive DFS or BFS.
 
+<LanguageSection>
+<CPPSection>
+
 ```cpp
 #include "bits/stdc++.h"
 using namespace std;
@@ -966,59 +973,49 @@ const int N = 100;
 bool adj[N][N], vis[N];
 int a[N];
 int n;
-// adding 1 to a[i] for all nodes i that are reachable from node u
+// adding 1 to a[i] for all nodes i that are reachable from node u 
 void dfs(int u) {
-	vis[u] = 1, a[u]++;
-	for (int v = 0; v < n; v++) {
-		if (!vis[v] && adj[u][v]) { dfs(v); }
-	}
+    vis[u] = 1, a[u]++;
+    for (int v = 0; v < n; v++) {
+        if (!vis[v] && adj[u][v]) {
+            dfs(v);
+        }
+    }
 }
 
 void solve() {
-	cin >> n;
-	for (int i = 0; i < n; i++) {
-		for (int j = 0; j < n; j++) {
-			char c;
-			cin >> c;
-			adj[i][j] = c - '0';
-		}
-	}
+    cin >> n;
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            char c;
+            cin >> c;
+            adj[i][j] = c - '0';
+        }
+    }
 
-	for (int i = 0; i < n; i++) {
-		dfs(i);
-		memset(vis, 0, sizeof(vis));
-	}
+    for (int i = 0; i < n; i++) {
+        dfs(i);
+        memset(vis, 0, sizeof(vis));
+    }
 
-	double out = 0;
-	for (int i = 0; i < n; i++) { out += 1.0 / a[i]; }
+    double out = 0;
+    for (int i = 0; i < n; i++) {
+        out += 1.0 / a[i];
+    }
 
-	// must be set high to be precise enough to pass
-	cout << setprecision(15);
-	cout << out << "\n";
+    // must be set high to be precise enough to pass
+    cout << setprecision(15);
+    cout << out << "\n";
 }
 
 int32_t main() {
-	std::ios::sync_with_stdio(false);
-	cin.tie(NULL);
-	solve();
+    std::ios::sync_with_stdio(false);
+    cin.tie(NULL);
+    solve();
 }
 ```
 
 </CPPSection>
-<PySection>
-
-```py
-from math import comb
-
-ans = []
-for _ in range(int(input())):
-	marble_num, color_num = [int(i) for i in input().split()]
-	ans.append(str(comb(marble_num - 1, color_num - 1)))
-
-print("\n".join(ans))
-```
-
-</PySection>
 </LanguageSection>
 
 ## Problems
