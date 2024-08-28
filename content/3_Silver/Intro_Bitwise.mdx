@@ -404,6 +404,41 @@ int main() {
 ```
 
 </CPPSection>
+<PySection>
+
+```py
+n = int(input())
+v = list(map(int, input().split()))
+
+res = 0
+"""
+For every bit position
+check if it's set on in the xor-sum of every subsequence
+"""
+for i in range(30):
+	s = 0
+	"""
+	Count the prefix sums
+	The # of 0 xor-sum prefxises starts from 1 to count the prefixes with
+	xor-sum 1
+	"""
+	pref = [1, 0]
+	for a in v:
+		s ^= (a >> i) & 1
+		"""
+		Count the # of sequences ending at this position with xor-sum
+		non-zero by counting the prefixes of the inversed bit, i.e.
+		pref[i] ^ pref[j] = 1. Update the answer by adding the # of such
+		sequnces multiplied by the respective power of two.
+		"""
+		res += pref[s ^ 1] * (1 << i)
+		# update the prexies
+		pref[s] += 1
+
+print(res - sum(v))
+```
+
+</PySection>
 </LanguageSection>
 
 <Problems problems="probs" />
