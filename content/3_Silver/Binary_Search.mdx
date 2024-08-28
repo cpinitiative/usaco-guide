@@ -4,7 +4,7 @@ redirects:
   - /silver/binary-search-sorted
   - /silver/binary-search-ans
 title: 'Binary Search'
-author: Darren Yao, Abutalib Namazov, Andrew Wang, Qi Wang, Dustin Miao
+author: Darren Yao, Abutalib Namazov, Andrew Wang, Qi Wang, Dustin Miao , Hasan Saleh
 prerequisites:
   - greedy-sorting
 description:
@@ -389,6 +389,69 @@ print(first_true(2, 10, lambda x: x * x >= 30))  # outputs 6
 print(first_true(2, 10, lambda x: False))  # outputs 11
 ```
 
+</PySection>
+</LanguageSection>
+
+### Example - Chat Ban
+<FocusProblem problem="e1" />
+**Statement**: you want to spam the emote triangle of size $k$. It consists of $2k−1$ messages. The first message consists of one emote, the second one — of two emotes, ..., the $k_{th}$ one - of $k$ emotes, the $(k+1)_{th}$ of $k−1$ emotes, ..., and the last one of one emote.
+
+For example, the emote triangle for $k=3$ consists of $5$ messages:
+<center>
+<img src="https://espresso.codeforces.com/c45a099db97c26744aa322176300f7161fe00bd9.png"></img>
+</center>
+Most of the channels have auto moderation. Auto moderator of the current chat will ban you right after you spam at least $x$ emotes in succession (you can assume you are the only user in the chat). Now you are interested - how many messages will you write before getting banned? Or maybe you will not get banned at all (i.e. will write all $2k−1$ messages and complete your emote triangle successfully)? 
+
+**Note that** if you get banned as a result of writing a message, this message is also counted.
+
+It's Easy to Formulate the Problem , Let $f(n,k)$ so that $n$ is the $n_{th}$ message , Notice that :
+$$\begin{cases}
+n \le k \implies \frac{n(n+1)}{2} \\
+n > k \implies \frac{k(k+1)}{2}-(n-k)(\frac{n-k+1}{2}+k)
+$$
+Thus We have $f(n,k)$ is $\mathcal{O}(1)$ time , Now notice $f(n,k)$ is increasing with fixed $k$ , thus you can binary search with $l=0$ , $r=2k$ and obtain an answer , Total complexity is $\mathcal{O}(\log k)$.
+
+<LanguageSection>
+<PySection>
+```python
+#Author : MathModel (CF)
+# Gitub : MinEuler
+def f(n,k):
+    if(n<=k):
+        return (n*(n+1))//2
+    else:
+        ans=(k*(k+1))//2
+        #k-1 + k-2 + k-3 + k-(k-1)
+        #(n-k)*k
+        #-(n-k)*(n-k+1)/2
+        ans+=(n-k)*k
+        ans-=((n-k)*(n-k+1))//2
+        return ans
+ 
+#f(n,k) in O(1)
+ 
+for _ in range(int(input())):
+    k,x=map(int,input().split())
+    l,r=0,2*k
+    ans=0
+    if(x>=f(2*k-1,k)):
+        print(2*k-1)
+        continue
+    #binary search for largest f(n) such f(n)<=x
+    while(l<=r):
+        n=(l+r)//2
+        if(f(n,k)==x):
+            ans=n
+            break
+        if(f(n,k)<x<f(n+1,k)):
+            ans=n+1
+            break
+        elif(f(n,k)<x):
+            l=n+1
+        else:
+            r=n-1
+    print(ans)
+```
 </PySection>
 </LanguageSection>
 
