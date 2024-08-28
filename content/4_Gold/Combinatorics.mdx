@@ -888,6 +888,20 @@ int main() {
 }
 ```
 </CPPSection>
+<PySection>
+
+```py
+from math import comb
+
+ans = []
+for _ in range(int(input())):
+	marble_num, color_num = [int(i) for i in input().split()]
+	ans.append(str(comb(marble_num - 1, color_num - 1)))
+
+print("\n".join(ans))
+```
+
+</PySection>
 </LanguageSection>
 ## Expected Value
 
@@ -973,41 +987,45 @@ const int N = 100;
 bool adj[N][N], vis[N];
 int a[N];
 int n;
-// adding 1 to a[i] for all nodes i that are reachable from node u
+// adding 1 to a[i] for all nodes i that are reachable from node u 
 void dfs(int u) {
-	vis[u] = 1, a[u]++;
-	for (int v = 0; v < n; v++) {
-		if (!vis[v] && adj[u][v]) { dfs(v); }
-	}
+    vis[u] = 1, a[u]++;
+    for (int v = 0; v < n; v++) {
+        if (!vis[v] && adj[u][v]) {
+            dfs(v);
+        }
+    }
 }
 
 void solve() {
-	cin >> n;
-	for (int i = 0; i < n; i++) {
-		for (int j = 0; j < n; j++) {
-			char c;
-			cin >> c;
-			adj[i][j] = c - '0';
-		}
-	}
+    cin >> n;
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            char c;
+            cin >> c;
+            adj[i][j] = c - '0';
+        }
+    }
 
-	for (int i = 0; i < n; i++) {
-		dfs(i);
-		memset(vis, 0, sizeof(vis));
-	}
+    for (int i = 0; i < n; i++) {
+        dfs(i);
+        memset(vis, 0, sizeof(vis));
+    }
 
-	double out = 0;
-	for (int i = 0; i < n; i++) { out += 1.0 / a[i]; }
+    double out = 0;
+    for (int i = 0; i < n; i++) {
+        out += 1.0 / a[i];
+    }
 
-	// must be set high to be precise enough to pass
-	cout << setprecision(15);
-	cout << out << "\n";
+    // must be set high to be precise enough to pass
+    cout << setprecision(15);
+    cout << out << "\n";
 }
 
 int32_t main() {
-	std::ios::sync_with_stdio(false);
-	cin.tie(NULL);
-	solve();
+    std::ios::sync_with_stdio(false);
+    cin.tie(NULL);
+    solve();
 }
 ```
 
