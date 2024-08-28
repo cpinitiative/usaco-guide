@@ -19,7 +19,8 @@ author: Justin Ji
 using namespace std;
 using ll = long long;
 
-struct LazySegtree {
+class LazySegtree {
+  private:
 	static constexpr array<ll, 2> ID = {0, INT32_MAX};  // default tree value
 	static constexpr int LZ_ID = 0;                     // default lazy value
 	const int sz;
@@ -31,11 +32,7 @@ struct LazySegtree {
 		return {a[0] + b[0], min(a[1], b[1])};
 	}
 
-	LazySegtree(const vector<int> &a)
-	    : sz((int)a.size()), t(4 * sz), lz(4 * sz) {
-		build(1, 0, sz - 1, a);
-	}
-
+    /** builds the segtree and its nodes */
 	void build(int v, int tl, int tr, const vector<int> &a) {
 		if (tl == tr) {
 			t[v] = {a[tl], a[tl]};
@@ -76,9 +73,6 @@ struct LazySegtree {
 		            qry(2 * v + 1, m + 1, tr, ql, qr));
 	}
 
-	/** @return {sum, minimum value} of haybales in [ql, qr] */
-	array<ll, 2> qry(int ql, int qr) { return qry(1, 0, sz - 1, ql, qr); }
-
 	void upd(int v, int tl, int tr, int ql, int qr, int amt) {
 		if (qr < tl || ql > tr) return;
 		if (ql <= tl && tr <= qr) {
@@ -91,6 +85,15 @@ struct LazySegtree {
 			t[v] = join(t[2 * v], t[2 * v + 1]);
 		}
 	}
+
+  public:
+	LazySegtree(const vector<int> &a)
+	    : sz((int)a.size()), t(4 * sz), lz(4 * sz) {
+		build(1, 0, sz - 1, a);
+	}
+
+	/** @return {sum, minimum value} of haybales in [ql, qr] */
+	array<ll, 2> qry(int ql, int qr) { return qry(1, 0, sz - 1, ql, qr); }
 
 	/** adds to every haybale in the range [ql, qr] */
 	void upd(int ql, int qr, int amt) { upd(1, 0, sz - 1, ql, qr, amt); }
