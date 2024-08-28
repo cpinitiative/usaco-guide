@@ -135,6 +135,7 @@ export default function TopNavigationBar({
   ];
   return (
     <>
+      {/*
       {!hidePromoBar && (
         <>
           <Banner
@@ -144,6 +145,7 @@ export default function TopNavigationBar({
           />
         </>
       )}
+      */}
 
       <nav
         className={classNames(
