@@ -400,7 +400,7 @@ For example, the emote triangle for $k=3$ consists of $5$ messages:
 <center>
 <img src="https://espresso.codeforces.com/c45a099db97c26744aa322176300f7161fe00bd9.png"></img>
 </center>
-Most of the channels have auto moderation. Auto moderator of the current chat will ban you right after you spam at least $x$ emotes in succession (you can assume you are the only user in the chat). Now you are interested - how many messages will you write before getting banned? Or maybe you will not get banned at all (i.e. will write all $2k−1$ messages and complete your emote triangle successfully)? 
+Most of the channels have auto moderation. Auto moderator of the current chat will ban you right after you spam at least $x$ emotes in succession (you can assume you are the only user in the chat). Now you are interested - how many messages will you write before getting banned? Or maybe you will not get banned at all (i.e. will write all $2k−1$ messages and complete your emote triangle successfully)?
 
 **Note that** if you get banned as a result of writing a message, this message is also counted.
 
@@ -413,44 +413,45 @@ Thus We have $f(n,k)$ is $\mathcal{O}(1)$ time , Now notice $f(n,k)$ is increasi
 
 <LanguageSection>
 <PySection>
-```python
-#Author : MathModel (CF)
+```py
+# Author : MathModel (CF)
 # Gitub : MinEuler
-def f(n,k):
-    if(n<=k):
-        return (n*(n+1))//2
-    else:
-        ans=(k*(k+1))//2
-        #k-1 + k-2 + k-3 + k-(k-1)
-        #(n-k)*k
-        #-(n-k)*(n-k+1)/2
-        ans+=(n-k)*k
-        ans-=((n-k)*(n-k+1))//2
-        return ans
- 
-#f(n,k) in O(1)
- 
+def f(n, k):
+	if n <= k:
+		return (n * (n + 1)) // 2
+	else:
+		ans = (k * (k + 1)) // 2
+		# k-1 + k-2 + k-3 + k-(k-1)
+		# (n-k)*k
+		# -(n-k)*(n-k+1)/2
+		ans += (n - k) * k
+		ans -= ((n - k) * (n - k + 1)) // 2
+		return ans
+
+
+# f(n,k) in O(1)
+
 for _ in range(int(input())):
-    k,x=map(int,input().split())
-    l,r=0,2*k
-    ans=0
-    if(x>=f(2*k-1,k)):
-        print(2*k-1)
-        continue
-    #binary search for largest f(n) such f(n)<=x
-    while(l<=r):
-        n=(l+r)//2
-        if(f(n,k)==x):
-            ans=n
-            break
-        if(f(n,k)<x<f(n+1,k)):
-            ans=n+1
-            break
-        elif(f(n,k)<x):
-            l=n+1
-        else:
-            r=n-1
-    print(ans)
+	k, x = map(int, input().split())
+	l, r = 0, 2 * k
+	ans = 0
+	if x >= f(2 * k - 1, k):
+		print(2 * k - 1)
+		continue
+	# binary search for largest f(n) such f(n)<=x
+	while l <= r:
+		n = (l + r) // 2
+		if f(n, k) == x:
+			ans = n
+			break
+		if f(n, k) < x < f(n + 1, k):
+			ans = n + 1
+			break
+		elif f(n, k) < x:
+			l = n + 1
+		else:
+			r = n - 1
+	print(ans)
 ```
 </PySection>
 </LanguageSection>
