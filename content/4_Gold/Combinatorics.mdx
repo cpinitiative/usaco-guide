@@ -730,7 +730,7 @@ $$
 !n = (n - 1)(!(n - 2) + !(n - 1))
 $$
 
-which can be computed in linear time with a simple DP. The base cases are that
+which can be computed in linear time with DP. The base cases are that
 $!0 = 1$ and $!1 = 0$.
 
 <LanguageSection>
@@ -868,22 +868,25 @@ non-empty. Thus, the answer is obtained by the second formula: $\binom{n-1}{k-1}
 ```cpp
 #include <iostream>
 
-using namespace std;
-
+/** @return n choose k, computed naively since the problem has no overflow */
 long long comb(int n, int k) {
 	if (k > n - k) { k = n - k; }
-	long long ans = 1;
-	for (int i = 0; i < k; i++) { ans = ans * (n - i) / (i + 1); }
-	return ans;
+	long long ret = 1;
+	for (int i = 0; i < k; i++) {
+		// this is done instead of *= for divisibility issues
+		ret = ret * (n - i) / (i + 1);
+	}
+	return ret;
 }
 
 int main() {
 	int test_num;
-	cin >> test_num;
+	std::cin >> test_num;
 	for (int t = 0; t < test_num; t++) {
-		int n, k;
-		cin >> n >> k;
-		cout << comb(n - 1, k - 1) << '\n';
+		int marble_num;
+		int color_num;
+		std::cin >> marble_num >> color_num;
+		std::cout << comb(marble_num - 1, color_num - 1) << '\n';
 	}
 }
 ```
@@ -903,6 +906,7 @@ print("\n".join(ans))
 
 </PySection>
 </LanguageSection>
+
 ## Expected Value
 
 An expected value is the theoretical mean of a probability distribution. A **random variable** is used to represent a possible probability distribution. Let $X$ be a random variable and $P(X = x)$ be the probability that the result of the random variable $X$ is $x$. Then, the expected value of $X$, denoted as $E[X]$, is
@@ -916,43 +920,58 @@ For example, let $X$ be the probability distribution of a fair 6-sided die. $P(X
 
 ### Explanation
 
-Let $X$ represent the probability distribution of maximum number of candies a child gets. To get $E[X]$, we just need $P(X = x)$ for $1 \leq x \leq k$. $(\frac{x}{k})^n$ is the probability that each child gets at most $x$ candies. To get $P(X = x)$, we must subtract out the probability that each child gets strictly less than $x$ candies, which is $(\frac{x - 1}{k})^n$.
+Let $X$ represent the probability distribution of maximum number of candies a child gets. To get $E[X]$, we  need $P(X = x)$ for $1 \leq x \leq k$. $(\frac{x}{k})^n$ is the probability that each child gets at most $x$ candies. To get $P(X = x)$, we must subtract out the probability that each child gets strictly less than $x$ candies, which is $(\frac{x - 1}{k})^n$.
 
-Therefore, $P(X = x) = (\frac{x}{k})^n - (\frac{x - 1}{k})^n$, allowing us to easily calculate $E[X]$.
+Therefore, $P(X = x) = (\frac{x}{k})^n - (\frac{x - 1}{k})^n$, allowing us to calculate $E[X]$.
 
 ### Implementation
 
-**Time Complexity:** $\mathcal{O}(nk)$ using naive exponentiation or $\mathcal{O}(k \log n)$ using binary exponentiation or std::pow.
+**Time Complexity:** $\mathcal{O}(nk)$ using naive exponentiation or $\mathcal{O}(k \log n)$ using binary exponentiation.
 
 <LanguageSection>
 <CPPSection>
 
 ```cpp
-#include <bits/stdc++.h>
-using namespace std;
-int n, k;
-void solve() {
-	cin >> n >> k;
-	double out = 0;
-	for (int i = 1; i <= k; i++) {
-		out += i * (pow((double)i / k, n) - pow((double)(i - 1) / k, n));
-	}
+#include <cmath>
+#include <iostream>
+#include <iomanip>
 
-	// set output precision to 6 decimal points
-	cout << setprecision(6) << fixed;
-	cout << out << "\n";
-}
+using std::cout;
+using std::endl;
 
-int32_t main() {
-	std::ios::sync_with_stdio(false);
-	cin.tie(NULL);
-	solve();
+int main() {
+    int n;
+    int k;
+    std::cin >> n >> k;
+
+    double expect_max = 0;
+    for (int i = 1; i <= k; i++) {
+        expect_max += i * (pow((double)i / k, n) - pow((double)(i - 1) / k, n));
+    }
+
+    cout << std::setprecision(6) << std::fixed;  // set output precision
+    cout << expect_max << endl;
 }
 ```
+
 </CPPSection>
+<PySection>
+
+```py
+n, k = [int(i) for i in input().split()]
+
+expected_max = 0
+for c in range(1, k + 1):
+    expected_max += c * ((c / k) ** n - ((c - 1) / k) ** n)
+
+print(f"{expected_max:.6f}")
+```
+
+</PySection>
 </LanguageSection>
 
 ## Linearity of Expectation
+
 Linearity of expectation states that $E[X + Y] = E[X] + E[Y]$ no matter if $X$ and $Y$ are independent from each other. For example, if on a certain day Alice goes to the gym with a probability of $\frac{1}{10}$ and her husband Bob goes to the gym with a probability of $\frac{3}{10}$, the expected number of visits to the gym on a certain day amongst the couple is $\frac{1}{10} + \frac{3}{10} = \frac{2}{5}$. This works even though the decisions of one person may affect the other.
 
 This can be generalized to a sequence of random variables $X_1, X_2, \dots, X_n$ and arbitrary constants $c_1, c_2, \dots, c_n$:
@@ -966,66 +985,112 @@ $$
 
 While this may seem impossible at first glance given the amount of different sequences of operations, linearity of expectation allows us to break down the expected value into the sum of smaller parts.
 
-Let $E[X_u]$ be the probability that node $u$ is chosen in a sequence of operations. Let's consider how an operation affects node $u$.
-1. All nodes $v$ that cannot reach $u$ will not affect $u$ if chosen in an operation.
-2. All nodes $v$ that can reach $u$ will immediately delete $u$ if chosen in an operation.
-Therefore, $E[X_u]$ is the probability (in this case probability and expected value go hand in hand) that $u$ is chosen before any node $v \neq u$, which is $\frac{1}{a_u}$, where $a_u$ is the number of nodes $v$ that can reach $u$.
+We can break this down by decomposing the initial random variable into the sums
+of various *indicator* random variables.
+Let $X_u$ be a variable that indicates whether node $u$ was explicitly marked for removal.
+Since it's basically a boolean, it can only take on either $0$ or $1$,
+which also means that the probability that it's $1$ is equal to its expected value.
 
-From linearity of expectation, $E[X_1 + X_2 + \dots + X_n] = E[X_1] + E[X_2] + \dots + E[X_n]$, solving the problem.
+Now, let's consider how an operation affects node $u$.
+1. Either it chooses a node that can't reach $u$, and nothing happens as far as $u$ is concerned.
+2. It chooses $u$ itself, making the indicator variable $1$.
+3. It chooses another node that can reach $u$, making the indicator variable $0$.
+Since all nodes have an equal chance of being chosen, the chance that $X_u=1$
+is $\frac{1}{a_u}$, where $a_u$ is the number of nodes that can reach $u$ *including $u$ itself*.
+
+To get our final answer, we put the expected values of all the indicator variables back together,
+giving us our final answer.
 
 ### Implementation
 
-**Time Complexity:** $\mathcal{O}(n^3)$ using a naive DFS or BFS.
+**Time Complexity:** $\mathcal{O}(N^3)$ using a naive DFS or BFS.
 
 <LanguageSection>
 <CPPSection>
 
 ```cpp
-#include "bits/stdc++.h"
-using namespace std;
-const int N = 100;
-bool adj[N][N], vis[N];
-int a[N];
-int n;
-// adding 1 to a[i] for all nodes i that are reachable from node u
-void dfs(int u) {
-	vis[u] = 1, a[u]++;
-	for (int v = 0; v < n; v++) {
-		if (!vis[v] && adj[u][v]) { dfs(v); }
-	}
-}
+#include <iomanip>
+#include <iostream>
+#include <vector>
 
-void solve() {
-	cin >> n;
-	for (int i = 0; i < n; i++) {
-		for (int j = 0; j < n; j++) {
-			char c;
-			cin >> c;
-			adj[i][j] = c - '0';
-		}
-	}
+using std::cout;
+using std::endl;
+using std::vector;
 
-	for (int i = 0; i < n; i++) {
-		dfs(i);
-		memset(vis, 0, sizeof(vis));
-	}
+int main() {
+    int n;
+    std::cin >> n;
+    vector<vector<int>> adj(n, vector<int>(n));
+    for (int n1 = 0; n1 < n; n1++) {
+        for (int n2 = 0; n2 < n; n2++) {
+            char connected;
+            std::cin >> connected;
+            adj[n1][n2] = connected == '1';
+        }
+    }
 
-	double out = 0;
-	for (int i = 0; i < n; i++) { out += 1.0 / a[i]; }
+    // reach_from[i] = the # of nodes that have a path to i
+    vector<int> reach_from(n);
+    for (int start = 0; start < n; start++) {
+        vector<int> todo{start};
+        vector<bool> visited(n, false);
+        visited[start] = true;
+        while (!todo.empty()) {
+            int curr = todo.back();
+            todo.pop_back();
+            for (int i = 0; i < n; i++) {
+                if (!visited[i] && adj[curr][i]) {
+                    visited[i] = true;
+                    reach_from[i]++;
+                    todo.push_back(i);
+                }
+            }
+        }
+    }
 
-	// must be set high to be precise enough to pass
-	cout << setprecision(15);
-	cout << out << "\n";
-}
+    double expected_ops = 0;
+    for (int i : reach_from) {
+        expected_ops += 1.0 / (i + 1);
+    }
 
-int32_t main() {
-	std::ios::sync_with_stdio(false);
-	cin.tie(NULL);
-	solve();
+    cout << std::setprecision(15) << expected_ops << endl;
 }
 ```
 
 </CPPSection>
+<PySection>
+
+```py
+n = int(input())
+
+adj = [[] for _ in range(n)]
+for i in range(n):
+    for v, c in enumerate(input()):
+        if c == "1":
+            adj[i].append(v)
+
+# reach_from[i] = the # of nodes that have a path to i
+reach_from = [0 for _ in range(n)]
+for start in range(n):
+    todo = [start]
+    visited = [False for _ in range(n)]
+    visited[start] = True
+    while todo:
+        curr = todo.pop()
+        for next_ in adj[curr]:
+            if not visited[next_]:
+                visited[next_] = True
+				reach_from[next_] += 1
+                todo.append(next_)
+
+expected_ops = 0
+for i in reach_from:
+    expected_ops += 1 / (i + 1)
+
+print(expected_ops)
+```
+
+</PySection>
 </LanguageSection>
 
 ## Problems
