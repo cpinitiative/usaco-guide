@@ -64,24 +64,24 @@ class LazySegtree {
 		lz[v] += add;
 	}
 
-	array<ll, 2> qry(int v, int tl, int tr, int ql, int qr) {
+	array<ll, 2> range_info(int v, int tl, int tr, int ql, int qr) {
 		if (qr < tl || ql > tr) return ID;
 		if (ql <= tl && tr <= qr) { return t[v]; }
 		pushdown(v, tl, tr);
 		int m = (tl + tr) / 2;
-		return join(qry(2 * v, tl, m, ql, qr),
-		            qry(2 * v + 1, m + 1, tr, ql, qr));
+		return join(range_info(2 * v, tl, m, ql, qr),
+		            range_info(2 * v + 1, m + 1, tr, ql, qr));
 	}
 
-	void upd(int v, int tl, int tr, int ql, int qr, int amt) {
+	void inc_range(int v, int tl, int tr, int ql, int qr, int amt) {
 		if (qr < tl || ql > tr) return;
 		if (ql <= tl && tr <= qr) {
 			apply(v, tr - tl + 1, amt);
 		} else {
 			pushdown(v, tl, tr);
 			int m = (tl + tr) / 2;
-			upd(2 * v, tl, m, ql, qr, amt);
-			upd(2 * v + 1, m + 1, tr, ql, qr, amt);
+			inc_range(2 * v, tl, m, ql, qr, amt);
+			inc_range(2 * v + 1, m + 1, tr, ql, qr, amt);
 			t[v] = join(t[2 * v], t[2 * v + 1]);
 		}
 	}
@@ -93,10 +93,12 @@ class LazySegtree {
 	}
 
 	/** @return {sum, minimum value} of haybales in [ql, qr] */
-	array<ll, 2> qry(int ql, int qr) { return qry(1, 0, sz - 1, ql, qr); }
+	array<ll, 2> range_info(int ql, int qr) { 
+		return range_info(1, 0, sz - 1, ql, qr); 
+	}
 
 	/** adds to every haybale in the range [ql, qr] */
-	void upd(int ql, int qr, int amt) { upd(1, 0, sz - 1, ql, qr, amt); }
+	void inc_range(int ql, int qr, int amt) { inc_range(1, 0, sz - 1, ql, qr, amt); }
 };
 
 int main() {
@@ -114,11 +116,11 @@ int main() {
 		if (type == 'P') {
 			int a, b, c;
 			cin >> a >> b >> c;
-			st.upd(--a, --b, c);
+			st.inc_range(--a, --b, c);
 		} else {
 			int a, b;
 			cin >> a >> b;
-			const auto [sum, mn] = st.qry(--a, --b);
+			const auto [sum, mn] = st.range_info(--a, --b);
 			cout << (type == 'M' ? mn : sum) << '\n';
 		}
 	}
