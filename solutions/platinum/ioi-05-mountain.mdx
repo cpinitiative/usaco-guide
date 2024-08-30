@@ -6,16 +6,16 @@ author: Justin Ji
 ---
 
 Consider an easier version of the problem where $N \leq 10^{6}$. In that case,
-we use a [maximum prefix sum segment tree](https://usaco.guide/problems/cses-2166-prefix-sum-queries/solution) 
-with lazy updates. Then, to find the last index where the maximum prefix sum 
+we use a [maximum prefix sum segment tree](https://usaco.guide/problems/cses-2166-prefix-sum-queries/solution)
+with lazy updates. Then, to find the last index where the maximum prefix sum
 $\leq H$, we walk on the segment tree.
 
 However, $N \leq 10^{9}$, rendering the approach above invalid. The approach
 I will describe below does not utilize sparse segment tree.
 
-Given that we do not need to answer the queries online, we can coordinate compress 
-the values. Then, each index on the segment tree represents a range, instead 
-of being an individual location. Let's say we have range updates on the 
+Given that we do not need to answer the queries online, we can coordinate compress
+the values. Then, each index on the segment tree represents a range, instead
+of being an individual location. Let's say we have range updates on the
 following subarrays:
 
 $[1, 10]$, $[2, 5]$
@@ -24,13 +24,13 @@ Then, we can maintain the following distinct values:
 
 $[1, 2, 6, 11]$
 
-These distinct values define the ranges $[1, 2], [2, 5], [6, 10]$. Then, if we 
-want to update the range $[1, 10]$, we can update the three subranges listed 
-above. The idea is that if we maintain an array $vals[i]$, then each index $i$ 
-will represent the range $[vals[i], vals[i + 1] - 1]$. For each update on 
-the range $[a, b]$, the array $vals$ should contain $a$ and $b + 1$. 
+These distinct values define the ranges $[1, 2], [2, 5], [6, 10]$. Then, if we
+want to update the range $[1, 10]$, we can update the three subranges listed
+above. The idea is that if we maintain an array $vals[i]$, then each index $i$
+will represent the range $[vals[i], vals[i + 1] - 1]$. For each update on
+the range $[a, b]$, the array $vals$ should contain $a$ and $b + 1$.
 
-After figuring out the coordinate compression, most of the segment tree is 
+After figuring out the coordinate compression, most of the segment tree is
 pretty similar to the approach described in the beginning.
 
 ## Implementation
@@ -46,138 +46,132 @@ using namespace std;
 
 class LazySegtree {
   private:
-    static constexpr array<int, 3> ID = {0, 0, 0};
-    static constexpr int LZ_ID = INT32_MAX;
-    const int sz;
+	static constexpr array<int, 3> ID = {0, 0, 0};
+	static constexpr int LZ_ID = INT32_MAX;
+	const int sz;
 
-    vector<array<int, 3>> t;
-    vector<int> lz, vals;
+	vector<array<int, 3>> t;
+	vector<int> lz, vals;
 
-    /** @return result of joining two ranges together */
-    inline array<int, 3> comb(const array<int, 3> &a, const array<int, 3> &b) { 
-        return {max(a[0], a[1] + b[0]), a[1] + b[1], a[2] + b[2]};
-    }
+	/** @return result of joining two ranges together */
+	inline array<int, 3> comb(const array<int, 3> &a, const array<int, 3> &b) {
+		return {max(a[0], a[1] + b[0]), a[1] + b[1], a[2] + b[2]};
+	}
 
-    /** builds the segment tree nodes */
-    void build(int v, int l, int r) {
-        if (l == r)
-            t[v] = {0, 0, vals[l + 1] - vals[l]};
-        else {
-            int m = (l + r) / 2;
-            build(2 * v, l, m);
-            build(2 * v + 1, m + 1, r);
-            t[v] = comb(t[2 * v], t[2 * v + 1]);
-        }
-    }
+	/** builds the segment tree nodes */
+	void build(int v, int l, int r) {
+		if (l == r) t[v] = {0, 0, vals[l + 1] - vals[l]};
+		else {
+			int m = (l + r) / 2;
+			build(2 * v, l, m);
+			build(2 * v + 1, m + 1, r);
+			t[v] = comb(t[2 * v], t[2 * v + 1]);
+		}
+	}
 
-    /** applies the update to node v and places the lazy update */
-    void apply(int v, int x) {
-        int full_sub = t[v][2] * x;
-        if (x >= 0) {
-            t[v] = {full_sub, full_sub, t[v][2]};
-        } else {
-            t[v] = {0, full_sub, t[v][2]};
-        }
-        lz[v] = x;
-    }
+	/** applies the update to node v and places the lazy update */
+	void apply(int v, int x) {
+		int full_sub = t[v][2] * x;
+		if (x >= 0) {
+			t[v] = {full_sub, full_sub, t[v][2]};
+		} else {
+			t[v] = {0, full_sub, t[v][2]};
+		}
+		lz[v] = x;
+	}
 
-    /** pushes down the lazy update on node v to node v's children */
-    void pushdown(int v, int l, int r) {
-        if (lz[v] != LZ_ID && l != r) {
-            for (int x : {2 * v, 2 * v + 1}) {
-                apply(x, lz[v]);
-            }
-        }
-        lz[v] = LZ_ID;
-    }
+	/** pushes down the lazy update on node v to node v's children */
+	void pushdown(int v, int l, int r) {
+		if (lz[v] != LZ_ID && l != r) {
+			for (int x : {2 * v, 2 * v + 1}) { apply(x, lz[v]); }
+		}
+		lz[v] = LZ_ID;
+	}
 
-    void range_set(int v, int tl, int tr, int ql, int qr, int amt) {
-        if (qr < tl || ql > tr) return;
-        if (ql <= tl && tr <= qr) {
-            apply(v, amt);
-        } else {
-            pushdown(v, tl, tr);
-            int m = (tl + tr) / 2;
-            range_set(2 * v, tl, m, ql, qr, amt);
-            range_set(2 * v + 1, m + 1, tr, ql, qr, amt);
-            t[v] = comb(t[2 * v], t[2 * v + 1]);
-        }
-    }
+	void range_set(int v, int tl, int tr, int ql, int qr, int amt) {
+		if (qr < tl || ql > tr) return;
+		if (ql <= tl && tr <= qr) {
+			apply(v, amt);
+		} else {
+			pushdown(v, tl, tr);
+			int m = (tl + tr) / 2;
+			range_set(2 * v, tl, m, ql, qr, amt);
+			range_set(2 * v + 1, m + 1, tr, ql, qr, amt);
+			t[v] = comb(t[2 * v], t[2 * v + 1]);
+		}
+	}
 
-    int walk_right(int v, int l, int r, array<int, 3> cur, int mx) {
-        if (l == r) {
-            int dx = mx - cur[1];
-            int div = t[v][1] / t[v][2];
-            return vals[l] - 1 + dx / div;
-        } else {
-            int m = (l + r) / 2;
-            pushdown(v, l, r);
-            array<int, 3> x = comb(cur, t[v * 2]);
-            return x[0] > mx ? walk_right(2 * v, l, m, cur, mx)
-                             : walk_right(2 * v + 1, m + 1, r, x, mx);
-        }
-    }
+	int walk_right(int v, int l, int r, array<int, 3> cur, int mx) {
+		if (l == r) {
+			int dx = mx - cur[1];
+			int div = t[v][1] / t[v][2];
+			return vals[l] - 1 + dx / div;
+		} else {
+			int m = (l + r) / 2;
+			pushdown(v, l, r);
+			array<int, 3> x = comb(cur, t[v * 2]);
+			return x[0] > mx ? walk_right(2 * v, l, m, cur, mx)
+			                 : walk_right(2 * v + 1, m + 1, r, x, mx);
+		}
+	}
 
   public:
-    LazySegtree(const vector<int> &arr) 
-        : sz((int) arr.size() - 1), t(4 * sz, ID), 
-          lz(4 * sz, LZ_ID), vals(arr) {
-        build(1, 0, sz - 1);
-    }
-    
-    /** sets the range [ql, qr] (coordinate compresed indexes) to amt */
-    void range_set(int ql, int qr, int amt) {
-        range_set(1, 0, sz - 1, ql, qr, amt);
-    }
+	LazySegtree(const vector<int> &arr)
+	    : sz((int)arr.size() - 1), t(4 * sz, ID), lz(4 * sz, LZ_ID), vals(arr) {
+		build(1, 0, sz - 1);
+	}
 
-    /** @return the last location where the height <= mx */ 
-    int walk_right(int mx) {
-        return walk_right(1, 0, sz - 1, ID, mx);
-    }
+	/** sets the range [ql, qr] (coordinate compresed indexes) to amt */
+	void range_set(int ql, int qr, int amt) {
+		range_set(1, 0, sz - 1, ql, qr, amt);
+	}
 
-    /** @return largest prefix sum in the whole array */
-    int best_pf() { return t[1][0]; }
+	/** @return the last location where the height <= mx */
+	int walk_right(int mx) { return walk_right(1, 0, sz - 1, ID, mx); }
+
+	/** @return largest prefix sum in the whole array */
+	int best_pf() { return t[1][0]; }
 };
 
 int main() {
-    int n; 
-    cin >> n;
-    vector<vector<int>> tests;
-    vector<int> vals = {0};
-    while (true) {
-        char type; 
-        cin >> type;
-        if (type == 'I') {
-            int a, b, d;
-            cin >> a >> b >> d;
-            tests.push_back({0, a, b, d});
-            vals.push_back(a);
-            vals.push_back(b + 1);
-        } else if (type == 'Q') {
-            int h; 
-            cin >> h;
-            tests.push_back({1, h});
-        } else {
-            break;
-        }
-    }
-    sort(begin(vals), end(vals));
-    vals.erase(unique(begin(vals), end(vals)), end(vals));
-    const auto id = [&](int x) -> int {
-        return lower_bound(begin(vals), end(vals), x) - begin(vals);
-    };
+	int n;
+	cin >> n;
+	vector<vector<int>> tests;
+	vector<int> vals = {0};
+	while (true) {
+		char type;
+		cin >> type;
+		if (type == 'I') {
+			int a, b, d;
+			cin >> a >> b >> d;
+			tests.push_back({0, a, b, d});
+			vals.push_back(a);
+			vals.push_back(b + 1);
+		} else if (type == 'Q') {
+			int h;
+			cin >> h;
+			tests.push_back({1, h});
+		} else {
+			break;
+		}
+	}
+	sort(begin(vals), end(vals));
+	vals.erase(unique(begin(vals), end(vals)), end(vals));
+	const auto id = [&](int x) -> int {
+		return lower_bound(begin(vals), end(vals), x) - begin(vals);
+	};
 
-    LazySegtree st(vals);
-    for (int i = 0; i < (int) tests.size(); i++) {
-        const vector<int> &cur = tests[i];
-        if (cur[0] == 0) {
-            st.range_set(id(cur[1]), id(cur[2] + 1) - 1, cur[3]);
-        } else {
-            cout << (st.best_pf() <= cur[1] ? n : st.walk_right(cur[1])) << "\n";
-        }
-    }
+	LazySegtree st(vals);
+	for (int i = 0; i < (int)tests.size(); i++) {
+		const vector<int> &cur = tests[i];
+		if (cur[0] == 0) {
+			st.range_set(id(cur[1]), id(cur[2] + 1) - 1, cur[3]);
+		} else {
+			cout << (st.best_pf() <= cur[1] ? n : st.walk_right(cur[1]))
+			     << "\n";
+		}
+	}
 }
-
 ```
 
 </CPPSection>
