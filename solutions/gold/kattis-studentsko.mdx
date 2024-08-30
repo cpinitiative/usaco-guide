@@ -1,0 +1,188 @@
+---
+id: kattis-studentsko
+source: AC
+title: Studentsko
+author: Kevin Sheng
+---
+
+<Spoiler title="Hint 1">
+
+Try solving the case where $K=1$.
+
+</Spoiler>
+
+<Spoiler title="Hint 2">
+
+Is there any way to simplify all cases to some variant of $K=1$?
+
+</Spoiler>
+
+<Spoiler title="Solution">
+
+## Explanation
+
+If $K=1$, we're being asked to find the number of operations to sort the array.
+This is actually a somewhat well-established problem, and it
+[can be shown](https://stackoverflow.com/a/20394497/12128483)
+that the minimum number of operations is the length minus the length
+of the longest non-decreasing subsequence.
+
+To generalize to any value of $K$, we can replace each student's skill value
+with its block number.
+For example, the third sample case
+```
+7 9 8 3 6 5
+```
+would become
+```
+1 1 1 0 0 0
+```
+After that, we get the answer by sorting this new array.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N \log N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <algorithm>
+#include <iostream>
+#include <vector>
+
+using std::cout;
+using std::endl;
+using std::vector;
+
+/** Same as the code in the LIS module besides the usage of upper_bound. */
+int find_lis(const vector<int> &a) {
+	vector<int> dp;
+	for (int i : a) {
+		int pos = std::upper_bound(dp.begin(), dp.end(), i) - dp.begin();
+		if (pos == dp.size()) {
+			dp.push_back(i);
+		} else {
+			dp[pos] = i;
+		}
+	}
+	return dp.size();
+}
+
+int main() {
+	int len;
+	int block_size;
+	std::cin >> len >> block_size;
+	vector<std::pair<int, int>> arr(len);
+	for (int i = 0; i < len; i++) {
+		std::cin >> arr[i].first;
+		arr[i].second = i;
+	}
+	std::sort(arr.begin(), arr.end());
+
+	vector<int> block_arr(len);
+	for (int i = 0; i < arr.size(); i++) {
+		block_arr[arr[i].second] = i / block_size;
+	}
+
+	cout << len - find_lis(block_arr) << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Studentsko {
+	public static void main(String[] args) throws IOException {
+		BufferedReader read =
+		    new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer initial = new StringTokenizer(read.readLine());
+		int len = Integer.parseInt(initial.nextToken());
+		int blockSize = Integer.parseInt(initial.nextToken());
+		StringTokenizer arrST = new StringTokenizer(read.readLine());
+		int[][] arr = new int[len][2];
+		for (int i = 0; i < len; i++) {
+			arr[i][0] = Integer.parseInt(arrST.nextToken());
+			arr[i][1] = i;
+		}
+
+		Arrays.sort(arr, Comparator.comparingInt(i -> i[0]));
+		int[] blockArr = new int[len];
+		for (int i = 0; i < len; i++) { blockArr[arr[i][1]] = i / blockSize; }
+
+		System.out.println(len - findLis(blockArr));
+	}
+
+	/** Same as the code in the LIS module besides the binary search. */
+	public static int findLis(int[] a) {
+		ArrayList<Integer> dp = new ArrayList<Integer>();
+		for (int i : a) {
+			int pos = upperBound(dp, i);
+			if (pos == dp.size()) {
+				dp.add(i);
+			} else {
+				dp.set(pos, i);
+			}
+		}
+		return dp.size();
+	}
+
+	/**
+	 * Functions similarly to C++'s upper_bound.
+	 * Implementation adapted from
+	 * https://github.com/python/cpython/blob/main/Lib/bisect.py#L21
+	 */
+	public static int upperBound(List<Integer> a, int x) {
+		int lo = 0;
+		int hi = a.size();
+		while (lo < hi) {
+			int mid = (lo + hi) / 2;
+			if (x < a.get(mid)) {
+				hi = mid;
+			} else {
+				lo = mid + 1;
+			}
+		}
+		return lo;
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+from typing import List
+from bisect import bisect_right
+
+
+def find_lis(arr: List[int]) -> int:
+	"""Same as the code in the LIS module besides the usage of bisect_right."""
+	min_endings = []
+	for i in arr:
+		pos = bisect_right(min_endings, i)
+		if pos == len(min_endings):
+			min_endings.append(i)
+		else:
+			min_endings[pos] = i
+	return len(min_endings)
+
+
+size, block_size = [int(i) for i in input().split()]
+arr = sorted((int(i), v) for v, i in enumerate(input().split()))
+
+block_arr = [-1 for _ in range(size)]
+for i in range(size):
+	block_arr[arr[i][1]] = i // block_size
+
+print(size - find_lis(block_arr))
+```
+
+</PySection>
+</LanguageSection>
+
+</Spoiler>
