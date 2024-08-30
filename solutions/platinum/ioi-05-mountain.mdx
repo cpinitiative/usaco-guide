@@ -83,7 +83,7 @@ class LazySegtree {
 	}
 
 	/** pushes down the lazy update on node v to node v's children */
-	void pushdown(int v, int l, int r) {
+	void push_down(int v, int l, int r) {
 		if (lz[v] != LZ_ID && l != r) {
 			for (int x : {2 * v, 2 * v + 1}) { apply(x, lz[v]); }
 		}
@@ -95,7 +95,7 @@ class LazySegtree {
 		if (ql <= tl && tr <= qr) {
 			apply(v, amt);
 		} else {
-			pushdown(v, tl, tr);
+			push_down(v, tl, tr);
 			int m = (tl + tr) / 2;
 			range_set(2 * v, tl, m, ql, qr, amt);
 			range_set(2 * v + 1, m + 1, tr, ql, qr, amt);
@@ -110,7 +110,7 @@ class LazySegtree {
 			return vals[l] - 1 + dx / div;
 		} else {
 			int m = (l + r) / 2;
-			pushdown(v, l, r);
+			push_down(v, l, r);
 			array<int, 3> x = comb(cur, t[v * 2]);
 			return x[0] > mx ? walk_right(2 * v, l, m, cur, mx)
 			                 : walk_right(2 * v + 1, m + 1, r, x, mx);
@@ -164,8 +164,7 @@ int main() {
 	};
 
 	LazySegtree st(vals);
-	for (int i = 0; i < (int)tests.size(); i++) {
-		const vector<int> &cur = tests[i];
+	for (const vector<int> &cur : tests) {
 		if (cur[0] == 0) {
 			st.range_set(id(cur[1]), id(cur[2] + 1) - 1, cur[3]);
 		} else {
