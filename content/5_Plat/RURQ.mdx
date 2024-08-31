@@ -159,121 +159,118 @@ using ll = long long;
 // T = tree node type, which will be long long
 // U = update type, which will be array<ll, 2>
 // Updates are: {lazy_set, lazy_add}
-template<class T, class U> class LazySegtree {
+template <class T, class U> class LazySegtree {
   private:
-    static constexpr T ID = 0;         // neutral tree node value
-    static constexpr U LZ_ID = {0, 0}; // neutral lazy update value
-    const int sz;
-    vector<T> t;
-    vector<U> lz;
- 
-    /** @return result of joining two tree nodes together */
-    inline T comb(T a, T b) { return a + b; }
+	static constexpr T ID = 0;          // neutral tree node value
+	static constexpr U LZ_ID = {0, 0};  // neutral lazy update value
+	const int sz;
+	vector<T> t;
+	vector<U> lz;
 
-    /** builds the segtree nodes */
-    void build(int v, int l, int r, const vector<T> &a) {
-        if (l == r) {
-            t[v] = a[l];
-        } else {
-            int m = (l + r) / 2;
-            build(2 * v, l, m, a);;
-            build(2 * v + 1, m + 1, r, a);
-            t[v] = comb(t[2 * v], t[2 * v + 1]);
-        }
-    }
+	/** @return result of joining two tree nodes together */
+	inline T comb(T a, T b) { return a + b; }
 
-    /** applies lazy update to t[v], places update at lz[v] */
-    void apply(int v, int len, U x) {
-        if (x[0] != 0) {
-            t[v] = 1ll * x[0] * len;
-            lz[v] = {x[0], 0};
-        }
-        if (x[1] != 0) {
-            t[v] += 1ll * x[1] * len;
-            if (lz[v][0] == 0) {
-                lz[v][1] += x[1];
-            } else {
-                lz[v][0] += x[1];
-                lz[v][1] = 0;
-            }
-        }
-    }
+	/** builds the segtree nodes */
+	void build(int v, int l, int r, const vector<T> &a) {
+		if (l == r) {
+			t[v] = a[l];
+		} else {
+			int m = (l + r) / 2;
+			build(2 * v, l, m, a);
+			;
+			build(2 * v + 1, m + 1, r, a);
+			t[v] = comb(t[2 * v], t[2 * v + 1]);
+		}
+	}
 
-    /** pushes down lazy update to children of v */
-    void pushdown(int v, int l, int r) {
-        if (lz[v] != LZ_ID && l != r) {
-            int m = (l + r) / 2;
-            for (int x : {2 * v, 2 * v + 1}) {
-                int len = (x == 2 * v) ? m - l + 1 : r - m;
-                apply(x, len, lz[v]);
-            }
-        }
-        lz[v] = LZ_ID;
-    }
+	/** applies lazy update to t[v], places update at lz[v] */
+	void apply(int v, int len, U x) {
+		if (x[0] != 0) {
+			t[v] = 1ll * x[0] * len;
+			lz[v] = {x[0], 0};
+		}
+		if (x[1] != 0) {
+			t[v] += 1ll * x[1] * len;
+			if (lz[v][0] == 0) {
+				lz[v][1] += x[1];
+			} else {
+				lz[v][0] += x[1];
+				lz[v][1] = 0;
+			}
+		}
+	}
 
-    void range_update(int v, int tl, int tr, int ql, int qr, U x) {
-        if (qr < tl || ql > tr) return;
-        if (ql <= tl && tr <= qr) {
-            apply(v, tr - tl + 1, x);
-        } else {
-            pushdown(v, tl, tr);
-            int m = (tl + tr) / 2;
-            range_update(2 * v, tl, m, ql, qr, x);
-            range_update(2 * v + 1, m + 1, tr, ql, qr, x);
-            t[v] = comb(t[2 * v], t[2 * v + 1]);
-        }
-    }
+	/** pushes down lazy update to children of v */
+	void pushdown(int v, int l, int r) {
+		if (lz[v] != LZ_ID && l != r) {
+			int m = (l + r) / 2;
+			for (int x : {2 * v, 2 * v + 1}) {
+				int len = (x == 2 * v) ? m - l + 1 : r - m;
+				apply(x, len, lz[v]);
+			}
+		}
+		lz[v] = LZ_ID;
+	}
 
-    T range_sum(int v, int l, int r, int ql, int qr) {
-        if (qr < l || ql > r) return ID;
-        if (l >= ql && r <= qr) return t[v];
-        pushdown(v, l, r);
-        int m = (l + r) / 2;
-        return comb(range_sum(2 * v, l, m, ql, qr), 
-                    range_sum(2 * v + 1, m + 1, r, ql, qr));
-    }
+	void range_update(int v, int tl, int tr, int ql, int qr, U x) {
+		if (qr < tl || ql > tr) return;
+		if (ql <= tl && tr <= qr) {
+			apply(v, tr - tl + 1, x);
+		} else {
+			pushdown(v, tl, tr);
+			int m = (tl + tr) / 2;
+			range_update(2 * v, tl, m, ql, qr, x);
+			range_update(2 * v + 1, m + 1, tr, ql, qr, x);
+			t[v] = comb(t[2 * v], t[2 * v + 1]);
+		}
+	}
 
-  public: 
-    LazySegtree(const vector<T> &a)
-        : sz((int) a.size()), t(4 * sz, ID), lz(4 * sz, LZ_ID) {
-        build(1, 0, sz - 1, a);
-    }   
+	T range_sum(int v, int l, int r, int ql, int qr) {
+		if (qr < l || ql > r) return ID;
+		if (l >= ql && r <= qr) return t[v];
+		pushdown(v, l, r);
+		int m = (l + r) / 2;
+		return comb(range_sum(2 * v, l, m, ql, qr),
+		            range_sum(2 * v + 1, m + 1, r, ql, qr));
+	}
 
-    /** updates [ql, qr] with the update x */
-    void range_update(int ql, int qr, U x) {
-        range_update(1, 0, sz - 1, ql, qr, x);
-    }
+  public:
+	LazySegtree(const vector<T> &a)
+	    : sz((int)a.size()), t(4 * sz, ID), lz(4 * sz, LZ_ID) {
+		build(1, 0, sz - 1, a);
+	}
 
-    /** sum of array values on [ql, qr] */
-    T range_sum(int ql, int qr) {
-        return range_sum(1, 0, sz - 1, ql, qr);
-    }
+	/** updates [ql, qr] with the update x */
+	void range_update(int ql, int qr, U x) {
+		range_update(1, 0, sz - 1, ql, qr, x);
+	}
+
+	/** sum of array values on [ql, qr] */
+	T range_sum(int ql, int qr) { return range_sum(1, 0, sz - 1, ql, qr); }
 };
 
 int main() {
-    int n, q;
-    cin >> n >> q;
-    vector<ll> a(n);
-    for (ll &i : a) {
-        cin >> i;
-    }
-    LazySegtree<ll, array<ll, 2>> st(a);
-    for (int t = 0; t < q; t++) {
-        int type, a, b;
-        cin >> type >> a >> b;
-        a--, b--;
-        if (type == 1) {
-            int x;
-            cin >> x;
-            st.range_update(a, b, {0, x});
-        } else if (type == 2) {
-            int x;
-            cin >> x;
-            st.range_update(a, b, {x, 0});
-        } else {
-            cout << st.range_sum(a, b) << "\n";
-        }
-    }
+	int n, q;
+	cin >> n >> q;
+	vector<ll> a(n);
+	for (ll &i : a) { cin >> i; }
+	LazySegtree<ll, array<ll, 2>> st(a);
+	for (int t = 0; t < q; t++) {
+		int type, a, b;
+		cin >> type >> a >> b;
+		a--, b--;
+		if (type == 1) {
+			int x;
+			cin >> x;
+			st.range_update(a, b, {0, x});
+		} else if (type == 2) {
+			int x;
+			cin >> x;
+			st.range_update(a, b, {x, 0});
+		} else {
+			cout << st.range_sum(a, b) << "\n";
+		}
+	}
 }
 ```
 
