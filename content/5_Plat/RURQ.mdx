@@ -152,135 +152,128 @@ Given the mechanics behind the `pushdown` function, all you need is a regular
 range-sum segment tree to solve the question.
 
 ```cpp
-
-#include <iostream>
-using ll = long long;
+#include <bits/stdc++.h>
 using namespace std;
+using ll = long long;
 
-const int maxN = 2e5 + 5;
+// T = tree node type, which will be long long
+// U = update type, which will be array<ll, 2>
+// Updates are: {lazy_set, lazy_add}
+template<class T, class U> class LazySegtree {
+  private:
+    static constexpr T ID = 0;         // neutral tree node value
+    static constexpr U LZ_ID = {0, 0}; // neutral lazy update value
+    const int sz;
+    vector<T> t;
+    vector<U> lz;
+ 
+    /** @return result of joining two tree nodes together */
+    inline T comb(T a, T b) { return a + b; }
 
-int N, Q;
-int a[maxN];
+    /** builds the segtree nodes */
+    void build(int v, int l, int r, const vector<T> &a) {
+        if (l == r) {
+            t[v] = a[l];
+        } else {
+            int m = (l + r) / 2;
+            build(2 * v, l, m, a);;
+            build(2 * v + 1, m + 1, r, a);
+            t[v] = comb(t[2 * v], t[2 * v + 1]);
+        }
+    }
 
-struct node {
-	ll val;
-	ll lzAdd;
-	ll lzSet;
-	node(){};
-} tree[maxN << 2];
+    /** applies lazy update to t[v], places update at lz[v] */
+    void apply(int v, int len, U x) {
+        if (x[0] != 0) {
+            t[v] = 1ll * x[0] * len;
+            lz[v] = {x[0], 0};
+        }
+        if (x[1] != 0) {
+            t[v] += 1ll * x[1] * len;
+            if (lz[v][0] == 0) {
+                lz[v][1] += x[1];
+            } else {
+                lz[v][0] += x[1];
+                lz[v][1] = 0;
+            }
+        }
+    }
 
-#define lc p << 1
-#define rc (p << 1) + 1
+    /** pushes down lazy update to children of v */
+    void pushdown(int v, int l, int r) {
+        if (lz[v] != LZ_ID && l != r) {
+            int m = (l + r) / 2;
+            for (int x : {2 * v, 2 * v + 1}) {
+                int len = (x == 2 * v) ? m - l + 1 : r - m;
+                apply(x, len, lz[v]);
+            }
+        }
+        lz[v] = LZ_ID;
+    }
 
-inline void pushup(int p) {
-	tree[p].val = tree[lc].val + tree[rc].val;
-	return;
-}
+    void range_update(int v, int tl, int tr, int ql, int qr, U x) {
+        if (qr < tl || ql > tr) return;
+        if (ql <= tl && tr <= qr) {
+            apply(v, tr - tl + 1, x);
+        } else {
+            pushdown(v, tl, tr);
+            int m = (tl + tr) / 2;
+            range_update(2 * v, tl, m, ql, qr, x);
+            range_update(2 * v + 1, m + 1, tr, ql, qr, x);
+            t[v] = comb(t[2 * v], t[2 * v + 1]);
+        }
+    }
 
-void pushdown(int p, int l, int mid, int r) {
-	// lazy: range set
-	if (tree[p].lzSet != 0) {
-		tree[lc].lzSet = tree[rc].lzSet = tree[p].lzSet;
-		tree[lc].val = (mid - l + 1) * tree[p].lzSet;
-		tree[rc].val = (r - mid) * tree[p].lzSet;
-		tree[lc].lzAdd = tree[rc].lzAdd = 0;
-		tree[p].lzSet = 0;
-	} else if (tree[p].lzAdd != 0) {  // lazy: range add
-		if (tree[lc].lzSet == 0) tree[lc].lzAdd += tree[p].lzAdd;
-		else {
-			tree[lc].lzSet += tree[p].lzAdd;
-			tree[lc].lzAdd = 0;
-		}
-		if (tree[rc].lzSet == 0) tree[rc].lzAdd += tree[p].lzAdd;
-		else {
-			tree[rc].lzSet += tree[p].lzAdd;
-			tree[rc].lzAdd = 0;
-		}
-		tree[lc].val += (mid - l + 1) * tree[p].lzAdd;
-		tree[rc].val += (r - mid) * tree[p].lzAdd;
-		tree[p].lzAdd = 0;
-	}
-	return;
-}
+    T range_sum(int v, int l, int r, int ql, int qr) {
+        if (qr < l || ql > r) return ID;
+        if (l >= ql && r <= qr) return t[v];
+        pushdown(v, l, r);
+        int m = (l + r) / 2;
+        return comb(range_sum(2 * v, l, m, ql, qr), 
+                    range_sum(2 * v + 1, m + 1, r, ql, qr));
+    }
 
-void build(int p, int l, int r) {
-	tree[p].lzAdd = tree[p].lzSet = 0;
-	if (l == r) {
-		tree[p].val = a[l];
-		return;
-	}
-	int mid = (l + r) >> 1;
-	build(lc, l, mid);
-	build(rc, mid + 1, r);
-	pushup(p);
-	return;
-}
+  public: 
+    LazySegtree(const vector<T> &a)
+        : sz((int) a.size()), t(4 * sz, ID), lz(4 * sz, LZ_ID) {
+        build(1, 0, sz - 1, a);
+    }   
 
-void add(int p, int l, int r, int a, int b, ll val) {
-	if (a > r || b < l) return;
-	if (a <= l && r <= b) {
-		tree[p].val += (r - l + 1) * val;
-		if (tree[p].lzSet == 0) tree[p].lzAdd += val;
-		else tree[p].lzSet += val;
-		return;
-	}
-	int mid = (l + r) >> 1;
-	pushdown(p, l, mid, r);
-	add(lc, l, mid, a, b, val);
-	add(rc, mid + 1, r, a, b, val);
-	pushup(p);
-	return;
-}
+    /** updates [ql, qr] with the update x */
+    void range_update(int ql, int qr, U x) {
+        range_update(1, 0, sz - 1, ql, qr, x);
+    }
 
-void set(int p, int l, int r, int a, int b, ll val) {
-	if (a > r || b < l) return;
-	if (a <= l && r <= b) {
-		tree[p].val = (r - l + 1) * val;
-		tree[p].lzAdd = 0;
-		tree[p].lzSet = val;
-		return;
-	}
-	int mid = (l + r) >> 1;
-	pushdown(p, l, mid, r);
-	set(lc, l, mid, a, b, val);
-	set(rc, mid + 1, r, a, b, val);
-	pushup(p);
-	return;
-}
+    /** sum of array values on [ql, qr] */
+    T range_sum(int ql, int qr) {
+        return range_sum(1, 0, sz - 1, ql, qr);
+    }
+};
 
-ll query(int p, int l, int r, int a, int b) {
-	if (a > r || b < l) return 0;
-	if (a <= l && r <= b) return tree[p].val;
-	int mid = (l + r) >> 1;
-	pushdown(p, l, mid, r);
-	return query(lc, l, mid, a, b) + query(rc, mid + 1, r, a, b);
-}
-
-signed main() {
-	ios_base::sync_with_stdio(false);
-	cin.tie(0);
-	cin >> N >> Q;
-	for (int i = 1; i <= N; ++i) cin >> a[i];
-	build(1, 1, N);
-	for (int i = 1; i <= Q; ++i) {
-		int k;
-		cin >> k;
-		int a, b, x;
-		if (k == 1) {
-			cin >> a >> b >> x;
-			add(1, 1, N, a, b, x);
-		}
-		if (k == 2) {
-			cin >> a >> b >> x;
-			set(1, 1, N, a, b, x);
-		}
-		if (k == 3) {
-			cin >> a >> b;
-			ll res = query(1, 1, N, a, b);
-			cout << res << '\n';
-		}
-	}
-	return 0;
+int main() {
+    int n, q;
+    cin >> n >> q;
+    vector<ll> a(n);
+    for (ll &i : a) {
+        cin >> i;
+    }
+    LazySegtree<ll, array<ll, 2>> st(a);
+    for (int t = 0; t < q; t++) {
+        int type, a, b;
+        cin >> type >> a >> b;
+        a--, b--;
+        if (type == 1) {
+            int x;
+            cin >> x;
+            st.range_update(a, b, {0, x});
+        } else if (type == 2) {
+            int x;
+            cin >> x;
+            st.range_update(a, b, {x, 0});
+        } else {
+            cout << st.range_sum(a, b) << "\n";
+        }
+    }
 }
 ```
 
