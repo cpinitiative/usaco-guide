@@ -177,7 +177,6 @@ template <class T, class U> class LazySegtree {
 		} else {
 			int m = (l + r) / 2;
 			build(2 * v, l, m, a);
-			;
 			build(2 * v + 1, m + 1, r, a);
 			t[v] = comb(t[2 * v], t[2 * v + 1]);
 		}
@@ -204,10 +203,8 @@ template <class T, class U> class LazySegtree {
 	void pushdown(int v, int l, int r) {
 		if (lz[v] != LZ_ID && l != r) {
 			int m = (l + r) / 2;
-			for (int x : {2 * v, 2 * v + 1}) {
-				int len = (x == 2 * v) ? m - l + 1 : r - m;
-				apply(x, len, lz[v]);
-			}
+			apply(2 * v, m - l + 1, lz[v]);
+            		apply(2 * v + 1, r - m, lz[v]);
 		}
 		lz[v] = LZ_ID;
 	}
@@ -255,10 +252,12 @@ int main() {
 	vector<ll> a(n);
 	for (ll &i : a) { cin >> i; }
 	LazySegtree<ll, array<ll, 2>> st(a);
+
 	for (int t = 0; t < q; t++) {
 		int type, a, b;
 		cin >> type >> a >> b;
 		a--, b--;
+
 		if (type == 1) {
 			int x;
 			cin >> x;
