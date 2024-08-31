@@ -68,19 +68,19 @@ int main() {
 
 	for (int i = 0; i < sz; i++) {
 		// Binary search for the first different character
-		int l = 0, r = sz - 1;
-		while (r - l >= 0) {
-			int mid = (l + r) / 2;
+		int lo = 0, hi = sz - 1;
+		while (lo <= hi) {
+			int mid = (lo + hi) / 2;
 			// Check if prefixes match
 			if (pref.get_hash(i, i + mid) == pref.get_hash(ans, ans + mid)) {
-				l = mid + 1;
+				lo = mid + 1;
 			} else {
-				r = mid - 1;
+				hi = mid - 1;
 			}
 		}
 
 		// Update answer
-		if (s[i + l] < s[ans + l]) { ans = i; }
+		if (s[i + lo] < s[ans + lo]) { ans = i; }
 	}
 
 	cout << s.substr(ans, sz) << endl;
