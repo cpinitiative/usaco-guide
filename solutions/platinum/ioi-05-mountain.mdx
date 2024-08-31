@@ -7,6 +7,8 @@ author: Justin Ji
 
 [Official Analysis](https://dmoj.ca/problem/ioi05p3/editorial)
 
+## Explanation
+
 Consider an easier version of the problem where $N \leq 10^{6}$. In that case,
 we use a [maximum prefix sum segment tree](https://usaco.guide/problems/cses-2166-prefix-sum-queries/solution)
 with lazy updates. Then, to find the last index where the maximum prefix sum
@@ -82,10 +84,11 @@ class LazySegtree {
 		lz[v] = x;
 	}
 
-	/** pushes down the lazy update on node v to node v's children */
+	/** pushes down the lazy update on node v to its children */
 	void push_down(int v, int l, int r) {
 		if (lz[v] != LZ_ID && l != r) {
-			for (int x : {2 * v, 2 * v + 1}) { apply(x, lz[v]); }
+			apply(2 * v, lz[v]);
+			apply(2 * v + 1, lz[v]);
 		}
 		lz[v] = LZ_ID;
 	}
