@@ -7,9 +7,9 @@ author: Mihnea Brebenel
 
 ## Explanation
 
-We'll maintain the smallest lexicographically rotation after it's starting index, let it be $i$. 
+We'll maintain the smallest lexicographically rotation after it's starting index, let it be $i$.
 Then, the comparison between this one and another rotation, starting at index $j$, is done by finding
-the first different character. This can be quickly done by binary searching the value $d$ such that 
+the first different character. This can be quickly done by binary searching the value $d$ such that
 $S_{i+d} \neq S_{j+d}$. Furthermore, hashing can be used to compare the prefixes of the rotations.
 
 The algorithm is also known as [Booth's Algorithm](https://en.wikipedia.org/wiki/Lexicographically_minimal_string_rotation).
@@ -19,7 +19,7 @@ The algorithm is also known as [Booth's Algorithm](https://en.wikipedia.org/wiki
 <LanguageSection>
 <CPPSection>
 
-```cpp 
+```cpp
 #include <bits/stdc++.h>
 
 using namespace std;
@@ -56,21 +56,21 @@ class HashedString {
 vector<long long> HashedString::pow = {1};
 // EndCodeSnip
 
-int main() { 
+int main() {
 	string s;
 	cin >> s;
 
 	int sz = (int)s.size(), ans = 0;
 	s += s;
-	HashedString pref(s);	
+	HashedString pref(s);
 
-	for(int i = 0; i < sz; i++) {
-        // Binary search for the first different character
+	for (int i = 0; i < sz; i++) {
+		// Binary search for the first different character
 		int l = 0, r = sz - 1;
-		while(r - l >= 0) {
+		while (r - l >= 0) {
 			int mid = (l + r) / 2;
-            // Check if prefixes match
-			if(pref.get_hash(i, i + mid) == pref.get_hash(ans, ans + mid)) {
+			// Check if prefixes match
+			if (pref.get_hash(i, i + mid) == pref.get_hash(ans, ans + mid)) {
 				l = mid + 1;
 			} else {
 				r = mid - 1;
@@ -78,14 +78,11 @@ int main() {
 		}
 
 		// Update answer
-		if(s[i + l] < s[ans + l]) {
-			ans = i;
-		}
+		if (s[i + l] < s[ans + l]) { ans = i; }
 	}
 
 	cout << s.substr(ans, sz) << endl;
 }
-
 ```
 
 </CPPSection>
