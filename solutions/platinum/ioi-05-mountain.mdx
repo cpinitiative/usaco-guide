@@ -108,12 +108,22 @@ class LazySegtree {
 
 	int walk_right(int v, int l, int r, array<int, 3> cur, int mx) {
 		if (l == r) {
+			/* 
+			 * r is the first index where adding it causes the prefix max to be > mx.
+			 * To find the first point after the previous range where prefix max <= mx,
+			 * we need to do a bit of math.
+ 			 */
 			int dx = mx - cur[1];
 			int div = t[v][1] / t[v][2];
 			return vals[l] - 1 + dx / div;
 		} else {
 			int m = (l + r) / 2;
 			push_down(v, l, r);
+			/* 
+			 * We need to keep track of our current prefix's result,
+			 * so every time we walk right, we need to join the left
+ 			 * child's tree node to our prefix result.
+ 			 */
 			array<int, 3> x = comb(cur, t[v * 2]);
 			return x[0] > mx ? walk_right(2 * v, l, m, cur, mx)
 			                 : walk_right(2 * v + 1, m + 1, r, x, mx);
