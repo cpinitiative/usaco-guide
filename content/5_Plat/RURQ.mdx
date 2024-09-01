@@ -251,13 +251,13 @@ int main() {
 	cin >> n >> q;
 	vector<ll> a(n);
 	for (ll &i : a) { cin >> i; }
-	LazySegtree<ll, array<ll, 2>> st(a);
 
+	LazySegtree<ll, array<ll, 2>> st(a);
 	for (int t = 0; t < q; t++) {
 		int type, a, b;
 		cin >> type >> a >> b;
-		a--, b--;
-
+		a--;
+		b--;
 		if (type == 1) {
 			int x;
 			cin >> x;
@@ -267,7 +267,7 @@ int main() {
 			cin >> x;
 			st.range_update(a, b, {x, 0});
 		} else {
-			cout << st.range_sum(a, b) << "\n";
+			cout << st.range_sum(a, b) << '\n';
 		}
 	}
 }
