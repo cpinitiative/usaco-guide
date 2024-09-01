@@ -156,9 +156,11 @@ range-sum segment tree to solve the question.
 using namespace std;
 using ll = long long;
 
-// T = tree node type, which will be long long
-// U = update type, which will be array<ll, 2>
-// Updates are: {lazy_set, lazy_add}
+/**
+ * T = tree node type, which will be long long
+ * U = update type, which will be array<ll, 2>
+ * Updates are: {lazy_set, lazy_add}
+*/
 template <class T, class U> class LazySegtree {
   private:
 	static constexpr T ID = 0;          // neutral tree node value
@@ -210,7 +212,7 @@ template <class T, class U> class LazySegtree {
 	}
 
 	void range_update(int v, int tl, int tr, int ql, int qr, U x) {
-		if (qr < tl || ql > tr) return;
+		if (qr < tl || ql > tr) { return; }
 		if (ql <= tl && tr <= qr) {
 			apply(v, tr - tl + 1, x);
 		} else {
@@ -223,8 +225,8 @@ template <class T, class U> class LazySegtree {
 	}
 
 	T range_sum(int v, int l, int r, int ql, int qr) {
-		if (qr < l || ql > r) return ID;
-		if (l >= ql && r <= qr) return t[v];
+		if (qr < l || ql > r) { return ID; }
+		if (l >= ql && r <= qr) { return t[v]; }
 		pushdown(v, l, r);
 		int m = (l + r) / 2;
 		return comb(range_sum(2 * v, l, m, ql, qr),
