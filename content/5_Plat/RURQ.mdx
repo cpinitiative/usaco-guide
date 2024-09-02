@@ -156,6 +156,10 @@ range-sum segment tree to solve the question.
 using namespace std;
 using ll = long long;
 
+/** 
+ * Represents the type of lazy update being done.
+ * NONE = if there's no lazy update to be performed.
+ */
 enum QueryType { ADD, SET, NONE };
 
 struct Query {
@@ -170,8 +174,8 @@ struct Query {
 template <class T, class U> class LazySegtree {
   private:
 	const int sz;
-	vector<T> t;
-	vector<U> lz;
+	vector<T> tree; // tree[i] = sum of this node's range
+	vector<U> lazy; // lazy[i] = lazy update for the range
 
 	/** @return result of joining two tree nodes together */
 	inline T comb(T a, T b) { return a + b; }
@@ -179,38 +183,41 @@ template <class T, class U> class LazySegtree {
 	/** builds the segtree nodes */
 	void build(int v, int l, int r, const vector<T> &a) {
 		if (l == r) {
-			t[v] = a[l];
+			tree[v] = a[l];
 		} else {
 			int m = (l + r) / 2;
 			build(2 * v, l, m, a);
 			build(2 * v + 1, m + 1, r, a);
-			t[v] = comb(t[2 * v], t[2 * v + 1]);
+			tree[v] = comb(tree[2 * v], tree[2 * v + 1]);
 		}
 	}
 
 	/** applies lazy update to t[v], places update at lz[v] */
 	void apply(int v, int len, U x) {
 		if (x.type == ADD) {
-			t[v] += x.val * len;
-			if (lz[v].type != SET) {
-				lz[v] = Query{ADD, lz[v].val + x.val};
+			// if lazy[v]'s type is NONE or ADD, then we add to the range
+			// otherwise, we add to our lazy set value
+			if (lazy[v].type != SET) {
+				lazy[v] = Query{ADD, lazy[v].val + x.val};
 			} else {
-				lz[v] = Query{SET, lz[v].val + x.val};
+				lazy[v] = Query{SET, lazy[v].val + x.val};
 			}
+			tree[v] += x.val * len;
 		} else {
-			t[v] = x.val * len;
-			lz[v] = x;
+			// lazy set overrides any previous update
+			tree[v] = x.val * len;
+			lazy[v] = x;
 		}
 	}
 
 	/** pushes down lazy update to children of v */
 	void pushdown(int v, int l, int r) {
-		if (lz[v].type != NONE && l != r) {
+		if (lazy[v].type != NONE && l != r) {
 			int m = (l + r) / 2;
-			apply(2 * v, m - l + 1, lz[v]);
-			apply(2 * v + 1, r - m, lz[v]);
+			apply(2 * v, m - l + 1, lazy[v]);
+			apply(2 * v + 1, r - m, lazy[v]);
 		}
-		lz[v] = Query{NONE, 0};
+		lazy[v] = Query{NONE, 0};
 	}
 
 	void range_update(int v, int l, int r, int ql, int qr, U x) {
@@ -222,13 +229,13 @@ template <class T, class U> class LazySegtree {
 			int m = (l + r) / 2;
 			range_update(2 * v, l, m, ql, qr, x);
 			range_update(2 * v + 1, m + 1, r, ql, qr, x);
-			t[v] = comb(t[2 * v], t[2 * v + 1]);
+			tree[v] = comb(tree[2 * v], tree[2 * v + 1]);
 		}
 	}
 
 	T range_sum(int v, int l, int r, int ql, int qr) {
 		if (qr < l || ql > r) { return 0ll; }
-		if (l >= ql && r <= qr) { return t[v]; }
+		if (l >= ql && r <= qr) { return tree[v]; }
 		pushdown(v, l, r);
 		int m = (l + r) / 2;
 		return comb(range_sum(2 * v, l, m, ql, qr),
@@ -236,7 +243,7 @@ template <class T, class U> class LazySegtree {
 	}
 
   public:
-	LazySegtree(const vector<T> &a) : sz((int)a.size()), t(4 * sz), lz(4 * sz) {
+	LazySegtree(const vector<T> &a) : sz((int)a.size()), tree(4 * sz), lazy(4 * sz) {
 		build(1, 0, sz - 1, a);
 	}
 
