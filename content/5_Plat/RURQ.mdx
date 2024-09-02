@@ -155,16 +155,14 @@ range-sum segment tree to solve the question.
 #include <bits/stdc++.h>
 using namespace std;
 using ll = long long;
- 
-enum QueryType {
-    ADD, SET, NONE
-};
- 
+
+enum QueryType { ADD, SET, NONE };
+
 struct Query {
-    QueryType type = NONE;
-    ll val = 0;
+	QueryType type = NONE;
+	ll val = 0;
 };
- 
+
 /**
  * T = tree node type, which will be long long
  * U = update type, which will be the Query struct
@@ -174,10 +172,10 @@ template <class T, class U> class LazySegtree {
 	const int sz;
 	vector<T> t;
 	vector<U> lz;
- 
+
 	/** @return result of joining two tree nodes together */
 	inline T comb(T a, T b) { return a + b; }
- 
+
 	/** builds the segtree nodes */
 	void build(int v, int l, int r, const vector<T> &a) {
 		if (l == r) {
@@ -189,7 +187,7 @@ template <class T, class U> class LazySegtree {
 			t[v] = comb(t[2 * v], t[2 * v + 1]);
 		}
 	}
- 
+
 	/** applies lazy update to t[v], places update at lz[v] */
 	void apply(int v, int len, U x) {
 		if (x.type == ADD) {
@@ -204,7 +202,7 @@ template <class T, class U> class LazySegtree {
 			lz[v] = x;
 		}
 	}
- 
+
 	/** pushes down lazy update to children of v */
 	void pushdown(int v, int l, int r) {
 		if (lz[v].type != NONE && l != r) {
@@ -214,7 +212,7 @@ template <class T, class U> class LazySegtree {
 		}
 		lz[v] = Query{NONE, 0};
 	}
- 
+
 	void range_update(int v, int l, int r, int ql, int qr, U x) {
 		if (qr < l || ql > r) { return; }
 		if (ql <= l && r <= qr) {
@@ -227,7 +225,7 @@ template <class T, class U> class LazySegtree {
 			t[v] = comb(t[2 * v], t[2 * v + 1]);
 		}
 	}
- 
+
 	T range_sum(int v, int l, int r, int ql, int qr) {
 		if (qr < l || ql > r) { return 0ll; }
 		if (l >= ql && r <= qr) { return t[v]; }
@@ -236,28 +234,27 @@ template <class T, class U> class LazySegtree {
 		return comb(range_sum(2 * v, l, m, ql, qr),
 		            range_sum(2 * v + 1, m + 1, r, ql, qr));
 	}
- 
+
   public:
-	LazySegtree(const vector<T> &a)
-	    : sz((int)a.size()), t(4 * sz), lz(4 * sz) {
+	LazySegtree(const vector<T> &a) : sz((int)a.size()), t(4 * sz), lz(4 * sz) {
 		build(1, 0, sz - 1, a);
 	}
- 
+
 	/** updates [ql, qr] with the update x */
 	void range_update(int ql, int qr, U x) {
 		range_update(1, 0, sz - 1, ql, qr, x);
 	}
- 
+
 	/** sum of array values on [ql, qr] */
 	T range_sum(int ql, int qr) { return range_sum(1, 0, sz - 1, ql, qr); }
 };
- 
+
 int main() {
 	int n, q;
 	cin >> n >> q;
 	vector<ll> a(n);
 	for (ll &i : a) { cin >> i; }
- 
+
 	LazySegtree<ll, Query> st(a);
 	for (int t = 0; t < q; t++) {
 		int type, a, b;
