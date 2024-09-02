@@ -203,7 +203,7 @@ template <class T, class U> class LazySegtree {
 				lazy[v] = Query{SET, lazy[v].val + x.val};
 			}
 			tree[v] += x.val * len;
-		} else {
+		} else if (query.type == SET) {
 			// lazy set overrides any previous update
 			tree[v] = x.val * len;
 			lazy[v] = x;
