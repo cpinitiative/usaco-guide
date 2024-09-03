@@ -21,14 +21,13 @@ to maintain the binary representations of the xor-sums of prefixes.
 
 ```cpp
 #include <bits/stdc++.h>
-
 using namespace std;
 
 const int NMAX = 2e5;
 
 int trie[32 * NMAX][2], node_count;
 
-void insert(const int val) {
+void insert(int val) {
 	int node = 0;
 	// Traverse the binary representation of val
 	for (int i = 31; i >= 0; i--) {
@@ -41,9 +40,10 @@ void insert(const int val) {
 	}
 }
 
-int query(const int xor_sum) {
-	// Path recreates the number in trie
-	int node = 0, path = 0;
+int query(int xor_sum) {
+	int node = 0;
+	int path = 0;  // Path recreates the number in the trie
+
 	// Traverse the binary representation of val
 	for (int i = 31; i >= 0; i--) {
 		// Get the value of the current bit
@@ -57,18 +57,19 @@ int query(const int xor_sum) {
 			node = trie[node][bit];
 		}
 	}
+
 	// Retung pref_i ^ pref_j
 	return xor_sum ^ path;
 }
 
 int main() {
-
 	int n;
 	cin >> n;
 
 	insert(0);
 
-	int xor_sum = 0, ans = 0;
+	int xor_sum = 0;
+	int ans = 0;
 	for (int i = 0; i < n; i++) {
 		int x;
 		cin >> x;
@@ -81,8 +82,6 @@ int main() {
 	}
 
 	cout << ans << endl;
-
-	return 0;
 }
 ```
 
