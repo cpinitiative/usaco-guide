@@ -148,7 +148,7 @@ situations might take place after any update:
   $\texttt{lzSet}$ value since a set update will override all previous add
   updates.
 
-Given the mechanics behind the `pushdown` function, all you need is a regular
+Given the mechanics behind the `push_down` function, all you need is a regular
 range-sum segment tree to solve the question.
 
 ```cpp
@@ -211,7 +211,7 @@ template <class T, class U> class LazySegtree {
 	}
 
 	/** pushes down lazy update to children of v */
-	void pushdown(int v, int l, int r) {
+	void push_down(int v, int l, int r) {
 		if (lazy[v].type != NONE && l != r) {
 			int m = (l + r) / 2;
 			apply(2 * v, m - l + 1, lazy[v]);
@@ -225,7 +225,7 @@ template <class T, class U> class LazySegtree {
 		if (ql <= l && r <= qr) {
 			apply(v, r - l + 1, x);
 		} else {
-			pushdown(v, l, r);
+			push_down(v, l, r);
 			int m = (l + r) / 2;
 			range_update(2 * v, l, m, ql, qr, x);
 			range_update(2 * v + 1, m + 1, r, ql, qr, x);
@@ -236,7 +236,7 @@ template <class T, class U> class LazySegtree {
 	T range_sum(int v, int l, int r, int ql, int qr) {
 		if (qr < l || ql > r) { return 0ll; }
 		if (l >= ql && r <= qr) { return tree[v]; }
-		pushdown(v, l, r);
+		push_down(v, l, r);
 		int m = (l + r) / 2;
 		return comb(range_sum(2 * v, l, m, ql, qr),
 		            range_sum(2 * v + 1, m + 1, r, ql, qr));
