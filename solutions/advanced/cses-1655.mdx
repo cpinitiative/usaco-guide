@@ -7,11 +7,14 @@ author: Mihnea Brebenel
 
 ## Explanation
 
-Let $\texttt{pref}_i$ be the xor-sum of the prefix ending at $i$. Then, we must find a previous prefix sum
-$\texttt{pref}_j$ such that $\texttt{pref}_i \oplus \texttt{pref}_j$ is maximized. To obtain the maximal result
-the $0$ bits should be flipped to $1$. And this is where a trie data structure comes in handy. It can be used
-to maintain the binary representations of the xor-sums of prefixes. We add the values in trie from the most significant
-bit to the least significat bit. When querying for $\texttt{pref}_j$ we'll traverse the trie trying to down the path
+Let $\texttt{pref}_i$ be the xor-sum of the prefix ending at $i$. We must find a previous prefix sum
+$\texttt{pref}_j$ such that $\texttt{pref}_i \oplus \texttt{pref}_j$ is maximized.
+
+To obtain the maximum result, the $0$ bits should be flipped to $1$.
+Now, we can use a trie to maintain the binary representations of the xor-sums of prefixes.
+We add the values in the trie from the most significant to the least significat bit.
+
+When querying for $\texttt{pref}_j$ we'll traverse the trie trying to down the path
 of the opposite bit, such that after xoring with $\texttt{pref}_i$ more bits are flipped to $1$.
 
 ## Implementation
@@ -28,7 +31,7 @@ using namespace std;
 const int MAX_N = 2e5;
 
 int node_count;
-int trie[32 * MAX_N][2];  // 32 is the int size
+int trie[32 * MAX_N][2];  // 32 bits in an int
 
 void insert(int val) {
 	int node = 0;
