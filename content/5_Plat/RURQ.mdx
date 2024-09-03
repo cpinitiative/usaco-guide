@@ -169,13 +169,13 @@ struct Query {
 
 /**
  * T = tree node type, which will be long long
- * U = update type, which will be the Query struct
+ * We use the Query struct to manage updates.
  */
-template <class T, class U> class LazySegtree {
+template <class T> class LazySegtree {
   private:
 	const int sz;
-	vector<T> tree;  // tree[i] = sum of this node's range
-	vector<U> lazy;  // lazy[i] = lazy update for the range
+	vector<T> tree;      // tree[i] = sum of this node's range
+	vector<Query> lazy;  // lazy[i] = lazy update for the range
 
 	/** @return result of joining two tree nodes together */
 	inline T comb(T a, T b) { return a + b; }
@@ -193,7 +193,7 @@ template <class T, class U> class LazySegtree {
 	}
 
 	/** applies lazy update to t[v], places update at lz[v] */
-	void apply(int v, int len, U x) {
+	void apply(int v, int len, Query x) {
 		if (x.type == ADD) {
 			// if lazy[v]'s type is NONE or ADD, then we add to the range
 			// otherwise, we add to our lazy set value
@@ -203,7 +203,7 @@ template <class T, class U> class LazySegtree {
 				lazy[v] = Query{SET, lazy[v].val + x.val};
 			}
 			tree[v] += x.val * len;
-		} else if (query.type == SET) {
+		} else if (x.type == SET) {
 			// lazy set overrides any previous update
 			tree[v] = x.val * len;
 			lazy[v] = x;
@@ -220,7 +220,7 @@ template <class T, class U> class LazySegtree {
 		lazy[v] = Query{NONE, 0};
 	}
 
-	void range_update(int v, int l, int r, int ql, int qr, U x) {
+	void range_update(int v, int l, int r, int ql, int qr, Query x) {
 		if (qr < l || ql > r) { return; }
 		if (ql <= l && r <= qr) {
 			apply(v, r - l + 1, x);
@@ -248,7 +248,7 @@ template <class T, class U> class LazySegtree {
 	}
 
 	/** updates [ql, qr] with the update x */
-	void range_update(int ql, int qr, U x) {
+	void range_update(int ql, int qr, Query x) {
 		range_update(1, 0, sz - 1, ql, qr, x);
 	}
 
@@ -262,7 +262,7 @@ int main() {
 	vector<ll> a(n);
 	for (ll &i : a) { cin >> i; }
 
-	LazySegtree<ll, Query> st(a);
+	LazySegtree<ll> st(a);
 	for (int t = 0; t < q; t++) {
 		int type, a, b;
 		cin >> type >> a >> b;
