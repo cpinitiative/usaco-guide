@@ -1,0 +1,93 @@
+---
+id: cses-1655
+source: CSES
+title: Maximum Xor Subarray
+author: Mihnea Brebenel
+---
+
+## Explanation
+
+Let $\texttt{pref}_i$ be the xor-sum of prefix ending at $i$. Then, we must find a previous prefix sum
+$\texttt{pref}_j$ such that $\texttt{pref}_i \oplus \texttt{pref}_j$ is maximized. To obtain the maximal result
+the $0$ bits should be flipped to $1$. And this is where a trie data structure comes in handy. It can be used 
+to maintain the binary representations of the xor-sums of prefixes.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+const int NMAX = 2e5;
+
+int trie[32 * NMAX][2], node_count;
+
+void insert(const int val) {
+    int node = 0;
+    // Traverse the binary representation of val
+    for(int i = 31; i >= 0; i--) {
+        // Get the value of the current bit
+        bool bit = val & (1 << i);
+        // If the node doesn't exist, create one
+        if(trie[node][bit] == 0) {
+            trie[node][bit] = ++node_count;
+        }
+        // Move to the next node
+        node = trie[node][bit];
+    }
+}
+
+int query(const int xor_sum) {
+    // Path recreates the number in trie
+    int node = 0, path = 0;
+    // Traverse the binary representation of val
+    for(int i = 31; i >= 0; i--) {
+        // Get the value of the current bit
+        bool bit = xor_sum & (1 << i);
+        // First try opposite value of the bit, so that it result in 1 in xor
+        if(trie[node][1 ^ bit]) {
+            if(1 ^ bit) path |= (1 << i);
+            node = trie[node][1 ^ bit];
+        } else if(trie[node][bit]) {
+            if(bit) path |= (1 << i);
+            node = trie[node][bit];
+        }
+    }
+    // Retung pref_i ^ pref_j
+    return xor_sum ^ path;
+}
+
+int main() { 
+
+    int n;
+    cin >> n;
+
+    insert(0);
+
+    int xor_sum = 0, ans = 0;
+    for(int i = 0; i < n; i++) {
+        int x;
+        cin >> x;
+
+        // Insert the prefix xor-sum in trie
+        xor_sum ^= x;
+        insert(xor_sum);
+
+        ans = max(ans, query(xor_sum));
+    }
+
+    cout << ans << endl;
+
+    return 0;
+}
+
+```
+
+</CPPSection>
+</LanguageSection>
