@@ -545,7 +545,7 @@ Here are the values of $\phi(n)$ for the first 20 numbers:
 The totient function is **multiplicative** meaning that $\phi(nm)=\phi(n) \cdot \phi(m)$, where $n$ and $m$ are coprime - $gcd(n, m)=1$. For example $\phi(15)=\phi(3 \cdot 5)=\phi(3) \cdot \phi(5) = 2 \cdot 4 = 8$.
 
 Let's take a look at some edge cases for $\phi(n)$:
-- If n is a prime number then $\phi(n)=n-1$ because $gcd(n, x)=1$ for all $1 \leq x \le n$
+- If n is a prime number then $\phi(n)=n-1$ because $gcd(n, x)=1$ for all $1 \leq x < n$
 - If n is a power of a prime number, $n=p^q$ where p is a prime number and $1 \leq q$ then\
   there are exactly $p^{q-1}$ numbers divisible by $p$, so
   $\phi(p^q)=p^{q} - p^{q-1} = p^{q-1}(p - 1)$
@@ -557,7 +557,7 @@ $$
 \phi(n)=\phi(p_1^{q_1}) \cdot \phi(p_2^{q_2}) \cdot \ldots \cdot \phi(p_k^{q_k}) = p_1^{q_1-1}(p_1 - 1) \cdot p_2^{q_2-1}(p_2 - 1) \cdot \ldots \cdot p_k^{q_k-1}(q_k - 1)
 $$
 
-Below is an implementation for factorization in $\mathcal{o}(\sqrt{n})$. It can be a little bit tricky to understand why we substract $and/p$ from $ans$. For example
+Below is an implementation for factorization in $\mathcal{O}(\sqrt{n})$. It can be a little bit tricky to understand why we substract $and/p$ from $ans$. For example
 $ans=p_q \cdot x$ ,where $p$ is a prime factor and $x$ is the rest of the prime factorization. By substracting $\frac{ans}{p}=p_{q-1} \cdot x$ we end up with:
 $p_q \cdot x - p_{q-1} \cdot x = p_{q-1} \cdot x \cdot (p - 1)$ which is exactly the form of $\phi(n)$ described a few linew above.
 
