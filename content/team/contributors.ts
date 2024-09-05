@@ -251,14 +251,14 @@ export const RestOfMembers: Member[] = [
     titles: [roles.contentAuthor],
   },
   {
-    photo: 'alex_du',
-    name: 'Alex Du',
-    titles: [roles.contentAuthor],
-  },
-  {
     photo: 'andrew_xu',
     name: 'Andrew Xu',
     titles: [roles.liveInstructor],
+  },
+  {
+    photo: 'peng_bai',
+    name: 'Peng Bai',
+    titles: [roles.contentAuthor],
   },
 ];
 
@@ -287,24 +287,15 @@ export const NotPictured: Member[] = [
 ];
 
 export const FormerMembers: Member[] = [
-  /*{
-    photo: "egor",
-    name: "Egor Gagushin",
-    titles: [roles.videoInstructor],
-    codeforces: "eggag32",
-    github: "Eggag",
-  },*/
-  /*{
-    photo: "ramit",
-    name: "Ramit Goyal",
-    titles: [roles.videoInstructor],
-    email: "24ramitg@students.harker.org",
-    instagram: "ramit_goyal24",
-  },*/
   {
     photo: 'nikhil',
     name: 'Nikhil Chatterjee',
     titles: [roles.liveInstructor, roles.videoInstructor, roles.clubCurriculum],
+  },
+  {
+    photo: 'alex_du',
+    name: 'Alex Du',
+    titles: [roles.contentAuthor],
   },
   {
     photo: 'dustin',

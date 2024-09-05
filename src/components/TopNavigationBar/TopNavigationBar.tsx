@@ -32,7 +32,6 @@ import LogoSquare from '../LogoSquare';
 import MobileMenuButtonContainer from '../MobileMenuButtonContainer';
 import SectionsDropdown from '../SectionsDropdown';
 import { LoadingSpinner } from '../elements/LoadingSpinner';
-import Banner from './Banner';
 import { SearchModal } from './SearchModal';
 import { UserAvatarMenu } from './UserAvatarMenu';
 
@@ -135,6 +134,7 @@ export default function TopNavigationBar({
   ];
   return (
     <>
+      {/*
       {!hidePromoBar && (
         <>
           <Banner
@@ -144,6 +144,7 @@ export default function TopNavigationBar({
           />
         </>
       )}
+      */}
 
       <nav
         className={classNames(
