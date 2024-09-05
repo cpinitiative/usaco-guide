@@ -60,32 +60,29 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-    public static void main (String[] args) {
-        Kattio io = new Kattio();
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
 
-        long n = io.nextLong();
-        int ans = 0;
-        // prime factorize n
-        for (long p = 2; p * p <= n; p++) {
-            int exponent = 0;
-            while (n % p == 0) {
-                exponent++;
-                n /= p;
-            }
-            // decrement the exponent by i each time
-            for (int i = 1; exponent - i >= 0; i++) {
-                exponent -= i;
-                ans++;
-            } 
+		long n = io.nextLong();
+		int ans = 0;
+		// prime factorize n
+		for (long p = 2; p * p <= n; p++) {
+			int exponent = 0;
+			while (n % p == 0) {
+				exponent++;
+				n /= p;
+			}
+			// decrement the exponent by i each time
+			for (int i = 1; exponent - i >= 0; i++) {
+				exponent -= i;
+				ans++;
+			}
+		}
+		if (n > 1) { ans++; }
+		System.out.println(ans);
+	}
 
-        }
-        if (n > 1) {
-            ans++;
-        }
-        System.out.println(ans);
-    }
-
-    // CodeSnip{Kattio}
+	// CodeSnip{Kattio}
 }
 ```
 
