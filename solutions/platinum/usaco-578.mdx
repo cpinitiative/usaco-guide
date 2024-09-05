@@ -1,0 +1,133 @@
+---
+id: usaco-578
+source: USACO Platinum 2015 December
+title: Counting Haybales
+author: Justin Ji
+---
+
+[Official Analysis (Java)](https://usaco.org/current/data/sol_haybales_platinum_dec15.html)
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N\log{N})$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+
+class LazySegtree {
+  private:
+	static constexpr array<ll, 2> ID = {0, INT32_MAX};  // default tree value
+	static constexpr int LZ_ID = 0;                     // default lazy value
+	const int sz;
+	vector<array<ll, 2>> t;  // t[v] = {sum, minimum}
+	vector<int> lz;          // lz[v] = lazy add
+
+	/** @return the result of joining two tree nodes */
+	inline array<ll, 2> join(const array<ll, 2> &a, const array<ll, 2> &b) {
+		return {a[0] + b[0], min(a[1], b[1])};
+	}
+
+	/** builds the segtree and its nodes */
+	void build(int v, int tl, int tr, const vector<int> &a) {
+		if (tl == tr) {
+			t[v] = {a[tl], a[tl]};
+		} else {
+			int m = (tl + tr) / 2;
+			build(2 * v, tl, m, a);
+			build(2 * v + 1, m + 1, tr, a);
+			t[v] = join(t[2 * v], t[2 * v + 1]);
+		}
+	}
+
+	/** pushes the lazy update to v's children */
+	void pushdown(int v, int l, int r) {
+		// need to make sure v has children
+		if (lz[v] != LZ_ID && l != r) {
+			int m = (l + r) / 2;
+			for (int x : {2 * v, 2 * v + 1}) {
+				int len = (x == 2 * v ? m - l + 1 : r - m);
+				apply(x, len, lz[v]);
+			}
+		}
+		lz[v] = LZ_ID;
+	}
+
+	/** applies an update to node v and adds to the lazy tag */
+	void apply(int v, int len, int add) {
+		t[v][0] += 1ll * len * add;
+		t[v][1] += add;
+		lz[v] += add;
+	}
+
+	array<ll, 2> range_info(int v, int tl, int tr, int ql, int qr) {
+		if (qr < tl || ql > tr) return ID;
+		if (ql <= tl && tr <= qr) { return t[v]; }
+		pushdown(v, tl, tr);
+		int m = (tl + tr) / 2;
+		return join(range_info(2 * v, tl, m, ql, qr),
+		            range_info(2 * v + 1, m + 1, tr, ql, qr));
+	}
+
+	void inc_range(int v, int tl, int tr, int ql, int qr, int amt) {
+		if (qr < tl || ql > tr) return;
+		if (ql <= tl && tr <= qr) {
+			apply(v, tr - tl + 1, amt);
+		} else {
+			pushdown(v, tl, tr);
+			int m = (tl + tr) / 2;
+			inc_range(2 * v, tl, m, ql, qr, amt);
+			inc_range(2 * v + 1, m + 1, tr, ql, qr, amt);
+			t[v] = join(t[2 * v], t[2 * v + 1]);
+		}
+	}
+
+  public:
+	LazySegtree(const vector<int> &a)
+	    : sz((int)a.size()), t(4 * sz), lz(4 * sz) {
+		build(1, 0, sz - 1, a);
+	}
+
+	/** @return {sum, minimum value} of haybales in [ql, qr] */
+	array<ll, 2> range_info(int ql, int qr) {
+		return range_info(1, 0, sz - 1, ql, qr);
+	}
+
+	/** adds to every haybale in the range [ql, qr] */
+	void inc_range(int ql, int qr, int amt) {
+		inc_range(1, 0, sz - 1, ql, qr, amt);
+	}
+};
+
+int main() {
+	freopen("haybales.in", "r", stdin);
+	int n, q;
+	cin >> n >> q;
+	vector<int> a(n);
+	for (int &i : a) { cin >> i; }
+
+	LazySegtree st(a);
+	freopen("haybales.out", "w", stdout);
+	for (int t = 0; t < q; t++) {
+		char type;
+		cin >> type;
+		if (type == 'P') {
+			int a, b, c;
+			cin >> a >> b >> c;
+			st.inc_range(--a, --b, c);
+		} else {
+			int a, b;
+			cin >> a >> b;
+			const auto [sum, mn] = st.range_info(--a, --b);
+			cout << (type == 'M' ? mn : sum) << '\n';
+		}
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>
