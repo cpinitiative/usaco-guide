@@ -83,6 +83,36 @@ public class oraclcm {
 ```
 
 </JavaSection>
+
+<PySection>
+
+```py
+import math
+
+"""
+    a stores minimum exponents (gcd of all numbers seen so far)
+    b stores second minimum exponents
+"""
+def red(): # restore invariant mentioned above
+    global a, b
+    g = math.gcd(a, b)
+    a, b = g, a // g * b # a / g * b = lcm(a, b)
+
+
+n = int(input())
+arr = list(map(int, input().split()))
+a, b = arr[0], arr[1]
+red()
+
+for i in range(2, n):
+    b = math.gcd(b, arr[i])
+    red()
+
+print(b)
+```
+
+</PySection>
+
 </LanguageSection>
 
 If it's hard to understand what exactly this code is doing at first glance, a
