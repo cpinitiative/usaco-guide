@@ -7,14 +7,6 @@ author: Rameez Parwez
 
 [Official Editorial (C++)](https://codeforces.com/blog/entry/71594)
 
-## Explanation
-
-The idea is to use Heavy-Light Decomposition(HLD) for its efficiency in dividing the tree into chains and ensuring that paths between any two nodes pass through a limited number of chains, along with Binary Indexed Tree(BIT) to efficiently manage cumulative sums and range updates operations.
-
-At first, the DFS is performed starting from node $0$ to calculate the depth and subtree size. Afterwards, the decomposition is performed to transform the tree into a structure suitable for BIT operations.
-
-For a modification, we first check if vertex $v$ has some subtree. If it does, we want to add a tag to $v$ which increase the subtree of every light child $u$ of $v$ by $(n - x) * d$. When handling the query, we find its value on BIT and sum of all tags on its path to the root.
-
 ## Implementation
 
 **Time Complexity:** $\mathcal{O} (N + Q \log(N))$

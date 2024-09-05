@@ -161,9 +161,12 @@ void dfs_hld(int u, int chain) {
 	en[u] = T;
 }
 
-/** @return maximum value on the path from u to the root of the chain containing
-v int query_up(int u, int v) { int res = -INF; while (head[u] != head[v]) { res
-= max(res, lseg.query(1, 1, n, st[head[u]], st[u])); u = par[head[u]][0];
+/** @return maximum value on the path from u to the root of the chain containing v 
+int query_up(int u, int v) { 
+	int res = -INF; 
+	while (head[u] != head[v]) { 
+		res = max(res, lseg.query(1, 1, n, st[head[u]], st[u]));
+		u = par[head[u]][0];
     }
     res = max(res, lseg.query(1, 1, n, st[v], st[u]));
     return res;
