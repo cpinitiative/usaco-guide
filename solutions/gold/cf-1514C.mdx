@@ -75,4 +75,59 @@ int main() {
 ```
 
 </CPPSection>
+
+<PySection>
+
+```py
+import math
+
+n = int(input())
+coprimes = []
+
+"""
+	This array stores all of the numbers
+	which are less than n and are coprime with n. 
+"""
+
+for i in range(1, n):
+    if math.gcd(n, i) == 1: # A number is coprime with n if gcd(n, i) == 1 
+        coprimes.append(i)
+
+
+"""
+    The longest subsequence whose product is 1 modulo n
+	is the longest subarray of coprimes with a product
+	of 1 modulo n.
+"""
+number_of_coprimes = len(coprimes)
+prefix_mod = [0] * number_of_coprimes
+prefix_mod[0] = 1
+
+"""
+	We can take the modulo prefix to check the modulus
+    of the first k coprimes, where k is the end of the
+	subarray.
+"""
+for i in range(1, number_of_coprimes):
+    prefix_mod[i] = (prefix_mod[i - 1] * coprimes[i]) % n
+
+length_of_longest_subarray = 1
+for i in range(number_of_coprimes):
+    """
+	    If a given subarray has a product of
+		1 modulo n, update the length of the
+		longest subsequence with product 1
+		modulo n.
+
+    """
+    if prefix_mod[i] == 1:
+        length_of_longest_subarray = i + 1
+
+print(length_of_longest_subarray)
+for i in range(length_of_longest_subarray):
+    print(coprimes[i], end= ' ')
+
+```
+
+</PySection>
 </LanguageSection>
