@@ -34,6 +34,7 @@ import SectionsDropdown from '../SectionsDropdown';
 import { LoadingSpinner } from '../elements/LoadingSpinner';
 import { SearchModal } from './SearchModal';
 import { UserAvatarMenu } from './UserAvatarMenu';
+import Banner from './Banner';
 
 export default function TopNavigationBar({
   transparent = false,
@@ -134,17 +135,15 @@ export default function TopNavigationBar({
   ];
   return (
     <>
-      {/*
       {!hidePromoBar && (
         <>
           <Banner
-            text="Registration for Summer Semester Live Classes Open"
+            text="Registration for Fall Semester Live Classes Open"
             action="Register"
             link="https://joincpi.org/classes"
           />
         </>
       )}
-      */}
 
       <nav
         className={classNames(
