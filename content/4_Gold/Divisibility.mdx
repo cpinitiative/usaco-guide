@@ -614,13 +614,30 @@ void precompute() {
 	for (int i = 2; i < MAX_N; i++) {
 		// If i is prime
 		if (phi[i] == i) {
-			for (int j = i; j < NMAX; j += i) { phi[j] -= phi[j] / i; }
+			for (int j = i; j < MAX_N; j += i) { phi[j] -= phi[j] / i; }
 		}
 	}
 }
 ```
 
 </CPPSection>
+
+<PySection>
+
+```py
+def precompute() -> None:
+    for i in range(1, MAX_N):
+        phi[i] = i
+
+    for i in range(2, MAX_N):
+        # If i is prime
+        if phi[i] == i:
+            for j in range(i, MAX_N, i):
+                phi[j] -= phi[j] // i
+
+```
+</PySection>
+
 </LanguageSection>
 
 <FocusProblem problem="gcdex" />
