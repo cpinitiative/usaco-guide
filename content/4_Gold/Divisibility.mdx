@@ -587,16 +587,12 @@ public static int phi(int n) {
 	int ans = n;
 	for (int p = 2; p * p <= n; p++) {
 		if (n % p == 0) {
-			while (n % p == 0) {
-				n /= p;
-			}
+			while (n % p == 0) { n /= p; }
 			ans -= ans / p;
 		}
 	}
 
-	if (n > 1) {
-		ans -= ans / n;
-	}
+	if (n > 1) { ans -= ans / n; }
 	return ans;
 }
 ```
@@ -606,18 +602,17 @@ public static int phi(int n) {
 
 ```py
 def phi(n: int) -> int:
-    ans = n
-    p = 2
-    while p * p <= n:
-        if n % p == 0:
-            while n % p == 0:
-                n //= p
-            ans -= ans // p
-        p += 1
-    if n > 1:
-        ans -= ans // n
-    return ans
-
+	ans = n
+	p = 2
+	while p * p <= n:
+		if n % p == 0:
+			while n % p == 0:
+				n //= p
+			ans -= ans // p
+		p += 1
+	if n > 1:
+		ans -= ans // n
+	return ans
 ```
 
 </PySection>
@@ -648,16 +643,12 @@ void precompute() {
 
 ```java
 public static void precompute() {
-	for (int i = 1; i < MAX_N; i++) {
-		phi[i] = i;
-	}
+	for (int i = 1; i < MAX_N; i++) { phi[i] = i; }
 
 	for (int i = 2; i < MAX_N; i++) {
 		// If i is prime
 		if (phi[i] == i) {
-			for (int j = i; j < MAX_N; j += i) {
-				phi[j] -= phi[j] / i;
-			}
+			for (int j = i; j < MAX_N; j += i) { phi[j] -= phi[j] / i; }
 		}
 	}
 }
@@ -669,15 +660,14 @@ public static void precompute() {
 
 ```py
 def precompute() -> None:
-    for i in range(1, MAX_N):
-        phi[i] = i
+	for i in range(1, MAX_N):
+		phi[i] = i
 
-    for i in range(2, MAX_N):
-        # If i is prime
-        if phi[i] == i:
-            for j in range(i, MAX_N, i):
-                phi[j] -= phi[j] // i
-
+	for i in range(2, MAX_N):
+		# If i is prime
+		if phi[i] == i:
+			for j in range(i, MAX_N, i):
+				phi[j] -= phi[j] // i
 ```
 </PySection>
 
