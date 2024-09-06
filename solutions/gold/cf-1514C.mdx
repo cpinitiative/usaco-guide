@@ -75,86 +75,76 @@ int main() {
 ```
 
 </CPPSection>
-
 <JavaSection>
 
 ```java
 import java.io.*;
 import java.util.*;
 
-public class Product_1_Modulo_N {
+public class Prod1ModN {
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
+		int n = io.nextInt();
 
-    public static void main(String[] args) {
-        Kattio io = new Kattio();
-        int n = io.nextInt();
-        
-        ArrayList<Long> coprimes = new ArrayList<>();
-        
-        /*
-         * This array stores all of the numbers
-         * which are less than n and are coprime with n.
-         */
-        for (int i = 1; i < n; i++) {
-            // A number is coprime with n if gcd(n, i) = 1
-            if (gcd(n, i) == 1) {
-                coprimes.add((long) i);
-            }
-        }
+		ArrayList<Long> coprimes = new ArrayList<>();
 
-        /*
-         * The longest subsequence whose product is 1 modulo n
-         * is the longest subarray of coprimes with a product
-         * of 1 modulo n.
-         */
-        
-        int number_of_coprimes = coprimes.size();
-        long[] prefix_mod = new long[number_of_coprimes];
-        prefix_mod[0] = 1;
-        
-        /*
-         * We can take the modulo prefix to check the modulus
-         * of the first k coprimes, where k is the end of the
-         * subarray.
-         */
-        for (int i = 1; i < number_of_coprimes; i++) {
-            prefix_mod[i] = (prefix_mod[i - 1] * coprimes.get(i)) % n;
-        }
-        
-        int length_of_longest_subarray = 1;
-        for (int i = 0; i < number_of_coprimes; i++) {
-            /*
-             * If a given subarray has a product of
-             * 1 modulo n, update the length of the
-             * longest subsequence with product 1
-             * modulo n.
-             */
-            if (prefix_mod[i] == 1) {
-                length_of_longest_subarray = i + 1;
-            }
-        }
+		/*
+		 * This array stores all of the numbers
+		 * which are less than n and are coprime with n.
+		 */
+		for (int i = 1; i < n; i++) {
+			// A number is coprime with n if gcd(n, i) = 1
+			if (gcd(n, i) == 1) { coprimes.add((long)i); }
+		}
 
-        System.out.println(length_of_longest_subarray);
+		/*
+		 * The longest subsequence whose product is 1 modulo n
+		 * is the longest subarray of coprimes with a product
+		 * of 1 modulo n.
+		 */
 
-        for (int i = 0; i < length_of_longest_subarray; i++) {
-            System.out.print(coprimes.get(i) + " ");
-        }
-        System.out.println();
-    }
+		int number_of_coprimes = coprimes.size();
+		long[] prefix_mod = new long[number_of_coprimes];
+		prefix_mod[0] = 1;
 
-    public static long gcd(long a, long b) {
-        if (b == 0) {
-            return a;
-        }
-        return gcd(b, a % b);
-    }
+		/*
+		 * We can take the modulo prefix to check the modulus
+		 * of the first k coprimes, where k is the end of the
+		 * subarray.
+		 */
+		for (int i = 1; i < number_of_coprimes; i++) {
+			prefix_mod[i] = (prefix_mod[i - 1] * coprimes.get(i)) % n;
+		}
 
-    // CodeSnip{Kattio}
+		int length_of_longest_subarray = 1;
+		for (int i = 0; i < number_of_coprimes; i++) {
+			/*
+			 * If a given subarray has a product of
+			 * 1 modulo n, update the length of the
+			 * longest subsequence with product 1
+			 * modulo n.
+			 */
+			if (prefix_mod[i] == 1) { length_of_longest_subarray = i + 1; }
+		}
+
+		System.out.println(length_of_longest_subarray);
+
+		for (int i = 0; i < length_of_longest_subarray; i++) {
+			System.out.print(coprimes.get(i) + " ");
+		}
+		System.out.println();
+	}
+
+	public static long gcd(long a, long b) {
+		if (b == 0) { return a; }
+		return gcd(b, a % b);
+	}
+
+	// CodeSnip{Kattio}
 }
 ```
 
 </JavaSection>
-
-
 <PySection>
 
 ```py
@@ -169,8 +159,8 @@ which are less than n and are coprime with n.
 """
 
 for i in range(1, n):
-    if math.gcd(n, i) == 1: # A number is coprime with n if gcd(n, i) == 1 
-        coprimes.append(i)
+	if math.gcd(n, i) == 1:  # A number is coprime with n if gcd(n, i) == 1
+		coprimes.append(i)
 
 
 """
@@ -188,7 +178,7 @@ of the first k coprimes, where k is the end of the
 subarray.
 """
 for i in range(1, number_of_coprimes):
-    prefix_mod[i] = (prefix_mod[i - 1] * coprimes[i]) % n
+	prefix_mod[i] = (prefix_mod[i - 1] * coprimes[i]) % n
 
 length_of_longest_subarray = 1
 for i in range(number_of_coprimes):
@@ -203,8 +193,7 @@ for i in range(number_of_coprimes):
 
 print(length_of_longest_subarray)
 for i in range(length_of_longest_subarray):
-    print(coprimes[i], end= ' ')
-
+	print(coprimes[i], end=" ")
 ```
 
 </PySection>
