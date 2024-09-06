@@ -579,6 +579,27 @@ int phi(int n) {
 ```
 
 </CPPSection>
+
+<PySection>
+
+```py
+def phi(n: int) -> int:
+    ans = n
+    p = 2
+    while p * p <= n:
+        if n % p == 0:
+            while n % p == 0:
+                n //= p
+            ans -= ans // p
+        p += 1
+    if n > 1:
+        ans -= ans // n
+    return ans
+
+```
+
+</PySection>
+
 </LanguageSection>
 
 Usually in problems we need to precompute the totient of all numbers between $1$ and $n$, then factorizing is not efficient. The idea is the same as the
