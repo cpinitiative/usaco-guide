@@ -1,0 +1,95 @@
+---
+id: cses-1655
+source: CSES
+title: Maximum Xor Subarray
+author: Mihnea Brebenel
+---
+
+## Explanation
+
+Let $\texttt{pref}_i$ be the xor-sum of the prefix ending at $i$. We must find a previous prefix sum
+$\texttt{pref}_j$ such that $\texttt{pref}_i \oplus \texttt{pref}_j$ is maximized.
+
+To obtain the maximum result, the $0$ bits should be flipped to $1$.
+Now, we can use a trie to maintain the binary representations of the xor-sums of prefixes.
+We add the values in the trie from the most significant to the least significat bit.
+
+When querying for $\texttt{pref}_j$ we'll traverse the trie trying to down the path
+of the opposite bit, such that after xoring with $\texttt{pref}_i$ more bits are flipped to $1$.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N \cdot \log{M})$, where $M$ is the maximum value
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MAX_N = 2e5;
+
+int node_count;
+int trie[32 * MAX_N][2];  // 32 bits in an int
+
+void insert(int val) {
+	int node = 0;
+	// Traverse the binary representation of val
+	for (int i = 31; i >= 0; i--) {
+		// Get the value of the current bit
+		bool bit = val & (1 << i);
+		// If the node doesn't exist, create one
+		if (trie[node][bit] == 0) { trie[node][bit] = ++node_count; }
+		// Move to the next node
+		node = trie[node][bit];
+	}
+}
+
+int query(int xor_sum) {
+	int node = 0;
+	int path = 0;  // Path recreates the number in the trie
+
+	// Traverse the binary representation of val
+	for (int i = 31; i >= 0; i--) {
+		// Get the value of the current bit
+		bool bit = xor_sum & (1 << i);
+		// First try opposite value of the bit, so that it result in 1 in xor
+		if (trie[node][1 ^ bit]) {
+			if (1 ^ bit) path |= (1 << i);
+			node = trie[node][1 ^ bit];
+		} else if (trie[node][bit]) {
+			if (bit) path |= (1 << i);
+			node = trie[node][bit];
+		}
+	}
+
+	// Retung pref_i ^ pref_j
+	return xor_sum ^ path;
+}
+
+int main() {
+	int n;
+	cin >> n;
+
+	insert(0);
+
+	int xor_sum = 0;
+	int ans = 0;
+	for (int i = 0; i < n; i++) {
+		int x;
+		cin >> x;
+
+		// Insert the prefix xor-sum in trie
+		xor_sum ^= x;
+		insert(xor_sum);
+
+		ans = max(ans, query(xor_sum));
+	}
+
+	cout << ans << endl;
+}
+```
+
+</CPPSection>
+</LanguageSection>
