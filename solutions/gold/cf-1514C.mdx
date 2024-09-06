@@ -103,33 +103,33 @@ public class Prod1ModN {
 		 * of 1 modulo n.
 		 */
 
-		int number_of_coprimes = coprimes.size();
-		long[] prefix_mod = new long[number_of_coprimes];
-		prefix_mod[0] = 1;
+		int numberOfCoprimes = coprimes.size();
+		long[] prefixMod = new long[numberOfCoprimes];
+		prefixMod[0] = 1;
 
 		/*
 		 * We can take the modulo prefix to check the modulus
 		 * of the first k coprimes, where k is the end of the
 		 * subarray.
 		 */
-		for (int i = 1; i < number_of_coprimes; i++) {
-			prefix_mod[i] = (prefix_mod[i - 1] * coprimes.get(i)) % n;
+		for (int i = 1; i < numberOfCoprimes; i++) {
+			prefixMod[i] = (prefixMod[i - 1] * coprimes.get(i)) % n;
 		}
 
-		int length_of_longest_subarray = 1;
-		for (int i = 0; i < number_of_coprimes; i++) {
+		int lengthOfLongestSubarray = 1;
+		for (int i = 0; i < numberOfCoprimes; i++) {
 			/*
 			 * If a given subarray has a product of
 			 * 1 modulo n, update the length of the
 			 * longest subsequence with product 1
 			 * modulo n.
 			 */
-			if (prefix_mod[i] == 1) { length_of_longest_subarray = i + 1; }
+			if (prefixMod[i] == 1) { lengthOfLongestSubarray = i + 1; }
 		}
 
-		io.println(length_of_longest_subarray);
+		io.println(lengthOfLongestSubarray);
 
-		for (int i = 0; i < length_of_longest_subarray; i++) {
+		for (int i = 0; i < lengthOfLongestSubarray; i++) {
 			io.print(coprimes.get(i) + " ");
 		}
 		io.println();
