@@ -138,7 +138,7 @@ export default function TopNavigationBar({
       {!hidePromoBar && (
         <>
           <Banner
-            text="Registration for Summer Semester Live Classes Open"
+            text="Registration for Fall Semester Live Classes Open"
             action="Register"
             link="https://joincpi.org/classes"
           />
