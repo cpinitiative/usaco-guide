@@ -74,14 +74,14 @@ int main() {
 
 ```py
 from collections import Counter
- 
+
 MAXN = 10**6
 MOD = 10**9 + 7
- 
+
 fac = [0] * (MAXN + 1)
 inv = [0] * (MAXN + 1)
- 
- 
+
+
 # BeginCodeSnip{Combinatorics Functions (from the module)}
 def exp(x: int, n: int, m: int) -> int:
 	x %= m
@@ -92,31 +92,31 @@ def exp(x: int, n: int, m: int) -> int:
 		x = x * x % m
 		n //= 2
 	return res
- 
- 
+
+
 def factorial():
 	fac[0] = 1
 	for i in range(1, MAXN + 1):
 		fac[i] = fac[i - 1] * i % MOD
- 
- 
+
+
 def inverses():
 	inv[MAXN] = exp(fac[MAXN], MOD - 2, MOD)
 	for i in range(MAXN, 0, -1):
 		inv[i - 1] = inv[i] * i % MOD
- 
- 
+
+
 # EndCodeSnip
- 
+
 st = input()
 cnt = Counter(st)
 factorial()
 inverses()
- 
+
 res = fac[len(st)]
 for x in cnt.values():
 	res = res * inv[x] % MOD
-	
+
 print(res)
 ```
 
