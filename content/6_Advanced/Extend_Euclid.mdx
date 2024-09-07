@@ -328,15 +328,143 @@ def inv_general(a: int, b: int) -> int:
 
 <Resources>
 	<Resource
-		source="cp-algo"
-		url="algebra/linear_congruence_equation.html"
-		title="Linear Congruence Equation"
-	/>
+		  source="Stanford"
+		  title="The Chinese Remainder Theorem"
+		  url="https://crypto.stanford.edu/pbc/notes/numbertheory/crt.html"
+		  starred
+	>
+		In-depth explanation
+	</Resource>
 	<Resource
 		source="cp-algo"
-		url="algebra/chinese-remainder-theorem.html"
 		title="Chinese Remainder Theorem"
-	 />
+		url="https://cp-algorithms.com/algebra/chinese-remainder-theorem.html"
+	>
+	</Resource>
+	<Resource
+		source="CMU"
+		title="Chinese Remainder Theorem"
+		url="https://www.math.cmu.edu/~mradclif/teaching/127S19/Notes/ChineseRemainderTheorem.pdf"
+	>
+	</Resource>
 </Resources>
 
-<Problems problems="crt" />
+<FocusProblem problem="CRT" />
+
+### For Two Congruences
+
+#### Explanation
+
+The [Chinese Remainder Theorem](https://en.wikipedia.org/wiki/Chinese_remainder_theorem) - also referred to as CRT - yields a unique
+solution to a system of simultaneous modular congruences with pairwise coprime moduli. More specifically, CRT determines a number $x$ that
+when divided by the given divisors leaves the given remainders. Mathematically, it solves the following system of modular congruences:
+
+$$
+x \equiv a_1 \pmod{m_1} \\
+x \equiv a_2 \pmod{m_2} \\
+x \equiv a_3 \pmod{m_3} \\
+\vdots\\
+x \equiv a_k \pmod{m_k} \\
+\tag{1}
+$$
+<center>$M=m_1\cdot m_2 \cdot m_3 \cdots m_k$</center>
+
+The above system has exactly one solution modulo $M$.
+
+We'll focus on the particular case for $k=2$; for two coprime moduli:
+
+$$
+x \equiv a_1 \pmod{m_1} \\
+x \equiv a_2 \pmod{m_2} \\
+\tag{2}
+$$
+<center>$M=m_1 \cdot m_2$</center>
+- Let $n_1$ and $n_2 $be the modular inverse of $m_1$ modulo $m_2$ and the modular inverse of $m_2$
+modulo $m_1$, respecively, thus the properties hold: $n_1 \cdot m_1 \equiv 1 \pmod{m_2}$ and $n_2 \cdot m_2 \equiv 1 \pmod{m_1}$.
+It's worth mentioning that $n_1$ and $n_2$ always exists because $\gcd(m_1,m_2)=1$. We can define a solution $x$ as:
+
+$$
+x = a_1 \cdot m_2 \cdot n_2 + a_2 \cdot m_1 \cdot n_1 \pmod{m_1\cdot m_2}
+$$
+
+It satisfies both equations:
+- Modulo $m_1$ we have $x \equiv a_1 \cdot m_2 \cdot n_2 \pmod{m_1} \iff x \equiv a_1 \pmod{m_1}$ since $m_2 \cdot n_2 \equiv 1 \pmod{m_1}$
+- Modulo $m_2$ we have $x \equiv a_2 \cdot m_1 \cdot n_1 \pmod{m_2} \iff x \equiv a_2 \pmod{m_2}$ since $m_1 \cdot n_1 \equiv 1 \pmod{m_2}$
+
+Now that we have a solution $x \pmod{M}$ it only remains to show that it is indeed the only valid
+solution modulo $m_1 \cdot m_2$. Assuming that there is a different valid solution $y$ we have: $m_1 | y-x$, $m_2 | y-x$,
+$m_3 | y-x$, $\ldots$, $m_k | y-x$, then it follows that $m_1 \cdot m_2 \cdots m_k$ divides $y-x$, since $m_1, m_2, \ldots, m_k$ are relatively
+prime. This means that: $y \equiv x \pmod{m_1 \cdot m_2 \cdots m_k}$.
+
+#### Implementation
+
+**Time Complexity:** $\mathcal{O}(T \cdot \log{MN})$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <algorithm>
+#include <array>
+#include <iostream>
+#include <numeric>
+#include <vector>
+
+using namespace std;
+
+typedef long long ll;
+
+// Extended Euclidean Algorithm
+array<ll, 3> extend_euclid(ll a, ll b) {
+	// we know that (1 * a) + (0 * b) = a and (0 * a) + (1 * b) = b
+	array<ll, 3> x = {1, 0, a};
+	array<ll, 3> y = {0, 1, b};
+
+	while (y[2] > 0) {
+		// keep subtracting the multiple of one equation from the other
+		ll k = x[2] / y[2];
+		for (int i = 0; i < 3; i++) { x[i] -= k * y[i]; }
+		swap(x, y);
+	}
+	return x;  // x[0] * a + x[1] * b = x[2], x[2] = gcd(a, b)
+}
+
+// The Modular Inverse
+ll inv(ll x, ll y) {
+	ll m = extend_euclid(x, y)[0] % y;
+	return (m < 0 ? m + y : m);
+}
+
+// General code for multiple congruences in a system
+ll crt(const vector<ll> &remainders, const vector<ll> &moduli) {
+	ll MOD = accumulate(moduli.begin(), moduli.end(), 1LL, multiplies<ll>());
+	ll x = 0;
+	for (int i = 0; i < (int)moduli.size(); i++) {
+		ll a = remainders[i] * inv(MOD / moduli[i], moduli[i]) % moduli[i];
+		x = (x + a * (MOD / moduli[i])) % MOD;
+	}
+	return x;
+}
+
+int main() {
+	int tests;
+	cin >> tests;
+	for (int t = 0; t < tests; t++) {
+		vector<ll> r(2), m(2);
+		cin >> r[0] >> m[0] >> r[1] >> m[1];
+		cout << crt(r, m) << ' ' << m[0] * m[1] << '\n';
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
+### For Several Congruences
+
+Using the same notations as in $(1)$, consider $n_i = \frac{M}{m_i}$ - the product of all moduli excluding $m_i$ - and $n_i' \equiv n_i^{-1} \pmod{m_i}$.
+By similar arguments as before, the unique solution mod $M$ is:
+
+$$
+x = \sum_{i=1}^{n}{a_i \cdot n_i \cdot n_i'} \pmod{M}
+$$
