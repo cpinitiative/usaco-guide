@@ -41,13 +41,14 @@ using Tree =
 int main() {
 	int n;
 	cin >> n;
+
 	int timer = 0;
 	vector<ll> inversions(2 * n - 1);
 	map<int, Tree<int>> sets;
-
 	function<void(int)> dfs = [&](int idx) {
 		int val;
 		cin >> val;
+
 		if (val == 0) {
 			int idx_l = ++timer;
 			dfs(idx_l);
@@ -57,6 +58,7 @@ int main() {
 			if (sets[idx_l].size() > sets[idx_r].size()) {
 				sets[idx_l].swap(sets[idx_r]);
 			}
+
 			ll way_1 = 0;  // way 1: left set is joined to the right set
 			ll way_2 = 0;  // way 2: right set is joined to the left set
 			for (int v : sets[idx_l]) {
@@ -64,6 +66,7 @@ int main() {
 				way_1 += loc;
 				way_2 += (int)sets[idx_r].size() - loc;
 			}
+
 			for (int v : sets[idx_l]) { sets[idx_r].insert(v); }
 			sets[idx].swap(sets[idx_r]);
 			sets.erase(idx_l);
@@ -77,7 +80,8 @@ int main() {
 	};
 
 	dfs(0);
-	cout << inversions[0] << "\n";
+
+	cout << inversions[0] << endl;
 }
 ```
 
