@@ -35,7 +35,7 @@ class SparseSegtree {
     };
     Node* root = new Node;
 
-    inline array<int, 2> comb(const array<int, 2> &a, const array<int, 2> &b) {
+    array<int, 2> comb(const array<int, 2> &a, const array<int, 2> &b) {
         return {max(a[0], a[1] + b[0]), a[1] + b[1]};
     }
 
@@ -88,11 +88,11 @@ class SparseSegtree {
   public:
     SparseSegtree(int _n) : n(_n) {}
 
-    inline void range_set(int ql, int qr, int val) {
+    void range_set(int ql, int qr, int val) {
         range_set(root, 0, n - 1, ql, qr, val);
     }
 
-    inline int walk_right(int mx) {
+    int walk_right(int mx) {
         return walk_right(root, 0, n - 1, {0, 0}, mx);
     }
 };
@@ -177,7 +177,7 @@ class LazySegtree {
 	vector<int> lz, vals;
 
 	/** @return result of joining two ranges together */
-	inline array<int, 3> comb(const array<int, 3> &a, const array<int, 3> &b) {
+	array<int, 3> comb(const array<int, 3> &a, const array<int, 3> &b) {
 		return {max(a[0], a[1] + b[0]), a[1] + b[1], a[2] + b[2]};
 	}
 
