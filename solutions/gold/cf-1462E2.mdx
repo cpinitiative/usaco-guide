@@ -150,22 +150,22 @@ for _ in range(int(input())):
 	n, m, k = map(int, input().split())
 	nums = list(map(int, input().split()))
 	freq = [0] * (n + 1)  # frequency of each element
-	preFreq = [0] * (n + 1)  # prefix-array for freq vector
+	pre_freq = [0] * (n + 1)  # prefix-array for freq vector
 	ans = 0
 
 	for x in nums:
 		freq[x] += 1
 
 	for i in range(1, n + 1):
-		preFreq[i] = freq[i] + preFreq[i - 1]
+		pre_freq[i] = freq[i] + pre_freq[i - 1]
 
 	for i in range(1, n + 1):
 		# the max possible value that could be in a tuple with i as the minimum
 		max_index = min(n, i + k)
 		# the number of elements from [i, max_index]
-		num_total_elems = preFreq[max_index] - preFreq[i - 1]
+		num_total_elems = pre_freq[max_index] - pre_freq[i - 1]
 		# the number of elements from [i+1, max_index]
-		num_larger_elems = preFreq[max_index] - preFreq[i]
+		num_larger_elems = pre_freq[max_index] - pre_freq[i]
 		"""
 		We count the total number of m-tuples with elements between i and
 		max_index. Then, we subtract the tuples that don't have i as their
