@@ -18,22 +18,16 @@ $\mathcal{O}(\log N)$ time each on an array of size $N$:
 
 Both **segment trees** and **binary indexed trees** can accomplish this.
 
-## Segment Tree
-
-<FocusProblem problem="segSam" />
+# Segment Tree
 
 A **segment tree** allows you to do point update and range query in
 $\mathcal{O}(\log N)$ time each for **any** associative operation, not just
 summation.
 
-### Resources
-
-<Info title="Pro Tip">
+## Resources
 
 You can skip more advanced applications such as **lazy propagation** for now.
 They will be covered in [platinum](/plat/seg-ext).
-
-</Info>
 
 <Resources>
 	<Resource
@@ -60,11 +54,6 @@ They will be covered in [platinum](/plat/seg-ext).
 	>
 		"Advanced versions" are covered in Platinum.
 	</Resource>
-</Resources>
-
-### Solution - Dynamic Range Minimum Queries
-
-<Resources>
 	<Resource
 		source="CF"
 		title="AICash - Efficient and easy segment trees"
@@ -81,6 +70,14 @@ They will be covered in [platinum](/plat/seg-ext).
 	</Resource>
 </Resources>
 
+## Dynamic Range Minimum Queries
+
+<FocusProblem problem="rangeMin" />
+
+### Recursive Implementation
+
+**Time Complexity:** $\mathcal{O}(N \log N + Q \log N)$
+
 <LanguageSection>
 <CPPSection>
 
@@ -95,6 +92,111 @@ using std::endl;
 using std::vector;
 
 /** A data structure that can answer point update & range minimum queries. */
+template <class T>
+class MinSegmentTree {
+   private:
+	const T DEFAULT = std::numeric_limits<T>().max();
+
+	int len;
+	int padded_len;
+	vector<T> segtree;
+
+	T combine(const T& a, const T& b) { return std::min(a, b); }
+
+	void set(int ind, T val, int at, int at_left, int at_right) {
+		if (at_right - at_left == 1) {
+			segtree[at] = val;
+			return;
+		}
+		int mid = (at_left + at_right) / 2;
+		if (ind < mid) {
+			set(ind, val, 2 * at + 1, at_left, mid);
+		} else {
+			set(ind, val, 2 * at + 2, mid, at_right);
+		}
+		segtree[at] =
+			combine(segtree[2 * at + 1], segtree[2 * at + 2]);
+	}
+
+	T range_min(int start, int end, int at, int at_left, int at_right) {
+		if (at_right <= start || end <= at_left) {
+			return DEFAULT;
+		}
+		if (start <= at_left && at_right <= end) {
+			return segtree[at];
+		}
+		int mid = (at_left + at_right) / 2;
+		T left_res = range_min(start, end, 2 * at + 1, at_left, mid);
+		T right_res = range_min(start, end, 2 * at + 2, mid, at_right);
+		return combine(left_res, right_res);
+	}
+
+   public:
+	MinSegmentTree(int len) : len(len) {
+		padded_len = 1;
+		while (padded_len < len) {
+			padded_len *= 2;
+		}
+		segtree = vector<T>(padded_len * 2 - 1, DEFAULT);
+	};
+
+	/** Sets the value at ind to val. */
+	void set(int ind, T val) { set(ind, val, 0, 0, padded_len); }
+
+	/** @return the minimum element in the range [start, end) */
+	T range_min(int start, int end) { return range_min(start, end, 0, 0, padded_len); }
+};
+
+int main() {
+	int arr_len;
+	int query_num;
+	std::cin >> arr_len >> query_num;
+
+	MinSegmentTree<int> segtree(arr_len);
+	for (int i = 0; i < arr_len; i++) {
+		int n;
+		std::cin >> n;
+		segtree.set(i, n);
+	}
+
+	for (int q = 0; q < query_num; q++) {
+		int type;
+		std::cin >> type;
+		if (type == 1) {
+			int ind, val;
+			std::cin >> ind >> val;
+			segtree.set(ind - 1, val);
+		} else if (type == 2) {
+			int start, end;
+			std::cin >> start >> end;
+			cout << segtree.range_min(start - 1, end) << '\n';
+		}
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
+### Iterative Implementation
+
+Though less extensible, this implementation is shorter and has a better constant factor.
+
+**Time Complexity:** Same as the recursive implementation.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <algorithm>
+#include <iostream>
+#include <limits>
+#include <vector>
+
+using std::cout;
+using std::endl;
+using std::vector;
+
 template <class T> class MinSegmentTree {
   private:
 	const T DEFAULT = std::numeric_limits<T>().max();
@@ -105,7 +207,6 @@ template <class T> class MinSegmentTree {
   public:
 	MinSegmentTree(int len) : len(len), segtree(len * 2, DEFAULT) {}
 
-	/** Sets the value at ind to val. */
 	void set(int ind, T val) {
 		ind += len;
 		segtree[ind] = val;
@@ -114,7 +215,6 @@ template <class T> class MinSegmentTree {
 		}
 	}
 
-	/** @return the minimum element in the range [start, end) */
 	T range_min(int start, int end) {
 		T min = DEFAULT;
 		for (start += len, end += len; start < end; start /= 2, end /= 2) {
@@ -130,7 +230,7 @@ int main() {
 	int query_num;
 	std::cin >> arr_len >> query_num;
 
-	MinSegmentTree<long long> segtree(arr_len);
+	MinSegmentTree<int> segtree(arr_len);
 	for (int i = 0; i < arr_len; i++) {
 		int n;
 		std::cin >> n;
@@ -268,7 +368,117 @@ for _ in range(query_num):
 </PySection>
 </LanguageSection>
 
-### Solution - Dynamic Range Sum Queries
+## Dynamic Range Sum Queries
+
+<FocusProblem problem="rangeSum" />
+
+### Recursive Implementation
+
+**Time Complexity:** $\mathcal{O}(N \log N + Q \log N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <algorithm>
+#include <iostream>
+#include <limits>
+#include <vector>
+
+using std::cout;
+using std::endl;
+using std::vector;
+
+/** A data structure that can answer point update & range sum queries. */
+template <class T>
+class SumSegmentTree {
+   private:
+	const T DEFAULT = 0;
+
+	int len;
+	int padded_len;
+	vector<T> segtree;
+
+	T combine(const T& a, const T& b) { return a + b; }
+
+	void set(int ind, T val, int at, int at_left, int at_right) {
+		if (at_right - at_left == 1) {
+			segtree[at] = val;
+			return;
+		}
+		int mid = (at_left + at_right) / 2;
+		if (ind < mid) {
+			set(ind, val, 2 * at + 1, at_left, mid);
+		} else {
+			set(ind, val, 2 * at + 2, mid, at_right);
+		}
+		segtree[at] =
+			combine(segtree[2 * at + 1], segtree[2 * at + 2]);
+	}
+
+	T range_sum(int start, int end, int at, int at_left, int at_right) {
+		if (at_right <= start || end <= at_left) {
+			return DEFAULT;
+		}
+		if (start <= at_left && at_right <= end) {
+			return segtree[at];
+		}
+		int mid = (at_left + at_right) / 2;
+		T left_res = range_sum(start, end, 2 * at + 1, at_left, mid);
+		T right_res = range_sum(start, end, 2 * at + 2, mid, at_right);
+		return combine(left_res, right_res);
+	}
+
+   public:
+	SumSegmentTree(int len) : len(len) {
+		padded_len = 1;
+		while (padded_len < len) {
+			padded_len *= 2;
+		}
+		segtree = vector<T>(padded_len * 2 - 1, DEFAULT);
+	};
+
+	/** Sets the value at ind to val. */
+	void set(int ind, T val) { set(ind, val, 0, 0, padded_len); }
+
+	/** @return the minimum element in the range [start, end) */
+	T range_sum(int start, int end) { return range_sum(start, end, 0, 0, padded_len); }
+};
+
+int main() {
+	int arr_len;
+	int query_num;
+	std::cin >> arr_len >> query_num;
+
+	SumSegmentTree<long long> segtree(arr_len);
+	for (int i = 0; i < arr_len; i++) {
+		int n;
+		std::cin >> n;
+		segtree.set(i, n);
+	}
+
+	for (int q = 0; q < query_num; q++) {
+		int type;
+		std::cin >> type;
+		if (type == 1) {
+			int ind, val;
+			std::cin >> ind >> val;
+			segtree.set(ind - 1, val);
+		} else if (type == 2) {
+			int start, end;
+			std::cin >> start >> end;
+			cout << segtree.range_sum(start - 1, end) << '\n';
+		}
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
+### Iterative Implementation
+
+**Time Complexity:** Same as the recursive implementation.
 
 <LanguageSection>
 <CPPSection>
@@ -461,12 +671,12 @@ for _ in range(query_num):
 </PySection>
 </LanguageSection>
 
-## Binary Indexed Tree
+# Binary Indexed Tree
 
 The implementation is shorter than segment tree, but maybe more confusing at
 first glance.
 
-### Resources
+## Resources
 
 <Resources>
 	<Resource source="CSA" title="Fenwick Trees" url="fenwick_trees" starred>
@@ -489,7 +699,9 @@ first glance.
 	 />
 </Resources>
 
-### Solution - Dynamic Range Sum Queries (With a BIT)
+## Dynamic Range Sum Queries 
+
+### Implementation
 
 <LanguageSection>
 <CPPSection>
@@ -697,7 +909,7 @@ for _ in range(query_num):
 </PySection>
 </LanguageSection>
 
-## Finding the $k$-th Element
+# Finding the $k$-th Element
 
 Suppose that we want a data structure that supports all the operations as a
 `set` in C++ in addition to the following:
@@ -707,7 +919,7 @@ Suppose that we want a data structure that supports all the operations as a
 - `find_by_order(k)`: similar to `find`, returns the iterator corresponding to
   the `k`-th lowest element in the set (0-indexed).
 
-### Order Statistic Tree
+## Order Statistic Tree
 
 Luckily, such a built-in data structure already exists in C++.
 
@@ -733,7 +945,7 @@ Luckily, such a built-in data structure already exists in C++.
 To use indexed sets locally, you need to
 [install GCC](/general/cpp-command#installing-g).
 
-### With a BIT
+## With a BIT
 
 Assumes all updates are in the range $[1,N]$.
 
@@ -745,15 +957,15 @@ Assumes all updates are in the range $[1,N]$.
 
 <!--   <Resource source="GFG" url="order-statistic-tree-using-fenwick-tree-bit" title="Order Statistic Tree using BIT"> log^2 N </Resource> -->
 
-### With a Segment Tree
+## With a Segment Tree
 
 Covered in [Platinum](/plat/seg-ext).
 
-## Example - Inversion Counting
+## Inversion Counting
 
 <FocusProblem problem="inv" />
 
-### Solution
+### Implementation
 
 <LanguageSection>
 <CPPSection>
@@ -768,7 +980,7 @@ using namespace std;
 using namespace __gnu_pbds;
 template <class T>
 using Tree =
-    tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
+	tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
 
 int main() {
 	int test_num;
@@ -804,8 +1016,6 @@ value while the second would denote the position of the value in the array.
 
 </CPPSection>
 <JavaSection>
-
-Using a binary indexed tree, we can count the number of inversions.
 
 ```java
 import java.io.*;
@@ -911,7 +1121,7 @@ for _ in range(test_num):
 </PySection>
 </LanguageSection>
 
-## Range Sum Problems
+# Problems
 
 <Info title="Coordinate Compression">
 
@@ -922,13 +1132,11 @@ before using a BIT or segment tree (though
 
 </Info>
 
-### General
+## General
 
 <Problems problems="practice" />
 
-### USACO
-
-<!-- Haircut, Balanced Photo, and Circle Cross are just variations on inversion counting. -->
+## USACO
 
 <Problems problems="usaco" />
 
