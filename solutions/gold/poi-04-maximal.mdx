@@ -183,12 +183,12 @@ using namespace std;
 const int MAX_N = 1e4, MAX_P = 70;
 
 bool composite[MAX_N + 1];
-vector<int> primes = {
-    2,   3,   5,   7,   11,  13,  17,  19,  23,  29,  31,  37,  41,  43,
-    47,  53,  59,  61,  67,  71,  73,  79,  83,  89,  97,  101, 103, 107,
-    109, 113, 127, 131, 137, 139, 149, 151, 157, 163, 167, 173, 179, 181,
-    191, 193, 197, 199, 211, 223, 227, 229, 233, 239, 241, 251, 257, 263,
-    269, 271, 277, 281, 283, 293, 307, 311, 313, 317, 331, 337, 347, 349};
+vector<int> primes = {2,   3,   5,   7,   11,  13,  17,  19,  23,  29,  31,  37,
+                      41,  43,  47,  53,  59,  61,  67,  71,  73,  79,  83,  89,
+                      97,  101, 103, 107, 109, 113, 127, 131, 137, 139, 149, 151,
+                      157, 163, 167, 173, 179, 181, 191, 193, 197, 199, 211, 223,
+                      227, 229, 233, 239, 241, 251, 257, 263, 269, 271, 277, 281,
+                      283, 293, 307, 311, 313, 317, 331, 337, 347, 349};
 
 double mem[MAX_N + 1][MAX_P];
 bool visited[MAX_N + 1][MAX_P];
@@ -200,8 +200,7 @@ double dp(int n, int pos = 0) {
 
 	double ans = dp(n, pos + 1);
 	backtrack[n][pos] = 0;
-	for (int p_pow = primes[pos], expo = 1; p_pow <= n;
-	     p_pow *= primes[pos], expo++) {
+	for (int p_pow = primes[pos], expo = 1; p_pow <= n; p_pow *= primes[pos], expo++) {
 		double potential = expo * log(primes[pos]) + dp(n - p_pow, pos + 1);
 		if (ans < potential) {
 			ans = potential;
@@ -306,8 +305,7 @@ const int MOD = 1e9 + 7;  // 998244353;
 const int MX = 2e5 + 5;
 const ll INF = 1e18;  // not too close to LLONG_MAX
 const ld PI = acos((ld)-1);
-const int dx[4] = {1, 0, -1, 0},
-          dy[4] = {0, 1, 0, -1};  // for every grid problem!!
+const int dx[4] = {1, 0, -1, 0}, dy[4] = {0, 1, 0, -1};  // for every grid problem!!
 mt19937 rng((uint32_t)chrono::steady_clock::now().time_since_epoch().count());
 template <class T> using pqg = priority_queue<T, vector<T>, greater<T>>;
 
@@ -328,9 +326,7 @@ ll fdiv(ll a, ll b) {
 	return a / b - ((a ^ b) < 0 && a % b);
 }  // divide a by b rounded down
 
-tcT > bool ckmin(T &a, const T &b) {
-	return b < a ? a = b, 1 : 0;
-}  // set a = min(a,b)
+tcT > bool ckmin(T &a, const T &b) { return b < a ? a = b, 1 : 0; }  // set a = min(a,b)
 tcT > bool ckmax(T &a, const T &b) { return a < b ? a = b, 1 : 0; }
 
 tcTU > T fstTrue(T lo, T hi, U f) {
@@ -478,13 +474,12 @@ tcTUU > void DBG(const T &t, const U &...u) {
 	DBG(u...);
 }
 #ifdef LOCAL  // compile with -DLOCAL, chk -> fake assert
-#define dbg(...)                                                               \
-	cerr << "Line(" << __LINE__ << ") -> [" << #__VA_ARGS__ << "]: [",         \
-	    DBG(__VA_ARGS__)
-#define chk(...)                                                               \
-	if (!(__VA_ARGS__))                                                        \
-		cerr << "Line(" << __LINE__ << ") -> function(" << __FUNCTION__        \
-		     << ") -> CHK FAILED: (" << #__VA_ARGS__ << ")" << "\n",           \
+#define dbg(...)                                                                       \
+	cerr << "Line(" << __LINE__ << ") -> [" << #__VA_ARGS__ << "]: [", DBG(__VA_ARGS__)
+#define chk(...)                                                                       \
+	if (!(__VA_ARGS__))                                                                \
+		cerr << "Line(" << __LINE__ << ") -> function(" << __FUNCTION__                \
+		     << ") -> CHK FAILED: (" << #__VA_ARGS__ << ")" << "\n",                   \
 		    exit(0);
 #else
 #define dbg(...) 0

@@ -169,8 +169,7 @@ struct Point {
  * crosses the midpoint of Points a & b with the highway
  */
 double max_point(const Point &a, const Point &b) {
-	return (b.x * b.x + b.y * b.y - a.x * a.x - a.y * a.y) /
-	       (2 * b.x - 2 * a.x);
+	return (b.x * b.x + b.y * b.y - a.x * a.x - a.y * a.y) / (2 * b.x - 2 * a.x);
 }
 /** @return the euclidean distance between points a & b */
 double dist(const Point &a, const Point &b) {
@@ -227,9 +226,7 @@ int main() {
 			right.x = max_point(needed[x], needed[x + 1]);
 		}
 
-		if (left.x < 0 || right.x > l || right.x < 0 || left.x > l) {
-			continue;
-		}
+		if (left.x < 0 || right.x > l || right.x < 0 || left.x > l) { continue; }
 
 		ans = max({ans, dist(needed[x], left), dist(needed[x], right)});
 	}

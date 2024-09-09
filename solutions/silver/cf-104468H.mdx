@@ -118,20 +118,15 @@ import java.util.*;
 
 public class AmmarutilArray {
 	public static void main(String[] args) throws IOException {
-		BufferedReader read =
-		    new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
 
 		int n = Integer.parseInt(read.readLine());
 		StringTokenizer st = new StringTokenizer(read.readLine());
 		int[] arr = new int[n];
-		for (int i = 0; i < n; i++) {
-			arr[i] = Integer.parseInt(st.nextToken());
-		}
+		for (int i = 0; i < n; i++) { arr[i] = Integer.parseInt(st.nextToken()); }
 		st = new StringTokenizer(read.readLine());
 		int[] color = new int[n];
-		for (int i = 0; i < n; i++) {
-			color[i] = Integer.parseInt(st.nextToken());
-		}
+		for (int i = 0; i < n; i++) { color[i] = Integer.parseInt(st.nextToken()); }
 
 		Map<Integer, List<Long>> colPrefs = new HashMap<>();
 		for (int i = 0; i < n; i++) {
@@ -164,8 +159,7 @@ public class AmmarutilArray {
 				while (lo <= hi) {
 					int mid = (lo + hi) / 2;
 					long initVal = colPrefs.get(col).get(mid);
-					long toAdd =
-					    (totInc - colExclude.getOrDefault(col, 0L)) * mid;
+					long toAdd = (totInc - colExclude.getOrDefault(col, 0L)) * mid;
 					if (initVal + toAdd <= arg) {
 						valid = mid;
 						lo = mid + 1;

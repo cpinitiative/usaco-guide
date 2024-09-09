@@ -84,9 +84,7 @@ class SparseSegtree {
   public:
 	SparseSegtree(int n) : n(n) {}
 
-	void range_set(int ql, int qr, int val) {
-		range_set(root, 0, n - 1, ql, qr, val);
-	}
+	void range_set(int ql, int qr, int val) { range_set(root, 0, n - 1, ql, qr, val); }
 
 	int walk_right(int mx) { return walk_right(root, 0, n - 1, {0, 0}, mx); }
 };
@@ -249,9 +247,7 @@ class LazySegtree {
 	}
 
 	/** sets the range [ql, qr] (coordinate compresed indexes) to amt */
-	void range_set(int ql, int qr, int amt) {
-		range_set(1, 0, sz - 1, ql, qr, amt);
-	}
+	void range_set(int ql, int qr, int amt) { range_set(1, 0, sz - 1, ql, qr, amt); }
 
 	/** @return the last location where the height <= mx */
 	int walk_right(int mx) { return walk_right(1, 0, sz - 1, ID, mx); }
@@ -294,8 +290,7 @@ int main() {
 		if (cur[0] == 0) {
 			st.range_set(id(cur[1]), id(cur[2] + 1) - 1, cur[3]);
 		} else {
-			cout << (st.best_prefix() <= cur[1] ? n : st.walk_right(cur[1]))
-			     << "\n";
+			cout << (st.best_prefix() <= cur[1] ? n : st.walk_right(cur[1])) << "\n";
 		}
 	}
 }

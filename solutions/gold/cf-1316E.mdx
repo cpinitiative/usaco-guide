@@ -39,8 +39,8 @@ int main() {
 		team_contrib[i] = raw_team_contrib[aud_contrib[i].second];
 	}
 
-	vector<vector<long long>> max_strength(
-	    pool_size + 1, vector<long long>(1 << team_size, -1));
+	vector<vector<long long>> max_strength(pool_size + 1,
+	                                       vector<long long>(1 << team_size, -1));
 	max_strength[0][0] = 0;
 	for (int up_to = 1; up_to <= pool_size; up_to++) {
 		max_strength[up_to] = max_strength[up_to - 1];
@@ -49,19 +49,17 @@ int main() {
 			if (curr_aud < aud_size && max_strength[up_to - 1][subset] != -1) {
 				max_strength[up_to][subset] =
 				    max(max_strength[up_to][subset],
-				        max_strength[up_to - 1][subset] +
-				            aud_contrib[up_to - 1].first);
+				        max_strength[up_to - 1][subset] + aud_contrib[up_to - 1].first);
 			}
 
 			for (int t = 0; t < team_size; t++) {
 				int prev = subset & ~(1 << t);
-				if (!(subset & (1 << t)) ||
-				    max_strength[up_to - 1][prev] == -1) {
+				if (!(subset & (1 << t)) || max_strength[up_to - 1][prev] == -1) {
 					continue;
 				}
-				max_strength[up_to][subset] = max(
-				    max_strength[up_to][subset],
-				    max_strength[up_to - 1][prev] + team_contrib[up_to - 1][t]);
+				max_strength[up_to][subset] =
+				    max(max_strength[up_to][subset],
+				        max_strength[up_to - 1][prev] + team_contrib[up_to - 1][t]);
 			}
 		}
 	}
@@ -79,8 +77,7 @@ import java.util.*;
 
 public class TeamBuilding {
 	public static void main(String[] args) throws IOException {
-		BufferedReader br =
-		    new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
 		StringTokenizer st = new StringTokenizer(br.readLine());
 		int poolSize = Integer.parseInt(st.nextToken());
@@ -123,10 +120,9 @@ public class TeamBuilding {
 
 				// Try adding the player to the team.
 				for (int j = 0; j < teamSize; j++) {
-					if ((m & (1 << j)) != 0 &&
-					    (dp[i - 1][m ^ (1 << j)]) != -1) {
-						dp[i][m] = Math.max(dp[i][m], dp[i - 1][m ^ (1 << j)] +
-						                                  skill[ind][j]);
+					if ((m & (1 << j)) != 0 && (dp[i - 1][m ^ (1 << j)]) != -1) {
+						dp[i][m] =
+						    Math.max(dp[i][m], dp[i - 1][m ^ (1 << j)] + skill[ind][j]);
 					}
 				}
 			}

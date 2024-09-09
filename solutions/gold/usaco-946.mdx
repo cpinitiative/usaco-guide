@@ -64,8 +64,7 @@ vector<ll> prim(int N) {
 		// find the nearest node to the current MST
 		int min_dist_node = -1;
 		for (int j = 0; j < N; j++) {
-			if (!visited[j] &&
-			    (min_dist_node < 0 || dist[j] < dist[min_dist_node])) {
+			if (!visited[j] && (min_dist_node < 0 || dist[j] < dist[min_dist_node])) {
 				min_dist_node = j;
 			}
 		}
@@ -76,8 +75,8 @@ vector<ll> prim(int N) {
 		// update the distances between the MST and other unconnected nodes
 		for (int j = 0; j < N; j++) {
 			if (!visited[j]) {
-				dist[j] = min(dist[j], calc_length(min(min_dist_node, j),
-				                                   max(min_dist_node, j)));
+				dist[j] = min(
+				    dist[j], calc_length(min(min_dist_node, j), max(min_dist_node, j)));
 			}
 		}
 	}
@@ -148,8 +147,7 @@ public class Walk {
 			// find the nearest node to the current MST
 			int minDistNode = -1;
 			for (int j = 0; j < N; j++) {
-				if (!visited[j] &&
-				    (minDistNode < 0 || dist[j] < dist[minDistNode])) {
+				if (!visited[j] && (minDistNode < 0 || dist[j] < dist[minDistNode])) {
 					minDistNode = j;
 				}
 			}
@@ -160,9 +158,8 @@ public class Walk {
 			// update the distances between the MST and other unconnected nodes
 			for (int j = 0; j < N; j++) {
 				if (!visited[j]) {
-					dist[j] =
-					    Math.min(dist[j], calcLength(Math.min(minDistNode, j),
-					                                 Math.max(minDistNode, j)));
+					dist[j] = Math.min(dist[j], calcLength(Math.min(minDistNode, j),
+					                                       Math.max(minDistNode, j)));
 				}
 			}
 		}

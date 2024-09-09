@@ -172,8 +172,7 @@ int main() {
 			 * check if there's a parent of the snowball that's
 			 * already been painted with the color
 			 */
-			if (l_closest != painted.begin() &&
-			    end[sb] <= end[(--l_closest)->second]) {
+			if (l_closest != painted.begin() && end[sb] <= end[(--l_closest)->second]) {
 				continue;
 			}
 			// remove all children of the current snowball that are in the map
@@ -199,8 +198,7 @@ int main() {
 			 * the colors from parents influence every node in the subtree,
 			 * so multiply by the current subtree size
 			 */
-			long long above_colors =
-			    sub_size[sb] * above_unique.query(start[sb]);
+			long long above_colors = sub_size[sb] * above_unique.query(start[sb]);
 			long long below_colors =
 			    (below_unique.query(end[sb]) - below_unique.query(start[sb]));
 			written << above_colors + below_colors << '\n';
@@ -225,9 +223,7 @@ public class SnowCow {
 
 		List<Integer>[] neighbors = new ArrayList[snowballNum];
 		// sb short for SnowBall
-		for (int sb = 0; sb < snowballNum; sb++) {
-			neighbors[sb] = new ArrayList<>();
-		}
+		for (int sb = 0; sb < snowballNum; sb++) { neighbors[sb] = new ArrayList<>(); }
 		for (int b = 0; b < snowballNum - 1; b++) {
 			StringTokenizer branch = new StringTokenizer(read.readLine());
 			int sb1 = Integer.parseInt(branch.nextToken()) - 1;
@@ -279,9 +275,7 @@ public class SnowCow {
 			int sb = Integer.parseInt(query.nextToken()) - 1;
 			if (type == 1) {
 				int color = Integer.parseInt(query.nextToken());
-				if (!colors.containsKey(color)) {
-					colors.put(color, new TreeMap<>());
-				}
+				if (!colors.containsKey(color)) { colors.put(color, new TreeMap<>()); }
 
 				TreeMap<Integer, Integer> painted = colors.get(color);
 				Integer lClosest = painted.floorKey(start[sb]);
@@ -296,9 +290,7 @@ public class SnowCow {
 				// map
 				while (true) {
 					Integer rNext = painted.higherKey(start[sb]);
-					if (rNext == null || end[sb] <= end[painted.get(rNext)]) {
-						break;
-					}
+					if (rNext == null || end[sb] <= end[painted.get(rNext)]) { break; }
 					int rNextSB = painted.get(rNext);
 					// undo the increments from when the child was added
 					aboveUnique.increment(start[rNextSB], -1);

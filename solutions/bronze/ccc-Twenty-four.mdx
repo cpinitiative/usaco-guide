@@ -26,7 +26,7 @@ using namespace std;
 int ans;
 int hand[4];                   // The given card hand.
 vector<int> hand_permutation;  // The generated permutation of the card hand.
-bool chosen[4];  // Whether a given card is present in `hand_permutation`.
+bool chosen[4];                // Whether a given card is present in `hand_permutation`.
 
 // Function that takes in two numbers and an operation and returns the result.
 int operation(int op, int num1, int num2) {
@@ -54,8 +54,8 @@ void generate_hand_permutation() {
 		for (int op1 = 0; op1 < 4; op1++) {
 			for (int op2 = 0; op2 < 4; op2++) {
 				for (int op3 = 0; op3 < 4; op3++) {
-					int first = operation(op1, hand_permutation[0],
-					                      hand_permutation[1]);
+					int first =
+					    operation(op1, hand_permutation[0], hand_permutation[1]);
 					// If the operation is invalid, continue;
 					if (first == INT32_MIN) { continue; }
 
@@ -74,12 +74,12 @@ void generate_hand_permutation() {
 		for (int op1 = 0; op1 < 4; op1++) {
 			for (int op2 = 0; op2 < 4; op2++) {
 				for (int op3 = 0; op3 < 4; op3++) {
-					int first = operation(op1, hand_permutation[0],
-					                      hand_permutation[1]);
+					int first =
+					    operation(op1, hand_permutation[0], hand_permutation[1]);
 					if (first == INT32_MIN) { continue; }
 
-					int second = operation(op2, hand_permutation[2],
-					                       hand_permutation[3]);
+					int second =
+					    operation(op2, hand_permutation[2], hand_permutation[3]);
 					if (second == INT32_MIN) { continue; }
 
 					int third = operation(op3, first, second);
@@ -166,12 +166,10 @@ public class Solution {
 						// If the operation is invalid, continue;
 						if (first == Integer.MIN_VALUE) { continue; }
 
-						int second =
-						    operation(op2, first, handPermutation.get(2));
+						int second = operation(op2, first, handPermutation.get(2));
 						if (second == Integer.MIN_VALUE) { continue; }
 
-						int third =
-						    operation(op3, second, handPermutation.get(3));
+						int third = operation(op3, second, handPermutation.get(3));
 						if (third == Integer.MIN_VALUE) { continue; }
 
 						if (third <= 24) { ans = Math.max(ans, third); }

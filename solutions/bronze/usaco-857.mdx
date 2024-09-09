@@ -45,9 +45,7 @@ void solve(ll trips_left, const vector<ll> &buckets_here,
 			// Remove the taken bucket from our current barn
 			vector<ll> new_buckets_src;
 			for (ll i = 0; i < buckets_here.size(); i++) {
-				if (i != taken_idx) {
-					new_buckets_src.push_back(buckets_here[i]);
-				}
+				if (i != taken_idx) { new_buckets_src.push_back(buckets_here[i]); }
 			}
 			// Move @bucket gallons of milk from the current tank to the other
 			// tank
@@ -55,8 +53,8 @@ void solve(ll trips_left, const vector<ll> &buckets_here,
 			ll new_tank_src = tank_here - bucket;
 			// Since we went to the other barn, "here" now refers to the "dest"
 			// barn and "there" now refers to the "src" barn
-			solve(trips_left - 1, new_buckets_dest, new_buckets_src,
-			      new_tank_dest, new_tank_src);
+			solve(trips_left - 1, new_buckets_dest, new_buckets_src, new_tank_dest,
+			      new_tank_src);
 		}
 	}
 }
@@ -93,8 +91,7 @@ public class backforth {
 	// The possible amounts that could be left in the tank at the first barn
 	static HashSet<Integer> possible = new HashSet<Integer>();
 	static void solve(int trips_left, ArrayList<Integer> buckets_here,
-	                  ArrayList<Integer> buckets_there, int tank_here,
-	                  int tank_there) {
+	                  ArrayList<Integer> buckets_there, int tank_here, int tank_there) {
 		if (trips_left == 0) {
 			// We completed all the trips, so the amount currently in the tank
 			// at the first barn is possible We started at the first barn and
@@ -102,8 +99,7 @@ public class backforth {
 			// represents the amount in the tank at the first barn
 			possible.add(tank_here);
 		} else {
-			for (int taken_idx = 0; taken_idx < buckets_here.size();
-			     taken_idx++) {
+			for (int taken_idx = 0; taken_idx < buckets_here.size(); taken_idx++) {
 				int bucket = buckets_here.get(taken_idx);
 				// Leave the taken bucket at our destination
 				ArrayList<Integer> new_buckets_dest =
@@ -112,9 +108,7 @@ public class backforth {
 				// Remove the taken bucket from our current barn
 				ArrayList<Integer> new_buckets_src = new ArrayList<Integer>();
 				for (int i = 0; i < buckets_here.size(); i++) {
-					if (i != taken_idx) {
-						new_buckets_src.add(buckets_here.get(i));
-					}
+					if (i != taken_idx) { new_buckets_src.add(buckets_here.get(i)); }
 				}
 				// Move @bucket gallons of milk from the current tank to the
 				// other tank
@@ -122,16 +116,16 @@ public class backforth {
 				int new_tank_src = tank_here - bucket;
 				// Since we went to the other barn, "here" now refers to the
 				// "dest" barn and "there" now refers to the "src" barn
-				solve(trips_left - 1, new_buckets_dest, new_buckets_src,
-				      new_tank_dest, new_tank_src);
+				solve(trips_left - 1, new_buckets_dest, new_buckets_src, new_tank_dest,
+				      new_tank_src);
 			}
 		}
 	}
 
 	public static void main(String[] args) throws Exception {
 		BufferedReader in = new BufferedReader(new FileReader("backforth.in"));
-		PrintWriter out = new PrintWriter(
-		    new BufferedWriter(new FileWriter("backforth.out")));
+		PrintWriter out =
+		    new PrintWriter(new BufferedWriter(new FileWriter("backforth.out")));
 		String[] first_barn = in.readLine().split(" ");
 		String[] second_barn = in.readLine().split(" ");
 		ArrayList<Integer> buckets_here = new ArrayList<Integer>();
@@ -280,8 +274,7 @@ public class BackForth {
 	static Set<Integer> possible = new HashSet<>();
 
 	public static void main(String[] args) throws IOException {
-		BufferedReader read =
-		    new BufferedReader(new FileReader("backforth.in"));
+		BufferedReader read = new BufferedReader(new FileReader("backforth.in"));
 
 		StringTokenizer aST = new StringTokenizer(read.readLine());
 		StringTokenizer bST = new StringTokenizer(read.readLine());
@@ -299,8 +292,8 @@ public class BackForth {
 		write.close();
 	}
 
-	static void getPossible(int day, int aTank, List<Integer> aBuckets,
-	                        int bTank, List<Integer> bBuckets) {
+	static void getPossible(int day, int aTank, List<Integer> aBuckets, int bTank,
+	                        List<Integer> bBuckets) {
 		// Last day, add the amount of milk in the first tank.
 		if (day == 4) {
 			possible.add(aTank);

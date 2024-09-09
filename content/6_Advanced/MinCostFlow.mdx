@@ -144,8 +144,7 @@ struct MCF  // MN = nodes, MM = edges [assume edges one-directional]
 			for (int id = hd[n], x; ~id; id = nx[id]) {
 				if (cap[id] - flow[id] <= 0) continue;
 				x = to[id];
-				if (ckmin(pi[x], pi[n] + cost[id]))
-					assert(++vis[x] <= N), q.push(x);
+				if (ckmin(pi[x], pi[n] + cost[id])) assert(++vis[x] <= N), q.push(x);
 			}
 		}
 	}
@@ -182,8 +181,7 @@ struct MCF  // MN = nodes, MM = edges [assume edges one-directional]
 			dijk();
 			if (d[T] == INF) return INF;
 			int c = d[T] + pi[T] - pi[S], f = F;
-			for (int x = T; x != S; x = to[p[x] ^ 1])
-				ckmin(f, cap[p[x]] - flow[p[x]]);
+			for (int x = T; x != S; x = to[p[x] ^ 1]) ckmin(f, cap[p[x]] - flow[p[x]]);
 			C += c * f;
 			for (int x = T; x != S; x = to[p[x] ^ 1]) {
 				flow[p[x]] += f;

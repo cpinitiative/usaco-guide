@@ -109,15 +109,12 @@ void solve() {
 			if (vis[x]) continue;
 			for (int i = 1; i < 20; i++) {
 				par[x][i] = par[par[x][i - 1]][i - 1];
-				prob_a[x][i] =
-				    prob_a[x][i - 1] * prob_a[par[x][i - 1]][i - 1] +
-				    prob_b[x][i - 1] * (1 - prob_a[par[x][i - 1]][i - 1]);
-				prob_b[x][i] =
-				    prob_a[x][i - 1] * prob_b[par[x][i - 1]][i - 1] +
-				    prob_b[x][i - 1] * (1 - prob_b[par[x][i - 1]][i - 1]);
+				prob_a[x][i] = prob_a[x][i - 1] * prob_a[par[x][i - 1]][i - 1] +
+				               prob_b[x][i - 1] * (1 - prob_a[par[x][i - 1]][i - 1]);
+				prob_b[x][i] = prob_a[x][i - 1] * prob_b[par[x][i - 1]][i - 1] +
+				               prob_b[x][i - 1] * (1 - prob_b[par[x][i - 1]][i - 1]);
 			}
-			p[x] =
-			    prob_a[x][0] * p[par[x][0]] + prob_b[x][0] * (1 - p[par[x][0]]);
+			p[x] = prob_a[x][0] * p[par[x][0]] + prob_b[x][0] * (1 - p[par[x][0]]);
 			dfs(x);
 		}
 	};

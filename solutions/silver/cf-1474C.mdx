@@ -41,9 +41,7 @@ bool works(int initial_sum) {
 		remaining.erase(remaining.find(curr));
 		// If this condition is true, then it is impossible to destruct the
 		// array with the given initial sum
-		if (remaining.find(initial_sum - curr) == remaining.end()) {
-			return false;
-		}
+		if (remaining.find(initial_sum - curr) == remaining.end()) { return false; }
 		remaining.erase(remaining.find(initial_sum - curr));
 		pair_to_remove.push_back({curr, initial_sum - curr});
 		initial_sum = curr;
@@ -99,8 +97,7 @@ import java.util.TreeMap;
 
 public final class DestroyArray {
 	public static void main(String[] args) throws IOException {
-		BufferedReader read =
-		    new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
 		int testNum = Integer.parseInt(read.readLine());
 		for (int t = 0; t < testNum; t++) {
 			int halfSize = Integer.parseInt(read.readLine());
@@ -121,9 +118,7 @@ public final class DestroyArray {
 				for (int i = 0; i < halfSize; i++) {
 					int largest = remaining.lastKey();
 					remaining.put(largest, remaining.get(largest) - 1);
-					if (remaining.get(largest) == 0) {
-						remaining.remove(largest);
-					}
+					if (remaining.get(largest) == 0) { remaining.remove(largest); }
 
 					int other = at - largest;
 					if (!remaining.containsKey(other)) { break; }
@@ -145,9 +140,7 @@ public final class DestroyArray {
 				System.out.println("NO");
 			} else {
 				System.out.printf("YES%n%d%n", validStart);
-				for (int[] m : validMoves) {
-					System.out.printf("%d %d%n", m[0], m[1]);
-				}
+				for (int[] m : validMoves) { System.out.printf("%d %d%n", m[0], m[1]); }
 			}
 		}
 	}

@@ -111,8 +111,7 @@ int main() {
 	vector<pair<pair<ll, ll>, int>> trees(n);
 	set<pi> pts;
 	auto dist = [&](int x1, int y1, int x2, int y2) {
-		return sqrt((1LL * (x2 - x1) * (x2 - x1)) +
-		            (1LL * (y2 - y1) * (y2 - y1)));
+		return sqrt((1LL * (x2 - x1) * (x2 - x1)) + (1LL * (y2 - y1) * (y2 - y1)));
 	};
 	auto add = [&](int x1, int y1, int x2, int y2, ll r1, ll r2) {
 		ll ndist = dist(x1, y1, x2, y2) - r1 - r2;
@@ -135,8 +134,8 @@ int main() {
 	assert(cnt <= n + 4);
 	for (int i = 0; i < n; i++) {
 		for (int j = i + 1; j < n; j++) {
-			add(trees[i].f.f, trees[i].f.s, trees[j].f.f, trees[j].f.s,
-			    trees[i].s, trees[j].s);
+			add(trees[i].f.f, trees[i].f.s, trees[j].f.f, trees[j].f.s, trees[i].s,
+			    trees[j].s);
 		}
 	}
 	vector<pair<pi, int>> qrs;
@@ -162,9 +161,7 @@ int main() {
 					conn[j][i] = conn[i][j];
 				}
 			}
-			auto bad = [&](const int &x) {
-				return conn[(x - 1 < 0 ? 3 : x - 1)][x];
-			};
+			auto bad = [&](const int &x) { return conn[(x - 1 < 0 ? 3 : x - 1)][x]; };
 			for (int i = 0; i < 4; i++) {
 				if (curr.f.s == i) { continue; }
 				if (bad(curr.f.s) || bad(i)) {

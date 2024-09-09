@@ -78,17 +78,15 @@ import java.util.*;
 public class Haircut {
 	public static void main(String[] args) throws IOException {
 		BufferedReader f = new BufferedReader(new InputStreamReader(System.in));
-		PrintWriter out = new PrintWriter(
-		    new BufferedWriter(new OutputStreamWriter(System.out)));
+		PrintWriter out =
+		    new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)));
 
 		int N = Integer.parseInt(f.readLine());
 		StringTokenizer st = new StringTokenizer(f.readLine());
 
 		int[] hairs = new int[N];
 
-		for (int i = 0; i < N; i++) {
-			hairs[i] = Integer.parseInt(st.nextToken());
-		}
+		for (int i = 0; i < N; i++) { hairs[i] = Integer.parseInt(st.nextToken()); }
 
 		BIT tree = new BIT(N + 1);  // hair can be at most N
 
@@ -223,9 +221,7 @@ void add(vector<ll> &segtree, int k, ll x) {
 	int c = segtree.size() / 2;
 	k += c;
 	segtree[k] += x;
-	for (k /= 2; k >= 1; k /= 2) {
-		segtree[k] = segtree[2 * k] + segtree[2 * k + 1];
-	}
+	for (k /= 2; k >= 1; k /= 2) { segtree[k] = segtree[2 * k] + segtree[2 * k + 1]; }
 }
 
 int main() {

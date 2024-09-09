@@ -31,8 +31,8 @@ vector<pair<int, int>> arr[100001];  // The persistent array
 
 int get_item(int index, int time) {
 	// Gets the array item at a given index and time
-	auto ub = upper_bound(arr[index].begin(), arr[index].end(),
-	                      make_pair(time, INT_MAX));
+	auto ub =
+	    upper_bound(arr[index].begin(), arr[index].end(), make_pair(time, INT_MAX));
 	return prev(ub)->second;
 }
 
@@ -98,8 +98,7 @@ Node *build(int l = 0, int r = n - 1) {
 Node *update(Node *node, int val, int pos, int l = 0, int r = n - 1) {
 	if (l == r) return new Node(val);
 	int mid = (l + r) / 2;
-	if (pos > mid)
-		return new Node(node->l, update(node->r, val, pos, mid + 1, r));
+	if (pos > mid) return new Node(node->l, update(node->r, val, pos, mid + 1, r));
 	else return new Node(update(node->l, val, pos, l, mid), node->r);
 }
 
@@ -218,8 +217,7 @@ Node *build(int l = 1, int r = n) {
 Node *update(Node *node, int val, int pos, int l = 1, int r = n) {
 	if (l == r) return new Node(val);
 	int mid = (l + r) / 2;
-	if (pos > mid)
-		return new Node(node->l, update(node->r, val, pos, mid + 1, r));
+	if (pos > mid) return new Node(node->l, update(node->r, val, pos, mid + 1, r));
 	else return new Node(update(node->l, val, pos, l, mid), node->r);
 }
 

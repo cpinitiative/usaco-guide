@@ -75,16 +75,14 @@ int main() {
 		track_city.insert(occ[i].second);
 
 		// beginning of query, sorted by year
-		int q_low_ind =
-		    lower_bound(all(query), make_pair(years, 0)) - query.begin();
+		int q_low_ind = lower_bound(all(query), make_pair(years, 0)) - query.begin();
 
 		for (int j = q_low_ind; j < q && query[j].first < years_upper; j++) {
 			ll qyears = query[j].first;
 			int qindex = query[j].second;
 
 			// retrieve the requested city by original query order
-			qans[qindex] =
-			    *track_city.find_by_order((qyears - years) % (i + 1));
+			qans[qindex] = *track_city.find_by_order((qyears - years) % (i + 1));
 		}
 
 		years = years_upper;

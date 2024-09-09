@@ -47,8 +47,7 @@ int main() {
 	for (int right = 0; right < flat_num; right++) {
 		curr_pokemon[flats[right]]++;
 		// check if removing the left one would remove a needed type
-		while (closest_left + 1 <= right &&
-		       curr_pokemon.count(flats[closest_left]) &&
+		while (closest_left + 1 <= right && curr_pokemon.count(flats[closest_left]) &&
 		       curr_pokemon[flats[closest_left]] > 1) {
 			curr_pokemon[flats[closest_left]]--;
 			closest_left++;
@@ -58,8 +57,7 @@ int main() {
 		 * wasn't valid at all, so we need to check for that
 		 */
 		if (curr_pokemon.size() == types.size()) {
-			shortest_interval =
-			    std::min(shortest_interval, right - closest_left + 1);
+			shortest_interval = std::min(shortest_interval, right - closest_left + 1);
 		}
 	}
 	cout << shortest_interval << endl;
@@ -86,8 +84,7 @@ import java.util.HashSet;
  */
 public class Everywhere {
 	public static void main(String[] args) throws IOException {
-		BufferedReader read =
-		    new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
 		int flatNum = Integer.parseInt(read.readLine());
 		String flats = read.readLine();
 
@@ -99,8 +96,7 @@ public class Everywhere {
 		HashMap<Character, Integer> currCaught = new HashMap<>();
 		for (int right = 0; right < flatNum; right++) {
 			char newCaught = flats.charAt(right);
-			currCaught.put(newCaught,
-			               currCaught.getOrDefault(newCaught, 0) + 1);
+			currCaught.put(newCaught, currCaught.getOrDefault(newCaught, 0) + 1);
 			// move the left pointer to the left only if it isn't unique
 			while (closestLeft + 1 <= right &&
 			       currCaught.getOrDefault(flats.charAt(closestLeft), 0) > 1) {
@@ -113,8 +109,7 @@ public class Everywhere {
 			 * place, so we'll have to check for that
 			 */
 			if (currCaught.size() == types.size()) {
-				shortestInterval =
-				    Math.min(shortestInterval, right - closestLeft + 1);
+				shortestInterval = Math.min(shortestInterval, right - closestLeft + 1);
 			}
 		}
 		System.out.println(shortestInterval);

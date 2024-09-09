@@ -222,11 +222,9 @@ map<int, int> m;
 m[3] = 5;     // [(3, 5)]
 m[11] = 4;    // [(3, 5); (11, 4)]
 m[10] = 491;  // [(3, 5); (10, 491); (11, 4)]
-cout << m.lower_bound(10)->first << " " << m.lower_bound(10)->second
-     << '\n';  // 10 491
-cout << m.upper_bound(10)->first << " " << m.upper_bound(10)->second
-     << '\n';  // 11 4
-m.erase(11);   // [(3, 5); (10, 491)]
+cout << m.lower_bound(10)->first << " " << m.lower_bound(10)->second << '\n';  // 10 491
+cout << m.upper_bound(10)->first << " " << m.upper_bound(10)->second << '\n';  // 11 4
+m.erase(11);  // [(3, 5); (10, 491)]
 if (m.upper_bound(10) == m.end()) {
 	cout << "end" << endl;  // Prints end
 }
@@ -532,8 +530,7 @@ import java.io.*;
 import java.util.*;
 
 class BitInversion {
-	public static TreeMap<Integer, Integer> ret =
-	    new TreeMap<Integer, Integer>();
+	public static TreeMap<Integer, Integer> ret = new TreeMap<Integer, Integer>();
 	public static String s;
 	public static int m;
 	public static Set<Integer> dif = new TreeSet<Integer>();
@@ -555,20 +552,17 @@ class BitInversion {
 		}
 	}
 	public static void main(String[] args) throws IOException {
-		BufferedReader sc =
-		    new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader sc = new BufferedReader(new InputStreamReader(System.in));
 		PrintWriter out = new PrintWriter(System.out);
 		s = sc.readLine();
 		m = Integer.parseInt(sc.readLine());
 		dif.add(0);
 		dif.add(s.length());
 		for (int i = 0; i < s.length() - 1; i++) {
-			if (s.charAt(i) != s.charAt(i + 1))
-				dif.add(i + 1);  // initialize dif
+			if (s.charAt(i) != s.charAt(i + 1)) dif.add(i + 1);  // initialize dif
 		}
 		for (int it : dif) {
-			if (dif.higher(it) != null)
-				add(dif.higher(it) - it);  // initialize ret
+			if (dif.higher(it) != null) add(dif.higher(it) - it);  // initialize ret
 		}
 		StringTokenizer st = new StringTokenizer(sc.readLine());
 		for (int i = 0; i < m; i++) {
@@ -647,9 +641,7 @@ int main() {
 	for (int i = 0; i < sz(s) - 1; ++i) {
 		if (s[i] != s[i + 1]) dif.insert(i + 1);
 	}
-	for (auto it = dif.begin(); next(it) != dif.end(); it++) {
-		ad(*next(it) - *it);
-	}
+	for (auto it = dif.begin(); next(it) != dif.end(); it++) { ad(*next(it) - *it); }
 	for (int i = 0; i < m; ++i) {
 		int x;
 		cin >> x;
@@ -699,8 +691,7 @@ class BitInversion {
 		}
 	}
 	public static void main(String[] args) throws IOException {
-		BufferedReader sc =
-		    new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader sc = new BufferedReader(new InputStreamReader(System.in));
 		PrintWriter out = new PrintWriter(System.out);
 		s = sc.readLine();
 		m = Integer.parseInt(sc.readLine());
@@ -708,8 +699,7 @@ class BitInversion {
 		dif.add(0);
 		dif.add(s.length());
 		for (int i = 0; i < s.length() - 1; i++) {
-			if (s.charAt(i) != s.charAt(i + 1))
-				dif.add(i + 1);  // initialize dif
+			if (s.charAt(i) != s.charAt(i + 1)) dif.add(i + 1);  // initialize dif
 		}
 		for (int it : dif) {
 			if (dif.higher(it) != null) { add(dif.higher(it) - it); }

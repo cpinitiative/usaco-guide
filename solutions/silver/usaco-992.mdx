@@ -65,9 +65,7 @@ int main() {
 				frontier.pop_back();
 				component[curr] = curr_comp;
 				for (const auto &[n, w] : neighbors[curr]) {
-					if (component[n] == -1 && w >= mid) {
-						frontier.push_back(n);
-					}
+					if (component[n] == -1 && w >= mid) { frontier.push_back(n); }
 				}
 			}
 			curr_comp++;
@@ -89,8 +87,7 @@ int main() {
 		}
 	}
 
-	std::ofstream("wormsort.out")
-	    << (valid == max_width + 1 ? -1 : valid) << endl;
+	std::ofstream("wormsort.out") << (valid == max_width + 1 ? -1 : valid) << endl;
 }
 ```
 
@@ -140,8 +137,7 @@ public class WormSort {
 			int currComp = 0;
 			for (int c = 0; c < cowNum; c++) {
 				if (component[c] != -1) { continue; }
-				List<Integer> frontier =
-				    new ArrayList<>(Collections.singletonList(c));
+				List<Integer> frontier = new ArrayList<>(Collections.singletonList(c));
 				while (!frontier.isEmpty()) {
 					int curr = frontier.remove(frontier.size() - 1);
 					component[curr] = currComp;
@@ -215,9 +211,7 @@ class DSU {
 		for (int i = 0; i < size; i++) { parent[i] = i; }
 	}
 
-	int get_top(int n) {
-		return parent[n] == n ? n : (parent[n] = get_top(parent[n]));
-	}
+	int get_top(int n) { return parent[n] == n ? n : (parent[n] = get_top(parent[n])); }
 
 	bool link(int n1, int n2) {
 		n1 = get_top(n1);
@@ -284,8 +278,7 @@ int main() {
 		}
 	}
 
-	std::ofstream("wormsort.out")
-	    << (valid == max_width + 1 ? -1 : valid) << endl;
+	std::ofstream("wormsort.out") << (valid == max_width + 1 ? -1 : valid) << endl;
 }
 ```
 
@@ -309,8 +302,7 @@ public class WormSort {
 		int maxWidth = 0;
 		List<int[]> wormholes = new ArrayList<>();
 		for (int w = 0; w < wormholeNum; w++) {
-			wormholes.add(
-			    new int[] {io.nextInt() - 1, io.nextInt() - 1, io.nextInt()});
+			wormholes.add(new int[] {io.nextInt() - 1, io.nextInt() - 1, io.nextInt()});
 			maxWidth = Math.max(maxWidth, wormholes.get(w)[2]);
 		}
 
@@ -415,9 +407,7 @@ class DSU {
 		for (int i = 0; i < size; i++) { parent[i] = i; }
 	}
 
-	int get_top(int n) {
-		return parent[n] == n ? n : (parent[n] = get_top(parent[n]));
-	}
+	int get_top(int n) { return parent[n] == n ? n : (parent[n] = get_top(parent[n])); }
 
 	bool link(int n1, int n2) {
 		n1 = get_top(n1);
@@ -436,9 +426,7 @@ struct Wormhole {
 	int width;
 };
 
-bool operator<(const Wormhole &w1, const Wormhole &w2) {
-	return w1.width < w2.width;
-}
+bool operator<(const Wormhole &w1, const Wormhole &w2) { return w1.width < w2.width; }
 
 int main() {
 	std::ifstream read("wormsort.in");
@@ -473,8 +461,7 @@ int main() {
 	}
 
 	std::ofstream("wormsort.out")
-	    << (wormhole_at == wormhole_num ? -1 : wormholes[wormhole_at].width)
-	    << endl;
+	    << (wormhole_at == wormhole_num ? -1 : wormholes[wormhole_at].width) << endl;
 }
 ```
 
@@ -498,8 +485,7 @@ public class WormSort {
 		int maxWidth = 0;
 		List<int[]> wormholes = new ArrayList<>();
 		for (int w = 0; w < wormholeNum; w++) {
-			wormholes.add(
-			    new int[] {io.nextInt() - 1, io.nextInt() - 1, io.nextInt()});
+			wormholes.add(new int[] {io.nextInt() - 1, io.nextInt() - 1, io.nextInt()});
 			maxWidth = Math.max(maxWidth, wormholes.get(w)[2]);
 		}
 
@@ -510,13 +496,11 @@ public class WormSort {
 		for (int i = 0; i < cowNum; i++) {
 			while (dsu.getTop(i) != dsu.getTop(cows[i])) {
 				wormholeAt--;
-				dsu.link(wormholes.get(wormholeAt)[0],
-				         wormholes.get(wormholeAt)[1]);
+				dsu.link(wormholes.get(wormholeAt)[0], wormholes.get(wormholeAt)[1]);
 			}
 		}
 
-		io.println(wormholeAt == wormholeNum ? -1
-		                                     : wormholes.get(wormholeAt)[2]);
+		io.println(wormholeAt == wormholeNum ? -1 : wormholes.get(wormholeAt)[2]);
 		io.close();
 	}
 

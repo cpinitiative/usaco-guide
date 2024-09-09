@@ -39,8 +39,8 @@ using namespace __gnu_pbds;
 struct chash {  /// use most bits rather than just the lowest ones
 	const uint64_t C = ll(2e18 * PI) + 71;  // large odd number
 	const int RANDOM = rng();
-	ll operator()(ll x)
-	    const {  /// https://gcc.gnu.org/onlinedocs/gcc/Other-Builtins.html
+	ll
+	operator()(ll x) const {  /// https://gcc.gnu.org/onlinedocs/gcc/Other-Builtins.html
 		return __builtin_bswap64((x ^ RANDOM) * C);
 	}
 };
@@ -148,10 +148,10 @@ int main() {
 		*/
 
 		while (r < n - 1 && cntDifVal + (frequency[a[r + 1]] == 0) <= k) {
-			cntDifVal += frequency[a[r + 1]] ==
-			             0;         // update the number of different values
-			frequency[a[r + 1]]++;  // update the frequency array
-			r++;  // update the right end of the current window
+			cntDifVal +=
+			    frequency[a[r + 1]] == 0;  // update the number of different values
+			frequency[a[r + 1]]++;         // update the frequency array
+			r++;                           // update the right end of the current window
 		}
 
 		// update the answer if we find a larger segment
@@ -163,9 +163,8 @@ int main() {
 
 		// here we discard the first element a[l] making the current segment
 		// [l+1,r]
-		frequency[a[l]]--;  // update the frequency
-		cntDifVal -=
-		    frequency[a[l]] == 0;  // update the number of different values
+		frequency[a[l]]--;                  // update the frequency
+		cntDifVal -= frequency[a[l]] == 0;  // update the number of different values
 	}
 	// we add one because the answer should be 1-indexed
 	printf("%d %d\n", leftMaxSegment + 1, rightMaxSegment + 1);
@@ -194,8 +193,7 @@ public class KGood {
 		for (int i = 0; i < N; i++) { arr[i] = io.nextInt(); }
 
 		int max = Arrays.stream(arr).max().getAsInt();
-		int[] freq =
-		    new int[max + 1];  // Frequency of each number in the window.
+		int[] freq = new int[max + 1];  // Frequency of each number in the window.
 
 		for (int i = 0; i < N; i++) {
 			int x = arr[i];

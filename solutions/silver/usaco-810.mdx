@@ -86,11 +86,9 @@ public class RestStops {
 
 	public static void main(String[] args) {
 		try {
-			BufferedReader br =
-			    new BufferedReader(new FileReader("reststops.in"));
+			BufferedReader br = new BufferedReader(new FileReader("reststops.in"));
 			String[] line = br.readLine().split(" ");
-			int trailLen =
-			    Integer.parseInt(line[0]);  // this value is never used...
+			int trailLen = Integer.parseInt(line[0]);  // this value is never used...
 			int stopNum = Integer.parseInt(line[1]);
 			int fRate = Integer.parseInt(line[2]);
 			int bRate = Integer.parseInt(line[3]);
@@ -110,8 +108,7 @@ public class RestStops {
 			// find all "best" stops
 			int max = 0;
 			for (int i = stopNum - 1; i >= 0; i--) {
-				if (c[i] >
-				    max) {  // there are no stops after stop i that are "better"
+				if (c[i] > max) {  // there are no stops after stop i that are "better"
 					good[i] = true;
 					max = c[i];
 				}
@@ -131,8 +128,7 @@ public class RestStops {
 				}
 			}
 
-			BufferedWriter bw =
-			    new BufferedWriter(new FileWriter("reststops.out"));
+			BufferedWriter bw = new BufferedWriter(new FileWriter("reststops.out"));
 			bw.write(ans + "\n");
 			bw.close();
 		} catch (Exception e) { System.out.println(e.getMessage()); }
