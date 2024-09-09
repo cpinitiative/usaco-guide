@@ -92,16 +92,15 @@ using std::endl;
 using std::vector;
 
 /** A data structure that can answer point update & range minimum queries. */
-template <class T>
-class MinSegmentTree {
-   private:
+template <class T> class MinSegmentTree {
+  private:
 	const T DEFAULT = std::numeric_limits<T>().max();
 
 	int len;
 	int padded_len;
 	vector<T> segtree;
 
-	T combine(const T& a, const T& b) { return std::min(a, b); }
+	T combine(const T &a, const T &b) { return std::min(a, b); }
 
 	void set(int ind, T val, int at, int at_left, int at_right) {
 		if (at_right - at_left == 1) {
@@ -114,29 +113,22 @@ class MinSegmentTree {
 		} else {
 			set(ind, val, 2 * at + 2, mid, at_right);
 		}
-		segtree[at] =
-			combine(segtree[2 * at + 1], segtree[2 * at + 2]);
+		segtree[at] = combine(segtree[2 * at + 1], segtree[2 * at + 2]);
 	}
 
 	T range_min(int start, int end, int at, int at_left, int at_right) {
-		if (at_right <= start || end <= at_left) {
-			return DEFAULT;
-		}
-		if (start <= at_left && at_right <= end) {
-			return segtree[at];
-		}
+		if (at_right <= start || end <= at_left) { return DEFAULT; }
+		if (start <= at_left && at_right <= end) { return segtree[at]; }
 		int mid = (at_left + at_right) / 2;
 		T left_res = range_min(start, end, 2 * at + 1, at_left, mid);
 		T right_res = range_min(start, end, 2 * at + 2, mid, at_right);
 		return combine(left_res, right_res);
 	}
 
-   public:
+  public:
 	MinSegmentTree(int len) : len(len) {
 		padded_len = 1;
-		while (padded_len < len) {
-			padded_len *= 2;
-		}
+		while (padded_len < len) { padded_len *= 2; }
 		segtree = vector<T>(padded_len * 2 - 1, DEFAULT);
 	};
 
@@ -144,7 +136,9 @@ class MinSegmentTree {
 	void set(int ind, T val) { set(ind, val, 0, 0, padded_len); }
 
 	/** @return the minimum element in the range [start, end) */
-	T range_min(int start, int end) { return range_min(start, end, 0, 0, padded_len); }
+	T range_min(int start, int end) {
+		return range_min(start, end, 0, 0, padded_len);
+	}
 };
 
 int main() {
@@ -390,16 +384,15 @@ using std::endl;
 using std::vector;
 
 /** A data structure that can answer point update & range sum queries. */
-template <class T>
-class SumSegmentTree {
-   private:
+template <class T> class SumSegmentTree {
+  private:
 	const T DEFAULT = 0;
 
 	int len;
 	int padded_len;
 	vector<T> segtree;
 
-	T combine(const T& a, const T& b) { return a + b; }
+	T combine(const T &a, const T &b) { return a + b; }
 
 	void set(int ind, T val, int at, int at_left, int at_right) {
 		if (at_right - at_left == 1) {
@@ -412,29 +405,22 @@ class SumSegmentTree {
 		} else {
 			set(ind, val, 2 * at + 2, mid, at_right);
 		}
-		segtree[at] =
-			combine(segtree[2 * at + 1], segtree[2 * at + 2]);
+		segtree[at] = combine(segtree[2 * at + 1], segtree[2 * at + 2]);
 	}
 
 	T range_sum(int start, int end, int at, int at_left, int at_right) {
-		if (at_right <= start || end <= at_left) {
-			return DEFAULT;
-		}
-		if (start <= at_left && at_right <= end) {
-			return segtree[at];
-		}
+		if (at_right <= start || end <= at_left) { return DEFAULT; }
+		if (start <= at_left && at_right <= end) { return segtree[at]; }
 		int mid = (at_left + at_right) / 2;
 		T left_res = range_sum(start, end, 2 * at + 1, at_left, mid);
 		T right_res = range_sum(start, end, 2 * at + 2, mid, at_right);
 		return combine(left_res, right_res);
 	}
 
-   public:
+  public:
 	SumSegmentTree(int len) : len(len) {
 		padded_len = 1;
-		while (padded_len < len) {
-			padded_len *= 2;
-		}
+		while (padded_len < len) { padded_len *= 2; }
 		segtree = vector<T>(padded_len * 2 - 1, DEFAULT);
 	};
 
@@ -442,7 +428,9 @@ class SumSegmentTree {
 	void set(int ind, T val) { set(ind, val, 0, 0, padded_len); }
 
 	/** @return the minimum element in the range [start, end) */
-	T range_sum(int start, int end) { return range_sum(start, end, 0, 0, padded_len); }
+	T range_sum(int start, int end) {
+		return range_sum(start, end, 0, 0, padded_len);
+	}
 };
 
 int main() {
@@ -699,7 +687,7 @@ first glance.
 	 />
 </Resources>
 
-## Dynamic Range Sum Queries 
+## Dynamic Range Sum Queries
 
 ### Implementation
 
@@ -980,7 +968,7 @@ using namespace std;
 using namespace __gnu_pbds;
 template <class T>
 using Tree =
-	tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
+    tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
 
 int main() {
 	int test_num;
