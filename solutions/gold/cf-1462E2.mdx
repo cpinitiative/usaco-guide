@@ -146,21 +146,18 @@ def choose(n: int, r: int):
 factorial()
 inverses()
 for _ in range(int(input())):
-
 	n, m, k = map(int, input().split())
 	nums = list(map(int, input().split()))
-	freq = [0] * (n + 1)  # frequency of each element
-	pre_freq = [0] * (n + 1)  # prefix-array for freq vector
-	ans = 0
 
+	freq = [0] * (n + 1)  # frequency of each element
 	for x in nums:
 		freq[x] += 1
-
+	pre_freq = [0] * (n + 1)  # prefix array for freq vector
 	for i in range(1, n + 1):
 		pre_freq[i] = freq[i] + pre_freq[i - 1]
 
+	ans = 0
 	for i in range(1, n + 1):
-
 		# the max possible value that could be in a tuple with i as the minimum
 		max_index = min(n, i + k)
 
