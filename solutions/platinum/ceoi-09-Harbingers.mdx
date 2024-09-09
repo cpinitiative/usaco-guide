@@ -117,17 +117,14 @@ void dfs(int u = 1, int p = 0, ll d = 0) {
 		min_time[u] = 0;
 		stk[stk_max++] = {0, 0};
 	} else {
-		min_time[u] = line_min(V[u]) + d * V[u] +
-		              S[u];  // get dp value by querying convex hull
-		Line l(
-		    -d,
-		    min_time[u]);    // construct new line that might be added into hull
-		prev_max = stk_max;  // store previous hull size
-		prev_pos = stk_max =
-		    remove_pos(l);  // update hull size to include new line
-		prev_line =
-		    stk[stk_max];    // store previous line at replacement position
-		stk[stk_max++] = l;  // update replacement position to new line
+		min_time[u] =
+		    line_min(V[u]) + d * V[u] + S[u];  // get dp value by querying convex hull
+		Line l(-d,
+		       min_time[u]);  // construct new line that might be added into hull
+		prev_max = stk_max;   // store previous hull size
+		prev_pos = stk_max = remove_pos(l);  // update hull size to include new line
+		prev_line = stk[stk_max];  // store previous line at replacement position
+		stk[stk_max++] = l;        // update replacement position to new line
 	}
 
 	// recurse to children

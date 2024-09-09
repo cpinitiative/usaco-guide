@@ -138,13 +138,12 @@ int main() {
 
 	memset(ans, 0x3f, sizeof(ans));
 	for (int i = 0; i < 2 * m; i++) {
-		if (par[edges[i].u] == edges[i].v || par[edges[i].v] == edges[i].u)
-			continue;
+		if (par[edges[i].u] == edges[i].v || par[edges[i].v] == edges[i].u) continue;
 		int x = find(sp, sp + k, lca[edges[i].u]) - sp;
 		int y = find(sp, sp + k, lca[edges[i].v]) - sp;
 		for (int j = x; j < y; j++)
-			ans[j] = min(ans[j], from_a[edges[i].u] + from_b[edges[i].v] +
-			                         edges[i].c - 2);
+			ans[j] =
+			    min(ans[j], from_a[edges[i].u] + from_b[edges[i].v] + edges[i].c - 2);
 	}
 
 	for (int i = 0; i < k - 1; i++)

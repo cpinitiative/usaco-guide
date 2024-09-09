@@ -287,8 +287,7 @@ struct chash {
 	// any random-ish large odd number will do
 	const uint64_t C = uint64_t(2e18 * PI) + 71;
 	// random 32-bit number
-	const uint32_t RANDOM =
-	    chrono::steady_clock::now().time_since_epoch().count();
+	const uint32_t RANDOM = chrono::steady_clock::now().time_since_epoch().count();
 	size_t operator()(uint64_t x) const {
 		// see https://gcc.gnu.org/onlinedocs/gcc/Other-Builtins.html
 		return __builtin_bswap64((x ^ RANDOM) * C);
@@ -355,10 +354,11 @@ We can modify the declaration of `gp_hash_table` so that it supports the
 
 ```cpp
 template <class K, class V>
-using ht = gp_hash_table<
-    K, V, hash<K>, equal_to<K>, direct_mask_range_hashing<>, linear_probe_fn<>,
-    hash_standard_resize_policy<hash_exponential_size_policy<>,
-                                hash_load_check_resize_trigger<>, true>>;
+using ht =
+    gp_hash_table<K, V, hash<K>, equal_to<K>, direct_mask_range_hashing<>,
+                  linear_probe_fn<>,
+                  hash_standard_resize_policy<hash_exponential_size_policy<>,
+                                              hash_load_check_resize_trigger<>, true>>;
 ```
 
 These are the same template arguments as the default `gp_hash_table`, except

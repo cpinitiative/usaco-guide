@@ -34,8 +34,8 @@ This is, however, not necessarily the longest path. It's possible for the initia
 using namespace std;
 
 /** @return the farthest node and its distance from the given node. */
-pair<int, int> dfs(const vector<vector<int>> &tree, int node = 1,
-                   int previous = 0, int length = 0) {
+pair<int, int> dfs(const vector<vector<int>> &tree, int node = 1, int previous = 0,
+                   int length = 0) {
 	pair<int, int> max_path = {node, length};
 	for (const int &i : tree[node]) {
 		if (i == previous) { continue; }
@@ -70,8 +70,7 @@ int main() {
 	int tree1_diameter = dfs(tree1, tree1_start).second;
 	int tree2_diameter = dfs(tree2, tree2_start).second;
 	// (x + 1) / 2 divides by 2 and rounds up
-	int added_edge_diameter =
-	    (tree1_diameter + 1) / 2 + (tree2_diameter + 1) / 2 + 1;
+	int added_edge_diameter = (tree1_diameter + 1) / 2 + (tree2_diameter + 1) / 2 + 1;
 
 	cout << max({tree1_diameter, tree2_diameter, added_edge_diameter}) << endl;
 }

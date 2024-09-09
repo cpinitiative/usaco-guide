@@ -46,15 +46,11 @@ bool _Line_Comp_State;
 struct Line {
 	// k is slope, m is intercept, p is intersection point
 	mutable ll k, m, p;
-	bool operator<(const Line &o) const {
-		return _Line_Comp_State ? p < o.p : k < o.k;
-	}
+	bool operator<(const Line &o) const { return _Line_Comp_State ? p < o.p : k < o.k; }
 };
 
 struct LineContainer : multiset<Line> {
-	long long div(long long a, long long b) {
-		return a / b - ((a ^ b) < 0 && a % b);
-	}
+	long long div(long long a, long long b) { return a / b - ((a ^ b) < 0 && a % b); }
 
 	bool isect(iterator x, iterator y) {
 		if (y == end()) {

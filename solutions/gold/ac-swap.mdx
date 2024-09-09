@@ -107,10 +107,10 @@ int main() {
 	}
 
 	vector<vector<vector<vector<long long>>>> dp(
-	    MAX_SWAPS, vector<vector<vector<long long>>>(
-	                   count[0] + 1,
-	                   vector<vector<long long>>(
-	                       count[1] + 1, vector<long long>(count[2] + 1, 0))));
+	    MAX_SWAPS,
+	    vector<vector<vector<long long>>>(
+	        count[0] + 1, vector<vector<long long>>(
+	                          count[1] + 1, vector<long long>(count[2] + 1, 0))));
 
 	// base case (one way to create an empty string)
 	dp[0][0][0][0] = 1;
@@ -126,8 +126,7 @@ int main() {
 						           max(0, pref[pos[0][ks]][2] - ys);
 
 						if (cur + cost < MAX_SWAPS) {
-							dp[cur + cost][ks + 1][es][ys] +=
-							    dp[cur][ks][es][ys];
+							dp[cur + cost][ks + 1][es][ys] += dp[cur][ks][es][ys];
 						}
 					}
 
@@ -135,12 +134,11 @@ int main() {
 					if (es < count[1]) {
 						int next = pos[1][es];
 						// swap out letters in the way
-						int cost = max(0, pref[next][0] - ks) +
-						           max(0, pref[next][2] - ys);
+						int cost =
+						    max(0, pref[next][0] - ks) + max(0, pref[next][2] - ys);
 
 						if (cur + cost < MAX_SWAPS) {
-							dp[cur + cost][ks][es + 1][ys] +=
-							    dp[cur][ks][es][ys];
+							dp[cur + cost][ks][es + 1][ys] += dp[cur][ks][es][ys];
 						}
 					}
 
@@ -148,12 +146,11 @@ int main() {
 					if (ys < count[2]) {
 						int next = pos[2][ys];
 						// swap out letters in the way
-						int cost = max(0, pref[next][0] - ks) +
-						           max(0, pref[next][1] - es);
+						int cost =
+						    max(0, pref[next][0] - ks) + max(0, pref[next][1] - es);
 
 						if (cur + cost < MAX_SWAPS) {
-							dp[cur + cost][ks][es][ys + 1] +=
-							    dp[cur][ks][es][ys];
+							dp[cur + cost][ks][es][ys + 1] += dp[cur][ks][es][ys];
 						}
 					}
 

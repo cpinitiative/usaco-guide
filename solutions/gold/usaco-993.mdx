@@ -104,13 +104,13 @@ public class TimeIsMooney {
 		long best = 0;
 		dp[0][0] = 0;
 		for (int t = 0; t < T_MAX - 1; t++) {  // populate dp array up to T_MAX
-			for (int i = 0; i < n; i++) {  // check each city at each time step
+			for (int i = 0; i < n; i++) {      // check each city at each time step
 				// skip city if it can't be reached at time t
 				if (dp[t][i] != -1) {
 					// visit all cities adjacent to i, update dp array
 					for (int neighbor : adj.get(i)) {
-						dp[t + 1][neighbor] = Math.max(
-						    dp[t + 1][neighbor], dp[t][i] + values[neighbor]);
+						dp[t + 1][neighbor] =
+						    Math.max(dp[t + 1][neighbor], dp[t][i] + values[neighbor]);
 					}
 				}
 			}

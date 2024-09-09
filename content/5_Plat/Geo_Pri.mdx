@@ -95,8 +95,7 @@ struct Point {
 // EndCodeSnip
 
 long long collinear(Point p, Point p1, Point p2) {
-	return 1LL * (p.y - p1.y) * (p2.x - p1.x) -
-	       1LL * (p.x - p1.x) * (p2.y - p1.y);
+	return 1LL * (p.y - p1.y) * (p2.x - p1.x) - 1LL * (p.x - p1.x) * (p2.y - p1.y);
 }
 
 int main() {
@@ -162,8 +161,7 @@ int sign(long long num) {
 }
 
 long long trigonometric_sense(Point p, Point p1, Point p2) {
-	return sign(1LL * (p1.x - p.x) * (p2.y - p.y) -
-	            1LL * (p2.x - p.x) * (p1.y - p.y));
+	return sign(1LL * (p1.x - p.x) * (p2.y - p.y) - 1LL * (p2.x - p.x) * (p1.y - p.y));
 }
 
 // Check if the rectangles with [P1, P2] and [P3, P4] as diagonals intersect
@@ -246,8 +244,8 @@ int main() {
 
 	long long area = 0;
 	for (int i = 0; i < points.size(); i++) {
-		area += (1LL * points[i].x * points[i + 1].y -
-		         1LL * points[i].y * points[i + 1].x);
+		area +=
+		    (1LL * points[i].x * points[i + 1].y - 1LL * points[i].y * points[i + 1].x);
 	}
 }
 ```
@@ -295,14 +293,12 @@ bool on_segment(const Point &p, const Point &p1, const Point &p2) {
 	int b = max(p1.x, p2.x);
 	int x = min(p1.y, p2.y);
 	int y = max(p1.y, p2.y);
-	return 1LL * (p.y - p1.y) * (p2.x - p1.x) ==
-	           1LL * (p.x - p1.x) * (p2.y - p1.y) &&
+	return 1LL * (p.y - p1.y) * (p2.x - p1.x) == 1LL * (p.x - p1.x) * (p2.y - p1.y) &&
 	       a <= p.x && p.x <= b && x <= p.y && p.y <= y;
 }
 
 long long trigonometric_sense(Point p, Point p1, Point p2) {
-	return 1LL * (p1.x - p.x) * (p2.y - p.y) -
-	       1LL * (p2.x - p.x) * (p1.y - p.y);
+	return 1LL * (p1.x - p.x) * (p2.y - p.y) - 1LL * (p2.x - p.x) * (p1.y - p.y);
 }
 
 int main() {
@@ -395,8 +391,8 @@ int main() {
 	points.push_back(points[0]);
 	long long area = 0;
 	for (int i = 0; i < n; i++) {
-		area += (1LL * points[i].x * points[i + 1].y -
-		         1LL * points[i].y * points[i + 1].x);
+		area +=
+		    (1LL * points[i].x * points[i + 1].y - 1LL * points[i].y * points[i + 1].x);
 	}
 	area = abs(area);
 	long long boundary_points = 0;
@@ -446,8 +442,7 @@ points from the beginning of the sorted array, thus the array of angles should b
 ```cpp
 class Solution {
   public:
-	int visiblePoints(vector<vector<int>> &points, int angle,
-	                  vector<int> &location) {
+	int visiblePoints(vector<vector<int>> &points, int angle, vector<int> &location) {
 		int extra = 0;
 		vector<double> angles;
 		for (const vector<int> &p : points) {

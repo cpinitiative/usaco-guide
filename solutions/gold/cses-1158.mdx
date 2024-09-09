@@ -78,16 +78,12 @@ public class bookShop {
 		// Read in the cost array.
 		int[] costs = new int[N];
 		st = new StringTokenizer(b.readLine());
-		for (int i = 0; i < N; i++) {
-			costs[i] = Integer.parseInt(st.nextToken());
-		}
+		for (int i = 0; i < N; i++) { costs[i] = Integer.parseInt(st.nextToken()); }
 
 		// Read in the pages array.
 		int[] pages = new int[N];
 		st = new StringTokenizer(b.readLine());
-		for (int i = 0; i < N; i++) {
-			pages[i] = Integer.parseInt(st.nextToken());
-		}
+		for (int i = 0; i < N; i++) { pages[i] = Integer.parseInt(st.nextToken()); }
 
 		// dp[i][j] is how many pages you have from the first i books,
 		// after spending j money.
@@ -99,8 +95,7 @@ public class bookShop {
 				if (prev >= 0) {
 					// The total number of pages we have if we buy this book.
 					int newState = dp[book][prev] + pages[book];
-					dp[book + 1][money] =
-					    Integer.max(dp[book + 1][money], newState);
+					dp[book + 1][money] = Integer.max(dp[book + 1][money], newState);
 				}
 			}
 		}

@@ -58,8 +58,7 @@ int maxf[MAXN];  // maximum flights with minimum distance
 bool v[MAXN];    // if a node is visited
 
 void djikstra(int s) {
-	priority_queue<pair<ll, int>, vector<pair<ll, int>>, greater<pair<ll, int>>>
-	    pq;
+	priority_queue<pair<ll, int>, vector<pair<ll, int>>, greater<pair<ll, int>>> pq;
 
 	pq.push({dist[s] = 0, s});
 	num[s] = 1;
@@ -112,8 +111,7 @@ public class Investigation {
 	static final int MOD = 1000000007;
 
 	public static void main(String[] args) throws IOException {
-		BufferedReader in =
-		    new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 		PrintWriter out = new PrintWriter(System.out);
 		StringTokenizer st = new StringTokenizer(in.readLine());
 
@@ -169,17 +167,15 @@ public class Investigation {
 					// with equivalent distance, update num, maxf and minf
 				} else if (cost + dist[nodeIdx] == dist[childNode]) {
 					num[childNode] += num[nodeIdx];
-					maxf[childNode] =
-					    Integer.max(maxf[childNode], maxf[nodeIdx] + 1);
-					minf[childNode] =
-					    Integer.min(minf[childNode], minf[nodeIdx] + 1);
+					maxf[childNode] = Integer.max(maxf[childNode], maxf[nodeIdx] + 1);
+					minf[childNode] = Integer.min(minf[childNode], minf[nodeIdx] + 1);
 				}
 			}
 		}
 
 		num[n - 1] %= MOD;
-		out.println(String.format("%d %d %d %d", dist[n - 1], num[n - 1],
-		                          minf[n - 1], maxf[n - 1]));
+		out.println(String.format("%d %d %d %d", dist[n - 1], num[n - 1], minf[n - 1],
+		                          maxf[n - 1]));
 		out.close();
 	}
 

@@ -723,8 +723,7 @@ int N, Psum[MAX_N + 1][MAX_N + 1];
 Point P[MAX_N];
 
 int rsum(int x1, int y1, int x2, int y2) {
-	return Psum[x2 + 1][y2 + 1] - Psum[x2 + 1][y1] - Psum[x1][y2 + 1] +
-	       Psum[x1][y1];
+	return Psum[x2 + 1][y2 + 1] - Psum[x2 + 1][y1] - Psum[x1][y2 + 1] + Psum[x1][y1];
 }
 
 int main(void) {
@@ -809,8 +808,8 @@ public class RectangularPasture {
 		long answer = n + 1;
 		for (int j = 0; j < n; j++) {
 			for (int k = j + 1; k < n; k++) {
-				answer += getSum(Math.min(xs[j], xs[k]), Math.max(xs[j], xs[k]),
-				                 1, Math.min(ys[j], ys[k])) *
+				answer += getSum(Math.min(xs[j], xs[k]), Math.max(xs[j], xs[k]), 1,
+				                 Math.min(ys[j], ys[k])) *
 				          getSum(Math.min(xs[j], xs[k]), Math.max(xs[j], xs[k]),
 				                 Math.max(ys[j], ys[k]), n);
 			}
@@ -942,10 +941,9 @@ ll interval_value[400005];  // interval_value[i] = the value of special interval
 ll prefix_sums[400005];  // prefix_sums[i] = prefix sum of the sums of special
                          // intervals up to i
 
-vector<int> indices;             // sorted list of special indices
-pair<int, int> queries[100005];  // queries given in the input <l, r>
-pair<pair<int, int>, int>
-    updates[100005];  // updates in given in the input <<l, r>, v>
+vector<int> indices;                        // sorted list of special indices
+pair<int, int> queries[100005];             // queries given in the input <l, r>
+pair<pair<int, int>, int> updates[100005];  // updates in given in the input <<l, r>, v>
 
 // EndCodeSnip
 
@@ -1064,7 +1062,7 @@ public class rangequeries {
 	// difference_array[i] = the difference of the values between special
 	// intervals i-1 and i
 
-	static int widths[];  // width[i] = the length of special interval i
+	static int widths[];           // width[i] = the length of special interval i
 	static long interval_value[];  // interval_value[i] = the value of special
 	                               // interval i
 
@@ -1073,7 +1071,7 @@ public class rangequeries {
 
 	static ArrayList<Integer> indices;  // sorted list of special indices
 	static Query queries[];             // queries given in the input <l, r>
-	static Query updates[];  // updates in given in the input <l, r, v>
+	static Query updates[];             // updates in given in the input <l, r, v>
 	// EndCodeSnip
 	// finds the "compressed index" of a special index (a.k.a. its position in
 	// the sorted list)
@@ -1086,8 +1084,7 @@ public class rangequeries {
 		    System.in));  // A Scanner is too slow to solve this problem!
 
 		StringTokenizer st = new StringTokenizer(br.readLine());
-		int N = Integer.parseInt(st.nextToken()),
-		    Q = Integer.parseInt(st.nextToken());
+		int N = Integer.parseInt(st.nextToken()), Q = Integer.parseInt(st.nextToken());
 
 		indices = new ArrayList<Integer>();
 		queries = new Query[Q];

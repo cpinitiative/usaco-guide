@@ -100,17 +100,14 @@ import java.util.*;
 
 public class DistinctValuesQueries {
 	public static void main(String[] args) throws IOException {
-		BufferedReader bf =
-		    new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st = new StringTokenizer(bf.readLine());
 		int n = Integer.parseInt(st.nextToken());
 		int q = Integer.parseInt(st.nextToken());
 
 		int[] arr = new int[n];
 		st = new StringTokenizer(bf.readLine());
-		for (int i = 0; i < n; i++) {
-			arr[i] = Integer.parseInt(st.nextToken());
-		}
+		for (int i = 0; i < n; i++) { arr[i] = Integer.parseInt(st.nextToken()); }
 
 		List<List<Pair>> queries = new ArrayList<>();
 		for (int i = 0; i < n; i++) { queries.add(new ArrayList<>()); }
@@ -135,9 +132,7 @@ public class DistinctValuesQueries {
 			 * If val already appeared earlier, then the saved value is no
 			 * longer the left-most index, so erase it from our BIT.
 			 */
-			if (last_index.containsKey(val)) {
-				bit.update(last_index.get(val), -1);
-			}
+			if (last_index.containsKey(val)) { bit.update(last_index.get(val), -1); }
 			// i becomes the left-most index.
 			last_index.put(val, i);
 			bit.update(i, 1);
@@ -152,8 +147,7 @@ public class DistinctValuesQueries {
 			}
 		}
 
-		BufferedWriter bw =
-		    new BufferedWriter(new OutputStreamWriter(System.out));
+		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 		for (int i = 0; i < q; i++) {
 			bw.write(Integer.toString(solution[i]));
 			bw.write("\n");

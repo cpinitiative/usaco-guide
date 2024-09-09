@@ -250,9 +250,7 @@ public class GridPaths {
 		if (p[pathIdx] < 4) {
 			int nxtR = curR + dr[p[pathIdx]];
 			int nxtC = curC + dc[p[pathIdx]];
-			if (!onPath[nxtR][nxtC]) {
-				ret += tryPath(pathIdx + 1, nxtR, nxtC);
-			}
+			if (!onPath[nxtR][nxtC]) { ret += tryPath(pathIdx + 1, nxtR, nxtC); }
 		}
 		// now search for dead ends (Optimization 4)
 		else if ((curC > 2) && onPath[curR][curC - 2] &&
@@ -269,8 +267,8 @@ public class GridPaths {
 			int nxtR = curR;
 			int nxtC = curC + 1;
 			ret += tryPath(pathIdx + 1, nxtR, nxtC);
-		} else if ((curR > 2) && onPath[curR - 2][curC] &&
-		           onPath[curR - 1][curC - 1] && (!onPath[curR - 1][curC])) {
+		} else if ((curR > 2) && onPath[curR - 2][curC] && onPath[curR - 1][curC - 1] &&
+		           (!onPath[curR - 1][curC])) {
 			// potential dead end upwards
 			// note: I didn't include all possible scenarios because
 			// it wasn't necessary in order for the program to run in time

@@ -70,8 +70,7 @@ int main() {
 				contained.push_back(curr);
 				regions[curr.first][curr.second] = curr_region;
 
-				for (const auto &[nr, nc] :
-				     neighbors(curr.first, curr.second)) {
+				for (const auto &[nr, nc] : neighbors(curr.first, curr.second)) {
 					if (0 <= nr && 0 <= nc && nr < side_len && nc < side_len &&
 					    !visited[nr][nc] && grid[nr][nc] == grid[r][c]) {
 						visited[nr][nc] = true;
@@ -107,9 +106,7 @@ int main() {
 	for (int r1 = 0; r1 < region_cells.size(); r1++) {
 		for (int r2 : adj_regions[r1]) {
 			pair<int, int> valid{region_id(r1), region_id(r2)};
-			if (valid.first > valid.second) {
-				std::swap(valid.first, valid.second);
-			}
+			if (valid.first > valid.second) { std::swap(valid.first, valid.second); }
 
 			// if this pair & region have been processed already, don't start
 			if (seen[valid].count(r1)) { continue; }
@@ -127,8 +124,7 @@ int main() {
 				seen[valid].insert(curr);
 				for (int nr : adj_regions[curr]) {
 					int nid = region_id(nr);
-					if (!curr_vis[nr] &&
-					    (valid.first == nid || valid.second == nid)) {
+					if (!curr_vis[nr] && (valid.first == nid || valid.second == nid)) {
 						curr_vis[nr] = true;
 						frontier.push_back(nr);
 					}

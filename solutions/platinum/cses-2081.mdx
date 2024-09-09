@@ -48,8 +48,7 @@ bool processed[200001];
 int get_subtree_sizes(int node, int parent = 0) {
 	subtree[node] = 1;
 	for (int i : graph[node])
-		if (!processed[i] && i != parent)
-			subtree[node] += get_subtree_sizes(i, node);
+		if (!processed[i] && i != parent) subtree[node] += get_subtree_sizes(i, node);
 	return subtree[node];
 }
 
@@ -88,8 +87,7 @@ void centroid_decomp(int node = 1) {
 				if (dadd >= 0) partial_sum += total_cnt[dadd];
 			}
 
-			for (int depth = a - 1; depth <= b - 1 && depth <= subtree_depth;
-			     depth++)
+			for (int depth = a - 1; depth <= b - 1 && depth <= subtree_depth; depth++)
 				partial_sum_init += cnt[depth];
 
 			for (int depth = 1; depth <= subtree_depth; depth++)
@@ -229,8 +227,7 @@ const int MOD = 1e9 + 7;  // 998244353;
 const int MX = 2e5 + 5;
 const ll INF = 1e18;  // not too close to LLONG_MAX
 const db PI = acos((db)-1);
-const int dx[4] = {1, 0, -1, 0},
-          dy[4] = {0, 1, 0, -1};  // for every grid problem!!
+const int dx[4] = {1, 0, -1, 0}, dy[4] = {0, 1, 0, -1};  // for every grid problem!!
 mt19937 rng((uint32_t)chrono::steady_clock::now().time_since_epoch().count());
 template <class T> using pqg = priority_queue<T, vector<T>, greater<T>>;
 
@@ -251,9 +248,7 @@ ll fdiv(ll a, ll b) {
 	return a / b - ((a ^ b) < 0 && a % b);
 }  // divide a by b rounded down
 
-tcT > bool ckmin(T &a, const T &b) {
-	return b < a ? a = b, 1 : 0;
-}  // set a = min(a,b)
+tcT > bool ckmin(T &a, const T &b) { return b < a ? a = b, 1 : 0; }  // set a = min(a,b)
 tcT > bool ckmax(T &a, const T &b) { return a < b ? a = b, 1 : 0; }
 
 tcTU > T fstTrue(T lo, T hi, U f) {
@@ -401,13 +396,12 @@ tcTUU > void DBG(const T &t, const U &...u) {
 	DBG(u...);
 }
 #ifdef LOCAL  // compile with -DLOCAL, chk -> fake assert
-#define dbg(...)                                                               \
-	cerr << "Line(" << __LINE__ << ") -> [" << #__VA_ARGS__ << "]: [",         \
-	    DBG(__VA_ARGS__)
-#define chk(...)                                                               \
-	if (!(__VA_ARGS__))                                                        \
-		cerr << "Line(" << __LINE__ << ") -> function(" << __FUNCTION__        \
-		     << ") -> CHK FAILED: (" << #__VA_ARGS__ << ")" << "\n",           \
+#define dbg(...)                                                                       \
+	cerr << "Line(" << __LINE__ << ") -> [" << #__VA_ARGS__ << "]: [", DBG(__VA_ARGS__)
+#define chk(...)                                                                       \
+	if (!(__VA_ARGS__))                                                                \
+		cerr << "Line(" << __LINE__ << ") -> function(" << __FUNCTION__                \
+		     << ") -> CHK FAILED: (" << #__VA_ARGS__ << ")" << "\n",                   \
 		    exit(0);
 #else
 #define dbg(...) 0

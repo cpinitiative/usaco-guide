@@ -190,8 +190,7 @@ import java.util.*;
 
 public class Main {
 	public static void main(String[] args) throws IOException {
-		BufferedReader read =
-		    new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer initial = new StringTokenizer(read.readLine());
 		int rowNum = Integer.parseInt(initial.nextToken());
 		int colNum = Integer.parseInt(initial.nextToken());
@@ -214,8 +213,7 @@ public class Main {
 		int[][] pref = new int[rowNum + 1][colNum + 1];
 		for (int r = 1; r <= rowNum; r++) {
 			for (int c = 1; c <= colNum; c++) {
-				pref[r][c] =
-				    pref[r - 1][c] + pref[r][c - 1] - pref[r - 1][c - 1];
+				pref[r][c] = pref[r - 1][c] + pref[r][c - 1] - pref[r - 1][c - 1];
 				if (grid[r].charAt(c) == '1') {
 					boolean up = grid[r - 1].charAt(c) == '1';
 					boolean left = grid[r].charAt(c - 1) == '1';
@@ -274,8 +272,7 @@ public class Main {
 			int topCol = verpref[er][sc] - verpref[sr][sc];
 
 			// Change in # of connected components in the rest of the grid
-			int change =
-			    pref[er][ec] - pref[sr][ec] - pref[er][sc] + pref[sr][sc];
+			int change = pref[er][ec] - pref[sr][ec] - pref[er][sc] + pref[sr][sc];
 
 			queryAns.append(corner + topRow + topCol + change).append('\n');
 		}

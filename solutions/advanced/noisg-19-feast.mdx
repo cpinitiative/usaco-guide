@@ -63,8 +63,7 @@ bool check(long double lambda) {
 		dp[i][0] = max(dp[i - 1][0], dp[i - 1][1]);
 		dp[i][1] =
 		    max(make_pair(dp[i - 1][1].first + a[i], dp[i - 1][1].second),
-		        make_pair(dp[i - 1][0].first + a[i] - lambda,
-		                  dp[i - 1][0].second + 1));
+		        make_pair(dp[i - 1][0].first + a[i] - lambda, dp[i - 1][0].second + 1));
 	}
 	return max(dp[n][0], dp[n][1]).second >= k;
 };
@@ -83,8 +82,7 @@ int main() {
 	}
 	long double lambda = lower;
 	check(lambda);
-	printf("%lld\n",
-	       (long long)round(lambda * k + max(dp[n][0], dp[n][1]).first));
+	printf("%lld\n", (long long)round(lambda * k + max(dp[n][0], dp[n][1]).first));
 }
 ```
 

@@ -32,9 +32,7 @@ public class EditDistance {
 		 * of the string into the first j letters of result.
 		 */
 		int[][] dp = new int[str1.length + 1][str2.length + 1];
-		for (int i = 0; i < dp.length; i++) {
-			Arrays.fill(dp[i], Integer.MAX_VALUE);
-		}
+		for (int i = 0; i < dp.length; i++) { Arrays.fill(dp[i], Integer.MAX_VALUE); }
 		dp[0][0] = 0;
 		for (int i = 0; i <= str1.length; i++) {
 			for (int j = 0; j <= str2.length; j++) {
@@ -49,8 +47,8 @@ public class EditDistance {
 
 				// Make letter i - 1 equal to letter j - 1 of the result.
 				if (i != 0 && j != 0) {
-					int newCost = dp[i - 1][j - 1] +
-					              ((str1[i - 1] == str2[j - 1]) ? 0 : 1);
+					int newCost =
+					    dp[i - 1][j - 1] + ((str1[i - 1] == str2[j - 1]) ? 0 : 1);
 					dp[i][j] = Math.min(dp[i][j], newCost);
 				}
 			}
@@ -84,8 +82,7 @@ int main() {
 	 * dp[i][j] is the minimum number of moves to change the first i letters
 	 * of the string into the first j letters of result.
 	 */
-	vector<vector<int>> dp(str1.size() + 1,
-	                       vector<int>(str2.size() + 1, INT32_MAX));
+	vector<vector<int>> dp(str1.size() + 1, vector<int>(str2.size() + 1, INT32_MAX));
 	dp[0][0] = 0;
 	for (int i = 0; i <= str1.size(); i++) {
 		for (int j = 0; j <= str2.size(); j++) {

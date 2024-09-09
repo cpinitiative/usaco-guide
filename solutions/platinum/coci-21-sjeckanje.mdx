@@ -51,12 +51,11 @@ struct Node {
 							// it's never optimal to take two opposite sign
 							// values
 							if ((borders[1] < 0) == (other.borders[0] < 0)) {
-								ret.dp[l][r] = max(ret.dp[l][r],
-								                   dp[l][m] + other.dp[o][r]);
+								ret.dp[l][r] =
+								    max(ret.dp[l][r], dp[l][m] + other.dp[o][r]);
 							}
 						} else {
-							ret.dp[l][r] =
-							    max(ret.dp[l][r], dp[l][m] + other.dp[o][r]);
+							ret.dp[l][r] = max(ret.dp[l][r], dp[l][m] + other.dp[o][r]);
 						}
 					}
 				}
@@ -86,8 +85,7 @@ struct SegTree {
 		if (l == r) {
 			val = nums[l];
 		} else {
-			left = new SegTree(l, mid, nums),
-			right = new SegTree(mid + 1, r, nums);
+			left = new SegTree(l, mid, nums), right = new SegTree(mid + 1, r, nums);
 			val = left->val.comb(right->val);
 		}
 	}

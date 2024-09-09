@@ -54,9 +54,7 @@ auto identify = [&](int i, int j) {
 			if (ni < 0 || ni >= n || nj < 0 || nj >= m) continue;
 
 			// part of same component
-			if (grid[ni][nj] == 1 && comp[ni][nj] == -1) {
-				todo.push({ni, nj});
-			}
+			if (grid[ni][nj] == 1 && comp[ni][nj] == -1) { todo.push({ni, nj}); }
 		}
 	}
 };
@@ -110,8 +108,7 @@ for (int to = 0; to < comp_number; to++) {
 		for (int d = 0; d < 4; d++) {
 			int nx = top.first + dx[d], ny = top.second + dy[d];
 
-			if (nx < 0 || nx >= n || ny < 0 || ny >= m || grid[nx][ny] == -1)
-				continue;
+			if (nx < 0 || nx >= n || ny < 0 || ny >= m || grid[nx][ny] == -1) continue;
 
 			// increase distance if we walk across shallow water
 			int ncost = dist[top.first][top.second] + (grid[nx][ny] == 0);
@@ -166,9 +163,8 @@ for (int mask = 0; mask < (1 << comp_number); mask++) {
 		if (mask & (1 << to)) {
 			for (int from = 0; from < comp_number; from++) {
 				if (mask & (1 << from)) {
-					ans[mask][to] =
-					    min(ans[mask][to],
-					        ans[mask ^ (1 << to)][from] + cost[from][to]);
+					ans[mask][to] = min(ans[mask][to],
+					                    ans[mask ^ (1 << to)][from] + cost[from][to]);
 				}
 			}
 		}
@@ -245,9 +241,7 @@ int main() {
 				if (ni < 0 || ni >= n || nj < 0 || nj >= m) continue;
 
 				// part of same component
-				if (grid[ni][nj] == 1 && comp[ni][nj] == -1) {
-					todo.push({ni, nj});
-				}
+				if (grid[ni][nj] == 1 && comp[ni][nj] == -1) { todo.push({ni, nj}); }
 			}
 		}
 	};
@@ -285,8 +279,7 @@ int main() {
 			for (int d = 0; d < 4; d++) {
 				int nx = top.first + dx[d], ny = top.second + dy[d];
 
-				if (nx < 0 || nx >= n || ny < 0 || ny >= m ||
-				    grid[nx][ny] == -1)
+				if (nx < 0 || nx >= n || ny < 0 || ny >= m || grid[nx][ny] == -1)
 					continue;
 
 				// increase distance if we walk across shallow water
@@ -323,9 +316,8 @@ int main() {
 			if (mask & (1 << to)) {
 				for (int from = 0; from < comp_number; from++) {
 					if (mask & (1 << from)) {
-						ans[mask][to] =
-						    min(ans[mask][to],
-						        ans[mask ^ (1 << to)][from] + cost[from][to]);
+						ans[mask][to] = min(ans[mask][to], ans[mask ^ (1 << to)][from] +
+						                                       cost[from][to]);
 					}
 				}
 			}

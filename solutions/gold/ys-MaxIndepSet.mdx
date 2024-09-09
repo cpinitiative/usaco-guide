@@ -105,8 +105,7 @@ std::pair<vector<bool>, vector<ll>> max_cliques(const vector<ll> &adj) {
 		}
 		for (int prev = 0; prev < sz; prev++) {
 			if (bit_set(ss, prev)) {
-				largest[ss] =
-				    more_bits(largest[ss], largest[ss & ~(1 << prev)]);
+				largest[ss] = more_bits(largest[ss], largest[ss & ~(1 << prev)]);
 			}
 		}
 	}
@@ -130,9 +129,7 @@ int main() {
 	// Calculate the relevant arrays for each half
 	int half1 = node_num / 2;
 	vector<ll> half1_adj(half1);
-	for (int n = 0; n < half1; n++) {
-		half1_adj[n] = adj[n] & ((1 << half1) - 1);
-	}
+	for (int n = 0; n < half1; n++) { half1_adj[n] = adj[n] & ((1 << half1) - 1); }
 	auto [valid1, largest1] = max_cliques(half1_adj);
 
 	int half2 = node_num - half1;

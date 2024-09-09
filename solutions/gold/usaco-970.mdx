@@ -83,8 +83,7 @@ const int MOD = 1e9 + 7;  // 998244353;
 const int MX = 2e5 + 5;
 const ll INF = 1e18;  // not too close to LLONG_MAX
 const ld PI = acos((ld)-1);
-const int dx[4] = {1, 0, -1, 0},
-          dy[4] = {0, 1, 0, -1};  // for every grid problem!!
+const int dx[4] = {1, 0, -1, 0}, dy[4] = {0, 1, 0, -1};  // for every grid problem!!
 mt19937 rng((uint32_t)chrono::steady_clock::now().time_since_epoch().count());
 template <class T> using pqg = priority_queue<T, vector<T>, greater<T>>;
 
@@ -105,9 +104,7 @@ ll fdiv(ll a, ll b) {
 	return a / b - ((a ^ b) < 0 && a % b);
 }  // divide a by b rounded down
 
-tcT > bool ckmin(T &a, const T &b) {
-	return b < a ? a = b, 1 : 0;
-}  // set a = min(a,b)
+tcT > bool ckmin(T &a, const T &b) { return b < a ? a = b, 1 : 0; }  // set a = min(a,b)
 tcT > bool ckmax(T &a, const T &b) { return a < b ? a = b, 1 : 0; }
 
 tcTU > T fstTrue(T lo, T hi, U f) {
@@ -255,13 +252,12 @@ tcTUU > void DBG(const T &t, const U &...u) {
 	DBG(u...);
 }
 #ifdef LOCAL  // compile with -DLOCAL, chk -> fake assert
-#define dbg(...)                                                               \
-	cerr << "Line(" << __LINE__ << ") -> [" << #__VA_ARGS__ << "]: [",         \
-	    DBG(__VA_ARGS__)
-#define chk(...)                                                               \
-	if (!(__VA_ARGS__))                                                        \
-		cerr << "Line(" << __LINE__ << ") -> function(" << __FUNCTION__        \
-		     << ") -> CHK FAILED: (" << #__VA_ARGS__ << ")" << "\n",           \
+#define dbg(...)                                                                       \
+	cerr << "Line(" << __LINE__ << ") -> [" << #__VA_ARGS__ << "]: [", DBG(__VA_ARGS__)
+#define chk(...)                                                                       \
+	if (!(__VA_ARGS__))                                                                \
+		cerr << "Line(" << __LINE__ << ") -> function(" << __FUNCTION__                \
+		     << ") -> CHK FAILED: (" << #__VA_ARGS__ << ")" << "\n",                   \
 		    exit(0);
 #else
 #define dbg(...) 0
@@ -318,9 +314,7 @@ template <int SZ> struct LCA {
 		R0F(k, BITS) if (par[k][u] != par[k][v]) u = par[k][u], v = par[k][v];
 		return u == v ? u : par[0][u];
 	}
-	int dist(int u, int v) {
-		return depth[u] + depth[v] - 2 * depth[lca(u, v)];
-	}
+	int dist(int u, int v) { return depth[u] + depth[v] - 2 * depth[lca(u, v)]; }
 	int last(int a, int c) {
 		auto it = ub(all(CUR[c]), mp(label[a], MOD));
 		if (it == begin(CUR[c])) return 0;
@@ -446,8 +440,7 @@ const int MOD = 1e9 + 7;  // 998244353;
 const int MX = 2e5 + 5;
 const ll INF = 1e18;  // not too close to LLONG_MAX
 const ld PI = acos((ld)-1);
-const int dx[4] = {1, 0, -1, 0},
-          dy[4] = {0, 1, 0, -1};  // for every grid problem!!
+const int dx[4] = {1, 0, -1, 0}, dy[4] = {0, 1, 0, -1};  // for every grid problem!!
 mt19937 rng((uint32_t)chrono::steady_clock::now().time_since_epoch().count());
 template <class T> using pqg = priority_queue<T, vector<T>, greater<T>>;
 
@@ -468,9 +461,7 @@ ll fdiv(ll a, ll b) {
 	return a / b - ((a ^ b) < 0 && a % b);
 }  // divide a by b rounded down
 
-tcT > bool ckmin(T &a, const T &b) {
-	return b < a ? a = b, 1 : 0;
-}  // set a = min(a,b)
+tcT > bool ckmin(T &a, const T &b) { return b < a ? a = b, 1 : 0; }  // set a = min(a,b)
 tcT > bool ckmax(T &a, const T &b) { return a < b ? a = b, 1 : 0; }
 
 tcTU > T fstTrue(T lo, T hi, U f) {
@@ -618,13 +609,12 @@ tcTUU > void DBG(const T &t, const U &...u) {
 	DBG(u...);
 }
 #ifdef LOCAL  // compile with -DLOCAL, chk -> fake assert
-#define dbg(...)                                                               \
-	cerr << "Line(" << __LINE__ << ") -> [" << #__VA_ARGS__ << "]: [",         \
-	    DBG(__VA_ARGS__)
-#define chk(...)                                                               \
-	if (!(__VA_ARGS__))                                                        \
-		cerr << "Line(" << __LINE__ << ") -> function(" << __FUNCTION__        \
-		     << ") -> CHK FAILED: (" << #__VA_ARGS__ << ")" << "\n",           \
+#define dbg(...)                                                                       \
+	cerr << "Line(" << __LINE__ << ") -> [" << #__VA_ARGS__ << "]: [", DBG(__VA_ARGS__)
+#define chk(...)                                                                       \
+	if (!(__VA_ARGS__))                                                                \
+		cerr << "Line(" << __LINE__ << ") -> function(" << __FUNCTION__                \
+		     << ") -> CHK FAILED: (" << #__VA_ARGS__ << ")" << "\n",                   \
 		    exit(0);
 #else
 #define dbg(...) 0
@@ -679,8 +669,7 @@ template <int SZ> struct HLD {
 		pos[x] = ti++;
 		rpos.pb(x);
 		all_of_col[T[x]][pos[x]] = depth[x];
-		if (!first_cols[root[x]].count(T[x]))
-			first_cols[root[x]][T[x]] = depth[x];
+		if (!first_cols[root[x]].count(T[x])) first_cols[root[x]][T[x]] = depth[x];
 		trav(y, adj[x]) {
 			root[y] = (y == adj[x][0] ? root[x] : y);
 			dfsHld(y);
@@ -713,9 +702,7 @@ template <int SZ> struct HLD {
 		}
 		return -1;
 	}
-	bool exists(int x, int y, int col) {
-		return closest_anc(x, col) >= depth[y];
-	}
+	bool exists(int x, int y, int col) { return closest_anc(x, col) >= depth[y]; }
 };
 
 HLD<MX> H;
