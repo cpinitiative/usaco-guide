@@ -160,19 +160,24 @@ for _ in range(int(input())):
 		pre_freq[i] = freq[i] + pre_freq[i - 1]
 
 	for i in range(1, n + 1):
+
 		# the max possible value that could be in a tuple with i as the minimum
 		max_index = min(n, i + k)
+
 		# the number of elements from [i, max_index]
 		num_total_elems = pre_freq[max_index] - pre_freq[i - 1]
+
 		# the number of elements from [i+1, max_index]
 		num_larger_elems = pre_freq[max_index] - pre_freq[i]
+
 		"""
 		We count the total number of m-tuples with elements between i and
 		max_index. Then, we subtract the tuples that don't have i as their
 		minimum element, as they will be counted later on.
 		"""
+		
 		curr_ans = (
-			choose(num_total_elems, m) - choose(num_larger_elems, m) + MOD
+			choose(num_total_elems, m) - choose(num_larger_elems, m)
 		) % MOD
 		ans = (ans + curr_ans) % MOD
 
