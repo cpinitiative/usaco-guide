@@ -70,9 +70,9 @@ int main() {
 		return pos;
 	};
 
-	auto midpoint = [&] (long double x, long double y) -> long double {
-        return (x + y) / 2;
-    };
+	auto midpoint = [&](long double x, long double y) -> long double {
+		return (x + y) / 2;
+	};
 
 	long double lo = 0, hi = 1e9;
 	array<long double, 3> ans;
@@ -98,26 +98,27 @@ int main() {
 ```py
 EPSILON = 1e-7
 
+
 def test(d: int, x: list) -> int:
-    used = 0
-    pos = [x[0] + d] * 3
-    """
+	used = 0
+	pos = [x[0] + d] * 3
+	"""
     Checks if each house is within range of the most recently placed
     station, if not, builds a new one (unless there are none left)
     """
-    for i in range(1, len(x)):	
-        if x[i] - pos[used] > d:
-            used += 1
-            if used == 3:
-                return None 
-            pos[used] = x[i] + d
-    
-    return pos
+	for i in range(1, len(x)):
+		if x[i] - pos[used] > d:
+			used += 1
+			if used == 3:
+				return None
+			pos[used] = x[i] + d
+
+	return pos
 
 
 n = int(input())
 x = list(map(int, input().split()))
-x.sort() 
+x.sort()
 
 lo, hi = 0, 1e9
 ans = [0.0] * 3
@@ -125,7 +126,7 @@ ans = [0.0] * 3
 while hi - lo > EPSILON:
 	mid = (lo + hi) / 2
 	res = test(mid, x)
-	
+
 	if res is not None:
 		hi = mid
 		ans = res
@@ -134,7 +135,6 @@ while hi - lo > EPSILON:
 
 print(f"{lo:.6f}")
 print(f"{ans[0]:.6f} {ans[1]:.6f} {ans[2]:.6f}")
-
 ```
 
 </PySection>
