@@ -7,7 +7,7 @@ author: Jesse Choe
 
 [Official Editorial](https://codeforces.com/blog/entry/85951)
 
-## Editorial
+## Explanation
 
 We can initially attempt this problem by figuring out which firecrackers should explode. Obviously, we should attempt to explode the firecrackers with a minimal
 detonation time to increase the number of firecrackers exploded before eventually being caught. Also, observe that the firecrackers with a longer detonation
@@ -32,7 +32,6 @@ After computing the amount of time before getting caught, we can simulate whethe
 **Time Complexity:** $\mathcal{O}(N\log N)$
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
@@ -102,7 +101,6 @@ int main() {
 ```
 
 </CPPSection>
-
 <PySection>
 
 ```py
@@ -136,8 +134,9 @@ for _ in range(int(input())):
 	elif hooligan_location > guard_location:
 		time_before_caught = corridor_size - guard_location
 
-	left, right, max_exploded = 0, max_firecrackers, 0
-
+	left = 0
+	right = max_firecrackers
+	max_exploded = 0
 	while left <= right:
 		mid = left + (right - left) // 2
 
@@ -149,6 +148,6 @@ for _ in range(int(input())):
 
 	print(max_exploded)
 ```
-</PySection>
 
+</PySection>
 </LanguageSection>
