@@ -80,7 +80,7 @@ void solve() {
 	} else if (hooligan_location > guard_location) {
 		time_before_caught = corridor_size - guard_location;
 	}
-	
+
 	ll left = 0, right = max_firecrackers, max_exploded = 0;
 	while (left <= right) {
 		ll mid = left + (right - left) / 2;
@@ -106,7 +106,7 @@ int main() {
 <PySection>
 
 ```py
-def works(exploding_times, firecrackers_exploded, time_before_caught):
+def works(exploding_times: list, firecrackers_exploded: int, time_before_caught: int) -> bool:
     current_time = 1
     for i in range(firecrackers_exploded - 1, -1, -1):
         # Check whether a given firecracker could be exploded before being caught by the guard
@@ -131,8 +131,10 @@ for _ in range(int(input())):
         time_before_caught = corridor_size - guard_location
     
     left, right, max_exploded = 0, max_firecrackers, 0
+	
     while left <= right:
         mid = left + (right - left) // 2
+
         if works(exploding_times, mid, time_before_caught):
             max_exploded = mid
             left = mid + 1
