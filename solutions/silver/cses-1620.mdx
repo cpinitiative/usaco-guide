@@ -74,12 +74,15 @@ void setIO(string name = "") {  // name is nonempty for USACO file I/O
 int main() {
 	setIO();
 	int n;
-	ll t;
+	ll t, mn = INT_MAX;
 	cin >> n >> t;
 	vector<ll> k(n);
-	for (int i = 0; i < n; i++) { cin >> k[i]; }
+	for (int i = 0; i < n; i++) {
+		cin >> k[i];
+		mn = min(mn, k[i]);
+	}
 	ll lo = 0;
-	ll hi = 1e18;
+	ll hi = mn * t;
 	ll ans = 0;
 	while (lo <= hi) {
 		ll mid = (lo + hi) / 2;
