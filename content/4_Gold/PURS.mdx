@@ -92,17 +92,16 @@ using std::endl;
 using std::vector;
 
 /** A data structure that can answer point update & range min queries. */
-template <class T>
-class MinSegmentTree {
-   private:
+template <class T> class MinSegmentTree {
+  private:
 	const T DEFAULT = std::numeric_limits<T>().max();
 
 	int len;
 	vector<T> segtree;  // index 0 is not in use
 
-	T combine(const T& a, const T& b) { return std::min(a, b); }
+	T combine(const T &a, const T &b) { return std::min(a, b); }
 
-	void build(const vector<T>& arr, int at, int at_left, int at_right) {
+	void build(const vector<T> &arr, int at, int at_left, int at_right) {
 		if (at_left == at_right) {
 			segtree[at] = arr[at_left];
 			return;
@@ -124,29 +123,22 @@ class MinSegmentTree {
 		} else {
 			set(ind, val, 2 * at + 1, mid + 1, at_right);
 		}
-		segtree[at] =
-			combine(segtree[2 * at], segtree[2 * at + 1]);
+		segtree[at] = combine(segtree[2 * at], segtree[2 * at + 1]);
 	}
 
 	T range_min(int start, int end, int at, int at_left, int at_right) {
-		if (at_right < start || end < at_left) {
-			return DEFAULT;
-		}
-		if (start <= at_left && at_right <= end) {
-			return segtree[at];
-		}
+		if (at_right < start || end < at_left) { return DEFAULT; }
+		if (start <= at_left && at_right <= end) { return segtree[at]; }
 		int mid = (at_left + at_right) / 2;
 		T left_res = range_min(start, end, 2 * at, at_left, mid);
 		T right_res = range_min(start, end, 2 * at + 1, mid + 1, at_right);
 		return combine(left_res, right_res);
 	}
 
-   public:
-	MinSegmentTree(int len) : len(len) {
-		segtree = vector<T>(len * 4, DEFAULT);
-	};
+  public:
+	MinSegmentTree(int len) : len(len) { segtree = vector<T>(len * 4, DEFAULT); };
 
-	MinSegmentTree(const vector<T>& arr) : len(arr.size()) {
+	MinSegmentTree(const vector<T> &arr) : len(arr.size()) {
 		segtree = vector<T>(len * 4, DEFAULT);
 		build(arr, 1, 0, len - 1);
 	}
@@ -163,9 +155,7 @@ int main() {
 	int query_num;
 	std::cin >> arr_len >> query_num;
 	vector<long long> arr(arr_len);
-	for (long long& i : arr) {
-		std::cin >> i;
-	}
+	for (long long &i : arr) { std::cin >> i; }
 
 	MinSegmentTree<long long> segtree(arr);
 	for (int q = 0; q < query_num; q++) {
@@ -399,17 +389,16 @@ using std::endl;
 using std::vector;
 
 /** A data structure that can answer point update & range sum queries. */
-template <class T>
-class SumSegmentTree {
-   private:
+template <class T> class SumSegmentTree {
+  private:
 	const T DEFAULT = 0;
 
 	int len;
 	vector<T> segtree;  // index 0 is not in use
 
-	T combine(const T& a, const T& b) { return a + b; }
+	T combine(const T &a, const T &b) { return a + b; }
 
-	void build(const vector<T>& arr, int at, int at_left, int at_right) {
+	void build(const vector<T> &arr, int at, int at_left, int at_right) {
 		if (at_left == at_right) {
 			segtree[at] = arr[at_left];
 			return;
@@ -431,29 +420,22 @@ class SumSegmentTree {
 		} else {
 			set(ind, val, 2 * at + 1, mid + 1, at_right);
 		}
-		segtree[at] =
-			combine(segtree[2 * at], segtree[2 * at + 1]);
+		segtree[at] = combine(segtree[2 * at], segtree[2 * at + 1]);
 	}
 
 	T range_sum(int start, int end, int at, int at_left, int at_right) {
-		if (at_right < start || end < at_left) {
-			return DEFAULT;
-		}
-		if (start <= at_left && at_right <= end) {
-			return segtree[at];
-		}
+		if (at_right < start || end < at_left) { return DEFAULT; }
+		if (start <= at_left && at_right <= end) { return segtree[at]; }
 		int mid = (at_left + at_right) / 2;
 		T left_res = range_sum(start, end, 2 * at, at_left, mid);
 		T right_res = range_sum(start, end, 2 * at + 1, mid + 1, at_right);
 		return combine(left_res, right_res);
 	}
 
-   public:
-	SumSegmentTree(int len) : len(len) {
-		segtree = vector<T>(len * 4, DEFAULT);
-	};
+  public:
+	SumSegmentTree(int len) : len(len) { segtree = vector<T>(len * 4, DEFAULT); };
 
-	SumSegmentTree(const vector<T>& arr) : len(arr.size()) {
+	SumSegmentTree(const vector<T> &arr) : len(arr.size()) {
 		segtree = vector<T>(len * 4, DEFAULT);
 		build(arr, 1, 0, len - 1);
 	}
@@ -470,9 +452,7 @@ int main() {
 	int query_num;
 	std::cin >> arr_len >> query_num;
 	vector<long long> arr(arr_len);
-	for (long long& i : arr) {
-		std::cin >> i;
-	}
+	for (long long &i : arr) { std::cin >> i; }
 
 	SumSegmentTree<long long> segtree(arr);
 	for (int q = 0; q < query_num; q++) {
@@ -998,7 +978,7 @@ using namespace std;
 using namespace __gnu_pbds;
 template <class T>
 using Tree =
-	tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
+    tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
 
 int main() {
 	int test_num;
