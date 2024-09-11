@@ -5,15 +5,13 @@ title: LIS on Permutations
 author: Dong Liu
 ---
 
-### Slow Solution
+## Slow Solution
 
 **Time Complexity**: $\mathcal O(N^2)$
 
 See [here](/gold/paths-grids#solution---longest-common-subsequence).
 
-### Efficient Solution
-
-**Time Complexity**: $\mathcal O(N\log N)$
+## Efficient Solution
 
 In the $\mathcal O(N^2)$ solution, we increase the DP arrray only if
 $a[i] = b[j]$, but since both arrays are permutations of length $N$, for each
@@ -30,11 +28,11 @@ $b[x_1], b[x_2], \dots b[x_k]$, which is equivalent to
 $a[c[x_1]], a[c[x_2]], \dots a[c[x_k]]$. Thus, the length of the longest common
 subsequence between $a$ and $b$ is the longest increasing subsequence of $c$.
 
-Finding a LIS takes $\mathcal O(N\log N)$, so the overall time complexity in
-this algorithm is $\mathcal O(N\log N)$.
+## Implementation
+
+**Time Complexity**: $\mathcal O(N\log N)$
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
@@ -66,7 +64,6 @@ int main() {
 ```
 
 </CPPSection>
-
 <JavaSection>
 
 ```java
@@ -111,7 +108,6 @@ public class Main {
 ```
 
 </JavaSection>
-
 <PySection>
 
 ```py
@@ -132,7 +128,6 @@ for i in range(n):
 	c[i] = pos[b[i]]
 
 lis = []
-
 for i in range(n):
 	p = bisect_left(lis, c[i])
 	if p == len(lis):
@@ -142,7 +137,6 @@ for i in range(n):
 
 print(len(lis))
 ```
-
 </PySection>
 
 </LanguageSection>
