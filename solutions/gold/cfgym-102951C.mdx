@@ -112,4 +112,38 @@ public class Main {
 
 </JavaSection>
 
+<PySection>
+
+```py
+from bisect import bisect_left
+
+n = int(input())
+a = list(map(int, input().split()))
+b = list(map(int, input().split()))
+
+# pos is the inverse of a
+pos = [0] * (n + 1)
+c = [0] * n
+
+for i in range(n):
+    pos[a[i]] = i + 1
+
+for i in range(n):
+    c[i] = pos[b[i]]
+
+lis = []
+
+for i in range(n):
+    p = bisect_left(lis, c[i])
+    if p == len(lis):
+        lis.append(c[i])
+    else:
+        lis[p] = c[i]
+
+print(len(lis))
+
+```
+
+</PySection>
+
 </LanguageSection>
