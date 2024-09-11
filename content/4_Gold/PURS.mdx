@@ -76,7 +76,7 @@ They will be covered in [platinum](/plat/seg-ext).
 
 ### Recursive Implementation
 
-**Time Complexity:** $\mathcal{O}(N \log N + Q \log N)$
+**Time Complexity:** $\mathcal{O}((N + Q) \log N)$
 
 <LanguageSection>
 <CPPSection>
@@ -91,68 +91,83 @@ using std::cout;
 using std::endl;
 using std::vector;
 
-/** A data structure that can answer point update & range minimum queries. */
-template <class T> class MinSegmentTree {
-  private:
+/** A data structure that can answer point update & range min queries. */
+template <class T>
+class MinSegmentTree {
+   private:
 	const T DEFAULT = std::numeric_limits<T>().max();
 
 	int len;
-	int padded_len;
-	vector<T> segtree;
+	vector<T> segtree;  // index 0 is not in use
 
-	T combine(const T &a, const T &b) { return std::min(a, b); }
+	T combine(const T& a, const T& b) { return std::min(a, b); }
+
+	void build(const vector<T>& arr, int at, int at_left, int at_right) {
+		if (at_left == at_right) {
+			segtree[at] = arr[at_left];
+			return;
+		}
+		int mid = (at_left + at_right) / 2;
+		build(arr, 2 * at, at_left, mid);
+		build(arr, 2 * at + 1, mid + 1, at_right);
+		segtree[at] = combine(segtree[2 * at], segtree[2 * at + 1]);
+	}
 
 	void set(int ind, T val, int at, int at_left, int at_right) {
-		if (at_right - at_left == 1) {
+		if (at_left == at_right) {
 			segtree[at] = val;
 			return;
 		}
 		int mid = (at_left + at_right) / 2;
-		if (ind < mid) {
-			set(ind, val, 2 * at + 1, at_left, mid);
+		if (ind <= mid) {
+			set(ind, val, 2 * at, at_left, mid);
 		} else {
-			set(ind, val, 2 * at + 2, mid, at_right);
+			set(ind, val, 2 * at + 1, mid + 1, at_right);
 		}
-		segtree[at] = combine(segtree[2 * at + 1], segtree[2 * at + 2]);
+		segtree[at] =
+			combine(segtree[2 * at], segtree[2 * at + 1]);
 	}
 
 	T range_min(int start, int end, int at, int at_left, int at_right) {
-		if (at_right <= start || end <= at_left) { return DEFAULT; }
-		if (start <= at_left && at_right <= end) { return segtree[at]; }
+		if (at_right < start || end < at_left) {
+			return DEFAULT;
+		}
+		if (start <= at_left && at_right <= end) {
+			return segtree[at];
+		}
 		int mid = (at_left + at_right) / 2;
-		T left_res = range_min(start, end, 2 * at + 1, at_left, mid);
-		T right_res = range_min(start, end, 2 * at + 2, mid, at_right);
+		T left_res = range_min(start, end, 2 * at, at_left, mid);
+		T right_res = range_min(start, end, 2 * at + 1, mid + 1, at_right);
 		return combine(left_res, right_res);
 	}
 
-  public:
+   public:
 	MinSegmentTree(int len) : len(len) {
-		padded_len = 1;
-		while (padded_len < len) { padded_len *= 2; }
-		segtree = vector<T>(padded_len * 2 - 1, DEFAULT);
+		segtree = vector<T>(len * 4, DEFAULT);
 	};
 
-	/** Sets the value at ind to val. */
-	void set(int ind, T val) { set(ind, val, 0, 0, padded_len); }
-
-	/** @return the minimum element in the range [start, end) */
-	T range_min(int start, int end) {
-		return range_min(start, end, 0, 0, padded_len);
+	MinSegmentTree(const vector<T>& arr) : len(arr.size()) {
+		segtree = vector<T>(len * 4, DEFAULT);
+		build(arr, 1, 0, len - 1);
 	}
+
+	/** Sets the value at ind to val. */
+	void set(int ind, T val) { set(ind, val, 1, 0, len - 1); }
+
+	/** @return the minimum element in the range [start, end] */
+	T range_min(int start, int end) { return range_min(start, end, 1, 0, len - 1); }
 };
 
 int main() {
 	int arr_len;
 	int query_num;
 	std::cin >> arr_len >> query_num;
-
-	MinSegmentTree<int> segtree(arr_len);
-	for (int i = 0; i < arr_len; i++) {
-		int n;
-		std::cin >> n;
-		segtree.set(i, n);
+	vector<long long> arr(arr_len);
+	for (long long& i : arr) {
+		std::cin >> i;
 	}
 
+	MinSegmentTree<long long> segtree(arr);
 	for (int q = 0; q < query_num; q++) {
 		int type;
 		std::cin >> type;
@@ -163,7 +178,7 @@ int main() {
 		} else if (type == 2) {
 			int start, end;
 			std::cin >> start >> end;
-			cout << segtree.range_min(start - 1, end) << '\n';
+			cout << segtree.range_min(start - 1, end - 1) << '\n';
 		}
 	}
 }
@@ -176,7 +191,7 @@ int main() {
 
 Though less extensible, this implementation is shorter and has a better constant factor.
 
-**Time Complexity:** $\mathcal{O}(N \log N + Q \log N)$
+**Time Complexity:** $\mathcal{O}((N + Q) \log N)$
 
 <LanguageSection>
 <CPPSection>
@@ -368,7 +383,7 @@ for _ in range(query_num):
 
 ### Recursive Implementation
 
-**Time Complexity:** $\mathcal{O}(N \log N + Q \log N)$
+**Time Complexity:** $\mathcal{O}((N + Q) \log N)$
 
 <LanguageSection>
 <CPPSection>
@@ -384,67 +399,82 @@ using std::endl;
 using std::vector;
 
 /** A data structure that can answer point update & range sum queries. */
-template <class T> class SumSegmentTree {
-  private:
+template <class T>
+class SumSegmentTree {
+   private:
 	const T DEFAULT = 0;
 
 	int len;
-	int padded_len;
-	vector<T> segtree;
+	vector<T> segtree;  // index 0 is not in use
 
-	T combine(const T &a, const T &b) { return a + b; }
+	T combine(const T& a, const T& b) { return a + b; }
+
+	void build(const vector<T>& arr, int at, int at_left, int at_right) {
+		if (at_left == at_right) {
+			segtree[at] = arr[at_left];
+			return;
+		}
+		int mid = (at_left + at_right) / 2;
+		build(arr, 2 * at, at_left, mid);
+		build(arr, 2 * at + 1, mid + 1, at_right);
+		segtree[at] = combine(segtree[2 * at], segtree[2 * at + 1]);
+	}
 
 	void set(int ind, T val, int at, int at_left, int at_right) {
-		if (at_right - at_left == 1) {
+		if (at_left == at_right) {
 			segtree[at] = val;
 			return;
 		}
 		int mid = (at_left + at_right) / 2;
-		if (ind < mid) {
-			set(ind, val, 2 * at + 1, at_left, mid);
+		if (ind <= mid) {
+			set(ind, val, 2 * at, at_left, mid);
 		} else {
-			set(ind, val, 2 * at + 2, mid, at_right);
+			set(ind, val, 2 * at + 1, mid + 1, at_right);
 		}
-		segtree[at] = combine(segtree[2 * at + 1], segtree[2 * at + 2]);
+		segtree[at] =
+			combine(segtree[2 * at], segtree[2 * at + 1]);
 	}
 
 	T range_sum(int start, int end, int at, int at_left, int at_right) {
-		if (at_right <= start || end <= at_left) { return DEFAULT; }
-		if (start <= at_left && at_right <= end) { return segtree[at]; }
+		if (at_right < start || end < at_left) {
+			return DEFAULT;
+		}
+		if (start <= at_left && at_right <= end) {
+			return segtree[at];
+		}
 		int mid = (at_left + at_right) / 2;
-		T left_res = range_sum(start, end, 2 * at + 1, at_left, mid);
-		T right_res = range_sum(start, end, 2 * at + 2, mid, at_right);
+		T left_res = range_sum(start, end, 2 * at, at_left, mid);
+		T right_res = range_sum(start, end, 2 * at + 1, mid + 1, at_right);
 		return combine(left_res, right_res);
 	}
 
-  public:
+   public:
 	SumSegmentTree(int len) : len(len) {
-		padded_len = 1;
-		while (padded_len < len) { padded_len *= 2; }
-		segtree = vector<T>(padded_len * 2 - 1, DEFAULT);
+		segtree = vector<T>(len * 4, DEFAULT);
 	};
 
-	/** Sets the value at ind to val. */
-	void set(int ind, T val) { set(ind, val, 0, 0, padded_len); }
-
-	/** @return the minimum element in the range [start, end) */
-	T range_sum(int start, int end) {
-		return range_sum(start, end, 0, 0, padded_len);
+	SumSegmentTree(const vector<T>& arr) : len(arr.size()) {
+		segtree = vector<T>(len * 4, DEFAULT);
+		build(arr, 1, 0, len - 1);
 	}
+
+	/** Sets the value at ind to val. */
+	void set(int ind, T val) { set(ind, val, 1, 0, len - 1); }
+
+	/** @return the sum of the range [start, end] */
+	T range_sum(int start, int end) { return range_sum(start, end, 1, 0, len - 1); }
 };
 
 int main() {
 	int arr_len;
 	int query_num;
 	std::cin >> arr_len >> query_num;
-
-	SumSegmentTree<long long> segtree(arr_len);
-	for (int i = 0; i < arr_len; i++) {
-		int n;
-		std::cin >> n;
-		segtree.set(i, n);
+	vector<long long> arr(arr_len);
+	for (long long& i : arr) {
+		std::cin >> i;
 	}
 
+	SumSegmentTree<long long> segtree(arr);
 	for (int q = 0; q < query_num; q++) {
 		int type;
 		std::cin >> type;
@@ -455,7 +485,7 @@ int main() {
 		} else if (type == 2) {
 			int start, end;
 			std::cin >> start >> end;
-			cout << segtree.range_sum(start - 1, end) << '\n';
+			cout << segtree.range_sum(start - 1, end - 1) << '\n';
 		}
 	}
 }
@@ -466,7 +496,7 @@ int main() {
 
 ### Iterative Implementation
 
-**Time Complexity:** $\mathcal{O}(N \log N + Q \log N)$
+**Time Complexity:** $\mathcal{O}((N + Q) \log N)$
 
 <LanguageSection>
 <CPPSection>
@@ -968,7 +998,7 @@ using namespace std;
 using namespace __gnu_pbds;
 template <class T>
 using Tree =
-    tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
+	tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
 
 int main() {
 	int test_num;
