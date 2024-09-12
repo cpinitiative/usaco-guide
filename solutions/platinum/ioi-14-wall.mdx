@@ -64,7 +64,7 @@ class Segtree {
 		t[v].min_val = min(t[v].min_val, t[v].max_val);
 	}
 
-	void pushdown(int v) {
+	void push_down(int v) {
 		apply(2 * v, t[v]);
 		apply(2 * v + 1, t[v]);
 		t[v] = Update();
@@ -75,7 +75,7 @@ class Segtree {
 		if (ql <= l && r <= qr) {
 			apply(v, x);
 		} else {
-			pushdown(v);
+			push_down(v);
 			int m = (l + r) / 2;
 			update(2 * v, l, m, ql, qr, x);
 			update(2 * v + 1, m + 1, r, ql, qr, x);
@@ -86,7 +86,7 @@ class Segtree {
 		if (l == r) {
 			return t[v];
 		} else {
-			pushdown(v);
+			push_down(v);
 			int m = (l + r) / 2;
 			return (idx <= m) ? query(2 * v, l, m, idx)
 			                  : query(2 * v + 1, m + 1, r, idx);
