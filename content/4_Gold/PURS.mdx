@@ -186,9 +186,7 @@ public class MinSegmentTree {
 	public final int len;
 	private final int[] segtree;  // index 0 is not in use
 
-	private int combine(int a, int b) {
-		return Math.min(a, b);
-	}
+	private int combine(int a, int b) { return Math.min(a, b); }
 
 	private void build(int[] arr, int at, int atLeft, int atRight) {
 		if (atLeft == atRight) {
@@ -216,12 +214,8 @@ public class MinSegmentTree {
 	}
 
 	private int rangeMin(int start, int end, int at, int atLeft, int atRight) {
-		if (atRight < start || end < atLeft) {
-			return Integer.MAX_VALUE;
-		}
-		if (start <= atLeft && atRight <= end) {
-			return segtree[at];
-		}
+		if (atRight < start || end < atLeft) { return Integer.MAX_VALUE; }
+		if (start <= atLeft && atRight <= end) { return segtree[at]; }
 		int mid = (atLeft + atRight) / 2;
 		int leftRes = rangeMin(start, end, 2 * at, atLeft, mid);
 		int rightRes = rangeMin(start, end, 2 * at + 1, mid + 1, atRight);
@@ -252,9 +246,7 @@ public class MinSegmentTree {
 		int queryNum = io.nextInt();
 
 		int[] arr = new int[arrLen];
-		for (int i = 0; i < arrLen; i++) {
-			arr[i] = io.nextInt();
-		}
+		for (int i = 0; i < arrLen; i++) { arr[i] = io.nextInt(); }
 		MinSegmentTree segtree = new MinSegmentTree(arr);
 
 		for (int i = 0; i < queryNum; i++) {
@@ -495,9 +487,8 @@ using std::endl;
 using std::vector;
 
 // BeginCodeSnip{Segment Tree}
-template <class T>
-class SumSegmentTree {
-   private:
+template <class T> class SumSegmentTree {
+  private:
 	const T DEFAULT = 0;
 
 	int len;
@@ -592,9 +583,7 @@ public class SumSegmentTree {
 	public final int len;
 	private final long[] segtree;
 
-	private long combine(long a, long b) {
-		return a + b;
-	}
+	private long combine(long a, long b) { return a + b; }
 
 	private void build(long[] arr, int at, int atLeft, int atRight) {
 		if (atLeft == atRight) {
@@ -622,12 +611,8 @@ public class SumSegmentTree {
 	}
 
 	private long rangeSum(int start, int end, int at, int atLeft, int atRight) {
-		if (atRight < start || end < atLeft) {
-			return 0;
-		}
-		if (start <= atLeft && atRight <= end) {
-			return segtree[at];
-		}
+		if (atRight < start || end < atLeft) { return 0; }
+		if (start <= atLeft && atRight <= end) { return segtree[at]; }
 		int mid = (atLeft + atRight) / 2;
 		long leftRes = rangeSum(start, end, 2 * at, atLeft, mid);
 		long rightRes = rangeSum(start, end, 2 * at + 1, mid + 1, atRight);
@@ -657,9 +642,7 @@ public class SumSegmentTree {
 		int queryNum = io.nextInt();
 
 		long[] arr = new long[arrLen];
-		for (int i = 0; i < arrLen; i++) {
-			arr[i] = io.nextInt();
-		}
+		for (int i = 0; i < arrLen; i++) { arr[i] = io.nextInt(); }
 		SumSegmentTree segtree = new SumSegmentTree(arr);
 
 		for (int i = 0; i < queryNum; i++) {
