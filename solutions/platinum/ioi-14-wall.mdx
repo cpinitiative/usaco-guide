@@ -49,10 +49,9 @@ individual value is the lower bound of what value it can take.
 #include <bits/stdc++.h>
 using namespace std;
 
-constexpr int INF = 2e9;
 struct Update {
 	int min_val = 0;
-	int max_val = INF;
+	int max_val = INT_MAX;
 };
 class Segtree {
 	const int sz;
@@ -107,9 +106,9 @@ void buildWall(int n, int k, int op[], int left[], int right[], int height[],
 	Segtree st(n);
 	for (int i = 0; i < k; i++) {
 		if (op[i] == 1) {
-			st.update(left[i], right[i], {height[i], INF});
+			st.update(left[i], right[i], {height[i], INT_MAX});
 		} else {
-			st.update(left[i], right[i], {-INF, height[i]});
+			st.update(left[i], right[i], {0, height[i]});
 		}
 	}
 	for (int i = 0; i < n; i++) { final_height[i] = st.get(i).min_val; }
