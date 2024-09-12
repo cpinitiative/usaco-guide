@@ -116,4 +116,45 @@ int main() {
 ```
 
 </CPPSection>
+
+<PySection>
+
+```py
+size = int(input())
+arr = list(map(int, input().split()))
+
+best_len = 1
+# given the ending limit, stores the longest consecutive sequence
+ending_max_len = {}  # {element: (length, index)}
+come_from = {}  # {index: previous_index}
+
+for i in range(size):
+    n = arr[i]
+    if (n - 1) not in ending_max_len:
+        ending_max_len[n] = (1, i)
+        come_from[i] = -1
+    else:
+        new_len = ending_max_len[n - 1][0] + 1
+        if n not in ending_max_len or ending_max_len[n][0] < new_len:
+            ending_max_len[n] = (new_len, i)
+            best_len = max(best_len, new_len)
+            come_from[i] = ending_max_len[n - 1][1]
+
+at_ind = -1
+for end, (length, index) in ending_max_len.items():
+    if length == best_len:
+        at_ind = index
+
+reverse_inds = []
+for _ in range(best_len):
+    reverse_inds.append(at_ind)
+    at_ind = come_from[at_ind]
+
+print(best_len)
+for i in range(best_len - 1, 0, -1):
+    print(reverse_inds[i] + 1, end=' ')
+print(reverse_inds[0] + 1)
+
+```
+</PySection>
 </LanguageSection>
