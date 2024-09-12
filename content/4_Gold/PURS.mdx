@@ -175,11 +175,114 @@ int main() {
 ```
 
 </CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+/** A data structure that can answer point update & range min queries. */
+public class MinSegmentTree {
+	public final int len;
+	private final int[] segtree;  // index 0 is not in use
+
+	private int combine(int a, int b) {
+		return Math.min(a, b);
+	}
+
+	private void build(int[] arr, int at, int atLeft, int atRight) {
+		if (atLeft == atRight) {
+			segtree[at] = arr[atLeft];
+			return;
+		}
+		int mid = (atLeft + atRight) / 2;
+		build(arr, 2 * at, atLeft, mid);
+		build(arr, 2 * at + 1, mid + 1, atRight);
+		segtree[at] = combine(segtree[2 * at], segtree[2 * at + 1]);
+	}
+
+	private void set(int ind, int val, int at, int atLeft, int atRight) {
+		if (atLeft == atRight) {
+			segtree[at] = val;
+			return;
+		}
+		int mid = (atLeft + atRight) / 2;
+		if (ind <= mid) {
+			set(ind, val, 2 * at, atLeft, mid);
+		} else {
+			set(ind, val, 2 * at + 1, mid + 1, atRight);
+		}
+		segtree[at] = combine(segtree[2 * at], segtree[2 * at + 1]);
+	}
+
+	private int rangeMin(int start, int end, int at, int atLeft, int atRight) {
+		if (atRight < start || end < atLeft) {
+			return Integer.MAX_VALUE;
+		}
+		if (start <= atLeft && atRight <= end) {
+			return segtree[at];
+		}
+		int mid = (atLeft + atRight) / 2;
+		int leftRes = rangeMin(start, end, 2 * at, atLeft, mid);
+		int rightRes = rangeMin(start, end, 2 * at + 1, mid + 1, atRight);
+		return combine(leftRes, rightRes);
+	}
+
+	/** Sets the value at ind to val. */
+	void set(int ind, int val) { set(ind, val, 1, 0, len - 1); }
+
+	/** @return the minimum element in the range [start, end] */
+	int rangeMin(int start, int end) { return rangeMin(start, end, 1, 0, len - 1); }
+
+	public MinSegmentTree(int len) {
+		this.len = len;
+		segtree = new int[len * 4];
+		Arrays.fill(segtree, Integer.MAX_VALUE);
+	}
+
+	public MinSegmentTree(int[] arr) {
+		this.len = arr.length;
+		segtree = new int[len * 4];
+		build(arr, 1, 0, len - 1);
+	}
+
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
+		int arrLen = io.nextInt();
+		int queryNum = io.nextInt();
+
+		int[] arr = new int[arrLen];
+		for (int i = 0; i < arrLen; i++) {
+			arr[i] = io.nextInt();
+		}
+		MinSegmentTree segtree = new MinSegmentTree(arr);
+
+		for (int i = 0; i < queryNum; i++) {
+			int type = io.nextInt();
+			int arg1 = io.nextInt();
+			int arg2 = io.nextInt();
+			if (type == 1) {
+				segtree.set(arg1 - 1, arg2);
+			} else {
+				io.println(segtree.rangeMin(arg1 - 1, arg2 - 1));
+			}
+		}
+
+		io.close();
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
 </LanguageSection>
 
 ### Iterative Implementation
 
 Though less extensible, this implementation is shorter and has a better constant factor.
+The ranges it operates on are also end-exclusive, unlike the previous one which
+is end-inclusive.
 
 **Time Complexity:** $\mathcal{O}((N + Q) \log N)$
 
@@ -378,6 +481,9 @@ for _ in range(query_num):
 <LanguageSection>
 <CPPSection>
 
+Compared to the previous implementation, all we need to change are `DEFAULT`
+and how we combine the elements.
+
 ```cpp
 #include <algorithm>
 #include <iostream>
@@ -388,13 +494,14 @@ using std::cout;
 using std::endl;
 using std::vector;
 
-/** A data structure that can answer point update & range sum queries. */
-template <class T> class SumSegmentTree {
-  private:
+// BeginCodeSnip{Segment Tree}
+template <class T>
+class SumSegmentTree {
+   private:
 	const T DEFAULT = 0;
 
 	int len;
-	vector<T> segtree;  // index 0 is not in use
+	vector<T> segtree;
 
 	T combine(const T &a, const T &b) { return a + b; }
 
@@ -440,12 +547,11 @@ template <class T> class SumSegmentTree {
 		build(arr, 1, 0, len - 1);
 	}
 
-	/** Sets the value at ind to val. */
 	void set(int ind, T val) { set(ind, val, 1, 0, len - 1); }
 
-	/** @return the sum of the range [start, end] */
 	T range_sum(int start, int end) { return range_sum(start, end, 1, 0, len - 1); }
 };
+// EndCodeSnip
 
 int main() {
 	int arr_len;
@@ -472,6 +578,109 @@ int main() {
 ```
 
 </CPPSection>
+<JavaSection>
+
+Compared to the previous implementation, all we need to change is
+the way we combine the elements, the default value, and the data type
+we use for the segment tree (from `int` to `long`).
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class SumSegmentTree {
+	public final int len;
+	private final long[] segtree;
+
+	private long combine(long a, long b) {
+		return a + b;
+	}
+
+	private void build(long[] arr, int at, int atLeft, int atRight) {
+		if (atLeft == atRight) {
+			segtree[at] = arr[atLeft];
+			return;
+		}
+		int mid = (atLeft + atRight) / 2;
+		build(arr, 2 * at, atLeft, mid);
+		build(arr, 2 * at + 1, mid + 1, atRight);
+		segtree[at] = combine(segtree[2 * at], segtree[2 * at + 1]);
+	}
+
+	private void set(int ind, long val, int at, int atLeft, int atRight) {
+		if (atLeft == atRight) {
+			segtree[at] = val;
+			return;
+		}
+		int mid = (atLeft + atRight) / 2;
+		if (ind <= mid) {
+			set(ind, val, 2 * at, atLeft, mid);
+		} else {
+			set(ind, val, 2 * at + 1, mid + 1, atRight);
+		}
+		segtree[at] = combine(segtree[2 * at], segtree[2 * at + 1]);
+	}
+
+	private long rangeSum(int start, int end, int at, int atLeft, int atRight) {
+		if (atRight < start || end < atLeft) {
+			return 0;
+		}
+		if (start <= atLeft && atRight <= end) {
+			return segtree[at];
+		}
+		int mid = (atLeft + atRight) / 2;
+		long leftRes = rangeSum(start, end, 2 * at, atLeft, mid);
+		long rightRes = rangeSum(start, end, 2 * at + 1, mid + 1, atRight);
+		return combine(leftRes, rightRes);
+	}
+
+	/** Sets the value at ind to val. */
+	void set(int ind, long val) { set(ind, val, 1, 0, len - 1); }
+
+	/** @return the minimum element in the range [start, end] */
+	long rangeSum(int start, int end) { return rangeSum(start, end, 1, 0, len - 1); }
+
+	public SumSegmentTree(int len) {
+		this.len = len;
+		segtree = new long[len * 4];
+	}
+
+	public SumSegmentTree(long[] arr) {
+		this.len = arr.length;
+		segtree = new long[len * 4];
+		build(arr, 1, 0, len - 1);
+	}
+
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
+		int arrLen = io.nextInt();
+		int queryNum = io.nextInt();
+
+		long[] arr = new long[arrLen];
+		for (int i = 0; i < arrLen; i++) {
+			arr[i] = io.nextInt();
+		}
+		SumSegmentTree segtree = new SumSegmentTree(arr);
+
+		for (int i = 0; i < queryNum; i++) {
+			int type = io.nextInt();
+			int arg1 = io.nextInt();
+			int arg2 = io.nextInt();
+			if (type == 1) {
+				segtree.set(arg1 - 1, arg2);
+			} else {
+				io.println(segtree.rangeSum(arg1 - 1, arg2 - 1));
+			}
+		}
+
+		io.close();
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
 </LanguageSection>
 
 ### Iterative Implementation
@@ -480,9 +689,6 @@ int main() {
 
 <LanguageSection>
 <CPPSection>
-
-Compared to the previous problem, all we need to change are `DEFAULT`
-and how we combine the elements.
 
 ```cpp
 #include <iostream>
@@ -549,10 +755,6 @@ int main() {
 </CPPSection>
 <JavaSection>
 
-Compared to the previous problem, all we need to change is the way we aggregate
-values (from `Math.min()` to summation) and the data type we use to store the
-query (from `int` to `long`).
-
 ```java
 import java.io.*;
 import java.util.*;
@@ -613,8 +815,8 @@ public class SumSegmentTree {
 </JavaSection>
 <PySection>
 
-Compared to the previous problem, all we need to change is the way we aggregate
-values (from `min()` to '+'), and change the initial value to 0.
+Compared to the previous implementation, all we need to change is the way we
+aggregate values (from `min()` to '+'), and change the initial value to 0.
 
 ```py
 # BeginCodeSnip{Segment Tree}
@@ -920,6 +1122,7 @@ Suppose that we want a data structure that supports all the operations as a
 ## Order Statistic Tree
 
 Luckily, such a built-in data structure already exists in C++.
+However, it's only supported on GCC, so Clang users are out of luck.
 
 <Resources>
 	<Resource
@@ -940,12 +1143,10 @@ Luckily, such a built-in data structure already exists in C++.
 	</Resource>
 </Resources>
 
-To use indexed sets locally, you need to
-[install GCC](/general/cpp-command#installing-g).
-
 ## With a BIT
 
-Assumes all updates are in the range $[1,N]$.
+However, if all updates are in the range $[1,N]$,
+we can do the same thing with a BIT.
 
 <Resources>
 	<Resource source="CF" url="11275" title="adamant - About Ordered Set" starred>
@@ -1020,8 +1221,8 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
+	private static final int MAX_ELEM = (int)1e7;
 	public static void main(String[] args) {
-		final int MAX_ELEM = (int)1e7;
 		Kattio io = new Kattio();
 
 		int testNum = io.nextInt();
