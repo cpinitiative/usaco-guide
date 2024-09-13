@@ -128,13 +128,9 @@ template <typename T> point<T> operator-(point<T> p, const point<T> &q) {
 	return p -= q;
 }
 
-template <typename T> point<T> operator*(point<T> p, const T &s) {
-	return p *= s;
-}
+template <typename T> point<T> operator*(point<T> p, const T &s) { return p *= s; }
 
-template <typename T> point<T> operator*(const T &s, point<T> p) {
-	return p *= s;
-}
+template <typename T> point<T> operator*(const T &s, point<T> p) { return p *= s; }
 
 template <typename T> T cross(const point<T> &p, const point<T> &q) {
 	long double ret = (long double)p.x * q.y - (long double)p.y * q.x;
@@ -182,8 +178,8 @@ struct monotonic_dp_hull {
 			if (p.y <= points.back().y) return;
 			points.pop_back();
 		}
-		while (size() >= 2 && ((points.back() - p) ^
-		                       (points[size() - 2] - points.back())) <= 0)
+		while (size() >= 2 &&
+		       ((points.back() - p) ^ (points[size() - 2] - points.back())) <= 0)
 			points.pop_back();
 		points.push_back(p);
 	}
@@ -194,8 +190,8 @@ struct monotonic_dp_hull {
 		assert(size() > 0);
 		assert(prev_x == LLONG_MIN || x * prev_y >= prev_x * y);
 		prev_x = x, prev_y = y;
-		while (size() >= 2 && x * (points[1].x - points[0].x) >=
-		                          (points[0].y - points[1].y) * y)
+		while (size() >= 2 &&
+		       x * (points[1].x - points[0].x) >= (points[0].y - points[1].y) * y)
 			points.pop_front();
 		return points[0].x * x + points[0].y * y;
 	}
@@ -233,8 +229,8 @@ int main() {
 		monotonic_dp_hull md0, md1;
 		md1.add(0, 0);
 		for (int i = 1; i <= N; i++) {
-			dp0[m][i] = -md1.query((i - 1) - N) + suf[i - 1] -
-			            (N - (i - 1)) * sum[i - 1];
+			dp0[m][i] =
+			    -md1.query((i - 1) - N) + suf[i - 1] - (N - (i - 1)) * sum[i - 1];
 			md0.add(i, -dp0[m][i] + pre[i] - i * sum[i]);
 			dp1[m][i] = -md0.query(sum[i]) + pre[i];
 			md1.add(sum[i], -dp1[m - 1][i] + suf[i]);

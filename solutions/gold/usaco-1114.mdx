@@ -75,8 +75,7 @@ int main() {
 		for (int i = 0; i < n - s; i++) {
 			for (int j = i; j < i + s; j++) {
 				int k = i + s;
-				if (A[i] == A[k])
-					dp[i][k] = min(dp[i][k], dp[i][j] + dp[j + 1][k] - 1);
+				if (A[i] == A[k]) dp[i][k] = min(dp[i][k], dp[i][j] + dp[j + 1][k] - 1);
 				dp[i][k] = min(dp[i][k], dp[i][j] + dp[j + 1][k]);
 			}
 		}
@@ -101,13 +100,10 @@ public class ModernArt3 {
 	public static int[][] dp = new int[MAXN][MAXN];
 
 	public static void main(String[] args) throws IOException {
-		BufferedReader in =
-		    new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 		int N = Integer.parseInt(in.readLine());
 		StringTokenizer st = new StringTokenizer(in.readLine());
-		for (int i = 0; i < N; i++) {
-			painting[i] = Integer.parseInt(st.nextToken());
-		}
+		for (int i = 0; i < N; i++) { painting[i] = Integer.parseInt(st.nextToken()); }
 
 		for (int i = 0; i < N; i++) {
 			for (int j = 0; j < N; j++) { dp[i][j] = MAXN + 1; }
@@ -119,8 +115,7 @@ public class ModernArt3 {
 					int k = i + s;
 					// Merge the 2 ranges
 					if (painting[i] == painting[k]) {
-						dp[i][k] =
-						    Math.min(dp[i][k], dp[i][j] + dp[j + 1][k] - 1);
+						dp[i][k] = Math.min(dp[i][k], dp[i][j] + dp[j + 1][k] - 1);
 					}
 					// Sum of the both parts
 					dp[i][k] = Math.min(dp[i][k], dp[i][j] + dp[j + 1][k]);

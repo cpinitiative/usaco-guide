@@ -160,7 +160,7 @@ int lcp[MN];  // lcp[i] stores the longest common prefix between s[sa[i-1]..]
               // and s[sa[i]..]
 
 Edge c[MN * 2][MK];  // edges of suffix tree
-int d[MN * 2];  // length of string corresponding to a node in the suffix tree
+int d[MN * 2];       // length of string corresponding to a node in the suffix tree
 int q[MN * 2], Q, ctr,
     rm[MN];  // q is used as stack. ctr counts number of nodes in tree
 std::stack<int> ins[MN];
@@ -375,8 +375,7 @@ int main(void) {
 		x = topo[i];
 		for (int j = 0; j < 26; ++j)
 			if (~c[x][j])
-				cnt[c[x][j]] +=
-				    cnt[x];  // count number of paths from root to a node
+				cnt[c[x][j]] += cnt[x];  // count number of paths from root to a node
 		if (v[x] >= 0)
 			f[v[x]] += cnt[x];  // if this node is associated with a unique cow,
 			                    // add to answer

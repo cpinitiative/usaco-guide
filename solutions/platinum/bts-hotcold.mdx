@@ -72,9 +72,7 @@ class Tree {
 		tin[u] = timer++;
 		lift[0][u] = p;
 		depth[u] = depth[p] + 1;
-		for (int i = 1; i < log2dist; i++) {
-			lift[i][u] = lift[i - 1][lift[i - 1][u]];
-		}
+		for (int i = 1; i < log2dist; i++) { lift[i][u] = lift[i - 1][lift[i - 1][u]]; }
 		for (int v : adj[u]) {
 			if (v != p) { tour(v, u); }
 		}
@@ -103,8 +101,8 @@ class Tree {
 
   public:
 	Tree(int n, vector<vector<int>> &adj)
-	    : n(n), log2dist((int)log2(n) + 1), adj(adj),
-	      lift(log2dist, vector<int>(n)), diff(n), depth(n), tin(n), tout(n) {
+	    : n(n), log2dist((int)log2(n) + 1), adj(adj), lift(log2dist, vector<int>(n)),
+	      diff(n), depth(n), tin(n), tout(n) {
 		tin[0] = -1;
 		tout[0] = n + 1;  // ensures that LCA works
 		tour(1, 0);

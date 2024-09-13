@@ -52,8 +52,7 @@ int fall_to_row(int r, int c, int direc, const vector<vector<char>> &grid) {
  * @param flips Number of flips already performed to get to [r, c]
  * @param direc Current direction of the gravity, either 1 or -1
  */
-void search_horizontally(int r, int c, int flips, int direc,
-                         queue<array<int, 4>> &bfs,
+void search_horizontally(int r, int c, int flips, int direc, queue<array<int, 4>> &bfs,
                          vector<vector<int>> &flip_count,
                          const vector<vector<char>> &grid) {
 	// if out of bound or already visited, then don't go further
@@ -61,10 +60,10 @@ void search_horizontally(int r, int c, int flips, int direc,
 	flip_count[r][c] = flips;
 	bfs.push({r, c, flips, direc});
 
-	search_horizontally(fall_to_row(r, c + 1, direc, grid), c + 1, flips, direc,
-	                    bfs, flip_count, grid);
-	search_horizontally(fall_to_row(r, c - 1, direc, grid), c - 1, flips, direc,
-	                    bfs, flip_count, grid);
+	search_horizontally(fall_to_row(r, c + 1, direc, grid), c + 1, flips, direc, bfs,
+	                    flip_count, grid);
+	search_horizontally(fall_to_row(r, c - 1, direc, grid), c - 1, flips, direc, bfs,
+	                    flip_count, grid);
 }
 
 int main() {
@@ -97,8 +96,8 @@ int main() {
 	// {row, column, number of flips, direction of the gravity}
 	queue<array<int, 4>> bfs;
 	// let captain fall down and perform a search to the left and right
-	search_horizontally(fall_to_row(start.first, start.second, 1, grid),
-	                    start.second, 0, 1, bfs, flip_count, grid);
+	search_horizontally(fall_to_row(start.first, start.second, 1, grid), start.second,
+	                    0, 1, bfs, flip_count, grid);
 
 	while (!bfs.empty()) {
 		int r, c, flips, direc;

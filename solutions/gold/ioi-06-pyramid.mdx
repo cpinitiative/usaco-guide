@@ -53,14 +53,13 @@ int main() {
 	for (int i = 1; i <= n; i++) {
 		for (int j = 1; j <= m; j++) {
 			cin >> grid_sum[i][j];
-			grid_sum[i][j] += grid_sum[i - 1][j] + grid_sum[i][j - 1] -
-			                  grid_sum[i - 1][j - 1];
+			grid_sum[i][j] +=
+			    grid_sum[i - 1][j] + grid_sum[i][j - 1] - grid_sum[i - 1][j - 1];
 		}
 	}
 
 	/** @return sum of rectangle with corners at (r1, c1) and (r2, c2) */
-	const auto rect_sum = [&](int row_1, int col_1, int row_2,
-	                          int col_2) -> int {
+	const auto rect_sum = [&](int row_1, int col_1, int row_2, int col_2) -> int {
 		return grid_sum[row_2][col_2] - grid_sum[row_2][col_1 - 1] -
 		       grid_sum[row_1 - 1][col_2] + grid_sum[row_1 - 1][col_1 - 1];
 	};

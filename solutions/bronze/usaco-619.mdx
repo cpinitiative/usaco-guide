@@ -99,8 +99,8 @@ int main() {
 					break;
 			}
 			// find the maximum quadrant
-			int cur_div = max({cow_count[0][0], cow_count[0][1],
-			                   cow_count[1][0], cow_count[1][1]});
+			int cur_div = max(
+			    {cow_count[0][0], cow_count[0][1], cow_count[1][0], cow_count[1][1]});
 			// update the min
 			opt = min(opt, cur_div);
 		}
@@ -253,12 +253,9 @@ int min_partition(int x_line, const vector<Cow> &cows) {
 	while (left_at + right_at < cows.size()) {
 		int y_line = cows[left_at + right_at].y + 1;
 		while (left_at < left.size() && y_line > left[left_at].y) { left_at++; }
-		while (right_at < right.size() && y_line > right[right_at].y) {
-			right_at++;
-		}
+		while (right_at < right.size() && y_line > right[right_at].y) { right_at++; }
 		int below_max = std::max(left_at, right_at);
-		int above_max =
-		    std::max(left.size() - left_at, right.size() - right_at);
+		int above_max = std::max(left.size() - left_at, right.size() - right_at);
 		most_balanced = std::min(most_balanced, std::max(below_max, above_max));
 	}
 
@@ -285,9 +282,7 @@ int main() {
 		int x_line = by_x[x_line_at].x + 1;
 		most_balanced = std::min(most_balanced, min_partition(x_line, by_y));
 		// Go through the list of cows until we hit one with a new x-pos
-		while (x_line_at < cow_num && x_line > by_x[x_line_at].x) {
-			x_line_at++;
-		}
+		while (x_line_at < cow_num && x_line > by_x[x_line_at].x) { x_line_at++; }
 	}
 
 	std::ofstream("balancing.out") << most_balanced << endl;
@@ -303,8 +298,7 @@ import java.util.*;
 
 public class Balancing {
 	public static void main(String[] args) throws IOException {
-		BufferedReader read =
-		    new BufferedReader(new FileReader("balancing.in"));
+		BufferedReader read = new BufferedReader(new FileReader("balancing.in"));
 		int cowNum = Integer.parseInt(read.readLine());
 		// The array of cows (to be sorted by x-pos)
 		int[][] byX = new int[cowNum][2];
@@ -354,15 +348,12 @@ public class Balancing {
 		int rightAt = 0;
 		while (leftAt + rightAt < cows.length) {
 			int yLine = cows[leftAt + rightAt][1] + 1;
-			while (leftAt < left.size() && yLine > left.get(leftAt)[1]) {
-				leftAt++;
-			}
+			while (leftAt < left.size() && yLine > left.get(leftAt)[1]) { leftAt++; }
 			while (rightAt < right.size() && yLine > right.get(rightAt)[1]) {
 				rightAt++;
 			}
 			int belowMax = Math.max(leftAt, rightAt);
-			int aboveMax =
-			    Math.max(left.size() - leftAt, right.size() - rightAt);
+			int aboveMax = Math.max(left.size() - leftAt, right.size() - rightAt);
 			mostEqual = Math.min(mostEqual, Math.max(belowMax, aboveMax));
 		}
 
@@ -527,8 +518,8 @@ int main() {
 			vector<vector<int>> field_amt{{0, 0}, {0, 0}};
 			for (const Cow &c : cows) { field_amt[x < c.x][y < c.y]++; }
 
-			int balance = std::max({field_amt[0][0], field_amt[0][1],
-			                        field_amt[1][0], field_amt[1][1]});
+			int balance = std::max(
+			    {field_amt[0][0], field_amt[0][1], field_amt[1][0], field_amt[1][1]});
 			most_balanced = std::min(most_balanced, balance);
 		}
 	}
@@ -546,8 +537,7 @@ import java.util.*;
 
 public class Balancing {
 	public static void main(String[] args) throws IOException {
-		BufferedReader read =
-		    new BufferedReader(new FileReader("balancing.in"));
+		BufferedReader read = new BufferedReader(new FileReader("balancing.in"));
 		int cowNum = Integer.parseInt(read.readLine());
 
 		int[][] cows = new int[cowNum][2];
@@ -570,12 +560,9 @@ public class Balancing {
 			for (int y : toCheckY) {
 				// Try placing a fence centered at (x, y)
 				int[][] fieldAmt = new int[][] {{0, 0}, {0, 0}};
-				for (int[] c : cows) {
-					fieldAmt[x < c[0] ? 1 : 0][y < c[1] ? 1 : 0]++;
-				}
-				int balance =
-				    Math.max(Math.max(fieldAmt[0][0], fieldAmt[0][1]),
-				             Math.max(fieldAmt[1][0], fieldAmt[1][1]));
+				for (int[] c : cows) { fieldAmt[x < c[0] ? 1 : 0][y < c[1] ? 1 : 0]++; }
+				int balance = Math.max(Math.max(fieldAmt[0][0], fieldAmt[0][1]),
+				                       Math.max(fieldAmt[1][0], fieldAmt[1][1]));
 				mostEqual = Math.min(mostEqual, balance);
 			}
 		}
@@ -607,9 +594,7 @@ public class Balancing {
 		List<Integer> important = new ArrayList<>();
 		for (int i = 0; i < distinct.size(); i++) {
 			// We can just move the fence to the right, so ignore this
-			if (i + 1 < distinct.size() && numLeft.get(i + 1) <= sz / 3) {
-				continue;
-			}
+			if (i + 1 < distinct.size() && numLeft.get(i + 1) <= sz / 3) { continue; }
 			// Same, but to the left
 			if (i > 0 && numLeft.get(i - 1) >= sz - sz / 3) { continue; }
 			important.add(distinct.get(i));

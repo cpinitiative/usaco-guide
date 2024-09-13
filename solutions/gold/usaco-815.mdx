@@ -79,8 +79,7 @@ int main() {
 	for (int i = 0; i < n; i++) {
 		for (int j = i; j < n; j++) {
 			if (j) {
-				range_ans[i][j] =
-				    range_ans[i][j - 1] + (entry[j] == j - i ? 0 : 1);
+				range_ans[i][j] = range_ans[i][j - 1] + (entry[j] == j - i ? 0 : 1);
 			} else {
 				range_ans[i][j] = (entry[j] == j - i ? 0 : 1);
 			}
@@ -108,8 +107,7 @@ int main() {
 			}
 
 			// Case 3
-			if (j - entry[j] - 1 >= 0 &&
-			    dp[i - 1][j - entry[j] - 1] != INT32_MAX) {
+			if (j - entry[j] - 1 >= 0 && dp[i - 1][j - entry[j] - 1] != INT32_MAX) {
 				dp[i][j] = min(dp[i][j], dp[i - 1][j - entry[j] - 1] +
 				                             range_ans[j - entry[j]][j]);
 			}

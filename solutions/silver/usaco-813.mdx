@@ -44,9 +44,8 @@ int main() {
 		boots[i].index = i;
 	}
 	// sort the boots from greatest depth to least depth
-	sort(boots.begin(), boots.end(), [&](const Boot &a, const Boot &b) {
-		return a.max_depth > b.max_depth;
-	});
+	sort(boots.begin(), boots.end(),
+	     [&](const Boot &a, const Boot &b) { return a.max_depth > b.max_depth; });
 
 	vector<int> tiles_by_depth;  // list of tile indices, sorted by snow depth
 	for (int i = 1; i < tile_num - 1; i++) { tiles_by_depth.push_back(i); }
@@ -150,9 +149,8 @@ public class SnowBoots {
 			       tiles[tilesByDepth[tileAt]] > b.maxDepth) {
 				int invalid = tilesByDepth[tileAt];
 				validTiles.remove(invalid);
-				neededStep =
-				    Math.max(neededStep, validTiles.ceiling(invalid) -
-				                             validTiles.floor(invalid));
+				neededStep = Math.max(neededStep, validTiles.ceiling(invalid) -
+				                                      validTiles.floor(invalid));
 				tileAt++;
 			}
 			canReach[b.index] = b.maxSteps >= neededStep;

@@ -7,7 +7,117 @@ author: Justin Ji
 
 [Official Analysis](https://dmoj.ca/problem/ioi05p3/editorial)
 
-## Explanation
+<Spoiler title = "Sparse Segment Tree Solution">
+
+This problem can be solved with a sparse segment tree. We keep track
+of the prefix max and range sum in each node, and walk on the segment tree to
+answer queries. The implementation below uses pointers, but it is possible to
+write the solution without using them.
+
+**Time Complexity:** $\mathcal{O}(Q\log{N})$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+class SparseSegtree {
+  private:
+	const int n;
+	struct Node {
+		// vals = {prefix max, range sum}
+		array<int, 2> vals = {0, 0};
+		int lazy_set = INT32_MAX;
+		Node *left = nullptr;
+		Node *right = nullptr;
+	};
+	Node *root = new Node;
+
+	array<int, 2> comb(const array<int, 2> &a, const array<int, 2> &b) {
+		return {max(a[0], a[1] + b[0]), a[1] + b[1]};
+	}
+
+	void apply(Node *cur, int len, int val) {
+		(cur->vals)[1] = len * val;
+		(cur->vals)[0] = max(0, len * val);
+		(cur->lazy_set) = val;
+	}
+
+	void push_down(Node *cur, int l, int r) {
+		if ((cur->left) == nullptr) { (cur->left) = new Node; }
+		if ((cur->right) == nullptr) { (cur->right) = new Node; }
+		if (l != r && (cur->lazy_set) != INT32_MAX) {
+			int m = (l + r) / 2;
+			apply(cur->left, m - l + 1, cur->lazy_set);
+			apply(cur->right, r - m, cur->lazy_set);
+		}
+		(cur->lazy_set) = INT32_MAX;
+	}
+
+	void range_set(Node *cur, int l, int r, int ql, int qr, int val) {
+		if (qr < l || ql > r) { return; }
+		if (ql <= l && r <= qr) {
+			apply(cur, r - l + 1, val);
+		} else {
+			push_down(cur, l, r);
+			int m = (l + r) / 2;
+			range_set(cur->left, l, m, ql, qr, val);
+			range_set(cur->right, m + 1, r, ql, qr, val);
+			(cur->vals) = comb((cur->left)->vals, (cur->right)->vals);
+		}
+	}
+
+	int walk_right(Node *cur, int l, int r, const array<int, 2> &pf, int mx) {
+		if (l == r) {
+			return l;
+		} else {
+			push_down(cur, l, r);
+			int m = (l + r) / 2;
+			array<int, 2> x = comb(pf, (cur->left)->vals);
+			return x[0] > mx ? walk_right(cur->left, l, m, pf, mx)
+			                 : walk_right(cur->right, m + 1, r, x, mx);
+		}
+	}
+
+  public:
+	SparseSegtree(int n) : n(n) {}
+
+	void range_set(int ql, int qr, int val) { range_set(root, 0, n - 1, ql, qr, val); }
+
+	int walk_right(int mx) { return walk_right(root, 0, n - 1, {0, 0}, mx); }
+};
+
+int main() {
+	int n;
+	cin >> n;
+	SparseSegtree st(n + 2);
+
+	while (true) {
+		char type;
+		cin >> type;
+		if (type == 'I') {
+			int a, b, d;
+			cin >> a >> b >> d;
+			st.range_set(a, b, d);
+		} else if (type == 'Q') {
+			int height;
+			cin >> height;
+			cout << st.walk_right(height) - 1 << "\n";
+		} else if (type == 'E') {
+			break;
+		}
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
+</Spoiler>
+
+<Spoiler title = "Coordinate Compression Solution">
 
 Consider an easier version of the problem where $N \leq 10^{6}$. In that case,
 we use a [maximum prefix sum segment tree](https://usaco.guide/problems/cses-2166-prefix-sum-queries/solution)
@@ -58,7 +168,7 @@ class LazySegtree {
 	vector<int> lz, vals;
 
 	/** @return result of joining two ranges together */
-	inline array<int, 3> comb(const array<int, 3> &a, const array<int, 3> &b) {
+	array<int, 3> comb(const array<int, 3> &a, const array<int, 3> &b) {
 		return {max(a[0], a[1] + b[0]), a[1] + b[1], a[2] + b[2]};
 	}
 
@@ -137,9 +247,7 @@ class LazySegtree {
 	}
 
 	/** sets the range [ql, qr] (coordinate compresed indexes) to amt */
-	void range_set(int ql, int qr, int amt) {
-		range_set(1, 0, sz - 1, ql, qr, amt);
-	}
+	void range_set(int ql, int qr, int amt) { range_set(1, 0, sz - 1, ql, qr, amt); }
 
 	/** @return the last location where the height <= mx */
 	int walk_right(int mx) { return walk_right(1, 0, sz - 1, ID, mx); }
@@ -182,8 +290,7 @@ int main() {
 		if (cur[0] == 0) {
 			st.range_set(id(cur[1]), id(cur[2] + 1) - 1, cur[3]);
 		} else {
-			cout << (st.best_prefix() <= cur[1] ? n : st.walk_right(cur[1]))
-			     << "\n";
+			cout << (st.best_prefix() <= cur[1] ? n : st.walk_right(cur[1])) << "\n";
 		}
 	}
 }
@@ -191,3 +298,5 @@ int main() {
 
 </CPPSection>
 </LanguageSection>
+
+</Spoiler>

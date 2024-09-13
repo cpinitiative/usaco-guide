@@ -59,8 +59,7 @@ public class FlightDiscount {
 	static List<List<Flight>> reverseNeighbors = new ArrayList<>();
 
 	public static void main(String[] args) throws IOException {
-		BufferedReader br =
-		    new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer initial = new StringTokenizer(br.readLine());
 		int cityNum = Integer.parseInt(initial.nextToken());
 		int flightNum = Integer.parseInt(initial.nextToken());
@@ -90,8 +89,7 @@ public class FlightDiscount {
 		System.out.println(minCost);
 	}
 
-	public static long[] minDist(int start,
-	                             ArrayList<ArrayList<Flight>> neighbors) {
+	public static long[] minDist(int start, ArrayList<ArrayList<Flight>> neighbors) {
 		long[] minDist = new long[neighbors.size()];
 		boolean[] visited = new boolean[neighbors.size()];
 		PriorityQueue<Pos> frontier = new PriorityQueue<>();
@@ -130,8 +128,7 @@ using std::vector;
  * from all the other nodes to the start node
  * (the value is INT64_MAX if unreachable)
  */
-vector<long long> min_costs(int from,
-                            const vector<vector<pair<int, int>>> &neighbors) {
+vector<long long> min_costs(int from, const vector<vector<pair<int, int>>> &neighbors) {
 	vector<long long> min_costs(neighbors.size(), INT64_MAX);
 	min_costs[from] = 0;
 	std::priority_queue<pair<long long, int>> frontier;
@@ -173,11 +170,8 @@ int main() {
 	long long total_min = INT64_MAX;
 	for (int c = 0; c < city_num; c++) {
 		for (auto [n, nc] : neighbors[c]) {
-			if (start_costs[c] == INT64_MAX || end_costs[n] == INT64_MAX) {
-				continue;
-			}
-			total_min =
-			    std::min(total_min, start_costs[c] + (nc / 2) + end_costs[n]);
+			if (start_costs[c] == INT64_MAX || end_costs[n] == INT64_MAX) { continue; }
+			total_min = std::min(total_min, start_costs[c] + (nc / 2) + end_costs[n]);
 		}
 	}
 	cout << total_min << endl;

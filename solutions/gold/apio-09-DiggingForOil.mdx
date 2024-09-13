@@ -60,8 +60,7 @@ using namespace std;
 
 #define MAXN 1505
 
-int m, n, k, dp[MAXN][MAXN][2], pp[MAXN][MAXN][4], pq[MAXN][MAXN],
-    ar[MAXN][MAXN];
+int m, n, k, dp[MAXN][MAXN][2], pp[MAXN][MAXN][4], pq[MAXN][MAXN], ar[MAXN][MAXN];
 int main() {
 	ios_base::sync_with_stdio(0);
 	cin >> m >> n >> k;
@@ -176,23 +175,19 @@ int main() {
 	for (int i = k; i < m - k; i++) {
 		for (int j = k; j < n - k; j++) {
 			ans = max(ans, pp[i - 1][n - 1][0] + pp[i][j - 1][1] + pp[i][j][3]);
-			ans = max(ans,
-			          pp[i - 1][j - 1][0] + pp[i - 1][j][2] + pp[i][n - 1][1]);
-			ans = max(ans,
-			          pp[i - 1][j - 1][0] + pp[i][j - 1][1] + pp[m - 1][j][2]);
+			ans = max(ans, pp[i - 1][j - 1][0] + pp[i - 1][j][2] + pp[i][n - 1][1]);
+			ans = max(ans, pp[i - 1][j - 1][0] + pp[i][j - 1][1] + pp[m - 1][j][2]);
 			ans = max(ans, pp[m - 1][j - 1][0] + pp[i - 1][j][2] + pp[i][j][3]);
 		}
 	}
 	// do three rectangles all aligned.
 	for (int i = 1; i < m; i++)
 		for (int j = i + k; j < m; j++) {
-			ans = max(ans,
-			          pp[i - 1][n - 1][0] + dp[i][j - 1][0] + pp[j][n - 1][1]);
+			ans = max(ans, pp[i - 1][n - 1][0] + dp[i][j - 1][0] + pp[j][n - 1][1]);
 		}
 	for (int i = 1; i < n; i++)
 		for (int j = i + k; j < n; j++) {
-			ans = max(ans,
-			          pp[m - 1][i - 1][0] + dp[i][j - 1][1] + pp[m - 1][j][2]);
+			ans = max(ans, pp[m - 1][i - 1][0] + dp[i][j - 1][1] + pp[m - 1][j][2]);
 		}
 	cout << ans << endl;
 }

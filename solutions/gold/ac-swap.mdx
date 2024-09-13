@@ -107,10 +107,10 @@ int main() {
 	}
 
 	vector<vector<vector<vector<long long>>>> dp(
-	    MAX_SWAPS, vector<vector<vector<long long>>>(
-	                   count[0] + 1,
-	                   vector<vector<long long>>(
-	                       count[1] + 1, vector<long long>(count[2] + 1, 0))));
+	    MAX_SWAPS,
+	    vector<vector<vector<long long>>>(
+	        count[0] + 1, vector<vector<long long>>(
+	                          count[1] + 1, vector<long long>(count[2] + 1, 0))));
 
 	// base case (one way to create an empty string)
 	dp[0][0][0][0] = 1;
@@ -126,8 +126,7 @@ int main() {
 						           max(0, pref[pos[0][ks]][2] - ys);
 
 						if (cur + cost < MAX_SWAPS) {
-							dp[cur + cost][ks + 1][es][ys] +=
-							    dp[cur][ks][es][ys];
+							dp[cur + cost][ks + 1][es][ys] += dp[cur][ks][es][ys];
 						}
 					}
 
@@ -135,12 +134,11 @@ int main() {
 					if (es < count[1]) {
 						int next = pos[1][es];
 						// swap out letters in the way
-						int cost = max(0, pref[next][0] - ks) +
-						           max(0, pref[next][2] - ys);
+						int cost =
+						    max(0, pref[next][0] - ks) + max(0, pref[next][2] - ys);
 
 						if (cur + cost < MAX_SWAPS) {
-							dp[cur + cost][ks][es + 1][ys] +=
-							    dp[cur][ks][es][ys];
+							dp[cur + cost][ks][es + 1][ys] += dp[cur][ks][es][ys];
 						}
 					}
 
@@ -148,12 +146,11 @@ int main() {
 					if (ys < count[2]) {
 						int next = pos[2][ys];
 						// swap out letters in the way
-						int cost = max(0, pref[next][0] - ks) +
-						           max(0, pref[next][1] - es);
+						int cost =
+						    max(0, pref[next][0] - ks) + max(0, pref[next][1] - es);
 
 						if (cur + cost < MAX_SWAPS) {
-							dp[cur + cost][ks][es][ys + 1] +=
-							    dp[cur][ks][es][ys];
+							dp[cur + cost][ks][es][ys + 1] += dp[cur][ks][es][ys];
 						}
 					}
 
@@ -172,6 +169,88 @@ int main() {
 ```
 
 </CPPSection>
+<PySection>
+
+```py
+LETTERS = 3
+MAX_SWAPS = 465  # see hint above
+
+s = input()
+k = int(input())
+
+n = len(s)
+count = [0] * LETTERS
+for x in s:
+	if x == "K":
+		count[0] += 1
+	elif x == "E":
+		count[1] += 1
+	else:
+		count[2] += 1
+
+# stores the number of occurrences of a letter on a prefix
+pref = [[0] * LETTERS for _ in range(n + 1)]
+# stores the position of the ith letter
+pos = [[] for _ in range(LETTERS)]
+
+for i in range(n):
+	pref[i][0] = (pref[i - 1][0] if i - 1 >= 0 else 0) + (s[i] == "K")
+	pref[i][1] = (pref[i - 1][1] if i - 1 >= 0 else 0) + (s[i] == "E")
+	pref[i][2] = (pref[i - 1][2] if i - 1 >= 0 else 0) + (s[i] == "Y")
+
+	if s[i] == "K":
+		pos[0].append(i)
+	elif s[i] == "E":
+		pos[1].append(i)
+	else:
+		pos[2].append(i)
+
+dp = [
+	[[[0] * (count[2] + 1) for _ in range(count[1] + 1)] for _ in range(count[0] + 1)]
+	for _ in range(MAX_SWAPS)
+]
+
+# base case (one way to create an empty string)
+dp[0][0][0][0] = 1
+ans = 0
+
+for ks in range(count[0] + 1):
+	for es in range(count[1] + 1):
+		for ys in range(count[2] + 1):
+			for cur in range(MAX_SWAPS):
+				# shift next 'K' into the string
+				if ks < count[0]:
+					# swap out letters in the way
+					cost = max(0, pref[pos[0][ks]][1] - es) + max(
+						0, pref[pos[0][ks]][2] - ys
+					)
+					if cur + cost < MAX_SWAPS:
+						dp[cur + cost][ks + 1][es][ys] += dp[cur][ks][es][ys]
+
+				# shift next 'E' into the string
+				if es < count[1]:
+					next = pos[1][es]
+					# swap out letters in the way
+					cost = max(0, pref[next][0] - ks) + max(0, pref[next][2] - ys)
+					if cur + cost < MAX_SWAPS:
+						dp[cur + cost][ks][es + 1][ys] += dp[cur][ks][es][ys]
+
+				# shift next 'Y' into the string
+				if ys < count[2]:
+					next = pos[2][ys]
+					# swap out letters in the way
+					cost = max(0, pref[next][0] - ks) + max(0, pref[next][1] - es)
+					if cur + cost < MAX_SWAPS:
+						dp[cur + cost][ks][es][ys + 1] += dp[cur][ks][es][ys]
+
+				# all letters have been used and we do not exceed swaps
+				if ks == count[0] and es == count[1] and ys == count[2] and cur <= k:
+					ans += dp[cur][ks][es][ys]
+
+print(ans)
+```
+
+</PySection>
 </LanguageSection>
 
 </Spoiler>

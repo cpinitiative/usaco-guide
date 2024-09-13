@@ -11,12 +11,15 @@ This strategy is known as [The Multinomial Theorem](https://en.wikipedia.org/wik
 
 We are essentially counting how many distinct strings we can make by permuting the letters of the string. Note that if there are repeating characters in the string, permuting those characters in place counts as the same string since letters are indisguinshable.
 
-For example, consider the string $aab$, and supposed we denote the $a$'s that sppear in the string in order of which they appear, so the original string becomes $a_1a_2b$. One possible permutation is $a_2a_1b$. When we remove these subscripts, these two strings become the same thing.
+For example, consider the string $aab$, and supposed we denote the $a$'s that appear in the string in order of which they appear, so the original string becomes $a_1a_2b$. One possible permutation is $a_2a_1b$. When we remove these subscripts, these two strings become the same thing.
 
 To account for this, we'll go through each letter which occurs in the string and divide off the number of arrangements among its occurrences. The total number of permutations is $n!$. The number of ways a letter can permute is also just the factorial of the number of times it appears in the string.
 
-<LanguageSection>
+## Implementation
 
+**Time Complexity:** $\mathcal{O}(MAXN * \log(MOD) + n)$
+
+<LanguageSection>
 <CPPSection>
 
 ```cpp
@@ -65,5 +68,55 @@ int main() {
 ```
 
 </CPPSection>
+<PySection>
 
+```py
+from collections import Counter
+
+MAXN = 10**6
+MOD = 10**9 + 7
+
+fac = [0] * (MAXN + 1)
+inv = [0] * (MAXN + 1)
+
+
+# BeginCodeSnip{Combinatorics Functions (from the module)}
+def exp(x: int, n: int, m: int) -> int:
+	x %= m
+	res = 1
+	while n > 0:
+		if n % 2 == 1:
+			res = res * x % m
+		x = x * x % m
+		n //= 2
+	return res
+
+
+def factorial():
+	fac[0] = 1
+	for i in range(1, MAXN + 1):
+		fac[i] = fac[i - 1] * i % MOD
+
+
+def inverses():
+	inv[MAXN] = exp(fac[MAXN], MOD - 2, MOD)
+	for i in range(MAXN, 0, -1):
+		inv[i - 1] = inv[i] * i % MOD
+
+
+# EndCodeSnip
+
+s = input()
+character_count = Counter(s)
+factorial()
+inverses()
+
+total = fac[len(s)]
+for x in character_count.values():
+	total = total * inv[x] % MOD
+
+print(total)
+```
+
+</PySection>
 </LanguageSection>

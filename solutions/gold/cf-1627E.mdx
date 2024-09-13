@@ -81,23 +81,20 @@ int main() {
 			 * priority queue that sorts by minimum distance to that ladder
 			 * first, then col of ladder
 			 */
-			priority_queue<pair<ll, int>, vector<pair<ll, int>>,
-			               greater<pair<ll, int>>>
+			priority_queue<pair<ll, int>, vector<pair<ll, int>>, greater<pair<ll, int>>>
 			    pq;
 
 			for (int col : in_row) {
 				// make sure we can reach the ladder point
-				if (dist[row][col] != INT64_MAX) {
-					pq.push({dist[row][col], col});
-				}
+				if (dist[row][col] != INT64_MAX) { pq.push({dist[row][col], col}); }
 			}
 
 			while (!pq.empty()) {
 				ll distance = pq.top().first;
 				int col = pq.top().second;
 				pq.pop();
-				int index = lower_bound(in_row.begin(), in_row.end(), col) -
-				            in_row.begin();
+				int index =
+				    lower_bound(in_row.begin(), in_row.end(), col) - in_row.begin();
 
 				// we go to the left ladder on the same floor
 				if (index > 0) {

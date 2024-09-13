@@ -63,8 +63,7 @@ int main() {
 				} else {
 					lst[row][col] = lst[row - 1][col];
 				}
-				while (stackSize &&
-				       lst[row - 1][col] >= lst[row][d[stackSize]]) {
+				while (stackSize && lst[row - 1][col] >= lst[row][d[stackSize]]) {
 					--stackSize;
 				}
 				if (mat[row][col] == i) {
@@ -89,11 +88,8 @@ int main() {
 				} else {
 					lst2[row][col] = lst2[row + 1][col];
 				}
-				while (stackSize &&
-				       lst2[row + 1][col] <= lst2[row][d[stackSize]]) {
-					if (mat[lst2[row][d[stackSize]]][d[stackSize]] == i) {
-						hm--;
-					}
+				while (stackSize && lst2[row + 1][col] <= lst2[row][d[stackSize]]) {
+					if (mat[lst2[row][d[stackSize]]][d[stackSize]] == i) { hm--; }
 					stackSize--;
 				}
 				if (mat[row][col] == i) {
@@ -102,9 +98,7 @@ int main() {
 					if (stackSize && d[stackSize] == col) { ans--; }
 				}
 				while (stackSize && lst2[row][col] <= lst2[row][d[stackSize]]) {
-					if (mat[lst2[row][d[stackSize]]][d[stackSize]] == i) {
-						hm--;
-					}
+					if (mat[lst2[row][d[stackSize]]][d[stackSize]] == i) { hm--; }
 					stackSize--;
 				}
 				if (lst2[row][col] >= (row + 1) && lst2[row][col] != (n + 2)) {

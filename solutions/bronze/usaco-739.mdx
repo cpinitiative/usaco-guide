@@ -107,16 +107,14 @@ public class cownomicsSilver {
 		boolean good = true;
 
 		// mark the values in A used by a spotty cow
-		for (int i = 0; i < N; i++)
-			A[S[i][j1] * 16 + S[i][j2] * 4 + S[i][j3]] = 1;
+		for (int i = 0; i < N; i++) A[S[i][j1] * 16 + S[i][j2] * 4 + S[i][j3]] = 1;
 
 		// see if a plain cow has the same values as a spotty cow
 		for (int i = 0; i < N; i++)
 			if (A[P[i][j1] * 16 + P[i][j2] * 4 + P[i][j3]] == 1) good = false;
 
 		// reset int [] A
-		for (int i = 0; i < N; i++)
-			A[S[i][j1] * 16 + S[i][j2] * 4 + S[i][j3]] = 0;
+		for (int i = 0; i < N; i++) A[S[i][j1] * 16 + S[i][j2] * 4 + S[i][j3]] = 0;
 
 		return good;
 	}
@@ -218,9 +216,7 @@ int main() {
 	for (int p = 0; p < cow_num; p++) {
 		std::string genome;
 		read >> genome;
-		for (int g = 0; g < genome_len; g++) {
-			plain[p][g] = GENOME_ID.at(genome[g]);
-		}
+		for (int g = 0; g < genome_len; g++) { plain[p][g] = GENOME_ID.at(genome[g]); }
 	}
 
 	int valid_sets = 0;
@@ -235,15 +231,15 @@ int main() {
 					 * third digits by 16, 4, and 1 respectively, we can
 					 * get a number unique to that combination.
 					 */
-					int total = (spotted[sc][a] * 16 + spotted[sc][b] * 4 +
-					             spotted[sc][c] * 1);
+					int total =
+					    (spotted[sc][a] * 16 + spotted[sc][b] * 4 + spotted[sc][c] * 1);
 					spotted_ids[total] = true;
 				}
 
 				bool valid = true;
 				for (int pc = 0; pc < cow_num; pc++) {
-					int total = (plain[pc][a] * 16 + plain[pc][b] * 4 +
-					             plain[pc][c] * 1);
+					int total =
+					    (plain[pc][a] * 16 + plain[pc][b] * 4 + plain[pc][c] * 1);
 					// We can't tell the spotted & plain cows apart.
 					if (spotted_ids[total]) {
 						valid = false;
@@ -268,9 +264,8 @@ import java.io.*;
 import java.util.*;
 
 public class BovineGenomics {
-	static final Map<Character, Integer> GENOME_ID =
-	    Map.ofEntries(Map.entry('A', 0), Map.entry('T', 1), Map.entry('C', 2),
-	                  Map.entry('G', 3));
+	static final Map<Character, Integer> GENOME_ID = Map.ofEntries(
+	    Map.entry('A', 0), Map.entry('T', 1), Map.entry('C', 2), Map.entry('G', 3));
 
 	public static void main(String[] args) throws IOException {
 		Kattio io = new Kattio("cownomics");
@@ -314,8 +309,8 @@ public class BovineGenomics {
 
 					boolean valid = true;
 					for (int pc = 0; pc < cowNum; pc++) {
-						int total = (plain[pc][a] * 16 + plain[pc][b] * 4 +
-						             plain[pc][c] * 1);
+						int total =
+						    (plain[pc][a] * 16 + plain[pc][b] * 4 + plain[pc][c] * 1);
 						// We can't tell the spotted & plain cows apart.
 						if (spottedIDs[total]) {
 							valid = false;

@@ -52,8 +52,7 @@ class HashedString {
 	}
 
 	long long get_hash(int start, int end) {
-		long long raw_val =
-		    (p_hash[end + 1] - (p_hash[start] * pow[end - start + 1]));
+		long long raw_val = (p_hash[end + 1] - (p_hash[start] * pow[end - start + 1]));
 		return (raw_val % M + M) % M;
 	}
 };
@@ -79,9 +78,7 @@ public class HashedString {
 
 	public HashedString(String s) {
 		if (pow.isEmpty()) { pow.add(1L); }
-		while (pow.size() <= s.length()) {
-			pow.add((pow.get(pow.size() - 1) * B) % M);
-		}
+		while (pow.size() <= s.length()) { pow.add((pow.get(pow.size() - 1) * B) % M); }
 
 		pHash = new long[s.length() + 1];
 		pHash[0] = 0;
@@ -91,8 +88,7 @@ public class HashedString {
 	}
 
 	public long getHash(int start, int end) {
-		long rawVal =
-		    pHash[end + 1] - (pHash[start] * pow.get(end - start + 1));
+		long rawVal = pHash[end + 1] - (pHash[start] * pow.get(end - start + 1));
 		return (rawVal % M + M) % M;
 	}
 }
@@ -268,8 +264,7 @@ class HashedString {
 	}
 
 	ll get_hash(int start, int end) {
-		ll raw_val =
-		    p_hash[end + 1] - mod_mul(p_hash[start], pow[end - start + 1]);
+		ll raw_val = p_hash[end + 1] - mod_mul(p_hash[start], pow[end - start + 1]);
 		return (raw_val + M) % M;
 	}
 };
@@ -303,9 +298,7 @@ int main() {
 			freq_curr[h[i - n.size()] - 'a']--;
 		}
 		bool match = true;
-		for (int j = 0; j < 26; j++) {
-			match &= freq_curr[j] == freq_target[j];
-		}
+		for (int j = 0; j < 26; j++) { match &= freq_curr[j] == freq_target[j]; }
 		if (match) { good.insert(hs.get_hash(i + 1 - n.size(), i)); }
 	}
 
@@ -373,8 +366,7 @@ class HashedString {
 	}
 
 	ll get_hash(int start, int end) {
-		ll raw_val =
-		    p_hash[end + 1] - mod_mul(p_hash[start], pow[end - start + 1]);
+		ll raw_val = p_hash[end + 1] - mod_mul(p_hash[start], pow[end - start + 1]);
 		return (raw_val + M) % M;
 	}
 };

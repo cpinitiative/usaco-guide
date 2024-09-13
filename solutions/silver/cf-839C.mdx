@@ -128,8 +128,7 @@ public class Journey {
 		System.out.println(String.format("%.10f", ans));
 	}
 
-	public static void dfs(int node, int current_length,
-	                       double current_probability) {
+	public static void dfs(int node, int current_length, double current_probability) {
 		visited[node] = true;
 
 		int possible_moves = 0;
@@ -146,9 +145,7 @@ public class Journey {
 			// by the number of possible cities
 			double new_probability = current_probability / possible_moves;
 			for (int x : adjList.get(node)) {
-				if (!visited[x]) {
-					dfs(x, current_length + 1, new_probability);
-				}
+				if (!visited[x]) { dfs(x, current_length + 1, new_probability); }
 			}
 		}
 	}

@@ -99,9 +99,7 @@ pll tree[MAXN * 4];
 ll lazy[MAXN * 4];
 
 // returns the pair-sum of a and b
-pll merge(const pll &a, const pll &b) {
-	return {(a.f + b.f) % MOD, (a.s + b.s) % MOD};
-}
+pll merge(const pll &a, const pll &b) { return {(a.f + b.f) % MOD, (a.s + b.s) % MOD}; }
 
 // pushes lazy update in t to its children
 void pushdown(int t) {
@@ -136,8 +134,7 @@ ll query(int l, int r, int t = 1, int tl = 1, int tr = N) {
 	pushdown(t);
 
 	int tm = (tl + tr) >> 1;
-	return (query(l, r, t << 1, tl, tm) + query(l, r, t << 1 | 1, tm + 1, tr)) %
-	       MOD;
+	return (query(l, r, t << 1, tl, tm) + query(l, r, t << 1 | 1, tm + 1, tr)) % MOD;
 }
 
 int main() {

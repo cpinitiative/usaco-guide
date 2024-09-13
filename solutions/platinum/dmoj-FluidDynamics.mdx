@@ -75,8 +75,7 @@ const int MOD = 1e9 + 7;  // 998244353;
 const int MX = 2e5 + 5;
 const ll INF = 1e18;  // not too close to LLONG_MAX
 const ld PI = acos((ld)-1);
-const int dx[4] = {1, 0, -1, 0},
-          dy[4] = {0, 1, 0, -1};  // for every grid problem!!
+const int dx[4] = {1, 0, -1, 0}, dy[4] = {0, 1, 0, -1};  // for every grid problem!!
 mt19937 rng((uint32_t)chrono::steady_clock::now().time_since_epoch().count());
 template <class T> using pqg = priority_queue<T, vector<T>, greater<T>>;
 
@@ -97,9 +96,7 @@ ll fdiv(ll a, ll b) {
 	return a / b - ((a ^ b) < 0 && a % b);
 }  // divide a by b rounded down
 
-tcT > bool ckmin(T &a, const T &b) {
-	return b < a ? a = b, 1 : 0;
-}  // set a = min(a,b)
+tcT > bool ckmin(T &a, const T &b) { return b < a ? a = b, 1 : 0; }  // set a = min(a,b)
 tcT > bool ckmax(T &a, const T &b) { return a < b ? a = b, 1 : 0; }
 
 tcTU > T fstTrue(T lo, T hi, U f) {
@@ -247,13 +244,12 @@ tcTUU > void DBG(const T &t, const U &...u) {
 	DBG(u...);
 }
 #ifdef LOCAL  // compile with -DLOCAL, chk -> fake assert
-#define dbg(...)                                                               \
-	cerr << "Line(" << __LINE__ << ") -> [" << #__VA_ARGS__ << "]: [",         \
-	    DBG(__VA_ARGS__)
-#define chk(...)                                                               \
-	if (!(__VA_ARGS__))                                                        \
-		cerr << "Line(" << __LINE__ << ") -> function(" << __FUNCTION__        \
-		     << ") -> CHK FAILED: (" << #__VA_ARGS__ << ")" << "\n",           \
+#define dbg(...)                                                                       \
+	cerr << "Line(" << __LINE__ << ") -> [" << #__VA_ARGS__ << "]: [", DBG(__VA_ARGS__)
+#define chk(...)                                                                       \
+	if (!(__VA_ARGS__))                                                                \
+		cerr << "Line(" << __LINE__ << ") -> function(" << __FUNCTION__                \
+		     << ") -> CHK FAILED: (" << #__VA_ARGS__ << ")" << "\n",                   \
 		    exit(0);
 #else
 #define dbg(...) 0
@@ -293,9 +289,7 @@ ll CROSS(const P &p, const P &a, const P &b) {
 	return (a.f - p.f) * (b.s - p.s) - (a.s - p.s) * (b.f - p.f);
 }
 ll cross(int a, int b, int c) { return CROSS(fluid[a], fluid[b], fluid[c]); }
-ll dif(int a, int x) {
-	return fluid[x].f * fluid[a].s - fluid[x].s * fluid[a].f;
-}
+ll dif(int a, int x) { return fluid[x].f * fluid[a].s - fluid[x].s * fluid[a].f; }
 
 ll bs(int *v, const P &p, int lo, int hi) {
 	auto eval = [&](int x) { return fluid[x].f * p.f + fluid[x].s * p.s; };
@@ -323,8 +317,7 @@ struct Hull {
 		sort(all(xord), cmp);
 		usz = lsz = 0;
 		for (int i : xord) {
-			while (lsz > 1 && cross(lower[lsz - 2], lower[lsz - 1], i) <= 0)
-				lsz--;
+			while (lsz > 1 && cross(lower[lsz - 2], lower[lsz - 1], i) <= 0) lsz--;
 			lower[lsz++] = i;
 		}
 	}
@@ -351,16 +344,13 @@ struct Hull {
 		INS(lower, lsz, pos, label);
 		{
 			int nex = pos + 1;
-			while (nex + 1 < lsz &&
-			       cross(lower[pos], lower[nex], lower[nex + 1]) <= 0)
+			while (nex + 1 < lsz && cross(lower[pos], lower[nex], lower[nex + 1]) <= 0)
 				nex++;
 			ERASE(lower, lsz, pos + 1, nex);
 		}
 		{
 			int nex = pos - 1;
-			while (nex > 0 &&
-			       cross(lower[nex - 1], lower[nex], lower[pos]) <= 0)
-				nex--;
+			while (nex > 0 && cross(lower[nex - 1], lower[nex], lower[pos]) <= 0) nex--;
 			ERASE(lower, lsz, nex + 1, pos);
 		}
 	}

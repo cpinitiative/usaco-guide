@@ -108,16 +108,13 @@ int main() {
 						dp[i][j][k][m] +=
 						    (3 - m) * dp[i - 1][j - 1][k - cost_diff][m - 1];
 					// Case 3
-					dp[i][j][k][m] +=
-					    (2 * j - m) * dp[i - 1][j][k - cost_diff][m];
+					dp[i][j][k][m] += (2 * j - m) * dp[i - 1][j][k - cost_diff][m];
 					// Case 4
 					if (m == 1)
-						dp[i][j][k][m] +=
-						    2 * j * dp[i - 1][j][k - cost_diff][m - 1];
+						dp[i][j][k][m] += 2 * j * dp[i - 1][j][k - cost_diff][m - 1];
 					if (m == 2) {
 						if (i == n)
-							dp[i][j][k][m] +=
-							    dp[i - 1][j][k - cost_diff][m - 1];
+							dp[i][j][k][m] += dp[i - 1][j][k - cost_diff][m - 1];
 						else if (j > 1)
 							dp[i][j][k][m] +=
 							    (j - 1) * dp[i - 1][j][k - cost_diff][m - 1];
@@ -125,15 +122,12 @@ int main() {
 					// Case 5
 					if (m == 2) {
 						if (i == n)
-							dp[i][j][k][m] +=
-							    dp[i - 1][j + 1][k - cost_diff][m];
+							dp[i][j][k][m] += dp[i - 1][j + 1][k - cost_diff][m];
 						else
 							dp[i][j][k][m] +=
-							    j * (j - 1) *
-							    dp[i - 1][j + 1][k - cost_diff][m];
+							    j * (j - 1) * dp[i - 1][j + 1][k - cost_diff][m];
 					} else if (m == 1)
-						dp[i][j][k][m] +=
-						    j * j * dp[i - 1][j + 1][k - cost_diff][m];
+						dp[i][j][k][m] += j * j * dp[i - 1][j + 1][k - cost_diff][m];
 					else
 						dp[i][j][k][m] +=
 						    j * (j + 1) * dp[i - 1][j + 1][k - cost_diff][m];

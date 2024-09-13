@@ -39,8 +39,7 @@ int solve_noflip(string &s, string &t, int *loc) {
 	for (int i = 0; i <= n; ++i) cur_v_y[n - i] = i;
 	vector<short> cur_h_len(m + 1);
 	for (int i = 0; i <= n; ++i) {
-		for (int j = 0; j <= m; ++j)
-			forw_back_len[j] = max(0, forw_back_len[j] - 1);
+		for (int j = 0; j <= m; ++j) forw_back_len[j] = max(0, forw_back_len[j] - 1);
 		for (int j = 0; j <= m; ++j) {
 			int idx = n - i + j;
 			while (cur_v_y[idx] - cur_v_len[idx] == i) {
@@ -66,8 +65,7 @@ int solve_noflip(string &s, string &t, int *loc) {
 			back_forw_len[nj] = max(back_forw_len[nj], cur_h_len[j]);
 		}
 		for (int j = 1; j <= m; ++j) {
-			back_forw_len[j] =
-			    max((int)back_forw_len[j], back_forw_len[j - 1] - 1);
+			back_forw_len[j] = max((int)back_forw_len[j], back_forw_len[j - 1] - 1);
 		}
 		for (int j = 0; j <= m; ++j) {
 			if (forw_back_len[j] + back_forw_len[j] > res) {

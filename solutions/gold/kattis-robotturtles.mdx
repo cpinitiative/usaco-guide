@@ -85,15 +85,13 @@ int main() {
 		    (grid[newi][newj] == '.' || grid[newi][newj] == 'D') &&
 		    dist[cur.dir][cur.i][cur.j] + 1 < dist[cur.dir][newi][newj]) {
 			dist[cur.dir][newi][newj] = dist[cur.dir][cur.i][cur.j] + 1;
-			pq.push({dist[cur.dir][newi][newj], newi, newj, cur.dir,
-			         cur.moves + "F"});
+			pq.push({dist[cur.dir][newi][newj], newi, newj, cur.dir, cur.moves + "F"});
 		}
 		// melt ice castle and move forward
 		if (ingrid(newi, newj) && grid[newi][newj] == 'I' &&
 		    dist[cur.dir][cur.i][cur.j] + 2 < dist[cur.dir][newi][newj]) {
 			dist[cur.dir][newi][newj] = dist[cur.dir][cur.i][cur.j] + 2;
-			pq.push({dist[cur.dir][newi][newj], newi, newj, cur.dir,
-			         cur.moves + "XF"});
+			pq.push({dist[cur.dir][newi][newj], newi, newj, cur.dir, cur.moves + "XF"});
 		}
 		// turn left or right
 		for (int turn : {-1, 1}) {

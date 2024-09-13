@@ -66,8 +66,7 @@ bool check(long double v) {
 				for (int j = 0; j < mice_num; ++j) {
 					if (pre & (1 << j)) {
 						long double cur_v = v * p[num_mice];
-						long double time =
-						    dp[pre][j] + dist(mice[j], mice[i]) / cur_v;
+						long double time = dp[pre][j] + dist(mice[j], mice[i]) / cur_v;
 						if (dp[pre][j] != INF && time <= mice[i].time) {
 							dp[mask][i] = min(dp[mask][i], time);
 						}
@@ -117,8 +116,7 @@ import java.util.*;
 public final class CatAndMice {
 	private static final long PRECISION = (long)1e4;
 	public static void main(String[] args) throws IOException {
-		BufferedReader read =
-		    new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
 		int miceNum = Integer.parseInt(read.readLine());
 		int[][] mice = new int[miceNum][];
 		for (int m = 0; m < miceNum; m++) {
@@ -144,8 +142,8 @@ public final class CatAndMice {
 		System.out.println(valid);
 	}
 
-	private static boolean allEatable(int[] start, int[][] mice,
-	                                  double speedRed, double initSpeed) {
+	private static boolean allEatable(int[] start, int[][] mice, double speedRed,
+	                                  double initSpeed) {
 		double[][] minTime = new double[1 << mice.length][mice.length];
 		for (int s = 0; s < (1 << mice.length); s++) {
 			// MAX_VALUE will be used as a placeholder for invalid values
@@ -153,8 +151,7 @@ public final class CatAndMice {
 		}
 
 		for (int s = 1; s < (1 << mice.length); s++) {
-			double speed =
-			    Math.pow(speedRed, Integer.bitCount(s) - 1) * initSpeed;
+			double speed = Math.pow(speedRed, Integer.bitCount(s) - 1) * initSpeed;
 			for (int end = 0; end < mice.length; end++) {
 				if ((s & (1 << end)) == 0) { continue; }
 				// the subset without the current end
@@ -168,17 +165,14 @@ public final class CatAndMice {
 					continue;
 				}
 				for (int prevEnd = 0; prevEnd < mice.length; prevEnd++) {
-					if (minTime[prev][prevEnd] == Double.MAX_VALUE) {
-						continue;
-					}
+					if (minTime[prev][prevEnd] == Double.MAX_VALUE) { continue; }
 					double dist = dist(mice[prevEnd], mice[end]);
 					// check if Cartesian Cat can reach the mouse in time
-					if (speed * (mice[end][2] - minTime[prev][prevEnd]) <
-					    dist) {
+					if (speed * (mice[end][2] - minTime[prev][prevEnd]) < dist) {
 						continue;
 					}
-					minTime[s][end] = Math.min(
-					    minTime[s][end], minTime[prev][prevEnd] + dist / speed);
+					minTime[s][end] = Math.min(minTime[s][end],
+					                           minTime[prev][prevEnd] + dist / speed);
 				}
 			}
 		}
@@ -189,8 +183,7 @@ public final class CatAndMice {
 	}
 
 	private static double dist(int[] p1, int[] p2) {
-		return Math.sqrt(Math.pow(p1[0] - p2[0], 2) +
-		                 Math.pow(p1[1] - p2[1], 2));
+		return Math.sqrt(Math.pow(p1[0] - p2[0], 2) + Math.pow(p1[1] - p2[1], 2));
 	}
 }
 ```

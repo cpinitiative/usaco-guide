@@ -107,8 +107,7 @@ struct SegmentTree {
 		 * the M value corresponding to the best west/east partition based on
 		 * the current given north/south partitions
 		 */
-		return max(max(west_size, east_size),
-		           max(other_west_size, other_east_size));
+		return max(max(west_size, east_size), max(other_west_size, other_east_size));
 	}
 };
 
@@ -124,8 +123,7 @@ int main() {
 	// sort after the y coordinates and divide the farm into north and south
 	sort(cows.begin(), cows.end(),
 	     [&](const pair<int, int> &c1, const pair<int, int> &c2) {
-		     return make_pair(c1.second, c1.first) <
-		            make_pair(c2.second, c2.first);
+		     return make_pair(c1.second, c1.first) < make_pair(c2.second, c2.first);
 	     });
 
 	// north and south store the number of points on the x coordinates
@@ -265,10 +263,8 @@ public class Balancing {
 				int r = mid * 2 + 1;
 				// add the subtree which minimizes the overall maximum count of
 				// cows
-				if (Math.max(westSize + tree[l],
-				             otherWestSize + other.tree[l]) <
-				    Math.max(eastSize + tree[r],
-				             otherEastSize + other.tree[r])) {
+				if (Math.max(westSize + tree[l], otherWestSize + other.tree[l]) <
+				    Math.max(eastSize + tree[r], otherEastSize + other.tree[r])) {
 					mid = r;
 					westSize += tree[l];
 					otherWestSize += other.tree[l];
@@ -280,10 +276,8 @@ public class Balancing {
 			}
 
 			// Add the last x coordinate either to the west or the east side
-			if (Math.max(westSize + tree[mid],
-			             otherWestSize + other.tree[mid]) <
-			    Math.max(eastSize + tree[mid],
-			             otherEastSize + other.tree[mid])) {
+			if (Math.max(westSize + tree[mid], otherWestSize + other.tree[mid]) <
+			    Math.max(eastSize + tree[mid], otherEastSize + other.tree[mid])) {
 				westSize += tree[mid];
 				otherWestSize += other.tree[mid];
 			} else {
@@ -375,8 +369,7 @@ public class Balancing {
 			int r = (MAX_Y - 1) / 2;
 			while (l <= r) {
 				int mid = (l + r) / 2;
-				int up =
-				    Math.max(i - left.sum(2 * mid), N - i - right.sum(2 * mid));
+				int up = Math.max(i - left.sum(2 * mid), N - i - right.sum(2 * mid));
 				int down = Math.max(left.sum(2 * mid), right.sum(2 * mid));
 				if (up > down) {
 					l = mid + 1;
@@ -512,8 +505,7 @@ int main() {
 	// compress y coordinates
 	sort(cows.begin(), cows.end(),
 	     [&](const pair<int, int> &c1, const pair<int, int> &c2) {
-		     return make_pair(c1.second, c1.first) <
-		            make_pair(c2.second, c2.first);
+		     return make_pair(c1.second, c1.first) < make_pair(c2.second, c2.first);
 	     });
 	int new_y = 0;
 	int actual_y = cows[0].second;
@@ -556,8 +548,7 @@ int main() {
 			 * with the current maximum M, i.e. mid
 			 */
 			if (min(west_south_height[x], east_south_height[N - 2 - x]) + 1 +
-			        min(west_north_height[x], east_north_height[N - 2 - x]) +
-			        1 >=
+			        min(west_north_height[x], east_north_height[N - 2 - x]) + 1 >=
 			    N) {
 				possible = true;
 				break;

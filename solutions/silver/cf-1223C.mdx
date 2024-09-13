@@ -47,9 +47,7 @@ bool works(int sellTickets) {
 	sort(percentages.begin(), percentages.end(), greater<ll>());
 
 	ll cur = 0;
-	for (int i = 0; i < sellTickets; i++) {
-		cur += percentages[i] * p[i] / 100;
-	}
+	for (int i = 0; i < sellTickets; i++) { cur += percentages[i] * p[i] / 100; }
 
 	return cur >= k;
 }
@@ -101,8 +99,7 @@ import java.util.Comparator;
 
 public final class SaveNature {
 	public static void main(String[] args) throws IOException {
-		BufferedReader read =
-		    new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
 		int queryNum = Integer.parseInt(read.readLine());
 		for (int q = 0; q < queryNum; q++) {
 			int ticketNum = Integer.parseInt(read.readLine());
@@ -120,8 +117,7 @@ public final class SaveNature {
 			                  .toArray();
 			long minRevenue = Long.parseLong(read.readLine());
 			// the frequency of both programs including a single ticket
-			long comboFreq =
-			    (long)prog1[1] * prog2[1] / gcd(prog1[1], prog2[1]);
+			long comboFreq = (long)prog1[1] * prog2[1] / gcd(prog1[1], prog2[1]);
 
 			int lo = 0;
 			int hi = ticketNum;
@@ -129,10 +125,10 @@ public final class SaveNature {
 			while (lo <= hi) {
 				int mid = (lo + hi) / 2;
 				// all the possible tickets that can be used to save the nature
-				int[][] helpChances = new int[][] {
-				    {prog1[0] + prog2[0], ((int)(mid / comboFreq))},
-				    {prog1[0], (int)(mid / prog1[1] - mid / comboFreq)},
-				    {prog2[0], (int)(mid / prog2[1] - mid / comboFreq)}};
+				int[][] helpChances =
+				    new int[][] {{prog1[0] + prog2[0], ((int)(mid / comboFreq))},
+				                 {prog1[0], (int)(mid / prog1[1] - mid / comboFreq)},
+				                 {prog2[0], (int)(mid / prog2[1] - mid / comboFreq)}};
 				// sort the chances, the greatest percentage going first
 				Arrays.sort(helpChances, Comparator.comparingInt(c -> - c[0]));
 

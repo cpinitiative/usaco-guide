@@ -61,9 +61,8 @@ void retrace(pii node) {  // retrace from final node, adding direction from
 	if (origin.second == node.second - 1) ans.push_back('R');
 	retrace(origin);
 }
-void check(
-    pii origin,
-    pii dest) {  // check if the considered destination may be traveled to
+void check(pii origin,
+           pii dest) {  // check if the considered destination may be traveled to
 	int pl = paths[origin.first][origin.second];
 	if (pl + 1 < paths[dest.first][dest.second]) {
 		paths[dest.first][dest.second] = pl + 1;
@@ -88,8 +87,8 @@ void bfs() {
 		next = loc;
 		next.second--;
 		check(loc, next);
-		if (mora && (loc.first == 1 || loc.second == 1 || loc.first == N ||
-		             loc.second == M)) {
+		if (mora &&
+		    (loc.first == 1 || loc.second == 1 || loc.first == N || loc.second == M)) {
 			cout << "YES" << endl;
 			cout << paths[loc.first][loc.second] << endl;
 			retrace(loc);
@@ -116,10 +115,9 @@ int main() {
 			}
 		}
 	}
-	bfs();        // monster bfs
-	mora = true;  // change next bfs to A bfs
-	from[A.first][A.second] =
-	    pii(0, 0);  // give the retrace a terminating location
+	bfs();                                // monster bfs
+	mora = true;                          // change next bfs to A bfs
+	from[A.first][A.second] = pii(0, 0);  // give the retrace a terminating location
 	paths[A.first][A.second] = 0;
 	q.push(A);  // get ready for next bfs
 	bfs();      // bfs with A
@@ -144,8 +142,7 @@ public class monsters {
 	public static int N, M;
 
 	public static void main(String[] args) throws IOException {
-		BufferedReader br =
-		    new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st = new StringTokenizer(br.readLine());
 		N = Integer.parseInt(st.nextToken());
 		M = Integer.parseInt(st.nextToken());

@@ -196,8 +196,7 @@ public class CowLand {
 			set(index, element, 0, 0, size);
 		}
 
-		private void set(int index, int element, int currNode, int left,
-		                 int right) {
+		private void set(int index, int element, int currNode, int left, int right) {
 			if (right - left == 1) {
 				segtree[currNode] = element;
 			} else {
@@ -207,18 +206,16 @@ public class CowLand {
 				} else {
 					set(index, element, 2 * currNode + 2, mid, right);
 				}
-				segtree[currNode] =
-				    Collections.min(Arrays.asList(segtree[2 * currNode + 1],
-				                                  segtree[2 * currNode + 2]),
-				                    cmp);
+				segtree[currNode] = Collections.min(
+				    Arrays.asList(segtree[2 * currNode + 1], segtree[2 * currNode + 2]),
+				    cmp);
 			}
 		}
 
 		public int min(int from, int to) {
 			if (from < 0 || to > arrSize) {
 				throw new IllegalArgumentException(String.format(
-				    "the bounds %s and %s are out of bounds i think", from,
-				    to));
+				    "the bounds %s and %s are out of bounds i think", from, to));
 			}
 			return min(from, to, 0, 0, size);
 		}
@@ -243,15 +240,13 @@ public class CowLand {
 		private final int arrSize;
 		private final int size;
 
-		public XORSegTree(
-		    int len) {  // constructs the thing kinda like an array
+		public XORSegTree(int len) {  // constructs the thing kinda like an array
 			int size = 1;
 			while (size < len) { size *= 2; }
 			this.size = size;
 			arrSize = len;
-			segtree =
-			    new int[size * 2];  // we won't necessarily use all of the
-			                        // element but that doesn't really matter
+			segtree = new int[size * 2];  // we won't necessarily use all of the
+			                              // element but that doesn't really matter
 		}
 
 		public void set(int index, int element) {
@@ -262,8 +257,7 @@ public class CowLand {
 			set(index, element, 0, 0, size);
 		}
 
-		private void set(int index, int element, int currNode, int left,
-		                 int right) {
+		private void set(int index, int element, int currNode, int left, int right) {
 			if (right - left == 1) {
 				segtree[currNode] = element;
 			} else {
@@ -283,8 +277,7 @@ public class CowLand {
 		public int xor(int from, int to) {
 			if (from < 0 || to > arrSize) {
 				throw new IllegalArgumentException(String.format(
-				    "the bounds %s and %s are out of bounds i think", from,
-				    to));
+				    "the bounds %s and %s are out of bounds i think", from, to));
 			}
 			return xor(from, to, 0, 0, size);
 		}
@@ -314,8 +307,7 @@ public class CowLand {
 		private final MinSegTree LCATree;
 		private final XORSegTree queryTree;
 
-		public AmusementPark(ArrayList<Integer>[] neighbors,
-		                     int[] respectiveVals) {
+		public AmusementPark(ArrayList<Integer>[] neighbors, int[] respectiveVals) {
 			this.neighbors = neighbors;
 			enjoyment = respectiveVals.clone();
 			nodes = neighbors.length;
@@ -337,9 +329,8 @@ public class CowLand {
 				queryTree.set(firstOcc[n], enjoyment[n]);
 				queryTree.set(lastOcc[n], enjoyment[n]);
 			}
-			LCATree =
-			    new MinSegTree(eulerTour.stream().mapToInt(i -> i).toArray(),
-			                   Comparator.comparingInt(n -> height[n]));
+			LCATree = new MinSegTree(eulerTour.stream().mapToInt(i -> i).toArray(),
+			                         Comparator.comparingInt(n -> height[n]));
 		}
 
 		public int query(int n1, int n2) {
@@ -368,8 +359,8 @@ public class CowLand {
 
 		private void eulerTour() {  // i could just put this in the constructor
 			                        // but this makes it look better
-			ArrayDeque<int[]> frontier = new ArrayDeque<>(
-			    Collections.singletonList(new int[] {0, -1, 0}));
+			ArrayDeque<int[]> frontier =
+			    new ArrayDeque<>(Collections.singletonList(new int[] {0, -1, 0}));
 			HashSet<Integer> visited = new HashSet<>();
 			int[] parent = new int[nodes];
 			while (!frontier.isEmpty()) {
@@ -379,8 +370,7 @@ public class CowLand {
 				visited.add(curr[0]);
 				height[curr[0]] = curr[2];
 				firstOcc[curr[0]] =
-				    eulerTour.size() -
-				    1;  // -1 because of that .add(curr[0]) above
+				    eulerTour.size() - 1;  // -1 because of that .add(curr[0]) above
 				if (curr[0] != 0) {
 					frontier.addFirst(
 					    new int[] {curr[1], parent[curr[1]], curr[2] - 1});
@@ -435,8 +425,8 @@ public class CowLand {
 				written.println(happiness);
 				break;
 			default:
-				throw new IllegalArgumentException(
-				    "what kind of query is " + Arrays.toString(query) + " lol");
+				throw new IllegalArgumentException("what kind of query is " +
+				                                   Arrays.toString(query) + " lol");
 			}
 		}
 		written.close();

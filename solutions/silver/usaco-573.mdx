@@ -25,8 +25,7 @@ int number_of_wins(vector<int> &bessie, vector<int> &elsie,
 	sort(begin(bessie), end(bessie), cmp);
 	sort(begin(elsie), end(elsie), cmp);
 
-	int bpos =
-	    0;  // keep track of index of card which bessie uses in current move
+	int bpos = 0;  // keep track of index of card which bessie uses in current move
 	int wins = 0;
 
 	for (int i = 0; i < n; i++) {
@@ -68,11 +67,9 @@ int main() {
 	}
 
 	for (int i = 2 * n; i > 0; i--) {
-		if (elsie_has.find(i) ==
-		    elsie_has.end())  // elsie does not have this card
+		if (elsie_has.find(i) == elsie_has.end())  // elsie does not have this card
 		{
-			if (size(bessie_first) <
-			    n / 2)  // bigger card must be used in first half
+			if (size(bessie_first) < n / 2)  // bigger card must be used in first half
 			{
 				bessie_first.push_back(i);
 			} else {
@@ -84,12 +81,12 @@ int main() {
 	int ans = 0;
 
 	// First half person with card of larger value wins
-	ans += number_of_wins(bessie_first, elsie_first,
-	                      [](int a, int b) { return a > b; });
+	ans +=
+	    number_of_wins(bessie_first, elsie_first, [](int a, int b) { return a > b; });
 
 	// In second half of game person with card of smaller value win
-	ans += number_of_wins(bessie_second, elsie_second,
-	                      [](int a, int b) { return a < b; });
+	ans +=
+	    number_of_wins(bessie_second, elsie_second, [](int a, int b) { return a < b; });
 
 	cout << ans << endl;
 }

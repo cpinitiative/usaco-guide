@@ -159,8 +159,7 @@ int main() {
 
 	long long ans = (long long)n * (n - 1) / 2;
 	for (const auto &[subset, freq] : subsets) {
-		ans -=
-		    ((int)subset.size() % 2 == 1 ? 1LL : -1LL) * freq * (freq - 1) / 2;
+		ans -= ((int)subset.size() % 2 == 1 ? 1LL : -1LL) * freq * (freq - 1) / 2;
 	}
 
 	ofstream("cowpatibility.out") << cnt << '\n';
@@ -190,9 +189,7 @@ int howMany(vector<string> patterns, int k) {
 		for (char c = 'a'; c <= 'z'; c++) {
 			int mask = 0;
 			for (int j = 0; j < (int)patterns.size(); j++) {
-				if (patterns[j][i] == c || patterns[j][i] == '?') {
-					mask |= (1 << j);
-				}
+				if (patterns[j][i] == c || patterns[j][i] == '?') { mask |= (1 << j); }
 			}
 			if (i == 0) {
 				dp[i][mask]++;
@@ -246,8 +243,7 @@ int howMany(vector<string> patterns, int k) {
 			for (int supermask = mask; supermask < (1 << (int)patterns.size());
 			     supermask++) {
 				if ((mask & supermask) == mask) {
-					int sign =
-					    ((__builtin_popcount(supermask) - k) & 1 ? -1 : 1);
+					int sign = ((__builtin_popcount(supermask) - k) & 1 ? -1 : 1);
 					int cnt = 1;
 					for (int i = 0; i < (int)patterns[0].size(); i++) {
 						bool flag = true;

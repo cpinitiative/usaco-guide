@@ -260,10 +260,8 @@ int main() {
 
 	// returns the sum of leftovers[from_r][from_c] to leftovers[to_r][to_c]
 	auto rect_sum = [&](int from_r, int from_c, int to_r, int to_c) {
-		return (pref_leftovers[to_r + 1][to_c + 1] -
-		        pref_leftovers[from_r][to_c + 1] -
-		        pref_leftovers[to_r + 1][from_c] +
-		        pref_leftovers[from_r][from_c]);
+		return (pref_leftovers[to_r + 1][to_c + 1] - pref_leftovers[from_r][to_c + 1] -
+		        pref_leftovers[to_r + 1][from_c] + pref_leftovers[from_r][from_c]);
 	};
 
 	vector<int> top_best(WIDTH), bottom_best(WIDTH), left_best(WIDTH),
@@ -330,8 +328,7 @@ public final class PaintBarn {
 	static int[][] prefLeftovers;
 
 	public static void main(String[] args) throws IOException {
-		BufferedReader read =
-		    new BufferedReader(new FileReader("paintbarn.in"));
+		BufferedReader read = new BufferedReader(new FileReader("paintbarn.in"));
 		StringTokenizer initial = new StringTokenizer(read.readLine());
 		int rectNum = Integer.parseInt(initial.nextToken());
 		int optimalAmt = Integer.parseInt(initial.nextToken());
@@ -402,8 +399,7 @@ public final class PaintBarn {
 				int rightSum = 0;
 				for (int i = WIDTH - 1; i >= 1; i--) {
 					rect = bottomSum + rectSum(i, start, i, end);
-					bottomBest[i] =
-					    max(bottomBest[i], bottomSum = max(0, rect));
+					bottomBest[i] = max(bottomBest[i], bottomSum = max(0, rect));
 
 					rect = rightSum + rectSum(start, i, end, i);
 					rightBest[i] = max(rightBest[i], rightSum = max(0, rect));
@@ -435,9 +431,8 @@ public final class PaintBarn {
 
 	// returns the sum of leftovers[from_r][from_c] to leftovers[to_r][to_c]
 	static int rectSum(int fromR, int fromC, int toR, int toC) {
-		return (prefLeftovers[toR + 1][toC + 1] -
-		        prefLeftovers[fromR][toC + 1] - prefLeftovers[toR + 1][fromC] +
-		        prefLeftovers[fromR][fromC]);
+		return (prefLeftovers[toR + 1][toC + 1] - prefLeftovers[fromR][toC + 1] -
+		        prefLeftovers[toR + 1][fromC] + prefLeftovers[fromR][fromC]);
 	}
 }
 ```

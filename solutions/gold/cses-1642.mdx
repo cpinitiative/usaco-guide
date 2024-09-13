@@ -34,11 +34,10 @@ mt19937 rng((uint32_t)chrono::steady_clock::now().time_since_epoch().count());
 #include <ext/pb_ds/assoc_container.hpp>
 using namespace __gnu_pbds;
 struct chash {  /// use most bits rather than just the lowest ones
-	const uint64_t C =
-	    ll(2e18 * acos((long double)-1)) + 71;  // large odd number
+	const uint64_t C = ll(2e18 * acos((long double)-1)) + 71;  // large odd number
 	const int RANDOM = rng();
-	ll operator()(ll x)
-	    const {  /// https://gcc.gnu.org/onlinedocs/gcc/Other-Builtins.html
+	ll
+	operator()(ll x) const {  /// https://gcc.gnu.org/onlinedocs/gcc/Other-Builtins.html
 		return __builtin_bswap64((x ^ RANDOM) * C);
 	}
 };
