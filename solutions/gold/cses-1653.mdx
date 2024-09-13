@@ -133,4 +133,46 @@ int main() {
 }
 ```
 </CPPSection>
+
+<PySection>
+
+```py
+people, maxWeight = map(int, input().split())
+weight = list(map(int, input().split()))
+
+dp = [(people + 1, maxWeight + 1)] * (1 << people)
+dp[0] = (1, 0)
+
+"""
+Loop through all bitmasks.
+The bitmasks represent whether each person has used the elevator or not.
+If the ith bit is set, this means the ith person has used the elevator.
+"""
+
+for mask in range(1, (1 << people)):
+    for i in range(people):
+        # The ith person has used the elevator
+        if (mask & (1 << i)):
+            prev = dp[mask ^ (1 << i)]
+            numRides = prev[0]
+            totalWeight = prev[1]
+
+            # We need to use a new ride
+            if totalWeight + weight[i] <= maxWeight:
+                totalWeight += weight[i]
+
+            else:
+                # Add the weight of the ith person to the current ride
+                numRides += 1
+                totalWeight = weight[i]
+
+            # Update if it is better than the original
+            dp[mask] = min(dp[mask], (numRides, totalWeight))
+
+# Result when all people have used the elevator
+print(dp[(1 << people) - 1][0])
+```
+
+</PySection>
+
 </LanguageSection>
