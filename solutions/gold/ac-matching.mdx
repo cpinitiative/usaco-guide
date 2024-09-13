@@ -124,25 +124,25 @@ N = int(input())
 
 compat = []
 for _ in range(N):
-    compat.append(list(map(int, input().split())))
+	compat.append(list(map(int, input().split())))
 
 dp = [0] * (1 << N)
 dp[0] = 1
 
 for s in range(1 << N):
-    pair_num = bin(s).count('1') 
-    for w in range(N):
-        """
-        check that
-        1. check that this woman hasn't been paired already
-        2. she's compatible with the {pair_num + 1}th man
-        """
-        if (s & (1 << w)) or not compat[pair_num][w]:
-            continue
+	pair_num = bin(s).count("1")
+	for w in range(N):
+		"""
+		check that
+		1. check that this woman hasn't been paired already
+		2. she's compatible with the {pair_num + 1}th man
+		"""
+		if (s & (1 << w)) or not compat[pair_num][w]:
+			continue
 
-        # add the count to future dp states
-        dp[s | (1 << w)] += dp[s]
-        dp[s | (1 << w)] %= MOD
+		# add the count to future dp states
+		dp[s | (1 << w)] += dp[s]
+		dp[s | (1 << w)] %= MOD
 
 print(dp[(1 << N) - 1])
 ```
