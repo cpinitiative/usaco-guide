@@ -1,0 +1,123 @@
+---
+id: ioi-14-wall
+source: IOI
+title: 2014 - Wall
+author: Justin Ji
+---
+
+[Official Analysis](https://dmoj.ca/problem/ioi14p2/editorial)
+
+<Spoiler title = "Hint">
+
+Consider treating each update as a restriction on the values the items in the
+range can take on. For example, a range update $\texttt{add(x)}$ restricts the values
+on the range to being $\geq x$, and a range update $\texttt{remove(x)}$ restricts the
+values on the range to being $\leq x$.
+
+</Spoiler>
+
+<Spoiler title = "Explanation">
+
+As mentioned in the hint, we can treat each range update as a restriction of
+what values can occur on the range. For example, let's consider the following
+sequence of updates:
+
+$\texttt{add(5)}$, $\texttt{remove(7)}$
+
+Then, any value on the range would be restricted to being $\geq 5$ and $\leq 7$.
+Let's consider what would happen if we added another update to this sequence:
+
+$\texttt{add(5)}$, $\texttt{remove(7)}$, $\texttt{remove(4)}$
+
+Now, the range's values can only be equal to $4$, because the values were
+greater than $4$ before the range updates. We can handle all updates in the
+manner described above.
+
+Now that we have a concrete lower and upper bound, the problem of figuring out
+the final value remains. Recall how each $\texttt{add}$ and $\texttt{remove}$ update essentially imposed
+an upper and lower bound on the values. Thus, restricting the values on
+the range to being on the interval $[a, b]$ is essentially the same as performing
+two updates: $\texttt{add(a)}$ and $\texttt{remove(b)}$. As a result, the final result for an
+individual value is the lower bound of what value it can take.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}((N + Q)\log{N})$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+struct Update {
+	int min_val = 0;
+	int max_val = INT_MAX;
+};
+class Segtree {
+	const int sz;
+	vector<Update> t;
+
+	void apply(int v, const Update &x) {
+		t[v].min_val = max(t[v].min_val, x.min_val);
+		t[v].max_val = max(t[v].max_val, t[v].min_val);
+		t[v].max_val = min(t[v].max_val, x.max_val);
+		t[v].min_val = min(t[v].min_val, t[v].max_val);
+	}
+
+	void push_down(int v) {
+		apply(2 * v, t[v]);
+		apply(2 * v + 1, t[v]);
+		t[v] = Update();
+	}
+
+	void update(int v, int l, int r, int ql, int qr, const Update &x) {
+		if (qr < l || ql > r) { return; }
+		if (ql <= l && r <= qr) {
+			apply(v, x);
+		} else {
+			push_down(v);
+			int m = (l + r) / 2;
+			update(2 * v, l, m, ql, qr, x);
+			update(2 * v + 1, m + 1, r, ql, qr, x);
+		}
+	}
+
+	Update query(int v, int l, int r, int idx) {
+		if (l == r) {
+			return t[v];
+		} else {
+			push_down(v);
+			int m = (l + r) / 2;
+			return (idx <= m) ? query(2 * v, l, m, idx)
+			                  : query(2 * v + 1, m + 1, r, idx);
+		}
+	}
+
+  public:
+	Segtree(int n) : sz(n), t(4 * n) {}
+
+	void update(int ql, int qr, const Update &x) { update(1, 0, sz - 1, ql, qr, x); }
+
+	Update get(int idx) { return query(1, 0, sz - 1, idx); }
+};
+
+void buildWall(int n, int k, int op[], int left[], int right[], int height[],
+               int final_height[]) {
+	Segtree st(n);
+	for (int i = 0; i < k; i++) {
+		if (op[i] == 1) {
+			st.update(left[i], right[i], {height[i], INT_MAX});
+		} else {
+			st.update(left[i], right[i], {0, height[i]});
+		}
+	}
+	for (int i = 0; i < n; i++) { final_height[i] = st.get(i).min_val; }
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
+</Spoiler>
