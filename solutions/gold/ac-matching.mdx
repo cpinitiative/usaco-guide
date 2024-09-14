@@ -120,18 +120,18 @@ public class Main {
 MOD = 10**9 + 7
 MAX_N = 21
 
-N = int(input())
+n = int(input())
 
 compat = []
-for _ in range(N):
+for _ in range(n):
 	compat.append(list(map(int, input().split())))
 
-dp = [0] * (1 << N)
+dp = [0] * (1 << n)
 dp[0] = 1
 
-for s in range(1 << N):
+for s in range(1 << n):
 	pair_num = bin(s).count("1")
-	for w in range(N):
+	for w in range(n):
 		"""
 		check that
 		1. check that this woman hasn't been paired already
@@ -144,7 +144,7 @@ for s in range(1 << N):
 		dp[s | (1 << w)] += dp[s]
 		dp[s | (1 << w)] %= MOD
 
-print(dp[(1 << N) - 1])
+print(dp[(1 << n) - 1])
 ```
 
 </PySection>
