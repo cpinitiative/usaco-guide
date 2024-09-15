@@ -957,17 +957,17 @@ using std::cout;
 using std::endl;
 
 int main() {
-    int n;
-    int k;
-    std::cin >> n >> k;
+	int n;
+	int k;
+	std::cin >> n >> k;
 
-    double expect_max = 0;
-    for (int i = 1; i <= k; i++) {
-        expect_max += i * (pow((double)i / k, n) - pow((double)(i - 1) / k, n));
-    }
+	double expect_max = 0;
+	for (int i = 1; i <= k; i++) {
+		expect_max += i * (pow((double)i / k, n) - pow((double)(i - 1) / k, n));
+	}
 
-    cout << std::setprecision(6) << std::fixed;  // set output precision
-    cout << expect_max << endl;
+	cout << std::setprecision(6) << std::fixed;  // set output precision
+	cout << expect_max << endl;
 }
 ```
 
@@ -979,7 +979,7 @@ n, k = [int(i) for i in input().split()]
 
 expected_max = 0
 for c in range(1, k + 1):
-    expected_max += c * ((c / k) ** n - ((c - 1) / k) ** n)
+	expected_max += c * ((c / k) ** n - ((c - 1) / k) ** n)
 
 print(f"{expected_max:.6f}")
 ```
@@ -1034,42 +1034,42 @@ using std::endl;
 using std::vector;
 
 int main() {
-    int n;
-    std::cin >> n;
-    vector<vector<int>> adj(n, vector<int>(n));
-    for (int n1 = 0; n1 < n; n1++) {
-        for (int n2 = 0; n2 < n; n2++) {
-            char connected;
-            std::cin >> connected;
-            adj[n1][n2] = connected == '1';
-        }
-    }
+	int n;
+	std::cin >> n;
+	vector<vector<int>> adj(n, vector<int>(n));
+	for (int n1 = 0; n1 < n; n1++) {
+		for (int n2 = 0; n2 < n; n2++) {
+			char connected;
+			std::cin >> connected;
+			adj[n1][n2] = connected == '1';
+		}
+	}
 
-    // reach_from[i] = the # of nodes that have a path to i
-    vector<int> reach_from(n);
-    for (int start = 0; start < n; start++) {
-        vector<int> todo{start};
-        vector<bool> visited(n, false);
-        visited[start] = true;
-        while (!todo.empty()) {
-            int curr = todo.back();
-            todo.pop_back();
-            for (int i = 0; i < n; i++) {
-                if (!visited[i] && adj[curr][i]) {
-                    visited[i] = true;
-                    reach_from[i]++;
-                    todo.push_back(i);
-                }
-            }
-        }
-    }
+	// reach_from[i] = the # of nodes that have a path to i
+	vector<int> reach_from(n);
+	for (int start = 0; start < n; start++) {
+		vector<int> todo{start};
+		vector<bool> visited(n, false);
+		visited[start] = true;
+		while (!todo.empty()) {
+			int curr = todo.back();
+			todo.pop_back();
+			for (int i = 0; i < n; i++) {
+				if (!visited[i] && adj[curr][i]) {
+					visited[i] = true;
+					reach_from[i]++;
+					todo.push_back(i);
+				}
+			}
+		}
+	}
 
-    double expected_ops = 0;
-    for (int i : reach_from) {
-        expected_ops += 1.0 / (i + 1);
-    }
+	double expected_ops = 0;
+	for (int i : reach_from) {
+		expected_ops += 1.0 / (i + 1);
+	}
 
-    cout << std::setprecision(15) << expected_ops << endl;
+	cout << std::setprecision(15) << expected_ops << endl;
 }
 ```
 
@@ -1081,27 +1081,27 @@ n = int(input())
 
 adj = [[] for _ in range(n)]
 for i in range(n):
-    for v, c in enumerate(input()):
-        if c == "1":
-            adj[i].append(v)
+	for v, c in enumerate(input()):
+		if c == "1":
+			adj[i].append(v)
 
 # reach_from[i] = the # of nodes that have a path to i
 reach_from = [0 for _ in range(n)]
 for start in range(n):
-    todo = [start]
-    visited = [False for _ in range(n)]
-    visited[start] = True
-    while todo:
-        curr = todo.pop()
-        for next_ in adj[curr]:
-            if not visited[next_]:
-                visited[next_] = True
+	todo = [start]
+	visited = [False for _ in range(n)]
+	visited[start] = True
+	while todo:
+		curr = todo.pop()
+		for next_ in adj[curr]:
+			if not visited[next_]:
+				visited[next_] = True
 				reach_from[next_] += 1
-                todo.append(next_)
+				todo.append(next_)
 
 expected_ops = 0
 for i in reach_from:
-    expected_ops += 1 / (i + 1)
+	expected_ops += 1 / (i + 1)
 
 print(expected_ops)
 ```
