@@ -37,7 +37,8 @@ int main() {
 	int n;
 	cin >> n;
 
-	// Initialize arrays for column position of 'A' and column position of 'B' in each row
+	// Initialize arrays for column position of 'A' and column position of 'B' in each
+	// row
 	vector<int> colA(n, -1), colB(n, -1), configCount(6, 0);
 	vector<bool> hasA(n, false), hasB(n, false);
 	vector<ll> fact(n + 1), invFact(n + 1);
@@ -90,12 +91,12 @@ int main() {
 
 	/** @return The number of valid grid configurations */
 	auto f = [&](int i, int j, int k) {
-		ll res = (choose(configCount[0], i) * choose(configCount[1], j) % MOD * choose(configCount[2], k) % MOD *
-		          choose(configCount[3], i) % MOD);
+		ll res = (choose(configCount[0], i) * choose(configCount[1], j) % MOD *
+		          choose(configCount[2], k) % MOD * choose(configCount[3], i) % MOD);
 
 		// Multiply by the factorials of the number of rows and columns left
-		res =
-		    (res * fact[i] % MOD * fact[configCount[4] - i - j] % MOD * fact[configCount[5] - i - k] % MOD);
+		res = (res * fact[i] % MOD * fact[configCount[4] - i - j] % MOD *
+		       fact[configCount[5] - i - k] % MOD);
 
 		// Apply inclusion-exclusion principle to adjust the result
 		if ((i + j + k) % 2 == 1) { res = (MOD - res); }
@@ -107,12 +108,13 @@ int main() {
 	ll ans = 0;
 	for (int i = 0; i <= min(configCount[0], configCount[3]); i++) {
 		for (int j = 0; j <= configCount[1]; j++) {
-			for (int k = 0; k <= configCount[2]; k++) { ans = (ans + f(i, j, k)) % MOD; }
+			for (int k = 0; k <= configCount[2]; k++) {
+				ans = (ans + f(i, j, k)) % MOD;
+			}
 		}
 	}
 
 	cout << ans << endl;
-
 }
 ```
 </CPPSection>
