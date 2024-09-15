@@ -1,0 +1,140 @@
+---
+id: cses-2429
+source: CSES
+title: Grid Completion
+author:Alexis Tao
+---
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N^3)$
+
+<LanguageSection>
+
+<CPPSection>
+
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+typedef long long ll;
+const ll MOD = 1e9 + 7;
+
+// Compute modular inverse using Fermat's Little Theorem
+ll modInverse(ll x, ll MOD) {
+    ll res = 1;
+    ll b = MOD - 2;  // Theorem: x^(MOD-2) ≡ x^(-1) (mod MOD)
+    while (b) {
+        if (b & 1) {
+            res = (res * x) % MOD;
+        }
+        x = (x * x) % MOD;
+        b >>= 1;
+    }
+    return res;
+}
+
+int main() {
+    int N;
+    cin >> N;
+
+    vector<int> p(N, -1), q(N, -1), C(6, 0);
+    vector<bool> inp(N, false), inq(N, false);
+    vector<ll> fact(N + 1), inv(N + 1);
+    string S;
+
+    // Precompute factorials
+    fact[0] = 1;
+    for (int i = 1; i <= N; i++) {
+        fact[i] = (fact[i - 1] * i) % MOD;
+    }
+
+    // Compute the modular inverse of the largest factorial first
+    inv[N] = modInverse(fact[N], MOD);
+
+    // Compute modular inverses of all factorials in reverse order
+    for (int i = N - 1; i >= 0; i--) {
+        inv[i] = (inv[i + 1] * (i + 1)) % MOD;
+    }
+
+    // Read grid and fill arrays p, q, inp, and inq
+    for (int i = 0; i < N; i++) {
+        cin >> S;
+        for (int j = 0; j < N; j++) {
+            if (S[j] == 'A') {
+                p[i] = j;
+                inp[j] = true;
+            }
+            if (S[j] == 'B') {
+                q[i] = j;
+                inq[j] = true;
+            }
+        }
+    }
+
+    // Count various configurations based on positions of 'A' and 'B'
+    for (int i = 0; i < N; i++) {
+        if (p[i] == -1 && q[i] == -1) {
+            C[0]++;
+        }
+        if (p[i] == -1 && q[i] != -1 && !inp[q[i]]) {
+            C[1]++;
+        }
+        if (p[i] != -1 && q[i] == -1 && !inq[p[i]]) {
+            C[2]++;
+        }
+    }
+
+    // Count rows and columns without 'A' or 'B'
+    for (int i = 0; i < N; i++) {
+        if (!inp[i] && !inq[i]) {
+            C[3]++;
+        }
+        if (!inp[i]) {
+            C[4]++;
+        }
+        if (!inq[i]) {
+            C[5]++;
+        }
+    }
+
+    // Function to compute binomial coefficient C(x, y) modulo MOD
+    auto choose = [&](int x, int y) {
+        if (y > x || y < 0) return 0LL;
+        return (fact[x] * inv[y] % MOD) * inv[x - y] % MOD;
+    };
+
+    // Function to calculate the number of ways to complete the grid
+    auto f = [&](int i, int j, int k) {
+        ll res = (choose(C[0], i) * choose(C[1], j) % MOD * 
+                  choose(C[2], k) % MOD * choose(C[3], i) % MOD);
+
+        // Multiply by the factorials of the number of rows and columns left
+        res = (res * fact[i] % MOD * fact[C[4] - i - j] % MOD * fact[C[5] - i - k] % MOD);
+
+        // Apply inclusion-exclusion principle to adjust the result
+        if ((i + j + k) % 2 == 1) {
+            res = (MOD - res);
+        }
+
+        return res;
+    };
+
+    // Calculate the number of valid grid configurations
+    ll ans = 0;
+    for (int i = 0; i <= min(C[0], C[3]); i++) {
+        for (int j = 0; j <= C[1]; j++) {
+            for (int k = 0; k <= C[2]; k++) {
+                ans = (ans + f(i, j, k)) % MOD;
+            }
+        }
+    }
+
+    cout << ans << endl;
+
+    return 0;
+}
+```
+</CPPSection>
+</LanguageSection>
