@@ -70,8 +70,8 @@ int main() {
 	vector<ll> arr(n);
 	for (ll &i : arr) { cin >> i; }
 
-	ll l = *max_element(begin(arr), end(arr)),
-	   r = accumulate(begin(arr), end(arr), 0LL);
+	ll l = *max_element(begin(arr), end(arr));
+	ll r = accumulate(begin(arr), end(arr), 0LL);
 	while (l < r) {
 		ll mid = (l + r) / 2;
 		if (is_possible(arr, k, mid)) {
@@ -80,7 +80,8 @@ int main() {
 			l = mid + 1;
 		}
 	}
-	cout << l << '\n';
+
+	cout << l << endl;
 }
 ```
 
@@ -104,8 +105,8 @@ public class ArrayDivision {
 		for (int i = 0; i < n; i++) { arr[i] = Long.parseLong(st.nextToken()); }
 		br.close();
 
-		long l = Arrays.stream(array).max().getAsLong(),
-		     r = Arrays.stream(array).asLongStream().sum();
+		long l = Arrays.stream(array).max().getAsLong();
+		long r = Arrays.stream(array).asLongStream().sum();
 		while (l < r) {
 			long mid = (l + r) / 2;
 			if (is_possible(arr, k, mid)) {
@@ -114,6 +115,7 @@ public class ArrayDivision {
 				l = mid + 1;
 			}
 		}
+
 		System.out.println(l);
 	}
 
@@ -177,8 +179,8 @@ def can_divide_arrays(max_sum: int) -> bool:
 	return num_subarrays <= k
 
 
-left, right = max(nums), sum(nums)
-
+left = max(nums)
+right = sum(nums)
 while left < right:
 	mid = (left + right) // 2
 	if can_divide_arrays(mid):
