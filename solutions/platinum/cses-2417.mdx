@@ -2,12 +2,12 @@
 id: cses-2417
 source: CSES
 title: Counting Coprime Pairs
-author:
+author: Alexis Tao
 ---
 
-# Solution
+## Implementation
 
-Time complexity: $\mathcal O(N*\sqrt{maxX})$
+**Time Complexity:** $\mathcal O(N \cdot \sqrt{\max (x_i)})$
 
 <LanguageSection>
 
@@ -18,76 +18,89 @@ Time complexity: $\mathcal O(N*\sqrt{maxX})$
 #include <bits/stdc++.h>
 
 using namespace std;
-typedef long long ll;
-const int maxX = 1e6 + 1;  // Maximum value for numbers in input
-
-ll ans;
-int N, dp[maxX];  // number of elements, array to keep track of counts for each
-                  // divisor
-bool b[maxX];
-vector<int> primes;
-
-// Function to initialize the sieve and populate the primes vector
-void init() {
-	fill(b + 2, b + maxX,
-	     true);  // Mark all numbers as prime initially (except 0 and 1)
-
-	// Sieve of Eratosthenes to find all primes up to maxX
-	for (int i = 2; i * i < maxX; i++)
-		if (b[i])
-			for (int j = i * i; j < maxX; j += i) b[j] = false;
-
-	// Collect all prime numbers into the primes vector
-	for (int i = 2; i < maxX; i++)
-		if (b[i]) primes.push_back(i);
-}
-
-// Function to compute the contribution of a number x to the overall answer
-void compute(int x) {
-	vector<int> pf;
-
-	// Prime factorization of x
-	for (int p : primes) {
-		if (x == 1) break;
-		else if (b[x]) {
-			pf.push_back(x);
-			break;
-		}
-
-		if (x % p) continue;
-
-		pf.push_back(p);
-		while (x % p == 0) x /= p;
-	}
-
-	int K = (int)pf.size();
-
-	// Iterate over all subsets of the prime factors
-	for (int mask = 0; mask < (1 << K); mask++) {
-		int mu = 1;
-
-		// Generate the product of the prime factors according to the current
-		// mask
-		for (int i = 0; i < K; i++)
-			if (mask & (1 << i)) mu *= pf[i];
-
-		int k = __builtin_popcount(mask);
-		// Update the answer using the principle of inclusion-exclusion
-		ans += (k & 1 ? -dp[mu] : dp[mu]);
-		dp[mu]++;
-	}
-}
+using ll = long long;
+const int MAX_X = 1e6 + 1;
 
 int main() {
-	init();
-	scanf("%d", &N);
+    ll ans = 0;
+    int N;
+    vector<int> dp(MAX_X, 0);
+    vector<bool> is_prime(MAX_X, true);
+    vector<int> primes;
 
-	for (int i = 0, x; i < N; i++) {
-		scanf("%d", &x);
-		compute(x);
-	}
+    // Lambda to initialize the sieve and populate the primes vector
+    auto init = [&]() {
+        fill(is_prime.begin() + 2, is_prime.end(), true);  // Mark all numbers as prime initially (except 0 and 1)
 
-	printf("%lld\n", ans);
+        // Sieve of Eratosthenes to find all primes up to MAX_X
+        for (int i = 2; i * i < MAX_X; i++) {
+            if (is_prime[i]) {
+                for (int j = i * i; j < MAX_X; j += i) {
+                    is_prime[j] = false;
+                }
+            }
+        }
+
+        // Collect all prime numbers into the primes vector
+        for (int i = 2; i < MAX_X; i++) {
+            if (is_prime[i]) {
+                primes.push_back(i);
+            }
+        }
+    };
+
+    // Lambda to compute the contribution of a number x to the overall answer
+    auto compute = [&](int x) {
+        vector<int> pf;
+
+        // Prime factorization of x
+        for (int p : primes) {
+            if (x == 1) {
+                break;
+            } else if (is_prime[x]) {
+                pf.push_back(x);
+                break;
+            }
+
+            if (x % p != 0) {
+                continue;
+            }
+
+            pf.push_back(p);
+            while (x % p == 0) {
+                x /= p;
+            }
+        }
+
+        // Iterate over all subsets of the prime factors
+        for (int mask = 0; mask < (1 << pf.size()); mask++) {
+            int mu = 1;
+
+            // Generate the product of the prime factors according to the current mask
+            for (int i = 0; i < pf.size(); i++) {
+                if (mask & (1 << i)) {
+                    mu *= pf[i];
+                }
+            }
+
+            int k = __builtin_popcount(mask);
+            // Update the answer using the principle of inclusion-exclusion
+            ans += (k & 1 ? -dp[mu] : dp[mu]);
+            dp[mu]++;
+        }
+    };
+
+    init();  // Initialize the sieve and primes
+    cin >> N;
+
+    for (int i = 0, x; i < N; i++) {
+        cin >> x;
+        compute(x);
+    }
+
+    cout << ans << endl;
+
+    return 0;
 }
 ```
 
