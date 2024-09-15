@@ -68,14 +68,11 @@ int main() {
 	int n, k;
 	cin >> n >> k;
 	vector<ll> arr(n);
-	ll sum = 0, mx = 0;
 	for (ll &i : arr) {
 		cin >> i;
-		sum += i;
-		mx = max(mx, i);
 	}
 
-	ll l = mx, r = sum;
+	ll l = *max_element(begin(arr), end(arr)), r = accumulate(begin(arr), end(arr), 0LL);
 	while (l < r) {
 		ll mid = (l + r) / 2;
 		if (is_possible(arr, k, mid)) {
@@ -105,15 +102,12 @@ public class ArrayDivision {
 
 		st = new StringTokenizer(br.readLine());
 		long[] arr = new long[n];
-		long sum = 0, max = 0;
 		for (int i = 0; i < n; i++) {
 			arr[i] = Long.parseLong(st.nextToken());
-			sum += arr[i];
-			max = Math.max(max, arr[i]);
 		}
 		br.close();
 
-		long l = max, r = sum;
+		long l = Arrays.stream(array).max().getAsLong();, r = Arrays.stream(array).asLongStream().sum();
 		while (l < r) {
 			long mid = (l + r) / 2;
 			if (is_possible(arr, k, mid)) {
