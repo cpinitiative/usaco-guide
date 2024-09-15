@@ -37,8 +37,7 @@ int main() {
 	int n;
 	cin >> n;
 
-	// Initialize arrays for column position of 'A' and column position of 'B' in each
-	// row
+	// Initialize arrays for column position of 'A' and column position of 'B' in each row
 	vector<int> colA(n, -1), colB(n, -1), configCount(6, 0);
 	vector<bool> hasA(n, false), hasB(n, false);
 	vector<ll> fact(n + 1), invFact(n + 1);
@@ -84,13 +83,13 @@ int main() {
 	}
 
 	/** @return The binomial coefficient C(x, y) modulo MOD */
-	auto choose = [&](int x, int y) {
+	auto choose = [&](int x, int y) -> ll {
 		if (y > x || y < 0) return 0LL;
 		return (fact[x] * invFact[y] % MOD) * invFact[x - y] % MOD;
 	};
 
 	/** @return The number of valid grid configurations */
-	auto f = [&](int i, int j, int k) {
+	auto f = [&](int i, int j, int k) -> ll {
 		ll res = (choose(configCount[0], i) * choose(configCount[1], j) % MOD *
 		          choose(configCount[2], k) % MOD * choose(configCount[3], i) % MOD);
 
