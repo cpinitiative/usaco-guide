@@ -22,85 +22,76 @@ using ll = long long;
 const int MAX_X = 1e6 + 1;
 
 int main() {
-    ll ans = 0;
-    int N;
-    vector<int> dp(MAX_X, 0);
-    vector<bool> is_prime(MAX_X, true);
-    vector<int> primes;
+	ll ans = 0;
+	int N;
+	vector<int> dp(MAX_X, 0);
+	vector<bool> is_prime(MAX_X, true);
+	vector<int> primes;
 
-    // Lambda to initialize the sieve and populate the primes vector
-    auto init = [&]() {
-        fill(is_prime.begin() + 2, is_prime.end(), true);  // Mark all numbers as prime initially (except 0 and 1)
+	// Lambda to initialize the sieve and populate the primes vector
+	auto init = [&]() {
+		fill(is_prime.begin() + 2, is_prime.end(),
+		     true);  // Mark all numbers as prime initially (except 0 and 1)
 
-        // Sieve of Eratosthenes to find all primes up to MAX_X
-        for (int i = 2; i * i < MAX_X; i++) {
-            if (is_prime[i]) {
-                for (int j = i * i; j < MAX_X; j += i) {
-                    is_prime[j] = false;
-                }
-            }
-        }
+		// Sieve of Eratosthenes to find all primes up to MAX_X
+		for (int i = 2; i * i < MAX_X; i++) {
+			if (is_prime[i]) {
+				for (int j = i * i; j < MAX_X; j += i) { is_prime[j] = false; }
+			}
+		}
 
-        // Collect all prime numbers into the primes vector
-        for (int i = 2; i < MAX_X; i++) {
-            if (is_prime[i]) {
-                primes.push_back(i);
-            }
-        }
-    };
+		// Collect all prime numbers into the primes vector
+		for (int i = 2; i < MAX_X; i++) {
+			if (is_prime[i]) { primes.push_back(i); }
+		}
+	};
 
-    // Lambda to compute the contribution of a number x to the overall answer
-    auto compute = [&](int x) {
-        vector<int> pf;
+	// Lambda to compute the contribution of a number x to the overall answer
+	auto compute = [&](int x) {
+		vector<int> pf;
 
-        // Prime factorization of x
-        for (int p : primes) {
-            if (x == 1) {
-                break;
-            } else if (is_prime[x]) {
-                pf.push_back(x);
-                break;
-            }
+		// Prime factorization of x
+		for (int p : primes) {
+			if (x == 1) {
+				break;
+			} else if (is_prime[x]) {
+				pf.push_back(x);
+				break;
+			}
 
-            if (x % p != 0) {
-                continue;
-            }
+			if (x % p != 0) { continue; }
 
-            pf.push_back(p);
-            while (x % p == 0) {
-                x /= p;
-            }
-        }
+			pf.push_back(p);
+			while (x % p == 0) { x /= p; }
+		}
 
-        // Iterate over all subsets of the prime factors
-        for (int mask = 0; mask < (1 << pf.size()); mask++) {
-            int mu = 1;
+		// Iterate over all subsets of the prime factors
+		for (int mask = 0; mask < (1 << pf.size()); mask++) {
+			int mu = 1;
 
-            // Generate the product of the prime factors according to the current mask
-            for (int i = 0; i < pf.size(); i++) {
-                if (mask & (1 << i)) {
-                    mu *= pf[i];
-                }
-            }
+			// Generate the product of the prime factors according to the current mask
+			for (int i = 0; i < pf.size(); i++) {
+				if (mask & (1 << i)) { mu *= pf[i]; }
+			}
 
-            int k = __builtin_popcount(mask);
-            // Update the answer using the principle of inclusion-exclusion
-            ans += (k & 1 ? -dp[mu] : dp[mu]);
-            dp[mu]++;
-        }
-    };
+			int k = __builtin_popcount(mask);
+			// Update the answer using the principle of inclusion-exclusion
+			ans += (k & 1 ? -dp[mu] : dp[mu]);
+			dp[mu]++;
+		}
+	};
 
-    init();  // Initialize the sieve and primes
-    cin >> N;
+	init();  // Initialize the sieve and primes
+	cin >> N;
 
-    for (int i = 0, x; i < N; i++) {
-        cin >> x;
-        compute(x);
-    }
+	for (int i = 0, x; i < N; i++) {
+		cin >> x;
+		compute(x);
+	}
 
-    cout << ans << endl;
+	cout << ans << endl;
 
-    return 0;
+	return 0;
 }
 ```
 
