@@ -82,10 +82,8 @@ int main() {
 	for (int i = 0; i <= x; i++) { dp[i] = INT_MAX; }
 	dp[0] = 0;
 	for (int i = 1; i <= n; i++) {
-		for (int weight = 0; weight <= x; weight++) {
-			if (weight - coins[i - 1] >= 0) {
-				dp[weight] = min(dp[weight], dp[weight - coins[i - 1]] + 1);
-			}
+		for (int weight = coins[i - 1]; weight <= x; weight++) {
+			dp[weight] = min(dp[weight], dp[weight - coins[i - 1]] + 1);
 		}
 	}
 	cout << (dp[x] == INT_MAX ? -1 : dp[x]) << '\n';
@@ -126,10 +124,8 @@ public class cses1634 {
 		If the state curWeight - coin[i] is possible
 		DP[curWeight] = min(DP[curWeight], DP[curWeight - coin[i]] + 1). */
 		for (int i = 1; i <= N; i++) {
-			for (int sum = 0; sum <= X; sum++) {
-				if (sum - coins[i - 1] >= 0) {
-					dp[sum] = Integer.min(dp[sum], dp[sum - coins[i - 1]] + 1);
-				}
+			for (int sum = coins[i - 1]; sum <= X; sum++) {
+				dp[sum] = Integer.min(dp[sum], dp[sum - coins[i - 1]] + 1);
 			}
 		}
 
@@ -155,17 +151,13 @@ c = list(map(int, input().split()))
 dp = [INF] * (x + 1)
 dp[0] = 0  # Base case: 0 coins are needed for a sum of 0
 
-for i in range(x):
-	# Continue if the state is impossible
-	if i == INF:
-		continue
-	for coin in c:
-		if i + coin <= x:
-			"""
-			DP transition: state i needs dp[i] coins,
-			so state i + coin can be made with dp[i] + 1 coins.
-			"""
-			dp[i + coin] = min(dp[i + coin], dp[i] + 1)
+for coin in c:
+	for i in range(x - coin + 1):
+		"""
+		DP transition: state i needs dp[i] coins,
+		so state i + coin can be made with dp[i] + 1 coins.
+		"""
+		dp[i + coin] = min(dp[i + coin], dp[i] + 1)
 
 
 print(dp[x] if dp[x] != INF else -1)
