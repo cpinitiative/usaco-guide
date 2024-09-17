@@ -5,11 +5,11 @@ title: Minimizing Coins
 author: Michael Cao, Sofia Yang, Paul Chen
 ---
 
+## Explanation
+
 In this problem, we're asked the minimum number of coins of distinct weights
 needed to achieve some weight, $x$. You can read about the solution to this
 classical problem in [CPH Chapter 7](/CPH.pdf) under "Coin Problem".
-
-# Main Idea
 
 For this problem, we'll define $\texttt{dp[w]}$ as the minimum number of coins
 to achieve some weight, $w$. Then, at some $w$, we can try to use every coin.
@@ -33,6 +33,8 @@ you add 1 for the transitions.
 
 </Warning>
 
+## Implementation
+
 <Warning>
 
 Don't forget to check if $\texttt{dp[x]} = MX$, where $MX$ is the large value
@@ -40,12 +42,9 @@ you used, and print $-1$ if so (since it's impossible to achieve a sum of $x$).
 
 </Warning>
 
-## Implementation
-
 **Time Complexity**: $\mathcal O(N\cdot X)$
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
@@ -62,6 +61,7 @@ int main() {
 	cin >> n >> x;
 	vector<int> coins(n);
 	for (int i = 0; i < n; i++) { cin >> coins[i]; }
+
 	for (int i = 0; i <= x; i++) { dp[i] = INT_MAX; }
 	dp[0] = 0;
 	for (int i = 1; i <= n; i++) {
@@ -69,13 +69,12 @@ int main() {
 			dp[weight] = min(dp[weight], dp[weight - coins[i - 1]] + 1);
 		}
 	}
-	cout << (dp[x] == INT_MAX ? -1 : dp[x]) << '\n';
+
+	cout << (dp[x] == INT_MAX ? -1 : dp[x]) << endl;
 }
 ```
 
 </CPPSection>
-
-
 <JavaSection>
 
 ```java
@@ -84,7 +83,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
-public class cses1634 {
+public class MinCoins {
 	public static int MAX = (int)10e6 + 2;
 
 	public static void main(String[] args) throws IOException {
@@ -122,6 +121,7 @@ public class cses1634 {
 	}
 }
 ```
+
 </JavaSection>
 <PySection>
 
