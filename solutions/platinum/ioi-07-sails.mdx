@@ -93,50 +93,46 @@ template <class T> class BIT {
 // EndCodeSnip
 
 int main() {
-    int n; 
-    cin >> n;
-    vector<int> h(n), k(n);
-    for (int i = 0; i < n; i++) {
-        cin >> h[i] >> k[i];
-    }
+	int n;
+	cin >> n;
+	vector<int> h(n), k(n);
+	for (int i = 0; i < n; i++) { cin >> h[i] >> k[i]; }
 
-    vector<int> ord(n);
-    iota(begin(ord), end(ord), 0);
-    sort(begin(ord), end(ord), [&](int i, int j) -> bool {
-        return h[i] < h[j];
-    });
+	vector<int> ord(n);
+	iota(begin(ord), end(ord), 0);
+	sort(begin(ord), end(ord), [&](int i, int j) -> bool { return h[i] < h[j]; });
 
-    const int max_h = *max_element(begin(h), end(h));
-    BIT<int> bit(max_h + 1);
+	const int max_h = *max_element(begin(h), end(h));
+	BIT<int> bit(max_h + 1);
 
-    /** @return first index with bit.pref_sum(i) < val */
-    const auto first_val = [&](int val, int high) {
-        int low = 0;
-        while (low < high) {
-            int mid = low + (high - low) / 2;
-            int cur_val = bit.pref_sum(mid);
-            (cur_val < val) ? high = mid : low = mid + 1;
-        }
-        return low;
-    };
-    
-    for (int i : ord) {
-        int last = h[i] - k[i];
-        int val = bit.pref_sum(last);
-        int idx_1 = first_val(val, h[i]);
-        int idx_2 = first_val(val + 1, h[i]);
-        bit.add(idx_1, 1);
-        bit.add(h[i], -1);
-        bit.add(idx_2, 1);
-        bit.add(idx_2 + k[i] - (h[i] - idx_1), -1);
-    }   
-    
-    ll res = 0;
-    for (int i = 0; i < max_h; i++) {
-        int cnt = bit.pref_sum(i);
-        res += 1ll * cnt * (cnt - 1) / 2;
-    }
-    cout << res << "\n";
+	/** @return first index with bit.pref_sum(i) < val */
+	const auto first_val = [&](int val, int high) {
+		int low = 0;
+		while (low < high) {
+			int mid = low + (high - low) / 2;
+			int cur_val = bit.pref_sum(mid);
+			(cur_val < val) ? high = mid : low = mid + 1;
+		}
+		return low;
+	};
+
+	for (int i : ord) {
+		int last = h[i] - k[i];
+		int val = bit.pref_sum(last);
+		int idx_1 = first_val(val, h[i]);
+		int idx_2 = first_val(val + 1, h[i]);
+		bit.add(idx_1, 1);
+		bit.add(h[i], -1);
+		bit.add(idx_2, 1);
+		bit.add(idx_2 + k[i] - (h[i] - idx_1), -1);
+	}
+
+	ll res = 0;
+	for (int i = 0; i < max_h; i++) {
+		int cnt = bit.pref_sum(i);
+		res += 1ll * cnt * (cnt - 1) / 2;
+	}
+	cout << res << "\n";
 }
 ```
 
