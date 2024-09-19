@@ -87,6 +87,112 @@ int main() {
 ```
 </CPPSection>
 
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Firehose {
+    static final int MAX_H = 1000;
+    static final int STREET_SIZE = 1000000;
+
+    static boolean possible(int length, int numHouses, int numHydrants, int[] houses) {
+        for (int i = 0; i < numHouses; i++) {
+
+            // Number of fire hydrants that are needed.
+            int needed = 0;
+
+            // The house that we need to connect a fire hydrant to.
+            int start = houses[i];
+
+            for (int j = 1; j < numHouses; j++) {
+                // Address of house at index j.
+                int end = houses[(i + j) % numHouses];
+
+                /* 
+                 * If the distance between the start and end houses is greater than
+                 * two times the length of the hose, a single fire hydrant will not
+                 * be enough to cover both houses.
+                 */
+                int dist = (end - start + STREET_SIZE) % STREET_SIZE;
+                if (dist > 2 * length) {
+                    start = end;
+                    needed++;
+                }
+            }
+
+            // Increment needed as we need another hydrant to reach the last houses.
+            needed++;
+
+            if (needed <= numHydrants) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static void main(String[] args) {
+        Kattio io = new Kattio();
+        
+        int numHouses = io.nextInt();
+        int[] houses = new int[numHouses];
+        
+        for (int i = 0; i < numHouses; i++) {
+            houses[i] = io.nextInt();
+        }
+        
+        int numHydrants = io.nextInt();
+        
+        Arrays.sort(houses);
+
+        // Binary search for the lowest hose length
+        int left = 0, right = STREET_SIZE, ans = 0;
+        
+        while (left <= right) {
+            int mid = (left + right) / 2;
+            
+            if (possible(mid, numHouses, numHydrants, houses)) {
+                right = mid - 1;
+                ans = mid;
+            } else {
+                left = mid + 1;
+            }
+        }
+        
+        System.out.println(ans);
+        io.close();
+    }
+
+
+    static class Kattio extends PrintWriter {
+		private BufferedReader r;
+		private StringTokenizer st;
+		// standard input
+		public Kattio() { this(System.in, System.out); }
+		public Kattio(InputStream i, OutputStream o) {
+			super(o);
+			r = new BufferedReader(new InputStreamReader(i));
+		}
+ 
+		// returns null if no more input
+		public String next() {
+			try {
+				while (st == null || !st.hasMoreTokens())
+					st = new StringTokenizer(r.readLine());
+				return st.nextToken();
+			} catch (Exception e) { }
+			return null;
+		}
+		public int nextInt() { return Integer.parseInt(next()); }
+		public double nextDouble() { return Double.parseDouble(next()); }
+		public long nextLong() { return Long.parseLong(next()); }
+    }
+}
+```
+
+</JavaSection>
+
 <PySection>
 
 ```py
