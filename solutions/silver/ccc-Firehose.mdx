@@ -87,4 +87,65 @@ int main() {
 ```
 </CPPSection>
 
+<PySection>
+
+```py
+MAX_H = 1000
+STREET_SIZE = 1000000
+
+def possible(length: int, num_houses: int, num_hydrants: int, houses: list) -> bool:
+    for i in range(num_houses):
+
+        # Number of fire hydrants that are needed.
+        needed = 0
+
+        # The house that we need to connect a fire hydrant to.
+        start = houses[i]
+
+        for j in range(1, num_houses):
+            # Address of house at index j.
+            end = houses[(i + j) % num_houses]
+
+            """
+            If the distance between the start and end houses is greater than
+            two times the length of the hose, a single fire hydrant will not
+            be enough to cover both houses.
+            """
+            dist = (end - start + STREET_SIZE) % STREET_SIZE
+            if dist > 2 * length:
+                start = end
+                needed += 1
+
+        # Increment needed as we need another hydrant to reach the last houses.
+        needed += 1
+
+        if needed <= num_hydrants:
+            return True
+    return False
+
+
+num_houses = int(input())
+houses = []
+for _ in range(num_houses):
+    houses.append(int(input()))
+
+num_hydrants = int(input())
+
+houses.sort()
+
+# Binary search for the lowest hose length
+l, r, ans = 0, STREET_SIZE, 0
+while l <= r:
+    m = (l + r) // 2
+    if possible(m, num_houses, num_hydrants, houses):
+        r = m - 1
+        ans = m
+    else:
+        l = m + 1
+
+print(ans)
+```
+
+</PySection>
+
 </LanguageSection>
