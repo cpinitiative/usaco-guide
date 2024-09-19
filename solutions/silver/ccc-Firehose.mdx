@@ -16,8 +16,8 @@ We use a greedy algorithm to find $\texttt{possible}(i)$. Firstly, we want to so
 **Time Complexity**: $\mathcal O(h^2\times log(\texttt{max}(H_i)))$
 
 <LanguageSection>
-
 <CPPSection>
+
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
@@ -71,8 +71,7 @@ int main() {
 	// Binary search for the lowest hose length
 	int l = 0;
 	int r = STREET_SIZE;
-	int ans = 0;
-
+	int ans = -1;
 	while (l <= r) {
 		int m = (l + r) / 2;
 		if (possible(m)) {
@@ -83,11 +82,11 @@ int main() {
 		}
 	}
 
-	cout << ans << "\n";
+	cout << ans << endl;
 }
 ```
-</CPPSection>
 
+</CPPSection>
 <JavaSection>
 
 ```java
@@ -146,11 +145,9 @@ public class Firehose {
 		// Binary search for the lowest hose length
 		int left = 0;
 		int right = STREET_SIZE;
-		int ans = 0;
-
+		int ans = -1;
 		while (left <= right) {
 			int mid = (left + right) / 2;
-
 			if (possible(mid, numHouses, numHydrants, houses)) {
 				right = mid - 1;
 				ans = mid;
@@ -168,7 +165,6 @@ public class Firehose {
 ```
 
 </JavaSection>
-
 <PySection>
 
 ```py
@@ -190,10 +186,10 @@ def possible(length: int, num_houses: int, num_hydrants: int, houses: list) -> b
 			end = houses[(i + j) % num_houses]
 
 			"""
-            If the distance between the start and end houses is greater than
-            two times the length of the hose, a single fire hydrant will not
-            be enough to cover both houses.
-            """
+			If the distance between the start and end houses is greater than
+			two times the length of the hose, a single fire hydrant will not
+			be enough to cover both houses.
+			"""
 			dist = (end - start + STREET_SIZE) % STREET_SIZE
 			if dist > 2 * length:
 				start = end
@@ -217,7 +213,9 @@ num_hydrants = int(input())
 houses.sort()
 
 # Binary search for the lowest hose length
-l, r, ans = 0, STREET_SIZE, 0
+l = 0
+r = STREET_SIZE
+ans = -1
 while l <= r:
 	m = (l + r) // 2
 	if possible(m, num_houses, num_hydrants, houses):
@@ -230,5 +228,4 @@ print(ans)
 ```
 
 </PySection>
-
 </LanguageSection>
