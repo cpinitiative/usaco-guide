@@ -9,19 +9,19 @@ author: Justin Ji
 
 <Spoiler title = "Hint 1">
 
-Consider the number of cells at every height. If $x$ is the number of cells 
+Consider the number of cells at every height. If $x$ is the number of cells
 at a given height, then this level contributes $\frac{x(x - 1)}{2}$ inefficiency
-to the boat. Because of this, the order in which we order the masts does not 
+to the boat. Because of this, the order in which we order the masts does not
 matter. What order should we process them in?
 
 </Spoiler>
 
 <Spoiler title = "Hint 2">
 
-If we process the masts in sorted order of height, then for each mast we can 
-pick the $k$ levels within our allowed height that have the least amount of 
-sails already on them, and add these sails to these levels. How can we 
-efficiently perform this operation? 
+If we process the masts in sorted order of height, then for each mast we can
+pick the $k$ levels within our allowed height that have the least amount of
+sails already on them, and add these sails to these levels. How can we
+efficiently perform this operation?
 
 </Spoiler>
 
@@ -30,10 +30,10 @@ efficiently perform this operation?
 As mentioned in the hints, we process each mast in sorted order. We can maintain
 a binary indexed tree maintaining the number of sails at each level in descending
 order. We place all sails on the range $[h[i] - k[i] + 1, h[i]]$ (in the BIT),
-as that is optimal. To handle placing a sail on every index in the range, we 
+as that is optimal. To handle placing a sail on every index in the range, we
 use the difference array idea on our BIT.
 
-However, applying this range addition may cause the values in the BIT to be 
+However, applying this range addition may cause the values in the BIT to be
 sorted in descending order. Let's assume that after applying all the updates,
 the values in the BIT are the following:
 
@@ -45,7 +45,7 @@ values will be:
 $$[5, 6, 5, 4, 2]$$
 
 To remedy this issue, we split up our range addition into two separate updates.
-In the case above, we can just split our previous range addition into updates 
+In the case above, we can just split our previous range addition into updates
 on the range $[1, 1]$ and $[3, 5]$.
 
 ## Implementation
@@ -92,20 +92,45 @@ template <class T> class BIT {
 };
 // EndCodeSnip
 
+template <typename T, typename F> T first_true(T low, T high, const F &fn) {
+	while (low < high) {
+		T mid = low + (high - low) / 2;
+		fn(mid) ? high = mid : low = mid + 1;
+	}
+	return low;
+}
+
 int main() {
-    int n; 
-    cin >> n;
-    vector<int> h(n), k(n);
-    for (int i = 0; i < n; i++) {
-        cin >> h[i] >> k[i];
-    }
+	int n;
+	cin >> n;
+	vector<int> h(n), k(n);
+	for (int i = 0; i < n; i++) { cin >> h[i] >> k[i]; }
 
-    vector<int> ord(n);
-    iota(begin(ord), end(ord), 0);
-    sort(begin(ord), end(ord), [&](int i, int j) -> bool {
-        return h[i] < h[j];
-    });
+	vector<int> ord(n);
+	iota(begin(ord), end(ord), 0);
+	sort(begin(ord), end(ord), [&](int i, int j) -> bool { return h[i] < h[j]; });
 
+	const int max_h = *max_element(begin(h), end(h));
+	BIT<int> bit(max_h + 1);
+	for (int i : ord) {
+		int last = h[i] - k[i];
+		int val = bit.pref_sum(last);
+		int idx_1 =
+		    first_true(0, h[i], [&](int x) -> bool { return bit.pref_sum(x) < val; });
+		int idx_2 =
+		    first_true(0, h[i], [&](int x) -> bool { return bit.pref_sum(x) <= val; });
+		bit.add(idx_1, 1);
+		bit.add(h[i], -1);
+		bit.add(idx_2, 1);
+		bit.add(idx_2 + k[i] - (h[i] - idx_1), -1);
+	}
+
+	ll res = 0;
+	for (int i = 0; i < max_h; i++) {
+		int cnt = bit.pref_sum(i);
+		res += 1ll * cnt * (cnt - 1) / 2;
+	}
+	cout << res << "\n";
     const int max_h = *max_element(begin(h), end(h));
     BIT<int> bit(max_h + 1);
 
