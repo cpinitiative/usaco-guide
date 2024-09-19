@@ -92,15 +92,6 @@ template <class T> class BIT {
 };
 // EndCodeSnip
 
-template <typename T, typename F> 
-T first_true(T low, T high, const F &fn) {
-    while (low < high) {
-        T mid = low + (high - low) / 2;
-        fn(mid) ? high = mid : low = mid + 1;
-    }
-    return low;
-}
-
 int main() {
     int n; 
     cin >> n;
@@ -117,15 +108,23 @@ int main() {
 
     const int max_h = *max_element(begin(h), end(h));
     BIT<int> bit(max_h + 1);
+
+    /** @return first index with bit.pref_sum(i) < val */
+    const auto first_val = [&](int val, int high) {
+        int low = 0;
+        while (low < high) {
+            int mid = low + (high - low) / 2;
+            int cur_val = bit.pref_sum(mid);
+            (cur_val < val) ? high = mid : low = mid + 1;
+        }
+        return low;
+    };
+    
     for (int i : ord) {
         int last = h[i] - k[i];
         int val = bit.pref_sum(last);
-        int idx_1 = first_true(0, h[i], [&](int x) -> bool {
-            return bit.pref_sum(x) < val;
-        });
-        int idx_2 = first_true(0, h[i], [&](int x) -> bool {
-            return bit.pref_sum(x) <= val;
-        });
+        int idx_1 = first_val(val, h[i]);
+        int idx_2 = first_val(val + 1, h[i]);
         bit.add(idx_1, 1);
         bit.add(h[i], -1);
         bit.add(idx_2, 1);
