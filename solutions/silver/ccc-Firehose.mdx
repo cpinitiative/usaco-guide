@@ -94,77 +94,71 @@ import java.io.*;
 import java.util.*;
 
 public class Firehose {
-    static final int MAX_H = 1000;
-    static final int STREET_SIZE = 1000000;
+	static final int MAX_H = 1000;
+	static final int STREET_SIZE = 1000000;
 
-    static boolean possible(int length, int numHouses, int numHydrants, int[] houses) {
-        for (int i = 0; i < numHouses; i++) {
+	static boolean possible(int length, int numHouses, int numHydrants, int[] houses) {
+		for (int i = 0; i < numHouses; i++) {
 
-            // Number of fire hydrants that are needed.
-            int needed = 0;
+			// Number of fire hydrants that are needed.
+			int needed = 0;
 
-            // The house that we need to connect a fire hydrant to.
-            int start = houses[i];
+			// The house that we need to connect a fire hydrant to.
+			int start = houses[i];
 
-            for (int j = 1; j < numHouses; j++) {
-                // Address of house at index j.
-                int end = houses[(i + j) % numHouses];
+			for (int j = 1; j < numHouses; j++) {
+				// Address of house at index j.
+				int end = houses[(i + j) % numHouses];
 
-                /* 
-                 * If the distance between the start and end houses is greater than
-                 * two times the length of the hose, a single fire hydrant will not
-                 * be enough to cover both houses.
-                 */
-                int dist = (end - start + STREET_SIZE) % STREET_SIZE;
-                if (dist > 2 * length) {
-                    start = end;
-                    needed++;
-                }
-            }
+				/*
+				 * If the distance between the start and end houses is greater than
+				 * two times the length of the hose, a single fire hydrant will not
+				 * be enough to cover both houses.
+				 */
+				int dist = (end - start + STREET_SIZE) % STREET_SIZE;
+				if (dist > 2 * length) {
+					start = end;
+					needed++;
+				}
+			}
 
-            // Increment needed as we need another hydrant to reach the last houses.
-            needed++;
+			// Increment needed as we need another hydrant to reach the last houses.
+			needed++;
 
-            if (needed <= numHydrants) {
-                return true;
-            }
-        }
-        return false;
-    }
+			if (needed <= numHydrants) { return true; }
+		}
+		return false;
+	}
 
-    public static void main(String[] args) {
-        Kattio io = new Kattio();
-        
-        int numHouses = io.nextInt();
-        int[] houses = new int[numHouses];
-        
-        for (int i = 0; i < numHouses; i++) {
-            houses[i] = io.nextInt();
-        }
-        
-        int numHydrants = io.nextInt();
-        
-        Arrays.sort(houses);
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
 
-        // Binary search for the lowest hose length
-        int left = 0;
-		int right = STREET_SIZE;
-		int ans = 0;
-        
-        while (left <= right) {
-            int mid = (left + right) / 2;
-            
-            if (possible(mid, numHouses, numHydrants, houses)) {
-                right = mid - 1;
-                ans = mid;
-            } else {
-                left = mid + 1;
-            }
-        }
-        
-        System.out.println(ans);
-        io.close();
-    }
+		int numHouses = io.nextInt();
+		int[] houses = new int[numHouses];
+
+		for (int i = 0; i < numHouses; i++) { houses[i] = io.nextInt(); }
+
+		int numHydrants = io.nextInt();
+
+		Arrays.sort(houses);
+
+		// Binary search for the lowest hose length
+		int left = 0, right = STREET_SIZE, ans = 0;
+
+		while (left <= right) {
+			int mid = (left + right) / 2;
+
+			if (possible(mid, numHouses, numHydrants, houses)) {
+				right = mid - 1;
+				ans = mid;
+			} else {
+				left = mid + 1;
+			}
+		}
+
+		System.out.println(ans);
+		io.close();
+	}
 
 	// CodeSnip{Kattio}
 }
@@ -178,41 +172,42 @@ public class Firehose {
 MAX_H = 1000
 STREET_SIZE = 1000000
 
+
 def possible(length: int, num_houses: int, num_hydrants: int, houses: list) -> bool:
-    for i in range(num_houses):
+	for i in range(num_houses):
 
-        # Number of fire hydrants that are needed.
-        needed = 0
+		# Number of fire hydrants that are needed.
+		needed = 0
 
-        # The house that we need to connect a fire hydrant to.
-        start = houses[i]
+		# The house that we need to connect a fire hydrant to.
+		start = houses[i]
 
-        for j in range(1, num_houses):
-            # Address of house at index j.
-            end = houses[(i + j) % num_houses]
+		for j in range(1, num_houses):
+			# Address of house at index j.
+			end = houses[(i + j) % num_houses]
 
-            """
+			"""
             If the distance between the start and end houses is greater than
             two times the length of the hose, a single fire hydrant will not
             be enough to cover both houses.
             """
-            dist = (end - start + STREET_SIZE) % STREET_SIZE
-            if dist > 2 * length:
-                start = end
-                needed += 1
+			dist = (end - start + STREET_SIZE) % STREET_SIZE
+			if dist > 2 * length:
+				start = end
+				needed += 1
 
-        # Increment needed as we need another hydrant to reach the last houses.
-        needed += 1
+		# Increment needed as we need another hydrant to reach the last houses.
+		needed += 1
 
-        if needed <= num_hydrants:
-            return True
-    return False
+		if needed <= num_hydrants:
+			return True
+	return False
 
 
 num_houses = int(input())
 houses = []
 for _ in range(num_houses):
-    houses.append(int(input()))
+	houses.append(int(input()))
 
 num_hydrants = int(input())
 
@@ -221,12 +216,12 @@ houses.sort()
 # Binary search for the lowest hose length
 l, r, ans = 0, STREET_SIZE, 0
 while l <= r:
-    m = (l + r) // 2
-    if possible(m, num_houses, num_hydrants, houses):
-        r = m - 1
-        ans = m
-    else:
-        l = m + 1
+	m = (l + r) // 2
+	if possible(m, num_houses, num_hydrants, houses):
+		r = m - 1
+		ans = m
+	else:
+		l = m + 1
 
 print(ans)
 ```
