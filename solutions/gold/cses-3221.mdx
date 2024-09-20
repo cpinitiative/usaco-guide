@@ -7,7 +7,7 @@ author: Rameez Parwez
 
 [Official Analysis] (https://cp-algorithms.com/data_structures/stack_queue_modification.html#queue-modification-method-1)
 
-## Implementation
+## Implementation 1 - Deque
 
 **Time Complexity**: $\mathcal{O}(N)$
 
@@ -77,5 +77,44 @@ print(*res)
 ```
 
 </PySection>
+
+</LanguageSection>
+
+
+## Implementation 2 - Multiset
+
+**Time Complexity**: $\mathcal{O}(N\log N)$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+ 
+int main() {
+	int n, k;
+	std::cin >> n >> k;
+	std::vector<int> arr(n);
+	for (auto &x : arr) {
+		std::cin >> x;
+	}
+ 
+	std::multiset<int> mset;
+	std::vector<int> res;
+	for (int i = 0; i < n; i++) {
+		mset.insert(arr[i]);
+		if (i >= k - 1) {
+			res.push_back(*mset.begin());
+			mset.erase(mset.find(arr[i - k + 1]));
+		}
+	}
+ 
+	for (int i = 0; i < n - k + 1; i++) {
+		std::cout << res[i] << " \n"[i == n - k];
+	}
+}
+```
+</CPPSection>
 
 </LanguageSection>
