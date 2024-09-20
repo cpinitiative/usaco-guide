@@ -21,9 +21,7 @@ int main() {
 	int n, k;
 	std::cin >> n >> k;
 	std::vector<int> arr(n);
-	for (auto &x : arr) {
-		std::cin >> x;
-	}
+	for (auto &x : arr) { std::cin >> x; }
 
 	std::deque<int> d;
 	std::vector<int> res;
@@ -34,20 +32,14 @@ int main() {
 	for (int i = k; i < n; i++) {
 		res.push_back(arr[d.front()]);
 
-		if (!d.empty() && d.front() == i - k) {
-			d.pop_front();	
-		}
+		if (!d.empty() && d.front() == i - k) { d.pop_front(); }
 
-		while (!d.empty() and arr[i] <= arr[d.back()]) {
-			d.pop_back();
-		}
+		while (!d.empty() and arr[i] <= arr[d.back()]) { d.pop_back(); }
 		d.push_back(i);
 	}
 	res.push_back(arr[d.front()]);
 
-	for (int i = 0; i < n - k + 1; i++) {
-		std::cout << res[i] << " \n"[i == n - k];
-	}
+	for (int i = 0; i < n - k + 1; i++) { std::cout << res[i] << " \n"[i == n - k]; }
 }
 ```
 
@@ -65,19 +57,19 @@ d = deque()
 res = []
 
 for i in range(k):
-    while d and arr[i] < arr[d[-1]]:
-        d.pop()
-    d.append(i)
+	while d and arr[i] < arr[d[-1]]:
+		d.pop()
+	d.append(i)
 
 for i in range(k, n):
-    res.append(arr[d[0]])
+	res.append(arr[d[0]])
 
-    if d and d[0] == i - k:
-        d.popleft()
+	if d and d[0] == i - k:
+		d.popleft()
 
-    while d and arr[i] <= arr[d[-1]]:
-        d.pop()
-    d.append(i)
+	while d and arr[i] <= arr[d[-1]]:
+		d.pop()
+	d.append(i)
 
 res.append(arr[d[0]])
 
