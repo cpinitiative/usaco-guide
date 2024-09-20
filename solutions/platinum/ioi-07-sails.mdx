@@ -1,0 +1,143 @@
+---
+id: ioi-07-sails
+source: IOI
+title: 2007 - Sails
+author: Justin Ji
+---
+
+[Official Analysis](https://dmoj.ca/problem/ioi07p3/editorial)
+
+<Spoiler title = "Hint 1">
+
+Consider the number of cells at every height. If $x$ is the number of cells
+at a given height, then this level contributes $\frac{x(x - 1)}{2}$ inefficiency
+to the boat. Because of this, the order in which we order the masts does not
+matter. What order should we process them in?
+
+</Spoiler>
+
+<Spoiler title = "Hint 2">
+
+If we process the masts in sorted order of height, then for each mast we can
+pick the $k$ levels within our allowed height that have the least amount of
+sails already on them, and add these sails to these levels. How can we
+efficiently perform this operation?
+
+</Spoiler>
+
+<Spoiler title = "Explanation">
+
+As mentioned in the hints, we process each mast in sorted order. We can maintain
+a binary indexed tree maintaining the number of sails at each level in descending
+order. We place all sails on the range $[h[i] - k[i] + 1, h[i]]$ (in the BIT),
+as that is optimal. To handle placing a sail on every index in the range, we
+use the difference array idea on our BIT.
+
+However, applying this range addition may cause the values in the BIT to be
+sorted in descending order. Let's assume that after applying all the updates,
+the values in the BIT are the following:
+
+$$[5, 5, 4, 3, 1]$$
+
+If we directly perform a range addition on the last four elements, the resulting
+values will be:
+
+$$[5, 6, 5, 4, 2]$$
+
+To remedy this issue, we split up our range addition into two separate updates.
+In the case above, we can just split our previous range addition into updates
+on the range $[1, 1]$ and $[3, 5]$.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N\log^2N)$
+
+<Info title = "Faster Solution">
+It is possible to cut a log factor by walking on the BIT, as described in
+[this](https://codeforces.com/blog/entry/61364) blog.
+</Info>
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+
+// BeginCodeSnip{Binary Indexed Tree (from the module)}
+template <class T> class BIT {
+  private:
+	int size;
+	vector<T> bit;
+	vector<T> arr;
+
+  public:
+	BIT(int size) : size(size), bit(size + 1), arr(size) {}
+
+	void set(int ind, T val) { add(ind, val - arr[ind]); }
+
+	void add(int ind, T val) {
+		arr[ind] += val;
+		ind++;
+		for (; ind <= size; ind += ind & -ind) { bit[ind] += val; }
+	}
+
+	T pref_sum(int ind) {
+		ind++;
+		T total = 0;
+		for (; ind > 0; ind -= ind & -ind) { total += bit[ind]; }
+		return total;
+	}
+};
+// EndCodeSnip
+
+int main() {
+	int n;
+	cin >> n;
+	vector<int> h(n), k(n);
+	for (int i = 0; i < n; i++) { cin >> h[i] >> k[i]; }
+
+	vector<int> ord(n);
+	iota(begin(ord), end(ord), 0);
+	sort(begin(ord), end(ord), [&](int i, int j) -> bool { return h[i] < h[j]; });
+
+	const int max_h = *max_element(begin(h), end(h));
+	BIT<int> bit(max_h + 1);
+
+	/** @return first index with bit.pref_sum(i) < val */
+	const auto first_val = [&](int val, int high) {
+		int low = 0;
+		while (low < high) {
+			int mid = low + (high - low) / 2;
+			int cur_val = bit.pref_sum(mid);
+			(cur_val < val) ? high = mid : low = mid + 1;
+		}
+		return low;
+	};
+
+	for (int i : ord) {
+		int last = h[i] - k[i];
+		int val = bit.pref_sum(last);
+		int idx_1 = first_val(val, h[i]);
+		int idx_2 = first_val(val + 1, h[i]);
+		bit.add(idx_1, 1);
+		bit.add(h[i], -1);
+		bit.add(idx_2, 1);
+		bit.add(idx_2 + k[i] - (h[i] - idx_1), -1);
+	}
+
+	ll res = 0;
+	for (int i = 0; i < max_h; i++) {
+		int sail_num = bit.pref_sum(i);
+		res += 1ll * sail_num * (sail_num - 1) / 2;
+	}
+
+	cout << res << endl;
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
+</Spoiler>
