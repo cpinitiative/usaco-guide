@@ -132,22 +132,22 @@ w = list(map(int, input().split()))
 
 w.sort()
 
-res = 10 ** 9
+res = 10**9
 
 # loop through all possible combinations of people in the single kayaks
 for i in range(0, 2 * n):
-    for j in range(i + 1, 2 * n):
+	for j in range(i + 1, 2 * n):
 
-        # list 's' will store the weights of the people who need to be placed in tandem kayaks
-        s = [w[k] for k in range(0, 2 * n) if k != i and k != j]
+		# list 's' will store the weights of the people who need to be placed in tandem kayaks
+		s = [w[k] for k in range(0, 2 * n) if k != i and k != j]
 
-        temp = 0
+		temp = 0
 
-        # calculating instability
-        for k in range(0, 2 * n - 2, 2):
-            temp += s[k + 1] - s[k]
-        
-        res = min(res, temp)
+		# calculating instability
+		for k in range(0, 2 * n - 2, 2):
+			temp += s[k + 1] - s[k]
+
+		res = min(res, temp)
 
 print(res)
 ```
