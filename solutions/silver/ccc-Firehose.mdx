@@ -97,8 +97,8 @@ public class Firehose {
 	static final int MAX_H = 1000;
 	static final int STREET_SIZE = 1000000;
 
-	static boolean possible(int length, int numHouses, int numHydrants, int[] houses) {
-		for (int i = 0; i < numHouses; i++) {
+	static boolean possible(int length, int numHydrants, int[] houses) {
+		for (int i = 0; i < houses.length; i++) {
 
 			// Number of fire hydrants that are needed.
 			int needed = 0;
@@ -106,9 +106,9 @@ public class Firehose {
 			// The house that we need to connect a fire hydrant to.
 			int start = houses[i];
 
-			for (int j = 1; j < numHouses; j++) {
+			for (int j = 1; j < houses.length; j++) {
 				// Address of house at index j.
-				int end = houses[(i + j) % numHouses];
+				int end = houses[(i + j) % houses.length];
 
 				/*
 				 * If the distance between the start and end houses is greater than
@@ -148,7 +148,7 @@ public class Firehose {
 		int ans = -1;
 		while (left <= right) {
 			int mid = (left + right) / 2;
-			if (possible(mid, numHouses, numHydrants, houses)) {
+			if (possible(mid, numHydrants, houses)) {
 				right = mid - 1;
 				ans = mid;
 			} else {
@@ -172,8 +172,8 @@ MAX_H = 1000
 STREET_SIZE = 1000000
 
 
-def possible(length: int, num_houses: int, num_hydrants: int, houses: list) -> bool:
-	for i in range(num_houses):
+def possible(length: int, num_hydrants: int, houses: list) -> bool:
+	for i in range(len(houses)):
 
 		# Number of fire hydrants that are needed.
 		needed = 0
@@ -181,9 +181,9 @@ def possible(length: int, num_houses: int, num_hydrants: int, houses: list) -> b
 		# The house that we need to connect a fire hydrant to.
 		start = houses[i]
 
-		for j in range(1, num_houses):
+		for j in range(1, len(houses)):
 			# Address of house at index j.
-			end = houses[(i + j) % num_houses]
+			end = houses[(i + j) % len(houses)]
 
 			"""
 			If the distance between the start and end houses is greater than
@@ -218,7 +218,7 @@ r = STREET_SIZE
 ans = -1
 while l <= r:
 	m = (l + r) // 2
-	if possible(m, num_houses, num_hydrants, houses):
+	if possible(m, num_hydrants, houses):
 		r = m - 1
 		ans = m
 	else:
