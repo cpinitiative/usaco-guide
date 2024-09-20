@@ -53,4 +53,37 @@ int main() {
 
 </CPPSection>
 
+<PySection>
+
+```py
+from collections import deque
+
+n, k = map(int, input().split())
+arr = list(map(int, input().split()))
+
+d = deque()
+res = []
+
+for i in range(k):
+    while d and arr[i] < arr[d[-1]]:
+        d.pop()
+    d.append(i)
+
+for i in range(k, n):
+    res.append(arr[d[0]])
+
+    if d and d[0] == i - k:
+        d.popleft()
+
+    while d and arr[i] <= arr[d[-1]]:
+        d.pop()
+    d.append(i)
+
+res.append(arr[d[0]])
+
+print(*res)
+```
+
+</PySection>
+
 </LanguageSection>
