@@ -295,33 +295,33 @@ grid = [[False] * (MAX_SIZE + 1) for _ in range(MAX_SIZE + 1)]
 
 # Read the grid
 for i in range(1, n + 1):
-    row = input()
-    for j in range(1, m + 1):
-        grid[i][j] = row[j - 1] == '1'
+	row = input()
+	for j in range(1, m + 1):
+		grid[i][j] = row[j - 1] == "1"
 
 # Overall prefix sums array. pref[x][y] is how many components
 # we have in the 2D array from (1, 1) to (x, y), inclusive.
 pref = [[0] * (MAX_SIZE + 1) for _ in range(MAX_SIZE + 1)]
 
 for i in range(1, n + 1):
-    for j in range(1, m + 1):
-        pref[i][j] = pref[i - 1][j] + pref[i][j - 1] - pref[i - 1][j - 1]
-        if grid[i][j]:
-            """
-              0
-            0 1
-            A new connected component forms!
-            """
-            if not grid[i - 1][j] and not grid[i][j - 1]:
-                pref[i][j] += 1
+	for j in range(1, m + 1):
+		pref[i][j] = pref[i - 1][j] + pref[i][j - 1] - pref[i - 1][j - 1]
+		if grid[i][j]:
+			"""
+			  0
+			0 1
+			A new connected component forms!
+			"""
+			if not grid[i - 1][j] and not grid[i][j - 1]:
+				pref[i][j] += 1
 
-            """
+			"""
               1
             1 1
             Two connected componets merge!
             """
-            if grid[i - 1][j] and grid[i][j - 1]:
-                pref[i][j] -= 1
+			if grid[i - 1][j] and grid[i][j - 1]:
+				pref[i][j] -= 1
 
 # horpref[x][y]: number of connected components in the row from (x, 1) to (x, y)
 horpref = [[0] * (MAX_SIZE + 1) for _ in range(MAX_SIZE + 1)]
@@ -330,27 +330,27 @@ horpref = [[0] * (MAX_SIZE + 1) for _ in range(MAX_SIZE + 1)]
 verpref = [[0] * (MAX_SIZE + 1) for _ in range(MAX_SIZE + 1)]
 
 for i in range(1, n + 1):
-    for j in range(1, m + 1):
-        horpref[i][j] = horpref[i][j - 1]
-        verpref[i][j] = verpref[i - 1][j]
-        if grid[i][j]:
-            horpref[i][j] += not grid[i][j - 1]
-            verpref[i][j] += not grid[i - 1][j]
+	for j in range(1, m + 1):
+		horpref[i][j] = horpref[i][j - 1]
+		verpref[i][j] = verpref[i - 1][j]
+		if grid[i][j]:
+			horpref[i][j] += not grid[i][j - 1]
+			verpref[i][j] += not grid[i - 1][j]
 
 for _ in range(q):
-    a, b, c, d = map(int, input().split())
+	a, b, c, d = map(int, input().split())
 
-    # Whether we start with a connected component
-    ans = grid[a][b]
+	# Whether we start with a connected component
+	ans = grid[a][b]
 
-    # How many new components appear in the top row and leftmost column
-    ans += horpref[a][d] - horpref[a][b]
-    ans += verpref[c][b] - verpref[a][b]
+	# How many new components appear in the top row and leftmost column
+	ans += horpref[a][d] - horpref[a][b]
+	ans += verpref[c][b] - verpref[a][b]
 
-    # Change in the number of connected components in the rest of the grid
-    ans += pref[c][d] - pref[a][d] - pref[c][b] + pref[a][b]
+	# Change in the number of connected components in the rest of the grid
+	ans += pref[c][d] - pref[a][d] - pref[c][b] + pref[a][b]
 
-    print(ans)
+	print(ans)
 ```
 
 </PySection>
