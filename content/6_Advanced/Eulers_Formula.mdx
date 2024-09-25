@@ -11,14 +11,14 @@ frequency: 1
 
 ## Introduction
 
-A planar graph is a graph that can be drawn on a plane without any edges crossing. In other words, it can be embedded in the plane such that no two edges intersect except at their endpoints. Planar graphs can be represented in a two-dimensional space without overlaps between edges.
+A planar graph is a graph that can be drawn on a plane without any edges crossing. In other words, it can be embedded in the plane such that no two edges intersect except at their endpoints. 
 
 <Resources>
     <Resource
         source="MIT"
-        title="    MIT Course Notes"
+        title="MIT Course Notes"
         url="https://dspace.mit.edu/bitstream/handle/1721.1/104426/6-042j-spring-2010/contents/readings/MIT6_042JS10_chap12.pdf"
-
+        
     >
         6.024J course notes
     </Resource>
@@ -34,16 +34,20 @@ A planar graph is a graph that can be drawn on a plane without any edges crossin
         title="Planar Graph"
         url="https://sites.math.rutgers.edu/~sk1233/courses/graphtheory-F11/planar.pdf"
     />
-
+    
 </Resources>
 
 ## Euler's Formula
 
 Euler's Formula states that any correct embedding of a connected planar graph satistfies:-
 
-         <center><h1>V − E + F = 2</h1></center>
+    <center>     $$ V − E + F = 2 $$  </center>
 
-Where V is the no of vertices, E is the number of edges and F is the number of faces.
+$$ V = Vertices $$
+
+$$ E = Edges $$
+
+$$ F = Faces $$
 
 ## Example 1
 
@@ -110,14 +114,10 @@ With a persistent segment tree.
 **Memory Complexity:** $\mathcal{O}(N \log N)$
 
 ```cpp
-#include "rainbow.h"
-#include <bits/stdc++.h>
-#define FOR(i, x, y) for (int i = x; i < y; i++)
-using namespace std;
 
-const int MAXN = 2e5, MAXSEG = (6e5 + 9) * 19 + 1;
+const int MAXN = 2e5, MAXSEGMENT = (6e5 + 9) * 19 + 1;
 
-int cnt = 1, segtree[MAXSEG], left_c[MAXSEG], right_c[MAXSEG];
+int cnt = 1, segtree[MAXSEGMENT], left_c[MAXSEGMENT], right_c[MAXSEGMENT];
 
 struct Segtree {
 	set<int> data[MAXN + 1];
@@ -194,22 +194,24 @@ void init(int R, int C, int sr, int sc, int M, char *S) {
 }
 
 int colour(int ar, int ac, int br, int bc) {
-	int E =
+	int e =
 	    edges_horiz.query(ar + 1, br, ac, bc) + edges_vert.query(ar, br, ac + 1, bc);
-	int V = vertices.query(ar + 1, br, ac + 1, bc);
-	int R = rivers.query(ar, br, ac, bc);
-	int C = (ar >= mn_r || br <= mx_r || ac >= mn_c || bc <= mx_c ? 1 : 2);
-	return E - V + C - R;
+	int v = vertices.query(ar + 1, br, ac + 1, bc);
+	int r = rivers.query(ar, br, ac, bc);
+	int c = (ar >= mn_r || br <= mx_r || ac >= mn_c || bc <= mx_c ? 1 : 2);
+	return e - v + c - r;
 }
+
+
 ```
 
 ## Example 2
 
 <Problems problems="e2" />
 
-# Explanation
+## Explanation 
 
-This problem involves a 2D grid. The code tracks connected region of points using heights. We will use Disjoint Set Union (DSU). As we process points by increasing height, we merge them into regions and update the answer based on their size. The logic here mirrors an application of Euler's formula for planar graphs, where we maintain
+This problem involves a 2D grid. The code tracks connected region of points using heights. We will use Disjoint Set Union (DSU). As we process points by increasing height, we merge them into regions and update the answer based on their size. The logic here mirrors an application of Euler's formula for planar graphs, where we maintain 
 boundaries (faces) as we mege points (vertices) and check their connectivity (edges).
 ## Implementation
 
@@ -220,76 +222,327 @@ With Euler's Formula
 **Memory Complexity:** $\mathcal{O}(N^2)$
 
 ```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using ll = long long;
+using ld = long double;
+using db = double;
+using str = string;  // yay python!
+
+using pi = pair<int, int>;
+using pl = pair<ll, ll>;
+using pd = pair<db, db>;
+
+using vi = vector<int>;
+using vb = vector<bool>;
+using vl = vector<ll>;
+using vd = vector<db>;
+using vs = vector<str>;
+using vpi = vector<pi>;
+using vpl = vector<pl>;
+using vpd = vector<pd>;
+
+#define tcT template <class T
+#define tcTU tcT, class U
+// ^ lol this makes everything look weird but I'll try it
+tcT > using V = vector<T>;
+tcT, size_t SZ > using AR = array<T, SZ>;
+tcT > using PR = pair<T, T>;
+
+// pairs
+#define mp make_pair
+#define f first
+#define s second
+
+// vectors
+// oops size(x), rbegin(x), rend(x) need C++17
+#define sz(x) int((x).size())
+#define bg(x) begin(x)
+#define all(x) bg(x), end(x)
+#define rall(x) x.rbegin(), x.rend()
+#define sor(x) sort(all(x))
+#define rsz resize
+#define ins insert
+#define ft front()
+#define bk back()
+#define pb push_back
+#define eb emplace_back
+#define pf push_front
+
+#define lb lower_bound
+#define ub upper_bound
+tcT > int lwb(V<T> &a, const T &b) { return int(lb(all(a), b) - bg(a)); }
+
+// loops
+#define FOR(i, a, b) for (int i = (a); i < (b); ++i)
+#define F0R(i, a) FOR(i, 0, a)
+#define ROF(i, a, b) for (int i = (b) - 1; i >= (a); --i)
+#define R0F(i, a) ROF(i, 0, a)
+#define trav(a, x) for (auto &a : x)
+
+const int MOD = 1e9 + 7;  // 998244353;
+const int MX = 2e5 + 5;
+const ll INF = 1e18;  // not too close to LLONG_MAX
+const ld PI = acos((ld)-1);
+const int dx[4] = {1, 0, -1, 0}, dy[4] = {0, 1, 0, -1};  // for every grid problem!!
+mt19937 rng((uint32_t)chrono::steady_clock::now().time_since_epoch().count());
+template <class T> using pqg = priority_queue<T, vector<T>, greater<T>>;
+
+// bitwise ops
+// also see https://gcc.gnu.org/onlinedocs/gcc/Other-Builtins.html
+constexpr int pct(int x) { return __builtin_popcount(x); }  // # of bits set
+constexpr int bits(int x) {  // assert(x >= 0); // make C++11 compatible until
+	                         // USACO updates ...
+	return x == 0 ? 0 : 31 - __builtin_clz(x);
+}  // floor(log2(x))
+constexpr int p2(int x) { return 1 << x; }
+constexpr int msk2(int x) { return p2(x) - 1; }
+
+ll cdiv(ll a, ll b) {
+	return a / b + ((a ^ b) > 0 && a % b);
+}  // divide a by b rounded up
+ll fdiv(ll a, ll b) {
+	return a / b - ((a ^ b) < 0 && a % b);
+}  // divide a by b rounded down
+
+tcT > bool ckmin(T &a, const T &b) { return b < a ? a = b, 1 : 0; }  // set a = min(a,b)
+tcT > bool ckmax(T &a, const T &b) { return a < b ? a = b, 1 : 0; }
+
+tcTU > T fstTrue(T lo, T hi, U f) {
+	hi++;
+	assert(lo <= hi);  // assuming f is increasing
+	while (lo < hi) {  // find first index such that f is true
+		T mid = lo + (hi - lo) / 2;
+		f(mid) ? hi = mid : lo = mid + 1;
+	}
+	return lo;
+}
+tcTU > T lstTrue(T lo, T hi, U f) {
+	lo--;
+	assert(lo <= hi);  // assuming f is decreasing
+	while (lo < hi) {  // find first index such that f is true
+		T mid = lo + (hi - lo + 1) / 2;
+		f(mid) ? lo = mid : hi = mid - 1;
+	}
+	return lo;
+}
+tcT > void remDup(vector<T> &v) {  // sort and remove duplicates
+	sort(all(v));
+	v.erase(unique(all(v)), end(v));
+}
+tcTU > void erase(T &t, const U &u) {  // don't erase
+	auto it = t.find(u);
+	assert(it != end(t));
+	t.erase(it);
+}  // element that doesn't exist from (multi)set
+
+// INPUT
+#define tcTUU tcT, class... U
+tcT > void re(complex<T> &c);
+tcTU > void re(pair<T, U> &p);
+tcT > void re(V<T> &v);
+tcT, size_t SZ > void re(AR<T, SZ> &a);
+
+tcT > void re(T &x) { cin >> x; }
+void re(db &d) {
+	str t;
+	re(t);
+	d = stod(t);
+}
+void re(ld &d) {
+	str t;
+	re(t);
+	d = stold(t);
+}
+tcTUU > void re(T &t, U &...u) {
+	re(t);
+	re(u...);
+}
+
+tcT > void re(complex<T> &c) {
+	T a, b;
+	re(a, b);
+	c = {a, b};
+}
+tcTU > void re(pair<T, U> &p) { re(p.f, p.s); }
+tcT > void re(V<T> &x) { trav(a, x) re(a); }
+tcT, size_t SZ > void re(AR<T, SZ> &x) { trav(a, x) re(a); }
+tcT > void rv(int n, V<T> &x) {
+	x.rsz(n);
+	re(x);
+}
+
+// TO_STRING
+#define ts to_string
+str ts(char c) { return str(1, c); }
+str ts(const char *s) { return (str)s; }
+str ts(str s) { return s; }
+str ts(bool b) {
+#ifdef LOCAL
+	return b ? "true" : "false";
+#else
+	return ts((int)b);
+#endif
+}
+tcT > str ts(complex<T> c) {
+	stringstream ss;
+	ss << c;
+	return ss.str();
+}
+str ts(V<bool> v) {
+	str res = "{";
+	F0R(i, sz(v)) res += char('0' + v[i]);
+	res += "}";
+	return res;
+}
+template <size_t SZ> str ts(bitset<SZ> b) {
+	str res = "";
+	F0R(i, SZ) res += char('0' + b[i]);
+	return res;
+}
+tcTU > str ts(pair<T, U> p);
+tcT > str ts(T v) {  // containers with begin(), end()
+#ifdef LOCAL
+	bool fst = 1;
+	str res = "{";
+	for (const auto &x : v) {
+		if (!fst) res += ", ";
+		fst = 0;
+		res += ts(x);
+	}
+	res += "}";
+	return res;
+#else
+	bool fst = 1;
+	str res = "";
+	for (const auto &x : v) {
+		if (!fst) res += " ";
+		fst = 0;
+		res += ts(x);
+	}
+	return res;
+
+#endif
+}
+tcTU > str ts(pair<T, U> p) {
+#ifdef LOCAL
+	return "(" + ts(p.f) + ", " + ts(p.s) + ")";
+#else
+	return ts(p.f) + " " + ts(p.s);
+#endif
+}
+
+// OUTPUT
+tcT > void pr(T x) { cout << ts(x); }
+tcTUU > void pr(const T &t, const U &...u) {
+	pr(t);
+	pr(u...);
+}
+void ps() { pr("\n"); }  // print w/ spaces
+tcTUU > void ps(const T &t, const U &...u) {
+	pr(t);
+	if (sizeof...(u)) pr(" ");
+	ps(u...);
+}
+
+// DEBUG
+void DBG() { cerr << "]" << endl; }
+tcTUU > void DBG(const T &t, const U &...u) {
+	cerr << ts(t);
+	if (sizeof...(u)) cerr << ", ";
+	DBG(u...);
+}
+#ifdef LOCAL  // compile with -DLOCAL, chk -> fake assert
+#define dbg(...)                                                                       \
+	cerr << "Line(" << __LINE__ << ") -> [" << #__VA_ARGS__ << "]: [", DBG(__VA_ARGS__)
+#define chk(...)                                                                       \
+	if (!(__VA_ARGS__))                                                                \
+		cerr << "Line(" << __LINE__ << ") -> function(" << __FUNCTION__                \
+		     << ") -> CHK FAILED: (" << #__VA_ARGS__ << ")" << "\n",                   \
+		    exit(0);
+#else
+#define dbg(...) 0
+#define chk(...) 0
+#endif
+
+void setPrec() { cout << fixed << setprecision(15); }
+void unsyncIO() { cin.tie(0)->sync_with_stdio(0); }
+// FILE I/O
+void setIn(str s) { freopen(s.c_str(), "r", stdin); }
+void setOut(str s) { freopen(s.c_str(), "w", stdout); }
+void setIO(str s = "") {
+	unsyncIO();
+	setPrec();
+	// cin.exceptions(cin.failbit);
+	// throws exception when do smth illegal
+	// ex. try to read letter into int
+	if (sz(s)) setIn(s + ".in"), setOut(s + ".out");  // for USACO
+}
+
 int N, h[750][750];
-ll ans;
-vector<pair<int, pi>> v;
 
-int hsh(int a, int b) { return N * a + b; }
+int hsh(pi a) { return N * a.f + a.s; }
 
-const int xd[4] = {1, 0, -1, 0}, yd[4] = {0, 1, 0, -1};
+bool valid(pi a) { return 0 <= a.f && a.f < N && 0 <= a.s && a.s < N; }
 
 template <int SZ> struct DSU {
-	int par[SZ], sz[SZ], measure[SZ];
-	vi comp[SZ];
-	DSU() { F0R(i, SZ) par[i] = i, sz[i] = 1, measure[i] = 1; }
-	bool valid(int b, int c) { return b >= 0 && b < N && c >= 0 && c < N; }
-	bool ok(int a, int b, int c) {
-		if (!valid(b, c)) return 0;
-		return par[hsh(b, c)] == a;
+	int par[SZ], sz[SZ], hole[SZ], numComp = 1;
+
+	DSU() { F0R(i, SZ) par[i] = i, sz[i] = 1; }
+
+	int get(int x) {  // path compression
+		if (par[x] != x) par[x] = get(par[x]);
+		return par[x];
 	}
-	void addPoint(int x, pi t) {
-		par[hsh(t.f, t.s)] = x;
-		measure[x]++;
-		F0R(i, 4) {
-			if (ok(x, t.f + xd[i], t.s + yd[i])) {
-				measure[x]--;
-				int j = (i + 1) % 4;
-				if (ok(x, t.f + xd[j], t.s + yd[j]) &&
-				    ok(x, t.f + xd[j] + xd[i], t.s + yd[j] + yd[i]))
-					measure[x]++;
-			}
-		}
-		comp[x].pb(hsh(t.f, t.s));
-	}
-	void unite(pi x, pi y) {  // union-by-rank
-		int X = hsh(x.f, x.s), Y = hsh(y.f, y.s);
-		if (par[X] == par[Y]) return;
-		X = par[X], Y = par[Y];
-		if (sz(comp[X]) < sz(comp[Y])) swap(X, Y);
-		trav(t, comp[Y]) addPoint(X, {t / N, t % N});
-		comp[Y].clear();
+
+	void unite(pi a, pi b) {  // union-by-rank
+		int A = get(hsh(a)), B = get(hsh(b));
+		if (A == B) return;
+		if (sz[A] < sz[B]) swap(A, B);
+		numComp--;
+		sz[A] += sz[B];
+		hole[A] += hole[B];
+		par[B] = A;
 	}
 };
 
-DSU<750 * 750> D;
-bool ok[750][750];
+DSU<750 * 750 + 5> A, B;
 
-void solve(int x, int y) {
-	ok[x][y] = 1;
-	F0R(i, 4) {
-		int X = x + xd[i], Y = y + yd[i];
-		if (X < 0 || X >= N || Y < 0 || Y >= N) continue;
-		if (!ok[X][Y]) continue;
-		D.unite({x, y}, {X, Y});
-	}
-}
+int xd[4] = {0, 1, 0, -1}, yd[4] = {1, 0, -1, 0};
 
 int main() {
 	setIO("valleys");
 	re(N);
-	F0R(i, N) F0R(j, N) {
-		re(h[i][j]);
-		v.pb({h[i][j], {i, j}});
-		D.comp[hsh(i, j)].pb(hsh(i, j));
+	F0R(i, N) F0R(j, N) re(h[i][j]);
+	vpi v;
+	F0R(i, N) F0R(j, N) v.pb({i, j});
+	sort(all(v), [](pi a, pi b) { return h[a.f][a.s] < h[b.f][b.s]; });
+
+	vi rec = {1};
+	R0F(i, sz(v)) {
+		A.numComp++;
+		FOR(j, -1, 2) FOR(k, -1, 2) {
+			pi x = {v[i].f + j, v[i].s + k};
+			if (!valid(x)) A.unite(v[i], {N, 0});
+			else if (h[x.f][x.s] > h[v[i].f][v[i].s]) A.unite(v[i], x);
+		}
+		rec.pb(A.numComp);
 	}
-	sort(all(v));
-	F0R(i, sz(v)) {
-		solve(v[i].s.f, v[i].s.s);
-		pi p = v[i].s;
-		int q = D.par[hsh(p.f, p.s)];
-		if (D.measure[q] == 1) ans += sz(D.comp[q]);
+	reverse(all(rec));
+
+	ll ret = 0;
+	F0R(i, sz(v)) {  // maintain number of holes in current component
+		F0R(j, 4) {
+			pi x = {v[i].f + xd[j], v[i].s + yd[j]};
+			if (!valid(x)) continue;
+			if (h[x.f][x.s] < h[v[i].f][v[i].s]) B.unite(v[i], x);
+		}
+		int H = B.get(hsh(v[i]));
+		B.hole[H] += rec[i + 1] - rec[i];
+		if (B.hole[H] == 0) { ret += B.sz[H]; }
 	}
-	cout << ans;
+	pr(ret);
 }
 ```
 
