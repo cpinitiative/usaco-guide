@@ -52,7 +52,7 @@ query subrectangles.
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
- 
+
 /**
  * 2D Fenwick Tree implementation.
  * Note that all cell locations are zero-indexed
@@ -60,69 +60,65 @@ using namespace std;
  */
 template <typename T> class BIT2D {
   private:
-    const int n, m;
-    vector<vector<T>> bit;
- 
+	const int n, m;
+	vector<vector<T>> bit;
+
   public:
-    BIT2D(int n, int m) : n(n), m(m), bit(n + 1, vector<T>(m + 1)) {}
-    
-    void add(int r, int c, T val) {
-        r++, c++;
-        for (; r <= n; r += r & -r) {
-            for (int i = c; i <= m; i += i & -i) {
-                bit[r][i] += val;
-            }
-        }
-    }
- 
-    T rect_sum(int r, int c) {
-        r++, c++;
-        T sum = 0;
-        for (; r > 0; r -= r & -r) {
-            for (int i = c; i > 0; i -= i & -i) {
-                sum += bit[r][i];
-            }
-        }
-        return sum;
-    }
- 
-    T rect_sum(int r1, int c1, int r2, int c2) {
-        return rect_sum(r2, c2) - rect_sum(r2, c1 - 1) - 
-               rect_sum(r1 - 1, c2) + rect_sum(r1 - 1, c1 - 1);
-    }
+	BIT2D(int n, int m) : n(n), m(m), bit(n + 1, vector<T>(m + 1)) {}
+
+	void add(int r, int c, T val) {
+		r++, c++;
+		for (; r <= n; r += r & -r) {
+			for (int i = c; i <= m; i += i & -i) { bit[r][i] += val; }
+		}
+	}
+
+	T rect_sum(int r, int c) {
+		r++, c++;
+		T sum = 0;
+		for (; r > 0; r -= r & -r) {
+			for (int i = c; i > 0; i -= i & -i) { sum += bit[r][i]; }
+		}
+		return sum;
+	}
+
+	T rect_sum(int r1, int c1, int r2, int c2) {
+		return rect_sum(r2, c2) - rect_sum(r2, c1 - 1) - rect_sum(r1 - 1, c2) +
+		       rect_sum(r1 - 1, c1 - 1);
+	}
 };
 
 int main() {
-    int n, q;
-    cin >> n >> q;
-    BIT2D<int> bit(n, n);
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
-            char c;
-            cin >> c;
-            if (c == '*') { bit.add(i, j, 1); }
-        }
-    }
- 
-    for (int i = 0; i < q; i++) {
-        int type;
-        cin >> type;
-        if (type == 1) {
-            int r, c;
-            cin >> r >> c;
-            r--, c--;
-            if (bit.rect_sum(r, c, r, c) == 1) {
-                bit.add(r, c, -1);
-            } else {
-                bit.add(r, c, 1);
-            }
-        } else {
-            int r1, c1, r2, c2;
-            cin >> r1 >> c1 >> r2 >> c2;
-            r1--, c1--, r2--, c2--;
-            cout << bit.rect_sum(r1, c1, r2, c2) << "\n";
-        }
-    }
+	int n, q;
+	cin >> n >> q;
+	BIT2D<int> bit(n, n);
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
+			char c;
+			cin >> c;
+			if (c == '*') { bit.add(i, j, 1); }
+		}
+	}
+
+	for (int i = 0; i < q; i++) {
+		int type;
+		cin >> type;
+		if (type == 1) {
+			int r, c;
+			cin >> r >> c;
+			r--, c--;
+			if (bit.rect_sum(r, c, r, c) == 1) {
+				bit.add(r, c, -1);
+			} else {
+				bit.add(r, c, 1);
+			}
+		} else {
+			int r1, c1, r2, c2;
+			cin >> r1 >> c1 >> r2 >> c2;
+			r1--, c1--, r2--, c2--;
+			cout << bit.rect_sum(r1, c1, r2, c2) << "\n";
+		}
+	}
 }
 ```
 
@@ -288,63 +284,56 @@ using ll = long long;
  */
 template <typename T> class OfflineBIT2D {
   private:
-    const int n;
-    vector<vector<int>> vals;
-    vector<vector<T>> bit;
+	const int n;
+	vector<vector<int>> vals;
+	vector<vector<T>> bit;
 
-    int ind(const vector<int> &v, int x) {
-        return upper_bound(begin(v), end(v), x) - begin(v) - 1;
-    }
+	int ind(const vector<int> &v, int x) {
+		return upper_bound(begin(v), end(v), x) - begin(v) - 1;
+	}
 
   public:
-    OfflineBIT2D(int _n, vector<array<int, 2>> &todo)
-        : n(_n), vals(n + 1), bit(n + 1) {
-        sort(begin(todo), end(todo), 
-            [](const array<int, 2> &a, const array<int, 2> &b) -> bool {
-            return a[1] < b[1];
-        });
+	OfflineBIT2D(int _n, vector<array<int, 2>> &todo) : n(_n), vals(n + 1), bit(n + 1) {
+		sort(begin(todo), end(todo),
+		     [](const array<int, 2> &a, const array<int, 2> &b) -> bool {
+			     return a[1] < b[1];
+		     });
 
-        for (int i = 1; i <= n; i++) { vals[i].push_back(0); }
-        for (auto [r, c] : todo) {
-            r++, c++;
-            for (; r <= n; r += r & -r) {
-                if (vals[r].back() != c) { vals[r].push_back(c); }
-            }
-        }
-        for (int i = 1; i <= n; i++) {
-            bit[i].resize(vals[i].size());
-        }
-    }
+		for (int i = 1; i <= n; i++) { vals[i].push_back(0); }
+		for (auto [r, c] : todo) {
+			r++, c++;
+			for (; r <= n; r += r & -r) {
+				if (vals[r].back() != c) { vals[r].push_back(c); }
+			}
+		}
+		for (int i = 1; i <= n; i++) { bit[i].resize(vals[i].size()); }
+	}
 
-    /** adds val to the point (r, c) */
-    void add(int r, int c, T val) {
-        r++, c++;
-        for (; r <= n; r += r & -r) {
-            int i = ind(vals[r], c);
-            for (; i < bit[r].size(); i += i & -i) {
-                bit[r][i] += val;
-            }
-        }
-    }
+	/** adds val to the point (r, c) */
+	void add(int r, int c, T val) {
+		r++, c++;
+		for (; r <= n; r += r & -r) {
+			int i = ind(vals[r], c);
+			for (; i < bit[r].size(); i += i & -i) { bit[r][i] += val; }
+		}
+	}
 
-    /** @return rectangle sum for corners (0, 0), (r, c) */
-    T rect_sum(int r, int c) {
-        r++, c++;
-        T sum = 0;
-        for (; r > 0; r -= r & -r) {
-            int i = ind(vals[r], c);
-            for (; i > 0; i -= i & -i) {
-                sum += bit[r][i];
-            }
-        }
-        return sum;
-    }
+	/** @return rectangle sum for corners (0, 0), (r, c) */
+	T rect_sum(int r, int c) {
+		r++, c++;
+		T sum = 0;
+		for (; r > 0; r -= r & -r) {
+			int i = ind(vals[r], c);
+			for (; i > 0; i -= i & -i) { sum += bit[r][i]; }
+		}
+		return sum;
+	}
 
-    /** @return rectangle sum with corners (r1, c1) and (r2, c2) */
-    T rect_sum(int r1, int c1, int r2, int c2) {
-        return rect_sum(r2, c2) - rect_sum(r2, c1 - 1) - 
-               rect_sum(r1 - 1, c2) + rect_sum(r1 - 1, c1 - 1);
-    }
+	/** @return rectangle sum with corners (r1, c1) and (r2, c2) */
+	T rect_sum(int r1, int c1, int r2, int c2) {
+		return rect_sum(r2, c2) - rect_sum(r2, c1 - 1) - rect_sum(r1 - 1, c2) +
+		       rect_sum(r1 - 1, c1 - 1);
+	}
 };
 ```
 
@@ -368,86 +357,77 @@ using ll = long long;
  */
 template <typename T> class OfflineBIT2D {
   private:
-    const int n;
-    vector<vector<int>> vals;
-    vector<vector<T>> bit;
+	const int n;
+	vector<vector<int>> vals;
+	vector<vector<T>> bit;
 
-    int ind(const vector<int> &v, int x) {
-        return upper_bound(begin(v), end(v), x) - begin(v) - 1;
-    }
+	int ind(const vector<int> &v, int x) {
+		return upper_bound(begin(v), end(v), x) - begin(v) - 1;
+	}
 
   public:
-    OfflineBIT2D(int _n, vector<array<int, 2>> &todo)
-        : n(_n), vals(n + 1), bit(n + 1) {
-        sort(begin(todo), end(todo), 
-            [](const array<int, 2> &a, const array<int, 2> &b) -> bool {
-            return a[1] < b[1];
-        });
+	OfflineBIT2D(int _n, vector<array<int, 2>> &todo) : n(_n), vals(n + 1), bit(n + 1) {
+		sort(begin(todo), end(todo),
+		     [](const array<int, 2> &a, const array<int, 2> &b) -> bool {
+			     return a[1] < b[1];
+		     });
 
-        for (int i = 1; i <= n; i++) { vals[i].push_back(0); }
-        for (auto [r, c] : todo) {
-            r++, c++;
-            for (; r <= n; r += r & -r) {
-                if (vals[r].back() != c) { vals[r].push_back(c); }
-            }
-        }
-        for (int i = 1; i <= n; i++) {
-            bit[i].resize(vals[i].size());
-        }
-    }
+		for (int i = 1; i <= n; i++) { vals[i].push_back(0); }
+		for (auto [r, c] : todo) {
+			r++, c++;
+			for (; r <= n; r += r & -r) {
+				if (vals[r].back() != c) { vals[r].push_back(c); }
+			}
+		}
+		for (int i = 1; i <= n; i++) { bit[i].resize(vals[i].size()); }
+	}
 
-    /** adds val to the point (r, c) */
-    void add(int r, int c, T val) {
-        r++, c++;
-        for (; r <= n; r += r & -r) {
-            int i = ind(vals[r], c);
-            for (; i < bit[r].size(); i += i & -i) {
-                bit[r][i] += val;
-            }
-        }
-    }
+	/** adds val to the point (r, c) */
+	void add(int r, int c, T val) {
+		r++, c++;
+		for (; r <= n; r += r & -r) {
+			int i = ind(vals[r], c);
+			for (; i < bit[r].size(); i += i & -i) { bit[r][i] += val; }
+		}
+	}
 
-    /** @return rectangle sum for corners (0, 0), (r, c) */
-    T rect_sum(int r, int c) {
-        r++, c++;
-        T sum = 0;
-        for (; r > 0; r -= r & -r) {
-            int i = ind(vals[r], c);
-            for (; i > 0; i -= i & -i) {
-                sum += bit[r][i];
-            }
-        }
-        return sum;
-    }
+	/** @return rectangle sum for corners (0, 0), (r, c) */
+	T rect_sum(int r, int c) {
+		r++, c++;
+		T sum = 0;
+		for (; r > 0; r -= r & -r) {
+			int i = ind(vals[r], c);
+			for (; i > 0; i -= i & -i) { sum += bit[r][i]; }
+		}
+		return sum;
+	}
 
-    /** @return rectangle sum with corners (r1, c1) and (r2, c2) */
-    T rect_sum(int r1, int c1, int r2, int c2) {
-        return rect_sum(r2, c2) - rect_sum(r2, c1 - 1) - 
-               rect_sum(r1 - 1, c2) + rect_sum(r1 - 1, c1 - 1);
-    }
+	/** @return rectangle sum with corners (r1, c1) and (r2, c2) */
+	T rect_sum(int r1, int c1, int r2, int c2) {
+		return rect_sum(r2, c2) - rect_sum(r2, c1 - 1) - rect_sum(r1 - 1, c2) +
+		       rect_sum(r1 - 1, c1 - 1);
+	}
 };
 
 int main() {
-    int n; 
-    cin >> n;
-    vector<int> a(n), p(n);
-    for (int &i : a) { cin >> i; }
-    for (int &i : p) { cin >> i, i--; }
+	int n;
+	cin >> n;
+	vector<int> a(n), p(n);
+	for (int &i : a) { cin >> i; }
+	for (int &i : p) { cin >> i, i--; }
 
-    vector<array<int, 2>> upd(n);
-    for (int i = 0; i < n; i++) {
-        upd[i] = {p[i], a[p[i]]};
-    }
-    OfflineBIT2D<ll> bit(n, upd);
+	vector<array<int, 2>> upd(n);
+	for (int i = 0; i < n; i++) { upd[i] = {p[i], a[p[i]]}; }
+	OfflineBIT2D<ll> bit(n, upd);
 
-    ll res = 0;
+	ll res = 0;
 	const int mx = *max_element(begin(a), end(a));
-    for (int i = 0; i < n; i++) {
-        res += bit.rect_sum(0, a[p[i]] + 1, p[i] - 1, mx);
-        res += bit.rect_sum(p[i] + 1, 0, n - 1, a[p[i]] - 1);
-        cout << res << "\n";
-        bit.add(p[i], a[p[i]], 1);
-    }
+	for (int i = 0; i < n; i++) {
+		res += bit.rect_sum(0, a[p[i]] + 1, p[i] - 1, mx);
+		res += bit.rect_sum(p[i] + 1, 0, n - 1, a[p[i]] - 1);
+		cout << res << "\n";
+		bit.add(p[i], a[p[i]], 1);
+	}
 }
 ```
 
