@@ -50,7 +50,8 @@ query subrectangles.
 <CPPSection>
 
 ```cpp
-#include <bits/stdc++.h>
+#include <vector>
+#include <iostream>
 using namespace std;
 
 /**
@@ -276,14 +277,17 @@ easier to understand, albeit significantly slower due to a high constant factor:
 <CPPSection>
 
 ```cpp
-#include <bits/stdc++.h>
+#include <vector>
+#include <iostream>
+#include <algorithm>
+#include <array>
 using namespace std;
-using ll = long long;
 
 /**
  * Offline 2D Fenwick Tree implementation.
- * Note that n needs to be of a reasonable size, and
- * all the updates/queries inputs are zero indexed.
+ * Note that all the update and query indices
+ * are zero-indexed, and that the rows are not
+ * coordinate compressed in this implementation.
  */
 template <typename T> class OfflineBIT2D {
   private:
@@ -350,18 +354,20 @@ And you might use it like so:
 <CPPSection>
 
 ```cpp
-#include <bits/stdc++.h>
+#include <vector>
+#include <iostream>
+#include <algorithm>
+#include <array>
 using namespace std;
 using ll = long long;
 
-// BeginCodeSnip{Offline 2D BIT (from the module)}
+// BeginCodeSnip{Offline 2D BIT}
 template <typename T> class OfflineBIT2D {
   private:
 	const int n;
 	vector<vector<int>> vals;
 	vector<vector<T>> bit;
 
-	/** @return the first index i such that v[i] <= x */
 	int ind(const vector<int> &v, int x) {
 		return upper_bound(begin(v), end(v), x) - begin(v) - 1;
 	}
@@ -383,7 +389,6 @@ template <typename T> class OfflineBIT2D {
 		for (int i = 1; i <= n; i++) { bit[i].resize(vals[i].size()); }
 	}
 
-	/** adds val to the point (r, c) */
 	void add(int r, int c, T val) {
 		r++, c++;
 		for (; r <= n; r += r & -r) {
@@ -392,7 +397,6 @@ template <typename T> class OfflineBIT2D {
 		}
 	}
 
-	/** @returns sum of points with row in [0, r] and column in [0, c] */
 	T rect_sum(int r, int c) {
 		r++, c++;
 		T sum = 0;
@@ -403,7 +407,6 @@ template <typename T> class OfflineBIT2D {
 		return sum;
 	}
 
-	/** @returns sum of points with r in [r1, r2] and c in [c1, c2] */
 	T rect_sum(int r1, int c1, int r2, int c2) {
 		return rect_sum(r2, c2) - rect_sum(r2, c1 - 1) - rect_sum(r1 - 1, c2) +
 		       rect_sum(r1 - 1, c1 - 1);
