@@ -30,114 +30,98 @@ const int MOD = 1e9 + 7;
 
 /** @return The modular inverse of x modulo MOD */
 ll modInverse(ll x, ll MOD) {
-    ll res = 1;
-    ll b = MOD - 2;
-    while (b) {
-        if (b & 1) {
-            res = (res * x) % MOD;
-        }
-        x = (x * x) % MOD;
-        b >>= 1;
-    }
-    return res;
+	ll res = 1;
+	ll b = MOD - 2;
+	while (b) {
+		if (b & 1) { res = (res * x) % MOD; }
+		x = (x * x) % MOD;
+		b >>= 1;
+	}
+	return res;
 }
 
 int main() {
-    int n;
-    cin >> n;
+	int n;
+	cin >> n;
 
-    // Initialize arrays for column position of 'A' and column position of 'B' in each row
-    vector<int> colA(n, -1), colB(n, -1), config_count(6, 0);
-    vector<bool> hasA(n, false), hasB(n, false);
-    vector<ll> fact(n + 1), inv_fact(n + 1);
-    string S;
+	// Initialize arrays for column position of 'A' and column position of 'B' in each
+	// row
+	vector<int> colA(n, -1), colB(n, -1), config_count(6, 0);
+	vector<bool> hasA(n, false), hasB(n, false);
+	vector<ll> fact(n + 1), inv_fact(n + 1);
+	string S;
 
-    // Precompute factorials
-    fact[0] = 1;
-    for (int i = 1; i <= n; i++) {
-        fact[i] = (fact[i - 1] * i) % MOD;
-    }
+	// Precompute factorials
+	fact[0] = 1;
+	for (int i = 1; i <= n; i++) { fact[i] = (fact[i - 1] * i) % MOD; }
 
-    // Compute the modular inverse of the largest factorial then do it for all factorials in reverse order
-    inv_fact[n] = modInverse(fact[n], MOD);
-    for (int i = n - 1; i >= 0; i--) {
-        inv_fact[i] = (inv_fact[i + 1] * (i + 1)) % MOD;
-    }
+	// Compute the modular inverse of the largest factorial then do it for all
+	// factorials in reverse order
+	inv_fact[n] = modInverse(fact[n], MOD);
+	for (int i = n - 1; i >= 0; i--) {
+		inv_fact[i] = (inv_fact[i + 1] * (i + 1)) % MOD;
+	}
 
-    for (int i = 0; i < n; i++) {
-        cin >> S;
-        for (int j = 0; j < n; j++) {
-            if (S[j] == 'A') {
-                colA[i] = j;
-                hasA[j] = true;
-            }
-            if (S[j] == 'B') {
-                colB[i] = j;
-                hasB[j] = true;
-            }
-        }
-    }
+	for (int i = 0; i < n; i++) {
+		cin >> S;
+		for (int j = 0; j < n; j++) {
+			if (S[j] == 'A') {
+				colA[i] = j;
+				hasA[j] = true;
+			}
+			if (S[j] == 'B') {
+				colB[i] = j;
+				hasB[j] = true;
+			}
+		}
+	}
 
-    // Count various configurations based on positions of 'A' and 'B'
-    for (int i = 0; i < n; i++) {
-        if (colA[i] == -1 && colB[i] == -1) {
-            config_count[0]++;
-        }
-        if (colA[i] == -1 && colB[i] != -1 && !hasA[colB[i]]) {
-            config_count[1]++;
-        }
-        if (colA[i] != -1 && colB[i] == -1 && !hasB[colA[i]]) {
-            config_count[2]++;
-        }
-    }
+	// Count various configurations based on positions of 'A' and 'B'
+	for (int i = 0; i < n; i++) {
+		if (colA[i] == -1 && colB[i] == -1) { config_count[0]++; }
+		if (colA[i] == -1 && colB[i] != -1 && !hasA[colB[i]]) { config_count[1]++; }
+		if (colA[i] != -1 && colB[i] == -1 && !hasB[colA[i]]) { config_count[2]++; }
+	}
 
-    // Count rows and columns without 'A' or 'B'
-    for (int i = 0; i < n; i++) {
-        if (!hasA[i] && !hasB[i]) {
-            config_count[3]++;
-        }
-        if (!hasA[i]) {
-            config_count[4]++;
-        }
-        if (!hasB[i]) {
-            config_count[5]++;
-        }
-    }
+	// Count rows and columns without 'A' or 'B'
+	for (int i = 0; i < n; i++) {
+		if (!hasA[i] && !hasB[i]) { config_count[3]++; }
+		if (!hasA[i]) { config_count[4]++; }
+		if (!hasB[i]) { config_count[5]++; }
+	}
 
-    /** @return The binomial coefficient C(x, y) modulo MOD */
-    auto choose = [&](int x, int y) -> ll {
-        if (y > x || y < 0) return 0LL;
-        return (fact[x] * inv_fact[y] % MOD) * inv_fact[x - y] % MOD;
-    };
+	/** @return The binomial coefficient C(x, y) modulo MOD */
+	auto choose = [&](int x, int y) -> ll {
+		if (y > x || y < 0) return 0LL;
+		return (fact[x] * inv_fact[y] % MOD) * inv_fact[x - y] % MOD;
+	};
 
-    /** @return The number of valid grid configurations */
-    auto f = [&](int i, int j, int k) -> ll {
-        ll res = (choose(config_count[0], i) * choose(config_count[1], j) % MOD *
-                  choose(config_count[2], k) % MOD * choose(config_count[3], i) % MOD);
+	/** @return The number of valid grid configurations */
+	auto f = [&](int i, int j, int k) -> ll {
+		ll res = (choose(config_count[0], i) * choose(config_count[1], j) % MOD *
+		          choose(config_count[2], k) % MOD * choose(config_count[3], i) % MOD);
 
-        // Multiply by the factorials of the number of rows and columns left
-        res = (res * fact[i] % MOD * fact[config_count[4] - i - j] % MOD *
-               fact[config_count[5] - i - k] % MOD);
+		// Multiply by the factorials of the number of rows and columns left
+		res = (res * fact[i] % MOD * fact[config_count[4] - i - j] % MOD *
+		       fact[config_count[5] - i - k] % MOD);
 
-        // Apply inclusion-exclusion principle to adjust the result
-        if ((i + j + k) % 2 == 1) {
-            res = (MOD - res);
-        }
+		// Apply inclusion-exclusion principle to adjust the result
+		if ((i + j + k) % 2 == 1) { res = (MOD - res); }
 
-        return res;
-    };
+		return res;
+	};
 
-    // Calculate the number of valid grid configurations
-    ll ans = 0;
-    for (int i = 0; i <= min(config_count[0], config_count[3]); i++) {
-        for (int j = 0; j <= config_count[1]; j++) {
-            for (int k = 0; k <= config_count[2]; k++) {
-                ans = (ans + f(i, j, k)) % MOD;
-            }
-        }
-    }
+	// Calculate the number of valid grid configurations
+	ll ans = 0;
+	for (int i = 0; i <= min(config_count[0], config_count[3]); i++) {
+		for (int j = 0; j <= config_count[1]; j++) {
+			for (int k = 0; k <= config_count[2]; k++) {
+				ans = (ans + f(i, j, k)) % MOD;
+			}
+		}
+	}
 
-    cout << ans << endl;
+	cout << ans << endl;
 }
 ```
 </CPPSection>
