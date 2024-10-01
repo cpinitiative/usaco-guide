@@ -872,6 +872,71 @@ public class Badge {
 ```
 
 </JavaSection>
+<PySection>
+
+```py
+def fill_up(curr: int, first_cycle: int):
+	"""
+	Fills up all vertices from curr to first_cycle,
+	whose answer has already been calculated.
+	"""
+	while curr != first_cycle:
+		res[curr] = res[first_cycle]
+		curr = arr[curr]
+
+
+def floyd(curr: int):
+	a = arr[curr]
+	b = arr[arr[curr]]
+
+	# Find cycle using Floyd's cycle-finding algorithm
+	while a != b:
+		if res[a] != -1:
+			"""
+			While finding cycle, if a node is found to be already
+			calculated, go to the fill_up function where the answer
+			from vertex curr to this vertex a is res[a].
+			"""
+			fill_up(curr, a)
+			return
+
+		a = arr[a]
+		b = arr[arr[b]]
+
+	a = curr
+	while a != b:
+		a = arr[a]
+		b = arr[b]
+
+	cycle_first = a
+	a = curr
+	while a != cycle_first:
+		res[a] = cycle_first
+		a = arr[a]
+
+	# For each node in the cycle, the answer would be itself
+	a = cycle_first
+	while True:
+		res[a] = a
+		a = arr[a]
+		if a == cycle_first:
+			break
+
+
+n = int(input())
+
+arr = list(map(int, input().split()))
+arr = [0] + arr
+res = [-1] * (n + 1)
+
+for i in range(1, n + 1):
+	if res[i] == -1:
+		floyd(i)
+
+print(*res[1:])
+```
+
+</PySection>
 </LanguageSection>
 
 ## Count Cycles
