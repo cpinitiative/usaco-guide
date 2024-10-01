@@ -37,7 +37,7 @@ int n, m;
 char A[1000][1000];
 bool vis[1000][1000];
 
-// previousStep stores the previous direction that we moved in to arrive that
+// previousStep stores the previous direction that we moved in to arrive at
 // this cell
 int previousStep[1000][1000];
 
@@ -198,5 +198,72 @@ public class cses1193 {
 ```
 
 </JavaSection>
+<PySection>
 
+```py
+from collections import deque
+
+vis = [[False for _ in range(1000)] for _ in range(1000)]
+
+# previousStep stores the previous direction that we moved in to arrive at this cell
+previousStep = [[-1 for _ in range(1000)] for _ in range(1000)]
+
+# 0 = up, 1 = right, 2 = down, 3 = left
+dx = [-1, 0, 1, 0]
+dy = [0, 1, 0, -1]
+stepDir = "URDL"
+
+n, m = map(int, input().split())
+
+A = []
+begin = []
+end = []
+
+for i in range(n):
+    row = list(input())
+    A.append(row)
+    for j in range(m):
+        if A[i][j] == 'A':
+            begin = (i, j)
+        elif A[i][j] == 'B':
+            end = (i, j)
+
+q = deque()
+q.append(begin)
+vis[begin[0]][begin[1]] = True
+
+while q:
+    u = q.popleft()
+    for i in range(4):
+        v = (u[0] + dx[i], u[1] + dy[i])
+        
+        if v[0] < 0 or v[0] >= n or v[1] < 0 or v[1] >= m:
+            continue
+        if A[v[0]][v[1]] == '#':
+            continue
+        if vis[v[0]][v[1]]:
+            continue
+        
+        vis[v[0]][v[1]] = True
+        previousStep[v[0]][v[1]] = i
+        q.append(v)
+
+if vis[end[0]][end[1]]:
+    print("YES")
+    steps = []
+    while end != begin:
+        p = previousStep[end[0]][end[1]]
+        steps.append(p)
+        # undo the previous step to get back to the previous square
+	    # Notice how we subtract dx/dy, whereas we added dx/dy before
+        end = (end[0] - dx[p], end[1] - dy[p])
+    
+    steps.reverse()
+    print(len(steps))
+    print(''.join(stepDir[step] for step in steps))
+else:
+    print("NO")
+```
+
+</PySection>
 </LanguageSection>
