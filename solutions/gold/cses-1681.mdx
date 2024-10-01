@@ -161,28 +161,28 @@ dp = [0] * (n + 1)
 dp[1] = 1
 
 for _ in range(m):
-    a, b = map(int, input().split())
-    edge[a].append(b)
-    backedge[b].append(a)
-    in_degree[b] += 1
+	a, b = map(int, input().split())
+	edge[a].append(b)
+	backedge[b].append(a)
+	in_degree[b] += 1
 
 # uses Kahn's algorithm
 q = deque()
 
 for i in range(1, n + 1):
-    if in_degree[i] == 0:
-        q.append(i)
+	if in_degree[i] == 0:
+		q.append(i)
 
 while q:
-    node = q.popleft()
-    
-    for next_node in edge[node]:
-        in_degree[next_node] -= 1
-        if in_degree[next_node] == 0:
-            q.append(next_node)
+	node = q.popleft()
 
-    for prev_node in backedge[node]:
-        dp[node] = (dp[node] + dp[prev_node]) % 1000000007
+	for next_node in edge[node]:
+		in_degree[next_node] -= 1
+		if in_degree[next_node] == 0:
+			q.append(next_node)
+
+	for prev_node in backedge[node]:
+		dp[node] = (dp[node] + dp[prev_node]) % 1000000007
 
 print(dp[n])
 ```
