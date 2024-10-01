@@ -80,8 +80,7 @@ import java.util.*;
 public class Main {
 	public static final int MOD = (int)1e9 + 7;
 	public static void main(String[] args) throws IOException {
-		BufferedReader br =
-		    new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		int N = Integer.parseInt(br.readLine());
 		boolean[][] compat = new boolean[N][N];
 		for (int m = 0; m < N; m++) {
@@ -114,5 +113,40 @@ public class Main {
 ```
 
 </JavaSection>
+
+<PySection>
+
+```py
+MOD = 10**9 + 7
+MAX_N = 21
+
+n = int(input())
+
+compat = []
+for _ in range(n):
+	compat.append(list(map(int, input().split())))
+
+dp = [0] * (1 << n)
+dp[0] = 1
+
+for s in range(1 << n):
+	pair_num = bin(s).count("1")
+	for w in range(n):
+		"""
+		check that
+		1. check that this woman hasn't been paired already
+		2. she's compatible with the {pair_num + 1}th man
+		"""
+		if (s & (1 << w)) or not compat[pair_num][w]:
+			continue
+
+		# add the count to future dp states
+		dp[s | (1 << w)] += dp[s]
+		dp[s | (1 << w)] %= MOD
+
+print(dp[(1 << n) - 1])
+```
+
+</PySection>
 
 </LanguageSection>

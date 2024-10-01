@@ -159,9 +159,7 @@ void dfs(int node, int par) {
 	anc[node][0] = par;
 	depth[node] = depth[anc[node][0]] + 1;
 	// initializes binary jumping for the current node.
-	for (int i = 1; i < LOGN; i++) {
-		anc[node][i] = anc[anc[node][i - 1]][i - 1];
-	}
+	for (int i = 1; i < LOGN; i++) { anc[node][i] = anc[anc[node][i - 1]][i - 1]; }
 	for (int next : adj[node]) {
 		if (next != par) { dfs(next, node); }
 	}

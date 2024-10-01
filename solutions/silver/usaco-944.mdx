@@ -72,8 +72,7 @@ int main() {
 			min_y = min(min_y, cows[i].y);
 			max_y = max(max_y, cows[i].y);
 		}
-		min_perimeter =
-		    min(min_perimeter, 2 * (max_x - min_x) + 2 * (max_y - min_y));
+		min_perimeter = min(min_perimeter, 2 * (max_x - min_x) + 2 * (max_y - min_y));
 	}
 
 	ofstream("fenceplan.out") << min_perimeter << endl;
@@ -143,15 +142,13 @@ public class FencePlan {
 		}
 
 		int lowestPerimeter = Integer.MAX_VALUE;
-		for (int cow = 1; cow <= n;
-		     cow++) {  // go through each connected component
+		for (int cow = 1; cow <= n; cow++) {  // go through each connected component
 			if (!visited[cow]) {
 				floodfill(cow);
 
 				// calculate the perimeter
 				int perimeter = ((highX - lowX) + (highY - lowY)) * 2;
-				lowestPerimeter =
-				    Math.min(lowestPerimeter, perimeter);  // track lowest
+				lowestPerimeter = Math.min(lowestPerimeter, perimeter);  // track lowest
 
 				lowX = Integer.MAX_VALUE;  // reset values
 				highX = Integer.MIN_VALUE;

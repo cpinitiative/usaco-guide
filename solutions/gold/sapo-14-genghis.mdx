@@ -73,10 +73,10 @@ int main() {
 			 * first handle the beginning and ending edge cases,
 			 * where the smallest or largest element has become the root
 			 */
-			lowest_ops[start][end] = std::min(
-			    lowest_ops[start][end],
-			    lowest_ops[start][start + 1] + lowest_ops[start + 1][end] +
-			        stable_horses[end] - stable_horses[start + 1]);
+			lowest_ops[start][end] =
+			    std::min(lowest_ops[start][end],
+			             lowest_ops[start][start + 1] + lowest_ops[start + 1][end] +
+			                 stable_horses[end] - stable_horses[start + 1]);
 			lowest_ops[start][end] =
 			    std::min(lowest_ops[start][end],
 			             lowest_ops[end - 1][end] + lowest_ops[start][end - 1] +
@@ -106,16 +106,14 @@ import java.util.Arrays;
 
 public final class genghis {
 	public static void main(String[] args) throws IOException {
-		BufferedReader read =
-		    new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
 		int horseNum = Integer.parseInt(read.readLine());
 		int stableNum = Integer.parseInt(read.readLine());
 		int[] stableHorses = new int[stableNum + 2];
 		for (int i = 1; i <= stableNum; i++) {
 			stableHorses[i] = Integer.parseInt(read.readLine());
 			if (stableHorses[i] < 1 || horseNum < stableHorses[i]) {
-				throw new IllegalArgumentException(
-				    "this horse shouldn't exist");
+				throw new IllegalArgumentException("this horse shouldn't exist");
 			}
 		}
 		// add the "out-of-bounds" horses
@@ -147,24 +145,24 @@ public final class genghis {
 				 * first handle the beginning and ending edge cases,
 				 * where the smallest or largest element has become the root
 				 */
-				lowestOps[start][end] = Math.min(
-				    lowestOps[start][end],
-				    lowestOps[start][start + 1] + lowestOps[start + 1][end] +
-				        stableHorses[end] - stableHorses[start + 1]);
-				lowestOps[start][end] = Math.min(
-				    lowestOps[start][end],
-				    lowestOps[end - 1][end] + lowestOps[start][end - 1] +
-				        stableHorses[end - 1] - stableHorses[start]);
+				lowestOps[start][end] =
+				    Math.min(lowestOps[start][end],
+				             lowestOps[start][start + 1] + lowestOps[start + 1][end] +
+				                 stableHorses[end] - stableHorses[start + 1]);
+				lowestOps[start][end] =
+				    Math.min(lowestOps[start][end],
+				             lowestOps[end - 1][end] + lowestOps[start][end - 1] +
+				                 stableHorses[end - 1] - stableHorses[start]);
 
 				/*
 				 * then get to the actual part where we combine
 				 * two parts with top being the root
 				 */
 				for (int top = start + 2; top < end - 1; top++) {
-					lowestOps[start][end] = Math.min(
-					    lowestOps[start][end],
-					    lowestOps[start][top] + lowestOps[top][end] +
-					        stableHorses[end] - stableHorses[start] - 1);
+					lowestOps[start][end] =
+					    Math.min(lowestOps[start][end],
+					             lowestOps[start][top] + lowestOps[top][end] +
+					                 stableHorses[end] - stableHorses[start] - 1);
 				}
 			}
 		}

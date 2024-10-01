@@ -164,8 +164,7 @@ template <class T> struct BIT {
 		T lans = ID, rans = ID;
 		for (int P = p, lo = p - 1, hi = p + 1; P < SZ; P += P & -P) {
 			for (; hi < P; hi += hi & -hi) rans = comb(rans, bit[1][hi]);
-			for (; lo > P - (P & -P); lo -= lo & -lo)
-				lans = comb(bit[0][lo], lans);
+			for (; lo > P - (P & -P); lo -= lo & -lo) lans = comb(bit[0][lo], lans);
 			assert(lo == P - (P & -P));
 			bit[0][P] = comb(lans, x[p]);
 			if (p != P) bit[0][P] = comb(bit[0][P], comb(rans, x[P]));
@@ -174,8 +173,7 @@ template <class T> struct BIT {
 	void upd1(int p) {
 		T lans = ID, rans = ID;
 		for (int P = p, lo = p - 1, hi = p + 1; P; P -= P & -P) {
-			for (; hi < P + (P & -P); hi += hi & -hi)
-				rans = comb(rans, bit[1][hi]);
+			for (; hi < P + (P & -P); hi += hi & -hi) rans = comb(rans, bit[1][hi]);
 			for (; lo > P; lo -= lo & -lo) lans = comb(bit[0][lo], lans);
 			assert(hi == P + (P & -P));
 			bit[1][P] = comb(x[p], rans);
@@ -191,10 +189,8 @@ template <class T> struct BIT {
 	T query(int a, int b) {
 		assert(0 < a && a <= b && b < SZ);
 		T lans = ID, rans = ID;
-		for (int A; (A = a + (a & -a)) <= b; a = A)
-			lans = comb(lans, bit[1][a]);
-		for (int B; (B = b - (b & -b)) >= a; b = B)
-			rans = comb(bit[0][b], rans);
+		for (int A; (A = a + (a & -a)) <= b; a = A) lans = comb(lans, bit[1][a]);
+		for (int B; (B = b - (b & -b)) >= a; b = B) rans = comb(bit[0][b], rans);
 		assert(a == b);
 		return comb(comb(lans, x[a]), rans);
 	}
@@ -256,9 +252,8 @@ const ll MAXN = 200001;
 struct Node {
 	ll g_max, l_max, r_max, sum;
 	Node operator+(Node b) {
-		return {max(max(g_max, b.g_max), r_max + b.l_max),
-		        max(l_max, sum + b.l_max), max(b.r_max, r_max + b.sum),
-		        sum + b.sum};
+		return {max(max(g_max, b.g_max), r_max + b.l_max), max(l_max, sum + b.l_max),
+		        max(b.r_max, r_max + b.sum), sum + b.sum};
 	}
 };
 
@@ -266,8 +261,7 @@ ll n, a[MAXN];
 Node segtree[4 * MAXN];
 
 void build(ll l = 1, ll r = n, ll node = 1) {
-	if (l == r)
-		segtree[node] = {max(0ll, a[l]), max(0ll, a[l]), max(0ll, a[l]), a[l]};
+	if (l == r) segtree[node] = {max(0ll, a[l]), max(0ll, a[l]), max(0ll, a[l]), a[l]};
 	else {
 		ll mid = (l + r) / 2;
 		build(l, mid, node * 2);
@@ -276,8 +270,7 @@ void build(ll l = 1, ll r = n, ll node = 1) {
 	}
 }
 void update(ll pos, ll val, ll l = 1, ll r = n, ll node = 1) {
-	if (l == r)
-		segtree[node] = {max(0ll, val), max(0ll, val), max(0ll, val), val};
+	if (l == r) segtree[node] = {max(0ll, val), max(0ll, val), max(0ll, val), val};
 	else {
 		ll mid = (l + r) / 2;
 		if (pos > mid) update(pos, val, mid + 1, r, node * 2 + 1);

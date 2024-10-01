@@ -55,9 +55,7 @@ int main() {
 	int l = 0;
 	int r = k;
 	for (int i = 0; i < n; i++) {
-		while (r + 1 < n && rocks[r + 1] - rocks[i] < rocks[i] - rocks[l]) {
-			l++, r++;
-		}
+		while (r + 1 < n && rocks[r + 1] - rocks[i] < rocks[i] - rocks[l]) { l++, r++; }
 		next_stone[i] = (rocks[i] - rocks[l] >= rocks[r] - rocks[i]) ? l : r;
 	}
 
@@ -114,15 +112,11 @@ int main() {
 	int l = 0;
 	int r = k;
 	for (int i = 0; i < n; i++) {
-		while (r + 1 < n && rocks[r + 1] - rocks[i] < rocks[i] - rocks[l]) {
-			l++, r++;
-		}
+		while (r + 1 < n && rocks[r + 1] - rocks[i] < rocks[i] - rocks[l]) { l++, r++; }
 		lift[i][0] = (rocks[i] - rocks[l] >= rocks[r] - rocks[i]) ? l : r;
 	}
 	for (int i = 1; i < LOG; i++) {
-		for (int j = 0; j < n; j++) {
-			lift[j][i] = lift[lift[j][i - 1]][i - 1];
-		}
+		for (int j = 0; j < n; j++) { lift[j][i] = lift[lift[j][i - 1]][i - 1]; }
 	}
 
 	// Calculate the sizes of the cycles formed.

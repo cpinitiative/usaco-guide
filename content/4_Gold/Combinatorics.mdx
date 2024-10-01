@@ -1,7 +1,7 @@
 ---
 id: combo
 title: 'Combinatorics'
-author: Jesse Choe, Aadit Ambadkar, Dustin Miao, Mihnea Brebenel
+author: Jesse Choe, Aadit Ambadkar, Dustin Miao, Mihnea Brebenel, Peng Bai
 prerequisites:
   - divisibility
   - modular
@@ -19,7 +19,7 @@ to start.
 		url="https://artofproblemsolving.com/alcumus/problem"
 		starred
 	>
-		practice problems, set focus to Counting and Probability.
+		practice problems; set focus to Counting and Probability for module topics
 	</Resource>
 	<Resource
 		source="AoPS"
@@ -47,9 +47,6 @@ to start.
 	</Resource>
 	<Resource source="AoPS" title="Intermediate Combinatorics" url = "https://artofproblemsolving.com/wiki/index.php/Combinatorics/Intermediate">
 		teaches more advanced combinatorics concepts
-	</Resource>
-	<Resource source="CF" title="Expected Value" url = "https://codeforces.com/blog/entry/62690">
-		a good blog about the expected value
 	</Resource>
 	<Resource source="CF" title="Inclusion-Exclusion Principle" url = "https://codeforces.com/blog/entry/64625">
 		a good blog about the inclusion-exclusion principle
@@ -290,7 +287,7 @@ Since these binomial coefficients are large, problems typically require us to
 output the answer modulo a large prime $p$ such as $10^9 + 7$. Fortunately, we
 can use [modular inverses](/gold/modular) to divide $n!$ by $k!$ and $(n - k)!$
 modulo $p$ for any prime $p$. Computing inverse factorials **online** can be
-very time costly. Instead, we can **precompute** all factorials in
+very time-consuming. Instead, we can **precompute** all factorials in
 $\mathcal{O}(n)$ time and inverse factorials in $\mathcal{O}(n + \log MOD)$.
 First, we compute the modular inverse of the largest factorial using binary
 exponentiation. For the rest, we use the fact that $(n!)^{-1} \equiv
@@ -362,7 +359,7 @@ public class BinomialCoefficients {
 		return res;
 	}
 
-	/** Precomputes n! from 0 to MAXN. */
+	/** Precomputes n! from 0 to MAXN with a certain modulo. */
 	private static void factorial(long p) {
 		fac[0] = 1;
 		for (int i = 1; i <= MAXN; i++) { fac[i] = fac[i - 1] * i % p; }
@@ -499,7 +496,7 @@ int main() {
 import java.io.*;
 import java.util.*;
 
-public class BinomialCoefficients {
+public class BinomialCoeffs {
 	private static final int MAXN = (int)1e6;
 	private static final int MOD = (int)1e9 + 7;
 	private static long[] fac = new long[MAXN + 1];
@@ -730,7 +727,7 @@ $$
 !n = (n - 1)(!(n - 2) + !(n - 1))
 $$
 
-which can be computed in linear time with a simple DP. The base cases are that
+which can be computed in linear time with DP. The base cases are that
 $!0 = 1$ and $!1 = 0$.
 
 <LanguageSection>
@@ -827,7 +824,7 @@ print()
 </Resources>
 
 [Stars and Bars](https://en.wikipedia.org/wiki/Stars_and_bars_(combinatorics)) is a useful method in combinatorics that involves
-grouping indistinguishable objects into distinguishable boxes. The number ways to put $n$ indistinguishable objects into
+grouping indistinguishable objects into distinguishable boxes. The number of ways to put $n$ indistinguishable objects into
 $k$ distinguishable boxes is:
 
 $$
@@ -890,50 +887,6 @@ int main() {
 	}
 }
 ```
-## Expected Value
-
-An expected value is the theoretical mean of a probability distribution. A **random variable** is used to represent a possible probability distribution. Let $X$ be a random variable and $P(X = x)$ be the probability that the result of the random variable $X$ is $x$. Then, the expected value of $X$, denoted as $E[X]$, is
-$$
-\sum_x x \cdot P(X = x)
-$$
-
-For example, let $X$ be the probability distribution of a fair 6-sided die. $P(X = x)$ is $\frac{1}{6}$ for $1 \leq x \leq 6$. Using the formula, we get $E[X] = \frac{21}{6} = \frac{7}{2}$.
-
-<FocusProblem problem="sample5" />
-
-### Explanation
-
-Let $X$ represent the probability distribution of maximum number of candies a child gets. To get $E[X]$, we just need $P(X = x)$ for $1 \leq x \leq k$. $(\frac{x}{k})^n$ is the probability that each child gets at most $x$ candies. To get $P(X = x)$, we must subtract out the probability that each child gets strictly less than $x$ candies, which is $(\frac{x - 1}{k})^n$.
-
-Therefore, $P(X = x) = (\frac{x}{k})^n - (\frac{x - 1}{k})^n$, allowing us to easily calculate $E[X]$.
-
-### Implementation
-
-**Time Complexity:** $\mathcal{O}(nk)$ using naive exponentiation or $\mathcal{O}(k \log n)$ using binary exponentiation or std::pow.
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-int n, k;
-void solve() {
-	cin >> n >> k;
-	double out = 0;
-	for (int i = 1; i <= k; i++) {
-		out += i * (pow((double)i / k, n) - pow((double)(i - 1) / k, n));
-	}
-
-	// set output precision to 6 decimal points
-	cout << setprecision(6) << fixed;
-	cout << out << "\n";
-}
-
-int32_t main() {
-	std::ios::sync_with_stdio(false);
-	cin.tie(NULL);
-	solve();
-}
-```
-
 </CPPSection>
 <PySection>
 
@@ -950,6 +903,222 @@ print("\n".join(ans))
 
 </PySection>
 </LanguageSection>
+
+## Expected Value
+
+<Resources>
+	<Resource
+		source="Brilliant"
+		title="Expected Value"
+		url="https://brilliant.org/wiki/expected-value/"
+	>
+		lots of pure math examples of expected value + explanations
+	</Resource>
+	<Resource
+		source="Brilliant"
+		title="Linearity of Expectation"
+		url="https://brilliant.org/wiki/linearity-of-expectation/"
+	>
+		lots of pure math examples of linearity of expectation + explanations
+	</Resource>
+	<Resource source="CF" title="Expected Value" url = "https://codeforces.com/blog/entry/62690">
+		a good blog about the expected value
+	</Resource>
+</Resources>
+
+An expected value is the theoretical mean of a probability distribution. A **random variable** is used to represent a possible probability distribution. Let $X$ be a random variable and $P(X = x)$ be the probability that the result of the random variable $X$ is $x$. Then, the expected value of $X$, denoted as $E[X]$, is
+$$
+\sum_x x \cdot P(X = x)
+$$
+
+For example, let $X$ be the probability distribution of a fair 6-sided die. $P(X = x)$ is $\frac{1}{6}$ for $1 \leq x \leq 6$. Using the formula, we get $E[X] = \frac{21}{6} = \frac{7}{2}$.
+
+<FocusProblem problem="sample5" />
+
+### Explanation
+
+Let $X$ represent the probability distribution of the maximum number of candies a child gets. To get $E[X]$, we need $P(X = x)$ for $1 \leq x \leq k$. $(\frac{x}{k})^n$ is the probability that each child gets at most $x$ candies. To get $P(X = x)$, we must subtract out the probability that each child gets strictly less than $x$ candies, which is $(\frac{x - 1}{k})^n$.
+
+Therefore, $P(X = x) = (\frac{x}{k})^n - (\frac{x - 1}{k})^n$, allowing us to calculate $E[X]$.
+
+### Implementation
+
+**Time Complexity:** $\mathcal{O}(nk)$ using naive exponentiation or $\mathcal{O}(k \log n)$ using binary exponentiation.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <cmath>
+#include <iomanip>
+#include <iostream>
+
+using std::cout;
+using std::endl;
+
+int main() {
+	int n;
+	int k;
+	std::cin >> n >> k;
+
+	double expect_max = 0;
+	for (int i = 1; i <= k; i++) {
+		expect_max += i * (pow((double)i / k, n) - pow((double)(i - 1) / k, n));
+	}
+
+	cout << std::setprecision(6) << std::fixed;  // set output precision
+	cout << expect_max << endl;
+}
+```
+
+</CPPSection>
+<PySection>
+
+```py
+n, k = [int(i) for i in input().split()]
+
+expected_max = 0
+for c in range(1, k + 1):
+	expected_max += c * ((c / k) ** n - ((c - 1) / k) ** n)
+
+print(f"{expected_max:.6f}")
+```
+
+</PySection>
+</LanguageSection>
+
+## Linearity of Expectation
+
+Linearity of expectation states that $E[X + Y] = E[X] + E[Y]$ no matter if $X$ and $Y$ are independent of each other. For example, if on a certain day Alice goes to the gym with a probability of $\frac{1}{10}$ and her husband Bob goes to the gym with a probability of $\frac{3}{10}$, the expected number of visits to the gym on a certain day amongst the couple is $\frac{1}{10} + \frac{3}{10} = \frac{2}{5}$. This works even though the decisions of one person may affect the other.
+
+This can be generalized to a sequence of random variables $X_1, X_2, \dots, X_n$ and arbitrary constants $c_1, c_2, \dots, c_n$:
+$$
+E\left[\sum_{i = 1}^{n} c_iX_i \right] = \sum_{i = 1}^{n}c_i \cdot E[ X_i]
+$$
+
+<FocusProblem problem="sample6" />
+
+### Explanation
+
+While this may seem impossible at first glance given the amount of different sequences of operations, linearity of expectation allows us to break down the expected value into the sum of smaller parts.
+
+We can break this down by decomposing the initial random variable into the sums
+of various *indicator* random variables.
+Let $X_u$ be a variable that indicates whether node $u$ was explicitly marked for removal.
+Since it's basically a boolean, it can only take on either $0$ or $1$,
+which also means that the probability that it's $1$ is equal to its expected value.
+
+Now, let's consider how an operation affects node $u$.
+1. Either it chooses a node that can't reach $u$, and nothing happens as far as $u$ is concerned.
+2. It chooses $u$ itself, making the indicator variable $1$.
+3. It chooses another node that can reach $u$, making the indicator variable $0$.
+Since all nodes have an equal chance of being chosen, the chance that $X_u=1$
+is $\frac{1}{a_u}$, where $a_u$ is the number of nodes that can reach $u$ *including $u$ itself*.
+
+We put the expected values of all the indicator variables back together, giving us our final answer.
+
+### Implementation
+
+**Time Complexity:** $\mathcal{O}(N^3)$ using a naive DFS or BFS.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <iomanip>
+#include <iostream>
+#include <vector>
+
+using std::cout;
+using std::endl;
+using std::vector;
+
+int main() {
+	int n;
+	std::cin >> n;
+	vector<vector<int>> adj(n, vector<int>(n));
+	for (int n1 = 0; n1 < n; n1++) {
+		for (int n2 = 0; n2 < n; n2++) {
+			char connected;
+			std::cin >> connected;
+			adj[n1][n2] = connected == '1';
+		}
+	}
+
+	// reach_from[i] = the # of nodes that have a path to i
+	vector<int> reach_from(n);
+	for (int start = 0; start < n; start++) {
+		vector<int> todo{start};
+		vector<bool> visited(n, false);
+		visited[start] = true;
+		while (!todo.empty()) {
+			int curr = todo.back();
+			todo.pop_back();
+			for (int i = 0; i < n; i++) {
+				if (!visited[i] && adj[curr][i]) {
+					visited[i] = true;
+					reach_from[i]++;
+					todo.push_back(i);
+				}
+			}
+		}
+	}
+
+	double expected_ops = 0;
+	for (int i : reach_from) { expected_ops += 1.0 / (i + 1); }
+
+	cout << std::setprecision(15) << expected_ops << endl;
+}
+```
+
+</CPPSection>
+<PySection>
+
+```py
+n = int(input())
+
+adj = [[] for _ in range(n)]
+for i in range(n):
+	for v, c in enumerate(input()):
+		if c == "1":
+			adj[i].append(v)
+
+# reach_from[i] = the # of nodes that have a path to i
+reach_from = [0 for _ in range(n)]
+for start in range(n):
+	todo = [start]
+	visited = [False for _ in range(n)]
+	visited[start] = True
+	while todo:
+		curr = todo.pop()
+		for next_ in adj[curr]:
+			if not visited[next_]:
+				visited[next_] = True
+				reach_from[next_] += 1
+				todo.append(next_)
+
+expected_ops = 0
+for i in reach_from:
+	expected_ops += 1 / (i + 1)
+
+print(expected_ops)
+```
+
+</PySection>
+</LanguageSection>
+
+## Expected Products
+
+Linearity of expectation deals with $E[X + Y]$, but what about $E[X \cdot Y]$?
+
+$E[X \cdot Y] = E[X] \cdot E[Y]$ if $X$ and $Y$ are independent from each other.
+We can reconsider the example of a fair 6-sided die to show that $E[X^2] \neq E[X]^2$.
+We know that $E[X] = \frac{7}{2}$, so $E[X]^2 = \frac{7}{2} \cdot \frac{7}{2} = \frac{49}{4}$.
+
+On the other hand,
+$$
+E[X^2] = \sum_x x^2 \cdot P(X = x) = \frac{1 + 4 + 9 + 16 + 25 + 36}{6} = \frac{91}{6}.
+$$
 
 ## Problems
 

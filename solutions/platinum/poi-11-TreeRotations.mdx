@@ -1,0 +1,90 @@
+---
+id: poi-11-TreeRotations
+source: POI
+title: 2011 - Tree Rotations
+author: Justin Ji
+---
+
+[Official Analysis (Polish)](https://github.com/mostafa-saad/MyCompetitiveProgramming/blob/master/Olympiad/POI/official/2011/editorial/rot.pdf)
+
+## Explanation
+
+The number of inversions that result in joining two sets
+together is the sum of the inversions within the two sets plus the
+number of new inversions after joining the two sets, with each new inversion
+having one item in the left and right sets. Thus, to count the
+best way to merge the two sets, we need to find the inversions if we either swap
+or don't swap the two sets.
+
+The implementation below uses small-to-large merging and ordered sets to
+efficiently count the least inversions we can have when combining the sets from
+our left and right subtrees. We iterate on the smaller set, and use the ordered
+set `order_of_key` method to count the number of elements $< x$ and $> x$, for
+every leaf value $x$ within the smaller set.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N\log^2N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+
+#include <ext/pb_ds/assoc_container.hpp>
+using namespace __gnu_pbds;
+template <class T>
+using Tree =
+    tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
+
+int main() {
+	int n;
+	cin >> n;
+
+	int timer = 0;
+	vector<ll> inversions(2 * n - 1);
+	map<int, Tree<int>> sets;
+	function<void(int)> dfs = [&](int idx) {
+		int val;
+		cin >> val;
+
+		if (val == 0) {
+			int idx_l = ++timer;
+			dfs(idx_l);
+			int idx_r = ++timer;
+			dfs(idx_r);
+
+			if (sets[idx_l].size() > sets[idx_r].size()) {
+				sets[idx_l].swap(sets[idx_r]);
+			}
+
+			ll way_1 = 0;  // way 1: left set is joined to the right set
+			ll way_2 = 0;  // way 2: right set is joined to the left set
+			for (int v : sets[idx_l]) {
+				int loc = sets[idx_r].order_of_key(v);
+				way_1 += loc;
+				way_2 += (int)sets[idx_r].size() - loc;
+			}
+
+			for (int v : sets[idx_l]) { sets[idx_r].insert(v); }
+			sets[idx].swap(sets[idx_r]);
+			sets.erase(idx_l);
+			sets.erase(idx_r);
+
+			inversions[idx] = inversions[idx_l] + inversions[idx_r] + min(way_1, way_2);
+		} else if (val > 0) {
+			sets[idx].insert(val);
+		}
+	};
+
+	dfs(0);
+
+	cout << inversions[0] << endl;
+}
+```
+
+</CPPSection>
+</LanguageSection>

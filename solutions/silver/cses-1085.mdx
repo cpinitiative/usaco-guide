@@ -40,9 +40,6 @@ using namespace std;
 
 using ll = long long;
 
-// MAX_N * MAX_X
-ll MAX_SUM = 2e5 * 1e9;
-
 /**
  * true if the given `arr` can be divided into `k` subarrays where the sum of
  * each subarray is at most `max_sum`
@@ -73,7 +70,8 @@ int main() {
 	vector<ll> arr(n);
 	for (ll &i : arr) { cin >> i; }
 
-	ll l = 1, r = MAX_SUM;
+	ll l = *max_element(begin(arr), end(arr));
+	ll r = accumulate(begin(arr), end(arr), 0LL);
 	while (l < r) {
 		ll mid = (l + r) / 2;
 		if (is_possible(arr, k, mid)) {
@@ -82,7 +80,8 @@ int main() {
 			l = mid + 1;
 		}
 	}
-	cout << l << '\n';
+
+	cout << l << endl;
 }
 ```
 
@@ -91,15 +90,14 @@ int main() {
 
 ```java
 import java.io.*;
+import java.util.Arrays;
 import java.util.StringTokenizer;
+import java.util.stream.LongStream;
 
 public class ArrayDivision {
-	// MAX_N * MAX_X
-	static final long MAX_SUM = (long)(2e5 * 1e9);
 
 	public static void main(String[] args) throws IOException {
-		BufferedReader br =
-		    new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st = new StringTokenizer(br.readLine());
 		int n = Integer.parseInt(st.nextToken());
 		int k = Integer.parseInt(st.nextToken());
@@ -109,7 +107,8 @@ public class ArrayDivision {
 		for (int i = 0; i < n; i++) { arr[i] = Long.parseLong(st.nextToken()); }
 		br.close();
 
-		long l = 1, r = MAX_SUM;
+		long l = Arrays.stream(arr).max().getAsLong();
+		long r = Arrays.stream(arr).sum();
 		while (l < r) {
 			long mid = (l + r) / 2;
 			if (is_possible(arr, k, mid)) {
@@ -118,6 +117,7 @@ public class ArrayDivision {
 				l = mid + 1;
 			}
 		}
+
 		System.out.println(l);
 	}
 
@@ -181,8 +181,8 @@ def can_divide_arrays(max_sum: int) -> bool:
 	return num_subarrays <= k
 
 
-left, right = 0, sum(nums)
-
+left = max(nums)
+right = sum(nums)
 while left < right:
 	mid = (left + right) // 2
 	if can_divide_arrays(mid):

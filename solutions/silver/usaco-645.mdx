@@ -66,9 +66,7 @@ ll search() {
 	for (int i = 1; i < n; ++i) { pref[i] = upd(pref[i - 1], cows[i].second); }
 
 	suf[n - 1] = {cows[n - 1].second, cows[n - 1].second};
-	for (int i = n - 2; i >= 0; i--) {
-		suf[i] = upd(suf[i + 1], cows[i].second);
-	}
+	for (int i = n - 2; i >= 0; i--) { suf[i] = upd(suf[i + 1], cows[i].second); }
 
 	// initial area with one enclosure
 	ll area = (ll)(cows.back().first - cows.front().first) *
@@ -78,8 +76,8 @@ ll search() {
 	for (int i = 0; i < n - 1; i++) {
 		// if it's possible to split
 		if (cows[i].first != cows[i + 1].first) {
-			ll first_rect = (ll)(cows[i].first - cows[0].first) *
-			                (pref[i].second - pref[i].first);
+			ll first_rect =
+			    (ll)(cows[i].first - cows[0].first) * (pref[i].second - pref[i].first);
 			ll second_rect = (ll)(cows.back().first - cows[i + 1].first) *
 			                 (suf[i + 1].second - suf[i + 1].first);
 
@@ -147,9 +145,7 @@ public class SplittingTheField {
 
 			// compute prefix/suffix minimums and maximums
 			pref[0] = new Pair(cows[0].second, cows[0].second);
-			for (int i = 1; i < n; i++) {
-				pref[i] = upd(pref[i - 1], cows[i].second);
-			}
+			for (int i = 1; i < n; i++) { pref[i] = upd(pref[i - 1], cows[i].second); }
 
 			suf[n - 1] = new Pair(cows[n - 1].second, cows[n - 1].second);
 			for (int i = n - 2; i >= 0; i--) {

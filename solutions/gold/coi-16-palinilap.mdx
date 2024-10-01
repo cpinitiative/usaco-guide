@@ -193,8 +193,7 @@ int main() {
 
 	// checks if a substring is a palindrome
 	auto is_pal = [&](int from, int to) {
-		return h_str.hash(from, to) ==
-		       h_rev_str.hash(len - to - 1, len - from - 1);
+		return h_str.hash(from, to) == h_rev_str.hash(len - to - 1, len - from - 1);
 	};
 	// checks if a substring is a palindrome with a replaced character
 	auto is_pal_rep = [&](int from, int to, pair<int, char> rep) {
@@ -210,8 +209,7 @@ int main() {
 	long long init_amt = 0;  // the initial amount of palindromes
 	for (int c = 0; c < len; c++) {
 		// first check the odd-length palindromes relative to c
-		int most =
-		    min(c, len - c - 1);  // the most we can extend from position c
+		int most = min(c, len - c - 1);  // the most we can extend from position c
 		check = [&](int d) { return is_pal(c - d, c + d); };
 		int raw_pal = last_true(0, most, check);
 		init_amt += raw_pal + 1;
@@ -249,9 +247,7 @@ int main() {
 		}
 	}
 
-	for (pair<int, int> &r : removal2) {
-		r = {len - r.second - 1, len - r.first - 1};
-	}
+	for (pair<int, int> &r : removal2) { r = {len - r.second - 1, len - r.first - 1}; }
 	// these two combined give the bad array stated in the analysis
 	vector<long long> bad1 = range_res(len, removal1);
 	vector<long long> bad2 = range_res(len, removal2);

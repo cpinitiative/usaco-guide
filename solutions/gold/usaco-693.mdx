@@ -67,14 +67,12 @@ int main() {
 	}
 	for (int i : height) {
 		cow.erase(i);  // remove current cow from right
-		int le =
-		    woc.size() -
-		    woc.order_of_key(i);  // order_of_key counts the number of elements
-		                          // in the set that are strictly less than i
-		int ri =
-		    cow.size() - cow.order_of_key(i);  // we want to count the number of
-		                                       // elemtns that are larger than i
-		woc.insert(i);                         // add current cow to left
+		int le = woc.size() -
+		         woc.order_of_key(i);  // order_of_key counts the number of elements
+		                               // in the set that are strictly less than i
+		int ri = cow.size() - cow.order_of_key(i);  // we want to count the number of
+		                                            // elemtns that are larger than i
+		woc.insert(i);                              // add current cow to left
 		if (max(le, ri) > 2 * min(le, ri)) ans++;
 	}
 	fprintf(out, "%d\n", ans);

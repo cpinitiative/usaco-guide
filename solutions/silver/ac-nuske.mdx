@@ -190,8 +190,7 @@ import java.util.*;
 
 public class Main {
 	public static void main(String[] args) throws IOException {
-		BufferedReader read =
-		    new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer initial = new StringTokenizer(read.readLine());
 		int rowNum = Integer.parseInt(initial.nextToken());
 		int colNum = Integer.parseInt(initial.nextToken());
@@ -214,8 +213,7 @@ public class Main {
 		int[][] pref = new int[rowNum + 1][colNum + 1];
 		for (int r = 1; r <= rowNum; r++) {
 			for (int c = 1; c <= colNum; c++) {
-				pref[r][c] =
-				    pref[r - 1][c] + pref[r][c - 1] - pref[r - 1][c - 1];
+				pref[r][c] = pref[r - 1][c] + pref[r][c - 1] - pref[r - 1][c - 1];
 				if (grid[r].charAt(c) == '1') {
 					boolean up = grid[r - 1].charAt(c) == '1';
 					boolean left = grid[r].charAt(c - 1) == '1';
@@ -274,8 +272,7 @@ public class Main {
 			int topCol = verpref[er][sc] - verpref[sr][sc];
 
 			// Change in # of connected components in the rest of the grid
-			int change =
-			    pref[er][ec] - pref[sr][ec] - pref[er][sc] + pref[sr][sc];
+			int change = pref[er][ec] - pref[sr][ec] - pref[er][sc] + pref[sr][sc];
 
 			queryAns.append(corner + topRow + topCol + change).append('\n');
 		}
@@ -286,4 +283,74 @@ public class Main {
 ```
 
 </JavaSection>
+<PySection>
+
+```py
+MAX_SIZE = 2000
+
+n, m, q = map(int, input().split())
+
+grid = [[False] * (MAX_SIZE + 1) for _ in range(MAX_SIZE + 1)]
+
+# Read the grid
+for i in range(1, n + 1):
+	row = input()
+	for j in range(1, m + 1):
+		grid[i][j] = row[j - 1] == "1"
+
+# Overall prefix sums array. pref[x][y] is how many components
+# we have in the 2D array from (1, 1) to (x, y), inclusive.
+pref = [[0] * (MAX_SIZE + 1) for _ in range(MAX_SIZE + 1)]
+
+for i in range(1, n + 1):
+	for j in range(1, m + 1):
+		pref[i][j] = pref[i - 1][j] + pref[i][j - 1] - pref[i - 1][j - 1]
+		if grid[i][j]:
+			"""
+			  0
+			0 1
+			A new connected component forms!
+			"""
+			if not grid[i - 1][j] and not grid[i][j - 1]:
+				pref[i][j] += 1
+
+			"""
+              		  1
+            		1 1
+            		Two connected componets merge!
+            		"""
+			if grid[i - 1][j] and grid[i][j - 1]:
+				pref[i][j] -= 1
+
+# horpref[x][y]: number of connected components in the row from (x, 1) to (x, y)
+horpref = [[0] * (MAX_SIZE + 1) for _ in range(MAX_SIZE + 1)]
+
+# verpref[x][y]: number of connected components in the column from (1, y) to (x, y)
+verpref = [[0] * (MAX_SIZE + 1) for _ in range(MAX_SIZE + 1)]
+
+for i in range(1, n + 1):
+	for j in range(1, m + 1):
+		horpref[i][j] = horpref[i][j - 1]
+		verpref[i][j] = verpref[i - 1][j]
+		if grid[i][j]:
+			horpref[i][j] += not grid[i][j - 1]
+			verpref[i][j] += not grid[i - 1][j]
+
+for _ in range(q):
+	a, b, c, d = map(int, input().split())
+
+	# Whether we start with a connected component
+	ans = grid[a][b]
+
+	# How many new components appear in the top row and leftmost column
+	ans += horpref[a][d] - horpref[a][b]
+	ans += verpref[c][b] - verpref[a][b]
+
+	# Change in the number of connected components in the rest of the grid
+	ans += pref[c][d] - pref[a][d] - pref[c][b] + pref[a][b]
+
+	print(ans)
+```
+
+</PySection>
 </LanguageSection>

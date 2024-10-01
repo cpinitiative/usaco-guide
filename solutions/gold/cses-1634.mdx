@@ -5,11 +5,11 @@ title: Minimizing Coins
 author: Michael Cao, Sofia Yang, Paul Chen
 ---
 
+## Explanation
+
 In this problem, we're asked the minimum number of coins of distinct weights
 needed to achieve some weight, $x$. You can read about the solution to this
 classical problem in [CPH Chapter 7](/CPH.pdf) under "Coin Problem".
-
-# Main Idea
 
 For this problem, we'll define $\texttt{dp[w]}$ as the minimum number of coins
 to achieve some weight, $w$. Then, at some $w$, we can try to use every coin.
@@ -33,6 +33,8 @@ you add 1 for the transitions.
 
 </Warning>
 
+## Implementation
+
 <Warning>
 
 Don't forget to check if $\texttt{dp[x]} = MX$, where $MX$ is the large value
@@ -40,61 +42,39 @@ you used, and print $-1$ if so (since it's impossible to achieve a sum of $x$).
 
 </Warning>
 
-## Implementation
-
 **Time Complexity**: $\mathcal O(N\cdot X)$
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
 using ll = long long;
-using vi = vector<int>;
-#define pb push_back
-#define rsz resize
-#define all(x) begin(x), end(x)
-#define sz(x) (int)(x).size()
-using pi = pair<int, int>;
-#define f first
-#define s second
-#define mp make_pair
-void setIO(string name = "") {  // name is nonempty for USACO file I/O
-	ios_base::sync_with_stdio(0);
-	cin.tie(0);  // see Fast Input & Output
-	if (sz(name)) {
-		freopen((name + ".in").c_str(), "r", stdin);  // see Input & Output
-		freopen((name + ".out").c_str(), "w", stdout);
-	}
-}
 
 ll dp[1000001];
 
-const int MOD = (int)1e9 + 7;
+const int MOD = 1e9 + 7;
 
 int main() {
 	int n, x;
 	cin >> n >> x;
-	vi coins(n);
+	vector<int> coins(n);
 	for (int i = 0; i < n; i++) { cin >> coins[i]; }
+
 	for (int i = 0; i <= x; i++) { dp[i] = INT_MAX; }
 	dp[0] = 0;
 	for (int i = 1; i <= n; i++) {
-		for (int weight = 0; weight <= x; weight++) {
-			if (weight - coins[i - 1] >= 0) {
-				dp[weight] = min(dp[weight], dp[weight - coins[i - 1]] + 1);
-			}
+		for (int weight = coins[i - 1]; weight <= x; weight++) {
+			dp[weight] = min(dp[weight], dp[weight - coins[i - 1]] + 1);
 		}
 	}
-	cout << (dp[x] == INT_MAX ? -1 : dp[x]) << '\n';
+
+	cout << (dp[x] == INT_MAX ? -1 : dp[x]) << endl;
 }
 ```
 
 </CPPSection>
-
-
 <JavaSection>
 
 ```java
@@ -103,12 +83,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
-public class cses1634 {
+public class MinCoins {
 	public static int MAX = (int)10e6 + 2;
 
 	public static void main(String[] args) throws IOException {
-		BufferedReader br =
-		    new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st = new StringTokenizer(br.readLine());
 		int N = Integer.parseInt(st.nextToken());
 		int X = Integer.parseInt(st.nextToken());
@@ -116,9 +95,7 @@ public class cses1634 {
 		/* Read the coin weights. */
 		int[] coins = new int[N];
 		st = new StringTokenizer(br.readLine());
-		for (int i = 0; i < N; i++) {
-			coins[i] = Integer.parseInt(st.nextToken());
-		}
+		for (int i = 0; i < N; i++) { coins[i] = Integer.parseInt(st.nextToken()); }
 
 		/* Initialize DP. */
 		int[] dp = new int[X + 1];
@@ -129,10 +106,8 @@ public class cses1634 {
 		If the state curWeight - coin[i] is possible
 		DP[curWeight] = min(DP[curWeight], DP[curWeight - coin[i]] + 1). */
 		for (int i = 1; i <= N; i++) {
-			for (int sum = 0; sum <= X; sum++) {
-				if (sum - coins[i - 1] >= 0) {
-					dp[sum] = Integer.min(dp[sum], dp[sum - coins[i - 1]] + 1);
-				}
+			for (int sum = coins[i - 1]; sum <= X; sum++) {
+				dp[sum] = Integer.min(dp[sum], dp[sum - coins[i - 1]] + 1);
 			}
 		}
 
@@ -146,9 +121,10 @@ public class cses1634 {
 	}
 }
 ```
-</JavaSection>
 
+</JavaSection>
 <PySection>
+
 ```py
 INF = 1000000000  # Using float('inf') results in a TLE
 
@@ -158,21 +134,17 @@ c = list(map(int, input().split()))
 dp = [INF] * (x + 1)
 dp[0] = 0  # Base case: 0 coins are needed for a sum of 0
 
-for i in range(x):
-	# Continue if the state is impossible
-	if i == INF:
-		continue
-	for coin in c:
-		if i + coin <= x:
-			"""
-			DP transition: state i needs dp[i] coins,
-			so state i + coin can be made with dp[i] + 1 coins.
-			"""
-			dp[i + coin] = min(dp[i + coin], dp[i] + 1)
+for coin in c:
+	for i in range(x - coin + 1):
+		"""
+		DP transition: state i needs dp[i] coins,
+		so state i + coin can be made with dp[i] + 1 coins.
+		"""
+		dp[i + coin] = min(dp[i + coin], dp[i] + 1)
 
 
 print(dp[x] if dp[x] != INF else -1)
 ```
-</PySection>
 
+</PySection>
 </LanguageSection>

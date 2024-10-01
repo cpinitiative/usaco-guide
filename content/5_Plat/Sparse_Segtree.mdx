@@ -130,15 +130,13 @@ void update(int node, int l, int r) {
 
 		push_lazy(segtree[node].l);
 		push_lazy(segtree[node].r);
-		segtree[node].sum =
-		    segtree[segtree[node].l].sum + segtree[segtree[node].r].sum;
+		segtree[node].sum = segtree[segtree[node].l].sum + segtree[segtree[node].r].sum;
 	}
 }
 
 int query(int node, int l, int r) {
 	push_lazy(node);
-	if (l == segtree[node].tl && r == segtree[node].tr)
-		return segtree[node].sum;
+	if (l == segtree[node].tl && r == segtree[node].tr) return segtree[node].sum;
 	else {
 		int mid = (segtree[node].tl + segtree[node].tr) / 2;
 		if (segtree[node].l == -1) {
@@ -154,9 +152,7 @@ int query(int node, int l, int r) {
 
 		if (l > mid) return query(segtree[node].r, l, r);
 		else if (r <= mid) return query(segtree[node].l, l, r);
-		else
-			return query(segtree[node].l, l, mid) +
-			       query(segtree[node].r, mid + 1, r);
+		else return query(segtree[node].l, l, mid) + query(segtree[node].r, mid + 1, r);
 	}
 }
 

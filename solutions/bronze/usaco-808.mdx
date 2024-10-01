@@ -49,8 +49,7 @@ int main() {
 	}
 	int num_islands = 0;
 	if (reach[0] == 1 && reach[1] == 1 && to[2] != 1) num_islands++;
-	if (reach[n - 1] == 1 && reach[n - 2] == 1 && to[n - 3] != n - 2)
-		num_islands++;
+	if (reach[n - 1] == 1 && reach[n - 2] == 1 && to[n - 3] != n - 2) num_islands++;
 
 	for (int i = 2; i < n - 3; i++) {
 		if (reach[i] == 1 && reach[i + 1] == 1 && to[i + 2] != i + 1 &&
@@ -84,18 +83,15 @@ class Main {
 		int n = Integer.parseInt(st.nextToken());
 		int[] cows = new int[n];
 		st = new StringTokenizer(in.readLine());
-		for (int i = 0; i < n; i++) {
-			cows[i] = Integer.parseInt(st.nextToken());
-		}
+		for (int i = 0; i < n; i++) { cows[i] = Integer.parseInt(st.nextToken()); }
 		in.close();
 		if (n <= 2) {
 			out.write(1);
 			System.exit(0);
 		}
 		Arrays.sort(cows);
-		int[] reach =
-		    new int[n];         // reach[i] is how many cows pass the ball to i
-		int[] to = new int[n];  // to[i] is where does cow i pass the ball
+		int[] reach = new int[n];  // reach[i] is how many cows pass the ball to i
+		int[] to = new int[n];     // to[i] is where does cow i pass the ball
 		reach[1]++;
 		reach[n - 2]++;
 		to[0] = 1;
@@ -111,8 +107,7 @@ class Main {
 		}
 		int num_islands = 0;
 		if (reach[0] == 1 && reach[1] == 1 && to[2] != 1) num_islands++;
-		if (reach[n - 1] == 1 && reach[n - 2] == 1 && to[n - 3] != n - 2)
-			num_islands++;
+		if (reach[n - 1] == 1 && reach[n - 2] == 1 && to[n - 3] != n - 2) num_islands++;
 
 		for (int i = 2; i < n - 3; i++) {
 			if (reach[i] == 1 && reach[i + 1] == 1 && to[i + 2] != i + 1 &&
@@ -269,8 +264,8 @@ int main() {
 		// This is a source cow, so give it a ball
 		if (cowsPassingTo[i] == 0) { ballsNeeded++; }
 		// This cow only passes to 1 other cow forever, so give it a ball
-		if (i < passToCow(i) && passToCow(passToCow(i)) == i &&
-		    cowsPassingTo[i] == 1 && cowsPassingTo[passToCow(i)] == 1) {
+		if (i < passToCow(i) && passToCow(passToCow(i)) == i && cowsPassingTo[i] == 1 &&
+		    cowsPassingTo[passToCow(i)] == 1) {
 			ballsNeeded++;
 		}
 	}

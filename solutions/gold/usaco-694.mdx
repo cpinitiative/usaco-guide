@@ -99,8 +99,7 @@ public class HoofPaperScissors {
 
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new FileReader("hps.in"));
-		PrintWriter pw =
-		    new PrintWriter(new BufferedWriter(new FileWriter("hps.out")));
+		PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("hps.out")));
 
 		StringTokenizer inputLine = new StringTokenizer(br.readLine());
 		int numGames = Integer.parseInt(inputLine.nextToken());
@@ -137,27 +136,26 @@ public class HoofPaperScissors {
 				if (moves[c] == 0) { add1 = 1; }
 				// take the maximum of the game before + add (win or lose)
 				// and switching from the other two options
-				dp[c][n][0] = Math.max(dp[c - 1][n][0] + add1,
-				                       Math.max(dp[c - 1][n - 1][1] + add1,
-				                                dp[c - 1][n - 1][2] + add1));
+				dp[c][n][0] = Math.max(
+				    dp[c - 1][n][0] + add1,
+				    Math.max(dp[c - 1][n - 1][1] + add1, dp[c - 1][n - 1][2] + add1));
 
 				int add2 = 0;
 				if (moves[c] == 1) { add2 = 1; }
-				dp[c][n][1] = Math.max(dp[c - 1][n][1] + add2,
-				                       Math.max(dp[c - 1][n - 1][0] + add2,
-				                                dp[c - 1][n - 1][2] + add2));
+				dp[c][n][1] = Math.max(
+				    dp[c - 1][n][1] + add2,
+				    Math.max(dp[c - 1][n - 1][0] + add2, dp[c - 1][n - 1][2] + add2));
 
 				int add3 = 0;
 				if (moves[c] == 2) { add3 = 1; }
-				dp[c][n][2] = Math.max(dp[c - 1][n][2] + add3,
-				                       Math.max(dp[c - 1][n - 1][0] + add3,
-				                                dp[c - 1][n - 1][1] + add3));
+				dp[c][n][2] = Math.max(
+				    dp[c - 1][n][2] + add3,
+				    Math.max(dp[c - 1][n - 1][0] + add3, dp[c - 1][n - 1][1] + add3));
 
 				if (c == numGames) {  // check maximum if it is the last row
-					maximum = Math.max(maximum,
-					                   Math.max(dp[numGames][n][0],
-					                            Math.max(dp[numGames][n][1],
-					                                     dp[numGames][n][2])));
+					maximum = Math.max(maximum, Math.max(dp[numGames][n][0],
+					                                     Math.max(dp[numGames][n][1],
+					                                              dp[numGames][n][2])));
 				}
 			}
 		}

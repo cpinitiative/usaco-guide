@@ -73,8 +73,7 @@ class WaveletTree {
 			tree[t].push_back(tree[t].back() + (*it <= vm));
 			psum[t].push_back(psum[t].back() + vmap[*it]);
 		}
-		auto pivot =
-		    stable_partition(begin, end, [vm](int x) { return x <= vm; });
+		auto pivot = stable_partition(begin, end, [vm](int x) { return x <= vm; });
 		build(begin, pivot, t * 2, vl, vm);
 		build(pivot, end, t * 2 + 1, vm + 1, vr);
 	}
@@ -86,8 +85,8 @@ class WaveletTree {
 			return query(tree[t][l - 1] + 1, tree[t][r], k, t * 2, vl, vm);
 		} else {
 			return psum[t * 2][tree[t][r]] - psum[t * 2][tree[t][l - 1]] +
-			       query(l - tree[t][l - 1], r - tree[t][r], k - lv, t * 2 + 1,
-			             vm + 1, vr);
+			       query(l - tree[t][l - 1], r - tree[t][r], k - lv, t * 2 + 1, vm + 1,
+			             vr);
 		}
 	}
 
@@ -122,8 +121,7 @@ int main() {
 		cin >> v >> c;
 		v = -v;
 	}
-	sort(A.begin(), A.end(),
-	     [](auto a, auto b) { return a.second < b.second; });
+	sort(A.begin(), A.end(), [](auto a, auto b) { return a.second < b.second; });
 
 	vector<long long> V(N), C(N);
 	for (int i = 0; i < N; i++) { tie(V[i], C[i]) = A[i]; }

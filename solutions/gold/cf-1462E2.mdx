@@ -65,7 +65,7 @@ void solve() {
 		cin >> nums[i];
 		freq[nums[i]]++;
 	}
-	vector<int> preFreq(n + 1, 0);  // prefix-array for freq vector;
+	vector<int> preFreq(n + 1, 0);  // prefix-array for freq vector
 	for (int i = 1; i <= n; i++) { preFreq[i] = freq[i] + preFreq[i - 1]; }
 	for (int i = 1; i <= n; i++) {
 		int max_index = min(n, i + k);  // the max possible value that could be
@@ -83,8 +83,7 @@ void solve() {
 		 * minimum element, as they will be counted later on.
 		 */
 		int curr_ans =
-		    (choose(num_total_elems, m) - choose(num_larger_elems, m) + MOD) %
-		    MOD;
+		    (choose(num_total_elems, m) - choose(num_larger_elems, m) + MOD) % MOD;
 		ans += curr_ans % MOD;
 		ans %= MOD;
 	}
@@ -100,5 +99,84 @@ int main() {
 	while (t--) { solve(); }
 }
 ```
+
 </CPPSection>
+<PySection>
+
+```py
+MAXN = 200000 + 1
+MOD = 10**9 + 7
+
+fac = [0] * (MAXN + 1)
+inv = [0] * (MAXN + 1)
+
+# BeginCodeSnip{Combinatorics Functions (from the module)}
+def exp(x: int, n: int, m: int) -> int:
+	x %= m
+	res = 1
+	while n > 0:
+		if n % 2 == 1:
+			res = res * x % m
+		x = x * x % m
+		n //= 2
+	return res
+
+
+def factorial():
+	fac[0] = 1
+	for i in range(1, MAXN + 1):
+		fac[i] = fac[i - 1] * i % MOD
+
+
+def inverses():
+	inv[MAXN] = exp(fac[MAXN], MOD - 2, MOD)
+	for i in range(MAXN, 0, -1):
+		inv[i - 1] = inv[i] * i % MOD
+
+
+def choose(n: int, r: int):
+	if n < r:
+		return 0
+	return fac[n] * inv[r] % MOD * inv[n - r] % MOD
+
+
+# EndCodeSnip
+
+factorial()
+inverses()
+for _ in range(int(input())):
+	n, m, k = map(int, input().split())
+	nums = list(map(int, input().split()))
+
+	freq = [0] * (n + 1)  # frequency of each element
+	for x in nums:
+		freq[x] += 1
+	pre_freq = [0] * (n + 1)  # prefix array for freq vector
+	for i in range(1, n + 1):
+		pre_freq[i] = freq[i] + pre_freq[i - 1]
+
+	ans = 0
+	for i in range(1, n + 1):
+		# the max possible value that could be in a tuple with i as the minimum
+		max_index = min(n, i + k)
+
+		# the number of elements from [i, max_index]
+		num_total_elems = pre_freq[max_index] - pre_freq[i - 1]
+
+		# the number of elements from [i+1, max_index]
+		num_larger_elems = pre_freq[max_index] - pre_freq[i]
+
+		"""
+		We count the total number of m-tuples with elements between i and
+		max_index. Then, we subtract the tuples that don't have i as their
+		minimum element, as they will be counted later on.
+		"""
+
+		curr_ans = (choose(num_total_elems, m) - choose(num_larger_elems, m)) % MOD
+		ans = (ans + curr_ans) % MOD
+
+	print(ans)
+```
+
+</PySection>
 </LanguageSection>

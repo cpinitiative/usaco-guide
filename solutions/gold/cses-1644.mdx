@@ -54,12 +54,10 @@ int main() {
 	// we can keep a sliding window of size B - A + 1,
 	// then find the lowest pfx[j] using multiset
 	for (int i = A; i <= N; ++i) {
-		if (i > B)
-			ms.erase(ms.find(pfx[i - B - 1]));  // erase the element if size > B
+		if (i > B) ms.erase(ms.find(pfx[i - B - 1]));  // erase the element if size > B
 		ms.insert(pfx[i - A]);
-		ret = max(
-		    ret,
-		    pfx[i] - *ms.begin());  // we want to minimize ms.begin() aka pfx[j]
+		ret = max(ret,
+		          pfx[i] - *ms.begin());  // we want to minimize ms.begin() aka pfx[j]
 	}
 
 	cout << ret << "\n";

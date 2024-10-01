@@ -206,8 +206,7 @@ import java.io.InputStreamReader;
 
 public class Divisors {
 	public static void main(String[] args) throws IOException {
-		BufferedReader read =
-		    new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
 		int queryNum = Integer.parseInt(read.readLine());
 		StringBuilder ans = new StringBuilder();
 		for (int q = 0; q < queryNum; q++) {
@@ -349,8 +348,7 @@ public class Divisors {
 			}
 		}
 
-		BufferedReader read =
-		    new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
 		int queryNum = Integer.parseInt(read.readLine());
 		StringBuilder ans = new StringBuilder();
 		for (int q = 0; q < queryNum; q++) {
@@ -511,7 +509,7 @@ $$
 
 <Resources>
 	<Resource
-		source="CP Algorithms"
+		source="cp-algo"
 		title="Euler's Totient Function"
 		url="https://cp-algorithms.com/algebra/phi-function.html"
 		starred
@@ -519,7 +517,7 @@ $$
 	Theory and Exercises
 	</Resource>
 	<Resource
-		source="codeforces"
+		source="CF"
 		title="Euler's phi function, its properties, and how to compute it"
 		url="https://codeforces.com/blog/entry/106851"
 	>
@@ -545,7 +543,7 @@ Here are the values of $\phi(n)$ for the first 20 numbers:
 The totient function is **multiplicative** meaning that $\phi(nm)=\phi(n) \cdot \phi(m)$, where $n$ and $m$ are coprime - $gcd(n, m)=1$. For example $\phi(15)=\phi(3 \cdot 5)=\phi(3) \cdot \phi(5) = 2 \cdot 4 = 8$.
 
 Let's take a look at some edge cases for $\phi(n)$:
-- If n is a prime number then $\phi(n)=n-1$ because $gcd(n, x)=1$ for all $1 \leq x \le n$
+- If n is a prime number then $\phi(n)=n-1$ because $gcd(n, x)=1$ for all $1 \leq x < n$
 - If n is a power of a prime number, $n=p^q$ where p is a prime number and $1 \leq q$ then\
   there are exactly $p^{q-1}$ numbers divisible by $p$, so
   $\phi(p^q)=p^{q} - p^{q-1} = p^{q-1}(p - 1)$
@@ -557,7 +555,7 @@ $$
 \phi(n)=\phi(p_1^{q_1}) \cdot \phi(p_2^{q_2}) \cdot \ldots \cdot \phi(p_k^{q_k}) = p_1^{q_1-1}(p_1 - 1) \cdot p_2^{q_2-1}(p_2 - 1) \cdot \ldots \cdot p_k^{q_k-1}(q_k - 1)
 $$
 
-Below is an implementation for factorization in $\mathcal{o}(\sqrt{n})$. It can be a little bit tricky to understand why we substract $and/p$ from $ans$. For example
+Below is an implementation for factorization in $\mathcal{O}(\sqrt{n})$. It can be a little bit tricky to understand why we substract $and/p$ from $ans$. For example
 $ans=p_q \cdot x$ ,where $p$ is a prime factor and $x$ is the rest of the prime factorization. By substracting $\frac{ans}{p}=p_{q-1} \cdot x$ we end up with:
 $p_q \cdot x - p_{q-1} \cdot x = p_{q-1} \cdot x \cdot (p - 1)$ which is exactly the form of $\phi(n)$ described a few linew above.
 
@@ -579,6 +577,44 @@ int phi(int n) {
 ```
 
 </CPPSection>
+<JavaSection>
+
+```java
+public static int phi(int n) {
+	int ans = n;
+	for (int p = 2; p * p <= n; p++) {
+		if (n % p == 0) {
+			while (n % p == 0) { n /= p; }
+			ans -= ans / p;
+		}
+	}
+
+	if (n > 1) { ans -= ans / n; }
+	return ans;
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+def phi(n: int) -> int:
+	ans = n
+	p = 2
+	while p * p <= n:
+		if n % p == 0:
+			while n % p == 0:
+				n //= p
+			ans -= ans // p
+		p += 1
+
+	if n > 1:
+		ans -= ans // n
+
+	return ans
+```
+
+</PySection>
 </LanguageSection>
 
 Usually in problems we need to precompute the totient of all numbers between $1$ and $n$, then factorizing is not efficient. The idea is the same as the
@@ -593,13 +629,44 @@ void precompute() {
 	for (int i = 2; i < MAX_N; i++) {
 		// If i is prime
 		if (phi[i] == i) {
-			for (int j = i; j < NMAX; j += i) { phi[j] -= phi[j] / i; }
+			for (int j = i; j < MAX_N; j += i) { phi[j] -= phi[j] / i; }
 		}
 	}
 }
 ```
 
 </CPPSection>
+<JavaSection>
+
+```java
+public static void precompute() {
+	for (int i = 1; i < MAX_N; i++) { phi[i] = i; }
+
+	for (int i = 2; i < MAX_N; i++) {
+		// If i is prime
+		if (phi[i] == i) {
+			for (int j = i; j < MAX_N; j += i) { phi[j] -= phi[j] / i; }
+		}
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+def precompute():
+	for i in range(1, MAX_N):
+		phi[i] = i
+
+	for i in range(2, MAX_N):
+		# If i is prime
+		if phi[i] == i:
+			for j in range(i, MAX_N, i):
+				phi[j] -= phi[j] // i
+```
+
+</PySection>
 </LanguageSection>
 
 <FocusProblem problem="gcdex" />
@@ -640,9 +707,7 @@ long long solve(long long n) {
 	long long ans = 1LL * n * (n + 1) / 2;
 	for (int i = 2; n / i > d; i++) { ans -= solve(n / i); }
 
-	for (int i = d; i >= 1; i--) {
-		ans -= 1LL * (n / i - n / (i + 1)) * solve(i);
-	}
+	for (int i = d; i >= 1; i--) { ans -= 1LL * (n / i - n / (i + 1)) * solve(i); }
 	memo[n] = ans;
 
 	return ans;
@@ -655,9 +720,7 @@ int main() {
 		// If i is prime
 		if (phi[i] == i) {
 			phi[i]--;
-			for (int j = i + i; j <= MAX_N; j += i) {
-				phi[j] = phi[j] / i * (i - 1);
-			}
+			for (int j = i + i; j <= MAX_N; j += i) { phi[j] = phi[j] / i * (i - 1); }
 		}
 	}
 

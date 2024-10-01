@@ -74,10 +74,8 @@ int main() {
 	if (common == "") {
 		cout << ("NOT RELATED");
 	} else {
-		int xLvl =
-		    distance(xAnc.begin(), find(xAnc.begin(), xAnc.end(), common));
-		int yLvl =
-		    distance(yAnc.begin(), find(yAnc.begin(), yAnc.end(), common));
+		int xLvl = distance(xAnc.begin(), find(xAnc.begin(), xAnc.end(), common));
+		int yLvl = distance(yAnc.begin(), find(yAnc.begin(), yAnc.end(), common));
 
 		if (xLvl == yLvl && yLvl == 1) {
 			cout << ("SIBLINGS");
@@ -139,8 +137,7 @@ public class FamilyTree {
 
 	public static void main(String[] args) throws IOException {
 		PrintWriter pw = new PrintWriter(new File("family.out"));
-		BufferedReader br =
-		    new BufferedReader(new FileReader(new File("family.in")));
+		BufferedReader br = new BufferedReader(new FileReader(new File("family.in")));
 
 		StringTokenizer st = new StringTokenizer(br.readLine());
 		int lines = Integer.parseInt(st.nextToken());
@@ -359,9 +356,7 @@ public class FamilyTree {
 		String cowX = st.nextToken();
 		String cowY = st.nextToken();
 		String[][] relations = new String[relNum][];
-		for (int i = 0; i < relNum; i++) {
-			relations[i] = in.readLine().split(" ");
-		}
+		for (int i = 0; i < relNum; i++) { relations[i] = in.readLine().split(" "); }
 		in.close();
 
 		// minimum distance between the shared ancestor and X and Y
@@ -398,11 +393,8 @@ public class FamilyTree {
 			for (int i = 0; i < (xIsAncestor ? minYDist : minXDist) - 2; i++) {
 				out.print("great-");
 			}
-			if ((xIsAncestor ? minYDist : minXDist) > 1) {
-				out.print("grand-");
-			}
-			out.println(
-			    String.format("mother of %s", xIsAncestor ? cowY : cowX));
+			if ((xIsAncestor ? minYDist : minXDist) > 1) { out.print("grand-"); }
+			out.println(String.format("mother of %s", xIsAncestor ? cowY : cowX));
 		}
 		// otherwise, there's a (great-great-...) aunt relationship
 		else {
@@ -461,10 +453,9 @@ string mother(const string &child, const vector<Relation> &relations) {
 }
 
 // returns the distance between start and end (-1 if no relation)
-int ancestor_dist(
-    const string &start,
-    string end,  // we're going to reassign this variable so no reference
-    const vector<Relation> &relations) {
+int ancestor_dist(const string &start,
+                  string end,  // we're going to reassign this variable so no reference
+                  const vector<Relation> &relations) {
 	int dist = 0;
 	while (end != "") {
 		if (end == start) { return dist; }
@@ -594,8 +585,7 @@ public class Family {
 		}
 
 		String common = null;
-		int dist0 =
-		    Integer.MAX_VALUE;  // distance from cow 0 to the common ancestor
+		int dist0 = Integer.MAX_VALUE;  // distance from cow 0 to the common ancestor
 		int dist1 = Integer.MAX_VALUE;  // and the distance from cow 1
 		for (var d0 : ancestors[0].entrySet()) {
 			if (ancestors[1].containsKey(d0.getKey())) {
@@ -679,8 +669,7 @@ int main() {
 	// Finding the lowest common ancestor
 	for (const pair<string, int> &d0 : ancestors[0]) {
 		auto d1 = ancestors[1].find(d0.first);
-		if (d1 != ancestors[1].end() &&
-		    (dist0 > d0.second || dist1 > d1->second)) {
+		if (d1 != ancestors[1].end() && (dist0 > d0.second || dist1 > d1->second)) {
 			common = d0.first;
 			dist0 = d0.second;
 			dist1 = d1->second;

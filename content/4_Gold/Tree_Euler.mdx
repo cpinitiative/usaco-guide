@@ -605,8 +605,7 @@ int query(int a, int b, int node = 1, int l = 0, int r = timer - 1) {
 	if (l > b || r < a) return -1;
 	if (l >= a && r <= b) return segtree[node];
 	int mid = (l + r) / 2;
-	return mn_tin(query(a, b, node * 2, l, mid),
-	              query(a, b, node * 2 + 1, mid + 1, r));
+	return mn_tin(query(a, b, node * 2, l, mid), query(a, b, node * 2 + 1, mid + 1, r));
 }
 
 // Make sure you run $dfs` and `build()` before you run this
@@ -634,8 +633,7 @@ public class LCA {
 	public static int t[] = new int[maxsize];
 
 	public static void update(int p, int value) {  // set value at position p
-		for (t[p += size] = value; p > 1; p >>= 1)
-			t[p >> 1] = mn_tin(t[p], t[p ^ 1]);
+		for (t[p += size] = value; p > 1; p >>= 1) t[p >> 1] = mn_tin(t[p], t[p ^ 1]);
 	}
 	public static int query(int l,
 	                        int r) {  // sum on interval [l, r) (0-INDEXED)
@@ -647,8 +645,7 @@ public class LCA {
 		return res;
 	}
 	public static void main(String[] args) throws Exception {
-		BufferedReader br =
-		    new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer str = new StringTokenizer(br.readLine());
 		N = Integer.parseInt(str.nextToken());
 		int Q = Integer.parseInt(str.nextToken());

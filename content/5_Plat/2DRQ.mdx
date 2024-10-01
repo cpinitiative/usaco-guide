@@ -111,7 +111,7 @@ int main() {
 ### Alternative Implementation
 
 Using the multidimensional implementation mentioned
-[here](/gold/PURS/#solution---dynamic-range-sum-queries-with-a-bit).
+[here](/gold/PURS/#resources-1).
 
 ```cpp
 template <class T, int... Ns> struct BIT {
@@ -273,9 +273,8 @@ class BIT2D {
   public:
 	BIT2D(int n, vector<pair<int, int>> &todo) : n(n), vals(n + 1), bit(n + 1) {
 		// sort points by y-coordinate
-		sort(todo.begin(), todo.end(), [](pair<int, int> a, pair<int, int> b) {
-			return a.second < b.second;
-		});
+		sort(todo.begin(), todo.end(),
+		     [](pair<int, int> a, pair<int, int> b) { return a.second < b.second; });
 		// ensures vals and bit are 1-indexed
 		for (int i = 1; i <= n; i++) { vals[i].push_back(0); }
 		for (auto [x, y] : todo) {
@@ -299,9 +298,7 @@ class BIT2D {
 	int query(int x, int y) {
 		int tot = 0;
 		for (; x > 0; x -= x & -x) {
-			for (int z = ind(vals[x], y); z > 0; z -= z & -z) {
-				tot += bit[x][z];
-			}
+			for (int z = ind(vals[x], y); z > 0; z -= z & -z) { tot += bit[x][z]; }
 		}
 		return tot;
 	}
@@ -348,9 +345,8 @@ class BIT2D {
   public:
 	BIT2D(int n, vector<pair<int, int>> &todo) : n(n), vals(n + 1), bit(n + 1) {
 		// sort points by y-coordinate
-		sort(todo.begin(), todo.end(), [](pair<int, int> a, pair<int, int> b) {
-			return a.second < b.second;
-		});
+		sort(todo.begin(), todo.end(),
+		     [](pair<int, int> a, pair<int, int> b) { return a.second < b.second; });
 		// ensures vals and bit are 1-indexed
 		for (int i = 1; i <= n; i++) { vals[i].push_back(0); }
 		for (auto [x, y] : todo) {
@@ -374,9 +370,7 @@ class BIT2D {
 	int query(int x, int y) {
 		int tot = 0;
 		for (; x > 0; x -= x & -x) {
-			for (int z = ind(vals[x], y); z > 0; z -= z & -z) {
-				tot += bit[x][z];
-			}
+			for (int z = ind(vals[x], y); z > 0; z -= z & -z) { tot += bit[x][z]; }
 		}
 		return tot;
 	}

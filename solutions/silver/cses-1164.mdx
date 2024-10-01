@@ -56,10 +56,10 @@ int main() {
 	}
 	sort(v.begin(), v.end());
 
-	int rooms = 0, last_room = 0;
+	int last_room = 0;
 	priority_queue<pair<int, int>> pq;  // min heap to store departure times.
 	for (int i = 0; i < N; i++) {
-		if (pq.empty()) {
+		if (pq.empty() || -pq.top().first >= v[i].first.first) {
 			last_room++;
 			// make the departure time negative so that we create a min heap
 			// (cleanest way to do a min heap... default is max in c++)
@@ -68,23 +68,13 @@ int main() {
 		} else {
 			// accessing the minimum departure time
 			pair<int, int> minimum = pq.top();
-			if (-minimum.first < v[i].first.first) {
-				pq.pop();
-				pq.push(make_pair(-v[i].first.second, minimum.second));
-				ans[v[i].second] = minimum.second;
-			}
-
-			else {
-				last_room++;
-				pq.push(make_pair(-v[i].first.second, last_room));
-				ans[v[i].second] = last_room;
-			}
+			pq.pop();
+			pq.push(make_pair(-v[i].first.second, minimum.second));
+			ans[v[i].second] = minimum.second;
 		}
-
-		rooms = max(rooms, int(pq.size()));
 	}
 
-	cout << rooms << "\n";
+	cout << last_room << "\n";
 	for (int i = 0; i < N; i++) { cout << ans[i] << " "; }
 }
 ```
@@ -150,9 +140,7 @@ public class RoomAllocation {
 		io.println(k);
 		// use StringBuilder to speed up output
 		StringBuilder str = new StringBuilder();
-		for (int allocation : roomAllocations) {
-			str.append(allocation).append(" ");
-		}
+		for (int allocation : roomAllocations) { str.append(allocation).append(" "); }
 		io.println(str);
 		io.close();
 	}

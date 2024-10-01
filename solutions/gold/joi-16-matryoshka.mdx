@@ -58,18 +58,16 @@ int main() {
 	vector<pair<int, int>> dp;
 	for (int i = 0, j = 0; i < q; i++) {
 		while (j < n && doll[j].first >= query[i].first.first) {
-			int lds = upper_bound(dp.begin(), dp.end(),
-			                      make_pair(-doll[j].second, INT_MAX)) -
-			          dp.begin();
-			if (lds == dp.size())
-				dp.push_back({-doll[j].second, doll[j].first});
+			int lds =
+			    upper_bound(dp.begin(), dp.end(), make_pair(-doll[j].second, INT_MAX)) -
+			    dp.begin();
+			if (lds == dp.size()) dp.push_back({-doll[j].second, doll[j].first});
 			else dp[lds] = {-doll[j].second, doll[j].first};
 			j++;
 		}
-		ans[query[i].second] =
-		    upper_bound(dp.begin(), dp.end(),
-		                make_pair(query[i].first.second, INT_MAX)) -
-		    dp.begin();
+		ans[query[i].second] = upper_bound(dp.begin(), dp.end(),
+		                                   make_pair(query[i].first.second, INT_MAX)) -
+		                       dp.begin();
 	}
 
 	for (int i = 0; i < q; i++) cout << ans[i] << '\n';

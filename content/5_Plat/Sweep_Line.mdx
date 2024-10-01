@@ -114,13 +114,10 @@ pair<Point, Point> solve(vector<Point> &points, int l, int r) {
 	Point mid_point = points[mid];
 	vector<Point> strip;
 	for (int i = l; i < r; i++) {
-		if (abs(points[i].x - mid_point.x) <= delta) {
-			strip.push_back(points[i]);
-		}
+		if (abs(points[i].x - mid_point.x) <= delta) { strip.push_back(points[i]); }
 	}
-	sort(strip.begin(), strip.end(), [](Point a, Point b) {
-		return a.y < b.y || (a.y == b.y && a.x < b.x);
-	});
+	sort(strip.begin(), strip.end(),
+	     [](Point a, Point b) { return a.y < b.y || (a.y == b.y && a.x < b.x); });
 	return get_closest_points(ans, strip_solve(strip));
 }
 
@@ -135,8 +132,8 @@ int main() {
 		}
 		sort(v.begin(), v.end());
 		pair<Point, Point> ans = solve(v, 0, v.size());
-		printf("%0.2Lf %0.2Lf %0.2Lf %0.2Lf\n", ans.first.x, ans.first.y,
-		       ans.second.x, ans.second.y);
+		printf("%0.2Lf %0.2Lf %0.2Lf %0.2Lf\n", ans.first.x, ans.first.y, ans.second.x,
+		       ans.second.y);
 	}
 }
 ```
@@ -282,8 +279,7 @@ int main() {
 			// Ending segment & Check the intersection of the segments above and
 
 			auto after = next(it), before = it;
-			if (before != active_segments.begin() &&
-			    after != active_segments.end()) {
+			if (before != active_segments.begin() && after != active_segments.end()) {
 				before--;
 				if (intersect(segments[before->idx], segments[after->idx])) {
 					first_segment = before->idx;
@@ -318,14 +314,12 @@ int main() {
 	// Which segment of the two is the answer
 	int ans = 0;
 	for (int i = 0; i < n; i++) {
-		if (i != second_segment &&
-		    intersect(segments[i], segments[second_segment])) {
+		if (i != second_segment && intersect(segments[i], segments[second_segment])) {
 			ans++;
 		}
 	}
 
-	ofstream("cowjump.out")
-	    << (ans > 1 ? second_segment + 1 : first_segment + 1);
+	ofstream("cowjump.out") << (ans > 1 ? second_segment + 1 : first_segment + 1);
 }
 ```
 
@@ -479,8 +473,7 @@ pair<ll, ll> origin, polygon[22];
 
 // Cross product
 ll cross(pair<ll, ll> a, pair<ll, ll> b) {
-	return (a.y - origin.y) * (b.x - origin.x) -
-	       (a.x - origin.x) * (b.y - origin.y);
+	return (a.y - origin.y) * (b.x - origin.x) - (a.x - origin.x) * (b.y - origin.y);
 }
 
 // Which half of the plane some point lies in

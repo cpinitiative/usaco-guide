@@ -7,6 +7,8 @@ author: Jesse Choe
 
 [Official Editorial](https://codeforces.com/blog/entry/85951)
 
+## Explanation
+
 We can initially attempt this problem by figuring out which firecrackers should explode. Obviously, we should attempt to explode the firecrackers with a minimal
 detonation time to increase the number of firecrackers exploded before eventually being caught. Also, observe that the firecrackers with a longer detonation
 time should be dropped first.
@@ -25,13 +27,12 @@ There are two cases which determine the amount of time before getting caught:
 
 After computing the amount of time before getting caught, we can simulate whether a particular firecracker will explode in time.
 
+## Implementation
+
 **Time Complexity:** $\mathcal{O}(N\log N)$
 
 <LanguageSection>
-
 <CPPSection>
-
-## C++ Implementation
 
 ```cpp
 #include <bits/stdc++.h>
@@ -62,8 +63,7 @@ bool works(vl exploding_times, ll firecrackers_exploded) {
 }
 
 void solve() {
-	cin >> corridor_size >> num_of_firecrackers >> hooligan_location >>
-	    guard_location;
+	cin >> corridor_size >> num_of_firecrackers >> hooligan_location >> guard_location;
 	vl exploding_times(num_of_firecrackers);
 	for (int i = 0; i < num_of_firecrackers; i++) { cin >> exploding_times[i]; }
 	sort(exploding_times.begin(), exploding_times.end());
@@ -77,9 +77,8 @@ void solve() {
 		time_before_caught = guard_location - 1;
 	} else if (hooligan_location > guard_location) {
 		time_before_caught = corridor_size - guard_location;
-	} else {
-		return;
 	}
+
 	ll left = 0, right = max_firecrackers, max_exploded = 0;
 	while (left <= right) {
 		ll mid = left + (right - left) / 2;
@@ -101,5 +100,53 @@ int main() {
 ```
 
 </CPPSection>
+<PySection>
 
+```py
+def works(
+	exploding_times: list, firecrackers_exploded: int, time_before_caught: int
+) -> bool:
+	current_time = 1
+	for i in range(firecrackers_exploded - 1, -1, -1):
+		# Check whether a given firecracker could be exploded before being caught by the guard
+		if current_time + exploding_times[i] > time_before_caught:
+			return False
+		else:
+			current_time += 1
+	return True
+
+
+for _ in range(int(input())):
+	corridor_size, num_of_firecrackers, hooligan_location, guard_location = map(
+		int, input().split()
+	)
+	exploding_times = list(map(int, input().split()))
+	exploding_times.sort()
+
+	max_firecrackers = min(
+		num_of_firecrackers, abs(hooligan_location - guard_location) - 1
+	)
+
+	# Compute the maximum time before the guard catches the hooligan given their initial positions
+	if hooligan_location < guard_location:
+		time_before_caught = guard_location - 1
+	elif hooligan_location > guard_location:
+		time_before_caught = corridor_size - guard_location
+
+	left = 0
+	right = max_firecrackers
+	max_exploded = 0
+	while left <= right:
+		mid = left + (right - left) // 2
+
+		if works(exploding_times, mid, time_before_caught):
+			max_exploded = mid
+			left = mid + 1
+		else:
+			right = mid - 1
+
+	print(max_exploded)
+```
+
+</PySection>
 </LanguageSection>

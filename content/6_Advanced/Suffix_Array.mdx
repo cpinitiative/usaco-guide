@@ -185,9 +185,7 @@ void radix_sort(vector<pair<pair<int, int>, int>> &arr) {
 		vector<int> occs(max + 1);
 		for (const auto &i : arr) { occs[key(i)]++; }
 		vector<int> start(max + 1);
-		for (int i = 1; i <= max; i++) {
-			start[i] = start[i - 1] + occs[i - 1];
-		}
+		for (int i = 1; i <= max; i++) { start[i] = start[i - 1] + occs[i - 1]; }
 
 		vector<pair<pair<int, int>, int>> new_arr(arr.size());
 		for (const auto &i : arr) {
@@ -230,9 +228,7 @@ int main() {
 		}
 	}
 
-	for (int i = 1; i < n; i++) {
-		cout << suffs[i].second << " \n"[i == n - 1];
-	}
+	for (int i = 1; i < n; i++) { cout << suffs[i].second << " \n"[i == n - 1]; }
 }
 ```
 
@@ -281,8 +277,7 @@ public class SuffixArray {
 	}
 
 	public static void main(String[] args) throws IOException {
-		BufferedReader read =
-		    new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
 		String str = read.readLine() + '$';
 		final int n = str.length();  // just a shorthand
 
@@ -320,17 +315,14 @@ public class SuffixArray {
 
 	private static void radixSort(Suffix[] arr) {
 		for (int i : Arrays.asList(2, 1)) {
-			Function<Suffix, Integer> key =
-			    x -> (i == 1 ? x.leftEq : x.rightEq);
+			Function<Suffix, Integer> key = x -> (i == 1 ? x.leftEq : x.rightEq);
 			int max = 0;
 			for (Suffix s : arr) { max = Math.max(max, key.apply(s)); }
 
 			int[] occs = new int[max + 1];
 			for (Suffix s : arr) { occs[key.apply(s)]++; }
 			int[] start = new int[max + 1];
-			for (int j = 1; j <= max; j++) {
-				start[j] = start[j - 1] + occs[j - 1];
-			}
+			for (int j = 1; j <= max; j++) { start[j] = start[j - 1] + occs[j - 1]; }
 
 			Suffix[] newArr = new Suffix[arr.length];
 			for (Suffix s : arr) {
@@ -397,9 +389,7 @@ public class Generator {
 
 		int n = 50;  // adjust n as you please
 		StringBuilder sb = new StringBuilder();
-		for (int i = 0; i < n; i++) {
-			sb.append((char)('a' + rng.nextInt(26)));
-		}
+		for (int i = 0; i < n; i++) { sb.append((char)('a' + rng.nextInt(26))); }
 		String str = sb.toString();
 		System.out.println(str);
 
@@ -520,9 +510,7 @@ void radix_sort(vector<pair<pair<int, int>, int>> &arr) {
 		vector<int> occs(max + 1);
 		for (const auto &i : arr) { occs[key(i)]++; }
 		vector<int> start(max + 1);
-		for (int i = 1; i <= max; i++) {
-			start[i] = start[i - 1] + occs[i - 1];
-		}
+		for (int i = 1; i <= max; i++) { start[i] = start[i - 1] + occs[i - 1]; }
 
 		vector<pair<pair<int, int>, int>> new_arr(arr.size());
 		for (const auto &i : arr) {
@@ -554,9 +542,7 @@ int main() {
 	int cmp_amt = 1;
 	while (cmp_amt < n) {
 		const vector<int> &prev = equiv.back();
-		for (auto &[val, s] : suffs) {
-			val = {prev[s], prev[(s + cmp_amt) % n]};
-		}
+		for (auto &[val, s] : suffs) { val = {prev[s], prev[(s + cmp_amt) % n]}; }
 		radix_sort(suffs);
 
 		vector<int> nxt_eq = vector<int>(n);
@@ -627,8 +613,7 @@ public class SuffixArray {
 	// EndCodeSnip
 
 	public static void main(String[] args) throws IOException {
-		BufferedReader read =
-		    new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
 		String str = read.readLine() + '$';
 		final int n = str.length();
 
@@ -667,9 +652,7 @@ public class SuffixArray {
 		for (int i = 0; i < n - 1; i++) {
 			int prev = suffs[suffInd[i] - 1].start;
 			int currCmp = startAt;
-			while (str.charAt(i + currCmp) == str.charAt(prev + currCmp)) {
-				currCmp++;
-			}
+			while (str.charAt(i + currCmp) == str.charAt(prev + currCmp)) { currCmp++; }
 			lcp[suffInd[i] - 1] = currCmp;
 			startAt = Math.max(currCmp - 1, 0);
 		}
@@ -685,17 +668,14 @@ public class SuffixArray {
 	// BeginCodeSnip{Radix Sort}
 	private static void radixSort(Suffix[] arr) {
 		for (int i : Arrays.asList(2, 1)) {
-			Function<Suffix, Integer> key =
-			    x -> (i == 1 ? x.leftEq : x.rightEq);
+			Function<Suffix, Integer> key = x -> (i == 1 ? x.leftEq : x.rightEq);
 			int max = 0;
 			for (Suffix s : arr) { max = Math.max(max, key.apply(s)); }
 
 			int[] occs = new int[max + 1];
 			for (Suffix s : arr) { occs[key.apply(s)]++; }
 			int[] start = new int[max + 1];
-			for (int j = 1; j <= max; j++) {
-				start[j] = start[j - 1] + occs[j - 1];
-			}
+			for (int j = 1; j <= max; j++) { start[j] = start[j - 1] + occs[j - 1]; }
 
 			Suffix[] newArr = new Suffix[arr.length];
 			for (Suffix s : arr) {

@@ -96,6 +96,28 @@ static ArrayList<Integer> maxSlidingWindow(int[] nums, int k) {
 
 </JavaSection>
 
+<PySection>
+
+```py
+from sortedcontainers import SortedList
+
+
+class Solution:
+	def maxSlidingWindow(self, nums: List[int], k: int) -> List[int]:
+		s = SortedList(nums[:k])
+		ret = []
+
+		for i in range(k, len(nums)):
+			ret.append(s[-1])
+			s.remove(nums[i - k])
+			s.add(nums[i])
+
+		ret.append(s[-1])
+		return ret
+```
+
+</PySection>
+
 </LanguageSection>
 
 ### Problems
@@ -176,8 +198,7 @@ print(ans)
 ```java
 public class test {
 	public static void main(String[] args) throws Exception {
-		BufferedReader br =
-		    new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		int n = Integer.parseInt(br.readLine());
 		StringTokenizer st = new StringTokenizer(br.readLine());
 		int a[] = new int[n];
@@ -203,7 +224,7 @@ public class test {
 
 <Problems problems="general" />
 
-## Sliding Window Minimum in $\mathcal{O}(N)$
+## Sliding Window Maximum in $\mathcal{O}(N)$
 
 <FocusProblem problem="constantSam" />
 
@@ -443,8 +464,7 @@ class Solution {
 		 * element itself and the maximum element in the stack s1 after adding.
 		 */
 		public void enqueue(int val) {
-			s1.push(
-			    new Pair(val, s1.empty() ? val : Math.max(val, s1.peek().b)));
+			s1.push(new Pair(val, s1.empty() ? val : Math.max(val, s1.peek().b)));
 		}
 
 		/**

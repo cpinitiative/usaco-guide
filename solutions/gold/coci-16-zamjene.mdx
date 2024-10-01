@@ -159,9 +159,7 @@ class DominikArray {
 	std::unordered_map<Hash, ll, HashFn> bad_diff;
 	ll cloud_pairs = 0;  // # of valid component pairs (used for type 4)
 
-	int get_top(int n) {
-		return parent[n] == n ? n : (parent[n] = get_top(parent[n]));
-	}
+	int get_top(int n) { return parent[n] == n ? n : (parent[n] = get_top(parent[n])); }
 
 	/** checks if a component is unsortable (n is a top node) */
 	inline bool is_unsortable(int n) { return hash[n] != req_hash[n]; }
@@ -201,9 +199,7 @@ class DominikArray {
 		std::mt19937 gen(42069);
 		std::uniform_int_distribution<long long> distr(1, INT64_MAX);
 		for (int i : sorted) {
-			if (!elem_val.count(i)) {
-				elem_val[i] = Hash(distr(gen), distr(gen));
-			}
+			if (!elem_val.count(i)) { elem_val[i] = Hash(distr(gen), distr(gen)); }
 		}
 
 		// set up DSU and the hashes

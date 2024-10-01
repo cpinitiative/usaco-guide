@@ -68,7 +68,7 @@ Each element in this stack would contribute the amount given by our formula abov
 Since the indices in the stack are always decreasing, we can use a binary search to find where the query lies within the stack.
 For the tail element that might not be completely contained within the query, we can compute the contribution manually and add it on at the end.
 
-To efficiently update contributions relative to the stack, we'll use a [BIT](/gold/PURS#solution---dynamic-range-sum-queries-with-a-bit).
+To efficiently update contributions relative to the stack, we'll use a [BIT](/gold/PURS#binary-indexed-tree).
 We also need a prefix sum array to efficiently calculate the second term of that contribution formula back there.
 
 ## Implementation
@@ -130,9 +130,7 @@ int main() {
 	}
 
 	vector<ll> pref_arr(arr_size + 1);
-	for (int i = 0; i < arr_size; i++) {
-		pref_arr[i + 1] = pref_arr[i] + arr[i];
-	}
+	for (int i = 0; i < arr_size; i++) { pref_arr[i + 1] = pref_arr[i] + arr[i]; }
 
 	vector<ll> ans(query_num);
 	vector<pair<int, int>> maxes;
@@ -166,8 +164,7 @@ int main() {
 			}
 
 			// the contribution from most of the max elements
-			ll sum1 =
-			    contrib.pref_sum(maxes.size() - 1) - contrib.pref_sum(valid);
+			ll sum1 = contrib.pref_sum(maxes.size() - 1) - contrib.pref_sum(valid);
 			// the tail element mentioned in the editorial
 			ll sum2 = (ll)(end - maxes[valid].second + 1) * maxes[valid].first;
 			// the second term in the contribution formula

@@ -12,6 +12,7 @@ import black
 CLANG_FORMAT_STYLE = """
 TabWidth: 4
 IndentWidth: 4
+ColumnLimit: 88
 UseTab: ForIndentation
 AllowShortIfStatementsOnASingleLine: AllIfsAndElse
 AllowShortBlocksOnASingleLine: Always
