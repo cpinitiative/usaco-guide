@@ -110,10 +110,8 @@ int main() {
 			     return (v_1 == v_2) ? x[0] < y[0] : v_1 < v_2;
 		     });
 
-		/*
-		 * pref = RMQ for best option if b <= y
-		 * suff = RMQ for best option if b >= y
-		 */
+		// pref = RMQ for best option if b <= y
+		// suff = RMQ for best option if b >= y
 		MinSegmentTree<ll> pref(coords.size());
 		MinSegmentTree<ll> suff(coords.size());
 		for (const auto [type, a, b, c] : events) {
@@ -127,13 +125,16 @@ int main() {
 				ll add_2 = (t) ? c - a + b : c + a + b;
 				if (suff.get(b_id) > add_2) { suff.set(b_id, add_2); }
 			} else {
-				// res1 is for if we are choosing a slingshot with b <= y
-				// res2 is for if we are choosing a slingshot with b >= y
-				// we set res1 and res2 to be at most INF to prevent overflow when
-				// adding to them
+				/*
+				 * res1 is for if we are choosing a slingshot with b <= y
+				 * res2 is for if we are choosing a slingshot with b >= y
+				 * we set res1 and res2 to be at most INF to prevent overflow when
+				 * adding to them
+				 */
 				ll res1 = min(INF, pref.range_min(0, b_id + 1));
 				ll res2 = min(INF, suff.range_min(b_id, coords.size()));
 
+				// could have overflow when adding (e.g. if adding a + b to res1)
 				if (t == 0) {
 					res1 += b - a;
 					res2 -= a + b;
