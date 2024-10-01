@@ -32,6 +32,7 @@ iteration $a \leq x$, and in the other $a \geq x$.
 using namespace std;
 using ll = long long;
 
+// BeginCodeSnip{Segment Tree (from the module)}
 template <class T> class MinSegmentTree {
   private:
 	const T DEFAULT = numeric_limits<T>().max();
@@ -61,6 +62,7 @@ template <class T> class MinSegmentTree {
 
 	T get(int ind) { return segtree[len + ind]; }
 };
+// EndCodeSnip
 
 int main() {
 	freopen("slingshot.in", "r", stdin);
@@ -125,20 +127,20 @@ int main() {
 				ll add_2 = (t) ? c - a + b : c + a + b;
 				if (suff.get(b_id) > add_2) { suff.set(b_id, add_2); }
 			} else {
-				// res_1 is for if we are choosing a slingshot with b <= y
-				// res_2 is for if we are choosing a slingshot with b >= y
-				ll res_1 = min(INF, pref.range_min(0, b_id + 1));
-				ll res_2 = min(INF, suff.range_min(b_id, coords.size()));
+				// res1 is for if we are choosing a slingshot with b <= y
+				// res2 is for if we are choosing a slingshot with b >= y
+				ll res1 = min(INF, pref.range_min(0, b_id + 1));
+				ll res2 = min(INF, suff.range_min(b_id, coords.size()));
 
 				if (t == 0) {
-					res_1 += b - a;
-					res_2 -= a + b;
+					res1 += b - a;
+					res2 -= a + b;
 				} else {
-					res_1 += a + b;
-					res_2 += a - b;
+					res1 += a + b;
+					res2 += a - b;
 				}
 
-				res[c] = min({res[c], res_1, res_2, (ll)abs(a - b)});
+				res[c] = min({res[c], res1, res2, (ll)abs(a - b)});
 			}
 		}
 	}
