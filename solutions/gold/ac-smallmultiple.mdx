@@ -45,7 +45,6 @@ of 1.
 **Time Complexity:** $\mathcal{O}(K)$
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
@@ -90,13 +89,12 @@ int main() {
 ```
 
 </CPPSection>
-
 <PySection>
 
 ```py
 from collections import deque
 
-INF = 10 ** 9 + 7
+INF = 10**9 + 7
 
 k = int(input())
 
@@ -108,23 +106,23 @@ dist[1] = 1
 q.appendleft(1)
 
 while q:
-    cur = q.popleft()
+	cur = q.popleft()
 
-    # case 1: append an extra 0 at the end (NO EXTRA COST)
-    case1 = cur * 10 % k
-    if dist[cur] < dist[case1]:
-        dist[case1] = dist[cur]
-        q.appendleft(case1)
+	# case 1: append an extra 0 at the end (NO EXTRA COST)
+	case1 = cur * 10 % k
+	if dist[cur] < dist[case1]:
+		dist[case1] = dist[cur]
+		q.appendleft(case1)
 
-    # case 2: add one to cur but increase the digit sum
-    case2 = (cur + 1) % k
-    if dist[cur] + 1 < dist[case2]:
-        dist[case2] = dist[cur] + 1
-        q.append(case2)
+	# case 2: add one to cur but increase the digit sum
+	case2 = (cur + 1) % k
+	if dist[cur] + 1 < dist[case2]:
+		dist[case2] = dist[cur] + 1
+		q.append(case2)
 
 # the answer must be 0 mod k
 print(dist[0])
 ```
-</PySection>
 
+</PySection>
 </LanguageSection>
