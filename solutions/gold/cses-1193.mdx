@@ -204,6 +204,7 @@ public class cses1193 {
 from collections import deque
 
 MAX_N = 1000
+step_dir = "URDL"
 vis = [[False for _ in range(MAX_N)] for _ in range(MAX_N)]
 
 # previous_step stores the previous direction that we moved in to arrive at this cell
@@ -212,21 +213,20 @@ previous_step = [[-1 for _ in range(MAX_N)] for _ in range(MAX_N)]
 # 0 = up, 1 = right, 2 = down, 3 = left
 dx = [-1, 0, 1, 0]
 dy = [0, 1, 0, -1]
-step_dir = "URDL"
 
 n, m = map(int, input().split())
 
-A = []
+a = []
 begin = []
 end = []
 
 for i in range(n):
 	row = list(input())
-	A.append(row)
+	a.append(row)
 	for j in range(m):
-		if A[i][j] == "A":
+		if a[i][j] == "A":
 			begin = (i, j)
-		elif A[i][j] == "B":
+		elif a[i][j] == "B":
 			end = (i, j)
 
 q = deque()
@@ -240,7 +240,7 @@ while q:
 
 		if v[0] < 0 or v[0] >= n or v[1] < 0 or v[1] >= m:
 			continue
-		if A[v[0]][v[1]] == "#":
+		if a[v[0]][v[1]] == "#":
 			continue
 		if vis[v[0]][v[1]]:
 			continue
