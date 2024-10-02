@@ -234,34 +234,34 @@ q.append(begin)
 vis[begin[0]][begin[1]] = True
 
 while q:
-    u = q.popleft()
-    for i in range(4):
-        v = (u[0] + dx[i], u[1] + dy[i])
-        
-        if v[0] < 0 or v[0] >= n or v[1] < 0 or v[1] >= m:
-            continue
-        if A[v[0]][v[1]] == '#':
-            continue
-        if vis[v[0]][v[1]]:
-            continue
-        
-        vis[v[0]][v[1]] = True
-        previous_step[v[0]][v[1]] = i
-        q.append(v)
+	u = q.popleft()
+	for i in range(4):
+		v = (u[0] + dx[i], u[1] + dy[i])
+
+		if v[0] < 0 or v[0] >= n or v[1] < 0 or v[1] >= m:
+			continue
+		if A[v[0]][v[1]] == "#":
+			continue
+		if vis[v[0]][v[1]]:
+			continue
+
+		vis[v[0]][v[1]] = True
+		previous_step[v[0]][v[1]] = i
+		q.append(v)
 
 if vis[end[0]][end[1]]:
-    print("YES")
-    steps = []
-    while end != begin:
-        p = previous_step[end[0]][end[1]]
-        steps.append(p)
-        # undo the previous step to get back to the previous square
-	    # Notice how we subtract dx/dy, whereas we added dx/dy before
-        end = (end[0] - dx[p], end[1] - dy[p])
-    
-    steps.reverse()
-    print(len(steps))
-    print(''.join(step_dir[step] for step in steps))
+	print("YES")
+	steps = []
+	while end != begin:
+		p = previous_step[end[0]][end[1]]
+		steps.append(p)
+		# undo the previous step to get back to the previous square
+		# Notice how we subtract dx/dy, whereas we added dx/dy before
+		end = (end[0] - dx[p], end[1] - dy[p])
+
+	steps.reverse()
+	print(len(steps))
+	print("".join(step_dir[step] for step in steps))
 else:
 	print("NO")
 ```
