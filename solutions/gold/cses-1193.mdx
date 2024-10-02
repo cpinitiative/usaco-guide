@@ -204,15 +204,16 @@ public class cses1193 {
 from collections import deque
 
 MAX_N = 1000
-step_dir = "URDL"
+STEP_DIR = "URDL"
+
+# 0 = up, 1 = right, 2 = down, 3 = left
+DX = [-1, 0, 1, 0]
+DY = [0, 1, 0, -1]
+
 vis = [[False for _ in range(MAX_N)] for _ in range(MAX_N)]
 
 # previous_step stores the previous direction that we moved in to arrive at this cell
 previous_step = [[-1 for _ in range(MAX_N)] for _ in range(MAX_N)]
-
-# 0 = up, 1 = right, 2 = down, 3 = left
-dx = [-1, 0, 1, 0]
-dy = [0, 1, 0, -1]
 
 n, m = map(int, input().split())
 
@@ -236,7 +237,7 @@ vis[begin[0]][begin[1]] = True
 while q:
 	u = q.popleft()
 	for i in range(4):
-		v = (u[0] + dx[i], u[1] + dy[i])
+		v = (u[0] + DX[i], u[1] + DY[i])
 
 		if v[0] < 0 or v[0] >= n or v[1] < 0 or v[1] >= m:
 			continue
@@ -256,12 +257,12 @@ if vis[end[0]][end[1]]:
 		p = previous_step[end[0]][end[1]]
 		steps.append(p)
 		# undo the previous step to get back to the previous square
-		# notice how we subtract dx/dy, whereas we added dx/dy before
-		end = (end[0] - dx[p], end[1] - dy[p])
+		# notice how we subtract DX/DY, whereas we added DX/DY before
+		end = (end[0] - DX[p], end[1] - DY[p])
 
 	steps.reverse()
 	print(len(steps))
-	print("".join(step_dir[step] for step in steps))
+	print("".join(STEP_DIR[step] for step in steps))
 else:
 	print("NO")
 ```
