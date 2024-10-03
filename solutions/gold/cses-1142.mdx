@@ -68,6 +68,38 @@ int main() {
 ```
 
 </CPPSection>
+<PySection>
+
+```py
+n = int(input())
+heights = list(map(int, input().split()))
+
+mono_stack = []
+area = [0] * n
+
+# left to right
+for i in range(n):
+    while mono_stack and heights[mono_stack[-1]] >= heights[i]:
+        mono_stack.pop()
+    width = i - (-1 if not mono_stack else mono_stack[-1])
+    area[i] += width * heights[i]
+    mono_stack.append(i)
+    
+while mono_stack:
+    mono_stack.pop()
+    
+# right to left
+for i in range(n - 1, -1, -1):
+    while mono_stack and heights[mono_stack[-1]] >= heights[i]:
+        mono_stack.pop()
+    width = (n if not mono_stack else mono_stack[-1]) - i
+    area[i] += (width - 1) * heights[i]
+    mono_stack.append(i)
+    
+print(max(area))
+```
+
+</PySection>
 </LanguageSection>
 
 ## Solution 2
