@@ -221,4 +221,28 @@ int main() {
 ```
 
 </CPPSection>
+<PySection>
+
+```py
+n = int(input())
+heights = list(map(int, input().split()))
+heights.append(-1)
+
+mono_stack = [-1]
+ans = 0
+
+for i in range(n + 1):
+    while mono_stack[-1] != -1 and heights[mono_stack[-1]] >= heights[i]:
+        x = mono_stack[-1]
+        mono_stack.pop()
+        # min height is heights[x]
+        new_area = (i - 1 - mono_stack[-1]) * heights[x]
+        ans = max(ans, new_area)
+        
+    mono_stack.append(i)
+
+print(ans)
+```
+
+</PySection>
 </LanguageSection>
