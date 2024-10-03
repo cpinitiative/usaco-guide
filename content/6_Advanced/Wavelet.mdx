@@ -173,8 +173,7 @@ struct Segment {
 			// Split the indices for left and right child
 			vector<pair<int, int>> leftIndices, rightIndices;
 			partition_copy(indices.begin(), indices.end(), leftIndices.begin(),
-			               rightIndices.begin(),
-			               [this](const pair<int, int> &elem) {
+			               rightIndices.begin(), [this](const pair<int, int> &elem) {
 				               return elem.second < mid;
 			               });
 
@@ -200,8 +199,7 @@ struct Segment {
 
 		int lb = prefixB[a];
 		int lr = prefixB[b];
-		int inLeft =
-		    lr - lb;  // Amount of values in range (a,b) that are less the mid
+		int inLeft = lr - lb;  // Amount of values in range (a,b) that are less the mid
 
 		if (k <= inLeft) {
 			return left->find_k_smallest(lb, lr, k);  // Appears in left
