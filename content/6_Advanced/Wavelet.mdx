@@ -49,7 +49,7 @@ We are going to maintain a segment tree over values instead of indices. Each seg
 <Spoiler title="Wavelet tree Visualization">
 
 Let's say our array is: $[3,5,3,1,2,2,3,4,5,5]$
-Each node has an array representing the indecies of every number between l and r
+Each node has an array representing the indices of every number between l and r
 
 ![Wavelet Tree Visualization](./assets/diagram.png)
 </Spoiler>
@@ -105,7 +105,7 @@ To update $r$ as we recurse down, we do the following:
 ## Solving the second type of query
 **Given a range l, r find the k smallest element**
 
-We will determine whether the answer for a given node is in the left or the
+We will determine whether the answer for a given node is on the left or the
 right segment.
 We can calculate how many times the elements within the segments' ranges appear
 in our range $(l, r)$ using our first type of query.
@@ -173,7 +173,8 @@ struct Segment {
 			// Split the indices for left and right child
 			vector<pair<int, int>> leftIndices, rightIndices;
 			partition_copy(indices.begin(), indices.end(), leftIndices.begin(),
-			               rightIndices.begin(), [this](const pair<int, int> &elem) {
+			               rightIndices.begin(),
+			               [this](const pair<int, int> &elem) {
 				               return elem.second < mid;
 			               });
 
@@ -199,7 +200,8 @@ struct Segment {
 
 		int lb = prefixB[a];
 		int lr = prefixB[b];
-		int inLeft = lr - lb;  // Amount of values in range (a,b) that are less the mid
+		int inLeft =
+		    lr - lb;  // Amount of values in range (a,b) that are less the mid
 
 		if (k <= inLeft) {
 			return left->find_k_smallest(lb, lr, k);  // Appears in left
