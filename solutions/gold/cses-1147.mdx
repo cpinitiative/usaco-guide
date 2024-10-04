@@ -20,6 +20,9 @@ Update the nearest tree for every column for each new bottom row. Iterate from
 left to right and use a monotonic stack to calculate the area for every bottom
 row.
 
+<LanguageSection>
+<CPPSection>
+
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
@@ -40,7 +43,9 @@ int main() {
 			if (grid[j][i] == '*') { col[j].push(i); }
 		}
 	}
+
 	for (int j = 0; j < M; j++) col[j].push(N);
+
 	int maxa = 0;
 	for (int i = 0; i < N; i++) {
 		for (int j = 0; j < M; j++) {
@@ -63,10 +68,54 @@ int main() {
 			maxa = max(maxa, (M - cur.f) * cur.s);
 		}
 	}
+
 	cout << maxa << endl;
-	return 0;
 }
 ```
+
+</CPPSection>
+<PySection>
+
+```py
+n, m = map(int, input().split())
+
+grid = [[""] * n for _ in range(m)]
+col = [[] for _ in range(m)]
+
+for i in range(n):
+	str_row = input().strip()
+	for j in range(m):
+		grid[j][i] = str_row[j]
+		if grid[j][i] == "*":
+			col[j].append(i)
+
+for j in range(m):
+	col[j].append(n)
+
+maxa = 0
+for i in range(n):
+	for j in range(m):
+		if col[j] and col[j][0] < i:  # updates the nearest tree
+			del [col[j][0]]
+
+	stack = []
+	for j in range(m):
+		start = j
+		while stack and col[j][0] - i < stack[-1][1]:
+			cur = stack.pop()
+			start = cur[0]
+			maxa = max(maxa, (j - cur[0]) * cur[1])
+		stack.append((start, col[j][0] - i))
+
+	while stack:
+		cur = stack.pop()
+		maxa = max(maxa, (m - cur[0]) * cur[1])
+
+print(maxa)
+```
+
+</PySection>
+</LanguageSection>
 
 </Spoiler>
 
@@ -75,6 +124,9 @@ int main() {
 **Time Complexity:** $\mathcal{O}(NM)$
 
 Same as solution 1, but we can use DSU instead of a monotonic stack.
+
+<LanguageSection>
+<CPPSection>
 
 ```cpp
 #include <bits/stdc++.h>
@@ -385,5 +437,8 @@ int main() {
 	cout << solve();
 }
 ```
+
+</CPPSection>
+</LanguageSection>
 
 </Spoiler>
