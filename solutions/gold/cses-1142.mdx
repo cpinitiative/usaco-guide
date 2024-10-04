@@ -68,6 +68,38 @@ int main() {
 ```
 
 </CPPSection>
+<PySection>
+
+```py
+n = int(input())
+heights = list(map(int, input().split()))
+
+mono_stack = []
+area = [0] * n
+
+# left to right
+for i in range(n):
+	while mono_stack and heights[mono_stack[-1]] >= heights[i]:
+		mono_stack.pop()
+	width = i - (-1 if not mono_stack else mono_stack[-1])
+	area[i] += width * heights[i]
+	mono_stack.append(i)
+
+while mono_stack:
+	mono_stack.pop()
+
+# right to left
+for i in range(n - 1, -1, -1):
+	while mono_stack and heights[mono_stack[-1]] >= heights[i]:
+		mono_stack.pop()
+	width = (n if not mono_stack else mono_stack[-1]) - i
+	area[i] += (width - 1) * heights[i]
+	mono_stack.append(i)
+
+print(max(area))
+```
+
+</PySection>
 </LanguageSection>
 
 ## Solution 2
@@ -119,6 +151,35 @@ int main() {
 ```
 
 </CPPSection>
+<PySection>
+
+```py
+n = int(input())
+heights = list(map(int, input().split()))
+
+ans = 0
+mono_stack = []
+
+for i in range(n):
+	start = i
+	while mono_stack and heights[i] < mono_stack[-1][1]:
+		curr = mono_stack[-1]
+		mono_stack.pop()
+		start = curr[0]
+		ans = max(ans, (i - curr[0]) * curr[1])
+
+	mono_stack.append([start, heights[i]])
+
+# finish up the remaining rectangles
+while mono_stack:
+	curr = mono_stack[-1]
+	mono_stack.pop()
+	ans = max(ans, (n - curr[0]) * curr[1])
+
+print(ans)
+```
+
+</PySection>
 </LanguageSection>
 
 Alternatively, one can add `-1` to the list of `heights` so we don't have
@@ -160,4 +221,28 @@ int main() {
 ```
 
 </CPPSection>
+<PySection>
+
+```py
+n = int(input())
+heights = list(map(int, input().split()))
+heights.append(-1)
+
+mono_stack = [-1]
+ans = 0
+
+for i in range(n + 1):
+	while mono_stack[-1] != -1 and heights[mono_stack[-1]] >= heights[i]:
+		x = mono_stack[-1]
+		mono_stack.pop()
+		# min height is heights[x]
+		new_area = (i - 1 - mono_stack[-1]) * heights[x]
+		ans = max(ans, new_area)
+
+	mono_stack.append(i)
+
+print(ans)
+```
+
+</PySection>
 </LanguageSection>
