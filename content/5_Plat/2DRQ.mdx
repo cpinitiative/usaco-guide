@@ -2,7 +2,7 @@
 id: 2DRQ
 title: '2D Range Queries'
 author: Benjamin Qi, Andi Qu
-contributors: Daniel Zhu
+contributors: Daniel Zhu, Justin Ji
 prerequisites:
   - sparse-segtree
 description: 'Extending Range Queries to 2D (and beyond).'
@@ -50,61 +50,79 @@ query subrectangles.
 <CPPSection>
 
 ```cpp
-#include <bits/stdc++.h>
+#include <iostream>
+#include <vector>
 using namespace std;
 
-int bit[1001][1001];
-int n;
+/**
+ * 2D Fenwick Tree implementation.
+ * Note that all cell locations are zero-indexed
+ * in this implementation.
+ */
+template <typename T> class BIT2D {
+  private:
+	const int n, m;
+	vector<vector<T>> bit;
 
-void update(int x, int y, int val) {
-	for (; x <= n; x += (x & (-x))) {
-		for (int i = y; i <= n; i += (i & (-i))) { bit[x][i] += val; }
-	}
-}
+  public:
+	BIT2D(int n, int m) : n(n), m(m), bit(n + 1, vector<T>(m + 1)) {}
 
-int query(int x1, int y1, int x2, int y2) {
-	int ans = 0;
-	for (int i = x2; i; i -= (i & (-i))) {
-		for (int j = y2; j; j -= (j & (-j))) { ans += bit[i][j]; }
+	/** adds val to the point (r, c) */
+	void add(int r, int c, T val) {
+		r++, c++;
+		for (; r <= n; r += r & -r) {
+			for (int i = c; i <= m; i += i & -i) { bit[r][i] += val; }
+		}
 	}
-	for (int i = x2; i; i -= (i & (-i))) {
-		for (int j = y1 - 1; j; j -= (j & (-j))) { ans -= bit[i][j]; }
+
+	/** @returns sum of points with row in [0, r] and column in [0, c] */
+	T rect_sum(int r, int c) {
+		r++, c++;
+		T sum = 0;
+		for (; r > 0; r -= r & -r) {
+			for (int i = c; i > 0; i -= i & -i) { sum += bit[r][i]; }
+		}
+		return sum;
 	}
-	for (int i = x1 - 1; i; i -= (i & (-i))) {
-		for (int j = y2; j; j -= (j & (-j))) { ans -= bit[i][j]; }
+
+	/** @returns sum of points with row in [r1, r2] and column in [c1, c2] */
+	T rect_sum(int r1, int c1, int r2, int c2) {
+		return rect_sum(r2, c2) - rect_sum(r2, c1 - 1) - rect_sum(r1 - 1, c2) +
+		       rect_sum(r1 - 1, c1 - 1);
 	}
-	for (int i = x1 - 1; i; i -= (i & (-i))) {
-		for (int j = y1 - 1; j; j -= (j & (-j))) { ans += bit[i][j]; }
-	}
-	return ans;
-}
+};
 
 int main() {
-	iostream::sync_with_stdio(false);
-	cin.tie(0);
-	int q;
+	int n, q;
 	cin >> n >> q;
-	for (int i = 1; i <= n; i++)
-		for (int j = 1; j <= n; j++) {
+	BIT2D<int> bit(n, n);
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
 			char c;
 			cin >> c;
-			if (c == '*') update(j, i, 1);
-		}
-	while (q--) {
-		int t;
-		cin >> t;
-		if (t == 1) {
-			int x, y;
-			cin >> y >> x;
-			if (query(x, y, x, y)) update(x, y, -1);
-			else update(x, y, 1);
-		} else {
-			int y1, x1, y2, x2;
-			cin >> y1 >> x1 >> y2 >> x2;
-			cout << query(x1, y1, x2, y2) << '\n';
+			if (c == '*') { bit.add(i, j, 1); }
 		}
 	}
-	return 0;
+
+	for (int i = 0; i < q; i++) {
+		int type;
+		cin >> type;
+		if (type == 1) {
+			int r, c;
+			cin >> r >> c;
+			r--, c--;
+			if (bit.rect_sum(r, c, r, c) == 1) {
+				bit.add(r, c, -1);
+			} else {
+				bit.add(r, c, 1);
+			}
+		} else if (type == 2) {
+			int r1, c1, r2, c2;
+			cin >> r1 >> c1 >> r2 >> c2;
+			r1--, c1--, r2--, c2--;
+			cout << bit.rect_sum(r1, c1, r2, c2) << '\n';
+		}
+	}
 }
 ```
 
@@ -259,58 +277,70 @@ easier to understand, albeit significantly slower due to a high constant factor:
 <CPPSection>
 
 ```cpp
-// index of largest value <= x in v (sorted)
-// if v = [1, 2, 4], ind(v, 3) would return 1
-int ind(vector<int> v, int x) {
-	return upper_bound(v.begin(), v.end(), x) - v.begin() - 1;
-}
+#include <algorithm>
+#include <array>
+#include <iostream>
+#include <vector>
+using namespace std;
 
-class BIT2D {
+/**
+ * Offline 2D Fenwick Tree implementation.
+ * Note that all the update and query indices
+ * are zero-indexed, and that the rows are not
+ * coordinate compressed in this implementation.
+ */
+template <typename T> class OfflineBIT2D {
   private:
-	int n;  // max x-coordinate
-	vector<vector<int>> vals, bit;
+	const int n;
+	vector<vector<int>> vals;
+	vector<vector<T>> bit;
+
+	/** @return the first index i such that v[i] <= x */
+	int ind(const vector<int> &v, int x) {
+		return upper_bound(begin(v), end(v), x) - begin(v) - 1;
+	}
 
   public:
-	BIT2D(int n, vector<pair<int, int>> &todo) : n(n), vals(n + 1), bit(n + 1) {
-		// sort points by y-coordinate
-		sort(todo.begin(), todo.end(),
-		     [](pair<int, int> a, pair<int, int> b) { return a.second < b.second; });
-		// ensures vals and bit are 1-indexed
+	OfflineBIT2D(int n, vector<array<int, 2>> &todo) : n(n), vals(n + 1), bit(n + 1) {
+		sort(begin(todo), end(todo),
+		     [](const array<int, 2> &a, const array<int, 2> &b) -> bool {
+			     return a[1] < b[1];
+		     });
+
 		for (int i = 1; i <= n; i++) { vals[i].push_back(0); }
-		for (auto [x, y] : todo) {
-			for (int z = x; z <= n; z += z & -z) {
-				if (vals[z].back() != y) { vals[z].push_back(y); }
+		for (auto [r, c] : todo) {
+			r++, c++;
+			for (; r <= n; r += r & -r) {
+				if (vals[r].back() != c) { vals[r].push_back(c); }
 			}
 		}
 		for (int i = 1; i <= n; i++) { bit[i].resize(vals[i].size()); }
 	}
 
-	/** adds t to the point (x, y) */
-	void upd(int x, int y, int t = 1) {
-		for (; x <= n; x += x & -x) {
-			int z = ind(vals[x], y);
-			assert(z && vals[x][z] == y);
-			for (; z < bit[x].size(); z += z & -z) { bit[x][z] += t; }
+	/** adds val to the point (r, c) */
+	void add(int r, int c, T val) {
+		r++, c++;
+		for (; r <= n; r += r & -r) {
+			int i = ind(vals[r], c);
+			for (; i < bit[r].size(); i += i & -i) { bit[r][i] += val; }
 		}
 	}
 
-	/** @return sum of points in rectangle with top-right corner (x, y) */
-	int query(int x, int y) {
-		int tot = 0;
-		for (; x > 0; x -= x & -x) {
-			for (int z = ind(vals[x], y); z > 0; z -= z & -z) { tot += bit[x][z]; }
+	/** @returns sum of points with row in [0, r] and column in [0, c] */
+	T rect_sum(int r, int c) {
+		r++, c++;
+		T sum = 0;
+		for (; r > 0; r -= r & -r) {
+			int i = ind(vals[r], c);
+			for (; i > 0; i -= i & -i) { sum += bit[r][i]; }
 		}
-		return tot;
+		return sum;
 	}
 
-	/** @returns sum of points with x in [x1, x2] and y in [y1, y2] */
-	int query(int x1, int x2, int y1, int y2) {
-		if (x1 > x2 || y1 > y2) { return 0; }
-		int tr = query(x2, y2);          // top-right
-		int tl = query(x1 - 1, y2);      // top-left
-		int br = query(x2, y1 - 1);      // bottom-right
-		int bl = query(x1 - 1, y1 - 1);  // bottom-left
-		return tr - tl - br + bl;
+	/** @returns sum of points with row in [r1, r2] and column in [c1, c2] */
+	T rect_sum(int r1, int c1, int r2, int c2) {
+		return rect_sum(r2, c2) - rect_sum(r2, c1 - 1) - rect_sum(r1 - 1, c2) +
+		       rect_sum(r1 - 1, c1 - 1);
 	}
 };
 ```
@@ -322,67 +352,64 @@ And you might use it like so:
 
 <LanguageSection>
 <CPPSection>
+
 ```cpp
 #include <algorithm>
-#include <cassert>
+#include <array>
 #include <iostream>
 #include <vector>
 using namespace std;
 using ll = long long;
 
-// BeginCodeSnip{BIT2D}
-// index of largest value <= x in v (sorted)
-// if v = [1, 2, 4], ind(v, 3) would return 1
-int ind(vector<int> v, int x) {
-	return upper_bound(v.begin(), v.end(), x) - v.begin() - 1;
-}
-
-class BIT2D {
+// BeginCodeSnip{Offline 2D BIT}
+template <typename T> class OfflineBIT2D {
   private:
-	int n;  // max x-coordinate
-	vector<vector<int>> vals, bit;
+	const int n;
+	vector<vector<int>> vals;
+	vector<vector<T>> bit;
+
+	int ind(const vector<int> &v, int x) {
+		return upper_bound(begin(v), end(v), x) - begin(v) - 1;
+	}
 
   public:
-	BIT2D(int n, vector<pair<int, int>> &todo) : n(n), vals(n + 1), bit(n + 1) {
-		// sort points by y-coordinate
-		sort(todo.begin(), todo.end(),
-		     [](pair<int, int> a, pair<int, int> b) { return a.second < b.second; });
-		// ensures vals and bit are 1-indexed
+	OfflineBIT2D(int n, vector<array<int, 2>> &todo) : n(n), vals(n + 1), bit(n + 1) {
+		sort(begin(todo), end(todo),
+		     [](const array<int, 2> &a, const array<int, 2> &b) -> bool {
+			     return a[1] < b[1];
+		     });
+
 		for (int i = 1; i <= n; i++) { vals[i].push_back(0); }
-		for (auto [x, y] : todo) {
-			for (int z = x; z <= n; z += z & -z) {
-				if (vals[z].back() != y) { vals[z].push_back(y); }
+		for (auto [r, c] : todo) {
+			r++, c++;
+			for (; r <= n; r += r & -r) {
+				if (vals[r].back() != c) { vals[r].push_back(c); }
 			}
 		}
 		for (int i = 1; i <= n; i++) { bit[i].resize(vals[i].size()); }
 	}
 
-	/** adds t to the point (x, y) */
-	void upd(int x, int y, int t = 1) {
-		for (; x <= n; x += x & -x) {
-			int z = ind(vals[x], y);
-			assert(z && vals[x][z] == y);
-			for (; z < bit[x].size(); z += z & -z) { bit[x][z] += t; }
+	void add(int r, int c, T val) {
+		r++, c++;
+		for (; r <= n; r += r & -r) {
+			int i = ind(vals[r], c);
+			for (; i < bit[r].size(); i += i & -i) { bit[r][i] += val; }
 		}
 	}
 
-	/** @return sum of points in rectangle with top-right corner (x, y) */
-	int query(int x, int y) {
-		int tot = 0;
-		for (; x > 0; x -= x & -x) {
-			for (int z = ind(vals[x], y); z > 0; z -= z & -z) { tot += bit[x][z]; }
+	T rect_sum(int r, int c) {
+		r++, c++;
+		T sum = 0;
+		for (; r > 0; r -= r & -r) {
+			int i = ind(vals[r], c);
+			for (; i > 0; i -= i & -i) { sum += bit[r][i]; }
 		}
-		return tot;
+		return sum;
 	}
 
-	/** @returns sum of points with x in [x1, x2] and y in [y1, y2] */
-	int query(int x1, int x2, int y1, int y2) {
-		if (x1 > x2 || y1 > y2) { return 0; }
-		int tr = query(x2, y2);          // top-right
-		int tl = query(x1 - 1, y2);      // top-left
-		int br = query(x2, y1 - 1);      // bottom-right
-		int bl = query(x1 - 1, y1 - 1);  // bottom-left
-		return tr - tl - br + bl;
+	T rect_sum(int r1, int c1, int r2, int c2) {
+		return rect_sum(r2, c2) - rect_sum(r2, c1 - 1) - rect_sum(r1 - 1, c2) +
+		       rect_sum(r1 - 1, c1 - 1);
 	}
 };
 // EndCodeSnip
@@ -390,25 +417,21 @@ class BIT2D {
 int main() {
 	int n;
 	cin >> n;
-	vector<int> a(n + 1), p(n + 1);
-	vector<pair<int, int>> updates;
-	for (int i = 1; i <= n; i++) {
-		cin >> a[i];
-		// register all updates offline
-		updates.push_back({i, a[i]});
-	}
+	vector<int> a(n), p(n);
+	for (int &i : a) { cin >> i; }
+	for (int &i : p) { cin >> i, i--; }
 
-	// intialize BIT from list of updates
-	BIT2D bit(n, updates);
-	for (int i = 1; i <= n; i++) { cin >> p[i]; }
+	vector<array<int, 2>> upd(n);
+	for (int i = 0; i < n; i++) { upd[i] = {p[i], a[p[i]]}; }
+	OfflineBIT2D<ll> bit(n, upd);
 
-	ll ans = 0;
-	// now we can update and query like normal
-	for (int i = 1; i <= n; i++) {
-		ans += bit.query(1, p[i], a[p[i]] + 1, n);
-		ans += bit.query(p[i], n, 1, a[p[i]] - 1);
-		cout << ans << "\n";
-		bit.upd(p[i], a[p[i]]);
+	ll res = 0;
+	const int mx = *max_element(begin(a), end(a));
+	for (int i = 0; i < n; i++) {
+		res += bit.rect_sum(0, a[p[i]] + 1, p[i] - 1, mx);
+		res += bit.rect_sum(p[i] + 1, 0, n - 1, a[p[i]] - 1);
+		cout << res << '\n';
+		bit.add(p[i], a[p[i]], 1);
 	}
 }
 ```
@@ -418,7 +441,7 @@ int main() {
 
 <Warning title="Implementation Note">
 
-As mentioned earlier, the above `BIT2D` implementation is significantly slower than Benq's `OffBIT2D` and, in fact, will get TLE on the Soriya's Programming Project; this is due to the large amount of calls to `vector.resize` it makes.
+As mentioned earlier, the above `OfflineBIT2D` implementation is significantly slower than Benq's `OffBIT2D` and, in fact, will get TLE on the Soriya's Programming Project.
 
 </Warning>
 
