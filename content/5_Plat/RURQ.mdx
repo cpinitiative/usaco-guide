@@ -78,7 +78,8 @@ int main() {
 		int n, q;
 		cin >> n >> q;
 
-		BIT<long long> bit_values(n), bit_count(n);
+		BIT<long long> bit_values(n + 1);
+		BIT<long long> bit_count(n + 1);
 		for (int i = 0; i < q; i++) {
 			int type;
 			cin >> type;
@@ -86,19 +87,21 @@ int main() {
 			if (type == 0) {
 				int p, q, val;
 				cin >> p >> q >> val;
+				p--, q--;
 
 				// Update the 2 BITs
-				bit_values.add(p - 1, val);
-				bit_count.add(p - 1, val * (p - 1));
-				bit_values.add(q, -val);
-				bit_count.add(q, -val * q);
+				bit_values.add(p, val);
+				bit_count.add(p, 1ll * val * (p - 1));
+				bit_values.add(q + 1, -val);
+				bit_count.add(q + 1, -1ll * val * q);
 			} else {
 				int p, q;
 				cin >> p >> q;
-				cout << 1LL * bit_values.pref_sum(q) * q - bit_count.pref_sum(q) -
-				            (1LL * bit_values.pref_sum(p - 1) * (p - 1) -
-				             bit_count.pref_sum(p - 1))
-				     << '\n';
+				p--, q--;
+				long long pref_p =
+				    bit_values.pref_sum(p - 1) * (p - 1) - bit_count.pref_sum(p - 1);
+				long long pref_q = bit_values.pref_sum(q) * q - bit_count.pref_sum(q);
+				cout << pref_q - pref_p << '\n';
 			}
 		}
 	}
