@@ -175,9 +175,7 @@ We would then have these two cases:
 #include <bits/stdc++.h>
 using namespace std;
 
-int main() {
-	string s;
-	cin >> s;
+vector<int> z_function(const string& s) {
 	vector<int> z(s.size());
 
 	for (int i = 1, l = 0, r = 0; i < s.size(); i++) {
@@ -188,8 +186,20 @@ int main() {
 			r = i + z[i];
 			z[i]++;
 		}
+	}
 
-		if (z[i] + i == s.size()) { cout << i << ' '; }
+	return z;
+}
+
+int main() {
+	string s;
+	cin >> s;
+	const auto z = z_function(s);
+
+	for (int i = 0; i < s.size(); i++) {
+		if (z[i] + i == s.size()) {
+			cout << i << " ";
+		}
 	}
 
 	cout << s.size() << endl;
@@ -215,6 +225,18 @@ def z_function(s: str) -> List[int]:
 			l, r = i, i + zi
 		z.append(zi)
 	return z
+
+
+def main():
+	s = input()
+	z = z_function(s)
+	for i in range(1, len(z)):
+		if z[i] + i == len(s):
+			print(i, end=" ")
+	print(len(s))
+
+
+main()
 ```
 
 </PySection>
