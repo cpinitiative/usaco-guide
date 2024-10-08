@@ -172,17 +172,21 @@ We would then have these two cases:
 <CPPSection>
 
 ```cpp
-#include <bits/stdc++.h>
+#include <string>
+#include <algorithm>
+#include <iostream>
+#include <vector>
+
 using namespace std;
 
 vector<int> z_function(const string &s) {
 	vector<int> z(s.size());
 	z[0] = s.size();
 
-	int l = 0, r = 0;
+	int l = 0;
+	int r = 0;
 	for (int i = 1; i < s.size(); i++) {
 		z[i] = max(0, min(z[i - l], r - i + 1));
-
 		while (i + z[i] < s.size() && s[z[i]] == s[i + z[i]]) {
 			l = i;
 			r = i + z[i];
@@ -197,11 +201,9 @@ int main() {
 	string s;
 	cin >> s;
 	vector<int> z = z_function(s);
-
 	for (int i = 1; i < s.size(); i++) {
 		if (z[i] + i == s.size()) { cout << i << " "; }
 	}
-
 	cout << s.size() << endl;
 }
 ```
@@ -216,7 +218,8 @@ from typing import List
 def z_function(s: str) -> List[int]:
 	n = len(s)
 	z = [n]
-	l, r = 0, 0
+	l = 0
+	r = 0
 	for i in range(1, n):
 		zi = min(r - i, z[i - l]) if i < r else 0
 		while i + zi < n and s[i + zi] == s[zi]:
@@ -224,6 +227,7 @@ def z_function(s: str) -> List[int]:
 		if i + zi > r:
 			l, r = i, i + zi
 		z.append(zi)
+
 	return z
 
 
