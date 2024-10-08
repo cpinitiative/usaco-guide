@@ -8,8 +8,8 @@ author: Justin Ji
 <Spoiler title = "Hint">
 
 The number of inversions in an array is the number of adjacent
-swaps we need to make in order to sort an array in non-decreasing order.
-How can we use this idea to find the minimum value of $k$ needed to sort
+swaps we need to make to sort an array in non-decreasing order.
+How can we use this idea to find the minimum value of $k$ required to sort
 the array?
 
 </Spoiler>
@@ -18,20 +18,20 @@ the array?
 
 In our array, we only need to swap elements that are inversions. That is
 to say, if we have a pair $(i, j)$ where $i < j$ and $w_i > w_j$, then we
-will need to swap them when sorting the array. Thus, the answer is the maximum
+must swap them when sorting the array. Thus, the answer is the maximum
 value of $w_i + w_j$ among all inversion pairs.
 
 To answer the queries, we sweep right to left on the left endpoint whilst
 maintaining some data structure to keep track of the minimum value of $k$ for
 all the right endpoints. One key observation to make is that if at our current
-indice $i$ there exists a $j$ where $i < j$ and $w_i \leq w_j$, then we can't
+index $i$ there exists a $j$ where $i < j$ and $w_i \leq w_j$, then we can't
 increase the value of any inversion pairs where the second value's index is
-greater than $j$. Thus, we only need to worry about updating the inversion pair
-values on the range $[i + 1, j - 1]$. To find said value of $j$, we utilize a
+greater than $j$. Thus, we only need to update the inversion pair
+values on the range $[i + 1, j - 1]$. To find the said value of $j$, we utilize a
 monotonic stack.
 
 The most straightforward way to solve the problem from here is to use a lazy
-segment tree to keep track of the best inversion pair value for each indice
+segment tree to keep track of the best inversion pair value for each index
 (where the value of an inversion pair $(i, j)$ is stored at index $j$)
 and the best inversion pair value on a range. To implement this, notice how
 every inversion pair value stored at an index $j$ is $w_j + x$, where $x$ is
