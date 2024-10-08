@@ -177,8 +177,10 @@ using namespace std;
 
 vector<int> z_function(const string& s) {
 	vector<int> z(s.size());
+	z[0] = s.size();
 
-	for (int i = 1, l = 0, r = 0; i < s.size(); i++) {
+	int l = 0, r = 0;
+	for (int i = 1; i < s.size(); i++) {
 		z[i] = max(0, min(z[i - l], r - i + 1));
 
 		while (i + z[i] < s.size() && s[z[i]] == s[i + z[i]]) {
@@ -194,9 +196,9 @@ vector<int> z_function(const string& s) {
 int main() {
 	string s;
 	cin >> s;
-	const auto z = z_function(s);
+	vector<int> z = z_function(s);
 
-	for (int i = 0; i < s.size(); i++) {
+	for (int i = 1; i < s.size(); i++) {
 		if (z[i] + i == s.size()) {
 			cout << i << " ";
 		}
@@ -227,16 +229,13 @@ def z_function(s: str) -> List[int]:
 	return z
 
 
-def main():
-	s = input()
-	z = z_function(s)
-	for i in range(1, len(z)):
-		if z[i] + i == len(s):
-			print(i, end=" ")
-	print(len(s))
+s = input()
+z = z_function(s)
+for i in range(1, len(z)):
+	if z[i] + i == len(s):
+		print(i, end=" ")
+print(len(s))
 
-
-main()
 ```
 
 </PySection>
