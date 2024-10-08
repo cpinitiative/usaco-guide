@@ -1,6 +1,6 @@
 ---
 id: cf-1713E
-source: Codeforces Div 2
+source: CF
 title: Cross Swapping
 author: Aakash Gokhale
 ---
@@ -18,27 +18,27 @@ If $a[i][j] > a[j][i]$, we want to swap them. If $a[i][j] < a[j][i]$ we want to 
 However, it is possible that not all conditions can work together with each other and swapping something/keeping something the same means we can't swap something else/keep something the same later on.
 Consider the following input:
 
-$0$ $2$ $1$
-
-$1$ $0$ $1$
-
-$3$ $2$ $0$
+```
+0 2 1
+1 0 1
+3 2 0
+```
 
 We want to first swap $a[0][1]$ and $a[1][0]$ because $1$ is less than $2$. We can do this by flipping the $0$th row/col. This would give us the array:
 
-$0$ $1$ $3$
-
-$2$ $0$ $1$
-
-$1$ $2$ $0$
+```
+0 1 3
+2 0 1
+1 2 0
+```
 
 Then we want to swap $a[0][2]$ and $a[2][0]$ because $1$ is less than $3$. To do this either we can either swap the $0$th row/col or the $2$nd row/col. However, swapping the $0$th row/col would undo the efforts of our first operation so we will swap the $2$nd row/col and get:
 
-$0$ $1$ $1$
-
-$2$ $0$ $2$
-
-$3$ $1$ $0$
+```
+0 1 1
+2 0 2
+3 1 0
+```
 
 Now we want to swap $a[1][2]$ and $a[2][1]$ because $1$ is less than $2$ and we want the lexicographically minimum. However swapping the $1$st row/col would mess up the swap we made in the first operation and swapping the $2$nd row/col would mess up the swap we made in the second operation.
 Thus, it is impossible to make all swaps optimally.
@@ -57,19 +57,18 @@ After this we can construct the answer by iterating over each cell of the grid. 
 **Time Complexity:** $\mathcal{O}(N^2)$
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
-#include <bits/stdc++.h>
-using namespace std;
+#include <iostream>
+#include <vector>
 
-using vi = vector<int>;
+using namespace std;
 
 // BeginCodeSnip{DSU}
 struct DSU {
-	vi e;
-	DSU(int n) { e = vi(n, -1); }
+	vector<int> e;
+	DSU(int n) { e = vector<int>(n, -1); }
 
 	int get(int x) {
 		if (e[x] < 0) {
@@ -132,7 +131,7 @@ void solve() {
 	}
 
 	// Construct the answer
-	vector<vi> ans(n, vi(n));
+	vector<vector<int>> ans(n, vector<int>(n));
 	for (int i = 0; i < n; i++) {
 		for (int j = i; j < n; j++) {
 			/*
@@ -163,13 +162,13 @@ void solve() {
 
 int main() {
 	ios::sync_with_stdio(false);
-	cin.tie(nullptr);
-	int T;
-	cin >> T;
-	for (int t = 0; t < T; t++) { solve(); }
+	cin.tie(NULL);
+
+	int test_num;
+	cin >> test_num;
+	for (int t = 0; t < test_num; t++) { solve(); }
 }
 ```
 
 </CPPSection>
-
 </LanguageSection>
