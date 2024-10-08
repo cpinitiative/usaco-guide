@@ -44,13 +44,13 @@ Binary Indexed Trees can support range increments and range sum queries.
 
 ### Explanation
 
-First, we can reduce the problem of performing range add and range sum queries 
-into an easier problem: adding on a suffix, and querying the sum of a prefix 
+First, we can reduce the problem of performing range add and range sum queries
+into an easier problem: adding on a suffix, and querying the sum of a prefix
 of our array.
 
-Let our array be $a$, and the prefix sum array of $a$ be $b$. If we add $x$ to 
-the range $[p, n]$, then, for every $i \geq p$, we add $x \cdot (i - p + 1)$ to 
-each $b_i$ in the range. To query the prefix of $[1, p]$, we can consider the 
+Let our array be $a$, and the prefix sum array of $a$ be $b$. If we add $x$ to
+the range $[p, n]$, then, for every $i \geq p$, we add $x \cdot (i - p + 1)$ to
+each $b_i$ in the range. To query the prefix of $[1, p]$, we can consider the
 following process:
 
 1. Find the sum of all the range additions affecting the index $p$. Let this number be $x$. For now, we evaluate their contribution to be equal to $p \cdot x$. We can keep track of all the range additions that affect each indice using a BIT.
@@ -103,7 +103,7 @@ int main() {
 		cin >> n >> q;
 
 		BIT<long long> bit_values(n + 1);
-        BIT<long long> bit_count(n + 1);
+		BIT<long long> bit_count(n + 1);
 		for (int i = 0; i < q; i++) {
 			int type;
 			cin >> type;
@@ -111,7 +111,7 @@ int main() {
 			if (type == 0) {
 				int p, q, val;
 				cin >> p >> q >> val;
-                p--, q--;
+				p--, q--;
 
 				// Update the 2 BITs
 				bit_values.add(p, val);
@@ -121,11 +121,11 @@ int main() {
 			} else {
 				int p, q;
 				cin >> p >> q;
-                p--, q--;
-                long long pref_p =
+				p--, q--;
+				long long pref_p =
 				    bit_values.pref_sum(p - 1) * (p - 1) - bit_count.pref_sum(p - 1);
 				long long pref_q = bit_values.pref_sum(q) * q - bit_count.pref_sum(q);
-                cout << pref_q - pref_p << '\n';
+				cout << pref_q - pref_p << '\n';
 			}
 		}
 	}
@@ -169,14 +169,14 @@ Lazy segment trees allow us to efficiently perform range updates and range queri
 	</Resource>
 </Resources>
 
-Lazy segment trees allow us to perform range updates and range queries in 
-$\mathcal{O}(\log{N})$ time. In order to perform range updates in 
-$\mathcal{O}(\log{N})$, we lazily apply updates by storing them at the tree 
+Lazy segment trees allow us to perform range updates and range queries in
+$\mathcal{O}(\log{N})$ time. In order to perform range updates in
+$\mathcal{O}(\log{N})$, we lazily apply updates by storing them at the tree
 nodes they affect.
 
-As an example, let's consider writing a lazy segment tree that supports range 
+As an example, let's consider writing a lazy segment tree that supports range
 addition and range summation. We would have our tree nodes contain the sum on
-the range, and keep a separate array keeping track of the lazy additions we 
+the range, and keep a separate array keeping track of the lazy additions we
 have to do for each node.
 
 <Spoiler title = "Horrible Queries Implementation">
@@ -191,79 +191,81 @@ using ll = long long;
 
 class LazySegtree {
   private:
-    const int sz;
-    vector<ll> tree;
-    vector<ll> lazy;
+	const int sz;
+	vector<ll> tree;
+	vector<ll> lazy;
 
-    void apply(int v, int len, ll add) {
-        tree[v] += 1ll * len * add;
-        lazy[v] += add;
-    }
+	void apply(int v, int len, ll add) {
+		tree[v] += 1ll * len * add;
+		lazy[v] += add;
+	}
 
-    void push_down(int v, int l, int r) {
-        int m = (l + r) / 2;
-        apply(2 * v, m - l + 1, lazy[v]);
-        apply(2 * v + 1, r - m, lazy[v]);
-        lazy[v] = 0;
-    }
+	void push_down(int v, int l, int r) {
+		int m = (l + r) / 2;
+		apply(2 * v, m - l + 1, lazy[v]);
+		apply(2 * v + 1, r - m, lazy[v]);
+		lazy[v] = 0;
+	}
 
-    void range_add(int v, int l, int r, int ql, int qr, int add) {
-        if (qr < l || ql > r) { return; }
-        if (ql <= l && r <= qr) {
-            apply(v, r - l + 1, add);
-        } else {
-            push_down(v, l, r);
-            int m = (l + r) / 2;
-            range_add(2 * v, l, m, ql, qr, add);
-            range_add(2 * v + 1, m + 1, r, ql, qr, add);
-            tree[v] = tree[2 * v] + tree[2 * v + 1];
-        }
-    }
+	void range_add(int v, int l, int r, int ql, int qr, int add) {
+		if (qr < l || ql > r) { return; }
+		if (ql <= l && r <= qr) {
+			apply(v, r - l + 1, add);
+		} else {
+			push_down(v, l, r);
+			int m = (l + r) / 2;
+			range_add(2 * v, l, m, ql, qr, add);
+			range_add(2 * v + 1, m + 1, r, ql, qr, add);
+			tree[v] = tree[2 * v] + tree[2 * v + 1];
+		}
+	}
 
-    ll range_sum(int v, int l, int r, int ql, int qr) {
-        if (qr < l || ql > r) { return 0; }
-        if (ql <= l && r <= qr) { return tree[v]; }
-        push_down(v, l, r);
-        int m = (l + r) / 2;
-        return range_sum(2 * v, l, m, ql, qr) + 
-               range_sum(2 * v + 1, m + 1, r, ql, qr);
-    }
+	ll range_sum(int v, int l, int r, int ql, int qr) {
+		if (qr < l || ql > r) { return 0; }
+		if (ql <= l && r <= qr) { return tree[v]; }
+		push_down(v, l, r);
+		int m = (l + r) / 2;
+		return range_sum(2 * v, l, m, ql, qr) + range_sum(2 * v + 1, m + 1, r, ql, qr);
+	}
 
   public:
-    LazySegtree(int n) : sz(n), tree(4 * n), lazy(4 * n) {}
+	LazySegtree(int n)
+	    : sz(n), tree(4 * n), lazy(4 * n){}
 
-	/** adds to every value on the range [ql, qr] */*
-    void range_add(int ql, int qr, int add) { range_add(1, 0, sz - 1, ql, qr, add); }
+	                              /** adds to every value on the range [ql, qr] */
+	                              * void range_add(int ql, int qr, int add) {
+		range_add(1, 0, sz - 1, ql, qr, add);
+	}
 
 	/** @return sum of values on [ql, qr] */
-    ll range_sum(int ql, int qr) { return range_sum(1, 0, sz - 1, ql, qr); }
+	ll range_sum(int ql, int qr) { return range_sum(1, 0, sz - 1, ql, qr); }
 };
 
 int main() {
-    int test_num;
-    cin >> test_num;
-    for (int t = 0; t < test_num; t++) {
-        int n, q;
-        cin >> n >> q;
+	int test_num;
+	cin >> test_num;
+	for (int t = 0; t < test_num; t++) {
+		int n, q;
+		cin >> n >> q;
 
-        LazySegtree st(n);
-        for (int i = 0; i < q; i++) {
-            int type;
-            cin >> type;
+		LazySegtree st(n);
+		for (int i = 0; i < q; i++) {
+			int type;
+			cin >> type;
 
-            if (type == 0) {
-                int p, q, val;
-                cin >> p >> q >> val;
-                p--, q--;
-                st.range_add(p, q, val);
-            } else {
-                int p, q;
-                cin >> p >> q;
-                p--, q--;
-                cout << st.range_sum(p, q) << '\n';
-            }
-        }
-    }
+			if (type == 0) {
+				int p, q, val;
+				cin >> p >> q >> val;
+				p--, q--;
+				st.range_add(p, q, val);
+			} else {
+				int p, q;
+				cin >> p >> q;
+				p--, q--;
+				cout << st.range_sum(p, q) << '\n';
+			}
+		}
+	}
 }
 ```
 
@@ -323,8 +325,8 @@ using ll = long long;
 enum QueryType { ADD, SET, NONE };
 
 struct Query {
-    QueryType type = NONE;
-    ll val = 0;
+	QueryType type = NONE;
+	ll val = 0;
 };
 
 class LazySegtree {
@@ -365,10 +367,10 @@ class LazySegtree {
 
 	/** pushes down lazy update to children of v */
 	void push_down(int v, int l, int r) {
-        int m = (l + r) / 2;
-        apply(2 * v, m - l + 1, lazy[v]);
+		int m = (l + r) / 2;
+		apply(2 * v, m - l + 1, lazy[v]);
 		apply(2 * v + 1, r - m, lazy[v]);
-        lazy[v] = Query();
+		lazy[v] = Query();
 	}
 
 	void range_update(int v, int l, int r, int ql, int qr, const Query &x) {
@@ -389,8 +391,7 @@ class LazySegtree {
 		if (l >= ql && r <= qr) { return tree[v]; }
 		push_down(v, l, r);
 		int m = (l + r) / 2;
-		return range_sum(2 * v, l, m, ql, qr) +
-		       range_sum(2 * v + 1, m + 1, r, ql, qr);
+		return range_sum(2 * v, l, m, ql, qr) + range_sum(2 * v + 1, m + 1, r, ql, qr);
 	}
 
   public:
@@ -445,122 +446,115 @@ We can also use a somewhat generic template:
 using namespace std;
 using ll = long long;
 
-template <class Info, class Tag> 
-class LazySegtree {
+template <class Info, class Tag> class LazySegtree {
   private:
-    const int n;
-    vector<Info> t;
-    vector<Tag> lz;
-       
-    void build(int v, int l, int r, const vector<Info> &a) {
-        if (l == r) {
-            t[v] = a[l];
-        } else {
-            int m = (l + r) >> 1;
-            build(2 * v, l, m, a);
-            build(2 * v + 1, m + 1, r, a);
-            t[v] = t[2 * v] + t[2 * v + 1];
-        }
-    }
+	const int n;
+	vector<Info> t;
+	vector<Tag> lz;
 
-    void apply(int v, int l, int r, const Tag &x) {
-        t[v].apply(x, l, r);
-        lz[v].apply(x);
-    }
+	void build(int v, int l, int r, const vector<Info> &a) {
+		if (l == r) {
+			t[v] = a[l];
+		} else {
+			int m = (l + r) >> 1;
+			build(2 * v, l, m, a);
+			build(2 * v + 1, m + 1, r, a);
+			t[v] = t[2 * v] + t[2 * v + 1];
+		}
+	}
 
-    void pushdown(int v, int l, int r) {
-        int m = (l + r) >> 1;
-        apply(2 * v, l, m, lz[v]);
-        apply(2 * v + 1, m + 1, r, lz[v]);
-        lz[v] = Tag();
-    }
+	void apply(int v, int l, int r, const Tag &x) {
+		t[v].apply(x, l, r);
+		lz[v].apply(x);
+	}
 
-    void range_update(int v, int l, int r, int ql, int qr, const Tag &x) {
-        if (qr < l || ql > r) { return; }
-        if (ql <= l && r <= qr) {
-            apply(v, l, r, x);
-        } else {
-            pushdown(v, l, r);
-            int m = (l + r) >> 1;
-            range_update(2 * v, l, m, ql, qr, x);
-            range_update(2 * v + 1, m + 1, r, ql, qr, x);
-            t[v] = t[2 * v] + t[2 * v + 1];
-        }
-    }
-    
-    Info range_query(int v, int l, int r, int ql, int qr) {
-        if (qr < l || ql > r) return Info();
-        if (l >= ql && r <= qr) return t[v];
-        pushdown(v, l, r);
-        int m = (l + r) >> 1;
-        return range_query(2 * v, l, m, ql, qr) + 
-               range_query(2 * v + 1, m + 1, r, ql, qr);
-    }
+	void pushdown(int v, int l, int r) {
+		int m = (l + r) >> 1;
+		apply(2 * v, l, m, lz[v]);
+		apply(2 * v + 1, m + 1, r, lz[v]);
+		lz[v] = Tag();
+	}
+
+	void range_update(int v, int l, int r, int ql, int qr, const Tag &x) {
+		if (qr < l || ql > r) { return; }
+		if (ql <= l && r <= qr) {
+			apply(v, l, r, x);
+		} else {
+			pushdown(v, l, r);
+			int m = (l + r) >> 1;
+			range_update(2 * v, l, m, ql, qr, x);
+			range_update(2 * v + 1, m + 1, r, ql, qr, x);
+			t[v] = t[2 * v] + t[2 * v + 1];
+		}
+	}
+
+	Info range_query(int v, int l, int r, int ql, int qr) {
+		if (qr < l || ql > r) return Info();
+		if (l >= ql && r <= qr) return t[v];
+		pushdown(v, l, r);
+		int m = (l + r) >> 1;
+		return range_query(2 * v, l, m, ql, qr) +
+		       range_query(2 * v + 1, m + 1, r, ql, qr);
+	}
 
   public:
-    LazySegtree() {}
-    
-    LazySegtree(int n) : n(n) {
-        t.assign(4 << __lg(n), Info());
-        lz.assign(4 << __lg(n), Tag());
-    }
+	LazySegtree() {}
 
-    LazySegtree(const vector<Info> &a) : n(a.size()) {
-        t.assign(4 << __lg(n), Info());
-        lz.assign(4 << __lg(n), Tag());
-        build(1, 0, n - 1, a);
-    }
+	LazySegtree(int n) : n(n) {
+		t.assign(4 << __lg(n), Info());
+		lz.assign(4 << __lg(n), Tag());
+	}
 
-    /** updates [ql, qr] with the arbitrary update chosen */
-    void range_update(int ql, int qr, const Tag &x) {
-        range_update(1, 0, n - 1, ql, qr, x);
-    }
+	LazySegtree(const vector<Info> &a) : n(a.size()) {
+		t.assign(4 << __lg(n), Info());
+		lz.assign(4 << __lg(n), Tag());
+		build(1, 0, n - 1, a);
+	}
 
-    /** @return result of range query on [ql, qr] */
-    Info range_query(int ql, int qr) {
-        return range_query(1, 0, n - 1, ql, qr);
-    }
+	/** updates [ql, qr] with the arbitrary update chosen */
+	void range_update(int ql, int qr, const Tag &x) {
+		range_update(1, 0, n - 1, ql, qr, x);
+	}
+
+	/** @return result of range query on [ql, qr] */
+	Info range_query(int ql, int qr) { return range_query(1, 0, n - 1, ql, qr); }
 };
 
 enum QueryType { ADD, SET, NONE };
 
 struct Tag {
-    QueryType type = NONE;
-    ll val = 0;
-    void apply(const Tag &t) {
-        if (t.type == ADD) {
-            val += t.val;
-            if (type != SET) { type = ADD; }
-        } else if (t.type == SET) {
-            type = SET;
-            val = t.val;
-        }
-    }
+	QueryType type = NONE;
+	ll val = 0;
+	void apply(const Tag &t) {
+		if (t.type == ADD) {
+			val += t.val;
+			if (type != SET) { type = ADD; }
+		} else if (t.type == SET) {
+			type = SET;
+			val = t.val;
+		}
+	}
 };
 
 struct Info {
-    ll sum = 0;
-    void apply(const Tag &t, int l, int r) {
-        if (t.type == SET) {
-            sum = t.val * (r - l + 1);
-        } else if (t.type == ADD) {
-            sum += t.val * (r - l + 1);
-        }
-    }
+	ll sum = 0;
+	void apply(const Tag &t, int l, int r) {
+		if (t.type == SET) {
+			sum = t.val * (r - l + 1);
+		} else if (t.type == ADD) {
+			sum += t.val * (r - l + 1);
+		}
+	}
 };
 
 /** @return result of joining nodes a and b together */
-Info operator+(const Info &a, const Info &b) {
-    return {a.sum + b.sum};
-}
+Info operator+(const Info &a, const Info &b) { return {a.sum + b.sum}; }
 
 int main() {
 	int n, q;
 	cin >> n >> q;
 	vector<Info> a(n);
-	for (Info &i : a) {
-        cin >> i.sum;
-    }
+	for (Info &i : a) { cin >> i.sum; }
 
 	LazySegtree<Info, Tag> st(a);
 	for (int t = 0; t < q; t++) {
