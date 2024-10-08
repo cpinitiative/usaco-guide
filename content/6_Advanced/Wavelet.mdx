@@ -46,10 +46,15 @@ range into two halves.
 
 We are going to maintain a segment tree over values instead of indices. Each segment will contain indices whose values lie within the segment's range. We'll save those indices in a vector. Notice that an index can be in at most $log(M)$ segments
 
+
+<Info title="Motivation">
+  The motivation for maintaining a segment tree over values lies in the types of queries we want to answer. While traditional segment trees handle range-based queries like sums effectively, they fall short for value-based queries. By maintaining segments over values, we can efficiently address these value-specific queries.
+</Info>
+
 <Spoiler title="Wavelet tree Visualization">
 
 Let's say our array is: $[3,5,3,1,2,2,3,4,5,5]$
-Each node has an array representing the indecies of every number between l and r
+Each node has an array representing the indices of every number between l and r
 
 ![Wavelet Tree Visualization](./assets/diagram.png)
 </Spoiler>
@@ -72,8 +77,6 @@ One way to solve the problem is to go to the leaf node
 and perform a binary search for the number of indices less than $𝑟$
 However, let's explore a different approach that can also be extended to the
 second type of query.
-
-**A different way to find the Index of $𝑟$ in the list of vertices**
 
 Instead of binary searching on the leaf, we update $𝑟$ as we recurse down the
 tree.
@@ -99,11 +102,11 @@ $$
 
 
 To update $r$ as we recurse down, we do the following:
-- To know the value of 𝑟 if we recurse left, we use prefixB[r]
-- If we recurse right, we use 𝑟 - prefixB[r]
+- To know the value of $r$ if we recurse left, we use prefixB[r]
+- If we recurse right, we use $r$ - prefixB[r]
 
 ## Solving the second type of query
-**Given a range l, r find the k smallest element**
+**Given a range $l$, $r$ find the k smallest element**
 
 We will determine whether the answer for a given node is in the left or the
 right segment.
