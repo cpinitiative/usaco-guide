@@ -88,53 +88,54 @@ import java.io.*;
 import java.util.*;
 
 public class MixingWater {
-    public static void main(String[] args) {
-        Kattio io = new Kattio();
-        int testNum = io.nextInt();
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
+		int testNum = io.nextInt();
 
-        for (int t = 0; t < testNum; t++) {
-            int hot = io.nextInt();
-            int cold = io.nextInt();
-            int target = io.nextInt();
+		for (int t = 0; t < testNum; t++) {
+			int hot = io.nextInt();
+			int cold = io.nextInt();
+			int target = io.nextInt();
 
-            if (target * 2 <= hot + cold) {
-                io.println(2);
-                continue;
-            }
+			if (target * 2 <= hot + cold) {
+				io.println(2);
+				continue;
+			}
 
-            long lo = 0;
-            long hi = Integer.MAX_VALUE;
-            long valid = -1;
+			long lo = 0;
+			long hi = Integer.MAX_VALUE;
+			long valid = -1;
 
-            while (lo <= hi) {
-                long n = (lo + hi) / 2;
-                long num = (n + 1) * hot + n * cold;
-                long denom = 2 * n + 1;
+			while (lo <= hi) {
+				long n = (lo + hi) / 2;
+				long num = (n + 1) * hot + n * cold;
+				long denom = 2 * n + 1;
 
-                if (num >= denom * target) {
-                    valid = n;
-                    lo = n + 1;
-                } else {
-                    hi = n - 1;
-                }
-            }
+				if (num >= denom * target) {
+					valid = n;
+					lo = n + 1;
+				} else {
+					hi = n - 1;
+				}
+			}
 
-            long err1Num = hot * (valid + 1) + cold * valid - target  * (2 * valid + 1);
-            long err1Denom = 2 * valid + 1;
+			long err1Num = hot * (valid + 1) + cold * valid - target * (2 * valid + 1);
+			long err1Denom = 2 * valid + 1;
 
-            long err2Num = target * (2 * valid + 3) - hot * (valid + 2) - cold * (valid + 1);
-            long err2Denom = 2 * valid + 3;
+			long err2Num =
+			    target * (2 * valid + 3) - hot * (valid + 2) - cold * (valid + 1);
+			long err2Denom = 2 * valid + 3;
 
-            if (err1Num * err2Denom <= err2Num * err1Denom) {
-                io.println(2 * valid + 1);
-            } else {
-                io.println(2 * valid + 3);
-            }
-        }
+			if (err1Num * err2Denom <= err2Num * err1Denom) {
+				io.println(2 * valid + 1);
+			} else {
+				io.println(2 * valid + 3);
+			}
+		}
 
-        io.close();
-    }
-    // CodeSnip{Kattio}
+		io.close();
+	}
+	// CodeSnip{Kattio}
 }
 ```
 
@@ -145,37 +146,37 @@ public class MixingWater {
 import sys
 
 for _ in range(int(input())):
-    hot, cold, target = map(int, input().split())
+	hot, cold, target = map(int, input().split())
 
-    if target * 2 <= hot + cold:
-        print(2)
-        continue
+	if target * 2 <= hot + cold:
+		print(2)
+		continue
 
-    lo = 0
-    hi = sys.maxsize
-    valid = -1
+	lo = 0
+	hi = sys.maxsize
+	valid = -1
 
-    while lo <= hi:
-        n = (lo + hi) // 2
-        num = (n + 1) * hot + n * cold
-        denom = 2 * n + 1
+	while lo <= hi:
+		n = (lo + hi) // 2
+		num = (n + 1) * hot + n * cold
+		denom = 2 * n + 1
 
-        if num >= denom * target:
-            valid = n
-            lo = n + 1
-        else:
-            hi = n - 1
+		if num >= denom * target:
+			valid = n
+			lo = n + 1
+		else:
+			hi = n - 1
 
-    err1_num = hot * (valid + 1) + cold * valid - target * (2 * valid + 1)
-    err1_denom = 2 * valid + 1
+	err1_num = hot * (valid + 1) + cold * valid - target * (2 * valid + 1)
+	err1_denom = 2 * valid + 1
 
-    err2_num = target * (2 * valid + 3) - hot * (valid + 2) - cold * (valid + 1)
-    err2_denom = 2 * valid + 3
+	err2_num = target * (2 * valid + 3) - hot * (valid + 2) - cold * (valid + 1)
+	err2_denom = 2 * valid + 3
 
-    if err1_num * err2_denom <= err2_num * err1_denom:
-        print(2 * valid + 1)
-    else:
-        print(2 * valid + 3)
+	if err1_num * err2_denom <= err2_num * err1_denom:
+		print(2 * valid + 1)
+	else:
+		print(2 * valid + 3)
 ```
 
 </PySection>
