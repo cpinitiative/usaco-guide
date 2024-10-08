@@ -20,9 +20,7 @@ Consider the following input:
 
 ```
 0 2 1
-
 1 0 1
-
 3 2 0
 ```
 
@@ -30,9 +28,7 @@ We want to first swap $a[0][1]$ and $a[1][0]$ because $1$ is less than $2$. We c
 
 ```
 0 1 3
-
 2 0 1
-
 1 2 0
 ```
 
@@ -40,9 +36,7 @@ Then we want to swap $a[0][2]$ and $a[2][0]$ because $1$ is less than $3$. To do
 
 ```
 0 1 1
-
 2 0 2
-
 3 1 0
 ```
 
@@ -66,15 +60,15 @@ After this we can construct the answer by iterating over each cell of the grid. 
 <CPPSection>
 
 ```cpp
-#include <bits/stdc++.h>
-using namespace std;
+#include <iostream>
+#include <vector>
 
-using vi = vector<int>;
+using namespace std;
 
 // BeginCodeSnip{DSU}
 struct DSU {
-	vi e;
-	DSU(int n) { e = vi(n, -1); }
+	vector<int> e;
+	DSU(int n) { e = vector<int>(n, -1); }
 
 	int get(int x) {
 		if (e[x] < 0) {
@@ -137,7 +131,7 @@ void solve() {
 	}
 
 	// Construct the answer
-	vector<vi> ans(n, vi(n));
+	vector<vector<int>> ans(n, vector<int>(n));
 	for (int i = 0; i < n; i++) {
 		for (int j = i; j < n; j++) {
 			/*
@@ -168,10 +162,11 @@ void solve() {
 
 int main() {
 	ios::sync_with_stdio(false);
-	cin.tie(nullptr);
-	int T;
-	cin >> T;
-	for (int t = 0; t < T; t++) { solve(); }
+	cin.tie(NULL);
+
+	int test_num;
+	cin >> test_num;
+	for (int t = 0; t < test_num; t++) { solve(); }
 }
 ```
 
