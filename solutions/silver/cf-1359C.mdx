@@ -81,4 +81,44 @@ int main() {
 ```
 
 </CPPSection>
+<PySection>
+
+```py
+import sys
+
+for _ in range(int(input())):
+    hot, cold, target = map(int, input().split())
+
+    if target * 2 <= hot + cold:
+        print(2)
+        continue
+
+    lo = 0
+    hi = sys.maxsize
+    valid = -1
+
+    while lo <= hi:
+        n = (lo + hi) // 2
+        num = (n + 1) * hot + n * cold
+        denom = 2 * n + 1
+
+        if num >= denom * target:
+            valid = n
+            lo = n + 1
+        else:
+            hi = n - 1
+
+    err1_num = hot * (valid + 1) + cold * valid - target * (2 * valid + 1)
+    err1_denom = 2 * valid + 1
+
+    err2_num = target * (2 * valid + 3) - hot * (valid + 2) - cold * (valid + 1)
+    err2_denom = 2 * valid + 3
+
+    if err1_num * err2_denom <= err2_num * err1_denom:
+        print(2 * valid + 1)
+    else:
+        print(2 * valid + 3)
+```
+
+</PySection>
 </LanguageSection>
