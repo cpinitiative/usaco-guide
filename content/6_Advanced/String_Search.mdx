@@ -202,7 +202,7 @@ int main() {
 	cin >> s;
 	vector<int> z = z_function(s);
 	for (int i = 1; i < s.size(); i++) {
-		if (z[i] + i == s.size()) { cout << i << " "; }
+		if (i + z[i] == s.size()) { cout << i << " "; }
 	}
 	cout << s.size() << endl;
 }
@@ -217,24 +217,22 @@ from typing import List
 
 def z_function(s: str) -> List[int]:
 	n = len(s)
-	z = [n]
-	l = 0
-	r = 0
+	z = [0]*n
+	z[0] = n
+	l, r = 0, 0
 	for i in range(1, n):
-		zi = min(r - i, z[i - l]) if i < r else 0
-		while i + zi < n and s[i + zi] == s[zi]:
-			zi += 1
-		if i + zi > r:
-			l, r = i, i + zi
-		z.append(zi)
-
+		z[i] = max(0, min(z[i - l], r - i + 1))
+		while i + z[i] < n and s[i + z[i]] == s[z[i]]:
+			l = i
+			r = i + z[i]
+			z[i] += 1
 	return z
 
 
 s = input()
 z = z_function(s)
 for i in range(1, len(z)):
-	if z[i] + i == len(s):
+	if i + z[i] == len(s):
 		print(i, end=" ")
 print(len(s))
 ```
