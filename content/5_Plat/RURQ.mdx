@@ -344,7 +344,7 @@ class LazySegtree {
 		}
 	}
 
-	/** applies lazy update to t[v], places update at lz[v] */
+	/** applies lazy update to tree[v], places update at lazy[v] */
 	void apply(int v, int len, const Query &x) {
 		if (x.type == ADD) {
 			// if lazy[v]'s type is NONE or ADD, then we add to the range
@@ -446,30 +446,30 @@ using ll = long long;
 template <class Info, class Tag> class LazySegtree {
   private:
 	const int n;
-	vector<Info> t;
-	vector<Tag> lz;
+	vector<Info> tree;
+	vector<Tag> lazy;
 
 	void build(int v, int l, int r, const vector<Info> &a) {
 		if (l == r) {
-			t[v] = a[l];
+			tree[v] = a[l];
 		} else {
-			int m = (l + r) >> 1;
+			int m = (l + r) / 2;
 			build(2 * v, l, m, a);
 			build(2 * v + 1, m + 1, r, a);
-			t[v] = t[2 * v] + t[2 * v + 1];
+			tree[v] = tree[2 * v] + tree[2 * v + 1];
 		}
 	}
 
 	void apply(int v, int l, int r, const Tag &x) {
-		t[v].apply(x, l, r);
-		lz[v].apply(x);
+		tree[v].apply(x, l, r);
+		lazy[v].apply(x);
 	}
 
 	void push_down(int v, int l, int r) {
-		int m = (l + r) >> 1;
-		apply(2 * v, l, m, lz[v]);
-		apply(2 * v + 1, m + 1, r, lz[v]);
-		lz[v] = Tag();
+		int m = (l + r) / 2;
+		apply(2 * v, l, m, lazy[v]);
+		apply(2 * v + 1, m + 1, r, lazy[v]);
+		lazy[v] = Tag();
 	}
 
 	void range_update(int v, int l, int r, int ql, int qr, const Tag &x) {
@@ -478,18 +478,18 @@ template <class Info, class Tag> class LazySegtree {
 			apply(v, l, r, x);
 		} else {
 			push_down(v, l, r);
-			int m = (l + r) >> 1;
+			int m = (l + r) / 2;
 			range_update(2 * v, l, m, ql, qr, x);
 			range_update(2 * v + 1, m + 1, r, ql, qr, x);
-			t[v] = t[2 * v] + t[2 * v + 1];
+			tree[v] = tree[2 * v] + tree[2 * v + 1];
 		}
 	}
 
 	Info range_query(int v, int l, int r, int ql, int qr) {
-		if (qr < l || ql > r) return Info();
-		if (l >= ql && r <= qr) return t[v];
+		if (qr < l || ql > r) { return Info(); }
+		if (l >= ql && r <= qr) { return tree[v]; }
 		push_down(v, l, r);
-		int m = (l + r) >> 1;
+		int m = (l + r) / 2;
 		return range_query(2 * v, l, m, ql, qr) +
 		       range_query(2 * v + 1, m + 1, r, ql, qr);
 	}
