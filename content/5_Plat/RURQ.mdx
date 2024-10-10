@@ -465,7 +465,7 @@ template <class Info, class Tag> class LazySegtree {
 		lz[v].apply(x);
 	}
 
-	void pushdown(int v, int l, int r) {
+	void push_down(int v, int l, int r) {
 		int m = (l + r) >> 1;
 		apply(2 * v, l, m, lz[v]);
 		apply(2 * v + 1, m + 1, r, lz[v]);
@@ -477,7 +477,7 @@ template <class Info, class Tag> class LazySegtree {
 		if (ql <= l && r <= qr) {
 			apply(v, l, r, x);
 		} else {
-			pushdown(v, l, r);
+			push_down(v, l, r);
 			int m = (l + r) >> 1;
 			range_update(2 * v, l, m, ql, qr, x);
 			range_update(2 * v + 1, m + 1, r, ql, qr, x);
@@ -488,7 +488,7 @@ template <class Info, class Tag> class LazySegtree {
 	Info range_query(int v, int l, int r, int ql, int qr) {
 		if (qr < l || ql > r) return Info();
 		if (l >= ql && r <= qr) return t[v];
-		pushdown(v, l, r);
+		push_down(v, l, r);
 		int m = (l + r) >> 1;
 		return range_query(2 * v, l, m, ql, qr) +
 		       range_query(2 * v + 1, m + 1, r, ql, qr);
