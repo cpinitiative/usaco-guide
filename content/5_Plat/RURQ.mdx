@@ -165,32 +165,32 @@ Lazy segment trees allow us to efficiently perform range updates and range queri
 
 Lazy segment trees allow us to perform range updates and range queries in
 $\mathcal{O}(\log{N})$ time. In order to perform range updates in
-$\mathcal{O}(\log{N})$, we lazily apply updates to the nodes. That is, we store 
-updates on the nodes that compose the range we are updating, and lazily apply 
+$\mathcal{O}(\log{N})$, we lazily apply updates to the nodes. That is, we store
+updates on the nodes that compose the range we are updating, and lazily apply
 the updates when we walk down the tree.
 
 As an example, let's consider writing a lazy segment tree that supports range
 addition and range summation. We would have our tree nodes contain the sum on
 the range, and keep a separate array keeping track of the lazy additions we
-have to do for each node. If we were to add $3$ to our array $a[0 \ldots n - 1]$, 
-then we would need to set a lazy update at the root of our tree indicating that 
-we need to add $3$ to the entire range. Then, if we were to query a subarray of 
-$a$, we need to "push down" the updates at the root down to its children. 
+have to do for each node. If we were to add $3$ to our array $a[0 \ldots n - 1]$,
+then we would need to set a lazy update at the root of our tree indicating that
+we need to add $3$ to the entire range. Then, if we were to query a subarray of
+$a$, we need to "push down" the updates at the root down to its children.
 
-It is crucial that we always push down all the previous updates when traversing 
+It is crucial that we always push down all the previous updates when traversing
 down the tree. If we don't, the following things can happen:
 
 1. If we have two updates that affect two nodes, where one node is an ancestor of another, then one of the updates will be ignored.
 2. The updates will be applied in incorrect order, which matters if the updates are not commutative.
 
-For a concrete example for why point 1 can be an issue, consider the following 
+For a concrete example for why point 1 can be an issue, consider the following
 sequence of updates.
 
 1. +3 to all values on $[1, 4]$
 2. +5 to all values on $[1, 2]$
 3. Query sum on $[1, 8]$
 
-If we don't push down the updates when traversing down the tree, then the first 
+If we don't push down the updates when traversing down the tree, then the first
 update will get ignored in our sum query.
 
 <Spoiler title = "Horrible Queries Implementation">
