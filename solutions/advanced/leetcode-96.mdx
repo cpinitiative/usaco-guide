@@ -57,11 +57,35 @@ class Solution {
 ```
 
 </CPPSection>
+<JavaSection>
+
+```java
+class Solution {
+    public int numTrees(int n) {
+        return (int)(nCr(2 * n, n) / (long)(n + 1));
+    }
+
+    public long nCr(int n, int k) {
+		long res = 1;
+
+		// since C(n, k) = C(n, n - k)
+		if (k > n - k) { k = n - k; }
+
+		for (int i = 0; i < k; i++) {
+			res *= (n - i);
+			res /= (i + 1);
+		}
+
+		return res;
+	}
+}
+```
+
+</JavaSection>
 <PySection>
 
 ```py
 import math
-
 
 class Solution:
 	def numTrees(self, n: int) -> int:
