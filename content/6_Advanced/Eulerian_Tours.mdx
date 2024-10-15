@@ -162,6 +162,54 @@ int main() {
 ```
 
 </CPPSection>
+<PySection>
+
+```py
+path = []
+
+def dfs(start: int):
+	stack = [start]
+	while stack:
+		node = stack[-1]
+		if g[node]:
+			son = g[node].pop()
+			stack.append(son)
+		else:
+			path.append(stack.pop())
+
+	
+n, m = map(int, input().split())
+
+g = [[] for _ in range(n + 1)]
+in_degree = [0] * (n + 1)
+out_degree = [0] * (n + 1)
+
+for _ in range(m):
+	x, y = map(int, input().split())
+	g[x].append(y)
+	out_degree[x] += 1
+	in_degree[y] += 1
+
+flag = True
+for node in range(2, n):
+	if in_degree[node] != out_degree[node]:
+		flag = False
+		break
+
+if out_degree[1] != in_degree[1] + 1 or out_degree[n] != in_degree[n] - 1 or not flag:
+	print("IMPOSSIBLE")
+	exit()
+
+dfs(1)
+path.reverse()
+
+if len(path) != m + 1 or path[-1] != n:
+	print("IMPOSSIBLE")
+else:
+	print(*path)
+```
+
+</PySection>
 </LanguageSection>
 
 ## De Bruijn Sequences
