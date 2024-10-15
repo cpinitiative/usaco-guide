@@ -233,30 +233,30 @@ int main() {
 n = int(input())
 
 if n == 1:
-    print("10")
-    exit()
-    
+	print("10")
+	exit()
+
 adj = [[] for _ in range(1 << (n - 1))]
 
 for node in range(1 << (n - 1)):
-    son = (node << 1) % (1 << (n - 1))
-    adj[node].append(son)
-    adj[node].append(son | 1)
-    
+	son = (node << 1) % (1 << (n - 1))
+	adj[node].append(son)
+	adj[node].append(son | 1)
+
 todo = [0]
 path = []
 
 while todo:
-    node = todo[-1]
-    if adj[node]:
-        todo.append(adj[node][-1])
-        adj[node].pop()
-    else:
-        path.append(node & 1)
-        todo.pop()
-        
+	node = todo[-1]
+	if adj[node]:
+		todo.append(adj[node][-1])
+		adj[node].pop()
+	else:
+		path.append(node & 1)
+		todo.pop()
+
 path = path + [0] * (n - 2)
-print(''.join(map(str, path)))
+print("".join(map(str, path)))
 ```
 
 </PySection>
