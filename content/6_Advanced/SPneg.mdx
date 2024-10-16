@@ -346,6 +346,7 @@ Timeline (USACO Camp):
 ```cpp
 #include <iostream>
 
+using std::cout;
 using ll = long long;
 
 const ll INF = 1e18;
@@ -354,7 +355,7 @@ ll dist[MAX_N][MAX_N], bad[MAX_N][MAX_N];
 
 int main() {
 	int n, m, q;
-	while (std::cin >> n >> m >> q) {
+	while (cin >> n >> m >> q) {
 		for (int i = 0; i < n; i++) {
 			for (int j = 0; j < n; j++) {
 				dist[i][j] = (i == j ? 0 : INF);
@@ -364,7 +365,7 @@ int main() {
 
 		for (int i = 0; i < m; i++) {
 			int u, v, w;
-			std::cin >> u >> v >> w;
+			cin >> u >> v >> w;
 			dist[u][v] = std::min(dist[u][v], (ll)w);
 		}
 
@@ -400,16 +401,16 @@ int main() {
 
 		for (int i = 0; i < q; i++) {
 			int u, v;
-			std::cin >> u >> v;
+			cin >> u >> v;
 			if (bad[u][v]) {
-				std::cout << "-Infinity" << '\n';
+				cout << "-Infinity" << '\n';
 			} else if (dist[u][v] == INF) {
-				std::cout << "Impossible" << '\n';
+				cout << "Impossible" << '\n';
 			} else {
-				std::cout << dist[u][v] << '\n';
+				cout << dist[u][v] << '\n';
 			}
 		}
-		std::cout << '\n';
+		cout << '\n';
 	}
 }
 ```
