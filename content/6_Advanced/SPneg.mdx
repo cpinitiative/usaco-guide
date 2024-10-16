@@ -393,7 +393,61 @@ int main() {
 ```
 
 </CPPSection>
+<PySection>
 
+```py
+INF = 10**18
+MAX_N = 150
+
+n, m, q = map(int, input().split())
+while True:
+    if n == 0 and m == 0 and q == 0:
+        break
+
+    dist = [[INF] * n for _ in range(n)]
+    bad = [[0] * n for _ in range(n)]
+
+    for i in range(n):
+        dist[i][i] = 0
+
+    for _ in range(m):
+        u, v, w = map(int, input().split())
+        dist[u][v] = min(dist[u][v], w)
+
+    for k in range(n):
+        for i in range(n):
+            for j in range(n):
+                if dist[i][k] != INF and dist[k][j] != INF:
+                    dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j])
+
+    for k in range(n):
+        for i in range(n):
+            for j in range(n):
+                if (dist[i][k] != INF and dist[k][j] != INF 
+                        and dist[i][j] > dist[i][k] + dist[k][j]):
+                    bad[i][j] = 1
+
+    for k in range(n):
+        for i in range(n):
+            for j in range(n):
+                if dist[i][k] < INF and bad[k][j]:
+                    bad[i][j] = 1
+                if dist[k][j] < INF and bad[i][k]:
+                    bad[i][j] = 1
+
+    for _ in range(q):
+        u, v = map(int, input().split())
+        if bad[u][v]:
+            print("-Infinity")
+        elif dist[u][v] == INF:
+            print("Impossible")
+        else:
+            print(dist[u][v])
+
+    n, m, q = map(int, input().split())
+```
+
+</PySection>
 </LanguageSection>
 
 ### Problems
