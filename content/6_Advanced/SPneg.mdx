@@ -59,6 +59,10 @@ from those will also have minus infinity cost. In the solution below, we detect
 all the negative cycles and save the point from which we detected the cycle. We then
 do a [BFS](/silver/graph-traversal) with those points as sources.
 
+#### Implementation
+
+**Time Complexity:** $\mathcal{O}(N \cdot M)$
+
 <LanguageSection>
 
 <CPPSection>
@@ -130,7 +134,64 @@ int main() {
 ```
 
 </CPPSection>
+<PySection>
 
+```py
+import queue
+
+n, m, q, s = map(int, input().split())
+while True:
+	if n == 0 and m == 0 and q == 0 and s == 0:
+		break
+
+	adj = [[] for _ in range(n)]
+	for _ in range(m):
+		u, v, w = map(int, input().split())
+		adj[u].append((v, w))
+
+	dist = [float("inf")] * n
+	dist[s] = 0
+
+	for i in range(n - 1):
+		for u in range(n):
+			if dist[u] == float("inf"):
+				continue
+			for v, w in adj[u]:
+				dist[v] = min(dist[v], dist[u] + w)
+
+	bfs_queue = queue.Queue()
+
+	# one more iteration to detect negative cycles on graph
+	for u in range(n):
+		if dist[u] == float("inf"):
+			continue
+		for v, w in adj[u]:
+			# the relaxed vertices belong to a negative cycle
+			if dist[u] + w < dist[v]:
+				bfs_queue.put(v)
+
+	is_negative_inf = [False] * n
+	while not bfs_queue.empty():
+		u = bfs_queue.get()
+		is_negative_inf[u] = True
+		for v, w in adj[u]:
+			if is_negative_inf[v]:
+				continue
+			bfs_queue.put(v)
+
+	for _ in range(q):
+		target = int(input())
+		if is_negative_inf[target]:
+			print("-Infinity")
+		elif dist[target] == float("inf"):
+			print("Impossible")
+		else:
+			print(dist[target])
+
+	n, m, q, s = map(int, input().split())
+```
+
+</PySection>
 </LanguageSection>
 
 ### Finding Negative Cycles
