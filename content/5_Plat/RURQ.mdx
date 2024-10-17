@@ -479,6 +479,7 @@ template <class Info, class Tag> class LazySegtree {
 	vector<Info> tree;
 	vector<Tag> lazy;
 
+	/** builds the segtree values in O(N) time */
 	void build(int v, int l, int r, const vector<Info> &a) {
 		if (l == r) {
 			tree[v] = a[l];
@@ -490,11 +491,13 @@ template <class Info, class Tag> class LazySegtree {
 		}
 	}
 
+	/** applies update x to lazy[v] and tree[v] */
 	void apply(int v, int l, int r, const Tag &x) {
 		tree[v].apply(x, l, r);
 		lazy[v].apply(x);
 	}
 
+	/** pushes lazy updates down to the children of v */
 	void push_down(int v, int l, int r) {
 		int m = (l + r) / 2;
 		apply(2 * v, l, m, lazy[v]);
