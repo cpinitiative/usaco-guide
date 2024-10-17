@@ -203,14 +203,14 @@ Here's an implementation of the previous focus problem, Horrible Queries.
 using namespace std;
 using ll = long long;
 
-class LazySegtree {
+template <typename T> class LazySegtree {
   private:
 	const int sz;
-	vector<ll> tree;
-	vector<ll> lazy;
+	vector<T> tree;
+	vector<T> lazy;
 
-	void apply(int v, int len, ll add) {
-		tree[v] += 1ll * len * add;
+	void apply(int v, int len, T add) {
+		tree[v] += add * len;
 		lazy[v] += add;
 	}
 
@@ -234,7 +234,7 @@ class LazySegtree {
 		}
 	}
 
-	ll range_sum(int v, int l, int r, int ql, int qr) {
+	T range_sum(int v, int l, int r, int ql, int qr) {
 		if (qr < l || ql > r) { return 0; }
 		if (ql <= l && r <= qr) { return tree[v]; }
 		push_down(v, l, r);
@@ -249,7 +249,7 @@ class LazySegtree {
 	void range_add(int ql, int qr, int add) { range_add(1, 0, sz - 1, ql, qr, add); }
 
 	/** @return sum of values on [ql, qr] */
-	ll range_sum(int ql, int qr) { return range_sum(1, 0, sz - 1, ql, qr); }
+	T range_sum(int ql, int qr) { return range_sum(1, 0, sz - 1, ql, qr); }
 };
 
 int main() {
@@ -259,7 +259,7 @@ int main() {
 		int n, q;
 		cin >> n >> q;
 
-		LazySegtree st(n);
+		LazySegtree<ll> st(n);
 		for (int i = 0; i < q; i++) {
 			int type;
 			cin >> type;
@@ -343,14 +343,14 @@ struct Query {
 	ll val = 0;
 };
 
-class LazySegtree {
+template <typename T> class LazySegtree {
   private:
 	const int sz;
-	vector<ll> tree;     // tree[i] = sum of this node's range
+	vector<T> tree;     // tree[i] = sum of this node's range
 	vector<Query> lazy;  // lazy[i] = lazy update for the range
 
 	/** builds the segtree nodes */
-	void build(int v, int l, int r, const vector<ll> &a) {
+	void build(int v, int l, int r, const vector<T> &a) {
 		if (l == r) {
 			tree[v] = a[l];
 		} else {
@@ -400,7 +400,7 @@ class LazySegtree {
 		}
 	}
 
-	ll range_sum(int v, int l, int r, int ql, int qr) {
+	T range_sum(int v, int l, int r, int ql, int qr) {
 		if (qr < l || ql > r) { return 0; }
 		if (l >= ql && r <= qr) { return tree[v]; }
 		push_down(v, l, r);
@@ -409,7 +409,7 @@ class LazySegtree {
 	}
 
   public:
-	LazySegtree(const vector<ll> &a) : sz(a.size()), tree(4 * sz), lazy(4 * sz) {
+	LazySegtree(const vector<T> &a) : sz(a.size()), tree(4 * sz), lazy(4 * sz) {
 		build(1, 0, sz - 1, a);
 	}
 
@@ -419,7 +419,7 @@ class LazySegtree {
 	}
 
 	/** sum of array values on [ql, qr] */
-	ll range_sum(int ql, int qr) { return range_sum(1, 0, sz - 1, ql, qr); }
+	T range_sum(int ql, int qr) { return range_sum(1, 0, sz - 1, ql, qr); }
 };
 
 int main() {
@@ -428,7 +428,7 @@ int main() {
 	vector<ll> a(n);
 	for (ll &i : a) { cin >> i; }
 
-	LazySegtree st(a);
+	LazySegtree<ll> st(a);
 	for (int t = 0; t < q; t++) {
 		int type, a, b;
 		cin >> type >> a >> b;
