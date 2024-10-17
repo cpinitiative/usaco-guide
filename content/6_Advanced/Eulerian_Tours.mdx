@@ -103,17 +103,18 @@ int main() {
 ```py
 path = []
 
+
 def dfs(node: int):
-    stack = [node]
-    while stack:
-        u = stack[-1]
-        if g[u]:
-            son, idx = g[u].pop()
-            if not seen[idx]:
-                seen[idx] = 1
-                stack.append(son)
-        else:
-            path.append(stack.pop() + 1)
+	stack = [node]
+	while stack:
+		u = stack[-1]
+		if g[u]:
+			son, idx = g[u].pop()
+			if not seen[idx]:
+				seen[idx] = 1
+				stack.append(son)
+		else:
+			path.append(stack.pop() + 1)
 
 
 n, m = map(int, input().split())
@@ -123,25 +124,25 @@ seen = [0] * m
 degree = [0] * n
 
 for i in range(m):
-    x, y = map(int, input().split())
-    x -= 1
-    y -= 1
-    g[x].append((y, i))
-    g[y].append((x, i))
-    degree[x] += 1
-    degree[y] += 1
+	x, y = map(int, input().split())
+	x -= 1
+	y -= 1
+	g[x].append((y, i))
+	g[y].append((x, i))
+	degree[x] += 1
+	degree[y] += 1
 
 for node in range(n):
-    if degree[node] % 2 == 1:
-        print("IMPOSSIBLE")
-        exit()
+	if degree[node] % 2 == 1:
+		print("IMPOSSIBLE")
+		exit()
 
 dfs(0)
 
 if len(path) != m + 1:
-    print("IMPOSSIBLE")
+	print("IMPOSSIBLE")
 else:
-    print(*path)
+	print(*path)
 ```
 
 </PySection>
