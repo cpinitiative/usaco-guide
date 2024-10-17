@@ -186,14 +186,16 @@ down the tree. If we don't, the following things can happen:
 For a concrete example for why point 1 can be an issue, consider the following
 sequence of updates.
 
-1. +3 to all values on $[1, 4]$
-2. +5 to all values on $[1, 2]$
+1. $+3$ to all values on $[1, 4]$
+2. $+5$ to all values on $[1, 2]$
 3. Query sum on $[1, 8]$
 
 If we don't push down the updates when traversing down the tree, then the first
 update will get ignored in our sum query.
 
-Here's an implementation of the previous focus problem, Horrible Queries.
+### Horrible Queries Implementation
+
+**Time Complexity:** $\mathcal{O}(N + Q \log{N})$
 
 <LanguageSection>
 <CPPSection>
@@ -209,11 +211,13 @@ template <typename T> class LazySegtree {
 	vector<T> tree;
 	vector<T> lazy;
 
+	/** applies lazy update to tree[v], places update at lazy[v] */
 	void apply(int v, int len, T add) {
 		tree[v] += add * len;
 		lazy[v] += add;
 	}
 
+	/** pushes down lazy updates to children of v */
 	void push_down(int v, int l, int r) {
 		int m = (l + r) / 2;
 		apply(2 * v, m - l + 1, lazy[v]);
@@ -450,7 +454,16 @@ int main() {
 </CPPSection>
 </LanguageSection>
 
-We can also use a somewhat generic template:
+Below is an implementation of the focus problem using a somewhat generic 
+template. The idea is that we supply a `Info` and `Tag` class into the template.
+The `Tag` class handles lazy updates, and how lazy updates interact with each other.
+Meanwhile, the `Info` class handles the tree values, and how lazy updates are applied 
+to given tree values. 
+
+Some key implementation details:
+
+1. We must give lazy tags and tree values neutral values. That is, we need to set the values inside the classes to some value that won't affect our answers.
+2. For the `apply` function in the `Info` and `Tag` functions, we need to ensure that we aren't applying neutral updates to any nodes.
 
 <LanguageSection>
 <CPPSection>
