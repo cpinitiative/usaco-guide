@@ -405,51 +405,73 @@ Timeline (USACO Camp):
 <CPPSection>
 
 ```cpp
-const int MOD = 1000000007;
-const ll INF = 1e18;
+#include <bits/stdc++.h>
 
-int n, m, q;
-ll dist[150][150], bad[150][150];
+using namespace std;
+using ll = long long;
 
-void solve() {
-	F0R(i, n) F0R(j, n) dist[i][j] = INF, bad[i][j] = 0;
-	F0R(i, n) dist[i][i] = 0;
-	F0R(i, m) {
-		int u, v, w;
-		cin >> u >> v >> w;
-		dist[u][v] = min(dist[u][v], (ll)w);
-	}
-	F0R(k, n)
-	F0R(i, n)
-	F0R(j, n)
-	if (dist[i][k] != INF && dist[k][j] != INF)
-		dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j]);
-
-	F0R(k, n)
-	F0R(i, n)
-	F0R(j, n)
-	if (dist[i][k] != INF && dist[k][j] != INF)
-		if (dist[i][j] > dist[i][k] + dist[k][j]) bad[i][j] = 1;
-
-	F0R(k, n) F0R(i, n) F0R(j, n) {
-		if (dist[i][k] < INF && bad[k][j]) bad[i][j] = 1;
-		if (bad[i][k] && dist[k][j] < INF) bad[i][j] = 1;
-	}
-
-	F0R(i, q) {
-		int u, v;
-		cin >> u >> v;
-		if (bad[u][v]) cout << "-Infinity\n";
-		else if (dist[u][v] == INF) cout << "Impossible\n";
-		else cout << dist[u][v] << "\n";
-	}
-	cout << "\n";
-}
+const int MAX_N = 150;
+ll dist[MAX_N][MAX_N], bad[MAX_N][MAX_N];
 
 int main() {
-	ios_base::sync_with_stdio(0);
-	cin.tie(0);
-	while (cin >> n >> m >> q) solve();
+	int n, m, q;
+	while (cin >> n >> m >> q) {
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
+				dist[i][j] = (i == j ? 0 : INT_MAX);
+				bad[i][j] = 0;
+			}
+		}
+
+		for (int i = 0; i < m; i++) {
+			int u, v, w;
+			cin >> u >> v >> w;
+			dist[u][v] = std::min(dist[u][v], (ll)w);
+		}
+
+		for (int k = 0; k < n; k++) {
+			for (int i = 0; i < n; i++) {
+				for (int j = 0; j < n; j++) {
+					if (dist[i][k] != INT_MAX && dist[k][j] != INT_MAX) {
+						dist[i][j] = std::min(dist[i][j], dist[i][k] + dist[k][j]);
+					}
+				}
+			}
+		}
+
+		for (int k = 0; k < n; k++) {
+			for (int i = 0; i < n; i++) {
+				for (int j = 0; j < n; j++) {
+					if (dist[i][k] != INT_MAX && dist[k][j] != INT_MAX &&
+					    dist[i][j] > dist[i][k] + dist[k][j]) {
+						bad[i][j] = 1;
+					}
+				}
+			}
+		}
+
+		for (int k = 0; k < n; k++) {
+			for (int i = 0; i < n; i++) {
+				for (int j = 0; j < n; j++) {
+					if (dist[i][k] < INT_MAX && bad[k][j]) { bad[i][j] = 1; }
+					if (dist[k][j] < INT_MAX && bad[i][k]) { bad[i][j] = 1; }
+				}
+			}
+		}
+
+		for (int i = 0; i < q; i++) {
+			int u, v;
+			cin >> u >> v;
+			if (bad[u][v]) {
+				cout << "-Infinity" << '\n';
+			} else if (dist[u][v] == INT_MAX) {
+				cout << "Impossible" << '\n';
+			} else {
+				cout << dist[u][v] << '\n';
+			}
+		}
+		cout << '\n';
+	}
 }
 ```
 
