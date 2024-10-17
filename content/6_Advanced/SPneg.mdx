@@ -214,7 +214,7 @@ there is an negative cycle.
 using namespace std;
 using ll = long long;
 
-struct edge {
+struct Edge {
 	int from, to;
 	ll weight;
 };
@@ -223,16 +223,16 @@ const int MAXN = 2505;
 
 int n, m, parent[MAXN];
 ll dist[MAXN];
-vector<edge> graph;
+vector<Edge> graph;
 
-void BellmanFord(int source) {
+void bellman_ford(int source) {
 	fill(parent + 1, parent + n + 1, 0);
 	fill(dist + 1, dist + n + 1, 1e18);
 	dist[source] = 0;
 	int last_node_updated;
 	for (int i = 1; i <= n; i++) {
 		last_node_updated = -1;
-		for (edge &e : graph) {
+		for (Edge &e : graph) {
 			if (dist[e.from] + e.weight < dist[e.to]) {
 				dist[e.to] = dist[e.from] + e.weight;
 				parent[e.to] = e.from;
@@ -268,7 +268,7 @@ int main() {
 		cin >> a >> b >> c;
 		graph.push_back({a, b, c});
 	}
-	BellmanFord(1);
+	bellman_ford(1);
 }
 ```
 
