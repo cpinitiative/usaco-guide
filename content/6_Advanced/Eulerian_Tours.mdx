@@ -82,7 +82,7 @@ int main() {
 
 	for (int node = 0; node < n; node++) {
 		if (degree[node] % 2) {
-			cout << "IMPOSSIBLE";
+			cout << "IMPOSSIBLE" << endl;
 			return 0;
 		}
 	}
@@ -92,8 +92,9 @@ int main() {
 	if (path.size() != m + 1) {
 		cout << "IMPOSSIBLE";
 	} else {
-		for (auto node : path) { cout << node + 1 << ' '; }
+		for (int node : path) { cout << node + 1 << ' '; }
 	}
+	cout << endl;
 }
 ```
 
@@ -114,7 +115,7 @@ def dfs(node: int):
 				seen[idx] = 1
 				stack.append(son)
 		else:
-			path.append(stack.pop() + 1)
+			path.append(stack.pop())
 
 
 n, m = map(int, input().split())
@@ -122,7 +123,6 @@ n, m = map(int, input().split())
 g = [[] for _ in range(n)]
 seen = [0] * m
 degree = [0] * n
-
 for i in range(m):
 	x, y = map(int, input().split())
 	x -= 1
@@ -142,7 +142,7 @@ dfs(0)
 if len(path) != m + 1:
 	print("IMPOSSIBLE")
 else:
-	print(*path)
+	print(*[i + 1 for i in path])
 ```
 
 </PySection>
