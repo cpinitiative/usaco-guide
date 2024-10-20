@@ -46,9 +46,9 @@ After this step of preprocessing, our DP definition is now valid.
 <CPPSection>
 
 ```cpp
+#include <algorithm>
 #include <iostream>
 #include <vector>
-#include <algorithm>
 
 using std::cout;
 using std::endl;
@@ -61,9 +61,7 @@ int main() {
 	for (int i = 0; i < len; i++) {
 		int x;
 		std::cin >> x;
-		if (arr.empty() || x != arr.back()) {
-			arr.push_back(x);
-		}
+		if (arr.empty() || x != arr.back()) { arr.push_back(x); }
 	}
 	len = arr.size();
 
@@ -71,15 +69,11 @@ int main() {
 	for (int l = 2; l <= len; l++) {
 		for (int start = 0; start + l - 1 < len; start++) {
 			int end = start + l - 1;
-			min_ops[start][end] = std::min(
-				min_ops[start + 1][end],
-				min_ops[start][end - 1]
-			) + 1;
+			min_ops[start][end] =
+			    std::min(min_ops[start + 1][end], min_ops[start][end - 1]) + 1;
 			if (arr[start] == arr[end] && l > 2) {
-				min_ops[start][end] = std::min(
-					min_ops[start][end],
-					min_ops[start + 1][end - 1] + 1
-				);
+				min_ops[start][end] =
+				    std::min(min_ops[start][end], min_ops[start + 1][end - 1] + 1);
 			}
 		}
 	}
@@ -94,7 +88,7 @@ int main() {
 ```java
 import java.io.*;
 import java.util.*;
- 
+
 public class FloodFill {
 	public static void main(String[] args) throws IOException {
 		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
@@ -103,28 +97,24 @@ public class FloodFill {
 		StringTokenizer arrST = new StringTokenizer(read.readLine());
 		for (int i = 0; i < len; i++) {
 			int x = Integer.parseInt(arrST.nextToken());
-			if (arr.isEmpty() || x != arr.get(arr.size() - 1)) {
-				arr.add(x);
-			}
+			if (arr.isEmpty() || x != arr.get(arr.size() - 1)) { arr.add(x); }
 		}
 		len = arr.size();
- 
+
 		int[][] minOps = new int[len][len];
 		for (int l = 2; l <= len; l++) {
 			for (int start = 0; start + l - 1 < len; start++) {
 				int end = start + l - 1;
-				minOps[start][end] = Math.min(
-						minOps[start + 1][end],
-						minOps[start][end - 1]) + 1;
-				
+				minOps[start][end] =
+				    Math.min(minOps[start + 1][end], minOps[start][end - 1]) + 1;
+
 				if (arr.get(start).equals(arr.get(end)) && l > 2) {
-					minOps[start][end] = Math.min(
-							minOps[start][end],
-							minOps[start + 1][end - 1] + 1);
+					minOps[start][end] =
+					    Math.min(minOps[start][end], minOps[start + 1][end - 1] + 1);
 				}
 			}
 		}
- 
+
 		System.out.println(minOps[0][len - 1]);
 	}
 }
