@@ -4,7 +4,7 @@ title: 'Wavelet Tree'
 author: Benjamin Qi, Omri Jerbi
 prerequisites:
   - RURQ
-description: Wavelet trees support efficient queries for the kth minimum element in a range"
+description: Wavelet trees support efficient queries for the kth minimum element in a range
 frequency: 0
 ---
 
@@ -30,28 +30,20 @@ Wavelet trees are data structures that support efficient queries for the k-th mi
 	</Resource>
 </Resources>
 
+## Introduction 
 Suppose you want to support the following queries:
 
 - Given a range, count the number of occurrences of value $x$.
 - Given a range, find the $k$ smallest element
 
-With a wavelet tree, you can easily support those queries in $\log(M)$ time,
+With a wavelet tree, you can easily support those queries in $\mathcal{O}(\log M)$ time,
 where $M$ is the maximum value in the array.
 
-## Wavelet tree structure
+### Wavelet tree structure
 
-A wavelet tree is a binary tree where each node represents a range of values.
-The root node covers the entire range, and each subsequent level splits the
-range into two halves.
+To answer value-based queries efficiently, we'll create a segment tree where each node represents a range of values, instead of indices. Just like a normal segment tree, each subsequent level splits the range into two halves. Note that an index can appear in at most $\log(M)$ nodes.
 
-We are going to maintain a segment tree over values instead of indices. Each segment will contain indices whose values lie within the segment's range. We'll save those indices in a vector. Notice that an index can be in at most $log(M)$ segments
-
-
-<Info title="Motivation">
-  The motivation for maintaining a segment tree over values lies in the types of queries we want to answer. While traditional segment trees handle range-based queries like sums effectively, they fall short for value-based queries. By maintaining segments over values, we can efficiently address these value-specific queries.
-</Info>
-
-<Spoiler title="Wavelet tree Visualization">
+<Spoiler title="Wavelet Tree Visualization">
 
 Let's say our array is: $[3,5,3,1,2,2,3,4,5,5]$
 Each node has an array representing the indices of every number between l and r
@@ -59,8 +51,11 @@ Each node has an array representing the indices of every number between l and r
 ![Wavelet Tree Visualization](./assets/diagram.png)
 </Spoiler>
 
+### Solution - Range K-th Smallest
+Before we solve this problem, let's consider a simpler version where we are asked, given a range, to count the number of occurrences of value $x$.
+
 ## Solving the first type of query
-**Given a range l, r count the number of occurrences of value x.**
+**Given a range $l$, $r$, count the number of occurrences of value x.**
 
 To calculate the number of occurrences from $𝑙$ to $𝑟$, we can use the following
 formula:
@@ -80,9 +75,7 @@ second type of query.
 
 Instead of binary searching on the leaf, we update $𝑟$ as we recurse down the
 tree.
-If we can determine the position (index) of $𝑟$ in the left and right
-children of a node.
-We can recurse down the tree and determine its position in the leaf node.
+If we can determine the position (index) of $r$ in the left and right children of a node, we can recurse down the tree and determine its position in the leaf node.
 
 To find the position of $𝑟$ in a node's left and right children, we need to
 determine how many indices are smaller than the middle value (mid) and precede
@@ -91,20 +84,26 @@ This can be done using a prefix sum.
 
 Let's define:
 - $c[i]$ = as 1 if $index[i]$ is smaller than mid otherwise 0
-- $prefixB[i]$ as prefix sum of $c[i]$
+- $prefix_b[i]$ as prefix sum of $c[i]$
 
 Formally
 
 $$
-c[i] = index[i] < mid ? 1 : 0;
-prefixB[i] = prefixB[i - 1] + c[i]
+c[i] = \begin{cases} 
+    1, & \text{if } \text{index}[i] < \text{mid} \\
+    0, & \text{otherwise}
+\end{cases}
+$$
+$$
+\text{prefixB}[i] = \text{prefixB}[i - 1] + c[i]
 $$
 
 
 To update $r$ as we recurse down, we do the following:
-- To know the value of $r$ if we recurse left, we use prefixB[r]
-- If we recurse right, we use $r$ - prefixB[r]
+- To know the value of $r$ if we recurse left, we use prefix_b[r]
+- If we recurse right, we use $r$ - prefix_b[r]
 
+Now let's try to solve our main problem.
 ## Solving the second type of query
 **Given a range $l$, $r$ find the k smallest element**
 
@@ -117,14 +116,14 @@ Note that this also works for non-leaf nodes using the following formula:
 $$
 \texttt{occurrences}(l, r) = r - l
 $$
-<Info title="Simular">
-This is similar to counting how many times a value appears up to index 𝑅 in our previous query. We did this by using the new 𝑅 value at the leaf node. But now, we consider the difference between the updated 𝑅 and 𝐿
+<Info title="Similar">
+This is similar to counting how many times a value appears up to index $r$ in our previous query. We did this by using the new $r$ value at the leaf node. But now, we consider the difference between the updated $r$ and $l$
 </Info>
 
 Therefore, the occurrences of the left node is
 
 $$
-\texttt{left\_occurrences} = prefixB[r] - prefixB[l]
+\texttt{left\_occurrences} = prefix_b[r] - prefix_b[l]
 $$
 
 <Info title="Left occurrences">
@@ -145,6 +144,8 @@ $$
 
 the answer then will be the value of the node we end up on (leaf)
 
+In conclusion we maintain our ranges l and r as we recurse down to our child, and when we reach the child node we can return $R$ - $L$.
+
 ## Implemention
 **Time Complexity:** $\mathcal{O}(Q \cdot \log(M))$
 
@@ -155,6 +156,7 @@ the answer then will be the value of the node we end up on (leaf)
 #include <bits/stdc++.h>
 
 using namespace std;
+constexpr int MAX_VAL = 1e9 + 2;
 
 struct Segment {
 	Segment *left = nullptr, *right = nullptr;
@@ -165,7 +167,15 @@ struct Segment {
 
 	Segment(int l, int r, const vector<pair<int, int>> &indices)
 	    : l(l), r(r), mid((r + l) / 2), indices(indices) {
-		calculate_b();
+
+		// Calcultes the prefix B
+		int i = 1;
+		int j = 0;
+		prefix_b.resize(indices.size() + 1);
+		for (auto [ind, val] : indices) {
+			if (val < mid) j++;
+			prefix_b[i++] = j;
+		}
 	}
 
 	// Sparse since values can go up to 1e9
@@ -182,17 +192,6 @@ struct Segment {
 
 			left = new Segment(l, mid, leftIndices);
 			right = new Segment(mid, r, rightIndices);
-		}
-	}
-
-	// Calculates the prefix B
-	void calculate_b() {
-		int i = 1;
-		int j = 0;
-		prefix_b.resize(indices.size() + 1);
-		for (auto [ind, val] : indices) {
-			if (val < mid) j++;
-			prefix_b[i++] = j;
 		}
 	}
 
@@ -223,7 +222,7 @@ int main() {
 		cin >> v;
 		indices.emplace_back(i, v);
 	}
-	Segment seg(0, 1e9 + 2, indices);
+	Segment seg(0, MAX_VAL, indices);
 
 	for (int i = 0; i < q; ++i) {
 		int a, b, k;
@@ -253,7 +252,7 @@ So what do the updates change?
 To change the indices vector, what we can do is, instead of storing a vector, use a set.
 Then erasing and adding values becomes easy.
 
-On the other hand, To change the prefix vector, since each update could change our prefix vector a lot, we can't maintain just the normal vector. What we could do is use a sparse segment tree.
+On the other hand, to change the prefix vector, since each update could change our prefix vector a lot, we can't maintain just the normal vector. What we could do is use a sparse segment tree.
 	- erasing and inserting can be done by just setting the value to 0 or 1 at the specific index
 	- querying for a prefix can be done by querying the segment tree from 0 to $i$
 This approach is not memory efficient and requires a segment tree's implementation.
