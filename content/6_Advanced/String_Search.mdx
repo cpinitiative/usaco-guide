@@ -147,8 +147,8 @@ Given a position, this function gives the length of the longest string that's bo
 and of the suffix of $S$ starting at the given position.
 
 Here's some examples of what this function might look like:
-- `aabxaayaab` $\rightarrow$ $Z=[0,1,0,0,2,1,0,3,1,0]$
-- `aabxaabxcaabxaabxay` $\rightarrow$ $Z=[0,1,0,0,4,1,0,0,0,8,1,0,0,5,1,0,0,1,0]$
+- `aabxaayaab` $\rightarrow$ $Z=[10,1,0,0,2,1,0,3,1,0]$
+- `aabxaabxcaabxaabxay` $\rightarrow$ $Z=[18,1,0,0,4,1,0,0,0,8,1,0,0,5,1,0,0,1,0]$
 
 Let's also take a closer look at $Z_9=8$ (0-indexed) for the second string.
 The value for this position is $8$ because that's the longest common prefix
@@ -180,7 +180,8 @@ We would then have these two cases:
 using namespace std;
 
 vector<int> z_function(const string &s) {
-	vector<int> z(s.size(), 0);
+	vector<int> z(s.size());
+	z[0] = s.size();
 
 	int l = 0;
 	int r = 0;
@@ -217,6 +218,7 @@ from typing import List
 def z_function(s: str) -> List[int]:
 	n = len(s)
 	z = [0] * n
+	z[0] = n
 	l, r = 0, 0
 	for i in range(1, n):
 		z[i] = max(0, min(z[i - l], r - i + 1))
