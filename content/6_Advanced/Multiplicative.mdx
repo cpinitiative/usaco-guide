@@ -131,28 +131,25 @@ This is also a common representation form.
 <CPPSection>
 
 ```cpp
-#include <algorithm>
-#include <iostream>
-using namespace std;
-
-int main() {
-	long long n;
-	cin >> n;  // Taking input for n
-	long long sum = 0;
-	int i;  // Initializing i globally to keep its value after the loop
-	for (i = 1; i * i <= n; i++) {
-		sum += i * (n / i);
-		int b = n / i;
-		int a = n / (i + 1) + 1;
-		// Adding the sum of elements from 'a' to 'b'
-		sum += (a + b) * (b - a + 1) / 2 * i;
-	}
-	i--;  // Decrementing i to match the last value used in the loop
-	if (i == n / i) {
-		sum -= i * (n / i);  // Adjusting the sum if n is a perfect square
-	}
-	cout << sum << endl;
-}
+class Solution {
+public:
+    long long sumOfDivisors(int n) {
+        long long sum = 0;
+    	int i;  // Initializing i globally to keep its value after the loop
+    	for (i = 1; i * i <= n; i++) {
+    		sum += i * (n / i);
+    		int b = n / i;
+    		int a = n / (i + 1) + 1;
+    		// Adding the sum of elements from 'a' to 'b'
+    		sum += (a + b) * (b - a + 1) / 2 * i;
+    	}
+    	i--;  // Decrementing i to match the last value used in the loop
+    	if (i == n / i) {
+    		sum -= i * (n / i);  // Adjusting the sum if n is a perfect square
+    	}
+    	return sum;
+    }
+};
 ```
 
 </CPPSection>
