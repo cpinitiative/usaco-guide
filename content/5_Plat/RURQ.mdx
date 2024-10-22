@@ -1,7 +1,7 @@
 ---
 id: RURQ
 title: 'Range Update Range Query'
-author: Benjamin Qi, Mihnea Brebenel
+author: Benjamin Qi, Mihnea Brebenel, Justin Ji
 prerequisites:
   - PURS
 description:
@@ -9,14 +9,19 @@ description:
 frequency: 1
 ---
 
-## BIT Revisited
+# BIT Revisited
 
-<FocusProblem problem="bitSample" />
+Binary Indexed Trees can support range increments and range sum queries.
 
-Binary Indexed Trees can support range increments in addition to range sum
-queries.
+## Resources
 
 <Resources>
+	<Resource
+	 	source = "CF"
+		title = "Historic Sums and Range Add Range Sum"
+		url = "https://codeforces.com/blog/entry/99895"
+		starred
+	 />
 	<Resource
 		source="GFG"
 		title="Range Update Point Query"
@@ -27,15 +32,28 @@ queries.
 		title="Range Update Range Query"
 		url="binary-indexed-tree-range-update-range-queries/"
 	 />
-	<Resource
-		source="bmerry"
-		title="Interval Trees"
-		url="https://saco-evaluator.org.za/presentations/2014%20Camp%202/Interval%20Trees%20(Bruce%20Merry).pdf#page=36"
-		starred
-	 />
 </Resources>
 
+<FocusProblem problem="bitSample" />
+
+### Explanation
+
+First, we can reduce the problem of performing range add and range sum queries
+into an easier problem: adding on a suffix, and querying the sum of a prefix
+of our array.
+
+Let our array be $a$, and the prefix sum array of $a$ be $b$. If we add $x$ to
+the range $[p, n]$, then, for every $i \geq p$, we add $x \cdot (i - p + 1)$ to
+each $b_i$ in the range. To query the prefix of $[1, p]$, we can consider the
+following process:
+
+1. Find the sum of all the range additions affecting the index $p$. Let this number be $x$. For now, we evaluate their contribution to be equal to $p \cdot x$. We can keep track of all the range additions that affect each indice using a BIT.
+2. Step 1 obviously overcounts. To fix this overcounting, note that for each suffix addition query, the true contribution to the array only differs by a constant amount compared to the value obtained by step 1. This value is $x \cdot (p - 1)$, if we update the suffix of $[p, n]$ by adding $x$. Thus, we use a separate BIT that keeps track of all of the corrections to the contribution evaluated by step 1.
+
+We can perform range addition and range summation queries by performing multiple suffix addition and prefix sum queries.
+
 ### Implementation
+**Time Complexity:** $\mathcal{O}(N + Q\log{N})$
 
 <LanguageSection>
 <CPPSection>
@@ -115,11 +133,163 @@ int main() {
 
 <Problems problems="bitProb" />
 
-## Lazy Segment Tree
+# Lazy Segment Tree
+
+Lazy segment trees allow us to efficiently perform range updates and range queries.
+
+<Resources>
+	<Resource
+		source="CF EDU"
+		title="Segment Tree Pt 2"
+		url="https://codeforces.com/edu/course/2/lesson/5"
+		starred
+	 />
+	<Resource source="CPH" title="28.1 - Segment Trees Revisited" starred>
+		short description
+	</Resource>
+	<Resource source="CSA" title="Segment Trees" url="segment_trees" starred>
+		interactive
+	</Resource>
+	<Resource
+		source="cp-algo"
+		title="Segment Tree"
+		url="data_structures/segment_tree.html#range-updates-lazy-propagation"
+		starred
+	>
+		adding on segments, assigning
+	</Resource>
+	<Resource source="CF" title="Efficient and easy segment trees" url="18051">
+		code is more confusing than recursive version
+	</Resource>
+</Resources>
+
+Lazy segment trees allow us to perform range updates and range queries in
+$\mathcal{O}(\log{N})$ time. In order to perform range updates in
+$\mathcal{O}(\log{N})$, we lazily apply updates to the nodes. That is, we store
+updates on the nodes that compose the range we are updating, and lazily apply
+the updates when we walk down the tree.
+
+As an example, let's consider writing a lazy segment tree that supports range
+addition and range summation. We would have our tree nodes contain the sum on
+the range, and keep a separate array keeping track of the lazy additions we
+have to do for each node. If we were to add $3$ to our array $a[0 \ldots n - 1]$,
+then we would need to set a lazy update at the root of our tree indicating that
+we need to add $3$ to the entire range. Then, if we were to query a subarray of
+$a$, we need to "push down" the updates at the root down to its children.
+
+It is crucial that we always push down all the previous updates when traversing
+down the tree. If we don't, the following things can happen:
+
+1. If we have two updates that affect two nodes, where one node is an ancestor of another, then one of the updates will be ignored.
+2. The updates will be applied in incorrect order, which matters if the updates are not commutative.
+
+For a concrete example for why point 1 can be an issue, consider the following
+sequence of updates.
+
+1. $+3$ to all values on $[1, 4]$
+2. $+5$ to all values on $[1, 2]$
+3. Query sum on $[1, 8]$
+
+If we don't push down the updates when traversing down the tree, then the first
+update will get ignored in our sum query.
+
+## Horrible Queries Implementation
+
+**Time Complexity:** $\mathcal{O}(N + Q \log{N})$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+
+template <typename T> class LazySegtree {
+  private:
+	const int sz;
+	vector<T> tree;
+	vector<T> lazy;
+
+	/** applies lazy update to tree[v], places update at lazy[v] */
+	void apply(int v, int len, T add) {
+		tree[v] += add * len;
+		lazy[v] += add;
+	}
+
+	/** pushes down lazy updates to children of v */
+	void push_down(int v, int l, int r) {
+		int m = (l + r) / 2;
+		apply(2 * v, m - l + 1, lazy[v]);
+		apply(2 * v + 1, r - m, lazy[v]);
+		lazy[v] = 0;
+	}
+
+	void range_add(int v, int l, int r, int ql, int qr, int add) {
+		if (qr < l || ql > r) { return; }
+		if (ql <= l && r <= qr) {
+			apply(v, r - l + 1, add);
+		} else {
+			push_down(v, l, r);
+			int m = (l + r) / 2;
+			range_add(2 * v, l, m, ql, qr, add);
+			range_add(2 * v + 1, m + 1, r, ql, qr, add);
+			tree[v] = tree[2 * v] + tree[2 * v + 1];
+		}
+	}
+
+	T range_sum(int v, int l, int r, int ql, int qr) {
+		if (qr < l || ql > r) { return 0; }
+		if (ql <= l && r <= qr) { return tree[v]; }
+		push_down(v, l, r);
+		int m = (l + r) / 2;
+		return range_sum(2 * v, l, m, ql, qr) + range_sum(2 * v + 1, m + 1, r, ql, qr);
+	}
+
+  public:
+	LazySegtree(int n) : sz(n), tree(4 * n), lazy(4 * n) {}
+
+	/** adds to every value on the range [ql, qr] */
+	void range_add(int ql, int qr, int add) { range_add(1, 0, sz - 1, ql, qr, add); }
+
+	/** @return sum of values on [ql, qr] */
+	T range_sum(int ql, int qr) { return range_sum(1, 0, sz - 1, ql, qr); }
+};
+
+int main() {
+	int test_num;
+	cin >> test_num;
+	for (int t = 0; t < test_num; t++) {
+		int n, q;
+		cin >> n >> q;
+
+		LazySegtree<ll> st(n);
+		for (int i = 0; i < q; i++) {
+			int type;
+			cin >> type;
+
+			if (type == 0) {
+				int p, q, val;
+				cin >> p >> q >> val;
+				p--, q--;
+				st.range_add(p, q, val);
+			} else {
+				int p, q;
+				cin >> p >> q;
+				p--, q--;
+				cout << st.range_sum(p, q) << '\n';
+			}
+		}
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>
 
 <FocusProblem problem="lazySample" />
 
-### Solution - Range Updates & Sums
+### Explanation
 
 This question asks you to support the following types of queries:
 
@@ -153,6 +323,13 @@ situations might take place after any update:
 Given the mechanics behind the `push_down` function, all you need is a regular
 range-sum segment tree to solve the question.
 
+### Implementation
+
+**Time Complexity:** $\mathcal{O}(N + Q\log{N})$
+
+<LanguageSection>
+<CPPSection>
+
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
@@ -169,18 +346,11 @@ struct Query {
 	ll val = 0;
 };
 
-/**
- * T = tree node type, which will be long long
- * We use the Query struct to manage updates.
- */
-template <class T> class LazySegtree {
+template <typename T> class LazySegtree {
   private:
 	const int sz;
 	vector<T> tree;      // tree[i] = sum of this node's range
 	vector<Query> lazy;  // lazy[i] = lazy update for the range
-
-	/** @return result of joining two tree nodes together */
-	inline T comb(T a, T b) { return a + b; }
 
 	/** builds the segtree nodes */
 	void build(int v, int l, int r, const vector<T> &a) {
@@ -190,11 +360,11 @@ template <class T> class LazySegtree {
 			int m = (l + r) / 2;
 			build(2 * v, l, m, a);
 			build(2 * v + 1, m + 1, r, a);
-			tree[v] = comb(tree[2 * v], tree[2 * v + 1]);
+			tree[v] = tree[2 * v] + tree[2 * v + 1];
 		}
 	}
 
-	/** applies lazy update to t[v], places update at lz[v] */
+	/** applies lazy update to tree[v], places update at lazy[v] */
 	void apply(int v, int len, const Query &x) {
 		if (x.type == ADD) {
 			// if lazy[v]'s type is NONE or ADD, then we add to the range
@@ -214,12 +384,10 @@ template <class T> class LazySegtree {
 
 	/** pushes down lazy update to children of v */
 	void push_down(int v, int l, int r) {
-		if (lazy[v].type != NONE && l != r) {
-			int m = (l + r) / 2;
-			apply(2 * v, m - l + 1, lazy[v]);
-			apply(2 * v + 1, r - m, lazy[v]);
-		}
-		lazy[v] = Query{NONE, 0};
+		int m = (l + r) / 2;
+		apply(2 * v, m - l + 1, lazy[v]);
+		apply(2 * v + 1, r - m, lazy[v]);
+		lazy[v] = Query();
 	}
 
 	void range_update(int v, int l, int r, int ql, int qr, const Query &x) {
@@ -231,17 +399,16 @@ template <class T> class LazySegtree {
 			int m = (l + r) / 2;
 			range_update(2 * v, l, m, ql, qr, x);
 			range_update(2 * v + 1, m + 1, r, ql, qr, x);
-			tree[v] = comb(tree[2 * v], tree[2 * v + 1]);
+			tree[v] = tree[2 * v] + tree[2 * v + 1];
 		}
 	}
 
 	T range_sum(int v, int l, int r, int ql, int qr) {
-		if (qr < l || ql > r) { return 0ll; }
+		if (qr < l || ql > r) { return 0; }
 		if (l >= ql && r <= qr) { return tree[v]; }
 		push_down(v, l, r);
 		int m = (l + r) / 2;
-		return comb(range_sum(2 * v, l, m, ql, qr),
-		            range_sum(2 * v + 1, m + 1, r, ql, qr));
+		return range_sum(2 * v, l, m, ql, qr) + range_sum(2 * v + 1, m + 1, r, ql, qr);
 	}
 
   public:
@@ -268,8 +435,7 @@ int main() {
 	for (int t = 0; t < q; t++) {
 		int type, a, b;
 		cin >> type >> a >> b;
-		a--;
-		b--;
+		a--, b--;
 		if (type == 1) {
 			int x;
 			cin >> x;
@@ -284,35 +450,168 @@ int main() {
 	}
 }
 ```
+</CPPSection>
+</LanguageSection>
 
-### Tutorial
+Lazy segment trees are notorious for being difficult to make generic. The
+[AtCoder template](https://github.com/atcoder/ac-library/blob/master/atcoder/lazysegtree.hpp)
+is an example of a fully generic template.
 
-<Resources>
-	<Resource
-		source="CF EDU"
-		title="Segment Tree Pt 2"
-		url="https://codeforces.com/edu/course/2/lesson/5"
-		starred
-	 />
-	<Resource source="CPH" title="28.1 - Segment Trees Revisited" starred>
-		short description
-	</Resource>
-	<Resource source="CSA" title="Segment Trees" url="segment_trees" starred>
-		interactive
-	</Resource>
-	<Resource
-		source="cp-algo"
-		title="Segment Tree"
-		url="data_structures/segment_tree.html"
-		starred
-	>
-		adding on segments, assigning
-	</Resource>
-	<Resource source="CF" title="Efficient and easy segment trees" url="18051">
-		code is more confusing than recursive version
-	</Resource>
-</Resources>
+Below is an implementation of the focus problem using a somewhat generic
+template. The idea is that we supply an `Info` and `Tag` class into the template.
+The `Tag` class handles lazy updates, and how lazy updates interact with each other.
+Meanwhile, the `Info` class handles the tree values, and how lazy updates are applied
+to given tree values.
 
-### Problems
+Some key implementation details:
+
+1. We must give lazy tags and tree values neutral values. That is, we need to set the values inside the classes to some value that won't affect our answers.
+2. For the `apply` function in the `Info` and `Tag` functions, we need to ensure that we aren't applying neutral updates to any nodes.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+
+template <class Info, class Tag> class LazySegtree {
+  private:
+	const int n;
+	vector<Info> tree;
+	vector<Tag> lazy;
+
+	/** builds the segtree values in O(N) time */
+	void build(int v, int l, int r, const vector<Info> &a) {
+		if (l == r) {
+			tree[v] = a[l];
+		} else {
+			int m = (l + r) / 2;
+			build(2 * v, l, m, a);
+			build(2 * v + 1, m + 1, r, a);
+			tree[v] = tree[2 * v] + tree[2 * v + 1];
+		}
+	}
+
+	/** applies update x to lazy[v] and tree[v] */
+	void apply(int v, int l, int r, const Tag &x) {
+		tree[v].apply(x, l, r);
+		lazy[v].apply(x);
+	}
+
+	/** pushes lazy updates down to the children of v */
+	void push_down(int v, int l, int r) {
+		int m = (l + r) / 2;
+		apply(2 * v, l, m, lazy[v]);
+		apply(2 * v + 1, m + 1, r, lazy[v]);
+		lazy[v] = Tag();
+	}
+
+	void range_update(int v, int l, int r, int ql, int qr, const Tag &x) {
+		if (qr < l || ql > r) { return; }
+		if (ql <= l && r <= qr) {
+			apply(v, l, r, x);
+		} else {
+			push_down(v, l, r);
+			int m = (l + r) / 2;
+			range_update(2 * v, l, m, ql, qr, x);
+			range_update(2 * v + 1, m + 1, r, ql, qr, x);
+			tree[v] = tree[2 * v] + tree[2 * v + 1];
+		}
+	}
+
+	Info range_query(int v, int l, int r, int ql, int qr) {
+		if (qr < l || ql > r) { return Info(); }
+		if (l >= ql && r <= qr) { return tree[v]; }
+		push_down(v, l, r);
+		int m = (l + r) / 2;
+		return range_query(2 * v, l, m, ql, qr) +
+		       range_query(2 * v + 1, m + 1, r, ql, qr);
+	}
+
+  public:
+	LazySegtree() {}
+
+	LazySegtree(int n) : n(n) {
+		t.assign(4 << __lg(n), Info());
+		lz.assign(4 << __lg(n), Tag());
+	}
+
+	LazySegtree(const vector<Info> &a) : n(a.size()) {
+		t.assign(4 << __lg(n), Info());
+		lz.assign(4 << __lg(n), Tag());
+		build(1, 0, n - 1, a);
+	}
+
+	/** updates [ql, qr] with the arbitrary update chosen */
+	void range_update(int ql, int qr, const Tag &x) {
+		range_update(1, 0, n - 1, ql, qr, x);
+	}
+
+	/** @return result of range query on [ql, qr] */
+	Info range_query(int ql, int qr) { return range_query(1, 0, n - 1, ql, qr); }
+};
+
+enum QueryType { ADD, SET, NONE };
+
+struct Tag {
+	QueryType type = NONE;
+	ll val = 0;
+	void apply(const Tag &t) {
+		if (t.type == ADD) {
+			val += t.val;
+			if (type != SET) { type = ADD; }
+		} else if (t.type == SET) {
+			type = SET;
+			val = t.val;
+		}
+	}
+};
+
+struct Info {
+	ll sum = 0;
+	void apply(const Tag &t, int l, int r) {
+		if (t.type == SET) {
+			sum = t.val * (r - l + 1);
+		} else if (t.type == ADD) {
+			sum += t.val * (r - l + 1);
+		}
+	}
+};
+
+/** @return result of joining nodes a and b together */
+Info operator+(const Info &a, const Info &b) { return {a.sum + b.sum}; }
+
+int main() {
+	int n, q;
+	cin >> n >> q;
+	vector<Info> a(n);
+	for (Info &i : a) { cin >> i.sum; }
+
+	LazySegtree<Info, Tag> st(a);
+	for (int t = 0; t < q; t++) {
+		int type, a, b;
+		cin >> type >> a >> b;
+		a--, b--;
+		if (type == 1) {
+			int x;
+			cin >> x;
+			st.range_update(a, b, Tag{ADD, x});
+		} else if (type == 2) {
+			int x;
+			cin >> x;
+			st.range_update(a, b, Tag{SET, x});
+		} else {
+			cout << st.range_query(a, b).sum << '\n';
+		}
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
+# Problems
 
 <Problems problems="lazySegTree" />
