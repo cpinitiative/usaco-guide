@@ -164,11 +164,12 @@ int main() {
 	}
 
 	vector<bool> res(q);
-	stack<int> stk;
+	stack<int> indices;
 	for (int i = n - 1; i >= 0; i--) {
-		while (!stk.empty() && w[stk.top()] < w[i]) { stk.pop(); }
-		int b = stk.empty() ? n : stk.top();
-		stk.push(i);
+		// maintain a monotonic stack to find the first index j where w[i] >= w[j]
+		while (!indices.empty() && w[indices.top()] < w[i]) { indices.pop(); }
+		int b = indices.empty() ? n : indices.top();
+		indices.push(i);
 		st.upd(i + 1, b - 1, {w[i]});
 		for (auto [r, k, idx] : tests[i]) { res[idx] = st.qry(i, r).applied <= k; }
 	}
