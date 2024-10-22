@@ -82,7 +82,7 @@ int main() {
 
 	for (int node = 0; node < n; node++) {
 		if (degree[node] % 2) {
-			cout << "IMPOSSIBLE";
+			cout << "IMPOSSIBLE" << endl;
 			return 0;
 		}
 	}
@@ -92,12 +92,60 @@ int main() {
 	if (path.size() != m + 1) {
 		cout << "IMPOSSIBLE";
 	} else {
-		for (auto node : path) { cout << node + 1 << ' '; }
+		for (int node : path) { cout << node + 1 << ' '; }
 	}
+	cout << endl;
 }
 ```
 
 </CPPSection>
+<PySection>
+
+```py
+path = []
+
+
+def dfs(node: int):
+	stack = [node]
+	while stack:
+		u = stack[-1]
+		if g[u]:
+			son, idx = g[u].pop()
+			if not seen[idx]:
+				seen[idx] = 1
+				stack.append(son)
+		else:
+			path.append(stack.pop())
+
+
+n, m = map(int, input().split())
+
+g = [[] for _ in range(n)]
+seen = [0] * m
+degree = [0] * n
+for i in range(m):
+	x, y = map(int, input().split())
+	x -= 1
+	y -= 1
+	g[x].append((y, i))
+	g[y].append((x, i))
+	degree[x] += 1
+	degree[y] += 1
+
+for node in range(n):
+	if degree[node] % 2 == 1:
+		print("IMPOSSIBLE")
+		exit()
+
+dfs(0)
+
+if len(path) != m + 1:
+	print("IMPOSSIBLE")
+else:
+	print(*[i + 1 for i in path])
+```
+
+</PySection>
 </LanguageSection>
 
 ### Teleporters
@@ -162,6 +210,55 @@ int main() {
 ```
 
 </CPPSection>
+<PySection>
+
+```py
+path = []
+
+
+def dfs(start: int):
+	stack = [start]
+	while stack:
+		node = stack[-1]
+		if g[node]:
+			son = g[node].pop()
+			stack.append(son)
+		else:
+			path.append(stack.pop())
+
+
+n, m = map(int, input().split())
+
+g = [[] for _ in range(n + 1)]
+in_degree = [0] * (n + 1)
+out_degree = [0] * (n + 1)
+
+for _ in range(m):
+	x, y = map(int, input().split())
+	g[x].append(y)
+	out_degree[x] += 1
+	in_degree[y] += 1
+
+flag = True
+for node in range(2, n):
+	if in_degree[node] != out_degree[node]:
+		flag = False
+		break
+
+if out_degree[1] != in_degree[1] + 1 or out_degree[n] != in_degree[n] - 1 or not flag:
+	print("IMPOSSIBLE")
+	exit()
+
+dfs(1)
+path.reverse()
+
+if len(path) != m + 1 or path[-1] != n:
+	print("IMPOSSIBLE")
+else:
+	print(*path)
+```
+
+</PySection>
 </LanguageSection>
 
 ## De Bruijn Sequences
@@ -227,6 +324,38 @@ int main() {
 ```
 
 </CPPSection>
+<PySection>
+
+```py
+n = int(input())
+
+if n == 1:
+	print("10")
+	exit()
+
+adj = [[] for _ in range(1 << (n - 1))]
+
+for node in range(1 << (n - 1)):
+	son = (node << 1) % (1 << (n - 1))
+	adj[node].append(son)
+	adj[node].append(son | 1)
+
+todo = [0]
+path = []
+while todo:
+	node = todo[-1]
+	if adj[node]:
+		todo.append(adj[node][-1])
+		adj[node].pop()
+	else:
+		path.append(node & 1)
+		todo.pop()
+
+path = path + [0] * (n - 2)
+print("".join(map(str, path)))
+```
+
+</PySection>
 </LanguageSection>
 
 ## Problems

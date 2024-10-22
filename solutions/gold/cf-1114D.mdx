@@ -1,0 +1,154 @@
+---
+id: cf-1114D
+source: CF
+title: Flood Fill
+author: Kevin Sheng
+---
+
+[Official Analysis (C++)](https://codeforces.com/blog/entry/65136)
+
+## Explanation
+
+Without regards for actual correctness, let's just set up
+what seems like an intuitive DP state.
+Let's have $\texttt{min\_ops}[s][e]$ be the minimum number of operations
+it takes to make all the numbers from $s$ to $e$ inclusive the same.
+For transitions, we can come from either $\texttt{min\_ops}[s][e-1]$
+or $\texttt{min\_ops}[s+1][e]$.
+There's also a change that the numbers at $s$ and $e$ are the same, in which case
+we can transition from $\texttt{min\_ops}[s+1][e-1]$.
+
+The problem with this setup, is that it's, well, wrong.
+However, we can make it right with some observations into *why* it outputs the wrong answer.
+Take the first sample case:
+```
+5 2 2 1
+```
+$\texttt{min\_ops}[1][2]$ should equal $0$, but our transitions
+set it to be $1$.
+The reason it does this is that our algorithm fails to detects
+elements that are already the same and don't need to be merged any further.
+This phenomenon can be observed more clearly if you plug in, say,
+10 numbers, all of which are the same.
+
+A key observation to combat this is that we can treat ranges of consecutive
+identical numbers as just a single number.
+This way, we can guarantee that each element is different from its neighbors,
+and that no pre-connected components exist.
+
+After this step of preprocessing, our DP definition is now valid.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N^2)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <algorithm>
+#include <iostream>
+#include <vector>
+
+using std::cout;
+using std::endl;
+using std::vector;
+
+int main() {
+	int len;
+	std::cin >> len;
+	vector<int> arr;
+	for (int i = 0; i < len; i++) {
+		int x;
+		std::cin >> x;
+		if (arr.empty() || x != arr.back()) { arr.push_back(x); }
+	}
+	len = arr.size();
+
+	vector<vector<int>> min_ops(len, vector<int>(len));
+	for (int l = 2; l <= len; l++) {
+		for (int start = 0; start + l - 1 < len; start++) {
+			int end = start + l - 1;
+			min_ops[start][end] =
+			    std::min(min_ops[start + 1][end], min_ops[start][end - 1]) + 1;
+			if (arr[start] == arr[end] && l > 2) {
+				min_ops[start][end] =
+				    std::min(min_ops[start][end], min_ops[start + 1][end - 1] + 1);
+			}
+		}
+	}
+
+	cout << min_ops[0][len - 1] << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class FloodFill {
+	public static void main(String[] args) throws IOException {
+		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
+		int len = Integer.parseInt(read.readLine());
+		List<Integer> arr = new ArrayList<>();
+		StringTokenizer arrST = new StringTokenizer(read.readLine());
+		for (int i = 0; i < len; i++) {
+			int x = Integer.parseInt(arrST.nextToken());
+			if (arr.isEmpty() || x != arr.get(arr.size() - 1)) { arr.add(x); }
+		}
+		len = arr.size();
+
+		int[][] minOps = new int[len][len];
+		for (int l = 2; l <= len; l++) {
+			for (int start = 0; start + l - 1 < len; start++) {
+				int end = start + l - 1;
+				minOps[start][end] =
+				    Math.min(minOps[start + 1][end], minOps[start][end - 1]) + 1;
+
+				if (arr.get(start).equals(arr.get(end)) && l > 2) {
+					minOps[start][end] =
+					    Math.min(minOps[start][end], minOps[start + 1][end - 1] + 1);
+				}
+			}
+		}
+
+		System.out.println(minOps[0][len - 1]);
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+<Warning>
+
+The below code only runs in time if you submit with PyPy.
+
+</Warning>
+
+```py
+from itertools import groupby
+
+len_ = int(input())
+arr = [int(i) for i in input().split()]
+arr = [v for v, _ in groupby(arr)]
+len_ = len(arr)
+
+min_ops = [[0 for _ in range(len_)] for _ in range(len_)]
+for l in range(2, len_ + 1):
+	for start in range(len_ - l + 1):
+		end = start + l - 1
+		min_ops[start][end] = min(min_ops[start + 1][end], min_ops[start][end - 1]) + 1
+		if arr[start] == arr[end] and l > 2:
+			min_ops[start][end] = min(
+				min_ops[start][end], min_ops[start + 1][end - 1] + 1
+			)
+
+print(min_ops[0][len_ - 1])
+```
+
+</PySection>
+</LanguageSection>

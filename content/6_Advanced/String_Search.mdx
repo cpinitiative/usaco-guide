@@ -151,7 +151,7 @@ Here's some examples of what this function might look like:
 - `aabxaabxcaabxaabxay` $\rightarrow$ $Z=[18,1,0,0,4,1,0,0,0,8,1,0,0,5,1,0,0,1,0]$
 
 Let's also take a closer look at $Z_9=8$ (0-indexed) for the second string.
-The value for this position if $8$ because that's the longest common prefix
+The value for this position is $8$ because that's the longest common prefix
 between the string itself **aabxaabxcaabx**aabxay and the suffix starting
 at position $9$ **aabxaabx**ay (also 0-indexed).
 
@@ -172,31 +172,72 @@ We would then have these two cases:
 <CPPSection>
 
 ```cpp
-#include <bits/stdc++.h>
+#include <algorithm>
+#include <iostream>
+#include <string>
+#include <vector>
+
 using namespace std;
 
-int main() {
-	string s;
-	cin >> s;
+vector<int> z_function(const string &s) {
 	vector<int> z(s.size());
+	z[0] = s.size();
 
-	for (int i = 1, l = 0, r = 0; i < s.size(); i++) {
+	int l = 0;
+	int r = 0;
+	for (int i = 1; i < s.size(); i++) {
 		z[i] = max(0, min(z[i - l], r - i + 1));
-
 		while (i + z[i] < s.size() && s[z[i]] == s[i + z[i]]) {
 			l = i;
 			r = i + z[i];
 			z[i]++;
 		}
-
-		if (z[i] + i == s.size()) { cout << i << ' '; }
 	}
 
+	return z;
+}
+
+int main() {
+	string s;
+	cin >> s;
+	vector<int> z = z_function(s);
+	for (int i = 1; i < s.size(); i++) {
+		if (i + z[i] == s.size()) { cout << i << " "; }
+	}
 	cout << s.size() << endl;
 }
 ```
 
 </CPPSection>
+<PySection>
+
+```py
+from typing import List
+
+
+def z_function(s: str) -> List[int]:
+	n = len(s)
+	z = [0] * n
+	z[0] = n
+	l, r = 0, 0
+	for i in range(1, n):
+		z[i] = max(0, min(z[i - l], r - i + 1))
+		while i + z[i] < n and s[i + z[i]] == s[z[i]]:
+			l = i
+			r = i + z[i]
+			z[i] += 1
+	return z
+
+
+s = input()
+z = z_function(s)
+for i in range(1, len(z)):
+	if i + z[i] == len(s):
+		print(i, end=" ")
+print(len(s))
+```
+
+</PySection>
 </LanguageSection>
 
 <Problems problems="Z" />
