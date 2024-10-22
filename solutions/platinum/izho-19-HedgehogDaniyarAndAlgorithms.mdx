@@ -52,6 +52,7 @@ maximum value and update it while popping items in our monotonic stack.
 #include <bits/stdc++.h>
 using namespace std;
 
+// BeginCodeSnip{Lazy Segment Tree (from the module)}
 template <class Info, class Tag> class LazySegtree {
   private:
 	const int n;
@@ -115,6 +116,7 @@ template <class Info, class Tag> class LazySegtree {
 	/** @return result of range query on [ql, qr] */
 	Info qry(int ql, int qr) { return qry(1, 0, n - 1, ql, qr); }
 };
+// EndCodeSnip
 
 struct Tag {
 	int added_val = -1;
@@ -159,7 +161,7 @@ int main() {
 	for (int i = 0; i < q; i++) {
 		int l, r, k;
 		cin >> l >> r >> k;
-		--l, --r;
+		l--, r--;
 		tests[l].push_back({r, k, i});
 	}
 
