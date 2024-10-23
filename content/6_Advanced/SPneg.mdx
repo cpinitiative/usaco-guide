@@ -59,6 +59,10 @@ from those will also have minus infinity cost. In the solution below, we detect
 all the negative cycles and save the point from which we detected the cycle. We then
 do a [BFS](/silver/graph-traversal) with those points as sources.
 
+#### Implementation
+
+**Time Complexity:** $\mathcal{O}(N \cdot M)$
+
 <LanguageSection>
 
 <CPPSection>
@@ -130,7 +134,64 @@ int main() {
 ```
 
 </CPPSection>
+<PySection>
 
+```py
+import queue
+
+n, m, q, s = map(int, input().split())
+while True:
+	if n == 0 and m == 0 and q == 0 and s == 0:
+		break
+
+	adj = [[] for _ in range(n)]
+	for _ in range(m):
+		u, v, w = map(int, input().split())
+		adj[u].append((v, w))
+
+	dist = [float("inf")] * n
+	dist[s] = 0
+
+	for i in range(n - 1):
+		for u in range(n):
+			if dist[u] == float("inf"):
+				continue
+			for v, w in adj[u]:
+				dist[v] = min(dist[v], dist[u] + w)
+
+	bfs_queue = queue.Queue()
+
+	# one more iteration to detect negative cycles on graph
+	for u in range(n):
+		if dist[u] == float("inf"):
+			continue
+		for v, w in adj[u]:
+			# the relaxed vertices belong to a negative cycle
+			if dist[u] + w < dist[v]:
+				bfs_queue.put(v)
+
+	is_negative_inf = [False] * n
+	while not bfs_queue.empty():
+		u = bfs_queue.get()
+		is_negative_inf[u] = True
+		for v, w in adj[u]:
+			if is_negative_inf[v]:
+				continue
+			bfs_queue.put(v)
+
+	for _ in range(q):
+		target = int(input())
+		if is_negative_inf[target]:
+			print("-Infinity")
+		elif dist[target] == float("inf"):
+			print("Impossible")
+		else:
+			print(dist[target])
+
+	n, m, q, s = map(int, input().split())
+```
+
+</PySection>
 </LanguageSection>
 
 ### Finding Negative Cycles
@@ -344,56 +405,134 @@ Timeline (USACO Camp):
 <CPPSection>
 
 ```cpp
-const int MOD = 1000000007;
-const ll INF = 1e18;
+#include <bits/stdc++.h>
 
-int n, m, q;
-ll dist[150][150], bad[150][150];
+using namespace std;
+using ll = long long;
 
-void solve() {
-	F0R(i, n) F0R(j, n) dist[i][j] = INF, bad[i][j] = 0;
-	F0R(i, n) dist[i][i] = 0;
-	F0R(i, m) {
-		int u, v, w;
-		cin >> u >> v >> w;
-		dist[u][v] = min(dist[u][v], (ll)w);
-	}
-	F0R(k, n)
-	F0R(i, n)
-	F0R(j, n)
-	if (dist[i][k] != INF && dist[k][j] != INF)
-		dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j]);
-
-	F0R(k, n)
-	F0R(i, n)
-	F0R(j, n)
-	if (dist[i][k] != INF && dist[k][j] != INF)
-		if (dist[i][j] > dist[i][k] + dist[k][j]) bad[i][j] = 1;
-
-	F0R(k, n) F0R(i, n) F0R(j, n) {
-		if (dist[i][k] < INF && bad[k][j]) bad[i][j] = 1;
-		if (bad[i][k] && dist[k][j] < INF) bad[i][j] = 1;
-	}
-
-	F0R(i, q) {
-		int u, v;
-		cin >> u >> v;
-		if (bad[u][v]) cout << "-Infinity\n";
-		else if (dist[u][v] == INF) cout << "Impossible\n";
-		else cout << dist[u][v] << "\n";
-	}
-	cout << "\n";
-}
+const int MAX_N = 150;
+ll dist[MAX_N][MAX_N], bad[MAX_N][MAX_N];
 
 int main() {
-	ios_base::sync_with_stdio(0);
-	cin.tie(0);
-	while (cin >> n >> m >> q) solve();
+	int n, m, q;
+	while (cin >> n >> m >> q) {
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
+				dist[i][j] = (i == j ? 0 : INT_MAX);
+				bad[i][j] = 0;
+			}
+		}
+
+		for (int i = 0; i < m; i++) {
+			int u, v, w;
+			cin >> u >> v >> w;
+			dist[u][v] = std::min(dist[u][v], (ll)w);
+		}
+
+		for (int k = 0; k < n; k++) {
+			for (int i = 0; i < n; i++) {
+				for (int j = 0; j < n; j++) {
+					if (dist[i][k] != INT_MAX && dist[k][j] != INT_MAX) {
+						dist[i][j] = std::min(dist[i][j], dist[i][k] + dist[k][j]);
+					}
+				}
+			}
+		}
+
+		for (int k = 0; k < n; k++) {
+			for (int i = 0; i < n; i++) {
+				for (int j = 0; j < n; j++) {
+					if (dist[i][k] != INT_MAX && dist[k][j] != INT_MAX &&
+					    dist[i][j] > dist[i][k] + dist[k][j]) {
+						bad[i][j] = 1;
+					}
+				}
+			}
+		}
+
+		for (int k = 0; k < n; k++) {
+			for (int i = 0; i < n; i++) {
+				for (int j = 0; j < n; j++) {
+					if (dist[i][k] < INT_MAX && bad[k][j]) { bad[i][j] = 1; }
+					if (dist[k][j] < INT_MAX && bad[i][k]) { bad[i][j] = 1; }
+				}
+			}
+		}
+
+		for (int i = 0; i < q; i++) {
+			int u, v;
+			cin >> u >> v;
+			if (bad[u][v]) {
+				cout << "-Infinity" << '\n';
+			} else if (dist[u][v] == INT_MAX) {
+				cout << "Impossible" << '\n';
+			} else {
+				cout << dist[u][v] << '\n';
+			}
+		}
+		cout << '\n';
+	}
 }
 ```
 
 </CPPSection>
+<PySection>
 
+```py
+INF = 10**18  # Note: using float('inf') results in TLE
+
+n, m, q = map(int, input().split())
+while True:
+	if n == 0 and m == 0 and q == 0:
+		break
+
+	dist = [[INF] * n for _ in range(n)]
+	bad = [[0] * n for _ in range(n)]
+
+	for i in range(n):
+		dist[i][i] = 0
+
+	for _ in range(m):
+		u, v, w = map(int, input().split())
+		dist[u][v] = min(dist[u][v], w)
+
+	for k in range(n):
+		for i in range(n):
+			for j in range(n):
+				if dist[i][k] != INF and dist[k][j] != INF:
+					dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j])
+
+	for k in range(n):
+		for i in range(n):
+			for j in range(n):
+				if (
+					dist[i][k] != INF
+					and dist[k][j] != INF
+					and dist[i][j] > dist[i][k] + dist[k][j]
+				):
+					bad[i][j] = 1
+
+	for k in range(n):
+		for i in range(n):
+			for j in range(n):
+				if dist[i][k] < INF and bad[k][j]:
+					bad[i][j] = 1
+				if dist[k][j] < INF and bad[i][k]:
+					bad[i][j] = 1
+
+	for _ in range(q):
+		u, v = map(int, input().split())
+		if bad[u][v]:
+			print("-Infinity")
+		elif dist[u][v] == INF:
+			print("Impossible")
+		else:
+			print(dist[u][v])
+
+	n, m, q = map(int, input().split())
+```
+
+</PySection>
 </LanguageSection>
 
 ### Problems

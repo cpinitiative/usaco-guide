@@ -1,0 +1,186 @@
+---
+id: izho-19-HedgehogDaniyarAndAlgorithms
+source: IZhO
+title: 2019 - Hedgehog Daniyar and Algorithms
+author: Justin Ji
+---
+
+<Spoiler title = "Hint">
+
+The number of inversions in an array is the number of adjacent
+swaps we need to make to sort an array in non-decreasing order.
+How can we use this idea to find the minimum value of $k$ required to sort
+the array?
+
+</Spoiler>
+
+<Spoiler title = "Explanation">
+
+In our array, we only need to swap elements that are inversions. That is
+to say, if we have a pair $(i, j)$ where $i < j$ and $w_i > w_j$, then we
+must swap them when sorting the array. Thus, the answer is the maximum
+value of $w_i + w_j$ among all inversion pairs.
+
+To answer the queries, we sweep right to left on the left endpoint whilst
+maintaining some data structure to keep track of the minimum value of $k$ for
+all the right endpoints. One key observation to make is that if at our current
+index $i$ there exists a $j$ where $i < j$ and $w_i \leq w_j$, then we can't
+increase the value of any inversion pairs where the second value's index is
+greater than $j$. Thus, we only need to update the inversion pair
+values on the range $[i + 1, j - 1]$. To find the said value of $j$, we utilize a
+monotonic stack.
+
+The most straightforward way to solve the problem from here is to use a lazy
+segment tree to keep track of the best inversion pair value for each index
+(where the value of an inversion pair $(i, j)$ is stored at index $j$)
+and the best inversion pair value on a range. To implement this, notice how
+every inversion pair value stored at an index $j$ is $w_j + x$, where $x$ is
+some value $w_i$. Thus, we can use a range update to apply the best value of $x$.
+
+Note that a more elegant (although less intuitive) solution with BITs
+also exists. For that solution, we utilize a BIT to keep track of the prefix
+maximum value and update it while popping items in our monotonic stack.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}((N + Q)\log{N})$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+// BeginCodeSnip{Lazy Segment Tree (from the module)}
+template <class Info, class Tag> class LazySegtree {
+  private:
+	const int n;
+	vector<Info> tree;
+	vector<Tag> lazy;
+
+	void build(int v, int l, int r, const vector<Info> &a) {
+		if (l == r) {
+			tree[v] = a[l];
+		} else {
+			int m = (l + r) >> 1;
+			build(2 * v, l, m, a);
+			build(2 * v + 1, m + 1, r, a);
+			tree[v] = tree[2 * v] + tree[2 * v + 1];
+		}
+	}
+
+	void apply(int v, int l, int r, const Tag &x) {
+		tree[v].apply(x, l, r);
+		lazy[v].apply(x);
+	}
+
+	void push_down(int v, int l, int r) {
+		int m = (l + r) >> 1;
+		apply(2 * v, l, m, lazy[v]);
+		apply(2 * v + 1, m + 1, r, lazy[v]);
+		lazy[v] = Tag();
+	}
+
+	void upd(int v, int l, int r, int ql, int qr, const Tag &x) {
+		if (qr < l || ql > r) { return; }
+		if (ql <= l && r <= qr) {
+			apply(v, l, r, x);
+		} else {
+			push_down(v, l, r);
+			int m = (l + r) >> 1;
+			upd(2 * v, l, m, ql, qr, x);
+			upd(2 * v + 1, m + 1, r, ql, qr, x);
+			tree[v] = tree[2 * v] + tree[2 * v + 1];
+		}
+	}
+
+	Info qry(int v, int l, int r, int ql, int qr) {
+		if (qr < l || ql > r) { return Info(); }
+		if (l >= ql && r <= qr) { return tree[v]; }
+		push_down(v, l, r);
+		int m = (l + r) >> 1;
+		return qry(2 * v, l, m, ql, qr) + qry(2 * v + 1, m + 1, r, ql, qr);
+	}
+
+  public:
+	LazySegtree(const vector<Info> &a) : n(a.size()) {
+		tree.assign(4 << __lg(n), Info());
+		lazy.assign(4 << __lg(n), Tag());
+		build(1, 0, n - 1, a);
+	}
+
+	/** updates [ql, qr] with the arbitrary update chosen */
+	void upd(int ql, int qr, const Tag &x) { upd(1, 0, n - 1, ql, qr, x); }
+
+	/** @return result of range query on [ql, qr] */
+	Info qry(int ql, int qr) { return qry(1, 0, n - 1, ql, qr); }
+};
+// EndCodeSnip
+
+struct Tag {
+	int added_val = -1;
+	/** applies another lazy update to this update */
+	void apply(const Tag &t) {
+		if (t.added_val != -1) { added_val = t.added_val; }
+	}
+};
+
+struct Info {
+	int mx = -1;
+	int applied = -1;
+	/** applies an update to this tree node */
+	void apply(const Tag &t, int l, int r) {
+		if (t.added_val != -1) { applied = mx + t.added_val; }
+	}
+};
+
+/** @return result of joining nodes a and b together */
+Info operator+(const Info &a, const Info &b) {
+	return {max(a.mx, b.mx), max(a.applied, b.applied)};
+}
+
+int main() {
+	int n, q;
+	cin >> n >> q;
+	vector<int> w(n);
+	for (int &i : w) { cin >> i; }
+
+	vector<Info> arr(n);
+	for (int i = 0; i < n; i++) {
+		/*
+		 * The default applied value (a.k.a. inversion pair value) must be
+		 * initially set to 0, so that indices that aren't in an inversion pair
+		 * will be effectively ignored by the segment tree.
+		 */
+		arr[i] = {w[i], 0};
+	}
+	LazySegtree<Info, Tag> st(arr);
+
+	vector<vector<array<int, 3>>> tests(n);
+	for (int i = 0; i < q; i++) {
+		int l, r, k;
+		cin >> l >> r >> k;
+		l--, r--;
+		tests[l].push_back({r, k, i});
+	}
+
+	vector<bool> res(q);
+	stack<int> indices;
+	for (int i = n - 1; i >= 0; i--) {
+		// maintain a monotonic stack to find the first index j where w[i] >= w[j]
+		while (!indices.empty() && w[indices.top()] < w[i]) { indices.pop(); }
+		int b = indices.empty() ? n : indices.top();
+		indices.push(i);
+		st.upd(i + 1, b - 1, {w[i]});
+		for (auto [r, k, idx] : tests[i]) { res[idx] = st.qry(i, r).applied <= k; }
+	}
+
+	for (int i = 0; i < q; i++) { cout << res[i] << '\n'; }
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
+</Spoiler>
