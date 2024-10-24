@@ -179,7 +179,7 @@ class SparseSegtree {
 	void apply(int cur, int len, int val) {
 		if (val == 1) {
 			tree[cur].lazy = val;
-			tree[cur].freq = len * val *;
+			tree[cur].freq = len * val;
 		}
 	}
 
@@ -222,8 +222,8 @@ class SparseSegtree {
 	}
 
   public:
-	SparseSegtree(int n, int q) : n(n) {
-		tree.reserve(2 * q * __lg(n));
+	SparseSegtree(int n, int q = 0) : n(n) {
+		if (q > 0) { tree.reserve(2 * q * __lg(n)); }
 		tree.push_back(Node());
 	}
 
