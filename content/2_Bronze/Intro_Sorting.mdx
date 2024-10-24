@@ -146,8 +146,9 @@ class Main {
 The `Arrays.sort()` function uses quicksort on primitive data types such as
 `long`s. This is fine for USACO, but in other contests such as Codeforces, it
 may time out on test cases specifically engineered to trigger worst-case
-$\Theta(N^2)$ behavior in quicksort. See [here](https://codeforces.com/contest/817/hacks/329192)
-for an example of a solution that was hacked on Codeforces.
+$\Theta(N^2)$ behavior in quicksort. See
+[here](https://codeforces.com/contest/817/hacks/329192) for an example of a
+solution that was hacked on Codeforces.
 
 There are two ways to avoid this:
 
@@ -157,11 +158,34 @@ There are two ways to avoid this:
 - [Shuffle](https://pastebin.com/k6gCRJDv) the array beforehand.
 
 Note: The generator for the hack above works for OpenJDK 13 and below. In
-OpenJDK 14, heapsort is used if quicksort takes too long ([source](https://bugs.openjdk.org/browse/JDK-8226297)).
+OpenJDK 14, heapsort is used if quicksort takes too long
+([source](https://bugs.openjdk.org/browse/JDK-8226297)).
 
 </Warning>
 
 </JavaSection>
+<PySection>
+
+### Static Arrays
+
+To create a static array in Python, the `array` module is used. Python does not
+have a built in sort method for arrays, but you can use Python's `sorted()`
+function which sorts the array as a list, and returns a list. Then, convert the
+list back into an array.
+
+```python
+from array import array
+
+arr = array("i", [5, 1, 3, 2, 4]) # "i" denotes integer type of array elements
+
+print(arr) # Outputs the original array
+print(sorted(arr)) # Outputs the sorted array, converted to a list
+
+arr = array("i", sorted(arr)) # Sorting, then converting back into an array
+print(arr)
+```
+
+</PySection>
 </LanguageSection>
 
 ### Dynamic Arrays
@@ -215,9 +239,9 @@ class Main {
 </JavaSection>
 <PySection>
 
-There's two main ways to sort a list in Python.
-You can use `sorted(arr)`, which returns a new list and doesn't modify the old
-one, or `arr.sort()`, which sorts the list in place.
+There's two main ways to sort a list in Python. You can use `sorted(arr)`, which
+returns a new list and doesn't modify the old one, or `arr.sort()`, which sorts
+the list in place.
 
 ```py
 arr = [5, 1, 3, 2, 4]
@@ -309,29 +333,29 @@ Note: There are some more sorting problems in the
 		<Quiz.Explanation>
 			Correct. Steps:
 
-			$[7, 2, 6, 3, 1]$
+    		$[7, 2, 6, 3, 1]$
 
-			$[2, 7, 6, 3, 1]$
+    		$[2, 7, 6, 3, 1]$
 
-			$[2, 6, 7, 3, 1]$
+    		$[2, 6, 7, 3, 1]$
 
-			$[2, 6, 3, 7, 1]$
+    		$[2, 6, 3, 7, 1]$
 
-			$[2, 6, 3, 1, 7]$
-	  </Quiz.Explanation>
-	</Quiz.Answer>
-	<Quiz.Answer>
-	  $[1, 2, 7, 6, 3]$
-	  <Quiz.Explanation>
-		Incorrect. This is the array after 2 passes of selection sort.
-	  </Quiz.Explanation>
-	</Quiz.Answer>
-	<Quiz.Answer>
-	  $[1, 2, 3, 6, 7]$
-	  <Quiz.Explanation>
-		Incorrect. This is the array after it has been completely sorted.
-	  </Quiz.Explanation>
-	</Quiz.Answer>
+    		$[2, 6, 3, 1, 7]$
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      $[1, 2, 7, 6, 3]$
+      <Quiz.Explanation>
+    	Incorrect. This is the array after 2 passes of selection sort.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      $[1, 2, 3, 6, 7]$
+      <Quiz.Explanation>
+    	Incorrect. This is the array after it has been completely sorted.
+      </Quiz.Explanation>
+    </Quiz.Answer>
 
 </Quiz.Question>
 
@@ -387,18 +411,19 @@ Note: There are some more sorting problems in the
 	  	</Quiz.Explanation>
 	</Quiz.Answer>
 
-	<Quiz.Answer>
-		$\mathcal{O}(n\log{}n)$
-		<Quiz.Explanation>
-			Incorrect. This is the average time complexity for quicksort. If the partition process always picks the worst element as pivot in the quicksort, the complexity would be $\mathcal{O}(n^2)$ because there will be $\mathcal{O}(n)$ passes that will take $\mathcal{O}(n)$ comparisons each.
-		</Quiz.Explanation>
-	</Quiz.Answer>
+    <Quiz.Answer>
+    	$\mathcal{O}(n\log{}n)$
+    	<Quiz.Explanation>
+    		Incorrect. This is the average time complexity for quicksort. If the partition process always picks the worst element as pivot in the quicksort, the complexity would be $\mathcal{O}(n^2)$ because there will be $\mathcal{O}(n)$ passes that will take $\mathcal{O}(n)$ comparisons each.
+    	</Quiz.Explanation>
+    </Quiz.Answer>
 
-	<Quiz.Answer>
-		$\mathcal{O}(n)$
-		<Quiz.Explanation>
-			Incorrect. The average time complexity for quicksort is already $\mathcal{O}(n\log{}n)$.
-		</Quiz.Explanation>
-	</Quiz.Answer>
+    <Quiz.Answer>
+    	$\mathcal{O}(n)$
+    	<Quiz.Explanation>
+    		Incorrect. The average time complexity for quicksort is already $\mathcal{O}(n\log{}n)$.
+    	</Quiz.Explanation>
+    </Quiz.Answer>
+
 </Quiz.Question>
 </Quiz>
