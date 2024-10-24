@@ -10,8 +10,6 @@ description: 'Querying big ranges.'
 frequency: 1
 ---
 
-
-
 In problems where the query range is at most something like $10^6$, a normal
 segment tree suffices. However, as soon as we move to bigger ranges ($10^{12}$
 in some cases), a normal segment tree results in MLE.
@@ -136,8 +134,9 @@ class SparseSegtree {
 int main() {
 	int query_num;
 	cin >> query_num;
-	const int range_size = 1e9 + 1;
-	SparseSegtree st(range_size);
+	const int range_size = 1e9;
+	SparseSegtree st(range_size + 1);
+
 	int c = 0;
 	for (int i = 0; i < query_num; i++) {
 		int type, x, y;
@@ -236,8 +235,9 @@ class SparseSegtree {
 int main() {
 	int query_num;
 	cin >> query_num;
-	const int range_size = 1e9 + 1;
-	SparseSegtree st(range_size, query_num);
+	const int range_size = 1e9;
+	SparseSegtree st(range_size + 1, query_num);
+
 	int c = 0;
 	for (int i = 0; i < query_num; i++) {
 		int type, x, y;
