@@ -2,7 +2,7 @@
 id: intro-sorted-sets
 title: 'More Operations on Sorted Sets'
 author: Darren Yao, Benjamin Qi, Andrew Wang
-contributors: Aadit Ambadkar, Jeffrey Hu
+contributors: Aadit Ambadkar, Jeffrey Hu, Jason Sun
 prerequisites:
   - intro-sets
 description:
@@ -48,10 +48,10 @@ redirects:
 In sets and maps where keys (or elements) are stored in sorted order, accessing
 or removing the next key higher or lower than some input key `k` is supported.
 
-Keep in mind that insertion and deletion will take $\mathcal{O}(\log N)$ time for
-sorted sets, which is more than the average $\mathcal{O}(1)$ insertion and
-deletion for unordered sets, but less than the worst case $\mathcal{O}(N)$ insertion
-and deletion for unordered sets.
+Keep in mind that insertion and deletion will take $\mathcal{O}(\log N)$ time
+for sorted sets, which is more than the average $\mathcal{O}(1)$ insertion and
+deletion for unordered sets, but less than the worst case $\mathcal{O}(N)$
+insertion and deletion for unordered sets.
 
 ## Using Iterators
 
@@ -126,6 +126,31 @@ which can only be used once before calling the `next()` method.
 
 </JavaSection>
 
+<PySection>
+
+In Python, we can use `iter()` to obtain the iterator object of any iterable.
+This returns the first element, and using `next()` on the iterator gives you the
+next one. Below, a dictionary is used instead of a set because dictionaries keep
+order.
+
+```py
+nums = {1: None, 7: None, 0: None, 2: None, 4: None}
+iterator = iter(nums)
+
+print(iterator) # <set_iterator object at 0x14765f3eb6c0>
+print(next(iterator)) # 1
+print(next(iterator)) # 7
+print(next(iterator)) # 0
+print(next(iterator)) # 2
+print(next(iterator)) # 4
+```
+
+<Warning>
+As of Python 3.6, dictionaries are ordered by **insertion order**. You can also use an `OrderedDict` from `collections`, which is built with the goal of being ordered and thus has more features and slightly different speeds compared to a regular Python dictionary.
+</Warning>
+
+</PySection>
+
 </LanguageSection>
 
 ## Sorted Sets
@@ -197,6 +222,53 @@ System.out.println(set.higher(23));  // ERROR, no such element exists
 
 </JavaSection>
 
+<PySection>
+
+Python does not have a sorted set, however, you can represent a similar data
+structure using a lazy implementation with lists, sets, and binary search. A
+more accurate representation of a sorted set in Python is more complex and not
+silver difficulty (usually involves creating a tree-based data structure).
+
+In the lazy implementation, removing and inserting take $\mathcal{O}(N)$ time
+since a list is used, while checking if an element is present takes
+$\mathcal{O}(1)$ time.
+
+```py
+import bisect
+
+unordered_set = {3, 2, 1, 4}
+sorted_set = sorted(unordered_set) # [1, 2, 3, 4]
+
+# Adding an element
+addNum = 7
+
+if addNum not in unordered_set:
+    unordered_set.add(addNum)
+    bisect.insort(sorted_set, addNum)
+
+print(unordered_set) # {1, 2, 3, 4, 7}
+print(sorted_set) # [1, 2, 3, 4, 7]
+
+# Removing an element
+removeNum = 2
+
+if removeNum in unordered_set:
+    unordered_set.remove(removeNum)
+    sorted_set.remove(bisect.bisect_left(sorted_set, removeNum))
+
+print(unordered_set) # {1, 3, 4, 7}
+print(sorted_set) # [2, 3, 4, 7]
+```
+
+<Warning>
+
+The variable `unordered_set` appears to be sorted due to the nature that hashing
+was implementated in sets, but we can not rely on it being sorted (or ordered).
+
+</Warning>
+
+</PySection>
+
 </LanguageSection>
 
 One limitation of sorted sets is that we can't efficiently access the $k^{th}$
@@ -256,6 +328,86 @@ System.out.println(map.lowerKey(3));     // ERROR
 
 </JavaSection>
 
+<PySection>
+
+Maps in Python are called dictionaries. They are ordered by insertion and only
+support map methods. You can also used an `OrderedDict`, with an example of its
+use below, but for our case of implementing sorted maps, there would be no
+difference.
+
+```py
+from collections import OrderedDict
+
+ordered_map = OrderedDict({4: 4, 2: 7, 1: 3, 3: 1})
+```
+
+Since Python does not have sorted dictionaries, we must implement it ourselves
+through regular Python dictionaries, since those are unordered.
+
+To sort the unordered dictionary, simply use `sorted()` on the key value pairs
+obtained from using `dictionary.items()`, and sort by the first element for each
+tuple, returning a list of tuples which then must be converting back into a
+dictionary.
+
+```py
+ordered_map = {4: 12, 2: 7, 1: 5, 3: 8}
+print(sorted(ordered_map)) # [1, 2, 3, 4]
+
+# Sorting the ordered_map
+ordered_map = {k: v for k, v in sorted(ordered_map.items())}
+print(ordered_map) # {1: 5, 2: 7, 3: 8, 4: 12}
+```
+
+To add elements while keeping the dictionary sorted, simply use a sorted array
+of keys, an ordered dictionary (that doesn't need to be sorted), as well as
+binary search to find the index to remove or insert at.
+
+Insertions and removals have a total complexity of $\mathcal{O}(N)$ time from a
+$\mathcal{O}(\log N)$ search (through binary search) and a slow $\mathcal{O}(N)$
+insertion/removal step.
+
+```py
+import bisect
+
+ordered_map = {1: 5, 3: 8, 3: 12}
+sorted_keys = list(ordered_map.keys())
+print(sorted_keys) # [1, 3]
+
+# Adding a key value pair
+
+new_key = 2
+new_value = 1
+
+if new_key not in ordered_map:
+    bisect.insort(sorted_keys, new_key)
+
+ordered_map[new_key] = new_value
+
+print(ordered_map) # {1: 5, 3: 12, 2: 1}
+print(sorted_keys) # [1, 2, 3]
+
+# Removing a key value pair
+
+remove_key = 2
+
+if remove_key in ordered_map:
+    del ordered_map[remove_key]
+    sorted_keys.remove(bisect.bisect_left(sorted_keys, remove_key) + 1)
+
+print(ordered_map) # {1: 5, 3: 12}
+print(sorted_keys) # [1, 3]
+```
+
+<Warning>
+
+Python dictionaries are ordered by insertion order only after Python 3.6. If you
+are using an older version, use `OrderedDict` instead, with the same
+implementation as above to create sorted maps.
+
+</Warning>
+
+</PySection>
+
 </LanguageSection>
 
 ## Multisets
@@ -271,8 +423,8 @@ In addition to all of the regular set operations,
 - the `count()` method returns the number of times an element is present in the
   multiset. However, this method takes time **linear** in the number of matches
   so you shouldn't use it in a contest.
-- To remove a value __once__, use `ms.erase(ms.find(val))`.
-- To remove __all__ occurrences of a value, use `ms.erase(val)`.
+- To remove a value **once**, use `ms.erase(ms.find(val))`.
+- To remove **all** occurrences of a value, use `ms.erase(val)`.
 
 <Warning>
 	Using `ms.erase(val)` erases __all__ instances of `val` from the multiset. To remove one instance of `val`, use `ms.erase(ms.find(val))`!
@@ -392,11 +544,16 @@ pq.add(6);                      // [7, 6, 5]
 
 In Python (unlike in C++), we delete and retrieve the **lowest** element.
 
-Note that Python's priority queue is not encapsulated; `heapq` operates on a provided list directly by turning it into a heap, then doing operations on the heap.
+Note that Python's priority queue is not encapsulated; `heapq` operates on a
+provided list directly by turning it into a heap, then doing operations on the
+heap.
 
 <Warning>
 
-Because of a heap's structure, printing out `pq` will **not** print out the elements in sorted order in Python; instead, it will print out the list. The comments below are a **representation** of what the heap contains, **not** what the contents of `pq` actually are.
+Because of a heap's structure, printing out `pq` will **not** print out the
+elements in sorted order in Python; instead, it will print out the list. The
+comments below are a **representation** of what the heap contains, **not** what
+the contents of `pq` actually are.
 
 </Warning>
 
