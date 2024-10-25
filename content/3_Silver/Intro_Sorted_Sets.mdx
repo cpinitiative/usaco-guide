@@ -137,12 +137,12 @@ order.
 nums = {1: None, 7: None, 0: None, 2: None, 4: None}
 iterator = iter(nums)
 
-print(iterator) # <set_iterator object at 0x14765f3eb6c0>
-print(next(iterator)) # 1
-print(next(iterator)) # 7
-print(next(iterator)) # 0
-print(next(iterator)) # 2
-print(next(iterator)) # 4
+print(iterator)  # <set_iterator object at 0x14765f3eb6c0>
+print(next(iterator))  # 1
+print(next(iterator))  # 7
+print(next(iterator))  # 0
+print(next(iterator))  # 2
+print(next(iterator))  # 4
 ```
 
 <Warning>
@@ -237,27 +237,27 @@ $\mathcal{O}(1)$ time.
 import bisect
 
 unordered_set = {3, 2, 1, 4}
-sorted_set = sorted(unordered_set) # [1, 2, 3, 4]
+sorted_set = sorted(unordered_set)  # [1, 2, 3, 4]
 
 # Adding an element
 addNum = 7
 
 if addNum not in unordered_set:
-    unordered_set.add(addNum)
-    bisect.insort(sorted_set, addNum)
+	unordered_set.add(addNum)
+	bisect.insort(sorted_set, addNum)
 
-print(unordered_set) # {1, 2, 3, 4, 7}
-print(sorted_set) # [1, 2, 3, 4, 7]
+print(unordered_set)  # {1, 2, 3, 4, 7}
+print(sorted_set)  # [1, 2, 3, 4, 7]
 
 # Removing an element
 removeNum = 2
 
 if removeNum in unordered_set:
-    unordered_set.remove(removeNum)
-    sorted_set.remove(bisect.bisect_left(sorted_set, removeNum))
+	unordered_set.remove(removeNum)
+	sorted_set.remove(bisect.bisect_left(sorted_set, removeNum))
 
-print(unordered_set) # {1, 3, 4, 7}
-print(sorted_set) # [2, 3, 4, 7]
+print(unordered_set)  # {1, 3, 4, 7}
+print(sorted_set)  # [2, 3, 4, 7]
 ```
 
 <Warning>
@@ -351,11 +351,11 @@ dictionary.
 
 ```py
 ordered_map = {4: 12, 2: 7, 1: 5, 3: 8}
-print(sorted(ordered_map)) # [1, 2, 3, 4]
+print(sorted(ordered_map))  # [1, 2, 3, 4]
 
 # Sorting the ordered_map
 ordered_map = {k: v for k, v in sorted(ordered_map.items())}
-print(ordered_map) # {1: 5, 2: 7, 3: 8, 4: 12}
+print(ordered_map)  # {1: 5, 2: 7, 3: 8, 4: 12}
 ```
 
 To add elements while keeping the dictionary sorted, simply use a sorted array
@@ -371,7 +371,7 @@ import bisect
 
 ordered_map = {1: 5, 3: 8, 3: 12}
 sorted_keys = list(ordered_map.keys())
-print(sorted_keys) # [1, 3]
+print(sorted_keys)  # [1, 3]
 
 # Adding a key value pair
 
@@ -379,23 +379,23 @@ new_key = 2
 new_value = 1
 
 if new_key not in ordered_map:
-    bisect.insort(sorted_keys, new_key)
+	bisect.insort(sorted_keys, new_key)
 
 ordered_map[new_key] = new_value
 
-print(ordered_map) # {1: 5, 3: 12, 2: 1}
-print(sorted_keys) # [1, 2, 3]
+print(ordered_map)  # {1: 5, 3: 12, 2: 1}
+print(sorted_keys)  # [1, 2, 3]
 
 # Removing a key value pair
 
 remove_key = 2
 
 if remove_key in ordered_map:
-    del ordered_map[remove_key]
-    sorted_keys.remove(bisect.bisect_left(sorted_keys, remove_key) + 1)
+	del ordered_map[remove_key]
+	sorted_keys.remove(bisect.bisect_left(sorted_keys, remove_key) + 1)
 
-print(ordered_map) # {1: 5, 3: 12}
-print(sorted_keys) # [1, 3]
+print(ordered_map)  # {1: 5, 3: 12}
+print(sorted_keys)  # [1, 3]
 ```
 
 <Warning>
