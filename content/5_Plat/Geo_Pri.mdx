@@ -246,6 +246,8 @@ We can use the [Shoelace formula](https://en.wikipedia.org/wiki/Shoelace_formula
 
 ## Implementation
 
+**Time Complexity:** $\mathcal{O}(N)$
+
 <LanguageSection>
 <CPPSection>
 
@@ -278,10 +280,36 @@ int main() {
 		area +=
 		    (1LL * points[i].x * points[i + 1].y - 1LL * points[i].y * points[i + 1].x);
 	}
+	cout << labs(area) << '\n';
 }
 ```
 
 </CPPSection>
+<PySection>
+
+```py
+class Point:
+	def __init__(self, x: int = 0, y: int = 0):
+		self.x = x
+		self.y = y
+
+
+n = int(input())
+points = []
+for _ in range(n):
+	x, y = map(int, input().split())
+	points.append(Point(x, y))
+
+points.append(points[0])
+
+area = 0
+for i in range(n):
+	area += points[i].x * points[i + 1].y - points[i].y * points[i + 1].x
+
+print(abs(area))
+```
+
+</PySection>
 </LanguageSection>
 
 # Point's Location Relative to Polygon
