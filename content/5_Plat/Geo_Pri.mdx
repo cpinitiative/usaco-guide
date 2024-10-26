@@ -74,6 +74,8 @@ This formula doesn't only tell us whether the points are collinear, but where th
 
 ## Implementation
 
+**Time Complexity:** $\mathcal{O}(T)$, where $T$ is the number of test cases.
+
 <LanguageSection>
 <CPPSection>
 
@@ -117,6 +119,35 @@ int main() {
 ```
 
 </CPPSection>
+<PySection>
+
+```py
+class Point:
+	def __init__(self, x: int = 0, y: int = 0):
+		self.x = x
+		self.y = y
+
+
+def collinear(p: Point, p1: Point, p2: Point) -> int:
+	return (p.y - p1.y) * (p2.x - p1.x) - (p.x - p1.x) * (p2.y - p1.y)
+
+
+for _ in range(int(input())):
+	points = list(map(int, input().split()))
+	p1 = Point(points[0], points[1])
+	p2 = Point(points[2], points[3])
+	p3 = Point(points[4], points[5])
+
+	result = collinear(p1, p2, p3)
+	if result == 0:
+		print("TOUCH")
+	elif result < 0:
+		print("RIGHT")
+	else:
+		print("LEFT")
+```
+
+</PySection>
 </LanguageSection>
 
 # Segment Intersection
