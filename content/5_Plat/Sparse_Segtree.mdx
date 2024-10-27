@@ -10,18 +10,11 @@ description: 'Querying big ranges.'
 frequency: 1
 ---
 
-<FocusProblem problem="sparseSample" />
-
-<br />
-
 In problems where the query range is at most something like $10^6$, a normal
 segment tree suffices. However, as soon as we move to bigger ranges ($10^{12}$
 in some cases), a normal segment tree results in MLE.
 
 Luckily, we can still use a segment tree to solve these types of problems.
-
-## Resources
-
 The main idea is that we don't have to store all the nodes at all times - we
 create nodes only when needed. In a normal segment tree, an update only affects
 $\mathcal{O}(\log N)$ nodes, so in a sparse segment tree, we only store
@@ -29,6 +22,12 @@ $\mathcal{O}(Q \log N)$ nodes!
 
 We can implement this efficiently using pointers to a node's children - just
 like a trie! (Then again, a segment tree is basically a fancier binary trie.)
+
+An alternative is to implement the nodes using indices and an array to keep track
+of each node. This is typically faster than using pointers, although is slightly
+less natural to implement.
+
+## Resources
 
 <IncompleteSection />
 
@@ -63,130 +62,212 @@ range is up to $10^9$, so we have to use a sparse segment tree.
 
 Luckily, lazy propagation still works here.
 
-<LanguageSection>
+### Pointer Implementation
 
+**Time Complexity:** $\mathcal{O}(Q\log{N})$
+
+<LanguageSection>
 <CPPSection>
 
 ```cpp
 #include <bits/stdc++.h>
-#pragma GCC optimize("O3")
-#define FOR(i, x, y) for (int i = x; i < y; i++)
-#define MOD 1000000007
-typedef long long ll;
 using namespace std;
 
-struct Node {
-	int sum, lazy, tl, tr, l, r;
-	Node() : sum(0), lazy(0), l(-1), r(-1) {}
+class SparseSegtree {
+  private:
+	struct Node {
+		int freq = 0;
+		int lazy = 0;
+		Node *left = nullptr;
+		Node *right = nullptr;
+	};
+	Node *root = new Node;
+	const int n;
+
+	int comb(int a, int b) { return a + b; }
+
+	void apply(Node *cur, int len, int val) {
+		if (val == 1) {
+			(cur->lazy) = val;
+			(cur->freq) = len * val;
+		}
+	}
+
+	void push_down(Node *cur, int l, int r) {
+		if ((cur->left) == nullptr) { (cur->left) = new Node; }
+		if ((cur->right) == nullptr) { (cur->right) = new Node; }
+		int m = (l + r) / 2;
+		apply(cur->left, m - l + 1, cur->lazy);
+		apply(cur->right, r - m, cur->lazy);
+	}
+
+	void range_set(Node *cur, int l, int r, int ql, int qr, int val) {
+		if (qr < l || ql > r) { return; }
+		if (ql <= l && r <= qr) {
+			apply(cur, r - l + 1, val);
+		} else {
+			push_down(cur, l, r);
+			int m = (l + r) / 2;
+			range_set(cur->left, l, m, ql, qr, val);
+			range_set(cur->right, m + 1, r, ql, qr, val);
+			(cur->freq) = comb((cur->left)->freq, (cur->right)->freq);
+		}
+	}
+
+	int range_sum(Node *cur, int l, int r, int ql, int qr) {
+		if (qr < l || ql > r) { return 0; }
+		if (ql <= l && r <= qr) { return cur->freq; }
+		push_down(cur, l, r);
+		int m = (l + r) / 2;
+		return comb(range_sum(cur->left, l, m, ql, qr),
+		            range_sum(cur->right, m + 1, r, ql, qr));
+	}
+
+  public:
+	SparseSegtree(int n) : n(n) {}
+
+	void range_set(int ql, int qr, int val) { range_set(root, 0, n - 1, ql, qr, val); }
+
+	int range_sum(int ql, int qr) { return range_sum(root, 0, n - 1, ql, qr); }
 };
 
-const int MAXN = 123456;
-Node segtree[64 * MAXN];
-int cnt = 2;
-
-void push_lazy(int node) {
-	if (segtree[node].lazy) {
-		segtree[node].sum = segtree[node].tr - segtree[node].tl + 1;
-		int mid = (segtree[node].tl + segtree[node].tr) / 2;
-		if (segtree[node].l == -1) {
-			segtree[node].l = cnt++;
-			segtree[segtree[node].l].tl = segtree[node].tl;
-			segtree[segtree[node].l].tr = mid;
-		}
-		if (segtree[node].r == -1) {
-			segtree[node].r = cnt++;
-			segtree[segtree[node].r].tl = mid + 1;
-			segtree[segtree[node].r].tr = segtree[node].tr;
-		}
-		segtree[segtree[node].l].lazy = segtree[segtree[node].r].lazy = 1;
-		segtree[node].lazy = 0;
-	}
-}
-
-void update(int node, int l, int r) {
-	push_lazy(node);
-	if (l == segtree[node].tl && r == segtree[node].tr) {
-		segtree[node].lazy = 1;
-		push_lazy(node);
-	} else {
-		int mid = (segtree[node].tl + segtree[node].tr) / 2;
-		if (segtree[node].l == -1) {
-			segtree[node].l = cnt++;
-			segtree[segtree[node].l].tl = segtree[node].tl;
-			segtree[segtree[node].l].tr = mid;
-		}
-		if (segtree[node].r == -1) {
-			segtree[node].r = cnt++;
-			segtree[segtree[node].r].tl = mid + 1;
-			segtree[segtree[node].r].tr = segtree[node].tr;
-		}
-
-		if (l > mid) update(segtree[node].r, l, r);
-		else if (r <= mid) update(segtree[node].l, l, r);
-		else {
-			update(segtree[node].l, l, mid);
-			update(segtree[node].r, mid + 1, r);
-		}
-
-		push_lazy(segtree[node].l);
-		push_lazy(segtree[node].r);
-		segtree[node].sum = segtree[segtree[node].l].sum + segtree[segtree[node].r].sum;
-	}
-}
-
-int query(int node, int l, int r) {
-	push_lazy(node);
-	if (l == segtree[node].tl && r == segtree[node].tr) return segtree[node].sum;
-	else {
-		int mid = (segtree[node].tl + segtree[node].tr) / 2;
-		if (segtree[node].l == -1) {
-			segtree[node].l = cnt++;
-			segtree[segtree[node].l].tl = segtree[node].tl;
-			segtree[segtree[node].l].tr = mid;
-		}
-		if (segtree[node].r == -1) {
-			segtree[node].r = cnt++;
-			segtree[segtree[node].r].tl = mid + 1;
-			segtree[segtree[node].r].tr = segtree[node].tr;
-		}
-
-		if (l > mid) return query(segtree[node].r, l, r);
-		else if (r <= mid) return query(segtree[node].l, l, r);
-		else return query(segtree[node].l, l, mid) + query(segtree[node].r, mid + 1, r);
-	}
-}
-
 int main() {
-	iostream::sync_with_stdio(false);
-	cin.tie(0);
-	int m;
-	cin >> m;
-
-	segtree[1].sum = 0;
-	segtree[1].lazy = 0;
-	segtree[1].tl = 1;
-	segtree[1].tr = 1e9;
+	int query_num;
+	cin >> query_num;
+	const int RANGE_SIZE = 1e9;
+	SparseSegtree st(RANGE_SIZE + 1);
 
 	int c = 0;
-	FOR(_, 0, m) {
-		int d, x, y;
-		cin >> d >> x >> y;
-		if (d == 1) {
-			c = query(1, x + c, y + c);
+	for (int i = 0; i < query_num; i++) {
+		int type, x, y;
+		cin >> type >> x >> y;
+		if (type == 1) {
+			c = st.range_sum(x + c, y + c);
 			cout << c << '\n';
-		} else update(1, x + c, y + c);
+		} else if (type == 2) {
+			st.range_set(x + c, y + c, 1);
+		}
 	}
-	return 0;
+}
+```
+
+<Warning>
+
+This implementation is not garbage collected, so the tree nodes aren't deleted even if the instance
+of the segment tree is taken out of scope.
+
+</Warning>
+
+</CPPSection>
+</LanguageSection>
+
+### Index Implementation
+
+**Time Complexity:** $\mathcal{O}(Q\log{N})$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+class SparseSegtree {
+  private:
+	struct Node {
+		int freq = 0;
+		int lazy = 0;
+		int left = -1;
+		int right = -1;
+	};
+	vector<Node> tree;
+	const int n;
+	int timer = 0;
+
+	int comb(int a, int b) { return a + b; }
+
+	void apply(int cur, int len, int val) {
+		if (val == 1) {
+			tree[cur].lazy = val;
+			tree[cur].freq = len * val;
+		}
+	}
+
+	void push_down(int cur, int l, int r) {
+		if (tree[cur].left == -1) {
+			tree[cur].left = ++timer;
+			tree.push_back(Node());
+		}
+		if (tree[cur].right == -1) {
+			tree[cur].right = ++timer;
+			tree.push_back(Node());
+		}
+		int m = (l + r) / 2;
+		apply(tree[cur].left, m - l + 1, tree[cur].lazy);
+		apply(tree[cur].right, r - m, tree[cur].lazy);
+		tree[cur].lazy = 0;
+	}
+
+	void range_set(int cur, int l, int r, int ql, int qr, int val) {
+		if (qr < l || ql > r) { return; }
+		if (ql <= l && r <= qr) {
+			apply(cur, r - l + 1, val);
+		} else {
+			push_down(cur, l, r);
+			int m = (l + r) / 2;
+			range_set(tree[cur].left, l, m, ql, qr, val);
+			range_set(tree[cur].right, m + 1, r, ql, qr, val);
+			tree[cur].freq =
+			    comb(tree[tree[cur].left].freq, tree[tree[cur].right].freq);
+		}
+	}
+
+	int range_sum(int cur, int l, int r, int ql, int qr) {
+		if (qr < l || ql > r) { return 0; }
+		if (ql <= l && r <= qr) { return tree[cur].freq; }
+		push_down(cur, l, r);
+		int m = (l + r) / 2;
+		return comb(range_sum(tree[cur].left, l, m, ql, qr),
+		            range_sum(tree[cur].right, m + 1, r, ql, qr));
+	}
+
+  public:
+	SparseSegtree(int n, int q = 0) : n(n) {
+		if (q > 0) { tree.reserve(2 * q * __lg(n)); }
+		tree.push_back(Node());
+	}
+
+	void range_set(int ql, int qr, int val) { range_set(0, 0, n - 1, ql, qr, val); }
+
+	int range_sum(int ql, int qr) { return range_sum(0, 0, n - 1, ql, qr); }
+};
+
+int main() {
+	int query_num;
+	cin >> query_num;
+	const int RANGE_SIZE = 1e9;
+	SparseSegtree st(RANGE_SIZE + 1, query_num);
+
+	int c = 0;
+	for (int i = 0; i < query_num; i++) {
+		int type, x, y;
+		cin >> type >> x >> y;
+		if (type == 1) {
+			c = st.range_sum(x + c, y + c);
+			cout << c << '\n';
+		} else if (type == 2) {
+			st.range_set(x + c, y + c, 1);
+		}
+	}
 }
 ```
 
 </CPPSection>
-
 </LanguageSection>
 
 <Optional>
 
-It's possible to reduce the memory of a sparse segment tree to $\mathcal{O}(N)$,
+It's possible to reduce the memory of a sparse segment tree to $\mathcal{O}(Q)$,
 as described [here](https://codeforces.com/blog/entry/83969).
 
 </Optional>
