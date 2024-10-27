@@ -137,12 +137,12 @@ order.
 nums = {1: None, 7: None, 0: None, 2: None, 4: None}
 iterator = iter(nums)
 
-print(iterator)  # <set_iterator object at 0x14765f3eb6c0>
-print(next(iterator))  # 1
-print(next(iterator))  # 7
-print(next(iterator))  # 0
-print(next(iterator))  # 2
-print(next(iterator))  # 4
+print(iterator) # <set_iterator object at 0x14765f3eb6c0>
+print(next(iterator)) # 1
+print(next(iterator)) # 7
+print(next(iterator)) # 0
+print(next(iterator)) # 2
+print(next(iterator)) # 4
 ```
 
 <Warning>
@@ -224,46 +224,60 @@ System.out.println(set.higher(23));  // ERROR, no such element exists
 
 <PySection>
 
-Python does not have a sorted set, however, you can represent a similar data
-structure using a lazy implementation with lists, sets, and binary search. A
-more accurate representation of a sorted set in Python is more complex and not
-silver difficulty (usually involves creating a tree-based data structure).
+Python does not have a sorted set, so see the C++ or Java if you want an implementation from the standard library.
 
-In the lazy implementation, removing and inserting take $\mathcal{O}(N)$ time
-since a list is used, while checking if an element is present takes
-$\mathcal{O}(1)$ time.
+Creating a sorted set from scratch is time consuming, and not reccomended to do so in contests, but if you are curious regarding the implementation, you can find an AVL tree implementation of a sorted set below.
+
+<Resources>
+	<Resource source="DSA Python" url="https://nibmehub.com/opac-service/pdf/read/Data%20Structures%20and%20Algorithms%20in%20Python.pdf#page=503" title="AVL Trees">
+		Read about the definition and implementation of AVL Trees in Python
+	</Resource>
+</Resources>
+
+<Warning>
+
+You are not expected to know how to create an AVL tree in the silver division.
+
+</Warning>
+
+Since some online judges include additional libraries, there is also an implementation of sorted sets included from the `sortedcontainers` library. All operations shown below are $\mathcal{O}(\log N)$ time, except for its $\mathcal{O}(N \log N)$ initialization.
 
 ```py
-import bisect
+from sortedcontainers import SortedSet
 
-unordered_set = {3, 2, 1, 4}
-sorted_set = sorted(unordered_set)  # [1, 2, 3, 4]
+sorted_set = SortedSet([5, 1, 3, 2])
+print(sorted_set) # SortedSet([1, 2, 3, 4, 7])
 
-# Adding an element
-addNum = 7
+# Add elements
+sorted_set.add(4)
+sorted_set.add(6)
+print(sorted_set) # SortedSet([1, 2, 3, 4, 5, 6])
 
-if addNum not in unordered_set:
-	unordered_set.add(addNum)
-	bisect.insort(sorted_set, addNum)
+# Remove elements
+sorted_set.discard(3)
+sorted_set.discard(5)
+print(sorted_set) # SortedSet([1, 2, 4, 6])
 
-print(unordered_set)  # {1, 2, 3, 4, 7}
-print(sorted_set)  # [1, 2, 3, 4, 7]
+# Check if an element is in the sorted set
+print(2 in sorted_set) # True
+print(100 in sorted_set) # False
 
-# Removing an element
-removeNum = 2
+# Access elements by it's index
+print(sorted_set[0]) # 1 (smallest element, first index)
+print(sorted_set[-1]) # 6 (largest element, last index)
+print(sorted_set[2]) # 4
 
-if removeNum in unordered_set:
-	unordered_set.remove(removeNum)
-	sorted_set.remove(bisect.bisect_left(sorted_set, removeNum))
+# Get the index of an element
+print(sorted_set.index(4)) # 2
 
-print(unordered_set)  # {1, 3, 4, 7}
-print(sorted_set)  # [2, 3, 4, 7]
+# Find the index to insert the given value
+print(sorted_set.bisect_left(2)) # 1
+print(sorted_set.bisect_right(2)) # 2
 ```
 
 <Warning>
 
-The variable `unordered_set` appears to be sorted due to the nature that hashing
-was implementated in sets, but we can not rely on it being sorted (or ordered).
+The `sortedcontainers` library is not part of Python's standard library. This means that most online judges do **not** provide it (including USACO).
 
 </Warning>
 
@@ -330,79 +344,51 @@ System.out.println(map.lowerKey(3));     // ERROR
 
 <PySection>
 
-Maps in Python are called dictionaries. They are ordered by insertion and only
-support map methods. You can also used an `OrderedDict`, with an example of its
-use below, but for our case of implementing sorted maps, there would be no
-difference.
+Python does not have built in sorted maps or sorted sets in it's standard library. However, sorted maps in Python can be created by adding a dictionary to a sorted set, where each element in the sorted set is a key in the dictionary and values can be assigned with the dictionary.
+
+This is the most straightforward implementation, and the ground up implementation of a sorted set can be found in the above section.
+
+Since some online judges include additional libraries, an implementation of `SortedDict` from the `sortedcontainers` library can be found below. All operations shown below are $\mathcal{O}(\log N)$ time, except for its $\mathcal{O}(N \log N)$ initialization and getting all items, keys, or values which is $\mathcal{O}(N)$ time.
 
 ```py
-from collections import OrderedDict
+from sortedcontainers import SortedDict
 
-ordered_map = OrderedDict({4: 4, 2: 7, 1: 3, 3: 1})
-```
+sorted_map = SortedDict({1: "one", 4: "four", 3: "three"})
+print(sorted_map) # SortedDict({1: 'one', 3: 'three', 4: 'four'})
 
-Since Python does not have sorted dictionaries, we must implement it ourselves
-through regular Python dictionaries, since those are unordered.
+# Add elements
+sorted_map[2] = "two"
+sorted_map[5] = "five"
+print(sorted_map) # SortedDict({1: 'one', 2: 'two', 3: 'three', 4: 'four', 5: 'five'})
 
-To sort the unordered dictionary, simply use `sorted()` on the key value pairs
-obtained from using `dictionary.items()`, and sort by the first element for each
-tuple, returning a list of tuples which then must be converting back into a
-dictionary.
+# Remove elements
+del sorted_map[3]
+print(sorted_map) # SortedDict({1: 'one', 2: 'two', 4: 'four', 5: 'five'})
 
-```py
-ordered_map = {4: 12, 2: 7, 1: 5, 3: 8}
-print(sorted(ordered_map))  # [1, 2, 3, 4]
+# Check if a key is in the sorted dict
+print(1 in sorted_map) # True
+print(100 in sorted_map) # False
 
-# Sorting the ordered_map
-ordered_map = {k: v for k, v in sorted(ordered_map.items())}
-print(ordered_map)  # {1: 5, 2: 7, 3: 8, 4: 12}
-```
+# Get the key's value
+print(sorted_map[2]) # two
+print(sorted_map[4]) # four
 
-To add elements while keeping the dictionary sorted, simply use a sorted array
-of keys, an ordered dictionary (that doesn't need to be sorted), as well as
-binary search to find the index to remove or insert at.
+# Get all items (key value pairs), keys, or values
+print(sorted_map.items())  # SortedItemsView(SortedDict({1: 'one', 2: 'two', 4: 'four', 5: 'five'}))
+print(sorted_map.keys())   # SortedKeysView(SortedDict({1: 'one', 2: 'two', 4: 'four', 5: 'five'}))
+print(sorted_map.values()) # SortedValuesView(SortedDict({1: 'one', 2: 'two', 4: 'four', 5: 'five'}))
 
-Insertions and removals have a total complexity of $\mathcal{O}(N)$ time from a
-$\mathcal{O}(\log N)$ search (through binary search) and a slow $\mathcal{O}(N)$
-insertion/removal step.
+# Find the index of an existing key
+print(sorted_map.index(2)) # 1
 
-```py
-import bisect
-
-ordered_map = {1: 5, 3: 8, 3: 12}
-sorted_keys = list(ordered_map.keys())
-print(sorted_keys)  # [1, 3]
-
-# Adding a key value pair
-
-new_key = 2
-new_value = 1
-
-if new_key not in ordered_map:
-	bisect.insort(sorted_keys, new_key)
-
-ordered_map[new_key] = new_value
-
-print(ordered_map)  # {1: 5, 3: 12, 2: 1}
-print(sorted_keys)  # [1, 2, 3]
-
-# Removing a key value pair
-
-remove_key = 2
-
-if remove_key in ordered_map:
-	del ordered_map[remove_key]
-	sorted_keys.remove(bisect.bisect_left(sorted_keys, remove_key) + 1)
-
-print(ordered_map)  # {1: 5, 3: 12}
-print(sorted_keys)  # [1, 3]
+# Find the index to insert a given key
+print(sorted_map.bisect_left(3))  # 2
+print(sorted_map.bisect_right(6)) # 4
 ```
 
 <Warning>
 
-Python dictionaries are ordered by insertion order only after Python 3.6. If you
-are using an older version, use `OrderedDict` instead, with the same
-implementation as above to create sorted maps.
+The `sortedcontainers` library is not part of Python's standard library. This means that most online judges do **not** provide it (including USACO).
 
 </Warning>
 
