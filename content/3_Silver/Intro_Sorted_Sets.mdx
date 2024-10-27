@@ -126,29 +126,57 @@ which can only be used once before calling the `next()` method.
 <PySection>
 
 In Python, we can use `iter()` to obtain the iterator object of any iterable.
-This returns the first element, and using `next()` on the iterator gives you the
-next one. Below, a dictionary is used instead of a set because dictionaries keep
-order.
+Using `next()` on the iterator lets you iterate through the iterable.
 
 ```py
-nums = {1: None, 7: None, 0: None, 2: None, 4: None}
+nums = {1, "three", 0, (1, 3, 5), 4}
 iterator = iter(nums)
 
-print(iterator)  # <set_iterator object at 0x14765f3eb6c0>
-print(next(iterator))  # 1
-print(next(iterator))  # 7
 print(next(iterator))  # 0
-print(next(iterator))  # 2
+print(next(iterator))  # 1
 print(next(iterator))  # 4
+print(next(iterator))  # three
+print(next(iterator))  # (1, 3, 5)
+
+# Note:
+# The numbers appear ordered when iterating due to the hashing implementation
+# Sets are not ordered, so do not expect this behavior
 ```
 
-<Warning>
+Python's iterators are fundamental to iteration and are used in for loops and
+tuple unpacking, for example. This is useful when you want lower level control
+over your iteration.
 
-As of Python 3.6, dictionaries are ordered by **insertion order**.
-You can also use an `OrderedDict` from `collections`, which is built with the goal of being ordered
-and thus has more features and slightly different speeds compared to a regular Python dictionary.
+In competitive programming however, you will find that the `itertools` library
+provides more common uses that can save you lots of time. The most useful of
+these are shown below.
 
-</Warning>
+```py
+import itertools
+
+# Iterate through and accumulate with a specified function
+nums = [1, 0, 5, 2, -4, 3]
+psa = list(itertools.accumulate(nums)) # operator.add is the default
+print(psa) # [1, 1, 6, 8, 4, 7]
+print(list(itertools.accumulate(nums, min))) # [1, 0, 0, 0, -4, -4]
+print(list(itertools.accumulate(nums, max))) # [1, 1, 5, 5, 5, 5]
+
+# Iterate through the perms and combs below
+# (1, 2) (1, 3) (2, 3)
+print(*itertools.combinations([1, 2, 3], 2))
+# (1, 1) (1, 2) (1, 3) (2, 2) (2, 3) (3, 3)
+print(*itertools.combinations_with_replacement([1, 2, 3], 2))
+# (1, 2) (1, 3) (2, 1) (2, 3) (3, 1) (3, 2)
+print(*itertools.permutations([1, 2, 3], 2))
+# (1, 1) (1, 2) (1, 3) (2, 1) (2, 2) (2, 3) (3, 1) (3, 2) (3, 3)
+print(*itertools.product([1, 2, 3], repeat = 2))
+
+# Iterate pairwise
+print(*itertools.pairwise("ABCD")) # ('A', 'B') ('B', 'C') ('C', 'D')
+
+# Iterate in an infinite cycle: "A", "B", "C", "A", "B", "C", "A", ...
+for letter in itertools.cycle("ABC"): break
+```
 
 </PySection>
 </LanguageSection>
@@ -240,10 +268,10 @@ You are not expected to know how to create an AVL tree in USACO.
 
 </Warning>
 
-Since some online judges such as LeetCode include additional libraries, there is also an
-implementation of sorted sets included from the `sortedcontainers` library. All
-operations shown below are $\mathcal{O}(\log N)$ time, except for its
-$\mathcal{O}(N \log N)$ initialization.
+Since some online judges such as LeetCode include additional libraries, there is
+also an implementation of sorted sets included from the `sortedcontainers`
+library. All operations shown below are $\mathcal{O}(\log N)$ time, except for
+its $\mathcal{O}(N \log N)$ initialization.
 
 ```py
 from sortedcontainers import SortedSet
@@ -384,15 +412,9 @@ print(sorted_map[2])  # two
 print(sorted_map[4])  # four
 
 # Get all items (key value pairs), keys, or values below
-
-# Output SortedItemsView(SortedDict({1: 'one', 2: 'two', 4: 'four', 5: 'five'}))
-print(sorted_map.items())
-
-# Output SortedKeysView(SortedDict({1: 'one', 2: 'two', 4: 'four', 5: 'five'}))
-print(sorted_map.keys())
-
-# Output SortedValuesView(SortedDict({1: 'one', 2: 'two', 4: 'four', 5: 'five'}))
-print(sorted_map.values())
+print(*sorted_map.items()) # (1, 'one') (2, 'two') (4, 'four') (5, 'five')
+print(*sorted_map.keys()) # 1 2 4 5
+print(*sorted_map.values()) # one two four five
 
 # Find the index of an existing key
 print(sorted_map.index(2))  # 1
