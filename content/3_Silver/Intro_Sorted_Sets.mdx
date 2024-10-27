@@ -128,6 +128,8 @@ which can only be used once before calling the `next()` method.
 In Python, we can use `iter()` to obtain the iterator object of any iterable.
 Using `next()` on the iterator lets you iterate through the iterable.
 
+Iterating through a `set`:
+
 ```py
 nums = {1, "three", 0, (1, 3, 5), 4}
 iterator = iter(nums)
@@ -139,45 +141,28 @@ print(next(iterator))  # three
 print(next(iterator))  # (1, 3, 5)
 
 # Note:
-# The numbers appear ordered when iterating due to the hashing implementation
-# Sets are not ordered, so do not expect this behavior
+# The numbers appear sorted when iterating due to the hashing implementation
+# Sets are not ordered, so do not expect ordered/sorted behavior
 ```
 
-Python's iterators are fundamental to iteration and are used in for loops and
-tuple unpacking, for example. This is useful when you want lower level control
-over your iteration.
-
-In competitive programming however, you will find that the `itertools` library
-provides more common uses that can save you lots of time. The most useful of
-these are shown below.
+Iterating through a `SortedSet`:
 
 ```py
-import itertools
+from sortedcontainers import SortedSet
 
-# Iterate through and accumulate with a specified function
-nums = [1, 0, 5, 2, -4, 3]
-psa = list(itertools.accumulate(nums))  # operator.add is the default
-print(psa)  # [1, 1, 6, 8, 4, 7]
-print(list(itertools.accumulate(nums, min)))  # [1, 0, 0, 0, -4, -4]
-print(list(itertools.accumulate(nums, max)))  # [1, 1, 5, 5, 5, 5]
+sorted_set = SortedSet([3, 2, 4, 1, 5])
+iterator = iter(sorted_set)
 
-# Iterate through the perms and combs below
-# (1, 2) (1, 3) (2, 3)
-print(*itertools.combinations([1, 2, 3], 2))
-# (1, 1) (1, 2) (1, 3) (2, 2) (2, 3) (3, 3)
-print(*itertools.combinations_with_replacement([1, 2, 3], 2))
-# (1, 2) (1, 3) (2, 1) (2, 3) (3, 1) (3, 2)
-print(*itertools.permutations([1, 2, 3], 2))
-# (1, 1) (1, 2) (1, 3) (2, 1) (2, 2) (2, 3) (3, 1) (3, 2) (3, 3)
-print(*itertools.product([1, 2, 3], repeat=2))
-
-# Iterate pairwise
-print(*itertools.pairwise("ABCD"))  # ('A', 'B') ('B', 'C') ('C', 'D')
-
-# Iterate in an infinite cycle: "A", "B", "C", "A", "B", "C", "A", ...
-for letter in itertools.cycle("ABC"):
-	break
+print(next(iterator)) # 1
+print(next(iterator)) # 2
+print(next(iterator)) # 3
+print(next(iterator)) # 4
+print(next(iterator)) # 5
 ```
+
+Python's iterators are fundamental to iteration and are used in its for loops
+and tuple unpacking. This is useful when you want more control over your
+iteration. It can also be simply used in cases where you just want the first or any element.
 
 </PySection>
 </LanguageSection>
@@ -413,9 +398,9 @@ print(sorted_map[2])  # two
 print(sorted_map[4])  # four
 
 # Get all items (key value pairs), keys, or values below
-print(*sorted_map.items())  # (1, 'one') (2, 'two') (4, 'four') (5, 'five')
-print(*sorted_map.keys())  # 1 2 4 5
-print(*sorted_map.values())  # one two four five
+print(*sorted_map.items()) # (1, 'one') (2, 'two') (4, 'four') (5, 'five')
+print(*sorted_map.keys()) # 1 2 4 5
+print(*sorted_map.values()) # one two four five
 
 # Find the index of an existing key
 print(sorted_map.index(2))  # 1
