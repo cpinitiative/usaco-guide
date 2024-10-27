@@ -1,8 +1,9 @@
 ---
 id: leetcode-149
-source: Leetcode
+source: LC
 title: Max Points on a Line
 author: Mihnea Brebenel
+contributors: Rameez Parwez
 ---
 
 ## Explanation
@@ -18,7 +19,7 @@ In practice you'll find this formula in a product form to avoid dealing with flo
 
 ## Implementation
 
-**Time Complexity:** $\mathcal{O}(n^3)$
+**Time Complexity:** $\mathcal{O}(N^3)$
 
 <LanguageSection>
 <CPPSection>
@@ -84,4 +85,107 @@ class Solution {
 ```
 
 </JavaSection>
+<PySection>
+
+```py
+class Solution:
+	def maxPoints(self, points: List[List[int]]) -> int:
+		n = len(points)
+		if n <= 2:
+			return n
+
+		ans = 0
+		for i in range(n):
+			for j in range(i + 1, n):
+				p = 2  # the 2 points are collinear with themselves
+				for k in range(j + 1, n):
+					dx1 = points[i][0] - points[k][0]
+					dx2 = points[j][0] - points[i][0]
+					dy1 = points[i][1] - points[k][1]
+					dy2 = points[j][1] - points[i][1]
+
+					# Check if dy1 / dx1 = dy2 / dx2
+					# Which is the same as: dy1 * dx2 = dy2 * dx1
+					if dy1 * dx2 == dy2 * dx1:
+						p += 1
+
+				ans = max(ans, p)
+
+		return ans
+```
+
+</PySection>
+</LanguageSection>
+
+## Efficient Solution
+
+We can take a point $A$ and compute the slopes of all lines connecting $A$ to the other points.
+Two different points lie on the same line if they share the same slope.
+In this way, we can determine the maximum number of points lying on the same straight line with respect to $A$.
+
+We perform this for all other points.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N^2)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+class Solution {
+  public:
+	int maxPoints(vector<vector<int>> &points) {
+		int n = (int)points.size();
+		int res = 0;
+		for (int i = 0; i < n; i++) {
+			unordered_map<float, int> slope_count;
+			for (int j = i + 1; j < n; j++) {
+				float slope = 0.0;
+				if (points[i][0] - points[j][0] == 0) {  // avoid division by 0
+					slope = INT_MAX;
+				} else {
+					slope = float(points[i][1] - points[j][1]) /
+					        float(points[i][0] - points[j][0]);
+				}
+
+				slope_count[slope]++;
+			}
+			for (auto &[_, pt_num] : slope_count) { res = max(res, pt_num); }
+		}
+
+		return res + 1;
+	}
+};
+```
+
+</CPPSection>
+<PySection>
+
+```py
+from collections import defaultdict
+
+
+class Solution:
+	def maxPoints(self, points: List[List[int]]) -> int:
+		n = len(points)
+		res = 0
+		for i in range(n):
+			slope_count = defaultdict(int)
+			for j in range(i + 1, n):
+				if points[i][0] == points[j][0]:  # avoid division by zero
+					slope = float("inf")
+				else:
+					slope = (points[i][1] - points[j][1]) / (
+						points[i][0] - points[j][0]
+					)
+
+				slope_count[slope] += 1
+
+			res = max(res, max(slope_count.values(), default=0))
+
+		return res + 1
+```
+
+</PySection>
 </LanguageSection>
