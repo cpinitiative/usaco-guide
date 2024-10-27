@@ -139,7 +139,7 @@ class Solution {
 		int n = (int)points.size();
 		int res = 0;
 		for (int i = 0; i < n; i++) {
-			unordered_map<float, int> umap;
+			unordered_map<float, int> slope_count;
 			for (int j = i + 1; j < n; j++) {
 				float slope = 0.0;
 				if (points[i][0] - points[j][0] == 0) {  // avoid division by 0
@@ -149,9 +149,9 @@ class Solution {
 					        float(points[i][0] - points[j][0]);
 				}
 
-				umap[slope]++;
+				slope_count[slope]++;
 			}
-			for (auto &[_, slope] : umap) { res = max(res, slope); }
+			for (auto &[_, slope] : slope_count) { res = max(res, slope); }
 		}
 
 		return res + 1;
