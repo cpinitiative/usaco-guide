@@ -466,6 +466,46 @@ int main() {
 ```
 
 </CPPSection>
+<PySection>
+
+```py
+from math import gcd
+
+class Point:
+    def __init__(self, x: int = 0, y: int = 0):
+        self.x = x
+        self.y = y
+
+    def __sub__(self, other):
+        return Point(self.x - other.x, self.y - other.y)
+    
+n = int(input())
+points = []
+
+for _ in range(n):
+    x, y = map(int, input().split())
+    points.append(Point(x, y))
+
+points.append(points[0])
+
+area = 0
+for i in range(n):
+    area += points[i].x * points[i + 1].y - points[i].y * points[i + 1].x
+
+area = abs(area)
+boundary_points = 0
+
+for i in range(n):
+    diff = points[i + 1] - points[i]
+    g = gcd(abs(diff.x), abs(diff.y))
+    boundary_points += g
+
+interior_points = (area - boundary_points) // 2 + 1
+
+print(interior_points, boundary_points)
+```
+
+</PySection>
 </LanguageSection>
 
 <Problems problems="standard" />
