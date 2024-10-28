@@ -3,7 +3,7 @@ id: segtree-ext
 redirects:
   - /plat/seg-ext
 title: 'More Applications of Segment Tree'
-author: Benjamin Qi, Andi Qu
+author: Benjamin Qi, Andi Qu, Justin Ji
 prerequisites:
   - PURS
 description: 'Walking on a Segment Tree, Non-Commutative Combiner Functions'
@@ -61,6 +61,11 @@ $\max(a_l, \dots, a_{mid}) \geq x$; otherwise, we move to the right child.
 This is convenient because $\max(a_l, \dots, a_{mid})$ is already stored in the
 left child, so we can find it in $\mathcal{O}(1)$ time.
 
+**Time Complexity:** $\mathcal{O}(N + Q\log{N})$
+
+<LanguageSection>
+<CPPSection>
+
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
@@ -110,6 +115,158 @@ int main() {
 	return 0;
 }
 ```
+
+</CPPSection>
+</LanguageSection>
+
+<FocusProblem problem="walkSam2" />
+
+### Solution - Ordered Set
+
+First, we coordinate compress all the values and keep track of the frequency of each value in the array we build our segment tree on.
+We can easily answer the 
+$\texttt{INSERT}$, $\texttt{DELETE}$, and $\texttt{COUNT}$ queries using 
+the sum segment tree from the [PURS](/gold/PURS) module. Answering the 
+$\texttt{K-TH}$ queries in $\mathcal{O}(\log{N})$ time requires us to use 
+segment tree walking.
+
+Let $freq[i]$ equal the number of times $i$ occurs in our set.
+In our array of coordinate compressed values, we want to find the first 
+indice $x$ such that $\sum_{i=0}^{x} freq[i]$ is $\geq K$. 
+
+In the previous problem, we were walking on the prefix maximum of our array. Here, we are walking on the prefix sum of our array. The difference here is that if we know our answer is in $[l, r]$, then 
+checking the maximum in our left and right childs is enough to know if we 
+should walk left or right. But with sum, we also need to consider the range $[1, l)$ and how it might affect our answer.
+
+To handle keeping track of the prefix of $[1, l)$, we first set our prefix value to a neutral value, then join it with our left child's answer every time we walk right.
+
+**Time Complexity:** $\mathcal{O}(Q\log{Q})$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+template <class T> class SumSegmentTree {
+  private:
+	const T DEFAULT = 0;
+
+	int len;
+	vector<T> segtree;
+
+	T combine(const T &a, const T &b) { return a + b; }
+
+	void build(const vector<T> &arr, int at, int at_left, int at_right) {
+		if (at_left == at_right) {
+			segtree[at] = arr[at_left];
+			return;
+		}
+		int mid = (at_left + at_right) / 2;
+		build(arr, 2 * at, at_left, mid);
+		build(arr, 2 * at + 1, mid + 1, at_right);
+		segtree[at] = combine(segtree[2 * at], segtree[2 * at + 1]);
+	}
+
+	void set(int ind, T val, int at, int at_left, int at_right) {
+		if (at_left == at_right) {
+			segtree[at] = val;
+			return;
+		}
+		int mid = (at_left + at_right) / 2;
+		if (ind <= mid) {
+			set(ind, val, 2 * at, at_left, mid);
+		} else {
+			set(ind, val, 2 * at + 1, mid + 1, at_right);
+		}
+		segtree[at] = combine(segtree[2 * at], segtree[2 * at + 1]);
+	}
+
+	T range_sum(int start, int end, int at, int at_left, int at_right) {
+		if (at_right < start || end < at_left) { return DEFAULT; }
+		if (start <= at_left && at_right <= end) { return segtree[at]; }
+		int mid = (at_left + at_right) / 2;
+		T left_res = range_sum(start, end, 2 * at, at_left, mid);
+		T right_res = range_sum(start, end, 2 * at + 1, mid + 1, at_right);
+		return combine(left_res, right_res);
+	}
+
+    int walk(int at, int at_left, int at_right, int max_val, int pref_res) {
+        if (at_left == at_right) {
+            return at_left;
+        }
+        int mid = (at_left + at_right) / 2;
+        int sum_left = pref_res + segtree[2 * at];
+        if (sum_left >= max_val) {
+            return walk(2 * at, at_left, mid, max_val, pref_res);
+        }
+        return walk(2 * at + 1, mid + 1, at_right, max_val, sum_left);
+    }
+
+  public:
+	SumSegmentTree(int len) : len(len) { segtree = vector<T>(len * 4, DEFAULT); };
+
+	SumSegmentTree(const vector<T> &arr) : len(arr.size()) {
+		segtree = vector<T>(len * 4, DEFAULT);
+		build(arr, 1, 0, len - 1);
+	}
+
+	void set(int ind, T val) { set(ind, val, 1, 0, len - 1); }
+
+	T range_sum(int start, int end) { return range_sum(start, end, 1, 0, len - 1); }
+
+    int walk(int val) { return walk(1, 0, len - 1, val, 0); }
+};
+
+int main() {
+    int query_num;
+    cin >> query_num;
+    vector<int> indices;
+    vector<pair<char, int>> updates(query_num);
+    for (int i = 0; i < query_num; i++) {
+        char type;
+        int val;
+        cin >> type >> val;
+        updates[i] = {type, val};
+        indices.push_back(val);
+    }
+
+    sort(begin(indices), end(indices));
+    indices.erase(unique(begin(indices), end(indices)), end(indices));
+    const auto id = [&](int v) -> int {
+        return lower_bound(begin(indices), end(indices), v) - begin(indices);
+    };
+
+    vector<int> freq(indices.size());
+    SumSegmentTree<int> st(indices.size());
+    for (const auto [type, val] : updates) {
+        int loc = id(val);
+        if (type == 'I') {
+            if (freq[loc] == 0) {
+                freq[loc] = 1;
+                st.set(loc, 1);
+            }
+        } else if (type == 'D') {
+            if (freq[loc] == 1) {
+                freq[loc] = 0;
+                st.set(loc, 0);
+            }
+        } else if (type == 'K') {
+            if (st.range_sum(0, indices.size() - 1) < val) {
+                cout << "invalid" << "\n";
+            } else {
+                cout << st.walk(val) << "\n";
+            }
+        } else if (type == 'C') {
+            cout << st.range_sum(0, loc - 1) << "\n";
+        }
+    }
+}
+```
+
+</CPPSection>
+</LanguageSection>
 
 ### Problems
 
