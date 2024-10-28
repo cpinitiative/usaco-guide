@@ -124,18 +124,18 @@ int main() {
 ### Solution - Ordered Set
 
 First, we coordinate compress all the values and keep track of the frequency of each value in the array we build our segment tree on.
-We can easily answer the 
-$\texttt{INSERT}$, $\texttt{DELETE}$, and $\texttt{COUNT}$ queries using 
-the sum segment tree from the [PURS](/gold/PURS) module. Answering the 
-$\texttt{K-TH}$ queries in $\mathcal{O}(\log{N})$ time requires us to use 
+We can easily answer the
+$\texttt{INSERT}$, $\texttt{DELETE}$, and $\texttt{COUNT}$ queries using
+the sum segment tree from the [PURS](/gold/PURS) module. Answering the
+$\texttt{K-TH}$ queries in $\mathcal{O}(\log{N})$ time requires us to use
 segment tree walking.
 
 Let $freq[i]$ equal the number of times $i$ occurs in our set.
-In our array of coordinate compressed values, we want to find the first 
-indice $x$ such that $\sum_{i=0}^{x} freq[i]$ is $\geq K$. 
+In our array of coordinate compressed values, we want to find the first
+indice $x$ such that $\sum_{i=0}^{x} freq[i]$ is $\geq K$.
 
-In the previous problem, we were walking on the prefix maximum of our array. Here, we are walking on the prefix sum of our array. The difference here is that if we know our answer is in $[l, r]$, then 
-checking the maximum in our left and right childs is enough to know if we 
+In the previous problem, we were walking on the prefix maximum of our array. Here, we are walking on the prefix sum of our array. The difference here is that if we know our answer is in $[l, r]$, then
+checking the maximum in our left and right childs is enough to know if we
 should walk left or right. But with sum, we also need to consider the range $[1, l)$ and how it might affect our answer.
 
 To handle keeping track of the prefix of $[1, l)$, we first set our prefix value to a neutral value, then join it with our left child's answer every time we walk right.
@@ -192,17 +192,15 @@ template <class T> class SumSegmentTree {
 		return combine(left_res, right_res);
 	}
 
-    int walk(int at, int at_left, int at_right, int max_val, int pref_res) {
-        if (at_left == at_right) {
-            return at_left;
-        }
-        int mid = (at_left + at_right) / 2;
-        int sum_left = pref_res + segtree[2 * at];
-        if (sum_left >= max_val) {
-            return walk(2 * at, at_left, mid, max_val, pref_res);
-        }
-        return walk(2 * at + 1, mid + 1, at_right, max_val, sum_left);
-    }
+	int walk(int at, int at_left, int at_right, int max_val, int pref_res) {
+		if (at_left == at_right) { return at_left; }
+		int mid = (at_left + at_right) / 2;
+		int sum_left = pref_res + segtree[2 * at];
+		if (sum_left >= max_val) {
+			return walk(2 * at, at_left, mid, max_val, pref_res);
+		}
+		return walk(2 * at + 1, mid + 1, at_right, max_val, sum_left);
+	}
 
   public:
 	SumSegmentTree(int len) : len(len) { segtree = vector<T>(len * 4, DEFAULT); };
@@ -216,52 +214,52 @@ template <class T> class SumSegmentTree {
 
 	T range_sum(int start, int end) { return range_sum(start, end, 1, 0, len - 1); }
 
-    int walk(int val) { return walk(1, 0, len - 1, val, 0); }
+	int walk(int val) { return walk(1, 0, len - 1, val, 0); }
 };
 
 int main() {
-    int query_num;
-    cin >> query_num;
-    vector<int> indices;
-    vector<pair<char, int>> updates(query_num);
-    for (int i = 0; i < query_num; i++) {
-        char type;
-        int val;
-        cin >> type >> val;
-        updates[i] = {type, val};
-        indices.push_back(val);
-    }
+	int query_num;
+	cin >> query_num;
+	vector<int> indices;
+	vector<pair<char, int>> updates(query_num);
+	for (int i = 0; i < query_num; i++) {
+		char type;
+		int val;
+		cin >> type >> val;
+		updates[i] = {type, val};
+		indices.push_back(val);
+	}
 
-    sort(begin(indices), end(indices));
-    indices.erase(unique(begin(indices), end(indices)), end(indices));
-    const auto id = [&](int v) -> int {
-        return lower_bound(begin(indices), end(indices), v) - begin(indices);
-    };
+	sort(begin(indices), end(indices));
+	indices.erase(unique(begin(indices), end(indices)), end(indices));
+	const auto id = [&](int v) -> int {
+		return lower_bound(begin(indices), end(indices), v) - begin(indices);
+	};
 
-    vector<int> freq(indices.size());
-    SumSegmentTree<int> st(indices.size());
-    for (const auto [type, val] : updates) {
-        int loc = id(val);
-        if (type == 'I') {
-            if (freq[loc] == 0) {
-                freq[loc] = 1;
-                st.set(loc, 1);
-            }
-        } else if (type == 'D') {
-            if (freq[loc] == 1) {
-                freq[loc] = 0;
-                st.set(loc, 0);
-            }
-        } else if (type == 'K') {
-            if (st.range_sum(0, indices.size() - 1) < val) {
-                cout << "invalid" << "\n";
-            } else {
-                cout << st.walk(val) << "\n";
-            }
-        } else if (type == 'C') {
-            cout << st.range_sum(0, loc - 1) << "\n";
-        }
-    }
+	vector<int> freq(indices.size());
+	SumSegmentTree<int> st(indices.size());
+	for (const auto [type, val] : updates) {
+		int loc = id(val);
+		if (type == 'I') {
+			if (freq[loc] == 0) {
+				freq[loc] = 1;
+				st.set(loc, 1);
+			}
+		} else if (type == 'D') {
+			if (freq[loc] == 1) {
+				freq[loc] = 0;
+				st.set(loc, 0);
+			}
+		} else if (type == 'K') {
+			if (st.range_sum(0, indices.size() - 1) < val) {
+				cout << "invalid" << "\n";
+			} else {
+				cout << st.walk(val) << "\n";
+			}
+		} else if (type == 'C') {
+			cout << st.range_sum(0, loc - 1) << "\n";
+		}
+	}
 }
 ```
 
