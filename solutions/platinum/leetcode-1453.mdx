@@ -108,46 +108,46 @@ class Solution {
 
 ```py
 class Solution:
-    def numPoints(self, darts: List[List[int]], r: int) -> int:
-        # Compute the distances between all pairs of points
-        dist = [[0] * len(darts) for _ in range(len(darts))]
-        for i in range(len(darts)):
-            for j in range(i + 1, len(darts)):
-                dx = darts[i][0] - darts[j][0]
-                dy = darts[i][1] - darts[j][1]
-                dist[i][j] = dist[j][i] = math.sqrt(dx * dx + dy * dy)
+	def numPoints(self, darts: List[List[int]], r: int) -> int:
+		# Compute the distances between all pairs of points
+		dist = [[0] * len(darts) for _ in range(len(darts))]
+		for i in range(len(darts)):
+			for j in range(i + 1, len(darts)):
+				dx = darts[i][0] - darts[j][0]
+				dy = darts[i][1] - darts[j][1]
+				dist[i][j] = dist[j][i] = math.sqrt(dx * dx + dy * dy)
 
-        ans = 1
-        for i in range(len(darts)):
-            # Store the angles of other points relative to darts[i]
-            angles = []
-            for j in range(len(darts)):
-                # Continue if it's the same point or if it lies outside any circle
-                if i == j or dist[i][j] > 2 * r:
-                    continue
+		ans = 1
+		for i in range(len(darts)):
+			# Store the angles of other points relative to darts[i]
+			angles = []
+			for j in range(len(darts)):
+				# Continue if it's the same point or if it lies outside any circle
+				if i == j or dist[i][j] > 2 * r:
+					continue
 
-                a = math.atan2(darts[j][1] - darts[i][1], darts[j][0] - darts[i][0])
-                b = math.acos(dist[i][j] / (2.0 * r))
-                alpha = a - b
-                beta = a + b
-				
-                # The angle at which the point enters the circle
-                angles.append((alpha, False))
-                # The angle at which the point leaves the circle
-                angles.append((beta, True))
+				a = math.atan2(darts[j][1] - darts[i][1], darts[j][0] - darts[i][0])
+				b = math.acos(dist[i][j] / (2.0 * r))
+				alpha = a - b
+				beta = a + b
 
-            # Sort all the angles
-            angles.sort()
-            
-            active_points = 1
-            for angle, is_exit in angles:
-                if not is_exit:
-                    active_points += 1
-                else:
-                    active_points -= 1
-                ans = max(ans, active_points)
+				# The angle at which the point enters the circle
+				angles.append((alpha, False))
+				# The angle at which the point leaves the circle
+				angles.append((beta, True))
 
-        return ans
+			# Sort all the angles
+			angles.sort()
+
+			active_points = 1
+			for angle, is_exit in angles:
+				if not is_exit:
+					active_points += 1
+				else:
+					active_points -= 1
+				ans = max(ans, active_points)
+
+		return ans
 ```
 
 </PySection>
