@@ -16,7 +16,7 @@ Add one to the line passing through each pair of points.
 #include <bits/stdc++.h>
 using namespace std;
 
-pair<pair<int, int>, int> getline(pair<int, int> a, pair<int, int> b) {
+pair<pair<int, int>, int> get_line(pair<int, int> a, pair<int, int> b) {
     pair<int, int> z = {b.first - a.first, b.second - a.second};
     swap(z.first, z.second);
 
@@ -44,7 +44,7 @@ int main() {
         map<pair<pair<int, int>, int>, int> mp;
         for (int i = 0; i < n; i++) {
             for (int j = i + 1; j < n; j++) {
-                mp[getline(points[i], points[j])]++;
+                mp[get_line(points[i], points[j])]++;
             }
         }
 
@@ -64,4 +64,50 @@ int main() {
 ```
 
 </CPPSection>
+<PySection>
+
+```py
+import math
+from collections import defaultdict
+from typing import Tuple
+
+def get_line(a: Tuple[int, int], b: Tuple[int, int]) -> Tuple[Tuple[int, int], int]:
+    z = (b[0] - a[0], b[1] - a[1])
+    z = (-z[1], z[0])
+
+    g = math.gcd(z[0], z[1])
+    z = (z[0] // g, z[1] // g)
+    
+    z = min(z, (-z[0], -z[1]))
+    
+    c = z[0] * a[0] + z[1] * a[1]
+    return (z, c)
+
+while True:
+    n = int(input())
+    if n == 0:
+        break
+        
+    points = []
+    for _ in range(n):
+        x, y = map(int, input().split())
+        points.append((x, y))
+
+    mp = defaultdict(int)
+    
+    for i in range(n):
+        for j in range(i + 1, n):
+            mp[get_line(points[i], points[j])] += 1
+
+    mx = max(mp.values(), default=0)
+
+    res = 0
+    for i in range(1, n + 1):
+        if i * (i - 1) // 2 <= mx:
+            res = i
+
+    print(res)
+```
+
+</PySection>
 </LanguageSection>
