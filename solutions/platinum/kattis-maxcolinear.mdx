@@ -37,13 +37,13 @@ int main() {
 
 		vector<pair<int, int>> points(n);
 		for (int i = 0; i < n; i++) { cin >> points[i].first >> points[i].second; }
-		map<pair<pair<int, int>, int>, int> mp;
+		map<pair<pair<int, int>, int>, int> collinear_count;
 		for (int i = 0; i < n; i++) {
-			for (int j = i + 1; j < n; j++) { mp[get_line(points[i], points[j])]++; }
+			for (int j = i + 1; j < n; j++) { collinear_count[get_line(points[i], points[j])]++; }
 		}
 
 		int mx = 0;
-		for (auto x : mp) { mx = max(mx, x.second); }
+		for (auto x : collinear_count) { mx = max(mx, x.second); }
 		int res = 0;
 		for (int i = 1; i <= n; i++) {
 			if (i * (i - 1) / 2 <= mx) { res = i; }
@@ -85,13 +85,13 @@ while True:
 		x, y = map(int, input().split())
 		points.append((x, y))
 
-	mp = defaultdict(int)
+	collinear_count = defaultdict(int)
 
 	for i in range(n):
 		for j in range(i + 1, n):
-			mp[get_line(points[i], points[j])] += 1
+			collinear_count[get_line(points[i], points[j])] += 1
 
-	mx = max(mp.values(), default=0)
+	mx = max(collinear_count.values(), default=0)
 
 	res = 0
 	for i in range(1, n + 1):
