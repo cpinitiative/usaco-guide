@@ -89,7 +89,7 @@ class Solution {
 
 			int active_points = 1;
 			for (const pair<double, int> &angle : angles) {
-				if (angle.second == false) {
+				if (!angle.second) {
 					active_points++;
 				} else {
 					active_points--;
@@ -141,10 +141,7 @@ class Solution:
 
 			active_points = 1
 			for angle, is_exit in angles:
-				if not is_exit:
-					active_points += 1
-				else:
-					active_points -= 1
+				active_points += -1 if is_exit else 1
 				ans = max(ans, active_points)
 
 		return ans
