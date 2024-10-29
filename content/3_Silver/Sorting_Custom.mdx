@@ -672,21 +672,21 @@ public class Sol {
 
 ## Coordinate Compression
 
-Coordinate compression describes the process of mapping each value in a list to its index if that
-list was sorted. For example, the list $\{7, 3, 4, 1\}$ would be compressed to
-$\{3, 1, 2, 0\}$. Notice that $1$ is the least value in the first list, so it
-becomes $0$, and $7$ is the greatest value, so it becomes $3$, the largest index
-in the list.
+Coordinate compression describes the process of mapping each value in a list to
+its index if that list was sorted. For example, the list $\{7, 3, 4, 1\}$ would
+be compressed to $\{3, 1, 2, 0\}$. Notice that $1$ is the least value in the
+first list, so it becomes $0$, and $7$ is the greatest value, so it becomes $3$,
+the largest index in the list.
 
-When we have values from a large range, but we
-only care about their relative order (for example, if we have to know if one
-value is above another), coordinate compression is a simple way to help
-with implementation. For example, if we have a set of integers ranging from $0$ to $10^9$, we
-can't use them as array indices because we'd have to create an array of size
-$10^9$, which would surely cause a `Memory Limit Exceeded` verdict. However, if
-there are only $N \leq 10^6$ such integers, we can coordinate-compress their
-values, which guarantees that the values will all be in the range from $0$ to
-$N-1$, which _can_ be used as array indices.
+When we have values from a large range, but we only care about their relative
+order (for example, if we have to know if one value is above another),
+coordinate compression is a simple way to help with implementation. For example,
+if we have a set of integers ranging from $0$ to $10^9$, we can't use them as
+array indices because we'd have to create an array of size $10^9$, which would
+surely cause a `Memory Limit Exceeded` verdict. However, if there are only
+$N \leq 10^6$ such integers, we can coordinate-compress their values, which
+guarantees that the values will all be in the range from $0$ to $N-1$, which
+_can_ be used as array indices.
 
 <FocusProblem problem="sample2" />
 
@@ -697,11 +697,12 @@ Rectangular Pasture._ Again, we won't delve into the full solution but instead
 discuss how coordinate compression is applied. Since the solution uses
 [2D-prefix](/silver/prefix-sums-2) sums (another Silver topic), it is helpful if
 all point coordinates are coordinate-compressed to the range $0$ to $N-1$ so
-they can be used as array indices. Without coordinate compression, creating a large enough array would result in a `Memory Limit Exceeded` verdict.
+they can be used as array indices. Without coordinate compression, creating a
+large enough array would result in a `Memory Limit Exceeded` verdict.
 
-Below you will find the solution to Rectangular Pasture, which uses
-coordinate compression at the beginning. Observe how a custom comparator is used to sort the
-points:
+Below you will find the solution to Rectangular Pasture, which uses coordinate
+compression at the beginning. Observe how a custom comparator is used to sort
+the points:
 
 <LanguageSection>
 
@@ -857,11 +858,12 @@ We also provide a more detailed explanation:
 
 First of all, let's figure out the value at each index in array $a$. It would be
 too slow to loop through every index in every update interval as well as every
-index in a query interval (The time complexity would be $O(N \cdot max_c + Q
-\cdot max_c)$ where $max_c$ is the maximum coordinate given in the input, which
-is up to $10^9$.). At the same time, that approach would take $O(max_c)$ memory,
-which is also too much. Instead, we make an observation that will make prefix
-sums paired with coordinate compression a viable option.
+index in a query interval (The time complexity would be
+$O(N \cdot max_c + Q
+\cdot max_c)$ where $max_c$ is the maximum coordinate given
+in the input, which is up to $10^9$.). At the same time, that approach would
+take $O(max_c)$ memory, which is also too much. Instead, we make an observation
+that will make prefix sums paired with coordinate compression a viable option.
 
 Not every index in the whole range from $1...10^9$ is used in updates. In fact,
 there can be large intervals of indices that all have the same value. Call every
@@ -1206,19 +1208,19 @@ Many of the problems below may use other Silver concepts, such as
     <Quiz.Answer correct>
       $1 \leq N \leq 10^6$ and $1 \leq M \leq 10^9$
       <Quiz.Explanation>
-        You would need to create an array of length M, and since M can be up to 10^9, that is too large. Instead, you can compress the N unique values into N unique values in the range of M. For example, [1, 2, 10^9] becomes [1, 2, 3], and therefore your array will only have a size of N.
+        You would need to create an array of length $M$, and since $M$ can be up to $10^9$, that is too large. Instead, you can compress the $N$ unique values to be within the range of $N$. For example, $[1, 4, 10^9]$ becomes $[0, 1, 2]$, and therefore your array will only be a size of $N$.
       </Quiz.Explanation>
     </Quiz.Answer>
     <Quiz.Answer>
       $1 \leq N \leq 10^9$ and $1 \leq M \leq 10^6$
       <Quiz.Explanation>
-        You would not need coordinate compression since the largest M can be is 10^6 and making an array of size M will typically not exceed the memory limit.
+        You would not need coordinate compression since the largest $M$ can be is $10^6$ and making an array of size $M$ will typically not exceed the memory limit.
       </Quiz.Explanation>
     </Quiz.Answer>
     <Quiz.Answer>
       $1 \leq N \leq 10^6$ and $1 \leq M \leq 10^6$
       <Quiz.Explanation>
-        You would not need coordinate compression since the largest M can be is 10^6 and making an array of size M will typically not exceed the memory limit.
+        You would not need coordinate compression since the largest $M$ can be is $10^6$ and making an array of size $M$ will typically not exceed the memory limit.
       </Quiz.Explanation>
     </Quiz.Answer>
   </Quiz.Question>
