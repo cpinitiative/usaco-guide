@@ -2,7 +2,7 @@
 id: intro-sorted-sets
 title: 'More Operations on Sorted Sets'
 author: Darren Yao, Benjamin Qi, Andrew Wang
-contributors: Aadit Ambadkar, Jeffrey Hu
+contributors: Aadit Ambadkar, Jeffrey Hu, Jason Sun
 prerequisites:
   - intro-sets
 description:
@@ -48,17 +48,16 @@ redirects:
 In sets and maps where keys (or elements) are stored in sorted order, accessing
 or removing the next key higher or lower than some input key `k` is supported.
 
-Keep in mind that insertion and deletion will take $\mathcal{O}(\log N)$ time for
-sorted sets, which is more than the average $\mathcal{O}(1)$ insertion and
-deletion for unordered sets, but less than the worst case $\mathcal{O}(N)$ insertion
-and deletion for unordered sets.
+Keep in mind that insertion and deletion will take $\mathcal{O}(\log N)$ time
+for sorted sets, which is more than the average $\mathcal{O}(1)$ insertion and
+deletion for unordered sets, but less than the worst case $\mathcal{O}(N)$
+insertion and deletion for unordered sets.
 
 ## Using Iterators
 
 In Bronze, we avoided discussion of any set operations involving iterators.
 
 <LanguageSection>
-
 <CPPSection>
 
 <Resources>
@@ -66,7 +65,6 @@ In Bronze, we avoided discussion of any set operations involving iterators.
 </Resources>
 
 </CPPSection>
-
 <JavaSection>
 
 In Java, iterators are helpful for looping through sets.
@@ -125,13 +123,44 @@ which can only be used once before calling the `next()` method.
 </Warning>
 
 </JavaSection>
+<PySection>
 
+In Python, we can use `iter()` to obtain the iterator object of any iterable.
+Using `next()` on the iterator lets you iterate through the iterable. Below, a
+dictionary is used instead of a set because dictionaries keep order.
+
+Iterating through a dictionary representation of an ordered set:
+
+```py
+nums = {0: None, 1: None, 2: None, 4: None, 7: None}
+iterator = iter(nums)
+
+print(next(iterator))  # 0
+print(next(iterator))  # 1
+print(next(iterator))  # 2
+print(next(iterator))  # 4
+print(next(iterator))  # 7
+```
+
+<Warning>
+As of Python 3.6, dictionaries are ordered by **insertion order**. For older
+versions, you can use an `OrderedDict` from `collections`. Keep in mind that
+the above representation is of an ordered set, not a sorted set, because Python
+does not have sorted sets in its standard library, as you will see in the next
+section.
+</Warning>
+
+Python's iterators are fundamental to iteration and are used in its for loops
+and tuple unpacking. This is useful when you want more control over your
+iteration. It can also be simply used in cases where you just want the first or
+any element.
+
+</PySection>
 </LanguageSection>
 
 ## Sorted Sets
 
 <LanguageSection>
-
 <CPPSection>
 
 The sorted `std::set` also supports:
@@ -168,7 +197,6 @@ make sure to avoid it!
 </Warning>
 
 </CPPSection>
-
 <JavaSection>
 
 `TreeSet`s in Java allow for a multitude of additional operations:
@@ -196,7 +224,67 @@ System.out.println(set.higher(23));  // ERROR, no such element exists
 ```
 
 </JavaSection>
+<PySection>
 
+Python does not have a sorted set nor a sorted map, so see the C++ or Java if
+you want an implementation from the standard library. However, if you are still
+curious regarding the Python implementation, you can find an AVL tree
+representation of a sorted set below.
+
+<Resources>
+	<Resource source="DSA Python" url="https://nibmehub.com/opac-service/pdf/read/Data%20Structures%20and%20Algorithms%20in%20Python.pdf#page=503" title="AVL Trees">
+		definition and implementation of AVL Trees in Python
+	</Resource>
+</Resources>
+
+<Warning>
+
+You are not expected to know how to create an AVL tree in USACO Silver, nor is
+it recommended to do so for a representation of a sorted set since other
+languages have sorted sets built-in.
+
+</Warning>
+
+Since some online judges include additional libraries, an implementation of
+sorted sets from the `sortedcontainers` library (which is not included in most
+online judges like USACO) is shown below. All operations shown below are
+$\mathcal{O}(\log N)$ time, except for its $\mathcal{O}(N \log N)$
+initialization.
+
+```py
+from sortedcontainers import SortedSet
+
+sorted_set = SortedSet([5, 1, 3, 2])
+print(sorted_set)  # SortedSet([1, 2, 3, 4, 7])
+
+# Add elements
+sorted_set.add(4)
+sorted_set.add(6)
+print(sorted_set)  # SortedSet([1, 2, 3, 4, 5, 6])
+
+# Remove elements
+sorted_set.discard(3)
+sorted_set.discard(5)
+print(sorted_set)  # SortedSet([1, 2, 4, 6])
+
+# Check if an element is in the sorted set
+print(2 in sorted_set)  # True
+print(100 in sorted_set)  # False
+
+# Access elements by it's index
+print(sorted_set[0])  # 1 (smallest element, first index)
+print(sorted_set[-1])  # 6 (largest element, last index)
+print(sorted_set[2])  # 4
+
+# Get the index of an element
+print(sorted_set.index(4))  # 2
+
+# Find the index to insert the given value
+print(sorted_set.bisect_left(2))  # 1
+print(sorted_set.bisect_right(2))  # 2
+```
+
+</PySection>
 </LanguageSection>
 
 One limitation of sorted sets is that we can't efficiently access the $k^{th}$
@@ -207,7 +295,6 @@ structure called an [order statistic tree](/gold/PURS#order-statistic-tree).
 ## Sorted Maps
 
 <LanguageSection>
-
 <CPPSection>
 
 The ordered `map` also allows:
@@ -231,7 +318,6 @@ if (m.upper_bound(10) == m.end()) {
 ```
 
 </CPPSection>
-
 <JavaSection>
 
 The ordered map additionally supports `firstKey` / `firstEntry` and `lastKey` /
@@ -255,7 +341,58 @@ System.out.println(map.lowerKey(3));     // ERROR
 ```
 
 </JavaSection>
+<PySection>
 
+Sorted maps in Python can be created by adding a dictionary to a sorted set,
+where each element in the sorted set is a key in the dictionary and values can
+be assigned with the dictionary. This is the most straightforward
+implementation, and the ground up implementation of a sorted set can be found in
+the above section.
+
+Additionally, you can implement a `SortedDict` with the `sortedcontainers`
+library. All operations shown below are $\mathcal{O}(\log N)$ time, except for
+an $\mathcal{O}(N \log N)$ initialization and $\mathcal{O}(N)$ time to get all
+items, keys, or values.
+
+```py
+from sortedcontainers import SortedDict
+
+sorted_map = SortedDict({1: "one", 4: "four", 3: "three"})
+print(sorted_map)  # SortedDict({1: 'one', 3: 'three', 4: 'four'})
+
+# Add elements
+sorted_map[2] = "two"
+sorted_map[5] = "five"
+
+# Output SortedDict({1: 'one', 2: 'two', 3: 'three', 4: 'four', 5: 'five'})
+print(sorted_map)
+
+# Remove elements
+del sorted_map[3]
+print(sorted_map)  # SortedDict({1: 'one', 2: 'two', 4: 'four', 5: 'five'})
+
+# Check if a key is in the sorted dict
+print(1 in sorted_map)  # True
+print(100 in sorted_map)  # False
+
+# Get the key's value
+print(sorted_map[2])  # two
+print(sorted_map[4])  # four
+
+# Get all items (key value pairs), keys, or values below
+print(*sorted_map.items())  # (1, 'one') (2, 'two') (4, 'four') (5, 'five')
+print(*sorted_map.keys())  # 1 2 4 5
+print(*sorted_map.values())  # one two four five
+
+# Find the index of an existing key
+print(sorted_map.index(2))  # 1
+
+# Find the index to insert a given key
+print(sorted_map.bisect_left(3))  # 2
+print(sorted_map.bisect_right(6))  # 4
+```
+
+</PySection>
 </LanguageSection>
 
 ## Multisets
@@ -263,7 +400,6 @@ System.out.println(map.lowerKey(3));     // ERROR
 A **multiset** is a sorted set that allows multiple copies of the same element.
 
 <LanguageSection>
-
 <CPPSection>
 
 In addition to all of the regular set operations,
@@ -271,8 +407,8 @@ In addition to all of the regular set operations,
 - the `count()` method returns the number of times an element is present in the
   multiset. However, this method takes time **linear** in the number of matches
   so you shouldn't use it in a contest.
-- To remove a value __once__, use `ms.erase(ms.find(val))`.
-- To remove __all__ occurrences of a value, use `ms.erase(val)`.
+- To remove a value **once**, use `ms.erase(ms.find(val))`.
+- To remove **all** occurrences of a value, use `ms.erase(val)`.
 
 <Warning>
 	Using `ms.erase(val)` erases __all__ instances of `val` from the multiset. To remove one instance of `val`, use `ms.erase(ms.find(val))`!
@@ -296,7 +432,6 @@ cout << ms.count(9) << '\n';  // 0
 ```
 
 </CPPSection>
-
 <JavaSection>
 
 While there is no multiset in Java, we can implement one using the `TreeMap`
@@ -326,7 +461,6 @@ static void remove(int x) {
 ```
 
 </JavaSection>
-
 </LanguageSection>
 
 ## Priority Queues
@@ -392,11 +526,16 @@ pq.add(6);                      // [7, 6, 5]
 
 In Python (unlike in C++), we delete and retrieve the **lowest** element.
 
-Note that Python's priority queue is not encapsulated; `heapq` operates on a provided list directly by turning it into a heap, then doing operations on the heap.
+Note that Python's priority queue is not encapsulated; `heapq` operates on a
+provided list directly by turning it into a heap, then doing operations on the
+heap.
 
 <Warning>
 
-Because of a heap's structure, printing out `pq` will **not** print out the elements in sorted order in Python; instead, it will print out the list. The comments below are a **representation** of what the heap contains, **not** what the contents of `pq` actually are.
+Because of a heap's structure, printing out `pq` will **not** print out the
+elements in sorted order in Python; instead, it will print out the list. The
+comments below are a **representation** of what the heap contains, **not** what
+the contents of `pq` actually are.
 
 </Warning>
 
