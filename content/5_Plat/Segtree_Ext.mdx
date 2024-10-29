@@ -214,6 +214,7 @@ template <class T> class SumSegmentTree {
 
 	T range_sum(int start, int end) { return range_sum(start, end, 1, 0, len - 1); }
 
+	/** @return first i such that the prefix sum up to i >= val */
 	int walk(int val) { return walk(1, 0, len - 1, val, 0); }
 };
 
@@ -232,6 +233,8 @@ int main() {
 
 	sort(begin(indices), end(indices));
 	indices.erase(unique(begin(indices), end(indices)), end(indices));
+
+	/** @return coordinate compressed location of v */
 	const auto id = [&](int v) -> int {
 		return lower_bound(begin(indices), end(indices), v) - begin(indices);
 	};
