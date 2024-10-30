@@ -1183,44 +1183,44 @@ Many of the problems below may use other Silver concepts, such as
 
 <Quiz>
   <Quiz.Question>
-    When are custom comparators used?
+    What would the list $\{40, 21, -4, 1000, 5\}$ be coordinate compressed to?
     <Quiz.Answer>
-      When sorting integers in default order.
+      $\{4, 1, 0, 3, 2\}$
       <Quiz.Explanation>
-        Incorrect. Sorting integers in default order does not require custom comparators as the default comparator in the sort function suffices.
+        Incorrect. 1000 is the largest number in the list, yet it becomes 3 instead of 4, the largest number in the new list.
       </Quiz.Explanation>
     </Quiz.Answer>
     <Quiz.Answer>
-      Comparing the relationships of elements in a single-element array.
+      $\{0, 1, 2, 3, 4\}$
       <Quiz.Explanation>
-        Incorrect. Comparators are only needed for data with two or more elements to compare.
+        Incorrect. -4 should be 0 since's it's the smallest number in the list, yet it becomes 2.
       </Quiz.Explanation>
     </Quiz.Answer>
     <Quiz.Answer correct>
-      Sorting custom objects or sorting values in non-default order.
+      $\{3, 2, 0, 4, 1\}$
       <Quiz.Explanation>
-        Correct. You will need to use a custom comparator as there is no default option that is able to sort the custom data, or no option to sort in the specific way that you want.
+        Correct. We can sort the list to $\{-4, 5, 21, 40, 1000\}$, and map the indices to the values to see that this solution is correct. -4 -> 0, 5 -> 1, 21 -> 2, 40 -> 3, 1000 -> 4.
       </Quiz.Explanation>
     </Quiz.Answer>
   </Quiz.Question>
   <Quiz.Question>
-    Which input constraints require coordinate compression for the following problem: Given $N$ unique integers, in where each integer is $N_i$ ($1 \leq N_i \leq M$), the solution requires you to create an array where the values of the $N$ integers given are represented by the array's indices.
+    What is the fastest time complexity to coordinate compress an array of $N$ integers (where the integers are unordered)?
     <Quiz.Answer correct>
-      $1 \leq N \leq 10^6$ and $1 \leq M \leq 10^9$
+      $\mathcal{O}(N\log N)$
       <Quiz.Explanation>
-        You would need to create an array of length $M$, and since $M$ can be up to $10^9$, that is too large. Instead, you can compress the $N$ unique values to be within the range of $N$. For example, $[1, 4, 10^9]$ becomes $[0, 1, 2]$, and therefore your array will only be a size of $N$.
+        Correct. Sorting the array takes $\mathcal{O}(N\log N)$ time, and assigning new values to each value takes $\mathcal{O}(N)$. Thus, it is $\mathcal{O}(N\log N)$ total time.
       </Quiz.Explanation>
     </Quiz.Answer>
     <Quiz.Answer>
-      $1 \leq N \leq 10^9$ and $1 \leq M \leq 10^6$
+      $O(N^2)$
       <Quiz.Explanation>
-        You would not need coordinate compression since the largest $M$ can be is $10^6$ and making an array of size $M$ will typically not exceed the memory limit.
+        Incorrect. The fastest way to coordinate compress is explained in the module, try to recall and determine the time complexity of that algorithm.
       </Quiz.Explanation>
     </Quiz.Answer>
     <Quiz.Answer>
-      $1 \leq N \leq 10^6$ and $1 \leq M \leq 10^6$
+      $O(N)$
       <Quiz.Explanation>
-        You would not need coordinate compression since the largest $M$ can be is $10^6$ and making an array of size $M$ will typically not exceed the memory limit.
+        Incorrect. This would be the case only if the array of $N$ integers were sorted already.
       </Quiz.Explanation>
     </Quiz.Answer>
   </Quiz.Question>
