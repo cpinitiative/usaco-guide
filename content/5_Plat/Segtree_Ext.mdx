@@ -123,7 +123,7 @@ int main() {
 
 ### Solution - Ordered Set
 
-First, we coordinate compress all the values and keep track of the frequency of each value in the array we build our segment tree on.
+First, we coordinate compress all the values, and keep track of the frequency of each value in the array we build our segment tree on.
 We can answer the
 $\texttt{INSERT}$, $\texttt{DELETE}$, and $\texttt{COUNT}$ queries using
 the sum segment tree from the [PURS](/gold/PURS) module. Answering the
@@ -132,13 +132,14 @@ segment tree walking.
 
 Let $freq[i]$ equal the number of times $i$ occurs in our set.
 In our array of coordinate compressed values, we want to find the first
-indice $x$ such that $\sum_{i=0}^{x} freq[i]$ is $\geq K$.
+index $x$ such that $\sum_{i=0}^{x} freq[i]$ is $\geq K$.
 
 In the previous problem, we were walking on the prefix maximum of our array. Here, we are walking on the prefix sum of our array. The difference here is that if we know our answer is in $[l, r]$, then
-checking the maximum in our left and right childs is enough to know if we
+checking the maximum in our left and right children is enough to know if we
 should walk left or right. But with sum, we also need to consider the range $[1, l)$ and how it might affect our answer.
 
-To handle keeping track of the prefix of $[1, l)$, we first set our prefix value to a neutral value, then join it with our left child's answer every time we walk right.
+To keep track of the prefix $[1, l)$, we first set our prefix result to be a neutral value. By neutral value, we mean the identity of the operation (for addition it's 0, for multiplication it's 1, etc.). 
+Every time we walk right, we add the left child's value to our prefix result.
 
 **Time Complexity:** $\mathcal{O}(Q\log{Q})$
 
