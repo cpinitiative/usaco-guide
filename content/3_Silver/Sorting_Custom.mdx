@@ -672,21 +672,21 @@ public class Sol {
 
 ## Coordinate Compression
 
-Coordinate compression describes the process of mapping each value in a list to its index if that
-list was sorted. For example, the list $\{7, 3, 4, 1\}$ would be compressed to
-$\{3, 1, 2, 0\}$. Notice that $1$ is the least value in the first list, so it
-becomes $0$, and $7$ is the greatest value, so it becomes $3$, the largest index
-in the list.
+Coordinate compression describes the process of mapping each value in a list to
+its index if that list was sorted. For example, the list $\{7, 3, 4, 1\}$ would
+be compressed to $\{3, 1, 2, 0\}$. Notice that $1$ is the least value in the
+first list, so it becomes $0$, and $7$ is the greatest value, so it becomes $3$,
+the largest index in the list.
 
-When we have values from a large range, but we
-only care about their relative order (for example, if we have to know if one
-value is above another), coordinate compression is a simple way to help
-with implementation. For example, if we have a set of integers ranging from $0$ to $10^9$, we
-can't use them as array indices because we'd have to create an array of size
-$10^9$, which would surely cause a `Memory Limit Exceeded` verdict. However, if
-there are only $N \leq 10^6$ such integers, we can coordinate-compress their
-values, which guarantees that the values will all be in the range from $0$ to
-$N-1$, which _can_ be used as array indices.
+When we have values from a large range, but we only care about their relative
+order (for example, if we have to know if one value is above another),
+coordinate compression is a simple way to help with implementation. For example,
+if we have a set of integers ranging from $0$ to $10^9$, we can't use them as
+array indices because we'd have to create an array of size $10^9$, which would
+surely cause a `Memory Limit Exceeded` verdict. However, if there are only
+$N \leq 10^6$ such integers, we can coordinate-compress their values, which
+guarantees that the values will all be in the range from $0$ to $N-1$, which
+_can_ be used as array indices.
 
 <FocusProblem problem="sample2" />
 
@@ -697,11 +697,12 @@ Rectangular Pasture._ Again, we won't delve into the full solution but instead
 discuss how coordinate compression is applied. Since the solution uses
 [2D-prefix](/silver/prefix-sums-2) sums (another Silver topic), it is helpful if
 all point coordinates are coordinate-compressed to the range $0$ to $N-1$ so
-they can be used as array indices. Without coordinate compression, creating a large enough array would result in a `Memory Limit Exceeded` verdict.
+they can be used as array indices. Without coordinate compression, creating a
+large enough array would result in a `Memory Limit Exceeded` verdict.
 
-Below you will find the solution to Rectangular Pasture, which uses
-coordinate compression at the beginning. Observe how a custom comparator is used to sort the
-points:
+Below you will find the solution to Rectangular Pasture, which uses coordinate
+compression at the beginning. Observe how a custom comparator is used to sort
+the points:
 
 <LanguageSection>
 
@@ -857,11 +858,12 @@ We also provide a more detailed explanation:
 
 First of all, let's figure out the value at each index in array $a$. It would be
 too slow to loop through every index in every update interval as well as every
-index in a query interval (The time complexity would be $O(N \cdot max_c + Q
-\cdot max_c)$ where $max_c$ is the maximum coordinate given in the input, which
-is up to $10^9$.). At the same time, that approach would take $O(max_c)$ memory,
-which is also too much. Instead, we make an observation that will make prefix
-sums paired with coordinate compression a viable option.
+index in a query interval
+(The complexity would be $O(C(N+Q))$,
+where $C$ is the maximum coordinate given in the input).
+At the same time, that approach would take $O(C)$ memory, which is also too much.
+Instead, we make an observation
+that will make prefix sums paired with coordinate compression a viable option.
 
 Not every index in the whole range from $1...10^9$ is used in updates. In fact,
 there can be large intervals of indices that all have the same value. Call every
@@ -1176,3 +1178,50 @@ Many of the problems below may use other Silver concepts, such as
 </Info>
 
 <Problems problems="general" hideSuggestProblemButton />
+
+## Quiz
+
+<Quiz>
+  <Quiz.Question>
+    What would the list $\{40, 21, -4, 1000, 5\}$ be coordinate compressed to?
+    <Quiz.Answer>
+      $\{4, 1, 0, 3, 2\}$
+      <Quiz.Explanation>
+        Incorrect. 1000 is the largest number in the list, yet it becomes 3 instead of 4, the largest number in the new list.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      $\{0, 1, 2, 3, 4\}$
+      <Quiz.Explanation>
+        Incorrect. -4 should be 0 since's it's the smallest number in the list, yet it becomes 2.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer correct>
+      $\{3, 2, 0, 4, 1\}$
+      <Quiz.Explanation>
+        Correct. We can sort the list to $\{-4, 5, 21, 40, 1000\}$, and map the indices to the values to see that this solution is correct. -4 -> 0, 5 -> 1, 21 -> 2, 40 -> 3, 1000 -> 4.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+  </Quiz.Question>
+  <Quiz.Question>
+    What is the fastest time complexity to coordinate compress an array of $N$ integers (where the integers are unordered)?
+    <Quiz.Answer correct>
+      $\mathcal{O}(N\log N)$
+      <Quiz.Explanation>
+        Correct. Sorting the array takes $\mathcal{O}(N\log N)$ time, and assigning new values to each value takes $\mathcal{O}(N)$. Thus, it is $\mathcal{O}(N\log N)$ total time.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      $O(N^2)$
+      <Quiz.Explanation>
+        Incorrect. The fastest way to coordinate compress is explained in the module, try to recall and determine the time complexity of that algorithm.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      $O(N)$
+      <Quiz.Explanation>
+        Incorrect. This would be the case only if the array of $N$ integers were sorted already.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+  </Quiz.Question>
+</Quiz>
