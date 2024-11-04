@@ -19,20 +19,22 @@ using namespace std;
 
 vector<int> ux = {0, -1, 0, 1}, uy = {1, 0, -1, 0}, dx = {0, -1, 0, 1},
             dy = {-1, 0, 1, 0};
-int mat[50][50], cnt = 0, n, m, k, cur = 0;
 
-void fn(int x, int y) {
+const int MAX_N = 50;
+int mat[MAX_N][MAX_N], visited_cells_cnt = 0, n, m, k, current_distance = 0;
+
+void update_distance(int x, int y) {
 	if (x < 0 || x >= m || y < 0 || y >= n) return;
-	cnt++;
-	mat[y][x] = min(mat[y][x], cur);
+	visited_cells_cnt++;
+	mat[y][x] = min(mat[y][x], current_distance);
 }
 
 int main() {
 	cin >> n >> m >> k;
 	int x, y, z;
 	vector<int> tx, ty;
-	for (int i = 0; i < 50; i++) {
-		for (int j = 0; j < 50; j++) { mat[i][j] = 1e9; }
+	for (int i = 0; i < MAX_N; i++) {
+		for (int j = 0; j < MAX_N; j++) { mat[i][j] = 1e9; }
 	}
 	for (int i = 0; i < k; i++) {
 		cin >> x >> y >> z;
@@ -46,30 +48,30 @@ int main() {
 			tx = ux;
 			ty = uy;
 		}
-		int kk = 1;
-		int di = 1;
-		int c = 2;
-		cur = 1;
-		cnt = 0;
-		fn(x, y);
+		int direction_index = 1;
+		int steps_len = 1;
+		int steps_left = 2;
+		current_distance = 1;
+		visited_cells_cnt = 0;
+		update_distance(x, y);
 		while (true) {
-			if (cnt >= n * m) break;
-			if (c == 0) {
-				di++;
-				c = 2;
+			if (visited_cells_cnt >= n * m) break;
+			if (steps_left == 0) {
+				steps_len++;
+				steps_left = 2;
 			}
-			for (int va = 0; va < di; va++) {
-				x += ty[kk];
-				y += tx[kk];
-				cur++;
-				fn(x, y);
+			for (int va = 0; va < steps_len; va++) {
+				x += ty[direction_index];
+				y += tx[direction_index];
+				current_distance++;
+				update_distance(x, y);
 			}
-			c--;
-			kk = (kk + 1) % 4;
+			steps_left--;
+			direction_index = (direction_index + 1) % 4;
 		}
 	}
 	for (int i = 0; i < n; i++) {
-		for (int j = 0; j < m; j++) { cout << mat[i][j] << (j == m - 1 ? '\n' : ' '); }
+		for (int j = 0; j < m; j++) { cout << mat[i][j] << " \n"[j == m - 1]; }
 	}
 }
 ```
