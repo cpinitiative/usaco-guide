@@ -212,24 +212,24 @@ public class Art {
 
 ```py
 with open("art.in") as read:
-    width = int(read.readline().strip())
-    canvas = [list(map(int, read.readline().split())) for _ in range(width)]
-    
+	width = int(read.readline().strip())
+	canvas = [list(map(int, read.readline().split())) for _ in range(width)]
+
 visible = {}
 for r in range(width):
-    for c in range(width):
-        color = canvas[r][c]
-        if color not in visible:
-            visible[color] = {'min_r': r, 'max_r': r, 'min_c': c, 'max_c': c}
-        else:
-            bounds = visible[color]
-            bounds['min_r'] = min(r, bounds['min_r'])
-            bounds['max_r'] = max(r, bounds['max_r'])
-            bounds['min_c'] = min(c, bounds['min_c'])
-            bounds['max_c'] = max(c, bounds['max_c'])
+	for c in range(width):
+		color = canvas[r][c]
+		if color not in visible:
+			visible[color] = {"min_r": r, "max_r": r, "min_c": c, "max_c": c}
+		else:
+			bounds = visible[color]
+			bounds["min_r"] = min(r, bounds["min_r"])
+			bounds["max_r"] = max(r, bounds["max_r"])
+			bounds["min_c"] = min(c, bounds["min_c"])
+			bounds["max_c"] = max(c, bounds["max_c"])
 
 
-visible.pop(0, None) # 0 isn't a color
+visible.pop(0, None)  # 0 isn't a color
 
 # all the non-visible colors could've been painted first
 poss_first = width * width - len(visible)
@@ -237,35 +237,40 @@ poss_first = width * width - len(visible)
 # handle the edge case where there's only 1 color
 if len(visible) > 1:
 
-    # rect_num[r][c] is *going* to contain the # of rectangles
+	# rect_num[r][c] is *going* to contain the # of rectangles
 	# that must contain the point (r, c)
-    rect_num = [[0] * (width + 1) for _ in range(width + 1)]
-    valid_colors = set(visible.keys())
-    
-    for color, bounds in visible.items():
-        # initialize it as a difference array
-        min_r, max_r, min_c, max_c = bounds['min_r'], bounds['max_r'], bounds['min_c'], bounds['max_c']
-        rect_num[min_r][min_c] += 1
-        rect_num[min_r][max_c + 1] -= 1
-        rect_num[max_r + 1][min_c] -= 1
-        rect_num[max_r + 1][max_c + 1] += 1
+	rect_num = [[0] * (width + 1) for _ in range(width + 1)]
+	valid_colors = set(visible.keys())
 
-    # Apply the difference array to get the actual count
-    for r in range(width):
-        for c in range(width):
-            if r > 0:
-                rect_num[r][c] += rect_num[r - 1][c]
-            if c > 0:
-                rect_num[r][c] += rect_num[r][c - 1]
-            if r > 0 and c > 0:
-                rect_num[r][c] -= rect_num[r - 1][c - 1]
+	for color, bounds in visible.items():
+		# initialize it as a difference array
+		min_r, max_r, min_c, max_c = (
+			bounds["min_r"],
+			bounds["max_r"],
+			bounds["min_c"],
+			bounds["max_c"],
+		)
+		rect_num[min_r][min_c] += 1
+		rect_num[min_r][max_c + 1] -= 1
+		rect_num[max_r + 1][min_c] -= 1
+		rect_num[max_r + 1][max_c + 1] += 1
+
+	# Apply the difference array to get the actual count
+	for r in range(width):
+		for c in range(width):
+			if r > 0:
+				rect_num[r][c] += rect_num[r - 1][c]
+			if c > 0:
+				rect_num[r][c] += rect_num[r][c - 1]
+			if r > 0 and c > 0:
+				rect_num[r][c] -= rect_num[r - 1][c - 1]
 
 			# if 2 rectangles overlap, the one at the top
 			# (aka the shown one) can't have been painted first
-            if rect_num[r][c] > 1:
-                valid_colors.discard(canvas[r][c])
+			if rect_num[r][c] > 1:
+				valid_colors.discard(canvas[r][c])
 
-    poss_first += len(valid_colors)
+	poss_first += len(valid_colors)
 
 print(poss_first, file=open("art.out", "w"))
 ```
