@@ -828,6 +828,58 @@ be apparent which coordinate (`x` or `y`) that the comparator is sorting by.
 
 </JavaSection>
 
+<PySection>
+
+```py
+// BeginCodeSnip{Solution code}
+import sys
+input = sys.stdin.readline
+// EndCodeSnip
+
+n = int(input().strip())
+points = [list(map(int, input().strip().split())) for _ in range(n)]
+
+points.sort(key = lambda i: i[1])
+for i in range(n): points[i][1] = i + 1
+
+points.sort(key = lambda i: i[0])
+for i in range(n): points[i][0] = i + 1
+
+// BeginCodeSnip{Solution code}
+psa = [[0 for _ in range(n+1)] for _ in range(n+1)]
+for x, y in points: psa[x][y] = 1
+
+for x in range(1, n+1):
+    for y in range(1, n+1):
+        psa[x][y] += psa[x-1][y] + psa[x][y-1] - psa[x-1][y-1]
+
+ans = n + 1
+
+for s in range(n):
+    for e in range(s + 1, n):
+        srt, end = points[s][0], points[e][0]
+        top = max(points[s][1], points[e][1])
+		btm = min(points[s][1], points[e][1])
+
+        above = psa[end][n] - psa[srt-1][n] - psa[end][top] + psa[srt-1][top]
+        below = psa[end][btm-1] - psa[srt-1][btm-1]
+        ans += (above + 1) * (below + 1)
+
+print(ans)
+// EndCodeSnip
+```
+
+The solution uses a
+[lambda](https://docs.python.org/3/tutorial/controlflow.html#lambda-expressions)
+function as the custom comparator, which our guide didn't discuss, but it should
+be apparent which coordinate (`x` or `y`) that the comparator is sorting by.
+
+**Note:** The above Python solution does not sucessfully pass all test cases on
+USACO even with the correct time complexity of $\mathcal{O}(N^2)$ since Python
+is too slow.
+
+</PySection>
+
 </LanguageSection>
 
 The solution to Rectangular Pasture directly replaces coordinates with their
@@ -858,12 +910,10 @@ We also provide a more detailed explanation:
 
 First of all, let's figure out the value at each index in array $a$. It would be
 too slow to loop through every index in every update interval as well as every
-index in a query interval
-(The complexity would be $O(C(N+Q))$,
-where $C$ is the maximum coordinate given in the input).
-At the same time, that approach would take $O(C)$ memory, which is also too much.
-Instead, we make an observation
-that will make prefix sums paired with coordinate compression a viable option.
+index in a query interval (The complexity would be $O(C(N+Q))$, where $C$ is the
+maximum coordinate given in the input). At the same time, that approach would
+take $O(C)$ memory, which is also too much. Instead, we make an observation that
+will make prefix sums paired with coordinate compression a viable option.
 
 Not every index in the whole range from $1...10^9$ is used in updates. In fact,
 there can be large intervals of indices that all have the same value. Call every
