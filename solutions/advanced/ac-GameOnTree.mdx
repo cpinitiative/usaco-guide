@@ -71,4 +71,34 @@ int main() {
 ```
 
 </CPPSection>
+<PySection>
+
+```py
+import sys, pypyjit
+
+# improves performance for deeply recursive functions by allowing PyPy to skip unrolling
+pypyjit.set_param('max_unroll_recursion=-1')
+
+sys.setrecursionlimit(10**7)
+
+def dfs(u: int, p: int) -> int:
+    sg = 0
+    for v in g[u]:
+        if v != p:
+            sg ^= dfs(v, u) + 1
+
+    return sg
+
+n = int(input())
+g = [[] for _ in range(n + 1)]
+
+for _ in range(n - 1):
+    u, v = map(int, input().split())
+    g[u].append(v)
+    g[v].append(u)
+
+print("Alice" if dfs(1, 0) else "Bob")
+```
+
+</PySection>
 </LanguageSection>
