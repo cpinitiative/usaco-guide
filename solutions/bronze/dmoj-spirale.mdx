@@ -15,13 +15,10 @@ we will choose the minimum number that visit this cell.
 
 ```cpp
 #include <bits/stdc++.h>
-
 using namespace std;
-using ll = long long;
-using ld = long double;
 
-vector<int> ui = {0, -1, 0, 1}, uj = {1, 0, -1, 0}, di = {0, -1, 0, 1},
-            dj = {-1, 0, 1, 0};
+vector<int> ux = {0, -1, 0, 1}, uy = {1, 0, -1, 0}, dx = {0, -1, 0, 1},
+            dy = {-1, 0, 1, 0};
 int mat[50][50], cnt = 0, n, m, k, cur = 0;
 
 void fn(int x, int y) {
@@ -33,7 +30,7 @@ void fn(int x, int y) {
 int main() {
 	cin >> n >> m >> k;
 	int x, y, z;
-	vector<int> ti, tj;
+	vector<int> tx, ty;
 	for (int i = 0; i < 50; i++) {
 		for (int j = 0; j < 50; j++) { mat[i][j] = 1e9; }
 	}
@@ -43,11 +40,11 @@ int main() {
 		y--;
 		swap(x, y);
 		if (z == 0) {
-			ti = di;
-			tj = dj;
+			tx = dx;
+			ty = dy;
 		} else {
-			ti = ui;
-			tj = uj;
+			tx = ux;
+			ty = uy;
 		}
 		int kk = 1;
 		int di = 1;
@@ -62,8 +59,8 @@ int main() {
 				c = 2;
 			}
 			for (int va = 0; va < di; va++) {
-				x += tj[kk];
-				y += ti[kk];
+				x += ty[kk];
+				y += tx[kk];
 				cur++;
 				fn(x, y);
 			}
@@ -72,7 +69,7 @@ int main() {
 		}
 	}
 	for (int i = 0; i < n; i++) {
-		for (int j = 0; j < m; j++) { cout << mat[i][j] <<LanguageSection (j == m - 1 ? '\n' : ' '); }
+		for (int j = 0; j < m; j++) { cout << mat[i][j] << (j == m - 1 ? '\n' : ' '); }
 	}
 }
 ```
