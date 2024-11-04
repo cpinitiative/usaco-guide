@@ -10,6 +10,9 @@ author: Oscar Garries
 We can simulate the spiral around each starting position. For every cell in our solution
 we will choose the minimum number that visit this cell.
 
+<LanguageSection>
+<CPPSection>
+
 ```cpp
 #include <bits/stdc++.h>
 
@@ -69,7 +72,66 @@ int main() {
 		}
 	}
 	for (int i = 0; i < n; i++) {
-		for (int j = 0; j < m; j++) { cout << mat[i][j] << (j == m - 1 ? '\n' : ' '); }
+		for (int j = 0; j < m; j++) { cout << mat[i][j] <<LanguageSection (j == m - 1 ? '\n' : ' '); }
 	}
 }
 ```
+
+</CPPSection>
+<PySection>
+
+```py
+ux = [0, -1, 0, 1]
+uy = [1, 0, -1, 0]
+dx = [0, -1, 0, 1]
+dy = [-1, 0, 1, 0]
+
+mat = [[(float('inf'))] * 50 for _ in range(50)]
+curr = 0
+cnt = 0
+
+def fn(x: int, y: int):
+    global cnt
+    if x < 0 or x >= m or y < 0 or y >= n:
+        return
+    
+    cnt += 1
+    mat[y][x] = min(mat[y][x], cur)
+
+n, m, k = map(int, input().split())
+for _ in range(k):
+    x, y, z = map(int, input().split())
+    x -= 1
+    y -= 1
+    x, y = y, x
+
+    if z == 0:
+        tx, ty = dx, dy
+    else:
+        tx, ty = ux, uy
+
+    di = 1
+    c = 2
+    cur = 1
+    cnt = 0
+    fn(x, y)
+    kk = 1
+
+    while cnt < n * m:
+        if c == 0:
+            di += 1
+            c = 2
+        for _ in range(di):
+            x += ty[kk]
+            y += tx[kk]
+            cur += 1
+            fn(x, y)
+        c -= 1
+        kk = (kk + 1) % 4
+
+for i in range(n):
+    print(" ".join(map(str, mat[i][:m])))
+```
+
+</PySection>
+</LanguageSection>
