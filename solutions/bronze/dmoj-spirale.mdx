@@ -86,53 +86,55 @@ dx = [0, -1, 0, 1]
 dy = [-1, 0, 1, 0]
 
 MAX_N = 50
-mat = [[(float('inf'))] * MAX_N for _ in range(MAX_N)]
+mat = [[(float("inf"))] * MAX_N for _ in range(MAX_N)]
 current_distance = 0
 visited_cells_cnt = 0
 
+
 def update_distance(x: int, y: int):
-    global visited_cells_cnt
-    if x < 0 or x >= m or y < 0 or y >= n:
-        return
-    
-    visited_cells_cnt += 1
-    mat[y][x] = min(mat[y][x], current_distance)
+	global visited_cells_cnt
+	if x < 0 or x >= m or y < 0 or y >= n:
+		return
+
+	visited_cells_cnt += 1
+	mat[y][x] = min(mat[y][x], current_distance)
+
 
 n, m, k = map(int, input().split())
 for _ in range(k):
-    x, y, z = map(int, input().split())
-    x -= 1
-    y -= 1
-    x, y = y, x
+	x, y, z = map(int, input().split())
+	x -= 1
+	y -= 1
+	x, y = y, x
 
-    if z == 0:
-        tx, ty = dx, dy
-    else:
-        tx, ty = ux, uy
+	if z == 0:
+		tx, ty = dx, dy
+	else:
+		tx, ty = ux, uy
 
-    steps_len = 1
-    steps_left = 2
-    current_distance = 1
-    visited_cells_cnt = 0
-    direction_index = 1
-    update_distance(x, y)
+	steps_len = 1
+	steps_left = 2
+	current_distance = 1
+	visited_cells_cnt = 0
+	direction_index = 1
+	update_distance(x, y)
 
-    while visited_cells_cnt < n * m:
-        if steps_left == 0:
-            steps_len += 1
-            steps_left = 2
-            
-        for _ in range(steps_len):
-            x += ty[direction_index]
-            y += tx[direction_index]
-            current_distance += 1
-            update_distance(x, y)
+	while visited_cells_cnt < n * m:
+		if steps_left == 0:
+			steps_len += 1
+			steps_left = 2
 
-        steps_left -= 1
-        direction_index = (direction_index + 1) % 4
+		for _ in range(steps_len):
+			x += ty[direction_index]
+			y += tx[direction_index]
+			current_distance += 1
+			update_distance(x, y)
+
+		steps_left -= 1
+		direction_index = (direction_index + 1) % 4
 
 for i in range(n):
-    print(" ".join(map(str, mat[i][:m])))
+	print(" ".join(map(str, mat[i][:m])))
 ```
 
 </PySection>
