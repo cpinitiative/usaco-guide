@@ -40,17 +40,17 @@ int main() {
 
 	long long last_day = days[0];
 	long long cost = k + 1;  // Start the first subscription
-	for (long long d : days) {
+	for (int i = 1; i < n; i++) {
 		// Should Bessie extend the most recent subscription?
-		if (d - last_day < k + 1) {
-			cost += d - last_day;
+		if (days[i] - last_day < k + 1) {
+			cost += days[i] - last_day;
 		} else {
 			// Or just start a new one entirely?
 			cost += k + 1;
 		}
 
 		// Store the date of the last subscription
-		last_day = d;
+		last_day = days[i];
 	}
 
 	cout << cost << endl;
@@ -78,17 +78,17 @@ public class WatchingMooloo {
 
 		long lastDay = days[0];
 		long cost = k + 1;  // Start the first subscription
-		for (long d : days) {
+		for (int i = 1; i < n; i++) {
 			// Should Bessie extend the most recent subscription?
-			if (d - lastDay < k + 1) {
-				cost += d - lastDay;
+			if (days[i] - lastDay < k + 1) {
+				cost += days[i] - lastDay;
 			} else {
 				// Or just start a new one entirely?
 				cost += k + 1;
 			}
 
 			// Store the date of the last subscription
-			lastDay = d;
+			lastDay = days[i];
 		}
 
 		System.out.println(cost);
