@@ -828,37 +828,41 @@ public class RectangularPasture {
 ```py
 # BeginCodeSnip{Solution code}
 import sys
+
 input = sys.stdin.readline
 # EndCodeSnip
 
 n = int(input().strip())
 points = [list(map(int, input().strip().split())) for _ in range(n)]
 
-points.sort(key = lambda i: i[1])
-for i in range(n): points[i][1] = i + 1
+points.sort(key=lambda i: i[1])
+for i in range(n):
+	points[i][1] = i + 1
 
-points.sort(key = lambda i: i[0])
-for i in range(n): points[i][0] = i + 1
+points.sort(key=lambda i: i[0])
+for i in range(n):
+	points[i][0] = i + 1
 
 # BeginCodeSnip{Solution code}
 psa = [[0 for _ in range(n + 1)] for _ in range(n + 1)]
-for x, y in points: psa[x][y] = 1
+for x, y in points:
+	psa[x][y] = 1
 
 for x in range(1, n + 1):
-    for y in range(1, n + 1):
-        psa[x][y] += psa[x - 1][y] + psa[x][y - 1] - psa[x - 1][y - 1]
+	for y in range(1, n + 1):
+		psa[x][y] += psa[x - 1][y] + psa[x][y - 1] - psa[x - 1][y - 1]
 
 ans = n + 1
 
 for s in range(n):
-    for e in range(s + 1, n):
-        srt, end = points[s][0], points[e][0]
-        top = max(points[s][1], points[e][1])
-        bottom = min(points[s][1], points[e][1])
+	for e in range(s + 1, n):
+		srt, end = points[s][0], points[e][0]
+		top = max(points[s][1], points[e][1])
+		bottom = min(points[s][1], points[e][1])
 
-        above = psa[end][n] - psa[srt - 1][n] - psa[end][top] + psa[srt - 1][top]
-        below = psa[end][bottom - 1] - psa[srt - 1][bottom - 1]
-        ans += (above + 1) * (below + 1)
+		above = psa[end][n] - psa[srt - 1][n] - psa[end][top] + psa[srt - 1][top]
+		below = psa[end][bottom - 1] - psa[srt - 1][bottom - 1]
+		ans += (above + 1) * (below + 1)
 
 print(ans)
 
