@@ -619,11 +619,9 @@ edges.sort(key=lambda edge: (edge.w, edge.a))
 Sorting by an arbitrary number of criteria is done similarly.
 
 <LanguageSection>
-
 <CPPSection>
 
 </CPPSection>
-
 <JavaSection>
 
 With Java, we can implement a comparator for arrays of arbitrary length
@@ -663,7 +661,6 @@ public class Sol {
 ```
 
 </JavaSection>
-
 <PySection>
 
 </PySection>
@@ -705,57 +702,62 @@ compression at the beginning. Observe how a custom comparator is used to sort
 the points:
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
-// BeginCodeSnip{Solution code}
 #include <algorithm>
 #include <iostream>
+
 using namespace std;
-// EndCodeSnip
 
 typedef pair<int, int> Point;
 bool ycomp(Point p, Point q) { return p.second < q.second; }
 
-// BeginCodeSnip{Solution code}
 const int MAX_N = 2500;
-int N, Psum[MAX_N + 1][MAX_N + 1];
-Point P[MAX_N];
+int pref[MAX_N + 1][MAX_N + 1];
+Point p[MAX_N];
 
 int rsum(int x1, int y1, int x2, int y2) {
-	return Psum[x2 + 1][y2 + 1] - Psum[x2 + 1][y1] - Psum[x1][y2 + 1] + Psum[x1][y1];
+    return pref[x2 + 1][y2 + 1] - pref[x2 + 1][y1] - pref[x1][y2 + 1] + pref[x1][y1];
 }
 
 int main(void) {
-	cin >> N;
-	for (int i = 0; i < N; i++) {
-		int x, y;
-		cin >> x >> y;
-		P[i] = make_pair(x, y);
-	}
-	// EndCodeSnip
+    int n;
+    cin >> n;
+    for (int i = 0; i < n; i++) {
+        int x, y;
+        cin >> x >> y;
+        p[i] = make_pair(x, y);
+    }
 
-	sort(P, P + N);
-	for (int i = 0; i < N; i++) P[i].first = i + 1;
-	sort(P, P + N, ycomp);
-	for (int i = 0; i < N; i++) P[i].second = i + 1;
+    sort(p, p + n);
+    for (int i = 0; i < n; i++) {
+        p[i].first = i + 1;
+    }
+    sort(p, p + n, ycomp);
+    for (int i = 0; i < n; i++) {
+        p[i].second = i + 1;
+    }
 
-	// BeginCodeSnip{Solution code}
-	for (int i = 0; i < N; i++) Psum[P[i].first][P[i].second] = 1;
-	for (int i = 1; i <= N; i++)
-		for (int j = 1; j <= N; j++)
-			Psum[i][j] += Psum[i - 1][j] + Psum[i][j - 1] - Psum[i - 1][j - 1];
-	long long answer = 0;
-	for (int i = 0; i < N; i++)
-		for (int j = i; j < N; j++) {
-			int x1 = min(P[i].first, P[j].first) - 1;
-			int x2 = max(P[i].first, P[j].first) - 1;
-			answer += rsum(0, i, x1, j) * rsum(x2, i, N - 1, j);
-		}
-	cout << answer + 1 << "\n";
+    for (int i = 0; i < n; i++) {
+        pref[p[i].first][p[i].second] = 1;
+    }
+    for (int i = 1; i <= n; i++) {
+        for (int j = 1; j <= n; j++) {
+            pref[i][j] += pref[i - 1][j] + pref[i][j - 1] - pref[i - 1][j - 1];
+        }
+    }
+    long long answer = 0;
+    for (int i = 0; i < n; i++) {
+        for (int j = i; j < n; j++) {
+            int x1 = min(p[i].first, p[j].first) - 1;
+            int x2 = max(p[i].first, p[j].first) - 1;
+            answer += rsum(0, i, x1, j) * rsum(x2, i, n - 1, j);
+        }
+    }
+
+    cout << answer + 1 << endl;
 }
-// EndCodeSnip
 ```
 
 </CPPSection>
@@ -763,7 +765,6 @@ int main(void) {
 <JavaSection>
 
 ```java
-// BeginCodeSnip{Solution code}
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Scanner;
@@ -779,7 +780,6 @@ public class RectangularPasture {
 	public static void main(String[] args) {
 		Scanner in = new Scanner(System.in);
 		int n = in.nextInt();
-		// EndCodeSnip
 
 		int[] xs = new int[n];
 		int[] ys = new int[n];
@@ -796,7 +796,6 @@ public class RectangularPasture {
 		Arrays.sort(cows, Comparator.comparingInt(j -> ys[j]));
 		for (int y = 1; y <= n; y++) { ys[cows[y - 1]] = y; }
 
-		// BeginCodeSnip{Solution code}
 		sums = new int[n + 1][n + 1];
 		for (int j = 0; j < n; j++) { sums[xs[j]][ys[j]]++; }
 		for (int x = 0; x <= n; x++) {
@@ -806,6 +805,7 @@ public class RectangularPasture {
 				if (x > 0 && y > 0) { sums[x][y] -= sums[x - 1][y - 1]; }
 			}
 		}
+
 		long answer = n + 1;
 		for (int j = 0; j < n; j++) {
 			for (int k = j + 1; k < n; k++) {
@@ -815,22 +815,26 @@ public class RectangularPasture {
 				                 Math.max(ys[j], ys[k]), n);
 			}
 		}
+
 		System.out.println(answer);
 	}
 }
-// EndCodeSnip
 ```
 
 </JavaSection>
-
 <PySection>
 
+<Warning>
+
+Due to Python's constant factor, the below code will TLE
+on a couple test cases despite having the correct time complexity.
+
+</Warning>
+
 ```py
-# BeginCodeSnip{Solution code}
 import sys
 
 input = sys.stdin.readline
-# EndCodeSnip
 
 n = int(input().strip())
 points = [list(map(int, input().strip().split())) for _ in range(n)]
@@ -843,7 +847,6 @@ points.sort(key=lambda i: i[0])
 for i in range(n):
 	points[i][0] = i + 1
 
-# BeginCodeSnip{Solution code}
 psa = [[0 for _ in range(n + 1)] for _ in range(n + 1)]
 for x, y in points:
 	psa[x][y] = 1
@@ -865,14 +868,9 @@ for s in range(n):
 		ans += (above + 1) * (below + 1)
 
 print(ans)
-
-# Note: This solution does not sucessfully pass all test cases on USACO even
-# with the correct time complexity of O(n^2) since Python is too slow.
-# EndCodeSnip
 ```
 
 </PySection>
-
 </LanguageSection>
 
 The solution to Rectangular Pasture directly replaces coordinates with their
@@ -963,11 +961,9 @@ answer these range sum queries in O(1) each.
 </Spoiler>
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
-// BeginCodeSnip{Solution code}
 #include <bits/stdc++.h>
 
 using namespace std;
@@ -992,18 +988,12 @@ pair<pair<int, int>, int> updates[100005];  // updates in given in the input <<l
 
 // EndCodeSnip
 
-// finds the "compressed index" of a special index (a.k.a. its position in the
-// sorted list)
+/** @return the compressed index of a special index (it), aka its index in the compressed list */
 int getCompressedIndex(int a) {
 	return lower_bound(indices.begin(), indices.end(), a) - indices.begin();
 }
 
-// BeginCodeSnip{Solution code}
-
 int main() {
-	ios_base::sync_with_stdio(false);
-	cin.tie(NULL);
-
 	int N, Q;
 	cin >> N >> Q;
 
@@ -1021,20 +1011,11 @@ int main() {
 		indices.push_back(r);
 		queries[i] = {l, r};
 	}
-	// EndCodeSnip
-	//========= COORDINATE COMPRESSION =======
+	
+	// Perform coordinate compression by sorting and removing duplicates
 	sort(indices.begin(), indices.end());
 	indices.erase(unique(indices.begin(), indices.end()), indices.end());
-	/*
-	You can find info on "unique" here:
-	https://www.cplusplus.com/reference/algorithm/unique/
 
-	Since our list is already sorted, the effect of "unique" is duplicates are
-	removed. In total, these two lines give us a sorted list with duplicates
-	removed.
-	*/
-	//========= COORDINATE COMPRESSION =======
-	// BeginCodeSnip{Solution code}
 	// We create the difference array, using coordinate compression and binary
 	// search to get the compressed index of each special index Note the 1-based
 	// indexing for convenience
@@ -1069,27 +1050,20 @@ int main() {
 		            prefix_sums[getCompressedIndex(queries[i].first)]
 		     << "\n";
 	}
-
-	return 0;
 }
-// EndCodeSnip
 ```
 
 </CPPSection>
-
 <JavaSection>
 
 ```java
-// BeginCodeSnip{Solution code}
 import java.io.*;
 import java.util.*;
 
-public class rangequeries {
-
+public class StaticRangeQueries {
 	// custom class that stores a few integers (used for directly storing the
 	// queries and updates given in the input)
 	static class Query {
-
 		int l, r, v;
 		public Query(int l, int r, int v) {
 			this.l = l;
@@ -1117,16 +1091,15 @@ public class rangequeries {
 	static ArrayList<Integer> indices;  // sorted list of special indices
 	static Query queries[];             // queries given in the input <l, r>
 	static Query updates[];             // updates in given in the input <l, r, v>
-	// EndCodeSnip
-	// finds the "compressed index" of a special index (a.k.a. its position in
-	// the sorted list)
+	
+	/** @return the compressed index of a special index (it), aka its index in the compressed list */
 	static int getCompressedIndex(int a) {
 		return Collections.binarySearch(indices, a);
 	}
-	// BeginCodeSnip{Solution code}
+
 	public static void main(String[] args) throws Exception {
 		BufferedReader br = new BufferedReader(new InputStreamReader(
-		    System.in));  // A Scanner is too slow to solve this problem!
+		    System.in));
 
 		StringTokenizer st = new StringTokenizer(br.readLine());
 		int N = Integer.parseInt(st.nextToken()), Q = Integer.parseInt(st.nextToken());
@@ -1152,18 +1125,12 @@ public class rangequeries {
 			indices.add(r);
 			queries[i] = new Query(l, r);
 		}
-		// EndCodeSnip
-		//========= COORDINATE COMPRESSION =======
+		
+		// Coordinate compress by adding the indices to a sorted set and vice versa
 		TreeSet<Integer> temp = new TreeSet<Integer>(indices);
-		// Since temp is a set, all duplicate elements are removed
 		indices.clear();
-		indices.addAll(temp);  // The elements of temp will be added to indices
-		                       // in sorted order, since temp is a TreeSet
-		// The effect of these lines is to sort indices while removing duplicate
-		// elements. While this is not the only way to do it, it is one that
-		// requires little code.
-		//========= COORDINATE COMPRESSION =======
-		// BeginCodeSnip{Solution code}
+		indices.addAll(temp);
+
 		difference_array = new long[indices.size() + 5];
 		widths = new int[indices.size() + 5];
 		interval_value = new long[indices.size() + 5];
@@ -1204,11 +1171,9 @@ public class rangequeries {
 		}
 	}
 }
-// EndCodeSnip
 ```
 
 </JavaSection>
-
 </LanguageSection>
 
 ## Problems
