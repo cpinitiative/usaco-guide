@@ -821,11 +821,6 @@ public class RectangularPasture {
 // EndCodeSnip
 ```
 
-The solution uses a
-[lambda](https://docs.oracle.com/javase/tutorial/java/javaOO/lambdaexpressions.html)
-function as the custom comparator, which our guide didn't discuss, but it should
-be apparent which coordinate (`x` or `y`) that the comparator is sorting by.
-
 </JavaSection>
 
 <PySection>
@@ -846,12 +841,12 @@ points.sort(key = lambda i: i[0])
 for i in range(n): points[i][0] = i + 1
 
 // BeginCodeSnip{Solution code}
-psa = [[0 for _ in range(n+1)] for _ in range(n+1)]
+psa = [[0 for _ in range(n + 1)] for _ in range(n + 1)]
 for x, y in points: psa[x][y] = 1
 
-for x in range(1, n+1):
-    for y in range(1, n+1):
-        psa[x][y] += psa[x-1][y] + psa[x][y-1] - psa[x-1][y-1]
+for x in range(1, n + 1):
+    for y in range(1, n + 1):
+        psa[x][y] += psa[x - 1][y] + psa[x][y - 1] - psa[x - 1][y - 1]
 
 ans = n + 1
 
@@ -859,24 +854,19 @@ for s in range(n):
     for e in range(s + 1, n):
         srt, end = points[s][0], points[e][0]
         top = max(points[s][1], points[e][1])
-		btm = min(points[s][1], points[e][1])
+		bottom = min(points[s][1], points[e][1])
 
-        above = psa[end][n] - psa[srt-1][n] - psa[end][top] + psa[srt-1][top]
-        below = psa[end][btm-1] - psa[srt-1][btm-1]
+        above = psa[end][n] - psa[srt - 1][n] - psa[end][top] + psa[srt - 1][top]
+        below = psa[end][bottom - 1] - psa[srt - 1][bottom - 1]
         ans += (above + 1) * (below + 1)
 
 print(ans)
+
+# Note: This solution does not sucessfully pass all test cases on USACO even
+# with the correct time complexity of O(n^2) since Python is too slow.
+
 // EndCodeSnip
 ```
-
-The solution uses a
-[lambda](https://docs.python.org/3/tutorial/controlflow.html#lambda-expressions)
-function as the custom comparator, which our guide didn't discuss, but it should
-be apparent which coordinate (`x` or `y`) that the comparator is sorting by.
-
-**Note:** The above Python solution does not sucessfully pass all test cases on
-USACO even with the correct time complexity of $\mathcal{O}(N^2)$ since Python
-is too slow.
 
 </PySection>
 
