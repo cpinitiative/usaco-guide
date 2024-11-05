@@ -718,45 +718,39 @@ int pref[MAX_N + 1][MAX_N + 1];
 Point p[MAX_N];
 
 int rsum(int x1, int y1, int x2, int y2) {
-    return pref[x2 + 1][y2 + 1] - pref[x2 + 1][y1] - pref[x1][y2 + 1] + pref[x1][y1];
+	return pref[x2 + 1][y2 + 1] - pref[x2 + 1][y1] - pref[x1][y2 + 1] + pref[x1][y1];
 }
 
 int main(void) {
-    int n;
-    cin >> n;
-    for (int i = 0; i < n; i++) {
-        int x, y;
-        cin >> x >> y;
-        p[i] = make_pair(x, y);
-    }
+	int n;
+	cin >> n;
+	for (int i = 0; i < n; i++) {
+		int x, y;
+		cin >> x >> y;
+		p[i] = make_pair(x, y);
+	}
 
-    sort(p, p + n);
-    for (int i = 0; i < n; i++) {
-        p[i].first = i + 1;
-    }
-    sort(p, p + n, ycomp);
-    for (int i = 0; i < n; i++) {
-        p[i].second = i + 1;
-    }
+	sort(p, p + n);
+	for (int i = 0; i < n; i++) { p[i].first = i + 1; }
+	sort(p, p + n, ycomp);
+	for (int i = 0; i < n; i++) { p[i].second = i + 1; }
 
-    for (int i = 0; i < n; i++) {
-        pref[p[i].first][p[i].second] = 1;
-    }
-    for (int i = 1; i <= n; i++) {
-        for (int j = 1; j <= n; j++) {
-            pref[i][j] += pref[i - 1][j] + pref[i][j - 1] - pref[i - 1][j - 1];
-        }
-    }
-    long long answer = 0;
-    for (int i = 0; i < n; i++) {
-        for (int j = i; j < n; j++) {
-            int x1 = min(p[i].first, p[j].first) - 1;
-            int x2 = max(p[i].first, p[j].first) - 1;
-            answer += rsum(0, i, x1, j) * rsum(x2, i, n - 1, j);
-        }
-    }
+	for (int i = 0; i < n; i++) { pref[p[i].first][p[i].second] = 1; }
+	for (int i = 1; i <= n; i++) {
+		for (int j = 1; j <= n; j++) {
+			pref[i][j] += pref[i - 1][j] + pref[i][j - 1] - pref[i - 1][j - 1];
+		}
+	}
+	long long answer = 0;
+	for (int i = 0; i < n; i++) {
+		for (int j = i; j < n; j++) {
+			int x1 = min(p[i].first, p[j].first) - 1;
+			int x2 = max(p[i].first, p[j].first) - 1;
+			answer += rsum(0, i, x1, j) * rsum(x2, i, n - 1, j);
+		}
+	}
 
-    cout << answer + 1 << endl;
+	cout << answer + 1 << endl;
 }
 ```
 
@@ -988,7 +982,8 @@ pair<pair<int, int>, int> updates[100005];  // updates in given in the input <<l
 
 // EndCodeSnip
 
-/** @return the compressed index of a special index (it), aka its index in the compressed list */
+/** @return the compressed index of a special index (it), aka its index in the
+ * compressed list */
 int getCompressedIndex(int a) {
 	return lower_bound(indices.begin(), indices.end(), a) - indices.begin();
 }
@@ -1011,7 +1006,7 @@ int main() {
 		indices.push_back(r);
 		queries[i] = {l, r};
 	}
-	
+
 	// Perform coordinate compression by sorting and removing duplicates
 	sort(indices.begin(), indices.end());
 	indices.erase(unique(indices.begin(), indices.end()), indices.end());
@@ -1091,15 +1086,17 @@ public class StaticRangeQueries {
 	static ArrayList<Integer> indices;  // sorted list of special indices
 	static Query queries[];             // queries given in the input <l, r>
 	static Query updates[];             // updates in given in the input <l, r, v>
-	
-	/** @return the compressed index of a special index (it), aka its index in the compressed list */
+
+	/**
+	 * @return the compressed index of a special index (it), aka its index in the
+	 *     compressed list
+	 */
 	static int getCompressedIndex(int a) {
 		return Collections.binarySearch(indices, a);
 	}
 
 	public static void main(String[] args) throws Exception {
-		BufferedReader br = new BufferedReader(new InputStreamReader(
-		    System.in));
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
 		StringTokenizer st = new StringTokenizer(br.readLine());
 		int N = Integer.parseInt(st.nextToken()), Q = Integer.parseInt(st.nextToken());
@@ -1125,7 +1122,7 @@ public class StaticRangeQueries {
 			indices.add(r);
 			queries[i] = new Query(l, r);
 		}
-		
+
 		// Coordinate compress by adding the indices to a sorted set and vice versa
 		TreeSet<Integer> temp = new TreeSet<Integer>(indices);
 		indices.clear();
