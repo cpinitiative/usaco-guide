@@ -21,11 +21,11 @@ vector<int> ux = {0, -1, 0, 1}, uy = {1, 0, -1, 0}, dx = {0, -1, 0, 1},
             dy = {-1, 0, 1, 0};
 
 const int MAX_N = 50;
-int mat[MAX_N][MAX_N], visited_cells_cnt = 0, n, m, k, current_distance = 0;
+int mat[MAX_N][MAX_N], num_visited = 0, n, m, k, current_distance = 0;
 
 void update_distance(int x, int y) {
 	if (x < 0 || x >= m || y < 0 || y >= n) return;
-	visited_cells_cnt++;
+	num_visited++;
 	mat[y][x] = min(mat[y][x], current_distance);
 }
 
@@ -52,10 +52,10 @@ int main() {
 		int steps_len = 1;
 		int steps_left = 2;
 		current_distance = 1;
-		visited_cells_cnt = 0;
+		num_visited = 0;
 		update_distance(x, y);
 		while (true) {
-			if (visited_cells_cnt >= n * m) break;
+			if (num_visited >= n * m) break;
 			if (steps_left == 0) {
 				steps_len++;
 				steps_left = 2;
@@ -88,15 +88,15 @@ dy = [-1, 0, 1, 0]
 MAX_N = 50
 mat = [[(float("inf"))] * MAX_N for _ in range(MAX_N)]
 current_distance = 0
-visited_cells_cnt = 0
+num_visited = 0
 
 
 def update_distance(x: int, y: int):
-	global visited_cells_cnt
+	global num_visited
 	if x < 0 or x >= m or y < 0 or y >= n:
 		return
 
-	visited_cells_cnt += 1
+	num_visited += 1
 	mat[y][x] = min(mat[y][x], current_distance)
 
 
@@ -115,11 +115,11 @@ for _ in range(k):
 	steps_len = 1
 	steps_left = 2
 	current_distance = 1
-	visited_cells_cnt = 0
+	num_visited = 0
 	direction_index = 1
 	update_distance(x, y)
 
-	while visited_cells_cnt < n * m:
+	while num_visited < n * m:
 		if steps_left == 0:
 			steps_len += 1
 			steps_left = 2
