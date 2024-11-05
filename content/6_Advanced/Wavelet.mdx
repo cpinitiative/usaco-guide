@@ -90,12 +90,12 @@ Formally
 
 $$
 c[i] = \begin{cases}
-    1, & \text{if } \text{index}[i] < \text{mid} \\
-    0, & \text{otherwise}
+    1, & \texttt{if } \texttt{index}[i] < \texttt{mid} \\
+    0, & \texttt{otherwise}
 \end{cases}
 $$
 $$
-\text{prefixB}[i] = \text{prefixB}[i - 1] + c[i]
+\texttt{prefixB}[i] = \texttt{prefixB}[i - 1] + c[i]
 $$
 
 
@@ -126,10 +126,7 @@ $$
 \texttt{left\_occurrences} = prefix_b[r] - prefix_b[l]
 $$
 
-<Info title="Left occurrences">
-  Note that $\texttt{left\_occurrences}$ is the number of indices between l and r whose value is less than mid
-
-</Info>
+Note that $\texttt{left\_occurrences}$ is the number of indices between l and r whose value is less than mid
 
 - If $\texttt{left\_occurrences}$ is greater or equal to $k$, it means the $k$-th smallest element is in
   the left subtree. Therefore, we update our range and recurse into the left
@@ -257,6 +254,124 @@ On the other hand, to change the prefix vector, since each update could change o
 This approach is not memory efficient and requires a segment tree's implementation.
 A more friendly approach would be using an order statistics tree.
 Such that querying for a prefix would be equivalent to order_of_key($i$)
+
+## Implemention
+**Time Complexity:** $\mathcal{O}(Q \cdot \log(M) \cdot \log(N))$
+
+<LanguageSection>
+<CPPSection>
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+#include <ext/pb_ds/assoc_container.hpp>
+using namespace __gnu_pbds;
+template <class T>
+using Tree =
+        tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
+
+struct Segment {
+    Segment *left = nullptr, *right = nullptr;
+    int l, r, mid;
+    bool children = false;
+    Tree<pair<int,int>> indices; // Index, Value
+
+    Segment(int l, int r,const Tree<pair<int,int>> &indices) :l(l), r(r), mid((r + l) / 2), indices(indices) {
+
+    }
+
+    // Sparse since values can go up to 1e9
+    void update() {
+        if (children) {return;}
+        children = true;
+
+        if (r - l > 1) {
+            // Split the indices for left and right child
+            Tree<pair<int, int>> leftIndices, rightIndices;
+            for (auto [index, value] : indices) {
+                if (value < mid)
+                    leftIndices.insert({index, value});
+                else
+                    rightIndices.insert({index, value});
+            }
+
+            left = new Segment(l,mid, leftIndices);
+            right = new Segment(mid,r, rightIndices);
+        }
+    }
+
+    int find_k_smallest(int a, int b, int k) {
+        update();
+        if (r - l <= 1) return l;
+
+        int lb = left->indices.order_of_key({a, -1});
+        int lr = left->indices.order_of_key({b, -1});
+        int inLeft = lr - lb;
+
+        if (k <= inLeft)
+            return left->find_k_smallest(a,b,k); // Appears in left
+        else
+            return right->find_k_smallest(a,b, k - inLeft); // Appears in right
+    }
+
+    void update(int index, int v, int oldV) {
+        update(oldV, index, false);
+        update(v, index, true);
+    }
+
+    void update(int v, int index, bool insertOperation) {
+        if (insertOperation) indices.insert({index, v});
+        else indices.erase({index, v});
+
+        update();
+        if (r - l <= 1) return;
+
+        if (v < mid)
+            left->update(v, index, insertOperation);
+        else
+            right->update(v, index, insertOperation);
+    }
+};
+
+
+int main() {
+    int n, q; cin >> n >> q;
+
+    Tree<pair<int,int>> indices;
+    for (int i = 0; i < n; ++i) {
+        indices.insert({i,0});
+    }
+
+    Segment seg(0,1e9 + 2,indices);
+    vector<int> arr(n);
+
+    for (int i = 0; i < n; ++i) {
+        int v; cin >> v;
+        seg.update(i, v, arr[i]);
+        arr[i] =v;
+    }
+
+    for (int i = 0; i < q; ++i) {
+        int t; cin >> t;
+        if (t == 1) {
+            int a, b, k; cin >> a >> b >> k;
+            k++;
+            cout << seg.find_k_smallest(a,b,k) << " ";
+        } else {
+            int a, b; cin >> a >> b;
+            seg.update(a, b, arr[i]);
+            arr[i] = b;
+        }
+    }
+
+    return 0;
+}
+
+```
+
+</CPPSection>
+</LanguageSection>
 
 ### Problems
 
