@@ -10,29 +10,31 @@ author: Oscar Garries
 We can simulate the spiral around each starting position. For every cell in our solution
 we will choose the minimum number that visit this cell.
 
+<LanguageSection>
+<CPPSection>
+
 ```cpp
 #include <bits/stdc++.h>
-
 using namespace std;
-using ll = long long;
-using ld = long double;
 
-vector<int> ui = {0, -1, 0, 1}, uj = {1, 0, -1, 0}, di = {0, -1, 0, 1},
-            dj = {-1, 0, 1, 0};
-int mat[50][50], cnt = 0, n, m, k, cur = 0;
+vector<int> ux = {0, -1, 0, 1}, uy = {1, 0, -1, 0}, dx = {0, -1, 0, 1},
+            dy = {-1, 0, 1, 0};
 
-void fn(int x, int y) {
+const int MAX_N = 50;
+int mat[MAX_N][MAX_N], num_visited = 0, n, m, k, current_distance = 0;
+
+void update_distance(int x, int y) {
 	if (x < 0 || x >= m || y < 0 || y >= n) return;
-	cnt++;
-	mat[y][x] = min(mat[y][x], cur);
+	num_visited++;
+	mat[y][x] = min(mat[y][x], current_distance);
 }
 
 int main() {
 	cin >> n >> m >> k;
 	int x, y, z;
-	vector<int> ti, tj;
-	for (int i = 0; i < 50; i++) {
-		for (int j = 0; j < 50; j++) { mat[i][j] = 1e9; }
+	vector<int> tx, ty;
+	for (int i = 0; i < MAX_N; i++) {
+		for (int j = 0; j < MAX_N; j++) { mat[i][j] = 1e9; }
 	}
 	for (int i = 0; i < k; i++) {
 		cin >> x >> y >> z;
@@ -40,36 +42,100 @@ int main() {
 		y--;
 		swap(x, y);
 		if (z == 0) {
-			ti = di;
-			tj = dj;
+			tx = dx;
+			ty = dy;
 		} else {
-			ti = ui;
-			tj = uj;
+			tx = ux;
+			ty = uy;
 		}
-		int kk = 1;
-		int di = 1;
-		int c = 2;
-		cur = 1;
-		cnt = 0;
-		fn(x, y);
+		int direction_index = 1;
+		int steps_len = 1;
+		int steps_left = 2;
+		current_distance = 1;
+		num_visited = 0;
+		update_distance(x, y);
 		while (true) {
-			if (cnt >= n * m) break;
-			if (c == 0) {
-				di++;
-				c = 2;
+			if (num_visited >= n * m) break;
+			if (steps_left == 0) {
+				steps_len++;
+				steps_left = 2;
 			}
-			for (int va = 0; va < di; va++) {
-				x += tj[kk];
-				y += ti[kk];
-				cur++;
-				fn(x, y);
+			for (int va = 0; va < steps_len; va++) {
+				x += ty[direction_index];
+				y += tx[direction_index];
+				current_distance++;
+				update_distance(x, y);
 			}
-			c--;
-			kk = (kk + 1) % 4;
+			steps_left--;
+			direction_index = (direction_index + 1) % 4;
 		}
 	}
 	for (int i = 0; i < n; i++) {
-		for (int j = 0; j < m; j++) { cout << mat[i][j] << (j == m - 1 ? '\n' : ' '); }
+		for (int j = 0; j < m; j++) { cout << mat[i][j] << " \n"[j == m - 1]; }
 	}
 }
 ```
+
+</CPPSection>
+<PySection>
+
+```py
+ux = [0, -1, 0, 1]
+uy = [1, 0, -1, 0]
+dx = [0, -1, 0, 1]
+dy = [-1, 0, 1, 0]
+
+MAX_N = 50
+mat = [[(float("inf"))] * MAX_N for _ in range(MAX_N)]
+current_distance = 0
+num_visited = 0
+
+
+def update_distance(x: int, y: int):
+	global num_visited
+	if x < 0 or x >= m or y < 0 or y >= n:
+		return
+
+	num_visited += 1
+	mat[y][x] = min(mat[y][x], current_distance)
+
+
+n, m, k = map(int, input().split())
+for _ in range(k):
+	x, y, z = map(int, input().split())
+	x -= 1
+	y -= 1
+	x, y = y, x
+
+	if z == 0:
+		tx, ty = dx, dy
+	else:
+		tx, ty = ux, uy
+
+	steps_len = 1
+	steps_left = 2
+	current_distance = 1
+	num_visited = 0
+	direction_index = 1
+	update_distance(x, y)
+
+	while num_visited < n * m:
+		if steps_left == 0:
+			steps_len += 1
+			steps_left = 2
+
+		for _ in range(steps_len):
+			x += ty[direction_index]
+			y += tx[direction_index]
+			current_distance += 1
+			update_distance(x, y)
+
+		steps_left -= 1
+		direction_index = (direction_index + 1) % 4
+
+for i in range(n):
+	print(" ".join(map(str, mat[i][:m])))
+```
+
+</PySection>
+</LanguageSection>

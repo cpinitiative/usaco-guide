@@ -9,9 +9,9 @@ author: Chu Minjae
 
 ## Explanation
 
-We solve this problem with a greedy algorithm by first sorting all the days Bessie wants to watch Mooloo.
+We solve this problem with a greedy algorithm.
 
-Next, we iterate through all the days.
+First, we iterate through all the days.
 On the first day, Bessie will always have to buy a new subscription.
 However, on subsequent days, there's two cases:
 1. It's better to extend the last subscription.
@@ -37,8 +37,6 @@ int main() {
 
 	vector<long long> days(n);
 	for (long long &d : days) { cin >> d; }
-
-	sort(days.begin(), days.end());
 
 	long long last_day = days[0];
 	long long cost = k + 1;  // Start the first subscription
@@ -78,8 +76,6 @@ public class WatchingMooloo {
 		br.close();
 		for (int i = 0; i < n; i++) { days[i] = Long.parseLong(daysInput[i]); }
 
-		Arrays.sort(days);
-
 		long lastDay = days[0];
 		long cost = k + 1;  // Start the first subscription
 		for (long d : days) {
@@ -101,4 +97,28 @@ public class WatchingMooloo {
 ```
 
 </JavaSection>
+<PySection>
+
+```py
+n, k = map(int, input().split())
+days = list(map(int, input().split()))
+
+last_day = days[0]
+cost = k + 1  # Start the first subscription
+
+for d in days:
+	# Should Bessie extend the most recent subscription?
+	if d - last_day < k + 1:
+		cost += d - last_day
+	else:
+		# Or just start a new one entirely?
+		cost += k + 1
+
+	# Store the date of the last subscription
+	last_day = d
+
+print(cost)
+```
+
+</PySection>
 </LanguageSection>
