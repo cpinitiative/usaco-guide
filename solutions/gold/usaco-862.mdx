@@ -115,30 +115,30 @@ n = int(input().strip())
 cows = []
 
 for _ in range(n):
-    flavors = list(map(int, input().strip().split()))
-    flavors.sort()  # Sort to avoid double counting
-    cows.append(flavors)
+	flavors = list(map(int, input().strip().split()))
+	flavors.sort()  # Sort to avoid double counting
+	cows.append(flavors)
 
 # common[i][j] = the number of cows that share i flavors (j) in common
 common = [defaultdict(int) for _ in range(FLAVORS)]
 
 for flavors in cows:
-    common[4][tuple(flavors)] += 1
+	common[4][tuple(flavors)] += 1
 
-    # iterate over all subsets
-    for size in range(1, FLAVORS):
-        for subset in combinations(flavors, size):
-            common[size - 1][subset] += 1
+	# iterate over all subsets
+	for size in range(1, FLAVORS):
+		for subset in combinations(flavors, size):
+			common[size - 1][subset] += 1
 
 compatible = 0
 # use PIE to count the number of compatible pairs
 # (see explanation above)
 for i in range(FLAVORS):
-    for subset, count in common[i].items():
-        if i % 2 == 0:
-            compatible += count * (count - 1) // 2
-        else:
-            compatible -= count * (count - 1) // 2
+	for subset, count in common[i].items():
+		if i % 2 == 0:
+			compatible += count * (count - 1) // 2
+		else:
+			compatible -= count * (count - 1) // 2
 
 res = n * (n - 1) // 2 - compatible
 print(res)
