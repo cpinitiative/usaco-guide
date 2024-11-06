@@ -142,10 +142,10 @@ earn = list(map(int, input().split()))
 adj = [[] for _ in range(n)]
 
 for _ in range(m):
-    u, v = map(int, input().split())
-    u -= 1
-    v -= 1
-    adj[u].append(v)
+	u, v = map(int, input().split())
+	u -= 1
+	v -= 1
+	adj[u].append(v)
 
 # dp[i][j] = the max money that Bessie can make on day i if she ends in city j
 dp = [[-1] * n for _ in range(MAX_DAYS + 1)]
@@ -155,15 +155,15 @@ dp[0][0] = 0
 ans = 0
 
 for d in range(MAX_DAYS):
-    for i in range(n):
-        # if dp[d][i] == -1 then the city can't be visited
-        if dp[d][i] != -1:
-            for u in adj[i]:
-                # dp[d + 1][u] = max(current money earned,
+	for i in range(n):
+		# if dp[d][i] == -1 then the city can't be visited
+		if dp[d][i] != -1:
+			for u in adj[i]:
+				# dp[d + 1][u] = max(current money earned,
 				# previous city's earnings + current city's earnings)
-                dp[d + 1][u] = max(dp[d + 1][u], dp[d][i] + earn[u])
+				dp[d + 1][u] = max(dp[d + 1][u], dp[d][i] + earn[u])
 
-    ans = max(ans, dp[d][0] - (c * d * d))
+	ans = max(ans, dp[d][0] - (c * d * d))
 
 sys.stdout = open("time.out", "w")
 print(ans)
