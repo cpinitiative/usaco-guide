@@ -122,7 +122,78 @@ int main() {
 ```
 
 </CPPSection>
+<PySection>
 
+```py
+cows = []  # List to store {s, t, c} for each cow
+air_conditioners = []  # List to store {a, b, p, m} for each air conditioner
+
+# the minimum amount of money needed to keep all cows comfortable
+min_cost = float("inf")
+
+
+def update():
+	"""
+	Based on 'uses', determine if the current subset of air conditioners suffices
+	the constraints, and if so, update the minimum cost
+	"""
+	global min_cost
+	is_feasible = True
+	# iterate through all positions to check if the current subset is feasible
+	for i in range(1, 101):
+		# iterate through air conditioners to find the current cooling units
+		cooling = 0
+		for j in range(M):
+			if not uses[j]:
+				continue
+			a, b, p, m = air_conditioners[j]
+			if a <= i <= b:
+				cooling += p
+
+		# iterate through cows to find the current cow
+		cow_requirement = 0
+		for s, t, c in cows:
+			if s <= i <= t:
+				cow_requirement = c
+				break
+
+		# For each position, the requirement of the cow must be met
+		if cooling < cow_requirement:
+			is_feasible = False
+			break
+
+	# Update minimum cost if feasible
+	if is_feasible:
+		cost = sum(air_conditioners[i][3] for i in range(M) if uses[i])
+		min_cost = min(min_cost, cost)
+
+
+def search(i: int):
+	"""Expand the subset, represented by 'uses', by choosing to (not) use the i-th air conditioner"""
+	if i == M:
+		update()
+	else:
+		uses[i] = False
+		search(i + 1)
+		uses[i] = True
+		search(i + 1)
+
+
+N, M = map(int, input().split())
+uses = [False] * M  # uses[i] == true: the i-th air conditioner is used
+for _ in range(N):
+	s, t, c = map(int, input().split())
+	cows.append((s, t, c))
+
+for _ in range(M):
+	a, b, p, m = map(int, input().split())
+	air_conditioners.append((a, b, p, m))
+
+search(0)
+print(min_cost)
+```
+
+</PySection>
 </LanguageSection>
 
 
@@ -137,9 +208,7 @@ int main() {
 #include <bits/stdc++.h>
 using namespace std;
 
-/**
- * Check if the given 'air_conditioners' satisfy the constraints of the cows
- */
+/** @return if the given AC units satisfy the constraints of the cows */
 bool check(vector<array<int, 3>> &cows, vector<array<int, 4>> &air_conditioners) {
 	// iterate through all positions to check if the current subset is feasible
 	for (int i = 1; i <= 100; i++) {
@@ -204,7 +273,6 @@ int main() {
 ```
 
 </CPPSection>
-
 <JavaSection>
 
 ```java
@@ -292,7 +360,6 @@ public class AirCownditioning {
 ```
 
 </JavaSection>
-
 <PySection>
 
 ```py
@@ -344,5 +411,4 @@ print(min_cost)
 ```
 
 </PySection>
-
 </LanguageSection>
