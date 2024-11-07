@@ -55,9 +55,9 @@ When comparing these, C++ looks at the first element and only uses
 the second element as a tiebreaker.
 
 ```cpp
+#include <algorithm>
 #include <iostream>
 #include <vector>
-#include <algorithm>
 
 using namespace std;
 
@@ -65,12 +65,10 @@ int main() {
 	constexpr int edge_num = 4;
 
 	vector<pair<int, pair<int, int>>> edges(edge_num);
-	for (auto& [width, edge] : edges) {
-		cin >> edge.first >> edge.second >> width;
-	}
+	for (auto &[width, edge] : edges) { cin >> edge.first >> edge.second >> width; }
 	sort(edges.begin(), edges.end());
 
-	for (const auto& [width, edge] : edges) {
+	for (const auto &[width, edge] : edges) {
 		printf("(%i, %i): %i\n", edge.first, edge.second, width);
 	}
 }
@@ -81,9 +79,9 @@ an alternative is to use an `std::vector` or maybe even an
 [`std::array`](https://en.cppreference.com/w/cpp/container/array):
 
 ```cpp
+#include <algorithm>
 #include <iostream>
 #include <vector>
-#include <algorithm>
 
 using namespace std;
 
@@ -100,9 +98,7 @@ int main() {
 	}
 	sort(edges.begin(), edges.end());
 
-	for (const vector<int>& e : edges) {
-		printf("(%i, %i): %i\n", e[1], e[2], e[00]);
-	}
+	for (const vector<int> &e : edges) { printf("(%i, %i): %i\n", e[1], e[2], e[00]); }
 }
 ```
 
@@ -189,21 +185,17 @@ struct Edge {
 	int width;
 
 	// see https://stackoverflow.com/a/11805395/12128483 for why we use const Edge&
-	bool operator<(const Edge& y) { return width < y.width; }
+	bool operator<(const Edge &y) { return width < y.width; }
 };
 
 int main() {
 	constexpr int edge_num = 4;
 
 	vector<Edge> edges(edge_num);
-	for (Edge& e : edges) {
-		cin >> e.a >> e.b >> e.width;
-	}
+	for (Edge &e : edges) { cin >> e.a >> e.b >> e.width; }
 	sort(edges.begin(), edges.end());
 
-	for (const Edge& e : edges) {
-		printf("(%i, %i): %i\n", e.a, e.b, e.width);
-	}
+	for (const Edge &e : edges) { printf("(%i, %i): %i\n", e.a, e.b, e.width); }
 }
 ```
 
@@ -215,9 +207,7 @@ struct Edge {
 	int width;
 };
 
-bool operator<(const Edge& x, const Edge& y) {
-	return x.width < y.width;
-}
+bool operator<(const Edge &x, const Edge &y) { return x.width < y.width; }
 ```
 
 or within it using
@@ -255,16 +245,11 @@ int main() {
 	constexpr int edge_num = 4;
 
 	vector<Edge> edges(edge_num);
-	for (Edge& e : edges) {
-		cin >> e.a >> e.b >> e.width;
-	}
-	sort(edges.begin(), edges.end(), [&] (const Edge& x, const Edge& y) {
-		return x.width < y.width;
-	});
+	for (Edge &e : edges) { cin >> e.a >> e.b >> e.width; }
+	sort(edges.begin(), edges.end(),
+	     [&](const Edge &x, const Edge &y) { return x.width < y.width; });
 
-	for (const Edge& e : edges) {
-		printf("(%i, %i): %i\n", e.a, e.b, e.width);
-	}
+	for (const Edge &e : edges) { printf("(%i, %i): %i\n", e.a, e.b, e.width); }
 }
 ```
 
@@ -327,9 +312,7 @@ public class SortingDemo {
 		}
 		Arrays.sort(edges);
 
-		for (Edge e : edges) {
-			System.out.printf("(%d, %d): %d\n", e.a, e.b, e.width);
-		}
+		for (Edge e : edges) { System.out.printf("(%d, %d): %d\n", e.a, e.b, e.width); }
 
 		sc.close();
 	}
@@ -366,9 +349,7 @@ public class SortingDemo {
 		}
 		Arrays.sort(edges, (x, y) -> x.width - y.width);
 
-		for (Edge e : edges) {
-			System.out.printf("(%d, %d): %d\n", e.a, e.b, e.width);
-		}
+		for (Edge e : edges) { System.out.printf("(%d, %d): %d\n", e.a, e.b, e.width); }
 
 		sc.close();
 	}
@@ -477,10 +458,8 @@ struct Edge {
 	int a, b;
 	int width;
 
-	bool operator<(const Edge& y) {
-		if (width == y.width) {
-			return width - y.width;
-		}
+	bool operator<(const Edge &y) {
+		if (width == y.width) { return width - y.width; }
 		return a - y.a;
 	}
 };
@@ -502,9 +481,7 @@ class Edge implements Comparable<Edge> {
 
 	@Override
 	public int compareTo(Edge e) {
-		if (width != e.width) {
-			return width - e.width;
-		}
+		if (width != e.width) { return width - e.width; }
 		return a - e.a;
 	}
 }
@@ -624,7 +601,7 @@ public class RectangularPasture {
 
 	static int getSum(int fromX, int toX, int fromY, int toY) {
 		return sums[toX][toY] - sums[fromX - 1][toY] - sums[toX][fromY - 1] +
-			sums[fromX - 1][fromY - 1];
+		    sums[fromX - 1][fromY - 1];
 	}
 
 	public static void main(String[] args) {
@@ -660,9 +637,9 @@ public class RectangularPasture {
 		for (int j = 0; j < n; j++) {
 			for (int k = j + 1; k < n; k++) {
 				answer += getSum(Math.min(xs[j], xs[k]), Math.max(xs[j], xs[k]), 1,
-								 Math.min(ys[j], ys[k])) *
-						  getSum(Math.min(xs[j], xs[k]), Math.max(xs[j], xs[k]),
-								 Math.max(ys[j], ys[k]), n);
+				                 Math.min(ys[j], ys[k])) *
+				          getSum(Math.min(xs[j], xs[k]), Math.max(xs[j], xs[k]),
+				                 Math.max(ys[j], ys[k]), n);
 			}
 		}
 
@@ -826,11 +803,11 @@ ll difference_array[400005];
 
 int widths[400005];         // width[i] = the length of special interval i
 ll interval_value[400005];  // interval_value[i] = the value of special interval
-							// i
+                            // i
 // the sum of a special interval is interval_value[i] * width[i]
 
 ll prefix_sums[400005];  // prefix_sums[i] = prefix sum of the sums of special
-						 // intervals up to i
+                         // intervals up to i
 
 vector<int> indices;                        // sorted list of special indices
 pair<int, int> queries[100005];             // queries given in the input <l, r>
@@ -898,8 +875,8 @@ int main() {
 	// Classic use of prefix sum array to answer range sum queries
 	for (int i = 0; i < Q; i++) {
 		cout << prefix_sums[getCompressedIndex(queries[i].second)] -
-					prefix_sums[getCompressedIndex(queries[i].first)]
-			 << "\n";
+		            prefix_sums[getCompressedIndex(queries[i].first)]
+		     << "\n";
 	}
 }
 ```
@@ -934,10 +911,10 @@ public class StaticRangeQueries {
 
 	static int widths[];           // width[i] = the length of special interval i
 	static long interval_value[];  // interval_value[i] = the value of special
-								   // interval i
+	                               // interval i
 
 	static long prefix_sums[];  // prefix_sums[i] = prefix sum of the sums of
-								// special intervals up to i
+	                            // special intervals up to i
 
 	static ArrayList<Integer> indices;  // sorted list of special indices
 	static Query queries[];             // queries given in the input <l, r>
@@ -964,8 +941,8 @@ public class StaticRangeQueries {
 		for (int i = 0; i < N; i++) {
 			st = new StringTokenizer(br.readLine());
 			int l = Integer.parseInt(st.nextToken()),
-				r = Integer.parseInt(st.nextToken()),
-				v = Integer.parseInt(st.nextToken());
+			    r = Integer.parseInt(st.nextToken()),
+			    v = Integer.parseInt(st.nextToken());
 			indices.add(l);
 			indices.add(r);
 			updates[i] = new Query(l, r, v);
@@ -973,7 +950,7 @@ public class StaticRangeQueries {
 		for (int i = 0; i < Q; i++) {
 			st = new StringTokenizer(br.readLine());
 			int l = Integer.parseInt(st.nextToken()),
-				r = Integer.parseInt(st.nextToken());
+			    r = Integer.parseInt(st.nextToken());
 			indices.add(l);
 			indices.add(r);
 			queries[i] = new Query(l, r);
@@ -1020,7 +997,7 @@ public class StaticRangeQueries {
 		// Classic use of prefix sum array to answer range sum queries
 		for (int i = 0; i < Q; i++) {
 			System.out.println(prefix_sums[getCompressedIndex(queries[i].r)] -
-							   prefix_sums[getCompressedIndex(queries[i].l)]);
+			                   prefix_sums[getCompressedIndex(queries[i].l)]);
 		}
 	}
 }
