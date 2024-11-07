@@ -198,14 +198,17 @@ for i in range(n):
 			if l == A[i]:
 				dp[i][j][l] += 1
 
+			# switch to not item
 			dp[i + 1][j + 1][0] = max(dp[i + 1][j + 1][0], dp[i][j][l])
+
 			# switch to not item
 			dp[i + 1][j + 1][1] = max(dp[i + 1][j + 1][1], dp[i][j][l])
+
 			# switch to not item
 			dp[i + 1][j + 1][2] = max(dp[i + 1][j + 1][2], dp[i][j][l])
-			# switch to not item
-			dp[i + 1][j][l] = max(dp[i + 1][j][l], dp[i][j][l])
+
 			# stay
+			dp[i + 1][j][l] = max(dp[i + 1][j][l], dp[i][j][l])
 
 res = 0
 for i in range(3):
