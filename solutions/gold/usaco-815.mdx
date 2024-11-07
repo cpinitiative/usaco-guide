@@ -125,13 +125,9 @@ int main() {
 <PySection>
 
 ```py
-import sys
-
-sys.stdin = open("taming.in", "r")
-sys.stdout = open("taming.out", "w")
-
-n = int(input())
-entry = list(map(int, input().split()))
+with open("taming.in", "r") as read:
+    n = int(read.readline().strip())
+    entry = list(map(int, read.readline().strip().split()))
 
 range_ans = [[0] * n for _ in range(n)]
 for i in range(n):
@@ -165,8 +161,9 @@ for i in range(1, n + 1):
 		if j - entry[j] == 0 and i == 1:
 			dp[i][j] = min(dp[i][j], range_ans[j - entry[j]][j])
 
-for i in range(1, n + 1):
-	print(dp[i][n - 1])
+with open("taming.out", "w") as out:
+    for i in range(1, n + 1):
+        out.write(f"{dp[i][n - 1]}\n")
 ```
 
 </PySection>
