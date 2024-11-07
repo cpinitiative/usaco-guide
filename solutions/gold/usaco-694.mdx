@@ -175,16 +175,16 @@ Due to Python's constant factor, the below solution TLEs on a couple test cases.
 
 ```py
 with open("hps.in") as read:
-    n, k = map(int, read.readline().strip().split())
-    A = [0] * n
-    for i in range(n):
-        a = read.readline().strip()
-        if a == 'H':
-            A[i] = 0
-        elif a == 'P':
-            A[i] = 1
-        else:
-            A[i] = 2
+	n, k = map(int, read.readline().strip().split())
+	A = [0] * n
+	for i in range(n):
+		a = read.readline().strip()
+		if a == "H":
+			A[i] = 0
+		elif a == "P":
+			A[i] = 1
+		else:
+			A[i] = 2
 
 """
 dp[i][j][k] is the largest number of games she wins at
@@ -195,26 +195,26 @@ dp = [[[0] * 3 for _ in range(k + 2)] for _ in range(n + 1)]
 
 # either she switches to hoof or paper or scissors or stays
 for i in range(n):
-    for j in range(k + 1):
-        for l in range(3):
-            if l == A[i]:
-                dp[i][j][l] += 1
+	for j in range(k + 1):
+		for l in range(3):
+			if l == A[i]:
+				dp[i][j][l] += 1
 
-            # switch to not hoof
-            dp[i + 1][j + 1][0] = max(dp[i + 1][j + 1][0], dp[i][j][l])
+			# switch to not hoof
+			dp[i + 1][j + 1][0] = max(dp[i + 1][j + 1][0], dp[i][j][l])
 
-            # switch to not paper  
-            dp[i + 1][j + 1][1] = max(dp[i + 1][j + 1][1], dp[i][j][l])
+			# switch to not paper
+			dp[i + 1][j + 1][1] = max(dp[i + 1][j + 1][1], dp[i][j][l])
 
-            # switch to not scissors
-            dp[i + 1][j + 1][2] = max(dp[i + 1][j + 1][2], dp[i][j][l])
+			# switch to not scissors
+			dp[i + 1][j + 1][2] = max(dp[i + 1][j + 1][2], dp[i][j][l])
 
-            # stay
-            dp[i + 1][j][l] = max(dp[i + 1][j][l], dp[i][j][l]);
+			# stay
+			dp[i + 1][j][l] = max(dp[i + 1][j][l], dp[i][j][l])
 
 res = 0
 for i in range(3):
-    res = max(res, dp[n - 1][k][i])
+	res = max(res, dp[n - 1][k][i])
 
 print(res, file=open("hps.out", "w"))
 ```
