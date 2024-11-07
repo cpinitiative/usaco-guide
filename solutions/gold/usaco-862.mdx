@@ -102,22 +102,19 @@ int main() {
 <PySection>
 
 ```py
-import sys
 from itertools import combinations
 from collections import defaultdict
 
 FLAVORS = 5
 
-sys.stdin = open("cowpatibility.in", "r")
-sys.stdout = open("cowpatibility.out", "w")
+with open("cowpatibility.in", "r") as read:
+    n = int(read.readline().strip())
+    cows = []
 
-n = int(input().strip())
-cows = []
-
-for _ in range(n):
-	flavors = list(map(int, input().strip().split()))
-	flavors.sort()  # Sort to avoid double counting
-	cows.append(flavors)
+    for _ in range(n):
+        flavors = list(map(int, read.readline().strip().split()))
+        flavors.sort()  # Sort to avoid double counting
+        cows.append(flavors)
 
 # common[i][j] = the number of cows that share i flavors (j) in common
 common = [defaultdict(int) for _ in range(FLAVORS)]
@@ -141,7 +138,7 @@ for i in range(FLAVORS):
 			compatible -= count * (count - 1) // 2
 
 res = n * (n - 1) // 2 - compatible
-print(res)
+print(res, file=open("cowpatibility.out", "w"))
 ```
 
 </PySection>
