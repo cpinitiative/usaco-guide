@@ -16,7 +16,6 @@ We only need to keep track of the number of days that Bessie has been traveling 
 **Time Complexity:** $\mathcal{O}(T_{\text{max}} \cdot (N + M))$
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
@@ -67,6 +66,7 @@ int main() {
 	cout << ans << "\n";
 }
 ```
+
 </CPPSection>
 <JavaSection>
 
@@ -115,8 +115,7 @@ public class TimeIsMooney {
 					}
 				}
 			}
-			// update the max profit Bessie can make after t days, ending
-			// at city 0
+			// update the max profit Bessie can make after t days, ending at city 0
 			best = Math.max(best, dp[t][0] - t * t * c);
 		}
 
@@ -127,13 +126,14 @@ public class TimeIsMooney {
 	// CodeSnip{Kattio}
 }
 ```
+
 </JavaSection>
 <PySection>
 
 ```py
 MAX_DAYS = 1000
 
-with open("time.in", "r") as read:
+with open("time.in") as read:
 	n, m, c = map(int, read.readline().strip().split())
 	earn = list(map(int, read.readline().strip().split()))
 
@@ -151,7 +151,6 @@ dp = [[-1] * n for _ in range(MAX_DAYS + 1)]
 # base case: if Bessie doesn't travel at all, she makes $0
 dp[0][0] = 0
 ans = 0
-
 for d in range(MAX_DAYS):
 	for i in range(n):
 		# if dp[d][i] == -1 then the city can't be visited
