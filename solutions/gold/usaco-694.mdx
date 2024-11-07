@@ -165,5 +165,53 @@ public class HoofPaperScissors {
 }
 ```
 </JavaSection>
+<PySection>
 
+<Warning>
+
+Due to Python's constant factor, the below solution TLEs on a couple test cases.
+
+</Warning>
+
+```py
+MX = 10**5 + 5
+
+dp = [[[0] * 3 for _ in range(25)] for _ in range(MX)]
+A = [0] * MX
+
+with open("hps.in") as read:
+    n, k = map(int, read.readline().strip().split())
+
+    for i in range(n):
+        a = read.readline().strip()
+        if a == 'H':
+            A[i] = 0
+        elif a == 'P':
+            A[i] = 1
+        else:
+            A[i] = 2
+
+# either she switches to h or p or s or stays
+for i in range(n):
+    for j in range(k + 1):
+        for l in range(3):
+            if l == A[i]:
+                dp[i][j][l] += 1
+
+            dp[i + 1][j + 1][0] = max(dp[i + 1][j + 1][0],
+				                          dp[i][j][l]);  # switch to not item
+            dp[i + 1][j + 1][1] = max(dp[i + 1][j + 1][1],
+				                          dp[i][j][l]);  # switch to not item
+            dp[i + 1][j + 1][2] = max(dp[i + 1][j + 1][2],
+				                          dp[i][j][l]);  # switch to not item
+            dp[i + 1][j][l] = max(dp[i + 1][j][l], dp[i][j][l]);  # stay
+
+res = 0
+for i in range(3):
+    res = max(res, dp[n - 1][k][i])
+
+print(res, file=open("hps.out", "w"))
+```
+
+</PySection>
 </LanguageSection>
