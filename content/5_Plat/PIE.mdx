@@ -177,24 +177,24 @@ The solution results in TLE for some test cases because of python's constant fac
 from collections import defaultdict
 
 with open("cowpatibility.in", "r") as read:
-    n = int(read.readline().strip())
-    subsets = defaultdict(int)
+	n = int(read.readline().strip())
+	subsets = defaultdict(int)
 
-    for _ in range(n):
-        flavors = list(map(int, read.readline().strip().split()))
-        flavors.sort()
-        
-        for mask in range(1, 1 << 5):
-            subset = tuple(flavors[i] for i in range(5) if (1 << i) & mask)
-            subsets[subset] += 1
+	for _ in range(n):
+		flavors = list(map(int, read.readline().strip().split()))
+		flavors.sort()
+
+		for mask in range(1, 1 << 5):
+			subset = tuple(flavors[i] for i in range(5) if (1 << i) & mask)
+			subsets[subset] += 1
 
 ans = n * (n - 1) // 2
 
 for subset, freq in subsets.items():
-    if len(subset) % 2 == 1:
-        ans -= freq * (freq - 1) // 2
-    else:
-        ans += freq * (freq - 1) // 2
+	if len(subset) % 2 == 1:
+		ans -= freq * (freq - 1) // 2
+	else:
+		ans += freq * (freq - 1) // 2
 
 print(ans, file=open("cowpatibility.out", "w"))
 ```
