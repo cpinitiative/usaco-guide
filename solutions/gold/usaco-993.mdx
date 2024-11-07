@@ -131,22 +131,19 @@ public class TimeIsMooney {
 <PySection>
 
 ```py
-import sys
-
 MAX_DAYS = 1000
 
-sys.stdin = open("time.in", "r")
+with open("time.in", "r" ) as read:
+    n, m, c = map(int, read.readline().strip().split())
+    earn = list(map(int, read.readline().strip().split()))
 
-n, m, c = map(int, input().split())
-earn = list(map(int, input().split()))
+    adj = [[] for _ in range(n)]
 
-adj = [[] for _ in range(n)]
-
-for _ in range(m):
-	u, v = map(int, input().split())
-	u -= 1
-	v -= 1
-	adj[u].append(v)
+    for _ in range(m):
+        u, v = map(int, read.readline().strip().split())
+        u -= 1
+        v -= 1
+        adj[u].append(v)
 
 # dp[i][j] = the max money that Bessie can make on day i if she ends in city j
 dp = [[-1] * n for _ in range(MAX_DAYS + 1)]
@@ -166,8 +163,7 @@ for d in range(MAX_DAYS):
 
 	ans = max(ans, dp[d][0] - (c * d * d))
 
-sys.stdout = open("time.out", "w")
-print(ans)
+print(ans, file=open("time.out", "w"))
 ```
 
 </PySection>
