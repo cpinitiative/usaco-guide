@@ -7,6 +7,7 @@ author: Nathan Gong, Ryan Chou
 
 [Official Analysis (C++)](http://www.usaco.org/current/data/sol_time_gold_jan20.html)
 
+## Explanation
 
 We only need to keep track of the number of days that Bessie has been traveling and the amount of mooney that she has made. For every day up to $T_{\text{max}}$, we'll try to travel to each city, and update the mooney made if the current path is more optimal. The maximum amount of money she makes is $1000t - t^2$, in the case where she makes $1000$ mooney per city and the cost is $1$. Her earnings become negative when $t > 1000$, so we only have to check her movement across the cities for at most $1000$ days.
 
@@ -15,7 +16,6 @@ We only need to keep track of the number of days that Bessie has been traveling 
 **Time Complexity:** $\mathcal{O}(T_{\text{max}} \cdot (N + M))$
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
@@ -66,6 +66,7 @@ int main() {
 	cout << ans << "\n";
 }
 ```
+
 </CPPSection>
 <JavaSection>
 
@@ -114,8 +115,7 @@ public class TimeIsMooney {
 					}
 				}
 			}
-			// update the max profit Bessie can make after t days, ending
-			// at city 0
+			// update the max profit Bessie can make after t days, ending at city 0
 			best = Math.max(best, dp[t][0] - t * t * c);
 		}
 
@@ -126,5 +126,44 @@ public class TimeIsMooney {
 	// CodeSnip{Kattio}
 }
 ```
+
 </JavaSection>
+<PySection>
+
+```py
+MAX_DAYS = 1000
+
+with open("time.in") as read:
+	n, m, c = map(int, read.readline().strip().split())
+	earn = list(map(int, read.readline().strip().split()))
+
+	adj = [[] for _ in range(n)]
+
+	for _ in range(m):
+		u, v = map(int, read.readline().strip().split())
+		u -= 1
+		v -= 1
+		adj[u].append(v)
+
+# dp[i][j] = the max money that Bessie can make on day i if she ends in city j
+dp = [[-1] * n for _ in range(MAX_DAYS + 1)]
+
+# base case: if Bessie doesn't travel at all, she makes $0
+dp[0][0] = 0
+ans = 0
+for d in range(MAX_DAYS):
+	for i in range(n):
+		# if dp[d][i] == -1 then the city can't be visited
+		if dp[d][i] != -1:
+			for u in adj[i]:
+				# dp[d + 1][u] = max(current money earned,
+				# previous city's earnings + current city's earnings)
+				dp[d + 1][u] = max(dp[d + 1][u], dp[d][i] + earn[u])
+
+	ans = max(ans, dp[d][0] - (c * d * d))
+
+print(ans, file=open("time.out", "w"))
+```
+
+</PySection>
 </LanguageSection>
