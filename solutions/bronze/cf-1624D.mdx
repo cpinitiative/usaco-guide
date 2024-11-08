@@ -59,8 +59,26 @@ int main() {
 <PySection>
 
 ```py
+from collections import Counter
 
+for _ in range(int(input())):
+    n, k = map(int, input().split())
+    st = input()
 
+    cnt = Counter(st)
+
+    pairs_cnt, odd_cnt = 0, 0
+
+    for c in cnt.values():
+        pairs_cnt += c // 2
+        odd_cnt += c % 2
+
+    res = 2 * (pairs_cnt // k)
+    odd_cnt += 2 * (pairs_cnt % k)
+
+    res += (odd_cnt >= k)
+
+    print(res)
 ```
 
 </PySection>
