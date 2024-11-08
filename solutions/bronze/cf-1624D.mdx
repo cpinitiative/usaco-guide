@@ -56,6 +56,46 @@ int main() {
 ```
 
 </CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class palindromesColoring {
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
+		int testNum = io.nextInt();
+
+		for (int t = 0; t < testNum; t++) {
+			int n = io.nextInt();
+			int k = io.nextInt();
+            String st = io.next();
+
+            int cnt[] = new int[26];
+            for (int i = 0; i < n; i++) {
+                cnt[st.charAt(i) - 'a'] += 1;
+            }
+
+            int pairsCnt = 0, oddCnt = 0;
+            for (int i = 0; i < 26; i++) {
+                pairsCnt += cnt[i] / 2;
+                oddCnt += cnt[i] % 2;
+            }
+
+            int res = 2 * (pairsCnt / k);
+            oddCnt += 2 * (pairsCnt % k);
+
+            io.println((oddCnt >= k) ? res + 1 : res);
+		}
+        io.close();
+	}
+
+	//CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
 <PySection>
 
 ```py
@@ -83,4 +123,3 @@ for _ in range(int(input())):
 
 </PySection>
 </LanguageSection>
-
