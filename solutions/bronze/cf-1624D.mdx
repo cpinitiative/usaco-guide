@@ -21,6 +21,37 @@ Once we are done adding pairs, we can still add one more character to the middle
 <CPPSection>
 
 ```cpp
+#include <bits/stdc++.h>
+
+using std::cout;
+
+int main() {
+	int test_num;
+	std::cin >> test_num;
+	while (test_num--) {
+
+		int n, k;
+		std::string st;
+		std::array<int, 26> cnt {0};
+		std::cin >> n >> k >> st;
+
+		for (char x : st) {
+			cnt[x - 'a']++;
+		}
+
+		int pairs_cnt = 0, odd_cnt = 0;
+		for (int i = 0; i < 26; i++) {
+			pairs_cnt += cnt[i] / 2;
+			odd_cnt += (cnt[i] % 2 == 1);
+		}
+
+		int res = 2 * (pairs_cnt / k);
+		odd_cnt += 2 * (pairs_cnt % k);
+		res += (odd_cnt >= k);
+		
+		cout << res << '\n';
+	}	
+}
 
 ```
 
