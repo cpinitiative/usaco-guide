@@ -81,6 +81,47 @@ int main() {
 ```
 
 </CPPSection>
+
+<PySection>
+
+```python
+def calculate_num_operations(word: str) -> int:
+	"""Returns the minimum number of operations to turn `word` into "MOO", or
+	`-1` if it is not possible."""
+
+	min_operations = float("inf")
+
+	# To make "MOO" from `word`, we must delete all but three characters. This is therefore a
+	# lower bound on `min_operations`. We then only consider additional operations to these
+	# deletions in our loop.
+	lower_bound = len(word) - 3
+
+	# We are checking if the substring `word[i : i+3]`, can be "MOO", with all other characters
+	# deleted. Then, we calculate the number of operations it would take.
+	for i in range(len(word) - 2):
+		num_operations = lower_bound
+
+		if not word[i + 1] == "O":
+			continue
+
+		if word[i] != "M":
+			num_operations += 1
+		if word[i + 2] != "O":
+			num_operations += 1
+
+		min_operations = min(min_operations, num_operations)
+
+	return -1 if min_operations == float("inf") else int(min_operations)
+
+
+q = int(input())
+for _ in range(q):
+	word = input().strip()
+	print(calculate_num_operations(word))
+```
+
+</PySection>
+
 </LanguageSection>
 
 </Spoiler>
