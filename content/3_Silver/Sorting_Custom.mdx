@@ -207,9 +207,7 @@ struct Edge {
 	int width;
 };
 
-bool operator<(const Edge& x, const Edge& y) {
-	return x.width < y.width;
-}
+bool operator<(const Edge &x, const Edge &y) { return x.width < y.width; }
 ```
 
 ### Comparison Function
@@ -235,12 +233,9 @@ int main() {
 	constexpr int edge_num = 4;
 
 	vector<Edge> edges(edge_num);
-	for (Edge& e : edges) {
-		cin >> e.a >> e.b >> e.width;
-	}
-	sort(edges.begin(), edges.end(), [] (const Edge& x, const Edge& y) {
-		return x.width < y.width;
-	});
+	for (Edge &e : edges) { cin >> e.a >> e.b >> e.width; }
+	sort(edges.begin(), edges.end(),
+	     [](const Edge &x, const Edge &y) { return x.width < y.width; });
 
 	for (const Edge &e : edges) { printf("(%i, %i): %i\n", e.a, e.b, e.width); }
 }
