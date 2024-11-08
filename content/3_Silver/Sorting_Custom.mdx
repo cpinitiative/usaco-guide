@@ -151,8 +151,8 @@ Let's call this comparator `compare`, and the objects it compares `x` and `y`.
 
 - If `x` is less than `y`, return `true`.
 - If `y` is greater than *or equal to* `y`, return `false`.
-- If `compare(x, y)` is `true`, then `compare(y, x)` must be false.
-- If `compare(x, y)` is `true` and `compare(y, z)` is `true`, then `compare(x, z)` must be true.
+- If `compare(x, y)` is `true`, then `compare(y, x)` must be false. (antisymmetry)
+- If `compare(x, y)` is `true` and `compare(y, z)` is `true`, then `compare(x, z)` must be true. (transitivity)
 
 Essentially, the comparator determines whether $x$ belongs to the left of
 $y$ in a sorted ordering.
@@ -207,19 +207,9 @@ struct Edge {
 	int width;
 };
 
-bool operator<(const Edge &x, const Edge &y) { return x.width < y.width; }
-```
-
-or within it using
-[`friend`](https://en.cppreference.com/w/cpp/language/friend):
-
-```cpp
-struct Edge {
-	int a, b;
-	int width;
-
-	friend bool operator<(const Edge &x, const Edge &y) { return x.width < y.width; }
-};
+bool operator<(const Edge& x, const Edge& y) {
+	return x.width < y.width;
+}
 ```
 
 ### Comparison Function
@@ -245,9 +235,12 @@ int main() {
 	constexpr int edge_num = 4;
 
 	vector<Edge> edges(edge_num);
-	for (Edge &e : edges) { cin >> e.a >> e.b >> e.width; }
-	sort(edges.begin(), edges.end(),
-	     [&](const Edge &x, const Edge &y) { return x.width < y.width; });
+	for (Edge& e : edges) {
+		cin >> e.a >> e.b >> e.width;
+	}
+	sort(edges.begin(), edges.end(), [] (const Edge& x, const Edge& y) {
+		return x.width < y.width;
+	});
 
 	for (const Edge &e : edges) { printf("(%i, %i): %i\n", e.a, e.b, e.width); }
 }
@@ -263,8 +256,8 @@ For `compare` to be valid, the following must be true:
 - If `x` is less than `y`, return `-1`.
 - If `y` is greater than `y`, return `1`.
 - If the two are equal, return `0`.
-- If `compare(x, y) > 0`, then `compare(y, x) < 0`.
-- If `compare(x, y) > 0` and `compare(y, z) > 0`, then `compare(x, z) > 0`.
+- If `compare(x, y) > 0`, then `compare(y, x) < 0`. (antisymmetry)
+- If `compare(x, y) > 0` and `compare(y, z) > 0`, then `compare(x, z) > 0`. (transitivity)
 
 Essentially, the comparator determines whether $x$ belongs to the left of
 $y$ in a sorted ordering.
@@ -400,8 +393,8 @@ For `compare` to be valid, the following must be true:
 - If `x` is less than `y`, return `-1`.
 - If `y` is greater than `y`, return `1`.
 - If the two are equal, return `0`.
-- If `compare(x, y) > 0`, then `compare(y, x) < 0`.
-- If `compare(x, y) > 0` and `compare(y, z) > 0`, then `compare(x, z) > 0`.
+- If `compare(x, y) > 0`, then `compare(y, x) < 0`. (antisymmetry)
+- If `compare(x, y) > 0` and `compare(y, z) > 0`, then `compare(x, z) > 0`. (transitivity)
 
 Python's sorting functions don't take comparators directly.
 We have to convert them to something `key` can take with
