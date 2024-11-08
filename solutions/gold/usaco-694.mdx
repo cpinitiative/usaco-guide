@@ -191,7 +191,7 @@ dp[i][j][k] is the largest number of games she wins at
 games i with switches j with current item k
 0 == H 1 == P 2 == S
 """
-dp = [[[0] * 3 for _ in range(k + 2)] for _ in range(n + 1)]
+dp = [[[0] * 3 for _ in range(k + 1)] for _ in range(n + 1)]
 
 # either she switches to hoof or paper or scissors or stays
 for i in range(n):
@@ -200,14 +200,15 @@ for i in range(n):
 			if l == A[i]:
 				dp[i][j][l] += 1
 
-			# switch to not hoof
-			dp[i + 1][j + 1][0] = max(dp[i + 1][j + 1][0], dp[i][j][l])
+			if j != k:
+				# switch to not hoof
+				dp[i + 1][j + 1][0] = max(dp[i + 1][j + 1][0], dp[i][j][l])
 
-			# switch to not paper
-			dp[i + 1][j + 1][1] = max(dp[i + 1][j + 1][1], dp[i][j][l])
+				# switch to not paper
+				dp[i + 1][j + 1][1] = max(dp[i + 1][j + 1][1], dp[i][j][l])
 
-			# switch to not scissors
-			dp[i + 1][j + 1][2] = max(dp[i + 1][j + 1][2], dp[i][j][l])
+				# switch to not scissors
+				dp[i + 1][j + 1][2] = max(dp[i + 1][j + 1][2], dp[i][j][l])
 
 			# stay
 			dp[i + 1][j][l] = max(dp[i + 1][j][l], dp[i][j][l])
