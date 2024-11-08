@@ -32,12 +32,10 @@ int main() {
 
 		int n, k;
 		std::string st;
-		std::array<int, 26> cnt {0};
+		std::array<int, 26> cnt{0};
 		std::cin >> n >> k >> st;
 
-		for (char x : st) {
-			cnt[x - 'a']++;
-		}
+		for (char x : st) { cnt[x - 'a']++; }
 
 		int pairs_cnt = 0, odd_cnt = 0;
 		for (int i = 0; i < 26; i++) {
@@ -48,11 +46,10 @@ int main() {
 		int res = 2 * (pairs_cnt / k);
 		odd_cnt += 2 * (pairs_cnt % k);
 		res += (odd_cnt >= k);
-		
-		cout << res << '\n';
-	}	
-}
 
+		cout << res << '\n';
+	}
+}
 ```
 
 </CPPSection>
@@ -70,28 +67,26 @@ public class palindromesColoring {
 		for (int t = 0; t < testNum; t++) {
 			int n = io.nextInt();
 			int k = io.nextInt();
-            String st = io.next();
+			String st = io.next();
 
-            int cnt[] = new int[26];
-            for (int i = 0; i < n; i++) {
-                cnt[st.charAt(i) - 'a'] += 1;
-            }
+			int cnt[] = new int[26];
+			for (int i = 0; i < n; i++) { cnt[st.charAt(i) - 'a'] += 1; }
 
-            int pairsCnt = 0, oddCnt = 0;
-            for (int i = 0; i < 26; i++) {
-                pairsCnt += cnt[i] / 2;
-                oddCnt += cnt[i] % 2;
-            }
+			int pairsCnt = 0, oddCnt = 0;
+			for (int i = 0; i < 26; i++) {
+				pairsCnt += cnt[i] / 2;
+				oddCnt += cnt[i] % 2;
+			}
 
-            int res = 2 * (pairsCnt / k);
-            oddCnt += 2 * (pairsCnt % k);
+			int res = 2 * (pairsCnt / k);
+			oddCnt += 2 * (pairsCnt % k);
 
-            io.println((oddCnt >= k) ? res + 1 : res);
+			io.println((oddCnt >= k) ? res + 1 : res);
 		}
-        io.close();
+		io.close();
 	}
 
-	//CodeSnip{Kattio}
+	// CodeSnip{Kattio}
 }
 ```
 
@@ -102,23 +97,23 @@ public class palindromesColoring {
 from collections import Counter
 
 for _ in range(int(input())):
-    n, k = map(int, input().split())
-    st = input()
+	n, k = map(int, input().split())
+	st = input()
 
-    cnt = Counter(st)
+	cnt = Counter(st)
 
-    pairs_cnt, odd_cnt = 0, 0
+	pairs_cnt, odd_cnt = 0, 0
 
-    for c in cnt.values():
-        pairs_cnt += c // 2
-        odd_cnt += c % 2
+	for c in cnt.values():
+		pairs_cnt += c // 2
+		odd_cnt += c % 2
 
-    res = 2 * (pairs_cnt // k)
-    odd_cnt += 2 * (pairs_cnt % k)
+	res = 2 * (pairs_cnt // k)
+	odd_cnt += 2 * (pairs_cnt % k)
 
-    res += (odd_cnt >= k)
+	res += odd_cnt >= k
 
-    print(res)
+	print(res)
 ```
 
 </PySection>
