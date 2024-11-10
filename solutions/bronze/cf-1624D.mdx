@@ -10,8 +10,13 @@ author: Rameez Parwez
 ## Explanation
 
 We can greedily solve this problem by first forming palindromic pairs from identical characters.
-We add one pair each of the `k` palindromes we want to build, as long as we have `k` pairs available.
-Once we are done adding pairs, we can still add one more character to the middle of each palindrome if there are at least `k` individual characters remaining.
+
+We first add pairs of identical characters to each color, tyring to keep everything as even as possible.
+When there's no more pairs, we can still add one more character to the middle of each palindrome.
+
+Note that when we add lone characters, it may be optimal to break some pairs apart
+to even things out a bit more.
+This is why we add `2 * (num_pairs % k)` near the end.
 
 ## Implementation
 
@@ -21,29 +26,32 @@ Once we are done adding pairs, we can still add one more character to the middle
 <CPPSection>
 
 ```cpp
-#include <bits/stdc++.h>
+#include <iostream>
+#include <string>
+#include <array>
 
 int main() {
 	int test_num;
 	std::cin >> test_num;
-	while (test_num--) {
+	for (int t = 0; t < test_num; t++) {
 		int n, k;
-		std::string st;
-		std::array<int, 26> cnt{0};
-		std::cin >> n >> k >> st;
+		std::string string;
+		std::cin >> n >> k >> string;
 
-		for (char x : st) { cnt[x - 'a']++; }
+		std::array<int, 26> char_freq{0};
+		for (char x : string) { char_freq[x - 'a']++; }
 
-		int num_pairs = 0, num_odd = 0;
+		int num_pairs = 0;
+		int num_odd = 0;
 		for (int i = 0; i < 26; i++) {
-			num_pairs += cnt[i] / 2;
-			num_odd += (cnt[i] % 2 == 1);
+			num_pairs += char_freq[i] / 2;
+			num_odd += (char_freq[i] % 2 == 1);
 		}
 
 		int res = 2 * (num_pairs / k);
 		num_odd += 2 * (num_pairs % k);
-		res += (num_odd >= k);
 
+		res += (num_odd >= k);
 		std::cout << res << '\n';
 	}
 }
@@ -53,32 +61,35 @@ int main() {
 <JavaSection>
 
 ```java
-import java.io.*;
 import java.util.*;
+import java.io.*;
 
-public class palindromesColoring {
+public class PalindromeColoring {
 	public static void main(String[] args) {
 		Kattio io = new Kattio();
 		int testNum = io.nextInt();
-
 		for (int t = 0; t < testNum; t++) {
 			int n = io.nextInt();
 			int k = io.nextInt();
-			String st = io.next();
+			String string = io.next();
 
-			int cnt[] = new int[26];
-			for (int i = 0; i < n; i++) { cnt[st.charAt(i) - 'a'] += 1; }
+			int charFreq[] = new int[26];
+			for (int i = 0; i < n; i++) {
+				charFreq[string.charAt(i) - 'a'] += 1;
+			}
 
-			int numPairs = 0, numOdd = 0;
+			int numPairs = 0;
+			int numOdd = 0;
 			for (int i = 0; i < 26; i++) {
-				numPairs += cnt[i] / 2;
-				numOdd += cnt[i] % 2;
+				numPairs += charFreq[i] / 2;
+				numOdd += charFreq[i] % 2;
 			}
 
 			int res = 2 * (numPairs / k);
 			numOdd += 2 * (numPairs % k);
 
-			io.println((numOdd >= k) ? res + 1 : res);
+			res += numOdd >= k ? 1 : 0;
+			io.println(res);
 		}
 		io.close();
 	}
@@ -95,13 +106,11 @@ from collections import Counter
 
 for _ in range(int(input())):
 	n, k = map(int, input().split())
-	st = input()
+	char_freq = Counter(input())
 
-	cnt = Counter(st)
-
-	num_pairs, num_odd = 0, 0
-
-	for c in cnt.values():
+	num_pairs = 0
+	num_odd = 0
+	for c in char_freq.values():
 		num_pairs += c // 2
 		num_odd += c % 2
 
@@ -109,7 +118,6 @@ for _ in range(int(input())):
 	num_odd += 2 * (num_pairs % k)
 
 	res += num_odd >= k
-
 	print(res)
 ```
 
