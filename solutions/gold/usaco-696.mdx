@@ -311,7 +311,7 @@ int main() {
 
 **Time Complexity:** $\mathcal{O}(N\log ^2N)$
 
-Sort the nodes from largest to smallest value, do path updates from each node to the root.
+Sort the cows from largest to smallest proficiency. For each cow, perform a path update that adds one to all cows from itself to the president.
 
 <LanguageSection>
 <CPPSection>
@@ -320,6 +320,7 @@ Sort the nodes from largest to smallest value, do path updates from each node to
 #include <bits/stdc++.h>
 using namespace std;
 
+// BeginCodeSnip{Segment Tree}
 template <class T> class SumSegmentTree {
   private:
 	T DEFAULT = 0;
@@ -347,6 +348,7 @@ template <class T> class SumSegmentTree {
 		return sum;
 	}
 };
+// EndCodeSnip
 
 void dfs_hld(vector<vector<int>> &edges, vector<vector<int>> &heavy_paths,
              vector<int> &depth, vector<int> &sizes, int start) {
@@ -356,7 +358,9 @@ void dfs_hld(vector<vector<int>> &edges, vector<vector<int>> &heavy_paths,
 		depth[i] = depth[start] + 1;
 		dfs_hld(edges, heavy_paths, depth, sizes, i);
 		sizes[start] += sizes[i];
-		if (heavy_child == -1 || sizes[heavy_child] < sizes[i]) heavy_child = i;
+		if (heavy_child == -1 || sizes[heavy_child] < sizes[i]){
+			heavy_child = i;
+		}
 	}
 	if (heavy_child != -1) {
 		swap(heavy_paths[start], heavy_paths[heavy_child]);
@@ -367,26 +371,26 @@ void dfs_hld(vector<vector<int>> &edges, vector<vector<int>> &heavy_paths,
 int main() {
 	freopen("promote.in", "r", stdin);
 	freopen("promote.out", "w", stdout);
-	int N, current_value;
-	cin >> N;
-	vector<pair<int, int>> cow_proficiency(N);
-	for (int i = 0; i < N; ++i) {
+	int n, current_value;
+	cin >> n;
+	vector<pair<int, int>> cow_proficiency(n);
+	for (int i = 0; i < n; ++i) {
 		cin >> cow_proficiency[i].first;
 		cow_proficiency[i].second = i;
 	}
-	vector edges(N, vector<int>()), heavy_paths(N, vector<int>());
+	vector edges(n, vector<int>()), heavy_paths(n, vector<int>());
 
-	vector<int> sizes(N, 0), heavy_index(N, -1), path_index(N, -1), depth(N, 0),
-	    parents(N, -1), ans(N, 0), cur_ans(N, 0);
+	vector<int> sizes(n, 0), heavy_index(n, -1), path_index(n, -1), depth(n, 0),
+	    parents(n, -1), ans(n, 0), cur_ans(n, 0);
 
-	for (int i = 1; i < N; ++i) {
+	for (int i = 1; i < n; ++i) {
 		cin >> parents[i];
 		edges[--parents[i]].push_back(i);
 	}
 
 	dfs_hld(edges, heavy_paths, depth, sizes, 0);
-	vector segtrees(N, SumSegmentTree<int>(0));
-	for (int i = 0; i < N; ++i) {
+	vector segtrees(n, SumSegmentTree<int>(0));
+	for (int i = 0; i < n; ++i) {
 		reverse(heavy_paths[i].begin(), heavy_paths[i].end());
 		for (int j = 0; j < (int)heavy_paths[i].size(); ++j) {
 			heavy_index[heavy_paths[i][j]] = i;
@@ -396,31 +400,34 @@ int main() {
 	}
 
 	sort(cow_proficiency.begin(), cow_proficiency.end(), greater<pair<int, int>>());
-	for (auto &p : cow_proficiency) {
-		if (heavy_index[p.second] != -1) {
-			ans[p.second] =
-			    segtrees[heavy_index[p.second]].range_sum(0, path_index[p.second] + 1);
-		} else ans[p.second] = cur_ans[p.second];
-		p.second = parents[p.second];
-		while (p.second >= 0) {
-			if (heavy_index[p.second] != -1) {
-				current_value = segtrees[heavy_index[p.second]].range_sum(0, 1);
-				segtrees[heavy_index[p.second]].set(0, current_value + 1);
-				if (path_index[p.second] + 1 <
-				    (int)heavy_paths[heavy_index[p.second]].size()) {
-					current_value = segtrees[heavy_index[p.second]].range_sum(
-					    path_index[p.second] + 1, path_index[p.second] + 2);
-					segtrees[heavy_index[p.second]].set(path_index[p.second] + 1,
-					                                    --current_value);
+	for (auto &[proficiency, cow] : cow_proficiency) {
+		if (heavy_index[cow] != -1) {
+			ans[cow] = segtrees[heavy_index[cow]].range_sum(0, path_index[cow] + 1);
+		}
+		else{
+			ans[cow] = cur_ans[cow];
+		}
+		cow = parents[cow];
+		while (cow >= 0) {
+			if (heavy_index[cow] != -1) {
+				current_value = segtrees[heavy_index[cow]].range_sum(0, 1);
+				segtrees[heavy_index[cow]].set(0, current_value + 1);
+				if (path_index[cow] + 1 < (int)heavy_paths[heavy_index[cow]].size()) {
+					current_value = segtrees[heavy_index[cow]].range_sum(
+					    path_index[cow] + 1, path_index[cow] + 2);
+					segtrees[heavy_index[cow]].set(path_index[cow] + 1, --current_value);
 				}
-				p.second = parents[heavy_paths[heavy_index[p.second]][0]];
-			} else {
-				++cur_ans[p.second];
-				p.second = parents[p.second];
+				cow = parents[heavy_paths[heavy_index[cow]][0]];
+			} 
+			else {
+				++cur_ans[cow];
+				cow = parents[cow];
 			}
 		}
 	}
-	for (int i = 0; i < N; ++i) { cout << ans[i] << '\n'; }
+	for (int i = 0; i < n; ++i) { 
+		cout << ans[i] << '\n';
+	}
 }
 ```
 
