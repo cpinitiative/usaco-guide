@@ -37,15 +37,15 @@ int main() {
 
 		for (char x : st) { cnt[x - 'a']++; }
 
-		int pairs_cnt = 0, odd_cnt = 0;
+		int num_pairs = 0, num_odd = 0;
 		for (int i = 0; i < 26; i++) {
-			pairs_cnt += cnt[i] / 2;
-			odd_cnt += (cnt[i] % 2 == 1);
+			num_pairs += cnt[i] / 2;
+			num_odd += (cnt[i] % 2 == 1);
 		}
 
-		int res = 2 * (pairs_cnt / k);
-		odd_cnt += 2 * (pairs_cnt % k);
-		res += (odd_cnt >= k);
+		int res = 2 * (num_pairs / k);
+		num_odd += 2 * (num_pairs % k);
+		res += (num_odd >= k);
 
 		cout << res << '\n';
 	}
@@ -72,16 +72,16 @@ public class palindromesColoring {
 			int cnt[] = new int[26];
 			for (int i = 0; i < n; i++) { cnt[st.charAt(i) - 'a'] += 1; }
 
-			int pairsCnt = 0, oddCnt = 0;
+			int numPairs = 0, numOdd = 0;
 			for (int i = 0; i < 26; i++) {
-				pairsCnt += cnt[i] / 2;
-				oddCnt += cnt[i] % 2;
+				numPairs += cnt[i] / 2;
+				numOdd += cnt[i] % 2;
 			}
 
-			int res = 2 * (pairsCnt / k);
-			oddCnt += 2 * (pairsCnt % k);
+			int res = 2 * (numPairs / k);
+			numOdd += 2 * (numPairs % k);
 
-			io.println((oddCnt >= k) ? res + 1 : res);
+			io.println((numOdd >= k) ? res + 1 : res);
 		}
 		io.close();
 	}
@@ -102,16 +102,16 @@ for _ in range(int(input())):
 
 	cnt = Counter(st)
 
-	pairs_cnt, odd_cnt = 0, 0
+	num_pairs, num_odd = 0, 0
 
 	for c in cnt.values():
-		pairs_cnt += c // 2
-		odd_cnt += c % 2
+		num_pairs += c // 2
+		num_odd += c % 2
 
-	res = 2 * (pairs_cnt // k)
-	odd_cnt += 2 * (pairs_cnt % k)
+	res = 2 * (num_pairs // k)
+	num_odd += 2 * (num_pairs % k)
 
-	res += odd_cnt >= k
+	res += num_odd >= k
 
 	print(res)
 ```
