@@ -358,9 +358,7 @@ void dfs_hld(vector<vector<int>> &edges, vector<vector<int>> &heavy_paths,
 		depth[i] = depth[start] + 1;
 		dfs_hld(edges, heavy_paths, depth, sizes, i);
 		sizes[start] += sizes[i];
-		if (heavy_child == -1 || sizes[heavy_child] < sizes[i]){
-			heavy_child = i;
-		}
+		if (heavy_child == -1 || sizes[heavy_child] < sizes[i]) { heavy_child = i; }
 	}
 	if (heavy_child != -1) {
 		swap(heavy_paths[start], heavy_paths[heavy_child]);
@@ -403,8 +401,7 @@ int main() {
 	for (auto &[proficiency, cow] : cow_proficiency) {
 		if (heavy_index[cow] != -1) {
 			ans[cow] = segtrees[heavy_index[cow]].range_sum(0, path_index[cow] + 1);
-		}
-		else{
+		} else {
 			ans[cow] = cur_ans[cow];
 		}
 		cow = parents[cow];
@@ -415,19 +412,17 @@ int main() {
 				if (path_index[cow] + 1 < (int)heavy_paths[heavy_index[cow]].size()) {
 					current_value = segtrees[heavy_index[cow]].range_sum(
 					    path_index[cow] + 1, path_index[cow] + 2);
-					segtrees[heavy_index[cow]].set(path_index[cow] + 1, --current_value);
+					segtrees[heavy_index[cow]].set(path_index[cow] + 1,
+					                               --current_value);
 				}
 				cow = parents[heavy_paths[heavy_index[cow]][0]];
-			} 
-			else {
+			} else {
 				++cur_ans[cow];
 				cow = parents[cow];
 			}
 		}
 	}
-	for (int i = 0; i < n; ++i) { 
-		cout << ans[i] << '\n';
-	}
+	for (int i = 0; i < n; ++i) { cout << ans[i] << '\n'; }
 }
 ```
 
