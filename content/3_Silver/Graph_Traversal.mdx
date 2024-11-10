@@ -1082,6 +1082,44 @@ public class BuildingTeams {
 ```
 
 </JavaSection>
+<PySection>
+
+Note that the below solution passes in CPython3 but exceeds the time limit on test case #7 in PyPy3.
+
+```py
+import sys
+input = sys.stdin.readline
+
+sys.setrecursionlimit(int(1e5 + 1))
+
+n, m = map(int, input().strip().split())
+adj = [[] for _ in range(n)]
+team = [0] * n # 0 -> has not been assigned a team yet
+
+for _ in range(m):
+    a, b = map(int, map(int, input().strip().split()))
+    adj[a - 1].append(b - 1)
+    adj[b - 1].append(a - 1)
+
+def dfs(node):
+    for next_node in adj[node]:
+        if team[next_node]:
+            if team[next_node] == team[node]:
+                print("IMPOSSIBLE")
+                raise SystemExit
+        else:
+            team[next_node] = 2 if team[node] == 1 else 1
+            dfs(next_node)
+
+for node in range(n):
+    if not team[node]:
+        team[node] = 1
+        dfs(node)
+
+print(*team)
+```
+
+</PySection>
 </LanguageSection>
 
 ### BFS Solution
@@ -1210,46 +1248,37 @@ public class BuildingTeams {
 <PySection>
 
 ```py
+import sys
 from collections import deque
+input = sys.stdin.readline
 
-n, m = map(int, input().split())
-
+n, m = map(int, input().strip().split())
 adj = [[] for _ in range(n)]
+team = [0] * n # 0 -> has not been assigned a team yet
+
 for _ in range(m):
-	a, b = map(int, input().split())
-	adj[a - 1].append(b - 1)
-	adj[b - 1].append(a - 1)
+    a, b = map(int, map(int, input().strip().split()))
+    adj[a - 1].append(b - 1)
+    adj[b - 1].append(a - 1)
 
-assigned = [0 for _ in range(n)]
-valid = True
-for i in range(n):
-	if assigned[i] != 0:
-		continue
+for node in range(n):
+    if not team[node]:
+        team[node] = 1
+        queue = deque([node])
 
-	assigned[i] = 1
-	todo = deque([i])
-	while todo:
-		curr = todo.popleft()
-		n_color = 2 if assigned[curr] == 1 else 1
-		for next_ in adj[curr]:
-			if assigned[next_] != 0:
-				if assigned[next_] != n_color:
-					valid = False
-					break
-			else:
-				assigned[next_] = n_color
-				todo.append(next_)
+        while queue:
+            node = queue.popleft()
 
-		if not valid:
-			break
+            for next_node in adj[node]:
+                if team[next_node]:
+                    if team[next_node] == team[node]:
+                        print("IMPOSSIBLE")
+                        raise SystemExit
+                else:
+                    team[next_node] = 2 if team[node] == 1 else 1
+                    queue.append(next_node)
 
-	if not valid:
-		break
-
-if valid:
-	print(" ".join(str(i) for i in assigned))
-else:
-	print("IMPOSSIBLE")
+print(*team)
 ```
 
 </PySection>
