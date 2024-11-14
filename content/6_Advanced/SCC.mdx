@@ -196,63 +196,67 @@ order = []
 
 # calculates the order in which nodes are processed
 def dfs1(v: int):
-    stack = [v]
-    while stack:
-        node = stack[-1]
-        if not vis[node]:
-            vis[node] = True
-        finished = True
-        for u in adj[node]:
-            if not vis[u]:
-                stack.append(u)
-                finished = False
-                break
-        if finished:
-            order.append(stack.pop())
-        else:
-            vis[node] = True
+	stack = [v]
+	while stack:
+		node = stack[-1]
+		if not vis[node]:
+			vis[node] = True
+		finished = True
+		for u in adj[node]:
+			if not vis[u]:
+				stack.append(u)
+				finished = False
+				break
+		if finished:
+			order.append(stack.pop())
+		else:
+			vis[node] = True
+
 
 """
 traverse one SCC at a time and
 assign component ID to all nodes in one SCC
 """
+
+
 def dfs2(x: int, comp: int):
-    stack = [x]
-    while stack:
-        node = stack.pop()
-        if not vis[node]:
-            vis[node] = True
-            id[node] = comp
-            for u in adj_t[node]:
-                if not vis[u]:
-                    stack.append(u)
+	stack = [x]
+	while stack:
+		node = stack.pop()
+		if not vis[node]:
+			vis[node] = True
+			id[node] = comp
+			for u in adj_t[node]:
+				if not vis[u]:
+					stack.append(u)
+
 
 n, m = map(int, input().split())
 
 adj = [[] for _ in range(n)]
-adj_t = [[] for _ in range(n)] # adj_t is the transpose of adj
+adj_t = [[] for _ in range(n)]  # adj_t is the transpose of adj
 vis = [False] * n
 id = [0] * n
 
 for _ in range(m):
-    u, v = map(int, input().split())
-    u -= 1
-    v -= 1
-    adj[u].append(v)
-    adj_t[v].append(u)
+	u, v = map(int, input().split())
+	u -= 1
+	v -= 1
+	adj[u].append(v)
+	adj_t[v].append(u)
 
 for i in range(n):
-    if not vis[i]:
-        dfs1(i)
+	if not vis[i]:
+		dfs1(i)
 
 vis = [False] * n
 comps = 0
 
 for i in range(len(order) - 1, -1, -1):
-    v = order[i]
-    if not vis[v]:
-        comps += 1 # counter for SCC
-        dfs2(v, comps)
+	v = order[i]
+	if not vis[v]:
+		comps += 1  # counter for SCC
+		dfs2(v, comps)
 
 print(comps)
 print(*id)
