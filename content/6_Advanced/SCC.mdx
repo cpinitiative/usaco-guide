@@ -226,7 +226,7 @@ def dfs2(x: int, comp: int):
 		if not vis[node]:
 			vis[node] = True
 			comp_id[node] = comp
-			for u in adj_t[node]:
+			for u in rev_adj[node]:
 				if not vis[u]:
 					stack.append(u)
 
@@ -234,7 +234,7 @@ def dfs2(x: int, comp: int):
 n, m = map(int, input().split())
 
 adj = [[] for _ in range(n)]
-adj_t = [[] for _ in range(n)]  # adj_t is the transpose of adj
+rev_adj = [[] for _ in range(n)]  # adj_t is the transpose of adj
 vis = [False] * n
 comp_id = [0] * n
 
@@ -243,7 +243,7 @@ for _ in range(m):
 	u -= 1
 	v -= 1
 	adj[u].append(v)
-	adj_t[v].append(u)
+	rev_adj[v].append(u)
 
 for i in range(n):
 	if not vis[i]:
