@@ -187,15 +187,16 @@ public class Main {
 
 <Warning>
 
-Submit the solution in PyPy3 to avoid TLE.
+The below solution only runs in time if you submit with PyPy.
 
 </Warning>
 
 ```py
 order = []
 
-# calculates the order in which nodes are processed
+
 def dfs1(v: int):
+	"""Calculate the order to process nodes."""
 	stack = [v]
 	while stack:
 		node = stack[-1]
@@ -213,13 +214,8 @@ def dfs1(v: int):
 			vis[node] = True
 
 
-"""
-traverse one SCC at a time and
-assign component ID to all nodes in one SCC
-"""
-
-
 def dfs2(x: int, comp: int):
+	"""Traverse an SCC and assign component numbers to each of them."""
 	stack = [x]
 	while stack:
 		node = stack.pop()
@@ -251,7 +247,6 @@ for i in range(n):
 
 vis = [False] * n
 comps = 0
-
 for i in range(len(order) - 1, -1, -1):
 	v = order[i]
 	if not vis[v]:
