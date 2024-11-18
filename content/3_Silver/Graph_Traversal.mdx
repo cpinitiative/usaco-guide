@@ -1085,17 +1085,15 @@ public class BuildingTeams {
 <PySection>
 
 <Warning>
-
-You have to submit with CPython (not PyPy3) to avoid TLE.
-
+You have to submit with CPython (not PyPy3) to avoid exceeding the time limit.
 </Warning>
 
 ```py
 import sys
 
-sys.setrecursionlimit(int(1e9))  # disable recursion limit
-
 input = sys.stdin.readline
+
+sys.setrecursionlimit(int(1e9))  # disable recursion limit
 
 n, m = map(int, input().strip().split())
 adj = [[] for _ in range(n)]
@@ -1106,7 +1104,6 @@ for _ in range(m):
 	adj[a - 1].append(b - 1)
 	adj[b - 1].append(a - 1)
 
-
 def dfs(node: int):
 	for next_node in adj[node]:
 		if team[next_node]:
@@ -1116,7 +1113,6 @@ def dfs(node: int):
 		else:
 			team[next_node] = 2 if team[node] == 1 else 1
 			dfs(next_node)
-
 
 for node in range(n):
 	if not team[node]:
@@ -1255,38 +1251,46 @@ public class BuildingTeams {
 <PySection>
 
 ```py
-import sys
 from collections import deque
 
-input = sys.stdin.readline
+n, m = map(int, input().split())
 
-n, m = map(int, input().strip().split())
 adj = [[] for _ in range(n)]
-team = [0] * n  # 0 -> has not been assigned a team yet
-
 for _ in range(m):
-	a, b = map(int, map(int, input().strip().split()))
+	a, b = map(int, input().split())
 	adj[a - 1].append(b - 1)
 	adj[b - 1].append(a - 1)
 
-for node in range(n):
-	if not team[node]:
-		team[node] = 1
-		queue = deque([node])
+assigned = [0 for _ in range(n)]
+valid = True
+for i in range(n):
+	if assigned[i] != 0:
+		continue
 
-		while queue:
-			node = queue.popleft()
+	assigned[i] = 1
+	todo = deque([i])
+	while todo:
+		curr = todo.popleft()
+		n_color = 2 if assigned[curr] == 1 else 1
+		for next_ in adj[curr]:
+			if assigned[next_] != 0:
+				if assigned[next_] != n_color:
+					valid = False
+					break
+			else:
+				assigned[next_] = n_color
+				todo.append(next_)
 
-			for next_node in adj[node]:
-				if team[next_node]:
-					if team[next_node] == team[node]:
-						print("IMPOSSIBLE")
-						exit()
-				else:
-					team[next_node] = 2 if team[node] == 1 else 1
-					queue.append(next_node)
+		if not valid:
+			break
 
-print(*team)
+	if not valid:
+		break
+
+if valid:
+	print(*assigned)
+else:
+	print("IMPOSSIBLE")
 ```
 
 </PySection>
