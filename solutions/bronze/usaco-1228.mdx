@@ -48,7 +48,7 @@ int main() {
 		// Add up all the cows that are lying to the left of our position.
 		lying_left[i] += lying_left[i - 1];
 
-		if (cows[i - 1].second == 'L' && cows[i].first >= cows[i - 1].first) {
+		if (cows[i - 1].second == 'L') {
 			/*
 			 * If the cow before says our position is to the left
 			 * but their position is strictly less than or equal to our
@@ -65,7 +65,7 @@ int main() {
 	for (int i = n - 2; i >= 0; i--) {
 		lying_right[i] += lying_right[i + 1];
 
-		if (cows[i + 1].second == 'G' && cows[i].first <= cows[i + 1].first) {
+		if (cows[i + 1].second == 'G') {
 			lying_right[i]++;
 		}
 	}
@@ -126,7 +126,7 @@ public class CountingLiars {
 			// Add up all the cows that are lying to the left of our position.
 			lying_left[i] += lying_left[i - 1];
 
-			if (cows[i - 1].statement == 'L' && cows[i].pos >= cows[i - 1].pos) {
+			if (cows[i - 1].statement == 'L') {
 				/*
 				 * If the cow before says our position is to the left
 				 * but their position is strictly less than our position,
@@ -143,7 +143,7 @@ public class CountingLiars {
 		for (int i = n - 2; i >= 0; i--) {
 			lying_right[i] += lying_right[i + 1];
 
-			if (cows[i + 1].statement == 'G' && cows[i].pos <= cows[i + 1].pos) {
+			if (cows[i + 1].statement == 'G') {
 				lying_right[i]++;
 			}
 		}
@@ -185,7 +185,7 @@ for i in range(1, n):
 	# Add up all the cows that are lying to the left of our position.
 	lying_left[i] += lying_left[i - 1]
 
-	if cows[i - 1].statement == "L" and cows[i].pos >= cows[i - 1].pos:
+	if cows[i - 1].statement == "L":
 		# If the cow before says our position is to the left
 		# but their position is strictly less than or equal to our position, they're lying.
 		lying_left[i] += 1
@@ -197,7 +197,7 @@ lying_right = [0 for _ in range(n)]
 for i in range(n - 2, -1, -1):
 	lying_right[i] += lying_right[i + 1]
 
-	if cows[i + 1].statement == "G" and cows[i].pos <= cows[i + 1].pos:
+	if cows[i + 1].statement == "G":
 		lying_right[i] += 1
 
 min_liars = n
