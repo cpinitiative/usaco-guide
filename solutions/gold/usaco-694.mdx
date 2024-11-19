@@ -32,7 +32,6 @@ always exactly one way to win.
 **Time Complexity:** $\mathcal{O}(NK)$
 
 <LanguageSection>
-
 <CPPSection>
 
 ## Implementation
@@ -89,7 +88,6 @@ int main() {
 ```
 
 </CPPSection>
-
 <JavaSection>
 
 ```java
@@ -101,11 +99,10 @@ public class HoofPaperScissors {
 
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new FileReader("hps.in"));
-		PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("hps.out")));
-
 		StringTokenizer inputLine = new StringTokenizer(br.readLine());
 		int numGames = Integer.parseInt(inputLine.nextToken());
 		int maximumSwitches = Integer.parseInt(inputLine.nextToken());
+
 		// dp[game][switches][type] = maximum number of wins
 		// at that game with at most that amount
 		// of switches and that with that type active
@@ -126,11 +123,10 @@ public class HoofPaperScissors {
 		int maximum = 0;
 
 		/*
-		c = current game number
-		n = number of switches
+		 * c = current game number
+		 * n = number of switches
 		 */
-
-		for (int c = 1; c <= numGames; c++) {  // for each game
+		for (int c = 1; c <= numGames; c++) {
 			// for each switch amount
 			for (int n = 1; n < maximumSwitches + 2; n++) {
 				// try switching to the three possibilities
@@ -161,11 +157,14 @@ public class HoofPaperScissors {
 				}
 			}
 		}
+
+		PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("hps.out")));
 		pw.println(maximum);
 		pw.close();
 	}
 }
 ```
+
 </JavaSection>
 <PySection>
 
