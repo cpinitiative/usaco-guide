@@ -123,4 +123,27 @@ public class Smallest {
 ```
 
 </JavaSection>
+<PySection>
+
+```py
+from functools import cmp_to_key
+
+n = int(input())
+inps = []
+for _ in range(n):
+	inps.append(input())
+
+
+def compare(x: str, y: str) -> int:
+	if x + y > y + x:  # y should come before x
+		return 1
+	elif x + y < y + x:  # x should come before y
+		return -1
+	return 0  # x and y are equal
+
+
+print("".join(sorted(inps, key=cmp_to_key(compare))))
+```
+
+</PySection>
 </LanguageSection>
