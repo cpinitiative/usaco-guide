@@ -177,15 +177,15 @@ Due to Python's constant factor, the below solution TLEs on a couple test cases.
 ```py
 with open("hps.in") as read:
 	n, k = map(int, read.readline().strip().split())
-	A = [0] * n
+	moves = [0] * n
 	for i in range(n):
 		a = read.readline().strip()
 		if a == "H":
-			A[i] = 0
+			moves[i] = 0
 		elif a == "P":
-			A[i] = 1
+			moves[i] = 1
 		else:
-			A[i] = 2
+			moves[i] = 2
 
 """
 dp[i][j][k] is the maximum number of games she wins at
@@ -200,7 +200,7 @@ for i in range(n):
 		for l in range(3):
 
 			# If current strategy matches opponent's move, increment win count
-			if l == A[i]:
+			if l == moves[i]:
 				dp[i][j][l] += 1
 
 			if j != k:
