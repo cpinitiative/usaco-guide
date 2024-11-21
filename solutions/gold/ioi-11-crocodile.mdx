@@ -59,9 +59,9 @@ int travel_plan(int n, int m, int r[][2], int l[], int k, int p[]) {
 		adj[r[i][1]].push_back({r[i][0], l[i]});
 	}
 
-	// we use 1e9 instead of INT_MAX to prevent overflow
-	// dist[i] = {best distance, second best distance}
+	// 1e9 because the answer is guaranteed to be less than that
 	const array<int, 2> DEFAULT = {(int)1e9, (int)1e9};
+	// dist[i] = {best distance, second best distance}
 	vector<array<int, 2>> dist(n, DEFAULT);
 	priority_queue<array<int, 2>> pq;
 	for (int i = 0; i < k; i++) {
@@ -85,6 +85,7 @@ int travel_plan(int n, int m, int r[][2], int l[], int k, int p[]) {
 			}
 		}
 	}
+
 	return dist[0][1];
 }
 ```
