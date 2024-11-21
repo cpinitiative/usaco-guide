@@ -383,16 +383,16 @@ int main() {
 	for (int i = 0; i < n; i++) {
 		int dist = 2e9 + 1;
 		// find closest tower to the right of the city
-		auto closesttower = towers.lower_bound(cities[i]);
-		if (closesttower != towers.end()) {
+		auto closest_tower = towers.lower_bound(cities[i]);
+		if (closest_tower != towers.end()) {
 			// if a tower is found, update the distance
-			dist = *closesttower - cities[i];
+			dist = *closest_tower - cities[i];
 		}
 		// find closest tower to the left of the city
-		if (closesttower != towers.begin()) {
-			closesttower--;
+		if (closest_tower != towers.begin()) {
+			closest_tower--;
 			// update dist with the minimum of the distances
-			dist = min(dist, cities[i] - *closesttower);
+			dist = min(dist, cities[i] - *closest_tower);
 		}
 		r = max(r, dist);
 	}
