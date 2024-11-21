@@ -376,7 +376,7 @@ int main() {
 		edges[--parents[i]].push_back(i);
 	}
 
-	function<void(int)> dfs_hld = [&](int start){
+	function<void(int)> dfs_hld = [&](int start) {
 		int heavy_child = -1;
 		++sizes[start];
 		for (int i : edges[start]) {
@@ -417,7 +417,8 @@ int main() {
 				if (path_index[cow] + 1 < (int)heavy_paths[heavy_index[cow]].size()) {
 					current_value = segtrees[heavy_index[cow]].range_sum(
 					    path_index[cow] + 1, path_index[cow] + 2);
-					segtrees[heavy_index[cow]].set(path_index[cow] + 1, --current_value);
+					segtrees[heavy_index[cow]].set(path_index[cow] + 1,
+					                               --current_value);
 				}
 				cow = parents[heavy_paths[heavy_index[cow]][0]];
 			} else {
