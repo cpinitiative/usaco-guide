@@ -9,9 +9,9 @@ author: Chongtian Ma, Juheon Rhee
 
 ## Explanation
 
-After we sort the input, an important observation is that if Bessie is at position $x$, then the number of cows lying are all the
-cows with position less than $x$ that says "L" plus all the cows with a position greater than $x$ that says
-"G".
+After we sort the input, an important observation is that if Bessie is at position $x$,
+then the number of cows lying are all the cows with position less than $x$ that says "L"
+plus all the cows with a position greater than $x$ that says "G".
 
 Given this, we can loop through every cow's position and compute the total number
 of liars by using a forwards loop and a backwards loop.
@@ -48,7 +48,7 @@ int main() {
 		// Add up all the cows that are lying to the left of our position.
 		lying_left[i] += lying_left[i - 1];
 
-		if (cows[i - 1].second == 'L' && cows[i].first >= cows[i - 1].first) {
+		if (cows[i - 1].second == 'L') {
 			/*
 			 * If the cow before says our position is to the left
 			 * but their position is strictly less than or equal to our
@@ -65,9 +65,7 @@ int main() {
 	for (int i = n - 2; i >= 0; i--) {
 		lying_right[i] += lying_right[i + 1];
 
-		if (cows[i + 1].second == 'G' && cows[i].first <= cows[i + 1].first) {
-			lying_right[i]++;
-		}
+		if (cows[i + 1].second == 'G') { lying_right[i]++; }
 	}
 
 	int min_liars = n;
@@ -126,7 +124,7 @@ public class CountingLiars {
 			// Add up all the cows that are lying to the left of our position.
 			lying_left[i] += lying_left[i - 1];
 
-			if (cows[i - 1].statement == 'L' && cows[i].pos >= cows[i - 1].pos) {
+			if (cows[i - 1].statement == 'L') {
 				/*
 				 * If the cow before says our position is to the left
 				 * but their position is strictly less than our position,
@@ -143,9 +141,7 @@ public class CountingLiars {
 		for (int i = n - 2; i >= 0; i--) {
 			lying_right[i] += lying_right[i + 1];
 
-			if (cows[i + 1].statement == 'G' && cows[i].pos <= cows[i + 1].pos) {
-				lying_right[i]++;
-			}
+			if (cows[i + 1].statement == 'G') { lying_right[i]++; }
 		}
 
 		int minLiars = n;
@@ -185,7 +181,7 @@ for i in range(1, n):
 	# Add up all the cows that are lying to the left of our position.
 	lying_left[i] += lying_left[i - 1]
 
-	if cows[i - 1].statement == "L" and cows[i].pos >= cows[i - 1].pos:
+	if cows[i - 1].statement == "L":
 		# If the cow before says our position is to the left
 		# but their position is strictly less than or equal to our position, they're lying.
 		lying_left[i] += 1
@@ -197,7 +193,7 @@ lying_right = [0 for _ in range(n)]
 for i in range(n - 2, -1, -1):
 	lying_right[i] += lying_right[i + 1]
 
-	if cows[i + 1].statement == "G" and cows[i].pos <= cows[i + 1].pos:
+	if cows[i + 1].statement == "G":
 		lying_right[i] += 1
 
 min_liars = n
