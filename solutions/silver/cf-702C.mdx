@@ -55,13 +55,11 @@ int main() {
 		int min_r_for_this_city = 2e9;
 		if (tower_right < m) {
 			assert(towers[tower_right] >= cities[i]);
-			min_r_for_this_city =
-			    min(min_r_for_this_city, towers[tower_right] - cities[i]);
+			min_r_for_this_city = min(min_r_for_this_city, towers[tower_right] - cities[i]);
 		}
 		if (tower_left >= 0) {
 			assert(towers[tower_left] <= cities[i]);
-			min_r_for_this_city =
-			    min(min_r_for_this_city, cities[i] - towers[tower_left]);
+			min_r_for_this_city = min(min_r_for_this_city, cities[i] - towers[tower_left]);
 		}
 
 		min_r = max(min_r, min_r_for_this_city);
@@ -145,18 +143,17 @@ returns the first index in the array that is >= value, or arr.size()
 if no such index exists
 """
 
-
 def first_at_least(value: int) -> int:
-	lo = 0
-	hi = len(towers)
-	while lo < hi:
-		mid = (lo + hi) // 2
-		if towers[mid] > value:
-			hi = mid
-		else:
-			lo = mid + 1
+    lo = 0
+    hi = len(towers)
+    while lo < hi:
+        mid = (lo + hi) // 2
+        if towers[mid] > value:
+            hi = mid
+        else:
+            lo = mid + 1
 
-	return lo
+    return lo
 
 
 n, m = map(int, input().split())
@@ -165,17 +162,18 @@ towers = list(map(int, input().split()))
 
 min_r = 0
 for i in range(n):
-	tower_right = first_at_least(cities[i])
-	tower_left = tower_right - 1
+    tower_right = first_at_least(cities[i])
+    tower_left = tower_right - 1
 
-	min_r_for_this_city = float("inf")
-	if tower_right < m:
-		min_r_for_this_city = min(min_r_for_this_city, towers[tower_right] - cities[i])
+    min_r_for_this_city = float('inf')
+    if tower_right < m:
+        min_r_for_this_city = min(min_r_for_this_city, towers[tower_right] - cities[i])
 
-	if tower_left >= 0:
-		min_r_for_this_city = min(min_r_for_this_city, cities[i] - towers[tower_left])
+    if tower_left >= 0:
+        min_r_for_this_city = min(min_r_for_this_city, cities[i] - towers[tower_left])
 
-	min_r = max(min_r, min_r_for_this_city)
+
+    min_r = max(min_r, min_r_for_this_city)
 
 print(min_r)
 ```
@@ -342,7 +340,6 @@ public class CellularNetwork2 {
 </JavaSection>
 </LanguageSection>
 
-## Solution 3 - Using a Set
 
 We use the set $\texttt{towers}$ to store the coordinates of the cellular
 towers. For each city, we want to find the closest tower and calculate the
@@ -363,6 +360,8 @@ to be the maximum of itself and $\texttt{dist}$.
 
 <LanguageSection>
 <CPPSection>
+
+## Solution 3 - Using a Set
 
 ```cpp
 #include <algorithm>
@@ -406,6 +405,8 @@ int main() {
 </CPPSection>
 <JavaSection>
 
+## Solution 3 - Using a Set
+
 ```java
 import java.io.*;
 import java.util.*;
@@ -448,4 +449,32 @@ public class CellularNetwork {
 ```
 
 </JavaSection>
+<PySection>
+
+## Solution 3 - Using a Sorted List
+
+```py
+import bisect
+
+n, m = map(int, input().split())
+cities = list(map(int, input().split()))
+towers = list(map(int, input().split()))
+
+r = 0
+for city in cities:
+    dist = float('inf')
+    closest_tower = bisect.bisect_left(towers, city)
+
+    if closest_tower != len(towers):
+        dist = towers[closest_tower] - city
+
+    if closest_tower > 0:
+        dist = min(dist, city - towers[closest_tower - 1])
+
+    r = max(r, dist)
+
+print(r)
+```
+
+</PySection>
 </LanguageSection>
