@@ -135,6 +135,51 @@ public class CellularNetwork {
 ```
 
 </JavaSection>
+<PySection>
+
+```py
+"""
+returns the first index in the array that is >= value, or arr.size()
+if no such index exists
+"""
+
+def first_at_least(value: int) -> int:
+    lo = 0
+    hi = len(towers)
+    while lo < hi:
+        mid = (lo + hi) // 2
+        if towers[mid] > value:
+            hi = mid
+        else:
+            lo = mid + 1
+
+    return lo
+
+
+n, m = map(int, input().split())
+cities = list(map(int, input().split()))
+towers = list(map(int, input().split()))
+
+min_r = 0
+for i in range(n):
+    tower_right = first_at_least(cities[i])
+    tower_left = tower_right - 1
+
+    min_r_for_this_city = float('inf')
+    if tower_right < m:
+        min_r_for_this_city = min(min_r_for_this_city, towers[tower_right] - cities[i])
+
+    if tower_left >= 0:
+        min_r_for_this_city = min(min_r_for_this_city, cities[i] - towers[tower_left])
+
+
+    min_r = max(min_r, min_r_for_this_city)
+
+print(min_r)
+```
+
+
+</PySection>
 </LanguageSection>
 
 ## Solution 2 - Two Pointers
