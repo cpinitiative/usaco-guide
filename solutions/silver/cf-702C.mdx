@@ -20,7 +20,7 @@ using namespace std;
 
 // returns the first index in the array that is >= value, or arr.size() if no
 // such index exists
-int firstAtLeast(const vector<int> &arr, int value) {
+int first_at_least(const vector<int> &arr, int value) {
 	int lo = 0, hi = arr.size();
 	while (lo < hi) {
 		int mid = (lo + hi) / 2;
@@ -47,25 +47,25 @@ int main() {
 		towers.push_back(tower);
 	}
 
-	int minR = 0;
+	int min_r = 0;
 	for (int i = 0; i < n; i++) {
-		int towerRight = firstAtLeast(towers, cities[i]);
-		int towerLeft = towerRight - 1;
+		int tower_right = first_at_least(towers, cities[i]);
+		int tower_left = tower_right - 1;
 
-		int minRForThisCity = 2e9;
-		if (towerRight < m) {
-			assert(towers[towerRight] >= cities[i]);
-			minRForThisCity = min(minRForThisCity, towers[towerRight] - cities[i]);
+		int min_r_for_this_city = 2e9;
+		if (tower_right < m) {
+			assert(towers[tower_right] >= cities[i]);
+			min_r_for_this_city = min(min_r_for_this_city, towers[tower_right] - cities[i]);
 		}
-		if (towerLeft >= 0) {
-			assert(towers[towerLeft] <= cities[i]);
-			minRForThisCity = min(minRForThisCity, cities[i] - towers[towerLeft]);
+		if (tower_left >= 0) {
+			assert(towers[tower_left] <= cities[i]);
+			min_r_for_this_city = min(min_r_for_this_city, cities[i] - towers[tower_left]);
 		}
 
-		minR = max(minR, minRForThisCity);
+		min_r = max(min_r, min_r_for_this_city);
 	}
 
-	cout << minR << endl;
+	cout << min_r << endl;
 }
 ```
 
