@@ -342,6 +342,7 @@ public class CellularNetwork2 {
 </JavaSection>
 </LanguageSection>
 
+## Solution 3 - Using a Set
 
 We use the set $\texttt{towers}$ to store the coordinates of the cellular
 towers. For each city, we want to find the closest tower and calculate the
@@ -362,8 +363,6 @@ to be the maximum of itself and $\texttt{dist}$.
 
 <LanguageSection>
 <CPPSection>
-
-## Solution 3 - Using a Set
 
 ```cpp
 #include <algorithm>
@@ -407,8 +406,6 @@ int main() {
 </CPPSection>
 <JavaSection>
 
-## Solution 3 - Using a Set
-
 ```java
 import java.io.*;
 import java.util.*;
@@ -451,32 +448,4 @@ public class CellularNetwork {
 ```
 
 </JavaSection>
-<PySection>
-
-## Solution 3 - Using a Sorted List
-
-```py
-import bisect
-
-n, m = map(int, input().split())
-cities = list(map(int, input().split()))
-towers = list(map(int, input().split()))
-
-r = 0
-for city in cities:
-	dist = float("inf")
-	closest_tower = bisect.bisect_left(towers, city)
-
-	if closest_tower != len(towers):
-		dist = towers[closest_tower] - city
-
-	if closest_tower > 0:
-		dist = min(dist, city - towers[closest_tower - 1])
-
-	r = max(r, dist)
-
-print(r)
-```
-
-</PySection>
 </LanguageSection>
