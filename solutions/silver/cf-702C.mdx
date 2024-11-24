@@ -7,12 +7,11 @@ author: Nathan Wang, Benjamin Qi, Maggie Liu, Brad Ma, George Pong
 
 [Official Editorial](https://codeforces.com/blog/entry/46324?locale=en)
 
-## Solution 1 - Binary Search on a Sorted Array
+## Solution 1 - Binary Search
 
 **Time Complexity:** $\mathcal{O}(N \log N)$
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
@@ -21,7 +20,7 @@ using namespace std;
 
 // returns the first index in the array that is >= value, or arr.size() if no
 // such index exists
-int firstAtLeast(const vector<int> &arr, int value) {
+int first_at_least(const vector<int> &arr, int value) {
 	int lo = 0, hi = arr.size();
 	while (lo < hi) {
 		int mid = (lo + hi) / 2;
@@ -48,30 +47,31 @@ int main() {
 		towers.push_back(tower);
 	}
 
-	int minR = 0;
+	int min_r = 0;
 	for (int i = 0; i < n; i++) {
-		int towerRight = firstAtLeast(towers, cities[i]);
-		int towerLeft = towerRight - 1;
+		int tower_right = first_at_least(towers, cities[i]);
+		int tower_left = tower_right - 1;
 
-		int minRForThisCity = 2e9;
-		if (towerRight < m) {
-			assert(towers[towerRight] >= cities[i]);
-			minRForThisCity = min(minRForThisCity, towers[towerRight] - cities[i]);
+		int min_r_for_this_city = INT_MAX;
+		if (tower_right < m) {
+			assert(towers[tower_right] >= cities[i]);
+			min_r_for_this_city =
+			    min(min_r_for_this_city, towers[tower_right] - cities[i]);
 		}
-		if (towerLeft >= 0) {
-			assert(towers[towerLeft] <= cities[i]);
-			minRForThisCity = min(minRForThisCity, cities[i] - towers[towerLeft]);
+		if (tower_left >= 0) {
+			assert(towers[tower_left] <= cities[i]);
+			min_r_for_this_city =
+			    min(min_r_for_this_city, cities[i] - towers[tower_left]);
 		}
 
-		minR = max(minR, minRForThisCity);
+		min_r = max(min_r, min_r_for_this_city);
 	}
 
-	cout << minR << endl;
+	cout << min_r << endl;
 }
 ```
 
 </CPPSection>
-
 <JavaSection>
 
 ```java
@@ -137,7 +137,48 @@ public class CellularNetwork {
 ```
 
 </JavaSection>
+<PySection>
 
+```py
+def first_at_least(value: int) -> int:
+	"""
+	:return the first index in the array that is >= value, or len(arr)
+	if no such index exists
+	"""
+	lo = 0
+	hi = len(towers)
+	while lo < hi:
+		mid = (lo + hi) // 2
+		if towers[mid] > value:
+			hi = mid
+		else:
+			lo = mid + 1
+
+	return lo
+
+
+n, m = map(int, input().split())
+cities = list(map(int, input().split()))
+towers = list(map(int, input().split()))
+
+min_r = 0
+for i in range(n):
+	tower_right = first_at_least(cities[i])
+	tower_left = tower_right - 1
+
+	min_r_for_this_city = float("inf")
+	if tower_right < m:
+		min_r_for_this_city = min(min_r_for_this_city, towers[tower_right] - cities[i])
+
+	if tower_left >= 0:
+		min_r_for_this_city = min(min_r_for_this_city, cities[i] - towers[tower_left])
+
+	min_r = max(min_r, min_r_for_this_city)
+
+print(min_r)
+```
+
+</PySection>
 </LanguageSection>
 
 ## Solution 2 - Two Pointers
@@ -149,7 +190,6 @@ We store two pointers, one for the current city and one for the current tower. W
 **Time Complexity:** $\mathcal{O}(N)$
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
@@ -202,7 +242,6 @@ int main() {
 ```
 
 </CPPSection>
-
 <PySection>
 
 ```py
@@ -242,7 +281,6 @@ print(max_dist)
 ```
 
 </PySection>
-
 <JavaSection>
 
 ```java
@@ -298,117 +336,6 @@ public class CellularNetwork2 {
 	// CodeSnip{Kattio}
 }
 ```
-</JavaSection>
-
-</LanguageSection>
-
-## Solution 3 - Using a Set
-
-We use the set $\texttt{towers}$ to store the coordinates of the cellular
-towers. For each city, we want to find the closest tower and calculate the
-distance. The minimal $r$ will be the maximum of all these distances. To find
-the closest tower to a certain city, we check the towers to the left and right
-and determine which one is closer.
-
-For each city, we use
-[`lower_bound`](http://www.cplusplus.com/reference/algorithm/lower_bound/) to
-find the closest tower to the right of the city. If this tower is found,
-calculate the distance between this tower and the city. If the tower is not at
-the beginning of the set, the previous tower in the set will be the tower to the
-left of the city. Define $\texttt{dist}$ to be the minimum of the distance to
-the tower on the right and the distance to the tower on the left. Then, set $r$
-to be the maximum of itself and $\texttt{dist}$.
-
-**Time Complexity:** $\mathcal{O}(N\log N)$
-
-<LanguageSection>
-
-<CPPSection>
-
-```cpp
-#include <algorithm>
-#include <iostream>
-#include <set>
-using namespace std;
-
-int main() {
-	int n, m;
-	cin >> n >> m;
-	int cities[n];
-	set<int> towers;
-	int tower;
-	for (int i = 0; i < n; i++) { cin >> cities[i]; }
-	for (int i = 0; i < m; i++) {
-		cin >> tower;
-		towers.insert(tower);
-	}
-	int r = 0;
-	for (int i = 0; i < n; i++) {
-		int dist = 2e9 + 1;
-		// find closest tower to the right of the city
-		auto closesttower = towers.lower_bound(cities[i]);
-		if (closesttower != towers.end()) {
-			// if a tower is found, update the distance
-			dist = *closesttower - cities[i];
-		}
-		// find closest tower to the left of the city
-		if (closesttower != towers.begin()) {
-			closesttower--;
-			// update dist with the minimum of the distances
-			dist = min(dist, cities[i] - *closesttower);
-		}
-		r = max(r, dist);
-	}
-	cout << r << endl;
-	return 0;
-}
-```
-
-</CPPSection>
-
-<JavaSection>
-
-```java
-import java.io.*;
-import java.util.*;
-
-public class CellularNetwork {
-	// CodeSnip{Kattio}
-	public static void main(String[] args) {
-		Kattio io = new Kattio();
-
-		int n = io.nextInt();
-		int m = io.nextInt();
-		int[] cities = new int[n];
-		TreeSet<Integer> towers = new TreeSet<>();
-		for (int i = 0; i < n; i++) { cities[i] = io.nextInt(); }
-
-		for (int i = 0; i < m; i++) {
-			int tower = io.nextInt();
-			towers.add(tower);
-		}
-
-		int r = 0;
-		for (int i = 0; i < n; i++) {
-			int distance = Integer.MAX_VALUE;
-			/*
-			 * .lower() and .higher() methods return a value of type
-			 * Integer if the value exists and null if it doesn't
-			 */
-			Integer closestTower = towers.lower(cities[i]);
-			Integer farthestTower = towers.higher(cities[i]);
-			if (closestTower != null) { distance = cities[i] - closestTower; }
-			if (farthestTower != null) {
-				distance = Math.min(distance, farthestTower - cities[i]);
-			}
-			r = Math.max(r, distance);
-		}
-		io.println(r);
-		io.close();
-	}
-}
-```
 
 </JavaSection>
-
 </LanguageSection>
