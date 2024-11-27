@@ -79,11 +79,11 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
     },
     {
       name: 'Sorting & Sets',
-      items: ['intro-sorting', 'intro-sets'],
+      items: ['intro-sorting', 'intro-sets', 'binary-search'],
     },
     {
       name: 'Additional',
-      items: ['ad-hoc', 'intro-greedy', 'binary-search', 'intro-graphs', 'rect-geo'],
+      items: ['ad-hoc', 'intro-greedy', 'intro-graphs', 'rect-geo'],
     },
     {
       name: 'Conclusion',
