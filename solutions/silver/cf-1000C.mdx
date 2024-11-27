@@ -185,7 +185,6 @@ explicitly perform the coordinate compression.
 **Time Complexity:** $\mathcal{O}(N\log N)$
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
@@ -238,5 +237,42 @@ int main() {
 ```
 
 </CPPSection>
+<PySection>
 
+```py
+from collections import defaultdict
+
+n = int(input())
+
+points = set() # distinct coordinates of the start and end of the segmetns
+freq = defaultdict(int) # frequency of a given coordinate
+
+for _ in range(n):
+    l, r = map(int, input().split())
+    
+    # A segment starts from [l*, r*], so we should end the segment
+    # at r* + 1 to ensure that r* is included in the segment.
+    freq[l] += 1
+    freq[r + 1] -= 1
+    points.add(l)
+    points.add(r + 1)
+
+sorted_points = sorted(points)
+
+# number of overlapping segments at current position
+layers = freq[sorted_points[0]]
+
+# covered_num[i] := number of points covered by exactly i segments
+covered_num = [0] * (n + 1)
+
+# iterate through all coordinates of interest and add the 
+# number of points in each range to the resp. answer
+for i in range(1, len(sorted_points)):
+    covered_num[layers] += (sorted_points[i] - sorted_points[i - 1])
+    layers += freq[sorted_points[i]]
+
+print(" ".join(map(str, covered_num[1:])))
+```
+
+</PySection>
 </LanguageSection>
