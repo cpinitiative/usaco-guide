@@ -134,9 +134,10 @@ Due to Python's large constant factor, the same C++ solution that is accepted TL
 
 ```py
 import sys
+
 input = sys.stdin.readline
 
-MOD = 10 ** 9 + 7
+MOD = 10**9 + 7
 
 n, m = map(int, input().strip().split())
 dp = [[0 for _ in range(n)] for _ in range(1 << n)]  # Cities indexed from 0 to n-1
@@ -152,21 +153,20 @@ for cities in range(1, 1 << n):
 	# only consider cities that include the first city
 	if cities & 1:
 		# only consider subsets with the last city if it's the full subset
-		if (cities & (1 << n - 1) and cities != (1 << n) - 1):
+		if cities & (1 << n - 1) and cities != (1 << n) - 1:
 			continue
-		
+
 		# loop through possible ending cities
 		for end in range(1, n):
 			if cities & (1 << end):
 				prev_cities = cities ^ (1 << end)
-				
+
 				for prev_end in adj[end]:
 					if prev_cities & (1 << prev_end):
 						dp[cities][end] += dp[prev_cities][prev_end]
 						dp[cities][end] %= MOD
 
 print(dp[(1 << n) - 1][n - 1])
-
 ```
 
 </PySection>
