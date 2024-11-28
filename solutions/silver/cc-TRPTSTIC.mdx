@@ -123,89 +123,91 @@ int main() {
 
 ```py
 def rangesum(row1: int, column1: int, row2: int, column2: int) -> int:
-    """
-    :return the sum from (row1, column1) to (row2, column2)
-    Assumes row1 < row2 and column1 < column2
-    """
+	"""
+	:return the sum from (row1, column1) to (row2, column2)
+	Assumes row1 < row2 and column1 < column2
+	"""
 
-    # Sometimes, the range the mentor can reach goes outside the grid.
-    if row1 < 0: 
-        row1 = 0
-    if row2 >= n: 
-        row2 = n - 1
-    if column1 < 0: 
-        column1 = 0
-    if column2 >= m: 
-        column2 = m - 1
+	# Sometimes, the range the mentor can reach goes outside the grid.
+	if row1 < 0:
+		row1 = 0
+	if row2 >= n:
+		row2 = n - 1
+	if column1 < 0:
+		column1 = 0
+	if column2 >= m:
+		column2 = m - 1
 
-    answer = pref[row2][column2]
-    if row1 > 0: 
-        answer -= pref[row1 - 1][column2]
-    if column1 > 0: 
-        answer -= pref[row2][column1 - 1]
-    if row1 > 0 and column1 > 0: 
-        answer += pref[row1 - 1][column1 - 1]
+	answer = pref[row2][column2]
+	if row1 > 0:
+		answer -= pref[row1 - 1][column2]
+	if column1 > 0:
+		answer -= pref[row2][column1 - 1]
+	if row1 > 0 and column1 > 0:
+		answer += pref[row1 - 1][column1 - 1]
 
-    return answer
+	return answer
 
 
 def test(distance: int) -> bool:
-    """:return whether the given distance will work"""
-    # Try centering the mentor at every room
-    for i in range(n):
-        for j in range(m):
-            if grid[i][j] == 0:
-                # The mentor has to at least be able to stay in this room
-                continue
-            if rangesum(i - distance, j - distance, i + distance, j + distance) >= (k + 1):
-                return True
-    return False
+	""":return whether the given distance will work"""
+	# Try centering the mentor at every room
+	for i in range(n):
+		for j in range(m):
+			if grid[i][j] == 0:
+				# The mentor has to at least be able to stay in this room
+				continue
+			if rangesum(i - distance, j - distance, i + distance, j + distance) >= (
+				k + 1
+			):
+				return True
+	return False
 
 
 def first_true(lo: int, hi: int) -> int:
-    # Binary search, adapted from the code in its module.
-    hi += 1
-    while lo < hi:
-        mid = lo + (hi - lo) // 2
-        if test(mid):
-            hi = mid
-        else:
-            lo = mid + 1
-    return lo
+	# Binary search, adapted from the code in its module.
+	hi += 1
+	while lo < hi:
+		mid = lo + (hi - lo) // 2
+		if test(mid):
+			hi = mid
+		else:
+			lo = mid + 1
+	return lo
 
 
 for _ in range(int(input())):
-    n, m, k = map(int, input().split())
+	n, m, k = map(int, input().split())
 
-    grid = []
-    total = 0
+	grid = []
+	total = 0
 
-    # Filling in the grid
-    for _ in range(n):
-        row = list(map(int, input().split()))
-        total += sum(row)
-        grid.append(row)
+	# Filling in the grid
+	for _ in range(n):
+		row = list(map(int, input().split()))
+		total += sum(row)
+		grid.append(row)
 
-    # Print -1 and continue if not enough space in hotel
-    if total < (k + 1):
-        print(-1)
-        continue
+	# Print -1 and continue if not enough space in hotel
+	if total < (k + 1):
+		print(-1)
+		continue
 
-    # Setting up the prefix sum array
-    pref = [[0] * m for _ in range(n)]
+	# Setting up the prefix sum array
+	pref = [[0] * m for _ in range(n)]
 
-    # Filling in the prefix sum array
-    for i in range(n):
-        for j in range(m):
-            pref[i][j] = grid[i][j]
-            if i > 0:
-                pref[i][j] += pref[i - 1][j]
-            if j > 0:
-                pref[i][j] += pref[i][j - 1]
-            if i > 0 and j > 0:
-                pref[i][j] -= pref[i - 1][j - 1]
+	# Filling in the prefix sum array
+	for i in range(n):
+		for j in range(m):
+			pref[i][j] = grid[i][j]
+			if i > 0:
+				pref[i][j] += pref[i - 1][j]
+			if j > 0:
+				pref[i][j] += pref[i][j - 1]
+			if i > 0 and j > 0:
+				pref[i][j] -= pref[i - 1][j - 1]
 
-    print(first_true(0, max(n, m)))
+	print(first_true(0, max(n, m)))
 ```
 
 </PySection>
