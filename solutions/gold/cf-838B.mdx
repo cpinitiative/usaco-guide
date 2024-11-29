@@ -7,16 +7,16 @@ author: Justin Ji
 
 ## Explanation
 
-First, we need to divide queries into two types: those that require us 
+First, we need to divide queries into two types: those that require us
 to jump to the root, and those that don't require such. Let's consider a
 query for the shortest path $u \rightarrow v$.
 
 ### Case 1: $u$ is an ancestor of $v$
 
-The optimal solution is for our path to just walk downwards from $u$ to $v$. 
-This is equivalent to $\texttt{dist}(1 \rightarrow v) - 
+The optimal solution is for our path to just walk downwards from $u$ to $v$.
+This is equivalent to $\texttt{dist}(1 \rightarrow v) -
 \texttt{dist}(1 \rightarrow u)$, where $1$ is the root of our tree.
-To answer these queries, we use the method described in 
+To answer these queries, we use the method described in
 [this editorial](/problems/cses-1138-path-queries/solution).
 
 ### Case 2: $u$ is not an ancestor of $v$
@@ -26,50 +26,50 @@ In this scenario, our path from $u$ to $v$ has the following structure.
 2. Using the back edge at our chosen node, we jump to node $1$.
 3. Finally, we walk down to node $v$
 
-We can use the same code for case 1 to calculate 
-$\texttt{dist}(1 \rightarrow v)$. However, it isn't exactly clear how we should 
-figure out the best node to pick in the subtree of $u$ to jump from. Let the node 
-we traverse down to be $x$. Then, the cost of using node $x$ to jump to the root 
+We can use the same code for case 1 to calculate
+$\texttt{dist}(1 \rightarrow v)$. However, it isn't exactly clear how we should
+figure out the best node to pick in the subtree of $u$ to jump from. Let the node
+we traverse down to be $x$. Then, the cost of using node $x$ to jump to the root
 is:
 
 $$
 \texttt{dist}(u \rightarrow x) + \texttt{back}[x]
 $$
 
-Here, $\texttt{back}[x]$ refers to the cost of jumping from $x$ to the root. 
+Here, $\texttt{back}[x]$ refers to the cost of jumping from $x$ to the root.
 Using the same idea from case 1, we can change our expression a bit.
 
 $$
 \texttt{dist}(1 \rightarrow x) + \texttt{back}[x] -
-\texttt{dist}(1 \rightarrow u) 
+\texttt{dist}(1 \rightarrow u)
 $$
 
-The distance from the root to node $u$ is fixed here. Thus, we want to find 
-the best value of $\texttt{dist}(1 \rightarrow x) + \texttt{back}[x]$ 
+The distance from the root to node $u$ is fixed here. Thus, we want to find
+the best value of $\texttt{dist}(1 \rightarrow x) + \texttt{back}[x]$
 within the subtree of $u$. To do this, we use Euler Tour to flatten our tree,
 and then use a lazy segment tree to answer our queries.
 
-Our segment tree must support range addition and range minimum. For more 
-information on how to implement it, refer to the 
+Our segment tree must support range addition and range minimum. For more
+information on how to implement it, refer to the
 [Range Updates Range Queries](/plat/RURQ) module.
 
-### Handling Updates 
+### Handling Updates
 
-If the edge we are updating is from node $u$ to node $1$, then it only affects 
-the value in our segment tree for node $u$. Thus, we do a point update on the 
+If the edge we are updating is from node $u$ to node $1$, then it only affects
+the value in our segment tree for node $u$. Thus, we do a point update on the
 node in question.
 
-In the case that the edge we are updating isn't from some node to the root, then 
-it changes all the values inside the subtree it affects. Let's have the edge 
+In the case that the edge we are updating isn't from some node to the root, then
+it changes all the values inside the subtree it affects. Let's have the edge
 affected connect node $u$ and node $v$, with the difference in weight being $w$.
 Then, we must do the following.
 - Change the distances in the subtree of $v$ by $w$
-- Change the value of $\texttt{dist}(1 \rightarrow x) + \texttt{back}[x]$ by 
-  $w$ 
+- Change the value of $\texttt{dist}(1 \rightarrow x) + \texttt{back}[x]$ by
+  $w$
 
-In my code, this boils down to updating the binary indexed tree handling the 
-root to node distances, and updating the segment tree containing the value of 
-$\texttt{dist}(1 \rightarrow x) + \texttt{back}[x]$ for every node. 
+In my code, this boils down to updating the binary indexed tree handling the
+root to node distances, and updating the segment tree containing the value of
+$\texttt{dist}(1 \rightarrow x) + \texttt{back}[x]$ for every node.
 
 ## Implementation
 
@@ -85,8 +85,7 @@ using namespace std;
 using ll = long long;
 
 // BeginCodeSnip{Lazy Segment Tree (from the module)}
-template <class Info, class Tag> 
-class LazySegtree {
+template <class Info, class Tag> class LazySegtree {
   private:
 	const int n;
 	vector<Info> tree;
@@ -164,23 +163,17 @@ class LazySegtree {
 };
 
 struct Tag {
-    ll add = 0;
-    void apply(const Tag &t) {
-        add += t.add;
-    }
+	ll add = 0;
+	void apply(const Tag &t) { add += t.add; }
 };
 
 struct Info {
-    ll min_val = 1e18;
-    void apply(const Tag &t, int l, int r) {
-        min_val += t.add;
-    }
+	ll min_val = 1e18;
+	void apply(const Tag &t, int l, int r) { min_val += t.add; }
 };
 
 /** @return result of joining nodes a and b together */
-Info operator+(const Info &a, const Info &b) {
-	return (a.min_val < b.min_val) ? a : b;
-}
+Info operator+(const Info &a, const Info &b) { return (a.min_val < b.min_val) ? a : b; }
 // EndCodeSnip
 
 // BeginCodeSnip{BIT (from the module)}
@@ -228,7 +221,7 @@ int main() {
 		edges[i] = {u, v, w};
 		adj[u].push_back({v, w});
 	}
-	
+
 	for (int i = 0; i < n - 1; i++) {
 		int u, v, w;
 		cin >> u >> v >> w;
@@ -237,7 +230,7 @@ int main() {
 		back[u] = w;
 	}
 
-	// calculating Euler Tour indices and the distances from 
+	// calculating Euler Tour indices and the distances from
 	// the root of the tree to every other node
 	vector<int> tin(n);
 	vector<int> tout(n);
@@ -255,11 +248,9 @@ int main() {
 	};
 	dfs(0, -1, dfs);
 
-	// initializing our segtree 
+	// initializing our segtree
 	vector<Info> arr(n);
-	for (int i = 0; i < n; i++) {
-		arr[tin[i]] = {back[i] + bit.pref_sum(tin[i])};
-	}
+	for (int i = 0; i < n; i++) { arr[tin[i]] = {back[i] + bit.pref_sum(tin[i])}; }
 	LazySegtree<Info, Tag> st(arr);
 
 	for (int t = 0; t < q; t++) {
