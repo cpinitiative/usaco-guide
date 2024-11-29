@@ -79,7 +79,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
     },
     {
       name: 'Sorting & Sets',
-      items: ['intro-sorting', 'intro-sets'],
+      items: ['intro-sorting', 'intro-sets', 'binary-search'],
     },
     {
       name: 'Additional',
@@ -104,7 +104,6 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
         'intro-sorted-sets',
         'custom-cpp-stl',
         'greedy-sorting',
-        'binary-search',
       ],
     },
     {
