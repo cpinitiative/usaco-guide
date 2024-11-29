@@ -3,6 +3,7 @@ id: usaco-696
 source: USACO Platinum 2017 January
 title: Promotion Counting
 author: Benjamin Qi, Timothy Gao, William Yuan
+contributors: Vaishnav Krishnan
 ---
 
 [Official Editorial (Java)](http://www.usaco.org/current/data/sol_promote_platinum_jan17.html)
@@ -306,10 +307,131 @@ int main() {
 </CPPSection>
 </LanguageSection>
 
-<IncompleteSection>
+## Solution 3: HLD
 
-Add Centroid Decomp/HLD Solution
+**Time Complexity:** $\mathcal{O}(N\log ^2N)$
 
-Sort nodes from largest to smallest value, do path updates from itself the root.
+Sort the cows from largest to smallest proficiency. For each cow, perform a path update that adds one to all cows from itself to the president.
 
-</IncompleteSection>
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+// BeginCodeSnip{Iterative Segment Tree from PURS}
+template <class T> class SumSegmentTree {
+  private:
+	T DEFAULT = 0;
+
+	vector<T> segtree;
+	int len;
+
+  public:
+	SumSegmentTree(int len) : len(len), segtree(len * 2, DEFAULT) {}
+
+	void set(int ind, T val) {
+		ind += len;
+		segtree[ind] = val;
+		for (; ind > 1; ind /= 2) {
+			segtree[ind / 2] = segtree[ind] + segtree[ind ^ 1];
+		}
+	}
+
+	T range_sum(int start, int end) {
+		T sum = DEFAULT;
+		for (start += len, end += len; start < end; start /= 2, end /= 2) {
+			if (start % 2 == 1) { sum += segtree[start++]; }
+			if (end % 2 == 1) { sum += segtree[--end]; }
+		}
+		return sum;
+	}
+};
+// EndCodeSnip
+
+int main() {
+	freopen("promote.in", "r", stdin);
+	freopen("promote.out", "w", stdout);
+	int n;
+	cin >> n;
+	vector<pair<int, int>> cow_proficiency(n);
+	for (int i = 0; i < n; ++i) {
+		cin >> cow_proficiency[i].first;
+		cow_proficiency[i].second = i;
+	}
+	vector edges(n, vector<int>());
+	vector heavy_paths(n, vector<int>());
+
+	vector<int> sizes(n);
+	vector<int> heavy_index(n, -1);
+	vector<int> path_index(n, -1);
+	vector<int> depth(n);
+	vector<int> parents(n, -1);
+	vector<int> ans(n);
+	vector<int> cur_ans(n);
+
+	for (int i = 1; i < n; ++i) {
+		cin >> parents[i];
+		edges[--parents[i]].push_back(i);
+	}
+
+	function<void(int)> dfs_hld = [&](int start) {
+		int heavy_child = -1;
+		++sizes[start];
+		for (int i : edges[start]) {
+			depth[i] = depth[start] + 1;
+			dfs_hld(i);
+			sizes[start] += sizes[i];
+			if (heavy_child == -1 || sizes[heavy_child] < sizes[i]) { heavy_child = i; }
+		}
+		if (heavy_child != -1) {
+			swap(heavy_paths[start], heavy_paths[heavy_child]);
+			heavy_paths[start].push_back(heavy_child);
+		}
+	};
+
+	dfs_hld(0);
+	vector segtrees(n, SumSegmentTree<int>(0));
+	for (int i = 0; i < n; ++i) {
+		reverse(heavy_paths[i].begin(), heavy_paths[i].end());
+		for (int j = 0; j < (int)heavy_paths[i].size(); ++j) {
+			heavy_index[heavy_paths[i][j]] = i;
+			path_index[heavy_paths[i][j]] = j;
+		}
+		segtrees[i] = SumSegmentTree<int>((int)heavy_paths[i].size());
+	}
+
+	sort(cow_proficiency.begin(), cow_proficiency.end(), greater<pair<int, int>>());
+	for (auto &[proficiency, cow] : cow_proficiency) {
+		if (heavy_index[cow] != -1) {
+			ans[cow] = segtrees[heavy_index[cow]].range_sum(0, path_index[cow] + 1);
+		} else {
+			ans[cow] = cur_ans[cow];
+		}
+		cow = parents[cow];
+		while (cow >= 0) {
+			if (heavy_index[cow] != -1) {
+				int current_value = segtrees[heavy_index[cow]].range_sum(0, 1);
+				segtrees[heavy_index[cow]].set(0, current_value + 1);
+				if (path_index[cow] + 1 < (int)heavy_paths[heavy_index[cow]].size()) {
+					current_value = segtrees[heavy_index[cow]].range_sum(
+					    path_index[cow] + 1, path_index[cow] + 2);
+					segtrees[heavy_index[cow]].set(path_index[cow] + 1,
+					                               --current_value);
+				}
+				cow = parents[heavy_paths[heavy_index[cow]][0]];
+			} else {
+				++cur_ans[cow];
+				// ans cannot be updated directly as this cow may have already
+				// been processed
+				cow = parents[cow];
+			}
+		}
+	}
+	for (int i = 0; i < n; ++i) { cout << ans[i] << '\n'; }
+}
+```
+
+</CPPSection>
+</LanguageSection>
