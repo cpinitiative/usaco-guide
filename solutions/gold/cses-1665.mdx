@@ -135,34 +135,34 @@ dp2 = [[0] * (x + K + 1) for _ in range(n + 1)]
 dp1[0][K] = 1
 
 for i in range(n):
-    for j in range(n - i + 1):  # At most n - i unfinished groups
-        for k in range(x + K + 1):
-            if dp1[j][k] == 0:
-                continue
-            
-            # i has their own group
-            dp2[j][k] = (dp2[j][k] + dp1[j][k]) % MOD
+	for j in range(n - i + 1):  # At most n - i unfinished groups
+		for k in range(x + K + 1):
+			if dp1[j][k] == 0:
+				continue
 
-            # Finish an unfinished group
-            if j > 0 and k + s[i] <= x + K:
-                dp2[j - 1][k + s[i]] = (dp2[j - 1][k + s[i]] + j * dp1[j][k]) % MOD
+			# i has their own group
+			dp2[j][k] = (dp2[j][k] + dp1[j][k]) % MOD
 
-            # Create a new unfinished group
-            if j + 1 <= n - (i + 1):
-                dp2[j + 1][k - s[i]] = (dp2[j + 1][k - s[i]] + dp1[j][k]) % MOD
+			# Finish an unfinished group
+			if j > 0 and k + s[i] <= x + K:
+				dp2[j - 1][k + s[i]] = (dp2[j - 1][k + s[i]] + j * dp1[j][k]) % MOD
 
-            # Extend an unfinished group
-            if j <= n - (i + 1):
-                dp2[j][k] = (dp2[j][k] + j * dp1[j][k]) % MOD
+			# Create a new unfinished group
+			if j + 1 <= n - (i + 1):
+				dp2[j + 1][k - s[i]] = (dp2[j + 1][k - s[i]] + dp1[j][k]) % MOD
 
-    for j in range(n - i):
-        for k in range(x + K + 1):
-            dp1[j][k] = dp2[j][k] % MOD # i + 1 becomes new i
-            dp2[j][k] = 0
+			# Extend an unfinished group
+			if j <= n - (i + 1):
+				dp2[j][k] = (dp2[j][k] + j * dp1[j][k]) % MOD
+
+	for j in range(n - i):
+		for k in range(x + K + 1):
+			dp1[j][k] = dp2[j][k] % MOD  # i + 1 becomes new i
+			dp2[j][k] = 0
 
 ans = 0
 for i in range(K, x + K + 1):
-    ans = (ans + dp1[0][i]) % MOD
+	ans = (ans + dp1[0][i]) % MOD
 
 print(ans)
 ```
