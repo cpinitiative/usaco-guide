@@ -53,33 +53,33 @@ int main() {
 
 ```py
 with open("feast.in") as read:
-    max_fullness, orange, lemon = map(int, read.readline().split())
+	max_fullness, orange, lemon = map(int, read.readline().split())
 
 dp = [[0] * (max_fullness + 1) for _ in range(2)]
 dp[0][0] = True
 
 for i in range(max_fullness + 1):
-    if i - orange >= 0:
-        dp[0][i] |= dp[0][i - orange]
+	if i - orange >= 0:
+		dp[0][i] |= dp[0][i - orange]
 
-    if i - lemon >= 0:
-        dp[0][i] |= dp[0][i - lemon]
+	if i - lemon >= 0:
+		dp[0][i] |= dp[0][i - lemon]
 
-    dp[1][i // 2] |= dp[0][i]
+	dp[1][i // 2] |= dp[0][i]
 
 
 for i in range(max_fullness + 1):
-    if i - orange >= 0:
-        dp[1][i] |= dp[1][i - orange]
+	if i - orange >= 0:
+		dp[1][i] |= dp[1][i - orange]
 
-    if i - lemon >= 0:
-        dp[1][i] |= dp[1][i - lemon]
+	if i - lemon >= 0:
+		dp[1][i] |= dp[1][i - lemon]
 
 
 for i in range(max_fullness, -1, -1):
-    if dp[1][i]:
-        print(i, file=open("feast.out", "w"))
-        break
+	if dp[1][i]:
+		print(i, file=open("feast.out", "w"))
+		break
 ```
 
 </PySection>
