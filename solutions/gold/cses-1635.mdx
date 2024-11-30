@@ -49,16 +49,12 @@ int main() {
 	int n, x;
 	std::cin >> n >> x;
 	std::vector<int> coins(n), dp(x + 1);
-	for (auto &x : coins) {
-		std::cin >> x;
-	}
+	for (auto &x : coins) { std::cin >> x; }
 
 	dp[0] = 1;
 	for (int i = 1; i <= x; i++) {
 		for (int c : coins) {
-			if (i - c >= 0) {
-				(dp[i] += dp[i - c]) %= MOD;
-			}
+			if (i - c >= 0) { (dp[i] += dp[i - c]) %= MOD; }
 		}
 	}
 
@@ -137,9 +133,9 @@ coins = list(map(int, input().split()))
 dp = [0] * (x + 1)
 dp[0] = 1
 for i in range(1, x + 1):
-    for c in coins:
-        if i - c >= 0:
-            dp[i] = (dp[i] + dp[i - c]) % MOD
+	for c in coins:
+		if i - c >= 0:
+			dp[i] = (dp[i] + dp[i - c]) % MOD
 
 print(dp[x])
 ```
