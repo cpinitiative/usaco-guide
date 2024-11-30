@@ -135,14 +135,22 @@ public class CountingCoins1 {
 ```
 
 </JavaSection>
-
 <PySection>
-<IncompleteSection>
 
-We don't currently have a Python solution for this problem. Please switch to
-another language to view the solution code.
+```py
+n, tar = map(int, input().split())
+coins = list(map(int, input().split()))
 
-</IncompleteSection>
+dp = [0] * (tar + 1)
+dp[0] = 1
+for i in range(1, tar + 1):
+    for c in coins:
+        if i - c >= 0:
+            dp[i] = (dp[i] + dp[i - c]) % 1000000007
+
+print(dp[tar])
+```
+
 </PySection>
 
 </LanguageSection>
