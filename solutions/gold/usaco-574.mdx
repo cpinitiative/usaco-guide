@@ -9,7 +9,7 @@ author: Danh Ta Chi Thanh, Mark Phan, Arpan Banerjee, Juheon Rhee
 
 ## Implementation - DP
 
-**Time Complexity:** $\mathcal{O}(T)$, where $T$ is the maximum fullness
+**Time Complexity:** $\mathcal{O}(T)$, where $T$ is the maximum fullness.
 
 <LanguageSection>
 <CPPSection>
@@ -22,26 +22,25 @@ bool dp[2][5000001];
 
 int main() {
 	freopen("feast.in", "r", stdin);
-	freopen("feast.out", "w", stdout);
-
 	int max_fullness, orange, lemon;
 	cin >> max_fullness >> orange >> lemon;
-	dp[0][0] = true;
 
-	for (int i = 0; i <= max_fullness; ++i) {
+	dp[0][0] = true;
+	for (int i = 0; i <= max_fullness; i++) {
 		if (i - orange >= 0) dp[0][i] |= dp[0][i - orange];
 		if (i - lemon >= 0) dp[0][i] |= dp[0][i - lemon];
 		dp[1][i / 2] |= dp[0][i];
 	}
 
-	for (int i = 0; i <= max_fullness; ++i) {
+	for (int i = 0; i <= max_fullness; i++) {
 		if (i - orange >= 0) dp[1][i] |= dp[1][i - orange];
 		if (i - lemon >= 0) dp[1][i] |= dp[1][i - lemon];
 	}
 
-	for (int i = max_fullness; i >= 0; --i) {
+	freopen("feast.out", "w", stdout);
+	for (int i = max_fullness; i >= 0; i--) {
 		if (dp[1][i]) {
-			cout << i;
+			cout << i << endl;
 			break;
 		}
 	}
@@ -57,7 +56,6 @@ with open("feast.in") as read:
 
 dp = [[0] * (max_fullness + 1) for _ in range(2)]
 dp[0][0] = True
-
 for i in range(max_fullness + 1):
 	if i - orange >= 0:
 		dp[0][i] |= dp[0][i - orange]
