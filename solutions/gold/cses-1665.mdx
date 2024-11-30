@@ -5,6 +5,8 @@ title: Coding Company
 author: Benjamin Qi, Andi Qu, Daniel Zhu
 ---
 
+## Explanation
+
 First, sort the people. This allows us to express the contribution of each team
 as $(\text{Skill of last person}) - (\text{Skill of first person})$. Let $s_i$
 denote the skill of the $i$-th person.
@@ -32,6 +34,13 @@ Two more things:
 I believe that this is called the "open and close interval trick". See
 [zscoder's blog post](https://codeforces.com/blog/entry/47764) for more
 information and problems.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N^2 \cdot (X + K))$
+
+<LanguageSection>
+<CPPSection>
 
 ```cpp
 #include <bits/stdc++.h>
@@ -96,3 +105,67 @@ int main() {
 	cout << ans << endl;
 }
 ```
+
+</CPPSection>
+<PySection>
+
+```py
+MOD = 10**9 + 7
+K = 5000  # K is an offset to account for negatives
+
+
+n, x = map(int, input().split())
+s = list(map(int, input().split()))
+s.sort()
+
+"""
+dp[N][N][X] -> dp[i][j][k] = first i people, j unfinished groups, k
+penalty for convenience, we 1-index dp array and 0-index person array so
+dp[i][j][k] lines up with s[i] (i.e. skill of person i + 1 = s[i]) notice
+we only need to store 2 rows!
+"""
+
+# the subarray we're currently at
+dp1 = [[0] * (x + K + 1) for _ in range(n + 1)]
+
+# the next subarray (we'll fill this up using dp1)
+dp2 = [[0] * (x + K + 1) for _ in range(n + 1)]
+
+# Base case: dp[0][0][0] -> 0 people, 0 unfinished groups, 0 penalty
+dp1[0][K] = 1
+
+for i in range(n):
+    for j in range(n - i + 1):  # At most n - i unfinished groups
+        for k in range(x + K + 1):
+            if dp1[j][k] == 0:
+                continue
+            
+            # i has their own group
+            dp2[j][k] = (dp2[j][k] + dp1[j][k]) % MOD
+
+            # Finish an unfinished group
+            if j > 0 and k + s[i] <= x + K:
+                dp2[j - 1][k + s[i]] = (dp2[j - 1][k + s[i]] + j * dp1[j][k]) % MOD
+
+            # Create a new unfinished group
+            if j + 1 <= n - (i + 1):
+                dp2[j + 1][k - s[i]] = (dp2[j + 1][k - s[i]] + dp1[j][k]) % MOD
+
+            # Extend an unfinished group
+            if j <= n - (i + 1):
+                dp2[j][k] = (dp2[j][k] + j * dp1[j][k]) % MOD
+
+    for j in range(n - i):
+        for k in range(x + K + 1):
+            dp1[j][k] = dp2[j][k] % MOD # i + 1 becomes new i
+            dp2[j][k] = 0
+
+ans = 0
+for i in range(K, x + K + 1):
+    ans = (ans + dp1[0][i]) % MOD
+
+print(ans)
+```
+
+</PySection>
+</LanguageSection>
