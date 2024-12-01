@@ -216,21 +216,24 @@ int main() {
 
 ```py
 def validate(k: int) -> bool:
-    bus = 0
-    cow = 0
-    lcow = 0
+    bus = 0 # number of buses needed
+    cow = 0 # current cow
+    lcow = 0 # earliest cow on this bus
 
     while cow < n:
         if cow == lcow:
             bus += 1
 
-        if (arrivals[cow] - arrivals[lcow]) > k:
+		# can't satisfy time constraint by adding this cow
+        if arrivals[cow] - arrivals[lcow] > k:
             lcow = cow
 
-        elif (cow - lcow + 1) == c:
+		# can't fit this cow in the bus
+        elif cow - lcow + 1 == c:
             cow += 1
             lcow = cow
 
+		# add this cow to the current bus
         else:
             cow += 1
 
@@ -240,6 +243,7 @@ with open("convention.in") as read:
     n, m, c = map(int, read.readline().strip().split())
     arrivals = list(map(int, read.readline().strip().split()))
 
+# sort by arrival time to process cows in order
 arrivals.sort()
 lo = 0
 hi = arrivals[n - 1] - arrivals[0]
