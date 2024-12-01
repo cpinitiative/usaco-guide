@@ -138,6 +138,42 @@ public class Snakes {
 }
 ```
 </JavaSection>
+<PySection>
+
+<Warning>
+
+Due to Python's constant factor, the below solution TLEs on a couple test cases.
+
+</Warning>
+
+```py
+with open("snakes.in") as read:
+	n, k = map(int, read.readline().strip().split())
+	groups = list(map(int, read.readline().strip().split()))
+
+groups = [0] + groups
+
+dp = [[0] * (k + 1) for _ in range(n + 1)]
+
+largest_group = -1
+space_used = 0
+for i in range(1, n + 1):
+	largest_group = max(largest_group, groups[i])
+
+	dp[i][0] = largest_group * i
+	for j in range(1, k + 1):
+		dp[i][j] = float("inf")
+		net_size = groups[i]
+		for c in range(i - 1, -1, -1):
+			dp[i][j] = min(dp[i][j], dp[c][j - 1] + net_size * (i - c))
+			net_size = max(net_size, groups[c])
+
+	space_used += groups[i]
+
+print(dp[n][k] - space_used, file=open("snakes.out", "w"))
+```
+
+</PySection>
 </LanguageSection>
 
 </Spoiler>

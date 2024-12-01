@@ -81,6 +81,29 @@ int main() {
 ```
 
 </CPPSection>
+<PySection>
+
+```py
+for _ in range(int(input())):
+	word = input()
+
+	# `char_diff` characters have to be removed regardless of the string
+	char_diff = len(word) - 3
+	min_ops = float("inf")
+
+	for i in range(len(word) - 2):
+		# Check if `word[i : i+3]` can form "MOO"
+		if word[i + 1] == "O":
+			# Check if we have to change the front and back
+			change_front = word[i] != "M"
+			change_back = word[i + 2] != "O"
+
+			min_ops = min(min_ops, char_diff + change_front + change_back)
+
+	print(-1 if min_ops == float("inf") else int(min_ops))
+```
+
+</PySection>
 </LanguageSection>
 
 </Spoiler>

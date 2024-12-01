@@ -21,7 +21,7 @@ The inclusion-exclusion principle relates to finding the size of the union of so
 Verbally it can be stated as following:
 <center>
 
-Sum the sizes of the sets separately, substract the sizes of all pairwise intersections of the sets, add back the sizes of intersections of triples of the sets, substract the size of quadruples of the sets, ...
+Sum the sizes of the sets separately, subtract the sizes of all pairwise intersections of the sets, add back the sizes of intersections of triples of the sets, subtract the size of quadruples of the sets, ...
 
 </center>
 
@@ -79,7 +79,7 @@ for (int i = 1; i < VALMAX; i++) {
 
 <FocusProblem problem="SQFREE" />
 
-A perfect application for inclusion-exclusion principle and mobius function. In this particular case the set $A_i$ - previously mentioned in the tutorial section - denotes how many numbers are divisible with $i^2$ and we're asked to find out $\bigg| \bigcup_{i=1}^{\sqrt{n}} A_i \bigg|$. The precomputed mobius array tells whether to add or substract $A_i$.
+A perfect application for inclusion-exclusion principle and mobius function. In this particular case the set $A_i$ - previously mentioned in the tutorial section - denotes how many numbers are divisible with $i^2$ and we're asked to find out $\bigg| \bigcup_{i=1}^{\sqrt{n}} A_i \bigg|$. The precomputed mobius array tells whether to add or subtract $A_i$.
 
 <LanguageSection>
 <CPPSection>
@@ -125,7 +125,7 @@ int main() {
 
 <FocusProblem problem="cow" />
 
-In this particular case the set $A_i$ - previously mentioned in the tutorial section - denotes how many pairs of cows have at least $i$ ice cream flavors in common. From the total number of pairs substract the union of $A_i$. The global answer is:
+In this particular case the set $A_i$ - previously mentioned in the tutorial section - denotes how many pairs of cows have at least $i$ ice cream flavors in common. From the total number of pairs subtract the union of $A_i$. The global answer is:
 $$
 \frac{n \cdot(n-1)}{2}- \bigg| \bigcup_{i=1}^{5} A_i \bigg|
 $$
@@ -135,7 +135,6 @@ $$
 
 ```cpp
 #include <bits/stdc++.h>
-
 using namespace std;
 
 int main() {
@@ -162,11 +161,45 @@ int main() {
 		ans -= ((int)subset.size() % 2 == 1 ? 1LL : -1LL) * freq * (freq - 1) / 2;
 	}
 
-	ofstream("cowpatibility.out") << ans << '\n';
+	ofstream("cowpatibility.out") << ans << endl;
 }
 ```
 
 </CPPSection>
+<PySection>
+
+<Warning>
+
+Due to Python's constant factor, the below solution TLEs on a couple test cases.
+
+</Warning>
+
+```py
+from collections import defaultdict
+
+with open("cowpatibility.in", "r") as read:
+	n = int(read.readline().strip())
+	subsets = defaultdict(int)
+
+	for _ in range(n):
+		flavors = list(map(int, read.readline().strip().split()))
+		flavors.sort()
+
+		for mask in range(1, 1 << 5):
+			subset = tuple(flavors[i] for i in range(5) if (1 << i) & mask)
+			subsets[subset] += 1
+
+ans = n * (n - 1) // 2
+for subset, freq in subsets.items():
+	if len(subset) % 2 == 1:
+		ans -= freq * (freq - 1) // 2
+	else:
+		ans += freq * (freq - 1) // 2
+
+print(ans, file=open("cowpatibility.out", "w"))
+```
+
+</PySection>
 </LanguageSection>
 
 ### The number of strings that match a certain pattern

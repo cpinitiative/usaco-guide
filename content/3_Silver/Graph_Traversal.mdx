@@ -1082,6 +1082,51 @@ public class BuildingTeams {
 ```
 
 </JavaSection>
+<PySection>
+
+<Warning>
+
+You have to submit with CPython (not PyPy3) to avoid TLE.
+
+</Warning>
+
+```py
+import sys
+
+input = sys.stdin.readline
+
+sys.setrecursionlimit(int(1e9))  # disable recursion limit
+
+n, m = map(int, input().strip().split())
+adj = [[] for _ in range(n)]
+team = [0] * n  # 0: not assigned yet, 1: team 1, 2: team 2
+
+for _ in range(m):
+	a, b = map(int, map(int, input().strip().split()))
+	adj[a - 1].append(b - 1)
+	adj[b - 1].append(a - 1)
+
+
+def dfs(node: int):
+	for next_node in adj[node]:
+		if team[next_node]:
+			if team[next_node] == team[node]:
+				print("IMPOSSIBLE")
+				exit()
+		else:
+			team[next_node] = 2 if team[node] == 1 else 1
+			dfs(next_node)
+
+
+for node in range(n):
+	if not team[node]:
+		team[node] = 1
+		dfs(node)
+
+print(*team)
+```
+
+</PySection>
 </LanguageSection>
 
 ### BFS Solution
@@ -1247,7 +1292,7 @@ for i in range(n):
 		break
 
 if valid:
-	print(" ".join(str(i) for i in assigned))
+	print(*assigned)
 else:
 	print("IMPOSSIBLE")
 ```

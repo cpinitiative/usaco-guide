@@ -1,0 +1,123 @@
+---
+id: cf-1624D
+source: CF
+title: Palindromes Coloring
+author: Rameez Parwez
+---
+
+[Official Editorial (C++)](https://codeforces.com/blog/entry/98942)
+
+## Explanation
+
+We can greedily solve this problem by first forming palindromic pairs from identical characters.
+
+We first add pairs of identical characters to each color, tyring to keep everything as even as possible.
+When there's no more pairs, we can still add one more character to the middle of each palindrome.
+
+Note that when we add lone characters, it may be optimal to break some pairs apart
+to even things out a bit more.
+This is why we add `2 * (num_pairs % k)` near the end.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <array>
+#include <iostream>
+#include <string>
+
+int main() {
+	int test_num;
+	std::cin >> test_num;
+	for (int t = 0; t < test_num; t++) {
+		int n, k;
+		std::string string;
+		std::cin >> n >> k >> string;
+
+		std::array<int, 26> char_freq{0};
+		for (char x : string) { char_freq[x - 'a']++; }
+
+		int num_pairs = 0;
+		int num_odd = 0;
+		for (int i = 0; i < 26; i++) {
+			num_pairs += char_freq[i] / 2;
+			num_odd += (char_freq[i] % 2 == 1);
+		}
+
+		int res = 2 * (num_pairs / k);
+		num_odd += 2 * (num_pairs % k);
+
+		res += (num_odd >= k);
+		std::cout << res << '\n';
+	}
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class PalindromeColoring {
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
+		int testNum = io.nextInt();
+		for (int t = 0; t < testNum; t++) {
+			int n = io.nextInt();
+			int k = io.nextInt();
+			String string = io.next();
+
+			int[] charFreq = new int[26];
+			for (int i = 0; i < n; i++) { charFreq[string.charAt(i) - 'a'] += 1; }
+
+			int numPairs = 0;
+			int numOdd = 0;
+			for (int i = 0; i < 26; i++) {
+				numPairs += charFreq[i] / 2;
+				numOdd += charFreq[i] % 2;
+			}
+
+			int res = 2 * (numPairs / k);
+			numOdd += 2 * (numPairs % k);
+
+			res += numOdd >= k ? 1 : 0;
+			io.println(res);
+		}
+		io.close();
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+from collections import Counter
+
+for _ in range(int(input())):
+	n, k = map(int, input().split())
+	char_freq = Counter(input())
+
+	num_pairs = 0
+	num_odd = 0
+	for c in char_freq.values():
+		num_pairs += c // 2
+		num_odd += c % 2
+
+	res = 2 * (num_pairs // k)
+	num_odd += 2 * (num_pairs % k)
+
+	res += num_odd >= k
+	print(res)
+```
+
+</PySection>
+</LanguageSection>
