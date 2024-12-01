@@ -212,4 +212,47 @@ int main() {
 ```
 
 </CPPSection>
+<PySection>
+
+```py
+def validate(k: int) -> bool:
+    bus = 0
+    cow = 0
+    lcow = 0
+
+    while cow < n:
+        if cow == lcow:
+            bus += 1
+
+        if (arrivals[cow] - arrivals[lcow]) > k:
+            lcow = cow
+
+        elif (cow - lcow + 1) == c:
+            cow += 1
+            lcow = cow
+
+        else:
+            cow += 1
+
+    return bus <= m 
+
+with open("convention.in") as read:
+    n, m, c = map(int, read.readline().strip().split())
+    arrivals = list(map(int, read.readline().strip().split()))
+
+arrivals.sort()
+lo = 0
+hi = arrivals[n - 1] - arrivals[0]
+
+while lo < hi:
+    mid = lo + (hi - lo) // 2
+    if validate(mid):
+        hi = mid
+    else:
+        lo = mid + 1
+
+print(lo, file=open("convention.out", "w"))
+```
+
+</PySection>
 </LanguageSection>
