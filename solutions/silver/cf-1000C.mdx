@@ -5,7 +5,7 @@ title: Covered Points Count
 author: Jesse Choe, Chuyang Wang
 ---
 
-[Official Editorial](http://codeforces.com/blog/entry/60288)
+[Official Editorial (C++)](http://codeforces.com/blog/entry/60288)
 
 
 ## Solution 1: Coordinate Compression
@@ -25,7 +25,6 @@ ordered map.
 **Time Complexity:** $\mathcal{O}(N\log N)$
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
@@ -170,7 +169,55 @@ public class CoveredPointsCount {
 ```
 
 </JavaSection>
+<PySection>
 
+```py
+n = int(input())
+# This stores the original endpoints to use in our frequency array later
+segments = []
+
+# This stores only the unique endpoints in sorted order
+points = set()
+
+for _ in range(n):
+	l, r = map(int, input().split())
+	segments.append((l, r))
+	points.add(l)
+	points.add(r + 1)
+
+# This map stores the compressed coordinates.
+compressed = {}
+coords = []
+
+for cur, c in enumerate(sorted(points)):
+	compressed[c] = cur
+	coords.append(c)
+
+# This stores the frequency of a given endpoint
+freq = [0] * (2 * n)
+
+for l, r in segments:
+	# A segment starts from [l*, r*], so we should end the segment
+	# at r* + 1 to ensure that r* is included in the segment.
+	freq[compressed[l]] += 1
+	freq[compressed[r + 1]] -= 1
+
+# Prefix sums for the number of points at a given compressed endpoint
+for i in range(1, len(freq)):
+	freq[i] += freq[i - 1]
+
+# covered_num[i] := number of points covered by exactly i segments
+covered_num = [0] * (n + 1)
+
+for i in range(1, len(coords)):
+	# We decompress the endpoints for a given frequency
+	# and add the points in this range to the answer.
+	covered_num[freq[i - 1]] += coords[i] - coords[i - 1]
+
+print(" ".join(map(str, covered_num[1:])))
+```
+
+</PySection>
 </LanguageSection>
 
 
@@ -185,7 +232,6 @@ explicitly perform the coordinate compression.
 **Time Complexity:** $\mathcal{O}(N\log N)$
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
@@ -232,11 +278,47 @@ int main() {
 		it++;
 	}
 
-	for (int i = 1; i < n; i++) { cout << covered_num[i] << " "; }
-	cout << covered_num[n] << endl;
+	for (int i = 1; i <= n; i++) { cout << covered_num[i] << " \n"[i == n]; }
 }
 ```
 
 </CPPSection>
+<PySection>
 
+```py
+from collections import defaultdict
+
+n = int(input())
+
+points = set()  # distinct coordinates of the start and end of the segmetns
+freq = defaultdict(int)  # frequency of a given coordinate
+
+for _ in range(n):
+	l, r = map(int, input().split())
+
+	# A segment starts from [l*, r*], so we should end the segment
+	# at r* + 1 to ensure that r* is included in the segment.
+	freq[l] += 1
+	freq[r + 1] -= 1
+	points.add(l)
+	points.add(r + 1)
+
+sorted_points = sorted(points)
+
+# number of overlapping segments at current position
+layers = freq[sorted_points[0]]
+
+# covered_num[i] := number of points covered by exactly i segments
+covered_num = [0] * (n + 1)
+
+# iterate through all coordinates of interest and add the
+# number of points in each range to the resp. answer
+for i in range(1, len(sorted_points)):
+	covered_num[layers] += sorted_points[i] - sorted_points[i - 1]
+	layers += freq[sorted_points[i]]
+
+print(" ".join(map(str, covered_num[1:])))
+```
+
+</PySection>
 </LanguageSection>

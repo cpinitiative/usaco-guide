@@ -32,7 +32,6 @@ always exactly one way to win.
 **Time Complexity:** $\mathcal{O}(NK)$
 
 <LanguageSection>
-
 <CPPSection>
 
 ## Implementation
@@ -44,7 +43,7 @@ const int MX = 1e5 + 5;
 
 int dp[MX][25][3];  // dp[i][j][k] is the largest number of games she wins at
                     // games i with switches j with current item k
-int A[MX];          // 0 == H 1 == P 2 == S
+int moves[MX];      // 0 == H 1 == P 2 == S
 
 int main() {
 	setIO("hps");
@@ -56,9 +55,9 @@ int main() {
 	for (int i = 0; i < N; i++) {
 		char a;
 		cin >> a;
-		if (a == 'H') A[i] = 0;
-		if (a == 'P') A[i] = 1;
-		if (a == 'S') A[i] = 2;
+		if (a == 'H') moves[i] = 0;
+		if (a == 'P') moves[i] = 1;
+		if (a == 'S') moves[i] = 2;
 	}
 
 	// either she switches to h or p or s or stays
@@ -66,13 +65,15 @@ int main() {
 	for (int i = 0; i < N; i++) {
 		for (int j = 0; j <= K; j++) {
 			for (int k = 0; k < 3; k++) {
-				if (k == A[i]) dp[i][j][k]++;
+
+				// If current strategy matches opponent's move, increment win count
+				if (k == moves[i]) dp[i][j][k]++;
 				dp[i + 1][j + 1][0] = max(dp[i + 1][j + 1][0],
-				                          dp[i][j][k]);  // switch to not item
+				                          dp[i][j][k]);  // switch to hoof
 				dp[i + 1][j + 1][1] = max(dp[i + 1][j + 1][1],
-				                          dp[i][j][k]);  // switch to not item
+				                          dp[i][j][k]);  // switch to paper
 				dp[i + 1][j + 1][2] = max(dp[i + 1][j + 1][2],
-				                          dp[i][j][k]);  // switch to not item
+				                          dp[i][j][k]);  // switch to scissors
 				dp[i + 1][j][k] = max(dp[i + 1][j][k], dp[i][j][k]);  // stay
 			}
 		}
@@ -87,7 +88,6 @@ int main() {
 ```
 
 </CPPSection>
-
 <JavaSection>
 
 ```java
@@ -99,11 +99,10 @@ public class HoofPaperScissors {
 
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new FileReader("hps.in"));
-		PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("hps.out")));
-
 		StringTokenizer inputLine = new StringTokenizer(br.readLine());
 		int numGames = Integer.parseInt(inputLine.nextToken());
 		int maximumSwitches = Integer.parseInt(inputLine.nextToken());
+
 		// dp[game][switches][type] = maximum number of wins
 		// at that game with at most that amount
 		// of switches and that with that type active
@@ -124,11 +123,10 @@ public class HoofPaperScissors {
 		int maximum = 0;
 
 		/*
-		c = current game number
-		n = number of switches
+		 * c = current game number
+		 * n = number of switches
 		 */
-
-		for (int c = 1; c <= numGames; c++) {  // for each game
+		for (int c = 1; c <= numGames; c++) {
 			// for each switch amount
 			for (int n = 1; n < maximumSwitches + 2; n++) {
 				// try switching to the three possibilities
@@ -159,11 +157,71 @@ public class HoofPaperScissors {
 				}
 			}
 		}
+
+		PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("hps.out")));
 		pw.println(maximum);
 		pw.close();
 	}
 }
 ```
-</JavaSection>
 
+</JavaSection>
+<PySection>
+
+<Warning>
+
+Due to Python's constant factor, the below solution TLEs on a couple test cases.
+
+</Warning>
+
+```py
+with open("hps.in") as read:
+	n, k = map(int, read.readline().strip().split())
+	moves = [0] * n
+	for i in range(n):
+		a = read.readline().strip()
+		if a == "H":
+			moves[i] = 0
+		elif a == "P":
+			moves[i] = 1
+		else:
+			moves[i] = 2
+
+"""
+dp[i][j][k] is the maximum number of games she wins at
+the ith game after j switches with current item k
+H = 0, P = 1, S = 2
+"""
+dp = [[[0] * 3 for _ in range(k + 1)] for _ in range(n + 1)]
+
+# either she switches to hoof or paper or scissors or stays
+for i in range(n):
+	for j in range(k + 1):
+		for l in range(3):
+
+			# If current strategy matches opponent's move, increment win count
+			if l == moves[i]:
+				dp[i][j][l] += 1
+
+			if j != k:
+				# switch to hoof
+				dp[i + 1][j + 1][0] = max(dp[i + 1][j + 1][0], dp[i][j][l])
+
+				# switch to paper
+				dp[i + 1][j + 1][1] = max(dp[i + 1][j + 1][1], dp[i][j][l])
+
+				# switch to scissors
+				dp[i + 1][j + 1][2] = max(dp[i + 1][j + 1][2], dp[i][j][l])
+
+			# stay
+			dp[i + 1][j][l] = max(dp[i + 1][j][l], dp[i][j][l])
+
+res = 0
+for i in range(3):
+	res = max(res, dp[n - 1][k][i])
+
+print(res, file=open("hps.out", "w"))
+```
+
+</PySection>
 </LanguageSection>

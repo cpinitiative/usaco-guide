@@ -122,5 +122,49 @@ int main() {
 ```
 
 </CPPSection>
+<PySection>
 
+```py
+with open("taming.in", "r") as read:
+	n = int(read.readline().strip())
+	entry = list(map(int, read.readline().strip().split()))
+
+range_ans = [[0] * n for _ in range(n)]
+for i in range(n):
+	for j in range(i, n):
+		if j > 0:
+			range_ans[i][j] = range_ans[i][j - 1] + (0 if entry[j] == j - i else 1)
+		else:
+			range_ans[i][j] = 0 if entry[j] == j - i else 1
+
+dp = [[float("inf")] * n for _ in range(n + 1)]
+for i in range(1, n + 1):
+	for j in range(i - 1, n):
+		if j == 0:
+			dp[i][j] = 0 if entry[j] == 0 else 1
+			continue
+
+		# Case 1
+		if dp[i][j - 1] != float("inf"):
+			dp[i][j] = dp[i][j - 1] + 1
+
+		# Case 2
+		if entry[j] and dp[i - 1][j - 1] != float("inf"):
+			dp[i][j] = min(dp[i][j], dp[i - 1][j - 1] + 1)
+
+		# Case 3
+		if j - entry[j] - 1 >= 0 and dp[i - 1][j - entry[j] - 1] != float("inf"):
+			dp[i][j] = min(
+				dp[i][j], dp[i - 1][j - entry[j] - 1] + range_ans[j - entry[j]][j]
+			)
+
+		if j - entry[j] == 0 and i == 1:
+			dp[i][j] = min(dp[i][j], range_ans[j - entry[j]][j])
+
+with open("taming.out", "w") as out:
+	for i in range(1, n + 1):
+		out.write(f"{dp[i][n - 1]}\n")
+```
+
+</PySection>
 </LanguageSection>

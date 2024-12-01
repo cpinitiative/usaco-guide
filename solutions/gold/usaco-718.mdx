@@ -53,6 +53,7 @@ int main() {
 	cout << dp[n][n] << endl;
 }
 ```
+
 </CPPSection>
 <JavaSection>
 
@@ -109,5 +110,44 @@ public class NoCross {
 	// CodeSnip{Kattio}
 }
 ```
+
 </JavaSection>
+<PySection>
+
+```py
+with open("nocross.in") as read:
+	n = int(read.readline().strip())
+
+	"""
+	id1 represents the breed ID of the fields
+	on the first side of the road
+	id2 represents the breed ID of the fields
+	on the other side of the road.
+	"""
+	id1 = [0]
+	id2 = [0]
+	for _ in range(n):
+		x = int(read.readline().strip())
+		id1.append(x)
+	for _ in range(n):
+		x = int(read.readline().strip())
+		id2.append(x)
+
+dp = [[0] * (n + 1) for _ in range(n + 1)]
+for i in range(1, n + 1):
+	for j in range(1, n + 1):
+		"""
+		We can either build a new crosswalk between
+		i and j or not build a new crosswalk.
+		"""
+		dp[i][j] = max(
+			dp[i - 1][j],
+			dp[i][j - 1],
+			dp[i - 1][j - 1] + (1 if abs(id1[i] - id2[j]) <= 4 else 0),
+		)
+
+print(dp[n][n], file=open("nocross.out", "w"))
+```
+
+</PySection>
 </LanguageSection>

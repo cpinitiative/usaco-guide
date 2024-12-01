@@ -183,6 +183,81 @@ public class Main {
 ```
 
 </JavaSection>
+<PySection>
+
+<Warning>
+
+The below solution only runs in time if you submit with PyPy.
+
+</Warning>
+
+```py
+order = []
+
+
+def dfs1(v: int):
+	"""Calculate the order to process nodes."""
+	stack = [v]
+	while stack:
+		node = stack[-1]
+		if not vis[node]:
+			vis[node] = True
+		finished = True
+		for u in adj[node]:
+			if not vis[u]:
+				stack.append(u)
+				finished = False
+				break
+		if finished:
+			order.append(stack.pop())
+		else:
+			vis[node] = True
+
+
+def dfs2(x: int, comp: int):
+	"""Traverse an SCC and assign component numbers to each of them."""
+	stack = [x]
+	while stack:
+		node = stack.pop()
+		if not vis[node]:
+			vis[node] = True
+			comp_id[node] = comp
+			for u in rev_adj[node]:
+				if not vis[u]:
+					stack.append(u)
+
+
+n, m = map(int, input().split())
+
+adj = [[] for _ in range(n)]
+rev_adj = [[] for _ in range(n)]
+vis = [False] * n
+comp_id = [0] * n
+
+for _ in range(m):
+	u, v = map(int, input().split())
+	u -= 1
+	v -= 1
+	adj[u].append(v)
+	rev_adj[v].append(u)
+
+for i in range(n):
+	if not vis[i]:
+		dfs1(i)
+
+vis = [False] * n
+comps = 0
+for i in range(len(order) - 1, -1, -1):
+	v = order[i]
+	if not vis[v]:
+		comps += 1  # counter for SCC
+		dfs2(v, comps)
+
+print(comps)
+print(*comp_id)
+```
+
+</PySection>
 </LanguageSection>
 
 ## Tarjan's Algorithm

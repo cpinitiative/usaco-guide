@@ -5,7 +5,7 @@ title: Elevator Rides
 author: Sofia Yang
 ---
 
-[CPH Solution (10.5)](/CPH.pdf#page=112)
+[CPH Solution (10.5)](/CPH.pdf#page=113)
 
 
 ## Implementation
@@ -13,7 +13,6 @@ author: Sofia Yang
 **Time Complexity:** $\mathcal{O}(N\cdot 2^N)$
 
 <LanguageSection>
-
 <JavaSection>
 
 ```java
@@ -90,19 +89,18 @@ public class ElevatorRides {
 ```
 
 </JavaSection>
-
 <CPPSection>
 
 ```cpp
 // CodeSnip{CPP Short Template}
 
 int main() {
-	int people, maxWeight;
-	cin >> people >> maxWeight;
+	int people, max_weight;
+	cin >> people >> max_weight;
 	vector<int> weight(people);
 	for (int &i : weight) cin >> i;
 
-	vector<pair<int, int>> dp(1 << people, {people + 1, maxWeight + 1});
+	vector<pair<int, int>> dp(1 << people, {people + 1, max_weight + 1});
 	dp[0] = make_pair(1, 0);
 	/*
 	 * Loop through all bitmasks.
@@ -114,25 +112,25 @@ int main() {
 			// The ith person has used the elevator.
 			if (mask & (1 << i)) {
 				auto prev = dp[mask ^ (1 << i)];
-				int numRides = prev.first;
-				int totalWeight = prev.second;
+				int num_rides = prev.first;
+				int total_weight = prev.second;
 				// We need to use a new ride.
-				if (totalWeight + weight[i] <= maxWeight) totalWeight += weight[i];
+				if (total_weight + weight[i] <= max_weight) total_weight += weight[i];
 				else {
 					// Add the weight of the ith person to the current ride.
-					numRides++;
-					totalWeight = weight[i];
+					num_rides++;
+					total_weight = weight[i];
 				}
 				// Update if it is better than the original.
-				dp[mask] = min(dp[mask], make_pair(numRides, totalWeight));
+				dp[mask] = min(dp[mask], make_pair(num_rides, total_weight));
 			}
 	}
 	// Result when all people have used the elevator.
 	cout << dp[(1 << people) - 1].first;
 }
 ```
-</CPPSection>
 
+</CPPSection>
 <PySection>
 
 ```py
@@ -173,5 +171,4 @@ print(dp[(1 << people) - 1][0])
 ```
 
 </PySection>
-
 </LanguageSection>
