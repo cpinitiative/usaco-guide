@@ -7,10 +7,11 @@ author: Danh Ta Chi Thanh, Mark Phan, Arpan Banerjee, Juheon Rhee
 
 [Official Analysis (Java)](http://www.usaco.org/current/data/sol_feast_gold_dec15.html)
 
-## Solution - DP
+## Implementation - DP
+
+**Time Complexity:** $\mathcal{O}(T)$, where $T$ is the maximum fullness.
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
@@ -20,33 +21,66 @@ using namespace std;
 bool dp[2][5000001];
 
 int main() {
-	ios_base::sync_with_stdio(0);
-	cin.tie(0);
 	freopen("feast.in", "r", stdin);
-	freopen("feast.out", "w", stdout);
-	int T, A, B;
-	cin >> T >> A >> B;
+	int max_fullness, orange, lemon;
+	cin >> max_fullness >> orange >> lemon;
+
 	dp[0][0] = true;
-	for (int i = 0; i < T + 1; ++i) {
-		if (i - A >= 0) dp[0][i] |= dp[0][i - A];
-		if (i - B >= 0) dp[0][i] |= dp[0][i - B];
+	for (int i = 0; i <= max_fullness; i++) {
+		if (i - orange >= 0) dp[0][i] |= dp[0][i - orange];
+		if (i - lemon >= 0) dp[0][i] |= dp[0][i - lemon];
 		dp[1][i / 2] |= dp[0][i];
 	}
-	for (int i = 0; i < T + 1; ++i) {
-		if (i - A >= 0) dp[1][i] |= dp[1][i - A];
-		if (i - B >= 0) dp[1][i] |= dp[1][i - B];
+
+	for (int i = 0; i <= max_fullness; i++) {
+		if (i - orange >= 0) dp[1][i] |= dp[1][i - orange];
+		if (i - lemon >= 0) dp[1][i] |= dp[1][i - lemon];
 	}
-	for (int i = T; i >= 0; --i)
+
+	freopen("feast.out", "w", stdout);
+	for (int i = max_fullness; i >= 0; i--) {
 		if (dp[1][i]) {
-			cout << i;
+			cout << i << endl;
 			break;
 		}
-	return 0;
+	}
 }
 ```
 
 </CPPSection>
+<PySection>
 
+```py
+with open("feast.in") as read:
+	max_fullness, orange, lemon = map(int, read.readline().split())
+
+dp = [[0] * (max_fullness + 1) for _ in range(2)]
+dp[0][0] = True
+for i in range(max_fullness + 1):
+	if i - orange >= 0:
+		dp[0][i] |= dp[0][i - orange]
+
+	if i - lemon >= 0:
+		dp[0][i] |= dp[0][i - lemon]
+
+	dp[1][i // 2] |= dp[0][i]
+
+
+for i in range(max_fullness + 1):
+	if i - orange >= 0:
+		dp[1][i] |= dp[1][i - orange]
+
+	if i - lemon >= 0:
+		dp[1][i] |= dp[1][i - lemon]
+
+
+for i in range(max_fullness, -1, -1):
+	if dp[1][i]:
+		print(i, file=open("feast.out", "w"))
+		break
+```
+
+</PySection>
 </LanguageSection>
 
 ## Alternative Implementation - BFS/DFS
