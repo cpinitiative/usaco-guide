@@ -242,13 +242,11 @@ def validate(k: int) -> bool:
 
 with open("convention.in") as read:
 	n, m, c = map(int, read.readline().strip().split())
-	arrivals = list(map(int, read.readline().strip().split()))
+	# sort by arrival times
+	arrivals = sorted(map(int, read.readline().strip().split()))
 
-# sort by arrival time to process cows in order
-arrivals.sort()
 lo = 0
 hi = arrivals[n - 1] - arrivals[0]
-
 while lo < hi:
 	mid = lo + (hi - lo) // 2
 	if validate(mid):
