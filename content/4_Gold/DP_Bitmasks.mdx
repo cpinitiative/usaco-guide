@@ -128,23 +128,22 @@ int main() {
 
 <Warning>
 
-Due to Python's large constant factor, the solution below TLEs on a couple of test cases.
+Due to Python's large constant factor, the solution below TLEs.
 
 </Warning>
 
 ```py
 import sys
 
-input = sys.stdin.readline
-
 MOD = 10**9 + 7
+
+input = sys.stdin.readline
 
 n, m = map(int, input().strip().split())
 dp = [[0 for _ in range(n)] for _ in range(1 << n)]
 dp[1][0] = 1
 
 adj = [[] for _ in range(n)]
-
 for i in range(m):
 	a, b = map(int, input().strip().split())
 	adj[b - 1].append(a - 1)
@@ -162,8 +161,8 @@ for cities in range(1, 1 << n):
 	for end in range(1, n):
 		if not cities & (1 << end):
 			continue
-		prev_cities = cities ^ (1 << end)
 
+		prev_cities = cities ^ (1 << end)
 		for prev_end in adj[end]:
 			if not prev_cities & (1 << prev_end):
 				continue
