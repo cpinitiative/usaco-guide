@@ -126,7 +126,7 @@ export const OrderedFirstMembers: Member[] = [
   {
     photo: 'evan',
     name: 'Evan Zhao',
-    titles: ['Executive', 'Director of Classes', roles.liveInstructor],
+    titles: ['Board', roles.liveInstructor],
     email: 'evanzhao12@gmail.com',
   },
   {
