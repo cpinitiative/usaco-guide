@@ -2,14 +2,24 @@
 id: usaco-993
 source: USACO Gold 2020 January
 title: Time is Mooney
-author: Nathan Gong, Ryan Chou
+author: Nathan Gong, Ryan Chou, David Guo
 ---
 
 [Official Analysis (C++)](http://www.usaco.org/current/data/sol_time_gold_jan20.html)
 
 ## Explanation
 
-We only need to keep track of the number of days that Bessie has been traveling and the amount of mooney that she has made. For every day up to $T_{\text{max}}$, we'll try to travel to each city, and update the mooney made if the current path is more optimal. The maximum amount of money she makes is $1000t - t^2$, in the case where she makes $1000$ mooney per city and the cost is $1$. Her earnings become negative when $t > 1000$, so we only have to check her movement across the cities for at most $1000$ days.
+The problem involves maximizing the profit Bessie can earn while traveling
+between cities and collecting moonies. We define $dp[t][i]$ as the maximum
+moonies Bessie can have at city $i$ on day $t$. Starting with $dp[0][1] = 0$, we
+iterate over each day up to $T_{\text{max}}$, the maximum number of days, and
+over each city, updating $dp[t + 1][j]$ for all cities $j$ reachable from city
+$i$ via a directed road. We compare the current value of $dp[t + 1][j]$ with the
+value of coming from an adjacent city on the previous day,
+$dp[t][i] + \text{moonies}[j]$, and take the maximum. After processing each day,
+we calculate the profit as $dp[t][1] - C \cdot t^2$, representing the total
+moonies minus the travel cost for $t$ days, and track the maximum profit. This
+approach ensures we consider all feasible trips and ignore unreachable states.
 
 ## Implementation
 
@@ -22,48 +32,55 @@ We only need to keep track of the number of days that Bessie has been traveling 
 #include <bits/stdc++.h>
 using namespace std;
 
-const int MAX_DAYS = 1000;
-
 int main() {
-	freopen("time.in", "r", stdin);
-	freopen("time.out", "w", stdout);
+    ifstream cin("time.in");
+    ofstream cout("time.out");
 
-	int n, m, c;
-	cin >> n >> m >> c;
+    int n, m, c;
+    cin >> n >> m >> c;
 
-	vector<int> earn(n);
-	for (int i = 0; i < n; i++) { cin >> earn[i]; }
+    vector<int> moonies(n + 1);
+    for (int i = 1; i <= n; i++) {
+        cin >> moonies[i];
+    }
 
-	vector<vector<int>> adj(n);
-	for (int i = 0; i < m; i++) {
-		int u, v;
-		cin >> u >> v;
-		adj[--u].push_back(--v);
-	}
+    vector<vector<int>> adj(n + 1);
+    for (int i = 0; i < m; i++) {
+        int a, b;
+        cin >> a >> b;
+        adj[a].push_back(b);
+    }
 
-	// dp[i][j] = the max money that Bessie can make on day i if she ends in
-	// city j
-	vector<vector<int>> dp(MAX_DAYS + 1, vector<int>(n, -1));
-	// base case: if Bessie doesn't travel at all, she makes $0
-	dp[0][0] = 0;
+    const int MAX_T = 1000;  // Maximum number of days Bessie can travel
+    
+    // DP table: dp[t][i] represents the maximum moonies Bessie can have at city i on day t
+    vector<vector<int>> dp(MAX_T + 1, vector<int>(n + 1, -1));
+    dp[0][1] = 0;  // Base case: Start at city 1 on day 0 with 0 moonies
 
-	int ans = 0;
-	for (int d = 0; d < MAX_DAYS; d++) {
-		for (int i = 0; i < n; i++) {
-			// if dp[d][i] == -1 then the city can't be visited
-			if (dp[d][i] != -1) {
-				for (int u : adj[i]) {
-					/*
-					 * dp[d + 1][u] = max(current money earned,
-					 * previous city's earnings + current city's earnings)
-					 */
-					dp[d + 1][u] = max(dp[d + 1][u], dp[d][i] + earn[u]);
-				}
-			}
-		}
-		ans = max(ans, (dp[d][0] - (c * d * d)));
-	}
-	cout << ans << "\n";
+    int res = 0;
+
+    for (int t = 0; t <= MAX_T; t++) {
+        for (int i = 1; i <= n; i++) {
+            // Skip cities that are unreachable on day t
+            if (dp[t][i] == -1) {
+                continue;
+            }
+
+            // Transition: Consider all roads from city i to its neighbors
+            for (int j : adj[i]) {
+                if (t + 1 <= MAX_T) {
+                    // Update dp[t + 1][j] by considering a transition from an adjacent city on the previous day
+                    dp[t + 1][j] = max(dp[t + 1][j], dp[t][i] + moonies[j]);
+                }
+            }
+        }
+
+        // After processing all cities for day t, calculate the profit if Bessie returns to city 1
+        res = max(res, dp[t][1] - c * t * t);
+    }
+
+    cout << res << "\n";
+    return 0;
 }
 ```
 
@@ -75,55 +92,61 @@ import java.io.*;
 import java.util.*;
 
 public class TimeIsMooney {
-	public static void main(String[] args) throws IOException {
-		Kattio io = new Kattio("time");
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new FileReader("time.in"));
+        PrintWriter pw = new PrintWriter(new FileWriter("time.out"));
 
-		// max time that we check (it can be any arbitrary large number as long
-		// as it is sufficient for O(T_MAX * (N + M)) time)
-		final int T_MAX = 1001;
-		int n = io.nextInt();
-		int m = io.nextInt();
-		int c = io.nextInt();
+        final int MAX_T = 1000;  // Maximum number of days Bessie can travel
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        int n = Integer.parseInt(st.nextToken());
+        int m = Integer.parseInt(st.nextToken());
+        int c = Integer.parseInt(st.nextToken());
 
-		// amount of moonies Bessie can make at each city
-		int[] values = new int[n];
-		for (int i = 0; i < values.length; i++) { values[i] = io.nextInt(); }
+        int[] moonies = new int[n + 1];
+        st = new StringTokenizer(br.readLine());
+        for (int i = 1; i <= n; i++) {
+            moonies[i] = Integer.parseInt(st.nextToken());
+        }
 
-		List<List<Integer>> adj = new ArrayList<>();
-		for (int i = 0; i < n; i++) adj.add(new ArrayList<>());
-		for (int i = 0; i < m; i++) {
-			int n1 = io.nextInt() - 1;
-			int n2 = io.nextInt() - 1;
-			adj.get(n1).add(n2);
-		}
+        List<List<Integer>> adj = new ArrayList<>();
+        for (int i = 0; i <= n; i++) adj.add(new ArrayList<>());
+        for (int i = 0; i < m; i++) {
+            st = new StringTokenizer(br.readLine());
+            int u = Integer.parseInt(st.nextToken());
+            int v = Integer.parseInt(st.nextToken());
+            adj.get(u).add(v);
+        }
 
-		// dp[t][i] = max amount of moonies Bessie can make after t days,
-		// ending at city i
-		long[][] dp = new long[T_MAX][n];
-		for (int i = 0; i < T_MAX; i++) { Arrays.fill(dp[i], -1); }
+        // DP table: dp[t][i] represents the maximum moonies Bessie can have at city i on day t
+        long[][] dp = new long[MAX_T + 1][n + 1];
+        for (int t = 0; t <= MAX_T; t++) {
+            Arrays.fill(dp[t], -1);
+        }
+        dp[0][1] = 0;  // Base case: Start at city 1 on day 0 with 0 moonies
 
-		long best = 0;
-		dp[0][0] = 0;
-		for (int t = 0; t < T_MAX - 1; t++) {  // populate dp array up to T_MAX
-			for (int i = 0; i < n; i++) {      // check each city at each time step
-				// skip city if it can't be reached at time t
-				if (dp[t][i] != -1) {
-					// visit all cities adjacent to i, update dp array
-					for (int neighbor : adj.get(i)) {
-						dp[t + 1][neighbor] =
-						    Math.max(dp[t + 1][neighbor], dp[t][i] + values[neighbor]);
-					}
-				}
-			}
-			// update the max profit Bessie can make after t days, ending at city 0
-			best = Math.max(best, dp[t][0] - t * t * c);
-		}
+        long res = 0;
 
-		io.println(best);
-		io.close();
-	}
+        for (int t = 0; t < MAX_T; t++) {
+            for (int i = 1; i <= n; i++) {
+                // Skip cities that are unreachable on day t
+                if (dp[t][i] == -1) continue;
 
-	// CodeSnip{Kattio}
+                // Transition: Consider all roads from city i to its neighbors
+                for (int neighbor : adj.get(i)) {
+                    if (t + 1 <= MAX_T) {
+                        // Update dp[t + 1][neighbor] by considering a transition from an adjacent city on the previous day
+                        dp[t + 1][neighbor] = Math.max(dp[t + 1][neighbor], dp[t][i] + moonies[neighbor]);
+                    }
+                }
+            }
+
+            // After processing all cities for day t, calculate the profit if Bessie returns to city 1
+            res = Math.max(res, dp[t][1] - (long) c * t * t);
+        }
+
+        pw.println(res);
+        pw.close();
+    }
 }
 ```
 
@@ -134,35 +157,37 @@ public class TimeIsMooney {
 MAX_DAYS = 1000
 
 with open("time.in") as read:
-	n, m, c = map(int, read.readline().strip().split())
-	earn = list(map(int, read.readline().strip().split()))
+    n, m, c = map(int, read.readline().strip().split())
+    moonies = [0] + list(map(int, read.readline().strip().split()))
 
-	adj = [[] for _ in range(n)]
+    adj = [[] for _ in range(n + 1)]
+    for _ in range(m):
+        u, v = map(int, read.readline().strip().split())
+        adj[u].append(v)
 
-	for _ in range(m):
-		u, v = map(int, read.readline().strip().split())
-		u -= 1
-		v -= 1
-		adj[u].append(v)
+# DP table: dp[t][i] represents the maximum moonies Bessie can have at city i on day t
+dp = [[-1] * (n + 1) for _ in range(MAX_DAYS + 1)]
+dp[0][1] = 0  # Base case: Start at city 1 on day 0 with 0 moonies
 
-# dp[i][j] = the max money that Bessie can make on day i if she ends in city j
-dp = [[-1] * n for _ in range(MAX_DAYS + 1)]
+res = 0
 
-# base case: if Bessie doesn't travel at all, she makes $0
-dp[0][0] = 0
-ans = 0
-for d in range(MAX_DAYS):
-	for i in range(n):
-		# if dp[d][i] == -1 then the city can't be visited
-		if dp[d][i] != -1:
-			for u in adj[i]:
-				# dp[d + 1][u] = max(current money earned,
-				# previous city's earnings + current city's earnings)
-				dp[d + 1][u] = max(dp[d + 1][u], dp[d][i] + earn[u])
+for t in range(MAX_DAYS):
+    for i in range(1, n + 1):
+        # Skip cities that are unreachable on day t
+        if dp[t][i] == -1:
+            continue
 
-	ans = max(ans, dp[d][0] - (c * d * d))
+        # Transition: Consider all roads from city i to its neighbors
+        for neighbor in adj[i]:
+            if t + 1 <= MAX_DAYS:
+                # Update dp[t + 1][neighbor] by considering a transition from an adjacent city on the previous day
+                dp[t + 1][neighbor] = max(dp[t + 1][neighbor], dp[t][i] + moonies[neighbor])
 
-print(ans, file=open("time.out", "w"))
+    # After processing all cities for day t, calculate the profit if Bessie returns to city 1
+    res = max(res, dp[t][1] - c * t * t)
+
+with open("time.out", "w") as write:
+    write.write(f"{res}\n")
 ```
 
 </PySection>
