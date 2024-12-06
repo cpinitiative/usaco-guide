@@ -1,0 +1,294 @@
+---
+id: cf-838B
+source: CF
+title: Diverging Directions
+author: Justin Ji
+---
+
+## Explanation
+
+First, we need to divide queries into two types: those that require us
+to jump to the root, and those that don't require such. Let's consider a
+query for the shortest path $u \rightarrow v$.
+
+### Case 1: $u$ is an ancestor of $v$
+
+The optimal solution is for our path to just walk downwards from $u$ to $v$.
+This is equivalent to $\texttt{dist}(1 \rightarrow v) -
+\texttt{dist}(1 \rightarrow u)$, where $1$ is the root of our tree.
+To answer these queries, we use the method described in
+[this editorial](/problems/cses-1138-path-queries/solution).
+
+### Case 2: $u$ is not an ancestor of $v$
+
+In this scenario, our path from $u$ to $v$ has the following structure.
+1. First, we traverse down to some node in the subtree of $u$
+2. Using the back edge at our chosen node, we jump to node $1$.
+3. Finally, we walk down to node $v$
+
+We can use the same code for case 1 to calculate
+$\texttt{dist}(1 \rightarrow v)$. However, it isn't exactly clear how we should
+figure out the best node to pick in the subtree of $u$ to jump from. Let the node
+we traverse down to be $x$. Then, the cost of using node $x$ to jump to the root
+is:
+
+$$
+\texttt{dist}(u \rightarrow x) + \texttt{back}[x]
+$$
+
+Here, $\texttt{back}[x]$ refers to the cost of jumping from $x$ to the root.
+Using the same idea from case 1, we can change our expression a bit.
+
+$$
+\texttt{dist}(1 \rightarrow x) + \texttt{back}[x] -
+\texttt{dist}(1 \rightarrow u)
+$$
+
+The distance from the root to node $u$ is fixed here. Thus, we want to find
+the best value of $\texttt{dist}(1 \rightarrow x) + \texttt{back}[x]$
+within the subtree of $u$. To do this, we use Euler Tour to flatten our tree,
+and then use a lazy segment tree to answer our queries.
+
+Our segment tree must support range addition and range minimum. For more
+information on how to implement it, refer to the
+[Range Updates Range Queries](/plat/RURQ) module.
+
+### Handling Updates
+
+If the edge we are updating is from node $u$ to node $1$, then it only affects
+the value in our segment tree for node $u$. Thus, we do a point update on the
+node in question.
+
+In the case that the edge we are updating isn't from some node to the root, then
+it changes all the values inside the subtree it affects. Let's have the edge
+affected connect node $u$ and node $v$, with the difference in weight being $w$.
+Then, we must do the following.
+- Change the distances in the subtree of $v$ by $w$
+- Change the value of $\texttt{dist}(1 \rightarrow x) + \texttt{back}[x]$ by
+  $w$
+
+In my code, this boils down to updating the binary indexed tree handling the
+root to node distances, and updating the segment tree containing the value of
+$\texttt{dist}(1 \rightarrow x) + \texttt{back}[x]$ for every node.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}((N+Q)\log{N})$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using ll = long long;
+
+// BeginCodeSnip{Lazy Segment Tree (from the module)}
+template <class Info, class Tag> class LazySegtree {
+  private:
+	const int n;
+	vector<Info> tree;
+	vector<Tag> lazy;
+
+	/** builds the segtree values in O(N) time */
+	void build(int v, int l, int r, const vector<Info> &a) {
+		if (l == r) {
+			tree[v] = a[l];
+		} else {
+			int m = (l + r) / 2;
+			build(2 * v, l, m, a);
+			build(2 * v + 1, m + 1, r, a);
+			tree[v] = tree[2 * v] + tree[2 * v + 1];
+		}
+	}
+
+	/** applies update x to lazy[v] and tree[v] */
+	void apply(int v, int l, int r, const Tag &x) {
+		tree[v].apply(x, l, r);
+		lazy[v].apply(x);
+	}
+
+	/** pushes lazy updates down to the children of v */
+	void push_down(int v, int l, int r) {
+		int m = (l + r) / 2;
+		apply(2 * v, l, m, lazy[v]);
+		apply(2 * v + 1, m + 1, r, lazy[v]);
+		lazy[v] = Tag();
+	}
+
+	void range_update(int v, int l, int r, int ql, int qr, const Tag &x) {
+		if (qr < l || ql > r) { return; }
+		if (ql <= l && r <= qr) {
+			apply(v, l, r, x);
+		} else {
+			push_down(v, l, r);
+			int m = (l + r) / 2;
+			range_update(2 * v, l, m, ql, qr, x);
+			range_update(2 * v + 1, m + 1, r, ql, qr, x);
+			tree[v] = tree[2 * v] + tree[2 * v + 1];
+		}
+	}
+
+	Info range_query(int v, int l, int r, int ql, int qr) {
+		if (qr < l || ql > r) { return Info(); }
+		if (l >= ql && r <= qr) { return tree[v]; }
+		push_down(v, l, r);
+		int m = (l + r) / 2;
+		return range_query(2 * v, l, m, ql, qr) +
+		       range_query(2 * v + 1, m + 1, r, ql, qr);
+	}
+
+  public:
+	LazySegtree() {}
+
+	LazySegtree(int n) : n(n) {
+		tree.assign(4 << __lg(n), Info());
+		lazy.assign(4 << __lg(n), Tag());
+	}
+
+	LazySegtree(const vector<Info> &a) : n(a.size()) {
+		tree.assign(4 << __lg(n), Info());
+		lazy.assign(4 << __lg(n), Tag());
+		build(1, 0, n - 1, a);
+	}
+
+	/** updates [ql, qr] with the arbitrary update chosen */
+	void range_update(int ql, int qr, const Tag &x) {
+		range_update(1, 0, n - 1, ql, qr, x);
+	}
+
+	/** @return result of range query on [ql, qr] */
+	Info range_query(int ql, int qr) { return range_query(1, 0, n - 1, ql, qr); }
+};
+
+struct Tag {
+	ll add = 0;
+	void apply(const Tag &t) { add += t.add; }
+};
+
+struct Info {
+	ll min_val = 1e18;
+	void apply(const Tag &t, int l, int r) { min_val += t.add; }
+};
+
+/** @return result of joining nodes a and b together */
+Info operator+(const Info &a, const Info &b) { return (a.min_val < b.min_val) ? a : b; }
+// EndCodeSnip
+
+// BeginCodeSnip{BIT (from the module)}
+template <class T> class BIT {
+  private:
+	int size;
+	vector<T> bit;
+	vector<T> arr;
+
+  public:
+	BIT(int size) : size(size), bit(size + 1), arr(size) {}
+
+	/** Sets the value at index ind to val. */
+	void set(int ind, T val) { add(ind, val - arr[ind]); }
+
+	/** Adds val to the element at index ind. */
+	void add(int ind, T val) {
+		arr[ind] += val;
+		ind++;
+		for (; ind <= size; ind += ind & -ind) { bit[ind] += val; }
+	}
+
+	/** @return The sum of all values in [0, ind]. */
+	T pref_sum(int ind) {
+		ind++;
+		T total = 0;
+		for (; ind > 0; ind -= ind & -ind) { total += bit[ind]; }
+		return total;
+	}
+};
+// EndCodeSnip
+
+int main() {
+	int n, q;
+	cin >> n >> q;
+
+	vector<array<int, 3>> edges(2 * n - 2);
+	vector<vector<array<int, 2>>> adj(n);
+	vector<int> back(n);
+
+	for (int i = 0; i < n - 1; i++) {
+		int u, v, w;
+		cin >> u >> v >> w;
+		u--, v--;
+		edges[i] = {u, v, w};
+		adj[u].push_back({v, w});
+	}
+
+	for (int i = 0; i < n - 1; i++) {
+		int u, v, w;
+		cin >> u >> v >> w;
+		u--, v--;
+		edges[n - 1 + i] = {u, v, w};
+		back[u] = w;
+	}
+
+	// calculating Euler Tour indices and the distances from
+	// the root of the tree to every other node
+	vector<int> tin(n);
+	vector<int> tout(n);
+	int timer = 0;
+	BIT<ll> bit(n + 1);
+	const auto dfs = [&](int u, int p, auto &&self) -> void {
+		tin[u] = timer++;
+		for (const auto [v, w] : adj[u]) {
+			if (v == p) { continue; }
+			self(v, u, self);
+			bit.add(tin[v], w);
+			bit.add(tout[v] + 1, -w);
+		}
+		tout[u] = timer - 1;
+	};
+	dfs(0, -1, dfs);
+
+	// initializing our segtree
+	vector<Info> arr(n);
+	for (int i = 0; i < n; i++) { arr[tin[i]] = {back[i] + bit.pref_sum(tin[i])}; }
+	LazySegtree<Info, Tag> st(arr);
+
+	for (int t = 0; t < q; t++) {
+		int type;
+		cin >> type;
+		if (type == 1) {
+			int i, w;
+			cin >> i >> w;
+			i--;
+			auto &[u, v, prev_wt] = edges[i];
+			if (v == 0) {
+				// just need to update the value for best node to root val
+				st.range_update(tin[u], tin[u], {w - prev_wt});
+			} else {
+				// need to update root to node path distances and also
+				// have a constant increase for all distances going down
+				st.range_update(tin[v], tout[v], {w - prev_wt});
+				bit.add(tin[v], w - prev_wt);
+				bit.add(tout[v] + 1, prev_wt - w);
+			}
+			prev_wt = w;
+		} else {
+			int u, v;
+			cin >> u >> v;
+			u--, v--;
+
+			ll dist_u = bit.pref_sum(tin[u]);
+			ll dist_v = bit.pref_sum(tin[v]);
+			if (tin[u] <= tin[v] && tout[v] <= tout[u]) {
+				cout << dist_v - dist_u << "\n";
+			} else {
+				const Info best = st.range_query(tin[u], tout[u]);
+				cout << best.min_val - dist_u + dist_v << "\n";
+			}
+		}
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>
