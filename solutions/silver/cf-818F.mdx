@@ -59,19 +59,15 @@ int main() {
 		int nodes;
 		cin >> nodes;
 
-		/** @return if we can make a graph with this many edges */
-		const auto check = [&](ll edges) -> bool {
-			int num_bridges = (edges + 1) / 2;
-			int cycle_nodes = nodes - num_bridges;
-			ll cycle_edges = 1ll * cycle_nodes * (cycle_nodes - 1) / 2;
-			return edges - num_bridges <= cycle_edges;
-		};
-
 		ll low = nodes - 1;
 		ll high = 2ll * (nodes - 1);
 		while (low < high) {
 			ll mid = (low + high + 1) / 2;
-			if (check(mid)) {
+			int num_bridges = (mid + 1) / 2;
+			int cycle_nodes = nodes - num_bridges;
+			ll cycle_edges = 1ll * cycle_nodes * (cycle_nodes - 1) / 2;
+
+			if (mid - num_bridges <= cycle_edges) {
 				low = mid;
 			} else {
 				high = mid - 1;
