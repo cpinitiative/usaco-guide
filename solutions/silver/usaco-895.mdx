@@ -24,83 +24,87 @@ import java.io.*;
 import java.util.*;
 
 public class IcyPerimeter {
-    static int n;
-    static char[][] grid;
-    static boolean[][] visited;
-    static final int[][] directions = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}}; // Movement directions (up, down, left, right)
+	static int n;
+	static char[][] grid;
+	static boolean[][] visited;
+	static final int[][] directions = {
+	    {-1, 0},
+	    {1, 0},
+	    {0, -1},
+	    {0, 1}};  // Movement directions (up, down, left, right)
 
-    // BFS function to calculate the area and perimeter of a blob of ice cream
-    static int[] bfs(int x, int y) {
-        Queue<int[]> queue = new LinkedList<>();
-        queue.add(new int[]{x, y}); // Start BFS from the given cell (startX, startY)
+	// BFS function to calculate the area and perimeter of a blob of ice cream
+	static int[] bfs(int x, int y) {
+		Queue<int[]> queue = new LinkedList<>();
+		queue.add(new int[] {x, y});  // Start BFS from the given cell (startX, startY)
 
-        int area = 0;
-        int perimeter = 0;
+		int area = 0;
+		int perimeter = 0;
 
-        while (!queue.isEmpty()) {
-            int[] current = queue.poll();
-            int curX = current[0], curY = current[1]; // Current cell
+		while (!queue.isEmpty()) {
+			int[] current = queue.poll();
+			int curX = current[0], curY = current[1];  // Current cell
 
-            // Skip if the cell has already been visited
-            if (visited[curX][curY]) {
-                continue;
-            }
+			// Skip if the cell has already been visited
+			if (visited[curX][curY]) { continue; }
 
-            visited[curX][curY] = true; // Mark the cell as visited
-            area++; // Increment area (each '#' contributes 1 to the area)
+			visited[curX][curY] = true;  // Mark the cell as visited
+			area++;  // Increment area (each '#' contributes 1 to the area)
 
-            int sides = 4; // Each cell starts with 4 sides contributing to the perimeter
-            for (int[] dir : directions) {
-                int newX = curX + dir[0], newY = curY + dir[1];
+			int sides =
+			    4;  // Each cell starts with 4 sides contributing to the perimeter
+			for (int[] dir : directions) {
+				int newX = curX + dir[0], newY = curY + dir[1];
 
-                // Check if the neighboring cell is within the grid
-                if (newX >= 0 && newX < n && newY >= 0 && newY < n) {
-                    if (grid[newX][newY] == '#') { // If the neighbor is part of the same blob
-                        queue.add(new int[]{newX, newY}); // Add the neighbor to the queue
-                        sides--; // Shared edges reduce the perimeter contribution
-                    }
-                }
-            }
-            perimeter += sides; // Add remaining sides to the perimeter
-        }
+				// Check if the neighboring cell is within the grid
+				if (newX >= 0 && newX < n && newY >= 0 && newY < n) {
+					if (grid[newX][newY] ==
+					    '#') {  // If the neighbor is part of the same blob
+						queue.add(
+						    new int[] {newX, newY});  // Add the neighbor to the queue
+						sides--;  // Shared edges reduce the perimeter contribution
+					}
+				}
+			}
+			perimeter += sides;  // Add remaining sides to the perimeter
+		}
 
-        return new int[]{area, perimeter};
-    }
+		return new int[] {area, perimeter};
+	}
 
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new FileReader("perimeter.in"));
-        PrintWriter pw = new PrintWriter(new FileWriter("perimeter.out"));
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new FileReader("perimeter.in"));
+		PrintWriter pw = new PrintWriter(new FileWriter("perimeter.out"));
 
-        n = Integer.parseInt(br.readLine());
-        grid = new char[n][n];
-        visited = new boolean[n][n];
+		n = Integer.parseInt(br.readLine());
+		grid = new char[n][n];
+		visited = new boolean[n][n];
 
-        for (int i = 0; i < n; i++) {
-            grid[i] = br.readLine().toCharArray();
-        }
+		for (int i = 0; i < n; i++) { grid[i] = br.readLine().toCharArray(); }
 
-        int maxArea = 0;
-        int minPerimeter = Integer.MAX_VALUE;
+		int maxArea = 0;
+		int minPerimeter = Integer.MAX_VALUE;
 
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                if (grid[i][j] == '#' && !visited[i][j]) {
-                    int[] result = bfs(i, j);
-                    int area = result[0];
-                    int perimeter = result[1];
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
+				if (grid[i][j] == '#' && !visited[i][j]) {
+					int[] result = bfs(i, j);
+					int area = result[0];
+					int perimeter = result[1];
 
-                    // Update maxArea and minPerimeter based on the BFS results
-                    if (area > maxArea || (area == maxArea && perimeter < minPerimeter)) {
-                        maxArea = area;
-                        minPerimeter = perimeter;
-                    }
-                }
-            }
-        }
+					// Update maxArea and minPerimeter based on the BFS results
+					if (area > maxArea ||
+					    (area == maxArea && perimeter < minPerimeter)) {
+						maxArea = area;
+						minPerimeter = perimeter;
+					}
+				}
+			}
+		}
 
-        pw.println(maxArea + " " + minPerimeter);
-        pw.close();
-    }
+		pw.println(maxArea + " " + minPerimeter);
+		pw.close();
+	}
 }
 ```
 
@@ -115,79 +119,78 @@ using namespace std;
 int n;
 vector<vector<char>> grid;
 vector<vector<bool>> visited;
-const vector<pair<int, int>> directions = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}}; // Movement directions (up, down, left, right)
+const vector<pair<int, int>> directions = {
+    {-1, 0}, {1, 0}, {0, -1}, {0, 1}};  // Movement directions (up, down, left, right)
 
 // BFS function to calculate the area and perimeter of a blob of ice cream
 pair<int, int> bfs(int x, int y) {
-    queue<pair<int, int>> q;
-    q.push({x, y}); // Start BFS from the given cell (start_x, start_y)
-    
-    int area = 0;
-    int perimeter = 0;
+	queue<pair<int, int>> q;
+	q.push({x, y});  // Start BFS from the given cell (start_x, start_y)
 
-    while (!q.empty()) {
-        auto [cur_x, cur_y] = q.front(); // Current cell
-        q.pop();
+	int area = 0;
+	int perimeter = 0;
 
-        // Skip if the cell has already been visited
-        if (visited[cur_x][cur_y]) {
-            continue;
-        }
-        
-        visited[cur_x][cur_y] = true; // Mark the cell as visited
-        area++; // Increment area (each '#' contributes 1 to the area)
+	while (!q.empty()) {
+		auto [cur_x, cur_y] = q.front();  // Current cell
+		q.pop();
 
-        int sides = 4; // Each cell starts with 4 sides contributing to the perimeter
-        for (auto [dx, dy] : directions) {
-            int new_x = cur_x + dx, new_y = cur_y + dy;
+		// Skip if the cell has already been visited
+		if (visited[cur_x][cur_y]) { continue; }
 
-            // Check if the neighboring cell is within the grid
-            if (new_x >= 0 && new_x < n && new_y >= 0 && new_y < n) {
-                if (grid[new_x][new_y] == '#') { // If the neighbor is part of the same blob
-                    q.push({new_x, new_y}); // Add the neighbor to the queue
-                    sides--; // Shared edges reduce the perimeter contribution
-                }
-            }
-        }
-        perimeter += sides; // Add remaining sides to the perimeter
-    }
+		visited[cur_x][cur_y] = true;  // Mark the cell as visited
+		area++;  // Increment area (each '#' contributes 1 to the area)
 
-    return {area, perimeter};
+		int sides = 4;  // Each cell starts with 4 sides contributing to the perimeter
+		for (auto [dx, dy] : directions) {
+			int new_x = cur_x + dx, new_y = cur_y + dy;
+
+			// Check if the neighboring cell is within the grid
+			if (new_x >= 0 && new_x < n && new_y >= 0 && new_y < n) {
+				if (grid[new_x][new_y] ==
+				    '#') {                   // If the neighbor is part of the same blob
+					q.push({new_x, new_y});  // Add the neighbor to the queue
+					sides--;  // Shared edges reduce the perimeter contribution
+				}
+			}
+		}
+		perimeter += sides;  // Add remaining sides to the perimeter
+	}
+
+	return {area, perimeter};
 }
 
 int main() {
-    freopen("perimeter.in", "r", stdin);
-    freopen("perimeter.out", "w", stdout);
+	freopen("perimeter.in", "r", stdin);
+	freopen("perimeter.out", "w", stdout);
 
-    cin >> n;
+	cin >> n;
 
-    grid.resize(n, vector<char>(n));
-    visited.assign(n, vector<bool>(n, false));
+	grid.resize(n, vector<char>(n));
+	visited.assign(n, vector<bool>(n, false));
 
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
-            cin >> grid[i][j];
-        }
-    }
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) { cin >> grid[i][j]; }
+	}
 
-    int max_area = 0;
-    int min_perimeter = INT_MAX;
+	int max_area = 0;
+	int min_perimeter = INT_MAX;
 
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
-            if (grid[i][j] == '#' && !visited[i][j]) {
-                auto [area, perimeter] = bfs(i, j);
-                // Update max_area and min_perimeter based on the BFS results
-                if (area > max_area || (area == max_area && perimeter < min_perimeter)) {
-                    max_area = area;
-                    min_perimeter = perimeter;
-                }
-            }
-        }
-    }
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
+			if (grid[i][j] == '#' && !visited[i][j]) {
+				auto [area, perimeter] = bfs(i, j);
+				// Update max_area and min_perimeter based on the BFS results
+				if (area > max_area ||
+				    (area == max_area && perimeter < min_perimeter)) {
+					max_area = area;
+					min_perimeter = perimeter;
+				}
+			}
+		}
+	}
 
-    cout << max_area << " " << min_perimeter << "\n";
-    return 0;
+	cout << max_area << " " << min_perimeter << "\n";
+	return 0;
 }
 ```
 
@@ -196,67 +199,74 @@ int main() {
 <PySection>
 
 ```py
-
 from collections import deque
 
 n = 0
 grid = []
 visited = []
-directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]  # Movement directions (up, down, left, right)
+directions = [
+	(-1, 0),
+	(1, 0),
+	(0, -1),
+	(0, 1),
+]  # Movement directions (up, down, left, right)
 
 # BFS function to calculate the area and perimeter of a blob of ice cream
 def bfs(x, y):
-    q = deque()
-    q.append((x, y))  # Start BFS from the given cell (start_x, start_y)
-    
-    area = 0
-    perimeter = 0
+	q = deque()
+	q.append((x, y))  # Start BFS from the given cell (start_x, start_y)
 
-    while q:
-        cur_x, cur_y = q.popleft()  # Current cell
+	area = 0
+	perimeter = 0
 
-        # Skip if the cell has already been visited
-        if visited[cur_x][cur_y]:
-            continue
-        
-        visited[cur_x][cur_y] = True  # Mark the cell as visited
-        area += 1  # Increment area (each '#' contributes 1 to the area)
+	while q:
+		cur_x, cur_y = q.popleft()  # Current cell
 
-        sides = 4  # Each cell starts with 4 sides contributing to the perimeter
-        for dx, dy in directions:
-            new_x, new_y = cur_x + dx, cur_y + dy
+		# Skip if the cell has already been visited
+		if visited[cur_x][cur_y]:
+			continue
 
-            # Check if the neighboring cell is within the grid
-            if 0 <= new_x < n and 0 <= new_y < n:
-                if grid[new_x][new_y] == '#':  # If the neighbor is part of the same blob
-                    q.append((new_x, new_y))  # Add the neighbor to the queue
-                    sides -= 1  # Shared edges reduce the perimeter contribution
-        
-        perimeter += sides  # Add remaining sides to the perimeter
+		visited[cur_x][cur_y] = True  # Mark the cell as visited
+		area += 1  # Increment area (each '#' contributes 1 to the area)
 
-    return area, perimeter
+		sides = 4  # Each cell starts with 4 sides contributing to the perimeter
+		for dx, dy in directions:
+			new_x, new_y = cur_x + dx, cur_y + dy
+
+			# Check if the neighboring cell is within the grid
+			if 0 <= new_x < n and 0 <= new_y < n:
+				if (
+					grid[new_x][new_y] == "#"
+				):  # If the neighbor is part of the same blob
+					q.append((new_x, new_y))  # Add the neighbor to the queue
+					sides -= 1  # Shared edges reduce the perimeter contribution
+
+		perimeter += sides  # Add remaining sides to the perimeter
+
+	return area, perimeter
+
 
 # Main function
 if __name__ == "__main__":
-    with open("perimeter.in", "r") as f:
-        n = int(f.readline().strip())
-        grid = [list(f.readline().strip()) for _ in range(n)]
-        visited = [[False] * n for _ in range(n)]
+	with open("perimeter.in", "r") as f:
+		n = int(f.readline().strip())
+		grid = [list(f.readline().strip()) for _ in range(n)]
+		visited = [[False] * n for _ in range(n)]
 
-    max_area = 0
-    min_perimeter = float('inf')
+	max_area = 0
+	min_perimeter = float("inf")
 
-    for i in range(n):
-        for j in range(n):
-            if grid[i][j] == '#' and not visited[i][j]:
-                area, perimeter = bfs(i, j)
-                # Update max_area and min_perimeter based on the BFS results
-                if area > max_area or (area == max_area and perimeter < min_perimeter):
-                    max_area = area
-                    min_perimeter = perimeter
+	for i in range(n):
+		for j in range(n):
+			if grid[i][j] == "#" and not visited[i][j]:
+				area, perimeter = bfs(i, j)
+				# Update max_area and min_perimeter based on the BFS results
+				if area > max_area or (area == max_area and perimeter < min_perimeter):
+					max_area = area
+					min_perimeter = perimeter
 
-    with open("perimeter.out", "w") as f:
-        f.write(f"{max_area} {min_perimeter}\n")
+	with open("perimeter.out", "w") as f:
+		f.write(f"{max_area} {min_perimeter}\n")
 ```
 </PySection>
 
