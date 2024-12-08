@@ -9,16 +9,16 @@ author: Tanish Tyagi, Brad Ma, Juheon Rhee, David Guo
 
 ## Explanation
 
-We can use BFS to explore each blob, starting from an unvisited '#' cell.
-During BFS, we can calculate the blob’s area by counting the number of '#' cells visited and determine its perimeter by carefully analyzing the surroundings of each '#' cell.
+We can use BFS to explore each blob, starting from an unvisited `#`.
+During BFS, we can calculate the blob’s area by counting the number of `#` visited and
+determine its perimeter by analyzing the surroundings of each `#`.
 
-The perimeter is determined by counting the number of sides of the cell that are either adjacent to a '.' cell or are on the boundary of the grid.
-For example, if a '#' cell is surrounded on all four sides by other '#' cells, it is considered to be completely inside the blob and does not contribute to the perimeter.
-However, for each side of a '#' cell that is either adjacent to a '.' cell or is on the edge of the grid (top, bottom, left, or right boundaries), that side contributes one unit to the perimeter.
+The perimeter is determined by summing the number of sides of all cells that are either adjacent to a `#` or are on the boundary.
 
-As we traverse the grid, we can initiate a BFS for each unvisited '#' cell to compute the area and perimeter of all blobs.
-Within the BFS, for each '#' cell, we start by assuming that all four of its sides contribute to the perimeter and then reduce this count by one for each neighboring
-'#' cell in the grid (since shared edges do not add to the perimeter).
+As we traverse the grid, we can initiate a BFS for each unvisited `#` to compute the area and perimeter of all blobs.
+Within the BFS, for each `#`, we start by assuming that all four of its sides
+contribute to the perimeter.
+We then reduce this count by one for each neighboring `#`, since shared edges do not add to the perimeter.
 
 ## Implementation
 
@@ -36,8 +36,7 @@ const vector<pair<int, int>> DIRECTIONS = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
 
 pair<int, int> bfs(int row, int col, const vector<vector<char>> &grid,
                    vector<vector<bool>> &visited) {
-	// Shorthand for the size of the grid
-	const int n = grid.size();
+	const int n = grid.size();  // shorthand
 
 	queue<pair<int, int>> q;
 	q.push({row, col});  // Start BFS from the given cell (row, col)
@@ -114,7 +113,6 @@ int main() {
 </CPPSection>
 <JavaSection>
 
-
 ```java
 import java.io.*;
 import java.util.*;
@@ -131,7 +129,6 @@ public class IcyPerimeter {
 		q.add(new int[] {row, col});  // Start BFS from the given cell (row, col)
 		int area = 0;
 		int perimeter = 0;
-
 		while (!q.isEmpty()) {
 			int[] current = q.poll();  // Current cell (row, col)
 			row = current[0];
