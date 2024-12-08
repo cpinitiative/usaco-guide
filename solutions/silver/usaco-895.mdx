@@ -9,108 +9,21 @@ author: Tanish Tyagi, Brad Ma, Juheon Rhee, David Guo
 
 ## Explanation
 
-We can use Breadth-First Search (BFS) to explore each blob, starting from an unvisited '#' cell. During BFS, we can calculate the blob’s area by counting the number of '#' cells visited and determine its perimeter by counting the number of adjacent cells, reducing the count for each shared edge with neighboring '#' cells. As we traverse the grid, we can initiate a BFS for each unvisited '#' cell to compute the area and perimeter of all blobs. We can track the largest area found, and if multiple blobs share the same largest area, we can choose the one with the smallest perimeter. Finally, we output the largest area and the corresponding smallest perimeter.
+We can BFS to explore each blob, starting from an unvisited '#' cell.
+During BFS, we can calculate the blob’s area by counting the number of '#' cells visited
+and determine its perimeter by counting the number of adjacent cells,
+reducing the count for each shared edge with neighboring '#' cells.
+
+As we traverse the grid, we can initiate a BFS for each unvisited '#' cell to compute the area and perimeter of all blobs.
+We can track the largest area found, and if multiple blobs share the same largest area, we can choose the one with the smallest perimeter.
+
+Finally, we output the largest area and the corresponding smallest perimeter.
 
 ## Implementation
 
 **Time Complexity:** $\mathcal{O}(N^2)$
 
 <LanguageSection>
-
-<JavaSection>
-
-```java
-import java.io.*;
-import java.util.*;
-
-public class IcyPerimeter {
-	// Movement directions (up, down, left, right)
-	private static final int[][] DIRECTIONS = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
-
-	private static int[] bfs(int row, int col, char[][] grid, boolean[][] visited,
-	                         int n) {
-		Deque<int[]> q = new ArrayDeque<>();
-		q.add(new int[] {row, col});  // Start BFS from the given cell (row, col)
-
-		int area = 0;
-		int perimeter = 0;
-
-		while (!q.isEmpty()) {
-			int[] current = q.poll();  // Current cell (row, col)
-			row = current[0];
-			col = current[1];
-
-			// Skip if the cell has already been visited
-			if (visited[row][col]) { continue; }
-
-			visited[row][col] = true;  // Mark the cell (row, col) as visited
-			area++;  // Increment area (each '#' contributes 1 to the area)
-
-			int sides =
-			    4;  // Each cell starts with 4 sides contributing to the perimeter
-			for (int[] direction : DIRECTIONS) {
-				int nextRow = row + direction[0];
-				int nextCol = col + direction[1];
-
-				// Check if the neighboring cell is within the grid
-				if (nextRow >= 0 && nextRow < n && nextCol >= 0 && nextCol < n) {
-					// If the neighbor (nextRow, nextCol) is part of the same blob
-					if (grid[nextRow][nextCol] == '#') {
-						// Add the neighbor (nextRow, nextCol) to the queue
-						q.add(new int[] {nextRow, nextCol});
-						sides--;  // Shared edges reduce the perimeter contribution
-					}
-				}
-			}
-			perimeter += sides;  // Add remaining sides to the perimeter
-		}
-
-		return new int[] {area, perimeter};
-	}
-
-	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new FileReader("perimeter.in"));
-		PrintWriter pw =
-		    new PrintWriter(new BufferedWriter(new FileWriter("perimeter.out")));
-
-		int n = Integer.parseInt(br.readLine());
-
-		char[][] grid = new char[n][n];
-		boolean[][] visited = new boolean[n][n];
-
-		for (int i = 0; i < n; i++) {
-			String line = br.readLine();
-			grid[i] = line.toCharArray();
-		}
-
-		int maxArea = 0;
-		int minPerimeter = Integer.MAX_VALUE;
-
-		for (int i = 0; i < n; i++) {
-			for (int j = 0; j < n; j++) {
-				if (grid[i][j] == '#' && !visited[i][j]) {
-					int[] result = bfs(i, j, grid, visited, n);
-					int area = result[0];
-					int perimeter = result[1];
-
-					// Update maxArea and minPerimeter based on the BFS results
-					if (area > maxArea ||
-					    (area == maxArea && perimeter < minPerimeter)) {
-						maxArea = area;
-						minPerimeter = perimeter;
-					}
-				}
-			}
-		}
-
-		pw.println(maxArea + " " + minPerimeter);
-		pw.close();
-	}
-}
-```
-
-</JavaSection>
-
 <CPPSection>
 
 ```cpp
@@ -189,13 +102,102 @@ int main() {
 		}
 	}
 
-	cout << max_area << " " << min_perimeter << "\n";
-	return 0;
+	cout << max_area << " " << min_perimeter << endl;
 }
 ```
 
 </CPPSection>
+<JavaSection>
 
+```java
+import java.io.*;
+import java.util.*;
+
+public class IcyPerimeter {
+	// Movement directions (up, down, left, right)
+	private static final int[][] DIRECTIONS = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+
+	private static int[] bfs(int row, int col, char[][] grid, boolean[][] visited,
+	                         int n) {
+		Deque<int[]> q = new ArrayDeque<>();
+		q.add(new int[] {row, col});  // Start BFS from the given cell (row, col)
+
+		int area = 0;
+		int perimeter = 0;
+
+		while (!q.isEmpty()) {
+			int[] current = q.poll();  // Current cell (row, col)
+			row = current[0];
+			col = current[1];
+
+			// Skip if the cell has already been visited
+			if (visited[row][col]) { continue; }
+
+			visited[row][col] = true;  // Mark the cell (row, col) as visited
+			area++;  // Increment area (each '#' contributes 1 to the area)
+
+			int sides =
+			    4;  // Each cell starts with 4 sides contributing to the perimeter
+			for (int[] direction : DIRECTIONS) {
+				int nextRow = row + direction[0];
+				int nextCol = col + direction[1];
+
+				// Check if the neighboring cell is within the grid
+				if (nextRow >= 0 && nextRow < n && nextCol >= 0 && nextCol < n) {
+					// If the neighbor (nextRow, nextCol) is part of the same blob
+					if (grid[nextRow][nextCol] == '#') {
+						// Add the neighbor (nextRow, nextCol) to the queue
+						q.add(new int[] {nextRow, nextCol});
+						sides--;  // Shared edges reduce the perimeter contribution
+					}
+				}
+			}
+			perimeter += sides;  // Add remaining sides to the perimeter
+		}
+
+		return new int[] {area, perimeter};
+	}
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new FileReader("perimeter.in"));
+		int n = Integer.parseInt(br.readLine());
+
+		char[][] grid = new char[n][n];
+		boolean[][] visited = new boolean[n][n];
+
+		for (int i = 0; i < n; i++) {
+			String line = br.readLine();
+			grid[i] = line.toCharArray();
+		}
+
+		int maxArea = 0;
+		int minPerimeter = Integer.MAX_VALUE;
+
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
+				if (grid[i][j] == '#' && !visited[i][j]) {
+					int[] result = bfs(i, j, grid, visited, n);
+					int area = result[0];
+					int perimeter = result[1];
+
+					// Update maxArea and minPerimeter based on the BFS results
+					if (area > maxArea ||
+					    (area == maxArea && perimeter < minPerimeter)) {
+						maxArea = area;
+						minPerimeter = perimeter;
+					}
+				}
+			}
+		}
+
+		PrintWriter pw = new PrintWriter("perimeter.out");
+		pw.println(maxArea + " " + minPerimeter);
+		pw.close();
+	}
+}
+```
+
+</JavaSection>
 <PySection>
 
 ```py
@@ -259,6 +261,6 @@ for i in range(n):
 
 print(f"{max_area} {min_perimeter}", file=open("perimeter.out", "w"))
 ```
-</PySection>
 
+</PySection>
 </LanguageSection>
