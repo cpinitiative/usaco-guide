@@ -7,8 +7,9 @@ author: Justin Ji
 
 <Spoiler title="Hint 1">
 
-The upper bound for the number of bridges we can have is $n - 1$. To achieve
-this, we construct a tree.
+The upper bound for the number of bridges we can have is $n - 1$ because 
+each bridge is present in any spanning tree of the graph. A 
+spanning tree is a subgraph that connects every node without cycles.
 
 </Spoiler>
 
@@ -21,17 +22,16 @@ How can we use the rest of these nodes to use as many edges as possible?
 
 <Spoiler title="Explanation">
 
-The most bridges we can have in a graph with $n$ nodes is $n - 1$ bridges. For
-those interested, the reason this is the case is that all of our bridges must be part of an
-arbitrary spanning tree of our graph.
+The most bridges we can have in a graph with $n$ nodes is $n - 1$ bridges. 
+As a result, our answer is in the range $[n - 1, 2n - 2]$. 
 
-As a result, our answer is in the range $[n - 1, 2n - 2]$. Let's consider binary
+Let's consider binary
 searching on our answer. If we have $x$ edges that we need to use, then
-$\lfloor \frac{x + 1}{2} \rfloor$ of these edges must be a bridge.
+$\lfloor \frac{x + 1}{2} \rfloor$ of these edges must be bridges.
 
 Recall that the best way to create bridges is to create a tree. Thus, we use all of these
 bridge edges to form a tree, and then use the one extra edge to connect this tree
-to some component of nodes. With the rest of our nodes, we can form a complete
+to some component of nodes. Note that this extra edge is also a bridge. With the rest of our nodes, we can form a complete
 graph of nodes to use as many edges as possible.
 
 ## Implementation
