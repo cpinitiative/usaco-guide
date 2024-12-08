@@ -34,8 +34,11 @@ using namespace std;
 // Movement directions (up, down, left, right)
 const vector<pair<int, int>> DIRECTIONS = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
 
-pair<int, int> bfs(int row, int col, const vector<vector<char>> &grid,
-                   vector<vector<bool>> &visited, int n) {
+pair<int, int> bfs(int row, int col, const vector<vector<char>>& grid,
+                   vector<vector<bool>> &visited) {
+	// Shorthand for the size of the grid
+	const int n = grid.size();
+
 	queue<pair<int, int>> q;
 	q.push({row, col});  // Start BFS from the given cell (row, col)
 
@@ -94,7 +97,7 @@ int main() {
 		for (int j = 0; j < n; j++) {
 			if (grid[i][j] != '#' || visited[i][j]) { continue; }
 
-			const auto [area, perimeter] = bfs(i, j, grid, visited, n);
+			const auto [area, perimeter] = bfs(i, j, grid, visited);
 
 			// Update max_area and min_perimeter based on the BFS results
 			if (area > max_area || (area == max_area && perimeter < min_perimeter)) {
@@ -111,6 +114,7 @@ int main() {
 </CPPSection>
 <JavaSection>
 
+
 ```java
 import java.io.*;
 import java.util.*;
@@ -119,8 +123,10 @@ public class IcyPerimeter {
 	// Movement directions (up, down, left, right)
 	private static final int[][] DIRECTIONS = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
 
-	private static int[] bfs(int row, int col, char[][] grid, boolean[][] visited,
-	                         int n) {
+	private static int[] bfs(int row, int col, char[][] grid, boolean[][] visited) {
+		// Shorthand for the size of the grid
+		final int n = grid.length;
+
 		Deque<int[]> q = new ArrayDeque<>();
 		q.add(new int[] {row, col});  // Start BFS from the given cell (row, col)
 		int area = 0;
@@ -178,7 +184,7 @@ public class IcyPerimeter {
 			for (int j = 0; j < n; j++) {
 				if (grid[i][j] != '#' || visited[i][j]) { continue; }
 
-				int[] result = bfs(i, j, grid, visited, n);
+				int[] result = bfs(i, j, grid, visited);
 				int area = result[0];
 				int perimeter = result[1];
 
@@ -209,8 +215,11 @@ DIRECTIONS = [(-1, 0), (1, 0), (0, -1), (0, 1)]
 
 
 def bfs(
-	row: int, col: int, grid: List[str], visited: List[List[bool]], n: int
+	row: int, col: int, grid: List[str], visited: List[List[bool]]
 ) -> Tuple[int, int]:
+	# Shorthand for the size of the grid
+	n = len(grid)
+
 	queue = deque()
 	queue.append((row, col))  # Start BFS from the given cell (row, col)
 
@@ -248,7 +257,7 @@ def bfs(
 
 with open("perimeter.in", "r") as fin:
 	n = int(fin.readline().strip())
-	grid = [list(fin.readline().strip()) for _ in range(n)]
+	grid = [fin.readline().strip() for _ in range(n)]
 
 visited = [[False] * n for _ in range(n)]
 
@@ -259,7 +268,7 @@ for i in range(n):
 		if grid[i][j] != "#" or visited[i][j]:
 			continue
 
-		area, perimeter = bfs(i, j, grid, visited, n)
+		area, perimeter = bfs(i, j, grid, visited)
 
 		# Update max_area and min_perimeter based on the BFS results
 		if area > max_area or (area == max_area and perimeter < min_perimeter):
