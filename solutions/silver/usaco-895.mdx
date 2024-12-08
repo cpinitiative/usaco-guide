@@ -34,14 +34,13 @@ using namespace std;
 // Movement directions (up, down, left, right)
 const vector<pair<int, int>> DIRECTIONS = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
 
-pair<int, int> bfs(int row, int col, const vector<vector<char>> &grid,
+pair<int, int> bfs(int row, int col, vector<vector<char>> &grid,
                    vector<vector<bool>> &visited, int n) {
 	queue<pair<int, int>> q;
 	q.push({row, col});  // Start BFS from the given cell (row, col)
 
 	int area = 0;
 	int perimeter = 0;
-
 	while (!q.empty()) {
 		auto [row, col] = q.front();  // Current cell (row, col)
 		q.pop();
@@ -91,7 +90,6 @@ int main() {
 
 	int max_area = 0;
 	int min_perimeter = INT_MAX;
-
 	for (int i = 0; i < n; i++) {
 		for (int j = 0; j < n; j++) {
 			if (grid[i][j] != '#' || visited[i][j]) { continue; }
@@ -106,8 +104,7 @@ int main() {
 		}
 	}
 
-	cout << max_area << " " << min_perimeter << "\n";
-	return 0;
+	cout << max_area << " " << min_perimeter << endl;
 }
 ```
 
@@ -251,13 +248,12 @@ def bfs(
 
 with open("perimeter.in", "r") as fin:
 	n = int(fin.readline().strip())
-	grid = [fin.readline().strip() for _ in range(n)]  # Each row is a string
+	grid = [list(fin.readline().strip()) for _ in range(n)]
 
 visited = [[False] * n for _ in range(n)]
 
 max_area = 0
 min_perimeter = float("inf")
-
 for i in range(n):
 	for j in range(n):
 		if grid[i][j] != "#" or visited[i][j]:
