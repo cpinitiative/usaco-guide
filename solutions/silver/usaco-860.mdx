@@ -2,10 +2,20 @@
 id: usaco-860
 source: USACO Silver 2018 December
 title: Mooyo Mooyo
-author: Nathan Gong, Pranav Jadhav, Juheon Rhee
+author: Nathan Gong, Pranav Jadhav, Juheon Rhee, David Guo
 ---
 
-[Official Analysis](http://www.usaco.org/current/data/sol_mooyomooyo_silver_dec18.html)
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_mooyomooyo_silver_dec18.html)
+
+## Explanation
+
+We can use BFS to perform a floodfill, starting from an unvisited cell, to explore connected regions of the same color. During the floodfill, we collect all the cells in the same connected region by visiting neighbors that share the same color.
+
+To identify regions that can be removed, we calculate the size of each connected region. If the size is greater than or equal to the threshold $k$, the region is marked as removable.
+
+After identifying all removable regions, we set the cells in these regions to ‘0’, effectively “removing” them from the grid. To simulate gravity, we let the non-empty cells in each column fall to the lowest available position by swapping them with empty cells (‘0’).
+
+This process is repeated until no removable regions remain, at which point we output the final state of the grid.
 
 ## Implementation
 
@@ -13,112 +23,135 @@ author: Nathan Gong, Pranav Jadhav, Juheon Rhee
 
 <LanguageSection>
 <CPPSection>
+
 ```cpp
 #include <bits/stdc++.h>
-
 using namespace std;
 
-int n, k;
-const int MAX_ROWS = 100;
 const int MAX_COLS = 10;
-vector<vector<char>> board(MAX_ROWS, vector<char>(MAX_COLS));
-vector<vector<bool>> visited(MAX_ROWS, vector<bool>(MAX_COLS));
+// Movement directions (up, down, left, right)
+const vector<pair<int, int>> MOVES = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 
-// stores current component indices to set to '0'
-vector<pair<int, int>> component;
+// BFS to find all connected cells of the same color
+vector<pair<int, int>> find_region(const vector<string>& grid, int row, int col) {
+    const int n = grid.size();  // Shorthand for the number of rows
+    const char color = grid[row][col];  // Color of the starting cell
 
-/*
- * floodfill to count connected regions
- * returns size of connected region
- * fills 'component' vector with the indices of the component
- */
-int floodfill(int i, int j, char color) {
-	int cnt = 1;
-	if (i < 0 || j < 0 || i >= n || j >= MAX_COLS || visited[i][j] ||
-	    board[i][j] != color) {
-		return 0;
-	}
+    queue<pair<int, int>> q;
+    q.push({row, col});  // Start BFS from the given cell (row, col)
 
-	visited[i][j] = 1;
-	component.push_back({i, j});
-	cnt += (floodfill(i + 1, j, color) + floodfill(i - 1, j, color) +
-	        floodfill(i, j + 1, color) + floodfill(i, j - 1, color));
-	return cnt;
+    vector<pair<int, int>> cells;  // Stores coordinates of connected cells
+    vector<vector<bool>> visited(n, vector<bool>(MAX_COLS, false));
+
+    while (!q.empty()) {
+        auto [row, col] = q.front();  // Current cell (row, col)
+        q.pop();
+
+        // Skip if the cell has already been visited
+        if (visited[row][col]) {
+            continue;
+        }
+
+        visited[row][col] = true;
+        cells.push_back({row, col});  // Add the cell to the connected region
+
+        for (auto [dx, dy] : MOVES) {
+            int next_row = row + dx;
+            int next_col = col + dy;
+
+            // Check if the neighboring cell is within bounds
+            if (next_row >= 0 && next_row < n && next_col >= 0 && next_col < MAX_COLS) {
+                // If the neighbor (next_row, next_col) has the same color
+                if (grid[next_row][next_col] == color) {
+                    // Add the neighbor (next_row, next_col) to the queue
+                    q.push({next_row, next_col});
+                }
+            }
+        }
+    }
+
+    return cells;
+}
+
+// Find all removable regions (regions of size >= k)
+vector<vector<pair<int, int>>> find_removable_regions(const vector<string>& grid, int k) {
+    const int n = grid.size();
+    vector<vector<pair<int, int>>> removable_regions;
+    vector<vector<bool>> visited(n, vector<bool>(MAX_COLS, false));
+
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < MAX_COLS; j++) {
+            // Skip already visited cells or empty cells ('0')
+            if (grid[i][j] == '0' || visited[i][j]) {
+                continue;
+            }
+
+            char color = grid[i][j];
+            auto cells = find_region(grid, i, j);
+
+            // Mark all cells in the region as visited
+            for (auto [r, c] : cells) {
+                visited[r][c] = true;
+            }
+
+            // If the region size meets the threshold, add it to the removable regions
+            if (cells.size() >= k) {
+                removable_regions.push_back(cells);
+            }
+        }
+    }
+
+    return removable_regions;
+}
+
+// Simulate gravity by making non-empty cells fall to the lowest available position
+void apply_gravity(vector<string>& grid) {
+    const int n = grid.size();
+    for (int j = 0; j < MAX_COLS; j++) {
+        int empty_row = n - 1;  // Start from the bottom of the column
+
+        for (int i = n - 1; i >= 0; i--) {
+            if (grid[i][j] != '0') {
+                swap(grid[empty_row][j], grid[i][j]);
+                empty_row--;
+            }
+        }
+    }
 }
 
 int main() {
-	freopen("mooyomooyo.in", "r", stdin);
-	freopen("mooyomooyo.out", "w", stdout);
+    ifstream fin("mooyomooyo.in");
+    ofstream fout("mooyomooyo.out");
 
-	cin >> n >> k;
+    int n, k;
+    fin >> n >> k;
 
-	for (int i = n - 1; i >= 0; i--) {
-		string nums;
-		cin >> nums;
-		for (int j = 0; j < MAX_COLS; j++) { board[i][j] = nums[j]; }
-	}
+    vector<string> grid(n);
+    for (int i = 0; i < n; i++) {
+        fin >> grid[i];
+    }
 
-	/*
-	 * Loop while there are regions that got destroyed (board changed)
-	 * If no regions were destroyed, we are at the final state (break loop;
-	 * return answer)
-	 */
-	bool board_changed = true;
-	while (board_changed) {
-		board_changed = false;
+    while (true) {
+        auto removable_regions = find_removable_regions(grid, k);
 
-		// destroy all haybales in connected regions with size >= k
-		for (int i = 0; i < n; i++) {
-			for (int j = 0; j < MAX_COLS; j++) {
-				if (!visited[i][j] && board[i][j] != '0') {
-					char current_color = board[i][j];
-					int cnt = floodfill(i, j, current_color);
+        if (removable_regions.empty()) {
+            break;
+        }
 
-					if (cnt >= k) {
-						// found a region to destroy
-						board_changed = true;
-						for (auto p : component) { board[p.first][p.second] = '0'; }
-					}
-					component.clear();
-				}
-			}
-		}
+        // Remove all identified regions by setting their cells to '0'
+        for (const auto& region : removable_regions) {
+            for (const auto& [row, col] : region) {
+                grid[row][col] = '0';
+            }
+        }
 
-		// run gravity
-		for (int col = 0; col < MAX_COLS; col++) {
-			vector<char> column_after_gravity;
-			/*
-			 * loop over rows from bottom to top of current column
-			 * add nonzero elements to vector 'column_after_gravity'
-			 */
-			for (int row = 0; row < n; row++) {
-				if (board[row][col] != '0') {
-					column_after_gravity.push_back(board[row][col]);
-				}
-			}
+        // Apply gravity to the grid
+        apply_gravity(grid);
+    }
 
-			/*
-			 * edit the board to reflect changes
-			 * going from bottom to top, fill the column with
-			 * column_after_gravity while we can, otherwise make it '0' (empty)
-			 */
-			for (int row = 0; row < n; row++) {
-				if (row < column_after_gravity.size()) {
-					board[row][col] = column_after_gravity[row];
-				} else {
-					board[row][col] = '0';
-				}
-			}
-		}
-
-		// reset visited array
-		fill(visited.begin(), visited.end(), vector<bool>(MAX_COLS, false));
-	}
-
-	for (int i = n - 1; i >= 0; i--) {
-		for (int j = 0; j < MAX_COLS; j++) { cout << board[i][j]; }
-		cout << '\n';
-	}
+    for (const auto& row : grid) {
+        fout << row << "\n";
+    }
 }
 ```
 
@@ -130,200 +163,239 @@ import java.io.*;
 import java.util.*;
 
 public class MooyoMooyo {
-	static int n, m, k;
-	static int[][] grid, region;
+    static final int MAX_COLS = 10;
+    static final int[][] MOVES = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}}; // Movement directions
 
-	public static void main(String[] args) throws IOException {
-		Kattio io = new Kattio("mooyomooyo");
+    // BFS to find all connected cells of the same color
+    static List<int[]> findRegion(char[][] grid, int row, int col) {
+        int n = grid.length; // Number of rows
+        char color = grid[row][col]; // Color of the starting cell
 
-		n = io.nextInt();
-		m = 10;
-		k = io.nextInt();
-		grid = new int[n][m];
-		region = new int[n][m];
+        ArrayDeque<int[]> queue = new ArrayDeque<>();
+        queue.add(new int[]{row, col}); // Start BFS from the given cell (row, col)
 
-		for (int i = 0; i < n; i++) {
-			String row = io.next();
-			for (int j = 0; j < m; j++) {
-				grid[i][j] = Character.getNumericValue(row.charAt(j));
-			}
-		}
+        List<int[]> cells = new ArrayList<>(); // Stores coordinates of connected cells
+        boolean[][] visited = new boolean[n][MAX_COLS];
 
-		// Loop until game ends (when there are no more regions to delete)
-		while (true) {
-			// Stores the current region we're on
-			int r = 1;
-			// Reset region matrix
-			region = new int[n][m];
+        while (!queue.isEmpty()) {
+            int[] cell = queue.poll();
+            int currentRow = cell[0], currentCol = cell[1];
 
-			Set<Integer> largeRegions = new HashSet<>();
-			for (int i = 0; i < n; i++) {
-				for (int j = 0; j < m; j++) {
-					/*
-					 * Floodfill only if the current square isn't empty
-					 * and hasn't been visited (if it already has, region[i][j]
-					 * would be nonzero)
-					 */
-					if (grid[i][j] != 0 && region[i][j] == 0) {
-						int size = floodfill(i, j, r, grid[i][j]);
-						if (size >= k) { largeRegions.add(r); }
-						r++;
-					}
-				}
-			}
+            // Skip if the cell has already been visited
+            if (visited[currentRow][currentCol]) {
+                continue;
+            }
 
-			// Stop simulation if there are no more regions to delete
-			if (largeRegions.size() == 0) { break; }
+            visited[currentRow][currentCol] = true;
+            cells.add(cell); // Add the cell to the connected region
 
-			// Delete squares that are part of a large region
-			for (int i = 0; i < n; i++) {
-				for (int j = 0; j < m; j++) {
-					if (largeRegions.contains(region[i][j])) { grid[i][j] = 0; }
-				}
-			}
+            for (int[] move : MOVES) {
+                int nextRow = currentRow + move[0];
+                int nextCol = currentCol + move[1];
 
-			/*
-			 * Apply gravity; In other words, for each column, we move all the
-			 * zeros to the top
-			 * Here's a good source explaining a similar concept:
-			 * https://www.geeksforgeeks.org/move-zeroes-end-array/
-			 */
-			for (int j = 0; j < m; j++) {
-				int count = n - 1;
-				for (int i = n - 1; i >= 0; i--) {
-					if (grid[i][j] != 0) { grid[count--][j] = grid[i][j]; }
-				}
+                // Check if the neighboring cell is within bounds
+                if (nextRow >= 0 && nextRow < n && nextCol >= 0 && nextCol < MAX_COLS) {
+                    // If the neighbor (nextRow, nextCol) has the same color
+                    if (grid[nextRow][nextCol] == color) {
+                        // Add the neighbor (nextRow, nextCol) to the queue
+                        queue.add(new int[]{nextRow, nextCol});
+                    }
+                }
+            }
+        }
 
-				while (count >= 0) { grid[count--][j] = 0; }
-			}
-		}
+        return cells;
+    }
 
-		for (int i = 0; i < n; i++) {
-			for (int j = 0; j < m; j++) { io.print(grid[i][j]); }
-			io.println();
-		}
-		io.close();
-	}
+    // Find all removable regions (regions of size >= k)
+    static List<List<int[]>> findRemovableRegions(char[][] grid, int k) {
+        int n = grid.length;
+        List<List<int[]>> removableRegions = new ArrayList<>();
+        boolean[][] visited = new boolean[n][MAX_COLS];
 
-	// Returns the size of the region containing square (i, j)
-	static int floodfill(int i, int j, int r, int color) {
-		// Exit if out of bounds, already visited, or if the current square
-		// has a different color
-		if (i < 0 || i >= n || j < 0 || j >= m) return 0;
-		if (region[i][j] != 0) return 0;
-		if (grid[i][j] != color) return 0;
+        for (int row = 0; row < n; row++) {
+            for (int col = 0; col < MAX_COLS; col++) {
+                // Skip already visited cells or empty cells ('0')
+                if (grid[row][col] == '0' || visited[row][col]) {
+                    continue;
+                }
 
-		// If we haven't exited, we can continue with floodfill
-		region[i][j] = r;
-		int size = 1;
-		size += floodfill(i + 1, j, r, color);
-		size += floodfill(i - 1, j, r, color);
-		size += floodfill(i, j + 1, r, color);
-		size += floodfill(i, j - 1, r, color);
-		return size;
-	}
+                char color = grid[row][col];
+                List<int[]> cells = findRegion(grid, row, col);
 
-	// CodeSnip{Kattio}
+                // Mark all cells in the region as visited
+                for (int[] cell : cells) {
+                    visited[cell[0]][cell[1]] = true;
+                }
+
+                // If the region size meets the threshold, add it to the removable regions
+                if (cells.size() >= k) {
+                    removableRegions.add(cells);
+                }
+            }
+        }
+
+        return removableRegions;
+    }
+
+    // Simulate gravity by making non-empty cells fall to the lowest available position
+    static void applyGravity(char[][] grid) {
+        int n = grid.length;
+        for (int col = 0; col < MAX_COLS; col++) {
+            int emptyRow = n - 1; // Start from the bottom of the column
+
+            for (int row = n - 1; row >= 0; row--) {
+                if (grid[row][col] != '0') {
+                    char temp = grid[emptyRow][col];
+                    grid[emptyRow][col] = grid[row][col];
+                    grid[row][col] = temp;
+                    emptyRow--;
+                }
+            }
+        }
+    }
+
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new FileReader("mooyomooyo.in"));
+        PrintWriter pw = new PrintWriter(new FileWriter("mooyomooyo.out"));
+
+        String[] firstLine = br.readLine().split(" ");
+        int n = Integer.parseInt(firstLine[0]);
+        int k = Integer.parseInt(firstLine[1]);
+
+        char[][] grid = new char[n][MAX_COLS];
+        for (int row = 0; row < n; row++) {
+            grid[row] = br.readLine().toCharArray();
+        }
+
+        while (true) {
+            List<List<int[]>> removableRegions = findRemovableRegions(grid, k);
+
+            if (removableRegions.isEmpty()) {
+                break;
+            }
+
+            // Remove all identified regions by setting their cells to '0'
+            for (List<int[]> region : removableRegions) {
+                for (int[] cell : region) {
+                    grid[cell[0]][cell[1]] = '0';
+                }
+            }
+
+            // Apply gravity to the grid
+            applyGravity(grid);
+        }
+
+        for (char[] row : grid) {
+            pw.println(new String(row));
+        }
+
+        br.close();
+        pw.close();
+    }
 }
 ```
 
 </JavaSection>
 <PySection>
 
-<Info>
-This solution uses [BFS](/silver/graph-traversal), but the general gist is similar to the DFS solution.
-</Info>
-
 ```py
 from collections import deque
 
-# possible directions to visit all connected regions
-DIRECTIONS = ((1, 0), (0, 1), (-1, 0), (0, -1))
+MAX_COLS = 10
+MOVES = [(1, 0), (-1, 0), (0, 1), (0, -1)]  # Movement directions (up, down, left, right)
 
-c = []
+# BFS to find all connected cells of the same color
+def find_region(grid, row, col):
+    n = len(grid)  # Number of rows
+    color = grid[row][col]  # Color of the starting cell
 
-with open("mooyomooyo.in") as r:
-	a, b = map(int, r.readline().split())
-	for i in range(a):
-		c.append(list(map(int, list(r.readline().strip()))))
+    q = deque()
+    q.append((row, col))  # Start BFS from the given cell (row, col)
 
-mid = 5
+    cells = []  # Stores coordinates of connected cells
+    visited = [[False] * MAX_COLS for _ in range(n)]
 
+    while q:
+        row, col = q.popleft()  # Current cell (row, col)
 
-def gravity(graph, s, coords):
-	for i in range(s // 2):
-		for j in range(mid):
-			graph[i][j], graph[j][i] = graph[j][i], graph[i][j]
+        # Skip if the cell has already been visited
+        if visited[row][col]:
+            continue
 
-	for y, x in coords:
-		graph[y].pop(x)
-		graph[y].append(0)
+        visited[row][col] = True
+        cells.append((row, col))  # Add the cell to the connected region
 
-	for i in range(mid):
-		for j in range(s // 2):
-			graph[i][j], graph[j][i] = graph[j][i], graph[i][j]
+        for dx, dy in MOVES:
+            next_row = row + dx
+            next_col = col + dy
 
-	return graph
+            # Check if the neighboring cell is within bounds
+            if 0 <= next_row < n and 0 <= next_col < MAX_COLS:
+                # If the neighbor (next_row, next_col) has the same color
+                if grid[next_row][next_col] == color:
+                    # Add the neighbor (next_row, next_col) to the queue
+                    q.append((next_row, next_col))
 
+    return cells
 
-def mark_connected(x, y, graph, visited):
-	q = deque()
-	q.append((x, y))
-	visited[y][x] = True
-	coords = [(x, y)]
+# Find all removable regions (regions of size >= k)
+def find_removable_regions(grid, k):
+    n = len(grid)
+    removable_regions = []
+    visited = [[False] * MAX_COLS for _ in range(n)]
 
-	while q:
-		x, y = q.pop()
-		for dx, dy in DIRECTIONS:
-			nx, ny = x + dx, y + dy
-			# boundaries
-			if 0 <= nx < 10 and 0 <= ny < a:
-				# check if already visited
-				if graph[ny][nx] == graph[y][x] and not visited[ny][nx]:
-					q.appendleft((nx, ny))
-					visited[ny][nx] = True
-					coords.append((nx, ny))
-	return coords
+    for row in range(n):
+        for col in range(MAX_COLS):
+            # Skip already visited cells or empty cells ('0')
+            if grid[row][col] == '0' or visited[row][col]:
+                continue
 
+            color = grid[row][col]
+            cells = find_region(grid, row, col)
 
-def mooyo(graph):
-	visited = [[False] * 10 for _ in range(a)]
-	all_coords = []
+            # Mark all cells in the region as visited
+            for r, c in cells:
+                visited[r][c] = True
 
-	for i in range(a):
-		for j in range(10):
-			# check if visited
-			if graph[i][j] != 0 and not visited[i][j]:
-				temp = mark_connected(j, i, graph, visited)
-				if len(temp) >= b:
-					all_coords += temp
+            # If the region size meets the threshold, add it to the removable regions
+            if len(cells) >= k:
+                removable_regions.append(cells)
 
-	if not all_coords:
-		return graph
+    return removable_regions
 
-	for x, y in all_coords:
-		graph[y][x] = 0
+# Simulate gravity by making non-empty cells fall to the lowest available position
+def apply_gravity(grid):
+    n = len(grid)
+    for col in range(MAX_COLS):
+        empty_row = n - 1  # Start from the bottom of the column
 
-	for x in range(10):
-		blocks = []
-		for y in range(a):
-			if graph[y][x] != 0:
-				blocks.append(graph[y][x])
-				graph[y][x] = 0
+        for row in range(n - 1, -1, -1):
+            if grid[row][col] != '0':
+                grid[empty_row][col], grid[row][col] = grid[row][col], grid[empty_row][col]
+                empty_row -= 1
 
-		y = a - 1
-		while blocks:
-			node = blocks.pop()
-			graph[y][x] = node
-			y -= 1
+with open("mooyomooyo.in", "r") as fin:
+    n, k = map(int, fin.readline().split())
+    grid = [list(fin.readline().strip()) for _ in range(n)]
 
-	return mooyo(graph)
+while True:
+    removable_regions = find_removable_regions(grid, k)
 
+    if not removable_regions:
+        break
 
-ans = mooyo(c)
-with open("mooyomooyo.out", "w") as out:
-	for i in ans:
-		print("".join([str(x) for x in i]), file=out)
+    # Remove all identified regions by setting their cells to '0'
+    for region in removable_regions:
+        for row, col in region:
+            grid[row][col] = '0'
+
+    # Apply gravity to the grid
+    apply_gravity(grid)
+
+with open("mooyomooyo.out", "w") as fout:
+    for row in grid:
+        fout.write(''.join(row) + '\n')
 ```
 
 </PySection>
