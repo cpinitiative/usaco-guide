@@ -43,7 +43,7 @@ vector<pair<int, int>> find_region(const vector<string> &grid, int row, int col)
 	vector<vector<bool>> visited(n, vector<bool>(MAX_COLS, false));
 
 	while (!q.empty()) {
-		auto [row, col] = q.front();  // Current cell (row, col)
+		const auto [row, col] = q.front();  // Current cell (row, col)
 		q.pop();
 
 		// Skip if the cell has already been visited
@@ -82,7 +82,7 @@ vector<vector<pair<int, int>>> find_removable_regions(const vector<string> &grid
 			if (grid[i][j] == '0' || visited[i][j]) { continue; }
 
 			char color = grid[i][j];
-			auto cells = find_region(grid, i, j);
+			const auto cells = find_region(grid, i, j);
 
 			// Mark all cells in the region as visited
 			for (auto [r, c] : cells) { visited[r][c] = true; }
