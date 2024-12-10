@@ -21,6 +21,8 @@ we calculate the profit as $dp[t][0] - C \cdot t^2$, representing the total
 moonies minus the travel cost for $t$ days, and track the maximum profit. This
 approach ensures we consider all feasible trips and ignore unreachable states.
 
+Note that the maximum amount of money Bessie makes is $1000t - t^2$, in the case where she makes $1000$ mooney per city and the cost is $1$ mooney. Her earnings become negative when $t > 1000$, so we only have to check her movement across the cities for at most $1000$ days.
+
 ## Implementation
 
 **Time Complexity:** $\mathcal{O}(T_{\text{max}} \cdot (N + M))$
@@ -35,8 +37,8 @@ using namespace std;
 const int MAX_DAYS = 1000;  // Maximum number of days Bessie can travel
 
 int main() {
-	freopen("time.in", "r", stdin);
-	freopen("time.out", "w", stdout);
+	ifstream cin("time.in");
+	ofstream cout("time.out");
 
 	int n, m, c;
 	cin >> n >> m >> c;
@@ -54,8 +56,8 @@ int main() {
 
 	// dp[t][i]: max moonies at city i on day t
 	vector<vector<int>> dp(MAX_DAYS, vector<int>(n, -1));
-	dp[0][0] =
-	    0;  // Base case: Start at city 0 (originally city 1) on day 0 with 0 moonies
+	// Base case: Start at city 0 (originally city 1) on day 0 with 0 moonies
+	dp[0][0] = 0;
 
 	int res = 0;
 
@@ -79,7 +81,6 @@ int main() {
 	}
 
 	cout << res << "\n";
-	return 0;
 }
 ```
 
@@ -119,8 +120,8 @@ public class Main {
 		// dp[t][i]: max moonies at city i on day t
 		int[][] dp = new int[MAX_DAYS][n];
 		for (int[] row : dp) Arrays.fill(row, -1);
-		dp[0][0] = 0;  // Base case: Start at city 0 (originally city 1) on day 0 with 0
-		               // moonies
+		// Base case: Start at city 0 (originally city 1) on day 0 with 0 moonies
+		dp[0][0] = 0;
 
 		int res = 0;
 
@@ -153,49 +154,41 @@ public class Main {
 <PySection>
 
 ```py
-def main():
-	with open("time.in", "r") as fin:
-		n, m, c = map(int, fin.readline().split())
-		moonies = list(map(int, fin.readline().split()))
+with open("time.in", "r") as fin:
+	n, m, c = map(int, fin.readline().split())
+	moonies = list(map(int, fin.readline().split()))
 
-		adj = [[] for _ in range(n)]
-		for _ in range(m):
-			a, b = map(int, fin.readline().split())
-			a -= 1  # Convert 1-indexed input to 0-indexed
-			b -= 1
-			adj[a].append(b)
+	adj = [[] for _ in range(n)]
+	for _ in range(m):
+		a, b = map(int, fin.readline().split())
+		adj[a - 1].append(b - 1)  # Convert 1-indexed input to 0-indexed
 
-	MAX_DAYS = 1000  # Maximum number of days Bessie can travel
+MAX_DAYS = 1000  # Maximum number of days Bessie can travel
 
-	# dp[t][i]: max moonies at city i on day t
-	dp = [[-1] * n for _ in range(MAX_DAYS)]
-	dp[0][
-		0
-	] = 0  # Base case: Start at city 0 (originally city 1) on day 0 with 0 moonies
+# dp[t][i]: max moonies at city i on day t
+dp = [[-1] * n for _ in range(MAX_DAYS)]
+# Base case: Start at city 0 (originally city 1) on day 0 with 0 moonies
+dp[0][0] = 0
 
-	res = 0
+res = 0
 
-	for t in range(MAX_DAYS):
-		for i in range(n):
-			# Skip cities that are unreachable on day t
-			if dp[t][i] == -1:
-				continue
+for t in range(MAX_DAYS):
+	for i in range(n):
+		# Skip cities that are unreachable on day t
+		if dp[t][i] == -1:
+			continue
 
-			# Transition: Consider all roads from city i to its neighbors
-			for j in adj[i]:
-				if t + 1 < MAX_DAYS:
-					# Update dp[t + 1][j] by considering a transition from an adjacent city on the previous day
-					dp[t + 1][j] = max(dp[t + 1][j], dp[t][i] + moonies[j])
+		# Transition: Consider all roads from city i to its neighbors
+		for j in adj[i]:
+			if t + 1 < MAX_DAYS:
+				# Update dp[t + 1][j] by considering a transition from an adjacent city on the previous day
+				dp[t + 1][j] = max(dp[t + 1][j], dp[t][i] + moonies[j])
 
-		# Calculate profit if Bessie returns to city 0 (originally city 1) on day t
-		res = max(res, dp[t][0] - c * t * t)
+	# Calculate profit if Bessie returns to city 0 (originally city 1) on day t
+	res = max(res, dp[t][0] - c * t * t)
 
-	with open("time.out", "w") as fout:
-		fout.write(f"{res}\n")
-
-
-if __name__ == "__main__":
-	main()
+with open("time.out", "w") as fout:
+	fout.write(f"{res}\n")
 ```
 
 </PySection>
