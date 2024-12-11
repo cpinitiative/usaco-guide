@@ -82,7 +82,6 @@ are in the same connected component.
 ```cpp
 #include <bits/stdc++.h>
 #define FOR(i, x, y) for (int i = x; i < y; i++)
-typedef long long ll;
 using namespace std;
 
 const int MOD = 1e9;
@@ -93,7 +92,7 @@ int find(int A) {
 	while (A != cmp[A]) cmp[A] = cmp[cmp[A]], A = cmp[A];
 	return A;
 }
-void onion(int A, int B) { cmp[find(A)] = cmp[find(B)]; }
+void join(int A, int B) { cmp[find(A)] = cmp[find(B)]; }
 
 int main() {
 	ios_base::sync_with_stdio(0);
@@ -108,11 +107,11 @@ int main() {
 		c ^= (x[i] & 1) && (y[i] & 1);
 
 		if (c) {
-			onion(x[i], y[i] + n);
-			onion(x[i] + m + n, y[i] + 2 * n + m);
+			join(x[i], y[i] + n);
+			join(x[i] + m + n, y[i] + 2 * n + m);
 		} else {
-			onion(x[i] + m + n, y[i] + n);
-			onion(x[i], y[i] + 2 * n + m);
+			join(x[i] + m + n, y[i] + n);
+			join(x[i], y[i] + 2 * n + m);
 		}
 	}
 
