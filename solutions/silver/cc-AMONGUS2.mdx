@@ -6,7 +6,8 @@ author: Ryan Chou
 ---
 
 ## Explanation
-If we only have two players $x$ and $y$, then we have 4 cases possible cases.
+
+If we only have two players $x$ and $y$, then we have 4 cases.
 
 * If $x$ vouches for $y$ and $x$ is an imposter, then $y$ must also be an imposter.
 
@@ -20,9 +21,12 @@ You'll notice that whenever $x$ accuses $y$, they'll always be of a different ty
 
 With this information, we can build a bipartite graph and color nodes with the same color if they vouch for each other, or different colors if one of them accuses the other. If we can't build this graph, then no valid arrangement can exist.
 
-Otherwise, we'll consider each connected component independently and keep track of the number of crewmates and imposters. At the end, we'll return the sum of the maximum of these two values for all connected components. We don't care about the roles of each node because we can switch all of them to get another valid solution.
+Otherwise, we'll consider each connected component independently and keep track of the number of crewmates and imposters.
+At the end, we'll return the sum of the maximum of these two values for all connected components.
+We don't care about the roles of each node because we can switch all of them to get another valid solution.
 
 ## Implementation
+
 **Time Complexity:** $\mathcal{O}(N)$
 
 <LanguageSection>
@@ -32,19 +36,19 @@ Otherwise, we'll consider each connected component independently and keep track 
 #include <iostream>
 #include <stack>
 #include <vector>
+
 using namespace std;
 
 int main() {
 	int t;
 	cin >> t;
-
 	for (int tc = 0; tc < t; tc++) {
 		int n;
 		int q;
 		cin >> n >> q;
 
-		// adj[i][j] = {the jth adjacent node from i, their statement (0 =
-		// imposter, 1 = crewmate)}
+		// adj[i][j] = {the jth adjacent node from i
+		// their statement (0 = imposter, 1 = crewmate)}
 		vector<vector<pair<int, bool>>> adj(n);
 		for (int i = 0; i < q; i++) {
 			int type;
@@ -63,7 +67,6 @@ int main() {
 
 		int ans = 0;
 		bool impossible = false;
-
 		for (int i = 0; i < n; i++) {
 			// haven't visited this connected component yet
 			if (role[i] == -1) {
@@ -118,8 +121,8 @@ for _ in range(int(input())):
 	n, q = map(int, input().split())
 
 	"""
-        adj[i][j] = {the jth adjacent node from i, their statement (0 =
-        imposter, 1 = crewmate)}
+        adj[i][j] = {the jth adjacent node from i,
+	their statement (0 = imposter, 1 = crewmate)}
         """
 	adj = [[] for _ in range(n)]
 
@@ -135,7 +138,6 @@ for _ in range(int(input())):
 	role = [-1] * n
 	ans = 0
 	impossible = False
-
 	for i in range(n):
 		# haven't visited this connected component yet
 		if role[i] == -1:
