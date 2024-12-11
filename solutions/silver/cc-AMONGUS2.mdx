@@ -115,61 +115,61 @@ int main() {
 
 ```py
 for _ in range(int(input())):
-    n, q = map(int, input().split())
+	n, q = map(int, input().split())
 
-    """
+	"""
     adj[i][j] = {the jth adjacent node from i, their statement (0 =
     imposter, 1 = crewmate)}
     """
-    adj = [[] for _ in range(n)]
-    
-    for _ in range(q):
-        type, x, y = map(int, input().split())
-        type -= 1
-        x -= 1
-        y -= 1
-        
-        adj[x].append((y, type))
-        adj[y].append((x, type))
-    
-    role = [-1] * n
-    ans = 0
-    impossible = False
-    
-    for i in range(n):
-        # haven't visited this connected component yet
-        if role[i] == -1:
-            imposters = 0
-            crewmates = 0
-            
-            # dfs to build bipartite graph
-            todo = [i]
-            role[i] = 1
-            imposters += 1
-            
-            while todo:
-                curr = todo.pop()
-                
-                for u in adj[curr]:
-                    type = role[curr] if u[1] else 1 - role[curr]
-                    
-                    # haven't visited
-                    if role[u[0]] == -1:
-                        role[u[0]] = type
-                        if type:
-                            imposters += 1
-                        else:
-                            crewmates += 1
+	adj = [[] for _ in range(n)]
 
-                        todo.append(u[0])
-                        # creates a contradiction
-                    elif role[u[0]] != type:
-                        impossible = True
-                        break
+	for _ in range(q):
+		type, x, y = map(int, input().split())
+		type -= 1
+		x -= 1
+		y -= 1
 
-            ans += max(imposters, crewmates)
-    
-    print(-1 if impossible else ans)
+		adj[x].append((y, type))
+		adj[y].append((x, type))
+
+	role = [-1] * n
+	ans = 0
+	impossible = False
+
+	for i in range(n):
+		# haven't visited this connected component yet
+		if role[i] == -1:
+			imposters = 0
+			crewmates = 0
+
+			# dfs to build bipartite graph
+			todo = [i]
+			role[i] = 1
+			imposters += 1
+
+			while todo:
+				curr = todo.pop()
+
+				for u in adj[curr]:
+					type = role[curr] if u[1] else 1 - role[curr]
+
+					# haven't visited
+					if role[u[0]] == -1:
+						role[u[0]] = type
+						if type:
+							imposters += 1
+						else:
+							crewmates += 1
+
+						todo.append(u[0])
+						# creates a contradiction
+					elif role[u[0]] != type:
+						impossible = True
+						break
+
+			ans += max(imposters, crewmates)
+
+	print(-1 if impossible else ans)
 ```
 
 </PySection>
