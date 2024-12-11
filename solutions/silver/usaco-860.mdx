@@ -41,7 +41,6 @@ vector<pair<int, int>> find_region(const vector<string> &grid, int row, int col)
 
 	vector<pair<int, int>> cells;  // Stores coordinates of connected cells
 	vector<vector<bool>> visited(n, vector<bool>(MAX_COLS, false));
-
 	while (!q.empty()) {
 		const auto [row, col] = q.front();  // Current cell (row, col)
 		q.pop();
@@ -112,8 +111,6 @@ void apply_gravity(vector<string> &grid) {
 
 int main() {
 	ifstream fin("mooyomooyo.in");
-	ofstream fout("mooyomooyo.out");
-
 	int n, k;
 	fin >> n >> k;
 
@@ -135,6 +132,7 @@ int main() {
 		apply_gravity(grid);
 	}
 
+	ofstream fout("mooyomooyo.out");
 	for (const auto &row : grid) { fout << row << "\n"; }
 }
 ```
@@ -148,8 +146,8 @@ import java.util.*;
 
 public class MooyoMooyo {
 	static final int MAX_COLS = 10;
-	static final int[][] MOVES = {
-	    {1, 0}, {-1, 0}, {0, 1}, {0, -1}};  // Movement directions
+	// Movement directions
+	static final int[][] MOVES = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 
 	static List<int[]> findRegion(char[][] grid, int row, int col) {
 		int n = grid.length;          // Number of rows
@@ -160,7 +158,6 @@ public class MooyoMooyo {
 
 		List<int[]> cells = new ArrayList<>();  // Stores coordinates of connected cells
 		boolean[][] visited = new boolean[n][MAX_COLS];
-
 		while (!queue.isEmpty()) {
 			int[] cell = queue.poll();
 			int currentRow = cell[0], currentCol = cell[1];
@@ -273,12 +270,13 @@ from collections import deque
 from typing import List, Tuple
 
 MAX_COLS = 10
+# Movement directions (up, down, left, right)
 MOVES = [
 	(1, 0),
 	(-1, 0),
 	(0, 1),
 	(0, -1),
-]  # Movement directions (up, down, left, right)
+]
 
 
 def find_region(grid: List[List[str]], row: int, col: int) -> List[Tuple[int, int]]:
@@ -382,5 +380,4 @@ with open("mooyomooyo.out", "w") as fout:
 ```
 
 </PySection>
-
 </LanguageSection>
