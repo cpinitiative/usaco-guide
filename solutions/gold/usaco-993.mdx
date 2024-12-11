@@ -9,17 +9,21 @@ author: Nathan Gong, Ryan Chou, David Guo
 
 ## Explanation
 
-We define $dp[t][i]$ as the maximum moonies Bessie can have at city $i$ on day $t$. Starting with $dp[0][0] = 0$, we
-iterate over each day up to $T_{\text{max}}$, the maximum number of days, and
-over each city, updating $dp[t + 1][j]$ for all cities $j$ reachable from city
-$i$ via a directed road. We compare the current value of $dp[t + 1][j]$ with the
-value of coming from an adjacent city on the previous day,
-$dp[t][i] + \text{moonies}[j]$, and take the maximum. After processing each day,
-we calculate the profit as $dp[t][0] - C \cdot t^2$, representing the total
-moonies minus the travel cost for $t$ days, and track the maximum profit. This
-approach ensures we consider all feasible trips and ignore unreachable states.
+We define $dp[t][i]$ as the maximum moonies Bessie can have at city $i$ on day $t$.
+Starting with $dp[0][0] = 0$, we iterate over each day up to $T_{\text{max}}$,
+the maximum number of days, and over each city, updating $dp[t + 1][j]$
+for all cities $j$ reachable from city $i$ via a directed road.
 
-Note that the maximum amount of money Bessie makes is $1000t - t^2$, in the case where she makes $1000$ mooney per city and the cost is $1$ mooney. Her earnings become negative when $t > 1000$, so we only have to check her movement across the cities for at most $1000$ days.
+We compare the current value of $dp[t + 1][j]$ with the
+value of coming from an adjacent city on the previous day,
+$dp[t][i] + \text{moonies}[j]$, and take the maximum.
+After processing each day, we calculate the profit as $dp[t][0] - C \cdot t^2$,
+representing the total moonies minus the travel cost for $t$ days,
+and track the maximum profit.
+
+Note that the maximum amount of money Bessie makes is $1000t - t^2$,
+in the case where she makes $1000$ mooney per city and the cost is $1$ mooney.
+Her earnings become negative when $t > 1000$, so we only have to check her movement across the cities for at most $1000$ days.
 
 ## Implementation
 
