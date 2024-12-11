@@ -66,7 +66,7 @@ for (int i = 0; i < (1 << n); i++) {
 We can speed this up if we iterate over only subsets of the current mask and add up all of the those values to get the sum over subsets for a particular mask.
 
 The difference comes from the fact that in the first example we iterate over every pair of subsets which takes $(2^n)^2$ time and the second we iterate directly over the subsets for each mask. This means each mask is only visited by $2^{n - k}$ other masks where k is the number of elements of the mask.
-This means that the total time complexity is O$\sum_0^n {n \choose k} \cdot 2^{n - k} = 3^n$).
+This means that the total time complexity is $\mathcal{O} (\sum_0^n {n \choose k} \cdot 2^{n - k} = 3^n)$.
 
 <LanguageSection>
 <CPPSection>
@@ -77,7 +77,10 @@ vector<int> a(1 << n);
 vector<int> sos(1 << n);
 for (int i = 0; i < (1 << n); i++) {
 	// iterate over all subsets of i directly
-	for (int j = (i - 1) & i; j >= 0; j = (j - 1) & i) { sos[i] += a[j]; }
+	for (int j = (i - 1) & i;; j = (j - 1) & i) {
+		sos[i] += a[j];
+		if (j == 0) break;
+	}
 }
 ```
 
