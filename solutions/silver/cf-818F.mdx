@@ -1,0 +1,81 @@
+---
+id: cf-818F
+source: CF
+title: Level Generation
+author: Justin Ji
+---
+
+[Official Analysis](https://codeforces.com/blog/entry/52991)
+
+<Spoiler title="Hint 1">
+
+The upper bound for the number of bridges we can have is $n - 1$ because
+each bridge is present in any [spanning tree](https://en.wikipedia.org/wiki/Spanning_tree) of the graph.
+
+</Spoiler>
+
+<Spoiler title="Hint 2">
+
+Let's consider allocating a certain amount of these nodes to forming a tree.
+How can we use the rest of these nodes to use as many edges as possible?
+
+</Spoiler>
+
+<Spoiler title="Explanation">
+
+The most bridges we can have in a graph with $n$ nodes is $n - 1$ bridges.
+As a result, our answer is in the range $[n - 1, 2n - 2]$.
+
+Let's consider binary
+searching on our answer. If we have $x$ edges that we need to use, then
+$\lfloor \frac{x + 1}{2} \rfloor$ of these edges must be bridges.
+
+Recall that the best way to create bridges is to create a tree. Thus, we use all of these
+bridge edges to form a tree, and then use the one extra edge to connect this tree
+to some component of nodes. Note that this extra edge is also a bridge. With the rest of our nodes, we can form a complete
+graph of nodes to use as many edges as possible.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(Q\log{N})$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using ll = long long;
+
+int main() {
+	int test_num;
+	cin >> test_num;
+	for (int i = 0; i < test_num; i++) {
+		int nodes;
+		cin >> nodes;
+
+		ll low = nodes - 1;
+		ll high = 2ll * (nodes - 1);
+		while (low < high) {
+			ll mid = (low + high + 1) / 2;
+			int num_bridges = (mid + 1) / 2;
+			int cycle_nodes = nodes - num_bridges;
+			ll cycle_edges = 1ll * cycle_nodes * (cycle_nodes - 1) / 2;
+
+			if (mid - num_bridges <= cycle_edges) {
+				low = mid;
+			} else {
+				high = mid - 1;
+			}
+		}
+
+		cout << low << '\n';
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
+</Spoiler>
