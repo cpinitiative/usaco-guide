@@ -20,11 +20,10 @@ fence.
 
 </Warning>
 
-<LanguageSection>
-
-<CPPSection>
-
 ## Implementation
+
+<LanguageSection>
+<CPPSection>
 
 ```cpp
 #include <cstdio>
@@ -88,7 +87,6 @@ void ff(int i, int j) {
 ```
 
 </CPPSection>
-
 </LanguageSection>
 
 ## Alternate Faster Solution
@@ -109,7 +107,6 @@ Under these observations, we can use a set of visited edges and visited nodes, a
 **Time Complexity:** $\mathcal{O}(N\log N)$
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
@@ -164,6 +161,44 @@ int main() {
 	cout << ans << "\n";
 }
 ```
-</CPPSection>
 
+</CPPSection>
+<PySection>
+
+```py
+with open("gates.in") as read:
+	n = int(read.readline().strip())
+	s = read.readline().strip()
+
+visedge = set()
+visnode = set()
+
+prev = (0, 0)
+visnode.add(prev)
+ans = 0
+for direction in s:
+	x, y = prev
+	if direction == "N":
+		x += 1
+	elif direction == "S":
+		x -= 1
+	elif direction == "E":
+		y -= 1
+	elif direction == "W":
+		y += 1
+
+	# Check if the edge from prev to {x, y} was visited (see 2nd observation)
+	if ((x, y), prev) not in visedge and (x, y) in visnode:
+		ans += 1
+
+	visedge.add(((x, y), prev))
+	visedge.add((prev, (x, y)))
+	visnode.add((x, y))
+
+	prev = (x, y)
+
+print(ans, file=open("gates.out", "w"))
+```
+
+</PySection>
 </LanguageSection>
