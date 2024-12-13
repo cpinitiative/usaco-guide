@@ -2,7 +2,7 @@
 id: usaco-617
 source: USACO Bronze 2016 February
 title: Load Balancing
-author: Maggie Liu, Kevin Sheng
+author: Maggie Liu, Kevin Sheng, David Guo
 ---
 
 [Official Analysis (Java)](http://www.usaco.org/current/data/sol_balancing_bronze_feb16.html)
@@ -10,31 +10,30 @@ author: Maggie Liu, Kevin Sheng
 <LanguageSection>
 <CPPSection>
 
+## Explanation
+
+We solve this problem by brute forcing over all possible placements of the two fences. Note that we only need to consider fence positions at $x + 1$ and $y + 1$ for each cow's position ($x, y$) because these are the only positions that affect the regions without passing through a cow. For each pair of fences, we count the number of cows in each of the four regions and calculate $M$, the maximum number of cows in any region. We update $M$ to track the smallest value found across all configurations. At the end, we output this minimum value of $M$ as the result.
+
 ## Implementation
 
 ```cpp
-#include <algorithm>
-#include <cstdio>
-#include <iostream>
-#include <set>
-#include <vector>
-
+#include <bits/stdc++.h>
 using namespace std;
 
 int main() {
-	freopen("balancing.in", "r", stdin);
-	freopen("balancing.out", "w", stdout);
+	ifstream fin("balancing.in");
+	ofstream fout("balancing.out");
 
 	int cow_num;
 	int max_pos;  // We won't use this variable
-	cin >> cow_num >> max_pos;
+	fin >> cow_num >> max_pos;
 
 	vector<int> x_vals(cow_num);
 	vector<int> y_vals(cow_num);
 	set<int> vfence;
 	set<int> hfence;
 	for (int c = 0; c < cow_num; c++) {
-		cin >> x_vals[c] >> y_vals[c];
+		fin >> x_vals[c] >> y_vals[c];
 		vfence.insert(x_vals[c] + 1);  // x-coords of relevant vertical fences
 		hfence.insert(y_vals[c] + 1);  // y-coords of relevant horizontal fences
 	}
@@ -66,7 +65,8 @@ int main() {
 		}
 	}
 
-	cout << min_imbalance << endl;
+	fout << min_imbalance << endl;
+	return 0;
 }
 ```
 
@@ -98,6 +98,7 @@ public class Balancing {
 		}
 
 		int minImbalance = cowNum;
+		// Loop through each pair of fences
 		for (int v : vfences) {
 			for (int h : hfences) {
 				int topLeft = 0;
@@ -105,6 +106,7 @@ public class Balancing {
 				int bottomLeft = 0;
 				int bottomRight = 0;
 
+				// Count the number of cows in each region
 				for (int c = 0; c < cowNum; c++) {
 					if (xvals[c] < v && yvals[c] > h) {
 						topLeft++;
