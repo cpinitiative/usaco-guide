@@ -167,8 +167,8 @@ int main() {
 
 ```py
 with open("gates.in") as read:
-    n = int(read.readline().strip())
-    s = read.readline().strip()
+	n = int(read.readline().strip())
+	s = read.readline().strip()
 
 visedge = set()
 visnode = set()
@@ -178,27 +178,27 @@ visnode.add(prev)
 ans = 0
 
 for direction in s:
-    x, y = prev
-    if direction == 'N':
-        x += 1
-    elif direction == 'S':
-        x -= 1
-    elif direction == 'E':
-        y -= 1
-    elif direction == 'W':
-        y += 1
+	x, y = prev
+	if direction == "N":
+		x += 1
+	elif direction == "S":
+		x -= 1
+	elif direction == "E":
+		y -= 1
+	elif direction == "W":
+		y += 1
 
-    # Check if the edge from prev to {x, y} was visited (see 2nd observation)
-    if (((x, y), prev) not in visedge) and ((x, y) in visnode):
-        ans += 1
+	# Check if the edge from prev to {x, y} was visited (see 2nd observation)
+	if (((x, y), prev) not in visedge) and ((x, y) in visnode):
+		ans += 1
 
-    visedge.add(((x, y), prev))
-    visedge.add((prev, (x, y)))
-    visnode.add((x, y))
+	visedge.add(((x, y), prev))
+	visedge.add((prev, (x, y)))
+	visnode.add((x, y))
 
-    prev = (x, y)
+	prev = (x, y)
 
-print(ans, file = open("gates.out", "w"))
+print(ans, file=open("gates.out", "w"))
 ```
 
 </PySection>
