@@ -19,23 +19,28 @@ For each pair of fences, we count the number of cows in each of the four regions
 ## Implementation
 
 ```cpp
-#include <bits/stdc++.h>
+#include <algorithm>
+#include <cstdio>
+#include <iostream>
+#include <set>
+#include <vector>
+
 using namespace std;
 
 int main() {
-	ifstream fin("balancing.in");
-	ofstream fout("balancing.out");
+	freopen("balancing.in", "r", stdin);
+	freopen("balancing.out", "w", stdout);
 
 	int cow_num;
 	int max_pos;  // We won't use this variable
-	fin >> cow_num >> max_pos;
+	cin >> cow_num >> max_pos;
 
 	vector<int> x_vals(cow_num);
 	vector<int> y_vals(cow_num);
 	set<int> vfence;
 	set<int> hfence;
 	for (int c = 0; c < cow_num; c++) {
-		fin >> x_vals[c] >> y_vals[c];
+		cin >> x_vals[c] >> y_vals[c];
 		vfence.insert(x_vals[c] + 1);  // x-coords of relevant vertical fences
 		hfence.insert(y_vals[c] + 1);  // y-coords of relevant horizontal fences
 	}
@@ -67,8 +72,7 @@ int main() {
 		}
 	}
 
-	fout << min_imbalance << endl;
-	return 0;
+	cout << min_imbalance << endl;
 }
 ```
 
