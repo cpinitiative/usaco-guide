@@ -24,10 +24,9 @@ const NavBar = ({ alignNavButtonsRight = true }) => {
   const moduleIdx = React.useMemo(
     () => sortedModuleLinks?.findIndex(x => x.id === markdownLayoutInfo.id),
     [markdownLayoutInfo, sortedModuleLinks]
-  );
+  ) as number;
   if (
     !sortedModuleLinks ||
-    !moduleIdx ||
     markdownLayoutInfo instanceof SolutionInfo
   ) {
     return null;
