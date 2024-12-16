@@ -71,18 +71,16 @@ void solve() {
     vector<ll> startComponent = components[vis[0]];
     vector<ll> endComponent = components[vis[n-1]];
 
-    // Initialize distance vectors with "infinity"
+    // Initialize distance vectors with infinity
     vector<ll> dist1(cnt, LLONG_MAX);
     vector<ll> dist2(cnt, LLONG_MAX);
 
     // Calculate minimum distances to startComponent
     ll a = 0;
     for(ll i = 0; i < n; ++i){
-        if(a >= sz(startComponent)) break;
         ll dist = abs(startComponent[a] - i);
         while(a < sz(startComponent) - 1 && abs(startComponent[a + 1] - i) < dist){
             a++;
-            dist = abs(startComponent[a] - i);
         }
         dist1[vis[i]] = min(dist1[vis[i]], dist);
     }
@@ -90,11 +88,9 @@ void solve() {
     // Calculate minimum distances to endComponent
     ll b = 0;
     for(ll i = 0; i < n; ++i){
-        if(b >= sz(endComponent)) break;
         ll dist = abs(endComponent[b] - i);
         while(b < sz(endComponent) - 1 && abs(endComponent[b + 1] - i) < dist){
             b++;
-            dist = abs(endComponent[b] - i);
         }
         dist2[vis[i]] = min(dist2[vis[i]], dist);
     }
@@ -102,7 +98,6 @@ void solve() {
     // Compute the result by finding the minimum sum of squared distances
     ll res = LLONG_MAX;
     for(ll i = 0; i < cnt; ++i){
-        if(dist1[i] == LLONG_MAX || dist2[i] == LLONG_MAX) continue;
         res = min(res, dist1[i] * dist1[i] + dist2[i] * dist2[i]);
     }
     cout << res << '\n';
