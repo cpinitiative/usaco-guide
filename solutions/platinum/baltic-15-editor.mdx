@@ -46,48 +46,44 @@ for `i`; otherwise, the answer for `i` is 0.
 <CPPSection>
 
 ```cpp
-#include <iostream>
 #include <assert.h>
+#include <iostream>
 
 const int MAX_N = 3e5 + 1;
-const int MAX_D = 19; // ceil(log2(3*(10^5)))
+const int MAX_D = 19;  // ceil(log2(3*(10^5)))
 
 int state[MAX_N], par[MAX_N][MAX_D], lev[MAX_N];
 
 // get last op on active path of x with lev <= maxLev
 int get_par(int x, int max_lev) {
-    if (lev[x] <= max_lev) {
-        return x;
-    }
-    for (int i = MAX_D - 1; i >= 0; i--) {
-        if (lev[par[x][i]] > max_lev) {
-            x = par[x][i];
-        }
-    }
-    return par[x][0];
+	if (lev[x] <= max_lev) { return x; }
+	for (int i = MAX_D - 1; i >= 0; i--) {
+		if (lev[par[x][i]] > max_lev) { x = par[x][i]; }
+	}
+	return par[x][0];
 }
 
 int main() {
-    int n;
-    std::cin >> n;
-    for (int i = 1; i <= n; i++) {
-        std::cin >> state[i];
-        if (state[i] < 0) {
-            lev[i] = -state[i];
-            int z = get_par(i - 1, lev[i] - 1);
-            assert(z); // must be something to undo
-            par[i][0] = get_par(z - 1, lev[i] - 1);
+	int n;
+	std::cin >> n;
+	for (int i = 1; i <= n; i++) {
+		std::cin >> state[i];
+		if (state[i] < 0) {
+			lev[i] = -state[i];
+			int z = get_par(i - 1, lev[i] - 1);
+			assert(z);  // must be something to undo
+			par[i][0] = get_par(z - 1, lev[i] - 1);
 
-            // levels of ops in active path are strictly decreasing
-            assert(lev[i] > lev[par[i][0]]);
+			// levels of ops in active path are strictly decreasing
+			assert(lev[i] > lev[par[i][0]]);
 
-            for (int j = 1; j < MAX_D; j++) {
-                par[i][j] = par[par[i][j - 1]][j - 1]; // prepare binary jumps
-            }
-        }
-        std::cout << state[get_par(i, 0)] << '\n';
-        // current active path is i, par[i], par[par[i]], ...
-    }
+			for (int j = 1; j < MAX_D; j++) {
+				par[i][j] = par[par[i][j - 1]][j - 1];  // prepare binary jumps
+			}
+		}
+		std::cout << state[get_par(i, 0)] << '\n';
+		// current active path is i, par[i], par[par[i]], ...
+	}
 }
 ```
 
@@ -104,38 +100,38 @@ lev = [0] * MAX_N
 
 
 def get_par(x: int, max_lev: int) -> int:
-    # get last op on active path of x with lev <= maxLev
-    if lev[x] <= max_lev:
-        return x
-    for i in range(MAX_D - 1, -1, -1):
-        if lev[par[x][i]] > max_lev:
-            x = par[x][i]
-    return par[x][0]
+	# get last op on active path of x with lev <= maxLev
+	if lev[x] <= max_lev:
+		return x
+	for i in range(MAX_D - 1, -1, -1):
+		if lev[par[x][i]] > max_lev:
+			x = par[x][i]
+	return par[x][0]
 
 
 n = int(input())
 
 for i in range(1, n + 1):
-    state[i] = int(input())
+	state[i] = int(input())
 
-    if state[i] < 0:
-        lev[i] = -state[i]
-        z = get_par(i - 1, lev[i] - 1)
+	if state[i] < 0:
+		lev[i] = -state[i]
+		z = get_par(i - 1, lev[i] - 1)
 
-        # must be something to undo
-        assert z > 0
+		# must be something to undo
+		assert z > 0
 
-        par[i][0] = get_par(z - 1, lev[i] - 1)
+		par[i][0] = get_par(z - 1, lev[i] - 1)
 
-        # levels of ops in active path are strictly decreasing
-        assert lev[i] > lev[par[i][0]]
+		# levels of ops in active path are strictly decreasing
+		assert lev[i] > lev[par[i][0]]
 
-        # prepare binary jumps
-        for j in range(1, MAX_D):
-            par[i][j] = par[par[i][j - 1]][j - 1]
+		# prepare binary jumps
+		for j in range(1, MAX_D):
+			par[i][j] = par[par[i][j - 1]][j - 1]
 
-    # current active path is i, par[i], par[par[i]], ...
-    print(state[get_par(i, 0)])
+	# current active path is i, par[i], par[par[i]], ...
+	print(state[get_par(i, 0)])
 ```
 
 </PySection>
