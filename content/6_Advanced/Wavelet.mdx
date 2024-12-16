@@ -45,8 +45,7 @@ Each node has an array representing the indices of every number between $l$ and 
 ### Solution - Range K-th Smallest
 Before we solve this problem, let's consider a simpler version where we are asked, given a range, to count the number of occurrences of value $x$.
 
-## Solving the first type of query
-**Given a range $l$, $r$, count the number of occurrences of value x.**
+## Given a range $l$, $r$, count the number of occurrences of value x.
 
 To calculate the number of occurrences from $𝑙$ to $𝑟$, we can use the following
 formula:
@@ -95,8 +94,7 @@ To update $r$ as we recurse down, we do the following:
 - If we recurse right, we use $r$ - $\texttt{prefix\_b}$[$r$]
 
 Now let's try to solve our main problem.
-## Solving the second type of query
-**Given a range $l$, $r$ find the k-th smallest element**
+## Given a range $l$, $r$ find the k-th smallest element
 
 We will determine whether the answer for a given node is in the left or the
 right segment.
@@ -257,99 +255,105 @@ using namespace std;
 using namespace __gnu_pbds;
 template <class T>
 using Tree =
-    tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
+        tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
 
 struct Segment {
-	Segment *left = nullptr, *right = nullptr;
-	int l, r, mid;
-	bool children = false;
-	Tree<pair<int, int>> indices;  // index, value
+    Segment *left = nullptr, *right = nullptr;
+    int l, r, mid;
+    bool children = false;
+    Tree<pair<int,int>> indices; // index, value
 
-	Segment(int l, int r, const Tree<pair<int, int>> &indices)
-	    : l(l), r(r), mid((r + l) / 2), indices(indices) {}
+    Segment(int l, int r,const Tree<pair<int,int>> &indices) :l(l), r(r), mid((r + l) / 2), indices(indices) {
 
-	// Sparse since values can go up to 1e9
-	void update() {
-		if (children) { return; }
-		children = true;
+    }
 
-		if (r - l > 1) {
-			// Split the indices for left and right child
-			Tree<pair<int, int>> leftIndices, rightIndices;
-			for (auto [index, value] : indices) {
-				if (value < mid) leftIndices.insert({index, value});
-				else rightIndices.insert({index, value});
-			}
+    // Sparse since values can go up to 1e9
+    void update() {
+        if (children) {return;}
+        children = true;
 
-			left = new Segment(l, mid, leftIndices);
-			right = new Segment(mid, r, rightIndices);
-		}
-	}
+        if (r - l > 1) {
+            // Split the indices for left and right child
+            Tree<pair<int, int>> leftIndices, rightIndices;
+            for (auto [index, value] : indices) {
+                if (value < mid)
+                    leftIndices.insert({index, value});
+                else
+                    rightIndices.insert({index, value});
+            }
 
-	int find_k_smallest(int a, int b, int k) {
-		update();
-		if (r - l <= 1) return l;
+            left = new Segment(l,mid, leftIndices);
+            right = new Segment(mid,r, rightIndices);
+        }
+    }
 
-		int lb = left->indices.order_of_key({a, -1});
-		int lr = left->indices.order_of_key({b, -1});
-		int inLeft = lr - lb;
+    int find_k_smallest(int a, int b, int k) {
+        update();
+        if (r - l <= 1) return l;
 
-		if (k <= inLeft) return left->find_k_smallest(a, b, k);  // Appears in left
-		else return right->find_k_smallest(a, b, k - inLeft);    // Appears in right
-	}
+        int lb = left->indices.order_of_key({a, -1});
+        int lr = left->indices.order_of_key({b, -1});
+        int inLeft = lr - lb;
 
-	void update(int index, int v, int old_v) {
-		update(old_v, index, false);
-		update(v, index, true);
-	}
+        if (k <= inLeft)
+            return left->find_k_smallest(a,b,k); // Appears in left
+        else
+            return right->find_k_smallest(a,b, k - inLeft); // Appears in right
+    }
 
-	void update(int v, int index, bool insert_operation) {
-		if (insert_operation) indices.insert({index, v});
-		else indices.erase({index, v});
+    void update(int index, int v, int old_v) {
+        update(old_v, index, false);
+        update(v, index, true);
+    }
 
-		update();
-		if (r - l <= 1) return;
+    void update(int v, int index, bool insert_operation) {
+        if (insert_operation) indices.insert({index, v});
+        else indices.erase({index, v});
 
-		if (v < mid) left->update(v, index, insert_operation);
-		else right->update(v, index, insert_operation);
-	}
+        update();
+        if (r - l <= 1) return;
+
+        if (v < mid)
+            left->update(v, index, insert_operation);
+        else
+            right->update(v, index, insert_operation);
+    }
 };
 
+
 int main() {
-	int n, q;
-	cin >> n >> q;
+    int n, q; cin >> n >> q;
 
-	Tree<pair<int, int>> indices;
-	for (int i = 0; i < n; ++i) { indices.insert({i, 0}); }
+    Tree<pair<int,int>> indices;
+    for (int i = 0; i < n; ++i) {
+        indices.insert({i,0});
+    }
 
-	Segment seg(0, 1e9 + 2, indices);
-	vector<int> arr(n);
+    Segment seg(0,1e9 + 2,indices);
+    vector<int> arr(n);
 
-	for (int i = 0; i < n; ++i) {
-		int v;
-		cin >> v;
-		seg.update(i, v, arr[i]);
-		arr[i] = v;
-	}
+    for (int i = 0; i < n; ++i) {
+        int v; cin >> v;
+        seg.update(i, v, arr[i]);
+        arr[i] =v;
+    }
 
-	for (int i = 0; i < q; ++i) {
-		int t;
-		cin >> t;
-		if (t == 1) {
-			int a, b, k;
-			cin >> a >> b >> k;
-			k++;
-			cout << seg.find_k_smallest(a, b, k) << " ";
-		} else {
-			int a, b;
-			cin >> a >> b;
-			seg.update(a, b, arr[i]);
-			arr[i] = b;
-		}
-	}
+    for (int i = 0; i < q; ++i) {
+        int t; cin >> t;
+        if (t == 1) {
+            int a, b, k; cin >> a >> b >> k;
+            k++;
+            cout << seg.find_k_smallest(a,b,k) << " ";
+        } else {
+            int a, b; cin >> a >> b;
+            seg.update(a, b, arr[i]);
+            arr[i] = b;
+        }
+    }
 
-	return 0;
+    return 0;
 }
+
 ```
 
 </CPPSection>
