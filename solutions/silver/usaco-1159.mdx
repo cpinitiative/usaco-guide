@@ -13,6 +13,82 @@ author: Nathan Gong, Jesse Choe
 
 <LanguageSection>
 
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using ll = long long;
+using vll = vector<long long>;
+using vvll = vector<vector<long long>>;
+#define f(i, to) for (int i = 0; i < (to); ++i)
+constexpr ll INFL = 0x3f3f3f3f3f3f3f3f;
+
+ll t, n, m;
+void solve() {
+    cin>>n>>m;
+    vvll adj(n);
+    f(i, m) {
+        ll u, v; cin>>u>>v; u--; v--;
+        adj[u].push_back(v);
+        adj[v].push_back(u);
+    }
+    vll vis(n, -1);
+    ll cnt = 0;
+    f(i, n) {
+        if(vis[i]!=-1) continue;
+        // Run dfs, mapping each node to its connected component
+        stack<ll> s; s.push(i);
+        while(!s.empty()) {
+            ll u = s.top(); s.pop();
+            if(vis[u]!=-1) continue; vis[u] = cnt;
+            for(ll v : adj[u]) s.push(v);
+        }
+        cnt++;
+    }
+    vvll mp(cnt);
+    f(i, n) mp[vis[i]].push_back(i);
+
+	// Components for the start and end barn
+    vll b1 = mp[vis[0]];
+    vll b2 = mp[vis[n-1]];
+
+	// Distances to b1 and b2
+    vll dist1(cnt, INFL);
+    vll dist2(cnt, INFL);
+
+	// If we have a better option within the component (shorter distance) take it.
+	// This pointer method works because component nodes are ordered
+    ll a=0;
+    f(i, n) {
+        ll dist = abs(b1[a]-i);
+        while(a < b1.size()-1 && abs(b1[a+1]-i)<dist) a++;
+        dist1[vis[i]] = min(dist1[vis[i]], dist);
+    }
+    ll b=0;
+    f(i, n) {
+        ll dist = abs(b2[b]-i);
+        while(b < b2.size()-1 && abs(b2[b+1]-i) < dist) b++;
+        dist2[vis[i]] = min(dist2[vis[i]], dist);
+    }
+
+    ll res = INFL;
+    f(i, cnt) {
+        res = min(res, dist1[i]*dist1[i] + dist2[i]*dist2[i]);
+    }
+    cout<<res<<'\n';
+}
+
+int main() {
+    ios::sync_with_stdio(false); cin.tie(nullptr);
+    cin>>t;
+    f(i, t) solve();
+}
+```
+
+</CPPSection>
+
 <JavaSection>
 
 ```java
@@ -141,7 +217,11 @@ public class ConnectingTwoBarns {
 
 ## Alternative Implementation - DFS + Binary Search
 
-As the editorial mentioned, we can minimize the cost function by using binary search. Since each conncected component array is in sorted order (if we add the nodes of each connected component in increasing order), we can binary search on the sorted connected component array to find the closest field $j$ for each field $i$ using `std::lower_bound`.
+As the editorial mentioned, we can minimize the cost function by using binary
+search. Since each conncected component array is in sorted order (if we add the
+nodes of each connected component in increasing order), we can binary search on
+the sorted connected component array to find the closest field $j$ for each
+field $i$ using `std::lower_bound`.
 
 <LanguageSection>
 
