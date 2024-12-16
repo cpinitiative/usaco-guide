@@ -148,27 +148,27 @@ length = [[0] * MAXL for _ in range(MAXN)]
 
 
 def len_between(x: int, y: int) -> int:
-    """
-    :returns the number of elements between the subarray
-    starting at x and the next y subarrays
-    """
-    total = 0
-    for i in range(MAXL):
-        if y & (1 << i):
-            total += length[x][i]
-            x = nxt[x][i]
-    return total
+	"""
+	:returns the number of elements between the subarray
+	starting at x and the next y subarrays
+	"""
+	total = 0
+	for i in range(MAXL):
+		if y & (1 << i):
+			total += length[x][i]
+			x = nxt[x][i]
+	return total
 
 
 def check(x: int) -> bool:
-    """
-    :return true if there is a series of x subarrays
-    that uses the whole array
-    """
-    for i in range(n):
-        if len_between(i, x) >= n:
-            return True
-    return False
+	"""
+	:return true if there is a series of x subarrays
+	that uses the whole array
+	"""
+	for i in range(n):
+		if len_between(i, x) >= n:
+			return True
+	return False
 
 
 n, k = map(int, input().split())
@@ -183,40 +183,40 @@ if k == 1:
 
 # edge case: every element can go into one subarray
 if k >= total_sum:
-    print(1)
-    exit(0)
+	print(1)
+	exit(0)
 
 # two pointers to find each subarray range [l, r)
 curr_sum = 0
 r = 0
 
 for l in range(n):
-    while curr_sum + a[r % n] <= k:
-        curr_sum += a[r % n]
-        r += 1
+	while curr_sum + a[r % n] <= k:
+		curr_sum += a[r % n]
+		r += 1
 
-    # initialize binary lifting arrays
-    nxt[l][0] = r % n
-    length[l][0] = r - l
+	# initialize binary lifting arrays
+	nxt[l][0] = r % n
+	length[l][0] = r - l
 
-    curr_sum -= a[l]
+	curr_sum -= a[l]
 
 for j in range(1, MAXL):
-    for i in range(n):
-        nxt[i][j] = nxt[nxt[i][j - 1]][j - 1]
-        # add lengths from the left and the right
-        length[i][j] = length[i][j - 1] + length[nxt[i][j - 1]][j - 1]
+	for i in range(n):
+		nxt[i][j] = nxt[nxt[i][j - 1]][j - 1]
+		# add lengths from the left and the right
+		length[i][j] = length[i][j - 1] + length[nxt[i][j - 1]][j - 1]
 
 
 # binary search over the least amount of subarrays
 # needed to cover the whole array
 lo, hi = 0, n
 while lo < hi - 1:
-    mid = (lo + hi) // 2
-    if check(mid):
-        hi = mid
-    else:
-        lo = mid
+	mid = (lo + hi) // 2
+	if check(mid):
+		hi = mid
+	else:
+		lo = mid
 
 print(hi)
 ```
