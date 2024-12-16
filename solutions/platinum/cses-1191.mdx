@@ -171,7 +171,6 @@ def check(x: int) -> bool:
     return False
 
 
-
 n, k = map(int, input().split())
 a = list(map(int, input().split()))
 
@@ -188,19 +187,19 @@ if k >= total_sum:
     exit(0)
 
 # two pointers to find each subarray range [l, r)
-current_sum = 0
+curr_sum = 0
 r = 0
 
 for l in range(n):
-    while current_sum + a[r % n] <= k:
-        current_sum += a[r % n]
+    while curr_sum + a[r % n] <= k:
+        curr_sum += a[r % n]
         r += 1
 
     # initialize binary lifting arrays
     nxt[l][0] = r % n
     length[l][0] = r - l
 
-    current_sum -= a[l]
+    curr_sum -= a[l]
 
 for j in range(1, MAXL):
     for i in range(n):
