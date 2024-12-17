@@ -2,10 +2,14 @@
 id: usaco-664
 source: USACO Bronze 2016 December
 title: Block Game
-author: Óscar Garries, Franek Antoniak, Dong Liu
+author: Óscar Garries, Franek Antoniak, Dong Liu, David Guo
 ---
 
 [Official Analysis (Java)](http://www.usaco.org/current/data/sol_blocks_bronze_dec16.html)
+
+## Explanation
+
+We use a frequency array to keep track of the minimum number of blocks needed for each letter. For each pair of words, we count the occurrences of each letter in both words. Since we can only see one side of the block at a time, we take the larger of the two frequencies for each letter and add it to the total count. Finally, after processing all pairs, we output the frequency array, which represents the total number of blocks needed for each letter.
 
 ## Implementation
 
@@ -101,7 +105,6 @@ public class Blocks {
 ```py
 from typing import List
 
-
 def count_freq(s: str) -> List[int]:
 	"""
 	:return: An array of length 26, containing the frequency
@@ -111,7 +114,6 @@ def count_freq(s: str) -> List[int]:
 	for c in s:
 		freq[ord(c) - ord("a")] += 1
 	return freq
-
 
 with open("blocks.in") as read:
 	n = int(read.readline())
