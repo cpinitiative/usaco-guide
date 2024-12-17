@@ -64,28 +64,28 @@ void solve() {
 	for (ll i = 0; i < n; ++i) { components[vis[i]].push_back(i); }
 
 	// Components containing the start (0) and end (n-1) barns
-	vector<ll> startComponent = components[vis[0]];
-	vector<ll> endComponent = components[vis[n - 1]];
+	vector<ll> start_component = components[vis[0]];
+	vector<ll> end_component = components[vis[n - 1]];
 
 	// Initialize distance vectors with infinity
 	vector<ll> dist1(cnt, LLONG_MAX);
 	vector<ll> dist2(cnt, LLONG_MAX);
 
-	// Calculate minimum distances to startComponent
+	// Calculate minimum distances to start_component
 	ll a = 0;
 	for (ll i = 0; i < n; ++i) {
-		ll dist = abs(startComponent[a] - i);
-		while (a < startComponent.size() - 1 && abs(startComponent[a + 1] - i) < dist) {
+		ll dist = abs(start_component[a] - i);
+		while (a < start_component.size() - 1 && abs(start_component[a + 1] - i) < dist) {
 			a++;
 		}
 		dist1[vis[i]] = min(dist1[vis[i]], dist);
 	}
 
-	// Calculate minimum distances to endComponent
+	// Calculate minimum distances to end_component
 	ll b = 0;
 	for (ll i = 0; i < n; ++i) {
-		ll dist = abs(endComponent[b] - i);
-		while (b < endComponent.size() - 1 && abs(endComponent[b + 1] - i) < dist) {
+		ll dist = abs(end_component[b] - i);
+		while (b < end_component.size() - 1 && abs(end_component[b + 1] - i) < dist) {
 			b++;
 		}
 		dist2[vis[i]] = min(dist2[vis[i]], dist);
