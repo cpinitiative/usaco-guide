@@ -100,8 +100,6 @@ int main() {
 ```py
 MAX_K = 5
 MAX_J = 17
-INF = float("inf")
-
 
 def combine(target: list[list[int]], a: list[list[int]], b: list[list[int]]):
 	for x in range(k):
@@ -113,7 +111,7 @@ def combine(target: list[list[int]], a: list[list[int]], b: list[list[int]]):
 k, n, m, o = map(int, input().split())
 
 dp = [
-	[[[INF] * k for _ in range(k)] for _ in range(MAX_J)]
+	[[[float("inf")] * k for _ in range(k)] for _ in range(MAX_J)]
 	for _ in range((n + k - 1) // k)
 ]
 
@@ -128,7 +126,7 @@ for j in range(1, MAX_J):
 for _ in range(o):
 	a, b = map(int, input().split())
 
-	ans = [[INF] * k for _ in range(k)]
+	ans = [[float("inf")] * k for _ in range(k)]
 	for i in range(k):
 		ans[i][i] = 0
 
@@ -137,12 +135,12 @@ for _ in range(o):
 
 	for i in range(MAX_J - 1, -1, -1):
 		if curr + (1 << i) <= dest:
-			tmp = [[INF] * k for _ in range(k)]
+			tmp = [[float("inf")] * k for _ in range(k)]
 			combine(tmp, ans, dp[curr][i], k)
 			ans = tmp
 			curr += 1 << i
 
-	print(-1 if ans[a % k][b % k] == INF else ans[a % k][b % k])
+	print(-1 if ans[a % k][b % k] == float("inf") else ans[a % k][b % k])
 ```
 
 </PySection>
