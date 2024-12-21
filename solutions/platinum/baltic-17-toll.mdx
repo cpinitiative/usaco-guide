@@ -39,6 +39,9 @@ complexity of $\mathcal{O}(K^2(N+O)\log N)$.
 $\mathcal{O}(K^3 \log N)$ per query. We can reduce this to
 $\mathcal{O}(K^2 \log N)$ per query by only storing the `a % k`-th row of `ans`.
 
+<LanguageSection>
+<CPPSection>
+
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
@@ -90,3 +93,56 @@ int main() {
 	return 0;
 }
 ```
+
+</CPPSection>
+<PySection>
+
+```py
+MAX_K = 5
+MAX_J = 17
+
+
+def combine(target: list[list[int]], a: list[list[int]], b: list[list[int]]):
+	for x in range(k):
+		for y in range(k):
+			for z in range(k):
+				target[x][y] = min(target[x][y], a[x][z] + b[z][y])
+
+
+k, n, m, o = map(int, input().split())
+
+dp = [
+	[[[float("inf")] * k for _ in range(k)] for _ in range(MAX_J)]
+	for _ in range((n + k - 1) // k)
+]
+
+for _ in range(m):
+	a, b, t = map(int, input().split())
+	dp[a // k][0][a % k][b % k] = t
+
+for j in range(1, MAX_J):
+	for i in range((n + k - 1) // k - (1 << j)):
+		combine(dp[i][j], dp[i][j - 1], dp[i + (1 << (j - 1))][j - 1], k)
+
+for _ in range(o):
+	a, b = map(int, input().split())
+
+	ans = [[float("inf")] * k for _ in range(k)]
+	for i in range(k):
+		ans[i][i] = 0
+
+	curr = a // k
+	dest = b // k
+
+	for i in range(MAX_J - 1, -1, -1):
+		if curr + (1 << i) <= dest:
+			tmp = [[float("inf")] * k for _ in range(k)]
+			combine(tmp, ans, dp[curr][i], k)
+			ans = tmp
+			curr += 1 << i
+
+	print(-1 if ans[a % k][b % k] == float("inf") else ans[a % k][b % k])
+```
+
+</PySection>
+</LanguageSection>
