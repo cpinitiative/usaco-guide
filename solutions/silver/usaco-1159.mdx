@@ -35,7 +35,7 @@ void solve() {
 		adj[v].push_back(u);
 	}
 
-	// Connected components parent and count
+	// vis[i] stores the component label for node i
 	vector<int> vis(n, -1);
 	int cnt = 0;
 
@@ -57,7 +57,7 @@ void solve() {
 		cnt++;
 	}
 
-	// Mapping each component to its nodes
+	// components[i] stores all nodes with component label i
 	vector<vector<int>> components(cnt);
 	for (int i = 0; i < n; ++i) { components[vis[i]].push_back(i); }
 
@@ -236,8 +236,8 @@ public class ConnectingTwoBarns {
 ## Alternative Implementation - DFS + Binary Search
 
 As the editorial mentioned, we can minimize the cost function by using binary
-search. Since each conncected component array is in sorted order (if we add the
-nodes of each connected component in increasing order), we can binary search on
+search. Since the connected component arrays are in sorted order (since we are adding
+nodes in order from $1$ to $N$), we can binary search on
 the sorted connected component array to find the closest field $j$ for each
 field $i$ using `std::lower_bound`.
 
