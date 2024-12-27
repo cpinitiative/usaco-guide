@@ -37,7 +37,7 @@ void solve() {
 
 	// vis[i] stores the component label for node i
 	vector<int> vis(n, -1);
-	int cnt = 0;
+	int num_components = 0;
 
 	// Identify connected components using DFS
 	for (int i = 0; i < n; ++i) {
@@ -49,16 +49,16 @@ void solve() {
 			int u = s.top();
 			s.pop();
 			if (vis[u] != -1) continue;
-			vis[u] = cnt;
+			vis[u] = num_components;
 			for (ll v : adj[u]) {
 				if (vis[v] == -1) s.push(v);
 			}
 		}
-		cnt++;
+		num_components++;
 	}
 
 	// components[i] stores all nodes with component label i
-	vector<vector<int>> components(cnt);
+	vector<vector<int>> components(num_components);
 	for (int i = 0; i < n; ++i) { components[vis[i]].push_back(i); }
 
 	// Components containing the start (0) and end (n-1) barns
@@ -66,8 +66,8 @@ void solve() {
 	vector<int> end_component = components[vis[n - 1]];
 
 	// Initialize distance vectors with infinity
-	vector<int> dist1(cnt, INT_MAX);
-	vector<int> dist2(cnt, INT_MAX);
+	vector<int> dist1(num_components, INT_MAX);
+	vector<int> dist2(num_components, INT_MAX);
 
 	// Calculate minimum distances to start_component
 	int a = 0;
@@ -92,7 +92,7 @@ void solve() {
 
 	// Compute the result by finding the minimum sum of squared distances
 	ll res = LLONG_MAX;
-	for (int i = 0; i < cnt; ++i) {
+	for (int i = 0; i < num_components; ++i) {
 		res = min(res, 1LL * dist1[i] * dist1[i] + 1LL * dist2[i] * dist2[i]);
 	}
 	cout << res << '\n';
