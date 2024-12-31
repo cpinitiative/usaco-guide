@@ -41,23 +41,17 @@ int main() {
 
 		// Identify connected components using DFS
 		for (int i = 0; i < n; i++) {
-			if (vis[i] != -1) {
-				continue;
-			}
+			if (vis[i] != -1) { continue; }
 			// DFS using a stack
 			stack<int> s;
 			s.push(i);
 			while (!s.empty()) {
 				int u = s.top();
 				s.pop();
-				if (vis[u] != -1) {
-					continue;
-				}
+				if (vis[u] != -1) { continue; }
 				vis[u] = num_components;
 				for (ll v : adj[u]) {
-					if (vis[v] == -1) {
-						s.push(v);
-					}
+					if (vis[v] == -1) { s.push(v); }
 				}
 			}
 			num_components++;
@@ -65,9 +59,7 @@ int main() {
 
 		// components[i] stores all nodes with component label i
 		vector<vector<int>> components(num_components);
-		for (int i = 0; i < n; i++) {
-			components[vis[i]].push_back(i);
-		}
+		for (int i = 0; i < n; i++) { components[vis[i]].push_back(i); }
 
 		// Components containing the start (0) and end (n-1) barns
 		vector<int> start_component = components[vis[0]];
@@ -82,7 +74,7 @@ int main() {
 		for (int i = 0; i < n; i++) {
 			int dist = abs(start_component[a] - i);
 			while (a < start_component.size() - 1 &&
-				   abs(start_component[a + 1] - i) < dist) {
+			       abs(start_component[a + 1] - i) < dist) {
 				a++;
 			}
 			dist1[vis[i]] = min(dist1[vis[i]], dist);
@@ -93,7 +85,7 @@ int main() {
 		for (int i = 0; i < n; i++) {
 			int dist = abs(end_component[b] - i);
 			while (b < end_component.size() - 1 &&
-				   abs(end_component[b + 1] - i) < dist) {
+			       abs(end_component[b + 1] - i) < dist) {
 				b++;
 			}
 			dist2[vis[i]] = min(dist2[vis[i]], dist);
