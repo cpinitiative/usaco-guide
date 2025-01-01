@@ -271,6 +271,7 @@ When using Comparable, we can call `Arrays.sort(arr)` or
 `Collections.sort(list)` on the array or list as usual.
 
 ```java
+import java.io.*;
 import java.util.*;
 
 class Edge implements Comparable<Edge> {
@@ -314,6 +315,7 @@ directly to `Arrays.sort` (or `Collections.sort`, if you're sorting an `ArrayLis
 
 ```java
 import java.io.*;
+import java.util.*;
 
 class Edge {
 	public int a, b;
@@ -442,21 +444,40 @@ otherwise compare first vertices.
 <CPPSection>
 
 ```cpp
+#include <algorithm>
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
 struct Edge {
 	int a, b;
 	int width;
 
 	bool operator<(const Edge &y) {
-		if (width == y.width) { return width < y.width; }
+		if (width != y.width) { return width < y.width; }
 		return a < y.a;
 	}
 };
+
+int main() {
+	constexpr int edge_num = 4;
+
+	vector<Edge> edges(edge_num);
+	for (Edge &e : edges) { cin >> e.a >> e.b >> e.width; }
+	sort(edges.begin(), edges.end());
+
+	for (const Edge &e : edges) { printf("(%i, %i): %i\n", e.a, e.b, e.width); }
+}
 ```
 
 </CPPSection>
 <JavaSection>
 
 ```java
+import java.io.*;
+import java.util.*;
+
 class Edge implements Comparable<Edge> {
 	public int a, b;
 	public int width;
@@ -473,6 +494,23 @@ class Edge implements Comparable<Edge> {
 		return a - e.a;
 	}
 }
+
+public class SortingDemo {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+
+		final int edgeNum = 4;
+		Edge[] edges = new Edge[edgeNum];
+		for (int e = 0; e < edgeNum; e++) {
+			edges[e] = new Edge(sc.nextInt(), sc.nextInt(), sc.nextInt());
+		}
+		Arrays.sort(edges);
+
+		for (Edge e : edges) { System.out.printf("(%d, %d): %d\n", e.a, e.b, e.width); }
+
+		sc.close();
+	}
+}
 ```
 
 </JavaSection>
@@ -482,11 +520,38 @@ In Python, tuples have a natural order based on their elements in order. We can
 take advantage of this to write a comparator:
 
 ```py
+from functools import cmp_to_key
+
+
+class Edge:
+	def __init__(self, a: int, b: int, width: int):
+		self.a = a
+		self.b = b
+		self.width = width
+
+
+edge_num = 4
+edges = [Edge(*[int(i) for i in input().split()]) for _ in range(edge_num)]
 edges.sort(key=lambda edge: (edge.width, edge.a))
+
+for e in edges:
+	print(f"({e.a}, {e.b}): {e.width}")
 ```
 
 </PySection>
 </LanguageSection>
+
+Try this slightly modified version of the sample input:
+
+```
+2 2 7
+1 3 7
+2 3 10
+2 4 3
+```
+
+While edges with width $3$ and $10$ will still assume the same positions, edges $\{2, 2, 7\}$ and $\{1, 3, 7\}$ will swap in the final ordering with the inclusion of the second criterion.
+
 
 # Coordinate Compression
 
