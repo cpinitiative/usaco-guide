@@ -54,7 +54,9 @@ const int MAX_D = 19;  // ceil(log2(3*(10^5)))
 
 int state[MAX_N], par[MAX_N][MAX_D], lev[MAX_N];
 
-// get last op on active path of x with lev <= maxLev
+/**
+ * get last op on active path of x with lev <= max_lev
+ */
 int get_par(int x, int max_lev) {
 	if (lev[x] <= max_lev) { return x; }
 	for (int i = MAX_D - 1; i >= 0; i--) {
@@ -91,8 +93,10 @@ int main() {
 <PySection>
 
 ```py
+import math
+
 MAX_N = 300001
-MAX_D = 19  # ceil(log2(3 * (10^5)))
+MAX_D = math.ceil(math.log2(MAX_N))
 
 state = [0] * MAX_N
 par = [[0] * MAX_D for _ in range(MAX_N)]
@@ -100,7 +104,9 @@ lev = [0] * MAX_N
 
 
 def get_par(x: int, max_lev: int) -> int:
-	# get last op on active path of x with lev <= maxLev
+	"""
+	get last op on active path of x with lev <= max_lev
+	"""
 	if lev[x] <= max_lev:
 		return x
 	for i in range(MAX_D - 1, -1, -1):
