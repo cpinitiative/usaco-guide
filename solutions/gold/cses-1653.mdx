@@ -2,11 +2,20 @@
 id: cses-1653
 source: CSES
 title: Elevator Rides
-author: Sofia Yang
+author: Sofia Yang, David Guo
 ---
 
 [CPH Solution (10.5)](/CPH.pdf#page=113)
 
+## Explanation
+
+We solve the problem using dynamic programming with bitmasking to determine the minimum number of elevator rides required to transport all the people within the given weight limit.
+
+We use a DP array where each element corresponds to a bitmask representing which people have already been transported. Each entry in the DP array stores a pair that represents the state of the rides, including the number of rides taken and the weight of the current ride. The bitmask allows us to efficiently represent subsets of people, with each bit indicating whether a specific person has already been transported.
+
+For each subset of people, we iterate over all individuals to determine who could be the last person added to the group. By removing that person from the current subset, we calculate the state of the group without them. If adding this person’s weight to the current ride does not exceed the elevator’s weight limit, we update the total weight for that ride. Otherwise, we start a new ride, incrementing the number of rides, and set the total weight to this person’s weight. After every iteration, we update the state only if the new configuration results in fewer rides or a lighter current total weight.
+
+Finally, when we have transported everyone, the result for the full group is stored in the DP array. This value represents the minimum number of elevator rides needed to transport all the people within the weight limit.
 
 ## Implementation
 
