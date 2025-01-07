@@ -316,8 +316,8 @@ image = [[""] * MAX_N for _ in range(MAX_N)]
 visited = [[False] * MAX_N for _ in range(MAX_N)]
 
 
-# Floodfill to find connected regions (iterative implementation)
 def floodfill(i: int, j: int, color: str) -> None:
+	"""Floodfill to find the connected regions"""
 	stack = [(i, j)]
 	visited[i][j] = True
 	while stack:
@@ -334,8 +334,8 @@ def floodfill(i: int, j: int, color: str) -> None:
 				stack.append((new_i, new_j))
 
 
-# Check whether a given rectangle forms a PCL
 def is_pcl(i1: int, j1: int, i2: int, j2: int) -> bool:
+	""":returns: whether the given rectangle forms a PCL"""
 	global i_min, i_max, j_min, j_max
 	# Keep track of number of regions for each color
 	region_count = [0] * 26
@@ -371,13 +371,11 @@ def is_pcl(i1: int, j1: int, i2: int, j2: int) -> bool:
 	return color_count == 2 and color_with_one_region and color_with_more_regions
 
 
-# Driver code
 with open("where.in", "r") as fin:
 	n = int(fin.readline().strip())
 	image = [list(fin.readline().strip()) for _ in range(n)]
 
 pcl_list = []
-
 # Brute force every rectangle to find PCLs
 for i1 in range(n):
 	for j1 in range(n):
@@ -389,7 +387,6 @@ for i1 in range(n):
 					pcl_list.append(PCL(i1, j1, i2, j2))
 
 pcl_count = 0
-
 # Check each PCL and ensure it is not inside another PCL
 for i in range(len(pcl_list)):
 	valid_pcl = True
