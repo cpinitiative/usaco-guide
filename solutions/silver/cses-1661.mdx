@@ -20,10 +20,10 @@ the map.
 
 ## Implementation
 
-**Time Complexity:** $\mathcal{O}(N)$
-
 <LanguageSection>
 <CPPSection>
+
+**Time Complexity:** $\mathcal{O}(N\log N)$
 
 In C++, because `std::unordered_map` is vulnerable to collisions,
 we use `std::map` at the cost of adding an extra log factor to the complexity.
@@ -65,6 +65,8 @@ int main() {
 
 </CPPSection>
 <JavaSection>
+
+**Time Complexity:** $\mathcal{O}(N\log N)$
 
 ```java
 import java.io.*;
@@ -113,26 +115,35 @@ public class SubarraySumsII {
 </JavaSection>
 <PySection>
 
+**Time Complexity:** $\mathcal{O}(N)$ (expected)
+
 <Warning>
 
-The below solution TLEs due to Python's constant factor.
+Without incorporating randomness, the code below will fail to pass
+cases specifically designed to make Python dict run slowly. See the [Introduction to Sets](/bronze/intro-sets) module for more information.
 
 </Warning>
 
 ```py
+import random
+
+RANDOM = random.randrange(2**62)
+
+
+def Wrapper(x):
+	return x ^ RANDOM
+
+
 def main():
 	N, X = map(int, input().split())
 	prefix, res = 0, 0
-	mp = {0: 1}  # mp[0] = 1
+	mp = {Wrapper(0): 1}  # mp[0] = 1
 
 	for x in input().split():
 		prefix += int(x)
-		res += mp.get(prefix - X, 0)  # if not in dict, return 0
-		mp[prefix] = mp.get(prefix, 0) + 1
+		res += mp.get(Wrapper(prefix - X), 0)  # if not in dict, return 0
+		mp[Wrapper(prefix)] = mp.get(Wrapper(prefix), 0) + 1
 	print(res)
-
-
-main()
 ```
 
 </PySection>
