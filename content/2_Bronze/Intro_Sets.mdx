@@ -50,7 +50,7 @@ of elements in the set.
 <CPPSection>
 
 Sorted sets are implemented in C++ by
-[`std:set`](https://www.cplusplus.com/reference/set/set/) in the `<set>` header. Some basic operations on an `std::set` named `s` include:
+[`std::set`](https://www.cplusplus.com/reference/set/set/) in the `<set>` header. Some basic operations on an `std::set` named `s` include:
 
 - `s.insert(x)`, which adds the element `x` to `s` if not already present.
 - `s.erase(x)`, which removes the element `x` from `s` if present.
@@ -59,7 +59,10 @@ Sorted sets are implemented in C++ by
 You can also iterate through a set in sorted order using a for-each loop.
 
 ```cpp
+#include <iostream>
 #include <set>
+
+using namespace std;
 
 void demo() {
 	set<int> s;
@@ -130,11 +133,14 @@ In the worst case, hashsets in C++ may take proportional to $N$ time per operati
 </Warning>
 
 Hashsets are implemented in C++ by
-[`std:unordered_set`](https://www.cplusplus.com/reference/unordered_set/unordered_set/)
+[`std::unordered_set`](https://www.cplusplus.com/reference/unordered_set/unordered_set/)
 in the `<unordered_set>` header.
 
 ```cpp
+#include <iostream>
 #include <unordered_set>
+
+using namespace std;
 
 void demo() {
 	unordered_set<int> s;
@@ -148,7 +154,7 @@ void demo() {
 	s.erase(0);                  // does nothing because 0 wasn't in the set
 	s.insert(6);                 // {2, 4, 6}
 
-	// Outputs 6, 2, and 4 separated by spaces
+	// Outputs 6, 2, and 4 separated by spaces (not in sorted order)
 	for (int element : s) { cout << element << " "; }
 }
 ```
@@ -527,16 +533,23 @@ Some operations on an `std::map` and `std::unordered_map` named `m` include:
   if the key was present in the map.
 
 ```cpp
-map<int, int> m;
-m[1] = 5;                    // [(1, 5)]
-m[3] = 14;                   // [(1, 5); (3, 14)]
-m[2] = 7;                    // [(1, 5); (2, 7); (3, 14)]
-m[0] = -1;                   // [(0, -1); (1, 5); (2, 7); (3, 14)]
-m.erase(2);                  // [(0, -1); (1, 5); (3, 14)]
-cout << m[1] << endl;        // 5
-cout << m.count(7) << endl;  // 0
-cout << m.count(1) << endl;  // 1
-cout << m[2] << endl;        // 0
+#include <iostream>
+#include <map>
+
+using namespace std;
+
+void demo() {
+	map<int, int> m;
+	m[1] = 5;                    // [(1, 5)]
+	m[3] = 14;                   // [(1, 5); (3, 14)]
+	m[2] = 7;                    // [(1, 5); (2, 7); (3, 14)]
+	m[0] = -1;                   // [(0, -1); (1, 5); (2, 7); (3, 14)]
+	m.erase(2);                  // [(0, -1); (1, 5); (3, 14)]
+	cout << m[1] << endl;        // 5
+	cout << m.count(7) << endl;  // 0
+	cout << m.count(1) << endl;  // 1
+	cout << m[2] << endl;        // 0
+}
 ```
 
 </CPPSection>
