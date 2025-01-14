@@ -2,7 +2,7 @@
 id: usaco-990
 source: USACO Silver 2020 January
 title: Berry Picking
-author: Qi Wang, Daniel Suh, Juheon Rhee
+author: Qi Wang, Daniel Suh, Juheon Rhee, David Guo
 ---
 
 <Spoiler title="Hint 1">
@@ -16,6 +16,16 @@ How can we increase this value?
 <Spoiler title="Solution">
 
 [Official Analysis (C++)](http://www.usaco.org/current/data/sol_berries_silver_jan20.html)
+
+## Explanation
+
+Let $b$ represent the minimum number of berries in any bucket that Elsie receives. Without loss of generality, we can assume that all of Elsie's buckets contain exactly $b$ berries. Our goal is to maximize the total number of berries placed into $K$ buckets, each containing at most $b$ berries, such that at least $K/2$ buckets contain exactly $b$ berries.
+
+Now, consider the allocation of berries from a single tree in the optimal solution. There is no benefit to creating multiple buckets with fewer than $b$ berries from the same tree. Therefore, apart from at most one bucket, all other buckets filled with berries from this tree will contain exactly $b$ berries.
+
+The optimal approach is to repeatedly fill buckets with exactly $b$ berries until either all $K$ buckets are filled or the tree no longer has at least $b$ berries remaining. If there are still buckets to fill after this, sort the remaining trees by the value $B_i$ $mod$ $b$, where $B_i$ is the number of berries on tree $i$. Then, iterate through the trees in descending order of $B_i$ $mod$ $b$, filling the remaining buckets as efficiently as possible.
+
+This process can be repeated for each possible value of $b$ from $1$ to $max(B_i)$.
 
 ## Implementation 1
 
