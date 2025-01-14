@@ -7,6 +7,8 @@ author: Rameez Parwez
 
 ## Explanation
 
+Calculate the involvement of each index in the range query using a difference array technique.
+To maximize the sum, sort both the array and frequency array in descending order and pair the elements of the array with their respective frequencies.
 
 ## Implementation
 
@@ -16,7 +18,39 @@ author: Rameez Parwez
 <CPPSection>
 
 ```cpp
+#include <bits/stdc++.h>
 
+int main() {
+    int n, q;
+    std::cin >> n >> q;
+    std::vector<int> arr(n);
+
+    for (auto &x : arr) {
+        std::cin >> x;
+    }
+
+    std::vector<int> freq(n + 1);
+    while (q--) {
+        int l, r;
+        std::cin >> l >> r;
+        l--;
+        freq[l] += 1;
+        freq[r] -= 1;
+    }
+
+    for (int i = 1; i <= n; i++) {
+        freq[i] += freq[i - 1];
+    }
+
+    std::sort(rbegin(freq), rend(freq));
+    std::sort(rbegin(arr), rend(arr));
+    long long res = 0;
+    
+    for (int i = 0; i < n; i++) {
+        res += 1LL * freq[i] * arr[i];
+    }
+    std::cout << res << '\n';
+}
 ```
 
 </CPPSection>
