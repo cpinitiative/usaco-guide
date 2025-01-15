@@ -1,0 +1,86 @@
+---
+id: cf-276C
+source: CF
+title: Little Girl and Maximum Sum
+author: Rameez Parwez
+---
+
+## Explanation
+
+We can calculate the contribution of each index in the range query using a difference array technique.
+
+To maximize the sum, sort both the array and frequency array in descending order
+and pair the elements of the array with their respective frequencies.
+
+## Implementation
+
+**Time Complexity:** $ \mathcal{O} (N \log N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <algorithm>
+#include <iostream>
+#include <vector>
+
+using std::cout;
+using std::endl;
+using std::vector;
+
+int main() {
+	int n, q;
+	std::cin >> n >> q;
+	vector<int> arr(n);
+
+	for (int &x : arr) { std::cin >> x; }
+
+	vector<int> freq(n + 1);
+	for (int i = 0; i < q; i++) {
+		int l, r;
+		std::cin >> l >> r;
+		l--;
+		freq[l] += 1;
+		freq[r] -= 1;
+	}
+
+	for (int i = 1; i <= n; i++) { freq[i] += freq[i - 1]; }
+
+	std::sort(std::rbegin(freq), std::rend(freq));
+	std::sort(std::rbegin(arr), std::rend(arr));
+
+	long long res = 0;
+	for (int i = 0; i < n; i++) { res += 1LL * freq[i] * arr[i]; }
+
+	cout << res << endl;
+}
+```
+
+</CPPSection>
+<PySection>
+
+```py
+n, q = map(int, input().split())
+arr = list(map(int, input().split()))
+
+freq = [0] * (n + 1)
+for _ in range(q):
+	l, r = map(int, input().split())
+	freq[l - 1] += 1
+	freq[r] -= 1
+
+for i in range(1, n + 1):
+	freq[i] += freq[i - 1]
+
+freq.sort(reverse=True)
+arr.sort(reverse=True)
+
+res = 0
+for i in range(n):
+	res += freq[i] * arr[i]
+
+print(res)
+```
+
+</PySection>
+</LanguageSection>
