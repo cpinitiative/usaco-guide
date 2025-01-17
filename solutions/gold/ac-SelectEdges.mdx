@@ -1,0 +1,92 @@
+---
+id: ac-SelectEdges
+source: AC
+title: Select Edges
+author: Justin Ji
+---
+
+## Explanation
+
+To solve this problem, we write a tree DP. Consider that the only factor we
+need to differentiate nodes on is whether or not we can connect a given node
+to its parent. Thus, our DP state is the following:
+
+- $\texttt{dp}[u][0]$ is the best result in the subtree of $u$ if we can connect $u$ to its parent
+- $\texttt{dp}[u][1]$ is the best result in the subtree of $u$ if we can't connect $u$ to its parent
+
+For a given node $u$, the "gain" we get from adding this node in is:
+
+$$
+(w + \texttt{dp}[u][0]) - \texttt{dp}[u][1]
+$$
+
+Thus, we want to use our $d[u]$ allowed edges on the nodes that have the most
+benefit when adding an edge to them. Note that we handle the cases for
+$\texttt{dp}[u][0])$ and $\texttt{dp}[u][1]$ pretty similarly.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N\log{N})$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using ll = long long;
+
+int main() {
+	int n;
+	cin >> n;
+
+	vector<int> d(n);
+	for (int &i : d) { cin >> i; }
+
+	vector<vector<array<int, 2>>> adj(n);
+	for (int i = 0; i < n - 1; i++) {
+		int u, v, w;
+		cin >> u >> v >> w;
+		u--, v--;
+		adj[u].push_back({v, w});
+		adj[v].push_back({u, w});
+	}
+
+	// DP state is for the relation with its parent node
+	// {can connect, can't connect}
+	vector<array<ll, 2>> dp(n);
+	const auto dfs = [&](int u, int p, auto self) -> void {
+		auto &[can_con, no_con] = dp[u];
+		vector<ll> diffs;  // diff between using edge and not using edge
+
+		for (const auto &[v, w] : adj[u]) {
+			if (v == p) { continue; }
+			self(v, u, self);
+			can_con += dp[v][1];
+			no_con += dp[v][1];
+			if (d[v] > 0) { diffs.push_back(w + dp[v][0] - dp[v][1]); }
+		}
+
+		int leftover = d[u];
+
+		sort(begin(diffs), end(diffs), greater());
+		for (const ll &val : diffs) {
+			if (leftover == 0 || val < 0) { break; }
+			if (leftover > 1) {
+				can_con += val;
+				no_con += val;
+			} else {
+				no_con += val;
+			}
+			leftover--;
+		}
+	};
+	dfs(0, -1, dfs);
+
+	cout << dp[0][1] << endl;
+}
+```
+
+</CPPSection>
+</LanguageSection>
