@@ -17,11 +17,24 @@ What if you fixed the number of berries $b$ in each bucket? How would you alloca
 
 ## Explanation
 
-Let $b$ represent the minimum number of berries in any bucket that Elsie receives. Without loss of generality, we can assume that all of Elsie's buckets contain exactly $b$ berries, as any configuration where Elsie's buckets are unequal can be adjusted to make all buckets contain exactly $b$, preserving or improving the minimum value $b$. Our goal is to maximize the total number of berries placed into $K$ buckets, each containing at most $b$ berries, such that at least $\frac{K}{2}$ buckets contain exactly $b$ berries.
+Let $b$ represent the minimum number of berries in any bucket that Elsie receives.
+We can assume WLOG that all of Elsie's buckets contain exactly $b$ berries,
+as any configuration where Elsie's buckets are unequal can be adjusted to make all buckets contain exactly $b$,
+preserving or improving the minimum value $b$.
 
-Now, consider the allocation of berries from a single tree in the optimal solution. There is no benefit to creating multiple buckets with fewer than $b$ berries from the same tree. Therefore, apart from at most one bucket, all other buckets filled with berries from this tree will contain exactly $b$ berries.
+Our goal is to maximize the total number of berries placed into $K$ buckets,
+each containing at most $b$ berries, such that at least $\frac{K}{2}$ buckets contain exactly $b$ berries.
 
-The optimal approach is to repeatedly fill buckets with exactly $b$ berries until either all $K$ buckets are filled or the tree no longer has at least $b$ berries remaining. If there are still buckets to fill after this, sort the remaining trees by the value $B_i$ $mod$ $b$, where $B_i$ is the number of berries on tree $i$. Then, iterate through the trees in descending order of $B_i$ $mod$ $b$, filling the remaining buckets as efficiently as possible.
+Now, consider the allocation of berries from a single tree in the optimal solution.
+There is no benefit to creating multiple buckets with fewer than $b$ berries from the same tree.
+Therefore, apart from at most one bucket, all other buckets filled with berries from this tree will contain exactly $b$ berries.
+
+The optimal approach is to repeatedly fill buckets with exactly $b$ berries until either all $K$ buckets are filled
+or the tree no longer has at least $b$ berries remaining.
+If there are still buckets to fill after this, sort the remaining trees by the value $B_i$ $mod$ $b$,
+where $B_i$ is the number of berries on tree $i$. 
+hen, iterate through the trees in descending order of $B_i$ $mod$ $b$,
+filling the remaining buckets as efficiently as possible.
 
 This process can be repeated for each possible value of $b$ from $1$ to $\max(B_i)$.
 
