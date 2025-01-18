@@ -6,27 +6,36 @@ author: Chongtian Ma
 ---
 
 ## Explanation
-Let's define the function $\mathtt{pref}(x)$ to return the sum of digits among all integers from $0$ to $x$ inclusive. Then, the answer for each query will be $\mathtt{pref}(r) - \mathtt{pref}(l-1)$.
 
-We can calculate $\mathtt{pref}(x)$ using digit dp. Let $n$ be the number of digits in $x$. Evidently, the maximum sum of digits among all numbers with at most $n$ digits is $9n$. Under the problem constraints, $n$ can be at most $16$. We can define the following dp state:
+Let's define the function $\mathtt{pref}(x)$ to return the sum of digits among all integers from $0$ to $x$ inclusive
+Then, the answer for each query will be $\mathtt{pref}(r) - \mathtt{pref}(l-1)$.
 
+We can calculate $\mathtt{pref}(x)$ using digit dp. Let $n$ be the number of digits in $x$.
+The maximum sum of digits among all numbers with at most $n$ digits is $9n$.
+Under the problem constraints, $n$ can be at most $16$.
+
+We can define the following dp state:
 $\mathtt{dp[i][j][b]}$ = number of integers having exactly $i$ digits with sum of digits $j$ and a freedom value of $b$ (which is either $0$ or $1$).
 
-- If $b = 0$, then the first $i$ digits of the dp state is equivalent to the first $i$ digits of $x$. In this case, when placing the $i+1$'th digit, it cannot exceed the $i+1$'th digit of $x$.
+- If $b = 0$, then the first $i$ digits of the state is equivalent to the first $i$ digits of $x$.
+  In this case, when placing the $i+1$'th digit, it cannot exceed the $i+1$'th digit of $x$.
 
-- If $b = 1$, then there exists some $d$ where $d < i$ and the $d$'th digit that we placed is less than the $d$'th digit of $x$. In this case, we already know our integer must be less than $x$, regardless of what digit we place next.
+- If $b = 1$, then there exists some $d$ where $d < i$ and the $d$-th digit that we placed is less than the $d$-th digit of $x$.
+  In this case, we already know our integer must be less than $x$, regardless of what digit we place next.
 
-For transitions, we must consider the three cases where $b$ remains $0$, $b$ remains $1$, and $b$ goes from $0$ to $1$.
+For transitions, we must consider the three cases where $b$ remains $0$,
+$b$ remains $1$, and $b$ goes from $0$ to $1$.
 
-Finally, the sum of digits among all integers with exactly $i$ digits and does not exceed $x$ is given by $\sum_{j=0}^{9n} \sum_{b=0}^1 \mathtt{dp[n][j][b]} \cdot j$. However, we still have to add the sum of digits for all numbers with less than $n$ digits, which can be precalculated.
+Finally, the sum of digits among all integers with exactly $i$ digits and does not exceed $x$ is given by $\sum_{j=0}^{9n} \sum_{b=0}^1 \mathtt{dp[n][j][b]} \cdot j$.
+However, we still have to add the sum of digits for all numbers with less than $n$ digits, which can be precalculated.
 
 ## Implementation
 
 **Time Complexity:** $\mathcal{O}(n^2)$ for each query.
 
 <LanguageSection>
-
 <CPPSection>
+
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
@@ -86,21 +95,20 @@ int main() {
 		ans_pow10[i] = pref(pow10 - 1);
 	}
 
-	int t;
-	cin >> t;
-	for (int test = 0; test < t; test++) {
+	int test_num;
+	cin >> test_num;
+	for (int t = 0; t < test_num; t++) {
 		ll l, r;
 		cin >> l >> r;
 		if (l == 0) {
 			// l - 1 < 0 which breaks things
-			cout << pref(r) << "\n";
+			cout << pref(r) << '\n';
 		} else {
-			cout << pref(r) - pref(l - 1) << "\n";
+			cout << pref(r) - pref(l - 1) << '\n';
 		}
 	}
 }
 ```
 
 </CPPSection>
-
 </LanguageSection>
