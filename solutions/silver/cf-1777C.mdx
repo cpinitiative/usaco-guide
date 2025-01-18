@@ -32,56 +32,50 @@ std::vector<int> factors[M + 1];
 
 int main() {
 
-    // Precompute factors for all numbers from 1 to M
-    for (int i = 1; i <= M; i++) {
-        for (int j = i; j <= M; j += i) {
-            factors[j].push_back(i);
-        }
-    }
+	// Precompute factors for all numbers from 1 to M
+	for (int i = 1; i <= M; i++) {
+		for (int j = i; j <= M; j += i) { factors[j].push_back(i); }
+	}
 
-    int test_case;
-    std::cin >> test_case;
-    while (test_case-- > 0) {
-        int n, m;
-        std::cin >> n >> m;
-        std::vector<int> arr(n), cnt(m + 1);
-        for (int &x : arr) {
-            std::cin >> x;
-        }
+	int test_case;
+	std::cin >> test_case;
+	while (test_case-- > 0) {
+		int n, m;
+		std::cin >> n >> m;
+		std::vector<int> arr(n), cnt(m + 1);
+		for (int &x : arr) { std::cin >> x; }
 
-        std::sort(begin(arr), end(arr));
-        int topics_covered = 0;
-        int res = INT_MAX;
+		std::sort(begin(arr), end(arr));
+		int topics_covered = 0;
+		int res = INT_MAX;
 
-        for (int i = 0, j = 0; i < n; i++) {
-            // adding student
-            while (j < n and topics_covered < m) {
-                for (int x : factors[arr[j]]) {
-                    if (x <= m) {
-                        cnt[x]++;
-                        if (cnt[x] == 1) { // topic x covered for the first time
-                            topics_covered += 1;
-                        }
-                    }
-                }
-                j++;
-            }
-            if (topics_covered == m) {
-                res = std::min(arr[j - 1] - arr[i], res);
-            }
+		for (int i = 0, j = 0; i < n; i++) {
+			// adding student
+			while (j < n and topics_covered < m) {
+				for (int x : factors[arr[j]]) {
+					if (x <= m) {
+						cnt[x]++;
+						if (cnt[x] == 1) {  // topic x covered for the first time
+							topics_covered += 1;
+						}
+					}
+				}
+				j++;
+			}
+			if (topics_covered == m) { res = std::min(arr[j - 1] - arr[i], res); }
 
-            // removing student
-            for (auto x : factors[arr[i]]) {
-                if (x <= m) {
-                    cnt[x]--;
-                    if (cnt[x] == 0) { // topic x no longer covered
-                        topics_covered -= 1;
-                    }
-                }
-            }
-        }
-        std::cout << (res == INT_MAX ? -1 : res) << '\n';
-    }
+			// removing student
+			for (auto x : factors[arr[i]]) {
+				if (x <= m) {
+					cnt[x]--;
+					if (cnt[x] == 0) {  // topic x no longer covered
+						topics_covered -= 1;
+					}
+				}
+			}
+		}
+		std::cout << (res == INT_MAX ? -1 : res) << '\n';
+	}
 }
 ```
 
@@ -94,41 +88,41 @@ factors = [[] for _ in range(M + 1)]
 
 # Precompute factors for all numbers from 1 to M
 for i in range(1, M + 1):
-    for j in range(i, M + 1, i):
-        factors[j].append(i)
+	for j in range(i, M + 1, i):
+		factors[j].append(i)
 
 for _ in range(int(input())):
-    n, m = map(int, input().split())
-    arr = list(map(int, input().split()))
+	n, m = map(int, input().split())
+	arr = list(map(int, input().split()))
 
-    arr.sort()
-    cnt = [0] * (m + 1)
-    topics_covered = 0
-    res = float('inf')
-    j = 0
+	arr.sort()
+	cnt = [0] * (m + 1)
+	topics_covered = 0
+	res = float("inf")
+	j = 0
 
-    for i in range(n):    
-        # adding student
-        while j < n and topics_covered < m:
-            for x in factors[arr[j]]:
-                if x <= m:
-                    cnt[x] += 1
-                    if cnt[x] == 1: # topic x covered for the first time
-                        topics_covered += 1
+	for i in range(n):
+		# adding student
+		while j < n and topics_covered < m:
+			for x in factors[arr[j]]:
+				if x <= m:
+					cnt[x] += 1
+					if cnt[x] == 1:  # topic x covered for the first time
+						topics_covered += 1
 
-            j += 1
-        
-        if topics_covered == m:
-            res = min(res, arr[j - 1] - arr[i])
+			j += 1
 
-        # removing student
-        for x in factors[arr[i]]:
-            if x <= m:
-                cnt[x] -= 1
-                if cnt[x] == 0: # topic x no longer covered
-                    topics_covered -= 1
+		if topics_covered == m:
+			res = min(res, arr[j - 1] - arr[i])
 
-    print(-1 if res == float('inf') else res)
+		# removing student
+		for x in factors[arr[i]]:
+			if x <= m:
+				cnt[x] -= 1
+				if cnt[x] == 0:  # topic x no longer covered
+					topics_covered -= 1
+
+	print(-1 if res == float("inf") else res)
 ```
 
 </PySection>
