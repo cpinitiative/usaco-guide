@@ -9,12 +9,12 @@ author: Rameez Parwez
 
 ## Explanation
 
-A team is considered to be proficient if every number from $1$ to $m$ is covered by at least one of the student's smartness value. We will use a two-pointer approach on the sorted smartness values to minimize the maximum difference between any two students while ensuring the team covers all topics. A topic is covered if it's a factor of at least one student's smartness. We will keep track of this using a frequency array $cnt$ to count how many times each topic is covered and a variable ${topics\_covered}$ to count how many topics are fully covered.
+A team is considered to be proficient if every number from $1$ to $m$ is covered by at least one of the student's smartness value. We will use a two-pointer approach on the sorted smartness values to minimize the maximum difference between any two students while ensuring the team covers all topics. A topic is covered if it's a factor of at least one student's smartness. We will keep track of this using a frequency array $freq$ to count how many times each topic is covered and a variable ${topics\_covered}$ to count how many topics are fully covered.
 
-At first, when we add a student to the team we iterate through all the factors of their smartness (up to $m$) and update $cnt$. If a topic is covered for the first time (i.e., $cnt[x] = 1$) we increase
+At first, when we add a student to the team we iterate through all the factors of their smartness (up to $m$) and update $freq$. If a topic is covered for the first time (i.e., $freq[x] = 1$) we increase
 ${topics\_covered}$ counter. Once all topics are covered, we calculate the difference between the current team's maximum and minimum smartness values and store the minimum difference encountered.
 
-Similarly, we do this when we remove a student from the team, but this time, instead of increasing $cnt$, we decrease it. If a topic's frequency becomes $0$, we decrement ${topics\_covered}$, indicating that topic is no longer covered.
+Similarly, we do this when we remove a student from the team, but this time, instead of increasing $freq$, we decrease it. If a topic's frequency becomes $0$, we decrement ${topics\_covered}$, indicating that topic is no longer covered.
 
 We keep sliding the pointers and repeating this process to find the smallest range where all topics are covered.
 
@@ -38,15 +38,15 @@ int main() {
 		for (int j = i; j <= M; j += i) { factors[j].push_back(i); }
 	}
 
-	int test_case;
-	std::cin >> test_case;
-	while (test_case-- > 0) {
+	int test_num;
+	std::cin >> test_num;
+	for (int t = 0; t < test_num; t++) {
 		int n, m;
 		std::cin >> n >> m;
-		std::vector<int> arr(n), cnt(m + 1);
+		std::vector<int> arr(n), freq(m + 1);
 		for (int &x : arr) { std::cin >> x; }
 
-		std::sort(begin(arr), end(arr));
+		std::sort(std::begin(arr), std::end(arr));
 		int topics_covered = 0;
 		int res = INT_MAX;
 
@@ -55,8 +55,8 @@ int main() {
 			while (j < n and topics_covered < m) {
 				for (int x : factors[arr[j]]) {
 					if (x <= m) {
-						cnt[x]++;
-						if (cnt[x] == 1) {  // topic x covered for the first time
+						freq[x]++;
+						if (freq[x] == 1) {  // topic x covered for the first time
 							topics_covered += 1;
 						}
 					}
@@ -66,10 +66,10 @@ int main() {
 			if (topics_covered == m) { res = std::min(arr[j - 1] - arr[i], res); }
 
 			// removing student
-			for (auto x : factors[arr[i]]) {
+			for (int x : factors[arr[i]]) {
 				if (x <= m) {
-					cnt[x]--;
-					if (cnt[x] == 0) {  // topic x no longer covered
+					freq[x]--;
+					if (freq[x] == 0) {  // topic x no longer covered
 						topics_covered -= 1;
 					}
 				}
@@ -97,7 +97,7 @@ for _ in range(int(input())):
 	arr = list(map(int, input().split()))
 
 	arr.sort()
-	cnt = [0] * (m + 1)
+	freq = [0] * (m + 1)
 	topics_covered = 0
 	res = float("inf")
 	j = 0
@@ -107,8 +107,8 @@ for _ in range(int(input())):
 		while j < n and topics_covered < m:
 			for x in factors[arr[j]]:
 				if x <= m:
-					cnt[x] += 1
-					if cnt[x] == 1:  # topic x covered for the first time
+					freq[x] += 1
+					if freq[x] == 1:  # topic x covered for the first time
 						topics_covered += 1
 
 			j += 1
@@ -119,8 +119,8 @@ for _ in range(int(input())):
 		# removing student
 		for x in factors[arr[i]]:
 			if x <= m:
-				cnt[x] -= 1
-				if cnt[x] == 0:  # topic x no longer covered
+				freq[x] -= 1
+				if freq[x] == 0:  # topic x no longer covered
 					topics_covered -= 1
 
 	print(-1 if res == float("inf") else res)
