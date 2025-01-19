@@ -9,14 +9,10 @@ author: Rameez Parwez
 
 ## Explanation
 
-A team is considered to be proficient if every number from $1$ to $m$ is covered by at least one of the student's smartness value. We will use a two-pointer approach on the sorted smartness values to minimize the maximum difference between any two students while ensuring the team covers all topics. A topic is covered if it's a factor of at least one student's smartness. We will keep track of this using a frequency array $freq$ to count how many times each topic is covered and a variable ${topics\_covered}$ to count how many topics are fully covered.
-
-At first, when we add a student to the team we iterate through all the factors of their smartness (up to $m$) and update $freq$. If a topic is covered for the first time (i.e., $freq[x] = 1$) we increase
-${topics\_covered}$ counter. Once all topics are covered, we calculate the difference between the current team's maximum and minimum smartness values and store the minimum difference encountered.
-
-Similarly, we do this when we remove a student from the team, but this time, instead of increasing $freq$, we decrease it. If a topic's frequency becomes $0$, we decrement ${topics\_covered}$, indicating that topic is no longer covered.
-
-We keep sliding the pointers and repeating this process to find the smallest range where all topics are covered.
+Let's use a sliding window technique on sorted smartness values to track how many topics are being covered as we add and remove a student.
+As we expand the team by moving the right pointer, we check the factors of each student's smartness to determine which topics they help cover.
+If all topics are covered, we calculate the difference between the highest and lowest smartness values in the current team.
+Then, we attempt to reduce the size of the team from the left to see if the range can be further minimized while still covering all topics.
 
 ## Implementation
 
