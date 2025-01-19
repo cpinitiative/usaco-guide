@@ -56,14 +56,14 @@ ll pref(ll upper) {
 	dp[0][first_digit][0] = 1;
 	for (int i = 1; i < first_digit; i++) { dp[0][i][1] = 1; }
 
-	int cur_sum = first_digit;
+	int curr_sum = first_digit;
 	for (int i = 1; i < n; i++) {
 		// case 1: we continue not have freedom
 		int next_digit = upper_str[i] - '0';
-		dp[i][cur_sum + next_digit][0] = 1;
+		dp[i][curr_sum + next_digit][0] = 1;
 
 		// case 2: we previously did not have freedom, but now we do
-		for (int j = 0; j < next_digit; j++) { dp[i][cur_sum + j][1]++; }
+		for (int j = 0; j < next_digit; j++) { dp[i][curr_sum + j][1]++; }
 
 		// case 3: we always had freedom
 		for (int j = 0; j < 10; j++) {
@@ -71,16 +71,14 @@ ll pref(ll upper) {
 				dp[i][prev_sum + j][1] += dp[i - 1][prev_sum][1];
 			}
 		}
-		cur_sum += next_digit;
+		curr_sum += next_digit;
 	}
 
 	ll ans = 0;
-
 	// answer for all current digit numbers
 	for (int sum = 0; sum < MAX_SUM; sum++) {
 		for (int free = 0; free < 2; free++) { ans += dp[n - 1][sum][free] * sum; }
 	}
-
 	// answer for all smaller digit numbers
 	ans += ans_pow10[n - 1];
 
