@@ -178,32 +178,42 @@ print(dp[(1 << n) - 1][n - 1])
 </LanguageSection>
 
 ## Merging Subsets
-In some problems, for a set $S$, it is not sufficient to transition from $S  \setminus \{i\}$. Instead, it is necessary to transition from $T$ for all $T \subset S$. In other words, all strict subsets of $S$. Although it may seem like there are $\mathcal{O}(2^N \cdot 2^N) = \mathcal{O}(4^N)$ transitions, but there are actually only $\mathcal{O}(3^N)$ transitions. This is because for each element $x$, there are three cases.
 
-Case 1: $x\in S$ and $x\in T$
+In some problems, for a set $S$, it is not sufficient to transition from $S  \setminus \{i\}$.
+Instead, it is necessary to transition from all *strict* subsets of $S$.
 
-Case 2: $x\in S$ and $x\notin T$
+Though it may seem like we have to do $\mathcal{O}(2^N \cdot 2^N) = \mathcal{O}(4^N)$ transitions,
+theres really only $\mathcal{O}(3^N)$ transitions!
 
-Case 3: $x\notin S$ and $x\notin T$
+To see why, let's count the number of ordered pairs $(T, S)$ where $T \subset S$.
+Instead of counting directly, notice that each element $x$ is either:
+1. In $T$ and $S$
+2. In neither
+3. In $S$ but not in $T$.
+If $x$ is in $T$ but not in $S$, $T$ isn't a valid subset.
 
-If $x\notin S$ and $x\in T$, $T$ is not a subset of $S$.
+Given that each element can be in three possible states, our overall complexity is actually $\mathcal{O}(3^N)$.
 
-Consider the implementation of this algorithm, based on tricks with bit operations.
+To implement this, we can do some bitwise tricks:
+
 <LanguageSection>
 <CPPSection>
 
 ```cpp
 for (int mask = 0; mask < (1 << n); mask++) {
-	for (int submask = mask; submask; submask = (submask - 1) & mask) {
-		... do dp here...
+	for (int submask = mask; submask != 0; submask = (submask - 1) & mask) {
+		int subset = mask ^ submask;
+		// do whatever you need to do here
 	}
 }
 ```
-Consider the inner loop. When we subtract $1$ from $\text{submask}$, the rightmost bit flips to a $0$ and all bits to the right of it will become $1$. Applying the bitwise AND with $\text{mask}$ removes all extra bits not in $\text{mask}$. From this process, all strict subsets of $\text{mask}$ are generated in increasing order as $\text{mask} \setminus \text{submask}$.
 
 </CPPSection>
 </LanguageSection>
 
+When we subtract $1$ from $\texttt{submask}$, the rightmost bit flips to a $0$ and all bits to the right of it will become $1$.
+Applying the bitwise AND with $\texttt{mask}$ removes all extra bits not in $\texttt{mask}$.
+From this process, we can get all strict subsets in increasing order by calculating $\texttt{mask} \oplus \texttt{submask}$, which does set subtraction.
 
 ### Problems
 
