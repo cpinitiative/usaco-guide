@@ -914,24 +914,24 @@ Note that we use 64-bit integers since $k$ and $v$ may be large.
 <CPPSection>
 
 ```cpp
-#include <bits/stdc++.h>
+#include <iostream>
+#include <map>
 
 using namespace std;
 
 int main() {
-	int Q;
-	cin >> Q;
-
-	map<int64_t, int64_t> a;
-	for (int i = 0; i < Q; ++i) {
+	int query_num;
+	cin >> query_num;
+	map<long long, long long> a;
+	for (int q = 0; q < query_num; q++) {
 		int t;
 		cin >> t;
 		if (t == 0) {
-			int64_t k, v;
+			long long k, v;
 			cin >> k >> v;
 			a[k] = v;
-		} else {
-			int64_t k;
+		} else if (t == 1) {
+			long long k;
 			cin >> k;
 			cout << a[k] << "\n";
 		}
@@ -946,26 +946,20 @@ int main() {
 import java.io.*;
 import java.util.*;
 
-public class AssociativeArray {
+public class Main {
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		StringTokenizer st = new StringTokenizer(br.readLine());
-
-		long N = Long.parseLong(st.nextToken());
+		int queryNum = Integer.parseInt(br.readLine());
 		HashMap<Long, Long> a = new HashMap<Long, Long>();
-		for (int i = 0; i < N; i++) {
-			st = new StringTokenizer(br.readLine());
+		for (int i = 0; i < queryNum; i++) {
+			StringTokenizer st = new StringTokenizer(br.readLine());
 			long t = Long.parseLong(st.nextToken());
 			long k = Long.parseLong(st.nextToken());
 			if (t == 0) {
 				long v = Long.parseLong(st.nextToken());
 				a.put(k, v);
-			} else {
-				if (a.get(k) == null) {
-					System.out.println(0);
-				} else {
-					System.out.println(a.get(k));
-				}
+			} else if (t == 1) {
+				System.out.println(a.getOrDefault(k, 0L));
 			}
 		}
 	}
@@ -978,15 +972,13 @@ public class AssociativeArray {
 Unfortunately, the straightforward solution fails a few tests specifically designed to make Python `dict`s run slowly:
 
 ```py
-Q = int(input())
-d = dict()
-
-for _ in range(Q):
+a = dict()
+for _ in range(int(input())):
 	nums = list(map(int, input().split()))
 	if nums[0] == 0:
-		d[nums[1]] = nums[2]
-	else:
-		print(d.get(nums[1], 0))
+		a[nums[1]] = nums[2]
+	elif nums[0] == 1:
+		print(a.get(nums[1], 0))
 ```
 
 To pass all the tests, we can use one of the workarounds mentioned for `set`.
@@ -997,19 +989,17 @@ import random
 RANDOM = random.randrange(2**62)
 
 
-def Wrapper(x):
+def wrap(x):
 	return x ^ RANDOM
 
 
-Q = int(input())
-d = dict()
-
-for _ in range(Q):
+a = dict()
+for _ in range(int(input())):
 	nums = list(map(int, input().split()))
 	if nums[0] == 0:
-		d[Wrapper(nums[1])] = nums[2]
-	else:
-		print(d.get(Wrapper(nums[1]), 0))
+		a[wrap(nums[1])] = nums[2]
+	elif nums[0] == 1:
+		print(a.get(wrap(nums[1]), 0))
 ```
 
 </PySection>
