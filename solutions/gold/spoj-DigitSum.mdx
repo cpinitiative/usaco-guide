@@ -1,0 +1,112 @@
+---
+id: spoj-DigitSum
+source: SPOJ
+title: Digit Sum
+author: Chongtian Ma
+---
+
+## Explanation
+
+Let's define the function $\mathtt{pref}(x)$ to return the sum of digits among all integers from $0$ to $x$ inclusive.
+Then, the answer for each query will be $\mathtt{pref}(r) - \mathtt{pref}(l-1)$.
+
+We can calculate $\mathtt{pref}(x)$ using digit dp. Let $n$ be the number of digits in $x$.
+The maximum sum of digits among all numbers with at most $n$ digits is $9n$.
+Under the problem constraints, $n$ can be at most $16$.
+
+We can define the following dp state:
+$\mathtt{dp[i][j][b]}$ = number of integers having exactly $i$ digits with sum of digits $j$ and a freedom value of $b$ (which is either $0$ or $1$).
+
+- If $b = 0$, then the first $i$ digits of the state is equivalent to the first $i$ digits of $x$.
+  In this case, when placing the $i+1$'th digit, it cannot exceed the $i+1$'th digit of $x$.
+
+- If $b = 1$, then there exists some $d$ where $d < i$ and the $d$-th digit that we placed is less than the $d$-th digit of $x$.
+  In this case, we already know our integer must be less than $x$, regardless of what digit we place next.
+
+For transitions, we must consider the three cases where $b$ remains $0$,
+$b$ remains $1$, and $b$ goes from $0$ to $1$.
+
+Finally, the sum of digits among all integers with exactly $i$ digits and does not exceed $x$ is given by $\sum_{j=0}^{9n} \sum_{b=0}^1 \mathtt{dp[n][j][b]} \cdot j$.
+However, we still have to add the sum of digits for all numbers with less than $n$ digits, which can be precalculated.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(n^2)$ for each query.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+
+const int MAX_LEN = 17;
+ll ans_pow10[MAX_LEN];
+
+ll pref(ll upper) {
+	string upper_str = to_string(upper);
+	int n = upper_str.length();
+	const int MAX_SUM = 9 * n + 1;
+	// dp[current length][current digit sum][do we have freedom?] = # numbers
+	vector<vector<vector<ll>>> dp(n, vector<vector<ll>>(MAX_SUM, vector<ll>(2)));
+
+	// initialize first digit
+	int first_digit = upper_str[0] - '0';
+	dp[0][first_digit][0] = 1;
+	for (int i = 1; i < first_digit; i++) { dp[0][i][1] = 1; }
+
+	int curr_sum = first_digit;
+	for (int i = 1; i < n; i++) {
+		// case 1: we continue not have freedom
+		int next_digit = upper_str[i] - '0';
+		dp[i][curr_sum + next_digit][0] = 1;
+
+		// case 2: we previously did not have freedom, but now we do
+		for (int j = 0; j < next_digit; j++) { dp[i][curr_sum + j][1]++; }
+
+		// case 3: we always had freedom
+		for (int j = 0; j < 10; j++) {
+			for (int prev_sum = 0; prev_sum < MAX_SUM - j; prev_sum++) {
+				dp[i][prev_sum + j][1] += dp[i - 1][prev_sum][1];
+			}
+		}
+		curr_sum += next_digit;
+	}
+
+	ll ans = 0;
+	// answer for all current digit numbers
+	for (int sum = 0; sum < MAX_SUM; sum++) {
+		for (int free = 0; free < 2; free++) { ans += dp[n - 1][sum][free] * sum; }
+	}
+	// answer for all smaller digit numbers
+	ans += ans_pow10[n - 1];
+
+	return ans;
+}
+
+int main() {
+	// precompute answer for [0, 10^i - 1]
+	ll pow10 = 1;
+	for (int i = 1; i < MAX_LEN; i++) {
+		pow10 *= 10;
+		ans_pow10[i] = pref(pow10 - 1);
+	}
+
+	int test_num;
+	cin >> test_num;
+	for (int t = 0; t < test_num; t++) {
+		ll l, r;
+		cin >> l >> r;
+		if (l == 0) {
+			// l - 1 < 0 which breaks things
+			cout << pref(r) << '\n';
+		} else {
+			cout << pref(r) - pref(l - 1) << '\n';
+		}
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>
