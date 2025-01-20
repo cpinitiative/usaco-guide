@@ -10,6 +10,7 @@ author: Rameez Parwez
 ## Explanation
 
 Let's use a sliding window technique on sorted smartness values to track how many topics are being covered as we add and remove a student.
+
 As we expand the team by moving the right pointer, we check the factors of each student's smartness to determine which topics they help cover.
 If all topics are covered, we calculate the difference between the highest and lowest smartness values in the current team.
 Then, we attempt to reduce the size of the team from the left to see if the range can be further minimized while still covering all topics.
@@ -28,7 +29,6 @@ const int M = 1e5;
 std::vector<int> factors[M + 1];
 
 int main() {
-
 	// Precompute factors for all numbers from 1 to M
 	for (int i = 1; i <= M; i++) {
 		for (int j = i; j <= M; j += i) { factors[j].push_back(i); }
@@ -39,13 +39,14 @@ int main() {
 	for (int t = 0; t < test_num; t++) {
 		int n, m;
 		std::cin >> n >> m;
-		std::vector<int> arr(n), freq(m + 1);
+		std::vector<int> arr(n);
+		std::vector<int> freq(m + 1);
 		for (int &x : arr) { std::cin >> x; }
 
 		std::sort(std::begin(arr), std::end(arr));
+
 		int topics_covered = 0;
 		int res = INT_MAX;
-
 		for (int i = 0, j = 0; i < n; i++) {
 			// adding student
 			while (j < n && topics_covered < m) {
@@ -71,6 +72,7 @@ int main() {
 				}
 			}
 		}
+
 		std::cout << (res == INT_MAX ? -1 : res) << '\n';
 	}
 }
