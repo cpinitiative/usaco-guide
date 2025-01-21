@@ -19,7 +19,51 @@ Once it is calculated, construct the resulting array by including elements in pr
 <CPPSection>
 
 ```cpp
+#include <iostream>
+#include <vector>
+#include <functional>
 
+const int MAX_N = 200001;
+
+int main() {
+    int n, k;
+    std::cin >> n >> k;
+    std::vector<int> freq(MAX_N);
+    std::vector<int> res;
+    for (int i = 0; i < n; i++) {
+        int x;
+        std::cin >> x;
+        freq[x] += 1;
+    }
+
+    std::function <bool(int)> can = [&] (int x) {
+        int ele_num = 0;
+        for (int i = 1; i < MAX_N; i++) {
+            ele_num += freq[i] / x;
+        }
+        return (ele_num >= k);
+    };
+
+    int lo = 0, hi = n;
+    while (lo < hi) {
+        int mid = (lo + hi + 1) >> 1;
+        if (can(mid)) {
+            lo = mid;
+        } else {
+            hi = mid - 1;
+        }
+    }
+
+    for (int i = 1; i < MAX_N; i++) {
+        for (int j = 0; j < freq[i] / lo; j++) {
+            res.push_back(i);
+        }   
+    }
+
+    for (int i = 0; i < k; i++) {
+        std::cout << res[i] << " \n"[i == k - 1];
+    }
+}
 ```
 
 </CPPSection>
