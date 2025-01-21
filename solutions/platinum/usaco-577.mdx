@@ -61,83 +61,78 @@ Modifying the algorithm for "lower mode" is left as an exercise to the reader.
 #include <bits/stdc++.h>
 using namespace std;
 
-struct segtree{
+struct segtree {
 	bool higher_mode;
 	int n;
 
-	struct item{
+	struct item {
 		int ans, bessie, elsie;
 	};
 
-	item merge(item a, item b){
+	item merge(item a, item b) {
 		int take = higher_mode ? min(a.elsie, b.bessie) : min(a.bessie, b.elsie);
-		return {a.ans + b.ans + take, a.bessie + b.bessie - take, a.elsie + b.elsie - take};
+		return {a.ans + b.ans + take, a.bessie + b.bessie - take,
+		        a.elsie + b.elsie - take};
 	}
 
 	item NEUTRAL = {0, 0, 0};
 
 	vector<item> seg;
 
-	segtree(int n, bool higher_mode){
-		this -> n = n;
-		this -> higher_mode = higher_mode;
+	segtree(int n, bool higher_mode) {
+		this->n = n;
+		this->higher_mode = higher_mode;
 		seg.resize(2 * n, NEUTRAL);
 	}
 
-	void update(int idx, item x){
+	void update(int idx, item x) {
 		idx += n;
 		seg[idx] = x;
-		while(idx /= 2){
-			seg[idx] = merge(seg[2 * idx], seg[2 * idx + 1]);
-		}
+		while (idx /= 2) { seg[idx] = merge(seg[2 * idx], seg[2 * idx + 1]); }
 	}
 
-	int query(){
+	int query() {
 		item left_item = NEUTRAL, right_item = NEUTRAL;
-		for(int l = n, r = 2 * n; l < r; l /= 2, r /= 2){
-			if(l % 2 == 1){
-				left_item = merge(left_item, seg[l++]);
-			}
-			if(r % 2 == 1){
-				right_item = merge(seg[--r], right_item);
-			}
+		for (int l = n, r = 2 * n; l < r; l /= 2, r /= 2) {
+			if (l % 2 == 1) { left_item = merge(left_item, seg[l++]); }
+			if (r % 2 == 1) { right_item = merge(seg[--r], right_item); }
 		}
 		return merge(left_item, right_item).ans;
 	}
 };
 
-int main(){
+int main() {
 	ifstream cin("cardgame.in");
 	ofstream cout("cardgame.out");
 
 	int n;
 	cin >> n;
-	vector<bool> contain(2*n);
+	vector<bool> contain(2 * n);
 	vector<int> elsie;
-	for(int i = 0; i < n; i++){
-		int x; cin >> x;
+	for (int i = 0; i < n; i++) {
+		int x;
+		cin >> x;
 		contain[--x] = true;
 		elsie.push_back(x);
 	}
 	vector<int> bessie;
-	for(int i = 0; i < 2*n; i++){
-		if(!contain[i]){
-			bessie.push_back(i);
-		}
+	for (int i = 0; i < 2 * n; i++) {
+		if (!contain[i]) { bessie.push_back(i); }
 	}
 
 	segtree higher_st(2 * n, true), lower_st(2 * n, false);
-	const segtree::item BESSIE_CARD = {0, 1, 0}, ELSIE_CARD = {0, 0, 1}, RESET = {0, 0, 0};
+	const segtree::item BESSIE_CARD = {0, 1, 0}, ELSIE_CARD = {0, 0, 1},
+	                    RESET = {0, 0, 0};
 
-	for(int i = 0; i < n; i++){
+	for (int i = 0; i < n; i++) {
 		higher_st.update(bessie[i], BESSIE_CARD);
 		higher_st.update(elsie[i], ELSIE_CARD);
 	}
 
 	int ans = higher_st.query();
-    // sort to remove smallest cards first for "lower mode"
+	// sort to remove smallest cards first for "lower mode"
 	sort(bessie.rbegin(), bessie.rend());
-	for(int i = n - 1; i >= 0; i--){
+	for (int i = n - 1; i >= 0; i--) {
 		higher_st.update(bessie[i], RESET);
 		higher_st.update(elsie[i], RESET);
 		lower_st.update(bessie[i], BESSIE_CARD);
