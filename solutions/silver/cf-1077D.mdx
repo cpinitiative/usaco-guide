@@ -20,50 +20,44 @@ Once it is calculated, construct the resulting array by including elements in pr
 <CPPSection>
 
 ```cpp
+#include <functional>
 #include <iostream>
 #include <vector>
-#include <functional>
 
 const int MAX_N = 200001;
 
 int main() {
-    int n, k;
-    std::cin >> n >> k;
-    std::vector<int> freq(MAX_N);
-    std::vector<int> res;
-    for (int i = 0; i < n; i++) {
-        int x;
-        std::cin >> x;
-        freq[x] += 1;
-    }
+	int n, k;
+	std::cin >> n >> k;
+	std::vector<int> freq(MAX_N);
+	std::vector<int> res;
+	for (int i = 0; i < n; i++) {
+		int x;
+		std::cin >> x;
+		freq[x] += 1;
+	}
 
-    std::function <bool(int)> can = [&] (int x) {
-        int ele_num = 0;
-        for (int i = 1; i < MAX_N; i++) {
-            ele_num += freq[i] / x;
-        }
-        return (ele_num >= k);
-    };
+	std::function<bool(int)> can = [&](int x) {
+		int ele_num = 0;
+		for (int i = 1; i < MAX_N; i++) { ele_num += freq[i] / x; }
+		return (ele_num >= k);
+	};
 
-    int lo = 0, hi = n;
-    while (lo < hi) {
-        int mid = (lo + hi + 1) >> 1;
-        if (can(mid)) {
-            lo = mid;
-        } else {
-            hi = mid - 1;
-        }
-    }
+	int lo = 0, hi = n;
+	while (lo < hi) {
+		int mid = (lo + hi + 1) >> 1;
+		if (can(mid)) {
+			lo = mid;
+		} else {
+			hi = mid - 1;
+		}
+	}
 
-    for (int i = 1; i < MAX_N; i++) {
-        for (int j = 0; j < freq[i] / lo; j++) {
-            res.push_back(i);
-        }   
-    }
+	for (int i = 1; i < MAX_N; i++) {
+		for (int j = 0; j < freq[i] / lo; j++) { res.push_back(i); }
+	}
 
-    for (int i = 0; i < k; i++) {
-        std::cout << res[i] << " \n"[i == k - 1];
-    }
+	for (int i = 0; i < k; i++) { std::cout << res[i] << " \n"[i == k - 1]; }
 }
 ```
 
@@ -74,12 +68,13 @@ int main() {
 MAX_N = 200001
 freq = [0] * (MAX_N)
 
-def can(x: int) -> bool:
-    ele_num = 0
-    for i in range(1, MAX_N):
-        ele_num += freq[i] // x
 
-    return (ele_num >= k)
+def can(x: int) -> bool:
+	ele_num = 0
+	for i in range(1, MAX_N):
+		ele_num += freq[i] // x
+
+	return ele_num >= k
 
 
 n, k = map(int, input().split())
@@ -87,21 +82,21 @@ arr = list(map(int, input().split()))
 res = []
 
 for x in arr:
-    freq[x] += 1
+	freq[x] += 1
 
 lo = 0
 hi = n
 
 while lo < hi:
-    mid = (lo + hi + 1) // 2
-    if can(mid):
-        lo = mid
-    else:
-        hi = mid - 1
+	mid = (lo + hi + 1) // 2
+	if can(mid):
+		lo = mid
+	else:
+		hi = mid - 1
 
 for i in range(1, MAX_N):
-    for j in range(0, freq[i] // lo):
-        res.append(i)
+	for j in range(0, freq[i] // lo):
+		res.append(i)
 
 print(*res[:k])
 ```
