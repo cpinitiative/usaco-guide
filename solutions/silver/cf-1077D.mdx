@@ -67,4 +67,43 @@ int main() {
 ```
 
 </CPPSection>
+<PySection>
+
+```py
+MAX_N = 200001
+freq = [0] * (MAX_N)
+
+def can(x: int) -> bool:
+    ele_num = 0
+    for i in range(1, MAX_N):
+        ele_num += freq[i] // x
+
+    return (ele_num >= k)
+
+
+n, k = map(int, input().split())
+arr = list(map(int, input().split()))
+res = []
+
+for x in arr:
+    freq[x] += 1
+
+lo = 0
+hi = n
+
+while lo < hi:
+    mid = (lo + hi + 1) // 2
+    if can(mid):
+        lo = mid
+    else:
+        hi = mid - 1
+
+for i in range(1, MAX_N):
+    for j in range(0, freq[i] // lo):
+        res.append(i)
+
+print(*res[:k])
+```
+
+</PySection>
 </LanguageSection>
