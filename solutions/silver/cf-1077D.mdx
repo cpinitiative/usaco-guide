@@ -20,7 +20,6 @@ Once it is calculated, construct the resulting array by including elements in pr
 <CPPSection>
 
 ```cpp
-#include <functional>
 #include <iostream>
 #include <vector>
 
@@ -37,7 +36,7 @@ int main() {
 		freq[x] += 1;
 	}
 
-	std::function<bool(int)> can = [&](int x) {
+	auto can = [&](int x) -> bool {
 		int ele_num = 0;
 		for (int i = 1; i <= MAX_N; i++) { ele_num += freq[i] / x; }
 		return (ele_num >= k);
@@ -45,7 +44,7 @@ int main() {
 
 	int lo = 0, hi = n;
 	while (lo < hi) {
-		int mid = (lo + hi + 1) >> 1;
+		int mid = (lo + hi + 1) / 2;
 		if (can(mid)) {
 			lo = mid;
 		} else {
