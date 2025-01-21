@@ -196,7 +196,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
     },
     {
       name: 'Misc. Topics',
-      items: ['PIE', 'matrix-expo', 'bitsets', 'DC-DP'],
+      items: ['PIE', 'matrix-expo', 'bitsets', 'DC-DP', 'dp-sos'],
     },
     {
       name: 'Conclusion',
@@ -234,7 +234,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
     },
     {
       name: 'Dynamic Programming',
-      items: ['comb-sub', 'dp-more', 'dp-sos'],
+      items: ['comb-sub', 'dp-more'],
     },
     {
       name: 'Flows',
