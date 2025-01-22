@@ -1,0 +1,123 @@
+---
+id: spoj-pt07j
+source: SPOJ
+title: Query on a tree III
+author: Nigar Hajiyeva
+---
+
+## Implementation
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+#define ll long long
+#define vi vector<ll>
+#define pb push_back
+#define INF 100000000000
+#define f first
+#define pi pair<int,int>
+#define vpi vector<pi>
+#define s second
+
+const int MAX = 1e5+1, mx = 6e7+1;
+
+vi g[MAX+5],order;
+ll sz[MAX+5], L[mx+5], R[mx+5], trs[MAX+5], t[mx+5];
+ll mtch[MAX+5];
+ll nxt = 1;
+
+ll build(int l, int r){
+    ll nw = ++nxt;
+    if(l==r) return nw;
+    int m = (l+r)/2;
+    L[nw] = build(l,m);
+    R[nw] = build(m+1,r);
+    return nw;
+}
+
+void dfs(int from,int p){
+    order.pb(from);
+    sz[from]=1;
+    for(int to : g[from]){
+        if(to==p)continue;
+        dfs(to,from);
+        sz[from] += sz[to];
+    }
+}
+
+ll update(int v, int l, int r, int pos){
+    ll nw = ++nxt;
+    if(l==r){
+        t[nw]=1;
+        return nw;
+    }
+    L[nw]=L[v];
+    R[nw] =R[v];
+    ll m = (l+r)/2;
+    if(pos<=m) L[nw] =update(L[v], l,m,pos);
+    else R[nw] = update(R[v], m+1,r,pos);
+    t[nw] = t[L[nw]]+t[R[nw]];
+    return nw;
+}
+
+int query(int add, int sub, int l, int r,int k){
+    if(l==r){
+    	return l;
+    }
+    ll m = (l+r)/2;
+    ll cnt = (t[L[add]]-t[L[sub]]);
+    if(k<=cnt) return query(L[add], L[sub],l,m,k);
+    else return query(R[add], R[sub], m+1,r,k-cnt);
+}
+
+int main(){
+    ios_base::sync_with_stdio(0);
+    cin.tie(0);
+    cout.tie(0);
+    ll n,q,a,b,c;
+    cin >> n;
+    ll val[n];
+    vi compr;
+    map<ll,ll>mp;
+    for(int i = 1; i<= n; i++){
+        cin >> val[i];
+        compr.pb(val[i]);
+        mp[val[i]]=i;
+    }
+    compr.pb(-INF);
+    sort(compr.begin(), compr.end());
+    compr.resize(unique(compr.begin(),compr.end())- compr.begin());
+    for(int i = 1; i<= n; i++){
+        val[i] = lower_bound(compr.begin(), compr.end(), val[i]) - compr.begin();
+    }
+
+    for(int i = 1; i<n; i++){
+        cin >> a >> b;
+        g[a].pb(b);
+        g[b].pb(a);
+    }
+    order.pb(0);
+    dfs(1,0);
+    ll root = build(1,MAX);
+    trs[0]=root;
+    for(int i =1; i<= n; i++){
+       root  = update(root,1,MAX, val[order[i]]); 
+        trs[order[i]]=root;
+        mtch[order[i]] = i;
+    }
+
+    cin >>q;
+    while(q--){
+        cin >> a >> c;
+        ll loc = order[mtch[a]+sz[a]-1];
+        ll bef  = order[mtch[a]-1];
+        cout << mp[compr[query(trs[loc], trs[bef],1,MAX,c)]]<<endl;
+    }
+}
+```
+
+</CPPSection>
+</LanguageSection>
