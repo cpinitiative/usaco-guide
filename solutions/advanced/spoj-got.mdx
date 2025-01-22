@@ -18,130 +18,126 @@ using namespace std;
 #define pb push_back
 #define INF 100000000000
 
-const int MAX = 1e5+10, mxi = 7e6, LOG = 20;
-ll L[mxi+1], R[mxi+1], t[mxi+1], trs[MAX+1], up[MAX+1][LOG+1];
-ll tin[MAX+1], tout[MAX+1], val[MAX+1];
-vi g[MAX+1];
+const int MAX = 1e5 + 10, mxi = 7e6, LOG = 20;
+ll L[mxi + 1], R[mxi + 1], t[mxi + 1], trs[MAX + 1], up[MAX + 1][LOG + 1];
+ll tin[MAX + 1], tout[MAX + 1], val[MAX + 1];
+vi g[MAX + 1];
 bool found[MAX];
 ll nxt = 0, timer = 0;
 
 int build(int v, int l, int r) {
-    int nw = ++nxt;
-    if (l == r) return nw;
-    int m = (l + r) / 2;
-    L[nw] = build(nw, l, m);
-    R[nw] = build(nw, m + 1, r);
-    return nw;
+	int nw = ++nxt;
+	if (l == r) return nw;
+	int m = (l + r) / 2;
+	L[nw] = build(nw, l, m);
+	R[nw] = build(nw, m + 1, r);
+	return nw;
 }
 
 ll update(int v, int l, int r, int pos) {
-    int nw = ++nxt;
-    if (l == r) {
-        t[nw]=t[v]+1;
-        return nw;
-    }
-    L[nw] = L[v];
-    R[nw] = R[v];
-    int m = (l + r) / 2;
-    if (pos <= m) L[nw] = update(L[v], l, m, pos);
-    else R[nw] = update(R[v], m + 1, r, pos);
-    t[nw] = t[L[nw]] + t[R[nw]];
-    return nw;
+	int nw = ++nxt;
+	if (l == r) {
+		t[nw] = t[v] + 1;
+		return nw;
+	}
+	L[nw] = L[v];
+	R[nw] = R[v];
+	int m = (l + r) / 2;
+	if (pos <= m) L[nw] = update(L[v], l, m, pos);
+	else R[nw] = update(R[v], m + 1, r, pos);
+	t[nw] = t[L[nw]] + t[R[nw]];
+	return nw;
 }
 
 void dfs(int from, int p) {
-    int root = trs[p];
-    root = update(root, 1, MAX, val[from]);
-    trs[from] = root;
-    tin[from] = ++timer;
-    if (from != 1) up[from][0] = p;
-    else up[from][0] = from;
-    
-    for (int i = 1; i < LOG; i++) {
-        up[from][i] = up[up[from][i-1]][i-1];
-    }
+	int root = trs[p];
+	root = update(root, 1, MAX, val[from]);
+	trs[from] = root;
+	tin[from] = ++timer;
+	if (from != 1) up[from][0] = p;
+	else up[from][0] = from;
 
-    for (int to : g[from]) {
-        if (to == p) continue;
-        dfs(to, from);
-    }
-    tout[from] = timer;
+	for (int i = 1; i < LOG; i++) { up[from][i] = up[up[from][i - 1]][i - 1]; }
+
+	for (int to : g[from]) {
+		if (to == p) continue;
+		dfs(to, from);
+	}
+	tout[from] = timer;
 }
 
-bool is_ancestor(int u, int v) {
-    return tin[u] <= tin[v] && tout[u] >= tout[v];
-}
+bool is_ancestor(int u, int v) { return tin[u] <= tin[v] && tout[u] >= tout[v]; }
 
 int lca(int u, int v) {
-    if (is_ancestor(u, v)) return u;
-    if (is_ancestor(v, u)) return v;
-    for (int i = LOG - 1; i >= 0; i--) {
-        if (!is_ancestor(up[u][i], v)) u = up[u][i];
-    }
-    return up[u][0];
+	if (is_ancestor(u, v)) return u;
+	if (is_ancestor(v, u)) return v;
+	for (int i = LOG - 1; i >= 0; i--) {
+		if (!is_ancestor(up[u][i], v)) u = up[u][i];
+	}
+	return up[u][0];
 }
 
 ll query(int a, int b, int anc, int l, int r, int k) {
-    if (l == r) {
-      ll cnt = t[a] + t[b] - 2*t[anc];
-      return cnt;
-    }
-    int m = (l + r) / 2;
-    if (k<=m) return query(L[a], L[b], L[anc], l, m, k);
-    else return query(R[a], R[b], R[anc], m + 1, r, k);
+	if (l == r) {
+		ll cnt = t[a] + t[b] - 2 * t[anc];
+		return cnt;
+	}
+	int m = (l + r) / 2;
+	if (k <= m) return query(L[a], L[b], L[anc], l, m, k);
+	else return query(R[a], R[b], R[anc], m + 1, r, k);
 }
 
 int main() {
-    ios_base::sync_with_stdio(0);
-    cin.tie(0);
-    cout.tie(0);
-    int n, m, a, b, k, common, pr;
-    
-	  while(cin >> n >> m){   
-        nxt = 0, timer = 0; 
-        memset(t,0,sizeof(t));  
-        vi compr;
-        
-        for (int i = 1; i <= n; i++) {
-            cin >> val[i];
-            g[i].clear();
-            compr.pb(val[i]);
-        }
-        
-        compr.pb(-INF);
-        sort(compr.begin(),compr.end());
-        compr.resize(unique(compr.begin(),compr.end()) - compr.begin());
-        
-        for (int i = 1; i <= n; i++) {
-            val[i] = lower_bound(compr.begin(),compr.end(),val[i]) - compr.begin();
-        }
-        
-        for (int i = 1; i < n; i++) {
-            cin >> a >> b;
-            g[a].pb(b);
-            g[b].pb(a);
-        }
-        
-        trs[0] = build(nxt, 1, MAX);
-        dfs(1, 0);
-        for(int i = 0; i < m; i++) {
-            cin >> a >> b >> k;
-            auto loc = lower_bound(compr.begin(),compr.end(),k);
-            if(loc == compr.end()|| (*loc)!=k){
-                cout << "NotFind\n";  
-                continue;
-            }
-            k = loc-compr.begin();
-            common = lca(a, b);
-            if(val[common] == k){
-                cout << "Find\n";
-                continue;
-            }
-            if(query(trs[a], trs[b], trs[common], 1, MAX, k)) cout << "Find\n";
-            else cout << "NotFind\n";
-        }
-        cout <<'\n';
-    }
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
+	cout.tie(0);
+	int n, m, a, b, k, common, pr;
+
+	while (cin >> n >> m) {
+		nxt = 0, timer = 0;
+		memset(t, 0, sizeof(t));
+		vi compr;
+
+		for (int i = 1; i <= n; i++) {
+			cin >> val[i];
+			g[i].clear();
+			compr.pb(val[i]);
+		}
+
+		compr.pb(-INF);
+		sort(compr.begin(), compr.end());
+		compr.resize(unique(compr.begin(), compr.end()) - compr.begin());
+
+		for (int i = 1; i <= n; i++) {
+			val[i] = lower_bound(compr.begin(), compr.end(), val[i]) - compr.begin();
+		}
+
+		for (int i = 1; i < n; i++) {
+			cin >> a >> b;
+			g[a].pb(b);
+			g[b].pb(a);
+		}
+
+		trs[0] = build(nxt, 1, MAX);
+		dfs(1, 0);
+		for (int i = 0; i < m; i++) {
+			cin >> a >> b >> k;
+			auto loc = lower_bound(compr.begin(), compr.end(), k);
+			if (loc == compr.end() || (*loc) != k) {
+				cout << "NotFind\n";
+				continue;
+			}
+			k = loc - compr.begin();
+			common = lca(a, b);
+			if (val[common] == k) {
+				cout << "Find\n";
+				continue;
+			}
+			if (query(trs[a], trs[b], trs[common], 1, MAX, k)) cout << "Find\n";
+			else cout << "NotFind\n";
+		}
+		cout << '\n';
+	}
 }
 ```
 
