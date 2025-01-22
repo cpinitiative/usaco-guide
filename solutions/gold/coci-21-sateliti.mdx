@@ -1,0 +1,161 @@
+---
+id: coci-21-sateliti
+source: COCI
+title: 2021 - Sateliti
+author: Justin Ji
+---
+
+[Official Analysis](https://dmoj.ca/problem/coci20c3p3/editorial)
+
+<Spoiler title="Hint 1">
+
+A neat trick we can use to handle rotations is to augment our array.
+
+Say we have an array of length $n$ and want to consider all cyclic rotations
+of the array. Then, we can construct an array of size $2n$, where each element
+$i$ is mapped to $i$ and $i+n$. From there, we just need to consider every
+length $n$ subarray of this augmented array.
+
+We can use this same idea on our 2D grid. Thus, the problem reduces to finding
+the lexicographically smallest $n$ row by $m$ column subgrid in our augmented
+grid.
+
+</Spoiler>
+
+<Spoiler title="Hint 2">
+
+Consider the process of lexicographically comparing two strings. We first loop
+through a bunch of identical characters, then run into an index where the two
+strings differ.
+
+To compare subgrids fast, we want to cut through all the identical characters
+as fast as possible. Recall the string problem of finding the least
+common prefix between two strings: one solution is to use binary search and
+hashing. How can we extend this solution to a grid?
+
+</Spoiler>
+
+<Spoiler title="Solution">
+
+To find the best rectangle, we brute force every relevant subgrid of our augmented
+grid, and find the best one.
+
+Comparing two rectangles lexicographically is a bit tricky. Recall the
+least common prefix problem: we binary search on the last index where the two
+strings have equivalent hashes.
+
+We separate the problem of finding the first differing index into two parts:
+1. Finding the first row where there are differing values
+2. Within this first row, finding the first index where the positions differ
+
+Step 2 is easily done with binary search and hashing. But how do we accomplish
+our goal in step 1?
+
+For a given cell $(i, j)$, we only care about one subarray in row $i$, that
+being $[j, j + m)$. Thus, what we can do is hash our hashes: we keep
+a hash table for each column that keeps track of the row hashes.
+
+Similar to step 2, we use binary search to complete step 1 of the comparison process.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(NM \log(NM))$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using ll = long long;
+
+constexpr int M = 1e9 + 9;
+constexpr int B = 9973;
+
+int main() {
+	int n, m;
+	cin >> n >> m;
+	vector grid(2 * n, vector<int>(2 * m));
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < m; j++) {
+			char c;
+			cin >> c;
+			grid[i][j] = c;
+			grid[i + n][j] = c;
+			grid[i][j + m] = c;
+			grid[i + n][j + m] = c;
+		}
+	}
+
+	vector<ll> pows(max(n, m) + 1);
+	pows[0] = 1;
+	for (int i = 1; i < pows.size(); i++) { pows[i] = (pows[i - 1] * B) % M; }
+
+	// col[i] is our polynomial hash array for the i'th row
+	// row[i] is the hash of our hashes for the i'th column
+	vector row(m, vector<int>(2 * n));
+	vector col(2 * n, vector<int>(2 * m));
+
+	/** @return the hash of the subarray [l, r] */
+	const auto get_hash = [&](const vector<int> &arr, int l, int r) -> int {
+		ll raw = arr[r] - pows[r - l + 1] * (l <= 0 ? 0 : arr[l - 1]);
+		return (raw % M + M) % M;
+	};
+
+	for (int i = 0; i < 2 * n; i++) {
+		ll cur = 0;
+		for (int j = 0; j < 2 * m; j++) {
+			cur = (cur * B + grid[i][j]) % M;
+			col[i][j] = cur;
+		}
+
+		for (int j = 0; j < m; j++) {
+			ll prv = (i > 0) ? row[j][i - 1] : 0;
+			row[j][i] = (prv * B + get_hash(col[i], j, j + m - 1)) % M;
+		}
+	}
+
+	int best_r = 0, best_c = 0;
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < m; j++) {
+			int lo = 0, hi = n - 1;
+			while (lo < hi) {
+				int mid = (lo + hi) / 2;
+				bool mismatch = get_hash(row[best_c], best_r, best_r + mid) !=
+				                get_hash(row[j], i, i + mid);
+				(mismatch) ? hi = mid : lo = mid + 1;
+			}
+
+			if (get_hash(row[best_c], best_r, best_r + n - 1) ==
+			    get_hash(row[j], i, i + n - 1)) {
+				continue;
+			}
+
+			int off = lo;
+
+			lo = 0, hi = m - 1;
+			while (lo < hi) {
+				int mid = (lo + hi) / 2;
+				bool mismatch = get_hash(col[best_r + off], best_c, best_c + mid) !=
+				                get_hash(col[i + off], j, j + mid);
+				(mismatch) ? hi = mid : lo = mid + 1;
+			}
+
+			if (grid[i + off][j + lo] < grid[best_r + off][best_c + lo]) {
+				best_r = i, best_c = j;
+			}
+		}
+	}
+
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < m; j++) { cout << char(grid[best_r + i][best_c + j]); }
+		cout << "\n";
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
+</Spoiler>
