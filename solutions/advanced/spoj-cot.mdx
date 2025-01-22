@@ -1,0 +1,144 @@
+---
+id: spoj-cot
+source: SPOJ
+title: Count on a tree
+author: Nigar Hajiyeva
+---
+
+## Implementation
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+#define ll long long
+#define f first
+#define s second
+#define vi vector<ll>
+#define pb push_back
+#define endl '\n'
+#define INF 100000000000
+
+const int MAX = 2e5+10, mxi = 7e6, LOG = 20;
+ll L[mxi+1], R[mxi+1],t[mxi+1], trs[MAX+1], up[MAX+1][LOG+1];
+ll tin[MAX+1], tout[MAX+1],val[MAX+1];
+vi g[MAX+1];
+ll nxt = 0, timer = 0;
+
+int build(int v, int l, int r){
+    int nw = ++nxt;
+    if(l==r) return nw;
+    int m = (l+r)/2;
+    
+    L[v] = build(nw, l,m);
+    R[v]= build(nw,m+1,r);
+    return nw;
+}
+
+
+ll update(int v, int l,int r, int pos){
+    int nw = ++nxt;
+    
+    if(l==r){
+        t[nw]+=t[v]+1;
+        return nw;
+    }
+    
+    L[nw]= L[v];
+    R[nw] = R[v];
+    int m = (l+r)/2;
+
+    if(pos<=m) L[nw] = update(L[v],l,m,pos);
+    else R[nw] = update(R[v],m+1,r,pos);
+
+    t[nw] = t[L[nw]]+t[R[nw]];
+    return nw;
+}
+
+void dfs(int from,int p){
+    int root = trs[p];
+    root = update(root, 1,MAX, val[from]); 
+
+    trs[from]=root;
+    tin[from] =++timer;
+    
+    if(from!=1) up[from][0]=p;
+    else up[from][0]=from;
+
+    for(int i =1; i<=LOG-1;i++){
+        up[from][i]= up[up[from][i-1]][i-1];
+    }
+
+    for(int to : g[from]){
+        if(to==p) continue;
+        dfs(to,from);
+    }
+    tout[from] =timer;
+}
+
+
+bool is_ancestor(int u,int v){
+    return tin[u]<=tin[v] && tout[u]>=tout[v];
+}
+
+int lca(int u,int v){
+    if(is_ancestor(u,v)) return u;
+    if(is_ancestor(v,u)) return v;
+    for(int i = LOG-1; i>= 0; i--){
+        if(is_ancestor(up[u][i],v)) continue;
+         u= up[u][i];
+    }
+    return up[u][0];
+}
+
+ll query(int a, int b, int anc, int pr, int l, int r, int k){
+    if(l==r){
+        return l;
+    }
+    int m  = (l+r)/2;
+    ll cnt = t[L[a]] + t[L[b]] - t[L[anc]]-t[L[pr]];
+    if(cnt>=k) return query(L[a], L[b], L[anc],L[pr], l,m,k);
+    else return query(R[a], R[b], R[anc], R[pr], m+1,r,k-cnt);
+}
+
+int main(){
+    int n,m,a,b,k,common,pr;
+    cin >> n >> m;
+    vi compr;
+    compr.pb(-INF);
+
+    for(int i = 1; i<= n; i++){
+        cin >> val[i];
+        compr.pb(val[i]);
+    }
+
+    sort(compr.begin(),compr.end());
+    compr.resize(unique(compr.begin(),compr.end()) - compr.begin());
+    
+    for(int i = 1;i<= n; i++){
+        val[i]= (lower_bound(compr.begin(), compr.end(),val[i])-compr.begin());
+    }
+    
+    for(int i = 1; i< n; i++){
+        cin >> a >> b;
+        g[a].pb(b);
+        g[b].pb(a);
+    }
+    
+    trs[0]=build(nxt,1,MAX);
+    dfs(1,0);
+
+    for(int i =0; i < m; i++){
+        cin >> a >> b>>k;
+        common = lca(a,b);
+        pr = up[common][0];
+        if(common == 1) pr = 0;
+        cout << compr[query(trs[a], trs[b], trs[common],trs[pr],1,MAX,k)]<<endl;
+    }    
+} 
+```
+
+</CPPSection>
+</LanguageSection>
