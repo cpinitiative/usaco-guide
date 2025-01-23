@@ -80,9 +80,7 @@ vector<int> sos(1 << n);
 for (int i = 0; i < (1 << n); i++) {
 	sos[i] = a[0];
 	// iterate over all subsets of i directly
-	for (int j = i; j > 0; j = (j - 1) & i) {
-		sos[i] += a[j];
-	}
+	for (int j = i; j > 0; j = (j - 1) & i) { sos[i] += a[j]; }
 }
 ```
 
@@ -126,8 +124,7 @@ for (int mask = 0; mask < (1 << n); mask++) {
 	for (int x = 0; x < n; x++) {
 		if (mask & (1 << x)) {
 			dp[mask][x] = dp[mask][x - 1] + dp[mask ^ (1 << x)][x - 1];
-		}
-		else {
+		} else {
 			dp[mask][x] = dp[mask][x - 1];
 		}
 	}
