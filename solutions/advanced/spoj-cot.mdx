@@ -7,9 +7,9 @@ author: Nigar Hajiyeva
 ## Explanation
 
 This code solves the "Count on a Tree" problem using a persistent segment tree.
-In this code, a persistent segment tree is built for each node in the tree by modifying that of its parent. 
+In this code, a persistent segment tree is built for each node in the tree by modifying that of its parent.
 
-Each persistent segment tree keeps the frequency of numbers on the way from the root node to itself. 
+Each persistent segment tree keeps the frequency of numbers on the way from the root node to itself.
 
 
 Binary lifting is used to find the lowest common ancestor (LCA) of the two nodes to subtract the frequencies of numbers that lie from the root node to the lowest common ancestor. This is used to accurately maintain the count of appearances of numbers on the path from a to b.
@@ -32,7 +32,8 @@ using ll = long long;
 #define pb push_back
 #define endl '\n'
 const int MAX = 2e5 + 10, MAX_NODES = 7e6, LOG = 20;
-int L[MAX_NODES + 1], R[MAX_NODES + 1], t[MAX_NODES + 1], trs[MAX + 1],up[MAX + 1][LOG + 1];
+int L[MAX_NODES + 1], R[MAX_NODES + 1], t[MAX_NODES + 1], trs[MAX + 1],
+    up[MAX + 1][LOG + 1];
 int tin[MAX + 1], tout[MAX + 1], val[MAX + 1];
 vi g[MAX + 1];
 ll nxt = 0, timer = 0;
@@ -58,8 +59,11 @@ ll update(int v, int l, int r, int pos) {
 	R[nw] = R[v];
 	int m = (l + r) / 2;
 
-	if (pos <= m) {L[nw] = update(L[v], l, m, pos);}
-	else {R[nw] = update(R[v], m + 1, r, pos);}
+	if (pos <= m) {
+		L[nw] = update(L[v], l, m, pos);
+	} else {
+		R[nw] = update(R[v], m + 1, r, pos);
+	}
 
 	t[nw] = t[L[nw]] + t[R[nw]];
 	return nw;
@@ -72,10 +76,13 @@ void dfs(int from, int p) {
 	trs[from] = root;
 	tin[from] = ++timer;
 
-	if (from != 1) {up[from][0] = p;}
-	else {up[from][0] = from;}
+	if (from != 1) {
+		up[from][0] = p;
+	} else {
+		up[from][0] = from;
+	}
 
-	for (int i = 1; i < LOG ; i++) { up[from][i] = up[up[from][i - 1]][i - 1]; }
+	for (int i = 1; i < LOG; i++) { up[from][i] = up[up[from][i - 1]][i - 1]; }
 
 	for (int to : g[from]) {
 		if (to == p) continue;
@@ -106,11 +113,12 @@ ll query(int a, int b, int anc, int pr, int l, int r, int k) {
 
 int main() {
 	ios_base::sync_with_stdio(0);
-	cin.tie(0); cout.tie(0);
+	cin.tie(0);
+	cout.tie(0);
 	int n, m;
 	cin >> n >> m;
 	vi compr;
-    compr.pb(-INT_MAX);
+	compr.pb(-INT_MAX);
 
 	for (int i = 1; i <= n; i++) {
 		cin >> val[i];
@@ -123,9 +131,9 @@ int main() {
 	for (int i = 1; i <= n; i++) {
 		val[i] = lower_bound(compr.begin(), compr.end(), val[i]) - compr.begin();
 	}
-	
+
 	for (int i = 1; i < n; i++) {
-        int a, b;
+		int a, b;
 		cin >> a >> b;
 		g[a].pb(b);
 		g[b].pb(a);
@@ -135,12 +143,12 @@ int main() {
 	dfs(1, 0);
 
 	for (int i = 0; i < m; i++) {
-        int a, b, k;
+		int a, b, k;
 		cin >> a >> b >> k;
-        int common, pr;
+		int common, pr;
 		common = lca(a, b);
 		pr = up[common][0];
-		if (common == 1) {pr = 0;}
+		if (common == 1) { pr = 0; }
 		cout << compr[query(trs[a], trs[b], trs[common], trs[pr], 1, MAX, k)] << endl;
 	}
 }
