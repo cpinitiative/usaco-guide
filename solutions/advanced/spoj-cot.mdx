@@ -7,10 +7,23 @@ author: Nigar Hajiyeva
 ## Explanation
 
 This code solves the "Count on a Tree" problem using a persistent segment tree.
-In this code, a persistent segment tree is built for each node in the tree by modifying that of its parent.
+In this code, a persistent segment tree is built for each node in the tree by modifying that of its parent. 
 
-Each persistent segment tree keeps the frequency of numbers on the way from the root node to itself.
+Each persistent segment tree keeps the frequency of numbers on the way from the root node to itself. When asked for the kth minimum node in the path of u to v, the code first determines the lowest common ancestor (LCA). Next, we run a binary search using the frequency values from the persistent segment tree of the three nodes.      
 
+<LanguageSection>
+<CPPSection>
+
+```cpp
+
+ll cnt = t[L[a]] + t[L[b]] - t[L[anc]] - t[L[pr]];
+
+```
+
+</CPPSection>
+</LanguageSection>
+
+Since the values that are not on the path of u and v, but on the path from root node to the nodes u and v, just considering the persistent segment trees of these nodes would produce wrong answers. We subtract the frequencies of nodes from root node to the LCA and its parents because we count the nodes twice from root node to the LCA. In addition, since the lca is on the path of u to v, we subtract the frequencies from the LCA and parents of the LCA to consider the value of the LCA.
 
 Binary lifting is used to find the lowest common ancestor (LCA) of the two nodes to subtract the frequencies of numbers that lie from the root node to the lowest common ancestor. This is used to accurately maintain the count of appearances of numbers on the path from a to b.
 
@@ -18,6 +31,7 @@ Binary lifting is used to find the lowest common ancestor (LCA) of the two nodes
 Value compression is used to effectively handle large numbers which would potentially create a problem when used for indexing.
 
 **Time Complexity:** $\mathcal{O}((N+M) \cdot \log{N})$
+
 
 ## Implementation
 
