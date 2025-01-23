@@ -78,10 +78,10 @@ int n = 20;
 vector<int> a(1 << n);
 vector<int> sos(1 << n);
 for (int i = 0; i < (1 << n); i++) {
+	sos[i] = a[0];
 	// iterate over all subsets of i directly
-	for (int j = (i - 1) & i;; j = (j - 1) & i) {
+	for (int j = i; j > 0; j = (j - 1) & i) {
 		sos[i] += a[j];
-		if (j == 0) break;
 	}
 }
 ```
@@ -103,7 +103,7 @@ More formally,
 
 $\texttt{SOS}(mask, x) = \left\{
 	\begin{array}{ c l }
-		\texttt{SOS}(\texttt{mask}, x - 1) + \texttt{SOS}(\texttt{mask} - 2^i, x - 1) & \quad \textrm{if } |2^i \wedge \texttt{mask}| > 0 \\
+		\texttt{SOS}(\texttt{mask}, x - 1) + \texttt{SOS}(\texttt{mask} - 2^x, x - 1) & \quad \textrm{if } |2^x \& \texttt{mask}| > 0 \\
 		\texttt{SOS}(\texttt{mask}, x - 1) & \quad \textrm{otherwise}
 	\end{array}
 \right.$
@@ -124,8 +124,12 @@ vector<int> sos(1 << n);
 for (int mask = 0; mask < (1 << n); mask++) {
 	dp[mask][-1] = a[mask];
 	for (int x = 0; x < n; x++) {
-		dp[mask][x] = dp[mask][x - 1];
-		if (mask & (1 << x)) { dp[mask][x] += dp[mask - (1 << x)][x - 1]; }
+		if (mask & (1 << x)) {
+			dp[mask][x] = dp[mask][x - 1] + dp[mask ^ (1 << x)][x - 1];
+		}
+		else {
+			dp[mask][x] = dp[mask][x - 1];
+		}
 	}
 	sos[mask] = dp[mask][n - 1];
 }
