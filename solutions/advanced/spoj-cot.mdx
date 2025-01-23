@@ -4,6 +4,22 @@ source: SPOJ
 title: Count on a tree
 author: Nigar Hajiyeva
 ---
+## Explanation
+
+This code solves the "Count on a Tree" problem using a persistent segment tree. It efficiently handles queries on a tree to find the k-th smallest value in the path between two nodes. 
+
+**Key steps:**
+
+Persistent Segment Tree Construction: Builds a segment tree where each update creates a new version, allowing access to historical states.
+
+DFS for Tree Traversal: Computes entry/exit times (tin/tout) and initializes the segment tree for each node.
+
+LCA Calculation: Uses binary lifting to find the Lowest Common Ancestor (LCA) of two nodes.
+
+Value Compression: Compresses the node values to handle large numbers efficiently, making them suitable for indexing in the segment tree.
+
+
+**Time Complexity:** $\mathcal{O}((N+M) \cdot \log{N})$
 
 ## Implementation
 
@@ -13,17 +29,14 @@ author: Nigar Hajiyeva
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
-#define ll long long
-#define f first
-#define s second
+using ll = long long;
 #define vi vector<ll>
 #define pb push_back
-#define endl '\n'
 #define INF 100000000000
 
-const int MAX = 2e5 + 10, mxi = 7e6, LOG = 20;
-ll L[mxi + 1], R[mxi + 1], t[mxi + 1], trs[MAX + 1], up[MAX + 1][LOG + 1];
-ll tin[MAX + 1], tout[MAX + 1], val[MAX + 1];
+const int MAX = 2e5 + 10, MAX_NODES = 7e6, LOG = 20;
+int L[MAX_NODES + 1], R[MAX_NODES + 1], t[MAX_NODES + 1], trs[MAX + 1], up[MAX + 1][LOG + 1];
+int tin[MAX + 1], tout[MAX + 1], val[MAX + 1];
 vi g[MAX + 1];
 ll nxt = 0, timer = 0;
 
@@ -96,7 +109,8 @@ ll query(int a, int b, int anc, int pr, int l, int r, int k) {
 }
 
 int main() {
-	int n, m, a, b, k, common, pr;
+	// input variables
+	int n, m;
 	cin >> n >> m;
 	vi compr;
 	compr.pb(-INF);
@@ -113,6 +127,7 @@ int main() {
 		val[i] = (lower_bound(compr.begin(), compr.end(), val[i]) - compr.begin());
 	}
 
+	int a, b, k, common, pr;
 	for (int i = 1; i < n; i++) {
 		cin >> a >> b;
 		g[a].pb(b);
