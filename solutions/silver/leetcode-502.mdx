@@ -7,11 +7,14 @@ author: Rameez Parwez
 
 ## Explanation
 
-We can solve this problem using a greedy approach. The idea is to prioritize projects that offer the highest profit. At the same time, we ensure that the projects we choose can be started with the capital we currently have.
+We can solve this problem using a greedy approach.
+
+The idea is to prioritize projects that offer the highest profit.
+At the same time, we ensure that the projects we choose can be started with the capital we currently have.
 
 ## Implementation
 
-**Time Complexity:** $ \mathcal{O} (N \logN)$
+**Time Complexity:** $ \mathcal{O} (N \log N)$
 
 <LanguageSection>
 <CPPSection>
@@ -20,13 +23,13 @@ We can solve this problem using a greedy approach. The idea is to prioritize pro
 class Solution {
   public:
 	int findMaximizedCapital(int k, int w, vector<int> &profits, vector<int> &capital) {
-		int n = (int)profits.size();
+		const int n = (int)profits.size();
+
 		vector<pair<int, int>> projects(n);
 		for (int i = 0; i < n; i++) { projects[i] = {capital[i], profits[i]}; }
-
 		sort(begin(projects), end(projects));
-		priority_queue<int> pq;
 
+		priority_queue<int> pq;
 		int j = 0;
 		while (j < n && k > 0) {
 			if (projects[j].first <= w) {
@@ -39,7 +42,6 @@ class Solution {
 				k--;
 			}
 		}
-
 		while (k > 0 && !pq.empty()) {
 			w += pq.top();
 			pq.pop();
@@ -63,12 +65,10 @@ class Solution:
 		self, k: int, w: int, profits: List[int], capital: List[int]
 	) -> int:
 		n = len(profits)
-		projects = [(capital[i], profits[i]) for i in range(n)]
-		projects.sort()
+		projects = sorted((capital[i], profits[i]) for i in range(n))
 
 		j = 0
 		pq = []
-
 		while j < n and k > 0:
 			if projects[j][0] <= w:
 				heapq.heappush(pq, -projects[j][1])
