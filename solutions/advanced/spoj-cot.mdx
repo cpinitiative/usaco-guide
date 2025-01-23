@@ -22,7 +22,9 @@ ll cnt = t[L[a]] + t[L[b]] - t[L[anc]] - t[L[pr]];
 </CPPSection>
 </LanguageSection>
 
-Since the values that are not on the path of u and v, but on the path from root node to the nodes u and v, just considering the persistent segment trees of these nodes would produce wrong answers. We subtract the frequencies of nodes from root node to the LCA and its parents because we count the nodes twice from root node to the LCA. In addition, since the lca is on the path of u to v, we subtract the frequencies from the LCA and parents of the LCA to consider the value of the LCA.
+Since the values that are not on the path of u and v, but on the path from the root node to the nodes u and v are also counted in their persistent segment trees, just considering their persistent segment trees would produce wrong results. 
+
+We subtract the frequencies of nodes from the root node to the LCA and its parent because we count the nodes twice from the root node to the LCA. In addition, since the LCA is on the path of u to v, we subtract the frequencies from the LCA and parents of the LCA to consider the value of the LCA.
 
 Binary lifting is used to find the lowest common ancestor (LCA) of the two nodes to subtract the frequencies of numbers that lie from the root node to the lowest common ancestor. This is used to accurately maintain the count of appearances of numbers on the path from a to b.
 
