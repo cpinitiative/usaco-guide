@@ -105,7 +105,8 @@ for (int x = 0; x < (1 << n); x++) {
 </CPPSection>
 </LanguageSection>
 
-<Spoiler title="Why this works?">
+<Spoiler title="How does this works?">
+
 If you subtract $1$ from a bitmask $i$, the rightmost $1$-bit becomes $0$, and all bits to the right of it become $1$. Performing bitwise _AND_ with $x$ ensures that only the bits within $x$ are retained. By starting with $i = x$ and repeatedly applying $(i - 1) \& x$, all subset masks of $x$ are visited in reverse order.
 
 The operation $(i - 1) \& x$ ensures that each new value of $i$ is strictly smaller than the previous one and is also a valid submask of $x$. There is no need to explicitly check $(i \& x) == i$.
