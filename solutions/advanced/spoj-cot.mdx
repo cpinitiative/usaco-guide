@@ -26,10 +26,10 @@ Binary lifting is used to find the lowest common ancestor (LCA) of the two nodes
 **Note:**
 Value compression is used to effectively handle large numbers which would potentially create a problem when used for indexing.
 
-**Time Complexity:** $\mathcal{O}((N+M) \cdot \log{N})$
-
 
 ## Implementation
+
+**Time Complexity:** $\mathcal{O}((N+M) \cdot \log{N})$
 
 <LanguageSection>
 <CPPSection>
@@ -38,14 +38,10 @@ Value compression is used to effectively handle large numbers which would potent
 #include <bits/stdc++.h>
 using namespace std;
 using ll = long long;
-#define vi vector<ll>
-#define pb push_back
-#define endl '\n'
 const int MAX = 2e5 + 10, MAX_NODES = 7e6, LOG = 20;
-int L[MAX_NODES + 1], R[MAX_NODES + 1], t[MAX_NODES + 1], trs[MAX + 1],
-    up[MAX + 1][LOG + 1];
+int L[MAX_NODES + 1], R[MAX_NODES + 1], t[MAX_NODES + 1], trs[MAX + 1], up[MAX + 1][LOG + 1];
 int tin[MAX + 1], tout[MAX + 1], val[MAX + 1];
-vi g[MAX + 1];
+vector<int> graph[MAX + 1];
 ll nxt = 0, timer = 0;
 
 int build(int v, int l, int r) {
@@ -94,7 +90,7 @@ void dfs(int from, int p) {
 
 	for (int i = 1; i < LOG; i++) { up[from][i] = up[up[from][i - 1]][i - 1]; }
 
-	for (int to : g[from]) {
+	for (int to : graph[from]) {
 		if (to == p) continue;
 		dfs(to, from);
 	}
@@ -122,17 +118,14 @@ ll query(int a, int b, int anc, int pr, int l, int r, int k) {
 }
 
 int main() {
-	ios_base::sync_with_stdio(0);
-	cin.tie(0);
-	cout.tie(0);
 	int n, m;
 	cin >> n >> m;
-	vi compr;
-	compr.pb(-INT_MAX);
+	vector<int> compr;
+	compr.push_back(-INT_MAX);
 
 	for (int i = 1; i <= n; i++) {
 		cin >> val[i];
-		compr.pb(val[i]);
+		compr.push_back(val[i]);
 	}
 
 	sort(compr.begin(), compr.end());
@@ -145,8 +138,8 @@ int main() {
 	for (int i = 1; i < n; i++) {
 		int a, b;
 		cin >> a >> b;
-		g[a].pb(b);
-		g[b].pb(a);
+		graph[a].push_back(b);
+		graph[b].push_back(a);
 	}
 
 	trs[0] = build(nxt, 1, MAX);
