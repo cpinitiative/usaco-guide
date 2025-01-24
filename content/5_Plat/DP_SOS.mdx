@@ -37,33 +37,51 @@ redirects:
 </Resources>
 
 
-Sum over subsets (SOS) DP is a trick that allows you to efficiently compute the sum of all the subsets of an array.
+Sum Over Subsets (SOS) is technique used to efficiently calculate the sum of values for all subsets of a given set or bitmask. Instead of manually generating every subset, which can be slow, SOS uses bitwise operations to quickly go through only the necessary subsets.
 
-The naive solution would be to iterate through every pair of masks and check if one of them is a subset of the other.
+The main trick is that for any bitmask $i$, we can directly loop through all its subsets $j$ using:
+
+$$
+j = (j - 1)\&i
+$$
+
+This ensures we efficiently handle only the subsets of $i$, skipping unnecessary combinations.
+
+## Implementation
+
+Consider an array $A$ of $2^n$ elements. For a bitmask x, we define $F(x)$ as the sum of $A[i]$ over all subset mask $i \subseteq x$. That is:
+
+$$
+F(x) = \sum_{i \subseteq x} A[i] 
+$$
+
+The goal is to compute $F(x)$ for all $x = 0, 1, 2, ...., 2^n - 1$.
+
+## Brute Force 
+
+The naive solution is to iterate over all pair of masks, summing $A[i]$ only when one of them is a subset of the other (i.e.,$i \& x = i$).
 
 <LanguageSection>
 <CPPSection>
 
 ```cpp
-// # of elements in the list for which you want to find the sum over all subsets
-int n = 20;
-
-// the list for which you want to find the sum over all subsets
-vector<int> a(1 << n);
-
-// answer for sum over subsets of each subset
+vector<int> arr(1 << n);
 vector<int> sos(1 << n);
 
-for (int i = 0; i < (1 << n); i++) {
-	// iterate over all other sets and checks whether they're a subset of i
-	for (int j = 0; j < (1 << n); j++) {
-		if ((i & j) == j) { sos[i] += a[j]; }
-	}
+for (int x = 0; x < (1 << n); x++) {
+    //iterate over all other sets and checks whether they're a subset of x
+    for (int i = 0; i < (1 << n); i++) {
+        if ((i & x) == i) {
+            sos[x] += arr[i];
+        }
+    }
 }
 ```
-
 </CPPSection>
 </LanguageSection>
+
+This solution has a time complexity of $\mathcal{O}(2^n \cdot 2^n) = O(4^n)$, which is impractical for large $n$.
+
 
 We can speed this up if we iterate over only subsets of the current mask and add up all of the those values to get the sum over subsets for a particular mask.
 
