@@ -202,7 +202,10 @@ vector<int> sos(1 << n);
 vector<vector<int>> dp(1 << n, vector<int> (n));
 
 for (int x = 0; x < (1 << n); x++) {
-	dp[x][-1] = a[x];
+	dp[x][0] = a[x];
+	if (x & 1) {
+		dp[x][0] += a[x ^ 1];
+	}
 	for (int i = 0; i < n; i++) {
 		if (x & (1 << i)) {
 			dp[x][i] = dp[x][i - 1] + dp[x ^ (1 << i)][i - 1];
