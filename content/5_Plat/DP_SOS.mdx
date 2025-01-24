@@ -66,11 +66,10 @@ The naive solution is to iterate over all pair of masks, summing $A[i]$ only whe
 <CPPSection>
 
 ```cpp
-vector<int> a(1 << n);
 vector<int> sos(1 << n);
 
 for (int x = 0; x < (1 << n); x++) {
-    //iterate over all other sets and checks whether they're a subset of x
+    // iterate over all other sets and checks whether they're a subset of x
     for (int i = 0; i < (1 << n); i++) {
         if ((i & x) == i) {
             sos[x] += a[i];
@@ -78,7 +77,20 @@ for (int x = 0; x < (1 << n); x++) {
     }
 }
 ```
+
 </CPPSection>
+<PySection>
+
+```py
+sos = [0] * (1 << n)
+for x in range(1 << n):
+	# iterate over all other sets and checks whether they're a subset of x
+	for i in range(1 << n):
+		if (x &i) == i:
+			sos[x] += a[i]
+```
+
+</PySection>
 </LanguageSection>
 
 This solution has a time complexity of $\mathcal{O}(2^n \cdot 2^n) = O(4^n)$, which is impractical for large $n$.
@@ -91,7 +103,6 @@ Instead of iterating over all $2^n$ bitmasks for $i$, we can optimize by iterati
 <CPPSection>
 
 ```cpp
-vector<int> a(1 << n);
 vector<int> sos(1 << n);
 
 for (int x = 0; x < (1 << n); x++) {
@@ -102,11 +113,25 @@ for (int x = 0; x < (1 << n); x++) {
 	}
 }
 ```
+
 </CPPSection>
+<PySection>
+
+```py
+sos = [0] * (1 << n)
+for x in range(1 << n):
+	sos[x] = a[0]
+	i = x
+	# iterate over all subsets of x directly
+	while i > 0:
+		sos[x] += a[i]
+		i = (i - 1) & x
+```
+
+</PySection>
 </LanguageSection>
 
 <Spoiler title="How does this works?">
-
 If you subtract $1$ from a bitmask $i$, the rightmost $1$-bit becomes $0$, and all bits to the right of it become $1$. Performing bitwise _AND_ with $x$ ensures that only the bits within $x$ are retained. By starting with $i = x$ and repeatedly applying $(i - 1) \& x$, all subset masks of $x$ are visited in reverse order.
 
 The operation $(i - 1) \& x$ ensures that each new value of $i$ is strictly smaller than the previous one and is also a valid submask of $x$. There is no need to explicitly check $(i \& x) == i$.
@@ -198,7 +223,6 @@ $$
 <CPPSection>
 
 ```cpp
-vector<int> a(1 << n);
 vector<int> sos(1 << n);
 vector<vector<int>> dp(1 << n, vector<int> (n));
 
@@ -207,12 +231,10 @@ for (int x = 0; x < (1 << n); x++) {
 	if (x & 1) {
 		dp[x][0] += a[x ^ 1];
 	}
-	for (int i = 0; i < n; i++) {
+	for (int i = 1; i < n; i++) {
+		dp[x][i] = dp[x][i - 1];
 		if (x & (1 << i)) {
-			dp[x][i] = dp[x][i - 1] + dp[x ^ (1 << i)][i - 1];
-		}
-		else {
-			dp[x][i] = dp[x][i - 1];
+			dp[x][i] += dp[x ^ (1 << i)][i - 1]; 
 		}
 	}
 	sos[x] = dp[x][n - 1];
@@ -220,6 +242,26 @@ for (int x = 0; x < (1 << n); x++) {
 ```
 
 </CPPSection>
+<PySection>
+
+```py
+sos = [0] * (1 << n)
+dp = [[0] * n for _ in range(1 << n)]
+
+for x in range(1 << n):
+	dp[x][0] = a[x]
+	if x & 1:
+		dp[x][0] += a[x ^ 1]
+
+	for i in range(1, n):
+		dp[x][i] = dp[x][i - 1]
+		if x & (1 << i):
+			dp[x][i] += dp[x ^ (1 << i)][i - 1]
+
+	sos[x] = dp[x][n - 1]
+```
+
+</PySection>
 </LanguageSection>
 
 #### Optimized Memory Usage
@@ -230,13 +272,12 @@ Since $dp[x][i]$ only depends on $dp[x][i - 1]$, we can reuse the DP array.
 <CPPSection>
 
 ```cpp
-
 for (int i = 0; i < (1 << n); i++) {
 	sos[i] = a[i];
 }
 
 for (int i = 0; i < n; i++) {
-	for (int x = 0; x < (1<< n); x++) {
+	for (int x = 0; x < (1 << n); x++) {
 		if (x & (1 << i)) {
 			sos[x] += sos[x ^ (1 << i)];
 		}	
@@ -245,6 +286,20 @@ for (int i = 0; i < n; i++) {
 ```
 
 </CPPSection>
+<PySection>
+
+```py
+sos = [0] * (1 << n)
+    for i in range(1 << n):
+        sos[i] = a[i]
+
+    for i in range(n):
+        for x in range(1 << n):
+            if x & (1 << i):
+                sos[x] += sos[x ^ (1 << i)]
+```
+
+</PySection>
 </LanguageSection>
 
 ## General Problems
