@@ -40,7 +40,6 @@ int main() {
 	}
 
 	// loop over all combinations of moves from (0, 0)
-
 	/*
 	 * left[i][j][k] = number of ways we can have
 	 * an xorsum of k ending at (row, col)
@@ -49,7 +48,8 @@ int main() {
 
 	int leftmoves = moves / 2;
 	for (int i = 0; i < (1 << leftmoves); i++) {
-		ll r = 0 ll c = 0;
+		int r = 0;
+		int c = 0;
 		ll xorsum = grid[0][0];
 		bool in_grid = true;
 		for (int j = 0; j < leftmoves; j++) {
@@ -78,7 +78,8 @@ int main() {
 	// here we do the same thing, but we are going up from (n - 1, m - 1)
 	int rightmoves = moves - leftmoves - 1;  // note the minus 1
 	for (int i = 0; i < (1 << rightmoves); i++) {
-		ll r = 0 ll c = 0;
+		int r = n - 1;
+		int c = m - 1;
 		ll xorsum = grid[n - 1][m - 1];
 		bool in_grid = true;
 		for (int j = 0; j < rightmoves; j++) {
@@ -89,7 +90,7 @@ int main() {
 			if (i & (1 << j)) {
 				r--;
 			} else {
-				c++;
+				c--;
 			}
 
 			if (r < 0 || c < 0) {
