@@ -1,0 +1,131 @@
+---
+id: cf-1777C
+source: CF
+title: Quiz Master
+author: Rameez Parwez
+---
+
+[Official Editorial (C++)](https://codeforces.com/blog/entry/111729)
+
+## Explanation
+
+Let's use a sliding window technique on sorted smartness values to track how many topics are being covered as we add and remove a student.
+
+As we expand the team by moving the right pointer, we check the factors of each student's smartness to determine which topics they help cover.
+If all topics are covered, we calculate the difference between the highest and lowest smartness values in the current team.
+Then, we attempt to reduce the size of the team from the left to see if the range can be further minimized while still covering all topics.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(n \log(n) + n \cdot \sqrt{M})$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <algorithm>
+#include <climits>
+#include <iostream>
+#include <vector>
+
+const int M = 1e5;
+std::vector<int> factors[M + 1];
+
+int main() {
+	// Precompute factors for all numbers from 1 to M
+	for (int i = 1; i <= M; i++) {
+		for (int j = i; j <= M; j += i) { factors[j].push_back(i); }
+	}
+
+	int test_num;
+	std::cin >> test_num;
+	for (int t = 0; t < test_num; t++) {
+		int n, m;
+		std::cin >> n >> m;
+		std::vector<int> arr(n);
+		std::vector<int> freq(m + 1);
+		for (int &x : arr) { std::cin >> x; }
+
+		std::sort(std::begin(arr), std::end(arr));
+
+		int topics_covered = 0;
+		int res = INT_MAX;
+		for (int i = 0, j = 0; i < n; i++) {
+			// adding student
+			while (j < n && topics_covered < m) {
+				for (int x : factors[arr[j]]) {
+					if (x <= m) {
+						freq[x]++;
+						if (freq[x] == 1) {  // topic x covered for the first time
+							topics_covered += 1;
+						}
+					}
+				}
+				j++;
+			}
+			if (topics_covered == m) { res = std::min(arr[j - 1] - arr[i], res); }
+
+			// removing student
+			for (int x : factors[arr[i]]) {
+				if (x <= m) {
+					freq[x]--;
+					if (freq[x] == 0) {  // topic x no longer covered
+						topics_covered -= 1;
+					}
+				}
+			}
+		}
+
+		std::cout << (res == INT_MAX ? -1 : res) << '\n';
+	}
+}
+```
+
+</CPPSection>
+<PySection>
+
+```py
+M = 10**5
+factors = [[] for _ in range(M + 1)]
+
+# Precompute factors for all numbers from 1 to M
+for i in range(1, M + 1):
+	for j in range(i, M + 1, i):
+		factors[j].append(i)
+
+for _ in range(int(input())):
+	n, m = map(int, input().split())
+	arr = list(map(int, input().split()))
+
+	arr.sort()
+	freq = [0] * (m + 1)
+	topics_covered = 0
+	res = float("inf")
+	j = 0
+
+	for i in range(n):
+		# adding student
+		while j < n and topics_covered < m:
+			for x in factors[arr[j]]:
+				if x <= m:
+					freq[x] += 1
+					if freq[x] == 1:  # topic x covered for the first time
+						topics_covered += 1
+
+			j += 1
+
+		if topics_covered == m:
+			res = min(res, arr[j - 1] - arr[i])
+
+		# removing student
+		for x in factors[arr[i]]:
+			if x <= m:
+				freq[x] -= 1
+				if freq[x] == 0:  # topic x no longer covered
+					topics_covered -= 1
+
+	print(-1 if res == float("inf") else res)
+```
+
+</PySection>
+</LanguageSection>
