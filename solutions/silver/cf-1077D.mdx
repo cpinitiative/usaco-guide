@@ -29,20 +29,20 @@ int main() {
 	int n, k;
 	std::cin >> n >> k;
 	std::vector<int> freq(MAX_N + 1);
-	std::vector<int> res;
 	for (int i = 0; i < n; i++) {
 		int x;
 		std::cin >> x;
 		freq[x] += 1;
 	}
 
-	const auto can = [&](int x) -> bool {
+	auto can = [&](int x) -> bool {
 		int ele_num = 0;
 		for (int i = 1; i <= MAX_N; i++) { ele_num += freq[i] / x; }
 		return ele_num >= k;
 	};
 
-	int lo = 0, hi = n;
+	int lo = 0;
+	int hi = n;
 	while (lo < hi) {
 		int mid = (lo + hi + 1) / 2;
 		if (can(mid)) {
@@ -52,6 +52,7 @@ int main() {
 		}
 	}
 
+	std::vector<int> res;
 	for (int i = 1; i <= MAX_N; i++) {
 		for (int j = 0; j < freq[i] / lo; j++) { res.push_back(i); }
 	}
@@ -65,27 +66,22 @@ int main() {
 
 ```py
 MAX_N = 200000
+
 freq = [0] * (MAX_N + 1)
+n, k = map(int, input().split())
+for x in input().split():
+	freq[int(x)] += 1
 
 
 def can(x: int) -> bool:
 	ele_num = 0
 	for i in range(1, MAX_N + 1):
 		ele_num += freq[i] // x
-
 	return ele_num >= k
 
 
-n, k = map(int, input().split())
-arr = list(map(int, input().split()))
-res = []
-
-for x in arr:
-	freq[x] += 1
-
 lo = 0
 hi = n
-
 while lo < hi:
 	mid = (lo + hi + 1) // 2
 	if can(mid):
@@ -93,6 +89,7 @@ while lo < hi:
 	else:
 		hi = mid - 1
 
+res = []
 for i in range(1, MAX_N + 1):
 	for j in range(0, freq[i] // lo):
 		res.append(i)
