@@ -31,52 +31,47 @@ Time complexity: $\mathcal{O}(\log{N})$ per query.
 using namespace std;
 
 struct node {
-    int S, O, C; // S = answer, O = unused ('s, C = unused )'s
-    friend node operator+ (node left, node right) {
-        node res;
-        res.S = left.S + right.S + 2*min(left.O, right.C);
-        res.O = left.O + right.O - min(left.O, right.C);
-        res.C = left.C + right.C - min(left.O, right.C);
-        return res;
-    }
+	int S, O, C;  // S = answer, O = unused ('s, C = unused )'s
+	friend node operator+(node left, node right) {
+		node res;
+		res.S = left.S + right.S + 2 * min(left.O, right.C);
+		res.O = left.O + right.O - min(left.O, right.C);
+		res.C = left.C + right.C - min(left.O, right.C);
+		return res;
+	}
 };
 
 const int N = 1 << 20;
-node tree[N*4];
+node tree[N * 4];
 
 node query(int v, int l, int r, int ql, int qr) {
-    if (ql <= l && r <= qr) return tree[v];
-    if (qr < l || r < ql) return {0, 0, 0};
-    int mid = (l+r)/2;
-    return query(v << 1, l, mid, ql, qr) +
-        query(v << 1 | 1, mid+1, r, ql, qr);
+	if (ql <= l && r <= qr) return tree[v];
+	if (qr < l || r < ql) return {0, 0, 0};
+	int mid = (l + r) / 2;
+	return query(v << 1, l, mid, ql, qr) + query(v << 1 | 1, mid + 1, r, ql, qr);
 }
 
-node query(int l, int r) {
-    return query(1, 0, N-1, l, r);
-}
+node query(int l, int r) { return query(1, 0, N - 1, l, r); }
 
 signed main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
 
-    string s; cin>>s;
-    int q; cin>>q;
-    int n = s.size();
-    for (int i = 0; i < n; i++) {
-        (s[i] == '(' ? tree[i + N].O : tree[i + N].C) = 1;
-    }
-    for (int i = N-1; i > 0; i--)
-        tree[i] = tree[2*i] + tree[2*i + 1];
-    while (q--) {
-        int l,r; cin>>l>>r;
-        l--, r--;
-        cout << query(l, r).S << '\n';
-    }
+	string s;
+	cin >> s;
+	int q;
+	cin >> q;
+	int n = s.size();
+	for (int i = 0; i < n; i++) { (s[i] == '(' ? tree[i + N].O : tree[i + N].C) = 1; }
+	for (int i = N - 1; i > 0; i--) tree[i] = tree[2 * i] + tree[2 * i + 1];
+	while (q--) {
+		int l, r;
+		cin >> l >> r;
+		l--, r--;
+		cout << query(l, r).S << '\n';
+	}
 }
 ```
 
 </CppSection>
 </LanguageSection>
-
-
