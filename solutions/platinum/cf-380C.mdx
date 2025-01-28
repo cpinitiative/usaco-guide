@@ -1,15 +1,21 @@
----https://github.com/Sul-AA/usaco-guide/tree/master
+---
 id: cf-380C
 source: CF
 title: Sereja and Brackets
 author: Sultan Alaiban
 ---
 
-In the segment tree, will store three values: the number of unused `(`'s, the number of unused `)`'s, and the longest bracket subsequence. Let's call these value $O$, $C$, and $S$. respectively. Then they would be combined like this:
+In the segment tree, will store three values: the number of unused `(`'s, the number of unused `)`'s, and the longest bracket subsequence. Let's call these value $O$, $C$, and $S$. respectively.
 
+The answer for the current segment is equal to the answer for the left plus the answer for the right (because `AB` is valid bracket sequence if `A` and `B` are valid bracket sequences), in addition to some brackets we can combine from the left and right. These are the complete formulas.
+
+<Spoiler title = "Equations">
 $S = left.S + right.S + 2 \cdot min(left.O, right.C)$
+
 $O = left.O + right.O - min(left.O, right.C)$
+
 $C = left.C + right.C - min(left.O, rigth.C)$
+</Spoiler>
 
 ## Implementation
 
@@ -19,6 +25,53 @@ Time complexity: $\mathcal{O}(\log{N})$ per query.
 <CPPSection>
 
 ```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+struct node {
+    int S, O, C; // S = answer, O = unused ('s, C = unused )'s
+    friend node operator+ (node left, node right) {
+        node res;
+        res.S = left.S + right.S + 2*min(left.O, right.C);
+        res.O = left.O + right.O - min(left.O, right.C);
+        res.C = left.C + right.C - min(left.O, right.C);
+        return res;
+    }
+};
+
+const int N = 1 << 20;
+node tree[N*4];
+
+node query(int v, int l, int r, int ql, int qr) {
+    if (ql <= l && r <= qr) return tree[v];
+    if (qr < l || r < ql) return {0, 0, 0};
+    int mid = (l+r)/2;
+    return query(v << 1, l, mid, ql, qr) +
+        query(v << 1 | 1, mid+1, r, ql, qr);
+}
+
+node query(int l, int r) {
+    return query(1, 0, N-1, l, r);
+}
+
+signed main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr); cout.tie(nullptr);
+
+    string s; cin>>s;
+    int q; cin>>q;
+    int n = s.size();
+    for (int i = 0; i < n; i++) {
+        (s[i] == '(' ? tree[i + N].O : tree[i + N].C) = 1;
+    }
+    for (int i = N-1; i > 0; i--)
+        tree[i] = tree[2*i] + tree[2*i + 1];
+    while (q--) {
+        int l,r; cin>>l>>r;
+        l--, r--;
+        cout << query(l, r).S << '\n';
+    }
+}
 ```
 
 </CppSection>
