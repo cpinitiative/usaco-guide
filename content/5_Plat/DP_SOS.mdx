@@ -288,13 +288,13 @@ for (int i = 0; i < n; i++) {
 
 ```py
 sos = [0] * (1 << n)
-    for i in range(1 << n):
-        sos[i] = a[i]
+for i in range(1 << n):
+	sos[i] = a[i]
 
-    for i in range(n):
-        for x in range(1 << n):
-            if x & (1 << i):
-                sos[x] += sos[x ^ (1 << i)]
+for i in range(n):
+	for x in range(1 << n):
+    	if x & (1 << i):
+		sos[x] += sos[x ^ (1 << i)]
 ```
 
 </PySection>
@@ -322,22 +322,22 @@ However, this approach has a drawback: as the number of dimensions grows, the nu
 ```cpp
 // Initialize
 for (int i = 0; i < n; i++) {
-    for (int j = 0; j < m; j++) {
-        S[i][j] = A[i][j]
+    	for (int j = 0; j < m; j++) {
+        	S[i][j] = A[i][j];
 	}
 }
 
 // Sweep along x-axis
 for (int i = 1; i < n; i++) {
-    for (int j = 0; j < m; j++) {
-        S[i][j] += S[i - 1][j]
+    	for (int j = 0; j < m; j++) {
+        	S[i][j] += S[i - 1][j];
 	}
 }
 
 // Sweep along y-axis
 for (int i = 0; i < n; i++) {
-    for (int j = 1; j < m; j++) {
-        S[i][j] += S[i][j - 1]
+    	for (int j = 1; j < m; j++) {
+        	S[i][j] += S[i][j - 1];
 	}
 }
 ```
@@ -348,18 +348,18 @@ for (int i = 0; i < n; i++) {
 ```py
 # Initialize
 for i in range(n):
-    for j in range(m):
-        S[i][j] = A[i][j]
+    	for j in range(m):
+        	S[i][j] = A[i][j]
 
 # Sweep along the x-axis
 for i in range(1, n):
-    for j in range(m):
-        S[i][j] += S[i - 1][j]
+    	for j in range(m):
+        	S[i][j] += S[i - 1][j]
 
 # Sweep along the y-axis
 for i in range(n):
-    for j in range(1, m):
-        S[i][j] += S[i][j - 1]
+    	for j in range(1, m):
+        	S[i][j] += S[i][j - 1]
 ```
 
 </PySection>
@@ -383,14 +383,14 @@ By applying the sweeping algorithm along each axis, we get the memory-optimized 
 
 ```cpp
 for (int i = 0; i < (1 << n); i++) {
-    F[i] = A[i];
+    	F[i] = A[i];
 }
 
 for (int i = 0; i < n; i++) {  // Sweep along the i-th axis
-    for (int x = 0; x < (1 << n); x++) {
-        if (x & (1 << i))  // If the i-th bit is set, accumulate
-            F[x] += F[x ^ (1 << i)];
-    }
+    	for (int x = 0; x < (1 << n); x++) {
+        	if (x & (1 << i))  // If the i-th bit is set, accumulate
+            	F[x] += F[x ^ (1 << i)];
+    	}
 }
 ```
 
@@ -399,12 +399,12 @@ for (int i = 0; i < n; i++) {  // Sweep along the i-th axis
 
 ```py
 for i in range(1 << n):
-    F[i] = A[i]
+	F[i] = A[i]
 
 for i in range(n): # Sweep along the i-th axis
-    for x in range(1 << n):
-        if x & (1 << i): # If the i-th bit is set, accumulate
-            F[x] += F[x ^ (1 << i)]
+	for x in range(1 << n):
+		if x & (1 << i): # If the i-th bit is set, accumulate
+			F[x] += F[x ^ (1 << i)]
 ```
 
 </PySection>
