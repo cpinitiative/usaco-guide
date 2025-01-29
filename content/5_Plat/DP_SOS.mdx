@@ -51,14 +51,14 @@ This ensures we efficiently handle only the subsets of $x$, skipping unnecessary
 Consider an array $A$ of $2^n$ elements. For a bitmask $x$, we define $F(x)$ as the sum of $A[i]$ over all subset mask $i \subseteq x$. That is:
 
 $$
-F(x) = \sum_{i \subseteq x} A[i] 
+F(x) = \sum_{i \subseteq x} A[i]
 $$
 
 The goal is to compute $F(x)$ for all $x = 0, 1, 2, ...., 2^n - 1$ as efficiently as possible.
 
 ## Solution
 
-### Brute Force 
+### Brute Force
 
 The naive solution is to iterate over all pair of masks, summing $A[i]$ only when one of them is a subset of the other (i.e.,$i \& x = i$).
 
@@ -190,7 +190,7 @@ $$
 
 In simpler terms, $S(x, i)$ contains all subset masks of $x$ whose bits to the left of the $i$-th bit match those of $x$.
 
-For example: 
+For example:
 $$
 S(11010110, 3) = \{11010000,11010010,11010100,11010110\}
 $$
@@ -200,10 +200,10 @@ We can break $S(x, i)$ as follows:
 1.  If the $i$-th bit of $x$ is $0$, then $S(x, i) = S(x, i - 1)$.
 2.  If the $i$-th bit of $x$ is $1$:
     - Subsets with the $i$-th bit $1: S(x, i - 1)$.
-    - Subsets with the $i$-th bit $0 : S(x \oplus 2^i, i - 1)$.  
+    - Subsets with the $i$-th bit $0 : S(x \oplus 2^i, i - 1)$.
 Thus:
 $$
-S(x, i) = 
+S(x, i) =
 \begin{cases}
 S(x, i - 1) & \text{if the i-th bit is 0} \\
 S(x, i - 1) \cup S(x \oplus 2^i, i - 1) & \text{if the i-th bit is 1}
@@ -232,7 +232,7 @@ for (int x = 0; x < (1 << n); x++) {
 	for (int i = 1; i < n; i++) {
 		dp[x][i] = dp[x][i - 1];
 		if (x & (1 << i)) {
-			dp[x][i] += dp[x ^ (1 << i)][i - 1]; 
+			dp[x][i] += dp[x ^ (1 << i)][i - 1];
 		}
 	}
 	sos[x] = dp[x][n - 1];
@@ -278,8 +278,8 @@ for (int i = 0; i < n; i++) {
 	for (int x = 0; x < (1 << n); x++) {
 		if (x & (1 << i)) {
 			sos[x] += sos[x ^ (1 << i)];
-		}	
-	}	
+		}
+	}
 }
 ```
 
