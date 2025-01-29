@@ -76,6 +76,45 @@ class DSU {
 ```
 
 </CPPSection>
+<PySection>
+
+```py
+class DSU:
+    def __init__(self, n: int):
+        self.p = list(range(n))
+        self.sz = [1] * n
+        self.history = [] # stores all history info related to merges
+
+    def get(self, x) -> int:
+        if self.p[x] == x:
+            return x
+        return self.get(self.p[x])
+
+    def unite(self, a: int, b: int):
+        a = self.get(a)
+        b = self.get(b)
+        if a == b:
+            return
+        if self.sz[a] < self.sz[b]:
+            a, b = b, a
+
+        # add to history
+        self.history.append((self.p, b, self.p[b]))
+        self.history.append((self.sz, a, self.sz[a]))
+
+        self.p[b] = a
+        self.sz[a] += self.sz[b]
+
+    def snapshot(self) -> int:
+        return len(self.history)
+
+    def rollback(self, until: int):
+        while self.snapshot() > until:
+            arr, idx, val = self.history.pop()
+            arr[idx] = val
+```
+
+</PySection>
 </LanguageSection>
 
 ## Dynamic Connectivity
@@ -276,7 +315,7 @@ int main() {
 MAXN = 300000
 tree = [[] for _ in range(4 * MAXN)]
 
-
+// BeginCodeSnip{DSU}
 class DSU:
 	def __init__(self, n: int):
 		self.p = list(range(n))
@@ -325,7 +364,7 @@ class DSU:
 		while self.snapshot() > until:
 			arr, idx, val = self.history.pop()
 			arr[idx] = val
-
+// EndCodeSnip
 
 class Query:
 	def __init__(self, t: int, u: int, v=None, x=None):
