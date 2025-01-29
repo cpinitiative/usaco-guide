@@ -23,8 +23,8 @@ import { ProgressTrackingFeature } from '../components/Index/features/ProgressTr
 import { ResourcesFeature } from '../components/Index/features/ResourcesFeature';
 import {
   EasyFunCoding,
-  Vercel,
   NonTrivial,
+  Vercel,
 } from '../components/Index/sponsor-logos';
 import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
 import { GlowingRing } from '../components/elements/landing/GlowingRing';
