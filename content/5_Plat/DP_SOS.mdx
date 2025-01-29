@@ -51,14 +51,14 @@ This ensures we efficiently handle only the subsets of $x$, skipping unnecessary
 Consider an array $A$ of $2^n$ elements. For a bitmask $x$, we define $F(x)$ as the sum of $A[i]$ over all subset mask $i \subseteq x$. That is:
 
 $$
-F(x) = \sum_{i \subseteq x} A[i]
+F(x) = \sum_{i \subseteq x} A[i] 
 $$
 
-The goal is to compute $F(x)$ for all $x = 0, 1, 2, ...., 2^n - 1$.
+The goal is to compute $F(x)$ for all $x = 0, 1, 2, ...., 2^n - 1$ as efficiently as possible.
 
 ## Solution
 
-### Brute Force
+### Brute Force 
 
 The naive solution is to iterate over all pair of masks, summing $A[i]$ only when one of them is a subset of the other (i.e.,$i \& x = i$).
 
@@ -69,10 +69,12 @@ The naive solution is to iterate over all pair of masks, summing $A[i]$ only whe
 vector<int> sos(1 << n);
 
 for (int x = 0; x < (1 << n); x++) {
-	// iterate over all other sets and checks whether they're a subset of x
-	for (int i = 0; i < (1 << n); i++) {
-		if ((i & x) == i) { sos[x] += a[i]; }
-	}
+    // iterate over all other sets and checks whether they're a subset of x
+    for (int i = 0; i < (1 << n); i++) {
+        if ((i & x) == i) {
+            sos[x] += a[i];
+        }
+    }
 }
 ```
 
@@ -84,16 +86,16 @@ sos = [0] * (1 << n)
 for x in range(1 << n):
 	# iterate over all other sets and checks whether they're a subset of x
 	for i in range(1 << n):
-		if (x & i) == i:
+		if (x &i) == i:
 			sos[x] += a[i]
 ```
 
 </PySection>
 </LanguageSection>
 
-This solution has a time complexity of $\mathcal{O}(2^n \cdot 2^n) = O(4^n)$, which is impractical for large $n$.
+This solution has a time complexity of $\mathcal{O}(2^n \cdot 2^n) = O(4^n)$, which is too slow for large values of $n$.
 
-### Optimized Solution
+### Optimized Solution : Iterating Over Submasks
 
 Instead of iterating over all $2^n$ bitmasks for $i$, we can optimize by iterating only over the subset mask of $x$.
 
@@ -106,7 +108,9 @@ vector<int> sos(1 << n);
 for (int x = 0; x < (1 << n); x++) {
 	sos[x] = a[0];
 	// iterate over all subsets of x directly
-	for (int i = x; i > 0; i = (i - 1) & x) { sos[x] += a[i]; }
+	for (int i = x; i > 0; i = (i - 1) & x) {
+		sos[x] += a[i];
+	}
 }
 ```
 
@@ -174,7 +178,7 @@ $$
 
 ### Faster Solution using Dynamic Programming
 
-The above solution still has redundancy. For example, if a bitmask $i$ has $k$ unset bits, then $A[i]$ is summed $2^k$ times. If we precompute and reuse these sums, we can eliminate repeated additions.
+While the previous method is better, it still has some redundancy. For example, if a bitmask $i$ has $k$ unset bits, then $A[i]$ is summed $2^k$ times. If we precompute and reuse these sums, we can eliminate repeated additions.
 
 #### Subset Mask Partitioning with $S(x, i)$
 
@@ -186,21 +190,20 @@ $$
 
 In simpler terms, $S(x, i)$ contains all subset masks of $x$ whose bits to the left of the $i$-th bit match those of $x$.
 
-For example:
+For example: 
 $$
 S(11010110, 3) = \{11010000,11010010,11010100,11010110\}
 $$
 
-The subsets $S(x, i)$ can be recursively partitioned as follows:
+We can break $S(x, i)$ as follows:
 
 1.  If the $i$-th bit of $x$ is $0$, then $S(x, i) = S(x, i - 1)$.
 2.  If the $i$-th bit of $x$ is $1$:
-	- Subsets with the $i$-th bit $1: S(x, i - 1)$.
-	- Subsets with the $i$-th bit $0 : S(x \oplus 2^i, i - 1)$.
-
+    - Subsets with the $i$-th bit $1: S(x, i - 1)$.
+    - Subsets with the $i$-th bit $0 : S(x \oplus 2^i, i - 1)$.  
 Thus:
 $$
-S(x, i) =
+S(x, i) = 
 \begin{cases}
 S(x, i - 1) & \text{if the i-th bit is 0} \\
 S(x, i - 1) \cup S(x \oplus 2^i, i - 1) & \text{if the i-th bit is 1}
@@ -219,14 +222,18 @@ $$
 
 ```cpp
 vector<int> sos(1 << n);
-vector<vector<int>> dp(1 << n, vector<int>(n));
+vector<vector<int>> dp(1 << n, vector<int> (n));
 
 for (int x = 0; x < (1 << n); x++) {
 	dp[x][0] = a[x];
-	if (x & 1) { dp[x][0] += a[x ^ 1]; }
+	if (x & 1) {
+		dp[x][0] += a[x ^ 1];
+	}
 	for (int i = 1; i < n; i++) {
 		dp[x][i] = dp[x][i - 1];
-		if (x & (1 << i)) { dp[x][i] += dp[x ^ (1 << i)][i - 1]; }
+		if (x & (1 << i)) {
+			dp[x][i] += dp[x ^ (1 << i)][i - 1]; 
+		}
 	}
 	sos[x] = dp[x][n - 1];
 }
@@ -263,12 +270,16 @@ Since $dp[x][i]$ only depends on $dp[x][i - 1]$, we can reuse the DP array.
 <CPPSection>
 
 ```cpp
-for (int i = 0; i < (1 << n); i++) { sos[i] = a[i]; }
+for (int i = 0; i < (1 << n); i++) {
+	sos[i] = a[i];
+}
 
 for (int i = 0; i < n; i++) {
 	for (int x = 0; x < (1 << n); x++) {
-		if (x & (1 << i)) { sos[x] += sos[x ^ (1 << i)]; }
-	}
+		if (x & (1 << i)) {
+			sos[x] += sos[x ^ (1 << i)];
+		}	
+	}	
 }
 ```
 
@@ -277,13 +288,123 @@ for (int i = 0; i < n; i++) {
 
 ```py
 sos = [0] * (1 << n)
-for i in range(1 << n):
-	sos[i] = a[I]
+    for i in range(1 << n):
+        sos[i] = a[i]
 
+    for i in range(n):
+        for x in range(1 << n):
+            if x & (1 << i):
+                sos[x] += sos[x ^ (1 << i)]
+```
+
+</PySection>
+</LanguageSection>
+
+### SOS DP as N-Dimensional Prefix Sum
+
+To understand this, let's revisit $2D$ prefix sums. Given $n \times m$ array $A$, the prefix sum array $S$ is defined as:
+
+$$
+S[i][j] = \sum_{a \leq i} \sum_{b \leq j} A[a][b]
+$$
+
+The standard approach uses inclusion-exlcusion:
+
+$$
+S[i][j] = S[i][j - 1] + S[i - 1][j] - S[i - 1][j - 1] + A[i][j]
+$$
+
+However, this approach has a drawback: as the number of dimensions grows, the number of terms we need to add or subtract grows exponentially. A simple and more scalable approach is to sweep through each dimensions one at a time and compute the prefix sum step by step:
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+// Initialize
+for (int i = 0; i < n; i++) {
+    for (int j = 0; j < m; j++) {
+        S[i][j] = A[i][j]
+	}
+}
+
+// Sweep along x-axis
+for (int i = 1; i < n; i++) {
+    for (int j = 0; j < m; j++) {
+        S[i][j] += S[i - 1][j]
+	}
+}
+
+// Sweep along y-axis
+for (int i = 0; i < n; i++) {
+    for (int j = 1; j < m; j++) {
+        S[i][j] += S[i][j - 1]
+	}
+}
+```
+
+</CPPSection>
+<PySection>
+
+```py
+# Initialize
 for i in range(n):
-	for x in range(1 << n):
-		if x & (1 << i):
-			sos[x] += sos[x ^ (1 << i)]
+    for j in range(m):
+        S[i][j] = A[i][j]
+
+# Sweep along the x-axis
+for i in range(1, n):
+    for j in range(m):
+        S[i][j] += S[i - 1][j]
+
+# Sweep along the y-axis
+for i in range(n):
+    for j in range(1, m):
+        S[i][j] += S[i][j - 1]
+```
+
+</PySection>
+</LanguageSection>
+
+This approach generalizes to higher dimensions. For example, in $4D$:
+
+- After sweeping along the x-axis, $S[i][j][k][l]$ contains the sum of $A[a][b][c][d]$ where $a \leq i, b = j, c = k,$ and $d = l$.
+- After sweeping along the y-axis, $S[i][j][k][l]$ contains the sum of $A[a][b][c][d]$ where $a \leq i, b \leq j, c = k,$ and $d = l$.
+- After sweeping along the z-axis, $S[i][j][k][l]$ contains the sum of $A[a][b][c][d]$ where $a \leq i, b \leq j, c \leq k,$ and $d = l$.
+- After sweeping along the w-axis, $S[i][j][k][l]$ contains the sum of $A[a][b][c][d]$ where $a \leq i, b \leq j, c \leq k,$ and $d \leq l$.
+
+If we extend this idea to $n$ dimensions, here's what happens: after sweeping along the $i$-th axis, $S[x]$ contains the sum of $A$ values where the first $i$ coordinates are less than or equal to $x$, and the remaining coordinates match $x$. Sound familiar? That's exactly what $F(x)$ represents in the SOS problem!
+
+If we think of each bit in a bitmask as its own axis, then a bitmask $x$ with $n$ bits can be viewed as an $n$-dimensional coordinate where each component is either $0$ or $1$. A submask of $x$ corresponds to an $n$-dimensional coordinate where each component is less than or equal to $x$. Therefore, when we interpret the bitmask as an $n$-dimensional coordinate, $F(x)$ alings with the definition of an $n$-dimensional prefix sum!
+
+By applying the sweeping algorithm along each axis, we get the memory-optimized SOS DP solution mentioned earlier, demonstrating that SOS DP is indeed an **n-dimensional prefix sum**.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+for (int i = 0; i < (1 << n); i++) {
+    F[i] = A[i];
+}
+
+for (int i = 0; i < n; i++) {  // Sweep along the i-th axis
+    for (int x = 0; x < (1 << n); x++) {
+        if (x & (1 << i))  // If the i-th bit is set, accumulate
+            F[x] += F[x ^ (1 << i)];
+    }
+}
+```
+
+</CPPSection>
+<PySection>
+
+```py
+for i in range(1 << n):
+    F[i] = A[i]
+
+for i in range(n): # Sweep along the i-th axis
+    for x in range(1 << n):
+        if x & (1 << i): # If the i-th bit is set, accumulate
+            F[x] += F[x ^ (1 << i)]
 ```
 
 </PySection>
