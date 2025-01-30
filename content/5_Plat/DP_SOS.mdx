@@ -390,6 +390,89 @@ for i in range(n):  # Sweep along the i-th axis
 </PySection>
 </LanguageSection>
 
+<FocusProblem problem = "sos_dp"/>
+
+## Explanation
+
+First, think of each word as a combination of letters represented by a bitmask. For example, `bcd` = `0b1110`, and `ada` = `0b1001`, where each bit stands for a letter. We'll also keep track of how often each bitmask appears in the dictionary.
+
+Next, we use SOS DP to compute the number of words disjoint from the mask(i.e., words containing **none of the vowels** in the mask).
+
+Once this is calculated, the number of valid words for a subset is simply $n - sos[mask]$ because a word is valid if it contains **at least one vowel** from the subset, meaning it is not disjoint from mask. Finally, we square the count of valid words for every subset, XOR all those squared values together, and that gives us the answer.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(M \cdot 2^M)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <string>
+
+const int M = 24;
+int sos[1 << M];
+
+int main() {
+    int n;
+    std::cin >> n;
+    for (int i = 0; i < n; i++) {
+        std::string st;
+        std::cin >> st;
+        int mask = (1 << (st[0] - 'a')) | (1 << (st[1] - 'a')) | (1 << (st[2] - 'a'));
+        sos[mask] += 1;
+    }
+
+    for (int i = 0; i < M; i++) {
+        for (int mask = 0; mask < (1 << M); mask++) {
+            if (mask & (1 << i)) {
+                sos[mask] += sos[mask ^ (1 << i)];
+            }
+        }
+    }
+
+    int res = 0;
+    for (int mask = 0; mask < (1 << M); mask++) {
+		// sos[mask] now contains the number of words that are disjoint from subset mask
+		int valid_words = n - sos[mask];
+        res ^= valid_words * valid_words;
+    }
+    std::cout << res << '\n';
+}
+```
+
+</CPPSection>
+<PySection>
+
+```py
+M = 24
+sos = [0] * (1 << M)
+
+n = int(input())
+for i in range(n):
+    st = input()
+    mask = (1 << (ord(st[0]) - 97)) | (1 << (ord(st[1]) - 97)) | (1 << (ord(st[2]) - 97))
+    sos[mask] += 1
+
+
+for i in range(M):
+    for mask in range(1 << M):
+        if mask & (1 << i):
+            sos[mask] += sos[mask ^ (1 << i)]
+
+res = 0
+for mask in range(1 << M):
+    # sos[mask] now contains the number of words that are disjoint from subset mask
+    valid_words = n - sos[mask]
+    res ^= valid_words * valid_words
+
+print(res)
+```
+
+</PySection>
+</LanguageSection>
+
 ## General Problems
 
 <Problems problems="probs" />
