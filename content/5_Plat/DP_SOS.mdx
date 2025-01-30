@@ -415,30 +415,28 @@ const int M = 24;
 int sos[1 << M];
 
 int main() {
-    int n;
-    std::cin >> n;
-    for (int i = 0; i < n; i++) {
-        std::string st;
-        std::cin >> st;
-        int mask = (1 << (st[0] - 'a')) | (1 << (st[1] - 'a')) | (1 << (st[2] - 'a'));
-        sos[mask] += 1;
-    }
+	int n;
+	std::cin >> n;
+	for (int i = 0; i < n; i++) {
+		std::string st;
+		std::cin >> st;
+		int mask = (1 << (st[0] - 'a')) | (1 << (st[1] - 'a')) | (1 << (st[2] - 'a'));
+		sos[mask] += 1;
+	}
 
-    for (int i = 0; i < M; i++) {
-        for (int mask = 0; mask < (1 << M); mask++) {
-            if (mask & (1 << i)) {
-                sos[mask] += sos[mask ^ (1 << i)];
-            }
-        }
-    }
+	for (int i = 0; i < M; i++) {
+		for (int mask = 0; mask < (1 << M); mask++) {
+			if (mask & (1 << i)) { sos[mask] += sos[mask ^ (1 << i)]; }
+		}
+	}
 
-    int res = 0;
-    for (int mask = 0; mask < (1 << M); mask++) {
+	int res = 0;
+	for (int mask = 0; mask < (1 << M); mask++) {
 		// sos[mask] now contains the number of words that are disjoint from subset mask
 		int valid_words = n - sos[mask];
-        res ^= valid_words * valid_words;
-    }
-    std::cout << res << '\n';
+		res ^= valid_words * valid_words;
+	}
+	std::cout << res << '\n';
 }
 ```
 
@@ -451,21 +449,23 @@ sos = [0] * (1 << M)
 
 n = int(input())
 for i in range(n):
-    st = input()
-    mask = (1 << (ord(st[0]) - 97)) | (1 << (ord(st[1]) - 97)) | (1 << (ord(st[2]) - 97))
-    sos[mask] += 1
+	st = input()
+	mask = (
+		(1 << (ord(st[0]) - 97)) | (1 << (ord(st[1]) - 97)) | (1 << (ord(st[2]) - 97))
+	)
+	sos[mask] += 1
 
 
 for i in range(M):
-    for mask in range(1 << M):
-        if mask & (1 << i):
-            sos[mask] += sos[mask ^ (1 << i)]
+	for mask in range(1 << M):
+		if mask & (1 << i):
+			sos[mask] += sos[mask ^ (1 << i)]
 
 res = 0
 for mask in range(1 << M):
-    # sos[mask] now contains the number of words that are disjoint from subset mask
-    valid_words = n - sos[mask]
-    res ^= valid_words * valid_words
+	# sos[mask] now contains the number of words that are disjoint from subset mask
+	valid_words = n - sos[mask]
+	res ^= valid_words * valid_words
 
 print(res)
 ```
