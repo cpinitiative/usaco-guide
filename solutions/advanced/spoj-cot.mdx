@@ -36,30 +36,22 @@ Value compression is used to effectively handle large numbers, which could other
 <CPPSection>
 
 ```cpp
+
+
 #include <bits/stdc++.h>
 using namespace std;
-using ll = long long;
 const int MAX = 2e5 + 10, MAX_NODES = 7e6, LOG = 20;
-int L[MAX_NODES + 1], R[MAX_NODES + 1], t[MAX_NODES + 1], trs[MAX + 1],
+int L[MAX_NODES + 1], R[MAX_NODES + 1], t[MAX_NODES + 1], roots[MAX + 1],
     up[MAX + 1][LOG + 1];
 int tin[MAX + 1], tout[MAX + 1], val[MAX + 1];
 vector<int> graph[MAX + 1];
-ll nxt = 0, timer = 0;
+int nxt = 1, timer = 0;
 
-int build(int v, int l, int r) {
+int update(int v, int l, int r, int pos) {
 	int nw = ++nxt;
-	if (l == r) { return nw; }
-	int m = (l + r) / 2;
-	L[v] = build(nw, l, m);
-	R[v] = build(nw, m + 1, r);
-	return nw;
-}
-
-ll update(int v, int l, int r, int pos) {
-	int nw = ++nxt;
-
+    
 	if (l == r) {
-		t[nw] += t[v] + 1;
+		t[nw] = t[v] + 1;
 		return nw;
 	}
 
@@ -78,10 +70,10 @@ ll update(int v, int l, int r, int pos) {
 }
 
 void dfs(int from, int p) {
-	int root = trs[p];
+	int root = roots[p];
 	root = update(root, 1, MAX, val[from]);
 
-	trs[from] = root;
+	roots[from] = root;
 	tin[from] = ++timer;
 
 	if (from != 1) {
@@ -111,10 +103,10 @@ int lca(int u, int v) {
 	return up[u][0];
 }
 
-ll query(int a, int b, int anc, int pr, int l, int r, int k) {
+int query(int a, int b, int anc, int pr, int l, int r, int k) {
 	if (l == r) { return l; }
 	int m = (l + r) / 2;
-	ll cnt = t[L[a]] + t[L[b]] - t[L[anc]] - t[L[pr]];
+	int cnt = t[L[a]] + t[L[b]] - t[L[anc]] - t[L[pr]];
 	if (cnt >= k) return query(L[a], L[b], L[anc], L[pr], l, m, k);
 	else return query(R[a], R[b], R[anc], R[pr], m + 1, r, k - cnt);
 }
@@ -144,17 +136,16 @@ int main() {
 		graph[b].push_back(a);
 	}
 
-	trs[0] = build(nxt, 1, MAX);
+     
+    	roots[0] = ++timer;
 	dfs(1, 0);
 
 	for (int i = 0; i < m; i++) {
 		int a, b, k;
 		cin >> a >> b >> k;
-		int common, pr;
-		common = lca(a, b);
-		pr = up[common][0];
-		if (common == 1) { pr = 0; }
-		cout << compr[query(trs[a], trs[b], trs[common], trs[pr], 1, MAX, k)] << endl;
+		int common = lca(a, b);
+		int pr = (common == 1) ? 0 : up[common][0];
+		cout << compr[query(roots[a], roots[b], roots[common], roots[pr], 1, MAX, k)] << '\n';
 	}
 }
 ```
