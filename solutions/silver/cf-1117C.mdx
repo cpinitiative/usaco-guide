@@ -9,11 +9,11 @@ author: Kevin Sheng, David Guo
 
 ## Explanation
 
-We start by calculating how the wind shifts us over a given number of days, and then we check whether we can cover the remaining distance with our own daily movement in that same amount of time. Specifically, we figure out the net change of one full cycle of wind, then multiply that by how many full cycles fit into our candidate number of days, and finally account for any leftover days by finding the partial cycle change.
+We start by calculating how the wind shifts us over a given number of days, and then we check whether we can cover the remaining distance with our own daily movement in that same amount of time. Specifically, we figure out the net change of one full cycle of wind, then multiply that by how many full cycles fit into our candidate number of days, and finally account for any leftover days by finding the partial cycle change. Note that the partial cycle change will take more days, which is fine as we can always reach our destination and continue counteracting the wind.
 
-We apply that shift to our initial position and then measure the distance to the destination. If the Manhattan distance to the destination is no greater than the number of days, it means we could have used some of those days to make up the distance with our own movements, so reaching the destination is possible by that day.
+If we know the candidate number of days we are traveling for, we can measure the total change from the wind by calculating how many full cycles of wind fit within our number of days. We apply that shift to our initial position and then measure the distance to the destination. If the Manhattan distance to the destination is no greater than the number of days, it means we could have used some of those days to make up the distance with our own movements, so reaching the destination is possible by that day.
 
-We then perform a binary search on the number of days to find the smallest time for which this reachability check is true, and we output the smallest valid day or conclude that it is impossible, in which case we output $-1$.
+Since the answer is monotonic and knowing if a candidate number of days lets us reach our destination in time, we then perform a binary search on the number of days to find the smallest time for which this reachability check is true. Finally, we output the smallest valid day or conclude that it is impossible, in which case we output $-1$.
 
 ## Implementation
 
