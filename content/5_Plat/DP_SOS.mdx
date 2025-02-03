@@ -128,35 +128,10 @@ for x in range(1 << n):
 </LanguageSection>
 
 <Spoiler title="How does this works?">
+
 If you subtract $1$ from a bitmask $i$, the rightmost $1$-bit becomes $0$, and all bits to the right of it become $1$. Performing bitwise _AND_ with $x$ ensures that only the bits within $x$ are retained. By starting with $i = x$ and repeatedly applying $(i - 1) \& x$, all subset masks of $x$ are visited in reverse order.
 
 The operation $(i - 1) \& x$ ensures that each new value of $i$ is strictly smaller than the previous one and is also a valid submask of $x$. There is no need to explicitly check $(i \& x) == i$.
-
-Example: Consider $x = 10110$ and $n = 5$.
-
-The submask of $x$ are $\{00000, 00010, 00100, 00110, 10000, 10010, 10100, 10110\}$. The second loop will generate these submasks in reverse order.
-
-Initial state: $i = x = 10110$
-
-First iteration:
-- $i = 10110$
-- Subtract $1: 10110 - 1 = 10101$
-- Bitwise _AND_ with $x: 10101 \& 10110 = 10100$
-- Next $i = 10100$
-
-Second iteration:
-- $i = 10100$
-- Subtract $1: 10100 - 1 = 10011$
-- Bitwise _AND_ with $x: 10011 \& 10110 = 10010$
-- Next $i = 10010$
-
-Third iteration:
-- $i = 10010$
-- Subtract $1: 10010 - 1 = 10001$
-- Bitwise _AND_ with $x: 10001 \& 10110 = 10000$
-- Next $i = 10000$
-
-Repeating this process generates the remaining submasks in reverse order until $i = 0$.
 
 </Spoiler>
 
