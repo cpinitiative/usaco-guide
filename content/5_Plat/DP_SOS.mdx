@@ -48,19 +48,19 @@ This ensures we efficiently handle only the subsets of $x$, skipping unnecessary
 
 ## Implementation
 
-Consider an array $A$ of $2^n$ elements. For a bitmask $x$, we define $F(x)$ as the sum of $A[i]$ over all subset mask $i \subseteq x$. That is:
+Consider an array $A$ with $2^n$ elements. Our goal is to calculate $F(x)$ for all $x = 0, 1, 2, ....., 2^n - 1$. Here, $F(x)$ represents the sum of values in array $A$ for all subsets $i$ of $x$. That is:
 
 $$
 F(x) = \sum_{i \subseteq x} A[i]
 $$
 
-The goal is to compute $F(x)$ for all $x = 0, 1, 2, ...., 2^n - 1$ as efficiently as possible.
+For example, If $x = 5$, its subsets would be $\{0, 1, 4, 5\}$ then $F(x)$ would simply be $A[0] + A[1] + A[4] + A[5]$.
 
 ## Solution
 
 ### Brute Force
 
-The naive solution is to iterate over all pair of masks, summing $A[i]$ only when one of them is a subset of the other (i.e.,$i \& x = i$).
+The naive solution would be to iterate over all pair of masks, summing $A[i]$ only when one of them is a subset of the other $(i.e.,i$ $\&$ $x = i$).
 
 <LanguageSection>
 <CPPSection>
@@ -129,9 +129,9 @@ for x in range(1 << n):
 
 <Spoiler title="How does this works?">
 
-If you subtract $1$ from a bitmask $i$, the rightmost $1$-bit becomes $0$, and all bits to the right of it become $1$. Performing bitwise _AND_ with $x$ ensures that only the bits within $x$ are retained. By starting with $i = x$ and repeatedly applying $(i - 1) \& x$, all subset masks of $x$ are visited in reverse order.
+When we subtract $1$ from a bitmask $i$, the rightmost $1$-bit becomes $0$, and all bits to the right of it will become $1$. By performing a bitwise _AND_ with $x$, we ensure that only the bits within $x$ are retained. By starting with $i = x$ and repeatedly applying $(i - 1)$ $\&$ $x$, all subset masks of $x$ are visited in reverse order.
 
-The operation $(i - 1) \& x$ ensures that each new value of $i$ is strictly smaller than the previous one and is also a valid submask of $x$. There is no need to explicitly check $(i \& x) == i$.
+The operation $(i - 1)$ $\&$ $x$ ensures that each new value of $i$ is strictly smaller than the previous one and is also a valid submask of $x$. There is no need to explicitly check $(i$ $\&$ $x) = i$.
 
 </Spoiler>
 
@@ -265,7 +265,7 @@ for i in range(n):
 
 ### SOS DP as N-Dimensional Prefix Sum
 
-To understand this, let's revisit $2D$ prefix sums. Given $n \times m$ array $A$, the prefix sum array $S$ is defined as:
+Before we move on, let's revisit $2D$ prefix sums. Given $n \times m$ array $A$, the prefix sum array $S$ is defined as:
 
 $$
 S[i][j] = \sum_{a \leq i} \sum_{b \leq j} A[a][b]
@@ -277,7 +277,9 @@ $$
 S[i][j] = S[i][j - 1] + S[i - 1][j] - S[i - 1][j - 1] + A[i][j]
 $$
 
-However, this approach has a drawback: as the number of dimensions grows, the number of terms we need to add or subtract grows exponentially. A simple and more scalable approach is to sweep through each dimensions one at a time and compute the prefix sum step by step:
+While this approach works for 2D grids, it has a significant limitation: as the number of dimensions increases, the number of terms we need to add or subtract also increases exponentially, making it inefficient for higher-dimensional grids.
+
+A simple and more scalable approach would be to sweep through each dimensions one at a time and compute the prefix sum step by step:
 
 <LanguageSection>
 <CPPSection>
@@ -322,16 +324,27 @@ for i in range(n):
 </PySection>
 </LanguageSection>
 
-This approach generalizes to higher dimensions. For example, in $4D$:
+This approach generalizes to higher dimensions.
 
-- After sweeping along the x-axis, $S[i][j][k][l]$ contains the sum of $A[a][b][c][d]$ where $a \leq i, b = j, c = k,$ and $d = l$.
-- After sweeping along the y-axis, $S[i][j][k][l]$ contains the sum of $A[a][b][c][d]$ where $a \leq i, b \leq j, c = k,$ and $d = l$.
-- After sweeping along the z-axis, $S[i][j][k][l]$ contains the sum of $A[a][b][c][d]$ where $a \leq i, b \leq j, c \leq k,$ and $d = l$.
-- After sweeping along the w-axis, $S[i][j][k][l]$ contains the sum of $A[a][b][c][d]$ where $a \leq i, b \leq j, c \leq k,$ and $d \leq l$.
+Let's say we want to calculate the prefix sum array for $4D$ grid. We can calculate this by sweeping along each axis of a $4D$ grid, one at a time:
 
-If we extend this idea to $n$ dimensions, here's what happens: after sweeping along the $i$-th axis, $S[x]$ contains the sum of $A$ values where the first $i$ coordinates are less than or equal to $x$, and the remaining coordinates match $x$. Sound familiar? That's exactly what $F(x)$ represents in the SOS problem!
+- After sweeping along the x-axis, $S[i][j][k][l]$ contains the sum of $A[a][b][c][d]$ where:
+	- $a \leq i$
+	- $b = j, c = k,$ and $d = l$.
+- After sweeping along the y-axis, $S[i][j][k][l]$ contains the sum of $A[a][b][c][d]$ where:
+	- $a \leq i, b \leq j$
+	- $c = k,$ and $d = l$.
+- After sweeping along the z-axis, $S[i][j][k][l]$ contains the sum of $A[a][b][c][d]$ where:
+	- $a \leq i, b \leq j, c \leq k$
+	- $d = l$.
+- Finally, after sweeping along the w-axis, $S[i][j][k][l]$ contains the sum of $A[a][b][c][d]$ where:
+	- $a \leq i, b \leq j, c \leq k,$ and $d \leq l$.
 
-If we think of each bit in a bitmask as its own axis, then a bitmask $x$ with $n$ bits can be viewed as an $n$-dimensional coordinate where each component is either $0$ or $1$. A submask of $x$ corresponds to an $n$-dimensional coordinate where each component is less than or equal to $x$. Therefore, when we interpret the bitmask as an $n$-dimensional coordinate, $F(x)$ alings with the definition of an $n$-dimensional prefix sum!
+If we extend this idea to $n$ dimensions, here's what happens: after sweeping along the $i$-th axis, $S[x]$ contains the sum of the values in $A$ where the first $i$ coordinates are less than or equal to the $x$, and the remaining coordinates match $x$. Sound familiar? That's exactly what $F(x)$ represents in the SOS problem!
+
+If we think of each bit in a bitmask as its own axis, then a bitmask $x$ with $n$ bits can be viewed as an $n$-dimensional coordinate, where each component is either $0$ or $1$. A submask of $x$ corresponds to an $n$-dimensional coordinate where each component is less than or equal to $x$.
+
+Therefore, when we interpret the bitmask as an $n$-dimensional coordinate, $F(x)$ alings with the definition of an $n$-dimensional prefix sum!
 
 By applying the sweeping algorithm along each axis, we get the memory-optimized SOS DP solution mentioned earlier, demonstrating that SOS DP is indeed an **n-dimensional prefix sum**.
 
