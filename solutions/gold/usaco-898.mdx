@@ -27,61 +27,32 @@ Note: The video solution might not be the same as other solutions. Code in C++.
 #include <algorithm>
 
 // BeginCodeSnip{Segment Tree}
-template <typename T>
-struct SegmentTree {
-    using monoid = typename T::monoid;
-
-    explicit SegmentTree(const int n)
-        : SegmentTree(std::vector<monoid>(n, T::id())) {}
-
-    explicit SegmentTree(const std::vector<monoid>& a) : n(a.size()), p2(1) {
-        while (p2 < n) {
-            p2 <<= 1;
-        }
-        data.assign(p2 << 1, T::id());
-        std::copy(a.begin(), a.end(), data.begin() + p2);
-        for (int i = p2 - 1; i > 0; --i) {
-            data[i] = T::merge(data[i << 1], data[(i << 1) + 1]);
-        }
-    }
-
-    void set(int idx, const monoid val) {
-        idx += p2;
-        data[idx] = val;
-        while (idx >>= 1) {
-            data[idx] = T::merge(data[idx << 1], data[(idx << 1) + 1]);
-        }
-    }
-
-    monoid get(int left, int right) const {
-        monoid res_l = T::id(), res_r = T::id();
-        for (left += p2, right += p2; left < right; left >>= 1, right >>= 1) {
-            if (left & 1) {
-                res_l = T::merge(res_l, data[left++]);
-            } 
-            if (right & 1) {
-                res_r = T::merge(data[--right], res_r);
-            } 
-        }
-        return T::merge(res_l, res_r);
-    }
-
-    monoid operator[](const int idx) const { return data[idx + p2]; }
-
+template <class T> class SumSegmentTree {
     private:
-    const int n;
-    int p2;
-    std::vector<monoid> data;
+    const T DEFAULT = 0;
+    std::vector<T> segtree;
+    int len;
+  
+    public:
+    SumSegmentTree(int len) : len(len), segtree(len * 2, DEFAULT) {}
+  
+    void set(int ind, T val) {
+        ind += len;
+        segtree[ind] = val;
+        for (; ind > 1; ind /= 2) {
+            segtree[ind / 2] = segtree[ind] + segtree[ind ^ 1];
+        }
+    }
+  
+    T range_sum(int start, int end) {
+        T sum = DEFAULT;
+        for (start += len, end += len; start < end; start /= 2, end /= 2) {
+            if (start % 2 == 1) { sum += segtree[start++]; }
+            if (end % 2 == 1) { sum += segtree[--end]; }
+        }
+        return sum;
+    }
 };
-
-namespace monoid {
-    template <typename T>
-    struct RangeSumQuery {
-        using monoid = T;
-        static constexpr monoid id() { return 0; }
-        static monoid merge(const monoid& a, const monoid& b) { return a + b; }
-    };
-}
 // EndCodeSnip
 
 void set_up(std::string name) {
@@ -107,7 +78,7 @@ int main() {
      *
      * Read the analysis of the bronze version of this problem to learn why
      * this is the case:
-     * http://www.usaco.org/current/data/sol_sleepy_bronze_jan19.html
+     * http://www.usaco.org/current/dataa/sol_sleepy_bronze_jan19.html
      */
 
     int suffix_length = 1;
@@ -134,21 +105,20 @@ int main() {
      * unsorted region of the array.
      */
 
-    SegmentTree<monoid::RangeSumQuery<int>> seg(n);
+    SumSegmentTree<long long> segtree(n);
     for (int i = k; i < n; i++) {
-        seg.set(cows[i], 1);
+        segtree.set(cows[i], 1);
     }
 
     for (int i = 0; i < k; i++) {
         // Takes the prefix sum up to cows[i] - 1, which calculates the
         // number of cows smaller than the current cow
-        int smaller = seg.get(0, cows[i]);
+        int smaller = segtree.range_sum(0, cows[i]);
 
         std::cout << smaller + (k - i - 1) << " \n"[i == k - 1];
-        seg.set(cows[i], 1);
+        segtree.set(cows[i], 1);
     }
 }
-
 ```
 
 </CPPSection>
