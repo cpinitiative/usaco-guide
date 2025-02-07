@@ -28,30 +28,30 @@ Note: The video solution might not be the same as other solutions. Code in C++.
 
 // BeginCodeSnip{Segment Tree}
 template <class T> class SumSegmentTree {
-    private:
-    const T DEFAULT = 0;
-    std::vector<T> segtree;
-    int len;
-  
-    public:
-    SumSegmentTree(int len) : len(len), segtree(len * 2, DEFAULT) {}
-  
-    void set(int ind, T val) {
-        ind += len;
-        segtree[ind] = val;
-        for (; ind > 1; ind /= 2) {
-            segtree[ind / 2] = segtree[ind] + segtree[ind ^ 1];
-        }
-    }
-  
-    T range_sum(int start, int end) {
-        T sum = DEFAULT;
-        for (start += len, end += len; start < end; start /= 2, end /= 2) {
-            if (start % 2 == 1) { sum += segtree[start++]; }
-            if (end % 2 == 1) { sum += segtree[--end]; }
-        }
-        return sum;
-    }
+  private:
+	const T DEFAULT = 0;
+	std::vector<T> segtree;
+	int len;
+
+  public:
+	SumSegmentTree(int len) : len(len), segtree(len * 2, DEFAULT) {}
+
+	void set(int ind, T val) {
+		ind += len;
+		segtree[ind] = val;
+		for (; ind > 1; ind /= 2) {
+			segtree[ind / 2] = segtree[ind] + segtree[ind ^ 1];
+		}
+	}
+
+	T range_sum(int start, int end) {
+		T sum = DEFAULT;
+		for (start += len, end += len; start < end; start /= 2, end /= 2) {
+			if (start % 2 == 1) { sum += segtree[start++]; }
+			if (end % 2 == 1) { sum += segtree[--end]; }
+		}
+		return sum;
+	}
 };
 // EndCodeSnip
 
@@ -70,16 +70,16 @@ int main() {
 		x--;
 	}
 
-    /*
-     * To find K, we first need to calculate the length of the longest
-     * suffix of the array that is already in order.
-     *
-     * Then, we can subtract that length from N to get K
-     *
-     * Read the analysis of the bronze version of this problem to learn why
-     * this is the case:
-     * http://www.usaco.org/current/dataa/sol_sleepy_bronze_jan19.html
-     */
+	/*
+	 * To find K, we first need to calculate the length of the longest
+	 * suffix of the array that is already in order.
+	 *
+	 * Then, we can subtract that length from N to get K
+	 *
+	 * Read the analysis of the bronze version of this problem to learn why
+	 * this is the case:
+	 * http://www.usaco.org/current/dataa/sol_sleepy_bronze_jan19.html
+	 */
 
 	int suffix_length = 1;
 	for (int i = n - 1; i > 0; i--) {
@@ -105,19 +105,17 @@ int main() {
 	 * unsorted region of the array.
 	 */
 
-    SumSegmentTree<int> segtree(n);
-    for (int i = k; i < n; i++) {
-        segtree.set(cows[i], 1);
-    }
+	SumSegmentTree<int> segtree(n);
+	for (int i = k; i < n; i++) { segtree.set(cows[i], 1); }
 
-    for (int i = 0; i < k; i++) {
-        // Takes the prefix sum up to cows[i] - 1, which calculates the
-        // number of cows smaller than the current cow
-        int smaller = segtree.range_sum(0, cows[i]);
+	for (int i = 0; i < k; i++) {
+		// Takes the prefix sum up to cows[i] - 1, which calculates the
+		// number of cows smaller than the current cow
+		int smaller = segtree.range_sum(0, cows[i]);
 
-        std::cout << smaller + (k - i - 1) << " \n"[i == k - 1];
-        segtree.set(cows[i], 1);
-    }
+		std::cout << smaller + (k - i - 1) << " \n"[i == k - 1];
+		segtree.set(cows[i], 1);
+	}
 }
 ```
 
@@ -233,31 +231,31 @@ public class Sleepy {
 
 // BeginCodeSnip{Binary Indexed Tree}
 template <class T> class BIT {
-    private:
-    int size;
-    std::vector<T> bit;
-    std::vector<T> arr;
-  
-    public:
-    BIT(int size) : size(size), bit(size + 1), arr(size) {}
-  
-    /** Sets the value at index ind to val. */
-    void set(int ind, T val) { add(ind, val - arr[ind]); }
+  private:
+	int size;
+	std::vector<T> bit;
+	std::vector<T> arr;
 
-    /** Adds val to the element at index ind. */
-    void add(int ind, T val) {
-        arr[ind] += val;
-        ind++;
-        for (; ind <= size; ind += ind & -ind) { bit[ind] += val; }
-    }
+  public:
+	BIT(int size) : size(size), bit(size + 1), arr(size) {}
 
-    /** @return The sum of all values in [0, ind]. */
-    T pref_sum(int ind) {
-        ind++;
-        T total = 0;
-        for (; ind > 0; ind -= ind & -ind) { total += bit[ind]; }
-        return total;
-    }
+	/** Sets the value at index ind to val. */
+	void set(int ind, T val) { add(ind, val - arr[ind]); }
+
+	/** Adds val to the element at index ind. */
+	void add(int ind, T val) {
+		arr[ind] += val;
+		ind++;
+		for (; ind <= size; ind += ind & -ind) { bit[ind] += val; }
+	}
+
+	/** @return The sum of all values in [0, ind]. */
+	T pref_sum(int ind) {
+		ind++;
+		T total = 0;
+		for (; ind > 0; ind -= ind & -ind) { total += bit[ind]; }
+		return total;
+	}
 };
 // EndCodeSnip
 
@@ -273,21 +271,21 @@ int main() {
 	std::vector<int> cows(n + 1);
 	for (int i = 1; i <= n; i++) { std::cin >> cows[i]; }
 
-    int k = n;
-    BIT<int> bit(n + 1);
-    while (cows[k] > cows[k - 1]) {
-        bit.add(cows[k], 1);
-        k--;
-    }
+	int k = n;
+	BIT<int> bit(n + 1);
+	while (cows[k] > cows[k - 1]) {
+		bit.add(cows[k], 1);
+		k--;
+	}
 
 	bit.add(cows[k], 1);
 	k--;
 
-    std::cout << k << '\n';
-    for (int i = 1; i <= k; i++) {
-        std::cout << bit.pref_sum(cows[i] - 1) + k - i << " \n"[i == k];
-        bit.add(cows[i], 1);
-    }
+	std::cout << k << '\n';
+	for (int i = 1; i <= k; i++) {
+		std::cout << bit.pref_sum(cows[i] - 1) + k - i << " \n"[i == k];
+		bit.add(cows[i], 1);
+	}
 }
 ```
 
