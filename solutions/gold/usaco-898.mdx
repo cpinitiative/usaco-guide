@@ -22,9 +22,9 @@ Note: The video solution might not be the same as other solutions. Code in C++.
 <CPPSection>
 
 ```cpp
+#include <algorithm>
 #include <iostream>
 #include <vector>
-#include <algorithm>
 
 // BeginCodeSnip{Segment Tree}
 template <class T> class SumSegmentTree {
@@ -56,19 +56,19 @@ template <class T> class SumSegmentTree {
 // EndCodeSnip
 
 void set_up(std::string name) {
-    freopen((name + ".in").c_str(), "r", stdin);
-    freopen((name + ".out").c_str(), "w", stdout);
+	freopen((name + ".in").c_str(), "r", stdin);
+	freopen((name + ".out").c_str(), "w", stdout);
 }
 
 int main() {
-    set_up("sleepy");
-    int n;
-    std::cin >> n;
-    std::vector<int> cows(n);
-    for (auto &x : cows) {
-        std::cin >> x;
-        x--;
-    }
+	set_up("sleepy");
+	int n;
+	std::cin >> n;
+	std::vector<int> cows(n);
+	for (auto &x : cows) {
+		std::cin >> x;
+		x--;
+	}
 
     /*
      * To find K, we first need to calculate the length of the longest
@@ -81,31 +81,31 @@ int main() {
      * http://www.usaco.org/current/dataa/sol_sleepy_bronze_jan19.html
      */
 
-    int suffix_length = 1;
-    for (int i = n - 1; i > 0; i--) {
-        // If current cow is in order, increment suffix length and continue
+	int suffix_length = 1;
+	for (int i = n - 1; i > 0; i--) {
+		// If current cow is in order, increment suffix length and continue
 		// Otherwise, there has been an inversion so we break from the loop
-        if (cows[i] > cows[i - 1]) {
-            suffix_length++;
-        } else {
-            break;
-        }
-    }
+		if (cows[i] > cows[i - 1]) {
+			suffix_length++;
+		} else {
+			break;
+		}
+	}
 
-    int k = n - suffix_length;
-    std::cout << k << '\n';
+	int k = n - suffix_length;
+	std::cout << k << '\n';
 
-    /* To calculate the minimum amount of paces each cow needs to make,
-     * we first need to find the number of cows in the sorted region that
-     * are smaller than that cow (this is done through a segment tree).
-     *
-     * Then, we can add that to the number of cows that the cow has to move
-     * through to reach the sorted region of the array, or in other words,
-     * the number of cows to the right of the current cow that are in the
-     * unsorted region of the array.
-     */
+	/* To calculate the minimum amount of paces each cow needs to make,
+	 * we first need to find the number of cows in the sorted region that
+	 * are smaller than that cow (this is done through a segment tree).
+	 *
+	 * Then, we can add that to the number of cows that the cow has to move
+	 * through to reach the sorted region of the array, or in other words,
+	 * the number of cows to the right of the current cow that are in the
+	 * unsorted region of the array.
+	 */
 
-    SumSegmentTree<long long> segtree(n);
+    SumSegmentTree<int> segtree(n);
     for (int i = k; i < n; i++) {
         segtree.set(cows[i], 1);
     }
@@ -262,18 +262,16 @@ template <class T> class BIT {
 // EndCodeSnip
 
 void set_up(std::string name) {
-    freopen((name + ".in").c_str(), "r", stdin);
-    freopen((name + ".out").c_str(), "w", stdout);
+	freopen((name + ".in").c_str(), "r", stdin);
+	freopen((name + ".out").c_str(), "w", stdout);
 }
 
 int main() {
-    set_up("sleepy");
-    int n;
-    std::cin >> n;
-    std::vector<int> cows(n + 1);
-    for (int i = 1; i <= n; i++) {
-        std::cin >> cows[i];
-    }
+	set_up("sleepy");
+	int n;
+	std::cin >> n;
+	std::vector<int> cows(n + 1);
+	for (int i = 1; i <= n; i++) { std::cin >> cows[i]; }
 
     int k = n;
     BIT<int> bit(n + 1);
@@ -282,8 +280,8 @@ int main() {
         k--;
     }
 
-    bit.add(cows[k], 1);
-    k--;
+	bit.add(cows[k], 1);
+	k--;
 
     std::cout << k << '\n';
     for (int i = 1; i <= k; i++) {
