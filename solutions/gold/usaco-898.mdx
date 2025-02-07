@@ -19,6 +19,139 @@ Note: The video solution might not be the same as other solutions. Code in C++.
 ### Using Segment Tree
 
 <LanguageSection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+// BeginCodeSnip{Segment Tree}
+template <typename T>
+struct SegmentTree {
+    using monoid = typename T::monoid;
+
+    explicit SegmentTree(const int n)
+        : SegmentTree(std::vector<monoid>(n, T::id())) {}
+
+    explicit SegmentTree(const std::vector<monoid>& a) : n(a.size()), p2(1) {
+        while (p2 < n) {
+            p2 <<= 1;
+        }
+        data.assign(p2 << 1, T::id());
+        std::copy(a.begin(), a.end(), data.begin() + p2);
+        for (int i = p2 - 1; i > 0; --i) {
+            data[i] = T::merge(data[i << 1], data[(i << 1) + 1]);
+        }
+    }
+
+    void set(int idx, const monoid val) {
+        idx += p2;
+        data[idx] = val;
+        while (idx >>= 1) {
+            data[idx] = T::merge(data[idx << 1], data[(idx << 1) + 1]);
+        }
+    }
+
+    monoid get(int left, int right) const {
+        monoid res_l = T::id(), res_r = T::id();
+        for (left += p2, right += p2; left < right; left >>= 1, right >>= 1) {
+            if (left & 1) {
+                res_l = T::merge(res_l, data[left++]);
+            } 
+            if (right & 1) {
+                res_r = T::merge(data[--right], res_r);
+            } 
+        }
+        return T::merge(res_l, res_r);
+    }
+
+    monoid operator[](const int idx) const { return data[idx + p2]; }
+
+    private:
+    const int n;
+    int p2;
+    std::vector<monoid> data;
+};
+
+namespace monoid {
+    template <typename T>
+    struct RangeSumQuery {
+        using monoid = T;
+        static constexpr monoid id() { return 0; }
+        static monoid merge(const monoid& a, const monoid& b) { return a + b; }
+    };
+}
+// EndCodeSnip
+
+void set_up(std::string name) {
+    freopen((name + ".in").c_str(), "r", stdin);
+    freopen((name + ".out").c_str(), "w", stdout);
+}
+
+int main() {
+    set_up("sleepy");
+    int n;
+    std::cin >> n;
+    std::vector<int> cows(n);
+    for (auto &x : cows) {
+        std::cin >> x;
+        x--;
+    }
+
+    /*
+     * To find K, we first need to calculate the length of the longest
+     * suffix of the array that is already in order.
+     *
+     * Then, we can subtract that length from N to get K
+     *
+     * Read the analysis of the bronze version of this problem to learn why
+     * this is the case:
+     * http://www.usaco.org/current/data/sol_sleepy_bronze_jan19.html
+     */
+
+    int suffix_length = 1;
+    for (int i = n - 1; i > 0; i--) {
+        // If current cow is in order, increment suffix length and continue
+		// Otherwise, there has been an inversion so we break from the loop
+        if (cows[i] > cows[i - 1]) {
+            suffix_length++;
+        } else {
+            break;
+        }
+    }
+
+    int k = n - suffix_length;
+    std::cout << k << '\n';
+
+    /* To calculate the minimum amount of paces each cow needs to make,
+     * we first need to find the number of cows in the sorted region that
+     * are smaller than that cow (this is done through a segment tree).
+     *
+     * Then, we can add that to the number of cows that the cow has to move
+     * through to reach the sorted region of the array, or in other words,
+     * the number of cows to the right of the current cow that are in the
+     * unsorted region of the array.
+     */
+
+    SegmentTree<monoid::RangeSumQuery<int>> seg(n);
+    for (int i = k; i < n; i++) {
+        seg.set(cows[i], 1);
+    }
+
+    for (int i = 0; i < k; i++) {
+        // Takes the prefix sum up to cows[i] - 1, which calculates the
+        // number of cows smaller than the current cow
+        int smaller = seg.get(0, cows[i]);
+
+        std::cout << smaller + (k - i - 1) << " \n"[i == k - 1];
+        seg.set(cows[i], 1);
+    }
+}
+
+```
+
+</CPPSection>
 <JavaSection>
 
 ```java
@@ -46,7 +179,7 @@ public class Sleepy {
 		 */
 
 		int suffixLength = 1;
-		for (int i = n - 1; i >= 0; i--) {
+		for (int i = n - 1; i > 0; i--) {
 			// If current cow is in order, increment suffix length and continue
 			// Otherwise, there has been an inversion so we break from the loop
 			if (cows[i] > cows[i - 1]) {
@@ -122,6 +255,67 @@ public class Sleepy {
 ### Using Binary Indexed Tree
 
 <LanguageSection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <vector>
+
+// BeginCodeSnip{Binary Indexed Tree}
+struct BIT {
+    const int n;
+    std::vector<int> bit;
+    BIT(int n) : n(n), bit(n, 0) {}
+
+    void add(int x, int v) {
+        for (int i = x; i <= n; i += i & -i) {
+            bit[i] += v;
+        }
+    }
+
+    int query(int x) {
+        int res = 0;
+        for (int i = x; i > 0; i -= i & -i) {
+            res += bit[i];
+        }
+        return res;
+    }
+};
+// EndCodeSnip
+
+void set_up(std::string name) {
+    freopen((name + ".in").c_str(), "r", stdin);
+    freopen((name + ".out").c_str(), "w", stdout);
+}
+
+int main() {
+    set_up("sleepy");
+    int n;
+    std::cin >> n;
+    std::vector<int> cows(n + 1);
+    for (int i = 1; i <= n; i++) {
+        std::cin >> cows[i];
+    }
+
+    int k = n;
+    BIT bit(n + 1);
+    while (cows[k] > cows[k - 1]) {
+        bit.add(cows[k], 1);
+        k--;
+    }
+
+    bit.add(cows[k], 1);
+    k--;
+
+    std::cout << k << '\n';
+    for (int i = 1; i <= k; i++) {
+        std::cout << bit.query(cows[i] - 1) + k - i << " \n"[i == k];
+        bit.add(cows[i], 1);
+    }
+}
+```
+
+</CPPSection>
 <JavaSection>
 
 ```java
