@@ -274,7 +274,7 @@ int main() {
 
 <Warning>
 
-This implementation is not garbage collected, so the tree nodes aren't deleted even if the instance of the segment tree is taken out of scope. 
+This implementation is not garbage collected, so the tree nodes aren't deleted even if the instance of the segment tree is taken out of scope.
 
 </Warning>
 
@@ -286,93 +286,88 @@ This implementation is not garbage collected, so the tree nodes aren't deleted e
 <LanguageSection>
 <CPPSection>
 
-```cpp 
+```cpp
 #include <bits/stdc++.h>
 using namespace std;
 
 using ll = long long;
 
 struct Node {
-    ll sum = 0;
-    int l = 0, r = 0;
+	ll sum = 0;
+	int l = 0, r = 0;
 };
 
 constexpr int MX_NODES = 5e6;
 Node tree[MX_NODES];
 int timer = 1;
 
-Node join(int l, int r) {
-    return Node{tree[l].sum + tree[r].sum, l, r};
-}
+Node join(int l, int r) { return Node{tree[l].sum + tree[r].sum, l, r}; }
 
 int build(int tl, int tr, const vector<int> &arr) {
-    if (tl == tr) {
-        tree[timer] = {arr[tl], 0, 0};
-        return timer++;
-    }
+	if (tl == tr) {
+		tree[timer] = {arr[tl], 0, 0};
+		return timer++;
+	}
 
-    int mid = (tl + tr) / 2;
-    tree[timer] = join(build(tl, mid, arr), build(mid + 1, tr, arr));
+	int mid = (tl + tr) / 2;
+	tree[timer] = join(build(tl, mid, arr), build(mid + 1, tr, arr));
 
-    return timer++;
+	return timer++;
 }
 
 int upd(int v, int pos, int val, int tl, int tr) {
-    if (tl == tr) {
-        tree[timer] = {val, 0, 0};
-        return timer++;
-    }
+	if (tl == tr) {
+		tree[timer] = {val, 0, 0};
+		return timer++;
+	}
 
-    int mid = (tl + tr) / 2;
-    if (pos <= mid) {
-        tree[timer] = join(upd(tree[v].l, pos, val, tl, mid), tree[v].r);
-    } else {
-        tree[timer] = join(tree[v].l, upd(tree[v].r, pos, val, mid + 1, tr));
-    }
+	int mid = (tl + tr) / 2;
+	if (pos <= mid) {
+		tree[timer] = join(upd(tree[v].l, pos, val, tl, mid), tree[v].r);
+	} else {
+		tree[timer] = join(tree[v].l, upd(tree[v].r, pos, val, mid + 1, tr));
+	}
 
-    return timer++;
+	return timer++;
 }
 
 ll qry(int v, int ql, int qr, int tl, int tr) {
-    if (qr < tl || tr < ql) { return 0ll; }
-    if (ql <= tl && tr <= qr) {
-        return tree[v].sum;
-    }
+	if (qr < tl || tr < ql) { return 0ll; }
+	if (ql <= tl && tr <= qr) { return tree[v].sum; }
 
-    int mid = (tl + tr) / 2;
-    return qry(tree[v].l, ql, qr, tl, mid) + 
-           qry(tree[v].r, ql, qr, mid + 1, tr);
+	int mid = (tl + tr) / 2;
+	return qry(tree[v].l, ql, qr, tl, mid) + qry(tree[v].r, ql, qr, mid + 1, tr);
 }
 
 int main() {
-    int n, q;
-    cin >> n >> q;
-    vector<int> a(n);
-    for (int &i : a) { cin >> i; }
+	int n, q;
+	cin >> n >> q;
+	vector<int> a(n);
+	for (int &i : a) { cin >> i; }
 
-    vector<int> roots = {build(0, n - 1, a)};
+	vector<int> roots = {build(0, n - 1, a)};
 
-    for (int t = 0; t < q; t++) {
-        int type, k;
-        cin >> type >> k;
-        k--;
+	for (int t = 0; t < q; t++) {
+		int type, k;
+		cin >> type >> k;
+		k--;
 
-        if (type == 1) {
-            int pos, val;
-            cin >> pos >> val;
-            pos--;
-            roots[k] = upd(roots[k], pos, val, 0, n - 1);
-        } else if (type == 2) {
-            int a, b;
-            cin >> a >> b;
-            a--, b--;
-            cout << qry(roots[k], a, b, 0, n - 1) << "\n";
-        } else if (type == 3) {
-            tree[timer] = tree[roots[k]];
-            roots.push_back(timer);
-            timer++;
-        }
-    }
+		if (type == 1) {
+			int pos, val;
+			cin >> pos >> val;
+			pos--;
+			roots[k] = upd(roots[k], pos, val, 0, n - 1);
+		} else if (type == 2) {
+			int a, b;
+			cin >> a >> b;
+			a--, b--;
+			cout << qry(roots[k], a, b, 0, n - 1) << "\n";
+		} else if (type == 3) {
+			tree[timer] = tree[roots[k]];
+			roots.push_back(timer);
+			timer++;
+		}
+	}
 }
 ```
 
