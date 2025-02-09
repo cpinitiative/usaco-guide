@@ -18,9 +18,11 @@ Note: The video solution might not be the same as other solutions. Code in C++.
 
 ### Using Segment Tree
 
-To obtain the number of cows (**K**) that are not in the correct position, subtract the length of the longest suffix of the array that is already sorted from **N**. Read the analysis of the bronze version of this problem to learn why this is the case. [Analysis](https://usaco.org/current/data/sol_sleepy_bronze_jan19.html)
+To obtain the number of cows $K$ that are not in the correct position, subtract the length of the longest suffix of the array that is already sorted from $N$. This makes sense because the problem assumes cows are moved one by one into the sorted part of the line. Once a cow reaches its correct spot in the already-sorted section, it stays there and doesn't cause any more trouble. By focusing on the longest sorted suffix, we're identifying the cows that are already in the right place and don't need to move anymore. This maximizes the number of cows that are "done" and minimizes the number of cows $(K)$ that still need to be rearranged.
 
-Next, for each of these unsorted cows, we calculate how many steps it needs to take to reach its correct position. To do this, we consider two things: first, we count how many cows in the sorted section have a smaller number than the cow we're focusing on. These cows are in the way and need to be bypassed. To make this counting efficient, we use a **Segment Tree** , which lets us quickly find how many smaller cows are ahead without checking each one individually. Second, we count how many cows in the unsorted section are standing to the right of the current cow, as they also block its path.
+Next, for each of these unsorted cows, we calculate how many steps it needs to take to reach its correct position. To do this, we consider two things:
+1. Count how many cows in the sorted section have a smaller number than the cow we're focusing on. These cows are in the way and need to be bypassed. To make this counting efficient, we use a **Segment Tree** , which lets us quickly find how many smaller cows are ahead without checking each one individually.
+2. Count how many cows in the unsorted section are standing to the right of the current cow, as they also block its path.
 
 By adding these two numbers together—the cows in the sorted section that are smaller and the cows in the unsorted section ahead of it—we get the total number of steps that cow needs to take to reach its correct spot. This way, we make sure we account for all the obstacles each cow has to pass to get to where it needs to be.
 
