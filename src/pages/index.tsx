@@ -21,7 +21,11 @@ import TrustedBy from '../components/Index/TrustedBy';
 import { ProblemsetsFeature } from '../components/Index/features/ProblemsetsFeature';
 import { ProgressTrackingFeature } from '../components/Index/features/ProgressTrackingFeature';
 import { ResourcesFeature } from '../components/Index/features/ResourcesFeature';
-import { EasyFunCoding, Vercel } from '../components/Index/sponsor-logos';
+import {
+  EasyFunCoding,
+  NonTrivial,
+  Vercel,
+} from '../components/Index/sponsor-logos';
 import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
 import { GlowingRing } from '../components/elements/landing/GlowingRing';
 import { GlowingText } from '../components/elements/landing/GlowingText';
@@ -546,16 +550,20 @@ export default function IndexPage(): JSX.Element {
             Our Sponsors
           </p>
           {/* Sponsor logos don't fit well in the light theme */}
-          {/*<p className="uppercase text-gray-600 dark:text-gray-400 font-semibold pt-6 md:text-lg">
+          <p className="uppercase text-gray-600 dark:text-gray-400 font-semibold pt-6 md:text-lg">
             Platinum Sponsors
           </p>
           <div className="my-8 grid grid-cols-2 gap-0.5 md:grid-cols-3 lg:grid-cols-4 lg:my-6 text-gray-600 dark:text-gray-400 items-center">
-            <div className="col-span-1">
-              <a href="https://x-camp.academy" target="_blank" rel="noreferrer">
-                <XCamp />
+            <div className="col-span-1 dark:invert invert-0">
+              <a
+                href="http://non-trivial.org/"
+                target="_blank"
+                rel="noreferrer"
+              >
+                <NonTrivial />
               </a>
             </div>
-          </div> */}
+          </div>
           <p className="uppercase text-gray-600 dark:text-gray-400 font-semibold pt-6 md:text-lg">
             Bronze Sponsors
           </p>
