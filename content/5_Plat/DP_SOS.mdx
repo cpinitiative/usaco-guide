@@ -374,7 +374,7 @@ First, think of each word as a combination of letters represented by a bitmask. 
 
 Next, we use SOS DP to compute the number of words disjoint from the mask (i.e., words containing **none of the vowels** in mask). This means the word's bitmask must be a subset of the complement of mask (~mask).
 
-Once this is calculated, the number of valid words for a subset is simply $n - sos[mask]$ because a word is valid if it contains **at least one vowel** from the subset, meaning it is not disjoint from mask. Finally, we square the count of valid words for every subset, XOR all those squared values together, and that gives us the answer.
+Once this is calculated, the number of valid words for a subset is simply $n - sos[~mask]$ because a word is valid if it contains **at least one vowel** from the subset, meaning it is not disjoint from mask. Finally, we square the count of valid words for every subset, XOR all those squared values together, and that gives us the answer.
 
 ## Implementation
 
@@ -409,7 +409,7 @@ int main() {
 	int res = 0;
 	for (int mask = 0; mask < (1 << M); mask++) {
 		// sos[mask] now contains the number of words whose bitmasks are subsets of mask
-		int valid_words = n - sos[mask];
+		int valid_words = n - sos[(1 << M) - 1 - mask];
 		res ^= valid_words * valid_words;
 	}
 	std::cout << res << '\n';
@@ -440,7 +440,7 @@ for i in range(M):
 res = 0
 for mask in range(1 << M):
 	# sos[mask] now contains the number of words whose bitmasks are subsets of mask
-	valid_words = n - sos[mask]
+	valid_words = n - sos[(1 << M) - 1 - mask]
 	res ^= valid_words * valid_words
 
 print(res)
