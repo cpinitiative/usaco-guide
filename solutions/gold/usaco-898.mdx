@@ -197,20 +197,32 @@ public class Sleepy {
 using std::vector;
 
 // BeginCodeSnip{Binary Indexed Tree}
-struct BIT {
-	const int n;
-	vector<int> bit;
-	BIT(int n) : n(n), bit(n, 0) {}
+template <class T> class BIT {
+  private:
+    int size;
+    vector<T> bit;
+    vector<T> arr;
+  
+  public:
+    BIT(int size) : size(size), bit(size + 1), arr(size) {}
 
-	void add(int x, int v) {
-		for (int i = x; i <= n; i += i & -i) { bit[i] += v; }
-	}
+    /** Sets the value at index ind to val. */
+    void set(int ind, T val) { add(ind, val - arr[ind]); }
 
-	int query(int x) {
-		int res = 0;
-		for (int i = x; i > 0; i -= i & -i) { res += bit[i]; }
-		return res;
-	}
+    /** Adds val to the element at index ind. */
+    void add(int ind, T val) {
+        arr[ind] += val;
+        ind++;
+        for (; ind <= size; ind += ind & -ind) { bit[ind] += val; }
+    }
+
+    /** @return The sum of all values in [0, ind]. */
+    T pref_sum(int ind) {
+        ind++;
+        T total = 0;
+        for (; ind > 0; ind -= ind & -ind) { total += bit[ind]; }
+        return total;
+    }
 };
 // EndCodeSnip
 
@@ -224,7 +236,7 @@ int main() {
 	for (int i = 1; i <= n; i++) { fin >> cows[i]; }
 
 	int k = n;
-	BIT bit(n + 1);
+	BIT<int> bit(n + 1);
 	while (cows[k] > cows[k - 1]) {
 		bit.add(cows[k], 1);
 		k--;
@@ -235,7 +247,7 @@ int main() {
 
 	fout << k << '\n';
 	for (int i = 1; i <= k; i++) {
-		fout << bit.query(cows[i] - 1) + k - i << " \n"[i == k];
+		fout << bit.pref_sum(cows[i] - 1) + k - i << " \n"[i == k];
 		bit.add(cows[i], 1);
 	}
 }
