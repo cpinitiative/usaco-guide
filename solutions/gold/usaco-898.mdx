@@ -68,8 +68,6 @@ template <class T> class SumSegmentTree {
 
 int main() {
 	std::ifstream fin("sleepy.in");
-	std::ofstream fout("sleepy.out");
-
 	int n;
 	fin >> n;
 	vector<int> cows(n);
@@ -89,6 +87,7 @@ int main() {
 		}
 	}
 
+	std::ofstream fout("sleepy.out");
 	int k = n - suffix_length;
 	fout << k << '\n';
 
@@ -186,7 +185,7 @@ public class Sleepy {
 </JavaSection>
 </LanguageSection>
 
-### Using Binary Indexed Tree
+### Using a BIT
 
 <LanguageSection>
 <CPPSection>
@@ -230,8 +229,6 @@ template <class T> class BIT {
 
 int main() {
 	std::ifstream fin("sleepy.in");
-	std::ofstream fout("sleepy.out");
-
 	int n;
 	fin >> n;
 	vector<int> cows(n + 1);
@@ -247,6 +244,7 @@ int main() {
 	bit.add(cows[k], 1);
 	k--;
 
+	std::ofstream fout("sleepy.out");
 	fout << k << '\n';
 	for (int i = 1; i <= k; i++) {
 		fout << bit.pref_sum(cows[i] - 1) + k - i << " \n"[i == k];
