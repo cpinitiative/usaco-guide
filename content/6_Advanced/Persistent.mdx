@@ -333,12 +333,12 @@ class PersistentSegtree {
 		return timer++;
 	}
 
-	ll qry(int v, int ql, int qr, int tl, int tr) {
+	ll range_sum(int v, int ql, int qr, int tl, int tr) {
 		if (qr < tl || tr < ql) { return 0ll; }
 		if (ql <= tl && tr <= qr) { return tree[v].sum; }
 
 		int mid = (tl + tr) / 2;
-		return qry(tree[v].l, ql, qr, tl, mid) + qry(tree[v].r, ql, qr, mid + 1, tr);
+		return range_sum(tree[v].l, ql, qr, tl, mid) + range_sum(tree[v].r, ql, qr, mid + 1, tr);
 	}
 
   public:
@@ -348,7 +348,7 @@ class PersistentSegtree {
 
 	int set(int root, int pos, int val) { return set(root, pos, val, 0, n - 1); }
 
-	ll qry(int root, int l, int r) { return qry(root, l, r, 0, n - 1); }
+	ll range_sum(int root, int l, int r) { return range_sum(root, l, r, 0, n - 1); }
 
 	int add_copy(int root) {
 		tree[timer] = tree[root];
@@ -381,7 +381,7 @@ int main() {
 			int a, b;
 			cin >> a >> b;
 			a--, b--;
-			cout << st.qry(roots[k], a, b) << '\n';
+			cout << st.range_sum(roots[k], a, b) << '\n';
 		} else if (type == 3) {
 			roots.push_back(st.add_copy(roots[k]));
 		}
