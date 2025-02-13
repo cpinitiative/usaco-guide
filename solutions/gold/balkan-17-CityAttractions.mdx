@@ -35,163 +35,214 @@ Obviously, the solution to the simpler problem doesn't solve the general
 problem: we might need to move up into a node's parent!
 
 To address this issue, we can first do a DFS to find $dp$ as defined above, and
-then do a second DFS to allow moving to a node's parent. See the
+then do a second DFS to allow moving outside our subtree. See the
 [solving for all roots module](/gold/all-roots) if you're unfamiliar with this
 technique. Essentially, we find the best destination from $i$ if we move up into
 $i$'s parent and then compare that with $dp[i]$.
 
 After doing this, $dp[i]$ is simply $t_i$ as desired.
 
-These two DFSes run in $\mathcal{O}(N)$ time, so the final complexity is
-$\mathcal{O}(N + \log K)$ (from the binary jumping).
+## Finding the final destination 
 
-## Implementation
+There are two ways we can go about finding Gigel's final location.
+1. We can implement [binary jumping](/plat/bin-jump) on our array containing the next location 
+2. We try to reach a cycle, and then take our remaining jumps modulo the cycle size 
+
+The first method is a tad easier to implement, but introduces a log factor.
+
+## Implementation 1
+
+**Time Complexity:** $O(N \log{K})$
 
 ```cpp
 #include <bits/stdc++.h>
-typedef long long ll;
 using namespace std;
 
-int a[300001], nxt[2][300001];
-pair<int, int> dp[300001], pdp[300001];
-vector<int> graph[300001];
-
-void dfs1(int node = 1, int parent = 0) {
-	dp[node] = {INT_MAX / 2, 0};
-	for (int i : graph[node])
-		if (i != parent) {
-			dfs1(i, node);
-			dp[node] = min({dp[node], {dp[i].first + 1, dp[i].second}, {1 - a[i], i}});
-		}
-}
-
-void dfs2(int node = 1, int parent = 0) {
-	dp[node] = min(dp[node], pdp[node]);
-	pair<int, int> tmp = {pdp[node].first + 1, pdp[node].second};
-	tmp = min(tmp, {1 - a[node], node});
-	for (int i : graph[node])
-		if (i != parent) {
-			pdp[i] = min(pdp[i], tmp);
-			tmp = min({tmp, {dp[i].first + 2, dp[i].second}, {2 - a[i], i}});
-		}
-	reverse(graph[node].begin(), graph[node].end());
-	tmp = {pdp[node].first + 1, pdp[node].second};
-	tmp = min(tmp, {1 - a[node], node});
-	for (int i : graph[node])
-		if (i != parent) {
-			pdp[i] = min(pdp[i], tmp);
-			tmp = min({tmp, {dp[i].first + 2, dp[i].second}, {2 - a[i], i}});
-		}
-	for (int i : graph[node])
-		if (i != parent) dfs2(i, node);
-}
+using ll = long long;
 
 int main() {
-	ios_base::sync_with_stdio(0);
-	cin.tie(0);
-	int n;
+    int n;
 	ll k;
 	cin >> n >> k;
-	for (int i = 1; i <= n; i++) {
-		cin >> a[i];
-		pdp[i] = {INT_MAX / 2, 0};
-	}
-	for (int i = 1; i < n; i++) {
+
+	vector<int> a(n);
+	for (int &i : a) { cin >> i; }
+
+	vector<vector<int>> adj(n);
+	for (int i = 0; i < n - 1; i++) {
 		int u, v;
 		cin >> u >> v;
-		graph[u].push_back(v);
-		graph[v].push_back(u);
+		u--, v--;
+		adj[u].push_back(v);
+		adj[v].push_back(u);
 	}
-	dfs1();
-	dfs2();
 
-	for (int i = 1; i <= n; i++) nxt[0][i] = dp[i].second;
-	int curr = (k & 1 ? nxt[0][1] : 1);
-	for (int i = 1; i < 63; i++) {
-		for (int j = 1; j <= n; j++) nxt[i & 1][j] = nxt[i - 1 & 1][nxt[i - 1 & 1][j]];
-		if (k & (1ll << i)) curr = nxt[i & 1][curr];
+	const array<int, 2> def = {-(n + 1), -1};
+	vector<array<int, 2>> top(n, def);
+    vector<array<int, 2>> sub(n, def);
+
+    /** @return best next node in subtree of u */
+	const auto get = [&](int u) -> array<int, 2> {
+		return max(array<int, 2>{sub[u][0] - 1, sub[u][1]}, 
+                   array<int, 2>{a[u] - 1, -u});
+	};
+
+	// calculate the best vertex to go to in the current subtree
+	const auto dfs = [&](int u, int p, auto &&self) -> void {
+		for (const int v : adj[u]) {
+			if (v == p) { continue; }
+			self(v, u, self);
+			sub[u] = max(sub[u], get(v));
+		}
+	};
+
+	dfs(0, -1, dfs);
+
+	vector<int> nxt(n);
+
+	// calculate the best vertex to go outside of the current subtree
+	const auto reroot = [&](int u, int p, auto &&self) -> void {
+		nxt[u] = -max(top[u], sub[u])[1];
+		array<int, 2> best = top[u];
+        array<int, 2> alt = def;
+		for (const int v : adj[u]) {
+			if (v == p) { continue; }
+			const array<int, 2> cur = get(v);
+			if (cur > best) {
+				alt = best, best = cur;
+			} else if (cur > alt) {
+				alt = cur;
+			}
+		}
+
+		for (const int v : adj[u]) {
+			if (v == p) { continue; }
+            top[v] = (get(v) == best) ? alt : best;
+            top[v][0]--; 
+			top[v] = max(top[v], array<int, 2>{a[u] - 1, -u});
+			self(v, u, self);
+		}
+	};
+
+	reroot(0, -1, reroot);
+
+	int res = 0;
+	for (int i = 0; i < 63; i++) {
+		if ((k >> i) & 1) {
+			res = nxt[res];
+		}
+
+		vector<int> new_nxt(n);
+		for (int j = 0; j < n; j++) {
+			new_nxt[j] = nxt[nxt[j]];
+		}
+
+		nxt = move(new_nxt);
 	}
-	cout << curr << '\n';
-	return 0;
+
+	cout << res + 1 << endl;
 }
 ```
 
-## Alternative Code (Ben)
+## Implementation 2
+
+**Time Complexity:** $O(N)$
 
 ```cpp
-const int MX = 3e5 + 5;
+#include <bits/stdc++.h>
+using namespace std;
 
-int N;
-ll K;
-array<pi, 2> bes[MX];  // for each x,
-// get best two a[y]-d(x,y), possibly including x itself
-vi adj[MX];
-int nex[MX], vis[MX];
-
-array<pi, 2> comb(array<pi, 2> a, array<pi, 2> b) {
-	trav(t, b) t.f--;
-	vpi res, tmp;
-	F0R(i, 2) res.pb(a[i]), res.pb(b[i]);
-	sort(rall(res));
-	set<int> ind;
-	trav(t, res) {
-		if (ind.count(t.s)) continue;  // ignore repeated indices
-		ind.insert(t.s);
-		tmp.pb(t);
-	}
-	array<pi, 2> ans;
-	F0R(i, 2) ans[i] = tmp[i];
-	return ans;
-}
-
-void dfsUp(int a, int b) {
-	trav(t, adj[a]) if (t != b) {
-		dfsUp(t, a);
-		bes[a] = comb(bes[a], bes[t]);
-	}
-}
-
-void dfsDown(int a, int b) {
-	trav(t, adj[a]) if (t != b) {
-		bes[t] = comb(bes[t], bes[a]);
-		dfsDown(t, a);
-	}
-}
+using ll = long long;
 
 int main() {
-	setIO();
-	re(N, K);
-	FOR(i, 1, N + 1) {
-		int A;
-		re(A);
-		bes[i] = {{{A, -i}, {-MOD, MOD}}};
+    int n;
+	ll k;
+	cin >> n >> k;
+
+	vector<int> a(n);
+	for (int &i : a) { cin >> i; }
+
+	vector<vector<int>> adj(n);
+	for (int i = 0; i < n - 1; i++) {
+		int u, v;
+		cin >> u >> v;
+		u--, v--;
+		adj[u].push_back(v);
+		adj[v].push_back(u);
 	}
-	F0R(i, N - 1) {
-		int a, b;
-		re(a, b);
-		adj[a].pb(b), adj[b].pb(a);
-	}
-	dfsUp(1, 0);
-	dfsDown(1, 0);
-	FOR(i, 1, N + 1) {
-		nex[i] = -bes[i][0].s;
-		if (nex[i] == i) nex[i] = -bes[i][1].s;
-	}
-	FOR(i, 1, N + 1) vis[i] = -1;
-	vis[1] = 0;
-	int cur = 1, ti = 0;
-	bool flag = 0;
-	while (K) {
-		cur = nex[cur];
-		ti++;
-		K--;
-		if (!flag && vis[cur] != -1) {
-			int cycLen = ti - vis[cur];
-			K %= cycLen;
-			flag = 1;
+
+	const array<int, 2> def = {-(n + 1), -1};
+	vector<array<int, 2>> top(n, def);
+    vector<array<int, 2>> sub(n, def);
+
+    /** @return best next node in subtree of u */
+	const auto get = [&](int u) -> array<int, 2> {
+		return max(array<int, 2>{sub[u][0] - 1, sub[u][1]}, 
+                   array<int, 2>{a[u] - 1, -u});
+	};
+
+	// calculate the best vertex to go to in the current subtree
+	const auto dfs = [&](int u, int p, auto &&self) -> void {
+		for (const int v : adj[u]) {
+			if (v == p) { continue; }
+			self(v, u, self);
+			sub[u] = max(sub[u], get(v));
 		}
-		vis[cur] = ti;
+	};
+
+	dfs(0, -1, dfs);
+
+	vector<int> nxt(n);
+
+	// calculate the best vertex to go outside of the current subtree
+	const auto reroot = [&](int u, int p, auto &&self) -> void {
+		nxt[u] = -max(top[u], sub[u])[1];
+		array<int, 2> best = top[u];
+        array<int, 2> alt = def;
+		for (const int v : adj[u]) {
+			if (v == p) { continue; }
+			const array<int, 2> cur = get(v);
+			if (cur > best) {
+				alt = best;
+                best = cur;
+			} else if (cur > alt) {
+				alt = cur;
+			}
+		}
+
+		for (const int v : adj[u]) {
+			if (v == p) { continue; }
+            top[v] = (get(v) == best) ? alt : best;
+            top[v][0]--; 
+			top[v] = max(top[v], array<int, 2>{a[u] - 1, -u});
+			self(v, u, self);
+		}
+	};
+
+	reroot(0, -1, reroot);
+
+	int res = 0;
+	if (k <= n) {
+		for (int i = 0; i < k; i++) {
+			res = nxt[res];
+		}
+	} else {
+		k -= n;
+		for (int i = 0; i < n; i++) {
+			res = nxt[res];
+		}
+
+		vector<bool> vis(n);
+		vector<int> path;
+		while (!vis[res]) {
+			vis[res] = true;
+			path.push_back(res);
+			res = nxt[res];
+		}
+
+		res = path[k % path.size()];
 	}
-	ps(cur);
+
+	cout << res + 1 << endl;
 }
 ```
