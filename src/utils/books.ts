@@ -7,6 +7,7 @@ export const books = {
   CPH: ['/CPH.pdf', "Competitive Programmer's Handbook (Antti Laaksonen)"],
   IUSACO: ['https://darrenyao.com/', 'An Introduction to USACO (Darren Yao)'],
   GCP: [
-    '/GCP.pdf', 'Guide to Competitive Programming (Antti Laaksonen)',
+    'https://link.springer.com/book/10.1007/978-3-319-72547-5',
+    'Guide to Competitive Programming (Antti Laaksonen)',
   ],
 };
