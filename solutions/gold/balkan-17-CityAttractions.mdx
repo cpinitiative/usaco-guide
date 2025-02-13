@@ -42,11 +42,11 @@ $i$'s parent and then compare that with $dp[i]$.
 
 After doing this, $dp[i]$ is simply $t_i$ as desired.
 
-## Finding the final destination 
+## Finding the final destination
 
 There are two ways we can go about finding Gigel's final location.
-1. We can implement [binary jumping](/plat/bin-jump) on our array containing the next location 
-2. We try to reach a cycle, and then take our remaining jumps modulo the cycle size 
+1. We can implement [binary jumping](/plat/bin-jump) on our array containing the next location
+2. We try to reach a cycle, and then take our remaining jumps modulo the cycle size
 
 The first method is a tad easier to implement, but introduces a log factor.
 
@@ -61,7 +61,7 @@ using namespace std;
 using ll = long long;
 
 int main() {
-    int n;
+	int n;
 	ll k;
 	cin >> n >> k;
 
@@ -79,12 +79,12 @@ int main() {
 
 	const array<int, 2> def = {-(n + 1), -1};
 	vector<array<int, 2>> top(n, def);
-    vector<array<int, 2>> sub(n, def);
+	vector<array<int, 2>> sub(n, def);
 
-    /** @return best next node in subtree of u */
+	/** @return best next node in subtree of u */
 	const auto get = [&](int u) -> array<int, 2> {
-		return max(array<int, 2>{sub[u][0] - 1, sub[u][1]}, 
-                   array<int, 2>{a[u] - 1, -u});
+		return max(array<int, 2>{sub[u][0] - 1, sub[u][1]},
+		           array<int, 2>{a[u] - 1, -u});
 	};
 
 	// calculate the best vertex to go to in the current subtree
@@ -104,7 +104,7 @@ int main() {
 	const auto reroot = [&](int u, int p, auto &&self) -> void {
 		nxt[u] = -max(top[u], sub[u])[1];
 		array<int, 2> best = top[u];
-        array<int, 2> alt = def;
+		array<int, 2> alt = def;
 		for (const int v : adj[u]) {
 			if (v == p) { continue; }
 			const array<int, 2> cur = get(v);
@@ -117,8 +117,8 @@ int main() {
 
 		for (const int v : adj[u]) {
 			if (v == p) { continue; }
-            top[v] = (get(v) == best) ? alt : best;
-            top[v][0]--; 
+			top[v] = (get(v) == best) ? alt : best;
+			top[v][0]--;
 			top[v] = max(top[v], array<int, 2>{a[u] - 1, -u});
 			self(v, u, self);
 		}
@@ -128,14 +128,10 @@ int main() {
 
 	int res = 0;
 	for (int i = 0; i < 63; i++) {
-		if ((k >> i) & 1) {
-			res = nxt[res];
-		}
+		if ((k >> i) & 1) { res = nxt[res]; }
 
 		vector<int> new_nxt(n);
-		for (int j = 0; j < n; j++) {
-			new_nxt[j] = nxt[nxt[j]];
-		}
+		for (int j = 0; j < n; j++) { new_nxt[j] = nxt[nxt[j]]; }
 
 		nxt = move(new_nxt);
 	}
@@ -155,7 +151,7 @@ using namespace std;
 using ll = long long;
 
 int main() {
-    int n;
+	int n;
 	ll k;
 	cin >> n >> k;
 
@@ -173,12 +169,12 @@ int main() {
 
 	const array<int, 2> def = {-(n + 1), -1};
 	vector<array<int, 2>> top(n, def);
-    vector<array<int, 2>> sub(n, def);
+	vector<array<int, 2>> sub(n, def);
 
-    /** @return best next node in subtree of u */
+	/** @return best next node in subtree of u */
 	const auto get = [&](int u) -> array<int, 2> {
-		return max(array<int, 2>{sub[u][0] - 1, sub[u][1]}, 
-                   array<int, 2>{a[u] - 1, -u});
+		return max(array<int, 2>{sub[u][0] - 1, sub[u][1]},
+		           array<int, 2>{a[u] - 1, -u});
 	};
 
 	// calculate the best vertex to go to in the current subtree
@@ -198,13 +194,13 @@ int main() {
 	const auto reroot = [&](int u, int p, auto &&self) -> void {
 		nxt[u] = -max(top[u], sub[u])[1];
 		array<int, 2> best = top[u];
-        array<int, 2> alt = def;
+		array<int, 2> alt = def;
 		for (const int v : adj[u]) {
 			if (v == p) { continue; }
 			const array<int, 2> cur = get(v);
 			if (cur > best) {
 				alt = best;
-                best = cur;
+				best = cur;
 			} else if (cur > alt) {
 				alt = cur;
 			}
@@ -212,8 +208,8 @@ int main() {
 
 		for (const int v : adj[u]) {
 			if (v == p) { continue; }
-            top[v] = (get(v) == best) ? alt : best;
-            top[v][0]--; 
+			top[v] = (get(v) == best) ? alt : best;
+			top[v][0]--;
 			top[v] = max(top[v], array<int, 2>{a[u] - 1, -u});
 			self(v, u, self);
 		}
@@ -223,14 +219,10 @@ int main() {
 
 	int res = 0;
 	if (k <= n) {
-		for (int i = 0; i < k; i++) {
-			res = nxt[res];
-		}
+		for (int i = 0; i < k; i++) { res = nxt[res]; }
 	} else {
 		k -= n;
-		for (int i = 0; i < n; i++) {
-			res = nxt[res];
-		}
+		for (int i = 0; i < n; i++) { res = nxt[res]; }
 
 		vector<bool> vis(n);
 		vector<int> path;
