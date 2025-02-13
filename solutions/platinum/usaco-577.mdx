@@ -61,7 +61,7 @@ The algorithm for "lower mode" can be determined similarly.
 #include <bits/stdc++.h>
 using namespace std;
 
-struct segtree {
+struct Segtree {
 	bool higher_mode;
 	int n;
 
@@ -79,7 +79,7 @@ struct segtree {
 
 	vector<item> seg;
 
-	segtree(int n, bool higher_mode) {
+	Segtree(int n, bool higher_mode) {
 		this->n = n;
 		this->higher_mode = higher_mode;
 		seg.resize(2 * n, NEUTRAL);
@@ -120,8 +120,8 @@ int main() {
 		if (!contain[i]) { bessie.push_back(i); }
 	}
 
-	segtree higher_st(2 * n, true), lower_st(2 * n, false);
-	const segtree::item BESSIE_CARD = {0, 1, 0}, ELSIE_CARD = {0, 0, 1},
+	Segtree higher_st(2 * n, true), lower_st(2 * n, false);
+	const Segtree::item BESSIE_CARD = {0, 1, 0}, ELSIE_CARD = {0, 0, 1},
 	                    RESET = {0, 0, 0};
 
 	for (int i = 0; i < n; i++) {
@@ -131,7 +131,7 @@ int main() {
 
 	int ans = higher_st.query();
 	// sort to allocate smallest cards first for "lower mode"
-	sort(bessie.rbegin(), bessie.rend());
+	reverse(bessie.begin(), bessie.end())
 	for (int i = n - 1; i >= 0; i--) {
 		higher_st.update(bessie[i], RESET);
 		higher_st.update(elsie[i], RESET);
