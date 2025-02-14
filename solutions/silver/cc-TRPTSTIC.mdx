@@ -2,8 +2,18 @@
 id: cc-TRPTSTIC
 source: CC
 title: TripTastic
-author: Daniel Ge
+author: Daniel Ge, David Guo
 ---
+
+## Explanation
+
+We use prefix sums to efficiently compute the total capacity of any rectangular subgrid. This allows us to quickly check if a given area can accommodate all students and the mentor.
+
+To find the optimal placement, we use binary search on the maximum distance between the mentor and the farthest student. Since a larger distance always works if a smaller one does, we binary search over the possible distances from $0$ to the maximum grid dimension, or $\max(n, m)$.
+
+For each possible distance, we check if there exists a mentor placement where all students fit within a square of that radius. We do this by iterating over possible mentor positions and querying the prefix sum array to determine if enough capacity exists.
+
+Finally, after binary searching over all distances we print out the answer.
 
 ## Implementation
 
