@@ -273,6 +273,7 @@ int main() {
 	for (int mask = 0; mask < (1 << n); mask++) {
 		for (int submask = mask; submask; submask = (submask - 1) & mask) {
 			int subset = mask ^ submask;
+			// submask has everything in mask but not in subset
 			if (dp[subset] != INT32_MAX && dp[submask] != INT32_MAX) {
 				dp[mask] = min(dp[mask], dp[subset] + dp[submask]);
 			}
