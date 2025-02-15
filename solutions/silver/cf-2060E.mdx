@@ -28,90 +28,86 @@ This gives us the total steps needed to make $F$ match the structure of $G$.
 <CPPSection>
 
 ```cpp
-#include <iostream>
-#include <vector>
-#include <map>
 #include <functional>
+#include <iostream>
+#include <map>
+#include <vector>
 
-using std::vector;
+using std::function;
 using std::map;
 using std::pair;
-using std::function;
+using std::vector;
 
 int main() {
-    int test_case;
-    std::cin >> test_case;
-    while (test_case--) {
+	int test_case;
+	std::cin >> test_case;
+	while (test_case--) {
 
-        int n, m1, m2;
-        std::cin >> n >> m1 >> m2;
-        vector<int> F[n], G[n];
+		int n, m1, m2;
+		std::cin >> n >> m1 >> m2;
+		vector<int> F[n], G[n];
 
-        for (int i = 0; i < m1; i++) {
-            int u, v;
-            std::cin >> u >> v;
-            F[--u].push_back(--v);
-            F[v].push_back(u);
-        }
+		for (int i = 0; i < m1; i++) {
+			int u, v;
+			std::cin >> u >> v;
+			F[--u].push_back(--v);
+			F[v].push_back(u);
+		}
 
-        for (int i = 0; i < m2; i++) {
-            int u, v;
-            std::cin >> u >> v;
-            G[--u].push_back(--v);
-            G[v].push_back(u);
-        }
+		for (int i = 0; i < m2; i++) {
+			int u, v;
+			std::cin >> u >> v;
+			G[--u].push_back(--v);
+			G[v].push_back(u);
+		}
 
-        int f_comps = 0, g_comps = 0;
-        map<pair<int, int>, int> invalid_edges;
-        vector<int> component_id(n);
-        vector<int> used(n);
+		int f_comps = 0, g_comps = 0;
+		map<pair<int, int>, int> invalid_edges;
+		vector<int> component_id(n);
+		vector<int> used(n);
 
-        function<void(int)> dfs1 = [&] (int node) -> void {
-            used[node] = 1;
-            for (int u : F[node]) {
-                if (!used[u] and !invalid_edges[{node, u}]) {
-                    dfs1(u);
-                }
-            }
-        };
+		function<void(int)> dfs1 = [&](int node) -> void {
+			used[node] = 1;
+			for (int u : F[node]) {
+				if (!used[u] and !invalid_edges[{node, u}]) { dfs1(u); }
+			}
+		};
 
-        function<void(int, int)> dfs2 = [&] (int node, int c) -> void {
-            component_id[node] = c;
-            used[node] = 1;
-            for (int u : G[node]) {
-                if (!used[u]) {
-                    dfs2(u, c);
-                }
-            }
-        };
-        
-        for (int i = 0; i < n; i++) {
-            if (!used[i]) {
-                g_comps++;
-                dfs2(i, g_comps);
-            }
-        }
+		function<void(int, int)> dfs2 = [&](int node, int c) -> void {
+			component_id[node] = c;
+			used[node] = 1;
+			for (int u : G[node]) {
+				if (!used[u]) { dfs2(u, c); }
+			}
+		};
 
-        int invalid = 0; // invalid edges in graph F
-        for (int i = 0; i < n; i++) {
-            for (int u : F[i]) {
-                if (component_id[i] != component_id[u]) {
-                    invalid++;
-                    invalid_edges[{i, u}] = 1;
-                }
-            }
-        }
+		for (int i = 0; i < n; i++) {
+			if (!used[i]) {
+				g_comps++;
+				dfs2(i, g_comps);
+			}
+		}
 
-        used.assign(n, 0);
-        for (int i = 0; i < n; i++) {
-            if (!used[i]) {
-                f_comps++;
-                dfs1(i);
-            }
-        }
+		int invalid = 0;  // invalid edges in graph F
+		for (int i = 0; i < n; i++) {
+			for (int u : F[i]) {
+				if (component_id[i] != component_id[u]) {
+					invalid++;
+					invalid_edges[{i, u}] = 1;
+				}
+			}
+		}
 
-        std::cout << invalid / 2 + (f_comps - g_comps) << '\n';
-    }
+		used.assign(n, 0);
+		for (int i = 0; i < n; i++) {
+			if (!used[i]) {
+				f_comps++;
+				dfs1(i);
+			}
+		}
+
+		std::cout << invalid / 2 + (f_comps - g_comps) << '\n';
+	}
 }
 ```
 
@@ -128,95 +124,86 @@ int main() {
 <CPPSection>
 
 ```cpp
-#include <iostream>
-#include <vector>
 #include <array>
+#include <iostream>
 #include <numeric>
+#include <vector>
 
-using std::vector;
 using std::array;
 using std::cin;
+using std::vector;
 
 // BeginCodeSnip{Disjoint Sets Union}
 struct DisjointSets {
-    int n, connected_comps;
-    vector<int> parents, sizes;
+	int n, connected_comps;
+	vector<int> parents, sizes;
 
-    DisjointSets(int _n) : n(_n), connected_comps(_n) {
-        parents = vector<int> (n);
-        iota(begin(parents), end(parents), 0);
-        sizes = std::vector<int> (n, 1);
-    }
+	DisjointSets(int _n) : n(_n), connected_comps(_n) {
+		parents = vector<int>(n);
+		iota(begin(parents), end(parents), 0);
+		sizes = std::vector<int>(n, 1);
+	}
 
-    /** @return the "representative" node in x's component */
-    int get(int x) {
-        if (x == parents[x]) {
-            return x;
-        }
-        return parents[x] = get(parents[x]);
-    }
+	/** @return the "representative" node in x's component */
+	int get(int x) {
+		if (x == parents[x]) { return x; }
+		return parents[x] = get(parents[x]);
+	}
 
-    /** @return whether the merge changed connectivity */
-    bool unite(int x, int y) {
-        int x_root = get(x);
-        int y_root = get(y);
+	/** @return whether the merge changed connectivity */
+	bool unite(int x, int y) {
+		int x_root = get(x);
+		int y_root = get(y);
 
-        if (x_root == y_root) {
-            return false;
-        }
+		if (x_root == y_root) { return false; }
 
-        if (sizes[x_root] < sizes[y_root]) {
-            std::swap(x_root, y_root);
-        }
-        sizes[x_root] += sizes[y_root];
-        parents[y_root] = x_root;
-        connected_comps--;
+		if (sizes[x_root] < sizes[y_root]) { std::swap(x_root, y_root); }
+		sizes[x_root] += sizes[y_root];
+		parents[y_root] = x_root;
+		connected_comps--;
 
-        return true;
-    }
+		return true;
+	}
 
-    /** @return whether x and y are in the same connected component */
-    bool connected(int x, int y) {
-        return (get(x) == get(y));
-    }
+	/** @return whether x and y are in the same connected component */
+	bool connected(int x, int y) { return (get(x) == get(y)); }
 };
 // EndCodeSnip
 
 int main() {
-    int test_case;
-    cin >> test_case;
-    while (test_case--) {
+	int test_case;
+	cin >> test_case;
+	while (test_case--) {
 
-        int n, m1, m2;
-        cin >> n >> m1 >> m2;
-        vector<array<int, 2>> f_edges(m1);
-        DisjointSets F(n), G(n);
-        int res = 0;
+		int n, m1, m2;
+		cin >> n >> m1 >> m2;
+		vector<array<int, 2>> f_edges(m1);
+		DisjointSets F(n), G(n);
+		int res = 0;
 
-        for (int i = 0; i < m1; i++) {
-            int a, b;
-            cin >> a >> b;
-            f_edges[i] = {--a, --b};
-        }
+		for (int i = 0; i < m1; i++) {
+			int a, b;
+			cin >> a >> b;
+			f_edges[i] = {--a, --b};
+		}
 
+		for (int i = 0; i < m2; i++) {
+			int a, b;
+			cin >> a >> b;
+			G.unite(--a, --b);
+		}
 
-        for (int i = 0; i < m2; i++) {
-            int a, b;
-            cin >> a >> b;
-            G.unite(--a, --b);
-        }
+		for (int i = 0; i < m1; i++) {
+			if (G.connected(f_edges[i][0], f_edges[i][1])) {
+				F.unite(f_edges[i][0], f_edges[i][1]);
+			} else {
+				res += 1;
+			}
+		}
 
-        for (int i = 0; i < m1; i++) {
-            if (G.connected(f_edges[i][0], f_edges[i][1])) {
-                F.unite(f_edges[i][0], f_edges[i][1]);
-            } else {
-                res += 1;
-            }
-        }
-        
-        res += F.connected_comps - G.connected_comps;
-        std::cout << res << '\n';
-    }
+		res += F.connected_comps - G.connected_comps;
+		std::cout << res << '\n';
+	}
 }
 ```
 
