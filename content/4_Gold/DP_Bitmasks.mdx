@@ -267,15 +267,15 @@ int main() {
 			}
 		}
 
-		if (connected) {
-			dp[mask] = 1;
-		}
+		if (connected) { dp[mask] = 1; }
 	}
 
 	for (int mask = 0; mask < (1 << n); mask++) {
 		for (int submask = mask; submask; submask = (submask - 1) & mask) {
 			int subset = mask ^ submask;
-			dp[mask] = min(dp[mask], dp[subset] + dp[submask]);
+			if (dp[subset] != INT32_MAX && dp[submask] != INT32_MAX) {
+				dp[mask] = min(dp[mask], dp[subset] + dp[submask]);
+			}
 		}
 	}
 
