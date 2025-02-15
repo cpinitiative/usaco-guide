@@ -174,7 +174,6 @@ print(dp[(1 << n) - 1][n - 1])
 ```
 
 </PySection>
-
 </LanguageSection>
 
 ## Merging Subsets
@@ -216,17 +215,21 @@ From this process, we can get all strict subsets in increasing order by calculat
 
 <FocusProblem problem="sam2" />
 
-### Solution
+### Explanation
 
-The goal of this problem is to partition the nodes into sets such that the nodes in each set form a complete graph. Let $\texttt{dp}[S]$ be the minimum number of partitions such that in each partition, the graph formed is a complete graph.
+The goal of this problem is to partition the nodes into sets such that the nodes in each set form a complete graph.
+Let $\texttt{dp}[S]$ be the minimum number of partitions such that in each partition, the graph formed is a complete graph.
 
-We can first find which sets $T$ form a complete graph, allowing us to set $\texttt{dp}[T]$ to $1$, otherwise, $\infty$. This can be done naively in $\mathcal{O}(2^N \cdot N^2)$ or $\mathcal{O}(2^N \cdot N)$ by setting the adjacency list as a bitmask and using bit manipulations if a set of nodes is a complete graph.
+We can first find which sets $T$ form a complete graph, setting $\texttt{dp}[T]$ to $1$ and $\infty$ otherwise.
+This can be done naively in $\mathcal{O}(2^N \cdot N^2)$ or $\mathcal{O}(2^N \cdot N)$
+by setting the adjacency list as a bitmask and using bit manipulations if a set of nodes is a complete graph.
 
-Then, the transitions are:
-
+Then we can transition as follows:
 $$
 \texttt{dp}[S] = \min_{T \subset S} (\texttt{dp}[T] + \texttt{dp}[S \setminus T])
 $$
+
+### Implementation
 
 **Time Complexity:** $\mathcal{O}(3^N + 2^N \cdot N)$
 
@@ -237,42 +240,46 @@ $$
 #include <bits/stdc++.h>
 using namespace std;
 
-constexpr int INF = 1e9;
-
 int main() {
 	int n, m;
 	cin >> n >> m;
 	vector<int> adj(n);
-	vector<int> dp(1 << n, INF);
-
 	for (int i = 0; i < m; i++) {
 		int u, v;
 		cin >> u >> v;
-		u--, v--;
+		u--;
+		v--;
 		// adjacency list represented as a bitmask
 		adj[u] |= (1 << v);
 		adj[v] |= (1 << u);
 	}
 
+	vector<int> dp(1 << n, INT32_MAX);
 	for (int mask = 0; mask < (1 << n); mask++) {
-		bool ok = 1;
+		bool connected = true;
 		for (int u = 0; u < n; u++) {
-			if ((mask >> u) & 1) {
+			if (((mask >> u) & 1) != 0) {
 				// check if u is connected to all other nodes in mask
-				if (((adj[u] | (1 << u)) & mask) != mask) ok = 0;
+				if (((adj[u] | (1 << u)) & mask) != mask) {
+					connected = false;
+					break;
+				}
 			}
 		}
 
-		if (ok) dp[mask] = 1;
+		if (connected) {
+			dp[mask] = 1;
+		}
 	}
 
 	for (int mask = 0; mask < (1 << n); mask++) {
 		for (int submask = mask; submask; submask = (submask - 1) & mask) {
-			dp[mask] = min(dp[mask], dp[mask ^ submask] + dp[submask]);
+			int subset = mask ^ submask;
+			dp[mask] = min(dp[mask], dp[subset] + dp[submask]);
 		}
 	}
 
-	cout << dp[(1 << n) - 1] << "\n";
+	cout << dp[(1 << n) - 1] << endl;
 }
 ```
 
