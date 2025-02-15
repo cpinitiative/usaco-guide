@@ -32,15 +32,15 @@ the room we check has nonempty capacity and that there's enough space for the me
 <CPPSection>
 
 ```cpp
+#include <algorithm>
 #include <iostream>
 #include <vector>
-#include <algorithm>
 
 using std::cout;
 using std::endl;
-using std::vector;
 using std::max;
 using std::min;
+using std::vector;
 
 int main() {
 	int test_num;
@@ -57,14 +57,14 @@ int main() {
 			for (int c = 1; c <= col_num; c++) {
 				std::cin >> r_pref[r][c];
 				r_pref[r][c] +=
-					r_pref[r - 1][c] + r_pref[r][c - 1] - r_pref[r - 1][c - 1];
+				    r_pref[r - 1][c] + r_pref[r][c - 1] - r_pref[r - 1][c - 1];
 			}
 		}
 
 		// Returns the sum of the room capacity from (sr, sc) to (er, ec) inclusive
 		auto rect_sum = [&](int sr, int er, int sc, int ec) {
 			return r_pref[er + 1][ec + 1] - r_pref[sr][ec + 1] - r_pref[er + 1][sc] +
-				   r_pref[sr][sc];
+			       r_pref[sr][sc];
 		};
 
 		int best = -1;
@@ -141,7 +141,7 @@ for _ in range(int(input())):
 					valid = mid
 					hi = mid - 1
 				else:
-					lo = mid + 1;
+					lo = mid + 1
 
 			if valid != -1:
 				best = valid if best == -1 else min(best, valid)
