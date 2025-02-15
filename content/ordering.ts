@@ -234,7 +234,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
     },
     {
       name: 'Dynamic Programming',
-      items: ['comb-sub', 'dp-more'],
+      items: ['comb-sub', 'dp-broken-profile', 'dp-more'],
     },
     {
       name: 'Flows',

@@ -89,12 +89,12 @@ zero, you have several options:
 
 <Warning>
 
-[`memset(arr, 0, sizeof arr)`](http://www.cplusplus.com/reference/cstring/memset/)
-will also zero-initialize an array. However, it's important to note that
-`memset` treats the value that is passed to it as an `unsigned char`. So for an
-array of 32-bit integers, `memset(arr, 1, sizeof arr)` will set each element to
-$1$, as you might expect. On the other hand, `memset(arr, -1, sizeof arr)` will
-set each element to $1+2^8+2^{16}+2^{24}=16843009$, not $-1$.
+`memset(arr, 0, sizeof arr)` will zero-initialize an array. However, it's important to note that
+`memset` treats the value that is passed to it as an `unsigned char`. So for an array of 32-bit integers,
+`memset(arr, 1, sizeof arr)` will set each **byte** to 1, resulting in each element becoming
+`0x01010101` (i.e. 16843009 in decimal), not 1. On the other hand,
+`memset(arr, -1, sizeof arr)` will set each byte to `0xFF`, which makes each element `0xFFFFFFFF`. For
+signed 32-bit integers, this bit pattern represents -1 (or 4294967295 if the integers are unsigned).
 
 </Warning>
 

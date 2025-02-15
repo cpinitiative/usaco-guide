@@ -76,6 +76,45 @@ class DSU {
 ```
 
 </CPPSection>
+<PySection>
+
+```py
+class DSU:
+	def __init__(self, n: int):
+		self.p = list(range(n))
+		self.sz = [1] * n
+		self.history = []  # stores all history info related to merges
+
+	def get(self, x) -> int:
+		if self.p[x] == x:
+			return x
+		return self.get(self.p[x])
+
+	def unite(self, a: int, b: int):
+		a = self.get(a)
+		b = self.get(b)
+		if a == b:
+			return
+		if self.sz[a] < self.sz[b]:
+			a, b = b, a
+
+		# add to history
+		self.history.append((self.p, b, self.p[b]))
+		self.history.append((self.sz, a, self.sz[a]))
+
+		self.p[b] = a
+		self.sz[a] += self.sz[b]
+
+	def snapshot(self) -> int:
+		return len(self.history)
+
+	def rollback(self, until: int):
+		while self.snapshot() > until:
+			arr, idx, val = self.history.pop()
+			arr[idx] = val
+```
+
+</PySection>
 </LanguageSection>
 
 ## Dynamic Connectivity
@@ -270,6 +309,156 @@ int main() {
 ```
 
 </CPPSection>
+<PySection>
+
+```py
+MAXN = 300000
+tree = [[] for _ in range(4 * MAXN)]
+
+# BeginCodeSnip{DSU}
+class DSU:
+	def __init__(self, n: int):
+		self.p = list(range(n))
+		self.sz = [1] * n
+		self.sum = [0] * n
+		self.history = []  # stores all history info related to merges
+
+	def init_sum(self, a: list[int]):
+		for i in range(len(a)):
+			self.sum[i] = a[i]
+
+	def get(self, x) -> int:
+		if self.p[x] == x:
+			return x
+		return self.get(self.p[x])
+
+	def get_sum(self, x: int) -> int:
+		return self.sum[self.get(x)]
+
+	def unite(self, a: int, b: int):
+		a = self.get(a)
+		b = self.get(b)
+		if a == b:
+			return
+		if self.sz[a] < self.sz[b]:
+			a, b = b, a
+
+		# add to history
+		self.history.append((self.p, b, self.p[b]))
+		self.history.append((self.sz, a, self.sz[a]))
+		self.history.append((self.sum, a, self.sum[a]))
+
+		self.p[b] = a
+		self.sz[a] += self.sz[b]
+		self.sum[a] += self.sum[b]
+
+	def add(self, x: int, v: int):
+		x = self.get(x)
+		self.history.append((self.sum, x, self.sum[x]))
+		self.sum[x] += v
+
+	def snapshot(self) -> int:
+		return len(self.history)
+
+	def rollback(self, until: int):
+		while self.snapshot() > until:
+			arr, idx, val = self.history.pop()
+			arr[idx] = val
+
+
+# EndCodeSnip
+
+
+class Query:
+	def __init__(self, t: int, u: int, v=None, x=None):
+		self.t = t
+		self.u = u
+		self.v = v
+		self.x = x
+
+
+dsu = DSU(MAXN)
+
+
+def update(q: Query, v: int, query_l: int, query_r: int, tree_l: int, tree_r: int):
+	if query_l > tree_r or query_r < tree_l:
+		return
+	if query_l <= tree_l and query_r >= tree_r:
+		tree[v].append(q)
+		return
+	m = (tree_l + tree_r) // 2
+	update(q, 2 * v, query_l, query_r, tree_l, m)
+	update(q, 2 * v + 1, query_l, query_r, m + 1, tree_r)
+
+
+def dfs(v: int, l: int, r: int, ans: list[int]):
+	snapshot = dsu.snapshot()
+	for q in tree[v]:
+		if q.t == 1:
+			dsu.unite(q.u, q.v)
+		elif q.t == 2:
+			dsu.add(q.v, q.x)
+	if l == r:
+		for q in tree[v]:
+			if q.t == 3:
+				ans[l] = dsu.get_sum(q.v)
+	else:
+		m = (l + r) // 2
+		dfs(2 * v, l, m, ans)
+		dfs(2 * v + 1, m + 1, r, ans)
+	dsu.rollback(snapshot)
+
+
+n, q = map(int, input().split())
+a = list(map(int, input().split()))
+dsu.init_sum(a)
+index_added = {}
+ans = [-1] * q
+
+for i in range(q):
+	query = list(map(int, input().split()))
+	t = query[0]
+	if t == 0:
+		u, v = query[1:]
+		if u > v:
+			u, v = v, u
+		# store index this edge is added, marks beginning of interval
+		index_added[(u, v)] = i
+	elif t == 1:
+		u, v = query[1:]
+		if u > v:
+			u, v = v, u
+		cur_q = Query(1, u, v)
+
+		# add all edges that are deleted to interval [index added, i - 1]
+		update(cur_q, 1, index_added[(u, v)], i - 1, 0, q - 1)
+		index_added[(u, v)] = -1
+	elif t == 2:
+		v, x = query[1:]
+		cur_q = Query(2, -1, v, x)
+
+		# add all sum queries to interval [i, q - 1]
+		update(cur_q, 1, i, q - 1, 0, q - 1)
+	elif t == 3:
+		v = query[1]
+		cur_q = Query(3, -1, v)
+
+		# add all output queries to interval [i, i]
+		update(cur_q, 1, i, i, 0, q - 1)
+
+# add all edges that are not deleted to interval [index added, q - 1]
+for (edge, index) in index_added.items():
+	if index != -1:
+		cur_q = Query(1, edge[0], edge[1])
+		update(cur_q, 1, index, q - 1, 0, q - 1)
+
+dfs(1, 0, q - 1, ans)
+for res in ans:
+	if res != -1:
+		print(res)
+```
+
+</PySection>
 </LanguageSection>
 
 <Problems problems="res" />
