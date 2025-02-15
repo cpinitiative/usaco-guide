@@ -7,123 +7,92 @@ author: Daniel Ge, David Guo
 
 ## Explanation
 
-We use prefix sums to efficiently compute the total capacity of any rectangular subgrid. This allows us to quickly check if a given area can accommodate all students and the mentor.
+For each room the mentor can be in, we binary search on the maximum distance between the mentor and the farthest student
+since a larger distance always works if a smaller one does.
+We binary search over the possible distances from $0$ to the maximum grid dimension, or $\max(n, m)$.
 
-To find the optimal placement, we use binary search on the maximum distance between the mentor and the farthest student. Since a larger distance always works if a smaller one does, we binary search over the possible distances from $0$ to the maximum grid dimension, or $\max(n, m)$.
+Notice that if we're currently checking a distance $d$ at a starting position $(r, c)$,
+then the students can be anywhere from $(r - d, c - d)$ to $(r + d, c + d)$, excluding the out-of-bounds rooms.
 
-For each possible distance, we check if there exists a mentor placement where all students fit within a square of that radius. We do this by iterating over possible mentor positions and querying the prefix sum array to determine if enough capacity exists.
-
-Finally, after binary searching over all distances we print out the answer.
+We can use prefix sums to efficiently compute the capacity of the subgrids described above.
+This allows us to quickly check if a given area can accommodate all students and the mentor.
 
 ## Implementation
 
 **Time Complexity:** $\mathcal{O}(N \cdot M)$
 
+<Warning title="Remember the Mentor!">
+
+When implementing, be sure to take into account that
+the room we check has nonempty capacity and that there's enough space for the mentor himself!
+
+</Warning>
+
 <LanguageSection>
 <CPPSection>
 
 ```cpp
-#include <bits/stdc++.h>
-using namespace std;
-using ll = long long;
+#include <iostream>
+#include <vector>
+#include <algorithm>
 
-int n, m, k;
-// Since n, m <= 1e6, we cannot just use an array
-vector<vector<ll>> grid, pref;
-
-/**
- * @return the sum from (row1, column1) to (row2, column2)
- * Assumes row1 < row2 and column1 < column2
- */
-ll rangesum(int row1, int column1, int row2, int column2) {
-	// Sometimes, the range the mentor can reach goes outside the grid
-	if (row1 < 0) { row1 = 0; }
-	if (row2 >= n) { row2 = n - 1; }
-	if (column1 < 0) { column1 = 0; }
-	if (column2 >= m) { column2 = m - 1; }
-
-	ll answer = 0;
-	answer += pref[row2][column2];
-	if (row1 > 0) { answer -= pref[row1 - 1][column2]; }
-	if (column1 > 0) { answer -= pref[row2][column1 - 1]; }
-	if (row1 > 0 && column1 > 0) { answer += pref[row1 - 1][column1 - 1]; }
-
-	return answer;
-}
-
-/** @return whether the given distance will work */
-bool test(int distance) {
-	// Try centering the mentor at every room
-	for (int i = 0; i < n; i++) {
-		for (int j = 0; j < m; j++) {
-			if (grid[i][j] == 0) {
-				// The mentor has to at least be able to stay in this room
-				continue;
-			}
-			if (rangesum(i - distance, j - distance, i + distance, j + distance) >=
-			    (k + 1)) {
-				return true;
-			}
-		}
-	}
-	return false;
-}
-
-/** Binary search, adapted from the code in its module. */
-int first_true(int lo, int hi) {
-	hi++;
-	while (lo < hi) {
-		int mid = lo + (hi - lo) / 2;
-		if (test(mid)) {
-			hi = mid;
-		} else {
-			lo = mid + 1;
-		}
-	}
-	return lo;
-}
+using std::cout;
+using std::endl;
+using std::vector;
+using std::max;
+using std::min;
 
 int main() {
-	int T;
-	cin >> T;
-	for (int t = 0; t < T; t++) {
-		cin >> n >> m >> k;
+	int test_num;
+	std::cin >> test_num;
+	for (int t = 0; t < test_num; t++) {
+		int row_num;
+		int col_num;
+		int kid_num;
+		std::cin >> row_num >> col_num >> kid_num;
 
-		// Filling in the grid
-		ll tot = 0;
-		grid.clear();
-		for (int i = 0; i < n; i++) {
-			vector<ll> row;
-			for (int j = 0; j < m; j++) {
-				ll a;
-				cin >> a;
-				tot += a;
-				row.push_back(a);
-			}
-			grid.push_back(row);
-		}
-
-		// Print -1 and continue if not enough space in hotel
-		if (tot < (k + 1)) {
-			cout << -1 << endl;
-			continue;
-		}
-
-		// Setting up the size of the prefix sum array
-		pref.clear();
-		for (int i = 0; i < n; i++) { pref.push_back(vector<ll>(m)); }
-
-		// Filling in the prefix sum array
-		for (int i = 0; i < n; i++) {
-			for (int j = 0; j < m; j++) {
-				pref[i][j] = grid[i][j];
-				if (i > 0) { pref[i][j] += pref[i - 1][j]; }
-				if (j > 0) { pref[i][j] += pref[i][j - 1]; }
-				if (i > 0 && j > 0) { pref[i][j] -= pref[i - 1][j - 1]; }
+		// 2D prefix sum array of the rooms
+		vector<vector<long long>> r_pref(row_num + 1, vector<long long>(col_num + 1));
+		for (int r = 1; r <= row_num; r++) {
+			for (int c = 1; c <= col_num; c++) {
+				std::cin >> r_pref[r][c];
+				r_pref[r][c] +=
+					r_pref[r - 1][c] + r_pref[r][c - 1] - r_pref[r - 1][c - 1];
 			}
 		}
 
-		cout << first_true(0, max(n, m)) << endl;
+		// Returns the sum of the room capacity from (sr, sc) to (er, ec) inclusive
+		auto rect_sum = [&](int sr, int er, int sc, int ec) {
+			return r_pref[er + 1][ec + 1] - r_pref[sr][ec + 1] - r_pref[er + 1][sc] +
+				   r_pref[sr][sc];
+		};
+
+		int best = -1;
+		for (int r = 0; r < row_num; r++) {
+			for (int c = 0; c < col_num; c++) {
+				// Make sure the room itself can fit the mentor
+				if (rect_sum(r, r, c, c) == 0) { continue; }
+
+				int lo = 0;
+				int hi = max(row_num, col_num);
+				int valid = -1;
+				while (lo <= hi) {
+					int mid = (lo + hi) / 2;
+					int sr = max(0, r - mid), er = min(row_num - 1, r + mid);
+					int sc = max(0, c - mid), ec = min(col_num - 1, c + mid);
+					if (rect_sum(sr, er, sc, ec) - 1 >= kid_num) {
+						valid = mid;
+						hi = mid - 1;
+					} else {
+						lo = mid + 1;
+					}
+				}
+
+				if (valid != -1) { best = best == -1 ? valid : min(best, valid); }
+			}
+		}
+
+		cout << best << endl;
 	}
 }
 ```
@@ -132,90 +101,52 @@ int main() {
 <PySection>
 
 ```py
-def rangesum(row1: int, column1: int, row2: int, column2: int) -> int:
-	""":return the sum from (row1, column1) to (row2, column2)"""
-	assert row1 <= row2 and column1 <= column2
-
-	# Sometimes, the range the mentor can reach goes outside the grid.
-	if row1 < 0:
-		row1 = 0
-	if row2 >= n:
-		row2 = n - 1
-	if column1 < 0:
-		column1 = 0
-	if column2 >= m:
-		column2 = m - 1
-
-	answer = pref[row2][column2]
-	if row1 > 0:
-		answer -= pref[row1 - 1][column2]
-	if column1 > 0:
-		answer -= pref[row2][column1 - 1]
-	if row1 > 0 and column1 > 0:
-		answer += pref[row1 - 1][column1 - 1]
-
-	return answer
-
-
-def test(distance: int) -> bool:
-	""":return whether the given distance will work"""
-	# Try centering the mentor at every room
-	for i in range(n):
-		for j in range(m):
-			if grid[i][j] == 0:
-				# The mentor has to at least be able to stay in this room
-				continue
-			if rangesum(i - distance, j - distance, i + distance, j + distance) >= (
-				k + 1
-			):
-				return True
-	return False
-
-
-def first_true(lo: int, hi: int) -> int:
-	"""Binary search (from the module)"""
-	hi += 1
-	while lo < hi:
-		mid = lo + (hi - lo) // 2
-		if test(mid):
-			hi = mid
-		else:
-			lo = mid + 1
-	return lo
-
-
 for _ in range(int(input())):
-	n, m, k = map(int, input().split())
+	row_num, col_num, kid_num = [int(i) for i in input().split()]
 
-	grid = []
-	total = 0
+	# 2D prefix sum array of the rooms
+	r_pref = [[0 for _ in range(col_num + 1)] for _ in range(row_num + 1)]
+	for r in range(1, row_num + 1):
+		row = [int(i) for i in input().split()]
+		for c in range(1, col_num + 1):
+			r_pref[r][c] = row[c - 1]
+			r_pref[r][c] += r_pref[r - 1][c] + r_pref[r][c - 1] - r_pref[r - 1][c - 1]
 
-	# Filling in the grid
-	for _ in range(n):
-		row = list(map(int, input().split()))
-		total += sum(row)
-		grid.append(row)
+	def rect_sum(sr: int, er: int, sc: int, ec: int) -> int:
+		""":return: the sum of the room capacity from (sr, sc) to (er, ec) inclusive"""
+		return (
+			r_pref[er + 1][ec + 1]
+			- r_pref[sr][ec + 1]
+			- r_pref[er + 1][sc]
+			+ r_pref[sr][sc]
+		)
 
-	# Print -1 and continue if not enough space in hotel
-	if total < (k + 1):
-		print(-1)
-		continue
+	best = -1
+	for r in range(row_num):
+		for c in range(col_num):
+			# Make sure the room itself can fit the mentor
+			if rect_sum(r, r, c, c) == 0:
+				continue
 
-	# Setting up the prefix sum array
-	pref = [[0] * m for _ in range(n)]
+			lo = 0
+			hi = max(row_num, col_num)
+			valid = -1
+			while lo <= hi:
+				mid = (lo + hi) // 2
+				sr = max(0, r - mid)
+				er = min(row_num - 1, r + mid)
+				sc = max(0, c - mid)
+				ec = min(col_num - 1, c + mid)
+				if rect_sum(sr, er, sc, ec) - 1 >= kid_num:
+					valid = mid
+					hi = mid - 1
+				else:
+					lo = mid + 1;
 
-	# Filling in the prefix sum array
-	for i in range(n):
-		for j in range(m):
-			pref[i][j] = grid[i][j]
-			if i > 0:
-				pref[i][j] += pref[i - 1][j]
-			if j > 0:
-				pref[i][j] += pref[i][j - 1]
-			if i > 0 and j > 0:
-				pref[i][j] -= pref[i - 1][j - 1]
+			if valid != -1:
+				best = valid if best == -1 else min(best, valid)
 
-	print(first_true(0, max(n, m)))
+	print(best)
 ```
 
 </PySection>
