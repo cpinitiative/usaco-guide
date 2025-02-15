@@ -44,20 +44,20 @@ int main() {
 	for (int t = 0; t < test_num; t++) {
 		int n, m1, m2;
 		std::cin >> n >> m1 >> m2;
-		vector<int> F[n], G[n];
+		vector<int> adj_f[n], adj_g[n];
 
 		for (int i = 0; i < m1; i++) {
 			int u, v;
 			std::cin >> u >> v;
-			F[--u].push_back(--v);
-			F[v].push_back(u);
+			adj_f[--u].push_back(--v);
+			adj_f[v].push_back(u);
 		}
 
 		for (int i = 0; i < m2; i++) {
 			int u, v;
 			std::cin >> u >> v;
-			G[--u].push_back(--v);
-			G[v].push_back(u);
+			adj_g[--u].push_back(--v);
+			adj_g[v].push_back(u);
 		}
 
 		int f_comps = 0, g_comps = 0;
@@ -67,15 +67,15 @@ int main() {
 
 		function<void(int)> dfs1 = [&](int node) -> void {
 			used[node] = 1;
-			for (int u : F[node]) {
-				if (!used[u] and !invalid_edges[{node, u}]) { dfs1(u); }
+			for (int u : adj_f[node]) {
+				if (!used[u] && !invalid_edges[{node, u}]) { dfs1(u); }
 			}
 		};
 
 		function<void(int, int)> dfs2 = [&](int node, int c) -> void {
 			component_id[node] = c;
 			used[node] = 1;
-			for (int u : G[node]) {
+			for (int u : adj_g[node]) {
 				if (!used[u]) { dfs2(u, c); }
 			}
 		};
@@ -89,7 +89,7 @@ int main() {
 
 		int invalid = 0;  // invalid edges in graph F
 		for (int i = 0; i < n; i++) {
-			for (int u : F[i]) {
+			for (int u : adj_f[i]) {
 				if (component_id[i] != component_id[u]) {
 					invalid++;
 					invalid_edges[{i, u}] = 1;
@@ -176,7 +176,7 @@ int main() {
 		int n, m1, m2;
 		cin >> n >> m1 >> m2;
 		vector<array<int, 2>> f_edges(m1);
-		DisjointSets F(n), G(n);
+		DisjointSets f(n), g(n);
 		int res = 0;
 
 		for (int i = 0; i < m1; i++) {
@@ -188,18 +188,18 @@ int main() {
 		for (int i = 0; i < m2; i++) {
 			int a, b;
 			cin >> a >> b;
-			G.unite(--a, --b);
+			g.unite(--a, --b);
 		}
 
 		for (int i = 0; i < m1; i++) {
-			if (G.connected(f_edges[i][0], f_edges[i][1])) {
-				F.unite(f_edges[i][0], f_edges[i][1]);
+			if (g.connected(f_edges[i][0], f_edges[i][1])) {
+				f.unite(f_edges[i][0], f_edges[i][1]);
 			} else {
 				res += 1;
 			}
 		}
 
-		res += F.connected_comps - G.connected_comps;
+		res += f.connected_comps - g.connected_comps;
 		std::cout << res << '\n';
 	}
 }
