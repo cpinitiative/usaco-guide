@@ -1,8 +1,8 @@
 ---
 id: dp-sos
 title: Sum over Subsets DP
-author: Siyong Huang, Aakash Gokhale
-description: Taking bitmask DP to the next level.
+author: Rameez Parwez, Siyong Huang, Aakash Gokhale
+description: Solving subset sum problems efficiently with DP.
 prerequisites:
   - dp-bitmasks
 frequency: 2
@@ -36,104 +36,416 @@ redirects:
 	</Resource>
 </Resources>
 
+**Sum Over Subsets (SOS)** is a technique used to efficiently calculate the sum of values for all subsets of a given set or bitmask.
 
-Sum over subsets (SOS) DP is a trick that allows you to efficiently compute the sum of all the subsets of an array.
+## Implementation
 
-The naive solution would be to iterate through every pair of masks and check if one of them is a subset of the other.
+Consider an array $A$ with $2^n$ elements. Our goal is to calculate $F(x)$ for all $x = 0, 1, 2, \dots, 2^n - 1$. Here, $F(x)$ represents the sum of values in array $A$ for all subsets $i$ of $x$. That is:
 
-<LanguageSection>
-<CPPSection>
+$$
+F(x) = \sum_{i \subseteq x} A[i]
+$$
 
-```cpp
-// # of elements in the list for which you want to find the sum over all subsets
-int n = 20;
+For example, $F(5)=A[0]+A[1]+A[4]+A[5]$.
 
-// the list for which you want to find the sum over all subsets
-vector<int> a(1 << n);
+## Solution
 
-// answer for sum over subsets of each subset
-vector<int> sos(1 << n);
+### Brute Force
 
-for (int i = 0; i < (1 << n); i++) {
-	// iterate over all other sets and checks whether they're a subset of i
-	for (int j = 0; j < (1 << n); j++) {
-		if ((i & j) == j) { sos[i] += a[j]; }
-	}
-}
-```
-
-</CPPSection>
-</LanguageSection>
-
-We can speed this up if we iterate over only subsets of the current mask and add up all of the those values to get the sum over subsets for a particular mask.
-
-The difference comes from the fact that in the first example we iterate over every pair of subsets which takes $(2^n)^2$ time and the second we iterate directly over the subsets for each mask. This means each mask is only visited by $2^{n - k}$ other masks where k is the number of elements of the mask.
-This means that the total time complexity is $\mathcal{O} (\sum_0^n {n \choose k} \cdot 2^{n - k} = 3^n)$.
+The naive solution would be to iterate over all pair of masks, summing $A[i]$ only when one of them is a subset of the other $(i.e.,i$ $\&$ $x = i)$.
 
 <LanguageSection>
 <CPPSection>
 
 ```cpp
-int n = 20;
-vector<int> a(1 << n);
 vector<int> sos(1 << n);
-for (int i = 0; i < (1 << n); i++) {
-	// iterate over all subsets of i directly
-	for (int j = (i - 1) & i;; j = (j - 1) & i) {
-		sos[i] += a[j];
-		if (j == 0) break;
+
+for (int x = 0; x < (1 << n); x++) {
+	// iterate over all other sets and checks whether they're a subset of x
+	for (int i = 0; i < (1 << n); i++) {
+		if ((i & x) == i) { sos[x] += a[i]; }
 	}
 }
 ```
 
 </CPPSection>
+<PySection>
+
+```py
+sos = [0] * (1 << n)
+for x in range(1 << n):
+	# iterate over all other sets and checks whether they're a subset of x
+	for i in range(1 << n):
+		if (x & i) == i:
+			sos[x] += a[i]
+```
+
+</PySection>
 </LanguageSection>
 
-Notice how in both of these examples we don't seem to be saving much information between different subsets which is the essence of DP.
-Define $\texttt{SOS}(\texttt{mask}, x)$ to be the sum of subsets of mask such that the first $x$ bits of the subset are identical to the first $x$ bits of mask.
-For example, $\texttt{SOS}(1001001, 3)$ includes the subsets $1001001$, $1000001$, $1001000$, $1000000$ which all have the same common prefix of $100$.
+This solution has a time complexity of $\mathcal{O}(2^n \cdot 2^n) = O(4^n)$, which is too slow for large values of $n$.
 
-Let's try to figure out the transitions between different states.
+### Optimized Solution: Iterating Over Submasks
 
-If the $x$th bit of mask is a $0$ then we can only transition to this state if the $x$th bit of the subset is also $0$. If the $x$th bit of the subset mask was a $1$ then it would no longer be a subset.
-
-If the $x$th bit of mask is a $1$ then we can transition to this state from both subsets where the $x$th bit is turned off and turned on because both of these cases would be subsets.
-
-More formally,
-
-$\texttt{SOS}(mask, x) = \left\{
-	\begin{array}{ c l }
-		\texttt{SOS}(\texttt{mask}, x - 1) + \texttt{SOS}(\texttt{mask} - 2^i, x - 1) & \quad \textrm{if } |2^i \wedge \texttt{mask}| > 0 \\
-		\texttt{SOS}(\texttt{mask}, x - 1) & \quad \textrm{otherwise}
-	\end{array}
-\right.$
-
+Instead of iterating over all $2^n$ bitmasks for $i$, we can optimize by iterating only over the subset mask of $x$ using the formula $i = (i - 1)\& x$, which efficiently generates all valid subsets of $x$ in reverse order. This approach skips unnecessary combinations, significantly reducing the number of iterations and improving the time complexity.
 
 <LanguageSection>
 <CPPSection>
 
 ```cpp
-int n = 20;
-vector<int> a(1 << n);
-
-// keeps track of the sum over subsets
-// with a certain amount of matching bits in the prefix
-vector<vector<int>> dp(1 << n, vector<int>(n));
-
 vector<int> sos(1 << n);
-for (int mask = 0; mask < (1 << n); mask++) {
-	dp[mask][-1] = a[mask];
-	for (int x = 0; x < n; x++) {
-		dp[mask][x] = dp[mask][x - 1];
-		if (mask & (1 << x)) { dp[mask][x] += dp[mask - (1 << x)][x - 1]; }
-	}
-	sos[mask] = dp[mask][n - 1];
+
+for (int x = 0; x < (1 << n); x++) {
+	sos[x] = a[0];
+	// iterate over all subsets of x directly
+	for (int i = x; i > 0; i = (i - 1) & x) { sos[x] += a[i]; }
 }
 ```
 
 </CPPSection>
+<PySection>
+
+```py
+sos = [0] * (1 << n)
+for x in range(1 << n):
+	sos[x] = a[0]
+	i = x
+	# iterate over all subsets of x directly
+	while i > 0:
+		sos[x] += a[i]
+		i = (i - 1) & x
+```
+
+</PySection>
 </LanguageSection>
 
-## Additional Problems
+<Spoiler title="How does this work?">
+
+When we subtract $1$ from a bitmask $i$, the rightmost $1$-bit becomes $0$, and all bits to the right of it will become $1$. By performing a bitwise _AND_ with $x$, we ensure that only the bits within $x$ are retained. By starting with $i = x$ and repeatedly applying $(i - 1)$ $\&$ $x$, all subset masks of $x$ are visited in reverse order.
+
+The operation $(i - 1)$ $\&$ $x$ ensures that each new value of $i$ is strictly smaller than the previous one and is also a valid submask of $x$. There is no need to explicitly check $(i$ $\&$ $x) = i$.
+
+</Spoiler>
+
+**Time Complexity:** $ \mathcal{O}(3^n)$
+
+<Spoiler title="Proof">
+
+The number of subset masks for a bitmask of size $k$(i.e., $k$ set bits) is $2^k$. There are $n \choose k$ bitmasks with $k$ set bits. Thus, the total number of operations is:
+
+$$
+\sum^n_{k = 0}{n \choose k} \cdot 2^k = (1 + 2)^n = 3^n.
+$$
+
+</Spoiler>
+
+### Faster Solution using Dynamic Programming
+
+While the previous method is better, it still has some redundancy. For example, if a bitmask $i$ has $k$ unset bits, then $A[i]$ is summed $2^k$ times. If we precompute and reuse these sums, we can eliminate repeated additions.
+
+#### Subset Mask Partitioning with $S(x, i)$
+
+We define the subset $S(x, i)$ as follows:
+
+$$
+S(x, i) = \{y \subseteq x \mid y \oplus x < 2^i\}
+$$
+
+In simpler terms, $S(x, i)$ contains all subset masks of $x$ whose bits to the left of the $i$-th bit match those of $x$.
+
+For example:
+$$
+S(11010110, 3) = \{11010000,11010010,11010100,11010110\}
+$$
+
+We can decompose $S(x, i)$ as follows:
+
+1.  If the $i$-th bit of $x$ is $0$, then $S(x, i) = S(x, i - 1)$.
+2.  If the $i$-th bit of $x$ is $1$:
+    - Subsets with the $i$-th bit $1: S(x, i - 1)$.
+    - Subsets with the $i$-th bit $0 : S(x \oplus 2^i, i - 1)$.
+Thus:
+$$
+S(x, i) =
+\begin{cases}
+S(x, i - 1) & \text{if the i-th bit is 0} \\
+S(x, i - 1) \cup S(x \oplus 2^i, i - 1) & \text{if the i-th bit is 1}
+\end{cases}
+$$
+
+Using the above partitioning, we define a DP table $dp[x][i]$ where:
+$$
+dp[x][i] = \sum_{y \in S(x, i)} A[y]
+$$
+
+**Time Complexity:** $\mathcal{O}(N \cdot 2^N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+vector<int> sos(1 << n);
+vector<vector<int>> dp(1 << n, vector<int>(n + 1));
+
+for (int x = 0; x < (1 << n); x++) {
+	dp[x][0] = a[x];
+	for (int i = 0; i < n; i++) {
+		dp[x][i + 1] = dp[x][i];
+		if (x & (1 << i)) { dp[x][i + 1] += dp[x ^ (1 << i)][i]; }
+	}
+	sos[x] = dp[x][n];
+}
+```
+
+</CPPSection>
+<PySection>
+
+```py
+sos = [0] * (1 << n)
+dp = [[0] * (n + 1) for _ in range(1 << n)]
+
+for x in range(1 << n):
+	dp[x][0] = a[x]
+	for i in range(n):
+		dp[x][i + 1] = dp[x][i]
+		if x & (1 << i):
+			dp[x][i + 1] += dp[x ^ (1 << i)][i]
+
+	sos[x] = dp[x][n]
+```
+
+</PySection>
+</LanguageSection>
+
+#### Optimized Memory Usage
+
+Since $dp[x][i]$ only depends on $dp[x][i - 1]$, we can reuse the DP array.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+sos = a;
+
+for (int i = 0; i < n; i++) {
+	for (int x = 0; x < (1 << n); x++) {
+		if (x & (1 << i)) { sos[x] += sos[x ^ (1 << i)]; }
+	}
+}
+```
+
+</CPPSection>
+<PySection>
+
+```py
+sos = a[:]
+
+for i in range(n):
+	for x in range(1 << n):
+		if x & (1 << i):
+			sos[x] += sos[x ^ (1 << i)]
+```
+
+</PySection>
+</LanguageSection>
+
+### SOS DP as N-Dimensional Prefix Sum
+
+Before we move on, let's revisit 2D prefix sums. Given $n \times m$ array $A$, the prefix sum array $S$ is defined as:
+
+$$
+S[i][j] = \sum_{a \leq i} \sum_{b \leq j} A[a][b]
+$$
+
+The standard approach uses inclusion-exlcusion:
+
+$$
+S[i][j] = S[i][j - 1] + S[i - 1][j] - S[i - 1][j - 1] + A[i][j]
+$$
+
+While this approach works for 2D grids, it has a significant limitation: as the number of dimensions increases, the number of terms we need to add or subtract also increases exponentially, making it inefficient for higher-dimensional grids.
+
+A simple and more scalable approach would be to sweep through each dimensions one at a time and compute the prefix sum step by step:
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+// Initialize
+for (int i = 0; i < n; i++) {
+	for (int j = 0; j < m; j++) { S[i][j] = A[i][j]; }
+}
+
+// Sweep along x-axis
+for (int i = 1; i < n; i++) {
+	for (int j = 0; j < m; j++) { S[i][j] += S[i - 1][j]; }
+}
+
+// Sweep along y-axis
+for (int i = 0; i < n; i++) {
+	for (int j = 1; j < m; j++) { S[i][j] += S[i][j - 1]; }
+}
+```
+
+</CPPSection>
+<PySection>
+
+```py
+# Initialize
+for i in range(n):
+	for j in range(m):
+		S[i][j] = A[i][j]
+
+# Sweep along the x-axis
+for i in range(1, n):
+	for j in range(m):
+		S[i][j] += S[i - 1][j]
+
+# Sweep along the y-axis
+for i in range(n):
+	for j in range(1, m):
+		S[i][j] += S[i][j - 1]
+```
+
+</PySection>
+</LanguageSection>
+
+This approach generalizes to higher dimensions.
+
+Let's say we want to calculate the prefix sum array for 4D grid. We can calculate this by sweeping along each axis of a 4D grid, one at a time:
+
+- After sweeping along the x-axis, $S[i][j][k][l]$ contains the sum of $A[a][b][c][d]$ where:
+	- $a \leq i$
+	- $b = j, c = k,$ and $d = l$.
+- After sweeping along the y-axis, $S[i][j][k][l]$ contains the sum of $A[a][b][c][d]$ where:
+	- $a \leq i, b \leq j$
+	- $c = k,$ and $d = l$.
+- After sweeping along the z-axis, $S[i][j][k][l]$ contains the sum of $A[a][b][c][d]$ where:
+	- $a \leq i, b \leq j, c \leq k$
+	- $d = l$.
+- Finally, after sweeping along the w-axis, $S[i][j][k][l]$ contains the sum of $A[a][b][c][d]$ where:
+	- $a \leq i, b \leq j, c \leq k,$ and $d \leq l$.
+
+If we extend this idea to $n$ dimensions, here's what happens: after sweeping along the $i$-th axis, $S[x]$ contains the sum of the values in $A$ where the first $i$ coordinates are less than or equal to the $x$, and the remaining coordinates match $x$. Sound familiar? That's exactly what $F(x)$ represents in the SOS problem!
+
+If we think of each bit in a bitmask as its own axis, then a bitmask $x$ with $n$ bits can be viewed as an $n$-dimensional coordinate, where each component is either $0$ or $1$. A submask of $x$ corresponds to an $n$-dimensional coordinate where each component is less than or equal to $x$.
+
+Therefore, when we interpret the bitmask as an $n$-dimensional coordinate, $F(x)$ aligns with the definition of an $n$-dimensional prefix sum!
+
+By applying the sweeping algorithm along each axis, we get the memory-optimized SOS DP solution mentioned earlier, demonstrating that SOS DP is indeed an **n-dimensional prefix sum**.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+F = A;
+
+for (int i = 0; i < n; i++) {  // Sweep along the i-th axis
+	for (int x = 0; x < (1 << n); x++) {
+		if (x & (1 << i))  // If the i-th bit is set, accumulate
+			F[x] += F[x ^ (1 << i)];
+	}
+}
+```
+
+</CPPSection>
+<PySection>
+
+```py
+F = A[:]
+
+for i in range(n):  # Sweep along the i-th axis
+	for x in range(1 << n):
+		if x & (1 << i):  # If the i-th bit is set, accumulate
+			F[x] += F[x ^ (1 << i)]
+```
+
+</PySection>
+</LanguageSection>
+
+<FocusProblem problem = "sos_dp"/>
+
+## Explanation
+
+First, think of each word as a combination of letters represented by a bitmask. For example, `bcd` = `0b1110`, and `ada` = `0b1001`, where each bit stands for a letter. We'll also keep track of how often each bitmask appears in the dictionary.
+
+Next, we use SOS DP to compute the number of words disjoint from the mask (i.e., words containing **none of the vowels** in mask). This means the word's bitmask must be a subset of the complement of mask (~mask).
+
+Once this is calculated, the number of valid words for a subset is simply $n - sos[\sim mask]$ because a word is valid if it contains **at least one vowel** from the subset, meaning it is not disjoint from mask. Finally, we square the count of valid words for every subset, XOR all those squared values together, and that gives us the answer.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(M \cdot 2^M)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <string>
+
+const int M = 24;
+int sos[1 << M];
+
+int main() {
+	int n;
+	std::cin >> n;
+	for (int i = 0; i < n; i++) {
+		std::string st;
+		std::cin >> st;
+		int mask = (1 << (st[0] - 'a')) | (1 << (st[1] - 'a')) | (1 << (st[2] - 'a'));
+		sos[mask] += 1;
+	}
+
+	for (int i = 0; i < M; i++) {
+		for (int mask = 0; mask < (1 << M); mask++) {
+			if (mask & (1 << i)) { sos[mask] += sos[mask ^ (1 << i)]; }
+		}
+	}
+
+	int res = 0;
+	for (int mask = 0; mask < (1 << M); mask++) {
+		// sos[mask] now contains the number of words whose bitmasks are subsets of mask
+		int valid_words = n - sos[(1 << M) - 1 - mask];
+		res ^= valid_words * valid_words;
+	}
+	std::cout << res << '\n';
+}
+```
+
+</CPPSection>
+<PySection>
+
+```py
+M = 24
+sos = [0] * (1 << M)
+
+n = int(input())
+for i in range(n):
+	st = input()
+	mask = (
+		(1 << (ord(st[0]) - 97)) | (1 << (ord(st[1]) - 97)) | (1 << (ord(st[2]) - 97))
+	)
+	sos[mask] += 1
+
+
+for i in range(M):
+	for mask in range(1 << M):
+		if mask & (1 << i):
+			sos[mask] += sos[mask ^ (1 << i)]
+
+res = 0
+for mask in range(1 << M):
+	# sos[mask] now contains the number of words whose bitmasks are subsets of mask
+	valid_words = n - sos[(1 << M) - 1 - mask]
+	res ^= valid_words * valid_words
+
+print(res)
+```
+
+</PySection>
+</LanguageSection>
+
+## General Problems
 
 <Problems problems="probs" />
