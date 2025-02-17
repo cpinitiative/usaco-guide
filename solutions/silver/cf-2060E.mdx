@@ -9,16 +9,14 @@ author: Rameez Parwez
 
 ## Explanation
 
-The problem revolves around two things:
-- Remove edges from $F$ that are absent in $G$
-- Add edges in $F$ that are present in $G$ but not in $F$
+The key idea is to focus on the connected components of both graphs.
+Any edge in $F$ that connects vertices from different components in $G$ is problematic because it creates a connection that doesn't exist in $G$. These edges are "invalid" and must be removed. Counting these invalid edges gives us the first part of the solution: the number of edges we need to remove from $F$.
 
-Counting these "invalid" edges that we need to remove from $F$ will give us the first part of the solution. After removing these invalid edges, $F$ may have more connected components in comparison to $G$. To resolve this, we need to add edges to $F$ to merge the extra components until both graphs have the same structure (i.e., same number of connected components).
+After removing these invalid edges, $F$ might end up with more connected components than $G$. To fix this, we need to add edges to $F$ to merge these extra components until the number of connected components in $F$ matches that in $G$. Each additional component in $F$ requires one edge addition to merge it with another component.
 
-Finally, count these two values:
-- The number of "invalid" edges we removed from $F$
-- The number of extra components in $F$ that need merging
-Summing these two values will provide us with the required result.
+Finally, we calculate the minimum number of operations by adding these two values:
+- The number of invalid edges that need to be removed
+- The number of extra connected components in $F$ that need to be merged
 
 ## Implementation
 
