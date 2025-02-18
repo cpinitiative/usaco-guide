@@ -1,0 +1,208 @@
+---
+id: cf-2060E
+source: CF
+title: Graph Composition
+author: Rameez Parwez
+---
+
+[Official Analysis (C++)](https://codeforces.com/blog/entry/138342)
+
+## Explanation
+
+The key idea is to focus on the connected components of both graphs.
+Any edge in $F$ that connects vertices from different components in $G$ is problematic because it
+creates a connection that doesn't exist in $G$.
+These edges are "invalid" and must be removed.
+Counting these invalid edges gives us the first part of the solution:
+the number of edges we need to remove from $F$.
+
+After removing these invalid edges, $F$ might end up with more connected components than $G$.
+To fix this, we need to add edges to $F$ to merge these extra components until the number of connected components in $F$ matches that in $G$.
+Each additional component in $F$ requires one edge addition to merge it with another component.
+
+Finally, we calculate the minimum number of operations by adding these two values:
+- The number of invalid edges that need to be removed
+- The number of extra connected components in $F$ that need to be merged
+
+## Implementation
+
+**Time Complexity:** $ \mathcal{O}(N + M \log(M))$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <functional>
+#include <iostream>
+#include <map>
+#include <vector>
+
+using std::cout;
+using std::function;
+using std::pair;
+using std::vector;
+
+int main() {
+	int test_num;
+	std::cin >> test_num;
+	for (int t = 0; t < test_num; t++) {
+		int n, m1, m2;
+		std::cin >> n >> m1 >> m2;
+		vector<vector<int>> adj_f(n), adj_g(n);
+		for (int i = 0; i < m1; i++) {
+			int u, v;
+			std::cin >> u >> v;
+			adj_f[--u].push_back(--v);
+			adj_f[v].push_back(u);
+		}
+
+		for (int i = 0; i < m2; i++) {
+			int u, v;
+			std::cin >> u >> v;
+			adj_g[--u].push_back(--v);
+			adj_g[v].push_back(u);
+		}
+
+		int f_comps = 0, g_comps = 0;
+		vector<int> component_id(n);
+		vector<int> used(n);
+
+		function<void(int, int)> dfs_g = [&](int node, int c) -> void {
+			component_id[node] = c;
+			used[node] = 1;
+			for (int u : adj_g[node]) {
+				if (!used[u]) { dfs_g(u, c); }
+			}
+		};
+		for (int i = 0; i < n; i++) {
+			if (!used[i]) {
+				g_comps++;
+				dfs_g(i, g_comps);
+			}
+		}
+
+		int invalid = 0;  // invalid edges in graph F
+		std::map<pair<int, int>, bool> invalid_edges;
+		for (int i = 0; i < n; i++) {
+			for (int u : adj_f[i]) {
+				if (component_id[i] != component_id[u]) {
+					invalid++;
+					invalid_edges[{i, u}] = true;
+				}
+			}
+		}
+
+		function<void(int)> dfs_f = [&](int node) -> void {
+			used[node] = 1;
+			for (int u : adj_f[node]) {
+				if (!used[u] && !invalid_edges[{node, u}]) { dfs_f(u); }
+			}
+		};
+		used.assign(n, 0);
+		for (int i = 0; i < n; i++) {
+			if (!used[i]) {
+				f_comps++;
+				dfs_f(i);
+			}
+		}
+
+		cout << invalid / 2 + (f_comps - g_comps) << '\n';
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
+## DSU Implementation
+
+**Time Complexity:** $\mathcal{O}(N + M)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <array>
+#include <iostream>
+#include <numeric>
+#include <vector>
+
+using std::array;
+using std::cout;
+using std::vector;
+
+/**
+ * This is basically the same as the DSU in the module,
+ * only now it also keeps track of the number of connected components.
+ */
+struct DisjointSets {
+	int n, connected_comps;
+	vector<int> parents, sizes;
+
+	DisjointSets(int n) : n(n), connected_comps(n) {
+		parents = vector<int>(n);
+		iota(begin(parents), end(parents), 0);
+		sizes = vector<int>(n, 1);
+	}
+
+	int get(int x) {
+		if (x == parents[x]) { return x; }
+		return parents[x] = get(parents[x]);
+	}
+
+	bool unite(int x, int y) {
+		int x_root = get(x);
+		int y_root = get(y);
+
+		if (x_root == y_root) { return false; }
+
+		if (sizes[x_root] < sizes[y_root]) { std::swap(x_root, y_root); }
+		sizes[x_root] += sizes[y_root];
+		parents[y_root] = x_root;
+		connected_comps--;
+
+		return true;
+	}
+
+	bool connected(int x, int y) { return (get(x) == get(y)); }
+};
+
+int main() {
+	int test_num;
+	std::cin >> test_num;
+	for (int t = 0; t < test_num; t++) {
+		int n, m1, m2;
+		std::cin >> n >> m1 >> m2;
+		vector<array<int, 2>> f_edges(m1);
+
+		for (int i = 0; i < m1; i++) {
+			int a, b;
+			std::cin >> a >> b;
+			f_edges[i] = {--a, --b};
+		}
+
+		DisjointSets g(n);
+		for (int i = 0; i < m2; i++) {
+			int a, b;
+			std::cin >> a >> b;
+			g.unite(--a, --b);
+		}
+
+		DisjointSets f(n);
+		int min_ops = 0;
+		for (int i = 0; i < m1; i++) {
+			if (g.connected(f_edges[i][0], f_edges[i][1])) {
+				f.unite(f_edges[i][0], f_edges[i][1]);
+			} else {
+				min_ops++;
+			}
+		}
+
+		min_ops += f.connected_comps - g.connected_comps;
+		cout << min_ops << '\n';
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>
