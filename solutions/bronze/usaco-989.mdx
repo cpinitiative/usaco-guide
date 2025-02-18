@@ -338,39 +338,42 @@ class Race {
 
 ```py
 with open(r"race.in") as fin:
-    K, N = [int(x) for x in fin.readline().split()]
-    Xs = []
-    for _ in range(N):
-        Xs.append(int(fin.readline()))
+	K, N = [int(x) for x in fin.readline().split()]
+	Xs = []
+	for _ in range(N):
+		Xs.append(int(fin.readline()))
 
 output = []
 for X in Xs:
-    # Binary search ...
-    left = 0
-    right = X
-    best_time = float("inf")
-    while right != left:
-        if right > X:
-            remaining_distance = K - ((right + 1) * right / 2 + (right + X - 1) * (right - X) / 2)
-            if remaining_distance < 0:
-                right = (right - left) // 2 + left
-                continue
-            time = -(-remaining_distance // right) + right + (right - X)  # Funny way to do ceiling
-        else:
-            remaining_distance = K - (right + 1) * right / 2
-            if remaining_distance < 0:
-                right = (right - left) // 2 + left
-                continue
-            time = -(-remaining_distance // right) + right
-        best_time = min(best_time, time)
-        left = right
-        right = 2 * right
-    output.append(int(best_time))
+	# Binary search ...
+	left = 0
+	right = X
+	best_time = float("inf")
+	while right != left:
+		if right > X:
+			remaining_distance = K - (
+				(right + 1) * right / 2 + (right + X - 1) * (right - X) / 2
+			)
+			if remaining_distance < 0:
+				right = (right - left) // 2 + left
+				continue
+			time = (
+				-(-remaining_distance // right) + right + (right - X)
+			)  # Funny way to do ceiling
+		else:
+			remaining_distance = K - (right + 1) * right / 2
+			if remaining_distance < 0:
+				right = (right - left) // 2 + left
+				continue
+			time = -(-remaining_distance // right) + right
+		best_time = min(best_time, time)
+		left = right
+		right = 2 * right
+	output.append(int(best_time))
 
 with open(r"race.out", mode="w") as fout:
-    for time in output:
-        fout.write(str(time) + "\n")
-
+	for time in output:
+		fout.write(str(time) + "\n")
 ```
 
 </PySection>
