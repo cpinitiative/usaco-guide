@@ -146,7 +146,6 @@ Due to Python's slow speed, this approach doesn't pass all test cases.
 
 </Info>
 
-
 ```py
 # S(n) = 1+2+...+n = n*(n+1)/2
 def S(n: int) -> int:
@@ -203,13 +202,15 @@ with open("race.out", "w") as fout:
 	for x in X:
 		print(solve(k, x), file=fout)
 ```
+
 </PySection>
 </LanguageSection>
 </Spoiler>
 
 <Spoiler title="Hint 1">
 
-What's the best strategy that Bessie could use if, hypothetically, there wasn't a speed limit at the finish line?
+What's the best strategy that Bessie could use if, hypothetically, there wasn't
+a speed limit at the finish line?
 
 </Spoiler>
 
@@ -227,8 +228,9 @@ How can we use this strategy when there **is** a speed limit?
 
 <Spoiler title="Answer to Hint 2">
 
-We'll have Bessie continuously speed up until she's forced to slow down because of the speed limit.
-This strategy works because we've observed that when possible, Bessie should always speed up!
+We'll have Bessie continuously speed up until she's forced to slow down because
+of the speed limit. This strategy works because we've observed that when
+possible, Bessie should always speed up!
 
 This is an example of a [greedy algorithm](/bronze/intro-greedy).
 
@@ -332,5 +334,45 @@ class Race {
 ```
 
 </JavaSection>
+<PySection>
+
+```py
+with open(r"race.in") as fin:
+    K, N = [int(x) for x in fin.readline().split()]
+    Xs = []
+    for _ in range(N):
+        Xs.append(int(fin.readline()))
+
+output = []
+for X in Xs:
+    # Binary search ...
+    left = 0
+    right = X
+    best_time = float("inf")
+    while right != left:
+        if right > X:
+            remaining_distance = K - ((right + 1) * right / 2 + (right + X - 1) * (right - X) / 2)
+            if remaining_distance < 0:
+                right = (right - left) // 2 + left
+                continue
+            time = -(-remaining_distance // right) + right + (right - X)  # Funny way to do ceiling
+        else:
+            remaining_distance = K - (right + 1) * right / 2
+            if remaining_distance < 0:
+                right = (right - left) // 2 + left
+                continue
+            time = -(-remaining_distance // right) + right
+        best_time = min(best_time, time)
+        left = right
+        right = 2 * right
+    output.append(int(best_time))
+
+with open(r"race.out", mode="w") as fout:
+    for time in output:
+        fout.write(str(time) + "\n")
+
+```
+
+</PySection>
 </LanguageSection>
 </Spoiler>
