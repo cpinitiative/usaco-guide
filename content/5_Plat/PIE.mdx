@@ -13,6 +13,7 @@ frequency: 1
 
 <Resources>
     <Resource source="cp-algo" title="The Inclusion-Exclusion Principle" url="https://cp-algorithms.com/combinatorics/inclusion-exclusion.html" starred> Well-covered article </Resource>
+	<Resource source="CF" title="Inclusion-Exclusion Principle" url="https://codeforces.com/blog/entry/64625"> Good Explanation </Resource>
     <Resource source="Wikipedia" title="Inclusion-exclusion  principle" url="https://en.wikipedia.org/wiki/Inclusion%E2%80%93exclusion_principle">Wiki</Resource>
 </Resources>
 
@@ -206,7 +207,9 @@ print(ans, file=open("cowpatibility.out", "w"))
 
 <FocusProblem problem="patterns" />
 
-A dynamic programming approach with bitmasking would look like this: $dp[i][mask] = \text{the number of strings of length i that match all the patterns in set, but none other patterns. } $ The recurrence is:
+A dynamic programming approach with bitmasking would look like this: 
+
+$dp[i][mask] = \text{the number of strings of length i that match all the patterns in set, but none other patterns. } $ The recurrence is:
 $$
 dp[i][mask \& j]=dp[i-1][j]\text{ where j is a set of patterns that match charachter c at position i}
 $$
@@ -216,6 +219,8 @@ The following code illustrates this:
 <CPPSection>
 
 ```cpp
+const int MOD = 1000003;
+
 int howMany(vector<string> patterns, int k) {
 	vector<vector<int>> dp(50, vector<int>((1 << (int)patterns.size())));
 	for (int i = 0; i < (int)patterns[0].size(); i++) {
@@ -258,7 +263,7 @@ $$
 solve(A) = \sum_{B \supseteq A} (-1)^{|B|-k} \cdot f(B)
 $$
 
-$f(B)$ denotes the number of strings matching _at leat_ set $B$
+$f(B)$ denotes the number of strings matching _at least_ set $B$
 
 The global answer is:
 $$
@@ -269,36 +274,38 @@ $$
 <CPPSection>
 
 ```cpp
+const int MOD = 1000003;
+
 int howMany(vector<string> patterns, int k) {
 	int ans = 0;
 	for (int mask = 0; mask < (1 << (int)patterns.size()); mask++) {
 		if (__builtin_popcount(mask) == k) {
-			for (int supermask = mask; supermask < (1 << (int)patterns.size());
-			     supermask++) {
+			for (int supermask = mask; supermask < (1 << (int)patterns.size()); supermask++) {
 				if ((mask & supermask) == mask) {
 					int sign = ((__builtin_popcount(supermask) - k) & 1 ? -1 : 1);
 					int cnt = 1;
 					for (int i = 0; i < (int)patterns[0].size(); i++) {
 						bool flag = true;
-						int j = 0, last_letter = -1;
-						for (; j < (int)patterns.size(); j++) {
+						char last_letter = '?';
+						for (int j = 0; j < (int)patterns.size(); j++) {
 							if (((1 << j) & supermask) == 0) { continue; }
 							if (patterns[j][i] != '?') {
-								flag = false;
-								if (last_letter == -1) {
-									last_letter = j;
-								} else {
+								if (last_letter == '?') {
+									last_letter = patterns[j][i];
+								} else if (patterns[j][i] != last_letter) {
+									flag = false;
 									break;
 								}
 							}
 						}
-						if (flag) {
-							cnt = cnt * 26 % MOD;
-						} else if (j < (int)patterns.size()) {
-							cnt *= 0;
+						if (!flag) {
+							cnt = 0;
+						} else if (last_letter == '?') {
+							cnt = (cnt * 26) % MOD;
 						}
 					}
 					ans = (ans + sign * cnt) % MOD;
+					ans = (ans + MOD) % MOD;
 				}
 			}
 		}
