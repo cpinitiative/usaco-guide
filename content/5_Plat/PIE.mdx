@@ -207,7 +207,7 @@ print(ans, file=open("cowpatibility.out", "w"))
 
 <FocusProblem problem="patterns" />
 
-A dynamic programming approach with bitmasking would look like this: 
+A dynamic programming approach with bitmasking would look like this:
 
 $dp[i][mask] = \text{the number of strings of length i that match all the patterns in set, but none other patterns. } $ The recurrence is:
 $$
@@ -280,7 +280,8 @@ int howMany(vector<string> patterns, int k) {
 	int ans = 0;
 	for (int mask = 0; mask < (1 << (int)patterns.size()); mask++) {
 		if (__builtin_popcount(mask) == k) {
-			for (int supermask = mask; supermask < (1 << (int)patterns.size()); supermask++) {
+			for (int supermask = mask; supermask < (1 << (int)patterns.size());
+			     supermask++) {
 				if ((mask & supermask) == mask) {
 					int sign = ((__builtin_popcount(supermask) - k) & 1 ? -1 : 1);
 					int cnt = 1;
