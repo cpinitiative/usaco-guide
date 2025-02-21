@@ -37,6 +37,64 @@ We can check the initial sum difference between the two groups (mod 12) to figur
 
 <LanguageSection>
 
+<PySection>
+
+```python
+def solve():
+    N = int(input())
+    clocks = list(map(int, input().split()))
+
+    edges = [list() for _ in range(N)]
+    for _ in range(N - 1):
+        a, b = map(lambda s: int(s) - 1, input().split())
+        edges[a].append(b)
+        edges[b].append(a)
+
+	# node count and sums for group0 and group1
+    nodes = [0, 0]
+    sums = [0, 0]
+
+    def dfs(i: int, parent: int, color: bool):
+        # update color/sum
+        if color:
+            nodes[0] += 1
+            sums[0] += clocks[i]
+        else:
+            nodes[1] += 1
+            sums[1] += clocks[i]
+
+        for j in edges[i]:
+            if j != parent:
+                dfs(j, i, not color)  # swap colors for child
+
+    dfs(0, 0, -1)
+
+    # same mod means you can start anywhere
+    if sums[0] % 12 == sums[1] % 12:
+        print(N)
+
+    # if sums0 is 1 smaller than sums1, we must start anywhere in group1
+    elif (sums[0] + 1) % 12 == (sums[1] % 12):
+        print(nodes[1])
+
+    # if sums1 is 1 smaller than sums0, we must start anywhere in group0
+    elif sums[0] % 12 == (sums[1] + 1) % 12:
+        print(nodes[0])
+
+    # otherwise, there is no way to get all clocks to point to 12
+    else:
+        print(0)
+
+
+if __name__ == '__main__':
+    import sys
+    sys.stdin = open('clocktree.in', 'r')
+    sys.stdout = open('clocktree.out', 'w')
+    solve()
+```
+
+</PySection>
+
 <CPPSection>
 
 ```cpp
