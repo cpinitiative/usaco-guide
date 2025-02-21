@@ -7,6 +7,8 @@ author: Melody Yu, Nathan Gong
 
 [Official Analysis](http://www.usaco.org/current/data/sol_clocktree_silver_feb20.html)
 
+## Explanation
+
 We can build a graph with the rooms as nodes and corridors as edges. Consider a simple case: there are 2 nodes in the graph and one edge.
 Bessie can start from one of the rooms, go to its neighbor, increase the clock, go back, and increase the starting room's clock.
 During this process of moving back and forth, notice that the difference between two rooms' clock readings may only change by 1.
@@ -36,61 +38,6 @@ We can check the initial sum difference between the two groups (mod 12) to figur
 **Time Complexity:** $\mathcal{O}(N)$
 
 <LanguageSection>
-
-<PySection>
-
-```py
-with open("clocktree.in", "r") as reader:
-	n = int(reader.readline())
-	clocks = list(map(int, reader.readline().split()))
-
-	edges = [list() for _ in range(n)]
-	for _ in range(n - 1):
-		a, b = map(lambda s: int(s) - 1, reader.readline().split())
-		edges[a].append(b)
-		edges[b].append(a)
-
-# node count and sums for group0 and group1
-nodes = [0, 0]
-sums = [0, 0]
-
-
-def dfs(i: int, parent: int, color: bool):
-	# update color/sum
-	if color:
-		nodes[0] += 1
-		sums[0] += clocks[i]
-	else:
-		nodes[1] += 1
-		sums[1] += clocks[i]
-
-	for j in edges[i]:
-		if j != parent:
-			dfs(j, i, not color)  # swap colors for child
-
-
-dfs(i=0, parent=-1, color=True)
-
-with open("clocktree.out", "w") as writer:
-	# same mod means you can start anywhere
-	if sums[0] % 12 == sums[1] % 12:
-		print(n, file=writer)
-
-	# if sums0 is 1 smaller than sums1, we must start anywhere in group1
-	elif (sums[0] + 1) % 12 == (sums[1] % 12):
-		print(nodes[1], file=writer)
-
-	# if sums1 is 1 smaller than sums0, we must start anywhere in group0
-	elif sums[0] % 12 == (sums[1] + 1) % 12:
-		print(nodes[0], file=writer)
-
-	# otherwise, there is no way to get all clocks to point to 12
-	else:
-		print(0, file=writer)
-```
-
-</PySection>
-
 <CPPSection>
 
 ```cpp
@@ -158,7 +105,6 @@ int main() {
 ```
 
 </CPPSection>
-
 <JavaSection>
 
 ```java
@@ -228,5 +174,57 @@ public class ClockTree {
 ```
 
 </JavaSection>
+<PySection>
 
+```py
+with open("clocktree.in", "r") as reader:
+	n = int(reader.readline())
+	clocks = list(map(int, reader.readline().split()))
+
+	edges = [list() for _ in range(n)]
+	for _ in range(n - 1):
+		a, b = map(lambda s: int(s) - 1, reader.readline().split())
+		edges[a].append(b)
+		edges[b].append(a)
+
+# node count and sums for group0 and group1
+nodes = [0, 0]
+sums = [0, 0]
+
+
+def dfs(i: int, parent: int, color: bool):
+	# update color/sum
+	if color:
+		nodes[0] += 1
+		sums[0] += clocks[i]
+	else:
+		nodes[1] += 1
+		sums[1] += clocks[i]
+
+	for j in edges[i]:
+		if j != parent:
+			dfs(j, i, not color)  # swap colors for child
+
+
+dfs(i=0, parent=-1, color=True)
+
+with open("clocktree.out", "w") as writer:
+	# same mod means you can start anywhere
+	if sums[0] % 12 == sums[1] % 12:
+		print(n, file=writer)
+
+	# if sums0 is 1 smaller than sums1, we must start anywhere in group1
+	elif (sums[0] + 1) % 12 == (sums[1] % 12):
+		print(nodes[1], file=writer)
+
+	# if sums1 is 1 smaller than sums0, we must start anywhere in group0
+	elif sums[0] % 12 == (sums[1] + 1) % 12:
+		print(nodes[0], file=writer)
+
+	# otherwise, there is no way to get all clocks to point to 12
+	else:
+		print(0, file=writer)
+```
+
+</PySection>
 </LanguageSection>
