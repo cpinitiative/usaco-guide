@@ -41,11 +41,11 @@ We can check the initial sum difference between the two groups (mod 12) to figur
 
 ```py
 with open("clocktree.in", "r") as reader:
-	N = int(reader.readline())
+	n = int(reader.readline())
 	clocks = list(map(int, reader.readline().split()))
 
-	edges = [list() for _ in range(N)]
-	for _ in range(N - 1):
+	edges = [list() for _ in range(n)]
+	for _ in range(n - 1):
 		a, b = map(lambda s: int(s) - 1, reader.readline().split())
 		edges[a].append(b)
 		edges[b].append(a)
@@ -74,19 +74,19 @@ dfs(i=0, parent=-1, color=True)
 with open("clocktree.out", "w") as writer:
 	# same mod means you can start anywhere
 	if sums[0] % 12 == sums[1] % 12:
-		writer.write(str(N))
+		print(n, file=writer)
 
 	# if sums0 is 1 smaller than sums1, we must start anywhere in group1
 	elif (sums[0] + 1) % 12 == (sums[1] % 12):
-		writer.write(str(nodes[1]))
+		print(nodes[1], file=writer)
 
 	# if sums1 is 1 smaller than sums0, we must start anywhere in group0
 	elif sums[0] % 12 == (sums[1] + 1) % 12:
-		writer.write(str(nodes[0]))
+		print(nodes[0], file=writer)
 
 	# otherwise, there is no way to get all clocks to point to 12
 	else:
-		writer.write(str(0))
+		print(0, file=writer)
 ```
 
 </PySection>
