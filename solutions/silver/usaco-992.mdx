@@ -2,16 +2,26 @@
 id: usaco-992
 source: USACO Silver 2020 January
 title: Wormhole Sort
-author: Óscar Garries, Neo Wang, Kevin Sheng
+author: Óscar Garries, Neo Wang, Kevin Sheng, Ruben Jing
 ---
 
 [Official Analysis (Java)](http://www.usaco.org/current/data/sol_wormsort_silver_jan20.html)
 
 ## Solution 1 - Binary Search and Floodfill
 
-**Time Complexity:** $\mathcal O((N+M)\log \max w_i)$
+### Explanation
+
+Suppose that cow $1$ is at position $3$. In order to place cow $3$ in the correct position, there must be a wormhole of at least width $x$ that connects positions $1$ and $3$. The number $1$ represents $i$ while the number $3$ represents $p_i$. Therefore, in order for a cow $i$ to be in the correct position, there must be a wormhole of at least width $x$ connecting $i$ and $p_i$.
+
+If a wormhole connects $i$ and $p_i$, these two positions must be in the same connected component. We can find connected components using floodfill.
+
+Once all connected components are found, we check if each cow $i$ is in the same connected component as $p_i$. If one cow is in the wrong place, then it is not possible to sort the cows with a wormhole of at least width $x$.
+
+We binary search on $x$ to find the optimal solution.
 
 ### Implementation
+
+**Time Complexity:** $\mathcal O((N+M)\log \max w_i)$
 
 <LanguageSection>
 <CPPSection>
