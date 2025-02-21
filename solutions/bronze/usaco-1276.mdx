@@ -125,100 +125,110 @@ int main() {
 <JavaSection>
 
 ```java
+import java.io.*;
 import java.util.*;
 
 public class AirConditioningII {
-	static int N, M;
-	static List<int[]> cows = new ArrayList<>();
-	static List<int[]> airConditioners = new ArrayList<>();
-	static boolean[] uses;
-	static int minCost = Integer.MAX_VALUE;
+    static int N, M;
+    static List<int[]> cows = new ArrayList<>();
+    static List<int[]> airConditioners = new ArrayList<>();
+    static boolean[] uses;
+    static int minCost = Integer.MAX_VALUE;
 
-	/**
-	 * Based on 'uses', determine if the current subset of air conditioners suffices
-	 * the constraints, and if so, update the minimum cost.
-	 */
-	static void update() {
-		boolean isFeasible = true;
+    /**
+     * Based on 'uses', determine if the current subset of air conditioners suffices
+     * the constraints, and if so, update the minimum cost.
+     */
+    static void update() {
+        boolean isFeasible = true;
 
-		// Iterate through all positions to check if the current subset is feasible
-		for (int i = 1; i <= 100; i++) {
-			// Iterate through air conditioners to find the current cooling units
-			int cooling = 0;
-			for (int j = 0; j < M; j++) {
-				if (!uses[j]) continue;
-				int[] ac = airConditioners.get(j);
-				int a = ac[0], b = ac[1], p = ac[2];
-				if (a <= i && i <= b) cooling += p;
-			}
+        // Iterate through all positions to check if the current subset is feasible
+        for (int i = 1; i <= 100; i++) {
+            // Iterate through air conditioners to find the current cooling units
+            int cooling = 0;
+            for (int j = 0; j < M; j++) {
+                if (!uses[j]) continue;
+                int[] ac = airConditioners.get(j);
+                int a = ac[0], b = ac[1], p = ac[2];
+                if (a <= i && i <= b) cooling += p;
+            }
 
-			// Iterate through cows to find the current cow requirement
-			int cowRequirement = 0;
-			for (int[] cow : cows) {
-				int s = cow[0], t = cow[1], c = cow[2];
-				if (s <= i && i <= t) {
-					cowRequirement = c;
-					break;
-				}
-			}
+            // Iterate through cows to find the current cow requirement
+            int cowRequirement = 0;
+            for (int[] cow : cows) {
+                int s = cow[0], t = cow[1], c = cow[2];
+                if (s <= i && i <= t) {
+                    cowRequirement = c;
+                    break;
+                }
+            }
 
-			// For each position, the requirement of the cow must be met
-			if (cooling < cowRequirement) {
-				isFeasible = false;
-				break;
-			}
-		}
+            // For each position, the requirement of the cow must be met
+            if (cooling < cowRequirement) {
+                isFeasible = false;
+                break;
+            }
+        }
 
-		if (isFeasible) {
-			int cost = 0;
-			for (int i = 0; i < M; i++) {
-				if (uses[i]) cost += airConditioners.get(i)[3];
-			}
-			minCost = Math.min(minCost, cost);
-		}
-	}
+        if (isFeasible) {
+            int cost = 0;
+            for (int i = 0; i < M; i++) {
+                if (uses[i]) cost += airConditioners.get(i)[3];
+            }
+            minCost = Math.min(minCost, cost);
+        }
+    }
 
-	/**
-	 * Expand the subset, represented by 'uses', by choosing to (not) use the i-th
-	 * air conditioner.
-	 */
-	static void search(int i) {
-		if (i == M) {
-			update();
-		} else {
-			uses[i] = false;
-			search(i + 1);
-			uses[i] = true;
-			search(i + 1);
-		}
-	}
+    /**
+     * Expand the subset, represented by 'uses', by choosing to (not) use the i-th
+     * air conditioner.
+     */
+    static void search(int i) {
+        if (i == M) {
+            update();
+        } else {
+            uses[i] = false;
+            search(i + 1);
+            uses[i] = true;
+            search(i + 1);
+        }
+    }
 
-	public static void main(String[] args) {
-		Scanner scanner = new Scanner(System.in);
-		N = scanner.nextInt();
-		M = scanner.nextInt();
+    public static void main(String[] args) throws IOException {
+        // Using BufferedReader for faster input
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
 
-		for (int i = 0; i < N; i++) {
-			int s = scanner.nextInt();
-			int t = scanner.nextInt();
-			int c = scanner.nextInt();
-			cows.add(new int[] {s, t, c});
-		}
+        // Read number of cows and air conditioners
+        N = Integer.parseInt(st.nextToken());
+        M = Integer.parseInt(st.nextToken());
 
-		for (int i = 0; i < M; i++) {
-			int a = scanner.nextInt();
-			int b = scanner.nextInt();
-			int p = scanner.nextInt();
-			int m = scanner.nextInt();
-			airConditioners.add(new int[] {a, b, p, m});
-		}
+        // Read cow requirements
+        for (int i = 0; i < N; i++) {
+            st = new StringTokenizer(br.readLine());
+            int s = Integer.parseInt(st.nextToken());
+            int t = Integer.parseInt(st.nextToken());
+            int c = Integer.parseInt(st.nextToken());
+            cows.add(new int[]{s, t, c});
+        }
 
-		uses = new boolean[M];
-		search(0);
+        // Read air conditioner specifications
+        for (int i = 0; i < M; i++) {
+            st = new StringTokenizer(br.readLine());
+            int a = Integer.parseInt(st.nextToken());
+            int b = Integer.parseInt(st.nextToken());
+            int p = Integer.parseInt(st.nextToken());
+            int m = Integer.parseInt(st.nextToken());
+            airConditioners.add(new int[]{a, b, p, m});
+        }
 
-		System.out.println(minCost);
-		scanner.close();
-	}
+        uses = new boolean[M];
+        search(0);
+
+        // Print the minimum cost
+        System.out.println(minCost);
+        br.close();
+    }
 }
 ```
 
