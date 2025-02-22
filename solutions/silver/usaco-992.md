@@ -10,11 +10,22 @@ author: Óscar Garries, Neo Wang, Kevin Sheng, Ruben Jing
 ## Solution 1 - Binary Search and Floodfill
 
 ### Explanation
-We start by searching for the maximum minimal wormhole width $x$. This can be optimized with binary search as it allows us to find the answer in $\mathcal O(\log \max w_i)$ time.
 
-To check if a given minimal wormhole width $x$ is valid, we find connected components using BFS. A connected component contains all the positions that are connected to each other. In the first sample input, when ignoring restrictions on the width of a wormhole, $\{1, 2, 3, 4\}$ are all in one connected component. This is because there is a series of wormholes connecting each of the positions to each other.
+We start by searching for the maximum minimal wormhole width $x$. This can be
+optimized with binary search as it allows us to find the answer in
+$\mathcal O(\log \max w_i)$ time.
 
-As stated in the problem, each cow $i$ is given to be at a position $p_i$. In order to make the cows sorted, we want to have cow $i$ be in position $i$. If $p_i \neq i$, $i$ must be reachable from $p_i$ through a series of wormholes, and therefore $i$ and $p_i$ must be in the same connected component.
+To check if a given minimal wormhole width $x$ is valid, we find connected
+components using BFS. A connected component contains all the positions that are
+connected to each other. In the first sample input, when ignoring restrictions
+on the width of a wormhole, $\{1, 2, 3, 4\}$ are all in one connected component.
+This is because there is a series of wormholes connecting each of the positions
+to each other.
+
+As stated in the problem, each cow $i$ is given to be at a position $p_i$. In
+order to make the cows sorted, we want to have cow $i$ be in position $i$. If
+$p_i \neq i$, $i$ must be reachable from $p_i$ through a series of wormholes,
+and therefore $i$ and $p_i$ must be in the same connected component.
 
 ### Implementation
 
@@ -103,7 +114,8 @@ int main() {
 
 <Warning>
 
-Due to Java's relatively slow speed, the below solution will often TLE on some test cases.
+Due to Java's relatively slow speed, the below solution will often TLE on some
+test cases.
 
 </Warning>
 
@@ -186,8 +198,8 @@ public class WormSort {
 
 ## Solution 2 - Binary Search and DSU
 
-Like the floodfill solution, we binary search on the answer $x$, which is valid if all
-$p_i$ are in the same component as $i$, which we can query in
+Like the floodfill solution, we binary search on the answer $x$, which is valid
+if all $p_i$ are in the same component as $i$, which we can query in
 $\mathcal{O}(\alpha(N))$ using a
 [Disjoint Set Union](https://en.wikipedia.org/wiki/Disjoint-set_data_structure).
 
@@ -382,9 +394,9 @@ class DSU {
 
 ## Solution 3 - DSU
 
-Due to the DSU's fast query and linking complexity, we can drop the binary search
-and instead add wormholes from greatest width to least width until
-all $p_i$ are in the same component as $i$.
+Due to the DSU's fast query and linking complexity, we can drop the binary
+search and instead add wormholes from greatest width to least width until all
+$p_i$ are in the same component as $i$.
 
 ### Implementation
 
