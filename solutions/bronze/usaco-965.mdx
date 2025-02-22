@@ -249,43 +249,43 @@ import java.io.*;
 import java.util.*;
 
 class Pair<T, U> {
-    T first;
-    U second;
-    
-    public Pair(T first, U second) {
-        this.first = first;
-        this.second = second;
-    }
+	T first;
+	U second;
+
+	public Pair(T first, U second) {
+		this.first = first;
+		this.second = second;
+	}
 }
 
 public class Lineup {
-    private static final int RESTRICT_LEN = 6;
-    // list of cows, in alphabetical order
-    private static final List<String> COWS = Arrays.asList("Beatrice", "Belinda", "Bella", "Bessie",
-            "Betsy", "Blue", "Buttercup", "Sue");
+	private static final int RESTRICT_LEN = 6;
+	// list of cows, in alphabetical order
+	private static final List<String> COWS = Arrays.asList(
+	    "Beatrice", "Belinda", "Bella", "Bessie", "Betsy", "Blue", "Buttercup", "Sue");
 
-    private static List<List<String>> orderings = new ArrayList<>();
+	private static List<List<String>> orderings = new ArrayList<>();
 
-    private static void build(List<String> ordering) {
-        // finished building permutation
-        if (ordering.size() == 8) {
-            orderings.add(new ArrayList<>(ordering));
-            return;
-        }
+	private static void build(List<String> ordering) {
+		// finished building permutation
+		if (ordering.size() == 8) {
+			orderings.add(new ArrayList<>(ordering));
+			return;
+		}
 
-        for (String cow : COWS) {
-            if (!ordering.contains(cow)) {
-                ordering.add(cow);
-                build(ordering);
-                ordering.remove(ordering.size() - 1);
-            }
-        }
-    }
+		for (String cow : COWS) {
+			if (!ordering.contains(cow)) {
+				ordering.add(cow);
+				build(ordering);
+				ordering.remove(ordering.size() - 1);
+			}
+		}
+	}
 
-    // returns index of a cow in an ordering
-    private static int loc(List<String> order, String cow) {
-        return order.indexOf(cow);
-    }
+	// returns index of a cow in an ordering
+	private static int loc(List<String> order, String cow) {
+		return order.indexOf(cow);
+	}
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new FileReader("lineup.in"));
@@ -314,16 +314,14 @@ public class Lineup {
                 }
             }
 
-            if (ok) {
-                for (String cow : order) {
-                    pw.println(cow);
-                }
-                break;
-            }
-        }
-        
-        pw.close();
-    }
+			if (ok) {
+				for (String cow : order) { pw.println(cow); }
+				break;
+			}
+		}
+
+		pw.close();
+	}
 }
 ```
 </JavaSection>
