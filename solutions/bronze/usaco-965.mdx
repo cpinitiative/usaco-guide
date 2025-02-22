@@ -287,32 +287,33 @@ public class Lineup {
 		return order.indexOf(cow);
 	}
 
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new FileReader("lineup.in"));
-        
-        int n = Integer.parseInt(br.readLine().trim());
-        List<Pair<String, String>> restrictions = new ArrayList<>();
-        
-        for (int i = 0; i < n; i++) {
-            String[] words = br.readLine().split(" ");
-            restrictions.add(new Pair<>(words[0], words[words.length - 1]));
-        }
-        
-        br.close();
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new FileReader("lineup.in"));
 
-        // build all possible orderings of cows
-        build(new ArrayList<>());
-        
-		PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("lineup.out")));
-        
-        for (List<String> order : orderings) {
-            boolean ok = true;
-            for (Pair<String, String> rule : restrictions) {
-                if (Math.abs(loc(order, rule.first) - loc(order, rule.second)) > 1) {
-                    ok = false;
-                    break;
-                }
-            }
+		int n = Integer.parseInt(br.readLine().trim());
+		List<Pair<String, String>> restrictions = new ArrayList<>();
+
+		for (int i = 0; i < n; i++) {
+			String[] words = br.readLine().split(" ");
+			restrictions.add(new Pair<>(words[0], words[words.length - 1]));
+		}
+
+		br.close();
+
+		// build all possible orderings of cows
+		build(new ArrayList<>());
+
+		PrintWriter pw =
+		    new PrintWriter(new BufferedWriter(new FileWriter("lineup.out")));
+
+		for (List<String> order : orderings) {
+			boolean ok = true;
+			for (Pair<String, String> rule : restrictions) {
+				if (Math.abs(loc(order, rule.first) - loc(order, rule.second)) > 1) {
+					ok = false;
+					break;
+				}
+			}
 
 			if (ok) {
 				for (String cow : order) { pw.println(cow); }
