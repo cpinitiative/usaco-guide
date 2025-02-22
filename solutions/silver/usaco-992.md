@@ -10,14 +10,11 @@ author: Óscar Garries, Neo Wang, Kevin Sheng, Ruben Jing
 ## Solution 1 - Binary Search and Floodfill
 
 ### Explanation
+We start by searching for the maximum minimal wormhole width $x$. This can be optimized with binary search as it allows us to find the answer in $\mathcal O(\log \max w_i)$ time.
 
-Suppose that cow $1$ is at position $3$. In order to place cow $3$ in the correct position, there must be a wormhole of at least width $x$ that connects positions $1$ and $3$. The number $1$ represents $i$ while the number $3$ represents $p_i$. Therefore, in order for a cow $i$ to be in the correct position, there must be a wormhole of at least width $x$ connecting $i$ and $p_i$.
+To check if a given minimal wormhole width $x$ is valid, we find connected components using BFS. A connected component contains all the positions that are connected to each other. In the first sample input, when ignoring restrictions on the width of a wormhole, $\{1, 2, 3, 4\}$ are all in one connected component. This is because there is a series of wormholes connecting each of the positions to each other.
 
-If a wormhole connects $i$ and $p_i$, these two positions must be in the same connected component. We can find connected components using floodfill.
-
-Once all connected components are found, we check if each cow $i$ is in the same connected component as $p_i$. If at least one cow $i$ is not able to move to $p_i$, then it is not possible to sort the cows with wormholes of at least width $x$.
-
-We binary search on $x$ to find the optimal solution.
+As stated in the problem, each cow $i$ is given to be at a position $p_i$. In order to make the cows sorted, we want to have cow $i$ be in position $i$. If $p_i \neq i$, $i$ must be reachable from $p_i$ through a series of wormholes, and therefore $i$ and $p_i$ must be in the same connected component.
 
 ### Implementation
 
