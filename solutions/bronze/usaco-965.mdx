@@ -248,83 +248,81 @@ int main() {
 import java.io.*;
 import java.util.*;
 
-
-//Pair class
+// Pair class
 class Pair<T, U> {
-    T first;
-    U second;
-    
-    public Pair(T first, U second) {
-        this.first = first;
-        this.second = second;
-    }
+	T first;
+	U second;
+
+	public Pair(T first, U second) {
+		this.first = first;
+		this.second = second;
+	}
 }
 
 public class Lineup {
-    private static final int RESTRICT_LEN = 6;
-    // list of cows, in alphabetical order
-    private static final List<String> COWS = Arrays.asList("Beatrice", "Belinda", "Bella", "Bessie",
-            "Betsy", "Blue", "Buttercup", "Sue");
+	private static final int RESTRICT_LEN = 6;
+	// list of cows, in alphabetical order
+	private static final List<String> COWS = Arrays.asList(
+	    "Beatrice", "Belinda", "Bella", "Bessie", "Betsy", "Blue", "Buttercup", "Sue");
 
-    private static List<List<String>> orderings = new ArrayList<>();
+	private static List<List<String>> orderings = new ArrayList<>();
 
-    private static void build(List<String> ordering) {
-        // finished building permutation
-        if (ordering.size() == 8) {
-            orderings.add(new ArrayList<>(ordering));
-            return;
-        }
+	private static void build(List<String> ordering) {
+		// finished building permutation
+		if (ordering.size() == 8) {
+			orderings.add(new ArrayList<>(ordering));
+			return;
+		}
 
-        for (String cow : COWS) {
-            if (!ordering.contains(cow)) {
-                ordering.add(cow);
-                build(ordering);
-                ordering.remove(ordering.size() - 1);
-            }
-        }
-    }
+		for (String cow : COWS) {
+			if (!ordering.contains(cow)) {
+				ordering.add(cow);
+				build(ordering);
+				ordering.remove(ordering.size() - 1);
+			}
+		}
+	}
 
-    // returns index of a cow in an ordering
-    private static int loc(List<String> order, String cow) {
-        return order.indexOf(cow);
-    }
+	// returns index of a cow in an ordering
+	private static int loc(List<String> order, String cow) {
+		return order.indexOf(cow);
+	}
 
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new FileReader("lineup.in"));
-        PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("lineup.out")));
-        
-        int n = Integer.parseInt(br.readLine().trim());
-        List<Pair<String, String>> restrictions = new ArrayList<>();
-        
-        for (int i = 0; i < n; i++) {
-            String[] words = br.readLine().split(" ");
-            restrictions.add(new Pair<>(words[0], words[words.length - 1]));
-        }
-        
-        br.close();
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new FileReader("lineup.in"));
+		PrintWriter pw =
+		    new PrintWriter(new BufferedWriter(new FileWriter("lineup.out")));
 
-        // build all possible orderings of cows
-        build(new ArrayList<>());
-        
-        for (List<String> order : orderings) {
-            boolean ok = true;
-            for (Pair<String, String> rule : restrictions) {
-                if (Math.abs(loc(order, rule.first) - loc(order, rule.second)) > 1) {
-                    ok = false;
-                    break;
-                }
-            }
+		int n = Integer.parseInt(br.readLine().trim());
+		List<Pair<String, String>> restrictions = new ArrayList<>();
 
-            if (ok) {
-                for (String cow : order) {
-                    pw.println(cow);
-                }
-                break;
-            }
-        }
-        
-        pw.close();
-    }
+		for (int i = 0; i < n; i++) {
+			String[] words = br.readLine().split(" ");
+			restrictions.add(new Pair<>(words[0], words[words.length - 1]));
+		}
+
+		br.close();
+
+		// build all possible orderings of cows
+		build(new ArrayList<>());
+
+		for (List<String> order : orderings) {
+			boolean ok = true;
+			for (Pair<String, String> rule : restrictions) {
+				if (Math.abs(loc(order, rule.first) - loc(order, rule.second)) > 1) {
+					ok = false;
+					break;
+				}
+			}
+
+			if (ok) {
+				for (String cow : order) { pw.println(cow); }
+				break;
+			}
+		}
+
+		pw.close();
+	}
 }
 ```
 </JavaSection>
