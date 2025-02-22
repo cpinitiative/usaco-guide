@@ -10,7 +10,7 @@ author: Óscar Garries, Neo Wang, Kevin Sheng, Ruben Jing
 ## Solution 1 - Binary Search and Floodfill
 
 ### Explanation
-We start by searching for the maximum minimal wormhole width $x$. This can be optimized with binary search as it allows us to find the answer in $\mathcal O(\log \max w_i)$ time.
+We start by searching for the maximum minimal wormhole width $x$. This can be optimized with binary search as it allows us to find the answer in $\mathcal O(\log \max w_i)$ time. The wormhole width always increases towards the right and always decreases towards the left, making binary search applicable.
 
 To check if a given minimal wormhole width $x$ is valid, we find connected components using BFS. A connected component contains all the positions that are connected to each other. In the first sample input, when ignoring restrictions on the width of a wormhole, $\{1, 2, 3, 4\}$ are all in one connected component. This is because there is a series of wormholes connecting each of the positions to each other.
 
