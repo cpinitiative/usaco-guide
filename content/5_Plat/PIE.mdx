@@ -279,10 +279,9 @@ const int MOD = 1000003;
 int howMany(vector<string> patterns, int k) {
 	int ans = 0;
 	for (int mask = 0; mask < (1 << (int)patterns.size()); mask++) {
-		if (__builtin_popcount(mask) != k) {
-			continue;
-		}
-		for (int supermask = mask; supermask < (1 << (int)patterns.size()); supermask++) {
+		if (__builtin_popcount(mask) != k) { continue; }
+		for (int supermask = mask; supermask < (1 << (int)patterns.size());
+		     supermask++) {
 			if ((mask & supermask) == mask) {
 				int sign = ((__builtin_popcount(supermask) - k) & 1 ? -1 : 1);
 				int freq = 1;
