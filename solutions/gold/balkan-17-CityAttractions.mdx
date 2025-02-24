@@ -88,20 +88,20 @@ int main() {
 	};
 
 	// calculate the best vertex to go to in the current subtree
-	const auto dfs = [&](int u, int p, auto &&self) -> void {
+	function<void(int, int)> dfs = [&](int u, int p) {
 		for (const int v : adj[u]) {
 			if (v == p) { continue; }
-			self(v, u, self);
+			dfs(v, u);
 			sub[u] = max(sub[u], get(v));
 		}
 	};
 
-	dfs(0, -1, dfs);
+	dfs(0, -1);
 
 	vector<int> nxt(n);
 
 	// calculate the best vertex to go outside of the current subtree
-	const auto reroot = [&](int u, int p, auto &&self) -> void {
+	function<void(int, int)> reroot = [&](int u, int p) {
 		nxt[u] = -max(top[u], sub[u])[1];
 		array<int, 2> best = top[u];
 		array<int, 2> alt = def;
@@ -120,11 +120,11 @@ int main() {
 			top[v] = (get(v) == best) ? alt : best;
 			top[v][0]--;
 			top[v] = max(top[v], array<int, 2>{a[u] - 1, -u});
-			self(v, u, self);
+			reroot(v, u);
 		}
 	};
 
-	reroot(0, -1, reroot);
+	reroot(0, -1);
 
 	int res = 0;
 	for (int i = 0; i < 63; i++) {
@@ -178,20 +178,20 @@ int main() {
 	};
 
 	// calculate the best vertex to go to in the current subtree
-	const auto dfs = [&](int u, int p, auto &&self) -> void {
+	function<void(int, int)> dfs = [&](int u, int p) {
 		for (const int v : adj[u]) {
 			if (v == p) { continue; }
-			self(v, u, self);
+			dfs(v, u);
 			sub[u] = max(sub[u], get(v));
 		}
 	};
 
-	dfs(0, -1, dfs);
+	dfs(0, -1);
 
 	vector<int> nxt(n);
 
 	// calculate the best vertex to go outside of the current subtree
-	const auto reroot = [&](int u, int p, auto &&self) -> void {
+	function<void(int, int)> reroot = [&](int u, int p) {
 		nxt[u] = -max(top[u], sub[u])[1];
 		array<int, 2> best = top[u];
 		array<int, 2> alt = def;
@@ -199,8 +199,7 @@ int main() {
 			if (v == p) { continue; }
 			const array<int, 2> cur = get(v);
 			if (cur > best) {
-				alt = best;
-				best = cur;
+				alt = best, best = cur;
 			} else if (cur > alt) {
 				alt = cur;
 			}
@@ -211,11 +210,11 @@ int main() {
 			top[v] = (get(v) == best) ? alt : best;
 			top[v][0]--;
 			top[v] = max(top[v], array<int, 2>{a[u] - 1, -u});
-			self(v, u, self);
+			reroot(v, u);
 		}
 	};
 
-	reroot(0, -1, reroot);
+	reroot(0, -1);
 
 	int res = 0;
 	if (k <= n) {
