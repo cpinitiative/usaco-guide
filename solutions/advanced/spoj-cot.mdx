@@ -41,111 +41,129 @@ Value compression is used to effectively handle large numbers.
 
 #include <bits/stdc++.h>
 using namespace std;
-const int MAX = 2e5, MAX_NODES = 2e6, LOG = 20;
-int L[MAX_NODES + 1], R[MAX_NODES + 1], t[MAX_NODES + 1], roots[MAX + 1],
-    up[MAX + 1][LOG + 1];
-int tin[MAX + 1], tout[MAX + 1], val[MAX + 1];
-vector<int> graph[MAX + 1];
-int nxt = 1, timer = 0;
+const int MAX_NODES_GRAPH = 1e5, MAX_NODES_TREE = 2e6;
+int nxt = 1, timer = 0, LOG;
 
-int update(int v, int l, int r, int pos) {
-	int nw = ++nxt;
+struct PersistentSegmentTree {
+    int L[MAX_NODES_TREE + 1], R[MAX_NODES_TREE + 1], t[MAX_NODES_TREE + 1];
 
-	if (l == r) {
-		t[nw] = t[v] + 1;
-		return nw;
-	}
+    int update(int v, int l, int r, int pos) {
+        int nw = ++nxt;
 
-	L[nw] = L[v];
-	R[nw] = R[v];
-	int m = (l + r) / 2;
+        if (l == r) {
+            t[nw] = t[v] + 1;
+            return nw;
+        }
 
-	if (pos <= m) {
-		L[nw] = update(L[v], l, m, pos);
-	} else {
-		R[nw] = update(R[v], m + 1, r, pos);
-	}
+        L[nw] = L[v];
+        R[nw] = R[v];
+        int m = (l + r) / 2;
 
-	t[nw] = t[L[nw]] + t[R[nw]];
-	return nw;
-}
+        if (pos <= m) {
+            L[nw] = update(L[v], l, m, pos);
+        } else {
+            R[nw] = update(R[v], m + 1, r, pos);
+        }
 
-void dfs(int from, int p) {
-	int root = roots[p];
-	root = update(root, 1, MAX, val[from]);
+        t[nw] = t[L[nw]] + t[R[nw]];
+        return nw;
+    }
 
-	roots[from] = root;
-	tin[from] = ++timer;
+    int query(int a, int b, int anc, int pr, int l, int r, int k) {
+        if (l == r) { return l; }
+        int m = (l + r) / 2;
+        int cnt = t[L[a]] + t[L[b]] - t[L[anc]] - t[L[pr]];
+        if (cnt >= k) return query(L[a], L[b], L[anc], L[pr], l, m, k);
+        else return query(R[a], R[b], R[anc], R[pr], m + 1, r, k - cnt);
+    }
+};
 
-	if (from != 1) {
-		up[from][0] = p;
-	} else {
-		up[from][0] = from;
-	}
+PersistentSegmentTree pst;
 
-	for (int i = 1; i < LOG; i++) { up[from][i] = up[up[from][i - 1]][i - 1]; }
+struct Graph {
+    int roots[MAX_NODES_GRAPH + 1];
+    vector<vector<int>> up;
+    int tin[MAX_NODES_GRAPH + 1], tout[MAX_NODES_GRAPH + 1], val[MAX_NODES_GRAPH + 1];
+    vector<int> graph[MAX_NODES_GRAPH + 1];
 
-	for (int to : graph[from]) {
-		if (to == p) continue;
-		dfs(to, from);
-	}
-	tout[from] = timer;
-}
+    void build(int n) {
+        LOG = ceil(log2(n));
+        up.assign(n + 1, vector<int>(LOG + 1, 0));
+    }
 
-bool is_ancestor(int u, int v) { return tin[u] <= tin[v] && tout[u] >= tout[v]; }
+    void dfs(int from, int p) {
+        int root = roots[p];
+        root = pst.update(root, 1, MAX_NODES_GRAPH, val[from]);
 
-int lca(int u, int v) {
-	if (is_ancestor(u, v)) return u;
-	if (is_ancestor(v, u)) return v;
-	for (int i = LOG - 1; i >= 0; i--) {
-		if (is_ancestor(up[u][i], v)) continue;
-		u = up[u][i];
-	}
-	return up[u][0];
-}
+        roots[from] = root;
+        tin[from] = ++timer;
 
-int query(int a, int b, int anc, int pr, int l, int r, int k) {
-	if (l == r) { return l; }
-	int m = (l + r) / 2;
-	int cnt = t[L[a]] + t[L[b]] - t[L[anc]] - t[L[pr]];
-	if (cnt >= k) return query(L[a], L[b], L[anc], L[pr], l, m, k);
-	else return query(R[a], R[b], R[anc], R[pr], m + 1, r, k - cnt);
-}
+        if (from != 1) {
+            up[from][0] = p;
+        } else {
+            up[from][0] = from;
+        }
+
+        for (int i = 1; i < LOG; i++) { up[from][i] = up[up[from][i - 1]][i - 1]; }
+
+        for (int to : graph[from]) {
+            if (to == p) continue;
+            dfs(to, from);
+        }
+        tout[from] = timer;
+    }
+
+    bool is_ancestor(int u, int v) { return tin[u] <= tin[v] && tout[u] >= tout[v]; }
+
+    int lca(int u, int v) {
+        if (is_ancestor(u, v)) return u;
+        if (is_ancestor(v, u)) return v;
+        for (int i = LOG - 1; i >= 0; i--) {
+            if (is_ancestor(up[u][i], v)) continue;
+            u = up[u][i];
+        }
+        return up[u][0];
+    }
+};
+
 
 int main() {
 	int n, m;
 	cin >> n >> m;
+        Graph g;
+        g.build(n);
+
 	vector<int> compr;
 	compr.push_back(-INT_MAX);
 
 	for (int i = 1; i <= n; i++) {
-		cin >> val[i];
-		compr.push_back(val[i]);
+		cin >> g.val[i];
+		compr.push_back(g.val[i]);
 	}
 
 	sort(compr.begin(), compr.end());
 	compr.resize(unique(compr.begin(), compr.end()) - compr.begin());
 
 	for (int i = 1; i <= n; i++) {
-		val[i] = lower_bound(compr.begin(), compr.end(), val[i]) - compr.begin();
+		g.val[i] = lower_bound(compr.begin(), compr.end(), g.val[i]) - compr.begin();
 	}
 
 	for (int i = 1; i < n; i++) {
 		int a, b;
 		cin >> a >> b;
-		graph[a].push_back(b);
-		graph[b].push_back(a);
+		g.graph[a].push_back(b);
+		g.graph[b].push_back(a);
 	}
 
-	roots[0] = ++timer;
-	dfs(1, 0);
+	g.roots[0] = ++timer;
+	g.dfs(1, 0);
 
 	for (int i = 0; i < m; i++) {
 		int a, b, k;
 		cin >> a >> b >> k;
-		int common = lca(a, b);
-		int pr = (common == 1) ? 0 : up[common][0];
-		cout << compr[query(roots[a], roots[b], roots[common], roots[pr], 1, MAX, k)]
+		int common = g.lca(a, b);
+		int pr = (common == 1) ? 0 : g.up[common][0];
+		cout << compr[pst.query(g.roots[a], g.roots[b], g.roots[common], g.roots[pr], 1, MAX_NODES_GRAPH, k)]
 		     << '\n';
 	}
 }
