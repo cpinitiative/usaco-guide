@@ -1,4 +1,4 @@
- 
+
 # Angry Cows (Gold Level)
 
 ## **Problem Overview**
@@ -21,51 +21,3 @@ Find the **minimum explosion radius \( R \)** required to destroy all hay bales 
 
 ## **Java Solution**
 ```java
-import java.util.*;
-
-public class AngryCowsGold {
-    static int N;
-    static int[] haybales;
-
-    static boolean canDestroyAll(int R) {
-        for (int i = 0; i < N; i++) { // Try starting explosion from each hay bale
-            int left = i, right = i;
-            int radius = R;
-
-            while (radius > 0) {
-                while (left > 0 && haybales[left - 1] >= haybales[left] - radius) left--;
-                while (right < N - 1 && haybales[right + 1] <= haybales[right] + radius) right++;
-                radius--;
-            }
-
-            if (left == 0 && right == N - 1) return true;
-        }
-        return false;
-    }
-
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        N = sc.nextInt();
-        haybales = new int[N];
-
-        for (int i = 0; i < N; i++) {
-            haybales[i] = sc.nextInt();
-        }
-        sc.close();
-
-        Arrays.sort(haybales);
-
-        int low = 0, high = (int) 1e9, ans = high;
-        while (low <= high) {
-            int mid = (low + high) / 2;
-            if (canDestroyAll(mid)) {
-                ans = mid;
-                high = mid - 1;
-            } else {
-                low = mid + 1;
-            }
-        }
-
-        System.out.println(ans);
-    }
-}
