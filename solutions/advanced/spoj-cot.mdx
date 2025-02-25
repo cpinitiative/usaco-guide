@@ -45,93 +45,92 @@ const int MAX_NODES_GRAPH = 1e5, MAX_NODES_TREE = 2e6;
 int nxt = 1, timer = 0, LOG;
 
 struct PersistentSegmentTree {
-    int L[MAX_NODES_TREE + 1], R[MAX_NODES_TREE + 1], t[MAX_NODES_TREE + 1];
+	int L[MAX_NODES_TREE + 1], R[MAX_NODES_TREE + 1], t[MAX_NODES_TREE + 1];
 
-    int update(int v, int l, int r, int pos) {
-        int nw = ++nxt;
+	int update(int v, int l, int r, int pos) {
+		int nw = ++nxt;
 
-        if (l == r) {
-            t[nw] = t[v] + 1;
-            return nw;
-        }
+		if (l == r) {
+			t[nw] = t[v] + 1;
+			return nw;
+		}
 
-        L[nw] = L[v];
-        R[nw] = R[v];
-        int m = (l + r) / 2;
+		L[nw] = L[v];
+		R[nw] = R[v];
+		int m = (l + r) / 2;
 
-        if (pos <= m) {
-            L[nw] = update(L[v], l, m, pos);
-        } else {
-            R[nw] = update(R[v], m + 1, r, pos);
-        }
+		if (pos <= m) {
+			L[nw] = update(L[v], l, m, pos);
+		} else {
+			R[nw] = update(R[v], m + 1, r, pos);
+		}
 
-        t[nw] = t[L[nw]] + t[R[nw]];
-        return nw;
-    }
+		t[nw] = t[L[nw]] + t[R[nw]];
+		return nw;
+	}
 
-    int query(int a, int b, int anc, int pr, int l, int r, int k) {
-        if (l == r) { return l; }
-        int m = (l + r) / 2;
-        int cnt = t[L[a]] + t[L[b]] - t[L[anc]] - t[L[pr]];
-        if (cnt >= k) return query(L[a], L[b], L[anc], L[pr], l, m, k);
-        else return query(R[a], R[b], R[anc], R[pr], m + 1, r, k - cnt);
-    }
+	int query(int a, int b, int anc, int pr, int l, int r, int k) {
+		if (l == r) { return l; }
+		int m = (l + r) / 2;
+		int cnt = t[L[a]] + t[L[b]] - t[L[anc]] - t[L[pr]];
+		if (cnt >= k) return query(L[a], L[b], L[anc], L[pr], l, m, k);
+		else return query(R[a], R[b], R[anc], R[pr], m + 1, r, k - cnt);
+	}
 };
 
 PersistentSegmentTree pst;
 
 struct Graph {
-    int roots[MAX_NODES_GRAPH + 1];
-    vector<vector<int>> up;
-    int tin[MAX_NODES_GRAPH + 1], tout[MAX_NODES_GRAPH + 1], val[MAX_NODES_GRAPH + 1];
-    vector<int> graph[MAX_NODES_GRAPH + 1];
+	int roots[MAX_NODES_GRAPH + 1];
+	vector<vector<int>> up;
+	int tin[MAX_NODES_GRAPH + 1], tout[MAX_NODES_GRAPH + 1], val[MAX_NODES_GRAPH + 1];
+	vector<int> graph[MAX_NODES_GRAPH + 1];
 
-    void build(int n) {
-        LOG = ceil(log2(n));
-        up.assign(n + 1, vector<int>(LOG + 1, 0));
-    }
+	void build(int n) {
+		LOG = ceil(log2(n));
+		up.assign(n + 1, vector<int>(LOG + 1, 0));
+	}
 
-    void dfs(int from, int p) {
-        int root = roots[p];
-        root = pst.update(root, 1, MAX_NODES_GRAPH, val[from]);
+	void dfs(int from, int p) {
+		int root = roots[p];
+		root = pst.update(root, 1, MAX_NODES_GRAPH, val[from]);
 
-        roots[from] = root;
-        tin[from] = ++timer;
+		roots[from] = root;
+		tin[from] = ++timer;
 
-        if (from != 1) {
-            up[from][0] = p;
-        } else {
-            up[from][0] = from;
-        }
+		if (from != 1) {
+			up[from][0] = p;
+		} else {
+			up[from][0] = from;
+		}
 
-        for (int i = 1; i < LOG; i++) { up[from][i] = up[up[from][i - 1]][i - 1]; }
+		for (int i = 1; i < LOG; i++) { up[from][i] = up[up[from][i - 1]][i - 1]; }
 
-        for (int to : graph[from]) {
-            if (to == p) continue;
-            dfs(to, from);
-        }
-        tout[from] = timer;
-    }
+		for (int to : graph[from]) {
+			if (to == p) continue;
+			dfs(to, from);
+		}
+		tout[from] = timer;
+	}
 
-    bool is_ancestor(int u, int v) { return tin[u] <= tin[v] && tout[u] >= tout[v]; }
+	bool is_ancestor(int u, int v) { return tin[u] <= tin[v] && tout[u] >= tout[v]; }
 
-    int lca(int u, int v) {
-        if (is_ancestor(u, v)) return u;
-        if (is_ancestor(v, u)) return v;
-        for (int i = LOG - 1; i >= 0; i--) {
-            if (is_ancestor(up[u][i], v)) continue;
-            u = up[u][i];
-        }
-        return up[u][0];
-    }
+	int lca(int u, int v) {
+		if (is_ancestor(u, v)) return u;
+		if (is_ancestor(v, u)) return v;
+		for (int i = LOG - 1; i >= 0; i--) {
+			if (is_ancestor(up[u][i], v)) continue;
+			u = up[u][i];
+		}
+		return up[u][0];
+	}
 };
-
 
 int main() {
 	int n, m;
 	cin >> n >> m;
-        Graph g;
-        g.build(n);
+	Graph g;
+	g.build(n);
 
 	vector<int> compr;
 	compr.push_back(-INT_MAX);
@@ -163,7 +162,8 @@ int main() {
 		cin >> a >> b >> k;
 		int common = g.lca(a, b);
 		int pr = (common == 1) ? 0 : g.up[common][0];
-		cout << compr[pst.query(g.roots[a], g.roots[b], g.roots[common], g.roots[pr], 1, MAX_NODES_GRAPH, k)]
+		cout << compr[pst.query(g.roots[a], g.roots[b], g.roots[common], g.roots[pr], 1,
+		                        MAX_NODES_GRAPH, k)]
 		     << '\n';
 	}
 }
