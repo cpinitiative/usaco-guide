@@ -1,0 +1,107 @@
+---
+id: cses-1643
+source: CSES
+title: Max Subarray Sum
+author: Kalisetty Kavya Varshitha
+---
+
+[Official Analysis](http://www.usaco.org/current/data/sol_cowdance_silver_jan17.html)
+
+## Explanation
+
+Using Kadane’s Algorithm, which runs in O(n) time complexity and is optimal for large constraints.
+
+Read Input: The program reads the array size n and the n integers.
+Kadane's Algorithm:
+currentSum stores the sum of the current subarray.
+maxSum keeps track of the maximum sum encountered.
+We iterate over the array, updating currentSum as either the current number itself or the sum including previous values.
+The maximum of maxSum and currentSum is stored.
+Output the Result: The maximum subarray sum is printed.
+
+
+Use `\texttt{}` around variable names with length *greater than one*, like so. Place long equations on separate lines with display math, and use `\cdot` instead of `*` to denote multiplication.
+
+$$
+\texttt{arr}[i]=2\cdot (a+b+c+d+e)+\sum_{j=0}^{i-1}\texttt{arr}[j]
+$$
+
+Some additional text styles which you might consider using:
+
+http://latexref.xyz/Font-styles.html
+
+http://applied-r.com/latex-font-styles/
+
+$func(var)$
+
+$\textit{func(var)}$
+
+$\textrm{func(var)}$
+
+$\text{func(var)}$
+
+$\textsf{func(var)}$
+
+$\textbf{func(var)}$
+
+$\texttt{func(var)}$
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+^ Format time complexity like this. Should appear outside of `<LanguageSection>` if it's the same for all implementations.
+
+If you need to link to a module, format your link like [this](/silver/more-prefix-sums) instead of [this](https://usaco.guide/silver/more-prefix-sums).
+
+<LanguageSection>
+
+<CPPSection>
+
+(add cpp code)
+
+</CPPSection>
+
+<PySection>
+
+(if you have Python code)
+
+</PySection>
+
+<JavaSection>
+
+import java.io.*;
+import java.util.*;
+
+public class Main {
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        
+        int n = Integer.parseInt(br.readLine());
+        int[] arr = new int[n];
+        
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        for (int i = 0; i < n; i++) {
+            arr[i] = Integer.parseInt(st.nextToken());
+        }
+        
+        System.out.println(maxSubarraySum(arr));
+    }
+    
+    public static long maxSubarraySum(int[] arr) {
+        long \texttt{maxSum} = Long.MIN_VALUE;
+        long \texttt{currentSum} = 0;
+        
+        for (int num : arr) {
+            \texttt{currentSum} = Math.max(num, \texttt{currentSum} + num);
+            \texttt{maxSum} = Math.max(\texttt{maxSum}, \texttt{currentSum});
+        }
+        
+        return \texttt{maxSum};
+    }
+}
+
+
+</JavaSection>
+
+</LanguageSection>
