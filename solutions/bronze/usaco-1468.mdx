@@ -1,0 +1,91 @@
+---
+id: usaco-1468
+source: USACO Bronze 2025 January
+title: It's Mooin' Time II
+author: Junwon Kim
+---
+
+[Official Analysis](https://usaco.org/current/data/sol_prob2_bronze_jan25.html)
+
+## Explanation
+
+Farmer John's contest is represented by an array of $ N $ integers. In this problem, a "moo" is defined as a sequence of three integers $ (x, y, y) $ such that the first integer $ x $ is not equal to $ y $. In other words, there must exist indices $ i < j < k $ with $ a[i] = x $, $ a[j] = y $, and $ a[k] = y $ where $ x \neq y $. Two moos are considered distinct if they do not consist of the same integers in the same order.
+
+The key observation is that a moo is completely characterized by the ordered pair $ (x, y) $. Once we have at least two occurrences of $ y $ in the array, any distinct number $ x $ that has already appeared (with $ x \neq y $) can serve as the first element of a valid moo $ (x, y, y) $. To count the number of distinct moos efficiently, we use the following approach:
+
+1. **Read Input**: Read the integer $ N $ and the array of integers $ a $ from the input. 
+2. **Initialize Data Structures**: Create an unordered map `pos` to store the positions of each integer and a vector `a` to hold the input integers. 
+3. **Populate Positions**: Traverse the array and populate the `pos` map with the indices of each integer. 
+4. **Track First Occurrences**: Create an unordered map `first_oc` to store the first occurrence of each integer and a vector `sorted_first_occs` to hold these occurrences. 
+5. **Sort First Occurrences**: Sort the `sorted_first_occs` vector to facilitate efficient counting of distinct integers. 
+6. **Initialize Answer Variable**: Create a variable `ans` to store the total count of distinct moos, initialized to 0. 
+7. **Process Each Unique Integer $ y $**: For each integer $ y $ in the `pos` map: 
+   - Check the count of occurrences $ k $ of $ y $. If $ k < 2 $, skip to the next integer. 
+   - Determine Cutoff Position: Calculate the cutoff index and position for the second occurrence of $ y $. 
+8. **Count Distinct Integers**: Use binary search to count how many distinct integers $ x $ can form a moo with $ y $ by checking how many first occurrences are less than or equal to the cutoff position. 
+9. **Adjust Count for $ y $**: If the first occurrence of $ y $ is less than or equal to the cutoff position, decrement the count to exclude $ y $ itself. 
+10. **Update Total Count**: Add the count of valid $ x $ values to the `ans` variable. 
+11. **Output Result**: Print the final count of distinct moos stored in `ans`.
+
+This solution runs in $ O(N) $ time and uses $ O(N) $ space, which is efficient given that $ N $ can be as large as $ 10^6 $. Given the potential for a very large answer, a 64-bit integer (long long in C++) is used to store the count.
+
+## Implementation
+
+**Time Complexity**: $\mathcal{O}(N)$
+
+<LanguageSection>
+<CPPSection>
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int N;
+    cin >> N;
+    vector<int> a(N);
+    unordered_map<int, vector<int>> pos;
+    for (int i = 0; i < N; ++i) {
+        cin >> a[i];
+        pos[a[i]].push_back(i);
+    }
+
+    unordered_map<int, int> first_oc;
+    vector<int> sorted_first_occs;
+    for (const auto& p : pos) {
+        int x = p.first;
+        first_oc[x] = p.second[0];
+        sorted_first_occs.push_back(p.second[0]);
+    }
+    sort(sorted_first_occs.begin(), sorted_first_occs.end());
+
+    long long ans = 0;
+
+    for (const auto& p : pos) {
+        int y = p.first;
+        const auto& v = p.second;
+        int k = v.size();
+        if (k < 2) continue;
+
+        int cutoff_idx = k - 2;
+        int cutoff_pos = v[cutoff_idx] - 1;
+
+        int cnt = upper_bound(sorted_first_occs.begin(), sorted_first_occs.end(), cutoff_pos) - sorted_first_occs.begin();
+
+        if (first_oc[y] <= cutoff_pos) {
+            cnt--;
+        }
+
+        ans += cnt;
+    }
+
+    cout << ans << '\n';
+
+    return 0;
+}
+```
+
+</CPPSection>
+</LanguageSection>  
