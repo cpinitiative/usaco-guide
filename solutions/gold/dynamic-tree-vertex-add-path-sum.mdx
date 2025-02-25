@@ -1,0 +1,43 @@
+---
+id: dynamic-tree-vertex-add-path-sum
+source: Custom Problem
+title: Dynamic Tree Vertex Add Path Sum
+author: PONNADA N V S S V V KISHORE
+---
+
+## Explanation
+
+We need to support three types of queries efficiently:
+1. **Modify an edge** in the tree.
+2. **Update a node's value**.
+3. **Find the sum of values in a path**.
+
+We use **Heavy-Light Decomposition (HLD)** and a **Segment Tree** to efficiently process queries in **O(log N)** time.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MAXN = 200005;
+vector<int> tree[MAXN];
+int value[MAXN], parent[MAXN], depth[MAXN];
+int heavy[MAXN], head[MAXN], pos[MAXN];
+int segTree[4 * MAXN], n, timer = 0;
+
+void dfs(int v, int p) {
+    parent[v] = p;
+    depth[v] = depth[p] + 1;
+    int maxSubtreeSize = 0;
+
+    for (int u : tree[v]) {
+        if (u == p) continue;
+        dfs(u, v);
+        if (tree[u].size() > maxSubtreeSize) {
+            maxSubtreeSize = tree[u].size();
+        }
+    }
+}
