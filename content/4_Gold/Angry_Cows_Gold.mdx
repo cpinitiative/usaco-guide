@@ -1,0 +1,71 @@
+ 
+# Angry Cows (Gold Level)
+
+## **Problem Overview**
+A set of **hay bales** is placed on a number line. A cow can **start an explosion** at any hay bale, which then spreads **outward** at an increasing rate:
+- At **t = 1**, the explosion spreads **1 unit** in both directions.
+- At **t = 2**, it spreads **2 units** further.
+- At **t = k**, it spreads **k units** further.
+
+Find the **minimum explosion radius \( R \)** required to destroy all hay bales if the explosion starts at an optimal position.
+
+---
+
+## **Approach**
+- We use **binary search** to find the smallest possible \( R \).
+- For each \( R \), we **simulate** an explosion from each hay bale and check if it destroys all bales.
+- The explosion **expands at an increasing rate** (1, 2, 3, …).
+- The **greedy approach** ensures we use the optimal starting bale.
+
+---
+
+## **Java Solution**
+```java
+import java.util.*;
+
+public class AngryCowsGold {
+    static int N;
+    static int[] haybales;
+
+    static boolean canDestroyAll(int R) {
+        for (int i = 0; i < N; i++) { // Try starting explosion from each hay bale
+            int left = i, right = i;
+            int radius = R;
+
+            while (radius > 0) {
+                while (left > 0 && haybales[left - 1] >= haybales[left] - radius) left--;
+                while (right < N - 1 && haybales[right + 1] <= haybales[right] + radius) right++;
+                radius--;
+            }
+
+            if (left == 0 && right == N - 1) return true;
+        }
+        return false;
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        N = sc.nextInt();
+        haybales = new int[N];
+
+        for (int i = 0; i < N; i++) {
+            haybales[i] = sc.nextInt();
+        }
+        sc.close();
+
+        Arrays.sort(haybales);
+
+        int low = 0, high = (int) 1e9, ans = high;
+        while (low <= high) {
+            int mid = (low + high) / 2;
+            if (canDestroyAll(mid)) {
+                ans = mid;
+                high = mid - 1;
+            } else {
+                low = mid + 1;
+            }
+        }
+
+        System.out.println(ans);
+    }
+}
