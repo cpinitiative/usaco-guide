@@ -154,58 +154,58 @@ public final class DestroyArray {
 import sys
 from collections import Counter
 
-def solve():
-    test_num = int(sys.stdin.readline().strip())
-    for _ in range(test_num):
-        half_size = int(sys.stdin.readline().strip())
-        arr = list(map(int, sys.stdin.readline().strip().split()))
-        nums = Counter(arr)
-        nums = dict(sorted(nums.items()))
 
-        valid_start = -1
-        valid_moves = None
-        
-        for to_remove in nums.keys():
-            start = max(nums.keys()) + to_remove
-            at = start
-            
-            remaining = dict(nums)
-            moves = []
-            
-            for _ in range(half_size):
-                largest = max(remaining.keys())
-                remaining[largest] -= 1
-                if remaining[largest] == 0:
-                    del remaining[largest]
-                
-                other = at - largest
-                if other not in remaining:
-                    break
-                
-                at = largest
-                remaining[other] -= 1
-                if remaining[other] == 0:
-                    del remaining[other]
-                
-                moves.append((largest, other))
-            
-            if len(moves) == half_size:
-                valid_start = start
-                valid_moves = moves
-                break
-        
-        if valid_moves is None:
-            print("NO")
-        else:
-            print("YES")
-            print(valid_start)
-            for x, y in valid_moves:
-                print(x, y)
+def solve():
+	test_num = int(sys.stdin.readline().strip())
+	for _ in range(test_num):
+		half_size = int(sys.stdin.readline().strip())
+		arr = list(map(int, sys.stdin.readline().strip().split()))
+		nums = Counter(arr)
+		nums = dict(sorted(nums.items()))
+
+		valid_start = -1
+		valid_moves = None
+
+		for to_remove in nums.keys():
+			start = max(nums.keys()) + to_remove
+			at = start
+
+			remaining = dict(nums)
+			moves = []
+
+			for _ in range(half_size):
+				largest = max(remaining.keys())
+				remaining[largest] -= 1
+				if remaining[largest] == 0:
+					del remaining[largest]
+
+				other = at - largest
+				if other not in remaining:
+					break
+
+				at = largest
+				remaining[other] -= 1
+				if remaining[other] == 0:
+					del remaining[other]
+
+				moves.append((largest, other))
+
+			if len(moves) == half_size:
+				valid_start = start
+				valid_moves = moves
+				break
+
+		if valid_moves is None:
+			print("NO")
+		else:
+			print("YES")
+			print(valid_start)
+			for x, y in valid_moves:
+				print(x, y)
+
 
 if __name__ == "__main__":
-    solve()
-
-
+	solve()
 ```
 
 </PySection>
