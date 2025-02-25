@@ -282,32 +282,33 @@ int howMany(vector<string> patterns, int k) {
 		if (__builtin_popcount(mask) != k) { continue; }
 		for (int supermask = mask; supermask < (1 << (int)patterns.size());
 		     supermask++) {
-			if ((mask & supermask) == mask) {
-				int sign = ((__builtin_popcount(supermask) - k) & 1 ? -1 : 1);
-				int freq = 1;
-				for (int i = 0; i < (int)patterns[0].size(); i++) {
-					bool flag = true;
-					char last_letter = '?';
-					for (int j = 0; j < (int)patterns.size(); j++) {
-						if (((1 << j) & supermask) == 0) { continue; }
-						if (patterns[j][i] != '?') {
-							if (last_letter == '?') {
-								last_letter = patterns[j][i];
-							} else if (patterns[j][i] != last_letter) {
-								flag = false;
-								break;
-							}
+			if ((mask & supermask) != mask) {
+				continue;
+			}
+			int sign = ((__builtin_popcount(supermask) - k) & 1 ? -1 : 1);
+			int freq = 1;
+			for (int i = 0; i < (int)patterns[0].size(); i++) {
+				bool flag = true;
+				char last_letter = '?';
+				for (int j = 0; j < (int)patterns.size(); j++) {
+					if (((1 << j) & supermask) == 0) { continue; }
+					if (patterns[j][i] != '?') {
+						if (last_letter == '?') {
+							last_letter = patterns[j][i];
+						} else if (patterns[j][i] != last_letter) {
+							flag = false;
+							break;
 						}
 					}
-					if (!flag) {
-						freq = 0;
-					} else if (last_letter == '?') {
-						freq = (freq * 26) % MOD;
-					}
 				}
-				ans = (ans + sign * freq) % MOD;
-				ans = (ans + MOD) % MOD;
+				if (!flag) {
+					freq = 0;
+				} else if (last_letter == '?') {
+					freq = (freq * 26) % MOD;
+				}
 			}
+			ans = (ans + sign * freq) % MOD;
+			ans = (ans + MOD) % MOD;
 		}
 	}
 
