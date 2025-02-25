@@ -19,25 +19,3 @@ We use **Heavy-Light Decomposition (HLD)** and a **Segment Tree** to efficiently
 <CPPSection>
 
 ```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const int MAXN = 200005;
-vector<int> tree[MAXN];
-int value[MAXN], parent[MAXN], depth[MAXN];
-int heavy[MAXN], head[MAXN], pos[MAXN];
-int segTree[4 * MAXN], n, timer = 0;
-
-void dfs(int v, int p) {
-    parent[v] = p;
-    depth[v] = depth[p] + 1;
-    int maxSubtreeSize = 0;
-
-    for (int u : tree[v]) {
-        if (u == p) continue;
-        dfs(u, v);
-        if (tree[u].size() > maxSubtreeSize) {
-            maxSubtreeSize = tree[u].size();
-        }
-    }
-}
