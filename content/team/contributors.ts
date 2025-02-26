@@ -73,6 +73,19 @@ export const OrderedFirstMembers: Member[] = [
     email: 'maggie.j.liu@gmail.com',
   },
   {
+    photo: 'ryan',
+    name: 'Ryan Chou',
+    titles: [
+      'Executive',
+      'Content Manager',
+      roles.liveInstructor,
+      roles.videoInstructor,
+      roles.contentAuthor,
+    ],
+    github: 'ryanchou-dev',
+    website: 'https://www.ryanchou.dev/',
+  },
+  {
     photo: 'melody',
     name: 'Melody Yu',
     titles: ['Executive', 'Director of Outreach', roles.videoInstructor],
@@ -170,16 +183,16 @@ export const OrderedFirstMembers: Member[] = [
     reddit: 'sanspapyrus683',
   },
   {
+    photo: 'justin_ji',
+    name: 'Justin Ji',
+    titles: ['Content Manager',roles.contentAuthor],
+    github: 'TheGamingMousse',
+  },
+  {
     photo: 'tatha',
     name: 'Tatha Pandey',
     titles: [roles.liveInstructor],
     github: 'tathap',
-  },
-  {
-    photo: 'justin_ji',
-    name: 'Justin Ji',
-    titles: [roles.contentAuthor],
-    github: 'TheGamingMousse',
   },
   {
     photo: 'tianqin',
@@ -190,18 +203,6 @@ export const OrderedFirstMembers: Member[] = [
 ];
 
 export const RestOfMembers: Member[] = [
-  {
-    photo: 'ryan',
-    name: 'Ryan Chou',
-    titles: [
-      'Content Manager',
-      roles.liveInstructor,
-      roles.videoInstructor,
-      roles.contentAuthor,
-    ],
-    github: 'ryanchou-dev',
-    website: 'https://www.ryanchou.dev/',
-  },
   {
     photo: 'jesse',
     name: 'Jesse Choe',
