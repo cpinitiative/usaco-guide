@@ -185,7 +185,7 @@ export const OrderedFirstMembers: Member[] = [
   {
     photo: 'justin_ji',
     name: 'Justin Ji',
-    titles: ['Content Manager',roles.contentAuthor],
+    titles: ['Content Manager', roles.contentAuthor],
     github: 'TheGamingMousse',
   },
   {
