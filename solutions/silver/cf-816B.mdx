@@ -30,6 +30,12 @@ constexpr int MAX_TEMP = 200000;
 int main() {
 	int n, k, q;
 	cin >> n >> k >> q;
+
+	/*
+     * +2 is required since we are decrementing r + 1 and max r will be 2e5
+	 * thus it prevents out of bounds error, and additional +1 ensure safe 
+	 * prefix sum computation.
+	 */
 	std::vector<int> diff_arr(MAX_TEMP + 2);
 
 	for (int i = 0; i < n; i++) {
@@ -66,6 +72,11 @@ public class KarenAndCoffee {
 		int k = io.nextInt();
 		int q = io.nextInt();
 
+		/*
+		 * +2 is required since we are decrementing r + 1 and max r will be 2e5
+		 * thus it prevents out of bounds error, and additional +1 ensure safe 
+		 * prefix sum computation.
+		 */
 		int[] diff_arr = new int[N + 2];
 		for (int i = 0; i < n; i++) {
 			int l, r;
@@ -107,6 +118,12 @@ The solution gives TLE in PyPy3.
 MAX_TEMP = 200000
 
 n, k, q = map(int, input().split())
+
+"""
++2 is required since we are decrementing r + 1 and max r will be 2e5
+thus it prevents out of bounds error, and additional +1 ensure safe 
+prefix sum computation.
+"""
 diff_arr = [0] * (MAX_TEMP + 2)
 
 for _ in range(n):
