@@ -98,11 +98,11 @@ int main() {
 
 	dfs(0, -1);
 
-	vector<int> nxt(n);
+	vector<int> next_node(n);
 
 	// calculate the best vertex to go outside of the current subtree
 	function<void(int, int)> reroot = [&](int u, int p) {
-		nxt[u] = -max(top[u], sub[u])[1];
+		next_node[u] = -max(top[u], sub[u])[1];
 		array<int, 2> best = top[u];
 		array<int, 2> alt = def;
 		for (const int v : adj[u]) {
@@ -117,7 +117,7 @@ int main() {
 
 		for (const int v : adj[u]) {
 			if (v == p) { continue; }
-			top[v] = (get(v) == best) ? alt : best;
+			top[v] = get(v) == best ? alt : best;
 			top[v][0]--;
 			top[v] = max(top[v], array<int, 2>{a[u] - 1, -u});
 			reroot(v, u);
@@ -128,12 +128,12 @@ int main() {
 
 	int res = 0;
 	for (int i = 0; i < 63; i++) {
-		if ((k >> i) & 1) { res = nxt[res]; }
+		if ((k >> i) & 1) { res = next_node[res]; }
 
-		vector<int> new_nxt(n);
-		for (int j = 0; j < n; j++) { new_nxt[j] = nxt[nxt[j]]; }
+		vector<int> new_next(n);
+		for (int j = 0; j < n; j++) { new_next[j] = next_node[next_node[j]]; }
 
-		nxt = move(new_nxt);
+		next_node = move(new_next);
 	}
 
 	cout << res + 1 << endl;
@@ -188,11 +188,11 @@ int main() {
 
 	dfs(0, -1);
 
-	vector<int> nxt(n);
+	vector<int> next_node(n);
 
 	// calculate the best vertex to go outside of the current subtree
 	function<void(int, int)> reroot = [&](int u, int p) {
-		nxt[u] = -max(top[u], sub[u])[1];
+		next_node[u] = -max(top[u], sub[u])[1];
 		array<int, 2> best = top[u];
 		array<int, 2> alt = def;
 		for (const int v : adj[u]) {
@@ -207,7 +207,7 @@ int main() {
 
 		for (const int v : adj[u]) {
 			if (v == p) { continue; }
-			top[v] = (get(v) == best) ? alt : best;
+			top[v] = get(v) == best ? alt : best;
 			top[v][0]--;
 			top[v] = max(top[v], array<int, 2>{a[u] - 1, -u});
 			reroot(v, u);
@@ -218,17 +218,17 @@ int main() {
 
 	int res = 0;
 	if (k <= n) {
-		for (int i = 0; i < k; i++) { res = nxt[res]; }
+		for (int i = 0; i < k; i++) { res = next_node[res]; }
 	} else {
 		k -= n;
-		for (int i = 0; i < n; i++) { res = nxt[res]; }
+		for (int i = 0; i < n; i++) { res = next_node[res]; }
 
 		vector<bool> vis(n);
 		vector<int> path;
 		while (!vis[res]) {
 			vis[res] = true;
 			path.push_back(res);
-			res = nxt[res];
+			res = next_node[res];
 		}
 
 		res = path[k % path.size()];
