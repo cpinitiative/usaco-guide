@@ -49,15 +49,15 @@ struct PersistentSegmentTree {
 
 	// Updates the tree at a given position
 	int update(int v, int l, int r, int pos) {
-		int nw = ++nxt; // Create a new node for the updated tree version
+		int nw = ++nxt;  // Create a new node for the updated tree version
 
 		if (l == r) {
-			t[nw] = t[v] + 1; // At leaf, increment the value at position 'pos'
+			t[nw] = t[v] + 1;  // At leaf, increment the value at position 'pos'
 			return nw;
 		}
 
-		L[nw] = L[v]; // Copy left child from the previous version
-		R[nw] = R[v]; // Copy right child from the previous version
+		L[nw] = L[v];  // Copy left child from the previous version
+		R[nw] = R[v];  // Copy right child from the previous version
 		int m = (l + r) / 2;
 
 		// Update the left or right child based on the position
@@ -75,17 +75,16 @@ struct PersistentSegmentTree {
 	// Queries kth smallest element between a and b
 	int query(int a, int b, int anc, int pr, int l, int r, int k) {
 		// If we've reached a leaf, return the current position
-		if (l == r) { return l; } 
+		if (l == r) { return l; }
 
 		int m = (l + r) / 2;
 
 		// Calculate the number of elements in the left child of the current range
 		int cnt = t[L[a]] + t[L[b]] - t[L[anc]] - t[L[pr]];
 
-		if (cnt >= k) { 
-			return query(L[a], L[b], L[anc], L[pr], l, m, k); 
-		} 
-		else {
+		if (cnt >= k) {
+			return query(L[a], L[b], L[anc], L[pr], l, m, k);
+		} else {
 			return query(R[a], R[b], R[anc], R[pr], m + 1, r, k - cnt);
 		}
 	}
@@ -113,15 +112,13 @@ struct Graph {
 
 		// Set parent of the node
 		if (from != 1) {
-			up[from][0] = p; 
+			up[from][0] = p;
 		} else {
 			up[from][0] = from;
 		}
 
 		// Precompute ancestors at each level
-		for (int i = 1; i < LOG; i++) { 
-			up[from][i] = up[up[from][i - 1]][i - 1]; 
-		}
+		for (int i = 1; i < LOG; i++) { up[from][i] = up[up[from][i - 1]][i - 1]; }
 
 		for (int to : graph[from]) {
 			if (to == p) continue;
@@ -162,7 +159,7 @@ int main() {
 		compr.push_back(g.val[i]);
 	}
 
-	sort(compr.begin(), compr.end()); // Sort for compression
+	sort(compr.begin(), compr.end());  // Sort for compression
 	compr.resize(unique(compr.begin(), compr.end()) - compr.begin());
 
 	// Map original values to compressed values
@@ -185,8 +182,10 @@ int main() {
 	for (int i = 0; i < m; i++) {
 		int a, b, k;
 		cin >> a >> b >> k;
-		int common = g.lca(a, b); // Find LCA of a and b
-		int pr = (common == 1) ? 0 : g.up[common][0]; // Find the parent of the common ancestor
+		int common = g.lca(a, b);  // Find LCA of a and b
+		int pr = (common == 1)
+		             ? 0
+		             : g.up[common][0];  // Find the parent of the common ancestor
 		cout << compr[pst.query(g.roots[a], g.roots[b], g.roots[common], g.roots[pr], 1,
 		                        MAX_NODES_GRAPH, k)]
 		     << '\n';
