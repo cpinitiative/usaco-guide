@@ -2,6 +2,7 @@
 id: PIE
 title: 'Inclusion-Exclusion Principle'
 author: Mihnea Brebenel
+contributor: Rameez Parwez
 prerequisites:
   - combo
 description:
@@ -9,13 +10,15 @@ description:
 frequency: 1
 ---
 
-## Tutorial
+## Resources
 
 <Resources>
     <Resource source="cp-algo" title="The Inclusion-Exclusion Principle" url="https://cp-algorithms.com/combinatorics/inclusion-exclusion.html" starred> Well-covered article </Resource>
 	<Resource source="CF" title="Inclusion-Exclusion Principle" url="https://codeforces.com/blog/entry/64625"> Good Explanation </Resource>
     <Resource source="Wikipedia" title="Inclusion-exclusion  principle" url="https://en.wikipedia.org/wiki/Inclusion%E2%80%93exclusion_principle">Wiki</Resource>
 </Resources>
+
+## Introduction
 
 The inclusion-exclusion principle relates to finding the size of the union of some sets.
 
@@ -80,7 +83,13 @@ for (int i = 1; i < VALMAX; i++) {
 
 <FocusProblem problem="SQFREE" />
 
+## Explanation
+
 A perfect application for inclusion-exclusion principle and mobius function. In this particular case the set $A_i$ - previously mentioned in the tutorial section - denotes how many numbers are divisible with $i^2$ and we're asked to find out $\bigg| \bigcup_{i=1}^{\sqrt{n}} A_i \bigg|$. The precomputed mobius array tells whether to add or subtract $A_i$.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(V \log V + T \cdot \sqrt{n})$, where $V = 1e7$
 
 <LanguageSection>
 <CPPSection>
@@ -126,10 +135,16 @@ int main() {
 
 <FocusProblem problem="cow" />
 
+## Explanation
+
 In this particular case the set $A_i$ - previously mentioned in the tutorial section - denotes how many pairs of cows have at least $i$ ice cream flavors in common. From the total number of pairs subtract the union of $A_i$. The global answer is:
 $$
 \frac{n \cdot(n-1)}{2}- \bigg| \bigcup_{i=1}^{5} A_i \bigg|
 $$
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N \log N)$
 
 <LanguageSection>
 <CPPSection>
@@ -207,6 +222,8 @@ print(ans, file=open("cowpatibility.out", "w"))
 
 <FocusProblem problem="patterns" />
 
+## Explanation 1
+
 A dynamic programming approach with bitmasking would look like this:
 
 $dp[i][mask] = \text{the number of strings of length i that match all the patterns in set, but none other patterns. } $ The recurrence is:
@@ -214,6 +231,10 @@ $$
 dp[i][mask \& j]=dp[i-1][j]\text{ where j is a set of patterns that match charachter c at position i}
 $$
 The following code illustrates this:
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(M \cdot N \cdot 2^N)$, where $M$ is size of each strings in patterns and $N$ is the size of patterns.
 
 <LanguageSection>
 <CPPSection>
@@ -253,6 +274,8 @@ int howMany(vector<string> patterns, int k) {
 </CPPSection>
 </LanguageSection>
 
+## Explanation 2
+
 The problem can also be solved using the inclusion exclusion principle.
 
 An important observation is that we can easily count the strings that satisfy some specific patterns. Simply iterate through the positions of all patterns. If all the patterns contain $?$ then we can use any letter from $a$ to $z$ giving us $26$ solution, otherwise we can only put the fixed letter contained by a pattern. The answer is the product.
@@ -270,6 +293,10 @@ $$
 ans = \sum_{A:|A|=k} solve(A)
 $$
 
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(\binom{N}{k} \cdot 2^{N - k} \cdot M \cdot N)$
+
 <LanguageSection>
 <CPPSection>
 
@@ -279,21 +306,24 @@ const int MOD = 1000003;
 int howMany(vector<string> patterns, int k) {
 	int ans = 0;
 	for (int mask = 0; mask < (1 << (int)patterns.size()); mask++) {
+		// subsets with exactly k patterns matters
 		if (__builtin_popcount(mask) != k) { continue; }
 		for (int supermask = mask; supermask < (1 << (int)patterns.size());
 		     supermask++) {
 			if ((mask & supermask) != mask) { continue; }
 			int sign = ((__builtin_popcount(supermask) - k) & 1 ? -1 : 1);
-			int freq = 1;
+			int freq = 1; // checks how many valid strings satisfy the supermask
 			for (int i = 0; i < (int)patterns[0].size(); i++) {
 				bool flag = true;
 				char last_letter = '?';
 				for (int j = 0; j < (int)patterns.size(); j++) {
 					if (((1 << j) & supermask) == 0) { continue; }
+					// check for conflicts if the pattern specifies a letter not '?'
 					if (patterns[j][i] != '?') {
 						if (last_letter == '?') {
 							last_letter = patterns[j][i];
 						} else if (patterns[j][i] != last_letter) {
+							// conflict! two patterns require different letters here
 							flag = false;
 							break;
 						}
