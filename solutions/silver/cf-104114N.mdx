@@ -1,0 +1,119 @@
+---
+id: cf-104114N
+source: CF
+title: Nusret Gökçe
+author: Rameez Parwez
+---
+
+[Official Analysis](https://drive.google.com/file/d/1MS0R9gT6XGpM_R1DIslzvhQ-MCMR4tIV/view)
+
+## Explanation
+
+The key to solving this problem is understanding how to smooth out the salt distribution step by step.
+
+Think of it this way:
+
+1. Moving forward (left-to-right), no slice has too little salt compared to the one before it. Specifically, each slice should have at least as much salt as the previous slice minus $m$. This prevents sharp drops in flavor.
+2. Moving backward (right-to-left), no slice has too much salt compared to the next one. Each slice shouldn't exceed the salt level of the next slice plus $m$. This avoids sudden spikes when looking backward.
+
+To achieve this, we break the problem into two steps:
+- First, we move left-to-right, ensuring each slice meets the minimum requirement based on the slice before it. This step focuses on preventing bland spots.
+- Then, we move right-to-left, smoothing out any excess salt to ensure no slice feels overly salty compared to the next. This step refines the distribution for balance.
+
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <vector>
+
+using std::cout;
+using std::vector;
+
+int main() {
+	int n, m;
+	std::cin >> n >> m;
+	vector<int> arr(n);
+	for (int &x : arr) { std::cin >> x; }
+
+	int running_max = 0;
+	for (int i = 0; i < n; i++) {
+		running_max = std::max(arr[i], running_max - m);
+		arr[i] = running_max;
+	}
+
+	running_max = 0;
+	for (int i = n - 1; i >= 0; i--) {
+		running_max = std::max(running_max - m, arr[i]);
+		arr[i] = running_max;
+	}
+
+	for (int i = 0; i < n; i++) { cout << arr[i] << " \n"[i == n - 1]; }
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class NusretGokce {
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+
+		int n = Integer.parseInt(st.nextToken());
+		int m = Integer.parseInt(st.nextToken());
+
+		int[] arr = new int[n];
+		st = new StringTokenizer(br.readLine());
+		for (int i = 0; i < n; i++) { arr[i] = Integer.parseInt(st.nextToken()); }
+
+		int runningMax = 0;
+		for (int i = 0; i < n; i++) {
+			runningMax = Math.max(arr[i], runningMax - m);
+			arr[i] = runningMax;
+		}
+
+		runningMax = 0;
+		for (int i = n - 1; i >= 0; i--) {
+			runningMax = Math.max(runningMax - m, arr[i]);
+			arr[i] = runningMax;
+		}
+
+		for (int i = 0; i < n; i++) {
+			System.out.print(arr[i] + (i == n - 1 ? "\n" : " "));
+		}
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+n, m = map(int, input().split())
+arr = list(map(int, input().split()))
+
+running_max = 0
+for i in range(n):
+	running_max = max(arr[i], running_max - m)
+	arr[i] = running_max
+
+running_max = 0
+for i in reversed(range(n)):
+	running_max = max(arr[i], running_max - m)
+	arr[i] = running_max
+
+print(*arr)
+```
+
+</PySection>
+</LanguageSection>

@@ -5,20 +5,107 @@ title: Sleepy Cow Sorting
 author: Nathan Gong, Melody Yu (Video), Qi Wang, Daniel Ge
 ---
 
-[Official Analysis](http://www.usaco.org/current/data/sol_sleepy_gold_jan19.html)
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_sleepy_gold_jan19.html)
 
 ## Video Solution
 
 Note: The video solution might not be the same as other solutions. Code in C++.
-<YouTube id="6oyl7lTKdPY" />
+<YouTube id="6oyl7lTKdPY"/>
+
+## Explanation
+
+To obtain the number of cows $K$ that are not in the correct position, subtract the length of the longest suffix of the array that is already sorted from $N$. This makes sense because the problem assumes cows are moved one by one into the sorted part of the line. Once a cow reaches its correct spot in the already-sorted section, it stays there and doesn't cause any more trouble. By focusing on the longest sorted suffix, we're identifying the cows that are already in the right place and don't need to move anymore. This maximizes the number of cows that are "done" and minimizes the number of cows $(K)$ that still need to be rearranged.
+
+Next, for each of these unsorted cows, we calculate how many steps it needs to take to reach its correct position. To do this, we consider two things:
+1. Count how many cows in the sorted section have a smaller number than the cow we're focusing on. These cows are in the way and need to be bypassed. To make this counting efficient, we use a **Segment Tree** , which lets us quickly find how many smaller cows are ahead without checking each one individually.
+2. Count how many cows in the unsorted section are standing to the right of the current cow, as they also block its path.
+
+By adding these two numbers together—the cows in the sorted section that are smaller and the cows in the unsorted section ahead of it—we get the total number of steps that cow needs to take to reach its correct spot. This way, we make sure we account for all the obstacles each cow has to pass to get to where it needs to be.
 
 ## Implementation
 
 **Time Complexity:** $\mathcal{O}(N\log N)$
 
-### Using Segment Tree
-
 <LanguageSection>
+<CPPSection>
+
+```cpp
+#include <algorithm>
+#include <fstream>
+#include <iostream>
+#include <vector>
+
+using std::vector;
+
+// BeginCodeSnip{Segment Tree}
+template <class T> class SumSegmentTree {
+  private:
+	const T DEFAULT = 0;
+	vector<T> segtree;
+	int len;
+
+  public:
+	SumSegmentTree(int len) : len(len), segtree(len * 2, DEFAULT) {}
+
+	void set(int ind, T val) {
+		ind += len;
+		segtree[ind] = val;
+		for (; ind > 1; ind /= 2) {
+			segtree[ind / 2] = segtree[ind] + segtree[ind ^ 1];
+		}
+	}
+
+	T range_sum(int start, int end) {
+		T sum = DEFAULT;
+		for (start += len, end += len; start < end; start /= 2, end /= 2) {
+			if (start % 2 == 1) { sum += segtree[start++]; }
+			if (end % 2 == 1) { sum += segtree[--end]; }
+		}
+		return sum;
+	}
+};
+// EndCodeSnip
+
+int main() {
+	std::ifstream fin("sleepy.in");
+	int n;
+	fin >> n;
+	vector<int> cows(n);
+	for (int &x : cows) {
+		fin >> x;
+		x--;
+	}
+
+	int suffix_length = 1;
+	for (int i = n - 1; i > 0; i--) {
+		// If current cow is in order, increment suffix length and continue
+		// Otherwise, there has been an inversion so we break from the loop
+		if (cows[i] > cows[i - 1]) {
+			suffix_length++;
+		} else {
+			break;
+		}
+	}
+
+	std::ofstream fout("sleepy.out");
+	int k = n - suffix_length;
+	fout << k << '\n';
+
+	SumSegmentTree<int> segtree(n);
+	for (int i = k; i < n; i++) { segtree.set(cows[i], 1); }
+
+	for (int i = 0; i < k; i++) {
+		// Takes the prefix sum up to cows[i] - 1, which calculates the
+		// number of cows smaller than the current cow
+		int smaller = segtree.range_sum(0, cows[i]);
+
+		fout << smaller + (k - i - 1) << " \n"[i == k - 1];
+		segtree.set(cows[i], 1);
+	}
+}
+```
+
+</CPPSection>
 <JavaSection>
 
 ```java
@@ -34,19 +121,8 @@ public class Sleepy {
 		int[] cows = new int[n];
 		for (int i = 0; i < n; i++) { cows[i] = sc.nextInt() - 1; }
 
-		/*
-		 * To find K, we first need to calculate the length of the longest
-		 * suffix of the array that is already in order.
-		 *
-		 * Then, we can subtract that length from N to get K
-		 *
-		 * Read the analysis of the bronze version of this problem to learn why
-		 * this is the case:
-		 * http://www.usaco.org/current/data/sol_sleepy_bronze_jan19.html
-		 */
-
 		int suffixLength = 1;
-		for (int i = n - 1; i >= 0; i--) {
+		for (int i = n - 1; i > 0; i--) {
 			// If current cow is in order, increment suffix length and continue
 			// Otherwise, there has been an inversion so we break from the loop
 			if (cows[i] > cows[i - 1]) {
@@ -57,16 +133,6 @@ public class Sleepy {
 		}
 		int k = n - suffixLegth;
 		out.println(k);
-
-		/* To calculate the minimum amount of paces each cow needs to make,
-		 * we first need to find the number of cows in the sorted region that
-		 * are smaller than that cow (this is done through a segment tree).
-		 *
-		 * Then, we can add that to the number of cows that the cow has to move
-		 * through to reach the sorted region of the array, or in other words,
-		 * the number of cows to the right of the current cow that are in the
-		 * unsorted region of the array.
-		 */
 
 		SegmentTree seg = new SegmentTree(n);
 		for (int i = k; i < n; i++) { seg.add(cows[i], 1); }
@@ -119,72 +185,7 @@ public class Sleepy {
 </JavaSection>
 </LanguageSection>
 
-### Using Binary Indexed Tree
-
-<LanguageSection>
-<JavaSection>
-
-```java
-import java.io.*;
-import java.util.*;
-
-public class Sleepy {
-	static int n;
-	static int[] order, bit, ans;
-	public static void main(String[] args) throws IOException {
-		BufferedReader in = new BufferedReader(new FileReader("sleepy.in"));
-
-		n = Integer.parseInt(in.readLine());
-		order = new int[n + 1];
-		bit = new int[n + 1];
-		ans = new int[n + 1];
-
-		StringTokenizer st = new StringTokenizer(in.readLine());
-		for (int i = 1; i <= n; i++) { order[i] = Integer.parseInt(st.nextToken()); }
-
-		int k = n;
-		while (order[k] > order[k - 1]) {
-			update(order[k], 1);
-			k--;
-		}
-
-		update(order[k], 1);
-		k--;
-
-		for (int i = 1; i <= k; i++) {
-			ans[i] = query(order[i] - 1) + k - i;
-			update(order[i], 1);
-		}
-
-		PrintWriter out = new PrintWriter("sleepy.out");
-		out.println(k);
-
-		for (int i = 1; i < k; i++) { out.print(ans[i] + " "); }
-
-		out.println(ans[k]);
-
-		in.close();
-		out.close();
-	}
-
-	public static int lowbit(int x) { return x & (-x); }
-
-	public static void update(int x, int k) {
-		for (int i = x; i <= n; i += lowbit(i)) { bit[i] += k; }
-	}
-
-	public static int query(int x) {
-		int ans = 0;
-		for (int i = x; i > 0; i -= lowbit(i)) { ans += bit[i]; }
-		return ans;
-	}
-}
-```
-
-</JavaSection>
-</LanguageSection>
-
-### Using Indexed Set
+## Alternate Solution (Using Indexed Set)
 
 <LanguageSection>
 <CPPSection>
