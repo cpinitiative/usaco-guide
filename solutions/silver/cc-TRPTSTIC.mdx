@@ -150,4 +150,80 @@ for _ in range(int(input())):
 ```
 
 </PySection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Main {
+
+    // Returns the sum of the room capacity from (sr, sc) to (er, ec) inclusive
+    static long rectSum(long[][] rPref, int sr, int er, int sc, int ec) {
+        return rPref[er + 1][ec + 1] - rPref[sr][ec + 1] - rPref[er + 1][sc] + rPref[sr][sc];
+    }
+
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        PrintWriter out = new PrintWriter(System.out);
+        
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        int testNum = Integer.parseInt(st.nextToken());
+        for (int t = 0; t < testNum; t++) {
+            st = new StringTokenizer(br.readLine());
+            int rowNum = Integer.parseInt(st.nextToken());
+            int colNum = Integer.parseInt(st.nextToken());
+            int kidNum = Integer.parseInt(st.nextToken());
+
+            // 2D prefix sum array of the rooms
+            long[][] rPref = new long[rowNum + 1][colNum + 1];
+            for (int r = 1; r <= rowNum; r++) {
+                st = new StringTokenizer(br.readLine());
+                for (int c = 1; c <= colNum; c++) {
+                    rPref[r][c] = Integer.parseInt(st.nextToken());
+                    rPref[r][c] += rPref[r - 1][c] + rPref[r][c - 1] - rPref[r - 1][c - 1];
+                }
+            }
+
+            int best = -1;
+            for (int r = 0; r < rowNum; r++) {
+                for (int c = 0; c < colNum; c++) {
+                    // Make sure the room itself can fit the mentor
+                    if (rectSum(rPref, r, r, c, c) == 0) { 
+                        continue; 
+                    }
+
+                    int lo = 0;
+                    int hi = Math.max(rowNum, colNum);
+                    int valid = -1;
+                    while (lo <= hi) {
+                        int mid = (lo + hi) / 2;
+                        int sr = Math.max(0, r - mid);
+                        int er = Math.min(rowNum - 1, r + mid);
+                        int sc = Math.max(0, c - mid);
+                        int ec = Math.min(colNum - 1, c + mid);
+                        if (rectSum(rPref, sr, er, sc, ec) - 1 >= kidNum) {
+                            valid = mid;
+                            hi = mid - 1;
+                        } else {
+                            lo = mid + 1;
+                        }
+                    }
+
+                    if (valid != -1) {
+                        best = (best == -1 ? valid : Math.min(best, valid));
+                    }
+                }
+            }
+
+            out.println(best);
+        }
+        out.flush();
+        out.close();
+        br.close();
+    }
+}
+```
+
+</JavaSection>
 </LanguageSection>
