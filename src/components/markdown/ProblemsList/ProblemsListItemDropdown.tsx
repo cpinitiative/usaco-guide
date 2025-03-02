@@ -3,7 +3,7 @@ import React from 'react';
 import { Instance } from 'tippy.js';
 import { useDarkMode } from '../../../context/DarkModeContext';
 import useUserSolutionsForProblem from '../../../hooks/useUserSolutionsForProblem';
-import { isUsaco, ProblemInfo, getProblemURL } from '../../../models/problem';
+import { getProblemURL, isUsaco, ProblemInfo } from '../../../models/problem';
 import TextTooltip from '../../Tooltip/TextTooltip';
 import { DivisionProblemInfo } from './DivisionList/DivisionProblemInfo';
 import ProblemListItemSolution from './ProblemListItemSolution';
