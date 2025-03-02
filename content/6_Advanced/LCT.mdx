@@ -242,6 +242,7 @@ int main() {
 </CPPSection>
 
 <JavaSection>
+
 import java.util.*;
 
 class Node {
@@ -274,7 +275,9 @@ class LCT {
 
     LCT(int n) {
         nodes = new Node[n + 1];
-        for (int i = 1; i <= n; i++) nodes[i] = new Node(i);
+        for (int i = 1; i <= n; i++) {
+            nodes[i] = new Node(i);
+        }
     }
 
     void rotate(Node child) {
@@ -307,7 +310,9 @@ class LCT {
         while (!node.isRoot()) {
             Node parent = node.parent;
             Node grandparent = parent.parent;
-            if (!parent.isRoot()) rotate((grandparent.right == parent) == (parent.right == node) ? parent : node);
+            if (!parent.isRoot()) {
+                rotate((grandparent.right == parent) == (parent.right == node) ? parent : node);
+            }
             rotate(node);
         }
         node.push();
@@ -367,14 +372,19 @@ public class Main {
             int u = sc.nextInt();
             int v = sc.nextInt();
 
-            if (command.equals("add")) lc.link(u, v);
-            else if (command.equals("rem")) lc.cut(u, v);
-            else if (command.equals("conn")) System.out.println(lc.connected(u, v) ? "YES" : "NO");
+            if (command.equals("add")) {
+                lc.link(u, v);
+            } else if (command.equals("rem")) {
+                lc.cut(u, v);
+            } else if (command.equals("conn")) {
+                System.out.println(lc.connected(u, v) ? "YES" : "NO");
+            }
         }
 
         sc.close();
     }
 }
+
 
 </JavaSection>
 </LanguageSection>
