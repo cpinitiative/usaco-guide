@@ -3,7 +3,7 @@ import React from 'react';
 import { Instance } from 'tippy.js';
 import { useDarkMode } from '../../../context/DarkModeContext';
 import useUserSolutionsForProblem from '../../../hooks/useUserSolutionsForProblem';
-import { isUsaco, ProblemInfo } from '../../../models/problem';
+import { isUsaco, ProblemInfo, getProblemURL } from '../../../models/problem';
 import TextTooltip from '../../Tooltip/TextTooltip';
 import { DivisionProblemInfo } from './DivisionList/DivisionProblemInfo';
 import ProblemListItemSolution from './ProblemListItemSolution';
@@ -61,15 +61,30 @@ export default function ProblemsListItemDropdown(
 
   const { problem, isDivisionTable, isFocusProblem } = props;
   const darkMode = useDarkMode();
-  const solutionContent =
-    isFocusProblem || isDivisionTable == true ? (
-      <></>
+
+  const solutionContent = isFocusProblem ? (
+    <></>
+  ) : isDivisionTable ? (
+    props?.problem?.solution?.kind == 'internal' ? (
+      <a
+        className={`flex items-center group px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800`}
+        href={`${getProblemURL(problem)}/solution`}
+        target="_blank"
+        rel="noreferrer"
+      >
+        <div className="text-left">
+          {props.problem.solution.hasHints && 'Hints + '}Internal Sol
+        </div>
+      </a>
     ) : (
-      <ProblemListItemSolution
-        problem={props.problem}
-        onShowSolutionSketch={props.onShowSolutionSketch}
-      />
-    );
+      <></>
+    )
+  ) : (
+    <ProblemListItemSolution
+      problem={props.problem}
+      onShowSolutionSketch={props.onShowSolutionSketch}
+    />
+  );
 
   const tippyRef = React.useRef<Instance>();
   const [isDropdownShown, setIsDropdownShown] = React.useState(false);
