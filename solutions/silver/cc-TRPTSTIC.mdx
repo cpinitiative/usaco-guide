@@ -98,58 +98,6 @@ int main() {
 ```
 
 </CPPSection>
-<PySection>
-
-```py
-for _ in range(int(input())):
-	row_num, col_num, kid_num = [int(i) for i in input().split()]
-
-	# 2D prefix sum array of the rooms
-	r_pref = [[0 for _ in range(col_num + 1)] for _ in range(row_num + 1)]
-	for r in range(1, row_num + 1):
-		row = [int(i) for i in input().split()]
-		for c in range(1, col_num + 1):
-			r_pref[r][c] = row[c - 1]
-			r_pref[r][c] += r_pref[r - 1][c] + r_pref[r][c - 1] - r_pref[r - 1][c - 1]
-
-	def rect_sum(sr: int, er: int, sc: int, ec: int) -> int:
-		""":return: the sum of the room capacity from (sr, sc) to (er, ec) inclusive"""
-		return (
-			r_pref[er + 1][ec + 1]
-			- r_pref[sr][ec + 1]
-			- r_pref[er + 1][sc]
-			+ r_pref[sr][sc]
-		)
-
-	best = -1
-	for r in range(row_num):
-		for c in range(col_num):
-			# Make sure the room itself can fit the mentor
-			if rect_sum(r, r, c, c) == 0:
-				continue
-
-			lo = 0
-			hi = max(row_num, col_num)
-			valid = -1
-			while lo <= hi:
-				mid = (lo + hi) // 2
-				sr = max(0, r - mid)
-				er = min(row_num - 1, r + mid)
-				sc = max(0, c - mid)
-				ec = min(col_num - 1, c + mid)
-				if rect_sum(sr, er, sc, ec) - 1 >= kid_num:
-					valid = mid
-					hi = mid - 1
-				else:
-					lo = mid + 1
-
-			if valid != -1:
-				best = valid if best == -1 else min(best, valid)
-
-	print(best)
-```
-
-</PySection>
 <JavaSection>
 
 ```java
@@ -157,7 +105,7 @@ import java.io.*;
 import java.util.*;
 
 public class TripTastic {
-	// @return the sum of the room capacity from (sr, sc) to (er, ec) inclusive
+	/** @return the sum of the room capacity from (sr, sc) to (er, ec) inclusive */
 	static long rectSum(long[][] rPref, int sr, int er, int sc, int ec) {
 		return rPref[er + 1][ec + 1] - rPref[sr][ec + 1] - rPref[er + 1][sc] +
 		    rPref[sr][sc];
@@ -217,7 +165,7 @@ public class TripTastic {
 
 			out.println(best);
 		}
-		out.flush();
+
 		out.close();
 		br.close();
 	}
@@ -225,4 +173,56 @@ public class TripTastic {
 ```
 
 </JavaSection>
+<PySection>
+
+```py
+for _ in range(int(input())):
+	row_num, col_num, kid_num = [int(i) for i in input().split()]
+
+	# 2D prefix sum array of the rooms
+	r_pref = [[0 for _ in range(col_num + 1)] for _ in range(row_num + 1)]
+	for r in range(1, row_num + 1):
+		row = [int(i) for i in input().split()]
+		for c in range(1, col_num + 1):
+			r_pref[r][c] = row[c - 1]
+			r_pref[r][c] += r_pref[r - 1][c] + r_pref[r][c - 1] - r_pref[r - 1][c - 1]
+
+	def rect_sum(sr: int, er: int, sc: int, ec: int) -> int:
+		""":return: the sum of the room capacity from (sr, sc) to (er, ec) inclusive"""
+		return (
+			r_pref[er + 1][ec + 1]
+			- r_pref[sr][ec + 1]
+			- r_pref[er + 1][sc]
+			+ r_pref[sr][sc]
+		)
+
+	best = -1
+	for r in range(row_num):
+		for c in range(col_num):
+			# Make sure the room itself can fit the mentor
+			if rect_sum(r, r, c, c) == 0:
+				continue
+
+			lo = 0
+			hi = max(row_num, col_num)
+			valid = -1
+			while lo <= hi:
+				mid = (lo + hi) // 2
+				sr = max(0, r - mid)
+				er = min(row_num - 1, r + mid)
+				sc = max(0, c - mid)
+				ec = min(col_num - 1, c + mid)
+				if rect_sum(sr, er, sc, ec) - 1 >= kid_num:
+					valid = mid
+					hi = mid - 1
+				else:
+					lo = mid + 1
+
+			if valid != -1:
+				best = valid if best == -1 else min(best, valid)
+
+	print(best)
+```
+
+</PySection>
 </LanguageSection>
