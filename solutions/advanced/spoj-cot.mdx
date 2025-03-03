@@ -39,14 +39,15 @@ Value compression is used to effectively handle large numbers.
 
 ```cpp
 
-#include <bits/stdc++.h>
+#include "bits/stdc++.h"
 using namespace std;
-const int MAX_NODES_GRAPH = 1e5, MAX_NODES_TREE = 2e6;
-int nxt = 1, timer = 0, LOG;
+int timer = 0;
+const int MAX_NODES_GRAPH = 1e5;
 
 struct PersistentSegmentTree {
-	int L[MAX_NODES_TREE + 1], R[MAX_NODES_TREE + 1], t[MAX_NODES_TREE + 1];
-
+	static const int MAX_NODES_TREE = 2e6;
+	int left_child[MAX_NODES_TREE + 1], right_child[MAX_NODES_TREE + 1], node_value[MAX_NODES_TREE + 1];
+	int nxt = 1;
 	/*
 	Updates the tree at a given position by incrementing the frequency of the specific
 	number added. It creates new nodes for every segment along the path from the root to
@@ -54,27 +55,27 @@ struct PersistentSegmentTree {
 	only the necessary parts.
 	*/
 	int update(int v, int l, int r, int pos) {
-		int nw = ++nxt;  // Create a new node for the updated tree version
+		int new_node = ++nxt;  // Create a new node for the updated tree version
 
 		if (l == r) {
-			t[nw] = t[v] + 1;  // At leaf, increment the value at position 'pos'
-			return nw;
+			node_value[new_node] = node_value[v] + 1;  // At leaf, increment the value at position 'pos'
+			return new_node;
 		}
 
-		L[nw] = L[v];  // Copy left child from the previous version
-		R[nw] = R[v];  // Copy right child from the previous version
+		left_child[new_node] = left_child[v];  // Copy left child from the previous version
+		right_child[new_node] = right_child[v];  // Copy right child from the previous version
 		int m = (l + r) / 2;
 
 		// Update the left or right child based on the position
 		if (pos <= m) {
-			L[nw] = update(L[v], l, m, pos);
+			left_child[new_node] = update(left_child[v], l, m, pos);
 		} else {
-			R[nw] = update(R[v], m + 1, r, pos);
+			right_child[new_node] = update(right_child[v], m + 1, r, pos);
 		}
 
 		// Update the current node's value by combining the values of its children
-		t[nw] = t[L[nw]] + t[R[nw]];
-		return nw;
+		node_value[new_node] = node_value[left_child[new_node]] + node_value[right_child[new_node]];
+		return new_node;
 	}
 
 	// Queries kth smallest element between a and b
@@ -85,12 +86,12 @@ struct PersistentSegmentTree {
 		int m = (l + r) / 2;
 
 		// Calculate the number of elements in the left child of the current range
-		int cnt = t[L[a]] + t[L[b]] - t[L[anc]] - t[L[pr]];
+		int leftSubtreeCount = node_value[left_child[a]] + node_value[left_child[b]] - node_value[left_child[anc]] - node_value[left_child[pr]];
 
-		if (cnt >= k) {
-			return query(L[a], L[b], L[anc], L[pr], l, m, k);
+		if (leftSubtreeCount >= k) {
+			return query(left_child[a], left_child[b], left_child[anc], left_child[pr], l, m, k);
 		} else {
-			return query(R[a], R[b], R[anc], R[pr], m + 1, r, k - cnt);
+			return query(right_child[a], right_child[b], right_child[anc], right_child[pr], m + 1, r, k - leftSubtreeCount);
 		}
 	}
 };
@@ -98,9 +99,9 @@ struct PersistentSegmentTree {
 PersistentSegmentTree pst;
 
 struct Graph {
-	int roots[MAX_NODES_GRAPH + 1];
+	int LOG;
+	int roots[MAX_NODES_GRAPH + 1], tin[MAX_NODES_GRAPH + 1], tout[MAX_NODES_GRAPH + 1], val[MAX_NODES_GRAPH + 1];
 	vector<vector<int>> up;
-	int tin[MAX_NODES_GRAPH + 1], tout[MAX_NODES_GRAPH + 1], val[MAX_NODES_GRAPH + 1];
 	vector<int> graph[MAX_NODES_GRAPH + 1];
 
 	void build(int n) {
