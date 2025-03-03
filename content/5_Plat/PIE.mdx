@@ -308,6 +308,7 @@ int howMany(vector<string> patterns, int k) {
 	for (int mask = 0; mask < (1 << (int)patterns.size()); mask++) {
 		// subsets with exactly k patterns matters
 		if (__builtin_popcount(mask) != k) { continue; }
+                // iterate over all superset of current subset mask
 		for (int supermask = mask; supermask < (1 << (int)patterns.size());
 		     supermask++) {
 			if ((mask & supermask) != mask) { continue; }
