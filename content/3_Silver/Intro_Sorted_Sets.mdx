@@ -5,13 +5,20 @@ author: Darren Yao, Benjamin Qi, Andrew Wang
 contributors: Aadit Ambadkar, Jeffrey Hu, Jason Sun
 prerequisites:
   - intro-sets
+  - binary-search
+  - greedy-sorting
 description:
-  'Finding the next element smaller or larger than a specified key in a set, and
-  using iterators with sets.'
+  'Finding the next element smaller or larger than a specified key in a sorted set, and using iterators with sorted sets.'
 frequency: 2
 redirects:
-  - intro-ordered
+  - /silver/intro-sorted-sets
 ---
+
+<Warning>
+
+Although sorted sets might sometimes helpful for some USACO Silver, they are rarely required. Only one practice problem from this module is from USACO Silver.
+
+</Warning>
 
 <LanguageSection>
 
@@ -50,8 +57,8 @@ or removing the next key higher or lower than some input key `k` is supported.
 
 Keep in mind that insertion and deletion will take $\mathcal{O}(\log N)$ time
 for sorted sets, which is more than the average $\mathcal{O}(1)$ insertion and
-deletion for unordered sets, but less than the worst case $\mathcal{O}(N)$
-insertion and deletion for unordered sets.
+deletion for hashsets, but less than the worst case $\mathcal{O}(N)$
+insertion and deletion for hashsets.
 
 ## Using Iterators
 
@@ -463,119 +470,11 @@ static void remove(int x) {
 </JavaSection>
 </LanguageSection>
 
-## Priority Queues
-
-<Warning>
-
-Priority queues are **not** implemented in the same way as sets and multisets,
-but they are included in this section because the operations that they perform
-can also be performed with sets.
-
-</Warning>
-
-<Resources>
-	<Resource source="CSA" url="heaps" title="Heaps" />
-</Resources>
-
-A **priority queue** (or **heap**) supports the following operations: insertion
-of elements, deletion of the element considered highest priority, and retrieval
-of the highest priority element, all in $\mathcal{O}(\log N)$ time according to
-the number of elements in the priority queue. Priority queues are simpler and
-faster than sets, so you should use them instead whenever possible.
-
-<LanguageSection>
-<CPPSection>
-
-### [C++](http://www.cplusplus.com/reference/queue/priority_queue/)
-
-```cpp
-priority_queue<int> pq;
-pq.push(7);                // [7]
-pq.push(2);                // [2, 7]
-pq.push(1);                // [1, 2, 7]
-pq.push(5);                // [1, 2, 5, 7]
-cout << pq.top() << endl;  // 7
-pq.pop();                  // [1, 2, 5]
-pq.pop();                  // [1, 2]
-pq.push(6);                // [1, 2, 6]
-```
-
-</CPPSection>
-<JavaSection>
-
-### Java
-
-In Java (unlike in C++), we delete and retrieve the **lowest** element.
-
-```java
-PriorityQueue<Integer> pq = new PriorityQueue<Integer>();
-pq.add(7);                      // [7]
-pq.add(2);                      // [7, 2]
-pq.add(1);                      // [7, 2, 1]
-pq.add(5);                      // [7, 5, 2, 1]
-System.out.println(pq.peek());  // 1
-pq.poll();                      // [7, 5, 2]
-pq.poll();                      // [7, 5]
-pq.add(6);                      // [7, 6, 5]
-```
-
-</JavaSection>
-<PySection>
-
-### [Python](https://docs.python.org/3/library/heapq.html)
-
-In Python (unlike in C++), we delete and retrieve the **lowest** element.
-
-Note that Python's priority queue is not encapsulated; `heapq` operates on a
-provided list directly by turning it into a heap, then doing operations on the
-heap.
-
-<Warning>
-
-Because of a heap's structure, printing out `pq` will **not** print out the
-elements in sorted order in Python; instead, it will print out the list. The
-comments below are a **representation** of what the heap contains, **not** what
-the contents of `pq` actually are.
-
-</Warning>
-
-```py
-import heapq
-
-pq = []
-
-"""
-The following line is not necessary since pq starts as an empty list. However,
-for lists of length greater than 1, heapify is required to turn the list into a
-heap.
-"""
-heapq.heapify(pq)
-
-heapq.heappush(pq, 7)  # [7]
-heapq.heappush(pq, 2)  # [7, 2]
-heapq.heappush(pq, 1)  # [7, 2, 1]
-heapq.heappush(pq, 5)  # [7, 5, 2, 1]
-print(pq[0])  # 1
-heapq.heappop(pq)  # [7, 5, 2]
-heapq.heappop(pq)  # [7, 5]
-heapq.heappush(pq, 6)  # [7, 6, 5]
-```
-
-</PySection>
-</LanguageSection>
-
 ## Introductory Problems
 
 <Problems problems="standard" />
 
 ## Harder Example - Bit Inversions
-
-<Warning>
-
-Problems marked as "Hard" or beyond in this module would likely be too difficult
-to appear on a USACO Silver contest.
-
-</Warning>
 
 <FocusProblem problem="sample" />
 
