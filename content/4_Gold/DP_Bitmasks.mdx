@@ -1,7 +1,7 @@
 ---
 id: dp-bitmasks
 title: 'Bitmask DP'
-author: Michael Cao, Siyong Huang
+author: Michael Cao, Siyong Huang, Peng Bai
 contributors: Andrew Wang, Neo Wang
 prerequisites:
   - intro-bitwise
@@ -72,6 +72,7 @@ $$
 
 where $S  \setminus \{i\}$ is the subset $S$ without city $i$.
 
+**Time Complexity:** $\mathcal{O}(2^N \cdot N^2)$
 <LanguageSection>
 
 <CPPSection>
@@ -173,7 +174,117 @@ print(dp[(1 << n) - 1][n - 1])
 ```
 
 </PySection>
+</LanguageSection>
 
+## Merging Subsets
+
+In some problems, for a set $S$, it is not sufficient to transition from $S  \setminus \{i\}$.
+Instead, it is necessary to transition from all *strict* subsets of $S$.
+
+Though it may seem like we have to do $\mathcal{O}(2^N \cdot 2^N) = \mathcal{O}(4^N)$ transitions,
+theres really only $\mathcal{O}(3^N)$ transitions!
+
+To see why, let's count the number of ordered pairs $(T, S)$ where $T \subset S$.
+Instead of counting directly, notice that each element $x$ is either:
+1. In $T$ and $S$
+2. In neither
+3. In $S$ but not in $T$.
+If $x$ is in $T$ but not in $S$, $T$ isn't a valid subset.
+
+Given that each element can be in three possible states, our overall complexity is actually $\mathcal{O}(3^N)$.
+
+To implement this, we can do some bitwise tricks:
+<LanguageSection>
+<CPPSection>
+
+```cpp
+for (int mask = 0; mask < (1 << n); mask++) {
+	for (int submask = mask; submask != 0; submask = (submask - 1) & mask) {
+		int subset = mask ^ submask;
+		// do whatever you need to do here
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
+When we subtract $1$ from $\texttt{submask}$, the rightmost bit flips to a $0$ and all bits to the right of it will become $1$.
+Applying the bitwise AND with $\texttt{mask}$ removes all extra bits not in $\texttt{mask}$.
+From this process, we can get all strict subsets in increasing order by calculating $\texttt{mask} \oplus \texttt{submask}$, which does set subtraction.
+
+<FocusProblem problem="sam2" />
+
+### Explanation
+
+The goal of this problem is to partition the nodes into sets such that the nodes in each set form a complete graph.
+Let $\texttt{dp}[S]$ be the minimum number of partitions such that in each partition, the graph formed is a complete graph.
+
+We can first find which sets $T$ form a complete graph, setting $\texttt{dp}[T]$ to $1$ and $\infty$ otherwise.
+This can be done naively in $\mathcal{O}(2^N \cdot N^2)$ or $\mathcal{O}(2^N \cdot N)$
+by setting the adjacency list as a bitmask and using bit manipulations if a set of nodes is a complete graph.
+
+Then we can transition as follows:
+$$
+\texttt{dp}[S] = \min_{T \subset S} (\texttt{dp}[T] + \texttt{dp}[S \setminus T])
+$$
+
+### Implementation
+
+**Time Complexity:** $\mathcal{O}(3^N + 2^N \cdot N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	int n, m;
+	cin >> n >> m;
+	vector<int> adj(n);
+	for (int i = 0; i < m; i++) {
+		int u, v;
+		cin >> u >> v;
+		u--;
+		v--;
+		// adjacency list represented as a bitmask
+		adj[u] |= (1 << v);
+		adj[v] |= (1 << u);
+	}
+
+	vector<int> dp(1 << n, INT32_MAX);
+	for (int mask = 0; mask < (1 << n); mask++) {
+		bool connected = true;
+		for (int u = 0; u < n; u++) {
+			if (((mask >> u) & 1) != 0) {
+				// check if u is connected to all other nodes in mask
+				if (((adj[u] | (1 << u)) & mask) != mask) {
+					connected = false;
+					break;
+				}
+			}
+		}
+
+		if (connected) { dp[mask] = 1; }
+	}
+
+	for (int mask = 0; mask < (1 << n); mask++) {
+		for (int submask = mask; submask; submask = (submask - 1) & mask) {
+			int subset = mask ^ submask;
+			// submask has everything in mask but not in subset
+			if (dp[subset] != INT32_MAX && dp[submask] != INT32_MAX) {
+				dp[mask] = min(dp[mask], dp[subset] + dp[submask]);
+			}
+		}
+	}
+
+	cout << dp[(1 << n) - 1] << endl;
+}
+```
+
+</CPPSection>
 </LanguageSection>
 
 ### Problems

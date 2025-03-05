@@ -7,15 +7,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout usaco-guide
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: Use Node.js 20.x
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v4
         with:
           node-version: 20.x
       - name: Checkout usaco-problems
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           repository: ${{ github.repository_owner }}/usaco-problems
           path: usaco-problems
@@ -47,10 +47,10 @@ jobs:
           pre-commit install
         env:
           GH_TOKEN: ${{ steps.generate_token.outputs.token }}
-      - name: Update contest to points
-        run: |
-          pip install -r src/components/markdown/ProblemsList/DivisionList/scripts/requirements.txt
-          python src/components/markdown/ProblemsList/DivisionList/scripts/update.py -s $(( $(date +%y) - 1 )) -e $(date +%y)
+      # - name: Update contest to points
+      #   run: |
+      #     pip install -r src/components/markdown/ProblemsList/DivisionList/scripts/requirements.txt
+      #     python src/components/markdown/ProblemsList/DivisionList/scripts/update.py -s $(( $(date +%y) - 1 )) -e $(date +%y)
       - name: Build list of problem ids
         run: |
           yarn
