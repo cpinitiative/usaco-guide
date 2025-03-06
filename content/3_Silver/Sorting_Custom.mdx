@@ -5,7 +5,7 @@ frequency: 3
 author: Darren Yao, Siyong Huang, Michael Cao, Benjamin Qi, Nathan Chen
 prerequisites:
   - intro-sorting
-  - intro-graphs
+  - binary-search-sorted-array
 description: 'Using a custom comparator to sort custom objects or values in a non-default order, and compressing values from a large range to a smaller one.'
 ---
 
@@ -46,10 +46,15 @@ After sorting, it should look like
 2 3 10
 ```
 
+We will describe several ways to do this below.
+
 <LanguageSection>
 <CPPSection>
 
-There's multiple ways we can do this.
+## Built-In Data Structures
+
+### Pairs
+
 The most straightforward method is to use a `pair<int, pair<int, int>>`.
 When comparing these, C++ looks at the first element and only uses
 the second element as a tiebreaker.
@@ -74,12 +79,13 @@ int main() {
 }
 ```
 
-If you don't like all the accesses to `.first` and `.second`,
-an alternative is to use an `std::vector` or maybe even an
-[`std::array`](https://en.cppreference.com/w/cpp/container/array):
+### Arrays
+
+An alternative is to use [`std::array`](https://en.cppreference.com/w/cpp/container/array) or `std::vector`:
 
 ```cpp
 #include <algorithm>
+#include <array>
 #include <iostream>
 #include <vector>
 
@@ -88,8 +94,8 @@ using namespace std;
 int main() {
 	constexpr int edge_num = 4;
 
-	// array<int, 3> is also usable and probably faster
-	vector<vector<int>> edges;
+	vector<array<int, 3>> edges;
+	// vector<vector<int>> edges;  // also works, but is slower
 	for (int e = 0; e < edge_num; e++) {
 		int a, b;
 		int width;
@@ -98,7 +104,7 @@ int main() {
 	}
 	sort(edges.begin(), edges.end());
 
-	for (const vector<int> &e : edges) { printf("(%i, %i): %i\n", e[1], e[2], e[0]); }
+	for (const auto &e : edges) { printf("(%i, %i): %i\n", e[1], e[2], e[0]); }
 }
 ```
 
@@ -427,10 +433,50 @@ for an explanation of how `cmp_to_key` works.
 
 ### Sorting in Descending Order
 
-We can replace all occurrences of `x.w < y.w` with `x.w > y.w` in our C++ code.
-Similarly, we can replace all occurrences of `Integer.compare(x, y)` with
-`-Integer.compare(x, y)` in our Java code. In Python, we can pass the parameter
+<LanguageSection>
+
+<CPPSection>
+
+There are many ways to do this.
+
+Sorting and then reversing:
+
+```
+sort(begin(edges), end(edges));
+reverse(begin(edges), end(edges));
+```
+
+Sorting using reverse iterators:
+
+```
+sort(rbegin(edges), rend(edges));
+```
+
+For data structures (such as pairs and arrays) where `operator>` is defined:
+
+```
+sort(edges.begin(), edges.end(), greater<>());
+```
+
+If overloading `operator<` yourself, you can replace all occurrences of `x.w < y.w` with `x.w > y.w`.
+
+</CPPSection>
+
+<JavaSection>
+
+We can replace all occurrences of `Integer.compare(x, y)` with
+`-Integer.compare(x, y)` in our Java code.
+
+</JavaSection>
+
+<PySection>
+
+In Python, we can pass the parameter
 `reverse=True` to the `sort` or `sorted` function.
+
+</PySection>
+
+</LanguageSection>
 
 ### Sorting by Multiple Criteria
 
@@ -770,7 +816,7 @@ implementation of coordinate compression and how it can switch between
 compressed indices and original values, see the contracted code below. `indices`
 is a list of values that need to be compressed. After it gets sorted and has
 duplicate values removed, it is ready to use. The method `getCompressedIndex`
-takes in an original value, and [binary searches](/silver/binary-search) for its
+takes in an original value, and [binary searches](/silver/binary-search-sorted-array) for its
 position in `indices` to get its corresponding compressed index. To go from a
 compressed index to an original value, the code can just access that index in
 `indices`.
@@ -821,7 +867,7 @@ conveniently use them as array indices for the difference array. We perform this
 coordinate compression by keeping a sorted list of all special indices, and
 using each special index's position in that list as its compressed index. To
 find a special index's position in the sorted list (a.k.a. its compressed
-index), we can [binary search](/silver/binary-search) on the list. The next part
+index), we can [binary search](/silver/binary-search-sorted-array) on the list. The next part
 of the solution will show why it was important for us to store the original
 indices.
 
