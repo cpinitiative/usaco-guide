@@ -159,8 +159,8 @@ int main() {
 	sort(v.begin(), v.end());
 
 	int last_room = 0;
-	using Cust = pair<int, int>;
-	priority_queue<Cust, vector<Cust>, greater<Cust>>
+	using Room = pair<int, int>;
+	priority_queue<Room, vector<Room>, greater<Room>>
 	    pq;  // min heap to store departure times.
 	for (int i = 0; i < N; i++) {
 		if (pq.empty() || pq.top().first >= v[i].first.first) {
@@ -169,7 +169,7 @@ int main() {
 			ans[v[i].second] = last_room;
 		} else {
 			// accessing the minimum departure time
-			pair<int, int> minimum = pq.top();
+			Room minimum = pq.top();
 			pq.pop();
 			pq.push(make_pair(v[i].first.second, minimum.second));
 			ans[v[i].second] = minimum.second;
