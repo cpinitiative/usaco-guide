@@ -246,143 +246,140 @@ int main() {
 import java.util.*;
 
 class Node {
-    int value;
-    Node left, right, parent;
-    boolean reversed;
+	int value;
+	Node left, right, parent;
+	boolean reversed;
 
-    Node(int v) {
-        this.value = v;
-    }
+	Node(int v) { this.value = v; }
 
-    void push() {
-        if (reversed) {
-            reversed = false;
-            Node temp = left;
-            left = right;
-            right = temp;
-            if (left != null) left.reversed ^= true;
-            if (right != null) right.reversed ^= true;
-        }
-    }
+	void push() {
+		if (reversed) {
+			reversed = false;
+			Node temp = left;
+			left = right;
+			right = temp;
+			if (left != null) left.reversed ^= true;
+			if (right != null) right.reversed ^= true;
+		}
+	}
 
-    boolean isRoot() {
-        return parent == null || (parent.left != this && parent.right != this);
-    }
+	boolean isRoot() {
+		return parent == null || (parent.left != this && parent.right != this);
+	}
 }
 
 class LCT {
-    Node[] nodes;
+	Node[] nodes;
 
-    LCT(int n) {
-        nodes = new Node[n + 1];
-        for (int i = 1; i <= n; i++) {
-            nodes[i] = new Node(i);
-        }
-    }
+	LCT(int n) {
+		nodes = new Node[n + 1];
+		for (int i = 1; i <= n; i++) { nodes[i] = new Node(i); }
+	}
 
-    void rotate(Node child) {
-        Node parent = child.parent;
-        Node grandparent = parent.parent;
+	void rotate(Node child) {
+		Node parent = child.parent;
+		Node grandparent = parent.parent;
 
-        if (!parent.isRoot()) {
-            if (grandparent.right == parent) grandparent.right = child;
-            else grandparent.left = child;
-        }
+		if (!parent.isRoot()) {
+			if (grandparent.right == parent) grandparent.right = child;
+			else grandparent.left = child;
+		}
 
-        parent.push();
-        child.push();
+		parent.push();
+		child.push();
 
-        if (parent.left == child) {
-            parent.left = child.right;
-            if (parent.left != null) parent.left.parent = parent;
-            child.right = parent;
-        } else {
-            parent.right = child.left;
-            if (parent.right != null) parent.right.parent = parent;
-            child.left = parent;
-        }
+		if (parent.left == child) {
+			parent.left = child.right;
+			if (parent.left != null) parent.left.parent = parent;
+			child.right = parent;
+		} else {
+			parent.right = child.left;
+			if (parent.right != null) parent.right.parent = parent;
+			child.left = parent;
+		}
 
-        parent.parent = child;
-        child.parent = grandparent;
-    }
+		parent.parent = child;
+		child.parent = grandparent;
+	}
 
-    void splay(Node node) {
-        while (!node.isRoot()) {
-            Node parent = node.parent;
-            Node grandparent = parent.parent;
-            if (!parent.isRoot()) {
-                rotate((grandparent.right == parent) == (parent.right == node) ? parent : node);
-            }
-            rotate(node);
-        }
-        node.push();
-    }
+	void splay(Node node) {
+		while (!node.isRoot()) {
+			Node parent = node.parent;
+			Node grandparent = parent.parent;
+			if (!parent.isRoot()) {
+				rotate((grandparent.right == parent) == (parent.right == node) ? parent
+				                                                               : node);
+			}
+			rotate(node);
+		}
+		node.push();
+	}
 
-    Node access(int v) {
-        Node last = null;
-        Node current = nodes[v];
-        for (Node p = current; p != null; p = p.parent) {
-            splay(p);
-            p.right = last;
-            last = p;
-        }
-        splay(current);
-        return last;
-    }
+	Node access(int v) {
+		Node last = null;
+		Node current = nodes[v];
+		for (Node p = current; p != null; p = p.parent) {
+			splay(p);
+			p.right = last;
+			last = p;
+		}
+		splay(current);
+		return last;
+	}
 
-    void makeRoot(int v) {
-        access(v);
-        Node current = nodes[v];
-        if (current.left != null) {
-            current.left.reversed ^= true;
-            current.left = null;
-        }
-    }
+	void makeRoot(int v) {
+		access(v);
+		Node current = nodes[v];
+		if (current.left != null) {
+			current.left.reversed ^= true;
+			current.left = null;
+		}
+	}
 
-    void link(int u, int v) {
-        makeRoot(v);
-        nodes[v].parent = nodes[u];
-    }
+	void link(int u, int v) {
+		makeRoot(v);
+		nodes[v].parent = nodes[u];
+	}
 
-    void cut(int u, int v) {
-        makeRoot(u);
-        access(v);
-        if (nodes[v].left != null) {
-            nodes[v].left.parent = null;
-            nodes[v].left = null;
-        }
-    }
+	void cut(int u, int v) {
+		makeRoot(u);
+		access(v);
+		if (nodes[v].left != null) {
+			nodes[v].left.parent = null;
+			nodes[v].left = null;
+		}
+	}
 
-    boolean connected(int u, int v) {
-        makeRoot(u);
-        access(v);
-        return nodes[v].parent != null;
-    }
+	boolean connected(int u, int v) {
+		makeRoot(u);
+		access(v);
+		return nodes[v].parent != null;
+	}
 }
 
 public class Main {
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        int n = sc.nextInt();
-        int m = sc.nextInt();
-        LCT lc = new LCT(n);
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int n = sc.nextInt();
+		int m = sc.nextInt();
+		LCT lc = new LCT(n);
 
-        for (int i = 0; i < m; i++) {
-            String command = sc.next();
-            int u = sc.nextInt();
-            int v = sc.nextInt();
+		for (int i = 0; i < m; i++) {
+			String command = sc.next();
+			int u = sc.nextInt();
+			int v = sc.nextInt();
 
-            if (command.equals("add")) {
-                lc.link(u, v);
-            } else if (command.equals("rem")) {
-                lc.cut(u, v);
-            } else if (command.equals("conn")) {
-                System.out.println(lc.connected(u, v) ? "YES" : "NO");
-            }
-        }
+			if (command.equals("add")) {
+				lc.link(u, v);
+			} else if (command.equals("rem")) {
+				lc.cut(u, v);
+			} else if (command.equals("conn")) {
+				System.out.println(lc.connected(u, v) ? "YES" : "NO");
+			}
+		}
 
-        sc.close();
-    }
+		sc.close();
+	}
 }
 ```
 
