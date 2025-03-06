@@ -4,6 +4,7 @@ title: 'Priority Queues'
 author: Darren Yao, Benjamin Qi, Jeffrey Hu, Shreyas Thumathy, Nathan Gong
 prerequisites:
   - greedy-sorting
+  - sorting-custom
 description: 'A data structure that supports insert, query max, and pop max.'
 frequency: 2
 ---
@@ -135,6 +136,8 @@ we iterate through the customers.
 
 <CPPSection>
 
+Implementation Note: Similarly to what was done in an [earlier module](/silver/sorting-custom?lang=cpp#sorting-in-descending-order), we can use `greater<>()` to create a min-heap instead of a max-heap.
+
 ```cpp
 #include <algorithm>
 #include <iostream>
@@ -156,19 +159,19 @@ int main() {
 	sort(v.begin(), v.end());
 
 	int last_room = 0;
-	priority_queue<pair<int, int>> pq;  // min heap to store departure times.
+	using Cust = pair<int, int>;
+	priority_queue<Cust, vector<Cust>, greater<Cust>>
+	    pq;  // min heap to store departure times.
 	for (int i = 0; i < N; i++) {
-		if (pq.empty() || -pq.top().first >= v[i].first.first) {
+		if (pq.empty() || pq.top().first >= v[i].first.first) {
 			last_room++;
-			// make the departure time negative so that we create a min heap
-			// (cleanest way to do a min heap... default is max in c++)
-			pq.push(make_pair(-v[i].first.second, last_room));
+			pq.push(make_pair(v[i].first.second, last_room));
 			ans[v[i].second] = last_room;
 		} else {
 			// accessing the minimum departure time
 			pair<int, int> minimum = pq.top();
 			pq.pop();
-			pq.push(make_pair(-v[i].first.second, minimum.second));
+			pq.push(make_pair(v[i].first.second, minimum.second));
 			ans[v[i].second] = minimum.second;
 		}
 	}
