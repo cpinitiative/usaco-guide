@@ -2,7 +2,7 @@
 id: usaco-859
 source: USACO Silver 2018 December
 title: Convention II
-author: Ryan Chou, Kevin Sheng
+author: Ryan Chou, Kevin Sheng, Benjamin Qi
 ---
 
 [Official Analysis (C++)](http://www.usaco.org/current/data/sol_convention2_silver_dec18.html)
@@ -18,9 +18,10 @@ Due to the low bounds on $N$, we can naively simulate the events. We'll sort by 
 
 ```cpp
 #include <algorithm>
+#include <array>
 #include <cstdio>
 #include <iostream>
-#include <set>
+#include <queue>
 #include <vector>
 
 using namespace std;
@@ -29,8 +30,10 @@ int main() {
 	freopen("convention2.in", "r", stdin);
 	freopen("convention2.out", "w", stdout);
 
+	using Cow = array<int, 3>;
+
 	int cow_num;
-	vector<vector<int>> cows;
+	vector<Cow> cows;
 	cin >> cow_num;
 	for (int c = 0; c < cow_num; c++) {
 		int start, duration;
@@ -39,20 +42,20 @@ int main() {
 	}
 
 	// sort by arrival time
-	auto cmp = [](const vector<int> &a, const vector<int> &b) { return a[1] < b[1]; };
-	sort(cows.begin(), cows.end(), cmp);
+	sort(cows.begin(), cows.end(),
+	     [](const Cow &a, const Cow &b) { return a[1] < b[1]; });
 
 	int time = 0;
 	int curr = 0;
 	int longest_wait = 0;
 
 	// sorted by priority so that the highest seniority starts eating first
-	set<vector<int>> waiting;
+	priority_queue<Cow, vector<Cow>, greater<Cow>> waiting;
 	// as long as we haven't processed all cows or there are still cows waiting
 	while (curr < cow_num || !waiting.empty()) {
 		// this cow can be processed.
 		if (curr < cow_num && cows[curr][1] <= time) {
-			waiting.insert(cows[curr]);
+			waiting.push(cows[curr]);
 			curr++;
 			// no cow waiting, skip to the next cow.
 		} else if (waiting.empty()) {
@@ -61,12 +64,12 @@ int main() {
 			curr++;
 		} else {
 			// process the next cow
-			vector<int> next = *waiting.begin();
+			Cow next = waiting.top();
 			longest_wait = max(longest_wait, time - next[1]);
 
 			// set the time to when this cow finishes
 			time += next[2];
-			waiting.erase(waiting.begin());
+			waiting.pop();
 		}
 	}
 
@@ -76,6 +79,12 @@ int main() {
 
 </CPPSection>
 <JavaSection>
+
+<IncompleteSection>
+
+TODO: use priority queue instead of sorted set
+
+</IncompleteSection>
 
 ```java
 import java.io.*;
