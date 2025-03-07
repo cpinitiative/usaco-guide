@@ -45,7 +45,7 @@ using namespace std;
 int timer = 0;
 const int MAX_NODES_GRAPH = 1e5;
 
-struct PersistentSegmentTree {
+struct persistent_segment_tree {
 	static const int MAX_NODES_TREE = 2e6;
 	int left_child[MAX_NODES_TREE + 1], right_child[MAX_NODES_TREE + 1],
 	    node_value[MAX_NODES_TREE + 1];
@@ -92,20 +92,20 @@ struct PersistentSegmentTree {
 		int m = (l + r) / 2;
 
 		// Calculate the number of elements in the left child of the current range
-		int leftSubtreeCount = node_value[left_child[a]] + node_value[left_child[b]] -
+		int left_subtree_count = node_value[left_child[a]] + node_value[left_child[b]] -
 		                       node_value[left_child[anc]] - node_value[left_child[pr]];
 
-		if (leftSubtreeCount >= k) {
+		if (left_subtree_count >= k) {
 			return query(left_child[a], left_child[b], left_child[anc], left_child[pr],
 			             l, m, k);
 		} else {
 			return query(right_child[a], right_child[b], right_child[anc],
-			             right_child[pr], m + 1, r, k - leftSubtreeCount);
+			             right_child[pr], m + 1, r, k - left_subtree_count);
 		}
 	}
 };
 
-PersistentSegmentTree pst;
+persistent_segment_tree pst;
 
 struct Graph {
 	int LOG;
