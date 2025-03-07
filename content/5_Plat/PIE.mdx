@@ -264,9 +264,7 @@ int howMany(vector<string> patterns, int k) {
 
 	int ans = 0;
 	for (int mask = 0; mask < (1 << n); mask++) {
-		if (__builtin_popcount(mask) == k) {
-			ans = (ans + dp[m - 1][mask]) % MOD;
-		}
+		if (__builtin_popcount(mask) == k) { ans = (ans + dp[m - 1][mask]) % MOD; }
 	}
 
 	return ans;
@@ -313,8 +311,7 @@ int howMany(vector<string> patterns, int k) {
 		// subsets with exactly k patterns matters
 		if (__builtin_popcount(mask) != k) { continue; }
 		// iterate over all superset of current subset mask
-		for (int supermask = mask; supermask < (1 << n);
-		     supermask++) {
+		for (int supermask = mask; supermask < (1 << n); supermask++) {
 			if ((mask & supermask) != mask) { continue; }
 			int sign = ((__builtin_popcount(supermask) - k) & 1 ? -1 : 1);
 			int freq = 1;  // checks how many valid strings satisfy the supermask
