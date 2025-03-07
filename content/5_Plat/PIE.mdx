@@ -243,17 +243,19 @@ The following code illustrates this:
 const int MOD = 1000003;
 
 int howMany(vector<string> patterns, int k) {
-	vector<vector<int>> dp(50, vector<int>((1 << (int)patterns.size())));
-	for (int i = 0; i < (int)patterns[0].size(); i++) {
+	int n = patterns.size();
+	int m = patterns[0].size();
+	vector<vector<int>> dp(50, vector<int>(1 << n));
+	for (int i = 0; i < m; i++) {
 		for (char c = 'a'; c <= 'z'; c++) {
 			int mask = 0;
-			for (int j = 0; j < (int)patterns.size(); j++) {
+			for (int j = 0; j < n; j++) {
 				if (patterns[j][i] == c || patterns[j][i] == '?') { mask |= (1 << j); }
 			}
 			if (i == 0) {
 				dp[i][mask]++;
 			} else {
-				for (int j = 0; j < (1 << (int)patterns.size()); j++) {
+				for (int j = 0; j < (1 << n); j++) {
 					dp[i][j & mask] = (dp[i][j & mask] + dp[i - 1][j]) % MOD;
 				}
 			}
@@ -261,9 +263,9 @@ int howMany(vector<string> patterns, int k) {
 	}
 
 	int ans = 0;
-	for (int mask = 0; mask < (1 << (int)patterns.size()); mask++) {
+	for (int mask = 0; mask < (1 << n); mask++) {
 		if (__builtin_popcount(mask) == k) {
-			ans = (ans + dp[(int)patterns[0].size() - 1][mask]) % MOD;
+			ans = (ans + dp[m - 1][mask]) % MOD;
 		}
 	}
 
@@ -304,20 +306,22 @@ $$
 const int MOD = 1000003;
 
 int howMany(vector<string> patterns, int k) {
+	int n = patterns.size();
+	int m = patterns[0].size();
 	int ans = 0;
-	for (int mask = 0; mask < (1 << (int)patterns.size()); mask++) {
+	for (int mask = 0; mask < (1 << n); mask++) {
 		// subsets with exactly k patterns matters
 		if (__builtin_popcount(mask) != k) { continue; }
 		// iterate over all superset of current subset mask
-		for (int supermask = mask; supermask < (1 << (int)patterns.size());
+		for (int supermask = mask; supermask < (1 << n);
 		     supermask++) {
 			if ((mask & supermask) != mask) { continue; }
 			int sign = ((__builtin_popcount(supermask) - k) & 1 ? -1 : 1);
 			int freq = 1;  // checks how many valid strings satisfy the supermask
-			for (int i = 0; i < (int)patterns[0].size(); i++) {
+			for (int i = 0; i < m; i++) {
 				bool flag = true;
 				char last_letter = '?';
-				for (int j = 0; j < (int)patterns.size(); j++) {
+				for (int j = 0; j < n; j++) {
 					if (((1 << j) & supermask) == 0) { continue; }
 					// check for conflicts if the pattern specifies a letter not '?'
 					if (patterns[j][i] != '?') {
