@@ -96,10 +96,10 @@ struct PersistentSegmentTree {
 
 		if (left_subtree_count >= k) {
 			return get_kth_smallest(left_child[a], left_child[b], left_child[anc],
-			                      left_child[pr], l, m, k);
+			                        left_child[pr], l, m, k);
 		} else {
 			return get_kth_smallest(right_child[a], right_child[b], right_child[anc],
-			                      right_child[pr], m + 1, r, k - left_subtree_count);
+			                        right_child[pr], m + 1, r, k - left_subtree_count);
 		}
 	}
 };
@@ -113,11 +113,10 @@ struct Tree {
 	vector<vector<int>> up;
 	vector<int> graph[MAX_NODES_GRAPH + 1];
 
-	Tree(int n) {  
-	        LOG = ceil(log2(n));
-	        up.assign(n + 1, vector<int>(LOG + 1, 0));
-    	}
-
+	Tree(int n) {
+		LOG = ceil(log2(n));
+		up.assign(n + 1, vector<int>(LOG + 1, 0));
+	}
 
 	void dfs(int from, int p) {
 		int root = roots[p];
@@ -205,7 +204,7 @@ int main() {
 		int pr = (common == 1) ? 0 : g.up[common][0];
 
 		int num = pst.get_kth_smallest(g.roots[a], g.roots[b], g.roots[common],
-		                             g.roots[pr], 1, MAX_NODES_GRAPH, k);
+		                               g.roots[pr], 1, MAX_NODES_GRAPH, k);
 		cout << compr[num] << '\n';
 	}
 }
