@@ -44,7 +44,7 @@ using namespace std;
 int timer = 0;
 const int MAX_NODES_GRAPH = 1e5;
 
-struct persistent_segment_tree {
+struct PersistentSegmentTree {
 	static const int MAX_NODES_TREE = 2e6;
 	int left_child[MAX_NODES_TREE + 1], right_child[MAX_NODES_TREE + 1],
 	    frequency[MAX_NODES_TREE + 1];
@@ -84,8 +84,7 @@ struct persistent_segment_tree {
 		return new_node;
 	}
 
-	// Queries kth smallest element between a and b
-	int getKthSmallest(int a, int b, int anc, int pr, int l, int r, int k) {
+	int get_kth_smallest(int a, int b, int anc, int pr, int l, int r, int k) {
 		// If we've reached a leaf, return the current position
 		if (l == r) { return l; }
 
@@ -96,30 +95,29 @@ struct persistent_segment_tree {
 		                         frequency[left_child[anc]] - frequency[left_child[pr]];
 
 		if (left_subtree_count >= k) {
-			return getKthSmallest(left_child[a], left_child[b], left_child[anc],
+			return get_kth_smallest(left_child[a], left_child[b], left_child[anc],
 			                      left_child[pr], l, m, k);
 		} else {
-			return getKthSmallest(right_child[a], right_child[b], right_child[anc],
+			return get_kth_smallest(right_child[a], right_child[b], right_child[anc],
 			                      right_child[pr], m + 1, r, k - left_subtree_count);
 		}
 	}
 };
 
-persistent_segment_tree pst;
+PersistentSegmentTree pst;
 
-struct Graph {
+struct Tree {
 	int LOG;
 	int roots[MAX_NODES_GRAPH + 1], tin[MAX_NODES_GRAPH + 1], tout[MAX_NODES_GRAPH + 1],
 	    val[MAX_NODES_GRAPH + 1];
 	vector<vector<int>> up;
 	vector<int> graph[MAX_NODES_GRAPH + 1];
 
-	Graph(int n) { build(n); }
+	Tree(int n) {  
+	        LOG = ceil(log2(n));
+	        up.assign(n + 1, vector<int>(LOG + 1, 0));
+    	}
 
-	void build(int n) {
-		LOG = ceil(log2(n));
-		up.assign(n + 1, vector<int>(LOG + 1, 0));
-	}
 
 	void dfs(int from, int p) {
 		int root = roots[p];
@@ -166,7 +164,7 @@ struct Graph {
 int main() {
 	int n, m;
 	cin >> n >> m;
-	Graph g(n);
+	Tree g(n);
 
 	vector<int> compr;
 	compr.push_back(-INT_MAX);
@@ -206,7 +204,7 @@ int main() {
 		// Find the parent of the common ancestor
 		int pr = (common == 1) ? 0 : g.up[common][0];
 
-		int num = pst.getKthSmallest(g.roots[a], g.roots[b], g.roots[common],
+		int num = pst.get_kth_smallest(g.roots[a], g.roots[b], g.roots[common],
 		                             g.roots[pr], 1, MAX_NODES_GRAPH, k);
 		cout << compr[num] << '\n';
 	}
