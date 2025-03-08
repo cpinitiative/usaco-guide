@@ -60,15 +60,13 @@ struct persistent_segment_tree {
 		int new_node = ++nxt;  // Create a new node for the updated tree version
 
 		if (l == r) {
-			node_value[new_node] =
-			    node_value[v] + 1;  // At leaf, increment the value at position 'pos'
+			// At leaf, increment the value at position 'pos'
+			node_value[new_node] = node_value[v] + 1; 
 			return new_node;
 		}
 
-		left_child[new_node] =
-		    left_child[v];  // Copy left child from the previous version
-		right_child[new_node] =
-		    right_child[v];  // Copy right child from the previous version
+		left_child[new_node] = left_child[v];  // Copy left child from the previous version
+		right_child[new_node] = right_child[v];  // Copy right child from the previous version
 		int m = (l + r) / 2;
 
 		// Update the left or right child based on the position
@@ -79,8 +77,7 @@ struct persistent_segment_tree {
 		}
 
 		// Update the current node's value by combining the values of its children
-		node_value[new_node] =
-		    node_value[left_child[new_node]] + node_value[right_child[new_node]];
+		node_value[new_node] = node_value[left_child[new_node]] + node_value[right_child[new_node]];
 		return new_node;
 	}
 
@@ -92,16 +89,12 @@ struct persistent_segment_tree {
 		int m = (l + r) / 2;
 
 		// Calculate the number of elements in the left child of the current range
-		int left_subtree_count = node_value[left_child[a]] + node_value[left_child[b]] -
-		                         node_value[left_child[anc]] -
-		                         node_value[left_child[pr]];
+		int left_subtree_count = node_value[left_child[a]] + node_value[left_child[b]] - node_value[left_child[anc]] - node_value[left_child[pr]];
 
 		if (left_subtree_count >= k) {
-			return query(left_child[a], left_child[b], left_child[anc], left_child[pr],
-			             l, m, k);
+			return query(left_child[a], left_child[b], left_child[anc], left_child[pr], l, m, k);
 		} else {
-			return query(right_child[a], right_child[b], right_child[anc],
-			             right_child[pr], m + 1, r, k - left_subtree_count);
+			return query(right_child[a], right_child[b], right_child[and], right_child[pr], m + 1, r, k - left_subtree_count);
 		}
 	}
 };
@@ -110,8 +103,7 @@ persistent_segment_tree pst;
 
 struct Graph {
 	int LOG;
-	int roots[MAX_NODES_GRAPH + 1], tin[MAX_NODES_GRAPH + 1], tout[MAX_NODES_GRAPH + 1],
-	    val[MAX_NODES_GRAPH + 1];
+	int roots[MAX_NODES_GRAPH + 1], tin[MAX_NODES_GRAPH + 1], tout[MAX_NODES_GRAPH + 1], val[MAX_NODES_GRAPH + 1];
 	vector<vector<int>> up;
 	vector<int> graph[MAX_NODES_GRAPH + 1];
 
@@ -200,12 +192,8 @@ int main() {
 		int a, b, k;
 		cin >> a >> b >> k;
 		int common = g.lca(a, b);  // Find LCA of a and b
-		int pr = (common == 1)
-		             ? 0
-		             : g.up[common][0];  // Find the parent of the common ancestor
-		cout << compr[pst.query(g.roots[a], g.roots[b], g.roots[common], g.roots[pr], 1,
-		                        MAX_NODES_GRAPH, k)]
-		     << '\n';
+		int pr = (common == 1) ? 0 : g.up[common][0];  // Find the parent of the common ancestor
+		cout << compr[pst.query(g.roots[a], g.roots[b], g.roots[common], g.roots[pr], 1, MAX_NODES_GRAPH, k)] << '\n';
 	}
 }
 ```
