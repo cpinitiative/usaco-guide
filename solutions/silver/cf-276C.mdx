@@ -59,6 +59,63 @@ int main() {
 ```
 
 </CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class LittleGirlMaxSum {
+
+	public static void reverse(int[] a) {
+		int len = a.length;
+		for (int i = 0; i < len / 2; i++) {
+			int temp = a[i];
+			a[i] = a[len - i - 1];
+			a[len - i - 1] = temp;
+		}
+	}
+
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
+		int n = io.nextInt();
+		int q = io.nextInt();
+
+		int[] arr = new int[n];
+		for (int i = 0; i < n; i++) {
+			arr[i] = io.nextInt();
+		}
+
+		int[] freq = new int[n + 1];
+		for (int i = 0; i < q; i++) {
+			int l = io.nextInt() - 1;
+			int r = io.nextInt();
+			freq[l] += 1;
+			freq[r] -= 1;
+		}
+
+		for (int i = 1; i <= n; i++) {
+			freq[i] += freq[i - 1];
+		}
+
+		Arrays.sort(freq);
+		reverse(freq);
+		Arrays.sort(arr);
+		reverse(arr);
+		
+		long res = 0;
+		for (int i = 0; i < n; i++) {
+			res += (long) freq[i] * arr[i];
+		}
+		io.println(res);
+		io.close();
+	}
+	
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
 <PySection>
 
 ```py
