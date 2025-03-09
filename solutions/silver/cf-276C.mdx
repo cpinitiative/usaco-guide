@@ -66,8 +66,8 @@ import java.io.*;
 import java.util.*;
 
 public class LittleGirlMaxSum {
-
-	public static void reverse(int[] a) {
+	public static void reverseSort(int[] a) {
+		Arrays.sort(a);
 		int len = a.length;
 		for (int i = 0; i < len / 2; i++) {
 			int temp = a[i];
@@ -94,10 +94,8 @@ public class LittleGirlMaxSum {
 
 		for (int i = 1; i <= n; i++) { freq[i] += freq[i - 1]; }
 
-		Arrays.sort(freq);
-		reverse(freq);
-		Arrays.sort(arr);
-		reverse(arr);
+		reverseSort(freq);
+		reverseSort(arr);
 
 		long res = 0;
 		for (int i = 0; i < n; i++) { res += (long)freq[i] * arr[i]; }
