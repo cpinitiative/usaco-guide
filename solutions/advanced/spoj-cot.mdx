@@ -55,27 +55,27 @@ struct PersistentSegmentTree {
 	 * the root to the target position, preserving the previous version of the tree
 	 * while modifying only the necessary parts.
 	 */
-	int update(int v, int l, int r, int pos) {
+	int update(int prev_node, int left, int right, int index) {
 		// Create a new node for the updated tree version
 		int new_node = ++nxt;
 
-		if (l == r) {
+		if (left == right) {
 			// At leaf, increment the value at position 'pos'
-			frequency[new_node] = frequency[v] + 1;
+			frequency[new_node] = frequency[prev_node] + 1;
 			return new_node;
 		}
 		// Copy left child from the previous version
-		left_child[new_node] = left_child[v];
+		left_child[new_node] = left_child[prev_node];
 
 		// Copy right child from the previous version
-		right_child[new_node] = right_child[v];
-		int m = (l + r) / 2;
+		right_child[new_node] = right_child[prev_node];
+		int middle = (left + right) / 2;
 
 		// Update the left or right child based on the position
-		if (pos <= m) {
-			left_child[new_node] = update(left_child[v], l, m, pos);
+		if (index <= middle) {
+			left_child[new_node] = update(left_child[prev_node], left, middle, index);
 		} else {
-			right_child[new_node] = update(right_child[v], m + 1, r, pos);
+			right_child[new_node] = update(right_child[prev_node], middle + 1, right, index);
 		}
 
 		// Update the current node's value by combining the values of its children
