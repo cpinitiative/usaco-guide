@@ -2,6 +2,7 @@
 id: PIE
 title: 'Inclusion-Exclusion Principle'
 author: Mihnea Brebenel
+contributor: Rameez Parwez
 prerequisites:
   - combo
 description:
@@ -9,12 +10,15 @@ description:
 frequency: 1
 ---
 
-## Tutorial
+## Resources
 
 <Resources>
     <Resource source="cp-algo" title="The Inclusion-Exclusion Principle" url="https://cp-algorithms.com/combinatorics/inclusion-exclusion.html" starred> Well-covered article </Resource>
+	<Resource source="CF" title="Inclusion-Exclusion Principle" url="https://codeforces.com/blog/entry/64625"> Good Explanation </Resource>
     <Resource source="Wikipedia" title="Inclusion-exclusion  principle" url="https://en.wikipedia.org/wiki/Inclusion%E2%80%93exclusion_principle">Wiki</Resource>
 </Resources>
+
+## Introduction
 
 The inclusion-exclusion principle relates to finding the size of the union of some sets.
 
@@ -79,7 +83,13 @@ for (int i = 1; i < VALMAX; i++) {
 
 <FocusProblem problem="SQFREE" />
 
+## Explanation
+
 A perfect application for inclusion-exclusion principle and mobius function. In this particular case the set $A_i$ - previously mentioned in the tutorial section - denotes how many numbers are divisible with $i^2$ and we're asked to find out $\bigg| \bigcup_{i=1}^{\sqrt{n}} A_i \bigg|$. The precomputed mobius array tells whether to add or subtract $A_i$.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(V \log V + T \cdot \sqrt{n})$, where $V = 1e7$
 
 <LanguageSection>
 <CPPSection>
@@ -125,10 +135,16 @@ int main() {
 
 <FocusProblem problem="cow" />
 
+## Explanation
+
 In this particular case the set $A_i$ - previously mentioned in the tutorial section - denotes how many pairs of cows have at least $i$ ice cream flavors in common. From the total number of pairs subtract the union of $A_i$. The global answer is:
 $$
 \frac{n \cdot(n-1)}{2}- \bigg| \bigcup_{i=1}^{5} A_i \bigg|
 $$
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N \log N)$
 
 <LanguageSection>
 <CPPSection>
@@ -206,28 +222,40 @@ print(ans, file=open("cowpatibility.out", "w"))
 
 <FocusProblem problem="patterns" />
 
-A dynamic programming approach with bitmasking would look like this: $dp[i][mask] = \text{the number of strings of length i that match all the patterns in set, but none other patterns. } $ The recurrence is:
+## Explanation 1
+
+A dynamic programming approach with bitmasking would look like this:
+
+$dp[i][mask] = \text{the number of strings of length i that match all the patterns in set, but none other patterns. } $ The recurrence is:
 $$
 dp[i][mask \& j]=dp[i-1][j]\text{ where j is a set of patterns that match charachter c at position i}
 $$
 The following code illustrates this:
 
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(M \cdot N \cdot 2^N)$, where $M$ is size of each strings in patterns and $N$ is the size of patterns.
+
 <LanguageSection>
 <CPPSection>
 
 ```cpp
+const int MOD = 1000003;
+
 int howMany(vector<string> patterns, int k) {
-	vector<vector<int>> dp(50, vector<int>((1 << (int)patterns.size())));
-	for (int i = 0; i < (int)patterns[0].size(); i++) {
+	int n = patterns.size();
+	int m = patterns[0].size();
+	vector<vector<int>> dp(50, vector<int>(1 << n));
+	for (int i = 0; i < m; i++) {
 		for (char c = 'a'; c <= 'z'; c++) {
 			int mask = 0;
-			for (int j = 0; j < (int)patterns.size(); j++) {
+			for (int j = 0; j < n; j++) {
 				if (patterns[j][i] == c || patterns[j][i] == '?') { mask |= (1 << j); }
 			}
 			if (i == 0) {
 				dp[i][mask]++;
 			} else {
-				for (int j = 0; j < (1 << (int)patterns.size()); j++) {
+				for (int j = 0; j < (1 << n); j++) {
 					dp[i][j & mask] = (dp[i][j & mask] + dp[i - 1][j]) % MOD;
 				}
 			}
@@ -235,10 +263,8 @@ int howMany(vector<string> patterns, int k) {
 	}
 
 	int ans = 0;
-	for (int mask = 0; mask < (1 << (int)patterns.size()); mask++) {
-		if (__builtin_popcount(mask) == k) {
-			ans = (ans + dp[(int)patterns[0].size() - 1][mask]) % MOD;
-		}
+	for (int mask = 0; mask < (1 << n); mask++) {
+		if (__builtin_popcount(mask) == k) { ans = (ans + dp[m - 1][mask]) % MOD; }
 	}
 
 	return ans;
@@ -247,6 +273,8 @@ int howMany(vector<string> patterns, int k) {
 
 </CPPSection>
 </LanguageSection>
+
+## Explanation 2
 
 The problem can also be solved using the inclusion exclusion principle.
 
@@ -258,49 +286,59 @@ $$
 solve(A) = \sum_{B \supseteq A} (-1)^{|B|-k} \cdot f(B)
 $$
 
-$f(B)$ denotes the number of strings matching _at leat_ set $B$
+$f(B)$ denotes the number of strings matching _at least_ set $B$
 
 The global answer is:
 $$
 ans = \sum_{A:|A|=k} solve(A)
 $$
 
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(\binom{N}{k} \cdot 2^{N - k} \cdot M \cdot N)$
+
 <LanguageSection>
 <CPPSection>
 
 ```cpp
+const int MOD = 1000003;
+
 int howMany(vector<string> patterns, int k) {
+	int n = patterns.size();
+	int m = patterns[0].size();
 	int ans = 0;
-	for (int mask = 0; mask < (1 << (int)patterns.size()); mask++) {
-		if (__builtin_popcount(mask) == k) {
-			for (int supermask = mask; supermask < (1 << (int)patterns.size());
-			     supermask++) {
-				if ((mask & supermask) == mask) {
-					int sign = ((__builtin_popcount(supermask) - k) & 1 ? -1 : 1);
-					int cnt = 1;
-					for (int i = 0; i < (int)patterns[0].size(); i++) {
-						bool flag = true;
-						int j = 0, last_letter = -1;
-						for (; j < (int)patterns.size(); j++) {
-							if (((1 << j) & supermask) == 0) { continue; }
-							if (patterns[j][i] != '?') {
-								flag = false;
-								if (last_letter == -1) {
-									last_letter = j;
-								} else {
-									break;
-								}
-							}
-						}
-						if (flag) {
-							cnt = cnt * 26 % MOD;
-						} else if (j < (int)patterns.size()) {
-							cnt *= 0;
+	for (int mask = 0; mask < (1 << n); mask++) {
+		// subsets with exactly k patterns matters
+		if (__builtin_popcount(mask) != k) { continue; }
+		// iterate over all superset of current subset mask
+		for (int supermask = mask; supermask < (1 << n); supermask++) {
+			if ((mask & supermask) != mask) { continue; }
+			int sign = ((__builtin_popcount(supermask) - k) & 1 ? -1 : 1);
+			int freq = 1;  // checks how many valid strings satisfy the supermask
+			for (int i = 0; i < m; i++) {
+				bool flag = true;
+				char last_letter = '?';
+				for (int j = 0; j < n; j++) {
+					if (((1 << j) & supermask) == 0) { continue; }
+					// check for conflicts if the pattern specifies a letter not '?'
+					if (patterns[j][i] != '?') {
+						if (last_letter == '?') {
+							last_letter = patterns[j][i];
+						} else if (patterns[j][i] != last_letter) {
+							// conflict! two patterns require different letters here
+							flag = false;
+							break;
 						}
 					}
-					ans = (ans + sign * cnt) % MOD;
+				}
+				if (!flag) {
+					freq = 0;
+				} else if (last_letter == '?') {
+					freq = (freq * 26) % MOD;
 				}
 			}
+			ans = (ans + sign * freq) % MOD;
+			ans = (ans + MOD) % MOD;
 		}
 	}
 
