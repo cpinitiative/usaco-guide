@@ -144,81 +144,80 @@ for i in range(n):
 import java.util.*;
 
 public class Spirale {
-    static final int MAX_N = 50;
-    static int[][] mat = new int[MAX_N][MAX_N];
-    static int n, m, k, currentDistance, numVisited;
+	static final int MAX_N = 50;
+	static int[][] mat = new int[MAX_N][MAX_N];
+	static int n, m, k, currentDistance, numVisited;
 
-    static int[] ux = {0, -1, 0, 1};
-    static int[] uy = {1, 0, -1, 0};
-    static int[] dx = {0, -1, 0, 1};
-    static int[] dy = {-1, 0, 1, 0};
+	static int[] ux = {0, -1, 0, 1};
+	static int[] uy = {1, 0, -1, 0};
+	static int[] dx = {0, -1, 0, 1};
+	static int[] dy = {-1, 0, 1, 0};
 
-    static void updateDistance(int x, int y) {
-        if (x < 0 || x >= m || y < 0 || y >= n) return;
-        numVisited++;
-        mat[y][x] = Math.min(mat[y][x], currentDistance);
-    }
+	static void updateDistance(int x, int y) {
+		if (x < 0 || x >= m || y < 0 || y >= n) return;
+		numVisited++;
+		mat[y][x] = Math.min(mat[y][x], currentDistance);
+	}
 
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        n = sc.nextInt();
-        m = sc.nextInt();
-        k = sc.nextInt();
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		n = sc.nextInt();
+		m = sc.nextInt();
+		k = sc.nextInt();
 
-        for (int i = 0; i < MAX_N; i++) {
-            Arrays.fill(mat[i], Integer.MAX_VALUE);
-        }
+		for (int i = 0; i < MAX_N; i++) { Arrays.fill(mat[i], Integer.MAX_VALUE); }
 
-        for (int i = 0; i < k; i++) {
-            int x = sc.nextInt() - 1;
-            int y = sc.nextInt() - 1;
-            int z = sc.nextInt();
-            int[] tx, ty;
+		for (int i = 0; i < k; i++) {
+			int x = sc.nextInt() - 1;
+			int y = sc.nextInt() - 1;
+			int z = sc.nextInt();
+			int[] tx, ty;
 
-            int temp = x;
-            x = y;
-            y = temp;
+			int temp = x;
+			x = y;
+			y = temp;
 
-            if (z == 0) {
-                tx = dx;
-                ty = dy;
-            } else {
-                tx = ux;
-                ty = uy;
-            }
+			if (z == 0) {
+				tx = dx;
+				ty = dy;
+			} else {
+				tx = ux;
+				ty = uy;
+			}
 
-            int stepsLen = 1, stepsLeft = 2, directionIndex = 1;
-            currentDistance = 1;
-            numVisited = 0;
-            updateDistance(x, y);
+			int stepsLen = 1, stepsLeft = 2, directionIndex = 1;
+			currentDistance = 1;
+			numVisited = 0;
+			updateDistance(x, y);
 
-            while (numVisited < n * m) {
-                if (stepsLeft == 0) {
-                    stepsLen++;
-                    stepsLeft = 2;
-                }
+			while (numVisited < n * m) {
+				if (stepsLeft == 0) {
+					stepsLen++;
+					stepsLeft = 2;
+				}
 
-                for (int va = 0; va < stepsLen; va++) {
-                    x += ty[directionIndex];
-                    y += tx[directionIndex];
-                    currentDistance++;
-                    updateDistance(x, y);
-                }
+				for (int va = 0; va < stepsLen; va++) {
+					x += ty[directionIndex];
+					y += tx[directionIndex];
+					currentDistance++;
+					updateDistance(x, y);
+				}
 
-                stepsLeft--;
-                directionIndex = (directionIndex + 1) % 4;
-            }
-        }
+				stepsLeft--;
+				directionIndex = (directionIndex + 1) % 4;
+			}
+		}
 
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < m; j++) {
-                System.out.print((mat[i][j] == Integer.MAX_VALUE ? "INF" : mat[i][j]) + " ");
-            }
-            System.out.println();
-        }
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < m; j++) {
+				System.out.print((mat[i][j] == Integer.MAX_VALUE ? "INF" : mat[i][j]) +
+				                 " ");
+			}
+			System.out.println();
+		}
 
-        sc.close();
-    }
+		sc.close();
+	}
 }
 ```
 
