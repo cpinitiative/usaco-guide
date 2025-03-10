@@ -193,13 +193,7 @@ export const OrderedFirstMembers: Member[] = [
     name: 'Tatha Pandey',
     titles: [roles.liveInstructor],
     github: 'tathap',
-  },
-  {
-    photo: 'tianqin',
-    name: 'Tianqin Meng',
-    titles: [roles.contentAuthor],
-    github: 'tqmsh',
-  },
+  }, 
 ];
 
 export const RestOfMembers: Member[] = [
