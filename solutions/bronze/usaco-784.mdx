@@ -63,7 +63,7 @@ public class Lifeguards {
 	public static void main(String[] args) throws IOException {
 		PrintWriter pw = new PrintWriter(new File("lifeguards.out"));
 		BufferedReader br =
-			new BufferedReader(new FileReader(new File("lifeguards.in")));
+		    new BufferedReader(new FileReader(new File("lifeguards.in")));
 		StringTokenizer st;
 
 		int cows = Integer.parseInt(br.readLine());
@@ -113,10 +113,10 @@ taking the maximum over all times.
 <CPPSection>
 
 ```cpp
-#include <iostream>
-#include <fstream>
-#include <vector>
 #include <algorithm>
+#include <fstream>
+#include <iostream>
+#include <vector>
 
 using std::cout;
 using std::endl;
@@ -129,9 +129,7 @@ int main() {
 	int guard_num;
 	read >> guard_num;
 	vector<std::pair<int, int>> guards(guard_num);
-	for (auto& [start, end] : guards) {
-		read >> start >> end;
-	}
+	for (auto &[start, end] : guards) { read >> start >> end; }
 
 	int max_time = 0;
 	// Try all guards we can remove
@@ -139,18 +137,14 @@ int main() {
 		// See which time points the remaining guards cover
 		vector<bool> covered(MAX_TIME);
 		for (int i = 0; i < guard_num; i++) {
-			if (i == g) {
-				continue;
-			}
+			if (i == g) { continue; }
 			for (int t = guards[i].first; t < guards[i].second; t++) {
 				covered[t] = true;
 			}
 		}
 
 		int time = 0;
-		for (bool c : covered) {
-			time += c;
-		}
+		for (bool c : covered) { time += c; }
 		max_time = std::max(max_time, time);
 	}
 
@@ -185,18 +179,12 @@ public class Lifeguards {
 			// See which time points the remaining guards cover
 			boolean[] covered = new boolean[MAX_TIME];
 			for (int i = 0; i < guardNum; i++) {
-				if (i == g) {
-					continue;
-				}
-				for (int t = guards[i][0]; t < guards[i][1]; t++) {
-					covered[t] = true;
-				}
+				if (i == g) { continue; }
+				for (int t = guards[i][0]; t < guards[i][1]; t++) { covered[t] = true; }
 			}
 
 			int time = 0;
-			for (boolean c : covered) {
-				time += c ? 1 : 0;
-			}
+			for (boolean c : covered) { time += c ? 1 : 0; }
 			maxTime = Math.max(maxTime, time);
 		}
 
@@ -223,7 +211,7 @@ max_time = 0
 for g in range(len(guards)):
 	# See which time points the remaining guards cover
 	covered = [False for _ in range(MAX_TIME)]
-	for start, end in guards[:g] + guards[g + 1:]:
+	for start, end in guards[:g] + guards[g + 1 :]:
 		for t in range(start, end):
 			covered[t] = True
 
