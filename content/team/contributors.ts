@@ -193,7 +193,7 @@ export const OrderedFirstMembers: Member[] = [
     name: 'Tatha Pandey',
     titles: [roles.liveInstructor],
     github: 'tathap',
-  }, 
+  },
 ];
 
 export const RestOfMembers: Member[] = [
