@@ -260,8 +260,8 @@ export const RestOfMembers: Member[] = [
     name: 'Rameez Parwez',
     titles: [roles.contentAuthor],
     github: 'sosuke23',
-    codeforces: 'sosuke23'
-  }
+    codeforces: 'sosuke23',
+  },
 ];
 
 export const NotPictured: Member[] = [
@@ -291,7 +291,7 @@ export const NotPictured: Member[] = [
     titles: [roles.contentAuthor],
     github: 'sosuke23',
     codeforces: 'sosuke23',
-  }
+  },
 ];
 
 export const FormerMembers: Member[] = [
