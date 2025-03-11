@@ -70,9 +70,8 @@ int main() {
 			while (i < n - 1 && ar[i + 1] <= hasta) i++;
 			i++;
 		}
-		bool ok;
-		ok = (i >= n);
-		if (ok) {
+	
+		if (i >= n) {
 			sol = min(sol, mid);
 			hi = mid - 1;
 		} else {
@@ -85,6 +84,56 @@ int main() {
 ```
 
 </CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class AngryCows {
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio("angry");
+		int n = io.nextInt();
+		int k = io.nextInt();
+
+		int[] arr = new int[n];
+		for (int i = 0; i < n; i++) {
+			arr[i] = io.nextInt();
+		}
+
+		Arrays.sort(arr);
+		int lo = 1, hi = 1000000009;
+		int sol = 1000000009;
+
+		while (lo <= hi) {
+			int mid = lo + (hi - lo) / 2;
+			int i = 0;
+			for (int kas = 0; kas < k && i < n; kas++) {
+				int hasta = arr[i];
+				hasta += mid * 2;
+				while (i < n - 1 && arr[i + 1] <= hasta) {
+					i++;
+				}
+				i++;
+			}
+
+			if (i >= n) {
+				sol = Math.min(sol, mid);
+				hi = mid - 1;
+			} else {
+				lo = mid + 1;
+			}
+		}
+		io.println(sol);
+		io.close();
+	}
+
+
+	// codeSnip{Kattio}
+}
+```
+
+</JavaSection>
 <PySection>
 
 ```py
