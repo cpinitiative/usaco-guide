@@ -255,6 +255,13 @@ export const RestOfMembers: Member[] = [
     name: 'Peng Bai',
     titles: [roles.contentAuthor],
   },
+  {
+    photo: 'rameez',
+    name: 'Rameez Parwez',
+    titles: [roles.contentAuthor],
+    github: 'sosuke23',
+    codeforces: 'sosuke23'
+  }
 ];
 
 export const NotPictured: Member[] = [
@@ -279,6 +286,12 @@ export const NotPictured: Member[] = [
     titles: [roles.contentAuthor],
     github: 'IDON-TEXIST',
   },
+  {
+    name: 'Rameez Parwez',
+    titles: [roles.contentAuthor],
+    github: 'sosuke23',
+    codeforces: 'sosuke23',
+  }
 ];
 
 export const FormerMembers: Member[] = [
