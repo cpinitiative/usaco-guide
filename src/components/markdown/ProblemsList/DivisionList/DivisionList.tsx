@@ -17,7 +17,7 @@ import divToProbs from './div_to_probs.json';
 import idToSol from './id_to_sol.json';
 
 const startYear = 2016;
-const endYear = 2024; // manually increment this for a new season
+const endYear = 2025; // manually increment this for a new season
 const allYears = `All (${startYear - 1} - ${endYear})`;
 const divisions = ['Bronze', 'Silver', 'Gold', 'Platinum'];
 
@@ -34,9 +34,9 @@ const seasons = getSeasons();
 
 const color: { [key: string]: string } = {
   Bronze: 'bg-red-800',
-  Silver: 'bg-gray-300',
+  Silver: 'bg-gray-400',
   Gold: 'bg-yellow-300',
-  Platinum: 'bg-gray-300', // whoops plat looks basically the same as silver on the website
+  Platinum: 'bg-gray-200',
 };
 
 const getCircle = option => {

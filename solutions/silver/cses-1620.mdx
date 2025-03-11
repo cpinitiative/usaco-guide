@@ -39,68 +39,55 @@ that it's optimal for every machine to work simultaneously. Then, in $ans$ time,
 machine $i$ can create $\lfloor \frac{ans}{k_i} \rfloor$ products.
 
 Overall, the $n$ machines can create
-‎‎$\sum_{i=1}^{n} \lfloor \frac{ans}{k_i} \rfloor$ products. If this sum
+$\sum_{i=1}^{n} \lfloor \frac{ans}{k_i} \rfloor$ products. If this sum
 $\geq t$, then $ans$ is valid.
 
 ## Implementation
 
-**Time Complexity:** $\mathcal{O}(n \log t)$, where $t$ is the largest time we need to consider.
+**Time Complexity:** $\mathcal{O}(N \log T)$, where $T$ is the largest time we need to consider.
 
 <LanguageSection>
 <CPPSection>
 
 ```cpp
-#include <bits/stdc++.h>
-using namespace std;
-using ll = long long;
-using vi = vector<int>;
-#define pb push_back
-#define rsz resize
-#define all(x) begin(x), end(x)
-#define sz(x) (int)(x).size()
-using pi = pair<int, int>;
-#define f first
-#define s second
-#define mp make_pair
-void setIO(string name = "") {  // name is nonempty for USACO file I/O
-	ios_base::sync_with_stdio(0);
-	cin.tie(0);  // see Fast Input & Output
-	if (sz(name)) {
-		freopen((name + ".in").c_str(), "r", stdin);  // see Input & Output
-		freopen((name + ".out").c_str(), "w", stdout);
-	}
-}
+#include <climits>
+#include <iostream>
+#include <vector>
+
+using std::vector;
 
 int main() {
-	setIO();
 	int n;
-	ll t, mn = INT_MAX;
-	cin >> n >> t;
-	vector<ll> k(n);
-	for (int i = 0; i < n; i++) {
-		cin >> k[i];
-		mn = min(mn, k[i]);
+	long long t;
+	std::cin >> n >> t;
+	vector<int> k(n);
+
+	int mn = INT_MAX;
+	for (int &x : k) {
+		std::cin >> x;
+		mn = std::min(mn, x);
 	}
-	ll lo = 0;
-	ll hi = mn * t;
-	ll ans = 0;
+
+	long long lo = 0;
+	long long hi = mn * t;
+	long long res = 0;
 	while (lo <= hi) {
-		ll mid = (lo + hi) / 2;
-		ll sum = 0;
+		long long mid = (lo + hi) / 2;
+		long long sum = 0;
 		for (int i = 0; i < n; i++) {
 			sum += (mid / k[i]);
-			if (sum >= t) {  // deal with overflow
-				break;
-			}
+			if (sum >= t) { break; }
 		}
+
 		if (sum >= t) {
-			ans = mid;
+			res = mid;
 			hi = mid - 1;
 		} else {
 			lo = mid + 1;
 		}
 	}
-	cout << ans << "\n";
+
+	std::cout << res << std::endl;
 }
 ```
 
@@ -157,7 +144,7 @@ _, goal = map(int, input().split())
 machines = list(map(int, input().split()))
 
 lo = 0
-hi = int(1e18)
+hi = 10**18
 ans = 0
 while lo <= hi:
 	mid = (lo + hi) // 2
@@ -171,6 +158,7 @@ while lo <= hi:
 		hi = mid - 1
 	else:
 		lo = mid + 1
+
 print(ans)
 ```
 

@@ -351,25 +351,27 @@ export default function ContactUsSlideover({
                 ) rather than submitting this form.
               </div>
               <div className="text-sm">
-                If you have any questions about{' '}
-                <a
-                  className="hover:underline text-blue-600 dark:text-blue-300"
-                  target="_blank"
-                  rel="noreferrer"
-                  href="https://joincpi.org/classes"
-                >
-                  CPI classes
-                </a>
-                , please email{' '}
-                <a
-                  className="hover:underline text-blue-600 dark:text-blue-300"
-                  target="_blank"
-                  rel="noreferrer"
-                  href="mailto:classes@joincpi.org"
-                >
-                  classes@joincpi.org
-                </a>{' '}
-                rather than submitting this form.
+                <strong>
+                  If you have any questions about{' '}
+                  <a
+                    className="hover:underline text-blue-600 dark:text-blue-300"
+                    target="_blank"
+                    rel="noreferrer"
+                    href="https://joincpi.org/classes"
+                  >
+                    CPI classes
+                  </a>
+                  , please email{' '}
+                  <a
+                    className="hover:underline text-blue-600 dark:text-blue-300"
+                    target="_blank"
+                    rel="noreferrer"
+                    href="mailto:classes@joincpi.org"
+                  >
+                    classes@joincpi.org
+                  </a>{' '}
+                  rather than submitting this form.
+                </strong>
               </div>
               <div className="space-y-3">
                 {topics.map((t, idx) => (

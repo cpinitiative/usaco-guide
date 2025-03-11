@@ -99,12 +99,12 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
     {
       name: 'Sorting & Searching',
       items: [
-        'sorting-custom',
         'two-pointers',
-        'intro-sorted-sets',
-        'custom-cpp-stl',
-        'greedy-sorting',
+        'binary-search-sorted-array',
         'binary-search',
+        'sorting-custom',
+        'greedy-sorting',
+        'priority-queues',
       ],
     },
     {
@@ -156,7 +156,13 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
     },
     {
       name: 'Data Structures',
-      items: ['stacks', 'sliding-window', 'PURS'],
+      items: [
+        'intro-sorted-sets',
+        'custom-cpp-stl',
+        'stacks',
+        'sliding-window',
+        'PURS',
+      ],
     },
     {
       name: 'Trees',
