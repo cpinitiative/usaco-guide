@@ -80,38 +80,38 @@ int main() {
 
 <JavaSection>
 
-```java 
+```java
 import java.io.*;
 
 public class LevelGeneration {
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        PrintWriter pw = new PrintWriter(System.out);
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		PrintWriter pw = new PrintWriter(System.out);
 
-        int testNum = Integer.parseInt(br.readLine());
-        for (int t = 0; t < testNum; t++) {
-            int nodes = Integer.parseInt(br.readLine());
+		int testNum = Integer.parseInt(br.readLine());
+		for (int t = 0; t < testNum; t++) {
+			int nodes = Integer.parseInt(br.readLine());
 
-            long low = nodes - 1;
-            long high = 2L * (nodes - 1);
-            while (low < high) {
-                long mid = (low + high + 1) / 2;
-                long num_bridges = (mid + 1) / 2;
-                long cycle_nodes = nodes - num_bridges;
-                long cycle_edges = cycle_nodes * (cycle_nodes - 1) / 2;
+			long low = nodes - 1;
+			long high = 2L * (nodes - 1);
+			while (low < high) {
+				long mid = (low + high + 1) / 2;
+				long num_bridges = (mid + 1) / 2;
+				long cycle_nodes = nodes - num_bridges;
+				long cycle_edges = cycle_nodes * (cycle_nodes - 1) / 2;
 
-                if (mid - num_bridges <= cycle_edges) {
-                    low = mid;
-                } else {
-                    high = mid - 1;
-                }
-            }
+				if (mid - num_bridges <= cycle_edges) {
+					low = mid;
+				} else {
+					high = mid - 1;
+				}
+			}
 
-            pw.println(low);
-        }
- 
-        pw.close();
-    }
+			pw.println(low);
+		}
+
+		pw.close();
+	}
 };
 ```
 
