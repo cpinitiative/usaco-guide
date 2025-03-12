@@ -1,7 +1,7 @@
 ---
 id: ad-hoc
 title: Ad Hoc Problems
-author: Michael Cao
+author: Michael Cao, Aarav Sharma
 contributors: Ryan Chou
 description:
   'Problems that do not fall into standard categories with well-studied
@@ -322,13 +322,153 @@ for i in range(n):
 </PySection>
 </LanguageSection>
 
-## Problems
+
+
+# Casework
+When you draw a lot of cases and notice that certain cases fit similar trends in their solutions, chances are that the problem requires **casework**. A casework problem is a type of ad hoc problem that needs to be broken down into different cases that each need to be accounted for. 
+
+Casework problems also require drawing out a lot of cases and making observations about these cases. Try to spot similarities and differences between cases and their solutions.
+
+## Example - Sleepy Cow Herding
+<FocusProblem problem="case-tutorial" />
+<Spoiler title="Hint 1">
+The solution for the minimum involves casework, while the maximum does not necessarily.
+</Spoiler>
+<Spoiler title="Hint 2">
+There are 3 cases for the minimum, each having their own $\mathcal{O}(1)$ solution. Can you find out what those solutions are?
+</Spoiler>
+There are 3 cases for the minimum amount of moves:
+- The 3 positions are already consecutive.
+- Two elements are already in-position consecutively (including gaps), but the other is not.
+- Any other case that did not satisfy the two above.
+For the first case, the answer would be $0$ because the elements are already consecutive.
+
+For the second case, the answer would be $1$ because the only swap required is the one that would insert the isolated element into the gap between the two other elements.
+
+The third case would output $2$ because for any other test case, the optimal solution would be to take the minimum element to $max-2$, and then the new minimum to fit right in between the gap.
+
+The maximum will always be finite because these operations group the cows closer together over time, as mentioned in the problem statement. The best approach to maximize the amount of moves is to place each element as close to a gap as possible (while not remaining an endpoint). Therefore, the maximum is just the largest gap between two adjacent elements minus 1. This can be observed by drawing a lot of cases.
+
+This code was borrowed from [here.](https://usaco.guide/problems/usaco-915-sleepy-cow-herding/solution)
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <algorithm>
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+int main() {
+	freopen("herding.in", "r", stdin);
+	freopen("herding.out", "w", stdout);
+
+	// all cow locations
+	vector<int> a;
+	for (int i = 0; i < 3; i++) {
+		int b;
+		cin >> b;
+		a.push_back(b);
+	}
+	sort(a.begin(), a.end());
+
+	/*
+	 * The minimum number of moves can only be 0, 1, or 2.
+	 * 0 is if they're already consecutive,
+	 * 1 is if there's a difference of 2 between any 2 numbers,
+	 * and 2 is for all other cases.
+	 */
+	if (a[0] == a[2] - 2) {
+		cout << 0 << endl;
+	} else if ((a[1] == a[2] - 2) || (a[0] == a[1] - 2)) {
+		cout << 1 << endl;
+	} else {
+		cout << 2 << endl;
+	}
+	// max is equal to largest difference between end and middle, minus one.
+	cout << max(a[2] - a[1], a[1] - a[0]) - 1;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+class Main {
+	public static void main(String[] args) throws IOException {
+		Scanner sc = new Scanner(new File("herding.in"));
+		PrintWriter pw = new PrintWriter(new File("herding.out"));
+		int[] cows = new int[3];
+		cows[0] = sc.nextInt();
+		cows[1] = sc.nextInt();
+		cows[2] = sc.nextInt();
+		Arrays.sort(cows);
+
+		// Printing the minimum number of moves
+		if (cows[2] == cows[0] + 2) {
+			pw.println(0);
+		} else if (cows[1] == cows[0] + 2 || cows[2] == cows[1] + 2) {
+			pw.println(1);
+		} else {
+			pw.println(2);
+		}
+
+		// Max number of moves
+		pw.println(Math.max(cows[1] - cows[0], cows[2] - cows[1]) - 1);
+		pw.close();
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+import sys
+
+sys.stdin = open("herding.in", "r")
+sys.stdout = open("herding.out", "w")
+a, b, c = map(int, input().split())
+
+# Best scenario: the three elements are already in order.
+if c == a + 2:
+	print(0)
+	"""
+	If there is a difference by 2, it can be solved in one move.
+	3 5 9 -> 5 7 9
+	"""
+elif b == a + 2 or c == b + 2:
+	print(1)
+	"""
+	It can always be solved in two moves by moving a -> c - 2 and b -> c - 1.
+	If there is less than one integer between the two elements, it'll be taken care
+	of in the if statement above.
+	"""
+else:
+	print(2)
+	"""
+	The worst case is incrementing by 1 in the largest gap.
+	3 5 9 -> 5 6 9 -> 6 7 9 -> 7 8 9
+	"""
+print(max(b - a, c - b) - 1)
+```
+
+</PySection>
+</LanguageSection>
+
+## Ad Hoc Problems
 
 Of course, ad hoc problems can be
 [quite easy](/general/expected-knowledge#problem-usaco-591), but the ones
 presented below are generally on the harder side.
 
 <Problems problems="general" />
+
+## Casework Problems
+<Problems problems="casework" />
 
 ## Quiz
 
@@ -351,6 +491,28 @@ presented below are generally on the harder side.
       Relying on previous knowledge on well-studied topics.
       <Quiz.Explanation>
         Incorrect. Ad hoc problems have solutions that are not well-studied and do not fall into any standard categories.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+  </Quiz.Question>
+
+  <Quiz.Question>
+    What is casework?
+    <Quiz.Answer correct>
+      Breaking down a problem into general cases that follow trends in their solutions.
+      <Quiz.Explanation>
+        Correct. 
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      The act of drawing out a lot of cases.
+      <Quiz.Explanation>
+        Incorrect. While drawing out a lot of cases is crucial in solving a casework problem, that is not the definition of casework.
+      </Quiz.Explanation>
+    </Quiz.Answer>
+    <Quiz.Answer>
+      A technique used to optimize searching.
+      <Quiz.Explanation>
+        Incorrect.
       </Quiz.Explanation>
     </Quiz.Answer>
   </Quiz.Question>
