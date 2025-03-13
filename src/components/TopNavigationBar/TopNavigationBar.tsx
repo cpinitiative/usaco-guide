@@ -29,7 +29,6 @@ import {
 import ContactUsSlideover from '../ContactUsSlideover/ContactUsSlideover';
 import Logo from '../Logo';
 import LogoSquare from '../LogoSquare';
-import MobileMenuButtonContainer from '../MobileMenuButtonContainer';
 import SectionsDropdown from '../SectionsDropdown';
 import { LoadingSpinner } from '../elements/LoadingSpinner';
 import Banner from './Banner';
@@ -295,8 +294,8 @@ export default function TopNavigationBar({
             </div>
             <div className="flex items-center lg:hidden">
               {/* Mobile menu button */}
-              <MobileMenuButtonContainer
-                className="inline-flex items-center justify-center p-2"
+              <button
+                className="mobile-menu-button-container inline-flex items-center justify-center p-2"
                 aria-label="Main menu"
                 aria-expanded="false"
                 onClick={() => setIsMobileNavOpen(!isMobileNavOpen)}
@@ -331,7 +330,7 @@ export default function TopNavigationBar({
                     d="M6 18L18 6M6 6l12 12"
                   />
                 </svg>
-              </MobileMenuButtonContainer>
+              </button>
             </div>
             <div className="hidden lg:mx-3 lg:block border-l border-gray-200 dark:border-gray-700 h-6 self-center" />
             <div className="hidden lg:flex lg:items-center">

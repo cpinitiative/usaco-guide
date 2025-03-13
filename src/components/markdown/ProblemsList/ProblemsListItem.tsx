@@ -1,6 +1,4 @@
 import React from 'react';
-import styled, { css } from 'styled-components';
-import tw from 'twin.macro';
 import { olympiads, ProblemInfo, probSources } from '../../../models/problem';
 import { UsacoTableProgress } from '../../Dashboard/DashboardProgress';
 import DifficultyBox from '../../DifficultyBox';
@@ -29,27 +27,6 @@ export type ProblemsListItemProps = {
     }
 );
 
-export const Anchor = styled.a`
-  ${tw`text-blue-600 font-semibold`}
-
-  .dark && {
-    color: #a9c5ea;
-  }
-`;
-
-// https://stackoverflow.com/questions/45871439/before-and-after-pseudo-classes-used-with-styled-components
-const StyledProblemRow = styled.tr<{ isActive: boolean }>`
-  ${({ isActive }) =>
-    isActive
-      ? css`
-          background-color: #fdfdea !important;
-          .dark && {
-            background-color: #3c3c00 !important;
-          }
-        `
-      : null}
-`;
-
 export default function ProblemsListItem(
   props: ProblemsListItemProps
 ): JSX.Element {
@@ -68,7 +45,7 @@ export default function ProblemsListItem(
     window.addEventListener('hashchange', hashHandler, false);
     return (): void =>
       window.removeEventListener('hashchange', hashHandler, false);
-  }, []);
+  }, [id]);
 
   const statusCol = (
     <td className="pl-4 whitespace-nowrap text-sm font-medium">
@@ -97,7 +74,7 @@ export default function ProblemsListItem(
   }
   const sourceCol = isDivisionTable ? (
     <td className="pl-4 md:pl-6 py-4 whitespace-nowrap text-sm leading-5 font-medium">
-      <Anchor
+      <a
         href={resultsUrl}
         className={'truncate'}
         style={{ maxWidth: '15rem' }}
@@ -105,7 +82,7 @@ export default function ProblemsListItem(
         rel="nofollow noopener noreferrer"
       >
         {problem.source}
-      </Anchor>
+      </a>
     </td>
   ) : (
     <td className="pl-4 md:pl-6 py-4 whitespace-nowrap text-sm leading-5 font-medium">
@@ -131,19 +108,19 @@ export default function ProblemsListItem(
             </svg>
           </Tooltip>
         )}
-        <Anchor
+        <a
           href={problem.url}
           className={
             (isDivisionTable == false && problem.isStarred
               ? 'pl-1 sm:pl-2'
-              : 'sm:pl-6') + ' truncate'
+              : 'sm:pl-6') + ' truncate problem-list-item-anchor'
           }
           style={{ maxWidth: '20rem' }}
           target="_blank"
           rel="nofollow noopener noreferrer"
         >
           {problem.name}
-        </Anchor>
+        </a>
       </div>
     </td>
   );
@@ -155,7 +132,12 @@ export default function ProblemsListItem(
   );
 
   return (
-    <StyledProblemRow id={id} isActive={isActive}>
+    <tr
+      className={
+        isActive ? '!bg-[#fdfdea] dark:!bg-[#3c3c00] relative' : 'relative'
+      }
+    >
+      <td id={id} className="absolute bottom-[120px] h-[2px]" />
       {statusCol}
       {sourceCol}
       {nameCol}
@@ -181,9 +163,10 @@ export default function ProblemsListItem(
       {isDivisionTable && props.modules && (
         <td className="pl-4 md:pl-6 pr-4 md:pr-6 py-4 whitespace-nowrap text-sm font-medium leading-none">
           {problem.moduleLink ? (
-            <Anchor href={problem.moduleLink} target="_blank" className="pl-6">
+            // eslint-disable-next-line react/jsx-no-target-blank
+            <a href={problem.moduleLink} target="_blank" className="pl-6">
               Link
-            </Anchor>
+            </a>
           ) : (
             <Tooltip content={`This problem isn't in a module yet.`}>
               <span className="text-gray-300 dark:text-gray-600 pl-6">
@@ -196,6 +179,6 @@ export default function ProblemsListItem(
       <td className="text-center pr-2 md:pr-3">
         <ProblemsListItemDropdown {...props} isFocusProblem={false} />
       </td>
-    </StyledProblemRow>
+    </tr>
   );
 }
