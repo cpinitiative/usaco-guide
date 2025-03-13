@@ -323,7 +323,6 @@ for i in range(n):
 </LanguageSection>
 
 
-
 # Casework
 When you draw a lot of cases and notice that certain cases fit similar trends in their solutions, chances are that the problem requires **casework**. A casework problem is a type of ad hoc problem that needs to be broken down into different cases that each need to be accounted for.
 
@@ -357,20 +356,25 @@ This code was borrowed from [here.](https://usaco.guide/problems/usaco-915-sleep
 #include <algorithm>
 #include <iostream>
 #include <vector>
+
 using namespace std;
+
 int main() {
 	freopen("herding.in", "r", stdin);
 	freopen("herding.out", "w", stdout);
+
 	// all cow locations
 	vector<int> a(3);
 	for (int &b : a) cin >> b;
 	sort(a.begin(), a.end());
+
 	/*
 	 * The minimum number of moves can only be 0, 1, or 2.
 	 * 0 is if they're already consecutive,
 	 * 1 is if there's a difference of 2 between any 2 numbers,
 	 * and 2 is for all other cases.
 	 */
+
 	if (a[0] == a[2] - 2) {
 		cout << 0 << endl;
 	} else if ((a[1] == a[2] - 2) || (a[0] == a[1] - 2)) {
@@ -425,19 +429,24 @@ with open("herding.in", "r") as file_in:
 	# Best scenario: the three elements are already in order.
 	if c == a + 2:
 		minimum = 0
+
 	"""
         If there is a difference by 2, it can be solved in one move.
         3 5 9 -> 5 7 9
         """
+
 	elif b == a + 2 or c == b + 2:
 		minimum = 1
+
 	"""
         It can always be solved in two moves by moving a -> c - 2 and b -> c - 1.
         If there is less than one integer between the two elements, it'll be taken care
         of in the if statement above.
         """
+
 	else:
 		minimum = 2
+
 	"""
         The worst case is incrementing by 1 in the largest gap.
         3 5 9 -> 5 6 9 -> 6 7 9 -> 7 8 9
