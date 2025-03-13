@@ -20,7 +20,10 @@ export default function ProblemsListHeader(
 ): JSX.Element {
   return (
     <tr className="bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 pr-4 md:pr-6">
-      <th className="pl-4 py-3 text-xs leading-4 font-medium uppercase tracking-wider text-center">
+      <th
+        className="pl-4 py-3 text-xs leading-4 font-medium uppercase tracking-wider text-center"
+        colSpan={2} // first column is anchor
+      >
         Status
       </th>
 

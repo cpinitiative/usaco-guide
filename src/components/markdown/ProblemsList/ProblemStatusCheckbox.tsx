@@ -90,7 +90,7 @@ const ProgressDropdown = ({ onProgressSelected, currentProgress }) => {
   return (
     <ul
       tabIndex={-1}
-      className="rounded-md py-1 text-base leading-6 overflow-auto focus:outline-none sm:text-sm sm:leading-5 no-markdown"
+      className="rounded-md py-1 overflow-auto focus:outline-none text-sm leading-5 no-markdown"
     >
       {PROBLEM_PROGRESS_OPTIONS.map(progress => (
         <li
@@ -201,6 +201,7 @@ export default function ProblemStatusCheckbox({
       trigger="click"
       placement="bottom-start"
       theme={darkMode ? 'dark' : 'light'}
+      appendTo={() => document.body}
     >
       <span
         // onClick={handleClick}
