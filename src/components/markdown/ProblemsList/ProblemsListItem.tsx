@@ -133,9 +133,11 @@ export default function ProblemsListItem(
 
   return (
     <tr
-      id={id}
-      className={isActive ? '!bg-[#fdfdea] dark:!bg-[#3c3c00]' : undefined}
+      className={
+        isActive ? '!bg-[#fdfdea] dark:!bg-[#3c3c00] relative' : 'relative'
+      }
     >
+      <td id={id} className="absolute bottom-[120px] h-[2px]" />
       {statusCol}
       {sourceCol}
       {nameCol}
