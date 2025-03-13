@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { useMarkdownLayout } from '../../context/MarkdownLayoutContext';
-import MobileMenuButtonContainer from '../MobileMenuButtonContainer';
 import NavBar from './NavBar';
 
 export default function MobileAppBar() {
@@ -8,8 +7,8 @@ export default function MobileAppBar() {
 
   return (
     <div className="sticky top-0 inset-x-0 bg-white dark:bg-dark-surface z-10 shadow lg:hidden pl-1 pt-1 flex items-center">
-      <MobileMenuButtonContainer
-        className="flex-shrink-0 -ml-0.5 -mt-0.5 h-12 w-12 inline-flex items-center justify-center"
+      <button
+        className="mobile-menu-button-container flex-shrink-0 -ml-0.5 -mt-0.5 h-12 w-12 inline-flex items-center justify-center"
         aria-label="Open sidebar"
         onClick={() => setIsMobileNavOpen(true)}
       >
@@ -26,7 +25,7 @@ export default function MobileAppBar() {
             d="M4 6h16M4 12h16M4 18h16"
           />
         </svg>
-      </MobileMenuButtonContainer>
+      </button>
       <div className="flex-1 ml-4 mr-4 sm:mr-6">
         <NavBar />
       </div>
