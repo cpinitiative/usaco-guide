@@ -19,7 +19,7 @@ export const CPIProjectCard = ({
     <div className="flex-1">
       <div
         className={classNames(
-          'w-12 h-12 rounded-xl mb-4 bg-gradient-to-br flex items-center justify-center text-white',
+          'w-12 h-12 rounded-xl mb-4 bg-linear-to-br flex items-center justify-center text-white',
           iconClasses
         )}
       >

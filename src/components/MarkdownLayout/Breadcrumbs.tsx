@@ -17,7 +17,7 @@ const Breadcrumbs = () => {
         Home
       </Link>
       <svg
-        className="flex-shrink-0 mx-2 h-5 w-5 text-gray-400"
+        className="shrink-0 mx-2 h-5 w-5 text-gray-400"
         viewBox="0 0 20 20"
         fill="currentColor"
       >
@@ -34,7 +34,7 @@ const Breadcrumbs = () => {
         {SECTION_LABELS[module.section]}
       </Link>
       <svg
-        className="flex-shrink-0 mx-2 h-5 w-5 text-gray-400"
+        className="shrink-0 mx-2 h-5 w-5 text-gray-400"
         viewBox="0 0 20 20"
         fill="currentColor"
       >

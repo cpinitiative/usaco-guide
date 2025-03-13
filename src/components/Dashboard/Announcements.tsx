@@ -28,7 +28,7 @@ export default function Announcements({
     >
       {announcements.filter(filterFn ?? (() => true)).map(announcement => (
         <div
-          className="bg-white dark:bg-gray-800 shadow transition sm:rounded-lg"
+          className="bg-white dark:bg-gray-800 shadow-sm transition sm:rounded-lg"
           key={announcement.id}
         >
           {/* hover:shadow-lg */}

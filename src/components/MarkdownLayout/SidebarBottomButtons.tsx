@@ -9,9 +9,9 @@ const SidebarBottomButtons = () => {
   const { setIsMobileNavOpen } = useMarkdownLayout();
   return (
     <>
-      <div className="flex-shrink-0 border-t border-gray-200 dark:border-gray-800 flex">
+      <div className="shrink-0 border-t border-gray-200 dark:border-gray-800 flex">
         <Link
-          className="group flex-1 flex items-center p-4 text-sm leading-5 font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 dark:text-dark-med-emphasis dark:hover:text-dark-high-emphasis dark:focus:text-dark-high-emphasis dark:hover:bg-gray-900 dark:focus:bg-gray-900 focus:outline-none focus:bg-gray-100 transition ease-in-out duration-150"
+          className="group flex-1 flex items-center p-4 text-sm leading-5 font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 dark:text-dark-med-emphasis dark:hover:text-dark-high-emphasis dark:focus:text-dark-high-emphasis dark:hover:bg-gray-900 dark:focus:bg-gray-900 focus:outline-hidden focus:bg-gray-100 transition ease-in-out duration-150"
           to="/settings"
         >
           <svg
@@ -37,9 +37,9 @@ const SidebarBottomButtons = () => {
           Settings
         </Link>
       </div>
-      <div className="flex-shrink-0 border-t border-gray-200 dark:border-gray-800 flex">
+      <div className="shrink-0 border-t border-gray-200 dark:border-gray-800 flex">
         <button
-          className="group flex-1 flex items-center p-4 text-sm leading-5 font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 dark:text-dark-med-emphasis dark:hover:text-dark-high-emphasis dark:focus:text-dark-high-emphasis dark:hover:bg-gray-900 dark:focus:bg-gray-900 focus:outline-none focus:bg-gray-100 transition ease-in-out duration-150"
+          className="group flex-1 flex items-center p-4 text-sm leading-5 font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 dark:text-dark-med-emphasis dark:hover:text-dark-high-emphasis dark:focus:text-dark-high-emphasis dark:hover:bg-gray-900 dark:focus:bg-gray-900 focus:outline-hidden focus:bg-gray-100 transition ease-in-out duration-150"
           onClick={() => {
             setIsContactUsSlideoverOpen(true);
             setIsMobileNavOpen(false);

@@ -108,7 +108,7 @@ export default function AdminSettings() {
               User Email
             </label>
             <div className="mt-1 flex rounded-md shadow-sm">
-              <div className="relative flex items-stretch flex-grow focus-within:z-10">
+              <div className="relative flex items-stretch grow focus-within:z-10">
                 <input
                   type="email"
                   name="search_email"
@@ -151,7 +151,7 @@ export default function AdminSettings() {
 
           <div>
             <div className="flex items-center mb-4">
-              <div className="mr-4 flex-shrink-0">
+              <div className="mr-4 shrink-0">
                 <img src={userData.photoURL} className="h-16 w-16 rounded-md" />
               </div>
               <div>

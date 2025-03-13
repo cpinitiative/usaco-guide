@@ -329,7 +329,7 @@ class CodeBlock extends React.Component<
     if (!['cpp', 'java', 'python'].includes(language ?? '')) {
       // no styling, just a regular pre tag
       return (
-        <pre className="-mx-4 sm:-mx-6 md:mx-0 md:rounded bg-gray-100 p-4 mb-4 whitespace-pre-wrap break-all dark:bg-gray-900">
+        <pre className="-mx-4 sm:-mx-6 md:mx-0 md:rounded-sm bg-gray-100 p-4 mb-4 whitespace-pre-wrap break-all dark:bg-gray-900">
           {code}
         </pre>
       );
@@ -362,7 +362,7 @@ class CodeBlock extends React.Component<
               navigator.clipboard.writeText(code);
             }}
             rightOffset={rightOffset}
-            className="focus:outline-none"
+            className="focus:outline-hidden"
             isDarkMode={isDarkMode}
           >
             Copy
@@ -383,7 +383,7 @@ class CodeBlock extends React.Component<
             >
               <pre
                 className={
-                  '-mx-4 sm:-mx-6 md:mx-0 md:rounded whitespace-pre-wrap break-all p-4 mb-4 relative ' +
+                  '-mx-4 sm:-mx-6 md:mx-0 md:rounded-sm whitespace-pre-wrap break-all p-4 mb-4 relative ' +
                   className
                 }
                 style={{

@@ -39,7 +39,7 @@ export function ActivityHeatmap({
     (activeDate && moduleActivities[activeDate.getTime()]?.length) ?? 0;
   return (
     <div className="sm:px-6 lg:px-8 py-4">
-      <div className="bg-white dark:bg-gray-800 shadow transition sm:rounded-lg px-4 py-5 sm:p-6">
+      <div className="bg-white dark:bg-gray-800 shadow-sm transition sm:rounded-lg px-4 py-5 sm:p-6">
         <div className="grid lg:grid-cols-3 lg:gap-x-6 gap-y-4 lg:gap-y-0">
           <div className="col-span-2">
             <CalendarHeatmap

@@ -51,7 +51,7 @@ const ModuleSearch = () => {
         <input
           type="search"
           placeholder="Search"
-          className="focus:outline-none focus:ring-0 text-gray-700 dark:bg-dark-surface dark:text-gray-200 dark:placeholder-gray-400 border-0 flex-1"
+          className="focus:outline-hidden focus:ring-0 text-gray-700 dark:bg-dark-surface dark:text-gray-200 dark:placeholder-gray-400 border-0 flex-1"
           value={query}
           onChange={e => setQuery(e.target.value)}
           autoComplete="off"

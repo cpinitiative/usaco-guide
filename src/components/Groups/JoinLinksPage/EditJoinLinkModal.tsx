@@ -92,7 +92,7 @@ export default function EditJoinLinkModal({
               Join Link
             </h3>
             <div className="mt-6">
-              <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded flex items-center">
+              <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-sm flex items-center">
                 <span className="flex-1">
                   https://usaco.guide/groups/join?key={link.id}
                 </span>
@@ -105,7 +105,7 @@ export default function EditJoinLinkModal({
                       `https://usaco.guide/groups/join?key=${link.id}`
                     );
                   }}
-                  className="focus:outline-none"
+                  className="focus:outline-hidden"
                 >
                   <Tooltip
                     content={copied ? 'Copied!' : 'Copy to Clipboard'}
@@ -113,7 +113,7 @@ export default function EditJoinLinkModal({
                     hideOnClick={false}
                   >
                     <svg
-                      className="h-6 w-6 flex-shrink-0 text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-gray-300"
+                      className="h-6 w-6 shrink-0 text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-gray-300"
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
                       viewBox="0 0 24 24"

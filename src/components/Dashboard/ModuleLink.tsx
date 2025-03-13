@@ -55,7 +55,7 @@ const LinkWithProgress = styled(SidebarLinkWithProgress)<{ small: boolean }>`
 `;
 
 const StyledLink = styled.div<{ showDot?: boolean }>`
-  ${tw`focus:outline-none transition ease-in-out duration-150 text-gray-800 hover:text-blue-700 text-xl leading-6 py-3`}
+  ${tw`focus:outline-hidden transition ease-in-out duration-150 text-gray-800 hover:text-blue-700 text-xl leading-6 py-3`}
 
   &::before {
     content: '';

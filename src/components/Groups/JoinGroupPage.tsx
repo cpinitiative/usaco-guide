@@ -90,7 +90,7 @@ const JoinGroupPage = (props: RouteComponentProps) => {
               <p className="font-medium text-2xl text-center">
                 Please{' '}
                 <button
-                  className="focus:outline-none underline text-blue-600"
+                  className="focus:outline-hidden underline text-blue-600"
                   onClick={() => signIn()}
                 >
                   sign in

@@ -92,7 +92,7 @@ const ProgressDropdown = ({
   return (
     <ul
       tabIndex={-1}
-      className="rounded-md py-1 text-base leading-6 overflow-auto focus:outline-none sm:text-sm sm:leading-5 no-markdown"
+      className="rounded-md py-1 text-base leading-6 overflow-auto focus:outline-hidden sm:text-sm sm:leading-5 no-markdown"
     >
       {ResourceProgressOptions.map(progress => (
         <li

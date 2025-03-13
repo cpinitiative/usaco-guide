@@ -108,7 +108,7 @@ export default function FeedItem({
           to={`/groups/${group.id}/post/${post.id}`}
           className="flex flex-1 space-x-4"
         >
-          <div className="flex-shrink-0 self-center">
+          <div className="shrink-0 self-center">
             {post.type === 'announcement' ? (
               <AnnouncementIcon />
             ) : (
@@ -135,11 +135,11 @@ export default function FeedItem({
           </div>
         </Link>
         {showAdminView && (
-          <div className="flex-shrink-0 self-center flex">
+          <div className="shrink-0 self-center flex">
             <div className="relative inline-block text-left" ref={ref}>
               <button
                 type="button"
-                className="pl-4 flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 focus:outline-none"
+                className="pl-4 flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 focus:outline-hidden"
                 id="options-menu-0"
                 onClick={e => {
                   setShowDropdown(!showDropdown);
@@ -167,7 +167,7 @@ export default function FeedItem({
                 leave="transition ease-in duration-75"
                 leaveFrom="transform opacity-100 scale-100"
                 leaveTo="transform opacity-0 scale-95"
-                className="origin-top-right absolute z-10 right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none"
+                className="origin-top-right absolute z-10 right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-hidden"
                 role="menu"
                 aria-orientation="vertical"
                 aria-labelledby="options-menu-0"

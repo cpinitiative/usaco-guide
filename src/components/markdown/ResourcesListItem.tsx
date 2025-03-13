@@ -127,7 +127,7 @@ export default function ResourcesListItem({
             <div>
               <button
                 type="button"
-                className="focus:outline-none block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900"
+                className="focus:outline-hidden block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900"
                 onClick={e => {
                   e.preventDefault();
                   setCopied(true);
@@ -153,7 +153,7 @@ export default function ResourcesListItem({
         interactive={true}
         onHidden={() => setCopied(false)}
       >
-        <button className="focus:outline-none w-8 h-8 inline-flex items-center justify-center text-gray-400 rounded-full bg-transparent hover:text-gray-500 dark:hover:text-gray-300">
+        <button className="focus:outline-hidden w-8 h-8 inline-flex items-center justify-center text-gray-400 rounded-full bg-transparent hover:text-gray-500 dark:hover:text-gray-300">
           {/* Heroicon name: solid/dots-vertical */}
           <svg
             className="w-5 h-5"

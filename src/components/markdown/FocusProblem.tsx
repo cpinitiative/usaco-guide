@@ -65,7 +65,7 @@ export default function FocusProblem({
               </a>
             </div>
           </div>
-          <div className="flex-shrink-0 flex items-center justify-center mt-1 sm:mr-2 ml-2">
+          <div className="shrink-0 flex items-center justify-center mt-1 sm:mr-2 ml-2">
             <div className="mr-2">
               <ProblemsListItemDropdown
                 onShowSolutionSketch={(problem: ProblemInfo) => {
@@ -82,14 +82,14 @@ export default function FocusProblem({
           </div>
         </div>
         <div className="border-t border-gray-100 dark:border-gray-700 sm:flex sm:justify-between">
-          <p className="text-xs italic text-gray-400 font-normal pt-3 px-4 sm:px-6 !mb-0 sm:pb-3">
+          <p className="text-xs italic text-gray-400 font-normal pt-3 px-4 sm:px-6 mb-0! sm:pb-3">
             Focus Problem – try your best to solve this problem before
             continuing!
           </p>
           {problem.solution?.kind === 'internal' && (
             <a
               href={`${getProblemURL(problem)}/solution`}
-              className="text-xs italic !text-gray-400 !font-normal py-3 px-4 sm:px-6 !mb-0 inline-flex hover:underline"
+              className="text-xs italic text-gray-400! font-normal! py-3 px-4 sm:px-6 mb-0! inline-flex hover:underline"
             >
               <span className="mr-1">View Internal Solution</span>
               <ExternalLinkIcon className="h-4 w-4" />

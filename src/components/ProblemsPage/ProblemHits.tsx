@@ -38,7 +38,7 @@ function ProblemHit({ hit }: ProblemHitProps) {
   const problem = hit as unknown as ProblemInfo;
   problem.uniqueId = hit.objectID;
   return (
-    <div className="bg-white dark:bg-gray-900 shadow p-4 sm:p-6 rounded-lg ">
+    <div className="bg-white dark:bg-gray-900 shadow-sm p-4 sm:p-6 rounded-lg ">
       <div className="flex flex-row justify-between w-full">
         <span>
           <span className="text-blue-700 dark:text-blue-400 font-medium text-sm">

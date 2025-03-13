@@ -67,7 +67,7 @@ const StyledLink = styled.span<{
   $darkTextStyle: TwStyle;
   $isActive: boolean;
 }>`
-  ${tw`focus:outline-none transition ease-in-out duration-150 hover:text-blue-700 hover:bg-blue-50 focus:bg-blue-100 flex items-center pl-12 pr-4 py-3 text-sm leading-5`}
+  ${tw`focus:outline-hidden transition ease-in-out duration-150 hover:text-blue-700 hover:bg-blue-50 focus:bg-blue-100 flex items-center pl-12 pr-4 py-3 text-sm leading-5`}
 
   ${({ $textStyle }) => $textStyle}
   .dark && {

@@ -76,7 +76,7 @@ export default function SlideoverForm(props: SlideoverProps): JSX.Element {
                     {props.children}
                   </div>
                 </div>
-                <div className="flex-shrink-0 px-4 py-4 space-x-4 flex justify-end border-t border-gray-200 dark:border-gray-800">
+                <div className="shrink-0 px-4 py-4 space-x-4 flex justify-end border-t border-gray-200 dark:border-gray-800">
                   {props.footerButtons}
                 </div>
               </form>

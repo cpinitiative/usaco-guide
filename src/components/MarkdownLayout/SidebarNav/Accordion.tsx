@@ -50,7 +50,7 @@ export default function Accordion({ label, isActive, children }) {
           {label}
         </span>
         <svg
-          className="h-5 w-5 flex-shrink-0 text-gray-600"
+          className="h-5 w-5 shrink-0 text-gray-600"
           fill="currentColor"
           viewBox="0 0 20 20"
         >

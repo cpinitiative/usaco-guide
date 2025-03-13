@@ -40,17 +40,17 @@ export default function ProblemPage(props) {
       <TopNavigationBar />
       <nav className="flex mt-6 mb-4" aria-label="Breadcrumb">
         <Breadcrumbs
-          className="max-w-screen-xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-3 pb-4"
+          className="max-w-(--breakpoint-xl) w-full mx-auto px-4 sm:px-6 lg:px-8 pt-3 pb-4"
           group={activeGroup.groupData!}
           post={post}
         />
       </nav>
       <main
-        className="flex-1 relative overflow-y-auto focus:outline-none"
+        className="flex-1 relative overflow-y-auto focus:outline-hidden"
         tabIndex={-1}
       >
         <div className="pb-8 xl:pb-10">
-          <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 xl:max-w-screen-xl xl:grid xl:grid-cols-3">
+          <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 xl:max-w-(--breakpoint-xl) xl:grid xl:grid-cols-3">
             <div className="xl:col-span-2 xl:pr-8 xl:border-r xl:border-gray-200 dark:border-gray-700">
               <div className="md:flex md:items-center md:justify-between md:space-x-4 xl:border-b xl:pb-6 dark:border-gray-700">
                 <div>

@@ -33,7 +33,7 @@ export default function MemberDetail({ member }: { member: MemberInfo }) {
       {/* Profile header */}
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 md:flex md:items-center md:justify-between md:space-x-5 mt-6">
         <div className="flex items-start space-x-5">
-          <div className="flex-shrink-0">
+          <div className="shrink-0">
             <div className="relative">
               <img
                 className="h-16 w-16 rounded-full"

@@ -147,7 +147,7 @@ export default function TopNavigationBar({
 
       <nav
         className={classNames(
-          !transparent && 'bg-white dark:bg-gray-900 shadow',
+          !transparent && 'bg-white dark:bg-gray-900 shadow-sm',
           'relative'
         )}
       >
@@ -157,7 +157,7 @@ export default function TopNavigationBar({
               <Link
                 to={linkLogoToIndex ? '/' : '/dashboard'}
                 state={{ redirect: redirectToDashboard }}
-                className="flex-shrink-0 flex items-center"
+                className="shrink-0 flex items-center"
               >
                 <div className="block sm:hidden">
                   <LogoSquare className="h-10 w-10" />
@@ -172,8 +172,8 @@ export default function TopNavigationBar({
                   to="/problems/"
                   getProps={({ isCurrent }) => ({
                     className: isCurrent
-                      ? 'inline-flex items-center px-1 pt-0.5 border-b-2 border-blue-500 dark:border-blue-700 text-base font-medium leading-6 text-gray-900 dark:text-dark-high-emphasis focus:outline-none focus:border-blue-700 dark:focus:border-blue-500 transition'
-                      : 'inline-flex items-center px-1 pt-0.5 border-b-2 border-transparent text-base font-medium leading-6 text-gray-500 hover:text-gray-900 hover:border-gray-300  focus:outline-none focus:text-gray-900 focus:border-gray-300 dark:text-dark-high-emphasis dark:hover:border-gray-500 dark:focus:border-gray-500 transition',
+                      ? 'inline-flex items-center px-1 pt-0.5 border-b-2 border-blue-500 dark:border-blue-700 text-base font-medium leading-6 text-gray-900 dark:text-dark-high-emphasis focus:outline-hidden focus:border-blue-700 dark:focus:border-blue-500 transition'
+                      : 'inline-flex items-center px-1 pt-0.5 border-b-2 border-transparent text-base font-medium leading-6 text-gray-500 hover:text-gray-900 hover:border-gray-300  focus:outline-hidden focus:text-gray-900 focus:border-gray-300 dark:text-dark-high-emphasis dark:hover:border-gray-500 dark:focus:border-gray-500 transition',
                   })}
                 >
                   Problems
@@ -187,7 +187,7 @@ export default function TopNavigationBar({
                             open
                               ? 'text-gray-900'
                               : 'text-gray-500 hover:border-gray-300 focus:border-gray-300 dark:hover:border-gray-500 dark:focus:border-gray-500',
-                            'group inline-flex items-center h-full border-b-2 border-transparent space-x-2 text-base leading-6 font-medium hover:text-gray-900 focus:outline-none focus:text-gray-900  transition ease-in-out duration-150 dark:text-dark-high-emphasis'
+                            'group inline-flex items-center h-full border-b-2 border-transparent space-x-2 text-base leading-6 font-medium hover:text-gray-900 focus:outline-hidden focus:text-gray-900  transition ease-in-out duration-150 dark:text-dark-high-emphasis'
                           )}
                         >
                           <span className="mt-0.5">Resources</span>
@@ -218,7 +218,7 @@ export default function TopNavigationBar({
                                   to="/groups/"
                                   className="-m-3 p-3 flex items-start rounded-lg dark:hover:bg-gray-700 hover:bg-gray-100 transition ease-in-out duration-150"
                                 >
-                                  <div className="flex-shrink-0 flex items-center justify-center h-10 w-10 rounded-md bg-blue-500 text-white sm:h-12 sm:w-12">
+                                  <div className="shrink-0 flex items-center justify-center h-10 w-10 rounded-md bg-blue-500 text-white sm:h-12 sm:w-12">
                                     <UserGroupIcon
                                       className="h-6 w-6"
                                       aria-hidden="true"
@@ -242,7 +242,7 @@ export default function TopNavigationBar({
                                     rel="noreferrer"
                                     className="-m-3 p-3 flex items-start rounded-lg dark:hover:bg-gray-700 hover:bg-gray-100 transition ease-in-out duration-150"
                                   >
-                                    <div className="flex-shrink-0 flex items-center justify-center h-10 w-10 rounded-md bg-blue-500 text-white sm:h-12 sm:w-12">
+                                    <div className="shrink-0 flex items-center justify-center h-10 w-10 rounded-md bg-blue-500 text-white sm:h-12 sm:w-12">
                                       <item.icon
                                         className="h-6 w-6"
                                         aria-hidden="true"
@@ -270,7 +270,7 @@ export default function TopNavigationBar({
                   </Popover>
                 </Popover.Group>
                 <button
-                  className="cursor-pointer inline-flex items-center px-1 border-b-2 border-transparent text-base font-medium leading-6 text-gray-500 hover:text-gray-900 hover:border-gray-300 focus:outline-none focus:text-gray-900 focus:border-gray-300 dark:text-dark-high-emphasis dark:hover:border-gray-500 dark:focus:border-gray-500 transition"
+                  className="cursor-pointer inline-flex items-center px-1 border-b-2 border-transparent text-base font-medium leading-6 text-gray-500 hover:text-gray-900 hover:border-gray-300 focus:outline-hidden focus:text-gray-900 focus:border-gray-300 dark:text-dark-high-emphasis dark:hover:border-gray-500 dark:focus:border-gray-500 transition"
                   onClick={() => setIsContactUsActive(true)}
                 >
                   Contact Us
@@ -282,7 +282,7 @@ export default function TopNavigationBar({
             >
               <button
                 type="button"
-                className="inline-flex items-center px-2 py-1 border border-transparent rounded-md text-gray-500 hover:text-gray-700 dark:text-dark-high-emphasis focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="inline-flex items-center px-2 py-1 border border-transparent rounded-md text-gray-500 hover:text-gray-700 dark:text-dark-high-emphasis focus:outline-hidden focus:ring-2 focus:ring-blue-500"
                 onClick={() => setIsSearchOpen(true)}
               >
                 <SearchIcon
@@ -348,7 +348,7 @@ export default function TopNavigationBar({
                 <>
                   <button
                     onClick={() => signIn()}
-                    className="relative inline-flex items-center px-2 py-1 border border-transparent text-base leading-6 font-medium rounded-md text-gray-500 hover:text-gray-700 dark:text-dark-high-emphasis focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="relative inline-flex items-center px-2 py-1 border border-transparent text-base leading-6 font-medium rounded-md text-gray-500 hover:text-gray-700 dark:text-dark-high-emphasis focus:outline-hidden focus:ring-2 focus:ring-blue-500"
                   >
                     Login
                   </button>
@@ -356,7 +356,7 @@ export default function TopNavigationBar({
                   {/* Settings button */}
                   <Link
                     to="/settings"
-                    className="p-1 border-2 border-transparent text-gray-400 dark:text-dark-med-emphasis rounded-full hover:text-gray-300 dark:hover:text-dark-high-emphasis focus:outline-none focus:text-gray-500 focus:bg-gray-100 dark:focus:bg-gray-700 transition"
+                    className="p-1 border-2 border-transparent text-gray-400 dark:text-dark-med-emphasis rounded-full hover:text-gray-300 dark:hover:text-dark-high-emphasis focus:outline-hidden focus:text-gray-500 focus:bg-gray-100 dark:focus:bg-gray-700 transition"
                     aria-label="Settings"
                   >
                     <svg
@@ -401,7 +401,7 @@ export default function TopNavigationBar({
                     className="group -m-3 p-3 flex items-center rounded-md hover:bg-gray-100 dark:hover:bg-gray-700"
                   >
                     <item.icon
-                      className="flex-shrink-0 h-6 w-6 text-gray-600 dark:group-hover:text-gray-400"
+                      className="shrink-0 h-6 w-6 text-gray-600 dark:group-hover:text-gray-400"
                       aria-hidden="true"
                     />
                     <span className="ml-3 text-base font-medium text-gray-700 dark:text-gray-300">
@@ -418,7 +418,7 @@ export default function TopNavigationBar({
                   className="group -m-3 p-3 flex items-center rounded-md hover:bg-gray-100 dark:hover:bg-gray-700"
                 >
                   <UserGroupIcon
-                    className="flex-shrink-0 h-6 w-6 text-gray-600 dark:group-hover:text-gray-400"
+                    className="shrink-0 h-6 w-6 text-gray-600 dark:group-hover:text-gray-400"
                     aria-hidden="true"
                   />
                   <span className="ml-3 text-base font-medium text-gray-700 dark:text-gray-300">
@@ -434,7 +434,7 @@ export default function TopNavigationBar({
                     className="group -m-3 p-3 flex items-center rounded-md hover:bg-gray-100 dark:hover:bg-gray-700"
                   >
                     <item.icon
-                      className="flex-shrink-0 h-6 w-6 text-gray-600 dark:group-hover:text-gray-400"
+                      className="shrink-0 h-6 w-6 text-gray-600 dark:group-hover:text-gray-400"
                       aria-hidden="true"
                     />
                     <span className="ml-3 text-base font-medium text-gray-700 dark:text-gray-300">
@@ -452,7 +452,7 @@ export default function TopNavigationBar({
                   className="group -m-3 p-3 flex items-center rounded-md hover:bg-gray-100 dark:hover:bg-gray-700"
                 >
                   <QuestionMarkCircleIcon
-                    className="flex-shrink-0 h-6 w-6 text-gray-600 dark:group-hover:text-gray-400"
+                    className="shrink-0 h-6 w-6 text-gray-600 dark:group-hover:text-gray-400"
                     aria-hidden="true"
                   />
                   <span className="ml-3 text-base font-medium text-gray-700 dark:text-gray-300">
@@ -477,7 +477,7 @@ export default function TopNavigationBar({
                   className="group -m-3 p-3 flex items-center rounded-md hover:bg-gray-100 dark:hover:bg-gray-700"
                 >
                   <CogIcon
-                    className="flex-shrink-0 h-6 w-6 text-gray-600 dark:group-hover:text-gray-400"
+                    className="shrink-0 h-6 w-6 text-gray-600 dark:group-hover:text-gray-400"
                     aria-hidden="true"
                   />
                   <span className="ml-3 text-base font-medium text-gray-700 dark:text-gray-300">

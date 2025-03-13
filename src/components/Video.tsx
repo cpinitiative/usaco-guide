@@ -17,7 +17,7 @@ export default function Video(): JSX.Element {
     <>
       <div className="relative mx-auto w-full rounded-lg shadow-lg lg:mx-4 xl:mx-8 max-w-[512px]">
         {showVideo && (
-          <div className="relative block w-full min-h-32 lg:min-h-64 xl:min-h-80 rounded-lg overflow-hidden focus:outline-none focus:shadow-outline bg-gray-300">
+          <div className="relative block w-full min-h-32 lg:min-h-64 xl:min-h-80 rounded-lg overflow-hidden focus:outline-hidden focus:shadow-outline bg-gray-300">
             <YouTube id={'ueNT-w7Oluw'} autoplay />
           </div>
         )}
@@ -25,7 +25,7 @@ export default function Video(): JSX.Element {
           <button
             onClick={() => setShowVideo(true)}
             type="button"
-            className="relative block w-full rounded-lg overflow-hidden focus:outline-none focus:shadow-outline text-[0px]"
+            className="relative block w-full rounded-lg overflow-hidden focus:outline-hidden focus:shadow-outline text-[0px]"
           >
             {/* We put 0px as text size above since GatsbyImage is inline block, so there's unwanted bottom spacing */}
             <GatsbyImage

@@ -58,12 +58,12 @@ export default function PostPage(
         />
       </nav>
       <main
-        className="flex-1 relative overflow-y-auto focus:outline-none"
+        className="flex-1 relative overflow-y-auto focus:outline-hidden"
         tabIndex={-1}
       >
         <div className="pb-8 xl:pb-10">
           {post.type === 'assignment' ? (
-            <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 xl:max-w-screen-xl xl:grid xl:grid-cols-3">
+            <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 xl:max-w-(--breakpoint-xl) xl:grid xl:grid-cols-3">
               <div className="xl:col-span-2 xl:pr-8 xl:border-r xl:border-gray-200 dark:border-gray-700">
                 <div>
                   <PostHeader post={post} />

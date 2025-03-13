@@ -14,9 +14,9 @@ export default function DesktopSidebar() {
         className="border-r border-gray-200 bg-white dark:bg-dark-surface dark:border-gray-800 h-screen flex flex-col"
         style={{ width: '20rem' }}
       >
-        <div className="flex-grow h-0 flex flex-col pt-5">
+        <div className="grow h-0 flex flex-col pt-5">
           <Link
-            className="flex items-center flex-shrink-0 px-4 pb-2"
+            className="flex items-center shrink-0 px-4 pb-2"
             to="/dashboard/"
           >
             <Logo />

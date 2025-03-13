@@ -20,7 +20,7 @@ const Asterisk: React.FC<Omit<TooltipProps, 'type'>> = ({
         type="asterisk"
       >
         <button
-          className="absolute block cursor-pointer focus:outline-none"
+          className="absolute block cursor-pointer focus:outline-hidden"
           style={{
             transform: 'translateY(5px)',
             top: '-19px',

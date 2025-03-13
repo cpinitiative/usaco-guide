@@ -15,7 +15,7 @@ const ProblemAutocompleteHit = ({
   return (
     <li key={hit.objectID}>
       <button
-        className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg text-left w-full focus:outline-none group hover:bg-light-blue-500 dark:hover:bg-light-blue-700 hover:text-white"
+        className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg text-left w-full focus:outline-hidden group hover:bg-light-blue-500 dark:hover:bg-light-blue-700 hover:text-white"
         onClick={() => onClick(hit)}
       >
         <div className="flex items-center justify-between">

@@ -14,7 +14,7 @@ export interface WarningProps {
 const Warning: React.FC<WarningProps> = ({ children, title }) => (
   <div className="rounded-md bg-yellow-50 dark:bg-yellow-700 dark:bg-opacity-25 p-4 mb-4">
     <div className="flex">
-      <div className="flex-shrink-0">
+      <div className="shrink-0">
         <svg
           className="h-5 w-5 text-yellow-400 dark:text-yellow-500"
           viewBox="0 0 20 20"

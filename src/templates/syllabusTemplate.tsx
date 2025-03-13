@@ -189,7 +189,7 @@ export default function Template(props) {
                 {SECTION_DESCRIPTION[division]}
               </p>
               <div className="grid max-w-2xl mx-auto lg:max-w-full lg:grid-cols-2 gap-8">
-                <div className="bg-white dark:bg-gray-900 shadow sm:rounded-lg">
+                <div className="bg-white dark:bg-gray-900 shadow-sm sm:rounded-lg">
                   <div className="px-4 py-5 sm:p-6">
                     <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-dark-high-emphasis">
                       Modules Progress
@@ -202,7 +202,7 @@ export default function Template(props) {
                     </div>
                   </div>
                 </div>
-                <div className="bg-white dark:bg-gray-900 shadow sm:rounded-lg">
+                <div className="bg-white dark:bg-gray-900 shadow-sm sm:rounded-lg">
                   <div className="px-4 py-5 sm:p-6">
                     <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-dark-high-emphasis">
                       Problems Progress
@@ -218,7 +218,7 @@ export default function Template(props) {
               </div>
             </div>
           </div>
-          <DottedLineContainer className="py-12 px-4 max-w-screen-xl mx-auto">
+          <DottedLineContainer className="py-12 px-4 max-w-(--breakpoint-xl) mx-auto">
             {section.map(category => (
               <SectionContainer key={category.name}>
                 <div className="flex-1 md:text-right pr-12 group">
