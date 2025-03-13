@@ -1,36 +1,13 @@
 import Tippy from '@tippyjs/react';
 import * as React from 'react';
 import { useRef } from 'react';
-import styled, { css } from 'styled-components';
 import { Instance } from 'tippy.js';
-import tw from 'twin.macro';
 import { useDarkMode } from '../../context/DarkModeContext';
 import { useUserLangSetting } from '../../context/UserDataContext/properties/simpleProperties';
 import { ResourceInfo } from '../../models/resource';
 import TextTooltip from '../Tooltip/TextTooltip';
 import Tooltip from '../Tooltip/Tooltip';
 import ResourceStatusCheckbox from './ResourceStatusCheckbox';
-
-export const Anchor = styled.a`
-  ${tw`text-blue-600 font-semibold`}
-
-  .dark && {
-    color: #a9c5ea;
-  }
-`;
-
-// https://stackoverflow.com/questions/45871439/before-and-after-pseudo-classes-used-with-styled-components
-const StyledResourceRow = styled.tr<{ isActive: boolean }>`
-  ${({ isActive }) =>
-    isActive
-      ? css`
-          background-color: #fdfdea !important;
-          .dark && {
-            background-color: #3c3c00 !important;
-          }
-        `
-      : null}
-`;
 
 export default function ResourcesListItem({
   resource,
@@ -66,7 +43,7 @@ export default function ResourcesListItem({
     </td>
   );
   const sourceCol = (
-    <td className="pl-6 sm:pl-8 pt-4 pb-1 sm:pb-4 whitespace-nowrap text-sm leading-5 text-gray-500 dark:text-dark-med-emphasis">
+    <td className="pl-6 sm:pl-8 py-4 whitespace-nowrap text-sm leading-5 text-gray-500 dark:text-dark-med-emphasis">
       {resource.source && (
         <>
           {resource.sourceDescription ? (
@@ -83,8 +60,8 @@ export default function ResourcesListItem({
   const urlCol = (
     <td
       className={`${
-        resource.source && 'pl-2 sm:pl-6'
-      } pr-4 sm:pr-6 pt-4 pb-1 sm:pb-4 whitespace-nowrap text-sm leading-5 font-medium text-gray-900 dark:text-dark-high-emphasis`}
+        resource.source && 'pl-6'
+      } pr-6 py-4 whitespace-nowrap text-sm leading-5 font-medium text-gray-900 dark:text-dark-high-emphasis`}
     >
       <div className="flex items-center">
         {resource.starred && (
@@ -110,7 +87,7 @@ export default function ResourcesListItem({
     </td>
   );
   const childrenCol = (
-    <td className="block sm:table-cell sm:w-full px-4 sm:px-6 sm:pt-4 pb-4 text-sm leading-5 text-gray-500 dark:text-dark-med-emphasis no-y-margin">
+    <td className="w-full px-4 sm:px-6 py-4 text-sm leading-5 text-gray-500 dark:text-dark-med-emphasis no-y-margin">
       {resource.children}
     </td>
   );
@@ -152,6 +129,7 @@ export default function ResourcesListItem({
         trigger="click"
         interactive={true}
         onHidden={() => setCopied(false)}
+        appendTo={() => document.body}
       >
         <button className="focus:outline-none w-8 h-8 inline-flex items-center justify-center text-gray-400 rounded-full bg-transparent hover:text-gray-500 dark:hover:text-gray-300">
           {/* Heroicon name: solid/dots-vertical */}
@@ -170,12 +148,17 @@ export default function ResourcesListItem({
   );
 
   return (
-    <StyledResourceRow id={id} isActive={isActive}>
+    <tr
+      className={
+        isActive ? '!bg-[#fdfdea] dark:!bg-[#3c3c00] relative' : 'relative'
+      }
+    >
+      <td id={id} className="absolute bottom-[120px] h-[2px]" />
       {statusCol}
       {sourceCol}
       {urlCol}
       {childrenCol}
       <td className="text-center pr-2 md:pr-3">{more}</td>
-    </StyledResourceRow>
+    </tr>
   );
 }
