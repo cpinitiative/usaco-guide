@@ -2,7 +2,6 @@ import * as React from 'react';
 import { getProblemURL, ProblemInfo } from '../../../models/problem';
 import TextTooltip from '../../Tooltip/TextTooltip';
 import Tooltip from '../../Tooltip/Tooltip';
-import { Anchor } from './ProblemsListItem';
 
 type ProblemListItemSolutionProps = {
   problem: ProblemInfo;
@@ -63,13 +62,14 @@ export default function ProblemListItemSolution(
     );
   } else if (problem.solution.kind === 'link') {
     contents = (
-      <Anchor
+      <a
         href={problem.solution.url}
         target="_blank"
         className="block w-full px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-800"
+        rel="noreferrer"
       >
         {problem.solution.label}
-      </Anchor>
+      </a>
     );
   } else if (problem.solution.kind === 'internal') {
     contents = (
