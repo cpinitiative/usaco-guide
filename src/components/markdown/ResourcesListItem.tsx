@@ -43,7 +43,7 @@ export default function ResourcesListItem({
     </td>
   );
   const sourceCol = (
-    <td className="pl-6 sm:pl-8 pt-4 pb-1 sm:pb-4 whitespace-nowrap text-sm leading-5 text-gray-500 dark:text-dark-med-emphasis">
+    <td className="pl-6 sm:pl-8 py-4 whitespace-nowrap text-sm leading-5 text-gray-500 dark:text-dark-med-emphasis">
       {resource.source && (
         <>
           {resource.sourceDescription ? (
@@ -60,8 +60,8 @@ export default function ResourcesListItem({
   const urlCol = (
     <td
       className={`${
-        resource.source && 'pl-2 sm:pl-6'
-      } pr-4 sm:pr-6 pt-4 pb-1 sm:pb-4 whitespace-nowrap text-sm leading-5 font-medium text-gray-900 dark:text-dark-high-emphasis`}
+        resource.source && 'pl-6'
+      } pr-6 py-4 whitespace-nowrap text-sm leading-5 font-medium text-gray-900 dark:text-dark-high-emphasis`}
     >
       <div className="flex items-center">
         {resource.starred && (
@@ -87,7 +87,7 @@ export default function ResourcesListItem({
     </td>
   );
   const childrenCol = (
-    <td className="block sm:table-cell sm:w-full px-4 sm:px-6 sm:pt-4 pb-4 text-sm leading-5 text-gray-500 dark:text-dark-med-emphasis no-y-margin">
+    <td className="w-full px-4 sm:px-6 py-4 text-sm leading-5 text-gray-500 dark:text-dark-med-emphasis no-y-margin">
       {resource.children}
     </td>
   );
