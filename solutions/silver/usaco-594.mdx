@@ -128,35 +128,68 @@ public class AngryCows {
 		int n = io.nextInt();
 		int k = io.nextInt();
 
-		int[] arr = new int[n];
-		for (int i = 0; i < n; i++) { arr[i] = io.nextInt(); }
+		long[] bales = new long[n];
+		for (int i = 0; i < n; i++) { bales[i] = io.nextLong(); }
 
-		Arrays.sort(arr);
-		int lo = 1, hi = 1000000009;
-		int sol = 1000000009;
+		Arrays.sort(bales);
+		long left = 0;
+		long right = bales[n - 1] - bales[0];
 
-		while (lo <= hi) {
-			int mid = lo + (hi - lo) / 2;
-			int i = 0;
-			for (int kas = 0; kas < k && i < n; kas++) {
-				int hasta = arr[i];
-				hasta += mid * 2;
-				while (i < n - 1 && arr[i + 1] <= hasta) { i++; }
-				i++;
-			}
-
-			if (i >= n) {
-				sol = Math.min(sol, mid);
-				hi = mid - 1;
+		while (left < right) {
+			long mid = (left + right) / 2;
+			if (validBlastRadius(mid, k, bales)) {
+				right = mid;
 			} else {
-				lo = mid + 1;
+				left = mid + 1;
 			}
 		}
-		io.println(sol);
+
+		io.println(left);
 		io.close();
 	}
 
-	// codeSnip{Kattio}
+	private static boolean validBlastRadius(long blastRadius, int k, long bales[]) {
+		
+		/*
+		 *Tests if all bales can be blown up with the specified blast radius.
+		
+		 *Calculates the total number of cows needed to blow up all the bales with
+		 *the specified blast radius. If the number is less than or equal to the
+	     *actual number of cows we have, then it is possible. Otherwise, it is not.
+		 
+	     @param blast_radius: The proposed blast radius to be tested.
+	     @return: True if it is possible to blow up all bales, False otherwise
+		 */
+		
+		long lastBlastLocation = Long.MIN_VALUE;
+		int neededCows = 0;
+		
+		for (long balePosition : bales) {
+
+			/*
+			 *If the current bale is out of the last cow's blast radius, we need
+			 *to use a new cow.
+			 */
+			
+			if (Math.abs(balePosition - lastBlastLocation) > blastRadius) {
+				neededCows += 1;
+				
+				/*
+				 *It is always most efficient to set the blast location of the current cow
+				 *to where the new bale being blown up is exactly on left boundary
+				 */
+				lastBlastLocation = balePosition + blastRadius;
+				
+				if (neededCows > k) {
+					return false;
+				}
+			}
+		}
+		
+		return true;
+	}
+
+	// CodeSnip{Kattio}
 }
 ```
 
