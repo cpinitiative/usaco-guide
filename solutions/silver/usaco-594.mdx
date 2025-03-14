@@ -42,44 +42,76 @@ This can be applied for every hay bale. We iterate through the sorted list of ha
 <CPPSection>
 
 ```cpp
-#include <bits/stdc++.h>
-
-using namespace std;
+#include <iostream>
+#include <vector>
+#include <fstream>
+#include <algorithm>
+#include <climits>
 
 int main() {
-	freopen("angry.in", "r", stdin);
-	freopen("angry.out", "w", stdout);
-
+	std::ifstream cin("angry.in");
+	
 	int n, k;
 	cin >> n >> k;
-	int ar[n];
 
-	for (int i = 0; i < n; i++) { cin >> ar[i]; }
+	std::vector<long long> bales(n);
+	
+	for (int i = 0; i < n; i++) { cin >> bales[i]; }
+	
+	std::sort(begin(bales), end(bales));
+	
+	long long left = 0;
+	long long right = bales[n - 1] - bales[0];
+	
+	auto valid_blast_radius = [&] (long long blast_radius) -> bool {
 
-	sort(ar, ar + n);
+		/*
+		 *Tests if all bales can be blown up with the specified blast radius.
 
-	int lo = 1, hi = 1e9;
-	int sol = 1e9;
+		 *Calculates the total number of cows needed to blow up all the bales with
+	     *the specified blast radius. If the number is less than or equal to the
+	     *actual number of cows we have, then it is possible. Otherwise, it is not.
 
-	while (lo <= hi) {
-		int mid = lo + (hi - lo) / 2;
-		int i = 0;
-		for (int kas = 0; kas < k && i < n; kas++) {
-			int hasta = ar[i];
-			hasta += mid * 2;
-			while (i < n - 1 && ar[i + 1] <= hasta) i++;
-			i++;
+	     @param blast_radius: The proposed blast radius to be tested.
+	     @return: True if it is possible to blow up all bales, False otherwise
+		 */
+
+		long long last_blast_location = LLONG_MIN;
+		int needed_cows = 0;
+		for (long long bale_position : bales) {
+			
+			/*
+			 *If the current bale is out of the last cow's blast radius, we need
+		     *to use a new cow.
+			 */
+			if (std::abs(bale_position - last_blast_location) > blast_radius) {
+				needed_cows += 1;
+				
+				/*
+				 *It is always most efficient to set the blast location of the current cow
+			     *to where the new bale being blown up is exactly on left boundary
+				 */
+				last_blast_location = bale_position + blast_radius;
+				
+				if (needed_cows > k) {
+					return false;
+				}
+			}	
 		}
-
-		if (i >= n) {
-			sol = min(sol, mid);
-			hi = mid - 1;
+		return true;
+	};
+	
+	while (left < right) {
+		long long mid = (left + right) / 2;
+		if (valid_blast_radius(mid)) {
+			right = mid;
 		} else {
-			lo = mid + 1;
+			left = mid + 1;
 		}
 	}
-
-	cout << sol << '\n';
+	
+	std::ofstream cout("angry.out");
+	cout << left << '\n';
 }
 ```
 
