@@ -97,7 +97,9 @@ public class Spirale {
 	static int[] dy = {-1, 0, 1, 0};
 
 	static void updateDistance(int x, int y) {
-		if (x < 0 || x >= m || y < 0 || y >= n) return;
+		if (x < 0 || x >= m || y < 0 || y >= n) {
+			return;
+		} 
 		numVisited++;
 		mat[y][x] = Math.min(mat[y][x], currentDistance);
 	}
@@ -128,7 +130,9 @@ public class Spirale {
 				ty = uy;
 			}
 
-			int stepsLen = 1, stepsLeft = 2, directionIndex = 1;
+			int stepsLen = 1;
+			int stepsLeft = 2;
+			int directionIndex = 1;
 			currentDistance = 1;
 			numVisited = 0;
 			updateDistance(x, y);
@@ -153,8 +157,11 @@ public class Spirale {
 
 		for (int i = 0; i < n; i++) {
 			for (int j = 0; j < m; j++) {
-				System.out.print((mat[i][j] == Integer.MAX_VALUE ? "INF" : mat[i][j]) +
-				                 " ");
+				if (mat[i][j] == Integer.MAX_VALUE) {
+					System.out.print("INF" + " ");
+				} else {
+					System.out.print(mat[i][j] + " ");
+				}
 			}
 			System.out.println();
 		}
