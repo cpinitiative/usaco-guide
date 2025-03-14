@@ -48,30 +48,29 @@ This can be applied for every hay bale. We iterate through the sorted list of ha
 #include <iostream>
 #include <vector>
 
+/**
+ *Tests if all bales can be blown up with the specified blast radius.
+
+ *Calculates the total number of cows needed to blow up all the bales with
+ *the specified blast radius. If the number is less than or equal to the
+ *actual number of cows we have, then it is possible. Otherwise, it is not.
+
+ @param blast_radius: The proposed blast radius to be tested.
+ @return True if it is possible to blow up all bales, False otherwise
+*/
 bool valid_blast_radius(long long blast_radius, int k, std::vector<long long> bales) {
-	/*
-	 *Tests if all bales can be blown up with the specified blast radius.
-
-	 *Calculates the total number of cows needed to blow up all the bales with
-	 *the specified blast radius. If the number is less than or equal to the
-	 *actual number of cows we have, then it is possible. Otherwise, it is not.
-
-	 @param blast_radius: The proposed blast radius to be tested.
-	 @return True if it is possible to blow up all bales, False otherwise
-	*/
-
 	long long last_blast_location = LLONG_MIN;
 	int needed_cows = 0;
 	for (long long bale_position : bales) {
 
-		/*
+		/**
 		 *If the current bale is out of the last cow's blast radius, we need
 		 *to use a new cow.
 		 */
 		if (std::abs(bale_position - last_blast_location) > blast_radius) {
 			needed_cows += 1;
 
-			/*
+			/**
 			 *It is always most efficient to set the blast location of the current
 			 *cow to where the new bale being blown up is exactly on left boundary
 			 */
@@ -145,25 +144,23 @@ public class AngryCows {
 		io.close();
 	}
 
+	/**
+	 *Tests if all bales can be blown up with the specified blast radius.
+
+	 *Calculates the total number of cows needed to blow up all the bales with
+	 *the specified blast radius. If the number is less than or equal to the
+	 *actual number of cows we have, then it is possible. Otherwise, it is not.
+
+	 @param blast_radius: The proposed blast radius to be tested.
+	 @return True if it is possible to blow up all bales, False otherwise
+	 */
 	private static boolean validBlastRadius(long blastRadius, int k, long bales[]) {
-
-		/*
-		 *Tests if all bales can be blown up with the specified blast radius.
-
-		 *Calculates the total number of cows needed to blow up all the bales with
-		 *the specified blast radius. If the number is less than or equal to the
-		 *actual number of cows we have, then it is possible. Otherwise, it is not.
-
-		 @param blast_radius: The proposed blast radius to be tested.
-		 @return: True if it is possible to blow up all bales, False otherwise
-		 */
-
 		long lastBlastLocation = Long.MIN_VALUE;
 		int neededCows = 0;
 
 		for (long balePosition : bales) {
 
-			/*
+			/**
 			 *If the current bale is out of the last cow's blast radius, we need
 			 *to use a new cow.
 			 */
@@ -171,7 +168,7 @@ public class AngryCows {
 			if (Math.abs(balePosition - lastBlastLocation) > blastRadius) {
 				neededCows += 1;
 
-				/*
+				/**
 				 *It is always most efficient to set the blast location of the current
 				 *cow to where the new bale being blown up is exactly on left boundary
 				 */
