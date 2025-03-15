@@ -87,45 +87,51 @@ int main() {
 import java.io.*;
 
 public class EmptyStrings {
-	private static final int MOD = 1000000007;
+   private static final int MOD = 1000000007;
 
-	private static int add(int a, int b) {
-		int sum = a + b;
-		return sum >= MOD ? sum -= MOD : sum;
-	}
+    private static int add(int a, int b) {
+        int sum = a + b;
+        return sum >= MOD ? sum - MOD : sum;
+    }
 
-	private static int mul(int a, int b) { return (int)(1L * a * b % MOD); }
+    private static int mul(int a, int b) {
+        return (int) (1L * a * b % MOD);
+    }
 
-	public static void main(String[] args) throws Exception {
-		char[] s = new BufferedReader(new InputStreamReader(System.in))
-		               .readLine()
-		               .toCharArray();
-		int n = s.length;
-		int[][] dp = new int[n + 1][n + 1];
-		int[][] choose = new int[n / 2 + 1][n / 2 + 1];
-		choose[0][0] = 1;
-		for (int i = 1; i <= n / 2; ++i) {
-			choose[i][0] = 1;
-			for (int j = 1; j <= i; ++j)
-				choose[i][j] = add(choose[i - 1][j], choose[i - 1][j - 1]);
-		}
+    public static void main(String[] args) throws Exception {
+        char[] s = new BufferedReader(new InputStreamReader(System.in))
+                .readLine()
+                .toCharArray();
+        final int n = s.length;
+        int[][] dp = new int[n + 1][n + 1];
+        int[][] choose = new int[n / 2 + 1][n / 2 + 1];
+        choose[0][0] = 1;
+        for (int i = 1; i <= n / 2; ++i) {
+            choose[i][0] = 1;
+            for (int j = 1; j <= i; ++j)
+                choose[i][j] = add(choose[i - 1][j], choose[i - 1][j - 1]);
+        }
 
-		for (int i = 0; i + 1 <= n; ++i) { dp[i + 1][i] = 1; }
+        for (int i = 0; i + 1 <= n; ++i) {
+            dp[i + 1][i] = 1;
+        }
 
-		for (int i = n - 1; i >= 0; --i) {
-			for (int j = i + 1; j < n; j += 2) {
-				for (int k = i + 1; k <= j; k += 2)
-					if (s[i] == s[k]) {
-						int temp = mul(dp[i + 1][k - 1], dp[k + 1][j]);
-						temp = mul(temp, choose[(j - i + 1) / 2][(k - i + 1) / 2]);
-						dp[i][j] = add(dp[i][j], temp);
-					}
-			}
-		}
+        for (int i = n - 1; i >= 0; --i) {
+            for (int j = i + 1; j < n; j += 2) {
+                for (int k = i + 1; k <= j; k += 2)
+                    if (s[i] == s[k]) {
+                        int temp = mul(dp[i + 1][k - 1], dp[k + 1][j]);
+                        temp = mul(temp, choose[(j - i + 1) / 2][(k - i + 1) / 2]);
+                        dp[i][j] = add(dp[i][j], temp);
+                    }
+            }
+        }
 
-		System.out.println(dp[0][n - 1]);
-	}
+        System.out.println(dp[0][n - 1]);
+    }
+
 }
+
 ```
 </JavaSection>
 <PySection>
