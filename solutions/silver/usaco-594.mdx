@@ -58,10 +58,10 @@ This can be applied for every hay bale. We iterate through the sorted list of ha
  @param blast_radius: The proposed blast radius to be tested.
  @return True if it is possible to blow up all bales, False otherwise
 */
-bool valid_blast_radius(long long blast_radius, int k, std::vector<long long> bales) {
-	long long last_blast_location = LLONG_MIN;
+bool valid_blast_radius(int blast_radius, int k, std::vector<int> &bales) {
+	int last_blast_location = INT_MIN;
 	int needed_cows = 0;
-	for (long long bale_position : bales) {
+	for (int bale_position : bales) {
 
 		/**
 		 *If the current bale is out of the last cow's blast radius, we need
@@ -88,17 +88,17 @@ int main() {
 	int n, k;
 	cin >> n >> k;
 
-	std::vector<long long> bales(n);
+	std::vector<int> bales(n);
 
 	for (int i = 0; i < n; i++) { cin >> bales[i]; }
 
 	std::sort(begin(bales), end(bales));
 
-	long long left = 0;
-	long long right = bales[n - 1] - bales[0];
+	int left = 0;
+	int right = bales[n - 1] - bales[0];
 
 	while (left < right) {
-		long long mid = (left + right) / 2;
+		int mid = (left + right) / 2;
 		if (valid_blast_radius(mid, k, bales)) {
 			right = mid;
 		} else {
@@ -124,15 +124,15 @@ public class AngryCows {
 		int n = io.nextInt();
 		int k = io.nextInt();
 
-		long[] bales = new long[n];
-		for (int i = 0; i < n; i++) { bales[i] = io.nextLong(); }
+		int[] bales = new int[n];
+		for (int i = 0; i < n; i++) { bales[i] = io.nextInt(); }
 
 		Arrays.sort(bales);
-		long left = 0;
-		long right = bales[n - 1] - bales[0];
+		int left = 0;
+		int right = bales[n - 1] - bales[0];
 
 		while (left < right) {
-			long mid = (left + right) / 2;
+			int mid = (left + right) / 2;
 			if (validBlastRadius(mid, k, bales)) {
 				right = mid;
 			} else {
@@ -154,11 +154,11 @@ public class AngryCows {
 	 @param blast_radius: The proposed blast radius to be tested.
 	 @return True if it is possible to blow up all bales, False otherwise
 	 */
-	private static boolean validBlastRadius(long blastRadius, int k, long bales[]) {
-		long lastBlastLocation = Long.MIN_VALUE;
+	private static boolean validBlastRadius(int blastRadius, int k, int bales[]) {
+		int lastBlastLocation = Integer.MIN_VALUE;
 		int neededCows = 0;
 
-		for (long balePosition : bales) {
+		for (int balePosition : bales) {
 
 			/**
 			 *If the current bale is out of the last cow's blast radius, we need
