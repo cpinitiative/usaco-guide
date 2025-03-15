@@ -80,12 +80,6 @@ int main() {
 </CPPSection>
 <JavaSection>
 
-<IncompleteSection>
-
-TODO: use priority queue instead of sorted set
-
-</IncompleteSection>
-
 ```java
 import java.io.*;
 import java.util.*;
@@ -110,8 +104,9 @@ public class Convention2 {
 		int curr = 0;
 		int longestWait = 0;
 
-		// sorted so that the highest seniority starts eating first
-		TreeSet<Cow> waiting = new TreeSet<>();
+		// sorted by priority so that the highest seniority starts eating first
+		PriorityQueue<Cow> waiting = new PriorityQueue<>();
+		// as long as we haven't processed all cows or there are still cows waiting
 		while (curr < cowNum || !waiting.isEmpty()) {
 			// this cow can be processed
 			if (curr < cowNum && cows[curr].start <= time) {
@@ -124,12 +119,13 @@ public class Convention2 {
 				curr++;
 			} else {
 				// process the next cow
-				Cow next = waiting.first();
+				Cow next = waiting.peek();
 				longestWait = Math.max(longestWait, time - next.start);
 
 				// set the time to when this cow finishes
 				time += next.duration;
-				waiting.remove(waiting.first());
+				// waiting.poll(waiting.first());
+				waiting.poll();
 			}
 		}
 
