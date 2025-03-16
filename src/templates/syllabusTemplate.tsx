@@ -21,7 +21,6 @@ import {
   useProblemsProgressInfo,
 } from '../utils/getProgressInfo';
 import { getModulesForDivision } from '../utils/utils';
-import { dottedLineContainer } from './syllabusTemplate.module.css';
 
 const HeroBGColor: { [key in SectionID]: string } = {
   general: 'bg-blue-700 dark:bg-blue-900',
@@ -182,9 +181,7 @@ export default function Template(props) {
               </div>
             </div>
           </div>
-          <div
-            className={`py-12 px-4 max-w-screen-xl mx-auto space-y-6 ${dottedLineContainer}`}
-          >
+          <div className="py-12 px-4 max-w-screen-xl mx-auto space-y-6 syllabus-dotted-line-container">
             {section.map(category => (
               <div
                 key={category.name}
