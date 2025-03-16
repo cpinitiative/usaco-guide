@@ -45,6 +45,14 @@ module.exports = {
       require.resolve('babel-plugin-remove-graphql-queries')
     );
     config.resolve.mainFields = ['browser', 'module', 'main'];
+
+    // Storybook bug: https://github.com/storybookjs/storybook/issues/12019#issuecomment-702207045
+    // Note: This may be fixed by newer versions of Storybook.
+    const { options } = config.module.rules[0].use[0];
+    options.plugins = options.plugins.filter(
+      excludePlugins(['@babel/plugin-transform-classes'])
+    );
+
     return config;
   },
 
@@ -54,3 +62,13 @@ module.exports = {
     ? { typescript: { reactDocgen: 'react-docgen' } }
     : {}),
 };
+
+function excludePlugins(excludePaths) {
+  return plugin => {
+    const name = typeof plugin === 'string' ? plugin : plugin[0];
+    if (typeof name !== 'string') {
+      throw new Error(`Not a string: ${name}`);
+    }
+    return !excludePaths.some(path => name.includes(path));
+  };
+}
