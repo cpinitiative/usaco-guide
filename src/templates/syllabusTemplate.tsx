@@ -10,10 +10,10 @@ import {
 import DashboardProgress, {
   DashboardProgressSmall,
 } from '../components/Dashboard/DashboardProgress';
-import ModuleLink from '../components/syllabus/ModuleLink';
-import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
 import Layout from '../components/layout';
 import SEO from '../components/seo';
+import ModuleLink from '../components/syllabus/ModuleLink';
+import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
 import { ModuleFrequency, ModuleLinkInfo } from '../models/module';
 // import UserDataContext from '../context/UserDataContext/UserDataContext';
 import {
