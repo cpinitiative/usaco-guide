@@ -1,7 +1,5 @@
 import { graphql } from 'gatsby';
 import * as React from 'react';
-import styled from 'styled-components';
-import tw from 'twin.macro';
 import {
   SECTION_LABELS,
   SECTION_SEO_DESCRIPTION,
@@ -23,41 +21,7 @@ import {
   useProblemsProgressInfo,
 } from '../utils/getProgressInfo';
 import { getModulesForDivision } from '../utils/utils';
-
-const DottedLineContainer = styled.div`
-  ${tw`space-y-6 relative`}
-
-  @media (min-width: 768px) {
-    &::before {
-      content: '';
-      position: absolute;
-      width: 2px;
-      display: block;
-      left: calc(50% - 1px);
-      top: 0;
-      bottom: 0;
-      border-right: 2px dashed;
-      ${tw`border-gray-100`}
-    }
-    .dark &::before {
-      ${tw`border-gray-700`}
-    }
-  }
-`;
-
-const SectionContainer = styled.div`
-  ${tw`flex flex-col md:flex-row`}
-
-  &:hover h2 {
-    ${tw`text-gray-600`}
-  }
-  .dark &:hover h2 {
-    ${tw`text-gray-300`}
-  }
-  &:hover h2 + p {
-    ${tw`text-gray-500`}
-  }
-`;
+import { dottedLineContainer } from './syllabusTemplate.module.css';
 
 const HeroBGColor: { [key in SectionID]: string } = {
   general: 'bg-blue-700 dark:bg-blue-900',
@@ -218,18 +182,23 @@ export default function Template(props) {
               </div>
             </div>
           </div>
-          <DottedLineContainer className="py-12 px-4 max-w-screen-xl mx-auto">
+          <div
+            className={`py-12 px-4 max-w-screen-xl mx-auto space-y-6 ${dottedLineContainer}`}
+          >
             {section.map(category => (
-              <SectionContainer key={category.name}>
-                <div className="flex-1 md:text-right pr-12 group">
-                  <h2 className="text-2xl font-semibold leading-6 py-3 text-gray-500 dark:text-dark-med-emphasis group-hover:text-gray-800 dark:group-hover:text-dark-high-emphasis transition">
+              <div
+                key={category.name}
+                className="group/category flex flex-col md:flex-row"
+              >
+                <div className="flex-1 md:text-right pr-12">
+                  <h2 className="text-2xl font-semibold leading-6 py-3 text-gray-500 dark:text-dark-med-emphasis group-hover/category:text-gray-800 dark:group-hover/category:text-dark-high-emphasis transition">
                     {category.name}
                   </h2>
-                  <div className="leading-6 py-3 text-gray-500 dark:text-dark-med-emphasis group-hover:text-gray-800 dark:group-hover:text-dark-high-emphasis transition">
+                  <div className="leading-6 py-3 text-gray-500 dark:text-dark-med-emphasis group-hover/category:text-gray-800 dark:group-hover/category:text-dark-high-emphasis transition">
                     {/* eslint-disable-next-line react-hooks/rules-of-hooks */}
                     {useProgressBarForCategory(category)}
                   </div>
-                  <p className="md:max-w-sm md:ml-auto text-gray-400 dark:text-gray-500 dark:group-hover:text-dark-med-emphasis group-hover:text-gray-600 transition">
+                  <p className="md:max-w-sm md:ml-auto text-gray-400 dark:text-gray-500 dark:group-hover/category:text-dark-med-emphasis group-hover/category:text-gray-600 transition">
                     {category.description}
                   </p>
                 </div>
@@ -255,9 +224,9 @@ export default function Template(props) {
                     />
                   ))}
                 </div>
-              </SectionContainer>
+              </div>
             ))}
-          </DottedLineContainer>
+          </div>
         </main>
       </div>
     </Layout>
