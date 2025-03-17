@@ -22,18 +22,6 @@ The largest of these values is our answer.
 #include <bits/stdc++.h>
 using namespace std;
 
-// returns the first index in the array that is >= value, or arr.size() if no
-// such index exists
-int first_at_least(const vector<int> &arr, int value) {
-	int lo = 0, hi = arr.size();
-	while (lo < hi) {
-		int mid = (lo + hi) / 2;
-		if (arr[mid] >= value) hi = mid;
-		else lo = mid + 1;
-	}
-	return lo;
-}
-
 int main() {
 	int n, m;
 	cin >> n >> m;
@@ -53,7 +41,7 @@ int main() {
 
 	int min_r = 0;
 	for (int i = 0; i < n; i++) {
-		int tower_right = first_at_least(towers, cities[i]);
+		int tower_right = lower_bound(begin(towers), end(towers), cities[i]) - begin(towers);
 		int tower_left = tower_right - 1;
 
 		int min_r_for_this_city = INT_MAX;
