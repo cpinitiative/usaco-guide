@@ -5,7 +5,32 @@ title: Angry Cows
 author: Qi Wang
 ---
 
+## Video Solution
+
+By Qi Wang
+
+<YouTube id="aFHESO1lhEY" />
+
+## Explanation
+
 [Official Analysis (Java)](http://www.usaco.org/current/data/sol_angry_bronze_jan16.html)
+
+Since there's at most 100 haybales, we can try launching a cow at every single
+one and simulate the aftermath.
+
+Implementing the explosions can get a little nasty, though, so to make
+things easier we can notice that the explosions on the left and right side
+are completely independent from each other.
+
+Consider a situation where the haybales are $[3, 4, 5]$.
+We'll refer to them by their positions for convenience.
+
+If we launch a cow at the hayable $4$, although $5$ is able
+to blow up $3$ with an explosion of radius $2$, $3$ was already going
+to explode anyway from $4$'s explosion of radius $1$.
+
+This observation allows us to check the farthest the explosion can reach on both sides
+and then add up the results for our final answer.
 
 <Warning>
 
@@ -22,17 +47,13 @@ It outputs 2, but the correct answer is 3.
 
 </Warning>
 
-## Video Solution
-By Qi Wang
-
-<YouTube id="aFHESO1lhEY" />
-
 ## Implementation
 
 **Time Complexity:** $\mathcal{O}(N^2)$
 
 <LanguageSection>
 <CPPSection>
+
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
@@ -58,6 +79,7 @@ int exploded_num(int start, int direction) {
 		prev = next;
 		radius++;
 	}
+
 	return abs(prev - start);
 }
 
@@ -75,9 +97,11 @@ int main() {
 		// Get the number of exploded bales for the left & right side
 		max_exploded = max(max_exploded, exploded_num(i, -1) + exploded_num(i, 1) + 1);
 	}
+
 	cout << max_exploded << endl;
 }
 ```
+
 </CPPSection>
 <JavaSection>
 
@@ -86,8 +110,8 @@ import java.io.*;
 import java.util.*;
 
 public class Angry {
-	static int N;
-	static int[] bales;
+	private static int N;
+	private static int[] bales;
 
 	public static void main(String[] args) throws IOException {
 		Kattio io = new Kattio("angry");
@@ -112,7 +136,7 @@ public class Angry {
 		int prev = start;
 		while (true) {
 			int next = prev;
-			// Getting the furthest explosion index without exceeding radius
+			// Get the furthest explosion index without exceeding radius
 			while (next + direction >= 0 && next + direction < N &&
 			       Math.abs(bales[next + direction] - bales[prev]) <= radius) {
 				next += direction;
