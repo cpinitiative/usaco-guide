@@ -47,9 +47,9 @@ to reduce this to our simpler problem!
 <CPPSection>
 
 ```cpp
+#include <algorithm>
 #include <iostream>
 #include <vector>
-#include <algorithm>
 
 using std::cout;
 using std::endl;
@@ -59,31 +59,21 @@ int main() {
 	int len;
 	std::cin >> len;
 	vector<int> a(len);
-	for (int& i : a) {
-		std::cin >> i;
-	}
+	for (int &i : a) { std::cin >> i; }
 	vector<int> b(len);
-	for (int& i : b) {
-		std::cin >> i;
-	}
+	for (int &i : b) { std::cin >> i; }
 
 	vector<long long> subarr_num(len);
-	for (int i = 0; i < len; i++) {
-		subarr_num[i] = (long long)(i + 1) * (len - i);
-	}
+	for (int i = 0; i < len; i++) { subarr_num[i] = (long long)(i + 1) * (len - i); }
 
 	vector<long long> actual_a(len);
-	for (int i = 0; i < len; i++) {
-		actual_a[i] = subarr_num[i] * a[i];
-	}
+	for (int i = 0; i < len; i++) { actual_a[i] = subarr_num[i] * a[i]; }
 
 	std::sort(actual_a.begin(), actual_a.end());
 	std::sort(b.begin(), b.end(), std::greater<int>());
 
 	long long total = 0;
-	for (int i = 0; i < len; i++) {
-		total += actual_a[i] * b[i];
-	}
+	for (int i = 0; i < len; i++) { total += actual_a[i] * b[i]; }
 	cout << total << endl;
 }
 ```
@@ -100,27 +90,23 @@ public class Permutator {
 		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
 		int len = Integer.parseInt(read.readLine());
 		int[] a = Arrays.stream(read.readLine().split(" "))
-				.mapToInt(Integer::parseInt).toArray();
+		              .mapToInt(Integer::parseInt)
+		              .toArray();
 		int[] b = Arrays.stream(read.readLine().split(" "))
-				.mapToInt(Integer::parseInt).toArray();
+		              .mapToInt(Integer::parseInt)
+		              .toArray();
 
 		long[] subarrNum = new long[len];
-		for (int i = 0; i < len; i++) {
-			subarrNum[i] = (long) (i + 1) * (len - i);
-		}
+		for (int i = 0; i < len; i++) { subarrNum[i] = (long)(i + 1) * (len - i); }
 
 		long[] actualA = new long[len];
-		for (int i = 0; i < len; i++) {
-			actualA[i] = subarrNum[i] * a[i];
-		}
+		for (int i = 0; i < len; i++) { actualA[i] = subarrNum[i] * a[i]; }
 
 		Arrays.sort(actualA);
 		Arrays.sort(b);
 
 		long total = 0;
-		for (int i = 0; i < len; i++) {
-			total += actualA[i] * b[len - i - 1];
-		}
+		for (int i = 0; i < len; i++) { total += actualA[i] * b[len - i - 1]; }
 		System.out.println(total);
 	}
 }
