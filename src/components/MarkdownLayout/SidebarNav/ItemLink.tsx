@@ -1,3 +1,4 @@
+import clsx from 'clsx';
 import { Link } from 'gatsby';
 import * as React from 'react';
 import { useContext } from 'react';
@@ -7,7 +8,6 @@ import {
   MarkdownLayoutSidebarModuleLinkInfo,
   ModuleLinkInfo,
 } from '../../../models/module';
-import clsx from 'clsx';
 
 const ItemLink = ({
   link,

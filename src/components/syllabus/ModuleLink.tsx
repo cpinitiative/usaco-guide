@@ -1,3 +1,4 @@
+import clsx from 'clsx';
 import { Link } from 'gatsby';
 import * as React from 'react';
 import {
@@ -9,7 +10,6 @@ import { ModuleLinkInfo } from '../../models/module';
 import { FrequencyLabels } from '../Frequency';
 import ModuleFrequencyDots from '../MarkdownLayout/ModuleFrequencyDots';
 import Tooltip from '../Tooltip/Tooltip';
-import clsx from 'clsx';
 
 const FrequencyCircleColors = [
   'group-hover:text-red-600 dark:group-hover:text-red-400',
