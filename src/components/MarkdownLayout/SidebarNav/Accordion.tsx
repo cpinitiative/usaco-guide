@@ -1,7 +1,7 @@
+import clsx from 'clsx';
 import * as React from 'react';
 import { useEffect } from 'react';
 import useStickyState from '../../../hooks/useStickyState';
-import clsx from 'clsx';
 
 export default function Accordion({ label, isActive, children }) {
   const [expanded, setExpanded] = useStickyState(
