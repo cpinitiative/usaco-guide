@@ -54,41 +54,6 @@ const LinkWithProgress = styled(SidebarLinkWithProgress)<{ small: boolean }>`
   }
 `;
 
-const StyledLink = styled.div<{ showDot?: boolean }>`
-  ${tw`focus:outline-none transition ease-in-out duration-150 text-gray-800 hover:text-blue-700 text-xl leading-6 py-3`}
-
-  &::before {
-    content: '';
-    left: calc(-1.75rem - 11px);
-    @media (min-width: 768px) {
-      left: calc(-3rem - 11px); // -(3rem padding plus half of width)
-    }
-    top: calc(1.5rem - 11px); // half of 1.5rem minus half of height
-    height: 22px;
-    width: 22px;
-    position: absolute;
-    transition: all 250ms cubic-bezier(0.4, 0, 0.2, 1) 0s;
-  }
-
-  &::before {
-    transform: ${({ showDot }) => (showDot ? 'scale(1)' : 'scale(0.1)')};
-    border-radius: 100%;
-    z-index: 1;
-  }
-
-  &:hover {
-    &::before {
-      transform: scale(1);
-      ${tw`bg-blue-600`}
-    }
-  }
-  .dark &:hover {
-    &::before {
-      ${tw`bg-gray-400`}
-    }
-  }
-`;
-
 const FrequencyCircleColors = [
   'group-hover:text-red-600 dark:group-hover:text-red-400',
   'group-hover:text-orange-600 dark:group-hover:text-orange-400',
@@ -213,7 +178,7 @@ const ModuleLink = ({ link }: { link: ModuleLinkInfo }): JSX.Element => {
       small={progress === 'Not Started' || progress === 'Ignored'}
     >
       <Link to={link.url}>
-        <StyledLink className="group">
+        <div className="syllabus-module-link-styled-link group">
           <p
             className={`${
               progress === 'Ignored'
@@ -275,7 +240,7 @@ const ModuleLink = ({ link }: { link: ModuleLinkInfo }): JSX.Element => {
               {timeAgoString(link.gitAuthorTime)}
             </i>
           </p>
-        </StyledLink>
+        </div>
       </Link>
     </LinkWithProgress>
   );
