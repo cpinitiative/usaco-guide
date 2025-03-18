@@ -178,7 +178,7 @@ const ModuleLink = ({ link }: { link: ModuleLinkInfo }): JSX.Element => {
       small={progress === 'Not Started' || progress === 'Ignored'}
     >
       <Link to={link.url}>
-        <div className="syllabus-module-link-styled-link group">
+        <div className="link-with-progress-link link-with-progress-link--syllabus text-xl leading-6 py-3 group">
           <p
             className={`${
               progress === 'Ignored'

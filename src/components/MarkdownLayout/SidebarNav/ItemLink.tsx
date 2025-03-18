@@ -109,7 +109,7 @@ const ItemLink = ({
       >
         <span
           className={clsx(
-            `link-with-progress-link`,
+            'link-with-progress-link hover:bg-blue-50 dark:hover:bg-gray-900 focus:bg-blue-100 dark:focus:bg-gray-800 dark:hover:text-dark-high-emphasis flex items-center pl-12 pr-4 py-3 text-sm leading-5',
             isActive && 'link-with-progress-link--active font-medium'
           )}
           ref={itemRef}

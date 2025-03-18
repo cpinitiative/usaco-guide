@@ -59,7 +59,7 @@
 
   .link-with-progress-container--complete {
     --dot-and-line-color: theme('colors.green.400');
-    --active-text-color: theme('colors.green.700'); 
+    --active-text-color: theme('colors.green.700');
 
     .dark & {
       --dot-and-line-color: theme('colors.green.400');
@@ -68,7 +68,7 @@
   }
 
   .link-with-progress-container--skipped {
-    --dot-and-line-color: theme('colors.blue.300'); 
+    --dot-and-line-color: theme('colors.blue.300');
     --active-text-color: theme('colors.blue.700');
 
     .dark & {
@@ -78,7 +78,7 @@
   }
 
   .link-with-progress-container--active {
-    --dot-and-line-color: theme('colors.blue.700'); 
+    --dot-and-line-color: theme('colors.blue.700');
     --active-text-color: theme('colors.blue.700');
 
     .dark & {
@@ -108,11 +108,10 @@
   }
 
   .link-with-progress-link {
-    @apply focus:outline-none transition ease-in-out duration-150 hover:text-blue-700 hover:bg-blue-50 focus:bg-blue-100 flex items-center pl-12 pr-4 py-3 text-sm leading-5;
+    @apply focus:outline-none transition ease-in-out duration-150 hover:text-blue-700;
 
     color: theme('colors.gray.600');
     .dark & {
-      @apply hover:bg-gray-900 hover:text-dark-high-emphasis focus:bg-gray-800;
       color: theme('colors.dark-med-emphasis');
     }
 
@@ -129,18 +128,26 @@
 
     &::before {
       content: '';
+      position: absolute;
+      transition: all 250ms cubic-bezier(0.4, 0, 0.2, 1) 0s;
+
+      transform: scale(0);
+      border-radius: 100%;
+      z-index: 1;
+
       left: 24px;
       top: 18px;
       height: 8px;
       width: 8px;
-      position: absolute;
-      transition: all 250ms cubic-bezier(0.4, 0, 0.2, 1) 0s;
     }
-
-    &::before {
-      transform: scale(0);
-      border-radius: 100%;
-      z-index: 1;
+    &.link-with-progress-link--syllabus::before {
+      left: calc(-1.75rem - 11px);
+      @media (min-width: 768px) {
+        left: calc(-3rem - 11px); /* -(3rem padding plus half of width) */
+      }
+      top: calc(1.5rem - 11px); /* half of 1.5rem minus half of height */
+      height: 22px;
+      width: 22px;
     }
 
     &:hover {
