@@ -1,33 +1,7 @@
 import * as React from 'react';
 import { useEffect } from 'react';
-import styled from 'styled-components';
-import tw from 'twin.macro';
 import useStickyState from '../../../hooks/useStickyState';
-
-const Container = styled.div<{ isActive: boolean }>`
-  &:last-of-type {
-    ${tw`border-b`}
-  }
-
-  ${({ isActive }) =>
-    isActive &&
-    `
-    background-color: #f7faff;
-    .dark & {
-      background-color: #16191f;
-    }
-  `}
-`;
-
-const Label = styled.div`
-  &:hover {
-    //background-color: #f7faff
-    ${tw`bg-blue-50`}
-  }
-  .dark &:hover {
-    ${tw`bg-gray-900`}
-  }
-`;
+import clsx from 'clsx';
 
 export default function Accordion({ label, isActive, children }) {
   const [expanded, setExpanded] = useStickyState(
@@ -38,12 +12,14 @@ export default function Accordion({ label, isActive, children }) {
     if (isActive) setExpanded(true);
   }, [isActive]);
   return (
-    <Container
-      className="border-b border-gray-200 dark:border-gray-800"
-      isActive={isActive}
+    <div
+      className={clsx(
+        'border-b border-gray-200 dark:border-gray-800 last:border-b-0',
+        isActive && 'bg-[#f7faff] dark:bg-[#16191f]'
+      )}
     >
-      <Label
-        className="font-semibold cursor-pointer relative flex items-center px-4 py-3 text-sm leading-5 transition ease-in-out duration-150 "
+      <div
+        className="font-semibold cursor-pointer relative flex items-center px-4 py-3 text-sm leading-5 transition ease-in-out duration-150  hover:bg-blue-50 dark:hover:bg-gray-900"
         onClick={() => setExpanded(!expanded)}
       >
         <span className="flex-1 text-gray-800 dark:text-dark-high-emphasis">
@@ -68,8 +44,8 @@ export default function Accordion({ label, isActive, children }) {
             />
           )}
         </svg>
-      </Label>
+      </div>
       {expanded && children}
-    </Container>
+    </div>
   );
 }
