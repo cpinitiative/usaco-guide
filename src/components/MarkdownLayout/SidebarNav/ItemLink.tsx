@@ -1,8 +1,6 @@
 import { Link } from 'gatsby';
 import * as React from 'react';
 import { useContext } from 'react';
-import styled from 'styled-components';
-import tw, { TwStyle } from 'twin.macro';
 import MarkdownLayoutContext from '../../../context/MarkdownLayoutContext';
 import { useUserProgressOnModules } from '../../../context/UserDataContext/properties/userProgress';
 import {
@@ -10,58 +8,6 @@ import {
   ModuleLinkInfo,
 } from '../../../models/module';
 import clsx from 'clsx';
-
-export const LinkWithProgress = styled.span<{
-  dotColorStyle: TwStyle;
-  lineColorStyle: TwStyle;
-  darkDotColorStyle: TwStyle;
-  darkLineColorStyle: TwStyle;
-}>`
-  ${tw`block relative`}
-
-  &::after {
-    content: '';
-    left: 24px;
-    top: 18px;
-    height: 8px;
-    width: 8px;
-    position: absolute;
-    transition: transform 250ms cubic-bezier(0.4, 0, 0.2, 1) 0s;
-  }
-
-  &::after {
-    border-radius: 100%;
-    ${props => props.dotColorStyle};
-  }
-
-  &::before {
-    content: '';
-    position: absolute;
-    width: 2px;
-    display: block;
-    left: 27px;
-    top: 0;
-    bottom: 0;
-    ${props => props.lineColorStyle};
-  }
-
-  // Really weird bug: Single ampersand breaks stuff; double ampersand works
-  // This might be a styled-component issue?????
-  .dark &&::after {
-    ${props => props.darkDotColorStyle};
-  }
-  .dark &&::before {
-    ${props => props.darkLineColorStyle};
-  }
-
-  &:first-of-type::before {
-    top: 22px;
-  }
-
-  &:last-of-type::before {
-    bottom: calc(100% - 22px);
-  }
-`;
 
 const ItemLink = ({
   link,
