@@ -28,10 +28,10 @@ and matched all adjacent pairs.
 <CPPSection>
 
 ```cpp
-#include <iostream>
-#include <vector>
-#include <map>
 #include <algorithm>
+#include <iostream>
+#include <map>
+#include <vector>
 
 using std::cout;
 using std::endl;
@@ -44,27 +44,23 @@ int main() {
 		int len;
 		std::cin >> len;
 		vector<int> arr(len);
-		for (int& i : arr) {
-			std::cin >> i;
-		}
-		
+		for (int &i : arr) { std::cin >> i; }
+
 		map<long long, vector<long long>> groups;
 		for (int i = 0; i < arr.size(); i++) {
 			long long id = i - arr[i];
-			groups[id].push_back((long long) arr[i]);
+			groups[id].push_back((long long)arr[i]);
 		}
-		
+
 		long long total = 0;
-		for (const auto& comp : groups) {
+		for (const auto &comp : groups) {
 			sort(comp.second.rbegin(), comp.second.rend());
 			for (int i = 0; i + 1 < comp.second.size(); i += 2) {
 				long long weight = comp.second[i] + comp.second[i + 1];
-				if (weight > 0) {
-					total += weight;
-				}
+				if (weight > 0) { total += weight; }
 			}
 		}
-		
+
 		cout << total << '\n';
 	}
 }
@@ -74,8 +70,8 @@ int main() {
 <JavaSection>
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class Matching {
 	public static void main(String[] args) throws IOException {
@@ -84,23 +80,22 @@ public class Matching {
 		for (int t = 0; t < testNum; t++) {
 			read.readLine();
 			int[] arr = Arrays.stream(read.readLine().split(" "))
-				.mapToInt(Integer::parseInt).toArray();
-			
+			                .mapToInt(Integer::parseInt)
+			                .toArray();
+
 			Map<Long, List<Long>> groups = new HashMap<>();
 			for (int i = 0; i < arr.length; i++) {
 				long id = i - arr[i];
 				groups.putIfAbsent(id, new ArrayList<>());
 				groups.get(id).add((long)arr[i]);
 			}
-		
+
 			long total = 0;
 			for (List<Long> comp : groups.values()) {
 				comp.sort(Comparator.reverseOrder());
 				for (int i = 0; i + 1 < comp.size(); i += 2) {
 					long weight = comp.get(i) + comp.get(i + 1);
-					if (weight > 0) {
-						total += weight;
-					}
+					if (weight > 0) { total += weight; }
 				}
 			}
 
