@@ -28,41 +28,45 @@ and matched all adjacent pairs.
 <CPPSection>
 
 ```cpp
-#include <algorithm>
 #include <iostream>
-#include <map>
 #include <vector>
+#include <map>
+#include <algorithm>
 
 using std::cout;
 using std::endl;
 using std::vector;
 
 int main() {
-	int test_num;
-	std::cin >> test_num;
-	for (int t = 0; t < test_num; t++) {
-		int len;
-		std::cin >> len;
-		vector<int> arr(len);
-		for (int &i : arr) { std::cin >> i; }
-
-		map<long long, vector<long long>> groups;
-		for (int i = 0; i < arr.size(); i++) {
-			long long id = i - arr[i];
-			groups[id].push_back((long long)arr[i]);
-		}
-
-		long long total = 0;
-		for (const auto &comp : groups) {
-			sort(comp.second.rbegin(), comp.second.rend());
-			for (int i = 0; i + 1 < comp.second.size(); i += 2) {
-				long long weight = comp.second[i] + comp.second[i + 1];
-				if (weight > 0) { total += weight; }
-			}
-		}
-
-		cout << total << '\n';
-	}
+    int test_num;
+    std::cin >> test_num;
+    for (int t = 0; t < test_num; t++) {
+        int len;
+        std::cin >> len;
+        vector<int> arr(len);
+        for (int& i : arr) {
+            std::cin >> i;
+        }
+        
+        std::map<long long, vector<long long>> groups;
+        for (int i = 0; i < arr.size(); i++) {
+            long long id = i - arr[i];
+            groups[id].push_back((long long) arr[i]);
+        }
+        
+        long long total = 0;
+        for (auto& comp : groups) {
+            sort(comp.second.rbegin(), comp.second.rend());
+            for (int i = 0; i + 1 < comp.second.size(); i += 2) {
+                long long weight = comp.second[i] + comp.second[i + 1];
+                if (weight > 0) {
+                    total += weight;
+                }
+            }
+        }
+        
+        cout << total << '\n';
+    }
 }
 ```
 
