@@ -9,6 +9,10 @@ author: Nathan Wang, Benjamin Qi, Maggie Liu, Brad Ma, George Pong
 
 ## Solution 1 - Binary Search
 
+For each city, we find the nearest tower to its left and right using binary search.
+We then calculate the distance to both towers and pick the smaller one to get the minimum radius for the city.
+The largest of these values is our answer.
+
 **Time Complexity:** $\mathcal{O}(N \log N)$
 
 <LanguageSection>
@@ -17,18 +21,6 @@ author: Nathan Wang, Benjamin Qi, Maggie Liu, Brad Ma, George Pong
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
-
-// returns the first index in the array that is >= value, or arr.size() if no
-// such index exists
-int first_at_least(const vector<int> &arr, int value) {
-	int lo = 0, hi = arr.size();
-	while (lo < hi) {
-		int mid = (lo + hi) / 2;
-		if (arr[mid] >= value) hi = mid;
-		else lo = mid + 1;
-	}
-	return lo;
-}
 
 int main() {
 	int n, m;
@@ -49,7 +41,8 @@ int main() {
 
 	int min_r = 0;
 	for (int i = 0; i < n; i++) {
-		int tower_right = first_at_least(towers, cities[i]);
+		int tower_right =
+		    lower_bound(begin(towers), end(towers), cities[i]) - begin(towers);
 		int tower_left = tower_right - 1;
 
 		int min_r_for_this_city = INT_MAX;
