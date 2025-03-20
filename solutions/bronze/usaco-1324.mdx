@@ -51,9 +51,9 @@ int main() {
 		int word_num, comma_num, period_num;
 		cin >> word_num >> comma_num >> period_num;
 		map<string, vector<string>> words{{"noun", {}},
-										  {"transitive-verb", {}},
-										  {"intransitive-verb", {}},
-										  {"conjunction", {}}};
+		                                  {"transitive-verb", {}},
+		                                  {"intransitive-verb", {}},
+		                                  {"conjunction", {}}};
 		for (int w = 0; w < word_num; w++) {
 			string token, type;
 			cin >> token >> type;
@@ -63,7 +63,7 @@ int main() {
 		int max_size = 0;
 		int best_tv = 0;
 		int best_itv = 0;
-		const vector<string>& nouns = words["noun"];  // just a shorthand
+		const vector<string> &nouns = words["noun"];  // just a shorthand
 		int max_verbs = period_num + min(period_num, (int)words["conjunction"].size());
 		// Test all combinations of transntive/intransitive verbs
 		for (int tv = 0; tv <= words["transitive-verb"].size(); tv++) {
@@ -73,7 +73,7 @@ int main() {
 				int conj_used = min((int)words["conjunction"].size(), (tv + itv) / 2);
 				int extra = tv > 0 ? min(comma_num, nouns_left) : 0;
 				int total = 2 * itv + 3 * tv + extra + conj_used;
-				
+
 				if (total > max_size) {
 					max_size = total;
 					best_tv = tv;
@@ -98,7 +98,7 @@ int main() {
 		}
 		// Add as many nouns to the end of a tv-sentence as possible
 		if (best_tv > 0) {
-			string& last = phrases.back();
+			string &last = phrases.back();
 			for (int c = 0; c < comma_num && noun_at < nouns.size(); c++) {
 				last.append(", ").append(nouns[noun_at++]);
 			}
@@ -117,7 +117,7 @@ int main() {
 
 		cout << max_size << endl;
 		string res = "";
-		for (const string& s : sentences) { res += s + ". "; }
+		for (const string &s : sentences) { res += s + ". "; }
 		if (!res.empty()) { res.pop_back(); }
 		cout << res << '\n';
 	}
@@ -140,12 +140,14 @@ public class MooLanguage {
 			int wordNum = Integer.parseInt(initial.nextToken());
 			int commaNum = Integer.parseInt(initial.nextToken());
 			int periodNum = Integer.parseInt(initial.nextToken());
-			Map<String, List<String>> words = new HashMap<>() {{
-				put("noun", new ArrayList<>());
-				put("transitive-verb", new ArrayList<>());
-				put("intransitive-verb", new ArrayList<>());
-				put("conjunction", new ArrayList<>());
-			}};
+			Map<String, List<String>> words = new HashMap<>() {
+				{
+					put("noun", new ArrayList<>());
+					put("transitive-verb", new ArrayList<>());
+					put("intransitive-verb", new ArrayList<>());
+					put("conjunction", new ArrayList<>());
+				}
+			};
 			for (int w = 0; w < wordNum; w++) {
 				StringTokenizer word = new StringTokenizer(read.readLine());
 				String token = word.nextToken();
@@ -157,18 +159,18 @@ public class MooLanguage {
 			int bestTV = 0;
 			int bestITV = 0;
 			final List<String> nouns = words.get("noun");  // just a shorthand
-			int maxVerbs = periodNum + Math.min(periodNum, words.get("conjunction").size());
+			int maxVerbs =
+			    periodNum + Math.min(periodNum, words.get("conjunction").size());
 			// Test all combinations of transntive/intransitive verbs
 			for (int tv = 0; tv <= words.get("transitive-verb").size(); tv++) {
 				for (int itv = 0; itv <= words.get("intransitive-verb").size(); itv++) {
 					int nounsLeft = nouns.size() - itv - 2 * tv;
-					if (nounsLeft < 0 || tv + itv > maxVerbs) {
-						break;
-					}
-					int conjUsed = Math.min(words.get("conjunction").size(), (tv + itv) / 2);
+					if (nounsLeft < 0 || tv + itv > maxVerbs) { break; }
+					int conjUsed =
+					    Math.min(words.get("conjunction").size(), (tv + itv) / 2);
 					int extra = tv > 0 ? Math.min(commaNum, nounsLeft) : 0;
 					int total = 2 * itv + 3 * tv + extra + conjUsed;
-							// Build all initial phrases (n + itv or n + tv + n)
+					// Build all initial phrases (n + itv or n + tv + n)
 
 					if (total > maxSize) {
 						maxSize = total;
@@ -205,9 +207,7 @@ public class MooLanguage {
 			int phraseAt = 0;
 			List<String> sentences = new ArrayList<>();
 			for (String conj : words.get("conjunction")) {
-				if (phraseAt + 1 >= phrases.size()) {
-					break;
-				}
+				if (phraseAt + 1 >= phrases.size()) { break; }
 				String first = phrases.get(phraseAt++);
 				String second = phrases.get(phraseAt++);
 				sentences.add(first + " " + conj + " " + second);
