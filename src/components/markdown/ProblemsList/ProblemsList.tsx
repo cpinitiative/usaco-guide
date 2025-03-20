@@ -104,7 +104,6 @@ export function ProblemsList(unannotatedProps: ProblemsListProps): JSX.Element {
           />
         }
       >
-        {/* <table className="w-full no-markdown text-gray-500 dark:text-dark-med-emphasis"> */}
         {props.isDivisionTable === true &&
           props.problems!.map((problem: DivisionProblemInfo) => {
             return (

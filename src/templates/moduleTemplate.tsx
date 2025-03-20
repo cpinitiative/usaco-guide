@@ -22,6 +22,7 @@ export default function Template(props): JSX.Element {
     // source: https://miguelpiedrafita.com/snippets/scrollToHash
     const { hash } = location;
     if (!hash) return;
+    if (!isLoaded) return;
     window.requestAnimationFrame(() => {
       try {
         const anchor = document.getElementById(hash.substring(1));

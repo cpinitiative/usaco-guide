@@ -8,6 +8,7 @@ import { ResourceInfo } from '../../models/resource';
 import TextTooltip from '../Tooltip/TextTooltip';
 import Tooltip from '../Tooltip/Tooltip';
 import ResourceStatusCheckbox from './ResourceStatusCheckbox';
+import ListTableRow from './ListTable/ListTableRow';
 
 export default function ResourcesListItem({
   resource,
@@ -16,21 +17,7 @@ export default function ResourcesListItem({
 }): JSX.Element {
   const userLang = useUserLangSetting();
   const darkMode = useDarkMode();
-  const [isActive, setIsActive] = React.useState(false);
   const id = `resource-${encodeURIComponent(resource.url!)}`;
-
-  React.useEffect(() => {
-    const hashHandler = (): void => {
-      setIsActive(
-        window && window.location && window.location.hash === '#' + id
-      );
-    };
-    hashHandler();
-
-    window.addEventListener('hashchange', hashHandler, false);
-    return (): void =>
-      window.removeEventListener('hashchange', hashHandler, false);
-  }, [userLang]); // hashes can change depending on lang
 
   const statusCol = (
     <td className="pl-8 whitespace-nowrap text-sm font-medium">
@@ -148,17 +135,12 @@ export default function ResourcesListItem({
   );
 
   return (
-    <tr
-      className={
-        isActive ? '!bg-[#fdfdea] dark:!bg-[#3c3c00] relative' : 'relative'
-      }
-    >
-      <td id={id} className="absolute bottom-[120px] h-[2px]" />
+    <ListTableRow id={id}>
       {statusCol}
       {sourceCol}
       {urlCol}
       {childrenCol}
       <td className="text-center pr-2 md:pr-3">{more}</td>
-    </tr>
+    </ListTableRow>
   );
 }
