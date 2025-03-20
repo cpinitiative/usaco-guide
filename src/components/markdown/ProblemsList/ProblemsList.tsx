@@ -12,6 +12,7 @@ import { DivisionProblemInfo } from './DivisionList/DivisionProblemInfo';
 import ProblemsListHeader from './ProblemsListHeader';
 import ProblemsListItem from './ProblemsListItem';
 import SuggestProblemRow from './SuggestProblemRow';
+import { ListTable } from '../ListTable/ListTable';
 
 /* eslint-disable react/prop-types */
 
@@ -82,77 +83,68 @@ export function ProblemsList(unannotatedProps: ProblemsListProps): JSX.Element {
   const path = globalHistory.location.pathname || '';
 
   return (
-    <div
-      className="-mx-4 sm:-mx-6 lg:mx-0"
-      id={`problemlist-${
-        props.isDivisionTable === false
-          ? props.tableName
-          : 'division-' + props.division
-      }`}
-    >
-      <div className="flex flex-col">
-        <div className="-my-2 py-2 overflow-x-auto lg:-mx-4 lg:px-4">
-          <div className="align-middle inline-block shadow overflow-hidden min-w-full lg:rounded-lg dark:bg-gray-900 border-b border-gray-200 dark:border-transparent">
-            <table className="w-full no-markdown text-gray-500 dark:text-dark-med-emphasis">
-              <thead>
-                <ProblemsListHeader
-                  showTags={showTags}
-                  showDifficulty={showDifficulty}
-                  isDivisionTable={props.isDivisionTable}
-                  showSolvePercentage={shouldShowSolvePercentage}
-                  showPlatinumSolvePercentageMessage={
-                    props.isDivisionTable
-                      ? props.division === 'Platinum'
-                      : (undefined as any)
-                  }
-                />
-              </thead>
-              <tbody className="table-alternating-stripes">
-                {props.isDivisionTable === true &&
-                  props.problems!.map((problem: DivisionProblemInfo) => {
-                    return (
-                      <ProblemsListItem
-                        key={problem.uniqueId}
-                        problem={problem}
-                        showTags={showTags}
-                        showDifficulty={showDifficulty}
-                        onShowSolutionSketch={problem => {
-                          setProblem(problem);
-                          setShowModal(true);
-                        }}
-                        isDivisionTable={props.isDivisionTable}
-                        modules={props.modules!}
-                        showPercent={shouldShowSolvePercentage}
-                      />
-                    );
-                  })}
-                {props.isDivisionTable === false && (
-                  <>
-                    {props.problems.map((problem: ProblemInfo) => (
-                      <ProblemsListItem
-                        key={problem.uniqueId}
-                        problem={problem}
-                        showTags={showTags}
-                        showDifficulty={showDifficulty}
-                        onShowSolutionSketch={problem => {
-                          setProblem(problem);
-                          setShowModal(true);
-                        }}
-                        isDivisionTable={props.isDivisionTable}
-                        showPercent={shouldShowSolvePercentage}
-                      />
-                    ))}
-                    {!props.hideSuggestProblemButton &&
-                      path.includes('conclusion') && (
-                        <SuggestProblemRow listName={props.tableName!} />
-                      )}
-                  </>
-                )}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
+    <>
+      <ListTable
+        id={`problemlist-${
+          props.isDivisionTable === false
+            ? props.tableName
+            : 'division-' + props.division
+        }`}
+        header={
+          <ProblemsListHeader
+            showTags={showTags}
+            showDifficulty={showDifficulty}
+            isDivisionTable={props.isDivisionTable}
+            showSolvePercentage={shouldShowSolvePercentage}
+            showPlatinumSolvePercentageMessage={
+              props.isDivisionTable
+                ? props.division === 'Platinum'
+                : (undefined as any)
+            }
+          />
+        }
+      >
+        {/* <table className="w-full no-markdown text-gray-500 dark:text-dark-med-emphasis"> */}
+        {props.isDivisionTable === true &&
+          props.problems!.map((problem: DivisionProblemInfo) => {
+            return (
+              <ProblemsListItem
+                key={problem.uniqueId}
+                problem={problem}
+                showTags={showTags}
+                showDifficulty={showDifficulty}
+                onShowSolutionSketch={problem => {
+                  setProblem(problem);
+                  setShowModal(true);
+                }}
+                isDivisionTable={props.isDivisionTable}
+                modules={props.modules!}
+                showPercent={shouldShowSolvePercentage}
+              />
+            );
+          })}
+        {props.isDivisionTable === false && (
+          <>
+            {props.problems.map((problem: ProblemInfo) => (
+              <ProblemsListItem
+                key={problem.uniqueId}
+                problem={problem}
+                showTags={showTags}
+                showDifficulty={showDifficulty}
+                onShowSolutionSketch={problem => {
+                  setProblem(problem);
+                  setShowModal(true);
+                }}
+                isDivisionTable={props.isDivisionTable}
+                showPercent={shouldShowSolvePercentage}
+              />
+            ))}
+            {!props.hideSuggestProblemButton && path.includes('conclusion') && (
+              <SuggestProblemRow listName={props.tableName!} />
+            )}
+          </>
+        )}
+      </ListTable>
 
       <Transition show={showModal} timeout={300}>
         <div className="fixed z-10 bottom-0 inset-x-0 px-4 pb-6 sm:inset-0 sm:p-0 sm:flex sm:items-center sm:justify-center">
@@ -227,6 +219,6 @@ export function ProblemsList(unannotatedProps: ProblemsListProps): JSX.Element {
           </Transition>
         </div>
       </Transition>
-    </div>
+    </>
   );
 }
