@@ -12,17 +12,15 @@ author: Chongtian Ma
 Let $\texttt{posA}[i]$ denote the position of cow $i$ in array $\texttt{A}$ and
 $\texttt{posB}[i]$ denote the position of cow $i$ in array $\texttt{B}$ (where
 arrays $\texttt{A}$ and $\texttt{B}$ represent the two sides of the road).
-Observe that two cows $i$ and $j$ will intersect cross if
+Observe that two cows $i$ and $j$ will cross if
 $\texttt{posA}[i] < \texttt{posA}[j]$ and $\texttt{posB}[i] > \texttt{posB}[j]$.
 
 We can use the above fact to compute the initial number of crossings. Using an
 Order Statistics Tree, we can initially store all
-$\texttt{posB}[\texttt{A}[i]]$. Then, we can sweep from through array
-$\texttt{A}$ starting from $1$, erase the current $\texttt{posB}[\texttt{A}[i]]$
-and query for the number of positions less than $\texttt{posB}[\texttt{A}[i]]$
-to obtain the number of cows that cross with cow $\texttt{posA}[i]$.
+$\texttt{posB}[\texttt{A}[i]]$. To obtain the number of cows that cross with cow $i$, we can erase all $\texttt{posB}[\texttt{A}[j]]$ such that $j < i$ 
+and query for the number of elements in the tree that are less than $\texttt{posB}[\texttt{A}[i]]$. To optimize erasing, we can loop from $1$ to $N$ and erase each $\texttt{posB}[\texttt{A}[i]]$ before each query.
 
-To handle cyclic shifts, note we only care about moving the first cow to the
+To handle cyclic shifts, we only care about moving the first cow to the
 last position. All other crossings will hold constant. Consider that shifting
 array $\texttt{B}$ to the left:
 
@@ -35,7 +33,7 @@ array $\texttt{B}$ to the left:
   that $j > \texttt{posA}[\texttt{B}[N]]$, $\texttt{A}[j]$ is attached to some
   position $\texttt{B}[k]$ such that $k < N$.
 
-Our answer is the minimum crossings out of all cyclic shifts.
+Our answer is the minimum crossings out of all cyclic shifts. Note that we may have to consider shifting $A$ as well.
 
 **Time Complexity:** $\mathcal{O}(N\log N)$
 
