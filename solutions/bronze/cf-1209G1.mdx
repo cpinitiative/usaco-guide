@@ -41,10 +41,10 @@ since they don't affect each other.
 <CPPSection>
 
 ```cpp
-#include <iostream>
-#include <vector>
-#include <map>
 #include <algorithm>
+#include <iostream>
+#include <map>
+#include <vector>
 
 using std::cout;
 using std::endl;
@@ -63,7 +63,7 @@ int main() {
 	}
 
 	vector<vector<int>> ranges;
-	for (const auto& [v, i] : inds) {
+	for (const auto &[v, i] : inds) {
 		ranges.push_back({i[0], i.back(), (int)i.size()});
 	}
 	std::sort(ranges.begin(), ranges.end());
@@ -72,7 +72,7 @@ int main() {
 	int start = ranges[0][0];
 	int end = ranges[0][1];
 	int most_common = 0;
-	for (const vector<int>& r : ranges) {
+	for (const vector<int> &r : ranges) {
 		if (r[0] > end) {
 			difficulty += end - start + 1 - most_common;
 			start = r[0];
@@ -106,16 +106,14 @@ public class IntoBlocks {
 		Map<Integer, List<Integer>> inds = new HashMap<>();
 		for (int i = 0; i < len; i++) {
 			int val = Integer.parseInt(arrST.nextToken());
-			if (!inds.containsKey(val)) {
-				inds.put(val, new ArrayList<>());
-			}
+			if (!inds.containsKey(val)) { inds.put(val, new ArrayList<>()); }
 			inds.get(val).add(i);
 		}
 
 		int[][] ranges = new int[inds.size()][3];
 		int at = 0;
 		for (List<Integer> i : inds.values()) {
-			ranges[at++] = new int[] { i.get(0), i.get(i.size() - 1), i.size() };
+			ranges[at++] = new int[] {i.get(0), i.get(i.size() - 1), i.size()};
 		}
 		Arrays.sort(ranges, Comparator.comparingInt(r -> r[0]));
 
