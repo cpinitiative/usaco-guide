@@ -1,0 +1,106 @@
+---
+id: usaco-720
+source: USACO Platinum 2017 February
+title: Mincross
+author: Chongtian Ma
+---
+
+[Official Analysis (C++)](https://usaco.org/current/data/sol_mincross_platinum_feb17.html)
+
+## Explanation
+
+Let $\texttt{posA}[i]$ denote the position of cow $i$ in array $\texttt{A}$ and
+$\texttt{posB}[i]$ denote the position of cow $i$ in array $\texttt{B}$ (where
+arrays $\texttt{A}$ and $\texttt{B}$ represent the two sides of the road).
+Observe that two cows $i$ and $j$ will cross if
+$\texttt{posA}[i] < \texttt{posA}[j]$ and $\texttt{posB}[i] > \texttt{posB}[j]$.
+
+We can use the above fact to compute the initial number of crossings. Using an
+Order Statistics Tree, we can initially store all
+$\texttt{posB}[\texttt{A}[i]]$. To obtain the number of cows that cross with cow $i$, we can erase all $\texttt{posB}[\texttt{A}[j]]$ such that $j < i$
+and query for the number of elements in the tree that are less than $\texttt{posB}[\texttt{A}[i]]$. To optimize erasing, we can loop from $1$ to $N$ and erase each $\texttt{posB}[\texttt{A}[i]]$ before each query.
+
+To handle cyclic shifts, we only care about moving the first cow to the
+last position. All other crossings will hold constant. Consider shifting
+array $\texttt{B}$ to the left:
+
+- To detach existing crossings from $\texttt{B}[1]$, we must subtract
+  $\texttt{posA}[\texttt{B}[1]]$ because we know for all positions $j$ such that
+  $j < \texttt{posA}[\texttt{B}[1]]$, $\texttt{A}[j]$ is attached to some
+  position $\texttt{B}[k]$ such that $k > 1$.
+- Now, $\texttt{B}[1]$ becomes $\texttt{B}[N]$. The number of new crossings is
+  $N - \texttt{posA}[\texttt{B}[N]]$ because we know for all positions $j$ such
+  that $j > \texttt{posA}[\texttt{B}[N]]$, $\texttt{A}[j]$ is attached to some
+  position $\texttt{B}[k]$ such that $k < N$.
+
+Our answer is the minimum crossings out of all cyclic shifts.
+Note that we may have to consider shifting $A$ as well.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N\log N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+#include <ext/pb_ds/assoc_container.hpp>
+using namespace std;
+using namespace __gnu_pbds;
+using ll = long long;
+
+template <typename T>
+using ordered_set =
+    tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
+
+int main() {
+	ifstream cin("mincross.in");
+	int n;
+	cin >> n;
+	vector<int> a(n);
+	for (int &i : a) {
+		cin >> i;
+		i--;
+	}
+	vector<int> b(n);
+	for (int &i : b) {
+		cin >> i;
+		i--;
+	}
+
+	ll final_ans = LLONG_MAX;
+	for (int iter = 0; iter < 2; iter++) {
+		vector<int> pos_a(n), pos_b(n);
+		for (int i = 0; i < n; i++) {
+			pos_a[a[i]] = i;
+			pos_b[b[i]] = i;
+		}
+
+		// compute initial crossings
+		ll crossings = 0;
+		ordered_set<int> oset;
+		for (int i = 0; i < n; i++) { oset.insert(pos_b[i]); }
+		for (int i = 0; i < n; i++) {
+			oset.erase(pos_b[a[i]]);
+			crossings += oset.order_of_key(pos_b[a[i]]);
+		}
+
+		ll ans = crossings;
+		// how many crossings after we perform i + 1 cyclic shifts?
+		for (int i = 0; i < n; i++) {
+			crossings -= pos_a[b[i]];
+			crossings += n - pos_a[b[i]] - 1;
+			ans = min(ans, crossings);
+		}
+
+		final_ans = min(ans, final_ans);
+		swap(a, b);  // after first iteration, consider shifting array a instead
+	}
+
+	ofstream("mincross.out") << final_ans << endl;
+}
+```
+
+</CPPSection>
+</LanguageSection>
