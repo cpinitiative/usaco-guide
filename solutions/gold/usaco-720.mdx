@@ -33,12 +33,14 @@ array $\texttt{B}$ to the left:
   that $j > \texttt{posA}[\texttt{B}[N]]$, $\texttt{A}[j]$ is attached to some
   position $\texttt{B}[k]$ such that $k < N$.
 
-Our answer is the minimum crossings out of all cyclic shifts. Note that we may have to consider shifting $A$ as well.
+Our answer is the minimum crossings out of all cyclic shifts.
+Note that we may have to consider shifting $A$ as well.
+
+## Implementation
 
 **Time Complexity:** $\mathcal{O}(N\log N)$
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
@@ -54,15 +56,14 @@ using ordered_set =
 
 int main() {
 	ifstream cin("mincross.in");
-	ofstream cout("mincross.out");
-
 	int n;
 	cin >> n;
-	vector<int> a(n), b(n);
+	vector<int> a(n);
 	for (int &i : a) {
 		cin >> i;
 		i--;
 	}
+	vector<int> b(n);
 	for (int &i : b) {
 		cin >> i;
 		i--;
@@ -75,6 +76,7 @@ int main() {
 			pos_a[a[i]] = i;
 			pos_b[b[i]] = i;
 		}
+
 		// compute initial crossings
 		ll crossings = 0;
 		ordered_set<int> oset;
@@ -83,6 +85,7 @@ int main() {
 			oset.erase(pos_b[a[i]]);
 			crossings += oset.order_of_key(pos_b[a[i]]);
 		}
+
 		ll ans = crossings;
 		// how many crossings after we perform i + 1 cyclic shifts?
 		for (int i = 0; i < n; i++) {
@@ -90,14 +93,14 @@ int main() {
 			crossings += n - pos_a[b[i]] - 1;
 			ans = min(ans, crossings);
 		}
+
 		final_ans = min(ans, final_ans);
 		swap(a, b);  // after first iteration, consider shifting array a instead
 	}
 
-	cout << final_ans << "\n";
+	ofstream("mincross.out") << final_ans << endl;
 }
 ```
 
 </CPPSection>
-
 </LanguageSection>
