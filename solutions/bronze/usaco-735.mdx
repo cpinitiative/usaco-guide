@@ -21,8 +21,8 @@ But if his path somehow overlaps with Bessie's, we only need to add the distance
 <CPPSection>
 
 ```cpp
-#include <iostream>
 #include <fstream>
+#include <iostream>
 
 int main() {
 
@@ -38,14 +38,15 @@ int main() {
 	while (true) {
 		// found bessie
 		if ((direction == 1 && x <= y && y <= (x + direction_distance)) ||
-			(direction == -1 && y <= x && (x - direction_distance) <= y)) {
-				total_distance += std::abs(y - x); // distance to bessie from original position
-				cout << total_distance << std::endl;
-				break;
-		} else { // bessie not found
+		    (direction == -1 && y <= x && (x - direction_distance) <= y)) {
+			total_distance +=
+			    std::abs(y - x);  // distance to bessie from original position
+			cout << total_distance << std::endl;
+			break;
+		} else {  // bessie not found
 			total_distance += direction_distance * 2;
 			direction_distance *= 2;
-			direction *= -1; // switch directions
+			direction *= -1;  // switch directions
 		}
 	}
 }
