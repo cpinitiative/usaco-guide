@@ -27,7 +27,7 @@ We also try to use as many conjuctions as possible;
 if there's $s$ sentences, we can use a maximum of $\left\lfloor\frac{s}{2}\right\rfloor$ conjuctions,
 since each sentence can be joined at most one time.
 
-The rest is some pretty annoying formatting, but it doesn't require any algorithmic tricks.
+The rest is formatting; no algorithmic tricks are required.
 
 ## Implementation
 
@@ -60,7 +60,8 @@ int main() {
 			words.at(type).push_back(token);
 		}
 
-		int max_size = 0;
+		int max_size = 0;  // The largest number of words we can use
+		// Along with how many TVs/ITVs bring about that largest size
 		int best_tv = 0;
 		int best_itv = 0;
 		const vector<string> &nouns = words["noun"];  // just a shorthand
@@ -70,7 +71,10 @@ int main() {
 			for (int itv = 0; itv <= words["intransitive-verb"].size(); itv++) {
 				int nouns_left = nouns.size() - itv - 2 * tv;
 				if (nouns_left < 0 || tv + itv > max_verbs) { break; }
+
+				// Try to use as many conjunctions as possible
 				int conj_used = min((int)words["conjunction"].size(), (tv + itv) / 2);
+				// If a transitive verb was used, put nouns until we run out of commas
 				int extra = tv > 0 ? min(comma_num, nouns_left) : 0;
 				int total = 2 * itv + 3 * tv + extra + conj_used;
 
@@ -155,7 +159,8 @@ public class MooLanguage {
 				words.get(type).add(token);
 			}
 
-			int maxSize = 0;
+			int maxSize = 0;  // The largest number of words we can use
+			// Along with how many TVs/ITVs bring about that largest size
 			int bestTV = 0;
 			int bestITV = 0;
 			final List<String> nouns = words.get("noun");  // just a shorthand
@@ -166,11 +171,13 @@ public class MooLanguage {
 				for (int itv = 0; itv <= words.get("intransitive-verb").size(); itv++) {
 					int nounsLeft = nouns.size() - itv - 2 * tv;
 					if (nounsLeft < 0 || tv + itv > maxVerbs) { break; }
+
+					// Try to use as many conjunctions as possible
 					int conjUsed =
 					    Math.min(words.get("conjunction").size(), (tv + itv) / 2);
+					// If a transitive verb was used, put nouns until we run out of commas
 					int extra = tv > 0 ? Math.min(commaNum, nounsLeft) : 0;
 					int total = 2 * itv + 3 * tv + extra + conjUsed;
-					// Build all initial phrases (n + itv or n + tv + n)
 
 					if (total > maxSize) {
 						maxSize = total;
@@ -239,7 +246,8 @@ for _ in range(int(input())):
 		token, type_ = input().split()
 		words[type_].append(token)
 
-	max_size = 0
+	max_size = 0  # The largest number of words we can use
+	# Along with how many TVs/ITVs bring about that largest size
 	best_tv = 0
 	best_itv = 0
 	nouns = words["noun"]  # just a shorthand
@@ -250,7 +258,10 @@ for _ in range(int(input())):
 			nouns_left = len(nouns) - itv - 2 * tv
 			if nouns_left < 0 or tv + itv > max_verbs:
 				break
+			
+			# Try to use as many conjunctions as possible
 			conj_used = min(len(words["conjunction"]), (tv + itv) // 2)
+			# If a transitive verb was used, put nouns until we run out of commas
 			extra = min(comma_num, nouns_left) if tv > 0 else 0
 			total = 2 * itv + 3 * tv + extra + conj_used
 
