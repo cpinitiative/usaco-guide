@@ -4,8 +4,8 @@ source: SPOJ
 title: Count on a tree
 author: Nigar Hajiyeva
 ---
-## Explanation
 
+## Explanation
 
 In this code, a persistent segment tree is built for each node in the tree by creating a new version based on its parent’s segment tree.
 
@@ -17,7 +17,7 @@ Since the values that are not on the path of $u$ and $v$, but on the path from t
 
 ![example](spoj-cot/example.png)
 
-**Handling Overcounting with LCA**
+### Handling Overcounting
 
 We subtract the frequencies of nodes from the root node to the LCA and its parent because we count the nodes twice from the root node to the LCA. In addition, since the LCA is on the path of $u$ to $v$, we subtract the frequencies from the LCA and the parent of the LCA to consider the value of the LCA.
 
@@ -27,7 +27,11 @@ $$
 
 This formula tracks the frequencies of values in the left subtree of the persistent segment tree along the path from $u$ to $v$.
 
-<Info>**Note: Value compression is used to effectively handle large numbers.**</Info>
+<Info>
+
+Value compression is used to effectively handle large numbers.
+
+</Info>
 
 ## Implementation
 
@@ -47,7 +51,8 @@ struct PersistentSegmentTree {
 	int left_child[MAX_NODES_TREE + 1], right_child[MAX_NODES_TREE + 1],
 	    frequency[MAX_NODES_TREE + 1];
 	int nxt = 1;
-	/*
+
+	/**
 	 * Updates the tree at a given position by incrementing the frequency of the
 	 * specific number added. It creates new nodes for every segment along
 	 * the path from the root to the target position, preserving the
