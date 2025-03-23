@@ -2,191 +2,96 @@
 id: usaco-735
 source: USACO Bronze 2017 Open
 title: The Lost Cow
-author: Jesse Choe, Ananth Kashyap, Brad Ma
+author: Jesse Choe, Ananth Kashyap, Brad Ma, Rameez Parwez
 ---
 
-[Official Analysis](http://www.usaco.org/current/data/sol_lostcow_bronze_open17.html)
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_lostcow_bronze_open17.html)
+
+## Explanation
+
+At each step, we check where Farmer John starts and where he's trying to go. If his path doesn't overlap with
+Bessie's path, we add the distance he convers to a running total and move him to his starting position.
+On the other hand, if his path somehow overlaps with Bessie's, we add only his distance from Bessie to the total.
 
 ## Implementation
 
-**Time Complexity:** $\mathcal{O}(\log|x-y|)$
+**Time Complexity:** $\mathcal{O}(\log|x - y|)$
+
+<Spoiler title="Proof">
+
+Let's say the distance between Farmer John and Bessie is $D = |x - y|$.
+In each step, Farmer John travels double the distance he traveled in the previous step: $1, 2, 4, 8, 16, \cdots$.
+We can see how the the distance grows exponentially.
+
+Farmer John will find Bessie when the range of his movement includes her position.
+This happens when the distance he travels in a single step, $2^k$, becomes at least $D$.
+
+Mathematically, this means $2^k \ge D \implies k \ge \log_2 D$.
+
+Thus, the number of steps needed to find Bessie is proportional to $\log_2(D)$, making the overall time complexity what it is.
+
+</Spoiler>
 
 <LanguageSection>
 <CPPSection>
 
 ```cpp
-// Created by Jesse Choe - Bronze Template
-
-#include <bits/stdc++.h>
-using namespace std;
-
-// Type aliases
-
-using ll = long long;
-using str = string;
-using vi = vector<int>;
-using pi = pair<int, int>;
-using vpi = vector<pi>;
-using si = set<int>;
-
-// Vector Operations
-
-#define sz (int)(x).size()
-#define pb push_back
-#define all(x) begin(x), end(x)
-#define sor(x) sort(all(x))
-#define rev(x) reverse(all(x))
-#define del(x, i) erase(begin(x) + i)
-#define rem(x, i) erase(begin(x), begin(x) + i)
-
-// Pairs
-
-#define mp make_pair
-#define sec second
-#define fir first
-
-// Sets and Maps
-
-#define ins insert
-#define ez erase
-#define cnt count
-
-// Math
-
-#define MOD 1e9 + 7
-#define MAX_INT 1e18 * 9
-
-// Permutation
-
-#define possibilities(x) while(next_permutation(all(x))
-
-// Loops
-
-#define Trav(a, x) for (auto &a : x)
-#define For(i, a, b) for (int i = (a); i < (b); ++i)
-
-// Input/Output - s is basically the file name without the ".in" and ".out"
-
-void setIO(string s) {
-	ios_base::sync_with_stdio(0);
-	cin.tie(0);
-	freopen((s + ".in").c_str(), "r", stdin);
-	freopen((s + ".out").c_str(), "w", stdout);
-}
+#include <fstream>
+#include <iostream>
 
 int main() {
-
-	setIO("lostcow");
-
+	std::ifstream read("lostcow.in");
 	int x, y;
-	cin >> x >> y;
+	read >> x >> y;
 
-	vi zigzag;
-
-	if (x == y) {
-		cout << 0 << endl;
-	} else if (x < y) {
-		int dist = 1;
-
-		while (x + dist < y) {
-			zigzag.pb(x + dist);
-			dist *= -2;
+	int dir = 1;
+	int total_distance = 0;
+	int dir_distance = 1;
+	while (true) {
+		if ((dir == 1 && x <= y && y <= (x + dir_distance)) ||
+		    (dir == -1 && y <= x && (x - dir_distance) <= y)) {
+			// found bessie
+			total_distance += std::abs(y - x);  // distance to her
+			std::ofstream("lostcow.out") << total_distance << std::endl;
+			break;
+		} else {
+			// didn't find bessie yet
+			total_distance += dir_distance * 2;
+			dir_distance *= 2;  // double the distance
+			dir *= -1;          // switch directions
 		}
-
-		zigzag.pb(x + dist);
-
-		int ans = 1;
-
-		For(i, 0, zigzag.size() - 1) { ans += abs(zigzag[i] - zigzag[i + 1]); }
-		ans -= (zigzag[zigzag.size() - 1] - y);
-		cout << ans << endl;
-	} else {
-		int dist = 1;
-
-		while (x + dist > y) {
-			zigzag.pb(x + dist);
-			dist *= -2;
-		}
-
-		zigzag.pb(x + dist);
-
-		int ans = 1;
-
-		For(i, 0, zigzag.size() - 1) { ans += abs(zigzag[i] - zigzag[i + 1]); }
-		ans -= (y - zigzag[zigzag.size() - 1]);
-		cout << ans << endl;
 	}
 }
 ```
 
 </CPPSection>
-
-<PySection>
-
-```py
-# Take in the input data using python standard file I/O system
-file_in = open("lostcow.in")
-data = file_in.read().strip().split("\n")
-x, y = map(int, data[0].split(" "))
-
-# Compute the number of times Farmer John must change direction
-if y > x:
-	p = 0
-	while (2**p) + x < y:
-		p += 2
-else:
-	p = 1
-	while x - (2**p) > y:
-		p += 2
-
-total_distance = 0
-
-# Compute the total distance that farmer John must travel
-if p == 0:
-	print(1)
-else:
-	total_distance = 1
-	for i in range(1, p):
-		total_distance += (2**i) + (2 ** (i - 1))
-	total_distance += (2 ** (p - 1)) + abs(x - y)
-
-# Add the answer to the output file using python standard file I/O system
-file_out = open("lostcow.out", "w")
-file_out.write(str(total_distance))
-file_out.close()
-```
-
-</PySection>
-
 <JavaSection>
 
 ```java
 import java.io.*;
 import java.util.StringTokenizer;
 
-public class theLostCow {
+public class TheLostCow {
 	public static void main(String[] args) throws IOException {
 		Kattio io = new Kattio("lostcow");
 		int x = io.nextInt();
 		int y = io.nextInt();
 
-		int direction = 1;
+		int dir = 1;
 		int totalDistance = 0;
-		int directionDistance = 1;
-
+		int dirDistance = 1;
 		while (true) {
-			// found bessie
-			if ((direction == 1 && x <= y && y <= (x + directionDistance)) ||
-			    (direction == -1 && y <= x && (x - directionDistance <= y))) {
-
-				totalDistance +=
-				    Math.abs(y - x);  // distance to bessie from original position
+			if ((dir == 1 && x <= y && y <= (x + dirDistance)) ||
+			    (dir == -1 && y <= x && (x - dirDistance <= y))) {
+				// found bessie
+				totalDistance += Math.abs(y - x);  // distance to her
 				io.println(totalDistance);
 				break;
-			} else {                                       // did not find bessie yet
-				totalDistance += (directionDistance * 2);  // add to the distance count
-				directionDistance *= 2;                    // double the distance
-				direction *= -1;                           // switch directions
+			} else {
+				// didn't find bessie yet
+				totalDistance += (dirDistance * 2);
+				dirDistance *= 2;  // double the distance
+				dir *= -1;         // switch directions
 			}
 		}
 
@@ -196,6 +101,31 @@ public class theLostCow {
 	// CodeSnip{Kattio}
 }
 ```
-</JavaSection>
 
+</JavaSection>
+<PySection>
+
+```py
+with open("lostcow.in") as read:
+	x, y = [int(i) for i in read.readline().split()]
+
+dir_ = 1
+total_distance = 0
+dir_distance = 1
+while True:
+	if (dir_ == 1 and x <= y and y <= (x + dir_distance)) or (
+		dir_ == -1 and y <= x and (x - dir_distance <= y)
+	):
+		# found bessie
+		total_distance += abs(y - x)  # distance to her
+		print(total_distance, file=open("lostcow.out", "w"))
+		break
+	else:
+		# didn't find bessie yet
+		total_distance += dir_distance * 2
+		dir_distance *= 2  # double the distance
+		dir_ *= -1  # switch directions
+```
+
+</PySection>
 </LanguageSection>
