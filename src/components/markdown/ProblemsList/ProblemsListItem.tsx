@@ -146,14 +146,12 @@ export default function ProblemsListItem(
         <ListTableCell className="whitespace-nowrap font-medium">
           {problem.moduleLink ? (
             // eslint-disable-next-line react/jsx-no-target-blank
-            <a href={problem.moduleLink} target="_blank" className="pl-6">
+            <a href={problem.moduleLink} target="_blank">
               Link
             </a>
           ) : (
             <Tooltip content={`This problem isn't in a module yet.`}>
-              <span className="text-gray-300 dark:text-gray-600 pl-6">
-                None
-              </span>
+              <span className="text-gray-300 dark:text-gray-600">None</span>
             </Tooltip>
           )}
         </ListTableCell>
