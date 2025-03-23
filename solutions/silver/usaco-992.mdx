@@ -13,22 +13,15 @@ If a certain wormhole width works, any larger wormhole width will work as well.
 Similarly, if a width fails, any smaller width will also fail.
 These two facts make it so that we can binary search on the minimal wormhole width.
 
-To check if a given minimal wormhole width $x$ is valid, we use BFS to find all positions that can reach each other by traversing wormholes that are at most width $x$.
+To check if a given minimal wormhole width $x$ is valid, we use BFS to find all positions
+that can reach each other by traversing wormholes that are at most width $x$.
+Then we look at each cow's initial position along with the position it's supposed to be in.
+If the two are in the same component, we're golden.
 
-As stated in the problem, each cow $i$ is given to be at a position $p_i$.
-In order to make the cows sorted, we want to have cow $i$ be in position $i$.
-If $p_i \neq i$, $i$ must be reachable from $p_i$ through a series of wormholes, and therefore $i$ and $p_i$ must be in the same connected component.
-
-Suppose that we want to test different wormhole widths $x$ with the data provided in the sample testcase.
-The sample testcase has it such that cow $3$ at position $1$ must be able to reach position $3$ and cow $1$ at position $3$ must be able to reach position $1$. Cow $4$ and cow $2$ are already in the correct spots.
-
-If we test $x=10$, our connected component will be $\{2, 3\}$.
-Positions $1$ and $3$ aren't reachable from each other, so using wormholes of at leastwidth $10$ will not work.
-
-However, if we test the wormhole width $x=9$, we find a different conneccted component: $\{1, 2, 3\}$.
-We find that positions $1$ and $3$ are reachable from each other, thus satisfying our conditions.
-
-The process testing if a wormhole width $x$ works described above is repeated with binary search to find the highest wormhole width $x$.
+For example, say we're testing a width of $10$ in the sample case.
+This makes our components $[0]$, $[1, 2]$, and $[3]$.
+Cow 1's initial position (3) and its final position (0)
+aren't in the same component, so this width wouldn't work.
 
 ### Implementation
 
