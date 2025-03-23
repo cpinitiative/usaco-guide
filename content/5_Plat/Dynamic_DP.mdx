@@ -27,16 +27,16 @@ Suppose that $n$ were smaller, and that $\mathcal{O}(n)$ fit inside the time lim
 ```cpp
 dp[0][1] = 1;
 for (int i = 0; i < n; i++) {
-	//case 1 - s or d
-	dp[i+1][0] += 2 * (dp[i][0] + dp[i][1]);
-	//case 2 - h
-	dp[i+1][1] += dp[i][0] + dp[i][1];
-	//case 3 - vowels
-	dp[i+1][0] += 5 * dp[i][1];
-	dp[i+1][1] += 5 * dp[i][0];
-	//case 4 - other
-	dp[i+1][0] += 18 * dp[i][0];
-	dp[i+1][1] += 18 * dp[i][1];
+	// case 1 - s or d
+	dp[i + 1][0] += 2 * (dp[i][0] + dp[i][1]);
+	// case 2 - h
+	dp[i + 1][1] += dp[i][0] + dp[i][1];
+	// case 3 - vowels
+	dp[i + 1][0] += 5 * dp[i][1];
+	dp[i + 1][1] += 5 * dp[i][0];
+	// case 4 - other
+	dp[i + 1][0] += 18 * dp[i][0];
+	dp[i + 1][1] += 18 * dp[i][1];
 }
 ```
 
@@ -56,7 +56,7 @@ $
 \begin{bmatrix}
   a & b
 \end{bmatrix}
-$, then we can represent transitions as multiplying by the transition matrix 
+$, then we can represent transitions as multiplying by the transition matrix
 $M =
 \begin{bmatrix}
   20 & 6 \\
@@ -75,33 +75,31 @@ using namespace std;
 
 #define i64 int64_t
 
-const i64 mod = 1e9+7;
+const i64 mod = 1e9 + 7;
 
-array<array<i64,2>,2> mul(const array<array<i64,2>,2> &a, const array<array<i64,2>,2> &b) {
-	array<array<i64,2>,2> res = {{{0, 0}, {0, 0}}};
-    for (int i = 0; i < 2; i++)
-        for (int j = 0; j < 2; j++)
-            for (int k = 0; k < 2; k++)
-                res[i][j] += a[i][k] * b[k][j];
-    for (int i=0; i<2; i++)
-    	for (int j=0; j<2; j++)
-    		res[i][j] %= mod;
-    return res;
+array<array<i64, 2>, 2> mul(const array<array<i64, 2>, 2> &a,
+                            const array<array<i64, 2>, 2> &b) {
+	array<array<i64, 2>, 2> res = {{{0, 0}, {0, 0}}};
+	for (int i = 0; i < 2; i++)
+		for (int j = 0; j < 2; j++)
+			for (int k = 0; k < 2; k++) res[i][j] += a[i][k] * b[k][j];
+	for (int i = 0; i < 2; i++)
+		for (int j = 0; j < 2; j++) res[i][j] %= mod;
+	return res;
 }
 
 signed main() {
-	array<array<i64,2>,2> T = {{{1,0},{0,1}}};
-	array<array<i64,2>,2> M = {{{19,7},{6,20}}};
-	
-	i64 n; cin >> n;
-	
-	for (int i=0; i<62; i++) {
-		if ((1ll<<i)&n) {
-			T = mul(T,M);
-		}
-		M = mul(M,M);
+	array<array<i64, 2>, 2> T = {{{1, 0}, {0, 1}}};
+	array<array<i64, 2>, 2> M = {{{19, 7}, {6, 20}}};
+
+	i64 n;
+	cin >> n;
+
+	for (int i = 0; i < 62; i++) {
+		if ((1ll << i) & n) { T = mul(T, M); }
+		M = mul(M, M);
 	}
-	
+
 	cout << T[0][0];
 }
 ```
