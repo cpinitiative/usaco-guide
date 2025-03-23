@@ -1,0 +1,179 @@
+---
+id: cf-1209G1
+source: CF
+title: Into Blocks
+author: Kevin Sheng
+---
+
+[Official Editorial](https://codeforces.com/blog/entry/69791)
+
+## Explanation
+
+The key thing to notice here is that if we have two numbers like so:
+$$
+[1, \cdots, 2, \cdots, 1, \cdots, 2]
+$$
+where their active ranges intersect, then they have to be the same value.
+
+The algorithm is thus to split the array into all the "independent" segments,
+where no number in the original array is split into multiple segments.
+We do this by calculating all the value ranges initially and sorting them by start position.
+
+For example, if our initial array was
+$$
+[3, 3, 1, 3, 1, 4, 2, 4, 2]
+$$
+the segments would be the first five and last four elements of the array.
+
+For each segment, its difficulty is its length minus the number of times
+the most frequently occurring value appears.
+In other words, the best strategy is to change every value in the segment
+to the value that already occurs the most.
+
+The total difficulty is the sum of the difficulties across all segments,
+since they don't affect each other.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(n \log n)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <algorithm>
+#include <iostream>
+#include <map>
+#include <vector>
+
+using std::cout;
+using std::endl;
+using std::vector;
+
+int main() {
+	int len;
+	int query_num;  // not used
+	std::cin >> len >> query_num;
+
+	std::map<int, vector<int>> inds;
+	for (int i = 0; i < len; i++) {
+		int val;
+		std::cin >> val;
+		inds[val].push_back(i);
+	}
+
+	vector<vector<int>> ranges;
+	for (const auto &[v, i] : inds) {
+		ranges.push_back({i[0], i.back(), (int)i.size()});
+	}
+	std::sort(ranges.begin(), ranges.end());
+
+	int difficulty = 0;
+	int start = ranges[0][0];
+	int end = ranges[0][1];
+	int most_common = 0;
+	for (const vector<int> &r : ranges) {
+		if (r[0] > end) {
+			difficulty += end - start + 1 - most_common;
+			start = r[0];
+			end = r[1];
+			most_common = r[2];
+		} else {
+			end = std::max(end, r[1]);
+			most_common = std::max(most_common, r[2]);
+		}
+	}
+	difficulty += end - start + 1 - most_common;
+
+	cout << difficulty << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class IntoBlocks {
+	public static void main(String[] args) throws IOException {
+		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer initial = new StringTokenizer(read.readLine());
+		int len = Integer.parseInt(initial.nextToken());
+
+		StringTokenizer arrST = new StringTokenizer(read.readLine());
+		Map<Integer, List<Integer>> inds = new HashMap<>();
+		for (int i = 0; i < len; i++) {
+			int val = Integer.parseInt(arrST.nextToken());
+			if (!inds.containsKey(val)) { inds.put(val, new ArrayList<>()); }
+			inds.get(val).add(i);
+		}
+
+		int[][] ranges = new int[inds.size()][3];
+		int at = 0;
+		for (List<Integer> i : inds.values()) {
+			ranges[at++] = new int[] {i.get(0), i.get(i.size() - 1), i.size()};
+		}
+		Arrays.sort(ranges, Comparator.comparingInt(r -> r[0]));
+
+		int difficulty = 0;
+		int start = ranges[0][0];
+		int end = ranges[0][1];
+		int mostCommon = 0;
+		for (int[] r : ranges) {
+			if (r[0] > end) {
+				difficulty += end - start + 1 - mostCommon;
+				start = r[0];
+				end = r[1];
+				mostCommon = r[2];
+			} else {
+				end = Math.max(end, r[1]);
+				mostCommon = Math.max(mostCommon, r[2]);
+			}
+		}
+		difficulty += end - start + 1 - mostCommon;
+
+		System.out.println(difficulty);
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+len_, _ = [int(i) for i in input().split()]
+
+inds = {}
+arr = [int(i) for i in input().split()]
+for i in range(len_):
+	if arr[i] not in inds:
+		inds[arr[i]] = []
+	inds[arr[i]].append(i)
+
+ranges = []
+for i in inds.values():
+	ranges.append((i[0], i[-1], len(i)))
+ranges.sort()
+
+difficulty = 0
+start = ranges[0][0]
+end = ranges[0][1]
+most_common = 0
+for r in ranges:
+	if r[0] > end:
+		difficulty += end - start + 1 - most_common
+		start = r[0]
+		end = r[1]
+		most_common = r[2]
+	else:
+		end = max(end, r[1])
+		most_common = max(most_common, r[2])
+difficulty += end - start + 1 - most_common
+
+print(difficulty)
+```
+
+</PySection>
+</LanguageSection>
