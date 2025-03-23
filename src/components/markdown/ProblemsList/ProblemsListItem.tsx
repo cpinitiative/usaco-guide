@@ -4,10 +4,10 @@ import { UsacoTableProgress } from '../../Dashboard/DashboardProgress';
 import DifficultyBox from '../../DifficultyBox';
 import TextTooltip from '../../Tooltip/TextTooltip';
 import Tooltip from '../../Tooltip/Tooltip';
+import ListTableRow, { ListTableCell } from '../ListTable/ListTableRow';
 import { DivisionProblemInfo } from './DivisionList/DivisionProblemInfo';
 import ProblemsListItemDropdown from './ProblemsListItemDropdown';
 import ProblemStatusCheckbox from './ProblemStatusCheckbox';
-import ListTableRow, { ListTableCell } from '../ListTable/ListTableRow';
 
 export type ProblemsListItemProps = {
   showTags: boolean;

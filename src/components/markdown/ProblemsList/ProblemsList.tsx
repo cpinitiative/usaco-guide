@@ -8,11 +8,11 @@ import {
 } from '../../../context/UserDataContext/properties/simpleProperties';
 import { ProblemInfo } from '../../../models/problem';
 import Transition from '../../Transition';
+import { ListTable } from '../ListTable/ListTable';
 import { DivisionProblemInfo } from './DivisionList/DivisionProblemInfo';
 import ProblemsListHeader from './ProblemsListHeader';
 import ProblemsListItem from './ProblemsListItem';
 import SuggestProblemRow from './SuggestProblemRow';
-import { ListTable } from '../ListTable/ListTable';
 
 /* eslint-disable react/prop-types */
 

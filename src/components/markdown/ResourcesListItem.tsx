@@ -7,8 +7,8 @@ import { useUserLangSetting } from '../../context/UserDataContext/properties/sim
 import { ResourceInfo } from '../../models/resource';
 import TextTooltip from '../Tooltip/TextTooltip';
 import Tooltip from '../Tooltip/Tooltip';
-import ResourceStatusCheckbox from './ResourceStatusCheckbox';
 import ListTableRow, { ListTableCell } from './ListTable/ListTableRow';
+import ResourceStatusCheckbox from './ResourceStatusCheckbox';
 
 export default function ResourcesListItem({
   resource,
