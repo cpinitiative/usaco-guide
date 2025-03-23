@@ -1,0 +1,111 @@
+---
+id: DDP
+title: Dynamic DP
+author: Ryan Fu
+prerequisites:
+description: A way to merge two sets efficiently.
+---
+
+<Resources>
+	<Resource
+		source="CF"
+		title="Errichto - Matrix Exponentiation tutorial + training contest"
+		url="80195"
+	 />
+</Resources>
+
+## Accelerating Simple Transitions
+
+If dynamic programming transitions are simple and predictable, can we speed them up significantly?
+
+<FocusProblem problem="stringmood" />
+
+### Naive Solution
+
+Suppose that $n$ were smaller, and that $\mathcal{O}(n)$ fit inside the time limit. We could use a simple dynamic programming state $\texttt{dp[i][0/1]}$ to represent the number of ways to be sad or happy, and our answer is simply $\texttt{dp[n][1]}$.
+
+```cpp
+dp[0][1] = 1;
+for (int i = 0; i < n; i++) {
+	//case 1 - s or d
+	dp[i+1][0] += 2 * (dp[i][0] + dp[i][1]);
+	//case 2 - h
+	dp[i+1][1] += dp[i][0] + dp[i][1];
+	//case 3 - vowels
+	dp[i+1][0] += 5 * dp[i][1];
+	dp[i+1][1] += 5 * dp[i][0];
+	//case 4 - other
+	dp[i+1][0] += 18 * dp[i][0];
+	dp[i+1][1] += 18 * dp[i][1];
+}
+```
+
+### Accelerated Solution
+
+Realize that our dp transitions seem to be very repetitive. In fact, each state is simply a linear combination of the previous state. Specifically,
+
+$$
+\texttt{dp[i+1][0] = }  20\cdot \texttt{dp[i][0] } + 7 \cdot \texttt{dp[i][1]}
+$$
+$$
+\texttt{dp[i+1][1] = }  6\cdot \texttt{dp[i][0] } + 19 \cdot \texttt{dp[i][1]}
+$$
+
+If we represent $\texttt{dp[i]}$ as a matrix
+$
+\begin{bmatrix}
+  a & b
+\end{bmatrix}
+$, then we can represent transitions as multiplying by the transition matrix 
+$M =
+\begin{bmatrix}
+  20 & 6 \\
+  7 & 19
+\end{bmatrix}
+$.
+
+Because matrix multiplication is associative, if we can find $M^n$, we can easily simulate $n$ transitions. To do this, we can leverage [binary exponentiation](https://usaco.guide/gold/modular) and solve the task in $\mathcal{O}(\log n)$.
+
+
+### Full Code
+
+```cpp
+#include "bits/stdc++.h"
+using namespace std;
+
+#define i64 int64_t
+
+const i64 mod = 1e9+7;
+
+array<array<i64,2>,2> mul(const array<array<i64,2>,2> &a, const array<array<i64,2>,2> &b) {
+	array<array<i64,2>,2> res = {{{0, 0}, {0, 0}}};
+    for (int i = 0; i < 2; i++)
+        for (int j = 0; j < 2; j++)
+            for (int k = 0; k < 2; k++)
+                res[i][j] += a[i][k] * b[k][j];
+    for (int i=0; i<2; i++)
+    	for (int j=0; j<2; j++)
+    		res[i][j] %= mod;
+    return res;
+}
+
+signed main() {
+	array<array<i64,2>,2> T = {{{1,0},{0,1}}};
+	array<array<i64,2>,2> M = {{{19,7},{6,20}}};
+	
+	i64 n; cin >> n;
+	
+	for (int i=0; i<62; i++) {
+		if ((1ll<<i)&n) {
+			T = mul(T,M);
+		}
+		M = mul(M,M);
+	}
+	
+	cout << T[0][0];
+}
+```
+
+## Problems
+
+<Problems problems="general" />
