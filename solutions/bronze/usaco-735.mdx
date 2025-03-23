@@ -40,28 +40,25 @@ Thus, the number of steps needed to find Bessie is proportional to $\log_2(D)$, 
 #include <iostream>
 
 int main() {
-	std::ifstream cin("lostcow.in");
-	std::ofstream cout("lostcow.out");
+	std::ifstream read("lostcow.in");
 	int x, y;
-	cin >> x >> y;
+	read >> x >> y;
 
-	int direction = 1;
+	int dir = 1;
 	int total_distance = 0;
-	int direction_distance = 1;
-
+	int dir_distance = 1;
 	while (true) {
-		if ((direction == 1 && x <= y && y <= (x + direction_distance)) ||
-		    (direction == -1 && y <= x && (x - direction_distance) <= y)) {
+		if ((dir == 1 && x <= y && y <= (x + dir_distance)) ||
+			(dir == -1 && y <= x && (x - dir_distance) <= y)) {
 			// found bessie
-			total_distance +=
-			    std::abs(y - x);  // distance to bessie from original position
-			cout << total_distance << std::endl;
+			total_distance += std::abs(y - x);  // distance to her
+			std::ofstream("lostcow.out") << total_distance << std::endl;
 			break;
 		} else {
-			// bessie not found
-			total_distance += direction_distance * 2;
-			direction_distance *= 2;
-			direction *= -1;  // switch directions
+			// didn't find bessie yet
+			total_distance += dir_distance * 2;
+			dir_distance *= 2;  // double the distance
+			dir *= -1;  // switch directions
 		}
 	}
 }
@@ -80,23 +77,21 @@ public class TheLostCow {
 		int x = io.nextInt();
 		int y = io.nextInt();
 
-		int direction = 1;
+		int dir = 1;
 		int totalDistance = 0;
-		int directionDistance = 1;
-
+		int dirDistance = 1;
 		while (true) {
-			if ((direction == 1 && x <= y && y <= (x + directionDistance)) ||
-			    (direction == -1 && y <= x && (x - directionDistance <= y))) {
+			if ((dir == 1 && x <= y && y <= (x + dirDistance)) ||
+				(dir == -1 && y <= x && (x - dirDistance <= y))) {
 				// found bessie
-				totalDistance +=
-				    Math.abs(y - x);  // distance to bessie from original position
+				totalDistance += Math.abs(y - x);  // distance to her
 				io.println(totalDistance);
 				break;
 			} else {
-				// did not find bessie yet
-				totalDistance += (directionDistance * 2);  // add to the distance count
-				directionDistance *= 2;                    // double the distance
-				direction *= -1;                           // switch directions
+				// didn't find bessie yet
+				totalDistance += (dirDistance * 2);
+				dirDistance *= 2;  // double the distance
+				dir *= -1;  // switch directions
 			}
 		}
 
@@ -111,36 +106,24 @@ public class TheLostCow {
 <PySection>
 
 ```py
-# Take in the input data using python standard file I/O system
-file_in = open("lostcow.in")
-data = file_in.read().strip().split("\n")
-x, y = map(int, data[0].split(" "))
+with open("lostcow.in") as read:
+	x, y = [int(i) for i in read.readline().split()]
 
-# Compute the number of times Farmer John must change direction
-if y > x:
-	p = 0
-	while (2**p) + x < y:
-		p += 2
-else:
-	p = 1
-	while x - (2**p) > y:
-		p += 2
-
+dir_ = 1
 total_distance = 0
-
-# Compute the total distance that farmer John must travel
-if p == 0:
-	print(1)
-else:
-	total_distance = 1
-	for i in range(1, p):
-		total_distance += (2**i) + (2 ** (i - 1))
-	total_distance += (2 ** (p - 1)) + abs(x - y)
-
-# Add the answer to the output file using python standard file I/O system
-file_out = open("lostcow.out", "w")
-file_out.write(str(total_distance))
-file_out.close()
+dir_distance = 1
+while True:
+	if (dir_ == 1 and x <= y and y <= (x + dir_distance)) or \
+				(dir_ == -1 and y <= x and (x - dir_distance <= y)):
+		# found bessie
+		total_distance += abs(y - x)  # distance to her
+		print(total_distance, file=open("lostcow.out", "w"))
+		break
+	else:
+		# didn't find bessie yet
+		total_distance += dir_distance * 2
+		dir_distance *= 2  # double the distance
+		dir_ *= -1  # switch directions
 ```
 
 </PySection>
