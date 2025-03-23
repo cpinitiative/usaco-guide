@@ -41,11 +41,5 @@ export function ListTableCell({
   children: React.ReactNode;
   className?: string;
 }): JSX.Element {
-  return (
-    <td
-      className={clsx('px-3 py-4 text-sm nth-2:pl-4 sm:nth-2:pl-6', className)}
-    >
-      {children}
-    </td>
-  );
+  return <td className={clsx('px-3 py-4 text-sm', className)}>{children}</td>;
 }

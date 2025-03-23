@@ -20,7 +20,7 @@ export default function ResourcesListItem({
   const id = `resource-${encodeURIComponent(resource.url!)}`;
 
   const statusCol = (
-    <ListTableCell className="whitespace-nowrap font-medium">
+    <ListTableCell className="pl-4 sm:pl-6 whitespace-nowrap font-medium">
       <div
         style={{ height: '1.25rem' }}
         className="flex items-center justify-center"

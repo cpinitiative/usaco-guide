@@ -7,6 +7,7 @@ import Tooltip from '../../Tooltip/Tooltip';
 import { DivisionProblemInfo } from './DivisionList/DivisionProblemInfo';
 import ProblemsListItemDropdown from './ProblemsListItemDropdown';
 import ProblemStatusCheckbox from './ProblemStatusCheckbox';
+import ListTableRow, { ListTableCell } from '../ListTable/ListTableRow';
 
 export type ProblemsListItemProps = {
   showTags: boolean;
@@ -30,32 +31,18 @@ export type ProblemsListItemProps = {
 export default function ProblemsListItem(
   props: ProblemsListItemProps
 ): JSX.Element {
-  const [isActive, setIsActive] = React.useState(false);
   const { isDivisionTable, problem } = props;
   const id = `problem-${problem.uniqueId}`;
 
-  React.useEffect(() => {
-    const hashHandler = (): void => {
-      setIsActive(
-        window && window.location && window.location.hash === '#' + id
-      );
-    };
-    hashHandler();
-
-    window.addEventListener('hashchange', hashHandler, false);
-    return (): void =>
-      window.removeEventListener('hashchange', hashHandler, false);
-  }, [id]);
-
   const statusCol = (
-    <td className="pl-4 whitespace-nowrap text-sm font-medium">
+    <ListTableCell className="whitespace-nowrap font-medium">
       <div
         style={{ height: '1.25rem' }}
         className="flex items-center justify-center"
       >
         <ProblemStatusCheckbox problem={problem} />
       </div>
-    </td>
+    </ListTableCell>
   );
   const sourceTooltip =
     isDivisionTable == false
@@ -73,7 +60,7 @@ export default function ProblemsListItem(
     resultsUrl = `http://www.usaco.org/index.php?page=${parts[1]}${parts[0]}results`;
   }
   const sourceCol = isDivisionTable ? (
-    <td className="pl-4 md:pl-6 py-4 whitespace-nowrap text-sm leading-5 font-medium">
+    <ListTableCell className="whitespace-nowrap font-medium">
       <a
         href={resultsUrl}
         className={'truncate'}
@@ -83,19 +70,19 @@ export default function ProblemsListItem(
       >
         {problem.source}
       </a>
-    </td>
+    </ListTableCell>
   ) : (
-    <td className="pl-4 md:pl-6 py-4 whitespace-nowrap text-sm leading-5 font-medium">
+    <ListTableCell className="whitespace-nowrap font-medium">
       {sourceTooltip ? (
         <TextTooltip content={sourceTooltip}>{problem.source}</TextTooltip>
       ) : (
         problem.source
       )}
-    </td>
+    </ListTableCell>
   );
 
   const nameCol = (
-    <td className="pl-4 md:px-6 py-4 whitespace-nowrap text-sm leading-5 font-medium">
+    <ListTableCell className="whitespace-nowrap font-medium">
       <div className="flex items-center">
         {isDivisionTable == false && problem.isStarred && (
           <Tooltip content="We highly recommend you do all starred problems!">
@@ -122,34 +109,29 @@ export default function ProblemsListItem(
           {problem.name}
         </a>
       </div>
-    </td>
+    </ListTableCell>
   );
 
   const difficultyCol = (
-    <td className={`py-4 whitespace-nowrap leading-5 pr-4 md:pr-6`}>
+    <ListTableCell className="whitespace-nowrap">
       <DifficultyBox difficulty={problem.difficulty} />
-    </td>
+    </ListTableCell>
   );
 
   return (
-    <tr
-      className={
-        isActive ? '!bg-[#fdfdea] dark:!bg-[#3c3c00] relative' : 'relative'
-      }
-    >
-      <td id={id} className="absolute bottom-[120px] h-[2px]" />
+    <ListTableRow id={id}>
       {statusCol}
       {sourceCol}
       {nameCol}
       {props.showDifficulty &&
         (isDivisionTable
           ? props.showPercent && (
-              <td className="pl-4 md:pl-6 pr-4 md:pr-6 py-3 text-left text-xs leading-4 font-medium uppercase tracking-wider">
+              <ListTableCell className="text-left text-xs leading-4 font-medium uppercase tracking-wider">
                 <UsacoTableProgress completed={problem.percentageSolved} />
-              </td>
+              </ListTableCell>
             )
           : difficultyCol)}
-      <td className="pl-4 md:pl-6 py-4 whitespace-nowrap text-sm leading-5 font-medium">
+      <ListTableCell className="whitespace-nowrap font-medium">
         {problem.tags && problem.tags.length ? (
           <details
             open={props.showTags}
@@ -159,9 +141,9 @@ export default function ProblemsListItem(
             <span className="text-xs">{problem.tags.sort().join(', ')}</span>
           </details>
         ) : null}
-      </td>
+      </ListTableCell>
       {isDivisionTable && props.modules && (
-        <td className="pl-4 md:pl-6 pr-4 md:pr-6 py-4 whitespace-nowrap text-sm font-medium leading-none">
+        <ListTableCell className="whitespace-nowrap font-medium">
           {problem.moduleLink ? (
             // eslint-disable-next-line react/jsx-no-target-blank
             <a href={problem.moduleLink} target="_blank" className="pl-6">
@@ -174,11 +156,11 @@ export default function ProblemsListItem(
               </span>
             </Tooltip>
           )}
-        </td>
+        </ListTableCell>
       )}
       <td className="text-center pr-2 md:pr-3">
         <ProblemsListItemDropdown {...props} isFocusProblem={false} />
       </td>
-    </tr>
+    </ListTableRow>
   );
 }

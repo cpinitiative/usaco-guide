@@ -21,24 +21,24 @@ export default function ProblemsListHeader(
   return (
     <tr className="bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 pr-4 md:pr-6">
       <th
-        className="pl-4 py-3 text-xs leading-4 font-medium uppercase tracking-wider text-center"
+        className="px-3 py-3 text-xs leading-4 font-medium uppercase tracking-wider text-center"
         colSpan={2} // first column is anchor
       >
         Status
       </th>
 
-      <th className="pl-4 md:pl-6 py-3 text-left text-xs leading-4 font-medium uppercase tracking-wider">
+      <th className="px-3 py-3 text-left text-xs leading-4 font-medium uppercase tracking-wider">
         {props.isDivisionTable ? 'Contest' : 'Source'}
       </th>
 
-      <th className="pl-4 sm:pl-10 md:pl-12 md:pr-6 py-3 text-left text-xs leading-4 font-medium uppercase tracking-wider whitespace-nowrap">
+      <th className="px-3 py-3 sm:pl-9 text-left text-xs leading-4 font-medium uppercase tracking-wider whitespace-nowrap">
         Problem Name
       </th>
 
       {props.showDifficulty &&
         (props.isDivisionTable ? (
           props.showSolvePercentage && (
-            <th className="pl-4 md:pl-6 pr-4 md:pr-6 py-3 text-left text-xs leading-4 font-medium uppercase tracking-wider">
+            <th className="px-3 py-3 text-left text-xs leading-4 font-medium uppercase tracking-wider">
               <TextTooltip
                 content={
                   props.showPlatinumSolvePercentageMessage
@@ -51,19 +51,17 @@ export default function ProblemsListHeader(
             </th>
           )
         ) : (
-          <th
-            className={`pr-4 md:pr-6 py-3 text-left text-xs leading-4 font-medium uppercase tracking-wider`}
-          >
+          <th className="px-3 py-3 text-left text-xs leading-4 font-medium uppercase tracking-wider">
             Difficulty
           </th>
         ))}
 
-      <th className="pl-4 md:pl-6 py-3 text-left text-xs leading-4 font-medium uppercase tracking-wider">
+      <th className="px-3 py-3 text-left text-xs leading-4 font-medium uppercase tracking-wider">
         Tags
       </th>
 
       {props.isDivisionTable && (
-        <th className="pl-10 md:pl-12 pr-4 md:pr-6 py-3 text-left text-xs leading-4 font-medium uppercase tracking-wider">
+        <th className="px-3 py-3 text-left text-xs leading-4 font-medium uppercase tracking-wider">
           Module
         </th>
       )}
