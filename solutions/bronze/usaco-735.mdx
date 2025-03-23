@@ -11,7 +11,7 @@ author: Jesse Choe, Ananth Kashyap, Brad Ma, Rameez Parwez
 
 At each step, we check where Farmer John starts and where he's trying to go. If his path doesn't overlap with
 Bessie's path, we add the distance he convers to a running total and move him to his starting position.
-But if his path somehow overlaps with Bessie's, we only need to add his distance from Bessie to the total.
+On the other hand, if his path somehow overlaps with Bessie's, we add only his distance from Bessie to the total.
 
 ## Implementation
 
@@ -19,24 +19,16 @@ But if his path somehow overlaps with Bessie's, we only need to add his distance
 
 <Spoiler title="Proof">
 
-Let's say the distance between Farmer John and Bessie is $D = |x - y|$. In each step, Farmer John travels double the distance he traveled in the previous step: $1, 2, 4, 8, 16, \dots, 2^k$. We can see how the the distance grows exponentially.
+Let's say the distance between Farmer John and Bessie is $D = |x - y|$.
+In each step, Farmer John travels double the distance he traveled in the previous step: $1, 2, 4, 8, 16, \cdots$.
+We can see how the the distance grows exponentially.
 
-Farmer John will find Bessie when the range of his movement includes her position. This happens when the distance he travels in a single step, $2^k$, becomes at least as large as $D$.
+Farmer John will find Bessie when the range of his movement includes her position.
+This happens when the distance he travels in a single step, $2^k$, becomes at least $D$.
 
-Mathematically, this means:
-$$
-2^k \geq D
-$$
+Mathematically, this means $2^k \ge D \implies k \ge \log_2 D$.
 
-Taking log(base 2) on both sides:
-$$
-k \geq \log_2(D)
-$$
-
-Thus, the number of steps $k$ needed to find Bessie is proportional to $\log_2(D)$, and the overall time complexity is:
-$$
-\mathcal{O}(\log|x - y|)
-$$
+Thus, the number of steps needed to find Bessie is proportional to $\log_2(D)$, making the overall time complexity what it is.
 
 </Spoiler>
 
@@ -82,7 +74,7 @@ int main() {
 import java.io.*;
 import java.util.StringTokenizer;
 
-public class theLostCow {
+public class TheLostCow {
 	public static void main(String[] args) throws IOException {
 		Kattio io = new Kattio("lostcow");
 		int x = io.nextInt();
