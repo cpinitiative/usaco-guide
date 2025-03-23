@@ -15,7 +15,30 @@ But if his path somehow overlaps with Bessie's, we only need to add his distance
 
 ## Implementation
 
-**Time Complexity:** $\mathcal{O}(\log|x-y|)$
+**Time Complexity:** $\mathcal{O}(\log|x - y|)$
+
+<Spoiler title="Proof">
+
+Let's say the distance between Farmer John and Bessie is $D = |x - y|$. In each step, Farmer John travels double the distance he traveled in the previous step: $1, 2, 4, 8, 16, \dots, 2^k$. We can see how the the distance grows exponentially.
+
+Farmer John will find Bessie when the range of his movement includes her position. This happens when the distance he travels in a single step, $2^k$, becomes at least as large as $D$.
+
+Mathematically, this means:
+$$
+2^k \geq D
+$$
+
+Taking log(base 2) on both sides:
+$$
+k \geq \log_2(D)
+$$
+
+Thus, the number of steps $k$ needed to find Bessie is proportional to $\log_2(D)$, and the overall time complexity is:
+$$
+\mathcal{O}(\log|x - y|)
+$$
+
+</Spoiler>
 
 <LanguageSection>
 <CPPSection>
