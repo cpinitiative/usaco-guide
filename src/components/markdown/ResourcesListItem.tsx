@@ -8,7 +8,7 @@ import { ResourceInfo } from '../../models/resource';
 import TextTooltip from '../Tooltip/TextTooltip';
 import Tooltip from '../Tooltip/Tooltip';
 import ResourceStatusCheckbox from './ResourceStatusCheckbox';
-import ListTableRow from './ListTable/ListTableRow';
+import ListTableRow, { ListTableCell } from './ListTable/ListTableRow';
 
 export default function ResourcesListItem({
   resource,
@@ -20,17 +20,17 @@ export default function ResourcesListItem({
   const id = `resource-${encodeURIComponent(resource.url!)}`;
 
   const statusCol = (
-    <td className="pl-8 whitespace-nowrap text-sm font-medium">
+    <ListTableCell className="whitespace-nowrap font-medium">
       <div
         style={{ height: '1.25rem' }}
         className="flex items-center justify-center"
       >
         <ResourceStatusCheckbox resource={resource} />
       </div>
-    </td>
+    </ListTableCell>
   );
   const sourceCol = (
-    <td className="pl-6 sm:pl-8 py-4 whitespace-nowrap text-sm leading-5 text-gray-500 dark:text-dark-med-emphasis">
+    <ListTableCell className="whitespace-nowrap text-gray-500 dark:text-dark-med-emphasis">
       {resource.source && (
         <>
           {resource.sourceDescription ? (
@@ -42,14 +42,10 @@ export default function ResourcesListItem({
           )}
         </>
       )}
-    </td>
+    </ListTableCell>
   );
   const urlCol = (
-    <td
-      className={`${
-        resource.source && 'pl-6'
-      } pr-6 py-4 whitespace-nowrap text-sm leading-5 font-medium text-gray-900 dark:text-dark-high-emphasis`}
-    >
+    <ListTableCell className="whitespace-nowrap font-medium text-gray-900 dark:text-dark-high-emphasis">
       <div className="flex items-center">
         {resource.starred && (
           <Tooltip content="You should read all starred resources (unless you already know it) before proceeding!">
@@ -71,12 +67,12 @@ export default function ResourcesListItem({
           {resource.title}
         </a>
       </div>
-    </td>
+    </ListTableCell>
   );
   const childrenCol = (
-    <td className="w-full px-4 sm:px-6 py-4 text-sm leading-5 text-gray-500 dark:text-dark-med-emphasis no-y-margin">
+    <ListTableCell className="w-full text-gray-500 dark:text-dark-med-emphasis no-y-margin">
       {resource.children}
-    </td>
+    </ListTableCell>
   );
 
   const [copied, setCopied] = React.useState(false);
