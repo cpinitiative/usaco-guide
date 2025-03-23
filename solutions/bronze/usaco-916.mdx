@@ -211,7 +211,7 @@ int main() {
 	int cow_num;
 	read >> pasture_num >> cow_num;
 	vector<pair<int, int>> cows(cow_num);
-	for (auto& [p1, p2] : cows) {
+	for (auto &[p1, p2] : cows) {
 		read >> p1 >> p2;
 		p1--;  // 0-index pastures
 		p2--;
@@ -225,7 +225,7 @@ int main() {
 		for (; color <= COLORS; color++) {
 			// Does this color conflict with any other existing colors?
 			bool conflicts = false;
-			for (const auto& [a, b] : cows) {
+			for (const auto &[a, b] : cows) {
 				if (pastures[a] == color && b == p) {
 					conflicts = true;
 					break;
@@ -281,17 +281,13 @@ public class Revegetate {
 					}
 				}
 				// If not, we can stop looking!
-				if (!conflicts) {
-					break;
-				}
+				if (!conflicts) { break; }
 			}
 			pastures[p] = color;
 		}
 
 		PrintWriter written = new PrintWriter("revegetate.out");
-		for (int p : pastures) {
-			written.print(p);
-		}
+		for (int p : pastures) { written.print(p); }
 		written.println();
 		written.close();
 	}
@@ -318,10 +314,10 @@ for p in range(pasture_num):
 		# Does this color conflict with any other existing colors?
 		if any(pastures[a] == color and b == p for a, b in cows):
 			continue
-		
+
 		# If not, we can stop looking!
 		break
-	
+
 	pastures[p] = color
 
 print("".join(map(str, pastures)), file=open("revegetate.out", "w"))
@@ -368,7 +364,7 @@ int main() {
 	int cow_num;
 	read >> pasture_num >> cow_num;
 	vector<pair<int, int>> cows(cow_num);
-	for (auto& [p1, p2] : cows) {
+	for (auto &[p1, p2] : cows) {
 		read >> p1 >> p2;
 		p1--;
 		p2--;
@@ -380,7 +376,7 @@ int main() {
 	// Assign the pastures at the front first.
 	std::sort(cows.begin(), cows.end());
 	for (int c = 0; c < cow_num; c++) {
-		const auto& [a, b] = cows[c];
+		const auto &[a, b] = cows[c];
 		if (pastures[a] != pastures[b]) { continue; }
 
 		// Increment one to the later pasture
@@ -394,10 +390,8 @@ int main() {
 			 * has to be equal to b, since that's the only
 			 * pasture we touched.
 			 */
-			const auto& [i, j] = cows[prev_c];
-			if (pastures[i] == pastures[j]) {
-				pastures[b]++;
-			}
+			const auto &[i, j] = cows[prev_c];
+			if (pastures[i] == pastures[j]) { pastures[b]++; }
 		}
 	}
 
@@ -417,7 +411,7 @@ import java.util.*;
 public class Revegetate {
 	public static void main(String[] args) throws IOException {
 		BufferedReader read = new BufferedReader(new FileReader("revegetate.in"));
-		
+
 		// Read input the same way as in the other implementation
 		StringTokenizer initial = new StringTokenizer(read.readLine());
 		int pastureNum = Integer.parseInt(initial.nextToken());
@@ -438,9 +432,7 @@ public class Revegetate {
 		Arrays.sort(cows, Arrays::compare);
 		for (int c = 0; c < cowNum; c++) {
 			int[] cow = cows[c];
-			if (pastures[cow[0]] != pastures[cow[1]]) {
-				continue;
-			}
+			if (pastures[cow[0]] != pastures[cow[1]]) { continue; }
 
 			// Increment one to the later pasture
 			pastures[cow[1]]++;
@@ -460,9 +452,7 @@ public class Revegetate {
 		}
 
 		PrintWriter written = new PrintWriter("revegetate.out");
-		for (int p : pastures) {
-			written.print(p);
-		}
+		for (int p : pastures) { written.print(p); }
 		written.println();
 		written.close();
 	}
@@ -488,7 +478,7 @@ cows.sort()
 for c, (a, b) in enumerate(cows):
 	if pastures[a] != pastures[b]:
 		continue
-	
+
 	# Increment one to the later pasture
 	pastures[b] += 1
 
