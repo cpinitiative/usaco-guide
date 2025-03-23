@@ -2,16 +2,29 @@
 id: usaco-992
 source: USACO Silver 2020 January
 title: Wormhole Sort
-author: Óscar Garries, Neo Wang, Kevin Sheng
+author: Óscar Garries, Neo Wang, Kevin Sheng, Ruben Jing
 ---
 
 [Official Analysis (Java)](http://www.usaco.org/current/data/sol_wormsort_silver_jan20.html)
 
 ## Solution 1 - Binary Search and Floodfill
 
-**Time Complexity:** $\mathcal O((N+M)\log \max w_i)$
+If a certain wormhole width works, any larger wormhole width will work as well.
+Similarly, if a width fails, any smaller width will also fail.
+These two facts make it so that we can binary search on the minimal wormhole width.
+
+To check if a given minimal wormhole width $x$ is valid, we use DFS to find all positions
+that can reach each other by traversing wormholes at most width $x$.
+If the cow's initial and sorted positions are both part of the same component, we've found a valid wormhole width!
+
+For example, say we're testing a width of $10$ in the sample case.
+This makes our components $[0]$, $[1, 2]$, and $[3]$.
+Cow 1's initial position (3) and its final position (0)
+aren't in the same component, so this width wouldn't work.
 
 ### Implementation
+
+**Time Complexity:** $\mathcal O((N+M)\log \max w_i)$
 
 <LanguageSection>
 <CPPSection>
@@ -180,9 +193,8 @@ public class WormSort {
 ## Solution 2 - Binary Search and DSU
 
 Like the floodfill solution, we binary search on the answer $x$, which is valid if all
-$p_i$ are in the same component as $i$, which we can query in
-$\mathcal{O}(\alpha(N))$ using a
-[Disjoint Set Union](https://en.wikipedia.org/wiki/Disjoint-set_data_structure).
+$p_i$ are in the same component as $i$, which we can query in $\mathcal{O}(\alpha(N))$ using a
+[Disjoint Set Union](/gold/dsu).
 
 ### Implementation
 
