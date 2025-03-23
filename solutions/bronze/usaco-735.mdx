@@ -25,7 +25,6 @@ But if his path somehow overlaps with Bessie's, we only need to add his distance
 #include <iostream>
 
 int main() {
-
 	std::ifstream cin("lostcow.in");
 	std::ofstream cout("lostcow.out");
 	int x, y;
@@ -36,14 +35,15 @@ int main() {
 	int direction_distance = 1;
 
 	while (true) {
-		// found bessie
 		if ((direction == 1 && x <= y && y <= (x + direction_distance)) ||
 		    (direction == -1 && y <= x && (x - direction_distance) <= y)) {
+			// found bessie
 			total_distance +=
 			    std::abs(y - x);  // distance to bessie from original position
 			cout << total_distance << std::endl;
 			break;
-		} else {  // bessie not found
+		} else {  
+			// bessie not found
 			total_distance += direction_distance * 2;
 			direction_distance *= 2;
 			direction *= -1;  // switch directions
@@ -70,15 +70,15 @@ public class theLostCow {
 		int directionDistance = 1;
 
 		while (true) {
-			// found bessie
 			if ((direction == 1 && x <= y && y <= (x + directionDistance)) ||
 			    (direction == -1 && y <= x && (x - directionDistance <= y))) {
-
+				// found bessie
 				totalDistance +=
 				    Math.abs(y - x);  // distance to bessie from original position
 				io.println(totalDistance);
 				break;
-			} else {                                       // did not find bessie yet
+			} else {
+				// did not find bessie yet                                       
 				totalDistance += (directionDistance * 2);  // add to the distance count
 				directionDistance *= 2;                    // double the distance
 				direction *= -1;                           // switch directions
