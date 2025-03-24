@@ -23,7 +23,7 @@ To find the maximum $(a \oplus x) \& (b \oplus x)$ from two integers out of many
 - Finding the maximum of two given integers
 - Comparing the maximums and picking the highest
 
-#### Part 1
+### Part 1
 
 Let us first focus our attention on figuring out the maximum $(a \oplus x) \& (b \oplus x)$ of two given integers $a$ and $b$. To people who are not quite familiar with bit operations this expression might seem daunting. But be not afraid, since all the bit operations are digits independent, we can simplify our case to single digit interactions.
 
@@ -31,7 +31,7 @@ We see that if both $a$ and $b$ are 1 or 0, we can always make the final $\&$ su
 
 If we step back and look at the entire picture, then to choose $x$ to maximize $\&$ sum of the two, all we need to know is the number of digits they share a common bit with.
 
-#### Part 2
+### Part 2
 
 Now the question we should ask ourselves is, given two pairs of integers $(a_1, b_1)$ and $(a_2, b_2)$, which maximum $\&$ sum is higher?
 
@@ -85,23 +85,19 @@ int main() {
 import java.io.*;
 import java.util.*;
 
-public class Main {
+public class LisaAndMartians {
 	public static void main(String[] args) {
 		Scanner sc = new Scanner(System.in);
-		int testNum;
-		testNum = sc.nextInt();
+		int testNum = sc.nextInt();
 		for (int t = 0; t < testNum; t++) {
-			int n, k;
-			n = sc.nextInt();
-			k = sc.nextInt();
+			int n = sc.nextInt();
+			int k = sc.nextInt();
 			int[][] nums = new int[n][2];
 			for (int i = 0; i < n; i++) {
 				nums[i][0] = sc.nextInt();
 				nums[i][1] = i + 1;
 			}
-			Arrays.sort(nums, new Comparator<int[]>() {
-				public int compare(int[] a, int[] b) { return a[0] - b[0]; }
-			});
+			Arrays.sort(nums, Arrays::compare);
 
 			int mins = Integer.MAX_VALUE;
 			int curr = 0;
