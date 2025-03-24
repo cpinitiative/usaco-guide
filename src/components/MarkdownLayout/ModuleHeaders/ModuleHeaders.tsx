@@ -180,7 +180,7 @@ export default function ModuleHeaders({
                 >
                   <Menu.Items
                     static
-                    className="origin-top-left absolute z-10 left-0 mt-2 w-56 rounded-md shadow-lg bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5 focus:outline-none"
+                    className="origin-top-left absolute z-10 left-0 mt-2 w-56 rounded-md shadow-lg bg-white dark:bg-gray-800 ring-1 ring-black/5 focus:outline-none"
                   >
                     <div className="py-1">
                       {(['cpp', 'java', 'py'] as const).map(lang => (

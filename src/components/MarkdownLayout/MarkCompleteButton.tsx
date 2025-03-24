@@ -129,7 +129,7 @@ const MarkCompleteButton = ({
                 dropdownAbove
                   ? 'origin-bottom-right bottom-0 mb-12'
                   : 'origin-top-right'
-              } right-0 absolute z-10 mt-2 w-36 bg-white dark:bg-gray-800 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none`}
+              } right-0 absolute z-10 mt-2 w-36 bg-white dark:bg-gray-800 rounded-md shadow-lg ring-1 ring-black/5 focus:outline-none`}
             >
               <div className="py-1">
                 {ModuleProgressOptions.map(option => (

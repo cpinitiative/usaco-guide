@@ -45,7 +45,7 @@ const Spoiler = ({
 
   return (
     <div
-      className={`bg-gray-50 border border-gray-100 dark:border-transparent dark:bg-gray-800 dark:bg-opacity-50 rounded-md mb-4`}
+      className={`bg-gray-50 border border-gray-100 dark:border-transparent dark:bg-gray-800/50 rounded-md mb-4`}
     >
       <p
         className="p-4 flex items-start"
@@ -84,7 +84,7 @@ const Spoiler = ({
       </p>
 
       {show && (
-        <div className="p-4 spoiler-body bg-white dark:bg-dark-surface dark:bg-opacity-40 no-y-margin">
+        <div className="p-4 spoiler-body bg-white dark:bg-dark-surface/40 no-y-margin">
           <SpoilerContext.Provider value={{ expandCodeBlock }}>
             {children}
           </SpoilerContext.Provider>

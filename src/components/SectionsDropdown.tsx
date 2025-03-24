@@ -71,7 +71,7 @@ export default function SectionsDropdown({
           >
             <Menu.Items
               static
-              className={`origin-top-left absolute z-20 left-0 w-56 -ml-4 rounded-lg bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5 shadow-lg focus:outline-none ${
+              className={`origin-top-left absolute z-20 left-0 w-56 -ml-4 rounded-lg bg-white dark:bg-gray-800 ring-1 ring-black/5 shadow-lg focus:outline-none ${
                 sidebarNav ? 'mt-2' : '-mt-2'
               }`}
             >

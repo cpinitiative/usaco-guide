@@ -211,7 +211,7 @@ export default function TopNavigationBar({
                             static
                             className="hidden md:block z-20 shadow-lg absolute left-1/2 transform -translate-x-1/2 -mt-2 px-2 w-screen max-w-md sm:px-0 lg:max-w-3xl"
                           >
-                            <div className="rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 overflow-hidden">
+                            <div className="rounded-lg shadow-lg ring-1 ring-black/5 overflow-hidden">
                               <div className="relative grid gap-6 bg-white dark:bg-gray-800 px-5 py-6 sm:gap-8 sm:p-8 lg:grid-cols-2">
                                 <Link
                                   to="/groups/"

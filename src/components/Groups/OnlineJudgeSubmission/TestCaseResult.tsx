@@ -13,9 +13,9 @@ const TestCaseResult = ({
 }): JSX.Element => {
   const containerClasses = data
     ? data.verdict === 'AC'
-      ? 'bg-green-100 border-green-200 dark:bg-green-700 dark:border-green-700'
-      : 'bg-red-100 border-red-200 dark:bg-red-700 dark:border-red-700'
-    : 'bg-gray-100 border-gray-200 dark:bg-gray-700 dark:border-gray-700';
+      ? 'bg-green-100 border-green-200 dark:bg-green-700/50 dark:border-green-700'
+      : 'bg-red-100 border-red-200 dark:bg-red-700/50 dark:border-red-700'
+    : 'bg-gray-100 border-gray-200 dark:bg-gray-700/50 dark:border-gray-700';
   const textColor = data
     ? data.verdict === 'AC'
       ? 'text-green-800 dark:text-green-100'
@@ -23,7 +23,7 @@ const TestCaseResult = ({
     : 'text-transparent';
   return (
     <div
-      className={`m-1 inline-block w-[70px] h-[60px] dark:bg-opacity-50 border ${containerClasses} relative`}
+      className={`m-1 inline-block w-[70px] h-[60px] border ${containerClasses} relative`}
       title={data ? data.verdict : 'Loading...'}
     >
       <div
