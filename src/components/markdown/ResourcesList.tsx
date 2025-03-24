@@ -2,6 +2,7 @@ import * as React from 'react';
 import { useUserLangSetting } from '../../context/UserDataContext/properties/simpleProperties';
 import { ResourceInfo } from '../../models/resource';
 import { books } from '../../utils/books';
+import { ListTable } from './ListTable/ListTable';
 import PGS from './PGS';
 import ResourcesListItem from './ResourcesListItem';
 
@@ -13,29 +14,22 @@ export function ResourcesList({
   children?: React.ReactNode;
 }): JSX.Element {
   return (
-    <div className="-mx-4 sm:-mx-6 md:mx-0">
-      <div className="flex flex-col mb-4">
-        <div className={`overflow-x-auto md:-mx-4 md:px-4 -my-2 py-2`}>
-          <div
-            className={`align-middle inline-block min-w-full shadow overflow-hidden md:rounded-lg border-b border-gray-200 dark:border-transparent`}
-          >
-            <table className="min-w-full no-markdown">
-              <thead>
-                <tr>
-                  <th
-                    colSpan={6}
-                    className={`px-4 sm:px-6 border-b text-left font-medium text-sm uppercase py-3 border-gray-200 dark:border-transparent bg-purple-50 text-purple-500 dark:bg-purple-700 dark:bg-opacity-25 dark:text-purple-200`}
-                  >
-                    Resources{title ? `: ${title}` : ''}
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="table-alternating-stripes">{children}</tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
+    <ListTable
+      header={
+        <>
+          <tr>
+            <th
+              colSpan={6}
+              className={`px-4 sm:px-6 border-b text-left font-medium text-sm uppercase py-3 border-gray-200 dark:border-transparent bg-purple-50 text-purple-500 dark:bg-purple-700 dark:bg-opacity-25 dark:text-purple-200`}
+            >
+              Resources{title ? `: ${title}` : ''}
+            </th>
+          </tr>
+        </>
+      }
+    >
+      {children}
+    </ListTable>
   );
 }
 

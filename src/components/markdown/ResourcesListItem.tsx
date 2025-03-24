@@ -7,6 +7,7 @@ import { useUserLangSetting } from '../../context/UserDataContext/properties/sim
 import { ResourceInfo } from '../../models/resource';
 import TextTooltip from '../Tooltip/TextTooltip';
 import Tooltip from '../Tooltip/Tooltip';
+import ListTableRow, { ListTableCell } from './ListTable/ListTableRow';
 import ResourceStatusCheckbox from './ResourceStatusCheckbox';
 
 export default function ResourcesListItem({
@@ -16,34 +17,20 @@ export default function ResourcesListItem({
 }): JSX.Element {
   const userLang = useUserLangSetting();
   const darkMode = useDarkMode();
-  const [isActive, setIsActive] = React.useState(false);
   const id = `resource-${encodeURIComponent(resource.url!)}`;
 
-  React.useEffect(() => {
-    const hashHandler = (): void => {
-      setIsActive(
-        window && window.location && window.location.hash === '#' + id
-      );
-    };
-    hashHandler();
-
-    window.addEventListener('hashchange', hashHandler, false);
-    return (): void =>
-      window.removeEventListener('hashchange', hashHandler, false);
-  }, [userLang]); // hashes can change depending on lang
-
   const statusCol = (
-    <td className="pl-8 whitespace-nowrap text-sm font-medium">
+    <ListTableCell className="pl-4 sm:pl-6 whitespace-nowrap font-medium">
       <div
         style={{ height: '1.25rem' }}
         className="flex items-center justify-center"
       >
         <ResourceStatusCheckbox resource={resource} />
       </div>
-    </td>
+    </ListTableCell>
   );
   const sourceCol = (
-    <td className="pl-6 sm:pl-8 py-4 whitespace-nowrap text-sm leading-5 text-gray-500 dark:text-dark-med-emphasis">
+    <ListTableCell className="whitespace-nowrap text-gray-500 dark:text-dark-med-emphasis">
       {resource.source && (
         <>
           {resource.sourceDescription ? (
@@ -55,14 +42,10 @@ export default function ResourcesListItem({
           )}
         </>
       )}
-    </td>
+    </ListTableCell>
   );
   const urlCol = (
-    <td
-      className={`${
-        resource.source && 'pl-6'
-      } pr-6 py-4 whitespace-nowrap text-sm leading-5 font-medium text-gray-900 dark:text-dark-high-emphasis`}
-    >
+    <ListTableCell className="whitespace-nowrap font-medium text-gray-900 dark:text-dark-high-emphasis">
       <div className="flex items-center">
         {resource.starred && (
           <Tooltip content="You should read all starred resources (unless you already know it) before proceeding!">
@@ -84,12 +67,12 @@ export default function ResourcesListItem({
           {resource.title}
         </a>
       </div>
-    </td>
+    </ListTableCell>
   );
   const childrenCol = (
-    <td className="w-full px-4 sm:px-6 py-4 text-sm leading-5 text-gray-500 dark:text-dark-med-emphasis no-y-margin">
+    <ListTableCell className="w-full text-gray-500 dark:text-dark-med-emphasis no-y-margin">
       {resource.children}
-    </td>
+    </ListTableCell>
   );
 
   const [copied, setCopied] = React.useState(false);
@@ -148,17 +131,12 @@ export default function ResourcesListItem({
   );
 
   return (
-    <tr
-      className={
-        isActive ? '!bg-[#fdfdea] dark:!bg-[#3c3c00] relative' : 'relative'
-      }
-    >
-      <td id={id} className="absolute bottom-[120px] h-[2px]" />
+    <ListTableRow id={id}>
       {statusCol}
       {sourceCol}
       {urlCol}
       {childrenCol}
       <td className="text-center pr-2 md:pr-3">{more}</td>
-    </tr>
+    </ListTableRow>
   );
 }

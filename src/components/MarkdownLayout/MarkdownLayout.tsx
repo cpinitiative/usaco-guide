@@ -30,7 +30,7 @@ import TableOfContentsSidebar from './TableOfContents/TableOfContentsSidebar';
 
 const ContentContainer = ({ children, tableOfContents }) => (
   <main
-    className="relative z-0 pt-6 lg:pt-2 focus:outline-none overflow-x-hidden"
+    className="relative pt-6 lg:pt-2 focus:outline-none overflow-x-hidden"
     tabIndex={0}
   >
     <div className="mx-auto">
