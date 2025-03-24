@@ -51,8 +51,8 @@ void solve() {
 		if (hunger[i + 1] > hunger[i]) {
 			if (i + 2 > n) {
 				/*
-				 * If the i+2'th cow doesn't exist, then we can't
-				 * possibly decrease the pair of cows starting with i+1.
+				 * If the i + 2'th cow doesn't exist, then we can't
+				 * possibly decrease the pair of cows starting with i + 1.
 				 */
 				cout << -1 << "\n";
 				return;
@@ -62,13 +62,13 @@ void solve() {
 			hunger[i + 1] -= difference;
 			hunger[i + 2] -= difference;
 			if (hunger[i + 2] < 0) {
-				// Cow i+2 can't possibly have a negative hunger value.
+				// Cow i + 2 can't possibly have a negative hunger value.
 				cout << -1 << "\n";
 				return;
 			}
 
-			// It takes difference * 2 bags to get cows i+1 and i+2 to cow i's
-			// level.
+			// It takes difference * 2 bags to get cows i + 1 and i + 2 
+			// to cow i's level.
 			bags_needed += difference * 2;
 		} else if (hunger[i] > hunger[i + 1]) {
 			if (i % 2 == 1) {
@@ -97,6 +97,78 @@ int main() {
 ```
 
 </CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Drought {
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
+
+		int testNum = io.nextInt();
+
+		for (int t = 0; t < testNum; t++) {
+			int n = io.nextInt();
+
+			int[] hunger = new int[n + 1]; // hunger for each cow, (1-indexed)
+			for (int i = 1; i <= n; i++) {
+				hunger[i] = io.nextInt();
+			}
+
+			long bagsNeeded = 0;
+			boolean ok = false;
+			for (int i = 1; i < n ; i++) {
+				if (hunger[i + 1] > hunger[i]) {
+					if (i + 2 > n) {
+						/*
+						 * If the i + 2'th cow doesn't exist, then we can't
+						 * possibly decrease the pair of cows starting with i + 1.
+						 */
+						ok = true;
+						break;
+					}
+
+					long difference = hunger[i + 1] - hunger[i];
+					hunger[i + 1] -= difference;
+					hunger[i + 2] -= difference;
+
+					if (hunger[i + 2] < 0) {
+						// Cow i + 2 can't possibly have a negative hunger value.
+						ok = true;
+						break;
+					}
+					
+					// It takes difference * 2 bags to get cows i + 1 and i + 2 
+					// to cow i's level.
+					bagsNeeded += difference * 2;
+				} else if (hunger[i] > hunger[i + 1]) {
+					if (i % 2 == 1) {
+						// If i is an odd index, then it is impossible.
+						ok = true;
+						break;
+					}
+
+					long difference = hunger[i] - hunger[i + 1];
+
+					/*
+					 * It takes difference * i bags to get every cow
+					 * from 1 to i to the same hunger value as cow i + 1.
+					 */
+					bagsNeeded += difference * i;
+				}
+			}
+			io.println((ok ? -1 : bagsNeeded));
+		}
+		io.close();
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
 <PySection>
 
 ```py
