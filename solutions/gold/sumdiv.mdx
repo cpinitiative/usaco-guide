@@ -117,15 +117,17 @@ int main() {
 
 		if (a > 1 && ((a - 1) % MOD) != 0) {
 			// if a is greater than 1 and a - 1 is not divisible by 10^9 + 7
-			// finds the value of d - 1 and (d^k - 1) modulo (10^9 + 7).
+			// find the value of d - 1 and (d^k - 1) modulo (10^9 + 7).
 			ll d_1 = inv((a - 1 + MOD) % MOD, MOD);
 			ll dk_1 = (pow(a, (b + 1) % (MOD - 1), MOD) - 1 + MOD) % MOD;
 			ans = (ans * ((d_1 * dk_1) % MOD)) % MOD;
 		} else if (a > 1) {
-			// if a - 1 is divisible by 10^9 + 7, than d - 1 doesn't have inverse.
-			// a is a prime of the form k * (10^9 + 7) + 1,
-			// by summing the values a^i modulo (10^9 + 7), where i is 0 <= i <= b.
-			// the result is (b + 1), so we can just multiply by (b + 1).
+			/*
+			 * if a - 1 is divisible by 10^9 + 7,
+			 * a is a prime of the form k * (10^9 + 7) + 1.
+			 * this means the sum of a^i modulo (10^9 + 7), where i goes from 0 to b
+			 * is (b + 1), so we multiply by (b + 1).
+			 */
 			ans = (ans * ((b + 1) % MOD)) % MOD;
 		}
 
