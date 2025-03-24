@@ -193,7 +193,7 @@ export default function TopNavigationBar({
                           <ChevronDownIcon
                             className={classNames(
                               open ? 'text-gray-500' : 'text-gray-400',
-                              'mt-0.5 ml-2 h-5 w-5 group-hover:text-gray-500 group-focus:text-gray-500 dark:text-dark-med-emphasis dark:group-hover:text-dark-med-emphasis dark:group-focus:text-dark-med-emphasis transition ease-in-out duration-150'
+                              'mt-0.5 h-5 w-5 group-hover:text-gray-500 group-focus:text-gray-500 dark:text-dark-med-emphasis dark:group-hover:text-dark-med-emphasis dark:group-focus:text-dark-med-emphasis transition ease-in-out duration-150'
                             )}
                             aria-hidden="true"
                           />

@@ -18,7 +18,6 @@ export const GlowingRing = ({
         blur
         opacity-30
         dark:opacity-50
-        -z-1
         transition
         duration-1000
         group-hover:opacity-50
