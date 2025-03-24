@@ -82,42 +82,40 @@ int main() {
 <JavaSection>
 
 ```java
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class Main {
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        int testNum;
-        testNum = scanner.nextInt();
-        for (int t = 0; t < testNum; t++) {
-            int n, k;
-            n = scanner.nextInt();
-            k = scanner.nextInt();
-            int[][] nums = new int[n][2];
-            for (int i = 0; i < n; i++) {
-                nums[i][0] = scanner.nextInt();
-                nums[i][1] = i + 1;
-            }
-            Arrays.sort(nums, new Comparator<int[]>() {
-                public int compare(int[] a, int[] b) {
-                    return a[0] - b[0];
-                }
-            });
-            
-            int mins = Integer.MAX_VALUE;
-            int curr = 0;
-            for (int i = 0; i < n - 1; i++) {
-                if ((nums[i][0] ^ nums[i + 1][0]) < mins) {
-                    mins = (nums[i][0] ^ nums[i + 1][0]);
-                    curr = i;
-                }
-            }
-            
-            System.out.print(nums[curr][1] + " " + nums[curr + 1][1] + " ");
-            System.out.println((nums[curr][0] ^ ((1 << k) - 1)));
-        }
-    }
+	public static void main(String[] args) {
+		Scanner scanner = new Scanner(System.in);
+		int testNum;
+		testNum = scanner.nextInt();
+		for (int t = 0; t < testNum; t++) {
+			int n, k;
+			n = scanner.nextInt();
+			k = scanner.nextInt();
+			int[][] nums = new int[n][2];
+			for (int i = 0; i < n; i++) {
+				nums[i][0] = scanner.nextInt();
+				nums[i][1] = i + 1;
+			}
+			Arrays.sort(nums, new Comparator<int[]>() {
+				public int compare(int[] a, int[] b) { return a[0] - b[0]; }
+			});
+
+			int mins = Integer.MAX_VALUE;
+			int curr = 0;
+			for (int i = 0; i < n - 1; i++) {
+				if ((nums[i][0] ^ nums[i + 1][0]) < mins) {
+					mins = (nums[i][0] ^ nums[i + 1][0]);
+					curr = i;
+				}
+			}
+
+			System.out.print(nums[curr][1] + " " + nums[curr + 1][1] + " ");
+			System.out.println((nums[curr][0] ^ ((1 << k) - 1)));
+		}
+	}
 }
 ```
 
