@@ -54,7 +54,7 @@ export default function MembersPage(): JSX.Element {
 
         <div className="flex-1 relative z-0 flex flex-col lg:flex-row overflow-hidden">
           <main
-            className="flex-1 relative z-0 overflow-y-auto focus:outline-none xl:order-last"
+            className="flex-1 relative z-0 overflow-y-auto focus:outline-hidden xl:order-last"
             tabIndex={0}
           >
             {activeMemberId ? (
@@ -75,7 +75,7 @@ export default function MembersPage(): JSX.Element {
               </div>
             )}
           </main>
-          <aside className="order-first lg:flex lg:flex-col flex-shrink-0 lg:w-96 lg:border-r lg:border-gray-200 dark:lg:border-gray-700 shadow-md lg:shadow-none">
+          <aside className="order-first lg:flex lg:flex-col shrink-0 lg:w-96 lg:border-r lg:border-gray-200 dark:lg:border-gray-700 shadow-md lg:shadow-none">
             <div className="px-6 pt-6 pb-4">
               <Link
                 to={`/groups/${activeGroup.groupData!.id}`}
@@ -104,7 +104,7 @@ export default function MembersPage(): JSX.Element {
               {/*      <input type="search" name="search" id="search" className="focus:ring-pink-500 focus:border-pink-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md" placeholder="Search" />*/}
               {/*    </div>*/}
               {/*  </div>*/}
-              {/*  <button type="submit" className="inline-flex justify-center px-3.5 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500">*/}
+              {/*  <button type="submit" className="inline-flex justify-center px-3.5 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-pink-500">*/}
               {/*    /!* Heroicon name: solid/filter *!/*/}
               {/*    <svg className="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">*/}
               {/*      <path fillRule="evenodd" d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z" clipRule="evenodd" />*/}
@@ -123,7 +123,7 @@ export default function MembersPage(): JSX.Element {
                   {memberInfo?.map(member => (
                     <li key={member.uid}>
                       <div className="relative px-6 py-5 flex items-center space-x-3 hover:bg-gray-50 dark:hover:bg-gray-900 focus-within:ring-2 focus-within:ring-inset focus-within:ring-pink-500">
-                        <div className="flex-shrink-0">
+                        <div className="shrink-0">
                           <img
                             className="h-10 w-10 rounded-full"
                             src={member.photoURL}
@@ -133,7 +133,7 @@ export default function MembersPage(): JSX.Element {
                         <div className="flex-1 min-w-0">
                           <a
                             href={`#${member.uid}`}
-                            className="focus:outline-none"
+                            className="focus:outline-hidden"
                           >
                             {/* Extend touch target to entire panel */}
                             <span

@@ -180,7 +180,7 @@ export function ProblemsList(unannotatedProps: ProblemsListProps): JSX.Element {
               <div className="hidden sm:block absolute top-0 right-0 pt-4 pr-4">
                 <button
                   type="button"
-                  className="text-gray-400 hover:text-gray-500 focus:outline-none focus:text-gray-500 transition ease-in-out duration-150"
+                  className="text-gray-400 hover:text-gray-500 focus:outline-hidden focus:text-gray-500 transition ease-in-out duration-150"
                   aria-label="Close"
                   onClick={() => setShowModal(false)}
                 >

@@ -26,7 +26,7 @@ const SubmissionListItem = ({
         <span className="block leading-3 text-sm text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-gray-100 font-medium">
           <button
             type="button"
-            className="focus:outline-none"
+            className="focus:outline-hidden"
             onClick={() => showSubmissionAction(submission)}
           >
             <span className="absolute inset-0" aria-hidden="true" />

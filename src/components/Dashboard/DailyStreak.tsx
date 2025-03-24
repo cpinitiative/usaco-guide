@@ -42,7 +42,7 @@ const PhotoCard = ({ img, day, tomorrowMilliseconds, hiddenOnDesktop }) => {
         'max-w-[592px] mx-auto mb-8' + (hiddenOnDesktop ? ' lg:hidden' : '')
       }
     >
-      <div className="bg-white dark:bg-gray-800 shadow sm:rounded-lg overflow-hidden flex flex-col">
+      <div className="bg-white dark:bg-gray-800 shadow-sm sm:rounded-lg overflow-hidden flex flex-col">
         <div className="px-4 pt-5 sm:px-6 sm:pt-6 pb-4">
           <h3 className="text-lg leading-6 font-medium text-gray-800 dark:text-dark-high-emphasis">
             Day {day} Photo
@@ -128,7 +128,7 @@ export default function DailyStreak({ streak }) {
     if (i == times.length) {
       return (
         <div className="mb-8" key={times.length}>
-          <div className="bg-white dark:bg-gray-800 shadow sm:rounded-lg overflow-hidden flex flex-col">
+          <div className="bg-white dark:bg-gray-800 shadow-sm sm:rounded-lg overflow-hidden flex flex-col">
             <div className="px-4 py-5 sm:p-6">
               <div className="text-center">
                 <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-dark-high-emphasis">
@@ -184,7 +184,7 @@ export default function DailyStreak({ streak }) {
   };
   return (
     <>
-      <div className="bg-white dark:bg-gray-800 shadow sm:rounded-lg overflow-hidden lg:col-span-2">
+      <div className="bg-white dark:bg-gray-800 shadow-sm sm:rounded-lg overflow-hidden lg:col-span-2">
         <div className="px-4 py-5 sm:p-6">
           <div className="text-center">
             <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-dark-high-emphasis">

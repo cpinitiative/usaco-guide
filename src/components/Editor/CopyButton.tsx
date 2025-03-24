@@ -18,7 +18,7 @@ export default function CopyButton({ className, onClick }) {
         setCopied(true);
         onClick();
       }}
-      className={`appearance-none p-2 border-0 outline-none cursor-pointer ${className}`}
+      className={`appearance-none p-2 border-0 outline-hidden cursor-pointer ${className}`}
     >
       <div className="relative h-4 w-4">
         <Clippy

@@ -17,7 +17,7 @@ export default function Feedback({ videoId }): JSX.Element {
   const db = getFirestore(firebaseApp);
   const { uid } = useFirebaseUser()!;
   const baseClasses =
-    'rounded-full border h-8 w-8 text-xl transform transition focus:outline-none';
+    'rounded-full border h-8 w-8 text-xl transform transition focus:outline-hidden';
   const unselectedClasses = 'hover:scale-110 border-gray-200';
   const selectedClasses = 'scale-110 border-cyan-600';
 
@@ -112,7 +112,7 @@ export default function Feedback({ videoId }): JSX.Element {
               title={'Write us a private comment'}
               type="button"
               className={classNames(
-                'rounded-full border h-8 px-2 ml-4 text-sm transform transition focus:outline-none hover:border-cyan-600'
+                'rounded-full border h-8 px-2 ml-4 text-sm transform transition focus:outline-hidden hover:border-cyan-600'
               )}
               onClick={() => setShowAdditionalFeedback(true)}
             >
@@ -161,14 +161,14 @@ export default function Feedback({ videoId }): JSX.Element {
           <div className="block">
             <button
               type="submit"
-              className="items-center mt-2 sm:mt-0 px-3 py-2 rounded-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 focus:ring-cyan-500 focus:border-cyan-500"
+              className="items-center mt-2 sm:mt-0 px-3 py-2 rounded-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-10 focus:outline-hidden focus:ring-1 focus:ring-cyan-500 focus:border-cyan-500"
             >
               Submit Private Comment
             </button>
             <button
               type="button"
               onClick={() => setShowAdditionalFeedback(false)}
-              className="ml-2 items-center mt-2 sm:mt-0 px-3 py-2 rounded-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 focus:ring-cyan-500 focus:border-cyan-500"
+              className="ml-2 items-center mt-2 sm:mt-0 px-3 py-2 rounded-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-10 focus:outline-hidden focus:ring-1 focus:ring-cyan-500 focus:border-cyan-500"
             >
               Close
             </button>

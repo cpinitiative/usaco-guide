@@ -19,7 +19,7 @@ export default function SectionsDropdown({
             <Menu.Button
               className={`group ${
                 open || sidebarNav ? 'text-gray-900' : 'text-gray-500'
-              } inline-flex items-center h-full space-x-2 text-base leading-6 font-medium hover:text-gray-900 focus:outline-none focus:text-gray-900 transition ease-in-out duration-150 ${
+              } inline-flex items-center h-full space-x-2 text-base leading-6 font-medium hover:text-gray-900 focus:outline-hidden focus:text-gray-900 transition ease-in-out duration-150 ${
                 !noDarkMode && `dark:text-dark-high-emphasis`
               }`}
             >
@@ -40,7 +40,7 @@ export default function SectionsDropdown({
             <Menu.Button
               className={`group ${
                 open || sidebarNav ? 'text-gray-900' : 'text-gray-500'
-              } inline-flex items-center h-full space-x-2 border-b-2 border-transparent text-base leading-6 font-medium hover:text-gray-900 hover:border-gray-300  focus:outline-none focus:text-gray-900 focus:border-gray-300 transition ease-in-out duration-150 ${
+              } inline-flex items-center h-full space-x-2 border-b-2 border-transparent text-base leading-6 font-medium hover:text-gray-900 hover:border-gray-300  focus:outline-hidden focus:text-gray-900 focus:border-gray-300 transition ease-in-out duration-150 ${
                 !noDarkMode &&
                 `dark:text-dark-high-emphasis dark:hover:border-gray-500 dark:focus:border-gray-500`
               }`}
@@ -71,7 +71,7 @@ export default function SectionsDropdown({
           >
             <Menu.Items
               static
-              className={`origin-top-left absolute z-20 left-0 w-56 -ml-4 rounded-lg bg-white dark:bg-gray-800 ring-1 ring-black/5 shadow-lg focus:outline-none ${
+              className={`origin-top-left absolute z-20 left-0 w-56 -ml-4 rounded-lg bg-white dark:bg-gray-800 ring-1 ring-black/5 shadow-lg focus:outline-hidden ${
                 sidebarNav ? 'mt-2' : '-mt-2'
               }`}
             >
@@ -105,7 +105,7 @@ export default function SectionsDropdown({
                             if (onSelect) onSelect(section);
                           }}
                           className={classNames(
-                            'w-full text-left block px-4 py-2 text-base font-medium leading-6 focus:outline-none',
+                            'w-full text-left block px-4 py-2 text-base font-medium leading-6 focus:outline-hidden',
                             active
                               ? 'bg-gray-100 text-gray-900 dark:text-gray-100 dark:bg-gray-700'
                               : 'text-gray-700 dark:text-gray-100'
@@ -121,7 +121,7 @@ export default function SectionsDropdown({
                         <Link
                           to={`/${section}/`}
                           className={classNames(
-                            'block px-4 py-2 text-base font-medium leading-6 focus:outline-none',
+                            'block px-4 py-2 text-base font-medium leading-6 focus:outline-hidden',
                             active
                               ? 'bg-gray-100 text-gray-900 dark:text-gray-100 dark:bg-gray-700'
                               : 'text-gray-700 dark:text-gray-100'

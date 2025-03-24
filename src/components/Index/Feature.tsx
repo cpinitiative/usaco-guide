@@ -33,7 +33,7 @@ export const Feature = ({
         {fade !== 'none' && (
           <div
             className={classNames(
-              'absolute top-0 bottom-0 w-36 bg-gradient-to-l from-white dark:from-gray-900 z-20',
+              'absolute top-0 bottom-0 w-36 bg-linear-to-l from-white dark:from-gray-900 z-20',
               featurePosition === 'left'
                 ? 'right-0 md:right-12 lg:right-24'
                 : 'right-0'
@@ -57,7 +57,7 @@ export const Feature = ({
         <div>
           <div
             className={classNames(
-              'w-12 h-12 rounded-xl mb-4 bg-gradient-to-br flex items-center justify-center text-white',
+              'w-12 h-12 rounded-xl mb-4 bg-linear-to-br flex items-center justify-center text-white',
               iconClasses
             )}
           >

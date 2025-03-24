@@ -26,7 +26,7 @@ export default function RadioList({
             value={option}
             className={({ checked }) =>
               classNames(
-                'relative border p-4 flex cursor-pointer focus:outline-none',
+                'relative border p-4 flex cursor-pointer focus:outline-hidden',
                 idx === 0 && 'rounded-tl-md rounded-tr-md',
                 idx === options.length - 1 && 'rounded-bl-md rounded-br-md',
                 checked

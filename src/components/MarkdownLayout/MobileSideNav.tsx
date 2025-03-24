@@ -41,7 +41,7 @@ export default function MobileSideNav() {
             <div className="relative flex-1 flex flex-col max-w-xs w-full bg-white dark:bg-dark-surface">
               <div className="absolute top-0 right-0 -mr-14 p-1">
                 <button
-                  className="flex items-center justify-center h-12 w-12 rounded-full focus:outline-none focus:bg-gray-600"
+                  className="flex items-center justify-center h-12 w-12 rounded-full focus:outline-hidden focus:bg-gray-600"
                   aria-label="Close sidebar"
                   onClick={() => setIsMobileNavOpen(false)}
                 >
@@ -62,7 +62,7 @@ export default function MobileSideNav() {
               </div>
               <div className="flex-1 h-0 pt-5 flex flex-col">
                 <Link
-                  className="flex-shrink-0 flex items-center px-4"
+                  className="shrink-0 flex items-center px-4"
                   to="/dashboard/"
                 >
                   <Logo />
@@ -75,7 +75,7 @@ export default function MobileSideNav() {
               <SidebarBottomButtons />
             </div>
           </Transition>
-          <div className="flex-shrink-0 w-14">
+          <div className="shrink-0 w-14">
             {/* Force sidebar to shrink to fit close icon */}
           </div>
         </div>

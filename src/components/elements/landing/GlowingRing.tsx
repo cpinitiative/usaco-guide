@@ -11,7 +11,7 @@ export const GlowingRing = ({
         absolute
         -inset-1
         dark:-inset-1.5
-        bg-gradient-to-r
+        bg-linear-to-r
         from-blue-600
         to-purple-700
         rounded-lg

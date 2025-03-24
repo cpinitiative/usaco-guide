@@ -49,7 +49,7 @@ const JoinLinksPage = () => {
                   Join Links
                 </h2>
               </div>
-              <div className="mt-4 flex-shrink-0 flex md:mt-0 md:ml-4">
+              <div className="mt-4 shrink-0 flex md:mt-0 md:ml-4">
                 <button
                   type="button"
                   className="btn"
@@ -67,7 +67,7 @@ const JoinLinksPage = () => {
             </div>
           </div>
           <div className="h-4" />
-          <div className="bg-white dark:bg-gray-900 shadow overflow-hidden sm:rounded-md">
+          <div className="bg-white dark:bg-gray-900 shadow-sm overflow-hidden sm:rounded-md">
             <ul className="divide-y divide-gray-200 dark:divide-gray-700">
               {joinLinks?.map(link => (
                 <li key={link.id}>
@@ -76,7 +76,7 @@ const JoinLinksPage = () => {
                       setCurLink(link);
                       setIsEditOpen(true);
                     }}
-                    className="focus:outline-none block hover:bg-gray-50 dark:hover:bg-gray-800 w-full"
+                    className="focus:outline-hidden block hover:bg-gray-50 dark:hover:bg-gray-800 w-full"
                   >
                     <div className="px-4 py-4 flex items-center sm:px-6">
                       <div className="min-w-0 flex-1 sm:flex sm:items-center sm:justify-between">
@@ -85,7 +85,7 @@ const JoinLinksPage = () => {
                             <p className="font-medium text-blue-600 dark:text-blue-300 truncate">
                               {link.id}
                             </p>
-                            <p className="ml-1 flex-shrink-0 font-normal text-gray-500 dark:text-gray-400">
+                            <p className="ml-1 shrink-0 font-normal text-gray-500 dark:text-gray-400">
                               · {link.numUses} Uses
                               {link.revoked && ` · REVOKED`}
                             </p>
@@ -94,7 +94,7 @@ const JoinLinksPage = () => {
                             <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
                               {/* Heroicon name: solid/calendar */}
                               <svg
-                                className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400 dark:text-gray-500"
+                                className="shrink-0 mr-1.5 h-5 w-5 text-gray-400 dark:text-gray-500"
                                 xmlns="http://www.w3.org/2000/svg"
                                 viewBox="0 0 20 20"
                                 fill="currentColor"
@@ -122,7 +122,7 @@ const JoinLinksPage = () => {
                               <>
                                 <span className="mx-2">&middot;</span>
                                 <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
-                                  <UserIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400 dark:text-gray-500" />
+                                  <UserIcon className="shrink-0 mr-1.5 h-5 w-5 text-gray-400 dark:text-gray-500" />
                                   <p>
                                     {link.author.replace('REGISTRATION_', '')}
                                   </p>
@@ -132,7 +132,7 @@ const JoinLinksPage = () => {
                           </div>
                         </div>
                       </div>
-                      <div className="ml-5 flex-shrink-0">
+                      <div className="ml-5 shrink-0">
                         {/* Heroicon name: solid/chevron-right */}
                         <svg
                           className="h-5 w-5 text-gray-400 dark:text-gray-500"

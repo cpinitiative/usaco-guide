@@ -8,7 +8,7 @@ export default function SectionProgressBar({ title }) {
           <span className="font-semibold inline-block">{title}: 50%</span>
         </div>
       </div>
-      <div className="overflow-hidden h-2 mb-4 text-xs flex rounded bg-gray-200">
+      <div className="overflow-hidden h-2 mb-4 text-xs flex rounded-sm bg-gray-200">
         <div
           style={{ width: '45%' }}
           className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-green-500"

@@ -238,7 +238,7 @@ export default function ContactUsSlideover({
         {showSuccess && (
           <div className="rounded-md bg-green-50 dark:bg-green-800 p-4">
             <div className="flex">
-              <div className="flex-grow-0">
+              <div className="grow-0">
                 <svg
                   className="h-5 w-5 text-green-400"
                   viewBox="0 0 20 20"

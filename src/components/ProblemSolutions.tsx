@@ -214,7 +214,7 @@ export default function ProblemSolutions({
                       {submission.upvotes.length}.{' '}
                       {firebaseUser?.uid && (
                         <button
-                          className="hover:underline text-blue-600 dark:text-blue-300 focus:outline-none"
+                          className="hover:underline text-blue-600 dark:text-blue-300 focus:outline-hidden"
                           onClick={() => {
                             if (
                               submission.upvotes.includes(firebaseUser?.uid)

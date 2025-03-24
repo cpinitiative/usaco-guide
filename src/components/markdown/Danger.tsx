@@ -14,7 +14,7 @@ export interface DangerProps {
 const Danger: React.FC<DangerProps> = ({ children, title }) => (
   <div className="rounded-md bg-red-50 dark:bg-red-700/25 p-4 mb-4">
     <div className="flex">
-      <div className="flex-shrink-0">
+      <div className="shrink-0">
         <svg
           className="h-5 w-5 text-red-400"
           viewBox="0 0 20 20"

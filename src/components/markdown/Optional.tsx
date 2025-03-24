@@ -14,7 +14,7 @@ export interface OptionalProps {
 const Optional: React.FC<OptionalProps> = ({ children, title }) => (
   <div className="rounded-md bg-purple-50 dark:bg-purple-700/25 p-4 mb-4">
     <div className="flex">
-      <div className="flex-shrink-0">
+      <div className="shrink-0">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           className="h-5 w-5 text-purple-400 dark:text-purple-300"

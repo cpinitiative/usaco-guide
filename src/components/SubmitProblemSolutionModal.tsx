@@ -97,7 +97,7 @@ export default function SubmitProblemSolutionModal({
         </div>
       </div>
       <div className="flex items-center justify-between">
-        <span className="flex-grow flex flex-col" id="toggleLabel">
+        <span className="grow flex flex-col" id="toggleLabel">
           <span className="leading-5 font-medium text-gray-900 dark:text-gray-100">
             Share Solution Code
           </span>
@@ -111,7 +111,7 @@ export default function SubmitProblemSolutionModal({
           tabIndex={0}
           onClick={() => setIsCodePublic(!isCodePublic)}
           className={className(
-            'relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:shadow-outline',
+            'relative inline-flex shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-hidden focus:shadow-outline',
             isCodePublic ? 'bg-blue-600' : 'bg-gray-200'
           )}
         >
@@ -119,7 +119,7 @@ export default function SubmitProblemSolutionModal({
             aria-hidden="true"
             className={className(
               isCodePublic ? 'translate-x-5' : 'translate-x-0',
-              'relative inline-block h-5 w-5 rounded-full bg-white shadow transform transition ease-in-out duration-200'
+              'relative inline-block h-5 w-5 rounded-full bg-white shadow-sm transform transition ease-in-out duration-200'
             )}
           >
             <span
@@ -169,7 +169,7 @@ export default function SubmitProblemSolutionModal({
   const successMessage = (
     <div className="rounded-md bg-green-50 dark:bg-green-800 p-4">
       <div className="flex">
-        <div className="flex-shrink-0">
+        <div className="shrink-0">
           <svg
             className="h-5 w-5 text-green-400"
             viewBox="0 0 20 20"
@@ -238,7 +238,7 @@ export default function SubmitProblemSolutionModal({
               <button
                 type="button"
                 onClick={() => onClose()}
-                className="bg-white dark:bg-dark-surface rounded-md text-gray-400 dark:text-gray-500 hover:text-gray-500 dark:hover:text-gray-400 focus:outline-none"
+                className="bg-white dark:bg-dark-surface rounded-md text-gray-400 dark:text-gray-500 hover:text-gray-500 dark:hover:text-gray-400 focus:outline-hidden"
               >
                 <span className="sr-only">Close</span>
                 {/* Heroicon name: x */}
@@ -279,7 +279,7 @@ export default function SubmitProblemSolutionModal({
                 <button
                   type="button"
                   onClick={() => onClose()}
-                  className="inline-flex justify-center w-full rounded-md border border-transparent px-4 py-2 bg-blue-600 text-base leading-6 font-medium text-white shadow-sm hover:bg-blue-500 focus:outline-none focus:border-blue-700 focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5"
+                  className="inline-flex justify-center w-full rounded-md border border-transparent px-4 py-2 bg-blue-600 text-base leading-6 font-medium text-white shadow-sm hover:bg-blue-500 focus:outline-hidden focus:border-blue-700 focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5"
                 >
                   Done
                 </button>
@@ -289,7 +289,7 @@ export default function SubmitProblemSolutionModal({
                 <span className="flex w-full rounded-md shadow-sm sm:ml-3 sm:w-auto">
                   <button
                     type="submit"
-                    className="inline-flex justify-center w-full rounded-md border border-transparent px-4 py-2 bg-blue-600 text-base leading-6 font-medium text-white shadow-sm hover:bg-blue-500 focus:outline-none focus:border-blue-700 focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5"
+                    className="inline-flex justify-center w-full rounded-md border border-transparent px-4 py-2 bg-blue-600 text-base leading-6 font-medium text-white shadow-sm hover:bg-blue-500 focus:outline-hidden focus:border-blue-700 focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5"
                     disabled={loading}
                   >
                     {loading ? 'Submitting...' : 'Submit Solution'}
@@ -298,7 +298,7 @@ export default function SubmitProblemSolutionModal({
                 <span className="mt-3 flex w-full rounded-md shadow-sm sm:mt-0 sm:w-auto">
                   <button
                     type="button"
-                    className="inline-flex justify-center w-full rounded-md border border-gray-300 dark:border-gray-600 px-4 py-2 bg-white dark:bg-gray-800 text-base leading-6 font-medium text-gray-700 dark:text-gray-200 shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5"
+                    className="inline-flex justify-center w-full rounded-md border border-gray-300 dark:border-gray-600 px-4 py-2 bg-white dark:bg-gray-800 text-base leading-6 font-medium text-gray-700 dark:text-gray-200 shadow-sm hover:text-gray-500 focus:outline-hidden focus:border-blue-300 focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5"
                     onClick={() => onClose()}
                     disabled={loading}
                   >

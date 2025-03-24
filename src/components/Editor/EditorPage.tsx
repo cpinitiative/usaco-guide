@@ -103,7 +103,7 @@ export default function EditorPage(props: PageProps): JSX.Element {
               {/* https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.istandaloneeditorconstructionoptions.html */}
               <div className="flex items-stretch">
                 <EditorSidebar
-                  className="h-full flex-shrink-0"
+                  className="h-full shrink-0"
                   loading={
                     !!new URLSearchParams(props.location.search).get('code')
                   }

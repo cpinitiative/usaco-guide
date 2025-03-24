@@ -38,7 +38,7 @@ import {
   useIsUserDataLoaded,
 } from '../context/UserDataContext/UserDataContext';
 
-const containerClasses = 'max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8';
+const containerClasses = 'max-w-(--breakpoint-xl) mx-auto px-4 sm:px-6 lg:px-8';
 const headerClasses =
   'text-4xl md:text-5xl 2xl:text-6xl font-black text-black dark:text-white';
 const headerClassesNoText = 'text-4xl md:text-5xl 2xl:text-6xl font-black';
@@ -599,7 +599,7 @@ export default function IndexPage(): JSX.Element {
 
       {/* Begin FAQ */}
       <div className="bg-white dark:bg-dark-surface">
-        <div className="max-w-screen-xl mx-auto pt-12 pb-16 sm:pt-16 sm:pb-20 px-4 sm:px-6 lg:pt-20 lg:pb-28 lg:px-8">
+        <div className="max-w-(--breakpoint-xl) mx-auto pt-12 pb-16 sm:pt-16 sm:pb-20 px-4 sm:px-6 lg:pt-20 lg:pb-28 lg:px-8">
           <h2 className={classNames(headerClasses, 'dark:text-gray-100')}>
             Frequently asked questions
           </h2>
@@ -762,7 +762,7 @@ export default function IndexPage(): JSX.Element {
       <ContributorsSection />
 
       <div className="bg-gray-100 dark:bg-gray-900">
-        <div className="max-w-screen-xl mx-auto py-12 px-4">
+        <div className="max-w-(--breakpoint-xl) mx-auto py-12 px-4">
           <p className="text-center text-base leading-6 text-gray-400 dark:text-dark-med-emphasis">
             &copy; {new Date().getFullYear()} Competitive Programming
             Initiative. Powered by{' '}

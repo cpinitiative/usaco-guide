@@ -97,7 +97,7 @@ const MarkCompleteButton = ({
               type="button"
               className={`rounded-md shadow-sm inline-flex justify-center w-full rounded-md border border-gray-300 dark:border-gray-800 pr-4 ${
                 state === 'Not Started' ? 'pl-4' : 'pl-3'
-              } py-2 bg-white dark:bg-gray-900 dark:hover:bg-gray-800 text-sm leading-5 font-medium text-gray-700 dark:text-gray-200 hover:text-gray-500 dark:hover:text-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-offset-dark-surface`}
+              } py-2 bg-white dark:bg-gray-900 dark:hover:bg-gray-800 text-sm leading-5 font-medium text-gray-700 dark:text-gray-200 hover:text-gray-500 dark:hover:text-gray-100 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-offset-dark-surface`}
             >
               {moduleProgressToIcon(state as ModuleProgress)}
               <span
@@ -129,7 +129,7 @@ const MarkCompleteButton = ({
                 dropdownAbove
                   ? 'origin-bottom-right bottom-0 mb-12'
                   : 'origin-top-right'
-              } right-0 absolute z-10 mt-2 w-36 bg-white dark:bg-gray-800 rounded-md shadow-lg ring-1 ring-black/5 focus:outline-none`}
+              } right-0 absolute z-10 mt-2 w-36 bg-white dark:bg-gray-800 rounded-md shadow-lg ring-1 ring-black/5 focus:outline-hidden`}
             >
               <div className="py-1">
                 {ModuleProgressOptions.map(option => (

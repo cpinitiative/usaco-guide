@@ -44,7 +44,7 @@ function ViewSolutionsContent({
   }
   return (
     <a
-      className="focus:outline-none block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900"
+      className="focus:outline-hidden block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900"
       href={`/problems/${problem.uniqueId}/user-solutions`}
       target="_blank"
       rel="noreferrer"
@@ -99,7 +99,7 @@ export default function ProblemsListItemDropdown(
             <ViewSolutionsContent problem={problem} />
             <button
               type="button"
-              className="focus:outline-none block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900"
+              className="focus:outline-hidden block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900"
               onClick={e => {
                 e.preventDefault();
                 setCopied(true);
@@ -114,7 +114,7 @@ export default function ProblemsListItemDropdown(
             </button>
             {isUsaco(problem.source) && (
               <a
-                className="!font-normal focus:outline-none block w-full text-left px-4 py-2 text-sm !text-gray-700 dark:!text-gray-300 hover:!bg-gray-100 dark:hover:!bg-gray-800 hover:!text-gray-900"
+                className="font-normal! focus:outline-hidden block w-full text-left px-4 py-2 text-sm text-gray-700! dark:text-gray-300! hover:bg-gray-100! dark:hover:bg-gray-800! hover:text-gray-900!"
                 href={`https://ide.usaco.guide/usaco/${problem.uniqueId.substring(
                   problem.uniqueId.indexOf('-') + 1
                 )}`}
@@ -139,7 +139,7 @@ export default function ProblemsListItemDropdown(
       onHidden={() => setIsDropdownShown(false)}
       appendTo={() => document.body}
     >
-      <button className="focus:outline-none w-8 h-8 inline-flex items-center justify-center text-gray-400 rounded-full bg-transparent hover:text-gray-500 dark:hover:text-gray-300">
+      <button className="focus:outline-hidden w-8 h-8 inline-flex items-center justify-center text-gray-400 rounded-full bg-transparent hover:text-gray-500 dark:hover:text-gray-300">
         {/* Heroicon name: solid/dots-vertical */}
         <svg
           className="w-5 h-5"

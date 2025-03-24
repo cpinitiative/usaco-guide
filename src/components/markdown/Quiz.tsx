@@ -57,7 +57,7 @@ const QuizMCAnswer = props => {
   const Element = isCorrect ? 'div' : 'button';
   return (
     <Element
-      className="flex w-full items-start bg-gray-100 dark:bg-gray-900 rounded-2xl px-4 py-3 text-left focus:outline-none"
+      className="flex w-full items-start bg-gray-100 dark:bg-gray-900 rounded-2xl px-4 py-3 text-left focus:outline-hidden"
       onClick={() => {
         if (!showVerdict) {
           if (selectedAnswer !== props.number) {
@@ -73,7 +73,7 @@ const QuizMCAnswer = props => {
     >
       <span
         className={classNames(
-          'flex-shrink-0 h-6 w-6 rounded-full font-medium inline-flex items-center justify-center',
+          'shrink-0 h-6 w-6 rounded-full font-medium inline-flex items-center justify-center',
           isSelected || showVerdict //render ring
             ? 'ring-2 ring-offset-2 ring-offset-gray-100 dark:ring-offset-gray-900 text-gray-100 dark:text-gray-900 font-bold'
             : 'border border-gray-600 text-gray-800 dark:border-gray-500 dark:text-gray-300',
