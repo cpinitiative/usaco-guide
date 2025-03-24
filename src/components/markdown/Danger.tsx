@@ -12,7 +12,7 @@ export interface DangerProps {
 }
 
 const Danger: React.FC<DangerProps> = ({ children, title }) => (
-  <div className="rounded-md bg-red-50 dark:bg-red-700 dark:bg-opacity-25 p-4 mb-4">
+  <div className="rounded-md bg-red-50 dark:bg-red-700/25 p-4 mb-4">
     <div className="flex">
       <div className="flex-shrink-0">
         <svg

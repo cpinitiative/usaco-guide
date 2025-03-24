@@ -136,7 +136,7 @@ export default function PostExportModal(props: {
       leave="transition ease-in duration-75"
       leaveFrom="transform opacity-100 scale-100"
       leaveTo="transform opacity-0 scale-95"
-      className="origin-top-right absolute z-10 right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none"
+      className="origin-top-right absolute z-10 right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black/5 focus:outline-none"
       role="menu"
       aria-orientation="vertical"
       aria-labelledby="options-menu-0"
@@ -156,7 +156,7 @@ export default function PostExportModal(props: {
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <Dialog.Overlay className="fixed inset-0 bg-gray-500 bg-opacity-75 dark:bg-gray-900 dark:bg-opacity-75 transition-opacity" />
+            <Dialog.Overlay className="fixed inset-0 bg-gray-500/75 dark:bg-gray-900/75 transition-opacity" />
           </Transition.Child>
 
           {/* This element is to trick the browser into centering the modal contents. */}
