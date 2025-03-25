@@ -159,103 +159,105 @@ export default function DashboardPage(props: PageProps) {
       <div className="min-h-screen bg-gray-100 dark:bg-dark-surface">
         <TopNavigationBar linkLogoToIndex={true} redirectToDashboard={false} />
 
-        <main className="pb-12">
-          <div className="max-w-7xl mx-auto mb-4">
-            <div className="lg:px-8 pt-4 pb-6">
-              <div className="flex flex-wrap mb-4">
-                <div className="w-full text-center">
-                  {firebaseUser ? (
-                    <>
-                      Signed in as <i>{firebaseUser.email}</i>.
-                    </>
-                  ) : (
-                    <span>
-                      Not signed in.{' '}
-                      <a
-                        href="#"
-                        onClick={e => {
-                          e.preventDefault();
-                          signIn();
-                        }}
-                        className="text-blue-600 dark:text-blue-300 underline"
-                      >
-                        Sign in now!
-                      </a>{' '}
-                    </span>
-                  )}
+        {finishedRendering && (
+          <main className="pb-12">
+            <div className="max-w-7xl mx-auto mb-4">
+              <div className="lg:px-8 pt-4 pb-6">
+                <div className="flex flex-wrap mb-4">
+                  <div className="w-full text-center">
+                    {firebaseUser ? (
+                      <>
+                        Signed in as <i>{firebaseUser.email}</i>.
+                      </>
+                    ) : (
+                      <span>
+                        Not signed in.{' '}
+                        <a
+                          href="#"
+                          onClick={e => {
+                            e.preventDefault();
+                            signIn();
+                          }}
+                          className="text-blue-600 dark:text-blue-300 underline"
+                        >
+                          Sign in now!
+                        </a>{' '}
+                      </span>
+                    )}
+                  </div>
                 </div>
+                <WelcomeBackBanner
+                  lastViewedModuleURL={lastViewedModuleURL}
+                  lastViewedModuleLabel={moduleIDToName[lastViewedModuleID]}
+                />
               </div>
-              <WelcomeBackBanner
-                lastViewedModuleURL={lastViewedModuleURL}
-                lastViewedModuleLabel={moduleIDToName[lastViewedModuleID]}
-              />
             </div>
-          </div>
-          <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 lg:grid lg:grid-cols-2 lg:gap-8">
-            {activeProblems.length > 0 && (
-              <div className="mb-8">
-                <ActiveItems type="problems" items={activeProblems} />
+            <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 lg:grid lg:grid-cols-2 lg:gap-8">
+              {activeProblems.length > 0 && (
+                <div className="mb-8">
+                  <ActiveItems type="problems" items={activeProblems} />
+                </div>
+              )}
+              {activeModules.length > 0 && (
+                <div className="mb-8">
+                  <ActiveItems type="modules" items={activeModules} />
+                </div>
+              )}
+            </div>
+            <header>
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <h1 className="text-3xl font-bold leading-tight text-gray-900 dark:text-dark-high-emphasis">
+                  Activity
+                </h1>
               </div>
-            )}
-            {activeModules.length > 0 && (
-              <div className="mb-8">
-                <ActiveItems type="modules" items={activeModules} />
+            </header>
+            <div className="max-w-7xl mx-auto mb-8">
+              <Activity />
+            </div>
+            <header>
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <h1 className="text-3xl font-bold leading-tight text-gray-900 dark:text-dark-high-emphasis">
+                  Statistics
+                </h1>
               </div>
-            )}
-          </div>
-          <header>
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <h1 className="text-3xl font-bold leading-tight text-gray-900 dark:text-dark-high-emphasis">
-                Activity
-              </h1>
-            </div>
-          </header>
-          <div className="max-w-7xl mx-auto mb-8">
-            {finishedRendering && <Activity />}
-          </div>
-          <header>
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <h1 className="text-3xl font-bold leading-tight text-gray-900 dark:text-dark-high-emphasis">
-                Statistics
-              </h1>
-            </div>
-          </header>
-          <div className="max-w-7xl mx-auto">
-            <div className="sm:px-6 lg:px-8 py-4 lg:grid lg:grid-cols-2 lg:gap-8 space-y-8 lg:space-y-0">
-              <div className="space-y-8">
-                <Card>
-                  <div className="px-4 py-5 sm:p-6">
-                    <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-dark-high-emphasis">
-                      Modules Progress - {SECTION_LABELS[lastViewedSection]}
-                    </h3>
-                    <div className="mt-6">
-                      <DashboardProgress
-                        {...allModulesProgressInfo}
-                        total={moduleProgressIDs.length}
-                      />
+            </header>
+            <div className="max-w-7xl mx-auto">
+              <div className="sm:px-6 lg:px-8 py-4 lg:grid lg:grid-cols-2 lg:gap-8 space-y-8 lg:space-y-0">
+                <div className="space-y-8">
+                  <Card>
+                    <div className="px-4 py-5 sm:p-6">
+                      <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-dark-high-emphasis">
+                        Modules Progress - {SECTION_LABELS[lastViewedSection]}
+                      </h3>
+                      <div className="mt-6">
+                        <DashboardProgress
+                          {...allModulesProgressInfo}
+                          total={moduleProgressIDs.length}
+                        />
+                      </div>
                     </div>
-                  </div>
-                </Card>
-              </div>
-              <div className="space-y-8">
-                <Card>
-                  <div className="px-4 py-5 sm:p-6">
-                    <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-dark-high-emphasis">
-                      Problems Progress - {SECTION_LABELS[lastViewedSection]}
-                    </h3>
-                    <div className="mt-6">
-                      <DashboardProgress
-                        {...allProblemsProgressInfo}
-                        total={Object.keys(problemStatisticsIDs).length}
-                      />
+                  </Card>
+                </div>
+                <div className="space-y-8">
+                  <Card>
+                    <div className="px-4 py-5 sm:p-6">
+                      <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-dark-high-emphasis">
+                        Problems Progress - {SECTION_LABELS[lastViewedSection]}
+                      </h3>
+                      <div className="mt-6">
+                        <DashboardProgress
+                          {...allProblemsProgressInfo}
+                          total={Object.keys(problemStatisticsIDs).length}
+                        />
+                      </div>
                     </div>
-                  </div>
-                </Card>
+                  </Card>
+                </div>
+                <DailyStreak streak={consecutiveVisits} />
               </div>
-              <DailyStreak streak={consecutiveVisits} />
             </div>
-          </div>
-        </main>
+          </main>
+        )}
       </div>
     </Layout>
   );
