@@ -50,7 +50,8 @@ export function ActivityHeatmap({
                 count: activityCount[Number(d)],
               }))}
               onMouseOver={(_ev, value) => {
-                setActiveDate(value.date);
+                if (!value) setActiveDate(null);
+                else setActiveDate(value.date);
               }}
               classForValue={value => {
                 if (!value || value.count === 0) {

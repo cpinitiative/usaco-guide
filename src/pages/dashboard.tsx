@@ -19,9 +19,7 @@ import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
 import { useSignIn } from '../context/SignInContext';
 import { useLastVisitInfo } from '../context/UserDataContext/properties/lastVisit';
 import {
-  useLastReadAnnouncement,
   useLastViewedModule,
-  useSetLastReadAnnouncement,
   useShowIgnoredSetting,
 } from '../context/UserDataContext/properties/simpleProperties';
 import {
@@ -88,10 +86,8 @@ export default function DashboardPage(props: PageProps) {
   const lastViewedModuleID = useLastViewedModule();
   const userProgressOnModules = useUserProgressOnModules();
   const userProgressOnProblems = useUserProgressOnProblems();
-  const lastReadAnnouncement = useLastReadAnnouncement();
-  const setLastReadAnnouncement = useSetLastReadAnnouncement();
   const firebaseUser = useFirebaseUser();
-  const { consecutiveVisits, numPageviews } = useLastVisitInfo();
+  const { consecutiveVisits } = useLastVisitInfo();
   const showIgnored = useShowIgnoredSetting();
   const { signIn } = useSignIn();
 
@@ -160,6 +156,11 @@ export default function DashboardPage(props: PageProps) {
     return announcements.edges.map(node =>
       graphqlToAnnouncementInfo(node.node)
     );
+  }, []);
+
+  const [finishedRendering, setFinishedRendering] = React.useState(false);
+  React.useEffect(() => {
+    setFinishedRendering(true);
   }, []);
 
   return (
@@ -244,7 +245,7 @@ export default function DashboardPage(props: PageProps) {
             </div>
           </header>
           <div className="max-w-7xl mx-auto mb-8">
-            <Activity />
+            {finishedRendering && <Activity />}
           </div>
           <header>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -284,42 +285,12 @@ export default function DashboardPage(props: PageProps) {
                     </div>
                   </div>
                 </Card>
-                {/*<div className="bg-white shadow-sm sm:rounded-lg">*/}
-                {/*  <div className="px-4 py-5 sm:p-6">*/}
-                {/*    <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-dark-high-emphasis">*/}
-                {/*      Section Breakdown*/}
-                {/*    </h3>*/}
-                {/*    <div className="mt-2 max-w-xl text-sm leading-5 text-gray-500">*/}
-                {/*      <p>Below is your progress on modules for each section.</p>*/}
-                {/*    </div>*/}
-                {/*    <div className="mt-4">*/}
-                {/*      <SectionProgressBar title="Intro" />*/}
-                {/*      <SectionProgressBar title="Bronze" />*/}
-                {/*      <SectionProgressBar title="Silver" />*/}
-                {/*      <SectionProgressBar title="Gold" />*/}
-                {/*      <SectionProgressBar title="Platinum" />*/}
-                {/*      <SectionProgressBar title="Advanced" />*/}
-                {/*    </div>*/}
-                {/*  </div>*/}
-                {/*</div>*/}
               </div>
               <DailyStreak streak={consecutiveVisits} />
             </div>
           </div>
         </main>
       </div>
-
-      {/* {parsedAnnouncements[0].id !== lastReadAnnouncement &&
-        numPageviews > 12 && (
-          <div className="h-12">
-            <AnnouncementBanner
-              announcement={parsedAnnouncements[0]}
-              onDismiss={() =>
-                setLastReadAnnouncement(parsedAnnouncements[0].id)
-              }
-            />
-          </div>
-        )} */}
     </Layout>
   );
 }
