@@ -160,6 +160,7 @@ export default function FeedItem({
               </button>
 
               <Transition
+                as="div"
                 show={showDropdown}
                 enter="transition ease-out duration-100"
                 enterFrom="transform opacity-0 scale-95"

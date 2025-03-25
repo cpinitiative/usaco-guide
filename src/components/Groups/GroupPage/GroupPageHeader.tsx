@@ -62,6 +62,7 @@ export default function GroupPageHeader(props: { group: GroupData }) {
             </div>
 
             <Transition
+              as="div"
               show={isActionsOpen}
               enter="transition ease-out duration-100"
               enterFrom="transform opacity-0 scale-95"

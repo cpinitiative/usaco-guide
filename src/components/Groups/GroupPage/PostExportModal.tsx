@@ -129,6 +129,7 @@ export default function PostExportModal(props: {
 
   return (
     <Transition
+      as="div"
       show={props.showExportModal}
       enter="transition ease-out duration-100"
       enterFrom="transform opacity-0 scale-95"
