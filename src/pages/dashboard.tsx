@@ -1,4 +1,4 @@
-import { graphql, Link, PageProps } from 'gatsby';
+import { graphql, PageProps } from 'gatsby';
 import * as React from 'react';
 import {
   moduleIDToSectionMap,
