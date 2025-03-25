@@ -25,7 +25,7 @@ const ModuleSearch = () => {
         <input
           type="search"
           placeholder="Search"
-          className="focus:outline-none focus:ring-0 text-gray-700 dark:bg-dark-surface dark:text-gray-200 dark:placeholder-gray-400 border-0 flex-1"
+          className="focus:outline-hidden focus:ring-0 text-gray-700 dark:bg-dark-surface dark:text-gray-200 dark:placeholder-gray-400 border-0 flex-1"
           value={query}
           onChange={e => setQuery(e.target.value)}
           autoComplete="off"
@@ -48,7 +48,7 @@ const ModuleSearch = () => {
                   <Highlight hit={hit} attribute="title" /> -{' '}
                   {SECTION_LABELS[hit.division]}
                 </h3>
-                <p className="[&_*]:!text-sm [&_*]:!leading-4">
+                <p className="**:text-sm! **:leading-4!">
                   <div className="mb-1 text-gray-700 dark:text-gray-200">
                     <Highlight hit={hit} attribute="description" />
                   </div>

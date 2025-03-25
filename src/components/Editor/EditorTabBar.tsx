@@ -131,7 +131,7 @@ const EditorTabBar: React.FC<EditorTabBarProps> = ({
                 tab.value === activeTab
                   ? 'bg-gray-200 dark:bg-gray-800 text-gray-900 dark:text-gray-100'
                   : 'text-gray-500 hover:text-gray-600 dark:hover:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900 active:bg-gray-100 dark:active:bg-gray-900',
-                'px-4 py-2 font-medium text-sm focus:outline-none transition'
+                'px-4 py-2 font-medium text-sm focus:outline-hidden transition'
               )}
               onClick={() => onTabSelect(tab)}
             >
@@ -148,7 +148,7 @@ const EditorTabBar: React.FC<EditorTabBarProps> = ({
         <button
           className={classNames(
             'hover:text-gray-800 dark:hover:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-800 active:bg-gray-200 dark:active:bg-gray-800',
-            'px-3 py-2 text-sm font-medium focus:outline-none transition'
+            'px-3 py-2 text-sm font-medium focus:outline-hidden transition'
           )}
           onClick={() => setOpen(true)}
           type="button"
@@ -158,7 +158,7 @@ const EditorTabBar: React.FC<EditorTabBarProps> = ({
         <button
           className={classNames(
             'hover:text-gray-800 dark:hover:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-800 active:bg-gray-200 dark:active:bg-gray-800',
-            'px-3 py-2 font-medium text-sm focus:outline-none transition'
+            'px-3 py-2 font-medium text-sm focus:outline-hidden transition'
           )}
           onClick={() => onFormatCode()}
         >
@@ -168,7 +168,7 @@ const EditorTabBar: React.FC<EditorTabBarProps> = ({
           <button
             className={classNames(
               'hover:text-gray-800 dark:hover:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-800 active:bg-gray-200 dark:active:bg-gray-800',
-              'px-3 py-2 font-medium text-sm focus:outline-none transition'
+              'px-3 py-2 font-medium text-sm focus:outline-hidden transition'
             )}
             onClick={() => setDialogOpen(true)}
           >
@@ -179,7 +179,7 @@ const EditorTabBar: React.FC<EditorTabBarProps> = ({
           <button
             className={classNames(
               'hover:text-gray-800 dark:hover:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-800 active:bg-gray-200 dark:active:bg-gray-800',
-              'px-3 py-2 font-medium text-sm focus:outline-none transition'
+              'px-3 py-2 font-medium text-sm focus:outline-hidden transition'
             )}
             onClick={() => updateFile(file)}
           >
@@ -190,7 +190,7 @@ const EditorTabBar: React.FC<EditorTabBarProps> = ({
           <button
             className={classNames(
               'hover:text-gray-800 dark:hover:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-800 active:bg-gray-200 dark:active:bg-gray-800',
-              'px-3 py-2 font-medium text-sm focus:outline-none transition'
+              'px-3 py-2 font-medium text-sm focus:outline-hidden transition'
             )}
             onClick={() => pullCode()}
           >

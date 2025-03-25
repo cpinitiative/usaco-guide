@@ -57,7 +57,7 @@ const PrefixSumInteractive = ({ demo2 = false }) => {
     return (
       <div
         className={
-          'font-mono px-2 py-1 border border-gray-300 dark:border-gray-600 cursor-pointer rounded ' +
+          'font-mono px-2 py-1 border border-gray-300 dark:border-gray-600 cursor-pointer rounded-sm ' +
           (isActive
             ? 'bg-green-200 dark:bg-green-700'
             : 'bg-gray-100 dark:bg-gray-800')

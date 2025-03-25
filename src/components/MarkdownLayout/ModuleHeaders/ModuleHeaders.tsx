@@ -125,7 +125,7 @@ export default function ModuleHeaders({
           )}
         </div>
         {markdownData instanceof ModuleInfo && (
-          <div className="hidden lg:flex-shrink-0 lg:flex ml-4">
+          <div className="hidden lg:shrink-0 lg:flex ml-4">
             <MarkCompleteButton
               state={moduleProgress}
               onChange={handleCompletionChange}
@@ -157,7 +157,7 @@ export default function ModuleHeaders({
               <>
                 <div className="-mt-1">
                   <Menu.Button
-                    className="inline-flex items-center w-full px-1 -mx-1 rounded-md text-sm font-medium text-gray-700 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 dark:focus:ring-offset-gray-900 focus:ring-blue-500"
+                    className="inline-flex items-center w-full px-1 -mx-1 rounded-md text-sm font-medium text-gray-700 dark:text-gray-200 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 dark:focus:ring-offset-gray-900 focus:ring-blue-500"
                     style={{ width: 'fit-content' }}
                   >
                     Language: {LANGUAGE_LABELS[lang]}
@@ -180,7 +180,7 @@ export default function ModuleHeaders({
                 >
                   <Menu.Items
                     static
-                    className="origin-top-left absolute z-10 left-0 mt-2 w-56 rounded-md shadow-lg bg-white dark:bg-gray-800 ring-1 ring-black/5 focus:outline-none"
+                    className="origin-top-left absolute z-10 left-0 mt-2 w-56 rounded-md shadow-lg bg-white dark:bg-gray-800 ring-1 ring-black/5 focus:outline-hidden"
                   >
                     <div className="py-1">
                       {(['cpp', 'java', 'py'] as const).map(lang => (
@@ -191,7 +191,7 @@ export default function ModuleHeaders({
                                 active
                                   ? 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100'
                                   : 'text-gray-700 dark:text-gray-300',
-                                'block px-4 py-2 text-sm focus:outline-none w-full text-left'
+                                'block px-4 py-2 text-sm focus:outline-hidden w-full text-left'
                               )}
                               onClick={() => setLang(lang)}
                             >

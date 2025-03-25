@@ -1,9 +1,6 @@
 module.exports = {
   plugins: [
-    require('postcss-import'),
-    'tailwindcss/nesting',
-    require(`tailwindcss`),
-    require(`autoprefixer`),
+    require('@tailwindcss/postcss'),
     ...(process.env.NODE_ENV === `production` ? [require(`cssnano`)] : []),
   ],
 };

@@ -57,7 +57,10 @@ const SyllabusModule = ({
   const isComplete = title === 'Prerequisites' || title === 'Getting Started';
 
   return (
-    <div className="bg-white overflow-hidden shadow rounded-lg mb-8" id={url}>
+    <div
+      className="bg-white overflow-hidden shadow-sm rounded-lg mb-8"
+      id={url}
+    >
       <div className="border-b border-gray-200 px-4 py-4 sm:px-6  flex items-center">
         <h2 className="font-bold text-xl mr-2">{title}</h2>
         {isComplete && (

@@ -47,7 +47,7 @@ export default function NotSignedInWarning() {
       //             settings across devices.
       //           </p>
       //         </div>
-      //         <div className="order-3 mt-2 flex-shrink-0 w-full sm:order-2 sm:mt-0 sm:w-auto">
+      //         <div className="order-3 mt-2 shrink-0 w-full sm:order-2 sm:mt-0 sm:w-auto">
       //           <button
       //             type="button"
       //             onClick={() => signIn()}
@@ -56,10 +56,10 @@ export default function NotSignedInWarning() {
       //             Sign In
       //           </button>
       //         </div>
-      //         <div className="order-2 flex-shrink-0 sm:order-3 sm:ml-3">
+      //         <div className="order-2 shrink-0 sm:order-3 sm:ml-3">
       //           <button
       //             type="button"
-      //             className="-mr-1 flex p-2 rounded-md hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-white sm:-mr-2"
+      //             className="-mr-1 flex p-2 rounded-md hover:bg-blue-500 focus:outline-hidden focus:ring-2 focus:ring-white sm:-mr-2"
       //           >
       //             <span className="sr-only">Dismiss</span>
       //             {/* Heroicon name: outline/x */}
@@ -101,7 +101,7 @@ export default function NotSignedInWarning() {
                 <button
                   type="button"
                   onClick={() => signIn()}
-                  className="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-700 text-sm leading-5 font-medium rounded-md text-gray-700 dark:text-dark-high-emphasis bg-white dark:bg-gray-800 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150"
+                  className="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-700 text-sm leading-5 font-medium rounded-md text-gray-700 dark:text-dark-high-emphasis bg-white dark:bg-gray-800 hover:text-gray-500 focus:outline-hidden focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150"
                 >
                   Sign in
                 </button>

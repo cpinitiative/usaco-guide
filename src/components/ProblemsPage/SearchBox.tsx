@@ -36,7 +36,7 @@ export default function SearchBox(props: UseSearchBoxProps): JSX.Element {
       </div>
       <input
         id="search"
-        className="block w-full pl-12 pr-3 py-3 rounded-md bg-blue-100 dark:bg-blue-100 placeholder-gray-900 dark:placeholder-blue-900 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue transition text-black dark:text-blue-900"
+        className="block w-full pl-12 pr-3 py-3 rounded-md bg-blue-100 dark:bg-blue-100 placeholder-gray-900 dark:placeholder-blue-900 focus:outline-hidden focus:border-blue-300 focus:shadow-outline-blue transition text-black dark:text-blue-900"
         placeholder="Search"
         type="search"
         autoComplete="off"

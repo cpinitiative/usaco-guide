@@ -64,7 +64,7 @@ const ProblemListItem = ({
             </div>
             <div className="relative group flex items-center space-x-2.5">
               <svg
-                className="flex-shrink-0 w-5 h-5 text-gray-400 dark:text-gray-500"
+                className="shrink-0 w-5 h-5 text-gray-400 dark:text-gray-500"
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 20 20"
                 fill="currentColor"
@@ -97,7 +97,7 @@ const ProblemListItem = ({
             </svg>
           </div>
           {/* Repo meta info */}
-          <div className="hidden sm:flex flex-col flex-shrink-0 items-end space-y-3">
+          <div className="hidden sm:flex flex-col shrink-0 items-end space-y-3">
             <p className="flex items-center space-x-4">
               <Link
                 to={`/groups/${group.id}/post/${post.id}/problems/${problem.id}`}

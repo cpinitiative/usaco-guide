@@ -74,7 +74,7 @@ const GroupPageWrapper = (props: GroupPageWrapperProps): ReactElement => {
             You need to sign in to access groups.{' '}
             <button
               onClick={signIn}
-              className="focus:outline-none underline text-blue-600 dark:text-blue-300"
+              className="focus:outline-hidden underline text-blue-600 dark:text-blue-300"
             >
               Sign in now
             </button>

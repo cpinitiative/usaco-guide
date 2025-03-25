@@ -38,23 +38,23 @@ export const EditorTopNav = (): JSX.Element => {
     <div className="block px-4 border-b border-gray-200 dark:border-gray-800 dark:bg-gray-900 flex items-center justify-between">
       <div className="flex items-center space-x-4">
         <div className="flex items-center space-x-2 whitespace-nowrap flex-nowrap py-2 mr-8">
-          <div className="h-8 w-8 flex-shrink-0">
+          <div className="h-8 w-8 shrink-0">
             <LogoSquare />
           </div>
           <span className="font-medium text-xl tracking-tight">
             Guide Editor
           </span>
         </div>
-        {/*<button className="inline-flex items-center space-x-2 text-gray-600 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 px-3 py-2 font-medium text-sm rounded-md focus:outline-none transition">*/}
+        {/*<button className="inline-flex items-center space-x-2 text-gray-600 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 px-3 py-2 font-medium text-sm rounded-md focus:outline-hidden transition">*/}
         {/*  /!*<ArchiveIcon className="h-4 w-4" />*!/*/}
         {/*  <span>History</span>*/}
         {/*</button>*/}
-        {/*<button className="inline-flex items-center space-x-2 text-gray-600 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 px-3 py-2 font-medium text-sm rounded-md focus:outline-none transition">*/}
+        {/*<button className="inline-flex items-center space-x-2 text-gray-600 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 px-3 py-2 font-medium text-sm rounded-md focus:outline-hidden transition">*/}
         {/*  /!*<ShareIcon className="h-4 w-4" />*!/*/}
         {/*  <span>Share</span>*/}
         {/*</button>*/}
         {/*<button*/}
-        {/*  className="inline-flex items-center space-x-2 text-gray-600 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 px-3 py-2 font-medium text-sm rounded-md focus:outline-none transition"*/}
+        {/*  className="inline-flex items-center space-x-2 text-gray-600 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 px-3 py-2 font-medium text-sm rounded-md focus:outline-hidden transition"*/}
         {/*  onClick={async () => {*/}
         {/*    const db = getFirestore(firebaseApp);*/}
         {/*    try {*/}
@@ -84,7 +84,7 @@ export const EditorTopNav = (): JSX.Element => {
 
         {activeFile?.path && (
           <button
-            className="inline-flex items-center space-x-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 px-3 py-2 font-medium text-sm rounded-md focus:outline-none transition"
+            className="inline-flex items-center space-x-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 px-3 py-2 font-medium text-sm rounded-md focus:outline-hidden transition"
             onClick={handleReloadContent}
           >
             Reload Content from GitHub
@@ -96,7 +96,7 @@ export const EditorTopNav = (): JSX.Element => {
               activeFile?.path
             )}`}
             target="_blank"
-            className="inline-flex items-center space-x-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 px-3 py-2 font-medium text-sm rounded-md focus:outline-none transition"
+            className="inline-flex items-center space-x-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 px-3 py-2 font-medium text-sm rounded-md focus:outline-hidden transition"
             rel="noreferrer"
           >
             View File on GitHub &rarr;
@@ -112,7 +112,7 @@ export const EditorTopNav = (): JSX.Element => {
                 tab === userLang
                   ? 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300'
                   : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300',
-                'px-3 py-2 font-medium text-sm rounded-md focus:outline-none transition'
+                'px-3 py-2 font-medium text-sm rounded-md focus:outline-hidden transition'
               )}
               onClick={() => setUserLang(tab)}
             >
@@ -137,7 +137,7 @@ export const EditorTopNav = (): JSX.Element => {
 
         <button
           onClick={() => setTheme(isDarkMode ? 'light' : 'dark')}
-          className="-mx-1 p-1 border-2 border-transparent text-gray-400 dark:text-gray-400 rounded-full hover:text-gray-300 dark:hover:text-dark-high-emphasis focus:outline-none focus:text-gray-500 focus:bg-gray-100 dark:focus:bg-gray-700 transition"
+          className="-mx-1 p-1 border-2 border-transparent text-gray-400 dark:text-gray-400 rounded-full hover:text-gray-300 dark:hover:text-dark-high-emphasis focus:outline-hidden focus:text-gray-500 focus:bg-gray-100 dark:focus:bg-gray-700 transition"
         >
           {isDarkMode ? (
             <svg

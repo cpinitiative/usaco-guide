@@ -305,7 +305,7 @@ export default function ProblemSuggestionModal({
   const successMessage = (
     <div className="rounded-md bg-green-50 dark:bg-green-800 p-4">
       <div className="flex">
-        <div className="flex-shrink-0">
+        <div className="shrink-0">
           <svg
             className="h-5 w-5 text-green-400"
             viewBox="0 0 20 20"
@@ -384,7 +384,7 @@ export default function ProblemSuggestionModal({
               <button
                 type="button"
                 onClick={() => onClose()}
-                className="bg-white dark:bg-dark-surface rounded-md text-gray-400 dark:text-gray-500 hover:text-gray-500 dark:hover:text-gray-400 focus:outline-none"
+                className="bg-white dark:bg-dark-surface rounded-md text-gray-400 dark:text-gray-500 hover:text-gray-500 dark:hover:text-gray-400 focus:outline-hidden"
               >
                 <span className="sr-only">Close</span>
                 {/* Heroicon name: x */}
@@ -443,7 +443,7 @@ export default function ProblemSuggestionModal({
                 <button
                   type="button"
                   onClick={() => onClose()}
-                  className="inline-flex justify-center w-full rounded-md border border-transparent px-4 py-2 bg-blue-600 text-base leading-6 font-medium text-white shadow-sm hover:bg-blue-500 focus:outline-none focus:border-blue-700 focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5"
+                  className="inline-flex justify-center w-full rounded-md border border-transparent px-4 py-2 bg-blue-600 text-base leading-6 font-medium text-white shadow-sm hover:bg-blue-500 focus:outline-hidden focus:border-blue-700 focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5"
                 >
                   Done
                 </button>
@@ -454,7 +454,7 @@ export default function ProblemSuggestionModal({
                   <button
                     type="submit"
                     className={
-                      'inline-flex justify-center w-full rounded-md border border-transparent px-4 py-2 text-base leading-6 font-medium text-white shadow-sm hover:bg-blue-500 focus:outline-none focus:border-blue-700 focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5 ' +
+                      'inline-flex justify-center w-full rounded-md border border-transparent px-4 py-2 text-base leading-6 font-medium text-white shadow-sm hover:bg-blue-500 focus:outline-hidden focus:border-blue-700 focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5 ' +
                       (loading ? 'bg-blue-400' : 'bg-blue-600')
                     }
                     disabled={loading}
@@ -470,7 +470,7 @@ export default function ProblemSuggestionModal({
                   <button
                     type="button"
                     className={
-                      'inline-flex justify-center w-full rounded-md border border-gray-300 dark:border-gray-600 px-4 py-2 dark:bg-gray-800 text-base leading-6 font-medium text-gray-700 dark:text-gray-200 shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5 ' +
+                      'inline-flex justify-center w-full rounded-md border border-gray-300 dark:border-gray-600 px-4 py-2 dark:bg-gray-800 text-base leading-6 font-medium text-gray-700 dark:text-gray-200 shadow-sm hover:text-gray-500 focus:outline-hidden focus:border-blue-300 focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5 ' +
                       (loading ? 'bg-gray-100' : 'bg-white')
                     }
                     onClick={() => onClose()}

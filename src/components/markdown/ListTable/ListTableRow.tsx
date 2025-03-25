@@ -24,7 +24,7 @@ export default function ListTableRow({
   return (
     <tr
       className={clsx(
-        isActive && '!bg-[#fdfdea] dark:!bg-[#3c3c00]',
+        isActive && 'bg-[#fdfdea]! dark:bg-[#3c3c00]!',
         'relative'
       )}
     >

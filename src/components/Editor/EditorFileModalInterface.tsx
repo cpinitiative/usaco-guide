@@ -32,7 +32,7 @@ const FileSearch = ({
         <input
           type="search"
           placeholder="Search"
-          className="focus:outline-none focus:ring-0 text-gray-700 dark:bg-dark-surface dark:text-gray-200 dark:placeholder-gray-400 border-0 flex-1"
+          className="focus:outline-hidden focus:ring-0 text-gray-700 dark:bg-dark-surface dark:text-gray-200 dark:placeholder-gray-400 border-0 flex-1"
           value={query}
           onChange={e => setQuery(e.target.value)}
           autoComplete="off"
@@ -47,7 +47,7 @@ const FileSearch = ({
           <div className="max-h-[20rem] overflow-y-auto border-t divide-y divide-gray-200 border-gray-200 dark:divide-gray-700 dark:border-gray-700">
             {hits.map(hit => (
               <button
-                className="block hover:bg-blue-100 dark:hover:bg-gray-700 py-3 px-5 transition focus:outline-none w-full text-left"
+                className="block hover:bg-blue-100 dark:hover:bg-gray-700 py-3 px-5 transition focus:outline-hidden w-full text-left"
                 key={hit.id}
                 onClick={() => onSelect(hit)}
               >
@@ -56,7 +56,7 @@ const FileSearch = ({
                   {hit.kind === 'module' ? 'Module' : 'Solution'})
                 </h3>
                 <p
-                  className={`text-gray-700 dark:text-gray-400 [&_*]:!text-sm [&_*]:!leading-4`}
+                  className={`text-gray-700 dark:text-gray-400 **:text-sm! **:leading-4!`}
                 >
                   <Highlight hit={hit} attribute="id" /> -{' '}
                   <Highlight hit={hit} attribute="path" />
@@ -64,7 +64,7 @@ const FileSearch = ({
               </button>
             ))}
             <button
-              className="block hover:bg-blue-100 dark:hover:bg-gray-700 py-3 px-5 transition focus:outline-none w-full text-left"
+              className="block hover:bg-blue-100 dark:hover:bg-gray-700 py-3 px-5 transition focus:outline-hidden w-full text-left"
               onClick={() => {
                 onSelect(undefined);
                 openAddFile();

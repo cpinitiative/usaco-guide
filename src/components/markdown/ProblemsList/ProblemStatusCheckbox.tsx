@@ -90,7 +90,7 @@ const ProgressDropdown = ({ onProgressSelected, currentProgress }) => {
   return (
     <ul
       tabIndex={-1}
-      className="rounded-md py-1 overflow-auto focus:outline-none text-sm leading-5 no-markdown"
+      className="rounded-md py-1 overflow-auto focus:outline-hidden text-sm leading-5 no-markdown"
     >
       {PROBLEM_PROGRESS_OPTIONS.map(progress => (
         <li

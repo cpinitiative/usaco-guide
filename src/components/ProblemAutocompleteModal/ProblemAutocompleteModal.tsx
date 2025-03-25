@@ -60,7 +60,7 @@ const ProblemAutocompleteModal = ({
               <button
                 type="button"
                 onClick={() => onClose()}
-                className="bg-white dark:bg-dark-surface rounded-md text-gray-400 dark:text-gray-500 hover:text-gray-500 dark:hover:text-gray-400 focus:outline-none"
+                className="bg-white dark:bg-dark-surface rounded-md text-gray-400 dark:text-gray-500 hover:text-gray-500 dark:hover:text-gray-400 focus:outline-hidden"
               >
                 <span className="sr-only">Close</span>
                 {/* Heroicon name: x */}

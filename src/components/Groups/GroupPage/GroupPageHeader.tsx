@@ -26,7 +26,7 @@ export default function GroupPageHeader(props: { group: GroupData }) {
   }, []);
 
   return (
-    <header className="py-6 sm:py-12 bg-gradient-to-r from-light-blue-800 to-cyan-600">
+    <header className="py-6 sm:py-12 bg-linear-to-r from-sky-800 to-cyan-600">
       <div className="max-w-7xl px-4 sm:px-8 mx-auto md:flex md:items-center md:justify-between">
         <div className="flex-1 min-w-0">
           <h1 className="text-white text-xl sm:text-3xl font-bold">
@@ -41,7 +41,7 @@ export default function GroupPageHeader(props: { group: GroupData }) {
             <div>
               <button
                 type="button"
-                className="inline-flex justify-center w-full rounded-md px-4 py-2 bg-light-blue-800 text-sm font-medium text-white hover:bg-light-blue-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-light-blue-600 focus:ring-black transition"
+                className="inline-flex justify-center w-full rounded-md px-4 py-2 bg-sky-800 text-sm font-medium text-white hover:bg-sky-900 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-offset-sky-600 focus:ring-black transition"
                 id="options-menu"
                 onClick={() => setIsActionsOpen(!isActionsOpen)}
               >
@@ -81,7 +81,7 @@ export default function GroupPageHeader(props: { group: GroupData }) {
                   <>
                     <button
                       type="button"
-                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
+                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-hidden focus:bg-gray-100 focus:text-gray-900"
                       onClick={() => {
                         const groupId = props.group?.id;
                         if (groupId) {
@@ -95,7 +95,7 @@ export default function GroupPageHeader(props: { group: GroupData }) {
                     </button>
                     <button
                       type="button"
-                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
+                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-hidden focus:bg-gray-100 focus:text-gray-900"
                       onClick={() => {
                         const groupId = props.group?.id;
                         if (groupId) {
@@ -109,19 +109,19 @@ export default function GroupPageHeader(props: { group: GroupData }) {
                     </button>
                     <Link
                       to="edit"
-                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
+                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-hidden focus:bg-gray-100 focus:text-gray-900"
                     >
                       Edit Group
                     </Link>
                     <Link
                       to="join-links"
-                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
+                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-hidden focus:bg-gray-100 focus:text-gray-900"
                     >
                       View Join Links
                     </Link>
                     <Link
                       to="members"
-                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
+                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-hidden focus:bg-gray-100 focus:text-gray-900"
                     >
                       View Members
                     </Link>
@@ -131,7 +131,7 @@ export default function GroupPageHeader(props: { group: GroupData }) {
                   isUserAdminOfGroup(props.group, firebaseUser.uid) && (
                     <button
                       type="button"
-                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
+                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-hidden focus:bg-gray-100 focus:text-gray-900"
                       onClick={() => {
                         setInStudentView(showAdminView);
                       }}
@@ -143,7 +143,7 @@ export default function GroupPageHeader(props: { group: GroupData }) {
                   )}
                 <button
                   type="button"
-                  className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
+                  className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-hidden focus:bg-gray-100 focus:text-gray-900"
                   onClick={() => {
                     const groupId = props.group?.id;
                     if (

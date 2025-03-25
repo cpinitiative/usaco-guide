@@ -11,14 +11,13 @@ export const GlowingRing = ({
         absolute
         -inset-1
         dark:-inset-1.5
-        bg-gradient-to-r
+        bg-linear-to-r
         from-blue-600
         to-purple-700
         rounded-lg
         blur
         opacity-30
         dark:opacity-50
-        -z-1
         transition
         duration-1000
         group-hover:opacity-50

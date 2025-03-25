@@ -30,18 +30,18 @@ import TableOfContentsSidebar from './TableOfContents/TableOfContentsSidebar';
 
 const ContentContainer = ({ children, tableOfContents }) => (
   <main
-    className="relative pt-6 lg:pt-2 focus:outline-none overflow-x-hidden"
+    className="relative pt-6 lg:pt-2 focus:outline-hidden overflow-x-hidden"
     tabIndex={0}
   >
     <div className="mx-auto">
       <div className="flex justify-center">
         {/* Placeholder for the sidebar */}
         <div
-          className="flex-shrink-0 hidden lg:block order-1"
+          className="shrink-0 hidden lg:block order-1"
           style={{ width: '20rem' }}
         />
         {tableOfContents.length > 1 && (
-          <div className="hidden 2xl:block ml-6 mr-6 w-64 mt-48 flex-shrink-0 order-3">
+          <div className="hidden 2xl:block ml-6 mr-6 w-64 mt-48 shrink-0 order-3">
             <TableOfContentsSidebar tableOfContents={tableOfContents} />
           </div>
         )}

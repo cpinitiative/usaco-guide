@@ -147,7 +147,7 @@ export default function QuizGeneratorModal(): JSX.Element {
                     <XIcon className={'h-4 w-4'} />
                   </button>
                 </div>
-                <div className={'flex-grow'}>
+                <div className={'grow'}>
                   <label htmlFor={`question-${idx + 1}`}>
                     Question {idx + 1}
                   </label>
@@ -183,7 +183,7 @@ export default function QuizGeneratorModal(): JSX.Element {
                                   )
                                 }
                                 className={
-                                  'flex-grow shadow-sm focus:ring-blue-500 focus:border-blue-500 block text-sm border-gray-300 rounded-md dark:bg-gray-900 dark:border-gray-700'
+                                  'grow shadow-sm focus:ring-blue-500 focus:border-blue-500 block text-sm border-gray-300 rounded-md dark:bg-gray-900 dark:border-gray-700'
                                 }
                                 placeholder={`Answer ${i + 1}`}
                               />
@@ -198,7 +198,7 @@ export default function QuizGeneratorModal(): JSX.Element {
                                   )
                                 }
                                 className={
-                                  'w-18 md:w-24 focus:ring-blue-500 focus:ring-2 rounded-md focus:outline-none'
+                                  'w-18 md:w-24 focus:ring-blue-500 focus:ring-2 rounded-md focus:outline-hidden'
                                 }
                               >
                                 {quiz[idx].answers[i].correct ? (

@@ -29,7 +29,7 @@ export default function ModuleFeedback({
       {/*{showSuccess && (*/}
       {/*<div className="rounded-md bg-green-50 dark:bg-green-800 p-4 mt-6">*/}
       {/*  <div className="flex">*/}
-      {/*    <div className="flex-shrink-0">*/}
+      {/*    <div className="shrink-0">*/}
       {/*      <svg*/}
       {/*        className="h-5 w-5 text-green-400"*/}
       {/*        viewBox="0 0 20 20"*/}
@@ -143,8 +143,8 @@ export default function ModuleFeedback({
       {/*          disabled={!submitEnabled}*/}
       {/*          className={`inline-flex items-center px-4 py-2 border border-transparent text-base leading-6 font-medium rounded-md text-white ${*/}
       {/*            submitEnabled*/}
-      {/*              ? 'bg-blue-600 dark:bg-blue-900 hover:bg-blue-500 dark:hover:bg-blue-700 focus:outline-none focus:border-blue-700 focus:shadow-outline-blue active:bg-blue-700'*/}
-      {/*              : 'bg-blue-400 dark:bg-blue-800 focus:outline-none cursor-default'*/}
+      {/*              ? 'bg-blue-600 dark:bg-blue-900 hover:bg-blue-500 dark:hover:bg-blue-700 focus:outline-hidden focus:border-blue-700 focus:shadow-outline-blue active:bg-blue-700'*/}
+      {/*              : 'bg-blue-400 dark:bg-blue-800 focus:outline-hidden cursor-default'*/}
       {/*          } transition ease-in-out duration-150`}*/}
       {/*        >*/}
       {/*          Share Feedback*/}
