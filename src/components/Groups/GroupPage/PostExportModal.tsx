@@ -129,6 +129,7 @@ export default function PostExportModal(props: {
 
   return (
     <Transition
+      as="div"
       show={props.showExportModal}
       enter="transition ease-out duration-100"
       enterFrom="transform opacity-0 scale-95"
@@ -156,7 +157,7 @@ export default function PostExportModal(props: {
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <Dialog.Overlay className="fixed inset-0 bg-gray-500/75 dark:bg-gray-900/75 transition-opacity" />
+            <div className="fixed inset-0 bg-gray-500/75 dark:bg-gray-900/75 transition-opacity" />
           </Transition.Child>
 
           {/* This element is to trick the browser into centering the modal contents. */}

@@ -19,6 +19,7 @@ const ProblemAutocompleteModal = ({
   return (
     <Transition
       show={isOpen}
+      as="div"
       className="fixed z-30 inset-0 h-full overflow-y-auto"
     >
       <form
@@ -26,6 +27,7 @@ const ProblemAutocompleteModal = ({
         onSubmit={e => e.preventDefault()}
       >
         <Transition.Child
+          as="div"
           className="fixed inset-0 transition-opacity"
           enter="ease-out duration-300"
           enterFrom="opacity-0"
@@ -44,6 +46,7 @@ const ProblemAutocompleteModal = ({
         </span>
 
         <Transition.Child
+          as="div"
           className="w-full inline-block align-bottom rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-3xl sm:w-full"
           enter="ease-out duration-300"
           enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
