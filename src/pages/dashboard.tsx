@@ -7,7 +7,6 @@ import {
 } from '../../content/ordering';
 import ActiveItems, { ActiveItem } from '../components/Dashboard/ActiveItems';
 import Activity from '../components/Dashboard/Activity';
-import Announcements from '../components/Dashboard/Announcements';
 import DailyStreak from '../components/Dashboard/DailyStreak';
 import Card from '../components/Dashboard/DashboardCard';
 import DashboardProgress from '../components/Dashboard/DashboardProgress';
@@ -28,16 +27,12 @@ import {
 } from '../context/UserDataContext/properties/userProgress';
 import { useFirebaseUser } from '../context/UserDataContext/UserDataContext';
 import {
-  AnnouncementInfo,
-  graphqlToAnnouncementInfo,
-} from '../models/announcement';
-import {
   useModulesProgressInfo,
   useProblemsProgressInfo,
 } from '../utils/getProgressInfo';
 
 export default function DashboardPage(props: PageProps) {
-  const { navigate, modules, announcements, problems } = props.data as any;
+  const { modules, problems } = props.data as any;
   const moduleIDToName = modules.edges.reduce((acc, cur) => {
     acc[cur.node.frontmatter.id] = cur.node.frontmatter.title;
     return acc;
@@ -152,12 +147,6 @@ export default function DashboardPage(props: PageProps) {
   }, [problemIDMap, lastViewedSection]);
   const allProblemsProgressInfo = useProblemsProgressInfo(problemStatisticsIDs);
 
-  const parsedAnnouncements: AnnouncementInfo[] = React.useMemo(() => {
-    return announcements.edges.map(node =>
-      graphqlToAnnouncementInfo(node.node)
-    );
-  }, []);
-
   const [finishedRendering, setFinishedRendering] = React.useState(false);
   React.useEffect(() => {
     setFinishedRendering(true);
@@ -201,29 +190,6 @@ export default function DashboardPage(props: PageProps) {
                 lastViewedModuleLabel={moduleIDToName[lastViewedModuleID]}
               />
             </div>
-          </div>
-          <header id="announcements">
-            <div className="max-w-7xl mx-auto px-4 sm:px-8 lg:px-10">
-              <h1 className="text-3xl font-bold leading-tight text-gray-900 dark:text-dark-high-emphasis">
-                Announcements
-              </h1>
-              <Link
-                to="/announcements"
-                className="hover:underline transition-all duration-300"
-              >
-                View all &rarr;
-              </Link>
-            </div>
-          </header>
-          <div className="max-w-7xl mx-auto mb-8">
-            {/* Only show announcements in the current year by passing in a filter function */}
-            <Announcements
-              filterFn={announcement =>
-                parseInt(announcement.date.split(', ')[1]) ===
-                new Date().getFullYear()
-              }
-              announcements={parsedAnnouncements}
-            />
           </div>
           <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 lg:grid lg:grid-cols-2 lg:gap-8">
             {activeProblems.length > 0 && (
@@ -318,21 +284,6 @@ export const pageQuery = graphql`
               id
             }
           }
-        }
-      }
-    }
-    announcements: allXdm(
-      filter: { fileAbsolutePath: { regex: "/announcements/" } }
-      sort: { order: DESC, fields: frontmatter___order }
-    ) {
-      edges {
-        node {
-          frontmatter {
-            title
-            id
-            date
-          }
-          body
         }
       }
     }
