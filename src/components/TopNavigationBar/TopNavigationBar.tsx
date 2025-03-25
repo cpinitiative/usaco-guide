@@ -187,14 +187,14 @@ export default function TopNavigationBar({
                   <PopoverButton
                     className={classNames(
                       'text-gray-500 hover:border-gray-300 focus:border-gray-300 dark:hover:border-gray-500 dark:focus:border-gray-500',
-                      'group inline-flex items-center h-full border-b-2 border-transparent space-x-2 text-base leading-6 font-medium hover:text-gray-900 focus:outline-hidden focus:text-gray-900  transition ease-in-out duration-150 dark:text-dark-high-emphasis'
+                      'group inline-flex items-center h-full pt-0.5 border-b-2 border-transparent space-x-2 text-base leading-6 font-medium hover:text-gray-900 focus:outline-hidden focus:text-gray-900  transition ease-in-out duration-150 dark:text-dark-high-emphasis'
                     )}
                   >
-                    <span className="mt-0.5">Resources</span>
+                    <span>Resources</span>
                     <ChevronDownIcon
                       className={classNames(
                         'text-gray-400',
-                        'mt-0.5 h-5 w-5 group-hover:text-gray-500 group-focus:text-gray-500 dark:text-dark-med-emphasis dark:group-hover:text-dark-med-emphasis dark:group-focus:text-dark-med-emphasis transition ease-in-out duration-150'
+                        'h-5 w-5 group-hover:text-gray-500 group-focus:text-gray-500 dark:text-dark-med-emphasis dark:group-hover:text-dark-med-emphasis dark:group-focus:text-dark-med-emphasis transition ease-in-out duration-150'
                       )}
                       aria-hidden="true"
                     />
