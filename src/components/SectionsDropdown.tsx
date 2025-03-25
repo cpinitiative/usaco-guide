@@ -1,9 +1,9 @@
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/solid';
+import clsx from 'clsx';
 import { Link } from 'gatsby';
 import * as React from 'react';
 import { SECTIONS, SECTION_LABELS } from '../../content/ordering';
-import clsx from 'clsx';
 
 export default function SectionsDropdown({
   currentSection = null as string | null,

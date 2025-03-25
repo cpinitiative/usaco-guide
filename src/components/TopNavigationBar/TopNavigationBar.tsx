@@ -1,9 +1,4 @@
-import {
-  Popover,
-  PopoverButton,
-  PopoverPanel,
-  Transition,
-} from '@headlessui/react';
+import { Popover, PopoverButton, PopoverPanel } from '@headlessui/react';
 import {
   AcademicCapIcon,
   BookmarkIcon,
@@ -24,7 +19,7 @@ import {
 import classNames from 'classnames';
 import { Link } from 'gatsby';
 import * as React from 'react';
-import { Fragment, useState } from 'react';
+import { useState } from 'react';
 import { useSignIn } from '../../context/SignInContext';
 import {
   useFirebaseUser,
