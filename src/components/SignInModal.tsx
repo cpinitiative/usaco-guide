@@ -14,7 +14,7 @@ import {
   signInWithCredential,
   signInWithPopup,
 } from 'firebase/auth';
-import React, { Fragment } from 'react';
+import React from 'react';
 import { useForceFirebaseUserRerender } from '../context/UserDataContext/UserDataContext';
 import { useFirebaseApp } from '../hooks/useFirebase';
 import { LoadingSpinner } from './elements/LoadingSpinner';
