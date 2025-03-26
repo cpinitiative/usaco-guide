@@ -508,7 +508,51 @@ Ben's code, which is a lot more concise and takes advantage of some nice similar
 <CPPSection>
 
 ```cpp
+#include <iostream>
+#include <vector>
+#include <algorithm>
 
+using std::vector;
+using std::endl;
+
+int main() {
+    int n;
+	std::string s;
+    std::cin >> n >> s;
+
+    if (std::count(s.begin(), s.end(), 'F') == n) {
+        s[0] = 'E';
+    }
+
+    vector<int> positions;
+    for (int i = 0; i < n; i++) {
+        if (s[i] != 'F') {
+            positions.push_back(i);
+        }
+    }
+
+    int ones = positions[0] + n - 1 - positions.back();
+
+    int mn = 0;
+	int mx = 0;
+
+    for (int i = 0; i < positions.size() - 1; ++i) {
+        int a = positions[i];
+		int b = positions[i + 1];
+        mn += ((b - a) & 1) ^ (s[a] != s[b]);
+        mx += b - a - (s[a] != s[b]);
+    }
+
+    vector<int> ans;
+    for (int i = mn; i <= ones + mx; i += (ones == 0 ? 2 : 1)) {
+        ans.push_back(i);
+    }
+
+    std::cout << ans.size() << endl;
+    for (int i : ans) {
+        std::cout << i << endl;
+    }
+}
 ```
 
 </CPPSection>
