@@ -63,13 +63,6 @@ const plugins = [
       name: `solutions`,
     },
   },
-  {
-    resolve: `gatsby-source-filesystem`,
-    options: {
-      path: `${__dirname}/announcements`,
-      name: `announcements`,
-    },
-  },
   `gatsby-plugin-image`,
   `gatsby-plugin-sharp`,
   {

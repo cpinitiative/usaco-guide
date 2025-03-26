@@ -37,7 +37,6 @@ export type UserData = {
     season: string;
   };
   lang: Language;
-  lastReadAnnouncement: string;
   lastViewedModule: string;
   lastVisitDate: number; // timestamp
   numPageviews: number;
@@ -91,7 +90,6 @@ export const assignDefaultsToUserData = (data: object): UserData => {
       season: '',
     },
     lang: 'cpp',
-    lastReadAnnouncement: '',
     lastViewedModule: '',
     lastVisitDate: new Date().getTime(),
     numPageviews: 0,
