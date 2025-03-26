@@ -66,16 +66,16 @@ export const trueFilePathAtom = atom(get => {
   return activeFile === null
     ? 'NONE'
     : get(tabAtom) === 'content'
-    ? activeFile.path
-    : activeFile.path.replace(/\.mdx$/, '.problems.json');
+      ? activeFile.path
+      : activeFile.path.replace(/\.mdx$/, '.problems.json');
 });
 export const trueFileAtom = atom(get => {
   const activeFile = get(activeFileAtom);
   return activeFile === null
     ? 'Open a file to begin'
     : get(tabAtom) === 'content'
-    ? activeFile.markdown
-    : activeFile.problems;
+      ? activeFile.markdown
+      : activeFile.problems;
 });
 export const githubInfoAtom = atom(
   async get => (await get(octokitAtom)?.request('GET /user'))?.data

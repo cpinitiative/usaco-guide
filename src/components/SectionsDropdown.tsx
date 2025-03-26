@@ -16,10 +16,10 @@ export default function SectionsDropdown({
         <div className="relative h-full">
           <MenuButton
             className={clsx(
-              'group inline-flex items-center h-full space-x-2 text-base leading-6 font-medium hover:text-gray-900 focus:outline-hidden focus:text-gray-900 transition ease-in-out duration-160 dark:text-dark-high-emphasis',
+              'group dark:text-dark-high-emphasis inline-flex h-full items-center space-x-2 text-base leading-6 font-medium transition duration-160 ease-in-out hover:text-gray-900 focus:text-gray-900 focus:outline-hidden',
               open || sidebarNav ? 'text-gray-900' : 'text-gray-500',
               !sidebarNav &&
-                'pt-0.5 border-b-2 border-transparent hover:border-gray-300 focus:border-gray-300 dark:hover:border-gray-500 dark:focus:border-gray-500'
+                'border-b-2 border-transparent pt-0.5 hover:border-gray-300 focus:border-gray-300 dark:hover:border-gray-500 dark:focus:border-gray-500'
             )}
           >
             <span>
@@ -28,16 +28,16 @@ export default function SectionsDropdown({
             <ChevronDownIcon
               className={`${
                 open ? 'text-gray-500' : 'text-gray-400'
-              } h-5 w-5 group-hover:text-gray-500 group-focus:text-gray-500 transition ease-in-out duration-150 ${'dark:text-dark-med-emphasis dark:group-hover:text-dark-med-emphasis dark:group-focus:text-dark-med-emphasis'}`}
+              } h-5 w-5 transition duration-150 ease-in-out group-hover:text-gray-500 group-focus:text-gray-500 ${'dark:text-dark-med-emphasis dark:group-hover:text-dark-med-emphasis dark:group-focus:text-dark-med-emphasis'}`}
               aria-hidden="true"
             />
           </MenuButton>
           <MenuItems
             transition
             anchor="top start"
-            className={`absolute z-20 left-0 w-56 -ml-4 rounded-lg bg-white dark:bg-gray-800 ring-1 ring-black/5 shadow-lg focus:outline-hidden ${
+            className={`absolute left-0 z-20 -ml-4 w-56 rounded-lg bg-white shadow-lg ring-1 ring-black/5 focus:outline-hidden dark:bg-gray-800 ${
               sidebarNav ? 'mt-2' : '-mt-2'
-            } transition data-[closed]:translate-y-1 data-[closed]:opacity-0 data-[enter]:duration-200 data-[leave]:duration-150 data-[enter]:ease-out data-[leave]:ease-in`}
+            } transition data-[closed]:translate-y-1 data-[closed]:opacity-0 data-[enter]:duration-200 data-[enter]:ease-out data-[leave]:duration-150 data-[leave]:ease-in`}
           >
             <div className="py-1">
               {SECTIONS.map(section => {
@@ -47,7 +47,7 @@ export default function SectionsDropdown({
                   <>
                     {SECTION_LABELS[section]}
                     {section === currentSection && (
-                      <span className="text-gray-300 dark:text-dark-med-emphasis absolute inset-y-0 right-0 flex items-center pr-4">
+                      <span className="dark:text-dark-med-emphasis absolute inset-y-0 right-0 flex items-center pr-4 text-gray-300">
                         <svg
                           className="h-5 w-5"
                           viewBox="0 0 20 20"

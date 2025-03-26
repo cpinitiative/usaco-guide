@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import {
-  UseRefinementListProps,
   useInstantSearch,
   useRefinementList,
+  UseRefinementListProps,
 } from 'react-instantsearch';
 import Select from '../Select';
 

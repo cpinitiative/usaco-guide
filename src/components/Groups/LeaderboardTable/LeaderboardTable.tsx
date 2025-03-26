@@ -29,26 +29,26 @@ export const LeaderboardTable = (
 
   return (
     <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-      <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-        <div className="overflow-hidden shadow-sm border-b border-gray-200 dark:border-transparent sm:rounded-lg">
+      <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+        <div className="overflow-hidden border-b border-gray-200 shadow-sm sm:rounded-lg dark:border-transparent">
           <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
             <thead className="bg-gray-50 dark:bg-gray-800">
               <tr>
                 <th
                   scope="col"
-                  className="px-6 py-3 text-center border-r border-gray-200 dark:border-gray-700 text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider w-16"
+                  className="w-16 border-r border-gray-200 px-6 py-3 text-center text-xs font-medium tracking-wider text-gray-500 uppercase dark:border-gray-700 dark:text-gray-300"
                 >
                   #
                 </th>
                 <th
                   scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
+                  className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase dark:text-gray-300"
                 >
                   Name
                 </th>
                 <th
                   scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
+                  className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase dark:text-gray-300"
                 >
                   Points
                 </th>
@@ -60,7 +60,7 @@ export const LeaderboardTable = (
                     scope="col"
                     className={
                       problemCellStyles +
-                      ' py-3 text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider'
+                      ' py-3 text-xs font-medium tracking-wider text-gray-500 uppercase dark:text-gray-300'
                     }
                     key={id}
                   >
@@ -79,13 +79,13 @@ export const LeaderboardTable = (
                   }
                   key={person.id}
                 >
-                  <td className="text-center border-r border-gray-200 dark:border-gray-700 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100 w-16">
+                  <td className="w-16 border-r border-gray-200 py-4 text-center text-sm font-medium whitespace-nowrap text-gray-900 dark:border-gray-700 dark:text-gray-100">
                     {idx + 1}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100 max-w-[10rem] text-ellipsis overflow-hidden">
+                  <td className="max-w-[10rem] overflow-hidden px-6 py-4 text-sm font-medium text-ellipsis whitespace-nowrap text-gray-900 dark:text-gray-100">
                     {person.name}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">
+                  <td className="px-6 py-4 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-gray-100">
                     {Math.round(person.points)}
                   </td>
                   {/*<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">*/}
@@ -95,7 +95,7 @@ export const LeaderboardTable = (
                     <td
                       className={
                         problemCellStyles +
-                        ' py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100 font-medium' +
+                        ' py-4 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-gray-100' +
                         (payload
                           ? ' cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700'
                           : '')

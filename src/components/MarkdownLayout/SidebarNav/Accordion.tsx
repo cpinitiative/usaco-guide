@@ -14,15 +14,15 @@ export default function Accordion({ label, isActive, children }) {
   return (
     <div
       className={clsx(
-        'border-b border-gray-200 dark:border-gray-800 last:border-b-0',
+        'border-b border-gray-200 last:border-b-0 dark:border-gray-800',
         isActive && 'bg-[#f7faff] dark:bg-[#16191f]'
       )}
     >
       <div
-        className="font-semibold cursor-pointer relative flex items-center px-4 py-3 text-sm leading-5 transition ease-in-out duration-150  hover:bg-blue-50 dark:hover:bg-gray-900"
+        className="relative flex cursor-pointer items-center px-4 py-3 text-sm leading-5 font-semibold transition duration-150 ease-in-out hover:bg-blue-50 dark:hover:bg-gray-900"
         onClick={() => setExpanded(!expanded)}
       >
-        <span className="flex-1 text-gray-800 dark:text-dark-high-emphasis">
+        <span className="dark:text-dark-high-emphasis flex-1 text-gray-800">
           {label}
         </span>
         <svg

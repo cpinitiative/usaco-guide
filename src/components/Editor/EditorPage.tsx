@@ -89,12 +89,12 @@ export default function EditorPage(props: PageProps): JSX.Element {
       <Layout>
         <SEO title="Editor" />
 
-        <div className="h-screen flex flex-col min-w-[768px]">
+        <div className="flex h-screen min-w-[768px] flex-col">
           <EditorTopNav />
 
           {typeof window !== 'undefined' && (
             <StyledSplit
-              className="h-full relative flex-1 overflow-hidden"
+              className="relative h-full flex-1 overflow-hidden"
               onDrag={() => {
                 if (editor.monaco !== null) editor.monaco.layout();
               }}
@@ -111,7 +111,7 @@ export default function EditorPage(props: PageProps): JSX.Element {
                 <MainEditorInterface className="h-full w-0 flex-1" />
               </div>
               <div className="flex flex-col">
-                <div className="overflow-y-auto relative flex-1">
+                <div className="relative flex-1 overflow-y-auto">
                   <EditorOutput />
                 </div>
               </div>

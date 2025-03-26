@@ -16,7 +16,7 @@ export const UserAvatarMenu: React.FC<UserAvatarMenuProps> = props => {
       {({ open }) => (
         <>
           <div>
-            <Menu.Button className="flex text-sm border-2 border-transparent rounded-full focus:outline-hidden dark:focus:border-white focus:border-blue-500 transition">
+            <Menu.Button className="flex rounded-full border-2 border-transparent text-sm transition focus:border-blue-500 focus:outline-hidden dark:focus:border-white">
               <span className="sr-only">Open user menu</span>
               <img
                 className="h-8 w-8 rounded-full"
@@ -38,7 +38,7 @@ export const UserAvatarMenu: React.FC<UserAvatarMenuProps> = props => {
           >
             <Menu.Items
               static
-              className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white dark:bg-gray-800 ring-1 ring-black/5 focus:outline-hidden"
+              className="absolute right-0 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-hidden dark:bg-gray-800"
             >
               <div className="py-1">
                 <Menu.Item>
@@ -47,7 +47,7 @@ export const UserAvatarMenu: React.FC<UserAvatarMenuProps> = props => {
                       to="/settings"
                       className={classNames(
                         active && 'bg-gray-100 dark:bg-gray-700',
-                        'block w-full text-left px-4 py-2 text-sm leading-5 text-gray-700 dark:text-gray-100 focus:outline-hidden'
+                        'block w-full px-4 py-2 text-left text-sm leading-5 text-gray-700 focus:outline-hidden dark:text-gray-100'
                       )}
                     >
                       Settings
@@ -62,7 +62,7 @@ export const UserAvatarMenu: React.FC<UserAvatarMenuProps> = props => {
                       }}
                       className={classNames(
                         active && 'bg-gray-100 dark:bg-gray-700',
-                        'block w-full text-left px-4 py-2 text-sm leading-5 text-gray-700 dark:text-gray-100 focus:outline-hidden'
+                        'block w-full px-4 py-2 text-left text-sm leading-5 text-gray-700 focus:outline-hidden dark:text-gray-100'
                       )}
                       role="menuitem"
                     >

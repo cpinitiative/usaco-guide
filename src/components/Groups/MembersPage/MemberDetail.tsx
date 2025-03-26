@@ -18,7 +18,7 @@ export default function MemberDetail({ member }: { member: MemberInfo }) {
 
   if (!member) {
     return (
-      <p className="mt-8 text-xl text-center">
+      <p className="mt-8 text-center text-xl">
         This member has been removed from the group.
       </p>
     );
@@ -31,7 +31,7 @@ export default function MemberDetail({ member }: { member: MemberInfo }) {
   return (
     <article>
       {/* Profile header */}
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 md:flex md:items-center md:justify-between md:space-x-5 mt-6">
+      <div className="mx-auto mt-6 max-w-5xl px-4 sm:px-6 md:flex md:items-center md:justify-between md:space-x-5 lg:px-8">
         <div className="flex items-start space-x-5">
           <div className="shrink-0">
             <div className="relative">
@@ -41,7 +41,7 @@ export default function MemberDetail({ member }: { member: MemberInfo }) {
                 alt={member.displayName}
               />
               <span
-                className="absolute inset-0 shadow-inner rounded-full"
+                className="absolute inset-0 rounded-full shadow-inner"
                 aria-hidden="true"
               ></span>
             </div>
@@ -81,9 +81,9 @@ export default function MemberDetail({ member }: { member: MemberInfo }) {
       {/*  </div>*/}
       {/*</div>*/}
 
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 my-6">
+      <div className="mx-auto my-6 max-w-5xl px-4 sm:px-6 lg:px-8">
         {member.uid !== userId && (
-          <div className="space-x-4 mt-8">
+          <div className="mt-8 space-x-4">
             <button
               type="button"
               className="btn"
@@ -162,7 +162,7 @@ export default function MemberDetail({ member }: { member: MemberInfo }) {
             </button>
           </div>
         )}
-        <hr className="dark:border-gray-700 my-6" />
+        <hr className="my-6 dark:border-gray-700" />
         <p>Future feature: View user progress on all problems/assignments!</p>
       </div>
     </article>

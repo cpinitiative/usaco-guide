@@ -7,16 +7,16 @@ import { SidebarNav } from './SidebarNav/SidebarNav';
 export default function DesktopSidebar() {
   return (
     <div
-      className="hidden lg:block fixed z-10 top-0 left-0 bottom-0"
+      className="fixed top-0 bottom-0 left-0 z-10 hidden lg:block"
       style={{ width: '20rem' }}
     >
       <div
-        className="border-r border-gray-200 bg-white dark:bg-dark-surface dark:border-gray-800 h-screen flex flex-col"
+        className="dark:bg-dark-surface flex h-screen flex-col border-r border-gray-200 bg-white dark:border-gray-800"
         style={{ width: '20rem' }}
       >
-        <div className="grow h-0 flex flex-col pt-5">
+        <div className="flex h-0 grow flex-col pt-5">
           <Link
-            className="flex items-center shrink-0 px-4 pb-2"
+            className="flex shrink-0 items-center px-4 pb-2"
             to="/dashboard/"
           >
             <Logo />

@@ -20,7 +20,7 @@ export default function ResourcesListItem({
   const id = `resource-${encodeURIComponent(resource.url!)}`;
 
   const statusCol = (
-    <ListTableCell className="pl-4 sm:pl-6 whitespace-nowrap font-medium">
+    <ListTableCell className="pl-4 font-medium whitespace-nowrap sm:pl-6">
       <div
         style={{ height: '1.25rem' }}
         className="flex items-center justify-center"
@@ -30,7 +30,7 @@ export default function ResourcesListItem({
     </ListTableCell>
   );
   const sourceCol = (
-    <ListTableCell className="whitespace-nowrap text-gray-500 dark:text-dark-med-emphasis">
+    <ListTableCell className="dark:text-dark-med-emphasis whitespace-nowrap text-gray-500">
       {resource.source && (
         <>
           {resource.sourceDescription ? (
@@ -45,7 +45,7 @@ export default function ResourcesListItem({
     </ListTableCell>
   );
   const urlCol = (
-    <ListTableCell className="whitespace-nowrap font-medium text-gray-900 dark:text-dark-high-emphasis">
+    <ListTableCell className="dark:text-dark-high-emphasis font-medium whitespace-nowrap text-gray-900">
       <div className="flex items-center">
         {resource.starred && (
           <Tooltip content="You should read all starred resources (unless you already know it) before proceeding!">
@@ -70,7 +70,7 @@ export default function ResourcesListItem({
     </ListTableCell>
   );
   const childrenCol = (
-    <ListTableCell className="w-full text-gray-500 dark:text-dark-med-emphasis no-y-margin">
+    <ListTableCell className="dark:text-dark-med-emphasis no-y-margin w-full text-gray-500">
       {resource.children}
     </ListTableCell>
   );
@@ -87,7 +87,7 @@ export default function ResourcesListItem({
             <div>
               <button
                 type="button"
-                className="focus:outline-hidden block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900"
+                className="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-hidden dark:text-gray-300 dark:hover:bg-gray-800"
                 onClick={e => {
                   e.preventDefault();
                   setCopied(true);
@@ -114,10 +114,10 @@ export default function ResourcesListItem({
         onHidden={() => setCopied(false)}
         appendTo={() => document.body}
       >
-        <button className="focus:outline-hidden w-8 h-8 inline-flex items-center justify-center text-gray-400 rounded-full bg-transparent hover:text-gray-500 dark:hover:text-gray-300">
+        <button className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-transparent text-gray-400 hover:text-gray-500 focus:outline-hidden dark:hover:text-gray-300">
           {/* Heroicon name: solid/dots-vertical */}
           <svg
-            className="w-5 h-5"
+            className="h-5 w-5"
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 20 20"
             fill="currentColor"
@@ -136,7 +136,7 @@ export default function ResourcesListItem({
       {sourceCol}
       {urlCol}
       {childrenCol}
-      <td className="text-center pr-2 md:pr-3">{more}</td>
+      <td className="pr-2 text-center md:pr-3">{more}</td>
     </ListTableRow>
   );
 }

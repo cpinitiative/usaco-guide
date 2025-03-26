@@ -12,7 +12,7 @@ export default function SuggestProblemRow({ listName }: { listName: string }) {
     <tr>
       <td colSpan={10}>
         <button
-          className="w-full text-center text-sm uppercase font-medium py-2 text-gray-600 hover:text-blue-700 dark:text-gray-300 dark:hover:text-blue-200 hover:underline"
+          className="w-full py-2 text-center text-sm font-medium text-gray-600 uppercase hover:text-blue-700 hover:underline dark:text-gray-300 dark:hover:text-blue-200"
           onClick={() => context.openProblemSuggestionModal(listName)}
         >
           + {inEditor ? 'Add a Problem' : 'Suggest a Problem'}

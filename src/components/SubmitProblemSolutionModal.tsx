@@ -68,7 +68,7 @@ export default function SubmitProblemSolutionModal({
         <div>
           <p className="mb-3 text-sm text-gray-500 dark:text-gray-400">
             Please keep these in mind when submitting a solution.
-            <ol className="list-decimal ml-5">
+            <ol className="ml-5 list-decimal">
               <li>
                 Especially if sharing your code, consider cleaning it up and{' '}
                 <b> adding solution notes</b> as a comment at the top.
@@ -86,7 +86,7 @@ export default function SubmitProblemSolutionModal({
             onChange={x => setCodeLang(x)}
           />
 
-          <div className="rounded-md shadow-sm mt-3">
+          <div className="mt-3 rounded-md shadow-sm">
             <TabIndentableTextarea
               rows={10}
               className="textarea font-mono"
@@ -97,7 +97,7 @@ export default function SubmitProblemSolutionModal({
         </div>
       </div>
       <div className="flex items-center justify-between">
-        <span className="grow flex flex-col" id="toggleLabel">
+        <span className="flex grow flex-col" id="toggleLabel">
           <span className="leading-5 font-medium text-gray-900 dark:text-gray-100">
             Share Solution Code
           </span>
@@ -111,7 +111,7 @@ export default function SubmitProblemSolutionModal({
           tabIndex={0}
           onClick={() => setIsCodePublic(!isCodePublic)}
           className={className(
-            'relative inline-flex shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-hidden focus:shadow-outline',
+            'focus:shadow-outline relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-hidden',
             isCodePublic ? 'bg-blue-600' : 'bg-gray-200'
           )}
         >
@@ -119,15 +119,15 @@ export default function SubmitProblemSolutionModal({
             aria-hidden="true"
             className={className(
               isCodePublic ? 'translate-x-5' : 'translate-x-0',
-              'relative inline-block h-5 w-5 rounded-full bg-white shadow-sm transform transition ease-in-out duration-200'
+              'relative inline-block h-5 w-5 transform rounded-full bg-white shadow-sm transition duration-200 ease-in-out'
             )}
           >
             <span
               className={className(
                 isCodePublic
-                  ? 'opacity-0 ease-out duration-100'
-                  : 'opacity-100 ease-in duration-200',
-                'absolute inset-0 h-full w-full flex items-center justify-center transition-opacity'
+                  ? 'opacity-0 duration-100 ease-out'
+                  : 'opacity-100 duration-200 ease-in',
+                'absolute inset-0 flex h-full w-full items-center justify-center transition-opacity'
               )}
             >
               <svg
@@ -147,9 +147,9 @@ export default function SubmitProblemSolutionModal({
             <span
               className={className(
                 isCodePublic
-                  ? 'opacity-100 ease-in duration-200'
-                  : 'opacity-0 ease-out duration-100',
-                'absolute inset-0 h-full w-full flex items-center justify-center transition-opacity'
+                  ? 'opacity-100 duration-200 ease-in'
+                  : 'opacity-0 duration-100 ease-out',
+                'absolute inset-0 flex h-full w-full items-center justify-center transition-opacity'
               )}
             >
               <svg
@@ -167,7 +167,7 @@ export default function SubmitProblemSolutionModal({
   );
 
   const successMessage = (
-    <div className="rounded-md bg-green-50 dark:bg-green-800 p-4">
+    <div className="rounded-md bg-green-50 p-4 dark:bg-green-800">
       <div className="flex">
         <div className="shrink-0">
           <svg
@@ -183,10 +183,10 @@ export default function SubmitProblemSolutionModal({
           </svg>
         </div>
         <div className="ml-3">
-          <h3 className="text-sm leading-5 font-medium text-green-800 dark:text-dark-high-emphasis">
+          <h3 className="dark:text-dark-high-emphasis text-sm leading-5 font-medium text-green-800">
             Solution Submitted!
           </h3>
-          <div className="mt-2 text-sm leading-5 text-green-700 dark:text-dark-high-emphasis">
+          <div className="dark:text-dark-high-emphasis mt-2 text-sm leading-5 text-green-700">
             <p>Thanks for helping to improve the USACO Guide.</p>
           </div>
         </div>
@@ -198,10 +198,10 @@ export default function SubmitProblemSolutionModal({
     <Transition
       show={isOpen}
       as="div"
-      className="fixed z-30 inset-0 h-full overflow-y-auto"
+      className="fixed inset-0 z-30 h-full overflow-y-auto"
     >
       <form
-        className="flex items-end justify-center min-h-full pt-4 px-4 pb-12 text-center sm:block"
+        className="flex min-h-full items-end justify-center px-4 pt-4 pb-12 text-center sm:block"
         onSubmit={handleSubmit}
       >
         <Transition.Child
@@ -214,10 +214,10 @@ export default function SubmitProblemSolutionModal({
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="absolute inset-0 bg-gray-500 dark:bg-gray-900 opacity-75" />
+          <div className="absolute inset-0 bg-gray-500 opacity-75 dark:bg-gray-900" />
         </Transition.Child>
         <span
-          className="hidden sm:inline-block sm:align-middle sm:h-screen"
+          className="hidden sm:inline-block sm:h-screen sm:align-middle"
           aria-hidden="true"
         >
           &#8203;
@@ -225,7 +225,7 @@ export default function SubmitProblemSolutionModal({
 
         <Transition.Child
           as="div"
-          className="w-full inline-block align-bottom rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full"
+          className="inline-block w-full transform overflow-hidden rounded-lg text-left align-bottom shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-4xl sm:align-middle"
           enter="ease-out duration-300"
           enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
           enterTo="opacity-100 translate-y-0 sm:scale-100"
@@ -236,12 +236,12 @@ export default function SubmitProblemSolutionModal({
           aria-modal="true"
           aria-labelledby="modal-headline"
         >
-          <div className="bg-white dark:bg-dark-surface px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-            <div className="hidden sm:block absolute top-0 right-0 pt-4 pr-4">
+          <div className="dark:bg-dark-surface bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+            <div className="absolute top-0 right-0 hidden pt-4 pr-4 sm:block">
               <button
                 type="button"
                 onClick={() => onClose()}
-                className="bg-white dark:bg-dark-surface rounded-md text-gray-400 dark:text-gray-500 hover:text-gray-500 dark:hover:text-gray-400 focus:outline-hidden"
+                className="dark:bg-dark-surface rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-hidden dark:text-gray-500 dark:hover:text-gray-400"
               >
                 <span className="sr-only">Close</span>
                 {/* Heroicon name: x */}
@@ -276,13 +276,13 @@ export default function SubmitProblemSolutionModal({
               {showSuccess ? successMessage : solutionForm}
             </div>
           </div>
-          <div className="bg-gray-50 dark:bg-gray-900 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+          <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6 dark:bg-gray-900">
             {showSuccess ? (
               <span className="flex w-full rounded-md shadow-sm sm:ml-3 sm:w-auto">
                 <button
                   type="button"
                   onClick={() => onClose()}
-                  className="inline-flex justify-center w-full rounded-md border border-transparent px-4 py-2 bg-blue-600 text-base leading-6 font-medium text-white shadow-sm hover:bg-blue-500 focus:outline-hidden focus:border-blue-700 focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5"
+                  className="focus:shadow-outline-blue inline-flex w-full justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-base leading-6 font-medium text-white shadow-sm transition duration-150 ease-in-out hover:bg-blue-500 focus:border-blue-700 focus:outline-hidden sm:text-sm sm:leading-5"
                 >
                   Done
                 </button>
@@ -292,7 +292,7 @@ export default function SubmitProblemSolutionModal({
                 <span className="flex w-full rounded-md shadow-sm sm:ml-3 sm:w-auto">
                   <button
                     type="submit"
-                    className="inline-flex justify-center w-full rounded-md border border-transparent px-4 py-2 bg-blue-600 text-base leading-6 font-medium text-white shadow-sm hover:bg-blue-500 focus:outline-hidden focus:border-blue-700 focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5"
+                    className="focus:shadow-outline-blue inline-flex w-full justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-base leading-6 font-medium text-white shadow-sm transition duration-150 ease-in-out hover:bg-blue-500 focus:border-blue-700 focus:outline-hidden sm:text-sm sm:leading-5"
                     disabled={loading}
                   >
                     {loading ? 'Submitting...' : 'Submit Solution'}
@@ -301,7 +301,7 @@ export default function SubmitProblemSolutionModal({
                 <span className="mt-3 flex w-full rounded-md shadow-sm sm:mt-0 sm:w-auto">
                   <button
                     type="button"
-                    className="inline-flex justify-center w-full rounded-md border border-gray-300 dark:border-gray-600 px-4 py-2 bg-white dark:bg-gray-800 text-base leading-6 font-medium text-gray-700 dark:text-gray-200 shadow-sm hover:text-gray-500 focus:outline-hidden focus:border-blue-300 focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5"
+                    className="focus:shadow-outline-blue inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-base leading-6 font-medium text-gray-700 shadow-sm transition duration-150 ease-in-out hover:text-gray-500 focus:border-blue-300 focus:outline-hidden sm:text-sm sm:leading-5 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200"
                     onClick={() => onClose()}
                     disabled={loading}
                   >

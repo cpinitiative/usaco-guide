@@ -23,16 +23,16 @@ export default function AddFileModal(props) {
   const createSol = useSetAtom(createNewInternalSolutionFileAtom);
   return (
     <Modal {...props}>
-      <Dialog.Panel className="bg-white dark:bg-black w-full max-w-xl dark:text-white p-5 rounded-lg shadow-lg flex flex-col items-start">
+      <Dialog.Panel className="flex w-full max-w-xl flex-col items-start rounded-lg bg-white p-5 shadow-lg dark:bg-black dark:text-white">
         <h3 className="text-lg font-bold">Enter Problem URL</h3>
         <input
           type="url"
-          className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md dark:bg-gray-900 dark:border-gray-700"
+          className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm dark:border-gray-700 dark:bg-gray-900"
           placeholder="e.g. https://codeforces.com/contest/1920/problem/C"
           onChange={e => setFileURL(e.target.value)}
         />
         <p className="mt-2">Problem Division</p>
-        <div className="mt-2 relative w-full dark:bg-black rounded-md shadow-sm">
+        <div className="relative mt-2 w-full rounded-md shadow-sm dark:bg-black">
           <Select
             options={[
               'General',

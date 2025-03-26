@@ -9,13 +9,13 @@ const SidebarBottomButtons = () => {
   const { setIsMobileNavOpen } = useMarkdownLayout();
   return (
     <>
-      <div className="shrink-0 border-t border-gray-200 dark:border-gray-800 flex">
+      <div className="flex shrink-0 border-t border-gray-200 dark:border-gray-800">
         <Link
-          className="group flex-1 flex items-center p-4 text-sm leading-5 font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 dark:text-dark-med-emphasis dark:hover:text-dark-high-emphasis dark:focus:text-dark-high-emphasis dark:hover:bg-gray-900 dark:focus:bg-gray-900 focus:outline-hidden focus:bg-gray-100 transition ease-in-out duration-150"
+          className="group dark:text-dark-med-emphasis dark:hover:text-dark-high-emphasis dark:focus:text-dark-high-emphasis flex flex-1 items-center p-4 text-sm leading-5 font-medium text-gray-600 transition duration-150 ease-in-out hover:bg-gray-50 hover:text-gray-900 focus:bg-gray-100 focus:outline-hidden dark:hover:bg-gray-900 dark:focus:bg-gray-900"
           to="/settings"
         >
           <svg
-            className="mr-4 h-6 w-6 text-gray-400 group-hover:text-gray-500 group-focus:text-gray-500 dark:text-gray-500 dark:group-hover:text-gray-400 transition ease-in-out duration-150"
+            className="mr-4 h-6 w-6 text-gray-400 transition duration-150 ease-in-out group-hover:text-gray-500 group-focus:text-gray-500 dark:text-gray-500 dark:group-hover:text-gray-400"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
@@ -37,16 +37,16 @@ const SidebarBottomButtons = () => {
           Settings
         </Link>
       </div>
-      <div className="shrink-0 border-t border-gray-200 dark:border-gray-800 flex">
+      <div className="flex shrink-0 border-t border-gray-200 dark:border-gray-800">
         <button
-          className="group flex-1 flex items-center p-4 text-sm leading-5 font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 dark:text-dark-med-emphasis dark:hover:text-dark-high-emphasis dark:focus:text-dark-high-emphasis dark:hover:bg-gray-900 dark:focus:bg-gray-900 focus:outline-hidden focus:bg-gray-100 transition ease-in-out duration-150"
+          className="group dark:text-dark-med-emphasis dark:hover:text-dark-high-emphasis dark:focus:text-dark-high-emphasis flex flex-1 items-center p-4 text-sm leading-5 font-medium text-gray-600 transition duration-150 ease-in-out hover:bg-gray-50 hover:text-gray-900 focus:bg-gray-100 focus:outline-hidden dark:hover:bg-gray-900 dark:focus:bg-gray-900"
           onClick={() => {
             setIsContactUsSlideoverOpen(true);
             setIsMobileNavOpen(false);
           }}
         >
           <svg
-            className="mr-4 h-6 w-6 text-gray-400 group-hover:text-gray-500 group-focus:text-gray-500 dark:text-gray-500 dark:group-hover:text-gray-400 transition ease-in-out duration-150"
+            className="mr-4 h-6 w-6 text-gray-400 transition duration-150 ease-in-out group-hover:text-gray-500 group-focus:text-gray-500 dark:text-gray-500 dark:group-hover:text-gray-400"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"

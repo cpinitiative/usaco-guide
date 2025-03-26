@@ -3,9 +3,9 @@ import * as React from 'react';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import useLeaderboardData from '../../../hooks/groups/useLeaderboardData';
 import useMemberInfoForGroup from '../../../hooks/groups/useMemberInfoForGroup';
-import TopNavigationBar from '../../TopNavigationBar/TopNavigationBar';
 import Layout from '../../layout';
 import SEO from '../../seo';
+import TopNavigationBar from '../../TopNavigationBar/TopNavigationBar';
 import MemberDetail from './MemberDetail';
 
 export default function MembersPage(): JSX.Element {
@@ -49,12 +49,12 @@ export default function MembersPage(): JSX.Element {
   return (
     <Layout>
       <SEO title={`Members · ${activeGroup.groupData!.name}`} />
-      <div className="xl:h-screen xl:overflow-hidden flex flex-col">
+      <div className="flex flex-col xl:h-screen xl:overflow-hidden">
         <TopNavigationBar />
 
-        <div className="flex-1 relative z-0 flex flex-col lg:flex-row overflow-hidden">
+        <div className="relative z-0 flex flex-1 flex-col overflow-hidden lg:flex-row">
           <main
-            className="flex-1 relative z-0 overflow-y-auto focus:outline-hidden xl:order-last"
+            className="relative z-0 flex-1 overflow-y-auto focus:outline-hidden xl:order-last"
             tabIndex={0}
           >
             {activeMemberId ? (
@@ -64,22 +64,22 @@ export default function MembersPage(): JSX.Element {
                 />
               ) : (
                 <div>
-                  <p className="text-xl mt-8 text-center">Loading...</p>
+                  <p className="mt-8 text-center text-xl">Loading...</p>
                 </div>
               )
             ) : (
               <div>
-                <p className="text-xl mt-8 text-center">
+                <p className="mt-8 text-center text-xl">
                   Select a member to begin!
                 </p>
               </div>
             )}
           </main>
-          <aside className="order-first lg:flex lg:flex-col shrink-0 lg:w-96 lg:border-r lg:border-gray-200 dark:lg:border-gray-700 shadow-md lg:shadow-none">
+          <aside className="order-first shrink-0 shadow-md lg:flex lg:w-96 lg:flex-col lg:border-r lg:border-gray-200 lg:shadow-none dark:lg:border-gray-700">
             <div className="px-6 pt-6 pb-4">
               <Link
                 to={`/groups/${activeGroup.groupData!.id}`}
-                className="text-gray-600 dark:text-gray-300 underline text-sm"
+                className="text-sm text-gray-600 underline dark:text-gray-300"
               >
                 &larr; Back to group page
               </Link>
@@ -115,14 +115,14 @@ export default function MembersPage(): JSX.Element {
             </div>
             {/* Directory list */}
             <nav
-              className="flex-1 min-h-0 max-h-56 lg:max-h-full overflow-y-auto"
+              className="max-h-56 min-h-0 flex-1 overflow-y-auto lg:max-h-full"
               aria-label="Directory"
             >
               <div className="relative">
                 <ul className="relative z-0 divide-y divide-gray-200 dark:divide-gray-700">
                   {memberInfo?.map(member => (
                     <li key={member.uid}>
-                      <div className="relative px-6 py-5 flex items-center space-x-3 hover:bg-gray-50 dark:hover:bg-gray-900 focus-within:ring-2 focus-within:ring-inset focus-within:ring-pink-500">
+                      <div className="relative flex items-center space-x-3 px-6 py-5 focus-within:ring-2 focus-within:ring-pink-500 focus-within:ring-inset hover:bg-gray-50 dark:hover:bg-gray-900">
                         <div className="shrink-0">
                           <img
                             className="h-10 w-10 rounded-full"
@@ -130,7 +130,7 @@ export default function MembersPage(): JSX.Element {
                             alt={member.displayName}
                           />
                         </div>
-                        <div className="flex-1 min-w-0">
+                        <div className="min-w-0 flex-1">
                           <a
                             href={`#${member.uid}`}
                             className="focus:outline-hidden"
@@ -143,7 +143,7 @@ export default function MembersPage(): JSX.Element {
                             <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
                               {member.displayName}
                             </p>
-                            <p className="text-sm text-gray-500 truncate dark:text-gray-300">
+                            <p className="truncate text-sm text-gray-500 dark:text-gray-300">
                               {getTotalPointsForMember(member.uid)} Points
                             </p>
                           </a>

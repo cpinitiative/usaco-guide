@@ -7,9 +7,9 @@ import {
 import { XIcon } from '@heroicons/react/solid';
 import {
   AuthCredential,
+  getAuth,
   GithubAuthProvider,
   GoogleAuthProvider,
-  getAuth,
   linkWithCredential,
   signInWithCredential,
   signInWithPopup,
@@ -130,23 +130,23 @@ export const SignInModal: React.FC<SignInModalProps> = ({
     >
       <DialogBackdrop
         transition
-        className="fixed inset-0 bg-gray-500/75 dark:bg-gray-900/75 transition-opacity data-[closed]:opacity-0 data-[enter]:duration-300 data-[leave]:duration-200 data-[enter]:ease-out data-[leave]:ease-in"
+        className="fixed inset-0 bg-gray-500/75 transition-opacity data-[closed]:opacity-0 data-[enter]:duration-300 data-[enter]:ease-out data-[leave]:duration-200 data-[leave]:ease-in dark:bg-gray-900/75"
       />
 
       <div className="fixed inset-0 z-30 w-screen overflow-y-auto">
         <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
           <DialogPanel
             transition
-            className="relative transform overflow-hidden rounded-lg bg-white dark:bg-dark-surface px-4 pb-4 pt-5 text-left shadow-xl transition-all data-[closed]:translate-y-4 data-[closed]:opacity-0 data-[enter]:duration-300 data-[leave]:duration-200 data-[enter]:ease-out data-[leave]:ease-in sm:my-8 sm:w-full sm:max-w-lg sm:p-6 data-[closed]:sm:translate-y-0 data-[closed]:sm:scale-95"
+            className="dark:bg-dark-surface relative transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all data-[closed]:translate-y-4 data-[closed]:opacity-0 data-[enter]:duration-300 data-[enter]:ease-out data-[leave]:duration-200 data-[leave]:ease-in sm:my-8 sm:w-full sm:max-w-lg sm:p-6 data-[closed]:sm:translate-y-0 data-[closed]:sm:scale-95"
           >
-            <div className="absolute right-0 top-0 hidden pr-4 pt-4 sm:block">
+            <div className="absolute top-0 right-0 hidden pt-4 pr-4 sm:block">
               <button
                 type="button"
                 onClick={() => {
                   setIsLinking(false);
                   onClose();
                 }}
-                className="bg-white dark:bg-dark-surface rounded-md text-gray-400 dark:text-gray-500 hover:text-gray-500 dark:hover:text-gray-400 focus:outline-hidden focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-dark-surface focus:ring-blue-500"
+                className="dark:bg-dark-surface dark:focus:ring-offset-dark-surface rounded-md bg-white text-gray-400 hover:text-gray-500 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-hidden dark:text-gray-500 dark:hover:text-gray-400"
               >
                 <span className="sr-only">Close</span>
                 <XIcon aria-hidden="true" className="size-6" />
@@ -172,7 +172,7 @@ export const SignInModal: React.FC<SignInModalProps> = ({
               </div>
             </div>
             <div className="mt-5 sm:mt-6">
-              <div className="space-y-2 sm:space-y-0 flex flex-col sm:flex-row sm:items-center sm:space-x-4">
+              <div className="flex flex-col space-y-2 sm:flex-row sm:items-center sm:space-y-0 sm:space-x-4">
                 <button
                   type="button"
                   className="btn pl-3"
@@ -257,7 +257,7 @@ export const SignInModal: React.FC<SignInModalProps> = ({
                   </p>
                   <button
                     type="button"
-                    className="btn pl-3 mt-3"
+                    className="btn mt-3 pl-3"
                     onClick={handleLinkAccounts}
                     // disabled={!firebaseApp || isSigningIn}
                   >

@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import useLeaderboardData from '../../../hooks/groups/useLeaderboardData';
-import TopNavigationBar from '../../TopNavigationBar/TopNavigationBar';
 import Layout from '../../layout';
 import SEO from '../../seo';
+import TopNavigationBar from '../../TopNavigationBar/TopNavigationBar';
 import Breadcrumbs from '../Breadcrumbs';
 import { LeaderboardTable } from '../LeaderboardTable/LeaderboardTable';
 
@@ -32,21 +32,21 @@ export default function GroupLeaderboardPage(): JSX.Element {
 
       <TopNavigationBar />
 
-      <nav className="flex mt-6 mb-4" aria-label="Breadcrumb">
+      <nav className="mt-6 mb-4 flex" aria-label="Breadcrumb">
         <Breadcrumbs
           className={`${
-            fullWidth ? '' : 'max-w-5xl w-full mx-auto'
-          } px-4 sm:px-6 lg:px-8 pt-3 pb-4`}
+            fullWidth ? '' : 'mx-auto w-full max-w-5xl'
+          } px-4 pt-3 pb-4 sm:px-6 lg:px-8`}
           group={activeGroup.groupData!}
         />
       </nav>
 
       <div
-        className={`${fullWidth ? '' : 'max-w-5xl mx-auto'} sm:px-6 lg:px-8`}
+        className={`${fullWidth ? '' : 'mx-auto max-w-5xl'} sm:px-6 lg:px-8`}
       >
         <div className="md:flex md:items-center md:justify-between">
-          <div className="flex-1 min-w-0 px-4 sm:px-0">
-            <h2 className="text-2xl font-bold leading-7 text-gray-900 dark:text-gray-100 sm:text-3xl sm:truncate">
+          <div className="min-w-0 flex-1 px-4 sm:px-0">
+            <h2 className="text-2xl leading-7 font-bold text-gray-900 sm:truncate sm:text-3xl dark:text-gray-100">
               Leaderboard: {activeGroup.groupData!.name}
             </h2>
           </div>

@@ -1,9 +1,9 @@
 // eslint-disable react/no-unescaped-entities
 import { Link, PageProps } from 'gatsby';
 import * as React from 'react';
-import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
 import Layout from '../components/layout';
 import SEO from '../components/seo';
+import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
 
 export default function LicensePage(props: PageProps) {
   return (
@@ -12,10 +12,10 @@ export default function LicensePage(props: PageProps) {
 
       <TopNavigationBar />
 
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
         <h1 className="mt-8 text-4xl font-extrabold">License and Usage</h1>
 
-        <div className="mt-6 text-gray-900 text-lg dark:text-dark-high-emphasis">
+        <div className="dark:text-dark-high-emphasis mt-6 text-lg text-gray-900">
           <p className="mb-4">
             No part of this site may be used, reproduced, redistributed,
             commercialized, or sold without prior written permission, except as
@@ -23,7 +23,7 @@ export default function LicensePage(props: PageProps) {
             <a
               rel="license noreferrer"
               className={
-                'text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 hover:underline'
+                'text-blue-500 hover:text-blue-700 hover:underline dark:text-blue-400 dark:hover:text-blue-300'
               }
               href="http://creativecommons.org/licenses/by-nc-sa/4.0/"
               target={'_blank'}
@@ -36,7 +36,7 @@ export default function LicensePage(props: PageProps) {
           <p className="mb-2">
             "This site" includes, but is not limited to, the following:
           </p>
-          <ul className="list-disc pl-10 mb-4">
+          <ul className="mb-4 list-disc pl-10">
             <li>The format, layout, design, and features of the website</li>
             <li>The contents of the Guide</li>
             <li>
@@ -52,7 +52,7 @@ export default function LicensePage(props: PageProps) {
             <a
               rel="license noreferrer"
               className={
-                'text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 hover:underline'
+                'text-blue-500 hover:text-blue-700 hover:underline dark:text-blue-400 dark:hover:text-blue-300'
               }
               href="http://creativecommons.org/licenses/by-nc-sa/4.0/"
               target={'_blank'}
@@ -65,7 +65,7 @@ export default function LicensePage(props: PageProps) {
             Examples of PERMITTED use cases that do not require prior written
             permission include, but are not limited to, the following:
           </p>
-          <ul className="list-disc pl-10 mb-4">
+          <ul className="mb-4 list-disc pl-10">
             <li>Using these resources as an individual to improve</li>
             <li>Sharing a link to these resources</li>
             <li>
@@ -95,7 +95,7 @@ export default function LicensePage(props: PageProps) {
             Examples of use cases NOT PERMITTED without prior written permission
             include, but are not limited to, the following:
           </p>
-          <ul className="list-disc pl-10 mb-4">
+          <ul className="mb-4 list-disc pl-10">
             <li>
               Hosting the contents of this website under a different website
             </li>
@@ -120,7 +120,7 @@ export default function LicensePage(props: PageProps) {
             cases described above, please contact us at{' '}
             <a
               href="mailto:usacoguide@gmail.com"
-              className="text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 underline"
+              className="text-blue-500 underline hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
             >
               usacoguide@gmail.com
             </a>
@@ -131,7 +131,7 @@ export default function LicensePage(props: PageProps) {
           </p>
           <Link
             to="/"
-            className="block mb-4 underline text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
+            className="mb-4 block text-blue-500 underline hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
           >
             &larr; Back to Home
           </Link>

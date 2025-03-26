@@ -51,7 +51,7 @@ export default function General(): JSX.Element {
       </div>
       <div>
         <ul className="divide-y divide-gray-200 dark:divide-gray-700">
-          <li className="py-4 flex items-center justify-between">
+          <li className="flex items-center justify-between py-4">
             <div className="flex flex-col">
               <p
                 className="text-sm font-medium text-gray-500 dark:text-gray-300"
@@ -62,7 +62,7 @@ export default function General(): JSX.Element {
             </div>
             <Switch checked={showTags} onChange={b => setShowTags(b)} />
           </li>
-          <li className="py-4 flex items-center justify-between">
+          <li className="flex items-center justify-between py-4">
             <div className="flex flex-col">
               <p
                 className="text-sm font-medium text-gray-500 dark:text-gray-300"
@@ -76,7 +76,7 @@ export default function General(): JSX.Element {
               onChange={b => setHideDifficulty(b)}
             />
           </li>
-          <li className="py-4 flex items-center justify-between">
+          <li className="flex items-center justify-between py-4">
             <div className="flex flex-col">
               <p
                 className="text-sm font-medium text-gray-500 dark:text-gray-300"
@@ -87,7 +87,7 @@ export default function General(): JSX.Element {
             </div>
             <Switch checked={hideModules} onChange={b => setHideModules(b)} />
           </li>
-          <li className="py-4 flex items-center justify-between">
+          <li className="flex items-center justify-between py-4">
             <div className="flex flex-col">
               <p
                 className="text-sm font-medium text-gray-500 dark:text-gray-300"
@@ -98,7 +98,7 @@ export default function General(): JSX.Element {
             </div>
             <Switch checked={showIgnored} onChange={b => setShowIgnored(b)} />
           </li>
-          <li className="py-4 flex items-center justify-between">
+          <li className="flex items-center justify-between py-4">
             <div className="flex flex-col">
               <p
                 className="text-sm font-medium text-gray-500 dark:text-gray-300"

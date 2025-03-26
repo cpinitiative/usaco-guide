@@ -62,7 +62,7 @@ export default function UserData() {
         </div>
         <div className="h-4" />
         <button
-          className="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 text-sm leading-5 font-medium rounded-md text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 hover:text-gray-500 focus:outline-hidden focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150"
+          className="focus:shadow-outline-blue inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm leading-5 font-medium text-gray-700 transition duration-150 ease-in-out hover:text-gray-500 focus:border-blue-300 focus:outline-hidden active:bg-gray-50 active:text-gray-800 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200"
           onClick={handleExportUserData}
         >
           Export User Data
@@ -97,9 +97,9 @@ export default function UserData() {
         <button
           className={`${
             file !== ''
-              ? 'text-gray-700 dark:text-gray-200 hover:text-gray-500 focus:outline-hidden focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150'
-              : 'text-gray-300 dark:text-gray-600 cursor-default'
-          } inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 text-sm leading-5 font-medium rounded-md bg-white dark:bg-gray-800`}
+              ? 'focus:shadow-outline-blue text-gray-700 transition duration-150 ease-in-out hover:text-gray-500 focus:border-blue-300 focus:outline-hidden active:bg-gray-50 active:text-gray-800 dark:text-gray-200'
+              : 'cursor-default text-gray-300 dark:text-gray-600'
+          } inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm leading-5 font-medium dark:border-gray-600 dark:bg-gray-800`}
           disabled={!file}
           onClick={handleImportUserData}
         >

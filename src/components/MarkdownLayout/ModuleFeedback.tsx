@@ -9,7 +9,7 @@ export default function ModuleFeedback({
 }) {
   return (
     <>
-      <h2 className="text-xl font-semibold mb-2">
+      <h2 className="mb-2 text-xl font-semibold">
         Give Us Feedback on {markdownData.title}!
       </h2>
 

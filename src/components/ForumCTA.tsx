@@ -2,7 +2,7 @@ import * as React from 'react';
 
 const ForumCTA = (): JSX.Element => {
   return (
-    <div className="bg-gray-50 dark:bg-gray-900 sm:rounded-lg mb-4">
+    <div className="mb-4 bg-gray-50 sm:rounded-lg dark:bg-gray-900">
       <div className="px-4 py-5 sm:p-6">
         <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-200">
           Join the USACO Forum!

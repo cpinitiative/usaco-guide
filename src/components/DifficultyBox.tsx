@@ -20,7 +20,7 @@ export default function DifficultyBox({
   return (
     <span
       className={
-        'mr-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium leading-4 ' +
+        'mr-2 inline-flex items-center rounded-full px-2.5 py-0.5 text-xs leading-4 font-medium ' +
         difficultyClasses[difficulty]
       }
     >

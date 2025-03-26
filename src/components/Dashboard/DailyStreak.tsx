@@ -26,7 +26,7 @@ const ComeBackTimer = ({ tomorrowMilliseconds }) => {
   return (
     <div>
       Come back in
-      <p className="text-2xl my-2">
+      <p className="my-2 text-2xl">
         {hours} hours {minutes} minutes {seconds} seconds
       </p>
       to {days ? 'continue your streak' : 'unlock this cow photo'}!
@@ -39,19 +39,19 @@ const PhotoCard = ({ img, day, tomorrowMilliseconds, hiddenOnDesktop }) => {
   return (
     <div
       className={
-        'max-w-[592px] mx-auto mb-8' + (hiddenOnDesktop ? ' lg:hidden' : '')
+        'mx-auto mb-8 max-w-[592px]' + (hiddenOnDesktop ? ' lg:hidden' : '')
       }
     >
-      <div className="bg-white dark:bg-gray-800 shadow-sm sm:rounded-lg overflow-hidden flex flex-col">
-        <div className="px-4 pt-5 sm:px-6 sm:pt-6 pb-4">
-          <h3 className="text-lg leading-6 font-medium text-gray-800 dark:text-dark-high-emphasis">
+      <div className="flex flex-col overflow-hidden bg-white shadow-sm sm:rounded-lg dark:bg-gray-800">
+        <div className="px-4 pt-5 pb-4 sm:px-6 sm:pt-6">
+          <h3 className="dark:text-dark-high-emphasis text-lg leading-6 font-medium text-gray-800">
             Day {day} Photo
           </h3>
         </div>
         {/* We set text size to 0px because GatsbyImage is inline block. Without it, there's extra space after the image. */}
-        <div className="overflow-hidden relative text-[0px]">
+        <div className="relative overflow-hidden text-[0px]">
           {tomorrowMilliseconds >= 0 ? (
-            <div className="text-base absolute inset-0 text-center flex items-center justify-center text-black font-medium bg-white/25 dark:bg-black/25 dark:text-white z-10 p-4">
+            <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/25 p-4 text-center text-base font-medium text-black dark:bg-black/25 dark:text-white">
               <ComeBackTimer tomorrowMilliseconds={tomorrowMilliseconds} />
             </div>
           ) : null}
@@ -128,13 +128,13 @@ export default function DailyStreak({ streak }) {
     if (i == times.length) {
       return (
         <div className="mb-8" key={times.length}>
-          <div className="bg-white dark:bg-gray-800 shadow-sm sm:rounded-lg overflow-hidden flex flex-col">
+          <div className="flex flex-col overflow-hidden bg-white shadow-sm sm:rounded-lg dark:bg-gray-800">
             <div className="px-4 py-5 sm:p-6">
               <div className="text-center">
-                <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-dark-high-emphasis">
+                <h3 className="dark:text-dark-high-emphasis text-lg leading-6 font-medium text-gray-900">
                   You've ran out of cow photos!
                 </h3>
-                <div className="mt-3 text-sm leading-5 text-gray-500 dark:text-dark-med-emphasis space-y-1">
+                <div className="dark:text-dark-med-emphasis mt-3 space-y-1 text-sm leading-5 text-gray-500">
                   Seeing that you're addicted to USACO Guide, you should
                   definitely reach out to us regarding{' '}
                   <a
@@ -184,13 +184,13 @@ export default function DailyStreak({ streak }) {
   };
   return (
     <>
-      <div className="bg-white dark:bg-gray-800 shadow-sm sm:rounded-lg overflow-hidden lg:col-span-2">
+      <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg lg:col-span-2 dark:bg-gray-800">
         <div className="px-4 py-5 sm:p-6">
           <div className="text-center">
-            <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-dark-high-emphasis">
+            <h3 className="dark:text-dark-high-emphasis text-lg leading-6 font-medium text-gray-900">
               🔥 {streak} Day Streak: Keep it up!
             </h3>
-            <div className="mt-3 text-sm leading-5 text-gray-500 dark:text-dark-med-emphasis space-y-1">
+            <div className="dark:text-dark-med-emphasis mt-3 space-y-1 text-sm leading-5 text-gray-500">
               <p>
                 You've visited this guide for {streak} consecutive day
                 {streak !== 1 && 's'}.

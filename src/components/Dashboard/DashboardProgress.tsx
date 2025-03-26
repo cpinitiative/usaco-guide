@@ -4,22 +4,22 @@ import Tooltip from '../Tooltip/Tooltip';
 const ProgressBar = ({ text, green, yellow, blue }) => {
   return (
     <div className="relative">
-      <div className="overflow-hidden h-4 text-xs flex bg-gray-200 dark:bg-gray-700">
+      <div className="flex h-4 overflow-hidden bg-gray-200 text-xs dark:bg-gray-700">
         <div
           style={{ width: `${green}%` }}
-          className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-green-500 dark:bg-green-800"
+          className="flex flex-col justify-center bg-green-500 text-center whitespace-nowrap text-white shadow-none dark:bg-green-800"
         />
         <div
           style={{ width: `${yellow}%` }}
-          className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-yellow-300 dark:bg-yellow-800"
+          className="flex flex-col justify-center bg-yellow-300 text-center whitespace-nowrap text-white shadow-none dark:bg-yellow-800"
         />
         <div
           style={{ width: `${blue}%` }}
-          className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-blue-500 dark:bg-blue-800"
+          className="flex flex-col justify-center bg-blue-500 text-center whitespace-nowrap text-white shadow-none dark:bg-blue-800"
         />
       </div>
       <div className="text-right">
-        <span className="text-sm font-semibold inline-block text-gray-800 dark:text-dark-med-emphasis">
+        <span className="dark:text-dark-med-emphasis inline-block text-sm font-semibold text-gray-800">
           {text}
         </span>
       </div>
@@ -36,12 +36,12 @@ const FancyNumber = ({
 }) => (
   <div className="text-center">
     <span
-      className={`text-3xl font-bold ${textColor} ${bgColor} rounded-full h-16 w-16 inline-block inline-flex items-center justify-center`}
+      className={`text-3xl font-bold ${textColor} ${bgColor} inline-block inline-flex h-16 w-16 items-center justify-center rounded-full`}
     >
       {number}
     </span>
     <span
-      className={`block mt-1 text-sm font-medium uppercase ${
+      className={`mt-1 block text-sm font-medium uppercase ${
         subTextColor ? subTextColor : textColor
       }`}
     >
@@ -67,7 +67,7 @@ export default function DashboardProgress({
 }: ProgressCounts): JSX.Element {
   return (
     <div>
-      <div className="grid grid-cols-4 gap-2 mb-4">
+      <div className="mb-4 grid grid-cols-4 gap-2">
         <FancyNumber
           number={completed}
           text="Completed"
@@ -114,7 +114,7 @@ const ProgressBarSmall = ({
   return (
     <div className={className}>
       <div className="inline-block">
-        <div className="overflow-hidden h-2 text-xs flex items-center bg-gray-200 rounded-full w-24 dark:bg-gray-700">
+        <div className="flex h-2 w-24 items-center overflow-hidden rounded-full bg-gray-200 text-xs dark:bg-gray-700">
           <div
             style={{ width: `${green}%` }}
             className="h-2 bg-green-500 dark:bg-green-800"
@@ -130,7 +130,7 @@ const ProgressBarSmall = ({
         </div>
       </div>
       {/*  text-gray-800 dark:text-dark-med-emphasis */}
-      <div className="inline-block ml-1">
+      <div className="ml-1 inline-block">
         {text && <span className="text-sm font-semibold">&nbsp;{text}</span>}
       </div>
     </div>
@@ -189,7 +189,7 @@ export function UsacoTableProgress({
           green={green}
           yellow={yellow}
           blue={blue}
-          className="h-2 inline-flex"
+          className="inline-flex h-2"
         />
       </span>
     </Tooltip>

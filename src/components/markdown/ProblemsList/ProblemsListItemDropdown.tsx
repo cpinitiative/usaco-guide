@@ -29,7 +29,7 @@ function ViewSolutionsContent({
           {viewSolutionsContent}
         </TextTooltip>
         <svg
-          className="h-5 w-5 text-green-400 inline-block ml-1"
+          className="ml-1 inline-block h-5 w-5 text-green-400"
           viewBox="0 0 20 20"
           fill="currentColor"
         >
@@ -44,7 +44,7 @@ function ViewSolutionsContent({
   }
   return (
     <a
-      className="focus:outline-hidden block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900"
+      className="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-hidden dark:text-gray-300 dark:hover:bg-gray-800"
       href={`/problems/${problem.uniqueId}/user-solutions`}
       target="_blank"
       rel="noreferrer"
@@ -67,7 +67,7 @@ export default function ProblemsListItemDropdown(
   ) : isDivisionTable ? (
     props?.problem?.solution?.kind == 'internal' ? (
       <a
-        className={`flex items-center group px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800`}
+        className={`group flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800`}
         href={`${getProblemURL(problem)}/solution`}
         target="_blank"
         rel="noreferrer"
@@ -99,7 +99,7 @@ export default function ProblemsListItemDropdown(
             <ViewSolutionsContent problem={problem} />
             <button
               type="button"
-              className="focus:outline-hidden block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900"
+              className="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-hidden dark:text-gray-300 dark:hover:bg-gray-800"
               onClick={e => {
                 e.preventDefault();
                 setCopied(true);
@@ -114,7 +114,7 @@ export default function ProblemsListItemDropdown(
             </button>
             {isUsaco(problem.source) && (
               <a
-                className="font-normal! focus:outline-hidden block w-full text-left px-4 py-2 text-sm text-gray-700! dark:text-gray-300! hover:bg-gray-100! dark:hover:bg-gray-800! hover:text-gray-900!"
+                className="block w-full px-4 py-2 text-left text-sm font-normal! text-gray-700! hover:bg-gray-100! hover:text-gray-900! focus:outline-hidden dark:text-gray-300! dark:hover:bg-gray-800!"
                 href={`https://ide.usaco.guide/usaco/${problem.uniqueId.substring(
                   problem.uniqueId.indexOf('-') + 1
                 )}`}
@@ -139,10 +139,10 @@ export default function ProblemsListItemDropdown(
       onHidden={() => setIsDropdownShown(false)}
       appendTo={() => document.body}
     >
-      <button className="focus:outline-hidden w-8 h-8 inline-flex items-center justify-center text-gray-400 rounded-full bg-transparent hover:text-gray-500 dark:hover:text-gray-300">
+      <button className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-transparent text-gray-400 hover:text-gray-500 focus:outline-hidden dark:hover:text-gray-300">
         {/* Heroicon name: solid/dots-vertical */}
         <svg
-          className="w-5 h-5"
+          className="h-5 w-5"
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 20 20"
           fill="currentColor"

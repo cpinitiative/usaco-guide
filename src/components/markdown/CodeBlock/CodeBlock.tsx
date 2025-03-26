@@ -64,8 +64,9 @@ const CopyButton = styled.button<{ isDarkMode: boolean; rightOffset: string }>`
   z-index: 99;
   border-radius: 0px 0px 4px 4px;
   font-size: 12px;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
-    'Liberation Mono', 'Courier New', monospace;
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono',
+    'Courier New', monospace;
   /* copy from tailwind defaults */
   &:hover {
     background-color: ${props =>
@@ -103,16 +104,16 @@ const CodeSnipButton = ({
       viewBox="0 0 24 24"
       stroke="currentColor"
       className={
-        'transform transition translate-y-0.5 h-4 cursor-pointer' +
+        'h-4 translate-y-0.5 transform cursor-pointer transition' +
         (buttonDir == 'Up'
           ? ' rotate-180'
           : buttonDir == 'Down'
-          ? ''
-          : buttonDir == 'Left'
-          ? ' rotate-90'
-          : buttonDir == 'Right'
-          ? ' -rotate-90'
-          : '')
+            ? ''
+            : buttonDir == 'Left'
+              ? ' rotate-90'
+              : buttonDir == 'Right'
+                ? ' -rotate-90'
+                : '')
       }
       onClick={() => onShowSnipChange(snipID, !showSnip)}
     >
@@ -329,7 +330,7 @@ class CodeBlock extends React.Component<
     if (!['cpp', 'java', 'python'].includes(language ?? '')) {
       // no styling, just a regular pre tag
       return (
-        <pre className="-mx-4 sm:-mx-6 md:mx-0 md:rounded-sm bg-gray-100 p-4 mb-4 whitespace-pre-wrap break-all dark:bg-gray-900">
+        <pre className="-mx-4 mb-4 bg-gray-100 p-4 break-all whitespace-pre-wrap sm:-mx-6 md:mx-0 md:rounded-sm dark:bg-gray-900">
           {code}
         </pre>
       );
@@ -383,7 +384,7 @@ class CodeBlock extends React.Component<
             >
               <pre
                 className={
-                  '-mx-4 sm:-mx-6 md:mx-0 md:rounded-sm whitespace-pre-wrap break-all p-4 mb-4 relative ' +
+                  'relative -mx-4 mb-4 p-4 break-all whitespace-pre-wrap sm:-mx-6 md:mx-0 md:rounded-sm ' +
                   className
                 }
                 style={{
@@ -412,7 +413,7 @@ class CodeBlock extends React.Component<
                   <div
                     className={
                       (collapsed ? 'h-full' : 'h-12') +
-                      ' absolute inset-x-0 bottom-0 flex items-end justify-center group cursor-pointer lg:rounded-b'
+                      ' group absolute inset-x-0 bottom-0 flex cursor-pointer items-end justify-center lg:rounded-b'
                     }
                     onClick={() => this.setCollapsed(!collapsed)}
                   >
@@ -436,8 +437,8 @@ class CodeBlock extends React.Component<
                         viewBox="0 0 24 24"
                         stroke="currentColor"
                         className={
-                          'w-6 h-6 transform group-hover:-translate-y-2 transition mb-2 ' +
-                          (collapsed ? '' : 'rotate-180 ') +
+                          'mb-2 h-6 w-6 transform transition group-hover:-translate-y-2 ' +
+                          (collapsed ? '' : 'rotate-180') +
                           (isDarkMode ? 'text-white' : 'text-black')
                         }
                       >

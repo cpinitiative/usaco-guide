@@ -11,8 +11,8 @@ import {
 } from '../../../../models/problem';
 import Transition from '../../../Transition';
 import { ProblemsList } from '../ProblemsList';
-import { DivisionProblemInfo } from './DivisionProblemInfo';
 import contestToPoints from './contest_to_points.json';
+import { DivisionProblemInfo } from './DivisionProblemInfo';
 import divToProbs from './div_to_probs.json';
 import idToSol from './id_to_sol.json';
 
@@ -83,9 +83,9 @@ const DivisionButton = ({
         <span className="rounded-md shadow-sm">
           <button
             type="button"
-            className={`inline-flex justify-center w-full rounded-md border border-gray-300 dark:border-gray-800 pr-4 ${
+            className={`inline-flex w-full justify-center rounded-md border border-gray-300 pr-4 dark:border-gray-800 ${
               getCircle(state) ? 'pl-3' : 'pl-4'
-            } py-2 bg-white dark:bg-gray-900 text-sm leading-5 font-medium text-gray-700 dark:text-dark-high-emphasis hover:text-gray-500 dark:hover:text-dark-high-emphasis focus:outline-hidden focus:border-blue-300 focus:shadow-outline-blue transition ease-in-out duration-150`}
+            } dark:text-dark-high-emphasis dark:hover:text-dark-high-emphasis focus:shadow-outline-blue bg-white py-2 text-sm leading-5 font-medium text-gray-700 transition duration-150 ease-in-out hover:text-gray-500 focus:border-blue-300 focus:outline-hidden dark:bg-gray-900`}
             id="options-menu"
             aria-haspopup="true"
             aria-expanded="true"
@@ -125,11 +125,11 @@ const DivisionButton = ({
         <div
           className={`${
             dropdownAbove
-              ? 'origin-bottom-right bottom-0 mb-12'
+              ? 'bottom-0 mb-12 origin-bottom-right'
               : 'origin-top-right'
-          } right-0 absolute z-10 mt-2 rounded-md shadow-lg`} // w-36
+          } absolute right-0 z-10 mt-2 rounded-md shadow-lg`} // w-36
         >
-          <div className="rounded-md bg-white dark:bg-gray-900 shadow-xs">
+          <div className="rounded-md bg-white shadow-xs dark:bg-gray-900">
             <div
               className="py-1"
               role="menu"
@@ -140,7 +140,7 @@ const DivisionButton = ({
                 <button
                   key={option}
                   onClick={() => handleSelect(option)}
-                  className="flex items-center w-full text-left px-3 py-2 text-sm leading-5 text-gray-700 dark:text-dark-high-emphasis hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-dark-high-emphasis focus:outline-hidden focus:bg-gray-100 focus:text-gray-900"
+                  className="dark:text-dark-high-emphasis dark:hover:text-dark-high-emphasis flex w-full items-center px-3 py-2 text-left text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:bg-gray-100 focus:text-gray-900 focus:outline-hidden dark:hover:bg-gray-700"
                   role="menuitem"
                 >
                   {getCircle(option)}
@@ -315,7 +315,7 @@ export function DivisionList(props): JSX.Element {
 
   return (
     <>
-      <div className="flex items-center space-x-4 mb-4">
+      <div className="mb-4 flex items-center space-x-4">
         <DivisionButton
           options={divisions}
           state={curDivision}

@@ -12,7 +12,7 @@ const Asterisk: React.FC<Omit<TooltipProps, 'type'>> = ({
   ...other
 }) => {
   return (
-    <span className="inline-block h-4 relative" style={{ width: 9 }}>
+    <span className="relative inline-block h-4" style={{ width: 9 }}>
       <Tooltip
         {...other}
         content={children}

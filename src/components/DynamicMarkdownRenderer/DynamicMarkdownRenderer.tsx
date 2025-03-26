@@ -33,7 +33,7 @@ class ErrorBoundary extends React.Component<{ children?: React.ReactNode }> {
       return (
         <div>
           An error occurred:
-          <p className="mt-2 text-red-700 font-mono text-sm">
+          <p className="mt-2 font-mono text-sm text-red-700">
             {this.state.error.toString()}
           </p>
         </div>
@@ -119,10 +119,10 @@ export default function DynamicMarkdownRenderer({
     return (
       <div>
         An error occurred:
-        <p className="mt-2 text-red-700 dark:text-red-400 font-mono text-sm">
+        <p className="mt-2 font-mono text-sm text-red-700 dark:text-red-400">
           {error.message || error.toString()}
         </p>
-        <p className="mt-2 text-red-700 dark:text-red-400 font-mono text-sm">
+        <p className="mt-2 font-mono text-sm text-red-700 dark:text-red-400">
           This error has also been logged to the console.
         </p>
       </div>

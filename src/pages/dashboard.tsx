@@ -156,14 +156,14 @@ export default function DashboardPage(props: PageProps) {
     <Layout>
       <SEO title="Dashboard" />
 
-      <div className="min-h-screen bg-gray-100 dark:bg-dark-surface">
+      <div className="dark:bg-dark-surface min-h-screen bg-gray-100">
         <TopNavigationBar linkLogoToIndex={true} redirectToDashboard={false} />
 
         {finishedRendering && (
           <main className="pb-12">
-            <div className="max-w-7xl mx-auto mb-4">
-              <div className="lg:px-8 pt-4 pb-6">
-                <div className="flex flex-wrap mb-4">
+            <div className="mx-auto mb-4 max-w-7xl">
+              <div className="pt-4 pb-6 lg:px-8">
+                <div className="mb-4 flex flex-wrap">
                   <div className="w-full text-center">
                     {firebaseUser ? (
                       <>
@@ -178,7 +178,7 @@ export default function DashboardPage(props: PageProps) {
                             e.preventDefault();
                             signIn();
                           }}
-                          className="text-blue-600 dark:text-blue-300 underline"
+                          className="text-blue-600 underline dark:text-blue-300"
                         >
                           Sign in now!
                         </a>{' '}
@@ -192,7 +192,7 @@ export default function DashboardPage(props: PageProps) {
                 />
               </div>
             </div>
-            <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 lg:grid lg:grid-cols-2 lg:gap-8">
+            <div className="mx-auto max-w-7xl sm:px-6 lg:grid lg:grid-cols-2 lg:gap-8 lg:px-8">
               {activeProblems.length > 0 && (
                 <div className="mb-8">
                   <ActiveItems type="problems" items={activeProblems} />
@@ -205,28 +205,28 @@ export default function DashboardPage(props: PageProps) {
               )}
             </div>
             <header>
-              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <h1 className="text-3xl font-bold leading-tight text-gray-900 dark:text-dark-high-emphasis">
+              <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                <h1 className="dark:text-dark-high-emphasis text-3xl leading-tight font-bold text-gray-900">
                   Activity
                 </h1>
               </div>
             </header>
-            <div className="max-w-7xl mx-auto mb-8">
+            <div className="mx-auto mb-8 max-w-7xl">
               <Activity />
             </div>
             <header>
-              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <h1 className="text-3xl font-bold leading-tight text-gray-900 dark:text-dark-high-emphasis">
+              <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                <h1 className="dark:text-dark-high-emphasis text-3xl leading-tight font-bold text-gray-900">
                   Statistics
                 </h1>
               </div>
             </header>
-            <div className="max-w-7xl mx-auto">
-              <div className="sm:px-6 lg:px-8 py-4 lg:grid lg:grid-cols-2 lg:gap-8 space-y-8 lg:space-y-0">
+            <div className="mx-auto max-w-7xl">
+              <div className="space-y-8 py-4 sm:px-6 lg:grid lg:grid-cols-2 lg:gap-8 lg:space-y-0 lg:px-8">
                 <div className="space-y-8">
                   <Card>
                     <div className="px-4 py-5 sm:p-6">
-                      <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-dark-high-emphasis">
+                      <h3 className="dark:text-dark-high-emphasis text-lg leading-6 font-medium text-gray-900">
                         Modules Progress - {SECTION_LABELS[lastViewedSection]}
                       </h3>
                       <div className="mt-6">
@@ -241,7 +241,7 @@ export default function DashboardPage(props: PageProps) {
                 <div className="space-y-8">
                   <Card>
                     <div className="px-4 py-5 sm:p-6">
-                      <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-dark-high-emphasis">
+                      <h3 className="dark:text-dark-high-emphasis text-lg leading-6 font-medium text-gray-900">
                         Problems Progress - {SECTION_LABELS[lastViewedSection]}
                       </h3>
                       <div className="mt-6">

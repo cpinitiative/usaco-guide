@@ -146,7 +146,7 @@ export function ProblemsList(unannotatedProps: ProblemsListProps): JSX.Element {
       </ListTable>
 
       <Transition show={showModal} timeout={300}>
-        <div className="fixed z-10 bottom-0 inset-x-0 px-4 pb-6 sm:inset-0 sm:p-0 sm:flex sm:items-center sm:justify-center">
+        <div className="fixed inset-x-0 bottom-0 z-10 px-4 pb-6 sm:inset-0 sm:flex sm:items-center sm:justify-center sm:p-0">
           <Transition
             enter="ease-out duration-300"
             enterFrom="opacity-0"
@@ -172,15 +172,15 @@ export function ProblemsList(unannotatedProps: ProblemsListProps): JSX.Element {
             leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
           >
             <div
-              className="relative bg-white rounded-lg px-4 pt-5 pb-4 overflow-hidden shadow-xl transform transition-all sm:max-w-xl sm:w-full sm:p-6"
+              className="relative transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 shadow-xl transition-all sm:w-full sm:max-w-xl sm:p-6"
               role="dialog"
               aria-modal="true"
               aria-labelledby="modal-headline"
             >
-              <div className="hidden sm:block absolute top-0 right-0 pt-4 pr-4">
+              <div className="absolute top-0 right-0 hidden pt-4 pr-4 sm:block">
                 <button
                   type="button"
-                  className="text-gray-400 hover:text-gray-500 focus:outline-hidden focus:text-gray-500 transition ease-in-out duration-150"
+                  className="text-gray-400 transition duration-150 ease-in-out hover:text-gray-500 focus:text-gray-500 focus:outline-hidden"
                   aria-label="Close"
                   onClick={() => setShowModal(false)}
                 >

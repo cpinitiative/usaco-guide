@@ -4,9 +4,9 @@ import toast from 'react-hot-toast';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import { useGroupActions } from '../../../hooks/groups/useGroupActions';
 import { GroupData } from '../../../models/groups/groups';
-import TopNavigationBar from '../../TopNavigationBar/TopNavigationBar';
 import Layout from '../../layout';
 import SEO from '../../seo';
+import TopNavigationBar from '../../TopNavigationBar/TopNavigationBar';
 import Breadcrumbs from '../Breadcrumbs';
 
 export default function EditGroupPage(props) {
@@ -33,8 +33,8 @@ export default function EditGroupPage(props) {
     return (
       <>
         <TopNavigationBar />
-        <main className="text-center py-10">
-          <p className="font-medium text-2xl">Loading...</p>
+        <main className="py-10 text-center">
+          <p className="text-2xl font-medium">Loading...</p>
         </main>
       </>
     );
@@ -47,14 +47,14 @@ export default function EditGroupPage(props) {
     <Layout>
       <SEO title={`Edit ${group?.name}`} />
       <TopNavigationBar />
-      <nav className="flex mt-6 mb-4" aria-label="Breadcrumb">
+      <nav className="mt-6 mb-4 flex" aria-label="Breadcrumb">
         <Breadcrumbs
-          className="max-w-4xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-3 pb-4"
+          className="mx-auto w-full max-w-4xl px-4 pt-3 pb-4 sm:px-6 lg:px-8"
           group={activeGroup.groupData!}
         />
       </nav>
-      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="md:flex md:items-center md:justify-between md:space-x-4 xl:border-b dark:border-gray-700 xl:pb-6">
+      <main className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+        <div className="md:flex md:items-center md:justify-between md:space-x-4 xl:border-b xl:pb-6 dark:border-gray-700">
           <div>
             <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
               Edit Group: {group.name}
@@ -69,7 +69,7 @@ export default function EditGroupPage(props) {
         <div className="h-6" />
         <div className="space-y-8 divide-y divide-gray-200 dark:divide-gray-700">
           <div>
-            <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+            <div className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-6">
               <div className="sm:col-span-4">
                 <label
                   htmlFor="group_name"
@@ -126,14 +126,14 @@ export default function EditGroupPage(props) {
                       .catch(e => toast.error(e.message));
                   }
                 }}
-                className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-hidden focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-dark-surface focus:ring-red-500"
+                className="dark:focus:ring-offset-dark-surface inline-flex justify-center rounded-md border border-transparent bg-red-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-red-700 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:outline-hidden"
               >
                 Delete Group
               </button>
               <button
                 type="button"
                 onClick={handleSave}
-                className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-hidden focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-dark-surface focus:ring-blue-500"
+                className="dark:focus:ring-offset-dark-surface inline-flex justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-hidden"
               >
                 Save
               </button>

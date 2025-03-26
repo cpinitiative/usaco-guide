@@ -16,20 +16,20 @@ const LeaderboardListItem = ({
   return (
     <li className="py-3">
       <div className="flex items-center lg:space-x-4">
-        <div className="shrink-0 hidden lg:block">
+        <div className="hidden shrink-0 lg:block">
           <img className="h-8 w-8 rounded-full" src={member.photoURL} alt="" />
         </div>
-        <div className="flex-1 min-w-0">
-          <p className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
+        <div className="min-w-0 flex-1">
+          <p className="truncate text-sm font-medium text-gray-900 dark:text-gray-100">
             {place}. {member.displayName}
           </p>
-          <p className="text-sm text-gray-500 dark:text-gray-400 truncate">
+          <p className="truncate text-sm text-gray-500 dark:text-gray-400">
             {Math.round(points)} points
           </p>
         </div>
         {activeUserId === member.uid && (
           <div>
-            <span className="inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium bg-teal-100 text-teal-800 dark:bg-teal-800 dark:text-teal-100">
+            <span className="inline-flex items-center rounded-full bg-teal-100 px-3 py-0.5 text-sm font-medium text-teal-800 dark:bg-teal-800 dark:text-teal-100">
               Me
             </span>
           </div>
@@ -62,7 +62,7 @@ export default function LeaderboardList({
           />
         ))
       ) : (
-        <p className="py-2 italic text-gray-600 dark:text-gray-300">
+        <p className="py-2 text-gray-600 italic dark:text-gray-300">
           Loading...
         </p>
       )}

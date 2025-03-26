@@ -3,23 +3,23 @@ import * as React from 'react';
 export default function SectionProgressBar({ title }) {
   return (
     <div className="relative">
-      <div className="flex mb-1 items-center justify-between text-gray-900">
+      <div className="mb-1 flex items-center justify-between text-gray-900">
         <div>
-          <span className="font-semibold inline-block">{title}: 50%</span>
+          <span className="inline-block font-semibold">{title}: 50%</span>
         </div>
       </div>
-      <div className="overflow-hidden h-2 mb-4 text-xs flex rounded-sm bg-gray-200">
+      <div className="mb-4 flex h-2 overflow-hidden rounded-sm bg-gray-200 text-xs">
         <div
           style={{ width: '45%' }}
-          className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-green-500"
+          className="flex flex-col justify-center bg-green-500 text-center whitespace-nowrap text-white shadow-none"
         />
         <div
           style={{ width: '10%' }}
-          className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-yellow-300"
+          className="flex flex-col justify-center bg-yellow-300 text-center whitespace-nowrap text-white shadow-none"
         />
         <div
           style={{ width: '5%' }}
-          className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-blue-500"
+          className="flex flex-col justify-center bg-blue-500 text-center whitespace-nowrap text-white shadow-none"
         />
       </div>
     </div>

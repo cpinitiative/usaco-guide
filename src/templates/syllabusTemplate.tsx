@@ -1,11 +1,11 @@
 import { graphql } from 'gatsby';
 import * as React from 'react';
 import {
+  moduleIDToSectionMap,
+  SectionID,
   SECTION_LABELS,
   SECTION_SEO_DESCRIPTION,
   SECTION_SEO_TITLES,
-  SectionID,
-  moduleIDToSectionMap,
 } from '../../content/ordering';
 import DashboardProgress, {
   DashboardProgressSmall,
@@ -94,10 +94,13 @@ const SECTION_DESCRIPTION: { [key in SectionID]: React.ReactNode } = {
 
 export default function Template(props) {
   const data: Queries.SyllabusQuery = props.data;
-  const allModules = data.modules.nodes.reduce((acc, cur) => {
-    acc[cur.frontmatter.id] = cur;
-    return acc;
-  }, {} as { [key: string]: (typeof data.modules.nodes)[0] });
+  const allModules = data.modules.nodes.reduce(
+    (acc, cur) => {
+      acc[cur.frontmatter.id] = cur;
+      return acc;
+    },
+    {} as { [key: string]: (typeof data.modules.nodes)[0] }
+  );
 
   const { division } = props.pageContext;
 
@@ -142,19 +145,19 @@ export default function Template(props) {
 
         <main>
           <div className={`${HeroBGColor[division]} py-12 sm:py-16`}>
-            <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-              <h1 className="mb-6 text-5xl tracking-tight leading-10 font-black text-white sm:leading-none md:text-6xl text-center">
+            <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
+              <h1 className="mb-6 text-center text-5xl leading-10 font-black tracking-tight text-white sm:leading-none md:text-6xl">
                 {SECTION_LABELS[division]}
               </h1>
               <p
-                className={`${HeroTextColor[division]} text-center mb-8 sm:mb-12 px-4`}
+                className={`${HeroTextColor[division]} mb-8 px-4 text-center sm:mb-12`}
               >
                 {SECTION_DESCRIPTION[division]}
               </p>
-              <div className="grid max-w-2xl mx-auto lg:max-w-full lg:grid-cols-2 gap-8">
-                <div className="bg-white dark:bg-gray-900 shadow-sm sm:rounded-lg">
+              <div className="mx-auto grid max-w-2xl gap-8 lg:max-w-full lg:grid-cols-2">
+                <div className="bg-white shadow-sm sm:rounded-lg dark:bg-gray-900">
                   <div className="px-4 py-5 sm:p-6">
-                    <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-dark-high-emphasis">
+                    <h3 className="dark:text-dark-high-emphasis text-lg leading-6 font-medium text-gray-900">
                       Modules Progress
                     </h3>
                     <div className="mt-6">
@@ -165,9 +168,9 @@ export default function Template(props) {
                     </div>
                   </div>
                 </div>
-                <div className="bg-white dark:bg-gray-900 shadow-sm sm:rounded-lg">
+                <div className="bg-white shadow-sm sm:rounded-lg dark:bg-gray-900">
                   <div className="px-4 py-5 sm:p-6">
-                    <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-dark-high-emphasis">
+                    <h3 className="dark:text-dark-high-emphasis text-lg leading-6 font-medium text-gray-900">
                       Problems Progress
                     </h3>
                     <div className="mt-6">
@@ -181,21 +184,21 @@ export default function Template(props) {
               </div>
             </div>
           </div>
-          <div className="py-12 px-4 max-w-(--breakpoint-xl) mx-auto space-y-6 syllabus-dotted-line-container">
+          <div className="syllabus-dotted-line-container mx-auto max-w-(--breakpoint-xl) space-y-6 px-4 py-12">
             {section.map(category => (
               <div
                 key={category.name}
                 className="group/category flex flex-col md:flex-row"
               >
-                <div className="flex-1 md:text-right pr-12">
-                  <h2 className="text-2xl font-semibold leading-6 py-3 text-gray-500 dark:text-dark-med-emphasis group-hover/category:text-gray-800 dark:group-hover/category:text-dark-high-emphasis transition">
+                <div className="flex-1 pr-12 md:text-right">
+                  <h2 className="dark:text-dark-med-emphasis dark:group-hover/category:text-dark-high-emphasis py-3 text-2xl leading-6 font-semibold text-gray-500 transition group-hover/category:text-gray-800">
                     {category.name}
                   </h2>
-                  <div className="leading-6 py-3 text-gray-500 dark:text-dark-med-emphasis group-hover/category:text-gray-800 dark:group-hover/category:text-dark-high-emphasis transition">
+                  <div className="dark:text-dark-med-emphasis dark:group-hover/category:text-dark-high-emphasis py-3 leading-6 text-gray-500 transition group-hover/category:text-gray-800">
                     {/* eslint-disable-next-line react-hooks/rules-of-hooks */}
                     {useProgressBarForCategory(category)}
                   </div>
-                  <p className="md:max-w-sm md:ml-auto text-gray-400 dark:text-gray-500 dark:group-hover/category:text-dark-med-emphasis group-hover/category:text-gray-600 transition">
+                  <p className="dark:group-hover/category:text-dark-med-emphasis text-gray-400 transition group-hover/category:text-gray-600 md:ml-auto md:max-w-sm dark:text-gray-500">
                     {category.description}
                   </p>
                 </div>

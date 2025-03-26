@@ -13,9 +13,9 @@ import {
   useUserProgressOnProblems,
 } from '../../../context/UserDataContext/properties/userProgress';
 import {
-  PROBLEM_PROGRESS_OPTIONS,
   ProblemInfo,
   ProblemProgress,
+  PROBLEM_PROGRESS_OPTIONS,
 } from '../../../models/problem';
 import { DivisionProblemInfo } from './DivisionList/DivisionProblemInfo';
 
@@ -90,16 +90,16 @@ const ProgressDropdown = ({ onProgressSelected, currentProgress }) => {
   return (
     <ul
       tabIndex={-1}
-      className="rounded-md py-1 overflow-auto focus:outline-hidden text-sm leading-5 no-markdown"
+      className="no-markdown overflow-auto rounded-md py-1 text-sm leading-5 focus:outline-hidden"
     >
       {PROBLEM_PROGRESS_OPTIONS.map(progress => (
         <li
           role="option"
           className={`${
             activeProgress === progress
-              ? 'text-white bg-indigo-600 dark:bg-indigo-800'
-              : 'text-gray-900 dark:text-dark-med-emphasis'
-          } cursor-default select-none relative py-2 pl-10 pr-4`}
+              ? 'bg-indigo-600 text-white dark:bg-indigo-800'
+              : 'dark:text-dark-med-emphasis text-gray-900'
+          } relative cursor-default py-2 pr-4 pl-10 select-none`}
           key={progress}
           onClick={() => onProgressSelected(progress)}
           onMouseEnter={() => setActiveProgress(progress)}
@@ -180,7 +180,7 @@ export default function ProblemStatusCheckbox({
     <StyledTippy
       onCreate={tippy => (tippyRef.current = tippy)}
       content={
-        <div className="w-56 z-20">
+        <div className="z-20 w-56">
           <ProgressDropdown
             onProgressSelected={progress => {
               tippyRef.current.hide();
@@ -212,7 +212,7 @@ export default function ProblemStatusCheckbox({
           className={
             `inline-block ${
               size === 'small' ? 'h-6 w-6' : 'h-8 w-8'
-            } rounded-full cursor-pointer transition duration-100 ease-out ` +
+            } cursor-pointer rounded-full transition duration-100 ease-out ` +
             color[status]
           }
         />

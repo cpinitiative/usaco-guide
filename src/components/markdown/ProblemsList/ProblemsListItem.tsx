@@ -35,7 +35,7 @@ export default function ProblemsListItem(
   const id = `problem-${problem.uniqueId}`;
 
   const statusCol = (
-    <ListTableCell className="whitespace-nowrap font-medium">
+    <ListTableCell className="font-medium whitespace-nowrap">
       <div
         style={{ height: '1.25rem' }}
         className="flex items-center justify-center"
@@ -60,7 +60,7 @@ export default function ProblemsListItem(
     resultsUrl = `http://www.usaco.org/index.php?page=${parts[1]}${parts[0]}results`;
   }
   const sourceCol = isDivisionTable ? (
-    <ListTableCell className="whitespace-nowrap font-medium">
+    <ListTableCell className="font-medium whitespace-nowrap">
       <a
         href={resultsUrl}
         className={'truncate'}
@@ -72,7 +72,7 @@ export default function ProblemsListItem(
       </a>
     </ListTableCell>
   ) : (
-    <ListTableCell className="whitespace-nowrap font-medium">
+    <ListTableCell className="font-medium whitespace-nowrap">
       {sourceTooltip ? (
         <TextTooltip content={sourceTooltip}>{problem.source}</TextTooltip>
       ) : (
@@ -82,7 +82,7 @@ export default function ProblemsListItem(
   );
 
   const nameCol = (
-    <ListTableCell className="whitespace-nowrap font-medium">
+    <ListTableCell className="font-medium whitespace-nowrap">
       <div className="flex items-center">
         {isDivisionTable == false && problem.isStarred && (
           <Tooltip content="We highly recommend you do all starred problems!">
@@ -100,7 +100,7 @@ export default function ProblemsListItem(
           className={
             (isDivisionTable == false && problem.isStarred
               ? 'pl-1 sm:pl-2'
-              : 'sm:pl-6') + ' truncate problem-list-item-anchor'
+              : 'sm:pl-6') + ' problem-list-item-anchor truncate'
           }
           style={{ maxWidth: '20rem' }}
           target="_blank"
@@ -126,16 +126,16 @@ export default function ProblemsListItem(
       {props.showDifficulty &&
         (isDivisionTable
           ? props.showPercent && (
-              <ListTableCell className="text-left text-xs leading-4 font-medium uppercase tracking-wider">
+              <ListTableCell className="text-left text-xs leading-4 font-medium tracking-wider uppercase">
                 <UsacoTableProgress completed={problem.percentageSolved} />
               </ListTableCell>
             )
           : difficultyCol)}
-      <ListTableCell className="whitespace-nowrap font-medium">
+      <ListTableCell className="font-medium whitespace-nowrap">
         {problem.tags && problem.tags.length ? (
           <details
             open={props.showTags}
-            className="text-gray-500 dark:text-dark-med-emphasis"
+            className="dark:text-dark-med-emphasis text-gray-500"
           >
             <summary>Show Tags</summary>
             <span className="text-xs">{problem.tags.sort().join(', ')}</span>
@@ -143,7 +143,7 @@ export default function ProblemsListItem(
         ) : null}
       </ListTableCell>
       {isDivisionTable && props.modules && (
-        <ListTableCell className="whitespace-nowrap font-medium">
+        <ListTableCell className="font-medium whitespace-nowrap">
           {problem.moduleLink ? (
             // eslint-disable-next-line react/jsx-no-target-blank
             <a href={problem.moduleLink} target="_blank">
@@ -156,7 +156,7 @@ export default function ProblemsListItem(
           )}
         </ListTableCell>
       )}
-      <td className="text-center pr-2 md:pr-3">
+      <td className="pr-2 text-center md:pr-3">
         <ProblemsListItemDropdown {...props} isFocusProblem={false} />
       </td>
     </ListTableRow>

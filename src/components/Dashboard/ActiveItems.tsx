@@ -77,7 +77,7 @@ export default function ActiveItems({
   return (
     <DashboardCard>
       <div className="px-4 py-5 sm:p-6">
-        <h3 className="text-lg leading-6 font-medium text-gray-800 dark:text-dark-high-emphasis">
+        <h3 className="dark:text-dark-high-emphasis text-lg leading-6 font-medium text-gray-800">
           Active {type === 'problems' ? 'Problems' : 'Modules'}
         </h3>
         <div className="mt-4 text-gray-500">
@@ -85,12 +85,12 @@ export default function ActiveItems({
             <p className={idx === 0 ? '' : 'mt-2'} key={item.url}>
               <Link
                 to={item.url}
-                className="font-medium text-blue-600 hover:text-blue-500 dark:text-blue-300 dark:hover:text-blue-200 transition ease-in-out duration-150"
+                className="font-medium text-blue-600 transition duration-150 ease-in-out hover:text-blue-500 dark:text-blue-300 dark:hover:text-blue-200"
               >
                 {item.label}
                 <span
                   className={
-                    'ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium leading-4 ' +
+                    'ml-2 inline-flex items-center rounded-full px-2.5 py-0.5 text-xs leading-4 font-medium ' +
                     statusClasses[item.status]
                   }
                 >

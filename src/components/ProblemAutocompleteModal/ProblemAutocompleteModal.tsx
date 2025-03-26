@@ -20,10 +20,10 @@ const ProblemAutocompleteModal = ({
     <Transition
       show={isOpen}
       as="div"
-      className="fixed z-30 inset-0 h-full overflow-y-auto"
+      className="fixed inset-0 z-30 h-full overflow-y-auto"
     >
       <form
-        className="flex items-end justify-center min-h-full pt-4 px-4 pb-12 text-center sm:block"
+        className="flex min-h-full items-end justify-center px-4 pt-4 pb-12 text-center sm:block"
         onSubmit={e => e.preventDefault()}
       >
         <Transition.Child
@@ -36,10 +36,10 @@ const ProblemAutocompleteModal = ({
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="absolute inset-0 bg-gray-500 dark:bg-gray-900 opacity-75" />
+          <div className="absolute inset-0 bg-gray-500 opacity-75 dark:bg-gray-900" />
         </Transition.Child>
         <span
-          className="hidden sm:inline-block sm:align-middle sm:h-screen"
+          className="hidden sm:inline-block sm:h-screen sm:align-middle"
           aria-hidden="true"
         >
           &#8203;
@@ -47,7 +47,7 @@ const ProblemAutocompleteModal = ({
 
         <Transition.Child
           as="div"
-          className="w-full inline-block align-bottom rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-3xl sm:w-full"
+          className="inline-block w-full transform overflow-hidden rounded-lg text-left align-bottom shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-3xl sm:align-middle"
           enter="ease-out duration-300"
           enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
           enterTo="opacity-100 translate-y-0 sm:scale-100"
@@ -58,12 +58,12 @@ const ProblemAutocompleteModal = ({
           aria-modal="true"
           aria-labelledby="modal-headline"
         >
-          <div className="bg-white dark:bg-dark-surface px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-            <div className="hidden sm:block absolute top-0 right-0 pt-4 pr-4">
+          <div className="dark:bg-dark-surface bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+            <div className="absolute top-0 right-0 hidden pt-4 pr-4 sm:block">
               <button
                 type="button"
                 onClick={() => onClose()}
-                className="bg-white dark:bg-dark-surface rounded-md text-gray-400 dark:text-gray-500 hover:text-gray-500 dark:hover:text-gray-400 focus:outline-hidden"
+                className="dark:bg-dark-surface rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-hidden dark:text-gray-500 dark:hover:text-gray-400"
               >
                 <span className="sr-only">Close</span>
                 {/* Heroicon name: x */}

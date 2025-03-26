@@ -20,7 +20,7 @@ export function ResourcesList({
           <tr>
             <th
               colSpan={6}
-              className={`px-4 sm:px-6 border-b text-left font-medium text-sm uppercase py-3 border-gray-200 dark:border-transparent bg-purple-50 text-purple-500 dark:bg-purple-700/25 dark:text-purple-200`}
+              className={`border-b border-gray-200 bg-purple-50 px-4 py-3 text-left text-sm font-medium text-purple-500 uppercase sm:px-6 dark:border-transparent dark:bg-purple-700/25 dark:text-purple-200`}
             >
               Resources{title ? `: ${title}` : ''}
             </th>
