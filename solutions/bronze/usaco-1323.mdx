@@ -559,7 +559,53 @@ int main() {
 <JavaSection>
 
 ```java
+import java.io.*;
+import java.util.*;
 
+public class FEB {
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
+
+		int n = io.nextInt();
+		String s = io.next();
+
+		if (s.chars().filter(c -> c == 'F').count() == n) {
+            s = "E" + s.substring(1); 
+		}
+
+        List<Integer> positions = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            if (s.charAt(i) != 'F') {
+                positions.add(i);
+            }
+        }
+
+        int ones = positions.get(0) + n - 1 - positions.get(positions.size() - 1);
+
+        int mn = 0;
+		int mx = 0;
+
+        for (int i = 0; i < positions.size() - 1; i++) {
+            int a = positions.get(i);
+            int b = positions.get(i + 1);
+            mn += ((b - a) & 1) ^ (s.charAt(a) != s.charAt(b) ? 1 : 0);
+            mx += b - a - (s.charAt(a) != s.charAt(b) ? 1 : 0);
+        }
+
+        List<Integer> ans = new ArrayList<>();
+        for (int i = mn; i <= ones + mx; i += (ones == 0 ? 2 : 1)) {
+            ans.add(i);
+        }
+
+		io.println(ans.size());
+		for (int i : ans) {
+			io.println(i);
+		}
+
+		io.close();
+	}
+	// CodeSnip{Kattio}
+}
 ```
 
 </JavaSection>
