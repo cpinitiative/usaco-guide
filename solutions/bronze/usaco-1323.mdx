@@ -412,18 +412,16 @@ mx = 0
 
 cur_idx = 0
 while cur_idx < n:
-	if s[cur_idx] == 'F':
+	if s[cur_idx] == "F":
 		cur_idx += 1
 		continue
-	
 
 	next_idx = cur_idx + 1
-	while next_idx < n and s[next_idx] == 'F':
+	while next_idx < n and s[next_idx] == "F":
 		next_idx += 1
-	
+
 	if next_idx == n:
 		break
-	
 
 	num_F = next_idx - cur_idx - 1
 	if s[next_idx] == s[cur_idx]:
@@ -437,7 +435,6 @@ while cur_idx < n:
 		else:
 			# We can alternate BEBEB
 			mn += 0
-		
 
 		# Next, solve for mx
 		mx += length - 1
@@ -452,21 +449,21 @@ while cur_idx < n:
 		else:
 			# At best we have BEBEE
 			mn += 1
-		
+
 		# Next, solve for mx
 		mx += length - 2
-	
+
 	cur_idx = next_idx
 
 
 # Special case: beginning / ending F's
 num_beginning_F = 0
-while num_beginning_F < n and s[num_beginning_F] == 'F':
+while num_beginning_F < n and s[num_beginning_F] == "F":
 	num_beginning_F += 1
 
 
 num_ending_F = 0
-while num_ending_F < n and s[n - 1 - num_ending_F] == 'F':
+while num_ending_F < n and s[n - 1 - num_ending_F] == "F":
 	num_ending_F += 1
 
 
@@ -487,15 +484,14 @@ if num_beginning_F == 0 and num_ending_F == 0:
 	assert (mx - mn) % 2 == 0
 	for i in range(mn, mx + 1, 2):
 		possible_levels.append(i)
-	
+
 else:
 	for i in range(mn, mx + 1):
 		possible_levels.append(i)
-	
+
 print(len(possible_levels))
 for i in possible_levels:
 	print(i)
-
 ```
 
 </PySection>
@@ -508,50 +504,42 @@ Ben's code, which is a lot more concise and takes advantage of some nice similar
 <CPPSection>
 
 ```cpp
+#include <algorithm>
 #include <iostream>
 #include <vector>
-#include <algorithm>
 
-using std::vector;
 using std::endl;
+using std::vector;
 
 int main() {
-    int n;
+	int n;
 	std::string s;
-    std::cin >> n >> s;
+	std::cin >> n >> s;
 
-    if (std::count(s.begin(), s.end(), 'F') == n) {
-        s[0] = 'E';
-    }
+	if (std::count(s.begin(), s.end(), 'F') == n) { s[0] = 'E'; }
 
-    vector<int> positions;
-    for (int i = 0; i < n; i++) {
-        if (s[i] != 'F') {
-            positions.push_back(i);
-        }
-    }
+	vector<int> positions;
+	for (int i = 0; i < n; i++) {
+		if (s[i] != 'F') { positions.push_back(i); }
+	}
 
-    int ones = positions[0] + n - 1 - positions.back();
+	int ones = positions[0] + n - 1 - positions.back();
 
-    int mn = 0;
+	int mn = 0;
 	int mx = 0;
 
-    for (int i = 0; i < positions.size() - 1; i++) {
-        int a = positions[i];
+	for (int i = 0; i < positions.size() - 1; i++) {
+		int a = positions[i];
 		int b = positions[i + 1];
-        mn += ((b - a) & 1) ^ (s[a] != s[b]);
-        mx += b - a - (s[a] != s[b]);
-    }
+		mn += ((b - a) & 1) ^ (s[a] != s[b]);
+		mx += b - a - (s[a] != s[b]);
+	}
 
-    vector<int> ans;
-    for (int i = mn; i <= ones + mx; i += (ones == 0 ? 2 : 1)) {
-        ans.push_back(i);
-    }
+	vector<int> ans;
+	for (int i = mn; i <= ones + mx; i += (ones == 0 ? 2 : 1)) { ans.push_back(i); }
 
-    std::cout << ans.size() << endl;
-    for (int i : ans) {
-        std::cout << i << endl;
-    }
+	std::cout << ans.size() << endl;
+	for (int i : ans) { std::cout << i << endl; }
 }
 ```
 
@@ -569,38 +557,30 @@ public class FEB {
 		int n = io.nextInt();
 		String s = io.next();
 
-		if (s.chars().filter(c -> c == 'F').count() == n) {
-            s = "E" + s.substring(1); 
+		if (s.chars().filter(c -> c == 'F').count() == n) { s = "E" + s.substring(1); }
+
+		List<Integer> positions = new ArrayList<>();
+		for (int i = 0; i < n; i++) {
+			if (s.charAt(i) != 'F') { positions.add(i); }
 		}
 
-        List<Integer> positions = new ArrayList<>();
-        for (int i = 0; i < n; i++) {
-            if (s.charAt(i) != 'F') {
-                positions.add(i);
-            }
-        }
+		int ones = positions.get(0) + n - 1 - positions.get(positions.size() - 1);
 
-        int ones = positions.get(0) + n - 1 - positions.get(positions.size() - 1);
-
-        int mn = 0;
+		int mn = 0;
 		int mx = 0;
 
-        for (int i = 0; i < positions.size() - 1; i++) {
-            int a = positions.get(i);
-            int b = positions.get(i + 1);
-            mn += ((b - a) & 1) ^ (s.charAt(a) != s.charAt(b) ? 1 : 0);
-            mx += b - a - (s.charAt(a) != s.charAt(b) ? 1 : 0);
-        }
+		for (int i = 0; i < positions.size() - 1; i++) {
+			int a = positions.get(i);
+			int b = positions.get(i + 1);
+			mn += ((b - a) & 1) ^ (s.charAt(a) != s.charAt(b) ? 1 : 0);
+			mx += b - a - (s.charAt(a) != s.charAt(b) ? 1 : 0);
+		}
 
-        List<Integer> ans = new ArrayList<>();
-        for (int i = mn; i <= ones + mx; i += (ones == 0 ? 2 : 1)) {
-            ans.add(i);
-        }
+		List<Integer> ans = new ArrayList<>();
+		for (int i = mn; i <= ones + mx; i += (ones == 0 ? 2 : 1)) { ans.add(i); }
 
 		io.println(ans.size());
-		for (int i : ans) {
-			io.println(i);
-		}
+		for (int i : ans) { io.println(i); }
 
 		io.close();
 	}
