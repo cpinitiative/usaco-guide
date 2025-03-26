@@ -405,6 +405,97 @@ public class FEB {
 <PySection>
 
 ```py
+n = int(input())
+s = input()
+
+mn = 0
+mx = 0
+
+cur_idx = 0
+while cur_idx < n:
+	if s[cur_idx] == 'F':
+		cur_idx += 1
+		continue
+	
+
+	next_idx = cur_idx + 1
+	while next_idx < n and s[next_idx] == 'F':
+		next_idx += 1
+	
+	if next_idx == n:
+		break
+	
+
+	num_F = next_idx - cur_idx - 1
+	if s[next_idx] == s[cur_idx]:
+		# Case 1: Solve something like BFFFFFB
+		length = num_F + 2
+
+		# First, solve for mn
+		if length % 2 == 0:
+			# At best we can have something like BEBEBB
+			mn += 1
+		else:
+			# We can alternate BEBEB
+			mn += 0
+		
+
+		# Next, solve for mx
+		mx += length - 1
+	else:
+		# Case 2: Solve something like BFFFFFE
+		length = num_F + 2
+
+		# First, solve for mn
+		if length % 2 == 0:
+			# We can alternate BEBEBE
+			mn += 0
+		else:
+			# At best we have BEBEE
+			mn += 1
+		
+		# Next, solve for mx
+		mx += length - 2
+	
+	cur_idx = next_idx
+
+
+# Special case: beginning / ending F's
+num_beginning_F = 0
+while num_beginning_F < n and s[num_beginning_F] == 'F':
+	num_beginning_F += 1
+
+
+num_ending_F = 0
+while num_ending_F < n and s[n - 1 - num_ending_F] == 'F':
+	num_ending_F += 1
+
+
+if num_beginning_F == n:
+	# everything is an F! special case
+	mn = 0
+	mx = n - 1
+else:
+	# mn doesn't change, since we can always alternate the beginning /
+	# ending properly
+	mx += num_beginning_F
+	mx += num_ending_F
+
+
+possible_levels = []
+if num_beginning_F == 0 and num_ending_F == 0:
+	# Special case: We can only change in increments of two
+	assert (mx - mn) % 2 == 0
+	for i in range(mn, mx + 1, 2):
+		possible_levels.append(i)
+	
+else:
+	for i in range(mn, mx + 1):
+		possible_levels.append(i)
+	
+print(len(possible_levels))
+for i in possible_levels:
+	print(i)
 
 ```
 
