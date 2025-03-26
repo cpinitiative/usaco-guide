@@ -5,25 +5,8 @@ export const GlowingRing = ({
 }: {
   children: JSX.Element;
 }): JSX.Element => (
-  <div className="relative group">
-    <div
-      className="
-        absolute
-        -inset-1
-        dark:-inset-1.5
-        bg-linear-to-r
-        from-blue-600
-        to-purple-700
-        rounded-lg
-        blur
-        opacity-30
-        dark:opacity-50
-        transition
-        duration-1000
-        group-hover:opacity-50
-        dark:group-hover:opacity-75
-      "
-    />
+  <div className="group relative">
+    <div className="absolute -inset-1 rounded-lg bg-linear-to-r from-blue-600 to-purple-700 opacity-30 blur transition duration-1000 group-hover:opacity-50 dark:-inset-1.5 dark:opacity-50 dark:group-hover:opacity-75" />
     {children}
   </div>
 );

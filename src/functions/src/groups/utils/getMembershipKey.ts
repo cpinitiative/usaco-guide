@@ -4,6 +4,6 @@ export default function getMembershipKey(
   return permissionLevel == 'OWNER'
     ? 'ownerIds'
     : permissionLevel == 'ADMIN'
-    ? 'adminIds'
-    : 'memberIds';
+      ? 'adminIds'
+      : 'memberIds';
 }

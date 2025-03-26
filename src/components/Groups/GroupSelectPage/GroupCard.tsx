@@ -6,10 +6,10 @@ export const GroupCard = ({ group }: { group: GroupData }): JSX.Element => {
   return (
     <Link
       to={`/groups/${group.id}/`}
-      className="block px-3 sm:px-5 py-2 sm:py-4 rounded-lg bg-gray-50 dark:bg-gray-900 shadow-xs hover:shadow-md dark:hover:bg-gray-800 transition mb-4"
+      className="mb-4 block rounded-lg bg-gray-50 px-3 py-2 shadow-xs transition hover:shadow-md sm:px-5 sm:py-4 dark:bg-gray-900 dark:hover:bg-gray-800"
     >
-      <div className="sm:text-lg font-medium">{group.name}</div>
-      <div className="text-xs sm:text-sm text-gray-700 dark:text-gray-400">
+      <div className="font-medium sm:text-lg">{group.name}</div>
+      <div className="text-xs text-gray-700 sm:text-sm dark:text-gray-400">
         {group.description}
       </div>
     </Link>

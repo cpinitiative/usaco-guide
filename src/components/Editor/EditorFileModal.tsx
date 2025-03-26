@@ -20,7 +20,7 @@ export const EditorFileModal: React.FC<EditorFileModalProps> = ({
   return (
     <>
       <Modal isOpen={isOpen} onClose={onClose} bg="bg-black/60">
-        <Dialog.Panel className="inline-block bg-white dark:bg-dark-surface rounded-lg text-left overflow-hidden shadow-xl transform transition-all my-8 sm:my-16 sm:align-middle sm:max-w-lg w-full self-start">
+        <Dialog.Panel className="dark:bg-dark-surface my-8 inline-block w-full transform self-start overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-16 sm:max-w-lg sm:align-middle">
           <EditorFileModalInterface
             onSelect={onSelect}
             openAddFile={() => setAddFileOpen(true)}

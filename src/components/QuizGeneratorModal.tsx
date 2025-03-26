@@ -5,8 +5,8 @@ import React, { useMemo } from 'react';
 import { useDarkMode } from '../context/DarkModeContext';
 import { useQuizOpen } from '../context/QuizGeneratorContext';
 import CopyButton from './Editor/CopyButton';
-import Modal from './Modal';
 import CodeBlock from './markdown/CodeBlock/CodeBlock';
+import Modal from './Modal';
 
 interface Answer {
   answer: string;
@@ -123,12 +123,12 @@ export default function QuizGeneratorModal(): JSX.Element {
   }, [quiz]);
   return (
     <Modal isOpen={open} onClose={closeModal}>
-      <Dialog.Panel className="px-4 text-center w-full max-w-4xl h-auto">
-        <div className="inline-block w-full max-w-4xl p-8 my-8 overflow-hidden text-left align-middle transition-all transform bg-white dark:bg-black shadow-xl rounded-2xl">
-          <div className={'flex justify-between items-center'}>
+      <Dialog.Panel className="h-auto w-full max-w-4xl px-4 text-center">
+        <div className="my-8 inline-block w-full max-w-4xl transform overflow-hidden rounded-2xl bg-white p-8 text-left align-middle shadow-xl transition-all dark:bg-black">
+          <div className={'flex items-center justify-between'}>
             <Dialog.Title
               as="h3"
-              className="text-lg font-medium leading-6 text-gray-900 dark:text-gray-200"
+              className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-200"
             >
               Quiz Generator
             </Dialog.Title>
@@ -136,7 +136,7 @@ export default function QuizGeneratorModal(): JSX.Element {
               Add question
             </button>
           </div>
-          <div className={'space-y-8 mt-4'}>
+          <div className={'mt-4 space-y-8'}>
             {quiz.map((question, idx) => (
               <div
                 key={idx}
@@ -156,11 +156,11 @@ export default function QuizGeneratorModal(): JSX.Element {
                     value={question.question}
                     onChange={e => changeQuestion(e.target.value, idx)}
                     className={
-                      'mt-2 w-full shadow-sm focus:ring-blue-500 focus:border-blue-500 block text-sm border-gray-300 rounded-md dark:bg-gray-900 dark:border-gray-700'
+                      'mt-2 block w-full rounded-md border-gray-300 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-900'
                     }
                   />
                   <div className={'ml-4'}>
-                    <h5 className={'font-medium my-2'}>Answers</h5>
+                    <h5 className={'my-2 font-medium'}>Answers</h5>
                     <div className={'space-y-4'}>
                       {question.answers.map((answer, i) => (
                         <div key={i} className={'flex'}>
@@ -170,7 +170,7 @@ export default function QuizGeneratorModal(): JSX.Element {
                             </button>
                           </div>
                           <div className={'w-full'}>
-                            <div className={'w-full flex gap-6 items-center'}>
+                            <div className={'flex w-full items-center gap-6'}>
                               <textarea
                                 value={answer.answer}
                                 onChange={e =>
@@ -183,7 +183,7 @@ export default function QuizGeneratorModal(): JSX.Element {
                                   )
                                 }
                                 className={
-                                  'grow shadow-sm focus:ring-blue-500 focus:border-blue-500 block text-sm border-gray-300 rounded-md dark:bg-gray-900 dark:border-gray-700'
+                                  'block grow rounded-md border-gray-300 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-900'
                                 }
                                 placeholder={`Answer ${i + 1}`}
                               />
@@ -198,7 +198,7 @@ export default function QuizGeneratorModal(): JSX.Element {
                                   )
                                 }
                                 className={
-                                  'w-18 md:w-24 focus:ring-blue-500 focus:ring-2 rounded-md focus:outline-hidden'
+                                  'w-18 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-hidden md:w-24'
                                 }
                               >
                                 {quiz[idx].answers[i].correct ? (
@@ -232,7 +232,7 @@ export default function QuizGeneratorModal(): JSX.Element {
                             </div>
                             <textarea
                               className={
-                                'mt-2 w-full shadow-sm focus:ring-blue-500 focus:border-blue-500 block text-sm border-gray-300 rounded-md dark:bg-gray-900 dark:border-gray-700'
+                                'mt-2 block w-full rounded-md border-gray-300 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-900'
                               }
                               value={answer.explanation}
                               onChange={e =>
@@ -250,7 +250,7 @@ export default function QuizGeneratorModal(): JSX.Element {
                         </div>
                       ))}
                     </div>
-                    <div className={'w-full flex justify-end my-2'}>
+                    <div className={'my-2 flex w-full justify-end'}>
                       <button className={'btn'} onClick={() => addAnswer(idx)}>
                         Add answer
                       </button>
@@ -264,7 +264,7 @@ export default function QuizGeneratorModal(): JSX.Element {
                 onClick={() => {
                   navigator.clipboard.writeText(code);
                 }}
-                className="btn absolute right-3 top-2"
+                className="btn absolute top-2 right-3"
               />
               <CodeBlock className="language-mdx" isDarkMode={isDarkMode}>
                 {code}

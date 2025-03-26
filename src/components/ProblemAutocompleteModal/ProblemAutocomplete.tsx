@@ -15,7 +15,7 @@ const ProblemAutocompleteHit = ({
   return (
     <li key={hit.objectID}>
       <button
-        className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg text-left w-full focus:outline-hidden group hover:bg-sky-500 dark:hover:bg-sky-700 hover:text-white"
+        className="group w-full rounded-lg bg-gray-50 p-4 text-left hover:bg-sky-500 hover:text-white focus:outline-hidden dark:bg-gray-800 dark:hover:bg-sky-700"
         onClick={() => onClick(hit)}
       >
         <div className="flex items-center justify-between">
@@ -25,7 +25,7 @@ const ProblemAutocompleteHit = ({
             {hit.difficulty}
           </span>
         </div>
-        <div className="md:flex md:items-center md:justify-between text-sm text-gray-700 dark:text-gray-300 group-hover:text-sky-100">
+        <div className="text-sm text-gray-700 group-hover:text-sky-100 md:flex md:items-center md:justify-between dark:text-gray-300">
           <span>
             Tags: {hit.tags?.length > 0 ? hit.tags.join(', ') : 'None'}
           </span>
@@ -68,7 +68,7 @@ export function ProblemAutocomplete({
         />
       </div>
       <ul
-        className="overflow-y-auto mt-2 space-y-2"
+        className="mt-2 space-y-2 overflow-y-auto"
         style={{ height: '40rem' }}
       >
         {hits.map(hit => (

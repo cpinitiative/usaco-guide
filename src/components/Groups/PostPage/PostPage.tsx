@@ -2,9 +2,9 @@ import { RouteComponentProps } from '@reach/router';
 import * as React from 'react';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import { usePost } from '../../../hooks/groups/usePost';
-import TopNavigationBar from '../../TopNavigationBar/TopNavigationBar';
 import Layout from '../../layout';
 import SEO from '../../seo';
+import TopNavigationBar from '../../TopNavigationBar/TopNavigationBar';
 import Breadcrumbs from '../Breadcrumbs';
 import PostBody from './PostBody';
 import PostHeader from './PostHeader';
@@ -27,8 +27,8 @@ export default function PostPage(
     return (
       <>
         <TopNavigationBar />
-        <main className="text-center py-10">
-          <p className="font-medium text-2xl">Loading...</p>
+        <main className="py-10 text-center">
+          <p className="text-2xl font-medium">Loading...</p>
         </main>
       </>
     );
@@ -38,8 +38,8 @@ export default function PostPage(
     return (
       <>
         <TopNavigationBar />
-        <main className="text-center py-10">
-          <p className="font-medium text-2xl">Post Not Found</p>
+        <main className="py-10 text-center">
+          <p className="text-2xl font-medium">Post Not Found</p>
         </main>
       </>
     );
@@ -49,22 +49,22 @@ export default function PostPage(
     <Layout>
       <SEO title={`${post.name} · ${activeGroup.groupData?.name}`} />
       <TopNavigationBar />
-      <nav className="flex mt-6 mb-4" aria-label="Breadcrumb">
+      <nav className="mt-6 mb-4 flex" aria-label="Breadcrumb">
         <Breadcrumbs
           className={`${
             post.type === 'announcement' ? 'max-w-4xl' : 'max-w-7xl'
-          } w-full mx-auto px-4 sm:px-6 lg:px-8 pt-3 pb-4`}
+          } mx-auto w-full px-4 pt-3 pb-4 sm:px-6 lg:px-8`}
           group={activeGroup.groupData!}
         />
       </nav>
       <main
-        className="flex-1 relative overflow-y-auto focus:outline-hidden"
+        className="relative flex-1 overflow-y-auto focus:outline-hidden"
         tabIndex={-1}
       >
         <div className="pb-8 xl:pb-10">
           {post.type === 'assignment' ? (
-            <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 xl:max-w-(--breakpoint-xl) xl:grid xl:grid-cols-3">
-              <div className="xl:col-span-2 xl:pr-8 xl:border-r xl:border-gray-200 dark:border-gray-700">
+            <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 xl:grid xl:max-w-(--breakpoint-xl) xl:grid-cols-3">
+              <div className="xl:col-span-2 xl:border-r xl:border-gray-200 xl:pr-8 dark:border-gray-700">
                 <div>
                   <PostHeader post={post} />
                   <aside className="mt-8 xl:hidden">
@@ -79,7 +79,7 @@ export default function PostPage(
               </aside>
             </div>
           ) : (
-            <div className="mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl">
+            <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
               <PostHeader post={post} />
               <div className="h-4" />
               <PostBody post={post} />

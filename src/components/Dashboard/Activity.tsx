@@ -38,9 +38,9 @@ export function ActivityHeatmap({
   const activeDateModulesCompleted =
     (activeDate && moduleActivities[activeDate.getTime()]?.length) ?? 0;
   return (
-    <div className="sm:px-6 lg:px-8 py-4">
-      <div className="bg-white dark:bg-gray-800 shadow-sm transition sm:rounded-lg px-4 py-5 sm:p-6">
-        <div className="grid lg:grid-cols-3 lg:gap-x-6 gap-y-4 lg:gap-y-0">
+    <div className="py-4 sm:px-6 lg:px-8">
+      <div className="bg-white px-4 py-5 shadow-sm transition sm:rounded-lg sm:p-6 dark:bg-gray-800">
+        <div className="grid gap-y-4 lg:grid-cols-3 lg:gap-x-6 lg:gap-y-0">
           <div className="col-span-2">
             <CalendarHeatmap
               startDate={startDate}
@@ -72,14 +72,14 @@ export function ActivityHeatmap({
                 </p>
               </div>
             ) : (
-              <p className="text-sm text-gray-600 dark:text-gray-400 mt-3">
+              <p className="mt-3 text-sm text-gray-600 dark:text-gray-400">
                 Hover over a square to view more details!
               </p>
             )}
           </div>
         </div>
 
-        <p className="text-sm text-gray-600 dark:text-gray-400 mt-3">
+        <p className="mt-3 text-sm text-gray-600 dark:text-gray-400">
           Note that activity calculations are very much in development and will
           change in the near future.
         </p>

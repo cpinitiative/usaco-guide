@@ -91,8 +91,8 @@ module.exports = (
       const captionOptions = Array.isArray(options.showCaptions)
         ? options.showCaptions
         : options.showCaptions === true
-        ? [`title`, `alt`]
-        : false;
+          ? [`title`, `alt`]
+          : false;
 
       if (captionOptions) {
         for (const option of captionOptions) {
@@ -370,8 +370,8 @@ module.exports = (
     <span
       class="${imageWrapperClass}"
       style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: ${presentationWidth}px; ${
-      imageCaption ? `` : wrapperStyle
-    }"
+        imageCaption ? `` : wrapperStyle
+      }"
     >
       ${rawHTML}
     </span>

@@ -19,7 +19,7 @@ const Template: Story<ModalProps> = args => {
       </button>
       <Modal {...args} isOpen={modalOpen} onClose={() => setModalOpen(false)}>
         <Dialog.Panel className={`w-full max-w-md ${darkMode ? 'dark' : ''}`}>
-          <div className="bg-white dark:bg-black dark:text-white p-5 rounded-lg shadow-lg flex flex-col items-start">
+          <div className="flex flex-col items-start rounded-lg bg-white p-5 shadow-lg dark:bg-black dark:text-white">
             <Dialog.Title as="h3" className="text-lg font-bold">
               Modal Title
             </Dialog.Title>

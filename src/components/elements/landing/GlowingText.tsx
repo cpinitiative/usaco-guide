@@ -10,12 +10,12 @@ export const GlowingText = ({
   extraGlow?: boolean;
   children: string;
 }): JSX.Element => (
-  <div className="relative group">
+  <div className="group relative">
     <h1 className={classNames(className, 'relative z-10')}>{children}</h1>
     <span
       className={classNames(
         className,
-        '-z-10 absolute inset-0',
+        'absolute inset-0 -z-10',
         'bg-linear-to-r from-sky-700 to-purple-700',
         'bg-clip-text text-transparent blur-xl select-none'
       )}
@@ -27,7 +27,7 @@ export const GlowingText = ({
       <span
         className={classNames(
           className,
-          '-z-10 absolute inset-0',
+          'absolute inset-0 -z-10',
           'bg-linear-to-r from-sky-700 to-purple-700',
           'bg-clip-text text-transparent blur-xl select-none'
         )}
@@ -39,7 +39,7 @@ export const GlowingText = ({
     <span
       className={classNames(
         className,
-        '-z-10 absolute inset-0',
+        'absolute inset-0 -z-10',
         'bg-linear-to-r from-sky-700 to-purple-700',
         'bg-clip-text text-transparent blur-xl select-none',
         'opacity-0 transition duration-1000 group-hover:opacity-100'

@@ -119,13 +119,13 @@ const ModuleLink = ({ link }: { link: ModuleLinkInfo }): JSX.Element => {
       )}
     >
       <Link to={link.url}>
-        <div className="link-with-progress-link link-with-progress-link--syllabus text-xl leading-6 py-3 group">
+        <div className="link-with-progress-link link-with-progress-link--syllabus group py-3 text-xl leading-6">
           <p
             className={`${
               progress === 'Ignored'
                 ? 'text-gray-400 dark:text-gray-600'
                 : 'text-gray-700 dark:text-gray-400'
-            } group-hover:text-blue-800 dark:group-hover:text-dark-high-emphasis transition mb-1 flex items-center`}
+            } dark:group-hover:text-dark-high-emphasis mb-1 flex items-center transition group-hover:text-blue-800`}
           >
             <span className="mr-2 inline-flex items-end">
               {link.title}{' '}
@@ -138,7 +138,7 @@ const ModuleLink = ({ link }: { link: ModuleLinkInfo }): JSX.Element => {
                   }
                 >
                   <svg
-                    className="h-5 w-5 text-gray-300 group-hover:text-yellow-300 ml-1.5 transition ease-in-out duration-150"
+                    className="ml-1.5 h-5 w-5 text-gray-300 transition duration-150 ease-in-out group-hover:text-yellow-300"
                     viewBox="0 0 20 20"
                     fill="currentColor"
                   >
@@ -153,7 +153,7 @@ const ModuleLink = ({ link }: { link: ModuleLinkInfo }): JSX.Element => {
             </span>
           </p>
           {link.frequency !== null && (
-            <p className="text-sm flex items-center leading-4 mb-1">
+            <p className="mb-1 flex items-center text-sm leading-4">
               <ModuleFrequencyDots
                 count={link.frequency}
                 totalCount={4}
@@ -164,7 +164,7 @@ const ModuleLink = ({ link }: { link: ModuleLinkInfo }): JSX.Element => {
               />
               <span
                 className={
-                  `ml-1 transition text-gray-500 ` +
+                  `ml-1 text-gray-500 transition ` +
                   FrequencyTextColors[link.frequency ?? 0]
                 }
               >
@@ -173,7 +173,7 @@ const ModuleLink = ({ link }: { link: ModuleLinkInfo }): JSX.Element => {
             </p>
           )}
           {/* https://stackoverflow.com/questions/9229213/convert-iso-date-to-milliseconds-in-javascript */}
-          <p className="block text-sm text-gray-400 group-hover:text-blue-700 dark:group-hover:text-dark-high-emphasis transition leading-5">
+          <p className="dark:group-hover:text-dark-high-emphasis block text-sm leading-5 text-gray-400 transition group-hover:text-blue-700">
             {link.description}
 
             <i>

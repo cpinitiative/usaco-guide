@@ -27,26 +27,26 @@ export default function SlideoverForm(props: SlideoverProps): JSX.Element {
     >
       <DialogBackdrop
         transition
-        className="fixed inset-0 bg-gray-500/75 dark:bg-gray-900/75 transition-opacity data-[closed]:opacity-0 data-[enter]:duration-300 data-[leave]:duration-200 data-[enter]:ease-out data-[leave]:ease-in"
+        className="fixed inset-0 bg-gray-500/75 transition-opacity data-[closed]:opacity-0 data-[enter]:duration-300 data-[enter]:ease-out data-[leave]:duration-200 data-[leave]:ease-in dark:bg-gray-900/75"
       />
 
       <div className="fixed inset-0 z-30 w-screen">
-        <div className="absolute inset-y-0 pl-16 max-w-xl right-0 flex">
+        <div className="absolute inset-y-0 right-0 flex max-w-xl pl-16">
           <DialogPanel
             transition
-            className="transform ease-in-out duration-500 sm:duration-700 data-[closed]:translate-x-full"
+            className="transform duration-500 ease-in-out data-[closed]:translate-x-full sm:duration-700"
           >
             <form
-              className="h-full flex flex-col bg-white dark:bg-dark-surface shadow-xl"
+              className="dark:bg-dark-surface flex h-full flex-col bg-white shadow-xl"
               onSubmit={props.onSubmit}
             >
-              <div className="flex-1 h-0 overflow-y-auto">
-                <header className="space-y-1 py-6 px-4 bg-blue-700 dark:bg-blue-900 sm:px-6">
+              <div className="h-0 flex-1 overflow-y-auto">
+                <header className="space-y-1 bg-blue-700 px-4 py-6 sm:px-6 dark:bg-blue-900">
                   <div className="flex items-center justify-between space-x-3">
                     <DialogTitle className="text-lg leading-7 font-medium text-white">
                       {props.title}
                     </DialogTitle>
-                    <div className="h-7 flex items-center">
+                    <div className="flex h-7 items-center">
                       <button
                         type="button"
                         className="text-blue-200 hover:text-white"
@@ -63,11 +63,11 @@ export default function SlideoverForm(props: SlideoverProps): JSX.Element {
                     </p>
                   </div>
                 </header>
-                <div className="flex-1 flex flex-col justify-between">
+                <div className="flex flex-1 flex-col justify-between">
                   {props.children}
                 </div>
               </div>
-              <div className="shrink-0 px-4 py-4 space-x-4 flex justify-end border-t border-gray-200 dark:border-gray-800">
+              <div className="flex shrink-0 justify-end space-x-4 border-t border-gray-200 px-4 py-4 dark:border-gray-800">
                 {props.footerButtons}
               </div>
             </form>

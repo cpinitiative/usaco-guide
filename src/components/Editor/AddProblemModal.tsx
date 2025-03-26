@@ -1,6 +1,6 @@
 import { Dialog } from '@headlessui/react';
-import prettier from 'prettier';
-import babelParser from 'prettier/parser-babel';
+import * as prettier from 'prettier';
+import babelPlugin from 'prettier/plugins/babel';
 import React, { useState } from 'react';
 import Modal from '../Modal';
 import CopyButton from './CopyButton';
@@ -33,7 +33,7 @@ async function addProblem(
     setMetadata(
       await prettier.format(JSON.stringify(metadata, null, 2), {
         parser: 'json',
-        plugins: [babelParser],
+        plugins: [babelPlugin],
       })
     );
     setStatus('Get Metadata');
@@ -53,14 +53,14 @@ export default function AddProblemModal(props: {
   );
   return (
     <Modal {...props}>
-      <Dialog.Panel className="w-full max-w-2xl transform overflow-hidden rounded-2xl bg-black text-white p-6 text-left align-middle shadow-xl transition-all">
-        <Dialog.Title as="h3" className="text-lg font-medium leading-6">
+      <Dialog.Panel className="w-full max-w-2xl transform overflow-hidden rounded-2xl bg-black p-6 text-left align-middle text-white shadow-xl transition-all">
+        <Dialog.Title as="h3" className="text-lg leading-6 font-medium">
           Add Problem
         </Dialog.Title>
-        <div className="mt-2 relative rounded-md shadow-sm">
+        <div className="relative mt-2 rounded-md shadow-sm">
           <input
             type="text"
-            className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md dark:bg-gray-900 dark:border-gray-700"
+            className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm dark:border-gray-700 dark:bg-gray-900"
             placeholder="Enter Problem URL"
             onChange={e => setLink(e.target.value)}
           />
@@ -75,8 +75,8 @@ export default function AddProblemModal(props: {
             {status}
           </button>
         </div>
-        <div className="mt-4 relative">
-          <pre className="bg-gray-900 p-4 rounded-md text-white text-sm whitespace-pre-wrap">
+        <div className="relative mt-4">
+          <pre className="rounded-md bg-gray-900 p-4 text-sm whitespace-pre-wrap text-white">
             {metadata}
           </pre>
           <CopyButton

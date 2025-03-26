@@ -113,30 +113,30 @@ export default function ProblemsPage(props: PageProps<DataProps>) {
     <Layout>
       <SEO title="All Problems" />
 
-      <div className="min-h-screen bg-gray-100 dark:bg-dark-surface">
+      <div className="dark:bg-dark-surface min-h-screen bg-gray-100">
         <TopNavigationBar />
 
         <InstantSearch searchClient={searchClient} indexName={indexName}>
-          <div className="py-16 bg-blue-600 dark:bg-blue-900 px-5">
-            <div className="max-w-3xl mx-auto mb-6">
-              <h1 className="text-center text-3xl sm:text-5xl font-bold text-white dark:text-dark-high-emphasis mb-6">
+          <div className="bg-blue-600 px-5 py-16 dark:bg-blue-900">
+            <div className="mx-auto mb-6 max-w-3xl">
+              <h1 className="dark:text-dark-high-emphasis mb-6 text-center text-3xl font-bold text-white sm:text-5xl">
                 Problems
               </h1>
               <SearchBox />
             </div>
           </div>
-          <div className="flex mt-4 mb-1 mx-9 justify-center">
+          <div className="mx-9 mt-4 mb-1 flex justify-center">
             <PoweredBy />
           </div>
-          <div className="pt-3 px-9 pb-4 grid grid-cols-10">
-            <div className="sm:col-span-4 md:col-span-3 lg:col-span-2 xl:col-span-2 col-span-5 overflow-y-auto">
+          <div className="grid grid-cols-10 px-9 pt-3 pb-4">
+            <div className="col-span-5 overflow-y-auto sm:col-span-4 md:col-span-3 lg:col-span-2 xl:col-span-2">
               <TagsRefinementList />
             </div>
-            <div className="py-0.5 px-1 sm:col-span-6 md:col-span-7 lg:col-span-8 xl:col-span-8 col-span-5">
-              <div className="mb-5 items-center grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-x-5 gap-y-3">
+            <div className="col-span-5 px-1 py-0.5 sm:col-span-6 md:col-span-7 lg:col-span-8 xl:col-span-8">
+              <div className="mb-5 grid grid-cols-1 items-center gap-x-5 gap-y-3 sm:grid-cols-2 lg:grid-cols-6">
                 {selectionMetadata.map(props => (
                   <div
-                    className="sm:col-span-3 col-span-2 md:col-span-1 lg:col-span-2 tw-forms-disable-all-descendants"
+                    className="tw-forms-disable-all-descendants col-span-2 sm:col-span-3 md:col-span-1 lg:col-span-2"
                     key={props.attribute}
                   >
                     <Selection {...props} />

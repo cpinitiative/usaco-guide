@@ -1,11 +1,11 @@
 .btn {
-  @apply inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors;
+  @apply inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm transition-colors hover:bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-hidden;
   &:disabled {
     cursor: not-allowed;
     @apply bg-gray-50 text-gray-400;
   }
   .dark & {
-    @apply border-transparent text-gray-200 bg-gray-800 hover:bg-gray-700 focus:ring-offset-dark-surface;
+    @apply focus:ring-offset-dark-surface border-transparent bg-gray-800 text-gray-200 hover:bg-gray-700;
   }
   .dark &:disabled {
     @apply bg-gray-900 text-gray-500;
@@ -14,13 +14,13 @@
 
 .dark {
   & .btn {
-    @apply border-transparent text-gray-200 bg-gray-800 hover:bg-gray-700 focus:ring-offset-dark-surface;
+    @apply focus:ring-offset-dark-surface border-transparent bg-gray-800 text-gray-200 hover:bg-gray-700;
   }
   & .btn:disabled {
     @apply bg-gray-900 text-gray-500;
   }
   & .input {
-    @apply focus:border-blue-500 border-transparent bg-gray-800 placeholder-gray-400;
+    @apply border-transparent bg-gray-800 placeholder-gray-400 focus:border-blue-500;
   }
   & .input:disabled {
     @apply bg-gray-800;
@@ -32,21 +32,21 @@
 }
 
 .btn-primary {
-  @apply inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 dark:disabled:bg-blue-900 dark:disabled:text-white/50 disabled:cursor-not-allowed focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-offset-dark-surface;
+  @apply dark:focus:ring-offset-dark-surface inline-flex items-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-hidden disabled:cursor-not-allowed disabled:bg-blue-300 dark:disabled:bg-blue-900 dark:disabled:text-white/50;
 }
 
 .textarea {
-  @apply shadow-sm block w-full focus:ring-blue-500 focus:border-blue-500 sm:text-sm border-gray-300 rounded-md dark:bg-gray-800 dark:border-transparent dark:focus:border-blue-500;
+  @apply block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm dark:border-transparent dark:bg-gray-800 dark:focus:border-blue-500;
 }
 
 .input {
-  @apply flex-1 block w-full min-w-0 focus:ring-blue-500 focus:border-blue-500 rounded-md shadow-sm sm:text-sm border-gray-300;
+  @apply block w-full min-w-0 flex-1 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm;
   &:disabled {
     @apply bg-gray-100;
     cursor: not-allowed;
   }
   .dark & {
-    @apply focus:border-blue-500 border-transparent bg-gray-800 placeholder-gray-400;
+    @apply border-transparent bg-gray-800 placeholder-gray-400 focus:border-blue-500;
   }
   .dark &:disabled {
     @apply bg-gray-800;
@@ -54,9 +54,91 @@
 }
 
 .mobile-menu-button-container {
-  @apply rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-hidden focus:bg-gray-100 focus:text-gray-500 transition;
+  @apply rounded-md text-gray-400 transition hover:bg-gray-100 hover:text-gray-500 focus:bg-gray-100 focus:text-gray-500 focus:outline-hidden;
 
   .dark & {
-    @apply text-dark-med-emphasis hover:bg-gray-800 hover:text-dark-high-emphasis focus:bg-gray-700;
+    @apply text-dark-med-emphasis hover:text-dark-high-emphasis hover:bg-gray-800 focus:bg-gray-700;
+  }
+}
+
+.tippy-tooltip {
+  --tooltip-bg-color: #252f3f;
+
+  .dark & {
+    --tooltip-bg-color: #e2e8f0;
+    color: #27272a !important;
+  }
+
+  background-color: var(--tooltip-bg-color) !important;
+  padding: 0.5rem;
+  line-height: 1.5;
+  font-size: 1rem !important;
+  font-weight: normal !important;
+  text-align: center;
+
+  &[data-placement^='top'] > .tippy-arrow::before {
+    border-top-color: var(--tooltip-bg-color) !important;
+  }
+  &[data-placement^='bottom'] > .tippy-arrow::before {
+    border-bottom-color: var(--tooltip-bg-color) !important;
+  }
+  &[data-placement^='left'] > .tippy-arrow::before {
+    border-left-color: var(--tooltip-bg-color) !important;
+  }
+  &[data-placement^='right'] > .tippy-arrow::before {
+    border-right-color: var(--tooltip-bg-color) !important;
+  }
+}
+
+.tippy-tooltip--asterisk {
+  &[data-placement^='top'] {
+    transform: translateY(10px);
+  }
+  &[data-placement^='bottom'] {
+    transform: translateY(-7px);
+  }
+}
+
+.tippy-tooltip--compact {
+  font-size: 0.875rem !important;
+  padding: 0rem;
+}
+
+.code-block-copy-button {
+  padding: 1.6px 8px 1.6px 8px;
+  color: white;
+  background-color: hsla(60, 20%, 12%, 1);
+
+  position: absolute;
+  top: 0px;
+  right: calc(var(--right-offset) + var(--left-offset));
+  z-index: 99;
+  border-radius: 0px 0px 4px 4px;
+  font-size: 12px;
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono',
+    'Courier New', monospace;
+
+  /* copy from tailwind defaults */
+  &:hover {
+    background-color: hsla(60, 20%, 25%, 1);
+  }
+
+  .dark & {
+    color: black;
+    background-color: hsla(240, 20%, 88%, 1);
+  }
+
+  .dark &:hover {
+    background-color: hsla(240, 20%, 75%, 1);
+  }
+
+  /* -mx-4 sm:-mx-6 md:mx-0 */
+  --left-offset: -4 * 0.25rem;
+  @media (min-width: 640px) {
+    --left-offset: -6 * 0.25rem;
+  }
+  @media (min-width: 768px) {
+    --left-offset: 0rem;
   }
 }

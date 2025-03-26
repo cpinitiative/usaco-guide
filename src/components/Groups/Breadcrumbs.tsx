@@ -22,7 +22,7 @@ export default function Breadcrumbs({
           >
             {/* Heroicon name: solid/home */}
             <svg
-              className="shrink-0 h-5 w-5"
+              className="h-5 w-5 shrink-0"
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 20 20"
               fill="currentColor"
@@ -38,7 +38,7 @@ export default function Breadcrumbs({
         <div className="flex items-center">
           {/* Heroicon name: solid/chevron-right */}
           <svg
-            className="shrink-0 h-5 w-5 text-gray-400 dark:text-gray-500"
+            className="h-5 w-5 shrink-0 text-gray-400 dark:text-gray-500"
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 20 20"
             fill="currentColor"
@@ -63,7 +63,7 @@ export default function Breadcrumbs({
           <div className="flex items-center">
             {/* Heroicon name: solid/chevron-right */}
             <svg
-              className="shrink-0 h-5 w-5 text-gray-400 dark:text-gray-500"
+              className="h-5 w-5 shrink-0 text-gray-400 dark:text-gray-500"
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 20 20"
               fill="currentColor"

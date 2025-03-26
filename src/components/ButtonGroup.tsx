@@ -24,7 +24,7 @@ export default function ButtonGroup<T extends string>({
     'border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-200 hover:text-gray-500 dark:hover:text-gray-100 active:bg-gray-100 active:text-gray-700';
 
   return (
-    <span className="relative z-0 inline-flex shadow-sm rounded-md">
+    <span className="relative z-0 inline-flex rounded-md shadow-sm">
       {options.map((option, index) => (
         <button
           type="button"

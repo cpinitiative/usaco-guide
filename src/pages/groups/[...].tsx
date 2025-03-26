@@ -25,9 +25,9 @@ import PostLeaderboardPage from '../../components/Groups/PostLeaderboardPage/Pos
 import PostPage from '../../components/Groups/PostPage/PostPage';
 import ProblemPage from '../../components/Groups/ProblemPage/ProblemPage';
 import { ProblemSubmissionPopupProvider } from '../../components/Groups/ProblemSubmissionPopup';
-import TopNavigationBar from '../../components/TopNavigationBar/TopNavigationBar';
 import Layout from '../../components/layout';
 import SEO from '../../components/seo';
+import TopNavigationBar from '../../components/TopNavigationBar/TopNavigationBar';
 import { useSignIn } from '../../context/SignInContext';
 import {
   useFirebaseUser,
@@ -69,12 +69,12 @@ const GroupPageWrapper = (props: GroupPageWrapperProps): ReactElement => {
     return (
       <Layout>
         <TopNavigationBar />
-        <main className="text-center py-10">
-          <p className="font-medium text-2xl">
+        <main className="py-10 text-center">
+          <p className="text-2xl font-medium">
             You need to sign in to access groups.{' '}
             <button
               onClick={signIn}
-              className="focus:outline-hidden underline text-blue-600 dark:text-blue-300"
+              className="text-blue-600 underline focus:outline-hidden dark:text-blue-300"
             >
               Sign in now
             </button>
@@ -92,8 +92,8 @@ const GroupPageWrapper = (props: GroupPageWrapperProps): ReactElement => {
       <Layout>
         <TopNavigationBar />
         <SEO title="Loading..." />
-        <main className="text-center py-10">
-          <p className="font-medium text-2xl">Loading...</p>
+        <main className="py-10 text-center">
+          <p className="text-2xl font-medium">Loading...</p>
         </main>
       </Layout>
     );
@@ -103,12 +103,12 @@ const GroupPageWrapper = (props: GroupPageWrapperProps): ReactElement => {
       <Layout>
         <TopNavigationBar />
         <SEO title="Group Not Found" />
-        <main className="text-center py-10">
-          <p className="font-medium text-2xl">
+        <main className="py-10 text-center">
+          <p className="text-2xl font-medium">
             Group not found.{' '}
             <Link
               to="/groups"
-              className="text-blue-600 dark:text-blue-400 underline"
+              className="text-blue-600 underline dark:text-blue-400"
             >
               Return Home.
             </Link>

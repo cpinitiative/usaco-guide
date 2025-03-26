@@ -45,10 +45,10 @@ export const parameters = {
 
 export const decorators = [
   Story => (
-    <div className="grid storybook-container font-sans">
+    <div className="storybook-container grid font-sans">
       <div className="h-full">
-        <div className="p-4 sm:p-6 lg:p-8 max-w-4xl mx-auto">
-          <p className="text-gray-800 text-2xl font-bold">Light Mode</p>
+        <div className="mx-auto max-w-4xl p-4 sm:p-6 lg:p-8">
+          <p className="text-2xl font-bold text-gray-800">Light Mode</p>
           <div className="h-4" />
           <DarkModeContext.Provider value={false}>
             <Story />
@@ -56,8 +56,8 @@ export const decorators = [
         </div>
       </div>
       <div className="bg-dark-surface text-dark-high-emphasis dark h-full">
-        <div className="p-4 sm:p-6 lg:p-8 max-w-4xl mx-auto">
-          <p className="text-gray-100 text-2xl font-bold">Dark Mode</p>
+        <div className="mx-auto max-w-4xl p-4 sm:p-6 lg:p-8">
+          <p className="text-2xl font-bold text-gray-100">Dark Mode</p>
           <div className="h-4" />
           <DarkModeContext.Provider value={true}>
             <Story />
