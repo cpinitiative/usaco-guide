@@ -224,20 +224,24 @@ int main() {
 
 	int mn = 0, mx = 0;
 
-	int curIdx = 0;
-	while (curIdx < n) {
-		if (s[curIdx] == 'F') {
-			curIdx++;
+	int cur_idx = 0;
+	while (cur_idx < n) {
+		if (s[cur_idx] == 'F') {
+			cur_idx++;
 			continue;
 		}
 
-		int nextIdx = curIdx + 1;
-		while (nextIdx < n && s[nextIdx] == 'F') nextIdx++;
-		if (nextIdx == n) break;
+		int next_idx = cur_idx + 1;
+		while (next_idx < n && s[next_idx] == 'F') {
+			next_idx++;
+		} 
+		if (next_idx == n) {
+			break;
+		} 
 
-		int num_F = nextIdx - curIdx - 1;
+		int num_F = next_idx - cur_idx - 1;
 
-		if (s[nextIdx] == s[curIdx]) {
+		if (s[next_idx] == s[cur_idx]) {
 			// Case 1: Solve something like BFFFFFB
 			int length = num_F + 2;
 
@@ -269,7 +273,7 @@ int main() {
 			mx += length - 2;
 		}
 
-		curIdx = nextIdx;
+		cur_idx = next_idx;
 	}
 
 	// Special case: beginning / ending F's
