@@ -5,14 +5,6 @@
 A free collection of curated, high-quality resources to take you from Bronze to
 Platinum and beyond.
 
-Thank you to the following companies:
-
-- [Vercel](https://vercel.com/?utm_source=cp-initiative&utm_campaign=oss),
-  hosting & continuous deployment
-- [Microsoft for Nonprofits](https://microsoft.com/)
-- [Algolia](https://algolia.com/), search functionality
-- And [more](docs/Companies.md)!
-
 ## Documentation + Contributing
 
 See the [contributing module](https://usaco.guide/general/contributing). All
@@ -36,13 +28,11 @@ Our front-end is built with:
 - React
 - Gatsby
 - Typescript
-- Tailwind CSS & Tailwind UI
+- Tailwind CSS
 - [Storybook](https://storybook.js.org/) and
   [Chromatic](https://www.chromatic.com/)
 - MDX (JSX in Markdown) with XDM compiler
 - Firebase
-- Deployed with
-  [Vercel](https://vercel.com/?utm_source=cp-initiative&utm_campaign=oss)
 
 ## Contact Info
 
