@@ -94,18 +94,6 @@ const plugins = [
     },
   },
   {
-    resolve: '@sentry/gatsby',
-    options: {
-      dsn: 'https://2e28bddc353b46e7bead85347a099a04@o423042.ingest.sentry.io/5352677',
-      denyUrls: [/extensions\//i, /^chrome:\/\//i],
-      ...(process.env.NODE_ENV === 'production'
-        ? {}
-        : {
-            defaultIntegrations: false,
-          }),
-    },
-  },
-  {
     // This plugin must be placed last in your list of plugins to ensure that it can query all the GraphQL data
     resolve: 'gatsby-plugin-algolia',
     options: {
@@ -124,18 +112,7 @@ const plugins = [
   //     devMode: false,
   //   },
   // },
-  // {
-  //   resolve: `gatsby-plugin-hotjar`,
-  //   options: {
-  //     includeInDevelopment: false, // optional parameter to include script in development
-  //     id: 2173658,
-  //     sv: 6,
-  //   },
-  // },
   `gatsby-plugin-meta-redirect`,
-  // this (optional) plugin enables Progressive Web App + Offline functionality
-  // To learn more, visit: https://gatsby.dev/offline
-  // `gatsby-plugin-offline`,
 ];
 
 module.exports = {
