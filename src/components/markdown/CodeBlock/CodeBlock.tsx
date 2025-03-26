@@ -2,90 +2,60 @@
 
 // File taken from https://github.com/FormidableLabs/prism-react-renderer/issues/54
 
+import clsx from 'clsx';
 import { themes } from 'prism-react-renderer';
 import * as React from 'react';
-import styled from 'styled-components';
 import { SpoilerContext } from '../Spoiler';
 import Highlight from './SyntaxHighlighting/Highlight';
 import Prism from './SyntaxHighlighting/prism';
 
-const Line = styled.div`
-  display: table-row;
-`;
+const Line = ({ className = '', ...props }) => (
+  <div className={clsx(className, 'table-row')} {...props} />
+);
 
-const LineNo = styled.span`
-  display: table-cell;
-  white-space: nowrap;
-  text-align: right;
-  user-select: none;
-  opacity: 0.5;
-  &::before {
-    content: attr(data-line-number);
-  }
-`;
+const LineNo = ({ className = '', ...props }) => (
+  <span
+    className={clsx(
+      className,
+      'table-cell text-right whitespace-nowrap opacity-50 select-none [&::before]:content-[attr(data-line-number)]'
+    )}
+    {...props}
+  />
+);
 
-const LineSnip = styled.span`
-  display: table-cell;
-  white-space: nowrap;
-  user-select: none;
-  width: 1em;
-  padding-right: 0.5em;
-`;
+const LineSnip = ({ className = '', ...props }) => (
+  <span
+    className={clsx(
+      className,
+      'user-select-none table-cell w-4 pr-2 whitespace-nowrap'
+    )}
+    {...props}
+  />
+);
 
-const CodeSnipButtonIcon = styled.svg`
-  color: rgba(156, 220, 254, 0.3);
-  &:hover {
-    color: rgba(156, 220, 254, 0.7);
-  }
-`;
+const CodeSnipButtonIcon = ({ className = '', ...props }) => (
+  <svg
+    className={clsx(
+      className,
+      'text-green-700/40 hover:text-green-600/50 dark:text-[rgba(156,220,254,0.3)] dark:hover:text-[rgba(156,220,254,0.7)]'
+    )}
+    {...props}
+  />
+);
 
-const LineContent = styled.span`
-  display: table-cell;
-`;
+const LineContent = ({ className = '', ...props }) => (
+  <span className={clsx(className, 'table-cell')} {...props} />
+);
 
-const CodeSnippetLineContent = styled(LineContent)`
-  color: ${(props: { isDarkMode: boolean }) =>
-    props.isDarkMode ? '#00bb00' : '#006600'};
-  &:hover > span {
-    color: ${(props: { isDarkMode: boolean }) =>
-      props.isDarkMode ? '#00bb00c0;' : '#006600c0'};
-    cursor: pointer;
-  }
-`;
-
-const CopyButton = styled.button<{ isDarkMode: boolean; rightOffset: string }>`
-  padding: 1.6px 8px 1.6px 8px;
-  color: ${({ isDarkMode }) => (isDarkMode ? 'black' : 'white')};
-  background-color: ${props =>
-    props.isDarkMode ? 'hsla(240, 20%, 88%, 1)' : 'hsla(60, 20%, 12%, 1)'};
-  position: absolute;
-  top: 0px;
-  right: calc(${props => props.rightOffset} + var(--left-offset));
-  z-index: 99;
-  border-radius: 0px 0px 4px 4px;
-  font-size: 12px;
-  font-family:
-    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono',
-    'Courier New', monospace;
-  /* copy from tailwind defaults */
-  &:hover {
-    background-color: ${props =>
-      props.isDarkMode ? 'hsla(240, 20%, 75%, 1)' : 'hsla(60, 20%, 25%, 1)'};
-  }
-  /* -mx-4 sm:-mx-6 md:mx-0 */
-  --left-offset: -4 * 0.25rem;
-  @media (min-width: 640px) {
-    --left-offset: -6 * 0.25rem;
-  }
-  @media (min-width: 768px) {
-    --left-offset: 0rem;
-  }
-`;
-
-const RelativeDiv = styled.div`
-  position: relative;
-  isolation: isolate;
-`;
+const CodeSnippetLineContent = ({ className = '', ...props }) => (
+  <span
+    className={clsx(
+      className,
+      'text-[#006600] dark:text-[#00bb00] [&:hover>span]:cursor-pointer [&:hover>span]:text-[#006600c0] dark:[&:hover>span]:text-[#00bb00c0]'
+    )}
+    {...props}
+  />
+);
 
 const CodeSnipButton = ({
   snipID,
@@ -335,11 +305,6 @@ class CodeBlock extends React.Component<
         </pre>
       );
     }
-    /*const [codeSnips, setCodeSnips] = useState(
-      for(let line of children.trim().split("\n"))
-      {
-      }
-    );*/
 
     // console.warn() if line length is > 80. uncomment to enable
     // Warning: Performance will be negatively impacted! Make sure to comment out before pushing
@@ -355,19 +320,22 @@ class CodeBlock extends React.Component<
     const collapsed = this.state.collapsed;
     const rightOffset = String(language!.length * 8 + 40) + 'px';
     return (
-      <RelativeDiv>
+      <div className="relative isolate">
         {this.props.copyButton ? (
-          <CopyButton
+          <button
             type="button"
             onClick={() => {
               navigator.clipboard.writeText(code);
             }}
-            rightOffset={rightOffset}
-            className="focus:outline-hidden"
-            isDarkMode={isDarkMode}
+            className="code-block-copy-button focus:outline-hidden"
+            style={
+              {
+                '--right-offset': rightOffset,
+              } as React.CSSProperties
+            }
           >
             Copy
-          </CopyButton>
+          </button>
         ) : null}
         <Highlight
           Prism={Prism as any}
@@ -436,11 +404,11 @@ class CodeBlock extends React.Component<
                         fill="none"
                         viewBox="0 0 24 24"
                         stroke="currentColor"
-                        className={
-                          'mb-2 h-6 w-6 transform transition group-hover:-translate-y-2 ' +
-                          (collapsed ? '' : 'rotate-180') +
-                          (isDarkMode ? 'text-white' : 'text-black')
-                        }
+                        className={clsx(
+                          'mb-2 h-6 w-6 transform transition group-hover:-translate-y-2',
+                          !collapsed && 'rotate-180',
+                          isDarkMode ? 'text-white' : 'text-black'
+                        )}
                       >
                         <path
                           strokeLinecap="round"
@@ -456,7 +424,7 @@ class CodeBlock extends React.Component<
             </div>
           )}
         </Highlight>
-      </RelativeDiv>
+      </div>
     );
   }
 }

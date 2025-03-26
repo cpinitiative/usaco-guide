@@ -13,7 +13,6 @@ import { PageProps } from 'gatsby';
 import { useAtomValue, useSetAtom } from 'jotai';
 import React, { useEffect } from 'react';
 import Split from 'react-split';
-import styled from 'styled-components';
 import {
   filesListAtom,
   monacoEditorInstanceAtom,
@@ -27,18 +26,6 @@ import { EditorOutput } from './EditorOutput';
 import { EditorSidebar } from './EditorSidebar/EditorSidebar';
 import { EditorTopNav } from './EditorTopNav';
 import { MainEditorInterface } from './MainEditorInterface';
-
-const StyledSplit = styled(Split)`
-  & > div,
-  & > .gutter.gutter-horizontal {
-    float: left;
-    height: 100%;
-  }
-
-  & > .gutter.gutter-horizontal {
-    cursor: ew-resize;
-  }
-`;
 
 // From https://stackoverflow.com/questions/2090551/parse-query-string-in-javascript
 function getQueryVariable(query, variable) {
@@ -93,8 +80,8 @@ export default function EditorPage(props: PageProps): JSX.Element {
           <EditorTopNav />
 
           {typeof window !== 'undefined' && (
-            <StyledSplit
-              className="relative h-full flex-1 overflow-hidden"
+            <Split
+              className="relative h-full flex-1 overflow-hidden [&>.gutter.gutter-horizontal]:cursor-ew-resize [&>.gutter.gutter-horizontal]:bg-gray-100 dark:[&>.gutter.gutter-horizontal]:bg-gray-900 [&>div,&>.gutter.gutter-horizontal]:float-left [&>div,&>.gutter.gutter-horizontal]:h-full"
               onDrag={() => {
                 if (editor.monaco !== null) editor.monaco.layout();
               }}
@@ -115,7 +102,7 @@ export default function EditorPage(props: PageProps): JSX.Element {
                   <EditorOutput />
                 </div>
               </div>
-            </StyledSplit>
+            </Split>
           )}
         </div>
       </Layout>

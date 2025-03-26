@@ -60,3 +60,85 @@
     @apply text-dark-med-emphasis hover:text-dark-high-emphasis hover:bg-gray-800 focus:bg-gray-700;
   }
 }
+
+.tippy-tooltip {
+  --tooltip-bg-color: #252f3f;
+
+  .dark & {
+    --tooltip-bg-color: #e2e8f0;
+    color: #27272a !important;
+  }
+
+  background-color: var(--tooltip-bg-color) !important;
+  padding: 0.5rem;
+  line-height: 1.5;
+  font-size: 1rem !important;
+  font-weight: normal !important;
+  text-align: center;
+
+  &[data-placement^='top'] > .tippy-arrow::before {
+    border-top-color: var(--tooltip-bg-color) !important;
+  }
+  &[data-placement^='bottom'] > .tippy-arrow::before {
+    border-bottom-color: var(--tooltip-bg-color) !important;
+  }
+  &[data-placement^='left'] > .tippy-arrow::before {
+    border-left-color: var(--tooltip-bg-color) !important;
+  }
+  &[data-placement^='right'] > .tippy-arrow::before {
+    border-right-color: var(--tooltip-bg-color) !important;
+  }
+}
+
+.tippy-tooltip--asterisk {
+  &[data-placement^='top'] {
+    transform: translateY(10px);
+  }
+  &[data-placement^='bottom'] {
+    transform: translateY(-7px);
+  }
+}
+
+.tippy-tooltip--compact {
+  font-size: 0.875rem !important;
+  padding: 0rem;
+}
+
+.code-block-copy-button {
+  padding: 1.6px 8px 1.6px 8px;
+  color: white;
+  background-color: hsla(60, 20%, 12%, 1);
+
+  position: absolute;
+  top: 0px;
+  right: calc(var(--right-offset) + var(--left-offset));
+  z-index: 99;
+  border-radius: 0px 0px 4px 4px;
+  font-size: 12px;
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono',
+    'Courier New', monospace;
+
+  /* copy from tailwind defaults */
+  &:hover {
+    background-color: hsla(60, 20%, 25%, 1);
+  }
+
+  .dark & {
+    color: black;
+    background-color: hsla(240, 20%, 88%, 1);
+  }
+
+  .dark &:hover {
+    background-color: hsla(240, 20%, 75%, 1);
+  }
+
+  /* -mx-4 sm:-mx-6 md:mx-0 */
+  --left-offset: -4 * 0.25rem;
+  @media (min-width: 640px) {
+    --left-offset: -6 * 0.25rem;
+  }
+  @media (min-width: 768px) {
+    --left-offset: 0rem;
+  }
+}

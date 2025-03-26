@@ -1,7 +1,6 @@
 import Tippy from '@tippyjs/react';
 import * as React from 'react';
 import { useContext, useRef, useState } from 'react';
-import styled from 'styled-components';
 import 'tippy.js/themes/light.css';
 import ConfettiContext from '../../../context/ConfettiContext';
 import { useDarkMode } from '../../../context/DarkModeContext';
@@ -18,12 +17,6 @@ import {
   PROBLEM_PROGRESS_OPTIONS,
 } from '../../../models/problem';
 import { DivisionProblemInfo } from './DivisionList/DivisionProblemInfo';
-
-const StyledTippy = styled(Tippy)`
-  .tippy-content {
-    padding: 0;
-  }
-`;
 
 const ProgressDropdown = ({ onProgressSelected, currentProgress }) => {
   const [activeProgress, setActiveProgress] =
@@ -177,7 +170,7 @@ export default function ProblemStatusCheckbox({
   const tippyRef = useRef<any>();
   const showConfetti = useContext(ConfettiContext);
   return (
-    <StyledTippy
+    <Tippy
       onCreate={tippy => (tippyRef.current = tippy)}
       content={
         <div className="z-20 w-56">
@@ -202,6 +195,7 @@ export default function ProblemStatusCheckbox({
       placement="bottom-start"
       theme={darkMode ? 'dark' : 'light'}
       appendTo={() => document.body}
+      className="[&>.tippy-content]:!p-0"
     >
       <span
         // onClick={handleClick}
@@ -217,6 +211,6 @@ export default function ProblemStatusCheckbox({
           }
         />
       </span>
-    </StyledTippy>
+    </Tippy>
   );
 }

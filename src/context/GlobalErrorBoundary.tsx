@@ -1,17 +1,35 @@
-import * as Sentry from '@sentry/gatsby';
 import * as React from 'react';
 
-const GlobalErrorBoundary = ({ children }) => {
-  return (
-    <Sentry.ErrorBoundary
-      fallback={({ error, componentStack, resetError }) => (
+export default class GlobalErrorBoundary extends React.Component<
+  { children: React.ReactNode },
+  { hasError: boolean; error: Error | null; info: any }
+> {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false, error: null, info: null };
+  }
+
+  static getDerivedStateFromError(error) {
+    // Update state so the next render will show the fallback UI.
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error, info) {
+    console.error('Caught error:', error, info);
+    this.setState({ error, info });
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
         <div className="mt-8 px-4">
           <div className="text-center text-2xl font-bold md:text-4xl">
             You have encountered an error
           </div>
           <pre className="mx-auto mt-4 max-w-5xl overflow-x-auto font-mono">
-            {error.toString()}
-            {componentStack}
+            {this.state.error?.stack}
+            {'\n\n'}
+            Component Stack:{this.state.info?.componentStack}
           </pre>
           <p className="mt-8 text-center">
             Try{' '}
@@ -22,8 +40,8 @@ const GlobalErrorBoundary = ({ children }) => {
               rel="noreferrer"
             >
               emailing us
-            </a>{' '}
-            or{' '}
+            </a>
+            ,{' '}
             <a
               href="https://github.com/cpinitiative/usaco-guide/issues"
               target="_blank"
@@ -32,38 +50,13 @@ const GlobalErrorBoundary = ({ children }) => {
             >
               opening a GitHub issue
             </a>
-            . Include steps to reproduce + the stack trace above.
+            , or reloading the page. Include steps to reproduce + the stack
+            trace above.
           </p>
-          <div className="mt-4 text-center">
-            <button
-              className="btn"
-              onClick={() => {
-                resetError();
-              }}
-            >
-              Click here to reset the application (or try reloading the page)
-            </button>
-          </div>
         </div>
-      )}
-    >
-      {children}
-    </Sentry.ErrorBoundary>
-  );
-};
+      );
+    }
 
-export default GlobalErrorBoundary;
-
-// the error boundary below didn't report issues to gatsby
-// export default class GlobalErrorBoundary extends React.Component {
-//   static contextType = NotificationSystemContext;
-//
-//   componentDidCatch(error, info) {
-//     console.error('Caught error:', error, info);
-//     this.context.showErrorNotification(error);
-//   }
-//
-//   render() {
-//     return this.props.children;
-//   }
-// }
+    return this.props.children;
+  }
+}

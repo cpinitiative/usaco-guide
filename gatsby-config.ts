@@ -68,7 +68,6 @@ const plugins = [
   {
     resolve: `gatsby-plugin-postcss`,
   },
-  `gatsby-plugin-styled-components`,
   `gatsby-plugin-react-helmet`,
   `gatsby-plugin-catch-links`,
   `gatsby-transformer-sharp`,
