@@ -24,20 +24,20 @@ export const filesFamily = atomFamily((path: string) => {
  */
 export const saveFileAtom = atom(
   null,
-  (
+  async (
     get,
     set,
     update:
       | {
           path: string;
-          update: (f: EditorFile) => EditorFile;
+          update: (f: EditorFile) => Promise<EditorFile>;
         }
       | EditorFile
   ) => {
     const file = update.hasOwnProperty('update')
-      ? (update as { update: (f: EditorFile) => EditorFile }).update(
-          get(filesFamily(update.path))
-        )
+      ? await (
+          update as { update: (f: EditorFile) => Promise<EditorFile> }
+        ).update(get(filesFamily(update.path)))
       : (update as EditorFile);
     set(filesFamily(file.path), file);
   }
@@ -218,17 +218,21 @@ $\\texttt{func(var)}$
       file.problemModules.map(async module => {
         if (get(filesListAtom).find(file => file === module.path)) {
           const currentFile = get(filesFamily(module.path));
+          const formattedProblems = await updateProblemJSON(
+            currentFile.problems
+          );
           set(saveFileAtom, {
             ...currentFile,
-            problems: updateProblemJSON(currentFile.problems),
+            problems: formattedProblems,
           });
           return;
         }
         const data = await fetchFileContent(module.path);
+        const formattedProblems = await updateProblemJSON(data.problems);
         set(saveFileAtom, {
           path: module.path,
           markdown: data.markdown,
-          problems: updateProblemJSON(data.problems),
+          problems: formattedProblems,
         });
       })
     );

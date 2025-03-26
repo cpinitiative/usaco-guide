@@ -104,7 +104,7 @@ const EditorTabBar: React.FC<EditorTabBarProps> = ({
     if (!('type' in response) || response.type !== 'file') return; // should not happen
     saveFile({
       path: filePath,
-      update(f) {
+      async update(f) {
         if (tab == 'content') {
           return {
             ...f,

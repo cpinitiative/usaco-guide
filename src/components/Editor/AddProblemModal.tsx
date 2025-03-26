@@ -1,6 +1,6 @@
 import { Dialog } from '@headlessui/react';
-import prettier from 'prettier';
-import babelParser from 'prettier/parser-babel';
+import * as prettier from 'prettier';
+import babelPlugin from 'prettier/plugins/babel';
 import React, { useState } from 'react';
 import Modal from '../Modal';
 import CopyButton from './CopyButton';
@@ -33,7 +33,7 @@ async function addProblem(
     setMetadata(
       await prettier.format(JSON.stringify(metadata, null, 2), {
         parser: 'json',
-        plugins: [babelParser],
+        plugins: [babelPlugin],
       })
     );
     setStatus('Get Metadata');

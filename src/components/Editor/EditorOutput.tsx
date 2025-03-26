@@ -1,6 +1,4 @@
 import { useAtomValue, useSetAtom } from 'jotai';
-import babelParser from 'prettier/parser-babel';
-import prettier from 'prettier/standalone';
 import * as React from 'react';
 import { useState } from 'react';
 import { activeFileAtom, saveFileAtom } from '../../atoms/editor';
@@ -11,6 +9,7 @@ import {
   ProblemMetadata,
   PROBLEM_DIFFICULTY_OPTIONS,
 } from '../../models/problem';
+import { formatMarkdown } from '../../utils/prettierFormatter';
 import QuizGeneratorModal from '../QuizGeneratorModal';
 
 const RawMarkdownRenderer = React.lazy(
@@ -43,7 +42,7 @@ export const EditorOutput = (): JSX.Element => {
     }
   }, [problems]);
 
-  const handleAddProblem = (
+  const handleAddProblem = async (
     listId: string,
     problemMetadata: ProblemMetadata
   ) => {
@@ -69,20 +68,10 @@ export const EditorOutput = (): JSX.Element => {
     // Use pretty JSON.stringify because it inserts a newline before all objects, which forces prettier to then convert
     // these objects into multiline ones.
     const newContent = JSON.stringify(parsedOldFileData, null, 2) + '\n';
-    const formattedNewContent = prettier.format(newContent, {
-      endOfLine: 'lf',
-      semi: true,
-      singleQuote: true,
-      tabWidth: 2,
-      useTabs: false,
-      trailingComma: 'es5',
-      arrowParens: 'avoid',
-      parser: 'json',
-      plugins: [babelParser],
-    });
+    const formattedNewContent = await formatMarkdown(newContent);
     saveFile({
       path: activeFile!.path,
-      update: prev => ({
+      update: async prev => ({
         ...prev,
         problems: formattedNewContent,
       }),
