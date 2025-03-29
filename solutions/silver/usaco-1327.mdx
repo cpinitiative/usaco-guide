@@ -98,44 +98,44 @@ import java.io.*;
 import java.util.*;
 
 public class FieldDay {
-	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		PrintWriter pw = new PrintWriter(System.out);
-		StringTokenizer st = new StringTokenizer(br.readLine());
-		int c = Integer.parseInt(st.nextToken());
-		int n = Integer.parseInt(st.nextToken());
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        int c = Integer.parseInt(st.nextToken());
+        int n = Integer.parseInt(st.nextToken());
 
-		int[] teams = new int[n];
-		int[] minEdits = new int[1 << c];
-		Arrays.fill(minEdits, Integer.MAX_VALUE);
+        int[] teams = new int[n];
+        int[] minEdits = new int[1 << c];
+        Arrays.fill(minEdits, Integer.MAX_VALUE);
 
-		for (int i = 0; i < n; i++) {
-			String breeds = br.readLine();
+        for (int i = 0; i < n; i++) {
+            String breeds = br.readLine();
 
-			// convert teams to bitmasks
-			for (int j = 0; j < c; j++) {
-				if (breeds.charAt(j) == 'G') { teams[i] += 1 << (c - j - 1); }
-			}
+            // convert teams to bitmasks
+            for (int j = 0; j < c; j++) {
+                if (breeds.charAt(j) == 'G') {
+                    teams[i] += 1 << (c - j - 1);
+                }
+            }
 
-			minEdits[teams[i]] = 0;
-		}
+            minEdits[teams[i]] = 0;
+        }
 
-		for (int edit = 0; edit < c; edit++) {
-			for (int mask = 0; mask < (1 << c); mask++) {
-				// mask ^ (1 << edit) flips the edit-th bit of mask
-				if (minEdits[mask] != Integer.MAX_VALUE) {
-					minEdits[mask ^ (1 << edit)] =
-					    Math.min(minEdits[mask ^ (1 << edit)], minEdits[mask] + 1);
-				}
-			}
-		}
+        for (int edit = 0; edit < c; edit++) {
+            for (int mask = 0; mask < (1 << c); mask++) {
+                // mask ^ (1 << edit) flips the edit-th bit of mask
+                if (minEdits[mask] != Integer.MAX_VALUE) {
+                    minEdits[mask ^ (1 << edit)] =
+                        Math.min(minEdits[mask ^ (1 << edit)], minEdits[mask] + 1);
+                }
+            }
+        }
 
-		for (int i = 0; i < n; i++) {
-			// teams[i] ^ ((1 << c) - 1) flips all the bits of teams[i]
-			pw.println(c - minEdits[teams[i] ^ ((1 << c) - 1)]);
-		}
-		pw.close();
-	}
+        for (int i = 0; i < n; i++) {
+            // teams[i] ^ ((1 << c) - 1) flips all the bits of teams[i]
+            System.out.println(c - minEdits[teams[i] ^ ((1 << c) - 1)]);
+        }
+    }
 }
 ```
 
