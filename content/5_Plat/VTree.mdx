@@ -31,12 +31,12 @@ description: Compressing a tree to only necessary nodes
 		url="https://youkn0wwho.academy/topic-list/virtual_tree"
 	>
 	</Resource>
-	
+
 </Resources>
 
-Often, when running operations or dynamic programming on trees, we only need to keep track of 
-a few key nodes and their relationships. If we are able to isolate the few relevant nodes that keep 
-the structure of the tree intact, while still maintaining the relationships between key nodes, we can 
+Often, when running operations or dynamic programming on trees, we only need to keep track of
+a few key nodes and their relationships. If we are able to isolate the few relevant nodes that keep
+the structure of the tree intact, while still maintaining the relationships between key nodes, we can
 cut our time complexity down significantly.
 
 ## Example - Unique Occurences
@@ -73,9 +73,9 @@ Taking the total over all colors, we can get our answer in $\mathcal{O}(n^2)$ ti
 
 ### Virtual Tree Optimization
 
-One observation we can make is that transitions when the parent edge of $v$ is not color $c$ are quite simple. 
+One observation we can make is that transitions when the parent edge of $v$ is not color $c$ are quite simple.
 
-We will aim to leverage this fact. Define $S_0$ as the set of vertices that have parent edge of color $c$. Define 
+We will aim to leverage this fact. Define $S_0$ as the set of vertices that have parent edge of color $c$. Define
 
 $$
 S = S_0 \cup \{\text{LCA}(u,v) \mid u, v \in S_0\}
@@ -121,7 +121,7 @@ A well-known method to construct the virtual tree of set $S_0$ is as follows:
 - Build the virtual tree based on the ancestor-descendant relationship of the original tree
 
 For a rough proof of correctness, consider the following:
-> Observe that a vertex $v \in S$ must either satisfy $v \in S_0$ or there exist at least two distinct children of $v$ with key points in their subtrees. 
+> Observe that a vertex $v \in S$ must either satisfy $v \in S_0$ or there exist at least two distinct children of $v$ with key points in their subtrees.
 >
 > The former is taken care of immediately in step 1. In the latter case, as a property of DFS order, there must exist key points $a,b$ in the subtree of $v$ such that $a,b$ are in distinct subtrees and $a,b$ are adjacent in the DFS order when only considering key points. Because $v$ is $\text{LCA}(a,b)$, our construction neccesarily holds true.
 
@@ -129,7 +129,7 @@ A corollary of our construction is that $|S|$ is indeed bounded by $\mathcal{O}(
 
 ### Implementation
 
-Below is an implementation for the task, which also contains general code for constructing virtual trees. 
+Below is an implementation for the task, which also contains general code for constructing virtual trees.
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
@@ -137,119 +137,103 @@ using namespace std;
 constexpr int MAX_N = 5e5 + 1;
 constexpr int LG = 20;
 
-int tin[MAX_N], tout[MAX_N], sub[MAX_N], col[MAX_N], 
-    lift[MAX_N][LG], timer;
+int tin[MAX_N], tout[MAX_N], sub[MAX_N], col[MAX_N], lift[MAX_N][LG], timer;
 long long dp[MAX_N][2];
 vector<int> rev[MAX_N], vg[MAX_N];
 vector<array<int, 2>> adj[MAX_N];
 
 int dfs(int v, int p) {
-    tin[v] = timer++;
-    sub[v] = 1;
+	tin[v] = timer++;
+	sub[v] = 1;
 
-    lift[v][0] = p;
-    for (int i = 1; i < LG; i++) {
-        lift[v][i] = lift[lift[v][i - 1]][i - 1];
-    }
+	lift[v][0] = p;
+	for (int i = 1; i < LG; i++) { lift[v][i] = lift[lift[v][i - 1]][i - 1]; }
 
-    for (const auto &[u, w] : adj[v]) {
-        if (u == p) { continue; }
-        sub[v] += dfs(u, v);
-        rev[w].push_back(u);
-        col[u] = w;
-    }
+	for (const auto &[u, w] : adj[v]) {
+		if (u == p) { continue; }
+		sub[v] += dfs(u, v);
+		rev[w].push_back(u);
+		col[u] = w;
+	}
 
-    tout[v] = timer++;
-    return sub[v];
+	tout[v] = timer++;
+	return sub[v];
 }
 
-bool is_ancestor(int u, int v) {
-    return tin[u] <= tin[v] && tout[v] <= tout[u];
-}
+bool is_ancestor(int u, int v) { return tin[u] <= tin[v] && tout[v] <= tout[u]; }
 
 int lca(int u, int v) {
-    if (is_ancestor(u, v)) { return u; }
-    if (is_ancestor(v, u)) { return v; }
-    for (int i = LG - 1; i >= 0; i--) {
-        if (!is_ancestor(lift[u][i], v)) {
-            u = lift[u][i];
-        }
-    }
+	if (is_ancestor(u, v)) { return u; }
+	if (is_ancestor(v, u)) { return v; }
+	for (int i = LG - 1; i >= 0; i--) {
+		if (!is_ancestor(lift[u][i], v)) { u = lift[u][i]; }
+	}
 
-    return lift[u][0];
+	return lift[u][0];
 }
 
-bool sort_tin(const int &a, const int &b) {
-    return tin[a] < tin[b];
-}
+bool sort_tin(const int &a, const int &b) { return tin[a] < tin[b]; }
 
 vector<int> vtree(vector<int> &key) {
-    vector<int> res = key;
-    sort(begin(key), end(key), sort_tin);
-    for (int i = 1; i < key.size(); i++) {
-        res.push_back(lca(key[i - 1], key[i]));
-    }
+	vector<int> res = key;
+	sort(begin(key), end(key), sort_tin);
+	for (int i = 1; i < key.size(); i++) { res.push_back(lca(key[i - 1], key[i])); }
 
-    sort(begin(res), end(res), sort_tin);
-    res.erase(unique(begin(res), end(res)), end(res));
-    for (int v : res) { vg[v].clear(); }
+	sort(begin(res), end(res), sort_tin);
+	res.erase(unique(begin(res), end(res)), end(res));
+	for (int v : res) { vg[v].clear(); }
 
-    vector<int> stk = {res[0]};
-    for (int i = 1; i < res.size(); i++) {
-        while (tin[res[i]] > tout[stk.back()]) {
-            stk.pop_back();
-        }
-        vg[stk.back()].push_back(res[i]);
-        stk.push_back(res[i]);
-    }
-    
-    return res;
+	vector<int> stk = {res[0]};
+	for (int i = 1; i < res.size(); i++) {
+		while (tin[res[i]] > tout[stk.back()]) { stk.pop_back(); }
+		vg[stk.back()].push_back(res[i]);
+		stk.push_back(res[i]);
+	}
+
+	return res;
 }
 
 int main() {
-    cin.tie(0)->sync_with_stdio(0);
-    int n;
-    cin >> n;
-    for (int i = 0; i < n - 1; i++) {
-        int u, v, x;
-        cin >> u >> v >> x;
-        u--, v--;
-        adj[u].push_back({v, x});
-        adj[v].push_back({u, x});
-    }
+	cin.tie(0)->sync_with_stdio(0);
+	int n;
+	cin >> n;
+	for (int i = 0; i < n - 1; i++) {
+		int u, v, x;
+		cin >> u >> v >> x;
+		u--, v--;
+		adj[u].push_back({v, x});
+		adj[v].push_back({u, x});
+	}
 
-    dfs(0, 0);
+	dfs(0, 0);
 
-    long long ans = 0;
-    for (int i = 1; i <= n; i++) {
-        rev[i].push_back(0);
-        vector<int> vt = vtree(rev[i]);
-        reverse(begin(vt), end(vt));
+	long long ans = 0;
+	for (int i = 1; i <= n; i++) {
+		rev[i].push_back(0);
+		vector<int> vt = vtree(rev[i]);
+		reverse(begin(vt), end(vt));
 
-        for (int v : vt) {
-            dp[v][0] = sub[v];
-            dp[v][1] = 0;
+		for (int v : vt) {
+			dp[v][0] = sub[v];
+			dp[v][1] = 0;
 
-            for (int u : vg[v]) {
-                dp[v][0] -= sub[u];
-            }
+			for (int u : vg[v]) { dp[v][0] -= sub[u]; }
 
-            for (int u : vg[v])
-                if (col[u] == i) {
-                    ans += dp[u][0] * dp[v][0];
-                    dp[v][1] += dp[u][0];
-                } else {
-                    ans += dp[u][0] * dp[v][1];
-                    ans += dp[u][1] * dp[v][0];
-                    dp[v][0] += dp[u][0];
-                    dp[v][1] += dp[u][1];
-                }
-        }
-    }
+			for (int u : vg[v])
+				if (col[u] == i) {
+					ans += dp[u][0] * dp[v][0];
+					dp[v][1] += dp[u][0];
+				} else {
+					ans += dp[u][0] * dp[v][1];
+					ans += dp[u][1] * dp[v][0];
+					dp[v][0] += dp[u][0];
+					dp[v][1] += dp[u][1];
+				}
+		}
+	}
 
-    cout << ans << '\n';
+	cout << ans << '\n';
 }
-
 ```
 
 
