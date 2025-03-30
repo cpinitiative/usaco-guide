@@ -29,3 +29,9 @@ export const formatMarkdown = (content: string): Promise<string> =>
     parser: 'mdx',
     plugins: [markdownPlugin],
   });
+
+export const formatMetadata = (content: string): Promise<string> =>
+  prettier.format(content, {
+    parser: 'json',
+    plugins: [estreePlugin as any, babelPlugin],
+  });
