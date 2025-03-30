@@ -23,15 +23,8 @@ export default function TrustedBy() {
       });
   }, []);
 
-  const usersText =
-    Math.floor(numUsers / 1000) +
-    '.' +
-    Math.floor((numUsers % 1000) / 100) +
-    'k';
-  const pageviewsText =
-    numPageviews >= 1000000
-      ? (numPageviews / 1000000).toFixed(2) + 'M'
-      : Math.floor(numPageviews / 1000) + 'k';
+  const usersText = Math.floor(numUsers / 1000) + 'k';
+  const pageviewsText = (numPageviews / 1000000).toFixed(1) + 'M';
 
   return (
     <div className="max-w-4xl">

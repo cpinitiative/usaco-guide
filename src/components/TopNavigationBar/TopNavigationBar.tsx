@@ -31,7 +31,6 @@ import { LoadingSpinner } from '../elements/LoadingSpinner';
 import Logo from '../Logo';
 import LogoSquare from '../LogoSquare';
 import SectionsDropdown from '../SectionsDropdown';
-import Banner from './Banner';
 import { SearchModal } from './SearchModal';
 import { UserAvatarMenu } from './UserAvatarMenu';
 
@@ -134,7 +133,7 @@ export default function TopNavigationBar({
   ];
   return (
     <>
-      {!hidePromoBar && (
+      {/* {!hidePromoBar && (
         <>
           <Banner
             text="Compete for Prizes in the USACO.Guide Informatics Tournament!"
@@ -142,7 +141,7 @@ export default function TopNavigationBar({
             link="http://contest.joincpi.org:8080/home"
           />
         </>
-      )}
+      )} */}
 
       <nav
         className={classNames(

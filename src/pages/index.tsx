@@ -24,11 +24,7 @@ import { Feature } from '../components/Index/Feature';
 import { ProblemsetsFeature } from '../components/Index/features/ProblemsetsFeature';
 import { ProgressTrackingFeature } from '../components/Index/features/ProgressTrackingFeature';
 import { ResourcesFeature } from '../components/Index/features/ResourcesFeature';
-import {
-  EasyFunCoding,
-  NonTrivial,
-  Vercel,
-} from '../components/Index/sponsor-logos';
+import { EasyFunCoding, NonTrivial } from '../components/Index/sponsor-logos';
 import TrustedBy from '../components/Index/TrustedBy';
 import Layout from '../components/layout';
 import SEO from '../components/seo';
@@ -490,8 +486,8 @@ export default function IndexPage(): JSX.Element {
           <p className={subtextClasses}>
             We're a <GradientText>501(c)3 nonprofit organization</GradientText>{' '}
             — all donations are tax deductible. Since our inception in September
-            2020, we've impacted well over <GradientText>16,000</GradientText>{' '}
-            students across our various initiatives.
+            2020, we've impacted tens of thousands of students across our
+            various initiatives.
           </p>
           <div className="h-8 md:h-12"></div>
 
@@ -563,20 +559,6 @@ export default function IndexPage(): JSX.Element {
                 rel="noreferrer"
               >
                 <EasyFunCoding />
-              </a>
-            </div>
-          </div>
-          <p className="pt-6 font-semibold text-gray-600 uppercase md:text-lg dark:text-gray-400">
-            In-kind Sponsors
-          </p>
-          <div className="my-8 grid grid-cols-2 items-center gap-0.5 text-gray-400 md:grid-cols-3 lg:my-6 lg:grid-cols-4">
-            <div className="col-span-1">
-              <a
-                href="https://vercel.com/?utm_source=cp-initiative&utm_campaign=oss"
-                target="_blank"
-                rel="noreferrer"
-              >
-                <Vercel />
               </a>
             </div>
           </div>
