@@ -101,19 +101,6 @@ export const OrderedFirstMembers: Member[] = [
 
 export const RestOfMembers: Member[] = [
   {
-    photo: 'jesse',
-    name: 'Jesse Choe',
-    titles: [
-      'Director of Classes',
-      'Content Manager',
-      roles.contentAuthor,
-      roles.liveInstructor,
-    ],
-    github: 'jessechoe10',
-    email: 'jessechoe10@gmail.com',
-    codeforces: 'YoRepi7',
-  },
-  {
     photo: 'trisha',
     name: 'Trisha Sabadra',
     titles: ['Director of Classes', roles.liveInstructor],
@@ -132,11 +119,6 @@ export const RestOfMembers: Member[] = [
     photo: 'justin_huang',
     name: 'Justin Huang',
     titles: ['Director of Software', roles.webdev],
-  },
-  {
-    photo: 'mihnea',
-    name: 'Mihnea Brebenel',
-    titles: [roles.contentAuthor],
   },
   {
     photo: 'daniel_zhu',
@@ -168,6 +150,24 @@ export const RestOfMembers: Member[] = [
 ];
 
 export const FormerMembers: Member[] = [
+  {
+    photo: 'mihnea',
+    name: 'Mihnea Brebenel',
+    titles: [roles.contentAuthor],
+  },
+  {
+    photo: 'jesse',
+    name: 'Jesse Choe',
+    titles: [
+      'Director of Classes',
+      'Content Manager',
+      roles.contentAuthor,
+      roles.liveInstructor,
+    ],
+    github: 'jessechoe10',
+    email: 'jessechoe10@gmail.com',
+    codeforces: 'YoRepi7',
+  },
   {
     photo: 'daniel',
     name: 'Daniel Guan',
