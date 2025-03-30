@@ -343,7 +343,7 @@ There is also an alternative solution using a binary indexed tree.
 using std::array;
 using std::vector;
 
-const int MAX_Y = 1000001;
+const int MAX_Y = 1000000;
 
 // BeginCodeSnip{BIT (from the PURS module)}
 template <class T> class BIT {
@@ -378,8 +378,8 @@ int main() {
 	vector<array<int, 2>> coords(n);
 	for (int i = 0; i < n; i++) { cin >> coords[i][0] >> coords[i][1]; }
 
-	BIT<int> left(MAX_Y);
-	BIT<int> right(MAX_Y);
+	BIT<int> left(MAX_Y + 1);
+	BIT<int> right(MAX_Y + 1);
 
 	for (array<int, 2> i : coords) { right.add(i[1], 1); }
 
@@ -397,7 +397,7 @@ int main() {
 		i = j;
 
 		int l = 0;
-		int r = (MAX_Y - 1) / 2;
+		int r = MAX_Y / 2;
 		while (l <= r) {
 			int mid = (l + r) / 2;
 			int up =
@@ -423,7 +423,7 @@ int main() {
 
 ```java
 public class Balancing {
-	static final int MAX_Y = 1_000_001;
+	static final int MAX_Y = 1_000_000;
 
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new FileReader("balancing.in"));
@@ -438,8 +438,8 @@ public class Balancing {
 			coords[i][1] = Integer.parseInt(st.nextToken());
 		}
 
-		BIT left = new BIT(MAX_Y);
-		BIT right = new BIT(MAX_Y);
+		BIT left = new BIT(MAX_Y + 1);
+		BIT right = new BIT(MAX_Y + 1);
 		for (int[] i : coords) { right.update(i[1], 1); }
 		int ret = N;
 		Arrays.sort(coords, (int[] a, int[] b) -> a[0] - b[0]);
@@ -454,7 +454,7 @@ public class Balancing {
 			i = j;
 
 			int l = 0;
-			int r = (MAX_Y - 1) / 2;
+			int r = MAX_Y / 2;
 			while (l <= r) {
 				int mid = (l + r) / 2;
 				int up = Math.max(i - left.sum(2 * mid), N - i - right.sum(2 * mid));
