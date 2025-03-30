@@ -45,33 +45,30 @@ cut our time complexity down significantly.
 
 ### Naive Solution
 
-Instead of counting $f(u,v)$ for each $u,v$, it seems more conducive to count, for each color, the number of paths that contain that color exactly once. We can count this by iterating over each color $c$, and maintaining $\text{dp}[v][0/1]$ as the number of paths up to $v$ which contain the color $c$ $0$ or $1$ times. Our transitions are as follows:
+We observe that any operation will only affect nodes of the same depth. Thus, instead of solving for all depths at once, we can take the sum of the minimum cost to fill in each depth.
 
-- If our the parent edge of $v$ is not color $c$, we can continue all paths from $v$ upwards, and start a new path from $v$:
-$$
-\texttt{dp}[p][0] \mathrel{+}= \texttt{dp}[v][0] + 1
-$$
-$$
-\texttt{dp}[p][1] \mathrel{+}= \texttt{dp}[v][1]
-$$
+Consider depth $d$. Define $\texttt{dp}[v]$ as the minimum cost to fill in all vertices of depth $d$ in the subtree of $v$, only considering operations selecting vertices at $v$ or lower.
 
-- If the parent edge of $v$ is color $c$, all paths that had color $c$ $0$ times will now have color $c$ $1$ time, and all paths that had color $c$ $1$ time will now be invalid. Additionally, we can start a new path from $v$:
+- If $v$ is of depth $d$, then we must fill it in with cost $a_0$
 $$
-\texttt{dp}[p][1] \mathrel{+}= \texttt{dp}[v][0] + 1
+\texttt{dp}[v] =a_0
+$$
+- Otherwise, we can either select to incur a cost of $a_{d-\text{depth}[v]}$ by operating on $v$, or not operate on $v$ and instead solve for each subtree:
+$$
+\texttt{dp}[v] = \min(a_{d-\text{depth}[v]},\sum_{u\in\text{Children}(v)} \text{dp}[u])
 $$
 
-We can obtain our by summing paths over their highest vertex. Specifically, a path with exactly one occurence of $c$ necessarily has a highest vertex $v$, of which one branch has the occurence of $c$, and the other branch does not. Thus, our answer for a color $c$ is:
-$$
-\sum_{u\neq v\in\text{Children}(p)} \texttt{dp}[v][1]\cdot\texttt{dp}[u][0]+1
-$$
-
-Taking the total over all colors, we can get our answer in $\mathcal{O}(n^2)$ time.
+Our answer will be the sum of $\texttt{dp}[0]$ for each value of $d$, yielding a solution in $\mathcal{O}(n^2)$ time.
 
 ### Virtual Tree Optimization
 
-One observation we can make is that transitions when the parent edge of $v$ is not color $c$ are quite simple.
+One observation we can make is for a long chain ending at $v$, we can process it quickly by taking
 
-We will aim to leverage this fact. Define $S_0$ as the set of vertices that have parent edge of color $c$. Define
+$$
+\texttt{dp}[v] = \min(\min_{x\in[d-\text{depth}[v],d]}a_x), \sum_{u\in\text{Children}(v)} \text{dp}[u])
+$$
+
+We will aim to leverage this fact. Define $S_0$ as the set of vertices at depth $d$. Define
 
 $$
 S = S_0 \cup \{\text{LCA}(u,v) \mid u, v \in S_0\}
@@ -83,30 +80,13 @@ Here is an example of a virtual tree, with nodes in $S_0$ colored purple, and th
 
 ![VTree](./assets/vtree_example.png)
 
-We continue in a similar fashion to previously, but we only compute dynamic programming values for nodes in $S$. This time, a pull-dp approach is more elegant, and our transitions are as follows, when considering node $u$ as a virtual child of $v$:
-
-- If the parent edge of $u$ is not color $c$, we can continue the paths from $u$ onward. Additionally, we can combine paths leading up to $u$ with other paths of occurences $0$ or $1$ to add to our answer:
+We continue in a similar fashion to previously, but we only compute dynamic programming values for nodes in $S$. The range minimum query can be answered using data structures in logarithmic or linear time.
 
 $$
-\texttt{dp}[v][0] \mathrel{+}=\texttt{dp}[u][0]
-$$
-$$
-\texttt{dp}[v][1] \mathrel{+}=\texttt{dp}[u][1]
-$$
-$$
-\texttt{ans} \mathrel{+}=\texttt{dp}[u][0]\cdot \texttt{dp}[v][1] + \texttt{dp}[u][1] \cdot \texttt{dp}[v][0]
+\texttt{dp}[v] = \min(\min_{x\in[d-\text{depth}[v],d]}a_x), \sum_{u\in\text{Virtual Children}(v)} \text{dp}[u])
 $$
 
-- If the parent edge of $u$ is color $c$, we can only continue paths without an occurence of $c$. Additionally, paths from under node $u$ can only merge with paths that have no occurences of $c$ to contribute to our answer:
-
-$$
-\texttt{dp}[v][1] \mathrel{+}= \texttt{dp}[u][0]
-$$
-$$
-\texttt{ans} \mathrel{+}= \texttt{dp}[u][0]\cdot \texttt{dp}[v][0]
-$$
-
-Our time complexity will then be $\mathcal{O}( \sum_c |S|)$, because we iterate over set $S$ for each color.
+Our time complexity will then be $\mathcal{O}( \sum_d |S|)$, because we iterate over set $S$ for each depth.
 
 In the following section, we prove that $|S|$ is bounded by $\mathcal{O}(S_0)$, and also demonstrate how to construct a virtual tree.
 
@@ -127,109 +107,139 @@ A corollary of our construction is that $|S|$ is indeed bounded by $\mathcal{O}(
 
 ### Implementation
 
-Below is an implementation for the task, which also contains general code for constructing virtual trees. Because $\sum |S|$ is $\mathcal{O(n)}$, and we sort by DFS order, our final time complexity is $\mathcal{O}(n\log n)$.
+Below is an implementation for the task, which also contains general code for constructing virtual trees. Because $\sum_d |S|$ is $\mathcal{O(n)}$, and we sort by DFS order, our final time complexity is $\mathcal{O}(n\log n)$.
+
+<!--
+Will clean up code later :pray:
+-->
+
 ```cpp
-#include <bits/stdc++.h>
+#include "bits/stdc++.h"
 using namespace std;
+#define all(x) begin(x), end(x)
+#define sz(x) (int) (x).size()
+#define int long long
 
-constexpr int MAX_N = 5e5;
-constexpr int LG = ceil(log2(MAX_N));
+const int mxn = 1e5+5;
+const int LG = 17;
+const int inf = 1e18;
 
-int tin[MAX_N], tout[MAX_N], sub[MAX_N], col[MAX_N], lift[MAX_N][LG], timer;
-long long dp[MAX_N][2];
-vector<int> rev[MAX_N], vg[MAX_N];
-vector<array<int, 2>> adj[MAX_N];
+int n,tin[mxn],tout[mxn],d[mxn],lift[mxn][LG],timer,dp[mxn];
+vector<int> g[mxn],vg[mxn],atd[mxn];
 
-int dfs(int v, int p) {
+void dfs(int v, int p) {
+	d[v] = v ? d[p]+1 : 0;
+	atd[d[v]].push_back(v);
 	tin[v] = timer++;
-	sub[v] = 1;
-
+	
 	lift[v][0] = p;
-	for (int i = 1; i < LG; i++) { lift[v][i] = lift[lift[v][i - 1]][i - 1]; }
-
-	for (const auto &[u, w] : adj[v]) {
-		if (u == p) { continue; }
-		sub[v] += dfs(u, v);
-		rev[w].push_back(u);
-		col[u] = w;
+	for (int i=1; i<LG; i++)
+		lift[v][i] = lift[lift[v][i-1]][i-1];
+	
+	for (int u : g[v]) {
+		if (u==p) continue;
+		dfs(u,v);
 	}
-
 	tout[v] = timer++;
-	return sub[v];
 }
 
-bool is_ancestor(int u, int v) { return tin[u] <= tin[v] && tout[v] <= tout[u]; }
+inline int is_ancestor(int u, int v) {
+	return tin[u] <= tin[v] && tout[v] <= tout[u];
+}
 
-int lca(int u, int v) {
-	if (is_ancestor(u, v)) { return u; }
-	if (is_ancestor(v, u)) { return v; }
-	for (int i = LG - 1; i >= 0; i--) {
-		if (!is_ancestor(lift[u][i], v)) { u = lift[u][i]; }
+inline int lca(int u, int v) {
+	if (is_ancestor(u,v)) return u;
+	if (is_ancestor(v,u)) return v;
+	for (int i=LG-1; i>=0; i--) {
+		if (!is_ancestor(lift[u][i],v))
+			u = lift[u][i];
 	}
-
 	return lift[u][0];
 }
 
-bool sort_tin(const int &a, const int &b) { return tin[a] < tin[b]; }
+bool sort_tin(const int &a, const int &b) {
+	return tin[a] < tin[b];
+}
 
 vector<int> vtree(vector<int> &key) {
-	vector<int> res = key;
-	sort(begin(key), end(key), sort_tin);
-	for (int i = 1; i < key.size(); i++) { res.push_back(lca(key[i - 1], key[i])); }
-
-	sort(begin(res), end(res), sort_tin);
-	res.erase(unique(begin(res), end(res)), end(res));
-	for (int v : res) { vg[v].clear(); }
-
+	if (!sz(key)) return {};
+	vector<int> res = key; sort(all(key),sort_tin);
+	for (int i=1; i<sz(key); i++)
+		res.push_back(lca(key[i-1],key[i]));
+	sort(all(res),sort_tin);
+	res.erase(unique(all(res)),res.end());
+	for (int v : res) vg[v].clear();
 	vector<int> stk = {res[0]};
-	for (int i = 1; i < res.size(); i++) {
-		while (tin[res[i]] > tout[stk.back()]) { stk.pop_back(); }
+	for (int i=1; i<sz(res); i++) {
+		while (tin[res[i]] > tout[stk.back()])
+			stk.pop_back();
 		vg[stk.back()].push_back(res[i]);
 		stk.push_back(res[i]);
 	}
-
 	return res;
 }
 
-int main() {
-	int n;
-	cin >> n;
-	for (int i = 0; i < n - 1; i++) {
-		int u, v, x;
-		cin >> u >> v >> x;
-		u--, v--;
-		adj[u].push_back({v, x});
-		adj[v].push_back({u, x});
-	}
-
-	dfs(0, 0);
-
-	long long ans = 0;
-	for (int i = 1; i <= n; i++) {
-		rev[i].push_back(0);
-		vector<int> vt = vtree(rev[i]);
-		reverse(begin(vt), end(vt));
-
-		for (int v : vt) {
-			dp[v][0] = sub[v];
-			dp[v][1] = 0;
-
-			for (int u : vg[v]) { dp[v][0] -= sub[u]; }
-
-			for (int u : vg[v])
-				if (col[u] == i) {
-					ans += dp[u][0] * dp[v][0];
-					dp[v][1] += dp[u][0];
-				} else {
-					ans += dp[u][0] * dp[v][1];
-					ans += dp[u][1] * dp[v][0];
-					dp[v][0] += dp[u][0];
-					dp[v][1] += dp[u][1];
-				}
+namespace rmq {
+	const int L = 1<<20;
+	const int DEFAULT = inf;
+	int seg[2*L];	
+	inline void point_set(int QI, int QV) {
+		QI += L; seg[QI] = QV; QI /= 2;
+		while (QI) {
+			seg[QI] = min(seg[2*QI],seg[2*QI+1]);
+			QI /= 2;
 		}
 	}
+	int range_query(int QL, int QR, int CL=0, int CR=L-1, int CI=1) {
+		if (QL > CR || CL > QR) return DEFAULT;
+		if (QL <= CL && CR <= QR) return seg[CI];
+		return min(
+			range_query(QL,QR,CL,(CL+CR)/2,2*CI),
+			range_query(QL,QR,(CL+CR)/2+1,CR,2*CI+1)
+		);
+	}
+}
 
-	cout << ans << '\n';
+void solve() {
+	cin>>n;
+	for (int i=0; i<=n; i++) {
+		g[i].clear();
+		atd[i].clear();
+	}
+	for (int i=0; i<n; i++) {
+		int a; cin>>a;
+		rmq::point_set(i,a);
+	}
+	for (int i=1; i<n; i++) {
+		int u,v; cin>>u>>v; --u; --v;
+		g[u].push_back(v); g[v].push_back(u);
+	}
+	dfs(0,0);
+	int ans = 0;
+	for (int dep=0; dep<n; dep++) {
+		vector<int> vt = vtree(atd[dep]);
+		reverse(all(vt));
+		for (int v : vt) {
+			dp[v] = rmq::range_query(dep-d[v],dep);
+			if (sz(vg[v])) {
+				int su = 0;
+				for (int u : vg[v])
+					su += dp[u];
+				dp[v] = min(dp[v],su);
+			}
+		}
+		if (sz(vt))
+			ans += dp[vt[sz(vt)-1]];
+	}
+	cout<<ans<<"\n";
+}
+
+signed main() {
+	ios::sync_with_stdio(false); cin.tie(nullptr);
+	
+	int t; cin>>t;
+	while (t--) solve();
+	
 }
 ```
 
