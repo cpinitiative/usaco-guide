@@ -735,16 +735,7 @@ export default function IndexPage(): JSX.Element {
         <div className="mx-auto max-w-(--breakpoint-xl) px-4 py-12">
           <p className="dark:text-dark-med-emphasis text-center text-base leading-6 text-gray-400">
             &copy; {new Date().getFullYear()} Competitive Programming
-            Initiative. Powered by{' '}
-            <a
-              href="https://vercel.com/?utm_source=cp-initiative&utm_campaign=oss"
-              target="_blank"
-              className="underline"
-              rel="noreferrer"
-            >
-              Vercel
-            </a>
-            .
+            Initiative.
             <br />
             No part of this website may be reproduced or commercialized in any
             manner without prior written permission.{' '}
