@@ -69,10 +69,6 @@ $$
 \sum_{u\neq v\in\text{Children}(p)} \texttt{dp}[v][1]\cdot\texttt{dp}[u][0]+1
 $$
 
-<!--
-fix this later
--->
-
 Taking the total over all colors, we can get our answer in $\mathcal{O}(n^2)$ time.
 
 ### Virtual Tree Optimization
@@ -87,7 +83,7 @@ $$
 
 $S$ is the *virtual tree* or *auxiliary tree* of $S_0$. We can also define $p'_v$, the virtual parent of $v$ as the lowest node in $S$ such that $p'_v \neq v$ and $\text{LCA}(p'_v,v) = p'_v$, and $v$ as a virtual child of $p'_v$. Here is an example of a virtual tree, with nodes in $S_0$ colored purple, and the rest of the virtual tree in blue:
 
-![VTree](https://ibb.co/67M0f8hY)
+![VTree](./assets/vtree_example.png)
 
 We continue in a similar fashion to previously, but we only compute dynamic programming values for nodes in $S$. This time, a pull-dp approach is more elegant, and our transitions are as follows, when considering node $u$ as a virtual child of $v$:
 
