@@ -167,36 +167,6 @@ export const RestOfMembers: Member[] = [
   },
 ];
 
-export const NotPictured: Member[] = [
-  {
-    name: 'Kevin Sheng',
-    titles: [roles.contentAuthor],
-    github: 'sanspapyrus683',
-  },
-  {
-    name: 'Shreyas Thumathy',
-    titles: [roles.liveInstructor, roles.clubCurriculum],
-    github: 'therealshreyas',
-  },
-  {
-    name: 'Sathvik Chundru',
-    titles: [roles.contentAuthor],
-    github: 'sathu-beep',
-    codeforces: 'sus',
-  },
-  {
-    name: 'KJ Karaisz',
-    titles: [roles.contentAuthor],
-    github: 'IDON-TEXIST',
-  },
-  {
-    name: 'Rameez Parwez',
-    titles: [roles.contentAuthor],
-    github: 'sosuke23',
-    codeforces: 'sosuke23',
-  },
-];
-
 export const FormerMembers: Member[] = [
   {
     photo: 'daniel',
