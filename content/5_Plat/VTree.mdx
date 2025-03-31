@@ -116,127 +116,174 @@ Will clean up code later :pray:
 ```cpp
 #include "bits/stdc++.h"
 using namespace std;
-#define all(x) begin(x), end(x)
-#define sz(x) (int)(x).size()
-#define int long long
 
-const int mxn = 1e5 + 5;
-const int LG = 17;
-const int inf = 1e18;
+constexpr int MAX_N = 1e5 + 1;
+constexpr int LG = 17;
 
-int n, tin[mxn], tout[mxn], d[mxn], lift[mxn][LG], timer, dp[mxn];
-vector<int> g[mxn], vg[mxn], atd[mxn];
+using ll = long long;
+
+int tin[MAX_N], tout[MAX_N], d[MAX_N], lift[MAX_N][LG], timer;
+ll dp[MAX_N];
+vector<int> adj[MAX_N], vadj[MAX_N], at_d[MAX_N];
 
 void dfs(int v, int p) {
-	d[v] = v ? d[p] + 1 : 0;
-	atd[d[v]].push_back(v);
-	tin[v] = timer++;
+    d[v] = v ? d[p] + 1 : 0;
+    at_d[d[v]].push_back(v);
+    tin[v] = timer++;
 
-	lift[v][0] = p;
-	for (int i = 1; i < LG; i++) lift[v][i] = lift[lift[v][i - 1]][i - 1];
+    lift[v][0] = p;
+    for (int i = 1; i < LG; i++) {
+        lift[v][i] = lift[lift[v][i - 1]][i - 1];
+    }
 
-	for (int u : g[v]) {
-		if (u == p) continue;
-		dfs(u, v);
-	}
-	tout[v] = timer++;
+    for (int u : adj[v]) {
+        if (u == p) { continue; }
+        dfs(u, v);
+    }
+    
+    tout[v] = timer++;
 }
 
-inline int is_ancestor(int u, int v) { return tin[u] <= tin[v] && tout[v] <= tout[u]; }
-
-inline int lca(int u, int v) {
-	if (is_ancestor(u, v)) return u;
-	if (is_ancestor(v, u)) return v;
-	for (int i = LG - 1; i >= 0; i--) {
-		if (!is_ancestor(lift[u][i], v)) u = lift[u][i];
-	}
-	return lift[u][0];
+int is_ancestor(int u, int v) {
+    return tin[u] <= tin[v] && tout[v] <= tout[u];
 }
 
-bool sort_tin(const int &a, const int &b) { return tin[a] < tin[b]; }
+int lca(int u, int v) {
+    if (is_ancestor(u, v)) { return u; }
+    if (is_ancestor(v, u)) { return v; }
+
+    for (int i = LG - 1; i >= 0; i--) {
+        if (!is_ancestor(lift[u][i], v)) {
+            u = lift[u][i];
+        }
+    }
+    return lift[u][0];
+}
+
+bool sort_tin(const int &a, const int &b) {
+    return tin[a] < tin[b];
+}
 
 vector<int> vtree(vector<int> &key) {
-	if (!sz(key)) return {};
-	vector<int> res = key;
-	sort(all(key), sort_tin);
-	for (int i = 1; i < sz(key); i++) res.push_back(lca(key[i - 1], key[i]));
-	sort(all(res), sort_tin);
-	res.erase(unique(all(res)), res.end());
-	for (int v : res) vg[v].clear();
-	vector<int> stk = {res[0]};
-	for (int i = 1; i < sz(res); i++) {
-		while (tin[res[i]] > tout[stk.back()]) stk.pop_back();
-		vg[stk.back()].push_back(res[i]);
-		stk.push_back(res[i]);
-	}
-	return res;
+    if (key.empty()) return {};
+    
+    vector<int> res = key;
+    sort(res.begin(), res.end(), sort_tin);
+    
+    for (int i = 1; i < (int) key.size(); i++) {
+        res.push_back(lca(key[i - 1], key[i]));
+    }
+    
+    sort(res.begin(), res.end(), sort_tin);
+    res.erase(unique(res.begin(), res.end()), res.end());
+    
+    for (int v : res) {
+        vadj[v].clear();
+    }
+    
+    vector<int> stk = {res[0]};
+    
+    for (int i = 1; i < (int) res.size(); i++) {
+        while (tin[res[i]] > tout[stk.back()]) {
+            stk.pop_back();
+        }
+        
+        vadj[stk.back()].push_back(res[i]);
+        stk.push_back(res[i]);
+    }
+    
+    return res;
 }
 
-namespace rmq {
-const int L = 1 << 20;
-const int DEFAULT = inf;
-int seg[2 * L];
-inline void point_set(int QI, int QV) {
-	QI += L;
-	seg[QI] = QV;
-	QI /= 2;
-	while (QI) {
-		seg[QI] = min(seg[2 * QI], seg[2 * QI + 1]);
-		QI /= 2;
-	}
-}
-int range_query(int QL, int QR, int CL = 0, int CR = L - 1, int CI = 1) {
-	if (QL > CR || CL > QR) return DEFAULT;
-	if (QL <= CL && CR <= QR) return seg[CI];
-	return min(range_query(QL, QR, CL, (CL + CR) / 2, 2 * CI),
-	           range_query(QL, QR, (CL + CR) / 2 + 1, CR, 2 * CI + 1));
-}
-}  // namespace rmq
+template <class T> class MinSegmentTree {
+  private:
+    const T DEFAULT = numeric_limits<T>().max();
+
+    vector<T> segtree;
+    int len;
+
+  public:
+    MinSegmentTree(int len) : len(len), segtree(len * 2, DEFAULT) {}
+
+    void set(int ind, T val) {
+        ind += len;
+        segtree[ind] = val;
+        for (; ind > 1; ind /= 2) {
+            segtree[ind / 2] = min(segtree[ind], segtree[ind ^ 1]);
+        }
+    }
+
+    T range_min(int start, int end) {
+        T res = DEFAULT;
+        for (start += len, end += len; start < end; start /= 2, end /= 2) {
+            if (start % 2 == 1) { res = min(res, segtree[start++]); }
+            if (end % 2 == 1) { res = min(res, segtree[--end]); }
+        }
+        return res;
+    }
+};
 
 void solve() {
-	cin >> n;
-	for (int i = 0; i <= n; i++) {
-		g[i].clear();
-		atd[i].clear();
-	}
-	for (int i = 0; i < n; i++) {
-		int a;
-		cin >> a;
-		rmq::point_set(i, a);
-	}
-	for (int i = 1; i < n; i++) {
-		int u, v;
-		cin >> u >> v;
-		--u;
-		--v;
-		g[u].push_back(v);
-		g[v].push_back(u);
-	}
-	dfs(0, 0);
-	int ans = 0;
-	for (int dep = 0; dep < n; dep++) {
-		vector<int> vt = vtree(atd[dep]);
-		reverse(all(vt));
-		for (int v : vt) {
-			dp[v] = rmq::range_query(dep - d[v], dep);
-			if (sz(vg[v])) {
-				int su = 0;
-				for (int u : vg[v]) su += dp[u];
-				dp[v] = min(dp[v], su);
-			}
-		}
-		if (sz(vt)) ans += dp[vt[sz(vt) - 1]];
-	}
-	cout << ans << "\n";
+    int n;
+    cin >> n;
+    
+    for (int i = 0; i <= n; i++) {
+        adj[i].clear();
+        at_d[i].clear();
+    }
+    
+    MinSegmentTree<int> rmq(n);
+    for (int i = 0; i < n; i++) {
+        int a;
+        cin >> a;
+        rmq.set(i, a);
+    }
+    
+    for (int i = 1; i < n; i++) {
+        int u, v;
+        cin >> u >> v;
+        u--, v--;
+        adj[u].push_back(v);
+        adj[v].push_back(u);
+    }
+    
+    dfs(0, 0);
+    
+    ll ans = 0;
+    
+    for (int dep = 0; dep < n; dep++) {
+        vector<int> vt = vtree(at_d[dep]);
+        reverse(vt.begin(), vt.end());
+        
+        for (int v : vt) {
+            dp[v] = rmq.range_min(dep - d[v], dep + 1);
+            
+            if (!vadj[v].empty()) {
+                ll sum = 0;
+                for (int u : vadj[v]) {
+                    sum += dp[u];
+                }
+                dp[v] = min(dp[v], sum);
+            }
+        }
+        
+        if (!vt.empty()) {
+            ans += dp[vt.back()];
+        }
+    }
+    
+    cout << ans << "\n";
 }
 
-signed main() {
-	ios::sync_with_stdio(false);
-	cin.tie(nullptr);
-
-	int t;
-	cin >> t;
-	while (t--) solve();
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    
+    int test_num;
+    cin >> test_num;
+    while (test_num--) {
+        solve();
+    }
 }
 ```
 
