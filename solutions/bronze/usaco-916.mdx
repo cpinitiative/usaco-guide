@@ -2,14 +2,8 @@
 id: usaco-916
 source: USACO Bronze 2019 February
 title: The Great Revegetation
-author: Ryan Chou, Brad Ma
+author: Ryan Chou, Brad Ma, Kevin Sheng
 ---
-
-<Spoiler title="Hint">
-
-What forces us to change to a different grass type?
-
-</Spoiler>
 
 ## Video Solution
 
@@ -18,6 +12,7 @@ By Jay Fu
 <YouTube id="GT9PEJbJjxo" />
 
 <Spoiler title="Video Solution Code">
+
 <LanguageSection>
 <CPPSection>
 
@@ -169,178 +164,339 @@ public class revegetate {
 </LanguageSection>
 </Spoiler>
 
+<Spoiler title="Hint">
+
+What forces us to change to a different grass type?
+
+</Spoiler>
+
 <Spoiler title="Solution 1">
 
 [Official Analysis (C++)](http://www.usaco.org/current/data/sol_revegetate_bronze_feb19.html)
 
+## Explanation
+
+We loop through all the pastures, assigning each the lowest color
+that doesn't conflict with any of the requirements.
+
 ## Implementation
+
+In the below implementation, it's made sure that the lower pastures
+are put before higher pastures in the `cows` array.
+
+This allows us to only check for one-way conflicts,
+since we assign the colors from lowest to highest.
 
 **Time Complexity:** $\mathcal{O}(NM)$
 
 <LanguageSection>
+<CPPSection>
+
+```cpp
+#include <algorithm>
+#include <fstream>
+#include <iostream>
+#include <vector>
+
+using std::cout;
+using std::endl;
+using std::pair;
+using std::vector;
+
+constexpr int COLORS = 4;
+
+int main() {
+	std::ifstream read("revegetate.in");
+	int pasture_num;
+	int cow_num;
+	read >> pasture_num >> cow_num;
+	vector<pair<int, int>> cows(cow_num);
+	for (auto &[p1, p2] : cows) {
+		read >> p1 >> p2;
+		p1--;  // 0-index pastures
+		p2--;
+		if (p1 > p2) { std::swap(p1, p2); }
+	}
+
+	// Start of all the pastures with no grass type (0)
+	vector<int> pastures(pasture_num);
+	for (int p = 0; p < pasture_num; p++) {
+		int color = 1;
+		for (; color <= COLORS; color++) {
+			// Does this color conflict with any other existing colors?
+			bool conflicts = false;
+			for (const auto &[a, b] : cows) {
+				if (pastures[a] == color && b == p) {
+					conflicts = true;
+					break;
+				}
+			}
+			// If not, we can stop looking!
+			if (!conflicts) { break; }
+		}
+		pastures[p] = color;
+	}
+
+	std::ofstream written("revegetate.out");
+	for (int p : pastures) { written << p; }
+	written << endl;
+}
+```
+
+</CPPSection>
 <JavaSection>
 
 ```java
 import java.io.*;
-import java.util.StringTokenizer;
+import java.util.*;
 
-public class Revegetation {
-	static final int MAXIMUM = 151;
+public class Revegetate {
+	private static final int COLORS = 4;
 
 	public static void main(String[] args) throws IOException {
-		Kattio io = new Kattio("revegetate");
-
-		int[] grassA = new int[MAXIMUM];
-		int[] grassB = new int[MAXIMUM];
-
-		// stores the identity of adjacent verticies
-		int[] G = new int[MAXIMUM];
-
-		int n = io.nextInt();
-		int m = io.nextInt();
-
-		for (int x = 0; x < m; x++) {
-			grassA[x] = io.nextInt();
-			grassB[x] = io.nextInt();
-
-			// put the smaller in A, the larger in B
-			if (grassA[x] > grassB[x]) {
-				int temp = grassA[x];
-				grassA[x] = grassB[x];
-				grassB[x] = temp;
-			}
+		BufferedReader read = new BufferedReader(new FileReader("revegetate.in"));
+		StringTokenizer initial = new StringTokenizer(read.readLine());
+		int pastureNum = Integer.parseInt(initial.nextToken());
+		int cowNum = Integer.parseInt(initial.nextToken());
+		int[][] cows = new int[cowNum][2];
+		for (int c = 0; c < cowNum; c++) {
+			StringTokenizer p = new StringTokenizer(read.readLine());
+			int p1 = Integer.parseInt(p.nextToken()) - 1;  // 0-index pastures
+			int p2 = Integer.parseInt(p.nextToken()) - 1;
+			cows[c][0] = Math.min(p1, p2);
+			cows[c][1] = Math.max(p1, p2);
 		}
 
-		for (int i = 1; i <= n; i++) {  // for each vertex
-			int j = 0;
-			for (j = 1; j <= 4; j++) {  // check which colors are free
-				boolean ok = true;
-				for (int k = 0; k < m; k++) {
-					if (grassB[k] == i && G[grassA[k]] == j) { ok = false; }
+		// Start of all the pastures with no grass type (0)
+		int[] pastures = new int[pastureNum];
+		for (int p = 0; p < pastureNum; p++) {
+			int color = 1;
+			for (; color <= COLORS; color++) {
+				// Does this color conflict with any other existing colors?
+				boolean conflicts = false;
+				for (int[] c : cows) {
+					if (pastures[c[0]] == color && c[1] == p) {
+						conflicts = true;
+						break;
+					}
 				}
-				if (ok) { break; }
+				// If not, we can stop looking!
+				if (!conflicts) { break; }
 			}
-			G[i] = j;
-			io.print(j);
+			pastures[p] = color;
 		}
-		io.println();
-		io.close();
+
+		PrintWriter written = new PrintWriter("revegetate.out");
+		for (int p : pastures) { written.print(p); }
+		written.println();
+		written.close();
 	}
-	// CodeSnip{Kattio}
 }
 ```
 
 </JavaSection>
+<PySection>
+
+```py
+COLORS = 4
+
+with open("revegetate.in") as read:
+	pasture_num, cow_num = map(int, read.readline().split())
+	cows = []
+	for _ in range(cow_num):
+		p1, p2 = sorted(map(int, read.readline().split()))
+		cows.append((p1 - 1, p2 - 1))  # 0-index pastures
+
+# Start of all the pastures with no grass type (0)
+pastures = [0 for _ in range(pasture_num)]
+for p in range(pasture_num):
+	for color in range(1, COLORS + 1):
+		# Does this color conflict with any other existing colors?
+		if any(pastures[a] == color and b == p for a, b in cows):
+			continue
+
+		# If not, we can stop looking!
+		break
+
+	pastures[p] = color
+
+print("".join(map(str, pastures)), file=open("revegetate.out", "w"))
+```
+
+</PySection>
 </LanguageSection>
+
 </Spoiler>
 
 <Spoiler title="Solution 2">
 
 ## Explanation
 
-We can iterate through the favorite pastures, and increment one to the pasture with the greater index, making the result minimal. All pastures start with
-the seed choice as one, this makes it so that we don't have to worry about decreasing or increasing more to a certain pasture. We'll also cycle through the
-previous favorite pastures to make sure that our new alteration doesn't interfere with any of the other cow's favorite pastures.
+We can iterate through the favorite pastures, and increment one to the pasture with the greater index, making the result minimal.
+All pastures start with grass type 1, and we only increment when we have to so the result is as small as possible.
+
+We'll also cycle through the previous favorite pastures to make sure
+new changes don't mess up previous ones.
 
 ## Implementation
 
 **Time Complexity:** $\mathcal{O}(N^2)$
 
 <LanguageSection>
-<PySection>
-
-```py
-import sys
-
-sys.stdin = open("revegetate.in", "r")
-sys.stdout = open("revegetate.out", "w")
-
-pasture_num, cow_num = map(int, input().split())
-pastures = []
-ans = [1] * pasture_num
-
-for _ in range(cow_num):
-	past1, past2 = sorted(map(int, input().split()))
-	# Subtract one so that the indexes start from 0
-	pastures.append([past1 - 1, past2 - 1])
-
-# Assign the pastures at the front first.
-pastures.sort()
-for a, b in pastures:
-	# If they're not unique.
-	if ans[a] == ans[b]:
-		# Increment one to the pasture closer to the end.
-		# 100 is larger than 001.
-		ans[b] += 1
-
-		# All favorite pastures up to the current one.
-		for i, j in pastures[: pastures.index([a, b])]:
-			# Increment again if requirement isn't satisfied.
-			# This also means that either i == b or j == b,
-			# since the only reason they would become equal again
-			# is if they had a pasture in common.
-			if ans[i] == ans[j]:
-				ans[b] += 1
-print("".join(map(str, ans)))
-```
-
-</PySection>
-
 <CPPSection>
 
 ```cpp
-#include <bits/stdc++.h>
+#include <algorithm>
+#include <fstream>
+#include <iostream>
+#include <vector>
 
-using namespace std;
+using std::cout;
+using std::endl;
+using std::pair;
+using std::vector;
 
 int main() {
-	freopen("revegetate.in", "r", stdin);
-	freopen("revegetate.out", "w", stdout);
+	std::ifstream read("revegetate.in");
 
-	int n, m;
-	cin >> n >> m;
-	vector<int> colors(n, 1);  // initially, all pastures have grass type one
-	vector<vector<int>> adj(n);
-
-	for (int i = 0; i < m; i++) {
-		int a, b;
-		cin >> a >> b;
-
-		// zero-index
-		adj[--a].push_back(--b);
-		adj[b].push_back(a);
+	// Read input the same way as in the other implementation
+	int pasture_num;
+	int cow_num;
+	read >> pasture_num >> cow_num;
+	vector<pair<int, int>> cows(cow_num);
+	for (auto &[p1, p2] : cows) {
+		read >> p1 >> p2;
+		p1--;
+		p2--;
+		if (p1 > p2) { std::swap(p1, p2); }
 	}
 
-	// we want to assign the smallest grass types to the pastures at the front
-	for (int i = 0; i < n; i++) {
-		for (int k : adj[i]) {
-			/*
-			 * if they have the same grass type, increment the greater
-			 * pasture to minimize the answer. (earlier digits have more weight)
-			 */
-			if (colors[k] == colors[i]) {
-				colors[k]++;
+	vector<int> pastures(pasture_num, 1);
 
-				/*
-				 * check if we've broken any of the "fixed" colorings.
-				 * once again, since j < i < k, we want to make sure
-				 * that we increment the greatest pasture.
-				 */
-				for (int j = 0; j < i; j++) {
-					for (int g : adj[j]) {
-						if (colors[g] == colors[j]) { colors[k]++; }
-					}
-				}
-			}
+	// Assign the pastures at the front first.
+	std::sort(cows.begin(), cows.end());
+	for (int c = 0; c < cow_num; c++) {
+		const auto &[a, b] = cows[c];
+		if (pastures[a] != pastures[b]) { continue; }
+
+		// Increment one to the later pasture
+		pastures[b]++;
+
+		// All favorite pastures up to the current one.
+		for (int prev_c = 0; prev_c < c; prev_c++) {
+			/*
+			 * Increment again if requirement isn't satisfied.
+			 * This also means that one of the cows in the previous req.
+			 * has to be equal to b, since that's the only
+			 * pasture we touched.
+			 */
+			const auto &[i, j] = cows[prev_c];
+			if (pastures[i] == pastures[j]) { pastures[b]++; }
 		}
 	}
 
-	for (int i : colors) { cout << i; }
-	cout << "\n";
+	std::ofstream written("revegetate.out");
+	for (int p : pastures) { written << p; }
+	written << endl;
 }
 ```
 
 </CPPSection>
+<JavaSection>
 
+```java
+import java.io.*;
+import java.util.*;
+
+public class Revegetate {
+	public static void main(String[] args) throws IOException {
+		BufferedReader read = new BufferedReader(new FileReader("revegetate.in"));
+
+		// Read input the same way as in the other implementation
+		StringTokenizer initial = new StringTokenizer(read.readLine());
+		int pastureNum = Integer.parseInt(initial.nextToken());
+		int cowNum = Integer.parseInt(initial.nextToken());
+		int[][] cows = new int[cowNum][2];
+		for (int c = 0; c < cowNum; c++) {
+			StringTokenizer p = new StringTokenizer(read.readLine());
+			int p1 = Integer.parseInt(p.nextToken()) - 1;  // 0-index pastures
+			int p2 = Integer.parseInt(p.nextToken()) - 1;
+			cows[c][0] = Math.min(p1, p2);
+			cows[c][1] = Math.max(p1, p2);
+		}
+
+		int[] pastures = new int[pastureNum];
+		Arrays.fill(pastures, 1);
+
+		// Assign the pastures at the front first.
+		Arrays.sort(cows, Arrays::compare);
+		for (int c = 0; c < cowNum; c++) {
+			int[] cow = cows[c];
+			if (pastures[cow[0]] != pastures[cow[1]]) { continue; }
+
+			// Increment one to the later pasture
+			pastures[cow[1]]++;
+
+			// All favorite pastures up to the current one.
+			for (int prevC = 0; prevC < c; prevC++) {
+				/*
+				 * Increment again if requirement isn't satisfied.
+				 * This also means that one of the cows in the previous req.
+				 * has to be equal to cow[1], since that's the only
+				 * pasture we touched.
+				 */
+				if (pastures[cows[prevC][0]] == pastures[cows[prevC][1]]) {
+					pastures[cow[1]]++;
+				}
+			}
+		}
+
+		PrintWriter written = new PrintWriter("revegetate.out");
+		for (int p : pastures) { written.print(p); }
+		written.println();
+		written.close();
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+# Read input the same way as in the other implementation
+with open("revegetate.in") as read:
+	pasture_num, cow_num = map(int, read.readline().split())
+	cows = []
+	for _ in range(cow_num):
+		p1, p2 = sorted(map(int, read.readline().split()))
+		cows.append((p1 - 1, p2 - 1))
+
+pastures = [1] * pasture_num
+
+# Assign the pastures at the front first.
+cows.sort()
+for c, (a, b) in enumerate(cows):
+	if pastures[a] != pastures[b]:
+		continue
+
+	# Increment one to the later pasture
+	pastures[b] += 1
+
+	# All favorite pastures up to the current one.
+	for i, j in cows[:c]:
+		"""
+		Increment again if requirement isn't satisfied.
+		This also means that one of the cows in the previous req.
+		has to be equal to b, since that's the only
+		pasture we touched.
+		"""
+		if pastures[i] == pastures[j]:
+			pastures[b] += 1
+
+print("".join(map(str, pastures)), file=open("revegetate.out", "w"))
+```
+
+</PySection>
 </LanguageSection>
+
 </Spoiler>

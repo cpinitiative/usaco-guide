@@ -35,26 +35,26 @@ export const EditorTopNav = (): JSX.Element => {
   };
 
   return (
-    <div className="block px-4 border-b border-gray-200 dark:border-gray-800 dark:bg-gray-900 flex items-center justify-between">
+    <div className="block flex items-center justify-between border-b border-gray-200 px-4 dark:border-gray-800 dark:bg-gray-900">
       <div className="flex items-center space-x-4">
-        <div className="flex items-center space-x-2 whitespace-nowrap flex-nowrap py-2 mr-8">
-          <div className="h-8 w-8 flex-shrink-0">
+        <div className="mr-8 flex flex-nowrap items-center space-x-2 py-2 whitespace-nowrap">
+          <div className="h-8 w-8 shrink-0">
             <LogoSquare />
           </div>
-          <span className="font-medium text-xl tracking-tight">
+          <span className="text-xl font-medium tracking-tight">
             Guide Editor
           </span>
         </div>
-        {/*<button className="inline-flex items-center space-x-2 text-gray-600 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 px-3 py-2 font-medium text-sm rounded-md focus:outline-none transition">*/}
+        {/*<button className="inline-flex items-center space-x-2 text-gray-600 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 px-3 py-2 font-medium text-sm rounded-md focus:outline-hidden transition">*/}
         {/*  /!*<ArchiveIcon className="h-4 w-4" />*!/*/}
         {/*  <span>History</span>*/}
         {/*</button>*/}
-        {/*<button className="inline-flex items-center space-x-2 text-gray-600 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 px-3 py-2 font-medium text-sm rounded-md focus:outline-none transition">*/}
+        {/*<button className="inline-flex items-center space-x-2 text-gray-600 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 px-3 py-2 font-medium text-sm rounded-md focus:outline-hidden transition">*/}
         {/*  /!*<ShareIcon className="h-4 w-4" />*!/*/}
         {/*  <span>Share</span>*/}
         {/*</button>*/}
         {/*<button*/}
-        {/*  className="inline-flex items-center space-x-2 text-gray-600 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 px-3 py-2 font-medium text-sm rounded-md focus:outline-none transition"*/}
+        {/*  className="inline-flex items-center space-x-2 text-gray-600 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 px-3 py-2 font-medium text-sm rounded-md focus:outline-hidden transition"*/}
         {/*  onClick={async () => {*/}
         {/*    const db = getFirestore(firebaseApp);*/}
         {/*    try {*/}
@@ -84,7 +84,7 @@ export const EditorTopNav = (): JSX.Element => {
 
         {activeFile?.path && (
           <button
-            className="inline-flex items-center space-x-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 px-3 py-2 font-medium text-sm rounded-md focus:outline-none transition"
+            className="inline-flex items-center space-x-2 rounded-md px-3 py-2 text-sm font-medium text-gray-500 transition hover:bg-gray-100 hover:text-gray-700 focus:outline-hidden dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-300"
             onClick={handleReloadContent}
           >
             Reload Content from GitHub
@@ -96,7 +96,7 @@ export const EditorTopNav = (): JSX.Element => {
               activeFile?.path
             )}`}
             target="_blank"
-            className="inline-flex items-center space-x-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 px-3 py-2 font-medium text-sm rounded-md focus:outline-none transition"
+            className="inline-flex items-center space-x-2 rounded-md px-3 py-2 text-sm font-medium text-gray-500 transition hover:bg-gray-100 hover:text-gray-700 focus:outline-hidden dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-300"
             rel="noreferrer"
           >
             View File on GitHub &rarr;
@@ -110,9 +110,9 @@ export const EditorTopNav = (): JSX.Element => {
               key={tab}
               className={classNames(
                 tab === userLang
-                  ? 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300'
-                  : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300',
-                'px-3 py-2 font-medium text-sm rounded-md focus:outline-none transition'
+                  ? 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300'
+                  : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300',
+                'rounded-md px-3 py-2 text-sm font-medium transition focus:outline-hidden'
               )}
               onClick={() => setUserLang(tab)}
             >
@@ -121,23 +121,23 @@ export const EditorTopNav = (): JSX.Element => {
           ))}
         </nav>
 
-        <div className="mx-4 block border-l border-gray-200 dark:border-gray-700 h-6 self-center" />
+        <div className="mx-4 block h-6 self-center border-l border-gray-200 dark:border-gray-700" />
 
         <a
           href="/general/adding-solution"
           target="_blank"
           rel="noreferrer"
-          className="text-gray-600 hover:text-black dark:text-gray-400 dark:hover:text-gray-200 inline-flex items-center space-x-2 font-medium text-sm group transition"
+          className="group inline-flex items-center space-x-2 text-sm font-medium text-gray-600 transition hover:text-black dark:text-gray-400 dark:hover:text-gray-200"
         >
-          <InformationCircleIcon className="h-6 w-6 text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300 transition" />
+          <InformationCircleIcon className="h-6 w-6 text-gray-400 transition group-hover:text-gray-500 dark:group-hover:text-gray-300" />
           <span>Documentation</span>
         </a>
 
-        <div className="mx-4 block border-l border-gray-200 dark:border-gray-700 h-6 self-center" />
+        <div className="mx-4 block h-6 self-center border-l border-gray-200 dark:border-gray-700" />
 
         <button
           onClick={() => setTheme(isDarkMode ? 'light' : 'dark')}
-          className="-mx-1 p-1 border-2 border-transparent text-gray-400 dark:text-gray-400 rounded-full hover:text-gray-300 dark:hover:text-dark-high-emphasis focus:outline-none focus:text-gray-500 focus:bg-gray-100 dark:focus:bg-gray-700 transition"
+          className="dark:hover:text-dark-high-emphasis -mx-1 rounded-full border-2 border-transparent p-1 text-gray-400 transition hover:text-gray-300 focus:bg-gray-100 focus:text-gray-500 focus:outline-hidden dark:text-gray-400 dark:focus:bg-gray-700"
         >
           {isDarkMode ? (
             <svg

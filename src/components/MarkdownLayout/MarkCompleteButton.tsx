@@ -95,13 +95,13 @@ const MarkCompleteButton = ({
           <div>
             <Menu.Button
               type="button"
-              className={`rounded-md shadow-sm inline-flex justify-center w-full rounded-md border border-gray-300 dark:border-gray-800 pr-4 ${
+              className={`inline-flex w-full justify-center rounded-md border border-gray-300 pr-4 shadow-sm dark:border-gray-800 ${
                 state === 'Not Started' ? 'pl-4' : 'pl-3'
-              } py-2 bg-white dark:bg-gray-900 dark:hover:bg-gray-800 text-sm leading-5 font-medium text-gray-700 dark:text-gray-200 hover:text-gray-500 dark:hover:text-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-offset-dark-surface`}
+              } dark:focus:ring-offset-dark-surface bg-white py-2 text-sm leading-5 font-medium text-gray-700 hover:text-gray-500 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-hidden dark:bg-gray-900 dark:text-gray-200 dark:hover:bg-gray-800 dark:hover:text-gray-100`}
             >
               {moduleProgressToIcon(state as ModuleProgress)}
               <span
-                className={`flex-1${state === 'Not Started' ? '' : ' ml-1.5'}`}
+                className={`flex-1${state === 'Not Started' ? '' : 'ml-1.5'}`}
               >
                 {state}
               </span>
@@ -127,9 +127,9 @@ const MarkCompleteButton = ({
               static
               className={`${
                 dropdownAbove
-                  ? 'origin-bottom-right bottom-0 mb-12'
+                  ? 'bottom-0 mb-12 origin-bottom-right'
                   : 'origin-top-right'
-              } right-0 absolute z-10 mt-2 w-36 bg-white dark:bg-gray-800 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none`}
+              } absolute right-0 z-10 mt-2 w-36 rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-hidden dark:bg-gray-800`}
             >
               <div className="py-1">
                 {ModuleProgressOptions.map(option => (
@@ -138,9 +138,9 @@ const MarkCompleteButton = ({
                       <button
                         onClick={() => onChange(option)}
                         className={classNames(
-                          'flex items-center w-full text-left px-3 py-2 text-sm',
+                          'flex w-full items-center px-3 py-2 text-left text-sm',
                           active
-                            ? 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100'
+                            ? 'bg-gray-100 text-gray-900 dark:bg-gray-700 dark:text-gray-100'
                             : 'text-gray-700 dark:text-gray-200'
                         )}
                         role="menuitem"

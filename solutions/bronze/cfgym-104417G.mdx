@@ -1,0 +1,135 @@
+---
+id: cfgym-104417G
+source: CF
+title: Matching
+author: Kevin Sheng
+---
+
+## Explanation
+
+The formula given for adding an edge may seem a little weird, but the key observation is that
+we can turn it into the following with some algebraic manipulation:
+$$
+i-a_i=j-a_j
+$$
+
+From this we can give each node an "ID" of sorts, and only nodes with identical IDs can be linked.
+In other words, our overall graph will consists of a bunch of sets of nodes that are all pairwise connected.
+
+Within these groups of nodes, we try to match as many pairs that have positive weight as possible.
+There's many ways to do this; in my implementation I sorted them in descending order
+and matched all adjacent pairs.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(n \log n)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <algorithm>
+#include <iostream>
+#include <map>
+#include <vector>
+
+using std::cout;
+using std::endl;
+using std::vector;
+
+int main() {
+	int test_num;
+	std::cin >> test_num;
+	for (int t = 0; t < test_num; t++) {
+		int len;
+		std::cin >> len;
+		vector<int> arr(len);
+		for (int &i : arr) { std::cin >> i; }
+
+		std::map<int, vector<int>> groups;
+		for (int i = 0; i < arr.size(); i++) {
+			int id = i - arr[i];
+			groups[id].push_back(arr[i]);
+		}
+
+		long long total = 0;
+		for (auto &comp : groups) {
+			std::sort(comp.second.rbegin(), comp.second.rend());
+			for (int i = 0; i + 1 < comp.second.size(); i += 2) {
+				int weight = comp.second[i] + comp.second[i + 1];
+				if (weight > 0) { total += weight; }
+			}
+		}
+
+		cout << total << '\n';
+	}
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Matching {
+	public static void main(String[] args) throws IOException {
+		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
+		int testNum = Integer.parseInt(read.readLine());
+		for (int t = 0; t < testNum; t++) {
+			read.readLine();
+			int[] arr = Arrays.stream(read.readLine().split(" "))
+			                .mapToInt(Integer::parseInt)
+			                .toArray();
+
+			Map<Integer, List<Integer>> groups = new HashMap<>();
+			for (int i = 0; i < arr.length; i++) {
+				int id = i - arr[i];
+				groups.putIfAbsent(id, new ArrayList<>());
+				groups.get(id).add((Integer)arr[i]);
+			}
+
+			long total = 0;
+			for (List<Integer> comp : groups.values()) {
+				comp.sort(Comparator.reverseOrder());
+				for (int i = 0; i + 1 < comp.size(); i += 2) {
+					int weight = comp.get(i) + comp.get(i + 1);
+					if (weight > 0) { total += weight; }
+				}
+			}
+
+			System.out.println(total);
+		}
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+for _ in range(int(input())):
+	input()
+	arr = [int(i) for i in input().split()]
+
+	groups = {}
+	for i in range(len(arr)):
+		id_ = i - arr[i]
+		if id_ not in groups:
+			groups[id_] = []
+		groups[id_].append(arr[i])
+
+	total = 0
+	for comp in groups.values():
+		comp.sort(reverse=True)
+		for i in range(0, len(comp) - 1, 2):
+			weight = comp[i] + comp[i + 1]
+			if weight > 0:
+				total += weight
+
+	print(total)
+```
+
+</PySection>
+</LanguageSection>

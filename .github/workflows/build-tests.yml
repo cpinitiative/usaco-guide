@@ -18,6 +18,9 @@ jobs:
           node-version: 20.x
       - uses: dart-lang/setup-dart@v1
 
+      - run: yarn add serve@14.2.4
+      - run: yarn add bundlewatch@0.4.0
+
       - name: Cache node modules
         uses: actions/cache@v4
         id: cache-node-modules
@@ -33,7 +36,7 @@ jobs:
       - run: dart pub global activate linkcheck
 
       - name: Check Links
-        run: $HOME/.pub-cache/bin/linkcheck --no-nice :5000
+        run: $HOME/.pub-cache/bin/linkcheck --no-nice :3000
 
       - name: Bundle Watch
         run: yarn bundlewatch ./public/*.js

@@ -1,0 +1,213 @@
+.link-with-progress-container {
+  @apply relative block;
+
+  &::after {
+    content: '';
+    left: 24px;
+    top: 18px;
+    height: 8px;
+    width: 8px;
+    position: absolute;
+    transition: transform 250ms cubic-bezier(0.4, 0, 0.2, 1) 0s;
+  }
+
+  &::after {
+    border-radius: 100%;
+    background-color: var(--dot-and-line-color);
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    width: 2px;
+    display: block;
+    left: 27px;
+    top: 0;
+    bottom: 0;
+    background-color: var(--dot-and-line-color);
+  }
+
+  &:first-of-type::before {
+    top: 22px;
+  }
+
+  &:last-of-type::before {
+    bottom: calc(100% - 22px);
+  }
+}
+
+.link-with-progress-container--syllabus {
+  &::after {
+    left: calc(-1.75rem - 10px); /* -(3rem padding plus half of width) */
+    top: calc(
+      1.5rem - 10px
+    ); /* half of (1.5 + 1.5padding) rem minus half of height */
+    height: 20px;
+    width: 20px;
+
+    @media (min-width: 768px) {
+      left: calc(-3rem - 10px); /* -(3rem padding plus half of width) */
+    }
+  }
+
+  .dark &::after {
+    @apply border-0;
+  }
+
+  &::before {
+    left: calc(-1.75rem - 1px);
+    @media (min-width: 768px) {
+      left: calc(-3rem - 1px); /* -(3rem padding plus half of width) */
+    }
+  }
+}
+
+.link-with-progress-container--syllabus--small {
+  &::after {
+    left: calc(-1.75rem - 8px); /* -(3rem padding plus half of width) */
+    top: calc(
+      1.5rem - 8px
+    ); /* half of (1.5 + 1.5padding) rem minus half of height */
+    height: 16px;
+    width: 16px;
+
+    @media (min-width: 768px) {
+      left: calc(-3rem - 8px); /* -(3rem padding plus half of width) */
+    }
+  }
+
+  &::after {
+    @apply border-2 border-gray-200 bg-white;
+  }
+  .dark &::after {
+    @apply border-2 border-gray-500;
+    background-color: var(--dot-and-line-color);
+  }
+}
+
+.link-with-progress-container--reading {
+  --dot-and-line-color: var(--color-yellow-300);
+  --active-text-color: var(--color-yellow-700);
+
+  .dark & {
+    --dot-and-line-color: var(--color-yellow-400);
+    --active-text-color: var(--color-yellow-400);
+  }
+}
+
+.link-with-progress-container--practicing {
+  --dot-and-line-color: var(--color-orange-400);
+  --active-text-color: var(--color-orange-700);
+
+  .dark & {
+    --dot-and-line-color: var(--color-orange-500);
+    --active-text-color: var(--color-orange-400);
+  }
+}
+
+.link-with-progress-container--complete {
+  --dot-and-line-color: var(--color-green-400);
+  --active-text-color: var(--color-green-700);
+
+  .dark & {
+    --dot-and-line-color: var(--color-green-400);
+    --active-text-color: var(--color-green-400);
+  }
+}
+
+.link-with-progress-container--skipped {
+  --dot-and-line-color: var(--color-blue-300);
+  --active-text-color: var(--color-blue-700);
+
+  .dark & {
+    --dot-and-line-color: var(--color-blue-700);
+    --active-text-color: var(--color-blue-400);
+  }
+}
+
+.link-with-progress-container--active {
+  --dot-and-line-color: var(--color-blue-700);
+  --active-text-color: var(--color-blue-700);
+
+  .dark & {
+    --dot-and-line-color: var(--color-blue-400);
+    --active-text-color: var(--color-blue-400);
+  }
+}
+
+.link-with-progress-container--ignored {
+  --dot-and-line-color: var(--color-gray-100);
+  --active-text-color: var(--color-gray-400);
+
+  .dark & {
+    --dot-and-line-color: var(--color-gray-800);
+    --active-text-color: var(--color-gray-500);
+  }
+}
+
+.link-with-progress-container--default {
+  --dot-and-line-color: var(--color-gray-200);
+  --active-text-color: var(--color-blue-700);
+
+  .dark & {
+    --dot-and-line-color: var(--color-gray-700);
+    --active-text-color: var(--color-blue-400);
+  }
+}
+
+.link-with-progress-link {
+  @apply transition duration-150 ease-in-out hover:text-blue-700 focus:outline-hidden;
+
+  color: var(--color-gray-600);
+  .dark & {
+    color: var(--color-dark-med-emphasis);
+  }
+
+  .link-with-progress-container--ignored & {
+    color: var(--color-gray-400);
+    .dark & {
+      color: var(--color-gray-600);
+    }
+  }
+
+  &.link-with-progress-link--active {
+    color: var(--active-text-color);
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    transition: all 250ms cubic-bezier(0.4, 0, 0.2, 1) 0s;
+
+    transform: scale(0);
+    border-radius: 100%;
+    z-index: 1;
+
+    left: 24px;
+    top: 18px;
+    height: 8px;
+    width: 8px;
+  }
+  &.link-with-progress-link--syllabus::before {
+    left: calc(-1.75rem - 11px);
+    @media (min-width: 768px) {
+      left: calc(-3rem - 11px); /* -(3rem padding plus half of width) */
+    }
+    top: calc(1.5rem - 11px); /* half of 1.5rem minus half of height */
+    height: 22px;
+    width: 22px;
+  }
+
+  &:hover {
+    &::before {
+      transform: scale(1);
+      @apply bg-blue-600;
+    }
+  }
+
+  .dark &:hover {
+    &::before {
+      @apply bg-gray-400;
+    }
+  }
+}

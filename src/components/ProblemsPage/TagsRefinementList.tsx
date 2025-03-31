@@ -7,15 +7,15 @@ export default function TagsRefinementList() {
     limit: 500,
   });
   return (
-    <div className="text-left ml-1">
+    <div className="ml-1 text-left">
       {items.map(item => (
         <div key={item.label}>
           <a
             href={createURL(item.value)}
             className={`${
               item.isRefined
-                ? 'text-gray-700 dark:text-blue-500 font-medium'
-                : 'text-gray-500 dark:text-dark-high-emphasis'
+                ? 'font-medium text-gray-700 dark:text-blue-500'
+                : 'dark:text-dark-high-emphasis text-gray-500'
             }`}
             onClick={e => {
               e.preventDefault();

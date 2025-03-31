@@ -19,18 +19,18 @@ export default function RadioList({
 }) {
   return (
     <RadioGroup value={value} onChange={onChange}>
-      <div className="bg-white dark:bg-gray-800 rounded-md -space-y-px">
+      <div className="-space-y-px rounded-md bg-white dark:bg-gray-800">
         {options.map((option, idx) => (
           <RadioGroup.Option
             key={option}
             value={option}
             className={({ checked }) =>
               classNames(
-                'relative border p-4 flex cursor-pointer focus:outline-none',
+                'relative flex cursor-pointer border p-4 focus:outline-hidden',
                 idx === 0 && 'rounded-tl-md rounded-tr-md',
-                idx === options.length - 1 && 'rounded-bl-md rounded-br-md',
+                idx === options.length - 1 && 'rounded-br-md rounded-bl-md',
                 checked
-                  ? 'bg-blue-50 dark:bg-blue-900 border-blue-200 dark:border-blue-700 z-10'
+                  ? 'z-10 border-blue-200 bg-blue-50 dark:border-blue-700 dark:bg-blue-900'
                   : 'border-gray-200 dark:border-gray-700'
               )
             }
@@ -40,17 +40,17 @@ export default function RadioList({
                 <span
                   className={classNames(
                     checked
-                      ? 'bg-blue-600 dark:bg-blue-500 border-transparent'
-                      : 'bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600',
+                      ? 'border-transparent bg-blue-600 dark:bg-blue-500'
+                      : 'border-gray-300 bg-white dark:border-gray-600 dark:bg-gray-700',
                     active
-                      ? 'ring-2 ring-offset-2 ring-blue-500 dark:ring-offset-gray-700'
+                      ? 'ring-2 ring-blue-500 ring-offset-2 dark:ring-offset-gray-700'
                       : '',
-                    'h-4 w-4 mt-0.5 cursor-pointer rounded-full border flex items-center justify-center'
+                    'mt-0.5 flex h-4 w-4 cursor-pointer items-center justify-center rounded-full border'
                   )}
                   aria-hidden="true"
                 >
                   {checked && (
-                    <span className="rounded-full bg-white w-1.5 h-1.5" />
+                    <span className="h-1.5 w-1.5 rounded-full bg-white" />
                   )}
                 </span>
                 <div className="ml-3 flex flex-col">

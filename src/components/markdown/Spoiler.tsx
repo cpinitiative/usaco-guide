@@ -45,10 +45,10 @@ const Spoiler = ({
 
   return (
     <div
-      className={`bg-gray-50 border border-gray-100 dark:border-transparent dark:bg-gray-800 dark:bg-opacity-50 rounded-md mb-4`}
+      className={`mb-4 rounded-md border border-gray-100 bg-gray-50 dark:border-transparent dark:bg-gray-800/50`}
     >
       <p
-        className="p-4 flex items-start"
+        className="flex items-start p-4"
         onClick={e => {
           setShow(!show);
         }}
@@ -56,7 +56,7 @@ const Spoiler = ({
       >
         {show && (
           <svg
-            className="h-6 w-6 text-gray-500 mr-4"
+            className="mr-4 h-6 w-6 text-gray-500"
             fill="currentColor"
             viewBox="0 0 20 20"
           >
@@ -69,7 +69,7 @@ const Spoiler = ({
         )}
         {!show && (
           <svg
-            className="h-6 w-6 text-gray-500 mr-4"
+            className="mr-4 h-6 w-6 text-gray-500"
             fill="currentColor"
             viewBox="0 0 20 20"
           >
@@ -84,7 +84,7 @@ const Spoiler = ({
       </p>
 
       {show && (
-        <div className="p-4 spoiler-body bg-white dark:bg-dark-surface dark:bg-opacity-40 no-y-margin">
+        <div className="spoiler-body dark:bg-dark-surface/40 no-y-margin bg-white p-4">
           <SpoilerContext.Provider value={{ expandCodeBlock }}>
             {children}
           </SpoilerContext.Provider>

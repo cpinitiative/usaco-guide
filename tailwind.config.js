@@ -7,20 +7,6 @@ module.exports = {
       fontFamily: {
         sans: ['Inter var', ...defaultTheme.fontFamily.sans],
       },
-      colors: {
-        'dark-surface': '#121212',
-        'dark-high-emphasis': 'rgba(255,255,255,0.87)',
-        'dark-med-emphasis': 'rgba(255, 255, 255, 0.60)',
-        'dark-disabled-emphasis': 'rgba(255, 255, 255, 0.38)',
-        cyan: colors.cyan,
-        teal: colors.teal,
-        orange: colors.orange,
-        gray: colors.gray,
-        sky: colors.sky,
-        fuchsia: colors.fuchsia,
-        purple: colors.purple,
-        'light-blue': colors.sky,
-      },
       boxShadow: {
         xs: '0 0 0 1px rgba(0, 0, 0, 0.05)',
         solid: '0 0 0 2px currentColor',
@@ -125,17 +111,5 @@ module.exports = {
     require('@tailwindcss/forms'),
     require('@tailwindcss/typography'),
     require('@tailwindcss/aspect-ratio'),
-  ],
-  content: [
-    './src/components/**/*.{js,ts,tsx}',
-    './src/context/**/*.{js,ts,tsx}',
-    './src/hooks/**/*.{js,ts,tsx}',
-    './src/models/**/*.{js,ts,tsx}',
-    './src/pages/**/*.{js,ts,tsx}',
-    './src/stories/**/*.{js,ts,tsx}',
-    './src/templates/**/*.{js,ts,tsx}',
-    './content/**/*.{mdx,ts,tsx}',
-    './gatsby-browser.tsx',
-    './.storybook/preview.js',
   ],
 };

@@ -108,7 +108,7 @@ export default function AdminSettings() {
               User Email
             </label>
             <div className="mt-1 flex rounded-md shadow-sm">
-              <div className="relative flex items-stretch flex-grow focus-within:z-10">
+              <div className="relative flex grow items-stretch focus-within:z-10">
                 <input
                   type="email"
                   name="search_email"
@@ -120,7 +120,7 @@ export default function AdminSettings() {
                 />
               </div>
               <button
-                className="-ml-px space-x-2 relative rounded-l-none btn focus:ring-offset-0 focus:ring-1 focus:border-blue-500 dark:focus:border-blue-500"
+                className="btn relative -ml-px space-x-2 rounded-l-none focus:border-blue-500 focus:ring-1 focus:ring-offset-0 dark:focus:border-blue-500"
                 type="submit"
                 disabled={searching}
               >
@@ -150,8 +150,8 @@ export default function AdminSettings() {
           <div className="h-8" />
 
           <div>
-            <div className="flex items-center mb-4">
-              <div className="mr-4 flex-shrink-0">
+            <div className="mb-4 flex items-center">
+              <div className="mr-4 shrink-0">
                 <img src={userData.photoURL} className="h-16 w-16 rounded-md" />
               </div>
               <div>
@@ -160,7 +160,7 @@ export default function AdminSettings() {
               </div>
             </div>
             <div className="mb-3">
-              <div className="text-sm text-gray-500 font-medium dark:text-gray-400">
+              <div className="text-sm font-medium text-gray-500 dark:text-gray-400">
                 Account Disabled?
               </div>
               <p className="mt-0.5 text-sm text-gray-900 dark:text-gray-100">
@@ -168,7 +168,7 @@ export default function AdminSettings() {
               </p>
             </div>
             <div className="mb-3">
-              <div className="text-sm text-gray-500 font-medium dark:text-gray-400">
+              <div className="text-sm font-medium text-gray-500 dark:text-gray-400">
                 User ID
               </div>
               <p className="mt-0.5 text-sm text-gray-900 dark:text-gray-100">
@@ -176,7 +176,7 @@ export default function AdminSettings() {
               </p>
             </div>
             <div className="mb-3">
-              <div className="text-sm text-gray-500 dark:text-gray-400 font-medium">
+              <div className="text-sm font-medium text-gray-500 dark:text-gray-400">
                 This information has also been logged to the console.
               </div>
             </div>
@@ -190,7 +190,7 @@ export default function AdminSettings() {
               <ul className="divide-y divide-gray-200 dark:divide-gray-700">
                 {Object.keys(UserPermissionInformation).map(key => (
                   <li
-                    className="py-4 flex items-center justify-between"
+                    className="flex items-center justify-between py-4"
                     key={key}
                   >
                     <div className="flex flex-col">

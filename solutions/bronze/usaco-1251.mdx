@@ -2,7 +2,7 @@
 id: usaco-1251
 source: USACO Bronze 2022 December
 title: Cow College
-author: Chu Minjae, Nimeesh Sharma
+author: Chu Minjae, Nimeesh Sharma, David Guo
 ---
 
 [Official Analysis (C++, Java, Python)](http://www.usaco.org/current/data/sol_prob1_bronze_dec22.html)
@@ -59,7 +59,38 @@ int main() {
 ```
 
 </CPPSection>
+<JavaSection>
 
+```java
+import java.util.*;
+
+public class CowCollege {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int n;
+		n = sc.nextInt();
+		int[] tuition = new int[n];
+		for (int i = 0; i < n; i++) { tuition[i] = sc.nextInt(); }
+
+		Arrays.sort(tuition);
+
+		int bestTuition = 0;
+		long bestMoney = 0;
+		for (int i = 0; i < n; i++) {
+			// Apply the formula from the editorial
+			long currTuition = (long)tuition[i] * (n - i);
+			if (currTuition > bestMoney) {
+				bestTuition = tuition[i];
+				bestMoney = currTuition;
+			}
+		}
+
+		System.out.println(bestMoney + " " + bestTuition);
+	}
+}
+```
+
+</JavaSection>
 <PySection>
 
 ```py

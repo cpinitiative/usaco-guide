@@ -16,10 +16,10 @@ const TableRow = ({
 }) => {
   return (
     <tr className={classNames(className)}>
-      <td className="pl-4 sm:pl-6 py-4 whitespace-nowrap text-sm leading-5 text-gray-500 dark:text-gray-400">
+      <td className="py-4 pl-4 text-sm leading-5 whitespace-nowrap text-gray-500 sm:pl-6 dark:text-gray-400">
         {source}
       </td>
-      <td className="pl-2 sm:pl-6 pr-4 sm:pr-6 py-4 whitespace-nowrap text-sm leading-5 font-medium text-blue-600 dark:text-blue-300">
+      <td className="py-4 pr-4 pl-2 text-sm leading-5 font-medium whitespace-nowrap text-blue-600 sm:pr-6 sm:pl-6 dark:text-blue-300">
         <div className="flex items-center">
           <svg
             className={classNames(
@@ -34,7 +34,7 @@ const TableRow = ({
           <span className="pl-1 sm:pl-2">{title}</span>
         </div>
       </td>
-      <td className="w-full px-4 sm:px-6 py-4 text-sm leading-5 text-gray-500 dark:text-gray-400 no-y-margin">
+      <td className="no-y-margin w-full px-4 py-4 text-sm leading-5 text-gray-500 sm:px-6 dark:text-gray-400">
         {children}
       </td>
     </tr>
@@ -43,20 +43,20 @@ const TableRow = ({
 
 export const ResourcesFeature = (): JSX.Element => {
   return (
-    <div className="max-w-full overflow-hidden -mx-4">
+    <div className="-mx-4 max-w-full overflow-hidden">
       <div className="min-w-[52rem] px-4">
         <div>
-          <div className="flex flex-col mb-4">
-            <div className={`overflow-x-auto -mx-4 px-4 -my-2 py-2`}>
+          <div className="mb-4 flex flex-col">
+            <div className={`-mx-4 -my-2 overflow-x-auto px-4 py-2`}>
               <div
-                className={`align-middle inline-block min-w-full shadow overflow-hidden rounded-lg border-b dark:border-l border-gray-200 dark:border-black`}
+                className={`inline-block min-w-full overflow-hidden rounded-lg border-b border-gray-200 align-middle shadow-sm dark:border-l dark:border-black`}
               >
-                <table className="min-w-full no-markdown">
+                <table className="no-markdown min-w-full">
                   <thead>
                     <tr>
                       <th
                         colSpan={3}
-                        className={`px-4 sm:px-6 border-b text-left font-medium text-sm uppercase py-3 border-gray-200 dark:border-transparent bg-purple-50 text-purple-500 dark:bg-purple-700 dark:bg-opacity-25 dark:text-purple-200`}
+                        className={`border-b border-gray-200 bg-purple-50 px-4 py-3 text-left text-sm font-medium text-purple-500 uppercase sm:px-6 dark:border-transparent dark:bg-purple-700/25 dark:text-purple-200`}
                       >
                         Resources
                       </th>

@@ -8,16 +8,16 @@ import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import { usePostActions } from '../../../hooks/groups/usePostActions';
 import { GroupData } from '../../../models/groups/groups';
 import {
-  PostData,
   getPostTimestampString,
   getTotalPointsOfPost,
+  PostData,
 } from '../../../models/groups/posts';
 import Tooltip from '../../Tooltip/Tooltip';
 import PostExportModal from './PostExportModal';
 
 const AnnouncementIcon = () => {
   return (
-    <div className="bg-light-blue-700 rounded-full p-2 inline-flex items-center justify-center">
+    <div className="inline-flex items-center justify-center rounded-full bg-sky-700 p-2">
       <svg
         className="h-6 w-6 text-white"
         xmlns="http://www.w3.org/2000/svg"
@@ -46,9 +46,9 @@ const AssignmentIcon = ({ pointsEarned, totalPoints }) => {
           (fullySolved
             ? 'bg-green-600'
             : inProgress
-            ? 'bg-orange-600'
-            : 'bg-light-blue-700') +
-          ' rounded-full p-2 inline-flex items-center justify-center'
+              ? 'bg-orange-600'
+              : 'bg-sky-700') +
+          ' inline-flex items-center justify-center rounded-full p-2'
         }
       >
         {fullySolved ? (
@@ -97,10 +97,10 @@ export default function FeedItem({
       className={`${
         isBeingDragged
           ? 'bg-gray-200 dark:bg-gray-900'
-          : 'bg-white dark:bg-gray-800 hover:bg-cyan-50 dark:hover:bg-cyan-900'
+          : 'bg-white hover:bg-cyan-50 dark:bg-gray-800 dark:hover:bg-cyan-900'
       } shadow ${
         dragHandle ? 'pr-4 sm:pr-6' : 'px-4 sm:px-6'
-      } sm:rounded-lg transition flex`}
+      } flex transition sm:rounded-lg`}
     >
       {dragHandle}
       <div className="flex flex-1">
@@ -108,7 +108,7 @@ export default function FeedItem({
           to={`/groups/${group.id}/post/${post.id}`}
           className="flex flex-1 space-x-4"
         >
-          <div className="flex-shrink-0 self-center">
+          <div className="shrink-0 self-center">
             {post.type === 'announcement' ? (
               <AnnouncementIcon />
             ) : (
@@ -121,7 +121,7 @@ export default function FeedItem({
           <div className="min-w-0 flex-1 py-4 sm:py-5">
             <h2
               id="question-title-81614"
-              className="text-base font-medium text-gray-900 dark:text-gray-100 flex items-center"
+              className="flex items-center text-base font-medium text-gray-900 dark:text-gray-100"
             >
               {post.name}
               {post.isPublished ? '' : ' (Unpublished)'}
@@ -135,11 +135,11 @@ export default function FeedItem({
           </div>
         </Link>
         {showAdminView && (
-          <div className="flex-shrink-0 self-center flex">
+          <div className="flex shrink-0 self-center">
             <div className="relative inline-block text-left" ref={ref}>
               <button
                 type="button"
-                className="pl-4 flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 focus:outline-none"
+                className="flex items-center pl-4 text-gray-400 hover:text-gray-600 focus:outline-hidden dark:hover:text-gray-200"
                 id="options-menu-0"
                 onClick={e => {
                   setShowDropdown(!showDropdown);
@@ -160,6 +160,7 @@ export default function FeedItem({
               </button>
 
               <Transition
+                as="div"
                 show={showDropdown}
                 enter="transition ease-out duration-100"
                 enterFrom="transform opacity-0 scale-95"
@@ -167,7 +168,7 @@ export default function FeedItem({
                 leave="transition ease-in duration-75"
                 leaveFrom="transform opacity-100 scale-100"
                 leaveTo="transform opacity-0 scale-95"
-                className="origin-top-right absolute z-10 right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none"
+                className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-hidden"
                 role="menu"
                 aria-orientation="vertical"
                 aria-labelledby="options-menu-0"
@@ -190,7 +191,7 @@ export default function FeedItem({
                     onClick={() =>
                       updatePost(post.id!, { isPublished: !post.isPublished })
                     }
-                    className="w-full flex px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                    className="flex w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
                     role="menuitem"
                   >
                     <svg
@@ -220,7 +221,7 @@ export default function FeedItem({
                         deletePost(post.id!).catch(e => toast.error(e.message));
                       }
                     }}
-                    className="w-full flex px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                    className="flex w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
                     role="menuitem"
                   >
                     <svg
@@ -245,7 +246,7 @@ export default function FeedItem({
                       setShowExportModal(true);
                       console.log('toggled');
                     }}
-                    className="w-full flex px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                    className="flex w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
                     role="menuitem"
                   >
                     <svg

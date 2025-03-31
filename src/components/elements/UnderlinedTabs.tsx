@@ -20,7 +20,7 @@ export default function UnderlinedTabs({
         <select
           id="selected-tab"
           name="selected-tab"
-          className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:focus:border-blue-500 sm:text-sm rounded-md dark:bg-gray-900"
+          className="mt-1 block w-full rounded-md border-gray-300 py-2 pr-10 pl-3 text-base focus:border-blue-500 focus:ring-blue-500 focus:outline-hidden sm:text-sm dark:border-gray-700 dark:bg-gray-900 dark:focus:border-blue-500"
           value={value}
           onChange={e => onChange(e.target.value)}
         >
@@ -41,8 +41,8 @@ export default function UnderlinedTabs({
                 className={
                   (value === option
                     ? 'border-blue-500 text-blue-600 dark:text-blue-400'
-                    : 'border-transparent text-gray-500 dark:text-gray-400 hover:border-gray-300 dark:hover:border-gray-600 hover:text-gray-700 dark:hover:text-gray-300') +
-                  ' whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm focus:outline-none'
+                    : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:text-gray-300') +
+                  ' border-b-2 px-1 py-4 text-sm font-medium whitespace-nowrap focus:outline-hidden'
                 }
               >
                 {labelMap ? labelMap[option] : option}

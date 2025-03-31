@@ -13,7 +13,7 @@ export default function MobileSideNav() {
   return (
     <Transition show={isMobileNavOpen} timeout={300}>
       <div className="lg:hidden">
-        <div className="fixed inset-0 flex z-40">
+        <div className="fixed inset-0 z-40 flex">
           <Transition
             enter="transition-opacity ease-linear duration-300"
             enterFrom="opacity-0"
@@ -26,7 +26,7 @@ export default function MobileSideNav() {
               className="fixed inset-0"
               onClick={() => setIsMobileNavOpen(false)}
             >
-              <div className="absolute inset-0 bg-gray-600 dark:bg-gray-800 opacity-75" />
+              <div className="absolute inset-0 bg-gray-600 opacity-75 dark:bg-gray-800" />
             </div>
           </Transition>
 
@@ -38,10 +38,10 @@ export default function MobileSideNav() {
             leaveFrom="translate-x-0"
             leaveTo="-translate-x-full"
           >
-            <div className="relative flex-1 flex flex-col max-w-xs w-full bg-white dark:bg-dark-surface">
+            <div className="dark:bg-dark-surface relative flex w-full max-w-xs flex-1 flex-col bg-white">
               <div className="absolute top-0 right-0 -mr-14 p-1">
                 <button
-                  className="flex items-center justify-center h-12 w-12 rounded-full focus:outline-none focus:bg-gray-600"
+                  className="flex h-12 w-12 items-center justify-center rounded-full focus:bg-gray-600 focus:outline-hidden"
                   aria-label="Close sidebar"
                   onClick={() => setIsMobileNavOpen(false)}
                 >
@@ -60,9 +60,9 @@ export default function MobileSideNav() {
                   </svg>
                 </button>
               </div>
-              <div className="flex-1 h-0 pt-5 flex flex-col">
+              <div className="flex h-0 flex-1 flex-col pt-5">
                 <Link
-                  className="flex-shrink-0 flex items-center px-4"
+                  className="flex shrink-0 items-center px-4"
                   to="/dashboard/"
                 >
                   <Logo />
@@ -75,7 +75,7 @@ export default function MobileSideNav() {
               <SidebarBottomButtons />
             </div>
           </Transition>
-          <div className="flex-shrink-0 w-14">
+          <div className="w-14 shrink-0">
             {/* Force sidebar to shrink to fit close icon */}
           </div>
         </div>

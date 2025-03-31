@@ -1,7 +1,6 @@
+import clsx from 'clsx';
 import { Link } from 'gatsby';
 import * as React from 'react';
-import styled, { css } from 'styled-components';
-import tw from 'twin.macro';
 import {
   LANGUAGE_LABELS,
   useUserLangSetting,
@@ -10,84 +9,7 @@ import { useUserProgressOnModules } from '../../context/UserDataContext/properti
 import { ModuleLinkInfo } from '../../models/module';
 import { FrequencyLabels } from '../Frequency';
 import ModuleFrequencyDots from '../MarkdownLayout/ModuleFrequencyDots';
-import { LinkWithProgress as SidebarLinkWithProgress } from '../MarkdownLayout/SidebarNav/ItemLink';
 import Tooltip from '../Tooltip/Tooltip';
-
-const LinkWithProgress = styled(SidebarLinkWithProgress)<{ small: boolean }>`
-  &&::after {
-    ${({ small }) => css`
-      // prettier-ignore
-      left: calc(-1.75rem - ${small
-        ? '8px'
-        : '10px'}); // -(3rem padding plus half of width)
-      // prettier-ignore
-      top: calc(1.5rem - ${small
-        ? '8px'
-        : '10px'}); // half of (1.5 + 1.5padding) rem minus half of height
-      height: ${small ? '16px' : '20px'};
-      width: ${small ? '16px' : '20px'};
-    `}
-
-    @media (min-width: 768px) {
-      ${({ small }) => css`
-        // prettier-ignore
-        left: calc(-3rem - ${small
-          ? '8px'
-          : '10px'}); // -(3rem padding plus half of width)
-      `}
-    }
-  }
-
-  &&::after {
-    ${({ small }) => small && tw`border-2 border-gray-200 bg-white`}
-  }
-  // lol no clue why two ampersands are needed but they are...
-  .dark &&::after {
-    ${({ small }) => (small ? tw`border-2 border-gray-500` : tw`border-0`)}
-  }
-
-  &&::before {
-    left: calc(-1.75rem - 1px);
-    @media (min-width: 768px) {
-      left: calc(-3rem - 1px); // -(3rem padding plus half of width)
-    }
-  }
-`;
-
-const StyledLink = styled.div<{ showDot?: boolean }>`
-  ${tw`focus:outline-none transition ease-in-out duration-150 text-gray-800 hover:text-blue-700 text-xl leading-6 py-3`}
-
-  &::before {
-    content: '';
-    left: calc(-1.75rem - 11px);
-    @media (min-width: 768px) {
-      left: calc(-3rem - 11px); // -(3rem padding plus half of width)
-    }
-    top: calc(1.5rem - 11px); // half of 1.5rem minus half of height
-    height: 22px;
-    width: 22px;
-    position: absolute;
-    transition: all 250ms cubic-bezier(0.4, 0, 0.2, 1) 0s;
-  }
-
-  &::before {
-    transform: ${({ showDot }) => (showDot ? 'scale(1)' : 'scale(0.1)')};
-    border-radius: 100%;
-    z-index: 1;
-  }
-
-  &:hover {
-    &::before {
-      transform: scale(1);
-      ${tw`bg-blue-600`}
-    }
-  }
-  .dark &:hover {
-    &::before {
-      ${tw`bg-gray-400`}
-    }
-  }
-`;
 
 const FrequencyCircleColors = [
   'group-hover:text-red-600 dark:group-hover:text-red-400',
@@ -164,37 +86,20 @@ const ModuleLink = ({ link }: { link: ModuleLinkInfo }): JSX.Element => {
   const userProgressOnModules = useUserProgressOnModules();
   const progress = userProgressOnModules[link.id] || 'Not Started';
 
-  let lineColorStyle = tw`bg-gray-200`;
-  let dotColorStyle = tw`bg-gray-200`;
-  let darkLineColorStyle = tw`bg-gray-700`;
-  let darkDotColorStyle = tw`bg-gray-700`;
+  let linkWithProgressColorClass = 'link-with-progress-container--default';
 
   if (progress === 'Reading') {
-    lineColorStyle = tw`bg-yellow-300`;
-    dotColorStyle = tw`bg-yellow-300`;
-    darkLineColorStyle = tw`bg-yellow-400`;
-    darkDotColorStyle = tw`bg-yellow-400`;
+    linkWithProgressColorClass = 'link-with-progress-container--reading';
   } else if (progress === 'Practicing') {
-    lineColorStyle = tw`bg-orange-400`;
-    dotColorStyle = tw`bg-orange-400`;
-    darkLineColorStyle = tw`bg-orange-500`;
-    darkDotColorStyle = tw`bg-orange-500`;
+    linkWithProgressColorClass = 'link-with-progress-container--practicing';
   } else if (progress === 'Complete') {
-    lineColorStyle = tw`bg-green-400`;
-    dotColorStyle = tw`bg-green-400`;
-    darkLineColorStyle = tw`bg-green-400`;
-    darkDotColorStyle = tw`bg-green-400`;
+    linkWithProgressColorClass = 'link-with-progress-container--complete';
   } else if (progress === 'Skipped') {
-    lineColorStyle = tw`bg-blue-300`;
-    dotColorStyle = tw`bg-blue-300`;
-    darkLineColorStyle = tw`bg-blue-700`;
-    darkDotColorStyle = tw`bg-blue-700`;
+    linkWithProgressColorClass = 'link-with-progress-container--skipped';
   } else if (progress === 'Ignored') {
-    lineColorStyle = tw`bg-gray-100`;
-    dotColorStyle = tw`bg-gray-100`;
-    darkLineColorStyle = tw`bg-gray-800`;
-    darkDotColorStyle = tw`bg-gray-800`;
+    linkWithProgressColorClass = 'link-with-progress-container--ignored';
   }
+
   const userLang = useUserLangSetting();
   const maxLangOc = Math.max(link.cppOc ?? 0, link.javaOc ?? 0, link.pyOc ?? 0);
   const langToOc = {
@@ -205,21 +110,22 @@ const ModuleLink = ({ link }: { link: ModuleLinkInfo }): JSX.Element => {
   };
   const isMissingLang = (langToOc[userLang] ?? 0) < maxLangOc;
   return (
-    <LinkWithProgress
-      lineColorStyle={lineColorStyle}
-      dotColorStyle={dotColorStyle}
-      darkLineColorStyle={darkLineColorStyle}
-      darkDotColorStyle={darkDotColorStyle}
-      small={progress === 'Not Started' || progress === 'Ignored'}
+    <span
+      className={clsx(
+        'link-with-progress-container link-with-progress-container--syllabus',
+        linkWithProgressColorClass,
+        (progress === 'Not Started' || progress === 'Ignored') &&
+          'link-with-progress-container--syllabus--small'
+      )}
     >
       <Link to={link.url}>
-        <StyledLink className="group">
+        <div className="link-with-progress-link link-with-progress-link--syllabus group py-3 text-xl leading-6">
           <p
             className={`${
               progress === 'Ignored'
                 ? 'text-gray-400 dark:text-gray-600'
                 : 'text-gray-700 dark:text-gray-400'
-            } group-hover:text-blue-800 dark:group-hover:text-dark-high-emphasis transition mb-1 flex items-center`}
+            } dark:group-hover:text-dark-high-emphasis mb-1 flex items-center transition group-hover:text-blue-800`}
           >
             <span className="mr-2 inline-flex items-end">
               {link.title}{' '}
@@ -232,7 +138,7 @@ const ModuleLink = ({ link }: { link: ModuleLinkInfo }): JSX.Element => {
                   }
                 >
                   <svg
-                    className="h-5 w-5 text-gray-300 group-hover:text-yellow-300 ml-1.5 transition ease-in-out duration-150"
+                    className="ml-1.5 h-5 w-5 text-gray-300 transition duration-150 ease-in-out group-hover:text-yellow-300"
                     viewBox="0 0 20 20"
                     fill="currentColor"
                   >
@@ -247,7 +153,7 @@ const ModuleLink = ({ link }: { link: ModuleLinkInfo }): JSX.Element => {
             </span>
           </p>
           {link.frequency !== null && (
-            <p className="text-sm flex items-center leading-4 mb-1">
+            <p className="mb-1 flex items-center text-sm leading-4">
               <ModuleFrequencyDots
                 count={link.frequency}
                 totalCount={4}
@@ -258,7 +164,7 @@ const ModuleLink = ({ link }: { link: ModuleLinkInfo }): JSX.Element => {
               />
               <span
                 className={
-                  `ml-1 transition text-gray-500 ` +
+                  `ml-1 text-gray-500 transition ` +
                   FrequencyTextColors[link.frequency ?? 0]
                 }
               >
@@ -267,7 +173,7 @@ const ModuleLink = ({ link }: { link: ModuleLinkInfo }): JSX.Element => {
             </p>
           )}
           {/* https://stackoverflow.com/questions/9229213/convert-iso-date-to-milliseconds-in-javascript */}
-          <p className="block text-sm text-gray-400 group-hover:text-blue-700 dark:group-hover:text-dark-high-emphasis transition leading-5">
+          <p className="dark:group-hover:text-dark-high-emphasis block text-sm leading-5 text-gray-400 transition group-hover:text-blue-700">
             {link.description}
 
             <i>
@@ -275,9 +181,9 @@ const ModuleLink = ({ link }: { link: ModuleLinkInfo }): JSX.Element => {
               {timeAgoString(link.gitAuthorTime)}
             </i>
           </p>
-        </StyledLink>
+        </div>
       </Link>
-    </LinkWithProgress>
+    </span>
   );
 };
 

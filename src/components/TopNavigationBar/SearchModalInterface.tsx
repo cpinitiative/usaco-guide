@@ -10,7 +10,7 @@ import {
   useHits,
   useSearchBox,
 } from 'react-instantsearch';
-import { SECTION_LABELS, moduleIDToURLMap } from '../../../content/ordering';
+import { moduleIDToURLMap, SECTION_LABELS } from '../../../content/ordering';
 import { AlgoliaModuleInfoHit } from '../../models/module';
 import { searchClient } from '../../utils/algoliaSearchClient';
 
@@ -25,7 +25,7 @@ const ModuleSearch = () => {
         <input
           type="search"
           placeholder="Search"
-          className="focus:outline-none focus:ring-0 text-gray-700 dark:bg-dark-surface dark:text-gray-200 dark:placeholder-gray-400 border-0 flex-1"
+          className="dark:bg-dark-surface flex-1 border-0 text-gray-700 focus:ring-0 focus:outline-hidden dark:text-gray-200 dark:placeholder-gray-400"
           value={query}
           onChange={e => setQuery(e.target.value)}
           autoComplete="off"
@@ -37,18 +37,18 @@ const ModuleSearch = () => {
       </div>
       {query !== '' && (
         <div>
-          <div className="max-h-[20rem] sm:max-h-[40rem] overflow-y-auto border-t divide-y divide-gray-200 border-gray-200 dark:divide-gray-700 dark:border-gray-700">
+          <div className="max-h-[20rem] divide-y divide-gray-200 overflow-y-auto border-t border-gray-200 sm:max-h-[40rem] dark:divide-gray-700 dark:border-gray-700">
             {hits.map(hit => (
               <Link
                 to={moduleIDToURLMap[hit.id]}
-                className="block hover:bg-blue-100 dark:hover:bg-gray-700 py-3 px-5 transition"
+                className="block px-5 py-3 transition hover:bg-blue-100 dark:hover:bg-gray-700"
                 key={hit.id}
               >
-                <h3 className="text-gray-700 dark:text-gray-200 font-medium">
+                <h3 className="font-medium text-gray-700 dark:text-gray-200">
                   <Highlight hit={hit} attribute="title" /> -{' '}
                   {SECTION_LABELS[hit.division]}
                 </h3>
-                <p className="[&_*]:!text-sm [&_*]:!leading-4">
+                <p className="**:text-sm! **:leading-4!">
                   <div className="mb-1 text-gray-700 dark:text-gray-200">
                     <Highlight hit={hit} attribute="description" />
                   </div>
@@ -59,7 +59,7 @@ const ModuleSearch = () => {
               </Link>
             ))}
           </div>
-          <div className="px-5 py-3 border-t border-gray-200 dark:border-gray-700">
+          <div className="border-t border-gray-200 px-5 py-3 dark:border-gray-700">
             <div className="hidden dark:block">
               <PoweredBy theme="dark" />
             </div>

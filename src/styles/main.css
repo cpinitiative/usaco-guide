@@ -1,7 +1,54 @@
-@import 'tailwindcss/base';
-@import 'tailwindcss/components';
-@import 'generalStyles.css';
-@import 'tailwindcss/utilities';
-@import 'components.css';
-@import 'anchor.css';
-@import 'animations.css';
+@import 'tailwindcss' source(none);
+
+@theme {
+  --color-dark-surface: #121212;
+  --color-dark-high-emphasis: rgba(255, 255, 255, 0.87);
+  --color-dark-med-emphasis: rgba(255, 255, 255, 0.6);
+  --color-dark-disabled-emphasis: rgba(255, 255, 255, 0.38);
+}
+
+@import './generalStyles.css' layer(components);
+@import './components.css' layer(components);
+@import './syllabus.css' layer(components);
+@import './link-with-progress.css' layer(components);
+@import './anchor.css' layer(utilities);
+@import './animations.css' layer(utilities);
+
+@source "../../src/components";
+@source "../../src/context";
+@source "../../src/hooks";
+@source "../../src/models";
+@source "../../src/pages";
+@source "../../src/stories";
+@source "../../src/templates";
+@source "../../content";
+@source "../../.storybook/preview.js";
+
+@config "../../tailwind.config.js";
+
+/*
+  The default border color has changed to `currentColor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentColor);
+  }
+
+  button,
+  [role='button'] {
+    cursor: pointer;
+  }
+  button:disabled,
+  [role='button']:disabled {
+    cursor: default;
+  }
+}

@@ -500,7 +500,6 @@ exports.createSchemaCustomization = ({ actions }) => {
   const { createTypes } = actions;
   createTypes(typeDefs);
 };
-const FilterWarningsPlugin = require('webpack-filter-warnings-plugin');
 exports.onCreateWebpackConfig = ({ actions, stage, loaders, plugins }) => {
   actions.setWebpackConfig({
     resolve: {
@@ -525,12 +524,6 @@ exports.onCreateWebpackConfig = ({ actions, stage, loaders, plugins }) => {
         },
       ],
     },
-    // plugins: [
-    //   new FilterWarningsPlugin({
-    //     exclude:
-    //       /mini-css-extract-plugin[^]*Conflicting order. Following module has been added:/,
-    //   }),
-    // ],
   });
   if (stage === 'build-javascript' || stage === 'develop') {
     actions.setWebpackConfig({

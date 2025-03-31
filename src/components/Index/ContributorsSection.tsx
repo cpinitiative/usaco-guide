@@ -113,13 +113,13 @@ const MemberCard = ({
   return (
     <li
       key={member.name}
-      className="relative group flex justify-center rounded-t-lg border border-transparent hover:bg-white dark:hover:bg-gray-800 hover:border-gray-200 dark:hover:border-transparent pointer-events-none hover:pointer-events-auto pt-8 pb-2"
+      className="group pointer-events-none relative flex justify-center rounded-t-lg border border-transparent pt-8 pb-2 hover:pointer-events-auto hover:border-gray-200 hover:bg-white dark:hover:border-transparent dark:hover:bg-gray-800"
     >
-      <div className="gap-2 flex flex-col items-center">
-        <div className="w-24 h-24 rounded-full overflow-hidden relative lg:w-20 lg:h-20 pointer-events-auto">
+      <div className="flex flex-col items-center gap-2">
+        <div className="pointer-events-auto relative h-24 w-24 overflow-hidden rounded-full lg:h-20 lg:w-20">
           <GatsbyImage
             image={gatsbyImage.gatsbyImageData}
-            className="rounded-full overflow-hidden gatsby-image-wrapper-rounded"
+            className="gatsby-image-wrapper-rounded overflow-hidden rounded-full"
             alt={member.name}
             style={{ width: '100%', height: '100%' }}
           />
@@ -129,9 +129,9 @@ const MemberCard = ({
         </p>
 
         {/* Pop-out component */}
-        <div className="absolute -top-[-100%] hidden group-hover:block bg-white dark:bg-gray-800 border border-gray-200 dark:border-transparent border-t-0 box-content w-full rounded-b-lg z-20">
+        <div className="absolute -top-[-100%] z-20 box-content hidden w-full rounded-b-lg border border-t-0 border-gray-200 bg-white group-hover:block dark:border-transparent dark:bg-gray-800">
           <div className="flex flex-col gap-3 px-5 pb-5">
-            <ul className="flex gap-3 justify-center">
+            <ul className="flex justify-center gap-3">
               {Object.keys(socialMedia)
                 .filter(sm => member.hasOwnProperty(sm))
                 .map(sm => (
@@ -143,18 +143,18 @@ const MemberCard = ({
                       target="_blank"
                       href={socialMedia[sm].link(member[sm])}
                       rel="noreferrer"
-                      className="inline-block hover:text-gray-500 text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+                      className="inline-block text-gray-700 hover:text-gray-500 dark:text-gray-400 dark:hover:text-gray-300"
                     >
                       {socialMedia[sm].icon}
                     </a>
                   </li>
                 ))}
             </ul>
-            <div className="flex gap-1 flex-wrap">
+            <div className="flex flex-wrap gap-1">
               {member.titles.map(title => (
                 <span
                   key={title}
-                  className="text-sm whitespace-nowrap inline-flex items-center px-2.5 py-0.5 rounded-full bg-gray-100 text-gray-800 dark:bg-gray-600 font-medium dark:text-neutral-200"
+                  className="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-sm font-medium whitespace-nowrap text-gray-800 dark:bg-gray-600 dark:text-neutral-200"
                 >
                   {title}
                 </span>
@@ -188,16 +188,16 @@ export default function ContributorsSection(): JSX.Element {
   `);
   return (
     <div className="bg-gray-100 dark:bg-gray-900">
-      <div className="max-w-7xl mx-auto py-12 px-4 text-center sm:px-6 lg:px-8 lg:py-24">
+      <div className="mx-auto max-w-7xl px-4 py-12 text-center sm:px-6 lg:px-8 lg:py-24">
         <div className="space-y-8 sm:space-y-12">
-          <div className="text-lg mx-auto">
-            <p className="text-base text-center leading-6 text-blue-600 dark:text-blue-300 font-semibold tracking-wide uppercase">
+          <div className="mx-auto text-lg">
+            <p className="text-center text-base leading-6 font-semibold tracking-wide text-blue-600 uppercase dark:text-blue-300">
               Contributors
             </p>
-            <h1 className="mt-2 mb-8 text-3xl text-center leading-8 font-extrabold tracking-tight text-gray-900 dark:text-gray-100 sm:text-4xl sm:leading-10 max-w-prose">
+            <h1 className="mt-2 mb-8 max-w-prose text-center text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl sm:leading-10 dark:text-gray-100">
               By the Community, for the Community.
             </h1>
-            <p className="text-lg text-gray-500 dark:text-gray-400 leading-8 mb-6 mx-auto max-w-prose">
+            <p className="mx-auto mb-6 max-w-prose text-lg leading-8 text-gray-500 dark:text-gray-400">
               Comprised of USACO Finalists and top USACO competitors, our team
               is committed to increasing participation in competitive
               programming.
@@ -218,7 +218,7 @@ export default function ContributorsSection(): JSX.Element {
               ))}
             </ul>
 
-            <h1 className="mt-[5rem] mb-8 text-3xl text-center leading-8 font-extrabold tracking-tight text-gray-900 dark:text-gray-100 sm:text-2xl sm:leading-10">
+            <h1 className="mt-[5rem] mb-8 text-center text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-2xl sm:leading-10 dark:text-gray-100">
               Former Team Members
             </h1>
             <ul className="mx-auto grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))]">

@@ -2,7 +2,7 @@
 id: usaco-594
 source: USACO Silver 2016 January
 title: Angry Cows
-author: Óscar Garries, George Pong
+author: Óscar Garries, George Pong, Rameez Parwez
 ---
 
 [Official Analysis (Java)](http://www.usaco.org/current/data/sol_angry_silver_jan16.html)
@@ -42,49 +42,141 @@ This can be applied for every hay bale. We iterate through the sorted list of ha
 <CPPSection>
 
 ```cpp
-#include <bits/stdc++.h>
+#include <algorithm>
+#include <climits>
+#include <fstream>
+#include <iostream>
+#include <vector>
 
-using namespace std;
+/**
+ * Tests if all bales can be blown up with the specified blast radius.
+ * Calculates the total number of cows needed to blow up all the bales with
+ * the specified blast radius. If the number is less than or equal to the
+ * actual number of cows we have, then it is possible. Otherwise, it is not.
+ * @param blast_radius: The proposed blast radius to be tested.
+ * @return true if it is possible to blow up all bales, false otherwise
+ */
+bool valid_blast_radius(int blast_radius, int k, std::vector<int> &bales) {
+	int last_blast_location = INT_MIN;
+	int needed_cows = 0;
+	for (int bale_position : bales) {
+		/*
+		 * If the current bale is out of the last cow's blast radius, we need
+		 * to use a new cow.
+		 */
+		if (std::abs(bale_position - last_blast_location) > blast_radius) {
+			needed_cows += 1;
+
+			/*
+			 * It is always most efficient to set the blast location of the current
+			 * cow to where the new bale being blown up is exactly on left boundary
+			 */
+			last_blast_location = bale_position + blast_radius;
+
+			if (needed_cows > k) { return false; }
+		}
+	}
+	return true;
+}
 
 int main() {
-	freopen("angry.in", "r", stdin);
-	freopen("angry.out", "w", stdout);
-
+	std::ifstream cin("angry.in");
 	int n, k;
 	cin >> n >> k;
-	int ar[n];
 
-	for (int i = 0; i < n; i++) { cin >> ar[i]; }
+	std::vector<int> bales(n);
+	for (int i = 0; i < n; i++) { cin >> bales[i]; }
 
-	sort(ar, ar + n);
+	std::sort(begin(bales), end(bales));
 
-	int lo = 1, hi = 1e9;
-	int sol = 1e9;
-
-	while (lo <= hi) {
-		int mid = lo + (hi - lo) / 2;
-		int i = 0;
-		for (int kas = 0; kas < k && i < n; kas++) {
-			int hasta = ar[i];
-			hasta += mid * 2;
-			while (i < n - 1 && ar[i + 1] <= hasta) i++;
-			i++;
-		}
-		bool ok;
-		ok = (i >= n);
-		if (ok) {
-			sol = min(sol, mid);
-			hi = mid - 1;
+	int left = 0;
+	int right = bales[n - 1] - bales[0];
+	while (left < right) {
+		int mid = (left + right) / 2;
+		if (valid_blast_radius(mid, k, bales)) {
+			right = mid;
 		} else {
-			lo = mid + 1;
+			left = mid + 1;
 		}
 	}
 
-	cout << sol << '\n';
+	std::ofstream("angry.out") << left << std::endl;
 }
 ```
 
 </CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class AngryCows {
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio("angry");
+		int n = io.nextInt();
+		int k = io.nextInt();
+
+		int[] bales = new int[n];
+		for (int i = 0; i < n; i++) { bales[i] = io.nextInt(); }
+
+		Arrays.sort(bales);
+		int left = 0;
+		int right = bales[n - 1] - bales[0];
+
+		while (left < right) {
+			int mid = (left + right) / 2;
+			if (validBlastRadius(mid, k, bales)) {
+				right = mid;
+			} else {
+				left = mid + 1;
+			}
+		}
+
+		io.println(left);
+		io.close();
+	}
+
+	/**
+	 * Tests if all bales can be blown up with the specified blast radius.
+	 * Calculates the total number of cows needed to blow up all the bales with
+	 * the specified blast radius. If the number is less than or equal to the
+	 * actual number of cows we have, then it is possible. Otherwise, it is not.
+	 * @param blast_radius: The proposed blast radius to be tested.
+	 * @return true if it is possible to blow up all bales, false otherwise
+	 */
+	private static boolean validBlastRadius(int blastRadius, int k, int bales[]) {
+		int lastBlastLocation = Integer.MIN_VALUE;
+		int neededCows = 0;
+
+		for (int balePosition : bales) {
+
+			/**
+			 *If the current bale is out of the last cow's blast radius, we need
+			 *to use a new cow.
+			 */
+
+			if (Math.abs(balePosition - lastBlastLocation) > blastRadius) {
+				neededCows += 1;
+
+				/**
+				 *It is always most efficient to set the blast location of the current
+				 *cow to where the new bale being blown up is exactly on left boundary
+				 */
+				lastBlastLocation = balePosition + blastRadius;
+
+				if (neededCows > k) { return false; }
+			}
+		}
+
+		return true;
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
 <PySection>
 
 ```py

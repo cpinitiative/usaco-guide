@@ -9,9 +9,9 @@ import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import { usePost } from '../../../hooks/groups/usePost';
 import { usePostActions } from '../../../hooks/groups/usePostActions';
 import { PostData } from '../../../models/groups/posts';
-import TopNavigationBar from '../../TopNavigationBar/TopNavigationBar';
 import Layout from '../../layout';
 import SEO from '../../seo';
+import TopNavigationBar from '../../TopNavigationBar/TopNavigationBar';
 import Breadcrumbs from '../Breadcrumbs';
 import MarkdownEditor from '../MarkdownEditor';
 
@@ -44,8 +44,8 @@ export default function EditPostPage(props) {
     return (
       <>
         <TopNavigationBar />
-        <main className="text-center py-10">
-          <p className="font-medium text-2xl">
+        <main className="py-10 text-center">
+          <p className="text-2xl font-medium">
             {postNotFound ? 'Post not found' : 'Loading...'}
           </p>
         </main>
@@ -57,15 +57,15 @@ export default function EditPostPage(props) {
     <Layout>
       <SEO title={`Edit ${post.name} · ${activeGroup.groupData!.name}`} />
       <TopNavigationBar />
-      <nav className="flex mt-6 mb-4" aria-label="Breadcrumb">
+      <nav className="mt-6 mb-4 flex" aria-label="Breadcrumb">
         <Breadcrumbs
-          className="max-w-4xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-3 pb-4"
+          className="mx-auto w-full max-w-4xl px-4 pt-3 pb-4 sm:px-6 lg:px-8"
           group={activeGroup.groupData!}
           post={post}
         />
       </nav>
-      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="md:flex md:items-center md:justify-between md:space-x-4 xl:border-b dark:border-gray-700 xl:pb-6">
+      <main className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+        <div className="md:flex md:items-center md:justify-between md:space-x-4 xl:border-b xl:pb-6 dark:border-gray-700">
           <div>
             <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
               Edit {post.type === 'assignment' ? 'Assignment' : 'Announcement'}:{' '}
@@ -81,7 +81,7 @@ export default function EditPostPage(props) {
         <div className="h-6" />
         <div className="space-y-8 divide-y divide-gray-200 dark:divide-gray-700">
           <div>
-            <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+            <div className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-6">
               <div className="sm:col-span-4">
                 <label
                   htmlFor="post_name"
@@ -203,7 +203,7 @@ export default function EditPostPage(props) {
                       .catch(e => toast.error(e.message));
                   }
                 }}
-                className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-dark-surface focus:ring-red-500"
+                className="dark:focus:ring-offset-dark-surface inline-flex justify-center rounded-md border border-transparent bg-red-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-red-700 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:outline-hidden"
               >
                 Delete Post
               </button>
@@ -212,7 +212,7 @@ export default function EditPostPage(props) {
                 onClick={() =>
                   updatePost(post.id!, post).then(() => navigate(-1))
                 }
-                className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-dark-surface focus:ring-blue-500"
+                className="dark:focus:ring-offset-dark-surface inline-flex justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-hidden"
               >
                 Save
               </button>

@@ -3,9 +3,6 @@
 import { wrapRootElement as wrap } from './root-wrapper';
 import 'katex/dist/katex.min.css';
 import './src/styles/main.css';
-import { inject } from '@vercel/analytics';
-import { injectSpeedInsights } from '@vercel/speed-insights';
-// import './build.css';
 
 export const wrapRootElement = wrap;
 
@@ -52,8 +49,4 @@ export const onClientEntry = () => {
     // Prevent normal copy handling.
     event.preventDefault();
   });
-
-  // vercel analytics
-  inject();
-  injectSpeedInsights();
 };

@@ -15,9 +15,9 @@ export default function Video(): JSX.Element {
   `);
   return (
     <>
-      <div className="relative mx-auto w-full rounded-lg shadow-lg lg:mx-4 xl:mx-8 max-w-[512px]">
+      <div className="relative mx-auto w-full max-w-[512px] rounded-lg shadow-lg lg:mx-4 xl:mx-8">
         {showVideo && (
-          <div className="relative block w-full min-h-32 lg:min-h-64 xl:min-h-80 rounded-lg overflow-hidden focus:outline-none focus:shadow-outline bg-gray-300">
+          <div className="focus:shadow-outline relative block min-h-32 w-full overflow-hidden rounded-lg bg-gray-300 focus:outline-hidden lg:min-h-64 xl:min-h-80">
             <YouTube id={'ueNT-w7Oluw'} autoplay />
           </div>
         )}
@@ -25,7 +25,7 @@ export default function Video(): JSX.Element {
           <button
             onClick={() => setShowVideo(true)}
             type="button"
-            className="relative block w-full rounded-lg overflow-hidden focus:outline-none focus:shadow-outline text-[0px]"
+            className="focus:shadow-outline relative block w-full overflow-hidden rounded-lg text-[0px] focus:outline-hidden"
           >
             {/* We put 0px as text size above since GatsbyImage is inline block, so there's unwanted bottom spacing */}
             <GatsbyImage
@@ -34,7 +34,7 @@ export default function Video(): JSX.Element {
               alt="Video by William Lin"
             />
 
-            <div className="absolute inset-0 w-full h-full flex items-center justify-center">
+            <div className="absolute inset-0 flex h-full w-full items-center justify-center">
               <svg
                 className="h-20 w-20 text-blue-500"
                 fill="currentColor"

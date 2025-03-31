@@ -1,4 +1,4 @@
-import { Popover, Transition } from '@headlessui/react';
+import { Popover, PopoverButton, PopoverPanel } from '@headlessui/react';
 import {
   AcademicCapIcon,
   BookmarkIcon,
@@ -19,7 +19,7 @@ import {
 import classNames from 'classnames';
 import { Link } from 'gatsby';
 import * as React from 'react';
-import { Fragment, useState } from 'react';
+import { useState } from 'react';
 import { useSignIn } from '../../context/SignInContext';
 import {
   useFirebaseUser,
@@ -27,11 +27,10 @@ import {
   useSignOutAction,
 } from '../../context/UserDataContext/UserDataContext';
 import ContactUsSlideover from '../ContactUsSlideover/ContactUsSlideover';
+import { LoadingSpinner } from '../elements/LoadingSpinner';
 import Logo from '../Logo';
 import LogoSquare from '../LogoSquare';
 import SectionsDropdown from '../SectionsDropdown';
-import { LoadingSpinner } from '../elements/LoadingSpinner';
-import Banner from './Banner';
 import { SearchModal } from './SearchModal';
 import { UserAvatarMenu } from './UserAvatarMenu';
 
@@ -134,7 +133,7 @@ export default function TopNavigationBar({
   ];
   return (
     <>
-      {!hidePromoBar && (
+      {/* {!hidePromoBar && (
         <>
           <Banner
             text="Compete for Prizes in the USACO.Guide Informatics Tournament!"
@@ -142,134 +141,117 @@ export default function TopNavigationBar({
             link="http://contest.joincpi.org:8080/home"
           />
         </>
-      )}
+      )} */}
 
       <nav
         className={classNames(
-          !transparent && 'bg-white dark:bg-gray-900 shadow',
+          !transparent && 'bg-white shadow-sm dark:bg-gray-900',
           'relative'
         )}
       >
-        <div className="max-w-7xl px-2 sm:px-4 lg:px-8 mx-auto">
-          <div className="flex justify-between h-16">
+        <div className="mx-auto max-w-7xl px-2 sm:px-4 lg:px-8">
+          <div className="flex h-16 justify-between">
             <div className="flex px-2 lg:px-0">
               <Link
                 to={linkLogoToIndex ? '/' : '/dashboard'}
                 state={{ redirect: redirectToDashboard }}
-                className="flex-shrink-0 flex items-center"
+                className="flex shrink-0 items-center"
               >
                 <div className="block sm:hidden">
                   <LogoSquare className="h-10 w-10" />
                 </div>
-                <div className={'hidden sm:block h-9'}>
+                <div className={'hidden h-9 sm:block'}>
                   <Logo />
                 </div>
               </Link>
-              <div className={`hidden lg:ml-8 lg:flex space-x-8`}>
+              <div className={`hidden space-x-8 lg:ml-8 lg:flex`}>
                 <SectionsDropdown currentSection={currentSection} />
                 <Link
                   to="/problems/"
                   getProps={({ isCurrent }) => ({
                     className: isCurrent
-                      ? 'inline-flex items-center px-1 pt-0.5 border-b-2 border-blue-500 dark:border-blue-700 text-base font-medium leading-6 text-gray-900 dark:text-dark-high-emphasis focus:outline-none focus:border-blue-700 dark:focus:border-blue-500 transition'
-                      : 'inline-flex items-center px-1 pt-0.5 border-b-2 border-transparent text-base font-medium leading-6 text-gray-500 hover:text-gray-900 hover:border-gray-300  focus:outline-none focus:text-gray-900 focus:border-gray-300 dark:text-dark-high-emphasis dark:hover:border-gray-500 dark:focus:border-gray-500 transition',
+                      ? 'inline-flex items-center px-1 pt-0.5 border-b-2 border-blue-500 dark:border-blue-700 text-base font-medium leading-6 text-gray-900 dark:text-dark-high-emphasis focus:outline-hidden focus:border-blue-700 dark:focus:border-blue-500 transition'
+                      : 'inline-flex items-center px-1 pt-0.5 border-b-2 border-transparent text-base font-medium leading-6 text-gray-500 hover:text-gray-900 hover:border-gray-300  focus:outline-hidden focus:text-gray-900 focus:border-gray-300 dark:text-dark-high-emphasis dark:hover:border-gray-500 dark:focus:border-gray-500 transition',
                   })}
                 >
                   Problems
                 </Link>
-                <Popover.Group as="nav" className="h-full">
-                  <Popover className="h-full">
-                    {({ open }) => (
-                      <>
-                        <Popover.Button
-                          className={classNames(
-                            open
-                              ? 'text-gray-900'
-                              : 'text-gray-500 hover:border-gray-300 focus:border-gray-300 dark:hover:border-gray-500 dark:focus:border-gray-500',
-                            'group inline-flex items-center h-full border-b-2 border-transparent space-x-2 text-base leading-6 font-medium hover:text-gray-900 focus:outline-none focus:text-gray-900  transition ease-in-out duration-150 dark:text-dark-high-emphasis'
-                          )}
-                        >
-                          <span className="mt-0.5">Resources</span>
-                          <ChevronDownIcon
-                            className={classNames(
-                              open ? 'text-gray-500' : 'text-gray-400',
-                              'mt-0.5 ml-2 h-5 w-5 group-hover:text-gray-500 group-focus:text-gray-500 dark:text-dark-med-emphasis dark:group-hover:text-dark-med-emphasis dark:group-focus:text-dark-med-emphasis transition ease-in-out duration-150'
-                            )}
-                            aria-hidden="true"
-                          />
-                        </Popover.Button>
-                        <Transition
-                          as={Fragment}
-                          enter="transition ease-out duration-200"
-                          enterFrom="opacity-0 translate-y-1"
-                          enterTo="opacity-100 translate-y-0"
-                          leave="transition ease-in duration-150"
-                          leaveFrom="opacity-100 translate-y-0"
-                          leaveTo="opacity-0 translate-y-1"
-                        >
-                          <Popover.Panel
-                            static
-                            className="hidden md:block z-20 shadow-lg absolute left-1/2 transform -translate-x-1/2 -mt-2 px-2 w-screen max-w-md sm:px-0 lg:max-w-3xl"
-                          >
-                            <div className="rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 overflow-hidden">
-                              <div className="relative grid gap-6 bg-white dark:bg-gray-800 px-5 py-6 sm:gap-8 sm:p-8 lg:grid-cols-2">
-                                <Link
-                                  to="/groups/"
-                                  className="-m-3 p-3 flex items-start rounded-lg dark:hover:bg-gray-700 hover:bg-gray-100 transition ease-in-out duration-150"
-                                >
-                                  <div className="flex-shrink-0 flex items-center justify-center h-10 w-10 rounded-md bg-blue-500 text-white sm:h-12 sm:w-12">
-                                    <UserGroupIcon
-                                      className="h-6 w-6"
-                                      aria-hidden="true"
-                                    />
-                                  </div>
-                                  <div className="ml-4">
-                                    <p className="text-base font-medium text-gray-900 dark:text-dark-high-emphasis">
-                                      Groups
-                                    </p>
-                                    <p className="mt-1 text-sm text-gray-500 dark:text-dark-med-emphasis">
-                                      A Learning Management System fully
-                                      integrated with the USACO Guide.
-                                    </p>
-                                  </div>
-                                </Link>
-                                {resources.map(item => (
-                                  <a
-                                    key={item.name}
-                                    href={item.href}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                    className="-m-3 p-3 flex items-start rounded-lg dark:hover:bg-gray-700 hover:bg-gray-100 transition ease-in-out duration-150"
-                                  >
-                                    <div className="flex-shrink-0 flex items-center justify-center h-10 w-10 rounded-md bg-blue-500 text-white sm:h-12 sm:w-12">
-                                      <item.icon
-                                        className="h-6 w-6"
-                                        aria-hidden="true"
-                                      />
-                                    </div>
-                                    <div className="ml-4">
-                                      <div className="flex text-base font-medium text-gray-900 dark:text-dark-high-emphasis">
-                                        {item.name}{' '}
-                                        <span className="text-gray-400 mt-0.5 ml-2 h-5 w-5">
-                                          <ExternalLinkIcon />
-                                        </span>
-                                      </div>
-                                      <p className="mt-1 text-sm text-gray-500 dark:text-dark-med-emphasis">
-                                        {item.description}
-                                      </p>
-                                    </div>
-                                  </a>
-                                ))}
-                              </div>
-                            </div>
-                          </Popover.Panel>
-                        </Transition>
-                      </>
+
+                <Popover className="h-full">
+                  <PopoverButton
+                    className={classNames(
+                      'text-gray-500 hover:border-gray-300 focus:border-gray-300 dark:hover:border-gray-500 dark:focus:border-gray-500',
+                      'group dark:text-dark-high-emphasis inline-flex h-full items-center space-x-2 border-b-2 border-transparent pt-0.5 text-base leading-6 font-medium transition duration-150 ease-in-out hover:text-gray-900 focus:text-gray-900 focus:outline-hidden'
                     )}
-                  </Popover>
-                </Popover.Group>
+                  >
+                    <span>Resources</span>
+                    <ChevronDownIcon
+                      className={classNames(
+                        'text-gray-400',
+                        'dark:text-dark-med-emphasis dark:group-hover:text-dark-med-emphasis dark:group-focus:text-dark-med-emphasis h-5 w-5 transition duration-150 ease-in-out group-hover:text-gray-500 group-focus:text-gray-500'
+                      )}
+                      aria-hidden="true"
+                    />
+                  </PopoverButton>
+                  <PopoverPanel
+                    transition
+                    className="absolute left-1/2 z-20 -mt-2 hidden w-screen max-w-md -translate-x-1/2 transform px-2 shadow-lg transition data-[closed]:translate-y-1 data-[closed]:opacity-0 data-[enter]:duration-200 data-[enter]:ease-out data-[leave]:duration-150 data-[leave]:ease-in sm:px-0 md:block lg:max-w-3xl"
+                  >
+                    <div className="overflow-hidden rounded-lg shadow-lg ring-1 ring-black/5">
+                      <div className="relative grid gap-6 bg-white px-5 py-6 sm:gap-8 sm:p-8 lg:grid-cols-2 dark:bg-gray-800">
+                        <Link
+                          to="/groups/"
+                          className="-m-3 flex items-start rounded-lg p-3 transition duration-150 ease-in-out hover:bg-gray-100 dark:hover:bg-gray-700"
+                        >
+                          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-blue-500 text-white sm:h-12 sm:w-12">
+                            <UserGroupIcon
+                              className="h-6 w-6"
+                              aria-hidden="true"
+                            />
+                          </div>
+                          <div className="ml-4">
+                            <p className="dark:text-dark-high-emphasis text-base font-medium text-gray-900">
+                              Groups
+                            </p>
+                            <p className="dark:text-dark-med-emphasis mt-1 text-sm text-gray-500">
+                              A Learning Management System fully integrated with
+                              the USACO Guide.
+                            </p>
+                          </div>
+                        </Link>
+                        {resources.map(item => (
+                          <a
+                            key={item.name}
+                            href={item.href}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="-m-3 flex items-start rounded-lg p-3 transition duration-150 ease-in-out hover:bg-gray-100 dark:hover:bg-gray-700"
+                          >
+                            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-blue-500 text-white sm:h-12 sm:w-12">
+                              <item.icon
+                                className="h-6 w-6"
+                                aria-hidden="true"
+                              />
+                            </div>
+                            <div className="ml-4">
+                              <div className="dark:text-dark-high-emphasis flex text-base font-medium text-gray-900">
+                                {item.name}{' '}
+                                <span className="mt-0.5 ml-2 h-5 w-5 text-gray-400">
+                                  <ExternalLinkIcon />
+                                </span>
+                              </div>
+                              <p className="dark:text-dark-med-emphasis mt-1 text-sm text-gray-500">
+                                {item.description}
+                              </p>
+                            </div>
+                          </a>
+                        ))}
+                      </div>
+                    </div>
+                  </PopoverPanel>
+                </Popover>
                 <button
-                  className="cursor-pointer inline-flex items-center px-1 border-b-2 border-transparent text-base font-medium leading-6 text-gray-500 hover:text-gray-900 hover:border-gray-300 focus:outline-none focus:text-gray-900 focus:border-gray-300 dark:text-dark-high-emphasis dark:hover:border-gray-500 dark:focus:border-gray-500 transition"
+                  className="dark:text-dark-high-emphasis inline-flex cursor-pointer items-center border-b-2 border-transparent px-1 text-base leading-6 font-medium text-gray-500 transition hover:border-gray-300 hover:text-gray-900 focus:border-gray-300 focus:text-gray-900 focus:outline-hidden dark:hover:border-gray-500 dark:focus:border-gray-500"
                   onClick={() => setIsContactUsActive(true)}
                 >
                   Contact Us
@@ -277,11 +259,11 @@ export default function TopNavigationBar({
               </div>
             </div>
             <div
-              className={`flex-1 flex items-center justify-end px-2 lg:px-0 lg:ml-6`}
+              className={`flex flex-1 items-center justify-end px-2 lg:ml-6 lg:px-0`}
             >
               <button
                 type="button"
-                className="inline-flex items-center px-2 py-1 border border-transparent rounded-md text-gray-500 hover:text-gray-700 dark:text-dark-high-emphasis focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="dark:text-dark-high-emphasis inline-flex items-center rounded-md border border-transparent px-2 py-1 text-gray-500 hover:text-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-hidden"
                 onClick={() => setIsSearchOpen(true)}
               >
                 <SearchIcon
@@ -332,7 +314,7 @@ export default function TopNavigationBar({
                 </svg>
               </button>
             </div>
-            <div className="hidden lg:mx-3 lg:block border-l border-gray-200 dark:border-gray-700 h-6 self-center" />
+            <div className="hidden h-6 self-center border-l border-gray-200 lg:mx-3 lg:block dark:border-gray-700" />
             <div className="hidden lg:flex lg:items-center">
               {firebaseUser ? (
                 <UserAvatarMenu
@@ -347,7 +329,7 @@ export default function TopNavigationBar({
                 <>
                   <button
                     onClick={() => signIn()}
-                    className="relative inline-flex items-center px-2 py-1 border border-transparent text-base leading-6 font-medium rounded-md text-gray-500 hover:text-gray-700 dark:text-dark-high-emphasis focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="dark:text-dark-high-emphasis relative inline-flex items-center rounded-md border border-transparent px-2 py-1 text-base leading-6 font-medium text-gray-500 hover:text-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-hidden"
                   >
                     Login
                   </button>
@@ -355,7 +337,7 @@ export default function TopNavigationBar({
                   {/* Settings button */}
                   <Link
                     to="/settings"
-                    className="p-1 border-2 border-transparent text-gray-400 dark:text-dark-med-emphasis rounded-full hover:text-gray-300 dark:hover:text-dark-high-emphasis focus:outline-none focus:text-gray-500 focus:bg-gray-100 dark:focus:bg-gray-700 transition"
+                    className="dark:text-dark-med-emphasis dark:hover:text-dark-high-emphasis rounded-full border-2 border-transparent p-1 text-gray-400 transition hover:text-gray-300 focus:bg-gray-100 focus:text-gray-500 focus:outline-hidden dark:focus:bg-gray-700"
                     aria-label="Settings"
                   >
                     <svg
@@ -390,17 +372,17 @@ export default function TopNavigationBar({
         Menu open: "block", Menu closed: "hidden"
       */}
         <div className={`${isMobileNavOpen ? 'block' : 'hidden'} lg:hidden`}>
-          <div className="grid grid-cols-1 divide-y divide-gray-300 dark:divide-gray-800 pb-6">
-            <div className="py-5 px-4">
-              <div className="grid grid-cols-2 gap-y-4 gap-x-8">
+          <div className="grid grid-cols-1 divide-y divide-gray-300 pb-6 dark:divide-gray-800">
+            <div className="px-4 py-5">
+              <div className="grid grid-cols-2 gap-x-8 gap-y-4">
                 {solutions.map(item => (
                   <Link
                     key={item.name}
                     to={item.href}
-                    className="group -m-3 p-3 flex items-center rounded-md hover:bg-gray-100 dark:hover:bg-gray-700"
+                    className="group -m-3 flex items-center rounded-md p-3 hover:bg-gray-100 dark:hover:bg-gray-700"
                   >
                     <item.icon
-                      className="flex-shrink-0 h-6 w-6 text-gray-600 dark:group-hover:text-gray-400"
+                      className="h-6 w-6 shrink-0 text-gray-600 dark:group-hover:text-gray-400"
                       aria-hidden="true"
                     />
                     <span className="ml-3 text-base font-medium text-gray-700 dark:text-gray-300">
@@ -410,14 +392,14 @@ export default function TopNavigationBar({
                 ))}
               </div>
             </div>
-            <div className="py-5 px-4">
-              <div className="grid grid-cols-2 gap-y-4 gap-x-8">
+            <div className="px-4 py-5">
+              <div className="grid grid-cols-2 gap-x-8 gap-y-4">
                 <Link
                   to="/groups/"
-                  className="group -m-3 p-3 flex items-center rounded-md hover:bg-gray-100 dark:hover:bg-gray-700"
+                  className="group -m-3 flex items-center rounded-md p-3 hover:bg-gray-100 dark:hover:bg-gray-700"
                 >
                   <UserGroupIcon
-                    className="flex-shrink-0 h-6 w-6 text-gray-600 dark:group-hover:text-gray-400"
+                    className="h-6 w-6 shrink-0 text-gray-600 dark:group-hover:text-gray-400"
                     aria-hidden="true"
                   />
                   <span className="ml-3 text-base font-medium text-gray-700 dark:text-gray-300">
@@ -430,10 +412,10 @@ export default function TopNavigationBar({
                     href={item.href}
                     target="_blank"
                     rel="noreferrer"
-                    className="group -m-3 p-3 flex items-center rounded-md hover:bg-gray-100 dark:hover:bg-gray-700"
+                    className="group -m-3 flex items-center rounded-md p-3 hover:bg-gray-100 dark:hover:bg-gray-700"
                   >
                     <item.icon
-                      className="flex-shrink-0 h-6 w-6 text-gray-600 dark:group-hover:text-gray-400"
+                      className="h-6 w-6 shrink-0 text-gray-600 dark:group-hover:text-gray-400"
                       aria-hidden="true"
                     />
                     <span className="ml-3 text-base font-medium text-gray-700 dark:text-gray-300">
@@ -443,15 +425,15 @@ export default function TopNavigationBar({
                 ))}
               </div>
             </div>
-            <div className="pt-5 px-4">
+            <div className="px-4 pt-5">
               <nav className="grid gap-y-8">
                 <Link
                   key="Problems"
                   to="/problems"
-                  className="group -m-3 p-3 flex items-center rounded-md hover:bg-gray-100 dark:hover:bg-gray-700"
+                  className="group -m-3 flex items-center rounded-md p-3 hover:bg-gray-100 dark:hover:bg-gray-700"
                 >
                   <QuestionMarkCircleIcon
-                    className="flex-shrink-0 h-6 w-6 text-gray-600 dark:group-hover:text-gray-400"
+                    className="h-6 w-6 shrink-0 text-gray-600 dark:group-hover:text-gray-400"
                     aria-hidden="true"
                   />
                   <span className="ml-3 text-base font-medium text-gray-700 dark:text-gray-300">
@@ -459,11 +441,11 @@ export default function TopNavigationBar({
                   </span>
                 </Link>
                 <a
-                  className="group -m-3 p-3 cursor-pointer flex items-center rounded-md hover:bg-gray-100 dark:hover:bg-gray-700"
+                  className="group -m-3 flex cursor-pointer items-center rounded-md p-3 hover:bg-gray-100 dark:hover:bg-gray-700"
                   onClick={() => setIsContactUsActive(true)}
                 >
                   <ChatAltIcon
-                    className="h-6 w-6 text-gray-600 float-left dark:group-hover:text-gray-400"
+                    className="float-left h-6 w-6 text-gray-600 dark:group-hover:text-gray-400"
                     aria-hidden="true"
                   />
                   <span className="ml-3 text-base font-medium text-gray-700 dark:text-gray-300">
@@ -473,10 +455,10 @@ export default function TopNavigationBar({
                 <Link
                   key="Settings"
                   to="/settings"
-                  className="group -m-3 p-3 flex items-center rounded-md hover:bg-gray-100 dark:hover:bg-gray-700"
+                  className="group -m-3 flex items-center rounded-md p-3 hover:bg-gray-100 dark:hover:bg-gray-700"
                 >
                   <CogIcon
-                    className="flex-shrink-0 h-6 w-6 text-gray-600 dark:group-hover:text-gray-400"
+                    className="h-6 w-6 shrink-0 text-gray-600 dark:group-hover:text-gray-400"
                     aria-hidden="true"
                   />
                   <span className="ml-3 text-base font-medium text-gray-700 dark:text-gray-300">
@@ -485,11 +467,11 @@ export default function TopNavigationBar({
                 </Link>
                 {firebaseUser ? (
                   <a
-                    className="group -m-3 p-3 flex items-center rounded-md hover:bg-gray-100 dark:hover:bg-gray-700"
+                    className="group -m-3 flex items-center rounded-md p-3 hover:bg-gray-100 dark:hover:bg-gray-700"
                     onClick={() => signOut()}
                   >
                     <LogoutIcon
-                      className="h-6 w-6 text-gray-600 float-left dark:group-hover:text-gray-400"
+                      className="float-left h-6 w-6 text-gray-600 dark:group-hover:text-gray-400"
                       aria-hidden="true"
                     />
                     <span className="ml-3 text-base font-medium text-gray-700 dark:text-gray-300">
@@ -498,11 +480,11 @@ export default function TopNavigationBar({
                   </a>
                 ) : (
                   <a
-                    className="group -m-3 p-3 cursor-pointer flex items-center rounded-md hover:bg-gray-100 dark:hover:bg-gray-700"
+                    className="group -m-3 flex cursor-pointer items-center rounded-md p-3 hover:bg-gray-100 dark:hover:bg-gray-700"
                     onClick={() => signIn()}
                   >
                     <LoginIcon
-                      className="h-6 w-6 text-gray-600 float-left dark:group-hover:text-gray-400"
+                      className="float-left h-6 w-6 text-gray-600 dark:group-hover:text-gray-400"
                       aria-hidden="true"
                     />
                     <span className="ml-3 text-base font-medium text-gray-700 dark:text-gray-300">

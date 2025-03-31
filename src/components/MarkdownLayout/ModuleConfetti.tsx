@@ -43,7 +43,7 @@ const ModuleConfetti = (props, ref) => {
   if (!show) return null;
 
   return (
-    <div className="fixed inset-0 pointer-events-none z-20">
+    <div className="pointer-events-none fixed inset-0 z-20">
       <Confetti
         width={width}
         height={height}

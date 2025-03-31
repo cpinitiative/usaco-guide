@@ -32,10 +32,10 @@ const ProblemListItem = ({
   if (!problem) throw new Error('No problem found'); // this shouldn't happen...
 
   return (
-    <div className="flex items-center bg-white dark:bg-dark-surface">
+    <div className="dark:bg-dark-surface flex items-center bg-white">
       {dragHandle}
       <div
-        className={`flex-1 relative pr-6 py-5 hover:bg-gray-50 dark:hover:bg-gray-900 sm:py-6 ${
+        className={`relative flex-1 py-5 pr-6 hover:bg-gray-50 sm:py-6 dark:hover:bg-gray-900 ${
           dragHandle ? 'pl-2' : 'pl-4 sm:pl-6 lg:pl-8 xl:pl-6'
         }`}
       >
@@ -43,7 +43,7 @@ const ProblemListItem = ({
           <div className="min-w-0 space-y-3">
             <div className="flex items-center space-x-3">
               <span
-                className={`h-5 w-5 rounded-full flex items-center justify-center ${submissionCircleBorderColor[status]}`}
+                className={`flex h-5 w-5 items-center justify-center rounded-full ${submissionCircleBorderColor[status]}`}
                 aria-hidden="true"
               >
                 <span
@@ -52,7 +52,7 @@ const ProblemListItem = ({
               </span>
 
               <span className="block">
-                <h2 className="font-medium leading-3">
+                <h2 className="leading-3 font-medium">
                   <Link
                     to={`/groups/${group.id}/post/${post.id}/problems/${problem.id}`}
                   >
@@ -62,9 +62,9 @@ const ProblemListItem = ({
                 </h2>
               </span>
             </div>
-            <div className="relative group flex items-center space-x-2.5">
+            <div className="group relative flex items-center space-x-2.5">
               <svg
-                className="flex-shrink-0 w-5 h-5 text-gray-400 dark:text-gray-500"
+                className="h-5 w-5 shrink-0 text-gray-400 dark:text-gray-500"
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 20 20"
                 fill="currentColor"
@@ -75,7 +75,7 @@ const ProblemListItem = ({
                   clipRule="evenodd"
                 />
               </svg>
-              <span className="text-sm text-gray-500 dark:text-gray-400 font-medium truncate">
+              <span className="truncate text-sm font-medium text-gray-500 dark:text-gray-400">
                 {pointsEarned} / {problem.points} points earned
               </span>
             </div>
@@ -97,16 +97,16 @@ const ProblemListItem = ({
             </svg>
           </div>
           {/* Repo meta info */}
-          <div className="hidden sm:flex flex-col flex-shrink-0 items-end space-y-3">
+          <div className="hidden shrink-0 flex-col items-end space-y-3 sm:flex">
             <p className="flex items-center space-x-4">
               <Link
                 to={`/groups/${group.id}/post/${post.id}/problems/${problem.id}`}
-                className="relative text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 font-medium"
+                className="relative text-sm font-medium text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
               >
                 View Problem
               </Link>
             </p>
-            <p className="flex text-gray-500 dark:text-gray-400 text-sm space-x-2">
+            <p className="flex space-x-2 text-sm text-gray-500 dark:text-gray-400">
               <span>Source: {problem.source}</span>
               <span aria-hidden="true">&middot;</span>
               <span>Difficulty: {problem.difficulty}</span>

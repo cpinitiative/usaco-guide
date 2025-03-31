@@ -5,7 +5,10 @@ export const EditorContext = React.createContext<
   | { inEditor: null }
   | { inEditor: false }
   | {
-      addProblem: (listId: string, problemMetadata: ProblemMetadata) => void;
+      addProblem: (
+        listId: string,
+        problemMetadata: ProblemMetadata
+      ) => Promise<void>;
       inEditor: true;
     }
 >({

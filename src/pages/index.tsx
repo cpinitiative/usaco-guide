@@ -14,31 +14,27 @@ import classNames from 'classnames';
 import { Link, navigate } from 'gatsby';
 import { StaticImage } from 'gatsby-plugin-image';
 import * as React from 'react';
-import { CPIProjectCard } from '../components/Index/CPIProjectCard';
-import ContributorsSection from '../components/Index/ContributorsSection';
-import { Feature } from '../components/Index/Feature';
-import TrustedBy from '../components/Index/TrustedBy';
-import { ProblemsetsFeature } from '../components/Index/features/ProblemsetsFeature';
-import { ProgressTrackingFeature } from '../components/Index/features/ProgressTrackingFeature';
-import { ResourcesFeature } from '../components/Index/features/ResourcesFeature';
-import {
-  EasyFunCoding,
-  NonTrivial,
-  Vercel,
-} from '../components/Index/sponsor-logos';
-import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
 import { GlowingRing } from '../components/elements/landing/GlowingRing';
 import { GlowingText } from '../components/elements/landing/GlowingText';
 import { GradientText } from '../components/elements/landing/GradientText';
 import { HighlightedText } from '../components/elements/landing/HighlightedText';
+import ContributorsSection from '../components/Index/ContributorsSection';
+import { CPIProjectCard } from '../components/Index/CPIProjectCard';
+import { Feature } from '../components/Index/Feature';
+import { ProblemsetsFeature } from '../components/Index/features/ProblemsetsFeature';
+import { ProgressTrackingFeature } from '../components/Index/features/ProgressTrackingFeature';
+import { ResourcesFeature } from '../components/Index/features/ResourcesFeature';
+import { EasyFunCoding, NonTrivial } from '../components/Index/sponsor-logos';
+import TrustedBy from '../components/Index/TrustedBy';
 import Layout from '../components/layout';
 import SEO from '../components/seo';
+import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
 import {
   useFirebaseUser,
   useIsUserDataLoaded,
 } from '../context/UserDataContext/UserDataContext';
 
-const containerClasses = 'max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8';
+const containerClasses = 'max-w-(--breakpoint-xl) mx-auto px-4 sm:px-6 lg:px-8';
 const headerClasses =
   'text-4xl md:text-5xl 2xl:text-6xl font-black text-black dark:text-white';
 const headerClassesNoText = 'text-4xl md:text-5xl 2xl:text-6xl font-black';
@@ -89,20 +85,20 @@ export default function IndexPage(): JSX.Element {
 
       {/* Begin Hero */}
       <div className="-mt-16 bg-gray-100 dark:bg-black">
-        <div className="md:min-h-screen flex flex-col px-4 sm:px-6 lg:px-8">
+        <div className="flex flex-col px-4 sm:px-6 md:min-h-screen lg:px-8">
           <div className="h-6 sm:h-12"></div>
 
-          <div className="flex-1 flex flex-col justify-center">
+          <div className="flex flex-1 flex-col justify-center">
             <div className="h-24"></div>
 
             <div className="flex md:justify-center dark:hidden">
-              <div className={classNames(usacoTitleClasses, 'text-black mt-4')}>
+              <div className={classNames(usacoTitleClasses, 'mt-4 text-black')}>
                 USACO Guide
               </div>
             </div>
-            <div className="flex md:justify-center invisible h-0 dark:visible dark:h-auto">
+            <div className="invisible flex h-0 md:justify-center dark:visible dark:h-auto">
               <GlowingText
-                className={classNames(usacoTitleClasses, 'text-white mt-4')}
+                className={classNames(usacoTitleClasses, 'mt-4 text-white')}
               >
                 USACO Guide
               </GlowingText>
@@ -110,19 +106,7 @@ export default function IndexPage(): JSX.Element {
 
             <div className="h-6 sm:h-8"></div>
 
-            <p
-              className="
-                md:text-center
-                text-xl
-                sm:text-2xl
-                2xl:text-3xl
-                font-medium
-                leading-snug
-                md:!leading-normal
-                text-gray-800
-                dark:text-gray-300
-              "
-            >
+            <p className="text-xl leading-snug font-medium text-gray-800 sm:text-2xl md:text-center md:!leading-normal 2xl:text-3xl dark:text-gray-300">
               A free collection of{' '}
               <GradientText>curated, high-quality resources</GradientText>{' '}
               <br className="hidden md:block" />
@@ -145,7 +129,7 @@ export default function IndexPage(): JSX.Element {
 
           <div className="h-16 sm:h-24"></div>
 
-          <div className="flex md:justify-center md:text-xl text-gray-600 dark:text-gray-400">
+          <div className="flex text-gray-600 md:justify-center md:text-xl dark:text-gray-400">
             <a
               href="https://joincpi.org/"
               className="inline-flex items-center space-x-3 md:space-x-4"
@@ -287,7 +271,7 @@ export default function IndexPage(): JSX.Element {
             title="Help when you need it"
             blobClasses="bg-green-200 dark:bg-green-800"
             feature={
-              <div className="shadow-lg rounded-lg">
+              <div className="rounded-lg shadow-lg">
                 <StaticImage
                   src="../assets/forum-screenshot.png"
                   alt="USACO Forum Screenshot"
@@ -300,7 +284,7 @@ export default function IndexPage(): JSX.Element {
             featurePosition="right"
             fade="none"
           >
-            <span className="block mb-4 md:mb-8">
+            <span className="mb-4 block md:mb-8">
               Get help from other community members in the USACO Forum.
             </span>
 
@@ -346,7 +330,7 @@ export default function IndexPage(): JSX.Element {
 
           <div className="h-8 md:h-12 2xl:h-16"></div>
 
-          <div className="relative group inline-block">
+          <div className="group relative inline-block">
             <GlowingRing>
               <Link
                 to="/dashboard"
@@ -367,13 +351,13 @@ export default function IndexPage(): JSX.Element {
             Created by the CP Initiative.
           </h2>
           <div className="h-4 md:h-8"></div>
-          <p className={classNames(subtextClasses, 'md:text-center mx-auto')}>
+          <p className={classNames(subtextClasses, 'mx-auto md:text-center')}>
             Here are some of our other projects you might find useful!
           </p>
 
-          <div className="h-12 md:h-16 2xl:24"></div>
+          <div className="2xl:24 h-12 md:h-16"></div>
 
-          <div className="grid md:grid-cols-2 2xl:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
+          <div className="grid gap-4 sm:gap-6 md:grid-cols-2 lg:gap-8 2xl:grid-cols-3">
             <CPIProjectCard
               title="USACO Classes"
               icon={AcademicCapIcon}
@@ -469,7 +453,7 @@ export default function IndexPage(): JSX.Element {
           </p>
           <div className="h-8 md:h-12"></div>
 
-          <div className="relative group inline-block">
+          <div className="group relative inline-block">
             <GlowingRing>
               <a
                 href="https://docs.google.com/document/d/13QpXqdiYQwjBLnywGL1FUG7GFdh8SM_1NigIkJl-A7k/edit?usp=sharing"
@@ -482,7 +466,7 @@ export default function IndexPage(): JSX.Element {
             </GlowingRing>
           </div>
 
-          <hr className="my-16 md:my-20 2xl:my-24 border-gray-300 dark:border-gray-800" />
+          <hr className="my-16 border-gray-300 md:my-20 2xl:my-24 dark:border-gray-800" />
 
           <div className="dark:hidden">
             <h1 className={classNames(headerClasses)}>
@@ -502,8 +486,8 @@ export default function IndexPage(): JSX.Element {
           <p className={subtextClasses}>
             We're a <GradientText>501(c)3 nonprofit organization</GradientText>{' '}
             — all donations are tax deductible. Since our inception in September
-            2020, we've impacted well over <GradientText>16,000</GradientText>{' '}
-            students across our various initiatives.
+            2020, we've impacted tens of thousands of students across our
+            various initiatives.
           </p>
           <div className="h-8 md:h-12"></div>
 
@@ -518,7 +502,7 @@ export default function IndexPage(): JSX.Element {
                 Sponsor Us
               </a>
             </GlowingRing>
-            <span className="text-lg font-medium text-gray-400 ml-4 md:ml-6">
+            <span className="ml-4 text-lg font-medium text-gray-400 md:ml-6">
               or{' '}
               <a
                 href="https://www.paypal.com/donate?hosted_button_id=FKG88TSTN82E4"
@@ -546,15 +530,15 @@ export default function IndexPage(): JSX.Element {
 
           <div className="h-12 md:h-20"></div>
 
-          <p className="uppercase text-gray-700 dark:text-gray-400 font-medium text-lg md:text-xl">
+          <p className="text-lg font-medium text-gray-700 uppercase md:text-xl dark:text-gray-400">
             Our Sponsors
           </p>
           {/* Sponsor logos don't fit well in the light theme */}
-          <p className="uppercase text-gray-600 dark:text-gray-400 font-semibold pt-6 md:text-lg">
+          <p className="pt-6 font-semibold text-gray-600 uppercase md:text-lg dark:text-gray-400">
             Platinum Sponsors
           </p>
-          <div className="my-8 grid grid-cols-2 gap-0.5 md:grid-cols-3 lg:grid-cols-4 lg:my-6 text-gray-600 dark:text-gray-400 items-center">
-            <div className="col-span-1 dark:invert invert-0">
+          <div className="my-8 grid grid-cols-2 items-center gap-0.5 text-gray-600 md:grid-cols-3 lg:my-6 lg:grid-cols-4 dark:text-gray-400">
+            <div className="col-span-1 invert-0 dark:invert">
               <a
                 href="http://non-trivial.org/"
                 target="_blank"
@@ -564,10 +548,10 @@ export default function IndexPage(): JSX.Element {
               </a>
             </div>
           </div>
-          <p className="uppercase text-gray-600 dark:text-gray-400 font-semibold pt-6 md:text-lg">
+          <p className="pt-6 font-semibold text-gray-600 uppercase md:text-lg dark:text-gray-400">
             Bronze Sponsors
           </p>
-          <div className="my-8 grid grid-cols-2 gap-0.5 md:grid-cols-3 lg:grid-cols-4 lg:my-6 text-gray-400 items-center">
+          <div className="my-8 grid grid-cols-2 items-center gap-0.5 text-gray-400 md:grid-cols-3 lg:my-6 lg:grid-cols-4">
             <div className="col-span-1">
               <a
                 href="https://easyfuncoding.com"
@@ -578,28 +562,14 @@ export default function IndexPage(): JSX.Element {
               </a>
             </div>
           </div>
-          <p className="uppercase text-gray-600 dark:text-gray-400 font-semibold pt-6 md:text-lg">
-            In-kind Sponsors
-          </p>
-          <div className="my-8 grid grid-cols-2 gap-0.5 md:grid-cols-3 lg:grid-cols-4 lg:my-6 text-gray-400 items-center">
-            <div className="col-span-1">
-              <a
-                href="https://vercel.com/?utm_source=cp-initiative&utm_campaign=oss"
-                target="_blank"
-                rel="noreferrer"
-              >
-                <Vercel />
-              </a>
-            </div>
-          </div>
         </div>
 
         <div className="h-16 md:h-20 xl:h-36 2xl:h-48"></div>
       </div>
 
       {/* Begin FAQ */}
-      <div className="bg-white dark:bg-dark-surface">
-        <div className="max-w-screen-xl mx-auto pt-12 pb-16 sm:pt-16 sm:pb-20 px-4 sm:px-6 lg:pt-20 lg:pb-28 lg:px-8">
+      <div className="dark:bg-dark-surface bg-white">
+        <div className="mx-auto max-w-(--breakpoint-xl) px-4 pt-12 pb-16 sm:px-6 sm:pt-16 sm:pb-20 lg:px-8 lg:pt-20 lg:pb-28">
           <h2 className={classNames(headerClasses, 'dark:text-gray-100')}>
             Frequently asked questions
           </h2>
@@ -617,14 +587,14 @@ export default function IndexPage(): JSX.Element {
                         href="http://www.usaco.org/"
                         target="_blank"
                         rel="noreferrer"
-                        className="text-blue-600 dark:text-blue-400 underline"
+                        className="text-blue-600 underline dark:text-blue-400"
                       >
                         USA Computing Olympiad
                       </a>
                       . Check out the{' '}
                       <Link
                         to="/general/usaco-faq"
-                        className="text-blue-600 dark:text-blue-400 underline"
+                        className="text-blue-600 underline dark:text-blue-400"
                       >
                         USACO FAQ Page
                       </Link>{' '}
@@ -656,7 +626,7 @@ export default function IndexPage(): JSX.Element {
                       "Contact Us" button. Alternatively, email us at{' '}
                       <a
                         href="mailto:usacoguide@gmail.com"
-                        className="text-blue-600 dark:text-blue-400 underline"
+                        className="text-blue-600 underline dark:text-blue-400"
                       >
                         usacoguide@gmail.com
                       </a>
@@ -675,7 +645,7 @@ export default function IndexPage(): JSX.Element {
                         href="https://joincpi.org/?ref=home"
                         target="_blank"
                         rel="noreferrer"
-                        className="text-blue-600 dark:text-blue-400 underline"
+                        className="text-blue-600 underline dark:text-blue-400"
                       >
                         Competitive Programming Initiative
                       </a>
@@ -708,7 +678,7 @@ export default function IndexPage(): JSX.Element {
                         href="https://forum.usaco.guide"
                         target="_blank"
                         rel="noreferrer"
-                        className="text-blue-600 dark:text-blue-400 underline"
+                        className="text-blue-600 underline dark:text-blue-400"
                       >
                         USACO Forum
                       </a>{' '}
@@ -725,7 +695,7 @@ export default function IndexPage(): JSX.Element {
                       To learn more about contributing, please visit{' '}
                       <Link
                         to="/general/contributing"
-                        className="text-blue-600 dark:text-blue-400 underline"
+                        className="text-blue-600 underline dark:text-blue-400"
                       >
                         this page
                       </Link>
@@ -744,7 +714,7 @@ export default function IndexPage(): JSX.Element {
                         href="https://github.com/cpinitiative/usaco-guide/?ref=home"
                         target="_blank"
                         rel="noreferrer"
-                        className="text-blue-600 dark:text-blue-400 underline"
+                        className="text-blue-600 underline dark:text-blue-400"
                       >
                         GitHub Repository
                       </a>
@@ -762,19 +732,10 @@ export default function IndexPage(): JSX.Element {
       <ContributorsSection />
 
       <div className="bg-gray-100 dark:bg-gray-900">
-        <div className="max-w-screen-xl mx-auto py-12 px-4">
-          <p className="text-center text-base leading-6 text-gray-400 dark:text-dark-med-emphasis">
+        <div className="mx-auto max-w-(--breakpoint-xl) px-4 py-12">
+          <p className="dark:text-dark-med-emphasis text-center text-base leading-6 text-gray-400">
             &copy; {new Date().getFullYear()} Competitive Programming
-            Initiative. Powered by{' '}
-            <a
-              href="https://vercel.com/?utm_source=cp-initiative&utm_campaign=oss"
-              target="_blank"
-              className="underline"
-              rel="noreferrer"
-            >
-              Vercel
-            </a>
-            .
+            Initiative.
             <br />
             No part of this website may be reproduced or commercialized in any
             manner without prior written permission.{' '}

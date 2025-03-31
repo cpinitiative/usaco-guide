@@ -1,5 +1,8 @@
 import { navigate } from 'gatsby';
 import * as React from 'react';
+import UnderlinedTabs from '../components/elements/UnderlinedTabs';
+import Layout from '../components/layout';
+import SEO from '../components/seo';
 import AdminSettings from '../components/Settings/AdminSettings';
 import Authentication from '../components/Settings/Authentication';
 import DarkMode from '../components/Settings/DarkMode';
@@ -8,9 +11,6 @@ import Language from '../components/Settings/Language';
 import Profile from '../components/Settings/Profile';
 import UserData from '../components/Settings/UserData';
 import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
-import UnderlinedTabs from '../components/elements/UnderlinedTabs';
-import Layout from '../components/layout';
-import SEO from '../components/seo';
 import { useUserPermissions } from '../context/UserDataContext/UserPermissionsContext';
 
 /*
@@ -69,13 +69,13 @@ export default function SettingsPage() {
       <TopNavigationBar />
 
       <main>
-        <div className="relative max-w-xl mx-auto md:px-8 xl:px-0">
+        <div className="relative mx-auto max-w-xl md:px-8 xl:px-0">
           <button
-            className="mt-8 btn mx-4 sm:mx-6 md:mx-0"
+            className="btn mx-4 mt-8 sm:mx-6 md:mx-0"
             onClick={() => navigate(-1)}
           >
             <svg
-              className="-ml-1 mr-2 h-4 w-4"
+              className="mr-2 -ml-1 h-4 w-4"
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 20 20"
               fill="currentColor"
@@ -88,12 +88,12 @@ export default function SettingsPage() {
             </svg>
             Back
           </button>
-          <div className="pt-4 sm:pt-6 pb-16">
+          <div className="pt-4 pb-16 sm:pt-6">
             <div className="px-4 sm:px-6 md:px-0">
               <h1 className="text-3xl font-extrabold text-gray-900 dark:text-gray-100">
                 Settings
               </h1>
-              <p className="text-gray-500 dark:text-gray-400 mt-2">
+              <p className="mt-2 text-gray-500 dark:text-gray-400">
                 If you're signed in, settings sync across devices.
               </p>
             </div>

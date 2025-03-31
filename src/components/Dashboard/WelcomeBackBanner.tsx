@@ -6,13 +6,13 @@ export default function WelcomeBackBanner({
   lastViewedModuleLabel,
 }) {
   return (
-    <div className="bg-white dark:bg-gray-800 shadow lg:rounded-lg w-full">
+    <div className="w-full bg-white shadow-sm lg:rounded-lg dark:bg-gray-800">
       <Link
-        className="px-4 py-6 sm:p-8 block sm:flex sm:items-center sm:justify-between"
+        className="block px-4 py-6 sm:flex sm:items-center sm:justify-between sm:p-8"
         to={lastViewedModuleURL || '/general/using-this-guide'}
       >
         <div>
-          <h3 className="text-xl sm:text-2xl leading-7 font-medium text-black dark:text-dark-high-emphasis">
+          <h3 className="dark:text-dark-high-emphasis text-xl leading-7 font-medium text-black sm:text-2xl">
             {lastViewedModuleURL
               ? 'Welcome Back!'
               : 'Welcome to the USACO Guide!'}
@@ -25,9 +25,9 @@ export default function WelcomeBackBanner({
             </p>
           </div>
         </div>
-        <div className="mt-5 sm:mt-0 sm:ml-6 sm:flex-shrink-0 sm:flex sm:items-center lg:mr-2">
+        <div className="mt-5 sm:mt-0 sm:ml-6 sm:flex sm:shrink-0 sm:items-center lg:mr-2">
           <span className="inline-flex rounded-md shadow-sm">
-            <span className="inline-flex items-center px-4 lg:px-8 py-2 lg:py-3 border border-transparent text-sm sm:text-base lg:text-lg font-medium rounded-md text-white bg-blue-800 hover:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none focus:border-blue-700 focus:shadow-outline-blue active:bg-blue-700 transition ease-in-out duration-150">
+            <span className="focus:shadow-outline-blue inline-flex items-center rounded-md border border-transparent bg-blue-800 px-4 py-2 text-sm font-medium text-white transition duration-150 ease-in-out hover:bg-blue-600 focus:border-blue-700 focus:outline-hidden active:bg-blue-700 sm:text-base lg:px-8 lg:py-3 lg:text-lg dark:hover:bg-blue-700">
               {lastViewedModuleURL
                 ? `Continue: ${lastViewedModuleLabel}`
                 : `Get Started: Using This Guide!`}

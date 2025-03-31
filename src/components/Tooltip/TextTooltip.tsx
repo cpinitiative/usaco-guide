@@ -15,7 +15,7 @@ const TextTooltip = ({
     <Tooltip {...props}>
       <span
         className={classNames(
-          'border-b border-dashed border-gray-600 cursor-pointer dark:border-gray-500',
+          'cursor-pointer border-b border-dashed border-gray-600 dark:border-gray-500',
           className
         )}
       >
