@@ -88,9 +88,7 @@ const int MOD = 1e9;
 int x[100001], y[100001], cmp[400001];
 
 int find(int a) {
-	while (a != cmp[a]) {
-        cmp[a] = cmp[cmp[a]], a = cmp[a];
-    } 
+	while (a != cmp[a]) { cmp[a] = cmp[cmp[a]], a = cmp[a]; }
 	return a;
 }
 void join(int a, int b) { cmp[find(a)] = cmp[find(b)]; }
@@ -99,11 +97,9 @@ int main() {
 	int n, m, k;
 	cin >> n >> m >> k;
 
-    for (int i = 0; i < 2 * (n + m); i++) {
-        cmp[i] = i;
-    }
+	for (int i = 0; i < 2 * (n + m); i++) { cmp[i] = i; }
 
-    for (int i = 0; i < k; i++) {
+	for (int i = 0; i < k; i++) {
 		int c;
 		cin >> x[i] >> y[i] >> c;
 		c ^= (x[i] & 1) && (y[i] & 1);
@@ -118,15 +114,13 @@ int main() {
 	}
 
 	int cnt = -1;
-    for (int i = 0; i < n + m; i++) {
+	for (int i = 0; i < n + m; i++) {
 		if (find(i) == find(i + n + m)) return cout << "0", 0;
 		if (find(i) == i) cnt++;
 	}
 
 	int ans = 1;
-    for (int i = 0; i < cnt; i++) {
-        ans = (ans * 2) % MOD;
-    }
+	for (int i = 0; i < cnt; i++) { ans = (ans * 2) % MOD; }
 	cout << ans << endl;
 }
 ```
