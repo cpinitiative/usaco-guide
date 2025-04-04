@@ -31,8 +31,8 @@ import { LoadingSpinner } from '../elements/LoadingSpinner';
 import Logo from '../Logo';
 import LogoSquare from '../LogoSquare';
 import SectionsDropdown from '../SectionsDropdown';
-import { SearchModal } from './SearchModal';
 import Banner from './Banner';
+import { SearchModal } from './SearchModal';
 import { UserAvatarMenu } from './UserAvatarMenu';
 
 export default function TopNavigationBar({
@@ -134,7 +134,7 @@ export default function TopNavigationBar({
   ];
   return (
     <>
-      { !hidePromoBar && (
+      {!hidePromoBar && (
         <>
           <Banner
             text="Join us for our workshop and QA with top USACO problemsetters!"
