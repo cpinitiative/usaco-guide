@@ -32,6 +32,7 @@ import Logo from '../Logo';
 import LogoSquare from '../LogoSquare';
 import SectionsDropdown from '../SectionsDropdown';
 import { SearchModal } from './SearchModal';
+import Banner from './Banner';
 import { UserAvatarMenu } from './UserAvatarMenu';
 
 export default function TopNavigationBar({
@@ -133,15 +134,15 @@ export default function TopNavigationBar({
   ];
   return (
     <>
-      {/* {!hidePromoBar && (
+      { !hidePromoBar && (
         <>
           <Banner
-            text="Compete for Prizes in the USACO.Guide Informatics Tournament!"
+            text="Join us for our workshop and QA with top USACO problemsetters!"
             action="Register"
-            link="http://contest.joincpi.org:8080/home"
+            link="https://joincpi.org/workshops/setting25"
           />
         </>
-      )} */}
+      )}
 
       <nav
         className={classNames(
