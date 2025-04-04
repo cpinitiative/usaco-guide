@@ -57,7 +57,7 @@ $$
 $$
 - Otherwise, we can either select to incur a cost of $a_{d-\text{depth}[v]}$ by operating on $v$, or not operate on $v$ and instead solve for each subtree:
 $$
-\texttt{dp}[v] = \min(a_{d-\text{depth}[v]},\sum_{u\in\text{Children}(v)} \text{dp}[u])
+\texttt{dp}[v] = \min\left( a_{d-\text{depth}[v]},\sum_{u\in\text{Children}(v)} \text{dp}[u]\right)
 $$
 
 Our answer will be the sum of $\texttt{dp}[0]$ for each value of $d$, yielding a solution in $\mathcal{O}(n^2)$ time.
@@ -67,7 +67,7 @@ Our answer will be the sum of $\texttt{dp}[0]$ for each value of $d$, yielding a
 One observation we can make is for a long chain ending at $v$, we can process it quickly by taking
 
 $$
-\texttt{dp}[v] = \min(\min_{x\in[d-\text{depth}[v],d]}a_x), \sum_{u\in\text{Children}(v)} \text{dp}[u])
+\texttt{dp}[v] = \min \left( \min_{x\in[d-\text{depth}[v],d]}a_x, \sum_{u\in\text{Children}(v)} \text{dp}[u] \right)
 $$
 
 We will aim to leverage this fact. Define $S_0$ as the set of vertices at depth $d$. Define
@@ -85,7 +85,7 @@ Here is an example of a virtual tree, with nodes in $S_0$ colored purple, and th
 We continue in a similar fashion to previously, but we only compute dynamic programming values for nodes in $S$. The range minimum query can be answered using data structures in logarithmic or linear time.
 
 $$
-\texttt{dp}[v] = \min(\min_{x\in[d-\text{depth}[v],d]}a_x), \sum_{u\in\text{Virtual Children}(v)} \text{dp}[u])
+\texttt{dp}[v] = \min \left( \min_{x\in[d-\text{depth}[v],d]}a_x, \sum_{u\in\text{Virtual Children}(v)} \text{dp}[u] \right)
 $$
 
 Our time complexity will then be $\mathcal{O}( \sum_d |S|)$, because we iterate over set $S$ for each depth.
