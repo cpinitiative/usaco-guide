@@ -90,6 +90,7 @@ int find(int a) {
 	while (a != cmp[a]) { cmp[a] = cmp[cmp[a]], a = cmp[a]; }
 	return a;
 }
+
 void join(int a, int b) { cmp[find(a)] = cmp[find(b)]; }
 
 int main() {
@@ -114,8 +115,12 @@ int main() {
 
 	int cnt = -1;
 	for (int i = 0; i < n + m; i++) {
-		if (find(i) == find(i + n + m)) return cout << "0", 0;
-		if (find(i) == i) cnt++;
+		if (find(i) == find(i + n + m)) {
+			return cout << "0", 0;
+		} 
+		if (find(i) == i) {
+			cnt++;
+		} 
 	}
 
 	int ans = 1;
