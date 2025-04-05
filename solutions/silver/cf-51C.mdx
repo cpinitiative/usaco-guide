@@ -56,7 +56,7 @@ int main() {
 	for (int i = 0; i < n; i++) { cin >> houses[i]; }
 	sort(houses.begin(), houses.end());
 
-	auto can = [&](double d) -> pair<bool, array<double, 3>> {
+	auto possible_coords = [&](double d) -> pair<bool, array<double, 3>> {
 		int used = 0;
 		array<double, 3> pos = {houses[0] + d};
 		// Checks if each house is within range of the most recently placed
@@ -76,7 +76,7 @@ int main() {
     
 	while (hi - lo > EPSILON) {
         double mid = (lo + hi) / 2;
-        auto res = can(mid);
+        auto res = possible_coords(mid);
         if (res.first) {
             hi = mid;
             ans = res.second;
@@ -114,7 +114,7 @@ public class ThreeBaseStations {
 
 		while (hi - lo > EPSILON) {
 			double mid = (lo + hi) / 2;
-			double[] res = can(mid,  houses);
+			double[] res = possibleCoords(mid,  houses);
 			if (res.length != 0) {
 				hi = mid;
 				ans = res;
@@ -127,7 +127,7 @@ public class ThreeBaseStations {
 		io.close();
 	}
 
-	private static double[] can(double d, int[] houses) {
+	private static double[] possibleCoords(double d, int[] houses) {
 		int used = 0;
 		double[] pos = new double[3];
 		pos[0] = houses[0] + d;
@@ -157,7 +157,7 @@ public class ThreeBaseStations {
 EPSILON = 1e-7
 
 
-def can(d: int, houses: list) -> int:
+def possible_coords(d: int, houses: list) -> int:
 	used = 0
 	pos = [houses[0] + d] * 3
 
@@ -185,7 +185,7 @@ ans = [0.0] * 3
 
 while hi - lo > EPSILON:
 	mid = (lo + hi) / 2
-	res = can(mid, houses)
+	res = possible_coords(mid, houses)
 
 	if res is not None:
 		hi = mid
