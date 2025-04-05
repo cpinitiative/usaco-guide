@@ -76,10 +76,10 @@ int main() {
     
 	while (hi - lo > EPSILON) {
         double mid = (lo + hi) / 2;
-        auto p = can(mid);
-        if (p.first) {
+        auto res = can(mid);
+        if (res.first) {
             hi = mid;
-            ans = p.second;
+            ans = res.second;
         } else {
 			lo = mid;
 		}
@@ -132,6 +132,8 @@ public class ThreeBaseStations {
 		double[] pos = new double[3];
 		pos[0] = houses[0] + d;
 
+		// Checks if each house is within range of the most recently placed
+		// station, if not, builds a new one (unless there are none left)
 		for (int i = 1; i < houses.length; i++) {
 			if (houses[i] - pos[used] > d) {
 				used++;
@@ -143,7 +145,6 @@ public class ThreeBaseStations {
 		}
 		return pos;
 	}
-
 
 	// CodeSnip{Kattio}
 }
