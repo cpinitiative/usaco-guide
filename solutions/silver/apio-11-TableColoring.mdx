@@ -87,9 +87,9 @@ int parent[400001];
 
 int find(int a) {
 	while (a != parent[a]) {
-        parent[a] = parent[parent[a]];
-        a = parent[a]; 
-    }
+		parent[a] = parent[parent[a]];
+		a = parent[a];
+	}
 	return a;
 }
 
@@ -117,12 +117,8 @@ int main() {
 
 	int cnt = -1;
 	for (int i = 0; i < n + m; i++) {
-		if (find(i) == find(i + n + m)) {
-			return std::cout << "0", 0;
-		} 
-		if (find(i) == i) {
-			cnt++;
-		} 
+		if (find(i) == find(i + n + m)) { return std::cout << "0", 0; }
+		if (find(i) == i) { cnt++; }
 	}
 
 	int ans = 1;
@@ -148,7 +144,6 @@ public class TableColoring {
 		int m = io.nextInt();
 		int k = io.nextInt();
 
-	
 		for (int i = 0; i < 2 * (n + m); i++) { parent[i] = i; }
 
 		for (int i = 0; i < k; i++) {
@@ -208,45 +203,46 @@ MOD = 10**9
 
 parent = [i for i in range(400001)]
 
+
 def find(a: int) -> int:
-    while a != parent[a]:
-        parent[a] = parent[parent[a]]
-        a = parent[a]
-        
-    return a
+	while a != parent[a]:
+		parent[a] = parent[parent[a]]
+		a = parent[a]
+
+	return a
 
 
 def join(a: int, b: int):
-    parent[find(a)] = parent[find(b)]
+	parent[find(a)] = parent[find(b)]
 
 
 n, m, k = map(int, input().split())
 
 for i in range(k):
-    x, y, c = map(int, input().split())
-    c ^= ((x & 1) and (y & 1))
-    
-    if c:
-        join(x, y + n)
-        join(x + m + n, y + 2 * n + m)
-    else:
-        join(x + m + n, y + n)
-        join(x, y + 2 * n + m)
-        
+	x, y, c = map(int, input().split())
+	c ^= (x & 1) and (y & 1)
+
+	if c:
+		join(x, y + n)
+		join(x + m + n, y + 2 * n + m)
+	else:
+		join(x + m + n, y + n)
+		join(x, y + 2 * n + m)
+
 cnt = -1
 ok = False
 
 for i in range(n + m):
-    if find(i) == find(i + n + m):
-        print(0)
-        sys.exit()
+	if find(i) == find(i + n + m):
+		print(0)
+		sys.exit()
 
-    if find(i) == i:
-        cnt += 1
-        
+	if find(i) == i:
+		cnt += 1
+
 ans = 1
 for _ in range(cnt):
-    ans = (ans * 2) % MOD
+	ans = (ans * 2) % MOD
 
 print(ans)
 ```
