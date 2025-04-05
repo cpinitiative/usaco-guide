@@ -79,44 +79,46 @@ are in the same connected component.
 <CPPSection>
 
 ```cpp
-#include <bits/stdc++.h>
-using namespace std;
+#include <iostream>
 
 const int MOD = 1e9;
 
-int x[100001], y[100001], cmp[400001];
+int parent[400001];
 
 int find(int a) {
-	while (a != cmp[a]) { cmp[a] = cmp[cmp[a]], a = cmp[a]; }
+	while (a != parent[a]) {
+        parent[a] = parent[parent[a]];
+        a = parent[a]; 
+    }
 	return a;
 }
 
-void join(int a, int b) { cmp[find(a)] = cmp[find(b)]; }
+void join(int a, int b) { parent[find(a)] = parent[find(b)]; }
 
 int main() {
 	int n, m, k;
-	cin >> n >> m >> k;
+	std::cin >> n >> m >> k;
 
-	for (int i = 0; i < 2 * (n + m); i++) { cmp[i] = i; }
+	for (int i = 0; i < 2 * (n + m); i++) { parent[i] = i; }
 
 	for (int i = 0; i < k; i++) {
-		int c;
-		cin >> x[i] >> y[i] >> c;
-		c ^= (x[i] & 1) && (y[i] & 1);
+		int x, y, c;
+		std::cin >> x >> y >> c;
+		c ^= (x & 1) && (y & 1);
 
 		if (c) {
-			join(x[i], y[i] + n);
-			join(x[i] + m + n, y[i] + 2 * n + m);
+			join(x, y + n);
+			join(x + m + n, y + 2 * n + m);
 		} else {
-			join(x[i] + m + n, y[i] + n);
-			join(x[i], y[i] + 2 * n + m);
+			join(x + m + n, y + n);
+			join(x, y + 2 * n + m);
 		}
 	}
 
 	int cnt = -1;
 	for (int i = 0; i < n + m; i++) {
 		if (find(i) == find(i + n + m)) {
-			return cout << "0", 0;
+			return std::cout << "0", 0;
 		} 
 		if (find(i) == i) {
 			cnt++;
@@ -125,7 +127,7 @@ int main() {
 
 	int ans = 1;
 	for (int i = 0; i < cnt; i++) { ans = (ans * 2) % MOD; }
-	cout << ans << endl;
+	std::cout << ans << '\n';
 }
 ```
 
