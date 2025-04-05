@@ -80,26 +80,43 @@ are in the same connected component.
 
 ```cpp
 #include <iostream>
+#include <vector>
+#include <algorithm>
 
 const int MOD = 1e9;
 
-int parent[400001];
+// BeginCodeSnip{DSU}
+class DisjointSets {
+	private:
+	std::vector<int> parents;
+	std::vector<int> sizes;
 
-int find(int a) {
-	while (a != parent[a]) {
-		parent[a] = parent[parent[a]];
-		a = parent[a];
+public:
+	DisjointSets(int size) : parents(size), sizes(size, 1) {
+		for (int i = 0; i < size; i++) { parents[i] = i; }
 	}
-	return a;
-}
 
-void join(int a, int b) { parent[find(a)] = parent[find(b)]; }
+	/** @return the "representative" node in x's component */
+	int find(int x) { return parents[x] == x ? x : (parents[x] = find(parents[x])); }
+
+	/** @return whether the merge changed connectivity */
+	bool unite(int x, int y) {
+		int x_root = find(x);
+		int y_root = find(y);
+		if (x_root == y_root) { return false; }
+
+		if (sizes[x_root] < sizes[y_root]) { std::swap(x_root, y_root); }
+		sizes[x_root] += sizes[y_root];
+		parents[y_root] = x_root;
+		return true;
+	}
+};
+// EndCodeSnip
 
 int main() {
 	int n, m, k;
 	std::cin >> n >> m >> k;
-
-	for (int i = 0; i < 2 * (n + m); i++) { parent[i] = i; }
+	DisjointSets dsu(2 * (n + m));
 
 	for (int i = 0; i < k; i++) {
 		int x, y, c;
@@ -107,18 +124,18 @@ int main() {
 		c ^= (x & 1) && (y & 1);
 
 		if (c) {
-			join(x, y + n);
-			join(x + m + n, y + 2 * n + m);
+			dsu.unite(x, y + n);
+			dsu.unite(x + m + n, y + 2 * n + m);
 		} else {
-			join(x + m + n, y + n);
-			join(x, y + 2 * n + m);
+			dsu.unite(x + m + n, y + n);
+			dsu.unite(x, y + 2 * n + m);
 		}
 	}
 
 	int cnt = -1;
 	for (int i = 0; i < n + m; i++) {
-		if (find(i) == find(i + n + m)) { return std::cout << "0", 0; }
-		if (find(i) == i) { cnt++; }
+		if (dsu.find(i) == dsu.find(i + n + m)) { return std::cout << "0", 0; }
+		if (dsu.find(i) == i) { cnt++; }
 	}
 
 	int ans = 1;
