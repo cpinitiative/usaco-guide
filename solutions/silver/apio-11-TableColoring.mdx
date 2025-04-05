@@ -140,7 +140,7 @@ import java.util.*;
 
 public class TableColoring {
 	static final int MOD = 1000000000;
-	static int[] cmp = new int[400001];
+	static int[] parent = new int[400001];
 	public static void main(String[] args) {
 		Kattio io = new Kattio();
 
@@ -148,24 +148,22 @@ public class TableColoring {
 		int m = io.nextInt();
 		int k = io.nextInt();
 
-		int[] x = new int[100001];
-		int[] y = new int[100001];
-
-		for (int i = 0; i < 2 * (n + m); i++) { cmp[i] = i; }
+	
+		for (int i = 0; i < 2 * (n + m); i++) { parent[i] = i; }
 
 		for (int i = 0; i < k; i++) {
-			x[i] = io.nextInt();
-			y[i] = io.nextInt();
+			int x = io.nextInt();
+			int y = io.nextInt();
 			int c = io.nextInt();
 
-			c ^= ((x[i] & 1) != 0 && (y[i] & 1) != 0) ? 1 : 0;
+			c ^= ((x & 1) != 0 && (y & 1) != 0) ? 1 : 0;
 
 			if (c == 1) {
-				join(x[i], y[i] + n);
-				join(x[i] + m + n, y[i] + 2 * n + m);
+				join(x, y + n);
+				join(x + m + n, y + 2 * n + m);
 			} else {
-				join(x[i] + m + n, y[i] + n);
-				join(x[i], y[i] + 2 * n + m);
+				join(x + m + n, y + n);
+				join(x, y + 2 * n + m);
 			}
 		}
 
@@ -187,14 +185,14 @@ public class TableColoring {
 	}
 
 	private static int find(int a) {
-		while (a != cmp[a]) {
-			cmp[a] = cmp[cmp[a]];
-			a = cmp[a];
+		while (a != parent[a]) {
+			parent[a] = parent[parent[a]];
+			a = parent[a];
 		}
 		return a;
 	}
 
-	private static void join(int a, int b) { cmp[find(a)] = cmp[find(b)]; }
+	private static void join(int a, int b) { parent[find(a)] = parent[find(b)]; }
 
 	// CodeSnip{Kattio}
 }
