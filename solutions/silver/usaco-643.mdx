@@ -23,19 +23,17 @@ Finally, we combine the two groups to determine the maximum total number of diam
 <CPPSection>
 
 ```cpp
-#include <iostream>
 #include <algorithm>
 #include <fstream>
+#include <iostream>
 
 int main() {
-	std::ifstream cin ("diamond.in");
-	
+	std::ifstream cin("diamond.in");
+
 	int n, k;
 	cin >> n >> k;
 	int arr[n];
-	for (int i = 0; i < n; i++) {
-		cin >> arr[i];
-	} 
+	for (int i = 0; i < n; i++) { cin >> arr[i]; }
 
 	std::sort(arr, arr + n);
 
@@ -59,7 +57,7 @@ int main() {
 	for (int l = 0; l < n; l++) {
 		ans = std::max(ans, can_take_left[l] + max_val_after_i[l + can_take_left[l]]);
 	}
-	
+
 	std::ofstream("diamond.out") << ans << '\n';
 }
 ```
@@ -146,7 +144,9 @@ sys.stdout = open("diamond.out", "w")
 n, k = map(int, input().split())
 arr = sorted([int(input()) for i in range(n)])
 
-max_diamond = [0] * (n + 1)  # maximum number of diamonds assuming i is the smallest diamond
+max_diamond = [0] * (
+	n + 1
+)  # maximum number of diamonds assuming i is the smallest diamond
 j = 0
 for i in range(n):
 	while j < n and arr[j] - arr[i] <= k:
