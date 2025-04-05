@@ -94,7 +94,59 @@ int main() {
 <JavaSection>
 
 ```java
+import java.io.*;
+import java.util.*;
 
+public class ThreeBaseStations {
+	private final static double EPSILON = 1E-7;
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
+
+		int n = io.nextInt();
+		int[] houses = new int[n];
+		for (int i = 0; i < n; i++) {
+			houses[i] = io.nextInt();
+		}
+
+		Arrays.sort(houses);
+		double lo = 0, hi = 1E9;
+		double[] ans = new double[3];
+
+		while (hi - lo > EPSILON) {
+			double mid = (lo + hi) / 2;
+			double[] res = can(mid,  houses);
+			if (res.length != 0) {
+				hi = mid;
+				ans = res;
+			} else {
+				lo = mid;
+			}
+		}
+		io.printf("%.6f\n", lo);
+		io.printf("%.6f %.6f %.6f\n", ans[0], ans[1], ans[2]);
+		io.close();
+	}
+
+	private static double[] can(double d, int[] houses) {
+		int used = 0;
+		double[] pos = new double[3];
+		pos[0] = houses[0] + d;
+
+		for (int i = 1; i < houses.length; i++) {
+			if (houses[i] - pos[used] > d) {
+				used++;
+				if (used == 3) {
+					return new double[0];
+				}
+				pos[used] = houses[i] + d;
+			}
+		}
+		return pos;
+	}
+
+
+	// CodeSnip{Kattio}
+}
 ```
 
 </JavaSection>
