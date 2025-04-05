@@ -2,7 +2,7 @@
 id: ceoi-10-AHugeTower
 source: CEOI 2010
 title: A Huge Tower
-author: Óscar Garries, Evan Zhao
+author: Óscar Garries, Evan Zhao, Rameez Parwez
 ---
 
 [Official Analysis](http://ceoi2010.ics.upjs.sk/pub/documents/ceoi_summary.pdf#page=14)
@@ -76,7 +76,7 @@ public class tower {
 			blocks[i] = io.nextInt();
 		}
 
-		Arrays.sort(blocks);
+		Arrays.sort(blocks); // sort the blocks
 		int right = 0;
 		long res = 1;
 		for (int left = 0; left < n; left++) {
@@ -103,21 +103,21 @@ public class tower {
 MOD = 10**9 + 9
 
 n, d = map(int, input().split())
-ar = list(map(int, input().split()))
+blocks = list(map(int, input().split()))
 
-ar.sort()  # sort the blocks
+blocks.sort()  # sort the blocks
 
-r = 0
-sol = 1
-for l in range(n):
-	while r < n - 1 and ar[r + 1] - ar[l] <= d:
-		r += 1
+right = 0
+res = 1
+for left in range(n):
+	while right < n - 1 and blocks[right + 1] - blocks[left] <= d:
+		right += 1
 
 	# largest tower we can built when blocks[left] block is the base
-	dist = r - l + 1
-	sol = (sol * dist) % MOD
+	dist = right - left + 1
+	res = (res * dist) % MOD
 
-print(sol)
+print(res)
 ```
 
 </PySection>
