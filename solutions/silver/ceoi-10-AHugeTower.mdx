@@ -59,6 +59,46 @@ int main() {
 ```
 
 </CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class tower {
+	static final int MOD = 1000000009;
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
+
+		int n = io.nextInt();
+		int d = io.nextInt();
+
+		int[] blocks = new int[n];
+		for (int i = 0; i < n; i++) {
+			blocks[i] = io.nextInt();
+		}
+
+		Arrays.sort(blocks);
+		int right = 0;
+		long res = 1;
+		for (int left = 0; left < n; left++) {
+			while (right < n - 1 && blocks[right + 1] - blocks[left] <= d) {
+				right++;
+			}
+
+			int dist = right - left + 1;
+			res = (res * dist) % MOD;
+		}
+		
+		io.println(res);
+		io.close();
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
 <PySection>
 
 ```py
