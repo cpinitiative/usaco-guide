@@ -206,18 +206,18 @@ import sys
 
 MOD = 10**9
 
-cmp = [i for i in range(400001)]
+parent = [i for i in range(400001)]
 
 def find(a: int) -> int:
-    while a != cmp[a]:
-        cmp[a] = cmp[cmp[a]]
-        a = cmp[a]
+    while a != parent[a]:
+        parent[a] = parent[parent[a]]
+        a = parent[a]
         
     return a
 
 
 def join(a: int, b: int):
-    cmp[find(a)] = cmp[find(b)]
+    parent[find(a)] = parent[find(b)]
 
 
 n, m, k = map(int, input().split())
