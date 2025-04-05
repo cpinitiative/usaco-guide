@@ -210,7 +210,53 @@ public class TableColoring {
 <PySection>
 
 ```py
+import sys
 
+MOD = 10**9
+
+cmp = [i for i in range(400001)]
+
+def find(a: int) -> int:
+    while a != cmp[a]:
+        cmp[a] = cmp[cmp[a]]
+        a = cmp[a]
+        
+    return a
+
+
+def join(a: int, b: int):
+    cmp[find(a)] = cmp[find(b)]
+
+
+n, m, k = map(int, input().split())
+
+for i in range(k):
+    x, y, c = map(int, input().split())
+    c ^= ((x & 1) and (y & 1))
+    
+    if c:
+        join(x, y + n)
+        join(x + m + n, y + 2 * n + m)
+    else:
+        join(x + m + n, y + n)
+        join(x, y + 2 * n + m)
+        
+cnt = -1
+ok = False
+
+for i in range(n + m):
+    if find(i) == find(i + n + m):
+        print(0)
+        sys.exit()
+
+    if find(i) == i:
+        cnt += 1
+        
+ans = 1
+for _ in range(cnt):
+    ans = (ans * 2) % MOD
+
+print(ans)
 ```
 
 </PySection>
