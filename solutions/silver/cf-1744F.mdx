@@ -120,27 +120,34 @@ public class MAXvsMED {
 				pos[x] = i;
 			}
 
+			// initialize left and right bounds for mex
 			int left = pos[0], right = pos[0];
 			long res = 1;
 
+			// mex represents the current mex left and right cover
 			for (int mex = 1; mex < n; mex++) {
 				int nextPos = pos[mex];
 
+				// skip if next_pos is already between left and right
 				if (left <= nextPos && nextPos <= right) {
 					continue;
 				}
-
+				// Since we can create a valid subsegment for a given mex up until
+				// size mex * 2, our max difference between left and right is mex * 2 - 1.
 				int maxDiff = mex * 2 - 1;
 
 				if (nextPos < left) {
 					for (; left > nextPos; left--) {
 						int largest_right = Math.min(left + maxDiff, n - 1);
+						// add all possible right bounds that don't change the
+						// current mex
 						res += Math.max(largest_right - right + 1, 0);
 					}
 				} else {
 					for (; right < nextPos; right++) {
 						int smallest_left = Math.max(right - maxDiff, 0);
-
+						// add all possible left bounds that don't change the
+						// current mex
 						res += Math.max(left - smallest_left + 1, 0);
 					}
 				}
