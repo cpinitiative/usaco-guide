@@ -93,78 +93,65 @@ import java.io.*;
 import java.util.*;
 
 public class TheWu {
-    public static final int MAX_K = 100;
+	public static final int MAX_K = 100;
 
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer(br.readLine());
-        int n = Integer.parseInt(st.nextToken());
-        int m = Integer.parseInt(st.nextToken());
-        int q = Integer.parseInt(st.nextToken());
-        int[] w = new int[n];
-        st = new StringTokenizer(br.readLine());
-        for (int i = 0; i < n; i++) { 
-            w[i] = Integer.parseInt(st.nextToken());
-        }
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int n = Integer.parseInt(st.nextToken());
+		int m = Integer.parseInt(st.nextToken());
+		int q = Integer.parseInt(st.nextToken());
+		int[] w = new int[n];
+		st = new StringTokenizer(br.readLine());
+		for (int i = 0; i < n; i++) { w[i] = Integer.parseInt(st.nextToken()); }
 
-        // precompute wu value for every subset
-        int[] wu = new int[1 << n];
-        for (int i = 0; i < (1 << n); i++) {
-            for (int j = 0; j < n; j++) {
-                if ((i & (1 << j)) != 0) { 
-                    wu[i] += w[j]; 
-                }
-            }
-        }
+		// precompute wu value for every subset
+		int[] wu = new int[1 << n];
+		for (int i = 0; i < (1 << n); i++) {
+			for (int j = 0; j < n; j++) {
+				if ((i & (1 << j)) != 0) { wu[i] += w[j]; }
+			}
+		}
 
-        // convert all strings to integers and store count
-        int[] strCount = new int[1 << n];
-        for (int i = 0; i < m; i++) {
-            String s = br.readLine();
-            int val = 0;
-            for (int j = 0; j < n; j++) {
-                if (s.charAt(j) == '1') { 
-                    val += 1 << j; 
-                }
-            }
-            strCount[val]++;
-        }
+		// convert all strings to integers and store count
+		int[] strCount = new int[1 << n];
+		for (int i = 0; i < m; i++) {
+			String s = br.readLine();
+			int val = 0;
+			for (int j = 0; j < n; j++) {
+				if (s.charAt(j) == '1') { val += 1 << j; }
+			}
+			strCount[val]++;
+		}
 
-        /*
-         * precompute wu value every possible k for a string
-         * pref_wu[i][j] stores prefix of count up to k = j for string i
-         */
-        int[][] pref_wu = new int[1 << n][MAX_K + 1];
-        for (int i = 0; i < (1 << n); i++) {
-            for (int j = 0; j < (1 << n); j++) {
-                int all_same = (1 << n) - 1;
-                int diff = i ^ j;
-                int wu_value = wu[all_same] - wu[diff];
-                if (wu_value <= MAX_K) { 
-                    pref_wu[i][wu_value] += strCount[j]; 
-                }
-            }
-            // accumulate prefix sums of count
-            for (int j = 1; j <= MAX_K; j++) { 
-                pref_wu[i][j] += pref_wu[i][j - 1]; 
-            }
-        }
+		/*
+		 * precompute wu value every possible k for a string
+		 * pref_wu[i][j] stores prefix of count up to k = j for string i
+		 */
+		int[][] pref_wu = new int[1 << n][MAX_K + 1];
+		for (int i = 0; i < (1 << n); i++) {
+			for (int j = 0; j < (1 << n); j++) {
+				int all_same = (1 << n) - 1;
+				int diff = i ^ j;
+				int wu_value = wu[all_same] - wu[diff];
+				if (wu_value <= MAX_K) { pref_wu[i][wu_value] += strCount[j]; }
+			}
+			// accumulate prefix sums of count
+			for (int j = 1; j <= MAX_K; j++) { pref_wu[i][j] += pref_wu[i][j - 1]; }
+		}
 
-        for (int query = 0; query < q; query++) {
-            st = new StringTokenizer(br.readLine());
-            String t = st.nextToken();
-            int k = Integer.parseInt(st.nextToken());
-            int val = 0;
-            for (int i = 0; i < n; i++) {
-                if (t.charAt(i) == '1') { 
-                    val += 1 << i; 
-                }
-            }
-            System.out.println(pref_wu[val][k]);
-        }
-    }
+		for (int query = 0; query < q; query++) {
+			st = new StringTokenizer(br.readLine());
+			String t = st.nextToken();
+			int k = Integer.parseInt(st.nextToken());
+			int val = 0;
+			for (int i = 0; i < n; i++) {
+				if (t.charAt(i) == '1') { val += 1 << i; }
+			}
+			System.out.println(pref_wu[val][k]);
+		}
+	}
 }
-
 ```
 </JavaSection>
 </LanguageSection>
