@@ -121,6 +121,7 @@ int main() {
 	for (int i = 0; i < k; i++) {
 		int x, y, c;
 		std::cin >> x >> y >> c;
+		x--, y--;
 		c ^= (x & 1) && (y & 1);
 
 		if (c) {
@@ -153,7 +154,6 @@ import java.util.*;
 
 public class TableColoring {
 	static final int MOD = 1000000000;
-	static int[] parent = new int[400001];
 	public static void main(String[] args) {
 		Kattio io = new Kattio();
 
@@ -161,53 +161,79 @@ public class TableColoring {
 		int m = io.nextInt();
 		int k = io.nextInt();
 
-		for (int i = 0; i < 2 * (n + m); i++) { parent[i] = i; }
+		DisjointSets dsu = new DisjointSets(400001);
 
 		for (int i = 0; i < k; i++) {
-			int x = io.nextInt();
-			int y = io.nextInt();
+			int x = io.nextInt() - 1;
+			int y = io.nextInt() - 1;
 			int c = io.nextInt();
 
 			c ^= ((x & 1) != 0 && (y & 1) != 0) ? 1 : 0;
 
 			if (c == 1) {
-				join(x, y + n);
-				join(x + m + n, y + 2 * n + m);
+				dsu.unite(x, y + n);
+				dsu.unite(x + m + n, y + 2 * n + m);
 			} else {
-				join(x + m + n, y + n);
-				join(x, y + 2 * n + m);
+				dsu.unite(x + m + n, y + n);
+				dsu.unite(x, y + 2 * n + m);
 			}
 		}
 
 		int cnt = -1;
 		for (int i = 0; i < n + m; i++) {
-			if (find(i) == find(i + n + m)) {
+			if (dsu.find(i) == dsu.find(i + n + m)) {
 				io.println(0);
 				io.close();
 			}
 
-			if (find(i) == i) { cnt += 1; }
+			if (dsu.find(i) == i) { cnt += 1; }
 		}
 
 		int ans = 1;
-		for (int i = 0; i < cnt; i++) { ans = (ans * 2) % MOD; }
+		for (int i = 0; i < cnt; i++) {
+			ans = ((ans * 2) % MOD) % MOD;
+
+		}
 
 		io.println(ans);
 		io.close();
 	}
 
-	private static int find(int a) {
-		while (a != parent[a]) {
-			parent[a] = parent[parent[a]];
-			a = parent[a];
-		}
-		return a;
-	}
-
-	private static void join(int a, int b) { parent[find(a)] = parent[find(b)]; }
-
 	// CodeSnip{Kattio}
 }
+
+// BeginCodeSnip{DSU}
+class DisjointSets {
+	int[] parents;  // 0-indexed
+	int[] sizes;
+
+	public DisjointSets(int size) {
+		parents = new int[size];
+		sizes = new int[size];
+		for (int i = 0; i < size; i++) {
+			parents[i] = i;
+			sizes[i] = 1;
+		}
+	}
+
+	/** @return the "representative" node in x's component */
+	public int find(int x) {
+		return parents[x] == x ? x : (parents[x] = find(parents[x]));
+	}
+
+	/** @return whether the merge changed connectivity */
+	public boolean unite(int x, int y) {
+		int xRoot = find(x);
+		int yRoot = find(y);
+		if (xRoot == yRoot) { return false; }
+
+		if (sizes[xRoot] < sizes[yRoot]) { return unite(yRoot, xRoot); }
+		parents[yRoot] = xRoot;
+		sizes[xRoot] += sizes[yRoot];
+		return true;
+	}
+}
+// EndCodeSnip
 ```
 
 </JavaSection>
