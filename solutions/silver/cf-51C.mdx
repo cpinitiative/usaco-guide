@@ -2,7 +2,7 @@
 id: cf-51C
 source: CF
 title: Three Base Stations
-author: KJ Karaisz
+author: KJ Karaisz, Rameez Parwez
 ---
 
 <Spoiler title = "Hint 1">
@@ -47,47 +47,46 @@ stations in this manner.
 #include <bits/stdc++.h>
 using namespace std;
 
-const long double EPSILON = 1e-7;
+const double EPSILON = 1e-7;
+
 int main() {
 	int n;
 	cin >> n;
-	vector<int> x(n);
-	for (int i = 0; i < n; i++) { cin >> x[i]; }
-	sort(x.begin(), x.end());
+	vector<int> houses(n);
+	for (int i = 0; i < n; i++) { cin >> houses[i]; }
+	sort(houses.begin(), houses.end());
 
-	auto test = [&](long double d) -> optional<array<long double, 3>> {
+	auto can = [&](double d) -> pair<bool, array<double, 3>> {
 		int used = 0;
-		array<long double, 3> pos = {x[0] + d};
+		array<double, 3> pos = {houses[0] + d};
 		// Checks if each house is within range of the most recently placed
 		// station, if not, builds a new one (unless there are none left)
 		for (int i = 1; i < n; i++) {
-			if (x[i] - pos[used] > d) {
+			if (houses[i] - pos[used] > d) {
 				used++;
-				if (used == 3) { return nullopt; }
-				pos[used] = x[i] + d;
+				if (used == 3) { return {false, {}}; }
+				pos[used] = houses[i] + d;
 			}
 		}
-		return pos;
+		return {true, pos};
 	};
 
-	auto midpoint = [&](long double x, long double y) -> long double {
-		return (x + y) / 2;
-	};
-
-	long double lo = 0, hi = 1e9;
-	array<long double, 3> ans;
+	double lo = 0, hi = 1e9;
+	array<double, 3> ans;
+    
 	while (hi - lo > EPSILON) {
-		long double mid = midpoint(lo, hi);
-		if (auto res = test(mid); res) {
-			hi = mid;
-			ans = *res;
-		} else {
+        double mid = (lo + hi) / 2;
+        auto p = can(mid);
+        if (p.first) {
+            hi = mid;
+            ans = p.second;
+        } else {
 			lo = mid;
 		}
 	}
 
-	cout << fixed << lo << "\n";
-	printf("%.6Lf %.6Lf %.6Lf\n", ans[0], ans[1], ans[2]);
+	cout << fixed << lo << '\n';
+	printf("%.6f %.6f %.6f\n", ans[0], ans[1], ans[2]);
 }
 ```
 
