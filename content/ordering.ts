@@ -194,7 +194,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
     },
     {
       name: 'Trees',
-      items: ['binary-jump', 'merging', 'hld', 'centroid'],
+      items: ['binary-jump', 'merging', 'hld', 'centroid', 'VT'],
     },
     {
       name: 'Geometry',

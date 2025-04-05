@@ -1,0 +1,278 @@
+---
+id: VT
+title: Virtual Tree
+author: Ryan Fu
+prerequisites:
+  - tree-euler
+
+description: Compressing a tree to only the necessary nodes.
+---
+
+<Resources>
+	<Resource
+		source="YouTube"
+		title="CP Tutorial: Virtual/Auxiliary Tree"
+		url="https://www.youtube.com/watch?v=czySm7bUHgY"
+	>
+	</Resource>
+	<Resource
+		source="CF"
+		title="Virtual trees method"
+		url="https://codeforces.com/blog/entry/140066"
+	>
+	</Resource>
+	<Resource
+		source="OIWiki"
+		title="OIWiki - Virtual Tree"
+		url="https://oi-wiki.org/graph/virtual-tree/"
+	>
+	</Resource>
+	<Resource
+		source="YKW"
+		title="YouKn0wWho Academy - Virtual Tree / Auxiliary Tree"
+		url="https://youkn0wwho.academy/topic-list/virtual_tree"
+	>
+	</Resource>
+
+</Resources>
+
+Often, when running operations or dynamic programming on trees, we only need to keep track of
+a few key nodes and their relationships. If we are able to isolate the few relevant nodes that keep
+the structure of the tree intact, while still maintaining the relationships between key nodes, we can
+cut our time complexity down significantly.
+
+## Example - Color the Tree
+
+<FocusProblem problem="uniqueocc" />
+
+### Naive Solution
+
+We observe that any operation will only affect nodes of the same depth. Thus, instead of solving for all depths at once, we can take the sum of the minimum cost to fill in each depth.
+
+Consider the set of nodes at depth $d$ relative to the root. Define $\texttt{dp}[v]$ as the minimum cost to fill in all vertices of depth $d$ in the subtree of $v$, only considering operations selecting vertices at $v$ or lower.
+
+- If $v$ is of depth $d$ (relative to the root), then we must fill it in with cost $a_0$
+$$
+\texttt{dp}[v] =a_0
+$$
+- Otherwise, we can either select to incur a cost of $a_{d-\text{depth}[v]}$ by operating on $v$, or not operate on $v$ and instead solve for each subtree:
+$$
+\texttt{dp}[v] = \min\left( a_{d-\text{depth}[v]},\sum_{u\in\text{Children}(v)} \text{dp}[u]\right)
+$$
+
+Our answer will be the sum of $\texttt{dp}[0]$ for each value of $d$, yielding a solution in $\mathcal{O}(n^2)$ time.
+
+### Virtual Tree Optimization
+
+One observation we can make is for a long chain ending at $v$, we can process it quickly by taking
+
+$$
+\texttt{dp}[v] = \min \left( \min_{x\in[d-\text{depth}[v],d]}a_x, \sum_{u\in\text{Children}(v)} \text{dp}[u] \right)
+$$
+
+We will aim to leverage this fact. Define $S_0$ as the set of vertices at depth $d$. Define
+
+$$
+S = S_0 \cup \{\text{LCA}(u,v) \mid u, v \in S_0\}
+$$
+
+$S$ is the *virtual tree* or *auxiliary tree* of $S_0$. We can also define $p'_v$, the virtual parent of $v$ as the lowest node in $S$ such that $p'_v \neq v$ and $\text{LCA}(p'_v,v) = p'_v$, and $v$ as a virtual child of $p'_v$.
+
+Here is an example of a virtual tree, with nodes in $S_0$ colored purple, and the rest of the virtual tree in blue:
+
+![VTree](./assets/vtree_example.png)
+
+We continue in a similar fashion to previously, but we only compute dynamic programming values for nodes in $S$. The range minimum query can be answered using data structures in logarithmic or linear time.
+
+$$
+\texttt{dp}[v] = \min \left( \min_{x\in[d-\text{depth}[v],d]}a_x, \sum_{u\in\text{Virtual Children}(v)} \text{dp}[u] \right)
+$$
+
+Our time complexity will then be $\mathcal{O}( \sum_d |S|)$, because we iterate over set $S$ for each depth.
+
+In the following section, we prove that $|S|$ is bounded by $\mathcal{O}(S_0)$, and also demonstrate how to construct a virtual tree.
+
+### Virtual Tree Construction
+
+A well-known method to construct the virtual tree of set $S_0$ is as follows:
+
+- Sort the points in $S_0$ by DFS order, and add them to $S$
+- Calculate the LCA of any two adjacent key points in $S_0$, and add that to $S$
+- Build the virtual tree based on the ancestor-descendant relationship of the original tree
+
+For a rough proof of correctness, consider the following:
+> Observe that a vertex $v \in S$ must either satisfy $v \in S_0$ or there exist at least two distinct children of $v$ with key points in their subtrees.
+>
+> The former is taken care of immediately in step 1. In the latter case, as a property of DFS order, there must exist key points $a,b$ in the subtree of $v$ such that $a,b$ are in distinct subtrees and $a,b$ are adjacent in the DFS order when only considering key points. Because $v$ is $\text{LCA}(a,b)$, our construction neccesarily holds true.
+A corollary of our construction is that $|S|$ is indeed bounded by $\mathcal{O}(|S_0|)$ - in fact, a tight bound is $|S| \leq 2 \cdot |S_0|-1$.
+
+### Implementation
+
+Below is an implementation for the task, which also contains general code for constructing virtual trees. Because $\sum_d |S|$ is $\mathcal{O(n)}$, and we sort by DFS order, our final time complexity is $\mathcal{O}(n\log n)$.
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using ll = long long;
+
+constexpr int MAX_N = 1e5 + 1;
+constexpr int LG = 17;
+
+int tin[MAX_N], tout[MAX_N], d[MAX_N], lift[MAX_N][LG], timer;
+ll dp[MAX_N];
+vector<int> adj[MAX_N], vadj[MAX_N], at_d[MAX_N];
+
+void dfs(int v, int p) {
+	d[v] = v ? d[p] + 1 : 0;
+	at_d[d[v]].push_back(v);
+	tin[v] = timer++;
+
+	lift[v][0] = p;
+	for (int i = 1; i < LG; i++) { lift[v][i] = lift[lift[v][i - 1]][i - 1]; }
+
+	for (int u : adj[v]) {
+		if (u == p) { continue; }
+		dfs(u, v);
+	}
+
+	tout[v] = timer++;
+}
+
+int is_ancestor(int u, int v) { return tin[u] <= tin[v] && tout[v] <= tout[u]; }
+
+int lca(int u, int v) {
+	if (is_ancestor(u, v)) { return u; }
+	if (is_ancestor(v, u)) { return v; }
+
+	for (int i = LG - 1; i >= 0; i--) {
+		if (!is_ancestor(lift[u][i], v)) { u = lift[u][i]; }
+	}
+	return lift[u][0];
+}
+
+bool sort_tin(const int &a, const int &b) { return tin[a] < tin[b]; }
+
+vector<int> vtree(vector<int> &key) {
+	if (key.empty()) return {};
+
+	vector<int> res = key;
+	sort(res.begin(), res.end(), sort_tin);
+
+	for (int i = 1; i < (int)key.size(); i++) {
+		res.push_back(lca(key[i - 1], key[i]));
+	}
+
+	sort(res.begin(), res.end(), sort_tin);
+	res.erase(unique(res.begin(), res.end()), res.end());
+
+	for (int v : res) { vadj[v].clear(); }
+
+	vector<int> stk = {res[0]};
+
+	for (int i = 1; i < (int)res.size(); i++) {
+		while (tin[res[i]] > tout[stk.back()]) { stk.pop_back(); }
+
+		vadj[stk.back()].push_back(res[i]);
+		stk.push_back(res[i]);
+	}
+
+	return res;
+}
+
+// BeginCodeSnip{RMQ Template}
+template <class T> class MinSegmentTree {
+  private:
+	const T DEFAULT = numeric_limits<T>().max();
+
+	vector<T> segtree;
+	int len;
+
+  public:
+	MinSegmentTree(int len) : len(len), segtree(len * 2, DEFAULT) {}
+
+	void set(int ind, T val) {
+		ind += len;
+		segtree[ind] = val;
+		for (; ind > 1; ind /= 2) {
+			segtree[ind / 2] = min(segtree[ind], segtree[ind ^ 1]);
+		}
+	}
+
+	T range_min(int start, int end) {
+		T res = DEFAULT;
+		for (start += len, end += len; start < end; start /= 2, end /= 2) {
+			if (start % 2 == 1) { res = min(res, segtree[start++]); }
+			if (end % 2 == 1) { res = min(res, segtree[--end]); }
+		}
+		return res;
+	}
+};
+// EndCodeSnip
+
+void solve() {
+	int n;
+	cin >> n;
+
+	for (int i = 0; i <= n; i++) {
+		adj[i].clear();
+		at_d[i].clear();
+	}
+
+	MinSegmentTree<int> rmq(n);
+	for (int i = 0; i < n; i++) {
+		int a;
+		cin >> a;
+		rmq.set(i, a);
+	}
+
+	for (int i = 1; i < n; i++) {
+		int u, v;
+		cin >> u >> v;
+		u--, v--;
+		adj[u].push_back(v);
+		adj[v].push_back(u);
+	}
+
+	dfs(0, 0);
+
+	ll ans = 0;
+
+	for (int dep = 0; dep < n; dep++) {
+		vector<int> vt = vtree(at_d[dep]);
+		reverse(vt.begin(), vt.end());
+
+		for (int v : vt) {
+			dp[v] = rmq.range_min(dep - d[v], dep + 1);
+
+			if (!vadj[v].empty()) {
+				ll sum = 0;
+				for (int u : vadj[v]) { sum += dp[u]; }
+				dp[v] = min(dp[v], sum);
+			}
+		}
+
+		if (!vt.empty()) { ans += dp[vt.back()]; }
+	}
+
+	cout << ans << "\n";
+}
+
+int main() {
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
+
+	int test_num;
+	cin >> test_num;
+	for (int t = 0; t < test_num; t++) { solve(); }
+}
+```
+## Problems
+
+<Warning>
+
+Note that [Bridges: The Final Battle](https://codeforces.com/problemset/gymProblem/100551/D) requires concepts from [Offline Deletion](https://usaco.guide/adv/offline-del?lang=cpp) and [BCCs and 2CCs](https://usaco.guide/adv/BCC-2CC?lang=cpp) to solve.
+
+</Warning>
+
+<Problems problems="general" />
