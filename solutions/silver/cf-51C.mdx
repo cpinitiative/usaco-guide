@@ -73,14 +73,14 @@ int main() {
 
 	double lo = 0, hi = 1e9;
 	array<double, 3> ans;
-    
+
 	while (hi - lo > EPSILON) {
-        double mid = (lo + hi) / 2;
-        auto res = can(mid);
-        if (res.first) {
-            hi = mid;
-            ans = res.second;
-        } else {
+		double mid = (lo + hi) / 2;
+		auto res = can(mid);
+		if (res.first) {
+			hi = mid;
+			ans = res.second;
+		} else {
 			lo = mid;
 		}
 	}
@@ -104,9 +104,7 @@ public class ThreeBaseStations {
 
 		int n = io.nextInt();
 		int[] houses = new int[n];
-		for (int i = 0; i < n; i++) {
-			houses[i] = io.nextInt();
-		}
+		for (int i = 0; i < n; i++) { houses[i] = io.nextInt(); }
 
 		Arrays.sort(houses);
 		double lo = 0, hi = 1E9;
@@ -114,7 +112,7 @@ public class ThreeBaseStations {
 
 		while (hi - lo > EPSILON) {
 			double mid = (lo + hi) / 2;
-			double[] res = can(mid,  houses);
+			double[] res = can(mid, houses);
 			if (res.length != 0) {
 				hi = mid;
 				ans = res;
@@ -137,9 +135,7 @@ public class ThreeBaseStations {
 		for (int i = 1; i < houses.length; i++) {
 			if (houses[i] - pos[used] > d) {
 				used++;
-				if (used == 3) {
-					return new double[0];
-				}
+				if (used == 3) { return new double[0]; }
 				pos[used] = houses[i] + d;
 			}
 		}
