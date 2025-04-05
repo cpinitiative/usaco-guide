@@ -100,6 +100,61 @@ int main() {
 ```
 
 </CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class MAXvsMED {
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
+
+		int testNum = io.nextInt();
+		for (int t = 0; t < testNum; t++) {
+			int n = io.nextInt();
+
+			int[] pos = new int[n];
+			for (int i = 0; i < n; i++) {
+				int x = io.nextInt();
+				pos[x] = i;
+			}
+
+			int left = pos[0], right = pos[0];
+			long res = 1;
+
+			for (int mex = 1; mex < n; mex++) {
+				int nextPos = pos[mex];
+
+				if (left <= nextPos && nextPos <= right) {
+					continue;
+				}
+
+				int maxDiff = mex * 2 - 1;
+
+				if (nextPos < left) {
+					for (; left > nextPos; left--) {
+						int largest_right = Math.min(left + maxDiff, n - 1);
+						res += Math.max(largest_right - right + 1, 0);
+					}
+				} else {
+					for (; right < nextPos; right++) {
+						int smallest_left = Math.max(right - maxDiff, 0);
+
+						res += Math.max(left - smallest_left + 1, 0);
+					}
+				}
+			}
+			io.println(res);
+		}
+		io.close();
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
 <PySection>
 
 ```py
