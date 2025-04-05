@@ -2,7 +2,7 @@
 id: apio-11-TableColoring
 source: APIO 2011
 title: Table Coloring
-author: Andi Qu
+author: Andi Qu, Rameez Parwez
 ---
 
 ## Explanation
@@ -76,58 +76,175 @@ are in the same connected component.
 **Time Complexity:** $\mathcal{O}((N+M+K)\log (N+M+K))$
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
-#include <bits/stdc++.h>
-#define FOR(i, x, y) for (int i = x; i < y; i++)
-using namespace std;
+#include <iostream>
 
 const int MOD = 1e9;
 
-int x[100001], y[100001], cmp[400001];
+int parent[400001];
 
-int find(int A) {
-	while (A != cmp[A]) cmp[A] = cmp[cmp[A]], A = cmp[A];
-	return A;
+int find(int a) {
+	while (a != parent[a]) {
+		parent[a] = parent[parent[a]];
+		a = parent[a];
+	}
+	return a;
 }
-void join(int A, int B) { cmp[find(A)] = cmp[find(B)]; }
+
+void join(int a, int b) { parent[find(a)] = parent[find(b)]; }
 
 int main() {
-	ios_base::sync_with_stdio(0);
-	cin.tie(0);
 	int n, m, k;
-	cin >> n >> m >> k;
-	FOR(i, 0, 2 * (n + m)) cmp[i] = i;
+	std::cin >> n >> m >> k;
 
-	FOR(i, 0, k) {
-		int c;
-		cin >> x[i] >> y[i] >> c;
-		c ^= (x[i] & 1) && (y[i] & 1);
+	for (int i = 0; i < 2 * (n + m); i++) { parent[i] = i; }
+
+	for (int i = 0; i < k; i++) {
+		int x, y, c;
+		std::cin >> x >> y >> c;
+		c ^= (x & 1) && (y & 1);
 
 		if (c) {
-			join(x[i], y[i] + n);
-			join(x[i] + m + n, y[i] + 2 * n + m);
+			join(x, y + n);
+			join(x + m + n, y + 2 * n + m);
 		} else {
-			join(x[i] + m + n, y[i] + n);
-			join(x[i], y[i] + 2 * n + m);
+			join(x + m + n, y + n);
+			join(x, y + 2 * n + m);
 		}
 	}
 
 	int cnt = -1;
-	FOR(i, 0, n + m) {
-		if (find(i) == find(i + n + m)) return cout << "0", 0;
-		if (find(i) == i) cnt++;
+	for (int i = 0; i < n + m; i++) {
+		if (find(i) == find(i + n + m)) { return std::cout << "0", 0; }
+		if (find(i) == i) { cnt++; }
 	}
 
 	int ans = 1;
-	FOR(i, 0, cnt) ans = (ans * 2) % MOD;
-	cout << ans;
-	return 0;
+	for (int i = 0; i < cnt; i++) { ans = (ans * 2) % MOD; }
+	std::cout << ans << '\n';
 }
 ```
 
 </CPPSection>
+<JavaSection>
 
+```java
+import java.io.*;
+import java.util.*;
+
+public class TableColoring {
+	static final int MOD = 1000000000;
+	static int[] parent = new int[400001];
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
+
+		int n = io.nextInt();
+		int m = io.nextInt();
+		int k = io.nextInt();
+
+		for (int i = 0; i < 2 * (n + m); i++) { parent[i] = i; }
+
+		for (int i = 0; i < k; i++) {
+			int x = io.nextInt();
+			int y = io.nextInt();
+			int c = io.nextInt();
+
+			c ^= ((x & 1) != 0 && (y & 1) != 0) ? 1 : 0;
+
+			if (c == 1) {
+				join(x, y + n);
+				join(x + m + n, y + 2 * n + m);
+			} else {
+				join(x + m + n, y + n);
+				join(x, y + 2 * n + m);
+			}
+		}
+
+		int cnt = -1;
+		for (int i = 0; i < n + m; i++) {
+			if (find(i) == find(i + n + m)) {
+				io.println(0);
+				io.close();
+			}
+
+			if (find(i) == i) { cnt += 1; }
+		}
+
+		int ans = 1;
+		for (int i = 0; i < cnt; i++) { ans = (ans * 2) % MOD; }
+
+		io.println(ans);
+		io.close();
+	}
+
+	private static int find(int a) {
+		while (a != parent[a]) {
+			parent[a] = parent[parent[a]];
+			a = parent[a];
+		}
+		return a;
+	}
+
+	private static void join(int a, int b) { parent[find(a)] = parent[find(b)]; }
+
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+import sys
+
+MOD = 10**9
+
+parent = [i for i in range(400001)]
+
+
+def find(a: int) -> int:
+	while a != parent[a]:
+		parent[a] = parent[parent[a]]
+		a = parent[a]
+
+	return a
+
+
+def join(a: int, b: int):
+	parent[find(a)] = parent[find(b)]
+
+
+n, m, k = map(int, input().split())
+
+for i in range(k):
+	x, y, c = map(int, input().split())
+	c ^= (x & 1) and (y & 1)
+
+	if c:
+		join(x, y + n)
+		join(x + m + n, y + 2 * n + m)
+	else:
+		join(x + m + n, y + n)
+		join(x, y + 2 * n + m)
+
+cnt = -1
+
+for i in range(n + m):
+	if find(i) == find(i + n + m):
+		print(0)
+		sys.exit()
+
+	if find(i) == i:
+		cnt += 1
+
+ans = 1
+for _ in range(cnt):
+	ans = (ans * 2) % MOD
+
+print(ans)
+```
+
+</PySection>
 </LanguageSection>
