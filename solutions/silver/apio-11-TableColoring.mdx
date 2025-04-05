@@ -244,42 +244,59 @@ import sys
 
 MOD = 10**9
 
-parent = [i for i in range(400001)]
+# BeginCodeSnip{DSU}
+class DisjointSets:
+	def __init__(self, size: int) -> None:
+		self.parents = [i for i in range(size)]
+		self.sizes = [1 for _ in range(size)]
 
+	def find(self, x: int) -> int:
+		""":return: the "representative" node in x's component"""
+		if self.parents[x] == x:
+			return x
+		self.parents[x] = self.find(self.parents[x])
+		return self.parents[x]
 
-def find(a: int) -> int:
-	while a != parent[a]:
-		parent[a] = parent[parent[a]]
-		a = parent[a]
+	def unite(self, x: int, y: int) -> bool:
+		""":return: whether the merge changed connectivity"""
+		x_root = self.find(x)
+		y_root = self.find(y)
+		if x_root == y_root:
+			return False
 
-	return a
+		if self.sizes[x_root] < self.sizes[y_root]:
+			x_root, y_root = y_root, x_root
 
+		self.parents[y_root] = x_root
+		self.sizes[x_root] += self.sizes[y_root]
+		return True
 
-def join(a: int, b: int):
-	parent[find(a)] = parent[find(b)]
-
+# EndCodeSnip
 
 n, m, k = map(int, input().split())
 
+dsu = DisjointSets(2 * (n + m))
 for i in range(k):
 	x, y, c = map(int, input().split())
+	x -= 1
+	y -= 1
 	c ^= (x & 1) and (y & 1)
 
 	if c:
-		join(x, y + n)
-		join(x + m + n, y + 2 * n + m)
+		dsu.unite(x, y + n)
+		dsu.unite(x + m + n, y + 2 * n + m)
 	else:
-		join(x + m + n, y + n)
-		join(x, y + 2 * n + m)
+		dsu.unite(x + m + n, y + n)
+		dsu.unite(x, y + 2 * n + m)
 
 cnt = -1
 
 for i in range(n + m):
-	if find(i) == find(i + n + m):
+	if dsu.find(i) == dsu.find(i + n + m):
 		print(0)
 		sys.exit()
 
-	if find(i) == i:
+	if dsu.find(i) == i:
 		cnt += 1
 
 ans = 1
