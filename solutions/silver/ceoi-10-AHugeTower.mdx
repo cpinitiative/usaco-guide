@@ -72,22 +72,18 @@ public class tower {
 		int d = io.nextInt();
 
 		int[] blocks = new int[n];
-		for (int i = 0; i < n; i++) {
-			blocks[i] = io.nextInt();
-		}
+		for (int i = 0; i < n; i++) { blocks[i] = io.nextInt(); }
 
-		Arrays.sort(blocks); // sort the blocks
+		Arrays.sort(blocks);  // sort the blocks
 		int right = 0;
 		long res = 1;
 		for (int left = 0; left < n; left++) {
-			while (right < n - 1 && blocks[right + 1] - blocks[left] <= d) {
-				right++;
-			}
+			while (right < n - 1 && blocks[right + 1] - blocks[left] <= d) { right++; }
 			// largest tower we can built when blocks[left] block is the base
 			int dist = right - left + 1;
 			res = (res * dist) % MOD;
 		}
-		
+
 		io.println(res);
 		io.close();
 	}
