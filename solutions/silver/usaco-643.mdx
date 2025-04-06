@@ -2,10 +2,18 @@
 id: usaco-643
 source: USACO Silver 2016 Open
 title: Diamond Collector
-author: Nathan Wang, Albert Ye
+author: Nathan Wang, Albert Ye, David Guo
 ---
 
 [Official Analysis (Java)](http://www.usaco.org/current/data/sol_diamond_silver_open16.html)
+
+## Explanation
+
+We first sort the diamonds by size, which allows us to consider groups of diamonds in order. For each diamond, we determine the maximum number of diamonds that can be grouped with it without exceeding the allowed size difference.
+
+We precompute the best grouping possible from every starting point so that once we fix a group for one case, we can quickly identify the optimal group for the second case from the remaining larger diamonds.
+
+Finally, we combine the two groups to determine the maximum total number of diamonds that can be showcased across both cases.
 
 ## Implementation
 
@@ -15,42 +23,42 @@ author: Nathan Wang, Albert Ye
 <CPPSection>
 
 ```cpp
-#include <bits/stdc++.h>
-
-using namespace std;
+#include <algorithm>
+#include <fstream>
+#include <iostream>
 
 int main() {
-	freopen("diamond.in", "r", stdin);
-	freopen("diamond.out", "w", stdout);
+	std::ifstream cin("diamond.in");
 
 	int n, k;
 	cin >> n >> k;
-	int A[n];
-	for (int i = 0; i < n; i++) cin >> A[i];
+	int arr[n];
+	for (int i = 0; i < n; i++) { cin >> arr[i]; }
 
-	sort(A, A + n);
+	std::sort(arr, arr + n);
 
 	// how many diamonds we can take
 	// assuming i is the leftmost diamond
-	int canTakeLeft[n];
+	int can_take_left[n];
 	int l = 0, r = 0;
 	for (; l < n; l++) {
-		while (r < n && A[r] - A[l] <= k) r++;
-		canTakeLeft[l] = r - l;
+		while (r < n && arr[r] - arr[l] <= k) r++;
+		can_take_left[l] = r - l;
 	}
 
-	// maxValAfterI[i] = max value of canTakeLeft[x] for some x >= i.
-	int maxValAfterI[n + 1];
-	maxValAfterI[n] = 0;
+	// max_val_after_i[i] = max value of can_take_left[x] for some x >= i.
+	int max_val_after_i[n + 1];
+	max_val_after_i[n] = 0;
 	for (int i = n - 1; i >= 0; i--) {
-		maxValAfterI[i] = max(maxValAfterI[i + 1], canTakeLeft[i]);
+		max_val_after_i[i] = std::max(max_val_after_i[i + 1], can_take_left[i]);
 	}
 
 	int ans = 0;
 	for (int l = 0; l < n; l++) {
-		ans = max(ans, canTakeLeft[l] + maxValAfterI[l + canTakeLeft[l]]);
+		ans = std::max(ans, can_take_left[l] + max_val_after_i[l + can_take_left[l]]);
 	}
-	cout << ans << endl;
+
+	std::ofstream("diamond.out") << ans << std::endl;
 }
 ```
 
@@ -134,24 +142,26 @@ sys.stdin = open("diamond.in", "r")
 sys.stdout = open("diamond.out", "w")
 
 n, k = map(int, input().split())
-a = sorted([int(input()) for i in range(n)])
+arr = sorted([int(input()) for i in range(n)])
 
-mx = [0] * (n + 1)  # maximum number of diamonds assuming i is the smallest diamond
+# maximum number of diamonds assuming i is the smallest diamond
+max_diamond = [0] * (n + 1)
 j = 0
 for i in range(n):
-	while j < n and a[j] - a[i] <= k:
+	while j < n and arr[j] - arr[i] <= k:
 		j += 1
 	j -= 1
-	mx[i] = j - i + 1
+	max_diamond[i] = j - i + 1
 
-smx = [0 for i in range(n + 1)]  # suffix maximum
-smx[n - 1] = mx[n - 1]
+suffix_max = [0 for i in range(n + 1)]  # suffix maximum
+suffix_max[n - 1] = max_diamond[n - 1]
 for i in range(n - 2, -1, -1):
-	smx[i] = max(mx[i], smx[i + 1])
+	suffix_max[i] = max(max_diamond[i], suffix_max[i + 1])
 
 ans = 0
 for i in range(n):
-	ans = max(ans, mx[i] + smx[i + mx[i]])
+	ans = max(ans, max_diamond[i] + suffix_max[i + max_diamond[i]])
+
 print(ans)
 ```
 
