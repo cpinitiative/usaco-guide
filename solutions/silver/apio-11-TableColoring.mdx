@@ -133,14 +133,14 @@ int main() {
 		}
 	}
 
-	int cnt = -1;
+	int valid_components = -1;
 	for (int i = 0; i < n + m; i++) {
 		if (dsu.find(i) == dsu.find(i + n + m)) { return std::cout << "0", 0; }
-		if (dsu.find(i) == i) { cnt++; }
+		if (dsu.find(i) == i) { valid_components++; }
 	}
 
 	int ans = 1;
-	for (int i = 0; i < cnt; i++) { ans = (ans * 2) % MOD; }
+	for (int i = 0; i < valid_components; i++) { ans = (ans * 2) % MOD; }
 	std::cout << ans << '\n';
 }
 ```
@@ -161,7 +161,7 @@ public class TableColoring {
 		int m = io.nextInt();
 		int k = io.nextInt();
 
-		DisjointSets dsu = new DisjointSets(400001);
+		DisjointSets dsu = new DisjointSets(2 * (n + m));
 
 		for (int i = 0; i < k; i++) {
 			int x = io.nextInt() - 1;
@@ -179,18 +179,18 @@ public class TableColoring {
 			}
 		}
 
-		int cnt = -1;
+		int validComponents = -1;
 		for (int i = 0; i < n + m; i++) {
 			if (dsu.find(i) == dsu.find(i + n + m)) {
 				io.println(0);
 				io.close();
 			}
 
-			if (dsu.find(i) == i) { cnt += 1; }
+			if (dsu.find(i) == i) { validComponents += 1; }
 		}
 
 		int ans = 1;
-		for (int i = 0; i < cnt; i++) { ans = ((ans * 2) % MOD) % MOD; }
+		for (int i = 0; i < validComponents; i++) { ans = ((ans * 2) % MOD) % MOD; }
 
 		io.println(ans);
 		io.close();
@@ -287,17 +287,17 @@ for i in range(k):
 		dsu.unite(x + m + n, y + n)
 		dsu.unite(x, y + 2 * n + m)
 
-cnt = -1
+valid_components = -1
 for i in range(n + m):
 	if dsu.find(i) == dsu.find(i + n + m):
 		print(0)
 		sys.exit()
 
 	if dsu.find(i) == i:
-		cnt += 1
+		valid_components += 1
 
 ans = 1
-for _ in range(cnt):
+for _ in range(valid_components):
 	ans = (ans * 2) % MOD
 
 print(ans)
