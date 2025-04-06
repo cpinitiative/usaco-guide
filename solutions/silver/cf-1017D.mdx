@@ -91,7 +91,7 @@ import java.io.*;
 import java.util.*;
 
 public class TheWu {
-	public static int maxK = 100;
+	public final static int MAX_K = 100;
 
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -126,16 +126,16 @@ public class TheWu {
 		 * precompute wu value every possible k for a string
 		 * prefWu[i][j] stores prefix of count up to k = j for string i
 		 */
-		int[][] prefWu = new int[1 << n][maxK + 1];
+		int[][] prefWu = new int[1 << n][MAX_K + 1];
 		for (int i = 0; i < (1 << n); i++) {
 			for (int j = 0; j < (1 << n); j++) {
 				int allSame = (1 << n) - 1;
 				int diff = i ^ j;
 				int wuValue = wu[allSame] - wu[diff];
-				if (wuValue <= maxK) { prefWu[i][wuValue] += strCount[j]; }
+				if (wuValue <= MAX_K) { prefWu[i][wuValue] += strCount[j]; }
 			}
 			// accumulate prefix sums of count
-			for (int j = 1; j <= maxK; j++) { prefWu[i][j] += prefWu[i][j - 1]; }
+			for (int j = 1; j <= MAX_K; j++) { prefWu[i][j] += prefWu[i][j - 1]; }
 		}
 
 		for (int query = 0; query < q; query++) {
