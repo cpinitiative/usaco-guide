@@ -2,7 +2,7 @@
 id: apio-11-TableColoring
 source: APIO 2011
 title: Table Coloring
-author: Andi Qu
+author: Andi Qu, Rameez Parwez
 ---
 
 ## Explanation
@@ -76,58 +76,232 @@ are in the same connected component.
 **Time Complexity:** $\mathcal{O}((N+M+K)\log (N+M+K))$
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
-#include <bits/stdc++.h>
-#define FOR(i, x, y) for (int i = x; i < y; i++)
-using namespace std;
+#include <algorithm>
+#include <iostream>
+#include <vector>
 
 const int MOD = 1e9;
 
-int x[100001], y[100001], cmp[400001];
+// BeginCodeSnip{DSU (from the module)}
+class DisjointSets {
+  private:
+	std::vector<int> parents;
+	std::vector<int> sizes;
 
-int find(int A) {
-	while (A != cmp[A]) cmp[A] = cmp[cmp[A]], A = cmp[A];
-	return A;
-}
-void join(int A, int B) { cmp[find(A)] = cmp[find(B)]; }
+  public:
+	DisjointSets(int size) : parents(size), sizes(size, 1) {
+		for (int i = 0; i < size; i++) { parents[i] = i; }
+	}
+
+	/** @return the "representative" node in x's component */
+	int find(int x) { return parents[x] == x ? x : (parents[x] = find(parents[x])); }
+
+	/** @return whether the merge changed connectivity */
+	bool unite(int x, int y) {
+		int x_root = find(x);
+		int y_root = find(y);
+		if (x_root == y_root) { return false; }
+
+		if (sizes[x_root] < sizes[y_root]) { std::swap(x_root, y_root); }
+		sizes[x_root] += sizes[y_root];
+		parents[y_root] = x_root;
+		return true;
+	}
+};
+// EndCodeSnip
 
 int main() {
-	ios_base::sync_with_stdio(0);
-	cin.tie(0);
 	int n, m, k;
-	cin >> n >> m >> k;
-	FOR(i, 0, 2 * (n + m)) cmp[i] = i;
+	std::cin >> n >> m >> k;
+	DisjointSets dsu(2 * (n + m));
 
-	FOR(i, 0, k) {
-		int c;
-		cin >> x[i] >> y[i] >> c;
-		c ^= (x[i] & 1) && (y[i] & 1);
+	for (int i = 0; i < k; i++) {
+		int x, y, c;
+		std::cin >> x >> y >> c;
+		x--, y--;
+		c ^= (x & 1) && (y & 1);
 
 		if (c) {
-			join(x[i], y[i] + n);
-			join(x[i] + m + n, y[i] + 2 * n + m);
+			dsu.unite(x, y + n);
+			dsu.unite(x + m + n, y + 2 * n + m);
 		} else {
-			join(x[i] + m + n, y[i] + n);
-			join(x[i], y[i] + 2 * n + m);
+			dsu.unite(x + m + n, y + n);
+			dsu.unite(x, y + 2 * n + m);
 		}
 	}
 
-	int cnt = -1;
-	FOR(i, 0, n + m) {
-		if (find(i) == find(i + n + m)) return cout << "0", 0;
-		if (find(i) == i) cnt++;
+	int valid_components = -1;
+	for (int i = 0; i < n + m; i++) {
+		if (dsu.find(i) == dsu.find(i + n + m)) { return std::cout << "0", 0; }
+		if (dsu.find(i) == i) { valid_components++; }
 	}
 
 	int ans = 1;
-	FOR(i, 0, cnt) ans = (ans * 2) % MOD;
-	cout << ans;
-	return 0;
+	for (int i = 0; i < valid_components; i++) { ans = (ans * 2) % MOD; }
+	std::cout << ans << '\n';
 }
 ```
 
 </CPPSection>
+<JavaSection>
 
+```java
+import java.io.*;
+import java.util.*;
+
+public class TableColoring {
+	static final int MOD = 1000000000;
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
+
+		int n = io.nextInt();
+		int m = io.nextInt();
+		int k = io.nextInt();
+
+		DisjointSets dsu = new DisjointSets(2 * (n + m));
+
+		for (int i = 0; i < k; i++) {
+			int x = io.nextInt() - 1;
+			int y = io.nextInt() - 1;
+			int c = io.nextInt();
+
+			c ^= ((x & 1) != 0 && (y & 1) != 0) ? 1 : 0;
+
+			if (c == 1) {
+				dsu.unite(x, y + n);
+				dsu.unite(x + m + n, y + 2 * n + m);
+			} else {
+				dsu.unite(x + m + n, y + n);
+				dsu.unite(x, y + 2 * n + m);
+			}
+		}
+
+		int validComponents = -1;
+		for (int i = 0; i < n + m; i++) {
+			if (dsu.find(i) == dsu.find(i + n + m)) {
+				io.println(0);
+				io.close();
+			}
+
+			if (dsu.find(i) == i) { validComponents += 1; }
+		}
+
+		int ans = 1;
+		for (int i = 0; i < validComponents; i++) { ans = ((ans * 2) % MOD) % MOD; }
+
+		io.println(ans);
+		io.close();
+	}
+
+	// CodeSnip{Kattio}
+}
+
+// BeginCodeSnip{DSU (from the module)}
+class DisjointSets {
+	int[] parents;  // 0-indexed
+	int[] sizes;
+
+	public DisjointSets(int size) {
+		parents = new int[size];
+		sizes = new int[size];
+		for (int i = 0; i < size; i++) {
+			parents[i] = i;
+			sizes[i] = 1;
+		}
+	}
+
+	/** @return the "representative" node in x's component */
+	public int find(int x) {
+		return parents[x] == x ? x : (parents[x] = find(parents[x]));
+	}
+
+	/** @return whether the merge changed connectivity */
+	public boolean unite(int x, int y) {
+		int xRoot = find(x);
+		int yRoot = find(y);
+		if (xRoot == yRoot) { return false; }
+
+		if (sizes[xRoot] < sizes[yRoot]) { return unite(yRoot, xRoot); }
+		parents[yRoot] = xRoot;
+		sizes[xRoot] += sizes[yRoot];
+		return true;
+	}
+}
+// EndCodeSnip
+```
+
+</JavaSection>
+<PySection>
+
+```py
+import sys
+
+MOD = 10**9
+
+# BeginCodeSnip{DSU (from the module)}
+class DisjointSets:
+	def __init__(self, size: int) -> None:
+		self.parents = [i for i in range(size)]
+		self.sizes = [1 for _ in range(size)]
+
+	def find(self, x: int) -> int:
+		""":return: the "representative" node in x's component"""
+		if self.parents[x] == x:
+			return x
+		self.parents[x] = self.find(self.parents[x])
+		return self.parents[x]
+
+	def unite(self, x: int, y: int) -> bool:
+		""":return: whether the merge changed connectivity"""
+		x_root = self.find(x)
+		y_root = self.find(y)
+		if x_root == y_root:
+			return False
+
+		if self.sizes[x_root] < self.sizes[y_root]:
+			x_root, y_root = y_root, x_root
+
+		self.parents[y_root] = x_root
+		self.sizes[x_root] += self.sizes[y_root]
+		return True
+
+
+# EndCodeSnip
+
+n, m, k = map(int, input().split())
+
+dsu = DisjointSets(2 * (n + m))
+for i in range(k):
+	x, y, c = map(int, input().split())
+	x -= 1
+	y -= 1
+	c ^= (x & 1) and (y & 1)
+
+	if c:
+		dsu.unite(x, y + n)
+		dsu.unite(x + m + n, y + 2 * n + m)
+	else:
+		dsu.unite(x + m + n, y + n)
+		dsu.unite(x, y + 2 * n + m)
+
+valid_components = -1
+for i in range(n + m):
+	if dsu.find(i) == dsu.find(i + n + m):
+		print(0)
+		sys.exit()
+
+	if dsu.find(i) == i:
+		valid_components += 1
+
+ans = 1
+for _ in range(valid_components):
+	ans = (ans * 2) % MOD
+
+print(ans)
+```
+
+</PySection>
 </LanguageSection>
