@@ -71,11 +71,12 @@ int sg_min[1 << LG + 1], sg_max[1 << LG + 1];
 bool is_ancestor(int u, int v) { return tin[u] <= tin[v] && tout[u] >= tout[v]; }
 
 int lca(int u, int v) {
-	if (is_ancestor(u, v)) return u;
-	if (is_ancestor(v, u)) return v;
+	if (is_ancestor(u, v)) { return u; }
+	if (is_ancestor(v, u)) { return v; }
 
 	for (int i = LG - 1; i >= 0; --i) {
-		if (!is_ancestor(lift[u][i], v)) u = lift[u][i];
+		if (!is_ancestor(lift[u][i], v))
+			{ u = lift[u][i]; }
 	}
 	return lift[u][0];
 }
@@ -93,19 +94,20 @@ void point_set(int i, int v) {
 int query(int l, int r) {
 	int lift = MAX_N, rt = -1;
 	for (l += 1 << LG, r += 1 << LG; l < r; l >>= 1, r >>= 1) {
-		if (l & 1) lift = min(lift, sg_min[l]), rt = max(rt, sg_max[l++]);
-		if (r & 1) lift = min(lift, sg_min[--r]), rt = max(rt, sg_max[r]);
+		if (l & 1) { lift = min(lift, sg_min[l]), rt = max(rt, sg_max[l++]); }
+		if (r & 1) { lift = min(lift, sg_min[--r]), rt = max(rt, sg_max[r]); }
 	}
 	return va[lca(tour[lift], tour[rt])];
 }
 
 void dfs(int v) {
-	if (v == -1) return;
+	if (v == -1) { return; }
 	tour[t] = v;
 	tin[v] = t;
 	point_set(v, t++);
 
-	for (int i = 1; i < LG; i++) lift[v][i] = lift[lift[v][i - 1]][i - 1];
+	for (int i = 1; i < LG; i++)
+		{ lift[v][i] = lift[lift[v][i - 1]][i - 1]; }
 
 	dfs(ch[v][0]);
 	dfs(ch[v][1]);
@@ -125,7 +127,7 @@ void solve() {
 		cin >> u >> v;
 
 		u = trace(--u), v = trace(--v);
-		if (u == v) continue;
+		if (u == v) { continue; }
 		va[nx] = i, ch[nx][0] = u, ch[nx][1] = v;
 		f[u] = f[v] = lift[u][0] = lift[v][0] = nx++;
 	}
@@ -135,8 +137,8 @@ void solve() {
 	while (q--) {
 		int l, r;
 		cin >> l >> r;
-		if (l == r) cout << "0 ";
-		else cout << query(l - 1, r) + 1 << " ";
+		if (l == r) { cout << "0 "; }
+		else { cout << query(l - 1, r) + 1 << " "; }
 	}
 	cout << "\n";
 }
@@ -147,7 +149,7 @@ int main() {
 
 	int t;
 	cin >> t;
-	while (t--) solve();
+	while (t--) { solve(); }
 }
 ```
 
