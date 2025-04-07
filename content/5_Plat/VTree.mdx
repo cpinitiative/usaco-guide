@@ -126,18 +126,21 @@ int dfs_dp(int v, int p, int c) {
 int main() {
 	cin >> n;
 
-	for (int i = 0; i < n; i++) { cin >> a[i]; }
+	for (int i = 0; i < n; i++) {
+		cin >> a[i];
+	}
 
 	for (int i = 1; i < n; i++) {
 		int u, v;
 		cin >> u >> v;
-		u--;
-		v--;
+		u--; v--;
 		adj[u].push_back(v);
 		adj[v].push_back(u);
 	}
 
-	for (int col = 1; col <= n; col++) { dfs_dp(0, 0, col); }
+	for (int col = 1; col <= n; col++) {
+		dfs_dp(0,0,col);
+	}
 
 	cout << ans;
 }
@@ -169,6 +172,11 @@ We define $S$ to be the _virtual tree_ or _auxillary tree_ of $S_c$. We can also
 define $p'_v$, the virtual parent of $v$ as the lowest node in $S$ such that
 $p'_v \neq v$ and $\text{LCA}(p'_v,v) = p'_v$, and $v$ as a virtual child of
 $p'_v$.
+
+
+Here is an example of a virtual tree, with nodes in $S_c$ colored purple, and the rest of the virtual tree in blue:
+
+![VTree](./assets/vtree_example.png)
 
 From here, we can calculate our dp values similarly to before, except we only
 process nodes in $S$, and we consider virtual children instead of direct
@@ -287,18 +295,19 @@ vector<int> vtree(vector<int> &key) {
 int main() {
 	cin >> n;
 
-	for (int i = 0; i < n; i++) { cin >> a[i]; }
+	for (int i = 0; i < n; i++) {
+		cin >> a[i];
+	}
 
 	for (int i = 1; i < n; i++) {
 		int u, v;
 		cin >> u >> v;
-		u--;
-		v--;
+		u--; v--;
 		adj[u].push_back(v);
 		adj[v].push_back(u);
 	}
 
-	dfs(0, 0);
+	dfs(0,0);
 
 	for (int col = 1; col <= n; col++) {
 		vector<int> vt = vtree(at_a[col]);
@@ -307,15 +316,14 @@ int main() {
 		for (int v : vt) {
 			dp[v] = 1;
 			for (int u : vadj[v]) {
-				dp[v] *= (dp[u] + 1);
+				dp[v] *= (dp[u]+1);
 				dp[v] %= MOD;
 			}
 			if (a[v] != col) dp[v]--;
 
-			ans += dp[v];
-			ans %= MOD;
+			ans += dp[v]; ans %= MOD;
 			if (a[v] != col) {
-				for (int u : vadj[v]) {
+				for (int u  : vadj[v]) {
 					ans += MOD - dp[u];
 					ans %= MOD;
 				}
@@ -324,11 +332,14 @@ int main() {
 	}
 
 	cout << ans;
+
 }
 ```
 
-<!--
+
 ## Example - Color the Tree
+
+Sometimes we can't completely ignore the contribution of nodes outside our virtual tree.
 
 <FocusProblem problem="ctt" />
 
@@ -357,17 +368,7 @@ $$
 \texttt{dp}[v] = \min \left( \min_{x\in[d-\text{depth}[v],d]}a_x, \sum_{u\in\text{Children}(v)} \text{dp}[u] \right)
 $$
 
-We will aim to leverage this fact. Define $S_0$ as the set of vertices at depth $d$. Define
-
-$$
-S = S_0 \cup \{\text{LCA}(u,v) \mid u, v \in S_0\}
-$$
-
-$S$ is the *virtual tree* or *auxiliary tree* of $S_0$. We can also define $p'_v$, the virtual parent of $v$ as the lowest node in $S$ such that $p'_v \neq v$ and $\text{LCA}(p'_v,v) = p'_v$, and $v$ as a virtual child of $p'_v$.
-
-Here is an example of a virtual tree, with nodes in $S_0$ colored purple, and the rest of the virtual tree in blue:
-
-![VTree](./assets/vtree_example.png)
+We will aim to leverage this fact. Define $S_d$ as the set of vertices at depth $d$, and take $S$ to be the virtual tree of $S_d$.
 
 We continue in a similar fashion to previously, but we only compute dynamic programming values for nodes in $S$. The range minimum query can be answered using data structures in logarithmic or linear time.
 
@@ -375,27 +376,9 @@ $$
 \texttt{dp}[v] = \min \left( \min_{x\in[d-\text{depth}[v],d]}a_x, \sum_{u\in\text{Virtual Children}(v)} \text{dp}[u] \right)
 $$
 
-Our time complexity will then be $\mathcal{O}( \sum_d |S|)$, because we iterate over set $S$ for each depth.
-
-In the following section, we prove that $|S|$ is bounded by $\mathcal{O}(S_0)$, and also demonstrate how to construct a virtual tree.
-
-### Virtual Tree Construction
-
-A well-known method to construct the virtual tree of set $S_0$ is as follows:
-
-- Sort the points in $S_0$ by DFS order, and add them to $S$
-- Calculate the LCA of any two adjacent key points in $S_0$, and add that to $S$
-- Build the virtual tree based on the ancestor-descendant relationship of the original tree
-
-For a rough proof of correctness, consider the following:
-> Observe that a vertex $v \in S$ must either satisfy $v \in S_0$ or there exist at least two distinct children of $v$ with key points in their subtrees.
->
-> The former is taken care of immediately in step 1. In the latter case, as a property of DFS order, there must exist key points $a,b$ in the subtree of $v$ such that $a,b$ are in distinct subtrees and $a,b$ are adjacent in the DFS order when only considering key points. Because $v$ is $\text{LCA}(a,b)$, our construction neccesarily holds true.
-A corollary of our construction is that $|S|$ is indeed bounded by $\mathcal{O}(|S_0|)$ - in fact, a tight bound is $|S| \leq 2 \cdot |S_0|-1$.
-
 ### Implementation
 
-Below is an implementation for the task, which also contains general code for constructing virtual trees. Because $\sum_d |S|$ is $\mathcal{O(n)}$, and we sort by DFS order, our final time complexity is $\mathcal{O}(n\log n)$.
+Our time complexity will be $\mathcal{O}(n\log n)$, for constructing the virtual trees.
 
 ```cpp
 #include <bits/stdc++.h>
@@ -554,7 +537,7 @@ int main() {
 	for (int t = 0; t < test_num; t++) { solve(); }
 }
 ```
--->
+
 
 ## Problems
 
