@@ -1,0 +1,158 @@
+---
+id: kruskal-tree
+title: Kruskal Reconstruction Tree
+author: Ryan Fu
+prerequisites:
+  - dsu
+
+description: Decomposing the Kruskal's algorithm to solve problems about maximum/minimum edge weights
+---
+
+<Resources>
+	<Resource
+		source="CF"
+		title="[Tutorial] Reachability Tree / DSU-tree"
+		url="https://codeforces.com/blog/entry/85714"
+	>
+	</Resource>
+	<Resource
+		source="smax"
+		title="Kruskal Reconstruction Tree"
+		url="https://mzhang2021.github.io/cp-blog/kruskal/"
+	>
+	</Resource>
+
+</Resources>
+
+## Tutorial
+
+Suppose that we want to support static path queries on a tree of size $n$ for the minimum edge between two vertices. Advanced readers may think of techniques like binary lifting, HLD or even LCT to support operations in logarithmic complexity, but a Kruskal Reconstruction Tree can answer such queries in $\mathcal{O}(1)$ with $\mathcal{O}(n\log n)$ construction.
+
+We can build a KRT as follows:
+
+- We start with $n$ components each representing each node
+- Process each edge in sorted order. For an edge connecting $(u,v)$, create an auxillary node $f$ that is the parent of the topmost nodes in the components of $u$ and $v$. Now, $f$ is the new topmost node in the merged component.
+
+Note that maintaining the relationships of components can be done in amortized logarithmic complexity using path compression similar to a [DSU](https://usaco.guide/gold/dsu?lang=cpp).
+
+We end up with a binary tree of size $2\cdot n -1$. We can support queries by returning the edge weight of the node corresponding to $\text{LCA}(u,v)$. 
+
+For a rough proof of correctness, consider the following:
+
+> Consider the KRT right before adding the node corresponding to $\text{LCA}(u,v)$. By definition of $\text{LCA}$, $u$ and $v$ are not connected, implying that the minimum weight edge can not be weighted less than $\text{LCA}(u,v)$. Additionally, because all edges added after the one corresponding to $\text{LCA}(u,v)$ are of greater weight, our answer is indeed the edge corresponding to $\text{LCA}(u,v)$.
+
+Thus, by using [$\mathcal{O}(1)$ LCA methods](https://usaco.guide/gold/tree-euler?lang=cpp), we can answer our queries with the aforementioned complexity.
+
+## Example - Qpwoeirut and Vertices
+
+<FocusProblem problem="qpav" />
+
+To solve this task, we can assign edge weights based on their index in the input order. Then, we can construct the Kruskal Tree, only processing edges between nodes that aren't already connected (similar to the Kruskal Tree's namesake, [Kruskal's Algorithm](https://usaco.guide/gold/mst?lang=cpp)). 
+
+From here, we simply need a fast way to query the $\text{LCA}$ of a range of nodes. One way to do this is to maintain the DFS order of the nodes, and simply take the $\text{LCA}$ of the nodes with earliest and latest traversal within the range. This can be done with any range query data structure, such as sparse table or segment tree.
+
+### Implementation
+
+An optimal time complexity for this problem would be $\mathcal{O}(n+m+q)$, using $\mathcal{O}(1)/\mathcal{O}(n)$ LCA and RMQ methods. However, we present an $\mathcal{O}((n+q)\log n + m)$ solution for simplicity.
+
+```cpp
+#include "bits/stdc++.h"
+
+using namespace std;
+
+constexpr int MAX_N = 4e5+5;
+constexpr int LG = 20;
+
+int n,m,q, va[MAX_N], f[MAX_N];
+int nx,lift[MAX_N][LG],ch[MAX_N][2],t,tin[MAX_N],tout[MAX_N],tour[2 * MAX_N];
+int sg_min[1 << LG+1],sg_max[1 << LG+1];
+
+bool is_ancestor(int u, int v) {
+    return tin[u] <= tin[v] && tout[u] >= tout[v];
+}
+
+int lca(int u, int v) {
+    if (is_ancestor(u, v)) return u;
+    if (is_ancestor(v, u)) return v;
+    
+    for (int i = LG - 1; i >= 0; --i) {
+        if (!is_ancestor(lift[u][i], v))
+        	u = lift[u][i];
+    }
+    return lift[u][0];
+}
+
+int trace(int v) {
+	return f[v]==v ? v : f[v] = trace(f[v]);
+}
+
+void point_set(int i, int v) {
+	sg_min[i + (1 << LG)] = sg_max[i + (1 << LG)] = v;
+	for (int j = (i + (1 << LG)) / 2; j; j /= 2) {
+		sg_min[j] = min(sg_min[2 * j],sg_min[2 * j + 1]),
+		sg_max[j] = max(sg_max[2 * j],sg_max[2 * j + 1]);
+	}
+}
+
+int query(int l, int r) {
+	int lift = MAX_N, rt = -1;
+	for (l += 1 << LG, r += 1 << LG; l < r; l >>= 1, r >>= 1) {
+		if (l & 1) lift = min(lift, sg_min[l]), rt = max(rt, sg_max[l++]);
+		if (r & 1) lift = min(lift, sg_min[--r]), rt = max(rt, sg_max[r]);
+	}
+	return va[lca(tour[lift], tour[rt])];
+}
+
+void dfs(int v) {
+	if (v == -1) return;
+	tour[t] = v; tin[v] = t;
+	point_set(v, t++);
+	
+	for (int i = 1; i < LG; i++)
+		lift[v][i] = lift[lift[v][i - 1]][i - 1];
+	
+	dfs(ch[v][0]); dfs(ch[v][1]);
+	tout[v] = t++;
+}
+
+void solve() {
+	
+	cin >> n >> m >> q;
+	
+	iota(f, f + 2 * n, 0); nx = n;
+	memset(ch, -1, sizeof(ch));
+	
+	for (int i = 0; i < m; i++) {
+		int u,v;
+		cin >> u >> v;
+		
+		u = trace(--u), v = trace(--v);
+		if (u == v) continue;	
+		va[nx] = i, ch[nx][0] = u, ch[nx][1] = v;
+		f[u] = f[v] = lift[u][0] = lift[v][0] = nx++;
+	}
+	
+	lift[2 * n - 2][0] = 2 * n - 2;
+	dfs(2 * n - 2);
+	while (q--) {
+		int l, r; cin >> l >> r;
+		if (l == r) cout << "0 ";
+		else cout << query(l - 1, r) + 1 << " ";
+	}
+	cout << "\n";	
+}
+
+int main() {
+	
+	memset(sg_min, 0x3f, sizeof(sg_min));
+	
+	int t; cin >> t;
+	while (t--)
+		solve();
+	
+}
+```
+
+## Problems
+
+<Problems problems="general" />
