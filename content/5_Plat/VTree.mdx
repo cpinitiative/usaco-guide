@@ -126,21 +126,18 @@ int dfs_dp(int v, int p, int c) {
 int main() {
 	cin >> n;
 
-	for (int i = 0; i < n; i++) {
-		cin >> a[i];
-	}
+	for (int i = 0; i < n; i++) { cin >> a[i]; }
 
 	for (int i = 1; i < n; i++) {
 		int u, v;
 		cin >> u >> v;
-		u--; v--;
+		u--;
+		v--;
 		adj[u].push_back(v);
 		adj[v].push_back(u);
 	}
 
-	for (int col = 1; col <= n; col++) {
-		dfs_dp(0,0,col);
-	}
+	for (int col = 1; col <= n; col++) { dfs_dp(0, 0, col); }
 
 	cout << ans;
 }
@@ -290,19 +287,18 @@ vector<int> vtree(vector<int> &key) {
 int main() {
 	cin >> n;
 
-	for (int i = 0; i < n; i++) {
-		cin >> a[i];
-	}
+	for (int i = 0; i < n; i++) { cin >> a[i]; }
 
 	for (int i = 1; i < n; i++) {
 		int u, v;
 		cin >> u >> v;
-		u--; v--;
+		u--;
+		v--;
 		adj[u].push_back(v);
 		adj[v].push_back(u);
 	}
 
-	dfs(0,0);
+	dfs(0, 0);
 
 	for (int col = 1; col <= n; col++) {
 		vector<int> vt = vtree(at_a[col]);
@@ -311,14 +307,15 @@ int main() {
 		for (int v : vt) {
 			dp[v] = 1;
 			for (int u : vadj[v]) {
-				dp[v] *= (dp[u]+1);
+				dp[v] *= (dp[u] + 1);
 				dp[v] %= MOD;
 			}
 			if (a[v] != col) dp[v]--;
 
-			ans += dp[v]; ans %= MOD;
+			ans += dp[v];
+			ans %= MOD;
 			if (a[v] != col) {
-				for (int u  : vadj[v]) {
+				for (int u : vadj[v]) {
 					ans += MOD - dp[u];
 					ans %= MOD;
 				}
@@ -327,7 +324,6 @@ int main() {
 	}
 
 	cout << ans;
-
 }
 ```
 
