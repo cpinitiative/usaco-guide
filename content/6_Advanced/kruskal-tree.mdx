@@ -76,8 +76,7 @@ int lca(int u, int v) {
 	if (is_ancestor(v, u)) { return v; }
 
 	for (int i = LG - 1; i >= 0; --i) {
-		if (!is_ancestor(lift[u][i], v))
-			{ u = lift[u][i]; }
+		if (!is_ancestor(lift[u][i], v)) { u = lift[u][i]; }
 	}
 	return lift[u][0];
 }
@@ -107,8 +106,7 @@ void dfs(int v) {
 	tin[v] = t;
 	point_set(v, t++);
 
-	for (int i = 1; i < LG; i++)
-		{ lift[v][i] = lift[lift[v][i - 1]][i - 1]; }
+	for (int i = 1; i < LG; i++) { lift[v][i] = lift[lift[v][i - 1]][i - 1]; }
 
 	dfs(ch[v][0]);
 	dfs(ch[v][1]);
@@ -138,8 +136,11 @@ void solve() {
 	while (q--) {
 		int l, r;
 		cin >> l >> r;
-		if (l == r) { cout << "0 "; }
-		else { cout << query(l - 1, r) + 1 << " "; }
+		if (l == r) {
+			cout << "0 ";
+		} else {
+			cout << query(l - 1, r) + 1 << " ";
+		}
 	}
 	cout << "\n";
 }
