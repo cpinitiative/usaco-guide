@@ -236,7 +236,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
         'eulers-formula',
         'critical',
         'link-cut-tree',
-        'kruskal-tree'
+        'kruskal-tree',
       ],
     },
     {
