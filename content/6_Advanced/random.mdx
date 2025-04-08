@@ -62,7 +62,7 @@ using namespace std;
 const int mxn = 1e6 + 5;
 const int S = 10;
 
-inline unsigned long long read() {
+unsigned long long read() {
 	long long num = 0, sign = 1;
 	char ch = getchar();
 	while (ch < '0' || ch > '9') {
@@ -193,13 +193,13 @@ int n, m, c[mxn];
 namespace SGT {
 const int L = 1 << 19;
 int seg[2 * L][S];
-inline void build() {
+void build() {
 	for (int i = L - 1; i; i--)
 		for (int j = 0; j < S; j++) {
 			seg[i][j] = min(seg[2 * i][j], seg[2 * i + 1][j]);
 		}
 }
-inline void point_update(int i, int v) {
+void point_update(int i, int v) {
 	// 1 <= v <= n is the original color
 	for (int j = 0; j < S; j++) {
 		seg[L + i][j] = va[v][j];
@@ -207,7 +207,7 @@ inline void point_update(int i, int v) {
 			seg[cv][j] = min(seg[2 * cv][j], seg[2 * cv + 1][j]);
 	}
 }
-inline int range_min(int l, int r, int j) {
+int range_min(int l, int r, int j) {
 	// we can be sloppy since only 10k queries
 	int res = inf;
 	for (l += L, r += L + 1; l < r; l /= 2, r /= 2) {
@@ -222,11 +222,11 @@ namespace HLD {
 const int mxn = 5e5 + 5;
 int f[mxn], depth[mxn], heavy[mxn], head[mxn], pos[mxn], cp = 0;
 vector<int> adj[mxn];
-inline void clear(int n) {
+void clear(int n) {
 	for (int i = 0; i < n; i++) adj[i].clear();
 	cp = 0;
 }
-inline void add_edge(int u, int v) {
+void add_edge(int u, int v) {
 	adj[u].push_back(v);
 	adj[v].push_back(u);
 }
@@ -250,12 +250,12 @@ void decompose(int v, int h) {
 		decompose(c, c);
 	}
 }
-inline void init() {
+void init() {
 	memset(heavy, -1, sizeof(heavy));
 	dfs(0);
 	decompose(0, 0);
 }
-inline int path_min(int a, int b, int i) {
+int path_min(int a, int b, int i) {
 	int res = inf;
 	for (; head[a] != head[b]; b = f[head[b]]) {
 		if (depth[head[a]] > depth[head[b]]) swap(a, b);
