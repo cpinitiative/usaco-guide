@@ -190,12 +190,11 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
         '2DRQ',
         'DC-SRQ',
         'sqrt',
-        'kruskal-tree',
       ],
     },
     {
       name: 'Trees',
-      items: ['binary-jump', 'merging', 'hld', 'centroid', 'VT'],
+      items: ['binary-jump', 'merging', 'hld', 'centroid', 'VT', 'kruskal-tree'],
     },
     {
       name: 'Geometry',
