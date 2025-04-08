@@ -180,151 +180,162 @@ By supporting path queries with HLD, we can solve this problem in $\mathcal{O}(S
 ```cpp
 #include "bits/stdc++.h"
 using namespace std;
-#define all(x) begin(x), end(x)
-#define sz(x) (int)(x).size()
 
-const int mxn = 5e5 + 5;
-const int S = 75;
-const int inf = 2e8;
+using us = unsigned short;
 
-unsigned int va[mxn][S];
-int n, m, c[mxn];
+inline int read() {
+	int num = 0, sign=1;
+	char ch = getchar();
+	while (ch < '0' || ch > '9') {
+		if (ch == '-') sign = -sign;
+		ch = getchar();
+	}
+	while(ch >= '0' && ch <= '9') {
+		num = num*10 + (int)ch - 48;
+		ch = getchar();
+	}
+	return num * sign;
+}
+
+const int mxn = 5e5+5;
+const int S = 100;
+const us inf = 65535;
+
+us va[mxn][S];
+int n,m,c[mxn];
 
 namespace SGT {
-const int L = 1 << 19;
-int seg[2 * L][S];
-void build() {
-	for (int i = L - 1; i; i--)
-		for (int j = 0; j < S; j++) {
-			seg[i][j] = min(seg[2 * i][j], seg[2 * i + 1][j]);
+	const int L = 1<<19;
+	us seg[2*L][S];
+	inline void build() {
+		for (int i=L-1; i; i--)
+			for (int j=0; j<S; j++)
+				{seg[i][j] = min(seg[2*i][j],seg[2*i+1][j]);}
+	}
+	inline void point_update(int i, int v) {
+		//1 <= v <= n is the original color
+		for (int j=0; j<S; j++) {
+			seg[L+i][j] = va[v][j];
+			for (int cv = (L+i)/2; cv; cv/=2)
+				seg[cv][j] = min(seg[2*cv][j],seg[2*cv+1][j]);
 		}
-}
-void point_update(int i, int v) {
-	// 1 <= v <= n is the original color
-	for (int j = 0; j < S; j++) {
-		seg[L + i][j] = va[v][j];
-		for (int cv = (L + i) / 2; cv; cv /= 2)
-			seg[cv][j] = min(seg[2 * cv][j], seg[2 * cv + 1][j]);
+	}
+	inline us range_min(int l, int r, int j) {
+		//we can be sloppy since only 10k queries
+		us res = inf;
+		for (l += L, r += L+1; l<r; l/=2, r/=2) {
+			if (l&1) res = min(res,seg[l++][j]);
+			if (r&1) res = min(res,seg[--r][j]);
+		}
+		return res;
 	}
 }
-int range_min(int l, int r, int j) {
-	// we can be sloppy since only 10k queries
-	int res = inf;
-	for (l += L, r += L + 1; l < r; l /= 2, r /= 2) {
-		if (l & 1) res = min(res, seg[l++][j]);
-		if (r & 1) res = min(res, seg[--r][j]);
-	}
-	return res;
-}
-}  // namespace SGT
 
 namespace HLD {
-const int mxn = 5e5 + 5;
-int f[mxn], depth[mxn], heavy[mxn], head[mxn], pos[mxn], cp = 0;
-vector<int> adj[mxn];
-void clear(int n) {
-	for (int i = 0; i < n; i++) adj[i].clear();
-	cp = 0;
-}
-void add_edge(int u, int v) {
-	adj[u].push_back(v);
-	adj[v].push_back(u);
-}
-int dfs(int v) {
-	int sz = 1, msz = 0;
-	for (int c : adj[v])
-		if (c != f[v]) {
-			f[c] = v, depth[c] = depth[v] + 1;
-			int csz = dfs(c);
-			sz += csz;
-			if (csz > msz) { msz = csz, heavy[v] = c; }
+	const int mxn = 5e5+5;
+	int f[mxn],depth[mxn],heavy[mxn],head[mxn],pos[mxn],cp=0;
+	vector<int> adj[mxn];
+	inline void clear(int n) {
+		for (int i=0; i<n; i++)
+			adj[i].clear();
+		cp = 0;
+	} 
+	inline void add_edge(int u, int v) {
+		adj[u].push_back(v);
+		adj[v].push_back(u);
+	}
+	int dfs(int v) {
+		int sz = 1, msz = 0;
+		for (int c : adj[v])
+			if (c != f[v]) {
+				f[c] = v, depth[c] = depth[v]+1;
+				int csz = dfs(c); sz += csz;
+				if (csz > msz) {
+					msz = csz, heavy[v] = c;
+				}
+			}
+		return sz;
+	}
+	void decompose(int v, int h) {
+		head[v] = h, pos[v] = cp++;
+		for (int i=0; i<S; i++)
+			SGT::seg[SGT::L+pos[v]][i] = va[c[v]][i];
+		if (heavy[v] != -1) decompose(heavy[v],h);
+		for (int c : adj[v]) {
+			if (c==f[v] || c==heavy[v]) continue;
+			decompose(c,c);
 		}
-	return sz;
-}
-void decompose(int v, int h) {
-	head[v] = h, pos[v] = cp++;
-	for (int i = 0; i < S; i++) SGT::seg[SGT::L + pos[v]][i] = va[c[v]][i];
-	if (heavy[v] != -1) decompose(heavy[v], h);
-	for (int c : adj[v]) {
-		if (c == f[v] || c == heavy[v]) continue;
-		decompose(c, c);
+	}
+	inline void init() {
+		memset(heavy,-1,sizeof(heavy));
+		dfs(0); decompose(0,0);
+	}
+	inline us path_min(int a, int b, int i) {
+		us res = inf;
+		for (; head[a] != head[b]; b = f[head[b]]) {
+	        if (depth[head[a]] > depth[head[b]])
+	            swap(a, b);
+	        res = min(res,SGT::range_min(pos[head[b]],pos[b],i));
+	    }
+	    if (depth[a] > depth[b])
+        	swap(a, b);
+        res = min(res,SGT::range_min(pos[a],pos[b],i));
+		return res;
 	}
 }
-void init() {
-	memset(heavy, -1, sizeof(heavy));
-	dfs(0);
-	decompose(0, 0);
-}
-int path_min(int a, int b, int i) {
-	int res = inf;
-	for (; head[a] != head[b]; b = f[head[b]]) {
-		if (depth[head[a]] > depth[head[b]]) swap(a, b);
-		res = min(res, SGT::range_min(pos[head[b]], pos[b], i));
-	}
-	if (depth[a] > depth[b]) swap(a, b);
-	res = min(res, SGT::range_min(pos[a], pos[b], i));
-	return res;
-}
-}  // namespace HLD
+
 
 void solve() {
-	cin >> n >> m;
-	for (int i = 1; i <= n; i++)
-		for (int j = 0; j < S; j++) { va[i][j] = rand() % (inf + 1); }
-	for (int i = 0; i < n; i++) cin >> c[i];
+	n = read();
+	m = read();
+	for (int i=1; i<=n; i++)
+		for (int j=0; j<S; j++) {
+			va[i][j] = rand()%(inf+1);
+		}
+	for (int i=0; i<n; i++) c[i] = read();
 	HLD::clear(n);
-	for (int i = 1; i < n; i++) {
-		int u, v;
-		cin >> u >> v;
-		--u;
-		--v;
-		HLD::add_edge(u, v);
+	for (int i=1; i<n; i++) {
+		int u = read()-1, v = read()-1;
+		HLD::add_edge(u,v);
 	}
 	HLD::init();
 	SGT::build();
-
+	
 	int cnt = 0;
 	while (m--) {
-		int tp;
-		cin >> tp;
-		if (tp == 1) {
-			int x, y;
-			cin >> x >> y;
-			x ^= cnt, y ^= cnt;
-			SGT::point_update(HLD::pos[x - 1], y);
+		int tp = read();
+		if (tp==1) {
+			int x = read()^cnt, y = read()^cnt;
+			SGT::point_update(HLD::pos[x-1],y);
 		} else {
-			int a, b, c, d;
-			cin >> a >> b >> c >> d;
-			a ^= cnt, b ^= cnt, c ^= cnt, d ^= cnt;
-			--a;
-			--b;
-			--c;
-			--d;
+			int a = read()^cnt, b = read()^cnt, c = read()^cnt, d = read()^cnt;
+			--a; --b; --c; --d;
 			long long c1 = 0, c2 = 0;
-			for (int i = 0; i < S; i++) {
-				c1 += HLD::path_min(a, b, i);
-				c2 += HLD::path_min(c, d, i);
+			for (int i=0; i<S; i++) {
+				c1 += HLD::path_min(a,b,i);
+				c2 += HLD::path_min(c,d,i);
 			}
 			if (c1 < c2) {
 				cnt++;
-				cout << "Yes\n";
+				cout<<"Yes\n";
 			} else {
-				cout << "No\n";
+				cout<<"No\n";
 			}
 		}
 	}
 }
 
 signed main() {
-	ios::sync_with_stdio(false);
-	cin.tie(nullptr);
+	ios::sync_with_stdio(false); cin.tie(nullptr);
 	mt19937 rng(1434);
-	for (int i = 1; i < mxn; i++)
-		for (int j = 0; j < S; j++) { va[i][j] = rng() % (inf + 1); }
-
-	int t;
-	cin >> t;
+	for (int i=1; i<mxn; i++)
+		for (int j=0; j<S; j++) {
+			va[i][j] = rng()%(inf+1);
+		}
+	
+	int t = read();
 	while (t--) solve();
+	
 }
 ```
 
