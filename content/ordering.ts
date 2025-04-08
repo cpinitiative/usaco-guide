@@ -190,6 +190,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
         '2DRQ',
         'DC-SRQ',
         'sqrt',
+        'kruskal-tree',
       ],
     },
     {
@@ -236,7 +237,6 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
         'eulers-formula',
         'critical',
         'link-cut-tree',
-        'kruskal-tree',
       ],
     },
     {
