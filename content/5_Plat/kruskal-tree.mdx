@@ -1,15 +1,3 @@
----
-id: kruskal-tree
-title: Kruskal Reconstruction Tree
-author: Ryan Fu
-prerequisites:
-  - dsu
-  - tree-euler
-frequency: 1
-
-description: Decomposing Kruskal's algorithm to solve problems about maximum/minimum edge weights
----
-
 <Resources>
 	<Resource
 		source="CF"
@@ -28,20 +16,20 @@ description: Decomposing Kruskal's algorithm to solve problems about maximum/min
 
 ## Tutorial
 
-Suppose that we want to support static path queries on a tree of size $n$ for the minimum edge between two vertices. Advanced readers may think of techniques like binary lifting, HLD or even LCT to support operations in logarithmic complexity, but a Kruskal Reconstruction Tree can answer such queries in $\mathcal{O}(1)$ with $\mathcal{O}(n\log n)$ construction.
+Suppose we want to support static path queries on a tree of size $N$ for the minimum edge between two vertices. Advanced readers may think of techniques like binary lifting, HLD, or even LCT to support operations in logarithmic complexity. A Kruskal Reconstruction Tree (KRT) can answer such queries in $\mathcal{O}(1)$ with $\mathcal{O}(N \log N)$ construction.
 
 We can build a KRT as follows:
 
-- We start with $n$ components each representing each node
-- Process each edge in sorted order. For an edge connecting $(u,v)$, create an auxillary node $f$ that is the parent of the topmost nodes in the components of $u$ and $v$. Now, $f$ is the new topmost node in the merged component.
+- We start with $N$ components each representing each node
+- Process each edge in sorted order. For an edge connecting $(u,v)$, create an auxiliary node $f$ that is the parent of the topmost nodes in the components of $u$ and $v$. Now, $f$ is the new topmost node in the merged component.
 
 Note that maintaining the relationships of components can be done in amortized logarithmic complexity using path compression similar to a [DSU](/gold/dsu?lang=cpp).
 
-We end up with a binary tree of size $2\cdot n -1$. We can support queries by returning the edge weight of the node corresponding to $\text{LCA}(u,v)$.
+We end up with a binary tree of size $2N -1$. We can support queries by returning the edge weight of the node corresponding to $\texttt{lca}(u, v)$.
 
 For a rough proof of correctness, consider the following:
 
-> Consider the KRT right before adding the node corresponding to $\text{LCA}(u,v)$. By definition of $\text{LCA}$, $u$ and $v$ are not connected, implying that the minimum weight edge can not be weighted less than $\text{LCA}(u,v)$. Additionally, because all edges added after the one corresponding to $\text{LCA}(u,v)$ are of greater weight, our answer is indeed the edge corresponding to $\text{LCA}(u,v)$.
+> Consider the KRT right before adding the node corresponding to $\texttt{lca}(u, v)$. By definition of LCA, $u$ and $v$ are not connected, implying that the minimum weight edge can not be weighted less than $\texttt{lca}(u, v)$. Additionally, because all edges added after the one corresponding to $\texttt{lca}(u, v)$ are of greater weight, our answer is indeed the edge corresponding to $\texttt{lca}(u, v)$.
 
 Thus, by using [$\mathcal{O}(1)$ LCA methods](/gold/tree-euler?lang=cpp), we can answer our queries with the aforementioned complexity.
 
@@ -49,17 +37,16 @@ Thus, by using [$\mathcal{O}(1)$ LCA methods](/gold/tree-euler?lang=cpp), we can
 
 <FocusProblem problem="qpav" />
 
-To solve this task, we can assign edge weights based on their index in the input order. Then, we can construct the Kruskal Tree, only processing edges between nodes that aren't already connected (similar to the Kruskal Tree's namesake, [Kruskal's Algorithm](/gold/mst?lang=cpp)).
+To solve this task, we can assign edge weights based on their index in the input order. Then, we can construct the Kruskal Tree, only processing edges between nodes that aren't already connected (similar to the Kruskal Tree's namesake, [Kruskal's Algorithm](/gold/mst)).
 
-From here, we simply need a fast way to query the $\text{LCA}$ of a range of nodes. One way to do this is to maintain the DFS order of the nodes, and simply take the $\text{LCA}$ of the nodes with earliest and latest traversal within the range. This can be done with any range query data structure, such as sparse table or segment tree.
+From here, we need a fast way to query the $\text{LCA}$ of a range of nodes. One way to do this is to maintain the DFS order of the nodes, and simply take the $\text{LCA}$ of the nodes with the earliest and latest traversal within the range. This can be done with any range query data structure, such as a sparse table or segment tree.
 
 ### Implementation
 
-An optimal time complexity for this problem would be $\mathcal{O}(n+m+q)$, using $\mathcal{O}(1)/\mathcal{O}(n)$ LCA and RMQ methods. However, we present an $\mathcal{O}((n+q)\log n + m)$ solution for simplicity.
+An optimal time complexity for this problem would be $\mathcal{O}(N+M+Q)$, using $\mathcal{O}(1)/\mathcal{O}(N)$ LCA and RMQ methods. However, we present an $\mathcal{O}((N+Q)\log N + M)$ solution for simplicity.
 
 ```cpp
 #include <bits/stdc++.h>
-
 using namespace std;
 
 constexpr int MAX_N = 4e5 + 5;
