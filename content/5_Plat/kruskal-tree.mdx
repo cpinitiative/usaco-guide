@@ -69,104 +69,101 @@ int trace(int v) { return f[v] == v ? v : f[v] = trace(f[v]); }
 
 /** Implements LCA with binary lifting */
 namespace LCA {
-    int lift[MAX_N][LG], ch[MAX_N][2], t, tin[MAX_N], tout[MAX_N], tour[2 * MAX_N];
-    
-    bool is_ancestor(int u, int v) { return tin[u] <= tin[v] && tout[u] >= tout[v]; }
+int lift[MAX_N][LG], ch[MAX_N][2], t, tin[MAX_N], tout[MAX_N], tour[2 * MAX_N];
 
-    int lca(int u, int v) {
-        if (is_ancestor(u, v)) { return u; }
-        if (is_ancestor(v, u)) { return v; }
-    
-        for (int i = LG - 1; i >= 0; --i) {
-            if (!is_ancestor(lift[u][i], v)) { u = lift[u][i]; }
-        }
+bool is_ancestor(int u, int v) { return tin[u] <= tin[v] && tout[u] >= tout[v]; }
 
-        return lift[u][0];
-    }
+int lca(int u, int v) {
+	if (is_ancestor(u, v)) { return u; }
+	if (is_ancestor(v, u)) { return v; }
 
-    void dfs(int v) {
-        if (v == -1) { return; }
-        tour[t] = v;
-        tin[v] = t;
-        
-        for (int i = 1; i < LG; i++) { lift[v][i] = lift[lift[v][i - 1]][i - 1]; }
-        
-        dfs(ch[v][0]);
-        dfs(ch[v][1]);
-        tout[v] = t++;
-    }
+	for (int i = LG - 1; i >= 0; --i) {
+		if (!is_ancestor(lift[u][i], v)) { u = lift[u][i]; }
+	}
+
+	return lift[u][0];
 }
+
+void dfs(int v) {
+	if (v == -1) { return; }
+	tour[t] = v;
+	tin[v] = t;
+
+	for (int i = 1; i < LG; i++) { lift[v][i] = lift[lift[v][i - 1]][i - 1]; }
+
+	dfs(ch[v][0]);
+	dfs(ch[v][1]);
+	tout[v] = t++;
+}
+}  // namespace LCA
 
 /** Point Update / Range Min/Max Segment Tree */
 namespace SGT {
-    int sg_min[1 << LG + 1], sg_max[1 << LG + 1];
-    
-    void point_set(int i, int v) {
-        sg_min[i + (1 << LG)] = sg_max[i + (1 << LG)] = v;
-        for (int j = (i + (1 << LG)) / 2; j; j /= 2) {
-            sg_min[j] = min(sg_min[2 * j], sg_min[2 * j + 1]),
-            sg_max[j] = max(sg_max[2 * j], sg_max[2 * j + 1]);
-        }
-    }
-    
-    /** @return edge which is the LCA of the nodes w/ lowest and highest traversal time in [l, r] */
-    int query(int l, int r) {
-        int lift = MAX_N, rt = -1;
-        for (l += 1 << LG, r += 1 << LG; l < r; l >>= 1, r >>= 1) {
-            if (l & 1) { lift = min(lift, sg_min[l]), rt = max(rt, sg_max[l++]); }
-            if (r & 1) { lift = min(lift, sg_min[--r]), rt = max(rt, sg_max[r]); }
-        }
-        return va[LCA::lca(LCA::tour[lift], LCA::tour[rt])];
-    }
+int sg_min[1 << LG + 1], sg_max[1 << LG + 1];
+
+void point_set(int i, int v) {
+	sg_min[i + (1 << LG)] = sg_max[i + (1 << LG)] = v;
+	for (int j = (i + (1 << LG)) / 2; j; j /= 2) {
+		sg_min[j] = min(sg_min[2 * j], sg_min[2 * j + 1]),
+		sg_max[j] = max(sg_max[2 * j], sg_max[2 * j + 1]);
+	}
 }
+
+/** @return edge which is the LCA of the nodes w/ lowest and highest traversal time in
+ * [l, r] */
+int query(int l, int r) {
+	int lift = MAX_N, rt = -1;
+	for (l += 1 << LG, r += 1 << LG; l < r; l >>= 1, r >>= 1) {
+		if (l & 1) { lift = min(lift, sg_min[l]), rt = max(rt, sg_max[l++]); }
+		if (r & 1) { lift = min(lift, sg_min[--r]), rt = max(rt, sg_max[r]); }
+	}
+	return va[LCA::lca(LCA::tour[lift], LCA::tour[rt])];
+}
+}  // namespace SGT
 void solve() {
-    cin >> n >> m >> q;
+	cin >> n >> m >> q;
 
-    iota(f, f + 2 * n, 0);
-    nx = n;
-    memset(LCA::ch, -1, sizeof(LCA::ch));
+	iota(f, f + 2 * n, 0);
+	nx = n;
+	memset(LCA::ch, -1, sizeof(LCA::ch));
 
-    for (int i = 0; i < m; i++) {
-        int u, v;
-        cin >> u >> v;
-        // assign u and v to the top of their component
-        u = trace(--u), v = trace(--v);
+	for (int i = 0; i < m; i++) {
+		int u, v;
+		cin >> u >> v;
+		// assign u and v to the top of their component
+		u = trace(--u), v = trace(--v);
 
-        // if the edge is within one component, no further work is needed
-        // otherwise, create a new node that is the parent of both components
-        
-        if (u == v) { continue; }
-        va[nx] = i, LCA::ch[nx][0] = u, LCA::ch[nx][1] = v;
-        f[u] = f[v] = LCA::lift[u][0] = LCA::lift[v][0] = nx++;
-    }
+		// if the edge is within one component, no further work is needed
+		// otherwise, create a new node that is the parent of both components
 
-    LCA::lift[2 * n - 2][0] = 2 * n - 2;
-    LCA::dfs(2 * n - 2);
-    
-    // update segment tree for range min/max of dfs-order traversal times
-    for (int i = 0; i < 2 * n - 1; i++) {
-        SGT::point_set(i, LCA::tin[i]);
-    }
-    
-    while (q--) {
-        int l, r;
-        cin >> l >> r;
-        if (l == r) {
-            cout << "0 ";
-        } else {
-            cout << SGT::query(l - 1, r) + 1 << " ";
-        }
-    }
+		if (u == v) { continue; }
+		va[nx] = i, LCA::ch[nx][0] = u, LCA::ch[nx][1] = v;
+		f[u] = f[v] = LCA::lift[u][0] = LCA::lift[v][0] = nx++;
+	}
 
-    cout << "\n";
+	LCA::lift[2 * n - 2][0] = 2 * n - 2;
+	LCA::dfs(2 * n - 2);
+
+	// update segment tree for range min/max of dfs-order traversal times
+	for (int i = 0; i < 2 * n - 1; i++) { SGT::point_set(i, LCA::tin[i]); }
+
+	while (q--) {
+		int l, r;
+		cin >> l >> r;
+		if (l == r) {
+			cout << "0 ";
+		} else {
+			cout << SGT::query(l - 1, r) + 1 << " ";
+		}
+	}
+
+	cout << "\n";
 }
 
 int main() {
-    int test_num;
-    cin >> test_num;
-    for (int t = 0; t < test_num; t++) {
-        solve();
-    }
+	int test_num;
+	cin >> test_num;
+	for (int t = 0; t < test_num; t++) { solve(); }
 }
 ```
 
