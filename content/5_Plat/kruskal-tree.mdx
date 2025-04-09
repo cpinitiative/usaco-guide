@@ -109,8 +109,7 @@ void point_set(int i, int v) {
 	}
 }
 
-/** @return edge which is the LCA of the nodes w/ lowest and highest traversal time in
- * [l, r] */
+/** @return edge (LCA of nodes w/ lowest and highest traversal time in [l, r]) */
 int query(int l, int r) {
 	int lift = MAX_N, rt = -1;
 	for (l += 1 << LG, r += 1 << LG; l < r; l >>= 1, r >>= 1) {
@@ -120,6 +119,7 @@ int query(int l, int r) {
 	return va[LCA::lca(LCA::tour[lift], LCA::tour[rt])];
 }
 }  // namespace SGT
+
 void solve() {
 	cin >> n >> m >> q;
 
