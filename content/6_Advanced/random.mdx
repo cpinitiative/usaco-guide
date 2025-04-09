@@ -56,50 +56,37 @@ Due to the high volume of input required for this problem, it may be useful (tho
 </Warning>
 
 ```cpp
-#include <bits/stdc++.h>
+#include "bits/stdc++.h"
 using namespace std;
 
-const int mxn = 1e6 + 5;
+const int MAX_N = 1e6+5;
 const int S = 10;
 
-unsigned long long read() {
-	long long num = 0, sign = 1;
-	char ch = getchar();
-	while (ch < '0' || ch > '9') {
-		if (ch == '-') sign = -sign;
-		ch = getchar();
-	}
-	while (ch >= '0' && ch <= '9') {
-		num = num * 10 + (long long)ch - 48;
-		ch = getchar();
-	}
-	return num * sign;
-}
-
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
-unsigned long long n, a[mxn], dv[mxn], cnt[mxn], ans, x, ind, d;
+unsigned long long n, a[MAX_N], dv[MAX_N], cnt[MAX_N], ans, x, ind, d;
 
-signed main() {
-	ios::sync_with_stdio(false);
-	cin.tie(nullptr);
-	n = read();
-	for (int i = 0; i < n; i++) a[i] = read();
+int main() {
+	ios::sync_with_stdio(false); cin.tie(nullptr);
+	cin >> n;
+	for (int i = 0; i < n; i++) cin >> a[i];
 	for (int s = 0; s < S; s++) {
-		x = a[rng() % n], ind = 0;
+		x = a[rng()%n], ind = 0;
 		for (d = 1; d * d <= x; d++)
 			if (x % d == 0) {
 				dv[ind++] = d;
-				if (d * d != x) dv[ind++] = x / d;
+				if (d * d != x)
+					dv[ind++] = x/d;
 			}
-		sort(dv, dv + ind);
-		fill(cnt, cnt + ind, 0);
+		sort(dv,dv+ind);
+		fill(cnt,cnt+ind,0);
 		for (int i = 0; i < n; i++)
-			cnt[lower_bound(dv, dv + ind, __gcd(a[i], x)) - dv]++;
+			cnt[lower_bound(dv,dv+ind,gcd(a[i],x))-dv]++;
 		for (int i = 0; i < ind; i++)
 			for (int j = 0; j < i; j++)
 				if (dv[i] % dv[j] == 0) cnt[j] += cnt[i];
 		for (int i = 0; i < ind; i++)
-			if (cnt[i] + cnt[i] >= n) ans = max(ans, dv[i]);
+			if (cnt[i] + cnt[i] >= n)
+				ans = max(ans, dv[i]);
 	}
 	cout << ans;
 }
@@ -151,13 +138,13 @@ def clt_probability(k, S):
 	   P(B<A) ≈ Φ(  (sqrt(S) * [k/((k+1)(2k+1)]) ) / sqrt( k/((k+1)^2(k+2)) + 2k/((2k+1)^2(2k+2)) ) )
 
 	Parameters:
-	    k (int): The parameter defining the number of draws for each minimum:
+	    k: The parameter defining the number of draws for each minimum:
 	             - The first group uses k draws.
 	             - The second group uses 2k draws.
-	    S (int): The number of independent trials (sums over S minima).
+	    S: The number of independent trials (sums over S minima).
 
 	Returns:
-	    float: The approximated probability that the sum of the minima from 2k draws is less than that from k draws.
+		The approximated probability that the sum of the minima from 2k draws is less than that from k draws.
 	"""
 	numerator = math.sqrt(S) * k / ((k + 1) * (2 * k + 1))
 
@@ -197,12 +184,12 @@ inline int read() {
 	return num * sign;
 }
 
-const int mxn = 5e5 + 5;
+const int MAX_N = 5e5 + 5;
 const int S = 100;
-const us inf = 65535;
+const us INF = 65535;
 
-us va[mxn][S];
-int n, m, c[mxn];
+us va[MAX_N][S];
+int n, m, c[MAX_N];
 
 namespace SGT {
 const int L = 1 << 19;
@@ -223,7 +210,7 @@ inline void point_update(int i, int v) {
 }
 inline us range_min(int l, int r, int j) {
 	// we can be sloppy since only 10k queries
-	us res = inf;
+	us res = INF;
 	for (l += L, r += L + 1; l < r; l /= 2, r /= 2) {
 		if (l & 1) res = min(res, seg[l++][j]);
 		if (r & 1) res = min(res, seg[--r][j]);
@@ -233,9 +220,9 @@ inline us range_min(int l, int r, int j) {
 }  // namespace SGT
 
 namespace HLD {
-const int mxn = 5e5 + 5;
-int f[mxn], depth[mxn], heavy[mxn], head[mxn], pos[mxn], cp = 0;
-vector<int> adj[mxn];
+const int MAX_N = 5e5 + 5;
+int f[MAX_N], depth[MAX_N], heavy[MAX_N], head[MAX_N], pos[MAX_N], cp = 0;
+vector<int> adj[MAX_N];
 inline void clear(int n) {
 	for (int i = 0; i < n; i++) adj[i].clear();
 	cp = 0;
@@ -270,7 +257,7 @@ inline void init() {
 	decompose(0, 0);
 }
 inline us path_min(int a, int b, int i) {
-	us res = inf;
+	us res = INF;
 	for (; head[a] != head[b]; b = f[head[b]]) {
 		if (depth[head[a]] > depth[head[b]]) swap(a, b);
 		res = min(res, SGT::range_min(pos[head[b]], pos[b], i));
@@ -285,7 +272,7 @@ void solve() {
 	n = read();
 	m = read();
 	for (int i = 1; i <= n; i++)
-		for (int j = 0; j < S; j++) { va[i][j] = rand() % (inf + 1); }
+		for (int j = 0; j < S; j++) { va[i][j] = rand() % (INF + 1); }
 	for (int i = 0; i < n; i++) c[i] = read();
 	HLD::clear(n);
 	for (int i = 1; i < n; i++) {
@@ -322,12 +309,12 @@ void solve() {
 	}
 }
 
-signed main() {
+int main() {
 	ios::sync_with_stdio(false);
 	cin.tie(nullptr);
 	mt19937 rng(1434);
-	for (int i = 1; i < mxn; i++)
-		for (int j = 0; j < S; j++) { va[i][j] = rng() % (inf + 1); }
+	for (int i = 1; i < MAX_N; i++)
+		for (int j = 0; j < S; j++) { va[i][j] = rng() % (INF + 1); }
 
 	int t = read();
 	while (t--) solve();
