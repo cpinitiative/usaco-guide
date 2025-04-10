@@ -174,31 +174,31 @@ const int L = 1 << 19;
 us seg[2 * L][S];
 
 void build() {
-    for (int i = L - 1; i; i--) {
-        for (int j = 0; j < S; j++) {
-            seg[i][j] = min(seg[2 * i][j], seg[2 * i + 1][j]);
-        }
-    }
+	for (int i = L - 1; i; i--) {
+		for (int j = 0; j < S; j++) {
+			seg[i][j] = min(seg[2 * i][j], seg[2 * i + 1][j]);
+		}
+	}
 }
 
 void point_update(int idx, int v) {
-    int pos = L + idx;
-    for (int j = 0; j < S; j++) { seg[pos][j] = va[v][j]; }
-    pos /= 2;
-    while (pos) {
-        int left = pos * 2, right = left + 1;
-        for (int j = 0; j < S; j++) { seg[pos][j] = min(seg[left][j], seg[right][j]); }
-        pos /= 2;
-    }
+	int pos = L + idx;
+	for (int j = 0; j < S; j++) { seg[pos][j] = va[v][j]; }
+	pos /= 2;
+	while (pos) {
+		int left = pos * 2, right = left + 1;
+		for (int j = 0; j < S; j++) { seg[pos][j] = min(seg[left][j], seg[right][j]); }
+		pos /= 2;
+	}
 }
 
 inline us range_min(int l, int r, int j) {
-    us res = inf;
-    for (l += L, r += L + 1; l < r; l /= 2, r /= 2) {
-        if (l & 1) res = min(res, seg[l++][j]);
-        if (r & 1) res = min(res, seg[--r][j]);
-    }
-    return res;
+	us res = inf;
+	for (l += L, r += L + 1; l < r; l /= 2, r /= 2) {
+		if (l & 1) res = min(res, seg[l++][j]);
+		if (r & 1) res = min(res, seg[--r][j]);
+	}
+	return res;
 }
 }  // namespace SGT
 
@@ -208,111 +208,125 @@ int f[mxn], depth[mxn], heavy[mxn], head[mxn], pos[mxn], cp = 0;
 vector<int> adj[mxn];
 
 void clear(int n) {
-    for (int i = 0; i < n; i++) { adj[i].clear(); }
-    cp = 0;
+	for (int i = 0; i < n; i++) { adj[i].clear(); }
+	cp = 0;
 }
 
 void add_edge(int u, int v) {
-    adj[u].push_back(v);
-    adj[v].push_back(u);
+	adj[u].push_back(v);
+	adj[v].push_back(u);
 }
 
 int dfs(int v) {
-    int sz = 1, msz = 0;
-    for (int nxt : adj[v]) {
-        if (nxt != f[v]) {
-            f[nxt] = v;
-            depth[nxt] = depth[v] + 1;
-            int csz = dfs(nxt);
-            sz += csz;
-            if (csz > msz) {
-                msz = csz;
-                heavy[v] = nxt;
-            }
-        }
-    }
-    return sz;
+	int sz = 1, msz = 0;
+	for (int nxt : adj[v]) {
+		if (nxt != f[v]) {
+			f[nxt] = v;
+			depth[nxt] = depth[v] + 1;
+			int csz = dfs(nxt);
+			sz += csz;
+			if (csz > msz) {
+				msz = csz;
+				heavy[v] = nxt;
+			}
+		}
+	}
+	return sz;
 }
 
 void decompose(int v, int h) {
-    head[v] = h;
-    pos[v] = cp++;
-    for (int j = 0; j < S; j++) SGT::seg[SGT::L + pos[v]][j] = va[c[v]][j];
-    if (heavy[v] != -1) decompose(heavy[v], h);
-    for (int nxt : adj[v]) {
-        if (nxt == f[v] || nxt == heavy[v]) continue;
-        decompose(nxt, nxt);
-    }
+	head[v] = h;
+	pos[v] = cp++;
+	for (int j = 0; j < S; j++) SGT::seg[SGT::L + pos[v]][j] = va[c[v]][j];
+	if (heavy[v] != -1) decompose(heavy[v], h);
+	for (int nxt : adj[v]) {
+		if (nxt == f[v] || nxt == heavy[v]) continue;
+		decompose(nxt, nxt);
+	}
 }
 
 inline void init() {
-    memset(heavy, -1, sizeof(heavy));
-    dfs(0);
-    decompose(0, 0);
+	memset(heavy, -1, sizeof(heavy));
+	dfs(0);
+	decompose(0, 0);
 }
 
 us path_min(int a, int b, int j) {
-    us res = inf;
-    while (head[a] != head[b]) {
-        if (depth[head[a]] > depth[head[b]]) swap(a, b);
-        res = min(res, SGT::range_min(pos[head[b]], pos[b], j));
-        b = f[head[b]];
-    }
-    if (depth[a] > depth[b]) swap(a, b);
-    res = min(res, SGT::range_min(pos[a], pos[b], j));
-    return res;
+	us res = inf;
+	while (head[a] != head[b]) {
+		if (depth[head[a]] > depth[head[b]]) swap(a, b);
+		res = min(res, SGT::range_min(pos[head[b]], pos[b], j));
+		b = f[head[b]];
+	}
+	if (depth[a] > depth[b]) swap(a, b);
+	res = min(res, SGT::range_min(pos[a], pos[b], j));
+	return res;
 }
 }  // namespace HLD
 
 void solve() {
-    cin >> n >> m;
-    for (int i = 0; i < n; i++) cin >> c[i];
-    HLD::clear(n);
-    for (int i = 1; i < n; i++) {
-        int u, v; cin >> u >> v; --u; --v;
-        HLD::add_edge(u, v);
-    }
-    HLD::init();
-    SGT::build();
+	cin >> n >> m;
+	for (int i = 0; i < n; i++) cin >> c[i];
+	HLD::clear(n);
+	for (int i = 1; i < n; i++) {
+		int u, v;
+		cin >> u >> v;
+		--u;
+		--v;
+		HLD::add_edge(u, v);
+	}
+	HLD::init();
+	SGT::build();
 
-    int cnt = 0;
-    while (m--) {
-        int tp; cin >> tp;
-        if (tp == 1) {
-            int x, y; cin >> x >> y;
-            x ^= cnt; y ^= cnt;
-            SGT::point_update(HLD::pos[x - 1], y);
-        } else {
-            int a, b, cc, d; cin >> a >> b >> cc >> d;
-            a ^= cnt; b ^= cnt; cc ^= cnt; d ^= cnt;
-            --a; --b; --cc; --d;
-            long long c1 = 0, c2 = 0;
-            for (int j = 0; j < S; j++) {
-                c1 += HLD::path_min(a, b, j);
-                c2 += HLD::path_min(cc, d, j);
-            }
-            if (c1 < c2) {
-                cnt++;
-                cout << "Yes\n";
-            } else {
-                cout << "No\n";
-            }
-        }
-    }
+	int cnt = 0;
+	while (m--) {
+		int tp;
+		cin >> tp;
+		if (tp == 1) {
+			int x, y;
+			cin >> x >> y;
+			x ^= cnt;
+			y ^= cnt;
+			SGT::point_update(HLD::pos[x - 1], y);
+		} else {
+			int a, b, cc, d;
+			cin >> a >> b >> cc >> d;
+			a ^= cnt;
+			b ^= cnt;
+			cc ^= cnt;
+			d ^= cnt;
+			--a;
+			--b;
+			--cc;
+			--d;
+			long long c1 = 0, c2 = 0;
+			for (int j = 0; j < S; j++) {
+				c1 += HLD::path_min(a, b, j);
+				c2 += HLD::path_min(cc, d, j);
+			}
+			if (c1 < c2) {
+				cnt++;
+				cout << "Yes\n";
+			} else {
+				cout << "No\n";
+			}
+		}
+	}
 }
 
 signed main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
 
-    mt19937 rng(1434);
-    for (int i = 1; i < mxn; i++) {
-        for (int j = 0; j < S; j++) { va[i][j] = rng() % (inf + 1); }
-    }
+	mt19937 rng(1434);
+	for (int i = 1; i < mxn; i++) {
+		for (int j = 0; j < S; j++) { va[i][j] = rng() % (inf + 1); }
+	}
 
-    int t; cin >> t;
-    while (t--) solve();
-    return 0;
+	int t;
+	cin >> t;
+	while (t--) solve();
+	return 0;
 }
 ```
 
