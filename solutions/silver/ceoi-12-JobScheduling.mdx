@@ -99,19 +99,22 @@ int main() {
 	while (lo < hi) {
 		int machine_num = (lo + hi) / 2;
 		
-		/* test if the jobs would finish within the deadline
+		/* 
+		 * test if the jobs would finish within the deadline
 		 * using the current # of machines i.e., machine_num
 		 */
 		vector<vector<int>> curr_result = is_feasible(machine_num);
 
-		/* if it's possible, we set the right bound as the tested 
+		/* 
+		 * if it's possible, we set the right bound as the tested 
 		 * machine number and save the current schedule
 		 */
 		if (!curr_result.empty()) {
 			hi = machine_num;
 			res = curr_result;
 		} else {
-			/* otherwise, we set the left bound to be the tested number + 1
+			/* 
+			 * otherwise, we set the left bound to be the tested number + 1
 			 * and test the next machine_num again
 			 */
 			lo = machine_num + 1;
