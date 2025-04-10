@@ -113,7 +113,7 @@ Calculating the exact probability that our approach works is more difficult than
 
 ![Graph](./assets/random-graph.png)
 
-The graph was generated for the probability of answering $10^4$ queries correctly in a row. This assumption is reasonable because the test data consists of only 1 large test case. Note that by increasing $S$ to $150$, which still fits under the time constraint, the probability of answering $10^6$ queries correctly is still $0.98$, making our solution resilient against multiple testcases, if they existed.
+The graph was generated for the probability of answering $4\cdot10^4$ queries correctly in a row. This assumption is reasonable because the test data consists of only 1 large test case. Note that by increasing $S$ to $200$, which still fits under the time constraint, the probability of answering $10^8$ queries correctly is still $0.98$, making our solution resilient against multiple testcases, if they existed.
 
 The python code used to generate the estimates is shown below:
 
@@ -162,7 +162,7 @@ using namespace std;
 
 using us = unsigned short;
 
-inline int read() {
+int read() {
 	int num = 0, sign = 1;
 	char ch = getchar();
 	while (ch < '0' || ch > '9') {
@@ -177,7 +177,7 @@ inline int read() {
 }
 
 const int mxn = 5e5 + 5;
-const int S = 100;
+const int S = 150;
 const us inf = 65535;
 
 us va[mxn][S];
@@ -187,7 +187,7 @@ namespace SGT {
 const int L = 1 << 19;
 us seg[2 * L][S];
 
-inline void build() {
+void build() {
 	for (int i = L - 1; i; i--) {
 		for (int j = 0; j < S; j++) {
 			seg[i][j] = min(seg[2 * i][j], seg[2 * i + 1][j]);
@@ -195,7 +195,7 @@ inline void build() {
 	}
 }
 
-inline void point_update(int idx, int v) {
+void point_update(int idx, int v) {
 	int pos = L + idx;
 	for (int j = 0; j < S; j++) { seg[pos][j] = va[v][j]; }
 	pos /= 2;
@@ -221,12 +221,12 @@ const int mxn = 5e5 + 5;
 int f[mxn], depth[mxn], heavy[mxn], head[mxn], pos[mxn], cp = 0;
 vector<int> adj[mxn];
 
-inline void clear(int n) {
+void clear(int n) {
 	for (int i = 0; i < n; i++) { adj[i].clear(); }
 	cp = 0;
 }
 
-inline void add_edge(int u, int v) {
+void add_edge(int u, int v) {
 	adj[u].push_back(v);
 	adj[v].push_back(u);
 }
@@ -265,7 +265,7 @@ inline void init() {
 	decompose(0, 0);
 }
 
-inline us path_min(int a, int b, int j) {
+us path_min(int a, int b, int j) {
 	us res = inf;
 	while (head[a] != head[b]) {
 		if (depth[head[a]] > depth[head[b]]) swap(a, b);
