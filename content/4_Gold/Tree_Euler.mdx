@@ -563,13 +563,13 @@ int main() {
 	/>
 </Resources>
 
-There are many ways to calculate the LCA of two nodes that are mentioned 
-in the [binary jumping](/plat/binary-jump) module. The one presented here 
+There are many ways to calculate the LCA of two nodes that are mentioned
+in the [binary jumping](/plat/binary-jump) module. The one presented here
 is known as LCA with RMQ, or colloquially known as $\mathcal{O}(1)$ LCA.
 
-First, we need to preprocess our tree. To do this, we perform a standard 
-Euler tour. However, **when moving back up the tree we also increment 
-the timer**. This results in the nodes the Euler tour always being connected 
+First, we need to preprocess our tree. To do this, we perform a standard
+Euler tour. However, **when moving back up the tree we also increment
+the timer**. This results in the nodes the Euler tour always being connected
 and being more tour-like.
 
 <center>
@@ -692,7 +692,7 @@ and being more tour-like.
 
 Here's some code to help understand how the tour is calculated.
 
-```cpp 
+```cpp
 // tin[u] = timer when we first visit u
 // et[u] = maps timer to current node
 void dfs(int u, int p) {
@@ -707,10 +707,10 @@ void dfs(int u, int p) {
 ```
 
 Let's say we want to calculate the LCA of two nodes $u$ and $v$.
-Assume that $\texttt{tin}[u] < \texttt{tin}[v]$. Then, $\texttt{lca}(u, v)$ 
-will equal to the node in the array $\texttt{et}$ at the lowest depth in the 
+Assume that $\texttt{tin}[u] < \texttt{tin}[v]$. Then, $\texttt{lca}(u, v)$
+will equal to the node in the array $\texttt{et}$ at the lowest depth in the
 range $[\texttt{tin}[u], \texttt{tin}[v]]$.
-Here, $\texttt{et}[i]$ means that when the timer was equal to $i$, we were at 
+Here, $\texttt{et}[i]$ means that when the timer was equal to $i$, we were at
 node $\texttt{et}[i]$.
 
 To understand why this is true, consider the following:
@@ -718,10 +718,10 @@ To understand why this is true, consider the following:
 > We know two facts about the LCA of $u$ and $v$:
 > 1. The LCA is on the shortest path between $u$ and $v$.
 > 2. The LCA is the node of minimal depth on the shortest path
-> Also, our Euler tour is practically a shortest path: it's just that 
+> Also, our Euler tour is practically a shortest path: it's just that
 > we happen to visit all the subtrees we pass by. Thus, this works.
 
-After that, we can just reduce this to a RMQ problem. We can either use 
+After that, we can just reduce this to a RMQ problem. We can either use
 a segment tree or a sparse table to handle our range-min queries.
 
 <LanguageSection>
@@ -734,77 +734,73 @@ using namespace std;
 
 // BeginCodeSnip{Min Segment Tree}
 template <class T> struct MinSegmentTree {
-    const T DEFAULT = std::numeric_limits<T>().max();
+	const T DEFAULT = std::numeric_limits<T>().max();
 
-    vector<T> segtree;
-    int len;
+	vector<T> segtree;
+	int len;
 
-    void init(const vector<T> &arr) {
-        len = arr.size();
-        for (int i = 0; i < len; i++) {
-            segtree[len + i] = arr[i];
-        }
+	void init(const vector<T> &arr) {
+		len = arr.size();
+		for (int i = 0; i < len; i++) { segtree[len + i] = arr[i]; }
 
-        for (int i = len - 1; i >= 1; i--) {
-            segtree[i] = min(segtree[2 * i], segtree[2 * i + 1]);
-        }
-    }
+		for (int i = len - 1; i >= 1; i--) {
+			segtree[i] = min(segtree[2 * i], segtree[2 * i + 1]);
+		}
+	}
 
-    void set(int ind, T val) {
-        ind += len;
-        segtree[ind] = val;
-        for (; ind > 1; ind /= 2) {
-            segtree[ind / 2] = min(segtree[ind], segtree[ind ^ 1]);
-        }
-    }
+	void set(int ind, T val) {
+		ind += len;
+		segtree[ind] = val;
+		for (; ind > 1; ind /= 2) {
+			segtree[ind / 2] = min(segtree[ind], segtree[ind ^ 1]);
+		}
+	}
 
-    T range_min(int start, int end) {
-        T res = DEFAULT;
-        for (start += len, end += len; start < end; start /= 2, end /= 2) {
-            if (start % 2 == 1) { res = min(res, segtree[start++]); }
-            if (end % 2 == 1) { res = min(res, segtree[--end]); }
-        }
-        return min;
-    }
+	T range_min(int start, int end) {
+		T res = DEFAULT;
+		for (start += len, end += len; start < end; start /= 2, end /= 2) {
+			if (start % 2 == 1) { res = min(res, segtree[start++]); }
+			if (end % 2 == 1) { res = min(res, segtree[--end]); }
+		}
+		return min;
+	}
 };
 // EndCodeSnip
 
 class LCA {
   private:
-    const int n;
-    const vector<vector<int>> &adj;
-    MinSegmentTree<pair<int, int>> rmq;
-    vector<int> tin, et, dep;
-    int timer = 0;
+	const int n;
+	const vector<vector<int>> &adj;
+	MinSegmentTree<pair<int, int>> rmq;
+	vector<int> tin, et, dep;
+	int timer = 0;
 
-    /** prepares tin, et, dep arrays */
-    void dfs(int u, int p) {
-        tin[u] = timer;
-        et[timer++] = u;
-        for (int v : adj[u]) {
-            if (v == p) continue;
-            dep[v] = dep[u] + 1;
-            dfs(v, u);
-            et[timer++] = u;
-        }
-    }
+	/** prepares tin, et, dep arrays */
+	void dfs(int u, int p) {
+		tin[u] = timer;
+		et[timer++] = u;
+		for (int v : adj[u]) {
+			if (v == p) continue;
+			dep[v] = dep[u] + 1;
+			dfs(v, u);
+			et[timer++] = u;
+		}
+	}
 
   public:
-    LCA(const vector<vector<int>> &adj)
-        : n(adj.size()), adj(adj), tin(n), et(2 * n), dep(n) {
-        dfs(0, -1);
-        vector<pair<int, int>> arr(2 * n);
-        for (int i = 0; i < 2 * n; i++) {
-            arr[i] = {dep[et[i]], et[i]};
-        }
-        rmq.init(arr);
-    }
+	LCA(const vector<vector<int>> &adj)
+	    : n(adj.size()), adj(adj), tin(n), et(2 * n), dep(n) {
+		dfs(0, -1);
+		vector<pair<int, int>> arr(2 * n);
+		for (int i = 0; i < 2 * n; i++) { arr[i] = {dep[et[i]], et[i]}; }
+		rmq.init(arr);
+	}
 
-    /** @return LCA of nodes a and b */
-    int query(int a, int b) {
-        if (tin[a] > tin[b]) { swap(a, b); }
-        return rmq.range_min(tin[a], tin[b]).second;
-    }
+	/** @return LCA of nodes a and b */
+	int query(int a, int b) {
+		if (tin[a] > tin[b]) { swap(a, b); }
+		return rmq.range_min(tin[a], tin[b]).second;
+	}
 };
 ```
 
@@ -942,60 +938,58 @@ template <typename T> struct SparseTable {
 	vector<vector<T>> st;
 
 	void init(const vector<T> &v) {
-        len = v.size();
-        const int max_log = 1 + __lg(len);
-        st.emplace_back(v);
-        for (int j = 1; j < max_log; j++) {
-            st.emplace_back(len - (1 << j) + 1);
-            for (int i = 0; i <= len - (1 << j); i++) {
-                st[j][i] = min(st[j - 1][i], st[j - 1][i + (1 << (j - 1))]);
-            }
-        }
+		len = v.size();
+		const int max_log = 1 + __lg(len);
+		st.emplace_back(v);
+		for (int j = 1; j < max_log; j++) {
+			st.emplace_back(len - (1 << j) + 1);
+			for (int i = 0; i <= len - (1 << j); i++) {
+				st[j][i] = min(st[j - 1][i], st[j - 1][i + (1 << (j - 1))]);
+			}
+		}
 	}
 
 	/** @return minimum on the range [l, r] */
-    T range_min(int l, int r) const {
-        int lg = __lg(r - l + 1);
-        return min(st[lg][l], st[lg][r - (1 << lg) + 1]);
-    }
+	T range_min(int l, int r) const {
+		int lg = __lg(r - l + 1);
+		return min(st[lg][l], st[lg][r - (1 << lg) + 1]);
+	}
 };
 
 class LCA {
   private:
-    const int n;
-    const vector<vector<int>> &adj;
-    SparseTable<pair<int, int>> rmq;
-    vector<int> tin, et, dep;
-    int timer = 0;
+	const int n;
+	const vector<vector<int>> &adj;
+	SparseTable<pair<int, int>> rmq;
+	vector<int> tin, et, dep;
+	int timer = 0;
 
-    /** prepares tin, et, dep arrays */
-    void dfs(int u, int p) {
-        tin[u] = timer;
-        et[timer++] = u;
-        for (int v : adj[u]) {
-            if (v == p) { continue; }
-            dep[v] = dep[u] + 1;
-            dfs(v, u);
-            et[timer++] = u;
-        }
-    }
+	/** prepares tin, et, dep arrays */
+	void dfs(int u, int p) {
+		tin[u] = timer;
+		et[timer++] = u;
+		for (int v : adj[u]) {
+			if (v == p) { continue; }
+			dep[v] = dep[u] + 1;
+			dfs(v, u);
+			et[timer++] = u;
+		}
+	}
 
   public:
-    LCA(const vector<vector<int>> &adj)
-        : n(adj.size()), adj(adj), tin(n), et(2 * n), dep(n) {
-        dfs(0, -1);
-        vector<pair<int, int>> arr(2 * n);
-        for (int i = 0; i < 2 * n; i++) {
-            arr[i] = {dep[et[i]], et[i]};
-        }
-        rmq.init(arr);
-    }
+	LCA(const vector<vector<int>> &adj)
+	    : n(adj.size()), adj(adj), tin(n), et(2 * n), dep(n) {
+		dfs(0, -1);
+		vector<pair<int, int>> arr(2 * n);
+		for (int i = 0; i < 2 * n; i++) { arr[i] = {dep[et[i]], et[i]}; }
+		rmq.init(arr);
+	}
 
-    /** @return LCA of nodes a and b */
-    int query(int a, int b) {
-        if (tin[a] > tin[b]) { swap(a, b); }
-        return rmq.range_min(tin[a], tin[b]).second;
-    }
+	/** @return LCA of nodes a and b */
+	int query(int a, int b) {
+		if (tin[a] > tin[b]) { swap(a, b); }
+		return rmq.range_min(tin[a], tin[b]).second;
+	}
 };
 ```
 
