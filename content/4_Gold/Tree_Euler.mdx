@@ -563,56 +563,249 @@ int main() {
 	/>
 </Resources>
 
+There are many ways to calculate the LCA of two nodes that are mentioned 
+in the [binary jumping](/plat/binary-jump) module. The one presented here 
+is known as LCA with RMQ, or colloquially known as $\mathcal{O}(1)$ LCA.
+
+First, we need to preprocess our tree. To do this, we perform a standard 
+Euler tour. However, **when moving back up the tree we also increment 
+the timer**. This results in the nodes the Euler tour always being connected 
+and being more tour-like.
+
+<center>
+
+<svg
+    width={747}
+    height={532}
+    className="stroke-current fill-transparent text-black dark:text-white"
+    style={{isolation:"isolate"}}
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M528.5 507c35.622 0 64.5-28.878 64.5-64.5S564.122 378 528.5 378 464 406.878 464 442.5s28.878 64.5 64.5 64.5Z"
+      stroke="currentColor"
+      strokeWidth={8}
+      strokeMiterlimit={3}
+      strokeLinecap="square"
+    />
+    <path
+      d="M524.141 439.828h3.257c2.047-.031 3.657-.57 4.829-1.617 1.171-1.047 1.757-2.461 1.757-4.242 0-4-1.992-6-5.976-6-1.875 0-3.375.539-4.5 1.617-1.11 1.062-1.664 2.476-1.664 4.242h-4.336c0-2.703.984-4.945 2.953-6.726 1.984-1.797 4.5-2.696 7.547-2.696 3.219 0 5.742.852 7.57 2.555 1.828 1.703 2.742 4.07 2.742 7.101 0 1.485-.484 2.922-1.453 4.313-.953 1.391-2.258 2.43-3.914 3.117 1.875.594 3.32 1.578 4.336 2.953 1.031 1.375 1.547 3.055 1.547 5.039 0 3.063-1 5.493-3 7.289-2 1.797-4.602 2.696-7.805 2.696-3.203 0-5.812-.867-7.828-2.602-2-1.734-3-4.023-3-6.867h4.359c0 1.797.586 3.234 1.758 4.312 1.172 1.079 2.742 1.618 4.711 1.618 2.094 0 3.696-.547 4.805-1.641 1.109-1.094 1.664-2.664 1.664-4.711 0-1.984-.609-3.508-1.828-4.57-1.219-1.063-2.977-1.61-5.274-1.641h-3.257v-3.539Z"
+      fill="currentColor"
+    />
+    <path
+      d="M106.5 181c35.622 0 64.5-28.878 64.5-64.5S142.122 52 106.5 52 42 80.878 42 116.5 70.878 181 106.5 181Z"
+      stroke="currentColor"
+      strokeWidth={8}
+      strokeMiterlimit={3}
+      strokeLinecap="square"
+    />
+    <path
+      d="M118.195 133h-22.36v-3.117l11.813-13.125c1.75-1.985 2.954-3.594 3.61-4.828.672-1.25 1.008-2.539 1.008-3.868 0-1.781-.539-3.242-1.618-4.382-1.078-1.141-2.515-1.711-4.312-1.711-2.156 0-3.836.617-5.039 1.851-1.188 1.219-1.781 2.922-1.781 5.11H95.18c0-3.141 1.007-5.68 3.023-7.618 2.031-1.937 4.742-2.906 8.133-2.906 3.172 0 5.68.836 7.523 2.508 1.844 1.656 2.766 3.867 2.766 6.633 0 3.359-2.141 7.359-6.422 12l-9.141 9.914h17.133V133Z"
+      fill="currentColor"
+    />
+    <path
+      d="M220.5 470c35.622 0 64.5-28.878 64.5-64.5S256.122 341 220.5 341 156 369.878 156 405.5s28.878 64.5 64.5 64.5Z"
+      stroke="currentColor"
+      strokeWidth={8}
+      strokeMiterlimit={3}
+      strokeLinecap="square"
+    />
+    <path
+      d="m211.828 404.891 1.734-17.016h17.485v4.008h-13.805l-1.031 9.305c1.672-.985 3.57-1.477 5.695-1.477 3.11 0 5.578 1.031 7.406 3.094 1.829 2.047 2.743 4.82 2.743 8.32 0 3.516-.953 6.289-2.86 8.32-1.89 2.016-4.539 3.024-7.945 3.024-3.016 0-5.477-.836-7.383-2.508-1.906-1.672-2.992-3.984-3.258-6.938h4.102c.266 1.954.961 3.43 2.086 4.43 1.125.985 2.609 1.477 4.453 1.477 2.016 0 3.594-.688 4.734-2.063 1.157-1.375 1.735-3.273 1.735-5.695 0-2.281-.625-4.11-1.875-5.484-1.235-1.391-2.883-2.086-4.946-2.086-1.89 0-3.375.414-4.453 1.242l-1.148.937-3.469-.89Z"
+      fill="currentColor"
+    />
+    <path
+      d="M373.5 291c35.622 0 64.5-28.878 64.5-64.5S409.122 162 373.5 162 309 190.878 309 226.5s28.878 64.5 64.5 64.5Z"
+      stroke="currentColor"
+      strokeWidth={8}
+      strokeMiterlimit={3}
+      strokeLinecap="square"
+    />
+    <path
+      d="M377.086 243h-4.359v-28.898l-8.743 3.21v-3.937l12.422-4.664h.68V243Z"
+      fill="currentColor"
+    />
+    <path
+      d="M657.5 246c35.622 0 64.5-28.878 64.5-64.5S693.122 117 657.5 117 593 145.878 593 181.5s28.878 64.5 64.5 64.5Z"
+      stroke="currentColor"
+      strokeWidth={8}
+      strokeMiterlimit={3}
+      strokeLinecap="square"
+    />
+    <path
+      d="M665.141 186.539h4.734v3.539h-4.734V198h-4.36v-7.922h-15.539v-2.555l15.281-23.648h4.618v22.664Zm-14.977 0h10.617v-16.734l-.515.937-10.102 15.797Z"
+      fill="currentColor"
+    />
+    <path
+      d="m164 144 152 62M411 276l80 117M283 415l185 28M626 237l-73 150"
+      stroke="currentColor"
+      strokeWidth={6}
+    />
+  </svg>
+
+</center>
+
+<center>
+	<table className="text-center">
+		<tbody>
+			<tr>
+				<td>Timer</td>
+				<td>1</td>
+				<td>2</td>
+				<td>1</td>
+				<td>3</td>
+				<td>4</td>
+				<td>3</td>
+				<td>5</td>
+				<td>3</td>
+				<td>1</td>
+			</tr>
+
+			<tr>
+				<td>Vertices</td>
+				<td>1</td>
+				<td>2</td>
+				<td>1</td>
+				<td>3</td>
+				<td>4</td>
+				<td>3</td>
+				<td>5</td>
+				<td>3</td>
+				<td>1</td>
+			</tr>
+			<tr>
+				<td>Heights</td>
+				<td>0</td>
+				<td>1</td>
+				<td>0</td>
+				<td>1</td>
+				<td>2</td>
+				<td>1</td>
+				<td>2</td>
+				<td>1</td>
+				<td>0</td>
+			</tr>
+		</tbody>
+	</table>
+</center>
+
+Here's some code to help understand how the tour is calculated.
+
+```cpp 
+// tin[u] = timer when we first visit u
+// et[u] = maps timer to current node
+void dfs(int u, int p) {
+	tin[u] = timer;
+	et[timer++] = u;
+	for (int v : adj[u]) {
+		if (v == p) { continue; }
+		dfs(v, u);
+		et[timer++] = u;
+	}
+}
+```
+
+Let's say we want to calculate the LCA of two nodes $u$ and $v$.
+Assume that $\texttt{tin}[u] < \texttt{tin}[v]$. Then, $\texttt{lca}(u, v)$ 
+will equal to the node in the array $\texttt{et}$ at the lowest depth in the 
+range $[\texttt{tin}[u], \texttt{tin}[v]]$.
+Here, $\texttt{et}[i]$ means that when the timer was equal to $i$, we were at 
+node $\texttt{et}[i]$.
+
+To understand why this is true, consider the following:
+
+> We know two facts about the LCA of $u$ and $v$:
+> 1. The LCA is on the shortest path between $u$ and $v$.
+> 2. The LCA is the node of minimal depth on the shortest path
+> Also, our Euler tour is practically a shortest path: it's just that 
+> we happen to visit all the subtrees we pass by. Thus, this works.
+
+After that, we can just reduce this to a RMQ problem. We can either use 
+a segment tree or a sparse table to handle our range-min queries.
+
 <LanguageSection>
 
 <CPPSection>
 
 ```cpp
-int n;  // The number of nodes in the graph
-vector<int> graph[100000];
-int timer = 0, tin[100000], euler_tour[200000];
-int segtree[800000];  // Segment tree for RMQ
+#include <bits/stdc++.h>
+using namespace std;
 
-void dfs(int node = 0, int parent = -1) {
-	tin[node] = timer;  // The time when we first visit a node
-	euler_tour[timer++] = node;
-	for (int i : graph[node]) {
-		if (i != parent) {
-			dfs(i, node);
-			euler_tour[timer++] = node;
-		}
-	}
-}
+// BeginCodeSnip{Min Segment Tree}
+template <class T> struct MinSegmentTree {
+    const T DEFAULT = std::numeric_limits<T>().max();
 
-int mn_tin(int x, int y) {
-	if (x == -1) return y;
-	if (y == -1) return x;
-	return (tin[x] < tin[y] ? x : y);
-}
+    vector<T> segtree;
+    int len;
 
-// Build the segment tree: run `build()` after running dfs`
-void build(int node = 1, int l = 0, int r = timer - 1) {
-	if (l == r) segtree[node] = euler_tour[l];
-	else {
-		int mid = (l + r) / 2;
-		build(node * 2, l, mid);
-		build(node * 2 + 1, mid + 1, r);
-		segtree[node] = mn_tin(segtree[node * 2], segtree[node * 2 + 1]);
-	}
-}
+    void init(const vector<T> &arr) {
+        len = arr.size();
+        for (int i = 0; i < len; i++) {
+            segtree[len + i] = arr[i];
+        }
 
-int query(int a, int b, int node = 1, int l = 0, int r = timer - 1) {
-	if (l > b || r < a) return -1;
-	if (l >= a && r <= b) return segtree[node];
-	int mid = (l + r) / 2;
-	return mn_tin(query(a, b, node * 2, l, mid), query(a, b, node * 2 + 1, mid + 1, r));
-}
+        for (int i = len - 1; i >= 1; i--) {
+            segtree[i] = min(segtree[2 * i], segtree[2 * i + 1]);
+        }
+    }
 
-// Make sure you run $dfs` and `build()` before you run this
-int lca(int a, int b) {
-	if (tin[a] > tin[b]) swap(a, b);
-	return query(tin[a], tin[b]);
-}
+    void set(int ind, T val) {
+        ind += len;
+        segtree[ind] = val;
+        for (; ind > 1; ind /= 2) {
+            segtree[ind / 2] = min(segtree[ind], segtree[ind ^ 1]);
+        }
+    }
+
+    T range_min(int start, int end) {
+        T res = DEFAULT;
+        for (start += len, end += len; start < end; start /= 2, end /= 2) {
+            if (start % 2 == 1) { res = min(res, segtree[start++]); }
+            if (end % 2 == 1) { res = min(res, segtree[--end]); }
+        }
+        return min;
+    }
+};
+// EndCodeSnip
+
+class LCA {
+  private:
+    const int n;
+    const vector<vector<int>> &adj;
+    MinSegmentTree<pair<int, int>> rmq;
+    vector<int> tin, et, dep;
+    int timer = 0;
+
+    /** prepares tin, et, dep arrays */
+    void dfs(int u, int p) {
+        tin[u] = timer;
+        et[timer++] = u;
+        for (int v : adj[u]) {
+            if (v == p) continue;
+            dep[v] = dep[u] + 1;
+            dfs(v, u);
+            et[timer++] = u;
+        }
+    }
+
+  public:
+    LCA(const vector<vector<int>> &adj)
+        : n(adj.size()), adj(adj), tin(n), et(2 * n), dep(n) {
+        dfs(0, -1);
+        vector<pair<int, int>> arr(2 * n);
+        for (int i = 0; i < 2 * n; i++) {
+            arr[i] = {dep[et[i]], et[i]};
+        }
+        rmq.init(arr);
+    }
+
+    /** @return LCA of nodes a and b */
+    int query(int a, int b) {
+        if (tin[a] > tin[b]) { swap(a, b); }
+        return rmq.range_min(tin[a], tin[b]).second;
+    }
+};
 ```
 
 </CPPSection>
@@ -703,96 +896,6 @@ public class LCA {
 
 ## Sparse Tables
 
-The above code does $\mathcal{O}(N)$ time preprocessing and allows LCA queries
-in $\mathcal{O}(\log N)$ time. If we replace the segment tree that computes
-minimums with a **sparse table**, then we do $\mathcal{O}(N\log N)$ time
-preprocessing and query in $\mathcal{O}(1)$ time.
-
-<!-- [](https://en.wikipedia.org/wiki/Range_minimum_query) -->
-
-<FocusProblem problem="rmqSample" />
-
-The following is an example implementation of a sparse table and code that
-answers LCA queries. Build time is $\mathcal{O}(N\log N)$, and queries are
-$\mathcal{O}(1)$.
-
-<LanguageSection>
-<CPPSection>
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-template <typename T> class SparseTable {
-  private:
-	int n, log2dist;
-	vector<vector<T>> st;
-
-  public:
-	SparseTable(const vector<T> &v) {
-		n = (int)v.size();
-		log2dist = 1 + (int)log2(n);
-		st.resize(log2dist);
-		st[0] = v;
-		for (int i = 1; i < log2dist; i++) {
-			st[i].resize(n - (1 << i) + 1);
-			for (int j = 0; j + (1 << i) <= n; j++) {
-				st[i][j] = min(st[i - 1][j], st[i - 1][j + (1 << (i - 1))]);
-			}
-		}
-	}
-
-	/** @return minimum on the range [l, r] */
-	T query(int l, int r) {
-		int i = (int)log2(r - l + 1);
-		return min(st[i][l], st[i][r - (1 << i) + 1]);
-	}
-};
-
-class LCA {
-  private:
-	const int n;
-	const vector<vector<int>> &adj;
-	SparseTable<pair<int, int>> rmq;
-	vector<int> tin, et, dep;
-	int timer = 0;
-
-	/** prepares tin, et, dep arrays */
-	void dfs(int u, int p) {
-		tin[u] = timer;
-		et[timer++] = u;
-		for (int v : adj[u]) {
-			if (v == p) { continue; }
-			dep[v] = dep[u] + 1;
-			dfs(v, u);
-			et[timer++] = u;
-		}
-	}
-
-  public:
-	// make sure the adjacency list is 0 indexed
-	LCA(vector<vector<int>> &_adj)
-	    : n((int)_adj.size()), adj(_adj), tin(n), et(2 * n), dep(n),
-	      rmq(vector<pair<int, int>>(1)) {
-		dfs(0, -1);
-		vector<pair<int, int>> arr(2 * n);
-		for (int i = 0; i < 2 * n; i++) { arr[i] = {dep[et[i]], et[i]}; }
-		rmq = SparseTable<pair<int, int>>(arr);
-	}
-
-	/** @return LCA of nodes a and b */
-	int query(int a, int b) {
-		if (tin[a] > tin[b]) { swap(a, b); }
-		return rmq.query(tin[a], tin[b]).second;
-	}
-};
-```
-
-</CPPSection>
-</LanguageSection>
-
-### Resources
-
 <Resources>
 	<Resource
 		source="CPH"
@@ -813,6 +916,91 @@ class LCA {
 </Resources>
 
 <!-- <Resource source="cp-algo" title="RMQ" url="sequences/rmq.html" /> -->
+
+The above code does $\mathcal{O}(N)$ time preprocessing and allows LCA queries
+in $\mathcal{O}(\log N)$ time. If we replace the segment tree that computes
+minimums with a **sparse table**, then we do $\mathcal{O}(N\log N)$ time
+preprocessing and query in $\mathcal{O}(1)$ time.
+
+<!-- [](https://en.wikipedia.org/wiki/Range_minimum_query) -->
+
+<FocusProblem problem="rmqSample" />
+
+The following is an example implementation of a sparse table and code that
+answers LCA queries. Build time is $\mathcal{O}(N\log N)$, and queries are
+$\mathcal{O}(1)$.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+template <typename T> struct SparseTable {
+	int len;
+	vector<vector<T>> st;
+
+	void init(const vector<T> &v) {
+        len = v.size();
+        const int max_log = 1 + __lg(len);
+        st.emplace_back(v);
+        for (int j = 1; j < max_log; j++) {
+            st.emplace_back(len - (1 << j) + 1);
+            for (int i = 0; i <= len - (1 << j); i++) {
+                st[j][i] = min(st[j - 1][i], st[j - 1][i + (1 << (j - 1))]);
+            }
+        }
+	}
+
+	/** @return minimum on the range [l, r] */
+    T range_min(int l, int r) const {
+        int lg = __lg(r - l + 1);
+        return min(st[lg][l], st[lg][r - (1 << lg) + 1]);
+    }
+};
+
+class LCA {
+  private:
+    const int n;
+    const vector<vector<int>> &adj;
+    SparseTable<pair<int, int>> rmq;
+    vector<int> tin, et, dep;
+    int timer = 0;
+
+    /** prepares tin, et, dep arrays */
+    void dfs(int u, int p) {
+        tin[u] = timer;
+        et[timer++] = u;
+        for (int v : adj[u]) {
+            if (v == p) { continue; }
+            dep[v] = dep[u] + 1;
+            dfs(v, u);
+            et[timer++] = u;
+        }
+    }
+
+  public:
+    LCA(const vector<vector<int>> &adj)
+        : n(adj.size()), adj(adj), tin(n), et(2 * n), dep(n) {
+        dfs(0, -1);
+        vector<pair<int, int>> arr(2 * n);
+        for (int i = 0; i < 2 * n; i++) {
+            arr[i] = {dep[et[i]], et[i]};
+        }
+        rmq.init(arr);
+    }
+
+    /** @return LCA of nodes a and b */
+    int query(int a, int b) {
+        if (tin[a] > tin[b]) { swap(a, b); }
+        return rmq.range_min(tin[a], tin[b]).second;
+    }
+};
+```
+
+</CPPSection>
+</LanguageSection>
 
 <Optional title="Faster Preprocessing">
 
