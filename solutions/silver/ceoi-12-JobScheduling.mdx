@@ -21,10 +21,10 @@ For each number of machines being tested, we can check its feasibility in linear
 <CPPSection>
 
 ```cpp
+#include <algorithm>
+#include <array>
 #include <iostream>
 #include <vector>
-#include <array>
-#include <algorithm>
 
 using std::vector;
 
@@ -35,7 +35,7 @@ int main() {
 	for (int i = 0; i < m; i++) {
 		int day;
 		std::cin >> day;
-		jobs[i] = {day, i + 1}; // {request date, index[1...m]}
+		jobs[i] = {day, i + 1};  // {request date, index[1...m]}
 	}
 
 	/*
@@ -46,8 +46,9 @@ int main() {
 	std::sort(begin(jobs), end(jobs));
 	vector<vector<int>> res;
 
-	/** @return true along with schedule if it feasible to finish the jobs otherwise false */
-	auto is_feasible = [&] (int machine_count) -> vector<vector<int>> {
+	/** @return true along with schedule if it feasible to finish the jobs otherwise
+	 * false */
+	auto is_feasible = [&](int machine_count) -> vector<vector<int>> {
 		vector<vector<int>> schedule(n);
 		int req_num = 0;
 
@@ -64,9 +65,7 @@ int main() {
 				 * we can go to the next day, even if there are usable machines left
 				 * we can determine that since the vector jobs is sorted
 				 */
-				if (jobs[req_num][0] > day) {
-					break;
-				}
+				if (jobs[req_num][0] > day) { break; }
 				/*
 				 * if the current date is before the deadline for the job
 				 * we can add this job to the schedule and move to the next
@@ -74,17 +73,15 @@ int main() {
 				 */
 				if (jobs[req_num][0] + d >= day) {
 					schedule[day - 1].push_back(jobs[req_num++][1]);
-				} else { // otherwise, it is not feasible due to deadline
+				} else {  // otherwise, it is not feasible due to deadline
 					return {};
 				}
 
 				/*
-				 * if we have processed all the requests, we have found a 
+				 * if we have processed all the requests, we have found a
 				 * feasible solution
 				 */
-				if (req_num == m) {
-					return schedule;
-				}
+				if (req_num == m) { return schedule; }
 			}
 		}
 
@@ -98,22 +95,22 @@ int main() {
 	int lo = 1, hi = m;
 	while (lo < hi) {
 		int machine_num = (lo + hi) / 2;
-		
-		/* 
+
+		/*
 		 * test if the jobs would finish within the deadline
 		 * using the current # of machines i.e., machine_num
 		 */
 		vector<vector<int>> curr_result = is_feasible(machine_num);
 
-		/* 
-		 * if it's possible, we set the right bound as the tested 
+		/*
+		 * if it's possible, we set the right bound as the tested
 		 * machine number and save the current schedule
 		 */
 		if (!curr_result.empty()) {
 			hi = machine_num;
 			res = curr_result;
 		} else {
-			/* 
+			/*
 			 * otherwise, we set the left bound to be the tested number + 1
 			 * and test the next machine_num again
 			 */
@@ -123,9 +120,7 @@ int main() {
 
 	std::cout << lo << '\n';
 	for (int i = 0; i < n; i++) {
-		for (int idx : res[i]) {
-			std::cout << idx << " ";
-		}
+		for (int idx : res[i]) { std::cout << idx << " "; }
 		std::cout << 0 << '\n';
 	}
 }
