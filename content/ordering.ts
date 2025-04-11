@@ -271,6 +271,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
         'game-theory',
         'multiplicative',
         'matroid-isect',
+        'random',
         'interactive',
         'vectorization',
       ],
