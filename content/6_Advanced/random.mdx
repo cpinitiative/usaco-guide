@@ -52,46 +52,46 @@ Our approach has a time complexity of $\mathcal{O}\left(S\cdot n\log a + S \cdot
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
- 
+
 const int MAX_N = 1e6 + 5;
 const int S = 15;
- 
+
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 long long a[MAX_N], dv[MAX_N], cnt[MAX_N];
- 
+
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
- 
-    int n;
-    cin >> n;
-    for (int i = 0; i < n; i++) cin >> a[i];
-    
-    long long ans = 0;
-    for (int s = 0; s < S; s++) {
-        long long x = a[rng() % n];
-        int ind = 0;
-        for (int d = 1; 1ll * d * d <= x; d++) {
-            if (x % d == 0) {
-                dv[ind++] = d;
-                if (d * d != x) dv[ind++] = x / d;
-            }
-        }
- 
-        sort(dv, dv + ind);
-        fill(cnt, cnt + ind, 0);
- 
-        for (int i = 0; i < n; i++) cnt[lower_bound(dv, dv + ind, gcd(a[i], x)) - dv]++;
- 
-        for (int i = 0; i < ind; i++)
-            for (int j = 0; j < i; j++)
-                if (dv[i] % dv[j] == 0) cnt[j] += cnt[i];
- 
-        for (int i = 0; i < ind; i++)
-            if (cnt[i] + cnt[i] >= n) ans = max(ans, dv[i]);
-    }
- 
-    cout << ans << '\n';
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
+
+	int n;
+	cin >> n;
+	for (int i = 0; i < n; i++) cin >> a[i];
+
+	long long ans = 0;
+	for (int s = 0; s < S; s++) {
+		long long x = a[rng() % n];
+		int ind = 0;
+		for (int d = 1; 1ll * d * d <= x; d++) {
+			if (x % d == 0) {
+				dv[ind++] = d;
+				if (d * d != x) dv[ind++] = x / d;
+			}
+		}
+
+		sort(dv, dv + ind);
+		fill(cnt, cnt + ind, 0);
+
+		for (int i = 0; i < n; i++) cnt[lower_bound(dv, dv + ind, gcd(a[i], x)) - dv]++;
+
+		for (int i = 0; i < ind; i++)
+			for (int j = 0; j < i; j++)
+				if (dv[i] % dv[j] == 0) cnt[j] += cnt[i];
+
+		for (int i = 0; i < ind; i++)
+			if (cnt[i] + cnt[i] >= n) ans = max(ans, dv[i]);
+	}
+
+	cout << ans << '\n';
 }
 ```
 
