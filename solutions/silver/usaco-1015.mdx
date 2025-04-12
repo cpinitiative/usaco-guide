@@ -238,6 +238,7 @@ public class Triangles {
 ```py
 import itertools
 import bisect
+
 MOD = 10**9 + 7
 
 with open("triangles.in", "r") as read:
@@ -280,9 +281,21 @@ for x, y in coordinates:
 	x_index = bisect.bisect_left(x_values[x], y)
 	y_index = bisect.bisect_left(y_values[y], x)
 	# find sum of distances from y to all y-values using prefix sums
-	x_sum = (y * x_index - x_prefix[x][x_index] + x_prefix[x][len(x_values[x])] - x_prefix[x][x_index + 1] - (y * (len(x_values[x]) - x_index - 1)))
+	x_sum = (
+		y * x_index
+		- x_prefix[x][x_index]
+		+ x_prefix[x][len(x_values[x])]
+		- x_prefix[x][x_index + 1]
+		- (y * (len(x_values[x]) - x_index - 1))
+	)
 	# find sum of distances from x to all x-values using prefix sums
-	y_sum = (x * y_index - y_prefix[y][y_index] + y_prefix[y][len(y_values[y])] - y_prefix[y][y_index + 1] - (x * (len(y_values[y]) - y_index - 1)))
+	y_sum = (
+		x * y_index
+		- y_prefix[y][y_index]
+		+ y_prefix[y][len(y_values[y])]
+		- y_prefix[y][y_index + 1]
+		- (x * (len(y_values[y]) - y_index - 1))
+	)
 	# add sum of triangle areas (product of x_sum and y_sum) to answer
 	ans += x_sum * y_sum
 
