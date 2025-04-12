@@ -1,0 +1,257 @@
+---
+id: ternary-search
+title: 'Maximizing Unimodal Functions'
+author: Justin Ji, Chongtian Ma
+prerequisites:
+  - binary-search
+description: 'Using ternary or binary search to find the mode of unimodal functions.'
+frequency: 1
+---
+
+<Resources>
+	<Resource
+		source="CP-Algorithms"
+		title="Ternary Search"
+		url="https://cp-algorithms.com/num_methods/ternary_search.html"
+		starred
+	/>
+</Resources>
+
+## Introduction
+
+In competitive programming, we are often asked to find the maximum value we can attain under some conditions. More specifically, 
+we are often asked to formulate some function $f(x)$, and find the maximum or minimum value of $f(x)$.
+
+If our function happens to be **unimodal**, then we can use either 
+ternary search or binary search to find the mode of our function 
+efficiently.
+
+### Definitions
+
+A function is unimodal if:
+1. The function **strictly increases** first, then reaches a maximum, then **strictly decreases**.
+2. The function **strictly decreases** first, then reaches a minimum, then **strictly increases**. 
+
+Let's assume that we want to find the local maximum of our function. Then, a 
+function is convex if **consecutive differences are non-increasing**. In calculus 
+terms, if the derivative of the function is non-increasing, the function is convex.
+
+Note that this implies that a convex function is also a unimodal function.
+
+## Ternary Search 
+
+For now, let's assume that our function follows case 1. That is, the function 
+strictly increases for a time, reaches its maximum, then strictly decreases.
+
+The idea behind ternary search is somewhat similar to binary search. At every 
+step of our algorithm, we want to cut out some large portion of our search 
+space from being considered.
+
+Let's consider two points $m_1$ and $m_2$, where $l < m_1 < m_2 < r$. Here, 
+$l$ and $r$ are the endpoints of our current search space. This ends up dividing 
+our search space into three sections. 
+
+Now, we just do a bit of casework to see if we can eliminate any sections.
+
+1. $f(m_1) < f(m_2)$ means that we can eliminate $[l, m_1)$
+2. $f(m_1) > f(m_2)$ means that we can eliminate $(m_2, r]$
+3. $f(m_1) = f(m_2)$ means that we can eliminate $[l, m_1)$ and $(m_2, r]$
+
+<!--
+insert manim anim later
+-->
+
+Typically, we treat case 3 as being analogous to cases 1 and 2.
+
+As a mini-proof for why the way we handle case 1 is correct, consider the 
+following:
+
+> If $f(m_1) < f(m_2)$, then we know the following two facts: 
+> -  $f(m_1)$ is not the maximum
+> - $f(m_2)$ cannot be on the strictly decreasing side of the function
+> Regarding the second point, if $f(m_1) < f(m_2)$ and $m_1$ was on the strictly decreasing side of the function, that would imply $m_1 > m_2$, which is a contradiction.
+> 
+> Thus, we can conclude that $m_1$ remains on the strictly increasing part of our function. Because of this, we can conclude that our mode will not be in the range $[l, m_1)$, so we can eliminate this section from our search space.
+
+Now that we know how to strategically remove sections of our search space, 
+the question remains on how to choose the best values of $m_1$ and $m_2$.
+The optimal way is to divide our search space into thirds, so we have: 
+
+$$
+m_1 = l + \frac{r - l}{3}, \ m_2 = r - \frac{r - l}{3}
+$$
+
+
+## Implementation
+
+The time complexity of ternary search takes on the following recurrence:
+
+$$
+T(n) = T \left(\frac{2n}{3} \right) + \mathcal{O}(1) 
+$$
+
+Per the [Master theorem](https://en.wikipedia.org/wiki/Master_theorem_(analysis_of_algorithms)), this is $\mathcal{O}(\log{n})$.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp 
+template <typename F>
+double find_mode(double l, double r, const F &f) {
+    const double eps = 1e-9;
+    while (r - l > eps) {
+        double m1 = l + (r - l) / 3;
+        double m2 = r - (r - l) / 3;
+        f(m1) < f(m2) ? l = m1 : r = m2;
+    }
+
+    return f(l);
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
+If our function only takes in integers, then our implementation looks a little 
+different. 
+
+<LanguageSection>
+<CPPSection>
+
+```cpp 
+template <typename F>
+int find_mode(int l, int r, const F &f) {
+    while (r - l > 3) {
+        int m1 = l + (r - l) / 3;
+        int m2 = r - (r - l) / 3;
+        f(m1) < f(m2) ? l = m1 : r = m2;
+    }
+
+    int res = INT_MIN;
+    for (int i = l; i <= r; i++) { res = std::max(res, f(i)); }
+    
+    return res;
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
+## Binary Search
+
+Actually, in the case of our function only taking in integers, binary search 
+is often a better option, as it typically uses less comparisons.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+template <typename F>
+int find_mode(int l, int r, const F &f) {
+    while (l < r) {
+        int m = (l + r) / 2;
+        f(m) > f(m + 1) ? r = m : l = m + 1;
+    }
+
+    return f(l);
+}
+```
+
+The way the binary search function works is that it essentially binary 
+searches on the derivative, and finds the turning point of the function, 
+which is the mode.
+
+However, if we are working with reals, binary search may be a bit more 
+problematic because of the loss of precision. For this reason, ternary 
+search is still sometimes preferable.
+
+</CPPSection>
+</LanguageSection>
+
+## Example - Haybale Distribution
+
+<Problems problems="sample" />
+
+Let's define a function $f(y)$ that evaluates the cost of transporting all the haybales if we deliver the haybales at point $y$. Can we show that this 
+function is either unimodal or convex?
+
+Consider the following two facts:
+1. $f(y)$ is the sum of multiple convex functions
+2. The sum of convex functions is still convex
+
+Thus, it turns out that $f(y)$ is actually 
+convex! 
+
+Given that a convex function is unimodal, this allows us to 
+ternary search on it. Thus, we can find the mode in $\mathcal{O}(\log{N}$ 
+per query.
+
+### Implementation 
+
+**Time Complexity:** $\mathcal{O}(N + Q \log{M})$, where $M$ is the maximum
+coordinate of a barn.
+
+Note that the implementation below uses binary search instead, as it's a bit 
+easier to implement.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp 
+#include <bits/stdc++.h>
+
+using ll = long long;
+
+int main() {
+    int n;
+    std::cin >> n;
+    std::vector<int> x(n);
+    for (int &i : x) { std::cin >> i; }
+
+    std::sort(x.begin(), x.end());
+
+    // compute prefix sums on x[i] values
+    std::vector<ll> pref(n + 1);
+    for (int i = 1; i <= n; i++) {
+        pref[i] = pref[i - 1] + x[i - 1];
+    }
+
+    int query_num;
+    std::cin >> query_num;
+    for (int q = 0; q < query_num; q++) {
+        int a, b;
+        std::cin >> a >> b;
+
+        const auto cost = [&](int loc) -> ll {
+            int low_idx = std::lower_bound(x.begin(), x.end(), loc) 
+                        - x.begin() - 1;
+            ll left_dists = 1ll * (low_idx + 1) * loc - pref[low_idx + 1];
+
+            int high_idx = low_idx + 1;
+            ll right_dists = (pref[n] - pref[high_idx]) - 1ll * (n - high_idx) * loc;
+
+            return left_dists * a + right_dists * b;
+        };
+
+        /*
+         * We use binary search to find the mode (instead of ternary).
+         * In this case, the mode is the minimum, so we find the first point
+         * where the function becomes increasing.
+         */
+        int l = 0, r = x.back();
+        while (l < r) {
+            int m = (l + r) / 2;
+            cost(m) < cost(m + 1) ? r = m : l = m + 1;
+        }
+
+        std::cout << cost(l) << '\n';
+    }
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
+## Problems 
+
+<Problems problems="probs" />
