@@ -6,11 +6,20 @@ author: Albert Zhu, Sachet Abeysinghe
 ---
 
 [Official Analysis](http://www.usaco.org/current/data/sol_triangles_silver_feb20.html)
+
 ## Explanation
 
-Let's consider the right triangles we can create if we consider every coordinate as the point of the right angle. If we have a point $\left(x,y\right)$ as the right angle point, then the other two vertices must be $\left(a,y\right)$ and $\left(x,b\right)$ (one with the same $x$-coordinate and another with the same $y$-coordinate). Pairing this $\left(a,y\right)$ and $\left(x,b\right)$ means two times the area of this triangle is $\left|x-a\right|\cdot\left|y-b\right|$. Thus, the total contribution for some $\left(x,y\right)$ is $(\sum_{a∈A}\left|x-a\right|)\cdot(\sum_{b∈B}\left|y-b\right|)$.
+Let's consider the right triangles we can create if we consider every coordinate as the point of the right angle.
 
-To do this for each coordinate, we can maintain a dictionary that stores the $y$-values for each $x$ and the $x$-values for each $y$. Then, we **sort** the $y$-values for each $x$ and the $x$-values for each $y$, so that for any coordinate, we can find the indices in which it appears in the hashmaps using binary search. After finding these indices, we need to find the distance from all $x$-values and distance from all $y$-values in the hashmap lists. We precompute **prefix sums** beforehand, and then compute the summations for the indices as follows:
+If we have a point $\left(x,y\right)$ as the right angle point, then the other two vertices must be $\left(a,y\right)$ and $\left(x,b\right)$
+(one with the same $x$-coordinate and another with the same $y$-coordinate).
+Pairing this $\left(a,y\right)$ and $\left(x,b\right)$ means two times the area of this triangle is $\left|x-a\right|\cdot\left|y-b\right|$.
+
+Thus, the total contribution for some $\left(x,y\right)$ is $(\sum_{a∈A}\left|x-a\right|)\cdot(\sum_{b∈B}\left|y-b\right|)$.
+
+To do this for each coordinate, we can maintain a dictionary that stores the $y$-values for each $x$ and the $x$-values for each $y$.
+Then, we sort the $y$-values for each $x$ and the $x$-values for each $y$, so that for any coordinate, we can find the indices in which it appears in the hashmaps using binary search.
+After finding these indices, we need to find the distance from all $x$-values and distance from all $y$-values in the hashmap lists. We precompute **prefix sums** beforehand, and then compute the summations for the indices as follows:
 
 $$
 \sum_{a∈A}^{ }\left|x-a\right|=\left(x\cdot i-\texttt{pref}\left[i\right]\right)+\left(\texttt{pref}\left[N\right]-\texttt{pref}\left[i\ +1\right]-x\cdot\left(N-i-1\right)\right)
