@@ -6,26 +6,12 @@ author: Albert Zhu, Sachet Abeysinghe
 ---
 
 [Official Analysis](http://www.usaco.org/current/data/sol_triangles_silver_feb20.html)
-
 ## Explanation
 
-Let's consider the right triangles we can create if we consider every coordinate as the point of the right angle.
+Let's consider the right triangles we can create if we consider every coordinate as the point of the right angle. If we have a point $\left(x,y\right)$ as the right angle point, then the other two vertices must be $\left(a,y\right)$ and $\left(x,b\right)$ (one with the same $x$-coordinate and another with the same $y$-coordinate). Pairing this $\left(a,y\right)$ and $\left(x,b\right)$ means two times the area of this triangle is $\left|x-a\right|\cdot\left|y-b\right|$. Thus, the total contribution for some $\left(x,y\right)$ is $(\sum_{a∈A}\left|x-a\right|)\cdot(\sum_{b∈B}\left|y-b\right|)$.
 
-If we have a point $\left(x,y\right)$ as the right angle point, then the other two vertices must be $\left(a,y\right)$ and $\left(x,b\right)$
-(one with the same $x$-coordinate and another with the same $y$-coordinate).
-Pairing this $\left(a,y\right)$ and $\left(x,b\right)$ means two times the area of this triangle is $\left|x-a\right|\cdot\left|y-b\right|$.
+To do this for each coordinate, we can store the $y$-values for each $x$ and the $x$-values for each $y$. Then, we **sort** the $y$-values for each $x$ and the $x$-values for each $y$, and precompute **prefix sums** to compute the distance from all $x$-values and distance from all $y$-values in the lists. For each point, multiply the total horizontal distance and total vertical distance to add that to the total answer.
 
-Thus, the total contribution for some $\left(x,y\right)$ is $(\sum_{a∈A}\left|x-a\right|)\cdot(\sum_{b∈B}\left|y-b\right|)$.
-
-To do this for each coordinate, we can maintain a dictionary that stores the $y$-values for each $x$ and the $x$-values for each $y$.
-Then, we sort the $y$-values for each $x$ and the $x$-values for each $y$, so that for any coordinate, we can find the indices in which it appears in the hashmaps using binary search.
-After finding these indices, we need to find the distance from all $x$-values and distance from all $y$-values in the hashmap lists. We precompute **prefix sums** beforehand, and then compute the summations for the indices as follows:
-
-$$
-\sum_{a∈A}^{ }\left|x-a\right|=\left(x\cdot i-\texttt{pref}\left[i\right]\right)+\left(\texttt{pref}\left[N\right]-\texttt{pref}\left[i\ +1\right]-x\cdot\left(N-i-1\right)\right)
-$$
-
-where $N$ is the length of $A$. The same applies for the sum of $y$ distances.
 ## Implementation
 **Time Complexity:** $\mathcal{O}(N\log N)$
 
@@ -252,7 +238,6 @@ public class Triangles {
 ```py
 import itertools
 import bisect
-
 MOD = 10**9 + 7
 
 with open("triangles.in", "r") as read:
@@ -295,21 +280,9 @@ for x, y in coordinates:
 	x_index = bisect.bisect_left(x_values[x], y)
 	y_index = bisect.bisect_left(y_values[y], x)
 	# find sum of distances from y to all y-values using prefix sums
-	x_sum = (
-		y * x_index
-		- x_prefix[x][x_index]
-		+ x_prefix[x][len(x_values[x])]
-		- x_prefix[x][x_index + 1]
-		- (y * (len(x_values[x]) - x_index - 1))
-	)
+	x_sum = (y * x_index - x_prefix[x][x_index] + x_prefix[x][len(x_values[x])] - x_prefix[x][x_index + 1] - (y * (len(x_values[x]) - x_index - 1)))
 	# find sum of distances from x to all x-values using prefix sums
-	y_sum = (
-		x * y_index
-		- y_prefix[y][y_index]
-		+ y_prefix[y][len(y_values[y])]
-		- y_prefix[y][y_index + 1]
-		- (x * (len(y_values[y]) - y_index - 1))
-	)
+	y_sum = (x * y_index - y_prefix[y][y_index] + y_prefix[y][len(y_values[y])] - y_prefix[y][y_index + 1] - (x * (len(y_values[y]) - y_index - 1)))
 	# add sum of triangle areas (product of x_sum and y_sum) to answer
 	ans += x_sum * y_sum
 
