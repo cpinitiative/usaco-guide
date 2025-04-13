@@ -79,16 +79,16 @@ template <class T> class SumSegmentTree {
 // EndCodeSnip
 
 int main() {
-	int t = 1;
-	cin >> t;
-	for (int zz = 0; zz < t; ++zz) {
+	int test_num;
+	cin >> test_num;
+	for (int t = 0; t < test_num; t++) {
 		int q;
 		cin >> q;
 
 		vector<pair<int, ll>> upds;
 		int sz = 1;
 		vector<vector<int>> adj(q + 2);
-		for (int i = 1; i <= q; ++i) {
+		for (int i = 1; i <= q; i++) {
 			int t;
 			cin >> t;
 			if (t == 1) {
@@ -125,8 +125,7 @@ int main() {
 
 		vector<ll> vals(sz + 2, 0);
 		SumSegmentTree<ll> segtree(vals);
-
-		for (int i = 0; i < q; ++i) {
+		for (int i = 0; i < q; i++) {
 			pair<int, ll> here = upds[i];
 
 			if (upds[i].second == INT64_MIN) {
@@ -156,13 +155,12 @@ int main() {
 		for (int i = 1; i <= sz; ++i) {
 			ll curval = segtree.range_sum(0, start[i]);
 
-			cout << curval << " ";
+			cout << curval << ' ';
 		}
-		cout << "\n";
+		cout << '\n';
 	}
 }
 ```
 
 </CPPSection>
-
 </LanguageSection>
