@@ -1,9 +1,11 @@
 ---
 id: cf-847B
 source: CF
-title: Preparing for Mergesort
-author: Andi Qu, Prashanth Ragam
+title: Preparing for Merge Sort
+author: Andi Qu, Prashanth Ragam, Rameez Parwez
 ---
+
+## Explanation
 
 Simply simulating the process described is potentially $\mathcal{O}(N^2)$, so we
 can't just do that. What if instead of finding the sequences one at a time, we
@@ -23,43 +25,95 @@ contradiction - what if there is an increase at some point?)
 This means that we can simply binary search for the sequence that we should
 insert the $i$-th number into!
 
-This algorithm runs in $\mathcal{O}(N \log N)$ time.
-
 ## Implementation
+
+**Time Complexity:** $\mathcal{O}(N \log N)$
 
 <LanguageSection>
 <CPPSection>
 
 ```cpp
-#include <bits/stdc++.h>
-using namespace std;
+#include <iostream>
+#include <vector>
+
+using std::vector;
 
 int main() {
-	ios_base::sync_with_stdio(0);
-	cin.tie(0);
 	int n;
-	cin >> n;
-	vector<vector<int>> ans;
-	while (n--) {
+	std::cin >> n;
+	vector<vector<int>> sequences;
+
+	for (int i = 0; i < n; i++) {
 		int a;
-		cin >> a;
-		int l = 0, r = ans.size();
-		while (l != r) {
-			int mid = (l + r) / 2;
-			if (ans[mid].back() < a) r = mid;
-			else l = mid + 1;
+		std::cin >> a;
+		int lo = 0, hi = (int)sequences.size();
+		while (lo < hi) {
+			int mid = (lo + hi) / 2;
+			if (sequences[mid].back() < a) {
+				hi = mid;
+			} else {
+				lo = mid + 1;
+			}
 		}
-		if (l == ans.size()) ans.push_back({a});
-		else ans[l].push_back(a);
+
+		if (lo == (int)sequences.size()) {
+			sequences.push_back({a});
+		} else {
+			sequences[lo].push_back({a});
+		}
 	}
-	for (vector<int> i : ans) {
-		for (int j : i) cout << j << ' ';
-		cout << '\n';
+
+	for (vector<int> i : sequences) {
+		for (int j : i) { std::cout << j << " "; }
+		std::cout << '\n';
 	}
-	return 0;
 }
 ```
+
 </CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class PreparingForMergeSort {
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
+		int n = io.nextInt();
+		List<List<Integer>> sequences = new ArrayList<>();
+
+		for (int i = 0; i < n; i++) {
+			int a = io.nextInt();
+			int lo = 0, hi = sequences.size();
+			while (lo < hi) {
+				int mid = (lo + hi) / 2;
+				if (sequences.get(mid).get(sequences.get(mid).size() - 1) < a) {
+					hi = mid;
+				} else {
+					lo = mid + 1;
+				}
+			}
+
+			if (lo == sequences.size()) {
+				sequences.add(new ArrayList<>(Collections.singletonList(a)));
+			} else {
+				sequences.get(lo).add(a);
+			}
+		}
+
+		for (List<Integer> i : sequences) {
+			for (int j : i) { io.print(j + " "); }
+			io.println();
+		}
+		io.close();
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
 <PySection>
 
 ```py
