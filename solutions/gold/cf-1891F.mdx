@@ -81,90 +81,95 @@ template <class T> class SumSegmentTree {
 const ll INF = 1e18;
 
 void solve() {
-    int q; cin >> q;
+	int q;
+	cin >> q;
 
-    vector<pair<int, ll> > upds;
-    int sz = 1;
-    vector<vector<int> > adj(q+2);
-    for (int i=1; i<=q; ++i) {
-        int t; cin >> t;
-        if (t == 1) {
-            // vertex added
-            int v; cin >> v;
-            sz++;
-            adj[v].push_back(sz);
-            adj[sz].push_back(v);
-            upds.push_back({sz, -INF});
-        } else {
-            // sum update
-            int v; ll x; cin >> v >> x;
-            upds.push_back({v, x});
-        }
-    }
+	vector<pair<int, ll>> upds;
+	int sz = 1;
+	vector<vector<int>> adj(q + 2);
+	for (int i = 1; i <= q; ++i) {
+		int t;
+		cin >> t;
+		if (t == 1) {
+			// vertex added
+			int v;
+			cin >> v;
+			sz++;
+			adj[v].push_back(sz);
+			adj[sz].push_back(v);
+			upds.push_back({sz, -INF});
+		} else {
+			// sum update
+			int v;
+			ll x;
+			cin >> v >> x;
+			upds.push_back({v, x});
+		}
+	}
 
-    int time = 0;
-    vector<int> start(sz+2, 0);
-    vector<int> end(sz+2, 0);
-    function<void(int, int)> euler = [&](int cur, int par) {
-        start[cur] = time++;
+	int time = 0;
+	vector<int> start(sz + 2, 0);
+	vector<int> end(sz + 2, 0);
+	function<void(int, int)> euler = [&](int cur, int par) {
+		start[cur] = time++;
 
-        for (int x : adj[cur]) {
-            if (x == par) continue;
-            euler(x, cur);
-        }
+		for (int x : adj[cur]) {
+			if (x == par) continue;
+			euler(x, cur);
+		}
 
-        end[cur] = time;
-    };
-    euler(1, -1);
+		end[cur] = time;
+	};
+	euler(1, -1);
 
-    vector<ll> vals(sz+2, 0);
-    SumSegmentTree<ll> segtree(vals);
+	vector<ll> vals(sz + 2, 0);
+	SumSegmentTree<ll> segtree(vals);
 
-    for (int i=0; i<q; ++i) {
-        pair<int, ll> here = upds[i];
+	for (int i = 0; i < q; ++i) {
+		pair<int, ll> here = upds[i];
 
-        if (upds[i].second == -INF) {
-            // set first dude to zero
-            int node = upds[i].first;
-            int tl = start[node];
-            int tr = end[node];
+		if (upds[i].second == -INF) {
+			// set first dude to zero
+			int node = upds[i].first;
+			int tl = start[node];
+			int tr = end[node];
 
-            ll curval = segtree.range_sum(0, start[node]);
-            ll tlval = segtree.range_sum(tl, tl);
-            ll trval = segtree.range_sum(tr, tr);
+			ll curval = segtree.range_sum(0, start[node]);
+			ll tlval = segtree.range_sum(tl, tl);
+			ll trval = segtree.range_sum(tr, tr);
 
-            segtree.set(tl, tlval-curval);
-            segtree.set(tr, trval+curval); // update entire subtree, why not
-        } else {
-            int node = upds[i].first;
-            int tl = start[node];
-            int tr = end[node];
-            
-            ll tlval = segtree.range_sum(tl, tl);
-            ll trval = segtree.range_sum(tr, tr);
-            segtree.set(tl, tlval+here.second);
-            segtree.set(tr, trval-here.second);
-        }
-    }
+			segtree.set(tl, tlval - curval);
+			segtree.set(tr, trval + curval);  // update entire subtree, why not
+		} else {
+			int node = upds[i].first;
+			int tl = start[node];
+			int tr = end[node];
 
-    for (int i = 1; i <= sz; ++i) {
-        ll curval = segtree.range_sum(0, start[i]);
+			ll tlval = segtree.range_sum(tl, tl);
+			ll trval = segtree.range_sum(tr, tr);
+			segtree.set(tl, tlval + here.second);
+			segtree.set(tr, trval - here.second);
+		}
+	}
 
-        cout << curval << " ";
-    }
-    cout << "\n";
+	for (int i = 1; i <= sz; ++i) {
+		ll curval = segtree.range_sum(0, start[i]);
+
+		cout << curval << " ";
+	}
+	cout << "\n";
 }
 
 int main() {
-    ios::sync_with_stdio(0);
-    cin.tie(0);
+	ios::sync_with_stdio(0);
+	cin.tie(0);
 
-    int t = 1; 
-    cin >> t;
-    while (t--) {
-        solve();
-        // cout << "DONE\n";
-    }
+	int t = 1;
+	cin >> t;
+	while (t--) {
+		solve();
+		// cout << "DONE\n";
+	}
 }
 ```
 
