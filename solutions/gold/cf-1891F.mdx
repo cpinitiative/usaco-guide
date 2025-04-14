@@ -109,51 +109,48 @@ int main() {
 		}
 
 		int time = 0;
-		vector<int> start(sz + 2, 0);
-		vector<int> end(sz + 2, 0);
+		vector<int> tin(sz + 2, 0);
+		vector<int> tout(sz + 2, 0);
 		function<void(int, int)> euler = [&](int cur, int par) {
-			start[cur] = time++;
+			tin[cur] = time++;
 
 			for (int x : adj[cur]) {
 				if (x == par) continue;
 				euler(x, cur);
 			}
 
-			end[cur] = time;
+			tout[cur] = time;
 		};
 		euler(1, -1);
 
 		vector<ll> vals(sz + 2, 0);
 		SumSegmentTree<ll> segtree(vals);
-		for (int i = 0; i < q; i++) {
-			pair<int, ll> here = upds[i];
+        for (const auto [node, val] : upds) {
 
-			if (upds[i].second == INT64_MIN) {
-				// set first dude to zero
-				int node = upds[i].first;
-				int tl = start[node];
-				int tr = end[node];
+			if (val == INT64_MIN) {
+				// set node to zero
+				int tl = tin[node];
+				int tr = tout[node];
 
-				ll curval = segtree.range_sum(0, start[node]);
+				ll curval = segtree.range_sum(0, tin[node]);
 				ll tlval = segtree.range_sum(tl, tl);
 				ll trval = segtree.range_sum(tr, tr);
 
 				segtree.set(tl, tlval - curval);
-				segtree.set(tr, trval + curval);  // update entire subtree, why not
+				segtree.set(tr, trval + curval);  // update entire subtree (nonexistent anyways)
 			} else {
-				int node = upds[i].first;
-				int tl = start[node];
-				int tr = end[node];
+				int tl = tin[node];
+				int tr = tout[node];
 
 				ll tlval = segtree.range_sum(tl, tl);
 				ll trval = segtree.range_sum(tr, tr);
-				segtree.set(tl, tlval + here.second);
-				segtree.set(tr, trval - here.second);
+				segtree.set(tl, tlval + val);
+				segtree.set(tr, trval - val);
 			}
 		}
 
 		for (int i = 1; i <= sz; ++i) {
-			ll curval = segtree.range_sum(0, start[i]);
+			ll curval = segtree.range_sum(0, tin[i]);
 
 			cout << curval << ' ';
 		}
