@@ -125,7 +125,7 @@ int main() {
 
 		vector<ll> vals(sz + 2, 0);
 		SumSegmentTree<ll> segtree(vals);
-        for (const auto [node, val] : upds) {
+		for (const auto [node, val] : upds) {
 
 			if (val == INT64_MIN) {
 				// set node to zero
@@ -137,7 +137,8 @@ int main() {
 				ll trval = segtree.range_sum(tr, tr);
 
 				segtree.set(tl, tlval - curval);
-				segtree.set(tr, trval + curval);  // update entire subtree (nonexistent anyways)
+				segtree.set(
+				    tr, trval + curval);  // update entire subtree (nonexistent anyways)
 			} else {
 				int tl = tin[node];
 				int tr = tout[node];
