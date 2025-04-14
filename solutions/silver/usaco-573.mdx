@@ -172,38 +172,40 @@ public class highcardgold {
 <PySection>
 ```py
 with open("cardgame.in", "r") as read:
-    N = int(read.readline())
-    elsie = [int(read.readline()) for i in range(N)]
-    set_elsie = set(elsie)
-    bessie = [i for i in range(1, 2 * N + 1) if i not in set_elsie] # find bessie's cards
+	N = int(read.readline())
+	elsie = [int(read.readline()) for i in range(N)]
+	set_elsie = set(elsie)
+	bessie = [
+		i for i in range(1, 2 * N + 1) if i not in set_elsie
+	]  # find bessie's cards
 
-'''
+"""
 find the cards they use for both games and sort, it's best to use highest cards for first N/2 and lowest for second N/2
-'''
-elsie_high = sorted(elsie[:N // 2], reverse=True)
-elsie_low = sorted(elsie[N // 2:])
-bessie_high = sorted(bessie[N // 2:], reverse=True)
-bessie_low = sorted(bessie[:N // 2])
-wins, bessie_index = 0, 0 # keep track of wins and index of bessie's card
+"""
+elsie_high = sorted(elsie[: N // 2], reverse=True)
+elsie_low = sorted(elsie[N // 2 :])
+bessie_high = sorted(bessie[N // 2 :], reverse=True)
+bessie_low = sorted(bessie[: N // 2])
+wins, bessie_index = 0, 0  # keep track of wins and index of bessie's card
 
 # first half - high card
 for i in range(N // 2):
-    '''
-    if bessie's card is higher than elsie's card, then go to next bessie card and elsie card, otherwise bessie can use her worst
-    '''
-    if bessie_high[bessie_index] > elsie_high[i]:
-        wins += 1
-        bessie_index += 1
+	"""
+	if bessie's card is higher than elsie's card, then go to next bessie card and elsie card, otherwise bessie can use her worst
+	"""
+	if bessie_high[bessie_index] > elsie_high[i]:
+		wins += 1
+		bessie_index += 1
 
 # reversed logic for low card
 bessie_index = 0
 for i in range(N // 2):
-    '''
-    if bessie's card is lower than elsie's card, then go to next bessie card and elsie card, otherwise bessie can use her worst
-    '''
-    if bessie_low[bessie_index] < elsie_low[i]:
-        wins += 1
-        bessie_index += 1
+	"""
+	if bessie's card is lower than elsie's card, then go to next bessie card and elsie card, otherwise bessie can use her worst
+	"""
+	if bessie_low[bessie_index] < elsie_low[i]:
+		wins += 1
+		bessie_index += 1
 
 print(wins, file=open("cardgame.out", "w"))
 ```
