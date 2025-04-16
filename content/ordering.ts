@@ -171,7 +171,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
     {
       name: 'Additional Topics',
       description: 'Rarely required.',
-      items: ['hashing', 'hashmaps', 'meet-in-the-middle'],
+      items: ['hashing', 'hashmaps', 'meet-in-the-middle', 'ternary-search'],
     },
     {
       name: 'Conclusion',
@@ -194,7 +194,14 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
     },
     {
       name: 'Trees',
-      items: ['binary-jump', 'merging', 'hld', 'centroid', 'VT'],
+      items: [
+        'binary-jump',
+        'merging',
+        'hld',
+        'centroid',
+        'VT',
+        'kruskal-tree',
+      ],
     },
     {
       name: 'Geometry',
@@ -264,6 +271,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
         'game-theory',
         'multiplicative',
         'matroid-isect',
+        'random',
         'interactive',
         'vectorization',
       ],

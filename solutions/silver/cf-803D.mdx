@@ -2,7 +2,7 @@
 id: cf-803D
 source: CF
 title: Magazine Ad
-author: Alex Du
+author: Alex Du, Rameez Parwez
 ---
 
 <Spoiler title="Hint 1">
@@ -103,6 +103,77 @@ int main() {
 ```
 
 </CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class MagazineAd {
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+
+		int maxLines = Integer.parseInt(st.nextToken());
+		String ad = br.readLine();
+
+		List<Integer> wordLengths = new ArrayList<>();
+		// get sizes of each word, including trailing spaces and trailing hyphens
+		wordLengths.add(0);
+
+		for (char i : ad.toCharArray()) {
+			wordLengths.set(wordLengths.size() - 1,
+			                wordLengths.get(wordLengths.size() - 1) + 1);
+
+			// spaces and hyphens work the same, start new word after adding char
+			if (i == ' ' || i == '-') { wordLengths.add(0); }
+		}
+
+		/*
+		 * find the lowest width that doesn't use greater than max_lines
+		 * binary search code: https://usaco.guide/silver/binary-search
+		 */
+		int lo = 0;
+		int hi = ad.length() + 1;
+		while (lo < hi) {
+			int mid = lo + (hi - lo) / 2;
+			if (widthValid(mid, wordLengths, maxLines)) {
+				hi = mid;
+			} else {
+				lo = mid + 1;
+			}
+		}
+
+		System.out.println(lo);
+	}
+
+	/** @return if the most optimized ad of the given width satisfies constraints */
+	private static boolean widthValid(int width, List<Integer> wordLengths,
+	                                  int maxLines) {
+		int lines = 0;
+		int currWidth = 0;
+
+		for (int wordLength : wordLengths) {
+			// if individual word is wider than the ad width, we need a greater width
+			if (wordLength > width) { return false; }
+
+			// if we overflow, we need a new line
+			if (currWidth + wordLength > width) {
+				lines++;
+				currWidth = wordLength;
+			} else {
+				currWidth += wordLength;  // add word to current line
+			}
+		}
+
+		if (currWidth > 0) { lines++; }
+
+		return lines <= maxLines;
+	}
+}
+```
+
+</JavaSection>
 <PySection>
 
 <Warning>
