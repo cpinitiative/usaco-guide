@@ -1,0 +1,289 @@
+---
+id: ternary-search
+title: 'Optimizing Unimodal Functions'
+author: Justin Ji, Chongtian Ma
+prerequisites:
+  - binary-search
+description: 'Using ternary or binary search to find the mode of unimodal functions.'
+frequency: 1
+---
+
+<Resources>
+	<Resource
+		source="cp-algo"
+		title="Ternary Search"
+		url="https://cp-algorithms.com/num_methods/ternary_search.html"
+		starred
+	/>
+</Resources>
+
+## Introduction
+
+In competitive programming, we are often asked to find the minimum or maximum value we can attain under some conditions. More specifically,
+we are often asked to formulate some function $f(x)$, and find the maximum or minimum value of $f(x)$.
+
+If our function happens to be **unimodal**, we can use either
+ternary search or binary search to find the mode of our function
+efficiently.
+
+### Definitions
+
+A function is unimodal if one of the following conditions holds:
+1. The function **strictly increases** first, then reaches a maximum, then **strictly decreases**.
+2. The function **strictly decreases** first, then reaches a minimum, then **strictly increases**.
+
+Let's assume that we want to find the local minimum of our function. Then, a
+function is convex if **consecutive differences are non-decreasing**. In calculus
+terms, if the derivative of the function is non-decreasing, the function is convex.
+
+Note that this implies that a convex function is also a unimodal function.
+
+## Ternary Search
+
+For now, let's assume that we want to find the minimum of our function, and that our function is unimodal. This means that the second condition holds, meaning our function **strictly decreases** first, reaches its minimum, then **strictly increases**.
+
+The idea behind ternary search is somewhat similar to binary search. At every
+step of our algorithm, we want to cut out some large portion of our search
+space from being considered.
+
+Let's consider two points $m_1$ and $m_2$, where $l < m_1 < m_2 < r$. Here,
+$l$ and $r$ are the endpoints of our current search space. This ends up dividing
+our search space into three sections.
+
+Now, we just do a bit of casework to see if we can eliminate any sections.
+
+1. $f(m_1) > f(m_2)$ means that we can eliminate $[l, m_1)$
+2. $f(m_1) < f(m_2)$ means that we can eliminate $(m_2, r]$
+3. $f(m_1) = f(m_2)$ means that we can eliminate $[l, m_1)$ and $(m_2, r]$
+
+<!--
+TODO: add manim animation (for the future)
+-->
+
+Typically, we treat case 3 as being analogous to cases 1 and 2.
+
+As a mini-proof for why the way we handle case 1 is correct, consider the
+following:
+
+> If $f(m_1) > f(m_2)$, then we know the following two facts:
+> -  $f(m_1)$ is not the minimum
+> - $f(m_1)$ cannot be on the strictly increasing side of the function
+> Regarding the second point, if $f(m_1) > f(m_2)$ and $m_1$ was on the strictly increasing side of the function, that would imply $m_1 > m_2$, which is a contradiction.
+>
+> Thus, we can conclude that $m_1$ remains on the strictly decreasing section of our function. Because of this, we can conclude that our minimum will not be in the range $[l, m_1)$, so we can eliminate this section from our search space.
+
+Now that we know how to strategically remove sections of our search space,
+the question remains on how to choose the best values of $m_1$ and $m_2$.
+The optimal way is to divide our search space into thirds, so we have:
+
+$$
+m_1 = l + \frac{r - l}{3}, \ m_2 = r - \frac{r - l}{3}
+$$
+
+
+### Implementation
+
+The time complexity of ternary search takes on the following recurrence:
+
+$$
+T(n) = T \left(\frac{2n}{3} \right) + \mathcal{O}(1)
+$$
+
+Per the [Master theorem](https://en.wikipedia.org/wiki/Master_theorem_(analysis_of_algorithms)), this is $\mathcal{O}(\log{n})$ if we are working with integers.
+
+If we are ternary searching with a fixed error margin $\epsilon$, the
+time complexity becomes $\mathcal{O}\left( \log\left( \frac{n}{\epsilon} \right) \right)$.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+template <typename F> double find_min(double l, double r, double eps, const F &f) {
+	while (r - l > eps) {
+		double m1 = l + (r - l) / 3;
+		double m2 = r - (r - l) / 3;
+		f(m1) > f(m2) ? l = m1 : r = m2;
+	}
+
+	return l;
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
+If our function only takes in integers, then our implementation looks a little
+different.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+template <typename F> int find_min(int l, int r, const F &f) {
+	while (r - l > 3) {
+		int m1 = l + (r - l) / 3;
+		int m2 = r - (r - l) / 3;
+		f(m1) > f(m2) ? l = m1 : r = m2;
+	}
+
+	int res = l;
+	for (int i = l + 1; i <= r; i++) {
+		if (f(i) < f(res)) { res = i; }
+	}
+
+	return res;
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
+## Binary Search
+
+Actually, in the case of our function only taking in integers, binary search
+is often a better option, as it's shorter and requires less calls to our function
+$f(x)$.
+
+However, if we are working with floating points, binary search may be a bit more
+problematic because of loss of precision. For this reason, ternary
+search is still sometimes preferable.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+template <typename F> int find_min(int l, int r, const F &f) {
+	while (l < r) {
+		int m = (l + r) / 2;
+		f(m) < f(m + 1) ? r = m : l = m + 1;
+	}
+
+	return l;
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
+The way the binary search approach works is that it finds the first point where
+the function becomes strictly increasing. This works because we assume that
+our function takes the form of strictly decreasing, reaching its minimum,
+then strictly increasing. Thus, the first point where our function becomes strictly
+increasing is the turning point of our function, which is the minimum.
+
+## Example - Haybale Distribution
+
+<FocusProblem problem="sample" />
+
+### Explanation
+
+Let's define a function $f(y)$ that evaluates the cost of transporting all the haybales if we deliver the haybales at point $y$. Can we show that this
+function is either unimodal or convex?
+
+An important fact to know when showing that a function is convex is that
+**the sum of convex functions is convex**.
+
+Here, $f(y)$ is the sum of all the individual cost functions for each barn.
+The cost function for a given barn is convex, so it turns out that $f(y)$
+is also convex!
+
+Given that a convex function is unimodal, this allows us to
+ternary search on it. Thus, we can find the minimum in $\mathcal{O}(\log{N})$
+per query.
+
+### Implementation
+
+**Time Complexity:** $\mathcal{O}((N + Q) \log{N})$
+
+Note that the implementation below uses binary search instead, as it's a bit
+easier to implement.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+using ll = long long;
+
+int main() {
+	int n;
+	std::cin >> n;
+	std::vector<int> x(n);
+	for (int &i : x) { std::cin >> i; }
+
+	std::sort(x.begin(), x.end());
+
+	// compute prefix sums on x[i] values
+	std::vector<ll> pref(n + 1);
+	for (int i = 1; i <= n; i++) { pref[i] = pref[i - 1] + x[i - 1]; }
+
+	/** @return sum of x[i] on range [l, r] */
+	const auto pref_sum = [&](int l, int r) -> ll { return pref[r + 1] - pref[l]; };
+
+	// only keep track of distinct x[i]
+	std::vector<int> unique_x = {0};
+	for (int i = 1; i < n; i++) {
+		if (x[i] != x[i - 1]) { unique_x.push_back(i); }
+	}
+
+	int query_num;
+	std::cin >> query_num;
+	for (int q = 0; q < query_num; q++) {
+		int a, b;
+		std::cin >> a >> b;
+
+		/** @return cost of delivering hay at x[unique_x[idx]] */
+		const auto cost = [&](int idx) -> ll {
+			int loc = unique_x[idx];
+			ll left_dists = 1ll * x[loc] * loc - pref_sum(0, loc - 1);
+			ll right_dists = pref_sum(loc, n - 1) - 1ll * x[loc] * (n - loc);
+			return left_dists * a + right_dists * b;
+		};
+
+		/*
+		 * We use binary search to find the minimum (instead of ternary).
+		 * In this case, we find the first point where the function becomes increasing.
+		 *
+		 * To optimize each query to O(log n), we choose to only consider
+		 * unique x[i] values to deliver our haybales at.
+		 */
+		int l = 0, r = unique_x.size() - 1;
+		while (l < r) {
+			int m = (l + r) / 2;
+			cost(m) < cost(m + 1) ? r = m : l = m + 1;
+		}
+
+		std::cout << cost(l) << '\n';
+	}
+}
+```
+
+<Warning>
+
+On the [official editorial](https://usaco.org/current/data/sol_prob3_gold_dec23.html) for
+this problem, you will see the following warning:
+
+> Note: Make sure to search only on distinct values of $x$, or you might end up with the wrong answer.
+
+Why is this? Recall the definition of unimodality if we are trying to find the
+local minimum of our function.
+
+> A function is unimodal if it **strictly decreases** first, then reaches a minimum, then **strictly increases**.
+
+We are very specific about the function having to strictly increase and decrease.
+This is because we can only allow our function to be flat at the minimum! If we have
+a flat section anywhere else, it's possible that our ternary search ends up eliminating the wrong section.
+
+Tying back to the problem at hand: if we allow searching on duplicate values of
+$x$, we end up creating flat intervals in our cost function, which can
+lead to our ternary search producing an incorrect answer.
+
+</Warning>
+
+</CPPSection>
+</LanguageSection>
+
+## Problems
+
+<Problems problems="probs" />

@@ -171,7 +171,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
     {
       name: 'Additional Topics',
       description: 'Rarely required.',
-      items: ['hashing', 'hashmaps', 'meet-in-the-middle'],
+      items: ['hashing', 'hashmaps', 'meet-in-the-middle', 'ternary-search'],
     },
     {
       name: 'Conclusion',
