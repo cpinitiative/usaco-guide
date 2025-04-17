@@ -147,57 +147,55 @@ template <class T> class MinSegmentTree {
 };
 // EndCodeSnip
 
-void solve() {
-	int n;
-	cin >> n;
-
-	for (int i = 0; i <= n; i++) {
-		adj[i].clear();
-		at_d[i].clear();
-	}
-
-	MinSegmentTree<int> rmq(n);
-	for (int i = 0; i < n; i++) {
-		int a;
-		cin >> a;
-		rmq.set(i, a);
-	}
-
-	for (int i = 1; i < n; i++) {
-		int u, v;
-		cin >> u >> v;
-		u--, v--;
-		adj[u].push_back(v);
-		adj[v].push_back(u);
-	}
-
-	dfs(0, 0);
-
-	ll ans = 0;
-
-	for (int dep = 0; dep < n; dep++) {
-		vector<int> vt = vtree(at_d[dep]);
-		reverse(vt.begin(), vt.end());
-
-		for (int v : vt) {
-			dp[v] = rmq.range_min(dep - d[v], dep + 1);
-
-			if (!vadj[v].empty()) {
-				ll sum = 0;
-				for (int u : vadj[v]) { sum += dp[u]; }
-				dp[v] = min(dp[v], sum);
-			}
-		}
-
-		if (!vt.empty()) { ans += dp[vt.back()]; }
-	}
-
-	cout << ans << "\n";
-}
-
 int main() {
 	int test_num;
 	cin >> test_num;
-	for (int t = 0; t < test_num; t++) { solve(); }
+	for (int t = 0; t < test_num; t++) {	
+		int n;
+		cin >> n;
+	
+		for (int i = 0; i <= n; i++) {
+			adj[i].clear();
+			at_d[i].clear();
+		}
+	
+		MinSegmentTree<int> rmq(n);
+		for (int i = 0; i < n; i++) {
+			int a;
+			cin >> a;
+			rmq.set(i, a);
+		}
+	
+		for (int i = 1; i < n; i++) {
+			int u, v;
+			cin >> u >> v;
+			u--, v--;
+			adj[u].push_back(v);
+			adj[v].push_back(u);
+		}
+	
+		dfs(0, 0);
+	
+		ll ans = 0;
+	
+		for (int dep = 0; dep < n; dep++) {
+			vector<int> vt = vtree(at_d[dep]);
+			reverse(vt.begin(), vt.end());
+	
+			for (int v : vt) {
+				dp[v] = rmq.range_min(dep - d[v], dep + 1);
+	
+				if (!vadj[v].empty()) {
+					ll sum = 0;
+					for (int u : vadj[v]) { sum += dp[u]; }
+					dp[v] = min(dp[v], sum);
+				}
+			}
+	
+			if (!vt.empty()) { ans += dp[vt.back()]; }
+		}
+	
+		cout << ans << "\n";
+	}
 }
 ```
