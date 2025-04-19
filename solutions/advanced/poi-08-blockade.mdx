@@ -5,21 +5,21 @@ title: Blockade
 author: Mihnea Brebenel
 ---
 
-## Explanation 
+## Explanation
 
 The number of severed visits can be computed at the same time whle searching for articulation points. There are two cases to consider for node $u$:
 
 1. Node $u$ is not an articulation point, then the number of severed visits by removing the noed is $2 \times (n - 1)$
-2. Node $u$ is an articulation point, then the number of severed visits by removing the node is $2 \times (n - 1)$ plus 
+2. Node $u$ is an articulation point, then the number of severed visits by removing the node is $2 \times (n - 1)$ plus
 the number of visits whose path goes through node $u$.
 
-## Implementation 
+## Implementation
 
 **Time Complexity:** $\mathcal{O}(N)$
 
 <LanguageSection>
 <CPPSection>
-```cpp 
+```cpp
 #include <bits/stdc++.h>
 
 using namespace std;
@@ -58,7 +58,7 @@ int main() {
 				sz[node] += sz[son];
 				if (low[son] >= id[node]) {
 					s += sz[son];
-                    // Add the visits going into the son's substree
+					// Add the visits going into the son's substree
 					ans[node] += 1LL * 2 * sz[son] * (n - s);
 				}
 			} else {
@@ -69,9 +69,7 @@ int main() {
 
 	dfs(1, 0);
 
-	for (int i = 1; i <= n; i++) {
-		cout << ans[i] << '\n';
-	}
+	for (int i = 1; i <= n; i++) { cout << ans[i] << '\n'; }
 
 	return 0;
 }
