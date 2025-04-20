@@ -181,11 +181,11 @@ else:
 We can generalize the technique above to calculate values in any linear recurrence. The tricky part is finding the correct matrix for the problem. Let's see how we can find this matrix $M$. We know that following equation must hold:
 
 $$
-	\begin{bmatrix} 
+	\begin{bmatrix}
     M_{1,1} & M_{1, 2} & \dots \\
-    \vdots & \ddots & \vdots \\ 
-    M_{k, 1} & \dots & M_{k, k} 
-    \end{bmatrix} 
+    \vdots & \ddots & \vdots \\
+    M_{k, 1} & \dots & M_{k, k}
+    \end{bmatrix}
 	\begin{bmatrix}
 	a_1 \\ \vdots \\ a_k
 	\end{bmatrix} =
@@ -197,27 +197,27 @@ $$
 Here, we use the values of $a_1, \dots, a_n$ to find $a_{k+1}$. We can also discard $a_1$ since it won't be used to calculate $a_{k+2}$. If we thinking about the matrix multiplication, we notice that there is a diagonal of $1$s shifted to the right by $1$ since $a_i \rarr a_{i + 1}$ for $i < k$. So now we have (using $k = 5$ as an example):
 
 $$
-M =	\begin{bmatrix} 
+M =	\begin{bmatrix}
 	0 & 1 & 0 & 0 & 0 \\
 	0 & 0 & 1 & 0 & 0 \\
 	0 & 0 & 0 & 1 & 0 \\
 	0 & 0 & 0 & 0 & 1 \\
     M_{5, 1} & M_{5, 2} & M_{5, 3} & M_{5, 4} & M_{5, 5}
-    \end{bmatrix} 
+    \end{bmatrix}
 $$
 
 To find the bottom row, we use the recurrence formula:
 $$
-M =	\begin{bmatrix} 
+M =	\begin{bmatrix}
 	0 & 1 & 0 & 0 & 0 \\
 	0 & 0 & 1 & 0 & 0 \\
 	0 & 0 & 0 & 1 & 0 \\
 	0 & 0 & 0 & 0 & 1 \\
     c_5 & c_4 & c_3 & c_2 & c_1
-    \end{bmatrix} 
+    \end{bmatrix}
 $$
 
-With this $M$, the equation always holds. 
+With this $M$, the equation always holds.
 
 <LanguageSection>
 
@@ -232,96 +232,80 @@ With this $M$, the equation always holds.
 using namespace std;
 typedef long long ll;
 const int mod = 1e9;
-template<typename T>
-void matmul(vector<vector<T>> &a, vector<vector<T>> b) {
-    int n = a.size(), m = a[0].size(), p = b[0].size();
-    assert(m == b.size());
-    vector<vector<T>> c(n, vector<T>(p));
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < p; j++) {
-            for (int k = 0; k < m; k++) {
-                c[i][j] = (c[i][j] + a[i][k] * b[k][j]) % mod;
-            }
-        }
-    }
-    
-    a = c;
+template <typename T> void matmul(vector<vector<T>> &a, vector<vector<T>> b) {
+	int n = a.size(), m = a[0].size(), p = b[0].size();
+	assert(m == b.size());
+	vector<vector<T>> c(n, vector<T>(p));
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < p; j++) {
+			for (int k = 0; k < m; k++) {
+				c[i][j] = (c[i][j] + a[i][k] * b[k][j]) % mod;
+			}
+		}
+	}
+
+	a = c;
 }
- 
-template<typename T>
-struct Matrix {
-    vector<vector<T>> mat;
-    Matrix() {}
-    Matrix(vector<vector<T>> a) {mat = a;}
-    Matrix(int n, int m) {
-        mat.resize(n);
-        for (int i = 0; i < n; i++) {
-            mat[i].resize(m);
-        }
-    }
-    
-    int rows() {return mat.size();}
-    int cols() {return mat[0].size();}
-    // makes the identity matrix for a n by n matrix
-    void makeiden() {
-        for (int i = 0; i < rows(); i++) {
-            mat[i][i] = 1;
-        }
-    }
-    
-    void print() {
-        for (int i = 0; i < rows(); i++) {
-            for (int j = 0; j < cols(); j++) {
-                cout << mat[i][j] << " ";
-            }
-            
-            cout << "\n";
-        }
-    }
-    
-    Matrix operator *= (const Matrix &b) {
-        matmul(mat, b.mat);
-        return *this;
-    }
-    
-    Matrix operator * (const Matrix &b) {return Matrix(*this) *= b;}
+
+template <typename T> struct Matrix {
+	vector<vector<T>> mat;
+	Matrix() {}
+	Matrix(vector<vector<T>> a) { mat = a; }
+	Matrix(int n, int m) {
+		mat.resize(n);
+		for (int i = 0; i < n; i++) { mat[i].resize(m); }
+	}
+
+	int rows() { return mat.size(); }
+	int cols() { return mat[0].size(); }
+	// makes the identity matrix for a n by n matrix
+	void makeiden() {
+		for (int i = 0; i < rows(); i++) { mat[i][i] = 1; }
+	}
+
+	void print() {
+		for (int i = 0; i < rows(); i++) {
+			for (int j = 0; j < cols(); j++) { cout << mat[i][j] << " "; }
+
+			cout << "\n";
+		}
+	}
+
+	Matrix operator*=(const Matrix &b) {
+		matmul(mat, b.mat);
+		return *this;
+	}
+
+	Matrix operator*(const Matrix &b) { return Matrix(*this) *= b; }
 };
- 
+
 void solve() {
-    int n, k;
-    cin >> k;
-    Matrix<ll> mat(k, k), vec(k, 1), cur(k, k);
-    cur.makeiden();
-    for (int i = 0; i < k; i++) {
-        cin >> vec.mat[i][0];
-    }
-    
-    for (int i = 0; i < k; i++) {
-        cin >> mat.mat[k - 1][k - i - 1];
-    }
-    
-    for (int i = 1; i < k; i++) {
-        mat.mat[i - 1][i] = 1;
-    }
-    
-    cin >> n;
-    n--;
-    while (n > 0) {
-        if (n & 1) cur *= mat;
-        mat *= mat;
-        n >>= 1;
-    }
-    
-    Matrix<ll> res = cur * vec;
-    cout << res.mat[0][0] << "\n";
+	int n, k;
+	cin >> k;
+	Matrix<ll> mat(k, k), vec(k, 1), cur(k, k);
+	cur.makeiden();
+	for (int i = 0; i < k; i++) { cin >> vec.mat[i][0]; }
+
+	for (int i = 0; i < k; i++) { cin >> mat.mat[k - 1][k - i - 1]; }
+
+	for (int i = 1; i < k; i++) { mat.mat[i - 1][i] = 1; }
+
+	cin >> n;
+	n--;
+	while (n > 0) {
+		if (n & 1) cur *= mat;
+		mat *= mat;
+		n >>= 1;
+	}
+
+	Matrix<ll> res = cur * vec;
+	cout << res.mat[0][0] << "\n";
 }
- 
+
 int main() {
-    int tt;
-    cin >> tt;
-    while (tt--) {
-        solve();
-    }
+	int tt;
+	cin >> tt;
+	while (tt--) { solve(); }
 }
 ```
 </CPPSection>
@@ -335,7 +319,7 @@ The takeaway here is not the exact matrix used in linear recurrences, but the me
 <Spoiler title = "Solution">
 
 $$
-	\begin{bmatrix} 
+	\begin{bmatrix}
 	0 & 1 & 0 & 0 & 0 & 0 \\
 	0 & 0 & 1 & 0 & 0 & 0 \\
 	0 & 0 & 0 & 1 & 0 & 0 \\
