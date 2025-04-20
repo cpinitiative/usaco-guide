@@ -37,11 +37,11 @@ frequency: 1
 	</Resource>
 </Resources>
 
-# Motivation
+<!-- # Motivation
 
 Consider some array $a_1, a_2, \dots, a_n$. Now, consider an operation that generates $a_1', a_2', \dots, a_n'$, in which $a_i'$ is a linear combination of the values $a_1, a_2, \dots, a_n$. For example, consider the following problem:
 
-On day $0$, you have $1$ happy cookie and $1$ sad cookie. On each day, 
+On day $0$, you have $1$ happy cookie and $1$ sad cookie. On each day,  -->
 ## Example - Fibonacci
 
 <FocusProblem problem='sample' />
@@ -176,6 +176,7 @@ else:
 </LanguageSection>
 
 ## Finding the Right Matrix - Generalized Linear Recurrences
+<FocusProblem problem='sample2' />
 
 We can generalize the technique above to calculate values in any linear recurrence. The tricky part is finding the correct matrix for the problem. Let's see how we can find this matrix $M$. We know that following equation must hold:
 
@@ -186,14 +187,10 @@ $$
     M_{k, 1} & \dots & M_{k, k} 
     \end{bmatrix} 
 	\begin{bmatrix}
-	a_1 \\
-	\vdots \\
-	a_k
+	a_1 \\ \vdots \\ a_k
 	\end{bmatrix} =
 	\begin{bmatrix}
-	a_2 \\
-	\vdots \\
-	a_{k + 1}
+	a_2 \\ \vdots \\ a_{k + 1}
 	\end{bmatrix}
 $$
 
@@ -292,27 +289,27 @@ struct Matrix {
  
 void solve() {
     int n, k;
-    cin >> n;
-    Matrix<ll> mat(n, n), vec(n, 1), cur(n, n);
+    cin >> k;
+    Matrix<ll> mat(k, k), vec(k, 1), cur(k, k);
     cur.makeiden();
-    for (int i = 0; i < n; i++) {
+    for (int i = 0; i < k; i++) {
         cin >> vec.mat[i][0];
     }
     
-    for (int i = 0; i < n; i++) {
-        cin >> mat.mat[n - 1][n - i - 1];
+    for (int i = 0; i < k; i++) {
+        cin >> mat.mat[k - 1][k - i - 1];
     }
     
-    for (int i = 1; i < n; i++) {
+    for (int i = 1; i < k; i++) {
         mat.mat[i - 1][i] = 1;
     }
     
-    cin >> k;
-    k--;
-    while (k > 0) {
-        if (k & 1) cur *= mat;
+    cin >> n;
+    n--;
+    while (n > 0) {
+        if (n & 1) cur *= mat;
         mat *= mat;
-        k >>= 1;
+        n >>= 1;
     }
     
     Matrix<ll> res = cur * vec;
@@ -333,8 +330,28 @@ int main() {
 
 ## Takeaway
 
-The takeaway here is not the exact matrix used in linear recurrences, but the method in deriving it. The process of thinking about the vector before and after applying $M$, then deducing $M$ through logic, is a technique that generalizes far beyond standard linear recurrences. 
+The takeaway here is not the exact matrix used in linear recurrences, but the method in deriving it. The process of thinking about a vector before and after applying $M$, then deducing $M$ through logic, is a technique that generalizes far beyond standard linear recurrences. For example, see if you can find the equation needed and correct matrix (using $k = 5$ as an example) to solve this modified recurrence: $a_i = c_1a_{i-1} + c_2a_{i-2} + ... + c_ka_{i-k} + C$ for $i > k$, where $C$ is a given constant.
 
+<Spoiler title = "Solution">
+
+$$
+	\begin{bmatrix} 
+	0 & 1 & 0 & 0 & 0 & 0 \\
+	0 & 0 & 1 & 0 & 0 & 0 \\
+	0 & 0 & 0 & 1 & 0 & 0 \\
+	0 & 0 & 0 & 0 & 1 & 0 \\
+    c_5 & c_4 & c_3 & c_2 & c_1 & 1 \\
+	0 & 0 & 0 & 0 & 0 & 1
+    \end{bmatrix}
+	\begin{bmatrix}
+	a_1 \\ a_2 \\ a_3 \\ a_4 \\ a_5 \\ C
+	\end{bmatrix} =
+	\begin{bmatrix}
+	a_2 \\ a_3 \\ a_4 \\ a_5 \\ a_6 \\ C
+	\end{bmatrix}
+$$
+
+</Spoiler>
 ## Problems
 
 <Problems problems="probs" />
