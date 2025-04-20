@@ -7,10 +7,10 @@ import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import { usePost } from '../../../hooks/groups/usePost';
 import { usePostActions } from '../../../hooks/groups/usePostActions';
 import { useProblem } from '../../../hooks/groups/useProblem';
-import TopNavigationBar from '../../TopNavigationBar/TopNavigationBar';
 import Layout from '../../layout';
 import Spoiler from '../../markdown/Spoiler';
 import SEO from '../../seo';
+import TopNavigationBar from '../../TopNavigationBar/TopNavigationBar';
 import Breadcrumbs from '../Breadcrumbs';
 import SafeMarkdownRenderer from '../SafeMarkdownRenderer';
 import ProblemSidebar from './ProblemSidebar';
@@ -38,20 +38,20 @@ export default function ProblemPage(props) {
         title={`Problem: ${problem.name} · ${activeGroup.groupData!.name}`}
       />
       <TopNavigationBar />
-      <nav className="flex mt-6 mb-4" aria-label="Breadcrumb">
+      <nav className="mt-6 mb-4 flex" aria-label="Breadcrumb">
         <Breadcrumbs
-          className="max-w-screen-xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-3 pb-4"
+          className="mx-auto w-full max-w-(--breakpoint-xl) px-4 pt-3 pb-4 sm:px-6 lg:px-8"
           group={activeGroup.groupData!}
           post={post}
         />
       </nav>
       <main
-        className="flex-1 relative overflow-y-auto focus:outline-none"
+        className="relative flex-1 overflow-y-auto focus:outline-hidden"
         tabIndex={-1}
       >
         <div className="pb-8 xl:pb-10">
-          <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 xl:max-w-screen-xl xl:grid xl:grid-cols-3">
-            <div className="xl:col-span-2 xl:pr-8 xl:border-r xl:border-gray-200 dark:border-gray-700">
+          <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 xl:grid xl:max-w-(--breakpoint-xl) xl:grid-cols-3">
+            <div className="xl:col-span-2 xl:border-r xl:border-gray-200 xl:pr-8 dark:border-gray-700">
               <div className="md:flex md:items-center md:justify-between md:space-x-4 xl:border-b xl:pb-6 dark:border-gray-700">
                 <div>
                   <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
@@ -91,7 +91,7 @@ export default function ProblemPage(props) {
                       className="btn"
                     >
                       <svg
-                        className="-ml-1 mr-2 h-5 w-5 text-gray-400"
+                        className="mr-2 -ml-1 h-5 w-5 text-gray-400"
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
                         viewBox="0 0 24 24"
@@ -108,7 +108,7 @@ export default function ProblemPage(props) {
                     </button>
                     <Link to="edit" className="btn">
                       <svg
-                        className="-ml-1 mr-2 h-5 w-5 text-gray-400"
+                        className="mr-2 -ml-1 h-5 w-5 text-gray-400"
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 20 20"
                         fill="currentColor"
@@ -179,7 +179,7 @@ export default function ProblemPage(props) {
                         ((problem.solutionReleaseMode == 'due-date' &&
                           post.dueTimestamp) ||
                           problem.solutionReleaseMode == 'custom') && (
-                          <p className="text-gray-600 dark:text-gray-400 italic">
+                          <p className="text-gray-600 italic dark:text-gray-400">
                             The problem solution will be released on{' '}
                             {problem &&
                               dayjs(

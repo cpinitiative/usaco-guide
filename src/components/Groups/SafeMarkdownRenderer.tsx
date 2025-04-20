@@ -35,7 +35,7 @@ const VideoComponent = ({ link }: { link: string }) => {
       >
         <div
           className={
-            'absolute top-0 left-0 w-full h-full border-2 border-solid bg-gray-200'
+            'absolute top-0 left-0 h-full w-full border-2 border-solid bg-gray-200'
           }
         >
           <p className={'text-center'}>

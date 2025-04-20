@@ -1,4 +1,3 @@
-import * as Sentry from '@sentry/browser';
 import { getAuth, onAuthStateChanged, signOut, User } from 'firebase/auth';
 import {
   doc,
@@ -37,7 +36,6 @@ export type UserData = {
     season: string;
   };
   lang: Language;
-  lastReadAnnouncement: string;
   lastViewedModule: string;
   lastVisitDate: number; // timestamp
   numPageviews: number;
@@ -91,7 +89,6 @@ export const assignDefaultsToUserData = (data: object): UserData => {
       season: '',
     },
     lang: 'cpp',
-    lastReadAnnouncement: '',
     lastViewedModule: '',
     lastVisitDate: new Date().getTime(),
     numPageviews: 0,
@@ -230,11 +227,6 @@ export const UserDataProvider = ({
           },
           error: error => {
             toast.error(error.message);
-            Sentry.captureException(error, {
-              extra: {
-                userId: user.uid,
-              },
-            });
           },
         });
       }

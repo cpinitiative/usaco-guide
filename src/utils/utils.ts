@@ -1,5 +1,3 @@
-import clsx, { ClassValue } from 'clsx';
-import { twMerge } from 'tailwind-merge';
 import MODULE_ORDERING from '../../content/ordering';
 import { ModuleInfo } from '../models/module';
 
@@ -45,5 +43,3 @@ export function graphqlToModuleInfo(mdx): ModuleInfo {
 export function removeDuplicates<T>(arr: T[]): T[] {
   return [...new Map(arr.map(item => [JSON.stringify(item), item])).values()];
 }
-
-export const cn = (...classes: ClassValue[]) => twMerge(clsx(...classes));

@@ -2,15 +2,28 @@
 id: usaco-573
 source: USACO Gold 2015 December
 title: High Card Low Card (Gold)
-author: Qi Wang, Ishwarendra Jha
+author: Qi Wang, Ishwarendra Jha, Sachet Abeysinghe
 ---
+
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_cardgame_gold_dec15.html)
+
+## Explanation
+
+First, let's note that we can consider each half of Elsie's cards independently, and it is fine to rearrange each half in any way (because we just need to match each of Elsie's cards to Bessie's cards).
+
+We can find Bessie's cards by checking the cards Elsie doesn't have from $1$ to $2N$. Since the first half of the game gives wins for the highest card and the second half of the game gives wins for the lowest card, it is optimal for Bessie to use her highest $\frac{N}{2}$ cards for the first half and lowest $\frac{N}{2}$ cards for the second half. Now, we know what cards Bessie and Elsie will play for each half, and we need to find the best strategy for Bessie by greedily matching their cards.
+
+For high card, one strategy is for Bessie to play the highest card only if it is higher than Elsie's card. Otherwise, we should play her lowest card, so that we save the higher cards for the future and not waste a good card. To do this, we sort both of Bessie and Elsie's cards in decreasing order. Then, we iterate all of Elsie's cards and if Bessie's highest unmatched card is higher, we match this and go to the next index. Otherwise, we keep the index here, because we can potentially match this to one of Elsie's next cards.
+
+Another strategy is to sort both lists of cards in increasing order, and for each Elsie card pick the lowest Bessie card that beats this. This can be accomplished using binary search or two pointers.
+
+For both strategies, the second half (low card) just uses the reverse logic.
+
+## Implementation
 
 **Time Complexity:** $\mathcal{O}(N\log{N})$
 
-[Official Analysis](http://www.usaco.org/current/data/sol_cardgame_gold_dec15.html)
-
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
@@ -93,7 +106,6 @@ int main() {
 ```
 
 </CPPSection>
-
 <JavaSection>
 
 ```java
@@ -101,7 +113,7 @@ int main() {
 import java.io.*;
 import java.util.*;
 
-public class highcardgold {
+public class HighCardGold {
 	static boolean[] C;
 	static List<Integer> B = new ArrayList<>();
 	static List<Integer> F = new ArrayList<>();
@@ -154,5 +166,43 @@ public class highcardgold {
 ```
 
 </JavaSection>
+<PySection>
 
+```py
+with open("cardgame.in") as read:
+	N = int(read.readline())
+	elsie = [int(read.readline()) for i in range(N)]
+	set_elsie = set(elsie)
+	# find bessie's cards
+	bessie = [i for i in range(1, 2 * N + 1) if i not in set_elsie]
+
+# find the cards they use for both games and sort,
+# it's best to use highest cards for first N/2 and lowest for second N/2
+elsie_high = sorted(elsie[: N // 2], reverse=True)
+elsie_low = sorted(elsie[N // 2 :])
+bessie_high = sorted(bessie[N // 2 :], reverse=True)
+bessie_low = sorted(bessie[: N // 2])
+wins, bessie_index = 0, 0  # keep track of wins and index of bessie's card
+
+# first half - high card
+for i in range(N // 2):
+	# if bessie's card is higher than elsie's card,
+	# then go to next bessie card and elsie card, otherwise bessie can use her worst
+	if bessie_high[bessie_index] > elsie_high[i]:
+		wins += 1
+		bessie_index += 1
+
+# reversed logic for low card
+bessie_index = 0
+for i in range(N // 2):
+	# if bessie's card is lower than elsie's card,
+	# then go to next bessie card and elsie card, otherwise bessie can use her worst
+	if bessie_low[bessie_index] < elsie_low[i]:
+		wins += 1
+		bessie_index += 1
+
+print(wins, file=open("cardgame.out", "w"))
+```
+
+</PySection>
 </LanguageSection>

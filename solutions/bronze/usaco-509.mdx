@@ -1,0 +1,316 @@
+---
+id: usaco-509
+source: Old Bronze
+title: It's All About the Base
+author: Justin Ji
+---
+
+[Official Analysis (C++)](https://usaco.org/current/data/sol_whatbase_bronze.html)
+
+<Spoiler title="Hint 1">
+
+Let's define a function $\texttt{to\_base\_10}(b, n)$
+that converts our number $n$ that is in base $b$ into base $10$.
+
+This function is monotonic. That is, for a fixed $b$ and any $n$:
+
+$$
+\texttt{to\_base\_10}(b + 1, n) > \texttt{to\_base\_10}(b, n)
+$$
+
+</Spoiler>
+
+<Spoiler title="Hint 2">
+
+The problem asks us to find a pair $x$ and $y$ that works. Instead of fixing
+both $x$ and $y$, let's instead try only fixing $x$.
+
+</Spoiler>
+
+<Spoiler title="Solution">
+
+## Explanation
+
+For both input numbers $n_1$ and $n_2$, precompute its value in base $10$ for every base
+value $i$. Let's fix our value of $x$.
+
+Now, our goal is to find some $y$ such that:
+
+$$
+\texttt{to\_base\_10}(x, n_1) = \texttt{to\_base\_10}(y, n_2)
+$$
+
+This is a much more manageable problem! From here, there are a few ways
+we can implement a fast solution:
+
+- Use [two pointers](https://usaco.guide/silver/two-pointers) to keep track of
+  the most relevant value of $y$ at every step
+- Use a data structure like a `std::map` to store all precomputed values for $n_2$
+- Keep the precomputed base $10$ values in an array, and use binary search
+  to find our possible $y$ candidate
+
+All of these approaches are based on the same idea, just implemented
+differently.
+
+## Implementation 1
+
+**Time Complexity:** $\mathcal{O}(KM)$, where $M$ is the maximum possible
+base value.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+constexpr int MAX_BASE = 15'000;
+
+/** @return the given number in base 10 */
+int to_base_10(int base, const std::string &num) {
+	return (num[0] - '0') * base * base + (num[1] - '0') * base + (num[2] - '0');
+}
+
+int main() {
+	std::freopen("whatbase.in", "r", stdin);
+	std::freopen("whatbase.out", "w", stdout);
+
+	int test_num;
+	std::cin >> test_num;
+	for (int t = 0; t < test_num; t++) {
+		std::string in_x, in_y;
+		std::cin >> in_x >> in_y;
+
+		// iterate on x, move a pointer on y
+		int y = 10;
+		for (int x = 10; x <= MAX_BASE; x++) {
+			const int cur = to_base_10(x, in_x);
+
+			// we want to_base_10(y, in_y) to equal cur
+			// bigger y results in a bigger to_10(y, in_y)
+			// thus, we increase y as necessary
+			while (to_base_10(y, in_y) < cur) { y++; }
+
+			if (y <= MAX_BASE && to_base_10(y, in_y) == cur) {
+				std::cout << x << ' ' << y << '\n';
+				break;
+			}
+		}
+	}
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class WhatBase {
+	private static final int MAX_BASE = 15_000;
+
+	/** @return the given number in base 10 */
+	private static int toBase10(int base, String num) {
+		return (num.charAt(0) - '0') * base * base + (num.charAt(1) - '0') * base +
+		    (num.charAt(2) - '0');
+	}
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new FileReader("whatbase.in"));
+		PrintWriter pw = new PrintWriter(new FileWriter("whatbase.out"));
+
+		int testNum = Integer.parseInt(br.readLine());
+		for (int t = 0; t < testNum; t++) {
+			StringTokenizer st = new StringTokenizer(br.readLine());
+			String inX = st.nextToken();
+			String inY = st.nextToken();
+
+			// iterate on x, move a pointer on y
+			int y = 10;
+			for (int x = 10; x <= MAX_BASE; x++) {
+				final int cur = toBase10(x, inX);
+
+				// we want toBase10(y, inY) to equal cur
+				// bigger y results in a bigger toBase10(y, inY)
+				// thus, we increase y as necessary
+				while (toBase10(y, inY) < cur) { y++; }
+
+				if (y <= MAX_BASE && toBase10(y, inY) == cur) {
+					pw.println(x + " " + y);
+					break;
+				}
+			}
+		}
+
+		br.close();
+		pw.close();
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+import sys
+
+MAX_BASE = 15_000
+
+
+def to_base_10(base, num):
+	return int(num[0]) * base * base + int(num[1]) * base + int(num[2])
+
+
+sys.stdin = open("whatbase.in", "r")
+sys.stdout = open("whatbase.out", "w")
+
+test_num = int(sys.stdin.readline())
+for _ in range(test_num):
+	in_x, in_y = sys.stdin.readline().split()
+
+	# iterate on x, move a pointer on y
+	y = 10
+	for x in range(10, MAX_BASE + 1):
+		cur = to_base_10(x, in_x)
+
+		# we want to_base_10(y, in_y) to equal cur
+		# bigger y results in a bigger to_base_10(y, in_y)
+		# thus, we increase y as necessary
+		while to_base_10(y, in_y) < cur:
+			y += 1
+
+		if y <= MAX_BASE and to_base_10(y, in_y) == cur:
+			print(x, y)
+			break
+```
+
+</PySection>
+</LanguageSection>
+
+## Implementation 2
+
+**Time Complexity:** $\mathcal{O}(KM)$, where $M$ is the maximum possible base value.
+
+<Info title="Map Time Complexity">
+
+Note that this implementation uses unordered maps. Although
+the average time complexity of these are $\mathcal{O}(1)$ per operation, they can sometimes
+blow up to $\mathcal{O}(N)$. Using ordered maps is generally safer, but adds a
+$\mathcal{O}(\log{N})$ factor to your complexity.
+
+</Info>
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+constexpr int MAX_BASE = 15'000;
+
+int to_base_10(int base, const std::string &num) {
+	return (num[0] - '0') * base * base + (num[1] - '0') * base + (num[2] - '0');
+}
+
+int main() {
+	std::freopen("whatbase.in", "r", stdin);
+	std::freopen("whatbase.out", "w", stdout);
+
+	int test_num;
+	std::cin >> test_num;
+	for (int t = 0; t < test_num; t++) {
+		std::string in_x, in_y;
+		std::cin >> in_x >> in_y;
+
+		// maps to_base_10(y, in_y) to y
+		std::unordered_map<int, int> y_vals;
+		for (int y = 10; y <= MAX_BASE; y++) { y_vals[to_base_10(y, in_y)] = y; }
+
+		for (int x = 10; x <= MAX_BASE; x++) {
+			const int cur = to_base_10(x, in_x);
+			if (y_vals.find(cur) != y_vals.end()) {
+				std::cout << x << ' ' << y_vals[cur] << '\n';
+				break;
+			}
+		}
+	}
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class WhatBase {
+	static final int MAX_BASE = 15000;
+
+	static int toBase10(int base, String num) {
+		return (num.charAt(0) - '0') * base * base + (num.charAt(1) - '0') * base +
+		    (num.charAt(2) - '0');
+	}
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new FileReader("whatbase.in"));
+		PrintWriter pw = new PrintWriter(new FileWriter("whatbase.out"));
+
+		int testNum = Integer.parseInt(br.readLine());
+		for (int t = 0; t < testNum; t++) {
+			StringTokenizer st = new StringTokenizer(br.readLine());
+			String inX = st.nextToken();
+			String inY = st.nextToken();
+
+			// maps to_base_10(y, in_y) to y
+			Map<Integer, Integer> yVals = new HashMap<>();
+			for (int y = 10; y <= MAX_BASE; y++) { yVals.put(toBase10(y, inY), y); }
+
+			for (int x = 10; x <= MAX_BASE; x++) {
+				int cur = toBase10(x, inX);
+				if (yVals.containsKey(cur)) {
+					pw.println(x + " " + yVals.get(cur));
+					break;
+				}
+			}
+		}
+
+		br.close();
+		pw.close();
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+import sys
+
+MAX_BASE = 15_000
+
+
+def to_base_10(base, num):
+	return int(num[0]) * base * base + int(num[1]) * base + int(num[2])
+
+
+sys.stdin = open("whatbase.in", "r")
+sys.stdout = open("whatbase.out", "w")
+
+test_num = int(sys.stdin.readline())
+for _ in range(test_num):
+	in_x, in_y = sys.stdin.readline().split()
+
+	y_vals = {to_base_10(y, in_y): y for y in range(10, MAX_BASE + 1)}
+
+	for x in range(10, MAX_BASE + 1):
+		cur = to_base_10(x, in_x)
+		if cur in y_vals:
+			print(x, y_vals[cur])
+			break
+```
+
+</PySection>
+</LanguageSection>
+
+</Spoiler>

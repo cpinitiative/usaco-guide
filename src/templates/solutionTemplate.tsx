@@ -1,8 +1,8 @@
 import { graphql } from 'gatsby';
 import * as React from 'react';
-import MarkdownLayout from '../components/MarkdownLayout/MarkdownLayout';
 import Layout from '../components/layout';
 import Markdown from '../components/markdown/Markdown';
+import MarkdownLayout from '../components/MarkdownLayout/MarkdownLayout';
 import SEO from '../components/seo';
 import { ConfettiProvider } from '../context/ConfettiContext';
 import { ProblemSolutionContext } from '../context/ProblemSolutionContext';

@@ -99,12 +99,12 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
     {
       name: 'Sorting & Searching',
       items: [
-        'sorting-custom',
         'two-pointers',
-        'intro-sorted-sets',
-        'custom-cpp-stl',
-        'greedy-sorting',
+        'binary-search-sorted-array',
         'binary-search',
+        'sorting-custom',
+        'greedy-sorting',
+        'priority-queues',
       ],
     },
     {
@@ -156,7 +156,13 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
     },
     {
       name: 'Data Structures',
-      items: ['stacks', 'sliding-window', 'PURS'],
+      items: [
+        'intro-sorted-sets',
+        'custom-cpp-stl',
+        'stacks',
+        'sliding-window',
+        'PURS',
+      ],
     },
     {
       name: 'Trees',
@@ -165,7 +171,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
     {
       name: 'Additional Topics',
       description: 'Rarely required.',
-      items: ['hashing', 'hashmaps', 'meet-in-the-middle'],
+      items: ['hashing', 'hashmaps', 'meet-in-the-middle', 'ternary-search'],
     },
     {
       name: 'Conclusion',
@@ -188,7 +194,14 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
     },
     {
       name: 'Trees',
-      items: ['binary-jump', 'merging', 'hld', 'centroid'],
+      items: [
+        'binary-jump',
+        'merging',
+        'hld',
+        'centroid',
+        'VT',
+        'kruskal-tree',
+      ],
     },
     {
       name: 'Geometry',
@@ -258,6 +271,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
         'game-theory',
         'multiplicative',
         'matroid-isect',
+        'random',
         'interactive',
         'vectorization',
       ],

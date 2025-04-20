@@ -12,9 +12,9 @@ export interface InfoProps {
 }
 
 const Info: React.FC<InfoProps> = ({ children, title }) => (
-  <div className="rounded-md bg-blue-50 dark:bg-blue-700 dark:bg-opacity-25 p-4 mb-4">
+  <div className="mb-4 rounded-md bg-blue-50 p-4 dark:bg-blue-700/25">
     <div className="flex">
-      <div className="flex-shrink-0">
+      <div className="shrink-0">
         <svg
           className="h-5 w-5 text-blue-400"
           fill="currentColor"
@@ -28,10 +28,10 @@ const Info: React.FC<InfoProps> = ({ children, title }) => (
         </svg>
       </div>
       <div className="ml-3 flex-1">
-        <h3 className="text-sm leading-5 font-medium text-blue-800 my-0 dark:text-blue-100">
+        <h3 className="my-0 text-sm leading-5 font-medium text-blue-800 dark:text-blue-100">
           {title}
         </h3>
-        <div className="text-sm leading-5 text-blue-700 mt-2 no-y-margin dark:text-blue-300 tailwind-alert tailwind-alert--info">
+        <div className="no-y-margin tailwind-alert tailwind-alert--info mt-2 text-sm leading-5 text-blue-700 dark:text-blue-300">
           {children}
         </div>
       </div>

@@ -50,16 +50,16 @@ export default function EditProblemHintSection({
       </span>
 
       <div>
-        <div className="flow-root mt-4">
+        <div className="mt-4 flow-root">
           <ul className="-my-5 divide-y divide-gray-200 dark:divide-gray-700">
             {problem.hints.map(hint => (
               <li className="py-4" key={hint.id}>
                 <div className="flex items-center space-x-4">
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-gray-900 dark:text-gray-200 truncate">
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-sm font-medium text-gray-900 dark:text-gray-200">
                       {hint.name || 'Hint'}
                     </p>
-                    <p className="text-sm text-gray-500 dark:text-gray-400 truncate">
+                    <p className="truncate text-sm text-gray-500 dark:text-gray-400">
                       {hint.body}
                     </p>
                   </div>
@@ -69,7 +69,7 @@ export default function EditProblemHintSection({
                         setCurrentProblemHint(hint);
                         setIsHintModalOpen(true);
                       }}
-                      className="btn px-2.5 py-0.5 rounded-full"
+                      className="btn rounded-full px-2.5 py-0.5"
                     >
                       Edit
                     </button>

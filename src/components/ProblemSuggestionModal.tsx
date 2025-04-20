@@ -7,11 +7,11 @@ import MarkdownLayoutContext from '../context/MarkdownLayoutContext';
 import useProblemSuggestionAction from '../hooks/useProblemSuggestionAction';
 import { ModuleInfo } from '../models/module';
 import {
-  PROBLEM_DIFFICULTY_OPTIONS,
-  ProblemDifficulty,
-  ProblemMetadata,
   autoGenerateSolutionMetadata,
   generateProblemUniqueId,
+  ProblemDifficulty,
+  ProblemMetadata,
+  PROBLEM_DIFFICULTY_OPTIONS,
   probSources,
 } from '../models/problem';
 import ButtonGroup from './ButtonGroup';
@@ -175,13 +175,13 @@ export default function ProblemSuggestionModal({
         <label className="block font-medium text-gray-700 dark:text-gray-200">
           Problem Name
         </label>
-        <div className="mt-2 relative rounded-md shadow-sm">
+        <div className="relative mt-2 rounded-md shadow-sm">
           {/* Remount component to trigger autofocus when opening modal */}
           {isOpen ? (
             <input
               autoFocus
               type="text"
-              className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md dark:bg-gray-900 dark:border-gray-700"
+              className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm dark:border-gray-700 dark:bg-gray-900"
               placeholder="Ex: Steeplechase (Please do NOT include the source)"
               value={name}
               disabled={loading}
@@ -191,7 +191,7 @@ export default function ProblemSuggestionModal({
           ) : (
             <input
               type="text"
-              className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md dark:bg-gray-900 dark:border-gray-700"
+              className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm dark:border-gray-700 dark:bg-gray-900"
               placeholder="Ex: USACO December 2012 Silver - Steeplechase"
               value={name}
               onChange={e => setName(e.target.value)}
@@ -205,10 +205,10 @@ export default function ProblemSuggestionModal({
         <label className="block font-medium text-gray-700 dark:text-gray-200">
           Problem Link
         </label>
-        <div className="mt-2 relative rounded-md shadow-sm">
+        <div className="relative mt-2 rounded-md shadow-sm">
           <input
             type="url"
-            className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md dark:bg-gray-900 dark:border-gray-700"
+            className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm dark:border-gray-700 dark:bg-gray-900"
             placeholder="https://..."
             value={link}
             onChange={e => setLink(e.target.value)}
@@ -229,19 +229,19 @@ export default function ProblemSuggestionModal({
               href="/general/usaco-monthlies"
               target="_blank"
               rel="noreferrer"
-              className="text-blue-600 dark:text-blue-300 underline"
+              className="text-blue-600 underline dark:text-blue-300"
             >
               here
             </a>
             .
           </p>
         )}
-        <div className="mt-2 relative rounded-md shadow-sm">
+        <div className="relative mt-2 rounded-md shadow-sm">
           <Select
             options={sourceOptions}
             value={sourceOptions.find(s => s.value == source)}
             onChange={o => setSource(o.value)}
-            className={'mt-1 block w-full text-sm tw-forms-disable'}
+            className={'tw-forms-disable mt-1 block w-full text-sm'}
             isDisabled={loading}
           />
         </div>
@@ -253,7 +253,7 @@ export default function ProblemSuggestionModal({
         <p className="text-sm text-gray-500 dark:text-gray-400">
           Relative to the module
         </p>
-        <div className="w-full overflow-x-auto mt-2 py-1 px-1 -mx-1">
+        <div className="-mx-1 mt-2 w-full overflow-x-auto px-1 py-1">
           <ButtonGroup
             options={PROBLEM_DIFFICULTY_OPTIONS}
             value={difficulty}
@@ -266,10 +266,10 @@ export default function ProblemSuggestionModal({
         <label className="block font-medium text-gray-700 dark:text-gray-200">
           {!inEditor && 'Suggested '}Tags (separated with comma and space)
         </label>
-        <div className="mt-2 relative rounded-md shadow-sm">
+        <div className="relative mt-2 rounded-md shadow-sm">
           <input
             type="text"
-            className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md dark:bg-gray-900 dark:border-gray-700"
+            className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm dark:border-gray-700 dark:bg-gray-900"
             placeholder="DP, Dijkstra"
             value={tags}
             onChange={e => setTags(e.target.value)}
@@ -289,7 +289,7 @@ export default function ProblemSuggestionModal({
             <div className="rounded-md shadow-sm">
               <textarea
                 rows={3}
-                className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md transition sm:leading-5 dark:bg-gray-900 dark:border-gray-700"
+                className="block w-full rounded-md border-gray-300 shadow-sm transition focus:border-blue-500 focus:ring-blue-500 sm:text-sm sm:leading-5 dark:border-gray-700 dark:bg-gray-900"
                 value={additionalNotes}
                 onChange={e => setAdditionalNotes(e.target.value)}
                 placeholder="Optional. Links to solutions or reasons to add the problem would be helpful. Markdown is supported."
@@ -303,9 +303,9 @@ export default function ProblemSuggestionModal({
   );
 
   const successMessage = (
-    <div className="rounded-md bg-green-50 dark:bg-green-800 p-4">
+    <div className="rounded-md bg-green-50 p-4 dark:bg-green-800">
       <div className="flex">
-        <div className="flex-shrink-0">
+        <div className="shrink-0">
           <svg
             className="h-5 w-5 text-green-400"
             viewBox="0 0 20 20"
@@ -319,10 +319,10 @@ export default function ProblemSuggestionModal({
           </svg>
         </div>
         <div className="ml-3">
-          <h3 className="text-sm leading-5 font-medium text-green-800 dark:text-dark-high-emphasis">
+          <h3 className="dark:text-dark-high-emphasis text-sm leading-5 font-medium text-green-800">
             Problem Suggestion Submitted!
           </h3>
-          <div className="mt-2 text-sm leading-5 text-green-700 dark:text-dark-high-emphasis">
+          <div className="dark:text-dark-high-emphasis mt-2 text-sm leading-5 text-green-700">
             <p>
               Thanks for helping to improve the USACO Guide. You can track the
               progress of your suggestion here:{' '}
@@ -330,7 +330,7 @@ export default function ProblemSuggestionModal({
                 href={createdIssueLink ?? undefined}
                 target="_blank"
                 rel="noreferrer"
-                className="underline text-black dark:text-white"
+                className="text-black underline dark:text-white"
               >
                 {createdIssueLink}
               </a>
@@ -342,14 +342,16 @@ export default function ProblemSuggestionModal({
   );
   return (
     <Transition
+      as="div"
       show={isOpen}
-      className="fixed z-30 inset-0 h-full overflow-y-auto"
+      className="fixed inset-0 z-30 h-full overflow-y-auto"
     >
       <form
-        className="flex items-end justify-center min-h-full pt-4 px-4 pb-12 text-center sm:block"
+        className="flex min-h-full items-end justify-center px-4 pt-4 pb-12 text-center sm:block"
         onSubmit={handleSubmit}
       >
         <Transition.Child
+          as="div"
           className="fixed inset-0 transition-opacity"
           enter="ease-out duration-300"
           enterFrom="opacity-0"
@@ -358,17 +360,18 @@ export default function ProblemSuggestionModal({
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="absolute inset-0 bg-gray-500 dark:bg-gray-900 opacity-75" />
+          <div className="absolute inset-0 bg-gray-500 opacity-75 dark:bg-gray-900" />
         </Transition.Child>
         <span
-          className="hidden sm:inline-block sm:align-middle sm:h-screen"
+          className="hidden sm:inline-block sm:h-screen sm:align-middle"
           aria-hidden="true"
         >
           &#8203;
         </span>
 
         <Transition.Child
-          className="w-full inline-block align-bottom rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-3xl sm:w-full"
+          as="div"
+          className="inline-block w-full transform overflow-hidden rounded-lg text-left align-bottom shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-3xl sm:align-middle"
           enter="ease-out duration-300"
           enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
           enterTo="opacity-100 translate-y-0 sm:scale-100"
@@ -379,12 +382,12 @@ export default function ProblemSuggestionModal({
           aria-modal="true"
           aria-labelledby="modal-headline"
         >
-          <div className="bg-white dark:bg-dark-surface px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-            <div className="hidden sm:block absolute top-0 right-0 pt-4 pr-4">
+          <div className="dark:bg-dark-surface bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+            <div className="absolute top-0 right-0 hidden pt-4 pr-4 sm:block">
               <button
                 type="button"
                 onClick={() => onClose()}
-                className="bg-white dark:bg-dark-surface rounded-md text-gray-400 dark:text-gray-500 hover:text-gray-500 dark:hover:text-gray-400 focus:outline-none"
+                className="dark:bg-dark-surface rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-hidden dark:text-gray-500 dark:hover:text-gray-400"
               >
                 <span className="sr-only">Close</span>
                 {/* Heroicon name: x */}
@@ -426,7 +429,7 @@ export default function ProblemSuggestionModal({
                   href="https://github.com/cpinitiative/usaco-guide/pulls"
                   target="_blank"
                   rel="noreferrer"
-                  className="text-blue-600 dark:text-blue-300 underline"
+                  className="text-blue-600 underline dark:text-blue-300"
                 >
                   GitHub pull request
                 </a>
@@ -437,13 +440,13 @@ export default function ProblemSuggestionModal({
               {createdIssueLink ? successMessage : form}
             </div>
           </div>
-          <div className="bg-gray-50 dark:bg-gray-900 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+          <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6 dark:bg-gray-900">
             {createdIssueLink ? (
               <span className="flex w-full rounded-md shadow-sm sm:ml-3 sm:w-auto">
                 <button
                   type="button"
                   onClick={() => onClose()}
-                  className="inline-flex justify-center w-full rounded-md border border-transparent px-4 py-2 bg-blue-600 text-base leading-6 font-medium text-white shadow-sm hover:bg-blue-500 focus:outline-none focus:border-blue-700 focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5"
+                  className="focus:shadow-outline-blue inline-flex w-full justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-base leading-6 font-medium text-white shadow-sm transition duration-150 ease-in-out hover:bg-blue-500 focus:border-blue-700 focus:outline-hidden sm:text-sm sm:leading-5"
                 >
                   Done
                 </button>
@@ -454,7 +457,7 @@ export default function ProblemSuggestionModal({
                   <button
                     type="submit"
                     className={
-                      'inline-flex justify-center w-full rounded-md border border-transparent px-4 py-2 text-base leading-6 font-medium text-white shadow-sm hover:bg-blue-500 focus:outline-none focus:border-blue-700 focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5 ' +
+                      'focus:shadow-outline-blue inline-flex w-full justify-center rounded-md border border-transparent px-4 py-2 text-base leading-6 font-medium text-white shadow-sm transition duration-150 ease-in-out hover:bg-blue-500 focus:border-blue-700 focus:outline-hidden sm:text-sm sm:leading-5 ' +
                       (loading ? 'bg-blue-400' : 'bg-blue-600')
                     }
                     disabled={loading}
@@ -462,15 +465,15 @@ export default function ProblemSuggestionModal({
                     {inEditor
                       ? 'Add Problem'
                       : loading
-                      ? 'Submitting...'
-                      : 'Submit Suggestion'}
+                        ? 'Submitting...'
+                        : 'Submit Suggestion'}
                   </button>
                 </span>
                 <span className="mt-3 flex w-full rounded-md shadow-sm sm:mt-0 sm:w-auto">
                   <button
                     type="button"
                     className={
-                      'inline-flex justify-center w-full rounded-md border border-gray-300 dark:border-gray-600 px-4 py-2 dark:bg-gray-800 text-base leading-6 font-medium text-gray-700 dark:text-gray-200 shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5 ' +
+                      'focus:shadow-outline-blue inline-flex w-full justify-center rounded-md border border-gray-300 px-4 py-2 text-base leading-6 font-medium text-gray-700 shadow-sm transition duration-150 ease-in-out hover:text-gray-500 focus:border-blue-300 focus:outline-hidden sm:text-sm sm:leading-5 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 ' +
                       (loading ? 'bg-gray-100' : 'bg-white')
                     }
                     onClick={() => onClose()}

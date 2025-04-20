@@ -46,6 +46,44 @@ int main() {
 ```
 
 </CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class SubarraySumsI {
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
+		int n = io.nextInt();
+		int x = io.nextInt();
+
+		int[] arr = new int[n];
+		for (int i = 0; i < n; i++) { arr[i] = io.nextInt(); }
+
+		int i = 0;
+		int j = 0;
+		int res = 0;
+		long sum = 0;
+		while (j < n) {
+			sum += arr[j];
+			while (sum > x) {
+				sum -= arr[i];
+				i++;
+			}
+			res += (sum == x ? 1 : 0);
+			j++;
+		}
+
+		io.println(res);
+		io.close();
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
 <PySection>
 
 ```py

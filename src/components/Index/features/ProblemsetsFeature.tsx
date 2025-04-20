@@ -19,10 +19,10 @@ const TableRow = ({
 }) => {
   return (
     <tr className={classNames(className)}>
-      <td className="pl-4 md:pl-6 py-4 whitespace-nowrap text-sm dark:text-gray-400 leading-5 font-medium">
+      <td className="py-4 pl-4 text-sm leading-5 font-medium whitespace-nowrap md:pl-6 dark:text-gray-400">
         {source}
       </td>
-      <td className="pl-4 md:px-6 py-4 whitespace-nowrap text-sm leading-5 font-medium">
+      <td className="py-4 pl-4 text-sm leading-5 font-medium whitespace-nowrap md:px-6">
         <div className="flex items-center">
           <svg
             className={classNames(
@@ -36,17 +36,17 @@ const TableRow = ({
           </svg>
           {/* Change the text color to the blue in the actual pages */}
           <span
-            className="sm:pl-2 truncate text-blue-600 dark:text-blue-300"
+            className="truncate text-blue-600 sm:pl-2 dark:text-blue-300"
             style={{ maxWidth: '20rem' }}
           >
             {title}
           </span>
         </div>
       </td>
-      <td className="py-4 whitespace-nowrap leading-5 pr-4 md:pr-6">
+      <td className="py-4 pr-4 leading-5 whitespace-nowrap md:pr-6">
         <span
           className={
-            'px-2 inline-flex text-xs leading-5 font-semibold rounded-full ' +
+            'inline-flex rounded-full px-2 text-xs leading-5 font-semibold ' +
             difficultyClasses[difficulty]
           }
         >
@@ -59,27 +59,27 @@ const TableRow = ({
 
 export const ProblemsetsFeature = (): JSX.Element => {
   return (
-    <div className="max-w-full overflow-hidden -mx-4">
+    <div className="-mx-4 max-w-full overflow-hidden">
       <div className="min-w-[36rem] px-4">
         <div className="-mx-4 sm:-mx-6 md:mx-0">
-          <div className="flex flex-col mb-4">
-            <div className={`overflow-x-auto md:-mx-4 md:px-4 -my-2 py-2`}>
+          <div className="mb-4 flex flex-col">
+            <div className={`-my-2 overflow-x-auto py-2 md:-mx-4 md:px-4`}>
               <div
-                className={`align-middle inline-block min-w-full shadow overflow-hidden md:rounded-lg border-b dark:border-l border-gray-200 dark:border-black`}
+                className={`inline-block min-w-full overflow-hidden border-b border-gray-200 align-middle shadow-sm md:rounded-lg dark:border-l dark:border-black`}
               >
-                <table className="min-w-full no-markdown text-gray-500 dark:text-gray-400">
+                <table className="no-markdown min-w-full text-gray-500 dark:text-gray-400">
                   <thead>
-                    <tr className="bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 pr-4 md:pr-6">
-                      <th className="pl-4 md:pl-6 py-3 text-left text-xs leading-4 font-medium uppercase tracking-wider">
+                    <tr className="border-b border-gray-200 bg-gray-50 pr-4 md:pr-6 dark:border-gray-700 dark:bg-gray-800">
+                      <th className="py-3 pl-4 text-left text-xs leading-4 font-medium tracking-wider uppercase md:pl-6">
                         Source
                       </th>
 
-                      <th className="pl-4 sm:pl-10 md:pl-12 md:pr-6 py-3 text-left text-xs leading-4 font-medium uppercase tracking-wider whitespace-nowrap">
+                      <th className="py-3 pl-4 text-left text-xs leading-4 font-medium tracking-wider whitespace-nowrap uppercase sm:pl-10 md:pr-6 md:pl-12">
                         Problem Name
                       </th>
 
                       <th
-                        className={`pr-4 md:pr-6 py-3 text-left text-xs leading-4 font-medium uppercase tracking-wider`}
+                        className={`py-3 pr-4 text-left text-xs leading-4 font-medium tracking-wider uppercase md:pr-6`}
                       >
                         Difficulty
                       </th>

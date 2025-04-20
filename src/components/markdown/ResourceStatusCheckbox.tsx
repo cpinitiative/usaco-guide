@@ -1,7 +1,6 @@
 import Tippy from '@tippyjs/react';
 import * as React from 'react';
 import { useContext, useRef, useState } from 'react';
-import styled from 'styled-components';
 import 'tippy.js/themes/light.css';
 import ConfettiContext from '../../context/ConfettiContext';
 import { useDarkMode } from '../../context/DarkModeContext';
@@ -18,12 +17,6 @@ import {
   ResourceProgress,
   ResourceProgressOptions,
 } from '../../models/resource';
-
-const StyledTippy = styled(Tippy)`
-  .tippy-content {
-    padding: 0;
-  }
-`;
 
 const ProgressDropdown = ({
   onProgressSelected,
@@ -92,16 +85,16 @@ const ProgressDropdown = ({
   return (
     <ul
       tabIndex={-1}
-      className="rounded-md py-1 text-base leading-6 overflow-auto focus:outline-none sm:text-sm sm:leading-5 no-markdown"
+      className="no-markdown overflow-auto rounded-md py-1 text-sm leading-5 focus:outline-hidden"
     >
       {ResourceProgressOptions.map(progress => (
         <li
           role="option"
           className={`${
             activeProgress === progress
-              ? 'text-white bg-indigo-600 dark:bg-indigo-800'
-              : 'text-gray-900 dark:text-dark-med-emphasis'
-          } cursor-default select-none relative py-2 pl-10 pr-4`}
+              ? 'bg-indigo-600 text-white dark:bg-indigo-800'
+              : 'dark:text-dark-med-emphasis text-gray-900'
+          } relative cursor-default py-2 pr-4 pl-10 select-none`}
           key={progress}
           onClick={() => onProgressSelected(progress)}
           onMouseEnter={() => setActiveProgress(progress)}
@@ -180,10 +173,10 @@ export default function ResourcestatusCheckbox({
   const tippyRef = useRef<any>();
   const showConfetti = useContext(ConfettiContext);
   return (
-    <StyledTippy
+    <Tippy
       onCreate={(tippy: any) => (tippyRef.current = tippy)}
       content={
-        <div className="w-56 z-20">
+        <div className="z-20 w-56">
           <ProgressDropdown
             onProgressSelected={progress => {
               tippyRef.current.hide();
@@ -205,6 +198,8 @@ export default function ResourcestatusCheckbox({
       trigger="click"
       placement="bottom-start"
       theme={darkMode ? 'dark' : 'light'}
+      appendTo={() => document.body}
+      className="[&>.tippy-content]:!p-0"
     >
       <span
         // onClick={handleClick}
@@ -215,11 +210,11 @@ export default function ResourcestatusCheckbox({
           className={
             `inline-block ${
               size === 'small' ? 'h-6 w-6' : 'h-8 w-8'
-            } rounded-full cursor-pointer transition duration-100 ease-out ` +
+            } cursor-pointer rounded-full transition duration-100 ease-out ` +
             color[status]
           }
         />
       </span>
-    </StyledTippy>
+    </Tippy>
   );
 }

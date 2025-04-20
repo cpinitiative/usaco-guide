@@ -3,7 +3,7 @@ import * as React from 'react';
 
 const CompletedCheck = () => (
   <svg
-    className="h-6 w-6 mr-2 text-green-500"
+    className="mr-2 h-6 w-6 text-green-500"
     fill="currentColor"
     viewBox="0 0 20 20"
   >
@@ -17,7 +17,7 @@ const CompletedCheck = () => (
 
 const IncompleteCheck = () => (
   <svg
-    className="h-6 w-6 mr-2 text-gray-200"
+    className="mr-2 h-6 w-6 text-gray-200"
     fill="currentColor"
     viewBox="0 0 20 20"
   >
@@ -57,9 +57,12 @@ const SyllabusModule = ({
   const isComplete = title === 'Prerequisites' || title === 'Getting Started';
 
   return (
-    <div className="bg-white overflow-hidden shadow rounded-lg mb-8" id={url}>
-      <div className="border-b border-gray-200 px-4 py-4 sm:px-6  flex items-center">
-        <h2 className="font-bold text-xl mr-2">{title}</h2>
+    <div
+      className="mb-8 overflow-hidden rounded-lg bg-white shadow-sm"
+      id={url}
+    >
+      <div className="flex items-center border-b border-gray-200 px-4 py-4 sm:px-6">
+        <h2 className="mr-2 text-xl font-bold">{title}</h2>
         {isComplete && (
           <svg
             className="h-8 w-8 text-green-500"
@@ -75,7 +78,7 @@ const SyllabusModule = ({
         )}
       </div>
       {prerequisites && (
-        <div className="p-4 sm:p-6 border-b border-gray-200">
+        <div className="border-b border-gray-200 p-4 sm:p-6">
           Prerequisites:{' '}
           <ul className="ml-8 list-disc">
             {prerequisites.map(renderPrerequisite)}
@@ -89,7 +92,7 @@ const SyllabusModule = ({
       </div>
       <Link
         to={url || '/'}
-        className="block border-t border-gray-200 px-4 py-4 sm:px-6 text-blue-600 font-bold uppercase text-sm hover:bg-gray-50 transition duration-150"
+        className="block border-t border-gray-200 px-4 py-4 text-sm font-bold text-blue-600 uppercase transition duration-150 hover:bg-gray-50 sm:px-6"
       >
         View Module
       </Link>

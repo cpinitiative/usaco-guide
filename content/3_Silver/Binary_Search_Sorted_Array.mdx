@@ -1,0 +1,321 @@
+---
+id: binary-search-sorted-array
+title: 'Binary Search on a Sorted Array'
+author: Darren Yao, Abutalib Namazov, Andrew Wang, Qi Wang, Dustin Miao
+prerequisites:
+  - intro-sorting
+description:
+  'Efficiently searching for a value in a sorted array.'
+frequency: 3
+---
+
+## Binary Search on a Sorted Array
+
+<LanguageSection>
+
+<CPPSection>
+
+<Resources>
+	<Resource
+		source="CPP"
+		url="http://www.cplusplus.com/reference/algorithm/lower_bound/"
+		title="lower_bound, upper_bound"
+		starred
+	>
+		with examples
+	</Resource>
+</Resources>
+
+</CPPSection>
+
+<JavaSection>
+
+<Resources>
+	<Resource
+		source="JAVA"
+		url="https://docs.oracle.com/javase/7/docs/api/java/util/Arrays.html#binarySearch(int[],%20int)"
+		title="Arrays.binarySearch"
+	/>
+	<Resource
+		source="JAVA"
+		url="https://docs.oracle.com/javase/7/docs/api/java/util/Collections.html#binarySearch(java.util.List,%20T)"
+		title="Collections.binarySearch"
+	/>
+</Resources>
+
+</JavaSection>
+
+<PySection>
+
+<Resources>
+	<Resource
+		source="Python"
+		url="https://docs.python.org/3/library/bisect.html"
+		title="Array bisection algorithm"
+	/>
+	<Resource
+		source="GFG"
+		url="https://www.geeksforgeeks.org/binary-search-bisect-in-python/"
+		title="Binary Search (bisect) in Python"
+	/>
+</Resources>
+
+</PySection>
+
+</LanguageSection>
+
+Please check the [Binary Search](/silver/binary-search) module for additional resources (though they cover additional material not part of this module).
+
+### Example - Counting Haybales
+
+<FocusProblem problem="count" />
+
+As each of the points are in the range $0 \ldots 1\,000\,000\,000$, storing
+locations of haybales in a boolean array and then taking prefix sums of that
+would take too much time and memory.
+
+Instead, let's place all of the locations of the haybales into a list and sort
+it. Now we can use binary search to count both the number of haybales with position at most $B$ and the number of haybales with position less than $A$ in $\mathcal{O}(\log N)$ time, and then subtract these two quantities to get the final answer.
+
+### Without Built-in Functions
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+void setIO(string name = "") {  // name is nonempty for USACO file I/O
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);  // see Fast Input & Output
+	// alternatively, cin.tie(0)->sync_with_stdio(0);
+	if (!name.empty()) {
+		freopen((name + ".in").c_str(), "r", stdin);  // see Input & Output
+		freopen((name + ".out").c_str(), "w", stdout);
+	}
+}
+
+int main() {
+	setIO("haybales");
+	int bale_num;
+	int query_num;
+	cin >> bale_num >> query_num;
+	vector<int> bales(bale_num);
+	for (int &i : bales) { cin >> i; }
+
+	sort(begin(bales), end(bales));
+	// Returns the number of elements that are at most x
+	auto atMost = [&](int x) {
+		int lo = 0;
+		int hi = bales.size();
+		while (lo < hi) {
+			int mid = (lo + hi) / 2;
+			if (bales[mid] <= x) {
+				lo = mid + 1;
+			} else {
+				hi = mid;
+			}
+		}
+		return lo;
+	};
+
+	for (int i = 0; i < query_num; ++i) {
+		int q_start;
+		int q_end;
+		cin >> q_start >> q_end;
+		cout << atMost(q_end) - atMost(q_start - 1) << "\n";
+	}
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Haybales {
+	static int[] bales;
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio("haybales");
+		int baleNum = io.nextInt();
+		int queryNum = io.nextInt();
+		bales = new int[baleNum];
+		for (int i = 0; i < baleNum; i++) { bales[i] = io.nextInt(); }
+		Arrays.sort(bales);
+
+		for (int i = 0; i < queryNum; ++i) {
+			int start = io.nextInt();
+			int end = io.nextInt();
+			io.println(atMost(end) - atMost(start - 1));
+		}
+		io.close();
+	}
+
+	// Returns the number of elements that are at most x
+	public static int atMost(int x) {
+		int lo = 0;
+		int hi = bales.length;
+		while (lo < hi) {
+			int mid = (lo + hi) / 2;
+			if (bales[mid] <= x) {
+				lo = mid + 1;
+			} else {
+				hi = mid;
+			}
+		}
+		return lo;
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+def at_most(x: int) -> int:
+	lo = 0
+	hi = len(bales)
+	while lo < hi:
+		mid = (lo + hi) // 2
+		if bales[mid] <= x:
+			lo = mid + 1
+		else:
+			hi = mid
+	return lo
+
+
+inp = open("haybales.in", "r")
+out = open("haybales.out", "w")
+
+bale_num, query_num = map(int, inp.readline().split())
+bales = sorted(list(map(int, inp.readline().split())))
+for _ in range(query_num):
+	start, end = map(int, inp.readline().split())
+	print(at_most(end) - at_most(start - 1), file=out)
+```
+
+</PySection>
+
+</LanguageSection>
+
+### With Built-in Functions
+
+<LanguageSection>
+
+<CPPSection>
+
+We can use the the built-in
+[`lower_bound`](https://en.cppreference.com/w/cpp/algorithm/lower_bound) and
+[`upper_bound`](https://en.cppreference.com/w/cpp/algorithm/upper_bound)
+functions.
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+void setIO(string name = "") {  // name is nonempty for USACO file I/O
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);  // see Fast Input & Output
+	// alternatively, cin.tie(0)->sync_with_stdio(0);
+	if (!name.empty()) {
+		freopen((name + ".in").c_str(), "r", stdin);  // see Input & Output
+		freopen((name + ".out").c_str(), "w", stdout);
+	}
+}
+
+int main() {
+	setIO("haybales");
+	int bale_num;
+	int query_num;
+	cin >> bale_num >> query_num;
+	vector<int> bales(bale_num);
+	for (int i = 0; i < bale_num; i++) { cin >> bales[i]; }
+
+	sort(begin(bales), end(bales));
+	for (int i = 0; i < query_num; i++) {
+		int q_start;
+		int q_end;
+		cin >> q_start >> q_end;
+		cout << upper_bound(begin(bales), end(bales), q_end) -
+		            lower_bound(begin(bales), end(bales), q_start)
+		     << "\n";
+	}
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+We can use the builtin
+[`Arrays.binarySearch`](<https://docs.oracle.com/javase/7/docs/api/java/util/Arrays.html#binarySearch(int[],%20int)>)
+function.
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Haybales {
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new FileReader(new File("haybales.in")));
+		PrintWriter out = new PrintWriter("haybales.out");
+		StringTokenizer st = new StringTokenizer(br.readLine());
+
+		int baleNum = Integer.parseInt(st.nextToken());
+		int queryNum = Integer.parseInt(st.nextToken());
+		int[] bales = new int[baleNum];
+		st = new StringTokenizer(br.readLine());
+		for (int i = 0; i < baleNum; i++) {
+			bales[i] = Integer.parseInt(st.nextToken());
+		}
+
+		Arrays.sort(bales);
+		for (int i = 0; i < queryNum; i++) {
+			st = new StringTokenizer(br.readLine());
+			int start = Integer.parseInt(st.nextToken());
+			int end = Integer.parseInt(st.nextToken());
+
+			// Get the left-est bale that's still in the interval
+			int bi = Arrays.binarySearch(bales, start);
+			if (bi < 0) { bi = Math.abs(bi + 1); }
+
+			// And also get the right-est bale that's still in the interval
+			int ti = Arrays.binarySearch(bales, end);
+			if (ti < 0) { ti = Math.abs(ti + 2); }
+			out.println(ti - bi + 1);
+		}
+		out.close();
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+We can use the builtin
+[`bisect.bisect`](https://docs.python.org/3/library/bisect.html#bisect.bisect)
+function.
+
+```py
+from bisect import bisect
+
+inp = open("haybales.in", "r")
+out = open("haybales.out", "w")
+
+bale_num, query_num = map(int, inp.readline().split())
+bales = sorted(list(map(int, inp.readline().split())))
+for _ in range(query_num):
+	start, end = map(int, inp.readline().split())
+	print(bisect(bales, end) - bisect(bales, start - 1), file=out)
+```
+
+</PySection>
+</LanguageSection>
+
+## Problems
+
+<Problems problems="general" />

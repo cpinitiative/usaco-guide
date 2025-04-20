@@ -7,9 +7,9 @@ import {
 import { useUserPermissions } from '../../../context/UserDataContext/UserPermissionsContext';
 import { useGroupActions } from '../../../hooks/groups/useGroupActions';
 import { useUserGroups } from '../../../hooks/groups/useUserGroups';
-import TopNavigationBar from '../../TopNavigationBar/TopNavigationBar';
 import Layout from '../../layout';
 import SEO from '../../seo';
+import TopNavigationBar from '../../TopNavigationBar/TopNavigationBar';
 import AdminViewAllGroups from './AdminViewAllGroups';
 import { GroupCard } from './GroupCard';
 
@@ -34,9 +34,9 @@ const GroupSelectPage = () => {
       <SEO title="My Groups" />
       <TopNavigationBar />
       <main>
-        <div className="max-w-3xl px-4 lg:px-8 mx-auto py-16">
+        <div className="mx-auto max-w-3xl px-4 py-16 lg:px-8">
           <div className="flex items-center justify-between">
-            <h1 className="text-xl md:text-3xl font-bold">My Groups</h1>
+            <h1 className="text-xl font-bold md:text-3xl">My Groups</h1>
             {!showLoading && !showNotSignedInMessage ? (
               <button className="btn" onClick={handleCreateNewGroup}>
                 Create New Group
@@ -46,7 +46,7 @@ const GroupSelectPage = () => {
           <hr className="mt-6 mb-8 dark:border-gray-700" />
           {showNotSignedInMessage && (
             <div>
-              <p className="font-medium text-2xl">
+              <p className="text-2xl font-medium">
                 Please sign in to access Groups.
               </p>
             </div>
@@ -54,7 +54,7 @@ const GroupSelectPage = () => {
 
           {showLoading && (
             <div>
-              <p className="font-medium text-2xl">Loading...</p>
+              <p className="text-2xl font-medium">Loading...</p>
             </div>
           )}
           {groups.isSuccess &&
@@ -75,7 +75,7 @@ const GroupSelectPage = () => {
             <>
               <div className="h-12"></div>
               <div className="flex items-center justify-between">
-                <h1 className="text-xl md:text-3xl font-bold">
+                <h1 className="text-xl font-bold md:text-3xl">
                   All Groups (Admin Only)
                 </h1>
               </div>

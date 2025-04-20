@@ -1,8 +1,8 @@
 import { ArrowLeftIcon, ArrowRightIcon } from '@heroicons/react/solid';
 import classNames from 'classnames';
 import {
-  Provider,
   atom,
+  Provider,
   useAtom,
   useAtomValue,
   useSetAtom,
@@ -36,7 +36,7 @@ const submittedAtom = atom(false); //whether or not the current question is curr
 
 const QuizAnswerExplanation = (props: { children?: React.ReactNode }) => {
   return (
-    <div className="text-sm text-gray-700 dark:text-gray-400 no-y-margin">
+    <div className="no-y-margin text-sm text-gray-700 dark:text-gray-400">
       {props.children}
     </div>
   );
@@ -57,7 +57,7 @@ const QuizMCAnswer = props => {
   const Element = isCorrect ? 'div' : 'button';
   return (
     <Element
-      className="flex w-full items-start bg-gray-100 dark:bg-gray-900 rounded-2xl px-4 py-3 text-left focus:outline-none"
+      className="flex w-full items-start rounded-2xl bg-gray-100 px-4 py-3 text-left focus:outline-hidden dark:bg-gray-900"
       onClick={() => {
         if (!showVerdict) {
           if (selectedAnswer !== props.number) {
@@ -73,23 +73,23 @@ const QuizMCAnswer = props => {
     >
       <span
         className={classNames(
-          'flex-shrink-0 h-6 w-6 rounded-full font-medium inline-flex items-center justify-center',
+          'inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full font-medium',
           isSelected || showVerdict //render ring
-            ? 'ring-2 ring-offset-2 ring-offset-gray-100 dark:ring-offset-gray-900 text-gray-100 dark:text-gray-900 font-bold'
+            ? 'font-bold text-gray-100 ring-2 ring-offset-2 ring-offset-gray-100 dark:text-gray-900 dark:ring-offset-gray-900'
             : 'border border-gray-600 text-gray-800 dark:border-gray-500 dark:text-gray-300',
           showVerdict &&
             (props.correct
-              ? 'ring-green-600 bg-green-600 dark:ring-green-300 dark:bg-green-300'
-              : 'ring-red-600 bg-red-600 dark:ring-red-300 dark:bg-red-300'),
+              ? 'bg-green-600 ring-green-600 dark:bg-green-300 dark:ring-green-300'
+              : 'bg-red-600 ring-red-600 dark:bg-red-300 dark:ring-red-300'),
           isSelected &&
             !submitted &&
-            'ring-gray-600 bg-gray-600 dark:ring-gray-300 dark:bg-gray-300'
+            'bg-gray-600 ring-gray-600 dark:bg-gray-300 dark:ring-gray-300'
         )}
       >
         {props.number + 1}
       </span>
 
-      <div className={classNames('flex-1 ml-3 no-y-margin')}>
+      <div className={classNames('no-y-margin ml-3 flex-1')}>
         {React.Children.map(props.children, child => {
           if (child?.type?.displayName == 'QuizAnswerExplanation') {
             if (!child.props.children || !showVerdict) {
@@ -175,13 +175,13 @@ const ActualQuiz = props => {
     <div className="quiz">
       {questionList[currentQuestion]}
 
-      <div className="flex items-center justify-between mt-4">
+      <div className="mt-4 flex items-center justify-between">
         <button
           className="btn"
           disabled={currentQuestion === 0}
           onClick={() => handleQuestionChange(currentQuestion - 1)}
         >
-          <ArrowLeftIcon className="-ml-0.5 mr-2 h-4 w-4" /> Previous
+          <ArrowLeftIcon className="mr-2 -ml-0.5 h-4 w-4" /> Previous
         </button>
         <span>
           Question {currentQuestion + 1} of{' '}

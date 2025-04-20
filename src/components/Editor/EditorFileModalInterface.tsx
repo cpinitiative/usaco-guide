@@ -7,37 +7,11 @@ import {
   useHits,
   useSearchBox,
 } from 'react-instantsearch';
-import styled from 'styled-components';
-import tw from 'twin.macro';
 import {
   AlgoliaEditorFile,
   AlgoliaEditorFileHit,
 } from '../../models/algoliaEditorFile';
 import { searchClient } from '../../utils/algoliaSearchClient';
-
-const SearchResultDescription = styled.p`
-  ${tw`leading-4`}
-
-  & > .ais-Highlight > * {
-    ${tw`text-gray-700`}
-    ${tw`text-sm!`}
-  }
-
-  .dark & > .ais-Highlight > * {
-    ${tw`text-gray-300`}
-  }
-
-  > .ais-Snippet > * {
-    ${tw`text-gray-400`}
-    ${tw`text-sm!`}
-  }
-`;
-
-const SearchResultsContainer = styled.div`
-  .dark & .ais-PoweredBy {
-    ${tw`text-dark-high-emphasis!`}
-  }
-`;
 
 const indexName = `${
   process.env.GATSBY_ALGOLIA_INDEX_NAME ?? 'dev'
@@ -58,7 +32,7 @@ const FileSearch = ({
         <input
           type="search"
           placeholder="Search"
-          className="focus:outline-none focus:ring-0 text-gray-700 dark:bg-dark-surface dark:text-gray-200 dark:placeholder-gray-400 border-0 flex-1"
+          className="dark:bg-dark-surface flex-1 border-0 text-gray-700 focus:ring-0 focus:outline-hidden dark:text-gray-200 dark:placeholder-gray-400"
           value={query}
           onChange={e => setQuery(e.target.value)}
           autoComplete="off"
@@ -70,43 +44,48 @@ const FileSearch = ({
       </div>
       {query !== '' && (
         <div>
-          <SearchResultsContainer>
-            <div className="max-h-[20rem] overflow-y-auto border-t divide-y divide-gray-200 border-gray-200 dark:divide-gray-700 dark:border-gray-700">
-              {hits.map(hit => (
-                <button
-                  className="block hover:bg-blue-100 dark:hover:bg-gray-700 py-3 px-5 transition focus:outline-none w-full text-left"
-                  key={hit.id}
-                  onClick={() => onSelect(hit)}
-                >
-                  <h3 className="text-gray-600 dark:text-gray-200 font-medium">
-                    <Highlight hit={hit} attribute="title" /> (
-                    {hit.kind === 'module' ? 'Module' : 'Solution'})
-                  </h3>
-                  <SearchResultDescription className="text-gray-700 dark:text-gray-400 text-sm">
-                    <Highlight hit={hit} attribute="id" /> -{' '}
-                    <Highlight hit={hit} attribute="path" />
-                  </SearchResultDescription>
-                </button>
-              ))}
+          <div className="max-h-[20rem] divide-y divide-gray-200 overflow-y-auto border-t border-gray-200 dark:divide-gray-700 dark:border-gray-700">
+            {hits.map(hit => (
               <button
-                className="block hover:bg-blue-100 dark:hover:bg-gray-700 py-3 px-5 transition focus:outline-none w-full text-left"
-                onClick={() => {
-                  onSelect(undefined);
-                  openAddFile();
-                }}
+                className="block w-full px-5 py-3 text-left transition hover:bg-blue-100 focus:outline-hidden dark:hover:bg-gray-700"
+                key={hit.id}
+                onClick={() => onSelect(hit)}
               >
-                <h3 className="text-gray-600 dark:text-gray-200 font-medium">
-                  Add New Problem (Solution)
+                <h3 className="font-medium text-gray-600 dark:text-gray-200">
+                  <Highlight hit={hit} attribute="title" /> (
+                  {hit.kind === 'module' ? 'Module' : 'Solution'})
                 </h3>
-                <SearchResultDescription className="text-gray-700 dark:text-gray-400 text-sm">
-                  Create New Internal Solution
-                </SearchResultDescription>
+                <p
+                  className={`text-gray-700 **:text-sm! **:leading-4! dark:text-gray-400`}
+                >
+                  <Highlight hit={hit} attribute="id" /> -{' '}
+                  <Highlight hit={hit} attribute="path" />
+                </p>
               </button>
-            </div>
-            <div className="px-5 py-3 border-t border-gray-200 dark:border-gray-700">
+            ))}
+            <button
+              className="block w-full px-5 py-3 text-left transition hover:bg-blue-100 focus:outline-hidden dark:hover:bg-gray-700"
+              onClick={() => {
+                onSelect(undefined);
+                openAddFile();
+              }}
+            >
+              <h3 className="font-medium text-gray-600 dark:text-gray-200">
+                Add New Problem (Solution)
+              </h3>
+              <p className="text-sm leading-4 text-gray-700 dark:text-gray-400">
+                Create New Internal Solution
+              </p>
+            </button>
+          </div>
+          <div className="border-t border-gray-200 px-5 py-3 dark:border-gray-700">
+            <div className="hidden dark:block">
               <PoweredBy theme="dark" />
             </div>
-          </SearchResultsContainer>
+            <div className="block dark:hidden">
+              <PoweredBy theme="light" />
+            </div>
+          </div>
         </div>
       )}
     </div>

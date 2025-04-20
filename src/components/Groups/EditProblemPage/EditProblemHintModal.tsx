@@ -41,12 +41,17 @@ export default function EditProblemHintModal({
   };
 
   return (
-    <Transition show={isOpen} className="fixed z-10 inset-0 overflow-y-auto">
+    <Transition
+      show={isOpen}
+      as="div"
+      className="fixed inset-0 z-10 overflow-y-auto"
+    >
       <form
-        className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0"
+        className="flex min-h-screen items-end justify-center px-4 pt-4 pb-20 text-center sm:block sm:p-0"
         onSubmit={handleSubmit}
       >
         <Transition.Child
+          as="div"
           enter="ease-out duration-300"
           enterFrom="opacity-0"
           enterTo="opacity-100"
@@ -56,23 +61,24 @@ export default function EditProblemHintModal({
           className="fixed inset-0 transition-opacity"
           aria-hidden="true"
         >
-          <div className="absolute inset-0 bg-gray-500 dark:bg-gray-700 opacity-75" />
+          <div className="absolute inset-0 bg-gray-500 opacity-75 dark:bg-gray-700" />
         </Transition.Child>
         {/* This element is to trick the browser into centering the modal contents. */}
         <span
-          className="hidden sm:inline-block sm:align-middle sm:h-screen"
+          className="hidden sm:inline-block sm:h-screen sm:align-middle"
           aria-hidden="true"
         >
           &#8203;
         </span>
         <Transition.Child
+          as="div"
           enter="ease-out duration-300"
           enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
           enterTo="opacity-100 translate-y-0 sm:scale-100"
           leave="ease-in duration-200"
           leaveFrom="opacity-100 translate-y-0 sm:scale-100"
           leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-          className="inline-block align-bottom bg-white dark:bg-dark-surface rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full sm:p-6"
+          className="dark:bg-dark-surface inline-block transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left align-bottom shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-2xl sm:p-6 sm:align-middle"
           role="dialog"
           aria-modal="true"
           aria-labelledby="modal-headline"
@@ -120,17 +126,17 @@ export default function EditProblemHintModal({
               </div>
             </div>
           </div>
-          <div className="mt-5 sm:mt-6 space-x-4 flex justify-between items-center">
+          <div className="mt-5 flex items-center justify-between space-x-4 sm:mt-6">
             <div className="space-x-4">
               <button
                 type="submit"
-                className="inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:col-start-2 sm:text-sm"
+                className="inline-flex justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-hidden sm:col-start-2 sm:text-sm"
               >
                 Save
               </button>
               <button
                 type="button"
-                className="inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:col-start-1 sm:text-sm"
+                className="inline-flex justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-hidden sm:col-start-1 sm:mt-0 sm:text-sm"
                 onClick={() => onClose()}
               >
                 Cancel
@@ -139,7 +145,7 @@ export default function EditProblemHintModal({
             {initialHint && (
               <button
                 type="button"
-                className="inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:col-start-1 sm:text-sm"
+                className="inline-flex justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-hidden sm:col-start-1 sm:mt-0 sm:text-sm"
                 onClick={() => {
                   if (confirm('Are you sure you want to delete this hint?')) {
                     onSave(null);

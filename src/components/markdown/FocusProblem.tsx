@@ -31,27 +31,27 @@ export default function FocusProblem({
   // transform creates a new stacking context :(
   return (
     <div
-      className={`shadow block transition dark:bg-gray-900 mb-4${
-        isHovered ? ' transform -translate-y-1 shadow-lg' : ''
+      className={`block shadow transition dark:bg-gray-900 mb-4${
+        isHovered ? '-translate-y-1 transform shadow-lg' : ''
       }`}
       id={'problem-' + problem.uniqueId}
     >
       <div className="border-t-4 border-blue-600">
         <div className="flex items-center px-4 sm:px-6">
-          <div className="flex-1 mr-4">
+          <div className="mr-4 flex-1">
             <div className="flex items-center">
               <a
                 href={problem.url}
                 target="_blank"
                 rel="noreferrer"
-                className="flex-1 block group transition py-4"
+                className="group block flex-1 py-4 transition"
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
               >
-                <div className="text-lg sm:text-xl font-medium text-black flex items-center dark:text-dark-high-emphasis">
+                <div className="dark:text-dark-high-emphasis flex items-center text-lg font-medium text-black sm:text-xl">
                   {problem.name}
                   <svg
-                    className="text-gray-300 h-5 w-5 ml-1"
+                    className="ml-1 h-5 w-5 text-gray-300"
                     fill="currentColor"
                     viewBox="0 0 20 20"
                   >
@@ -59,13 +59,13 @@ export default function FocusProblem({
                     <path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z" />
                   </svg>
                 </div>
-                <div className="text-gray-500 text-sm mt-1 dark:text-dark-med-emphasis">
+                <div className="dark:text-dark-med-emphasis mt-1 text-sm text-gray-500">
                   {problem.source} - {problem.difficulty}
                 </div>
               </a>
             </div>
           </div>
-          <div className="flex-shrink-0 flex items-center justify-center mt-1 sm:mr-2 ml-2">
+          <div className="mt-1 ml-2 flex shrink-0 items-center justify-center sm:mr-2">
             <div className="mr-2">
               <ProblemsListItemDropdown
                 onShowSolutionSketch={(problem: ProblemInfo) => {
@@ -81,15 +81,15 @@ export default function FocusProblem({
             <ProblemStatusCheckbox problem={problem} size="large" />
           </div>
         </div>
-        <div className="border-t border-gray-100 dark:border-gray-700 sm:flex sm:justify-between">
-          <p className="text-xs italic text-gray-400 font-normal pt-3 px-4 sm:px-6 !mb-0 sm:pb-3">
+        <div className="border-t border-gray-100 sm:flex sm:justify-between dark:border-gray-700">
+          <p className="mb-0! px-4 py-3 text-xs font-normal text-gray-400 italic sm:px-6">
             Focus Problem – try your best to solve this problem before
             continuing!
           </p>
           {problem.solution?.kind === 'internal' && (
             <a
               href={`${getProblemURL(problem)}/solution`}
-              className="text-xs italic !text-gray-400 !font-normal py-3 px-4 sm:px-6 !mb-0 inline-flex hover:underline"
+              className="mb-0! inline-flex px-4 py-3 text-xs font-normal! text-gray-400! italic hover:underline sm:px-6"
             >
               <span className="mr-1">View Internal Solution</span>
               <ExternalLinkIcon className="h-4 w-4" />

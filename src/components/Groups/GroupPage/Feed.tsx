@@ -51,7 +51,7 @@ function SortableItem(props: {
         isBeingDragged={props.isBeingDragged}
         dragHandle={
           <div
-            className="self-stretch flex items-center px-2"
+            className="flex items-center self-stretch px-2"
             {...attributes}
             {...listeners}
           >
@@ -142,7 +142,7 @@ export default function Feed(): JSX.Element {
               items={items}
               strategy={verticalListSortingStrategy}
             >
-              <div className="divide-y divide-solid divide-gray-200 dark:divide-gray-600 sm:divide-none sm:space-y-4">
+              <div className="divide-y divide-solid divide-gray-200 sm:space-y-4 sm:divide-none dark:divide-gray-600">
                 {items.map(id => (
                   <SortableItem
                     key={id}
@@ -164,7 +164,7 @@ export default function Feed(): JSX.Element {
                     userLeaderboardData?.[activeId]?.totalPoints ?? null
                   }
                   dragHandle={
-                    <div className="self-stretch flex items-center px-2">
+                    <div className="flex items-center self-stretch px-2">
                       <MenuIcon className="h-5 w-5 text-gray-300" />
                     </div>
                   }
@@ -173,7 +173,7 @@ export default function Feed(): JSX.Element {
             </DragOverlay>
           </DndContext>
         ) : (
-          <div className="divide-y divide-solid divide-gray-200 dark:divide-gray-600 sm:divide-none sm:space-y-4">
+          <div className="divide-y divide-solid divide-gray-200 sm:space-y-4 sm:divide-none dark:divide-gray-600">
             {items.map(id => {
               const post = group.posts.find(x => x.id === id);
               if (!post!.isPublished) return null;

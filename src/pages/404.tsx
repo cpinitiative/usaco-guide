@@ -1,8 +1,8 @@
 import { Link } from 'gatsby';
 import * as React from 'react';
-import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
 import Layout from '../components/layout';
 import SEO from '../components/seo';
+import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
 
 export default function NotFoundPage() {
   return (
@@ -10,10 +10,10 @@ export default function NotFoundPage() {
       <SEO title="404 Not Found" />
       <TopNavigationBar />
 
-      <h1 className="text-center mt-16 text-4xl sm:text-5xl font-black">
+      <h1 className="mt-16 text-center text-4xl font-black sm:text-5xl">
         404 Not Found
       </h1>
-      <p className="text-center mt-4">
+      <p className="mt-4 text-center">
         <Link to="/" className="text-xl text-blue-600">
           Return Home
         </Link>

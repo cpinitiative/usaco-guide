@@ -4,9 +4,9 @@ import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import { useGroupActions } from '../../../hooks/groups/useGroupActions';
 import useGroupJoinLinks from '../../../hooks/groups/useGroupJoinLinks';
 import { JoinGroupLink } from '../../../models/groups/groups';
-import TopNavigationBar from '../../TopNavigationBar/TopNavigationBar';
 import Layout from '../../layout';
 import SEO from '../../seo';
+import TopNavigationBar from '../../TopNavigationBar/TopNavigationBar';
 import Breadcrumbs from '../Breadcrumbs';
 import EditJoinLinkModal from './EditJoinLinkModal';
 
@@ -23,7 +23,7 @@ const JoinLinksPage = () => {
       <Layout>
         <SEO title="403 Forbidden" />
         <TopNavigationBar />
-        <p className="text-center mt-12">
+        <p className="mt-12 text-center">
           You don't have permission to access this page.
         </p>
       </Layout>
@@ -33,23 +33,23 @@ const JoinLinksPage = () => {
   return (
     <Layout>
       <SEO title={`Join Links: ${activeGroup.groupData!.name}`} />
-      <div className="bg-gray-100 dark:bg-dark-surface min-h-screen">
+      <div className="dark:bg-dark-surface min-h-screen bg-gray-100">
         <TopNavigationBar />
-        <nav className="flex mt-6 mb-4" aria-label="Breadcrumb">
+        <nav className="mt-6 mb-4 flex" aria-label="Breadcrumb">
           <Breadcrumbs
-            className={`max-w-2xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-3 pb-4`}
+            className={`mx-auto w-full max-w-2xl px-4 pt-3 pb-4 sm:px-6 lg:px-8`}
             group={activeGroup.groupData!}
           />
         </nav>
-        <main className="max-w-2xl w-full mx-auto px-4 sm:px-6 lg:px-8">
+        <main className="mx-auto w-full max-w-2xl px-4 sm:px-6 lg:px-8">
           <div>
             <div className="mt-2 md:flex md:items-center md:justify-between">
-              <div className="flex-1 min-w-0">
-                <h2 className="text-2xl font-bold leading-7 text-gray-900 dark:text-gray-100 sm:text-3xl sm:truncate">
+              <div className="min-w-0 flex-1">
+                <h2 className="text-2xl leading-7 font-bold text-gray-900 sm:truncate sm:text-3xl dark:text-gray-100">
                   Join Links
                 </h2>
               </div>
-              <div className="mt-4 flex-shrink-0 flex md:mt-0 md:ml-4">
+              <div className="mt-4 flex shrink-0 md:mt-0 md:ml-4">
                 <button
                   type="button"
                   className="btn"
@@ -67,7 +67,7 @@ const JoinLinksPage = () => {
             </div>
           </div>
           <div className="h-4" />
-          <div className="bg-white dark:bg-gray-900 shadow overflow-hidden sm:rounded-md">
+          <div className="overflow-hidden bg-white shadow-sm sm:rounded-md dark:bg-gray-900">
             <ul className="divide-y divide-gray-200 dark:divide-gray-700">
               {joinLinks?.map(link => (
                 <li key={link.id}>
@@ -76,16 +76,16 @@ const JoinLinksPage = () => {
                       setCurLink(link);
                       setIsEditOpen(true);
                     }}
-                    className="focus:outline-none block hover:bg-gray-50 dark:hover:bg-gray-800 w-full"
+                    className="block w-full hover:bg-gray-50 focus:outline-hidden dark:hover:bg-gray-800"
                   >
-                    <div className="px-4 py-4 flex items-center sm:px-6">
+                    <div className="flex items-center px-4 py-4 sm:px-6">
                       <div className="min-w-0 flex-1 sm:flex sm:items-center sm:justify-between">
                         <div className="truncate">
                           <div className="flex text-sm">
-                            <p className="font-medium text-blue-600 dark:text-blue-300 truncate">
+                            <p className="truncate font-medium text-blue-600 dark:text-blue-300">
                               {link.id}
                             </p>
-                            <p className="ml-1 flex-shrink-0 font-normal text-gray-500 dark:text-gray-400">
+                            <p className="ml-1 shrink-0 font-normal text-gray-500 dark:text-gray-400">
                               · {link.numUses} Uses
                               {link.revoked && ` · REVOKED`}
                             </p>
@@ -94,7 +94,7 @@ const JoinLinksPage = () => {
                             <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
                               {/* Heroicon name: solid/calendar */}
                               <svg
-                                className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400 dark:text-gray-500"
+                                className="mr-1.5 h-5 w-5 shrink-0 text-gray-400 dark:text-gray-500"
                                 xmlns="http://www.w3.org/2000/svg"
                                 viewBox="0 0 20 20"
                                 fill="currentColor"
@@ -122,7 +122,7 @@ const JoinLinksPage = () => {
                               <>
                                 <span className="mx-2">&middot;</span>
                                 <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
-                                  <UserIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400 dark:text-gray-500" />
+                                  <UserIcon className="mr-1.5 h-5 w-5 shrink-0 text-gray-400 dark:text-gray-500" />
                                   <p>
                                     {link.author.replace('REGISTRATION_', '')}
                                   </p>
@@ -132,7 +132,7 @@ const JoinLinksPage = () => {
                           </div>
                         </div>
                       </div>
-                      <div className="ml-5 flex-shrink-0">
+                      <div className="ml-5 shrink-0">
                         {/* Heroicon name: solid/chevron-right */}
                         <svg
                           className="h-5 w-5 text-gray-400 dark:text-gray-500"

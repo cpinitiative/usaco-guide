@@ -21,23 +21,23 @@ const SubmissionListItem = ({
   const showSubmissionAction = useProblemSubmissionPopupAction();
 
   return (
-    <li className="relative py-2 group">
+    <li className="group relative py-2">
       <div className="flex items-center justify-between space-x-4">
-        <span className="block leading-3 text-sm text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-gray-100 font-medium">
+        <span className="block text-sm leading-3 font-medium text-gray-500 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-gray-100">
           <button
             type="button"
-            className="focus:outline-none"
+            className="focus:outline-hidden"
             onClick={() => showSubmissionAction(submission)}
           >
             <span className="absolute inset-0" aria-hidden="true" />
             {getSubmissionTimestampString(submission)}
           </button>
         </span>
-        <div className="flex items-center text-sm text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-gray-100 font-medium">
+        <div className="flex items-center text-sm font-medium text-gray-500 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-gray-100">
           <span
             className={`h-5 w-5 ${
               submissionCircleBorderColor[getSubmissionStatus(submission)]
-            } rounded-full flex items-center justify-center`}
+            } flex items-center justify-center rounded-full`}
             aria-hidden="true"
           >
             <span
@@ -47,7 +47,7 @@ const SubmissionListItem = ({
             />
           </span>
           <span
-            className={`ml-2 mr-4 ${
+            className={`mr-4 ml-2 ${
               submissionTextColor[getSubmissionStatus(submission)]
             }`}
           >

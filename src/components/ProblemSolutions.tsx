@@ -3,19 +3,19 @@ import Filter from 'bad-words';
 import * as React from 'react';
 import { useState } from 'react';
 import {
-  SECTION_LABELS,
   moduleIDToSectionMap,
   moduleIDToURLMap,
+  SECTION_LABELS,
 } from '../../content/ordering';
 import ContactUsSlideover from '../components/ContactUsSlideover/ContactUsSlideover';
 import { useDarkMode } from '../context/DarkModeContext';
 import { useSignIn } from '../context/SignInContext';
-import { useFirebaseUser } from '../context/UserDataContext/UserDataContext';
-import { useUserPermissions } from '../context/UserDataContext/UserPermissionsContext';
 import {
   LANGUAGE_LABELS,
   useUserLangSetting,
 } from '../context/UserDataContext/properties/simpleProperties';
+import { useFirebaseUser } from '../context/UserDataContext/UserDataContext';
+import { useUserPermissions } from '../context/UserDataContext/UserPermissionsContext';
 import useUserProblemSolutionActions from '../hooks/useUserProblemSolutionActions';
 import useUserSolutionsForProblem from '../hooks/useUserSolutionsForProblem';
 import { ShortProblemInfo } from '../models/problem';
@@ -68,8 +68,8 @@ export default function ProblemSolutions({
     });
 
   return (
-    <div className="w-full rounded-lg overflow-hidden max-w-5xl mx-auto">
-      <div className="bg-white dark:bg-dark-surface px-4 pt-5 pb-4 sm:p-6 sm:pb-4 mt-6">
+    <div className="mx-auto w-full max-w-5xl overflow-hidden rounded-lg">
+      <div className="dark:bg-dark-surface mt-6 bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
         <h3
           className="text-xl leading-6 font-medium text-gray-900 dark:text-gray-100"
           id="modal-headline"
@@ -82,14 +82,14 @@ export default function ProblemSolutions({
           any of them are incorrect, submit the contact form below.
         </p>
 
-        <div className="rounded-md bg-gray-50 dark:bg-gray-900 px-4 py-5 sm:p-6 mt-4">
+        <div className="mt-4 rounded-md bg-gray-50 px-4 py-5 sm:p-6 dark:bg-gray-900">
           {moduleHeaderLinks?.length > 0 && (
             <div>
-              <h3 className="text-sm leading-5 font-medium text-gray-800 my-0 dark:text-gray-200">
+              <h3 className="my-0 text-sm leading-5 font-medium text-gray-800 dark:text-gray-200">
                 Appears In
               </h3>
-              <div className="text-sm leading-5 text-gray-700 mt-1 no-y-margin dark:text-gray-300">
-                <ul className="list-disc list-inside pl-3 space-y-1">
+              <div className="no-y-margin mt-1 text-sm leading-5 text-gray-700 dark:text-gray-300">
+                <ul className="list-inside list-disc space-y-1 pl-3">
                   {moduleHeaderLinks.map(link => (
                     <li key={link.url ?? link.label}>
                       {link.url ? (
@@ -97,7 +97,7 @@ export default function ProblemSolutions({
                           href={link.url}
                           target="_blank"
                           rel="noreferrer"
-                          className="underline text-black dark:text-gray-200"
+                          className="text-black underline dark:text-gray-200"
                         >
                           {link.label}
                         </a>
@@ -120,7 +120,7 @@ export default function ProblemSolutions({
                 href={problem.url}
                 target="_blank"
                 rel="noreferrer"
-                className="text-sm font-medium text-gray-800 hover:text-gray-900 my-0 dark:text-gray-200 dark:hover:text-gray-100 group inline-flex items-center space-x-1.5"
+                className="group my-0 inline-flex items-center space-x-1.5 text-sm font-medium text-gray-800 hover:text-gray-900 dark:text-gray-200 dark:hover:text-gray-100"
               >
                 <span>View Problem Statement</span>
                 <ExternalLinkIcon className="h-5 w-5 text-gray-400 group-hover:text-gray-600 dark:text-gray-400 dark:group-hover:text-gray-300" />
@@ -130,13 +130,13 @@ export default function ProblemSolutions({
         </div>
 
         <button
-          className="my-4 btn-primary"
+          className="btn-primary my-4"
           onClick={() => (firebaseUser ? showSubmitSolutionModal() : signIn())}
         >
           {firebaseUser ? 'Submit a Solution' : 'Sign in to submit a solution'}
         </button>
         <button
-          className="my-4 mx-3 btn-primary"
+          className="btn-primary mx-3 my-4"
           onClick={() => setIsContactUsActive(true)}
         >
           Contact Us
@@ -148,7 +148,7 @@ export default function ProblemSolutions({
         />
 
         <div className="h-8" />
-        <h3 className="text-lg font-semibold pb-2 mb-4 border-b border-gray-200 dark:border-gray-800">
+        <h3 className="mb-4 border-b border-gray-200 pb-2 text-lg font-semibold dark:border-gray-800">
           My Solutions
         </h3>
         <div className="space-y-6">
@@ -161,7 +161,7 @@ export default function ProblemSolutions({
                 | Votes: {submission.upvotes.length}. (
                 {submission.isPublic ? 'Public' : 'Private'}){' '}
                 <button
-                  className="hover:underline text-blue-600 dark:text-blue-300"
+                  className="text-blue-600 hover:underline dark:text-blue-300"
                   onClick={() => {
                     if (
                       confirm(
@@ -202,7 +202,7 @@ export default function ProblemSolutions({
           return (
             <React.Fragment key={lang}>
               <div className="h-8" />
-              <h4 className="text-lg font-semibold pb-2 mb-4 border-b border-gray-200 dark:border-gray-800">
+              <h4 className="mb-4 border-b border-gray-200 pb-2 text-lg font-semibold dark:border-gray-800">
                 Public {LANGUAGE_LABELS[lang]} Solutions (
                 {filteredSubmissions.length})
               </h4>
@@ -214,7 +214,7 @@ export default function ProblemSolutions({
                       {submission.upvotes.length}.{' '}
                       {firebaseUser?.uid && (
                         <button
-                          className="hover:underline text-blue-600 dark:text-blue-300 focus:outline-none"
+                          className="text-blue-600 hover:underline focus:outline-hidden dark:text-blue-300"
                           onClick={() => {
                             if (
                               submission.upvotes.includes(firebaseUser?.uid)
@@ -232,7 +232,7 @@ export default function ProblemSolutions({
                       )}
                       {canModerate && (
                         <button
-                          className="hover:underline text-blue-600 dark:text-blue-300 mx-2"
+                          className="mx-2 text-blue-600 hover:underline dark:text-blue-300"
                           onClick={() => {
                             if (
                               confirm(
@@ -250,7 +250,7 @@ export default function ProblemSolutions({
                       )}
                       {canModerate && (
                         <button
-                          className="hover:underline text-blue-600 dark:text-blue-300 mx-2"
+                          className="mx-2 text-blue-600 hover:underline dark:text-blue-300"
                           onClick={() => {
                             if (
                               confirm(

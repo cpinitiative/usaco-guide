@@ -30,22 +30,22 @@ import TableOfContentsSidebar from './TableOfContents/TableOfContentsSidebar';
 
 const ContentContainer = ({ children, tableOfContents }) => (
   <main
-    className="relative z-0 pt-6 lg:pt-2 focus:outline-none overflow-x-hidden"
+    className="relative overflow-x-hidden pt-6 focus:outline-hidden lg:pt-2"
     tabIndex={0}
   >
     <div className="mx-auto">
       <div className="flex justify-center">
         {/* Placeholder for the sidebar */}
         <div
-          className="flex-shrink-0 hidden lg:block order-1"
+          className="order-1 hidden shrink-0 lg:block"
           style={{ width: '20rem' }}
         />
         {tableOfContents.length > 1 && (
-          <div className="hidden 2xl:block ml-6 mr-6 w-64 mt-48 flex-shrink-0 order-3">
+          <div className="order-3 mt-48 mr-6 ml-6 hidden w-64 shrink-0 2xl:block">
             <TableOfContentsSidebar tableOfContents={tableOfContents} />
           </div>
         )}
-        <div className="flex-1 max-w-4xl px-4 sm:px-6 lg:px-8 w-0 min-w-0 order-2 overflow-x-auto">
+        <div className="order-2 w-0 max-w-4xl min-w-0 flex-1 overflow-x-auto px-4 sm:px-6 lg:px-8">
           <div className="hidden lg:block">
             <NavBar />
             <div className="h-8" />

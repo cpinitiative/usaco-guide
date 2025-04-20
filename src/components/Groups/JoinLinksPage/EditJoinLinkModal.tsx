@@ -4,8 +4,8 @@ import 'flatpickr/dist/themes/material_blue.css';
 import * as React from 'react';
 import Flatpickr from 'react-flatpickr';
 import { JoinGroupLink } from '../../../models/groups/groups';
-import Tooltip from '../../Tooltip/Tooltip';
 import Switch from '../../elements/Switch';
+import Tooltip from '../../Tooltip/Tooltip';
 
 export default function EditJoinLinkModal({
   isOpen,
@@ -48,12 +48,17 @@ export default function EditJoinLinkModal({
   if (!link) return null;
 
   return (
-    <Transition show={isOpen} className="fixed z-10 inset-0 overflow-y-auto">
+    <Transition
+      show={isOpen}
+      as="div"
+      className="fixed inset-0 z-10 overflow-y-auto"
+    >
       <form
-        className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0"
+        className="flex min-h-screen items-end justify-center px-4 pt-4 pb-20 text-center sm:block sm:p-0"
         onSubmit={handleSubmit}
       >
         <Transition.Child
+          as="div"
           enter="ease-out duration-300"
           enterFrom="opacity-0"
           enterTo="opacity-100"
@@ -63,23 +68,24 @@ export default function EditJoinLinkModal({
           className="fixed inset-0 transition-opacity"
           aria-hidden="true"
         >
-          <div className="absolute inset-0 bg-gray-500 dark:bg-gray-700 opacity-75" />
+          <div className="absolute inset-0 bg-gray-500 opacity-75 dark:bg-gray-700" />
         </Transition.Child>
         {/* This element is to trick the browser into centering the modal contents. */}
         <span
-          className="hidden sm:inline-block sm:align-middle sm:h-screen"
+          className="hidden sm:inline-block sm:h-screen sm:align-middle"
           aria-hidden="true"
         >
           &#8203;
         </span>
         <Transition.Child
+          as="div"
           enter="ease-out duration-300"
           enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
           enterTo="opacity-100 translate-y-0 sm:scale-100"
           leave="ease-in duration-200"
           leaveFrom="opacity-100 translate-y-0 sm:scale-100"
           leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-          className="inline-block align-bottom bg-white dark:bg-dark-surface rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full sm:p-6"
+          className="dark:bg-dark-surface inline-block transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left align-bottom shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-2xl sm:p-6 sm:align-middle"
           role="dialog"
           aria-modal="true"
           aria-labelledby="modal-headline"
@@ -92,7 +98,7 @@ export default function EditJoinLinkModal({
               Join Link
             </h3>
             <div className="mt-6">
-              <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded flex items-center">
+              <div className="flex items-center rounded-sm bg-gray-50 p-4 dark:bg-gray-800">
                 <span className="flex-1">
                   https://usaco.guide/groups/join?key={link.id}
                 </span>
@@ -105,7 +111,7 @@ export default function EditJoinLinkModal({
                       `https://usaco.guide/groups/join?key=${link.id}`
                     );
                   }}
-                  className="focus:outline-none"
+                  className="focus:outline-hidden"
                 >
                   <Tooltip
                     content={copied ? 'Copied!' : 'Copy to Clipboard'}
@@ -113,7 +119,7 @@ export default function EditJoinLinkModal({
                     hideOnClick={false}
                   >
                     <svg
-                      className="h-6 w-6 flex-shrink-0 text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-gray-300"
+                      className="h-6 w-6 shrink-0 text-gray-600 hover:text-black dark:text-gray-400 dark:hover:text-gray-300"
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
                       viewBox="0 0 24 24"
@@ -134,7 +140,7 @@ export default function EditJoinLinkModal({
 
               <div>
                 <div>
-                  <li className="py-2 flex items-center justify-between">
+                  <li className="flex items-center justify-between py-2">
                     <div className="flex flex-col">
                       <p className="font-medium text-gray-700 dark:text-gray-200">
                         Limit maximum number of uses
@@ -171,7 +177,7 @@ export default function EditJoinLinkModal({
                   )}
                 </div>
                 <div>
-                  <li className="py-2 flex items-center justify-between">
+                  <li className="flex items-center justify-between py-2">
                     <div className="flex flex-col">
                       <p className="font-medium text-gray-700 dark:text-gray-200">
                         Set expiration time
@@ -229,7 +235,7 @@ export default function EditJoinLinkModal({
               </div>
             </div>
           </div>
-          <div className="mt-8 space-x-4 flex justify-between items-center">
+          <div className="mt-8 flex items-center justify-between space-x-4">
             <div className="space-x-4">
               <button type="submit" className="btn-primary">
                 Save

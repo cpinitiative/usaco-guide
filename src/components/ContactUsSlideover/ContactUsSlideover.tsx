@@ -2,8 +2,8 @@ import * as React from 'react';
 import { useContext, useEffect, useState } from 'react';
 import { SECTION_LABELS } from '../../../content/ordering';
 import MarkdownLayoutContext from '../../context/MarkdownLayoutContext';
-import { useFirebaseUser } from '../../context/UserDataContext/UserDataContext';
 import { useUserLangSetting } from '../../context/UserDataContext/properties/simpleProperties';
+import { useFirebaseUser } from '../../context/UserDataContext/UserDataContext';
 import useContactFormAction from '../../hooks/useContactFormAction';
 import useStickyState from '../../hooks/useStickyState';
 import { ModuleInfo } from '../../models/module';
@@ -23,7 +23,7 @@ const Field = ({
     <div className="space-y-1">
       <label
         htmlFor={id}
-        className="block text-sm font-medium leading-5 text-gray-900 dark:text-dark-high-emphasis"
+        className="dark:text-dark-high-emphasis block text-sm leading-5 font-medium text-gray-900"
       >
         {label}
       </label>
@@ -34,14 +34,14 @@ const Field = ({
           className={
             'input' +
             (errorMsg
-              ? ' pr-10 border-red-300 dark:border-red-300 text-red-900 dark:text-red-300 placeholder-red-300 focus:border-red-300 dark:focus:border-red-300 focus:ring-red-300 dark:focus:ring-red-300'
+              ? ' border-red-300 pr-10 text-red-900 placeholder-red-300 focus:border-red-300 focus:ring-red-300 dark:border-red-300 dark:text-red-300 dark:focus:border-red-300 dark:focus:ring-red-300'
               : '')
           }
           value={value}
           onChange={onChange}
         />
         {errorMsg && (
-          <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
             <svg
               className="h-5 w-5 text-red-500"
               fill="currentColor"
@@ -234,11 +234,11 @@ export default function ContactUsSlideover({
           </div>
         </div>
       </div> */}
-      <div className="px-4 sm:px-6 mt-4">
+      <div className="mt-4 px-4 sm:px-6">
         {showSuccess && (
-          <div className="rounded-md bg-green-50 dark:bg-green-800 p-4">
+          <div className="rounded-md bg-green-50 p-4 dark:bg-green-800">
             <div className="flex">
-              <div className="flex-grow-0">
+              <div className="grow-0">
                 <svg
                   className="h-5 w-5 text-green-400"
                   viewBox="0 0 20 20"
@@ -252,10 +252,10 @@ export default function ContactUsSlideover({
                 </svg>
               </div>
               <div className="ml-3">
-                <h3 className="text-sm leading-5 font-medium text-green-800 dark:text-dark-high-emphasis">
+                <h3 className="dark:text-dark-high-emphasis text-sm leading-5 font-medium text-green-800">
                   Message received!
                 </h3>
-                <div className="mt-2 text-sm leading-5 text-green-700 dark:text-dark-high-emphasis">
+                <div className="dark:text-dark-high-emphasis mt-2 text-sm leading-5 text-green-700">
                   <p>
                     Your message has been submitted as an issue in our GitHub
                     repository. You can track the issue here:{' '}
@@ -304,8 +304,8 @@ export default function ContactUsSlideover({
                   ? email === ''
                     ? 'This field is required.'
                     : !validateEmail(email)
-                    ? 'Please enter a valid email address.'
-                    : null
+                      ? 'Please enter a valid email address.'
+                      : null
                   : null
               }
             />
@@ -316,14 +316,14 @@ export default function ContactUsSlideover({
               onChange={e => setLocation(e.target.value)}
             />
             <fieldset className="space-y-2">
-              <legend className="text-sm leading-5 font-medium text-gray-900 dark:text-dark-high-emphasis">
+              <legend className="dark:text-dark-high-emphasis text-sm leading-5 font-medium text-gray-900">
                 Topic
               </legend>
               <div className="text-sm">
                 The USACO Guide is not affiliated with the USACO. If you
                 encounter any issues with{' '}
                 <a
-                  className="hover:underline text-blue-600 dark:text-blue-300"
+                  className="text-blue-600 hover:underline dark:text-blue-300"
                   target="_blank"
                   rel="noreferrer"
                   href="http://usaco.org"
@@ -332,7 +332,7 @@ export default function ContactUsSlideover({
                 </a>{' '}
                 (e.g., trouble{' '}
                 <a
-                  className="hover:underline text-blue-600 dark:text-blue-300"
+                  className="text-blue-600 hover:underline dark:text-blue-300"
                   target="_blank"
                   rel="noreferrer"
                   href="https://github.com/cpinitiative/usaco-guide/issues/2854"
@@ -341,7 +341,7 @@ export default function ContactUsSlideover({
                 </a>
                 ), contact the USACO contest director (
                 <a
-                  className="hover:underline text-blue-600 dark:text-blue-300"
+                  className="text-blue-600 hover:underline dark:text-blue-300"
                   target="_blank"
                   rel="noreferrer"
                   href="mailto:bcdean@clemson.edu"
@@ -351,36 +351,38 @@ export default function ContactUsSlideover({
                 ) rather than submitting this form.
               </div>
               <div className="text-sm">
-                If you have any questions about{' '}
-                <a
-                  className="hover:underline text-blue-600 dark:text-blue-300"
-                  target="_blank"
-                  rel="noreferrer"
-                  href="https://joincpi.org/classes"
-                >
-                  CPI classes
-                </a>
-                , please email{' '}
-                <a
-                  className="hover:underline text-blue-600 dark:text-blue-300"
-                  target="_blank"
-                  rel="noreferrer"
-                  href="mailto:classes@joincpi.org"
-                >
-                  classes@joincpi.org
-                </a>{' '}
-                rather than submitting this form.
+                <strong>
+                  If you have any questions about{' '}
+                  <a
+                    className="text-blue-600 hover:underline dark:text-blue-300"
+                    target="_blank"
+                    rel="noreferrer"
+                    href="https://joincpi.org/classes"
+                  >
+                    CPI classes
+                  </a>
+                  , please email{' '}
+                  <a
+                    className="text-blue-600 hover:underline dark:text-blue-300"
+                    target="_blank"
+                    rel="noreferrer"
+                    href="mailto:classes@joincpi.org"
+                  >
+                    classes@joincpi.org
+                  </a>{' '}
+                  rather than submitting this form.
+                </strong>
               </div>
               <div className="space-y-3">
                 {topics.map((t, idx) => (
                   <div key={idx}>
                     <div className="relative flex items-start">
-                      <div className="absolute flex items-center h-5">
+                      <div className="absolute flex h-5 items-center">
                         <input
                           id={`contact_topic_${idx}`}
                           type="radio"
                           name="type"
-                          className="form-radio h-4 w-4 text-blue-600 dark:bg-gray-600 dark:focus:ring-offset-dark-surface"
+                          className="form-radio dark:focus:ring-offset-dark-surface h-4 w-4 text-blue-600 dark:bg-gray-600"
                           checked={topic === t[0]}
                           onChange={() => setTopic(t[0])}
                         />
@@ -388,7 +390,7 @@ export default function ContactUsSlideover({
                       <div className="pl-7 text-sm leading-5">
                         <label
                           htmlFor={`contact_topic_${idx}`}
-                          className="font-medium text-gray-900 dark:text-dark-high-emphasis"
+                          className="dark:text-dark-high-emphasis font-medium text-gray-900"
                         >
                           {t[0]} {t.length > 1 ? `(e.g., ${t[1]})` : ''}
                         </label>
@@ -396,7 +398,7 @@ export default function ContactUsSlideover({
                           <div>
                             Submitting a pull request{' '}
                             <a
-                              className="hover:underline text-blue-600 dark:text-blue-300"
+                              className="text-blue-600 hover:underline dark:text-blue-300"
                               target="_blank"
                               rel="noreferrer"
                               href="https://github.com/cpinitiative/usaco-guide/pulls"
@@ -405,7 +407,7 @@ export default function ContactUsSlideover({
                             </a>{' '}
                             is the preferred way to fix a mistake. See{' '}
                             <a
-                              className="hover:underline text-blue-600 dark:text-blue-300"
+                              className="text-blue-600 hover:underline dark:text-blue-300"
                               target="_blank"
                               rel="noreferrer"
                               href="/general/contributing"
@@ -419,7 +421,7 @@ export default function ContactUsSlideover({
                           <div>
                             You may get a faster response by reaching out on the{' '}
                             <a
-                              className="hover:underline text-blue-600 dark:text-blue-300"
+                              className="text-blue-600 hover:underline dark:text-blue-300"
                               href="https://forum.usaco.guide/"
                               target="_blank"
                               rel="noreferrer"
@@ -434,7 +436,7 @@ export default function ContactUsSlideover({
                             If you are reporting a loss of user data, please
                             include the information listed{' '}
                             <a
-                              className="hover:underline text-blue-600 dark:text-blue-300"
+                              className="text-blue-600 hover:underline dark:text-blue-300"
                               href="https://github.com/cpinitiative/usaco-guide/issues/3396#issuecomment-1414102550"
                               target="_blank"
                               rel="noreferrer"
@@ -457,7 +459,7 @@ export default function ContactUsSlideover({
             <div className="space-y-1">
               <label
                 htmlFor="contact_message"
-                className="block text-sm font-medium leading-5 text-gray-900 dark:text-dark-high-emphasis"
+                className="dark:text-dark-high-emphasis block text-sm leading-5 font-medium text-gray-900"
               >
                 Message (markdown is supported)
               </label>
@@ -468,14 +470,14 @@ export default function ContactUsSlideover({
                   className={
                     'textarea ' +
                     (showErrors && message.length < 10
-                      ? 'border-red-300 dark:border-red-300 text-red-900 dark:text-red-300 placeholder-red-300 focus:border-red-300 dark:focus:border-red-300  focus:ring-red-300 dark:focus:ring-red-300'
+                      ? 'border-red-300 text-red-900 placeholder-red-300 focus:border-red-300 focus:ring-red-300 dark:border-red-300 dark:text-red-300 dark:focus:border-red-300 dark:focus:ring-red-300'
                       : '')
                   }
                   value={message}
                   onChange={e => setMessage(e.target.value)}
                 />
                 {showErrors && message.length < 10 && (
-                  <div className="absolute top-0 pt-2 right-0 pr-3 flex items-center pointer-events-none">
+                  <div className="pointer-events-none absolute top-0 right-0 flex items-center pt-2 pr-3">
                     <svg
                       className="h-5 w-5 text-red-500"
                       fill="currentColor"

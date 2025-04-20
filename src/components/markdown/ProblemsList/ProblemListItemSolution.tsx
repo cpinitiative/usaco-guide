@@ -2,7 +2,6 @@ import * as React from 'react';
 import { getProblemURL, ProblemInfo } from '../../../models/problem';
 import TextTooltip from '../../Tooltip/TextTooltip';
 import Tooltip from '../../Tooltip/Tooltip';
-import { Anchor } from './ProblemsListItem';
 
 type ProblemListItemSolutionProps = {
   problem: ProblemInfo;
@@ -27,14 +26,14 @@ export default function ProblemListItemSolution(
   } else if (problem.solution.kind === 'sketch') {
     contents = (
       <div
-        className="px-4 py-2 text-gray-700 hover:text-gray-900 hover:bg-gray-100 dark:hover:bg-gray-800 dark:text-gray-300 cursor-pointer"
+        className="cursor-pointer px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-800"
         onClick={() => props.onShowSolutionSketch(problem)}
       >
-        <span className="inline-flex items-center group h-5">
+        <span className="group inline-flex h-5 items-center">
           Show Solution Sketch
           <Tooltip content="This solution is still a work-in-progress. It may be vague or incomplete.">
             <svg
-              className="h-5 w-5 text-gray-300 ml-1 group-hover:text-yellow-300 transition"
+              className="ml-1 h-5 w-5 text-gray-300 transition group-hover:text-yellow-300"
               viewBox="0 0 20 20"
               fill="currentColor"
             >
@@ -63,18 +62,19 @@ export default function ProblemListItemSolution(
     );
   } else if (problem.solution.kind === 'link') {
     contents = (
-      <Anchor
+      <a
         href={problem.solution.url}
         target="_blank"
         className="block w-full px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-800"
+        rel="noreferrer"
       >
         {problem.solution.label}
-      </Anchor>
+      </a>
     );
   } else if (problem.solution.kind === 'internal') {
     contents = (
       <a
-        className={`flex items-center group px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800`}
+        className={`group flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800`}
         href={`${getProblemURL(problem)}/solution`}
         target="_blank"
         rel="noreferrer"

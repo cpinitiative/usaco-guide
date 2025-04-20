@@ -1,0 +1,349 @@
+---
+id: priority-queues
+title: 'Priority Queues'
+author: Darren Yao, Benjamin Qi, Jeffrey Hu, Shreyas Thumathy, Nathan Gong
+prerequisites:
+  - greedy-sorting
+  - sorting-custom
+description: 'A data structure that supports insert, query max, and pop max.'
+frequency: 2
+---
+
+## Introduction
+
+<Resources>
+	<Resource source="CSA" url="heaps" title="Heaps" />
+</Resources>
+
+A **priority queue** (or **heap**) supports the following operations: insertion
+of elements, deletion of the element considered highest priority, and retrieval
+of the highest priority element, all in $\mathcal{O}(\log N)$ time according to
+the number of elements in the priority queue. Priority queues are simpler and
+faster than sets, so you should use them instead whenever possible.
+
+<LanguageSection>
+<CPPSection>
+
+### [C++](http://www.cplusplus.com/reference/queue/priority_queue/)
+
+```cpp
+priority_queue<int> pq;
+pq.push(7);                // [7]
+pq.push(2);                // [2, 7]
+pq.push(1);                // [1, 2, 7]
+pq.push(5);                // [1, 2, 5, 7]
+cout << pq.top() << endl;  // 7
+pq.pop();                  // [1, 2, 5]
+pq.pop();                  // [1, 2]
+pq.push(6);                // [1, 2, 6]
+```
+
+</CPPSection>
+<JavaSection>
+
+### Java
+
+In Java (unlike in C++), we delete and retrieve the **lowest** element.
+
+```java
+PriorityQueue<Integer> pq = new PriorityQueue<Integer>();
+pq.add(7);                      // [7]
+pq.add(2);                      // [7, 2]
+pq.add(1);                      // [7, 2, 1]
+pq.add(5);                      // [7, 5, 2, 1]
+System.out.println(pq.peek());  // 1
+pq.poll();                      // [7, 5, 2]
+pq.poll();                      // [7, 5]
+pq.add(6);                      // [7, 6, 5]
+```
+
+</JavaSection>
+<PySection>
+
+### [Python](https://docs.python.org/3/library/heapq.html)
+
+In Python (unlike in C++), we delete and retrieve the **lowest** element.
+
+Note that Python's priority queue is not encapsulated; `heapq` operates on a
+provided list directly by turning it into a heap, then doing operations on the
+heap.
+
+<Warning>
+
+Because of a heap's structure, printing out `pq` will **not** print out the
+elements in sorted order in Python; instead, it will print out the list. The
+comments below are a **representation** of what the heap contains, **not** what
+the contents of `pq` actually are.
+
+</Warning>
+
+```py
+import heapq
+
+pq = []
+
+"""
+The following line is not necessary since pq starts as an empty list. However,
+for lists of length greater than 1, heapify is required to turn the list into a
+heap.
+"""
+heapq.heapify(pq)
+
+heapq.heappush(pq, 7)  # [7]
+heapq.heappush(pq, 2)  # [7, 2]
+heapq.heappush(pq, 1)  # [7, 2, 1]
+heapq.heappush(pq, 5)  # [7, 5, 2, 1]
+print(pq[0])  # 1
+heapq.heappop(pq)  # [7, 5, 2]
+heapq.heappop(pq)  # [7, 5]
+heapq.heappush(pq, 6)  # [7, 6, 5]
+```
+
+</PySection>
+</LanguageSection>
+
+## Example
+
+<FocusProblem problem="sample" />
+
+### Solution
+
+In this problem, we're asked the minimum number of rooms needed to accommodate
+$n$ customers, who arrive and leave on set days. Let's sort each customer by
+their start time so that we do not have a customer arriving at say, time 3,
+occupying a room before a customer that arrives at time 2.
+
+Now, we can iterate through the customers while maintaining a minimum priority
+queue that stores the departure times of customers we've already processed. For
+each customer, we check to see if the minimum element in the priority queue is
+less than the arrival time of the new customer.
+
+- If this is true, that means a room previously occupied has opened up, so we
+  remove the minimum element from the priority queue and replace it with the new
+  customer's departure time. The new customer will be allocated to the same room
+  as the customer who departed.
+- Otherwise, all the rooms are full, so we need to allocate another room for the
+  customer and add it to the priority queue.
+
+We can determine $k$ by finding the maximum size the priority queue reaches as
+we iterate through the customers.
+
+### Implementation
+
+**Time Complexity:** $\mathcal{O}(n\log n)$
+
+<LanguageSection>
+
+<CPPSection>
+
+Implementation Note: Similarly to what was done in an [earlier module](/silver/sorting-custom?lang=cpp#sorting-in-descending-order), we can use `greater<>()` to create a min-heap instead of a max-heap.
+
+```cpp
+#include <algorithm>
+#include <iostream>
+#include <queue>
+using namespace std;
+
+int main() {
+	int N;
+	cin >> N;
+
+	vector<int> ans(N);
+	vector<pair<pair<int, int>, int>> v(N);
+
+	v.resize(N);
+	for (int i = 0; i < N; i++) {
+		cin >> v[i].first.first >> v[i].first.second;
+		v[i].second = i;  // store the original index
+	}
+	sort(v.begin(), v.end());
+
+	int last_room = 0;
+	using Room = pair<int, int>;
+	priority_queue<Room, vector<Room>, greater<Room>>
+	    pq;  // min heap to store departure times.
+	for (int i = 0; i < N; i++) {
+		if (pq.empty() || pq.top().first >= v[i].first.first) {
+			last_room++;
+			pq.push(make_pair(v[i].first.second, last_room));
+			ans[v[i].second] = last_room;
+		} else {
+			// accessing the minimum departure time
+			Room minimum = pq.top();
+			pq.pop();
+			pq.push(make_pair(v[i].first.second, minimum.second));
+			ans[v[i].second] = minimum.second;
+		}
+	}
+
+	cout << last_room << "\n";
+	for (int i = 0; i < N; i++) { cout << ans[i] << " "; }
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+<Warning>
+Input classes like `Scanner` and `BufferedReader` are too slow for this problem,
+so we have to use [`FastIO`](/general/fast-io?lang=java#even-faster-methods-1) (which reads bytes directly from an input stream) instead.
+</Warning>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class RoomAllocation {
+	public static void main(String[] args) {
+		FastIO io = new FastIO();
+
+		int n = io.nextInt();
+		Customer[] customers = new Customer[n];
+		for (int i = 0; i < n; i++) {
+			int arrival = io.nextInt();
+			int departure = io.nextInt();
+			customers[i] = new Customer(arrival, departure, i);
+		}
+
+		// sort customers by arrival time
+		Arrays.sort(customers, Comparator.comparingInt(c -> c.arrival));
+
+		PriorityQueue<Room> pq = new PriorityQueue<>(
+		    // order rooms by departure
+		    Comparator.comparingInt(r -> r.departure));
+
+		int k = 0;
+		// the room numbers allocated to each customer
+		int[] roomAllocations = new int[n];
+		// the number of the last new room we've allocated
+		int lastRoom = 1;
+
+		// add the first customer to the priority queue
+		pq.add(new Room(customers[0].departure, lastRoom));
+		roomAllocations[customers[0].index] = lastRoom;
+
+		for (int i = 1; i < n; i++) {
+			// find the minimum departure time
+			Room min = pq.peek();
+
+			if (min.departure < customers[i].arrival) {
+				pq.remove();
+				pq.add(new Room(customers[i].departure, min.number));
+				roomAllocations[customers[i].index] = min.number;
+			} else {
+				lastRoom++;
+				pq.add(new Room(customers[i].departure, lastRoom));
+				roomAllocations[customers[i].index] = lastRoom;
+			}
+			k = Math.max(k, pq.size());
+		}
+
+		io.println(k);
+		// use StringBuilder to speed up output
+		StringBuilder str = new StringBuilder();
+		for (int allocation : roomAllocations) { str.append(allocation).append(" "); }
+		io.println(str);
+		io.close();
+	}
+
+	static class Customer {
+		int arrival, departure, index;
+
+		Customer(int arrival, int departure, int index) {
+			this.arrival = arrival;
+			this.departure = departure;
+			this.index = index;
+		}
+	}
+
+	static class Room {
+		// departure: the time that the customer occupying the room leaves
+		// number: the number of the room
+		int departure, number;
+
+		Room(int departure, int number) {
+			this.departure = departure;
+			this.number = number;
+		}
+	}
+
+	// BeginCodeSnip{FastIO}
+	class FastIO extends PrintWriter {
+		private InputStream stream;
+		private byte[] buf = new byte[1 << 16];
+		private int curChar, numChars;
+
+		// standard input
+		public FastIO() { this(System.in, System.out); }
+		public FastIO(InputStream i, OutputStream o) {
+			super(o);
+			stream = i;
+		}
+		// file input
+		public FastIO(String i, String o) throws IOException {
+			super(new FileWriter(o));
+			stream = new FileInputStream(i);
+		}
+
+		// throws InputMismatchException() if previously detected end of file
+		private int nextByte() {
+			if (numChars == -1) throw new InputMismatchException();
+			if (curChar >= numChars) {
+				curChar = 0;
+				try {
+					numChars = stream.read(buf);
+				} catch (IOException e) { throw new InputMismatchException(); }
+				if (numChars == -1) return -1;  // end of file
+			}
+			return buf[curChar++];
+		}
+
+		// to read in entire lines, replace c <= ' '
+		// with a function that checks whether c is a line break
+		public String next() {
+			int c;
+			do { c = nextByte(); } while (c <= ' ');
+			StringBuilder res = new StringBuilder();
+			do {
+				res.appendCodePoint(c);
+				c = nextByte();
+			} while (c > ' ');
+			return res.toString();
+		}
+		public int nextInt() {  // nextLong() would be implemented similarly
+			int c;
+			do { c = nextByte(); } while (c <= ' ');
+			int sgn = 1;
+			if (c == '-') {
+				sgn = -1;
+				c = nextByte();
+			}
+			int res = 0;
+			do {
+				if (c < '0' || c > '9') throw new InputMismatchException();
+				res = 10 * res + c - '0';
+				c = nextByte();
+			} while (c > ' ');
+			return res * sgn;
+		}
+		public double nextDouble() { return Double.parseDouble(next()); }
+	}
+	// EndCodeSnip
+}
+```
+
+</JavaSection>
+
+</LanguageSection>
+
+
+## Problems
+
+<Info title="Sorted Sets">
+
+[Sorted sets](/gold/intro-sorted-sets) support all the operations of priority queues and more; however, their constant factor is worse, and we don't have any examples of USACO Silver problems that require the use of sorted sets.
+
+</Info>
+
+<Problems problems="general" />

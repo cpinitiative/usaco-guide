@@ -1,4 +1,4 @@
-import { graphql, Link, PageProps } from 'gatsby';
+import { graphql, PageProps } from 'gatsby';
 import * as React from 'react';
 import {
   moduleIDToSectionMap,
@@ -7,7 +7,6 @@ import {
 } from '../../content/ordering';
 import ActiveItems, { ActiveItem } from '../components/Dashboard/ActiveItems';
 import Activity from '../components/Dashboard/Activity';
-import Announcements from '../components/Dashboard/Announcements';
 import DailyStreak from '../components/Dashboard/DailyStreak';
 import Card from '../components/Dashboard/DashboardCard';
 import DashboardProgress from '../components/Dashboard/DashboardProgress';
@@ -19,9 +18,7 @@ import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
 import { useSignIn } from '../context/SignInContext';
 import { useLastVisitInfo } from '../context/UserDataContext/properties/lastVisit';
 import {
-  useLastReadAnnouncement,
   useLastViewedModule,
-  useSetLastReadAnnouncement,
   useShowIgnoredSetting,
 } from '../context/UserDataContext/properties/simpleProperties';
 import {
@@ -30,16 +27,12 @@ import {
 } from '../context/UserDataContext/properties/userProgress';
 import { useFirebaseUser } from '../context/UserDataContext/UserDataContext';
 import {
-  AnnouncementInfo,
-  graphqlToAnnouncementInfo,
-} from '../models/announcement';
-import {
   useModulesProgressInfo,
   useProblemsProgressInfo,
 } from '../utils/getProgressInfo';
 
 export default function DashboardPage(props: PageProps) {
-  const { navigate, modules, announcements, problems } = props.data as any;
+  const { modules, problems } = props.data as any;
   const moduleIDToName = modules.edges.reduce((acc, cur) => {
     acc[cur.node.frontmatter.id] = cur.node.frontmatter.title;
     return acc;
@@ -88,10 +81,8 @@ export default function DashboardPage(props: PageProps) {
   const lastViewedModuleID = useLastViewedModule();
   const userProgressOnModules = useUserProgressOnModules();
   const userProgressOnProblems = useUserProgressOnProblems();
-  const lastReadAnnouncement = useLastReadAnnouncement();
-  const setLastReadAnnouncement = useSetLastReadAnnouncement();
   const firebaseUser = useFirebaseUser();
-  const { consecutiveVisits, numPageviews } = useLastVisitInfo();
+  const { consecutiveVisits } = useLastVisitInfo();
   const showIgnored = useShowIgnoredSetting();
   const { signIn } = useSignIn();
 
@@ -156,170 +147,118 @@ export default function DashboardPage(props: PageProps) {
   }, [problemIDMap, lastViewedSection]);
   const allProblemsProgressInfo = useProblemsProgressInfo(problemStatisticsIDs);
 
-  const parsedAnnouncements: AnnouncementInfo[] = React.useMemo(() => {
-    return announcements.edges.map(node =>
-      graphqlToAnnouncementInfo(node.node)
-    );
+  const [finishedRendering, setFinishedRendering] = React.useState(false);
+  React.useEffect(() => {
+    setFinishedRendering(true);
   }, []);
 
   return (
     <Layout>
       <SEO title="Dashboard" />
 
-      <div className="min-h-screen bg-gray-100 dark:bg-dark-surface">
+      <div className="dark:bg-dark-surface min-h-screen bg-gray-100">
         <TopNavigationBar linkLogoToIndex={true} redirectToDashboard={false} />
 
-        <main className="pb-12">
-          <div className="max-w-7xl mx-auto mb-4">
-            <div className="lg:px-8 pt-4 pb-6">
-              <div className="flex flex-wrap mb-4">
-                <div className="w-full text-center">
-                  {firebaseUser ? (
-                    <>
-                      Signed in as <i>{firebaseUser.email}</i>.
-                    </>
-                  ) : (
-                    <span>
-                      Not signed in.{' '}
-                      <a
-                        href="#"
-                        onClick={e => {
-                          e.preventDefault();
-                          signIn();
-                        }}
-                        className="text-blue-600 dark:text-blue-300 underline"
-                      >
-                        Sign in now!
-                      </a>{' '}
-                    </span>
-                  )}
+        {finishedRendering && (
+          <main className="pb-12">
+            <div className="mx-auto mb-4 max-w-7xl">
+              <div className="pt-4 pb-6 lg:px-8">
+                <div className="mb-4 flex flex-wrap">
+                  <div className="w-full text-center">
+                    {firebaseUser ? (
+                      <>
+                        Signed in as <i>{firebaseUser.email}</i>.
+                      </>
+                    ) : (
+                      <span>
+                        Not signed in.{' '}
+                        <a
+                          href="#"
+                          onClick={e => {
+                            e.preventDefault();
+                            signIn();
+                          }}
+                          className="text-blue-600 underline dark:text-blue-300"
+                        >
+                          Sign in now!
+                        </a>{' '}
+                      </span>
+                    )}
+                  </div>
                 </div>
+                <WelcomeBackBanner
+                  lastViewedModuleURL={lastViewedModuleURL}
+                  lastViewedModuleLabel={moduleIDToName[lastViewedModuleID]}
+                />
               </div>
-              <WelcomeBackBanner
-                lastViewedModuleURL={lastViewedModuleURL}
-                lastViewedModuleLabel={moduleIDToName[lastViewedModuleID]}
-              />
             </div>
-          </div>
-          <header id="announcements">
-            <div className="max-w-7xl mx-auto px-4 sm:px-8 lg:px-10">
-              <h1 className="text-3xl font-bold leading-tight text-gray-900 dark:text-dark-high-emphasis">
-                Announcements
-              </h1>
-              <Link
-                to="/announcements"
-                className="hover:underline transition-all duration-300"
-              >
-                View all &rarr;
-              </Link>
+            <div className="mx-auto max-w-7xl sm:px-6 lg:grid lg:grid-cols-2 lg:gap-8 lg:px-8">
+              {activeProblems.length > 0 && (
+                <div className="mb-8">
+                  <ActiveItems type="problems" items={activeProblems} />
+                </div>
+              )}
+              {activeModules.length > 0 && (
+                <div className="mb-8">
+                  <ActiveItems type="modules" items={activeModules} />
+                </div>
+              )}
             </div>
-          </header>
-          <div className="max-w-7xl mx-auto mb-8">
-            {/* Only show announcements in the current year by passing in a filter function */}
-            <Announcements
-              filterFn={announcement =>
-                parseInt(announcement.date.split(', ')[1]) ===
-                new Date().getFullYear()
-              }
-              announcements={parsedAnnouncements}
-            />
-          </div>
-          <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 lg:grid lg:grid-cols-2 lg:gap-8">
-            {activeProblems.length > 0 && (
-              <div className="mb-8">
-                <ActiveItems type="problems" items={activeProblems} />
+            <header>
+              <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                <h1 className="dark:text-dark-high-emphasis text-3xl leading-tight font-bold text-gray-900">
+                  Activity
+                </h1>
               </div>
-            )}
-            {activeModules.length > 0 && (
-              <div className="mb-8">
-                <ActiveItems type="modules" items={activeModules} />
+            </header>
+            <div className="mx-auto mb-8 max-w-7xl">
+              <Activity />
+            </div>
+            <header>
+              <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                <h1 className="dark:text-dark-high-emphasis text-3xl leading-tight font-bold text-gray-900">
+                  Statistics
+                </h1>
               </div>
-            )}
-          </div>
-          <header>
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <h1 className="text-3xl font-bold leading-tight text-gray-900 dark:text-dark-high-emphasis">
-                Activity
-              </h1>
-            </div>
-          </header>
-          <div className="max-w-7xl mx-auto mb-8">
-            <Activity />
-          </div>
-          <header>
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <h1 className="text-3xl font-bold leading-tight text-gray-900 dark:text-dark-high-emphasis">
-                Statistics
-              </h1>
-            </div>
-          </header>
-          <div className="max-w-7xl mx-auto">
-            <div className="sm:px-6 lg:px-8 py-4 lg:grid lg:grid-cols-2 lg:gap-8 space-y-8 lg:space-y-0">
-              <div className="space-y-8">
-                <Card>
-                  <div className="px-4 py-5 sm:p-6">
-                    <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-dark-high-emphasis">
-                      Modules Progress - {SECTION_LABELS[lastViewedSection]}
-                    </h3>
-                    <div className="mt-6">
-                      <DashboardProgress
-                        {...allModulesProgressInfo}
-                        total={moduleProgressIDs.length}
-                      />
+            </header>
+            <div className="mx-auto max-w-7xl">
+              <div className="space-y-8 py-4 sm:px-6 lg:grid lg:grid-cols-2 lg:gap-8 lg:space-y-0 lg:px-8">
+                <div className="space-y-8">
+                  <Card>
+                    <div className="px-4 py-5 sm:p-6">
+                      <h3 className="dark:text-dark-high-emphasis text-lg leading-6 font-medium text-gray-900">
+                        Modules Progress - {SECTION_LABELS[lastViewedSection]}
+                      </h3>
+                      <div className="mt-6">
+                        <DashboardProgress
+                          {...allModulesProgressInfo}
+                          total={moduleProgressIDs.length}
+                        />
+                      </div>
                     </div>
-                  </div>
-                </Card>
-              </div>
-              <div className="space-y-8">
-                <Card>
-                  <div className="px-4 py-5 sm:p-6">
-                    <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-dark-high-emphasis">
-                      Problems Progress - {SECTION_LABELS[lastViewedSection]}
-                    </h3>
-                    <div className="mt-6">
-                      <DashboardProgress
-                        {...allProblemsProgressInfo}
-                        total={Object.keys(problemStatisticsIDs).length}
-                      />
+                  </Card>
+                </div>
+                <div className="space-y-8">
+                  <Card>
+                    <div className="px-4 py-5 sm:p-6">
+                      <h3 className="dark:text-dark-high-emphasis text-lg leading-6 font-medium text-gray-900">
+                        Problems Progress - {SECTION_LABELS[lastViewedSection]}
+                      </h3>
+                      <div className="mt-6">
+                        <DashboardProgress
+                          {...allProblemsProgressInfo}
+                          total={Object.keys(problemStatisticsIDs).length}
+                        />
+                      </div>
                     </div>
-                  </div>
-                </Card>
-                {/*<div className="bg-white shadow sm:rounded-lg">*/}
-                {/*  <div className="px-4 py-5 sm:p-6">*/}
-                {/*    <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-dark-high-emphasis">*/}
-                {/*      Section Breakdown*/}
-                {/*    </h3>*/}
-                {/*    <div className="mt-2 max-w-xl text-sm leading-5 text-gray-500">*/}
-                {/*      <p>Below is your progress on modules for each section.</p>*/}
-                {/*    </div>*/}
-                {/*    <div className="mt-4">*/}
-                {/*      <SectionProgressBar title="Intro" />*/}
-                {/*      <SectionProgressBar title="Bronze" />*/}
-                {/*      <SectionProgressBar title="Silver" />*/}
-                {/*      <SectionProgressBar title="Gold" />*/}
-                {/*      <SectionProgressBar title="Platinum" />*/}
-                {/*      <SectionProgressBar title="Advanced" />*/}
-                {/*    </div>*/}
-                {/*  </div>*/}
-                {/*</div>*/}
+                  </Card>
+                </div>
+                <DailyStreak streak={consecutiveVisits} />
               </div>
-              <DailyStreak streak={consecutiveVisits} />
             </div>
-          </div>
-        </main>
+          </main>
+        )}
       </div>
-
-      {/* {parsedAnnouncements[0].id !== lastReadAnnouncement &&
-        numPageviews > 12 && (
-          <div className="h-12">
-            <AnnouncementBanner
-              announcement={parsedAnnouncements[0]}
-              onDismiss={() =>
-                setLastReadAnnouncement(parsedAnnouncements[0].id)
-              }
-            />
-          </div>
-        )} */}
     </Layout>
   );
 }
@@ -347,21 +286,6 @@ export const pageQuery = graphql`
               id
             }
           }
-        }
-      }
-    }
-    announcements: allXdm(
-      filter: { fileAbsolutePath: { regex: "/announcements/" } }
-      sort: { order: DESC, fields: frontmatter___order }
-    ) {
-      edges {
-        node {
-          frontmatter {
-            title
-            id
-            date
-          }
-          body
         }
       }
     }
