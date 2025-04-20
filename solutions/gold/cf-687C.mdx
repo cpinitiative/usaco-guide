@@ -21,41 +21,33 @@ author: Rameez Parwez
 
 int main() {
 	int n, k;
-    std::cin >> n >> k;
-    std::vector<int> c(n);
-    for (auto &x : c) {
-        std::cin >> x;
-    }
-	
-    std::vector<std::vector<int>> dp(k + 1, std::vector<int> (k + 1, 0));
-    dp[0][0] = 1;
-    for (int a : c) {
-        std::vector<std::vector<int>> new_dp(dp);
-        for (int i = 0; i <= k; i++) {
-            for (int j = 0; j <= k - i; j++) {
-                if (i >= a) {
-                    new_dp[i][j] = new_dp[i][j] | dp[i - a][j];
-                }
- 
-                if (j >= a) {
-                    new_dp[i][j] = new_dp[i][j] | dp[i][j - a];
-                }
-            }
-        }
-        dp = new_dp;
-    }
- 
-    std::vector<int> res;
-    for (int i = 0; i <= k; i++) {
-        if (dp[i][k - i]) {
-            res.push_back(i);
-        }
-    }
- 
-    std::cout << (int)res.size() << '\n';
-    for (int i = 0; i < (int)res.size(); i++) {
-        std::cout << res[i] << " \n"[i == (int)res.size() - 1];
-    }
+	std::cin >> n >> k;
+	std::vector<int> c(n);
+	for (auto &x : c) { std::cin >> x; }
+
+	std::vector<std::vector<int>> dp(k + 1, std::vector<int>(k + 1, 0));
+	dp[0][0] = 1;
+	for (int a : c) {
+		std::vector<std::vector<int>> new_dp(dp);
+		for (int i = 0; i <= k; i++) {
+			for (int j = 0; j <= k - i; j++) {
+				if (i >= a) { new_dp[i][j] = new_dp[i][j] | dp[i - a][j]; }
+
+				if (j >= a) { new_dp[i][j] = new_dp[i][j] | dp[i][j - a]; }
+			}
+		}
+		dp = new_dp;
+	}
+
+	std::vector<int> res;
+	for (int i = 0; i <= k; i++) {
+		if (dp[i][k - i]) { res.push_back(i); }
+	}
+
+	std::cout << (int)res.size() << '\n';
+	for (int i = 0; i < (int)res.size(); i++) {
+		std::cout << res[i] << " \n"[i == (int)res.size() - 1];
+	}
 }
 ```
 
