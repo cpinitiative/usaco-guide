@@ -7,8 +7,6 @@ author: Rameez Parwez
 
 [Official Analysis (C++)](https://atcoder.jp/contests/abc321/editorial/7281)
 
-## Explanation
-
 
 ## Implementation
 
@@ -18,7 +16,34 @@ author: Rameez Parwez
 <CPPSection>
 
 ```cpp
+#include <iostream>
+#include <vector>
 
+const int MOD = 998244353;
+
+int main() {
+	int q, k;
+	std::cin >> q >> k;
+
+	std::vector<long long> dp(k + 1);
+	dp[0] = 1;
+
+	for (int i = 0; i < q; i++) {
+		char type;
+		int x;
+		std::cin >> type >> x;
+		if (type == '+') {
+			for (int j = k; j >= x; j--) {
+				(dp[j] += dp[j - x]) %= MOD;
+			}
+		} else {
+			for (int j = x; j <= k; j++) {
+				(dp[j] += MOD - dp[j - x]) %= MOD;
+			}
+		}
+		std::cout << dp[k] << '\n';
+	}
+}
 ```
 
 </CPPSection>
