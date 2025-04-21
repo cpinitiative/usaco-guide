@@ -278,13 +278,8 @@ vector<int> vtree(const vector<int> &key) {
 
 	for (int v : res) { vadj[v].clear(); }
 
-	vector<int> stk = {res[0]};
-
 	for (int i = 1; i < (int)res.size(); i++) {
-		while (tin[res[i]] > tout[stk.back()]) { stk.pop_back(); }
-
-		vadj[stk.back()].push_back(res[i]);
-		stk.push_back(res[i]);
+		vadj[lca(res[i - 1], res[i])].push_back(res[i]);
 	}
 
 	return res;
