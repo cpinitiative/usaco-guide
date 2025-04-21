@@ -2,14 +2,20 @@
 id: usaco-811
 source: USACO Silver 2018 February
 title: Snow Boots
-author: Qi Wang, Ryan Chou, Juheon Rhee
+author: Qi Wang, Ryan Chou, Juheon Rhee, David Guo
 ---
 
 [Official Analysis (C++)](http://www.usaco.org/current/data/sol_snowboots_silver_feb18.html)
 
 ## Explanation
 
-Due to the low bounds on $N$ and $B$, we can run a [DFS (Depth First Search)](/silver/graph-traversal) on every possible location and boot size Farmer John could be wearing.
+We view each position and boot as a state, and run a depth-first search (DFS) to explore every state while marking visited ones.
+
+From any state, we step forward up to the boot's maximum step length onto tiles it can handle, or swap to any later boot that also works on the current tile.
+
+When we reach the last tile, we record the current boot index, keeping the smallest value.
+
+Because the number of states is small, the DFS finishes quickly and returns the lowest boot index that allows us to reach the end.
 
 ## Implementation
 
