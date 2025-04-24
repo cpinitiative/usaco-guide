@@ -37,16 +37,11 @@ frequency: 1
 	</Resource>
 </Resources>
 
-<!-- # Motivation
-
-Consider some array $a_1, a_2, \dots, a_n$. Now, consider an operation that generates $a_1', a_2', \dots, a_n'$, in which $a_i'$ is a linear combination of the values $a_1, a_2, \dots, a_n$. For example, consider the following problem:
-
-On day $0$, you have $1$ happy cookie and $1$ sad cookie. On each day,  -->
 ## Example - Fibonacci
 
-<FocusProblem problem='sample' />
+<FocusProblem problem="sample" />
 
-The fibonacci numbers are defined as follows:
+The Fibonacci numbers are defined as follows:
 
 $$
 \begin{align*}
@@ -56,7 +51,7 @@ F_{n+1} &= F_{n} + F_{n-1}
 \end{align*}
 $$
 
-The fibonacci numbers are defined by the following matrix relation
+We can also write them using the following matrix recurrence:
 
 $$
 A = \begin{bmatrix}1&1\\1&0\end{bmatrix}^n=\begin{bmatrix}F_{n+1} & F_n \\ F_n & F_{n-1}\end{bmatrix}
@@ -70,7 +65,7 @@ $$
 A^1 = \begin{bmatrix}1 & 1 \\ 1 & 0\end{bmatrix} = \begin{bmatrix}F_2 & F_1 \\ F_1 & F_0\end{bmatrix}
 $$
 
-Induction step ($n+1$):
+Inductive step ($n+1$):
 
 $$
 A^{n+1}=A\,A^n=\begin{bmatrix}
@@ -84,16 +79,14 @@ F_{n+2} & F_{n+1} \\ F_{n+1} & F_{n}
 \end{bmatrix}
 $$
 
-The base case is true, and the induction step is true. Therefore the formula
-holds for all $n \in \mathbb{N}$.
-
-<LanguageSection>
-
-<CPPSection>
+With this, we've shown that the formula holds for all $n \in \mathbb{N}$.
 
 ## Implementation
 
-**Time complexity:** $\mathcal{O}(\log N)$
+**Time Complexity:** $\mathcal{O}(\log N)$
+
+<LanguageSection>
+<CPPSection>
 
 ```cpp
 #include <bits/stdc++.h>
@@ -133,9 +126,10 @@ int main() {
 	cout << base[0][1];
 }
 ```
-</CPPSection>
 
+</CPPSection>
 <PySection>
+
 ```py
 from typing import List
 
@@ -172,11 +166,13 @@ elif n > 2:
 else:
 	print(1)
 ```
+
 </PySection>
 </LanguageSection>
 
 ## Finding the Right Matrix - Generalized Linear Recurrences
-<FocusProblem problem='sample2' />
+
+<FocusProblem problem="sample2" />
 
 We can generalize the technique above to calculate values in any linear recurrence. The tricky part is finding the correct matrix for the problem. Let's see how we can find this matrix $M$. We know that following equation must hold:
 
@@ -219,13 +215,12 @@ $$
 
 With this $M$, the equation always holds.
 
-<LanguageSection>
-
-<CPPSection>
-
 ## Implementation
 
 **Time Complexity:** $\mathcal{O}(K^3 \log N)$
+
+<LanguageSection>
+<CPPSection>
 
 ```cpp
 #include <bits/stdc++.h>
