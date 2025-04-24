@@ -225,14 +225,14 @@ With this $M$, the equation always holds.
 
 ## Implementation
 
-**Time complexity:** $\mathcal{O}(K^3 \log N)$
+**Time Complexity:** $\mathcal{O}(K^3 \log N)$
 
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
 typedef long long ll;
 
-const int mod = 1e9;
+const int MOD = 1e9;
 
 template <typename T> void matmul(vector<vector<T>> &a, vector<vector<T>> b) {
 	int n = a.size(), m = a[0].size(), p = b[0].size();
@@ -241,7 +241,7 @@ template <typename T> void matmul(vector<vector<T>> &a, vector<vector<T>> b) {
 	for (int i = 0; i < n; i++) {
 		for (int j = 0; j < p; j++) {
 			for (int k = 0; k < m; k++) {
-				c[i][j] = (c[i][j] + a[i][k] * b[k][j]) % mod;
+				c[i][j] = (c[i][j] + a[i][k] * b[k][j]) % MOD;
 			}
 		}
 	}
@@ -258,19 +258,18 @@ template <typename T> struct Matrix {
 		for (int i = 0; i < n; i++) { mat[i].resize(m); }
 	}
 
-	int rows() { return mat.size(); }
-	int cols() { return mat[0].size(); }
+	int rows() const { return mat.size(); }
+	int cols() const { return mat[0].size(); }
 
 	// makes the identity matrix for a n by n matrix
 	void makeiden() {
 		for (int i = 0; i < rows(); i++) { mat[i][i] = 1; }
 	}
 
-	void print() {
+	void print() const {
 		for (int i = 0; i < rows(); i++) {
-			for (int j = 0; j < cols(); j++) { cout << mat[i][j] << " "; }
-
-			cout << "\n";
+			for (int j = 0; j < cols(); j++) { cout << mat[i][j] << ' '; }
+			cout << '\n';
 		}
 	}
 
@@ -282,37 +281,35 @@ template <typename T> struct Matrix {
 	Matrix operator*(const Matrix &b) { return Matrix(*this) *= b; }
 };
 
-void solve() {
-	int n, k;
-	cin >> k;
-	Matrix<ll> mat(k, k), vec(k, 1), cur(k, k);
-	cur.makeiden();
-	for (int i = 0; i < k; i++) { cin >> vec.mat[i][0]; }
-
-	for (int i = 0; i < k; i++) { cin >> mat.mat[k - 1][k - i - 1]; }
-
-	for (int i = 1; i < k; i++) { mat.mat[i - 1][i] = 1; }
-
-	cin >> n;
-	n--;
-	while (n > 0) {
-		if (n & 1) cur *= mat;
-		mat *= mat;
-		n >>= 1;
-	}
-
-	Matrix<ll> res = cur * vec;
-	cout << res.mat[0][0] << '\n';
-}
-
 int main() {
 	int test_num;
 	cin >> test_num;
-	while (test_num--) { solve(); }
+	for (int t = 0; t < test_num; t++) {
+		int n, k;
+		cin >> k;
+		Matrix<ll> mat(k, k), vec(k, 1), cur(k, k);
+		cur.makeiden();
+		for (int i = 0; i < k; i++) { cin >> vec.mat[i][0]; }
+
+		for (int i = 0; i < k; i++) { cin >> mat.mat[k - 1][k - i - 1]; }
+
+		for (int i = 1; i < k; i++) { mat.mat[i - 1][i] = 1; }
+
+		cin >> n;
+		n--;
+		while (n > 0) {
+			if (n & 1) cur *= mat;
+			mat *= mat;
+			n >>= 1;
+		}
+
+		Matrix<ll> res = cur * vec;
+		cout << res.mat[0][0] << '\n';
+	}
 }
 ```
-</CPPSection>
 
+</CPPSection>
 </LanguageSection>
 
 ## Takeaway
@@ -345,6 +342,7 @@ $$
 $$
 
 </Spoiler>
+
 ## Problems
 
 <Problems problems="probs" />
