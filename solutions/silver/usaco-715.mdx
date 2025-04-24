@@ -2,9 +2,17 @@
 id: usaco-715
 source: USACO Silver 2017 February
 title: Why Did the Cow Cross the Road II
-author: Albert Zhu, Juheon Rhee
+author: Albert Zhu, Juheon Rhee, Sachet Abeysinghe
 ---
 [Official Analysis (C++)](http://www.usaco.org/current/data/sol_maxcross_silver_feb17.html)
+
+## Explanation
+
+We can represent this problem as an array $a$ of $N$ signals, such that the $i$th signal is $0$ if it is working and $1$ if it is not working. Then, we have reduced the problem to finding the subarray of length $K$ with the least number of $1$s (i.e., the least sum).
+
+To do this, compute the prefix sum array $p$ such that $p_0 = 0$ and $p_i = a_1 + a_2 + ... + a_{i-1}$. Then, for each $i$ from $0$ to $N - K$, you can find the number of $1$s (broken signals) with the formula $p_{i + K} - p_i$, and take the minimum across all values.
+
+You can also solve this using a sliding window of length $K$, keeping track of the sum across all windows.
 
 ## Implementation
 
