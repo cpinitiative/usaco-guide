@@ -22,21 +22,21 @@ author: Rameez Parwez
 int main() {
 	int n, k;
 	std::cin >> n >> k;
-	std::vector<int> c(n);
-	for (auto &x : c) { std::cin >> x; }
+	std::vector<int> coins(n);
+	for (int &x : coins) { std::cin >> x; }
 
-	std::vector<std::vector<int>> dp(k + 1, std::vector<int>(k + 1, 0));
+    std::vector dp(k + 1, std::vector<int> (k + 1));
 	dp[0][0] = 1;
-	for (int a : c) {
+	for (int a : coins) {
 		std::vector<std::vector<int>> new_dp(dp);
 		for (int i = 0; i <= k; i++) {
 			for (int j = 0; j <= k - i; j++) {
-				if (i >= a) { new_dp[i][j] = new_dp[i][j] | dp[i - a][j]; }
+				if (i >= a) { new_dp[i][j] |= dp[i - a][j]; }
 
-				if (j >= a) { new_dp[i][j] = new_dp[i][j] | dp[i][j - a]; }
+				if (j >= a) { new_dp[i][j] |= dp[i][j - a]; }
 			}
 		}
-		dp = new_dp;
+		std::move(begin(new_dp), end(new_dp), begin(dp));
 	}
 
 	std::vector<int> res;
@@ -44,9 +44,9 @@ int main() {
 		if (dp[i][k - i]) { res.push_back(i); }
 	}
 
-	std::cout << (int)res.size() << '\n';
-	for (int i = 0; i < (int)res.size(); i++) {
-		std::cout << res[i] << " \n"[i == (int)res.size() - 1];
+	std::cout << res.size() << '\n';
+	for (int i = 0; i < res.size(); i++) {
+		std::cout << res[i] << " \n"[i == res.size() - 1];
 	}
 }
 ```
