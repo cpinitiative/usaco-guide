@@ -52,4 +52,30 @@ int main() {
 ```
 
 </CPPSection>
+<PySection>
+
+```py
+n, k = map(int, input().split())
+coins = list(map(int, input().split()))
+
+dp = [[0] * (k + 1) for _ in range(k + 1)]
+dp[0][0] = 1
+
+for a in coins:
+	new_dp = [x[:] for x in dp]
+	for i in range(k + 1):
+		for j in range(k - i + 1):
+			if i >= a:
+				new_dp[i][j] |= dp[i - a][j]
+			if j >= a:
+				new_dp[i][j] |= dp[i][j - a]
+	dp = new_dp
+
+res = [i for i in range(k + 1) if dp[i][k - i]]
+
+print(len(res))
+print(*res)
+```
+
+</PySection>
 </LanguageSection>
