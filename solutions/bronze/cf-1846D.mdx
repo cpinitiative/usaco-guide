@@ -113,77 +113,73 @@ import java.io.*;
 import java.util.*;
 
 public class RudolphAndChristmasTree {
-  static BufferedReader br;
-  static PrintWriter pw;
-  static StringTokenizer st;
+	static BufferedReader br;
+	static PrintWriter pw;
+	static StringTokenizer st;
 
-  static int nextInt() throws IOException {
-    return Integer.parseInt(nextToken());
-  }
+	static int nextInt() throws IOException { return Integer.parseInt(nextToken()); }
 
-  static long nextLong() throws IOException {
-    return Long.parseLong(nextToken());
-  }
+	static long nextLong() throws IOException { return Long.parseLong(nextToken()); }
 
-  static double nextDouble() throws IOException {
-    return Double.parseDouble(nextToken());
-  }
+	static double nextDouble() throws IOException {
+		return Double.parseDouble(nextToken());
+	}
 
-  static String nextToken() throws IOException {
-    while (st == null || !st.hasMoreTokens()) {
-      st = new StringTokenizer(br.readLine());
-    }
-    return st.nextToken();
-  }
+	static String nextToken() throws IOException {
+		while (st == null || !st.hasMoreTokens()) {
+			st = new StringTokenizer(br.readLine());
+		}
+		return st.nextToken();
+	}
 
-  public static void main(String[] args) {
-    try {
-      br = new BufferedReader(new InputStreamReader(System.in));
-      pw = new PrintWriter(System.out);
-      int t = nextInt();
-      for (int testCase = 0; testCase < t; testCase++) {
-        int n = nextInt();
-        double d = nextDouble();
-        double h = nextDouble();
+	public static void main(String[] args) {
+		try {
+			br = new BufferedReader(new InputStreamReader(System.in));
+			pw = new PrintWriter(System.out);
+			int t = nextInt();
+			for (int testCase = 0; testCase < t; testCase++) {
+				int n = nextInt();
+				double d = nextDouble();
+				double h = nextDouble();
 
-        int[] bases = new int[n];
-        for (int i = 0; i < n; i++) {
-          bases[i] = nextInt();
-        }
+				int[] bases = new int[n];
+				for (int i = 0; i < n; i++) { bases[i] = nextInt(); }
 
-        double totalAreaToColor = n * (0.5 * d * h);
-        
-        /*
-         * Some area of each triangle might be covered by another triangle
-         * that we don't have to color. This covered area is also a triangle.
-         * Main triangle and triangle created by covered area (call it covered triangle)
-         * both are similar triangles.
-         * 
-         * Height of covered triangle will be:
-         * heightCoveredTriangle = (bases[i] + h - bases[i+1])
-         * 
-         * Covered triangle is similar triangle with main triangle,
-         * so base of covered triangle:
-         * baseCoveredTriangle = (heightCoveredTriangle / h) * d
-         * 
-         * Calculate and subtract this covered area from totalArea for each triangle.
-         */
-        
-        for (int i = 0; i < n - 1; i++) {
-          double heightCoveredTriangle = bases[i] + h - bases[i+1];
-          if (heightCoveredTriangle > 0) {
-            double baseCoveredTriangle = (heightCoveredTriangle / h) * d;
-            totalAreaToColor -= (0.5 * heightCoveredTriangle * baseCoveredTriangle);
-          }
-        }
-        pw.println(totalAreaToColor);
-      }
-      pw.close();
-    } catch (Exception e) {
-      e.printStackTrace();
-      System.exit(1);
-    }
-  }
+				double totalAreaToColor = n * (0.5 * d * h);
+
+				/*
+				 * Some area of each triangle might be covered by another triangle
+				 * that we don't have to color. This covered area is also a triangle.
+				 * Main triangle and triangle created by covered area (call it covered
+				 * triangle) both are similar triangles.
+				 *
+				 * Height of covered triangle will be:
+				 * heightCoveredTriangle = (bases[i] + h - bases[i+1])
+				 *
+				 * Covered triangle is similar triangle with main triangle,
+				 * so base of covered triangle:
+				 * baseCoveredTriangle = (heightCoveredTriangle / h) * d
+				 *
+				 * Calculate and subtract this covered area from totalArea for each
+				 * triangle.
+				 */
+
+				for (int i = 0; i < n - 1; i++) {
+					double heightCoveredTriangle = bases[i] + h - bases[i + 1];
+					if (heightCoveredTriangle > 0) {
+						double baseCoveredTriangle = (heightCoveredTriangle / h) * d;
+						totalAreaToColor -=
+						    (0.5 * heightCoveredTriangle * baseCoveredTriangle);
+					}
+				}
+				pw.println(totalAreaToColor);
+			}
+			pw.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.exit(1);
+		}
+	}
 }
 ```
 
