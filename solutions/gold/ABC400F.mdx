@@ -1,6 +1,6 @@
 ---
 id: ac-happybirthday!3
-source: AC 
+source: AC
 title:  Happy Birthday! 3
 author: Joseph Lin
 ---
@@ -89,54 +89,49 @@ const int INF = 1e18;
 int dp[maxn][maxn];
 
 signed main() {
-    int N;
-    cin >> N;
-    assert(1 <= N && N <= 400);
-    vector<int> C(2 * N + 1), X(2 * N + 1);
+	int N;
+	cin >> N;
+	assert(1 <= N && N <= 400);
+	vector<int> C(2 * N + 1), X(2 * N + 1);
 
-    for (int i = 1; i <= N; i++) {
-        cin >> C[i];
-        C[i + N] = C[i];
-    }
-    for (int i = 1; i <= N; i++) {
-        cin >> X[i];
-        X[i + N] = X[i];
-    }
+	for (int i = 1; i <= N; i++) {
+		cin >> C[i];
+		C[i + N] = C[i];
+	}
+	for (int i = 1; i <= N; i++) {
+		cin >> X[i];
+		X[i + N] = X[i];
+	}
 
-    // Initialize dp array
-    for (int i = 1; i <= 2 * N; i++) {
-        for (int j = 1; j <= 2 * N; j++) {
-            dp[i][j] = INF;
-        }
-        dp[i][i] = X[C[i]] + 1; // Base case: single position
-    }
+	// Initialize dp array
+	for (int i = 1; i <= 2 * N; i++) {
+		for (int j = 1; j <= 2 * N; j++) { dp[i][j] = INF; }
+		dp[i][i] = X[C[i]] + 1;  // Base case: single position
+	}
 
-    // Compute dp[l][r] for increasing lengths
-    for (int len = 2; len <= N; len++) {
-        for (int l = 1; l <= 2 * N - len + 1; l++) {
-            int r = l + len - 1;
-            // Transition: paint l separately
-            dp[l][r] = min(dp[l][r], dp[l + 1][r] + X[C[l]] + 1);
+	// Compute dp[l][r] for increasing lengths
+	for (int len = 2; len <= N; len++) {
+		for (int l = 1; l <= 2 * N - len + 1; l++) {
+			int r = l + len - 1;
+			// Transition: paint l separately
+			dp[l][r] = min(dp[l][r], dp[l + 1][r] + X[C[l]] + 1);
 
-            // Transition: extend stroke from x where C[l] == C[x]
-            for (int x = l + 1; x <= r; x++) {
-                if (C[l] == C[x]) {
-                    int cost = x - l;
-                    int left = (l + 1 <= x - 1 ? dp[l + 1][x - 1] : 0);
-                    dp[l][r] = min(dp[l][r], left + dp[x][r] + cost);
-                }
-            }
-        }
-    }
+			// Transition: extend stroke from x where C[l] == C[x]
+			for (int x = l + 1; x <= r; x++) {
+				if (C[l] == C[x]) {
+					int cost = x - l;
+					int left = (l + 1 <= x - 1 ? dp[l + 1][x - 1] : 0);
+					dp[l][r] = min(dp[l][r], left + dp[x][r] + cost);
+				}
+			}
+		}
+	}
 
-    // Find minimum cost to paint the entire circular array
-    int ans = INF;
-    for (int i = 1; i <= N; i++) {
-        ans = min(ans, dp[i][i + N - 1]);
-    }
+	// Find minimum cost to paint the entire circular array
+	int ans = INF;
+	for (int i = 1; i <= N; i++) { ans = min(ans, dp[i][i + N - 1]); }
 
-    cout << ans << endl;
-    return 0;
+	cout << ans << endl;
+	return 0;
 }
-
 ```
