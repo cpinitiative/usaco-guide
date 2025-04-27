@@ -1,0 +1,142 @@
+---
+id: ac-happybirthday!3
+source: AC 
+title:  Happy Birthday! 3
+author: Joseph Lin
+---
+
+<details>
+<summary>Hint 1</summary>
+
+Consider range $\texttt{DP}$, where $\texttt{DP}[l][r]$ = minimum strokes needed
+to color the region l to r. How do you merge two different ranges?
+
+</details>
+<details>
+<summary>Hint 2</summary>
+
+Consider enumerating all positions $x$ where
+$\texttt{Color}[l] = \texttt{Color}[x]$, where $l \leq x \leq r$. Is it possible
+to extend the answer of $\texttt{DP}[x][r]$ leftwards to $\texttt{DP}[l][r]$?
+
+</details>
+
+<details>
+<summary>Hint 3</summary>
+
+For a stroke coloring only $l$ to $r$, it can safely be assumed that position
+$l$ can be colored first. This is because other strokes applying in the range
+$l+1$ to $r$ would not cover position $l$.
+
+Therefore, if $\texttt{Color}[l] = \texttt{Color}[x]$, we can extend the stroke
+with left ending at position $x$ to $l$, with an extra cost of $x-l$ (as given
+by the problem)
+
+</details>
+
+<details>
+<summary>Hint 4</summary>
+
+However, since one stroke can loop around the array, and enumerating each
+starting point is in efficient $(O(n^4))$, we should copy the array one time and
+do range DP on it.
+
+</details>
+
+## Explanation
+
+Consider the DP where $\texttt{DP}[l][r]$ is the minimum number of strokes
+required to paint the region from $l$ to $r$.
+
+When calculating $\texttt{DP}[l][r]$, we know that having the first stroke start
+at position $l$ is never "bad" (since no other strokes will touch position $l$).
+Therefore, we enumerate all other positions $x$ where
+$\texttt{Color}[x] = \texttt{Color}[l]$, and try to color them in the same
+stroke. The extra cost required is therefore $x - l$.
+
+The transition thus becomes:
+
+$$
+\texttt{DP}[l][r] = \min\left(\texttt{DP}[l][r],\ \texttt{DP}[l+1][x-1] + \texttt{DP}[x][r] + (x-l)\right)
+\quad \text{for all } x \in [l+1, r].
+$$
+
+Additionally, we initialize:
+
+$$
+\texttt{DP}[i][i] = X[C[i]] + 1 \quad \text{for all } i,
+$$
+
+where the $+1$ accounts for the problem's statement that coloring a segment of
+length $1$ requires $X[C[i]] + 1$ strokes.
+
+Finally, note that the cost of $X[C[x]]$ is not needed separately during
+transitions, because when extending from $\texttt{DP}[x][r]$ to
+$\texttt{DP}[l][r]$, the base cost of $X[C[x]]$ is already included within
+$\texttt{DP}[x][r]$.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N^3)$
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+#define int long long
+
+const int maxn = 805;
+const int INF = 1e18;
+int dp[maxn][maxn];
+
+signed main() {
+    int N;
+    cin >> N;
+    assert(1 <= N && N <= 400);
+    vector<int> C(2 * N + 1), X(2 * N + 1);
+
+    for (int i = 1; i <= N; i++) {
+        cin >> C[i];
+        C[i + N] = C[i];
+    }
+    for (int i = 1; i <= N; i++) {
+        cin >> X[i];
+        X[i + N] = X[i];
+    }
+
+    // Initialize dp array
+    for (int i = 1; i <= 2 * N; i++) {
+        for (int j = 1; j <= 2 * N; j++) {
+            dp[i][j] = INF;
+        }
+        dp[i][i] = X[C[i]] + 1; // Base case: single position
+    }
+
+    // Compute dp[l][r] for increasing lengths
+    for (int len = 2; len <= N; len++) {
+        for (int l = 1; l <= 2 * N - len + 1; l++) {
+            int r = l + len - 1;
+            // Transition: paint l separately
+            dp[l][r] = min(dp[l][r], dp[l + 1][r] + X[C[l]] + 1);
+
+            // Transition: extend stroke from x where C[l] == C[x]
+            for (int x = l + 1; x <= r; x++) {
+                if (C[l] == C[x]) {
+                    int cost = x - l;
+                    int left = (l + 1 <= x - 1 ? dp[l + 1][x - 1] : 0);
+                    dp[l][r] = min(dp[l][r], left + dp[x][r] + cost);
+                }
+            }
+        }
+    }
+
+    // Find minimum cost to paint the entire circular array
+    int ans = INF;
+    for (int i = 1; i <= N; i++) {
+        ans = min(ans, dp[i][i + N - 1]);
+    }
+
+    cout << ans << endl;
+    return 0;
+}
+
+```
