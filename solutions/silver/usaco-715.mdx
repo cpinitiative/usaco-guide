@@ -71,15 +71,11 @@ public class MaxCross {
 		int b = Integer.parseInt(st.nextToken());
 
 		int[] signals = new int[n];
-		for (int i = 0; i < b; i++) {
-			signals[Integer.parseInt(br.readLine()) - 1]++;
-		}
+		for (int i = 0; i < b; i++) { signals[Integer.parseInt(br.readLine()) - 1]++; }
 
 		// prefix sums precomputation
 		int[] prefSum = new int[n + 1];
-		for (int i = 0; i < n; i++) {
-			prefSum[i + 1] = signals[i] + prefSum[i];
-		}
+		for (int i = 0; i < n; i++) { prefSum[i + 1] = signals[i] + prefSum[i]; }
 
 		int minRepair = n;
 		for (int i = 0; i <= n - k; i++) {
@@ -99,7 +95,7 @@ public class MaxCross {
 ```py
 with open("maxcross.in") as read:
 	n, k, b = [int(i) for i in read.readline().split()]
-	
+
 	signals = [0 for _ in range(n)]
 	for _ in range(b):
 		signals[int(read.readline()) - 1] += 1
