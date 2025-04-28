@@ -2,57 +2,60 @@
 id: usaco-715
 source: USACO Silver 2017 February
 title: Why Did the Cow Cross the Road II
-author: Albert Zhu, Juheon Rhee
+author: Albert Zhu, Juheon Rhee, Sachet Abeysinghe
 ---
 [Official Analysis (C++)](http://www.usaco.org/current/data/sol_maxcross_silver_feb17.html)
+
+## Explanation
+
+We can represent this problem as an array $a$ of $N$ signals, such that the $i$-th signal is $0$ if it is working and $1$ if it is not working.
+Now we need to find a subarray of length $K$ with the least number of $1$s (i.e., the least sum).
+
+We can use prefix sums to find the number of $1$s (broken signals) across all subarrays of length $K$ and then take the minimum.
 
 ## Implementation
 
 **Time Complexity:** $\mathcal{O}(N)$
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
-#include <bits/stdc++.h>
+#include <algorithm>
+#include <fstream>
+#include <iostream>
+#include <vector>
 
-using namespace std;
-
-void setIO(string prob) {
-	freopen((prob + ".in").c_str(), "r", stdin);
-	freopen((prob + ".out").c_str(), "w", stdout);
-}
-
-const int MAX_N = 1e5;
-
-int sigs[MAX_N];
-int presum[MAX_N];
+using std::cout;
+using std::endl;
+using std::vector;
 
 int main() {
-	setIO("maxcross");
+	std::ifstream read("maxcross.in");
 	int n, k, b;
-	cin >> n >> k >> b;
+	read >> n >> k >> b;
 
-	// input broken signals
+	vector<int> signals(n);
 	for (int i = 0; i < b; i++) {
-		int x;
-		cin >> x;
-		sigs[x]++;
+		int index;
+		read >> index;
+		signals[index - 1] += 1;
 	}
 
 	// prefix sums precomputation
-	for (int i = 0; i < n; i++) { presum[i + 1] = sigs[i + 1] + presum[i]; }
+	vector<int> pref_sum(n + 1);
+	for (int i = 0; i < n; i++) { pref_sum[i + 1] = signals[i] + pref_sum[i]; }
 
-	int ret = INT_MAX;
-	// find the answer
-	for (int i = 0; i <= n - k; i++) { ret = min(ret, presum[i + k] - presum[i]); }
-	cout << ret << '\n';
+	int min_repair = n;
+	for (int i = 0; i <= n - k; i++) {
+		min_repair = std::min(min_repair, pref_sum[i + k] - pref_sum[i]);
+	}
+
+	std::ofstream("maxcross.out") << min_repair << endl;
 }
 ```
 
 </CPPSection>
-
 <JavaSection>
 
 ```java
@@ -61,58 +64,52 @@ import java.util.*;
 
 public class MaxCross {
 	public static void main(String[] args) throws IOException {
-		BufferedReader in = new BufferedReader(new FileReader("maxcross.in"));
-		PrintWriter pw = new PrintWriter("maxcross.out");
-		StringTokenizer st = new StringTokenizer(in.readLine());
-
+		BufferedReader br = new BufferedReader(new FileReader("maxcross.in"));
+		StringTokenizer st = new StringTokenizer(br.readLine());
 		int n = Integer.parseInt(st.nextToken());
 		int k = Integer.parseInt(st.nextToken());
 		int b = Integer.parseInt(st.nextToken());
 
-		int[] sigs = new int[n + 1];
-		int[] presum = new int[n + 1];
-
-		// input broken signals
-		for (int i = 0; i < b; i++) { sigs[Integer.parseInt(in.readLine())]++; }
+		int[] signals = new int[n];
+		for (int i = 0; i < b; i++) { signals[Integer.parseInt(br.readLine()) - 1]++; }
 
 		// prefix sums precomputation
-		for (int i = 0; i < n; i++) { presum[i + 1] = sigs[i + 1] + presum[i]; }
+		int[] prefSum = new int[n + 1];
+		for (int i = 0; i < n; i++) { prefSum[i + 1] = signals[i] + prefSum[i]; }
 
-		int ret = n + 1;
-		// find the answer
+		int minRepair = n;
 		for (int i = 0; i <= n - k; i++) {
-			ret = Math.min(ret, presum[i + k] - presum[i]);
+			minRepair = Math.min(minRepair, prefSum[i + k] - prefSum[i]);
 		}
-		pw.println(ret);
+
+		PrintWriter pw = new PrintWriter("maxcross.out");
+		pw.println(minRepair);
 		pw.close();
 	}
 }
 ```
 
 </JavaSection>
-
 <PySection>
 
 ```py
 with open("maxcross.in") as read:
-	n, k, b = map(int, read.readline().split())
-	seen = [0] * (n + 1)
-	left, right = 1, k
-	value = 0
+	n, k, b = [int(i) for i in read.readline().split()]
 
+	signals = [0 for _ in range(n)]
 	for _ in range(b):
-		seen[int(read.readline())] = 1
+		signals[int(read.readline()) - 1] += 1
 
-for i in range(left, right + 1):
-	value += seen[i]
+# prefix sums precomputation
+pref_sum = [0]
+for i in range(n):
+	pref_sum.append(signals[i] + pref_sum[-1])
 
-possible = [value]
-while n > right:
-	value += seen[right + 1] - seen[left]
-	left, right = left + 1, right + 1
-	possible.append(value)
+min_repair = n
+for i in range(n - k + 1):
+	min_repair = min(min_repair, pref_sum[i + k] - pref_sum[i])
 
-print(min(possible), file=open("maxcross.out", "w"))
+print(min_repair, file=open("maxcross.out", "w"))
 ```
 
 </PySection>
