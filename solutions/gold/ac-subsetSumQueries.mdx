@@ -52,4 +52,28 @@ int main() {
 ```
 
 </CPPSection>
+<PySection>
+
+```py
+MOD = 998244353
+
+q, k = map(int, input().split())
+dp = [0] * (k + 1)
+
+dp[0] = 1
+
+for i in  range(q):
+    a = input().strip()
+    t, x = a.split()
+    x = int(x)
+    if t == '+':
+        for j in range(k, x - 1, -1):
+            dp[j] += dp[j - x]
+    else:
+        for j in range(x, k + 1):
+            dp[j] += MOD - dp[j - x]
+    print(dp[k] % MOD)
+```
+
+</PySection>
 </LanguageSection>
