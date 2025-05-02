@@ -11,9 +11,9 @@ author: Rameez Parwez
 
 Let $\texttt{dp[a]}$ be the number of ways to achieve the sum $a$ using the current set of balls. We will update our array dynamically as balls are added or removed.
 
-- add a ball with value $x$: To add new ways to reach sum $j$ by including the new ball we will traverse from $K$ down to $x$ while updating $\texttt{dp[j] += dp[j - x]}$
+- add a ball with value $x$: To add new ways to reach sum $j$ by including the new ball we will traverse from $K$ down to $x$ while updating $\texttt{dp[j] += dp[j - x]}$. Here we are iterating backwards to ensure that we consider each subset only once. If we went from $x$ up to $K$, then we might end up reusing the updated values of $\texttt{dp[j - x]}$ multiple times.
 
-- remove a ball with value $x$: To remove the contribution of ball $x$ we will traverse from $x$ up to $K$ while updating $\texttt{dp[j] -= dp[j - x]}$
+- remove a ball with value $x$: To remove the contribution of ball $x$ we will traverse from $x$ up to $K$ while updating $\texttt{dp[j] -= dp[j - x]}$. Here we are iterating forwards because when we added the ball we went backwards, and now we have to reverse the effect of the first.
 
 For every query we will return $\texttt{dp[k]}$ which contains the number of valid subsets that sums to $K$.
 
