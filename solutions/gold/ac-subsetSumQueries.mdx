@@ -52,6 +52,48 @@ int main() {
 ```
 
 </CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Main {
+	private final static int MOD = 998244353;
+    public static void main(String[] args) {
+		Kattio io = new Kattio();
+
+		int q = io.nextInt();
+		int k = io.nextInt();
+
+		long[] dp = new long[k + 1];
+		dp[0] = 1;
+
+		for (int i = 0; i < q; i++) {
+			char type = io.next().charAt(0);
+			int x = io.nextInt();
+
+			if (type == '+') {
+				for (int j = k; j >= x; j--) {
+					dp[j] = (dp[j] % MOD + dp[j - x] % MOD) % MOD;
+				}
+			} else {
+				for (int j = x; j <= k; j++) {
+					dp[j] = (dp[j] % MOD + (MOD - dp[j - x]) % MOD) % MOD;
+				}
+			}
+			io.println(dp[k]);
+		}
+		io.close();
+	}
+
+	// CodeSnip{Kattio}
+}
+
+```
+
+
+</JavaSection>
 <PySection>
 
 ```py
