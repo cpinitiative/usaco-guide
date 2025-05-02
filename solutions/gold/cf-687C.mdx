@@ -41,8 +41,17 @@ int main() {
 		std::vector<std::vector<int>> new_dp(dp);
 		for (int i = 0; i <= k; i++) {
 			for (int j = 0; j <= k - i; j++) {
+
+				/*
+				 * If we can reach (i - a, j), then we can reach
+				 * (i, j) by adding a to arya's subset.
+				 */
 				if (i >= a) { new_dp[i][j] |= dp[i - a][j]; }
 
+				/*
+				 * If we can reach (i, j - a), then we can reach
+				 * (i, j) by adding a to the rest.
+				 */
 				if (j >= a) { new_dp[i][j] |= dp[i][j - a]; }
 			}
 		}
@@ -75,8 +84,14 @@ for a in coins:
 	new_dp = [x[:] for x in dp]
 	for i in range(k + 1):
 		for j in range(k - i + 1):
+		    
+			# If we can reach (i - a, j), then we can reach
+		    # (i, j) by adding a to arya's subset.
 			if i >= a:
 				new_dp[i][j] |= dp[i - a][j]
+
+			# If we can reach (i, j - a), then we can reach
+			# (i, j) by adding a to the rest.
 			if j >= a:
 				new_dp[i][j] |= dp[i][j - a]
 	dp = new_dp
