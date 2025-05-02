@@ -71,6 +71,77 @@ int main() {
 ```
 
 </CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class TheValuesYouCanMake {
+    public static void main(String[] args) {
+        Kattio io = new Kattio();
+        int n = io.nextInt();
+        int k = io.nextInt();
+
+        int[] coins = new int[n];
+        for (int i = 0; i < n; i++) {
+            coins[i] = io.nextInt();
+        }
+
+        int[][] dp = new int[k + 1][k + 1];
+        dp[0][0] = 1;
+
+        for (int a : coins) {
+            int[][] newDp = new int[k + 1][k + 1];
+
+            for (int i = 0; i <= k; i++) {
+                System.arraycopy(dp[i], 0, newDp[i], 0, k + 1);
+            }
+            
+            for (int i = 0; i <= k; i++) {
+                for (int j = 0; j <= k; j++) {
+
+                    /*
+                     * If we can reach (i - a, j), then we can reach
+                     * (i, j) by adding a to arya's subset.
+                     */
+                    if (i >= a) {
+                        newDp[i][j] |= dp[i - a][j];
+                    }
+
+                    /*
+				     * If we can reach (i, j - a), then we can reach
+				     * (i, j) by adding a to the rest.
+				     */
+                    if (j >= a) {
+                        newDp[i][j] |= dp[i][j - a];
+                    }
+                }
+            }
+            dp = newDp;
+        }
+
+        List<Integer> res = new ArrayList<>();
+        for (int i = 0; i <= k; i++) {
+            if (dp[i][k - i] == 1) {
+                res.add(i);
+            }
+        }
+
+        io.println(res.size());
+        for (int i = 0; i < res.size(); i++) {
+            io.print(res.get(i) + " ");
+        }
+
+        io.println();
+        io.close();
+    }
+
+    // CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
 <PySection>
 
 ```py
