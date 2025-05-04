@@ -189,12 +189,10 @@ public class CowPoetry {
 		int m = io.nextInt();
 		int k = io.nextInt();
 
-		long[] count = new long[k + 1];	
+		long[] count = new long[k + 1];
 		List<Integer>[] type = new ArrayList[n + 1];
 
-		for (int i = 0; i <= n; i++) {
-			type[i] = new ArrayList<Integer>();
-		}
+		for (int i = 0; i <= n; i++) { type[i] = new ArrayList<Integer>(); }
 
 		for (int i = 0; i < n; i++) {
 			int a = io.nextInt();
@@ -230,7 +228,7 @@ public class CowPoetry {
 			return;
 		}
 
-		Arrays.sort(rhyme);		
+		Arrays.sort(rhyme);
 		List<Integer> groups = new ArrayList<>();
 		int back = 0;
 		for (int i = 1; i <= m; i++) {
@@ -254,23 +252,18 @@ public class CowPoetry {
 	}
 
 	private static long modExp(long a, long b) {
-        if (a == 0) {
-			return 0;
-		} 
-        long ret = 1;
-        while (b > 0) {
-            if (b % 2 == 1) {
-                ret = (ret * a) % MOD;
-            }
-            a = (a * a) % MOD;
-            b /= 2;
-        }
-        return ret;
-    }
+		if (a == 0) { return 0; }
+		long ret = 1;
+		while (b > 0) {
+			if (b % 2 == 1) { ret = (ret * a) % MOD; }
+			a = (a * a) % MOD;
+			b /= 2;
+		}
+		return ret;
+	}
 
 	// CodeSnip{Kattio}
 }
-
 ```
 
 </JavaSection>
@@ -286,36 +279,36 @@ The solution TLE's on few test cases.
 MOD = 1000000007
 
 with open("poetry.in") as read:
-    n, m, k = map(int, read.readline().split())
+	n, m, k = map(int, read.readline().split())
 
-    count = [0] * (k + 1)
-    type = [[] for _ in range(n + 1)]
+	count = [0] * (k + 1)
+	type = [[] for _ in range(n + 1)]
 
-    for i in range(n):
-        a, b = map(int, read.readline().split())
-        count[a] += 1
-        type[b].append(a)
+	for i in range(n):
+		a, b = map(int, read.readline().split())
+		count[a] += 1
+		type[b].append(a)
 
-    rhyme = []
-    for i in range(m):
-        a = read.readline().strip()
-        rhyme.append(ord(a) - ord('A'))
+	rhyme = []
+	for i in range(m):
+		a = read.readline().strip()
+		rhyme.append(ord(a) - ord("A"))
 
 dp = [0] * (k + 1)
 dp[0] = 1
 
 for i in range(1, k + 1):
-    for j in range(1, i + 1):
-        dp[i] = (dp[i] + (dp[i - j] * count[j])) % MOD
+	for j in range(1, i + 1):
+		dp[i] = (dp[i] + (dp[i - j] * count[j])) % MOD
 
 total = [0] * (n + 1)
 for i in range(1, n + 1):
-    for j in range(len(type[i])):
-        total[i] = (total[i] + dp[k - type[i][j]]) % MOD
+	for j in range(len(type[i])):
+		total[i] = (total[i] + dp[k - type[i][j]]) % MOD
 
 if dp[k] == 0:
-    print(0, file = open("poetry.out", 'w'))
-    exit(0)
+	print(0, file=open("poetry.out", "w"))
+	exit(0)
 
 rhyme.sort()
 groups = []
@@ -323,20 +316,20 @@ rhyme.append(-1)
 back = 0
 
 for i in range(1, m + 1):
-    if rhyme[i] != rhyme[i - 1]:
-        groups.append(i - back)
-        back = i
+	if rhyme[i] != rhyme[i - 1]:
+		groups.append(i - back)
+		back = i
 
 
 ans = 1
 for i in range(len(groups)):
-    curr = 0
-    for j in range(1, n + 1):
-        curr = curr + pow(total[j], groups[i], MOD)
+	curr = 0
+	for j in range(1, n + 1):
+		curr = curr + pow(total[j], groups[i], MOD)
 
-    ans = (ans * curr) % MOD
+	ans = (ans * curr) % MOD
 
-print(ans, file = open("poetry.out", 'w'))
+print(ans, file=open("poetry.out", "w"))
 ```
 
 </PySection>
