@@ -242,7 +242,7 @@ public class CowPoetry {
 		for (int i = 0; i < groups.size(); i++) {
 			long curr = 0;
 			for (int j = 1; j <= n; j++) {
-				curr = (curr + modExp(total[j], groups.get(i))) % MOD;
+				curr = (curr + exp(total[j], groups.get(i))) % MOD;
 			}
 			ans = (ans * curr) % MOD;
 		}
@@ -251,15 +251,16 @@ public class CowPoetry {
 		io.close();
 	}
 
-	private static long modExp(long a, long b) {
-		if (a == 0) { return 0; }
-		long ret = 1;
-		while (b > 0) {
-			if (b % 2 == 1) { ret = (ret * a) % MOD; }
-			a = (a * a) % MOD;
-			b /= 2;
+	private static long exp(long x, long n) {
+		assert (n >= 0);
+		x %= MOD;  // note: m * m must be less than 2^63 to avoid ll overflow
+		long res = 1;
+		while (n > 0) {
+			if (n % 2 == 1) { res = res * x % MOD; }
+			x = x * x % MOD;
+			n /= 2;
 		}
-		return ret;
+		return res;
 	}
 
 	// CodeSnip{Kattio}
