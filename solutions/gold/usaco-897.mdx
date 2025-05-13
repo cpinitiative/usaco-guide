@@ -274,58 +274,56 @@ Due to Python's constant factor, the below solution TLEs on few test cases.
 </Warning>
 
 ```py
+from collections import Counter
+
 MOD = 1000000007
 
-with open("poetry.in") as read:
-	n, m, k = map(int, read.readline().split())
+read = open("poetry.in", "r").readline
+write = open("poetry.out", "w").write
 
-	count = [0] * (k + 1)
-	type = [[] for _ in range(n + 1)]
+n, m, k = map(int, read().split())
 
-	for i in range(n):
-		a, b = map(int, read.readline().split())
-		count[a] += 1
-		type[b].append(a)
+count = [0] * (k + 1)
+type = [[] for _ in range(n + 1)]
 
-	rhyme = []
-	for i in range(m):
-		a = read.readline().strip()
-		rhyme.append(ord(a) - ord("A"))
+for i in range(n):
+    a, b = map(int, read().split())
+    count[a] += 1
+    type[b].append(a)
+
+rhyme = [ord(read().strip()) - ord('A') for _ in range(m)]
 
 dp = [0] * (k + 1)
 dp[0] = 1
 
+lengths = [i for i in range(1, k + 1) if count[i] > 0]
+
 for i in range(1, k + 1):
-	for j in range(1, i + 1):
-		dp[i] = (dp[i] + (dp[i - j] * count[j])) % MOD
+    for j in lengths:
+        if j <= i:
+            dp[i] = (dp[i] + (dp[i - j] * count[j])) % MOD
 
 total = [0] * (n + 1)
 for i in range(1, n + 1):
-	for j in range(len(type[i])):
-		total[i] = (total[i] + dp[k - type[i][j]]) % MOD
+    for j in type[i]:
+        total[i] = (total[i] + dp[k - j]) % MOD
 
 if dp[k] == 0:
-	print(0, file=open("poetry.out", "w"))
-	exit(0)
+    write("0\n")
+    exit(0)
 
-rhyme.sort()
-groups = []
-rhyme.append(-1)
-back = 0
 
-for i in range(1, m + 1):
-	if rhyme[i] != rhyme[i - 1]:
-		groups.append(i - back)
-		back = i
+freq = Counter(rhyme)
 
 ans = 1
-for i in range(len(groups)):
-	curr = 0
-	for j in range(1, n + 1):
-		curr = curr + pow(total[j], groups[i], MOD)
-	ans = (ans * curr) % MOD
+for g in freq.values():
+    curr = 0
+    for t in total[1:]:
+        if t:
+            curr = curr + pow(t, g, MOD)
+    ans = (ans * curr) % MOD
 
-print(ans, file=open("poetry.out", "w"))
+write(f"{ans}\n")
 ```
 
 </PySection>
