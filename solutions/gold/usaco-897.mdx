@@ -280,17 +280,17 @@ with open("poetry.in") as read:
 	n, m, k = map(int, read.readline().split())
 	count = [0] * (k + 1)
 	type = [[] for _ in range(n + 1)]
-	
+
 	for i in range(n):
 		a, b = map(int, read.readline().split())
 		count[a] += 1
 		type[b].append(a)
-		
+
 	rhyme = []
 	for i in range(m):
 		a = read.readline().strip()
 		rhyme.append(ord(a) - ord("A"))
-		
+
 
 dp = [0] * (k + 1)
 dp[0] = 1
@@ -307,11 +307,11 @@ total = [0] * (n + 1)
 for i in range(1, n + 1):
 	for j in range(len(type[i])):
 		total[i] = (total[i] + dp[k - type[i][j]]) % MOD
-		
+
 if dp[k] == 0:
-	print(0, file = open("poetry.out", "w"))
+	print(0, file=open("poetry.out", "w"))
 	exit(0)
-	
+
 rhyme.sort()
 groups = []
 rhyme.append(-1)
@@ -321,15 +321,15 @@ for i in range(1, m + 1):
 	if rhyme[i] != rhyme[i - 1]:
 		groups.append(i - back)
 		back = i
-		
+
 ans = 1
 for i in range(len(groups)):
 	curr = 0
 	for j in range(1, n + 1):
 		curr = curr + pow(total[j], groups[i], MOD)
 	ans = (ans * curr) % MOD
-	
-print(ans, file = open("poetry.out", "w"))
+
+print(ans, file=open("poetry.out", "w"))
 ```
 
 </PySection>
