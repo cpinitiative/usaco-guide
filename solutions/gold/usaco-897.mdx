@@ -287,11 +287,11 @@ count = [0] * (k + 1)
 type = [[] for _ in range(n + 1)]
 
 for i in range(n):
-    a, b = map(int, read().split())
-    count[a] += 1
-    type[b].append(a)
+	a, b = map(int, read().split())
+	count[a] += 1
+	type[b].append(a)
 
-rhyme = [ord(read().strip()) - ord('A') for _ in range(m)]
+rhyme = [ord(read().strip()) - ord("A") for _ in range(m)]
 
 dp = [0] * (k + 1)
 dp[0] = 1
@@ -299,29 +299,29 @@ dp[0] = 1
 lengths = [i for i in range(1, k + 1) if count[i] > 0]
 
 for i in range(1, k + 1):
-    for j in lengths:
-        if j <= i:
-            dp[i] = (dp[i] + (dp[i - j] * count[j])) % MOD
+	for j in lengths:
+		if j <= i:
+			dp[i] = (dp[i] + (dp[i - j] * count[j])) % MOD
 
 total = [0] * (n + 1)
 for i in range(1, n + 1):
-    for j in type[i]:
-        total[i] = (total[i] + dp[k - j]) % MOD
+	for j in type[i]:
+		total[i] = (total[i] + dp[k - j]) % MOD
 
 if dp[k] == 0:
-    write("0\n")
-    exit(0)
+	write("0\n")
+	exit(0)
 
 
 freq = Counter(rhyme)
 
 ans = 1
 for g in freq.values():
-    curr = 0
-    for t in total[1:]:
-        if t:
-            curr = curr + pow(t, g, MOD)
-    ans = (ans * curr) % MOD
+	curr = 0
+	for t in total[1:]:
+		if t:
+			curr = curr + pow(t, g, MOD)
+	ans = (ans * curr) % MOD
 
 write(f"{ans}\n")
 ```
