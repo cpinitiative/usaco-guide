@@ -274,24 +274,23 @@ Due to Python's constant factor, the below solution TLEs on few test cases.
 </Warning>
 
 ```py
-from collections import Counter
-
 MOD = 1000000007
 
-read = open("poetry.in", "r").readline
-write = open("poetry.out", "w").write
-
-n, m, k = map(int, read().split())
-
-count = [0] * (k + 1)
-type = [[] for _ in range(n + 1)]
-
-for i in range(n):
-    a, b = map(int, read().split())
-    count[a] += 1
-    type[b].append(a)
-
-rhyme = [ord(read().strip()) - ord('A') for _ in range(m)]
+with open("poetry.in") as read:
+	n, m, k = map(int, read.readline().split())
+	count = [0] * (k + 1)
+	type = [[] for _ in range(n + 1)]
+	
+	for i in range(n):
+		a, b = map(int, read.readline().split())
+		count[a] += 1
+		type[b].append(a)
+		
+	rhyme = []
+	for i in range(m):
+		a = read.readline().strip()
+		rhyme.append(ord(a) - ord("A"))
+		
 
 dp = [0] * (k + 1)
 dp[0] = 1
@@ -303,27 +302,34 @@ for i in range(1, k + 1):
         if j <= i:
             dp[i] = (dp[i] + (dp[i - j] * count[j])) % MOD
 
+
 total = [0] * (n + 1)
 for i in range(1, n + 1):
-    for j in type[i]:
-        total[i] = (total[i] + dp[k - j]) % MOD
-
+	for j in range(len(type[i])):
+		total[i] = (total[i] + dp[k - type[i][j]]) % MOD
+		
 if dp[k] == 0:
-    write("0\n")
-    exit(0)
+	print(0, file = open("poetry.out", "w"))
+	exit(0)
+	
+rhyme.sort()
+groups = []
+rhyme.append(-1)
+back = 0
 
-
-freq = Counter(rhyme)
-
+for i in range(1, m + 1):
+	if rhyme[i] != rhyme[i - 1]:
+		groups.append(i - back)
+		back = i
+		
 ans = 1
-for g in freq.values():
-    curr = 0
-    for t in total[1:]:
-        if t:
-            curr = curr + pow(t, g, MOD)
-    ans = (ans * curr) % MOD
-
-write(f"{ans}\n")
+for i in range(len(groups)):
+	curr = 0
+	for j in range(1, n + 1):
+		curr = curr + pow(total[j], groups[i], MOD)
+	ans = (ans * curr) % MOD
+	
+print(ans, file = open("poetry.out", "w"))
 ```
 
 </PySection>
