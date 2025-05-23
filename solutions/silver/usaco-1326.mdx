@@ -5,7 +5,7 @@ title: Milk Sum
 author: Sachet Abeysinghe
 ---
 
-[Official Analysis](https://usaco.org/current/data/sol_prob1_silver_open23.html)
+[Official Analysis (C++, Java, Python)](https://usaco.org/current/data/sol_prob1_silver_open23.html)
 
 ## Explanation
 
@@ -20,13 +20,6 @@ Let's observe the effect of changing $a_i$ to $v$ when maintaining sorted order 
 **Time Complexity:** $\mathcal{O}((N + Q)\log N)$
 
 <LanguageSection>
-
-<CPPSection>
-
-(add cpp code)
-
-</CPPSection>
-
 <PySection>
 
 ```py
@@ -35,15 +28,19 @@ import itertools
 
 N = int(input())
 a = [int(x) for x in input().split()]
+
 # Sorting and prefix sums
 sorted_a = sorted(a)
 p_sum = [0] + list(itertools.accumulate(sorted_a))
+
 # Compute original value of T
 T = sum([(i + 1) * sorted_a[i] for i in range(N)])
+
 for query in range(int(input())):
 	i, j = map(int, input().split())
 	# Find the original and new positions in the sorted array
 	original, new = bisect.bisect(sorted_a, a[i - 1]), bisect.bisect(sorted_a, j)
+
 	# Handle 2 cases
 	if new >= original:
 		new -= 1
@@ -58,11 +55,4 @@ for query in range(int(input())):
 ```
 
 </PySection>
-
-<JavaSection>
-
-(if you have Java code)
-
-</JavaSection>
-
 </LanguageSection>
