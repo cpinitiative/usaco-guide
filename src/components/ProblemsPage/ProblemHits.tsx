@@ -1,42 +1,47 @@
-import { Link } from 'gatsby';
-import { BaseHit, Hit } from 'instantsearch.js';
-import * as React from 'react';
-import { Highlight, useHits } from 'react-instantsearch';
-import { moduleIDToSectionMap } from '../../../content/ordering';
-import { ConfettiProvider } from '../../context/ConfettiContext';
+import React, { useState, useEffect } from 'react'
+import { Link } from 'gatsby'
+import { BaseHit, Hit } from 'instantsearch.js'
+import { Highlight, useHits } from 'react-instantsearch'
+import { moduleIDToSectionMap } from '../../../content/ordering'
+import { ConfettiProvider } from '../../context/ConfettiContext'
 import {
   useHideDifficultySetting,
   useHideModulesSetting,
   useShowTagsSetting,
-} from '../../context/UserDataContext/properties/simpleProperties';
+} from '../../context/UserDataContext/properties/simpleProperties'
 import {
   AlgoliaProblemInfo,
   getProblemURL,
   isUsaco,
   ProblemInfo,
   recentUsaco,
-} from '../../models/problem';
-import DifficultyBox from '../DifficultyBox';
-import Info from '../markdown/Info';
-import ProblemStatusCheckbox from '../markdown/ProblemsList/ProblemStatusCheckbox';
+} from '../../models/problem'
+import DifficultyBox from '../DifficultyBox'
+import Info from '../markdown/Info'
+import ProblemStatusCheckbox from '../markdown/ProblemsList/ProblemStatusCheckbox'
 
-type AlgoliaProblemInfoHit = Hit<BaseHit> & AlgoliaProblemInfo;
+type AlgoliaProblemInfoHit = Hit<BaseHit> & AlgoliaProblemInfo
+
 interface ProblemHitProps {
-  hit: AlgoliaProblemInfoHit;
+  hit: AlgoliaProblemInfoHit
+  showAppearsIn: boolean
 }
 
-function ProblemHit({ hit }: ProblemHitProps) {
-  const hideDifficulty = useHideDifficultySetting();
-  const showTags = useShowTagsSetting();
-  const hideModules = useHideModulesSetting();
-  if (hit.problemModules.length == 0 && recentUsaco.includes(hit.source)) {
+function ProblemHit({ hit, showAppearsIn }: ProblemHitProps) {
+  const hideDifficulty = useHideDifficultySetting()
+  const showTags = useShowTagsSetting()
+  const hideModules = useHideModulesSetting()
+
+  if (hit.problemModules.length === 0 && recentUsaco.includes(hit.source)) {
     hit.problemModules.push({
       id: 'usaco-monthlies',
       title: 'USACO Monthlies',
-    });
+    })
   }
-  const problem = hit as unknown as ProblemInfo;
-  problem.uniqueId = hit.objectID;
+
+  const problem = hit as unknown as ProblemInfo
+  problem.uniqueId = hit.objectID
+
   return (
     <div className="rounded-lg bg-white p-4 shadow-sm sm:p-6 dark:bg-gray-900">
       <div className="flex w-full flex-row justify-between">
@@ -68,24 +73,6 @@ function ProblemHit({ hit }: ProblemHitProps) {
           <ProblemStatusCheckbox problem={problem} size="large" />
         </ConfettiProvider>
       </div>
-      {/* <div>
-        <a
-          href={hit.url}
-          target="_blank"
-          rel="noreferrer"
-          className="text-gray-500 dark:text-dark-med-emphasis text-sm"
-        >
-          View Problem Statement
-          <svg
-            viewBox="0 0 20 20"
-            fill="currentColor"
-            className="h-4 w-4 inline ml-0.5 mb-1"
-          >
-            <path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z" />
-            <path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z" />
-          </svg>
-        </a>
-      </div> */}
 
       {hit.solution &&
         (hit.solution.kind === 'internal' || hit.solution.kind === 'link') && (
@@ -113,6 +100,7 @@ function ProblemHit({ hit }: ProblemHitProps) {
             </svg>
           </a>
         )}
+
       {isUsaco(problem.source) && (
         <>
           <br />
@@ -136,7 +124,8 @@ function ProblemHit({ hit }: ProblemHitProps) {
           </a>
         </>
       )}
-      {!hideModules && (
+
+      {!hideModules && showAppearsIn && (
         <>
           <p className="dark:text-dark-med-emphasis mt-2 text-sm text-gray-500">
             Appears In:
@@ -169,24 +158,56 @@ function ProblemHit({ hit }: ProblemHitProps) {
           ))}
       </div>
     </div>
-  );
+  )
 }
 
 export default function ProblemHits() {
-  const { hits } = useHits() as { hits: AlgoliaProblemInfoHit[] };
+  const { hits } = useHits() as { hits: AlgoliaProblemInfoHit[] }
+  const [showAppearsIn, setShowAppearsIn] = useState(true)
+
+  useEffect(() => {
+    const stored = localStorage.getItem('showAppearsIn')
+    if (stored !== null) setShowAppearsIn(JSON.parse(stored))
+  }, [])
+
+  useEffect(() => {
+    localStorage.setItem('showAppearsIn', JSON.stringify(showAppearsIn))
+  }, [showAppearsIn])
+
   if (!hits.length) {
     return (
-      <Info title="No Problems Found">
-        No problems were found matching your search criteria. Try changing your
-        search or filters.
-      </Info>
-    );
+      <>
+        <button
+          onClick={() => setShowAppearsIn(!showAppearsIn)}
+          className="mb-4 px-2 py-1 border rounded"
+        >
+          {showAppearsIn ? 'Hide' : 'Show'} Appears In
+        </button>
+        <Info title="No Problems Found">
+          No problems were found matching your search criteria. Try changing your
+          search or filters.
+        </Info>
+      </>
+    )
   }
+
   return (
-    <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-      {hits.map(hit => (
-        <ProblemHit hit={hit} key={hit.objectID} />
-      ))}
-    </div>
-  );
+    <>
+      <button
+        onClick={() => setShowAppearsIn(!showAppearsIn)}
+        className="mb-4 px-2 py-1 border rounded"
+      >
+        {showAppearsIn ? 'Hide' : 'Show'} Appears In
+      </button>
+      <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        {hits.map(hit => (
+          <ProblemHit
+            hit={hit}
+            key={hit.objectID}
+            showAppearsIn={showAppearsIn}
+          />
+        ))}
+      </div>
+    </>
+  )
 }
