@@ -1,46 +1,46 @@
-import React, { useState, useEffect } from 'react'
-import { Link } from 'gatsby'
-import { BaseHit, Hit } from 'instantsearch.js'
-import { Highlight, useHits } from 'react-instantsearch'
-import { moduleIDToSectionMap } from '../../../content/ordering'
-import { ConfettiProvider } from '../../context/ConfettiContext'
+import { Link } from 'gatsby';
+import { BaseHit, Hit } from 'instantsearch.js';
+import React, { useEffect, useState } from 'react';
+import { Highlight, useHits } from 'react-instantsearch';
+import { moduleIDToSectionMap } from '../../../content/ordering';
+import { ConfettiProvider } from '../../context/ConfettiContext';
 import {
   useHideDifficultySetting,
   useHideModulesSetting,
   useShowTagsSetting,
-} from '../../context/UserDataContext/properties/simpleProperties'
+} from '../../context/UserDataContext/properties/simpleProperties';
 import {
   AlgoliaProblemInfo,
   getProblemURL,
   isUsaco,
   ProblemInfo,
   recentUsaco,
-} from '../../models/problem'
-import DifficultyBox from '../DifficultyBox'
-import Info from '../markdown/Info'
-import ProblemStatusCheckbox from '../markdown/ProblemsList/ProblemStatusCheckbox'
+} from '../../models/problem';
+import DifficultyBox from '../DifficultyBox';
+import Info from '../markdown/Info';
+import ProblemStatusCheckbox from '../markdown/ProblemsList/ProblemStatusCheckbox';
 
-type AlgoliaProblemInfoHit = Hit<BaseHit> & AlgoliaProblemInfo
+type AlgoliaProblemInfoHit = Hit<BaseHit> & AlgoliaProblemInfo;
 
 interface ProblemHitProps {
-  hit: AlgoliaProblemInfoHit
-  showAppearsIn: boolean
+  hit: AlgoliaProblemInfoHit;
+  showAppearsIn: boolean;
 }
 
 function ProblemHit({ hit, showAppearsIn }: ProblemHitProps) {
-  const hideDifficulty = useHideDifficultySetting()
-  const showTags = useShowTagsSetting()
-  const hideModules = useHideModulesSetting()
+  const hideDifficulty = useHideDifficultySetting();
+  const showTags = useShowTagsSetting();
+  const hideModules = useHideModulesSetting();
 
   if (hit.problemModules.length === 0 && recentUsaco.includes(hit.source)) {
     hit.problemModules.push({
       id: 'usaco-monthlies',
       title: 'USACO Monthlies',
-    })
+    });
   }
 
-  const problem = hit as unknown as ProblemInfo
-  problem.uniqueId = hit.objectID
+  const problem = hit as unknown as ProblemInfo;
+  problem.uniqueId = hit.objectID;
 
   return (
     <div className="rounded-lg bg-white p-4 shadow-sm sm:p-6 dark:bg-gray-900">
@@ -158,44 +158,44 @@ function ProblemHit({ hit, showAppearsIn }: ProblemHitProps) {
           ))}
       </div>
     </div>
-  )
+  );
 }
 
 export default function ProblemHits() {
-  const { hits } = useHits() as { hits: AlgoliaProblemInfoHit[] }
-  const [showAppearsIn, setShowAppearsIn] = useState(true)
+  const { hits } = useHits() as { hits: AlgoliaProblemInfoHit[] };
+  const [showAppearsIn, setShowAppearsIn] = useState(true);
 
   useEffect(() => {
-    const stored = localStorage.getItem('showAppearsIn')
-    if (stored !== null) setShowAppearsIn(JSON.parse(stored))
-  }, [])
+    const stored = localStorage.getItem('showAppearsIn');
+    if (stored !== null) setShowAppearsIn(JSON.parse(stored));
+  }, []);
 
   useEffect(() => {
-    localStorage.setItem('showAppearsIn', JSON.stringify(showAppearsIn))
-  }, [showAppearsIn])
+    localStorage.setItem('showAppearsIn', JSON.stringify(showAppearsIn));
+  }, [showAppearsIn]);
 
   if (!hits.length) {
     return (
       <>
         <button
           onClick={() => setShowAppearsIn(!showAppearsIn)}
-          className="mb-4 px-2 py-1 border rounded"
+          className="mb-4 rounded border px-2 py-1"
         >
           {showAppearsIn ? 'Hide' : 'Show'} Appears In
         </button>
         <Info title="No Problems Found">
-          No problems were found matching your search criteria. Try changing your
-          search or filters.
+          No problems were found matching your search criteria. Try changing
+          your search or filters.
         </Info>
       </>
-    )
+    );
   }
 
   return (
     <>
       <button
         onClick={() => setShowAppearsIn(!showAppearsIn)}
-        className="mb-4 px-2 py-1 border rounded"
+        className="mb-4 rounded border px-2 py-1"
       >
         {showAppearsIn ? 'Hide' : 'Show'} Appears In
       </button>
@@ -209,5 +209,5 @@ export default function ProblemHits() {
         ))}
       </div>
     </>
-  )
+  );
 }
