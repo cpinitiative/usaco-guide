@@ -32,6 +32,7 @@ Let's observe the effect of changing $a_i$ to $v$ when maintaining sorted order 
 ```py
 import bisect
 import itertools
+
 N = int(input())
 a = [int(x) for x in input().split()]
 # Sorting and prefix sums
@@ -40,16 +41,20 @@ p_sum = [0] + list(itertools.accumulate(sorted_a))
 # Compute original value of T
 T = sum([(i + 1) * sorted_a[i] for i in range(N)])
 for query in range(int(input())):
-    i, j = map(int, input().split())
-    # Find the original and new positions in the sorted array
-    original, new = bisect.bisect(sorted_a, a[i - 1]), bisect.bisect(sorted_a, j)
-    # Handle 2 cases
-    if new >= original:
-        new -= 1
-        answer = T - (p_sum[new + 1] - p_sum[original]) - original * a[i - 1] + (new + 1) * j
-    else:
-        answer = T + (p_sum[original - 1] - p_sum[new]) - original * a[i - 1] + (new + 1) * j
-    print(answer)
+	i, j = map(int, input().split())
+	# Find the original and new positions in the sorted array
+	original, new = bisect.bisect(sorted_a, a[i - 1]), bisect.bisect(sorted_a, j)
+	# Handle 2 cases
+	if new >= original:
+		new -= 1
+		answer = (
+			T - (p_sum[new + 1] - p_sum[original]) - original * a[i - 1] + (new + 1) * j
+		)
+	else:
+		answer = (
+			T + (p_sum[original - 1] - p_sum[new]) - original * a[i - 1] + (new + 1) * j
+		)
+	print(answer)
 ```
 
 </PySection>
