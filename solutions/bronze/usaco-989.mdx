@@ -339,5 +339,51 @@ class Race {
 ```
 
 </JavaSection>
+<PySection>
+
+<Warning title="TLE">
+
+Due to Python's slow speed, this approach doesn't pass all test cases.
+
+</Warning>
+
+```py
+def fastest_time(dist: int, max_speed: int) -> int:
+    speed_up_dist = 0   # Amount of distance where Bessie's speeding up
+    slow_down_dist = 0  # and slowing down respectively
+    time = 0
+
+    # Gradually speed up until we achieve our distance
+    curr_speed = 1
+    while True:
+        speed_up_dist += curr_speed
+        time += 1
+        if speed_up_dist + slow_down_dist >= dist:
+            return time
+
+
+        # If we're above the speed limit, add the current speed
+		# to the part where we slow down as well.
+        if curr_speed >= max_speed:
+            slow_down_dist += curr_speed
+            time += 1
+            # Check again if we've reached or passed the finish line
+            if speed_up_dist + slow_down_dist >= dist:
+                return time
+        
+        curr_speed += 1
+
+
+read = open("race.in", "r").readline
+write = open("race.out", "w").write
+
+dist, query_num = map(int, read().split())
+
+for _ in range(query_num):
+    max_speed = int(read())
+    write(f"{fastest_time(dist, max_speed)}\n")
+```
+
+</PySection>
 </LanguageSection>
 </Spoiler>
