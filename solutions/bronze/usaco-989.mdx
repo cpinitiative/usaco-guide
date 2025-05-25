@@ -373,14 +373,13 @@ def fastest_time(dist: int, max_speed: int) -> int:
 		curr_speed += 1
 
 
-read = open("race.in", "r").readline
-write = open("race.out", "w").write
+with open("race.in") as read:
+    dist, query_num = map(int, read.readline().split())
 
-dist, query_num = map(int, read().split())
-
-for _ in range(query_num):
-	max_speed = int(read())
-	write(f"{fastest_time(dist, max_speed)}\n")
+    with open("race.out", "w") as write:
+        for _ in range(query_num):
+            max_speed = int(read.readline())
+            write.write(f"{fastest_time(dist, max_speed)}\n")
 ```
 
 </PySection>
