@@ -114,6 +114,60 @@ int main() {
 ```
 
 </CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Garland {
+	private final static int MAXN = 1500;
+    public static void main(String[] args) {
+		Kattio io = new Kattio();
+
+		int garlandLen = io.nextInt();
+		String garland = io.next();
+		int queryNum = io.nextInt();
+
+		int[][] dp = new int[26][MAXN + 1];
+		for (int i = 1; i <= garlandLen; i++) {
+			int color = (garland.charAt(i - 1) - 'a');
+			dp[color][i]++;
+		}
+
+		for (int i = 0; i < 26; i++) {
+			for (int j = 1; j <= garlandLen; j++) {
+				dp[i][j] = dp[i][j - 1] + dp[i][j];
+			}
+		}
+
+		for (int i = 0; i < queryNum; i++) {
+			int maxRepaint = io.nextInt();
+			int color = (io.next().charAt(0) - 'a');
+
+			int l = 1;
+			int r = 1;
+			int koyomity = 1;
+			while (r <= garlandLen) {
+				int cCount = dp[color][r] - dp[color][l - 1] + maxRepaint;
+				if (cCount < r - l + 1) {
+					l++;
+				} else {
+					koyomity = Math.max(koyomity, r - l + 1);
+					r++;
+				}
+			}
+			io.println(koyomity);
+		}
+
+		io.close();
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
 </LanguageSection>
 
 ## Alternative Solution (Dynamic Programming)
