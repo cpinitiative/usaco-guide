@@ -86,6 +86,11 @@ export const OrderedFirstMembers: Member[] = [
     email: 'evanzhao12@gmail.com',
   },
   {
+    photo: 'ryanfu',
+    name: 'Ryan Fu',
+    titles: ["Director of Classes", "Director of Workshops", "Finalist", "Outreach"],
+  },
+  {
     photo: 'justin_ji',
     name: 'Justin Ji',
     titles: ['Content Manager', roles.contentAuthor],
