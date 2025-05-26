@@ -88,7 +88,12 @@ export const OrderedFirstMembers: Member[] = [
   {
     photo: 'ryanfu',
     name: 'Ryan Fu',
-    titles: ["Director of Classes", "Director of Workshops", "Finalist", "Outreach"],
+    titles: [
+      'Director of Classes',
+      'Director of Workshops',
+      'Finalist',
+      'Outreach',
+    ],
   },
   {
     photo: 'justin_ji',
