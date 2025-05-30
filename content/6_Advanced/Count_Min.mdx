@@ -6,7 +6,7 @@ title: 'Counting Minimums with Segment Tree'
 author: Benjamin Qi, Dustin Miao
 prerequisites:
   - RURQ
-description: "Querying for the minimum and number of occurences of minimum in a range"
+description: "Querying for the minimum and number of occurrences of minimum in a range"
 frequency: 0
 ---
 
@@ -15,7 +15,7 @@ frequency: 0
 <Resources>
 	<Resource
 		source="cp-algo"
-		title="Finding max and number of occurences"
+		title="Finding max and number of occurrences"
 		url="data_structures/segment_tree.html#toc-tgt-8"
 		starred
 	/>
@@ -23,9 +23,9 @@ frequency: 0
 
 We would like a data structure that can efficiently handle two types of operations:
 1. Update index $i$ to value $v$
-2. Report the minimum and the number of occurences of the minimum on a range $[l, r]$
+2. Report the minimum and the number of occurrences of the minimum on a range $[l, r]$
 
-We can use a normal segment tree to handle range queries, but slightly modify each node and the merge operation. Let each node be a pair of values $(\texttt{val}, \texttt{cnt})$, where $\texttt{val}$ is the minimum value and $\texttt{cnt}$ is the number occurences of the minimum value.
+We can use a normal segment tree to handle range queries, but slightly modify each node and the merge operation. Let each node be a pair of values $(\texttt{val}, \texttt{cnt})$, where $\texttt{val}$ is the minimum value and $\texttt{cnt}$ is the number occurrences of the minimum value.
 
 If node $c$ has two children $a$ and $b$, then
 - if $a.\texttt{val} < b.\texttt{val}$, then $c = a$
@@ -62,7 +62,7 @@ void update(int i, int v) {
 	}
 }
 
-// returns the minimum and occurences between indices l and r
+// returns the minimum and occurrences between indices l and r
 Node query(int l, int r) {
 	Node res;
 	for (l += MAXN, r += MAXN + 1; l < r; l >>= 1, r >>= 1) {
@@ -110,7 +110,7 @@ Instead of counting the area covered by at least one rectangle, let's count the
 amount of space covered by no rectangles. We can subtract this amount from the
 total number of indices to get the value we want.
 
-We can use a Segment Tree that counts the number of occurences of the minimum
+We can use a Segment Tree that counts the number of occurrences of the minimum
 value. Because the minimum value is at least zero (there can't be a negative
 number of rectangles at a position) the number of uncovered squares is equal to
 the number of squares with value 0.

@@ -605,12 +605,12 @@ for _ in range(n):
 The number of derangements of $n$ numbers, expressed as $!n$, is the number of
 permutations such that no element appears in its original position. Informally,
 it is the number of ways $n$ hats can be returned to $n$ people such that no
-person recieves their own hat.
+person receives their own hat.
 
 ### Method 1: Principle of Inclusion-Exclusion
 
 Suppose we had events $E_1, E_2, \dots, E_n$, where event $E_i$ corresponds to
-person $i$ recieving their own hat. We would like to calculate $n! - \lvert E_1
+person $i$ receiving their own hat. We would like to calculate $n! - \lvert E_1
 \cup E_2 \cup \dots \cup E_n \rvert$.
 
 We subtract from $n!$ the number of ways for each event to occur; that is,
@@ -625,7 +625,7 @@ $$
 n! - \lvert E_1 \cup E_2 \cup \dots \cup E_n \rvert = \sum_{k = 1}^n (-1)^k \cdot (\text{number of permutations with $k$ fixed points})
 $$
 
-For a set size of $k$, the number of permutations with at least $k$ indicies can
+For a set size of $k$, the number of permutations with at least $k$ indices can
 be computed by choosing a set of size $k$ that are fixed, and permuting the
 other indices. In mathematical terms:
 
@@ -711,13 +711,13 @@ print()
 
 ### Method 2: Dynamic Programming
 
-Suppose person 1 recieved person $i$'s hat. There are two cases:
+Suppose person 1 received person $i$'s hat. There are two cases:
 
-1. If person $i$ recieves person 1's hat, then the problem is reduced to a
+1. If person $i$ receives person 1's hat, then the problem is reduced to a
    subproblem of size $n - 2$. There are $n - 1$ possibilities for $i$ in this
    case, so we add to the current answer $(n - 1)\cdot !(n - 2)$.
-2. If person $i$ does not recieve person 1's hat, then we can reassign person
-   1's hat to be person $i$'s hat (if they recieved person 1's hat, then this
+2. If person $i$ does not receive person 1's hat, then we can reassign person
+   1's hat to be person $i$'s hat (if they received person 1's hat, then this
    would become first case). Thus, this becomes a subproblems with size $n - 1$,
    are there $n - 1$ ways to choose $i$.
 
