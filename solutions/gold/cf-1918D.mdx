@@ -36,22 +36,22 @@ which can be computed using a segment tree.
 ```cpp
 #include <cstdint>
 #include <iostream>
-#include <limits>
 #include <vector>
+#include <limits>
 
 using std::cout;
 using std::endl;
 using std::vector;
 
-// BeginCodeSnip{Min Segment Tree (from PURS module)}
-template <class T> class MinSegmentTree {
-  private:
+template <class T>
+class MinSegmentTree {
+   private:
 	const T DEFAULT = std::numeric_limits<T>().max();
 
 	int len;
 	vector<T> segtree;
 
-  public:
+   public:
 	MinSegmentTree(int len) : len(len), segtree(len * 2, DEFAULT) {}
 
 	void set(int ind, T val) {
@@ -71,7 +71,6 @@ template <class T> class MinSegmentTree {
 		return min;
 	}
 };
-// EndCodeSnip
 
 int main() {
 	int test_num;
@@ -80,40 +79,18 @@ int main() {
 		int len;
 		std::cin >> len;
 		vector<int> arr(len);
-		vector<long long> pref_sum{0};
-		for (int &i : arr) {
+		long long max_cost = 0;
+		for (int& i : arr) {
 			std::cin >> i;
-			pref_sum.push_back(pref_sum.back() + i);
+			max_cost += i;
 		}
 
 		// force a blocking element at the last position without affecting the answer
 		arr.push_back(0);
-		pref_sum.push_back(pref_sum.back());
 		len++;
 
-		/*
-		 * @return the lowest index i such that the sum of elements
-		 * in the range (i, at) is at most max_sum.
-		 * Note that -1 is a valid return value
-		 */
-		auto lowest_start = [&](int at, long long max_sum) {
-			int lo = -1;
-			int hi = at - 1;
-			int valid = -1;
-			while (lo <= hi) {
-				int mid = (lo + hi) / 2;
-				if (pref_sum[at] - pref_sum[mid + 1] <= max_sum) {
-					hi = mid - 1;
-					valid = mid;
-				} else {
-					lo = mid + 1;
-				}
-			}
-			return valid;
-		};
-
 		long long lo = 0;
-		long long hi = pref_sum.back();
+		long long hi = max_cost;
 		long long valid = -1;
 		while (lo <= hi) {
 			long long mid = (lo + hi) / 2;
@@ -121,11 +98,17 @@ int main() {
 			// the minimum cost to block up to a certain position
 			// given that the last element is blocked
 			MinSegmentTree<long long> min_cost(len);
+			int lowest_start = -1;
+			long long curr_sum = 0;
 			for (int i = 0; i < len; i++) {
-				int from = lowest_start(i, mid);
-				long long best = from == -1 ? 0 : INT64_MAX;
+				curr_sum += i > 0 ? arr[i - 1] : 0;
+				while (curr_sum > mid) {
+					lowest_start++;
+					curr_sum -= arr[lowest_start];
+				}
+				long long best = lowest_start == -1 ? 0 : INT64_MAX;
 				// calculate the best starting position to block from
-				best = std::min(best, min_cost.range_min(std::max(from, 0), i));
+				best = std::min(best, min_cost.range_min(std::max(lowest_start, 0), i));
 				min_cost.set(i, best + arr[i]);
 			}
 
