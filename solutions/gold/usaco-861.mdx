@@ -151,7 +151,7 @@ void solve() {
 
     vector<vector<int>> dist(n, vector<int>(2,INT_MAX));
     priority_queue<tuple<int,int,bool>, vector<tuple<int,int,bool>>, greater<tuple<int,int,bool>>> pq;
-    
+
     /*
      * dist[i][0] = shortest distance from cow i to barn without stopping for any haybale
      * dist[i][1] = shortest distance from cow i to barn with stopping for one haybale
@@ -160,7 +160,7 @@ void solve() {
 
     dist[n-1][0] = 0;           // distance to barn without hay
     pq.push({0, n-1, false});
-    
+
     if(hay[n-1] > 0) {
         dist[n-1][1] = 0;
         pq.push({-hay[n-1], n-1, true});
@@ -174,7 +174,7 @@ void solve() {
         bool hadhay = get<2>(fr);
 
         if(dist[u][hadhay] < cost) continue;
-        
+
         for(auto &v : adj[u]){
             int next = v.first, w = v.second;
             int new_cost = cost + w;
@@ -206,7 +206,7 @@ void solve() {
     }
     cout<<(dist[n-2][1] <= dist[n-2][0]);
 }
- 
+
 int main() {
     solve();
     return 0;
