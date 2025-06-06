@@ -236,10 +236,34 @@ This is an example of a [greedy algorithm](/bronze/intro-greedy).
 
 <Spoiler title="Solution">
 
-## Explanation
+### Explanation
 
 We'll have Bessie accelerate as much as possible until she reaches a certain top speed, then decelerate, so that her speed never exceeds $X$ m/s,
 and while doing so, she also spends exactly 1 second at each speed level during both acceleration and deceleration phases.
+
+<Spoiler title="Why this works in given time limit?">
+
+Let's say in worst case we increase our speed till the very end from 1 upto p, where:
+$$
+
+p * (p + 1) \geq K \Rightarrow p \approx \sqrt{K}
+
+$$
+
+So per query our Time will be:
+$$
+
+\mathcal{O}(\sqrt{K}) \approx 31,623 \space \text{operations when K =} {\space 10^9}
+
+$$
+
+For 1000 queries, our total operations will be $3.16 \times 10^7$,  which should be sufficient to pass all test cases. However, in Python, it will stuck so we have to make some optimizations.
+
+</Spoiler>
+
+### Implementation
+
+**Time Complexity:** $\mathcal{O}(Q \sqrt{K})$
 
 <LanguageSection>
 <CPPSection>
@@ -340,47 +364,57 @@ class Race {
 </JavaSection>
 <PySection>
 
-<Warning title="TLE">
+<Warning title="">
 
-Due to Python's slow speed, this approach doesn't pass all test cases.
+Due to Python's slow speed, this approach doesn't pass all test cases. However, we can optimize it using some observations.
+
+- instead of accelerating and then decelerating at the very end we will allow Bessie to only accelerate and calculate its minimum time, which is: assume if we spend $t$ seconds accelerating, then we cover a distance of $\frac{t * (t + 1)}{2}$ units, from this we get the inequality: $\frac{t * (t + 1)}{2} \geq K$, solving this we get 
+
+$$
+
+t >= \frac{\sqrt{8K + 1} - 1}{2} \\ \text{if the speed at time t is less than or equal to X, it will be our answer.}
+
+$$
+
+- if we can't directly increase speed to the end, we start off at max speed and start incrementing from there
 
 </Warning>
 
 ```py
+import math
+
 def fastest_time(dist: int, max_speed: int) -> int:
-	speed_up_dist = 0  # Amount of distance where Bessie's speeding up
-	slow_down_dist = 0  # and slowing down respectively
-	time = 0
+    no_slow_time = int(math.ceil((math.sqrt(8 * dist + 1) - 1) / 2))
+    if (no_slow_time <= max_speed):
+        return no_slow_time
 
-	# Gradually speed up until we achieve our distance
-	curr_speed = 1
-	while True:
-		speed_up_dist += curr_speed
-		time += 1
-		if speed_up_dist + slow_down_dist >= dist:
-			return time
+    speed_up_dist = max_speed * (max_speed - 1) // 2
+    slow_down_dist = 0
+    time = max_speed - 1
 
-		# If we're above the speed limit, add the current speed
-		# to the part where we slow down as well.
-		if curr_speed >= max_speed:
-			slow_down_dist += curr_speed
-			time += 1
-			# Check again if we've reached or passed the finish line
-			if speed_up_dist + slow_down_dist >= dist:
-				return time
+    curr_speed = max_speed
+    while True:
+        speed_up_dist += curr_speed
+        time += 1
+        if speed_up_dist + slow_down_dist >= dist:
+            return time
 
-		curr_speed += 1
+        slow_down_dist += curr_speed
+        time += 1
+        if speed_up_dist + slow_down_dist >= dist:
+            return time
 
+        curr_speed += 1
 
 with open("race.in") as read:
-	dist, query_num = map(int, read.readline().split())
-
-	with open("race.out", "w") as write:
-		for _ in range(query_num):
-			max_speed = int(read.readline())
-			write.write(f"{fastest_time(dist, max_speed)}\n")
+    dist, query_num = map(int, read.readline().split())
+	
+    with open("race.out", "w") as write:
+        for _ in range(query_num):
+            max_speed = int(read.readline())
+            write.write(str(fastest_time(dist, max_speed)) + "\n")
 ```
-
 </PySection>
+
 </LanguageSection>
 </Spoiler>
