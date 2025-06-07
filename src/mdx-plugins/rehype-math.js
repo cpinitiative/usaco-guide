@@ -45,7 +45,7 @@ const customRehypeKatex = options => {
         if (typeof file[fn] === 'function') {
           file[fn](error.message, element.position, origin);
         } else {
-          throw error; //throw the error if the file does not have a fail or message function
+          throw error;  // throw the error if the file doesn't have a fail or message function
         }
 
         result = katex(
