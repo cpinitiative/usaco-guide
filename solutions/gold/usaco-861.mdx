@@ -132,8 +132,8 @@ struct Pasture {
 };
 
 int main() {
-    freopen("dining.in", "r", stdin);
-    freopen("dining.out", "w", stdout);
+	freopen("dining.in", "r", stdin);
+	freopen("dining.out", "w", stdout);
 
 	// Input reading
 	int n, m, k;
@@ -190,34 +190,32 @@ int main() {
 		for (auto &[next, w] : adj[index]) {
 			int new_cost = cost + w;
 
-            if (had_hay) {
-                if (dist[next][1] > new_cost) {
-                    dist[next][1] = new_cost;
-                    pq.push({new_cost, next, true});
-                }
-            } 
-            else {
-                if (dist[next][0] > new_cost) {
-                    dist[next][0] = new_cost;
-                    pq.push({new_cost, next, false});
-                }
-                if (hay[next] > 0 && dist[next][1] > new_cost - hay[next]) {
-                    dist[next][1] = new_cost - hay[next];
-                    pq.push({new_cost - hay[next], next, true});
-                }
-            }
-        }
-    }
+			if (had_hay) {
+				if (dist[next][1] > new_cost) {
+					dist[next][1] = new_cost;
+					pq.push({new_cost, next, true});
+				}
+			} else {
+				if (dist[next][0] > new_cost) {
+					dist[next][0] = new_cost;
+					pq.push({new_cost, next, false});
+				}
+				if (hay[next] > 0 && dist[next][1] > new_cost - hay[next]) {
+					dist[next][1] = new_cost - hay[next];
+					pq.push({new_cost - hay[next], next, true});
+				}
+			}
+		}
+	}
 
-    for (int i = 0; i < n - 1; i++) {
-        if(dist[i][1] <= dist[i][0]){
-            cout<< "1\n";
-        }
-        else{
-            cout<< "0\n";
-        }
-    }
-    return 0;
+	for (int i = 0; i < n - 1; i++) {
+		if (dist[i][1] <= dist[i][0]) {
+			cout << "1\n";
+		} else {
+			cout << "0\n";
+		}
+	}
+	return 0;
 }
 ```
 </CPPSection>
