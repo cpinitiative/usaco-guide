@@ -243,21 +243,28 @@ and while doing so, she also spends exactly 1 second at each speed level during 
 
 <Spoiler title="Why does this run within the time limit?">
 
-Let's say in worst case we increase our speed till the very end from 1 upto p, where:
+Let's say in worst case Bessie ran a total of $10^9$ meters and her ending pace is $1 m/s$. In which it will take her $63,245$ seconds.
+
+#### Proof
+
+First, we accelerate her speed to $p$, then decelerate it back to $1$, total distance covered will be:
 $$
 
-p * (p + 1) \geq K \Rightarrow p \approx \sqrt{K}
-
-$$
-
-So per query our Time will be:
-$$
-
-\mathcal{O}(\sqrt{K}) \approx 31,623 \space \text{operations when K =} {\space 10^9}
+\sum_{i = 1}^p + \sum_{i = 1}^{p - 1} = \frac{p * (p + 1)}{2} + \frac{p * (p - 1)}{2} = p^2
 
 $$
 
-For $1000$ queries, our total operations will be less than $3 \times 10^7$, which should be sufficient to pass all test cases. However, due to Python's poor constant factor, we have to optimize this solution.
+So, to cover $10^9$ meters:
+
+$$
+
+p^2 = 10^9 \Rightarrow p = \sqrt{10^9} \approx 31,623
+
+$$
+
+Total time $= 31,623(accelerating) + 31,623(decelerating) = 63,245$
+
+For $1000$ queries, it would be sufficient to pass all test cases. However, due to Python's poor constant factor, we have to optimize this solution.
 
 </Spoiler>
 
