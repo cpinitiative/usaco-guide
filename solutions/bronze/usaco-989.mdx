@@ -235,6 +235,43 @@ This is an example of a [greedy algorithm](/bronze/intro-greedy).
 </Spoiler>
 
 <Spoiler title="Solution">
+
+### Explanation
+
+We'll have Bessie accelerate as much as possible until she reaches a certain top speed, then decelerate, so that her speed never exceeds $X$ m/s,
+and while doing so, she also spends exactly 1 second at each speed level during both acceleration and deceleration phases.
+
+<Spoiler title="Why does this run within the time limit?">
+
+Let's say in worst case Bessie ran a total of $10^9$ meters and her ending pace is $1 m/s$. In which it will take her $63,245$ seconds.
+
+#### Proof
+
+First, we accelerate her speed to $p$, then decelerate it back to $1$, total distance covered will be:
+$$
+
+\sum_{i = 1}^p + \sum_{i = 1}^{p - 1} = \frac{p * (p + 1)}{2} + \frac{p * (p - 1)}{2} = p^2
+
+$$
+
+So, to cover $10^9$ meters:
+
+$$
+
+p^2 = 10^9 \Rightarrow p = \sqrt{10^9} \approx 31,623
+
+$$
+
+Total time $= 31,623(accelerating) + 31,623(decelerating) = 63,245$
+
+For $1000$ queries, it would be sufficient to pass all test cases. However, due to Python's poor constant factor, we have to optimize this solution.
+
+</Spoiler>
+
+### Implementation
+
+**Time Complexity:** $\mathcal{O}(Q \sqrt{K})$
+
 <LanguageSection>
 <CPPSection>
 
@@ -332,5 +369,61 @@ class Race {
 ```
 
 </JavaSection>
+<PySection>
+
+<Warning title="">
+
+Due to Python's slow speed, this approach doesn't pass all test cases. However, we can optimize it using some observations.
+
+- instead of accelerating and then decelerating at the very end we will allow Bessie to only accelerate and calculate its minimum time, which is: assume if we spend $t$ seconds accelerating, then we cover a distance of $\frac{t * (t + 1)}{2}$ units, from this we get the inequality: $\frac{t * (t + 1)}{2} \geq K$, solving this we get
+
+$$
+
+t >= \frac{\sqrt{8K + 1} - 1}{2} \\ \text{if the speed at time t is less than or equal to X, it will be our answer.}
+
+$$
+
+- if we can't directly increase speed to the end, we start off at max speed and start incrementing from there
+
+</Warning>
+
+```py
+import math
+
+
+def fastest_time(dist: int, max_speed: int) -> int:
+	no_slow_time = int(math.ceil((math.sqrt(8 * dist + 1) - 1) / 2))
+	if no_slow_time <= max_speed:
+		return no_slow_time
+
+	speed_up_dist = max_speed * (max_speed - 1) // 2
+	slow_down_dist = 0
+	time = max_speed - 1
+
+	curr_speed = max_speed
+	while True:
+		speed_up_dist += curr_speed
+		time += 1
+		if speed_up_dist + slow_down_dist >= dist:
+			return time
+
+		slow_down_dist += curr_speed
+		time += 1
+		if speed_up_dist + slow_down_dist >= dist:
+			return time
+
+		curr_speed += 1
+
+
+with open("race.in") as read:
+	dist, query_num = map(int, read.readline().split())
+
+	with open("race.out", "w") as write:
+		for _ in range(query_num):
+			max_speed = int(read.readline())
+			write.write(str(fastest_time(dist, max_speed)) + "\n")
+```
+</PySection>
+
 </LanguageSection>
 </Spoiler>
