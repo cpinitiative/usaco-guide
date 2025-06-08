@@ -22,7 +22,7 @@ struct Pasture {
 	int cost;
 	int index;
 	bool had_hay;
-	bool operator>(const Pasture &other) const { return cost > other.cost; }
+	bool operator<(const Pasture &other) const { return cost > other.cost; } // For min-heap
 };
 
 int main() {
@@ -54,7 +54,7 @@ int main() {
 
 	// Priority Queue stores tuple of cost to reach a node, the node index, and whether
 	// cow had hay or not
-	priority_queue<Pasture, vector<Pasture>, greater<Pasture>> pq;
+	priority_queue<Pasture> pq;
 
 	/*
 	 * dist[i][0] = shortest distance from cow i to barn without stopping for any
