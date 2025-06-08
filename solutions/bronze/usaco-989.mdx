@@ -25,23 +25,17 @@ By Jonathan Paulson
 #include <vector>
 
 // sum(n) = 1 + 2 + ... + n = n * (n + 1) / 2
-long long sum(int n) {
-	return 1LL * n * (n + 1) / 2; 
-}
+long long sum(int n) { return 1LL * n * (n + 1) / 2; }
 
 // a + (a + 1) + (a + 2) + ... + b = \sum_{i = a}^b i
-long long sum(int a, int b) {
-	return a <= b ? sum(b) - sum(a - 1) : 0;
-}
+long long sum(int a, int b) { return a <= b ? sum(b) - sum(a - 1) : 0; }
 
 // Given that we start at speed s, can we slow down to speed x in at most l
 // meters? How many meters does it take to stop given current speed is s and
 // target is x? (s - 1) + (s - 2) + ... + x meters We are allowed to go over, so as
 // long as we have (s - 1) + (s - 2) + ... + (x + 1) + 1 meters, we are OK.
 bool ok(int speed, int x, int l) {
-	if (speed <= x) {
-		return true;
-	}
+	if (speed <= x) { return true; }
 
 	long long need = sum(x + 1, speed - 1) + 1;
 	return (need <= l);
@@ -55,9 +49,7 @@ int main() {
 	std::cin >> k >> n;
 	std::vector<int> arr(n);
 
-	for (int &x : arr) {
-		std::cin >> x;
-	}
+	for (int &x : arr) { std::cin >> x; }
 
 	for (int i = 0; i < n; i++) {
 		// Greedy. Go as fast as you can but make sure you can stop in time.
@@ -82,7 +74,7 @@ int main() {
 			res++;
 		}
 		std::cout << res << '\n';
-	}	
+	}
 }
 ```
 
