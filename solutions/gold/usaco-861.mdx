@@ -22,30 +22,25 @@ struct Pasture {
 	int cost;
 	int index;
 	bool had_hay;
+
 	bool operator<(const Pasture &other) const {
-		return cost > other.cost;
-	}  // For min-heap
+		return cost > other.cost;  // For priority queue
+	}
 };
 
 int main() {
 	freopen("dining.in", "r", stdin);
 	freopen("dining.out", "w", stdout);
 
-	// Input reading
 	int n, m, k;
 	cin >> n >> m >> k;
-
 	vector<vector<pair<int, int>>> adj(n);
 	for (int i = 0; i < m; i++) {
 		int u, v, w;
 		cin >> u >> v >> w;
-		u--;
-		v--;
-		adj[u].push_back({v, w});
+		adj[--u].push_back({--v, w});
 		adj[v].push_back({u, w});
 	}
-
-	// store yumminess for each haybale
 	vector<int> hay(n, 0);
 	for (int i = 0; i < k; i++) {
 		int index, yumminess;
@@ -54,8 +49,6 @@ int main() {
 		hay[index] = max(hay[index], yumminess);
 	}
 
-	// Priority Queue stores tuple of cost to reach a node, the node index, and whether
-	// cow had hay or not
 	priority_queue<Pasture> pq;
 
 	/*
@@ -106,9 +99,9 @@ int main() {
 
 	for (int i = 0; i < n - 1; i++) {
 		if (dist[i][1] <= dist[i][0]) {
-			cout << "1\n";
+			cout << 1 << '\n';
 		} else {
-			cout << "0\n";
+			cout << 0 << '\n';
 		}
 	}
 }
