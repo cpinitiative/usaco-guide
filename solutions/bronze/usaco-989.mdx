@@ -238,8 +238,11 @@ This is an example of a [greedy algorithm](/bronze/intro-greedy).
 
 ### Explanation
 
-We'll have Bessie accelerate as much as possible until she reaches a certain top speed, then decelerate, so that her speed never exceeds $X$ m/s,
-and while doing so, she also spends exactly 1 second at each speed level during both acceleration and deceleration phases.
+From the hints, it is clear that we always want to speed up if possible. But when should we slow down?
+To determine this, we can iterate over our peak speed and maintain the current distance traveled so far,
+along with the distance required to slow down to the maximum allowed speed at the finish line. If the
+total distance covered while accelerating and decelerating is greater than or equal to the length of the 
+track, then we know we have reached our optimal speed, and we can return the corresponding time.
 
 <Spoiler title="Why does this run within the time limit?">
 
