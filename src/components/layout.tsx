@@ -15,9 +15,7 @@ const Layout = ({
 }): JSX.Element => {
   useAnalyticsEffect();
   useUpdateStreakEffect({ setLastViewedModule });
-  return (
-      <div className="font-sans">{children}</div>
-  );
+  return <div className="font-sans">{children}</div>;
 };
 
 export default Layout;
