@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 
 interface BlindModeContextType {
   isBlindMode: boolean;
@@ -8,10 +8,22 @@ interface BlindModeContextType {
 const BlindModeContext = createContext<BlindModeContextType | undefined>(undefined);
 
 export function BlindModeProvider({ children }: { children: React.ReactNode }) {
-  const [isBlindMode, setIsBlindMode] = useState(false);
+  const [isBlindMode, setIsBlindMode] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const storedValue = localStorage.getItem('blindMode');
+      return storedValue === 'true';
+    }
+    return false;
+  });
+  
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('blindMode', String(isBlindMode));
+    }
+  }, [isBlindMode]);
 
   const toggleBlindMode = () => {
-    setIsBlindMode(prev => !prev);
+    setIsBlindMode((prev) => !prev);
   };
 
   return (
