@@ -116,6 +116,29 @@ export const RestOfMembers: Member[] = [
     titles: ['Director of Classes', roles.liveInstructor],
   },
   {
+    photo: 'elliotth',
+    name: 'Elliot Harper',
+    titles: [roles.webdev],
+    github: 'emhgit',
+    email: 'eharper0815@gmail.com',
+  },
+  {
+    photo: 'meherk',
+    name: 'Meher Khurana',
+    titles: [roles.webdev],
+  },
+  {
+    photo: 'rohang',
+    name: 'Rohan Garg',
+    titles: ['Director of Contests', roles.liveInstructor],
+  },
+  {
+    photo: 'davidg',
+    name: 'David Guo',
+    titles: [roles.contentAuthor],
+    github: 'JoltedCowIceCream',
+  },
+  {
     photo: 'alex_wang',
     name: 'Alex Wang',
     titles: ['Director of Clubs'],
@@ -156,6 +179,79 @@ export const RestOfMembers: Member[] = [
     titles: [roles.contentAuthor],
     github: 'sosuke23',
     codeforces: 'sosuke23',
+  },
+  {
+    photo: 'sachet',
+    name: 'Sachet Abeysinghe',
+    titles: [roles.contentAuthor],
+    github: 'sachet-abey',
+    linkedin: 'https://www.linkedin.com/in/sachet-abeysinghe-43314b30a/',
+  },
+  {
+    photo: 'srijith',
+    name: 'Srijith Chinthalapudi',
+    titles: ['Director of Self-Study Classes', roles.liveInstructor],
+  },
+  {
+    photo: 'i_chen_chou',
+    name: 'I Chen Chou',
+    titles: [roles.liveInstructor, roles.videoInstructor],
+  },
+  {
+    photo: 'nathan_chen',
+    name: 'Nathan Chen',
+    titles: [roles.videoInstructor],
+    website: 'https://nathanchen.me/',
+  },
+  {
+    photo: 'abhiraj',
+    name: 'Abhiraj Mallangi',
+    titles: [roles.videoInstructor],
+    email: 'abhirajmallangi@outlook.com',
+  },
+  {
+    name: 'Hannah Ying',
+    titles: [roles.videoInstructor],
+  },
+  {
+    name: 'Andy Chen',
+    titles: [roles.videoInstructor, roles.liveInstructor],
+  },
+  {
+    photo: 'zixuan_yin',
+    name: 'Zixuan Yin',
+    titles: [roles.liveInstructor],
+  },
+  {
+    photo: 'kyle_liang',
+    name: 'Kyle Liang',
+    titles: [roles.liveInstructor],
+  },
+  {
+    photo: 'zixuan_ye',
+    name: 'Zixuan Ye',
+    titles: [roles.liveInstructor],
+  },
+  {
+    photo: 'julian_wu',
+    name: 'Julian Wu',
+    titles: [roles.liveInstructor],
+  },
+  {
+    name: 'Melissa Yu',
+    titles: [roles.liveInstructor],
+  },
+  {
+    name: 'Patrick Deng',
+    titles: [roles.liveInstructor],
+  },
+  {
+    name: 'Ayush Bansal',
+    titles: [roles.videoInstructor],
+  },
+  {
+    name: 'David Zhou',
+    titles: [roles.videoInstructor],
   },
 ];
 
