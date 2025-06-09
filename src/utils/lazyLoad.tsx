@@ -25,4 +25,4 @@ export const lazyLoadConfig = {
     enabled: isDevelopment,
     fallback: () => <div>Groups is loading...</div>
   }
-}; 
+};

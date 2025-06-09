@@ -20,7 +20,7 @@ export default function EditorPageContainer(
   props: PageProps
 ): JSX.Element | null {
   const [hasMounted, setHasMounted] = React.useState(false);
-  
+
   React.useEffect(() => {
     setHasMounted(true);
   }, []);
