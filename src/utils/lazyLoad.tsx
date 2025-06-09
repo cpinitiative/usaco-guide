@@ -11,7 +11,7 @@ console.log('Current NODE_ENV:', process.env.NODE_ENV);
 console.log('isDevelopment:', isDevelopment);
 
 // Lazy loading configuration
-//set enabled to false to disable lazy loading
+// set enabled to false to disable lazy loading
 export const lazyLoadConfig = {
   editor: {
     enabled: isDevelopment,
