@@ -3,8 +3,8 @@ import { BaseHit, Hit } from 'instantsearch.js';
 import * as React from 'react';
 import { Highlight, useHits } from 'react-instantsearch';
 import { moduleIDToSectionMap } from '../../../content/ordering';
-import { ConfettiProvider } from '../../context/ConfettiContext';
 import { useBlindMode } from '../../context/BlindModeContext';
+import { ConfettiProvider } from '../../context/ConfettiContext';
 import {
   useHideDifficultySetting,
   useHideModulesSetting,
