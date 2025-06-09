@@ -10,6 +10,7 @@ import {
 } from 'react-instantsearch';
 
 import SECTIONS from '../../content/ordering';
+import BlindModeToggle from '../components/BlindModeToggle';
 import Layout from '../components/layout';
 import ProblemHits from '../components/ProblemsPage/ProblemHits';
 import SearchBox from '../components/ProblemsPage/SearchBox';
@@ -21,7 +22,6 @@ import SEO from '../components/seo';
 import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
 import { useUserProgressOnProblems } from '../context/UserDataContext/properties/userProgress';
 import { searchClient } from '../utils/algoliaSearchClient';
-import BlindModeToggle from '../components/BlindModeToggle';
 
 const indexName = `${process.env.GATSBY_ALGOLIA_INDEX_NAME ?? 'dev'}_problems`;
 
@@ -124,7 +124,7 @@ export default function ProblemsPage(props: PageProps<DataProps>) {
                 Problems
               </h1>
               <SearchBox />
-              <div className="flex justify-center m-4">
+              <div className="m-4 flex justify-center">
                 <BlindModeToggle />
               </div>
             </div>

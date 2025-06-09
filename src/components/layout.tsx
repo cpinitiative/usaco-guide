@@ -1,7 +1,7 @@
 import * as React from 'react';
+import { BlindModeProvider } from '../context/BlindModeContext';
 import { useAnalyticsEffect } from '../hooks/useAnalyticsEffect';
 import { useUpdateStreakEffect } from '../hooks/useUpdateStreakEffect';
-import { BlindModeProvider } from '../context/BlindModeContext';
 
 const Layout = ({
   children,

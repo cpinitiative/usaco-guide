@@ -1,11 +1,13 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 
 interface BlindModeContextType {
   isBlindMode: boolean;
   toggleBlindMode: () => void;
 }
 
-const BlindModeContext = createContext<BlindModeContextType | undefined>(undefined);
+const BlindModeContext = createContext<BlindModeContextType | undefined>(
+  undefined
+);
 
 export function BlindModeProvider({ children }: { children: React.ReactNode }) {
   const [isBlindMode, setIsBlindMode] = useState(() => {
@@ -23,7 +25,7 @@ export function BlindModeProvider({ children }: { children: React.ReactNode }) {
   }, [isBlindMode]);
 
   const toggleBlindMode = () => {
-    setIsBlindMode((prev) => !prev);
+    setIsBlindMode(prev => !prev);
   };
 
   return (
