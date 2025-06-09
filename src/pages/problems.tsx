@@ -21,6 +21,7 @@ import SEO from '../components/seo';
 import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
 import { useUserProgressOnProblems } from '../context/UserDataContext/properties/userProgress';
 import { searchClient } from '../utils/algoliaSearchClient';
+import BlindModeToggle from '../components/BlindModeToggle';
 
 const indexName = `${process.env.GATSBY_ALGOLIA_INDEX_NAME ?? 'dev'}_problems`;
 
@@ -123,6 +124,9 @@ export default function ProblemsPage(props: PageProps<DataProps>) {
                 Problems
               </h1>
               <SearchBox />
+              <div className="flex justify-center m-4">
+                <BlindModeToggle />
+              </div>
             </div>
           </div>
           <div className="mx-9 mt-4 mb-1 flex justify-center">
