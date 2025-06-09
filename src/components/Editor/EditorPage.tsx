@@ -11,7 +11,7 @@
 
 import { PageProps } from 'gatsby';
 import { useAtomValue, useSetAtom } from 'jotai';
-import React, { lazy, Suspense } from 'react';
+import React, { lazy } from 'react';
 import Split from 'react-split';
 import {
   filesListAtom,
@@ -20,15 +20,27 @@ import {
   tokenAtom,
 } from '../../atoms/editor';
 import QuizGeneratorProvider from '../../context/QuizGeneratorContext';
+import { LazyLoad } from '../../utils/lazyLoad';
 import Layout from '../layout';
 import SEO from '../seo';
-import { LazyLoad } from '../../utils/lazyLoad';
 
 // Lazy load heavy components
-const EditorOutput = lazy(() => import('./EditorOutput').then(module => ({ default: module.EditorOutput })));
-const EditorSidebar = lazy(() => import('./EditorSidebar/EditorSidebar').then(module => ({ default: module.EditorSidebar })));
-const EditorTopNav = lazy(() => import('./EditorTopNav').then(module => ({ default: module.EditorTopNav })));
-const MainEditorInterface = lazy(() => import('./MainEditorInterface').then(module => ({ default: module.MainEditorInterface })));
+const EditorOutput = lazy(() =>
+  import('./EditorOutput').then(module => ({ default: module.EditorOutput }))
+);
+const EditorSidebar = lazy(() =>
+  import('./EditorSidebar/EditorSidebar').then(module => ({
+    default: module.EditorSidebar,
+  }))
+);
+const EditorTopNav = lazy(() =>
+  import('./EditorTopNav').then(module => ({ default: module.EditorTopNav }))
+);
+const MainEditorInterface = lazy(() =>
+  import('./MainEditorInterface').then(module => ({
+    default: module.MainEditorInterface,
+  }))
+);
 
 // From https://stackoverflow.com/questions/2090551/parse-query-string-in-javascript
 function getQueryVariable(query, variable) {

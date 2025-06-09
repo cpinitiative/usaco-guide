@@ -2,11 +2,7 @@ import React, { Suspense } from 'react';
 
 // Lazy loading wrapper component
 export const LazyLoad = ({ children }: { children: React.ReactNode }) => {
-  return (
-    <Suspense fallback={<div>Loading...</div>}>
-      {children}
-    </Suspense>
-  );
+  return <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>;
 };
 
 // Development mode check
@@ -19,10 +15,10 @@ console.log('isDevelopment:', isDevelopment);
 export const lazyLoadConfig = {
   editor: {
     enabled: isDevelopment,
-    fallback: () => <div>Editor is loading...</div>
+    fallback: () => <div>Editor is loading...</div>,
   },
   groups: {
     enabled: isDevelopment,
-    fallback: () => <div>Groups is loading...</div>
-  }
+    fallback: () => <div>Groups is loading...</div>,
+  },
 };
