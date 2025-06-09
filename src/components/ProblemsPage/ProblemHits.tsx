@@ -4,7 +4,6 @@ import * as React from 'react';
 import { Highlight, useHits } from 'react-instantsearch';
 import { moduleIDToSectionMap } from '../../../content/ordering';
 import { ConfettiProvider } from '../../context/ConfettiContext';
-import { useBlindMode } from '../../context/BlindModeContext';
 import {
   useHideDifficultySetting,
   useHideModulesSetting,
@@ -30,7 +29,6 @@ function ProblemHit({ hit }: ProblemHitProps) {
   const hideDifficulty = useHideDifficultySetting();
   const showTags = useShowTagsSetting();
   const hideModules = useHideModulesSetting();
-  const { isBlindMode } = useBlindMode();
 
   if (hit.problemModules.length == 0 && recentUsaco.includes(hit.source)) {
     hit.problemModules.push({
@@ -139,7 +137,7 @@ function ProblemHit({ hit }: ProblemHitProps) {
           </a>
         </>
       )}
-      {!hideModules && !isBlindMode && (
+      {!hideModules && (
         <>
           <p className="dark:text-dark-med-emphasis mt-2 text-sm text-gray-500">
             Appears In:

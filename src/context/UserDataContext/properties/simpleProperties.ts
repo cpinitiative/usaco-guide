@@ -95,10 +95,3 @@ export const useSetDivisionTableQuery = createSimpleUserDataMutation(
 export const useLastViewedModule = createUserDataGetter(
   userData => userData.lastViewedModule
 );
-
-/*
-TODO LATER
-export const blindMode = defineBooleanProperty({
-  default: false,
-});
-*/
