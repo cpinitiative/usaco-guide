@@ -15,7 +15,7 @@ export function BlindModeProvider({ children }: { children: React.ReactNode }) {
     }
     return false;
   });
-  
+
   useEffect(() => {
     if (typeof window !== 'undefined') {
       localStorage.setItem('blindMode', String(isBlindMode));
@@ -39,4 +39,4 @@ export function useBlindMode() {
     throw new Error('useBlindMode must be used within a BlindModeProvider');
   }
   return context;
-} 
+}

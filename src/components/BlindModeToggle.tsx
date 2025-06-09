@@ -33,4 +33,4 @@ export default function BlindModeToggle() {
       {isBlindMode ? 'Show tags' : 'Hide tags'}
     </button>
   );
-} 
+}
