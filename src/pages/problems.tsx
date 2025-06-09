@@ -138,7 +138,6 @@ export default function ProblemsPage(props: PageProps<DataProps>) {
               <TagsRefinementList />
             </div>
             <div className="col-span-5 px-1 py-0.5 sm:col-span-6 md:col-span-7 lg:col-span-8 xl:col-span-8">
-
               <div className="mb-5 grid grid-cols-1 items-center gap-x-5 gap-y-3 sm:grid-cols-2 lg:grid-cols-6">
                 {selectionMetadata.map(props => (
                   <div
