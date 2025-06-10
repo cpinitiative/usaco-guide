@@ -32,7 +32,7 @@ export const OrderedFirstMembers: Member[] = [
     email: 'bqi343@gmail.com',
   },
   {
-    photo: 'kevin',
+    photo: 'kevins',
     name: 'Kevin Sheng',
     titles: ['Content Manager', roles.contentAuthor, roles.videoInstructor],
     github: 'sanspapyrus683',
@@ -167,6 +167,7 @@ export const RestOfMembers: Member[] = [
     photo: 'andrew_xu',
     name: 'Andrew Xu',
     titles: [roles.liveInstructor],
+    email: 'greatestrappingraptor@gmail.com',
   },
   {
     photo: 'peng_bai',
