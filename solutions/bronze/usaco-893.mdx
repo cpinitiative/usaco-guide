@@ -65,8 +65,10 @@ int main(int argc, char **argv) {
 	return 0;
 }
 ```
+
 </CPPSection>
 <JavaSection>
+
 ```java
 import java.io.*;
 import java.util.*;
@@ -110,8 +112,10 @@ public class Solution {
 	}
 }
 ```
+
 </JavaSection>
 <PySection>
+
 ```py
 with open("guess.in", "r") as input_file:
 	lines = input_file.readlines()
@@ -141,20 +145,21 @@ for i in range(N):
 with open("guess.out", "w") as output_file:
 	output_file.write("{}".format(greatest_common + 1))
 ```
+
 </PySection>
 </LanguageSection>
+
 </Spoiler>
 
 ## Explanation
 
-Take any two animals, and suppose they share $X$ characteristics with each other.
-To determine which animal is which, at least $X + 1$ questions must be asked to
-guarantee a differing characteristic, which in turn results in identifying the exact animal.
-With this, we can compare every pair of animals and keep track of the max $X + 1$ value
-in order to determine the number of questions that need to be asked. By using a
-[set](https://usaco.guide/bronze/intro-sets?lang=cpp), we can speed up checking overlapping characteristics.
+We compare each pair of animals and check how many characteristics they share.
+If they share $X$ characteristics, then we need at least $X + 1$ questions.
+Taking the maximum of the number of questions across all pairs gives us our answer.
 
 ## Implementation
+
+**Time Complexity:** $\mathcal{O}(N^2K)$
 
 <LanguageSection>
 <CPPSection>
