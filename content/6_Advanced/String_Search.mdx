@@ -69,7 +69,7 @@ Firstly, note that between $\pi_S[i]$ and $\pi_S[i + 1]$, $\pi_S[i + 1]$ can be 
 
 In the example above, $\pi_S[i] = 5$, meaning that the suffix of length $5$ is equivalent to a prefix of length $5$ of the entire string. It follows that if the character at position $5$ of the string is equal to the character at position $i + 1$, then the match is simply extended by a single character. Thus, $\pi_S[i + 1] = \pi_S[i] + 1 = 6$.
 
-In the general case, however, this is not necessarily true. That is to say, $S[\pi_S[i]] \neq S[i + 1]$. Thus, we need to find the largest index $j < \pi_S[i]$ such that the prefix property holds (ie $S[:j - 1] \equiv S[i - j + 1:i]$). For such a length $j$, we repeat the procedure in the first example by comparing characters at indicies $j$ and $i + 1$: if the two are equal, then we can conclude our search and assign $\pi_S[i + 1] = j + 1$, and otherwise, we find the next smallest $j$ and repeat. Indeed, notice that the first example is simply the case where $j$ begins as $\pi_S[i]$.
+In the general case, however, this is not necessarily true. That is to say, $S[\pi_S[i]] \neq S[i + 1]$. Thus, we need to find the largest index $j < \pi_S[i]$ such that the prefix property holds (ie $S[:j - 1] \equiv S[i - j + 1:i]$). For such a length $j$, we repeat the procedure in the first example by comparing characters at indices $j$ and $i + 1$: if the two are equal, then we can conclude our search and assign $\pi_S[i + 1] = j + 1$, and otherwise, we find the next smallest $j$ and repeat. Indeed, notice that the first example is simply the case where $j$ begins as $\pi_S[i]$.
 
 ![KMP Example 2](./kmp_example2.png)
 
@@ -319,7 +319,7 @@ string menacher(string s) {
 		/*
 		 * We've already computed the values for [left, i] interval.
 		 * The values on the right side of the palindrome [i+1, right] will
-		 * be the same as the ones on the left side execpt when some palindromes
+		 * be the same as the ones on the left side except when some palindromes
 		 * go beyond the current [left, right] palindrome.
 		 */
 		int new_center = right + (i % 2 == 0 ? 1 : 0);
@@ -535,7 +535,7 @@ The image below depicts how the structure looks like for the words $[a, ag, c, c
 There is a special case when some words are substring of other words in the wordlist. This could lead to some problems depending on the implementation. [Dictionary links](https://www.youtube.com/watch?v=OFKxWFew_L0) can solve this problem.
 They act like suffix links that point to the first suffix that is also a word in the wordlist. The code below constructs the structure using a BFS.
 
-**Time Complexity:** $\mathcal{O}(m\sigma)$ - where $m$ is the size of the alphaber and $\sigma$ the size of the alphabet
+**Time Complexity:** $\mathcal{O}(m\sigma)$ - where $m$ is the size of the alphabet and $\sigma$ the size of the alphabet
 
 <LanguageSection>
 <CPPSection>
