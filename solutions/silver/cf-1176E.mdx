@@ -17,6 +17,8 @@ Since BFS visits every node at the same level before moving on, edges must conne
 
 The categories are disjoint and exhaustive, so one group must have less than or equal to $\left \lfloor \frac{n}{2} \right \rfloor$ nodes. We can output the smaller of the two sets to satisfy the problem's requirements.
 
+Another interpretation is that the BFS traversal constructs a bipartite spanning tree, whose level-based partition guarantees that one side has size at most $\left \lfloor \frac{n}{2} \right \rfloor$, yielding a valid set of nodes to select.
+
 ## Implementation
 
 **Time Complexity:** $\mathcal{O}(N+M)$
@@ -63,7 +65,7 @@ int main() {
 		// separates nodes by parity and outputs smaller group
 		vector<int> even, odd;
 		for (int i = 0; i < n; i++) {
-			dist[i] % 2 == 0 ? even.push_back(i + 1) : odd.push_back(i + 1);
+			(dist[i] % 2 == 0 ? even : odd).push_back(i + 1);
 		}
 		if (even.size() < odd.size()) {
 			cout << even.size() << endl;
@@ -90,19 +92,21 @@ public class Cover {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		PrintWriter pw = new PrintWriter(new OutputStreamWriter(System.out));
 
-		int t = Integer.parseInt(br.readLine());
-		while (t-- > 0) {
+		int test_num = Integer.parseInt(br.readLine());
+		for (int t = 0; t < test_num; t++) {
 			String[] nm = br.readLine().split(" ");
 			int n = Integer.parseInt(nm[0]);
 			int m = Integer.parseInt(nm[1]);
-			List<List<Integer>> adj = new ArrayList<>();
-			for (int i = 0; i < n; i++) { adj.add(new ArrayList<>()); }
+			List<Integer>[] adj = new ArrayList[n];
+			for (int i = 0; i < n; i++) {
+				adj[i] = new ArrayList<>();
+			}
 			for (int i = 0; i < m; i++) {
 				String[] uv = br.readLine().split(" ");
 				int u = Integer.parseInt(uv[0]) - 1;
 				int v = Integer.parseInt(uv[1]) - 1;
-				adj.get(u).add(v);
-				adj.get(v).add(u);
+				adj[u].add(v);
+				adj[v].add(u);
 			}
 
 			// BFS from node 0
@@ -113,7 +117,7 @@ public class Cover {
 			dist[0] = 0;
 			while (!q.isEmpty()) {
 				int curr = q.poll();
-				for (int next : adj.get(curr)) {
+				for (int next : adj[curr]) {
 					if (dist[next] == -1) {
 						dist[next] = dist[curr] + 1;
 						q.add(next);
@@ -133,7 +137,9 @@ public class Cover {
 			}
 			List<Integer> smaller = even.size() <= odd.size() ? even : odd;
 			pw.println(smaller.size());
-			for (int num : smaller) { pw.print(num + " "); }
+			for (int num : smaller) {
+				pw.print(num + " ");
+			}
 			pw.println();
 		}
 
