@@ -40,9 +40,7 @@ int main() {
 		for (int i = 0; i < m; i++) {
 			int u, v;
 			cin >> u >> v;
-			u--;
-			v--;
-			adj[u].push_back(v);
+			adj[--u].push_back(--v);
 			adj[v].push_back(u);
 		}
 
@@ -63,24 +61,25 @@ int main() {
 		}
 
 		// separates nodes by parity and outputs smaller group
-		vector<int> even, odd;
+		vector<int> even;
+		vector<int> odd;
+
 		for (int i = 0; i < n; i++) {
 			(dist[i] % 2 == 0 ? even : odd).push_back(i + 1);
 		}
 		if (even.size() < odd.size()) {
-			cout << even.size() << endl;
+			cout << even.size() << "\n";
 			for (int num : even) { cout << num << " "; }
 		} else {
-			cout << odd.size() << endl;
+			cout << odd.size() << "\n";
 			for (int num : odd) { cout << num << " "; }
 		}
-		cout << endl;
+		cout << "\n";
 	}
 }
 ```
 
 </CPPSection>
-
 <JavaSection>
 
 ```java
@@ -92,8 +91,8 @@ public class Cover {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		PrintWriter pw = new PrintWriter(new OutputStreamWriter(System.out));
 
-		int test_num = Integer.parseInt(br.readLine());
-		for (int t = 0; t < test_num; t++) {
+		int testNum = Integer.parseInt(br.readLine());
+		for (int t = 0; t < testNum; t++) {
 			String[] nm = br.readLine().split(" ");
 			int n = Integer.parseInt(nm[0]);
 			int m = Integer.parseInt(nm[1]);
@@ -146,7 +145,6 @@ public class Cover {
 ```
 
 </JavaSection>
-
 <PySection>
 
 ```py
@@ -155,8 +153,7 @@ import sys
 
 input = sys.stdin.readline
 
-t = int(input())
-for _ in range(t):
+for _ in range(int(input()):
 	n, m = map(int, input().split())
 	adj = [[] for _ in range(n)]
 	for _ in range(m):
