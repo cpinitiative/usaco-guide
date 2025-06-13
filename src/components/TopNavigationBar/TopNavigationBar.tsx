@@ -137,9 +137,9 @@ export default function TopNavigationBar({
       {!hidePromoBar && (
         <>
           <Banner
-            text="CPI is a student-run organization. Join our team!"
-            action="Apply"
-            link="https://docs.google.com/document/d/13QpXqdiYQwjBLnywGL1FUG7GFdh8SM_1NigIkJl-A7k/edit?usp=sharing"
+            text="Registration for Summer Live Classes is Open!"
+            action="Register"
+            link="https://joincpi.org/classes/register"
           />
         </>
       )}
