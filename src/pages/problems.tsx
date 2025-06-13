@@ -10,6 +10,7 @@ import {
 } from 'react-instantsearch';
 
 import SECTIONS from '../../content/ordering';
+import BlindModeToggle from '../components/BlindModeToggle';
 import Layout from '../components/layout';
 import ProblemHits from '../components/ProblemsPage/ProblemHits';
 import SearchBox from '../components/ProblemsPage/SearchBox';
@@ -128,8 +129,12 @@ export default function ProblemsPage(props: PageProps<DataProps>) {
           <div className="mx-9 mt-4 mb-1 flex justify-center">
             <PoweredBy />
           </div>
+
           <div className="grid grid-cols-10 px-9 pt-3 pb-4">
             <div className="col-span-5 overflow-y-auto sm:col-span-4 md:col-span-3 lg:col-span-2 xl:col-span-2">
+              <div className="mb-4">
+                <BlindModeToggle />
+              </div>
               <TagsRefinementList />
             </div>
             <div className="col-span-5 px-1 py-0.5 sm:col-span-6 md:col-span-7 lg:col-span-8 xl:col-span-8">
