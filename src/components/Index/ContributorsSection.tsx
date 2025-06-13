@@ -117,12 +117,20 @@ const MemberCard = ({
     >
       <div className="flex flex-col items-center gap-2">
         <div className="pointer-events-auto relative h-24 w-24 overflow-hidden rounded-full lg:h-20 lg:w-20">
-          <GatsbyImage
-            image={gatsbyImage.gatsbyImageData}
-            className="gatsby-image-wrapper-rounded overflow-hidden rounded-full"
-            alt={member.name}
-            style={{ width: '100%', height: '100%' }}
-          />
+          {gatsbyImage ? (
+            <GatsbyImage
+              image={gatsbyImage.gatsbyImageData}
+              className="gatsby-image-wrapper-rounded overflow-hidden rounded-full"
+              alt={member.name}
+              style={{ width: '100%', height: '100%' }}
+            />
+          ) : (
+            <div className="flex h-full w-full items-center justify-center bg-gray-200 dark:bg-gray-700">
+              <span className="text-2xl font-bold text-gray-500 dark:text-gray-400">
+                {member.name.charAt(0)}
+              </span>
+            </div>
+          )}
         </div>
         <p className="text-base font-medium whitespace-nowrap dark:text-gray-100">
           {member.name}
@@ -211,8 +219,10 @@ export default function ContributorsSection(): JSX.Element {
                   member={member}
                   key={member.name}
                   gatsbyImage={
-                    data.allFile.nodes.find(x => x.name === member.photo)
-                      ?.childImageSharp
+                    member.photo
+                      ? data.allFile.nodes.find(x => x.name === member.photo)
+                          ?.childImageSharp
+                      : null
                   }
                 />
               ))}
@@ -227,8 +237,10 @@ export default function ContributorsSection(): JSX.Element {
                   member={member}
                   key={member.name}
                   gatsbyImage={
-                    data.allFile.nodes.find(x => x.name === member.photo)!
-                      .childImageSharp
+                    member.photo
+                      ? data.allFile.nodes.find(x => x.name === member.photo)
+                          ?.childImageSharp
+                      : null
                   }
                 />
               ))}
