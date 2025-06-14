@@ -1,0 +1,389 @@
+---
+id: cses-1131
+source: CSES - Tree Dianeter
+title: Tree Diameter
+author: David Zhou
+---
+
+## Solution 1 - Dynamic Programming
+
+At each node in the tree, we compute the heights of its two tallest subtrees. By adding them together, we find the length of the longest path through passes through that point. The diameter is the max of these longest paths.
+
+This solution is an example of [Tree DP](/gold/dp-trees), as previously computed subtree heights are used in a bottom-up manner to determine the current height.
+
+For a more detailed explaination, see Algorithm 1 in [CPH 14.2](/CPH.pdf#page=145).
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int diameter = 0;
+vector<vector<int>> adj;
+
+// visited array is unnecessary as we are traversing down the tree in one direction
+// ensuring that the current node does not return back up to its parent is sufficient
+
+int dfs(int curr, int parent) {
+    int max1 = 0, max2 = 0;
+    for (int next : adj[curr]) {
+        if (next != parent) {
+            int h = dfs(next, curr) + 1;
+            if (h > max1) {
+                max2 = max1;
+                max1 = h;
+            } else if (h > max2) {
+                max2 = h;
+            }
+        }
+    }
+
+    diameter = max(diameter, max1 + max2);
+    return max1;  // max1 is the height of the current subtree
+}
+
+int main() {
+    int n;
+    cin >> n;
+    dist.resize(n);
+    adj.resize(n);
+    for (int i = 0; i < n - 1; i++) {
+        int a, b;
+        cin >> a >> b;
+        adj[--a].push_back(--b);
+        adj[b].push_back(a);
+    }
+
+    dfs(0, -1);
+
+    cout << diameter << "\n";
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class TreeDiameter {
+    static ArrayList<Integer>[] adj;
+    static int[] height;
+    static int diameter = 0;
+
+    static class State {
+        int node, parent, phase;
+        State(int node, int parent, int phase) {
+            this.node = node;
+            this.parent = parent;
+            this.phase = phase;
+        }
+    }
+
+    // iterative DFS necessary in order to AC; recursive TLEs on final case
+    static void calculateDiameter(int start) {
+        Deque<State> stack = new ArrayDeque<>();
+        stack.push(new State(start, -1, 0));  // start from node 0, no parent, pre-processing phase
+
+        while (!stack.isEmpty()) {
+            State curr = stack.pop();
+            int u = curr.node;
+            int p = curr.parent;
+            int phase = curr.phase;
+
+            if (phase == 0) {
+                stack.push(new State(u, p, 1));  // convert current state to post-processing
+
+                for (int v : adj[u]) {
+                    if (v != p) {
+                        stack.push(new State(v, u, 0));
+                    }
+                }
+            } else {
+                // post-processing: calculate heights and update diameter
+                int max1 = 0, max2 = 0;
+                for (int v : adj[u]) {
+                    if (v == p) continue;
+                    int h = height[v] + 1;
+                    if (h > max1) {
+                        max2 = max1;
+                        max1 = h;
+                    } else if (h > max2) {
+                        max2 = h;
+                    }
+                }
+                height[u] = max1;
+                diameter = Math.max(diameter, max1 + max2); // diameter will equal the max of the sum of the heights of the two tallest subtrees
+            }
+        }
+    }
+
+    public static void main(String[] args) throws IOException {
+        // Fast IO
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        int n = Integer.parseInt(br.readLine());
+
+        adj = new ArrayList[n];
+        for (int i = 0; i < n; i++) {
+            adj[i] = new ArrayList<>();
+        }
+
+        for (int i = 0; i < n - 1; i++) {
+            StringTokenizer st = new StringTokenizer(br.readLine());
+            int a = Integer.parseInt(st.nextToken()) - 1;
+            int b = Integer.parseInt(st.nextToken()) - 1;
+            adj[a].add(b);
+            adj[b].add(a);
+        }
+
+        height = new int[n];
+        diameter = 0;
+
+        calculateDiameter(0);
+
+        System.out.println(diameter);
+    }
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+import sys
+input = sys.stdin.readline  # redefine input for performance reasons
+sys.setrecursionlimit(10**7)
+
+n = int(input())
+adj = [[] for _ in range(n)]
+for _ in range(n - 1):
+    a, b = map(int, input().split())
+    a -= 1
+    b -= 1
+    adj[a].append(b)
+    adj[b].append(a)
+
+height = [0] * n
+diameter = 0
+
+# iterative DFS necessary in order to AC; recursive TLEs
+stack = [(0, -1, 0)]  # node, parent, state (0=pre, 1=post)
+
+while stack:
+    u, p, state = stack.pop()
+    if state == 0:
+        stack.append((u, p, 1))  # convert current state to post-processing
+        for v in adj[u]:
+            if v != p:
+                stack.append((v, u, 0))  # pre-process children
+    else:
+        # post-processing: after processing all children, recalculate max heights of subtrees
+        max1 = max2 = 0
+        for v in adj[u]:
+            if v == p:
+                continue
+            h = height[v] + 1
+            if h > max1:
+                max2 = max1
+                max1 = h
+            elif h > max2:
+                max2 = h
+        height[u] = max1
+        diameter = max(diameter, max1 + max2)  # diameter will equal the max of the sum of the heights of the two tallest subtrees
+
+print(diameter)
+```
+
+</PySection>
+</LanguageSection>
+
+## Solution 2 - DFS Twice
+
+We start by using [DFS](/silver/graph-traversal#dfs) on an arbitrary point and calculate the distance to each point. The point with the maximum distance is one of the endpoints of the diameter. We can run DFS again from this point, where the maximum distance will now be the diameter.
+
+For a more detailed explaination, see Algorithm 2 in [CPH 14.2](/CPH.pdf#page=145).
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+vector<int> dist;
+vector<vector<int>> adj;
+
+// visited array is unnecessary as we are traversing down the tree in one direction
+// ensuring that the current node does not return back up to its parent is sufficient
+
+void dfs(int curr, int parent) {
+    if (parent != -1) {
+        dist[curr] = dist[parent] + 1;
+    }
+    for (int next : adj[curr]) {
+        if (next != parent) {
+            dfs(next, curr);
+        }
+    }
+}
+
+int main() {
+    int n;
+    cin >> n;
+    dist.resize(n);
+    adj.resize(n);
+    for (int i = 0; i < n - 1; i++) {
+        int a, b;
+        cin >> a >> b;
+        adj[--a].push_back(--b);
+        adj[b].push_back(a);
+    }
+
+    // first DFS to find furthest node from node 0
+    dfs(0, -1);
+
+    int start = -1, maxDist = -1;
+    for (int i = 0; i < n; i++) {
+        if (dist[i] > maxDist) {
+            maxDist = dist[i];
+            start = i;
+        }
+    }
+
+    // second DFS to find other endpoint of diameter
+    fill(dist.begin(), dist.end(), 0);
+    dfs(start, -1);
+
+    maxDist = -1;
+    for (int i = 0; i < n; i++) {
+        maxDist = max(maxDist, dist[i]);
+    }
+    cout << maxDist << "\n";
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class TreeDiameter {
+    static int[] dist;
+    static ArrayList<Integer>[] adj;
+
+    //iterative DFS necessary in order to AC; recursive TLEs
+    static void iterativeDFS(int start) {
+        Arrays.fill(dist, -1);
+        dist[start] = 0;
+        Deque<Integer> stack = new ArrayDeque<>();
+        stack.push(start);
+
+        while (!stack.isEmpty()) {
+            int curr = stack.pop();
+            for (int next : adj[curr]) {
+                if (dist[next] == -1) {
+                    dist[next] = dist[curr] + 1;
+                    stack.push(next);
+                }
+            }
+        }
+    }
+
+    public static void main(String[] args) throws IOException {
+        // Fast input and output
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        PrintWriter out = new PrintWriter(System.out);
+
+        int n = Integer.parseInt(br.readLine());
+        dist = new int[n];
+        adj = new ArrayList[n];
+        for (int i = 0; i < n; i++) {
+            adj[i] = new ArrayList<>();
+        }
+
+        for (int i = 0; i < n - 1; i++) {
+            StringTokenizer st = new StringTokenizer(br.readLine());
+            int a = Integer.parseInt(st.nextToken()) - 1;
+            int b = Integer.parseInt(st.nextToken()) - 1;
+            adj[a].add(b);
+            adj[b].add(a);
+        }
+
+        // First DFS from node 0 to find farthest node
+        iterativeDFS(0);
+        int start = -1, maxDist = -1;
+        for (int i = 0; i < n; i++) {
+            if (dist[i] > maxDist) {
+                maxDist = dist[i];
+                start = i;
+            }
+        }
+
+        // Second DFS from farthest node found
+        iterativeDFS(start);
+
+        maxDist = -1;
+        for (int i = 0; i < n; i++) {
+            maxDist = Math.max(maxDist, dist[i]);
+        }
+
+        out.println(maxDist);
+        out.flush();
+    }
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+import sys
+input = sys.stdin.readline  # redefine input for performance reasons
+sys.setrecursionlimit(10**7)
+
+# iterative DFS necessary in order to AC; recursive TLEs
+def iterative_dfs(start):
+    dist = [-1] * n
+    stack = [start]
+    dist[start] = 0
+    while stack:
+        curr = stack.pop()
+        for nxt in adj[curr]:
+            if dist[nxt] == -1:
+                dist[nxt] = dist[curr] + 1
+                stack.append(nxt)
+    return dist
+
+n = int(input())
+adj = [[] for _ in range(n)]
+for _ in range(n - 1):
+    a, b = map(int, input().split())
+    a -= 1
+    b -= 1
+    adj[a].append(b)
+    adj[b].append(a)
+
+# dfs from node 0 to find endpoint of diameter
+dist = iterative_dfs(0)
+start = max(range(n), key=lambda i: dist[i])
+
+#dfs from endpoint of diameter to find other endpoint
+dist = iterative_dfs(start)
+print(max(dist))
+```
+
+</PySection>
+</LanguageSection>
