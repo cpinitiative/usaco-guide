@@ -42,6 +42,7 @@ export type UserData = {
   // mapping timestamp to pageviews
   pageviewsPerDay: Record<number, number>;
   theme: Theme;
+  //blindmode?: boolean; //field to save blind mode
   // mapping module ID to progress
   userProgressOnModules: Record<string, ModuleProgress>;
   userProgressOnModulesActivity: {
