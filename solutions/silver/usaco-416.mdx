@@ -270,6 +270,7 @@ This way, we can brute force through all the squares Bessie can be and take the 
 
 using std::endl;
 using std::max;
+using std::min;
 using std::vector;
 
 int main() {
@@ -294,25 +295,22 @@ int main() {
 			// prevent including -1's in the prefix sum
 			int val = std::max(field[i][j], 0);
 			prefix[i + 1][j + 1] =
-			    (val + prefix[i + 1][j] + prefix[i][j + 1] - prefix[i][j]);
+				(val + prefix[i + 1][j] + prefix[i][j + 1] - prefix[i][j]);
 		}
 	}
 
 	int most_grass = 0;
-	for (int i = k; i < new_n - k; i++) {
-		for (int j = k; j < new_n - k; j++) {
+	for (int i = 0; i < new_n; i++) {
+		for (int j = 0; j < new_n; j++) {
 			if (field[i][j] == -1) {
 				continue;  // don't start at invalid locations
 			}
-			most_grass = max(most_grass,
-			                 prefix[i + k + 1][j + k + 1] - prefix[i + k + 1][j - k] -
-			                     prefix[i - k][j + k + 1] + prefix[i - k][j - k]);
-		}
-	}
 
-	if (k >= n) {
-		// check if Bessie can reach everything
-		most_grass = prefix[new_n][new_n];
+			int sr = max(i - k, 0), er = min(i + k, new_n - 1);
+			int sc = max(j - k, 0), ec = min(j + k, new_n - 1);
+			most_grass = max(most_grass, prefix[er + 1][ec + 1] - prefix[er + 1][sc] -
+											 prefix[sr][ec + 1] + prefix[sr][sc]);
+		}
 	}
 
 	std::ofstream("lazy.out") << most_grass << endl;
@@ -336,12 +334,14 @@ public class Lazy {
 		int newN = 2 * n - 1;
 		int[][] field = new int[newN][newN];
 		for (int r = 0; r < newN; r++) {
-			Arrays.fill(field[r], -1);  // -1's indicate invalid locations
+			Arrays.fill(field[r], -1); // -1's indicate invalid locations
 		}
 
 		// read input and store it rotated by 45 degrees
 		for (int i = 0; i < n; i++) {
-			for (int j = 0; j < n; j++) { field[i + j][n - i + j - 1] = io.nextInt(); }
+			for (int j = 0; j < n; j++) {
+				field[i + j][n - i + j - 1] = io.nextInt();
+			}
 		}
 
 		int[][] prefix = new int[newN + 1][newN + 1];
@@ -349,26 +349,22 @@ public class Lazy {
 			for (int j = 0; j < newN; j++) {
 				// prevent including -1's in the prefix sum
 				int val = Math.max(field[i][j], 0);
-				prefix[i + 1][j + 1] =
-				    (val + prefix[i + 1][j] + prefix[i][j + 1] - prefix[i][j]);
+				prefix[i + 1][j + 1] = (val + prefix[i + 1][j] + prefix[i][j + 1] - prefix[i][j]);
 			}
 		}
 
 		int mostGrass = 0;
-		for (int i = k; i < newN - k; i++) {
-			for (int j = k; j < newN - k; j++) {
+		for (int i = 0; i < newN; i++) {
+			for (int j = 0; j < newN; j++) {
 				if (field[i][j] == -1) {
-					continue;  // don't start at invalid locations
+					continue; // don't start at invalid locations
 				}
-				mostGrass = Math.max(
-				    mostGrass, prefix[i + k + 1][j + k + 1] - prefix[i + k + 1][j - k] -
-				                   prefix[i - k][j + k + 1] + prefix[i - k][j - k]);
-			}
-		}
 
-		if (k >= n) {
-			// check if Bessie can reach everything
-			mostGrass = prefix[newN][newN];
+				int sr = Math.max(i - k, 0), er = Math.min(i + k, newN - 1);
+				int sc = Math.max(j - k, 0), ec = Math.min(j + k, newN - 1);
+				mostGrass = Math.max(mostGrass, prefix[er + 1][ec + 1] - prefix[er + 1][sc] -
+						prefix[sr][ec + 1] + prefix[sr][sc]);
+			}
 		}
 
 		io.println(mostGrass);
@@ -382,11 +378,6 @@ public class Lazy {
 </JavaSection>
 <PySection>
 
-<Warning>
-
-This code may occasionally TLE on the last test case.
-
-</Warning>
 
 ```py
 import sys
@@ -410,26 +401,27 @@ for i in range(new_n):
 		prefix[i + 1][j + 1] = val + prefix[i + 1][j] + prefix[i][j + 1] - prefix[i][j]
 
 most_grass = 0
-for i in range(k, new_n - k):
-	for j in range(k, new_n - k):
+for i in range(new_n):
+	for j in range(new_n):
 		if field[i][j] == -1:
 			continue  # don't start at invalid locations
+
+		sr = max(i - k, 0)
+		er = min(i + k, new_n - 1)
+		sc = max(j - k, 0)
+		ec = min(j + k, new_n - 1)
 		most_grass = max(
 			most_grass,
-			prefix[i + k + 1][j + k + 1]
-			- prefix[i + k + 1][j - k]
-			- prefix[i - k][j + k + 1]
-			+ prefix[i - k][j - k],
+			prefix[er + 1][ec + 1]
+			- prefix[er + 1][sc]
+			- prefix[sr][ec + 1]
+			+ prefix[sr][sc],
 		)
 
-if k >= n:
-	# check if Bessie can reach everything
-	most_grass = prefix[new_n][new_n]
-
-sys.stdout = open("lazy.out", "w")
-print(most_grass)
+print(most_grass, file=open("lazy.out", "w"))
 ```
 
 </PySection>
 </LanguageSection>
+
 </Spoiler>
