@@ -14,6 +14,7 @@ By Jonathan Paulson
 <YouTube id="4KcvKIJP9KY" />
 
 <Spoiler title="Video Solution Code">
+
 <LanguageSection>
 <CPPSection>
 
@@ -22,57 +23,58 @@ By Jonathan Paulson
 #include <cstdio>
 #include <iostream>
 #include <vector>
-using namespace std;
-using ll = long long;
 
-// S(n) = 1+2+...+n = n*(n+1)/2
-ll S(ll n) { return n * (n + 1) / 2; }
-// A+(A+1)+(A+2)+...+B = \sum_{i=A}^B i
-ll sum(ll A, ll B) {
-	return A <= B ? S(B) - S(A - 1) : 0;
-	// return A<=B ? (A+B)*(B-A+1)/2 : 0;
+// sum(n) = 1 + 2 + ... + n = n * (n + 1) / 2
+long long sum(int n) { return 1LL * n * (n + 1) / 2; }
+
+// a + (a + 1) + (a + 2) + ... + b = \sum_{i = a}^b i
+long long sum(int a, int b) { return a <= b ? sum(b) - sum(a - 1) : 0; }
+
+// Given that we start at speed s, can we slow down to speed x in at most l
+// meters? How many meters does it take to stop given current speed is s and
+// target is x? (s - 1) + (s - 2) + ... + x meters We are allowed to go over, so as
+// long as we have (s - 1) + (s - 2) + ... + (x + 1) + 1 meters, we are OK.
+bool ok(int speed, int x, int l) {
+	if (speed <= x) { return true; }
+
+	long long need = sum(x + 1, speed - 1) + 1;
+	return (need <= l);
 }
-// Given that we start at speed S, can we slow down to speed X in at most L
-// meters? How many meters does it take to stop given current speed is S and
-// target is X? (S-1) + (S-2) + ... + X meters We are allowed to go over, so as
-// long as we have (S-1)+(S-2)+...+(X+1)+1 m we are OK.
-bool ok(ll S, ll X, ll L) {
-	if (S <= X) { return true; }
-	ll need = sum(X + 1, S - 1) + 1;
-	bool ans = (need <= L);
-	return ans;
-}
-ll solve(ll k, ll x) {
-	// Greedy. Go as fast as you can but make sure you can stop in time.
-	ll speed = 0;
-	ll left = k;
-	ll t = 0;
-	while (left > 0) {
-		if (ok(speed + 1, x, left - (speed + 1))) {
-			// speed up if we can
-			speed += 1;
-		} else if (ok(speed, x, left - speed)) {
-			// otherwise keep the same speed if we can
-		} else {
-			// slow down if we have to
-			// check that we have enough space left to stop in time.
-			assert(ok(speed - 1, x, left - (speed - 1)));
-			speed -= 1;
-		}
-		assert(speed >= 1);
-		left -= speed;
-		t++;
-	}
-	return t;
-}
+
 int main() {
-	assert(freopen("race.in", "r", stdin) != nullptr);
-	assert(freopen("race.out", "w", stdout) != nullptr);
-	ll k, n;
-	cin >> k >> n;
-	vector<ll> X(n, 0);
-	for (ll i = 0; i < n; i++) { cin >> X[i]; }
-	for (ll i = 0; i < n; i++) { cout << solve(k, X[i]) << endl; }
+	freopen("race.in", "r", stdin);
+	freopen("race.out", "w", stdout);
+
+	int k, n;
+	std::cin >> k >> n;
+	std::vector<int> arr(n);
+
+	for (int &x : arr) { std::cin >> x; }
+
+	for (int i = 0; i < n; i++) {
+		// Greedy. Go as fast as you can but make sure you can stop in time.
+		int x = arr[i];
+		int speed = 0;
+		int left = k;
+		int res = 0;
+
+		while (left > 0) {
+			if (ok(speed + 1, x, left - (speed + 1))) {
+				// speed up if we can
+				speed++;
+			} else if (ok(speed, x, left - speed)) {
+				// otherwise keep the same speed if we can
+			} else if (ok(speed - 1, x, left - (speed - 1))) {
+				// slow down if we have to
+				// check that we have enough space left to stop in time.
+				speed--;
+			}
+
+			left -= speed;
+			res++;
+		}
+		std::cout << res << '\n';
+	}
 }
 ```
 
@@ -203,8 +205,10 @@ with open("race.out", "w") as fout:
 	for x in X:
 		print(solve(k, x), file=fout)
 ```
+
 </PySection>
 </LanguageSection>
+
 </Spoiler>
 
 <Spoiler title="Hint 1">
@@ -235,6 +239,46 @@ This is an example of a [greedy algorithm](/bronze/intro-greedy).
 </Spoiler>
 
 <Spoiler title="Solution">
+
+### Explanation
+
+From the hints, it is clear that we always want to speed up if possible. But when should we slow down?
+To determine this, we can iterate over our peak speed and maintain the current distance traveled so far,
+along with the distance required to slow down to the maximum allowed speed at the finish line. If the
+total distance covered while accelerating and decelerating is greater than or equal to the length of the
+track, then we know we have reached our optimal speed, and we can return the corresponding time.
+
+<Spoiler title="Why does this run within the time limit?">
+
+Let's say in worst case Bessie ran a total of $10^9$ meters and her ending pace is $1 m/s$. In which it will take her $63,245$ seconds.
+
+#### Proof
+
+First, we accelerate her speed to $p$, then decelerate it back to $1$, total distance covered will be:
+$$
+
+\sum_{i = 1}^p + \sum_{i = 1}^{p - 1} = \frac{p * (p + 1)}{2} + \frac{p * (p - 1)}{2} = p^2
+
+$$
+
+So, to cover $10^9$ meters:
+
+$$
+
+p^2 = 10^9 \Rightarrow p = \sqrt{10^9} \approx 31,623
+
+$$
+
+Total time $= 31,623(accelerating) + 31,623(decelerating) = 63,245$
+
+For $1000$ queries, it would be sufficient to pass all test cases. However, due to Python's poor constant factor, we have to optimize this solution.
+
+</Spoiler>
+
+### Implementation
+
+**Time Complexity:** $\mathcal{O}(Q \sqrt{K})$
+
 <LanguageSection>
 <CPPSection>
 
@@ -332,5 +376,61 @@ class Race {
 ```
 
 </JavaSection>
+<PySection>
+
+<Warning title="">
+
+Due to Python's slow speed, this approach doesn't pass all test cases. However, we can optimize it using some observations.
+
+- instead of accelerating and then decelerating at the very end we will allow Bessie to only accelerate and calculate its minimum time, which is: assume if we spend $t$ seconds accelerating, then we cover a distance of $\frac{t * (t + 1)}{2}$ units, from this we get the inequality: $\frac{t * (t + 1)}{2} \geq K$, solving this we get
+
+$$
+
+t >= \frac{\sqrt{8K + 1} - 1}{2} \\ \text{if the speed at time t is less than or equal to X, it will be our answer.}
+
+$$
+
+- if we can't directly increase speed to the end, we start off at max speed and start incrementing from there
+
+</Warning>
+
+```py
+import math
+
+
+def fastest_time(dist: int, max_speed: int) -> int:
+	no_slow_time = int(math.ceil((math.sqrt(8 * dist + 1) - 1) / 2))
+	if no_slow_time <= max_speed:
+		return no_slow_time
+
+	speed_up_dist = max_speed * (max_speed - 1) // 2
+	slow_down_dist = 0
+	time = max_speed - 1
+
+	curr_speed = max_speed
+	while True:
+		speed_up_dist += curr_speed
+		time += 1
+		if speed_up_dist + slow_down_dist >= dist:
+			return time
+
+		slow_down_dist += curr_speed
+		time += 1
+		if speed_up_dist + slow_down_dist >= dist:
+			return time
+
+		curr_speed += 1
+
+
+with open("race.in") as read:
+	dist, query_num = map(int, read.readline().split())
+
+	with open("race.out", "w") as write:
+		for _ in range(query_num):
+			max_speed = int(read.readline())
+			write.write(str(fastest_time(dist, max_speed)) + "\n")
+```
+</PySection>
+
 </LanguageSection>
 </Spoiler>
