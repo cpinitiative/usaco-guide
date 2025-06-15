@@ -79,35 +79,14 @@ import java.io.*;
 import java.util.*;
 
 public class TreeDiameter {
-	static int[] dist;
-	static ArrayList<Integer>[] adj;
-
-	// iterative DFS necessary in order to AC; recursive TLEs
-	static void iterativeDFS(int start) {
-		Arrays.fill(dist, -1);
-		dist[start] = 0;
-		Deque<Integer> stack = new ArrayDeque<>();
-		stack.push(start);
-
-		while (!stack.isEmpty()) {
-			int curr = stack.pop();
-			for (int next : adj[curr]) {
-				if (dist[next] == -1) {
-					dist[next] = dist[curr] + 1;
-					stack.push(next);
-				}
-			}
-		}
-	}
-
 	public static void main(String[] args) throws IOException {
 		// Fast input and output
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		PrintWriter out = new PrintWriter(System.out);
 
 		int n = Integer.parseInt(br.readLine());
-		dist = new int[n];
-		adj = new ArrayList[n];
+		int[] dist = new int[n];
+		ArrayList<Integer>[] adj = new ArrayList[n];
 		for (int i = 0; i < n; i++) { adj[i] = new ArrayList<>(); }
 
 		for (int i = 0; i < n - 1; i++) {
@@ -118,20 +97,41 @@ public class TreeDiameter {
 			adj[b].add(a);
 		}
 
-		// First DFS from node 0 to find farthest node
-		iterativeDFS(0);
-		int start = -1, maxDist = -1;
-		for (int i = 0; i < n; i++) {
-			if (dist[i] > maxDist) {
-				maxDist = dist[i];
-				start = i;
+		// First DFS from node 0
+		Arrays.fill(dist, -1);
+		dist[0] = 0;
+		Deque<Integer> stack = new ArrayDeque<>();
+		stack.push(0);
+		while (!stack.isEmpty()) {
+			int curr = stack.pop();
+			for (int next : adj[curr]) {
+				if (dist[next] == -1) {
+					dist[next] = dist[curr] + 1;
+					stack.push(next);
+				}
 			}
 		}
 
-		// Second DFS from farthest node found
-		iterativeDFS(start);
+		int start = 0;
+		for (int i = 0; i < n; i++) {
+			if (dist[i] > dist[start]) start = i;
+		}
 
-		maxDist = -1;
+		// Second DFS from farthest node
+		Arrays.fill(dist, -1);
+		dist[start] = 0;
+		stack.push(start);
+		while (!stack.isEmpty()) {
+			int curr = stack.pop();
+			for (int next : adj[curr]) {
+				if (dist[next] == -1) {
+					dist[next] = dist[curr] + 1;
+					stack.push(next);
+				}
+			}
+		}
+
+		int maxDist = -1;
 		for (int i = 0; i < n; i++) { maxDist = Math.max(maxDist, dist[i]); }
 
 		out.println(maxDist);
