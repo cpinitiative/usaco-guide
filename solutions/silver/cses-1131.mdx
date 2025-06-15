@@ -5,11 +5,14 @@ title: Tree Diameter
 author: David Zhou
 ---
 
+[Unofficial Analysis](/CPH.pdf#page=145)
+
 ## Solution 1 - DFS Twice
 
-We start by using [DFS](/silver/graph-traversal#dfs) on an arbitrary point and calculate the distance to each point. The point with the maximum distance is one of the endpoints of the diameter. We can run DFS again from this point, where the maximum distance will now be the diameter.
+We [DFS](/silver/graph-traversal#dfs) on an arbitrary point and calculate the distance to each point.
+The point with the maximum distance is one of the endpoints of the diameter.
 
-For a more detailed explanation, see Algorithm 2 in [CPH 14.2](/CPH.pdf#page=145).
+We can run DFS again from this point, where the maximum distance from this new point is our actual diameter.
 
 ## Implementation
 
@@ -181,13 +184,11 @@ print(max(dist))
 </PySection>
 </LanguageSection>
 
-## Solution 2 - Dynamic Programming
+## Solution 2 - Tree DP
 
-At each node in the tree, we compute the heights of its two tallest subtrees. By adding them together, we find the length of the longest path through passes through that point. The diameter is the max of these longest paths.
-
-This solution is an example of [Tree DP](/gold/dp-trees), as previously computed subtree heights are used in a bottom-up manner to determine the current height.
-
-For a more detailed explanation, see Algorithm 1 in [CPH 14.2](/CPH.pdf#page=145).
+At each node in the tree, we compute the heights of its two tallest subtrees.
+By adding them together, we find the length of the longest path through that point.
+Our answer is then the longest path we've found across all nodes.
 
 ## Implementation
 
@@ -238,7 +239,7 @@ int main() {
 
 	dfs(0, -1);
 
-	cout << diameter << "\n";
+	cout << diameter << endl;
 }
 ```
 
@@ -250,12 +251,12 @@ import java.io.*;
 import java.util.*;
 
 public class TreeDiameter {
-	static ArrayList<Integer>[] adj;
-	static int[] height;
-	static int diameter = 0;
+	private static ArrayList<Integer>[] adj;
+	private static int[] height;
+	private static int diameter = 0;
 
 	static class State {
-		int node, parent, phase;
+		public int node, parent, phase;
 		State(int node, int parent, int phase) {
 			this.node = node;
 			this.parent = parent;
@@ -266,8 +267,8 @@ public class TreeDiameter {
 	// iterative DFS necessary in order to AC; recursive TLEs on final case
 	static void calculateDiameter(int start) {
 		Deque<State> stack = new ArrayDeque<>();
-		stack.push(new State(start, -1,
-		                     0));  // start from node 0, no parent, pre-processing phase
+		// start from node 0, no parent, pre-processing phase
+		stack.push(new State(start, -1, 0));
 
 		while (!stack.isEmpty()) {
 			State curr = stack.pop();
@@ -276,8 +277,8 @@ public class TreeDiameter {
 			int phase = curr.phase;
 
 			if (phase == 0) {
-				stack.push(
-				    new State(u, p, 1));  // convert current state to post-processing
+				// convert current state to post-processing
+				stack.push(new State(u, p, 1));
 
 				for (int v : adj[u]) {
 					if (v != p) { stack.push(new State(v, u, 0)); }
@@ -304,13 +305,11 @@ public class TreeDiameter {
 	}
 
 	public static void main(String[] args) throws IOException {
-		// Fast IO
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		int n = Integer.parseInt(br.readLine());
 
 		adj = new ArrayList[n];
 		for (int i = 0; i < n; i++) { adj[i] = new ArrayList<>(); }
-
 		for (int i = 0; i < n - 1; i++) {
 			StringTokenizer st = new StringTokenizer(br.readLine());
 			int a = Integer.parseInt(st.nextToken()) - 1;
@@ -321,7 +320,6 @@ public class TreeDiameter {
 
 		height = new int[n];
 		diameter = 0;
-
 		calculateDiameter(0);
 
 		System.out.println(diameter);
