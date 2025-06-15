@@ -295,7 +295,7 @@ int main() {
 			// prevent including -1's in the prefix sum
 			int val = std::max(field[i][j], 0);
 			prefix[i + 1][j + 1] =
-				(val + prefix[i + 1][j] + prefix[i][j + 1] - prefix[i][j]);
+			    (val + prefix[i + 1][j] + prefix[i][j + 1] - prefix[i][j]);
 		}
 	}
 
@@ -309,7 +309,7 @@ int main() {
 			int sr = max(i - k, 0), er = min(i + k, new_n - 1);
 			int sc = max(j - k, 0), ec = min(j + k, new_n - 1);
 			most_grass = max(most_grass, prefix[er + 1][ec + 1] - prefix[er + 1][sc] -
-											 prefix[sr][ec + 1] + prefix[sr][sc]);
+			                                 prefix[sr][ec + 1] + prefix[sr][sc]);
 		}
 	}
 
@@ -334,14 +334,12 @@ public class Lazy {
 		int newN = 2 * n - 1;
 		int[][] field = new int[newN][newN];
 		for (int r = 0; r < newN; r++) {
-			Arrays.fill(field[r], -1); // -1's indicate invalid locations
+			Arrays.fill(field[r], -1);  // -1's indicate invalid locations
 		}
 
 		// read input and store it rotated by 45 degrees
 		for (int i = 0; i < n; i++) {
-			for (int j = 0; j < n; j++) {
-				field[i + j][n - i + j - 1] = io.nextInt();
-			}
+			for (int j = 0; j < n; j++) { field[i + j][n - i + j - 1] = io.nextInt(); }
 		}
 
 		int[][] prefix = new int[newN + 1][newN + 1];
@@ -349,7 +347,8 @@ public class Lazy {
 			for (int j = 0; j < newN; j++) {
 				// prevent including -1's in the prefix sum
 				int val = Math.max(field[i][j], 0);
-				prefix[i + 1][j + 1] = (val + prefix[i + 1][j] + prefix[i][j + 1] - prefix[i][j]);
+				prefix[i + 1][j + 1] =
+				    (val + prefix[i + 1][j] + prefix[i][j + 1] - prefix[i][j]);
 			}
 		}
 
@@ -357,13 +356,14 @@ public class Lazy {
 		for (int i = 0; i < newN; i++) {
 			for (int j = 0; j < newN; j++) {
 				if (field[i][j] == -1) {
-					continue; // don't start at invalid locations
+					continue;  // don't start at invalid locations
 				}
 
 				int sr = Math.max(i - k, 0), er = Math.min(i + k, newN - 1);
 				int sc = Math.max(j - k, 0), ec = Math.min(j + k, newN - 1);
-				mostGrass = Math.max(mostGrass, prefix[er + 1][ec + 1] - prefix[er + 1][sc] -
-						prefix[sr][ec + 1] + prefix[sr][sc]);
+				mostGrass =
+				    Math.max(mostGrass, prefix[er + 1][ec + 1] - prefix[er + 1][sc] -
+				                            prefix[sr][ec + 1] + prefix[sr][sc]);
 			}
 		}
 
