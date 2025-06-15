@@ -29,6 +29,7 @@ function ProblemHit({ hit }: ProblemHitProps) {
   const hideDifficulty = useHideDifficultySetting();
   const showTags = useShowTagsSetting();
   const hideModules = useHideModulesSetting();
+
   if (hit.problemModules.length == 0 && recentUsaco.includes(hit.source)) {
     hit.problemModules.push({
       id: 'usaco-monthlies',
