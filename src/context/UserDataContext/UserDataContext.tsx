@@ -282,7 +282,7 @@ export const UserDataProvider = ({
      * Sometimes, such as when we just linked a Github account to a Google account,
      * firebaseUser changes, but React doesn't know about the change so it doesn't rerender.
      * This function forces React to update firebaseUser and trigger any rerenders
-     * that might be necessary. This funcation is used in SignInModal.tsx,
+     * that might be necessary. This function is used in SignInModal.tsx,
      * when someone links a Google or Github account, causing firebaseUser to change,
      * but onAuthStateChanged doesn't rereun.
      */

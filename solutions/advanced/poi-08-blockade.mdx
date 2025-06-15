@@ -1,0 +1,73 @@
+---
+id: poi-08-blockade
+source: POI 2008
+title: Blockade
+author: Mihnea Brebenel
+---
+
+## Explanation
+
+The number of severed visits can be computed at the same time while searching for articulation points. There are two cases to consider for node $u$:
+
+1. Node $u$ is not an articulation point, then the number of severed visits by removing the noed is $2 \times (n - 1)$
+2. Node $u$ is an articulation point, then the number of severed visits by removing the node is $2 \times (n - 1)$ plus the number of visits whose path goes through node $u$.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	int n, m;
+	cin >> n >> m;
+	vector<vector<int>> g(n + 1);
+	for (int i = 0; i < m; i++) {
+		int x, y;
+		cin >> x >> y;
+		g[x].push_back(y);
+		g[y].push_back(x);
+	}
+
+	int timer = 0;
+	vector<long long> ans(n + 1);
+	vector<long long> sz(n + 1);
+	vector<int> id(n + 1);
+	vector<int> low(n + 1);
+	vector<bool> seen(n + 1);
+	function<void(int, int)> dfs = [&](int node, int parent) {
+		sz[node] = 1;
+		seen[node] = true;
+		ans[node] = 1LL * 2 * (n - 1);
+		id[node] = low[node] = ++timer;
+		int s = 1;
+		for (int son : g[node]) {
+			if (son == parent) { continue; }
+			if (!seen[son]) {
+				dfs(son, node);
+				low[node] = min(low[node], low[son]);
+				sz[node] += sz[son];
+				if (low[son] >= id[node]) {
+					s += sz[son];
+					// Add the visits going into the son's substree
+					ans[node] += 1LL * 2 * sz[son] * (n - s);
+				}
+			} else {
+				low[node] = min(low[node], id[son]);
+			}
+		}
+	};
+
+	dfs(1, 0);
+
+	for (int i = 1; i <= n; i++) { cout << ans[i] << '\n'; }
+}
+```
+
+</CPPSection>
+</LanguageSection>

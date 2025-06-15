@@ -2,7 +2,7 @@
 id: cf-1088D
 source: CF
 title: Ehab and another another xor problem
-author: Chongtian Ma
+author: Chongtian Ma, Rameez Parwez
 ---
 
 [Official Editorial (C++)](https://codeforces.com/blog/entry/63656)
@@ -25,10 +25,11 @@ When it is the first two cases, the results for the two queries will be differen
 
 Thus for the last two cases, the results for the two queries will be different. To differentiate which number will take the bit, remember we know which number is greater so far! In this case, the greater number must take this bit, or else the smaller number must take it and that leads to a contradiction since higher bits take priority. Now, we have to update which is greater based on our current query to remove the effect of the more significant bits.
 
-# Implementation
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(1)$
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
@@ -74,7 +75,62 @@ int main() {
 ```
 
 </CPPSection>
+<JavaSection>
 
+```java
+import java.io.*;
+import java.util.*;
+
+public class EhabAndXOR {
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
+
+		boolean aGreaterThanB = (ask(0, 0) == 1 ? true : false);
+		int a = 0;
+		int b = 0;
+
+		// 2^29 is the maximum bit due to constraints
+		for (int bit = 29; bit >= 0; bit--) {
+			int query1 = ask(a | (1 << bit), b);
+			int query2 = ask(a, b | (1 << bit));
+
+			if (query1 != query2) {
+				if (query1 == -1) {
+					// case 1
+					a |= 1 << bit;
+					b |= 1 << bit;
+				}
+				// case 2 (Do nothing)
+			} else {
+				if (aGreaterThanB) {
+					// case 3
+					a |= 1 << bit;
+				} else {
+					// case 4
+					b |= 1 << bit;
+				}
+				aGreaterThanB = (query1 == 1 ? true : false);
+			}
+		}
+
+		io.println("! " + a + " " + b);
+		io.flush();
+		io.close();
+	}
+
+	private static int ask(int a, int b) {
+		Kattio io = new Kattio();
+		io.println("? " + a + " " + b);
+		io.flush();
+		int res = io.nextInt();
+		return res;
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
 <PySection>
 
 ```py
@@ -115,5 +171,4 @@ print(f"! {a} {b}")
 ```
 
 </PySection>
-
 </LanguageSection>

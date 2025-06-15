@@ -1,0 +1,130 @@
+---
+id: cf-1918D
+source: CF
+title: Blocking Elements
+author: Kevin Sheng
+---
+
+[Official Analysis (C++)](https://codeforces.com/blog/entry/125300)
+
+## Explanation
+
+Before we start, append a $0$ to the end of the array and force that element to always be blocked.
+This makes talking about the problem easier while not affecting the answer.
+
+We can binary search on the answer; to see how, let's see how we can check if a cost of at most $C$ is possible.
+
+Let $\texttt{dp}[i]$ be the minimum cost only considering elements up to index $i$.
+Since we're taking the *maximum* over the blocked segments' sums, we don't
+have to worry about them as long as each of them is less than $C$;
+we only have to care about the sum of the blocked elements.
+
+If $j$ is the smallest element we can start blocking from without
+having the sum of the new segment we create exceed $C$, then
+$$
+dp[i] = \min_{j \le x < i} dp[x] + a_i
+$$
+which can be computed using a segment tree.
+
+## Implementation
+
+**Time Complexity:** $O(n \log n \log S)$, where $S=\sum_{i=1}^n a_i$.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <cstdint>
+#include <iostream>
+#include <limits>
+#include <vector>
+
+using std::cout;
+using std::endl;
+using std::vector;
+
+// BeginCodeSnip{Segment Tree (from the module)}
+template <class T> class MinSegmentTree {
+  private:
+	const T DEFAULT = std::numeric_limits<T>().max();
+
+	int len;
+	vector<T> segtree;
+
+  public:
+	MinSegmentTree(int len) : len(len), segtree(len * 2, DEFAULT) {}
+
+	void set(int ind, T val) {
+		ind += len;
+		segtree[ind] = val;
+		for (; ind > 1; ind /= 2) {
+			segtree[ind / 2] = std::min(segtree[ind], segtree[ind ^ 1]);
+		}
+	}
+
+	T range_min(int start, int end) {
+		T min = DEFAULT;
+		for (start += len, end += len; start < end; start /= 2, end /= 2) {
+			if (start % 2 == 1) { min = std::min(min, segtree[start++]); }
+			if (end % 2 == 1) { min = std::min(min, segtree[--end]); }
+		}
+		return min;
+	}
+};
+// EndCodeSnip
+
+int main() {
+	int test_num;
+	std::cin >> test_num;
+	for (int t = 0; t < test_num; t++) {
+		int len;
+		std::cin >> len;
+		vector<int> arr(len);
+		long long max_cost = 0;
+		for (int &i : arr) {
+			std::cin >> i;
+			max_cost += i;
+		}
+
+		// force a blocking element at the last position without affecting the answer
+		arr.push_back(0);
+		len++;
+
+		long long lo = 0;
+		long long hi = max_cost;
+		long long valid = -1;
+		while (lo <= hi) {
+			long long mid = (lo + hi) / 2;
+
+			// the minimum cost to block up to a certain position
+			// given that the last element is blocked
+			MinSegmentTree<long long> min_cost(len);
+			int lowest_start = -1;
+			long long curr_sum = 0;
+			for (int i = 0; i < len; i++) {
+				curr_sum += i > 0 ? arr[i - 1] : 0;
+				while (curr_sum > mid) {
+					lowest_start++;
+					curr_sum -= arr[lowest_start];
+				}
+				long long best = lowest_start == -1 ? 0 : INT64_MAX;
+				// calculate the best starting position to block from
+				best = std::min(best, min_cost.range_min(std::max(lowest_start, 0), i));
+				min_cost.set(i, best + arr[i]);
+			}
+
+			if (min_cost.range_min(len - 1, len) <= mid) {
+				valid = mid;
+				hi = mid - 1;
+			} else {
+				lo = mid + 1;
+			}
+		}
+
+		cout << valid << '\n';
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>

@@ -1,0 +1,125 @@
+---
+id: ac-subsetSumQueries
+source: AC
+title: Subset Sum Queries
+author: Rameez Parwez
+---
+
+[Official Analysis (C++)](https://atcoder.jp/contests/abc321/editorial/7281)
+
+## Explanation
+
+Let $\texttt{dp[a]}$ be the number of ways to achieve the sum $a$ using the current set of balls.
+We'll update our array dynamically as balls are added or removed.
+
+If we add a ball with value $x$, we loop over all $j$ from $K$ to $x$ while performing the following transition:
+$$
+\texttt{dp}[j] := \texttt{dp[j]}+\texttt{dp[j-x]}
+$$
+An important thing to note is that we have to iterate backward;
+otherwise we might add this one ball multiple times.
+
+To remove a ball of value $x$, we do the same thing, but in reverse.
+This entails going from $x$ to $K$ and decrementing instead of incrementing.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(QK)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <vector>
+
+const int MOD = 998244353;
+
+int main() {
+	int q, k;
+	std::cin >> q >> k;
+
+	std::vector<long long> dp(k + 1);
+	dp[0] = 1;
+
+	for (int i = 0; i < q; i++) {
+		char type;
+		int x;
+		std::cin >> type >> x;
+		if (type == '+') {
+			for (int j = k; j >= x; j--) { (dp[j] += dp[j - x]) %= MOD; }
+		} else {
+			for (int j = x; j <= k; j++) { (dp[j] += MOD - dp[j - x]) %= MOD; }
+		}
+		std::cout << dp[k] << '\n';
+	}
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Main {
+	private final static int MOD = 998244353;
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
+
+		int q = io.nextInt();
+		int k = io.nextInt();
+
+		long[] dp = new long[k + 1];
+		dp[0] = 1;
+
+		for (int i = 0; i < q; i++) {
+			char type = io.next().charAt(0);
+			int x = io.nextInt();
+
+			if (type == '+') {
+				for (int j = k; j >= x; j--) {
+					dp[j] = (dp[j] % MOD + dp[j - x] % MOD) % MOD;
+				}
+			} else {
+				for (int j = x; j <= k; j++) {
+					dp[j] = (dp[j] % MOD + (MOD - dp[j - x]) % MOD) % MOD;
+				}
+			}
+			io.println(dp[k]);
+		}
+		io.close();
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+
+
+</JavaSection>
+<PySection>
+
+```py
+MOD = 998244353
+
+q, k = map(int, input().split())
+dp = [0] * (k + 1)
+
+dp[0] = 1
+
+for i in range(q):
+	a = input().strip()
+	t, x = a.split()
+	x = int(x)
+	if t == "+":
+		for j in range(k, x - 1, -1):
+			dp[j] += dp[j - x]
+	else:
+		for j in range(x, k + 1):
+			dp[j] += MOD - dp[j - x]
+	print(dp[k] % MOD)
+```
+
+</PySection>
+</LanguageSection>

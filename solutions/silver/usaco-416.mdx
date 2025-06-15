@@ -96,7 +96,7 @@ Apply a rotation of 45 degrees on the grid like follows. Our goal is that, inste
 </table>
 
 If we simply cram all the diagonals into rows, it creates this weird brick-like structure.
-This makes no sense as all as there are half-distances, how do you even put this into a 2D array?
+This makes no sense at all, as there are half-distances. How do you even put this into a 2D array?
 To resolve the half-distances issue, we simply expand the grid by a factor of 2, adding zeroes in as filler.
 Note that we add zeroes because they cannot impact the final sum.
 
@@ -270,6 +270,7 @@ This way, we can brute force through all the squares Bessie can be and take the 
 
 using std::endl;
 using std::max;
+using std::min;
 using std::vector;
 
 int main() {
@@ -278,7 +279,7 @@ int main() {
 	int n;
 	int k;
 	read >> n >> k;
-	// the side length needed to accomodate the 45 degree rotation
+	// the side length needed to accommodate the 45 degree rotation
 	int new_n = 2 * n - 1;
 	// -1's indicate invalid locations
 	vector<vector<int>> field(new_n, vector<int>(new_n, -1));
@@ -299,20 +300,17 @@ int main() {
 	}
 
 	int most_grass = 0;
-	for (int i = k; i < new_n - k; i++) {
-		for (int j = k; j < new_n - k; j++) {
+	for (int i = 0; i < new_n; i++) {
+		for (int j = 0; j < new_n; j++) {
 			if (field[i][j] == -1) {
 				continue;  // don't start at invalid locations
 			}
-			most_grass = max(most_grass,
-			                 prefix[i + k + 1][j + k + 1] - prefix[i + k + 1][j - k] -
-			                     prefix[i - k][j + k + 1] + prefix[i - k][j - k]);
-		}
-	}
 
-	if (k >= n) {
-		// check if Bessie can reach everything
-		most_grass = prefix[new_n][new_n];
+			int sr = max(i - k, 0), er = min(i + k, new_n - 1);
+			int sc = max(j - k, 0), ec = min(j + k, new_n - 1);
+			most_grass = max(most_grass, prefix[er + 1][ec + 1] - prefix[er + 1][sc] -
+			                                 prefix[sr][ec + 1] + prefix[sr][sc]);
+		}
 	}
 
 	std::ofstream("lazy.out") << most_grass << endl;
@@ -332,7 +330,7 @@ public class Lazy {
 		int n = io.nextInt();
 		int k = io.nextInt();
 
-		// the side length needed to accomodate for the 45 degree rotation
+		// the side length needed to accommodate for the 45 degree rotation
 		int newN = 2 * n - 1;
 		int[][] field = new int[newN][newN];
 		for (int r = 0; r < newN; r++) {
@@ -355,20 +353,18 @@ public class Lazy {
 		}
 
 		int mostGrass = 0;
-		for (int i = k; i < newN - k; i++) {
-			for (int j = k; j < newN - k; j++) {
+		for (int i = 0; i < newN; i++) {
+			for (int j = 0; j < newN; j++) {
 				if (field[i][j] == -1) {
 					continue;  // don't start at invalid locations
 				}
-				mostGrass = Math.max(
-				    mostGrass, prefix[i + k + 1][j + k + 1] - prefix[i + k + 1][j - k] -
-				                   prefix[i - k][j + k + 1] + prefix[i - k][j - k]);
-			}
-		}
 
-		if (k >= n) {
-			// check if Bessie can reach everything
-			mostGrass = prefix[newN][newN];
+				int sr = Math.max(i - k, 0), er = Math.min(i + k, newN - 1);
+				int sc = Math.max(j - k, 0), ec = Math.min(j + k, newN - 1);
+				mostGrass =
+				    Math.max(mostGrass, prefix[er + 1][ec + 1] - prefix[er + 1][sc] -
+				                            prefix[sr][ec + 1] + prefix[sr][sc]);
+			}
 		}
 
 		io.println(mostGrass);
@@ -382,11 +378,6 @@ public class Lazy {
 </JavaSection>
 <PySection>
 
-<Warning>
-
-This code may occasionally TLE on the last test case.
-
-</Warning>
 
 ```py
 import sys
@@ -394,7 +385,7 @@ import sys
 sys.stdin = open("lazy.in", "r")
 
 n, k = map(int, input().split())
-# the side length needed to accomodate the 45 degree rotation
+# the side length needed to accommodate the 45 degree rotation
 new_n = 2 * n - 1
 field = [[-1] * new_n for _ in range(new_n)]  # -1's indicate invalid locations
 
@@ -410,26 +401,27 @@ for i in range(new_n):
 		prefix[i + 1][j + 1] = val + prefix[i + 1][j] + prefix[i][j + 1] - prefix[i][j]
 
 most_grass = 0
-for i in range(k, new_n - k):
-	for j in range(k, new_n - k):
+for i in range(new_n):
+	for j in range(new_n):
 		if field[i][j] == -1:
 			continue  # don't start at invalid locations
+
+		sr = max(i - k, 0)
+		er = min(i + k, new_n - 1)
+		sc = max(j - k, 0)
+		ec = min(j + k, new_n - 1)
 		most_grass = max(
 			most_grass,
-			prefix[i + k + 1][j + k + 1]
-			- prefix[i + k + 1][j - k]
-			- prefix[i - k][j + k + 1]
-			+ prefix[i - k][j - k],
+			prefix[er + 1][ec + 1]
+			- prefix[er + 1][sc]
+			- prefix[sr][ec + 1]
+			+ prefix[sr][sc],
 		)
 
-if k >= n:
-	# check if Bessie can reach everything
-	most_grass = prefix[new_n][new_n]
-
-sys.stdout = open("lazy.out", "w")
-print(most_grass)
+print(most_grass, file=open("lazy.out", "w"))
 ```
 
 </PySection>
 </LanguageSection>
+
 </Spoiler>

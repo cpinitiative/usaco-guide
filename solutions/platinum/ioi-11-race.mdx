@@ -14,7 +14,7 @@ First, we root the tree arbitrarily.
 Let $\text {lca}(u, v) = w$.
 We can break $\text {path}(u, v)$ into $\text {path}(u, w)$ and $\text {path}(v, w)$.
 
-Because $w$ must be an ancestor of both $u$ and $v$, $\text {sum}(u, w) = \text {sum}(u, root) - \text {sum}(w, root)$ and $\text {sum}(v, w) = \text {sum}(v, root) - \text {sum}(w, root)$ where $\text {sum}(a, b)$ is the sum of the path betwen the 2 nodes $a$ and $b$. We can compute $\text {sum}(i, root)$ for all $i$ in $O(N)$ with a simple DFS. We also compute $\text {dist}(i, root)$ where is the number of edges between $i$ and $root$ in similar fashion.
+Because $w$ must be an ancestor of both $u$ and $v$, $\text {sum}(u, w) = \text {sum}(u, root) - \text {sum}(w, root)$ and $\text {sum}(v, w) = \text {sum}(v, root) - \text {sum}(w, root)$ where $\text {sum}(a, b)$ is the sum of the path between the 2 nodes $a$ and $b$. We can compute $\text {sum}(i, root)$ for all $i$ in $O(N)$ with a simple DFS. We also compute $\text {dist}(i, root)$ where is the number of edges between $i$ and $root$ in similar fashion.
 
 We perform small to large merging to find an $\text {lca}$ $i$ such that $\text {sum}(u, root) + \text {sum} (v, root) - 2 \cdot \text {sum}(i, root) = s$, and $\text {dist}(u, root) + \text {dist}(v, root) - 2 \cdot \text {dist}(i, root) = s$ is minimized.
 
@@ -81,7 +81,6 @@ void small_to_large_merge(int u, int p) {
 }
 
 int best_path(int n, int k, int edges[][2], int weights[]) {
-	if (k == 1) { return 0; }
 	N = n;
 	K = k;
 	ret = INT_MAX;

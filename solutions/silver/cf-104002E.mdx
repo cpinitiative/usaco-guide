@@ -2,7 +2,7 @@
 id: cf-104002E
 source: CF
 title: William and Robot
-author: Alex Du, Benjamin Qi
+author: Alex Du, Benjamin Qi, Rameez Parwez
 ---
 
 ## Explanation
@@ -54,4 +54,55 @@ int main() {
 ```
 
 </CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class WilliamAndRobot {
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
+
+		int n = io.nextInt();
+		int[] a = new int[n];
+
+		for (int i = 0; i < n; i++) { a[i] = io.nextInt(); }
+
+		PriorityQueue<Integer> taken = new PriorityQueue<>();
+		for (int i = 0; i < n; i++) {
+			taken.offer(a[i]);
+			if (i % 2 == 1) { taken.poll(); }
+		}
+
+		long ans = 0;
+		while (!taken.isEmpty()) { ans += taken.poll(); }
+
+		io.println(ans);
+		io.close();
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+import heapq
+
+n = int(input())
+a = list(map(int, input().split()))
+
+taken = []
+for i in range(n):
+	heapq.heappush(taken, a[i])
+	if i % 2 == 1:
+		heapq.heappop(taken)
+
+print(sum(taken))
+```
+
+</PySection>
 </LanguageSection>

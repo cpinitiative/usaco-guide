@@ -8,9 +8,7 @@ description: Visiting all edges of a graph exactly once.
 frequency: 0
 ---
 
-Mentioned in USACO Training ...
-
-<Problems problems="sam" />
+<!-- Mentioned in USACO Training ... -->
 
 ## Resources
 
@@ -19,9 +17,10 @@ Mentioned in USACO Training ...
 	<Resource source="CP2" title="4.7.3 - Eulerian Graph" />
 </Resources>
 
-## Implementation
 
-### Mail Delivery
+<FocusProblem problem = "sam1"/>
+
+## Explanation
 
 First, let's define what an **Eulerian path** is.
 
@@ -36,6 +35,8 @@ Now, to find the Eulerian cycle we run a modified DFS.
 The DFS goes through only unvisited edges and the same edge can be processed multiple times throughout the DFS, so we remove it from the graph at the first visit.
 
 The algorithm described is [Hierholzer's Algorithm](https://en.wikipedia.org/wiki/Eulerian_path).
+
+## Implementation
 
 **Time Complexity:** $\mathcal{O}(E)$
 
@@ -148,11 +149,17 @@ else:
 </PySection>
 </LanguageSection>
 
-### Teleporters
+<FocusProblem problem = "sam2"/>
+
+## Explanation
 
 The condition of existence for an eulerian path in a directed graph is: At most one node has $out_i - in_i=1$ and at most one node has $in_i - out_i=1$.
 This property is because an Eulerian path or cycle leaves a node the same number of times it enters the node. In a directed
 graph the exception are the start node and the end node.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(E)$
 
 <LanguageSection>
 <CPPSection>
@@ -265,7 +272,7 @@ else:
 
 <FocusProblem problem="de-bruijn-sequence" />
 
-A [De Bruijn sequece](https://en.wikipedia.org/wiki/De_Bruijn_sequence) is a string of minimum length that contains every string of length $n$ exactly once as a substring, for a fixed alphabet with $k$ letters.
+A [De Bruijn sequence](https://en.wikipedia.org/wiki/De_Bruijn_sequence) is a string of minimum length that contains every string of length $n$ exactly once as a substring, for a fixed alphabet with $k$ letters.
 In our case $k=2$ because we only have $0$ and $1$.
 
 Let's take a look at some particular cases:
@@ -280,6 +287,10 @@ We can visualize the transitions - adding $0$ or $1$ - using an oriented graph w
 </center>
 
 An Eulerian path in the above graph represents a valid solution. The starting node has $n-1$ characters and there are $k^n$ edges that each add one more character, so the length of a De-Bruijn string is $k^n+n-1$.
+
+## Implementation
+
+**Time Complexity**: $\mathcal{O}(2^N)$
 
 <LanguageSection>
 <CPPSection>

@@ -42,7 +42,11 @@ const customRehypeKatex = options => {
         const fn = throwOnError ? 'fail' : 'message';
         const origin = [source, error.name.toLowerCase()].join(':');
 
-        file[fn](error.message, element.position, origin);
+        if (typeof file[fn] === 'function') {
+          file[fn](error.message, element.position, origin);
+        } else {
+          throw error; // throw the error if the file doesn't have a fail or message function
+        }
 
         result = katex(
           value,
@@ -56,7 +60,10 @@ const customRehypeKatex = options => {
 
       if (element.tagName === 'div') element.tagName = 'MATHDIV';
       else if (element.tagName === 'span') element.tagName = 'MATHSPAN';
-      else throw 'unknown tag?';
+      else
+        throw new Error(
+          'Unknown tag encountered in rehype-math.js: ' + element.tagName
+        );
 
       element.children = [
         {
