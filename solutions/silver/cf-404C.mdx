@@ -1,0 +1,172 @@
+---
+id: cf-404C
+source: CF
+title: Restore Graph
+author: Kevin Sheng
+---
+
+[Official Analysis](https://codeforces.com/blog/entry/11095)
+
+## Explanation
+
+It's a bit hard to know where to start with this problem,
+so let's try a way simpler case:
+what if all $d[i]$s are either $0$ or $1$?
+
+In this case, $d[i]=0$ means that $i$ is the chosen node (which we can only have one of),
+and $d[i]=1$ means that it's a direct neighbor (which we can have at most $k$ of).
+
+Now we can extend this to include possibilities where $d[i]=2$.
+These nodes have to be neighbors of the nodes where $d[i]=1$,
+so we try to link them up with the direct neighbors of the chosen node.
+
+The only way Valera could've made a mistake is if the number of nodes
+that are $d+1$ away is greater than $k-1$<Asterisk>Except for the case where $d=0$, in which case it's $k$.</Asterisk>
+times the number of nodes that are $d$ away,
+since that would force us to allocate more edges than the constraints would allow.
+
+If you know what [BFS Trees](https://en.wikipedia.org/wiki/Breadth-first_search#More_details)
+are, we're basically constructing one of these.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+<PySection>
+
+```py
+import sys
+
+node_num, max_adj = [int(i) for i in input().split()]
+
+dists = [[] for _ in range(node_num)]
+for n, d in enumerate(input().split()):
+	dists[int(d)].append(n)
+
+if len(dists[0]) != 1:
+	print(-1)  # only one node can have distance 0
+	sys.exit()
+
+edges = []
+for i in range(1, node_num):
+	limit = max_adj - (i != 1)
+	if len(dists[i]) > len(dists[i - 1]) * limit:
+		# the current layer of our bfs tree can't accomodate this many edges!
+		print(-1)
+		sys.exit()
+
+	# assign each of the nodes in this layer to a parent arbitrarily
+	prev_at = 0
+	for n in dists[i]:
+		edges.append((dists[i - 1][prev_at // limit], n))
+		prev_at += 1
+
+print(len(edges))
+for a, b in edges:
+	print(a + 1, b + 1)
+```
+
+</PySection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class RestoreGraph {
+	public static void main(String[] args) throws IOException {
+		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
+
+		StringTokenizer initial = new StringTokenizer(read.readLine());
+		int nodeNum = Integer.parseInt(initial.nextToken());
+		int maxAdj = Integer.parseInt(initial.nextToken());
+
+		StringTokenizer distST = new StringTokenizer(read.readLine());
+		List<Integer>[] dists = new ArrayList[nodeNum];
+		for (int n = 0; n < nodeNum; n++) { dists[n] = new ArrayList<>(); }
+		for (int n = 0; n < nodeNum; n++) {
+			dists[Integer.parseInt(distST.nextToken())].add(n);
+		}
+
+		if (dists[0].size() != 1) {
+			System.out.println(-1);  // only one node can have distance 0
+			return;
+		}
+
+		List<int[]> edges = new ArrayList<>();
+		for (int i = 1; i < nodeNum; i++) {
+			int limit = maxAdj - (i != 1 ? 1 : 0);
+			if (dists[i].size() > (long)dists[i - 1].size() * limit) {
+				// the current layer of our bfs tree can't accomodate this many edges!
+				System.out.println(-1);
+				return;
+			}
+
+			// assign each of the nodes in this layer to a parent arbitrarily
+			int prevAt = 0;
+			for (int n : dists[i]) {
+				edges.add(new int[] {dists[i - 1].get(prevAt / limit), n});
+				prevAt++;
+			}
+		}
+
+		System.out.println(edges.size());
+		for (int[] e : edges) { System.out.println((e[0] + 1) + " " + (e[1] + 1)); }
+	}
+}
+```
+
+</JavaSection>
+<CPPSection>
+
+```cpp
+#include <algorithm>
+#include <iostream>
+#include <vector>
+
+using std::cout;
+using std::endl;
+using std::vector;
+
+int main() {
+	int node_num;
+	int max_adj;
+	std::cin >> node_num >> max_adj;
+
+	vector<vector<int>> dists(node_num);
+	for (int n = 0; n < node_num; n++) {
+		int d;
+		std::cin >> d;
+		dists[d].push_back(n);
+	}
+
+	if (dists[0].size() != 1) {
+		cout << -1 << endl;
+		return 0;
+	}
+
+	vector<std::pair<int, int>> edges;
+	for (int i = 1; i < node_num; i++) {
+		int limit = max_adj - (i != 1 ? 1 : 0);
+		if (dists[i].size() > (long long)dists[i - 1].size() * limit) {
+			// the current layer of our bfs tree can't accomodate this many edges!
+			cout << -1 << endl;
+			return 0;
+		}
+
+		// assign each of the nodes in this layer to a parent arbitrarily
+		int prev_at = 0;
+		for (int n : dists[i]) {
+			edges.push_back({dists[i - 1][prev_at / limit], n});
+			prev_at++;
+		}
+	}
+
+	cout << edges.size() << '\n';
+	for (const auto &[a, b] : edges) { cout << a + 1 << ' ' << b + 1 << '\n'; }
+}
+```
+
+</CPPSection>
+</LanguageSection>
