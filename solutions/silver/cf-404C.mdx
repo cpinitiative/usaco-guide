@@ -50,26 +50,129 @@ if len(dists[0]) != 1:
 
 edges = []
 for i in range(1, node_num):
-	# for i = 1 the previous layer of distance 0 has no "parent", so don't subtract 1
 	limit = max_adj - (i != 1)
 	if len(dists[i]) > len(dists[i - 1]) * limit:
 		# the current layer of our bfs tree can't accomodate this many edges!
 		print(-1)
-		break
+		sys.exit()
 
 	# assign each of the nodes in this layer to a parent arbitrarily
-	prev_ind, prev_at = 0, 0
+	prev_at = 0
 	for n in dists[i]:
-		edges.append((dists[i - 1][prev_ind], n))
-
+		edges.append((dists[i - 1][prev_at // limit], n))
 		prev_at += 1
-		if prev_at == limit:
-			prev_ind, prev_at = prev_ind + 1, 0
-else:
-	print(len(edges))
-	for a, b in edges:
-		print(a + 1, b + 1)
+
+print(len(edges))
+for a, b in edges:
+	print(a + 1, b + 1)
 ```
 
 </PySection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class RestoreGraph {
+	public static void main(String[] args) throws IOException {
+		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
+
+		StringTokenizer initial = new StringTokenizer(read.readLine());
+		int nodeNum = Integer.parseInt(initial.nextToken());
+		int maxAdj = Integer.parseInt(initial.nextToken());
+
+		StringTokenizer distST = new StringTokenizer(read.readLine());
+		List<Integer>[] dists = new ArrayList[nodeNum];
+		for (int n = 0; n < nodeNum; n++) {
+			dists[n] = new ArrayList<>();
+		}
+		for (int n = 0; n < nodeNum; n++) {
+			dists[Integer.parseInt(distST.nextToken())].add(n);
+		}
+
+		if (dists[0].size() != 1) {
+			System.out.println(-1);  // only one node can have distance 0
+			return;
+		}
+
+		List<int[]> edges = new ArrayList<>();
+		for (int i = 1; i < nodeNum; i++) {
+			int limit = maxAdj - (i != 1 ? 1 : 0);
+			if (dists[i].size() > (long)dists[i - 1].size() * limit) {
+				// the current layer of our bfs tree can't accomodate this many edges!
+				System.out.println(-1);
+				return;
+			}
+
+			// assign each of the nodes in this layer to a parent arbitrarily
+			int prevAt = 0;
+			for (int n : dists[i]) {
+				edges.add(new int[] { dists[i - 1].get(prevAt / limit), n });
+				prevAt++;
+			}
+		}
+
+		System.out.println(edges.size());
+		for (int[] e : edges) {
+			System.out.println((e[0] + 1) + " " + (e[1] + 1));
+		}
+	}
+}
+```
+
+</JavaSection>
+<CPPSection>
+
+```cpp
+#include <algorithm>
+#include <iostream>
+#include <vector>
+
+using std::cout;
+using std::endl;
+using std::vector;
+
+int main() {
+	int node_num;
+	int max_adj;
+	std::cin >> node_num >> max_adj;
+
+	vector<vector<int>> dists(node_num);
+	for (int n = 0; n < node_num; n++) {
+		int d;
+		std::cin >> d;
+		dists[d].push_back(n);
+	}
+
+	if (dists[0].size() != 1) {
+		cout << -1 << endl;
+		return 0;
+	}
+
+	vector<std::pair<int, int>> edges;
+	for (int i = 1; i < node_num; i++) {
+		int limit = max_adj - (i != 1 ? 1 : 0);
+		if (dists[i].size() > (long long)dists[i - 1].size() * limit) {
+			// the current layer of our bfs tree can't accomodate this many edges!
+			cout << -1 << endl;
+			return 0;
+		}
+
+		// assign each of the nodes in this layer to a parent arbitrarily
+		int prev_at = 0;
+		for (int n : dists[i]) {
+			edges.push_back({dists[i - 1][prev_at / limit], n});
+			prev_at++;
+		}
+	}
+
+	cout << edges.size() << '\n';
+	for (const auto& [a, b] : edges) {
+		cout << a + 1 << ' ' << b + 1 << '\n';
+	}
+}
+```
+
+</CPPSection>
 </LanguageSection>
