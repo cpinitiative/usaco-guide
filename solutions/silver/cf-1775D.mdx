@@ -51,13 +51,13 @@ using namespace std;
 set<int> primes(int n) {
 	set<int> ret;
 	while (n % 2 == 0) {
-		n = n / 2;
+		n /= 2;
 		ret.insert(2);
 	}
 
 	for (int i = 3; i * i <= n; i += 2) {
 		while (n % i == 0) {
-			n = n / i;
+			n /= i;
 			ret.insert(i);
 		}
 	}
@@ -126,4 +126,99 @@ int main() {
 ```
 
 </CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class FriendlySpiders {
+	public static void main(String[] args) throws IOException {
+		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
+		int spiderNum = Integer.parseInt(read.readLine());
+
+		Map<Integer, List<Integer>> trains = new HashMap<>();
+		Set<Integer>[] primeFactors = new HashSet[spiderNum];
+		StringTokenizer spiderST = new StringTokenizer(read.readLine());
+		for (int s = 0; s < spiderNum; s++) {
+			int spider = Integer.parseInt(spiderST.nextToken());
+			primeFactors[s] = primes(spider);
+			for (int f : primeFactors[s]) {
+				if (!trains.containsKey(f)) {
+					trains.put(f, new ArrayList<>());
+				}
+				trains.get(f).add(s);
+			}
+		}
+
+		StringTokenizer query = new StringTokenizer(read.readLine());
+		int start = Integer.parseInt(query.nextToken()) - 1;
+		int end = Integer.parseInt(query.nextToken()) - 1;
+
+		List<Integer> frontier = new ArrayList<>(Arrays.asList(start));
+		Set<Integer> taken = new HashSet<>();
+		// Stores each spider's predecessor for path reconstruction
+		int[] comeFrom = new int[spiderNum];
+		Arrays.fill(comeFrom, -1);
+		comeFrom[start] = start;
+		while (!frontier.isEmpty()) {
+			List<Integer> next_up = new ArrayList<>();
+			for (int s : frontier) {
+				for (int f : primeFactors[s]) {
+					if (taken.contains(f)) {
+						// Already used this factor before, so we can skip it
+						continue;
+					}
+					for (int ns : trains.get(f)) {
+						if (comeFrom[ns] == -1) {
+							comeFrom[ns] = s;
+							next_up.add(ns);
+						}
+					}
+					taken.add(f);
+				}
+			}
+			frontier = next_up;
+		}
+
+		if (comeFrom[end] == -1) {
+			System.out.println(-1);
+			return;
+		}
+
+		List<Integer> path = new ArrayList<>(Arrays.asList(end));
+		while (path.get(path.size() - 1) != start) {
+			path.add(comeFrom[path.get(path.size() - 1)]);
+		}
+		Collections.reverse(path);
+
+		System.out.println(path.size());
+		for (int i = 0; i < path.size(); i++) {
+			System.out.print(path.get(i) + 1 + (i == path.size() - 1 ? "\n" : " "));
+		}
+	}
+
+	private static Set<Integer> primes(int n) {
+		Set<Integer> ret = new HashSet<>();
+		while (n % 2 == 0) {
+			n /= 2;
+			ret.add(2);
+		}
+
+		for (int i = 3; i * i <= n; i += 2) {
+			while (n % i == 0) {
+				n /= i;
+				ret.add(i);
+			}
+		}
+
+		if (n > 2) {
+			ret.add(n);
+		}
+		return ret;
+	}
+}
+```
+
+</JavaSection>
 </LanguageSection>
