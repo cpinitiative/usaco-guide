@@ -181,6 +181,7 @@ export const RestOfMembers: Member[] = [
     email: 'abhirajmallangi@outlook.com',
   },
   {
+    photo: 'hannah',
     name: 'Hannah Ying',
     titles: [roles.videoInstructor],
   },
