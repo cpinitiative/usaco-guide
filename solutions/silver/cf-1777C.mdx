@@ -85,62 +85,67 @@ int main() {
 <JavaSection>
 
 ```java
+import java.io.*;
 import java.util.*;
 
 public class Main {
-	private static final int M = 100000;
-	private static List<Integer>[] factors = new ArrayList[M + 1];
+    private static final int M = 100000;
+    private static List<Integer>[] factors = new ArrayList[M + 1];
 
-	public static void main(String[] args) {
-		// Precompute factors for all numbers from 1 to M
-		for (int i = 1; i <= M; i++) { factors[i] = new ArrayList<>(); }
-		for (int i = 1; i <= M; i++) {
-			for (int j = i; j <= M; j += i) { factors[j].add(i); }
-		}
+    public static void main(String[] args) throws IOException {
+        // Precompute factors for all numbers from 1 to M
+        for (int i = 1; i <= M; i++) { factors[i] = new ArrayList<>(); }
+        for (int i = 1; i <= M; i++) {
+            for (int j = i; j <= M; j += i) { factors[j].add(i); }
+        }
 
-		Scanner sc = new Scanner(System.in);
-		int testNum = sc.nextInt();
-		for (int t = 0; t < testNum; t++) {
-			int n = sc.nextInt();
-			int m = sc.nextInt();
-			int[] arr = new int[n];
-			int[] freq = new int[m + 1];
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        int testNum = Integer.parseInt(st.nextToken());
 
-			for (int i = 0; i < n; i++) { arr[i] = sc.nextInt(); }
+        for (int t = 0; t < testNum; t++) {
+            st = new StringTokenizer(br.readLine());
+            int n = Integer.parseInt(st.nextToken());
+            int m = Integer.parseInt(st.nextToken());
+            int[] arr = new int[n];
+            int[] freq = new int[m + 1];
 
-			Arrays.sort(arr);
+            st = new StringTokenizer(br.readLine());
+            for (int i = 0; i < n; i++) { arr[i] = Integer.parseInt(st.nextToken()); }
 
-			int topicsCovered = 0;
-			int res = Integer.MAX_VALUE;
-			for (int i = 0, j = 0; i < n; i++) {
-				// adding student
-				while (j < n && topicsCovered < m) {
-					for (int x : factors[arr[j]]) {
-						if (x <= m) {
-							freq[x]++;
-							if (freq[x] == 1) {  // topic x covered for the first time
-								topicsCovered++;
-							}
-						}
-					}
-					j++;
-				}
-				if (topicsCovered == m) { res = Math.min(arr[j - 1] - arr[i], res); }
+            Arrays.sort(arr);
 
-				// removing student
-				for (int x : factors[arr[i]]) {
-					if (x <= m) {
-						freq[x]--;
-						if (freq[x] == 0) {  // topic x no longer covered
-							topicsCovered--;
-						}
-					}
-				}
-			}
+            int topicsCovered = 0;
+            int res = Integer.MAX_VALUE;
+            for (int i = 0, j = 0; i < n; i++) {
+                // adding student
+                while (j < n && topicsCovered < m) {
+                    for (int x : factors[arr[j]]) {
+                        if (x <= m) {
+                            freq[x]++;
+                            if (freq[x] == 1) {  // topic x covered for the first time
+                                topicsCovered++;
+                            }
+                        }
+                    }
+                    j++;
+                }
+                if (topicsCovered == m) { res = Math.min(arr[j - 1] - arr[i], res); }
 
-			System.out.println(res == Integer.MAX_VALUE ? -1 : res);
-		}
-	}
+                // removing student
+                for (int x : factors[arr[i]]) {
+                    if (x <= m) {
+                        freq[x]--;
+                        if (freq[x] == 0) {  // topic x no longer covered
+                            topicsCovered--;
+                        }
+                    }
+                }
+            }
+
+            System.out.println(res == Integer.MAX_VALUE ? -1 : res);
+        }
+    }
 }
 ```
 
