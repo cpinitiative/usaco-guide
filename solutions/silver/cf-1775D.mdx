@@ -1,0 +1,130 @@
+---
+id: cf-1755D
+source: CF
+title: Friendly Spiders
+author: Kevin Sheng
+---
+
+[Official Analysis (C++)](https://codeforces.com/blog/entry/111286)
+
+## Explanation
+
+The first observation we need to make is that all spiders which share a common
+factor form a complete graph where all pairs of spiders in this group are friends with each other.
+
+Thus, we can enumerate the prime factors of all spiders and keep track
+for each factor the spiders which divide it to store the edges in an efficient manner.
+Two spiders are friends iff they're both in some prime factor's list together.
+
+However, doing a naive BFS from the starting node will take too long.
+To optimize this, we have to make another optimization, which is that
+it's always optimal to "use" a prime at most once in our path.
+
+For example, take the path where the number of legs are $15$, $3$, and $9$
+where we've used the common divisor $3$ two times.
+Here, we can cut out $3$ and move directly from $15$ to $9$.
+
+This allows us to do an optimized BFS from the starting spider
+by keeping a global list of visited prime factors.
+For each spider, we iterate through its prime factors and see
+which ones haven't been used.
+If a factor hasn't been used, then it's standard BFS with backtracking.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}\left(n \left(\sqrt{A} + \log n\right)\right)$, where $A$ is the largest number of legs among the spiders.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <algorithm>
+#include <iostream>
+#include <map>
+#include <set>
+#include <vector>
+#include <cmath>
+
+using namespace std;
+
+/** @return n's prime factors */
+set<int> primes(int n) {
+	set<int> ret;
+	while (n % 2 == 0) {
+		n = n / 2;
+		ret.insert(2);
+	}
+
+	for (int i = 3; i <= sqrt(n); i = i + 2) {
+		while (n % i == 0) {
+			n = n / i;
+			ret.insert(i);
+		}
+	}
+
+	if (n > 2) { ret.insert(n); }
+	return ret;
+}
+
+int main() {
+	int spider_num;
+	cin >> spider_num;
+	map<int, vector<int>> trains;
+	vector<set<int>> prime_factors(spider_num);
+	for (int s = 0; s < spider_num; s++) {
+		int spider;
+		cin >> spider;
+		for (int f : (prime_factors[s] = primes(spider))) { trains[f].push_back(s); }
+	}
+
+	int start, end;
+	cin >> start >> end;
+	start--;
+	end--;
+
+	vector<int> frontier{start};
+	set<int> taken;
+	// each spider's predecessor in the bfs tree
+	vector<int> come_from(spider_num, -1);
+	come_from[start] = start;
+	while (!frontier.empty()) {
+		vector<int> next_up;
+		for (int s : frontier) {
+			if (s == end) { goto done; }
+			for (int f : prime_factors[s]) {
+				if (taken.count(f)) {
+					// alrady used this prime factor b4, let's not waste time
+					continue;
+				}
+				for (int ns : trains[f]) {
+					if (come_from[ns] == -1) {
+						come_from[ns] = s;
+						next_up.push_back(ns);
+					}
+				}
+				taken.insert(f);
+			}
+		}
+		frontier = next_up;
+	}
+done:;
+
+	if (come_from[end] == -1) {
+		cout << -1 << endl;
+		return 0;
+	}
+
+	// backtrack from the end until we get to the start
+	vector<int> path{end};
+	while (path.back() != start) { path.push_back(come_from[path.back()]); }
+	reverse(path.begin(), path.end());
+
+	cout << path.size() << '\n';
+	for (int i = 0; i < path.size(); i++) {
+		cout << path[i] + 1 << " \n"[i == path.size() - 1];
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>
