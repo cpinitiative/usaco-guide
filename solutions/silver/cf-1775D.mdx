@@ -55,7 +55,7 @@ set<int> primes(int n) {
 		ret.insert(2);
 	}
 
-	for (int i = 3; i <= sqrt(n); i = i + 2) {
+	for (int i = 3; i * i <= n; i += 2) {
 		while (n % i == 0) {
 			n = n / i;
 			ret.insert(i);
@@ -74,7 +74,8 @@ int main() {
 	for (int s = 0; s < spider_num; s++) {
 		int spider;
 		cin >> spider;
-		for (int f : (prime_factors[s] = primes(spider))) { trains[f].push_back(s); }
+		prime_factors[s] = primes(spider);
+		for (int f : primes_factors[s]) { trains[f].push_back(s); }
 	}
 
 	int start, end;
@@ -84,16 +85,15 @@ int main() {
 
 	vector<int> frontier{start};
 	set<int> taken;
-	// each spider's predecessor in the bfs tree
+	// Stores each spider's predecessor for path reconstruction
 	vector<int> come_from(spider_num, -1);
 	come_from[start] = start;
 	while (!frontier.empty()) {
 		vector<int> next_up;
 		for (int s : frontier) {
-			if (s == end) { goto done; }
 			for (int f : prime_factors[s]) {
 				if (taken.count(f)) {
-					// alrady used this prime factor b4, let's not waste time
+					// Already used this factor before, so we can skip it
 					continue;
 				}
 				for (int ns : trains[f]) {
@@ -107,14 +107,13 @@ int main() {
 		}
 		frontier = next_up;
 	}
-done:;
 
 	if (come_from[end] == -1) {
 		cout << -1 << endl;
 		return 0;
 	}
 
-	// backtrack from the end until we get to the start
+	// Reconstruct the path by backtracking from the end to the start
 	vector<int> path{end};
 	while (path.back() != start) { path.push_back(come_from[path.back()]); }
 	reverse(path.begin(), path.end());
