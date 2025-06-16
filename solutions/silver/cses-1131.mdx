@@ -10,9 +10,10 @@ author: David Zhou
 ## Solution 1 - DFS Twice
 
 We [DFS](/silver/graph-traversal#dfs) on an arbitrary point and calculate the distance to each point.
-The point with the maximum distance is one of the endpoints of the diameter.
-
+Since the diameter is the longest path, either endpoint is guaranteed to be furthest away. Therefore, the point with the maximum distance is one of the endpoints of the diameter.
 We can run DFS again from this point, where the maximum distance from this new point is our actual diameter.
+
+This DFS Twice approach is [Approach 2](https://usaco.guide/CPH.pdf#page=145) in CPH 14.2.
 
 ## Implementation
 
@@ -185,9 +186,12 @@ print(max(dist))
 
 ## Solution 2 - Tree DP
 
-At each node in the tree, we compute the heights of its two tallest subtrees.
-By adding them together, we find the length of the longest path through that point.
-Our answer is then the longest path we've found across all nodes.
+We first arbitrarily root the tree to establish an order for the nodes.
+Using DFS, we traverse down from the root and compute the heights of each node's two tallest subtrees.
+By adding them together in a bottom-up manner, we find the length of the longest path passing through that point.
+The diameter is the maximum of the longest paths we've found across all nodes.
+
+This DP approach is [Approach 1](https://usaco.guide/CPH.pdf#page=145) in CPH.
 
 ## Implementation
 
