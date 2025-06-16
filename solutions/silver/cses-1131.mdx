@@ -9,11 +9,12 @@ author: David Zhou
 
 ## Solution 1 - DFS Twice
 
-We [DFS](/silver/graph-traversal#dfs) on an arbitrary node and calculate the distance to each node.
-Since the diameter is the longest path, one of its endpoints must be furthest away from the starting point. Therefore, the node with the maximum distance is one of the endpoints of the diameter.
+We perform [DFS](/silver/graph-traversal#dfs) on an arbitrary node and calculate the distance to each node.
+Since the diameter is the longest path, one of its endpoints must be furthest away from the starting point.
+Therefore, the node with the maximum distance is one of the endpoints of the diameter.
 We can run a second DFS from this endpoint, since the maximum distance found will be the diameter.
 
-This DFS Twice approach is [Approach 2](https://usaco.guide/CPH.pdf#page=145) in CPH 14.2.
+This approach is [Approach 2](https://usaco.guide/CPH.pdf#page=145) in CPH 14.2.
 
 ## Implementation
 
@@ -28,9 +29,6 @@ using namespace std;
 
 vector<int> dist;
 vector<vector<int>> adj;
-
-// visited array is unnecessary as we are traversing down the tree in one direction
-// ensuring that the current node does not return back up to its parent is sufficient
 
 void dfs(int curr, int parent) {
 	if (parent != -1) { dist[curr] = dist[parent] + 1; }
@@ -81,9 +79,7 @@ import java.util.*;
 
 public class TreeDiameter {
 	public static void main(String[] args) throws IOException {
-		// Fast input and output
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		PrintWriter out = new PrintWriter(System.out);
 
 		int n = Integer.parseInt(br.readLine());
 		int[] dist = new int[n];
@@ -134,8 +130,7 @@ public class TreeDiameter {
 		int maxDist = -1;
 		for (int i = 0; i < n; i++) { maxDist = Math.max(maxDist, dist[i]); }
 
-		out.println(maxDist);
-		out.flush();
+		System.out.println(maxDist);
 	}
 }
 ```
@@ -206,9 +201,6 @@ using namespace std;
 
 int diameter = 0;
 vector<vector<int>> adj;
-
-// visited array is unnecessary as we are traversing down the tree in one direction
-// ensuring that the current node does not return back up to its parent is sufficient
 
 int dfs(int curr, int parent) {
 	int max1 = 0, max2 = 0;
