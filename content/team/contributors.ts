@@ -111,11 +111,6 @@ export const OrderedFirstMembers: Member[] = [
 
 export const RestOfMembers: Member[] = [
   {
-    photo: 'trisha',
-    name: 'Trisha Sabadra',
-    titles: ['Director of Classes', roles.liveInstructor],
-  },
-  {
     photo: 'elliotth',
     name: 'Elliot Harper',
     titles: [roles.webdev],
@@ -139,26 +134,6 @@ export const RestOfMembers: Member[] = [
     github: 'JoltedCowIceCream',
   },
   {
-    photo: 'alex_wang',
-    name: 'Alex Wang',
-    titles: ['Director of Clubs'],
-  },
-  {
-    photo: 'aakash_gokhale',
-    name: 'Aakash Gokhale',
-    titles: ['Director of Contests'],
-  },
-  {
-    photo: 'justin_huang',
-    name: 'Justin Huang',
-    titles: ['Director of Software', roles.webdev],
-  },
-  {
-    photo: 'daniel_zhu',
-    name: 'Daniel Zhu',
-    titles: [roles.contentAuthor, roles.webdev],
-  },
-  {
     photo: 'envy',
     name: 'Chongtian Ma',
     titles: [roles.contentAuthor],
@@ -168,11 +143,6 @@ export const RestOfMembers: Member[] = [
     name: 'Andrew Xu',
     titles: [roles.liveInstructor],
     email: 'greatestrappingraptor@gmail.com',
-  },
-  {
-    photo: 'peng_bai',
-    name: 'Peng Bai',
-    titles: [roles.contentAuthor],
   },
   {
     photo: 'rameez',
@@ -258,6 +228,36 @@ export const RestOfMembers: Member[] = [
 ];
 
 export const FormerMembers: Member[] = [
+  {
+    photo: 'peng_bai',
+    name: 'Peng Bai',
+    titles: [roles.contentAuthor],
+  },
+  {
+    photo: 'daniel_zhu',
+    name: 'Daniel Zhu',
+    titles: [roles.contentAuthor, roles.webdev],
+  },
+  {
+    photo: 'justin_huang',
+    name: 'Justin Huang',
+    titles: ['Director of Software', roles.webdev],
+  },
+  {
+    photo: 'aakash_gokhale',
+    name: 'Aakash Gokhale',
+    titles: ['Director of Contests'],
+  },
+  {
+    photo: 'alex_wang',
+    name: 'Alex Wang',
+    titles: ['Director of Clubs'],
+  },
+  {
+    photo: 'trisha',
+    name: 'Trisha Sabadra',
+    titles: ['Director of Classes', roles.liveInstructor],
+  },
   {
     photo: 'mihnea',
     name: 'Mihnea Brebenel',
