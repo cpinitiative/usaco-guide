@@ -1,0 +1,75 @@
+---
+id: cf-404C
+source: CF
+title: Restore Graph
+author: Kevin Sheng
+---
+
+[Official Analysis](https://codeforces.com/blog/entry/11095)
+
+## Explanation
+
+It's a bit hard to know where to start with this problem,
+so let's try a way simpler case:
+what if all $d[i]$s are either $0$ or $1$?
+
+In this case, $d[i]=0$ means that $i$ is the chosen node (which we can only have one of),
+and $d[i]=1$ means that it's a direct neighbor (which we can have at most $k$ of).
+
+Now we can extend this to include possibilities where $d[i]=2$.
+These nodes have to be neighbors of the nodes where $d[i]=1$,
+so we try to link them up with the direct neighbors of the chosen node.
+
+The only way Valera could've made a mistake is if the number of nodes
+that are $d+1$ away is greater than $k-1$<Asterisk>Except for the case where $d=0$, in which case it's $k$.</Asterisk>
+times the number of nodes that are $d$ away,
+since that would force us allocate more edges than the constraints would allow.
+
+If you know what [BFS Trees](https://en.wikipedia.org/wiki/Breadth-first_search#More_details)
+are, we're basically constructing one of these.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(n)$
+
+<LanguageSection>
+<PySection>
+
+```py
+import sys
+
+node_num, max_adj = [int(i) for i in input().split()]
+
+dists = [[] for _ in range(node_num)]
+for n, d in enumerate(input().split()):
+	dists[int(d)].append(n)
+
+if len(dists[0]) != 1:
+	print(-1)  # only one node can have distance 0
+	sys.exit()
+
+edges = []
+for i in range(1, node_num):
+	# for i = 1 the previous layer of distance 0 has no "parent", so don't subtract 1
+	limit = max_adj - (i != 1)
+	if len(dists[i]) > len(dists[i - 1]) * limit:
+		# the current layer of our bfs tree can't accomodate this many edges!
+		print(-1)
+		break
+	
+	# assign each of the nodes in this layer to a parent arbitrarily
+	prev_ind, prev_at = 0, 0
+	for n in dists[i]:
+		edges.append((dists[i - 1][prev_ind], n))
+
+		prev_at += 1
+		if prev_at == limit:
+			prev_ind, prev_at = prev_ind + 1, 0
+else:
+	print(len(edges))
+	for a, b in edges:
+		print(a + 1, b + 1)
+```
+
+</PySection>
+</LanguageSection>
