@@ -1,0 +1,220 @@
+---
+id: cf-1775D
+source: CF
+title: Friendly Spiders
+author: Kevin Sheng
+---
+
+[Official Analysis (C++)](https://codeforces.com/blog/entry/111286)
+
+## Explanation
+
+The first observation we need to make is that all spiders which share a common
+factor form a complete graph where all pairs of spiders in this group are friends with each other.
+
+Thus, we can enumerate the prime factors of all spiders and keep track
+for each factor the spiders which divide it to store the edges in an efficient manner.
+Two spiders are friends iff they're both in some prime factor's list together.
+
+However, doing a naive BFS from the starting node will take too long.
+To optimize this, we have to make another optimization, which is that
+it's always optimal to "use" a prime at most once in our path.
+
+For example, take the path where the number of legs are $15$, $3$, and $9$
+where we've used the common divisor $3$ two times.
+Here, we can cut out $3$ and move directly from $15$ to $9$.
+
+This allows us to do an optimized BFS from the starting spider
+by keeping a global list of visited prime factors.
+For each spider, we iterate through its prime factors and see
+which ones haven't been used.
+If a factor hasn't been used, then it's standard BFS with backtracking.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}\left(n \left(\sqrt{A} + \log n\right)\right)$, where $A$ is the largest number of legs among the spiders.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <algorithm>
+#include <cmath>
+#include <iostream>
+#include <map>
+#include <set>
+#include <vector>
+
+using namespace std;
+
+/** @return n's prime factors */
+set<int> primes(int n) {
+	set<int> ret;
+	while (n % 2 == 0) {
+		n /= 2;
+		ret.insert(2);
+	}
+
+	for (int i = 3; i * i <= n; i += 2) {
+		while (n % i == 0) {
+			n /= i;
+			ret.insert(i);
+		}
+	}
+
+	if (n > 2) { ret.insert(n); }
+	return ret;
+}
+
+int main() {
+	int spider_num;
+	cin >> spider_num;
+	map<int, vector<int>> trains;
+	vector<set<int>> prime_factors(spider_num);
+	for (int s = 0; s < spider_num; s++) {
+		int spider;
+		cin >> spider;
+		prime_factors[s] = primes(spider);
+		for (int f : prime_factors[s]) { trains[f].push_back(s); }
+	}
+
+	int start, end;
+	cin >> start >> end;
+	start--;
+	end--;
+
+	vector<int> frontier{start};
+	set<int> taken;
+	// Stores each spider's predecessor for path reconstruction
+	vector<int> come_from(spider_num, -1);
+	come_from[start] = start;
+	while (!frontier.empty()) {
+		vector<int> next_up;
+		for (int s : frontier) {
+			for (int f : prime_factors[s]) {
+				if (taken.count(f)) {
+					// Already used this factor before, so we can skip it
+					continue;
+				}
+				for (int ns : trains[f]) {
+					if (come_from[ns] == -1) {
+						come_from[ns] = s;
+						next_up.push_back(ns);
+					}
+				}
+				taken.insert(f);
+			}
+		}
+		frontier = next_up;
+	}
+
+	if (come_from[end] == -1) {
+		cout << -1 << endl;
+		return 0;
+	}
+
+	// Reconstruct the path by backtracking from the end to the start
+	vector<int> path{end};
+	while (path.back() != start) { path.push_back(come_from[path.back()]); }
+	reverse(path.begin(), path.end());
+
+	cout << path.size() << '\n';
+	for (int i = 0; i < path.size(); i++) {
+		cout << path[i] + 1 << " \n"[i == path.size() - 1];
+	}
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class FriendlySpiders {
+	public static void main(String[] args) throws IOException {
+		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
+		int spiderNum = Integer.parseInt(read.readLine());
+
+		Map<Integer, List<Integer>> trains = new HashMap<>();
+		Set<Integer>[] primeFactors = new HashSet[spiderNum];
+		StringTokenizer spiderST = new StringTokenizer(read.readLine());
+		for (int s = 0; s < spiderNum; s++) {
+			int spider = Integer.parseInt(spiderST.nextToken());
+			primeFactors[s] = primes(spider);
+			for (int f : primeFactors[s]) {
+				if (!trains.containsKey(f)) { trains.put(f, new ArrayList<>()); }
+				trains.get(f).add(s);
+			}
+		}
+
+		StringTokenizer query = new StringTokenizer(read.readLine());
+		int start = Integer.parseInt(query.nextToken()) - 1;
+		int end = Integer.parseInt(query.nextToken()) - 1;
+
+		List<Integer> frontier = new ArrayList<>(Arrays.asList(start));
+		Set<Integer> taken = new HashSet<>();
+		// Stores each spider's predecessor for path reconstruction
+		int[] comeFrom = new int[spiderNum];
+		Arrays.fill(comeFrom, -1);
+		comeFrom[start] = start;
+		while (!frontier.isEmpty()) {
+			List<Integer> next_up = new ArrayList<>();
+			for (int s : frontier) {
+				for (int f : primeFactors[s]) {
+					if (taken.contains(f)) {
+						// Already used this factor before, so we can skip it
+						continue;
+					}
+					for (int ns : trains.get(f)) {
+						if (comeFrom[ns] == -1) {
+							comeFrom[ns] = s;
+							next_up.add(ns);
+						}
+					}
+					taken.add(f);
+				}
+			}
+			frontier = next_up;
+		}
+
+		if (comeFrom[end] == -1) {
+			System.out.println(-1);
+			return;
+		}
+
+		List<Integer> path = new ArrayList<>(Arrays.asList(end));
+		while (path.get(path.size() - 1) != start) {
+			path.add(comeFrom[path.get(path.size() - 1)]);
+		}
+		Collections.reverse(path);
+
+		System.out.println(path.size());
+		for (int i = 0; i < path.size(); i++) {
+			System.out.print(path.get(i) + 1 + (i == path.size() - 1 ? "\n" : " "));
+		}
+	}
+
+	private static Set<Integer> primes(int n) {
+		Set<Integer> ret = new HashSet<>();
+		while (n % 2 == 0) {
+			n /= 2;
+			ret.add(2);
+		}
+
+		for (int i = 3; i * i <= n; i += 2) {
+			while (n % i == 0) {
+				n /= i;
+				ret.add(i);
+			}
+		}
+
+		if (n > 2) { ret.add(n); }
+		return ret;
+	}
+}
+```
+
+</JavaSection>
+</LanguageSection>
