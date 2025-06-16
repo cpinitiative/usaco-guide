@@ -1,0 +1,62 @@
+---
+id: cf-1620E
+source: CF
+title: Replace the Numbers
+author: Kevin Sheng
+---
+
+[Official Analysis (C++)](https://codeforces.com/blog/entry/98061)
+
+## Explanation
+
+The trick here is to process the queries in reverse.
+That way, when we come across an append operation,
+we'll know all the replace operations that will come after.
+
+Let's keep a hashmap $h$, where $h[x]$ is the number
+$x$ will get mapped to after all replace operations have completed.
+
+For example, consider the third sample case
+and say we've only processed the last query
+In this case,
+```
+h = {2: 7}
+```
+However, after we've processed *all* the queries, our map will now be
+```
+h = {1: 3, 2: 3, 4: 3}
+```
+
+If we hit an "append $x$" operation, we add $h[x]$ to the beginning of our array.
+
+For the "replace $x$ with $y$" operation, it's a bit trickier:
+* If $y$ isn't in $h$ yet, set $h[x]=y$.
+* Otherwise, $h[x]=h[y]$, since $y$ won't be $x$'s final state after all operations.
+
+And that's both types of queries handled!
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(q)$
+
+<LanguageSection>
+<PySection>
+
+```py
+queries = []
+for _ in range(int(input())):
+	queries.append(tuple(int(i) for i in input().split()))
+
+mappings = {}
+arr = []
+for q in reversed(queries):
+	if q[0] == 1:
+		arr.append(mappings.get(q[1], q[1]))
+	elif q[0] == 2:
+		mappings[q[1]] = mappings.get(q[2], q[2])
+
+print(" ".join(str(i) for i in reversed(arr)))
+```
+
+</PySection>
+</LanguageSection>
