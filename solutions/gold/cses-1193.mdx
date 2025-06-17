@@ -28,59 +28,58 @@ By David Zhou
 using namespace std;
 
 int main() {
-    int n, m;
-    cin >> n >> m;
-    vector<string> labyrinth(n);
-    queue<pair<int, int>> q;
-    int aRow, aCol, bRow, bCol;
-    for (int i = 0; i < n; i++) {
-        cin >> labyrinth[i];
-        for (int j = 0; j < m; j++) {
-            if (labyrinth[i][j] == 'A') {
-                aRow = i;
-                aCol = j;
-                q.push({i, j});
-            } else if (labyrinth[i][j] == 'B') {
-                bRow = i;
-                bCol = j;
-            }
-        }
-    }
+	int n, m;
+	cin >> n >> m;
+	vector<string> labyrinth(n);
+	queue<pair<int, int>> q;
+	int aRow, aCol, bRow, bCol;
+	for (int i = 0; i < n; i++) {
+		cin >> labyrinth[i];
+		for (int j = 0; j < m; j++) {
+			if (labyrinth[i][j] == 'A') {
+				aRow = i;
+				aCol = j;
+				q.push({i, j});
+			} else if (labyrinth[i][j] == 'B') {
+				bRow = i;
+				bCol = j;
+			}
+		}
+	}
 
-    // Directions: Up, Right, Down, Left
-    vector<int> dirR{-1, 0, 1, 0};
-    vector<int> dirC{0, 1, 0, -1};
-    vector<vector<int>> arrive(n, vector<int>(m, -1));
+	// Directions: Up, Right, Down, Left
+	vector<int> dirR{-1, 0, 1, 0};
+	vector<int> dirC{0, 1, 0, -1};
+	vector<vector<int>> arrive(n, vector<int>(m, -1));
 
-    while (!q.empty()) {
-        int row = q.front().first, col = q.front().second;
-        q.pop();
-        for (int i = 0; i < 4; i++) {
-            int nextR = row + dirR[i], nextC = col + dirC[i];
-            if (nextR >= 0 && nextR < n && nextC >= 0 && nextC < m &&
-                labyrinth[nextR][nextC] != '#' && arrive[nextR][nextC] == -1) {
-                arrive[nextR][nextC] = i;
-                q.push({nextR, nextC});
-            }
-        }
-    }
+	while (!q.empty()) {
+		int row = q.front().first, col = q.front().second;
+		q.pop();
+		for (int i = 0; i < 4; i++) {
+			int nextR = row + dirR[i], nextC = col + dirC[i];
+			if (nextR >= 0 && nextR < n && nextC >= 0 && nextC < m &&
+			    labyrinth[nextR][nextC] != '#' && arrive[nextR][nextC] == -1) {
+				arrive[nextR][nextC] = i;
+				q.push({nextR, nextC});
+			}
+		}
+	}
 
-    if (arrive[bRow][bCol] == -1) {
-        cout << "NO" << endl;
-    } else {
-        string res = "", dir = "URDL";
-        int row = bRow, col = bCol;
-        while (row != aRow || col != aCol) {
-            int ind = arrive[row][col];
-            res += dir[ind];
-            row -= dirR[ind];
-            col -= dirC[ind];
-        }
-        reverse(res.begin(), res.end());
-        cout << "YES\n" << res.length() << "\n" << res << endl;
-    }
+	if (arrive[bRow][bCol] == -1) {
+		cout << "NO" << endl;
+	} else {
+		string res = "", dir = "URDL";
+		int row = bRow, col = bCol;
+		while (row != aRow || col != aCol) {
+			int ind = arrive[row][col];
+			res += dir[ind];
+			row -= dirR[ind];
+			col -= dirC[ind];
+		}
+		reverse(res.begin(), res.end());
+		cout << "YES\n" << res.length() << "\n" << res << endl;
+	}
 }
-
 ```
 </CPPSection>
 
@@ -90,69 +89,69 @@ int main() {
 import java.util.*;
 
 public class Labyrinth {
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        int n = sc.nextInt(), m = sc.nextInt();
-        sc.nextLine(); // consume newline
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int n = sc.nextInt(), m = sc.nextInt();
+		sc.nextLine();  // consume newline
 
-        char[][] labyrinth = new char[n][m];
-        int[][] arrive = new int[n][m];
-        for (int[] row : arrive) Arrays.fill(row, -1);
+		char[][] labyrinth = new char[n][m];
+		int[][] arrive = new int[n][m];
+		for (int[] row : arrive) Arrays.fill(row, -1);
 
-        int aRow = -1, aCol = -1, bRow = -1, bCol = -1;
-        Queue<int[]> q = new LinkedList<>();
+		int aRow = -1, aCol = -1, bRow = -1, bCol = -1;
+		Queue<int[]> q = new LinkedList<>();
 
-        for (int i = 0; i < n; i++) {
-            String line = sc.nextLine();
-            for (int j = 0; j < m; j++) {
-                labyrinth[i][j] = line.charAt(j);
-                if (labyrinth[i][j] == 'A') {
-                    aRow = i;
-                    aCol = j;
-                    q.add(new int[]{i, j});
-                } else if (labyrinth[i][j] == 'B') {
-                    bRow = i;
-                    bCol = j;
-                }
-            }
-        }
+		for (int i = 0; i < n; i++) {
+			String line = sc.nextLine();
+			for (int j = 0; j < m; j++) {
+				labyrinth[i][j] = line.charAt(j);
+				if (labyrinth[i][j] == 'A') {
+					aRow = i;
+					aCol = j;
+					q.add(new int[] {i, j});
+				} else if (labyrinth[i][j] == 'B') {
+					bRow = i;
+					bCol = j;
+				}
+			}
+		}
 
-        // Directions: Up, Right, Down, Left
-        int[] dirR = {-1, 0, 1, 0};
-        int[] dirC = {0, 1, 0, -1};
-        char[] dirChar = {'U', 'R', 'D', 'L'};
+		// Directions: Up, Right, Down, Left
+		int[] dirR = {-1, 0, 1, 0};
+		int[] dirC = {0, 1, 0, -1};
+		char[] dirChar = {'U', 'R', 'D', 'L'};
 
-        while (!q.isEmpty()) {
-            int[] pos = q.poll();
-            int row = pos[0], col = pos[1];
-            for (int i = 0; i < 4; i++) {
-                int nextR = row + dirR[i], nextC = col + dirC[i];
-                if (nextR >= 0 && nextR < n && nextC >= 0 && nextC < m &&
-                        labyrinth[nextR][nextC] != '#' && arrive[nextR][nextC] == -1) {
-                    arrive[nextR][nextC] = i;
-                    q.add(new int[]{nextR, nextC});
-                }
-            }
-        }
+		while (!q.isEmpty()) {
+			int[] pos = q.poll();
+			int row = pos[0], col = pos[1];
+			for (int i = 0; i < 4; i++) {
+				int nextR = row + dirR[i], nextC = col + dirC[i];
+				if (nextR >= 0 && nextR < n && nextC >= 0 && nextC < m &&
+				    labyrinth[nextR][nextC] != '#' && arrive[nextR][nextC] == -1) {
+					arrive[nextR][nextC] = i;
+					q.add(new int[] {nextR, nextC});
+				}
+			}
+		}
 
-        if (arrive[bRow][bCol] == -1) {
-            System.out.println("NO");
-        } else {
-            StringBuilder res = new StringBuilder();
-            int row = bRow, col = bCol;
-            while (row != aRow || col != aCol) {
-                int move = arrive[row][col];
-                res.append(dirChar[move]);
-                row -= dirR[move];
-                col -= dirC[move];
-            }
-            
-            res.reverse();
-            System.out.println("YES");
-            System.out.println(res.length());
-            System.out.println(res.toString());
-        }
-    }
+		if (arrive[bRow][bCol] == -1) {
+			System.out.println("NO");
+		} else {
+			StringBuilder res = new StringBuilder();
+			int row = bRow, col = bCol;
+			while (row != aRow || col != aCol) {
+				int move = arrive[row][col];
+				res.append(dirChar[move]);
+				row -= dirR[move];
+				col -= dirC[move];
+			}
+
+			res.reverse();
+			System.out.println("YES");
+			System.out.println(res.length());
+			System.out.println(res.toString());
+		}
+	}
 }
 ```
 
@@ -171,13 +170,13 @@ n, m = map(int, input().split())
 labyrinth = []
 a_row = a_col = b_row = b_col = -1
 for i in range(n):
-    row = input().strip()
-    labyrinth.append(row)
-    for j in range(m):
-        if row[j] == 'A':
-            a_row, a_col = i, j
-        elif row[j] == 'B':
-            b_row, b_col = i, j
+	row = input().strip()
+	labyrinth.append(row)
+	for j in range(m):
+		if row[j] == "A":
+			a_row, a_col = i, j
+		elif row[j] == "B":
+			b_row, b_col = i, j
 
 queue = deque()
 queue.append((a_row, a_col))
@@ -188,31 +187,30 @@ dir_c = [0, 1, 0, -1]
 dir_char = "URDL"
 
 while queue:
-    row, col = queue.popleft()
-    for i in range(4):
-        next_r = row + dir_r[i]
-        next_c = col + dir_c[i]
-        if 0 <= next_r < n and 0 <= next_c < m:
-            if labyrinth[next_r][next_c] != '#' and arrive[next_r][next_c] == -1:
-                arrive[next_r][next_c] = i
-                queue.append((next_r, next_c))
+	row, col = queue.popleft()
+	for i in range(4):
+		next_r = row + dir_r[i]
+		next_c = col + dir_c[i]
+		if 0 <= next_r < n and 0 <= next_c < m:
+			if labyrinth[next_r][next_c] != "#" and arrive[next_r][next_c] == -1:
+				arrive[next_r][next_c] = i
+				queue.append((next_r, next_c))
 
 if arrive[b_row][b_col] == -1:
-    sys.stdout.write("NO\n")
+	sys.stdout.write("NO\n")
 else:
-    path = []
-    row, col = b_row, b_col
-    while (row, col) != (a_row, a_col):
-        i = arrive[row][col]
-        path.append(dir_char[i])
-        row -= dir_r[i]
-        col -= dir_c[i]
+	path = []
+	row, col = b_row, b_col
+	while (row, col) != (a_row, a_col):
+		i = arrive[row][col]
+		path.append(dir_char[i])
+		row -= dir_r[i]
+		col -= dir_c[i]
 
-    path.reverse()
-    sys.stdout.write("YES\n")
-    sys.stdout.write(str(len(path)) + "\n")
-    sys.stdout.write("".join(path) + "\n")
-
+	path.reverse()
+	sys.stdout.write("YES\n")
+	sys.stdout.write(str(len(path)) + "\n")
+	sys.stdout.write("".join(path) + "\n")
 ```
 
 </PySection>
