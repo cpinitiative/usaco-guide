@@ -88,7 +88,7 @@ using std::vector;
 /** @return all possible new regions that we might now be able to paint  */
 vector<pair<int, int>> new_paints(int r, int c) {
 	return {{r - 1, c - 1}, {r, c - 1},     {r + 1, c - 1}, {r - 1, c},
-			{r + 1, c},     {r - 1, c + 1}, {r, c + 1},     {r + 1, c + 1}};
+	        {r + 1, c},     {r - 1, c + 1}, {r, c + 1},     {r + 1, c + 1}};
 }
 
 int main() {
@@ -121,7 +121,7 @@ int main() {
 			if (color != -1) {
 				frontier.push_back({r, c});
 				painted[r][c] = painted[r + 1][c] = painted[r][c + 1] =
-					painted[r + 1][c + 1] = true;
+				    painted[r + 1][c + 1] = true;
 				ops.push_back({r, c, color});
 			}
 		}
@@ -131,11 +131,11 @@ int main() {
 		const auto [r, c] = frontier.back();
 		frontier.pop_back();
 
-		for (const auto& [nr, nc] : new_paints(r, c)) {
+		for (const auto &[nr, nc] : new_paints(r, c)) {
 			int color = can_paint(nr, nc);
 			if (color != -1) {
 				painted[nr][nc] = painted[nr + 1][nc] = painted[nr][nc + 1] =
-					painted[nr + 1][nc + 1] = true;
+				    painted[nr + 1][nc + 1] = true;
 				ops.push_back({nr, nc, color});
 				frontier.push_back({nr, nc});
 			}
