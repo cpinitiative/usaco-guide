@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { BlindModeProvider } from '../context/BlindModeContext';
 import { useAnalyticsEffect } from '../hooks/useAnalyticsEffect';
 import { useUpdateStreakEffect } from '../hooks/useUpdateStreakEffect';
 

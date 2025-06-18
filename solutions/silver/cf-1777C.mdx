@@ -2,7 +2,7 @@
 id: cf-1777C
 source: CF
 title: Quiz Master
-author: Rameez Parwez
+author: Rameez Parwez, David Guo
 ---
 
 [Official Editorial (C++)](https://codeforces.com/blog/entry/111729)
@@ -57,7 +57,7 @@ int main() {
 					if (x <= m) {
 						freq[x]++;
 						if (freq[x] == 1) {  // topic x covered for the first time
-							topics_covered += 1;
+							topics_covered++;
 						}
 					}
 				}
@@ -70,7 +70,7 @@ int main() {
 				if (x <= m) {
 					freq[x]--;
 					if (freq[x] == 0) {  // topic x no longer covered
-						topics_covered -= 1;
+						topics_covered--;
 					}
 				}
 			}
@@ -82,6 +82,74 @@ int main() {
 ```
 
 </CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Main {
+	private static final int M = 100000;
+	private static List<Integer>[] factors = new ArrayList[M + 1];
+
+	public static void main(String[] args) throws IOException {
+		// Precompute factors for all numbers from 1 to M
+		for (int i = 1; i <= M; i++) { factors[i] = new ArrayList<>(); }
+		for (int i = 1; i <= M; i++) {
+			for (int j = i; j <= M; j += i) { factors[j].add(i); }
+		}
+
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int testNum = Integer.parseInt(st.nextToken());
+
+		for (int t = 0; t < testNum; t++) {
+			st = new StringTokenizer(br.readLine());
+			int n = Integer.parseInt(st.nextToken());
+			int m = Integer.parseInt(st.nextToken());
+			int[] arr = new int[n];
+			int[] freq = new int[m + 1];
+
+			st = new StringTokenizer(br.readLine());
+			for (int i = 0; i < n; i++) { arr[i] = Integer.parseInt(st.nextToken()); }
+
+			Arrays.sort(arr);
+
+			int topicsCovered = 0;
+			int res = Integer.MAX_VALUE;
+			for (int i = 0, j = 0; i < n; i++) {
+				// adding student
+				while (j < n && topicsCovered < m) {
+					for (int x : factors[arr[j]]) {
+						if (x <= m) {
+							freq[x]++;
+							if (freq[x] == 1) {  // topic x covered for the first time
+								topicsCovered++;
+							}
+						}
+					}
+					j++;
+				}
+				if (topicsCovered == m) { res = Math.min(arr[j - 1] - arr[i], res); }
+
+				// removing student
+				for (int x : factors[arr[i]]) {
+					if (x <= m) {
+						freq[x]--;
+						if (freq[x] == 0) {  // topic x no longer covered
+							topicsCovered--;
+						}
+					}
+				}
+			}
+
+			System.out.println(res == Integer.MAX_VALUE ? -1 : res);
+		}
+	}
+}
+```
+
+</JavaSection>
 <PySection>
 
 ```py
