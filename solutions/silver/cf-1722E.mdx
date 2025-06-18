@@ -63,7 +63,7 @@ int main() {
 		int rect_num;
 		int query_num;
 		std::cin >> rect_num >> query_num;
-	
+
 		vector<vector<long long>> pref(MAX_SIDE + 1, vector<long long>(MAX_SIDE + 1));
 		for (int r = 0; r < rect_num; r++) {
 			int h, w;
@@ -74,15 +74,9 @@ int main() {
 		// fill out the prefix sum array
 		for (int r = 0; r <= MAX_SIDE; r++) {
 			for (int c = 0; c <= MAX_SIDE; c++) {
-				if (r > 0) {
-					pref[r][c] += pref[r - 1][c];
-				}
-				if (c > 0) {
-					pref[r][c] += pref[r][c - 1];
-				}
-				if (r > 0 && c > 0) {
-					pref[r][c] -= pref[r - 1][c - 1];
-				}
+				if (r > 0) { pref[r][c] += pref[r - 1][c]; }
+				if (c > 0) { pref[r][c] += pref[r][c - 1]; }
+				if (r > 0 && c > 0) { pref[r][c] -= pref[r - 1][c - 1]; }
 			}
 		}
 
