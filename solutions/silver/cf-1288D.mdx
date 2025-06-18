@@ -7,14 +7,14 @@ author: Justin Ji
 
 ## Explanation
 
-At a glance, it's difficult to directly compute the answer without comparing 
-each pair of arrays. Instead of directly computing the answer, we can try 
+At a glance, it's difficult to directly compute the answer without comparing
+each pair of arrays. Instead of directly computing the answer, we can try
 binary searching on it.
 
-If the value we are checking is $x$, then we need a pair of arrays $a$ and $b$ 
+If the value we are checking is $x$, then we need a pair of arrays $a$ and $b$
 where $\text{max}(a[i], b[i]) \geq x$ for all valid $i$. We can rephrase this to where
 either $a[i] \geq x$ or $b[i] \geq x$. Given that $m$ is small, this means that we can represent each array as being a bitmask,
-where the $i$-th bit in a given bitmask is turned on if $a[i] \geq x$ in our current array. 
+where the $i$-th bit in a given bitmask is turned on if $a[i] \geq x$ in our current array.
 
 Because there are only a maximum of $8$ bits in our bitmask, there are up to $256$ possible bitmasks.
 Note that we can consider two arrays with the same bitmask as being functionally equivalent. Thus, we can brute force every pair of bitmasks to see if any pair of arrays satisfies the condition for the value we are checking for.
@@ -32,56 +32,52 @@ Note that we can consider two arrays with the same bitmask as being functionally
 using ll = long long;
 
 int main() {
-    int n, m;
-    std::cin >> n >> m;
-    std::vector vals(n, std::vector<int>(m));
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < m; j++) {
-            std::cin >> vals[i][j];
-        }
-    }
+	int n, m;
+	std::cin >> n >> m;
+	std::vector vals(n, std::vector<int>(m));
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < m; j++) { std::cin >> vals[i][j]; }
+	}
 
-    std::pair<int, int> chosen;
+	std::pair<int, int> chosen;
 
-    /** @return if an answer of res is possible */
-    const auto check = [&](int res) -> bool {
-        std::vector<int> used(1 << m, -1);
-        for (int i = 0; i < n; i++) {
-            // we represent each array i with a bitmask
-            // the bitmask indicates if a[i][j] >= res
-            int mask = 0;
-            for (int j = 0; j < m; j++) {
-                mask |= (vals[i][j] >= res) << j;
-            }
+	/** @return if an answer of res is possible */
+	const auto check = [&](int res) -> bool {
+		std::vector<int> used(1 << m, -1);
+		for (int i = 0; i < n; i++) {
+			// we represent each array i with a bitmask
+			// the bitmask indicates if a[i][j] >= res
+			int mask = 0;
+			for (int j = 0; j < m; j++) { mask |= (vals[i][j] >= res) << j; }
 
-            // we map each mask to its index for now
-            used[mask] = i;
-        }
+			// we map each mask to its index for now
+			used[mask] = i;
+		}
 
-        // we now brute force every pair of bitmasks to see if there's
-        // a valid pair that satisfies the condition
-        const int full = (1 << m) - 1;
-        for (int i = 0; i < (1 << m); i++) {
-            for (int j = 0; j < (1 << m); j++) {
-                if ((i | j) == full && used[i] != -1 && used[j] != -1) {
-                    chosen = {used[i], used[j]};
-                    return true;
-                }
-            }
-        }
+		// we now brute force every pair of bitmasks to see if there's
+		// a valid pair that satisfies the condition
+		const int full = (1 << m) - 1;
+		for (int i = 0; i < (1 << m); i++) {
+			for (int j = 0; j < (1 << m); j++) {
+				if ((i | j) == full && used[i] != -1 && used[j] != -1) {
+					chosen = {used[i], used[j]};
+					return true;
+				}
+			}
+		}
 
-        return false;
-    };
+		return false;
+	};
 
-    int lo = 0, hi = 1e9;
-    while (lo < hi) {
-        int mid = (lo + hi + 1) / 2;
-        check(mid) ? lo = mid : hi = mid - 1;
-    }
+	int lo = 0, hi = 1e9;
+	while (lo < hi) {
+		int mid = (lo + hi + 1) / 2;
+		check(mid) ? lo = mid : hi = mid - 1;
+	}
 
-    check(lo); // reset the value so the (i, j) pair is correct here
+	check(lo);  // reset the value so the (i, j) pair is correct here
 
-    std::cout << chosen.first + 1 << ' ' << chosen.second + 1 << '\n';
+	std::cout << chosen.first + 1 << ' ' << chosen.second + 1 << '\n';
 }
 ```
 
