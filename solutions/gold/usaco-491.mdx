@@ -256,7 +256,7 @@ int main() {
 
 	int min_energy = INT32_MAX;
 	for (int i = 0; i < N; i++) {
-		int energy = dist[0][i] * B + dist[1][i] * E + dist[2][i] * P;
+		int energy = dist[0][i] * B + dist[1][i] * E + dist[2][i] * min(B + E, P);
 		min_energy = min(min_energy, energy);
 	}
 	cout << min_energy << endl;
@@ -271,7 +271,7 @@ int main() {
 import java.io.*;
 import java.util.*;
 
-public class PiggyBack {
+public class Piggyback {
 	static int B, E, P, N, M, A = Integer.MAX_VALUE;
 	static List<Integer>[] adj;
 	static int[][] dist;
@@ -299,12 +299,12 @@ public class PiggyBack {
 			adj[b].add(a);
 		}
 
-		distance(0, 0);
-		distance(1, 1);
-		distance(N - 1, 2);
+		bfs(0, 0);
+		bfs(1, 1);
+		bfs(N - 1, 2);
 
 		for (int i = 0; i < N; i++) {
-			A = Math.min(A, dist[0][i] * B + dist[1][i] * E + dist[2][i] * P);
+			A = Math.min(A, dist[0][i] * B + dist[1][i] * E + dist[2][i] * Math.min(B + E, P));
 		}
 
 		io.println(A);
