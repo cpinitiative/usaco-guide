@@ -52,7 +52,7 @@ int main() {
 			int mask = 0;
 			for (int j = 0; j < m; j++) { mask |= (vals[i][j] >= res) << j; }
 
-			// we map each mask to its index for now
+			// we map each mask to its index
 			used[mask] = i;
 		}
 
@@ -77,11 +77,143 @@ int main() {
 		check(mid) ? lo = mid : hi = mid - 1;
 	}
 
-	check(lo);  // reset the value so the (i, j) pair is correct here
+	check(lo);  // make sure chosen pair is correct
 
 	std::cout << chosen.first + 1 << ' ' << chosen.second + 1 << std::endl;
 }
 ```
 
 </CPPSection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Minimax {
+    static int n, m;
+    static int[][] vals;
+    static int chosenA = 0, chosenB = 0;
+
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+
+        n = Integer.parseInt(st.nextToken());
+        m = Integer.parseInt(st.nextToken());
+        vals = new int[n][m];
+
+        for (int i = 0; i < n; i++) {
+            st = new StringTokenizer(br.readLine());
+            for (int j = 0; j < m; j++) {
+                vals[i][j] = Integer.parseInt(st.nextToken());
+            }
+        }
+
+        int lo = 0, hi = (int) 1e9;
+        while (lo < hi) {
+            int mid = (lo + hi + 1) / 2;
+            if (check(mid)) {
+                lo = mid;
+            } else {
+                hi = mid - 1;
+            }
+        }
+
+        check(lo); // make sure chosen pair is correct
+        System.out.println((chosenA + 1) + " " + (chosenB + 1));
+    }
+
+    /** @return if an answer of res works, and sets chosen values */
+    static boolean check(int res) {
+        int[] used = new int[1 << m];
+        Arrays.fill(used, -1);
+
+        for (int i = 0; i < n; i++) {
+            // we represent each array i with a bitmask
+			// the bitmask indicates if a[i][j] >= res
+            int mask = 0;
+            for (int j = 0; j < m; j++) {
+                if (vals[i][j] >= res) {
+                    mask |= (1 << j);
+                }
+            }
+
+            // we map each mask to its index
+            used[mask] = i;
+        }
+
+        // we now brute force every pair of bitmasks to see if there's
+		// a valid pair that satisfies the condition
+        final int full = (1 << m) - 1;
+        for (int i = 0; i < (1 << m); i++) {
+            for (int j = 0; j < (1 << m); j++) {
+                if ((i | j) == full && used[i] != -1 && used[j] != -1) {
+                    chosenA = used[i];
+                    chosenB = used[j];
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+}
+```
+
+</JavaSection>
+
+<PySection>
+
+```py
+import sys
+
+input = sys.stdin.readline
+
+n, m = map(int, input().split())
+vals = [list(map(int, input().split())) for _ in range(n)]
+chosen = [0, 0]
+
+def check(res):
+    """
+    Checks if an answer of res is attainable. If so, set the 
+    values in the chosen list to be a valid pair for our answer.
+    """
+    used = [-1] * (1 << m)
+    for i in range(n):
+        # we represent each array i with a bitmask
+		# the bitmask indicates if a[i][j] >= res
+        mask = 0
+        for j in range(m):
+            if vals[i][j] >= res:
+                mask |= (1 << j)
+
+        # we map each mask to its index
+        used[mask] = i
+
+    # we now brute force every pair of bitmasks to see if there's
+	# a valid pair that satisfies the condition
+    full = (1 << m) - 1
+    for i in range(1 << m):
+        for j in range(1 << m):
+            if (i | j) == full and used[i] != -1 and used[j] != -1:
+                chosen[0], chosen[1] = used[i], used[j]
+                return True
+            
+    return False
+
+lo, hi = 0, int(1e9)
+while lo < hi:
+    mid = (lo + hi + 1) // 2
+    if check(mid):
+        lo = mid
+    else:
+        hi = mid - 1
+
+check(lo) # make sure chosen pair is correct
+print(chosen[0] + 1, chosen[1] + 1)
+```
+
+</PySection>
 </LanguageSection>
