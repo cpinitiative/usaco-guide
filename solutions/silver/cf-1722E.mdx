@@ -63,7 +63,7 @@ int main() {
 			int hb, wb;
 			std::cin >> hs >> ws >> hb >> wb;
 			long long submatrix = pref[hb - 1][wb - 1] - pref[hs][wb - 1] -
-								  pref[hb - 1][ws] + pref[hs][ws];
+			                      pref[hb - 1][ws] + pref[hs][ws];
 			cout << submatrix << '\n';
 		}
 	}
@@ -99,15 +99,9 @@ public class CountingRectangles {
 			// fill out the prefix sum array
 			for (int r = 0; r <= MAX_SIDE; r++) {
 				for (int c = 0; c <= MAX_SIDE; c++) {
-					if (r > 0) {
-						pref[r][c] += pref[r - 1][c];
-					}
-					if (c > 0) {
-						pref[r][c] += pref[r][c - 1];
-					}
-					if (r > 0 && c > 0) {
-						pref[r][c] -= pref[r - 1][c - 1];
-					}
+					if (r > 0) { pref[r][c] += pref[r - 1][c]; }
+					if (c > 0) { pref[r][c] += pref[r][c - 1]; }
+					if (r > 0 && c > 0) { pref[r][c] -= pref[r - 1][c - 1]; }
 				}
 			}
 
@@ -119,7 +113,7 @@ public class CountingRectangles {
 				int wb = Integer.parseInt(query.nextToken());
 
 				long submatrix = pref[hb - 1][wb - 1] - pref[hs][wb - 1] -
-						pref[hb - 1][ws] + pref[hs][ws];
+				                 pref[hb - 1][ws] + pref[hs][ws];
 				System.out.println(submatrix);
 			}
 		}
