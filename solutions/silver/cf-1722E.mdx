@@ -14,30 +14,8 @@ The overall approach is to use 2D prefix sums along with some jank combinatorics
 We start by constructing a 2D array $a$ where $a[h][w]$
 contains the area of all rectangles with height $h$ and width $w$ *exactly*.
 
-Now, if we let $p[h][w]$ be the submatrix sum from $a[0][0]$ to $a[h][w]$ inclusive,
-we get all the area of all rectangles whose height is at most $h$ and width is at most $w$.
-
-This allows us to hande the "fitting in a larger rectangle" constraint
-by accessing $p[h_b - 1][w_b - 1]$, but how about the other one?
-Naively subtracting $p[h_s][w_s]$ won't work since that only takes away
-all the rectangles whose width *and* height are less than or equal to $h_s$ and $w_s$ respectively,
-leaving us with all the rectangles that fit within the big one
-and have at least one dimension that's greater than the corresponding $h_s$ or $w_s$.
-
-To fix this, we can use $p[h_s][h_b - 1]$ to get all the area of the rectangles
-whose height is less than $h_s$ and something similar to get the area
-of all rectangles whose width is less than $w_s$.
-
-Now, we have the following three numbers:
-1. All rectangles that satisfy $h_s$ *or* $w_s$.
-2. All that satisfy *just* $h_s$.
-3. All that satisfy *just* $w_s$.
-We can subtract the first quantity from the sum of the second and third to get our final answer.
-The reasoning for this is similar to
-[how Venn Diagram work](https://math.stackexchange.com/a/3096210/713952).
-
-If this explanation was a bit confusing, you can check out
-the code below to see how the calculations actually pan out.
+To get the area of all rectangles that satisfy a certain query, we
+perform a 2D prefix sum from $a[h_s+1][w_s+1]$ to $a[h_b-1][w_b-1]$ inclusive.
 
 ## Implementation
 
@@ -84,20 +62,111 @@ int main() {
 			int hs, ws;
 			int hb, wb;
 			std::cin >> hs >> ws >> hb >> wb;
-
-			// everything that can fit inside the larger rectangle-
-			// in the subsequenct comments, by "all" i refer to everything here
-			long long total = pref[hb - 1][wb - 1];
-			// all rectangles s.t. h_i > h_s OR w_i > w_s
-			long long either_or = total - pref[hs][ws];
-			// (all such that h_i > h_s) + (all such that w_i > w_s)
-			long long indiv = (total - pref[hs][wb - 1]) + (total - pref[hb - 1][ws]);
-			// finally calculate all such that h_i > h_s AND w_i > w_s
-			cout << indiv - either_or << '\n';
+			long long submatrix = pref[hb - 1][wb - 1] - pref[hs][wb - 1] -
+								  pref[hb - 1][ws] + pref[hs][ws];
+			cout << submatrix << '\n';
 		}
 	}
 }
 ```
 
 </CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class CountingRectangles {
+	private static final int MAX_SIDE = 1000;
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
+		int testNum = Integer.parseInt(read.readLine());
+		for (int t = 0; t < testNum; t++) {
+			StringTokenizer initial = new StringTokenizer(read.readLine());
+			int rectNum = Integer.parseInt(initial.nextToken());
+			int queryNum = Integer.parseInt(initial.nextToken());
+
+			long[][] pref = new long[MAX_SIDE + 1][MAX_SIDE + 1];
+			for (int r = 0; r < rectNum; r++) {
+				StringTokenizer rect = new StringTokenizer(read.readLine());
+				int h = Integer.parseInt(rect.nextToken());
+				int w = Integer.parseInt(rect.nextToken());
+				pref[h][w] += h * w;
+			}
+
+			// fill out the prefix sum array
+			for (int r = 0; r <= MAX_SIDE; r++) {
+				for (int c = 0; c <= MAX_SIDE; c++) {
+					if (r > 0) {
+						pref[r][c] += pref[r - 1][c];
+					}
+					if (c > 0) {
+						pref[r][c] += pref[r][c - 1];
+					}
+					if (r > 0 && c > 0) {
+						pref[r][c] -= pref[r - 1][c - 1];
+					}
+				}
+			}
+
+			for (int q = 0; q < queryNum; q++) {
+				StringTokenizer query = new StringTokenizer(read.readLine());
+				int hs = Integer.parseInt(query.nextToken());
+				int ws = Integer.parseInt(query.nextToken());
+				int hb = Integer.parseInt(query.nextToken());
+				int wb = Integer.parseInt(query.nextToken());
+
+				long submatrix = pref[hb - 1][wb - 1] - pref[hs][wb - 1] -
+						pref[hb - 1][ws] + pref[hs][ws];
+				System.out.println(submatrix);
+			}
+		}
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+<Warning>
+
+This solution only runs in time when submitted with PyPy.
+
+</Warning>
+
+```py
+MAX_SIDE = 1000
+
+overall_ans = []
+
+for _ in range(int(input())):
+	rect_num, query_num = [int(i) for i in input().split()]
+
+	pref = [[0 for _ in range(MAX_SIDE + 1)] for _ in range(MAX_SIDE + 1)]
+	for _ in range(rect_num):
+		h, w = [int(i) for i in input().split()]
+		pref[h][w] += h * w
+
+	# fill out the prefix sum array
+	for r in range(MAX_SIDE + 1):
+		for c in range(MAX_SIDE + 1):
+			if r > 0:
+				pref[r][c] += pref[r - 1][c]
+			if c > 0:
+				pref[r][c] += pref[r][c - 1]
+			if r > 0 and c > 0:
+				pref[r][c] -= pref[r - 1][c - 1]
+
+	for _ in range(query_num):
+		hs, ws, hb, wb = [int(i) for i in input().split()]
+		overall_ans.append(
+			pref[hb - 1][wb - 1] - pref[hs][wb - 1] - pref[hb - 1][ws] + pref[hs][ws]
+		)
+
+print("\n".join(str(a) for a in overall_ans))
+```
+
+</PySection>
 </LanguageSection>
