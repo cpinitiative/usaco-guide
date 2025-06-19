@@ -1,0 +1,101 @@
+---
+id: ac-fennecvssnuke
+source: AC
+title: Fennec VS. Snuke
+author: Kevin Sheng
+---
+
+[Official Editorial](https://img.atcoder.jp/arc078/editorial.pdf)
+
+## Explanation
+
+Intuitively, there's two main "phases" to this fight:
+1. Where some nodes could either go black or white, and it's not yet clear.
+2. All nodes can only turn black or white due to being blocked in by Fennec or Snuke.
+
+As long as there's an uncolored node on the one and only path
+from node $1$ to node $N$, we're in phase 1.
+After that, the tree has been cut in two and every uncolored node
+can only reach one of the two colors.
+
+Thus, it would make sense for both players to try and get as many
+nodes on the path converted to their color before doing anything else.
+This winds up with the path split into half-black and half-white,
+with odd-length paths giving one extra black node since Fennec goes first.
+
+After this, it's only a matter of seeing which player has staked out more territory,
+since they're the one that can make more moves and outlast their opponent.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <functional>
+#include <iostream>
+#include <vector>
+
+using std::cout;
+using std::endl;
+using std::vector;
+
+int main() {
+	int node_num;
+	std::cin >> node_num;
+	vector<vector<int>> neighbors(node_num);
+	for (int i = 0; i < node_num - 1; i++) {
+		int from, to;
+		std::cin >> from >> to;
+		neighbors[--from].push_back(--to);
+		neighbors[to].push_back(from);
+	}
+
+	vector<int> parents(node_num);
+	std::function<void(int, int)> calc_parents;
+	calc_parents = [&](int at, int parent) {
+		parents[at] = parent;
+		for (int n : neighbors[at]) {
+			if (n != parent) { calc_parents(n, at); }
+		}
+	};
+	calc_parents(0, 0);
+
+	// the path from snuke to fennec (endpoints included)
+	vector<int> path;
+	int at = node_num - 1;
+	while (at != 0) {
+		path.push_back(at);
+		at = parents[at];
+	}
+	path.push_back(0);
+
+	// get the initial colors that they'll actually battle over
+	vector<int> colors(node_num, -1);
+	for (int i = 0; i < path.size(); i++) {
+		// 0 = black (fennec), 1 = white (snuke)
+		colors[path[i]] = i < path.size() / 2;
+	}
+
+	// and finally see which side got the most colors
+	int diff = 0;  // fennec - snuke
+	std::function<void(int)> fill_tree;
+	fill_tree = [&](int at) {
+		diff += colors[at] == 0 ? 1 : -1;
+		for (int n : neighbors[at]) {
+			if (n != parents[at]) {
+				if (colors[n] == -1) { colors[n] = colors[at]; }
+				fill_tree(n);
+			}
+		}
+	};
+	fill_tree(0);
+
+	cout << (diff > 0 ? "Fennec" : "Snuke") << endl;
+}
+```
+
+</CPPSection>
+</LanguageSection>
