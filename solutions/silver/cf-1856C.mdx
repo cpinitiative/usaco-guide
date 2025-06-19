@@ -33,6 +33,64 @@ operations is less than the max we were given, everything's fine.
 **Time Complexity:** $\mathcal{O}(n^2 \log k)$
 
 <LanguageSection>
+<CPPSection>
+
+```cpp
+#include <algorithm>
+#include <cstdint>
+#include <iostream>
+#include <vector>
+
+using std::cout;
+using std::endl;
+using std::vector;
+
+int main() {
+	int test_num;
+	std::cin >> test_num;
+	for (int t = 0; t < test_num; t++) {
+		int len;
+		int max_ops;
+		std::cin >> len >> max_ops;
+		vector<int> arr(len);
+		for (int& i : arr) { std::cin >> i; }
+
+		int best = INT32_MIN;
+		for (int start = 0; start < len; start++) {
+			int lo = arr[start];
+			int hi = arr[start] + max_ops;
+			int doable = -1;
+			while (lo <= hi) {
+				int mid = (lo + hi) / 2;
+
+				long long needed = 0;
+				for (int i = start; i < len; i++) {
+					int diff = mid - (i - start) - arr[i];
+					if (diff <= 0) { break; }
+					if (i == len - 1) {
+						needed = INT64_MAX;
+						break;
+					}
+					needed += diff;
+				}
+
+				if (needed <= max_ops) {
+					doable = mid;
+					lo = mid + 1;
+				} else {
+					hi = mid - 1;
+				}
+			}
+
+			best = std::max(best, doable);
+		}
+
+		cout << best << '\n';
+	}
+}
+```
+
+</CPPSection>
 <JavaSection>
 
 ```java
@@ -48,8 +106,8 @@ public class ToBecomeMax {
 			int len = Integer.parseInt(initial.nextToken());
 			int maxOps = Integer.parseInt(initial.nextToken());
 			int[] arr = Arrays.stream(read.readLine().split(" "))
-			                .mapToInt(Integer::parseInt)
-			                .toArray();
+							.mapToInt(Integer::parseInt)
+							.toArray();
 
 			int best = Integer.MIN_VALUE;
 			// go through all starting elements
@@ -95,4 +153,47 @@ public class ToBecomeMax {
 ```
 
 </JavaSection>
+<PySection>
+
+<Warning>
+
+The below solution only runs in time if submitted with PyPy.
+
+</Warning>
+
+```py
+for _ in range(int(input())):
+	len_, max_ops = [int(i) for i in input().split()]
+	arr = [int(i) for i in input().split()]
+
+	best = -float("inf")
+	for start in range(len_):
+		lo = arr[start]
+		hi = arr[start] + max_ops
+		doable = -1
+		while lo <= hi:
+			mid = (lo + hi) // 2
+
+			needed = 0
+			for i in range(start, len_):
+				diff = mid - (i - start) - arr[i]
+				if diff <= 0:
+					break
+				if i == len_ - 1:
+					needed = float("inf")
+					break
+				needed += diff
+			
+			if needed <= max_ops:
+				doable = mid
+				lo = mid + 1
+			else:
+				hi = mid - 1
+		
+		best = max(best, doable)
+
+	print(best)
+```
+
+</PySection>
 </LanguageSection>
