@@ -226,6 +226,13 @@ export const RestOfMembers: Member[] = [
     name: 'David Zhou',
     titles: [roles.videoInstructor],
   },
+  {
+    photo: 'kaylanc',
+    name: 'Kalyan Cherukuri',
+    titles: [roles.contentAuthor],
+    linkedin: 'http://www.linkedin.com/in/kal-che',
+    website: 'https://kal-che.vercel.app/',
+  },
 ];
 
 export const FormerMembers: Member[] = [
