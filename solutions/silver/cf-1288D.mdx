@@ -19,7 +19,8 @@ either $a[i] \geq x$ or $b[i] \geq x$. Given that $m$ is small, this means that 
 where the $i$-th bit in a given bitmask is turned on if $a[i] \geq x$ in our current array.
 
 Because there are only a maximum of $8$ bits in our bitmask, there are up to $256$ possible bitmasks.
-Note that we can consider two arrays with the same bitmask as being functionally equivalent. Thus, we can brute force every pair of bitmasks to see if any pair of arrays satisfies the condition for the value we are checking for.
+Note that we can consider two arrays with the same bitmask as being functionally equivalent.
+Thus, we can brute force every pair of bitmasks to see if any pair of arrays satisfies the condition for the value we are checking for.
 
 ## Implementation
 
@@ -84,7 +85,6 @@ int main() {
 ```
 
 </CPPSection>
-
 <JavaSection>
 
 ```java
@@ -161,7 +161,6 @@ public class Minimax {
 ```
 
 </JavaSection>
-
 <PySection>
 
 ```py
@@ -174,7 +173,7 @@ vals = [list(map(int, input().split())) for _ in range(n)]
 chosen = [0, 0]
 
 
-def check(res):
+def check(res: int) -> bool:
 	"""
 	Checks if an answer of res is attainable. If so, set the
 	values in the chosen list to be a valid pair for our answer.
@@ -203,7 +202,8 @@ def check(res):
 	return False
 
 
-lo, hi = 0, int(1e9)
+lo = 0
+hi = 10 ** 9
 while lo < hi:
 	mid = (lo + hi + 1) // 2
 	if check(mid):
