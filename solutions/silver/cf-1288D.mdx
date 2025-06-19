@@ -5,6 +5,8 @@ title: Minimax Problem
 author: Justin Ji
 ---
 
+[Official Analysis (C++)](https://codeforces.com/blog/entry/73105)
+
 ## Explanation
 
 At a glance, it's difficult to directly compute the answer without comparing
@@ -41,7 +43,7 @@ int main() {
 
 	std::pair<int, int> chosen;
 
-	/** @return if an answer of res is possible */
+	/** @return if an answer of res works, and sets chosen to a valid pair */
 	const auto check = [&](int res) -> bool {
 		std::vector<int> used(1 << m, -1);
 		for (int i = 0; i < n; i++) {
@@ -77,7 +79,7 @@ int main() {
 
 	check(lo);  // reset the value so the (i, j) pair is correct here
 
-	std::cout << chosen.first + 1 << ' ' << chosen.second + 1 << endl;
+	std::cout << chosen.first + 1 << ' ' << chosen.second + 1 << std::endl;
 }
 ```
 
