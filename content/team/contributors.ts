@@ -229,7 +229,7 @@ export const RestOfMembers: Member[] = [
   {
     photo: 'kaylanc',
     name: 'Kalyan Cherukuri',
-    titles: [roles.contentAuthor],
+    titles: [roles.clubCurriculum],
     linkedin: 'http://www.linkedin.com/in/kal-che',
     website: 'https://kal-che.vercel.app/',
   },
