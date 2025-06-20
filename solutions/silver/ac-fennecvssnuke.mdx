@@ -114,9 +114,7 @@ public class FennecVSSnuke {
 		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
 		int nodeNum = Integer.parseInt(read.readLine());
 		neighbors = new List[nodeNum];
-		for (int n = 0; n < nodeNum; n++) {
-			neighbors[n] = new ArrayList<>();
-		}
+		for (int n = 0; n < nodeNum; n++) { neighbors[n] = new ArrayList<>(); }
 		for (int i = 0; i < nodeNum - 1; i++) {
 			StringTokenizer edge = new StringTokenizer(read.readLine());
 			int from = Integer.parseInt(edge.nextToken()) - 1;
@@ -153,19 +151,15 @@ public class FennecVSSnuke {
 	private static void calcParents(int at, int parent) {
 		parents[at] = parent;
 		for (int n : neighbors[at]) {
-			if (n != parent) {
-				calcParents(n, at);
-			}
+			if (n != parent) { calcParents(n, at); }
 		}
 	}
 
 	private static void fillTree(int at) {
 		diff += colors[at] == 0 ? 1 : -1;
 		for (int n : neighbors[at]) {
-			if (n != parents[at]){
-				if (colors[n] == -1) {
-					colors[n] = colors[at];
-				}
+			if (n != parents[at]) {
+				if (colors[n] == -1) { colors[n] = colors[at]; }
 				fillTree(n);
 			}
 		}
@@ -179,7 +173,7 @@ public class FennecVSSnuke {
 ```py
 from sys import setrecursionlimit
 
-setrecursionlimit(10 ** 8)
+setrecursionlimit(10**8)
 
 
 def calc_parents(at: int, parent: int):
