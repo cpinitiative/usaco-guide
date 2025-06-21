@@ -1,0 +1,227 @@
+---
+id: ac-fennecvssnuke
+source: AC
+title: Fennec VS. Snuke
+author: Kevin Sheng
+---
+
+[Official Editorial](https://img.atcoder.jp/arc078/editorial.pdf)
+
+## Explanation
+
+Intuitively, there's two main "phases" to this fight:
+1. Where some nodes could either go black or white, and it's not yet clear.
+2. All nodes can only turn black or white due to being blocked in by Fennec or Snuke.
+
+As long as there's an uncolored node on the one and only path
+from node $1$ to node $N$, we're in phase 1.
+After that, the tree has been cut in two and every uncolored node
+can only reach one of the two colors.
+
+Thus, it would make sense for both players to try and get as many
+nodes on the path converted to their color before doing anything else.
+This winds up with the path split into half-black and half-white,
+with odd-length paths giving one extra black node since Fennec goes first.
+
+After this, it's only a matter of seeing which player has staked out more territory,
+since they're the one that can make more moves and outlast their opponent.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <functional>
+#include <iostream>
+#include <vector>
+
+using std::cout;
+using std::endl;
+using std::vector;
+
+int main() {
+	int node_num;
+	std::cin >> node_num;
+	vector<vector<int>> neighbors(node_num);
+	for (int i = 0; i < node_num - 1; i++) {
+		int from, to;
+		std::cin >> from >> to;
+		neighbors[--from].push_back(--to);
+		neighbors[to].push_back(from);
+	}
+
+	vector<int> parents(node_num);
+	std::function<void(int, int)> calc_parents;
+	calc_parents = [&](int at, int parent) {
+		parents[at] = parent;
+		for (int n : neighbors[at]) {
+			if (n != parent) { calc_parents(n, at); }
+		}
+	};
+	calc_parents(0, 0);
+
+	// the path from snuke to fennec (endpoints included)
+	vector<int> path;
+	int at = node_num - 1;
+	while (at != 0) {
+		path.push_back(at);
+		at = parents[at];
+	}
+	path.push_back(0);
+
+	// get the initial colors that they'll actually battle over
+	vector<int> colors(node_num, -1);
+	for (int i = 0; i < path.size(); i++) {
+		// 0 = black (fennec), 1 = white (snuke)
+		colors[path[i]] = i < path.size() / 2;
+	}
+
+	// and finally see which side got the most colors
+	int diff = 0;  // fennec - snuke
+	std::function<void(int)> fill_tree;
+	fill_tree = [&](int at) {
+		diff += colors[at] == 0 ? 1 : -1;
+		for (int n : neighbors[at]) {
+			if (n != parents[at]) {
+				if (colors[n] == -1) { colors[n] = colors[at]; }
+				fill_tree(n);
+			}
+		}
+	};
+	fill_tree(0);
+
+	cout << (diff > 0 ? "Fennec" : "Snuke") << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class FennecVSSnuke {
+	private static List<Integer>[] neighbors;
+	private static int[] parents;
+	private static int[] colors;
+	private static int diff = 0;  // fennec - snuke
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
+		int nodeNum = Integer.parseInt(read.readLine());
+		neighbors = new List[nodeNum];
+		for (int n = 0; n < nodeNum; n++) { neighbors[n] = new ArrayList<>(); }
+		for (int i = 0; i < nodeNum - 1; i++) {
+			StringTokenizer edge = new StringTokenizer(read.readLine());
+			int from = Integer.parseInt(edge.nextToken()) - 1;
+			int to = Integer.parseInt(edge.nextToken()) - 1;
+			neighbors[from].add(to);
+			neighbors[to].add(from);
+		}
+
+		parents = new int[nodeNum];
+		calcParents(0, 0);
+
+		// the path from snuke to fennec (endpoints included)
+		List<Integer> path = new ArrayList<>();
+		int at = nodeNum - 1;
+		while (at != 0) {
+			path.add(at);
+			at = parents[at];
+		}
+		path.add(0);
+
+		// get the initial colors that they'll actually battle over
+		colors = new int[nodeNum];
+		Arrays.fill(colors, -1);
+		for (int i = 0; i < path.size(); i++) {
+			// 0 = black (fennec), 1 = white (snuke)
+			colors[path.get(i)] = i < path.size() / 2 ? 1 : 0;
+		}
+
+		// and finally see which side got the most colors
+		fillTree(0);
+		System.out.println(diff > 0 ? "Fennec" : "Snuke");
+	}
+
+	private static void calcParents(int at, int parent) {
+		parents[at] = parent;
+		for (int n : neighbors[at]) {
+			if (n != parent) { calcParents(n, at); }
+		}
+	}
+
+	private static void fillTree(int at) {
+		diff += colors[at] == 0 ? 1 : -1;
+		for (int n : neighbors[at]) {
+			if (n != parents[at]) {
+				if (colors[n] == -1) { colors[n] = colors[at]; }
+				fillTree(n);
+			}
+		}
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+from sys import setrecursionlimit
+
+setrecursionlimit(10**8)
+
+
+def calc_parents(at: int, parent: int):
+	parents[at] = parent
+	for n in neighbors[at]:
+		if n != parent:
+			calc_parents(n, at)
+
+
+def fill_tree(at: int):
+	global diff
+	diff += 1 if colors[at] == 0 else -1
+	for n in neighbors[at]:
+		if n != parents[at]:
+			if colors[n] == -1:
+				colors[n] = colors[at]
+			fill_tree(n)
+
+
+node_num = int(input())
+neighbors = [[] for _ in range(node_num)]
+for _ in range(node_num - 1):
+	from_, to = [int(i) - 1 for i in input().split()]
+	neighbors[from_].append(to)
+	neighbors[to].append(from_)
+
+parents = [0 for _ in range(node_num)]
+calc_parents(0, 0)
+
+# the path from snuke to fennec (endpoints included)
+path = []
+at = node_num - 1
+while at != 0:
+	path.append(at)
+	at = parents[at]
+path.append(0)
+
+colors = [-1 for _ in range(node_num)]
+for i in range(len(path)):
+	# 0 = black (fennec), 1 = white (snuke)
+	colors[path[i]] = int(i < len(path) // 2)
+
+# and finally see which side got the most colors
+diff = 0  # fennec - snuke
+fill_tree(0)
+
+print("Fennec" if diff > 0 else "Snuke")
+```
+
+</PySection>
+</LanguageSection>
