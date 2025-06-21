@@ -199,7 +199,6 @@ public class Pails {
 ```py
 from collections import deque
 
-
 def main():
 	with open("pails.in", "r") as fin:
 		x, y, k, m = map(int, fin.readline().split())
@@ -270,7 +269,15 @@ if __name__ == "__main__":
 
 </Spoiler>
 
-## Implementation (DFS)
+## Explanation (DFS)
+
+We can perform a DFS starting from the base state of $(0, 0)$. We perform each operation to find the states $(i, j)$ where pail $X$ has $i$ and pail $Y$ has $j$ units of milk.
+
+We need to use a 3D grid to correctly track visited states. The DFS may visit the same state earlier in its processing but in a greater number of operations. To properly track visited cells, we need to make sure the visited grid has a record for how many operations it took to reach each state.
+
+Simulating the all six different operations every time is enough to pass the constraints.
+
+## Implementation
 
 **Time Complexity:** $\mathcal O(XYK)$
 
@@ -467,8 +474,6 @@ print(sol, file=open("pails.out", "w"))
 
 ## Alternate Solution: BFS
 
-**Time Complexity:** $\mathcal O(XY)$
-
 We can directly simulate all operations using BFS.
 
 In this problem, we care about states $(i, j)$ where pail $X$ has $i$ and pail
@@ -490,6 +495,10 @@ quantity to each pail appropriately.
 
 Now iterate over all states $(i, j)$ where $\texttt{dist}[i][j] \le K$ and
 compute the minimum $|i+j-M|$.
+
+## Implementation
+
+**Time Complexity:** $\mathcal O(XY)$
 
 <LanguageSection>
 
