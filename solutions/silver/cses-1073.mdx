@@ -16,8 +16,6 @@ $\mathcal{O}(N^2)$, which is too slow.
 
 ## Solution 1 - Binary Search + Dynamic Array
 
-**Time Complexity:** $\mathcal{O}(N\log N)$
-
 We can store existing towers using a dynamic array, where each tower's value is
 the size of the cube on top. For each cube, we can run upper bound binary search
 on the array to find the tower with the smallest top cube that's strictly larger
@@ -27,8 +25,11 @@ append a new tower to the end of the array. By doing so, we maintain the tower
 array in a sorted order (try and prove this for yourself). Our answer will be
 the size of the array after all cubes have been processed.
 
-<LanguageSection>
+## Implementation
 
+**Time Complexity:** $\mathcal{O}(N\log N)$
+
+<LanguageSection>
 <CPPSection>
 
 ```cpp
@@ -63,7 +64,6 @@ int main() {
 ```
 
 </CPPSection>
-
 <JavaSection>
 
 ```java
@@ -106,8 +106,8 @@ public class Towers {
 	// CodeSnip{Kattio}
 }
 ```
-</JavaSection>
 
+</JavaSection>
 <PySection>
 
 ```py
@@ -138,12 +138,9 @@ print(len(towers))
 ```
 
 </PySection>
-
 </LanguageSection>
 
 ## Solution 2 - Multiset
-
-**Time Complexity:** $\mathcal{O}(N\log N)$
 
 In this approach, we store the towers using an ordered multiset (which can be
 represented as a
@@ -157,9 +154,11 @@ adding it's new value into it. If no such tower exists, we add a new tower to
 the set. Our answer will be the total number of towers in the multiset (this
 takes some extra work to find in Java) after all cubes have been processed.
 
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N\log N)$
 
 <LanguageSection>
-
 <CPPSection>
 
 
@@ -192,8 +191,8 @@ int main() {
 ```
 
 </CPPSection>
-
 <JavaSection>
+
 ```java
 import java.io.*;
 import java.util.*;
@@ -232,8 +231,8 @@ public class Towers {
 	// CodeSnip{Kattio}
 }
 ```
-</JavaSection>
 
+</JavaSection>
 <PySection>
 
 ```py
@@ -256,5 +255,4 @@ print(len(towers))
 ```
 
 </PySection>
-
 </LanguageSection>
