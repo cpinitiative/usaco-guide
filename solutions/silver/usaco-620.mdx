@@ -2,10 +2,268 @@
 id: usaco-620
 source: USACO Silver 2016 February
 title: Milk Pails
-author: Óscar Garries, Neo Wang, Nathan Gong, Akshar Yeccherla, George Pong
+author: Óscar Garries, Neo Wang, Nathan Gong, Akshar Yeccherla, George Pong, David Zhou
 ---
 
 [Official Analysis (Java)](http://www.usaco.org/current/data/sol_pails_silver_feb16.html)
+
+## Video Solution
+
+By David Zhou
+
+<YouTube id="7IHPKEPe1w0" />
+
+<Spoiler title="Video Solution Code">
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <cmath>
+#include <iostream>
+#include <queue>
+#include <vector>
+using namespace std;
+
+struct State {
+    int op, a, b;
+};
+
+int main() {
+    // old IO
+    freopen("pails.in", "r", stdin);
+    freopen("pails.out", "w", stdout);
+    
+    int x, y, k, m;
+    cin >> x >> y >> k >> m;
+
+    int res = m;  // initially both pails are empty, so there is a difference of m-0, which is m
+    vector<vector<int>> visited(x + 1, vector<int>(y + 1, 0));
+    visited[0][0] = 1;
+
+    queue<State> q;
+    q.push({0, 0, 0});
+    while (!q.empty()) {
+        int op = q.front().op, a = q.front().a, b = q.front().b;
+        q.pop();
+        res = min(res, abs(m - (a + b)));
+        if (op == k) {
+            continue;
+        }
+
+        // fill
+        if (visited[x][b] == 0) {
+            visited[x][b] = 1;
+            q.push({op + 1, x, b});
+        }
+        if (visited[a][y] == 0) {
+            visited[a][y] = 1;
+            q.push({op + 1, a, y});
+        }
+
+        // empty
+        if (visited[0][b] == 0) {
+            visited[0][b] = 1;
+            q.push({op + 1, 0, b});
+        }
+        if (visited[a][0] == 0) {
+            visited[a][0] = 1;
+            q.push({op + 1, a, 0});
+        }
+
+        // pour X into Y
+        int pour_x = a + b - y;
+        if (pour_x <= 0) {
+            if (visited[0][a + b] == 0) {
+                visited[0][a + b] = 1;
+                q.push({op + 1, 0, a + b});
+            }
+        } else if (visited[pour_x][y] == 0) {
+            visited[pour_x][y] = 1;
+            q.push({op + 1, pour_x, y});
+        }
+
+        // pour Y into X
+        int pour_y = a + b - x;
+        if (pour_y <= 0) {
+            if (visited[a + b][0] == 0) {
+                visited[a + b][0] = 1;
+                q.push({op + 1, a + b, 0});
+            }
+        } else if (visited[x][pour_y] == 0) {
+            visited[x][pour_y] = 1;
+            q.push({op + 1, x, pour_y});
+        }
+    }
+
+    cout << res << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Pails {
+    static class State {
+        int op, a, b;
+        State(int op, int a, int b) {
+            this.op = op;
+            this.a = a;
+            this.b = b;
+        }
+    }
+
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new FileReader("pails.in"));
+        PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("pails.out")));
+        
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        int x = Integer.parseInt(st.nextToken());
+        int y = Integer.parseInt(st.nextToken());
+        int k = Integer.parseInt(st.nextToken());
+        int m = Integer.parseInt(st.nextToken());
+
+        int res = m;  // initially both pails are empty, so there is a difference of m-0, which is m
+        int[][] visited = new int[x + 1][y + 1];
+        visited[0][0] = 1;
+
+        Queue<State> q = new LinkedList<>();
+        q.add(new State(0, 0, 0));
+
+        while (!q.isEmpty()) {
+            State cur = q.poll();
+            int op = cur.op, a = cur.a, b = cur.b;
+            res = Math.min(res, Math.abs(m - (a + b)));
+            if (op == k) {
+                continue;
+            }
+
+            // fill
+            if (visited[x][b] == 0) {
+                visited[x][b] = 1;
+                q.add(new State(op + 1, x, b));
+            }
+            if (visited[a][y] == 0) {
+                visited[a][y] = 1;
+                q.add(new State(op + 1, a, y));
+            }
+
+            // empty
+            if (visited[0][b] == 0) {
+                visited[0][b] = 1;
+                q.add(new State(op + 1, 0, b));
+            }
+            if (visited[a][0] == 0) {
+                visited[a][0] = 1;
+                q.add(new State(op + 1, a, 0));
+            }
+
+            // pour X into Y
+            int pour_x = a + b - y;
+            if (pour_x <= 0) {
+                if (visited[0][a + b] == 0) {
+                    visited[0][a + b] = 1;
+                    q.add(new State(op + 1, 0, a + b));
+                }
+            } else if (visited[pour_x][y] == 0) {
+                visited[pour_x][y] = 1;
+                q.add(new State(op + 1, pour_x, y));
+            }
+
+            // pour Y into X
+            int pour_y = a + b - x;
+            if (pour_y <= 0) {
+                if (visited[a + b][0] == 0) {
+                    visited[a + b][0] = 1;
+                    q.add(new State(op + 1, a + b, 0));
+                }
+            } else if (visited[x][pour_y] == 0) {
+                visited[x][pour_y] = 1;
+                q.add(new State(op + 1, x, pour_y));
+            }
+        }
+
+        pw.println(res);
+    }
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+from collections import deque
+
+def main():
+    with open("pails.in", "r") as fin:
+        x, y, k, m = map(int, fin.readline().split())
+
+    res = m  # initially both pails are empty, so there is a difference of m-0, which is m
+    visited = [[0] * (y + 1) for _ in range(x + 1)]
+    visited[0][0] = 1
+
+    q = deque()
+    q.append((0, 0, 0))  # (op, a, b)
+
+    while q:
+        op, a, b = q.popleft()
+        res = min(res, abs(m - (a + b)))
+        if op == k:
+            continue
+
+        # fill
+        if visited[x][b] == 0:
+            visited[x][b] = 1
+            q.append((op + 1, x, b))
+        if visited[a][y] == 0:
+            visited[a][y] = 1
+            q.append((op + 1, a, y))
+
+        # empty
+        if visited[0][b] == 0:
+            visited[0][b] = 1
+            q.append((op + 1, 0, b))
+        if visited[a][0] == 0:
+            visited[a][0] = 1
+            q.append((op + 1, a, 0))
+
+        # pour X into Y
+        pour_x = a + b - y
+        if pour_x <= 0:
+            if visited[0][a + b] == 0:
+                visited[0][a + b] = 1
+                q.append((op + 1, 0, a + b))
+        else:
+            if visited[pour_x][y] == 0:
+                visited[pour_x][y] = 1
+                q.append((op + 1, pour_x, y))
+
+        # pour Y into X
+        pour_y = a + b - x
+        if pour_y <= 0:
+            if visited[a + b][0] == 0:
+                visited[a + b][0] = 1
+                q.append((op + 1, a + b, 0))
+        else:
+            if visited[x][pour_y] == 0:
+                visited[x][pour_y] = 1
+                q.append((op + 1, x, pour_y))
+
+    with open("pails.out", "w") as fout:
+        fout.write(str(res) + "\n")
+
+if __name__ == "__main__":
+    main()
+```
+
+</PySection>
+</LanguageSection>
+
+</Spoiler>
 
 ## Implementation (DFS)
 
