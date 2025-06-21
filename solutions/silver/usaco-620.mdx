@@ -319,45 +319,91 @@ int main() {
 import java.io.*;
 import java.util.*;
 
-public class pails {
-	static int x, y, k, m, sol;
-	static boolean[][][] vis;
-	public static void main(String[] args) throws IOException {
-		Scanner sc = new Scanner(new File("pails.in"));
-		PrintWriter out = new PrintWriter("pails.out");
+public class Pails {
+    static class State {
+        int op, a, b;
 
-		x = sc.nextInt();
-		y = sc.nextInt();
-		k = sc.nextInt();
-		m = sc.nextInt();
-		sol = m;
+        State(int op, int a, int b) {
+            this.op = op;
+            this.a = a;
+            this.b = b;
+        }
+    }
 
-		vis = new boolean[x + 1][y + 1][k + 1];
-		ff(0, 0, 0);
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new FileReader("pails.in"));
+        PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("pails.out")));
 
-		out.println(Math.abs(sol));
-		out.close();
-	}
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        int x = Integer.parseInt(st.nextToken());
+        int y = Integer.parseInt(st.nextToken());
+        int k = Integer.parseInt(st.nextToken());
+        int m = Integer.parseInt(st.nextToken());
 
-	static void ff(int curX, int curY, int curK) {
-		if (vis[curX][curY][curK]) return;
-		vis[curX][curY][curK] = true;
+        int res = m; // initially both pails are empty, so there is a difference of m-0, which is m
+        int[][] visited = new int[x + 1][y + 1];
+        visited[0][0] = 1;
 
-		if (curK == k) {
-			sol = Math.min(sol, Math.abs(m - (curX + curY)));
-			return;
-		}
+        Queue<State> q = new LinkedList<>();
+        q.add(new State(0, 0, 0));
 
-		// case 1
-		ff(x, curY, curK + 1);
-		ff(curX, y, curK + 1);
-		// case 2
-		ff(0, curY, curK + 1);
-		ff(curX, 0, curK + 1);
-		// case 3
-		ff(Math.min(curX + curY, x), Math.max((curX + curY) - x, 0), curK + 1);
-		ff(Math.max((curX + curY) - y, 0), Math.min(curX + curY, y), curK + 1);
-	}
+        while (!q.isEmpty()) {
+            State cur = q.poll();
+            int op = cur.op, a = cur.a, b = cur.b;
+            res = Math.min(res, Math.abs(m - (a + b)));
+            if (op == k) {
+                continue;
+            }
+
+            // fill
+            if (visited[x][b] == 0) {
+                visited[x][b] = 1;
+                q.add(new State(op + 1, x, b));
+            }
+            if (visited[a][y] == 0) {
+                visited[a][y] = 1;
+                q.add(new State(op + 1, a, y));
+            }
+
+            // empty
+            if (visited[0][b] == 0) {
+                visited[0][b] = 1;
+                q.add(new State(op + 1, 0, b));
+            }
+            if (visited[a][0] == 0) {
+                visited[a][0] = 1;
+                q.add(new State(op + 1, a, 0));
+            }
+
+            // pour X into Y
+            int pour_x = a + b - y;
+            if (pour_x <= 0) {
+                if (visited[0][a + b] == 0) {
+                    visited[0][a + b] = 1;
+                    q.add(new State(op + 1, 0, a + b));
+                }
+            } else if (visited[pour_x][y] == 0) {
+                visited[pour_x][y] = 1;
+                q.add(new State(op + 1, pour_x, y));
+            }
+
+            // pour Y into X
+            int pour_y = a + b - x;
+            if (pour_y <= 0) {
+                if (visited[a + b][0] == 0) {
+                    visited[a + b][0] = 1;
+                    q.add(new State(op + 1, a + b, 0));
+                }
+            } else if (visited[x][pour_y] == 0) {
+                visited[x][pour_y] = 1;
+                q.add(new State(op + 1, x, pour_y));
+            }
+        }
+
+        pw.println(res);
+        pw.close();
+        br.close();
+    }
 }
 ```
 
