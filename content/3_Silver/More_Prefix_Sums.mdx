@@ -19,23 +19,21 @@ frequency: 2
 
 ### Solution - Max Subarray Sum
 
-Consider the prefix sum array $p$. The subarray sum $a_i \dots a_{j-1}$, where
-$i < j$ is $p[j]-p[i]$. Thus, we are looking for the maximum possible value of
-$p[j]-p[i]$ over $0 \leq i < j \leq N$.
+Consider the prefix sum array $p[0], p[1], \dots, p[n]$ where $p[i]=\sum_{j=1}^ix_j$. Then the sum of the subarray $x_{l+1\dots r}$ ($0\le l < r\le n$) is equal to $p[r]-p[l]$.
 
-For a fixed right bound $j$, the maximum subarray sum is
+For a fixed right bound $r$, the maximum subarray sum over all valid $l$ is
 
 $$
-p[j]-\min_{i < j}{p[i]}
+p[r]-\min_{l < r}{p[l]}.
 $$
 
-Thus, we can keep a running minimum to store $\min\limits_{i < j}{p[i]}$ as we
-iterate through $j$. This yields the maximum subarray sum for each possible
+Thus, we can keep a running minimum to store $\min\limits_{l < r}{p[l]}$ as we
+iterate through $r$ in increasing order. This yields the maximum subarray sum for each possible
 right bound, and the maximum over all these values is our answer.
 
 ### Implementation
 
-**Time Complexity:** $\mathcal{O}(N)$
+**Time Complexity:** $\mathcal{O}(n)$
 
 <LanguageSection>
 <CPPSection>
@@ -120,9 +118,6 @@ print(max_subarray_sum)
 </LanguageSection>
 
 <Spoiler title = "Alternative Solution - Kadane's Algorithm">
-
-Note: it is recommended that you **disregard** this solution since it is not
-required to solve this problem.
 
 Kadane's Algorithm finds the largest subarray sum using a greedy method.
 [Click here for more information](https://en.wikipedia.org/wiki/Maximum_subarray_problem#Kadane's_algorithm).
