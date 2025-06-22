@@ -402,7 +402,13 @@ class Main {
 		cows[2] = sc.nextInt();
 		Arrays.sort(cows);
 
-		// Printing the minimum number of moves
+		/*
+		 * The minimum number of moves can only be 0, 1, or 2.
+		 * 0 is if they're already consecutive,
+		 * 1 is if there's a difference of 2 between any 2 numbers,
+		 * and 2 is for all other cases.
+		 */
+
 		if (cows[2] == cows[0] + 2) {
 			pw.println(0);
 		} else if (cows[1] == cows[0] + 2 || cows[2] == cows[1] + 2) {
@@ -411,7 +417,7 @@ class Main {
 			pw.println(2);
 		}
 
-		// Max number of moves
+		// max is equal to largest difference between end and middle, minus one.
 		pw.println(Math.max(cows[1] - cows[0], cows[2] - cows[1]) - 1);
 		pw.close();
 	}
@@ -425,32 +431,20 @@ class Main {
 with open("herding.in", "r") as file_in:
 	a, b, c = map(int, file_in.readline().split())
 
-	# Best scenario: the three elements are already in order.
+	"""
+	 * The minimum number of moves can only be 0, 1, or 2.
+	 * 0 is if they're already consecutive,
+	 * 1 is if there's a difference of 2 between any 2 numbers,
+	 * and 2 is for all other cases.
+	"""
 	if c == a + 2:
 		minimum = 0
-
-	"""
-        If there is a difference by 2, it can be solved in one move.
-        3 5 9 -> 5 7 9
-        """
-
 	elif (b == a + 2 or c == b + 2):
 		minimum = 1
-
-	"""
-        It can always be solved in two moves by moving a -> c - 2 and b -> c - 1.
-        If there is less than one integer between the two elements, it'll be taken care
-        of in the if statement above.
-        """
-
 	else:
 		minimum = 2
 
-	"""
-        The worst case is incrementing by 1 in the largest gap.
-        3 5 9 -> 5 6 9 -> 6 7 9 -> 7 8 9
-        """
-
+# max is equal to largest difference between end and middle, minus one.
 maximum = max(b - a, c - b) - 1
 with open("herding.out", "w") as file_out:
 	file_out.write(f"{minimum}\n{maximum}\n")
