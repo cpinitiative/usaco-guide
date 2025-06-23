@@ -59,27 +59,27 @@ ll exp(ll x, ll n, ll m) {
 
 	return res;
 }
-//EndCodeSnip
+// EndCodeSnip
 
 namespace Combo {
-	std::vector<ll> fact;
-	std::vector<ll> inv;
+std::vector<ll> fact;
+std::vector<ll> inv;
 
-	void init(int n) {
-		fact.resize(n + 1);
-		inv.resize(n + 1);
-		fact[0] = 1;
-		for (int i = 1; i <= n; i++) { fact[i] = (fact[i - 1] * i) % MOD; }
+void init(int n) {
+	fact.resize(n + 1);
+	inv.resize(n + 1);
+	fact[0] = 1;
+	for (int i = 1; i <= n; i++) { fact[i] = (fact[i - 1] * i) % MOD; }
 
-		inv[n] = exp(fact[n], MOD - 2, MOD);
-		for (int i = n; i >= 1; i--) { inv[i - 1] = (inv[i] * i) % MOD; }
-	}
-
-	ll nck(int n, int k) {
-		if (k > n || k < 0) { return 0ll; }
-		return fact[n] * inv[k] % MOD * inv[n - k] % MOD;
-	}
+	inv[n] = exp(fact[n], MOD - 2, MOD);
+	for (int i = n; i >= 1; i--) { inv[i - 1] = (inv[i] * i) % MOD; }
 }
+
+ll nck(int n, int k) {
+	if (k > n || k < 0) { return 0ll; }
+	return fact[n] * inv[k] % MOD * inv[n - k] % MOD;
+}
+}  // namespace Combo
 
 int main() {
 	Combo::init(1e5);
@@ -100,7 +100,8 @@ int main() {
 			 * then figure out the number of valid permutations for each subarray.
 			 */
 			const int mex = 1 + len / 2;
-			int subs = 1ll * Combo::nck(n - mex - 1, len / 2 - 1) * Combo::fact[len] % MOD;
+			int subs =
+			    1ll * Combo::nck(n - mex - 1, len / 2 - 1) * Combo::fact[len] % MOD;
 			int rest = 1ll * Combo::fact[n - len] * (n - len + 1) % MOD;
 			res[mex] = 1ll * subs * rest % MOD;
 		}
