@@ -2,30 +2,353 @@
 id: cses-1194
 source: CSES
 title: Monsters
-author: Isaac Noel, Sofia Yang
+author: Isaac Noel, Sofia Yang, David Zhou
 ---
 
-## Abstract
+## Video Solution
 
-We want to find if A can reach the edge of the maze without being touched by
-monsters by BFS. If possible, retrace and print its path.
+By David Zhou
 
-## Solution
+<YouTube id="y4E5g6xkU_0" />
+
+<Spoiler title="Video Solution Code">
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <algorithm>
+#include <climits>
+#include <iostream>
+#include <queue>
+#include <string>
+#include <utility>
+#include <vector>
+using namespace std;
+
+int n, m;
+vector<string> maze;
+vector<vector<int>> dist_monster, dist_person;
+vector<int> dir_r = {1, 0, -1, 0}, dir_c = {0, 1, 0, -1};
+vector<vector<int>> direction;  // for path reconstruction
+int closest_dist = INT_MAX, closest_r = -1, closest_c = -1;
+
+void bfs(queue<pair<int, int>> &q, vector<vector<int>> &dist) {
+	while (!q.empty()) {
+		int r = q.front().first, c = q.front().second;
+		q.pop();
+		for (int i = 0; i < 4; i++) {
+			int next_r = r + dir_r[i], next_c = c + dir_c[i];
+			if (next_r >= 0 && next_r < n && next_c >= 0 && next_c < m &&
+			    maze[next_r][next_c] != '#' && dist[next_r][next_c] > dist[r][c] + 1) {
+				dist[next_r][next_c] = dist[r][c] + 1;
+				direction[next_r][next_c] = i;
+				q.push({next_r, next_c});
+			}
+		}
+	}
+}
+
+void check_valid(int r, int c) {
+	if (maze[r][c] != '#' && dist_person[r][c] < dist_monster[r][c] &&
+	    dist_person[r][c] < closest_dist) {
+		closest_dist = dist_person[r][c];
+		closest_r = r;
+		closest_c = c;
+	}
+}
+
+int main() {
+	cin >> n >> m;
+
+	maze.resize(n);
+	dist_monster.resize(n, vector<int>(m, INT_MAX));
+	dist_person.resize(n, vector<int>(m, INT_MAX));
+	direction.resize(n, vector<int>(m, -1));
+
+	queue<pair<int, int>> q;
+	int person_r, person_c;
+	for (int i = 0; i < n; i++) {
+		cin >> maze[i];
+		for (int j = 0; j < maze[i].length(); j++) {
+			if (maze[i][j] == 'A') {
+				dist_person[i][j] = 0;
+				person_r = i;
+				person_c = j;
+			} else if (maze[i][j] == 'M') {
+				dist_monster[i][j] = 0;
+				q.push({i, j});
+			}
+		}
+	}
+
+	// BFS for monsters
+	bfs(q, dist_monster);
+
+	// BFS for person
+	q.push({person_r, person_c});
+	bfs(q, dist_person);
+
+	// check border cells
+	for (int i = 0; i < n; i++) {
+		check_valid(i, 0);
+		check_valid(i, m - 1);
+	}
+
+	for (int j = 0; j < m; j++) {
+		check_valid(0, j);
+		check_valid(n - 1, j);
+	}
+
+	if (closest_dist == INT_MAX) {
+		cout << "NO" << endl;
+	} else {
+		cout << "YES" << endl << closest_dist << endl;
+
+		string res = "", convert = "DRUL";
+		while (closest_r != person_r || closest_c != person_c) {
+			int idx = direction[closest_r][closest_c];
+			res += convert[idx];
+			closest_r -= dir_r[idx];
+			closest_c -= dir_c[idx];
+		}
+
+		reverse(res.begin(), res.end());
+		cout << res << endl;
+	}
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.util.*;
+
+public class Monsters {
+	static int n, m;
+	static String[] maze;
+	static int[][] distMonster, distPerson,
+	    direction;  // direction is for path reconstruction
+	static int[] dirR = {1, 0, -1, 0}, dirC = {0, 1, 0, -1};
+	static int closestDist = Integer.MAX_VALUE, closestR = -1, closestC = -1;
+
+	public static void bfs(Queue<int[]> q, int[][] dist) {
+		while (!q.isEmpty()) {
+			int[] curr = q.poll();
+			int r = curr[0], c = curr[1];
+			for (int i = 0; i < 4; i++) {
+				int nextR = r + dirR[i], nextC = c + dirC[i];
+				if (nextR >= 0 && nextR < n && nextC >= 0 && nextC < m &&
+				    maze[nextR].charAt(nextC) != '#' &&
+				    dist[nextR][nextC] > dist[r][c] + 1) {
+					dist[nextR][nextC] = dist[r][c] + 1;
+					direction[nextR][nextC] = i;
+					q.add(new int[] {nextR, nextC});
+				}
+			}
+		}
+	}
+
+	public static void checkValid(int r, int c) {
+		if (maze[r].charAt(c) != '#' && distPerson[r][c] < distMonster[r][c] &&
+		    distPerson[r][c] < closestDist) {
+			closestDist = distPerson[r][c];
+			closestR = r;
+			closestC = c;
+		}
+	}
+
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		n = sc.nextInt();
+		m = sc.nextInt();
+		sc.nextLine();
+
+		maze = new String[n];
+		distMonster = new int[n][m];
+		distPerson = new int[n][m];
+		direction = new int[n][m];
+
+		for (int i = 0; i < n; i++) {
+			maze[i] = sc.nextLine();
+			Arrays.fill(distMonster[i], Integer.MAX_VALUE);
+			Arrays.fill(distPerson[i], Integer.MAX_VALUE);
+			Arrays.fill(direction[i], -1);
+		}
+
+		Queue<int[]> q = new LinkedList<>();
+		int personR = -1, personC = -1;
+
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < m; j++) {
+				char ch = maze[i].charAt(j);
+				if (ch == 'A') {
+					distPerson[i][j] = 0;
+					personR = i;
+					personC = j;
+				} else if (ch == 'M') {
+					distMonster[i][j] = 0;
+					q.add(new int[] {i, j});
+				}
+			}
+		}
+
+		// BFS for monsters
+		bfs(q, distMonster);
+
+		// BFS for person
+		q.add(new int[] {personR, personC});
+		bfs(q, distPerson);
+
+		// check border cells
+		for (int i = 0; i < n; i++) {
+			checkValid(i, 0);
+			checkValid(i, m - 1);
+		}
+		for (int j = 0; j < m; j++) {
+			checkValid(0, j);
+			checkValid(n - 1, j);
+		}
+
+		if (closestDist == Integer.MAX_VALUE) {
+			System.out.println("NO");
+		} else {
+			System.out.println("YES");
+			System.out.println(closestDist);
+
+			StringBuilder res = new StringBuilder();
+			String convert = "DRUL";
+
+			while (closestR != personR || closestC != personC) {
+				int idx = direction[closestR][closestC];
+				res.append(convert.charAt(idx));
+				closestR -= dirR[idx];
+				closestC -= dirC[idx];
+			}
+
+			System.out.println(res.reverse().toString());
+		}
+
+		sc.close();
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+<Warning>
+
+The below solution only runs in time when submitted with PyPy.
+
+</Warning>
+
+```py
+from collections import deque
+
+n, m = map(int, input().split())
+maze = [input() for _ in range(n)]
+
+dist_monster = [[float("inf")] * m for _ in range(n)]
+dist_person = [[float("inf")] * m for _ in range(n)]
+direction = [[-1] * m for _ in range(n)]  # for path reconstruction
+
+dir_r = [1, 0, -1, 0]
+dir_c = [0, 1, 0, -1]
+convert = "DRUL"
+
+closest_dist = float("inf")
+closest_r, closest_c = -1, -1
+
+
+def bfs(q, dist):
+	while q:
+		r, c = q.popleft()
+		for i in range(4):
+			next_r, next_c = r + dir_r[i], c + dir_c[i]
+			if (
+				0 <= next_r < n
+				and 0 <= next_c < m
+				and maze[next_r][next_c] != "#"
+				and dist[next_r][next_c] > dist[r][c] + 1
+			):
+				dist[next_r][next_c] = dist[r][c] + 1
+				direction[next_r][next_c] = i
+				q.append((next_r, next_c))
+
+
+def check_valid(r, c):
+	global closest_dist, closest_r, closest_c
+	if (
+		maze[r][c] != "#"
+		and dist_person[r][c] < dist_monster[r][c]
+		and dist_person[r][c] < closest_dist
+	):
+		closest_dist = dist_person[r][c]
+		closest_r, closest_c = r, c
+
+
+q = deque()
+person_r = person_c = -1
+
+for i in range(n):
+	for j in range(m):
+		if maze[i][j] == "A":
+			dist_person[i][j] = 0
+			person_r, person_c = i, j
+		elif maze[i][j] == "M":
+			dist_monster[i][j] = 0
+			q.append((i, j))
+
+# BFS for monsters
+bfs(q, dist_monster)
+
+# BFS for person
+q = deque()
+q.append((person_r, person_c))
+bfs(q, dist_person)
+
+# Check borders for valid escape
+for i in range(n):
+	check_valid(i, 0)
+	check_valid(i, m - 1)
+for j in range(m):
+	check_valid(0, j)
+	check_valid(n - 1, j)
+
+if closest_dist == float("inf"):
+	print("NO")
+else:
+	print("YES")
+	print(closest_dist)
+	res = []
+	r, c = closest_r, closest_c
+	while (r, c) != (person_r, person_c):
+		idx = direction[r][c]
+		res.append(convert[idx])
+		r -= dir_r[idx]
+		c -= dir_c[idx]
+	print("".join(reversed(res)))
+```
+
+</PySection>
+</LanguageSection>
+
+</Spoiler>
+
+## Explanation
 
 Because the monsters move optimally, if a monster can reach a location in the
 maze before A, then A may never move to that spot. Thus, for A to enter a spot,
 the distance from that location to A must be less than the distance from that
 location to the nearest monster. Knowing this, we may BFS to find all locations
-that are visitable by A. This will run in $N^2$ time because each location will
+that are visitable by A. This will run in $NM$ time because each location will
 be visited a constant amount of times.
 
-While conducting the bfs, store the previous location of every location ("from"
-array in code below). This way, once A reaches the edge, we can retrace A's
-path, following the path of previous locations and storing the direction
-traveled.
-
 ## Implementation
-**Time Complexity:** $\mathcal{O}(N^2)$
+
+**Time Complexity:** $\mathcal{O}(NM)$
 
 <LanguageSection>
 <CPPSection>
@@ -97,6 +420,7 @@ void bfs() {
 		}
 	}
 }
+
 int main() {
 	cin >> N >> M;
 	for (int i = 1; i <= N; i++) {
@@ -127,8 +451,8 @@ int main() {
 	} else cout << "NO" << endl;
 }
 ```
-</CPPSection>
 
+</CPPSection>
 <JavaSection>
 
 ```java
@@ -259,5 +583,6 @@ public class monsters {
 	}
 }
 ```
+
 </JavaSection>
 </LanguageSection>
