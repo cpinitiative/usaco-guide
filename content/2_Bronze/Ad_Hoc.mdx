@@ -373,7 +373,6 @@ int main() {
 	 * 1 is if there's a difference of 2 between any 2 numbers,
 	 * and 2 is for all other cases.
 	 */
-
 	if (a[0] == a[2] - 2) {
 		cout << 0 << endl;
 	} else if ((a[1] == a[2] - 2) || (a[0] == a[1] - 2)) {
@@ -381,6 +380,7 @@ int main() {
 	} else {
 		cout << 2 << endl;
 	}
+
 	// max is equal to largest difference between end and middle, minus one.
 	cout << max(a[2] - a[1], a[1] - a[0]) - 1;
 }
@@ -408,7 +408,6 @@ class Main {
 		 * 1 is if there's a difference of 2 between any 2 numbers,
 		 * and 2 is for all other cases.
 		 */
-
 		if (cows[2] == cows[0] + 2) {
 			pw.println(0);
 		} else if (cows[1] == cows[0] + 2 || cows[2] == cows[1] + 2) {
@@ -431,23 +430,23 @@ class Main {
 with open("herding.in", "r") as file_in:
 	a, b, c = map(int, file_in.readline().split())
 
-	"""
-	 * The minimum number of moves can only be 0, 1, or 2.
-	 * 0 is if they're already consecutive,
-	 * 1 is if there's a difference of 2 between any 2 numbers,
-	 * and 2 is for all other cases.
-	"""
-	if c == a + 2:
-		minimum = 0
-	elif b == a + 2 or c == b + 2:
-		minimum = 1
-	else:
-		minimum = 2
+"""
+ * The minimum number of moves can only be 0, 1, or 2.
+ * 0 is if they're already consecutive,
+ * 1 is if there's a difference of 2 between any 2 numbers,
+ * and 2 is for all other cases.
+"""
+if c == a + 2:
+	minimum = 0
+elif b == a + 2 or c == b + 2:
+	minimum = 1
+else:
+	minimum = 2
 
 # max is equal to largest difference between end and middle, minus one.
 maximum = max(b - a, c - b) - 1
-with open("herding.out", "w") as file_out:
-	file_out.write(f"{minimum}\n{maximum}\n")
+
+print(minimum, "\n", maximum, file=open("herding.out", "w"))
 ```
 
 </PySection>
