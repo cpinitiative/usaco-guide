@@ -223,6 +223,8 @@ else:
 
 ## Implementation
 
+**Time Complexity:** $\mathal{O}(N \cdot M)$
+
 <LanguageSection>
 <CPPSection>
 
@@ -242,12 +244,12 @@ bool vis[1000][1000];
 
 // previousStep stores the previous direction that we moved in to arrive at
 // this cell
-int previousStep[1000][1000];
+int previous_step[1000][1000];
 
 // 0 = up, 1 = right, 2 = down, 3 = left
 int dx[4] = {-1, 0, 1, 0};
 int dy[4] = {0, 1, 0, -1};
-string stepDir = "URDL";
+string step_dir = "URDL";
 
 int main() {
 	cin >> n >> m;
@@ -277,7 +279,7 @@ int main() {
 			if (A[v.f][v.s] == '#') continue;
 			if (vis[v.f][v.s]) continue;
 			vis[v.f][v.s] = true;
-			previousStep[v.f][v.s] = i;
+			previous_step[v.f][v.s] = i;
 			q.push(v);
 		}
 	}
@@ -286,7 +288,7 @@ int main() {
 		cout << "YES" << endl;
 		vector<int> steps;
 		while (end != begin) {
-			int p = previousStep[end.f][end.s];
+			int p = previous_step[end.f][end.s];
 			steps.push_back(p);
 			// undo the previous step to get back to the previous square
 			// Notice how we subtract dx/dy, whereas we added dx/dy before
@@ -295,17 +297,15 @@ int main() {
 		reverse(steps.begin(), steps.end());
 
 		cout << steps.size() << endl;
-		for (char c : steps) { cout << stepDir[c]; }
+		for (char c : steps) { cout << step_dir[c]; }
 		cout << endl;
 	} else {
 		cout << "NO" << endl;
 	}
-
-	return 0;
 }
 ```
-</CPPSection>
 
+</CPPSection>
 <JavaSection>
 
 ```java
