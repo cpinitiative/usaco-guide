@@ -2,6 +2,7 @@
 id: intro-sets
 title: (Optional) Introduction to Sets & Maps
 author: Darren Yao, Benjamin Qi, Allen Li, Jesse Choe, Nathan Gong
+contributors: Elliott Harper
 description: 'Maintaining collections of distinct elements/keys with sets and maps.'
 frequency: 2
 prerequisites:
@@ -99,7 +100,13 @@ set.add(1);  // {1}
 set.add(4);  // {1, 4}
 set.add(2);  // {1, 2, 4}
 
-// Outputs 1, 2, and 4 on separate lines
+/*
+ * Output: 
+ * 1
+ * 2
+ * 4
+ */
+
 for (int element : set) { System.out.println(element); }
 ```
 
@@ -285,7 +292,7 @@ public class DistinctNumbers {
 		Kattio io = new Kattio();
 		int n = io.nextInt();
 		Set<Integer> set = new TreeSet<>();
-		for (int i = 0; i < n; i++) { set.add(io.nextInt()); }
+		for (int i = 0; i < n; i++) { set.add(io.nextInt()); } 
 		io.println(set.size());
 		io.close();
 	}
@@ -908,6 +915,18 @@ for (Map.Entry<Integer, Integer> entry : m.entrySet()) {
 
 ### Solution - Associative Array
 
+To solve this problem efficiently, we need a data structure that can:
+
+- Assign a value to any index `k` (where `k` can be as large as $10^{18}$).
+- Retrieve the value at any index `k` quickly.
+
+A regular array won't work because the indices can be extremely large, making it impossible to allocate enough memory. However, since all values are initially `0` and only a small subset of indices will ever be set or queried, we can use a **map** (also called an associative array or dictionary) to store only the indices that have been assigned a value.
+
+- When we receive a `0 k v` query, we set `a[k] = v` in the map.
+- When we receive a `1 k` query, we print `a[k]` if it exists in the map, or `0` otherwise.
+
+This approach is efficient because both operations are fast in maps, and we only store the keys that are actually used.
+
 Note that we use 64-bit integers since $k$ and $v$ may be large.
 
 <LanguageSection>
@@ -922,7 +941,7 @@ using namespace std;
 int main() {
 	int query_num;
 	cin >> query_num;
-	map<long long, long long> a;
+	map<long long, long long> a; // Map to store only assigned indices
 	for (int q = 0; q < query_num; q++) {
 		int t;
 		cin >> t;
@@ -933,11 +952,13 @@ int main() {
 		} else if (t == 1) {
 			long long k;
 			cin >> k;
+      // If k is not in the map, operator[] returns 0 by default
 			cout << a[k] << "\n";
 		}
 	}
 }
 ```
+*We use `std::map` because it can handle very large keys efficiently and only stores keys that are set. Accessing a key not present in the map returns `0` by default for integer values.*
 
 </CPPSection>
 <JavaSection>
@@ -950,7 +971,7 @@ public class Main {
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		int queryNum = Integer.parseInt(br.readLine());
-		HashMap<Long, Long> a = new HashMap<Long, Long>();
+		HashMap<Long, Long> a = new HashMap<Long, Long>(); // Map to store assigned indices
 		for (int i = 0; i < queryNum; i++) {
 			StringTokenizer st = new StringTokenizer(br.readLine());
 			long t = Long.parseLong(st.nextToken());
@@ -959,12 +980,14 @@ public class Main {
 				long v = Long.parseLong(st.nextToken());
 				a.put(k, v);
 			} else if (t == 1) {
+        // If k is not present, return 0
 				System.out.println(a.getOrDefault(k, 0L));
 			}
 		}
 	}
 }
 ```
+*We use `HashMap<Long, Long>` to efficiently store and retrieve only the indices that are set. The `getOrDefault` method returns `0` if the key is not present.*
 
 </JavaSection>
 <PySection>
@@ -972,12 +995,13 @@ public class Main {
 Unfortunately, the straightforward solution fails a few tests specifically designed to make Python `dict`s run slowly:
 
 ```py
-a = dict()
+a = dict() # Dictionary to store assigned indices
 for _ in range(int(input())):
 	nums = list(map(int, input().split()))
 	if nums[0] == 0:
 		a[nums[1]] = nums[2]
 	elif nums[0] == 1:
+    # Print a[k] if present, else 0
 		print(a.get(nums[1], 0))
 ```
 
@@ -993,14 +1017,16 @@ def wrap(x):
 	return x ^ RANDOM
 
 
-a = dict()
+a = dict() # Dictionary to store assigned indices
 for _ in range(int(input())):
 	nums = list(map(int, input().split()))
 	if nums[0] == 0:
 		a[wrap(nums[1])] = nums[2]
 	elif nums[0] == 1:
+    # Print a[k] if present, else 0
 		print(a.get(wrap(nums[1]), 0))
 ```
+*We use a Python dictionary to store only the indices that are set. The `get` method returns `0` if the key is not present.*
 
 </PySection>
 </LanguageSection>
