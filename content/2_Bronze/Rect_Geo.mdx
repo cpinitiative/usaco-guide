@@ -52,11 +52,15 @@ int main() {
 	cin >> a >> b >> c >> d;
 
 	vector<bool> painted(MAX_POS + 1);
-	for (int i = a; i < b; i++) { painted[i] = true; } // Add Farmer John's painted interval
-	for (int i = c; i < d; i++) { painted[i] = true; } // Add Bessie's painted interval
+	for (int i = a; i < b; i++) {
+		painted[i] = true;
+	}  // Add Farmer John's painted interval
+	for (int i = c; i < d; i++) { painted[i] = true; }  // Add Bessie's painted interval
 
 	int total = 0;
-	for (bool i : painted) { total += i; } // Count the total amount of intervals painted
+	for (bool i : painted) {
+		total += i;
+	}  // Count the total amount of intervals painted
 
 	cout << total << endl;
 }
@@ -80,11 +84,17 @@ public class Paint {
 		int d = io.nextInt();
 
 		boolean[] painted = new boolean[MAX_POS + 1];
-		for (int i = a; i < b; i++) { painted[i] = true; } // Add Farmer John's painted interval
-		for (int i = c; i < d; i++) { painted[i] = true; } // Add Bessie's painted interval
+		for (int i = a; i < b; i++) {
+			painted[i] = true;
+		}  // Add Farmer John's painted interval
+		for (int i = c; i < d; i++) {
+			painted[i] = true;
+		}  // Add Bessie's painted interval
 
 		int total = 0;
-		for (boolean i : painted) { total += i ? 1 : 0; } // Count the total amount of intervals painted
+		for (boolean i : painted) {
+			total += i ? 1 : 0;
+		}  // Count the total amount of intervals painted
 
 		io.println(total);
 		io.close();
@@ -110,11 +120,11 @@ c, d = map(int, input().split())
 
 painted = [False for _ in range(MAX_POS + 1)]
 for i in range(a, b):
-	painted[i] = True # Add Farmer John's painted interval
+	painted[i] = True  # Add Farmer John's painted interval
 for i in range(c, d):
-	painted[i] = True # Add Bessie's painted interval
+	painted[i] = True  # Add Bessie's painted interval
 
-print(sum(painted)) # Print the total amount of intervals painted
+print(sum(painted))  # Print the total amount of intervals painted
 ```
 
 </PySection>
@@ -250,13 +260,17 @@ int main() {
 		x2 += MAX_POS / 2;
 		y2 += MAX_POS / 2;
 		for (int x = x1; x < x2; x++) {
-			for (int y = y1; y < y2; y++) { visible[x][y] = i < 2; } // Mark billboard area as visible, truck as not visible
+			for (int y = y1; y < y2; y++) {
+				visible[x][y] = i < 2;
+			}  // Mark billboard area as visible, truck as not visible
 		}
 	}
 
 	int ans = 0;
 	for (int x = 0; x < MAX_POS; x++) {
-		for (int y = 0; y < MAX_POS; y++) { ans += visible[x][y]; } // Count all visible billboard squares
+		for (int y = 0; y < MAX_POS; y++) {
+			ans += visible[x][y];
+		}  // Count all visible billboard squares
 	}
 	cout << ans << "\n";
 }
@@ -287,13 +301,17 @@ public class Billboard {
 			x2 += MAX_POS / 2;
 			y2 += MAX_POS / 2;
 			for (int x = x1; x < x2; x++) {
-				for (int y = y1; y < y2; y++) { visible[x][y] = i < 2 ? 1 : 0; } // Mark billboard area as visible, truck as not visible
+				for (int y = y1; y < y2; y++) {
+					visible[x][y] = i < 2 ? 1 : 0;
+				}  // Mark billboard area as visible, truck as not visible
 			}
 		}
 
 		int ans = 0;
 		for (int x = 0; x < 2000; ++x) {
-			for (int y = 0; y < 2000; ++y) { ans += visible[x][y]; } // Count all visible billboard squares
+			for (int y = 0; y < 2000; ++y) {
+				ans += visible[x][y];
+			}  // Count all visible billboard squares
 		}
 
 		io.println(ans);
@@ -332,12 +350,14 @@ def main():
 		y2 += MAX_POS // 2
 		for x in range(x1, x2):
 			for y in range(y1, y2):
-				visible[x][y] = i < 2 # Mark billboard area as visible, truck as not visible
+				visible[x][y] = (
+					i < 2
+				)  # Mark billboard area as visible, truck as not visible
 
 	ans = 0
 	for x in range(MAX_POS):
 		for y in range(MAX_POS):
-			ans += visible[x][y] # Count all visible billboard squares
+			ans += visible[x][y]  # Count all visible billboard squares
 	print(ans)
 
 
@@ -368,7 +388,7 @@ import java.util.*;
 
 class Rect {
 	int x1, y1, x2, y2;
-	int area() { return (y2 - y1) * (x2 - x1); } // Area of the rectangle
+	int area() { return (y2 - y1) * (x2 - x1); }  // Area of the rectangle
 }
 
 public class Billboard {
@@ -398,7 +418,7 @@ public class Billboard {
 		// Calculate overlap in x and y directions
 		int xOverlap = Math.max(0, Math.min(p.x2, q.x2) - Math.max(p.x1, q.x1));
 		int yOverlap = Math.max(0, Math.min(p.y2, q.y2) - Math.max(p.y1, q.y1));
-		return xOverlap * yOverlap; // Area of intersection
+		return xOverlap * yOverlap;  // Area of intersection
 	}
 
 	// CodeSnip{Kattio}
@@ -518,14 +538,14 @@ using namespace std;
 
 struct Rect {
 	int x1, y1, x2, y2;
-	int area() { return (y2 - y1) * (x2 - x1); } // Area of the rectangle
+	int area() { return (y2 - y1) * (x2 - x1); }  // Area of the rectangle
 };
 
 int intersect(Rect p, Rect q) {
 	// Calculate overlap in x and y directions
 	int xOverlap = max(0, min(p.x2, q.x2) - max(p.x1, q.x1));
 	int yOverlap = max(0, min(p.y2, q.y2) - max(p.y1, q.y1));
-	return xOverlap * yOverlap; // Area of intersection
+	return xOverlap * yOverlap;  // Area of intersection
 }
 
 int main() {
@@ -568,7 +588,7 @@ def intersect(p, q):
 	x_overlap = max(0, min(p.x2, q.x2) - max(p.x1, q.x1))
 	# Calculate overlap in y direction
 	y_overlap = max(0, min(p.y2, q.y2) - max(p.y1, q.y1))
-	return x_overlap * y_overlap # Area of intersection
+	return x_overlap * y_overlap  # Area of intersection
 
 
 sys.stdin = open("billboard.in", "r")
@@ -576,13 +596,15 @@ sys.stdout = open("billboard.out", "w")
 
 rects = []
 for _ in range(3):
-	rects.append(Rect()) # Read the two billboards and the truck
+	rects.append(Rect())  # Read the two billboards and the truck
 
 print(
-	rects[0].area() # Area of first billboard
-	+ rects[1].area() # Area of second billboard
-	- intersect(rects[0], rects[2]) # Subtract area of first billboard covered by truck
-	- intersect(rects[1], rects[2]) # Subtract area of second billboard covered by truck
+	rects[0].area()  # Area of first billboard
+	+ rects[1].area()  # Area of second billboard
+	- intersect(rects[0], rects[2])  # Subtract area of first billboard covered by truck
+	- intersect(
+		rects[1], rects[2]
+	)  # Subtract area of second billboard covered by truck
 )
 ```
 

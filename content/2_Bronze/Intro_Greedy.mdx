@@ -77,30 +77,31 @@ using namespace std;
 using ll = long long;
 
 int main() {
-    freopen("breedflip.in", "r", stdin);
-    freopen("breedflip.out", "w", stdout);
-    ll n;
-    cin >> n;
-    string A;
-    string B;
-    cin >> A >> B;
-    ll ans = 0;
-    bool mismatched = false; // Tracks if we are currently in a mismatched segment
-    for (ll i = 0; i < n; i++) {
-        // If the current cows are different, we are in a mismatched segment
-        if (A[i] != B[i]) {
-            // If we just entered a new mismatched segment, increment the answer
-            if (!mismatched) {
-                mismatched = true;
-                ans++;
-            }
-        } else {
-            // If cows match, we are not in a mismatched segment anymore
-            mismatched = false;
-        }
-    }
-    // Output the number of mismatched segments, which is the minimum number of flips needed
-    cout << ans << endl;
+	freopen("breedflip.in", "r", stdin);
+	freopen("breedflip.out", "w", stdout);
+	ll n;
+	cin >> n;
+	string A;
+	string B;
+	cin >> A >> B;
+	ll ans = 0;
+	bool mismatched = false;  // Tracks if we are currently in a mismatched segment
+	for (ll i = 0; i < n; i++) {
+		// If the current cows are different, we are in a mismatched segment
+		if (A[i] != B[i]) {
+			// If we just entered a new mismatched segment, increment the answer
+			if (!mismatched) {
+				mismatched = true;
+				ans++;
+			}
+		} else {
+			// If cows match, we are not in a mismatched segment anymore
+			mismatched = false;
+		}
+	}
+	// Output the number of mismatched segments, which is the minimum number of flips
+	// needed
+	cout << ans << endl;
 }
 ```
 
@@ -116,33 +117,33 @@ From the
 import java.io.*;
 import java.util.*;
 public class Solution {
-    public static void main(String[] args) throws IOException {
-        Kattio io = new Kattio("breedflip");
-        int n = io.nextInt();
-        char[] a = io.next().toCharArray();
-        char[] b = io.next().toCharArray();
-        int ret = 0;
-        // Repeat until both strings are equal
-        while (!new String(a).equals(new String(b))) {
-            ret++;
-            int lhs = 0;
-            // Find the first position where a and b differ
-            while (a[lhs] == b[lhs]) lhs++;
-            int rhs = n - 1;
-            // Find the last position where a and b differ
-            while (a[rhs] == b[rhs]) rhs--;
-            // Flip the entire segment from lhs to rhs (inclusive)
-            for (int i = lhs; i <= rhs; i++) {
-                if (a[i] == 'G') a[i] = 'H';
-                else a[i] = 'G';
-            }
-        }
-        // Output the number of flips performed
-        io.println(ret);
-        io.close();
-    }
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio("breedflip");
+		int n = io.nextInt();
+		char[] a = io.next().toCharArray();
+		char[] b = io.next().toCharArray();
+		int ret = 0;
+		// Repeat until both strings are equal
+		while (!new String(a).equals(new String(b))) {
+			ret++;
+			int lhs = 0;
+			// Find the first position where a and b differ
+			while (a[lhs] == b[lhs]) lhs++;
+			int rhs = n - 1;
+			// Find the last position where a and b differ
+			while (a[rhs] == b[rhs]) rhs--;
+			// Flip the entire segment from lhs to rhs (inclusive)
+			for (int i = lhs; i <= rhs; i++) {
+				if (a[i] == 'G') a[i] = 'H';
+				else a[i] = 'G';
+			}
+		}
+		// Output the number of flips performed
+		io.println(ret);
+		io.close();
+	}
 
-    // CodeSnip{Kattio}
+	// CodeSnip{Kattio}
 }
 ```
 
