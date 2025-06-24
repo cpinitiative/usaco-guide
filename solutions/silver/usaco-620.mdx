@@ -5,8 +5,6 @@ title: Milk Pails
 author: Óscar Garries, Neo Wang, Nathan Gong, Akshar Yeccherla, George Pong, David Zhou
 ---
 
-[Official Analysis (Java)](http://www.usaco.org/current/data/sol_pails_silver_feb16.html)
-
 ## Video Solution
 
 By David Zhou
@@ -30,7 +28,6 @@ struct State {
 };
 
 int main() {
-	// old IO
 	freopen("pails.in", "r", stdin);
 	freopen("pails.out", "w", stdout);
 
@@ -107,7 +104,7 @@ import java.io.*;
 import java.util.*;
 
 public class Pails {
-	static class State {
+	private static class State {
 		int op, a, b;
 		State(int op, int a, int b) {
 			this.op = op;
@@ -204,9 +201,8 @@ def main():
 	with open("pails.in", "r") as fin:
 		x, y, k, m = map(int, fin.readline().split())
 
-	res = (
-		m  # initially both pails are empty, so there is a difference of m-0, which is m
-	)
+	# initially both pails are empty, so there is a difference of m-0, which is m
+	res = m
 	visited = [[0] * (y + 1) for _ in range(x + 1)]
 	visited[0][0] = 1
 
@@ -257,12 +253,10 @@ def main():
 				visited[x][pour_y] = 1
 				q.append((op + 1, x, pour_y))
 
-	with open("pails.out", "w") as fout:
-		fout.write(str(res) + "\n")
+	print(res, file=open("pails.out", "w"))
 
 
-if __name__ == "__main__":
-	main()
+main()
 ```
 
 </PySection>
@@ -270,13 +264,17 @@ if __name__ == "__main__":
 
 </Spoiler>
 
+[Official Analysis (Java)](http://www.usaco.org/current/data/sol_pails_silver_feb16.html)
+
 ## Explanation (DFS)
 
-We can perform a DFS starting from the base state of $(0, 0)$. We perform each operation to find the states $(i, j)$ where pail $X$ has $i$ and pail $Y$ has $j$ units of milk.
+We can perform a DFS starting from the base state of $(0, 0)$, where both pails have $0$ units of milk.
 
-We need to use a 3D grid to correctly track visited states. The DFS may visit the same $(i, j)$ state earlier in its processing but through a greater number of operations. To properly track visited cells, we need to make sure the visited grid has a record for how many operations it took to reach each state every time.
+Note that we need to use a 3D grid to correctly track visited states, though.
+This is because the DFS may visit the same $(i, j)$ state earlier in its processing but through a greater number of operations.
+To properly track visited cells, we need to make sure the visited grid has a record for how many operations it took to reach each state every time.
 
-Simulating the all six different operations every time is enough to pass the constraints.
+Simulating all six operations every time is enough to pass the constraints.
 
 ## Implementation
 
