@@ -334,13 +334,13 @@ We can try to spot similarities and differences between cases and their solution
 
 <FocusProblem problem="case-tutorial" />
 
-
 ### Explanation
 
 There are 3 cases for the minimum amount of moves:
-- The 3 positions are already consecutive.
-- Two elements are already in-position consecutively (including gaps), but the other is not.
-- Any other case that did not satisfy the two above.
+1. The 3 positions are already consecutive.
+2. Two elements are already in-position consecutively (including gaps), but the other is not.
+3. Any other case that did not satisfy the two above.
+
 For the first case, the answer would be $0$ because the elements are already consecutive.
 
 For the second case, the answer would be $1$ because the only swap required is the one that would insert the isolated element into the gap between the two other elements.
@@ -349,8 +349,8 @@ The third case would output $2$ because for any other test case, the optimal sol
 
 The maximum will always be finite because these operations group the cows closer together over time, as mentioned in the problem statement.
 The best approach to maximize the amount of moves is to place each element as close to a gap as possible (while not remaining an endpoint).
-Therefore, the maximum is just the largest gap between two adjacent elements minus 1.
-This can be observed by drawing a lot of cases.
+Therefore, the maximum is the largest gap between two adjacent elements minus 1.
+Try it yourself to see that this is indeed the case.
 
 ### Implementation
 
@@ -370,9 +370,8 @@ int main() {
 	freopen("herding.in", "r", stdin);
 	freopen("herding.out", "w", stdout);
 
-	// all cow locations
 	vector<int> a(3);
-	for (int &b : a) cin >> b;
+	for (int &b : a) { cin >> b; }
 	sort(a.begin(), a.end());
 
 	/*
@@ -439,10 +438,10 @@ with open("herding.in", "r") as file_in:
 	a, b, c = map(int, file_in.readline().split())
 
 """
- * The minimum number of moves can only be 0, 1, or 2.
- * 0 is if they're already consecutive,
- * 1 is if there's a difference of 2 between any 2 numbers,
- * and 2 is for all other cases.
+The minimum number of moves can only be 0, 1, or 2.
+0 is if they're already consecutive,
+1 is if there's a difference of 2 between any 2 numbers,
+and 2 is for all other cases.
 """
 if c == a + 2:
 	minimum = 0
