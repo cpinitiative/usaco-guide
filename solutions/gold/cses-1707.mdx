@@ -71,26 +71,23 @@ int main() {
 ```
 </CPPSection>
 <JavaSection>
-<Warning>
-The below code will TLE on some test cases due to Java's constant factor.
-</Warning>
 ```java
+import java.io.*;
 import java.util.*;
 
 public class GraphGirth {
-	private static int n;
+	static int n;
+	static int[] dist, parent;
+	static ArrayDeque<Integer> q = new ArrayDeque<>();
 
-	private static int bfs(int start, List<List<Integer>> adj) {
-		int[] dist = new int[n];
+	static int bfs(int start, List<List<Integer>> adj, int currMin) {
 		Arrays.fill(dist, -1);
-		dist[start] = 0;
-
-		int[] parent = new int[n];
 		Arrays.fill(parent, -1);
+		q.clear();
 
-		Queue<Integer> q = new LinkedList<>();
+		dist[start] = 0;
 		q.add(start);
-		int minCycle = Integer.MAX_VALUE;
+		int minCycle = currMin;
 
 		while (!q.isEmpty()) {
 			int curr = q.poll();
@@ -99,9 +96,11 @@ public class GraphGirth {
 					parent[next] = curr;
 					dist[next] = dist[curr] + 1;
 					q.add(next);
-				} else if (parent[curr] != next) {
-					// if the next cell is not the assigned parent, we have a cycle
-					minCycle = Math.min(minCycle, dist[curr] + dist[next] + 1);
+				} else if (parent[curr] != next) { // if the next cell is not the assigned parent, we have a cycle
+					int cycleLen = dist[curr] + dist[next] + 1;
+					if (cycleLen < minCycle) {
+						minCycle = cycleLen;
+					}
 				}
 			}
 		}
@@ -109,26 +108,33 @@ public class GraphGirth {
 		return minCycle;
 	}
 
-	public static void main(String[] args) {
-		Scanner sc = new Scanner(System.in);
-		int m;
-		n = sc.nextInt();
-		m = sc.nextInt();
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		n = Integer.parseInt(st.nextToken());
+		int m = Integer.parseInt(st.nextToken());
 
 		List<List<Integer>> adj = new ArrayList<>();
-		for (int i = 0; i < n; i++) { adj.add(new ArrayList<>()); }
+		for (int i = 0; i < n; i++) {
+			adj.add(new ArrayList<>());
+		}
 
 		for (int i = 0; i < m; i++) {
-			int a = sc.nextInt() - 1;
-			int b = sc.nextInt() - 1;
+			st = new StringTokenizer(br.readLine());
+			int a = Integer.parseInt(st.nextToken()) - 1;
+			int b = Integer.parseInt(st.nextToken()) - 1;
 			adj.get(a).add(b);
 			adj.get(b).add(a);
 		}
-		sc.close();
+
+		dist = new int[n];
+		parent = new int[n];
 
 		int res = Integer.MAX_VALUE;
-		// suppose the current node is part of the shortest cycle
-		for (int i = 0; i < n; i++) { res = Math.min(res, bfs(i, adj)); }
+		for (int i = 0; i < n; i++) { // suppose the current node is part of the shortest cycle
+			if (adj.get(i).size() < 2) continue;  // no cycle possible
+			res = Math.min(res, bfs(i, adj, res));
+		}
 
 		System.out.println(res == Integer.MAX_VALUE ? -1 : res);
 	}
