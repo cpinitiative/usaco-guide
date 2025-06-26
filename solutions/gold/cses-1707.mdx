@@ -96,11 +96,10 @@ public class GraphGirth {
 					parent[next] = curr;
 					dist[next] = dist[curr] + 1;
 					q.add(next);
-				} else if (parent[curr] != next) { // if the next cell is not the assigned parent, we have a cycle
+				} else if (parent[curr] != next) {  // if the next cell is not the
+					                                // assigned parent, we have a cycle
 					int cycleLen = dist[curr] + dist[next] + 1;
-					if (cycleLen < minCycle) {
-						minCycle = cycleLen;
-					}
+					if (cycleLen < minCycle) { minCycle = cycleLen; }
 				}
 			}
 		}
@@ -115,9 +114,7 @@ public class GraphGirth {
 		int m = Integer.parseInt(st.nextToken());
 
 		List<List<Integer>> adj = new ArrayList<>();
-		for (int i = 0; i < n; i++) {
-			adj.add(new ArrayList<>());
-		}
+		for (int i = 0; i < n; i++) { adj.add(new ArrayList<>()); }
 
 		for (int i = 0; i < m; i++) {
 			st = new StringTokenizer(br.readLine());
@@ -131,7 +128,8 @@ public class GraphGirth {
 		parent = new int[n];
 
 		int res = Integer.MAX_VALUE;
-		for (int i = 0; i < n; i++) { // suppose the current node is part of the shortest cycle
+		for (int i = 0; i < n;
+		     i++) {  // suppose the current node is part of the shortest cycle
 			if (adj.get(i).size() < 2) continue;  // no cycle possible
 			res = Math.min(res, bfs(i, adj, res));
 		}
