@@ -2,12 +2,281 @@
 id: usaco-620
 source: USACO Silver 2016 February
 title: Milk Pails
-author: Óscar Garries, Neo Wang, Nathan Gong, Akshar Yeccherla, George Pong
+author: Óscar Garries, Neo Wang, Nathan Gong, Akshar Yeccherla, George Pong, David Zhou
 ---
+
+## Video Solution
+
+By David Zhou
+
+<YouTube id="1W1VFl9s7fU" />
+
+<Spoiler title="Video Solution Code (DFS + BFS Explanation; Only BFS Code)">
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <cmath>
+#include <iostream>
+#include <queue>
+#include <vector>
+using namespace std;
+
+struct State {
+	int op, a, b;
+};
+
+int main() {
+	freopen("pails.in", "r", stdin);
+	freopen("pails.out", "w", stdout);
+
+	int x, y, k, m;
+	cin >> x >> y >> k >> m;
+
+	int res = m;  // initially both pails are empty, so there is a difference of m-0,
+	              // which is m
+	vector<vector<int>> visited(x + 1, vector<int>(y + 1, 0));
+	visited[0][0] = 1;
+
+	queue<State> q;
+	q.push({0, 0, 0});
+	while (!q.empty()) {
+		int op = q.front().op, a = q.front().a, b = q.front().b;
+		q.pop();
+		res = min(res, abs(m - (a + b)));
+		if (op == k) { continue; }
+
+		// fill
+		if (visited[x][b] == 0) {
+			visited[x][b] = 1;
+			q.push({op + 1, x, b});
+		}
+		if (visited[a][y] == 0) {
+			visited[a][y] = 1;
+			q.push({op + 1, a, y});
+		}
+
+		// empty
+		if (visited[0][b] == 0) {
+			visited[0][b] = 1;
+			q.push({op + 1, 0, b});
+		}
+		if (visited[a][0] == 0) {
+			visited[a][0] = 1;
+			q.push({op + 1, a, 0});
+		}
+
+		// pour X into Y
+		int pour_x = a + b - y;
+		if (pour_x <= 0) {
+			if (visited[0][a + b] == 0) {
+				visited[0][a + b] = 1;
+				q.push({op + 1, 0, a + b});
+			}
+		} else if (visited[pour_x][y] == 0) {
+			visited[pour_x][y] = 1;
+			q.push({op + 1, pour_x, y});
+		}
+
+		// pour Y into X
+		int pour_y = a + b - x;
+		if (pour_y <= 0) {
+			if (visited[a + b][0] == 0) {
+				visited[a + b][0] = 1;
+				q.push({op + 1, a + b, 0});
+			}
+		} else if (visited[x][pour_y] == 0) {
+			visited[x][pour_y] = 1;
+			q.push({op + 1, x, pour_y});
+		}
+	}
+
+	cout << res << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Pails {
+	private static class State {
+		int op, a, b;
+		State(int op, int a, int b) {
+			this.op = op;
+			this.a = a;
+			this.b = b;
+		}
+	}
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new FileReader("pails.in"));
+		PrintWriter pw =
+		    new PrintWriter(new BufferedWriter(new FileWriter("pails.out")));
+
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int x = Integer.parseInt(st.nextToken());
+		int y = Integer.parseInt(st.nextToken());
+		int k = Integer.parseInt(st.nextToken());
+		int m = Integer.parseInt(st.nextToken());
+
+		int res = m;  // initially both pails are empty, so there is a difference of
+		              // m-0, which is m
+		int[][] visited = new int[x + 1][y + 1];
+		visited[0][0] = 1;
+
+		Queue<State> q = new LinkedList<>();
+		q.add(new State(0, 0, 0));
+
+		while (!q.isEmpty()) {
+			State cur = q.poll();
+			int op = cur.op, a = cur.a, b = cur.b;
+			res = Math.min(res, Math.abs(m - (a + b)));
+			if (op == k) { continue; }
+
+			// fill
+			if (visited[x][b] == 0) {
+				visited[x][b] = 1;
+				q.add(new State(op + 1, x, b));
+			}
+			if (visited[a][y] == 0) {
+				visited[a][y] = 1;
+				q.add(new State(op + 1, a, y));
+			}
+
+			// empty
+			if (visited[0][b] == 0) {
+				visited[0][b] = 1;
+				q.add(new State(op + 1, 0, b));
+			}
+			if (visited[a][0] == 0) {
+				visited[a][0] = 1;
+				q.add(new State(op + 1, a, 0));
+			}
+
+			// pour X into Y
+			int pour_x = a + b - y;
+			if (pour_x <= 0) {
+				if (visited[0][a + b] == 0) {
+					visited[0][a + b] = 1;
+					q.add(new State(op + 1, 0, a + b));
+				}
+			} else if (visited[pour_x][y] == 0) {
+				visited[pour_x][y] = 1;
+				q.add(new State(op + 1, pour_x, y));
+			}
+
+			// pour Y into X
+			int pour_y = a + b - x;
+			if (pour_y <= 0) {
+				if (visited[a + b][0] == 0) {
+					visited[a + b][0] = 1;
+					q.add(new State(op + 1, a + b, 0));
+				}
+			} else if (visited[x][pour_y] == 0) {
+				visited[x][pour_y] = 1;
+				q.add(new State(op + 1, x, pour_y));
+			}
+		}
+
+		pw.println(res);
+		pw.close();
+		br.close();
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+from collections import deque
+
+
+def main():
+	with open("pails.in", "r") as fin:
+		x, y, k, m = map(int, fin.readline().split())
+
+	# initially both pails are empty, so there is a difference of m-0, which is m
+	res = m
+	visited = [[0] * (y + 1) for _ in range(x + 1)]
+	visited[0][0] = 1
+
+	q = deque()
+	q.append((0, 0, 0))  # (op, a, b)
+
+	while q:
+		op, a, b = q.popleft()
+		res = min(res, abs(m - (a + b)))
+		if op == k:
+			continue
+
+		# fill
+		if visited[x][b] == 0:
+			visited[x][b] = 1
+			q.append((op + 1, x, b))
+		if visited[a][y] == 0:
+			visited[a][y] = 1
+			q.append((op + 1, a, y))
+
+		# empty
+		if visited[0][b] == 0:
+			visited[0][b] = 1
+			q.append((op + 1, 0, b))
+		if visited[a][0] == 0:
+			visited[a][0] = 1
+			q.append((op + 1, a, 0))
+
+		# pour X into Y
+		pour_x = a + b - y
+		if pour_x <= 0:
+			if visited[0][a + b] == 0:
+				visited[0][a + b] = 1
+				q.append((op + 1, 0, a + b))
+		else:
+			if visited[pour_x][y] == 0:
+				visited[pour_x][y] = 1
+				q.append((op + 1, pour_x, y))
+
+		# pour Y into X
+		pour_y = a + b - x
+		if pour_y <= 0:
+			if visited[a + b][0] == 0:
+				visited[a + b][0] = 1
+				q.append((op + 1, a + b, 0))
+		else:
+			if visited[x][pour_y] == 0:
+				visited[x][pour_y] = 1
+				q.append((op + 1, x, pour_y))
+
+	print(res, file=open("pails.out", "w"))
+
+
+main()
+```
+
+</PySection>
+</LanguageSection>
+
+</Spoiler>
 
 [Official Analysis (Java)](http://www.usaco.org/current/data/sol_pails_silver_feb16.html)
 
-## Implementation (DFS)
+## Explanation (DFS)
+
+We can perform a DFS starting from the base state of $(0, 0)$, where both pails have $0$ units of milk.
+
+Note that we need to use a 3D grid to correctly track visited states, though.
+This is because the DFS may visit the same $(i, j)$ state earlier in its processing but through a greater number of operations.
+To properly track visited cells, we need to make sure the visited grid has a record for how many operations it took to reach each state every time.
+
+Simulating all six operations every time is enough to pass the constraints.
+
+## Implementation
 
 **Time Complexity:** $\mathcal O(XYK)$
 
@@ -61,44 +330,90 @@ int main() {
 import java.io.*;
 import java.util.*;
 
-public class pails {
-	static int x, y, k, m, sol;
-	static boolean[][][] vis;
-	public static void main(String[] args) throws IOException {
-		Scanner sc = new Scanner(new File("pails.in"));
-		PrintWriter out = new PrintWriter("pails.out");
+public class Pails {
+	static class State {
+		int op, a, b;
 
-		x = sc.nextInt();
-		y = sc.nextInt();
-		k = sc.nextInt();
-		m = sc.nextInt();
-		sol = m;
-
-		vis = new boolean[x + 1][y + 1][k + 1];
-		ff(0, 0, 0);
-
-		out.println(Math.abs(sol));
-		out.close();
+		State(int op, int a, int b) {
+			this.op = op;
+			this.a = a;
+			this.b = b;
+		}
 	}
 
-	static void ff(int curX, int curY, int curK) {
-		if (vis[curX][curY][curK]) return;
-		vis[curX][curY][curK] = true;
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new FileReader("pails.in"));
+		PrintWriter pw =
+		    new PrintWriter(new BufferedWriter(new FileWriter("pails.out")));
 
-		if (curK == k) {
-			sol = Math.min(sol, Math.abs(m - (curX + curY)));
-			return;
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int x = Integer.parseInt(st.nextToken());
+		int y = Integer.parseInt(st.nextToken());
+		int k = Integer.parseInt(st.nextToken());
+		int m = Integer.parseInt(st.nextToken());
+
+		int res = m;  // initially both pails are empty, so there is a difference of
+		              // m-0, which is m
+		int[][] visited = new int[x + 1][y + 1];
+		visited[0][0] = 1;
+
+		Queue<State> q = new LinkedList<>();
+		q.add(new State(0, 0, 0));
+
+		while (!q.isEmpty()) {
+			State cur = q.poll();
+			int op = cur.op, a = cur.a, b = cur.b;
+			res = Math.min(res, Math.abs(m - (a + b)));
+			if (op == k) { continue; }
+
+			// fill
+			if (visited[x][b] == 0) {
+				visited[x][b] = 1;
+				q.add(new State(op + 1, x, b));
+			}
+			if (visited[a][y] == 0) {
+				visited[a][y] = 1;
+				q.add(new State(op + 1, a, y));
+			}
+
+			// empty
+			if (visited[0][b] == 0) {
+				visited[0][b] = 1;
+				q.add(new State(op + 1, 0, b));
+			}
+			if (visited[a][0] == 0) {
+				visited[a][0] = 1;
+				q.add(new State(op + 1, a, 0));
+			}
+
+			// pour X into Y
+			int pour_x = a + b - y;
+			if (pour_x <= 0) {
+				if (visited[0][a + b] == 0) {
+					visited[0][a + b] = 1;
+					q.add(new State(op + 1, 0, a + b));
+				}
+			} else if (visited[pour_x][y] == 0) {
+				visited[pour_x][y] = 1;
+				q.add(new State(op + 1, pour_x, y));
+			}
+
+			// pour Y into X
+			int pour_y = a + b - x;
+			if (pour_y <= 0) {
+				if (visited[a + b][0] == 0) {
+					visited[a + b][0] = 1;
+					q.add(new State(op + 1, a + b, 0));
+				}
+			} else if (visited[x][pour_y] == 0) {
+				visited[x][pour_y] = 1;
+				q.add(new State(op + 1, x, pour_y));
+			}
 		}
 
-		// case 1
-		ff(x, curY, curK + 1);
-		ff(curX, y, curK + 1);
-		// case 2
-		ff(0, curY, curK + 1);
-		ff(curX, 0, curK + 1);
-		// case 3
-		ff(Math.min(curX + curY, x), Math.max((curX + curY) - x, 0), curK + 1);
-		ff(Math.max((curX + curY) - y, 0), Math.min(curX + curY, y), curK + 1);
+		pw.println(res);
+		pw.close();
+		br.close();
 	}
 }
 ```
@@ -158,8 +473,6 @@ print(sol, file=open("pails.out", "w"))
 
 ## Alternate Solution: BFS
 
-**Time Complexity:** $\mathcal O(XY)$
-
 We can directly simulate all operations using BFS.
 
 In this problem, we care about states $(i, j)$ where pail $X$ has $i$ and pail
@@ -181,6 +494,10 @@ quantity to each pail appropriately.
 
 Now iterate over all states $(i, j)$ where $\texttt{dist}[i][j] \le K$ and
 compute the minimum $|i+j-M|$.
+
+## Implementation
+
+**Time Complexity:** $\mathcal O(XY)$
 
 <LanguageSection>
 
