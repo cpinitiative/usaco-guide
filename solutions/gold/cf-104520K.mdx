@@ -1,0 +1,115 @@
+---
+id: cf-104520K
+source: CF
+title: Med and Mex
+author: Justin Ji
+---
+
+[Official Analysis (C++)](https://codeforces.com/blog/entry/119632)
+
+## Explanation
+
+First, we should try to figure out what a good sequence
+generally looks like. As mentioned in the problem, a good
+sequence must have its median equal its mex. With that definition, we can make the following
+observations.
+
+1. Our subarrays must be of even length
+2. The two median values of our subarray must be an even distance apart
+
+With those out of the way, we can make a few more observations. The first is that
+elements $1, 2, 3 \cdots \frac{\text{len}}{2}$ must be present
+in our subarray. If this wasn't the case, our mex would be less than $\frac{\text{len}}{2}$,
+which means it cannot be equal to the median of our subarray.
+
+Our next observation is an improvement upon the second observation. The distance
+between our two median values must be equal to $2$. If this was not the case,
+our mex would be less than our median.
+
+With those observations, we can calculate our answer with some combinatorics.
+The easiest way to do this is to iterate on our subarray length and count the
+number of good subarrays. Then, we can count the number
+of ways to fill in the elements around our subarrays. This works because each
+subarray length maps to one median/mex value, allowing us to calculate
+our final answers.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+using ll = long long;
+
+constexpr int MOD = 998244353;
+
+// BeginCodeSnip{Modular Exponentiation (from the module)}
+ll exp(ll x, ll n, ll m) {
+	x %= m;
+	ll res = 1;
+	while (n > 0) {
+		if (n % 2 == 1) { res = res * x % m; }
+		x = x * x % m;
+		n /= 2;
+	}
+
+	return res;
+}
+// EndCodeSnip
+
+namespace Combo {
+std::vector<ll> fact;
+std::vector<ll> inv;
+
+void init(int n) {
+	fact.resize(n + 1);
+	inv.resize(n + 1);
+	fact[0] = 1;
+	for (int i = 1; i <= n; i++) { fact[i] = (fact[i - 1] * i) % MOD; }
+
+	inv[n] = exp(fact[n], MOD - 2, MOD);
+	for (int i = n; i >= 1; i--) { inv[i - 1] = (inv[i] * i) % MOD; }
+}
+
+ll nck(int n, int k) {
+	if (k > n || k < 0) { return 0ll; }
+	return fact[n] * inv[k] % MOD * inv[n - k] % MOD;
+}
+}  // namespace Combo
+
+int main() {
+	Combo::init(1e5);
+
+	int test_num;
+	std::cin >> test_num;
+	for (int t = 0; t < test_num; t++) {
+		int n;
+		std::cin >> n;
+
+		std::vector<int> res(n + 1);
+		for (int len = 2; len <= n; len += 2) {
+			/**
+			 * A valid subarray must have all elements from 1...len/2, and also have
+			 * 2 + len/2. The rest of the values just need to be bigger than 2 + len/2.
+			 *
+			 * To count all the ways, we first figure out all the valid subarrays, and
+			 * then figure out the number of valid permutations for each subarray.
+			 */
+			const int mex = 1 + len / 2;
+			int subs =
+			    1ll * Combo::nck(n - mex - 1, len / 2 - 1) * Combo::fact[len] % MOD;
+			int rest = 1ll * Combo::fact[n - len] * (n - len + 1) % MOD;
+			res[mex] = 1ll * subs * rest % MOD;
+		}
+
+		for (int i = 1; i <= n; i++) { std::cout << res[i] << " \n"[i == n]; }
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>
