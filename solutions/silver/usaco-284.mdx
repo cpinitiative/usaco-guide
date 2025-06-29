@@ -5,6 +5,8 @@ title: Luxury River Cruise
 author: Justin Ji
 ---
 
+[Official Analysis (C++)](https://usaco.org/current/data/sol_cruise.html)
+
 ## Explanation
 
 Because $n \cdot m$ is reasonably small, we can construct a graph where
@@ -39,49 +41,48 @@ easier to implement but requires more advanced knowledge.
 using ll = long long;
 
 int main() {
-	std::freopen("cruise.in", "r", stdin);
-	std::freopen("cruise.out", "w", stdout);
+    std::ifstream read("cruise.in");
 
 	int n, m, k;
-	std::cin >> n >> m >> k;
+	read >> n >> m >> k;
 	std::vector<std::array<int, 2>> adj(n);
 	for (auto &[l, r] : adj) {
-		std::cin >> l >> r;
+		read >> l >> r;
 		l--, r--;
 	}
 
 	std::vector<int> moves(m);
 	for (int i = 0; i < m; i++) {
 		char c;
-		std::cin >> c;
-		moves[i] = (c == 'R');
+		read >> c;
+		moves[i] = c == 'R';
 	}
 
-	std::vector<int> nxt(n);
+	std::vector<int> next(n);
 	for (int i = 0; i < n; i++) {
-		int cur = i;
-		for (int j = 0; j < m; j++) { cur = adj[cur][moves[j]]; }
-		nxt[i] = cur;
+		int curr = i;
+		for (int j = 0; j < m; j++) { curr = adj[curr][moves[j]]; }
+		next[i] = curr;
 	}
 
-	int cur = 0;
+	int curr = 0;
 	if (k < n) {
-		for (int i = 0; i < k; i++) { cur = nxt[cur]; }
+		for (int i = 0; i < k; i++) { curr = next[curr]; }
 	} else {
 		int ptr = 0;
 		std::map<int, int> seen;
-		while (!seen.count(cur)) {
-			seen[cur] = ptr++;
-			cur = nxt[cur];
+		while (!seen.count(curr)) {
+			seen[curr] = ptr++;
+			curr = next[curr];
 		}
 
-		int cycle_len = seen.size() - seen[cur];
+		int cycle_len = seen.size() - seen[curr];
 
-		k = (k - seen[cur]) % cycle_len;
-		for (int i = 0; i < k; i++) { cur = nxt[cur]; }
+		k = (k - seen[curr]) % cycle_len;
+		for (int i = 0; i < k; i++) { curr = next[curr]; }
 	}
 
-	std::cout << cur + 1 << '\n';
+    std::ofstream("cruise.out") << curr + 1 << std::endl;
 }
 ```
 
@@ -114,31 +115,31 @@ public class Cruise {
 		int[] moves = new int[m];
 		for (int i = 0; i < m; i++) { moves[i] = st.nextToken().equals("R") ? 1 : 0; }
 
-		int[] nxt = new int[n];
+		int[] next = new int[n];
 		for (int i = 0; i < n; i++) {
-			int cur = i;
-			for (int j = 0; j < m; j++) { cur = adj[cur][moves[j]]; }
-			nxt[i] = cur;
+			int curr = i;
+			for (int j = 0; j < m; j++) { curr = adj[curr][moves[j]]; }
+			next[i] = curr;
 		}
 
-		int cur = 0;
+		int curr = 0;
 		if (k < n) {
-			for (int i = 0; i < k; i++) { cur = nxt[cur]; }
+			for (int i = 0; i < k; i++) { curr = next[curr]; }
 		} else {
 			Map<Integer, Integer> seen = new HashMap<>();
 			int ptr = 0;
-			while (!seen.containsKey(cur)) {
-				seen.put(cur, ptr++);
-				cur = nxt[cur];
+			while (!seen.containsKey(curr)) {
+				seen.put(curr, ptr++);
+				curr = next[curr];
 			}
 
-			int cycleLen = ptr - seen.get(cur);
-			k = (k - seen.get(cur)) % cycleLen;
+			int cycleLen = ptr - seen.get(curr);
+			k = (k - seen.get(curr)) % cycleLen;
 
-			for (int i = 0; i < k; i++) { cur = nxt[cur]; }
+			for (int i = 0; i < k; i++) { curr = next[curr]; }
 		}
 
-		pw.println(cur + 1);
+		pw.println(curr + 1);
 		pw.close();
 	}
 }
@@ -149,42 +150,40 @@ public class Cruise {
 <PySection>
 
 ```py
-read = open("cruise.in", "r").readline
-write = open("cruise.out", "w").write
+with open("cruise.in") as read:
+    n, m, k = map(int, read.readline().split())
+    adj = []
+    for _ in range(n):
+        l, r = map(int, read.readline().split())
+        adj.append((l - 1, r - 1))
 
-n, m, k = map(int, read().split())
-adj = []
-for _ in range(n):
-	l, r = map(int, read().split())
-	adj.append((l - 1, r - 1))
-
-moves = [1 if c == "R" else 0 for c in read().split()]
+    moves = [1 if c == 'R' else 0 for c in read.readline().split()]
 
 nxt = [0] * n
 for i in range(n):
-	cur = i
-	for j in range(m):
-		cur = adj[cur][moves[j]]
-	nxt[i] = cur
+    cur = i
+    for j in range(m):
+        cur = adj[cur][moves[j]]
+    nxt[i] = cur
 
 cur = 0
-if k < n:
-	for _ in range(k):
-		cur = nxt[cur]
+if k <= n:
+    for _ in range(k):
+        cur = nxt[cur]
 else:
-	seen = {}
-	ptr = 0
-	while cur not in seen:
-		seen[cur] = ptr
-		ptr += 1
-		cur = nxt[cur]
+    seen = {}
+    ptr = 0
+    while cur not in seen:
+        seen[cur] = ptr
+        ptr += 1
+        cur = nxt[cur]
 
-	cycle_len = ptr - seen[cur]
-	k = (k - seen[cur]) % cycle_len
-	for _ in range(k):
-		cur = nxt[cur]
+    cycle_len = ptr - seen[cur]
+    k = (k - seen[cur]) % cycle_len
+    for _ in range(k):
+        cur = nxt[cur]
 
-write(str(cur + 1) + "\n")
+print(cur + 1, file=open("cruise.out", "w"))
 ```
 
 </PySection>
