@@ -53,13 +53,17 @@ int main() {
 
 	vector<bool> painted(MAX_POS + 1);
 	// Add Farmer John's painted interval
-	for (int i = a; i < b; i++) { painted[i] = true; }
+	for (int i = a; i < b; i++) {
+		painted[i] = true;
+	}
 	// Add Bessie's painted interval
 	for (int i = c; i < d; i++) { painted[i] = true; }
 
 	// Count the total amount of intervals painted
 	int total = 0;
-	for (bool i : painted) { total += i; }
+	for (bool i : painted) {
+		total += i;
+	}
 
 	cout << total << endl;
 }
@@ -84,13 +88,19 @@ public class Paint {
 
 		boolean[] painted = new boolean[MAX_POS + 1];
 		// Add Farmer John's painted interval
-		for (int i = a; i < b; i++) { painted[i] = true; }
+		for (int i = a; i < b; i++) {
+			painted[i] = true;
+		}
 		// Add Bessie's painted interval
-		for (int i = c; i < d; i++) { painted[i] = true; }
+		for (int i = c; i < d; i++) {
+			painted[i] = true;
+		}
 
 		// Count the total amount of intervals painted
 		int total = 0;
-		for (boolean i : painted) { total += i ? 1 : 0; }
+		for (boolean i : painted) {
+			total += i ? 1 : 0;
+		}
 
 		io.println(total);
 		io.close();
@@ -258,19 +268,22 @@ int main() {
 		x2 += MAX_POS / 2;
 		y2 += MAX_POS / 2;
 		for (int x = x1; x < x2; x++) {
+			// Mark billboard area as visible, truck as not visible
 			for (int y = y1; y < y2; y++) {
 				visible[x][y] = i < 2;
-			}  // Mark billboard area as visible, truck as not visible
+			}
 		}
 	}
 
+	// Count all visible billboard squares
 	int ans = 0;
 	for (int x = 0; x < MAX_POS; x++) {
 		for (int y = 0; y < MAX_POS; y++) {
 			ans += visible[x][y];
-		}  // Count all visible billboard squares
+		}
 	}
-	cout << ans << "\n";
+
+	cout << ans << endl;
 }
 ```
 
@@ -298,18 +311,20 @@ public class Billboard {
 			y1 += MAX_POS / 2;
 			x2 += MAX_POS / 2;
 			y2 += MAX_POS / 2;
+			// Mark billboard area as visible, truck as not visible
 			for (int x = x1; x < x2; x++) {
 				for (int y = y1; y < y2; y++) {
 					visible[x][y] = i < 2 ? 1 : 0;
-				}  // Mark billboard area as visible, truck as not visible
+				}  
 			}
 		}
 
+		// Count all visible billboard squares
 		int ans = 0;
 		for (int x = 0; x < 2000; ++x) {
 			for (int y = 0; y < 2000; ++y) {
 				ans += visible[x][y];
-			}  // Count all visible billboard squares
+			}  
 		}
 
 		io.println(ans);
@@ -346,16 +361,16 @@ def main():
 		y1 += MAX_POS // 2
 		x2 += MAX_POS // 2
 		y2 += MAX_POS // 2
+		# Mark billboard area as visible, truck as not visible
 		for x in range(x1, x2):
 			for y in range(y1, y2):
-				visible[x][y] = (
-					i < 2
-				)  # Mark billboard area as visible, truck as not visible
+				visible[x][y] = i < 2
 
+	# Count all visible billboard squares
 	ans = 0
 	for x in range(MAX_POS):
 		for y in range(MAX_POS):
-			ans += visible[x][y]  # Count all visible billboard squares
+			ans += visible[x][y]
 	print(ans)
 
 
@@ -365,8 +380,7 @@ main()
 </PySection>
 </LanguageSection>
 
-Of course, this wouldn't suffice if the coordinates were changed to be up to
-$10^9$.
+This wouldn't suffice if the coordinates were changed to be up to $10^9$.
 
 ### Fast Solution
 
@@ -528,8 +542,6 @@ for an example of usage.
 Note how creating a struct `Rect` to represent a rectangle makes the code easier
 to understand.
 
-<!-- Unfortunately, C++ doesn't have a built in rectangle `struct` or `class`, so you need to write the functions yourself. Here is the code from the official analysis (modified slightly): -->
-
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
@@ -561,8 +573,6 @@ int main() {
 
 </CPPSection>
 <PySection>
-
-<!-- Unfortunately, Python doesn't have a built in rectangle class, so you need to write the class yourself. -->
 
 Note how creating a class `Rect` to represent a rectangle makes the code easier
 to understand.
@@ -639,6 +649,7 @@ $\texttt{length}$ is the length of the vertical sides, and $\texttt{width}$ is t
 
 <LanguageSection>
 <CPPSection>
+
 ```cpp
 long long area(int bl_x, int bl_y, int tr_x, int tr_y) {
 	long long length = tr_y - bl_y;
@@ -646,8 +657,10 @@ long long area(int bl_x, int bl_y, int tr_x, int tr_y) {
 	return length * width;
 }
 ```
+
 </CPPSection>
 <JavaSection>
+
 ```java
 int area(int bl_x, int bl_y, int tr_x, int tr_y) {
 	int length = tr_y - bl_y;
@@ -655,14 +668,17 @@ int area(int bl_x, int bl_y, int tr_x, int tr_y) {
 	return length * width;
 }
 ```
+
 </JavaSection>
 <PySection>
+
 ```py
 def area(bl_x: int, bl_y: int, tr_x: int, tr_y: int) -> int:
 	length = tr_y - bl_y
 	width = tr_x - bl_x
 	return length * width
 ```
+
 </PySection>
 </LanguageSection>
 
