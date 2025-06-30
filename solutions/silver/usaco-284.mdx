@@ -41,7 +41,7 @@ easier to implement but requires more advanced knowledge.
 using ll = long long;
 
 int main() {
-    std::ifstream read("cruise.in");
+	std::ifstream read("cruise.in");
 
 	int n, m, k;
 	read >> n >> m >> k;
@@ -82,7 +82,7 @@ int main() {
 		for (int i = 0; i < k; i++) { curr = next[curr]; }
 	}
 
-    std::ofstream("cruise.out") << curr + 1 << std::endl;
+	std::ofstream("cruise.out") << curr + 1 << std::endl;
 }
 ```
 
@@ -151,37 +151,37 @@ public class Cruise {
 
 ```py
 with open("cruise.in") as read:
-    n, m, k = map(int, read.readline().split())
-    adj = []
-    for _ in range(n):
-        l, r = map(int, read.readline().split())
-        adj.append((l - 1, r - 1))
+	n, m, k = map(int, read.readline().split())
+	adj = []
+	for _ in range(n):
+		l, r = map(int, read.readline().split())
+		adj.append((l - 1, r - 1))
 
-    moves = [1 if c == 'R' else 0 for c in read.readline().split()]
+	moves = [1 if c == "R" else 0 for c in read.readline().split()]
 
 next = [0] * n
 for i in range(n):
-    curr = i
-    for j in range(m):
-        curr = adj[curr][moves[j]]
-    next[i] = curr
+	curr = i
+	for j in range(m):
+		curr = adj[curr][moves[j]]
+	next[i] = curr
 
 curr = 0
 if k <= n:
-    for _ in range(k):
-        curr = next[curr]
+	for _ in range(k):
+		curr = next[curr]
 else:
-    seen = {}
-    ptr = 0
-    while curr not in seen:
-        seen[curr] = ptr
-        ptr += 1
-        curr = next[curr]
+	seen = {}
+	ptr = 0
+	while curr not in seen:
+		seen[curr] = ptr
+		ptr += 1
+		curr = next[curr]
 
-    cycle_len = ptr - seen[curr]
-    k = (k - seen[curr]) % cycle_len
-    for _ in range(k):
-        curr = next[curr]
+	cycle_len = ptr - seen[curr]
+	k = (k - seen[curr]) % cycle_len
+	for _ in range(k):
+		curr = next[curr]
 
 print(curr + 1, file=open("cruise.out", "w"))
 ```
