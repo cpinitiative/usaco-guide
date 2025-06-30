@@ -5,6 +5,201 @@ title: Graph Girth
 author: Benjamin Qi, Andi Qu
 ---
 
+## Video Solution
+
+By David Zhou
+
+<YouTube id="plyLEdUq0WY" />
+
+<Spoiler title="Video Solution Code">
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <climits>
+#include <iostream>
+#include <queue>
+#include <vector>
+using namespace std;
+
+int n;
+
+int bfs(int start, vector<vector<int>> &adj) {
+	vector<int> dist(n, -1);
+	dist[start] = 0;
+	vector<int> parent(n, -1);
+
+	queue<int> q;
+	q.push(start);
+	int min_cycle = INT_MAX;
+	while (!q.empty()) {
+		int curr = q.front();
+		q.pop();
+		for (int next : adj[curr]) {
+			if (dist[next] == -1) {
+				parent[next] = curr;
+				dist[next] = dist[curr] + 1;
+				q.push(next);
+			} else if (parent[curr] != next) {
+				// if the next cell is not the assigned parent, we have a cycle
+				min_cycle = min(min_cycle, dist[curr] + dist[next] + 1);
+			}
+		}
+	}
+
+	return min_cycle;
+}
+
+int main() {
+	int m;
+	cin >> n >> m;
+	vector<vector<int>> adj(n);
+	for (int i = 0; i < m; i++) {
+		int a, b;
+		cin >> a >> b;
+		adj[--a].push_back(--b);
+		adj[b].push_back(a);
+	}
+
+	int res = INT_MAX;
+	// suppose the current node is part of the shortest cycle
+	for (int i = 0; i < n; i++) { res = min(res, bfs(i, adj)); }
+
+	cout << (res == INT_MAX ? -1 : res) << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class GraphGirth {
+	private static int n;
+	private static int[] dist;
+	private static int[] parent;
+	private static ArrayDeque<Integer> q = new ArrayDeque<>();
+
+	private static int bfs(int start, List<List<Integer>> adj, int currMin) {
+		Arrays.fill(dist, -1);
+		Arrays.fill(parent, -1);
+		q.clear();
+
+		dist[start] = 0;
+		q.add(start);
+		int minCycle = currMin;
+
+		while (!q.isEmpty()) {
+			int curr = q.poll();
+			for (int next : adj.get(curr)) {
+				if (dist[next] == -1) {
+					parent[next] = curr;
+					dist[next] = dist[curr] + 1;
+					q.add(next);
+				} else if (parent[curr] != next) {
+					// if the next cell is not the assigned parent, we have a cycle
+					int cycleLen = dist[curr] + dist[next] + 1;
+					if (cycleLen < minCycle) { minCycle = cycleLen; }
+				}
+			}
+		}
+
+		return minCycle;
+	}
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		n = Integer.parseInt(st.nextToken());
+		int m = Integer.parseInt(st.nextToken());
+
+		List<List<Integer>> adj = new ArrayList<>();
+		for (int i = 0; i < n; i++) { adj.add(new ArrayList<>()); }
+
+		for (int i = 0; i < m; i++) {
+			st = new StringTokenizer(br.readLine());
+			int a = Integer.parseInt(st.nextToken()) - 1;
+			int b = Integer.parseInt(st.nextToken()) - 1;
+			adj.get(a).add(b);
+			adj.get(b).add(a);
+		}
+
+		dist = new int[n];
+		parent = new int[n];
+
+		int res = Integer.MAX_VALUE;
+		for (int i = 0; i < n; i++) {
+			// suppose the current node is part of the shortest cycle
+			if (adj.get(i).size() < 2) continue;  // no cycle possible
+			res = Math.min(res, bfs(i, adj, res));
+		}
+
+		System.out.println(res == Integer.MAX_VALUE ? -1 : res);
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+<Warning>
+
+The below code will TLE on some test cases due to Python's constant factor.
+
+</Warning>
+
+```py
+import sys
+from collections import deque
+from typing import List
+
+n, m = map(int, input().split())
+adj = [[] for _ in range(n)]
+for _ in range(m):
+	a, b = map(int, input().split())
+	a -= 1
+	b -= 1
+	adj[a].append(b)
+	adj[b].append(a)
+
+
+def bfs(start: int, adj: List[List[int]]) -> int:
+	dist = [-1] * n
+	dist[start] = 0
+	parent = [-1] * n
+
+	q = deque()
+	q.append(start)
+	min_cycle = float("inf")
+	while q:
+		curr = q.popleft()
+		for next in adj[curr]:
+			if dist[next] == -1:
+				parent[next] = curr
+				dist[next] = dist[curr] + 1
+				q.append(next)
+			elif parent[curr] != next:
+				# if the next cell is not the assigned parent, we have a cycle
+				min_cycle = min(min_cycle, dist[curr] + dist[next] + 1)
+
+	return min_cycle
+
+
+res = float("inf")
+for i in range(n):  # suppose the current node is part of the shortest cycle
+	res = min(res, bfs(i, adj))
+
+print(-1 if res == float("inf") else res)
+```
+
+</PySection>
+</LanguageSection>
+
+</Spoiler>
+
 ## Explanation
 
 Let's consider a simpler problem: given a graph, find the shortest cycle that
