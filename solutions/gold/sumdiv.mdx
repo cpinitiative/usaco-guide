@@ -138,3 +138,39 @@ int main() {
 
 </CPPSection>
 </LanguageSection>
+
+### Alternative Implementation
+
+This implementation avoids using modular inverse, and can work with arbitrary moduli
+
+<LanguageSection>
+
+<CPPSection>
+pair<mi, mi> operator*(pair<mi, mi> l, pair<mi, mi> r) {
+	return {l.f * r.f, l.s + l.f * r.s};
+}
+
+pair<mi, mi> geo_seq(mi p, ll e) {
+	// returns: {p^e, sum_{i=0}^{e-1}p^i}
+	if (e == 0) return {1, 0};
+	if (e & 1) return geo_seq(p, e - 1) * pair<mi, mi>{p, 1};
+	auto half = geo_seq(p, e / 2);
+	return half * half;
+}
+
+int main() {
+	setIO("sumdiv");
+	def(ll, A, B);
+	V<pair<ll, int>> v = factor(A);
+	mi ans = 1;
+	for (auto [p, e] : v) {
+		auto [pe, sum_pe] = geo_seq(p, e);
+		auto [_, sum_ofac] = geo_seq(pe, B);
+		ans *= p * sum_pe * sum_ofac + 1;
+	}
+	ps(ans);
+}
+</CPPSection>
+
+</LanguageSection>
+
