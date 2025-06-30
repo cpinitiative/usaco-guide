@@ -1,0 +1,139 @@
+---
+id: csa-bfsdfs
+source: CSA
+title: BFS-DFS
+author: David Zhou
+---
+
+## Video Solution
+
+By David Zhou
+
+<YouTube id="zJ8cVWbFcds"/>
+
+[Official Analysis (C++)](https://csacademy.com/contest/archive/task/bfs-dfs/solution/)
+
+## Explanation
+
+To satisfy the BFS order, we can connect node 1 to every other node, placing them all at the same level. This guarantees the correct BFS traversal.
+
+To satisfy the DFS order, we can form a simple path starting from node 1 by connecting each node to the next in the DFS list. This ensures a valid DFS traversal.
+
+We construct the edge list by:
+* Adding edges from node 1 to every other node in the BFS list.
+* Adding edges between each consecutive pair in the DFS list.
+
+If both traversals list a different second node, there's no valid graph, as the first child of node 1 must be the same in both traversals.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int main() {
+	int n;
+	cin >> n;
+	vector<int> bfs(n);
+	vector<int> dfs(n);
+	for (int i = 0; i < n; i++) { cin >> bfs[i]; }
+	for (int i = 0; i < n; i++) { cin >> dfs[i]; }
+
+	if (n == 1) {
+		cout << 0 << endl;
+		return 0;
+	}
+
+	// first child of node 1 must match
+	if (bfs[1] != dfs[1]) {
+		cout << -1 << endl;
+		return 0;
+	}
+
+	cout << 2 * n - 3 << endl;
+
+	for (int i = 1; i < n; i++) { cout << 1 << " " << bfs[i] << endl; }
+
+	// skip the edge between node 1 and first child because BFS already covered it
+	for (int i = 1; i < n - 1; i++) { cout << dfs[i] << " " << dfs[i + 1] << endl; }
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Main {
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+		int n = Integer.parseInt(br.readLine());
+		int[] bfs = new int[n];
+		int[] dfs = new int[n];
+		String[] bfsLine = br.readLine().split(" ");
+		String[] dfsLine = br.readLine().split(" ");
+
+		for (int i = 0; i < n; i++) { bfs[i] = Integer.parseInt(bfsLine[i]); }
+		for (int i = 0; i < n; i++) { dfs[i] = Integer.parseInt(dfsLine[i]); }
+
+		if (n == 1) {
+			System.out.println(0);
+			return;
+		}
+
+		// first child of node 1 must match
+		if (bfs[1] != dfs[1]) {
+			System.out.println(-1);
+			return;
+		}
+
+		System.out.println(2 * n - 3);
+
+		for (int i = 1; i < n; i++) { System.out.println("1 " + bfs[i]); }
+
+		// skip the edge between node 1 and first child because BFS already covered it
+		for (int i = 1; i < n - 1; i++) {
+			System.out.println(dfs[i] + " " + dfs[i + 1]);
+		}
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+n = int(input())
+bfs = list(map(int, input().split()))
+dfs = list(map(int, input().split()))
+
+if n == 1:
+	print(0)
+	exit()
+
+# first child of node 1 must match
+if bfs[1] != dfs[1]:
+	print(-1)
+	exit()
+
+print(2 * n - 3)
+
+for i in range(1, n):
+	print(1, bfs[i])
+
+# skip the edge between node 1 and first child because BFS already covered it
+for i in range(1, n - 1):
+	print(dfs[i], dfs[i + 1])
+```
+
+</PySection>
+</LanguageSection>
