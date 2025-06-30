@@ -1,0 +1,187 @@
+---
+id: usaco-284
+source: Old Silver 2013 Open
+title: Luxury River Cruise
+author: Justin Ji
+---
+
+[Official Analysis (C++)](https://usaco.org/current/data/sol_cruise.html)
+
+## Explanation
+
+Because $n \cdot m$ is reasonably small, we can construct a graph where
+we have an edge $a \rightarrow b$ if we start at port $a$ and end at port $b$ after
+going through the entire sequence of directions.
+
+This new graph that we make remains a functional graph. Thus, our problem can be
+distilled into a slightly easier problem.
+> Given a functional graph, what is our final destination after $k$ moves if we start at node $1$?
+
+To solve this problem, we can consider the following:
+- If $k < n$, we can directly simulate each of our movements
+- If $k \geq n$, we will end up in a cycle and repeat the same set of moves within it
+
+In a cycle, the number of moves we need to make can be reduced by taking the remainder of the remaining steps modulo the cycle length. Thus, once we simulate enough moves to find a cycle, we can
+modulo the remaining moves by our cycle size and simulate the final moves.
+
+Alternatively, you can use [binary lifting](plat/binary-jump), which is a little
+easier to implement but requires more advanced knowledge.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(NM)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+using ll = long long;
+
+int main() {
+	std::ifstream read("cruise.in");
+
+	int n, m, k;
+	read >> n >> m >> k;
+	std::vector<std::array<int, 2>> adj(n);
+	for (auto &[l, r] : adj) {
+		read >> l >> r;
+		l--, r--;
+	}
+
+	std::vector<int> moves(m);
+	for (int i = 0; i < m; i++) {
+		char c;
+		read >> c;
+		moves[i] = c == 'R';
+	}
+
+	std::vector<int> next(n);
+	for (int i = 0; i < n; i++) {
+		int curr = i;
+		for (int j = 0; j < m; j++) { curr = adj[curr][moves[j]]; }
+		next[i] = curr;
+	}
+
+	int curr = 0;
+	if (k < n) {
+		for (int i = 0; i < k; i++) { curr = next[curr]; }
+	} else {
+		int ptr = 0;
+		std::map<int, int> seen;
+		while (!seen.count(curr)) {
+			seen[curr] = ptr++;
+			curr = next[curr];
+		}
+
+		int cycle_len = seen.size() - seen[curr];
+
+		k = (k - seen[curr]) % cycle_len;
+		for (int i = 0; i < k; i++) { curr = next[curr]; }
+	}
+
+	std::ofstream("cruise.out") << curr + 1 << std::endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Cruise {
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new FileReader("cruise.in"));
+		PrintWriter pw = new PrintWriter(new FileWriter("cruise.out"));
+
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int n = Integer.parseInt(st.nextToken());
+		int m = Integer.parseInt(st.nextToken());
+		int k = Integer.parseInt(st.nextToken());
+
+		int[][] adj = new int[n][2];
+		for (int i = 0; i < n; i++) {
+			st = new StringTokenizer(br.readLine());
+			adj[i][0] = Integer.parseInt(st.nextToken()) - 1;
+			adj[i][1] = Integer.parseInt(st.nextToken()) - 1;
+		}
+
+		st = new StringTokenizer(br.readLine());
+		int[] moves = new int[m];
+		for (int i = 0; i < m; i++) { moves[i] = st.nextToken().equals("R") ? 1 : 0; }
+
+		int[] next = new int[n];
+		for (int i = 0; i < n; i++) {
+			int curr = i;
+			for (int j = 0; j < m; j++) { curr = adj[curr][moves[j]]; }
+			next[i] = curr;
+		}
+
+		int curr = 0;
+		if (k < n) {
+			for (int i = 0; i < k; i++) { curr = next[curr]; }
+		} else {
+			Map<Integer, Integer> seen = new HashMap<>();
+			int ptr = 0;
+			while (!seen.containsKey(curr)) {
+				seen.put(curr, ptr++);
+				curr = next[curr];
+			}
+
+			int cycleLen = ptr - seen.get(curr);
+			k = (k - seen.get(curr)) % cycleLen;
+
+			for (int i = 0; i < k; i++) { curr = next[curr]; }
+		}
+
+		pw.println(curr + 1);
+		pw.close();
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+with open("cruise.in") as read:
+	n, m, k = map(int, read.readline().split())
+	adj = []
+	for _ in range(n):
+		l, r = map(int, read.readline().split())
+		adj.append((l - 1, r - 1))
+
+	moves = [1 if c == "R" else 0 for c in read.readline().split()]
+
+next = [0] * n
+for i in range(n):
+	curr = i
+	for j in range(m):
+		curr = adj[curr][moves[j]]
+	next[i] = curr
+
+curr = 0
+if k <= n:
+	for _ in range(k):
+		curr = next[curr]
+else:
+	seen = {}
+	ptr = 0
+	while curr not in seen:
+		seen[curr] = ptr
+		ptr += 1
+		curr = next[curr]
+
+	cycle_len = ptr - seen[curr]
+	k = (k - seen[curr]) % cycle_len
+	for _ in range(k):
+		curr = next[curr]
+
+print(curr + 1, file=open("cruise.out", "w"))
+```
+
+</PySection>
+</LanguageSection>
