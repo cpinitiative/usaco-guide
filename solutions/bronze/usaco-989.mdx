@@ -2,7 +2,7 @@
 id: usaco-989
 source: USACO Bronze 2020 January
 title: Race
-author: Sathvik Chundru, Kevin Sheng, Jonathan Paulson
+author: Sathvik Chundru, Kevin Sheng, Jonathan Paulson, Rameez Parwez, Justin Ji
 ---
 
 [Official Analysis (C++)](http://www.usaco.org/current/data/sol_race_bronze_jan20.html)
@@ -250,28 +250,19 @@ track, then we know we have reached our optimal speed, and we can return the cor
 
 <Spoiler title="Why does this run within the time limit?">
 
-Let's say in worst case Bessie ran a total of $10^9$ meters and her ending pace is $1 m/s$. In which it will take her $63,245$ seconds.
+Consider the following facts:
+- The number of iterations we do is directly proportional to the top speed 
+- Bessie's top speed is $\mathcal{O}(\sqrt{K})$
 
-#### Proof
-
-First, we accelerate her speed to $p$, then decelerate it back to $1$, total distance covered will be:
-$$
-
-\sum_{i = 1}^p + \sum_{i = 1}^{p - 1} = \frac{p * (p + 1)}{2} + \frac{p * (p - 1)}{2} = p^2
-
-$$
-
-So, to cover $10^9$ meters:
+The first one is pretty straightforward, as we are directly iterating on our top speed. 
+To understand the second fact, consider that if Bessie didn't have a speed limit, 
+her answer would be the first value of $t$ that satisfies the following inequality.
 
 $$
-
-p^2 = 10^9 \Rightarrow p = \sqrt{10^9} \approx 31,623
-
+\frac{t(t+1)}{2} \geq K
 $$
 
-Total time $= 31,623(accelerating) + 31,623(decelerating) = 63,245$
-
-For $1000$ queries, it would be sufficient to pass all test cases. However, due to Python's poor constant factor, we have to optimize this solution.
+$t$ is proportional to $\sqrt{K}$, so our code runs in time.
 
 </Spoiler>
 
@@ -378,19 +369,28 @@ class Race {
 </JavaSection>
 <PySection>
 
-<Warning title="">
+<Warning>
 
-Due to Python's slow speed, this approach doesn't pass all test cases. However, we can optimize it using some observations.
+Due to Python's slow speed, this approach doesn't immediately pass all the test cases. However, with some optimizations,
+we can improve the speed to where it passes.
 
-- instead of accelerating and then decelerating at the very end we will allow Bessie to only accelerate and calculate its minimum time, which is: assume if we spend $t$ seconds accelerating, then we cover a distance of $\frac{t * (t + 1)}{2}$ units, from this we get the inequality: $\frac{t * (t + 1)}{2} \geq K$, solving this we get
+First, let's try to calculate how long it would take for Bessie to finish the race purely by increasing her speed. If her end speed remains at or below the maximum speed, then we can return the time calculated. Otherwise, we have to simulate Bessie increasing her speed. Instead of having her start at a speed of $0$ $\text{m/s}$, we can have her start off at her maximum speed. This greatly reduces the number of iterations needed.
+
+To calculate the time it takes for Bessie to finish the race if she only increases her speed,
+we write the following inequality.
 
 $$
-
-t >= \frac{\sqrt{8K + 1} - 1}{2} \\ \text{if the speed at time t is less than or equal to X, it will be our answer.}
-
+\frac{t(t+1)}{2} \geq K
 $$
 
-- if we can't directly increase speed to the end, we start off at max speed and start incrementing from there
+Note that the distance Bessie covers in $t$ seconds is equal to the left hand side 
+of the inequality. Using the quadratic formula, we get the following bound on $t$.
+
+$$
+t \geq \frac{\sqrt{8K + 1} - 1}{2}
+$$
+
+With this bound on $t$, we can implement the optimizations mentioned above.
 
 </Warning>
 
@@ -399,10 +399,12 @@ import math
 
 
 def fastest_time(dist: int, max_speed: int) -> int:
+	# We calculate the time it takes if only speeding up
 	no_slow_time = int(math.ceil((math.sqrt(8 * dist + 1) - 1) / 2))
 	if no_slow_time <= max_speed:
 		return no_slow_time
 
+	# Need to speed up past limit, so start at max speed for now
 	speed_up_dist = max_speed * (max_speed - 1) // 2
 	slow_down_dist = 0
 	time = max_speed - 1
