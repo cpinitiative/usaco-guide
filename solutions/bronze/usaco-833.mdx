@@ -241,7 +241,7 @@ public class FamilyTree {
 </Spoiler>
 
 
-## Solution
+## Solution 1
 
 [Official Analysis (C++)](http://www.usaco.org/current/data/sol_family_bronze_open18.html)
 
@@ -528,23 +528,11 @@ int main() {
 
 </LanguageSection>
 
-## Alternative Solution - BFS
-
-Note: This is an **alternative** solution and makes use of concepts outside the
-scope of Bronze. Breadth-first search is **not necessary** to know for the
-bronze division.
+## Solution 2
 
 **Time Complexity:** $\mathcal{O}(N \log N)$
 
-This problem can also be solved by using BFS to find the common ancestors and
-the distance between the two cows and their nearest common ancestor.
-
-<Warning>
-
-No Bronze / Silver problem has required knowledge of BFS, so feel free to skip
-this solution if you find it unfamiliar and come back later.
-
-</Warning>
+Similar to solution 1, but we find the common ancestor of the two cows more efficiently.
 
 <LanguageSection>
 <JavaSection>
@@ -780,4 +768,96 @@ with open("family.out", "w") as written:
 ```
 
 </PySection>
+</LanguageSection>
+
+
+## Solution 3
+
+Let's first create a map from each cow to its parent. Now let's handle this case by case.
+
+1. $X$ and $Y$ being siblings is equivalent to them having the same parent.
+
+2. $Y$ being a *-mother of $X$ is equivalent to $Y$ equaling some ancestor of $X$. We can iterate over the ancestors of $X$ by starting with our current cow being $X$ and then repeatedly setting the current cow to its parent.
+
+3. $Y$ being a *-aunt of $X$ is equivalent $Y$ and some ancestor of $X$ being siblings. We can handle this by combining cases 1 and 2.
+
+4. We can handle $X$ being a *-mother of $Y$ and $X$ being a *-aunt of $Y$ by swapping $X$ and $Y$ and applying the same logic.
+
+5. If $X$ and $Y$'s oldest ancestors are the same, then they are related.
+
+6. Otherwise, if none of the cases above apply, then $X$ and $Y$ are not related.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	ifstream fin("family.in");
+	ofstream fout("family.out");
+
+	int N;
+	string c1, c2;
+	fin >> N >> c1 >> c2;
+
+	map<string, string> par;
+	for (int i = 0; i < N; ++i) {
+		string x, y;
+		fin >> x >> y;
+		par[y] = x;
+	}
+
+	if (par.count(c1) && par.count(c2) && par.at(c1) == par.at(c2)) {
+		fout << "SIBLINGS\n";
+		return 0;
+	}
+
+	// if c2 is a *-mother or *-aunt of c1, print and exit
+	auto try_print = [&]() {
+		string current_c1 = c1;
+		int jumps = 0;
+		while (true) {
+			if (current_c1 == c2) {
+				fout << c2 << " is the ";
+				for (int i = 0; i < jumps - 2; ++i) fout << "great-";
+				if (jumps > 1) fout << "grand-";
+				fout << "mother";
+				fout << " of " << c1;
+				fout << "\n";
+				return true;
+			}
+			if (par.count(current_c1) && par.count(c2) &&
+			    par.at(current_c1) == par.at(c2)) {
+				fout << c2 << " is the ";
+				for (int i = 0; i < jumps - 1; ++i) fout << "great-";
+				fout << "aunt";
+				fout << " of " << c1;
+				fout << "\n";
+				return true;
+			}
+			if (!par.count(current_c1)) break;
+			++jumps;
+			current_c1 = par.at(current_c1);
+		}
+		return false;
+	};
+
+	if (try_print()) return 0;
+	swap(c1, c2);
+	if (try_print()) return 0;
+
+	auto top_anc = [&](string s) {
+		while (par.count(s)) s = par.at(s);
+		return s;
+	};
+	if (top_anc(c1) == top_anc(c2)) fout << "COUSINS\n";
+	else fout << "NOT RELATED\n";
+}
+```
+
+</CPPSection>
+
 </LanguageSection>
