@@ -530,6 +530,7 @@ using namespace std;
 
 struct Rect {
 	int x1, y1, x2, y2;
+	void read() { cin >> x1 >> y1 >> x2 >> y2; }
 	int area() { return (y2 - y1) * (x2 - x1); }  // Area of the rectangle
 };
 
@@ -545,9 +546,10 @@ int main() {
 	freopen("billboard.out", "w", stdout);
 
 	Rect a, b, t;  // billboards a, b, and the truck
-	cin >> a.x1 >> a.y1 >> a.x2 >> a.y2;
-	cin >> b.x1 >> b.y1 >> b.x2 >> b.y2;
-	cin >> t.x1 >> t.y1 >> t.x2 >> t.y2;
+	a.read();
+	b.read();
+	t.read();
+
 	// Total visible area = area of both billboards minus area covered by truck
 	cout << a.area() + b.area() - intersect(a, t) - intersect(b, t) << endl;
 }
@@ -602,6 +604,12 @@ print(
 </LanguageSection>
 
 ## Common Formulas
+
+<Warning>
+
+This entire section can be skipped if you already understand the fast solution to Blocked Billboard.
+
+</Warning>
 
 Certain tasks show up often in rectangle geometry problems. For example, many problems
 involve finding the overlapping area of two or more rectangles based on their coordinate points,
