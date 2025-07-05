@@ -535,7 +535,7 @@ int main() {
 	for (int e = 0; e < M; ++e) {
 		int a, b;
 		fin >> a >> b;
-		a--, b--;
+		--a, --b;
 		adj.at(max(a, b)).push_back(min(a, b));
 	}
 
@@ -545,10 +545,10 @@ int main() {
 		assert(size(adj.at(b)) < MAX_COLORS);
 		vector<bool> used(MAX_COLORS + 1);
 		for (int a : adj.at(b)) { used.at(color.at(a)) = true; }
-		while (used.at(color.at(b))) { color.at(b)++; }
+		while (used.at(color.at(b))) { ++color.at(b); }
 		fout << color.at(b);
 	}
-	fout << endl;
+	fout << "\n";
 }
 ```
 
