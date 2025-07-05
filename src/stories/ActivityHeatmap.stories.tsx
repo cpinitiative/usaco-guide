@@ -58,13 +58,40 @@ for (
   randomProblemActivities[i.getTime()] = Array(rng()).fill(dummyProblem);
 }
 console.log(startDate.getTime(), endDate.getTime());
+// Helper to generate activityCount from activities
+const getActivityCount = (
+  moduleActivities: { [key: number]: any[] },
+  problemActivities: { [key: number]: any[] }
+) => {
+  const activityCount: { [key: number]: number } = {};
+  const allKeys = new Set([
+    ...Object.keys(moduleActivities),
+    ...Object.keys(problemActivities),
+  ]);
+  for (const key of allKeys) {
+    const k = Number(key);
+    activityCount[k] =
+      (moduleActivities[k]?.length || 0) + (problemActivities[k]?.length || 0);
+  }
+  return activityCount;
+};
+
 export const Ordered = Template.bind({});
 Ordered.args = {
   moduleActivities: orderedModuleActivities,
   problemActivities: orderedProblemActivities,
+  activityCount: getActivityCount(
+    orderedModuleActivities,
+    orderedProblemActivities
+  ),
 };
+
 export const Random = Template.bind({});
 Random.args = {
   moduleActivities: randomModuleActivities,
   problemActivities: randomProblemActivities,
+  activityCount: getActivityCount(
+    randomModuleActivities,
+    randomProblemActivities
+  ),
 };
