@@ -162,6 +162,7 @@ public class revegetate {
 
 </JavaSection>
 </LanguageSection>
+
 </Spoiler>
 
 <Spoiler title="Hint">
@@ -503,18 +504,22 @@ print("".join(map(str, pastures)), file=open("revegetate.out", "w"))
 
 <Spoiler title="Solution 3 (Faster)">
 
-<LanguageSection>
-
-<CPPSection>
+## Explanation
 
 As in solution 1, we loop through all the pastures, assigning each the lowest color
 that doesn't conflict with any of the requirements. However, instead of looping
 through all requirements, we instead only iterate through those requirements
-for which the current pasture is the greater one. We can do this efficiently
-by storing the input in [adjacency list](/bronze/intro-graphs#constructing-adjacency-lists)
-format.
+for which the current pasture is the greater one.
+
+We can do this efficiently by storing the input
+with [adjacency lists](/bronze/intro-graphs#constructing-adjacency-lists).
+
+## Implementation
 
 **Time Complexity:** $\mathcal{O}(N+M)$
+
+<LanguageSection>
+<CPPSection>
 
 ```cpp
 #include <bits/stdc++.h>
@@ -526,12 +531,11 @@ int main() {
 
 	int N, M;
 	fin >> N >> M;
-
 	vector<vector<int>> adj(N);
 	for (int e = 0; e < M; ++e) {
 		int a, b;
 		fin >> a >> b;
-		--a, --b;
+		a--, b--;
 		adj.at(max(a, b)).push_back(min(a, b));
 	}
 
@@ -540,16 +544,15 @@ int main() {
 	for (int b = 0; b < N; ++b) {
 		assert(size(adj.at(b)) < MAX_COLORS);
 		vector<bool> used(MAX_COLORS + 1);
-		for (int a : adj.at(b)) used.at(color.at(a)) = true;
-		while (used.at(color.at(b))) ++color.at(b);
+		for (int a : adj.at(b)) { used.at(color.at(a)) = true; }
+		while (used.at(color.at(b))) { color.at(b)++; }
 		fout << color.at(b);
 	}
-	fout << "\n";
+	fout << endl;
 }
 ```
 
 </CPPSection>
-
 </LanguageSection>
 
 </Spoiler>
