@@ -275,19 +275,19 @@ If the logos can fit they can either:
 #include <bits/stdc++.h>
 using namespace std;
 
-void solve(void) {
-	using point = pair<pair<int, int>, char>;
-#define x first.first
-#define y first.second
-#define ch second
+struct point {
+	int x, y;
+	char ch;
 
-	auto print = [](const point a) {
-		for (int i = 0; i < a.y; i++) {
-			for (int j = 0; j < a.x; j++) { cout << a.ch; }
+	void print(void){
+		for (int i = 0; i < this->y; i++) {
+			for (int j = 0; j < this->x; j++) cout << this->ch; 
 			cout << '\n';
 		}
-	};
+	}
+};
 
+void solve(void) {
 	point a, b, c;
 
 	cin >> a.x >> a.y >> b.x >> b.y >> c.x >> c.y;
@@ -306,9 +306,9 @@ void solve(void) {
 		if (a.y + b.y + c.y == a.x) {  // if they actually forms a square
 			cout << a.x << "\n";
 
-			print(a);
-			print(b);
-			print(c);
+			a.print();
+			b.print();
+			c.print();
 
 		} else {
 			cout << "-1\n";
@@ -327,7 +327,7 @@ void solve(void) {
 
 	if (b.x + c.x == a.x && c.y == remaining_y && b.y == remaining_y) {
 		cout << a.x << "\n";
-		print(a);
+		a.print();
 
 		for (int i = 0; i < b.y; i++) {
 			for (int j = 0; j < b.x; j++) cout << b.ch;
