@@ -259,8 +259,8 @@ if __name__ == "__main__":
 
 ## Alternative Implementation
 
-This specific case of $n = 3$ can also be solved in $ \mathcal{O}(1) $, by simply
-considering the 2 possible cases.
+This problem can be solved in $ \mathcal{O}(1)$ time (ignoring the time to print the output), by simply
+considering the two possible cases.
 
 If the logos can fit they can either:
 
@@ -279,9 +279,9 @@ struct point {
 	int x, y;
 	char ch;
 
-	void print(void){
+	void print(void) {
 		for (int i = 0; i < this->y; i++) {
-			for (int j = 0; j < this->x; j++) cout << this->ch; 
+			for (int j = 0; j < this->x; j++) cout << this->ch;
 			cout << '\n';
 		}
 	}
@@ -295,7 +295,7 @@ void solve(void) {
 	b.ch = 'B';
 	c.ch = 'C';
 
-	// the logos can be rotated -> normalize to make the case work simpler
+	// rotate logos to reduce the amount of casework
 	// longer side = x, shorter side = y
 	if (a.x < a.y) swap(a.x, a.y);
 	if (b.x < b.y) swap(b.x, b.y);
@@ -303,7 +303,7 @@ void solve(void) {
 
 	// first case: all 3 have the same width, so try to place them one under the other
 	if (a.x == b.x && a.x == c.x) {
-		if (a.y + b.y + c.y == a.x) {  // if they actually forms a square
+		if (a.y + b.y + c.y == a.x) {  // if they actually form a square
 			cout << a.x << "\n";
 
 			a.print();
@@ -316,7 +316,7 @@ void solve(void) {
 		return;
 	}
 
-	// put a as the logo with the largest x
+	// let a be the logo with the largest x
 	if (c.x > b.x) swap(b, c);
 	if (b.x > a.x) swap(a, b);
 
