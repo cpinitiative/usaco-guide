@@ -9,10 +9,13 @@ author: Chongtian Ma
 
 ## Implementation
 
-We can brute force all rotations of the three rectangles with a bitmask of $2^3$, with bit $i$ representing whether the $i$'th rectangle should be rotated by
-$90$ degrees. The rest is just checking if the configurations are valid.
+We can brute force all rotations of the three rectangles with a bitmask of
+$2^3$, with bit $i$ representing whether the $i$'th rectangle should be rotated
+by $90$ degrees. The rest is just checking if the configurations are valid.
 
-**Time Complexity:** $\mathcal{O}(2^n \cdot \textbf{side}^2)$, where $n$ is the number of rectangles (in this case, 3) and $\textbf{side}$ as the side length of the square.
+**Time Complexity:** $\mathcal{O}(2^n \cdot \textbf{side}^2)$, where $n$ is the
+number of rectangles (in this case, 3) and $\textbf{side}$ as the side length of
+the square.
 
 <LanguageSection>
 <CPPSection>
@@ -252,4 +255,100 @@ if __name__ == "__main__":
 ```
 
 </PySection>
+</LanguageSection>
+
+## Alternative Implementation
+
+This problem can be solved in $ \mathcal{O}(1)$ time (ignoring the time to print the output), by simply
+considering the two possible cases.
+
+If the logos can fit they can either:
+
+- be placed one under the other, similar to the first sample
+- or one can be placed on top and the other two will be placed next to each
+  other.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+struct point {
+	int x, y;
+	char ch;
+
+	void print(void) {
+		for (int i = 0; i < this->y; i++) {
+			for (int j = 0; j < this->x; j++) cout << this->ch;
+			cout << '\n';
+		}
+	}
+};
+
+void solve(void) {
+	point a, b, c;
+
+	cin >> a.x >> a.y >> b.x >> b.y >> c.x >> c.y;
+	a.ch = 'A';
+	b.ch = 'B';
+	c.ch = 'C';
+
+	// rotate logos to reduce the amount of casework
+	// longer side = x, shorter side = y
+	if (a.x < a.y) swap(a.x, a.y);
+	if (b.x < b.y) swap(b.x, b.y);
+	if (c.x < c.y) swap(c.x, c.y);
+
+	// first case: all 3 have the same width, so try to place them one under the other
+	if (a.x == b.x && a.x == c.x) {
+		if (a.y + b.y + c.y == a.x) {  // if they actually form a square
+			cout << a.x << "\n";
+
+			a.print();
+			b.print();
+			c.print();
+
+		} else {
+			cout << "-1\n";
+		}
+		return;
+	}
+
+	// let a be the logo with the largest x
+	if (c.x > b.x) swap(b, c);
+	if (b.x > a.x) swap(a, b);
+
+	int remaining_y = a.x - a.y;
+	// rotate them as needed
+	if (b.x == remaining_y) swap(b.x, b.y);
+	if (c.x == remaining_y) swap(c.x, c.y);
+
+	if (b.x + c.x == a.x && c.y == remaining_y && b.y == remaining_y) {
+		cout << a.x << "\n";
+		a.print();
+
+		for (int i = 0; i < b.y; i++) {
+			for (int j = 0; j < b.x; j++) cout << b.ch;
+			for (int j = 0; j < c.x; j++) cout << c.ch;
+			cout << '\n';
+		}
+		return;
+	}
+
+	cout << "-1\n";
+}
+
+int main(void) {
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL);
+
+	solve();
+
+	return 0;
+}
+```
+
+</CPPSection>
 </LanguageSection>
