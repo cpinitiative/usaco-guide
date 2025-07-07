@@ -7,8 +7,6 @@ author: Qi Wang, Kakulavaram Sanjana Reddy, David Zhou
 
 [Official Analysis (C++)](http://www.usaco.org/current/data/sol_piggyback_silver.html)
 
-## Implementation
-
 ## Video Solution
 
 By David Zhou
@@ -211,6 +209,12 @@ if __name__ == "__main__":
 
 </Spoiler>
 
+## Explanation
+
+We can BFS from the three points of Bessie, Elsie, and the barn. By doing so, we determine the distance from these three points to every other point. After, we can loop over all the cells and check the energy spent if it were the meeting location.
+
+## Implementation
+
 **Time Complexity:** $\mathcal{O}(N+M)$
 
 <LanguageSection>
@@ -389,8 +393,7 @@ def main():
 		p_cost = barn_dist[i] * min(B + E, P)  # P may not be more optimal than B + E
 		res = min(res, b_cost + e_cost + p_cost)
 
-	with open("piggyback.out", "w") as fout:
-		fout.write(f"{res}\n")
+	print(res, file=open("piggyback.out", "w"))
 
 
 if __name__ == "__main__":
