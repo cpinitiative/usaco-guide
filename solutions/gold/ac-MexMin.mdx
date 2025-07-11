@@ -35,18 +35,18 @@ int main() {
 	for (int i = 0; i < n; i++) { cin >> v[i]; }
 
 	int res = INT_MAX;
-	unordered_map<int, int> cnt;
+	unordered_map<int, int> window_freq;
 	for (int i = 0; i < n; i++) {
 		if (i < m) {
 			s.erase(v[i]);
-			cnt[v[i]]++;
+			window_freq[v[i]]++;
 		} else {
 			res = min(res, *s.begin());
-			cnt[v[i]]++;
+			window_freq[v[i]]++;
 			s.erase(v[i]);
-			cnt[v[i - m]]--;
-			if (cnt[v[i - m]] == 0) {
-				cnt.erase(v[i - m]);
+			window_freq[v[i - m]]--;
+			if (window_freq[v[i - m]] == 0) {
+				window_freq.erase(v[i - m]);
 				s.insert(v[i - m]);
 			}
 		}
@@ -78,20 +78,20 @@ public class Main {
 		TreeSet<Integer> s = new TreeSet<>();
 		for (int i = 0; i <= n; i++) { s.add(i); }
 
-		Map<Integer, Integer> cnt = new HashMap<>();
+		Map<Integer, Integer> windowFreq = new HashMap<>();
 		int res = Integer.MAX_VALUE;
 		for (int i = 0; i < n; i++) {
 			if (i < m) {
 				s.remove(v[i]);
-				cnt.put(v[i], cnt.getOrDefault(v[i], 0) + 1);
+				windowFreq.put(v[i], windowFreq.getOrDefault(v[i], 0) + 1);
 			} else {
 				res = Math.min(res, s.first());
 				s.remove(v[i]);
-				cnt.put(v[i], cnt.getOrDefault(v[i], 0) + 1);
+				windowFreq.put(v[i], windowFreq.getOrDefault(v[i], 0) + 1);
 				int old = v[i - m];
-				cnt.put(old, cnt.get(old) - 1);
-				if (cnt.get(old) == 0) {
-					cnt.remove(old);
+				windowFreq.put(old, windowFreq.get(old) - 1);
+				if (windowFreq.get(old) == 0) {
+					windowFreq.remove(old);
 					s.add(old);
 				}
 			}
