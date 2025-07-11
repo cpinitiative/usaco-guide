@@ -13,9 +13,7 @@ We can store all integers from $0$ to $N$ in a set, and report the lowest value 
 
 **Time Complexity:** $\mathcal{O}(N \log N)$
 
-
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
@@ -24,15 +22,18 @@ We can store all integers from $0$ to $N$ in a set, and report the lowest value 
 #include <set>
 #include <unordered_map>
 #include <vector>
+
 using namespace std;
 
 int main() {
 	int n, m;
 	cin >> n >> m;
+
 	set<int> s;
 	for (int i = 0; i <= n; i++) { s.insert(i); }
 	vector<int> v(n);
 	for (int i = 0; i < n; i++) { cin >> v[i]; }
+
 	int res = INT_MAX;
 	unordered_map<int, int> cnt;
 	for (int i = 0; i < n; i++) {
@@ -50,12 +51,12 @@ int main() {
 			}
 		}
 	}
+
 	cout << min(res, *s.begin()) << endl;
 }
 ```
 
 </CPPSection>
-
 <JavaSection>
 
 ```java
@@ -79,7 +80,6 @@ public class Main {
 
 		Map<Integer, Integer> cnt = new HashMap<>();
 		int res = Integer.MAX_VALUE;
-
 		for (int i = 0; i < n; i++) {
 			if (i < m) {
 				s.remove(v[i]);
@@ -103,5 +103,4 @@ public class Main {
 ```
 
 </JavaSection>
-
 </LanguageSection>
