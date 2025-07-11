@@ -1,0 +1,115 @@
+---
+id: ac-MexMin
+source: AC
+title: Mex Min
+author: David Zhou
+---
+
+## Explanation
+
+We can store all integers from $0$ to $N$ in a set, and report the lowest value in the set. We can use a sliding window to keep track of the $M$ elements that must be removed or added.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N \log N)$
+
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <climits>
+#include <iostream>
+#include <set>
+#include <unordered_map>
+#include <vector>
+using namespace std;
+
+int main() {
+    int n, m;
+    cin >> n >> m;
+    set<int> s;
+    for (int i = 0; i <= n; i++) {
+        s.insert(i);
+    }
+    vector<int> v(n);
+    for (int i = 0; i < n; i++) {
+        cin >> v[i];
+    }
+    int res = INT_MAX;
+    unordered_map<int, int> cnt;
+    for (int i = 0; i < n; i++) {
+        if (i < m) {
+            s.erase(v[i]);
+            cnt[v[i]]++;
+        } else {
+            res = min(res, *s.begin());
+            cnt[v[i]]++;
+            s.erase(v[i]);
+            cnt[v[i - m]]--;
+            if (cnt[v[i - m]] == 0) {
+                cnt.erase(v[i - m]);
+                s.insert(v[i - m]);
+            }
+        }
+    }
+    cout << min(res, *s.begin()) << endl;
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Main {
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+
+        int n = Integer.parseInt(st.nextToken());
+        int m = Integer.parseInt(st.nextToken());
+
+        int[] v = new int[n];
+        st = new StringTokenizer(br.readLine());
+        for (int i = 0; i < n; i++) {
+            v[i] = Integer.parseInt(st.nextToken());
+        }
+
+        TreeSet<Integer> s = new TreeSet<>();
+        for (int i = 0; i <= n; i++) {
+            s.add(i);
+        }
+
+        Map<Integer, Integer> cnt = new HashMap<>();
+        int res = Integer.MAX_VALUE;
+
+        for (int i = 0; i < n; i++) {
+            if (i < m) {
+                s.remove(v[i]);
+                cnt.put(v[i], cnt.getOrDefault(v[i], 0) + 1);
+            } else {
+                res = Math.min(res, s.first());
+                s.remove(v[i]);
+                cnt.put(v[i], cnt.getOrDefault(v[i], 0) + 1);
+                int old = v[i - m];
+                cnt.put(old, cnt.get(old) - 1);
+                if (cnt.get(old) == 0) {
+                    cnt.remove(old);
+                    s.add(old);
+                }
+            }
+        }
+
+        System.out.println(Math.min(res, s.first()));
+    }
+}
+```
+
+</JavaSection>
+
+</LanguageSection>
