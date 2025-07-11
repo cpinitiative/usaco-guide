@@ -68,34 +68,34 @@ public class ConsecutiveSubsequence {
 using namespace std;
 
 int main(void) {
-    int n;
-    cin >> n;
+	int n;
+	cin >> n;
 
-    vector<int> v(n);
-    for(auto& i : v) cin >> i;
+	vector<int> v(n);
+	for (auto &i : v) cin >> i;
 
-    map<int, int> dp;
+	map<int, int> dp;
 
-    int mx = 0;
-    int last;
-    for(auto i : v){
-        dp[i] = dp[i - 1] + 1;
+	int mx = 0;
+	int last;
+	for (auto i : v) {
+		dp[i] = dp[i - 1] + 1;
 
-        if(dp[i] > mx) {
-            mx = dp[i];
-            last = i;
-        }
-    }
+		if (dp[i] > mx) {
+			mx = dp[i];
+			last = i;
+		}
+	}
 
-    cout << mx << '\n';
-    for (int cur = last - mx + 1, i = 0; i < n; i++) {
-        if (v[i] == cur) {
-            cout << i + 1 << ' ';
-            cur++;
-        }
-    }
-    
-    return 0;
+	cout << mx << '\n';
+	for (int cur = last - mx + 1, i = 0; i < n; i++) {
+		if (v[i] == cur) {
+			cout << i + 1 << ' ';
+			cur++;
+		}
+	}
+
+	return 0;
 }
 ```
 
