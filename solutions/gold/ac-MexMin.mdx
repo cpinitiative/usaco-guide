@@ -25,36 +25,30 @@ We can use a sliding window to keep track of the $M$ elements that cannot be exc
 using namespace std;
 
 int main() {
-    int n, m;
-    cin >> n >> m;
+	int n, m;
+	cin >> n >> m;
 
-    set<int> s;
-    for (int i = 0; i <= n; i++) {
-        s.insert(i);
-    }
-    vector<int> v(n);
-    for (int i = 0; i < n; i++) {
-        cin >> v[i];
-    }
+	set<int> s;
+	for (int i = 0; i <= n; i++) { s.insert(i); }
+	vector<int> v(n);
+	for (int i = 0; i < n; i++) { cin >> v[i]; }
 
-    int res = INT_MAX;
-    vector<int> window_freq(n);
-    for (int i = 0; i < n; i++) {
-        if (i < m) {
-            s.erase(v[i]);
-            window_freq[v[i]]++;
-        } else {
-            res = min(res, *s.begin());
-            window_freq[v[i]]++;
-            s.erase(v[i]);
-            window_freq[v[i - m]]--;
-            if (window_freq[v[i - m]] == 0) {
-                s.insert(v[i - m]);
-            }
-        }
-    }
+	int res = INT_MAX;
+	vector<int> window_freq(n);
+	for (int i = 0; i < n; i++) {
+		if (i < m) {
+			s.erase(v[i]);
+			window_freq[v[i]]++;
+		} else {
+			res = min(res, *s.begin());
+			window_freq[v[i]]++;
+			s.erase(v[i]);
+			window_freq[v[i - m]]--;
+			if (window_freq[v[i - m]] == 0) { s.insert(v[i - m]); }
+		}
+	}
 
-    cout << min(res, *s.begin()) << endl;
+	cout << min(res, *s.begin()) << endl;
 }
 ```
 
@@ -66,44 +60,38 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer(br.readLine());
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
 
-        int n = Integer.parseInt(st.nextToken());
-        int m = Integer.parseInt(st.nextToken());
+		int n = Integer.parseInt(st.nextToken());
+		int m = Integer.parseInt(st.nextToken());
 
-        int[] arr = new int[n];
-        st = new StringTokenizer(br.readLine());
-        for (int i = 0; i < n; i++) {
-            arr[i] = Integer.parseInt(st.nextToken());
-        }
+		int[] arr = new int[n];
+		st = new StringTokenizer(br.readLine());
+		for (int i = 0; i < n; i++) { arr[i] = Integer.parseInt(st.nextToken()); }
 
-        TreeSet<Integer> s = new TreeSet<>();
-        for (int i = 0; i <= n; i++) {
-            s.add(i);
-        }
+		TreeSet<Integer> s = new TreeSet<>();
+		for (int i = 0; i <= n; i++) { s.add(i); }
 
-        int[] windowFreq = new int[n];
-        int res = Integer.MAX_VALUE;
-        for (int i = 0; i < n; i++) {
-            if (i < m) {
-                s.remove(arr[i]);
-                windowFreq[arr[i]]++;
-            } else {
-                res = Math.min(res, s.first());
-                s.remove(arr[i]);
-                windowFreq[arr[i]]++;
-                int old = arr[i - m];
-                windowFreq[old]--;
-                if (windowFreq[old] == 0) {
-                    s.add(old);
-                }
-            }
-        }
+		int[] windowFreq = new int[n];
+		int res = Integer.MAX_VALUE;
+		for (int i = 0; i < n; i++) {
+			if (i < m) {
+				s.remove(arr[i]);
+				windowFreq[arr[i]]++;
+			} else {
+				res = Math.min(res, s.first());
+				s.remove(arr[i]);
+				windowFreq[arr[i]]++;
+				int old = arr[i - m];
+				windowFreq[old]--;
+				if (windowFreq[old] == 0) { s.add(old); }
+			}
+		}
 
-        System.out.println(Math.min(res, s.first()));
-    }
+		System.out.println(Math.min(res, s.first()));
+	}
 }
 ```
 
@@ -121,39 +109,41 @@ This solution TLEs even with PyPy.
 import sys
 from bisect import bisect_left, insort
 
+
 def main():
-    input = sys.stdin.readline
-    n, m = map(int, input().split())
-    arr = list(map(int, input().split()))
+	input = sys.stdin.readline
+	n, m = map(int, input().split())
+	arr = list(map(int, input().split()))
 
-    s = list(range(n + 1))
-    present = [True] * (n + 1)
-    window_freq = [0] * (n)
-    res = float('inf')
+	s = list(range(n + 1))
+	present = [True] * (n + 1)
+	window_freq = [0] * (n)
+	res = float("inf")
 
-    for i in range(n):
-        if i < m:
-            if present[arr[i]]:
-                s.pop(bisect_left(s, arr[i]))
-                present[arr[i]] = False
-            window_freq[arr[i]] += 1
-        else:
-            res = min(res, s[0])
-            if present[arr[i]]:
-                s.pop(bisect_left(s, arr[i]))
-                present[arr[i]] = False
-            window_freq[arr[i]] += 1
-            old = arr[i - m]
-            window_freq[old] -= 1
-            if window_freq[old] == 0:
-                if not present[old]:
-                    insort(s, old)
-                    present[old] = True
+	for i in range(n):
+		if i < m:
+			if present[arr[i]]:
+				s.pop(bisect_left(s, arr[i]))
+				present[arr[i]] = False
+			window_freq[arr[i]] += 1
+		else:
+			res = min(res, s[0])
+			if present[arr[i]]:
+				s.pop(bisect_left(s, arr[i]))
+				present[arr[i]] = False
+			window_freq[arr[i]] += 1
+			old = arr[i - m]
+			window_freq[old] -= 1
+			if window_freq[old] == 0:
+				if not present[old]:
+					insort(s, old)
+					present[old] = True
 
-    print(min(res, s[0]))
+	print(min(res, s[0]))
+
 
 if __name__ == "__main__":
-    main()
+	main()
 ```
 
 </PySection>
@@ -263,6 +253,7 @@ import sys
 
 input = sys.stdin.readline
 
+
 def main():
 	n, m = map(int, input().split())
 	nums = list(map(int, input().split()))
@@ -283,6 +274,7 @@ def main():
 		if valid[i]:
 			print(i)
 			break
+
 
 if __name__ == "__main__":
 	main()
