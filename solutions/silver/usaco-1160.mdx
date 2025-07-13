@@ -1,0 +1,64 @@
+---
+id: usaco-1160
+source: USACO Silver 2021 December
+title: Convoluted Intervals
+author: Sachet Abeysinghe
+---
+
+## Explanation
+
+Let's consider the brute force solution first and make optimizations from there. The naive solution is, for all $k$ from $0…2M$, iterate over all pairs of intervals $(a_i, b_i)$ and $(a_j, b_j)$ and add one to the answer if this $(i, j)$ pair satisfies $a_i + a_j \le k \le b_i + b_j$. This runs in $\mathcal{O}(MN^{2})$, which is extremely slow. Consider the two following optimizations:
+
+**Optimization 1:** Instead of considering each individual $k$, we can think of it as a pair of intervals contributing to all $k$ from $a_i + a_j$ to $b_i + b_j$. To count this efficiently, we can use the difference array prefix sums trick, where we do range updates by incrementing position $a_i + a_j$ by one and decrementing position $b_i + b_j + 1$ by one. This lends us a time complexity of $\mathcal{O}(N^{2}+M)$, which is better.
+
+**Optimization 2:** We should take advantage of the relatively small bound of $M$. Instead of looping through all pairs of intervals $(i, j)$ in $\mathcal{O}(N^2)$ time, iterate over all distinct $(a_i, a_j)$ and $(b_i, b_j)$ pairs in $\mathcal{O}(M^2)$, and multiply the frequencies of $a_i$ and $a_j$, and $b_i$ and $b_j$ (because the number of ways we can pair them is given by their product).
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N+M^{2})$
+
+<LanguageSection>
+
+<CPPSection>
+
+(add cpp code)
+
+</CPPSection>
+
+<PySection>
+
+(note that Python TLEs after the second test case)
+
+```py
+n, m = map(int, input().split())
+aFreq = [0] * (m + 1)
+bFreq = [0] * (m + 1)
+# Count frequencies of left and right endpoints
+for i in range(n):
+    a, b = map(int, input().split())
+    aFreq[a] += 1
+    bFreq[b] += 1
+# Difference array range update
+ans = [0] * (2 * m + 2)
+for a1 in range(m + 1):
+    for a2 in range(m + 1):
+        ans[a1 + a2] += aFreq[a1] * aFreq[a2]
+for b1 in range(m + 1):
+    for b2 in range(m + 1):
+        ans[b1 + b2 + 1] -= bFreq[b1] * bFreq[b2]
+# Accumulate prefix sums
+current = 0
+for k in range(2 * m + 1):
+    current += ans[k]
+    print(current)
+```
+
+</PySection>
+
+<JavaSection>
+
+(if you have Java code)
+
+</JavaSection>
+
+</LanguageSection>
