@@ -128,32 +128,30 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-    public static void main(String[] args) throws IOException {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+	public static void main(String[] args) throws IOException {
+		BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
-        StringTokenizer s1 = new StringTokenizer(reader.readLine());
-        int N = Integer.parseInt(s1.nextToken());
-        int M = Integer.parseInt(s1.nextToken());
+		StringTokenizer s1 = new StringTokenizer(reader.readLine());
+		int N = Integer.parseInt(s1.nextToken());
+		int M = Integer.parseInt(s1.nextToken());
 
-        List<List<Integer>> adj = new ArrayList<>();
-        for (int i = 0; i < N; i++) { adj.add(new ArrayList<>()); }
+		List<List<Integer>> adj = new ArrayList<>();
+		for (int i = 0; i < N; i++) { adj.add(new ArrayList<>()); }
 
-        for (int i = 0; i < M; i++) {
-            StringTokenizer s2 = new StringTokenizer(reader.readLine());
-            int u = Integer.parseInt(s2.nextToken());
-            int v = Integer.parseInt(s2.nextToken());
-            adj.get(u).add(v);
-            adj.get(v).add(u);
-        }
+		for (int i = 0; i < M; i++) {
+			StringTokenizer s2 = new StringTokenizer(reader.readLine());
+			int u = Integer.parseInt(s2.nextToken());
+			int v = Integer.parseInt(s2.nextToken());
+			adj.get(u).add(v);
+			adj.get(v).add(u);
+		}
 
-        int u = 1;
-        // print number of vertices adjacent to u
-        System.out.println("deg(u) = " + adj.get(u).size());
-        // print all edges with u as an endpoint
-        for (int v : adj.get(u)) {
-            System.out.println("{" + u + ", " + v + "}");
-        }
-    }
+		int u = 1;
+		// print number of vertices adjacent to u
+		System.out.println("deg(u) = " + adj.get(u).size());
+		// print all edges with u as an endpoint
+		for (int v : adj.get(u)) { System.out.println("{" + u + ", " + v + "}"); }
+	}
 }
 ```
 
