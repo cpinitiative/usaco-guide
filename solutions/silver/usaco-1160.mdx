@@ -5,6 +5,8 @@ title: Convoluted Intervals
 author: Sachet Abeysinghe
 ---
 
+[Official Analysis](https://usaco.org/current/data/sol_prob3_silver_dec21.html)
+
 ## Explanation
 
 Let's consider the brute force solution first and make optimizations from there. The naive solution is, for all $k$ from $0…2M$, iterate over all pairs of intervals $(a_i, b_i)$ and $(a_j, b_j)$ and add one to the answer if this $(i, j)$ pair satisfies $a_i + a_j \le k \le b_i + b_j$. This runs in $\mathcal{O}(MN^{2})$, which is extremely slow. Consider the two following optimizations:
@@ -21,31 +23,79 @@ Let's consider the brute force solution first and make optimizations from there.
 
 <CPPSection>
 
-(add cpp code)
+```cpp
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+ 
+public class IntervalConvolution {
+ 
+    public static void main(String[] args) throws IOException {
+        BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer tokenizer = new StringTokenizer(in.readLine());
+        int n = Integer.parseInt(tokenizer.nextToken());
+        int m = Integer.parseInt(tokenizer.nextToken());
+        long total_pairs = ((long) n) * ((long) n);
+        long[] a_freq = new long[m + 1];
+        long[] b_freq = new long[m + 1];
+        for (int j = 1; j <= n; j++) {
+            tokenizer = new StringTokenizer(in.readLine());
+            int a = Integer.parseInt(tokenizer.nextToken());
+            int b = Integer.parseInt(tokenizer.nextToken());
+            a_freq[a]++;
+            b_freq[b]++;
+        }
+        long[] a_sum_freq = new long[(2 * m) + 1];
+        long[] b_sum_freq = new long[(2 * m) + 1];
+        for (int x = 0; x <= m; x++) {
+            for (int y = 0; y <= m; y++) {
+                a_sum_freq[x + y] += a_freq[x] * a_freq[y];
+                b_sum_freq[x + y] += b_freq[x] * b_freq[y];
+            }
+        }
+        long a_valid = a_sum_freq[0];
+        long b_valid = total_pairs;
+        StringBuilder out = new StringBuilder();
+        for (int x = 0; x <= 2 * m; x++) {
+            if (x > 0) {
+                a_valid += a_sum_freq[x];
+                b_valid -= b_sum_freq[x - 1];
+            }
+            long res = a_valid + b_valid - total_pairs;
+            out.append(res).append('\n');
+        }
+        System.out.print(out);
+    }
+}
+```
 
 </CPPSection>
 
 <PySection>
 
-(note that Python TLEs after the second test case)
+<Warning>(note that Python TLEs after the second test case)</Warning>
 
 ```py
 n, m = map(int, input().split())
-aFreq = [0] * (m + 1)
-bFreq = [0] * (m + 1)
+a_freq = [0] * (m + 1)
+b_freq = [0] * (m + 1)
+
 # Count frequencies of left and right endpoints
 for i in range(n):
 	a, b = map(int, input().split())
-	aFreq[a] += 1
-	bFreq[b] += 1
+	a_freq[a] += 1
+	b_freq[b] += 1
+
 # Difference array range update
 ans = [0] * (2 * m + 2)
 for a1 in range(m + 1):
 	for a2 in range(m + 1):
-		ans[a1 + a2] += aFreq[a1] * aFreq[a2]
+		ans[a1 + a2] += a_freq[a1] * b_freq[a2]
 for b1 in range(m + 1):
 	for b2 in range(m + 1):
-		ans[b1 + b2 + 1] -= bFreq[b1] * bFreq[b2]
+		ans[b1 + b2 + 1] -= b_freq[b1] * b_freq[b2]
+
 # Accumulate prefix sums
 current = 0
 for k in range(2 * m + 1):
@@ -54,11 +104,5 @@ for k in range(2 * m + 1):
 ```
 
 </PySection>
-
-<JavaSection>
-
-(if you have Java code)
-
-</JavaSection>
 
 </LanguageSection>
