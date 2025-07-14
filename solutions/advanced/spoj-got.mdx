@@ -26,195 +26,203 @@ using namespace std;
 const int MAX_NODES_GRAPH = 1e5;
 
 struct PersistentSegmentTree {
-    int node_counter = 0;
+	int node_counter = 0;
 
-    // Maximum number of nodes in the persistent segment tree
-    static const int MAX_NODES_PERSISTENT_TREE = 2e6;
+	// Maximum number of nodes in the persistent segment tree
+	static const int MAX_NODES_PERSISTENT_TREE = 2e6;
 
-    // Arrays representing the structure of the segment tree
-    int left_chLild[MAX_NODES_PERSISTENT_TREE + 1];
-    int right_child[MAX_NODES_PERSISTENT_TREE + 1];
+	// Arrays representing the structure of the segment tree
+	int left_chLild[MAX_NODES_PERSISTENT_TREE + 1];
+	int right_child[MAX_NODES_PERSISTENT_TREE + 1];
 
-    // Frequency of values at positions
-    int frequency[MAX_NODES_PERSISTENT_TREE + 1];   
+	// Frequency of values at positions
+	int frequency[MAX_NODES_PERSISTENT_TREE + 1];
 
-    // Resets the segment tree for a new test case
-    void reset() {
-        node_counter = 0;
-        memset(frequency, 0, sizeof(frequency));  
-    }
+	// Resets the segment tree for a new test case
+	void reset() {
+		node_counter = 0;
+		memset(frequency, 0, sizeof(frequency));
+	}
 
-    // Builds the initial empty segment tree  
-    int build(int v, int l, int r) {
-        int new_node = ++node_counter;
-        if (l == r) return new_node;
-        int m = (l + r) / 2;
-        left_chLild[new_node] = build(new_node, l, m);
-        right_child[new_node] = build(new_node, m + 1, r);
-        return new_node;
-    }
+	// Builds the initial empty segment tree
+	int build(int v, int l, int r) {
+		int new_node = ++node_counter;
+		if (l == r) return new_node;
+		int m = (l + r) / 2;
+		left_chLild[new_node] = build(new_node, l, m);
+		right_child[new_node] = build(new_node, m + 1, r);
+		return new_node;
+	}
 
-    // Creates a new version of the tree with the new value inserted
-    int update(int node, int left, int right, int index) {
-        int new_node = ++node_counter;
-        if (left == right) {
-            frequency[new_node] = frequency[node] + 1;
-            return new_node; 
-        }
-        left_chLild[new_node] = left_chLild[node];
-        right_child[new_node] = right_child[node];
+	// Creates a new version of the tree with the new value inserted
+	int update(int node, int left, int right, int index) {
+		int new_node = ++node_counter;
+		if (left == right) {
+			frequency[new_node] = frequency[node] + 1;
+			return new_node;
+		}
+		left_chLild[new_node] = left_chLild[node];
+		right_child[new_node] = right_child[node];
 
-        int middle = (left + right) / 2;
-        if (index <= middle) left_chLild[new_node] = update(left_chLild[node], left, middle, index);
-        else right_child[new_node] = update(right_child[node], middle + 1, right, index);
-        return new_node;
-    }
+		int middle = (left + right) / 2;
+		if (index <= middle)
+			left_chLild[new_node] = update(left_chLild[node], left, middle, index);
+		else
+			right_child[new_node] = update(right_child[node], middle + 1, right, index);
+		return new_node;
+	}
 
-    // Returns the frequency of value `k` on the path from a to b  
-    int query(int a, int b, int anc, int left, int right, int k) {
-        if (left == right) {
-            int cnt = frequency[a] + frequency[b] - 2 * frequency[anc];
-            return cnt;
-        }
-        int middle = (left + right) / 2;
-        if (k <= middle) return query(left_chLild[a], left_chLild[b], left_chLild[anc], left, middle, k);
-        else return query(right_child[a], right_child[b], right_child[anc], middle + 1, right, k);
-    }
+	// Returns the frequency of value `k` on the path from a to b
+	int query(int a, int b, int anc, int left, int right, int k) {
+		if (left == right) {
+			int cnt = frequency[a] + frequency[b] - 2 * frequency[anc];
+			return cnt;
+		}
+		int middle = (left + right) / 2;
+		if (k <= middle)
+			return query(left_chLild[a], left_chLild[b], left_chLild[anc], left, middle,
+			             k);
+		else
+			return query(right_child[a], right_child[b], right_child[anc], middle + 1,
+			             right, k);
+	}
 };
 
 PersistentSegmentTree pst;
 
 struct Tree {
-    int LOG, timer = 0;
+	int LOG, timer = 0;
 
-    // LCA and DFS helpers
-    int roots[MAX_NODES_GRAPH + 1];
-    int tin[MAX_NODES_GRAPH + 1], tout[MAX_NODES_GRAPH + 1];
+	// LCA and DFS helpers
+	int roots[MAX_NODES_GRAPH + 1];
+	int tin[MAX_NODES_GRAPH + 1], tout[MAX_NODES_GRAPH + 1];
 
-     // Compressed values assigned to each node
-    int value[MAX_NODES_GRAPH + 1];
+	// Compressed values assigned to each node
+	int value[MAX_NODES_GRAPH + 1];
 
-    // Binary lifting ancestors
-    vector<vector<int>> up;         
-    vector<int> graph[MAX_NODES_GRAPH + 1];
+	// Binary lifting ancestors
+	vector<vector<int>> up;
+	vector<int> graph[MAX_NODES_GRAPH + 1];
 
-    Tree(int n) {
-        timer = 0;
-        LOG = ceil(log2(n));
-        up.assign(n + 1, vector<int>(LOG + 1, 0));
-    }
+	Tree(int n) {
+		timer = 0;
+		LOG = ceil(log2(n));
+		up.assign(n + 1, vector<int>(LOG + 1, 0));
+	}
 
-    // DFS to set up binary lifting + persistent segment tree roots
-    void dfs(int from, int parent) {
-        int root = roots[parent]; // Copy parent’s tree version
-        root = pst.update(root, 1, MAX_NODES_GRAPH, value[from]); // Insert current node value
-        roots[from] = root;
+	// DFS to set up binary lifting + persistent segment tree roots
+	void dfs(int from, int parent) {
+		int root = roots[parent];  // Copy parent’s tree version
+		root = pst.update(root, 1, MAX_NODES_GRAPH,
+		                  value[from]);  // Insert current node value
+		roots[from] = root;
 
-        tin[from] = ++timer;
-        up[from][0] = (from == 1 ? from : parent); // Binary lifting base case
-        for (int i = 1; i < LOG; i++) {
-            up[from][i] = up[up[from][i - 1]][i - 1];
-        }
+		tin[from] = ++timer;
+		up[from][0] = (from == 1 ? from : parent);  // Binary lifting base case
+		for (int i = 1; i < LOG; i++) { up[from][i] = up[up[from][i - 1]][i - 1]; }
 
-        for (int to : graph[from]) {
-            if (to != parent) dfs(to, from);
-        }
-        tout[from] = timer;
-    }
+		for (int to : graph[from]) {
+			if (to != parent) dfs(to, from);
+		}
+		tout[from] = timer;
+	}
 
-    // Check if u is an ancestor of v using tin/tout
-    bool is_ancestor(int u, int v) {
-        return tin[u] <= tin[v] && tout[u] >= tout[v];
-    }
+	// Check if u is an ancestor of v using tin/tout
+	bool is_ancestor(int u, int v) { return tin[u] <= tin[v] && tout[u] >= tout[v]; }
 
-    // Lowest Common Ancestor using binary lifting
-    int lca(int u, int v) {
-        if (is_ancestor(u, v)) return u;
-        if (is_ancestor(v, u)) return v;
-        for (int i = LOG - 1; i >= 0; i--) {
-            if (!is_ancestor(up[u][i], v)) u = up[u][i];
-        }
-        return up[u][0];
-    }
+	// Lowest Common Ancestor using binary lifting
+	int lca(int u, int v) {
+		if (is_ancestor(u, v)) return u;
+		if (is_ancestor(v, u)) return v;
+		for (int i = LOG - 1; i >= 0; i--) {
+			if (!is_ancestor(up[u][i], v)) u = up[u][i];
+		}
+		return up[u][0];
+	}
 };
 
 int main() {
-    ios_base::sync_with_stdio(0);
-    cin.tie(0);
-    cout.tie(0);
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
+	cout.tie(0);
 
-    int n, m;
+	int n, m;
 
-    // Handle multiple test cases until EOF
-    while (cin >> n >> m) {
-        pst.reset();  // Clear the segment tree for new test case
-        Tree tree(n);
+	// Handle multiple test cases until EOF
+	while (cin >> n >> m) {
+		pst.reset();  // Clear the segment tree for new test case
+		Tree tree(n);
 
-        vector<int> compressed_values;
-        compressed_values.push_back(-INT_MAX);  
+		vector<int> compressed_values;
+		compressed_values.push_back(-INT_MAX);
 
-        // Read values for each node and prepare for compression
-        for (int i = 1; i <= n; i++) {
-            cin >> tree.value[i];
-            tree.graph[i].clear();
-            compressed_values.push_back(tree.value[i]);
-        }
+		// Read values for each node and prepare for compression
+		for (int i = 1; i <= n; i++) {
+			cin >> tree.value[i];
+			tree.graph[i].clear();
+			compressed_values.push_back(tree.value[i]);
+		}
 
-        // Coordinate compression
-        sort(compressed_values.begin(), compressed_values.end());
-        compressed_values.resize(unique(compressed_values.begin(), compressed_values.end()) - compressed_values.begin());
+		// Coordinate compression
+		sort(compressed_values.begin(), compressed_values.end());
+		compressed_values.resize(
+		    unique(compressed_values.begin(), compressed_values.end()) -
+		    compressed_values.begin());
 
-        for (int i = 1; i <= n; i++) {
-            tree.value[i] = lower_bound(compressed_values.begin(), compressed_values.end(), tree.value[i]) - compressed_values.begin();  
-        }
+		for (int i = 1; i <= n; i++) {
+			tree.value[i] = lower_bound(compressed_values.begin(),
+			                            compressed_values.end(), tree.value[i]) -
+			                compressed_values.begin();
+		}
 
-        // Read tree edges
-        for (int i = 1; i < n; i++) {
-            int a, b;
-            cin >> a >> b;
-            tree.graph[a].push_back(b);
-            tree.graph[b].push_back(a);
-        }
+		// Read tree edges
+		for (int i = 1; i < n; i++) {
+			int a, b;
+			cin >> a >> b;
+			tree.graph[a].push_back(b);
+			tree.graph[b].push_back(a);
+		}
 
-        // Build initial tree (empty version 0)
-        tree.roots[0] = pst.build(pst.node_counter, 1, MAX_NODES_GRAPH);
+		// Build initial tree (empty version 0)
+		tree.roots[0] = pst.build(pst.node_counter, 1, MAX_NODES_GRAPH);
 
-        // DFS from root to build all PST versions and LCA structure
-        tree.dfs(1, 0);
+		// DFS from root to build all PST versions and LCA structure
+		tree.dfs(1, 0);
 
-        // Handle all queries
-        for (int i = 0; i < m; i++) {
-            int a, b, k;
-            cin >> a >> b >> k;
+		// Handle all queries
+		for (int i = 0; i < m; i++) {
+			int a, b, k;
+			cin >> a >> b >> k;
 
-            // Check if the value exists in compressed list
-            auto location = lower_bound(compressed_values.begin(), compressed_values.end(), k);
-            if (location == compressed_values.end() || (*location) != k) {
-                cout << "NotFind\n";
-                continue;
-            }
+			// Check if the value exists in compressed list
+			auto location =
+			    lower_bound(compressed_values.begin(), compressed_values.end(), k);
+			if (location == compressed_values.end() || (*location) != k) {
+				cout << "NotFind\n";
+				continue;
+			}
 
-            // Map the value to its compressed position
-            k = location - compressed_values.begin();
+			// Map the value to its compressed position
+			k = location - compressed_values.begin();
 
-            int common = tree.lca(a, b);
+			int common = tree.lca(a, b);
 
-            // If LCA is equal to the value k, answer is yes
-            if (tree.value[common] == k) {
-                cout << "Find\n";
-                continue;
-            }
+			// If LCA is equal to the value k, answer is yes
+			if (tree.value[common] == k) {
+				cout << "Find\n";
+				continue;
+			}
 
-            // Otherwise, query frequency of value `k` on path from a to b
-            if (pst.query(tree.roots[a], tree.roots[b], tree.roots[common], 1, MAX_NODES_GRAPH, k)) {
-                cout << "Find\n";
-            } else {
-                cout << "NotFind\n";
-            }
-        }
-    }
+			// Otherwise, query frequency of value `k` on path from a to b
+			if (pst.query(tree.roots[a], tree.roots[b], tree.roots[common], 1,
+			              MAX_NODES_GRAPH, k)) {
+				cout << "Find\n";
+			} else {
+				cout << "NotFind\n";
+			}
+		}
+	}
 }
- 
 ```
 
 </CPPSection>
