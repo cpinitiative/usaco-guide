@@ -105,44 +105,36 @@ This solution TLEs even with PyPy.
 </Warning>
 
 ```py
-import sys
 from bisect import bisect_left, insort
+	
+n, m = map(int, input().split())
+arr = list(map(int, input().split()))
 
+s = list(range(n + 1))
+present = [True] * (n + 1)
+window_freq = [0] * (n)
+res = float("inf")
 
-def main():
-	input = sys.stdin.readline
-	n, m = map(int, input().split())
-	arr = list(map(int, input().split()))
+for i in range(n):
+	if i < m:
+		if present[arr[i]]:
+			s.pop(bisect_left(s, arr[i]))
+			present[arr[i]] = False
+		window_freq[arr[i]] += 1
+	else:
+		res = min(res, s[0])
+		if present[arr[i]]:
+			s.pop(bisect_left(s, arr[i]))
+			present[arr[i]] = False
+		window_freq[arr[i]] += 1
+		old = arr[i - m]
+		window_freq[old] -= 1
+		if window_freq[old] == 0:
+			if not present[old]:
+				insort(s, old)
+				present[old] = True
 
-	s = list(range(n + 1))
-	present = [True] * (n + 1)
-	window_freq = [0] * (n)
-	res = float("inf")
-
-	for i in range(n):
-		if i < m:
-			if present[arr[i]]:
-				s.pop(bisect_left(s, arr[i]))
-				present[arr[i]] = False
-			window_freq[arr[i]] += 1
-		else:
-			res = min(res, s[0])
-			if present[arr[i]]:
-				s.pop(bisect_left(s, arr[i]))
-				present[arr[i]] = False
-			window_freq[arr[i]] += 1
-			old = arr[i - m]
-			window_freq[old] -= 1
-			if window_freq[old] == 0:
-				if not present[old]:
-					insort(s, old)
-					present[old] = True
-
-	print(min(res, s[0]))
-
-
-if __name__ == "__main__":
-	main()
+print(min(res, s[0]))
 ```
 
 </PySection>
@@ -244,35 +236,25 @@ public class Main {
 <PySection>
 
 ```py
-import sys
+n, m = map(int, input().split())
+nums = list(map(int, input().split()))
 
-input = sys.stdin.readline
+last_seen_pos = [-1] * (n + 1)
+valid = [False] * (n + 1)
 
+for i in range(n):
+	if i - last_seen_pos[nums[i]] > m:
+		valid[nums[i]] = True
+	last_seen_pos[nums[i]] = i
 
-def main():
-	n, m = map(int, input().split())
-	nums = list(map(int, input().split()))
+for i in range(n + 1):
+	if n - last_seen_pos[i] > m:
+		valid[i] = True
 
-	last_seen_pos = [-1] * (n + 1)
-	valid = [False] * (n + 1)
-
-	for i in range(n):
-		if i - last_seen_pos[nums[i]] > m:
-			valid[nums[i]] = True
-		last_seen_pos[nums[i]] = i
-
-	for i in range(n + 1):
-		if n - last_seen_pos[i] > m:
-			valid[i] = True
-
-	for i in range(n + 1):
-		if valid[i]:
-			print(i)
-			break
-
-
-if __name__ == "__main__":
-	main()
+for i in range(n + 1):
+	if valid[i]:
+		print(i)
+		break
 ```
 
 </PySection>
