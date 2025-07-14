@@ -4,7 +4,9 @@ source: SPOJ
 title: Gao on a tree
 author: Nigar Hajiyeva
 ---
+
 ## Explanation
+
 This solution builds a persistent segment tree for each node in the tree that keeps track of how many times each value appears on the path from the root to that node. We start by building the persistent segment tree for the root node with all frequencies set to zero. Then, for each child node, we create a new version of its parent’s segment tree and update it by increasing the count of the child’s value. This way, we avoid rebuilding the whole tree every time and only update the parts that need to change.
 
 To answer a query asking if a value $c$ appears on the path between nodes $a$ and $b$, we first find their lowest common ancestor (LCA). Since each node’s persistent segment tree counts the frequencies of values from the root down to that node, the number of times $c$ appears on the path from $a$ to $b$ can be found by adding the frequency of the value c from $a$ and $b$, subtracting twice the frequencies from the LCA (to avoid double counting), and then checking if the LCA itself has value $c$. If the total frequency of the value $c$ is greater than zero, the value exists on the path; otherwise, it does not.
