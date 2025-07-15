@@ -1,0 +1,261 @@
+---
+id: ac-MexMin
+source: AC
+title: Mex Min
+author: David Zhou
+---
+
+## Explanation
+
+We can use a sliding window to keep track of the $M$ elements that cannot be excluded. To track the excluded elements, we can store all integers from $0$ to $N$ in a set and report the lowest value in the set for each window. A frequency table is used to track the number of instances of an element in the window in order to determine when it must be removed or added from the excluded set.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N \log N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <climits>
+#include <iostream>
+#include <set>
+#include <vector>
+
+using namespace std;
+
+int main() {
+	int n, m;
+	cin >> n >> m;
+
+	set<int> s;
+	for (int i = 0; i <= n; i++) { s.insert(i); }
+	vector<int> v(n);
+	for (int i = 0; i < n; i++) { cin >> v[i]; }
+
+	int res = INT_MAX;
+	vector<int> window_freq(n);
+	for (int i = 0; i < n; i++) {
+		if (i < m) {
+			s.erase(v[i]);
+			window_freq[v[i]]++;
+		} else {
+			res = min(res, *s.begin());
+			window_freq[v[i]]++;
+			s.erase(v[i]);
+			window_freq[v[i - m]]--;
+			if (window_freq[v[i - m]] == 0) { s.insert(v[i - m]); }
+		}
+	}
+
+	cout << min(res, *s.begin()) << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Main {
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+
+		int n = Integer.parseInt(st.nextToken());
+		int m = Integer.parseInt(st.nextToken());
+
+		int[] arr = new int[n];
+		st = new StringTokenizer(br.readLine());
+		for (int i = 0; i < n; i++) { arr[i] = Integer.parseInt(st.nextToken()); }
+
+		TreeSet<Integer> s = new TreeSet<>();
+		for (int i = 0; i <= n; i++) { s.add(i); }
+
+		int[] windowFreq = new int[n];
+		int res = Integer.MAX_VALUE;
+		for (int i = 0; i < n; i++) {
+			if (i < m) {
+				s.remove(arr[i]);
+				windowFreq[arr[i]]++;
+			} else {
+				res = Math.min(res, s.first());
+				s.remove(arr[i]);
+				windowFreq[arr[i]]++;
+				int old = arr[i - m];
+				windowFreq[old]--;
+				if (windowFreq[old] == 0) { s.add(old); }
+			}
+		}
+
+		System.out.println(Math.min(res, s.first()));
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+<Warning>
+
+This solution TLEs even with PyPy.
+
+</Warning>
+
+```py
+from bisect import bisect_left, insort
+
+n, m = map(int, input().split())
+arr = list(map(int, input().split()))
+
+s = list(range(n + 1))
+present = [True] * (n + 1)
+window_freq = [0] * (n)
+res = float("inf")
+
+for i in range(n):
+	if i < m:
+		if present[arr[i]]:
+			s.pop(bisect_left(s, arr[i]))
+			present[arr[i]] = False
+		window_freq[arr[i]] += 1
+	else:
+		res = min(res, s[0])
+		if present[arr[i]]:
+			s.pop(bisect_left(s, arr[i]))
+			present[arr[i]] = False
+		window_freq[arr[i]] += 1
+		old = arr[i - m]
+		window_freq[old] -= 1
+		if window_freq[old] == 0:
+			if not present[old]:
+				insort(s, old)
+				present[old] = True
+
+print(min(res, s[0]))
+```
+
+</PySection>
+</LanguageSection>
+
+## Alternate Solution
+
+We can make an observation that eliminates the need to actually keep track of the window. An element can be excluded from the window for two reasons:
+- There is a gap of at least size $M$ between two instances of the same number.
+- The element does not appear at all.
+Thus, we can keep track of the last seen position of every element and determine if there is ever a gap of size $M$ between the two positions. After, we can compare each last seen position with the endpoint both to check for distance from the end and also existence.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int main() {
+	int n, m;
+	cin >> n >> m;
+
+	vector<int> v(n);
+	for (int i = 0; i < n; i++) { cin >> v[i]; }
+
+	vector<int> last_seen_pos(n + 1, -1);
+	vector<bool> valid(n + 1);
+
+	for (int i = 0; i < n; i++) {
+		if (i - last_seen_pos[v[i]] > m) { valid[v[i]] = true; }
+		last_seen_pos[v[i]] = i;
+	}
+
+	// compare endpoint with last_seen_pos
+	// this check also ensures that elements that do not appear are considered valid
+	for (int i = 0; i <= n; i++) {
+		if (n - last_seen_pos[i] > m) { valid[i] = true; }
+	}
+
+	for (int i = 0; i <= n; i++) {
+		if (valid[i]) {
+			cout << i << endl;
+			break;
+		}
+	}
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Main {
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		String[] nm = br.readLine().split(" ");
+		int n = Integer.parseInt(nm[0]);
+		int m = Integer.parseInt(nm[1]);
+
+		int[] nums = new int[n];
+		String[] vals = br.readLine().split(" ");
+		for (int i = 0; i < n; i++) { nums[i] = Integer.parseInt(vals[i]); }
+
+		int[] lastSeenPos = new int[n + 1];
+		Arrays.fill(lastSeenPos, -1);
+		boolean[] valid = new boolean[n + 1];
+
+		for (int i = 0; i < n; i++) {
+			if (i - lastSeenPos[nums[i]] > m) { valid[nums[i]] = true; }
+			lastSeenPos[nums[i]] = i;
+		}
+
+		for (int i = 0; i <= n; i++) {
+			if (n - lastSeenPos[i] > m) { valid[i] = true; }
+		}
+
+		for (int i = 0; i <= n; i++) {
+			if (valid[i]) {
+				System.out.println(i);
+				break;
+			}
+		}
+
+		br.close();
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+n, m = map(int, input().split())
+nums = list(map(int, input().split()))
+
+last_seen_pos = [-1] * (n + 1)
+valid = [False] * (n + 1)
+
+for i in range(n):
+	if i - last_seen_pos[nums[i]] > m:
+		valid[nums[i]] = True
+	last_seen_pos[nums[i]] = i
+
+for i in range(n + 1):
+	if n - last_seen_pos[i] > m:
+		valid[i] = True
+
+for i in range(n + 1):
+	if valid[i]:
+		print(i)
+		break
+```
+
+</PySection>
+</LanguageSection>
