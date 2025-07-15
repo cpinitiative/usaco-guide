@@ -37,4 +37,9 @@ module.exports = {
     'gatsby-browser.tsx',
     'tailwind.config.js',
   ],
+  settings: {
+    react: {
+      version: 'detect',
+    },
+  },
 };
