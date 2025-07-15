@@ -3,7 +3,7 @@ const visit = require('unist-util-visit');
 const katex = require('katex').renderToString;
 const unified = require('unified');
 const parse = require('rehype-parse');
-const toText = require('hast-util-to-text');
+const { toText } = require('hast-util-to-text');
 
 const assign = Object.assign;
 
