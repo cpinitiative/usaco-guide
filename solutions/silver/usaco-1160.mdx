@@ -74,37 +74,4 @@ class IntervalConvolution {
 
 </CPPSection>
 
-<PySection>
-
-<Warning>(note that Python TLEs after the second test case)</Warning>
-
-```py
-n, m = map(int, input().split())
-a_freq = [0] * (m + 1)
-b_freq = [0] * (m + 1)
-
-# Count frequencies of left and right endpoints
-for i in range(n):
-	a, b = map(int, input().split())
-	a_freq[a] += 1
-	b_freq[b] += 1
-
-# Difference array range update
-ans = [0] * (2 * m + 2)
-for a1 in range(m + 1):
-	for a2 in range(m + 1):
-		ans[a1 + a2] += a_freq[a1] * b_freq[a2]
-for b1 in range(m + 1):
-	for b2 in range(m + 1):
-		ans[b1 + b2 + 1] -= b_freq[b1] * b_freq[b2]
-
-# Accumulate prefix sums
-current = 0
-for k in range(2 * m + 1):
-	current += ans[k]
-	print(current)
-```
-
-</PySection>
-
 </LanguageSection>
