@@ -61,7 +61,11 @@ export default function PostLeaderboardPage(props) {
 
   return (
     <Layout>
-      <SEO title={`Leaderboard: ${post.name}`} image={null} pathname={props.path} />
+      <SEO
+        title={`Leaderboard: ${post.name}`}
+        image={null}
+        pathname={props.path}
+      />
 
       <TopNavigationBar />
 

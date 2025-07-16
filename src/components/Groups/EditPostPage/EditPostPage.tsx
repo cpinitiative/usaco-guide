@@ -31,7 +31,10 @@ export default function EditPostPage(props) {
           ...oldPost,
           ...updates,
         };
-      } else if (oldPost.type === 'announcement' && updates.type === 'announcement') {
+      } else if (
+        oldPost.type === 'announcement' &&
+        updates.type === 'announcement'
+      ) {
         return {
           ...oldPost,
           ...updates,

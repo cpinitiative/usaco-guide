@@ -7,7 +7,9 @@ import TopNavigationBar from '../../TopNavigationBar/TopNavigationBar';
 import Breadcrumbs from '../Breadcrumbs';
 import { LeaderboardTable } from '../LeaderboardTable/LeaderboardTable';
 
-export default function GroupLeaderboardPage(props: { path: string }): JSX.Element {
+export default function GroupLeaderboardPage(props: {
+  path: string;
+}): JSX.Element {
   const activeGroup = useActiveGroup();
   const posts = activeGroup.posts;
   const leaderboard = useLeaderboardData({
@@ -28,7 +30,11 @@ export default function GroupLeaderboardPage(props: { path: string }): JSX.Eleme
 
   return (
     <Layout>
-      <SEO title={`Leaderboard: ${activeGroup.groupData!.name}`} image={null} pathname={props.path} />
+      <SEO
+        title={`Leaderboard: ${activeGroup.groupData!.name}`}
+        image={null}
+        pathname={props.path}
+      />
 
       <TopNavigationBar />
 

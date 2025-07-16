@@ -48,7 +48,11 @@ export default function MembersPage({ path }: { path: string }): JSX.Element {
 
   return (
     <Layout>
-      <SEO title={`Members · ${activeGroup.groupData!.name}`} image={null} pathname={path} />
+      <SEO
+        title={`Members · ${activeGroup.groupData!.name}`}
+        image={null}
+        pathname={path}
+      />
       <div className="flex flex-col xl:h-screen xl:overflow-hidden">
         <TopNavigationBar />
 
