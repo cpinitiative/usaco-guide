@@ -90,12 +90,13 @@ export default function SafeMarkdownRenderer({ children }) {
   return (
     <div className="prose dark:prose-light max-w-none">
       <ReactMarkdown
-        children={children}
         components={renderers as any}
-        remarkPlugins={[gfm]}
+        remarkPlugins={[gfm as any]}
         linkTarget="_blank"
         className="react-markdown"
-      />
+      >
+        {children}
+      </ReactMarkdown>
     </div>
   );
 }

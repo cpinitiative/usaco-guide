@@ -39,7 +39,7 @@ export function ActivityHeatmap({
           <div className="col-span-2">
             <CalendarHeatmap
               startDate={startDate}
-              endDate={endDate}
+              endDate={endDate} 
               values={Object.keys(activityCount).map(d => ({
                 date: new Date(Number(d)),
                 count: activityCount[Number(d)],
