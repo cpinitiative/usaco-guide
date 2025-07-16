@@ -12,8 +12,8 @@ import {
 } from '../../../../models/problem';
 import { ProblemsList } from '../ProblemsList';
 import contestToPoints from './contest_to_points.json';
-import { DivisionProblemInfo } from './DivisionProblemInfo';
 import divToProbs from './div_to_probs.json';
+import { DivisionProblemInfo } from './DivisionProblemInfo';
 import idToSol from './id_to_sol.json';
 
 const startYear = 2016;
