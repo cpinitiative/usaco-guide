@@ -1,9 +1,9 @@
 import { StoryFn } from '@storybook/react-webpack5';
 import React, { ComponentProps } from 'react';
-import { InstantSearch } from 'react-instantsearch';
-import {
-  indexName,
+import { InstantSearch } from 'react-instantsearch-hooks-web';
+import { 
   ProblemAutocomplete,
+  indexName
 } from '../../components/ProblemAutocompleteModal/ProblemAutocomplete';
 import { searchClient } from '../../utils/algoliaSearchClient';
 

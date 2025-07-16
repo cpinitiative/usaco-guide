@@ -1,4 +1,5 @@
 const React = require('react');
+const webpack = require('webpack');
 
 module.exports = {
   framework: {
@@ -23,6 +24,17 @@ module.exports = {
   // unclear if this slows down build times. If it does, maybe go to ProblemsListItemDropdown.tsx
   // remove the import navigate statement and get rid of this code.
   webpackFinal: async config => {
+    // Add environment variable support
+    config.plugins.push(
+      new webpack.DefinePlugin({
+        'process.env': JSON.stringify({
+          GATSBY_ALGOLIA_INDEX_NAME: process.env.GATSBY_ALGOLIA_INDEX_NAME || 'dev',
+          GATSBY_ALGOLIA_APP_ID: process.env.GATSBY_ALGOLIA_APP_ID || '',
+          GATSBY_ALGOLIA_SEARCH_KEY: process.env.GATSBY_ALGOLIA_SEARCH_KEY || '',
+        }),
+      })
+    );
+
     // Find the Babel loader rule
     const babelRule = config.module.rules.find(
       rule =>
