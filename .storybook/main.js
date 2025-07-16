@@ -28,9 +28,11 @@ module.exports = {
     config.plugins.push(
       new webpack.DefinePlugin({
         'process.env': JSON.stringify({
-          GATSBY_ALGOLIA_INDEX_NAME: process.env.GATSBY_ALGOLIA_INDEX_NAME || 'dev',
+          GATSBY_ALGOLIA_INDEX_NAME:
+            process.env.GATSBY_ALGOLIA_INDEX_NAME || 'dev',
           GATSBY_ALGOLIA_APP_ID: process.env.GATSBY_ALGOLIA_APP_ID || '',
-          GATSBY_ALGOLIA_SEARCH_KEY: process.env.GATSBY_ALGOLIA_SEARCH_KEY || '',
+          GATSBY_ALGOLIA_SEARCH_KEY:
+            process.env.GATSBY_ALGOLIA_SEARCH_KEY || '',
         }),
       })
     );

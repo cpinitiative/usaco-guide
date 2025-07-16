@@ -1,8 +1,8 @@
 import type { BaseHit, Hit } from 'instantsearch.js';
 import * as React from 'react';
 import { useHits, useSearchBox } from 'react-instantsearch-hooks-web';
-import { AlgoliaProblemInfo } from '../../models/problem';
 import { ALGOLIA_INDEX_NAME } from '../../constants/algolia';
+import { AlgoliaProblemInfo } from '../../models/problem';
 
 type AlgoliaProblemInfoHit = Hit<BaseHit> & AlgoliaProblemInfo;
 

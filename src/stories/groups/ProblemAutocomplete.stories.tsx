@@ -3,7 +3,7 @@ import React, { ComponentProps } from 'react';
 import { InstantSearch } from 'react-instantsearch-hooks-web';
 import {
   ProblemAutocomplete,
-  indexName
+  indexName,
 } from '../../components/ProblemAutocompleteModal/ProblemAutocomplete';
 import { searchClient } from '../../utils/algoliaSearchClient';
 
