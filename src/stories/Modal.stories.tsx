@@ -1,5 +1,5 @@
 import { Dialog } from '@headlessui/react';
-import { Meta, Story } from '@storybook/react';
+import { Meta, StoryFn } from '@storybook/react-webpack5';
 import React from 'react';
 import Modal, { ModalProps } from '../components/Modal';
 import { DarkModeContext } from '../context/DarkModeContext';
@@ -9,7 +9,7 @@ export default {
   component: Modal,
 } as Meta;
 
-const Template: Story<ModalProps> = args => {
+const Template: StoryFn<ModalProps> = args => {
   const [modalOpen, setModalOpen] = React.useState(args.isOpen ?? false);
   const darkMode = React.useContext(DarkModeContext);
   return (

@@ -139,6 +139,8 @@ export default function Template(props) {
       <SEO
         title={SECTION_SEO_TITLES[division]}
         description={SECTION_SEO_DESCRIPTION[division]}
+        image={null}
+        pathname={props.path}
       />
       <div className="min-h-screen">
         <TopNavigationBar currentSection={division} />

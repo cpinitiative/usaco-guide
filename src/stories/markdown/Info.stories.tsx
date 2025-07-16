@@ -1,4 +1,4 @@
-import { Story } from '@storybook/react';
+import { StoryFn } from '@storybook/react-webpack5';
 import React, { ComponentProps } from 'react';
 import Info from '../../components/markdown/Info';
 import markdownDecorator from '../../components/markdown/markdownDecoratorForStorybook';
@@ -10,7 +10,9 @@ export default {
   decorators: [markdownDecorator],
 };
 
-const Template: Story<ComponentProps<typeof Info>> = args => <Info {...args} />;
+const Template: StoryFn<ComponentProps<typeof Info>> = args => (
+  <Info {...args} />
+);
 
 export const Default = Template.bind({});
 Default.args = {
