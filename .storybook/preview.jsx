@@ -3,7 +3,7 @@ import { DarkModeContext } from '../src/context/DarkModeContext';
 import '../src/styles/main.css';
 import './storybook.css';
 
-import { action } from '@storybook/addon-actions';
+import { action } from 'storybook/actions';
 
 // Gatsby's Link overrides:
 // Gatsby Link calls the `enqueue` & `hovering` methods on the global variable ___loader.
