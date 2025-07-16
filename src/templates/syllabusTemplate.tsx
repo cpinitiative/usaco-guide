@@ -2,10 +2,10 @@ import { graphql } from 'gatsby';
 import * as React from 'react';
 import {
   moduleIDToSectionMap,
-  SectionID,
   SECTION_LABELS,
   SECTION_SEO_DESCRIPTION,
   SECTION_SEO_TITLES,
+  SectionID,
 } from '../../content/ordering';
 import DashboardProgress, {
   DashboardProgressSmall,

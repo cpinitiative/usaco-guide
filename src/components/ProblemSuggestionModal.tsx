@@ -9,9 +9,9 @@ import { ModuleInfo } from '../models/module';
 import {
   autoGenerateSolutionMetadata,
   generateProblemUniqueId,
+  PROBLEM_DIFFICULTY_OPTIONS,
   ProblemDifficulty,
   ProblemMetadata,
-  PROBLEM_DIFFICULTY_OPTIONS,
   probSources,
 } from '../models/problem';
 import ButtonGroup from './ButtonGroup';

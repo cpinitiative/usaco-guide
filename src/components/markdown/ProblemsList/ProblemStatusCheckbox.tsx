@@ -12,9 +12,9 @@ import {
   useUserProgressOnProblems,
 } from '../../../context/UserDataContext/properties/userProgress';
 import {
+  PROBLEM_PROGRESS_OPTIONS,
   ProblemInfo,
   ProblemProgress,
-  PROBLEM_PROGRESS_OPTIONS,
 } from '../../../models/problem';
 import { DivisionProblemInfo } from './DivisionList/DivisionProblemInfo';
 
