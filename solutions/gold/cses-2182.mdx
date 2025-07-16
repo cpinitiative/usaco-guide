@@ -61,37 +61,29 @@ since all $x_i$ are prime. Then for $P_2$, we have
 
 $$
 \begin{aligned}
-P_2 = & x_1^1\times x_1^2\times x_1^3\times\dots\times x_1^{k_1} \\
-\times & x_2 \times x_2x_1 \times x_2x_1^2\times\dots\times x_2x_1^{k_1} \\
-\times & x_2^2 \times x_2^2x_1 \times x_2^2x_1^2\times\dots\times x_2^2x_1^{k_1} \\
-\vdots & \\
-\times & x_2^{k_2} \times x_2^{k_2}x_1 \times x_2^{k_2}x_1^2\times\dots\times x_2^{k_2}x_1^{k_1} \\
-= & P_1 \\
-\times & P_1x_2^{k_1+1} \\
-\times & P_1\left(x_2^{k_1+1}\right)^2 \\
-\vdots & \\
-\times & P_1\left(x_2^{k_1+1}\right)^{k_2} \\
-= & P_1^{k_2+1}\left(x_2^{k_1+1}\right)^{k_2(k_2+1)/2} \\
-= & P_1^{k_2+1}\left(x_2^{k_2(k_2+1)/2}\right)^{k_1+1}\text{.}
+P_2 & = x_1^1\times x_1^2\times x_1^3\times\dots\times x_1^{k_1} \\
+& \times x_2 \times x_2x_1 \times x_2x_1^2\times\dots\times x_2x_1^{k_1} \\
+& \times x_2^2 \times x_2^2x_1 \times x_2^2x_1^2\times\dots\times x_2^2x_1^{k_1} \\
+& \vdots \\
+& \times x_2^{k_2} \times x_2^{k_2}x_1 \times x_2^{k_2}x_1^2\times\dots\times x_2^{k_2}x_1^{k_1} \\
+& \\
+& = P_1 \times P_1x_2^{k_1+1} \times P_1\left(x_2^{k_1+1}\right)^2 \times \dots \times P_1\left(x_2^{k_1+1}\right)^{k_2} \\
+& = \prod_{j=0}^{k_2}\left(P_1\left(x_2^{k_1+1}\right)^j\right)\text{.}
 \end{aligned}
 $$
 
-To find $P_3$, we multiply each term we separated (each one we multiplied by $x_2^j$) by $x_3^j$.
-It is not hard to see that we will multiply $k_3+1$ copies of $P_3$, since $j$ goes from 0 to $k_3$.
-It is also not hard to see that we will multiply $x_3^j$ $(k_1+1)(k_2+1)$ times for all $j$, and that summing all $j$ will still be $k_3(k_3+1)/2$. Therefore we get
+Generalizing to $P_i$, we have
 
 $$
-P_3 = P_2^{k_3+1}\left(x_3^{(k_1+1)(k_2+1)}\right)^{k_3(k_3+1)/2}
+\begin{aligned}
+P_i & = \prod_{j=0}^{k_i}\left(P_{i-1}\left(x_i^j\right)^{C_{i-1}}\right) \\
+    & = P_{i-1}^{k_i+1}\left(x_i^{k_i(k_i+1)/2}\right)^{C_{i-1}}\text{,}
+\end{aligned}
 $$
 
-In general, to compute $P_i$, we will multiply $k_i+1$ copies of $P_{i-1}$.
-Notice that increasing $i$ increases the number of $x_i$ we multiply by a factor of $k_3+1$ (visualize adding a "dimension" to the "grid" we created for $P_2$).
-That is, the exponent of $x_i$ is $\prod_{j=1}^{i-1}(k_j+1)$, which is $C_{i-1}$
-Switching the exponents, we arrive at the desired relation of
-
-$$
-P_i = P_{i-1}^{k_i+1}\left(x_i^{k_i(k_i+1)/2}\right)^{C_{i-1}}
-$$
+which is our desired recurrence. The appearance of $C_{i-1}$ instead of $k_{i-1} + 1$ is because
+we need to give _all_ $C_{i-1}$ previous divisors a multiplier of $x_i^j$.
+Note that $C_1 = k_1 + 1$.
 
 </Spoiler>
 
