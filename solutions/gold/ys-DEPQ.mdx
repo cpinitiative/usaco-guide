@@ -1,0 +1,153 @@
+---
+id: ys-DEPQ
+source: YS
+title: Double-Ended Priority Queue
+author: David Zhou
+---
+
+## Explanation
+
+We need to be able to quickly add elements to a set of numbers, as well as access and remove the smallest and largest ones.
+
+For C++, we use a `std::multiset` to ensure a sorted order.
+
+For Java, we use a `TreeMap` for the same reason.
+
+For Python, we use a `min_heap`, `max_heap`, and a counts `dictionary`. The `min_heap` and `max_heap` are for access, while the counts `dictionary` determines removal.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}((N+Q)\log N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <set>
+using namespace std;
+
+int main() {
+	int n, q;
+	cin >> n >> q;
+
+	multiset<int> st;
+	for (int i = 0; i < n; i++) {
+		int num;
+		cin >> num;
+		st.insert(num);
+	}
+
+	for (int i = 0; i < q; i++) {
+		int query;
+		cin >> query;
+		if (query == 0) {
+			int num;
+			cin >> num;
+			st.insert(num);
+		} else if (query == 1) {
+			cout << *st.begin() << endl;
+			st.erase(st.begin());
+		} else if (query == 2) {
+			cout << *prev(st.end()) << endl;
+			st.erase(prev(st.end()));
+		}
+	}
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Main {
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+
+		int n = Integer.parseInt(st.nextToken());
+		int q = Integer.parseInt(st.nextToken());
+
+		TreeMap<Integer, Integer> map = new TreeMap<>();
+		st = new StringTokenizer(br.readLine());
+		for (int i = 0; i < n; i++) {
+			int num = Integer.parseInt(st.nextToken());
+			map.put(num, map.getOrDefault(num, 0) + 1);
+		}
+
+		for (int i = 0; i < q; i++) {
+			st = new StringTokenizer(br.readLine());
+			int query = Integer.parseInt(st.nextToken());
+			if (query == 0) {
+				int num = Integer.parseInt(st.nextToken());
+				map.put(num, map.getOrDefault(num, 0) + 1);
+			} else if (query == 1) {
+				int min = map.firstKey();
+				System.out.println(min);
+				if (map.get(min) == 1) {
+					map.remove(min);
+				} else {
+					map.put(min, map.get(min) - 1);
+				}
+			} else if (query == 2) {
+				int max = map.lastKey();
+				System.out.println(max);
+				if (map.get(max) == 1) {
+					map.remove(max);
+				} else {
+					map.put(max, map.get(max) - 1);
+				}
+			}
+		}
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+import heapq
+
+n, q = map(int, input().split())
+nums = list(map(int, input().split()))
+
+min_heap = []
+max_heap = []
+count = {}
+for num in nums:
+	heapq.heappush(min_heap, num)
+	heapq.heappush(max_heap, -num)
+	count[num] = count.get(num, 0) + 1
+
+for _ in range(q):
+	query = input().split()
+	q_id = int(query[0])
+	if q_id == 0:
+		num = int(query[1])
+		heapq.heappush(min_heap, num)
+		heapq.heappush(max_heap, -num)
+		count[num] = count.get(num, 0) + 1
+
+	elif q_id == 1:
+		while True:
+			min_key = heapq.heappop(min_heap)
+			if count.get(min_key, 0) > 0:
+				print(min_key)
+				count[min_key] -= 1
+				break
+
+	elif q_id == 2:
+		while True:
+			max_key = -heapq.heappop(max_heap)
+			if count.get(max_key, 0) > 0:
+				print(max_key)
+				count[max_key] -= 1
+				break
+```
+
+</PySection>
+</LanguageSection>
