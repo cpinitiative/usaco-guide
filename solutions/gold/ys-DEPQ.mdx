@@ -5,7 +5,6 @@ title: Double-Ended Priority Queue
 author: David Zhou
 ---
 
-
 ## Explanation
 
 We need to be able to quickly add elements to a set of numbers as well as accessing and removing the smallest and largest ones.
@@ -21,7 +20,6 @@ For Python, we use a `min_heap`, `max_heap`, and a counts `dictionary`. The `min
 **Time Complexity:** $\mathcal{O}((N+Q)\log N)$
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
@@ -40,7 +38,7 @@ int main() {
 		st.insert(num);
 	}
 
-	while (q--) {
+	for (int i = 0; i < q; i++) {
 		int query;
 		cin >> query;
 		if (query == 0) {
@@ -50,7 +48,7 @@ int main() {
 		} else if (query == 1) {
 			cout << *st.begin() << endl;
 			st.erase(st.begin());
-		} else {
+		} else if (query == 2) {
 			cout << *prev(st.end()) << endl;
 			st.erase(prev(st.end()));
 		}
@@ -59,7 +57,6 @@ int main() {
 ```
 
 </CPPSection>
-
 <JavaSection>
 
 ```java
@@ -81,7 +78,7 @@ public class Main {
 			map.put(num, map.getOrDefault(num, 0) + 1);
 		}
 
-		while (q-- > 0) {
+		for (int i = 0; i < q; i++) {
 			st = new StringTokenizer(br.readLine());
 			int query = Integer.parseInt(st.nextToken());
 			if (query == 0) {
@@ -95,7 +92,7 @@ public class Main {
 				} else {
 					map.put(min, map.get(min) - 1);
 				}
-			} else {
+			} else if (query == 2) {
 				int max = map.lastKey();
 				System.out.println(max);
 				if (map.get(max) == 1) {
@@ -110,7 +107,6 @@ public class Main {
 ```
 
 </JavaSection>
-
 <PySection>
 
 ```py
@@ -129,20 +125,22 @@ for num in nums:
 
 for _ in range(q):
 	query = input().split()
-	id = int(query[0])
-	if id == 0:
+	q_id = int(query[0])
+	if q_id == 0:
 		num = int(query[1])
 		heapq.heappush(min_heap, num)
 		heapq.heappush(max_heap, -num)
 		count[num] = count.get(num, 0) + 1
-	elif id == 1:
+
+	elif q_id == 1:
 		while True:
 			min_key = heapq.heappop(min_heap)
 			if count.get(min_key, 0) > 0:
 				print(min_key)
 				count[min_key] -= 1
 				break
-	else:
+
+	elif q_id == 2:
 		while True:
 			max_key = -heapq.heappop(max_heap)
 			if count.get(max_key, 0) > 0:
@@ -152,5 +150,4 @@ for _ in range(q):
 ```
 
 </PySection>
-
 </LanguageSection>
