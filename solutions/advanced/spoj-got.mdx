@@ -7,11 +7,10 @@ author: Nigar Hajiyeva
 
 ## Explanation
 
-This solution builds a persistent segment tree for each node in the tree that keeps track of how many times each value appears on the path from the root to that node. We start by building the persistent segment tree for the root node with all frequencies set to zero. Then, for each child node, we create a new version of its parent’s segment tree and update it by increasing the count of the child’s value. This way, we avoid rebuilding the whole tree every time and only update the parts that need to change.
+Persistent segment tree data structure is utilized to solve this problem. The code runs a DFS on the tree and creates persistent segment tree versions for each node, which counts the frequencies of the values from the root node to the relevant node. Initially, the root node’s persistent segment tree is created with all frequencies set to zero. Subsequently, for each child node, a new version of the parent's segment tree is built by incrementing the frequency of the current node’s value by one. This way, we reuse the majority of the nodes of the parent’s segment tree and add only necessary nodes. Thus, we avoid building a new segment tree from scratch, improving the efficiency of the code. 
 
-To answer a query asking if a value $c$ appears on the path between nodes $a$ and $b$, we first find their lowest common ancestor (LCA). Since each node’s persistent segment tree counts the frequencies of values from the root down to that node, the number of times $c$ appears on the path from $a$ to $b$ can be found by adding the frequency of the value c from $a$ and $b$, subtracting twice the frequencies from the LCA (to avoid double counting), and then checking if the LCA itself has value $c$. If the total frequency of the value $c$ is greater than zero, the value exists on the path; otherwise, it does not.
 
-This approach uses persistent segment trees and LCA together to quickly answer path queries in large trees without rebuilding data structures from scratch.
+For answering the queries of whether a value $c$ appears on the path from $a$ to $b$, we find the lowest common ancestor (LCA) of $a$ and $b$.  To compute the frequency of value c on the path from a to b, we add the frequencies of $c$ in the segment tree versions of a and b. However, since we count twice the frequency of $c$ from root node to LCA, we compensate for this by subtracting twice the frequency of value $c$ on the path from root node to the LCA. Consequently, If the frequency of $c$ computed via this formula is more than 0, then the value exists on the path. In addition, we check if the LCA ‘s value is c. If true, then the value exists on the path. 
 
 ## Implementation
 
@@ -30,11 +29,10 @@ const int MAX_NODES_GRAPH = 1e5;
 struct PersistentSegmentTree {
 	int node_counter = 0;
 
-	// Maximum number of nodes in the persistent segment tree
 	static const int MAX_NODES_PERSISTENT_TREE = 2e6;
 
 	// Arrays representing the structure of the segment tree
-	int left_chLild[MAX_NODES_PERSISTENT_TREE + 1];
+	int left_child[MAX_NODES_PERSISTENT_TREE + 1];
 	int right_child[MAX_NODES_PERSISTENT_TREE + 1];
 
 	// Frequency of values at positions
@@ -51,7 +49,7 @@ struct PersistentSegmentTree {
 		int new_node = ++node_counter;
 		if (l == r) return new_node;
 		int m = (l + r) / 2;
-		left_chLild[new_node] = build(new_node, l, m);
+		left_child[new_node] = build(new_node, l, m);
 		right_child[new_node] = build(new_node, m + 1, r);
 		return new_node;
 	}
@@ -63,12 +61,12 @@ struct PersistentSegmentTree {
 			frequency[new_node] = frequency[node] + 1;
 			return new_node;
 		}
-		left_chLild[new_node] = left_chLild[node];
+		left_child[new_node] = left_child[node];
 		right_child[new_node] = right_child[node];
 
 		int middle = (left + right) / 2;
 		if (index <= middle)
-			left_chLild[new_node] = update(left_chLild[node], left, middle, index);
+			left_child[new_node] = update(left_child[node], left, middle, index);
 		else
 			right_child[new_node] = update(right_child[node], middle + 1, right, index);
 		return new_node;
@@ -82,7 +80,7 @@ struct PersistentSegmentTree {
 		}
 		int middle = (left + right) / 2;
 		if (k <= middle)
-			return query(left_chLild[a], left_chLild[b], left_chLild[anc], left, middle,
+			return query(left_child[a], left_child[b], left_child[anc], left, middle,
 			             k);
 		else
 			return query(right_child[a], right_child[b], right_child[anc], middle + 1,
@@ -90,13 +88,14 @@ struct PersistentSegmentTree {
 	}
 };
 
+
 PersistentSegmentTree pst;
+
 
 struct Tree {
 	int LOG, timer = 0;
 
-	// LCA and DFS helpers
-	int roots[MAX_NODES_GRAPH + 1];
+	int segment_tree_roots[MAX_NODES_GRAPH + 1];
 	int tin[MAX_NODES_GRAPH + 1], tout[MAX_NODES_GRAPH + 1];
 
 	// Compressed values assigned to each node
