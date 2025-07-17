@@ -7,10 +7,10 @@ author: Nigar Hajiyeva
 
 ## Explanation
 
-Persistent segment tree data structure is utilized to solve this problem. The code runs a DFS on the tree and creates persistent segment tree versions for each node, which counts the frequencies of the values from the root node to the relevant node. Initially, the root node’s persistent segment tree is created with all frequencies set to zero. Subsequently, for each child node, a new version of the parent's segment tree is built by incrementing the frequency of the current node’s value by one. This way, we reuse the majority of the nodes of the parent’s segment tree and add only necessary nodes. Thus, we avoid building a new segment tree from scratch, improving the efficiency of the code. 
+Persistent segment tree data structure is utilized to solve this problem. The code runs a DFS on the tree and creates persistent segment tree versions for each node, which counts the frequencies of the values from the root node to the relevant node. Initially, the root node’s persistent segment tree is created with all frequencies set to zero. Subsequently, for each child node, a new version of the parent's segment tree is built by incrementing the frequency of the current node’s value by one. This way, we reuse the majority of the nodes of the parent’s segment tree and add only necessary nodes. Thus, we avoid building a new segment tree from scratch, improving the efficiency of the code.
 
 
-For answering the queries of whether a value $c$ appears on the path from $a$ to $b$, we find the lowest common ancestor (LCA) of $a$ and $b$.  To compute the frequency of value c on the path from a to b, we add the frequencies of $c$ in the segment tree versions of a and b. However, since we count twice the frequency of $c$ from root node to LCA, we compensate for this by subtracting twice the frequency of value $c$ on the path from root node to the LCA. Consequently, If the frequency of $c$ computed via this formula is more than 0, then the value exists on the path. In addition, we check if the LCA ‘s value is c. If true, then the value exists on the path. 
+For answering the queries of whether a value $c$ appears on the path from $a$ to $b$, we find the lowest common ancestor (LCA) of $a$ and $b$.  To compute the frequency of value c on the path from a to b, we add the frequencies of $c$ in the segment tree versions of a and b. However, since we count twice the frequency of $c$ from root node to LCA, we compensate for this by subtracting twice the frequency of value $c$ on the path from root node to the LCA. Consequently, If the frequency of $c$ computed via this formula is more than 0, then the value exists on the path. In addition, we check if the LCA ‘s value is c. If true, then the value exists on the path.
 
 ## Implementation
 
@@ -88,9 +88,7 @@ struct PersistentSegmentTree {
 	}
 };
 
-
 PersistentSegmentTree pst;
-
 
 struct Tree {
 	int LOG, timer = 0;
