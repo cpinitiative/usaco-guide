@@ -5,22 +5,35 @@ title: Convoluted Intervals
 author: Sachet Abeysinghe
 ---
 
-[Official Analysis](https://usaco.org/current/data/sol_prob3_silver_dec21.html)
+[Official Analysis (C++, Java)](https://usaco.org/current/data/sol_prob3_silver_dec21.html)
 
 ## Explanation
 
-Let's consider the brute force solution first and make optimizations from there. The naive solution is, for all $k$ from $0…2M$, iterate over all pairs of intervals $(a_i, b_i)$ and $(a_j, b_j)$ and add one to the answer if this $(i, j)$ pair satisfies $a_i + a_j \le k \le b_i + b_j$. This runs in $\mathcal{O}(MN^{2})$, which is extremely slow. Consider the two following optimizations:
+Let's start with the brute force solution.
 
-**Optimization 1:** Instead of considering each individual $k$, we can think of it as a pair of intervals contributing to all $k$ from $a_i + a_j$ to $b_i + b_j$. To count this efficiently, we can use the difference array prefix sums trick, where we do range updates by incrementing position $a_i + a_j$ by one and decrementing position $b_i + b_j + 1$ by one. This lends us a time complexity of $\mathcal{O}(N^{2}+M)$, which is better.
+We could just iterate over all $k$ from $0…2M$ along with all pairs of intervals $(a_i, b_i)$ and $(a_j, b_j)$.
+For each combination, we increment our answer if $a_i + a_j \le k \le b_i + b_j$.
+This runs in $\mathcal{O}(MN^{2})$, which is extremely slow.
 
-**Optimization 2:** We should take advantage of the relatively small bound of $M$. Instead of looping through all pairs of intervals $(i, j)$ in $\mathcal{O}(N^2)$ time, iterate over all distinct $(a_i, a_j)$ and $(b_i, b_j)$ pairs in $\mathcal{O}(M^2)$, and multiply the frequencies of $a_i$ and $a_j$, and $b_i$ and $b_j$ (because the number of ways we can pair them is given by their product).
+Consider the two following optimizations:
+
+### Optimization 1
+
+Instead of considering each individual $k$, we can think of it as a pair of intervals contributing to all $k$ from $a_i + a_j$ to $b_i + b_j$.
+To count this efficiently, we can use difference arrays, where we do range updates by incrementing position $a_i + a_j$ by one and decrementing position $b_i + b_j + 1$ by one.
+This improves the time complexity to $\mathcal{O}(N^{2}+M)$.
+
+### Optimization 2
+
+We should probably take advantage of the fact that $M$ is relatively small.
+Instead of looping through all pairs of intervals $(i, j)$ in $\mathcal{O}(N^2)$ time, we can iterate over all distinct $(a_i, a_j)$ and $(b_i, b_j)$ pairs in $\mathcal{O}(M^2)$.
+We can then multiply the frequencies of $a_i$/$a_j$ and $b_i$/$b_j$ to get the number of ways we can pair them.
 
 ## Implementation
 
 **Time Complexity:** $\mathcal{O}(N+M^{2})$
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
