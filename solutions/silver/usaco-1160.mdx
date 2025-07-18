@@ -37,54 +37,93 @@ We can then multiply the frequencies of $a_i$/$a_j$ and $b_i$/$b_j$ to get the n
 <CPPSection>
 
 ```cpp
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.StringTokenizer;
+#include <bits/stdc++.h>
+using namespace std;
 
-public
-class IntervalConvolution {
-
-  public
-	static void main(String[] args) throws IOException {
-		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-		StringTokenizer tokenizer = new StringTokenizer(in.readLine());
-		int n = Integer.parseInt(tokenizer.nextToken());
-		int m = Integer.parseInt(tokenizer.nextToken());
-		long total_pairs = ((long)n) * ((long)n);
-		long[] a_freq = new long[m + 1];
-		long[] b_freq = new long[m + 1];
-		for (int j = 1; j <= n; j++) {
-			tokenizer = new StringTokenizer(in.readLine());
-			int a = Integer.parseInt(tokenizer.nextToken());
-			int b = Integer.parseInt(tokenizer.nextToken());
-			a_freq[a]++;
-			b_freq[b]++;
-		}
-		long[] a_sum_freq = new long[(2 * m) + 1];
-		long[] b_sum_freq = new long[(2 * m) + 1];
-		for (int x = 0; x <= m; x++) {
-			for (int y = 0; y <= m; y++) {
-				a_sum_freq[x + y] += a_freq[x] * a_freq[y];
-				b_sum_freq[x + y] += b_freq[x] * b_freq[y];
-			}
-		}
-		long a_valid = a_sum_freq[0];
-		long b_valid = total_pairs;
-		StringBuilder out = new StringBuilder();
-		for (int x = 0; x <= 2 * m; x++) {
-			if (x > 0) {
-				a_valid += a_sum_freq[x];
-				b_valid -= b_sum_freq[x - 1];
-			}
-			long res = a_valid + b_valid - total_pairs;
-			out.append(res).append('\n');
-		}
-		System.out.print(out);
+int main() {
+	cin.tie(0)->sync_with_stdio(0);
+	int N, M;
+	cin >> N >> M;
+	vector<pair<int, int>> ivals(N);
+	for (auto &ival : ivals)
+		cin >> ival.first >> ival.second;
+	vector<int64_t> win_start(2 * M + 1), win_end(2 * M + 1);
+	{
+		vector<int64_t> a_freq(M + 1);
+		for (int i = 0; i < N; ++i)
+			++a_freq.at(ivals.at(i).first);
+		for (int i = 0; i <= M; ++i)
+			for (int j = 0; j <= M; ++j)
+				win_start.at(i + j) += a_freq.at(i) * a_freq.at(j);
+	}
+	{
+		vector<int64_t> b_freq(M + 1);
+		for (int i = 0; i < N; ++i)
+			++b_freq.at(ivals.at(i).second);
+		for (int i = 0; i <= M; ++i)
+			for (int j = 0; j <= M; ++j)
+				win_end.at(i + j) += b_freq.at(i) * b_freq.at(j);
+	}
+	int64_t win_count = 0;
+	for (int i = 0; i <= 2 * M; ++i) {
+		win_count += win_start.at(i);
+		cout << win_count << "\n";
+		win_count -= win_end.at(i);
 	}
 }
 ```
 
 </CPPSection>
+
+<JavaSection>
+
+```java
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+ 
+public class IntervalConvolution {
+ 
+    public static void main(String[] args) throws IOException {
+        BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer tokenizer = new StringTokenizer(in.readLine());
+        int n = Integer.parseInt(tokenizer.nextToken());
+        int m = Integer.parseInt(tokenizer.nextToken());
+        long totalPairs = ((long) n) * ((long) n);
+        long[] aFreq = new long[m + 1];
+        long[] bFreq = new long[m + 1];
+        for (int j = 1; j <= n; j++) {
+            tokenizer = new StringTokenizer(in.readLine());
+            int a = Integer.parseInt(tokenizer.nextToken());
+            int b = Integer.parseInt(tokenizer.nextToken());
+            aFreq[a]++;
+            bFreq[b]++;
+        }
+        long[] aSumFreq = new long[(2 * m) + 1];
+        long[] bSumFreq = new long[(2 * m) + 1];
+        for (int x = 0; x <= m; x++) {
+            for (int y = 0; y <= m; y++) {
+                aSumFreq[x + y] += aFreq[x] * aFreq[y];
+                bSumFreq[x + y] += bFreq[x] * bFreq[y];
+            }
+        }
+        long aValid = aSumFreq[0];
+        long bValid = totalPairs;
+        StringBuilder out = new StringBuilder();
+        for (int x = 0; x <= 2 * m; x++) {
+            if (x > 0) {
+                aValid += aSumFreq[x];
+                bValid -= bSumFreq[x - 1];
+            }
+            long res = aValid + bValid - totalPairs;
+            out.append(res).append('\n');
+        }
+        System.out.print(out);
+    }
+}
+```
+
+</JavaSection>
 
 </LanguageSection>
