@@ -90,7 +90,9 @@ void ff(int i, int j) {
 <JavaSection>
 
 <Info title = "Optimization">
-The Flood Fill approach as mentioned in C++ version didn't pass all test cases, so we switched it to BFS.
+
+Recursive DFS (which the C++ code uses) is too slow, so here we must use an iterative BFS approach.
+
 </Info>
 
 ```java
@@ -98,9 +100,10 @@ import java.io.*;
 import java.util.*;
 
 public class BuildGates {
-	static boolean[][] fence = new boolean[4003][4003];
-	static boolean[][] visited = new boolean[4003][4003];
-	static int maxx = 2001, minx = 2001, maxy = 2001, miny = 2001;
+	private static boolean[][] fence = new boolean[4003][4003];
+	private static boolean[][] visited = new boolean[4003][4003];
+	private static final int maxx = 2001, minx = 2001, maxy = 2001, miny = 2001;
+
 	public static void main(String[] args) throws IOException {
 		Kattio io = new Kattio("gates");
 
@@ -185,7 +188,6 @@ public class BuildGates {
 ```
 
 </JavaSection>
-
 </LanguageSection>
 
 ## Alternate Faster Solution
