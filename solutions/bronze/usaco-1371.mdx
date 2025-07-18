@@ -7,17 +7,22 @@ author: Junyi Liu
 
 [Official Analysis (C++, Java, Python)](https://usaco.org/current/data/sol_prob1_bronze_jan24.html)
 
-<LanguageSection>
+## Explanation
 
-<CPPSection>
+Let $a_{i}$ be the hay cow $i$ likes.
 
- Let $a_{i}$ be the hay cow $i$ likes, if there exists adjacent hays such that  $a_{i} = a_{i+1}$,we can run a focus group on $i, i+1, i+2$ or $i-1, i, i+1$. This will result in cow $i$ and $i+1$ infecting cow $i+2$ or $i-1$ with the type of hay they like. We can perpetually run focus groups like this to eventually infect every cow with hay $a_{i}$.
+If there are adjacent hays such that $a_{i} = a_{i+1}$, we can run a focus group on $i, i+1, i+2$ or $i-1, i, i+1$.
+This will result in cow $i$ and $i+1$ infecting cow $i+2$ or $i-1$ with the type of hay they like.
+We can perpetually run focus groups like this to eventually infect every cow with hay $a_{i}$.
 
- Occurences of $a_{i} = a_{i+2}$ will also create adjacent hays of the same type (by running a focus group on $i,i+1, i+2$) and therefore this  also makes $a_{i}$ part of the answer.
+Situations where $a_{i} = a_{i+2}$ will also create adjacent hays of the same type (by running a focus group on $i,i+1, i+2$) and therefore this also makes $a_{i}$ part of the answer.
 
-
+## Implementation
 
 **Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+<CPPSection>
 
 ```cpp
 #include <bits/stdc++.h>
@@ -57,5 +62,4 @@ int main() {
 ```
 
 </CPPSection>
-
 </LanguageSection>
