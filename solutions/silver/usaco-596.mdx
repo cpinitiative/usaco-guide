@@ -99,87 +99,89 @@ import java.util.*;
 
 public class BuildGates {
 	static boolean[][] fence = new boolean[4003][4003];
-    static boolean[][] visited = new boolean[4003][4003];
-    static int maxx = 2001, minx = 2001, maxy = 2001, miny = 2001;
+	static boolean[][] visited = new boolean[4003][4003];
+	static int maxx = 2001, minx = 2001, maxy = 2001, miny = 2001;
 	public static void main(String[] args) throws IOException {
 		Kattio io = new Kattio("gates");
 
 		int n = io.nextInt();
-        String path = io.next();
+		String path = io.next();
 
-        int x = 2001, y = 2001;
+		int x = 2001, y = 2001;
 
-        Map<Character, int[]> dir = new HashMap<>();
-        dir.put('N', new int[]{-1, 0});
-        dir.put('S', new int[]{1, 0});
-        dir.put('E', new int[]{0, 1});
-        dir.put('W', new int[]{0, -1});
+		Map<Character, int[]> dir = new HashMap<>();
+		dir.put('N', new int[] {-1, 0});
+		dir.put('S', new int[] {1, 0});
+		dir.put('E', new int[] {0, 1});
+		dir.put('W', new int[] {0, -1});
 
 		// mark fences, scaling so they are 2 units instead of 1
-        for (int i = 0; i < n; i++) {
+		for (int i = 0; i < n; i++) {
 
-            fence[x + dir.get(path.charAt(i))[0]][y + dir.get(path.charAt(i))[1]] = true;
-            fence[x + 2 * dir.get(path.charAt(i))[0]][y + 2 * dir.get(path.charAt(i))[1]] = true;
+			fence[x + dir.get(path.charAt(i))[0]][y + dir.get(path.charAt(i))[1]] =
+			    true;
+			fence[x + 2 * dir.get(path.charAt(i))[0]]
+			     [y + 2 * dir.get(path.charAt(i))[1]] = true;
 
-            x += 2 * dir.get(path.charAt(i))[0];
-            y += 2 * dir.get(path.charAt(i))[1];
-            minx = Math.min(minx, x);
-            maxx = Math.max(maxx, x);
-            miny = Math.min(miny, y);
-            maxy = Math.max(maxy, y);
-        }
+			x += 2 * dir.get(path.charAt(i))[0];
+			y += 2 * dir.get(path.charAt(i))[1];
+			minx = Math.min(minx, x);
+			maxx = Math.max(maxx, x);
+			miny = Math.min(miny, y);
+			maxy = Math.max(maxy, y);
+		}
 
 		// expand the farm to include area outside the fences
-        minx--;
-        maxx++;
-        miny--;
-        maxy++;
+		minx--;
+		maxx++;
+		miny--;
+		maxy++;
 
-        int regions = 0;
+		int regions = 0;
 
-        for (int i = minx; i <= maxx; i++) {
-            for (int j = miny; j <= maxy; j++) {
-                if (!visited[i][j] && !fence[i][j]) {
-                    bfs(i, j);
-                    regions++;
-                }
-            }
-        }
+		for (int i = minx; i <= maxx; i++) {
+			for (int j = miny; j <= maxy; j++) {
+				if (!visited[i][j] && !fence[i][j]) {
+					bfs(i, j);
+					regions++;
+				}
+			}
+		}
 
-        // answer is regions - 1 because each gate decreases the number of regions
-        // by 1
-        io.println(regions - 1);
-        io.close();
+		// answer is regions - 1 because each gate decreases the number of regions
+		// by 1
+		io.println(regions - 1);
+		io.close();
 	}
 
 	public static void bfs(int startX, int startY) {
-        Queue<int[]> queue = new ArrayDeque<>();
-        queue.offer(new int[]{startX, startY});
-        visited[startX][startY] = true;
+		Queue<int[]> queue = new ArrayDeque<>();
+		queue.offer(new int[] {startX, startY});
+		visited[startX][startY] = true;
 
-        int[] dx = {-1, 0, 0, 1};
-        int[] dy = {0, -1, 1, 0};
+		int[] dx = {-1, 0, 0, 1};
+		int[] dy = {0, -1, 1, 0};
 
-        while (!queue.isEmpty()) {
-            int[] curr = queue.poll();
-            int x = curr[0];
-            int y = curr[1];
+		while (!queue.isEmpty()) {
+			int[] curr = queue.poll();
+			int x = curr[0];
+			int y = curr[1];
 
-            for (int k = 0; k < 4; k++) {
-                int nx = x + dx[k];
-                int ny = y + dy[k];
+			for (int k = 0; k < 4; k++) {
+				int nx = x + dx[k];
+				int ny = y + dy[k];
 
-                if (nx >= minx && nx <= maxx && ny >= miny && ny <= maxy && !visited[nx][ny] && !fence[nx][ny]) {
-                    visited[nx][ny] = true;
-                    queue.offer(new int[]{nx, ny});
-                }
-            }
-        }
-    }
+				if (nx >= minx && nx <= maxx && ny >= miny && ny <= maxy &&
+				    !visited[nx][ny] && !fence[nx][ny]) {
+					visited[nx][ny] = true;
+					queue.offer(new int[] {nx, ny});
+				}
+			}
+		}
+	}
 
 	// CodeSnip{Kattio}
 }
-
 ```
 
 </JavaSection>
