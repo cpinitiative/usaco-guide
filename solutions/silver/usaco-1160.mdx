@@ -45,21 +45,18 @@ int main() {
 	int N, M;
 	cin >> N >> M;
 	vector<pair<int, int>> ivals(N);
-	for (auto &ival : ivals)
-		cin >> ival.first >> ival.second;
+	for (auto &ival : ivals) cin >> ival.first >> ival.second;
 	vector<int64_t> win_start(2 * M + 1), win_end(2 * M + 1);
 	{
 		vector<int64_t> a_freq(M + 1);
-		for (int i = 0; i < N; ++i)
-			++a_freq.at(ivals.at(i).first);
+		for (int i = 0; i < N; ++i) ++a_freq.at(ivals.at(i).first);
 		for (int i = 0; i <= M; ++i)
 			for (int j = 0; j <= M; ++j)
 				win_start.at(i + j) += a_freq.at(i) * a_freq.at(j);
 	}
 	{
 		vector<int64_t> b_freq(M + 1);
-		for (int i = 0; i < N; ++i)
-			++b_freq.at(ivals.at(i).second);
+		for (int i = 0; i < N; ++i) ++b_freq.at(ivals.at(i).second);
 		for (int i = 0; i <= M; ++i)
 			for (int j = 0; j <= M; ++j)
 				win_end.at(i + j) += b_freq.at(i) * b_freq.at(j);
@@ -82,45 +79,45 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.StringTokenizer;
- 
+
 public class IntervalConvolution {
- 
-    public static void main(String[] args) throws IOException {
-        BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer tokenizer = new StringTokenizer(in.readLine());
-        int n = Integer.parseInt(tokenizer.nextToken());
-        int m = Integer.parseInt(tokenizer.nextToken());
-        long totalPairs = ((long) n) * ((long) n);
-        long[] aFreq = new long[m + 1];
-        long[] bFreq = new long[m + 1];
-        for (int j = 1; j <= n; j++) {
-            tokenizer = new StringTokenizer(in.readLine());
-            int a = Integer.parseInt(tokenizer.nextToken());
-            int b = Integer.parseInt(tokenizer.nextToken());
-            aFreq[a]++;
-            bFreq[b]++;
-        }
-        long[] aSumFreq = new long[(2 * m) + 1];
-        long[] bSumFreq = new long[(2 * m) + 1];
-        for (int x = 0; x <= m; x++) {
-            for (int y = 0; y <= m; y++) {
-                aSumFreq[x + y] += aFreq[x] * aFreq[y];
-                bSumFreq[x + y] += bFreq[x] * bFreq[y];
-            }
-        }
-        long aValid = aSumFreq[0];
-        long bValid = totalPairs;
-        StringBuilder out = new StringBuilder();
-        for (int x = 0; x <= 2 * m; x++) {
-            if (x > 0) {
-                aValid += aSumFreq[x];
-                bValid -= bSumFreq[x - 1];
-            }
-            long res = aValid + bValid - totalPairs;
-            out.append(res).append('\n');
-        }
-        System.out.print(out);
-    }
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer tokenizer = new StringTokenizer(in.readLine());
+		int n = Integer.parseInt(tokenizer.nextToken());
+		int m = Integer.parseInt(tokenizer.nextToken());
+		long totalPairs = ((long)n) * ((long)n);
+		long[] aFreq = new long[m + 1];
+		long[] bFreq = new long[m + 1];
+		for (int j = 1; j <= n; j++) {
+			tokenizer = new StringTokenizer(in.readLine());
+			int a = Integer.parseInt(tokenizer.nextToken());
+			int b = Integer.parseInt(tokenizer.nextToken());
+			aFreq[a]++;
+			bFreq[b]++;
+		}
+		long[] aSumFreq = new long[(2 * m) + 1];
+		long[] bSumFreq = new long[(2 * m) + 1];
+		for (int x = 0; x <= m; x++) {
+			for (int y = 0; y <= m; y++) {
+				aSumFreq[x + y] += aFreq[x] * aFreq[y];
+				bSumFreq[x + y] += bFreq[x] * bFreq[y];
+			}
+		}
+		long aValid = aSumFreq[0];
+		long bValid = totalPairs;
+		StringBuilder out = new StringBuilder();
+		for (int x = 0; x <= 2 * m; x++) {
+			if (x > 0) {
+				aValid += aSumFreq[x];
+				bValid -= bSumFreq[x - 1];
+			}
+			long res = aValid + bValid - totalPairs;
+			out.append(res).append('\n');
+		}
+		System.out.print(out);
+	}
 }
 ```
 
