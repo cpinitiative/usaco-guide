@@ -26,7 +26,7 @@ This improves the time complexity to $\mathcal{O}(N^{2}+M)$.
 ### Optimization 2
 
 We should probably take advantage of the fact that $M$ is relatively small.
-Instead of looping through all pairs of intervals $(i, j)$ in $\mathcal{O}(N^2)$ time, we can iterate over all distinct $(a_i, a_j)$ and $(b_i, b_j)$ pairs in $\mathcal{O}(M^2)$.
+Instead of looping through all pairs of left endpoints $(a_i, a_j)$ and right endpoints $(b_i, b_j)$ in $\mathcal{O}(N^2)$ time, we can iterate over all distinct left endpoint and right endpoint pairs to process multiple at once in $\mathcal{O}(M^2)$.
 We can then multiply the frequencies of $a_i$/$a_j$ and $b_i$/$b_j$ to get the number of ways we can pair them.
 
 ## Implementation
@@ -41,25 +41,32 @@ We can then multiply the frequencies of $a_i$/$a_j$ and $b_i$/$b_j$ to get the n
 using namespace std;
 
 int main() {
-	cin.tie(0)->sync_with_stdio(0);
 	int N, M;
 	cin >> N >> M;
 	vector<pair<int, int>> ivals(N);
 	for (auto &ival : ivals) cin >> ival.first >> ival.second;
 	vector<int64_t> win_start(2 * M + 1), win_end(2 * M + 1);
 	{
-		vector<int64_t> a_freq(M + 1);
-		for (int i = 0; i < N; ++i) ++a_freq.at(ivals.at(i).first);
-		for (int i = 0; i <= M; ++i)
-			for (int j = 0; j <= M; ++j)
+		long long a_freq[M + 1];
+		for (int i = 0; i < N; i++) {
+			a_freq.at(ivals.at(i).first)++;
+		}
+		for (int i = 0; i <= M; i++) {
+			for (int j = 0; j <= M; j++) {
 				win_start.at(i + j) += a_freq.at(i) * a_freq.at(j);
+			}
+		}
 	}
 	{
-		vector<int64_t> b_freq(M + 1);
-		for (int i = 0; i < N; ++i) ++b_freq.at(ivals.at(i).second);
-		for (int i = 0; i <= M; ++i)
-			for (int j = 0; j <= M; ++j)
+		long long b_freq[M + 1];
+		for (int i = 0; i < N; i++) {
+			b_freq.at(ivals.at(i).second)++;
+		}
+		for (int i = 0; i <= M; i++) {
+			for (int j = 0; j <= M; j++) {
 				win_end.at(i + j) += b_freq.at(i) * b_freq.at(j);
+			}
+		}
 	}
 	int64_t win_count = 0;
 	for (int i = 0; i <= 2 * M; ++i) {
