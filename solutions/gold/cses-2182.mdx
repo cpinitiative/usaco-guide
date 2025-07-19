@@ -75,14 +75,23 @@ $$
 Generalizing to $P_i$, we have
 
 $$
+P_i = \prod_{j=0}^{k_i}\left(P_{i-1}\left(x_i^{C_{i-1}}\right)^j\right)\text{.}
+$$
+
+The appearance of $C_{i-1}$ instead of $k_{i-1} + 1$ is because we need to give _all_ $C_{i-1}$ previous divisors a multiplier of $x_i^j$.
+Simplifying, we have
+
+$$
 \begin{aligned}
-P_i & = \prod_{j=0}^{k_i}\left(P_{i-1}\left(x_i^j\right)^{C_{i-1}}\right) \\
+P_i & = \prod_{j=0}^{k_i}\left(P_{i-1}\left(x_i^{C_{i-1}}\right)^j\right) \\
+& = P_{i-1}^{k_i+1}\prod_{j=0}^{k_i}\left(\left(x_i^{C_{i-1}}\right)^j\right) \\
+& = P_{i-1}^{k_i+1}\left(\prod_{j=0}^{k_i}x_i^j\right)^{C_{i-1}} \\
+& = P_{i-1}^{k_i+1}\left(x_i^{\sum_{j=0}^{k_i}j}\right)^{C_{i-1}} \\
     & = P_{i-1}^{k_i+1}\left(x_i^{k_i(k_i+1)/2}\right)^{C_{i-1}}\text{,}
 \end{aligned}
 $$
 
-which is our desired recurrence. The appearance of $C_{i-1}$ instead of $k_{i-1} + 1$ is because
-we need to give _all_ $C_{i-1}$ previous divisors a multiplier of $x_i^j$.
+which is our desired recurrence.
 Note that $C_1 = k_1 + 1$.
 
 </Spoiler>
