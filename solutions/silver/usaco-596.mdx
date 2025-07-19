@@ -100,85 +100,88 @@ import java.io.*;
 import java.util.*;
 
 public class BuildGates {
-    static final int MAX = 4003;
+	static final int MAX = 4003;
 	static boolean[][] fence = new boolean[MAX][MAX];
-    static boolean[][] visited = new boolean[MAX][MAX];
-    static int MAX_X = 2001, MIN_X = 2001, MAX_Y = 2001, MIN_Y = 2001;
+	static boolean[][] visited = new boolean[MAX][MAX];
+	static int MAX_X = 2001, MIN_X = 2001, MAX_Y = 2001, MIN_Y = 2001;
 	public static void main(String[] args) throws IOException {
 		Kattio io = new Kattio("gates");
 
 		int n = io.nextInt();
-        String path = io.next();
+		String path = io.next();
 
-        int x = 2001, y = 2001; // x and y origin values
+		int x = 2001, y = 2001;  // x and y origin values
 
-        Map<Character, int[]> dir = new HashMap<>();
-        dir.put('N', new int[]{-1, 0});
-        dir.put('S', new int[]{1, 0});
-        dir.put('E', new int[]{0, 1});
-        dir.put('W', new int[]{0, -1});
+		Map<Character, int[]> dir = new HashMap<>();
+		dir.put('N', new int[] {-1, 0});
+		dir.put('S', new int[] {1, 0});
+		dir.put('E', new int[] {0, 1});
+		dir.put('W', new int[] {0, -1});
 
 		// mark fences, scaling so they are 2 units instead of 1
-        for (int i = 0; i < n; i++) {
+		for (int i = 0; i < n; i++) {
 
-            fence[x + dir.get(path.charAt(i))[0]][y + dir.get(path.charAt(i))[1]] = true;
-            fence[x + 2 * dir.get(path.charAt(i))[0]][y + 2 * dir.get(path.charAt(i))[1]] = true;
+			fence[x + dir.get(path.charAt(i))[0]][y + dir.get(path.charAt(i))[1]] =
+			    true;
+			fence[x + 2 * dir.get(path.charAt(i))[0]]
+			     [y + 2 * dir.get(path.charAt(i))[1]] = true;
 
-            x += 2 * dir.get(path.charAt(i))[0];
-            y += 2 * dir.get(path.charAt(i))[1];
-            MIN_X = Math.min(MIN_X, x);
-            MAX_X = Math.max(MAX_X, x);
-            MIN_Y = Math.min(MIN_Y, y);
-            MAX_Y = Math.max(MAX_Y, y);
-        }
+			x += 2 * dir.get(path.charAt(i))[0];
+			y += 2 * dir.get(path.charAt(i))[1];
+			MIN_X = Math.min(MIN_X, x);
+			MAX_X = Math.max(MAX_X, x);
+			MIN_Y = Math.min(MIN_Y, y);
+			MAX_Y = Math.max(MAX_Y, y);
+		}
 
 		// expand the farm to include area outside the fences
-        MIN_X--;
-        MAX_X++;
-        MIN_Y--;
-        MAX_Y++;
+		MIN_X--;
+		MAX_X++;
+		MIN_Y--;
+		MAX_Y++;
 
-        int regions = 0;
+		int regions = 0;
 
-        for (int i = MIN_X; i <= MAX_X; i++) {
-            for (int j = MIN_Y; j <= MAX_Y; j++) {
-                if (!visited[i][j] && !fence[i][j]) {
-                    dfs(i, j);
-                    regions++;
-                }
-            }
-        }
+		for (int i = MIN_X; i <= MAX_X; i++) {
+			for (int j = MIN_Y; j <= MAX_Y; j++) {
+				if (!visited[i][j] && !fence[i][j]) {
+					dfs(i, j);
+					regions++;
+				}
+			}
+		}
 
-        // answer is regions - 1 because each gate decreases the number of regions
-        // by 1
-        io.println(regions - 1);
-        io.close();
+		// answer is regions - 1 because each gate decreases the number of regions
+		// by 1
+		io.println(regions - 1);
+		io.close();
 	}
 
-    public static void dfs(int startX, int startY) {
-        Stack<int[]> stack = new Stack<>();
-        stack.push(new int[]{startX, startY});
-        visited[startX][startY] = true;
+	public static void dfs(int startX, int startY) {
+		Stack<int[]> stack = new Stack<>();
+		stack.push(new int[] {startX, startY});
+		visited[startX][startY] = true;
 
-        int[] dx = {-1, 0, 0, 1};
-        int[] dy = {0, -1, 1, 0};
+		int[] dx = {-1, 0, 0, 1};
+		int[] dy = {0, -1, 1, 0};
 
-        while (!stack.isEmpty()) {
-            int[] curr = stack.pop();
-            int x = curr[0];
-            int y = curr[1];
+		while (!stack.isEmpty()) {
+			int[] curr = stack.pop();
+			int x = curr[0];
+			int y = curr[1];
 
-            for (int k = 0; k < 4; k++) {
-                int nx = x + dx[k];
-                int ny = y + dy[k];
+			for (int k = 0; k < 4; k++) {
+				int nx = x + dx[k];
+				int ny = y + dy[k];
 
-                if (nx >= MIN_X && nx <= MAX_X && ny >= MIN_Y && ny <= MAX_Y && !visited[nx][ny] && !fence[nx][ny]) {
-                    visited[nx][ny] = true;
-                    stack.push(new int[]{nx, ny});
-                }
-            }
-        }
-    }
+				if (nx >= MIN_X && nx <= MAX_X && ny >= MIN_Y && ny <= MAX_Y &&
+				    !visited[nx][ny] && !fence[nx][ny]) {
+					visited[nx][ny] = true;
+					stack.push(new int[] {nx, ny});
+				}
+			}
+		}
+	}
 
 	// CodeSnip{Kattio}
 }
