@@ -86,7 +86,7 @@ export default function ProblemsListItemDropdown(
     />
   );
 
-  const tippyRef = React.useRef<Instance | null>(null);
+  const tippyRef = React.useRef<Instance>();
   const [isDropdownShown, setIsDropdownShown] = React.useState(false);
 
   return (

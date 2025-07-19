@@ -91,7 +91,7 @@ const GroupPageWrapper = (props: GroupPageWrapperProps): ReactElement => {
     return (
       <Layout>
         <TopNavigationBar />
-        <SEO title="Loading..." image={null} pathname={props.path} />
+        <SEO title="Loading..." />
         <main className="py-10 text-center">
           <p className="text-2xl font-medium">Loading...</p>
         </main>
@@ -102,7 +102,7 @@ const GroupPageWrapper = (props: GroupPageWrapperProps): ReactElement => {
     return (
       <Layout>
         <TopNavigationBar />
-        <SEO title="Group Not Found" image={null} pathname={props.path} />
+        <SEO title="Group Not Found" />
         <main className="py-10 text-center">
           <p className="text-2xl font-medium">
             Group not found.{' '}

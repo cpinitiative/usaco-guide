@@ -90,8 +90,9 @@ export default function SafeMarkdownRenderer({ children }) {
   return (
     <div className="prose dark:prose-light max-w-none">
       <ReactMarkdown
-        components={renderers as any}
-        remarkPlugins={[gfm as any]}
+        components={renderers}
+        /* @ts-expect-error https://github.com/rehypejs/rehype/discussions/63 */
+        plugins={[gfm]}
         linkTarget="_blank"
         className="react-markdown"
       >

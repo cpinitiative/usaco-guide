@@ -17,10 +17,10 @@ export default function EditGroupPage(props) {
   const activeGroup = useActiveGroup();
   const originalGroup = activeGroup?.groupData;
   const [group, editGroup] = useReducer(
-    (
-      old: GroupData | undefined,
-      updates: Partial<GroupData>
-    ): GroupData | undefined => (old ? { ...old, ...updates } : undefined),
+    (old, updates: Partial<GroupData>): GroupData | undefined => ({
+      ...old,
+      ...updates,
+    }),
     originalGroup
   );
   const { deleteGroup, updateGroup } = useGroupActions();
@@ -45,11 +45,7 @@ export default function EditGroupPage(props) {
 
   return (
     <Layout>
-      <SEO
-        title={`Edit ${group?.name}`}
-        image={undefined}
-        pathname={undefined}
-      />
+      <SEO title={`Edit ${group?.name}`} />
       <TopNavigationBar />
       <nav className="mt-6 mb-4 flex" aria-label="Breadcrumb">
         <Breadcrumbs
