@@ -9,7 +9,6 @@ module.exports = {
     'plugin:react/recommended',
     'plugin:react-hooks/recommended',
     'plugin:@typescript-eslint/recommended',
-    'plugin:storybook/recommended',
   ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
@@ -38,9 +37,4 @@ module.exports = {
     'gatsby-browser.tsx',
     'tailwind.config.js',
   ],
-  settings: {
-    react: {
-      version: 'detect',
-    },
-  },
 };

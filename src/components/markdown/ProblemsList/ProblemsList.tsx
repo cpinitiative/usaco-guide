@@ -1,7 +1,5 @@
-import { Transition } from '@headlessui/react';
 import { globalHistory } from '@reach/router';
 import * as React from 'react';
-import { Fragment } from 'react';
 import 'tippy.js/themes/light.css';
 import { useMarkdownProblemLists } from '../../../context/MarkdownProblemListsContext';
 import {
@@ -9,6 +7,7 @@ import {
   useShowTagsSetting,
 } from '../../../context/UserDataContext/properties/simpleProperties';
 import { ProblemInfo } from '../../../models/problem';
+import Transition from '../../Transition';
 import { ListTable } from '../ListTable/ListTable';
 import { DivisionProblemInfo } from './DivisionList/DivisionProblemInfo';
 import ProblemsListHeader from './ProblemsListHeader';
@@ -20,13 +19,13 @@ import SuggestProblemRow from './SuggestProblemRow';
 type ProblemsListProps =
   | {
       title?: string;
-      children?: React.ReactNode;
+      children?: React.ReactChildren;
       problems?: string;
       hideSuggestProblemButton?: boolean;
     }
   | {
       title?: string;
-      children?: React.ReactNode;
+      children?: React.ReactChildren;
       problems?: DivisionProblemInfo[]; // normally string; only DivisionProblemInfo[] when it's a division table
       division?: string; // only if is division table
       modules?: boolean; // only if is division table
@@ -36,14 +35,14 @@ type AnnotatedProblemsListProps =
       isDivisionTable: false;
       tableName?: string;
       title?: string;
-      children?: React.ReactNode;
+      children?: React.ReactChildren;
       problems: ProblemInfo[];
       hideSuggestProblemButton?: boolean;
     }
   | {
       isDivisionTable: true;
       title?: string;
-      children?: React.ReactNode;
+      children?: React.ReactChildren;
       problems?: DivisionProblemInfo[]; // normally string; only DivisionProblemInfo[] when it's a division table
       division?: string; // only if is division table
       modules?: boolean; // only if is division table
@@ -146,11 +145,9 @@ export function ProblemsList(unannotatedProps: ProblemsListProps): JSX.Element {
         )}
       </ListTable>
 
-      <Transition show={showModal} as={Fragment}>
+      <Transition show={showModal} timeout={300}>
         <div className="fixed inset-x-0 bottom-0 z-10 px-4 pb-6 sm:inset-0 sm:flex sm:items-center sm:justify-center sm:p-0">
           <Transition
-            show={showModal}
-            as={Fragment}
             enter="ease-out duration-300"
             enterFrom="opacity-0"
             enterTo="opacity-100"
@@ -167,8 +164,6 @@ export function ProblemsList(unannotatedProps: ProblemsListProps): JSX.Element {
           </Transition>
 
           <Transition
-            show={showModal}
-            as={Fragment}
             enter="ease-out duration-300"
             enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             enterTo="opacity-100 translate-y-0 sm:scale-100"

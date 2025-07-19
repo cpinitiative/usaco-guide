@@ -8,7 +8,7 @@ import SEO from '../../seo';
 import TopNavigationBar from '../../TopNavigationBar/TopNavigationBar';
 import MemberDetail from './MemberDetail';
 
-export default function MembersPage({ path }: { path: string }): JSX.Element {
+export default function MembersPage(): JSX.Element {
   const activeGroup = useActiveGroup();
   const memberInfo = useMemberInfoForGroup(activeGroup.groupData!);
   const leaderboard = useLeaderboardData({
@@ -48,11 +48,7 @@ export default function MembersPage({ path }: { path: string }): JSX.Element {
 
   return (
     <Layout>
-      <SEO
-        title={`Members · ${activeGroup.groupData!.name}`}
-        image={null}
-        pathname={path}
-      />
+      <SEO title={`Members · ${activeGroup.groupData!.name}`} />
       <div className="flex flex-col xl:h-screen xl:overflow-hidden">
         <TopNavigationBar />
 

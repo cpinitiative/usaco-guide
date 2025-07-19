@@ -51,16 +51,10 @@ export default function EditProblemPage(props: Props) {
   if (!post) throw new Error('Post not found');
   const originalProblem = useProblem(problemId);
   const [problem, editProblem] = useReducer(
-    (oldProblem, updates: Partial<GroupProblemData>): GroupProblemData => {
-      const merged = {
-        ...oldProblem,
-        ...updates,
-      };
-      if (merged.solutionReleaseMode === 'custom' && !merged.usacoGuideId) {
-        merged.usacoGuideId = '';
-      }
-      return merged as GroupProblemData;
-    },
+    (oldProblem, updates: Partial<GroupProblemData>): GroupProblemData => ({
+      ...oldProblem,
+      ...updates,
+    }),
     originalProblem
   );
   const { saveProblem, deleteProblem } = usePostActions(groupId);
@@ -150,11 +144,7 @@ export default function EditProblemPage(props: Props) {
 
   return (
     <Layout>
-      <SEO
-        title={`Edit ${problem.name} · ${post.name}`}
-        image={undefined}
-        pathname={undefined}
-      />
+      <SEO title={`Edit ${problem.name} · ${post.name}`} />
       <TopNavigationBar />
       <nav className="mt-6 mb-4 flex" aria-label="Breadcrumb">
         <Breadcrumbs

@@ -1,4 +1,4 @@
-import { StoryFn } from '@storybook/react-webpack5';
+import { Story } from '@storybook/react';
 import React, { ComponentProps } from 'react';
 import RadioList from '../components/elements/RadioList';
 import { LANGUAGE_LABELS } from '../context/UserDataContext/properties/simpleProperties';
@@ -8,7 +8,7 @@ export default {
   component: RadioList,
 };
 
-const Template: StoryFn<ComponentProps<typeof RadioList>> = args => (
+const Template: Story<ComponentProps<typeof RadioList>> = args => (
   <RadioList {...args} />
 );
 

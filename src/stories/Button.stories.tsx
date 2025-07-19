@@ -1,11 +1,11 @@
-import { StoryFn } from '@storybook/react-webpack5';
+import { Story } from '@storybook/react';
 import React from 'react';
 
 export default {
   title: 'Button',
 };
 
-const Template: StoryFn = args => <button {...args}>My button</button>;
+const Template: Story = args => <button {...args}>My button</button>;
 
 export const Default = Template.bind({});
 Default.args = {

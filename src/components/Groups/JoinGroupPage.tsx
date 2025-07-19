@@ -81,7 +81,7 @@ const JoinGroupPage = (props: RouteComponentProps) => {
 
   return (
     <Layout>
-      <SEO title="Join Group" image={null} pathname={props.path} />
+      <SEO title="Join Group" />
       <TopNavigationBar />
       <main>
         <div className="mx-auto max-w-7xl px-2 py-16 sm:px-4 lg:px-8">

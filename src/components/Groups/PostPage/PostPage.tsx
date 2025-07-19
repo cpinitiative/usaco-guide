@@ -47,11 +47,7 @@ export default function PostPage(
 
   return (
     <Layout>
-      <SEO
-        title={`${post.name} · ${activeGroup.groupData?.name}`}
-        image={null}
-        pathname={props.path}
-      />
+      <SEO title={`${post.name} · ${activeGroup.groupData?.name}`} />
       <TopNavigationBar />
       <nav className="mt-6 mb-4 flex" aria-label="Breadcrumb">
         <Breadcrumbs

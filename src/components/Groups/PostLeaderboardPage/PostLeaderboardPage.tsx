@@ -16,7 +16,7 @@ import { LeaderboardTable } from '../LeaderboardTable/LeaderboardTable';
 import { useProblemSubmissionPopupAction } from '../ProblemSubmissionPopup';
 
 export default function PostLeaderboardPage(props) {
-  const { postId, path } = props as {
+  const { postId } = props as {
     path: string;
     groupId: string;
     postId: string;
@@ -61,11 +61,7 @@ export default function PostLeaderboardPage(props) {
 
   return (
     <Layout>
-      <SEO
-        title={`Leaderboard: ${post.name}`}
-        image={null}
-        pathname={props.path}
-      />
+      <SEO title={`Leaderboard: ${post.name}`} />
 
       <TopNavigationBar />
 
