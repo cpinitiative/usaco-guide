@@ -112,7 +112,7 @@ export default function ProblemsPage(props: PageProps<DataProps>) {
   ];
   return (
     <Layout>
-      <SEO title="All Problems" />
+      <SEO title="All Problems" image={null} pathname={props.path} />
 
       <div className="dark:bg-dark-surface min-h-screen bg-gray-100">
         <TopNavigationBar />

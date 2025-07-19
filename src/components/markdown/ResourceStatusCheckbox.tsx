@@ -170,7 +170,7 @@ export default function ResourcestatusCheckbox({
     Skipped: 'bg-blue-300 dark:bg-blue-700',
     Ignored: 'bg-red-100 dark:bg-red-900',
   };
-  const tippyRef = useRef<any>();
+  const tippyRef = useRef<any>(null);
   const showConfetti = useContext(ConfettiContext);
   return (
     <Tippy

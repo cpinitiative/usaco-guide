@@ -88,8 +88,11 @@ function GithubActions() {
       if (branches.find(branch => branch.name === branchName)) {
         setBranchState('Setting Branch...');
       } else setBranchState('Creating Branch...');
+      if (!octokit) {
+        throw new Error('Octokit not available');
+      }
       const masterSha = (
-        await octokit?.request(
+        await octokit.request(
           'GET /repos/{owner}/{repo}/git/matching-refs/{ref}',
           {
             owner: 'cpinitiative',
