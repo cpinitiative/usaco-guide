@@ -2,10 +2,10 @@ import { graphql } from 'gatsby';
 import * as React from 'react';
 import {
   moduleIDToSectionMap,
-  SectionID,
   SECTION_LABELS,
   SECTION_SEO_DESCRIPTION,
   SECTION_SEO_TITLES,
+  SectionID,
 } from '../../content/ordering';
 import DashboardProgress, {
   DashboardProgressSmall,
@@ -139,6 +139,8 @@ export default function Template(props) {
       <SEO
         title={SECTION_SEO_TITLES[division]}
         description={SECTION_SEO_DESCRIPTION[division]}
+        image={null}
+        pathname={props.path}
       />
       <div className="min-h-screen">
         <TopNavigationBar currentSection={division} />

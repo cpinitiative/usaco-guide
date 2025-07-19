@@ -12,9 +12,9 @@ import {
   useUserProgressOnProblems,
 } from '../../../context/UserDataContext/properties/userProgress';
 import {
+  PROBLEM_PROGRESS_OPTIONS,
   ProblemInfo,
   ProblemProgress,
-  PROBLEM_PROGRESS_OPTIONS,
 } from '../../../models/problem';
 import { DivisionProblemInfo } from './DivisionList/DivisionProblemInfo';
 
@@ -167,7 +167,7 @@ export default function ProblemStatusCheckbox({
     Ignored: 'bg-red-100 dark:bg-red-900',
     Skipped: 'bg-blue-300 dark:bg-blue-700',
   };
-  const tippyRef = useRef<any>();
+  const tippyRef = useRef<any>(null);
   const showConfetti = useContext(ConfettiContext);
   return (
     <Tippy
