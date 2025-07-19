@@ -53,6 +53,49 @@ This is because $a^b \not \equiv a^{b \bmod p} \pmod{p}$ in general. However, by
 Fermat's little theorem, $a^b \equiv a^{b \bmod (p - 1)} \pmod{p}$ for prime
 $p$, so we can just store $C_i$ modulo $10^9 + 6$ to calculate $P_i$.
 
+<Spoiler title="How do we get this recurrence?">
+
+Clearly
+$$P_1 = x_1^0x_1^1x_1^2\dots x_1^{k_1} = x_1^\frac{k_1(k_1+1)}{2}$$
+since all $x_i$ are prime. Then for $P_2$, we have
+
+$$
+\begin{aligned}
+P_2 & = x_1^1\times x_1^2\times x_1^3\times\dots\times x_1^{k_1} \\
+& \times x_2 \times x_2x_1 \times x_2x_1^2\times\dots\times x_2x_1^{k_1} \\
+& \times x_2^2 \times x_2^2x_1 \times x_2^2x_1^2\times\dots\times x_2^2x_1^{k_1} \\
+& \vdots \\
+& \times x_2^{k_2} \times x_2^{k_2}x_1 \times x_2^{k_2}x_1^2\times\dots\times x_2^{k_2}x_1^{k_1} \\
+& \\
+& = P_1 \times P_1x_2^{k_1+1} \times P_1\left(x_2^{k_1+1}\right)^2 \times \dots \times P_1\left(x_2^{k_1+1}\right)^{k_2} \\
+& = \prod_{j=0}^{k_2}\left(P_1\left(x_2^{k_1+1}\right)^j\right)\text{.}
+\end{aligned}
+$$
+
+Generalizing to $P_i$, we have
+
+$$
+P_i = \prod_{j=0}^{k_i}\left(P_{i-1}\left(x_i^{C_{i-1}}\right)^j\right)\text{.}
+$$
+
+The appearance of $C_{i-1}$ instead of $k_{i-1} + 1$ is because we need to give _all_ $C_{i-1}$ previous divisors a multiplier of $x_i^j$.
+Simplifying, we have
+
+$$
+\begin{aligned}
+P_i & = \prod_{j=0}^{k_i}\left(P_{i-1}\left(x_i^{C_{i-1}}\right)^j\right) \\
+& = P_{i-1}^{k_i+1}\prod_{j=0}^{k_i}\left(\left(x_i^{C_{i-1}}\right)^j\right) \\
+& = P_{i-1}^{k_i+1}\left(\prod_{j=0}^{k_i}x_i^j\right)^{C_{i-1}} \\
+& = P_{i-1}^{k_i+1}\left(x_i^{\sum_{j=0}^{k_i}j}\right)^{C_{i-1}} \\
+    & = P_{i-1}^{k_i+1}\left(x_i^{k_i(k_i+1)/2}\right)^{C_{i-1}}\text{,}
+\end{aligned}
+$$
+
+which is our desired recurrence.
+Note that $C_1 = k_1 + 1$.
+
+</Spoiler>
+
 <LanguageSection>
 
 <CPPSection>
