@@ -2,7 +2,6 @@ import { Transition } from '@headlessui/react';
 import { globalHistory } from '@reach/router';
 import * as React from 'react';
 import { Fragment } from 'react';
-import 'tippy.js/themes/light.css';
 import { useMarkdownProblemLists } from '../../../context/MarkdownProblemListsContext';
 import {
   useHideDifficultySetting,

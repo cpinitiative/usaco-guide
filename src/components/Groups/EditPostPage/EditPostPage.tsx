@@ -1,5 +1,4 @@
 import { Timestamp } from 'firebase/firestore';
-import 'flatpickr/dist/themes/material_blue.css';
 import { Link, navigate } from 'gatsby';
 import * as React from 'react';
 import { useReducer } from 'react';

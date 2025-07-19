@@ -1,6 +1,5 @@
 import { Transition } from '@headlessui/react';
 import { Timestamp } from 'firebase/firestore';
-import 'flatpickr/dist/themes/material_blue.css';
 import * as React from 'react';
 import Flatpickr from 'react-flatpickr';
 import { JoinGroupLink } from '../../../models/groups/groups';
