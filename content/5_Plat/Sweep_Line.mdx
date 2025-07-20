@@ -166,22 +166,22 @@ using ld = long double;
 
 int main() {
 	int n;
-	while (scanf("%d", &n) && n > 0) {
+	while (cin >> n && n > 0) {
 		vector<pair<ld, ld>> points(n);
 
-		for (auto &p : points) { scanf("%Lf %Lf", &p.first, &p.second); }
+		for (auto &p : points) { cin >> p.first >> p.second; }
 
 		sort(points.begin(), points.end());
 
 		auto get_dist = [](const pair<ld, ld> &a, const pair<ld, ld> &b) -> ld {
 			return (a.first - b.first) * (a.first - b.first) +
-			       (a.second - b.second) * (a.second - b.second);
+				   (a.second - b.second) * (a.second - b.second);
 		};
 
 		ld min_dist = LLONG_MAX;
 		set<pair<ld, ld>> s = {{points[0].second, points[0].first}};
 
-		pair<pair<ld, ld>, pair<ld, ld>> ans;
+		array<ld, 4> ans;
 		for (int i = 1, j = 0; i < points.size(); i++) {
 
 			ld d = sqrt(min_dist);
@@ -197,14 +197,15 @@ int main() {
 				ld d = get_dist(points[i], {it->second, it->first});
 				if (min_dist > d) {
 					min_dist = d;
-					ans = {points[i], {it->second, it->first}};
+					// ans = {points[i], {it->second, it->first}};
+					ans = {points[i].first, points[i].second, it->second, it->first};
 				}
 			}
 			s.insert({points[i].second, points[i].first});
 		}
 
-		printf("%0.2Lf %0.2Lf %0.2Lf %0.2Lf\n", ans.first.first, ans.first.second,
-		       ans.second.first, ans.second.second);
+		cout << setprecision(2) << fixed << ans[0] << ' ' << ans[1] << ' ' << ans[2] << ' ' << ans[3] << '\n';
+
 	}
 }
 ```
