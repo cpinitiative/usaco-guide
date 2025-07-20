@@ -1,4 +1,10 @@
-import { Menu, Transition } from '@headlessui/react';
+import {
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuItems,
+  Transition,
+} from '@headlessui/react';
 import { ChevronDownIcon, ExternalLinkIcon } from '@heroicons/react/solid';
 import classNames from 'classnames';
 import { Link } from 'gatsby';
@@ -159,7 +165,7 @@ export default function ModuleHeaders({
             {({ open }) => (
               <>
                 <div className="-mt-1">
-                  <Menu.Button
+                  <MenuButton
                     className="-mx-1 inline-flex w-full items-center rounded-md px-1 text-sm font-medium text-gray-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-50 focus:outline-hidden dark:text-gray-200 dark:focus:ring-offset-gray-900"
                     style={{ width: 'fit-content' }}
                   >
@@ -168,7 +174,7 @@ export default function ModuleHeaders({
                       className="-mr-1 ml-1 h-5 w-5 text-gray-500 dark:text-gray-400"
                       aria-hidden="true"
                     />
-                  </Menu.Button>
+                  </MenuButton>
                 </div>
 
                 <Transition
@@ -181,13 +187,13 @@ export default function ModuleHeaders({
                   leaveFrom="transform opacity-100 scale-100"
                   leaveTo="transform opacity-0 scale-95"
                 >
-                  <Menu.Items
+                  <MenuItems
                     static
                     className="absolute left-0 z-10 mt-2 w-56 origin-top-left rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-hidden dark:bg-gray-800"
                   >
                     <div className="py-1">
                       {(['cpp', 'java', 'py'] as const).map(lang => (
-                        <Menu.Item key={lang}>
+                        <MenuItem key={lang}>
                           {({ active }) => (
                             <button
                               className={classNames(
@@ -201,10 +207,10 @@ export default function ModuleHeaders({
                               {LANGUAGE_LABELS[lang]}
                             </button>
                           )}
-                        </Menu.Item>
+                        </MenuItem>
                       ))}
                     </div>
-                  </Menu.Items>
+                  </MenuItems>
                 </Transition>
               </>
             )}
