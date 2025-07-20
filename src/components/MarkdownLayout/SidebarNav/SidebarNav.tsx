@@ -74,9 +74,11 @@ export const SidebarNav = () => {
               -1
             }
           >
-            {group.children.map(link => (
-              <ItemLink key={link.id} link={link} />
-            ))}
+            <ClientOnly>
+              {group.children.map(link => (
+                <ItemLink key={link.id} link={link} />
+              ))}
+            </ClientOnly>
           </Accordion>
         ))}
       </div>
