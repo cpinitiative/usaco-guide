@@ -1,4 +1,4 @@
-import { Dialog, DialogPanel, DialogBackdrop } from '@headlessui/react';
+import { Dialog, DialogBackdrop, DialogPanel } from '@headlessui/react';
 import * as React from 'react';
 import { useContext } from 'react';
 import { useDarkMode } from '../../context/DarkModeContext';
@@ -28,11 +28,13 @@ function ProblemSubmissionPopup() {
   const isDarkMode = useDarkMode();
 
   if (!submission) return null;
-  
+
   // Type guard to check if submission has code and language properties
-  const isCodeSubmission = (s: FirebaseSubmission): s is FirebaseSubmission & { 
-    code: string; 
-    language: string 
+  const isCodeSubmission = (
+    s: FirebaseSubmission
+  ): s is FirebaseSubmission & {
+    code: string;
+    language: string;
   } => {
     return 'code' in s && 'language' in s;
   };
@@ -43,7 +45,8 @@ function ProblemSubmissionPopup() {
       onClose={() => popupContext.setShowPopup(false)}
       className="fixed inset-0 z-10 overflow-y-auto"
     >
-      <DialogBackdrop 
+      <DialogBackdrop
+        transition
         className="fixed inset-0 bg-gray-500/75 dark:bg-gray-800/75"
         aria-hidden="true"
       />
@@ -56,6 +59,7 @@ function ProblemSubmissionPopup() {
         </span>
 
         <DialogPanel
+          transition
           className="dark:bg-dark-surface inline-block transform overflow-hidden rounded-lg bg-white pt-5 pb-4 text-left align-bottom shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-4xl sm:py-6 sm:align-middle"
           role="dialog"
           aria-modal="true"
@@ -64,7 +68,7 @@ function ProblemSubmissionPopup() {
           <div className="px-4 sm:px-6">
             <div className="flex items-start justify-between">
               <h3
-                className="text-lg font-medium leading-6 text-gray-900 dark:text-gray-100"
+                className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100"
                 id="modal-headline"
               >
                 Submission Details
@@ -72,7 +76,7 @@ function ProblemSubmissionPopup() {
               <div className="ml-3 flex h-7 items-center">
                 <button
                   type="button"
-                  className="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-400"
+                  className="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:ring-2 focus:ring-indigo-500 focus:outline-none dark:bg-gray-800 dark:text-gray-400"
                   onClick={() => popupContext.setShowPopup(false)}
                 >
                   <span className="sr-only">Close</span>
@@ -96,7 +100,7 @@ function ProblemSubmissionPopup() {
 
             <div className="mt-4">
               <div className="overflow-hidden shadow sm:rounded-lg">
-                <div className="bg-white px-4 py-5 dark:bg-gray-800 sm:p-6">
+                <div className="bg-white px-4 py-5 sm:p-6 dark:bg-gray-800">
                   <div className="flex items-center justify-between">
                     <div>
                       <h4 className="text-lg font-medium text-gray-900 dark:text-gray-100">
@@ -135,10 +139,10 @@ function ProblemSubmissionPopup() {
             </div>
           </div>
 
-          <div className="mt-5 bg-gray-50 px-4 py-3 dark:bg-gray-900 sm:px-6 sm:flex sm:flex-row-reverse">
+          <div className="mt-5 bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6 dark:bg-gray-900">
             <button
               type="button"
-              className="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+              className="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:outline-none sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200"
               onClick={() => popupContext.setShowPopup(false)}
             >
               Close Submission
