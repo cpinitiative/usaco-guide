@@ -8,7 +8,12 @@ const MemberCard = ({
   gatsbyImage,
 }: {
   member: Member;
-  gatsbyImage: any;
+  gatsbyImage:
+    | {
+        readonly gatsbyImageData: import('gatsby-plugin-image').IGatsbyImageData;
+      }
+    | null
+    | undefined;
 }) => {
   const socialMedia = {
     email: {
@@ -117,12 +122,11 @@ const MemberCard = ({
     >
       <div className="flex flex-col items-center gap-2">
         <div className="pointer-events-auto relative h-24 w-24 overflow-hidden rounded-full lg:h-20 lg:w-20">
-          {gatsbyImage ? (
+          {gatsbyImage && gatsbyImage.gatsbyImageData ? (
             <GatsbyImage
               image={gatsbyImage.gatsbyImageData}
-              className="gatsby-image-wrapper-rounded overflow-hidden rounded-full"
               alt={member.name}
-              style={{ width: '100%', height: '100%' }}
+              className="h-full w-full rounded-full object-cover"
             />
           ) : (
             <div className="flex h-full w-full items-center justify-center bg-gray-200 dark:bg-gray-700">
@@ -185,7 +189,6 @@ export default function ContributorsSection(): JSX.Element {
               width: 112
               height: 112
               quality: 100
-              transformOptions: { cropFocus: CENTER }
               layout: FIXED
             )
           }
@@ -214,18 +217,19 @@ export default function ContributorsSection(): JSX.Element {
               Current Team Members
             </h1>*/}
             <ul className="mx-auto grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))]">
-              {Members.CurrentMembers.map(member => (
-                <MemberCard
-                  member={member}
-                  key={member.name}
-                  gatsbyImage={
-                    member.photo
-                      ? data.allFile.nodes.find(x => x.name === member.photo)
-                          ?.childImageSharp
-                      : null
-                  }
-                />
-              ))}
+              {Members.CurrentMembers.map(member => {
+                const foundImage = member.photo
+                  ? data.allFile.nodes.find(x => x.name === member.photo)
+                  : null;
+
+                return (
+                  <MemberCard
+                    member={member}
+                    key={member.name}
+                    gatsbyImage={foundImage?.childImageSharp || null}
+                  />
+                );
+              })}
             </ul>
 
             <h1 className="mt-[5rem] mb-8 text-center text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-2xl sm:leading-10 dark:text-gray-100">
