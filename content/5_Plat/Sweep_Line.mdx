@@ -157,7 +157,7 @@ For each point, we recalculate $\delta = \min(\delta, \delta_p)$, and update our
 <LanguageSection>
 <CPPSection>
 
-```cpp 
+```cpp
 #include <bits/stdc++.h>
 #define ld long double
 
@@ -168,7 +168,8 @@ void test_case(vector<pair<ld, ld>> &points) {
 	sort(points.begin(), points.end());
 
 	auto get_dist = [](const pair<ld, ld> &a, const pair<ld, ld> &b) -> ld {
-		return (a.first - b.first) * (a.first - b.first) + (a.second - b.second) * (a.second - b.second);
+		return (a.first - b.first) * (a.first - b.first) +
+		       (a.second - b.second) * (a.second - b.second);
 	};
 
 	ld min_dist = LLONG_MAX;
@@ -196,7 +197,8 @@ void test_case(vector<pair<ld, ld>> &points) {
 		s.insert({points[i].second, points[i].first});
 	}
 
-	printf("%0.2Lf %0.2Lf %0.2Lf %0.2Lf\n", ans.first.first, ans.first.second, ans.second.first, ans.second.second);
+	printf("%0.2Lf %0.2Lf %0.2Lf %0.2Lf\n", ans.first.first, ans.first.second,
+	       ans.second.first, ans.second.second);
 }
 
 int main() {
@@ -206,15 +208,12 @@ int main() {
 	int n;
 	while (scanf("%d", &n) && n > 0) {
 		vector<pair<ld, ld>> points(n);
-		for (auto &p : points) {
-			scanf("%Lf %Lf", &p.first, &p.second);
-		}
+		for (auto &p : points) { scanf("%Lf %Lf", &p.first, &p.second); }
 		test_case(points);
 	}
 
 	return 0;
 }
-
 ```
 
 </CPPSection>
