@@ -159,60 +159,53 @@ For each point, we recalculate $\delta = \min(\delta, \delta_p)$, and update our
 
 ```cpp
 #include <bits/stdc++.h>
-#define ld long double
 
 using namespace std;
 
-void test_case(vector<pair<ld, ld>> &points) {
-
-	sort(points.begin(), points.end());
-
-	auto get_dist = [](const pair<ld, ld> &a, const pair<ld, ld> &b) -> ld {
-		return (a.first - b.first) * (a.first - b.first) +
-		       (a.second - b.second) * (a.second - b.second);
-	};
-
-	ld min_dist = LLONG_MAX;
-	set<pair<ld, ld>> s = {{points[0].second, points[0].first}};
-
-	pair<pair<ld, ld>, pair<ld, ld>> ans;
-	for (int i = 1, j = 0; i < points.size(); i++) {
-
-		ld d = sqrt(min_dist);
-		while (j < i && points[j].first < points[i].first - d) {
-			s.erase({points[j].second, points[j].first});
-			j++;
-		}
-
-		auto l = s.lower_bound({points[i].second - d, 0});
-		auto r = s.upper_bound({points[i].second + d, 0});
-
-		for (auto it = l; it != r; ++it) {
-			ld d = get_dist(points[i], {it->second, it->first});
-			if (min_dist > d) {
-				min_dist = d;
-				ans = {points[i], {it->second, it->first}};
-			}
-		}
-		s.insert({points[i].second, points[i].first});
-	}
-
-	printf("%0.2Lf %0.2Lf %0.2Lf %0.2Lf\n", ans.first.first, ans.first.second,
-	       ans.second.first, ans.second.second);
-}
+using ld = long double;
 
 int main() {
-
-	ios::sync_with_stdio(false);
-
 	int n;
 	while (scanf("%d", &n) && n > 0) {
 		vector<pair<ld, ld>> points(n);
-		for (auto &p : points) { scanf("%Lf %Lf", &p.first, &p.second); }
-		test_case(points);
-	}
 
-	return 0;
+		for (auto &p : points) { scanf("%Lf %Lf", &p.first, &p.second); }
+
+		sort(points.begin(), points.end());
+
+		auto get_dist = [](const pair<ld, ld> &a, const pair<ld, ld> &b) -> ld {
+			return (a.first - b.first) * (a.first - b.first) +
+				   (a.second - b.second) * (a.second - b.second);
+		};
+
+		ld min_dist = LLONG_MAX;
+		set<pair<ld, ld>> s = {{points[0].second, points[0].first}};
+
+		pair<pair<ld, ld>, pair<ld, ld>> ans;
+		for (int i = 1, j = 0; i < points.size(); i++) {
+
+			ld d = sqrt(min_dist);
+			while (j < i && points[j].first < points[i].first - d) {
+				s.erase({points[j].second, points[j].first});
+				j++;
+			}
+
+			auto l = s.lower_bound({points[i].second - d, 0});
+			auto r = s.upper_bound({points[i].second + d, 0});
+
+			for (auto it = l; it != r; ++it) {
+				ld d = get_dist(points[i], {it->second, it->first});
+				if (min_dist > d) {
+					min_dist = d;
+					ans = {points[i], {it->second, it->first}};
+				}
+			}
+			s.insert({points[i].second, points[i].first});
+		}
+
+		printf("%0.2Lf %0.2Lf %0.2Lf %0.2Lf\n", ans.first.first, ans.first.second,
+			   ans.second.first, ans.second.second);
+	}
 }
 ```
 
