@@ -7,6 +7,7 @@ import MODULE_ORDERING, {
 import MarkdownLayoutContext from '../../../context/MarkdownLayoutContext';
 import { MarkdownLayoutSidebarModuleLinkInfo } from '../../../models/module';
 import { SolutionInfo } from '../../../models/solution';
+import { ClientOnly } from '../../ClientOnly';
 import SectionsDropdown from '../../SectionsDropdown';
 import Accordion from './Accordion';
 import ItemLink from './ItemLink';
@@ -54,11 +55,13 @@ export const SidebarNav = () => {
     <nav className="dark:bg-dark-surface flex h-0 grow flex-col bg-white">
       <div className="shrink-0 border-b border-gray-200 dark:border-gray-800">
         <div className="my-4 flex justify-center">
-          <SectionsDropdown
-            currentSection={activeSection}
-            sidebarNav={true}
-            onSelect={s => setActiveSection(s as any)}
-          />
+          <ClientOnly>
+            <SectionsDropdown
+              currentSection={activeSection}
+              sidebarNav={true}
+              onSelect={s => setActiveSection(s as any)}
+            />
+          </ClientOnly>
         </div>
       </div>
       <div className="h-0 flex-1 overflow-y-auto">
