@@ -57,4 +57,21 @@ export const onClientEntry = () => {
     // Prevent normal copy handling.
     event.preventDefault();
   });
+
+  // Add error handling for HMR CSS reload
+  if (
+    typeof window !== 'undefined' &&
+    (window as any).__webpack_require__ &&
+    (window as any).__webpack_require__.h
+  ) {
+    const originalHotUpdate = (window as any).__webpack_require__.h;
+    (window as any).__webpack_require__.h = function () {
+      try {
+        return originalHotUpdate.apply(this, arguments);
+      } catch (error) {
+        console.warn('HMR error caught:', error);
+        return originalHotUpdate.apply(this, arguments);
+      }
+    };
+  }
 };
