@@ -26,7 +26,6 @@ import {
   useIsUserDataLoaded,
   useSignOutAction,
 } from '../../context/UserDataContext/UserDataContext';
-import { ClientOnly } from '../ClientOnly';
 import ContactUsSlideover from '../ContactUsSlideover/ContactUsSlideover';
 import { LoadingSpinner } from '../elements/LoadingSpinner';
 import Logo from '../Logo';
@@ -167,9 +166,7 @@ export default function TopNavigationBar({
                 </div>
               </Link>
               <div className={`hidden space-x-8 lg:ml-8 lg:flex`}>
-                <ClientOnly>
-                  <SectionsDropdown currentSection={currentSection} />
-                </ClientOnly>
+                <SectionsDropdown currentSection={currentSection} />
                 <Link
                   to="/problems/"
                   getProps={({ isCurrent }) => ({
