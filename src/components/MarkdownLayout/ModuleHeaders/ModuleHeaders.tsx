@@ -19,6 +19,7 @@ import {
 } from '../../../context/UserDataContext/properties/simpleProperties';
 import { ModuleInfo, ModuleLinkInfo } from '../../../models/module';
 import { useProblemsProgressInfo } from '../../../utils/getProgressInfo';
+import { ClientOnly } from '../../ClientOnly';
 import { DashboardProgressSmall } from '../../Dashboard/DashboardProgress';
 import { Frequency } from '../../Frequency';
 import MarkCompleteButton from '../MarkCompleteButton';
@@ -126,10 +127,12 @@ export default function ModuleHeaders({
         </div>
         {markdownData instanceof ModuleInfo && (
           <div className="ml-4 hidden lg:flex lg:shrink-0">
-            <MarkCompleteButton
-              state={moduleProgress}
-              onChange={handleCompletionChange}
-            />
+            <ClientOnly>
+              <MarkCompleteButton
+                state={moduleProgress}
+                onChange={handleCompletionChange}
+              />
+            </ClientOnly>
           </div>
         )}
         {/* {markdownData instanceof ModuleInfo &&
