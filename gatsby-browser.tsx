@@ -1,3 +1,11 @@
+import './src/styles/main.css';
+import 'tippy.js/animations/scale-subtle.css';
+import 'tippy.js/themes/light.css';
+import 'tippy.js/dist/tippy.css';
+import 'tippy.js/themes/material.css';
+import 'easymde/dist/easymde.min.css';
+import 'flatpickr/dist/themes/material_blue.css';
+
 // organize-imports-ignore
 // note that reordering the css file imports will break some styles
 import { wrapRootElement as wrap } from './root-wrapper';

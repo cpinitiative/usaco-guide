@@ -1,4 +1,3 @@
-import 'easymde/dist/easymde.min.css';
 import * as React from 'react';
 import SimpleMDE from 'react-simplemde-editor';
 import { useDarkMode } from '../../context/DarkModeContext';
