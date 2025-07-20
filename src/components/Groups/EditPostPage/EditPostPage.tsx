@@ -24,22 +24,19 @@ export default function EditPostPage(props) {
   const originalPost = usePost(postId);
   const [post, editPost] = useReducer(
     (oldPost: PostData | null, updates: Partial<PostData>): PostData | null => {
-      if (!oldPost) return null;
-      if (oldPost.type === 'assignment' && updates.type === 'assignment') {
-        return {
-          ...oldPost,
-          ...updates,
-        };
-      } else if (
-        oldPost.type === 'announcement' &&
-        updates.type === 'announcement'
-      ) {
-        return {
-          ...oldPost,
-          ...updates,
-        };
+      // If oldPost is null, this is the initial set - just return the updates
+      if (!oldPost) return updates as PostData;
+
+      // If updates has a type, check if it matches the old post type
+      if (updates.type && oldPost.type !== updates.type) {
+        return oldPost; // Don't allow type changes
       }
-      return oldPost;
+
+      // Merge the updates with the old post
+      return {
+        ...oldPost,
+        ...updates,
+      } as PostData;
     },
     null
   );
@@ -47,20 +44,40 @@ export default function EditPostPage(props) {
 
   React.useEffect(() => {
     // we need to check for timestamp -- ServerValue is null initially
-    if (!post && originalPost && originalPost.timestamp) {
+    if (!post && originalPost) {
       editPost(originalPost);
     }
   }, [originalPost, post]);
 
   if (!post) {
-    const postNotFound = !activeGroup.isLoading && !originalPost;
+    if (activeGroup.isLoading) {
+      return (
+        <>
+          <TopNavigationBar />
+          <main className="py-10 text-center">
+            <p className="text-2xl font-medium">Loading...</p>
+          </main>
+        </>
+      );
+    }
+
+    if (!originalPost) {
+      return (
+        <>
+          <TopNavigationBar />
+          <main className="py-10 text-center">
+            <p className="text-2xl font-medium">Post not found</p>
+          </main>
+        </>
+      );
+    }
+
+    // If we have originalPost but no post state, we're still loading
     return (
       <>
         <TopNavigationBar />
         <main className="py-10 text-center">
-          <p className="text-2xl font-medium">
-            {postNotFound ? 'Post not found' : 'Loading...'}
-          </p>
+          <p className="text-2xl font-medium">Loading...</p>
         </main>
       </>
     );
