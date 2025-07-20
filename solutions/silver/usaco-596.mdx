@@ -101,10 +101,10 @@ import java.util.*;
 public class BuildGates {
 	private static final Map<Character, int[]> DIR = new HashMap<>() {
 		{
-			put('N', new int[] { -1, 0 });
-			put('S', new int[] { 1, 0 });
-			put('E', new int[] { 0, 1 });
-			put('W', new int[] { 0, -1 });
+			put('N', new int[] {-1, 0});
+			put('S', new int[] {1, 0});
+			put('E', new int[] {0, 1});
+			put('W', new int[] {0, -1});
 		}
 	};
 
@@ -134,8 +134,10 @@ public class BuildGates {
 
 		// mark fences, scaling so they are 2 units instead of 1
 		for (int i = 0; i < n; i++) {
-			fence[x + DIR.get(path.charAt(i))[0]][y + DIR.get(path.charAt(i))[1]] = true;
-			fence[x + 2 * DIR.get(path.charAt(i))[0]][y + 2 * DIR.get(path.charAt(i))[1]] = true;
+			fence[x + DIR.get(path.charAt(i))[0]][y + DIR.get(path.charAt(i))[1]] =
+			    true;
+			fence[x + 2 * DIR.get(path.charAt(i))[0]]
+			     [y + 2 * DIR.get(path.charAt(i))[1]] = true;
 
 			x += 2 * DIR.get(path.charAt(i))[0];
 			y += 2 * DIR.get(path.charAt(i))[1];
@@ -169,11 +171,11 @@ public class BuildGates {
 
 	private static void dfs(int startX, int startY) {
 		Stack<int[]> stack = new Stack<>();
-		stack.push(new int[] { startX, startY });
+		stack.push(new int[] {startX, startY});
 		visited[startX][startY] = true;
 
-		int[] dx = { -1, 0, 0, 1 };
-		int[] dy = { 0, -1, 1, 0 };
+		int[] dx = {-1, 0, 0, 1};
+		int[] dy = {0, -1, 1, 0};
 
 		while (!stack.isEmpty()) {
 			int[] curr = stack.pop();
@@ -185,9 +187,9 @@ public class BuildGates {
 				int ny = y + dy[k];
 
 				if (nx >= min_x && nx <= max_x && ny >= min_y && ny <= max_y &&
-						!visited[nx][ny] && !fence[nx][ny]) {
+				    !visited[nx][ny] && !fence[nx][ny]) {
 					visited[nx][ny] = true;
-					stack.push(new int[] { nx, ny });
+					stack.push(new int[] {nx, ny});
 				}
 			}
 		}
