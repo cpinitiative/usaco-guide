@@ -1,4 +1,10 @@
-import { Menu, Transition } from '@headlessui/react';
+import {
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuItems,
+  Transition,
+} from '@headlessui/react';
 import classNames from 'classnames';
 import type { User } from 'firebase/auth';
 import { Link } from 'gatsby';
@@ -15,14 +21,14 @@ export const UserAvatarMenu: React.FC<UserAvatarMenuProps> = props => {
       {({ open }) => (
         <>
           <div>
-            <Menu.Button className="flex rounded-full border-2 border-transparent text-sm transition focus:border-blue-500 focus:outline-hidden dark:focus:border-white">
+            <MenuButton className="flex rounded-full border-2 border-transparent text-sm transition focus:border-blue-500 focus:outline-hidden dark:focus:border-white">
               <span className="sr-only">Open user menu</span>
               <img
                 className="h-8 w-8 rounded-full"
                 src={props.firebaseUser.photoURL ?? undefined}
                 alt="User photo URL"
               />
-            </Menu.Button>
+            </MenuButton>
           </div>
 
           <Transition
@@ -35,12 +41,12 @@ export const UserAvatarMenu: React.FC<UserAvatarMenuProps> = props => {
             leaveFrom="transform opacity-100 scale-100"
             leaveTo="transform opacity-0 scale-95"
           >
-            <Menu.Items
+            <MenuItems
               static
               className="absolute right-0 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-hidden dark:bg-gray-800"
             >
               <div className="py-1">
-                <Menu.Item>
+                <MenuItem>
                   {({ active }) => (
                     <Link
                       to="/settings"
@@ -52,8 +58,8 @@ export const UserAvatarMenu: React.FC<UserAvatarMenuProps> = props => {
                       Settings
                     </Link>
                   )}
-                </Menu.Item>
-                <Menu.Item>
+                </MenuItem>
+                <MenuItem>
                   {({ active }) => (
                     <button
                       onClick={() => {
@@ -68,9 +74,9 @@ export const UserAvatarMenu: React.FC<UserAvatarMenuProps> = props => {
                       Sign out
                     </button>
                   )}
-                </Menu.Item>
+                </MenuItem>
               </div>
-            </Menu.Items>
+            </MenuItems>
           </Transition>
         </>
       )}
