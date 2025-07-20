@@ -22,7 +22,7 @@ const ModuleConfetti = (props, ref) => {
   const { height, width } = useWindowDimensions();
   const [show, setShow] = useState(false);
 
-  const confettiRef = useRef<any>(null);
+  const confettiRef = useRef<any>();
 
   useImperativeHandle(ref, () => ({
     showConfetti: () => {

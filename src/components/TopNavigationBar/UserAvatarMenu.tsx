@@ -1,8 +1,9 @@
-import { Menu, Transition } from '@headlessui/react';
+import { Menu } from '@headlessui/react';
 import classNames from 'classnames';
 import type { User } from 'firebase/auth';
 import { Link } from 'gatsby';
-import React, { Fragment } from 'react';
+import React from 'react';
+import Transition from '../Transition';
 
 export interface UserAvatarMenuProps {
   firebaseUser: User;
@@ -27,7 +28,7 @@ export const UserAvatarMenu: React.FC<UserAvatarMenuProps> = props => {
 
           <Transition
             show={open}
-            as={Fragment}
+            as={React.Fragment}
             enter="transition ease-out duration-100"
             enterFrom="transform opacity-0 scale-95"
             enterTo="transform opacity-100 scale-100"

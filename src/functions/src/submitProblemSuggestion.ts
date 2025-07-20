@@ -5,8 +5,8 @@ import prettier from 'prettier';
 import {
   autoGenerateSolutionMetadata,
   generateProblemUniqueId,
-  PROBLEM_DIFFICULTY_OPTIONS,
   ProblemMetadata,
+  PROBLEM_DIFFICULTY_OPTIONS,
 } from '../../models/problem';
 
 const problemSuggestionReviewers = {

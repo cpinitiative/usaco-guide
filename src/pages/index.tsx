@@ -50,7 +50,7 @@ const usacoTitleClasses =
 const linkTextStyles =
   'text-blue-600 dark:text-blue-300 transition hover:text-purple-600 dark:hover:text-purple-300';
 
-export default function IndexPage({ path }): JSX.Element {
+export default function IndexPage(): JSX.Element {
   const firebaseUser = useFirebaseUser();
   const loading = useIsUserDataLoaded();
   const location = useLocation();
@@ -71,7 +71,7 @@ export default function IndexPage({ path }): JSX.Element {
 
   return (
     <Layout>
-      <SEO title={null} image={null} pathname={path} />
+      <SEO title={null} />
 
       {/*<a*/}
       {/*  href="http://usaco.org/"*/}

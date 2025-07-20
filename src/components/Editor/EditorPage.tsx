@@ -91,7 +91,7 @@ export default function EditorPage(props: PageProps): JSX.Element {
   return (
     <QuizGeneratorProvider>
       <Layout>
-        <SEO title="Editor" image={undefined} pathname={undefined} />
+        <SEO title="Editor" />
 
         <div className="flex h-screen min-w-[768px] flex-col">
           <LazyLoad>

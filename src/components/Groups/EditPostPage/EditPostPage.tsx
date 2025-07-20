@@ -24,24 +24,10 @@ export default function EditPostPage(props) {
   const activeGroup = useActiveGroup();
   const originalPost = usePost(postId);
   const [post, editPost] = useReducer(
-    (oldPost: PostData | null, updates: Partial<PostData>): PostData | null => {
-      if (!oldPost) return null;
-      if (oldPost.type === 'assignment' && updates.type === 'assignment') {
-        return {
-          ...oldPost,
-          ...updates,
-        };
-      } else if (
-        oldPost.type === 'announcement' &&
-        updates.type === 'announcement'
-      ) {
-        return {
-          ...oldPost,
-          ...updates,
-        };
-      }
-      return oldPost;
-    },
+    (oldPost, updates: Partial<PostData>): PostData | null => ({
+      ...oldPost,
+      ...updates,
+    }),
     null
   );
   const { updatePost, deletePost } = usePostActions(groupId);
@@ -69,11 +55,7 @@ export default function EditPostPage(props) {
 
   return (
     <Layout>
-      <SEO
-        title={`Edit ${post.name} · ${activeGroup.groupData!.name}`}
-        image={undefined}
-        pathname={undefined}
-      />
+      <SEO title={`Edit ${post.name} · ${activeGroup.groupData!.name}`} />
       <TopNavigationBar />
       <nav className="mt-6 mb-4 flex" aria-label="Breadcrumb">
         <Breadcrumbs

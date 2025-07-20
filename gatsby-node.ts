@@ -199,7 +199,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
       });
     });
   const result = await graphql(`
-    query CreatePagesQuery {
+    query {
       modules: allXdm(filter: { fileAbsolutePath: { regex: "/content/" } }) {
         edges {
           node {

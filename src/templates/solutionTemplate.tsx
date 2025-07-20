@@ -39,9 +39,7 @@ export default function Template(props) {
   return (
     <Layout>
       <SEO
-        title={`Solution: ${xdm.frontmatter.title}${modulesThatHaveProblem.length > 0 ? ` | ${modulesThatHaveProblem[0].title}` : ''}`}
-        image={null}
-        pathname={props.path}
+        title={`Solution - ${xdm.frontmatter.title} (${xdm.frontmatter.source})`}
       />
 
       <ConfettiProvider>

@@ -154,7 +154,7 @@ export default function DashboardPage(props: PageProps) {
 
   return (
     <Layout>
-      <SEO title="Dashboard" image={null} pathname={props.path} />
+      <SEO title="Dashboard" />
 
       <div className="dark:bg-dark-surface min-h-screen bg-gray-100">
         <TopNavigationBar linkLogoToIndex={true} redirectToDashboard={false} />
