@@ -126,7 +126,7 @@ const MemberCard = ({
             <GatsbyImage
               image={gatsbyImage.gatsbyImageData}
               alt={member.name}
-              className="mx-auto my-auto h-full w-full rounded-full object-cover"
+              className="gatsby-image-wrapper-rounded overflow-hidden rounded-full"
             />
           ) : (
             <div className="flex h-full w-full items-center justify-center bg-gray-200 dark:bg-gray-700">
@@ -189,6 +189,7 @@ export default function ContributorsSection(): JSX.Element {
               width: 112
               height: 112
               quality: 100
+              transformOptions: { cropFocus: CENTER }
               layout: FIXED
             )
           }
