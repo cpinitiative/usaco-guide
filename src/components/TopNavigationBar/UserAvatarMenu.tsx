@@ -33,9 +33,11 @@ export const UserAvatarMenu: React.FC<UserAvatarMenuProps> = props => {
               <MenuItem>
                 {({ focus }) => (
                   <span
-                    className={`block w-full px-4 py-2 text-left text-sm leading-5 text-gray-700 focus:outline-hidden dark:text-gray-100${focus ? 'bg-gray-100 dark:bg-gray-700' : ''}`}
+                    className={`block w-full px-4 py-2 text-left text-sm leading-5 focus:outline-hidden ${focus ? 'bg-gray-200 text-gray-900 dark:bg-gray-700 dark:text-gray-100' : 'bg-white text-gray-700 dark:bg-gray-800 dark:text-gray-100'}`}
                   >
-                    <Link to="/settings">Settings</Link>
+                    <Link to="/settings" className="block w-full text-inherit">
+                      Settings
+                    </Link>
                   </span>
                 )}
               </MenuItem>
@@ -46,7 +48,7 @@ export const UserAvatarMenu: React.FC<UserAvatarMenuProps> = props => {
                       props.onSignOut();
                     }}
                     role="menuitem"
-                    className={`block w-full px-4 py-2 text-left text-sm leading-5 text-gray-700 focus:outline-hidden dark:text-gray-100${focus ? 'bg-gray-100 dark:bg-gray-700' : ''}`}
+                    className={`block w-full px-4 py-2 text-left text-sm leading-5 focus:outline-hidden ${focus ? 'bg-gray-200 text-gray-900 dark:bg-gray-700 dark:text-gray-100' : 'bg-white text-gray-700 dark:bg-gray-800 dark:text-gray-100'}`}
                   >
                     Sign out
                   </button>
