@@ -24,20 +24,9 @@ function ProblemSubmissionPopup() {
   const submissionResult = useProblemSubmissionResult(
     submission && 'submissionID' in submission ? submission?.submissionID : null
   );
-
   const isDarkMode = useDarkMode();
 
   if (!submission) return null;
-
-  // Type guard to check if submission has code and language properties
-  const isCodeSubmission = (
-    s: FirebaseSubmission
-  ): s is FirebaseSubmission & {
-    code: string;
-    language: string;
-  } => {
-    return 'code' in s && 'language' in s;
-  };
 
   return (
     <Dialog
@@ -105,7 +94,7 @@ function ProblemSubmissionPopup() {
                     <div className="flex items-center justify-between">
                       <div>
                         <h4 className="text-lg font-medium text-gray-900 dark:text-gray-100">
-                          {getSubmissionStatus(submission)}
+                          {'Status:' + getSubmissionStatus(submission)}
                         </h4>
                         <p className="text-sm text-gray-500 dark:text-gray-400">
                           {getSubmissionTimestampString(submission)}
@@ -117,17 +106,22 @@ function ProblemSubmissionPopup() {
                       <h5 className="text-sm font-medium text-gray-900 dark:text-gray-100">
                         Code
                       </h5>
-                      <div className="mt-2">
-                        {isCodeSubmission(submission) ? (
-                          <CodeBlock
-                            className={`language-${submission.language}`}
-                            isDarkMode={isDarkMode}
-                          >
-                            {submissionResult?.sourceCode ?? submission.code}
-                          </CodeBlock>
+                      <div className="mt-2 rounded-md bg-gray-100 p-2 dark:bg-gray-900">
+                        {'link' in submission ? (
+                          <p className="px-4 text-base sm:px-6">
+                            Submission Link:{' '}
+                            <a
+                              className="font-medium underline"
+                              href={submission.link}
+                              target="_blank"
+                              rel="noreferrer"
+                            >
+                              {submission.link}
+                            </a>
+                          </p>
                         ) : (
                           <CodeBlock
-                            className="language-plaintext"
+                            className={`language-${submission.language}`}
                             isDarkMode={isDarkMode}
                           >
                             {submissionResult?.sourceCode ?? 'Loading...'}
