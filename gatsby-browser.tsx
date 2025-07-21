@@ -1,4 +1,4 @@
-import './build.css';
+import './src/styles/main.css';
 import 'tippy.js/animations/scale-subtle.css';
 import 'tippy.js/themes/light.css';
 import 'tippy.js/dist/tippy.css';
