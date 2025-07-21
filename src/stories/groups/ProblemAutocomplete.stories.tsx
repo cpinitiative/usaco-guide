@@ -1,6 +1,6 @@
 import { StoryFn } from '@storybook/react-webpack5';
 import React, { ComponentProps } from 'react';
-import { InstantSearch } from 'react-instantsearch-hooks-web';
+import { InstantSearch } from 'react-instantsearch';
 import {
   ProblemAutocomplete,
   indexName,

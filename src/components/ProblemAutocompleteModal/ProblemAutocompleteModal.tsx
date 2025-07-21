@@ -5,7 +5,7 @@ import {
   DialogTitle,
 } from '@headlessui/react';
 import * as React from 'react';
-import { InstantSearch } from 'react-instantsearch-hooks-web';
+import { InstantSearch } from 'react-instantsearch';
 import { AlgoliaProblemInfo } from '../../models/problem';
 import { searchClient } from '../../utils/algoliaSearchClient';
 import { indexName, ProblemAutocomplete } from './ProblemAutocomplete';
