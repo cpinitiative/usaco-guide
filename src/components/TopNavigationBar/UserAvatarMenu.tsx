@@ -27,7 +27,7 @@ export const UserAvatarMenu: React.FC<UserAvatarMenuProps> = props => {
           {/* Remove <Transition> and use transition prop on MenuItems */}
           <MenuItems
             transition
-            className="absolute right-0 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5 transition ease-out focus:outline-hidden data-[closed]:scale-95 data-[closed]:opacity-0 data-[enter]:duration-200 data-[leave]:duration-75 dark:bg-gray-800"
+            className="absolute right-0 z-30 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5 transition ease-out focus:outline-hidden data-[closed]:scale-95 data-[closed]:opacity-0 data-[enter]:duration-200 data-[leave]:duration-75 dark:bg-gray-800"
           >
             <div className="py-1">
               <MenuItem>
