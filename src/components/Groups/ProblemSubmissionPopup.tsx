@@ -90,51 +90,46 @@ function ProblemSubmissionPopup() {
 
               <div className="mt-4">
                 <div className="overflow-hidden shadow sm:rounded-lg">
-                  <div className="bg-white px-4 py-5 sm:p-6 dark:bg-gray-800">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <h4 className="text-lg font-medium text-gray-900 dark:text-gray-100">
-                          {'Status:' + getSubmissionStatus(submission)}
-                        </h4>
-                        <p className="text-sm text-gray-500 dark:text-gray-400">
-                          {getSubmissionTimestampString(submission)}
-                        </p>
-                      </div>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h4 className="text-lg font-medium text-gray-900 dark:text-gray-100">
+                        {getSubmissionTimestampString(submission)}
+                      </h4>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">
+                        {'Status: ' + getSubmissionStatus(submission)}
+                      </p>
                     </div>
+                  </div>
 
-                    <div className="mt-4">
-                      <h5 className="text-sm font-medium text-gray-900 dark:text-gray-100">
-                        Code
-                      </h5>
-                      <div className="mt-2 rounded-md bg-gray-100 p-2 dark:bg-gray-900">
-                        {'link' in submission ? (
-                          <p className="px-4 text-base sm:px-6">
-                            Submission Link:{' '}
-                            <a
-                              className="font-medium underline"
-                              href={submission.link}
-                              target="_blank"
-                              rel="noreferrer"
-                            >
-                              {submission.link}
-                            </a>
-                          </p>
-                        ) : (
-                          <CodeBlock
-                            className={`language-${submission.language}`}
-                            isDarkMode={isDarkMode}
+                  <div className="mt-4">
+                    <div className="mt-2 rounded-md">
+                      {'link' in submission ? (
+                        <p className="px-4 text-base sm:px-6">
+                          Submission Link:{' '}
+                          <a
+                            className="font-medium underline"
+                            href={submission.link}
+                            target="_blank"
+                            rel="noreferrer"
                           >
-                            {submissionResult?.sourceCode ?? 'Loading...'}
-                          </CodeBlock>
-                        )}
-                      </div>
+                            {submission.link}
+                          </a>
+                        </p>
+                      ) : (
+                        <CodeBlock
+                          className={`language-${submission.language}`}
+                          isDarkMode={isDarkMode}
+                        >
+                          {submissionResult?.sourceCode ?? 'Loading...'}
+                        </CodeBlock>
+                      )}
                     </div>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div className="mt-5 bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6 dark:bg-gray-900">
+            <div className="mt-5 px-4 py-1 sm:flex sm:flex-row-reverse sm:px-6">
               <button
                 type="button"
                 className="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:outline-none sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200"
