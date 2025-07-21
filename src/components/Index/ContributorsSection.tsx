@@ -121,12 +121,12 @@ const MemberCard = ({
       className="group pointer-events-none relative flex justify-center rounded-t-lg border border-transparent pt-8 pb-2 hover:pointer-events-auto hover:border-gray-200 hover:bg-white dark:hover:border-transparent dark:hover:bg-gray-800"
     >
       <div className="flex flex-col items-center gap-2">
-        <div className="pointer-events-auto relative h-24 w-24 overflow-hidden rounded-full lg:h-20 lg:w-20">
+        <div className="pointer-events-auto relative flex h-24 w-24 items-center justify-center overflow-hidden rounded-full lg:h-20 lg:w-20">
           {gatsbyImage && gatsbyImage.gatsbyImageData ? (
             <GatsbyImage
               image={gatsbyImage.gatsbyImageData}
               alt={member.name}
-              className="h-full w-full rounded-full object-cover"
+              className="mx-auto my-auto h-full w-full rounded-full object-cover"
             />
           ) : (
             <div className="flex h-full w-full items-center justify-center bg-gray-200 dark:bg-gray-700">
