@@ -136,7 +136,7 @@
   "license": "MIT",
   "scripts": {
     "build": "cp ./content/problems.schema.json ./static/problems.schema.json && gatsby build",
-    "dev": "concurrently \"yarn build:css\" \"gatsby develop\"",
+    "dev": "yarn build:css-once && concurrently \"gatsby develop\" \"yarn build:css-watch\"",
     "develop": "gatsby develop",
     "format": "prettier --write .",
     "lint": "npm run eslint",
@@ -151,7 +151,8 @@
     "build-storybook": "storybook build",
     "chromatic": "chromatic --project-token 6f3c58ad349c --exit-zero-on-changes",
     "lint-staged": "lint-staged",
-    "build:css": "tailwindcss -i ./src/styles/main.css -o ./build.css --watch"
+    "build:css-once": "tailwindcss -i ./src/styles/main.css -o ./build.css",
+    "build:css-watch": "tailwindcss -i ./src/styles/main.css -o ./build.css --watch"
   },
   "repository": {
     "type": "git",
