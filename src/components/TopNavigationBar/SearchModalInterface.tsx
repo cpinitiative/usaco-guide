@@ -48,14 +48,12 @@ const ModuleSearch = () => {
                   <Highlight hit={hit} attribute="title" /> -{' '}
                   {SECTION_LABELS[hit.division]}
                 </h3>
-                <p className="**:text-sm! **:leading-4!">
-                  <div className="mb-1 text-gray-700 dark:text-gray-200">
-                    <Highlight hit={hit} attribute="description" />
-                  </div>
-                  <div className="text-gray-500 dark:text-gray-400">
-                    <Snippet hit={hit} attribute="content" />
-                  </div>
-                </p>
+                <div className="mb-1 text-sm leading-4 text-gray-700 dark:text-gray-200">
+                  <Highlight hit={hit} attribute="description" />
+                </div>
+                <div className="text-sm leading-4 text-gray-500 dark:text-gray-400">
+                  <Snippet hit={hit} attribute="content" />
+                </div>
               </Link>
             ))}
           </div>
