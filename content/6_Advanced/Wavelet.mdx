@@ -160,15 +160,22 @@ int main() {
 ## Range Kth Smallest: Solution 2a
 
 Our goal in this section is to remove the $\log N$ factor from the query time
-complexity of solution 1. To do this, we'll replace the $\texttt{inds}$ vector at each node with something different.
+complexity of solution 1 without changing the memory complexity. We'll continue
+to store a vector of integers at each segment tree node. Its length will be
+the same as before, but it will represent something different.
 
-At the root node, let's store for each $r\in (0, N]$
-the number of indices in $\texttt{root->l->inds}$ that are less than $r$.
-In other words, we store the prefix sum array of the bitvector with $i$th element equal to $1$ if $a_i$ maps to the left child, and $0$ otherwise. Then $\texttt{num\_left}$ can be computed in constant time just by
-subtracting two prefix sums, rather than with binary search.
+Let's first consider what vector we should store at the root node to compute
+$\texttt{num\_left}$ without binary search. The simplest thing we could do is to
+store the values of $\texttt{count\_prefix}(\texttt{this->l->inds}, r)$ for each possible $r$
+from $0$ to $N$ inclusive. That is, all prefix sums of the length-$N$ bitvector
+with $i$th element equal to $1$ if $a_i$ maps to the left child node, and $0$ otherwise.
+Then $\texttt{num\_left}$ can be computed in constant time just by
+subtracting two prefix sums.
 
-Similarly, at each non-leaf
-node of the segment tree we can store a prefix sum array of a bitvector derived from the subsequences of $A$ associated with that node and its left child.
+In general, at each non-leaf node of the segment tree, we can first construct a bit vector
+of length equal to the subsequence of $A$ associated with that node with $1$s
+for values that map to the left child node and $0$s for others, and then store
+its prefix sums at that node.
 
 To answer queries, unlike solution 1, we'll need to modify $l$ and $r$ as we
 walk down the tree. Instead of representing the $l$th through $r$th indices of $A$,
@@ -176,6 +183,9 @@ they'll now represent the $l$th through $r$th indices of the subsequence of $A$
 associated with the current node.
 
 ### Implementation
+
+Note: The implementation avoids storing $\texttt{count\_prefix}(\texttt{this->l->inds}, 0)$
+since it's always zero.
 
 <LanguageSection>
 
@@ -327,7 +337,7 @@ int main() {
 
 ## Range Kth Smallest: Solution 3
 
-Here we discuss how to remove a factor of $\log \sigma$ from the memory complexity.
+Here we discuss how to remove the factor of $\log \sigma$ from the memory complexity.
 
 <Optional>
 
@@ -335,15 +345,18 @@ This entire section can be considered optional since the memory usage of solutio
 
 </Optional>
 
-The memory bottleneck in solution 2 is storing the prefix sums,
-which takes $O(N\log \sigma)$ integers. However, if we only store $O(N\log \sigma)$
-*bits* of information, we can pack these into $O(N\log \sigma / W)$ integers where
-$W$ is the word size (64). This is $O(N)$ since $2^W>\sigma$.
+The memory bottleneck in solution 2 is storing the prefix sums of $\log \sigma$ length-$N$ bitvectors,
+which takes $O(N\log \sigma)$ integers using the most straightforward approach. However, if we can reduce this to $O(N\log \max(N,\sigma))$
+*bits* of information, we can pack these bits into $O(N\log \max(N,\sigma) / W)$ words where
+$W$ is the [word](https://en.wikipedia.org/wiki/Word_(computer_architecture)#Variable-word_architectures) size ($W=64$ on a 64-bit architecture). This is $O(N)$ words assuming $2^W>\max(N,\sigma)$ (that is, all the integers we're working with fit into a single word).
 
-Specifically, we only store the original bitvector in packed form, and only every $W$th prefix sum. To answer a query for the
-$r$th prefix sum, we start with the $r/W\cdot W$th prefix sum and then use
-built-in bit operations that run in constant time to add the contribution of the
-remaining bits.
+It remains to describe how to store a single length-$N$ bitvector in
+$O(N)$ bits while still allowing constant time prefix sum queries. Specifically,
+we can store the original bitvector in $N$ bits and only the sums of prefixes
+with length divisible by $W$, taking $O(N)$ bits. To answer a query for the
+$r$th prefix sum, we start with the $\lfloor r/W\rfloor\cdot W$th prefix sum and then use
+built-in operations that run in constant time to add the contribution of the
+remaining bits (like $\texttt{\_\_builtin\_popcountll}$ to count the number of bits in a 64-bit word).
 
 ### Implementation
 
