@@ -10,6 +10,8 @@ description: "Efficiently querying for the kth minimum element in a subarray."
 frequency: 0
 ---
 
+## Introduction
+
 Suppose we have a static array of integers $a_0, a_1, \dots, a_{N-1}$ satisfying $0\le a_i<\sigma$, and we want to
 answer online queries of the following form:
 - Find the $k$-th smallest element in the contiguous subarray $a[l:r)$ (where $k$ is 0-indexed).
@@ -39,6 +41,8 @@ If $\sigma>N$, then we can reduce $\sigma$ to $N$ by first applying [coordinate 
 
 ## Resources
 
+Reading these resources is optional, unless you find the in-module explanations too succinct.
+
 <Resources>
 	<Resource
 		source = "IOI"
@@ -53,14 +57,13 @@ If $\sigma>N$, then we can reduce $\sigma$ to $N$ by first applying [coordinate 
 		title="Intro to New DS: Wavelet Trees"
 		url="52854"
 	>
-		Link in blog post is broken, check my comment.
 	</Resource>
 </Resources>
 
 <Optional>
 
-The first resource also discusses how to support updates to $a$ of the form
-$\text{swap}(a_i, a_{i+1})$.
+The first resource also discusses how to support updates to $a$ including
+swapping ($\text{swap}(a_i, a_{i+1})$), among others.
 
 </Optional>
 
@@ -86,7 +89,7 @@ child or the right child of the current node, we first query the number of indic
 
 Querying the count in a single node takes $O(\log N)$ time using binary search, and the tree has depth $O(\log \sigma)$, so in a total a query takes $O(\log \sigma\log N)$ time.
 
-## Implementation
+### Implementation
 
 Note: we set $\sigma=2^{30}$ so that every node has length equal to a power of two.
 
@@ -172,6 +175,8 @@ walk down the tree. Instead of representing the $l$th through $r$th indices of $
 they'll now represent the $l$th through $r$th indices of the subsequence of $A$
 associated with the current node.
 
+### Implementation
+
 <LanguageSection>
 
 <CPPSection>
@@ -248,7 +253,8 @@ but the constant factor is much better. Specifically, it's more than twice as fa
 and uses less than one tenth the memory!
 
 To accomplish this, it concatenates the
-bitvectors at each level into a single bitvector of length $N$ before taking prefix sums.
+bitvectors at each level into a single bitvector of length $N$ before taking prefix sums. This construction is known as the **Wavelet Matrix.**
+
 The query process can be seen to be equivalent to that of the solution above
 (up to translating $l$ and $r$ by a constant).
 
@@ -339,6 +345,8 @@ $r$th prefix sum, we start with the $r/W\cdot W$th prefix sum and then use
 built-in bit operations that run in constant time to add the contribution of the
 remaining bits.
 
+### Implementation
+
 <LanguageSection>
 
 <CPPSection>
@@ -348,7 +356,7 @@ remaining bits.
 using namespace std;
 
 struct PrefixSummer {
-	const int BITS = 64;
+	const int BITS = 64;  // word size
 	vector<uint64_t> packed;
 	vector<int> psums;
 	void init(const vector<bool> &v) {
@@ -423,7 +431,7 @@ int main() {
 
 </LanguageSection>
 
-### Problems
+## Problems
 
 <Info title="Suggestion">
 
