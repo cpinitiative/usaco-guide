@@ -346,17 +346,17 @@ This entire section can be considered optional since the memory usage of solutio
 </Optional>
 
 The memory bottleneck in solution 2 is storing the prefix sums of $\log \sigma$ length-$N$ bitvectors,
-which takes $O(N\log \sigma)$ integers using the most straightforward approach. However, if we can reduce this to $O(N\log \max(N,\sigma))$
-*bits* of information, we can pack these bits into $O(N\log \max(N,\sigma) / W)$ words where
-$W$ is the [word](https://en.wikipedia.org/wiki/Word_(computer_architecture)) size ($W=64$ on a 64-bit architecture). This is $O(N)$ words assuming $2^W>\max(N,\sigma)$ (that is, all the integers we're working with fit into a single word).
+which takes $O(N\log \sigma)$ integers using the most straightforward approach. However, if we can reduce this to $O(N\log \sigma)$
+*bits* of information, we can pack these bits into $O(N\log \sigma / W)$ words where
+$W$ is the [word](https://en.wikipedia.org/wiki/Word_(computer_architecture)) size ($W=64$ on a 64-bit architecture). This is $O(N)$ words assuming $2^W>\sigma$ (that is, all the integers we're working with fit into a single word).
 
 It remains to describe how to store a single length-$N$ bitvector in
 $O(N)$ bits while still allowing constant time prefix sum queries. Specifically,
 we can store the original bitvector in $N$ bits and only the sums of prefixes
-with length divisible by $W$, taking $O(N)$ bits. To answer a query for the
-$r$th prefix sum, we start with the $\lfloor r/W\rfloor\cdot W$th prefix sum and then use
+with length divisible by $W$, taking $O(N\log N/W)$ bits, which is $O(N)$ bits assuming $2^W>N$. To answer a query for the
+$r$th prefix sum in constant time, we start with the $\lfloor r/W\rfloor\cdot W$th prefix sum and then use
 built-in operations that run in constant time to add the contribution of the
-remaining $r\%W$ bits (like $\texttt{\_\_builtin\_popcountll}$ to count the number of bits in a 64-bit word).
+remaining $r\%W$ bits (like $\texttt{\_\_builtin\_popcountll}$ to count the number of bits set in a 64-bit word).
 
 ### Implementation
 
