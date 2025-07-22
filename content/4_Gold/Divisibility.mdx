@@ -705,19 +705,13 @@ void precompute() {
 	iota(phi, phi + MAXN, 0);
 	for (int i = 2; i < MAXN; i++) {
 		if (phi[i] == i) {
-			for (int j = i; j < MAXN; j += i) {
-				phi[j] -= phi[j] / i;
-			}
+			for (int j = i; j < MAXN; j += i) { phi[j] -= phi[j] / i; }
 		}
 	}
 	for (int i = 1; i < MAXN; i++) {
-		for (int j = i + i; j < MAXN; j += i) {
-			s[j] = s[j] + 1LL * i * phi[j / i];
-		}
+		for (int j = i + i; j < MAXN; j += i) { s[j] = s[j] + 1LL * i * phi[j / i]; }
 	}
-	for (int i = 1; i < MAXN; i++) {
-		s[i] += s[i - 1];
-	}
+	for (int i = 1; i < MAXN; i++) { s[i] += s[i - 1]; }
 }
 
 int main() {
@@ -725,12 +719,8 @@ int main() {
 	precompute();
 
 	int n;
-	while (cin >> n && n) {
-		cout << s[n] << '\n';
-	}
-
+	while (cin >> n && n) { cout << s[n] << '\n'; }
 }
-
 ```
 
 </CPPSection>
