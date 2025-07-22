@@ -10,26 +10,24 @@ description: "Efficiently querying for the kth minimum element in a subarray."
 frequency: 0
 ---
 
-Suppose we have a static array of integers $a_0, a_1, \dots, a_{N-1}$ satisfying $0\le a_i<M$, and we want to
+Suppose we have a static array of integers $a_0, a_1, \dots, a_{N-1}$ satisfying $0\le a_i<\sigma$, and we want to
 answer online queries of the following form:
 - Find the $k$-th smallest element in the contiguous subarray $a[l:r)$ (where $k$ is 0-indexed).
 
 <FocusProblem problem="waveletSam" />
 
-In this module, we will introduce the concept of a *Wavelet Tree* to answer these queries efficiently,
-with respect to both time and memory.
-
+In this module, we will introduce the concept of a *Wavelet Tree* to answer these queries efficiently with respect to both time and memory. Each module solution will build on the previous one.
 
 | Solution | Query Time Complexity | Memory Complexity |
 | ----- | ---- | ---- |
-| Module Solution 1 | $O(\log M\log N)$| $O(N\log M)$ |
-| Module Solutions 2a / 2b | $O(\log M)$ | $O(N\log M)$ |
-| Module Solution 3 | $O(\log M)$ | $O(N)$ |
-| Persistent Segment Tree | $O(\log M)$ | $O(N\log M)$ |
+| Module Solution 1 | $O(\log \sigma\log N)$| $O(N\log \sigma)$ |
+| Module Solutions 2a / 2b | $O(\log \sigma)$ | $O(N\log \sigma)$ |
+| Module Solution 3 | $O(\log \sigma)$ | $O(N)$ |
+| Persistent Segment Tree | $O(\log \sigma)$ | $O(N\log \sigma)$ |
 
 <Optional>
 
-If $M>N$, then we can reduce $M$ to $N$ by first applying [coordinate compression](/silver/sorting-custom#coordinate-compression) to $a$. However, we omit this step in the solutions below, since $\log M$ isn't much larger than $\log N$ for the given constraints.
+If $\sigma>N$, then we can reduce $\sigma$ to $N$ by first applying [coordinate compression](/silver/sorting-custom#coordinate-compression) to $a$. However, we omit this step in the solutions below, since $\log \sigma$ isn't much larger than $\log N$ for the given constraints.
 
 </Optional>
 
@@ -61,22 +59,24 @@ If $M>N$, then we can reduce $M$ to $N$ by first applying [coordinate compressio
 
 <Optional>
 
-The first resource also discusses how to support updates of the form
+The first resource also discusses how to support updates to $a$ of the form
 $\text{swap}(a_i, a_{i+1})$.
 
 </Optional>
 
 ## Range Kth Smallest: Solution 1
 
-Let's start by building a segment tree on the values $[0, M)$. A segment
+Let's start by building a segment tree on the values $[0, \sigma)$. A segment
 tree node corresponding to a range of values $[v_l, v_r)$ will store
 
-1. A vector containing the indices of the array $a$ with values in that range, in increasing order.
-2. If the node is not a leaf (that is, $v_l + 1 < v_r$), pointers to its two children, corresponding to the ranges $[v_l, (v_l+v_r)/2)$ and $[(v_l+v_r)/2, v_r)$.
+1. A list containing the indices of the array $a$ with values in that range, in increasing order.
+2. If the node is not a leaf (that is, $v_l + 1 < v_r$), pointers to its two child nodes, corresponding to the ranges $[v_l, (v_l+v_r)/2)$ and $[(v_l+v_r)/2, v_r)$.
 
-To build this data structure, we start at the root node corresponding to the range $[0,M)$,
-partition its indices among its two children, and recursively build those.
-This takes $O(N\log M)$ time and memory.
+A tree where each node stores a list of everything under it in sorted order is called a **merge-sort tree**.
+
+To build this data structure, we start at the root node corresponding to the range $[0,\sigma)$,
+partition the indices $[0,N)$ among its two children, and recursively build each child.
+This takes $O(N\log \sigma)$ time and memory.
 
 To answer a query, we again start at the root node, then recursively [walk](/plat/segtree-ext?lang=cpp#walking-on-a-segment-tree) down the tree until we reach the leaf node corresponding to the answer value. To determine whether to walk down into the left
 child or the right child of the current node, we first query the number of indices in the index vector of the left child in the range $[l,r)$ and store it into a variable $\texttt{num\_left}$.
@@ -84,11 +84,11 @@ child or the right child of the current node, we first query the number of indic
 - If $k<\texttt{num\_left}$, then the answer is the $k$th-smallest value in the left child.
 - Otherwise, the answer is the $(k-\texttt{num\_left})$-th smallest value in the right child.
 
-Querying takes $O(\log N)$ time using binary search, and the tree has depth $O(\log M)$, so in a total a query takes $O(\log M\log N)$ time.
+Querying the count in a single node takes $O(\log N)$ time using binary search, and the tree has depth $O(\log \sigma)$, so in a total a query takes $O(\log \sigma\log N)$ time.
 
 ## Implementation
 
-Note: we set $M=2^{30}$ so that every node has length equal to a power of two.
+Note: we set $\sigma=2^{30}$ so that every node has length equal to a power of two.
 
 <LanguageSection>
 
@@ -159,7 +159,7 @@ int main() {
 Our goal in this section is to remove the $\log N$ factor from the query time
 complexity of solution 1. To do this, we'll replace the $\texttt{inds}$ vector at each node with something different.
 
-At the root node, let's store for each $r\in [0, N]$
+At the root node, let's store for each $r\in (0, N]$
 the number of indices in $\texttt{root->l->inds}$ that are less than $r$.
 In other words, we store the prefix sum array of the bitvector with $i$th element equal to $1$ if $a_i$ maps to the left child, and $0$ otherwise. Then $\texttt{num\_left}$ can be computed in constant time just by
 subtracting two prefix sums, rather than with binary search.
@@ -248,7 +248,7 @@ but the constant factor is much better. Specifically, it's more than twice as fa
 and uses less than one tenth the memory!
 
 To accomplish this, it concatenates the
-bitvectors at each level into a single bitvector before taking prefix sums.
+bitvectors at each level into a single bitvector of length $N$ before taking prefix sums.
 The query process can be seen to be equivalent to that of the solution above
 (up to translating $l$ and $r$ by a constant).
 
@@ -321,7 +321,7 @@ int main() {
 
 ## Range Kth Smallest: Solution 3
 
-Here we discuss how to remove a factor of $\log M$ from the memory complexity.
+Here we discuss how to remove a factor of $\log \sigma$ from the memory complexity.
 
 <Optional>
 
@@ -330,9 +330,9 @@ This entire section can be considered optional since the memory usage of solutio
 </Optional>
 
 The memory bottleneck in solution 2 is storing the prefix sums,
-which takes $O(N\log M)$ integers. However, if we only store $O(N\log M)$
-*bits* of information, we can pack these into $O(N\log M / W)$ integers where
-$W$ is the word size (64). This is $O(N)$ since $2^W>M$.
+which takes $O(N\log \sigma)$ integers. However, if we only store $O(N\log \sigma)$
+*bits* of information, we can pack these into $O(N\log \sigma / W)$ integers where
+$W$ is the word size (64). This is $O(N)$ since $2^W>\sigma$.
 
 Specifically, we only store the original bitvector in packed form, and only every $W$th prefix sum. To answer a query for the
 $r$th prefix sum, we start with the $r/W\cdot W$th prefix sum and then use
