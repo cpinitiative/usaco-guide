@@ -691,52 +691,46 @@ This way the answer for a query is $\sum_{d=1}^{n}d \cdot f(n, d) = \sum_{d=1}^{
 
 ```cpp
 #include <bits/stdc++.h>
+
 using namespace std;
+using ll = long long;
 
-const int MAX_N = 1e6;
-// phi[i] = how many pairs of numbers <=i are coprime
-long long phi[MAX_N + 1];
-// Store the values found to speed up the recursion process
-unordered_map<int, long long> memo;
+const int MAXN = 1e6 + 1;
 
-long long solve(long long n) {
-	if (n <= MAX_N) { return phi[n]; }
-	if (memo.count(n)) { return memo[n]; }
+// totient function
+int phi[MAXN];
+ll s[MAXN];
 
-	long long d = sqrt(n);
-	long long ans = 1LL * n * (n + 1) / 2;
-	for (int i = 2; n / i > d; i++) { ans -= solve(n / i); }
-
-	for (int i = d; i >= 1; i--) { ans -= 1LL * (n / i - n / (i + 1)) * solve(i); }
-	memo[n] = ans;
-
-	return ans;
+void precompute() {
+	iota(phi, phi + MAXN, 0);
+	for (int i = 2; i < MAXN; i++) {
+		if (phi[i] == i) {
+			for (int j = i; j < MAXN; j += i) {
+				phi[j] -= phi[j] / i;
+			}
+		}
+	}
+	for (int i = 1; i < MAXN; i++) {
+		for (int j = i + i; j < MAXN; j += i) {
+			s[j] = s[j] + 1LL * i * phi[j / i];
+		}
+	}
+	for (int i = 1; i < MAXN; i++) {
+		s[i] += s[i - 1];
+	}
 }
 
 int main() {
-	// Precompute the values of phi as previously shown
-	for (int i = 1; i <= MAX_N; i++) { phi[i] = i; }
-	for (int i = 2; i <= MAX_N; i++) {
-		// If i is prime
-		if (phi[i] == i) {
-			phi[i]--;
-			for (int j = i + i; j <= MAX_N; j += i) { phi[j] = phi[j] / i * (i - 1); }
-		}
-	}
 
-	// Prefix sums of phi
-	for (int i = 2; i <= MAX_N; i++) { phi[i] += phi[i - 1]; }
+	precompute();
 
 	int n;
-	while (cin >> n) {
-		if (n == 0) { break; }
-
-		long long ans = 0;
-		for (int d = 1; d <= n; d++) { ans += d * (solve(n / d) - 1); }
-
-		cout << ans << '\n';
+	while (cin >> n && n) {
+		cout << s[n] << '\n';
 	}
+
 }
+
 ```
 
 </CPPSection>
