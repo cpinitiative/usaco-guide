@@ -54,6 +54,7 @@ export function ActivityHeatmap({
                 }
                 return `color-scale-${Math.min(value.count, 4)}`;
               }}
+              tooltipDataAttrs={() => ({})}
             />
           </div>
           <div className="col-span-1">

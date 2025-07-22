@@ -1,7 +1,13 @@
-import { Menu, Transition } from '@headlessui/react';
+import {
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuItems,
+  Transition,
+} from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/solid';
 import classNames from 'classnames';
-import React, { Fragment } from 'react';
+import React, { Fragment, useId } from 'react';
 import { ModuleProgress, ModuleProgressOptions } from '../../models/module';
 
 const moduleProgressToIcon = (status: ModuleProgress): JSX.Element => {
@@ -88,13 +94,16 @@ const MarkCompleteButton = ({
   onChange: (option: ModuleProgress) => void;
   dropdownAbove?: boolean;
 }): JSX.Element => {
+  const menuId = useId();
+
   return (
     <Menu as="div" className="relative inline-block text-left">
       {({ open }) => (
         <>
           <div>
-            <Menu.Button
+            <MenuButton
               type="button"
+              id={menuId}
               className={`inline-flex w-full justify-center rounded-md border border-gray-300 pr-4 shadow-sm dark:border-gray-800 ${
                 state === 'Not Started' ? 'pl-4' : 'pl-3'
               } dark:focus:ring-offset-dark-surface bg-white py-2 text-sm leading-5 font-medium text-gray-700 hover:text-gray-500 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-hidden dark:bg-gray-900 dark:text-gray-200 dark:hover:bg-gray-800 dark:hover:text-gray-100`}
@@ -110,7 +119,7 @@ const MarkCompleteButton = ({
                 className="-mr-1 ml-2 h-5 w-5"
                 aria-hidden="true"
               />
-            </Menu.Button>
+            </MenuButton>
           </div>
 
           <Transition
@@ -123,7 +132,7 @@ const MarkCompleteButton = ({
             leaveFrom="transform opacity-100 scale-100"
             leaveTo="transform opacity-0 scale-95"
           >
-            <Menu.Items
+            <MenuItems
               static
               className={`${
                 dropdownAbove
@@ -133,7 +142,7 @@ const MarkCompleteButton = ({
             >
               <div className="py-1">
                 {ModuleProgressOptions.map(option => (
-                  <Menu.Item key={option}>
+                  <MenuItem key={option}>
                     {({ active }) => (
                       <button
                         onClick={() => onChange(option)}
@@ -151,10 +160,10 @@ const MarkCompleteButton = ({
                         <span className="flex-1">{option}</span>
                       </button>
                     )}
-                  </Menu.Item>
+                  </MenuItem>
                 ))}
               </div>
-            </Menu.Items>
+            </MenuItems>
           </Transition>
         </>
       )}

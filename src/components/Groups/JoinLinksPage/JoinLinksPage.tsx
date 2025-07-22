@@ -21,7 +21,11 @@ const JoinLinksPage = () => {
   if (!activeGroup.showAdminView) {
     return (
       <Layout>
-        <SEO title="403 Forbidden" />
+        <SEO
+          title="403 Forbidden"
+          image={null}
+          pathname={window.location.pathname}
+        />
         <TopNavigationBar />
         <p className="mt-12 text-center">
           You don't have permission to access this page.
@@ -32,7 +36,11 @@ const JoinLinksPage = () => {
 
   return (
     <Layout>
-      <SEO title={`Join Links: ${activeGroup.groupData!.name}`} />
+      <SEO
+        title={`Join Links: ${activeGroup.groupData!.name}`}
+        image={null}
+        pathname={window.location.pathname}
+      />
       <div className="dark:bg-dark-surface min-h-screen bg-gray-100">
         <TopNavigationBar />
         <nav className="mt-6 mb-4 flex" aria-label="Breadcrumb">
