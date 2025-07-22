@@ -1,4 +1,9 @@
-import { Dialog, DialogPanel, DialogBackdrop, Transition } from '@headlessui/react';
+import {
+  Dialog,
+  DialogBackdrop,
+  DialogPanel,
+  Transition,
+} from '@headlessui/react';
 import className from 'classnames';
 import * as React from 'react';
 import { LANGUAGE_LABELS } from '../context/UserDataContext/properties/simpleProperties';
@@ -224,7 +229,7 @@ export default function SubmitProblemSolutionModal({
           leaveFrom="opacity-100 translate-y-0 sm:scale-100"
           leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
         >
-          <DialogPanel className="relative w-full max-w-4xl transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all dark:bg-dark-surface">
+          <DialogPanel className="dark:bg-dark-surface relative w-full max-w-4xl transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all">
             <form onSubmit={handleSubmit}>
               <div className="px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                 <h3

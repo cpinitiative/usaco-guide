@@ -13,8 +13,7 @@ reason).
 
 1. In `gatsby-browser.tsx`, change the css import to `./build.css` instead of
    `./src/styles/main.css`.
-2. Run
-   `yarn dev:optimized`
+2. Run `yarn dev:optimized`
 
-I get a consistent 1s hot reload with this
-This also prevents some unncecssary development bundle rebuilds
+I get a consistent 1s hot reload with this This also prevents some unncecssary
+development bundle rebuilds
