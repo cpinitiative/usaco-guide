@@ -338,26 +338,26 @@ public class RoomAllocation {
 <PySection>
 
 ```py
-import heapq # priority queue module
-import sys # read input with sys.stdin.readline() instead of input() to save time
+import heapq  # priority queue module
+import sys  # read input with sys.stdin.readline() instead of input() to save time
 
 n = int(sys.stdin.readline())
 timetable = []
-for customer in range (n):
-    arrival, departure = map(int, sys.stdin.readline().split())
-    timetable.append((arrival, departure, customer))
+for customer in range(n):
+	arrival, departure = map(int, sys.stdin.readline().split())
+	timetable.append((arrival, departure, customer))
 
-timetable.sort(key=lambda x : x[0]) # sort by arrival time
-priority_queue = [] # stores pairs of (departure time, customer number)
-room_numbers = [-1] * n # to be assigned
+timetable.sort(key=lambda x: x[0])  # sort by arrival time
+priority_queue = []  # stores pairs of (departure time, customer number)
+room_numbers = [-1] * n  # to be assigned
 
 for arrival, departure, customer in timetable:
-    if priority_queue and arrival > priority_queue[0][0]: # check for vacant room
-        room_numbers[customer] = room_numbers[priority_queue[0][1]]
-        heapq.heapreplace(priority_queue, (departure, customer))
-    else: # assign new room
-        heapq.heappush(priority_queue, (departure, customer))
-        room_numbers[customer] = len(priority_queue)
+	if priority_queue and arrival > priority_queue[0][0]:  # check for vacant room
+		room_numbers[customer] = room_numbers[priority_queue[0][1]]
+		heapq.heapreplace(priority_queue, (departure, customer))
+	else:  # assign new room
+		heapq.heappush(priority_queue, (departure, customer))
+		room_numbers[customer] = len(priority_queue)
 
 print(len(priority_queue))
 print(*room_numbers)
