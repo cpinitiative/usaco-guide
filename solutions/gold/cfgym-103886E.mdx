@@ -95,39 +95,39 @@ for _ in range(int(input())):
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
-
-const long long MOD = 1e9 + 7;
+ 
+const int MOD = 1e9 + 7;
 const int MAX_SUM = 1e5;
-int mod(int a) { return (a + MOD) % MOD; }
-
+int mod(long long a) { return (a + MOD) % MOD; }
+ 
 int main() {
-	ios_base::sync_with_stdio(false);
-	cin.tie(nullptr);
-
-	vector<int> powTwo;
-	vector<long long> pref;
-
-	// define powers of two up to max sum value for lookup later
-	powTwo.push_back(1);
-	for (int i = 1; i < MAX_SUM + 1; i++) {
-		powTwo.push_back((powTwo.back() * 2) % MOD);
-	}
-
-	// prefix amount of solutions at every i
-	pref.push_back(0);
-	for (int i = 1; i < MAX_SUM + 1; i++) {
-		pref.push_back(mod(pref.back() + mod(powTwo[i - 1] - powTwo[i / 2])));
-	}
-
-	int tests = 0;
-	cin >> tests;
-
-	for (int i = 0; i < tests; i++) {
-		int l, r;
-		cin >> l >> r;
-
-		cout << mod(pref[r] - pref[l - 1]) << "\n";
-	}
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+ 
+    vector<int> powTwo;
+    vector<int> pref;
+ 
+    // define powers of two up to max sum value for lookup later
+    powTwo.push_back(1);
+    for (int i = 1; i < MAX_SUM + 1; i++) {
+        powTwo.push_back((powTwo.back() * 2) % MOD);
+    }
+ 
+    // prefix amount of solutions at every i
+    pref.push_back(0);
+    for (int i = 1; i < MAX_SUM + 1; i++) {
+        pref.push_back(mod(pref.back() + mod(powTwo[i - 1] - powTwo[i / 2])));
+    }
+ 
+    int tests = 0;
+    cin >> tests;
+ 
+    for (int i = 0; i < tests; i++) {
+        int l, r;
+        cin >> l >> r;
+ 
+        cout << mod(pref[r] - pref[l - 1]) << "\n";
+    }
 }
 ```
 </CPPSection>
