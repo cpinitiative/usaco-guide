@@ -45,18 +45,19 @@ function GithubActions() {
         )
       );
     octokit
-      .request('GET /user/repos', {
+      .paginate('GET /user/repos', {
         affiliation: 'owner',
+        per_page: 100,
+        direction: 'desc',
         headers: {
           'X-GitHub-Api-Version': '2022-11-28',
         },
       })
-      .then(res =>
-        setFork(
-          res.data.find(repo => repo.name === 'usaco-guide')?.html_url ??
-            undefined
-        )
-      );
+      .then(data => {
+        return setFork(
+          data.find(repo => repo.name === 'usaco-guide')?.html_url ?? undefined
+        );
+      });
   }, [githubInfo, branch, octokit, setFork]);
   const createBranch = useCallback(
     async branchName => {
