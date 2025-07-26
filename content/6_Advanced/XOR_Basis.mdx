@@ -122,16 +122,16 @@ numbers = list(map(int, input().split()))
 
 # compute basis size
 basis_size = 0
-for i in range (0, N):
-    if numbers[i]:
-        basis_size += 1  # add numbers[i] to basis
-        for j in range (i + 1, N):  # reduce remaining vectors
-            numbers[j] = min(numbers[j], numbers[j] ^ numbers[i])
+for i in range(0, N):
+	if numbers[i]:
+		basis_size += 1  # add numbers[i] to basis
+		for j in range(i + 1, N):  # reduce remaining vectors
+			numbers[j] = min(numbers[j], numbers[j] ^ numbers[i])
 
 # print number of missing elements
 print(
-    2 ** basis_size  # size of closure
-    - N  # number of distinct elements already in the set
+	2**basis_size  # size of closure
+	- N  # number of distinct elements already in the set
 )
 ```
 
