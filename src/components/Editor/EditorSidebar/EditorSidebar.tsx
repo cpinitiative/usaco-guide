@@ -31,27 +31,17 @@ function GithubActions() {
   const [installed, setInstalled] = useState<boolean | undefined>(undefined);
   useEffect(() => {
     if (!octokit || !githubInfo) return;
-    octokit
-      .request('GET /user/installations', {
-        headers: {
-          'X-GitHub-Api-Version': '2022-11-28',
-        },
-      })
-      .then(res =>
-        setInstalled(
-          !!res.data.installations.find(
-            installation => installation.account?.id === githubInfo.id
-          )
-        )
+    octokit.paginate('GET /user/installations', {}).then(data => {
+      console.log(data);
+      setInstalled(
+        !!data.find(installation => installation.account?.id === githubInfo.id)
       );
+    });
     octokit
       .paginate('GET /user/repos', {
         affiliation: 'owner',
         per_page: 100,
         direction: 'desc',
-        headers: {
-          'X-GitHub-Api-Version': '2022-11-28',
-        },
       })
       .then(data => {
         return setFork(
