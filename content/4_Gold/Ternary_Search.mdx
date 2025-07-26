@@ -110,6 +110,23 @@ template <typename F> double find_min(double l, double r, double eps, const F &f
 ```
 
 </CPPSection>
+
+<PySection>
+
+```py
+def find_min_float(l: float, r: float, epsilon: float, f) -> float:
+    while r - l > epsilon:
+        m1 = l + (r - l) / 3
+        m2 = r - (r - l) / 3
+        if f(m1) > f(m2):
+            l = m1
+        else:
+            r = m2
+    return l
+```
+
+</PySection>
+
 </LanguageSection>
 
 If our function only takes in integers, then our implementation looks a little
@@ -136,6 +153,22 @@ template <typename F> int find_min(int l, int r, const F &f) {
 ```
 
 </CPPSection>
+
+<PySection>
+
+```py
+def find_min_int(l: int, r: int, f) -> int:
+    while l != r:
+        m1 = l + (r - l) // 3
+        m2 = r - (r - l) // 3
+        if f(m1) > f(m2):
+            l = m1 + 1
+        else:
+            r = m2 - 1
+    return l
+```
+
+</PySection>
 </LanguageSection>
 
 ## Binary Search
@@ -163,6 +196,22 @@ template <typename F> int find_min(int l, int r, const F &f) {
 ```
 
 </CPPSection>
+
+<PySection>
+
+```py
+def find_min_binary(l: int, r: int, f) -> int:
+    while l != r:
+        m = (l + r) // 2
+        if f(m) > f(m + 1):
+            l = m + 1
+        else:
+            r = m
+    return l
+```
+
+</PySection>
+
 </LanguageSection>
 
 The way the binary search approach works is that it finds the first point where
@@ -282,6 +331,42 @@ lead to our ternary search producing an incorrect answer.
 </Warning>
 
 </CPPSection>
+
+<PySection>
+
+```py
+import sys  # use sys.stdin.readline() instead of input() to save time
+
+N = int(input())  # number of barns
+barns = list(map(int, sys.stdin.readline().split()))  # barn locations
+barns.sort()
+
+# compute prefix sums
+prefix_sum = [0] * (N + 1)
+for i in range (0, N):
+    prefix_sum[i + 1] = prefix_sum[i] + barns[i]
+
+Q = int(input())  # number of queries
+for q in range(Q):
+    a, b = list(map(int, sys.stdin.readline().split()))  # transport costs
+
+    # binary search
+    l = 0
+    r = N - 1
+    while l != r:
+        m = (l + r) // 2
+        if a * (m + 1) - b * (N - m - 1) < 0:  # cost of moving right 
+            l = m + 1
+        else:
+            r = m
+
+    # compute number of wasted haybales
+    print((prefix_sum[N] - prefix_sum[l + 1] - barns[l] * (N - l - 1)) * b +
+          (l * barns[l] - prefix_sum[l]) * a)
+```
+
+</PySection>
+
 </LanguageSection>
 
 ## Problems
