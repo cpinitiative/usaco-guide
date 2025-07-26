@@ -1,0 +1,85 @@
+---
+id: ac-MaximumGlutton
+source: AC
+title: Maximum Glutton
+author: Justin Ji
+---
+
+[Official Analysis (C++)](https://atcoder.jp/contests/abc364/editorial/10559)
+
+## Explanation
+
+Any valid sequence of dishes consumed must have the following structure:
+- Before the last dish, the sum of sweetness and saltiness are both within limits
+- The last dish ends up violating one or more of the restrictions
+
+Noticing this structure makes solving the problem much easier! The original problem
+required you to care about the order in which you consume dishes, but if the
+sum of sweetness and saltiness are all within limits, then we can consume
+our dishes in any order.
+
+All that's left is to model a DP state. The most trivial DP state would be
+$\texttt{dp}[i][j][k]$, which would equal whether or not we can eat $i$ dishes with a
+sweetness sum of $j$ and a saltiness sum of $k$. However, we can drop the $k$
+dimension, as we always want to minimize our saltiness sum.
+
+Thus, our final DP state is $\texttt{dp}[i][j]$ equals the minimum saltiness if we eat
+$i$ dishes with a sweetness sum of $j$. Then, our transitions follow the typical
+form of a knapsack DP, which is
+
+$$
+\texttt{dp}[i][j] = \min(\texttt{dp}[i][j], \texttt{dp}[i - 1][j - a] + b)
+$$
+
+if we are considering an item with sweetness $a$ and saltiness $b$.
+
+With this, we iterate over all DP states, and find the last value of $i$ where
+there's a DP values $\leq Y$. Because we can eat one last item, our printed
+answer is $\min(i + 1, n)$.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N^2 X)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+constexpr int INF = 1e9;
+
+int main() {
+	int n, x, y;
+	std::cin >> n >> x >> y;
+
+	// dp[i][j] = min saltiness sum, if we eat i dishes with sweetness sum j
+	// note that we consider a max size of n - 1, since any more is useless
+	std::vector dp(n, std::vector<int>(x + 1, INF));
+	dp[0][0] = 0;
+
+	for (int dish = 0; dish < n; dish++) {
+		int a, b;
+		std::cin >> a >> b;
+
+		// we iterate in reverse order so we don't need a new DP array
+		for (int i = n - 1; i >= 1; i--) {
+			for (int j = x; j >= a; j--) {
+				dp[i][j] = std::min(dp[i][j], dp[i - 1][j - a] + b);
+			}
+		}
+	}
+
+	for (int i = n - 1; i >= 0; i--) {
+		for (int j = 0; j <= x; j++) {
+			if (dp[i][j] <= y) {
+				std::cout << i + 1 << '\n';
+				return 0;
+			}
+		}
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>
