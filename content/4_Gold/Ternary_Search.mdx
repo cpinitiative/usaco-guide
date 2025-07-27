@@ -332,43 +332,6 @@ lead to our ternary search producing an incorrect answer.
 
 </CPPSection>
 
-<PySection>
-
-```py
-import sys  # use sys.stdin.readline() instead of input() to save time
-
-N = int(input())  # number of barns
-barns = list(map(int, sys.stdin.readline().split()))  # barn locations
-barns.sort()
-
-# compute prefix sums
-prefix_sum = [0] * (N + 1)
-for i in range(0, N):
-	prefix_sum[i + 1] = prefix_sum[i] + barns[i]
-
-Q = int(input())  # number of queries
-for q in range(Q):
-	a, b = list(map(int, sys.stdin.readline().split()))  # transport costs
-
-	# binary search
-	l = 0
-	r = N - 1
-	while l != r:
-		m = (l + r) // 2
-		if a * (m + 1) - b * (N - m - 1) < 0:  # cost of moving right
-			l = m + 1
-		else:
-			r = m
-
-	# compute number of wasted haybales
-	print(
-		(prefix_sum[N] - prefix_sum[l + 1] - barns[l] * (N - l - 1)) * b
-		+ (l * barns[l] - prefix_sum[l]) * a
-	)
-```
-
-</PySection>
-
 </LanguageSection>
 
 ## Problems
