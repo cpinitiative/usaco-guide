@@ -47,50 +47,50 @@ farm, calculate the number of operations, and add it to the answer.
 using namespace std;
 
 int main() {
-	int farmNum; cin >> farmNum;
+	int farmNum;
+	cin >> farmNum;
 
-    vector<vector<int>> neighbors(farmNum);
+	vector<vector<int>> neighbors(farmNum);
 
-    //Creates a standard adjacency list
-    for (int f = 0; f < farmNum - 1; f++) {
-        int farm1, farm2;
-        cin >> farm1 >> farm2;
-        neighbors[--farm1].push_back(--farm2);
-        neighbors[farm2].push_back(farm1);
-    }
+	// Creates a standard adjacency list
+	for (int f = 0; f < farmNum - 1; f++) {
+		int farm1, farm2;
+		cin >> farm1 >> farm2;
+		neighbors[--farm1].push_back(--farm2);
+		neighbors[farm2].push_back(farm1);
+	}
 
-    int minDays = 0;
+	int minDays = 0;
 
-    vector<bool> visited(farmNum);
-    queue<int> frontier;
-    frontier.push(0);
-    visited[0] = true;
+	vector<bool> visited(farmNum);
+	queue<int> frontier;
+	frontier.push(0);
+	visited[0] = true;
 
-    while (!frontier.empty()) {
-        // This gets the current farm that we are considering, and removes it
-        // from the queue.
-        int current = frontier.front();
-        frontier.pop();
+	while (!frontier.empty()) {
+		// This gets the current farm that we are considering, and removes it
+		// from the queue.
+		int current = frontier.front();
+		frontier.pop();
 
-        int spreadTo = 0;
-        //Iterates through all the neighboring farms that are uninfected
-        // and pushes them to the queue.
-        for (int n : neighbors[current]) {
-            if (!visited[n]) {
-                spreadTo++;
-                visited[n] = true;
-                frontier.push(n);
-            }
-        }
-        //Calculates the number of necesary superspreader days and the number
-        // of days to spread those cows.
-        minDays += ceil(log2(spreadTo + 1)) + spreadTo;
-    }
+		int spreadTo = 0;
+		// Iterates through all the neighboring farms that are uninfected
+		//  and pushes them to the queue.
+		for (int n : neighbors[current]) {
+			if (!visited[n]) {
+				spreadTo++;
+				visited[n] = true;
+				frontier.push(n);
+			}
+		}
+		// Calculates the number of necesary superspreader days and the number
+		//  of days to spread those cows.
+		minDays += ceil(log2(spreadTo + 1)) + spreadTo;
+	}
 
-    cout << minDays;
-
+	cout << minDays;
 }
-````
+```
 </CPPSection>
 
 <JavaSection>
@@ -151,7 +151,7 @@ public class Cowntagion {
 		return count;
 	}
 }
-````
+```
 
 </JavaSection>
 
@@ -216,32 +216,43 @@ using namespace std;
 
 #define maxn 100005
 
-int n; vector<int> adj[maxn];
+int n;
+vector<int> adj[maxn];
 
-int dfs(int start, int parent) { int ans = 0; int cows = adj[start].size(); if
-(parent == -1) { // parent node is currently root node cows++; }
+int dfs(int start, int parent) {
+	int ans = 0;
+	int cows = adj[start].size();
+	if (parent == -1) {  // parent node is currently root node cows++; }
 
-    int currCows = 1;
-    int days = 0;
-    // count the number of superspreader events needed
-    while (currCows < cows) {
-    	days++;
-    	currCows *= 2;
-    }
-    // send one cow to each adjacent farm without a sick cow
-    ans += days;
+		int currCows = 1;
+		int days = 0;
+		// count the number of superspreader events needed
+		while (currCows < cows) {
+			days++;
+			currCows *= 2;
+		}
+		// send one cow to each adjacent farm without a sick cow
+		ans += days;
 
-    for (auto next : adj[start]) {
-    	if (next != parent) { ans += dfs(next, start) + 1; }
-    }
-    return ans;
+		for (auto next : adj[start]) {
+			if (next != parent) { ans += dfs(next, start) + 1; }
+		}
+		return ans;
+	}
 
-}
-
-int main() { cin >> n; for (int i = 0; i < n - 1; i++) { int a, b; cin >> a >>
-b; a--; b--; adj[a].push_back(b); adj[b].push_back(a); } cout << dfs(0, -1) <<
-endl; return 0; }
-
+	int main() {
+		cin >> n;
+		for (int i = 0; i < n - 1; i++) {
+			int a, b;
+			cin >> a >> b;
+			a--;
+			b--;
+			adj[a].push_back(b);
+			adj[b].push_back(a);
+		}
+		cout << dfs(0, -1) << endl;
+		return 0;
+	}
 ```
 
 </CPPSection>
