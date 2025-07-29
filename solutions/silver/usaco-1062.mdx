@@ -50,6 +50,8 @@ int main() {
 	int farmNum; cin >> farmNum;
 	
     vector<vector<int>> neighbors(farmNum);
+
+    //Creates a standard adjacency list
     for (int f = 0; f < farmNum - 1; f++) {
         int farm1, farm2;
         cin >> farm1 >> farm2;
@@ -63,11 +65,16 @@ int main() {
     queue<int> frontier;
     frontier.push(0);
     visited[0] = true;
-
+    
     while (!frontier.empty()) {
+        // This gets the current farm that we are considering, and removes it
+        // from the queue.
         int current = frontier.front();
         frontier.pop();
+        
         int spreadTo = 0;
+        //Iterates through all the neighboring farms that are uninfected
+        // and pushes them to the queue.
         for (int n : neighbors[current]) {
             if (!visited[n]) {
                 spreadTo++;
@@ -75,13 +82,14 @@ int main() {
                 frontier.push(n);
             }
         }
+        //Calculates the number of necesary superspreader days and the number
+        // of days to spread those cows.
         minDays += ceil(log2(spreadTo + 1)) + spreadTo;
     }
 
     cout << minDays;
 
 }
-
 ````
 </CPPSection>
 
