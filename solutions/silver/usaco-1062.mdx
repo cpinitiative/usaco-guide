@@ -2,7 +2,7 @@
 id: usaco-1062
 source: USACO Silver 2020 December
 title: Cowntagion
-author: Kevin Sheng (Java, Python), Tanish Tyagi (C++), Melody Yu (Video)
+author: Kevin Sheng (Java, Python), Tanish Tyagi (C++), Melody Yu (Video), David (Java Sol 2)
 ---
 
 [Official Editorial](http://www.usaco.org/current/data/sol_prob1_silver_dec20.html)
@@ -188,5 +188,55 @@ int main() {
 ```
 
 </CPPSection>
+<JavaSection>
 
+```java
+import java.io.*;
+import java.util.*;
+
+public class Cowntagion {
+	private static final int MAX_N = 100000;
+	private static List<Integer>[] adj;
+
+	private static int dfs(int start, int parent) {
+		int ans = 0;
+		int cows = adj[start].size();
+		if (parent == -1) { cows++; }
+
+		int currCows = 1;
+		int days = 0;
+		while (currCows < cows) {
+			days++;
+			currCows *= 2;
+		}
+		ans += days;
+
+		for (int next : adj[start]) {
+			if (next != parent) { ans += dfs(next, start) + 1; }
+		}
+		return ans;
+	}
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int n = Integer.parseInt(st.nextToken());
+
+		adj = new ArrayList[n];
+		for (int i = 0; i < n; i++) { adj[i] = new ArrayList<>(); }
+
+		for (int i = 0; i < n - 1; i++) {
+			st = new StringTokenizer(br.readLine());
+			int a = Integer.parseInt(st.nextToken()) - 1;
+			int b = Integer.parseInt(st.nextToken()) - 1;
+			adj[a].add(b);
+			adj[b].add(a);
+		}
+
+		System.out.println(dfs(0, -1));
+	}
+}
+```
+
+</JavaSection>
 </LanguageSection>
