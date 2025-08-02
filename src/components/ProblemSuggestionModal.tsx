@@ -1,4 +1,4 @@
-import { Transition } from '@headlessui/react';
+import { Dialog, DialogBackdrop, DialogPanel } from '@headlessui/react';
 import * as React from 'react';
 import { useContext } from 'react';
 import { SECTION_LABELS } from '../../content/ordering';
@@ -9,9 +9,9 @@ import { ModuleInfo } from '../models/module';
 import {
   autoGenerateSolutionMetadata,
   generateProblemUniqueId,
+  PROBLEM_DIFFICULTY_OPTIONS,
   ProblemDifficulty,
   ProblemMetadata,
-  PROBLEM_DIFFICULTY_OPTIONS,
   probSources,
 } from '../models/problem';
 import ButtonGroup from './ButtonGroup';
@@ -341,152 +341,132 @@ export default function ProblemSuggestionModal({
     </div>
   );
   return (
-    <Transition
-      as="div"
-      show={isOpen}
-      className="fixed inset-0 z-30 h-full overflow-y-auto"
-    >
-      <form
-        className="flex min-h-full items-end justify-center px-4 pt-4 pb-12 text-center sm:block"
-        onSubmit={handleSubmit}
-      >
-        <Transition.Child
-          as="div"
-          className="fixed inset-0 transition-opacity"
-          enter="ease-out duration-300"
-          enterFrom="opacity-0"
-          enterTo="opacity-100"
-          leave="ease-in duration-200"
-          leaveFrom="opacity-100"
-          leaveTo="opacity-0"
-        >
-          <div className="absolute inset-0 bg-gray-500 opacity-75 dark:bg-gray-900" />
-        </Transition.Child>
-        <span
-          className="hidden sm:inline-block sm:h-screen sm:align-middle"
-          aria-hidden="true"
-        >
-          &#8203;
-        </span>
+    <Dialog open={isOpen} onClose={onClose} className="relative z-30">
+      <DialogBackdrop
+        transition
+        className="fixed inset-0 bg-gray-500/75 transition-opacity data-[closed]:opacity-0 data-[enter]:duration-300 data-[enter]:ease-out data-[leave]:duration-200 data-[leave]:ease-in dark:bg-gray-900/75"
+      />
 
-        <Transition.Child
-          as="div"
-          className="inline-block w-full transform overflow-hidden rounded-lg text-left align-bottom shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-3xl sm:align-middle"
-          enter="ease-out duration-300"
-          enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-          enterTo="opacity-100 translate-y-0 sm:scale-100"
-          leave="ease-in duration-200"
-          leaveFrom="opacity-100 translate-y-0 sm:scale-100"
-          leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="modal-headline"
-        >
-          <div className="dark:bg-dark-surface bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-            <div className="absolute top-0 right-0 hidden pt-4 pr-4 sm:block">
-              <button
-                type="button"
-                onClick={() => onClose()}
-                className="dark:bg-dark-surface rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-hidden dark:text-gray-500 dark:hover:text-gray-400"
-              >
-                <span className="sr-only">Close</span>
-                {/* Heroicon name: x */}
-                <svg
-                  className="h-6 w-6"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  aria-hidden="true"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-              </button>
-            </div>
+      <div className="fixed inset-0 z-30 w-screen overflow-y-auto">
+        <div className="flex min-h-full items-end justify-center px-4 pt-4 pb-12 text-center sm:block">
+          <span
+            className="hidden sm:inline-block sm:h-screen sm:align-middle"
+            aria-hidden="true"
+          >
+            &#8203;
+          </span>
 
-            <h3
-              className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100"
-              id="modal-headline"
-            >
-              {inEditor ? 'Add a Problem' : 'Suggest a Problem'}
-            </h3>
-            {inEditor ? (
-              <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                You're in the editor, so the problem will be automatically added
-                to problems.json.
-              </p>
-            ) : (
-              <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                Help us improve the USACO Guide by suggesting a problem to add!
-                <br />
-                This will be submitted as a public{' '}
-                <a
-                  href="https://github.com/cpinitiative/usaco-guide/pulls"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-blue-600 underline dark:text-blue-300"
-                >
-                  GitHub pull request
-                </a>
-                .
-              </p>
-            )}
-            <div className="mt-6 space-y-6">
-              {createdIssueLink ? successMessage : form}
-            </div>
-          </div>
-          <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6 dark:bg-gray-900">
-            {createdIssueLink ? (
-              <span className="flex w-full rounded-md shadow-sm sm:ml-3 sm:w-auto">
+          <DialogPanel
+            transition
+            className="inline-block w-full transform overflow-hidden rounded-lg text-left align-bottom shadow-xl transition-all data-[closed]:translate-y-4 data-[closed]:opacity-0 data-[enter]:duration-300 data-[enter]:ease-out data-[leave]:duration-200 data-[leave]:ease-in sm:my-8 sm:w-full sm:max-w-3xl sm:align-middle data-[closed]:sm:translate-y-0 data-[closed]:sm:scale-95"
+          >
+            <div className="dark:bg-dark-surface bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+              <div className="absolute top-0 right-0 hidden pt-4 pr-4 sm:block">
                 <button
                   type="button"
                   onClick={() => onClose()}
-                  className="focus:shadow-outline-blue inline-flex w-full justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-base leading-6 font-medium text-white shadow-sm transition duration-150 ease-in-out hover:bg-blue-500 focus:border-blue-700 focus:outline-hidden sm:text-sm sm:leading-5"
+                  className="dark:bg-dark-surface rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-hidden dark:text-gray-500 dark:hover:text-gray-400"
                 >
-                  Done
+                  <span className="sr-only">Close</span>
+                  {/* Heroicon name: x */}
+                  <svg
+                    className="h-6 w-6"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    aria-hidden="true"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
                 </button>
-              </span>
-            ) : (
-              <>
+              </div>
+
+              <h3
+                className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100"
+                id="modal-headline"
+              >
+                {inEditor ? 'Add a Problem' : 'Suggest a Problem'}
+              </h3>
+              {inEditor ? (
+                <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                  You're in the editor, so the problem will be automatically
+                  added to problems.json.
+                </p>
+              ) : (
+                <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                  Help us improve the USACO Guide by suggesting a problem to
+                  add!
+                  <br />
+                  This will be submitted as a public{' '}
+                  <a
+                    href="https://github.com/cpinitiative/usaco-guide/pulls"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-blue-600 underline dark:text-blue-300"
+                  >
+                    GitHub pull request
+                  </a>
+                  .
+                </p>
+              )}
+              <div className="mt-6 space-y-6">
+                {createdIssueLink ? successMessage : form}
+              </div>
+            </div>
+            <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6 dark:bg-gray-900">
+              {createdIssueLink ? (
                 <span className="flex w-full rounded-md shadow-sm sm:ml-3 sm:w-auto">
                   <button
-                    type="submit"
-                    className={
-                      'focus:shadow-outline-blue inline-flex w-full justify-center rounded-md border border-transparent px-4 py-2 text-base leading-6 font-medium text-white shadow-sm transition duration-150 ease-in-out hover:bg-blue-500 focus:border-blue-700 focus:outline-hidden sm:text-sm sm:leading-5 ' +
-                      (loading ? 'bg-blue-400' : 'bg-blue-600')
-                    }
-                    disabled={loading}
-                  >
-                    {inEditor
-                      ? 'Add Problem'
-                      : loading
-                        ? 'Submitting...'
-                        : 'Submit Suggestion'}
-                  </button>
-                </span>
-                <span className="mt-3 flex w-full rounded-md shadow-sm sm:mt-0 sm:w-auto">
-                  <button
                     type="button"
-                    className={
-                      'focus:shadow-outline-blue inline-flex w-full justify-center rounded-md border border-gray-300 px-4 py-2 text-base leading-6 font-medium text-gray-700 shadow-sm transition duration-150 ease-in-out hover:text-gray-500 focus:border-blue-300 focus:outline-hidden sm:text-sm sm:leading-5 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 ' +
-                      (loading ? 'bg-gray-100' : 'bg-white')
-                    }
                     onClick={() => onClose()}
-                    disabled={loading}
+                    className="focus:shadow-outline-blue inline-flex w-full justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-base leading-6 font-medium text-white shadow-sm transition duration-150 ease-in-out hover:bg-blue-500 focus:border-blue-700 focus:outline-hidden sm:text-sm sm:leading-5"
                   >
-                    Cancel
+                    Done
                   </button>
                 </span>
-              </>
-            )}
-          </div>
-        </Transition.Child>
-      </form>
-    </Transition>
+              ) : (
+                <>
+                  <span className="flex w-full rounded-md shadow-sm sm:ml-3 sm:w-auto">
+                    <button
+                      type="submit"
+                      className={
+                        'focus:shadow-outline-blue inline-flex w-full justify-center rounded-md border border-transparent px-4 py-2 text-base leading-6 font-medium text-white shadow-sm transition duration-150 ease-in-out hover:bg-blue-500 focus:border-blue-700 focus:outline-hidden sm:text-sm sm:leading-5 ' +
+                        (loading ? 'bg-blue-400' : 'bg-blue-600')
+                      }
+                      disabled={loading}
+                    >
+                      {inEditor
+                        ? 'Add Problem'
+                        : loading
+                          ? 'Submitting...'
+                          : 'Submit Suggestion'}
+                    </button>
+                  </span>
+                  <span className="mt-3 flex w-full rounded-md shadow-sm sm:mt-0 sm:w-auto">
+                    <button
+                      type="button"
+                      className={
+                        'focus:shadow-outline-blue inline-flex w-full justify-center rounded-md border border-gray-300 px-4 py-2 text-base leading-6 font-medium text-gray-700 shadow-sm transition duration-150 ease-in-out hover:text-gray-500 focus:border-blue-300 focus:outline-hidden sm:text-sm sm:leading-5 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 ' +
+                        (loading ? 'bg-gray-100' : 'bg-white')
+                      }
+                      onClick={() => onClose()}
+                      disabled={loading}
+                    >
+                      Cancel
+                    </button>
+                  </span>
+                </>
+              )}
+            </div>
+          </DialogPanel>
+        </div>
+      </div>
+    </Dialog>
   );
 }

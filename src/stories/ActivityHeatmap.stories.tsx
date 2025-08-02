@@ -1,4 +1,4 @@
-import { Meta, Story } from '@storybook/react';
+import { Meta, StoryFn } from '@storybook/react-webpack5';
 import React from 'react';
 import seedrandom from 'seedrandom';
 import {
@@ -15,7 +15,7 @@ const endDate = new Date(Date.UTC(2023, 12));
 const startDate = new Date(endDate);
 startDate.setMonth(endDate.getMonth() - 10);
 
-const Template: Story<ActivityHeatmapProps> = args => (
+const Template: StoryFn<ActivityHeatmapProps> = args => (
   <ActivityHeatmap endDate={endDate} {...args} />
 );
 

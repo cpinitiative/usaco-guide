@@ -1,4 +1,4 @@
-import { Story } from '@storybook/react';
+import { StoryFn } from '@storybook/react-webpack5';
 import React, { ComponentProps } from 'react';
 import FocusProblem from '../../components/markdown/FocusProblem';
 import markdownDecorator from '../../components/markdown/markdownDecoratorForStorybook';
@@ -53,7 +53,7 @@ const problemLists: {
   },
 ];
 
-const Template: Story<ComponentProps<typeof FocusProblem>> = args => (
+const Template: StoryFn<ComponentProps<typeof FocusProblem>> = args => (
   <MarkdownProblemListsProvider value={problemLists}>
     <FocusProblem {...args} />
   </MarkdownProblemListsProvider>

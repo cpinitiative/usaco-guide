@@ -6,8 +6,8 @@ import { EditorContext } from '../../context/EditorContext';
 import { MarkdownProblemListsProvider } from '../../context/MarkdownProblemListsContext';
 import { ProblemSuggestionModalProvider } from '../../context/ProblemSuggestionModalContext';
 import {
-  ProblemMetadata,
   PROBLEM_DIFFICULTY_OPTIONS,
+  ProblemMetadata,
 } from '../../models/problem';
 import { formatMarkdown } from '../../utils/prettierFormatter';
 import QuizGeneratorModal from '../QuizGeneratorModal';

@@ -36,7 +36,7 @@ const FancyNumber = ({
 }) => (
   <div className="text-center">
     <span
-      className={`text-3xl font-bold ${textColor} ${bgColor} inline-block inline-flex h-16 w-16 items-center justify-center rounded-full`}
+      className={`text-3xl font-bold ${textColor} ${bgColor} inline-flex h-16 w-16 items-center justify-center rounded-full`}
     >
       {number}
     </span>
