@@ -2,10 +2,9 @@
 id: usaco-1062
 source: USACO Silver 2020 December
 title: Cowntagion
-author: Kevin Sheng (Java, Python), Tanish Tyagi (C++), Melody Yu (Video), David (Java Sol 2)
+author: Kevin Sheng (Java, Python), Tanish Tyagi (C++), Melody Yu (Video), David (Java Sol 2), Arnav Gokhale (Explanation, C++)
 ---
-
-[Official Editorial](http://www.usaco.org/current/data/sol_prob1_silver_dec20.html)
+[Official Editorial (C++)](http://www.usaco.org/current/data/sol_prob1_silver_dec20.html)
 
 ## Video Solution
 
@@ -13,14 +12,80 @@ Note: The video solution might not be the same as other solutions. Code in C++.
 
 <YouTube id="8gZY9ARwLVI" />
 
-## Solution 1 - Math
+## Explanation
 
-**Time Complexity**: $\mathcal O(N)$
+Let $x$ represent the number of neighboring farms without a infected cow a farm has.
 
-## Implementation
+We can notice that it takes $\left \lceil{\log_2(x+1)}\right \rceil$ superspreader
+events for that farm to collect enough infected cows to send a infected cow to
+each one of its uninfected adjacent farms.
+
+Additionally, it takes an additional $x$ operations to send a cow to
+each one of those uninfected adjacent farms.
+
+So, at each farm it takes $\left \lceil{\log_2(x+1)}\right \rceil + x$ operations to spread the infected cows.
+
+Since the given graph is a tree, we can traverse through the tree, and at each
+farm, calculate the number of operations and add it to the answer.
+
+## Implementation 1 - BFS
+
+**Time Complexity**: $\mathcal{O}(N)$
 
 <LanguageSection>
+<CPPSection>
 
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	int farm_num;
+	cin >> farm_num;
+
+	vector<vector<int>> neighbors(farm_num);
+
+	// Creates a standard adjacency list
+	for (int f = 0; f < farm_num - 1; f++) {
+		int farm1, farm2;
+		cin >> farm1 >> farm2;
+		neighbors[--farm1].push_back(--farm2);
+		neighbors[farm2].push_back(farm1);
+	}
+
+	int min_days = 0;
+
+	vector<bool> visited(farm_num);
+	queue<int> frontier;
+	frontier.push(0);
+	visited[0] = true;
+
+	while (!frontier.empty()) {
+		// This gets the current farm that we are considering, and removes it
+		// from the queue.
+		int current = frontier.front();
+		frontier.pop();
+
+		int spread_to = 0;
+		// Iterates through all the neighboring farms that are uninfected
+		//  and pushes them to the queue.
+		for (int n : neighbors[current]) {
+			if (!visited[n]) {
+				spread_to++;
+				visited[n] = true;
+				frontier.push(n);
+			}
+		}
+		// Calculates the number of necesary superspreader days and the number
+		//  of days to spread those cows.
+		min_days += ceil(log2(spread_to + 1)) + spread_to;
+	}
+
+	cout << min_days << endl;
+}
+```
+
+</CPPSection>
 <JavaSection>
 
 ```java
@@ -68,7 +133,7 @@ public class Cowntagion {
 		System.out.println(minDays);
 	}
 
-	// returns the smallest x such that 2^x >= n
+	/** @returns the smallest x such that 2^x >= n */
 	private static int ceilLog2(int n) {
 		int count = 0;
 		int so_far = 1;
@@ -82,7 +147,6 @@ public class Cowntagion {
 ```
 
 </JavaSection>
-
 <PySection>
 
 ```py
@@ -125,17 +189,13 @@ print(min_days)
 ```
 
 </PySection>
-
 </LanguageSection>
 
-## Solution 2 - DFS
+## Implementation 2 - DFS
 
 **Time Complexity**: $\mathcal O(N)$
 
-## Implementation
-
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
@@ -156,12 +216,12 @@ int dfs(int start, int parent) {
 		cows++;
 	}
 
-	int currCows = 1;
+	int curr_cows = 1;
 	int days = 0;
 	// count the number of superspreader events needed
-	while (currCows < cows) {
+	while (curr_cows < cows) {
 		days++;
-		currCows *= 2;
+		curr_cows *= 2;
 	}
 	// send one cow to each adjacent farm without a sick cow
 	ans += days;
@@ -188,6 +248,7 @@ int main() {
 ```
 
 </CPPSection>
+
 <JavaSection>
 
 ```java
@@ -237,6 +298,6 @@ public class Cowntagion {
 	}
 }
 ```
-
 </JavaSection>
+
 </LanguageSection>
