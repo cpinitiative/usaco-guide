@@ -110,6 +110,21 @@ template <typename F> double find_min(double l, double r, double eps, const F &f
 ```
 
 </CPPSection>
+<PySection>
+
+```py
+def find_min(l: float, r: float, epsilon: float, f) -> float:
+	while r - l > epsilon:
+		m1 = l + (r - l) / 3
+		m2 = r - (r - l) / 3
+		if f(m1) > f(m2):
+			l = m1
+		else:
+			r = m2
+	return l
+```
+
+</PySection>
 </LanguageSection>
 
 If our function only takes in integers, then our implementation looks a little
@@ -136,6 +151,21 @@ template <typename F> int find_min(int l, int r, const F &f) {
 ```
 
 </CPPSection>
+<PySection>
+
+```py
+def find_min(l: int, r: int, f) -> int:
+	while l < r:
+		m1 = l + (r - l) // 3
+		m2 = r - (r - l) // 3
+		if f(m1) > f(m2):
+			l = m1 + 1
+		else:
+			r = m2 - 1
+	return l
+```
+
+</PySection>
 </LanguageSection>
 
 ## Binary Search
@@ -163,6 +193,20 @@ template <typename F> int find_min(int l, int r, const F &f) {
 ```
 
 </CPPSection>
+<PySection>
+
+```py
+def find_min(l: int, r: int, f) -> int:
+	while l < r:
+		m = (l + r) // 2
+		if f(m) > f(m + 1):
+			l = m + 1
+		else:
+			r = m
+	return l
+```
+
+</PySection>
 </LanguageSection>
 
 The way the binary search approach works is that it finds the first point where
@@ -282,6 +326,7 @@ lead to our ternary search producing an incorrect answer.
 </Warning>
 
 </CPPSection>
+
 </LanguageSection>
 
 ## Problems

@@ -31,32 +31,23 @@ function GithubActions() {
   const [installed, setInstalled] = useState<boolean | undefined>(undefined);
   useEffect(() => {
     if (!octokit || !githubInfo) return;
-    octokit
-      .request('GET /user/installations', {
-        headers: {
-          'X-GitHub-Api-Version': '2022-11-28',
-        },
-      })
-      .then(res =>
-        setInstalled(
-          !!res.data.installations.find(
-            installation => installation.account?.id === githubInfo.id
-          )
-        )
+    octokit.paginate('GET /user/installations', {}).then(data => {
+      console.log(data);
+      setInstalled(
+        !!data.find(installation => installation.account?.id === githubInfo.id)
       );
+    });
     octokit
-      .request('GET /user/repos', {
+      .paginate('GET /user/repos', {
         affiliation: 'owner',
-        headers: {
-          'X-GitHub-Api-Version': '2022-11-28',
-        },
+        per_page: 100,
+        direction: 'desc',
       })
-      .then(res =>
-        setFork(
-          res.data.find(repo => repo.name === 'usaco-guide')?.html_url ??
-            undefined
-        )
-      );
+      .then(data => {
+        return setFork(
+          data.find(repo => repo.name === 'usaco-guide')?.html_url ?? undefined
+        );
+      });
   }, [githubInfo, branch, octokit, setFork]);
   const createBranch = useCallback(
     async branchName => {
