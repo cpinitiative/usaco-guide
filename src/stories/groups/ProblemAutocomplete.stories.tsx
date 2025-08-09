@@ -1,9 +1,9 @@
-import { Story } from '@storybook/react';
+import { StoryFn } from '@storybook/react-webpack5';
 import React, { ComponentProps } from 'react';
 import { InstantSearch } from 'react-instantsearch';
 import {
-  indexName,
   ProblemAutocomplete,
+  indexName,
 } from '../../components/ProblemAutocompleteModal/ProblemAutocomplete';
 import { searchClient } from '../../utils/algoliaSearchClient';
 
@@ -178,7 +178,7 @@ const mockHits = [
   },
 ];
 
-const Template: Story<ComponentProps<typeof ProblemAutocomplete>> = args => (
+const Template: StoryFn<ComponentProps<typeof ProblemAutocomplete>> = args => (
   <InstantSearch indexName={indexName} searchClient={searchClient}>
     <ProblemAutocomplete {...args} />
   </InstantSearch>

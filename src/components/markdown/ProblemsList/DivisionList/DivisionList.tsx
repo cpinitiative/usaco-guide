@@ -1,5 +1,6 @@
+import { Transition } from '@headlessui/react';
 import { graphql, useStaticQuery } from 'gatsby';
-import React, { useEffect } from 'react';
+import React, { Fragment, useEffect } from 'react';
 import { moduleIDToURLMap } from '../../../../../content/ordering';
 import {
   useDivisionTableQuery,
@@ -9,11 +10,10 @@ import {
   ProblemDifficulty,
   ProblemSolutionInfo,
 } from '../../../../models/problem';
-import Transition from '../../../Transition';
 import { ProblemsList } from '../ProblemsList';
 import contestToPoints from './contest_to_points.json';
-import { DivisionProblemInfo } from './DivisionProblemInfo';
 import divToProbs from './div_to_probs.json';
+import { DivisionProblemInfo } from './DivisionProblemInfo';
 import idToSol from './id_to_sol.json';
 
 const startYear = 2016;
@@ -115,6 +115,7 @@ const DivisionButton = ({
 
       <Transition
         show={show}
+        as={Fragment}
         enter="transition ease-out duration-100"
         enterFrom="transform opacity-0 scale-95"
         enterTo="transform opacity-100 scale-100"

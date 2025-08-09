@@ -10,19 +10,20 @@ const BlindModeContext = createContext<BlindModeContextType | undefined>(
 );
 
 export function BlindModeProvider({ children }: { children: React.ReactNode }) {
-  const [isBlindMode, setIsBlindMode] = useState(() => {
-    if (typeof window !== 'undefined') {
-      const storedValue = localStorage.getItem('blindMode');
-      return storedValue === 'true';
-    }
-    return false;
-  });
+  const [isBlindMode, setIsBlindMode] = useState(false);
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
+    setIsClient(true);
+    const storedValue = localStorage.getItem('blindMode');
+    setIsBlindMode(storedValue === 'true');
+  }, []);
+
+  useEffect(() => {
+    if (isClient) {
       localStorage.setItem('blindMode', String(isBlindMode));
     }
-  }, [isBlindMode]);
+  }, [isBlindMode, isClient]);
 
   const toggleBlindMode = () => {
     setIsBlindMode(prev => !prev);

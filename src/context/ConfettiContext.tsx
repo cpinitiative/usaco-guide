@@ -7,7 +7,7 @@ const ConfettiContext = createContext<(() => void) | null>(null);
 export default ConfettiContext;
 
 export const ConfettiProvider = ({ children }) => {
-  const confettiRef = useRef<{ showConfetti: () => void }>();
+  const confettiRef = useRef<{ showConfetti: () => void }>(null);
   return (
     <ConfettiContext.Provider value={() => confettiRef.current?.showConfetti()}>
       <ModuleConfetti ref={confettiRef} />
