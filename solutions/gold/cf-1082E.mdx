@@ -1,0 +1,123 @@
+---
+id: cf-1082E
+source: CF
+title: Increasing Frequency
+author: Justin Ji
+---
+
+[Official Analysis (C++)](https://codeforces.com/blog/entry/63544)
+
+## Explanation
+
+Let's define $\texttt{freq}(l, r, x)$ as the number of times the value $x$
+shows up in the range $[l, r]$.
+
+Our answer, at a minimum, will be $\texttt{freq}(1, n, c)$, if we don't perform an
+operation. Thus, our goal is to find a subarray that will maximize
+the additional occurrences of $c$ we can add to our answer.
+
+If we want to transform all occurrences of a value $v$ into $c$, then the contribution
+to our answer will be
+
+$$
+\texttt{freq}(l, r, v) - \texttt{freq}(l, r, c)
+$$
+
+because any value of $c$ will get disturbed by the operation needed to transform
+$v$ into $c$. Now, our goal is to find the optimal tuple $(l, r, v)$ and add that
+to our minimum answer.
+
+Consider all elements $v$, where we transform $v$ into $c$, and try to find our best subarray that way.
+Note that in an optimal subarray $[l, r]$, we only consider subarrays where
+$a[l] = a[r] = v$, which makes it so that across all values of $v$, there are
+only $\mathcal{O}(n)$ endpoints to consider.
+
+Considering we want to find the maximum
+answer across all subarrays, this hints towards transforming our problem into something
+similar to the classic max-subarray problem, which was covered in
+the [prefix sums module](/silver/more-prefix-sums).
+
+Let's define $l$ to be the sorted array of all occurrences of $v$ in our array $a$,
+and have $b$ be the array we run our max-subarray algorithm on, where $l[i]$
+directly corresponds to $b[i]$. Initially, every element in $b[i]$ is set to $1$.
+Now, to handle occurrences of $c$ in a possible subarray, we compress the intervals
+between each value of $l$. More specifically, we perform the following operation
+for all valid $i$:
+
+$$
+b[i] \mathrel{-}= \texttt{freq}(l[i - 1] + 1, l[i] - 1, c).
+$$
+
+With this transformation, we can apply our max-subarray algorithm of choice to get our answer.
+
+Directly implementing the approach above is enough to pass all test cases, and is
+the implementation featured in the official editorial. The implementation below
+uses the same idea as the approach described above, but is modified to be considerably
+more concise.
+
+Recall Kadane's algorithm for the max-subarray sum. The idea is to sweep from left
+to right, and for every index find the best subarray ending at said index. The greedy
+strategy is as follows:
+- If we are at index $i$, and the previous max subarray ending at $i-1$ is less than zero, we cut it off and start a new array with the singular element at $i$
+- Otherwise, we extend the subarray from $i-1$ by appending the current element to it
+
+Our DP algorithm works in a similar way. Consider sweeping left to right, and
+having $\texttt{dp}[v]$ equal the number of occurrences of $v$ in our current prefix, while
+also keeping a counter for the number of times we encounter $c$. Then, for this
+prefix, the countribution for this prefix would be $\texttt{dp}[v] - \texttt{freq}(1, i, c)$, if we are currently at index $i$.
+
+However, it's not always optimal to take the entire prefix when transforming certain
+occurrences of $v$ into $c$. More specifically, if $\texttt{dp}[v] < \texttt{freq}(1, i, c)$, then we should cut off this current prefix and start a new subarray. Thus,
+our DP state transition is
+
+$$
+\texttt{dp}[v] = \max(\texttt{dp}[v], \texttt{freq}(1, i, c)) + 1.
+$$
+
+With this, we can calculate the best contribution as being the maximum value of
+$\texttt{dp}[a[i]] - \texttt{freq}(1, i, c)$, as we sweep from left to right.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+constexpr int MAX = 5e5;
+int dp[MAX + 1];
+
+int main() {
+	int n, c;
+	std::cin >> n >> c;
+
+	int num_c = 0;
+	int best_sub = 0;
+	for (int i = 0; i < n; i++) {
+		int a;
+		std::cin >> a;
+
+		if (a == c) {
+			// we have one more total c element
+			// note that we don't care about dp[c]
+			num_c++;
+		} else {
+			// here, we care about dp[a]
+			// like Kadane's, we 'reset' here or we add on
+			dp[a] = std::max(num_c, dp[a]) + 1;
+		}
+
+		// the contribution a subarray operation adds is the max # of
+		// elements with the same value, minus the number of c values
+		best_sub = std::max(best_sub, dp[a] - num_c);
+	}
+
+	std::cout << num_c + best_sub << '\n';
+}
+```
+
+</CPPSection>
+</LanguageSection>
