@@ -501,14 +501,8 @@ int main() {
 
 ```java
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.StringTokenizer;
+import java.util.*;
+import java.io.*;
 
 public class Main {
 
@@ -523,7 +517,7 @@ public class Main {
 
 	static int[] arr;
 	static int[] values;
-	static int different_values = 0;
+	static int differentValues = 0;
 
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -549,25 +543,25 @@ public class Main {
 			Query query = new Query(l - 1, r - 1, i);
 			queries.add(query);
 		}
-		int block_size = (int)Math.sqrt(n);
+		int blockSize = (int)Math.sqrt(n);
 
 		Collections.sort(queries, (a, b) -> {
-			int a_block = a.l / block_size;
-			int b_block = b.l / block_size;
-			if (a_block != b_block) return a_block - b_block;
+			int aBlock = a.l / blockSize;
+			int bBlock = b.l / blockSize;
+			if (aBlock != bBlock) return aBlock - bBlock;
 			return a.r - b.r;
 		});
 
-		int mo_left = 0, mo_right = -1;
+		int moLeft = 0, moRight = -1;
 		int[] res = new int[q];
 		for (int i = 0; i < q; i++) {
 			int left = queries.get(i).l;
 			int right = queries.get(i).r;
-			while (mo_left < left) { remove(mo_left++); }
-			while (mo_left > left) { add(--mo_left); }
-			while (mo_right < right) { add(++mo_right); }
-			while (mo_right > right) { remove(mo_right--); }
-			res[queries.get(i).idx] = different_values;
+			while (moLeft < left) { remove(moLeft++); }
+			while (moLeft > left) { add(--moLeft); }
+			while (moRight < right) { add(++moRight); }
+			while (moRight > right) { remove(moRight--); }
+			res[queries.get(i).idx] = differentValues;
 		}
 		for (int i = 0; i < q; i++) { pw.println(res[i]); }
 		br.close();
@@ -576,13 +570,13 @@ public class Main {
 
 	public static void add(int idx) {
 		int num = arr[idx];
-		if (values[num] == 0) different_values++;
+		if (values[num] == 0) differentValues++;
 		values[num]++;
 	}
 
 	public static void remove(int idx) {
 		int num = arr[idx];
-		if (values[num] == 1) different_values--;
+		if (values[num] == 1) differentValues--;
 		values[num]--;
 	}
 }
