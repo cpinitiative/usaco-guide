@@ -1,7 +1,7 @@
 ---
 id: sqrt
 title: 'Square Root Decomposition'
-author: Benjamin Qi, Neo Wang, Mihnea Brebenel
+author: Benjamin Qi, Neo Wang, Mihnea Brebenel, Archit Pande
 description: Splitting up data into smaller chunks to speed up processing.
 frequency: 1
 ---
@@ -506,7 +506,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -514,37 +513,6 @@ import java.util.StringTokenizer;
 
 public class Main {
 
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		PrintWriter pw = new PrintWriter(System.out);
-		StringTokenizer st = new StringTokenizer(br.readLine());
-
-		int n = Integer.parseInt(st.nextToken());
-		
-
-		int[] arr = Arrays.stream(br.readLine().split(" "))
-		                .mapToInt(Integer::parseInt)
-		                .toArray();
-        int MAX = Arrays.stream(arr).max().getAsInt();
-        List<Query> list = new ArrayList<>();
-        
-        Mo mo = new Mo(arr, MAX);
-        int q = Integer.parseInt(br.readLine());
-        for (int i = 0; i < q; i++) {
-            st = new StringTokenizer(br.readLine());
-            int l = Integer.parseInt(st.nextToken()) - 1, r = Integer.parseInt(st.nextToken()) - 1;
-            Query query = new Query(l, r, i);
-            list.add(query);
-        }
-        mo.sort(list);
-        int[] res = mo.process(list);
-        for (int r : res) {
-            pw.println(r);
-        }
-        br.close();
-        pw.close();
-
-    }
     static class Query {
         int l, r, idx;
         Query(int l, int r, int idx) {
@@ -553,69 +521,89 @@ public class Main {
             this.idx = idx;
         }
     }
-    static class Mo {
-        int currL = 0, currR = -1;
-        int[] arr;
-        int n;
-        int blockSize;
-        int maxValue;
-        int distinct;
-        int[] freq;
-        Mo(int[] arr, int maxValue) {
-            this.arr = arr;
-            this.n = arr.length;
-            this.blockSize = (int)Math.sqrt(n);
-            this.maxValue = maxValue;
-            this.freq = new int[maxValue + 1];
+
+    static int[] arr;
+    static int[] values;
+    static int different_values = 0;
+
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		PrintWriter pw = new PrintWriter(System.out);
+		StringTokenizer st = new StringTokenizer(br.readLine());
+
+		int n = Integer.parseInt(st.nextToken());
+		
+        arr = new int[n];
+        int MAX = 0;
+        st = new StringTokenizer(br.readLine());
+        for (int i = 0; i < n; i++) {
+            arr[i] = Integer.parseInt(st.nextToken());
+            MAX = Math.max(MAX, arr[i]);
+        }
+        values = new int[MAX + 1];
+        List<Query> queries = new ArrayList<>();
+        int q = Integer.parseInt(br.readLine());
+        for (int i = 0; i < q; i++) {
+            st = new StringTokenizer(br.readLine());
+            int l = Integer.parseInt(st.nextToken()), r = Integer.parseInt(st.nextToken());
+            Query query = new Query(l - 1, r - 1, i);
+            queries.add(query);
+        }
+        int block_size = (int)Math.sqrt(n);
+
+        Collections.sort(queries, (a, b) -> {
+            int a_block = a.l / block_size;
+            int b_block = b.l / block_size;
+            if (a_block != b_block)
+                return a_block - b_block;
+            return a.r - b.r;
+        });
+        
+        int mo_left = 0, mo_right = -1;
+        int[] res = new int[q];
+        for (int i = 0; i < q; i++) {
+            int left = queries.get(i).l;
+            int right = queries.get(i).r;
+            while (mo_left < left) {
+                remove(mo_left++);
+            }
+            while (mo_left > left) {
+                add(--mo_left);
+            }
+            while (mo_right < right) {
+                add(++mo_right);
+            }
+            while (mo_right > right) {
+                remove(mo_right--);
+            }
+            res[queries.get(i).idx] = different_values;
 
         }
-        public void sort(List<Query> queries) {
-            Collections.sort(queries, (a, b) -> {
-                int aBlock = a.l/blockSize;
-                int bBlock = b.l/blockSize;
-                if (aBlock != bBlock)
-                    return aBlock - bBlock;
-                return a.r - b.r;
-            });
+        for (int i = 0; i < q; i++) {
+            pw.println(res[i]);
         }
-        public int[] process(List<Query> queries) {
-            int[] res = new int[queries.size()];
-            for (Query query : queries) {
-                int left = query.l, right = query.r, idx = query.idx;
-                while (currL > left) {
-                    currL--;
-                    add(currL);
-                }
-                while (currR < right) {
-                    currR++;
-                    add(currR);
-                }
-                while (currL < left) {
-                    remove(currL);
-                    currL++;
-                }
-                while (currR > right) {
-                    remove(currR);
-                    currR--;
-                }
-                res[idx] = distinct;
-            }
-            return res;
-        }
-        public void add(int idx) {
-            int num = arr[idx];
-            if (freq[num] == 0)
-                distinct++;
-            freq[num]++;
-        }
-        public void remove(int idx) {
-            int num = arr[idx];
-            if (freq[num] == 1)
-                distinct--;
-            freq[num]--;
-        }
+        br.close();
+        pw.close();
+
     }
+    
+    public static void add(int idx) {
+        int num = arr[idx];
+        if (values[num] == 0)
+            different_values++;
+        values[num]++;
+    }
+
+    public static void remove(int idx) {
+        int num = arr[idx];
+        if (values[num] == 1)
+            different_values--;
+        values[num]--;
+    }
+    
+    
 }
+
 
 ```
 
