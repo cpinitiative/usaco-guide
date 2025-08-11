@@ -12,7 +12,7 @@ Firstly, at any point, if there is a cow adjacent to exactly three other cows, F
 
 We can maintain a 2D boolean array that represents whether each cell contains a cow and a queue that represents the coordinates of new cows being added.
 
-At each step, we add the cow at $$(x, y)$$ to our queue. While the queue is not empty, we must pop the queue, and check if the current cow being added at (x,y) or any of its neighbors at locations $$(x-1, y), (x+1, y), (x, y - 1),$$ or $$(x, y + 1) $$ has exactly three adjacenct cows. 
+At each step, we add the cow at $$(x, y)$$ to our queue. While the queue is not empty, we must pop the queue, and check if the current cow being added at (x,y) or any of its neighbors at locations $$(x-1, y), (x+1, y), (x, y - 1),$$ or $$(x, y + 1) $$ has exactly three adjacenct cows.
 
 If any of the above cells has exactly adjacenct neighbors and has not already been visited, push the coordinates of the missing fourth adjacenct cell into the queue.
 
@@ -40,7 +40,7 @@ int count_neighbors(vector<vector<bool>> &v, int x, int y) {
     for (int i = 0; i < 4; i++) {
         if (v[x + dx[i]][y + dy[i]]) count_neighbors++;
     }
-    
+
     return count_neighbors;
 }
 
@@ -70,10 +70,10 @@ int main() {
     queue<array<int,2>> to_place;
 
     int total_cows = 0;
-    
+
     for (int cow_number = 1; cow_number <= n; cow_number++) {
         //New cow to add to the grid
-        array<int,2> new_cow; 
+        array<int,2> new_cow;
         cin >> new_cow[0] >> new_cow[1];
         //Offset the grid coordinates by 1000
         new_cow[0] += 1000, new_cow[1] += 1000;
@@ -97,14 +97,14 @@ int main() {
             for (int i = 0; i < 4; i++) {
                 if (filled[current_cow[0] + dx[i]][current_cow[1] + dy[i]]) check_cell(current_cow[0] + dx[i], current_cow[1] + dy[i], filled, to_place);
             }
-            
+
         }
 
         //The total number of cows minus the amount of cows placed by farmer nhoj
         // specifically, is the additional number of cows required.
-        
+
         cout << total_cows - cow_number << '\n';
-        
+
     }
 
 }
@@ -133,7 +133,7 @@ def find_empty(v, x, y):
         if not v[x + dx[i]][y + dy[i]]:
             empty_cell = [x + dx[i], y + dy[i]]
             return empty_cell
-#Checks if a cow has exactly three neighbors, and if the 4th 
+#Checks if a cow has exactly three neighbors, and if the 4th
 # cell has not been pushed already, pushes the cell to the queue.
 def check_cell(x, y, v, to_place):
     if count_neighbors(v, x, y) == 3:
@@ -214,14 +214,14 @@ public class Comfortable_Cows {
         }
         return emptyCell;
     }
-	//Checks if a cow has exactly three neighbors, and if the fourth 
+	//Checks if a cow has exactly three neighbors, and if the fourth
 	//cell has not been pushed already, pushes the cell to the queue.
     public static void check_cell(int x, int y, boolean[][] v, Queue<int[]> to_place) {
         if (count_neighbors(v, x, y) == 3) {
             int[] emptyCell = find_empty(v, x, y);
             if (!v[emptyCell[0]][emptyCell[1]]) {
                 to_place.add(emptyCell);
-            }   
+            }
         }
     }
 	public static void main(String[] args) throws IOException {
