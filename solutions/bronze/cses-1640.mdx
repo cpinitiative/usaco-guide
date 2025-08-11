@@ -27,19 +27,19 @@ Note that this code uses an `ordered map`, which does add a log factor to the co
 using namespace std;
 
 int main() {
-    int n, x;
-    cin >> n >> x;
-    map<int, int> m;
-    for (int i = 0; i < n; i++) {
-        int a;
-        cin >> a;
-        if (m.count(x - a)) {
-            cout << i + 1 << " " << m[x - a] + 1 << endl;
-            return 0;
-        }
-        m[a] = i;
-    }
-    cout << "IMPOSSIBLE" << endl;
+	int n, x;
+	cin >> n >> x;
+	map<int, int> m;
+	for (int i = 0; i < n; i++) {
+		int a;
+		cin >> a;
+		if (m.count(x - a)) {
+			cout << i + 1 << " " << m[x - a] + 1 << endl;
+			return 0;
+		}
+		m[a] = i;
+	}
+	cout << "IMPOSSIBLE" << endl;
 }
 ```
 </CPPSection>
@@ -50,23 +50,23 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer(br.readLine());
-        int n = Integer.parseInt(st.nextToken());
-        int x = Integer.parseInt(st.nextToken());
-        Map<Integer, Integer> m = new HashMap<>();
-        st = new StringTokenizer(br.readLine());
-        for (int i = 0; i < n; i++) {
-            int a = Integer.parseInt(st.nextToken());
-            if (m.containsKey(x - a)) {
-                System.out.println((i + 1) + " " + (m.get(x - a) + 1));
-                return;
-            }
-            m.put(a, i);
-        }
-        System.out.println("IMPOSSIBLE");
-    }
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int n = Integer.parseInt(st.nextToken());
+		int x = Integer.parseInt(st.nextToken());
+		Map<Integer, Integer> m = new HashMap<>();
+		st = new StringTokenizer(br.readLine());
+		for (int i = 0; i < n; i++) {
+			int a = Integer.parseInt(st.nextToken());
+			if (m.containsKey(x - a)) {
+				System.out.println((i + 1) + " " + (m.get(x - a) + 1));
+				return;
+			}
+			m.put(a, i);
+		}
+		System.out.println("IMPOSSIBLE");
+	}
 }
 ```
 </JavaSection>
@@ -80,10 +80,10 @@ n, x = map(int, input().split())
 nums = list(map(int, input().split()))
 m = {}
 for i, a in enumerate(nums):
-    if x - a in m:
-        print(i + 1, m[x - a] + 1)
-        exit()
-    m[a] = i
+	if x - a in m:
+		print(i + 1, m[x - a] + 1)
+		exit()
+	m[a] = i
 print("IMPOSSIBLE")
 ```
 </PySection>
@@ -110,29 +110,27 @@ We can sort the array and use a left pointer and right pointer. If the sum is gr
 using namespace std;
 
 int main() {
-    int n, x;
-    cin >> n >> x;
-    vector<pair<int, int>> nums(n);
-    for (int i = 0; i < n; i++) {
-        cin >> nums[i].first;
-        nums[i].second = i;
-    }
-    sort(nums.begin(), nums.end());
-    int l = 0, r = n - 1;
-    while (l < r) {
-        int sum = nums[l].first + nums[r].first;
-        if (sum == x) {
-            cout << nums[l].second + 1 << " " << nums[r].second + 1 << endl;
-            return 0;
-        } else if (sum < x) {
-            l++;
-        } else if (sum > x) {
-            r--;
-        }
-    }
-    if (l == r) {
-        cout << "IMPOSSIBLE" << endl;
-    }
+	int n, x;
+	cin >> n >> x;
+	vector<pair<int, int>> nums(n);
+	for (int i = 0; i < n; i++) {
+		cin >> nums[i].first;
+		nums[i].second = i;
+	}
+	sort(nums.begin(), nums.end());
+	int l = 0, r = n - 1;
+	while (l < r) {
+		int sum = nums[l].first + nums[r].first;
+		if (sum == x) {
+			cout << nums[l].second + 1 << " " << nums[r].second + 1 << endl;
+			return 0;
+		} else if (sum < x) {
+			l++;
+		} else if (sum > x) {
+			r--;
+		}
+	}
+	if (l == r) { cout << "IMPOSSIBLE" << endl; }
 }
 ```
 </CPPSection>
@@ -143,31 +141,31 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer(br.readLine());
-        int n = Integer.parseInt(st.nextToken());
-        int x = Integer.parseInt(st.nextToken());
-        List<int[]> nums = new ArrayList<>();
-        st = new StringTokenizer(br.readLine());
-        for (int i = 0; i < n; i++) {
-            nums.add(new int[]{Integer.parseInt(st.nextToken()), i});
-        }
-        nums.sort(Comparator.comparingInt(a -> a[0]));
-        int l = 0, r = n - 1;
-        while (l < r) {
-            int sum = nums.get(l)[0] + nums.get(r)[0];
-            if (sum == x) {
-                System.out.println((nums.get(l)[1] + 1) + " " + (nums.get(r)[1] + 1));
-                return;
-            } else if (sum < x) {
-                l++;
-            } else {
-                r--;
-            }
-        }
-        System.out.println("IMPOSSIBLE");
-    }
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int n = Integer.parseInt(st.nextToken());
+		int x = Integer.parseInt(st.nextToken());
+		List<int[]> nums = new ArrayList<>();
+		st = new StringTokenizer(br.readLine());
+		for (int i = 0; i < n; i++) {
+			nums.add(new int[] {Integer.parseInt(st.nextToken()), i});
+		}
+		nums.sort(Comparator.comparingInt(a -> a[0]));
+		int l = 0, r = n - 1;
+		while (l < r) {
+			int sum = nums.get(l)[0] + nums.get(r)[0];
+			if (sum == x) {
+				System.out.println((nums.get(l)[1] + 1) + " " + (nums.get(r)[1] + 1));
+				return;
+			} else if (sum < x) {
+				l++;
+			} else {
+				r--;
+			}
+		}
+		System.out.println("IMPOSSIBLE");
+	}
 }
 ```
 </JavaSection>
@@ -179,14 +177,14 @@ nums = [(int(val), i) for i, val in enumerate(input().split())]
 nums.sort()
 l, r = 0, n - 1
 while l < r:
-    sum = nums[l][0] + nums[r][0]
-    if sum == x:
-        print(nums[l][1] + 1, nums[r][1] + 1)
-        exit()
-    elif sum < x:
-        l += 1
-    else:
-        r -= 1
+	sum = nums[l][0] + nums[r][0]
+	if sum == x:
+		print(nums[l][1] + 1, nums[r][1] + 1)
+		exit()
+	elif sum < x:
+		l += 1
+	else:
+		r -= 1
 print("IMPOSSIBLE")
 ```
 </PySection>
