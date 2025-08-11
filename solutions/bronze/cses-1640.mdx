@@ -7,28 +7,35 @@ author: Michael Cao, Benjamin Qi, Brad Ma, Ryan Chou, David Zhang, David Zhou
 
 ## Solution 1 - Hashmap
 
-Using a `hashmap`, we can store the numbers in the array as keys and their indices as values. To check if a pair exists, we use the hashmap to quickly look up if any past value plus the current one equals $x$. If so, we output the current index and the one stored in the hashmap.
-
-<LanguageSection>
-
-<CPPSection>
+Using a hash map, we can store the numbers in the array as keys and their indices as values.
+To check if a pair exists, we use the hashmap to quickly look up if any past value plus the current one equals $x$.
+If so, we output the current index and the one stored in the hashmap.
 
 ## Implementation
 
-**Time Complexity:** $\mathcal{O}(N\log N)$
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+<CPPSection>
 
 <Warning>
-Note that this code uses `std::map` instead of `std::unordered_map`, which does add a log factor to the complexity. This is because CSES has anti-hash test cases, which are specifically designed to heavily slow down unordered maps.
+
+Note that this code uses `std::map` instead of `std::unordered_map`, which does add a log factor to the complexity.
+This is because CSES has anti-hash test cases, which are specifically designed to heavily slow down unordered maps.
+
 </Warning>
 
 ```cpp
 #include <iostream>
 #include <map>
+
 using namespace std;
 
 int main() {
-	int n, x;
+	int n;
+	int x;
 	cin >> n >> x;
+
 	map<int, int> m;
 	for (int i = 0; i < n; i++) {
 		int a;
@@ -39,16 +46,13 @@ int main() {
 		}
 		m[a] = i;
 	}
+
 	cout << "IMPOSSIBLE" << endl;
 }
 ```
+
 </CPPSection>
-
 <JavaSection>
-
-## Implementation
-
-**Time Complexity:** $\mathcal{O}(N)$
 
 ```java
 import java.io.*;
@@ -60,6 +64,7 @@ public class Main {
 		StringTokenizer st = new StringTokenizer(br.readLine());
 		int n = Integer.parseInt(st.nextToken());
 		int x = Integer.parseInt(st.nextToken());
+
 		Map<Integer, Integer> m = new HashMap<>();
 		st = new StringTokenizer(br.readLine());
 		for (int i = 0; i < n; i++) {
@@ -70,35 +75,36 @@ public class Main {
 			}
 			m.put(a, i);
 		}
+
 		System.out.println("IMPOSSIBLE");
 	}
 }
 ```
-</JavaSection>
 
+</JavaSection>
 <PySection>
 
-## Implementation
-
-**Time Complexity:** $\mathcal{O}(N)$
-
 <Warning>
-This code TLEs even with PyPy
+
+The below code TLEs on a couple test cases due to anti-hashing test cases on CSES.
+
 </Warning>
 
 ```py
 n, x = map(int, input().split())
 nums = list(map(int, input().split()))
+
 m = {}
 for i, a in enumerate(nums):
 	if x - a in m:
 		print(i + 1, m[x - a] + 1)
-		exit()
+		break
 	m[a] = i
-print("IMPOSSIBLE")
+else:
+	print("IMPOSSIBLE")
 ```
-</PySection>
 
+</PySection>
 </LanguageSection>
 
 ## Solution 2 - Two Pointers
@@ -110,8 +116,8 @@ We can sort the array and use a left pointer and right pointer. If the sum is gr
 **Time Complexity:** $\mathcal{O}(N\log N)$
 
 <LanguageSection>
-
 <CPPSection>
+
 ```cpp
 #include <algorithm>
 #include <iostream>
@@ -144,9 +150,10 @@ int main() {
 	if (l == r) { cout << "IMPOSSIBLE" << endl; }
 }
 ```
-</CPPSection>
 
+</CPPSection>
 <JavaSection>
+
 ```java
 import java.io.*;
 import java.util.*;
@@ -157,6 +164,7 @@ public class Main {
 		StringTokenizer st = new StringTokenizer(br.readLine());
 		int n = Integer.parseInt(st.nextToken());
 		int x = Integer.parseInt(st.nextToken());
+
 		List<int[]> nums = new ArrayList<>();
 		st = new StringTokenizer(br.readLine());
 		for (int i = 0; i < n; i++) {
@@ -175,18 +183,23 @@ public class Main {
 				r--;
 			}
 		}
+
 		System.out.println("IMPOSSIBLE");
 	}
 }
 ```
-</JavaSection>
 
+</JavaSection>
 <PySection>
+
 ```py
 n, x = map(int, input().split())
+
 nums = [(int(val), i) for i, val in enumerate(input().split())]
 nums.sort()
-l, r = 0, n - 1
+
+l = 0
+r = n - 1
 while l < r:
 	sum = nums[l][0] + nums[r][0]
 	if sum == x:
@@ -196,8 +209,10 @@ while l < r:
 		l += 1
 	else:
 		r -= 1
-print("IMPOSSIBLE")
-```
-</PySection>
 
+print("IMPOSSIBLE")
+
+```
+
+</PySection>
 </LanguageSection>
