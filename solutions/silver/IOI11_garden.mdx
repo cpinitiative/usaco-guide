@@ -68,13 +68,16 @@ using ll = long long;
 constexpr int INF = 1e9;
 
 void count_routes(int n, int m, int p, int r[][2], int q, int g[]) {
-	std::vector<std::vector<std::array<int, 2>>> adj(n), rev(n);
+	std::vector<std::vector<std::array<int, 2>>> adj(n);
 	for (int i = 0; i < m; i++) {
 		adj[r[i][0]].push_back({r[i][1], i});
 		adj[r[i][1]].push_back({r[i][0], i});
 	}
 
+	std::vector<std::vector<std::array<int, 2>>> rev(n);
 	for (int i = 0; i < n; i++) {
+		// we only care about the best two edges
+		// note that the edges are already in sorted order
 		if (adj[i].size() > 2) adj[i].resize(2);
 		for (const auto &[j, w] : adj[i]) { rev[j].push_back({i, w}); }
 	}
@@ -96,23 +99,28 @@ void count_routes(int n, int m, int p, int r[][2], int q, int g[]) {
 
 			int wt = adj[u][0][1];
 			for (const auto &[j, w] : rev[u]) {
+				// make sure we are allowed to take our current edge
 				if (f == 0 && w == wt && adj[u].size() > 1) continue;
 				if (f == 1 && w != wt && adj[u].size() > 1) continue;
+
 				int flag = w != adj[j][0][1];
 				bfs.push({t + 1, j, flag});
 			}
 		}
 
+		// distance will be dist[i][0] because we always start with the best edge
 		for (int i = 0; i < n; i++) { to_p[i][tt] = dist[i][0]; }
 
 		dist.assign(n, {INF, INF});
 	}
 
-	/** @return {cycle length for (p, f), time we visit (p, 1 - f)} */ *const auto
-	    get_cycle = [&](int f) -> std::array<int, 2> {
-		int cycle_len = 0, saw = 0;
+	/** @return {cycle length for (p, f), time we visit (p, 1 - f)} */ 
+	const auto get_cycle = [&](int f) -> std::array<int, 2> {
+		int cycle_len = 0;
+		int saw = 0;
 		std::vector<std::array<bool, 2>> vis(n);
 
+		// we keep on visiting nodes until we reach node p again or reach a cycle
 		int node = p, flag = f, trav = 0;
 		while (!vis[node][flag]) {
 			vis[node][flag] = true;
@@ -140,6 +148,7 @@ void count_routes(int n, int m, int p, int r[][2], int q, int g[]) {
 	for (int t = 0; t < q; t++) {
 		int k = g[t], res = 0;
 		for (int i = 0; i < n; i++) {
+			// we check to_p[i][0] and to_p[i][1] to see if they cycle into p
 			if (to_p[i][0] <= k &&
 			    ((k - to_p[i][0]) % s1[0] == 0 || (k - to_p[i][0]) % s1[0] == s1[1])) {
 				res++;
