@@ -65,34 +65,27 @@ void check_cell(int x, int y, vector<vector<bool>> &v, queue<array<int,2>> &to_p
 
 int main() {
 	int n; cin >> n;
-    //Boolean 2D vecotor accounting for expansion past the 1000 by 1000 grid
     vector<vector<bool>> filled(3000, vector<bool> (3000));
     queue<array<int,2>> to_place;
 
     int total_cows = 0;
 
     for (int cow_number = 1; cow_number <= n; cow_number++) {
-        //New cow to add to the grid
         array<int,2> new_cow;
         cin >> new_cow[0] >> new_cow[1];
-        //Offset the grid coordinates by 1000
         new_cow[0] += 1000, new_cow[1] += 1000;
         to_place.push(new_cow);
 
         while (!to_place.empty()) {
-            //Get the current cow we are processing from the queue and remove it
+            // Get the current cow we are processing from the queue and remove it
             array<int,2> current_cow = to_place.front();
             to_place.pop();
-            // If the cell is already filled, do nothing
             if (filled[current_cow[0]][current_cow[1]]) continue;
-            //Otherwise, add a new cow to the total amount of cows
             total_cows++;
-			// Set the current (x,y) to filled
             filled[current_cow[0]][current_cow[1]] = true;
 
             //Check the current cell and all of the neighboring cells that have a cow, to see
             // if they are affected.
-
             check_cell(current_cow[0], current_cow[1], filled, to_place);
             for (int i = 0; i < 4; i++) {
                 if (filled[current_cow[0] + dx[i]][current_cow[1] + dy[i]]) check_cell(current_cow[0] + dx[i], current_cow[1] + dy[i], filled, to_place);
@@ -100,9 +93,7 @@ int main() {
 
         }
 
-        //The total number of cows minus the amount of cows placed by farmer nhoj
-        // specifically, is the additional number of cows required.
-
+        //Answer is the total number of cows minus the amount of cows placed by farmer nhoj specifically
         cout << total_cows - cow_number << '\n';
 
     }
