@@ -185,7 +185,7 @@ export default function ProblemHits({ shuffle, random }) {
   function shuffleArr(arr) {
     let nArr = [...arr]
     let l = nArr.length;
-    
+
     while (l > 0) {
       const i = Math.floor(Math.random() * l--);
       [nArr[l], nArr[i]] = [nArr[i], nArr[l]];
