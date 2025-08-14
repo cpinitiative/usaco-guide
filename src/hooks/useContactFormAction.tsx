@@ -1,7 +1,7 @@
 import { getFunctions, httpsCallable } from 'firebase/functions';
 import { useCallback } from 'react';
-import { useFirebaseApp } from './useFirebase';
 import { useFirebaseUser } from '../context/UserDataContext/UserDataContext';
+import { useFirebaseApp } from './useFirebase';
 
 export default function useContactFormAction() {
   const firebaseApp = useFirebaseApp();
