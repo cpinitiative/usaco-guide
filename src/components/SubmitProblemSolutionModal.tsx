@@ -1,4 +1,9 @@
-import { Transition } from '@headlessui/react';
+import {
+  Dialog,
+  DialogBackdrop,
+  DialogPanel,
+  Transition,
+} from '@headlessui/react';
 import className from 'classnames';
 import * as React from 'react';
 import { LANGUAGE_LABELS } from '../context/UserDataContext/properties/simpleProperties';
@@ -195,18 +200,15 @@ export default function SubmitProblemSolutionModal({
   );
 
   return (
-    <Transition
-      show={isOpen}
-      as="div"
-      className="fixed inset-0 z-30 h-full overflow-y-auto"
+    <Dialog
+      open={isOpen}
+      onClose={onClose}
+      className="fixed inset-0 z-50 overflow-y-auto"
     >
-      <form
-        className="flex min-h-full items-end justify-center px-4 pt-4 pb-12 text-center sm:block"
-        onSubmit={handleSubmit}
-      >
-        <Transition.Child
-          as="div"
-          className="fixed inset-0 transition-opacity"
+      <div className="flex min-h-full items-center justify-center p-4 text-center">
+        <Transition
+          appear
+          show={true}
           enter="ease-out duration-300"
           enterFrom="opacity-0"
           enterTo="opacity-100"
@@ -214,105 +216,74 @@ export default function SubmitProblemSolutionModal({
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="absolute inset-0 bg-gray-500 opacity-75 dark:bg-gray-900" />
-        </Transition.Child>
-        <span
-          className="hidden sm:inline-block sm:h-screen sm:align-middle"
-          aria-hidden="true"
-        >
-          &#8203;
-        </span>
+          <DialogBackdrop className="fixed inset-0 bg-gray-500/75 dark:bg-gray-900/75" />
+        </Transition>
 
-        <Transition.Child
-          as="div"
-          className="inline-block w-full transform overflow-hidden rounded-lg text-left align-bottom shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-4xl sm:align-middle"
+        <Transition
+          appear
+          show={true}
           enter="ease-out duration-300"
           enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
           enterTo="opacity-100 translate-y-0 sm:scale-100"
           leave="ease-in duration-200"
           leaveFrom="opacity-100 translate-y-0 sm:scale-100"
           leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="modal-headline"
         >
-          <div className="dark:bg-dark-surface bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-            <div className="absolute top-0 right-0 hidden pt-4 pr-4 sm:block">
-              <button
-                type="button"
-                onClick={() => onClose()}
-                className="dark:bg-dark-surface rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-hidden dark:text-gray-500 dark:hover:text-gray-400"
-              >
-                <span className="sr-only">Close</span>
-                {/* Heroicon name: x */}
-                <svg
-                  className="h-6 w-6"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  aria-hidden="true"
+          <DialogPanel className="dark:bg-dark-surface relative w-full max-w-4xl transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all">
+            <form onSubmit={handleSubmit}>
+              <div className="px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                <h3
+                  className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100"
+                  id="modal-headline"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-              </button>
-            </div>
-
-            <h3
-              className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100"
-              id="modal-headline"
-            >
-              Submit Solution for {problem?.name}
-            </h3>
-            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-              Help others out by submitting a solution for {problem?.name}!
-            </p>
-            <div className="mt-6 space-y-6">
-              {showSuccess ? successMessage : solutionForm}
-            </div>
-          </div>
-          <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6 dark:bg-gray-900">
-            {showSuccess ? (
-              <span className="flex w-full rounded-md shadow-sm sm:ml-3 sm:w-auto">
-                <button
-                  type="button"
-                  onClick={() => onClose()}
-                  className="focus:shadow-outline-blue inline-flex w-full justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-base leading-6 font-medium text-white shadow-sm transition duration-150 ease-in-out hover:bg-blue-500 focus:border-blue-700 focus:outline-hidden sm:text-sm sm:leading-5"
-                >
-                  Done
-                </button>
-              </span>
-            ) : (
-              <>
-                <span className="flex w-full rounded-md shadow-sm sm:ml-3 sm:w-auto">
-                  <button
-                    type="submit"
-                    className="focus:shadow-outline-blue inline-flex w-full justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-base leading-6 font-medium text-white shadow-sm transition duration-150 ease-in-out hover:bg-blue-500 focus:border-blue-700 focus:outline-hidden sm:text-sm sm:leading-5"
-                    disabled={loading}
-                  >
-                    {loading ? 'Submitting...' : 'Submit Solution'}
-                  </button>
-                </span>
-                <span className="mt-3 flex w-full rounded-md shadow-sm sm:mt-0 sm:w-auto">
-                  <button
-                    type="button"
-                    className="focus:shadow-outline-blue inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-base leading-6 font-medium text-gray-700 shadow-sm transition duration-150 ease-in-out hover:text-gray-500 focus:border-blue-300 focus:outline-hidden sm:text-sm sm:leading-5 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200"
-                    onClick={() => onClose()}
-                    disabled={loading}
-                  >
-                    Cancel
-                  </button>
-                </span>
-              </>
-            )}
-          </div>
-        </Transition.Child>
-      </form>
-    </Transition>
+                  Submit Solution for {problem?.name}
+                </h3>
+                <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                  Help others out by submitting a solution for {problem?.name}!
+                </p>
+                <div className="mt-6 space-y-6">
+                  {showSuccess ? successMessage : solutionForm}
+                </div>
+              </div>
+              <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6 dark:bg-gray-900">
+                {showSuccess ? (
+                  <span className="flex w-full rounded-md shadow-sm sm:ml-3 sm:w-auto">
+                    <button
+                      type="button"
+                      onClick={() => onClose()}
+                      className="focus:shadow-outline-blue inline-flex w-full justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-base leading-6 font-medium text-white shadow-sm transition duration-150 ease-in-out hover:bg-blue-500 focus:border-blue-700 focus:outline-hidden sm:text-sm sm:leading-5"
+                    >
+                      Done
+                    </button>
+                  </span>
+                ) : (
+                  <>
+                    <span className="flex w-full rounded-md shadow-sm sm:ml-3 sm:w-auto">
+                      <button
+                        type="submit"
+                        className="focus:shadow-outline-blue inline-flex w-full justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-base leading-6 font-medium text-white shadow-sm transition duration-150 ease-in-out hover:bg-blue-500 focus:border-blue-700 focus:outline-hidden sm:text-sm sm:leading-5"
+                        disabled={loading}
+                      >
+                        {loading ? 'Submitting...' : 'Submit Solution'}
+                      </button>
+                    </span>
+                    <span className="mt-3 flex w-full rounded-md shadow-sm sm:mt-0 sm:w-auto">
+                      <button
+                        type="button"
+                        className="focus:shadow-outline-blue inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-base leading-6 font-medium text-gray-700 shadow-sm transition duration-150 ease-in-out hover:text-gray-500 focus:border-blue-300 focus:outline-hidden sm:text-sm sm:leading-5 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200"
+                        onClick={() => onClose()}
+                        disabled={loading}
+                      >
+                        Cancel
+                      </button>
+                    </span>
+                  </>
+                )}
+              </div>
+            </form>
+          </DialogPanel>
+        </Transition>
+      </div>
+    </Dialog>
   );
 }

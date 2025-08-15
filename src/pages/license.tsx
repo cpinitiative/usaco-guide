@@ -8,7 +8,7 @@ import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
 export default function LicensePage(props: PageProps) {
   return (
     <Layout>
-      <SEO title="License and Usage" />
+      <SEO title="License and Usage" image={null} pathname={props.path} />
 
       <TopNavigationBar />
 

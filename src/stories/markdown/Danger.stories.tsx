@@ -1,4 +1,4 @@
-import { Story } from '@storybook/react';
+import { StoryFn } from '@storybook/react-webpack5';
 import React, { ComponentProps } from 'react';
 import Danger from '../../components/markdown/Danger';
 import { IncompleteSection as MarkdownIncompleteSection } from '../../components/markdown/IncompleteSection';
@@ -11,7 +11,7 @@ export default {
   decorators: [markdownDecorator],
 };
 
-const Template: Story<ComponentProps<typeof Danger>> = args => (
+const Template: StoryFn<ComponentProps<typeof Danger>> = args => (
   <Danger {...args} />
 );
 

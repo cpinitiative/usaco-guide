@@ -7,8 +7,6 @@ export const LazyLoad = ({ children }: { children: React.ReactNode }) => {
 
 // Development mode check
 export const isDevelopment = process.env.NODE_ENV === 'development';
-console.log('Current NODE_ENV:', process.env.NODE_ENV);
-console.log('isDevelopment:', isDevelopment);
 
 // Lazy loading configuration
 // set enabled to false to disable lazy loading

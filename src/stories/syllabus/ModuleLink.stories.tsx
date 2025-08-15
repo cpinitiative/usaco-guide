@@ -1,4 +1,4 @@
-import { Story } from '@storybook/react';
+import { StoryFn } from '@storybook/react-webpack5';
 import React from 'react';
 import ModuleLink from '../../components/syllabus/ModuleLink';
 import { ModuleLinkInfo } from '../../models/module';
@@ -7,7 +7,7 @@ export default {
   title: 'Syllabus/ModuleLink',
 };
 
-const Template: Story = ({
+const Template: StoryFn = ({
   moduleId,
   section,
   title,

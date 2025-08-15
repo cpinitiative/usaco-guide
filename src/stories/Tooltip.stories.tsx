@@ -1,4 +1,4 @@
-import { Story } from '@storybook/react';
+import { StoryFn } from '@storybook/react-webpack5';
 import React, { ComponentProps } from 'react';
 import AsteriskComponent from '../components/Tooltip/Asterisk';
 import TextTooltipComponent from '../components/Tooltip/TextTooltip';
@@ -13,7 +13,7 @@ export default {
   },
 };
 
-const Template: Story<ComponentProps<typeof Tooltip>> = args => {
+const Template: StoryFn<ComponentProps<typeof Tooltip>> = args => {
   // We need to use a ref here because tippy by default appends to the end of the body element
   // Storybook dark mode doesn't add the dark class to the html element, so dark mode styles won't work otherwise
   const ref = React.useRef<HTMLDivElement>(null);
@@ -56,7 +56,7 @@ BaseCompact.args = {
   ),
 };
 
-const TextTooltipTemplate: Story<
+const TextTooltipTemplate: StoryFn<
   ComponentProps<typeof TextTooltipComponent>
 > = args => {
   // We need to use a ref here because tippy by default appends to the end of the body element
@@ -103,7 +103,7 @@ TextTooltipCompact.args = {
   ),
 };
 
-const AsteriskTooltipTemplate: Story<
+const AsteriskTooltipTemplate: StoryFn<
   ComponentProps<typeof AsteriskComponent>
 > = args => {
   // We need to use a ref here because tippy by default appends to the end of the body element
