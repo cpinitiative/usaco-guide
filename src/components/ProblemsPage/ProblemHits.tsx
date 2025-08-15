@@ -10,18 +10,18 @@ import {
   useHideModulesSetting,
   useShowTagsSetting,
 } from '../../context/UserDataContext/properties/simpleProperties';
+import { useUserProgressOnProblems } from '../../context/UserDataContext/properties/userProgress';
 import {
   AlgoliaProblemInfo,
   getProblemURL,
   isUsaco,
   ProblemInfo,
-  recentUsaco,
   ProblemProgress,
+  recentUsaco,
 } from '../../models/problem';
 import DifficultyBox from '../DifficultyBox';
 import Info from '../markdown/Info';
 import ProblemStatusCheckbox from '../markdown/ProblemsList/ProblemStatusCheckbox';
-import {  useUserProgressOnProblems } from '../../context/UserDataContext/properties/userProgress';
 
 type AlgoliaProblemInfoHit = Hit<BaseHit> & AlgoliaProblemInfo;
 interface ProblemHitProps {
@@ -179,11 +179,12 @@ function ProblemHit({ hit }: ProblemHitProps) {
 
 export default function ProblemHits({ shuffle, random }) {
   const { hits } = useHits() as { hits: AlgoliaProblemInfoHit[] };
-  const [displayHits, setDisplayHits] = React.useState<AlgoliaProblemInfoHit[]>(hits);
+  const [displayHits, setDisplayHits] =
+    React.useState<AlgoliaProblemInfoHit[]>(hits);
   const userProgressOnProblems = useUserProgressOnProblems();
 
   function shuffleArr(arr) {
-    let nArr = [...arr]
+    let nArr = [...arr];
     let l = nArr.length;
 
     while (l > 0) {
@@ -200,25 +201,29 @@ export default function ProblemHits({ shuffle, random }) {
     } else {
       setDisplayHits(hits);
     }
-  }, [shuffle, hits])
+  }, [shuffle, hits]);
 
   React.useEffect(() => {
     if (random) {
       let unsolvedURLs: string[] = [];
       for (let h of hits) {
-        const status: ProblemProgress = userProgressOnProblems[String(h.uniqueId)] || 'Not Attempted';
+        const status: ProblemProgress =
+          userProgressOnProblems[String(h.uniqueId)] || 'Not Attempted';
         if (status === 'Not Attempted') {
           unsolvedURLs.push(h.url);
         }
       }
 
       if (unsolvedURLs.length > 0) {
-        window.open(unsolvedURLs[Math.floor(Math.random() * unsolvedURLs.length)], '_blank')
+        window.open(
+          unsolvedURLs[Math.floor(Math.random() * unsolvedURLs.length)],
+          '_blank'
+        );
       }
     }
-  }, [random])
+  }, [random]);
 
-  if (!hits.length||!displayHits.length) {
+  if (!hits.length || !displayHits.length) {
     return (
       <Info title="No Problems Found">
         No problems were found matching your search criteria. Try changing your
