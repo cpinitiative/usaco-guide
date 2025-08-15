@@ -4,25 +4,32 @@ source: USACO Silver 2021 Feburary
 title: Comfortable Cows
 author: Arnav Gokhale
 ---
+
 [Official Analysis (C++)](https://usaco.org/current/data/sol_prob1_silver_feb21.html)
+
 ## Explanation
 
-
-Firstly, at any point, if there is a cow adjacent to exactly three other cows, Farmer Nhoj must place a cow in the missing fourth spot. It now becomes a flood fill question, where, after adding each additional cow, we need to check how many more cows get added as a result, and add them to the answer.
+Notice that at any point, if there is a cow adjacent to exactly three other cows,
+Farmer Nhoj must place a cow in the missing fourth spot.
+It now becomes a flood fill question, where, after adding each additional cow, we need to check how many more cows get added as a result, and add them to the answer.
 
 We can maintain a 2D boolean array that represents whether each cell contains a cow and a queue that represents the coordinates of new cows being added.
 
-At each step, we add the cow at $$(x, y)$$ to our queue. While the queue is not empty, we must pop the queue, and check if the current cow being added at (x,y) or any of its neighbors at locations $$(x-1, y), (x+1, y), (x, y - 1),$$ or $$(x, y + 1) $$ has exactly three adjacenct cows.
+At each step, we add the cow at $(x, y)$ to our queue.
+While the queue is not empty, we must pop the queue,
+and check if the current cow being added or any of its neighbors has exactly three adjacenct cows.
 
-If any of the above cells has exactly adjacenct neighbors and has not already been visited, push the coordinates of the missing fourth adjacenct cell into the queue.
+If any of the above cells has exactly adjacenct neighbors and has not already been visited,
+we push the coordinates of the missing fourth adjacenct cell into the queue.
 
-At each step, count the total number of cells filled by keeping a counter. Then, the number of additional cows necessary would be the total number of cows minus the current number of cows.
+At each step, count the total number of cells filled by keeping a counter.
+Then, the number of additional cows necessary would be the total number of cows minus the current number of cows.
 
 It is also important to realize that the coordinates of additional cows may exceed the 1000 by 1000 grid set for new cows by up to 500 in each direction. So to be safe, you can make the grid 3000 by 3000.
 
 ## Implementation
 
-**Time Complexity:** $\mathcal{O}\bigl(N + (\text{GRID SIZE})^2\bigr)$
+**Time Complexity:** $\mathcal{O}\left(N + G^2\right)$, where $G$ is the side length othe grid.
 
 <LanguageSection>
 <CPPSection>
@@ -97,8 +104,8 @@ int main() {
             }
         }
 
-        // Answer is the total number of cows minus the amount of cows placed by farmer nhoj specifically
-        cout << total_cows - cow_number << '\n';
+        // Output is number of cows - the amount of cows placed by Nhoj
+        cout << total_cows - cow_number << endl;
     }
 }
 ```
@@ -201,7 +208,7 @@ dx = [1, 0, -1, 0]
 dy = [0, 1, 0, -1]
 
 def count_neighbors(v, x, y):
-    """ :return: the amount of neighbors that surrounds a specific cow in the grid"""
+    """:return: the amount of neighbors that surrounds a specific cow in the grid"""
     count_neighbors = 0
     for i in range (4):
         if v[x + dx[i]][y + dy[i]]:
