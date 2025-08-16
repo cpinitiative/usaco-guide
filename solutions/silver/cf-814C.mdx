@@ -191,12 +191,8 @@ The process is performed independently for each of the 26 lowercase English lett
 
 ```cpp
 vector<int> bad;
-for (int i = 0; i < n; i++)
-{
-    if (s[i] != c)
-    {
-        bad.push_back(i);
-    }
+for (int i = 0; i < n; i++) {
+	if (s[i] != c) { bad.push_back(i); }
 }
 int k = bad.size();
 ```
@@ -204,10 +200,7 @@ int k = bad.size();
 + **Handle the Easy Case (m >= k)**: If the number of allowed changes m is greater than or equal to the total number of mismatched characters k, we can simply change all of them. This would make the entire string consist of only the character c. Therefore, the longest possible substring is the string itself, with length n.
 
 ```cpp
-for (int m = k; m <= maxM; m++)
-{
-    dp[c - 'a'][m] = n;
-}
+for (int m = k; m <= maxM; m++) { dp[c - 'a'][m] = n; }
 ```
 
 + **Sliding Window Over Mismatches (m < k)**: This is the main part of the algorithm. To get the longest substring of c's, we need to pick a contiguous segment of the original string and use our m changes to fix all the mismatched characters within that segment.
@@ -223,28 +216,25 @@ For each window of m bad characters to fix, starting from bad[i] and ending at b
 The length of this potential substring is right - left + 1. The code calculates this for every possible window of m bad characters and takes the maximum length.
 
 ```cpp
-for (int m = 0; m < k; m++)
-{
-    int maxLen = 0;
-    // ... (Special case for m=0 is handled, but the main logic is here)
-    // This loop slides a window of `m` bad characters to fix
-    for (int i = 0; i + m - 1 < k; i++)
-    {
-        // The substring starts after the previous bad character (or from index 0)
-        int left = (i == 0) ? 0 : bad[i - 1] + 1;
-        // The substring ends before the next bad character (or at index n-1)
-        int right = (i + m == k) ? n - 1 : bad[i + m] - 1;
-        maxLen = max(maxLen, right - left + 1);
-    }
-    dp[c - 'a'][m] = maxLen;
+for (int m = 0; m < k; m++) {
+	int maxLen = 0;
+	// ... (Special case for m=0 is handled, but the main logic is here)
+	// This loop slides a window of `m` bad characters to fix
+	for (int i = 0; i + m - 1 < k; i++) {
+		// The substring starts after the previous bad character (or from index 0)
+		int left = (i == 0) ? 0 : bad[i - 1] + 1;
+		// The substring ends before the next bad character (or at index n-1)
+		int right = (i + m == k) ? n - 1 : bad[i + m] - 1;
+		maxLen = max(maxLen, right - left + 1);
+	}
+	dp[c - 'a'][m] = maxLen;
 }
 ```
 + **Enforce Monotonicity**: Logically, with more available changes, the length of the longest substring cannot decrease. If you can make a substring of length L with m-1 changes, you can surely make one of at least length L with m changes. This final loop ensures our dp table reflects this property by setting dp[c-'a'][m] to be the maximum of its current value and the value for m-1.
 
 ```cpp
-for (int m = 1; m <= maxM; m++)
-{
-    dp[c - 'a'][m] = max(dp[c - 'a'][m], dp[c - 'a'][m - 1]);
+for (int m = 1; m <= maxM; m++) {
+	dp[c - 'a'][m] = max(dp[c - 'a'][m], dp[c - 'a'][m - 1]);
 }
 ```
 
@@ -253,10 +243,7 @@ for (int m = 1; m <= maxM; m++)
 - The solve function is very simple. After all the hard work in computeAll, it just performs a direct lookup in the dp table to get the precomputed answer.
 
 ```cpp
-int solve(vector<vector<int>> &dp, int m, char c)
-{
-    return dp[c - 'a'][m];
-}
+int solve(vector<vector<int>> &dp, int m, char c) { return dp[c - 'a'][m]; }
 ```
 
 - The main function orchestrates the process. It reads the input string s, calls computeAll once to pre-fill the dp table, and then enters a loop to answer each of the q queries by calling solve.
@@ -272,99 +259,75 @@ int solve(vector<vector<int>> &dp, int m, char c)
 #include "bits/stdc++.h"
 using namespace std;
 
-vector<vector<int>> computeAll(string &s, int maxM)
-{
-    int n = s.size();
-    vector<vector<int>> dp(26, vector<int>(maxM + 1, 0));
+vector<vector<int>> computeAll(string &s, int maxM) {
+	int n = s.size();
+	vector<vector<int>> dp(26, vector<int>(maxM + 1, 0));
 
-    for (char c = 'a'; c <= 'z'; c++)
-    {
-        vector<int> bad;
-        for (int i = 0; i < n; i++)
-        {
-            if (s[i] != c)
-            {
-                bad.push_back(i);
-            }
-        }
+	for (char c = 'a'; c <= 'z'; c++) {
+		vector<int> bad;
+		for (int i = 0; i < n; i++) {
+			if (s[i] != c) { bad.push_back(i); }
+		}
 
-        int k = bad.size();
+		int k = bad.size();
 
-        for (int m = k; m <= maxM; m++)
-        {
-            dp[c - 'a'][m] = n;
-        }
+		for (int m = k; m <= maxM; m++) { dp[c - 'a'][m] = n; }
 
-        for (int m = 0; m < k; m++)
-        {
-            int maxLen = 0;
+		for (int m = 0; m < k; m++) {
+			int maxLen = 0;
 
-            if (m == 0)
-            {
-                int currentLen = 0;
-                for (int i = 0; i < n; i++)
-                {
-                    if (s[i] == c)
-                    {
-                        currentLen++;
-                        maxLen = max(maxLen, currentLen);
-                    }
-                    else
-                    {
-                        currentLen = 0;
-                    }
-                }
-            }
-            else if (m <= k)
-            {
-                for (int i = 0; i + m - 1 < k; i++)
-                {
-                    int left = (i == 0) ? 0 : bad[i - 1] + 1;
-                    int right = (i + m == k) ? n - 1 : bad[i + m] - 1;
-                    maxLen = max(maxLen, right - left + 1);
-                }
-            }
+			if (m == 0) {
+				int currentLen = 0;
+				for (int i = 0; i < n; i++) {
+					if (s[i] == c) {
+						currentLen++;
+						maxLen = max(maxLen, currentLen);
+					} else {
+						currentLen = 0;
+					}
+				}
+			} else if (m <= k) {
+				for (int i = 0; i + m - 1 < k; i++) {
+					int left = (i == 0) ? 0 : bad[i - 1] + 1;
+					int right = (i + m == k) ? n - 1 : bad[i + m] - 1;
+					maxLen = max(maxLen, right - left + 1);
+				}
+			}
 
-            dp[c - 'a'][m] = maxLen;
-        }
+			dp[c - 'a'][m] = maxLen;
+		}
 
-        for (int m = 1; m <= maxM; m++)
-        {
-            dp[c - 'a'][m] = max(dp[c - 'a'][m], dp[c - 'a'][m - 1]);
-        }
-    }
-    return dp;
+		for (int m = 1; m <= maxM; m++) {
+			dp[c - 'a'][m] = max(dp[c - 'a'][m], dp[c - 'a'][m - 1]);
+		}
+	}
+	return dp;
 }
 
-int solve(vector<vector<int>> &dp, int m, char c)
-{
-    return dp[c - 'a'][m];
-}
+int solve(vector<vector<int>> &dp, int m, char c) { return dp[c - 'a'][m]; }
 
-int main()
-{
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
+int main() {
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL);
 
-    int n = 0;
-    cin >> n;
+	int n = 0;
+	cin >> n;
 
-    string s;
-    cin >> s;
+	string s;
+	cin >> s;
 
-    vector<vector<int>> dp = computeAll(s, n);
+	vector<vector<int>> dp = computeAll(s, n);
 
-    int q = 1;
-    cin >> q;
-    while (q--)
-    {
-        int m;
-        cin >> m;
-        char c;
-        cin >> c;
-        cout << solve(dp, m, c) << "\n";
-    }
-    return 0;
+	int q = 1;
+	cin >> q;
+	while (q--) {
+		int m;
+		cin >> m;
+		char c;
+		cin >> c;
+		cout << solve(dp, m, c) << "\n";
+	}
+	return 0;
 }
 ```
 
