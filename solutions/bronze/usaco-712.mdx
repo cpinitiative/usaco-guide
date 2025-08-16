@@ -449,14 +449,14 @@ Each cow appears exactly twice. Notice that for, say cows A and B to intersect, 
 
 **Approach:**
 
-1. Iterate over all pairs of cows (26 letters → 26 choose 2).  
-2. Extract only the crossings of these two cows.  
+1. Iterate over all pairs of cows (26 letters → 26 choose 2).
+2. Extract only the crossings of these two cows.
 3. Check if the string matches:
    - `ABAB`
    - `BABA`
-4. Count each intersecting pair.  
+4. Count each intersecting pair.
 
-**Time Complexity:** $\mathcal{O}(N)$, where $N$ is the length of FJ's string.  
+**Time Complexity:** $\mathcal{O}(N)$, where $N$ is the length of FJ's string.
 
 ### Implementation
 
@@ -470,47 +470,46 @@ using namespace std;
 
 int main() {
 
-    freopen("circlecross.in", "r", stdin);
+	freopen("circlecross.in", "r", stdin);
 
-    string crossings;
-    cin >> crossings;
+	string crossings;
+	cin >> crossings;
 
-    string a = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    int intersection = 0;
+	string a = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	int intersection = 0;
 
-    for (int i = 0; i < 26; ++i) {
-        for (int j = i + 1; j < 26; ++j) {
-            string result;
+	for (int i = 0; i < 26; ++i) {
+		for (int j = i + 1; j < 26; ++j) {
+			string result;
 
-	// the two cows to choose
-            char cow1 = a[i];
-            char cow2 = a[j];
+			// the two cows to choose
+			char cow1 = a[i];
+			char cow2 = a[j];
 
-	// making a new string filtering out al other cows other than the two desired cows
-            copy_if(crossings.begin(), crossings.end(), back_inserter(result),
-                    [cow1, cow2](char c){ return c == cow1 || c == cow2; });
+			// making a new string filtering out al other cows other than the two
+			// desired cows
+			copy_if(crossings.begin(), crossings.end(), back_inserter(result),
+			        [cow1, cow2](char c) { return c == cow1 || c == cow2; });
 
-	// concatenating the two cows into the two strings that feature the two cases
-            stringstream ss;
-            ss << cow1 << cow2 << cow1 << cow2;
-            string case1 = ss.str();
-            ss.str("");
-            ss.clear();
-            ss << cow2 << cow1 << cow2 << cow1;
-            string case2 = ss.str();
-            ss.str("");
-            ss.clear();
+			// concatenating the two cows into the two strings that feature the two
+			// cases
+			stringstream ss;
+			ss << cow1 << cow2 << cow1 << cow2;
+			string case1 = ss.str();
+			ss.str("");
+			ss.clear();
+			ss << cow2 << cow1 << cow2 << cow1;
+			string case2 = ss.str();
+			ss.str("");
+			ss.clear();
 
-            if (result == case1 || result == case2) {
-                ++intersection;
-            }
-        }
-    }
+			if (result == case1 || result == case2) { ++intersection; }
+		}
+	}
 
-    freopen("circlecross.out", "w", stdout);
-    cout << intersection;
+	freopen("circlecross.out", "w", stdout);
+	cout << intersection;
 }
-
 ```
 </CPPSection>
 </LanguageSection>
