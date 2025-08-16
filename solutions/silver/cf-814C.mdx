@@ -269,20 +269,9 @@ int solve(vvi &dp, int m, char c)
 <CPPSection>
 
 ```cpp
-#pragma GCC optimize("unroll-loops")
-#pragma GCC optimize("O3,unroll-loops")
-#pragma GCC target("avx2,bmi,bmi2,lzcnt,popcnt")
-
 #include "bits/stdc++.h"
-#define int long long
-#define uint unsigned long long
-#define vi vector<int>
-#define vvi vector<vi>
-#define vb vector<bool>
-#define vvb vector<vb>
-#define nl cout << "\n"
-#define dbg(var) cout << var << "\n"
 using namespace std;
+
 vector<vector<int>> computeAll(string &s, int maxM)
 {
     int n = s.size();
@@ -346,12 +335,13 @@ vector<vector<int>> computeAll(string &s, int maxM)
     }
     return dp;
 }
-int solve(vvi &dp, int m, char c)
+
+int solve(vector<vector<int>> &dp, int m, char c)
 {
     return dp[c - 'a'][m];
 }
 
-int32_t main()
+int main()
 {
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
@@ -362,7 +352,7 @@ int32_t main()
     string s;
     cin >> s;
 
-    vvi dp = computeAll(s, n);
+    vector<vector<int>> dp = computeAll(s, n);
 
     int q = 1;
     cin >> q;
@@ -372,7 +362,7 @@ int32_t main()
         cin >> m;
         char c;
         cin >> c;
-        dbg(solve(dp, m, c));
+        cout << solve(dp, m, c) << "\n";
     }
     return 0;
 }
