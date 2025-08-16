@@ -2,7 +2,7 @@
 id: cf-814C
 source: CF
 title: An impassioned circulation of affection
-author: Neo Wang, Qi Wang, Jesse Choe, Kevin Sheng, Rameez Parwez
+author: Neo Wang, Qi Wang, Jesse Choe, Kevin Sheng, Rameez Parwez, Manoj Singh Rawat
 ---
 
 [Official Editorial (C++)](https://codeforces.com/blog/entry/52449)
@@ -11,7 +11,6 @@ author: Neo Wang, Qi Wang, Jesse Choe, Kevin Sheng, Rameez Parwez
 
 For each query we can keep a sliding window where no more than $m$ letters in
 the window are not $c$.
-
 
 ## Implementation
 
@@ -170,7 +169,7 @@ public class Garland {
 </JavaSection>
 </LanguageSection>
 
-## Alternative Solution (Dynamic Programming)
+## Alternative Solution (Precomputation with Sliding Window and DP)
 
 <Warning>
 
@@ -178,34 +177,89 @@ Dynamic programming is a [Gold](/gold/intro-dp) topic.
 
 </Warning>
 
-We are performing up to $200\,000$ queries, so it may be optimal to have some
-way to quickly precompute our answer in constant time.
+This approach solves the problem by precomputing the answers for all possible queries. The problem asks for the length of the longest possible contiguous substring of a single character c, given that you can change at most m other characters in the original string s. The code calculates these answers for every character from 'a' to 'z' and for every possible number of changes m from 0 to n, storing them in a 2D array. This allows each of the q subsequent queries to be answered in constant time.
 
-We can use dynamic programming to cache such answers.
+The core logic revolves around a sliding window technique, not on the string itself, but on the indices of characters that need to be changed.
 
-Define $\texttt{dp}[i][j][k]$ to be the best possible score of the first $i$
-characters, with $j$ amount painted of character $k$. Either two things can
-happen when we add an additional character.
+### The computeAll Function
 
-1. We append the character and paint an additional square.
+This function is responsible for all the precomputation. It returns a 2D vector, dp, where dp[c-'a'][m] stores the answer for the target character c+'a' and the maximum number of changes m.
 
-   $$
-   \texttt{dp}[i+1][j+1][k] = \max(\texttt{dp}[i+1][j+1][k], \texttt{dp}[i][j][k] + 1)
-   $$
+The process is performed independently for each of the 26 lowercase English letters. For a given target character c:
 
-2. We append the character, but since it is the same as our previous character
-   we get to "save" a paint.
-   $$
-   \texttt{dp}[i+1][j][k] = \max(\texttt{dp}[i+1][j][k], \texttt{dp}[i][j][k] + 1)
-   $$
++ **Identify Mismatched Characters**: First, the code finds all the positions in the string s that do not contain the character c. The indices of these _mismatched_ characters are stored in a vector called bad. Let k be the total number of such characters.
 
-Since this only gives us the best possible score that ends with length $i$, we
-can just take the current best and translate it using
-$\texttt{dp}[i+1][j][k] = \max(\texttt{dp}[i+1][j][k], \texttt{dp}[i][j][k])$.
+```cpp
+vector<int> bad;
+for (int i = 0; i < n; i++)
+{
+    if (s[i] != c)
+    {
+        bad.push_back(i);
+    }
+}
+int k = bad.size();
+```
 
-Now, we can query the max painting score for any substring containing the first
-character. However, this is not required; we only have to query the optimal
-paintings with size $n$ (the full string) with $\texttt{dp}[n][m_i][c_i]$.
++ **Handle the Easy Case (m >= k)**: If the number of allowed changes m is greater than or equal to the total number of mismatched characters k, we can simply change all of them. This would make the entire string consist of only the character c. Therefore, the longest possible substring is the string itself, with length n.
+
+```cpp
+for (int m = k; m <= maxM; m++)
+{
+    dp[c - 'a'][m] = n;
+}
+```
+
++ **Sliding Window Over Mismatches (m < k)**: This is the main part of the algorithm. To get the longest substring of c's, we need to pick a contiguous segment of the original string and use our m changes to fix all the mismatched characters within that segment.
+
+The most efficient way to form a long substring is to use our m changes to fix a contiguous block of m mismatched characters from our bad list. The code iterates through all possible windows of size m over the bad vector.
+
+For each window of m bad characters to fix, starting from bad[i] and ending at bad[i+m-1]:
+
+    - The start of our new, long substring (left) is the position right after the previous bad character we didn't fix (bad[i-1]). If i=0, it means we are fixing the first m bad characters, so our substring can start from index 0.
+
+    + The end of our substring (right) is the position right before the next bad character we didn't fix (bad[i+m]). If this window includes the last bad character in the string, our substring can extend to the end of the string (n-1).
+
+The length of this potential substring is right - left + 1. The code calculates this for every possible window of m bad characters and takes the maximum length.
+
+```cpp
+for (int m = 0; m < k; m++)
+{
+    int maxLen = 0;
+    // ... (Special case for m=0 is handled, but the main logic is here)
+    // This loop slides a window of `m` bad characters to fix
+    for (int i = 0; i + m - 1 < k; i++)
+    {
+        // The substring starts after the previous bad character (or from index 0)
+        int left = (i == 0) ? 0 : bad[i - 1] + 1;
+        // The substring ends before the next bad character (or at index n-1)
+        int right = (i + m == k) ? n - 1 : bad[i + m] - 1;
+        maxLen = max(maxLen, right - left + 1);
+    }
+    dp[c - 'a'][m] = maxLen;
+}
+```
++ **Enforce Monotonicity**: Logically, with more available changes, the length of the longest substring cannot decrease. If you can make a substring of length L with m-1 changes, you can surely make one of at least length L with m changes. This final loop ensures our dp table reflects this property by setting dp[c-'a'][m] to be the maximum of its current value and the value for m-1.
+
+```cpp
+for (int m = 1; m <= maxM; m++)
+{
+    dp[c - 'a'][m] = max(dp[c - 'a'][m], dp[c - 'a'][m - 1]);
+}
+```
+
+### The solve and main Functions
+
+- The solve function is very simple. After all the hard work in computeAll, it just performs a direct lookup in the dp table to get the precomputed answer.
+
+```cpp
+int solve(vvi &dp, int m, char c)
+{
+    return dp[c - 'a'][m];
+}
+```
+
+- The main function orchestrates the process. It reads the input string s, calls computeAll once to pre-fill the dp table, and then enters a loop to answer each of the q queries by calling solve.
 
 ## Implementation
 
@@ -215,56 +269,112 @@ paintings with size $n$ (the full string) with $\texttt{dp}[n][m_i][c_i]$.
 <CPPSection>
 
 ```cpp
-#include <bits/stdc++.h>
+#pragma GCC optimize("unroll-loops")
+#pragma GCC optimize("O3,unroll-loops")
+#pragma GCC target("avx2,bmi,bmi2,lzcnt,popcnt")
+
+#include "bits/stdc++.h"
+#define int long long
+#define uint unsigned long long
+#define vi vector<int>
+#define vvi vector<vi>
+#define vb vector<bool>
+#define vvb vector<vb>
+#define nl cout << "\n"
+#define dbg(var) cout << var << "\n"
 using namespace std;
+vector<vector<int>> computeAll(string &s, int maxM)
+{
+    int n = s.size();
+    vector<vector<int>> dp(26, vector<int>(maxM + 1, 0));
 
-const int MAX_N = 1500;
+    for (char c = 'a'; c <= 'z'; c++)
+    {
+        vector<int> bad;
+        for (int i = 0; i < n; i++)
+        {
+            if (s[i] != c)
+            {
+                bad.push_back(i);
+            }
+        }
 
-int dp[MAX_N + 1][MAX_N + 1][26];
-int garland[MAX_N + 1];
+        int k = bad.size();
 
-int main() {
-	int garland_len;
-	cin >> garland_len;
-	for (int i = 0; i < garland_len; i++) {
-		char a;
-		cin >> a;
-		garland[i] = (int)(a - 'a');
-	}
+        for (int m = k; m <= maxM; m++)
+        {
+            dp[c - 'a'][m] = n;
+        }
 
-	// i = length of string
-	// j = amount painting
-	// k = character
-	for (int k = 0; k < 26; k++) {  // lower case characters
-		for (int i = 0; i < garland_len; i++) {
-			for (int j = 0; j < garland_len; j++) {
-				// appending a character
-				dp[i + 1][j + 1][k] = max(dp[i + 1][j + 1][k], dp[i][j][k] + 1);
-				// if we can "save"
-				if (garland[i] == k)
-					dp[i + 1][j][k] = max(dp[i + 1][j][k], dp[i][j][k] + 1);
-			}
-		}
-	}
+        for (int m = 0; m < k; m++)
+        {
+            int maxLen = 0;
 
-	// take the current best and translate it
-	for (int k = 0; k < 26; k++) {
-		for (int i = 0; i < garland_len; i++) {
-			for (int j = 0; j < garland_len; j++) {
-				dp[i + 1][j][k] = max(dp[i + 1][j][k], dp[i][j][k]);
-			}
-		}
-	}
+            if (m == 0)
+            {
+                int currentLen = 0;
+                for (int i = 0; i < n; i++)
+                {
+                    if (s[i] == c)
+                    {
+                        currentLen++;
+                        maxLen = max(maxLen, currentLen);
+                    }
+                    else
+                    {
+                        currentLen = 0;
+                    }
+                }
+            }
+            else if (m <= k)
+            {
+                for (int i = 0; i + m - 1 < k; i++)
+                {
+                    int left = (i == 0) ? 0 : bad[i - 1] + 1;
+                    int right = (i + m == k) ? n - 1 : bad[i + m] - 1;
+                    maxLen = max(maxLen, right - left + 1);
+                }
+            }
 
-	int query_num;
-	cin >> query_num;
-	for (int i = 0; i < query_num; i++) {
-		int max_repaint;
-		char color;
-		cin >> max_repaint >> color;
-		color -= 'a';
-		cout << dp[garland_len][max_repaint][(int)color] << '\n';
-	}
+            dp[c - 'a'][m] = maxLen;
+        }
+
+        for (int m = 1; m <= maxM; m++)
+        {
+            dp[c - 'a'][m] = max(dp[c - 'a'][m], dp[c - 'a'][m - 1]);
+        }
+    }
+    return dp;
+}
+int solve(vvi &dp, int m, char c)
+{
+    return dp[c - 'a'][m];
+}
+
+int32_t main()
+{
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+
+    int n = 0;
+    cin >> n;
+
+    string s;
+    cin >> s;
+
+    vvi dp = computeAll(s, n);
+
+    int q = 1;
+    cin >> q;
+    while (q--)
+    {
+        int m;
+        cin >> m;
+        char c;
+        cin >> c;
+        dbg(solve(dp, m, c));
+    }
+    return 0;
 }
 ```
 
