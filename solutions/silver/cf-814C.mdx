@@ -60,40 +60,40 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
-        int garlandLen = Integer.parseInt(br.readLine());
-        String garland = br.readLine();
-        int queryNum = Integer.parseInt(br.readLine());
+		int garlandLen = Integer.parseInt(br.readLine());
+		String garland = br.readLine();
+		int queryNum = Integer.parseInt(br.readLine());
 
-        char[] arr = garland.toCharArray();
-        StringBuilder out = new StringBuilder();
+		char[] arr = garland.toCharArray();
+		StringBuilder out = new StringBuilder();
 
-        for (int i = 0; i < queryNum; i++) {
-            StringTokenizer st = new StringTokenizer(br.readLine());
-            int maxRepaint = Integer.parseInt(st.nextToken());
-            char color = st.nextToken().charAt(0);
+		for (int i = 0; i < queryNum; i++) {
+			StringTokenizer st = new StringTokenizer(br.readLine());
+			int maxRepaint = Integer.parseInt(st.nextToken());
+			char color = st.nextToken().charAt(0);
 
-            int l = 0;
-            int r = 0;
-            int koyomity = 0;
-            while (l < garlandLen && r < garlandLen) {
-                while (r < garlandLen) {
-                    if (arr[r] != color) {
-                        if (maxRepaint == 0) break;
-                        maxRepaint--;
-                    }
-                    r++;
-                }
-                koyomity = Math.max(koyomity, r - l);
-                if (arr[l++] != color) maxRepaint++;
-            }
-            out.append(koyomity).append('\n');
-        }
+			int l = 0;
+			int r = 0;
+			int koyomity = 0;
+			while (l < garlandLen && r < garlandLen) {
+				while (r < garlandLen) {
+					if (arr[r] != color) {
+						if (maxRepaint == 0) break;
+						maxRepaint--;
+					}
+					r++;
+				}
+				koyomity = Math.max(koyomity, r - l);
+				if (arr[l++] != color) maxRepaint++;
+			}
+			out.append(koyomity).append('\n');
+		}
 
-        System.out.print(out.toString());
-    }
+		System.out.print(out.toString());
+	}
 }
 ```
 
