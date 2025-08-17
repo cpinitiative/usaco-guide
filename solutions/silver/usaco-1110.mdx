@@ -203,11 +203,12 @@ public class ComfortableCows {
 
 ```
 from collections import deque
+from typing import List
 
 dx = [1, 0, -1, 0]
 dy = [0, 1, 0, -1]
 
-def count_neighbors(v, x, y):
+def count_neighbors(v: List[List[bool]], x: int, y: int) -> int:
 	""":return: the amount of neighbors that surrounds a specific cow in the grid"""
 	count_neighbors = 0
 	for i in range (4):
@@ -215,7 +216,7 @@ def count_neighbors(v, x, y):
 			count_neighbors += 1
 	return count_neighbors
 
-def find_empty(v, x, y):
+def find_empty(v: List[List[bool]], x: int, y: int) -> List[int]:
 	""":return: the (x,y) coordinate of the empty 4th grid square for any given cow."""
 	for i in range(4):
 		if not v[x + dx[i]][y + dy[i]]:
@@ -224,7 +225,7 @@ def find_empty(v, x, y):
 
 # Checks if a cow has exactly three neighbors, and if the 4th
 # cell has not been pushed already, pushes the cell to the queue.
-def check_cell(x, y, v, to_place):
+def check_cell(x: int, y: int, v: List[List[bool]], to_place: deque) -> None:
 	if count_neighbors(v, x, y) == 3:
 		empty_cell = find_empty(v, x, y)
 		if not v[empty_cell[0]][empty_cell[1]]:
