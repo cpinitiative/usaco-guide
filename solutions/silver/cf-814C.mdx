@@ -24,7 +24,8 @@ the window are not $c$.
 using namespace std;
 
 int main() {
-	int garland_len, query_num;
+	int garland_len;
+	int query_num;
 	string garland;
 	cin >> garland_len >> garland >> query_num;
 
@@ -47,7 +48,8 @@ int main() {
 			koyomity = max(koyomity, r - l);
 			max_repaint += garland[l++] != color;
 		}
-		cout << koyomity << endl;
+
+		cout << koyomity << '\n';
 	}
 }
 ```
@@ -59,7 +61,7 @@ int main() {
 import java.io.*;
 import java.util.*;
 
-public class Main {
+public class Garland {
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
@@ -67,13 +69,13 @@ public class Main {
 		String garland = br.readLine();
 		int queryNum = Integer.parseInt(br.readLine());
 
+		// Reading all the queries here is faster for some reason
 		StringBuilder qb = new StringBuilder();
-		for (int i = 0; i < queryNum; i++) qb.append(br.readLine()).append('\n');
+		for (int i = 0; i < queryNum; i++) { qb.append(br.readLine()).append('\n'); }
 		StringTokenizer st = new StringTokenizer(qb.toString());
 
 		char[] arr = garland.toCharArray();
 		StringBuilder out = new StringBuilder();
-
 		for (int i = 0; i < queryNum; i++) {
 			int maxRepaint = Integer.parseInt(st.nextToken());
 			char color = st.nextToken().charAt(0);
