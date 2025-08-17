@@ -2,7 +2,7 @@
 id: cf-814C
 source: CF
 title: An impassioned circulation of affection
-author: Neo Wang, Qi Wang, Jesse Choe, Kevin Sheng, Rameez Parwez
+author: Neo Wang, Qi Wang, Jesse Choe, Kevin Sheng, Rameez Parwez, David Guo
 ---
 
 [Official Editorial (C++)](https://codeforces.com/blog/entry/52449)
@@ -11,7 +11,6 @@ author: Neo Wang, Qi Wang, Jesse Choe, Kevin Sheng, Rameez Parwez
 
 For each query we can keep a sliding window where no more than $m$ letters in
 the window are not $c$.
-
 
 ## Implementation
 
@@ -25,7 +24,8 @@ the window are not $c$.
 using namespace std;
 
 int main() {
-	int garland_len, query_num;
+	int garland_len;
+	int query_num;
 	string garland;
 	cin >> garland_len >> garland >> query_num;
 
@@ -48,12 +48,61 @@ int main() {
 			koyomity = max(koyomity, r - l);
 			max_repaint += garland[l++] != color;
 		}
-		cout << koyomity << endl;
+
+		cout << koyomity << '\n';
 	}
 }
 ```
 
 </CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Garland {
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+		int garlandLen = Integer.parseInt(br.readLine());
+		String garland = br.readLine();
+		int queryNum = Integer.parseInt(br.readLine());
+
+		// Reading all the queries here is faster for some reason
+		StringBuilder qb = new StringBuilder();
+		for (int i = 0; i < queryNum; i++) { qb.append(br.readLine()).append('\n'); }
+		StringTokenizer st = new StringTokenizer(qb.toString());
+
+		char[] arr = garland.toCharArray();
+		StringBuilder out = new StringBuilder();
+		for (int i = 0; i < queryNum; i++) {
+			int maxRepaint = Integer.parseInt(st.nextToken());
+			char color = st.nextToken().charAt(0);
+
+			int l = 0;
+			int r = 0;
+			int koyomity = 0;
+			while (l < garlandLen && r < garlandLen) {
+				while (r < garlandLen) {
+					if (arr[r] != color) {
+						if (maxRepaint == 0) break;
+						maxRepaint--;
+					}
+					r++;
+				}
+				koyomity = Math.max(koyomity, r - l);
+				if (arr[l++] != color) maxRepaint++;
+			}
+			out.append(koyomity).append('\n');
+		}
+
+		System.out.print(out.toString());
+	}
+}
+```
+
+</JavaSection>
 </LanguageSection>
 
 ## Alternative Solution (Two Pointers with Prefix Sums)
