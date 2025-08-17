@@ -34,48 +34,45 @@ For a fixed $j$, we should try to minimize the left side expression. So we can i
 using namespace std;
 
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
 
-    freopen("sabotage.in", "r", stdin);
-    freopen("sabotage.out", "w", stdout);
+	freopen("sabotage.in", "r", stdin);
+	freopen("sabotage.out", "w", stdout);
 
-    int n; cin >> n;
-    vector<int> array(n);
-    for (int i = 0; i < n; i++) cin >> array[i];
+	int n;
+	cin >> n;
+	vector<int> array(n);
+	for (int i = 0; i < n; i++) cin >> array[i];
 
-    // Prefix sums
-    vector<long long> pref_sum(n + 1, 0);
-    for (int i = 0; i < n; i++) {
-        pref_sum[i + 1] = pref_sum[i] + array[i];
-    }
+	// Prefix sums
+	vector<long long> pref_sum(n + 1, 0);
+	for (int i = 0; i < n; i++) { pref_sum[i + 1] = pref_sum[i] + array[i]; }
 
-    long long arr_sum = pref_sum[n];
+	long long arr_sum = pref_sum[n];
 
-    // Check function to see if average x can be achieved
-    auto check = [&](double x) {
-        double left_side = 1e18;
-        for (int j = 1; j <= n - 2; j++) {
-            left_side = min(left_side, pref_sum[j] - x * j);
-            double right_side = x * n - x * j - x - arr_sum + pref_sum[j + 1];
-            if (left_side <= right_side) {
-                return true;
-            }
-        }
-        return false;
-    };
+	// Check function to see if average x can be achieved
+	auto check = [&](double x) {
+		double left_side = 1e18;
+		for (int j = 1; j <= n - 2; j++) {
+			left_side = min(left_side, pref_sum[j] - x * j);
+			double right_side = x * n - x * j - x - arr_sum + pref_sum[j + 1];
+			if (left_side <= right_side) { return true; }
+		}
+		return false;
+	};
 
-    double l = 1, r = 10000;
+	double l = 1, r = 10000;
 
-    while (r - l > 1e-4) {
-        double mid = (l + r) / 2;
-        if (check(mid)) r = mid;
-        else l = mid;
-    }
+	while (r - l > 1e-4) {
+		double mid = (l + r) / 2;
+		if (check(mid)) r = mid;
+		else l = mid;
+	}
 
-    cout << fixed << setprecision(3) << l << "\n";
+	cout << fixed << setprecision(3) << l << "\n";
 
-    return 0;
+	return 0;
 }
 ```
 
@@ -85,30 +82,32 @@ int main() {
 
 ```py
 with open("sabotage.in", "r") as read:
-    n = int(read.readline())
-    array = [int(read.readline()) for i in range(n)]
+	n = int(read.readline())
+	array = [int(read.readline()) for i in range(n)]
 
 pref_sum = [0]
 for i in range(n):
-    pref_sum.append(pref_sum[-1] + array[i])
+	pref_sum.append(pref_sum[-1] + array[i])
 arr_sum = sum(array)
 
+
 def check(x):
-    left_side = float("inf")
-    for j in range(1, n - 1):
-        left_side = min(left_side, pref_sum[j] - x * j)
-        right_side = x * n - x * j - x - arr_sum + pref_sum[j + 1]
-        if left_side <= right_side:
-            return True
-    return False
+	left_side = float("inf")
+	for j in range(1, n - 1):
+		left_side = min(left_side, pref_sum[j] - x * j)
+		right_side = x * n - x * j - x - arr_sum + pref_sum[j + 1]
+		if left_side <= right_side:
+			return True
+	return False
+
 
 l, r = 1, 10000
 while r - l > 1e-4:
-    mid = (l + r) / 2
-    if check(mid):
-        r = mid
-    else:
-        l = mid
+	mid = (l + r) / 2
+	if check(mid):
+		r = mid
+	else:
+		l = mid
 
 print(f"{l:.3f}", file=open("sabotage.out", "w"))
 ```
