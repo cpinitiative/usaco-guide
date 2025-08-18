@@ -143,7 +143,8 @@ export default function ContactUsSlideover({
       email === '' ||
       !validateEmail(email) ||
       topic === '' ||
-      message.length < 10
+      message.length < 10 ||
+      !firebaseUser
     ) {
       return;
     }
@@ -285,6 +286,11 @@ export default function ContactUsSlideover({
         )}
         {!showSuccess && (
           <div className="space-y-6 pb-5">
+            {!firebaseUser && (
+              <p className="mt-2 text-sm text-red-600 dark:text-red-400">
+                You must be logged in to submit the contact form!
+              </p>
+            )}
             <Field
               label="Name (will not be shown publicly)"
               id="contact_name"
@@ -463,6 +469,11 @@ export default function ContactUsSlideover({
               >
                 Message (markdown is supported)
               </label>
+              {showErrors && !firebaseUser && (
+                <p className="mt-2 text-sm text-red-600 dark:text-red-400">
+                  You must be logged in to submit the contact form!
+                </p>
+              )}
               <div className="relative rounded-md shadow-sm">
                 <textarea
                   id="contact_message"
