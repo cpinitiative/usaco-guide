@@ -11,7 +11,7 @@ author: Sachet Abeysinghe
 
 We can binary search on real values to find the minimum average $X$ we can achieve.
 
-Now, if we find the prefix sum array $\texttt{pref}$, consider the condition we need to achieve an average $\le X$ by removing a subarray from $i$ to $j$:
+Now, if we find the prefix sum array $\texttt{pref}$ of the machine milk production array $M$, consider the condition we need to achieve an average $\le X$ by removing a subarray from $i$ to $j$:
 $$
 \frac{S-\left(\texttt{pref}[j+1]-\texttt{pref}[i]\right)}{N-\left(j-i+1\right)}\le X
 $$
@@ -39,12 +39,12 @@ int main() {
 
 	int n;
 	cin >> n;
-	vector<int> array(n);
-	for (int i = 0; i < n; i++) cin >> array[i];
+	vector<int> m(n);
+	for (int i = 0; i < n; i++) cin >> m[i];
 
-	// Prefix sums
+	// Prefix sums on the milk production array m
 	vector<long long> pref_sum(n + 1);
-	for (int i = 0; i < n; i++) { pref_sum[i + 1] = pref_sum[i] + array[i]; }
+	for (int i = 0; i < n; i++) { pref_sum[i + 1] = pref_sum[i] + m[i]; }
 
 	long long arr_sum = pref_sum[n];
 
@@ -68,6 +68,7 @@ int main() {
 	}
 
 	cout << fixed << setprecision(3) << l << "\n";
+
 }
 ```
 
@@ -77,12 +78,12 @@ int main() {
 ```py
 with open("sabotage.in", "r") as read:
 	n = int(read.readline())
-	array = [int(read.readline()) for i in range(n)]
+	m = [int(read.readline()) for i in range(n)]
 
 pref_sum = [0]
 for i in range(n):
-	pref_sum.append(pref_sum[-1] + array[i])
-arr_sum = sum(array)
+	pref_sum.append(pref_sum[-1] + m[i])
+arr_sum = sum(m)
 
 
 def check(x):
