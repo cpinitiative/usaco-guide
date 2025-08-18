@@ -541,7 +541,7 @@ export default function IndexPage(): JSX.Element {
           <p className="pt-6 font-semibold text-gray-600 uppercase md:text-lg dark:text-gray-400">
             Platinum Sponsors
           </p>
-          <div className="my-8 grid grid-cols-1 items-center text-gray-600 sm:grid-cols-2 gap-0.5 md:grid-cols-3 lg:my-6 lg:grid-cols-4 dark:text-gray-400">
+          <div className="my-8 grid grid-cols-1 items-center gap-0.5 text-gray-600 sm:grid-cols-2 md:grid-cols-3 lg:my-6 lg:grid-cols-4 dark:text-gray-400">
             <div className="col-span-1">
               <a
                 href="http://non-trivial.org/"
@@ -551,7 +551,7 @@ export default function IndexPage(): JSX.Element {
                 <NonTrivial />
               </a>
             </div>
-            <div className="col-span-1 sm:pt-0 pt-5">
+            <div className="col-span-1 pt-5 sm:pt-0">
               <a href="http://x-camp.academy/" target="_blank" rel="noreferrer">
                 <XCamp />
               </a>
