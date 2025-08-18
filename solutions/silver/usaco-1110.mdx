@@ -223,13 +223,16 @@ def find_empty(v: List[List[bool]], x: int, y: int) -> List[int]:
 			empty_cell = [x + dx[i], y + dy[i]]
 			return empty_cell
 
-# Checks if a cow has exactly three neighbors, and if the 4th
-# cell has not been pushed already, pushes the cell to the queue.
-def check_cell(x: int, y: int, v: List[List[bool]], to_place: deque) -> None:
-	if count_neighbors(v, x, y) == 3:
-		empty_cell = find_empty(v, x, y)
-		if not v[empty_cell[0]][empty_cell[1]]:
-			to_place.append(empty_cell)
+def check_cell(x: int, y: int, v: List[List[bool]], to_place: deque):
+	"""
+	Checks if a cow has exactly three neighbors, and if the 4th
+	cell has not been pushed already, pushes the cell to the queue.
+	"""
+	if count_neighbors(v, x, y) != 3:
+		return
+	empty_cell = find_empty(v, x, y)
+	if not v[empty_cell[0]][empty_cell[1]]:
+		to_place.append(empty_cell)
 
 n = int(input())
 to_place = deque()
