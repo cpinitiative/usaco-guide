@@ -577,47 +577,50 @@ public class Moocast {
 ```py
 from collections import deque
 
+
 def build_adj(cows):
-    n = len(cows)
-    adj = [[] for _ in range(n)]
-    max_dist = 0
-    for i, (xi, yi) in enumerate(cows):
-        neighbors = []
-        for j, (xj, yj) in enumerate(cows):
-            if i == j:
-                continue
-            dx = xi - xj
-            dy = yi - yj
-            d = dx*dx + dy*dy
-            neighbors.append((d, j))
-            if d > max_dist:
-                max_dist = d
-        neighbors.sort()
-        adj[i] = neighbors
-    return adj, max_dist
+	n = len(cows)
+	adj = [[] for _ in range(n)]
+	max_dist = 0
+	for i, (xi, yi) in enumerate(cows):
+		neighbors = []
+		for j, (xj, yj) in enumerate(cows):
+			if i == j:
+				continue
+			dx = xi - xj
+			dy = yi - yj
+			d = dx * dx + dy * dy
+			neighbors.append((d, j))
+			if d > max_dist:
+				max_dist = d
+		neighbors.sort()
+		adj[i] = neighbors
+	return adj, max_dist
+
 
 def all_reachable(power, adj):
-    n = len(adj)
-    reached = [False] * n
-    reached[0] = True
-    q = deque([0])
-    append = q.append
-    popleft = q.popleft
+	n = len(adj)
+	reached = [False] * n
+	reached[0] = True
+	q = deque([0])
+	append = q.append
+	popleft = q.popleft
 
-    while q:
-        curr = popleft()
-        for d, j in adj[curr]:
-            if d > power:
-                break
-            if not reached[j]:
-                reached[j] = True
-                append(j)
+	while q:
+		curr = popleft()
+		for d, j in adj[curr]:
+			if d > power:
+				break
+			if not reached[j]:
+				reached[j] = True
+				append(j)
 
-    return all(reached)
+	return all(reached)
+
 
 with open("moocast.in") as f:
-    n = int(f.readline().strip())
-    cows = [tuple(map(int, f.readline().split())) for _ in range(n)]
+	n = int(f.readline().strip())
+	cows = [tuple(map(int, f.readline().split())) for _ in range(n)]
 
 adj, max_dist = build_adj(cows)
 
@@ -625,15 +628,15 @@ lo, hi = 0, max_dist
 valid = hi
 
 while lo <= hi:
-    mid = (lo + hi) // 2
-    if all_reachable(mid, adj):
-        valid = mid
-        hi = mid - 1
-    else:
-        lo = mid + 1
+	mid = (lo + hi) // 2
+	if all_reachable(mid, adj):
+		valid = mid
+		hi = mid - 1
+	else:
+		lo = mid + 1
 
 with open("moocast.out", "w") as f:
-    f.write(str(valid) + "\n")
+	f.write(str(valid) + "\n")
 ```
 
 </PySection>
