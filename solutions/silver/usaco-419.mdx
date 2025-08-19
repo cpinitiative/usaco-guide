@@ -1,0 +1,109 @@
+---
+id: usaco-419
+source: USACO Old Gold 2014 March
+title: Sabotage
+author: Sachet Abeysinghe
+---
+
+[Official Analysis (C++)](https://usaco.org/current/data/sol_sabotage.html)
+
+## Explanation
+
+We can binary search on real values to find the minimum average $X$ we can achieve.
+
+Now, if we find the prefix sum array $\texttt{pref}$ of the machine milk production array $M$, consider the condition we need to achieve an average $\le X$ by removing the subarray $(i, j]$:
+$$
+\frac{S-\left(\texttt{pref}[j]-\texttt{pref}[i]\right)}{N-\left(j-i\right)}\le X,
+$$
+where $S$ is the current sum of the array. After multiplying both sides by the denominator and isolating all terms involving $i$, we get:
+$$
+\texttt{pref}[i]-X\cdot i\le X\cdot\left(N-j\right)-S+\texttt{pref}[j].
+$$
+For a fixed $j$, we should try to minimize the left side expression. So we can iterate $j$ from $2$ to $N - 1$ and keep a running minimum of the left side of the inequality. If the condition is satisfied, we can achieve an average $\le X$.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N\log\left(\frac{1}{\varepsilon}\right))$, where $\varepsilon$ is the fixed error margin.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	freopen("sabotage.in", "r", stdin);
+	freopen("sabotage.out", "w", stdout);
+
+	int n;
+	cin >> n;
+	vector<int> m(n);
+	for (int i = 0; i < n; i++) cin >> m[i];
+
+	// Prefix sums on the milk production array m
+	vector<long long> pref_sum(n + 1);
+	for (int i = 0; i < n; i++) { pref_sum[i + 1] = pref_sum[i] + m[i]; }
+
+	long long arr_sum = pref_sum[n];
+
+	// Check function to see if average x can be achieved
+	auto check = [&](double x) {
+		double left_side = pref_sum[1] - x;
+		for (int j = 2; j <= n - 1; j++) {
+			double right_side = x * (n - j) - arr_sum + pref_sum[j];
+			if (left_side <= right_side) { return true; }
+			left_side = min(left_side, pref_sum[j] - x * j);
+		}
+		return false;
+	};
+
+	double l = 1, r = 10000;
+
+	while (r - l > 1e-4) {
+		double mid = (l + r) / 2;
+		if (check(mid)) r = mid;
+		else l = mid;
+	}
+
+	cout << fixed << setprecision(3) << l << "\n";
+}
+```
+
+</CPPSection>
+<PySection>
+
+```py
+with open("sabotage.in", "r") as read:
+	n = int(read.readline())
+	m = [int(read.readline()) for i in range(n)]
+
+pref_sum = [0]
+for i in range(n):
+	pref_sum.append(pref_sum[-1] + m[i])
+arr_sum = sum(m)
+
+
+def check(x):
+	left_side = pref_sum[1] - x
+	for j in range(2, n):
+		right_side = x * (n - j) - arr_sum + pref_sum[j]
+		if left_side <= right_side:
+			return True
+		left_side = min(left_side, pref_sum[j] - x * j)
+	return False
+
+
+l, r = 1, 10000
+while r - l > 1e-4:
+	mid = (l + r) / 2
+	if check(mid):
+		r = mid
+	else:
+		l = mid
+
+print(f"{l:.3f}", file=open("sabotage.out", "w"))
+```
+
+</PySection>
+</LanguageSection>
