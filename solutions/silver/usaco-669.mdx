@@ -581,43 +581,46 @@ Due to Python's constant factor, the below code will TLE on a couple of test cas
 ```py
 from collections import deque
 
+
 def dist_sq(p1, p2):
-    dx = p1[0] - p2[0]
-    dy = p1[1] - p2[1]
-    return dx * dx + dy * dy
+	dx = p1[0] - p2[0]
+	dy = p1[1] - p2[1]
+	return dx * dx + dy * dy
+
 
 def all_reachable(power, cows):
-    n = len(cows)
-    reached = [False] * n
-    reached[0] = True   
-    q = deque([0])
+	n = len(cows)
+	reached = [False] * n
+	reached[0] = True
+	q = deque([0])
 
-    while q:
-        curr = q.popleft()
-        for c in range(n):
-            if not reached[c] and dist_sq(cows[curr], cows[c]) <= power:
-                reached[c] = True
-                q.append(c)
+	while q:
+		curr = q.popleft()
+		for c in range(n):
+			if not reached[c] and dist_sq(cows[curr], cows[c]) <= power:
+				reached[c] = True
+				q.append(c)
 
-    return all(reached)
+	return all(reached)
+
 
 with open("moocast.in") as f:
-    n = int(f.readline())
-    cows = [tuple(map(int, f.readline().split())) for _ in range(n)]
+	n = int(f.readline())
+	cows = [tuple(map(int, f.readline().split())) for _ in range(n)]
 
 lo, hi = 0, 2000000000
 valid = -1
 
 while lo <= hi:
-    mid = (lo + hi) // 2
-    if all_reachable(mid, cows):
-        valid = mid
-        hi = mid - 1
-    else:
-        lo = mid + 1
+	mid = (lo + hi) // 2
+	if all_reachable(mid, cows):
+		valid = mid
+		hi = mid - 1
+	else:
+		lo = mid + 1
 
 with open("moocast.out", "w") as f:
-    f.write(str(valid) + "\n")
+	f.write(str(valid) + "\n")
 ```
 
 </PySection>
