@@ -2,7 +2,7 @@
 id: cc-AMONGUS2
 source: CC
 title: Among Us
-author: Ryan Chou
+author: Ryan Chou, David Guo
 ---
 
 ## Explanation
@@ -114,6 +114,103 @@ int main() {
 ```
 
 </CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class AmongUs {
+	private static class Edge {
+		public int first;
+		public boolean second;
+
+		public Edge(int first, boolean second) {
+			this.first = first;
+			this.second = second;
+		}
+	}
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int t = Integer.parseInt(st.nextToken());
+		StringBuilder out = new StringBuilder();
+		for (int tc = 0; tc < t; tc++) {
+			st = new StringTokenizer(br.readLine());
+			int n = Integer.parseInt(st.nextToken());
+			int q = Integer.parseInt(st.nextToken());
+
+			// adj[i][j] = {the jth adjacent node from i
+			// their statement (0 = imposter, 1 = crewmate)}
+			List<List<Edge>> adj = new ArrayList<>(n);
+			for (int i = 0; i < n; i++) adj.add(new ArrayList<>());
+
+			for (int i = 0; i < q; i++) {
+				st = new StringTokenizer(br.readLine());
+				int type = Integer.parseInt(st.nextToken()) - 1;
+				int x = Integer.parseInt(st.nextToken()) - 1;
+				int y = Integer.parseInt(st.nextToken()) - 1;
+
+				adj.get(x).add(new Edge(y, type != 0));
+				adj.get(y).add(new Edge(x, type != 0));
+			}
+
+			int[] role = new int[n];
+			Arrays.fill(role, -1);
+
+			int ans = 0;
+			boolean impossible = false;
+			for (int i = 0; i < n; i++) {
+				// haven't visited this connected component yet
+				if (role[i] == -1) {
+					int imposters = 0, crewmates = 0;
+
+					// dfs to build bipartite graph
+					Stack<Integer> todo = new Stack<>();
+
+					todo.push(i);
+					role[i] = 1;
+					imposters++;
+					while (!todo.isEmpty()) {
+						int curr = todo.pop();
+
+						for (Edge u : adj.get(curr)) {
+							boolean type =
+							    u.second ? (role[curr] == 1) : (role[curr] != 1);
+
+							// haven't visited
+							if (role[u.first] == -1) {
+								role[u.first] = type ? 1 : 0;
+
+								if (type) {
+									imposters++;
+								} else {
+									crewmates++;
+								}
+
+								todo.push(u.first);
+								// creates a contradiction
+							} else if (role[u.first] == (type ? 0 : 1)) {
+								impossible = true;
+								break;
+							}
+						}
+					}
+					ans += Math.max(imposters, crewmates);
+				}
+			}
+
+			out.append(impossible ? -1 : ans).append('\n');
+		}
+
+		System.out.print(out.toString());
+	}
+}
+```
+
+</JavaSection>
 <PySection>
 
 ```py
