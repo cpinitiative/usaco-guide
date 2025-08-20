@@ -31,7 +31,7 @@ We can then multiply the frequencies of each pair of $a_i$ values and each pair 
 
 ## Implementation
 
-**Time Complexity:** $\mathcal{O}(N+M^{2})$
+**Time Complexity:** $\mathcal{O}\left(N+M^2\right)$
 
 <LanguageSection>
 <CPPSection>
@@ -43,9 +43,11 @@ using namespace std;
 int main() {
 	int n, m;
 	cin >> n >> m;
+
 	vector<pair<int, int>> intervals(n);
-	for (auto &interval : intervals) cin >> interval.first >> interval.second;
-	vector<int64_t> win_start(2 * m + 1), win_end(2 * m + 1);
+	for (auto &interval : intervals) { cin >> interval.first >> interval.second; }
+
+	vector<int64_t> win_start(2 * m + 1);
 	{
 		vector<long long> a_freq(m + 1);
 		for (int i = 0; i < n; i++) { a_freq.at(intervals.at(i).first)++; }
@@ -55,6 +57,8 @@ int main() {
 			}
 		}
 	}
+
+	vector<int64_t> win_end(2 * m + 1);
 	{
 		vector<long long> b_freq(m + 1);
 		for (int i = 0; i < n; i++) { b_freq.at(intervals.at(i).second)++; }
@@ -64,33 +68,30 @@ int main() {
 			}
 		}
 	}
+
 	int64_t win_count = 0;
 	for (int i = 0; i <= 2 * m; ++i) {
 		win_count += win_start.at(i);
-		cout << win_count << "\n";
+		cout << win_count << '\n';
 		win_count -= win_end.at(i);
 	}
 }
 ```
 
 </CPPSection>
-
 <JavaSection>
 
 ```java
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.StringTokenizer;
 
-public class IntervalConvolution {
-
+public class ConvolutedIntervals {
 	public static void main(String[] args) throws IOException {
 		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer tokenizer = new StringTokenizer(in.readLine());
 		int n = Integer.parseInt(tokenizer.nextToken());
 		int m = Integer.parseInt(tokenizer.nextToken());
-		long totalPairs = ((long)n) * ((long)n);
+
 		long[] aFreq = new long[m + 1];
 		long[] bFreq = new long[m + 1];
 		for (int j = 1; j <= n; j++) {
@@ -100,6 +101,7 @@ public class IntervalConvolution {
 			aFreq[a]++;
 			bFreq[b]++;
 		}
+
 		long[] aSumFreq = new long[(2 * m) + 1];
 		long[] bSumFreq = new long[(2 * m) + 1];
 		for (int x = 0; x <= m; x++) {
@@ -108,8 +110,11 @@ public class IntervalConvolution {
 				bSumFreq[x + y] += bFreq[x] * bFreq[y];
 			}
 		}
+
+		long totalPairs = ((long)n) * ((long)n);
 		long aValid = aSumFreq[0];
 		long bValid = totalPairs;
+
 		StringBuilder out = new StringBuilder();
 		for (int x = 0; x <= 2 * m; x++) {
 			if (x > 0) {
@@ -119,11 +124,11 @@ public class IntervalConvolution {
 			long res = aValid + bValid - totalPairs;
 			out.append(res).append('\n');
 		}
+
 		System.out.print(out);
 	}
 }
 ```
 
 </JavaSection>
-
 </LanguageSection>
