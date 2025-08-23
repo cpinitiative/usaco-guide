@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { useMarkdownLayout } from '../../context/MarkdownLayoutContext';
 import { ModuleInfo } from '../../models/module';
+import { ClientOnly } from '../ClientOnly';
 import TextTooltip from '../Tooltip/TextTooltip';
 import MarkCompleteButton from './MarkCompleteButton';
 
@@ -21,11 +22,13 @@ export default function ModuleProgressUpdateBanner() {
           :
         </span>
         <span className="ml-4">
-          <MarkCompleteButton
-            onChange={handleCompletionChange}
-            state={moduleProgress}
-            dropdownAbove
-          />
+          <ClientOnly>
+            <MarkCompleteButton
+              onChange={handleCompletionChange}
+              state={moduleProgress}
+              dropdownAbove
+            />
+          </ClientOnly>
         </span>
       </h3>
     );

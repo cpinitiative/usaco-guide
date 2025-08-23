@@ -37,7 +37,12 @@ export default function Template(props): JSX.Element {
 
   return (
     <Layout setLastViewedModule={module.id}>
-      <SEO title={`${module.title}`} description={module.description} />
+      <SEO
+        title={`${module.title}`}
+        description={module.description}
+        image={null}
+        pathname={props.path}
+      />
       <Helmet>
         <script type="application/ld+json">{`
           {
