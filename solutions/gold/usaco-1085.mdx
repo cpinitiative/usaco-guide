@@ -21,18 +21,15 @@ using namespace std;
 int main() {
 	int n;
 	cin >> n;
-
 	vector<int> cows(n);
 	vector<int> stalls(n);
-
 	for (int i = 0; i < n; i++) { cin >> cows[i]; }
 	for (int i = 0; i < n; i++) { cin >> stalls[i]; }
 
 	sort(cows.begin(), cows.end());
 	sort(stalls.begin(), stalls.end());
 
-	vector<long long> possible_places(n, 0);
-
+	vector<long long> possible_places(n);
 	// Create a list containing the number of stalls each cow can use
 	for (int i = 0; i < n; i++) {
 		for (int j = 0; j < n; j++) {
@@ -40,17 +37,17 @@ int main() {
 		}
 	}
 
-	// Initialize a cumulative product
 	long long possibilities = 1;
-
-	// For each cow, find out the number of stalls it can use in a valid permutation
-	// Use the formula provided in the explanation
-	// Multiply the cumulative product by this value
+	/*
+	 * For each cow, find out the number of stalls it can use in a valid permutation
+	 * Use the formula provided in the explanation
+	 * Multiply the cumulative product by this value
+	 */
 	for (int i = n - 1; i >= 0; i--) {
 		possibilities *= possible_places[i] - (n - i - 1);
 	}
 
-	cout << possibilities << '\n';
+	cout << possibilities << endl;
 }
 ```
 
@@ -80,7 +77,6 @@ public class JustStalling {
 		Arrays.sort(stalls);
 
 		long[] possiblePlaces = new long[n];
-
 		// Create a list containing the number of stalls each cow can use
 		for (int i = 0; i < n; i++) {
 			for (int j = 0; j < n; j++) {
@@ -88,12 +84,12 @@ public class JustStalling {
 			}
 		}
 
-		// Initialize a cumulative product
 		long possibilities = 1;
-
-		// For each cow, find out the number of stalls it can use in a valid permutation
-		// Use the formula provided in the explanation
-		// Multiply the cumulative product by this value
+		/*
+		 * For each cow, find out the number of stalls it can use in a valid permutation
+		 * Use the formula provided in the explanation
+		 * Multiply the cumulative product by this value
+		 */
 		for (int i = n - 1; i >= 0; i--) {
 			possibilities *= possiblePlaces[i] - (n - i - 1);
 		}
@@ -108,26 +104,22 @@ public class JustStalling {
 
 ```py
 n = int(input())
-cows = list(map(int, input().split(" ")))
-stalls = list(map(int, input().split(" ")))
-
-cows.sort()
-stalls.sort()
+cows = sorted(map(int, input().split(" ")))
+stalls = sorted(map(int, input().split(" ")))
 
 possible_places = [0] * n
-
 # Create a list containing the number of stalls each cow can use.
 for i in range(n):
 	for j in range(n):
 		if cows[i] <= stalls[j]:
 			possible_places[i] += 1
 
-# Initialize a cumulative product
 possibilities = 1
-
-# For each cow, find out the number of stalls it can use in a valid permutation
-# Use the formula provided in the explanation
-# Multiply the cumulative product by this value
+"""
+For each cow, find out the number of stalls it can use in a valid permutation
+Use the formula provided in the explanation
+Multiply the cumulative product by this value
+"""
 for i in range(n - 1, -1, -1):
 	possibilities *= possible_places[i] - (n - i - 1)
 
