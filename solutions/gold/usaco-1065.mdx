@@ -38,7 +38,7 @@ int main() {
 	for (int i = 0; i < n; i++) {
 		fill(rock_dist[i].begin(), rock_dist[i].end(), -1);
 		for (int j = 0; j < n; j++) {
-			if (grid[i][j] == '#') { queue.push(State(i, j, 0)); }
+			if (grid[i][j] == '#') { queue.push(State{i, j, 0}); }
 		}
 	}
 	while (!queue.empty()) {
@@ -52,15 +52,15 @@ int main() {
 		rock_dist[state.i][state.j] = state.distance;
 
 		for (int i = -1; i <= 1; i += 2) {
-			queue.push(State(state.i + i, state.j, state.distance + 1));
-			queue.push(State(state.i, state.j + i, state.distance + 1));
+			queue.push(State{state.i + i, state.j, state.distance + 1});
+			queue.push(State{state.i, state.j + i, state.distance + 1});
 		}
 	}
 
 	// BFS from the sources
 	for (int i = 0; i < n; i++) {
 		for (int j = 0; j < n; j++) {
-			if (grid[i][j] == 'S') { queue.push(State(i, j, 0)); }
+			if (grid[i][j] == 'S') { queue.push(State{i, j, 0}); }
 		}
 	}
 
@@ -95,22 +95,43 @@ int main() {
 		vis[state.i][state.j] = size;
 
 		for (int i = -1; i <= 1; i += 2) {
-			queue.push(State(state.i + i, state.j, state.distance + 1));
-			queue.push(State(state.i, state.j + i, state.distance + 1));
+			queue.push(State{state.i + i, state.j, state.distance + 1});
+			queue.push(State{state.i, state.j + i, state.distance + 1});
 		}
 	}
 
-	// Set cell to 'x' if it can be occupied by a robot
+	// Multi-source BFS to spread from all centers using their radius
+	vector<vector<int>> cover(n, vector<int>(n, -1));
+	while (!queue.empty()) queue.pop();
+
 	for (int i = 0; i < n; i++) {
 		for (int j = 0; j < n; j++) {
-			for (int di = 0; di <= vis[i][j]; di++) {
-				for (int dj = 0; dj <= vis[i][j] - di; dj++) {
-					grid[i + di][j + dj] = 'x';
-					grid[i - di][j + dj] = 'x';
-					grid[i + di][j - dj] = 'x';
-					grid[i - di][j - dj] = 'x';
-				}
-			}
+			if (vis[i][j] >= 0) queue.push(State{i, j, vis[i][j]});
+		}
+	}
+
+	while (!queue.empty()) {
+		State s = queue.front();
+		queue.pop();
+
+		if (s.i < 0 || s.i >= n || s.j < 0 || s.j >= n) continue;
+		if (grid[s.i][s.j] == '#') continue;
+		if (s.distance <= cover[s.i][s.j]) continue;
+
+		cover[s.i][s.j] = s.distance;
+
+		if (s.distance > 0) {
+			queue.push(State{s.i + 1, s.j, s.distance - 1});
+			queue.push(State{s.i - 1, s.j, s.distance - 1});
+			queue.push(State{s.i, s.j + 1, s.distance - 1});
+			queue.push(State{s.i, s.j - 1, s.distance - 1});
+		}
+	}
+
+	// Mark covered cells as 'x'
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
+			if (cover[i][j] >= 0) grid[i][j] = 'x';
 		}
 	}
 
