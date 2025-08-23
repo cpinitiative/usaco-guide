@@ -2,7 +2,7 @@
 id: usaco-1065
 source: USACO Gold 2020 December
 title: Replication
-author: Nathan Gong
+author: Nathan Gong, David Guo
 ---
 
 [Official Analysis (C++)](http://www.usaco.org/current/data/sol_prob1_gold_dec20.html)
@@ -11,6 +11,146 @@ author: Nathan Gong
 
 <LanguageSection>
 
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+struct State {
+	int i, j;
+	int distance;
+
+	State(int i, int j, int distance) {
+		this->i = i;
+		this->j = j;
+		this->distance = distance;
+	}
+};
+
+int main() {
+	int n, d;
+	cin >> n >> d;
+
+	vector<vector<char>> grid(n, vector<char>(n));
+	for (int i = 0; i < n; i++) {
+		string temp;
+		cin >> temp;
+		for (int j = 0; j < n; j++) {
+			grid[i][j] = temp[j];
+		}
+	}
+
+	// BFS with rocks as sources
+	// Calculates the distance of each cell to the closest rock
+	vector<vector<int>> rock_dist(n, vector<int>(n));
+	queue<State> queue;
+	for (int i = 0; i < n; i++) {
+		fill(rock_dist[i].begin(), rock_dist[i].end(), -1);
+		for (int j = 0; j < n; j++) {
+			if (grid[i][j] == '#') {
+				queue.push(State(i, j, 0));
+			}
+		}
+	}
+	while (!queue.empty()) {
+		State state = queue.front();
+		queue.pop();
+
+		// Skip if position out of bounds
+		if (state.i < 0 || state.i >= n || state.j < 0 || state.j >= n) {
+			continue;
+		}
+		// Skip if cell already visited
+		if (rock_dist[state.i][state.j] != -1) {
+			continue;
+		}
+		rock_dist[state.i][state.j] = state.distance;
+
+		for (int i = -1; i <= 1; i += 2) {
+			queue.push(State(state.i + i, state.j, state.distance + 1));
+			queue.push(State(state.i, state.j + i, state.distance + 1));
+		}
+	}
+
+	// BFS from the sources
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
+			if (grid[i][j] == 'S') {
+				queue.push(State(i, j, 0));
+			}
+		}
+	}
+
+	// We represent a cluster by position of center robot and size
+	// A cell is "visited" if it gets occupied by a center robot
+	// "vis" stores the size of the cluster that visits each cell
+	// If cell is never visited, its value will be -1
+	vector<vector<int>> vis(n, vector<int>(n));
+	for (int i = 0; i < n; i++) {
+		fill(vis[i].begin(), vis[i].end(), -1);
+	}
+
+	while (!queue.empty()) {
+		State state = queue.front();
+		queue.pop();
+
+		int size = (state.distance - 1) / d;
+
+		// Skip if position out of bounds
+		if (state.i < 0 || state.i >= n || state.j < 0 || state.j >= n) {
+			continue;
+		}
+		// Skip if cell already visited
+		if (vis[state.i][state.j] != -1) {
+			continue;
+		}
+		// Skip if cluster will collide with a rock
+		if (rock_dist[state.i][state.j] <= size) {
+			continue;
+		}
+
+		vis[state.i][state.j] = size;
+		// Update size of robot cluster
+		size = (state.distance) / d;
+		// Check if new size collides with rocks
+		if (rock_dist[state.i][state.j] <= size) {
+			continue;
+		}
+		// If not, continue BFS
+		vis[state.i][state.j] = size;
+
+		for (int i = -1; i <= 1; i += 2) {
+			queue.push(State(state.i + i, state.j, state.distance + 1));
+			queue.push(State(state.i, state.j + i, state.distance + 1));
+		}
+	}
+
+	// Set cell to 'x' if it can be occupied by a robot
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
+			for (int di = 0; di <= vis[i][j]; di++) {
+				for (int dj = 0; dj <= vis[i][j] - di; dj++) {
+					grid[i + di][j + dj] = 'x';
+					grid[i - di][j + dj] = 'x';
+					grid[i + di][j - dj] = 'x';
+					grid[i - di][j - dj] = 'x';
+				}
+			}
+		}
+	}
+
+	int ans = 0;
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
+			ans += (grid[i][j] == 'x') ? 1 : 0;
+		}
+	}
+
+	cout << ans << '\n';
+}
+```
+</CPPSection>
 <JavaSection>
 
 ```java
