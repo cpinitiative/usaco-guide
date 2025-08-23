@@ -55,6 +55,61 @@ int main() {
 ```
 
 </CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class JustStalling {
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        int n = Integer.parseInt(st.nextToken());
+
+        int[] cows = new int[n];
+        int[] stalls = new int[n];
+
+        st = new StringTokenizer(br.readLine());
+        for (int i = 0; i < n; i++) {
+            cows[i] = Integer.parseInt(st.nextToken());
+        }
+
+        st = new StringTokenizer(br.readLine());
+        for (int i = 0; i < n; i++) {
+            stalls[i] = Integer.parseInt(st.nextToken());
+        }
+
+        Arrays.sort(cows);
+        Arrays.sort(stalls);
+
+        long[] possiblePlaces = new long[n];
+
+        // Create a list containing the number of stalls each cow can use
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (cows[i] <= stalls[j]) {
+                    possiblePlaces[i]++;
+                }
+            }
+        }
+
+        // Initialize a cumulative product
+        long possibilities = 1;
+
+        // For each cow, find out the number of stalls it can use in a valid permutation
+        // Use the formula provided in the explanation
+        // Multiply the cumulative product by this value
+        for (int i = n - 1; i >= 0; i--) {
+            possibilities *= possiblePlaces[i] - (n - i - 1);
+        }
+
+        System.out.println(possibilities);
+    }
+}
+```
+
+</JavaSection>
 <PySection>
 
 ```py
