@@ -177,6 +177,46 @@ int main() {
 ```
 
 </CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class JustStalling {
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        int n = Integer.parseInt(st.nextToken());
+
+        int[] cows = new int[n];
+        int[] stalls = new int[n];
+
+        st = new StringTokenizer(br.readLine());
+        for (int i = 0; i < n; i++) {
+            cows[i] = Integer.parseInt(st.nextToken());
+        }
+
+        st = new StringTokenizer(br.readLine());
+        for (int i = 0; i < n; i++) {
+            stalls[i] = Integer.parseInt(st.nextToken());
+        }
+
+        Arrays.sort(cows);
+        Arrays.sort(stalls);
+
+        long possibilities = 1;
+        int j = n - 1;
+        for (int i = n - 1; i >= 1; i--) {
+            while (j >= 0 && stalls[j] >= cows[i]) { j--; }
+            possibilities *= (i - j);
+        }
+
+        System.out.println(possibilities);
+    }
+}
+```
+</JavaSection>
 <PySection>
 
 ```py
