@@ -433,20 +433,20 @@ public class Main {
 		// check if it's set on in the xor-sum of every subsequence
 		for (int i = 0; i < 30; i++) {
 			int s = 0;
-			//Count the prefix sums
-			// The # of 0 xor-sum prefixes start from 1 to count the prefixes with
-			// xor-sum 1
+			// Count the prefix sums
+			//  The # of 0 xor-sum prefixes start from 1 to count the prefixes with
+			//  xor-sum 1
 			int[] pref = {1, 0};
 			for (int a : v) {
 				s ^= (a >> i) & 1;
 				/*
-			 * Count the # of sequences ending at this position with xor-sum
-			 * non-zero by counting the prefixes of the inversed bit, i.e.
-			 * pref[i] ^ pref[j] = 1. Update the answer by adding the # of such
-			 * sequences multiplied by the respective power of two.
-			 */
+				 * Count the # of sequences ending at this position with xor-sum
+				 * non-zero by counting the prefixes of the inversed bit, i.e.
+				 * pref[i] ^ pref[j] = 1. Update the answer by adding the # of such
+				 * sequences multiplied by the respective power of two.
+				 */
 				ans += (long)pref[s ^ 1] << i;
-				//Update the prefixes
+				// Update the prefixes
 				pref[s]++;
 			}
 		}
