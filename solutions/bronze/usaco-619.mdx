@@ -113,7 +113,6 @@ int main() {
 ```
 
 </CPPSection>
-
 <JavaSection>
 
 ```java
@@ -204,21 +203,23 @@ public class balancing {
 ```
 
 </JavaSection>
-
 </LanguageSection>
+
 </Spoiler>
 
 ## Solution 1
 
-We must create two lists of the cows. One that is sorted by the x-coordinates of the cows, and the other sorted by the y-coordinates of the cows.
+Let's have two lists of the cows: one sorted by x-coordinate, the other by y-coordinate.
 
-Lets say that we had one cow at $\mathcal{x}$ = 1, and another cow at $\mathcal{x}$ = 999999. We can notice that whatever even north-south partion that we place between those two cows, they will always be in different regions. So, we we only need to consider fence positions at x + 1 or y + 1, because they will always split the cows into different regions, due to being odd positions.
+Lets say that we had one cow at $\mathcal{x}$ = 1, and another cow at $\mathcal{x}$ = 999999.
+Notice that whatever even north-south partion that we place between those two cows, they will always be in different regions.
+Thus, we we only need to consider fence positions at x + 1 or y + 1, because they will always split the cows into different regions, due to being odd positions.
 
-So, extending this logic to all of the cows, we can test each north-south partition between cows where there is at max $N$ possibitiles. For each north-south parition, we can split them into two lists, west and east sorted by their y - positions.
+So, extending this logic to all of the cows, we can test each north-south partition between cows where there is at max $N$ possibilities.
+For each north-south parition, we can split them into two lists, west and east sorted by their y-coordinates.
 
-We can then loop through all the possible horizontal partitions keeping track of how many cows were in the west and how many were in the east. For each horizontal partition, we need to count which section has the max amount of cows.
-
-The answer will be the minimum out of all such counts.
+We can then loop through all the possible partitions keeping track of how many cows are to the east and west,
+which gives us our answer.
 
 **Time Complexity:** $\mathcal{O}(N^2)$
 
