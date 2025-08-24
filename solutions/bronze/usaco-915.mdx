@@ -207,27 +207,29 @@ int main() {
 	freopen("herding.out", "w", stdout);
 
 	// all cow locations
-	int x1, x2, x3;
-	cin >> x1 >> x2 >> x3;
-	// Sort
-	if (x1 > x2) swap(x1, x2);
-	if (x2 > x3) swap(x2, x3);
-	if (x1 > x2) swap(x1, x2);
+	vector<int> a;
+	for (int i = 0; i < 3; i++) {
+		int b;
+		cin >> b;
+		a.push_back(b);
+	}
+	sort(a.begin(), a.end());
+
 	/*
 	 * The minimum number of moves can only be 0, 1, or 2.
 	 * 0 is if they're already consecutive,
 	 * 1 is if there's a difference of 2 between any 2 numbers,
 	 * and 2 is for all other cases.
 	 */
-	if (x1 == x3 - 2) {
+	if (a[0] == a[2] - 2) {
 		cout << 0 << endl;
-	} else if ((x2 == x3 - 2) || (x1 == x2 - 2)) {
+	} else if ((a[1] == a[2] - 2) || (a[0] == a[1] - 2)) {
 		cout << 1 << endl;
 	} else {
 		cout << 2 << endl;
 	}
 	// max is equal to largest difference between end and middle, minus one.
-	cout << max(x3 - x2, x2 - x1) - 1;
+	cout << max(a[2] - a[1], a[1] - a[0]) - 1;
 }
 ```
 
@@ -237,35 +239,28 @@ int main() {
 ```java
 import java.io.*;
 import java.util.*;
-
-public class Main {
+class Main {
 	public static void main(String[] args) throws IOException {
 		Scanner sc = new Scanner(new File("herding.in"));
 		PrintWriter pw = new PrintWriter(new File("herding.out"));
-
 		int[] cows = new int[3];
-		for (int i = 0; i < 3; i++) { cows[i] = sc.nextInt(); }
+		cows[0] = sc.nextInt();
+		cows[1] = sc.nextInt();
+		cows[2] = sc.nextInt();
 		Arrays.sort(cows);
 
-		// all cow locations
-		int x1 = cows[0];
-		int x2 = cows[1];
-		int x3 = cows[2];
-
-		// Minimum number of moves
-		if (x3 == x1 + 2) {
+		// Printing the minimum number of moves
+		if (cows[2] == cows[0] + 2) {
 			pw.println(0);
-		} else if (x2 == x1 + 2 || x3 == x2 + 2) {
+		} else if (cows[1] == cows[0] + 2 || cows[2] == cows[1] + 2) {
 			pw.println(1);
 		} else {
 			pw.println(2);
 		}
 
 		// Max number of moves
-		pw.println(Math.max(x2 - x1, x3 - x2) - 1);
-
+		pw.println(Math.max(cows[1] - cows[0], cows[2] - cows[1]) - 1);
 		pw.close();
-		sc.close();
 	}
 }
 ```
