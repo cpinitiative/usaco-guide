@@ -136,6 +136,7 @@ public class SleepyCowHerding {
 
 </JavaSection>
 </LanguageSection>
+
 </Spoiler>
 
 <Spoiler title="Hint 1">
@@ -162,12 +163,30 @@ When there are two consecutive cows, what is the optimal way to move the cow tha
 <Spoiler title="Solution">
 
 [Official Analysis (C++)](http://www.usaco.org/current/data/sol_herding_bronze_feb19.html)
+
 ## Explanation
-Lets consider the positions of our cows as $x_1$, $x_2$, and $x_3$, where $x_1 < x_2 < x_3$.
 
-Lets first consider the minimum. Obviously, if the three cows are already all next to each other the answer is 0 (e.g. 1, 2, 3). If two of the cows have a gap of one between then, then the answer must be one, because the last cow will just move inside the gap (e.g. 3, 5, and 9, where 9 moves to 4). However, in all other cases, the minimum is 2. This is because we can always move $x_1$ to $x_2 + 2$ and $x_3$ to $x_2 + 1$ in two operations.
+Let's consider the positions of our cows as $x_1$, $x_2$, and $x_3$, where $x_1 < x_2 < x_3$.
 
-Now lets consider the maximum. We will have 2 gaps, $x_1$ to $x_2$ and $x_2$ to $x_3$. After the first operation, one of these will disappear. The way to maximize the number of moves it to keep two adjacent cows at the endpoint, and keep on flipping those two cows until all three cows are grouped in consecutive locations. We can move one of the endpoints to the other, and keep flipping them, to get the maximum number of moves. So the answer just ends up being $max(x_2 - x_1, x_3 - x_2) - 1$.
+### Minimum
+
+If the three cows are already all next to each other the answer is $0$.
+
+If two of the cows have a gap of one between then, then the answer must be one, because the last cow will move inside the gap (e.g. 3, 5, and 9, where 9 moves to 4).
+
+However, in all other cases, the minimum is 2.
+This is because we can always move $x_1$ to $x_2 + 2$ and $x_3$ to $x_2 + 1$ in two operations.
+
+### Maximum
+
+We will have 2 gaps, $x_1$ to $x_2$ and $x_2$ to $x_3$.
+
+After the first operation, one of these will disappear.
+The way to maximize the number of moves it to keep two adjacent cows at the endpoint,
+and keep on flipping those two cows until all three cows are grouped in consecutive locations.
+
+We can move one of the endpoints to the other, and keep flipping them, to get the maximum number of moves.
+With that, the answer ends up being $max(x_2 - x_1, x_3 - x_2) - 1$.
 
 ## Implementation
 
