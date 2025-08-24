@@ -212,14 +212,17 @@ public class balancing {
 Let's have two lists of the cows: one sorted by x-coordinate, the other by y-coordinate.
 
 Lets say that we had one cow at $\mathcal{x}$ = 1, and another cow at $\mathcal{x}$ = 999999.
-Notice that whatever even north-south partion that we place between those two cows, they will always be in different regions.
+Notice that whatever vertical fence that we place between those two cows, they will always be in different regions. This same logic applies for horizontal fences.
 Thus, we we only need to consider fence positions at x + 1 or y + 1, because they will always split the cows into different regions, due to being odd positions.
 
-So, extending this logic to all of the cows, we can test each north-south partition between cows where there is at max $N$ possibilities.
-For each north-south parition, we can split them into two lists, west and east sorted by their y-coordinates.
+So, we can brute force each possible vertical fence between adjacent cows in our list sorted by x-coordinates where there is at max $N - 1$ possibilities.
 
-We can then loop through all the possible partitions keeping track of how many cows are to the east and west,
-which gives us our answer.
+Now, for each vertical fence, we want to find the position of a horizontal fence that minimizes the answer.
+To do this, we can maintain two lists, left and right representing cows to the left and right of the vertical fence. We can then loop through our cow list sorted by y - coordinates, and if any cow is to the left of the vertical fence, we add the to the left list, and if they are to the write, we add them to the right list.
+
+Again, we can brute force through each possible horizontal fence between adjacent cows in our list sorted by y-coordinates, where there is at max $N$ possibilites, while keeping track of how many cows are to the left and right. For each partition, we can find how many cows are in each quadrant by utilizing the sizes of the left and right lists, and the count of cows to the left and right. The answer at this case is the max out of all four quadrants.
+
+The final answer would be the minimum out of all such answers.
 
 **Time Complexity:** $\mathcal{O}(N^2)$
 
