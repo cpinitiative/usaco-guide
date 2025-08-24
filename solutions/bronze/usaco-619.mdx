@@ -2,7 +2,7 @@
 id: usaco-619
 source: USACO Silver 2016 February
 title: Load Balancing
-author: Benjamin Qi, Kevin Sheng, Varun Ragunath
+author: Benjamin Qi, Kevin Sheng, Varun Ragunath, Arnav Gokhale
 ---
 
 [Official Analysis (Java)](http://www.usaco.org/current/data/sol_balancing_silver_feb16.html)
@@ -210,7 +210,15 @@ public class balancing {
 
 ## Solution 1
 
-Similar to the analysis.
+We must create two lists of the cows. One that is sorted by the x-coordinates of the cows, and the other sorted by the y-coordinates of the cows.
+
+Lets say that we had one cow at $\mathcal{x}$ = 1, and another cow at $\mathcal{x}$ = 999999. We can notice that whatever even north-south partion that we place between those two cows, they will always be in different regions. So, we we only need to consider fence positions at x + 1 or y + 1, because they will always split the cows into different regions, due to being odd positions.
+
+So, extending this logic to all of the cows, we can test each north-south partition between cows where there is at max $N$ possibitiles. For each north-south parition, we can split them into two lists, west and east sorted by their y - positions. 
+
+We can then loop through all the possible horizontal partitions keeping track of how many cows were in the west and how many were in the east. For each horizontal partition, we need to count which section has the max amount of cows.
+
+The answer will be the minimum out of all such counts.
 
 **Time Complexity:** $\mathcal{O}(N^2)$
 
