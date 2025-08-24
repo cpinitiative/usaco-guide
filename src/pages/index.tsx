@@ -24,7 +24,11 @@ import { Feature } from '../components/Index/Feature';
 import { ProblemsetsFeature } from '../components/Index/features/ProblemsetsFeature';
 import { ProgressTrackingFeature } from '../components/Index/features/ProgressTrackingFeature';
 import { ResourcesFeature } from '../components/Index/features/ResourcesFeature';
-import { EasyFunCoding, NonTrivial, XCamp } from '../components/Index/sponsor-logos';
+import {
+  EasyFunCoding,
+  NonTrivial,
+  XCamp,
+} from '../components/Index/sponsor-logos';
 import TrustedBy from '../components/Index/TrustedBy';
 import Layout from '../components/layout';
 import SEO from '../components/seo';
@@ -547,12 +551,8 @@ export default function IndexPage(): JSX.Element {
                 <NonTrivial />
               </a>
             </div>
-            <div className="col-span-1">
-              <a
-                href="http://x-camp.academy/"
-                target="_blank"
-                rel="noreferrer"
-              >
+            <div className="col-span-1 pt-5 sm:pt-0">
+              <a href="http://x-camp.academy/" target="_blank" rel="noreferrer">
                 <XCamp />
               </a>
             </div>
