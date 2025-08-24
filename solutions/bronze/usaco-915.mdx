@@ -162,6 +162,12 @@ When there are two consecutive cows, what is the optimal way to move the cow tha
 <Spoiler title="Solution">
 
 [Official Analysis (C++)](http://www.usaco.org/current/data/sol_herding_bronze_feb19.html)
+## Explanation
+Lets consider the positions of our cows as $x_1$, $x_2$, and $x_3$, where $x_1 < x_2 < x_3$.
+
+Lets first consider the minimum. Obviously, if the three cows are already all next to each other the answer is 0 (e.g. 1, 2, 3). If two of the cows have a gap of one between then, then the answer must be one, because the last cow will just move inside the gap (e.g. 3, 5, and 9, where 9 moves to 4). However, in all other cases, the minimum is 2. This is because we can always move $x_1$ to $x_2 + 2$ and $x_3$ to $x_2 + 1$ in two operations.
+
+Now lets consider the maximum. We will have 2 gaps, $x_1$ to $x_2$ and $x_2$ to $x_3$. After the first operation, one of these will disappear. The way to maximize the number of moves it to keep two adjacent cows at the endpoint, and keep on flipping those two cows until all three cows are grouped in consecutive locations. We can move one of the endpoints to the other, and keep flipping them, to get the maximum number of moves. So the answer just ends up being $max(x_2 - x_1, x_3 - x_2) - 1$.
 
 ## Implementation
 
@@ -182,29 +188,27 @@ int main() {
 	freopen("herding.out", "w", stdout);
 
 	// all cow locations
-	vector<int> a;
-	for (int i = 0; i < 3; i++) {
-		int b;
-		cin >> b;
-		a.push_back(b);
-	}
-	sort(a.begin(), a.end());
-
+	int x1, x2, x3;
+	cin >> x1 >> x2 >> x3;
+	// Sort
+	if (x1 > x2) swap(x1,x2);
+	if (x2 > x3) swap(x2,x3);
+	if (x1 > x2) swap(x1,x2);
 	/*
 	 * The minimum number of moves can only be 0, 1, or 2.
 	 * 0 is if they're already consecutive,
 	 * 1 is if there's a difference of 2 between any 2 numbers,
 	 * and 2 is for all other cases.
 	 */
-	if (a[0] == a[2] - 2) {
+	if (x1 == x3 - 2) {
 		cout << 0 << endl;
-	} else if ((a[1] == a[2] - 2) || (a[0] == a[1] - 2)) {
+	} else if ((x2 == x3 - 2) || (x1 == x2 - 2)) {
 		cout << 1 << endl;
 	} else {
 		cout << 2 << endl;
 	}
 	// max is equal to largest difference between end and middle, minus one.
-	cout << max(a[2] - a[1], a[1] - a[0]) - 1;
+	cout << max(x3 - x2, x2 - x1) - 1;
 }
 ```
 
@@ -214,30 +218,41 @@ int main() {
 ```java
 import java.io.*;
 import java.util.*;
-class Main {
-	public static void main(String[] args) throws IOException {
-		Scanner sc = new Scanner(new File("herding.in"));
-		PrintWriter pw = new PrintWriter(new File("herding.out"));
-		int[] cows = new int[3];
-		cows[0] = sc.nextInt();
-		cows[1] = sc.nextInt();
-		cows[2] = sc.nextInt();
-		Arrays.sort(cows);
 
-		// Printing the minimum number of moves
-		if (cows[2] == cows[0] + 2) {
-			pw.println(0);
-		} else if (cows[1] == cows[0] + 2 || cows[2] == cows[1] + 2) {
-			pw.println(1);
-		} else {
-			pw.println(2);
-		}
+public class Main {
+    public static void main(String[] args) throws IOException {
+        Scanner sc = new Scanner(new File("herding.in"));
+        PrintWriter pw = new PrintWriter(new File("herding.out"));
 
-		// Max number of moves
-		pw.println(Math.max(cows[1] - cows[0], cows[2] - cows[1]) - 1);
-		pw.close();
-	}
+        int[] cows = new int[3];
+        for (int i = 0; i < 3; i++) {
+            cows[i] = sc.nextInt();
+        }
+        Arrays.sort(cows);
+
+        // all cow locations
+        int x1 = cows[0];
+        int x2 = cows[1];
+        int x3 = cows[2];
+
+        // Minimum number of moves
+        if (x3 == x1 + 2) {
+            pw.println(0);
+        } 
+        else if (x2 == x1 + 2 || x3 == x2 + 2) {
+            pw.println(1);
+        } else {
+            pw.println(2);
+        }
+
+        // Max number of moves
+        pw.println(Math.max(x2 - x1, x3 - x2) - 1);
+
+        pw.close();
+        sc.close();
+    }
 }
+
 ```
 
 </JavaSection>
@@ -248,19 +263,19 @@ import sys
 
 sys.stdin = open("herding.in", "r")
 sys.stdout = open("herding.out", "w")
-a, b, c = map(int, input().split())
+x1, x2, x3 = map(int, input().split())
 
 # Best scenario: the three elements are already in order.
-if c == a + 2:
+if x3 == x1 + 2:
 	print(0)
 	"""
 	If there is a difference by 2, it can be solved in one move.
 	3 5 9 -> 5 7 9
 	"""
-elif b == a + 2 or c == b + 2:
+elif x2 == x1 + 2 or x3 == x2 + 2:
 	print(1)
 	"""
-	It can always be solved in two moves by moving a -> c - 2 and b -> c - 1.
+	It can always be solved in two moves by moving x1 -> x3 - 2 and x2 -> x3 - 1.
 	If there is less than one integer between the two elements, it'll be taken care
 	of in the if statement above.
 	"""
@@ -270,7 +285,7 @@ else:
 	The worst case is incrementing by 1 in the largest gap.
 	3 5 9 -> 5 6 9 -> 6 7 9 -> 7 8 9
 	"""
-print(max(b - a, c - b) - 1)
+print(max(x2 - x1, x3 - x2) - 1)
 ```
 
 </PySection>
