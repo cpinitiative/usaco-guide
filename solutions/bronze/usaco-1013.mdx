@@ -144,14 +144,14 @@ Given that the cows just end up going around in cycles throughout all these swap
 For full credit, we need to do better than just simulating the $K$ processes one after another.
 
 We notice that after repeating the process a certain number of times, the cows all end up right back where they started.
-Let $X$ be the minimum number of times we must repeat the process for this to happen.
+Let $X$ be the minimum number of times we must repeat the process for this to happen. To find $X$, we can keep track of the ordering of the cows, and if we ever encounter a previously stored state, we use the number of stored orderings to determine X.
 
 Now we only have to consider the remainder when $K$ is divided by $X$ rather than $K$ itself.
-Since the remainder is always less than N, we can just simulate the process $K \bmod X$ times and still pass the problem in time.
+It can be verified by exhaustive search that the maximum possible value of $X$ for $N \leq 100$ is $29640$. Thus, the bounds are small enough so that we can simulate the process $K \bmod X$ times and still pass the problem in time.
 
 ## Implementation
 
-**Time Complexity:** $\mathcal{O}(N^2)$
+**Time Complexity:** $\mathcal{O}(NX)$
 
 <LanguageSection>
 <CPPSection>
