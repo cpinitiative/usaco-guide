@@ -5,32 +5,14 @@ title: Spaced Out
 author: Melody Yu (Video), Tyler Xiao (Video), Maggie Liu
 ---
 
-<Spoiler title="Hint 1">
-
-Look at the two following possible configurations:
-
-```
-C.C.   C..C
-.C.C   .CC.
-.C.C   C..C
-C.C.   .CC.
-```
-
-Do you see anything interesting?
-</Spoiler>
-<Spoiler title="Answer to Hint 1">
-Check out the rows of the first example, and the columns of the second.
-
-Some pattern is definitely at play!
-</Spoiler>
-
-## Internal Video Solution
+## Video Solution
 
 By Maggie Liu
 
 <YouTube id="u6Qlpo9qgvg" />
 
 <Spoiler title="Video Solution Code">
+
 <LanguageSection>
 <CPPSection>
 
@@ -119,7 +101,6 @@ public class SpacedOut {
 ```
 
 </JavaSection>
-
 <PySection>
 
 ```py
@@ -145,19 +126,81 @@ with open("planting.out", "w") as output_file:
 	output_file.write(str(result + 1))
 	output_file.write("\n")
 ```
+
 </PySection>
 </LanguageSection>
+
 </Spoiler>
 
-## External Video Solution
+<Spoiler title="Hint">
 
-Note: The video solution might not be the same as other solutions. Code in Java.
+Look at the two following possible configurations:
 
-<YouTube id="7eMHxpDQJEw" />
+```
+C.C.   C..C
+.C.C   .CC.
+.C.C   C..C
+C.C.   .CC.
+```
+
+Do you see anything interesting?
+
+</Spoiler>
+
+<Spoiler title="Answer to Hint">
+
+Check out the rows of the first example, and the columns of the second.
+
+Some pattern is definitely at play!
+
+</Spoiler>
+
+[Official Analysis (C++ and Java)](http://usaco.org/current/data/sol_prob3_silver_jan21.html)
 
 <Spoiler title="Solution">
 
-[Official Analysis (C++ and Java)](http://usaco.org/current/data/sol_prob3_silver_jan21.html)
+## Explanation
+
+The key idea is that in any valid arrangement, either every row alternates between cow and no-cow, or every column alternates between cow and no-cow.
+
+<Spoiler title = "Proof">
+
+If no two cows are adjacent, the claim holds trivially—both rows and columns will alternate in this case.
+
+Otherwise, suppose there exist two cows positioned next to each other. Without loss of generality, assume they are placed horizontally:
+
+```
+?????
+?CC??
+?????
+?????
+?????
+```
+
+The only way to consistently fill the columns containing these two cows is by alternating cow and no-cow entries:
+
+```
+?..??
+?CC??
+?..??
+?CC??
+?..??
+```
+
+Next, we must fill in the remaining columns. Begin with a column adjacent to one that is already filled. We observe that these too must alternate between cow and no-cow; failing to do so inevitably creates a 2 by 2 block with exactly 1 or 3 cows, which is invalid. This same reasoning applies inductively to all remaining columns. Hence, the claim follows.
+
+```
+C..C.
+.CC.C
+C..C.
+.CC.C
+C..C.
+```
+
+</Spoiler>
+
+To solve the problem, we only need to check both scenarios—either rows alternate or columns alternate.
+For each row (or column), there are only two possible alternating patterns, so we pick the arrangement that maximizes beauty.
 
 ## Implementation
 
@@ -276,4 +319,5 @@ print(max(rows_alternate, cols_alternate))
 
 </PySection>
 </LanguageSection>
+
 </Spoiler>
