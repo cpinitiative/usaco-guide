@@ -84,10 +84,10 @@ import java.io.*;
 import java.util.*;
 
 public class MinimizeDiameter {
-	private static class Edge {
+	private static class Pair {
 		int first;
 		int second;
-		Edge(int first, int second) {
+		Pair(int first, int second) {
 			this.first = first;
 			this.second = second;
 		}
@@ -133,15 +133,15 @@ public class MinimizeDiameter {
 		    Math.max(Math.max(tree1Diameter, tree2Diameter), addedEdgeDiameter));
 	}
 
-	private static Edge dfs(List<List<Integer>> tree) { return dfs(tree, 1, 0, 0); }
+	private static Pair dfs(List<List<Integer>> tree) { return dfs(tree, 1, 0, 0); }
 
 	/** @return the farthest node and its distance from the given node. */
-	private static Edge dfs(List<List<Integer>> tree, int node, int previous,
+	private static Pair dfs(List<List<Integer>> tree, int node, int previous,
 	                        int length) {
-		Edge maxPath = new Edge(node, length);
+		Pair maxPath = new Pair(node, length);
 		for (int i : tree.get(node)) {
 			if (i == previous) { continue; }
-			Edge other = dfs(tree, i, node, length + 1);
+			Pair other = dfs(tree, i, node, length + 1);
 			if (other.second > maxPath.second) { maxPath = other; }
 		}
 		return maxPath;
