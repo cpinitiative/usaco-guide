@@ -136,6 +136,7 @@ public class SleepyCowHerding {
 
 </JavaSection>
 </LanguageSection>
+
 </Spoiler>
 
 <Spoiler title="Hint 1">
@@ -162,6 +163,30 @@ When there are two consecutive cows, what is the optimal way to move the cow tha
 <Spoiler title="Solution">
 
 [Official Analysis (C++)](http://www.usaco.org/current/data/sol_herding_bronze_feb19.html)
+
+## Explanation
+
+Let's consider the positions of our cows as $x_1$, $x_2$, and $x_3$, where $x_1 < x_2 < x_3$.
+
+### Minimum
+
+If the three cows are already all next to each other the answer is $0$.
+
+If two of the cows have a gap of one between then, then the answer must be one, because the last cow will move inside the gap (e.g. 3, 5, and 9, where 9 moves to 4).
+
+However, in all other cases, the minimum is 2.
+This is because we can always move $x_1$ to $x_2 + 2$ and $x_3$ to $x_2 + 1$ in two operations.
+
+### Maximum
+
+We will have 2 gaps, $x_1$ to $x_2$ and $x_2$ to $x_3$.
+
+After the first operation, one of these will disappear.
+The way to maximize the number of moves it to keep two adjacent cows at the endpoint,
+and keep on flipping those two cows until all three cows are grouped in consecutive locations.
+
+We can move one of the endpoints to the other, and keep flipping them, to get the maximum number of moves.
+With that, the answer ends up being $max(x_2 - x_1, x_3 - x_2) - 1$.
 
 ## Implementation
 
@@ -248,19 +273,19 @@ import sys
 
 sys.stdin = open("herding.in", "r")
 sys.stdout = open("herding.out", "w")
-a, b, c = map(int, input().split())
+x1, x2, x3 = map(int, input().split())
 
 # Best scenario: the three elements are already in order.
-if c == a + 2:
+if x3 == x1 + 2:
 	print(0)
 	"""
 	If there is a difference by 2, it can be solved in one move.
 	3 5 9 -> 5 7 9
 	"""
-elif b == a + 2 or c == b + 2:
+elif x2 == x1 + 2 or x3 == x2 + 2:
 	print(1)
 	"""
-	It can always be solved in two moves by moving a -> c - 2 and b -> c - 1.
+	It can always be solved in two moves by moving x1 -> x3 - 2 and x2 -> x3 - 1.
 	If there is less than one integer between the two elements, it'll be taken care
 	of in the if statement above.
 	"""
@@ -270,7 +295,7 @@ else:
 	The worst case is incrementing by 1 in the largest gap.
 	3 5 9 -> 5 6 9 -> 6 7 9 -> 7 8 9
 	"""
-print(max(b - a, c - b) - 1)
+print(max(x2 - x1, x3 - x2) - 1)
 ```
 
 </PySection>
