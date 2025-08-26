@@ -7,24 +7,24 @@ author: Ruben Jing
 
 ## Explanation
 
-Notice how we have the formula $x_l + x_{l+1} + \dots + x_r = s$. Using prefix sums, 
-we can represent $x_l + x_{l+1} + \dots + x_r$ as $p_r - p_{l-1}$ where $p$ is the prefix 
-array. Therefore, $p_r - p_{l-1} = s$ is sufficient to represent $(l, r, s)$. 
+Notice how we have the formula $x_l + x_{l+1} + \dots + x_r = s$. Using prefix sums,
+we can represent $x_l + x_{l+1} + \dots + x_r$ as $p_r - p_{l-1}$ where $p$ is the prefix
+array. Therefore, $p_r - p_{l-1} = s$ is sufficient to represent $(l, r, s)$.
 
-With $p_r - p_{l-1} = s$, we can get $p_r = p_{l-1} + s$ and $p_{l-1} = p_r - s$. More generally, 
-we write $p_u = p_v + w$, where $w$ means "weight." This equation motivates a solution using 
-graphs. Each node of the graph represents $p_i$, and edges are of weight $\pm s$. 
+With $p_r - p_{l-1} = s$, we can get $p_r = p_{l-1} + s$ and $p_{l-1} = p_r - s$. More generally,
+we write $p_u = p_v + w$, where $w$ means "weight." This equation motivates a solution using
+graphs. Each node of the graph represents $p_i$, and edges are of weight $\pm s$.
 
-Every time we encounter a new node, we assign it an arbitrary value. For simplicity's sake, 
-the solutions below use $0$. Try any other random number like $500$, you will still AC! 
+Every time we encounter a new node, we assign it an arbitrary value. For simplicity's sake,
+the solutions below use $0$. Try any other random number like $500$, you will still AC!
 
-Let us call this new node $p_u$. We use DFS (or BFS) to find what other nodes it can reach. 
-Consider an edge from $p_u$ towards $p_v$ with weight $w$. We can use our equation $p_u = p_v + w$ 
-to compute $p_v$. If $p_v$ already has been assigned a value, we check if our newly computed value 
-matches the originally assigned value. If not, we have a contradiction, and therefore cannot create 
+Let us call this new node $p_u$. We use DFS (or BFS) to find what other nodes it can reach.
+Consider an edge from $p_u$ towards $p_v$ with weight $w$. We can use our equation $p_u = p_v + w$
+to compute $p_v$. If $p_v$ already has been assigned a value, we check if our newly computed value
+matches the originally assigned value. If not, we have a contradiction, and therefore cannot create
 an array!
 
-## Implementation 
+## Implementation
 **Time Complexity:** $\mathcal{O}(N + M)$
 
 <LanguageSection>
@@ -34,68 +34,66 @@ an array!
 using namespace std;
 using ll = long long;
 
-int main () {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-    int n, m;
+int main() {
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
+	int n, m;
 
-    cin >> n >> m;
-    
-    // .first is other node, .second is weight
-    vector<pair<int, int>> adj[n+1];
-    vector<ll> pref(n+1);
-    vector<bool> visited(n+1);
+	cin >> n >> m;
 
-    for (int i = 0; i < m; i++) {
-        int l, r, s;
+	// .first is other node, .second is weight
+	vector<pair<int, int>> adj[n + 1];
+	vector<ll> pref(n + 1);
+	vector<bool> visited(n + 1);
 
-        cin >> l >> r >> s;
+	for (int i = 0; i < m; i++) {
+		int l, r, s;
 
-        //p[r] - p[l - 1] = s
-        adj[l - 1].push_back({r, s});
-        adj[r].push_back({l - 1, -s});
-    }
+		cin >> l >> r >> s;
 
-    bool valid = true;
+		// p[r] - p[l - 1] = s
+		adj[l - 1].push_back({r, s});
+		adj[r].push_back({l - 1, -s});
+	}
 
-    function<void(int)> dfs = [&](int s) -> void {
-        if (visited[s]) return;
-        visited[s] = true;
+	bool valid = true;
 
-        for (auto u : adj[s]) {
-            int v = u.first;
-            ll val = pref[s] + u.second;
+	function<void(int)> dfs = [&](int s) -> void {
+		if (visited[s]) return;
+		visited[s] = true;
 
-            if (!visited[v]) {
-                pref[v] = val;
-                dfs(v);
+		for (auto u : adj[s]) {
+			int v = u.first;
+			ll val = pref[s] + u.second;
 
-                if (!valid) return;
-            } else if (pref[v] != val) {
-                valid = false;
-                return;
-            }
-        }
-    };
+			if (!visited[v]) {
+				pref[v] = val;
+				dfs(v);
 
-    for (int i = 0; i <= n; i++) {
-        if (!visited[i]) {
-            pref[i] = 0;
-            dfs(i);
+				if (!valid) return;
+			} else if (pref[v] != val) {
+				valid = false;
+				return;
+			}
+		}
+	};
 
-            if (!valid) {
-                cout << "NO" << "\n";
+	for (int i = 0; i <= n; i++) {
+		if (!visited[i]) {
+			pref[i] = 0;
+			dfs(i);
 
-                return 0;
-            }
-        }
-    }
+			if (!valid) {
+				cout << "NO" << "\n";
 
-    cout << "YES" << "\n";
+				return 0;
+			}
+		}
+	}
 
-    for (int i = 1; i <= n; i++) {
-        cout << pref[i] - pref[i - 1] << " ";
-    }
+	cout << "YES" << "\n";
+
+	for (int i = 1; i <= n; i++) { cout << pref[i] - pref[i - 1] << " "; }
 }
 ```
 </CPPSection>
@@ -106,82 +104,81 @@ import java.util.*;
 
 public class subsumcon {
 	static List<int[]>[] adj;
-    static long[] pref;
+	static long[] pref;
 	static boolean[] visited;
-    static boolean valid;
+	static boolean valid;
 
-    public static void main (String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer(br.readLine());
-        
-        int n = Integer.parseInt(st.nextToken());
-        int m = Integer.parseInt(st.nextToken());
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
 
-        visited = new boolean[n + 1];
-        pref = new long[n + 1];
-        adj = new ArrayList[n + 1];
-        valid = true;
+		int n = Integer.parseInt(st.nextToken());
+		int m = Integer.parseInt(st.nextToken());
 
-        for (int i = 0; i <= n; i++) adj[i] = new ArrayList<>();
+		visited = new boolean[n + 1];
+		pref = new long[n + 1];
+		adj = new ArrayList[n + 1];
+		valid = true;
 
-        for (int i = 0; i < m; i++) {
-            st = new StringTokenizer(br.readLine());
-            int l = Integer.parseInt(st.nextToken());
-            int r = Integer.parseInt(st.nextToken());
-            int s = Integer.parseInt(st.nextToken());
+		for (int i = 0; i <= n; i++) adj[i] = new ArrayList<>();
 
-            adj[l - 1].add(new int[]{r, s});
-            adj[r].add(new int[]{l - 1, -s});
-        }
+		for (int i = 0; i < m; i++) {
+			st = new StringTokenizer(br.readLine());
+			int l = Integer.parseInt(st.nextToken());
+			int r = Integer.parseInt(st.nextToken());
+			int s = Integer.parseInt(st.nextToken());
 
-        for (int i = 0; i <= n; i++) {
-            if (!visited[i]) {
-                pref[i] = 0;
-                dfs(i);
+			adj[l - 1].add(new int[] {r, s});
+			adj[r].add(new int[] {l - 1, -s});
+		}
 
-                if (!valid) {
-                    System.out.println("NO");
-                    return;
-                }
-            }
-        }
+		for (int i = 0; i <= n; i++) {
+			if (!visited[i]) {
+				pref[i] = 0;
+				dfs(i);
 
-        StringBuilder sb = new StringBuilder();
+				if (!valid) {
+					System.out.println("NO");
+					return;
+				}
+			}
+		}
 
-        sb.append("YES\n");
-        for (int i = 1; i <= n; i++) {
-            sb.append(pref[i] - pref[i - 1] + " ");
-        }
+		StringBuilder sb = new StringBuilder();
 
-        System.out.println(sb);
-    }
+		sb.append("YES\n");
+		for (int i = 1; i <= n; i++) { sb.append(pref[i] - pref[i - 1] + " "); }
 
-    static void dfs (int s) {
-        if (visited[s]) return;
-        visited[s] = true;
+		System.out.println(sb);
+	}
 
-        for (int[] u : adj[s]) {
-            int v = u[0];
-            long val = pref[s] + u[1];
+	static void dfs(int s) {
+		if (visited[s]) return;
+		visited[s] = true;
 
-            if (!visited[v]) {
-                pref[v] = val;
-                dfs(v);
+		for (int[] u : adj[s]) {
+			int v = u[0];
+			long val = pref[s] + u[1];
 
-                if (!valid) return;
-            } else if (pref[v] != val) {
-                valid = false;
-                return;
-            }
-        }
-    }
+			if (!visited[v]) {
+				pref[v] = val;
+				dfs(v);
+
+				if (!valid) return;
+			} else if (pref[v] != val) {
+				valid = false;
+				return;
+			}
+		}
+	}
 }
 ```
 </JavaSection>
 <PySection>
 ```py
 import sys
-sys.setrecursionlimit(10**5) 
+
+sys.setrecursionlimit(10**5)
 
 n, m = map(int, input().split())
 
@@ -189,34 +186,36 @@ adj = [[] for _ in range(n + 1)]
 pref = [0] * (n + 1)
 visited = [False] * (n + 1)
 
+
 def dfs(s):
-    if visited[s]:
-        return
-    visited[s] = True
+	if visited[s]:
+		return
+	visited[s] = True
 
-    for v, w in adj[s]:
-        val = pref[s] + w
+	for v, w in adj[s]:
+		val = pref[s] + w
 
-        if not visited[v]:
-            pref[v] = val
-            dfs(v)
-        elif pref[v] != val:
-            print("NO")
-            exit()
+		if not visited[v]:
+			pref[v] = val
+			dfs(v)
+		elif pref[v] != val:
+			print("NO")
+			exit()
+
 
 for _ in range(m):
-    l, r, s = map(int, input().split())
+	l, r, s = map(int, input().split())
 
-    adj[l - 1].append((r, s))
-    adj[r].append((l - 1, -s))
+	adj[l - 1].append((r, s))
+	adj[r].append((l - 1, -s))
 
-for i in range(n+1):
-    if not visited[i]:
-        pref[i] = 0
-        dfs(i)
+for i in range(n + 1):
+	if not visited[i]:
+		pref[i] = 0
+		dfs(i)
 
-print ("YES")
-print(" ".join(str(pref[i] - pref[i-1]) for i in range(1, n+1)))
+print("YES")
+print(" ".join(str(pref[i] - pref[i - 1]) for i in range(1, n + 1)))
 ```
 </PySection>
 </LanguageSection>
