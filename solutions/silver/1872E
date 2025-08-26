@@ -1,0 +1,153 @@
+---
+id: cf-1872E
+source: Codeforces Round 895 (Div. 3)
+title: Data Structures Fan
+author: Arnav Gokhale
+---
+
+## Explanation
+
+We can store two variables, that represent the XOR of the numbers in group 0 and group 1 named $G_0$ and $G_1$. For queries of type 2, you can simply output either $G_0$ or $G_1$ depending on the query number.
+
+For queries of type 1, we must consider how to update  $G_0$ or $G_1$.
+
+Let's only consider $G_0$ first. For every $i$ between $l$ and $r$ inclusive, where $s_i$ was $0$, now becomes a $1$, and $a_i$ has to now be removed from $G_0$. However, we can notice that XOR is a inversible operation, where $(x $ $\oplus$ $x) = 0$. So, by simply performing $G_0$ $ = $ $G_0$ $\oplus$ $a_i$, we can remove $a_i$ from $G_0$. However, if $s_i$ was a $1$ it would become a $0$, and we need to add $a_i$ to $G_0$. To do so, we simply perform $G_0$ = $G_0$ $\oplus$ $a_i$. The exact same logic applies for $G_1$, but in the opposite order.
+
+Now notice that no matter what the switch is from $0$ to $1$ or $1$ to $0$, for a certain $i$, $G_0$ and $G_1$ are updated in the exact same way: $G_0$ $=$ $G_0$ $\oplus$ $a_i$ and $G_1$ $=$ $G_1$ $\oplus$ $a_i$.
+
+To update $G_0$ and $G_1$, for given $l$ and $r$, we must do: $G_0$ = $G_0$ $\oplus$ $(a_l$ $\oplus$ $. . .$ $\oplus$ $a_r)$ and $G_1$ = $G_1$ $\oplus$ $(a_l$ $\oplus$ $. . .$ $\oplus$ $a_r).$
+
+We can find $a_l$ $\oplus$ $. . .$ $\oplus$ $a_r$ in $O(1)$ by creating a prefix XOR array, where $p_i$ = $a_1$ $\oplus ... \oplus ... $ $a_i$. Then, $a_l$ $\oplus$ $. . .$ $\oplus$ $a_r$ $ = $ $p_r$ $\oplus$ $p_{l-1}.$
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(n + q)$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+void solve() {
+	int n; cin >> n;
+	vector<int> a(n);
+	for (int i = 0; i < n; i++) {
+		cin >> a[i];
+	}
+	string s; cin >> s;
+	int q; cin >> q;
+	int g_0 = 0, g_1 = 0;
+    //Construct prefix array
+	vector<int> p(n + 1);
+	for (int i = 1; i <= n; i++) {
+		p[i] = (p[i-1] ^ a[i-1]);
+		if (s[i-1] == '1') {
+			g_1 = (g_1 ^ a[i-1]);
+		} else {
+			g_0 = (g_0 ^ a[i-1]);
+		}
+	}
+	for (int i = 0; i < q; i++) {
+		int type; cin >> type;
+		if (type == 2) {
+            //Queries of type 2 print g_0 or g_1
+			int num; cin >> num;
+			if (num == 0) cout << g_0 << ' ';
+			else cout << g_1 << ' ';
+		} else {
+            //Queries of type 1, update g_0 and g_1
+			int l, r;
+			cin >> l >> r;
+			g_0 = g_0 ^ (p[r] ^ p[l-1]);
+			g_1 = g_1 ^ (p[r] ^ p[l-1]);
+		}
+	}
+	cout << '\n';
+}
+int main() {
+	int t; cin >> t;
+	while (t--) {
+		solve();
+	}
+}
+```
+</CPPSection>
+
+<PySection>
+
+(if you have Python code)
+
+</PySection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.StringTokenizer;
+
+public class Main {
+	public static void main(String[] args) throws IOException {
+		BufferedReader rd = new BufferedReader(new InputStreamReader(System.in));
+		PrintWriter pw = new PrintWriter(System.out);
+
+		StringTokenizer st = new StringTokenizer(rd.readLine());
+		int t = Integer.parseInt(st.nextToken());
+		while (t > 0) {
+      st = new StringTokenizer(rd.readLine());
+      int n = Integer.parseInt(st.nextToken());
+      st = new StringTokenizer(rd.readLine());
+      int[] a = new int[n];
+      for (int i = 0; i < n; i++) {
+        a[i] = Integer.parseInt(st.nextToken());
+      }
+      st = new StringTokenizer(rd.readLine());
+      String s = st.nextToken();
+      st = new StringTokenizer(rd.readLine());
+      int q = Integer.parseInt(st.nextToken());
+
+      int[] p = new int[n+1];
+      int g_0 = 0;
+      int g_1 = 0;
+
+      //Construct prefix array
+      for (int i = 1; i <= n; i++) {
+        p[i] = (p[i-1] ^ a[i-1]);
+        if (s.charAt(i-1) == '1') {
+          g_1 = (g_1 ^ a[i-1]);
+        } else {
+          g_0 = (g_0 ^ a[i-1]);
+        }
+      }
+      
+      while (q > 0) {
+        st = new StringTokenizer(rd.readLine());
+        int type = Integer.parseInt(st.nextToken());
+        if (type == 2) {
+          //Queries of type 2 print g_0 or g_1
+          int num = Integer.parseInt(st.nextToken());
+          if (num == 0) pw.print(g_0 + " ");
+          else pw.print(g_1 + " ");
+        } else {
+          //Queries of type 1, update g_0 and g_1
+          int l = Integer.parseInt(st.nextToken());
+          int r = Integer.parseInt(st.nextToken());
+          g_0 = g_0 ^ (p[r] ^ p[l-1]);
+			    g_1 = g_1 ^ (p[r] ^ p[l-1]);
+        }
+        q--;
+      }
+      pw.print('\n');
+      t--;
+    }
+		pw.close();
+	}
+}
+
+```
+
+</JavaSection>
+
+</LanguageSection>
