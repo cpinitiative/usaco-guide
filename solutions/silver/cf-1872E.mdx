@@ -32,46 +32,48 @@ We can find $a_l$ $\oplus$ $. . .$ $\oplus$ $a_r$ in $O(1)$ by creating a prefix
 using namespace std;
 
 void solve() {
-	int n; cin >> n;
+	int n;
+	cin >> n;
 	vector<int> a(n);
-	for (int i = 0; i < n; i++) {
-		cin >> a[i];
-	}
-	string s; cin >> s;
-	int q; cin >> q;
+	for (int i = 0; i < n; i++) { cin >> a[i]; }
+	string s;
+	cin >> s;
+	int q;
+	cin >> q;
 	int g_0 = 0, g_1 = 0;
-    //Construct prefix array
+	// Construct prefix array
 	vector<int> p(n + 1);
 	for (int i = 1; i <= n; i++) {
-		p[i] = (p[i-1] ^ a[i-1]);
-		if (s[i-1] == '1') {
-			g_1 = (g_1 ^ a[i-1]);
+		p[i] = (p[i - 1] ^ a[i - 1]);
+		if (s[i - 1] == '1') {
+			g_1 = (g_1 ^ a[i - 1]);
 		} else {
-			g_0 = (g_0 ^ a[i-1]);
+			g_0 = (g_0 ^ a[i - 1]);
 		}
 	}
 	for (int i = 0; i < q; i++) {
-		int type; cin >> type;
+		int type;
+		cin >> type;
 		if (type == 2) {
-            //Queries of type 2 print g_0 or g_1
-			int num; cin >> num;
+			// Queries of type 2 print g_0 or g_1
+			int num;
+			cin >> num;
 			if (num == 0) cout << g_0 << ' ';
 			else cout << g_1 << ' ';
 		} else {
-            //Queries of type 1, update g_0 and g_1
+			// Queries of type 1, update g_0 and g_1
 			int l, r;
 			cin >> l >> r;
-			g_0 = g_0 ^ (p[r] ^ p[l-1]);
-			g_1 = g_1 ^ (p[r] ^ p[l-1]);
+			g_0 = g_0 ^ (p[r] ^ p[l - 1]);
+			g_1 = g_1 ^ (p[r] ^ p[l - 1]);
 		}
 	}
 	cout << '\n';
 }
 int main() {
-	int t; cin >> t;
-	while (t--) {
-		solve();
-	}
+	int t;
+	cin >> t;
+	while (t--) { solve(); }
 }
 ```
 </CPPSection>
@@ -96,56 +98,53 @@ public class Main {
 		StringTokenizer st = new StringTokenizer(rd.readLine());
 		int t = Integer.parseInt(st.nextToken());
 		while (t > 0) {
-      st = new StringTokenizer(rd.readLine());
-      int n = Integer.parseInt(st.nextToken());
-      st = new StringTokenizer(rd.readLine());
-      int[] a = new int[n];
-      for (int i = 0; i < n; i++) {
-        a[i] = Integer.parseInt(st.nextToken());
-      }
-      st = new StringTokenizer(rd.readLine());
-      String s = st.nextToken();
-      st = new StringTokenizer(rd.readLine());
-      int q = Integer.parseInt(st.nextToken());
+			st = new StringTokenizer(rd.readLine());
+			int n = Integer.parseInt(st.nextToken());
+			st = new StringTokenizer(rd.readLine());
+			int[] a = new int[n];
+			for (int i = 0; i < n; i++) { a[i] = Integer.parseInt(st.nextToken()); }
+			st = new StringTokenizer(rd.readLine());
+			String s = st.nextToken();
+			st = new StringTokenizer(rd.readLine());
+			int q = Integer.parseInt(st.nextToken());
 
-      int[] p = new int[n+1];
-      int g_0 = 0;
-      int g_1 = 0;
+			int[] p = new int[n + 1];
+			int g_0 = 0;
+			int g_1 = 0;
 
-      //Construct prefix array
-      for (int i = 1; i <= n; i++) {
-        p[i] = (p[i-1] ^ a[i-1]);
-        if (s.charAt(i-1) == '1') {
-          g_1 = (g_1 ^ a[i-1]);
-        } else {
-          g_0 = (g_0 ^ a[i-1]);
-        }
-      }
+			// Construct prefix array
+			for (int i = 1; i <= n; i++) {
+				p[i] = (p[i - 1] ^ a[i - 1]);
+				if (s.charAt(i - 1) == '1') {
+					g_1 = (g_1 ^ a[i - 1]);
+				} else {
+					g_0 = (g_0 ^ a[i - 1]);
+				}
+			}
 
-      while (q > 0) {
-        st = new StringTokenizer(rd.readLine());
-        int type = Integer.parseInt(st.nextToken());
-        if (type == 2) {
-          //Queries of type 2 print g_0 or g_1
-          int num = Integer.parseInt(st.nextToken());
-          if (num == 0) pw.print(g_0 + " ");
-          else pw.print(g_1 + " ");
-        } else {
-          //Queries of type 1, update g_0 and g_1
-          int l = Integer.parseInt(st.nextToken());
-          int r = Integer.parseInt(st.nextToken());
-          g_0 = g_0 ^ (p[r] ^ p[l-1]);
-			    g_1 = g_1 ^ (p[r] ^ p[l-1]);
-        }
-        q--;
-      }
-      pw.print('\n');
-      t--;
-    }
+			while (q > 0) {
+				st = new StringTokenizer(rd.readLine());
+				int type = Integer.parseInt(st.nextToken());
+				if (type == 2) {
+					// Queries of type 2 print g_0 or g_1
+					int num = Integer.parseInt(st.nextToken());
+					if (num == 0) pw.print(g_0 + " ");
+					else pw.print(g_1 + " ");
+				} else {
+					// Queries of type 1, update g_0 and g_1
+					int l = Integer.parseInt(st.nextToken());
+					int r = Integer.parseInt(st.nextToken());
+					g_0 = g_0 ^ (p[r] ^ p[l - 1]);
+					g_1 = g_1 ^ (p[r] ^ p[l - 1]);
+				}
+				q--;
+			}
+			pw.print('\n');
+			t--;
+		}
 		pw.close();
 	}
 }
-
 ```
 
 </JavaSection>
