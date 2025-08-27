@@ -97,6 +97,10 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
       items: ['prefix-sums', 'more-prefix-sums'],
     },
     {
+      name: 'Math',
+      items: ['divisibility', 'modular'],
+    },
+    {
       name: 'Sorting & Searching',
       items: [
         'two-pointers',
@@ -126,7 +130,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
   gold: [
     {
       name: 'Math',
-      items: ['divisibility', 'modular', 'combo'],
+      items: ['combo'],
     },
     {
       name: 'Dynamic Programming',
