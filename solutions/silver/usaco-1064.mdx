@@ -22,37 +22,35 @@ Note: The video solution might not be the same as other solutions. Code in C++.
 using namespace std;
 
 int main() {
-    int n;
-    cin >> n;
+	int n;
+	cin >> n;
 
-    vector<int> x_coordinates(n);
-    vector<int> y_coordinates(n);
-    vector<int> east_cows;
-    vector<int> north_cows;
+	vector<int> x_coordinates(n);
+	vector<int> y_coordinates(n);
+	vector<int> east_cows;
+	vector<int> north_cows;
 
-    for (int i = 0; i < n; i++) {
-        char direction;
-        cin >> direction >> x_coordinates[i] >> y_coordinates[i];
-        if (direction == 'E') {
-            east_cows.push_back(i);
-        } else {
-            north_cows.push_back(i);
-        }
-    }
+	for (int i = 0; i < n; i++) {
+		char direction;
+		cin >> direction >> x_coordinates[i] >> y_coordinates[i];
+		if (direction == 'E') {
+			east_cows.push_back(i);
+		} else {
+			north_cows.push_back(i);
+		}
+	}
 
-    // sort the east cows by y-coordinate
-    sort(east_cows.begin(), east_cows.end(), [&](int a, int b) {
-        return y_coordinates[a] < y_coordinates[b];
-    });
-    // sort the north cows by x-coordinate
-    sort(north_cows.begin(), north_cows.end(), [&](int a, int b) {
-        return x_coordinates[a] < x_coordinates[b];
-    });
+	// sort the east cows by y-coordinate
+	sort(east_cows.begin(), east_cows.end(),
+	     [&](int a, int b) { return y_coordinates[a] < y_coordinates[b]; });
+	// sort the north cows by x-coordinate
+	sort(north_cows.begin(), north_cows.end(),
+	     [&](int a, int b) { return x_coordinates[a] < x_coordinates[b]; });
 
-    vector<bool> stopped(n);
-    vector<int> amount_stopped(n);
-    for (int j : east_cows) {  // loop through all pairs of cows
-        for (int k : north_cows) {
+	vector<bool> stopped(n);
+	vector<int> amount_stopped(n);
+	for (int j : east_cows) {  // loop through all pairs of cows
+		for (int k : north_cows) {
 			/*
 			 * make sure that both the east and north cows
 			 * are not stopped a collision is only possible
@@ -60,31 +58,33 @@ int main() {
 			 * than the x of east cow and the y of the east
 			 * cow is greater than the y of the north cow
 			 */
-            if ((!stopped[j]) && (!stopped[k]) && (x_coordinates[k] > x_coordinates[j]) && (y_coordinates[j] > y_coordinates[k])) {
-                if ((x_coordinates[k] - x_coordinates[j]) > (y_coordinates[j] - y_coordinates[k])) {
-                    // the north cow stops the east cow
-                    // mark the east cow as stopped
-                    stopped[j] = true;
+			if ((!stopped[j]) && (!stopped[k]) &&
+			    (x_coordinates[k] > x_coordinates[j]) &&
+			    (y_coordinates[j] > y_coordinates[k])) {
+				if ((x_coordinates[k] - x_coordinates[j]) >
+				    (y_coordinates[j] - y_coordinates[k])) {
+					// the north cow stops the east cow
+					// mark the east cow as stopped
+					stopped[j] = true;
 
-                    // add number of cows that the east cow stops + 1
-                    amount_stopped[k] += (1 + amount_stopped[j]);
-                } else if ((x_coordinates[k] - x_coordinates[j]) < (y_coordinates[j] - y_coordinates[k])) {
-                    // the east cow stops the north cow
-                    // mark the north cow as stopped
-                    stopped[k] = true;
+					// add number of cows that the east cow stops + 1
+					amount_stopped[k] += (1 + amount_stopped[j]);
+				} else if ((x_coordinates[k] - x_coordinates[j]) <
+				           (y_coordinates[j] - y_coordinates[k])) {
+					// the east cow stops the north cow
+					// mark the north cow as stopped
+					stopped[k] = true;
 
-                    // add number of cows that the north cow stops + 1
-                    amount_stopped[j] += (1 + amount_stopped[k]);
-                }
-                // if difference in x and difference in y is equal,
-                // let the cows continue as stated in the problem
-            }
-        }
-    }
+					// add number of cows that the north cow stops + 1
+					amount_stopped[j] += (1 + amount_stopped[k]);
+				}
+				// if difference in x and difference in y is equal,
+				// let the cows continue as stated in the problem
+			}
+		}
+	}
 
-    for (int i = 0; i < n; i++) {
-        cout << amount_stopped[i] << '\n';
-    }
+	for (int i = 0; i < n; i++) { cout << amount_stopped[i] << '\n'; }
 }
 ```
 
