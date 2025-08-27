@@ -7,17 +7,27 @@ author: Arnav Gokhale
 
 ## Explanation
 
-We can store two variables, that represent the XOR of the numbers in group 0 and group 1 named $G_0$ and $G_1$. For queries of type 2, you can simply output either $G_0$ or $G_1$ depending on the query number.
+We can store two variables: one for the XOR of the numbers in group 0 and another for those in group 1.
+Let's call these $G_0$ and $G_1$ for brevity.
+This means for queries of type 2, we output either $G_0$ or $G_1$ depending on the parameter.
 
-For queries of type 1, we must consider how to update  $G_0$ or $G_1$.
+### Type 1 Queries
 
-Let's only consider $G_0$ first. For every $i$ between $l$ and $r$ inclusive, where $s_i$ was $0$, now becomes a $1$, and $a_i$ has to now be removed from $G_0$. However, we can notice that XOR is a inversible operation, where $(x $ $\oplus$ $x) = 0$. So, by simply performing $G_0$ $ = $ $G_0$ $\oplus$ $a_i$, we can remove $a_i$ from $G_0$. However, if $s_i$ was a $1$ it would become a $0$, and we need to add $a_i$ to $G_0$. To do so, we simply perform $G_0$ = $G_0$ $\oplus$ $a_i$. The exact same logic applies for $G_1$, but in the opposite order.
+Let's only consider $G_0$ for now.
+Say we had to flip $s_i$ when it was initially $1$, so we have to "remove" $a_i$ from $G_0$.
+Notice that since XORing is its own inverse ($x ^ x = 0$), we can remove $a_i$ from $G_0$ by setting $G_0$ to $G_0 ^ a_i$.
 
-Now notice that no matter what the switch is from $0$ to $1$ or $1$ to $0$, for a certain $i$, $G_0$ and $G_1$ are updated in the exact same way: $G_0$ $=$ $G_0$ $\oplus$ $a_i$ and $G_1$ $=$ $G_1$ $\oplus$ $a_i$.
+On the other hand, if $s_i$ was a $0$ it would become a $1$, and we need to add $a_i$ to $G_0$.
+Fascinatingly, setting $G_0$ to $G_0 ^ a_i$ does just what we want as well, since $x ^ 0 = x$!
 
-To update $G_0$ and $G_1$, for given $l$ and $r$, we must do: $G_0$ = $G_0$ $\oplus$ $(a_l$ $\oplus$ $. . .$ $\oplus$ $a_r)$ and $G_1$ = $G_1$ $\oplus$ $(a_l$ $\oplus$ $. . .$ $\oplus$ $a_r).$
+The logic for $G_1$ goes much the same way, and so
+the two values are updated the same way: $G_0 := G_0 \oplus a_i$ and $G_1 := G_1 \oplus a_i$.
 
-We can find $a_l$ $\oplus$ $. . .$ $\oplus$ $a_r$ in $O(1)$ by creating a prefix XOR array, where $p_i$ = $a_1$ $\oplus ... \oplus ... $ $a_i$. Then, $a_l$ $\oplus$ $. . .$ $\oplus$ $a_r$ $ = $ $p_r$ $\oplus$ $p_{l-1}.$
+### Efficient Updates
+
+To update $G_0$ and $G_1$, for a given $l$ and $r$, we must find the XOR of all $a_i$ that are contained in the range.
+
+This can be done in $\mathcal{O}(1)$ time by using prefix sums (or prefix XORs in this case).
 
 ## Implementation
 
