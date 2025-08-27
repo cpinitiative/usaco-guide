@@ -9,24 +9,24 @@ author: Ruben Jing
 
 ## Explanation
 
-Notice how we have the formula $x_l + x_{l+1} + \dots + x_r = s$. Using prefix sums,
-we can represent $x_l + x_{l+1} + \dots + x_r$ as $p_r - p_{l-1}$ where $p$ is the prefix
-array. Therefore, $p_r - p_{l-1} = s$ is sufficient to represent $(l, r, s)$.
+Notice that we can restate each constraint $x_l + x_{l+1} + \dots + x_r$ as $p_r - p_{l-1}$, where $p$ is the prefix sum array.
 
-With $p_r - p_{l-1} = s$, we can get $p_r = p_{l-1} + s$ and $p_{l-1} = p_r - s$. More generally,
-we write $p_u = p_v + w$, where $w$ means "weight." This equation motivates a solution using
-graphs. Each node of the graph represents $p_i$, and edges are of weight $\pm s$.
+Rearranging $p_r - p_{l-1} = s$ gets us $p_r = p_{l-1} + s$ and $p_{l-1} = p_r - s$.
+If each element of our prefix sum array is a "node",
+then these constraints can be represented as directed weighted "edges",
+where an "edge" tells us how much a neighboring node is greater than the current node by.
 
-Every time we encounter a new node, we assign it an arbitrary value. For simplicity's sake,
-the solutions below use $0$. Try any other random number like $500$, you will still AC!
+With our graph constructed, we perform a DFS on it.
+Every time we encounter a new node we assign it an arbitrary value (we use $0$, but any number works).
 
-Let us call this new node $p_u$. We use DFS (or BFS) to find what other nodes it can reach.
-Consider an edge from $p_u$ towards $p_v$ with weight $w$. We can use our equation $p_u = p_v + w$
-to compute $p_v$. If $p_v$ already has been assigned a value, we check if our newly computed value
-matches the originally assigned value. If not, we have a contradiction, and therefore cannot create
-an array!
+From this new node, we then go through all other reachable nodes and either assign them
+a value based on the weights of the edges we've gone through or check if their already computed
+value matches up with what we currently have.
+
+If there's a mismatch, then we have a contradiction and can't make the array.
 
 ## Implementation
+
 **Time Complexity:** $\mathcal{O}(N + M)$
 
 <LanguageSection>
@@ -64,15 +64,14 @@ int main() {
 		if (visited[s]) return;
 		visited[s] = true;
 
-		for (auto u : adj[s]) {
+		for (const pair<int, int>& u : adj[s]) {
 			int v = u.first;
 			ll val = pref[s] + u.second;
 
 			if (!visited[v]) {
 				pref[v] = val;
 				dfs(v);
-
-				if (!valid) return;
+				if (!valid) { return; }
 			} else if (pref[v] != val) {
 				valid = false;
 				return;
