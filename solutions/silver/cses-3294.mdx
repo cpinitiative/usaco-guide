@@ -1,0 +1,210 @@
+---
+id: cses-3294
+source: CSES
+title: Subarray Sum Constraints
+author: Ruben Jing
+---
+
+[Unofficial Editorial](https://codeforces.com/blog/entry/145140)
+
+## Explanation
+
+Notice that we can restate each constraint $x_l + x_{l+1} + \dots + x_r$ as $p_r - p_{l-1}$, where $p$ is the prefix sum array.
+
+Rearranging $p_r - p_{l-1} = s$ gets us $p_r = p_{l-1} + s$ and $p_{l-1} = p_r - s$.
+If each element of our prefix sum array is a "node",
+then these constraints can be represented as directed weighted "edges",
+where an "edge" tells us how much a neighboring node is greater than the current node by.
+
+With our graph constructed, we perform a DFS on it.
+Every time we encounter a new node we assign it an arbitrary value (we use $0$, but any number works).
+
+From this new node, we then go through all other reachable nodes and either assign them
+a value based on the weights of the edges we've gone through or check if their already computed
+value matches up with what we currently have.
+
+If there's a mismatch, then we have a contradiction and can't make the array.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N + M)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+
+int main() {
+	int n, m;
+	cin >> n >> m;
+
+	// .first is other node, .second is weight
+	vector<pair<int, int>> adj[n + 1];
+	vector<ll> pref(n + 1);
+	vector<bool> visited(n + 1);
+
+	for (int i = 0; i < m; i++) {
+		int l, r, s;
+		cin >> l >> r >> s;
+		// p[r] - p[l - 1] = s
+		adj[l - 1].push_back({r, s});
+		adj[r].push_back({l - 1, -s});
+	}
+
+	bool valid = true;
+	function<void(int)> dfs = [&](int s) -> void {
+		if (visited[s]) { return; }
+		visited[s] = true;
+
+		for (const pair<int, int> &u : adj[s]) {
+			int v = u.first;
+			ll val = pref[s] + u.second;
+
+			if (!visited[v]) {
+				pref[v] = val;
+				dfs(v);
+				if (!valid) { return; }
+			} else if (pref[v] != val) {
+				valid = false;
+				return;
+			}
+		}
+	};
+
+	for (int i = 0; i <= n; i++) {
+		if (visited[i]) { continue; }
+		pref[i] = 0;
+		dfs(i);
+		if (!valid) {
+			cout << "NO" << '\n';
+			return 0;
+		}
+	}
+
+	cout << "YES" << '\n';
+	for (int i = 1; i <= n; i++) { cout << pref[i] - pref[i - 1] << ' '; }
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class SubSumConstraints {
+	private static List<int[]>[] adj;
+	private static long[] pref;
+	private static boolean[] visited;
+	private static boolean valid;
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int n = Integer.parseInt(st.nextToken());
+		int m = Integer.parseInt(st.nextToken());
+
+		visited = new boolean[n + 1];
+		pref = new long[n + 1];
+		adj = new ArrayList[n + 1];
+		valid = true;
+
+		for (int i = 0; i <= n; i++) { adj[i] = new ArrayList<>(); }
+		for (int i = 0; i < m; i++) {
+			st = new StringTokenizer(br.readLine());
+			int l = Integer.parseInt(st.nextToken());
+			int r = Integer.parseInt(st.nextToken());
+			int s = Integer.parseInt(st.nextToken());
+			adj[l - 1].add(new int[] {r, s});
+			adj[r].add(new int[] {l - 1, -s});
+		}
+
+		for (int i = 0; i <= n; i++) {
+			if (visited[i]) { continue; }
+			pref[i] = 0;
+			dfs(i);
+			if (!valid) {
+				System.out.println("NO");
+				return;
+			}
+		}
+
+		StringBuilder sb = new StringBuilder();
+		sb.append("YES\n");
+		for (int i = 1; i <= n; i++) { sb.append(pref[i] - pref[i - 1] + " "); }
+		System.out.println(sb);
+	}
+
+	private static void dfs(int s) {
+		if (visited[s]) { return; }
+		visited[s] = true;
+
+		for (int[] u : adj[s]) {
+			int v = u[0];
+			long val = pref[s] + u[1];
+
+			if (!visited[v]) {
+				pref[v] = val;
+				dfs(v);
+				if (!valid) { return; }
+			} else if (pref[v] != val) {
+				valid = false;
+				return;
+			}
+		}
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+import sys
+
+sys.setrecursionlimit(10**5)
+
+n, m = map(int, input().split())
+
+adj = [[] for _ in range(n + 1)]
+pref = [0] * (n + 1)
+visited = [False] * (n + 1)
+
+
+def dfs(s: int):
+	if visited[s]:
+		return
+	visited[s] = True
+
+	for v, w in adj[s]:
+		val = pref[s] + w
+
+		if not visited[v]:
+			pref[v] = val
+			dfs(v)
+		elif pref[v] != val:
+			print("NO")
+			exit()
+
+
+for _ in range(m):
+	l, r, s = map(int, input().split())
+	adj[l - 1].append((r, s))
+	adj[r].append((l - 1, -s))
+
+for i in range(n + 1):
+	if not visited[i]:
+		pref[i] = 0
+		dfs(i)
+
+print("YES")
+print(" ".join(str(pref[i] - pref[i - 1]) for i in range(1, n + 1)))
+```
+
+</PySection>
+</LanguageSection>
