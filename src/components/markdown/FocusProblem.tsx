@@ -32,7 +32,7 @@ export default function FocusProblem({
   return (
     <div
       className={`block shadow transition dark:bg-gray-900 mb-4${
-        isHovered ? ' -translate-y-1 transform shadow-lg' : ''
+        isHovered ? '-translate-y-1 transform shadow-lg' : ''
       }`}
       id={'problem-' + problem.uniqueId}
     >
