@@ -31,16 +31,14 @@ If there's a mismatch, then we have a contradiction and can't make the array.
 
 <LanguageSection>
 <CPPSection>
+
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
 using ll = long long;
 
 int main() {
-	ios::sync_with_stdio(false);
-	cin.tie(nullptr);
 	int n, m;
-
 	cin >> n >> m;
 
 	// .first is other node, .second is weight
@@ -50,21 +48,18 @@ int main() {
 
 	for (int i = 0; i < m; i++) {
 		int l, r, s;
-
 		cin >> l >> r >> s;
-
 		// p[r] - p[l - 1] = s
 		adj[l - 1].push_back({r, s});
 		adj[r].push_back({l - 1, -s});
 	}
 
 	bool valid = true;
-
 	function<void(int)> dfs = [&](int s) -> void {
-		if (visited[s]) return;
+		if (visited[s]) { return; }
 		visited[s] = true;
 
-		for (const pair<int, int> &u : adj[s]) {
+		for (const pair<int, int>& u : adj[s]) {
 			int v = u.first;
 			ll val = pref[s] + u.second;
 
@@ -80,39 +75,39 @@ int main() {
 	};
 
 	for (int i = 0; i <= n; i++) {
-		if (!visited[i]) {
-			pref[i] = 0;
-			dfs(i);
-
-			if (!valid) {
-				cout << "NO" << "\n";
-
-				return 0;
-			}
+		if (visited[i]) {
+			continue;
+		}
+		pref[i] = 0;
+		dfs(i);
+		if (!valid) {
+			cout << "NO" << '\n';
+			return 0;
 		}
 	}
 
-	cout << "YES" << "\n";
-
-	for (int i = 1; i <= n; i++) { cout << pref[i] - pref[i - 1] << " "; }
+	cout << "YES" << '\n';
+	for (int i = 1; i <= n; i++) { cout << pref[i] - pref[i - 1] << ' '; }
 }
 ```
+
 </CPPSection>
 <JavaSection>
+
 ```java
 import java.io.*;
 import java.util.*;
 
-public class subsumcon {
-	static List<int[]>[] adj;
-	static long[] pref;
-	static boolean[] visited;
-	static boolean valid;
+public class SubSumConstraints {
+	private static List<int[]>[] adj;
+	private static long[] pref;
+	private static boolean[] visited;
+	private static boolean valid;
 
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		StringTokenizer st = new StringTokenizer(br.readLine());
 
+		StringTokenizer st = new StringTokenizer(br.readLine());
 		int n = Integer.parseInt(st.nextToken());
 		int m = Integer.parseInt(st.nextToken());
 
@@ -121,40 +116,36 @@ public class subsumcon {
 		adj = new ArrayList[n + 1];
 		valid = true;
 
-		for (int i = 0; i <= n; i++) adj[i] = new ArrayList<>();
-
+		for (int i = 0; i <= n; i++) { adj[i] = new ArrayList<>(); }
 		for (int i = 0; i < m; i++) {
 			st = new StringTokenizer(br.readLine());
 			int l = Integer.parseInt(st.nextToken());
 			int r = Integer.parseInt(st.nextToken());
 			int s = Integer.parseInt(st.nextToken());
-
 			adj[l - 1].add(new int[] {r, s});
 			adj[r].add(new int[] {l - 1, -s});
 		}
 
 		for (int i = 0; i <= n; i++) {
-			if (!visited[i]) {
-				pref[i] = 0;
-				dfs(i);
-
-				if (!valid) {
-					System.out.println("NO");
-					return;
-				}
+			if (visited[i]) {
+				continue;
+			}
+			pref[i] = 0;
+			dfs(i);
+			if (!valid) {
+				System.out.println("NO");
+				return;
 			}
 		}
 
 		StringBuilder sb = new StringBuilder();
-
 		sb.append("YES\n");
 		for (int i = 1; i <= n; i++) { sb.append(pref[i] - pref[i - 1] + " "); }
-
 		System.out.println(sb);
 	}
 
-	static void dfs(int s) {
-		if (visited[s]) return;
+	private static void dfs(int s) {
+		if (visited[s]) { return; }
 		visited[s] = true;
 
 		for (int[] u : adj[s]) {
@@ -164,8 +155,7 @@ public class subsumcon {
 			if (!visited[v]) {
 				pref[v] = val;
 				dfs(v);
-
-				if (!valid) return;
+				if (!valid) { return; }
 			} else if (pref[v] != val) {
 				valid = false;
 				return;
@@ -174,8 +164,10 @@ public class subsumcon {
 	}
 }
 ```
+
 </JavaSection>
 <PySection>
+
 ```py
 import sys
 
@@ -188,7 +180,7 @@ pref = [0] * (n + 1)
 visited = [False] * (n + 1)
 
 
-def dfs(s: int) -> int:
+def dfs(s: int):
 	if visited[s]:
 		return
 	visited[s] = True
@@ -206,7 +198,6 @@ def dfs(s: int) -> int:
 
 for _ in range(m):
 	l, r, s = map(int, input().split())
-
 	adj[l - 1].append((r, s))
 	adj[r].append((l - 1, -s))
 
@@ -218,5 +209,6 @@ for i in range(n + 1):
 print("YES")
 print(" ".join(str(pref[i] - pref[i - 1]) for i in range(1, n + 1)))
 ```
+
 </PySection>
 </LanguageSection>
