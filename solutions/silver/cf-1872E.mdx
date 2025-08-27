@@ -34,7 +34,6 @@ This can be done in $\mathcal{O}(1)$ time by using prefix sums (or prefix XORs i
 **Time Complexity:** $\mathcal{O}(n + q)$
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
@@ -49,21 +48,22 @@ void solve() {
 	for (int i = 0; i < n; i++) { cin >> a[i]; }
 	string s;
 	cin >> s;
-	int q;
-	cin >> q;
-	int g_0 = 0, g_1 = 0;
-
+	
+	int g_0 = 0;
+	int g_1 = 0;
 	// Construct prefix array
 	vector<int> p(n + 1);
 	for (int i = 1; i <= n; i++) {
-		p[i] = (p[i - 1] ^ a[i - 1]);
+		p[i] = p[i - 1] ^ a[i - 1];
 		if (s[i - 1] == '1') {
-			g_1 = (g_1 ^ a[i - 1]);
-		} else {
-			g_0 = (g_0 ^ a[i - 1]);
+			g_1 ^= a[i - 1];
+		} else if (s[i - 1] == '0') {
+			g_0 ^= a[i - 1];
 		}
 	}
 
+	int q;
+	cin >> q;
 	for (int i = 0; i < q; i++) {
 		int type;
 		cin >> type;
@@ -71,9 +71,8 @@ void solve() {
 			// Queries of type 2 print g_0 or g_1
 			int num;
 			cin >> num;
-			if (num == 0) cout << g_0 << ' ';
-			else cout << g_1 << ' ';
-		} else {
+			cout << (num == 0 ? g_0 : g_1) << ' ';
+		} else if (type == 1) {
 			// Queries of type 1, update g_0 and g_1
 			int l, r;
 			cin >> l >> r;
@@ -87,112 +86,99 @@ void solve() {
 int main() {
 	int t;
 	cin >> t;
-	while (t--) { solve(); }
+	for (int i = 0; i < t; i++) { solve(); }
 }
 ```
+
 </CPPSection>
-
-<PySection>
-
-t = int(input())
-
-for __ in range(t):
-	n = int(input())
-	a = list(map(int, input().split()))
-	s = input()
-	g_0 = 0
-	g_1 = 0
-
-  # Construct prefix array
-	p = [0] * (n + 1)
-	for i in range(1, n + 1):
-		p[i] = p[i - 1] ^ a[i - 1]
-		if s[i - 1] == '1':
-				g_1 ^= a[i - 1]
-		else:
-				g_0 ^= a[i - 1]
-
-	q = int(input())
-	for __ in range(q):
-		query = list(map(int, input().split()))
-		if query[0] == 2:
-      # Queries of type 2 print g_0 or g_1
-			if query[1] == 0: print(g_0, end = " ")
-			else: print(g_1, end = " ")
-		else:
-      # Queries of type 1, update g_0 and g_1
-			l = query[1]
-			r = query[2]
-			g_0 ^= p[r] ^ p[l - 1]
-			g_1 ^= p[r] ^ p[l - 1]
-
-	print()
-
-</PySection>
-
 <JavaSection>
 
 ```java
 import java.io.*;
 import java.util.StringTokenizer;
 
-public class Main {
+public class DataStructuresFan {
 	public static void main(String[] args) throws IOException {
 		BufferedReader rd = new BufferedReader(new InputStreamReader(System.in));
-		PrintWriter pw = new PrintWriter(System.out);
-
-		StringTokenizer st = new StringTokenizer(rd.readLine());
-		int t = Integer.parseInt(st.nextToken());
-		while (t > 0) {
-			st = new StringTokenizer(rd.readLine());
-			int n = Integer.parseInt(st.nextToken());
-			st = new StringTokenizer(rd.readLine());
+		int testNum = Integer.parseInt(rd.readLine());
+		for (int t = 0; t < testNum; t++) {
+			int n = Integer.parseInt(rd.readLine());
+			StringTokenizer st = new StringTokenizer(rd.readLine());
 			int[] a = new int[n];
 			for (int i = 0; i < n; i++) { a[i] = Integer.parseInt(st.nextToken()); }
-			st = new StringTokenizer(rd.readLine());
-			String s = st.nextToken();
-			st = new StringTokenizer(rd.readLine());
-			int q = Integer.parseInt(st.nextToken());
 
-			int[] p = new int[n + 1];
+			String s = rd.readLine();
+
 			int g_0 = 0;
 			int g_1 = 0;
-
 			// Construct prefix array
+			int[] p = new int[n + 1];
 			for (int i = 1; i <= n; i++) {
-				p[i] = (p[i - 1] ^ a[i - 1]);
+				p[i] = p[i - 1] ^ a[i - 1];
 				if (s.charAt(i - 1) == '1') {
-					g_1 = (g_1 ^ a[i - 1]);
+					g_1 ^= a[i - 1];
 				} else {
-					g_0 = (g_0 ^ a[i - 1]);
+					g_0 ^= a[i - 1];
 				}
 			}
 
-			while (q > 0) {
+			int queryNum = Integer.parseInt(rd.readLine());
+			for (int q = 0; q < queryNum; q++) {
 				st = new StringTokenizer(rd.readLine());
 				int type = Integer.parseInt(st.nextToken());
 				if (type == 2) {
-					// Queries of type 2 print g_0 or g_1
+					// Queries of type 2: print g_0 or g_1
 					int num = Integer.parseInt(st.nextToken());
-					if (num == 0) pw.print(g_0 + " ");
-					else pw.print(g_1 + " ");
+					int output = num == 0 ? g_0 : g_1;
+					System.out.print(output + " ");
 				} else {
-					// Queries of type 1, update g_0 and g_1
+					// Queries of type 1: update g_0 and g_1
 					int l = Integer.parseInt(st.nextToken());
 					int r = Integer.parseInt(st.nextToken());
-					g_0 = g_0 ^ (p[r] ^ p[l - 1]);
-					g_1 = g_1 ^ (p[r] ^ p[l - 1]);
+					g_0 ^= p[r] ^ p[l - 1];
+					g_1 ^= p[r] ^ p[l - 1];
 				}
-				q--;
 			}
-			pw.print('\n');
-			t--;
+			System.out.println();
 		}
-		pw.close();
 	}
 }
 ```
 
 </JavaSection>
+<PySection>
 
+```py
+for _ in range(int(input())):
+	n = int(input())
+	a = list(map(int, input().split()))
+	s = input()
+	g_0 = 0
+	g_1 = 0
+
+	# Construct prefix array
+	p = [0] * (n + 1)
+	for i in range(1, n + 1):
+		p[i] = p[i - 1] ^ a[i - 1]
+		if s[i - 1] == '1':
+				g_1 ^= a[i - 1]
+		elif s[i - 1] == '0':
+				g_0 ^= a[i - 1]
+
+	for _ in range(int(input())):
+		query = list(map(int, input().split()))
+		if query[0] == 2:
+			# Queries of type 2: print g_0 or g_1
+			print(g_0 if query[1] == 0 else g_1, end=" ")
+		elif query[0] == 1:
+			# Queries of type 1: update g_0 and g_1
+			l = query[1]
+			r = query[2]
+			g_0 ^= p[r] ^ p[l - 1]
+			g_1 ^= p[r] ^ p[l - 1]
+
+	print()
+```
+
+</PySection>
 </LanguageSection>
