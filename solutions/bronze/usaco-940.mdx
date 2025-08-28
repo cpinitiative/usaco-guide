@@ -2,7 +2,7 @@
 id: usaco-940
 source: USACO Bronze 2019 Open
 title: Milk Factory
-author: Mrinall Umasudhan, Jesse Choe, Ryan Chou, Chuyang Wang, David Eidenas, Neo Wang
+author: Mrinall Umasudhan, Jesse Choe, Ryan Chou, Chuyang Wang, David Eidenas, Neo Wang, David Guo
 ---
 
 ## Video Solution
@@ -149,6 +149,17 @@ the walkways connected to station $i$ (as a beginning or an end)?
 <Spoiler title="Solution 1">
 
 [Official Analysis (C++)](http://www.usaco.org/current/data/sol_factory_bronze_open19.html)
+
+## Explanation
+
+Notice that the structure we are dealing with here is a [tree](/silver/intro-tree), or a set of $N$ nodes connected by $N - 1$ edges where every node is reachable from every other node and no cycles exist.
+
+Let's call a node with only incoming directed edges a "sink". We now wish to determine whether or not our tree has a sink. We argue the following:
+
+1. If all nodes in the tree can reach some node $X$, then $X$ must be a sink. Additionally, $X$ must be the unique sink in the tree, since all other nodes need at least one outgoing directed edge to be able to escape them, and so they aren't sinks. Also, $X$ cannot have any outgoing edges, since if there was an edge connecting $X$ to node $Y$, then $Y$ cannot reach $X$.
+2. If $X$ is the unique sink, then all the nodes in the tree can reach $X$. Suppose some node $Y$ cannot reach $X$. We know that $Y$ has an outgoing edge since it isn't a sink, so let's follow such an edge. Then the node we land on must also have an outgoing edge since it isn't a sink, and repeatedly following these outgoing edges will inevitably get us stuck at a sink, since there are a finite number of nodes we can keep traveling to before stopping. Since $X$ is the only sink, we must have reached $X$.
+
+Therefore, we can keep track of the number of outgoing edges from each node, and if there is exactly one sink $X$, then $X$ is our answer.
 
 ## Implementation
 
