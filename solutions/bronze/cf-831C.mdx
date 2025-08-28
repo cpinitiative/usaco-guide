@@ -2,10 +2,22 @@
 id: cf-831C
 source: CF
 title: Jury Marks
-author: Danh Ta Chi Thanh, Brad Ma
+author: Danh Ta Chi Thanh, Brad Ma, David Guo
 ---
 
 [Official Editorial](https://codeforces.com/blog/entry/53302)
+
+## Explanation
+
+Observe that we are given all of the jury's marks in chronological order. Therefore, if we knew the participant's initial score, we could compute the participant's announced score after each of the $k$ judges gives their respective ratings.
+
+This motivates us to use prefix sums. Consider the prefix sum array $S$ such that $S[i]$ equals the sum of the first $i$ jury marks.
+
+Now consider the value $b_1$, the first of the values that Polycarp remembers being announced. Letting the initial score be denoted by $I$, we observe that $b_1 = I + S[i]$ for some $i$ from $1$ to $k$. Thus, we must have that $I = b_1 - S[i]$ for some $i$. We can then iterate through $i$ to find our candidates for the participant's initial score.
+
+Now, we must check if each of our candidates is an actually valid starting score. Recall that Polycarp remembers some of the announced scores, all of which were the participant's score at some point. Therefore, if we arbitrarily pick one of our candidate values, say $C$, then the set of values of the form $C + S[i]$ for $i$ ranging from $1$ to $k$ must contain all of Polycarp's remembered scores.
+
+Thus, we check if each candidate yields a valid starting score, and use the count of valid candidates to compute our answer.
 
 ## Implementation
 
