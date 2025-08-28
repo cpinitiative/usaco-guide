@@ -2,7 +2,7 @@
 id: usaco-809
 source: USACO Bronze 2018 February
 title: Taming the Herd
-author: Sathvik Chundru, Aditya Gupta, Jay Fu
+author: Sathvik Chundru, Aditya Gupta, Jay Fu, David Guo
 ---
 
 ## Video Solution
@@ -108,6 +108,22 @@ If some record in Farmer John's log is set, then what other records must be set?
 <Spoiler title="Solution">
 
 [Official Analysis (C++)](http://www.usaco.org/current/data/sol_taming_bronze_feb18.html)
+
+## Explanation
+
+We first observe that if the counter read a positive number $X$ on some day, then the counter must have been $X - 1$ on the previous day.
+
+Therefore, we can iterate backwards starting from the last day, and apply this rule to fill in missing entries. If we try to fill in an entry which was not missing, then either nothing happens (we fill in the entry with $Y$, but the entry already read $Y$), or we get a contradiction.
+
+The first entry in the log is a special case, since Farmer John already knows the cows broke out on that day. Thus, if the entry is missing, we can automatically set the number to $0$. If we get that the number is positive, we reach a contradiction.
+
+If we ever reach a contradiction, then the log is necessarily inconsistent, and we can simply output $-1$ as our answer.
+
+Otherwise, the log must contain several streaks $0, 1, \dots, k$ of various lengths, possibly with some $-1$s between streaks. We know that the first streak starts on the first day.
+
+Suppose there are $S$ streaks and $M$ entries still missing. To minimize the number of breakouts, we can fill in each sequence of consecutive missing entries so that it continues the streak preceding it. Thus, this makes the minimum number of breakouts $S$.
+
+To maximize the number of breakouts, we can have a breakout on each of the $M$ days for which the entry is missing, making the maximum number of breakouts $S + M$.
 
 ## Implementation
 
