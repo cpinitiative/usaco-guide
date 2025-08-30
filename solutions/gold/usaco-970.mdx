@@ -34,119 +34,104 @@ const int MX = 2e5 + 5;
 int T[MX];
 
 template <int SZ> struct LCA {
-    static const int BITS = 32 - __builtin_clz(SZ);
-    int n, r = 1, cnt = 0, label[SZ];
-    vector<int> adj[SZ], cur[SZ];
-    vector<pair<int, int>> CUR[SZ];
-    int par[BITS][SZ], depth[SZ];
+	static const int BITS = 32 - __builtin_clz(SZ);
+	int n, r = 1, cnt = 0, label[SZ];
+	vector<int> adj[SZ], cur[SZ];
+	vector<pair<int, int>> CUR[SZ];
+	int par[BITS][SZ], depth[SZ];
 
-    void add_edge(int u, int v) {
-        adj[u].push_back(v);
-        adj[v].push_back(u);
-    }
+	void add_edge(int u, int v) {
+		adj[u].push_back(v);
+		adj[v].push_back(u);
+	}
 
-    void dfs(int u, int prev) {
-        label[u] = cnt++;
-        cur[T[u]].push_back(u);
-        CUR[T[u]].push_back({label[u], u});
-        par[0][u] = prev;
-        depth[u] = depth[prev] + 1;
-        for (int v : adj[u]) {
-            if (v != prev) {
-                dfs(v, u);
-            }
-        }
+	void dfs(int u, int prev) {
+		label[u] = cnt++;
+		cur[T[u]].push_back(u);
+		CUR[T[u]].push_back({label[u], u});
+		par[0][u] = prev;
+		depth[u] = depth[prev] + 1;
+		for (int v : adj[u]) {
+			if (v != prev) { dfs(v, u); }
+		}
 
-        cur[T[u]].pop_back();
-        CUR[T[u]].push_back({cnt, cur[T[u]].size() ? cur[T[u]].back() : 0});
-    }
+		cur[T[u]].pop_back();
+		CUR[T[u]].push_back({cnt, cur[T[u]].size() ? cur[T[u]].back() : 0});
+	}
 
-    void init(int _N) {
-        n = _N;
-        dfs(r, 0);
-        for (int k = 1; k < BITS; k++) {
-            for (int i = 1; i <= n; i++) {
-                par[k][i] = par[k - 1][par[k - 1][i]];
-            }
-        }
-    }
+	void init(int _N) {
+		n = _N;
+		dfs(r, 0);
+		for (int k = 1; k < BITS; k++) {
+			for (int i = 1; i <= n; i++) { par[k][i] = par[k - 1][par[k - 1][i]]; }
+		}
+	}
 
-    int get_par(int a, int b) {
-        for (int k = BITS - 1; k >= 0; k--) {
-            if (b & (1 << k)) {
-                a = par[k][a];
-            }
-        }
-        return a;
-    }
+	int get_par(int a, int b) {
+		for (int k = BITS - 1; k >= 0; k--) {
+			if (b & (1 << k)) { a = par[k][a]; }
+		}
+		return a;
+	}
 
-    int lca(int u, int v) {
-        if (depth[u] < depth[v]) {
-            swap(u, v);
-        }
-        u = get_par(u, depth[u] - depth[v]);
-        for (int k = BITS - 1; k >= 0; k--) {
-            if (par[k][u] != par[k][v]) {
-                u = par[k][u];
-                v = par[k][v];
-            }
-        }
-        return u == v ? u : par[0][u];
-    }
+	int lca(int u, int v) {
+		if (depth[u] < depth[v]) { swap(u, v); }
+		u = get_par(u, depth[u] - depth[v]);
+		for (int k = BITS - 1; k >= 0; k--) {
+			if (par[k][u] != par[k][v]) {
+				u = par[k][u];
+				v = par[k][v];
+			}
+		}
+		return u == v ? u : par[0][u];
+	}
 
-    int dist(int u, int v) {
-        return depth[u] + depth[v] - 2 * depth[lca(u, v)];
-    }
+	int dist(int u, int v) { return depth[u] + depth[v] - 2 * depth[lca(u, v)]; }
 
-    int last(int a, int c) {
-        auto it = upper_bound(begin(CUR[c]), end(CUR[c]), make_pair(label[a], MOD));
-        if (it == begin(CUR[c])) {
-            return 0;
-        }
-        return prev(it)->second;
-    }
-
+	int last(int a, int c) {
+		auto it = upper_bound(begin(CUR[c]), end(CUR[c]), make_pair(label[a], MOD));
+		if (it == begin(CUR[c])) { return 0; }
+		return prev(it)->second;
+	}
 };
 
 void setUp(std::string name) {
-    freopen((name + ".in").c_str(), "r", stdin);
-    freopen((name + ".out").c_str(), "w", stdout);
+	freopen((name + ".in").c_str(), "r", stdin);
+	freopen((name + ".out").c_str(), "w", stdout);
 }
 
 LCA<MX> L;
 int n, m;
 
 int main() {
-    setUp("milkvisits");
-    cin >> n >> m;
-    for (int i = 1; i <= n; i++) {
-        cin >> T[i];
-    }
+	setUp("milkvisits");
+	cin >> n >> m;
+	for (int i = 1; i <= n; i++) { cin >> T[i]; }
 
-    for (int i = 0; i < n - 1; i++) {
-        int x, y;
-        cin >> x >> y;
-        L.add_edge(x, y);
-    }
+	for (int i = 0; i < n - 1; i++) {
+		int x, y;
+		cin >> x >> y;
+		L.add_edge(x, y);
+	}
 
-    L.init(n);
-    for (int i = 0; i < m; i++) {
-        int A, B, C;
-        cin >> A >> B >> C;
-        int z = L.lca(A, B);
-        int a = L.last(A, C);
+	L.init(n);
+	for (int i = 0; i < m; i++) {
+		int A, B, C;
+		cin >> A >> B >> C;
+		int z = L.lca(A, B);
+		int a = L.last(A, C);
 
-        if (a && L.depth[a] >= L.depth[z]) {
-            cout << 1;
-            continue;
-        }
-        a = L.last(B, C);
-        if (a && L.depth[a] >= L.depth[z]) {
-            cout << 1;
-            continue;
-        }
-        cout << 0;
-    }
+		if (a && L.depth[a] >= L.depth[z]) {
+			cout << 1;
+			continue;
+		}
+		a = L.last(B, C);
+		if (a && L.depth[a] >= L.depth[z]) {
+			cout << 1;
+			continue;
+		}
+		cout << 0;
+	}
 }
 ```
 
