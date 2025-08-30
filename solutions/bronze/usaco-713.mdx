@@ -2,7 +2,7 @@
 id: usaco-713
 source: USACO Bronze 2017 February
 title: Why Did the Cow Cross the Road III
-author: Óscar Garries, Ryan Chou, Varun Ragunath
+author: Óscar Garries, Ryan Chou, Varun Ragunath, David Guo
 ---
 
 [Official Analysis (Java)](http://www.usaco.org/current/data/sol_cowqueue_bronze_feb17.html)
@@ -147,8 +147,13 @@ public class cowqueue {
 
 </Spoiler>
 
-Since the time the cows arrive and need for questioning can be up to $10^6$,
-we should traverse through the times as steps.
+## Explanation
+
+Since we know the arrival times and processing times of all cows, we intuitively process them by arrival time.
+
+To explain this, consider processing a cow that arrived later before a cow that arrived earlier. Then, at the time we process the later cow, the earlier one must already be waiting. Since both are available for questioning and processing the earlier cow never hurts, we can always question the earlier cow before the later cow and reduce waiting.
+
+Thus, we can sort the cows by arrival time, and then process them one by one. We can track when each cow's questioning starts, since it's the later of their arrival time and when the questioning of the previous cow ended. Iterating through all the cows with this logic lets us compute the final answer.
 
 ## Implementation
 
