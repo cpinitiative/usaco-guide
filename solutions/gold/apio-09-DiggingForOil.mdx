@@ -58,152 +58,137 @@ You can rotate the grid for easier implementation.
 
 using i64 = long long;
 
-#ifdef DEBUG 
-    #include "debug.h"
+#ifdef DEBUG
+#include "debug.h"
 #else
-    #define debug(...) void(23)
+#define debug(...) void(23)
 #endif
 
-template<typename T>
-bool chmax(T& a, T b) {
-    if (a < b) {
-        a = b;
-        return true;
-    }
-    return false;
+template <typename T> bool chmax(T &a, T b) {
+	if (a < b) {
+		a = b;
+		return true;
+	}
+	return false;
 }
 
 constexpr i64 inf = i64(1E18);
 
 int main() {
-    std::ios::sync_with_stdio(false);
-    std::cin.tie(nullptr);
+	std::ios::sync_with_stdio(false);
+	std::cin.tie(nullptr);
 
-    int N, M, K;
-    std::cin >> N >> M >> K;
+	int N, M, K;
+	std::cin >> N >> M >> K;
 
-    std::vector<std::vector<i64>> A(N, std::vector<i64>(M));
-    for (int i = 0; i < N; ++i) {
-        for (int j = 0; j < M; ++j) {
-            std::cin >> A[i][j];
-        }
-    }
+	std::vector<std::vector<i64>> A(N, std::vector<i64>(M));
+	for (int i = 0; i < N; ++i) {
+		for (int j = 0; j < M; ++j) { std::cin >> A[i][j]; }
+	}
 
-    i64 ans = 0;
+	i64 ans = 0;
 
-    for (int _ = 0; _ < 4; ++_) {
-        std::vector<std::vector<i64>> pre(N, std::vector<i64>(M));
-        for (int i = 0; i < N; ++i) {
-            for (int j = 0; j < M; ++j) {
-                pre[i][j] = A[i][j];
-                if (i) pre[i][j] += pre[i - 1][j];
-                if (j) pre[i][j] += pre[i][j - 1];
-                if (i && j) pre[i][j] -= pre[i - 1][j - 1];
-            }
-        }
+	for (int _ = 0; _ < 4; ++_) {
+		std::vector<std::vector<i64>> pre(N, std::vector<i64>(M));
+		for (int i = 0; i < N; ++i) {
+			for (int j = 0; j < M; ++j) {
+				pre[i][j] = A[i][j];
+				if (i) pre[i][j] += pre[i - 1][j];
+				if (j) pre[i][j] += pre[i][j - 1];
+				if (i && j) pre[i][j] -= pre[i - 1][j - 1];
+			}
+		}
 
-        auto sum = [&](int x1, int y1, int x2, int y2) {
-            i64 res = pre[x2][y2];
-            if (x1) res -= pre[x1 - 1][y2];
-            if (y1) res -= pre[x2][y1 - 1];
-            if (x1 && y1) res += pre[x1 - 1][y1 - 1];
-            return res;
-        };
+		auto sum = [&](int x1, int y1, int x2, int y2) {
+			i64 res = pre[x2][y2];
+			if (x1) res -= pre[x1 - 1][y2];
+			if (y1) res -= pre[x2][y1 - 1];
+			if (x1 && y1) res += pre[x1 - 1][y1 - 1];
+			return res;
+		};
 
-        std::vector<i64> top(N, -inf);
-        for (int i = 0; i + K - 1 < N; ++i) {
-            for (int j = 0; j + K - 1 < M; ++j) {
-                chmax(top[i + K - 1], sum(i, j, i + K - 1, j + K - 1));
-            }
-        }
+		std::vector<i64> top(N, -inf);
+		for (int i = 0; i + K - 1 < N; ++i) {
+			for (int j = 0; j + K - 1 < M; ++j) {
+				chmax(top[i + K - 1], sum(i, j, i + K - 1, j + K - 1));
+			}
+		}
 
-        for (int i = 1; i < N; ++i) {
-            chmax(top[i], top[i - 1]);
-        }
+		for (int i = 1; i < N; ++i) { chmax(top[i], top[i - 1]); }
 
-        debug(A);
-        debug(top);
+		debug(A);
+		debug(top);
 
-        std::vector<i64> lef(M, -inf), rig(M, -inf);
+		std::vector<i64> lef(M, -inf), rig(M, -inf);
 
-        for (int i = N - K; i >= 0; --i) {
-            i64 mx = -inf;
-            for (int j = 0; j < M; ++j) {
-                chmax(mx, lef[j] + rig[j]);
-            }
+		for (int i = N - K; i >= 0; --i) {
+			i64 mx = -inf;
+			for (int j = 0; j < M; ++j) { chmax(mx, lef[j] + rig[j]); }
 
-            chmax(ans, top[i] + mx);
-            for (int j = 0; j + K - 1 < M; ++j) {
-                chmax(lef[j + K - 1], sum(i, j, i + K - 1, j + K - 1));
-            }
-            for (int j = M - 1; j - K >= 0; --j) {
-                chmax(rig[j - K], sum(i, j - K + 1, i + K - 1, j));
-            }
-            for (int j = 1; j < M; ++j) {
-                chmax(lef[j], lef[j - 1]);
-            }
-            for (int j = M - 1; j >= 1; --j) {
-                chmax(rig[j - 1], rig[j]);
-            }
-        }
+			chmax(ans, top[i] + mx);
+			for (int j = 0; j + K - 1 < M; ++j) {
+				chmax(lef[j + K - 1], sum(i, j, i + K - 1, j + K - 1));
+			}
+			for (int j = M - 1; j - K >= 0; --j) {
+				chmax(rig[j - K], sum(i, j - K + 1, i + K - 1, j));
+			}
+			for (int j = 1; j < M; ++j) { chmax(lef[j], lef[j - 1]); }
+			for (int j = M - 1; j >= 1; --j) { chmax(rig[j - 1], rig[j]); }
+		}
 
-        std::vector<std::vector<i64>> h(M, std::vector<i64>(N));
-        for (int i = 0; i < N; ++i) {
-            for (int j = 0; j < M; ++j) {
-                h[M - j - 1][i] = A[i][j];
-            }
-        }
-        A = std::move(h);
-        std::swap(N, M);
-    }
+		std::vector<std::vector<i64>> h(M, std::vector<i64>(N));
+		for (int i = 0; i < N; ++i) {
+			for (int j = 0; j < M; ++j) { h[M - j - 1][i] = A[i][j]; }
+		}
+		A = std::move(h);
+		std::swap(N, M);
+	}
 
-    for (int _ = 0; _ < 2; ++_) {
-        std::vector<std::vector<i64>> pre(N, std::vector<i64>(M));
-        for (int i = 0; i < N; ++i) {
-            for (int j = 0; j < M; ++j) {
-                pre[i][j] = A[i][j];
-                if (i) pre[i][j] += pre[i - 1][j];
-                if (j) pre[i][j] += pre[i][j - 1];
-                if (i && j) pre[i][j] -= pre[i - 1][j - 1];
-            }
-        }
+	for (int _ = 0; _ < 2; ++_) {
+		std::vector<std::vector<i64>> pre(N, std::vector<i64>(M));
+		for (int i = 0; i < N; ++i) {
+			for (int j = 0; j < M; ++j) {
+				pre[i][j] = A[i][j];
+				if (i) pre[i][j] += pre[i - 1][j];
+				if (j) pre[i][j] += pre[i][j - 1];
+				if (i && j) pre[i][j] -= pre[i - 1][j - 1];
+			}
+		}
 
-        auto sum = [&](int x1, int y1, int x2, int y2) {
-            i64 res = pre[x2][y2];
-            if (x1) res -= pre[x1 - 1][y2];
-            if (y1) res -= pre[x2][y1 - 1];
-            if (x1 && y1) res += pre[x1 - 1][y1 - 1];
-            return res;
-        };
+		auto sum = [&](int x1, int y1, int x2, int y2) {
+			i64 res = pre[x2][y2];
+			if (x1) res -= pre[x1 - 1][y2];
+			if (y1) res -= pre[x2][y1 - 1];
+			if (x1 && y1) res += pre[x1 - 1][y1 - 1];
+			return res;
+		};
 
-        std::vector<i64> top1(N + 1, -inf), top2(N + 1, -inf);
-        for (int i = 0; i + K - 1 < N; ++i) {
-            chmax(top1[i + 1], top1[i]);
-            for (int j = 0; j + K - 1 < M; ++j) {
-                chmax(top1[i + K], sum(i, j, i + K - 1, j + K - 1));
-            }
-            chmax(top2[i + 1], top2[i]);
-            for (int j = 0; j + K - 1 < M; ++j) {
-                chmax(top2[i + K], top1[i] + sum(i, j, i + K - 1, j + K - 1));
-            }
-            for (int j = 0; j + K - 1 < M; ++j) {
-                chmax(ans, top2[i] + sum(i, j, i + K - 1, j + K - 1));
-            }
-        }
+		std::vector<i64> top1(N + 1, -inf), top2(N + 1, -inf);
+		for (int i = 0; i + K - 1 < N; ++i) {
+			chmax(top1[i + 1], top1[i]);
+			for (int j = 0; j + K - 1 < M; ++j) {
+				chmax(top1[i + K], sum(i, j, i + K - 1, j + K - 1));
+			}
+			chmax(top2[i + 1], top2[i]);
+			for (int j = 0; j + K - 1 < M; ++j) {
+				chmax(top2[i + K], top1[i] + sum(i, j, i + K - 1, j + K - 1));
+			}
+			for (int j = 0; j + K - 1 < M; ++j) {
+				chmax(ans, top2[i] + sum(i, j, i + K - 1, j + K - 1));
+			}
+		}
 
-        std::vector<std::vector<i64>> h(M, std::vector<i64>(N));
-        for (int i = 0; i < N; ++i) {
-            for (int j = 0; j < M; ++j) {
-                h[j][i] = A[i][j];
-            }
-        }
-        A = std::move(h);
-        std::swap(N, M);
-    }
+		std::vector<std::vector<i64>> h(M, std::vector<i64>(N));
+		for (int i = 0; i < N; ++i) {
+			for (int j = 0; j < M; ++j) { h[j][i] = A[i][j]; }
+		}
+		A = std::move(h);
+		std::swap(N, M);
+	}
 
-    std::cout << ans << '\n';
+	std::cout << ans << '\n';
 
-    return 0;
+	return 0;
 }
 ```
 
