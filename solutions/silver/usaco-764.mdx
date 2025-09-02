@@ -2,14 +2,36 @@
 id: usaco-764
 source: USACO Silver 2017 December
 title: The Bovine Shuffle
-author: Jesse Choe, Tanish Tyagi, Paul Chen
+author: Jesse Choe, Tanish Tyagi, Paul Chen, David Guo
 ---
 
 [Official Analysis (Java)](http://www.usaco.org/current/data/sol_shuffle_silver_dec17.html)
 
-**Time Complexity:** $\mathcal{O}(N)$
+## Explanation
+
+Notice that if in the shuffle there is some position $P$ that doesn't receive any cows, then after one shuffle, $P$ will contain no cows and thus be empty.
+
+Since $P$ will remain empty for all future shuffles,
+then the position reachable from $P$ will also eventually contain no cows in the next shuffle,
+and this effect propagates throughout the positions.
+
+In general, we observe that if all the positions that direct a cow to some position $P$ eventually become empty, then $P$ will also become empty.
+In other words, this process ends up eliminating all non-cycle positions.
+
+Therefore, for every position $P_i$, we keep track of how many positions exist which could indefinitely contain cows
+and direct them to $P_i$ after exactly one shuffle.
+After computing these quantities, we start a queue of positions which are guaranteed to never contain cows after some number of shuffles.
+
+We keep a counter for the number of positions that contain cows indefinitely, and start by assuming all positions as such.
+
+Since any such position cannot contribute cows to the position it directs to,
+we must decrement our counter for that position and potentially add it to our queue.
+
+We continue processing positions until our queue is empty, and the answer is the number of positions that were never enqueued.
 
 ## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
 
 <LanguageSection>
 <CPPSection>
