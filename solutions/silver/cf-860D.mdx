@@ -33,7 +33,6 @@ connecting `pre` and `x` is left unpaired and `0` otherwise.
 #include <bits/stdc++.h>
 using namespace std;
 
-int n, m;
 vector<int> adj[200001];
 vector<vector<int>> ans;
 
@@ -50,6 +49,7 @@ bool dfs(int x, int pre) {
 	for (int i = 0; i < curr.size() / 2; i++) {
 		ans.push_back({curr[2 * i], x, curr[2 * i + 1]});
 	}
+
 	if (curr.size() % 2 == 0) { return true; }
 	if (pre != -1) { ans.push_back({curr[curr.size() - 1], x, pre}); }
 
@@ -57,8 +57,7 @@ bool dfs(int x, int pre) {
 }
 
 int main() {
-	ios_base::sync_with_stdio(0);
-	cin.tie(0);
+	int n, m;
 	cin >> n >> m;
 	for (int i = 0; i < m; i++) {
 		int a, b;
@@ -70,9 +69,7 @@ int main() {
 	dfs(1, -1);
 
 	cout << ans.size() << "\n";
-	for (const vector<int> &a : ans) {
-		cout << a[0] << " " << a[1] << " " << a[2] << "\n";
-	}
+	for (auto a : ans) { cout << a[0] << " " << a[1] << " " << a[2] << "\n"; }
 }
 ```
 
@@ -157,7 +154,6 @@ $(x,i)$ from $i$ whenever $x<i$ ($x>i$ would work just as well).
 #include <bits/stdc++.h>
 using namespace std;
 
-int n, m;
 bool visited[200001];
 vector<int> adj[200001];
 vector<vector<int>> ans;
@@ -178,12 +174,15 @@ bool dfs(int x, int pre) {
 	for (int i = 0; i < curr.size() / 2; i++) {
 		ans.push_back({curr[2 * i], x, curr[2 * i + 1]});
 	}
+
 	if (curr.size() % 2 == 0) { return true; }
 	if (pre != -1) { ans.push_back({curr[curr.size() - 1], x, pre}); }
+
 	return false;
 }
 
 int main() {
+	int n, m;
 	cin >> n >> m;
 	for (int i = 0; i < m; i++) {
 		int a, b;
