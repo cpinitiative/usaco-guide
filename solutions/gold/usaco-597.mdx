@@ -27,6 +27,7 @@ This implies a binary search on the power $R$.
 [Official Analysis (C++ and Java)](http://www.usaco.org/current/data/sol_angry_gold_jan16.html)
 
 <Warning>
+
 The second and third solutions in the analysis fail on the following test case:
 
 ```
@@ -36,6 +37,7 @@ The second and third solutions in the analysis fail on the following test case:
 ```
 
 The second one gives the wrong answer, and the third errors.
+
 </Warning>
 
 From the hints, we'll start binary searching on the initial power $R$. Now, we've reduced the problem into checking if a fixed power $R$ works for our set of haybales.
@@ -160,11 +162,11 @@ int main() {
 import java.io.*;
 import java.util.*;
 
-public class Main {
-	static int n;
-	static int[] haybales;
+public class Angry {
+	private static int n;
+	private static int[] haybales;
 
-	static boolean valid(int pos, int idx, int power, int dir) {
+	private static boolean valid(int pos, int idx, int power, int dir) {
 		// exploded leftmost haybale
 		if (idx <= 0 && dir == 0) { return (idx < 0 || pos - power <= haybales[idx]); }
 
@@ -200,14 +202,15 @@ public class Main {
 
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new FileReader("angry.in"));
-		PrintWriter pw = new PrintWriter(new FileWriter("angry.out"));
 
 		n = Integer.parseInt(br.readLine());
 		haybales = new int[n];
 		for (int i = 0; i < n; i++) {
-			haybales[i] = Integer.parseInt(br.readLine()) *
-			              2;  // double each position to eliminate decimals
+			// double each position to eliminate decimals
+			haybales[i] = Integer.parseInt(br.readLine()) * 2;
 		}
+		br.close();
+
 		Arrays.sort(haybales);
 		int l = 0, r = 2000000000;
 		while (l <= r) {
@@ -244,9 +247,10 @@ public class Main {
 				l = power + 1;
 			}
 		}
-		pw.printf("%.1f\n", (double)l / 2.0);
+
+		PrintWriter pw = new PrintWriter(new FileWriter("angry.out"));
+		pw.printf("%.1f%n", (double)l / 2.0);
 		pw.close();
-		br.close();
 	}
 }
 ```
@@ -258,7 +262,7 @@ public class Main {
 import sys
 
 
-def valid(mid):
+def valid(mid: int) -> bool:
 	# L to R
 	i, j = 0, 0
 
@@ -313,9 +317,8 @@ def valid(mid):
 
 with open("angry.in", "r") as f:
 	n = int(f.readline().strip())
-	hay = [
-		int(f.readline().strip()) * 2 for _ in range(n)
-	]  # double positions to avoid decimals
+	# double positions to avoid decimals
+	hay = [int(f.readline()) * 2 for _ in range(n)]
 hay.sort()
 
 # binary search for lowest initial power
@@ -328,8 +331,7 @@ while l < r:
 		l = mid + 1
 
 # rescale final asnwer
-with open("angry.out", "w") as f:
-	f.write(f"{l / 2:.1f}\n")
+print("{l / 2:.1f}", file=open("angry.out", "w"))
 ```
 
 </PySection>
