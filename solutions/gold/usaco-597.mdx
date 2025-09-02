@@ -161,111 +161,93 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-    static int n;
-    static int[] haybales;
+	static int n;
+	static int[] haybales;
 
-    static boolean valid(int pos, int idx, int power, int dir) {
-        // exploded leftmost haybale
-        if (idx <= 0 && dir == 0) {
-            return (idx < 0 || pos - power <= haybales[idx]);
-        }
+	static boolean valid(int pos, int idx, int power, int dir) {
+		// exploded leftmost haybale
+		if (idx <= 0 && dir == 0) { return (idx < 0 || pos - power <= haybales[idx]); }
 
-        // exploded rightmost haybale
-        if (idx >= n - 1 && dir == 1) {
-            return idx >= n || pos + power >= haybales[idx];
-        }
+		// exploded rightmost haybale
+		if (idx >= n - 1 && dir == 1) {
+			return idx >= n || pos + power >= haybales[idx];
+		}
 
-        if (dir == 0) {  // left
-            if (pos - power <= haybales[0]) {
-                return true;
-            }
+		if (dir == 0) {  // left
+			if (pos - power <= haybales[0]) { return true; }
 
-            // go as left as possible
-            int next_idx = idx;
-            while (next_idx >= 0 && pos - power <= haybales[next_idx]) {
-                next_idx--;
-            }
+			// go as left as possible
+			int next_idx = idx;
+			while (next_idx >= 0 && pos - power <= haybales[next_idx]) { next_idx--; }
 
-            // more movement is not possible
-            if (next_idx == idx) {
-                return false;
-            }
+			// more movement is not possible
+			if (next_idx == idx) { return false; }
 
-            return valid(haybales[next_idx + 1], next_idx, power - 2, dir);
-        } else {  // right
-            if (pos + power >= haybales[n - 1]) {
-                return true;
-            }
+			return valid(haybales[next_idx + 1], next_idx, power - 2, dir);
+		} else {  // right
+			if (pos + power >= haybales[n - 1]) { return true; }
 
-            // go as right as possible
-            int next_idx = idx;
-            while (next_idx < n && haybales[next_idx] <= pos + power) {
-                next_idx++;
-            }
+			// go as right as possible
+			int next_idx = idx;
+			while (next_idx < n && haybales[next_idx] <= pos + power) { next_idx++; }
 
-            // more movement is not possible
-            if (next_idx == idx) {
-                return false;
-            }
+			// more movement is not possible
+			if (next_idx == idx) { return false; }
 
-            return valid(haybales[next_idx - 1], next_idx, power - 2, dir);
-        }
+			return valid(haybales[next_idx - 1], next_idx, power - 2, dir);
+		}
+	}
 
-    }
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new FileReader("angry.in"));
+		PrintWriter pw = new PrintWriter(new FileWriter("angry.out"));
 
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new FileReader("angry.in"));
-        PrintWriter pw = new PrintWriter(new FileWriter("angry.out"));
+		n = Integer.parseInt(br.readLine());
+		haybales = new int[n];
+		for (int i = 0; i < n; i++) {
+			haybales[i] = Integer.parseInt(br.readLine()) *
+			              2;  // double each position to eliminate decimals
+		}
+		Arrays.sort(haybales);
+		int l = 0, r = 2000000000;
+		while (l <= r) {
+			int power = (r - l) / 2 + l;
 
-        n = Integer.parseInt(br.readLine());
-        haybales = new int[n];
-        for (int i = 0; i < n; i++) {
-            haybales[i] = Integer.parseInt(br.readLine()) * 2;  // double each position to eliminate decimals
-        }
-        Arrays.sort(haybales);
-        int l = 0, r = 2000000000;
-        while (l <= r) {
-            int power = (r - l) / 2 + l;
+			// find the rightmost haybale that can still reach the left
+			int pos_l = 0, pos_r = 2000000000;
+			while (pos_l <= pos_r) {
+				int pos = (pos_r - pos_l) / 2 + pos_l;
 
-            // find the rightmost haybale that can still reach the left
-            int pos_l = 0, pos_r = 2000000000;
-            while (pos_l <= pos_r) {
-                int pos = (pos_r - pos_l) / 2 + pos_l;
+				// index of candidate haybale
+				int idx = Arrays.binarySearch(haybales, pos);
+				if (idx < 0) { idx = -idx - 1; }
 
-                // index of candidate haybale
-                int idx = Arrays.binarySearch(haybales, pos);
-                if (idx < 0) {
-                    idx = -idx - 1;
-                }
+				// can we explode all haybales on left?
+				if (idx < n && valid(pos, idx, power, 0)) {
+					pos_l = pos + 1;
+				} else {
+					pos_r = pos - 1;
+				}
+			}
 
-                // can we explode all haybales on left?
-                if (idx < n && valid(pos, idx, power, 0)) {
-                    pos_l = pos + 1;
-                } else {
-                    pos_r = pos - 1;
-                }
-            }
+			int idx = Arrays.binarySearch(haybales, pos_l);
+			if (idx < 0) {
+				idx = -idx - 1;
+			} else {
+				while (idx < n && haybales[idx] == pos_l) { idx++; }
+			}
 
-            int idx = Arrays.binarySearch(haybales, pos_l);
-            if (idx < 0) {
-                idx = -idx - 1;
-            } else {
-                while (idx < n && haybales[idx] == pos_l) {
-                    idx++;
-                }
-            }
-
-            // can we explode all haybales on the right?
-            if (valid(pos_l, idx, power, 1)) {
-                r = power - 1;
-            } else {
-                l = power + 1;
-            }
-        }
-        pw.printf("%.1f\n", (double)l / 2.0);
-        pw.close();
-        br.close();
-    }
+			// can we explode all haybales on the right?
+			if (valid(pos_l, idx, power, 1)) {
+				r = power - 1;
+			} else {
+				l = power + 1;
+			}
+		}
+		pw.printf("%.1f\n", (double)l / 2.0);
+		pw.close();
+		br.close();
+	}
 }
 ```
 
@@ -275,75 +257,79 @@ public class Main {
 ```py
 import sys
 
+
 def valid(mid):
-    # L to R
-    i, j = 0, 0
-    
-    # maxpos finds the rightmost index that can reach the left
-    maxpos = hay[0] + mid
-    r = mid % 2
-    while j < n and r <= mid:
-        if hay[i] + r >= hay[j]:
-            j += 1
-        else:
-            if j - i == 1:
-                # recalculate radius needed between consecutive haybales
-                r = (hay[j] - hay[i]) + (hay[j] - hay[i]) % 2
-                if r >= mid:
-                    # update max possible position if radius is sufficient
-                    maxpos = min(maxpos, hay[i] + mid)
-                    break
-            else:
-                # increment radius if skipping multiple haybales
-                r += 2
-                i = j - 1
-        if r <= mid:
-            maxpos = max(maxpos, hay[i] + mid)
+	# L to R
+	i, j = 0, 0
 
-    # R to L
-    i, j = n - 1, n - 1
-    
-    # minpos finds the leftmost index that can reach the right
-    minpos = hay[-1] - mid
-    r = mid % 2
-    while j >= 0 and r <= mid:
-        if hay[i] - r <= hay[j]:
-            j -= 1
-        else:
-            if i - j == 1:
-                # recalculate radius needed between consecutive haybales
-                r = (hay[i] - hay[j]) + (hay[i] - hay[j]) % 2
-                if r >= mid:
-                    # update min possible position if radius is sufficient
-                    minpos = min(minpos, hay[i] - mid)
-                    break
-            else:
-                # increment radius if skipping multiple haybales
-                r += 2
-                i = j + 1
-        if r <= mid:
-            minpos = min(minpos, hay[i] - mid)
+	# maxpos finds the rightmost index that can reach the left
+	maxpos = hay[0] + mid
+	r = mid % 2
+	while j < n and r <= mid:
+		if hay[i] + r >= hay[j]:
+			j += 1
+		else:
+			if j - i == 1:
+				# recalculate radius needed between consecutive haybales
+				r = (hay[j] - hay[i]) + (hay[j] - hay[i]) % 2
+				if r >= mid:
+					# update max possible position if radius is sufficient
+					maxpos = min(maxpos, hay[i] + mid)
+					break
+			else:
+				# increment radius if skipping multiple haybales
+				r += 2
+				i = j - 1
+		if r <= mid:
+			maxpos = max(maxpos, hay[i] + mid)
 
-    # explosion possible if ranges overlap
-    return minpos <= maxpos
+	# R to L
+	i, j = n - 1, n - 1
+
+	# minpos finds the leftmost index that can reach the right
+	minpos = hay[-1] - mid
+	r = mid % 2
+	while j >= 0 and r <= mid:
+		if hay[i] - r <= hay[j]:
+			j -= 1
+		else:
+			if i - j == 1:
+				# recalculate radius needed between consecutive haybales
+				r = (hay[i] - hay[j]) + (hay[i] - hay[j]) % 2
+				if r >= mid:
+					# update min possible position if radius is sufficient
+					minpos = min(minpos, hay[i] - mid)
+					break
+			else:
+				# increment radius if skipping multiple haybales
+				r += 2
+				i = j + 1
+		if r <= mid:
+			minpos = min(minpos, hay[i] - mid)
+
+	# explosion possible if ranges overlap
+	return minpos <= maxpos
+
 
 with open("angry.in", "r") as f:
-    n = int(f.readline().strip())
-    hay = [int(f.readline().strip()) * 2 for _ in range(n)]  # double positions to avoid decimals
+	n = int(f.readline().strip())
+	hay = [
+		int(f.readline().strip()) * 2 for _ in range(n)
+	]  # double positions to avoid decimals
 hay.sort()
 
 # binary search for lowest initial power
 l, r = 0, hay[-1]
 while l < r:
-    mid = (l + r) // 2
-    if valid(mid):
-        r = mid
-    else:
-        l = mid + 1
+	mid = (l + r) // 2
+	if valid(mid):
+		r = mid
+	else:
+		l = mid + 1
 
 # rescale final asnwer
 with open("angry.out", "w") as f:
-    f.write(f"{l / 2:.1f}\n")
+	f.write(f"{l / 2:.1f}\n")
 ```
 
 </PySection>
