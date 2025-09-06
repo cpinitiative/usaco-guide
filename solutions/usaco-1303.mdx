@@ -45,54 +45,49 @@ This means that for each cow, we only need to check the two grazing sites with t
 using namespace std;
 
 struct Event {
-    int t, x, y;
+	int t, x, y;
 
-    bool operator<(const Event &other) const {
-        return t < other.t;
-    }
+	bool operator<(const Event &other) const { return t < other.t; }
 };
 
 Event read() {
-    int x, y, t;
-    cin >> x >> y >> t;
-    return {t, x, y};
+	int x, y, t;
+	cin >> x >> y >> t;
+	return {t, x, y};
 }
 
 bool reachable(const Event &a, const Event &b) {
-    long long dx = a.x - b.x;
-    long long dy = a.y - b.y;
-    long long dt = a.t - b.t;
-    return dx * dx + dy * dy <= dt * dt;
+	long long dx = a.x - b.x;
+	long long dy = a.y - b.y;
+	long long dt = a.t - b.t;
+	return dx * dx + dy * dy <= dt * dt;
 }
 
 int main() {
-    int g, n;
-    cin >> g >> n;
+	int g, n;
+	cin >> g >> n;
 
-    vector<Event> grazings(g);
-    for (int i = 0; i < g; i++) {
-        grazings[i] = read();
-    }
+	vector<Event> grazings(g);
+	for (int i = 0; i < g; i++) { grazings[i] = read(); }
 
-    sort(grazings.begin(), grazings.end());
+	sort(grazings.begin(), grazings.end());
 
-    int ans = 0;
+	int ans = 0;
 
-    for (int i = 0; i < n; i++) {
-        Event alibi = read();
-        int pos = upper_bound(grazings.begin(), grazings.end(), alibi) - grazings.begin();
+	for (int i = 0; i < n; i++) {
+		Event alibi = read();
+		int pos =
+		    upper_bound(grazings.begin(), grazings.end(), alibi) - grazings.begin();
 
-        bool innocent = false;
-        for (int y = pos - 1; y <= pos; y++) {
-            if (0 <= y && y < g) {
-                innocent |= !reachable(grazings[y], alibi);
-            }
-        }
+		bool innocent = false;
+		for (int y = pos - 1; y <= pos; y++) {
+			if (0 <= y && y < g) { innocent |= !reachable(grazings[y], alibi); }
+		}
 
-        ans += innocent;
-    }
+		ans += innocent;
+	}
 
-    cout << ans << "\n";
+	cout << ans << "\n";
 }
 ```
 
@@ -104,30 +99,33 @@ import bisect
 
 g, n = map(int, input().split())
 
+
 def read():
-    x, y, t = map(int, input().split())
-    return t, x, y
+	x, y, t = map(int, input().split())
+	return t, x, y
+
 
 def reachable(a, b):
-    dx = a[1] - b[1]
-    dy = a[2] - b[2]
-    dt = a[0] - b[0]
-    return dx * dx + dy * dy <= dt * dt
+	dx = a[1] - b[1]
+	dy = a[2] - b[2]
+	dt = a[0] - b[0]
+	return dx * dx + dy * dy <= dt * dt
+
 
 grazings = sorted(read() for _ in range(g))
 
 ans = 0
 
 for _ in range(n):
-    alibi = read()
-    pos = bisect.bisect(grazings, alibi)
+	alibi = read()
+	pos = bisect.bisect(grazings, alibi)
 
-    innocent = False
-    for y in range(pos - 1, pos + 1):
-        if 0 <= y < g:
-            innocent |= not reachable(grazings[y], alibi)
+	innocent = False
+	for y in range(pos - 1, pos + 1):
+		if 0 <= y < g:
+			innocent |= not reachable(grazings[y], alibi)
 
-    ans += innocent
+	ans += innocent
 
 print(ans)
 ```
