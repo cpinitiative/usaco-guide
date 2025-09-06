@@ -2,18 +2,19 @@
 id: cf-860D
 source: CF
 title: Wizard's Tour
-author: Benjamin Qi
+author: Benjamin Qi, David Guo
 ---
 
-[Official Editorial](https://codeforces.com/blog/entry/54604) (brief)
+[Official Editorial](https://codeforces.com/blog/entry/54604)
+
+## Explanation
 
 In other words, we want to pair up as many edges as possible such that the edges
 in each pair share a vertex.
 
-> Obviously the task can be solved independently for each component.
-
-The answer is always $\left\lfloor \frac{m}{2}\right\rfloor$ for a single
-connected component.
+We propose two things:
+1. The task can be solved independently for each component.
+2. The answer is always $\left\lfloor \frac{m}{2}\right\rfloor$ for a single connected component.
 
 ## Tree Case
 
@@ -25,12 +26,14 @@ of `x` except maybe the edge connecting `pre` and `x`, depending on the parity
 of the number of edges in this subtree. The function returns `1` if the edge
 connecting `pre` and `x` is left unpaired and `0` otherwise.
 
+<LanguageSection>
+<CPPSection>
+
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
 
-int n, m;
-vector<int> adj[200001];
+vector<vector<int>> adj;
 vector<vector<int>> ans;
 
 bool dfs(int x, int pre) {
@@ -46,6 +49,7 @@ bool dfs(int x, int pre) {
 	for (int i = 0; i < curr.size() / 2; i++) {
 		ans.push_back({curr[2 * i], x, curr[2 * i + 1]});
 	}
+
 	if (curr.size() % 2 == 0) { return true; }
 	if (pre != -1) { ans.push_back({curr[curr.size() - 1], x, pre}); }
 
@@ -53,9 +57,9 @@ bool dfs(int x, int pre) {
 }
 
 int main() {
-	ios_base::sync_with_stdio(0);
-	cin.tie(0);
+	int n, m;
 	cin >> n >> m;
+	adj.resize(n + 1);
 	for (int i = 0; i < m; i++) {
 		int a, b;
 		cin >> a >> b;
@@ -66,11 +70,68 @@ int main() {
 	dfs(1, -1);
 
 	cout << ans.size() << "\n";
-	for (const vector<int> &a : ans) {
-		cout << a[0] << " " << a[1] << " " << a[2] << "\n";
+	for (auto a : ans) { cout << a[0] << " " << a[1] << " " << a[2] << "\n"; }
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class WizardTour {
+	private static List<List<Integer>> adj;
+	private static List<int[]> ans;
+
+	private static boolean dfs(int x, int pre) {
+		List<Integer> curr = new ArrayList<>();
+		for (int i : adj.get(x)) {
+			if (i != pre) {
+				if (dfs(i, x)) {  // spanning tree edge
+					curr.add(i);
+				}
+			}
+		}
+
+		for (int i = 0; i < curr.size() / 2; i++) {
+			ans.add(new int[] {curr.get(2 * i), x, curr.get(2 * i + 1)});
+		}
+		if (curr.size() % 2 == 0) { return true; }
+		if (pre != -1) { ans.add(new int[] {curr.get(curr.size() - 1), x, pre}); }
+
+		return false;
+	}
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int n = Integer.parseInt(st.nextToken());
+		int m = Integer.parseInt(st.nextToken());
+
+		adj = new ArrayList<>(n + 1);
+		for (int i = 0; i <= n; i++) { adj.add(new ArrayList<>()); }
+		ans = new ArrayList<>();
+
+		for (int i = 0; i < m; i++) {
+			st = new StringTokenizer(br.readLine());
+			int a = Integer.parseInt(st.nextToken());
+			int b = Integer.parseInt(st.nextToken());
+			adj.get(a).add(b);
+			adj.get(b).add(a);
+		}
+
+		dfs(1, -1);
+
+		System.out.println(ans.size());
+		for (int[] a : ans) { System.out.println(a[0] + " " + a[1] + " " + a[2]); }
 	}
 }
 ```
+
+</JavaSection>
+</LanguageSection>
 
 </Spoiler>
 
@@ -87,13 +148,15 @@ problem to the tree case.
 We only need to modify the above solution slightly. Here we disconnect the edge
 $(x,i)$ from $i$ whenever $x<i$ ($x>i$ would work just as well).
 
+<LanguageSection>
+<CPPSection>
+
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
 
-int n, m;
-bool visited[200001];
-vector<int> adj[200001];
+vector<bool> visited;
+vector<vector<int>> adj;
 vector<vector<int>> ans;
 
 bool dfs(int x, int pre) {
@@ -112,13 +175,18 @@ bool dfs(int x, int pre) {
 	for (int i = 0; i < curr.size() / 2; i++) {
 		ans.push_back({curr[2 * i], x, curr[2 * i + 1]});
 	}
+
 	if (curr.size() % 2 == 0) { return true; }
 	if (pre != -1) { ans.push_back({curr[curr.size() - 1], x, pre}); }
+
 	return false;
 }
 
 int main() {
+	int n, m;
 	cin >> n >> m;
+	adj.resize(n + 1);
+	visited.resize(n + 1, false);
 	for (int i = 0; i < m; i++) {
 		int a, b;
 		cin >> a >> b;
@@ -134,5 +202,71 @@ int main() {
 	for (auto a : ans) { cout << a[0] << " " << a[1] << " " << a[2] << "\n"; }
 }
 ```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class WizardTour {
+	private static boolean[] visited;
+	private static List<List<Integer>> adj;
+	private static List<int[]> ans;
+
+	private static boolean dfs(int x, int pre) {
+		visited[x] = true;
+		List<Integer> curr = new ArrayList<>();
+		for (int i : adj.get(x)) {
+			if (i != pre) {
+				if (visited[i]) {  // non spanning tree edge
+					if (x < i) { curr.add(i); }
+				} else if (dfs(i, x)) {
+					curr.add(i);  // spanning tree edge
+				}
+			}
+		}
+
+		for (int i = 0; i < curr.size() / 2; i++) {
+			ans.add(new int[] {curr.get(2 * i), x, curr.get(2 * i + 1)});
+		}
+		if (curr.size() % 2 == 0) { return true; }
+		if (pre != -1) { ans.add(new int[] {curr.get(curr.size() - 1), x, pre}); }
+
+		return false;
+	}
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int n = Integer.parseInt(st.nextToken());
+		int m = Integer.parseInt(st.nextToken());
+
+		visited = new boolean[n + 1];
+		adj = new ArrayList<>(n + 1);
+		for (int i = 0; i <= n; i++) { adj.add(new ArrayList<>()); }
+		ans = new ArrayList<>();
+
+		for (int i = 0; i < m; i++) {
+			st = new StringTokenizer(br.readLine());
+			int a = Integer.parseInt(st.nextToken());
+			int b = Integer.parseInt(st.nextToken());
+			adj.get(a).add(b);
+			adj.get(b).add(a);
+		}
+
+		for (int i = 1; i <= n; i++) {
+			if (!visited[i]) { dfs(i, -1); }
+		}
+
+		System.out.println(ans.size());
+		for (int[] a : ans) { System.out.println(a[0] + " " + a[1] + " " + a[2]); }
+	}
+}
+```
+
+</JavaSection>
+</LanguageSection>
 
 </Spoiler>

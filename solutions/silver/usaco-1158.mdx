@@ -1,0 +1,288 @@
+---
+id: usaco-1158
+source: USACO Silver 2021 December
+title: Closest Cow Wins
+author: David Zhou
+---
+
+[Official Analysis (C++/Java)](https://usaco.org/current/data/sol_prob1_silver_dec21.html)
+
+## Explanation
+
+We can treat each interval between Nhoj's cows as a single problem.
+After computing the answer for each interval, we can select the $N$ most optimal cow placements for our answer.
+
+There are two types of intervals we need to consider:
+
+### Leftmost/Rightmost Intervals
+
+We can use a single cow to cut off Nhoj's cows on either edge. These cows earn all the tastiness left of the leftmost Nhoj cow and right of the rightmost Nhoj cow.
+
+### Middle Intervals
+
+We have a one-cow and a two-cow answer for each middle interval.
+
+For the **one-cow answer**, we find that regardless of where the cow is placed,
+it covers the same range that it beats Nhoj's cows.
+We can thus use a sliding window to compute the maximum gain from a single cow.
+
+For the **two-cow answer**, we can place cows right before both of Nhoj's cows,
+thus gaining all the tastiness in the interval.
+We then calculate the **gain** from adding the second cow to be the two-cow tastiness minus the one-cow tastiness.
+
+The one-cow answer shows the most optimal selection of tastiness in the interval. The two-cow answer is effectively the leftovers. Thus, the gain from the one-cow is always at least as good as the gain from the two-cow answer. Therefore, we can sort all the potential tastiness gains and select the $N$ largest ones to find our answer.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}((K+M)\log(K+M))$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <algorithm>
+#include <cstdio>
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+int main() {
+	int k, m, n;
+	cin >> k >> m >> n;
+
+	// store both patches and Nhoj's cows in one array
+	vector<pair<int, long long>> entries(k + m);
+	for (int i = 0; i < k; i++) {
+		int pos, tasty;
+		cin >> pos >> tasty;
+		entries[i] = {pos, tasty};
+	}
+	for (int i = 0; i < m; i++) {
+		int pos;
+		cin >> pos;
+		entries[k + i] = {pos, -1};  // mark Nhoj cow with tastiness = -1
+	}
+	sort(entries.begin(), entries.end());
+
+	vector<long long> contributions;
+	long long sum_range = 0;
+	int last_cow = -1;
+
+	for (int i = 0; i < entries.size(); i++) {
+		if (entries[i].second == -1) {  // hit Nhoj's cow
+			if (last_cow == -1) {
+				// leftmost interval: John can grab all tastiness with 1 cow
+				contributions.push_back(sum_range);
+			} else {
+				// middle interval: compute 1-cow and 2-cow answers
+				long long interval_len = entries[i].first - entries[last_cow].first;
+
+				long long cur_sum = 0, best_one = 0;
+				int r = last_cow;
+				for (int j = last_cow + 1; j < i; j++) {
+					while (r + 1 < i && (entries[r + 1].first - entries[j].first) * 2 <
+					                        interval_len) {
+						cur_sum += entries[++r].second;
+					}
+					best_one = max(best_one, cur_sum);
+					cur_sum -= entries[j].second;
+				}
+
+				// one-cow contribution
+				contributions.push_back(best_one);
+				// additional gain if we put a second cow
+				contributions.push_back(sum_range - best_one);
+			}
+			last_cow = i;
+			sum_range = 0;
+		} else {
+			sum_range += entries[i].second;
+		}
+	}
+
+	// rightmost interval: also fully claimable with 1 cow
+	contributions.push_back(sum_range);
+
+	// sort all contributions descending
+	sort(contributions.rbegin(), contributions.rend());
+
+	// take top N
+	long long ans = 0;
+	for (int i = 0; i < min(n, (int)contributions.size()); i++) {
+		ans += contributions[i];
+	}
+
+	cout << ans << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class ClosestCowWins {
+	static class Entry {
+		int pos;
+		long tastiness;
+
+		Entry(int pos, long tastiness) {
+			this.pos = pos;
+			this.tastiness = tastiness;
+		}
+	}
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		PrintWriter pw = new PrintWriter(System.out);
+
+		String[] line = br.readLine().split(" ");
+		int k = Integer.parseInt(line[0]);
+		int m = Integer.parseInt(line[1]);
+		int n = Integer.parseInt(line[2]);
+
+		// store both patches and Nhoj's cows in one array
+		List<Entry> entries = new ArrayList<>(k + m);
+		for (int i = 0; i < k; i++) {
+			line = br.readLine().split(" ");
+			int pos = Integer.parseInt(line[0]);
+			long tasty = Long.parseLong(line[1]);
+			entries.add(new Entry(pos, tasty));
+		}
+		for (int i = 0; i < m; i++) {
+			int pos = Integer.parseInt(br.readLine());
+			entries.add(new Entry(pos, -1));  // mark Nhoj cow with tastiness = -1
+		}
+		entries.sort(Comparator.comparingInt(e -> e.pos));
+
+		List<Long> contributions = new ArrayList<>();
+		long sum_range = 0;
+		int last_cow = -1;
+
+		for (int i = 0; i < entries.size(); i++) {
+			if (entries.get(i).tastiness == -1) {  // hit Nhoj's cow
+				if (last_cow == -1) {
+					// leftmost interval: John can grab all tastiness with 1 cow
+					contributions.add(sum_range);
+				} else {
+					// middle interval: compute 1-cow and 2-cow answers
+					long interval_len = entries.get(i).pos - entries.get(last_cow).pos;
+
+					long cur_sum = 0, best_one = 0;
+					int r = last_cow;
+					for (int j = last_cow + 1; j < i; j++) {
+						while (r + 1 < i &&
+						       (entries.get(r + 1).pos - entries.get(j).pos) * 2 <
+						           interval_len) {
+							cur_sum += entries.get(++r).tastiness;
+						}
+						best_one = Math.max(best_one, cur_sum);
+						cur_sum -= entries.get(j).tastiness;
+					}
+
+					// pne-cow contribution
+					contributions.add(best_one);
+					// additional gain if we put a second cow
+					contributions.add(sum_range - best_one);
+				}
+				last_cow = i;
+				sum_range = 0;
+			} else {
+				sum_range += entries.get(i).tastiness;
+			}
+		}
+
+		// rightmost interval: also fully claimable with 1 cow
+		contributions.add(sum_range);
+
+		// sort all contributions descending
+		contributions.sort(Collections.reverseOrder());
+
+		// take top N
+		long ans = 0;
+		for (int i = 0; i < Math.min(n, contributions.size()); i++) {
+			ans += contributions.get(i);
+		}
+
+		pw.println(ans);
+		pw.close();
+		br.close();
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+k, m, n = map(int, input().split())
+
+# store both patches and Nhoj's cows in one array
+entries = []
+
+for _ in range(k):
+	pos, tasty = map(int, input().split())
+	entries.append((pos, tasty))
+
+for _ in range(m):
+	pos = int(input())
+	entries.append((pos, -1))  # mark Nhoj cow with tastiness = -1
+
+# sort by position
+entries.sort()
+
+contributions = []
+sum_range = 0
+last_cow = -1
+
+for i in range(len(entries)):
+	if entries[i][1] == -1:  # hit Nhoj's cow
+		if last_cow == -1:
+			# leftmost interval: John can grab all tastiness with 1 cow
+			contributions.append(sum_range)
+		else:
+			# middle interval: compute 1-cow and 2-cow answers
+			interval_len = entries[i][0] - entries[last_cow][0]
+
+			cur_sum = 0
+			best_one = 0
+			r = last_cow
+
+			for j in range(last_cow + 1, i):
+				while (
+					r + 1 < i and (entries[r + 1][0] - entries[j][0]) * 2 < interval_len
+				):
+					r += 1
+					cur_sum += entries[r][1]
+				best_one = max(best_one, cur_sum)
+				cur_sum -= entries[j][1]
+
+			# one-cow contribution
+			contributions.append(best_one)
+			# additional gain if we put a second cow
+			contributions.append(sum_range - best_one)
+
+		last_cow = i
+		sum_range = 0
+	else:
+		sum_range += entries[i][1]
+
+# rightmost interval: also fully claimable with 1 cow
+contributions.append(sum_range)
+
+# sort all contributions descending
+contributions.sort(reverse=True)
+
+# take top N
+ans = 0
+for i in range(min(n, len(contributions))):
+	ans += contributions[i]
+
+print(ans)
+```
+
+</PySection>
+</LanguageSection>
