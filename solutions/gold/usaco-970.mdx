@@ -165,11 +165,11 @@ In the solution below, I refer to milk types as "colors."
 <CPPSection>
 
 ```cpp
+#include <algorithm>
 #include <iostream>
 #include <map>
 #include <unordered_map>
 #include <vector>
-#include <algorithm>
 
 /**
  * Description: Heavy-Light Decomposition, add val to verts
@@ -183,91 +183,81 @@ const int MX = 2e5 + 5;
 int T[MX];
 
 template <int SZ> struct HLD {
-    int n, ti;
-    int par[SZ], root[SZ], depth[SZ], sz[SZ], pos[SZ];
-    std::vector<int> adj[SZ];
+	int n, ti;
+	int par[SZ], root[SZ], depth[SZ], sz[SZ], pos[SZ];
+	std::vector<int> adj[SZ];
 
-    std::map<int, int> all_of_col[SZ];
-    std::unordered_map<int, int> first_cols[SZ];
-    
-    void add_edge(int x, int y) {
-        adj[x].push_back(y);
-        adj[y].push_back(x);
-    }
+	std::map<int, int> all_of_col[SZ];
+	std::unordered_map<int, int> first_cols[SZ];
 
-    void dfs_sz(int x) {
-        sz[x] = 1;
-        for (int &y : adj[x]) {
-            par[y] = x;
-            depth[y] = depth[x] + 1;
-            adj[y].erase(find(std::begin(adj[y]), std::end(adj[y]), x));
-            dfs_sz(y);
-            sz[x] += sz[y];
-            if (sz[y] > sz[adj[x][0]]) {
-                std::swap(y, adj[x][0]);
-            }
-        }
-    }
+	void add_edge(int x, int y) {
+		adj[x].push_back(y);
+		adj[y].push_back(x);
+	}
 
+	void dfs_sz(int x) {
+		sz[x] = 1;
+		for (int &y : adj[x]) {
+			par[y] = x;
+			depth[y] = depth[x] + 1;
+			adj[y].erase(find(std::begin(adj[y]), std::end(adj[y]), x));
+			dfs_sz(y);
+			sz[x] += sz[y];
+			if (sz[y] > sz[adj[x][0]]) { std::swap(y, adj[x][0]); }
+		}
+	}
 
-    void dfs_hld(int x) {
-        pos[x] = ti++;
-        all_of_col[T[x]][pos[x]] = depth[x];
-        if (!first_cols[root[x]].count(T[x])) {
-            first_cols[root[x]][T[x]] = depth[x];
-        }
+	void dfs_hld(int x) {
+		pos[x] = ti++;
+		all_of_col[T[x]][pos[x]] = depth[x];
+		if (!first_cols[root[x]].count(T[x])) { first_cols[root[x]][T[x]] = depth[x]; }
 
-        for (int &y : adj[x]) {
-            root[y] = (y == adj[x][0] ? root[x] : y);
-            dfs_hld(y);
-        }
-    }
+		for (int &y : adj[x]) {
+			root[y] = (y == adj[x][0] ? root[x] : y);
+			dfs_hld(y);
+		}
+	}
 
-    void init(int _n, int r = 0) {
-        n = _n;
-        par[r] = depth[r] = ti = 0;
-        dfs_sz(r);
-        root[r] = r;
-        dfs_hld(r);
-    }
+	void init(int _n, int r = 0) {
+		n = _n;
+		par[r] = depth[r] = ti = 0;
+		dfs_sz(r);
+		root[r] = r;
+		dfs_hld(r);
+	}
 
-    /** @returns the lowest common ancestor (LCA) of x and y */
-    int lca(int x, int y) {
-        for (; root[x] != root[y]; y = par[root[y]]) {
-            if (depth[root[x]] > depth[root[y]]) {
-                std::swap(x, y);
-            }
-        }
-        return depth[x] < depth[y] ? x : y;
-    }
+	/** @returns the lowest common ancestor (LCA) of x and y */
+	int lca(int x, int y) {
+		for (; root[x] != root[y]; y = par[root[y]]) {
+			if (depth[root[x]] > depth[root[y]]) { std::swap(x, y); }
+		}
+		return depth[x] < depth[y] ? x : y;
+	}
 
-    /** @returns depth of closest ancestor with desired color */
-    int closest_ancestor(int x, int col) {
-        while (x) {
+	/** @returns depth of closest ancestor with desired color */
+	int closest_ancestor(int x, int col) {
+		while (x) {
 
-            // check if there exists vertex above (or equal to x) in same heavy
+			// check if there exists vertex above (or equal to x) in same heavy
 			// path with desired color
-            auto it = first_cols[root[x]].find(col);
+			auto it = first_cols[root[x]].find(col);
 
-            // if so, return its depth using upper_bound
-            if (it != std::end(first_cols[root[x]]) && it->second <= depth[x]) {
-                return std::prev(all_of_col[col].upper_bound(pos[x]))->second;
-            }
-            x = par[root[x]];
-        }
-        return -1;
-    }
+			// if so, return its depth using upper_bound
+			if (it != std::end(first_cols[root[x]]) && it->second <= depth[x]) {
+				return std::prev(all_of_col[col].upper_bound(pos[x]))->second;
+			}
+			x = par[root[x]];
+		}
+		return -1;
+	}
 
-    bool exists(int x, int y, int col) {
-        return closest_ancestor(x, col) >= depth[y];
-    } 
+	bool exists(int x, int y, int col) { return closest_ancestor(x, col) >= depth[y]; }
 };
 
 void set_up(std::string name) {
-    freopen((name + ".in").c_str(), "r", stdin);
-    freopen((name + ".out").c_str(), "w", stdout);
+	freopen((name + ".in").c_str(), "r", stdin);
+	freopen((name + ".out").c_str(), "w", stdout);
 }
-
 
 HLD<MX> H;
 
@@ -275,9 +265,7 @@ int main() {
 	set_up("milkvisits");
 	int n, m;
 	std::cin >> n >> m;
-	for (int i = 0; i < n; i++) {
-		std::cin >> T[i];
-	}
+	for (int i = 0; i < n; i++) { std::cin >> T[i]; }
 	for (int i = 0; i < n - 1; i++) {
 		int x, y;
 		std::cin >> x >> y;
@@ -290,7 +278,7 @@ int main() {
 		std::cin >> a >> b >> c;
 		int L = H.lca(--a, --b);
 
-        // checks if color c is present on path from a to L, or b to L
+		// checks if color c is present on path from a to L, or b to L
 		if (H.exists(a, L, c) || H.exists(b, L, c)) {
 			std::cout << 1;
 		} else {
