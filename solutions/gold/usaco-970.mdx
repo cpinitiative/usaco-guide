@@ -56,7 +56,8 @@ template <int SZ> struct LCA {
 		}
 
 		curr_node[T[u]].pop_back();
-		last_seen_node[T[u]].push_back({cnt, curr_node[T[u]].size() ? curr_node[T[u]].back() : 0});
+		last_seen_node[T[u]].push_back(
+		    {cnt, curr_node[T[u]].size() ? curr_node[T[u]].back() : 0});
 	}
 
 	void init(int _N) {
@@ -89,7 +90,8 @@ template <int SZ> struct LCA {
 	int dist(int u, int v) { return depth[u] + depth[v] - 2 * depth[lca(u, v)]; }
 
 	int last(int a, int c) {
-		auto it = upper_bound(begin(last_seen_node[c]), end(last_seen_node[c]), make_pair(label[a], MOD));
+		auto it = upper_bound(begin(last_seen_node[c]), end(last_seen_node[c]),
+		                      make_pair(label[a], MOD));
 		if (it == begin(last_seen_node[c])) { return 0; }
 		return prev(it)->second;
 	}
