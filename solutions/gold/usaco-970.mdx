@@ -28,16 +28,16 @@ corresponding milk type.
 #include <bits/stdc++.h>
 using namespace std;
 
-const int MOD = 1e9 + 7;  // 998244353;
-const int MX = 2e5 + 5;
+const int MOD = 1000000007;
+const int MX = 200005;
 
 int T[MX];
 
 template <int SZ> struct LCA {
 	static const int BITS = 32 - __builtin_clz(SZ);
 	int n, r = 1, cnt = 0, label[SZ];
-	vector<int> adj[SZ], cur[SZ];
-	vector<pair<int, int>> CUR[SZ];
+	vector<int> adj[SZ], curr_node[SZ];
+	vector<pair<int, int>> last_seen_node[SZ];
 	int par[BITS][SZ], depth[SZ];
 
 	void add_edge(int u, int v) {
@@ -47,16 +47,16 @@ template <int SZ> struct LCA {
 
 	void dfs(int u, int prev) {
 		label[u] = cnt++;
-		cur[T[u]].push_back(u);
-		CUR[T[u]].push_back({label[u], u});
+		curr_node[T[u]].push_back(u);
+		last_seen_node[T[u]].push_back({label[u], u});
 		par[0][u] = prev;
 		depth[u] = depth[prev] + 1;
 		for (int v : adj[u]) {
 			if (v != prev) { dfs(v, u); }
 		}
 
-		cur[T[u]].pop_back();
-		CUR[T[u]].push_back({cnt, cur[T[u]].size() ? cur[T[u]].back() : 0});
+		curr_node[T[u]].pop_back();
+		last_seen_node[T[u]].push_back({cnt, curr_node[T[u]].size() ? curr_node[T[u]].back() : 0});
 	}
 
 	void init(int _N) {
@@ -89,13 +89,13 @@ template <int SZ> struct LCA {
 	int dist(int u, int v) { return depth[u] + depth[v] - 2 * depth[lca(u, v)]; }
 
 	int last(int a, int c) {
-		auto it = upper_bound(begin(CUR[c]), end(CUR[c]), make_pair(label[a], MOD));
-		if (it == begin(CUR[c])) { return 0; }
+		auto it = upper_bound(begin(last_seen_node[c]), end(last_seen_node[c]), make_pair(label[a], MOD));
+		if (it == begin(last_seen_node[c])) { return 0; }
 		return prev(it)->second;
 	}
 };
 
-void setUp(std::string name) {
+void set_up(std::string name) {
 	freopen((name + ".in").c_str(), "r", stdin);
 	freopen((name + ".out").c_str(), "w", stdout);
 }
@@ -104,7 +104,7 @@ LCA<MX> L;
 int n, m;
 
 int main() {
-	setUp("milkvisits");
+	set_up("milkvisits");
 	cin >> n >> m;
 	for (int i = 1; i <= n; i++) { cin >> T[i]; }
 
