@@ -1,0 +1,296 @@
+---
+id: usaco-832
+source: USACO Bronze 2018 US Open
+title: Milking Order
+author: Michael Cao, Ryan Chou
+---
+
+## Hint
+
+<Spoiler title="Hint 1">
+
+Let's try placing cow $1$ at a specific position.
+
+How might we go about checking to see if we'll end up with a valid ordering?
+
+</Spoiler>
+
+## Solution
+
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_milkorder_bronze_open18.html)
+
+<Spoiler title="Spoiler">
+
+What if we tried placing cow $1$ at every possible position?
+
+Then, we'll have some hierarchy we have to fit in and some free cows which can
+go anywhere. Let's just handle the hierarchy, since we can fit in the free cows
+at the end.
+
+As we sweep through the hierarchy, we'll also store a pointer that indicates our
+current position. Greedily, we should try to place these cows as early as
+possible to make sure that we have room to fit in all of them. As we go through
+the list, we have to make sure that this pointer never outruns some previous cow
+in our hierarchy.
+
+This check takes $\mathcal{O}(N)$ time, which brings our total time
+complexity to $\mathcal{O}(N^2)$.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int n, m, k;
+
+/**
+ * @return whether it's possible to construct a
+ * valid ordering with given fixed elements
+ */
+bool check(vector<int> order, vector<int> &hierarchy) {
+	vector<int> cow_to_pos(n, -1);
+
+	for (int i = 0; i < n; i++) {
+		if (order[i] != -1) { cow_to_pos[order[i]] = i; }
+	}
+
+	int h_idx = 0;
+	for (int i = 0; i < n && h_idx < m; i++) {
+		if (cow_to_pos[hierarchy[h_idx]] != -1) {
+			// we know the next cow has to be in front of it
+
+			if (i > cow_to_pos[hierarchy[h_idx]]) { return false; }
+
+			i = cow_to_pos[hierarchy[h_idx]];
+			h_idx++;
+		} else {
+			while (i < n && order[i] != -1) { i++; }
+
+			// run out of places
+			if (i == n) { return false; }
+
+			order[i] = hierarchy[h_idx];
+			cow_to_pos[hierarchy[h_idx]] = i;
+			h_idx++;
+		}
+	}
+
+	return true;
+}
+
+int main() {
+	freopen("milkorder.in", "r", stdin);
+	freopen("milkorder.out", "w", stdout);
+	cin >> n >> m >> k;
+
+	vector<int> hierarchy(m);
+	for (int i = 0; i < m; i++) {
+		cin >> hierarchy[i];
+		hierarchy[i]--;
+	}
+
+	vector<int> order(n, -1);
+
+	for (int i = 0; i < k; i++) {
+		int cow, pos;
+		cin >> cow >> pos;
+
+		order[--pos] = --cow;
+
+		if (cow == 0) {  // already fixed, nothing we can do
+			cout << pos + 1 << endl;
+			return 0;
+		}
+	}
+
+	for (int i = 0; i < n; i++) {
+		// if already fixed, skip
+		if (order[i] == -1) {
+			// try placing cow 1 @ position i
+			order[i] = 0;
+			if (check(order, hierarchy)) {
+				cout << i + 1 << endl;
+				break;
+			}
+			order[i] = -1;
+		}
+	}
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class MilkOrder {
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new FileReader("milkorder.in"));
+		PrintWriter pw = new PrintWriter("milkorder.out");
+
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int n = Integer.parseInt(st.nextToken());
+		int m = Integer.parseInt(st.nextToken());
+		int k = Integer.parseInt(st.nextToken());
+
+		int[] hierarchy = new int[m];
+		st = new StringTokenizer(br.readLine());
+		for (int i = 0; i < m; i++) {
+			hierarchy[i] = Integer.parseInt(st.nextToken()) - 1;
+		}
+
+		int[] order = new int[n];
+		Arrays.fill(order, -1);
+		for (int i = 0; i < k; i++) {
+			st = new StringTokenizer(br.readLine());
+			int cow = Integer.parseInt(st.nextToken()) - 1;
+			int pos = Integer.parseInt(st.nextToken()) - 1;
+			order[pos] = cow;
+
+			// already fixed, nothing we can do
+			if (cow == 0) {
+				pw.println(pos + 1);
+				pw.close();
+				System.exit(0);
+			}
+		}
+		br.close();
+
+		for (int i = 0; i < n; i++) {
+			if (order[i] == -1) {
+				// try placing cow 1 @ position i
+				order[i] = 0;
+				if (check(order, hierarchy)) {
+					pw.println(i + 1);
+					break;
+				}
+				order[i] = -1;
+			}
+		}
+		pw.close();
+	}
+
+	/**
+	 * @return whether it's possible to construct a
+	 * valid ordering with given fixed elements
+	 */
+	static boolean check(int[] order, int[] hierarchy) {
+		order = order.clone();
+
+		int[] cowToPos = new int[order.length];
+		Arrays.fill(cowToPos, -1);
+
+		for (int i = 0; i < order.length; i++) {
+			if (order[i] != -1) { cowToPos[order[i]] = i; }
+		}
+
+		int hIdx = 0;
+		for (int i = 0; i < order.length && hIdx < hierarchy.length; i++) {
+			if (cowToPos[hierarchy[hIdx]] != -1) {
+				// we know the next cow has to be in front of it
+				if (i > cowToPos[hierarchy[hIdx]]) { return false; }
+				i = cowToPos[hierarchy[hIdx]];
+				hIdx++;
+			} else {
+				while (i < order.length && order[i] != -1) { i++; }
+				// run out of places
+				if (i == order.length) { return false; }
+				order[i] = hierarchy[hIdx];
+				cowToPos[hierarchy[hIdx]] = i;
+				hIdx++;
+			}
+		}
+
+		return true;
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+import sys
+
+sys.stdin = open("milkorder.in", "r")
+sys.stdout = open("milkorder.out", "w")
+
+n, m, k = map(int, input().split())
+
+hierarchy = [i - 1 for i in list(map(int, input().split()))]
+order = [-1] * n
+
+for i in range(k):
+	cow, pos = map(int, input().split())
+
+	order[pos - 1] = cow - 1
+
+	if cow == 1:  # already fixed, nothing we can do
+		print(pos)
+		exit()
+
+
+def check():
+	"""
+	:return: whether it's possible to construct a
+	valid ordering with given fixed elements
+	"""
+	new_order = order.copy()
+
+	cow_to_pos = [-1] * n
+	for i in range(n):
+		if order[i] != -1:
+			cow_to_pos[order[i]] = i
+
+	h_idx = 0
+	i = 0
+	while i < n and h_idx < m:
+		# we know the next cow has to be in front of it
+		if cow_to_pos[hierarchy[h_idx]] != -1:
+			if i > cow_to_pos[hierarchy[h_idx]]:
+				return False
+
+			i = cow_to_pos[hierarchy[h_idx]]
+			h_idx += 1
+		else:
+			while i < n and new_order[i] != -1:
+				i += 1
+
+			# run out of places
+			if i == n:
+				return False
+
+			new_order[i] = hierarchy[h_idx]
+			cow_to_pos[hierarchy[h_idx]] = i
+			h_idx += 1
+
+		i += 1
+
+	return True
+
+
+for i in range(n):
+	# if already fixed, skip
+	if order[i] == -1:
+		# try placing cow 1 @ position i
+		order[i] = 0
+
+		if check():
+			print(i + 1)
+			break
+
+		order[i] = -1
+```
+
+</PySection>
+</LanguageSection>
+
+</Spoiler>
+
+## Bonus
+
+Solve the problem in $O(N)$ time.
