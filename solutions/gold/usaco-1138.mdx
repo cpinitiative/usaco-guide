@@ -2,12 +2,36 @@
 id: usaco-1138
 source: USACO Gold 2021 Open
 title: Portals
-author: Maggie Liu
+author: Maggie Liu, David Guo
 ---
 
 ## Solution 1 - Kruskal's
 
-[Official Analysis](http://www.usaco.org/current/data/sol_prob2_gold_open21.html)
+[Official Analysis (Java)](http://www.usaco.org/current/data/sol_prob2_gold_open21.html)
+
+## Explanation
+
+We first notice that movement is defined in terms of portals, so we mainly care about how the portals are connected.
+
+Let's consider the undirected multigraph $G$ with $2N$ nodes such that:
+
+- Every portal in the original graph corresponds to a node in $G$
+- Every node $v$ in the original graph corresponds to edges $p_{v,0} \leftrightarrow p_{v,1}$ and $p_{v,2} \leftrightarrow p_{v,3}$ in $G$
+
+We observe that each node in $G$ has degree exactly two, so $G$ is a union of disjoint cycles. Thus, our goal is to join all nodes in $G$ into a single cycle.
+
+Let's suppose that portals $p_{v,0}$ and $p_{v,1}$ are not contained within the same cycle as $p_{v,2}$ and $p_{v,3}$ in $G$.
+
+Then, by permuting the portals adjacent to node $v$ such that the adjacency list becomes $p_{v,0}, p_{v,2}, p_{v,1}, p_{v,3}$, we can combine all of $p_{v,0}, p_{v,1}, p_{v,2}, p_{v,3}$ into a single cycle. Essentially, each node can unite two cycles.
+
+Notice that by replacing "cycles" with "connected components" above, we are encouraged to find a [Minimum Spanning Tree (MST)](/gold/mst). In other words, we wish to unite all disjoint connected components such that $G$ becomes connected.
+
+Now, let's consider the graph $G'$ with the same nodes as $G$ and the following costs:
+
+- For each node $v$, edges $p_{v,0} \leftrightarrow p_{v,1}$ and $p_{v,2} \leftrightarrow p_{v,3}$ have cost $0$
+- For each node $v$, edge $p_{v,0} \leftrightarrow p_{v,2}$ has cost $c_v$ moonies
+
+Specifically, the answer is the cost of the MST of $G'$, which can be found using Kruskal's algorithm or Prim's algorithm.
 
 ## Implementation
 
