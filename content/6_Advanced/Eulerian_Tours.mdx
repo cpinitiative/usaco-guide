@@ -147,6 +147,67 @@ else:
 ```
 
 </PySection>
+
+<JavaSection>
+
+```java
+import java.util.*;
+
+public class EulerianCycle {
+    static List<List<int[]>> g;
+    static boolean[] seen;
+    static List<Integer> path;
+
+    static void dfs(int node) {
+        while (!g.get(node).isEmpty()) {
+            int[] edge = g.get(node).remove(g.get(node).size() - 1);
+            int son = edge[0], idx = edge[1];
+            if (seen[idx]) continue;
+            seen[idx] = true;
+            dfs(son);
+        }
+        path.add(node);
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int n = sc.nextInt(), m = sc.nextInt();
+        g = new ArrayList<>();
+        for (int i = 0; i < n; i++) g.add(new ArrayList<>());
+        seen = new boolean[m];
+        int[] degree = new int[n];
+
+        for (int i = 0; i < m; i++) {
+            int x = sc.nextInt() - 1;
+            int y = sc.nextInt() - 1;
+            g.get(x).add(new int[]{y, i});
+            g.get(y).add(new int[]{x, i});
+            degree[x]++;
+            degree[y]++;
+        }
+
+        for (int d : degree) {
+            if (d % 2 != 0) {
+                System.out.println("IMPOSSIBLE");
+                return;
+            }
+        }
+
+        path = new ArrayList<>();
+        dfs(0);
+
+        if (path.size() != m + 1) {
+            System.out.println("IMPOSSIBLE");
+        } else {
+            for (int node : path) {
+                System.out.print((node + 1) + " ");
+            }
+            System.out.println();
+        }
+    }
+}
+```
+</JavaSection>
 </LanguageSection>
 
 <FocusProblem problem = "sam2"/>
