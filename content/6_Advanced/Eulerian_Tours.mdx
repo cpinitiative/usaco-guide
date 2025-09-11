@@ -17,7 +17,6 @@ frequency: 0
 	<Resource source="CP2" title="4.7.3 - Eulerian Graph" />
 </Resources>
 
-
 <FocusProblem problem = "sam1"/>
 
 ## Explanation
@@ -100,74 +99,15 @@ int main() {
 ```
 
 </CPPSection>
-<PySection>
-
-```py
-path = []
-
-
-def dfs(node: int):
-	stack = [node]
-	while stack:
-		u = stack[-1]
-		if g[u]:
-			son, idx = g[u].pop()
-			if not seen[idx]:
-				seen[idx] = 1
-				stack.append(son)
-		else:
-			path.append(stack.pop())
-
-
-n, m = map(int, input().split())
-
-g = [[] for _ in range(n)]
-seen = [0] * m
-degree = [0] * n
-for i in range(m):
-	x, y = map(int, input().split())
-	x -= 1
-	y -= 1
-	g[x].append((y, i))
-	g[y].append((x, i))
-	degree[x] += 1
-	degree[y] += 1
-
-for node in range(n):
-	if degree[node] % 2 == 1:
-		print("IMPOSSIBLE")
-		exit()
-
-dfs(0)
-
-if len(path) != m + 1:
-	print("IMPOSSIBLE")
-else:
-	print(*[i + 1 for i in path])
-```
-
-</PySection>
-
 <JavaSection>
 
 ```java
 import java.util.*;
 
 public class EulerianCycle {
-	static List<List<int[]>> g;
-	static boolean[] seen;
-	static List<Integer> path;
-
-	static void dfs(int node) {
-		while (!g.get(node).isEmpty()) {
-			int[] edge = g.get(node).remove(g.get(node).size() - 1);
-			int son = edge[0], idx = edge[1];
-			if (seen[idx]) continue;
-			seen[idx] = true;
-			dfs(son);
-		}
-		path.add(node);
-	}
+	private static List<List<int[]>> g;
+	private static boolean[] seen;
+	private static List<Integer> path;
 
 	public static void main(String[] args) {
 		Scanner sc = new Scanner(System.in);
@@ -203,9 +143,63 @@ public class EulerianCycle {
 			System.out.println();
 		}
 	}
+
+	private static void dfs(int node) {
+		while (!g.get(node).isEmpty()) {
+			int[] edge = g.get(node).remove(g.get(node).size() - 1);
+			int son = edge[0];
+			int idx = edge[1];
+			if (seen[idx]) { continue; }
+			seen[idx] = true;
+			dfs(son);
+		}
+		path.add(node);
+	}
 }
 ```
+
 </JavaSection>
+<PySection>
+
+```py
+n, m = map(int, input().split())
+
+g = [[] for _ in range(n)]
+seen = [0] * m
+degree = [0] * n
+for i in range(m):
+	x, y = map(int, input().split())
+	x -= 1
+	y -= 1
+	g[x].append((y, i))
+	g[y].append((x, i))
+	degree[x] += 1
+	degree[y] += 1
+
+for node in range(n):
+	if degree[node] % 2 == 1:
+		print("IMPOSSIBLE")
+		exit()
+
+path = []
+stack = [0]
+while stack:
+	u = stack[-1]
+	if g[u]:
+		son, idx = g[u].pop()
+		if not seen[idx]:
+			seen[idx] = 1
+			stack.append(son)
+	else:
+		path.append(stack.pop())
+
+if len(path) != m + 1:
+	print("IMPOSSIBLE")
+else:
+	print(*[i + 1 for i in path])
+```
+
+</PySection>
 </LanguageSection>
 
 <FocusProblem problem = "sam2"/>
