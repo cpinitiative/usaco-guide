@@ -131,7 +131,7 @@ export const RestOfMembers: Member[] = [
     photo: 'davidg',
     name: 'David Guo',
     titles: [roles.contentAuthor],
-    github: 'JoltedCowIceCream',
+    github: 'guodavid0418',
   },
   {
     photo: 'envy',
