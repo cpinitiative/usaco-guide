@@ -17,6 +17,7 @@ frequency: 0
 	<Resource source="CP2" title="4.7.3 - Eulerian Graph" />
 </Resources>
 
+
 <FocusProblem problem = "sam1"/>
 
 ## Explanation
@@ -99,81 +100,105 @@ int main() {
 ```
 
 </CPPSection>
-<JavaSection>
 
+<JavaSection> 
 ```java
 import java.io.*;
 import java.util.*;
 
 public class EulerianCycle {
-	private static List<List<int[]>> g;
-	private static boolean[] seen;
-	private static List<Integer> path;
+    static List<int[]>[] g;
+    static boolean[] seen;
+    static int[] degree;
 
-	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		PrintWriter out =
-		    new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)));
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)));
 
-		StringTokenizer st = new StringTokenizer(br.readLine());
-		int n = Integer.parseInt(st.nextToken());
-		int m = Integer.parseInt(st.nextToken());
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        int n = Integer.parseInt(st.nextToken());
+        int m = Integer.parseInt(st.nextToken());
 
-		g = new ArrayList<>();
-		for (int i = 0; i < n; i++) g.add(new ArrayList<>());
-		seen = new boolean[m];
-		int[] degree = new int[n];
+        g = new ArrayList[n];
+        for (int i = 0; i < n; i++)
+            g[i] = new ArrayList<>();
+        seen = new boolean[m];
+        degree = new int[n];
 
-		for (int i = 0; i < m; i++) {
-			st = new StringTokenizer(br.readLine());
-			int x = Integer.parseInt(st.nextToken()) - 1;
-			int y = Integer.parseInt(st.nextToken()) - 1;
+        for (int i = 0; i < m; i++) {
+            st = new StringTokenizer(br.readLine());
+            int x = Integer.parseInt(st.nextToken()) - 1;
+            int y = Integer.parseInt(st.nextToken()) - 1;
+            g[x].add(new int[] {y, i});
+            g[y].add(new int[] {x, i});
+            degree[x]++;
+            degree[y]++;
+        }
 
-			g.get(x).add(new int[] {y, i});
-			g.get(y).add(new int[] {x, i});
-			degree[x]++;
-			degree[y]++;
-		}
+        // Check all degrees even
+        for (int d : degree) {
+            if ((d & 1) == 1) {
+                out.println("IMPOSSIBLE");
+                out.flush();
+                return;
+            }
+        }
 
-		for (int d : degree) {
-			if (d % 2 != 0) {
-				out.println("IMPOSSIBLE");
-				out.flush();
-				return;
-			}
-		}
+        ArrayDeque<Integer> stack = new ArrayDeque<>();
+        ArrayList<Integer> path = new ArrayList<>();
+        stack.push(0);
 
-		path = new ArrayList<>();
-		dfs(0);
+        while (!stack.isEmpty()) {
+            int u = stack.peek();
+            while (!g[u].isEmpty() && seen[g[u].get(g[u].size() - 1)[1]]) {
+                g[u].remove(g[u].size() - 1); // skip used edges
+            }
+            if (g[u].isEmpty()) {
+                path.add(u);
+                stack.pop();
+            } else {
+                int[] edge = g[u].remove(g[u].size() - 1);
+                int v = edge[0], idx = edge[1];
+                if (!seen[idx]) {
+                    seen[idx] = true;
+                    stack.push(v);
+                }
+            }
+        }
 
-		if (path.size() != m + 1) {
-			out.println("IMPOSSIBLE");
-		} else {
-			for (int node : path) { out.print((node + 1) + " "); }
-			out.println();
-		}
+        if (path.size() != m + 1)
+            out.println("IMPOSSIBLE");
+        else {
+            for (int i = path.size() - 1; i >= 0; i--)
+                out.print((path.get(i) + 1) + " ");
+            out.println();
+        }
 
-		out.flush();
-	}
-
-	private static void dfs(int node) {
-		while (!g.get(node).isEmpty()) {
-			int[] edge = g.get(node).remove(g.get(node).size() - 1);
-			int son = edge[0];
-			int idx = edge[1];
-			if (seen[idx]) continue;
-			seen[idx] = true;
-			dfs(son);
-		}
-		path.add(node);
-	}
+        out.flush();
+    }
 }
 ```
-
 </JavaSection>
+
 <PySection>
 
 ```py
+path = []
+
+
+def dfs(node: int):
+	stack = [node]
+	while stack:
+		u = stack[-1]
+		if g[u]:
+			son, idx = g[u].pop()
+			if not seen[idx]:
+				seen[idx] = 1
+				stack.append(son)
+		else:
+			path.append(stack.pop())
+
+
 n, m = map(int, input().split())
 
 g = [[] for _ in range(n)]
@@ -193,17 +218,7 @@ for node in range(n):
 		print("IMPOSSIBLE")
 		exit()
 
-path = []
-stack = [0]
-while stack:
-	u = stack[-1]
-	if g[u]:
-		son, idx = g[u].pop()
-		if not seen[idx]:
-			seen[idx] = 1
-			stack.append(son)
-	else:
-		path.append(stack.pop())
+dfs(0)
 
 if len(path) != m + 1:
 	print("IMPOSSIBLE")
