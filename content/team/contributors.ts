@@ -128,7 +128,7 @@ export const RestOfMembers: Member[] = [
     titles: ['Director of Contests', roles.liveInstructor],
   },
   {
-    photo: 'davidg',
+    photo: 'david_guo',
     name: 'David Guo',
     titles: [roles.contentAuthor],
     github: 'guodavid0418',
