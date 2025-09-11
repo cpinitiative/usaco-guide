@@ -101,81 +101,80 @@ int main() {
 
 </CPPSection>
 
-<JavaSection> 
+<JavaSection>
 ```java
 import java.io.*;
 import java.util.*;
 
 public class EulerianCycle {
-    static List<int[]>[] g;
-    static boolean[] seen;
-    static int[] degree;
+	static List<int[]>[] g;
+	static boolean[] seen;
+	static int[] degree;
 
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)));
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		PrintWriter out =
+		    new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)));
 
-        StringTokenizer st = new StringTokenizer(br.readLine());
-        int n = Integer.parseInt(st.nextToken());
-        int m = Integer.parseInt(st.nextToken());
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int n = Integer.parseInt(st.nextToken());
+		int m = Integer.parseInt(st.nextToken());
 
-        g = new ArrayList[n];
-        for (int i = 0; i < n; i++)
-            g[i] = new ArrayList<>();
-        seen = new boolean[m];
-        degree = new int[n];
+		g = new ArrayList[n];
+		for (int i = 0; i < n; i++) g[i] = new ArrayList<>();
+		seen = new boolean[m];
+		degree = new int[n];
 
-        for (int i = 0; i < m; i++) {
-            st = new StringTokenizer(br.readLine());
-            int x = Integer.parseInt(st.nextToken()) - 1;
-            int y = Integer.parseInt(st.nextToken()) - 1;
-            g[x].add(new int[] {y, i});
-            g[y].add(new int[] {x, i});
-            degree[x]++;
-            degree[y]++;
-        }
+		for (int i = 0; i < m; i++) {
+			st = new StringTokenizer(br.readLine());
+			int x = Integer.parseInt(st.nextToken()) - 1;
+			int y = Integer.parseInt(st.nextToken()) - 1;
+			g[x].add(new int[] {y, i});
+			g[y].add(new int[] {x, i});
+			degree[x]++;
+			degree[y]++;
+		}
 
-        // Check all degrees even
-        for (int d : degree) {
-            if ((d & 1) == 1) {
-                out.println("IMPOSSIBLE");
-                out.flush();
-                return;
-            }
-        }
+		// Check all degrees even
+		for (int d : degree) {
+			if ((d & 1) == 1) {
+				out.println("IMPOSSIBLE");
+				out.flush();
+				return;
+			}
+		}
 
-        ArrayDeque<Integer> stack = new ArrayDeque<>();
-        ArrayList<Integer> path = new ArrayList<>();
-        stack.push(0);
+		ArrayDeque<Integer> stack = new ArrayDeque<>();
+		ArrayList<Integer> path = new ArrayList<>();
+		stack.push(0);
 
-        while (!stack.isEmpty()) {
-            int u = stack.peek();
-            while (!g[u].isEmpty() && seen[g[u].get(g[u].size() - 1)[1]]) {
-                g[u].remove(g[u].size() - 1); // skip used edges
-            }
-            if (g[u].isEmpty()) {
-                path.add(u);
-                stack.pop();
-            } else {
-                int[] edge = g[u].remove(g[u].size() - 1);
-                int v = edge[0], idx = edge[1];
-                if (!seen[idx]) {
-                    seen[idx] = true;
-                    stack.push(v);
-                }
-            }
-        }
+		while (!stack.isEmpty()) {
+			int u = stack.peek();
+			while (!g[u].isEmpty() && seen[g[u].get(g[u].size() - 1)[1]]) {
+				g[u].remove(g[u].size() - 1);  // skip used edges
+			}
+			if (g[u].isEmpty()) {
+				path.add(u);
+				stack.pop();
+			} else {
+				int[] edge = g[u].remove(g[u].size() - 1);
+				int v = edge[0], idx = edge[1];
+				if (!seen[idx]) {
+					seen[idx] = true;
+					stack.push(v);
+				}
+			}
+		}
 
-        if (path.size() != m + 1)
-            out.println("IMPOSSIBLE");
-        else {
-            for (int i = path.size() - 1; i >= 0; i--)
-                out.print((path.get(i) + 1) + " ");
-            out.println();
-        }
+		if (path.size() != m + 1) out.println("IMPOSSIBLE");
+		else {
+			for (int i = path.size() - 1; i >= 0; i--)
+				out.print((path.get(i) + 1) + " ");
+			out.println();
+		}
 
-        out.flush();
-    }
+		out.flush();
+	}
 }
 ```
 </JavaSection>
