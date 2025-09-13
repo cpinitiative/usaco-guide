@@ -91,6 +91,75 @@ int main() {
 ```
 
 </CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class CowLibi {
+	private static class Event implements Comparable<Event> {
+		int t, x, y;
+
+		private Event(int t, int x, int y) {
+			this.t = t;
+			this.x = x;
+			this.y = y;
+		}
+
+		@Override
+		public int compareTo(Event other) {
+			return Integer.compare(this.t, other.t);
+		}
+	}
+
+	private static Event read(BufferedReader br) throws IOException {
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int x = Integer.parseInt(st.nextToken());
+		int y = Integer.parseInt(st.nextToken());
+		int t = Integer.parseInt(st.nextToken());
+		return new Event(t, x, y);
+	}
+
+	private static boolean reachable(Event a, Event b) {
+		long dx = a.x - b.x;
+		long dy = a.y - b.y;
+		long dt = a.t - b.t;
+		return dx * dx + dy * dy <= dt * dt;
+	}
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int g = Integer.parseInt(st.nextToken());
+		int n = Integer.parseInt(st.nextToken());
+
+		List<Event> grazings = new ArrayList<>();
+		for (int i = 0; i < g; i++) { grazings.add(read(br)); }
+
+		Collections.sort(grazings);
+
+		int ans = 0;
+		for (int i = 0; i < n; i++) {
+			Event alibi = read(br);
+
+			int pos = Collections.binarySearch(grazings, alibi);
+			if (pos < 0) { pos = -pos - 1; }
+
+			boolean innocent = false;
+			for (int y = pos - 1; y <= pos; y++) {
+				if (0 <= y && y < g) { innocent |= !reachable(grazings.get(y), alibi); }
+			}
+
+			ans += innocent ? 1 : 0;
+		}
+
+		System.out.println(ans);
+	}
+}
+```
+
+</JavaSection>
 <PySection>
 
 ```py
