@@ -124,8 +124,7 @@ export default function ModuleHeaders({
                 {markdownData.author}
               </p>
             )}
-            {markdownData instanceof ModuleInfo &&
-              markdownData.contributors && (
+            {markdownData.contributors && (
                 <p
                   className={`dark:text-dark-med-emphasis text-xs text-gray-500`}
                 >

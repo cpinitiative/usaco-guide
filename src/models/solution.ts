@@ -6,6 +6,7 @@ export class SolutionInfo {
     public source: string,
     public title: string,
     public author: string | null,
+    public contributors: string | null,
     public toc: TableOfContents,
     public fileRelativePath: string
   ) {}

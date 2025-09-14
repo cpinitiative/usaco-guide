@@ -26,6 +26,7 @@ export default function Template(props) {
       xdm.frontmatter.source,
       `${xdm.frontmatter.source} - ${xdm.frontmatter.title}`,
       xdm.frontmatter.author,
+      xdm.frontmatter.contributors,
       xdm.toc,
       xdm.parent.relativePath
     );
@@ -82,6 +83,7 @@ export const pageQuery = graphql`
         source
         title
         author
+        contributors
       }
       parent {
         ... on File {
