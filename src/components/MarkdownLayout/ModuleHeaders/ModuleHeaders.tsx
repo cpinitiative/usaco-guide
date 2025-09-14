@@ -125,15 +125,14 @@ export default function ModuleHeaders({
               </p>
             )}
             {markdownData.contributors && (
-                <p
-                  className={`dark:text-dark-med-emphasis text-xs text-gray-500`}
-                >
-                  Contributor
-                  {markdownData.contributors.indexOf(',') !== -1
-                    ? 's'
-                    : ''}: {markdownData.contributors}
-                </p>
-              )}
+              <p
+                className={`dark:text-dark-med-emphasis text-xs text-gray-500`}
+              >
+                Contributor
+                {markdownData.contributors.indexOf(',') !== -1 ? 's' : ''}:{' '}
+                {markdownData.contributors}
+              </p>
+            )}
           </div>
           {markdownData instanceof ModuleInfo && (
             <div className="ml-4 hidden lg:flex lg:shrink-0">
