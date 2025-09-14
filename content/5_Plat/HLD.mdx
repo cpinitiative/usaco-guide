@@ -10,10 +10,36 @@ frequency: 1
 ---
 
 <FocusProblem problem="sample" />
-
 <FocusProblem problem="sample2" />
 
 ## Tutorial
+
+<Resources>
+	<Resource
+		source="cp-algo"
+		title="HLD"
+		url="https://cp-algorithms.com/graph/hld.html"
+		starred
+	>
+		For an alternate implementation, see below
+	</Resource>
+	<Resource
+		source="CF"
+		title="galen_colin - HLD"
+		url="https://codeforces.com/blog/entry/81317"
+	>
+		blog + video for USACO Cowland. Binary jumping isn't necessary though.
+	</Resource>
+</Resources>
+
+<Optional title="Tree Queries in O(NQ)">
+
+[This](https://codeforces.com/blog/entry/82211?#comment-691472) is why you don't
+set problems where $\Theta(Q\sqrt N\log N)$ is intended ...
+
+</Optional>
+
+
 
 Suppose that you want to support the following operations on a tree:
 
@@ -84,147 +110,9 @@ Here's an animation of how the algorithm works:
 	<source src="/animations/hld.mp4" type="video/mp4"/>
 </video>
 
-We can solve the focus problem "Path Queries II" using Heavy Light
-Decomposition:
 
-<LanguageSection>
 
-<CPPSection>
-
-```cpp
-
-#include "bits/stdc++.h"
-using namespace std;
-
-const int N = 2e5 + 5;
-const int D = 19;
-const int S = (1 << D);
-
-int n, q, v[N];
-vector<int> adj[N];
-
-int sz[N], p[N], dep[N];
-int st[S], id[N], tp[N];
-
-void update(int idx, int val) {
-	st[idx += n] = val;
-	for (idx /= 2; idx; idx /= 2) st[idx] = max(st[2 * idx], st[2 * idx + 1]);
-}
-
-int query(int lo, int hi) {
-	int ra = 0, rb = 0;
-	for (lo += n, hi += n + 1; lo < hi; lo /= 2, hi /= 2) {
-		if (lo & 1) ra = max(ra, st[lo++]);
-		if (hi & 1) rb = max(rb, st[--hi]);
-	}
-	return max(ra, rb);
-}
-
-int dfs_sz(int cur, int par) {
-	sz[cur] = 1;
-	p[cur] = par;
-	for (int chi : adj[cur]) {
-		if (chi == par) continue;
-		dep[chi] = dep[cur] + 1;
-		p[chi] = cur;
-		sz[cur] += dfs_sz(chi, cur);
-	}
-	return sz[cur];
-}
-
-int ct = 1;
-
-void dfs_hld(int cur, int par, int top) {
-	id[cur] = ct++;
-	tp[cur] = top;
-	update(id[cur], v[cur]);
-	int h_chi = -1, h_sz = -1;
-	for (int chi : adj[cur]) {
-		if (chi == par) continue;
-		if (sz[chi] > h_sz) {
-			h_sz = sz[chi];
-			h_chi = chi;
-		}
-	}
-	if (h_chi == -1) return;
-	dfs_hld(h_chi, cur, top);
-	for (int chi : adj[cur]) {
-		if (chi == par || chi == h_chi) continue;
-		dfs_hld(chi, cur, chi);
-	}
-}
-
-int path(int x, int y) {
-	int ret = 0;
-	while (tp[x] != tp[y]) {
-		if (dep[tp[x]] < dep[tp[y]]) swap(x, y);
-		ret = max(ret, query(id[tp[x]], id[x]));
-		x = p[tp[x]];
-	}
-	if (dep[x] > dep[y]) swap(x, y);
-	ret = max(ret, query(id[x], id[y]));
-	return ret;
-}
-
-int main() {
-	scanf("%d%d", &n, &q);
-	for (int i = 1; i <= n; i++) scanf("%d", &v[i]);
-	for (int i = 2; i <= n; i++) {
-		int a, b;
-		scanf("%d%d", &a, &b);
-		adj[a].push_back(b);
-		adj[b].push_back(a);
-	}
-	dfs_sz(1, 1);
-	dfs_hld(1, 1, 1);
-	while (q--) {
-		int t;
-		scanf("%d", &t);
-		if (t == 1) {
-			int s, x;
-			scanf("%d%d", &s, &x);
-			v[s] = x;
-			update(id[s], v[s]);
-		} else {
-			int a, b;
-			scanf("%d%d", &a, &b);
-			int res = path(a, b);
-			printf("%d ", res);
-		}
-	}
-}
-```
-
-</CPPSection>
-
-</LanguageSection>
-
-<Resources>
-	<Resource
-		source="cp-algo"
-		title="HLD"
-		url="https://cp-algorithms.com/graph/hld.html"
-		starred
-	>
-		For an alternate implementation, see below
-	</Resource>
-	<Resource
-		source="CF"
-		title="galen_colin - HLD"
-		url="https://codeforces.com/blog/entry/81317"
-	>
-		blog + video for USACO Cowland. Binary jumping isn't necessary though.
-	</Resource>
-</Resources>
-
-<Optional title="Tree Queries in O(NQ)">
-
-[This](https://codeforces.com/blog/entry/82211?#comment-691472) is why you don't
-set problems where $\Theta(Q\sqrt N\log N)$ is intended ...
-
-</Optional>
-
-## Implementations
+## Implementation
 
 <Resources>
 	<Resource
@@ -252,7 +140,151 @@ set problems where $\Theta(Q\sqrt N\log N)$ is intended ...
 	</Resource>
 </Resources>
 
-<IncompleteSection />
+We can solve the focus problem "Path Queries II" using Heavy Light
+Decomposition:
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+ 
+// BeginCodeSnip{Segment Tree}
+/** A data structure that can answer point update & range max queries. */
+template <class T> class MaxSegmentTree {
+  private:
+	// const T DEFAULT = std::numeric_limits<T>().max();
+	const T DEFAULT = 0;
+ 
+	int len;
+	vector<T> segtree;
+ 
+  public:
+	MaxSegmentTree(int len) : len(len), segtree(len * 2, DEFAULT) {}
+ 
+	void set(int ind, T val) {
+		ind += len;
+		segtree[ind] = val;
+		for (; ind > 1; ind /= 2) {
+			segtree[ind / 2] = std::max(segtree[ind], segtree[ind ^ 1]);
+		}
+	}
+ 
+	T range_max(int start, int end) {
+		T max = DEFAULT;
+		for (start += len, end += len; start < end; start /= 2, end /= 2) {
+			if (start % 2 == 1) { max = std::max(max, segtree[start++]); }
+			if (end % 2 == 1) { max = std::max(max, segtree[--end]); }
+		}
+		return max;
+	}
+};
+ 
+// EndCodeSnip
+ 
+ 
+template <class T, bool VALS_EDGES> struct HLD {
+	int N, R, tim=0;
+	vector<vector<int>> adj;
+	vector<int> par, siz, depth, rt, pos;
+ 
+    MaxSegmentTree<T> segtree;
+ 
+	/** initialization */
+	HLD(vector<vector<int>> adj_, int R)
+		: N(adj_.size()), R(R), adj(adj_), par(N, -1), siz(N, 1), depth(N), rt(N), pos(N),
+        // segtree(vector<T>(N, 0)) // modify if need
+        segtree(N) // modify if need
+        { rt[R] = R; dfsSz(R); dfsHld(R);  }
+ 
+	void dfsSz(int v) {
+		if (par[v] != -1) adj[v].erase(find(adj[v].begin(),adj[v].end(), par[v]));
+		for (int& u : adj[v]) {
+			par[u] = v, depth[u] = depth[v] + 1;
+			dfsSz(u);
+			siz[v] += siz[u];
+			if (siz[u] > siz[adj[v][0]]) swap(u, adj[v][0]);
+		}
+	}
+	void dfsHld(int v) {
+		pos[v] = tim++;
+		for (int u : adj[v]) {
+			rt[u] = (u == adj[v][0] ? rt[v] : u);
+			dfsHld(u);
+		}
+	}
+	template <class B> void process(int u, int v, B op) {
+		for (; rt[u] != rt[v]; v = par[rt[v]]) {
+			if (depth[rt[u]] > depth[rt[v]]) swap(u, v);
+			op(pos[rt[v]], pos[v]);
+		}
+		if (depth[u] > depth[v]) swap(u, v);
+		op(pos[u] + VALS_EDGES, pos[v]);
+	}
+ 
+	void modifyNode(int u, T val) {
+        segtree.set(pos[u], val);
+	}
+ 
+	T queryPath(int u, int v) { // Modify depending on problem
+		T res = 0;
+		process(u, v, [&](int l, int r) {
+			res = max(res,segtree.range_max(l, r+1));
+		});
+		return res;
+	}
+ 
+};
+ 
+int main(){
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+ 
+    int N, Q;
+    cin >> N >> Q;
+    vector<int> v(N);
+    vector<vector<int>> adj(N);
+    for(int i=0; i<N; i++){
+        cin >> v[i];
+    }
+ 
+    for(int i=0; i<N-1; i++){
+        int a,b;
+        cin >> a >> b;
+        --a, --b;
+        adj[a].push_back(b);
+        adj[b].push_back(a);
+    }
+ 
+    HLD<int,0> H(adj, 0);
+ 
+    for(int i=0; i<N; i++){
+        H.modifyNode(i,v[i]);
+    }
+ 
+    while(Q--){
+        int type, s, a, b, x;
+        cin >> type;
+        if(type == 1){
+            cin >> s >> x;
+            --s;
+            H.modifyNode(s,x);
+        }else if(type == 2){
+            cin >> a >> b;
+            --a, --b;
+            cout << H.queryPath(a,b) << " ";
+        }
+    }
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
 
 ## Problems
 
