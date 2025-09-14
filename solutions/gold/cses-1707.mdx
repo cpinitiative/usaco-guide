@@ -316,24 +316,22 @@ See [here](https://people.csail.mit.edu/virgi/6.890/lecture9.pdf#page=4) for
 details.
 
 ```cpp
-#include <iostream>
-#include <vector>
-#include <queue>
-#include <climits>
+#include <bits/stdc++.h>
 
 using namespace std;
 
 const int INF = INT_MAX;
+const int MOD = 1e9 + 7;
 
 int main()
 {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
+    cout << fixed << setprecision(15);
 
     int n, m;
     cin >> n >> m;
 
-    // Build undirected graph
     vector<vector<int>> adj(n + 1);
     for (int i = 0; i < m; ++i)
     {
@@ -343,43 +341,38 @@ int main()
         adj[b].push_back(a);
     }
 
-    int answer = INF;
+    int answer = MOD;
 
-    // Run BFS from every node (O(N^2 + NM) = O(N^2) in dense graph)
-    for (int start = 1; start <= n; ++start)
+    for (int i = 1; i <= n; ++i)
     {
-        vector<int> dist(n + 1, INF);  // Distance from 'start' node
-        vector<int> parent(n + 1, -1); // Track parent to avoid trivial cycle
+        vector<int> dist(n + 1, MOD);
         queue<int> q;
-
-        q.push(start);
-        dist[start] = 0;
+        q.push(i);
+        dist[i] = 0;
 
         while (!q.empty())
         {
             int x = q.front();
             q.pop();
 
-            for (int neighbor : adj[x])
+            for (int t : adj[x])
             {
-                if (dist[neighbor] == INF)
+                if (dist[t] == MOD)
                 {
-                    // First time visiting 'neighbor'
-                    dist[neighbor] = dist[x] + 1;
-                    parent[neighbor] = x;
-                    q.push(neighbor);
+                    dist[t] = dist[x] + 1;
+                    q.push(t);
                 }
-                else if (neighbor != parent[x])
+                else if (dist[t] >= dist[x])
                 {
-                    // Found a cycle: length = dist[x] + dist[neighbor] + 1
-                    answer = min(answer, dist[x] + dist[neighbor] + 1);
+                    answer = min(answer, dist[t] + dist[x] + 1);
+                    goto DONE;
                 }
             }
         }
+    DONE:;
     }
 
-    // Output -1 if no cycle found, otherwise the shortest cycle length
-    cout << (answer == INF ? -1 : answer) << "\n";
+    cout << (answer == MOD ? -1 : answer) << '\n';
 
     return 0;
 }
