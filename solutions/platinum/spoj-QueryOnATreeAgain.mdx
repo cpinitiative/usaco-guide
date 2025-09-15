@@ -5,64 +5,154 @@ title: Query on a tree again!
 author: Jack Lim
 ---
 
-[Official Analysis](http://www.usaco.org/current/data/sol_cowdance_silver_jan17.html)
-
 ## Explanation
 
-(add explanation here ...)
+This problem can be solved using [Heavy-Light Decomposition](/plat/hld). In the segment tree, toggle sets a node’s position if it is black, or `INF` if it is white. For path queries, HLD breaks the path into segments and takes the minimum position over them. If the result is `INF`, the answer is `-1`. Otherwise, it is mapped back to the node index using `inv[]`.
 
-Use `\texttt{}` around variable names with length *greater than one*, like so. Place long equations on separate lines with display math, and use `\cdot` instead of `*` to denote multiplication.
-
-$$
-\texttt{arr}[i]=2\cdot (a+b+c+d+e)+\sum_{j=0}^{i-1}\texttt{arr}[j]
-$$
-
-Some additional text styles which you might consider using:
-
-http://latexref.xyz/Font-styles.html
-
-http://applied-r.com/latex-font-styles/
-
-$func(var)$
-
-$\textit{func(var)}$
-
-$\textrm{func(var)}$
-
-$\text{func(var)}$
-
-$\textsf{func(var)}$
-
-$\textbf{func(var)}$
-
-$\texttt{func(var)}$
 
 ## Implementation
 
-**Time Complexity:** $\mathcal{O}(N\log^2N)$
-
-^ Format time complexity like this. Should appear outside of `<LanguageSection>` if it's the same for all implementations.
-
-If you need to link to a module, format your link like [this](/silver/binary-search) instead of [this](https://usaco.guide/silver/binary-search).
+**Time Complexity:** $\mathcal{O}(\log^2N)$ per query
 
 <LanguageSection>
 
 <CPPSection>
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
 
-(add cpp code)
+// BeginCodeSnip{Segment Tree}
+template <class T> class MinSegmentTree {
+  private:
+	const T INF = 1e9;
+	int len;
+	vector<T> segtree;
+
+  public:
+	MinSegmentTree(int len) : len(len), segtree(len * 2, INF) {}
+
+	/** set index ind to value val */
+	void set(int ind, T val) {
+		ind += len;
+		segtree[ind] = val;
+		for (; ind > 1; ind /= 2) {
+			segtree[ind / 2] = min(segtree[ind], segtree[ind ^ 1]);
+		}
+	}
+
+	/** minimum on interval [start, end) */
+	T range_min(int start, int end) {
+		T ans = INF;
+		for (start += len, end += len; start < end; start /= 2, end /= 2) {
+			if (start % 2 == 1) { ans = min(ans, segtree[start++]); }
+			if (end % 2 == 1) { ans = min(ans, segtree[--end]); }
+		}
+		return ans;
+	}
+
+	T INFVAL() const { return INF; }
+};
+// EndCodeSnip
+
+// BeginCodeSnip{HLD}
+template <class T, bool VALS_IN_EDGES> 
+class HLD {
+  private:
+	int N, R, tim=0; // n, root node, time
+	vector<vector<int>> adj;
+	vector<int> par, siz, depth, rt, pos, inv; // parent, size, depth, root, position arrays
+	MinSegmentTree<T> segtree; // Modify as needed
+
+	/** Compute the size of each subtree and set parent-child relationship  
+	  * Subtree of node v corresponds to segment [ pos[v], pos[v] + sz[v] ) */
+	void dfsSz(int v) {
+		siz[v] = 1;
+		if (par[v] != -1) {
+			adj[v].erase(find(adj[v].begin(), adj[v].end(), par[v]));
+		}
+		for (int &u : adj[v]) {
+			par[u] = v, depth[u] = depth[v] + 1;
+			dfsSz(u);
+			siz[v] += siz[u];
+			if (siz[u] > siz[adj[v][0]]) swap(u, adj[v][0]);
+		}
+	}
+
+	/** Assign positions for nodes
+	  * Path from v to the last vertex in ascending heavy path 
+	    corresponds to [ pos[rt[v]], pos[v] ] */
+	void dfsHld(int v) {
+		pos[v] = tim; inv[tim] = v; tim++;
+		for (int u : adj[v]) {
+			rt[u] = (u == adj[v][0] ? rt[v] : u);
+			dfsHld(u);
+		}
+	}
+
+	/** process all heavy paths and combine their results */
+	template <class B> void process(int u, int v, B op) {
+		for (; rt[u] != rt[v]; v = par[rt[v]]) {
+			if (depth[rt[u]] > depth[rt[v]]) swap(u, v);
+			op(pos[rt[v]], pos[v]);
+		}
+		if (depth[u] > depth[v]) swap(u, v);
+		op(pos[u] + VALS_IN_EDGES, pos[v]);
+	}
+
+  public:
+	HLD(vector<vector<int>> adj_, int _R)
+		: N(adj_.size()), R(_R), adj(adj_), par(N, -1), siz(N, 1),
+		  depth(N), rt(N), pos(N), inv(N), segtree(N)
+		{ rt[R] = R; dfsSz(R); dfsHld(R); }
+
+	void toggleNode(int u) {
+		int cur = segtree.range_min(pos[u], pos[u] + 1);
+		if (cur == segtree.INFVAL()) segtree.set(pos[u], pos[u]); // make black
+		else segtree.set(pos[u], segtree.INFVAL());               // make white
+	}
+
+	T queryPath(int u, int v) { 
+		T res = segtree.INFVAL();
+		process(u, v, [&](int l, int r) {
+			res = min(res, segtree.range_min(l, r + 1));
+		});
+		if (res == segtree.INFVAL()) return -1;
+		return inv[res] + 1; // return 1-indexed node id
+	}
+};
+// EndCodeSnip
+
+int main() {
+	ios::sync_with_stdio(false); cin.tie(nullptr);
+
+	int N, Q;
+	cin >> N >> Q;
+	vector<vector<int>> adj(N);
+	for (int i = 0; i < N - 1; i++) {
+		int u, v;
+		cin >> u >> v;
+		--u, --v;
+		adj[u].push_back(v);
+		adj[v].push_back(u);
+	}
+
+	HLD<int, false> hld(adj, 0);
+
+	while (Q--) {
+		int type, v;
+		cin >> type >> v;
+		--v;
+		if (type == 0) {
+			hld.toggleNode(v);
+		} else {
+			cout << hld.queryPath(0, v) << "\n";
+		}
+	}
+}
+```
 
 </CPPSection>
 
-<PySection>
-
-(if you have Python code)
-
-</PySection>
-
-<JavaSection>
-
-(if you have Java code)
-
-</JavaSection>
 
 </LanguageSection>
