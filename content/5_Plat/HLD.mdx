@@ -140,8 +140,86 @@ Here's an animation of how the algorithm works:
 	</Resource>
 </Resources>
 
-We can solve the focus problem "Path Queries II" using Heavy Light
-Decomposition:
+Below is an example implementation of Heavy Light Decomposition used to solve the problem "Path Queries II."
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+template <class T, bool VALS_IN_EDGES> 
+class HLD {
+  private:
+    int N, R, tim=0; // n, root node, time
+    vector<vector<int>> adj;
+    vector<int> par, siz, depth, rt, pos; // parent, size, depth, root, position arrays
+    LazySegtree<T> segtree; // Modify as needed
+
+    /** Compute the size of each subtree and set parent-child relationship  
+      * Subtree of node v corresponds to segment [ pos[v], pos[v] + sz[v] ) */
+    void dfsSz(int v) {
+        if (par[v] != -1) adj[v].erase(find(adj[v].begin(),adj[v].end(), par[v]));
+        for (int& u : adj[v]) {
+            par[u] = v, depth[u] = depth[v] + 1;
+            dfsSz(u);
+            siz[v] += siz[u];
+            if (siz[u] > siz[adj[v][0]]) swap(u, adj[v][0]);
+        }
+    }
+
+    /** Assign positions for nodes
+      * Path from v to the last vertex in ascending heavy path 
+        corresponds to [ pos[rt[v]], pos[v] ] */
+    void dfsHld(int v) {
+        pos[v] = tim++;
+        for (int u : adj[v]) {
+            rt[u] = (u == adj[v][0] ? rt[v] : u);
+            dfsHld(u);
+        }
+    }
+
+    /** process all heavy path and combine their results */
+    template <class B> void process(int u, int v, B op) {
+        for (; rt[u] != rt[v]; v = par[rt[v]]) {
+            if (depth[rt[u]] > depth[rt[v]]) swap(u, v);
+            op(pos[rt[v]], pos[v]);
+        }
+        if (depth[u] > depth[v]) swap(u, v);
+        op(pos[u] + VALS_IN_EDGES, pos[v]);
+    }
+
+  public:
+    HLD(vector<vector<int>> adj_, int _R)
+        : N(adj_.size()), R(_R), adj(adj_), par(N, -1), siz(N, 1), depth(N), rt(N), pos(N),
+        segtree(vector<ll>(N,0ll)) // modify if need
+        { rt[R] = R; dfsSz(R); dfsHld(R);  }
+
+    T queryPath(int u, int v) { 
+        T res = 0; // default value, modify depending on problem
+        process(u, v, [&](int l, int r) {
+            res = max(res,segtree.range_max(l, r)); // modify depending on problem
+        });
+        return res;
+    }
+
+    void modifyNode(int u, T val) {
+        segtree.set(pos[u], val);
+    }
+
+    void modifySubtree(int v, T val) {
+        segtree.range_update(pos[v] + VALS_IN_EDGES, pos[v] + siz[v] - 1, Query{ADD,val}); // modify if need
+    }
+};
+```
+
+</CPPSection>
+
+</LanguageSection>
+
+## Solution - Path Queries II
 
 <LanguageSection>
 
@@ -185,6 +263,7 @@ template <class T> class MaxSegmentTree {
 };
 // EndCodeSnip
 
+// BeginCodeSnip{HLD}
 template <class T, bool VALS_IN_EDGES> 
 class HLD {
   private:
@@ -243,11 +322,9 @@ class HLD {
     void modifyNode(int u, T val) {
         segtree.set(pos[u], val);
 	}
-
-    /** void modifySubtree(int v, T val) {
-       segtree.range_update(pos[v] + VALS_IN_EDGES, pos[v] + siz[v] - 1, Query{ADD,val});
-    } */
 };
+// EndCodeSnip
+
 
 int main(){
     ios::sync_with_stdio(false);
