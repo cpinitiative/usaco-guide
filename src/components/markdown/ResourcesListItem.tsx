@@ -76,7 +76,7 @@ export default function ResourcesListItem({
   );
 
   const [copied, setCopied] = React.useState(false);
-  const tippyRef = useRef<Instance>();
+  const tippyRef = useRef<Instance | null>(null);
 
   const more = (
     <div>

@@ -4,9 +4,6 @@ import Tippy, { TippyProps } from '@tippyjs/react';
 import clsx from 'clsx';
 import * as React from 'react';
 import { Placement } from 'tippy.js';
-import 'tippy.js/animations/scale-subtle.css';
-import 'tippy.js/dist/tippy.css';
-import 'tippy.js/themes/material.css';
 
 export interface TooltipProps extends Partial<Omit<TippyProps, 'placement'>> {
   position?: Placement;

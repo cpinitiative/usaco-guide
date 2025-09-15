@@ -26,6 +26,7 @@ export default function Template(props) {
       xdm.frontmatter.source,
       `${xdm.frontmatter.source} - ${xdm.frontmatter.title}`,
       xdm.frontmatter.author,
+      xdm.frontmatter.contributors,
       xdm.toc,
       xdm.parent.relativePath
     );
@@ -39,7 +40,9 @@ export default function Template(props) {
   return (
     <Layout>
       <SEO
-        title={`Solution - ${xdm.frontmatter.title} (${xdm.frontmatter.source})`}
+        title={`Solution: ${xdm.frontmatter.title}${modulesThatHaveProblem.length > 0 ? ` | ${modulesThatHaveProblem[0].title}` : ''}`}
+        image={null}
+        pathname={props.path}
       />
 
       <ConfettiProvider>
@@ -80,6 +83,7 @@ export const pageQuery = graphql`
         source
         title
         author
+        contributors
       }
       parent {
         ... on File {

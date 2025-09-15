@@ -1,0 +1,196 @@
+---
+id: usaco-1498
+source: Gold
+title: The Best Subsequence
+author: Justin Ji
+---
+
+[Official Analysis (C++)](https://usaco.org/current/data/sol_prob2_gold_feb25.html)
+
+<Spoiler title="Hint 1">
+
+Let's assume we have some black box function that counts the number of ones in the range $[l, r]$. Let's consider two
+cases: one where the number of ones in our range is less than $K$, and
+if the number of ones is greater than or equal to $K$. How can we
+handle these two cases?
+
+</Spoiler>
+
+<Spoiler title="Hint 2">
+
+If the number of ones is $\geq K$, then our subsequence can consist of
+all ones. Otherwise, we need to let some amount of zeros into our subsequence.
+
+Let's say the number of ones in our range is $X$. Then, we need to let
+$K-X$ zeros into our range, and we want the first zero to come as far
+back as possible. What does this correspond to in our array?
+
+</Spoiler>
+
+<Spoiler title="Solution">
+
+As denoted in the hints, let $X$ be the number of ones in our range.
+
+### Case 1: $X \geq K$
+
+Our entire subsequence is ones, so the answer is $2^k - 1$.
+
+### Case 2: $X < K$
+
+It's always optimal to take the smallest suffix of $[l, r]$ that
+has $K - X$ zeros. To intuitively understand this, consider the fact that
+we want to maximize the first position where we have a zero in our subsequence. Given that we need to take at least $K-X$ zeros, it's optimal take the last $K-X$ zeros in our range. Because we are
+trying to maximize our resulting subsequence, it's also optimal to take the ones inside the suffix we end up taking.
+Note that there are other ways of maximizing the first zero position.
+
+### Computing the Result
+
+To compute $2^k$ efficiently, we use
+[modular exponentiation](/gold/modular). This allows us to handle case 1
+quite easily.
+
+As mentioned in the hints, we want some function to efficiently find the
+number of ones in a given range. Let's first simplify this problem
+to counting the number of ones in a prefix. We can do this by coordinate
+compressing our values, and then calculating prefix sums of the number of ones in our prefix. Careful implementation is required here, as we have to make sure the last interval in our prefix sum is not overcounted.
+
+We can reduce the problem of computing the hash of a range to finding the
+hash of a prefix. For every interval, we store the hash of the entire prefix that includes this interval. Make sure to handle intervals that
+are partially contained in our prefix carefully. Then, the hash of $[l, r]$ is:
+
+$$
+\texttt{pref\_hash}(r) - 2^{r - l + 1} \cdot \texttt{pref\_hash}(l - 1)
+$$
+
+To choose the suffix of our range that we hash, we need to find the
+smallest suffix that has $K - X$ zeros in it. This is equivalent to finding the last index $m$ where the number of zeros in $[m, r]$ is $\geq K-X$. The easiest way to implement this is with binary search,
+although it is possible to cut a log factor by finding the interval
+our index $m$ is in using lower bound on a prefix sum of zeros.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(Q\log^2N + M\log M + M\log N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using ll = long long;
+
+constexpr int MOD = 1e9 + 7;
+
+/** @return base^exp mod 1e9 + 7 */
+int modpow(int base, int exp) {
+	int res = 1;
+	for (; exp; exp /= 2, base = (1ll * base * base) % MOD) {
+		if (exp & 1) { res = (1ll * res * base) % MOD; }
+	}
+	return res;
+}
+
+int main() {
+	int n, m, q;
+	cin >> n >> m >> q;
+	vector<int> vals = {0, INT_MAX};
+	vector<array<int, 2>> upds(m);
+	for (auto &[l, r] : upds) {
+		cin >> l >> r;
+		r++;
+		vals.push_back(l);
+		vals.push_back(r);
+	}
+
+	// we coordinate compress all the relevant values
+	sort(begin(vals), end(vals));
+	vals.erase(unique(begin(vals), end(vals)), end(vals));
+
+	/** @return coordinate compressed value of x */
+	const auto id = [&](int x) -> int {
+		return lower_bound(begin(vals), end(vals), x) - begin(vals);
+	};
+
+	const int range_len = vals.size();
+	vector<int> diff(range_len);
+	for (const auto &[l, r] : upds) {
+		diff[id(l)]++;
+		diff[id(r)]--;
+	}
+
+	// pref[i] = number of 1s in the first i intervals
+	vector<int> pref(range_len);
+	for (int i = 0; i + 1 < range_len; i++) {
+		diff[i + 1] += diff[i];
+		diff[i] &= 1;
+		pref[i + 1] = pref[i] + diff[i] * (vals[i + 1] - vals[i]);
+	}
+
+	// pref_hash[i] = hash of the value of the array's first i intervals
+	vector<int> pref_hash(range_len);
+	for (int i = 0; i + 1 < range_len; i++) {
+		const int len = vals[i + 1] - vals[i];
+		const int pw2 = modpow(2, len);
+		pref_hash[i + 1] =
+		    diff[i] * (pw2 - 1 + MOD) % MOD + (1ll * pref_hash[i] * pw2) % MOD;
+		pref_hash[i + 1] %= MOD;
+	}
+
+	/** @return the value of the range [l, r] */
+	const auto range_hash = [&](int l, int r) -> int {
+		const auto get_pref = [&](int x) -> int {
+			// we can use our prefix hash, but x might be in the middle of an interval
+			// thus we split our answer into the prefix hash and a smaller interval
+			const int pos = upper_bound(begin(vals), end(vals), x) - begin(vals) - 1;
+			const int pw2 = modpow(2, x - vals[pos] + 1);
+			return (1ll * pref_hash[pos] * pw2 + diff[pos] * (pw2 - 1)) % MOD;
+		};
+
+		// to get the range hash from prefix hashes, we have to appropriately
+		// offset the prefix hash of [0, l - 1] so subtracting it works
+		ll raw = get_pref(r) - 1ll * modpow(2, r - l + 1) * get_pref(l - 1);
+		return (raw % MOD + MOD) % MOD;
+	};
+
+	/** @return the number of 1s in the range [l, r] */
+	const auto get_ones = [&](int l, int r) -> int {
+		const auto get_pref = [&](int x) -> int {
+			// we can use our prefix hash, but x might be in the middle of an interval
+			// thus we split our answer into our prefix sum value and a smaller interval
+			const int pos = upper_bound(begin(vals), end(vals), x) - begin(vals);
+			return pref[pos - 1] + diff[pos - 1] * (x - vals[pos - 1] + 1);
+		};
+
+		return get_pref(r) - get_pref(l - 1);
+	};
+
+	for (int t = 0; t < q; t++) {
+		int l, r, k;
+		cin >> l >> r >> k;
+		const int num_ones = get_ones(l, r);
+		if (num_ones >= k) {
+			cout << modpow(2, k) - 1 << "\n";
+		} else {
+			// binary search to find smallest suffix with k - num_ones 0s
+			int lo = l, hi = r;
+			while (lo < hi) {
+				int mid = (lo + hi + 1) / 2;
+				bool works = (r - mid + 1) - get_ones(mid, r) >= k - num_ones;
+				works ? lo = mid : hi = mid - 1;
+			}
+
+			const int suffix_hash = range_hash(lo, r);
+			const int suffix_ones = get_ones(lo, r);
+			const ll res =
+			    suffix_hash + modpow(2, k) - modpow(2, k - (num_ones - suffix_ones));
+			cout << (res % MOD + MOD) % MOD << "\n";
+		}
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
+</Spoiler>
