@@ -150,68 +150,70 @@ Below is an example implementation of Heavy Light Decomposition based on the res
 #include <bits/stdc++.h>
 using namespace std;
 
-template <class T, bool VALS_IN_EDGES> 
-class HLD {
+template <class T, bool VALS_IN_EDGES> class HLD {
   private:
-    int N, R, tim=0; // n, root node, time
-    vector<vector<int>> adj;
-    vector<int> par, siz, depth, rt, pos; // parent, size, depth, root, position arrays
-    LazySegtree<T> segtree; // Modify as needed
+	int N, R, tim = 0;  // n, root node, time
+	vector<vector<int>> adj;
+	vector<int> par, siz, depth, rt, pos;  // parent, size, depth, root, position arrays
+	LazySegtree<T> segtree;                // Modify as needed
 
-    /** Compute the size of each subtree and set parent-child relationship  
-      * Subtree of node v corresponds to segment [ pos[v], pos[v] + sz[v] ) */
-    void dfsSz(int v) {
-        if (par[v] != -1) adj[v].erase(find(adj[v].begin(),adj[v].end(), par[v]));
-        for (int& u : adj[v]) {
-            par[u] = v, depth[u] = depth[v] + 1;
-            dfsSz(u);
-            siz[v] += siz[u];
-            if (siz[u] > siz[adj[v][0]]) swap(u, adj[v][0]);
-        }
-    }
+	/** Compute the size of each subtree and set parent-child relationship
+	 * Subtree of node v corresponds to segment [ pos[v], pos[v] + sz[v] ) */
+	void dfsSz(int v) {
+		if (par[v] != -1) adj[v].erase(find(adj[v].begin(), adj[v].end(), par[v]));
+		for (int &u : adj[v]) {
+			par[u] = v, depth[u] = depth[v] + 1;
+			dfsSz(u);
+			siz[v] += siz[u];
+			if (siz[u] > siz[adj[v][0]]) swap(u, adj[v][0]);
+		}
+	}
 
-    /** Assign positions for nodes
-      * Path from v to the last vertex in ascending heavy path 
-        corresponds to [ pos[rt[v]], pos[v] ] */
-    void dfsHld(int v) {
-        pos[v] = tim++;
-        for (int u : adj[v]) {
-            rt[u] = (u == adj[v][0] ? rt[v] : u);
-            dfsHld(u);
-        }
-    }
+	/** Assign positions for nodes
+	  * Path from v to the last vertex in ascending heavy path
+	    corresponds to [ pos[rt[v]], pos[v] ] */
+	void dfsHld(int v) {
+		pos[v] = tim++;
+		for (int u : adj[v]) {
+			rt[u] = (u == adj[v][0] ? rt[v] : u);
+			dfsHld(u);
+		}
+	}
 
-    /** process all heavy path and combine their results */
-    template <class B> void process(int u, int v, B op) {
-        for (; rt[u] != rt[v]; v = par[rt[v]]) {
-            if (depth[rt[u]] > depth[rt[v]]) swap(u, v);
-            op(pos[rt[v]], pos[v]);
-        }
-        if (depth[u] > depth[v]) swap(u, v);
-        op(pos[u] + VALS_IN_EDGES, pos[v]);
-    }
+	/** process all heavy path and combine their results */
+	template <class B> void process(int u, int v, B op) {
+		for (; rt[u] != rt[v]; v = par[rt[v]]) {
+			if (depth[rt[u]] > depth[rt[v]]) swap(u, v);
+			op(pos[rt[v]], pos[v]);
+		}
+		if (depth[u] > depth[v]) swap(u, v);
+		op(pos[u] + VALS_IN_EDGES, pos[v]);
+	}
 
   public:
-    HLD(vector<vector<int>> adj_, int _R)
-        : N(adj_.size()), R(_R), adj(adj_), par(N, -1), siz(N, 1), depth(N), rt(N), pos(N),
-        segtree(vector<ll>(N,0ll)) // modify if need
-        { rt[R] = R; dfsSz(R); dfsHld(R);  }
+	HLD(vector<vector<int>> adj_, int _R)
+	    : N(adj_.size()), R(_R), adj(adj_), par(N, -1), siz(N, 1), depth(N), rt(N),
+	      pos(N), segtree(vector<ll>(N, 0ll))  // modify if need
+	{
+		rt[R] = R;
+		dfsSz(R);
+		dfsHld(R);
+	}
 
-    T queryPath(int u, int v) { 
-        T res = 0; // default value, modify depending on problem
-        process(u, v, [&](int l, int r) {
-            res = max(res,segtree.range_max(l, r)); // modify depending on problem
-        });
-        return res;
-    }
+	T queryPath(int u, int v) {
+		T res = 0;  // default value, modify depending on problem
+		process(u, v, [&](int l, int r) {
+			res = max(res, segtree.range_max(l, r));  // modify depending on problem
+		});
+		return res;
+	}
 
-    void modifyNode(int u, T val) {
-        segtree.set(pos[u], val);
-    }
+	void modifyNode(int u, T val) { segtree.set(pos[u], val); }
 
-    void modifySubtree(int v, T val) {
-        segtree.range_update(pos[v] + VALS_IN_EDGES, pos[v] + siz[v] - 1, Query{ADD,val}); // modify if need
-    }
+	void modifySubtree(int v, T val) {
+		segtree.range_update(pos[v] + VALS_IN_EDGES, pos[v] + siz[v] - 1,
+		                     Query{ADD, val});  // modify if need
+	}
 };
 ```
 
@@ -239,13 +241,13 @@ template <class T> class MaxSegmentTree {
   private:
 	// const T DEFAULT = std::numeric_limits<T>().max();
 	const T DEFAULT = 0;
- 
+
 	int len;
 	vector<T> segtree;
- 
+
   public:
 	MaxSegmentTree(int len) : len(len), segtree(len * 2, DEFAULT) {}
- 
+
 	void set(int ind, T val) {
 		ind += len;
 		segtree[ind] = val;
@@ -253,7 +255,7 @@ template <class T> class MaxSegmentTree {
 			segtree[ind / 2] = std::max(segtree[ind], segtree[ind ^ 1]);
 		}
 	}
- 
+
 	T range_max(int start, int end) {
 		T max = DEFAULT;
 		for (start += len, end += len; start < end; start /= 2, end /= 2) {
@@ -266,109 +268,104 @@ template <class T> class MaxSegmentTree {
 // EndCodeSnip
 
 // BeginCodeSnip{HLD}
-template <class T, bool VALS_IN_EDGES> 
-class HLD {
+template <class T, bool VALS_IN_EDGES> class HLD {
   private:
-    int N, R, tim=0; // n, root node, time
-    vector<vector<int>> adj;
-    vector<int> par, siz, depth, rt, pos; // parent, size, depth, root, position arrays
-    MaxSegmentTree<T> segtree; // Modify as needed
+	int N, R, tim = 0;  // n, root node, time
+	vector<vector<int>> adj;
+	vector<int> par, siz, depth, rt, pos;  // parent, size, depth, root, position arrays
+	MaxSegmentTree<T> segtree;             // Modify as needed
 
-    /** Compute the size of each subtree and set parent-child relationship  
-      * Subtree of node v corresponds to segment [ pos[v], pos[v] + sz[v] ) */
-    void dfsSz(int v) {
-        if (par[v] != -1) adj[v].erase(find(adj[v].begin(),adj[v].end(), par[v]));
-        for (int& u : adj[v]) {
-            par[u] = v, depth[u] = depth[v] + 1;
-            dfsSz(u);
-            siz[v] += siz[u];
-            if (siz[u] > siz[adj[v][0]]) swap(u, adj[v][0]);
-        }
-    }
+	/** Compute the size of each subtree and set parent-child relationship
+	 * Subtree of node v corresponds to segment [ pos[v], pos[v] + sz[v] ) */
+	void dfsSz(int v) {
+		if (par[v] != -1) adj[v].erase(find(adj[v].begin(), adj[v].end(), par[v]));
+		for (int &u : adj[v]) {
+			par[u] = v, depth[u] = depth[v] + 1;
+			dfsSz(u);
+			siz[v] += siz[u];
+			if (siz[u] > siz[adj[v][0]]) swap(u, adj[v][0]);
+		}
+	}
 
-    /** Assign positions for nodes
-      * Path from v to the last vertex in ascending heavy path 
-        corresponds to [ pos[rt[v]], pos[v] ] */
-    void dfsHld(int v) {
-        pos[v] = tim++;
-        for (int u : adj[v]) {
-            rt[u] = (u == adj[v][0] ? rt[v] : u);
-            dfsHld(u);
-        }
-    }
+	/** Assign positions for nodes
+	  * Path from v to the last vertex in ascending heavy path
+	    corresponds to [ pos[rt[v]], pos[v] ] */
+	void dfsHld(int v) {
+		pos[v] = tim++;
+		for (int u : adj[v]) {
+			rt[u] = (u == adj[v][0] ? rt[v] : u);
+			dfsHld(u);
+		}
+	}
 
-    /** process all heavy path and combine their results */
-    template <class B> void process(int u, int v, B op) {
-        for (; rt[u] != rt[v]; v = par[rt[v]]) {
-            if (depth[rt[u]] > depth[rt[v]]) swap(u, v);
-            op(pos[rt[v]], pos[v]);
-        }
-        if (depth[u] > depth[v]) swap(u, v);
-        op(pos[u] + VALS_IN_EDGES, pos[v]);
-    }
+	/** process all heavy path and combine their results */
+	template <class B> void process(int u, int v, B op) {
+		for (; rt[u] != rt[v]; v = par[rt[v]]) {
+			if (depth[rt[u]] > depth[rt[v]]) swap(u, v);
+			op(pos[rt[v]], pos[v]);
+		}
+		if (depth[u] > depth[v]) swap(u, v);
+		op(pos[u] + VALS_IN_EDGES, pos[v]);
+	}
 
   public:
-    HLD(vector<vector<int>> adj_, int _R)
-        : N(adj_.size()), R(_R), adj(adj_), par(N, -1), siz(N, 1), depth(N), rt(N), pos(N),
-        segtree(N) // modify as needed
-        { rt[R] = R; dfsSz(R); dfsHld(R);  }
-
-    T queryPath(int u, int v) { 
-        T res = 0; // default value, modify depending on problem
-        process(u, v, [&](int l, int r) {
-            res = max(res,segtree.range_max(l, r+1)); // modify depending on problem
-        });
-        return res;
-    }
-
-    void modifyNode(int u, T val) {
-        segtree.set(pos[u], val);
+	HLD(vector<vector<int>> adj_, int _R)
+	    : N(adj_.size()), R(_R), adj(adj_), par(N, -1), siz(N, 1), depth(N), rt(N),
+	      pos(N), segtree(N)  // modify as needed
+	{
+		rt[R] = R;
+		dfsSz(R);
+		dfsHld(R);
 	}
+
+	T queryPath(int u, int v) {
+		T res = 0;  // default value, modify depending on problem
+		process(u, v, [&](int l, int r) {
+			res = max(res, segtree.range_max(l, r + 1));  // modify depending on problem
+		});
+		return res;
+	}
+
+	void modifyNode(int u, T val) { segtree.set(pos[u], val); }
 };
 // EndCodeSnip
 
+int main() {
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
 
-int main(){
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
- 
-    int N, Q;
-    cin >> N >> Q;
-    vector<int> v(N);
-    vector<vector<int>> adj(N);
-    for(int i=0; i<N; i++){
-        cin >> v[i];
-    }
- 
-    for(int i=0; i<N-1; i++){
-        int a,b;
-        cin >> a >> b;
-        --a, --b;
-        adj[a].push_back(b);
-        adj[b].push_back(a);
-    }
- 
-    HLD<int,0> H(adj, 0);
- 
-    for(int i=0; i<N; i++){
-        H.modifyNode(i,v[i]);
-    }
- 
-    while(Q--){
-        int type, s, a, b, x;
-        cin >> type;
-        if(type == 1){
-            cin >> s >> x;
-            --s;
-            H.modifyNode(s,x);
-        }else if(type == 2){
-            cin >> a >> b;
-            --a, --b;
-            cout << H.queryPath(a,b) << " ";
-        }
-    }
+	int N, Q;
+	cin >> N >> Q;
+	vector<int> v(N);
+	vector<vector<int>> adj(N);
+	for (int i = 0; i < N; i++) { cin >> v[i]; }
+
+	for (int i = 0; i < N - 1; i++) {
+		int a, b;
+		cin >> a >> b;
+		--a, --b;
+		adj[a].push_back(b);
+		adj[b].push_back(a);
+	}
+
+	HLD<int, 0> H(adj, 0);
+
+	for (int i = 0; i < N; i++) { H.modifyNode(i, v[i]); }
+
+	while (Q--) {
+		int type, s, a, b, x;
+		cin >> type;
+		if (type == 1) {
+			cin >> s >> x;
+			--s;
+			H.modifyNode(s, x);
+		} else if (type == 2) {
+			cin >> a >> b;
+			--a, --b;
+			cout << H.queryPath(a, b) << " ";
+		}
+	}
 }
-
 ```
 
 </CPPSection>

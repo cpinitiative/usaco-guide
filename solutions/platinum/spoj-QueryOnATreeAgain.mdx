@@ -57,21 +57,19 @@ template <class T> class MinSegmentTree {
 // EndCodeSnip
 
 // BeginCodeSnip{HLD}
-template <class T, bool VALS_IN_EDGES> 
-class HLD {
+template <class T, bool VALS_IN_EDGES> class HLD {
   private:
-	int N, R, tim=0; // n, root node, time
+	int N, R, tim = 0;  // n, root node, time
 	vector<vector<int>> adj;
-	vector<int> par, siz, depth, rt, pos, inv; // parent, size, depth, root, position arrays
-	MinSegmentTree<T> segtree; // Modify as needed
+	vector<int> par, siz, depth, rt, pos,
+	    inv;                    // parent, size, depth, root, position arrays
+	MinSegmentTree<T> segtree;  // Modify as needed
 
-	/** Compute the size of each subtree and set parent-child relationship  
-	  * Subtree of node v corresponds to segment [ pos[v], pos[v] + sz[v] ) */
+	/** Compute the size of each subtree and set parent-child relationship
+	 * Subtree of node v corresponds to segment [ pos[v], pos[v] + sz[v] ) */
 	void dfsSz(int v) {
 		siz[v] = 1;
-		if (par[v] != -1) {
-			adj[v].erase(find(adj[v].begin(), adj[v].end(), par[v]));
-		}
+		if (par[v] != -1) { adj[v].erase(find(adj[v].begin(), adj[v].end(), par[v])); }
 		for (int &u : adj[v]) {
 			par[u] = v, depth[u] = depth[v] + 1;
 			dfsSz(u);
@@ -81,10 +79,12 @@ class HLD {
 	}
 
 	/** Assign positions for nodes
-	  * Path from v to the last vertex in ascending heavy path 
+	  * Path from v to the last vertex in ascending heavy path
 	    corresponds to [ pos[rt[v]], pos[v] ] */
 	void dfsHld(int v) {
-		pos[v] = tim; inv[tim] = v; tim++;
+		pos[v] = tim;
+		inv[tim] = v;
+		tim++;
 		for (int u : adj[v]) {
 			rt[u] = (u == adj[v][0] ? rt[v] : u);
 			dfsHld(u);
@@ -103,29 +103,32 @@ class HLD {
 
   public:
 	HLD(vector<vector<int>> adj_, int _R)
-		: N(adj_.size()), R(_R), adj(adj_), par(N, -1), siz(N, 1),
-		  depth(N), rt(N), pos(N), inv(N), segtree(N)
-		{ rt[R] = R; dfsSz(R); dfsHld(R); }
+	    : N(adj_.size()), R(_R), adj(adj_), par(N, -1), siz(N, 1), depth(N), rt(N),
+	      pos(N), inv(N), segtree(N) {
+		rt[R] = R;
+		dfsSz(R);
+		dfsHld(R);
+	}
 
 	void toggleNode(int u) {
 		int cur = segtree.range_min(pos[u], pos[u] + 1);
-		if (cur == segtree.INFVAL()) segtree.set(pos[u], pos[u]); // make black
-		else segtree.set(pos[u], segtree.INFVAL());               // make white
+		if (cur == segtree.INFVAL()) segtree.set(pos[u], pos[u]);  // make black
+		else segtree.set(pos[u], segtree.INFVAL());                // make white
 	}
 
-	T queryPath(int u, int v) { 
+	T queryPath(int u, int v) {
 		T res = segtree.INFVAL();
-		process(u, v, [&](int l, int r) {
-			res = min(res, segtree.range_min(l, r + 1));
-		});
+		process(u, v,
+		        [&](int l, int r) { res = min(res, segtree.range_min(l, r + 1)); });
 		if (res == segtree.INFVAL()) return -1;
-		return inv[res] + 1; // return 1-indexed node id
+		return inv[res] + 1;  // return 1-indexed node id
 	}
 };
 // EndCodeSnip
 
 int main() {
-	ios::sync_with_stdio(false); cin.tie(nullptr);
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
 
 	int N, Q;
 	cin >> N >> Q;
