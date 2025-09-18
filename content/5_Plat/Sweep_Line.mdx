@@ -32,6 +32,57 @@ number line?) never explicitly mentioned in module
    />
 </Resources>
 
+## Restaurant Customers
+<FocusProblem problem="restaurant" />
+
+### Solution
+**Time Complexity:** $\mathcal{O}(N\log N)$
+
+The solution uses a sweep line approach. Each interval is converted into two events: $(a_i, +1)$ for an arrival and $(b_i, -1)$ for a departure. This produces $2N$ events in total.  
+
+<!--- https://i.imgur.com/a/4PGI16s -->
+
+All events are sorted by time; if two events coincide, departures are processed before arrivals. Traversing the sorted list from left to right, we maintain a counter of active customers. The counter is incremented on arrival events and decremented on departure events. The maximum value reached during this traversal is the answer.
+
+For example, intervals $(5,8), (2,4), (3,9)$ yield the event sequence  
+$(2,+1), (3,+1), (4,-1), (5,+1), (8,-1), (9,-1)$ with counters $1,2,1,2,1,0$. The maximum is $2$.
+
+Creating events takes $\mathcal{O}(N)$, sorting them takes $\mathcal{O}(N \log N)$, and the sweep is $\mathcal{O}(N)$. Thus the overall complexity is $\mathcal{O}(N \log N)$.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include "bits/stdc++.h"
+using namespace std;
+
+int main () {
+    int n;
+    cin>>n;
+    
+    vector<pair<int,int>>events;
+    for(int i=0;i<n;i++){
+        int arrival, departure;
+        cin >> arrival >> departure;
+        events.push_back({arrival, +1});
+        events.push_back({departure, -1});
+    }
+
+    sort(events.begin(), events.end());
+    
+    int active = 0; //current number of customers
+    int max_active = 0; //maximum number of customers at any point of time
+    for(auto&[time, change]: events){
+        active += change;
+        max_active = max(max_active, active);
+    }
+    cout<< max_active <<endl;
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
 ## Closest Pair
 
 <FocusProblem problem="closest" />
