@@ -1,80 +1,91 @@
 ---
 id: usaco-1137
-source: Gold (TODO -- convert to something like `USACO Silver 2017 January`)
+source: USACO Gold 2021 US Open
 title: UCFJ
-author: TODO -- insert your name here
+author: Sachet Abeysinghe
 ---
 
-We found the following solution metadata for this problem:
-```
-[
-  {
-    "kind": "link",
-    "label": "External Sol",
-    "labelTooltip": null,
-    "hasHints": null,
-    "url": "http://www.usaco.org/current/data/sol_prob1_gold_open21.html",
-    "sketch": null
-  }
-]
-```
-
-When adding an internal solution, you have to update relevant modules to point to this new internal solution. This process is partially automated; modules containing this problem have been updated in the editor (see file list to the left).
+[Official Analysis (C++, Java)](https://usaco.org/current/data/sol_prob1_gold_open21.html)
 
 ## Explanation
 
-(add explanation here ...)
+Let's fix the left endpoint $l$ and compute how many right endpoints $r$ work for that $l$. First, consider the first position $x>l$ such that $b_x=b_l$. If this doesn't exist, let $x = N + 1$. We can't select any right endpoint $r \ge x$, because this results in the left endpoint leader having the same breed as the cow in position $x$. We can find this position $x$ by either binary searching the index map of $b$ or precomputation.
 
-Use `\texttt{}` around variable names with length *greater than one*, like so. Place long equations on separate lines with display math, and use `\cdot` instead of `*` to denote multiplication.
-
-$$
-\texttt{arr}[i]=2\cdot (a+b+c+d+e)+\sum_{j=0}^{i-1}\texttt{arr}[j]
-$$
-
-Some additional text styles which you might consider using:
-
-http://latexref.xyz/Font-styles.html
-
-http://applied-r.com/latex-font-styles/
-
-$func(var)$
-
-$\textit{func(var)}$
-
-$\textrm{func(var)}$
-
-$\text{func(var)}$
-
-$\textsf{func(var)}$
-
-$\textbf{func(var)}$
-
-$\texttt{func(var)}$
+The right endpoint leader can be handled similarly. For all breeds in the range $(l, x)$, we can only select the first position of that breed $>l$. Thus, the number of right endpoints that work for this $l$ are the number of distinct elements in $(l, x)$. This can be found using a data structure like a BIT (Binary Indexed Tree).
 
 ## Implementation
 
-**Time Complexity:** $\mathcal{O}(N\log^2N)$
-
-^ Format time complexity like this. Should appear outside of `<LanguageSection>` if it's the same for all implementations.
+**Time Complexity:** $\mathcal{O}(N\log N)$
 
 <LanguageSection>
-
 <CPPSection>
 
-(add cpp code)
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MAXN = 200005;
+int n;
+int breed[MAXN];
+int next_same_breed[MAXN];
+int last_seen[MAXN];
+int bit[MAXN];
+
+void update(int index, int value) {
+    while (index < MAXN) {
+        bit[index] += value;
+        index += index & -index;
+    }
+}
+
+int query(int index) {
+    int res = 0;
+    while (index > 0) {
+        res += bit[index];
+        index -= index & -index;
+    }
+    return res;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    cin >> n;
+    for (int i = 1; i <= n; ++i) {
+        cin >> breed[i];
+    }
+
+    unordered_map<int, int> breed_last_pos;
+    for (int i = n; i >= 1; --i) {
+        if (breed_last_pos.count(breed[i])) {
+            next_same_breed[i] = breed_last_pos[breed[i]];
+        } else {
+            next_same_breed[i] = n + 1;
+        }
+        breed_last_pos[breed[i]] = i;
+    }
+
+    fill(last_seen, last_seen + MAXN, 0);
+    fill(bit, bit + MAXN, 0);
+
+    long long answer = 0;
+    for (int l = n; l >= 1; --l) {
+        if (last_seen[breed[l]]) {
+            update(last_seen[breed[l]], -1);
+        }
+        last_seen[breed[l]] = l;
+        update(l, 1);
+
+        int x = next_same_breed[l];
+        int count = query(x - 1) - query(l);
+        answer += count;
+    }
+
+    cout << answer << '\n';
+    return 0;
+}
+```
 
 </CPPSection>
-
-<PySection>
-
-(if you have Python code)
-
-</PySection>
-
-<JavaSection>
-
-(if you have Java code)
-
-</JavaSection>
-
 </LanguageSection>
