@@ -53,8 +53,8 @@ We store the position of each element in arrays `a` and `b` which we will use fu
 <CPPSection>
 
 ```cpp
-#include <iostream>
 #include <cstring>
+#include <iostream>
 
 int main() {
 	int n;
@@ -62,9 +62,9 @@ int main() {
 	int moved[n];
 	int a[n], b[n];
 	int pos_a[n], pos_b[n];
-    int res = 0;
+	int res = 0;
 	int j = 0;
-    
+
 	for (int i = 0; i < n; i++) {
 		std::cin >> a[i];
 		a[i]--;
@@ -77,18 +77,16 @@ int main() {
 		pos_b[b[i]] = i;
 	}
 
-    memset(moved, 0, sizeof(moved));
-	
+	memset(moved, 0, sizeof(moved));
+
 	for (int i = 0; i < n; i++) {
-		while (j < n && moved[a[j]]) {
-			j++;
-		}
+		while (j < n && moved[a[j]]) { j++; }
 		if (a[j] == b[i]) {
 			j++;
 		} else {
 			res += 1;
 			moved[b[i]] = 1;
- 		}
+		}
 	}
 
 	std::cout << res << '\n';
