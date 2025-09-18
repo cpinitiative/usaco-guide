@@ -137,9 +137,9 @@ export default function TopNavigationBar({
       {!hidePromoBar && (
         <>
           <Banner
-            text="Registration for Fall Live Classes is Open!"
-            action="Register"
-            link="https://joincpi.org/classes/register"
+            text="Problem writers needed for Guide Tournament!"
+            action="Apply"
+            link="https://forms.gle/gNy9VNmGdRRH2LbL8"
           />
         </>
       )}
@@ -370,7 +370,7 @@ export default function TopNavigationBar({
         {/*
         Mobile menu, toggle classes based on menu state.
 
-        Menu open: "block", Menu closed: "hidden"
+        Menu open: "block", Menu closed: "hidden
       */}
         <div className={`${isMobileNavOpen ? 'block' : 'hidden'} lg:hidden`}>
           <div className="grid grid-cols-1 divide-y divide-gray-300 pb-6 dark:divide-gray-800">
