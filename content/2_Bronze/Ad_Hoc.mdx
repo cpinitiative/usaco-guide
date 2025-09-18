@@ -96,6 +96,38 @@ int main() {
 ```
 
 </CPPSection>
+<PySection>
+
+```py
+n = int(input())
+a = [int(x) - 1 for x in input().split()]
+b = [int(x) - 1 for x in input().split()]
+
+pos_a = pos_b = [0] * n
+moved = [0] * n
+j = res = 0
+
+for i in range(n):
+    pos_a[a[i]] = i
+    pos_b[b[i]] = i
+
+
+for i in range(n):
+    while j < n and moved[a[j]]:
+        j += 1
+
+    if a[j] == b[i]:
+        j += 1
+    else:
+        res += 1
+        moved[b[i]] = 1
+
+
+print(res)
+
+```
+
+</PySection>
 </LanguageSection>
 
 ## Problems
