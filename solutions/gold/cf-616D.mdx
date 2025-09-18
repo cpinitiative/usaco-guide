@@ -2,10 +2,12 @@
 id: cf-616D
 source: CF
 title: Longest k-Good Segment
-author: Sofia Yang, Mohammad Nour Massri, Neo Wang
+author: Sofia Yang, Mohammad Nour Massri, Neo Wang, Ruben Jing
 ---
 
 [Official Editorial (C++)](https://codeforces.com/blog/entry/22712)
+
+# Solution 1
 
 ## Explanation
 
@@ -109,7 +111,20 @@ int main() {
 </CPPSection>
 </LanguageSection>
 
+# Solution 2
 
+## Explanation
+
+Rather than binary searching for the maximum size, we can maintain a sliding window
+from $l$ to $r$. We only increment this window towards the right if two conditions hold:
+1. $r<n-1$, meaning that we are not going out of bounds.
+2. Adding $a[r+1]$ to the window doesn't increase the amount of different values to more than $k$.
+
+We continue expanding towards the right until either of these conditions no longer hold.
+If our new segment is larger than the previous segment, we update the largest segment value.
+
+Finally, we increment $l$, remove one occurrence of $a[l]$ from the frequency list, and update
+the number of different values.
 
 ## Implementation
 
