@@ -32,58 +32,54 @@ int last_seen[MAXN];
 int bit[MAXN];
 
 void update(int index, int value) {
-    while (index < MAXN) {
-        bit[index] += value;
-        index += index & -index;
-    }
+	while (index < MAXN) {
+		bit[index] += value;
+		index += index & -index;
+	}
 }
 
 int query(int index) {
-    int res = 0;
-    while (index > 0) {
-        res += bit[index];
-        index -= index & -index;
-    }
-    return res;
+	int res = 0;
+	while (index > 0) {
+		res += bit[index];
+		index -= index & -index;
+	}
+	return res;
 }
 
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
 
-    cin >> n;
-    for (int i = 1; i <= n; ++i) {
-        cin >> breed[i];
-    }
+	cin >> n;
+	for (int i = 1; i <= n; ++i) { cin >> breed[i]; }
 
-    unordered_map<int, int> breed_last_pos;
-    for (int i = n; i >= 1; --i) {
-        if (breed_last_pos.count(breed[i])) {
-            next_same_breed[i] = breed_last_pos[breed[i]];
-        } else {
-            next_same_breed[i] = n + 1;
-        }
-        breed_last_pos[breed[i]] = i;
-    }
+	unordered_map<int, int> breed_last_pos;
+	for (int i = n; i >= 1; --i) {
+		if (breed_last_pos.count(breed[i])) {
+			next_same_breed[i] = breed_last_pos[breed[i]];
+		} else {
+			next_same_breed[i] = n + 1;
+		}
+		breed_last_pos[breed[i]] = i;
+	}
 
-    fill(last_seen, last_seen + MAXN, 0);
-    fill(bit, bit + MAXN, 0);
+	fill(last_seen, last_seen + MAXN, 0);
+	fill(bit, bit + MAXN, 0);
 
-    long long answer = 0;
-    for (int l = n; l >= 1; --l) {
-        if (last_seen[breed[l]]) {
-            update(last_seen[breed[l]], -1);
-        }
-        last_seen[breed[l]] = l;
-        update(l, 1);
+	long long answer = 0;
+	for (int l = n; l >= 1; --l) {
+		if (last_seen[breed[l]]) { update(last_seen[breed[l]], -1); }
+		last_seen[breed[l]] = l;
+		update(l, 1);
 
-        int x = next_same_breed[l];
-        int count = query(x - 1) - query(l);
-        answer += count;
-    }
+		int x = next_same_breed[l];
+		int count = query(x - 1) - query(l);
+		answer += count;
+	}
 
-    cout << answer << '\n';
-    return 0;
+	cout << answer << '\n';
+	return 0;
 }
 ```
 
