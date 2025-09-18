@@ -38,6 +38,66 @@ appear to be ad hoc.
 In the end, the best way to get better at ad hoc problems (or any type of
 problem) is to do a lot of them.
 
+## Example - Photoshoot 2
+<FocusProblem problem = "photoshoot2"/>
+
+## Solution
+
+We store the position of each element in arrays `a` and `b` which we will use further to check if the eleme are in correct sequence or not. If the element is at the target position, we simply move forward. Otherwise, if it is behind the current pointer, we need to move it manually and mark it as moved.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <cstring>
+
+int main() {
+	int n;
+	std::cin >> n;
+	int moved[n];
+	int a[n], b[n];
+	int pos_a[n], pos_b[n];
+    int res = 0;
+	int j = 0;
+    
+	for (int i = 0; i < n; i++) {
+		std::cin >> a[i];
+		a[i]--;
+		pos_a[a[i]] = i;
+	}
+
+	for (int i = 0; i < n; i++) {
+		std::cin >> b[i];
+		b[i]--;
+		pos_b[b[i]] = i;
+	}
+
+    memset(moved, 0, sizeof(moved));
+	
+	for (int i = 0; i < n; i++) {
+		while (j < n && moved[a[j]]) {
+			j++;
+		}
+		if (a[j] == b[i]) {
+			j++;
+		} else {
+			res += 1;
+			moved[b[i]] = 1;
+ 		}
+	}
+
+	std::cout << res << '\n';
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
 ## Problems
 
 <Problems problems="general" />
