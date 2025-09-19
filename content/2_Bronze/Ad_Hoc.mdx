@@ -43,7 +43,7 @@ problem) is to do a lot of them.
 
 ## Solution
 
-We store the position of each element in arrays $a$ and $b$ which we will use to check if the elements are in the correct sequence or not. If the element is at the target position, we simply move forward. Otherwise, if it is behind the current pointer, we need to move it manually and mark it as moved.
+If the element is at the target position, we simply move forward. Otherwise, if it is behind the current pointer, we need to move it manually and mark it as moved.
 
 ## Implementation
 
@@ -61,18 +61,15 @@ int main() {
 	std::cin >> n;
 	int moved[n] = {0};
 	int a[n], b[n];
-	int pos_a[n], pos_b[n];
 
 	for (int i = 0; i < n; i++) {
 		std::cin >> a[i];
 		a[i]--;
-		pos_a[a[i]] = i;
 	}
 
 	for (int i = 0; i < n; i++) {
 		std::cin >> b[i];
 		b[i]--;
-		pos_b[b[i]] = i;
 	}
 
 	int res = 0;
@@ -101,13 +98,8 @@ n = int(input())
 a = [int(x) - 1 for x in input().split()]
 b = [int(x) - 1 for x in input().split()]
 
-pos_a = pos_b = [0] * n
 moved = [0] * n
 j = res = 0
-
-for i in range(n):
-	pos_a[a[i]] = i
-	pos_b[b[i]] = i
 
 
 for i in range(n):
