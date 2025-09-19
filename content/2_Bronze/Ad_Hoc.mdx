@@ -2,7 +2,7 @@
 id: ad-hoc
 title: Ad Hoc Problems
 author: Michael Cao
-contributors: Ryan Chou
+contributors: Ryan Chou, Rameez Parwez
 description:
   'Problems that do not fall into standard categories with well-studied
   solutions.'
@@ -59,12 +59,10 @@ We store the position of each element in arrays $a$ and $b$ which we will use to
 int main() {
 	int n;
 	std::cin >> n;
-	int moved[n];
+	int moved[n] = {0};
 	int a[n], b[n];
 	int pos_a[n], pos_b[n];
-	int res = 0;
-	int j = 0;
-
+	
 	for (int i = 0; i < n; i++) {
 		std::cin >> a[i];
 		a[i]--;
@@ -77,7 +75,8 @@ int main() {
 		pos_b[b[i]] = i;
 	}
 
-	memset(moved, 0, sizeof(moved));
+	int res = 0;
+	int j = 0;
 
 	for (int i = 0; i < n; i++) {
 		while (j < n && moved[a[j]]) { j++; }
