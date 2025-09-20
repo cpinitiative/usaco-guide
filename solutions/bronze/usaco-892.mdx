@@ -5,9 +5,107 @@ title: Sleepy Cow Sorting
 author: Ananth Kashyap, Brad Ma, Vikas Thoutam
 ---
 
-[Official Analysis](http://www.usaco.org/current/data/sol_sleepy_bronze_jan19.html)
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_sleepy_bronze_jan19.html)
 
-## Video Solution
+# Solution
+
+## Explanation
+
+We can think about this problem by looking at the end of the array of cows.
+
+Notice that if the last $i$ elements in the array are sorted in increasing order, FJ can fully sort the cows in $n-i$ time steps.
+This is because the first $n-i$ elements are still to be sorted.
+
+Thus, we can find the last unsorted cow and output its position.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	freopen("sleepy.in", "r", stdin);
+
+	int n;
+	cin >> n;
+	vector<int> cows(n);
+	for (int &c : cows) { cin >> c; }
+
+	int answer = n - 1;
+	for (int i = n - 2; i >= 0; i--) {
+		if (cows[i] < cows[i + 1]) {
+			answer = i;
+		} else {
+			break;
+		}
+	}
+
+	freopen("sleepy.out", "w", stdout);
+	cout << answer << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class SleepyCowSorting {
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio("sleepy");
+		int n = io.nextInt();
+		int[] cows = new int[n];
+
+		for (int i = 0; i < n; i++) { cows[i] = io.nextInt(); }
+
+		// Find the number of strictly increasing values at the end of the list
+		int answer = n - 1;
+		for (int i = n - 2; i >= 0; i--) {
+			if (cows[i] < cows[i + 1]) { answer = i; }
+			break;
+		}
+
+		io.println(answer);
+		io.close();
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+file_in = open("sleepy.in")
+data = file_in.read().strip().split("\n")
+
+n = int(data[0])
+cows = list(map(int, data[1].split(" ")))
+
+ans = 0
+# Find the number of strictly increasing values at the end of the list
+for i in range(n - 1, 0, -1):
+	if cows[i] < cows[i - 1]:
+		ans = i
+		break
+
+print(ans, file=open("sleepy.out", "w"))
+```
+
+</PySection>
+</LanguageSection>
+
+# Video Solution
+
 By Vikas Thoutam
 
 <YouTube id="9sh0XJryLAg" />
@@ -45,7 +143,6 @@ int main() {
 ```
 
 </CPPSection>
-
 <JavaSection>
 
 ```java
@@ -77,104 +174,8 @@ public class SleepyCowSorting {
 	}
 }
 ```
-</JavaSection>
 
+</JavaSection>
 </LanguageSection>
+
 </Spoiler>
-
-## Explanation
-
-We can think about this problem by looking at the end of the array of cows. Notice that if the last $i$ elements in the array are sorted in increasing order, FJ can fully sort the cows in $n-i$ time steps. This is because the first $n-i$ elements are still to be sorted. Thus, we can find the last unsorted cow and output its position.
-
-## Implementation
-
-**Time Complexity:** $\mathcal{O}(N)$
-
-<LanguageSection>
-
-<PySection>
-
-```py
-file_in = open("sleepy.in")
-data = file_in.read().strip().split("\n")
-
-n = int(data[0])
-cows = list(map(int, data[1].split(" ")))
-
-ans = 0
-
-# Find the number of strictly increasing values at the end of the list
-for i in range(n - 1, 0, -1):
-	if cows[i] < cows[i - 1]:
-		ans = i
-		break
-
-file_out = open("sleepy.out", "w")
-file_out.write(str(ans))
-file_out.close()
-```
-
-</PySection>
-
-<JavaSection>
-
-```java
-import java.io.*;
-import java.util.*;
-
-public class SleepyCowSorting {
-	public static void main(String[] args) throws IOException {
-		Kattio io = new Kattio("sleepy");
-		int n = io.nextInt();
-		int[] cows = new int[n];
-
-		for (int i = 0; i < n; i++) { cows[i] = io.nextInt(); }
-
-		// Find the number of strictly increasing values at the end of the list
-		int answer = n - 1;
-		for (int i = n - 2; i >= 0; i--) {
-			if (cows[i] < cows[i + 1]) {
-				answer = i;
-			} else {
-				break;
-			}
-		}
-
-		io.println(answer);
-		io.close();
-	}
-	// CodeSnip{Kattio}
-}
-```
-
-</JavaSection>
-
-<CPPSection>
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int cows[105];
-
-int main() {
-	freopen("sleepy.in", "r", stdin);
-	freopen("sleepy.out", "w", stdout);
-	int n;
-	cin >> n;
-	for (int i = 0; i < n; i++) { cin >> cows[i]; }
-	int answer = n - 1;
-	for (int i = n - 2; i >= 0; i--) {
-		if (cows[i] < cows[i + 1]) {
-			answer = i;
-		} else {
-			break;
-		}
-	}
-	cout << answer << endl;
-}
-```
-
-</CPPSection>
-
-</LanguageSection>

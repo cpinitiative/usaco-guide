@@ -5,109 +5,15 @@ title: Taming the Herd
 author: Sathvik Chundru, Aditya Gupta, Jay Fu, David Guo
 ---
 
-## Video Solution
-
-By Jay Fu
-
-<YouTube id="f_Otluj98kM" />
-
-<Spoiler title="Video Solution Code">
-<LanguageSection>
-<CPPSection>
-
-```cpp
-#include <algorithm>
-#include <cstdio>
-#include <iostream>
-using namespace std;
-#define MAXN 100000
-
-int N;
-int A[MAXN];
-
-int main() {
-	freopen("taming.in", "r", stdin);
-	freopen("taming.out", "w", stdout);
-	cin >> N;
-	for (int i = 0; i < N; i++) cin >> A[i];
-	if (A[0] > 0) {
-		cout << -1 << '\n';
-		return 0;
-	}
-	A[0] = 0;
-	int t = -1;
-	int req = 0;
-	int pos = 0;
-	for (int i = N - 1; i >= 0; i--) {
-		if (t != -1 && A[i] != -1 && A[i] != t) {
-			cout << -1 << '\n';
-			return 0;
-		}
-		if (t == -1) t = A[i];
-		if (A[i] == -1) A[i] = t;
-		if (A[i] == 0) req++;
-		if (A[i] == -1) pos++;
-		if (t > -1) t--;
-	}
-	cout << req << ' ' << req + pos << '\n';
-}
-```
-
-</CPPSection>
-<JavaSection>
-
-```java
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.StringTokenizer;
-
-public class taming {
-	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new FileReader("taming.in"));
-		PrintWriter out = new PrintWriter("taming.out");
-		int N = Integer.parseInt(br.readLine());
-		int[] A = new int[N];
-		StringTokenizer s = new StringTokenizer(br.readLine());
-		for (int i = 0; i < N; i++) { A[i] = Integer.parseInt(s.nextToken()); }
-		if (A[0] > 0) {
-			out.println(-1);
-			return;
-		}
-		A[0] = 0;
-		int t = -1;
-		int req = 0;
-		int pos = 0;
-		for (int i = N - 1; i >= 0; i--) {
-			if (t != -1 && A[i] != -1 && A[i] != t) {
-				out.println(-1);
-				out.close();
-				return;
-			}
-			if (t == -1) t = A[i];
-			if (A[i] == -1) A[i] = t;
-			if (A[i] == 0) req++;
-			if (A[i] == -1) pos++;
-			if (t > -1) t--;
-		}
-		out.println(req + " " + (req + pos));
-		out.close();
-	}
-}
-```
-
-</JavaSection>
-</LanguageSection>
-</Spoiler>
-
 <Spoiler title="Hint">
 If some record in Farmer John's log is set, then what other records must be set?
 </Spoiler>
 
-<Spoiler title="Solution">
-
 [Official Analysis (C++)](http://www.usaco.org/current/data/sol_taming_bronze_feb18.html)
+
+# Solution
+
+<Spoiler title="Solution">
 
 ## Explanation
 
@@ -320,5 +226,104 @@ else:
 ```
 
 </PySection>
+</LanguageSection>
+</Spoiler>
+
+# Video Solution
+
+By Jay Fu
+
+<YouTube id="f_Otluj98kM" />
+
+<Spoiler title="Video Solution Code">
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <algorithm>
+#include <cstdio>
+#include <iostream>
+
+using namespace std;
+
+const int MAXN = 100000;
+
+int N;
+int A[MAXN];
+
+int main() {
+	freopen("taming.in", "r", stdin);
+	freopen("taming.out", "w", stdout);
+	cin >> N;
+	for (int i = 0; i < N; i++) cin >> A[i];
+	if (A[0] > 0) {
+		cout << -1 << '\n';
+		return 0;
+	}
+	A[0] = 0;
+	int t = -1;
+	int req = 0;
+	int pos = 0;
+	for (int i = N - 1; i >= 0; i--) {
+		if (t != -1 && A[i] != -1 && A[i] != t) {
+			cout << -1 << '\n';
+			return 0;
+		}
+		if (t == -1) t = A[i];
+		if (A[i] == -1) A[i] = t;
+		if (A[i] == 0) req++;
+		if (A[i] == -1) pos++;
+		if (t > -1) t--;
+	}
+	cout << req << ' ' << req + pos << '\n';
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.StringTokenizer;
+
+public class taming {
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new FileReader("taming.in"));
+		PrintWriter out = new PrintWriter("taming.out");
+		int N = Integer.parseInt(br.readLine());
+		int[] A = new int[N];
+		StringTokenizer s = new StringTokenizer(br.readLine());
+		for (int i = 0; i < N; i++) { A[i] = Integer.parseInt(s.nextToken()); }
+		if (A[0] > 0) {
+			out.println(-1);
+			return;
+		}
+		A[0] = 0;
+		int t = -1;
+		int req = 0;
+		int pos = 0;
+		for (int i = N - 1; i >= 0; i--) {
+			if (t != -1 && A[i] != -1 && A[i] != t) {
+				out.println(-1);
+				out.close();
+				return;
+			}
+			if (t == -1) t = A[i];
+			if (A[i] == -1) A[i] = t;
+			if (A[i] == 0) req++;
+			if (A[i] == -1) pos++;
+			if (t > -1) t--;
+		}
+		out.println(req + " " + (req + pos));
+		out.close();
+	}
+}
+```
+
+</JavaSection>
 </LanguageSection>
 </Spoiler>
