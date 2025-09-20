@@ -1,0 +1,87 @@
+---
+id: usaco-1137
+source: USACO Gold 2021 US Open
+title: UCFJ
+author: Sachet Abeysinghe
+---
+
+[Official Analysis (C++, Java)](https://usaco.org/current/data/sol_prob1_gold_open21.html)
+
+## Explanation
+
+Let's fix the left endpoint $l$ and compute how many right endpoints $r$ work for that $l$. First, consider the first position $x>l$ such that $b_x=b_l$. If this doesn't exist, let $x = N + 1$. We can't select any right endpoint $r \ge x$, because this results in the left endpoint leader having the same breed as the cow in position $x$. We can find this position $x$ by either binary searching the index map of $b$ or precomputation.
+
+The right endpoint leader can be handled similarly. For all breeds in the range $(l, x)$, we can only select the first position of that breed $>l$. Thus, the number of right endpoints that work for this $l$ are the number of distinct elements in $(l, x)$. This can be found using a data structure like a BIT (Binary Indexed Tree).
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N\log N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MAXN = 200005;
+int n;
+int breed[MAXN];
+int next_same_breed[MAXN];
+int last_seen[MAXN];
+int bit[MAXN];
+
+void update(int index, int value) {
+	while (index < MAXN) {
+		bit[index] += value;
+		index += index & -index;
+	}
+}
+
+int query(int index) {
+	int res = 0;
+	while (index > 0) {
+		res += bit[index];
+		index -= index & -index;
+	}
+	return res;
+}
+
+int main() {
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
+
+	cin >> n;
+	for (int i = 1; i <= n; ++i) { cin >> breed[i]; }
+
+	unordered_map<int, int> breed_last_pos;
+	for (int i = n; i >= 1; --i) {
+		if (breed_last_pos.count(breed[i])) {
+			next_same_breed[i] = breed_last_pos[breed[i]];
+		} else {
+			next_same_breed[i] = n + 1;
+		}
+		breed_last_pos[breed[i]] = i;
+	}
+
+	fill(last_seen, last_seen + MAXN, 0);
+	fill(bit, bit + MAXN, 0);
+
+	long long answer = 0;
+	for (int l = n; l >= 1; --l) {
+		if (last_seen[breed[l]]) { update(last_seen[breed[l]], -1); }
+		last_seen[breed[l]] = l;
+		update(l, 1);
+
+		int x = next_same_breed[l];
+		int count = query(x - 1) - query(l);
+		answer += count;
+	}
+
+	cout << answer << '\n';
+	return 0;
+}
+```
+
+</CPPSection>
+</LanguageSection>
