@@ -8,6 +8,8 @@ prerequisites:
 frequency: 1
 ---
 
+## Introduction
+
 Imagine you have a vertical line that "sweeps" the plane from left to right.
 That's the main idea behind the sweep line.
 
@@ -19,7 +21,7 @@ at the "critical" positions (e.g. points and intersections).
 <IncompleteSection>
 
 should the reader already be familiar with the 1D case (union of intervals on
-number line?) never explicitly mentioned in module
+number line?) never explicitly mentioned in the module
 
 </IncompleteSection>
 
@@ -38,8 +40,6 @@ number line?) never explicitly mentioned in module
 
 ### Solution
 
-**Time Complexity:** $\mathcal{O}(N\log N)$
-
 The solution uses a sweep line approach. Each interval is converted into two
 events: $(a_i, +1)$ for an arrival and $(b_i, -1)$ for a departure. This
 produces $2N$ events in total.
@@ -55,14 +55,18 @@ $(2,+1), (3,+1), (4,-1), (5,+1), (8,-1), (9,-1)$ with counters $1,2,1,2,1,0$.
 The maximum is $2$.
 
 Creating events takes $\mathcal{O}(N)$, sorting them takes
-$\mathcal{O}(N \log N)$, and the sweep is $\mathcal{O}(N)$. Thus the overall
+$\mathcal{O}(N \log N)$, and the sweep is $\mathcal{O}(N)$. Thus, the overall
 complexity is $\mathcal{O}(N \log N)$.
+
+### Implementation
+
+**Time Complexity:** $\mathcal{O}(N\log N)$
 
 <LanguageSection>
 <CPPSection>
 
 ```cpp
-#include "bits/stdc++.h"
+#include <bits/stdc++.h>
 using namespace std;
 
 int main() {
@@ -97,8 +101,6 @@ int main() {
 <FocusProblem problem="closest" />
 
 ### Solution 1
-
-**Time Complexity:** $\mathcal{O}(N\log N)$
 
 We will use a divide and conquer algorithm. First, sort the points by
 x-coordinate. Now, let $P$ be the subarray of points in the current step. Then,
@@ -139,6 +141,10 @@ Because each step now runs in linear time and there is a total of
 $\lceil \log n \rceil$ steps, by the
 [master theorem](<https://en.wikipedia.org/wiki/Master_theorem_(analysis_of_algorithms)>)
 our solution now runs in $\mathcal{O}(n\log n)$.
+
+### Implementation
+
+**Time Complexity:** $\mathcal{O}(N\log N)$
 
 <LanguageSection>
 <CPPSection>
@@ -228,8 +234,6 @@ int main() {
 
 ### Solution 2
 
-**Time Complexity:** $\mathcal{O}(N\log N)$
-
 Extending Solution 1, we can use a set instead of divide and conquer. Once
 again, we define $\delta$ as the shortest distance between two points so far.
 After sorting the points by x-coordinate, we iterate through them while
@@ -248,6 +252,10 @@ bounding box as Solution 1, with at most 6 points inside.
 For each point, we recalculate $\delta = \min(\delta, \delta_p)$, and update our
 set accordingly. Each point is inserted and removed from the set at most once,
 so the algorithm yields $\mathcal{O}(n\log n)$.
+
+### Implementation
+
+**Time Complexity:** $\mathcal{O}(N\log N)$
 
 <LanguageSection>
 <CPPSection>
@@ -310,7 +318,7 @@ int main() {
 
 <FocusProblem problem="segSam" />
 
-### Solution
+### Solution - Cow Steeplechase II
 
 Let's simplify the problem a little bit and focus on finding any overlapping
 segments.
@@ -338,16 +346,15 @@ Here is an animation of how it works:
 	<source src="/animations/cowsteeplechase.mp4" type="video/mp4"/>
 </video>
 
-## Implementation
+### Implementation
 
-**Time complexity:** $\mathcal{O}(n\log n)$.
+**Time complexity:** $\mathcal{O}(N\log N)$.
 
 <LanguageSection>
 <CPPSection>
 
 ```cpp
 #include <bits/stdc++.h>
-
 using namespace std;
 
 long long sweep_line_x;
@@ -496,13 +503,17 @@ int main() {
 
 <FocusProblem problem="manSam" />
 
+### Solution - Grid MST
+
 The key observation is that although there are many points, they're spread
 across a pretty small surface. Because of this, instead of using Kruskal's or
 Prim's algorithm, we can use Dijkstra's. Starting from an arbitrary point, we
 run Dijkstra's algorithm with a priority queue that will sort the points by
 their distance to the MST.
 
-**Time Complexity:** $\mathcal{O}(S^3\log S)$, where S is the grid size
+### Implementation
+
+**Time Complexity:** $\mathcal{O}(S^3\log S)$, where $S$ is the grid size
 
 <LanguageSection>
 <CPPSection>
@@ -577,6 +588,8 @@ int main() {
 </CPPSection>
 </LanguageSection>
 
+### Problems
+
 <Problems problems="man" />
 
 <!--
@@ -599,8 +612,6 @@ normal line sweep.
 
 ### Solution - Seeing the Boundary
 
-**Complexity:** $\mathcal O(N + Rp_i \log R)$
-
 In this problem, there are three types of events: when our ray hits a fence
 post, enters a rock, or exits a rock.
 
@@ -615,8 +626,11 @@ type-3 events we've processed so far are equal.
 Note that some optimizations (e.g. not constructing the list of fence posts
 explicitly) may be required to get 100 points.
 
-<LanguageSection>
+### Implementation
 
+**Time Complexity:** $\mathcal O(N + Rp_i \log R)$
+
+<LanguageSection>
 <CPPSection>
 
 ```cpp
@@ -723,7 +737,6 @@ int main() {
 ```
 
 </CPPSection>
-
 </LanguageSection>
 
 ### Problems
