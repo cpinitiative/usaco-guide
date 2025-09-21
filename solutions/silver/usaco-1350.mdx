@@ -10,7 +10,7 @@ author: Arnav Gokhale
 
 Notice that it is optimal to place the heaviest cows at the bottom and the lightest cows at the top, which makes the gap as large as possible. So, we can sort the cows from heaviest to lightest. We maintain a sorted queue where the top of the queue is the current heaviest cow. If a cow can't be added to the current heaviest tower, we know it cannot be added to any tower, and therefore that cow can be ignored.
 
-However, this takes $O(c$ $logc$) operations, which is still too slow. To optimize this, instead of considering cows individually, we can group them up by weight and count. Then, by maintaining a queue with the groups of towers with sorted by the weight of the group, we can process all cows in O($N$).
+However, this takes $O(c$ $logc$) operations where c is the total amount of cows, which is still too slow. To optimize this, instead of considering cows individually, we can group them up by weight and count. Then, by maintaining a queue of cow groups sorted by the weight, we can process all cows in O($N$).
 
 Furthermore, each time we process the top group of the queue and add a new group to that group, we can always add this new group back, since it will be the lightest cow out of all so far, since we sort by heaviest to lightest.
 
@@ -38,12 +38,12 @@ int main() {
 	sort(a.begin(), a.end());
 	deque<array<int, 2>> q;
 
-	// Deque that stores the cows based on wieght count pairs
+	// Deque that stores the cows based on weight count pairs
 	q.push_back({-1e9, m});
 
 	// Large value for original tower
 
-	int ct = 0;
+	int count = 0;
 	for (int i = 0; i < n; i++) {
 		int amt = a[i][1];
 		// While there are still cows remaining in the current group and they can
@@ -59,10 +59,11 @@ int main() {
 			}
 		}
 		q.push_back({a[i][0], a[i][1] - amt});
-		ct += a[i][1] - amt;
+		count += a[i][1] - amt;
 	}
-	cout << ct;
+	cout << count;
 }
+
 ```
 
 </CPPSection>
@@ -71,39 +72,39 @@ int main() {
 ```py
 from collections import deque
 
-N, M, K = map(int, input().split())
+n, m, k = map(int, input().split())
 
 pairs = []
-for _ in range(N):
-	w, a = map(int, input().split())
-	pairs.append([w, a])
+for _ in range(n):
+    w, a = map(int, input().split())
+    pairs.append([w, a])
 pairs.sort(reverse=True)
-# Sort by decending weight
+# Sort by descending weight
 
 towers = deque()
 # Queue that stores cows based on weight count pairs
-towers.append([1e100, M])
+towers.append([1e100, m])
 # Use a large value for initial tower
 
 answer = 0
 for w, a in pairs:
-	remaining = a
-	# While there are still cows remaining in the current group and they can
-	# still be placed onto the top of the queue, process
-	while len(towers) > 0 and remaining > 0 and w + K <= towers[0][0]:
-		if towers[0][1] > remaining:
-			towers[0][1] -= remaining
-			remaining = 0
-		else:
-			remaining -= towers[0][1]
-			towers.popleft()
-	cnt = a - remaining
-	if cnt > 0:
-		towers.append([w, cnt])
-		answer += cnt
-
+    remaining = a
+    # While there are still cows remaining in the current group and they can
+    # still be placed onto the top of the queue, process
+    while len(towers) > 0 and remaining > 0 and w + k <= towers[0][0]:
+        if towers[0][1] > remaining:
+            towers[0][1] -= remaining
+            remaining = 0
+        else:
+            remaining -= towers[0][1]
+            towers.popleft()
+    count = a - remaining
+    if count > 0:
+        towers.append([w, count])
+        answer += count
 
 print(answer)
+
 ```
 
 </PySection>
