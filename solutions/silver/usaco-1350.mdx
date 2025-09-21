@@ -4,7 +4,7 @@ source: USACO Silver 2023 December
 title: Bovine Acrobatics
 author: Arnav Gokhale
 ---
-
+[Official Editorial Link](https://usaco.org/current/data/sol_prob1_silver_dec23.html)
 
 ## Explanation
 
@@ -33,31 +33,34 @@ int main() {
 		cin >> a[i][0] >> a[i][1];
 		a[i][1] = min(a[i][1], m);
 	}
+
 	// Sorted list of cows
 	sort(a.begin(), a.end());
-	deque<array<int, 2>> q;
 
-	// Deque that stores the cows based on weight count pairs
-	q.push_back({-1e9, m});
+	// Deque that stores the towers based on weight count pairs
+	deque<array<int, 2>> towers;
 
 	// Large value for original tower
+	towers.push_back({-1e9, m});
 
 	int count = 0;
 	for (int i = 0; i < n; i++) {
 		int amt = a[i][1];
+
 		// While there are still cows remaining in the current group and they can
-		// still be placed onto the top of the queue, process
-		while (q.size() > 0 and q[0][0] <= (a[i][0] - k) and amt > 0) {
-			if (q[0][1] > amt) {
-				q[0][1] -= amt;
+		// still be placed onto the top of the towers, process
+		while (!towers.empty() && towers[0][0] <= (a[i][0] - k) && amt > 0) {
+			if (towers[0][1] > amt) {
+				towers[0][1] -= amt;
 				amt = 0;
 				break;
 			} else {
-				amt -= q[0][1];
-				q.pop_front();
+				amt -= towers[0][1];
+				towers.pop_front();
 			}
 		}
-		q.push_back({a[i][0], a[i][1] - amt});
+
+		towers.push_back({a[i][0], a[i][1] - amt});
 		count += a[i][1] - amt;
 	}
 	cout << count;
