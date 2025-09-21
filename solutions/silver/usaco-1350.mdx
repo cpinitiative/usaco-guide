@@ -128,36 +128,34 @@ public class Main {
 	public static void main(String[] args) throws IOException {
 		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st = new StringTokenizer(read.readLine());
-		int N = Integer.parseInt(st.nextToken());
-		int M = Integer.parseInt(st.nextToken());
-		int K = Integer.parseInt(st.nextToken());
+		int n = Integer.parseInt(st.nextToken());
+		int m = Integer.parseInt(st.nextToken());
+		int k = Integer.parseInt(st.nextToken());
 
-		CowGroup[] cowGroups = new CowGroup[n];
+		Group[] cowGroups = new Group[n];
 
-		for (int i = 0; i < N; i++) {
+		for (int i = 0; i < n; i++) {
 			st = new StringTokenizer(read.readLine());
-			long w = Integer.parseInt(st.nextToken());
+			int w = Integer.parseInt(st.nextToken());
 			int a = Integer.parseInt(st.nextToken());
-			cowGroups[i] = new Group(w, a);
+			cowGroups[i] = new Group(w, Math.min(a, m));
 		}
 
 		Arrays.sort(cowGroups, Comparator.comparingInt(group -> group.weight));
-		// Sort by decending weight
 
-		// Queue that stores cows based on weight count pairs
+		// Queue that stores towers based on weight-count pairs
 		Deque<long[]> towers = new ArrayDeque<>();
-		towers.addFirst(new long[] {(long)-1e18, M});
-		// Use a large value for initial tower
+		towers.addFirst(new long[]{(long) -1e18, m}); // Initial large tower
+
 		long answer = 0;
 
-		for (CowGroup p : pairs) {
-			long w = p.weight;
-			int a = p.amount;
+		for (Group g : cowGroups) {
+			long w = g.weight;
+			int a = g.amt;
 			int remaining = a;
-			// While there are still cows remaining in the current group and they can
-			//  still be placed onto the top of the queue, process
+
 			while (!towers.isEmpty() && remaining > 0 &&
-			       w - K >= towers.peekFirst()[0]) {
+					w - k >= towers.peekFirst()[0]) {
 				long[] top = towers.peekFirst();
 				if (top[1] > remaining) {
 					top[1] -= remaining;
@@ -170,14 +168,15 @@ public class Main {
 
 			int cowsUsed = a - remaining;
 			if (cowsUsed > 0) {
-				towers.addLast(new long[] {w, used});
-				answer += used;
+				towers.addLast(new long[]{w, cowsUsed});
+				answer += cowsUsed;
 			}
 		}
 
 		System.out.println(answer);
 	}
 }
+
 ```
 
 </JavaSection>
