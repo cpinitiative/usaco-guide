@@ -63,7 +63,6 @@ int main() {
 	}
 	cout << count;
 }
-
 ```
 
 </CPPSection>
@@ -76,8 +75,8 @@ n, m, k = map(int, input().split())
 
 pairs = []
 for _ in range(n):
-    w, a = map(int, input().split())
-    pairs.append([w, a])
+	w, a = map(int, input().split())
+	pairs.append([w, a])
 pairs.sort(reverse=True)
 # Sort by descending weight
 
@@ -88,23 +87,22 @@ towers.append([1e100, m])
 
 answer = 0
 for w, a in pairs:
-    remaining = a
-    # While there are still cows remaining in the current group and they can
-    # still be placed onto the top of the queue, process
-    while len(towers) > 0 and remaining > 0 and w + k <= towers[0][0]:
-        if towers[0][1] > remaining:
-            towers[0][1] -= remaining
-            remaining = 0
-        else:
-            remaining -= towers[0][1]
-            towers.popleft()
-    count = a - remaining
-    if count > 0:
-        towers.append([w, count])
-        answer += count
+	remaining = a
+	# While there are still cows remaining in the current group and they can
+	# still be placed onto the top of the queue, process
+	while len(towers) > 0 and remaining > 0 and w + k <= towers[0][0]:
+		if towers[0][1] > remaining:
+			towers[0][1] -= remaining
+			remaining = 0
+		else:
+			remaining -= towers[0][1]
+			towers.popleft()
+	count = a - remaining
+	if count > 0:
+		towers.append([w, count])
+		answer += count
 
 print(answer)
-
 ```
 
 </PySection>
