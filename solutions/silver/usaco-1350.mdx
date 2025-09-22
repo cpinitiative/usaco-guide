@@ -24,8 +24,9 @@ Additionally, each time we process the top group of the queue and add a new cow 
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
+#define int long long
 
-int main() {
+signed main() {
 	int n, m, k;
 	cin >> n >> m >> k;
 	vector<array<int, 2>> cowGroups(n);
@@ -65,6 +66,7 @@ int main() {
 	}
 	cout << count;
 }
+
 ```
 
 </CPPSection>
@@ -116,12 +118,12 @@ import java.util.*;
 
 public class Main {
 	static class Group {
-		final int weight;
-		final int amt;
+		final long weight;
+		final long amount;
 
-		Group(int weight, int amt) {
+		Group(long weight, long amt) {
 			this.weight = weight;
-			this.amt = amt;
+			this.amount = amt;
 		}
 	}
 
@@ -132,16 +134,16 @@ public class Main {
 		int m = Integer.parseInt(st.nextToken());
 		int k = Integer.parseInt(st.nextToken());
 
-		CowGroup[] cowGroups = new CowGroup[n];
+		Group[] cowGroups = new Group[n];
 
 		for (int i = 0; i < n; i++) {
 			st = new StringTokenizer(read.readLine());
 			long w = Integer.parseInt(st.nextToken());
-			int a = Integer.parseInt(st.nextToken());
+			long a = Integer.parseInt(st.nextToken());
 			cowGroups[i] = new Group(w, a);
 		}
 
-		Arrays.sort(cowGroups, Comparator.comparingInt(group -> group.weight));
+		Arrays.sort(cowGroups, Comparator.comparingLong(Group -> Group.weight));
 		// Sort by decending weight
 
 		// Queue that stores cows based on weight count pairs
@@ -150,10 +152,10 @@ public class Main {
 		// Use a large value for initial tower
 		long answer = 0;
 
-		for (CowGroup p : pairs) {
+		for (Group p : cowGroups) {
 			long w = p.weight;
-			int a = p.amount;
-			int remaining = a;
+			long a = p.amount;
+			long remaining = a;
 			// While there are still cows remaining in the current group and they can
 			//  still be placed onto the top of the queue, process
 			while (!towers.isEmpty() && remaining > 0 &&
@@ -168,10 +170,10 @@ public class Main {
 				}
 			}
 
-			int cowsUsed = a - remaining;
+			long cowsUsed = a - remaining;
 			if (cowsUsed > 0) {
-				towers.addLast(new long[] {w, used});
-				answer += used;
+				towers.addLast(new long[] {w, cowsUsed});
+				answer += cowsUsed;
 			}
 		}
 
