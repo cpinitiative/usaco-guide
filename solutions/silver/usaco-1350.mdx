@@ -10,9 +10,9 @@ author: Arnav Gokhale
 
 Notice that it is optimal to place the heaviest cows at the bottom and the lightest cows at the top, which makes the gap as large as possible. Therefore, we can sort the cows from heaviest to lightest. We maintain a sorted queue such that the top is the current heaviest cow. If a cow can't be added to the current heaviest tower, we know that it cannot be added to any tower, and thus that cow can be ignored.
 
-However, this takes $\mathcal{O}(N \log N)$ operations for $N$ total cows, which is too slow. To optimize this, instead of considering cows individually, we can group them up by weight and count. Then, by maintaining a queue of cow groups sorted by weight, we can process all cows in $\mathcal{O}(N)$.
+However, this takes $\mathcal{O}(N \log N)$ operations for $N$ total cows, which is too slow. To optimize this, instead of considering cows individually, we can group towers which have equivalent cow weights at the top together. Then, by maintaining a queue of groups of towers sorted by weight, we can process all cows in $\mathcal{O}(N)$.
 
-Additionally, each time we process the top group of the queue and add a new cow to that group, we can always add this new group back, since it will be lighter than all cows processed before it, since we sorted the cows from heaviest to lightest.
+Additionally, each time we process the top group of the queue and add a new cow weight to that group, we can always add this new group back, since it will be lighter than all cows processed before it, as we sorted the cows from heaviest to lightest.
 
 ## Implementation
 
