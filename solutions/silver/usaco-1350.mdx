@@ -24,33 +24,34 @@ Additionally, each time we process the top group of the queue and add a new cow 
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
-#define int long long
+using ll = long long;
 
-signed main() {
-	int n, m, k;
+int main() {
+	ll n, m, k;
 	cin >> n >> m >> k;
-	vector<array<int, 2>> cowGroups(n);
-	for (int i = 0; i < n; i++) {
+	vector<array<ll, 2>> cowGroups(n);
+	for (ll i = 0; i < n; i++) {
 		cin >> cowGroups[i][0] >> cowGroups[i][1];
 		cowGroups[i][1] = min(cowGroups[i][1], m);
 	}
 
 	// Sorted list of cows
 	sort(cowGroups.begin(), cowGroups.end());
+    reverse(cowGroups.begin(), cowGroups.end());
 
 	// Deque that stores the towers based on weight count pairs
-	deque<array<int, 2>> towers;
+	deque<array<ll, 2>> towers;
 
 	// Large value for original tower
-	towers.push_back({-1000000000, m});
+	towers.push_back({10000000000, m});
 
-	int count = 0;
-	for (int i = 0; i < n; i++) {
-		int amt = cowGroups[i][1];
+	ll count = 0;
+	for (ll i = 0; i < n; i++) {
+		ll amt = cowGroups[i][1];
 
 		// While there are still cows remaining in the current group and they can
 		// still be placed onto the top of the queue, process
-		while (!towers.empty() && towers[0][0] <= (cowGroups[i][0] - k) && amt > 0) {
+		while (!towers.empty() && towers[0][0] >= (cowGroups[i][0] + k) && amt > 0) {
 			if (towers[0][1] > amt) {
 				towers[0][1] -= amt;
 				amt = 0;
