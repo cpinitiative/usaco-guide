@@ -141,7 +141,7 @@ export default function TopNavigationBar({
             action="Register"
             link="https://joincpi.org/classes/register"
           />
-          
+
         </>
       )}
 
