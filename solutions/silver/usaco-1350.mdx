@@ -4,7 +4,8 @@ source: USACO Silver 2023 December
 title: Bovine Acrobatics
 author: Arnav Gokhale
 ---
-[Official Editorial Link](https://usaco.org/current/data/sol_prob1_silver_dec23.html)
+
+[Official Analysis (Python)](https://usaco.org/current/data/sol_prob1_silver_dec23.html)
 
 ## Explanation
 
@@ -30,7 +31,7 @@ int main() {
 	int n, m, k;
 	cin >> n >> m >> k;
 	vector<array<int, 2>> cowGroups(n);
-	for (ll i = 0; i < n; i++) {
+	for (int i = 0; i < n; i++) {
 		cin >> cowGroups[i][0] >> cowGroups[i][1];
 		cowGroups[i][1] = min(cowGroups[i][1], m);
 	}
@@ -43,10 +44,10 @@ int main() {
 	deque<array<ll, 2>> towers;
 
 	// Large value for original tower
-	towers.push_back({10000000000, m});
+	towers.push_back({INT_MAX, m});
 
 	ll count = 0;
-	for (ll i = 0; i < n; i++) {
+	for (int i = 0; i < n; i++) {
 		ll amt = cowGroups[i][1];
 
 		// While there are still cows remaining in the current group and they can
@@ -65,7 +66,8 @@ int main() {
 		towers.push_back({cowGroups[i][0], cowGroups[i][1] - amt});
 		count += cowGroups[i][1] - amt;
 	}
-	cout << count;
+
+	cout << count << '\n';
 }
 ```
 
