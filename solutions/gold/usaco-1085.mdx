@@ -9,6 +9,18 @@ author: Ananth Kashyap, David Guo
 
 ## Solution 1
 
+Let's consider the cows in descending order of height.
+
+First, notice that the number of stalls we can place the tallest cow in is the number of stalls with height greater than or equal to the height of this cow.
+
+Next, the number of stalls we can place the second tallest cow in is the number of stalls at least as tall as this cow, minus one, since the tallest cow already occupies one of these stalls. The key observation here is that this number is independent of which stall the tallest cow is placed in (which is why we sort the cows in descending order).
+
+Similarly, the number of stalls the third tallest cow can be placed in is the number of stalls at least as tall as this cow, minus two, since the two tallest cows occupy two of these stalls.
+
+This pattern continues, so we can compute the answer by simply multiplying all of these numbers (choices) together.
+
+## Implementation
+
 **Time Complexity:** $\mathcal{O}(N^2)$
 
 <LanguageSection>
@@ -131,8 +143,7 @@ print(possibilities)
 
 ## Solution 2
 
-Instead of iterating through $\text{stalls}$ every time, we can use
-[two pointers](/silver/two-pointers).
+Instead of iterating through the stalls each time, we can use [two pointers](/silver/two-pointers).
 
 ## Implementation
 
