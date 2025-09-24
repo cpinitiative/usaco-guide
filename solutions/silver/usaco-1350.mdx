@@ -1,0 +1,188 @@
+---
+id: usaco-1350
+source: USACO Silver 2023 December
+title: Bovine Acrobatics
+author: Arnav Gokhale
+---
+
+[Official Analysis (Python)](https://usaco.org/current/data/sol_prob1_silver_dec23.html)
+
+## Explanation
+
+Notice that it is optimal to place the heaviest cows at the bottom and the lightest cows at the top, which makes the gap as large as possible. Therefore, we can sort the cows from heaviest to lightest. We maintain a sorted queue with these cows. For each cow, if it can't be added to the tower at the front of our queue, we know that it cannot be added to any tower, and thus that cow can be ignored.
+
+However, this takes $\mathcal{O}(N \log N)$ operations for $N$ total cows, which is too slow. To optimize this, instead of considering cows individually, we can group towers which have equivalent cow weights at the top together. Then, by maintaining a queue of groups of towers sorted by weight, we can process all cows in $\mathcal{O}(N)$.
+
+Each time we process a group of cows with the same weight, we will end up adding a new group of cows to our queue. Because we are processing our cows in sorted order, this newest group of towers will be placed at the back of the queue, which maintains the queue's sorted order.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N \log N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+
+int main() {
+	int n, m, k;
+	cin >> n >> m >> k;
+	vector<array<int, 2>> cowGroups(n);
+	for (int i = 0; i < n; i++) {
+		cin >> cowGroups[i][0] >> cowGroups[i][1];
+		cowGroups[i][1] = min(cowGroups[i][1], m);
+	}
+
+	// Sorted list of cows
+	sort(cowGroups.begin(), cowGroups.end());
+	reverse(cowGroups.begin(), cowGroups.end());
+
+	// Deque that stores the towers based on weight count pairs
+	deque<array<ll, 2>> towers;
+
+	// Large value for original tower
+	towers.push_back({INT_MAX, m});
+
+	ll count = 0;
+	for (int i = 0; i < n; i++) {
+		ll amt = cowGroups[i][1];
+
+		// While there are still cows remaining in the current group and they can
+		// still be placed onto the top of the queue, process
+		while (!towers.empty() && towers[0][0] >= (cowGroups[i][0] + k) && amt > 0) {
+			if (towers[0][1] > amt) {
+				towers[0][1] -= amt;
+				amt = 0;
+				break;
+			} else {
+				amt -= towers[0][1];
+				towers.pop_front();
+			}
+		}
+
+		towers.push_back({cowGroups[i][0], cowGroups[i][1] - amt});
+		count += cowGroups[i][1] - amt;
+	}
+
+	cout << count << '\n';
+}
+```
+
+</CPPSection>
+<PySection>
+
+```py
+from collections import deque
+
+n, m, k = map(int, input().split())
+
+pairs = []
+for _ in range(n):
+	w, a = map(int, input().split())
+	pairs.append([w, a])
+pairs.sort(reverse=True)
+# Sort by descending weight
+
+towers = deque()
+# Queue that stores cows based on weight count pairs
+towers.append([1e100, m])
+# Use a large value for initial tower
+
+answer = 0
+for w, a in pairs:
+	remaining = a
+	# While there are still cows remaining in the current group and they can
+	# still be placed onto the top of the queue, process
+	while len(towers) > 0 and remaining > 0 and w + k <= towers[0][0]:
+		if towers[0][1] > remaining:
+			towers[0][1] -= remaining
+			remaining = 0
+		else:
+			remaining -= towers[0][1]
+			towers.popleft()
+	count = a - remaining
+	if count > 0:
+		towers.append([w, count])
+		answer += count
+
+print(answer)
+```
+
+</PySection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Main {
+	static class Group {
+		final long weight;
+		final long amount;
+
+		Group(long weight, long amt) {
+			this.weight = weight;
+			this.amount = amt;
+		}
+	}
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(read.readLine());
+		int n = Integer.parseInt(st.nextToken());
+		int m = Integer.parseInt(st.nextToken());
+		int k = Integer.parseInt(st.nextToken());
+
+		Group[] cowGroups = new Group[n];
+
+		for (int i = 0; i < n; i++) {
+			st = new StringTokenizer(read.readLine());
+			long w = Integer.parseInt(st.nextToken());
+			long a = Integer.parseInt(st.nextToken());
+			cowGroups[i] = new Group(w, a);
+		}
+
+		Arrays.sort(cowGroups, Comparator.comparingLong(Group -> Group.weight));
+		// Sort by decending weight
+
+		// Queue that stores cows based on weight count pairs
+		Deque<long[]> towers = new ArrayDeque<>();
+		towers.addFirst(new long[] {(long)-1e18, m});
+		// Use a large value for initial tower
+		long answer = 0;
+
+		for (Group p : cowGroups) {
+			long w = p.weight;
+			long a = p.amount;
+			long remaining = a;
+			// While there are still cows remaining in the current group and they can
+			//  still be placed onto the top of the queue, process
+			while (!towers.isEmpty() && remaining > 0 &&
+			       w - k >= towers.peekFirst()[0]) {
+				long[] top = towers.peekFirst();
+				if (top[1] > remaining) {
+					top[1] -= remaining;
+					remaining = 0;
+				} else {
+					remaining -= top[1];
+					towers.pollFirst();
+				}
+			}
+
+			long cowsUsed = a - remaining;
+			if (cowsUsed > 0) {
+				towers.addLast(new long[] {w, cowsUsed});
+				answer += cowsUsed;
+			}
+		}
+
+		System.out.println(answer);
+	}
+}
+```
+
+</JavaSection>
+</LanguageSection>
