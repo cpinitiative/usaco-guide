@@ -2,10 +2,20 @@
 id: usaco-991
 source: USACO Silver 2020 January
 title: Loan Repayment
-author: Brad Ma, Raviteja Kompalli, Kevin Sheng
+author: Brad Ma, Raviteja Kompalli, Kevin Sheng, Arnav Gokhale
 ---
 
 [Official Analysis (C++)](http://www.usaco.org/current/data/sol_loan_silver_jan20.html)
+
+## Explanation
+
+Firstly, notice that we can binary serach on the answer, or $X$ in this case. For each $X$, we must check if it is a valid, and update the binary search accordingly.
+
+Notice the constraint on $M$ is up to $10^{12}$, which leads us to believe that the solution will be in square root time. To create a faster search on whether or not a certain $X$ value is valid, we can simulate the process, but process all states where $Y$ does not change at once.
+
+Addiitionally, notice that if Bessie gives more than $\sqrt{2n}$ distinct values of $Y$, then she will have most certainly payed of the debt, since $1 + 2 + ... + \sqrt{2n} \ge N$, meaning the upper bound of operations we must make is $\sqrt{2N}$.
+
+So, you can validate a value of $X$ in $O(\sqrt{N})$, and the whole solution runs in $O(\sqrt{N}log {N})$.
 
 ## Implementation
 **Time Complexity:** $\mathcal{O}(\sqrt{N} \cdot \log{N})$
