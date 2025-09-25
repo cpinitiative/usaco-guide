@@ -8,6 +8,7 @@ author: Akshaj Arora
 [Official Editorial (Java)](https://usaco.org/current/data/sol_disrupt_platinum_open18.html)
 
 ## Explanation
+
 Root the tree arbitrarily. Each original pathway detaches a subtree from the rest of the tree. For a replacement edge to replace this pathway, one of its endpoints must lie in the detached subtree and the other endpoint must lie outside of the subtree. To solve the problem, we need to find the edge with minimum length out of all of these possible edges.
 
 To calculate this, traverse the tree using a DFS, calculating the set of possible edges for each node's subtree. To calculate the set for the current node, we merge the sets of its children, insert all replacement edges that this node is an endpoint of into the set, and remove all edges where this node is the least common ancestor of the endpoints (because both endpoints of these edges are in the subtree of the current node). This runs in $\mathcal{O}(NM \log M)$.
@@ -15,6 +16,7 @@ To calculate this, traverse the tree using a DFS, calculating the set of possibl
 We can optimize this by using small-to-large merging when merging the sets of child nodes. Each insertion moves an element to a set at least twice as large as before, so each element is inserted at most $O(\log M)$ times, meaning that the time complexity of the DFS is $O(N + M \log^2 M)$.
 
 ## Implementation
+
 **Time Complexity:** $\mathcal{O}(N \log N + M \log^2 M)$, although the time complexity of similar solutions may vary based on how LCA is implemented.
 
 <LanguageSection>
