@@ -2,8 +2,8 @@ import * as React from 'react';
 import ReactMarkdown from 'react-markdown';
 import gfm from 'remark-gfm';
 import remarkMath from 'remark-math';
-import customRehypeKatex from '../../mdx-plugins/rehype-math';
 import { useDarkMode } from '../../context/DarkModeContext';
+import customRehypeKatex from '../../mdx-plugins/rehype-math';
 import CodeBlock from '../markdown/CodeBlock/CodeBlock';
 import YouTube from '../markdown/YouTube';
 import Feedback from './Feedback';
@@ -93,13 +93,8 @@ export default function SafeMarkdownRenderer({ children }) {
     <div className="prose dark:prose-light max-w-none">
       <ReactMarkdown
         components={renderers}
-        remarkPlugins={[
-          gfm as any,
-          remarkMath as any
-        ]}
-        rehypePlugins={[
-          customRehypeKatex as any
-        ]}
+        remarkPlugins={[gfm as any, remarkMath as any]}
+        rehypePlugins={[customRehypeKatex as any]}
         linkTarget="_blank"
         className="react-markdown"
       >
