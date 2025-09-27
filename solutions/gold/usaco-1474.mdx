@@ -34,83 +34,81 @@ using namespace std;
 using ll = long long;
 
 struct DSU {
-    vector<int> e, g; // e is size/parent, g is # of ghost nodes (do not count towards size)
-    DSU(int n): e(n, -1), g(n, 0) {}
-    int parent(int x) {
-        if (e[x] < 0) return x;
-        else return e[x] = parent(e[x]);
-    }
-    int size(int x) { // not counting ghost nodes
-        return -e[parent(x)] - g[parent(x)];
-    }
-    bool link(int x, int y) {
-        x = parent(x), y = parent(y);
-        if (x == y) return false;
-        if (e[x] > e[y]) swap(x, y);
-        e[x] += e[y];
-        g[x] += g[y];
-        e[y] = x;
-        return true;
-    }
+	vector<int> e,
+	    g;  // e is size/parent, g is # of ghost nodes (do not count towards size)
+	DSU(int n) : e(n, -1), g(n, 0) {}
+	int parent(int x) {
+		if (e[x] < 0) return x;
+		else return e[x] = parent(e[x]);
+	}
+	int size(int x) {  // not counting ghost nodes
+		return -e[parent(x)] - g[parent(x)];
+	}
+	bool link(int x, int y) {
+		x = parent(x), y = parent(y);
+		if (x == y) return false;
+		if (e[x] > e[y]) swap(x, y);
+		e[x] += e[y];
+		g[x] += g[y];
+		e[y] = x;
+		return true;
+	}
 };
 
-ll c2(ll x) {
-    return x*(x-1)/2;
-}
+ll c2(ll x) { return x * (x - 1) / 2; }
 
 void solve() {
-    int n, m;
-    string s;
-    cin >> n >> m >> s;
-    vector<vector<int>> adj(n);
-    for (int i = 0; i < m; i++) {
-        int a, b;
-        cin >> a >> b;
-        a--; b--;
-        adj[a].push_back(b);
-        adj[b].push_back(a);
-    }
-    
-    // solve
-    DSU dsu(n);
-    for (int i = 0; i < n; i++) {
-        if (s[i] == '1') {
-            dsu.g[dsu.parent(i)]++;
-            for (int j: adj[i]) {
-                if (s[j] == '1') {
-                    dsu.link(i, j);
-                }
-            }
-        }
-    }
+	int n, m;
+	string s;
+	cin >> n >> m >> s;
+	vector<vector<int>> adj(n);
+	for (int i = 0; i < m; i++) {
+		int a, b;
+		cin >> a >> b;
+		a--;
+		b--;
+		adj[a].push_back(b);
+		adj[b].push_back(a);
+	}
 
-    ll cur = 0;
-    vector<ll> ans;
-    for (int i = n-1; i >= 0; i--) {
-        if (s[i] == '1') {
-            cur += dsu.size(i);
-            dsu.g[dsu.parent(i)]--;
-        } else {
-            for (int j: adj[i]) {
-                if (j < i && s[j] == '0') continue;
-                if (dsu.parent(i) == dsu.parent(j)) continue;
-                cur -= c2(dsu.size(i));
-                cur -= c2(dsu.size(j));
-                dsu.link(i, j);
-                cur += c2(dsu.size(i));
-            }
-        }
-        ans.push_back(cur);
-    }
+	// solve
+	DSU dsu(n);
+	for (int i = 0; i < n; i++) {
+		if (s[i] == '1') {
+			dsu.g[dsu.parent(i)]++;
+			for (int j : adj[i]) {
+				if (s[j] == '1') { dsu.link(i, j); }
+			}
+		}
+	}
 
-    // ans
-    reverse(ans.begin(), ans.end());
-    for (auto i: ans) cout << i << '\n';
+	ll cur = 0;
+	vector<ll> ans;
+	for (int i = n - 1; i >= 0; i--) {
+		if (s[i] == '1') {
+			cur += dsu.size(i);
+			dsu.g[dsu.parent(i)]--;
+		} else {
+			for (int j : adj[i]) {
+				if (j < i && s[j] == '0') continue;
+				if (dsu.parent(i) == dsu.parent(j)) continue;
+				cur -= c2(dsu.size(i));
+				cur -= c2(dsu.size(j));
+				dsu.link(i, j);
+				cur += c2(dsu.size(i));
+			}
+		}
+		ans.push_back(cur);
+	}
+
+	// ans
+	reverse(ans.begin(), ans.end());
+	for (auto i : ans) cout << i << '\n';
 }
 
 signed main() {
-    cin.tie(0)->sync_with_stdio(0);
-    solve();
+	cin.tie(0)->sync_with_stdio(0);
+	solve();
 }
 ```
 </CPPSection>
