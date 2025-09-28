@@ -13,13 +13,13 @@ The problem asks us to find the number of pairs of nodes that are reachable from
 $$
 \sum_{i=1}^{k}{\binom{a_i}{2}}
 $$
-since two nodes are reachable if and only if they belong to the same connected component. To maintain the values of $a_i$, we can use a [DSU](https://usaco.guide/gold/dsu).
+since two nodes are reachable if and only if they belong to the same connected component. To maintain the values of $a_i$, we can use a [Disjoint Set Union (DSU)](/gold/dsu).
 
 At each timestamp $i$, if $s_i = 0$, then node $i$ is removed from its component, reducing its size by $1$. Since all edges incident to node $i$ are removed, this component might also split into multiple components. If $s_i = 1$, then the component also reduces in size by $1$, but it adds edges between all pairs of node $i$'s neighbors, preventing the component from splitting. It turns out that this has the same effect on the answer as reducing the size of node $i$'s component by $1$ without removing any of the edges incident to $i$.
 
-Since removing edges is not possible on a DSU, we instead simulate the process in reverse, starting with the final graph's DSU and adding edges and nodes as we go backwards. To create this final graph, set the sizes of the components of nodes where $s_i = 1$ to $0$ (all other components should start with size $1$). Then, connect all edges between nodes $i$ and $j$ where $s_i = s_j = 1$. Now, we process each $s_i$ in reverse. If $s_i = 1$, then increase the size of node $i$'s component by $1$. Else, if $s_i = 0$, add all edges incident to node $i$ to the DSU.
+Since removing edges is not possible on a DSU, we instead simulate the process in reverse, starting with the final graph's DSU and adding edges and nodes as we go backwards. To create this final graph, we set the sizes of the components of nodes where $s_i = 1$ to $0$ (all other components should start with size $1$). Then, connect all edges between nodes $i$ and $j$ where $s_i = s_j = 1$. Now, we process each $s_i$ in reverse. If $s_i = 1$, then increase the size of node $i$'s component by $1$. Otherwise, if $s_i = 0$, add all edges incident to node $i$ to our DSU.
 
-To keep track of the answer, we can store a variable $ans$ (initially equal to $0$). Whenever two components of size $x$ and $y$ are linked, add $\binom{x+y}{2}-\binom{x}{2}-\binom{y}{2}$ to $ans$. Whenever the size of a component is changed from $x$ to $x+1$, add $\binom{x+1}{2}-\binom{x}{2}=x$ to $ans$.
+To compute the answer, we can store a variable $ans$ (initially equal to $0$). Whenever two components of size $x$ and $y$ are linked, add $\binom{x+y}{2}-\binom{x}{2}-\binom{y}{2}$ to $ans$. Whenever the size of a component is changed from $x$ to $x+1$, add $\binom{x+1}{2}-\binom{x}{2}=x$ to $ans$.
 
 ## Implementation
 
