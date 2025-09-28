@@ -34,81 +34,76 @@ using namespace std;
 using ll = long long;
 
 struct DSU {
-    // s is size of component, p is parent
-    vector<int> p, s;
-    DSU(int n): p(n, -1), s(n, 1) {}
-    int parent(int x) {
-        if (p[x] == -1) return x;
-        else return p[x] = parent(p[x]);
-    }
-    int& size(int x) {
-        return s[parent(x)];
-    }
-    bool link(int x, int y) {
-        x = parent(x), y = parent(y);
-        if (x == y) return false;
-        if (size(x) < size(y)) swap(x, y);
-        s[x] += s[y];
-        p[y] = x;
-        return true;
-    }
+	// s is size of component, p is parent
+	vector<int> p, s;
+	DSU(int n) : p(n, -1), s(n, 1) {}
+	int parent(int x) {
+		if (p[x] == -1) return x;
+		else return p[x] = parent(p[x]);
+	}
+	int &size(int x) { return s[parent(x)]; }
+	bool link(int x, int y) {
+		x = parent(x), y = parent(y);
+		if (x == y) return false;
+		if (size(x) < size(y)) swap(x, y);
+		s[x] += s[y];
+		p[y] = x;
+		return true;
+	}
 };
 
-ll xchoose2(ll x) {
-    return x*(x-1)/2;
-}
+ll xchoose2(ll x) { return x * (x - 1) / 2; }
 
 void solve() {
-    int n, m;
-    string s;
-    cin >> n >> m >> s;
-    vector<vector<int>> adj(n);
-    for (int i = 0; i < m; i++) {
-        int a, b;
-        cin >> a >> b;
-        a--; b--;
-        adj[a].push_back(b);
-        adj[b].push_back(a);
-    }
-    
-    DSU dsu(n);
-    for (int i = 0; i < n; i++) {
-        if (s[i] == '1') {
-            dsu.size(i) = 0;
-            for (int j: adj[i]) {
-                if (s[j] == '1') {
-                    dsu.link(i, j);
-                }
-            }
-        }
-    }
+	int n, m;
+	string s;
+	cin >> n >> m >> s;
+	vector<vector<int>> adj(n);
+	for (int i = 0; i < m; i++) {
+		int a, b;
+		cin >> a >> b;
+		a--;
+		b--;
+		adj[a].push_back(b);
+		adj[b].push_back(a);
+	}
 
-    ll pairs = 0;
-    vector<ll> ans;
-    for (int i = n-1; i >= 0; i--) {
-        if (s[i] == '1') {
-            pairs += dsu.size(i);
-            dsu.size(i)++;
-        } else {
-            for (int j: adj[i]) {
-                if (j < i && s[j] == '0') continue;
-                if (dsu.parent(i) == dsu.parent(j)) continue;
-                pairs -= xchoose2(dsu.size(i));
-                pairs -= xchoose2(dsu.size(j));
-                dsu.link(i, j);
-                pairs += xchoose2(dsu.size(i));
-            }
-        }
-        ans.push_back(pairs);
-    }
+	DSU dsu(n);
+	for (int i = 0; i < n; i++) {
+		if (s[i] == '1') {
+			dsu.size(i) = 0;
+			for (int j : adj[i]) {
+				if (s[j] == '1') { dsu.link(i, j); }
+			}
+		}
+	}
 
-    reverse(ans.begin(), ans.end());
-    for (auto i: ans) cout << i << '\n';
+	ll pairs = 0;
+	vector<ll> ans;
+	for (int i = n - 1; i >= 0; i--) {
+		if (s[i] == '1') {
+			pairs += dsu.size(i);
+			dsu.size(i)++;
+		} else {
+			for (int j : adj[i]) {
+				if (j < i && s[j] == '0') continue;
+				if (dsu.parent(i) == dsu.parent(j)) continue;
+				pairs -= xchoose2(dsu.size(i));
+				pairs -= xchoose2(dsu.size(j));
+				dsu.link(i, j);
+				pairs += xchoose2(dsu.size(i));
+			}
+		}
+		ans.push_back(pairs);
+	}
+
+	reverse(ans.begin(), ans.end());
+	for (auto i : ans) cout << i << '\n';
 }
 
 signed main() {
-    cin.tie(0)->sync_with_stdio(0);
-    solve();
+	cin.tie(0)->sync_with_stdio(0);
+	solve();
 }
 ```
 </CPPSection>
