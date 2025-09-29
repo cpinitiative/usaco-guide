@@ -124,170 +124,154 @@ import java.io.*;
 import java.util.*;
 
 public class CoinCollector {
-    static ArrayList<Integer>[] graph, revGraph, dag;
-    static boolean[] visited;
-    static int[] comp;
-    static long[] coins, compCoins, dp;
-    static ArrayDeque<Integer> stack;
+	static ArrayList<Integer>[] graph, revGraph, dag;
+	static boolean[] visited;
+	static int[] comp;
+	static long[] coins, compCoins, dp;
+	static ArrayDeque<Integer> stack;
 
-    public static void main(String[] args) throws IOException {
-        FastScanner fs = new FastScanner(System.in);
-        PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)));
+	public static void main(String[] args) throws IOException {
+		FastScanner fs = new FastScanner(System.in);
+		PrintWriter out =
+		    new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)));
 
-        int n = fs.nextInt();
-        int m = fs.nextInt();
+		int n = fs.nextInt();
+		int m = fs.nextInt();
 
-        coins = new long[n];
-        for (int i = 0; i < n; i++)
-            coins[i] = fs.nextLong();
+		coins = new long[n];
+		for (int i = 0; i < n; i++) coins[i] = fs.nextLong();
 
-        graph = new ArrayList[n];
-        revGraph = new ArrayList[n];
-        for (int i = 0; i < n; i++) {
-            graph[i] = new ArrayList<>();
-            revGraph[i] = new ArrayList<>();
-        }
+		graph = new ArrayList[n];
+		revGraph = new ArrayList[n];
+		for (int i = 0; i < n; i++) {
+			graph[i] = new ArrayList<>();
+			revGraph[i] = new ArrayList<>();
+		}
 
-        for (int i = 0; i < m; i++) {
-            int a = fs.nextInt() - 1;
-            int b = fs.nextInt() - 1;
-            graph[a].add(b);
-            revGraph[b].add(a);
-        }
+		for (int i = 0; i < m; i++) {
+			int a = fs.nextInt() - 1;
+			int b = fs.nextInt() - 1;
+			graph[a].add(b);
+			revGraph[b].add(a);
+		}
 
-        // Run Kosaraju
-        int compId = kosaraju(n);
+		// Run Kosaraju
+		int compId = kosaraju(n);
 
-        // Compress SCC coins
-        compCoins = new long[compId];
-        for (int i = 0; i < n; i++)
-            compCoins[comp[i]] += coins[i];
+		// Compress SCC coins
+		compCoins = new long[compId];
+		for (int i = 0; i < n; i++) compCoins[comp[i]] += coins[i];
 
-        // Build DAG
-        dag = new ArrayList[compId];
-        for (int i = 0; i < compId; i++)
-            dag[i] = new ArrayList<>();
-        for (int u = 0; u < n; u++) {
-            for (int v : graph[u]) {
-                if (comp[u] != comp[v])
-                    dag[comp[u]].add(comp[v]);
-            }
-        }
+		// Build DAG
+		dag = new ArrayList[compId];
+		for (int i = 0; i < compId; i++) dag[i] = new ArrayList<>();
+		for (int u = 0; u < n; u++) {
+			for (int v : graph[u]) {
+				if (comp[u] != comp[v]) dag[comp[u]].add(comp[v]);
+			}
+		}
 
-        // DP on DAG (longest path)
-        dp = new long[compId];
-        long ans = 0;
+		// DP on DAG (longest path)
+		dp = new long[compId];
+		long ans = 0;
 
-        boolean[] seen = new boolean[compId];
-        ArrayDeque<Integer> topo = new ArrayDeque<>();
-        for (int i = 0; i < compId; i++) {
-            if (!seen[i])
-                topoSort(i, seen, topo);
-        }
+		boolean[] seen = new boolean[compId];
+		ArrayDeque<Integer> topo = new ArrayDeque<>();
+		for (int i = 0; i < compId; i++) {
+			if (!seen[i]) topoSort(i, seen, topo);
+		}
 
-        while (!topo.isEmpty()) {
-            int u = topo.pollLast();
-            if (dp[u] == 0)
-                dp[u] = compCoins[u];
-            ans = Math.max(ans, dp[u]);
-            for (int v : dag[u])
-                dp[v] = Math.max(dp[v], dp[u] + compCoins[v]);
-        }
+		while (!topo.isEmpty()) {
+			int u = topo.pollLast();
+			if (dp[u] == 0) dp[u] = compCoins[u];
+			ans = Math.max(ans, dp[u]);
+			for (int v : dag[u]) dp[v] = Math.max(dp[v], dp[u] + compCoins[v]);
+		}
 
-        out.println(ans);
-        out.flush();
-    }
+		out.println(ans);
+		out.flush();
+	}
 
-    // ---- Kosaraju’s Algorithm ----
-    static int kosaraju(int n) {
-        visited = new boolean[n];
-        stack = new ArrayDeque<>();
+	// ---- Kosaraju’s Algorithm ----
+	static int kosaraju(int n) {
+		visited = new boolean[n];
+		stack = new ArrayDeque<>();
 
-        // First pass: fill order
-        for (int i = 0; i < n; i++) {
-            if (!visited[i])
-                dfs1(i);
-        }
+		// First pass: fill order
+		for (int i = 0; i < n; i++) {
+			if (!visited[i]) dfs1(i);
+		}
 
-        // Second pass: assign components
-        comp = new int[n];
-        Arrays.fill(comp, -1);
-        int compId = 0;
-        while (!stack.isEmpty()) {
-            int node = stack.pollLast();
-            if (comp[node] == -1) {
-                dfs2(node, compId);
-                compId++;
-            }
-        }
-        return compId;
-    }
+		// Second pass: assign components
+		comp = new int[n];
+		Arrays.fill(comp, -1);
+		int compId = 0;
+		while (!stack.isEmpty()) {
+			int node = stack.pollLast();
+			if (comp[node] == -1) {
+				dfs2(node, compId);
+				compId++;
+			}
+		}
+		return compId;
+	}
 
-    static void dfs1(int u) {
-        visited[u] = true;
-        for (int v : graph[u])
-            if (!visited[v])
-                dfs1(v);
-        stack.add(u);
-    }
+	static void dfs1(int u) {
+		visited[u] = true;
+		for (int v : graph[u])
+			if (!visited[v]) dfs1(v);
+		stack.add(u);
+	}
 
-    static void dfs2(int u, int id) {
-        comp[u] = id;
-        for (int v : revGraph[u])
-            if (comp[v] == -1)
-                dfs2(v, id);
-    }
+	static void dfs2(int u, int id) {
+		comp[u] = id;
+		for (int v : revGraph[u])
+			if (comp[v] == -1) dfs2(v, id);
+	}
 
-    static void topoSort(int u, boolean[] seen, ArrayDeque<Integer> topo) {
-        seen[u] = true;
-        for (int v : dag[u])
-            if (!seen[v])
-                topoSort(v, seen, topo);
-        topo.add(u);
-    }
+	static void topoSort(int u, boolean[] seen, ArrayDeque<Integer> topo) {
+		seen[u] = true;
+		for (int v : dag[u])
+			if (!seen[v]) topoSort(v, seen, topo);
+		topo.add(u);
+	}
 
-    // ---- FastScanner ----
-    static class FastScanner {
-        private final InputStream in;
-        private final byte[] buffer = new byte[1 << 16];
-        private int ptr = 0, len = 0;
+	// ---- FastScanner ----
+	static class FastScanner {
+		private final InputStream in;
+		private final byte[] buffer = new byte[1 << 16];
+		private int ptr = 0, len = 0;
 
-        FastScanner(InputStream in) {
-            this.in = in;
-        }
+		FastScanner(InputStream in) { this.in = in; }
 
-        private int readByte() throws IOException {
-            if (ptr >= len) {
-                ptr = 0;
-                len = in.read(buffer);
-                if (len <= 0)
-                    return -1;
-            }
-            return buffer[ptr++];
-        }
+		private int readByte() throws IOException {
+			if (ptr >= len) {
+				ptr = 0;
+				len = in.read(buffer);
+				if (len <= 0) return -1;
+			}
+			return buffer[ptr++];
+		}
 
-        long nextLong() throws IOException {
-            int c;
-            while ((c = readByte()) <= ' ')
-                if (c == -1)
-                    return -1;
-            boolean neg = false;
-            if (c == '-') {
-                neg = true;
-                c = readByte();
-            }
-            long val = 0;
-            while (c > ' ') {
-                val = val * 10 + (c - '0');
-                c = readByte();
-            }
-            return neg ? -val : val;
-        }
+		long nextLong() throws IOException {
+			int c;
+			while ((c = readByte()) <= ' ')
+				if (c == -1) return -1;
+			boolean neg = false;
+			if (c == '-') {
+				neg = true;
+				c = readByte();
+			}
+			long val = 0;
+			while (c > ' ') {
+				val = val * 10 + (c - '0');
+				c = readByte();
+			}
+			return neg ? -val : val;
+		}
 
-        int nextInt() throws IOException {
-            return (int) nextLong();
-        }
-    }
+		int nextInt() throws IOException { return (int)nextLong(); }
+	}
 }
 ```
 
