@@ -26,55 +26,61 @@ We sweep from left to right, and maintain the BIT accordingly by inserting breed
 #include <bits/stdc++.h>
 using namespace std;
 
+// BeginCodeSnip{BIT}
+template <class T> class BIT {
+  private:
+	int size;
+	vector<T> bit;
+	vector<T> arr;
+
+  public:
+	BIT(int size) : size(size), bit(size + 1), arr(size) {}
+
+	void set(int ind, T val) { add(ind, val - arr[ind]); }
+
+	void add(int ind, T val) {
+		arr[ind] += val;
+		ind++;
+		for (; ind <= size; ind += ind & -ind) { bit[ind] += val; }
+	}
+
+	T pref_sum(int ind) {
+		ind++;
+		T total = 0;
+		for (; ind > 0; ind -= ind & -ind) { total += bit[ind]; }
+		return total;
+	}
+};
+// EndCodeSnip
+
 const int MAXN = 200005;
 int n;
-int breed[MAXN];
-int next_same_breed[MAXN];
-int last_seen[MAXN];
-int bit[MAXN];
-
-void update(int index, int value) {
-	while (index < MAXN) {
-		bit[index] += value;
-		index += index & -index;
-	}
-}
-
-int query(int index) {
-	int res = 0;
-	while (index > 0) {
-		res += bit[index];
-		index -= index & -index;
-	}
-	return res;
-}
+vector<int> breed(MAXN);
+vector<int> last_seen(MAXN);
 
 int main() {
-
 	cin >> n;
-	for (int i = 1; i <= n; ++i) { cin >> breed[i]; }
-
-	unordered_map<int, int> breed_last_pos;
-	for (int i = n; i >= 1; --i) {
-		if (breed_last_pos.count(breed[i])) {
-			next_same_breed[i] = breed_last_pos[breed[i]];
-		} else {
-			next_same_breed[i] = n + 1;
-		}
-		breed_last_pos[breed[i]] = i;
+	for (int i = 1; i <= n; ++i) {
+		cin >> breed[i];
 	}
 
-	fill(last_seen, last_seen + MAXN, 0);
-	fill(bit, bit + MAXN, 0);
+	map<int, int> breed_last_pos;
+	fill(last_seen.begin(), last_seen.end(), 0);
+	BIT<int> bit(MAXN);
 
 	long long answer = 0;
 	for (int l = n; l >= 1; --l) {
-		if (last_seen[breed[l]]) { update(last_seen[breed[l]], -1); }
-		last_seen[breed[l]] = l;
-		update(l, 1);
 
-		int x = next_same_breed[l];
-		int count = query(x - 1) - query(l);
+		int x = (breed_last_pos.count(breed[l]) ? breed_last_pos[breed[l]] : n + 1);
+		breed_last_pos[breed[l]] = l;
+
+		if (last_seen[breed[l]]) {
+			bit.add(last_seen[breed[l]], -1);
+		}
+		last_seen[breed[l]] = l;
+		bit.add(l, 1);
+
+		int count = bit.pref_sum(x - 1) - bit.pref_sum(l);
 		answer += count;
 	}
 
