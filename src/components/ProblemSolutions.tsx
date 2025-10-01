@@ -1,7 +1,15 @@
-import { ExternalLinkIcon } from '@heroicons/react/solid';
+import {
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuItems,
+  Transition,
+} from '@headlessui/react';
+import { ChevronDownIcon, ExternalLinkIcon } from '@heroicons/react/solid';
 import Filter from 'bad-words';
+import classNames from 'classnames';
 import * as React from 'react';
-import { useState } from 'react';
+import { Fragment, useState } from 'react';
 import {
   moduleIDToSectionMap,
   moduleIDToURLMap,
@@ -12,6 +20,7 @@ import { useDarkMode } from '../context/DarkModeContext';
 import { useSignIn } from '../context/SignInContext';
 import {
   LANGUAGE_LABELS,
+  useSetUserLangSetting,
   useUserLangSetting,
 } from '../context/UserDataContext/properties/simpleProperties';
 import { useFirebaseUser } from '../context/UserDataContext/UserDataContext';
@@ -20,17 +29,6 @@ import useUserProblemSolutionActions from '../hooks/useUserProblemSolutionAction
 import useUserSolutionsForProblem from '../hooks/useUserSolutionsForProblem';
 import { ShortProblemInfo } from '../models/problem';
 import CodeBlock from './markdown/CodeBlock/CodeBlock';
-import {
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuItems,
-  Transition,
-} from '@headlessui/react';
-import { ChevronDownIcon } from '@heroicons/react/solid';
-import classNames from 'classnames';
-import { Fragment } from 'react';
-import { useSetUserLangSetting } from '../context/UserDataContext/properties/simpleProperties';
 
 export default function ProblemSolutions({
   modulesThatHaveProblem,
@@ -54,7 +52,7 @@ export default function ProblemSolutions({
   const isDarkMode = useDarkMode();
   const filter = new Filter();
   const langArr: ('cpp' | 'java' | 'py')[] = ['cpp', 'java', 'py'];
-  langArr.sort(function(first, second) {
+  langArr.sort(function (first, second) {
     if (first === lang && second !== lang) {
       return -1;
     } else if (first !== lang && second === lang) {
@@ -72,8 +70,9 @@ export default function ProblemSolutions({
   const moduleHeaderLinks: { label: string; url?: string }[] =
     modulesThatHaveProblem.map(module => {
       return {
-        label: `${SECTION_LABELS[moduleIDToSectionMap[module.id]]} - ${module.title
-          }`,
+        label: `${SECTION_LABELS[moduleIDToSectionMap[module.id]]} - ${
+          module.title
+        }`,
         url: `${moduleIDToURLMap[module.id]}#problem-${problem!.uniqueId}`,
       };
     });
@@ -94,14 +93,13 @@ export default function ProblemSolutions({
         </p>
 
         <div className="mt-4 rounded-md bg-gray-50 px-4 py-5 sm:p-6 dark:bg-gray-900">
-
           <div className="mb-4 flex items-center justify-end">
             <Menu as="div" className="relative inline-block text-left">
               {({ open }) => (
                 <>
                   <div className="-mt-1">
                     <MenuButton
-                      className="-mx-1 inline-flex w-full items-center rounded-md px-1 text-sm font-medium text-gray-700 focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-50 dark:text-gray-200 dark:focus:ring-offset-gray-900"
+                      className="-mx-1 inline-flex w-full items-center rounded-md px-1 text-sm font-medium text-gray-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-50 focus:outline-hidden dark:text-gray-200 dark:focus:ring-offset-gray-900"
                       style={{ width: 'fit-content' }}
                     >
                       Language: {LANGUAGE_LABELS[lang]}
