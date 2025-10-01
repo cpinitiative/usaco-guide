@@ -52,7 +52,7 @@ export default function ProblemSolutions({
   const isDarkMode = useDarkMode();
   const filter = new Filter();
   const langArr: ('cpp' | 'java' | 'py')[] = ['cpp', 'java', 'py'];
-  langArr.sort(function(first, second) {
+  langArr.sort(function (first, second) {
     if (first === lang && second !== lang) {
       return -1;
     } else if (first !== lang && second === lang) {
@@ -70,8 +70,9 @@ export default function ProblemSolutions({
   const moduleHeaderLinks: { label: string; url?: string }[] =
     modulesThatHaveProblem.map(module => {
       return {
-        label: `${SECTION_LABELS[moduleIDToSectionMap[module.id]]} - ${module.title
-          }`,
+        label: `${SECTION_LABELS[moduleIDToSectionMap[module.id]]} - ${
+          module.title
+        }`,
         url: `${moduleIDToURLMap[module.id]}#problem-${problem!.uniqueId}`,
       };
     });
