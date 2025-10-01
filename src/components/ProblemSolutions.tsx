@@ -95,7 +95,7 @@ export default function ProblemSolutions({
 
         <div className="mt-4 rounded-md bg-gray-50 px-4 py-5 sm:p-6 dark:bg-gray-900">
 
-          <div className="mb-4 flex items-center justify-end">
+          <div className="mb-4 flex items-center justify-start">
             <Menu as="div" className="relative inline-block text-left">
               {({ open }) => (
                 <>
