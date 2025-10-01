@@ -2,10 +2,16 @@
 id: usaco-836
 source: USACO Silver 2018 US Open
 title: Multiplayer Moo
-author: Kevin Sheng
+author: Kevin Sheng, David Zhou
 ---
 
 [Official Editorial (C++)](http://www.usaco.org/current/data/sol_multimoo_silver_open18.html)
+
+## Explanation 1:
+
+We first find the largest **one-cow** region through floodfills from every non-visited cell.
+
+The largest **two-cow** region *technically* takes an optimization to pass in time. We map every cell to its floodfilled component. We then build edges between all adjacent cells of different colors. Finally, instead of doing a floodfill from every differing pair of adjacent colors, we can use the edges between components and add up the sizes for entire regions at once. We fix the first component and iterate over all adjacent ones for this floodfill. The region sizes are determined from the **one-cow** floodfill from earlier.
 
 The solution uses an iterative approach to floodfill instead of a recursive approach.
 
@@ -139,4 +145,532 @@ int main() {
 ```
 
 </CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Multimoo {
+	private int n, cnt, id = 1;
+	private Map<Integer, Integer> idToSize = new HashMap<>();
+	private Map<Integer, Integer> idToColor = new HashMap<>();
+	private Map<Integer, List<Integer>> componentAdj = new HashMap<>();
+	private int[][] grid, ids;
+	private int[] dirr = {1, 0, -1, 0};
+	private int[] dirc = {0, 1, 0, -1};
+
+	private void floodFill(int r, int c, int color) {
+		for (int i = 0; i < 4; i++) {
+			int nextR = r + dirr[i];
+			int nextC = c + dirc[i];
+			if (nextR >= 0 && nextR < n && nextC >= 0 && nextC < n &&
+			    ids[nextR][nextC] == 0 && grid[nextR][nextC] == color) {
+				ids[nextR][nextC] = id;
+				cnt++;
+				floodFill(nextR, nextC, color);
+			}
+		}
+	}
+
+	private int dfsTwoColor(int compId, int color1, int color2,
+	                        Map<Integer, Boolean> visited) {
+		if (visited.getOrDefault(compId, false) ||
+		    (idToColor.get(compId) != color1 && idToColor.get(compId) != color2)) {
+			return 0;
+		}
+		visited.put(compId, true);
+		int totalSize = idToSize.get(compId);
+
+		List<Integer> neighbors = componentAdj.getOrDefault(compId, new ArrayList<>());
+		for (int neighbor : neighbors) {
+			totalSize += dfsTwoColor(neighbor, color1, color2, visited);
+		}
+		return totalSize;
+	}
+
+	public void solve() throws IOException {
+		BufferedReader br = new BufferedReader(new FileReader("multimoo.in"));
+		PrintWriter pw = new PrintWriter(new FileWriter("multimoo.out"));
+
+		n = Integer.parseInt(br.readLine());
+		grid = new int[n][n];
+		ids = new int[n][n];
+
+		for (int i = 0; i < n; i++) {
+			String[] line = br.readLine().split(" ");
+			for (int j = 0; j < n; j++) { grid[i][j] = Integer.parseInt(line[j]); }
+		}
+
+		int res1 = 0;
+		// finding size of every region
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
+				if (ids[i][j] == 0) {
+					ids[i][j] = id;
+					cnt = 1;  // count the current cell
+					idToColor.put(id, grid[i][j]);
+					floodFill(i, j, grid[i][j]);
+					res1 = Math.max(res1, cnt);
+					idToSize.put(id, cnt);
+					id++;
+				}
+			}
+		}
+
+		// build component adjacency graph
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
+				// check right neighbor
+				if (j + 1 < n && ids[i][j] != ids[i][j + 1]) {
+					int id1 = ids[i][j], id2 = ids[i][j + 1];
+					componentAdj.computeIfAbsent(id1, k -> new ArrayList<>()).add(id2);
+					componentAdj.computeIfAbsent(id2, k -> new ArrayList<>()).add(id1);
+				}
+				// check bottom neighbor
+				if (i + 1 < n && ids[i][j] != ids[i + 1][j]) {
+					int id1 = ids[i][j], id2 = ids[i + 1][j];
+					componentAdj.computeIfAbsent(id1, k -> new ArrayList<>()).add(id2);
+					componentAdj.computeIfAbsent(id2, k -> new ArrayList<>()).add(id1);
+				}
+			}
+		}
+
+		// remove duplicates from adjacency lists
+		for (List<Integer> neighbors : componentAdj.values()) {
+			Collections.sort(neighbors);
+			neighbors = neighbors.stream().distinct().collect(
+			    java.util.stream.Collectors.toList());
+		}
+
+		int res2 = res1;
+		// compute two-color regions using component graph traversal
+		Set<String> processedPairs = new HashSet<>();
+
+		for (Map.Entry<Integer, List<Integer>> entry : componentAdj.entrySet()) {
+			int compId = entry.getKey();
+			List<Integer> neighbors = entry.getValue();
+
+			for (int neighborId : neighbors) {
+				int color1 = idToColor.get(compId);
+				int color2 = idToColor.get(neighborId);
+
+				// ensure consistent ordering to avoid duplicate work
+				if (color1 > color2) {
+					int temp = color1;
+					color1 = color2;
+					color2 = temp;
+				}
+
+				String colorPair = color1 + "," + color2;
+				if (processedPairs.contains(colorPair)) { continue; }
+				processedPairs.add(colorPair);
+
+				// traverse the two-color region starting from this component
+				Map<Integer, Boolean> visited = new HashMap<>();
+				int regionSize = dfsTwoColor(compId, color1, color2, visited);
+				res2 = Math.max(res2, regionSize);
+			}
+		}
+
+		pw.println(res1);
+		pw.println(res2);
+
+		br.close();
+		pw.close();
+	}
+
+	public static void main(String[] args) throws IOException {
+		new Multimoo().solve();
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+from collections import defaultdict, deque
+
+
+def flood_fill(r, c, color, n, grid, ids, id_val, cnt):
+	dirr = [1, 0, -1, 0]
+	dirc = [0, 1, 0, -1]
+
+	queue = deque([(r, c)])
+
+	while queue:
+		curr_r, curr_c = queue.popleft()
+
+		for i in range(4):
+			next_r = curr_r + dirr[i]
+			next_c = curr_c + dirc[i]
+			if (
+				0 <= next_r < n
+				and 0 <= next_c < n
+				and ids[next_r][next_c] == 0
+				and grid[next_r][next_c] == color
+			):
+				ids[next_r][next_c] = id_val
+				cnt[0] += 1
+				queue.append((next_r, next_c))
+
+
+def dfs_two_color(start_comp, color1, color2, id_to_color, id_to_size, component_adj):
+	visited = set()
+	stack = [start_comp]
+	total_size = 0
+
+	while stack:
+		comp_id = stack.pop()
+
+		if comp_id in visited:
+			continue
+
+		comp_color = id_to_color[comp_id]
+		if comp_color != color1 and comp_color != color2:
+			continue
+
+		visited.add(comp_id)
+		total_size += id_to_size[comp_id]
+
+		for neighbor in component_adj[comp_id]:
+			if neighbor not in visited:
+				neighbor_color = id_to_color[neighbor]
+				if neighbor_color == color1 or neighbor_color == color2:
+					stack.append(neighbor)
+
+	return total_size
+
+
+with open("multimoo.in", "r") as f:
+	n = int(f.readline().strip())
+	grid = []
+	ids = [[0] * n for _ in range(n)]
+
+	for i in range(n):
+		row = list(map(int, f.readline().strip().split()))
+		grid.append(row)
+
+id_val = 1
+id_to_size = {}
+id_to_color = {}
+component_adj = defaultdict(list)
+
+res1 = 0
+# finding size of every region
+for i in range(n):
+	for j in range(n):
+		if ids[i][j] == 0:
+			ids[i][j] = id_val
+			cnt = [1]  # count the current cell (use list for reference)
+			id_to_color[id_val] = grid[i][j]
+			flood_fill(i, j, grid[i][j], n, grid, ids, id_val, cnt)
+			res1 = max(res1, cnt[0])
+			id_to_size[id_val] = cnt[0]
+			id_val += 1
+
+# build component adjacency graph efficiently
+edge_set = set()
+for i in range(n):
+	for j in range(n):
+		# check right neighbor
+		if j + 1 < n and ids[i][j] != ids[i][j + 1]:
+			id1, id2 = ids[i][j], ids[i][j + 1]
+			if id1 > id2:
+				id1, id2 = id2, id1
+			edge_set.add((id1, id2))
+
+		# check bottom neighbor
+		if i + 1 < n and ids[i][j] != ids[i + 1][j]:
+			id1, id2 = ids[i][j], ids[i + 1][j]
+			if id1 > id2:
+				id1, id2 = id2, id1
+			edge_set.add((id1, id2))
+
+# convert edge set to adjacency list
+for id1, id2 in edge_set:
+	component_adj[id1].append(id2)
+	component_adj[id2].append(id1)
+
+res2 = res1
+# compute two-color regions using component graph traversal
+processed_pairs = set()
+for comp_id, neighbors in component_adj.items():
+	for neighbor_id in neighbors:
+		color1 = id_to_color[comp_id]
+		color2 = id_to_color[neighbor_id]
+
+		# ensure consistent ordering to avoid duplicate work
+		if color1 > color2:
+			color1, color2 = color2, color1
+
+		color_pair = (color1, color2)
+		if color_pair in processed_pairs:
+			continue
+		processed_pairs.add(color_pair)
+
+		# traverse the two-color region starting from this component
+		region_size = dfs_two_color(
+			comp_id, color1, color2, id_to_color, id_to_size, component_adj
+		)
+		res2 = max(res2, region_size)
+
+# write output
+with open("multimoo.out", "w") as f:
+	f.write(f"{res1}\n")
+	f.write(f"{res2}\n")
+```
+
+</PySection>
+</LanguageSection>
+
+## Explanation 2: "Bonus" Solution
+
+We can make some minor optimizations to regular floodfill to pass in time. This means that we can perform a **two-cow** floodfill for every differing pair of adjacent cells.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N^4)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <algorithm>
+#include <cstring>
+#include <iostream>
+using namespace std;
+
+int n;
+int grid[250][250];
+bool visited[250][250];
+
+int ff(int r, int c, int color_1, int color_2) {
+	if (r < 0 || r >= n || c < 0 || c >= n) { return 0; }
+	if (visited[r][c]) { return 0; }
+	if (grid[r][c] != color_1 && grid[r][c] != color_2) { return 0; }
+
+	visited[r][c] = true;
+	int cnt = 1;
+	cnt += ff(r + 1, c, color_1, color_2);
+	cnt += ff(r - 1, c, color_1, color_2);
+	cnt += ff(r, c + 1, color_1, color_2);
+	cnt += ff(r, c - 1, color_1, color_2);
+	return cnt;
+}
+
+int main() {
+	freopen("multimoo.in", "r", stdin);
+	freopen("multimoo.out", "w", stdout);
+	ios::sync_with_stdio(false);
+	cin.tie(0);
+
+	cin >> n;
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) { cin >> grid[i][j]; }
+	}
+
+	int res1 = 0;
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
+			if (!visited[i][j]) { res1 = max(res1, ff(i, j, grid[i][j], grid[i][j])); }
+		}
+	}
+	cout << res1 << "\n";
+
+	int res2 = 0;
+
+	// adjacent y
+	for (int i = 0; i < n; i++) {
+		for (int j = 1; j < n; j++) {
+			if (res2 >= n * n / 2) {  // early exit optimization
+				cout << res2 << endl;
+				return 0;
+			}
+			if (grid[i][j] != grid[i][j - 1]) {
+				memset(visited, 0, sizeof(visited));
+				res2 = max(res2, ff(i, j, grid[i][j], grid[i][j - 1]));
+			}
+		}
+	}
+
+	// adjacent x
+	for (int i = 1; i < n; i++) {
+		for (int j = 0; j < n; j++) {
+			if (res2 >= n * n / 2) {  // early exit optimization
+				cout << res2 << endl;
+				return 0;
+			}
+			if (grid[i][j] != grid[i - 1][j]) {
+				memset(visited, 0, sizeof(visited));
+				res2 = max(res2, ff(i, j, grid[i][j], grid[i - 1][j]));
+			}
+		}
+	}
+
+	cout << res2 << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class MultiMoo {
+	static int n;
+	static int[][] grid;
+	static boolean[][] visited;
+
+	static int ff(int r, int c, int color1, int color2) {
+		if (r < 0 || r >= n || c < 0 || c >= n) { return 0; }
+		if (visited[r][c]) { return 0; }
+		if (grid[r][c] != color1 && grid[r][c] != color2) { return 0; }
+
+		visited[r][c] = true;
+		int cnt = 1;
+		cnt += ff(r + 1, c, color1, color2);
+		cnt += ff(r - 1, c, color1, color2);
+		cnt += ff(r, c + 1, color1, color2);
+		cnt += ff(r, c - 1, color1, color2);
+		return cnt;
+	}
+
+	static void resetVisited() {
+		for (int i = 0; i < n; i++) { Arrays.fill(visited[i], false); }
+	}
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new FileReader("multimoo.in"));
+		PrintWriter pw = new PrintWriter(new FileWriter("multimoo.out"));
+
+		n = Integer.parseInt(br.readLine());
+		grid = new int[n][n];
+		visited = new boolean[n][n];
+
+		for (int i = 0; i < n; i++) {
+			String[] line = br.readLine().split(" ");
+			for (int j = 0; j < n; j++) { grid[i][j] = Integer.parseInt(line[j]); }
+		}
+
+		// Part 1: Find largest individual region
+		int res1 = 0;
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
+				if (!visited[i][j]) {
+					res1 = Math.max(res1, ff(i, j, grid[i][j], grid[i][j]));
+				}
+			}
+		}
+		pw.println(res1);
+
+		int res2 = 0;
+
+		// adjacent x
+		for (int i = 0; i < n; i++) {
+			for (int j = 1; j < n; j++) {
+				if (res2 >= n * n / 2) {  // early exit optimization
+					pw.println(res2);
+					pw.close();
+					br.close();
+					return;
+				}
+				if (grid[i][j] != grid[i][j - 1]) {
+					resetVisited();
+					res2 = Math.max(res2, ff(i, j, grid[i][j], grid[i][j - 1]));
+				}
+			}
+		}
+
+		// adjacent y
+		for (int i = 1; i < n; i++) {
+			for (int j = 0; j < n; j++) {
+				if (res2 >= n * n / 2) {  // early exit optimization
+					pw.println(res2);
+					pw.close();
+					br.close();
+					return;
+				}
+				if (grid[i][j] != grid[i - 1][j]) {
+					resetVisited();
+					res2 = Math.max(res2, ff(i, j, grid[i][j], grid[i - 1][j]));
+				}
+			}
+		}
+
+		pw.println(res2);
+		pw.close();
+		br.close();
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+from collections import deque
+import sys
+
+sys.stdin = open("multimoo.in")
+sys.stdout = open("multimoo.out", "w")
+
+n = int(input())
+grid = [list(map(int, input().split())) for _ in range(n)]
+
+
+def floodfill(color1, color2, x, y):
+	queue = deque()
+	queue.append((x, y))
+	count = 0
+	while queue:
+		a, b = queue.popleft()
+		if vis[a][b] != curr:
+			vis[a][b] = curr
+			count += 1
+			for c, d in [(a + 1, b), (a - 1, b), (a, b + 1), (a, b - 1)]:
+				if 0 <= c < n and 0 <= d < n:
+					if grid[c][d] == color1 or grid[c][d] == color2:
+						queue.append((c, d))
+	return count
+
+
+vis = [[0] * n for _ in range(n)]
+curr = 1
+ans = 0
+for i in range(n):
+	for j in range(n):
+		if not vis[i][j]:
+			ans = max(ans, floodfill(grid[i][j], grid[i][j], i, j))
+print(ans)
+
+ans = 0
+
+# adjacent x
+for i in range(n):
+	for j in range(1, n):
+		if ans > n * n // 2:  # early exit optimization
+			print(ans)
+			exit()
+		if grid[i][j] != grid[i][j - 1]:
+			curr += 1
+			ans = max(ans, floodfill(grid[i][j], grid[i][j - 1], i, j))
+
+# adjacent y
+for i in range(1, n):
+	for j in range(n):
+		if ans > n * n // 2:  # early exit optimization
+			print(ans)
+			exit()
+		if grid[i - 1][j] != grid[i][j]:
+			curr += 1
+			ans = max(ans, floodfill(grid[i][j], grid[i - 1][j], i, j))
+
+print(ans)
+```
+
+</PySection>
 </LanguageSection>
