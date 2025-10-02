@@ -22,7 +22,6 @@ This problem is a classic implementation of [Heavy Light Decomposition](/plat/hl
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
-using ll = long long;
 
 // BeginCodeSnip{Lazy Segment Tree}
 /* https://usaco.guide/plat/RURQ?lang=cpp#lazy-segment-tree */
@@ -30,7 +29,7 @@ enum QueryType { ADD, SET, NONE };
 
 struct Query {
 	QueryType type = NONE;
-	ll val = 0;
+	int val = 0;
 };
 
 template <class T> class LazySegtree {
@@ -131,11 +130,11 @@ template <class T, bool VALS_IN_EDGES> class HLD {
 
 	/** Compute the size of each subtree and set parent-child relationship
 	 * Subtree of node v corresponds to segment [ pos[v], pos[v] + sz[v] ) */
-	void dfsSz(int v) {
+	void dfs_sz(int v) {
 		if (par[v] != -1) adj[v].erase(find(adj[v].begin(), adj[v].end(), par[v]));
 		for (int &u : adj[v]) {
 			par[u] = v, depth[u] = depth[v] + 1;
-			dfsSz(u);
+			dfs_sz(u);
 			siz[v] += siz[u];
 			if (siz[u] > siz[adj[v][0]]) swap(u, adj[v][0]);
 		}
@@ -144,11 +143,11 @@ template <class T, bool VALS_IN_EDGES> class HLD {
 	/** Assign positions for nodes
 	  * Path from v to the last vertex in ascending heavy path
 	    corresponds to [ pos[rt[v]], pos[v] ] */
-	void dfsHld(int v) {
+	void dfs_hld(int v) {
 		pos[v] = tim++;
 		for (int u : adj[v]) {
 			rt[u] = (u == adj[v][0] ? rt[v] : u);
-			dfsHld(u);
+			dfs_hld(u);
 		}
 	}
 
@@ -165,14 +164,14 @@ template <class T, bool VALS_IN_EDGES> class HLD {
   public:
 	HLD(vector<vector<int>> adj_, int _R)
 	    : N(adj_.size()), R(_R), adj(adj_), par(N, -1), siz(N, 1), depth(N), rt(N),
-	      pos(N), segtree(vector<ll>(N, 0ll))  // modify if need
+	      pos(N), segtree(vector<int>(N, 0))  // modify if need
 	{
 		rt[R] = R;
-		dfsSz(R);
-		dfsHld(R);
+		dfs_sz(R);
+		dfs_hld(R);
 	}
 
-	T queryPath(int u, int v) {
+	T query_path(int u, int v) {
 		T res = -1e9;  // default value, modify depending on problem
 		process(u, v, [&](int l, int r) {
 			res = max(res, segtree.range_max(l, r));  // modify depending on problem
@@ -180,7 +179,7 @@ template <class T, bool VALS_IN_EDGES> class HLD {
 		return res;
 	}
 
-	void modifySubtree(int v, T val) {
+	void modify_subtree(int v, T val) {
 		segtree.range_update(pos[v] + VALS_IN_EDGES, pos[v] + siz[v] - 1,
 		                     Query{ADD, val});  // modify if need
 	}
@@ -189,31 +188,29 @@ template <class T, bool VALS_IN_EDGES> class HLD {
 
 int main() {
 
-	int N, Q;
+	int n, q;
+	cin >> n;
+	vector<vector<int>> adj(n);
 
-	cin >> N;
-
-	vector<vector<int>> adj(N);
-
-	for (int i = 0; i < N - 1; i++) {
+	for (int i = 0; i < n - 1; i++) {
 		int a, b;
 		cin >> a >> b;
 		adj[--a].push_back(--b);
 		adj[b].push_back(a);
 	}
 
-	HLD<ll, false> H(adj, 0);
+	HLD<int, false> H(adj, 0);
 
-	cin >> Q;
+	cin >> q;
 
-	while (Q--) {
+	while (q--) {
 		string type;
-		ll a, b;
+		int a, b;
 		cin >> type >> a >> b;
 		if (type == "add") {
-			H.modifySubtree(--a, b);
+			H.modify_subtree(--a, b);
 		} else if (type == "max") {
-			cout << H.queryPath(--a, --b) << '\n';
+			cout << H.query_path(--a, --b) << '\n';
 		}
 	}
 }
