@@ -140,7 +140,6 @@ Here's an animation of how the algorithm works:
 Below is an example implementation of Heavy Light Decomposition based on the resources above. See the solution below, as well as the solutions for [Subtrees & Paths](/problems/hr-subtrees--paths/solution) and [Query on a tree again!](/problems/spoj-query-on-a-tree-again/solution), for examples of how this implementation can be used.
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
@@ -156,11 +155,11 @@ template <class T, bool VALS_IN_EDGES> class HLD {
 
 	/** Compute the size of each subtree and set parent-child relationship
 	 * Subtree of node v corresponds to segment [ pos[v], pos[v] + sz[v] ) */
-	void dfsSz(int v) {
+	void dfs_sz(int v) {
 		if (par[v] != -1) adj[v].erase(find(adj[v].begin(), adj[v].end(), par[v]));
 		for (int &u : adj[v]) {
 			par[u] = v, depth[u] = depth[v] + 1;
-			dfsSz(u);
+			dfs_sz(u);
 			siz[v] += siz[u];
 			if (siz[u] > siz[adj[v][0]]) swap(u, adj[v][0]);
 		}
@@ -169,11 +168,11 @@ template <class T, bool VALS_IN_EDGES> class HLD {
 	/** Assign positions for nodes
 	  * Path from v to the last vertex in ascending heavy path
 	    corresponds to [ pos[rt[v]], pos[v] ] */
-	void dfsHld(int v) {
+	void dfs_hld(int v) {
 		pos[v] = tim++;
 		for (int u : adj[v]) {
 			rt[u] = (u == adj[v][0] ? rt[v] : u);
-			dfsHld(u);
+			dfs_hld(u);
 		}
 	}
 
@@ -193,11 +192,11 @@ template <class T, bool VALS_IN_EDGES> class HLD {
 	      pos(N), segtree(vector<ll>(N, 0ll))  // modify if need
 	{
 		rt[R] = R;
-		dfsSz(R);
-		dfsHld(R);
+		dfs_sz(R);
+		dfs_hld(R);
 	}
 
-	T queryPath(int u, int v) {
+	T query_path(int u, int v) {
 		T res = 0;  // default value, modify depending on problem
 		process(u, v, [&](int l, int r) {
 			res = max(res, segtree.range_max(l, r));  // modify depending on problem
@@ -205,9 +204,9 @@ template <class T, bool VALS_IN_EDGES> class HLD {
 		return res;
 	}
 
-	void modifyNode(int u, T val) { segtree.set(pos[u], val); }
+	void modify_node(int u, T val) { segtree.set(pos[u], val); }
 
-	void modifySubtree(int v, T val) {
+	void modify_subtree(int v, T val) {
 		segtree.range_update(pos[v] + VALS_IN_EDGES, pos[v] + siz[v] - 1,
 		                     Query{ADD, val});  // modify if need
 	}
@@ -215,31 +214,28 @@ template <class T, bool VALS_IN_EDGES> class HLD {
 ```
 
 </CPPSection>
-
 </LanguageSection>
 
 ## Path Queries II
 
 <FocusProblem problem="sample" />
 
+### Explanation
 
+We can label each edge as either heavy or light, then use a segment tree to keep track of the maximum value in each heavy chain.
+
+Now, to change the value at node $i$ to $x$, we can just update the value in the segment tree. To query the maximum value in the path from $a$ to $b$, we first find the [Lowest Common Ancestor](/gold/tree-euler#lca). We combine the path from $a$ to $lca(a,b)$ and the path from $b$ to $lca(a,b)$ to find our answer.
 
 ### Implementation
 
-
 **Time Complexity:** $\mathcal{O}(\log^2N)$ per query
 
-
-
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
-
 #include <bits/stdc++.h>
 using namespace std;
-using ll = long long;
 
 // BeginCodeSnip{Segment Tree}
 /** A data structure that can answer point update & range max queries. */
@@ -283,11 +279,11 @@ template <class T, bool VALS_IN_EDGES> class HLD {
 
 	/** Compute the size of each subtree and set parent-child relationship
 	 * Subtree of node v corresponds to segment [ pos[v], pos[v] + sz[v] ) */
-	void dfsSz(int v) {
+	void dfs_sz(int v) {
 		if (par[v] != -1) adj[v].erase(find(adj[v].begin(), adj[v].end(), par[v]));
 		for (int &u : adj[v]) {
 			par[u] = v, depth[u] = depth[v] + 1;
-			dfsSz(u);
+			dfs_sz(u);
 			siz[v] += siz[u];
 			if (siz[u] > siz[adj[v][0]]) swap(u, adj[v][0]);
 		}
@@ -296,11 +292,11 @@ template <class T, bool VALS_IN_EDGES> class HLD {
 	/** Assign positions for nodes
 	  * Path from v to the last vertex in ascending heavy path
 	    corresponds to [ pos[rt[v]], pos[v] ] */
-	void dfsHld(int v) {
+	void dfs_hld(int v) {
 		pos[v] = tim++;
 		for (int u : adj[v]) {
 			rt[u] = (u == adj[v][0] ? rt[v] : u);
-			dfsHld(u);
+			dfs_hld(u);
 		}
 	}
 
@@ -320,11 +316,11 @@ template <class T, bool VALS_IN_EDGES> class HLD {
 	      pos(N), segtree(N)  // modify as needed
 	{
 		rt[R] = R;
-		dfsSz(R);
-		dfsHld(R);
+		dfs_sz(R);
+		dfs_hld(R);
 	}
 
-	T queryPath(int u, int v) {
+	T query_path(int u, int v) {
 		T res = 0;  // default value, modify depending on problem
 		process(u, v, [&](int l, int r) {
 			res = max(res, segtree.range_max(l, r + 1));  // modify depending on problem
@@ -332,21 +328,21 @@ template <class T, bool VALS_IN_EDGES> class HLD {
 		return res;
 	}
 
-	void modifyNode(int u, T val) { segtree.set(pos[u], val); }
+	void modify_node(int u, T val) { segtree.set(pos[u], val); }
 };
 // EndCodeSnip
 
 int main() {
-	ios::sync_with_stdio(false);
-	cin.tie(nullptr);
+	ios_base::sync_with_stdio(false);
+    cin.tie(0);
+	
+	int n, q;
+	cin >> n >> q;
+	vector<int> v(n);
+	vector<vector<int>> adj(n);
+	for (int i = 0; i < n; i++) { cin >> v[i]; }
 
-	int N, Q;
-	cin >> N >> Q;
-	vector<int> v(N);
-	vector<vector<int>> adj(N);
-	for (int i = 0; i < N; i++) { cin >> v[i]; }
-
-	for (int i = 0; i < N - 1; i++) {
+	for (int i = 0; i < n - 1; i++) {
 		int a, b;
 		cin >> a >> b;
 		--a, --b;
@@ -356,26 +352,25 @@ int main() {
 
 	HLD<int, 0> H(adj, 0);
 
-	for (int i = 0; i < N; i++) { H.modifyNode(i, v[i]); }
+	for (int i = 0; i < n; i++) { H.modify_node(i, v[i]); }
 
-	while (Q--) {
+	while (q--) {
 		int type, s, a, b, x;
 		cin >> type;
 		if (type == 1) {
 			cin >> s >> x;
 			--s;
-			H.modifyNode(s, x);
+			H.modify_node(s, x);
 		} else if (type == 2) {
 			cin >> a >> b;
 			--a, --b;
-			cout << H.queryPath(a, b) << " ";
+			cout << H.query_path(a, b) << " ";
 		}
 	}
 }
 ```
 
 </CPPSection>
-
 </LanguageSection>
 
 ## Problems
