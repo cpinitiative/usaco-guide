@@ -7,21 +7,23 @@ author: Jack Lim
 
 ## Explanation
 
-This problem can be solved using [Heavy-Light Decomposition](/plat/hld). In the segment tree, toggle sets a node’s position if it is black, or `INF` if it is white. For path queries, HLD breaks the path into segments and takes the minimum position over them. If the result is `INF`, the answer is `-1`. Otherwise, it is mapped back to the node index using `inv[]`.
-
+This problem can be solved using [Heavy-Light Decomposition](/plat/hld).
+In the segment tree, toggle sets a node’s position if it is black, or 
+`INF` if it is white. For path queries, HLD breaks the path into 
+segments and takes the minimum position over them. If the result is 
+`INF`, the answer is `-1`. Otherwise, it is mapped back to the node 
+index using `inv[]`.
 
 ## Implementation
 
 **Time Complexity:** $\mathcal{O}(\log^2N)$ per query
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
-using ll = long long;
 
 // BeginCodeSnip{Segment Tree}
 template <class T> class MinSegmentTree {
@@ -67,12 +69,12 @@ template <class T, bool VALS_IN_EDGES> class HLD {
 
 	/** Compute the size of each subtree and set parent-child relationship
 	 * Subtree of node v corresponds to segment [ pos[v], pos[v] + sz[v] ) */
-	void dfsSz(int v) {
+	void dfs_sz(int v) {
 		siz[v] = 1;
 		if (par[v] != -1) { adj[v].erase(find(adj[v].begin(), adj[v].end(), par[v])); }
 		for (int &u : adj[v]) {
 			par[u] = v, depth[u] = depth[v] + 1;
-			dfsSz(u);
+			dfs_sz(u);
 			siz[v] += siz[u];
 			if (siz[u] > siz[adj[v][0]]) swap(u, adj[v][0]);
 		}
@@ -81,13 +83,13 @@ template <class T, bool VALS_IN_EDGES> class HLD {
 	/** Assign positions for nodes
 	  * Path from v to the last vertex in ascending heavy path
 	    corresponds to [ pos[rt[v]], pos[v] ] */
-	void dfsHld(int v) {
+	void dfs_hld(int v) {
 		pos[v] = tim;
 		inv[tim] = v;
 		tim++;
 		for (int u : adj[v]) {
 			rt[u] = (u == adj[v][0] ? rt[v] : u);
-			dfsHld(u);
+			dfs_hld(u);
 		}
 	}
 
@@ -106,17 +108,17 @@ template <class T, bool VALS_IN_EDGES> class HLD {
 	    : N(adj_.size()), R(_R), adj(adj_), par(N, -1), siz(N, 1), depth(N), rt(N),
 	      pos(N), inv(N), segtree(N) {
 		rt[R] = R;
-		dfsSz(R);
-		dfsHld(R);
+		dfs_sz(R);
+		dfs_hld(R);
 	}
 
-	void toggleNode(int u) {
+	void toggle_node(int u) {
 		int cur = segtree.range_min(pos[u], pos[u] + 1);
 		if (cur == segtree.INFVAL()) segtree.set(pos[u], pos[u]);  // make black
 		else segtree.set(pos[u], segtree.INFVAL());                // make white
 	}
 
-	T queryPath(int u, int v) {
+	T query_path(int u, int v) {
 		T res = segtree.INFVAL();
 		process(u, v,
 		        [&](int l, int r) { res = min(res, segtree.range_min(l, r + 1)); });
@@ -127,13 +129,10 @@ template <class T, bool VALS_IN_EDGES> class HLD {
 // EndCodeSnip
 
 int main() {
-	ios::sync_with_stdio(false);
-	cin.tie(nullptr);
-
-	int N, Q;
-	cin >> N >> Q;
-	vector<vector<int>> adj(N);
-	for (int i = 0; i < N - 1; i++) {
+	int n, q;
+	cin >> n >> q;
+	vector<vector<int>> adj(n);
+	for (int i = 0; i < n - 1; i++) {
 		int u, v;
 		cin >> u >> v;
 		--u, --v;
@@ -143,20 +142,18 @@ int main() {
 
 	HLD<int, false> hld(adj, 0);
 
-	while (Q--) {
+	while (q--) {
 		int type, v;
 		cin >> type >> v;
 		--v;
 		if (type == 0) {
-			hld.toggleNode(v);
+			hld.toggle_node(v);
 		} else {
-			cout << hld.queryPath(0, v) << "\n";
+			cout << hld.query_path(0, v) << "\n";
 		}
 	}
 }
 ```
 
 </CPPSection>
-
-
 </LanguageSection>
