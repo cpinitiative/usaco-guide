@@ -155,7 +155,7 @@ int main() {
 
 </CPPSection>
 
-<JavaSection> 
+<JavaSection>
 
 ```java
 import java.io.*;
@@ -184,259 +184,247 @@ import java.util.*;
 */
 
 public class PathQueriesHLD {
-    static FastScanner sc = new FastScanner(System.in);
-    static PrintWriter out = new PrintWriter(new BufferedOutputStream(System.out));
+	static FastScanner sc = new FastScanner(System.in);
+	static PrintWriter out = new PrintWriter(new BufferedOutputStream(System.out));
 
-    static int[] values; // stores initial values of nodes
+	static int[] values;  // stores initial values of nodes
 
-    public static void main(String[] args) throws IOException {
-        Attack();
-        out.flush();
-    }
+	public static void main(String[] args) throws IOException {
+		Attack();
+		out.flush();
+	}
 
-    public static void Attack() throws IOException {
-        int n = sc.nextInt(), q = sc.nextInt();
-        values = new int[n];
-        for (int i = 0; i < n; i++)
-            values[i] = sc.nextInt();
+	public static void Attack() throws IOException {
+		int n = sc.nextInt(), q = sc.nextInt();
+		values = new int[n];
+		for (int i = 0; i < n; i++) values[i] = sc.nextInt();
 
-        HeavyLightDecomposition hld = new HeavyLightDecomposition(n);
-        for (int i = 0; i < n - 1; i++) {
-            int u = sc.nextInt() - 1, v = sc.nextInt() - 1;
-            hld.addEdge(u, v);
-        }
+		HeavyLightDecomposition hld = new HeavyLightDecomposition(n);
+		for (int i = 0; i < n - 1; i++) {
+			int u = sc.nextInt() - 1, v = sc.nextInt() - 1;
+			hld.addEdge(u, v);
+		}
 
-        hld.initialize(0, values); // root the tree at node 0
+		hld.initialize(0, values);  // root the tree at node 0
 
-        while (q-- > 0) {
-            int type = sc.nextInt();
-            if (type == 1) {
-                // Point update: change node u's value
-                int u = sc.nextInt() - 1, newVal = sc.nextInt();
-                hld.updateSegmentTree(1, 0, hld.getPositionIndex() - 1, hld.getPosition(u), newVal);
-            } else {
-                // Path query: maximum value on path u-v
-                int u = sc.nextInt() - 1, v = sc.nextInt() - 1;
-                out.println(hld.queryMaxInPath(u, v));
-            }
-        }
-    }
+		while (q-- > 0) {
+			int type = sc.nextInt();
+			if (type == 1) {
+				// Point update: change node u's value
+				int u = sc.nextInt() - 1, newVal = sc.nextInt();
+				hld.updateSegmentTree(1, 0, hld.getPositionIndex() - 1,
+				                      hld.getPosition(u), newVal);
+			} else {
+				// Path query: maximum value on path u-v
+				int u = sc.nextInt() - 1, v = sc.nextInt() - 1;
+				out.println(hld.queryMaxInPath(u, v));
+			}
+		}
+	}
 
-    /**
-        Class for performing Heavy-Light Decomposition (HLD).
+	/**
+	    Class for performing Heavy-Light Decomposition (HLD).
 
-        Internally, it uses:
-        - parent[]: parent of each node
-        - depth[]: depth of each node in the tree
-        - subtreeSize[]: size of subtree rooted at node
-        - chainHead[]: head of the current chain for each node
-        - position[]: flattened position of node in segment tree array
-        - nodeValue[]: node values mapped to flattened array
-        - segmentTree[]: max segment tree for range queries
-    */
-    static class HeavyLightDecomposition {
-        private List<List<Integer >> tree; // adjacency list of the tree
-        private int[] parent;
-        private int[] depth;
-        private int[] subtreeSize;
-        private int[] chainHead;
-        private int[] position;
-        private int[] nodeValue;
-        private int[] segmentTree;
-        private int positionIndex; // current index in flattened array
+	    Internally, it uses:
+	    - parent[]: parent of each node
+	    - depth[]: depth of each node in the tree
+	    - subtreeSize[]: size of subtree rooted at node
+	    - chainHead[]: head of the current chain for each node
+	    - position[]: flattened position of node in segment tree array
+	    - nodeValue[]: node values mapped to flattened array
+	    - segmentTree[]: max segment tree for range queries
+	*/
+	static class HeavyLightDecomposition {
+		private List<List<Integer>> tree;  // adjacency list of the tree
+		private int[] parent;
+		private int[] depth;
+		private int[] subtreeSize;
+		private int[] chainHead;
+		private int[] position;
+		private int[] nodeValue;
+		private int[] segmentTree;
+		private int positionIndex;  // current index in flattened array
 
-        /**
-            Initializes HLD data structures.
-        */
-        public HeavyLightDecomposition(int n) {
-            tree = new ArrayList<>();
-            for (int i = 0; i <= n; i++)
-                tree.add(new ArrayList<>());
-            parent = new int[n + 1];
-            depth = new int[n + 1];
-            subtreeSize = new int[n + 1];
-            chainHead = new int[n + 1];
-            position = new int[n + 1];
-            nodeValue = new int[n + 1];
-            segmentTree = new int[4 * (n + 1)];
-            for (int i = 0; i <= n; i++)
-                chainHead[i] = -1;
-            positionIndex = 0;
-        }
+		/**
+		    Initializes HLD data structures.
+		*/
+		public HeavyLightDecomposition(int n) {
+			tree = new ArrayList<>();
+			for (int i = 0; i <= n; i++) tree.add(new ArrayList<>());
+			parent = new int[n + 1];
+			depth = new int[n + 1];
+			subtreeSize = new int[n + 1];
+			chainHead = new int[n + 1];
+			position = new int[n + 1];
+			nodeValue = new int[n + 1];
+			segmentTree = new int[4 * (n + 1)];
+			for (int i = 0; i <= n; i++) chainHead[i] = -1;
+			positionIndex = 0;
+		}
 
-        public int getPosition(int index) {
-            return position[index];
-        }
+		public int getPosition(int index) { return position[index]; }
 
-        public int getPositionIndex() {
-            return positionIndex;
-        }
+		public int getPositionIndex() { return positionIndex; }
 
-        /**
-            Adds an undirected edge between two nodes.
-        */
-        public void addEdge(int u, int v) {
-            tree.get(u).add(v);
-            tree.get(v).add(u);
-        }
+		/**
+		    Adds an undirected edge between two nodes.
+		*/
+		public void addEdge(int u, int v) {
+			tree.get(u).add(v);
+			tree.get(v).add(u);
+		}
 
-        /**
-            DFS to compute subtree sizes and parent/depth arrays.
-        */
-        private void dfsSize(int node, int parentNode) {
-            parent[node] = parentNode;
-            subtreeSize[node] = 1;
-            for (int child : tree.get(node)) {
-                if (child != parentNode) {
-                    depth[child] = depth[node] + 1;
-                    dfsSize(child, node);
-                    subtreeSize[node] += subtreeSize[child];
-                }
-            }
-        }
+		/**
+		    DFS to compute subtree sizes and parent/depth arrays.
+		*/
+		private void dfsSize(int node, int parentNode) {
+			parent[node] = parentNode;
+			subtreeSize[node] = 1;
+			for (int child : tree.get(node)) {
+				if (child != parentNode) {
+					depth[child] = depth[node] + 1;
+					dfsSize(child, node);
+					subtreeSize[node] += subtreeSize[child];
+				}
+			}
+		}
 
-        /**
-            Decompose tree into heavy and light chains.
-            Heavy child = child with maximum subtree size.
-        */
-        private void decompose(int node, int head) {
-            chainHead[node] = head;
-            position[node] = positionIndex++;
-            int heavyChild = -1, maxSubtreeSize = -1;
-            for (int child : tree.get(node)) {
-                if (child != parent[node] && subtreeSize[child] > maxSubtreeSize) {
-                    heavyChild = child;
-                    maxSubtreeSize = subtreeSize[child];
-                }
-            }
-            if (heavyChild != -1) // continue heavy chain
-                decompose(heavyChild, head);
-            for (int child : tree.get(node)) {
-                if (child != parent[node] && child != heavyChild)
-                    decompose(child, child); // start new light chain
-            }
-        }
+		/**
+		    Decompose tree into heavy and light chains.
+		    Heavy child = child with maximum subtree size.
+		*/
+		private void decompose(int node, int head) {
+			chainHead[node] = head;
+			position[node] = positionIndex++;
+			int heavyChild = -1, maxSubtreeSize = -1;
+			for (int child : tree.get(node)) {
+				if (child != parent[node] && subtreeSize[child] > maxSubtreeSize) {
+					heavyChild = child;
+					maxSubtreeSize = subtreeSize[child];
+				}
+			}
+			if (heavyChild != -1)  // continue heavy chain
+				decompose(heavyChild, head);
+			for (int child : tree.get(node)) {
+				if (child != parent[node] && child != heavyChild)
+					decompose(child, child);  // start new light chain
+			}
+		}
 
-        /**
-            Build segment tree for range maximum queries.
-        */
-        private void buildSegmentTree(int node, int start, int end) {
-            if (start == end) {
-                segmentTree[node] = nodeValue[start];
-                return;
-            }
-            int mid = (start + end) / 2;
-            buildSegmentTree(2 * node, start, mid);
-            buildSegmentTree(2 * node + 1, mid + 1, end);
-            segmentTree[node] = Math.max(segmentTree[2 * node], segmentTree[2 * node + 1]);
-        }
+		/**
+		    Build segment tree for range maximum queries.
+		*/
+		private void buildSegmentTree(int node, int start, int end) {
+			if (start == end) {
+				segmentTree[node] = nodeValue[start];
+				return;
+			}
+			int mid = (start + end) / 2;
+			buildSegmentTree(2 * node, start, mid);
+			buildSegmentTree(2 * node + 1, mid + 1, end);
+			segmentTree[node] =
+			    Math.max(segmentTree[2 * node], segmentTree[2 * node + 1]);
+		}
 
-        /**
-            Point update in segment tree.
-        */
-        public void updateSegmentTree(int node, int start, int end, int index, int value) {
-            if (start == end) {
-                segmentTree[node] = value;
-                return;
-            }
-            int mid = (start + end) / 2;
-            if (index <= mid)
-                updateSegmentTree(2 * node, start, mid, index, value);
-            else
-                updateSegmentTree(2 * node + 1, mid + 1, end, index, value);
-            segmentTree[node] = Math.max(segmentTree[2 * node], segmentTree[2 * node + 1]);
-        }
+		/**
+		    Point update in segment tree.
+		*/
+		public void updateSegmentTree(int node, int start, int end, int index,
+		                              int value) {
+			if (start == end) {
+				segmentTree[node] = value;
+				return;
+			}
+			int mid = (start + end) / 2;
+			if (index <= mid) updateSegmentTree(2 * node, start, mid, index, value);
+			else updateSegmentTree(2 * node + 1, mid + 1, end, index, value);
+			segmentTree[node] =
+			    Math.max(segmentTree[2 * node], segmentTree[2 * node + 1]);
+		}
 
-        /**
-            Range maximum query on segment tree.
-        */
-        public int querySegmentTree(int node, int start, int end, int left, int right) {
-            if (left > end || right < start)
-                return Integer.MIN_VALUE; // out of range
-            if (left <= start && end <= right)
-                return segmentTree[node]; // fully covered
-            int mid = (start + end) / 2;
-            int leftQuery = querySegmentTree(2 * node, start, mid, left, right);
-            int rightQuery = querySegmentTree(2 * node + 1, mid + 1, end, left, right);
-            return Math.max(leftQuery, rightQuery);
-        }
+		/**
+		    Range maximum query on segment tree.
+		*/
+		public int querySegmentTree(int node, int start, int end, int left, int right) {
+			if (left > end || right < start) return Integer.MIN_VALUE;  // out of range
+			if (left <= start && end <= right)
+				return segmentTree[node];  // fully covered
+			int mid = (start + end) / 2;
+			int leftQuery = querySegmentTree(2 * node, start, mid, left, right);
+			int rightQuery = querySegmentTree(2 * node + 1, mid + 1, end, left, right);
+			return Math.max(leftQuery, rightQuery);
+		}
 
-        /**
-            Query maximum value on the path between u and v.
-        */
-        public int queryMaxInPath(int u, int v) {
-            int result = Integer.MIN_VALUE;
-            while (chainHead[u] != chainHead[v]) {
-                if (depth[chainHead[u]] < depth[chainHead[v]]) {
-                    int temp = u;
-                    u = v;
-                    v = temp;
-                }
-                result = Math.max(result, querySegmentTree(1, 0, positionIndex - 1,
-                                  position[chainHead[u]], position[u]));
-                u = parent[chainHead[u]];
-            }
-            if (depth[u] > depth[v]) { // ensure u is ancestor
-                int temp = u;
-                u = v;
-                v = temp;
-            }
-            result = Math.max(result, querySegmentTree(1, 0, positionIndex - 1, position[u], position[v]));
-            return result;
-        }
+		/**
+		    Query maximum value on the path between u and v.
+		*/
+		public int queryMaxInPath(int u, int v) {
+			int result = Integer.MIN_VALUE;
+			while (chainHead[u] != chainHead[v]) {
+				if (depth[chainHead[u]] < depth[chainHead[v]]) {
+					int temp = u;
+					u = v;
+					v = temp;
+				}
+				result = Math.max(result, querySegmentTree(1, 0, positionIndex - 1,
+				                                           position[chainHead[u]],
+				                                           position[u]));
+				u = parent[chainHead[u]];
+			}
+			if (depth[u] > depth[v]) {  // ensure u is ancestor
+				int temp = u;
+				u = v;
+				v = temp;
+			}
+			result = Math.max(result, querySegmentTree(1, 0, positionIndex - 1,
+			                                           position[u], position[v]));
+			return result;
+		}
 
-        /**
-            Initialize HLD: runs DFS, decomposes tree, builds segment tree.
-        */
-        public void initialize(int root, int[] values) {
-            dfsSize(root, -1);
-            decompose(root, root);
-            for (int i = 0; i < values.length; i++)
-                nodeValue[position[i]] = values[i];
-            buildSegmentTree(1, 0, positionIndex - 1);
-        }
-    }
+		/**
+		    Initialize HLD: runs DFS, decomposes tree, builds segment tree.
+		*/
+		public void initialize(int root, int[] values) {
+			dfsSize(root, -1);
+			decompose(root, root);
+			for (int i = 0; i < values.length; i++) nodeValue[position[i]] = values[i];
+			buildSegmentTree(1, 0, positionIndex - 1);
+		}
+	}
 
-    // -------- Fast Scanner ----------
-    static class FastScanner {
-        private final InputStream in;
-        private final byte[] buffer = new byte[1 << 16];
-        private int ptr = 0, len = 0;
+	// -------- Fast Scanner ----------
+	static class FastScanner {
+		private final InputStream in;
+		private final byte[] buffer = new byte[1 << 16];
+		private int ptr = 0, len = 0;
 
-        public FastScanner(InputStream is) {
-            in = is;
-        }
+		public FastScanner(InputStream is) { in = is; }
 
-        private int readByte() {
-            if (ptr >= len) {
-                ptr = 0;
-                try {
-                    len = in.read(buffer);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-                if (len <= 0)
-                    return -1;
-            }
-            return buffer[ptr++];
-        }
+		private int readByte() {
+			if (ptr >= len) {
+				ptr = 0;
+				try {
+					len = in.read(buffer);
+				} catch (IOException e) { throw new RuntimeException(e); }
+				if (len <= 0) return -1;
+			}
+			return buffer[ptr++];
+		}
 
-        public int nextInt() {
-            int c, sign = 1, val = 0;
-            do {
-                c = readByte();
-            } while (c <= ' ');
-            if (c == '-') {
-                sign = -1;
-                c = readByte();
-            }
-            while (c > ' ') {
-                val = val * 10 + (c - '0');
-                c = readByte();
-            }
-            return val * sign;
-        }
-    }
+		public int nextInt() {
+			int c, sign = 1, val = 0;
+			do { c = readByte(); } while (c <= ' ');
+			if (c == '-') {
+				sign = -1;
+				c = readByte();
+			}
+			while (c > ' ') {
+				val = val * 10 + (c - '0');
+				c = readByte();
+			}
+			return val * sign;
+		}
+	}
 }
 ```
 
