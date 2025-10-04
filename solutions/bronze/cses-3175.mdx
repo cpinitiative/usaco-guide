@@ -8,8 +8,8 @@ author: Rameez Parwez
 ## Explanation
 
 We can solve this problem recursively, look for the smallest number at every point
-that satisfies the asked condition (i.e., *there are no adjacent elements whose difference is 1*) 
-and if it satisfies, we add it to our permutation.  
+that satisfies the asked condition (i.e., *there are no adjacent elements whose difference is 1*)
+and if it satisfies, we add it to our permutation.
 
 For $n = 2$ and $n = 3$, we know that no permutation satisfies the asked condition.
 
@@ -40,45 +40,41 @@ n = 3
 
 ```cpp
 #include <iostream>
-#include <vector>
 #include <set>
+#include <vector>
 
 std::vector<int> res;
 std::set<int> ele;
 
 void backtrack(int n) {
-    if ((int)res.size() == n) {
-        for (int x : res) {
-            std::cout << x << " \n"[x == res.back()];
-        }
-        exit(0);
-    }
+	if ((int)res.size() == n) {
+		for (int x : res) { std::cout << x << " \n"[x == res.back()]; }
+		exit(0);
+	}
 
-    for (int x : ele) {
-        if (res.empty() || std::abs(res.back() - x) > 1) {
-            res.push_back(x);
-            ele.erase(x);
-            backtrack(n);
-            ele.insert(x);
-            res.pop_back();
-        }
-    }
+	for (int x : ele) {
+		if (res.empty() || std::abs(res.back() - x) > 1) {
+			res.push_back(x);
+			ele.erase(x);
+			backtrack(n);
+			ele.insert(x);
+			res.pop_back();
+		}
+	}
 }
 
 int main() {
-    int n;
-    std::cin >> n;
-    
-    if (n == 2 || n == 3) {
-        std::cout << "NO SOLUTION" << '\n';
-        return 0;
-    }
+	int n;
+	std::cin >> n;
 
-    for (int i = 1; i <= n; i++) {
-        ele.insert(i);
-    }
+	if (n == 2 || n == 3) {
+		std::cout << "NO SOLUTION" << '\n';
+		return 0;
+	}
 
-    backtrack(n);
+	for (int i = 1; i <= n; i++) { ele.insert(i); }
+
+	backtrack(n);
 }
 ```
 
