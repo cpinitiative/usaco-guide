@@ -2,13 +2,18 @@
 id: usaco-763
 source: USACO Silver 2017 December
 title: Milk Measurement
-author: Qi Wang, Kevin Sheng, Benjamin Qi
+author: Qi Wang, Kevin Sheng, Benjamin Qi, David Guo
 ---
 
 [Official Analysis (C++)](http://www.usaco.org/current/data/sol_measurement_silver_dec17.html)
 
+## Solution 1 - Sorted Map
 
-## Solution with Sorted Map
+First, since the number of measurements is large, we sort them by day. Each time we process a measurement, we track the cow whose output is changing, as well as the old and new outputs. Afterwards, we check whether the cows with maximum output have changed.
+
+To do this, we must check several conditions. For example, if the number of cows with the maximum output has changed, then the display needs to be updated. However, the number of cows could stay the same, and the display might still need to be updated.
+
+To check this, we verify whether the current cow was originally on the display, and if they are still up there after the measurement changes.
 
 ## Implementation
 
@@ -166,7 +171,7 @@ public class Measurement {
 </JavaSection>
 </LanguageSection>
 
-## Solution with Priority Queue
+## Solution 2 - Priority Queue
 
 An alternative method to keep track of the maximum milk production is to use a priority queue instead of a sorted map. All the sorted maps from the solution code above can be left as is or interchanged with hashmaps.
 
