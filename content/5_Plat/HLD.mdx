@@ -1,19 +1,13 @@
 ---
 id: hld
 title: 'Heavy-Light Decomposition'
-author: Benjamin Qi, Andrew Cheng
+author: Benjamin Qi, Andrew Cheng, Jack Lim
 prerequisites:
   - tree-euler
   - RURQ
 description: Path and subtree updates and queries.
 frequency: 1
 ---
-
-<FocusProblem problem="sample" />
-
-<FocusProblem problem="sample2" />
-
-## Tutorial
 
 Suppose that you want to support the following operations on a tree:
 
@@ -23,6 +17,35 @@ Suppose that you want to support the following operations on a tree:
   associative property) along the path from node $x$ to node $y$.
 
 Heavy Light Decomposition (or HLD) supports both operations efficiently.
+
+
+<Resources>
+	<Resource
+		source="cp-algo"
+		title="HLD"
+		url="https://cp-algorithms.com/graph/hld.html"
+		starred
+	>
+		For an alternate implementation, see below
+	</Resource>
+	<Resource
+		source="CF"
+		title="galen_colin - HLD"
+		url="https://codeforces.com/blog/entry/81317"
+	>
+		blog + video for USACO Cowland. Binary jumping isn't necessary though.
+	</Resource>
+</Resources>
+
+<Optional title="Tree Queries in O(NQ)">
+
+[This](https://codeforces.com/blog/entry/82211?#comment-691472) is why you don't
+set problems where $\Theta(Q\sqrt N\log N)$ is intended ...
+
+</Optional>
+
+
+## Tutorial
 
 ### Definitions
 
@@ -84,147 +107,9 @@ Here's an animation of how the algorithm works:
 	<source src="/animations/hld.mp4" type="video/mp4"/>
 </video>
 
-We can solve the focus problem "Path Queries II" using Heavy Light
-Decomposition:
 
-<LanguageSection>
 
-<CPPSection>
-
-```cpp
-
-#include "bits/stdc++.h"
-using namespace std;
-
-const int N = 2e5 + 5;
-const int D = 19;
-const int S = (1 << D);
-
-int n, q, v[N];
-vector<int> adj[N];
-
-int sz[N], p[N], dep[N];
-int st[S], id[N], tp[N];
-
-void update(int idx, int val) {
-	st[idx += n] = val;
-	for (idx /= 2; idx; idx /= 2) st[idx] = max(st[2 * idx], st[2 * idx + 1]);
-}
-
-int query(int lo, int hi) {
-	int ra = 0, rb = 0;
-	for (lo += n, hi += n + 1; lo < hi; lo /= 2, hi /= 2) {
-		if (lo & 1) ra = max(ra, st[lo++]);
-		if (hi & 1) rb = max(rb, st[--hi]);
-	}
-	return max(ra, rb);
-}
-
-int dfs_sz(int cur, int par) {
-	sz[cur] = 1;
-	p[cur] = par;
-	for (int chi : adj[cur]) {
-		if (chi == par) continue;
-		dep[chi] = dep[cur] + 1;
-		p[chi] = cur;
-		sz[cur] += dfs_sz(chi, cur);
-	}
-	return sz[cur];
-}
-
-int ct = 1;
-
-void dfs_hld(int cur, int par, int top) {
-	id[cur] = ct++;
-	tp[cur] = top;
-	update(id[cur], v[cur]);
-	int h_chi = -1, h_sz = -1;
-	for (int chi : adj[cur]) {
-		if (chi == par) continue;
-		if (sz[chi] > h_sz) {
-			h_sz = sz[chi];
-			h_chi = chi;
-		}
-	}
-	if (h_chi == -1) return;
-	dfs_hld(h_chi, cur, top);
-	for (int chi : adj[cur]) {
-		if (chi == par || chi == h_chi) continue;
-		dfs_hld(chi, cur, chi);
-	}
-}
-
-int path(int x, int y) {
-	int ret = 0;
-	while (tp[x] != tp[y]) {
-		if (dep[tp[x]] < dep[tp[y]]) swap(x, y);
-		ret = max(ret, query(id[tp[x]], id[x]));
-		x = p[tp[x]];
-	}
-	if (dep[x] > dep[y]) swap(x, y);
-	ret = max(ret, query(id[x], id[y]));
-	return ret;
-}
-
-int main() {
-	scanf("%d%d", &n, &q);
-	for (int i = 1; i <= n; i++) scanf("%d", &v[i]);
-	for (int i = 2; i <= n; i++) {
-		int a, b;
-		scanf("%d%d", &a, &b);
-		adj[a].push_back(b);
-		adj[b].push_back(a);
-	}
-	dfs_sz(1, 1);
-	dfs_hld(1, 1, 1);
-	while (q--) {
-		int t;
-		scanf("%d", &t);
-		if (t == 1) {
-			int s, x;
-			scanf("%d%d", &s, &x);
-			v[s] = x;
-			update(id[s], v[s]);
-		} else {
-			int a, b;
-			scanf("%d%d", &a, &b);
-			int res = path(a, b);
-			printf("%d ", res);
-		}
-	}
-}
-```
-
-</CPPSection>
-
-</LanguageSection>
-
-<Resources>
-	<Resource
-		source="cp-algo"
-		title="HLD"
-		url="https://cp-algorithms.com/graph/hld.html"
-		starred
-	>
-		For an alternate implementation, see below
-	</Resource>
-	<Resource
-		source="CF"
-		title="galen_colin - HLD"
-		url="https://codeforces.com/blog/entry/81317"
-	>
-		blog + video for USACO Cowland. Binary jumping isn't necessary though.
-	</Resource>
-</Resources>
-
-<Optional title="Tree Queries in O(NQ)">
-
-[This](https://codeforces.com/blog/entry/82211?#comment-691472) is why you don't
-set problems where $\Theta(Q\sqrt N\log N)$ is intended ...
-
-</Optional>
-
-## Implementations
+## Implementation
 
 <Resources>
 	<Resource
@@ -252,7 +137,241 @@ set problems where $\Theta(Q\sqrt N\log N)$ is intended ...
 	</Resource>
 </Resources>
 
-<IncompleteSection />
+Below is an example implementation of Heavy Light Decomposition based on the resources above. See the solution below, as well as the solutions for [Subtrees & Paths](/problems/hr-subtrees--paths/solution) and [Query on a tree again!](/problems/spoj-query-on-a-tree-again/solution), for examples of how this implementation can be used.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+template <class T, bool VALS_IN_EDGES> class HLD {
+  private:
+	int N, R, tim = 0;  // n, root node, time
+	vector<vector<int>> adj;
+	vector<int> par, siz, depth, rt, pos;  // parent, size, depth, root, position arrays
+	LazySegtree<T> segtree;                // Modify as needed
+
+	/** Compute the size of each subtree and set parent-child relationship
+	 * Subtree of node v corresponds to segment [ pos[v], pos[v] + sz[v] ) */
+	void dfs_sz(int v) {
+		if (par[v] != -1) adj[v].erase(find(adj[v].begin(), adj[v].end(), par[v]));
+		for (int &u : adj[v]) {
+			par[u] = v, depth[u] = depth[v] + 1;
+			dfs_sz(u);
+			siz[v] += siz[u];
+			if (siz[u] > siz[adj[v][0]]) swap(u, adj[v][0]);
+		}
+	}
+
+	/** Assign positions for nodes
+	  * Path from v to the last vertex in ascending heavy path
+	    corresponds to [ pos[rt[v]], pos[v] ] */
+	void dfs_hld(int v) {
+		pos[v] = tim++;
+		for (int u : adj[v]) {
+			rt[u] = (u == adj[v][0] ? rt[v] : u);
+			dfs_hld(u);
+		}
+	}
+
+	/** process all heavy path and combine their results */
+	template <class B> void process(int u, int v, B op) {
+		for (; rt[u] != rt[v]; v = par[rt[v]]) {
+			if (depth[rt[u]] > depth[rt[v]]) swap(u, v);
+			op(pos[rt[v]], pos[v]);
+		}
+		if (depth[u] > depth[v]) swap(u, v);
+		op(pos[u] + VALS_IN_EDGES, pos[v]);
+	}
+
+  public:
+	HLD(vector<vector<int>> adj_, int _R)
+	    : N(adj_.size()), R(_R), adj(adj_), par(N, -1), siz(N, 1), depth(N), rt(N),
+	      pos(N), segtree(vector<ll>(N, 0ll))  // modify if need
+	{
+		rt[R] = R;
+		dfs_sz(R);
+		dfs_hld(R);
+	}
+
+	T query_path(int u, int v) {
+		T res = 0;  // default value, modify depending on problem
+		process(u, v, [&](int l, int r) {
+			res = max(res, segtree.range_max(l, r));  // modify depending on problem
+		});
+		return res;
+	}
+
+	void modify_node(int u, T val) { segtree.set(pos[u], val); }
+
+	void modify_subtree(int v, T val) {
+		segtree.range_update(pos[v] + VALS_IN_EDGES, pos[v] + siz[v] - 1,
+		                     Query{ADD, val});  // modify if need
+	}
+};
+```
+
+</CPPSection>
+</LanguageSection>
+
+## Path Queries II
+
+<FocusProblem problem="sample" />
+
+### Explanation
+
+We can label each edge as either heavy or light, then use a segment tree to keep track of the maximum value in each heavy chain.
+
+Now, to change the value at node $i$ to $x$, we can just update the value in the segment tree. To query the maximum value in the path from $a$ to $b$, we first find the [Lowest Common Ancestor](/gold/tree-euler#lca). We combine the path from $a$ to $lca(a,b)$ and the path from $b$ to $lca(a,b)$ to find our answer.
+
+### Implementation
+
+**Time Complexity:** $\mathcal{O}(\log^2N)$ per query
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+// BeginCodeSnip{Segment Tree}
+/** A data structure that can answer point update & range max queries. */
+template <class T> class MaxSegmentTree {
+  private:
+	// const T DEFAULT = std::numeric_limits<T>().max();
+	const T DEFAULT = 0;
+
+	int len;
+	vector<T> segtree;
+
+  public:
+	MaxSegmentTree(int len) : len(len), segtree(len * 2, DEFAULT) {}
+
+	void set(int ind, T val) {
+		ind += len;
+		segtree[ind] = val;
+		for (; ind > 1; ind /= 2) {
+			segtree[ind / 2] = std::max(segtree[ind], segtree[ind ^ 1]);
+		}
+	}
+
+	T range_max(int start, int end) {
+		T max = DEFAULT;
+		for (start += len, end += len; start < end; start /= 2, end /= 2) {
+			if (start % 2 == 1) { max = std::max(max, segtree[start++]); }
+			if (end % 2 == 1) { max = std::max(max, segtree[--end]); }
+		}
+		return max;
+	}
+};
+// EndCodeSnip
+
+// BeginCodeSnip{HLD}
+template <class T, bool VALS_IN_EDGES> class HLD {
+  private:
+	int N, R, tim = 0;  // n, root node, time
+	vector<vector<int>> adj;
+	vector<int> par, siz, depth, rt, pos;  // parent, size, depth, root, position arrays
+	MaxSegmentTree<T> segtree;             // Modify as needed
+
+	/** Compute the size of each subtree and set parent-child relationship
+	 * Subtree of node v corresponds to segment [ pos[v], pos[v] + sz[v] ) */
+	void dfs_sz(int v) {
+		if (par[v] != -1) adj[v].erase(find(adj[v].begin(), adj[v].end(), par[v]));
+		for (int &u : adj[v]) {
+			par[u] = v, depth[u] = depth[v] + 1;
+			dfs_sz(u);
+			siz[v] += siz[u];
+			if (siz[u] > siz[adj[v][0]]) swap(u, adj[v][0]);
+		}
+	}
+
+	/** Assign positions for nodes
+	  * Path from v to the last vertex in ascending heavy path
+	    corresponds to [ pos[rt[v]], pos[v] ] */
+	void dfs_hld(int v) {
+		pos[v] = tim++;
+		for (int u : adj[v]) {
+			rt[u] = (u == adj[v][0] ? rt[v] : u);
+			dfs_hld(u);
+		}
+	}
+
+	/** process all heavy path and combine their results */
+	template <class B> void process(int u, int v, B op) {
+		for (; rt[u] != rt[v]; v = par[rt[v]]) {
+			if (depth[rt[u]] > depth[rt[v]]) swap(u, v);
+			op(pos[rt[v]], pos[v]);
+		}
+		if (depth[u] > depth[v]) swap(u, v);
+		op(pos[u] + VALS_IN_EDGES, pos[v]);
+	}
+
+  public:
+	HLD(vector<vector<int>> adj_, int _R)
+	    : N(adj_.size()), R(_R), adj(adj_), par(N, -1), siz(N, 1), depth(N), rt(N),
+	      pos(N), segtree(N)  // modify as needed
+	{
+		rt[R] = R;
+		dfs_sz(R);
+		dfs_hld(R);
+	}
+
+	T query_path(int u, int v) {
+		T res = 0;  // default value, modify depending on problem
+		process(u, v, [&](int l, int r) {
+			res = max(res, segtree.range_max(l, r + 1));  // modify depending on problem
+		});
+		return res;
+	}
+
+	void modify_node(int u, T val) { segtree.set(pos[u], val); }
+};
+// EndCodeSnip
+
+int main() {
+	ios_base::sync_with_stdio(false);
+	cin.tie(0);
+
+	int n, q;
+	cin >> n >> q;
+	vector<int> v(n);
+	vector<vector<int>> adj(n);
+	for (int i = 0; i < n; i++) { cin >> v[i]; }
+
+	for (int i = 0; i < n - 1; i++) {
+		int a, b;
+		cin >> a >> b;
+		--a, --b;
+		adj[a].push_back(b);
+		adj[b].push_back(a);
+	}
+
+	HLD<int, 0> H(adj, 0);
+
+	for (int i = 0; i < n; i++) { H.modify_node(i, v[i]); }
+
+	while (q--) {
+		int type, s, a, b, x;
+		cin >> type;
+		if (type == 1) {
+			cin >> s >> x;
+			--s;
+			H.modify_node(s, x);
+		} else if (type == 2) {
+			cin >> a >> b;
+			--a, --b;
+			cout << H.query_path(a, b) << " ";
+		}
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>
 
 ## Problems
 
