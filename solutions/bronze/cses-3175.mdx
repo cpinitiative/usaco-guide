@@ -72,41 +72,39 @@ Let's see the code below, which is also correct, but it gives TLE for larger inp
 
 ```cpp
 #include <iostream>
-#include <vector>
 #include <set>
+#include <vector>
 
 std::vector<int> res;
 std::vector<int> used(1000001, 0);
 
 void backtrack(int n) {
-    if ((int)res.size() == n) {
-        for (int x : res) {
-            std::cout << x << " \n"[x == res.back()];
-        }
-        exit(0);
-    }
+	if ((int)res.size() == n) {
+		for (int x : res) { std::cout << x << " \n"[x == res.back()]; }
+		exit(0);
+	}
 
-    for (int i = 1; i <= n; i++) {
-        if (res.empty() || (!used[i] and std::abs(res.back() - i) > 1)) {
-            res.push_back(i);
-            used[i] = 1;
-            backtrack(n);
-            res.pop_back();
-            used[i] = 0;
-        }
-    }
+	for (int i = 1; i <= n; i++) {
+		if (res.empty() || (!used[i] and std::abs(res.back() - i) > 1)) {
+			res.push_back(i);
+			used[i] = 1;
+			backtrack(n);
+			res.pop_back();
+			used[i] = 0;
+		}
+	}
 }
 
 int main() {
-    int n;
-    std::cin >> n;
-    
-    if (n == 2 || n == 3) {
-        std::cout << "NO SOLUTION" << '\n';
-        return 0;
-    }
+	int n;
+	std::cin >> n;
 
-    backtrack(n);
+	if (n == 2 || n == 3) {
+		std::cout << "NO SOLUTION" << '\n';
+		return 0;
+	}
+
+	backtrack(n);
 }
 ```
 
@@ -115,10 +113,10 @@ int main() {
 
 <Spoiler title = "Can you identify the difference?">
 
-One of the major differences is that in the above code, we travese from 1 to n 
-every time during backtracking, which makes it slow. However, in our accepted 
-solution, we use a `std::set` where we delete the used elements, so whenever we 
-backtrack there are less number of elements from previous iteration, which eventually 
+One of the major differences is that in the above code, we travese from 1 to n
+every time during backtracking, which makes it slow. However, in our accepted
+solution, we use a `std::set` where we delete the used elements, so whenever we
+backtrack there are less number of elements from previous iteration, which eventually
 boosts its efficiency.
 
 </Spoiler>
