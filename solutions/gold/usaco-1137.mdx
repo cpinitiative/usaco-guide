@@ -53,27 +53,31 @@ template <class T> class BIT {
 };
 // EndCodeSnip
 
-const int MAXN = 200005;
-int n;
-vector<int> breed(MAXN);
-vector<int> last_seen(MAXN);
-
 int main() {
+	int n;
 	cin >> n;
-	for (int i = 1; i <= n; ++i) { cin >> breed[i]; }
 
-	map<int, int> breed_last_pos;
-	fill(last_seen.begin(), last_seen.end(), 0);
-	BIT<int> bit(MAXN);
+	vector<int> breed(n);
+	for (int i = 0; i < n; ++i) {
+		cin >> breed[i];
+		--breed[i];
+	}
+
+	vector<int> last_seen(n);
+	vector<int> breed_last_pos(n);
+	BIT<int> bit(n);
 
 	long long answer = 0;
-	for (int l = n; l >= 1; --l) {
 
-		int x = (breed_last_pos.count(breed[l]) ? breed_last_pos[breed[l]] : n + 1);
-		breed_last_pos[breed[l]] = l;
+	for (int l = n - 1; l >= 0; --l) {
+		int b = breed[l];
+		int x = (breed_last_pos[b] != 0 ? breed_last_pos[b] : n);
+		breed_last_pos[b] = l;
 
-		if (last_seen[breed[l]]) { bit.add(last_seen[breed[l]], -1); }
-		last_seen[breed[l]] = l;
+		if (last_seen[b] != 0) {
+			bit.add(last_seen[b], -1);
+		}
+		last_seen[b] = l;
 		bit.add(l, 1);
 
 		int count = bit.pref_sum(x - 1) - bit.pref_sum(l);
