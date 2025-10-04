@@ -1,0 +1,90 @@
+---
+id: usaco-1137
+source: USACO Gold 2021 US Open
+title: UCFJ
+author: Sachet Abeysinghe
+---
+
+[Official Analysis (C++, Java)](https://usaco.org/current/data/sol_prob1_gold_open21.html)
+
+## Explanation
+
+Let's fix the left endpoint $l$ and compute how many right endpoints $r$ work for that $l$. First, consider the first position $x>l$ such that $b_x=b_l$. If this doesn't exist, let $x = N + 1$. We can't select any right endpoint $r \ge x$, because this results in the left endpoint leader having the same breed as the cow in position $x$. We can find this position $x$ by either binary searching the index map of $b$ or precomputation.
+
+The right endpoint leader can be handled similarly. For all breeds in the range $(l, x)$, we can only select the first position of that breed $>l$. Thus, the number of right endpoints that work for this $l$ are the number of distinct elements in $(l, x)$. This can be found using a data structure like a BIT (Binary Indexed Tree).
+
+We sweep from left to right, and maintain the BIT accordingly by inserting breeds as we go. This ensures we don't overcount delegations, and allows us to efficiently query the number of valid right endpoints for each fixed $l$.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N\log N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+// BeginCodeSnip{BIT}
+template <class T> class BIT {
+  private:
+	int size;
+	vector<T> bit;
+	vector<T> arr;
+
+  public:
+	BIT(int size) : size(size), bit(size + 1), arr(size) {}
+
+	void set(int ind, T val) { add(ind, val - arr[ind]); }
+
+	void add(int ind, T val) {
+		arr[ind] += val;
+		ind++;
+		for (; ind <= size; ind += ind & -ind) { bit[ind] += val; }
+	}
+
+	T pref_sum(int ind) {
+		ind++;
+		T total = 0;
+		for (; ind > 0; ind -= ind & -ind) { total += bit[ind]; }
+		return total;
+	}
+};
+// EndCodeSnip
+
+int main() {
+	int n;
+	cin >> n;
+
+	vector<int> breed(n);
+	for (int i = 0; i < n; ++i) {
+		cin >> breed[i];
+		--breed[i];
+	}
+
+	vector<int> last_seen(n);
+	vector<int> breed_last_pos(n);
+	BIT<int> bit(n);
+
+	long long answer = 0;
+
+	for (int l = n - 1; l >= 0; --l) {
+		int b = breed[l];
+		int x = (breed_last_pos[b] != 0 ? breed_last_pos[b] : n);
+		breed_last_pos[b] = l;
+
+		if (last_seen[b] != 0) { bit.add(last_seen[b], -1); }
+		last_seen[b] = l;
+		bit.add(l, 1);
+
+		int count = bit.pref_sum(x - 1) - bit.pref_sum(l);
+		answer += count;
+	}
+
+	cout << answer << '\n';
+}
+```
+
+</CPPSection>
+</LanguageSection>
