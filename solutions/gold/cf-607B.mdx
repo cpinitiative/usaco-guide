@@ -94,4 +94,42 @@ public class Zuma {
 ```
 
 </JavaSection>
+<CppSection>
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+void solve(){
+    int n;cin>>n;
+    vector<int>v(n);
+    for(int i=0;i<n;i++){
+        cin>>v[i];
+    }
+    vector<vector<int>>dp(n+1,vector<int>(n+1,0));
+    for(int len=1;len<=n;len++){
+        for(int i=0;i+len<=n;i++){
+            int j=i+len-1;
+            dp[i][j]=1+dp[i+1][j];
+            if(i+1<n&&v[i]==v[i+1])dp[i][j]=1+dp[i+2][j];
+            for(int k=i+2;k<=j;k++){
+                if(v[i]==v[k]){
+                    dp[i][j]=min(dp[i][j],dp[i+1][k-1]+dp[k+1][j]);
+                }
+            }
+        }
+    }
+    cout<<dp[0][n-1];
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int t=1;
+   // cin>>t;
+    while(t--){
+    solve();
+    }
+}
+
+```
+</CppSection>
 </LanguageSection>
