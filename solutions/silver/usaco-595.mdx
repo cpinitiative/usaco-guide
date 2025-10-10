@@ -11,11 +11,11 @@ author: Kevin Sheng, thetazero, Melody Yu, Ruben Jing
 
 ## Explanation
 
-We can calculate the prefix sum array of our IDs to quickly compute 
+We can calculate the prefix sum array of our IDs to quickly compute
 whether or not a range of cows has IDs summing to a multiple of $7$.
 
 Given a prefix sum array $p$, the sum over the range $[l, r]$ is $p[r] - p[l-1]$.
-We must also make sure this sum is a multiple of $7$ to be a valid group. 
+We must also make sure this sum is a multiple of $7$ to be a valid group.
 These two conditions give us the following:
 $$
 (p[r] - p[l - 1]) \equiv 0 \pmod{7} \Longleftrightarrow p[r] \equiv p[l - 1] \pmod{7}
@@ -28,8 +28,8 @@ p[i]\%7 = \left(a[i]+p[i-1]\right)\%7,
 $$
 we can find the prefix mod $7$ when precomputing to avoid large numbers.
 
-In order to find the largest consecutive group, we try to find the largest distance 
-between two equal prefixes. We can have a list that stores the first occurrence 
+In order to find the largest consecutive group, we try to find the largest distance
+between two equal prefixes. We can have a list that stores the first occurrence
 of each remainder. Everytime we see a remainder again, we calculate the distance
 between the current index and the first occurrence of the remainder.
 
