@@ -15,7 +15,7 @@ of $7$ in order to be a valid group. These two conditions give us the following:
 $$
 \left(p[r] - p[l-1]\right)\%7 = 0 \\
 p[r]\%7 - p[l]\%7 = 0 \\
-p[r]\%7 = p[l]\%7 
+p[r]\%7 = p[l]\%7
 $$
 Thus, we can simplify the solution to finding where two prefixes mod $7$ are equal.
 
@@ -161,36 +161,33 @@ using namespace std;
 #define ll long long
 
 int main() {
-    ifstream cin ("div7.in");
-    ofstream cout ("div7.out");
+	ifstream cin("div7.in");
+	ofstream cout("div7.out");
 
-    ll N;
-    cin >> N;
+	ll N;
+	cin >> N;
 
-    vector<ll> cows(N);
-    vector<ll> prefix(N + 1);
+	vector<ll> cows(N);
+	vector<ll> prefix(N + 1);
 
-    for (int i = 0; i < N; i++) {
-        cin >> cows[i];
-        prefix[i + 1] = (prefix[i] + cows[i]) % 7;
-    }
+	for (int i = 0; i < N; i++) {
+		cin >> cows[i];
+		prefix[i + 1] = (prefix[i] + cows[i]) % 7;
+	}
 
-    vector<int> lastFound(7);
-    for (int i = 0; i < 7; i++) {
-        lastFound[i] = -1;
-    }
-    int maximum = 0;
+	vector<int> lastFound(7);
+	for (int i = 0; i < 7; i++) { lastFound[i] = -1; }
+	int maximum = 0;
 
-    for (int i = 0; i < prefix.size(); i++) {
-        if (lastFound[prefix[i]] == -1) {
-            lastFound[prefix[i]] = i;
-        }
-        else {
-            maximum = max(i - lastFound[prefix[i]], maximum);
-        }
-    }
+	for (int i = 0; i < prefix.size(); i++) {
+		if (lastFound[prefix[i]] == -1) {
+			lastFound[prefix[i]] = i;
+		} else {
+			maximum = max(i - lastFound[prefix[i]], maximum);
+		}
+	}
 
-    cout << maximum;
+	cout << maximum;
 }
 ```
 
