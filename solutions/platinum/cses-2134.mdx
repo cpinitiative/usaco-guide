@@ -161,270 +161,242 @@ int main() {
 import java.io.*;
 import java.util.*;
 
-/**
-    Heavy-Light Decomposition (HLD) implementation with Segment Tree.
-
-    This implementation supports:
-    1. Updating a single node's value in O(log n)</li>
-    2. Querying the maximum value on a path between two nodes in O(log^2 n)</li>
-
-    This solves problems such as:
-    - Path Queries II (CSES problem 2134) (This Code shows the solution to this problem)
-
-    Approach:
-    1. Perform a DFS to compute subtree sizes.
-    2. Decompose the tree into heavy and light chains.
-    3. Flatten the tree into an array (Euler order for chains).
-    4. Build a segment tree on top of this array for range queries/updates.
-
-    Time Complexity:
-    - Build: O(n)
-    - Update: O(log n)
-    - Path Query: O(log^2 n)
-*/
-
 public class PathQueriesHLD {
-	static FastScanner sc = new FastScanner(System.in);
-	static PrintWriter out = new PrintWriter(new BufferedOutputStream(System.out));
+    static final int MAX = 200005;
+    static final int LOG = 19;
+    static int nodes, queries;
+    static int[] values = new int[MAX];
+    static ArrayList<Integer>[] graph;
+    static int[] subtree = new int[MAX];
+    static int[][] ancestor = new int[MAX][LOG];
+    static int[] depth = new int[MAX];
+    static int[] segTree;
+    static int[] position = new int[MAX];
+    static int[] chain = new int[MAX];
+    static int timer = 1;
 
-	static int[] values;  // stores initial values of nodes
+    static void modify(int pos, int val, int node, int left, int right) {
+        if (left == right) {
+            segTree[node] = val;
+            return;
+        }
+        int mid = (left + right) / 2;
+        if (pos <= mid)
+            modify(pos, val, node * 2, left, mid);
+        else
+            modify(pos, val, node * 2 + 1, mid + 1, right);
+        segTree[node] = Math.max(segTree[node * 2], segTree[node * 2 + 1]);
+    }
 
-	public static void main(String[] args) throws IOException {
-		Attack();
-		out.flush();
-	}
+    static int getMax(int start, int end, int node, int left, int right) {
+        if (start > right || end < left)
+            return 0;
+        if (start <= left && right <= end)
+            return segTree[node];
+        int mid = (left + right) / 2;
+        return Math.max(getMax(start, end, node * 2, left, mid),
+                        getMax(start, end, node * 2 + 1, mid + 1, right));
+    }
 
-	public static void Attack() throws IOException {
-		int n = sc.nextInt(), q = sc.nextInt();
-		values = new int[n];
-		for (int i = 0; i < n; i++) values[i] = sc.nextInt();
+    static int computeSize(int curr, int parent) {
+        subtree[curr] = 1;
+        for (int child : graph[curr]) {
+            if (child == parent)
+                continue;
+            depth[child] = depth[curr] + 1;
+            ancestor[child][0] = curr;
+            subtree[curr] += computeSize(child, curr);
+        }
+        return subtree[curr];
+    }
 
-		HeavyLightDecomposition hld = new HeavyLightDecomposition(n);
-		for (int i = 0; i < n - 1; i++) {
-			int u = sc.nextInt() - 1, v = sc.nextInt() - 1;
-			hld.addEdge(u, v);
-		}
+    static void buildLCA() {
+        for (int level = 1; level < 18; level++) {
+            for (int i = 1; i <= nodes; i++)
+                ancestor[i][level] = ancestor[ancestor[i][level - 1]][level - 1];
+        }
+    }
 
-		hld.initialize(0, values);  // root the tree at node 0
+    static void decompose(int curr, int parent, int head) {
+        position[curr] = timer++;
+        chain[curr] = head;
+        modify(position[curr], values[curr], 1, 1, nodes);
+        int heavy = -1, maxSize = -1;
+        for (int child : graph[curr]) {
+            if (child == parent)
+                continue;
+            if (subtree[child] > maxSize) {
+                maxSize = subtree[child];
+                heavy = child;
+            }
+        }
+        if (heavy == -1)
+            return;
+        decompose(heavy, curr, head);
+        for (int child : graph[curr]) {
+            if (child == parent || child == heavy)
+                continue;
+            decompose(child, curr, child);
+        }
+    }
 
-		while (q-- > 0) {
-			int type = sc.nextInt();
-			if (type == 1) {
-				// Point update: change node u's value
-				int u = sc.nextInt() - 1, newVal = sc.nextInt();
-				hld.updateSegmentTree(1, 0, hld.getPositionIndex() - 1,
-				                      hld.getPosition(u), newVal);
-			} else {
-				// Path query: maximum value on path u-v
-				int u = sc.nextInt() - 1, v = sc.nextInt() - 1;
-				out.println(hld.queryMaxInPath(u, v));
-			}
-		}
-	}
+    static int findLCA(int u, int v) {
+        if (depth[u] < depth[v]) {
+            int temp = u;
+            u = v;
+            v = temp;
+        }
+        for (int level = LOG - 1; level >= 0; level--) {
+            if (depth[u] - (1 << level) >= depth[v])
+                u = ancestor[u][level];
+        }
+        for (int level = LOG - 1; level >= 0; level--) {
+            if (ancestor[u][level] != ancestor[v][level]) {
+                u = ancestor[u][level];
+                v = ancestor[v][level];
+            }
+        }
+        if (u != v) {
+            u = ancestor[u][0];
+            v = ancestor[v][0];
+        }
+        return u;
+    }
 
-	/**
-	    Class for performing Heavy-Light Decomposition (HLD).
+    static int queryPath(int child, int parent) {
+        int result = 0;
+        while (child != parent) {
+            if (chain[child] == child) {
+                result = Math.max(result, values[child]);
+                child = ancestor[child][0];
+            } else if (depth[chain[child]] > depth[parent]) {
+                result = Math.max(result, getMax(position[chain[child]], position[child], 1, 1, nodes));
+                child = ancestor[chain[child]][0];
+            } else {
+                result = Math.max(result, getMax(position[parent] + 1, position[child], 1, 1, nodes));
+                break;
+            }
+        }
+        return result;
+    }
 
-	    Internally, it uses:
-	    - parent[]: parent of each node
-	    - depth[]: depth of each node in the tree
-	    - subtreeSize[]: size of subtree rooted at node
-	    - chainHead[]: head of the current chain for each node
-	    - position[]: flattened position of node in segment tree array
-	    - nodeValue[]: node values mapped to flattened array
-	    - segmentTree[]: max segment tree for range queries
-	*/
-	static class HeavyLightDecomposition {
-		private List<List<Integer>> tree;  // adjacency list of the tree
-		private int[] parent;
-		private int[] depth;
-		private int[] subtreeSize;
-		private int[] chainHead;
-		private int[] position;
-		private int[] nodeValue;
-		private int[] segmentTree;
-		private int positionIndex;  // current index in flattened array
+    static class FastScanner {
+        private InputStream input;
+        private byte[] buffer = new byte[1 << 16];
+        private int current;
+        private int total;
 
-		/**
-		    Initializes HLD data structures.
-		*/
-		public HeavyLightDecomposition(int n) {
-			tree = new ArrayList<>();
-			for (int i = 0; i <= n; i++) tree.add(new ArrayList<>());
-			parent = new int[n + 1];
-			depth = new int[n + 1];
-			subtreeSize = new int[n + 1];
-			chainHead = new int[n + 1];
-			position = new int[n + 1];
-			nodeValue = new int[n + 1];
-			segmentTree = new int[4 * (n + 1)];
-			for (int i = 0; i <= n; i++) chainHead[i] = -1;
-			positionIndex = 0;
-		}
+        public FastScanner(InputStream input) {
+            this.input = input;
+        }
 
-		public int getPosition(int index) { return position[index]; }
+        int nextByte() {
+            if (total == -1)
+                throw new InputMismatchException();
+            if (current >= total) {
+                current = 0;
+                try {
+                    total = input.read(buffer);
+                } catch (IOException e) {
+                    throw new InputMismatchException();
+                }
+                if (total <= 0)
+                    return -1;
+            }
+            return buffer[current++];
+        }
 
-		public int getPositionIndex() { return positionIndex; }
+        int nextInt() {
+            int c = nextByte();
+            while (isWhitespace(c))
+                c = nextByte();
+            int sign = 1;
+            if (c == '-') {
+                sign = -1;
+                c = nextByte();
+            }
+            int num = 0;
+            do {
+                if (c < '0' || c > '9')
+                    throw new InputMismatchException();
+                num = num * 10 + c - '0';
+                c = nextByte();
+            } while (!isWhitespace(c));
+            return num * sign;
+        }
 
-		/**
-		    Adds an undirected edge between two nodes.
-		*/
-		public void addEdge(int u, int v) {
-			tree.get(u).add(v);
-			tree.get(v).add(u);
-		}
+        boolean isWhitespace(int c) {
+            return c == ' ' || c == '\n' || c == '\r' || c == '\t' || c == -1;
+        }
+    }
 
-		/**
-		    DFS to compute subtree sizes and parent/depth arrays.
-		*/
-		private void dfsSize(int node, int parentNode) {
-			parent[node] = parentNode;
-			subtreeSize[node] = 1;
-			for (int child : tree.get(node)) {
-				if (child != parentNode) {
-					depth[child] = depth[node] + 1;
-					dfsSize(child, node);
-					subtreeSize[node] += subtreeSize[child];
-				}
-			}
-		}
+    static class FastPrinter {
+        private final StringBuilder output;
 
-		/**
-		    Decompose tree into heavy and light chains.
-		    Heavy child = child with maximum subtree size.
-		*/
-		private void decompose(int node, int head) {
-			chainHead[node] = head;
-			position[node] = positionIndex++;
-			int heavyChild = -1, maxSubtreeSize = -1;
-			for (int child : tree.get(node)) {
-				if (child != parent[node] && subtreeSize[child] > maxSubtreeSize) {
-					heavyChild = child;
-					maxSubtreeSize = subtreeSize[child];
-				}
-			}
-			if (heavyChild != -1)  // continue heavy chain
-				decompose(heavyChild, head);
-			for (int child : tree.get(node)) {
-				if (child != parent[node] && child != heavyChild)
-					decompose(child, child);  // start new light chain
-			}
-		}
+        public FastPrinter() {
+            output = new StringBuilder();
+        }
 
-		/**
-		    Build segment tree for range maximum queries.
-		*/
-		private void buildSegmentTree(int node, int start, int end) {
-			if (start == end) {
-				segmentTree[node] = nodeValue[start];
-				return;
-			}
-			int mid = (start + end) / 2;
-			buildSegmentTree(2 * node, start, mid);
-			buildSegmentTree(2 * node + 1, mid + 1, end);
-			segmentTree[node] =
-			    Math.max(segmentTree[2 * node], segmentTree[2 * node + 1]);
-		}
+        public void write(int num) {
+            output.append(num);
+        }
 
-		/**
-		    Point update in segment tree.
-		*/
-		public void updateSegmentTree(int node, int start, int end, int index,
-		                              int value) {
-			if (start == end) {
-				segmentTree[node] = value;
-				return;
-			}
-			int mid = (start + end) / 2;
-			if (index <= mid) updateSegmentTree(2 * node, start, mid, index, value);
-			else updateSegmentTree(2 * node + 1, mid + 1, end, index, value);
-			segmentTree[node] =
-			    Math.max(segmentTree[2 * node], segmentTree[2 * node + 1]);
-		}
+        public void write(char ch) {
+            output.append(ch);
+        }
 
-		/**
-		    Range maximum query on segment tree.
-		*/
-		public int querySegmentTree(int node, int start, int end, int left, int right) {
-			if (left > end || right < start) return Integer.MIN_VALUE;  // out of range
-			if (left <= start && end <= right)
-				return segmentTree[node];  // fully covered
-			int mid = (start + end) / 2;
-			int leftQuery = querySegmentTree(2 * node, start, mid, left, right);
-			int rightQuery = querySegmentTree(2 * node + 1, mid + 1, end, left, right);
-			return Math.max(leftQuery, rightQuery);
-		}
+        public void write(String str) {
+            output.append(str);
+        }
 
-		/**
-		    Query maximum value on the path between u and v.
-		*/
-		public int queryMaxInPath(int u, int v) {
-			int result = Integer.MIN_VALUE;
-			while (chainHead[u] != chainHead[v]) {
-				if (depth[chainHead[u]] < depth[chainHead[v]]) {
-					int temp = u;
-					u = v;
-					v = temp;
-				}
-				result = Math.max(result, querySegmentTree(1, 0, positionIndex - 1,
-				                                           position[chainHead[u]],
-				                                           position[u]));
-				u = parent[chainHead[u]];
-			}
-			if (depth[u] > depth[v]) {  // ensure u is ancestor
-				int temp = u;
-				u = v;
-				v = temp;
-			}
-			result = Math.max(result, querySegmentTree(1, 0, positionIndex - 1,
-			                                           position[u], position[v]));
-			return result;
-		}
+        public void flush() {
+            System.out.print(output.toString());
+        }
+    }
 
-		/**
-		    Initialize HLD: runs DFS, decomposes tree, builds segment tree.
-		*/
-		public void initialize(int root, int[] values) {
-			dfsSize(root, -1);
-			decompose(root, root);
-			for (int i = 0; i < values.length; i++) nodeValue[position[i]] = values[i];
-			buildSegmentTree(1, 0, positionIndex - 1);
-		}
-	}
+    public static void main(String[] args) {
+        FastScanner sc = new FastScanner(System.in);
+        FastPrinter printer = new FastPrinter();
 
-	// -------- Fast Scanner ----------
-	static class FastScanner {
-		private final InputStream in;
-		private final byte[] buffer = new byte[1 << 16];
-		private int ptr = 0, len = 0;
+        nodes = sc.nextInt();
+        queries = sc.nextInt();
 
-		public FastScanner(InputStream is) { in = is; }
+        graph = new ArrayList[MAX];
+        for (int i = 0; i < MAX; i++)
+            graph[i] = new ArrayList<>();
 
-		private int readByte() {
-			if (ptr >= len) {
-				ptr = 0;
-				try {
-					len = in.read(buffer);
-				} catch (IOException e) { throw new RuntimeException(e); }
-				if (len <= 0) return -1;
-			}
-			return buffer[ptr++];
-		}
+        segTree = new int[4 * MAX];
 
-		public int nextInt() {
-			int c, sign = 1, val = 0;
-			do { c = readByte(); } while (c <= ' ');
-			if (c == '-') {
-				sign = -1;
-				c = readByte();
-			}
-			while (c > ' ') {
-				val = val * 10 + (c - '0');
-				c = readByte();
-			}
-			return val * sign;
-		}
-	}
+        for (int i = 1; i <= nodes; i++)
+            values[i] = sc.nextInt();
+
+        for (int i = 2; i <= nodes; i++) {
+            int u = sc.nextInt();
+            int v = sc.nextInt();
+            graph[u].add(v);
+            graph[v].add(u);
+        }
+
+        computeSize(1, 1);
+        buildLCA();
+        decompose(1, 1, 1);
+
+        while (queries-- > 0) {
+            int type = sc.nextInt();
+            if (type == 1) {
+                int node = sc.nextInt(), newVal = sc.nextInt();
+                values[node] = newVal;
+                modify(position[node], values[node], 1, 1, nodes);
+            } else {
+                int u = sc.nextInt(), v = sc.nextInt();
+                int lca = findLCA(u, v);
+                int res = Math.max(Math.max(queryPath(u, lca), queryPath(v, lca)), values[lca]);
+                printer.write(res);
+                printer.write(' ');
+            }
+        }
+        printer.flush();
+    }
 }
 ```
 
