@@ -1,0 +1,123 @@
+---
+id: cses-3175
+source: CSES
+title: Beautiful Permutation II
+author: Rameez Parwez
+---
+
+## Explanation
+
+We can solve this problem recursively. At every index, we look for the smallest number
+that satisfies the asked condition (i.e., *there are no adjacent elements whose difference is 1*)
+and if it satisfies, we add it to our permutation.
+
+For $n = 2$ and $n = 3$, we know that no permutation satisfies the asked condition.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N \log N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <set>
+#include <vector>
+
+std::vector<int> res;
+std::set<int> ele;
+
+void backtrack(int n) {
+	if ((int)res.size() == n) {
+		for (int x : res) { std::cout << x << " \n"[x == res.back()]; }
+		exit(0);
+	}
+
+	for (int x : ele) {
+		if (res.empty() || std::abs(res.back() - x) > 1) {
+			res.push_back(x);
+			ele.erase(x);
+			backtrack(n);
+			ele.insert(x);
+			res.pop_back();
+		}
+	}
+}
+
+int main() {
+	int n;
+	std::cin >> n;
+
+	if (n == 2 || n == 3) {
+		std::cout << "NO SOLUTION" << '\n';
+		return 0;
+	}
+
+	for (int i = 1; i <= n; i++) { ele.insert(i); }
+
+	backtrack(n);
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
+<Spoiler title = "Why the above solution runs within Time Limit?">
+
+Let's see the code below, which is also correct, but it gives TLE for larger inputs.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <set>
+#include <vector>
+
+std::vector<int> res;
+std::vector<int> used(1000001, 0);
+
+void backtrack(int n) {
+	if ((int)res.size() == n) {
+		for (int x : res) { std::cout << x << " \n"[x == res.back()]; }
+		exit(0);
+	}
+
+	for (int i = 1; i <= n; i++) {
+		if (res.empty() || (!used[i] and std::abs(res.back() - i) > 1)) {
+			res.push_back(i);
+			used[i] = 1;
+			backtrack(n);
+			res.pop_back();
+			used[i] = 0;
+		}
+	}
+}
+
+int main() {
+	int n;
+	std::cin >> n;
+
+	if (n == 2 || n == 3) {
+		std::cout << "NO SOLUTION" << '\n';
+		return 0;
+	}
+
+	backtrack(n);
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
+<Spoiler title = "Can you identify the difference?">
+
+One of the major differences is that in the above code, we travese from 1 to n
+every time during backtracking, which makes it slow. However, in our accepted
+solution, we use a `std::set` where we delete the used elements, so whenever we
+backtrack there are less number of elements from previous iteration, which eventually
+boosts its efficiency.
+
+</Spoiler>
+</Spoiler>
