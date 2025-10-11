@@ -46,7 +46,7 @@ We want to minimize the function $f(x) = \sum_{i=1}^n |a_i x + b_i|$.
 
 Since each $a_i \in \{+1, -1\}$, we can rewrite each term as $|a_i x + b_i| = |x - r_i|$, where $r_i = -\dfrac{b_i}{a_i}$
 
-Thus, minimizing $f(x)$ is equivalent to minimizing $f(x) = \sum_{i=1}^n |x - r_i|$  
+Thus, minimizing $f(x)$ is equivalent to minimizing $f(x) = \sum_{i=1}^n |x - r_i|$
 
 Intuitively, we can think of trying to push $x$ as close to the middle of the roots as possible, as placing it there will "balance" the values.
 
@@ -107,137 +107,135 @@ bool impossible;
 ll current_val;
 
 void dfs(int u) {
-    current_component.push_back(u);
-    vis[u] = true;
+	current_component.push_back(u);
+	vis[u] = true;
 
-    for (auto [v, w] : adj[u]) {
-        if (vis[v]) {
-            // found a cycle -> check consistency or solve for x
-            pll res = {coeffs[u].first + coeffs[v].first,
-                       coeffs[u].second + coeffs[v].second};
+	for (auto [v, w] : adj[u]) {
+		if (vis[v]) {
+			// found a cycle -> check consistency or solve for x
+			pll res = {coeffs[u].first + coeffs[v].first,
+			           coeffs[u].second + coeffs[v].second};
 
-            if (res.first == 0) {
-                // x terms cancel -> check if constants match
-                if (res.second != w) {
-                    impossible = true;
-                }
-            } else {
-                // can solve for x
-                ll expected;
-                if (res.first == 2) {
-                    expected = w - res.second;
-                } else {
-                    expected = res.second - w;
-                }
-                if (current_val == INF) {
-                    current_val = expected;
-                } else if (current_val != expected) {
-                    // contradiction with previously determined x
-                    impossible = true;
-                    return;
-                }
-            }
-        } else {
-            // compute neighbor's value based on edge: v = w - u
-            coeffs[v] = {-coeffs[u].first, w - coeffs[u].second};
-            dfs(v);
-        }
-    }
+			if (res.first == 0) {
+				// x terms cancel -> check if constants match
+				if (res.second != w) { impossible = true; }
+			} else {
+				// can solve for x
+				ll expected;
+				if (res.first == 2) {
+					expected = w - res.second;
+				} else {
+					expected = res.second - w;
+				}
+				if (current_val == INF) {
+					current_val = expected;
+				} else if (current_val != expected) {
+					// contradiction with previously determined x
+					impossible = true;
+					return;
+				}
+			}
+		} else {
+			// compute neighbor's value based on edge: v = w - u
+			coeffs[v] = {-coeffs[u].first, w - coeffs[u].second};
+			dfs(v);
+		}
+	}
 }
 
 void propagate(int u) {
-    // once x is known, propagate actual values through component
-    vis[u] = true;
-    for (auto [v, w] : adj[u]) {
-        if (!vis[v]) {
-            ans[v] = w - ans[u];
-            propagate(v);
-        }
-    }
+	// once x is known, propagate actual values through component
+	vis[u] = true;
+	for (auto [v, w] : adj[u]) {
+		if (!vis[v]) {
+			ans[v] = w - ans[u];
+			propagate(v);
+		}
+	}
 }
 
-double find_median(const vector<int>& comp) {
-    // optimal x minimizes sum of |ax+b|, which occurs at median of roots
-    vector<ll> roots;
-    for (int node : comp) {
-        if (coeffs[node].first == 1) {
-            roots.push_back(-coeffs[node].second);
-        } else {
-            roots.push_back(coeffs[node].second);
-        }
-    }
-    sort(roots.begin(), roots.end());
-    int sz = roots.size();
-    return (roots[(sz - 1) / 2] + roots[sz / 2]) / 2.0;
+double find_median(const vector<int> &comp) {
+	// optimal x minimizes sum of |ax+b|, which occurs at median of roots
+	vector<ll> roots;
+	for (int node : comp) {
+		if (coeffs[node].first == 1) {
+			roots.push_back(-coeffs[node].second);
+		} else {
+			roots.push_back(coeffs[node].second);
+		}
+	}
+	sort(roots.begin(), roots.end());
+	int sz = roots.size();
+	return (roots[(sz - 1) / 2] + roots[sz / 2]) / 2.0;
 }
 
 int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
+	ios_base::sync_with_stdio(false);
+	cin.tie(nullptr);
 
-    int n, m;
-    cin >> n >> m;
+	int n, m;
+	cin >> n >> m;
 
-    adj.resize(n);
-    coeffs.assign(n, {-INF, -INF});
-    vis.assign(n, false);
-    ans.resize(n);
-    impossible = false;
+	adj.resize(n);
+	coeffs.assign(n, {-INF, -INF});
+	vis.assign(n, false);
+	ans.resize(n);
+	impossible = false;
 
-    // build adjacency list
-    for (int i = 0; i < m; i++) {
-        int a, b;
-        ll c;
-        cin >> a >> b >> c;
-        --a, --b;
-        adj[a].push_back({b, c});
-        adj[b].push_back({a, c});
-    }
+	// build adjacency list
+	for (int i = 0; i < m; i++) {
+		int a, b;
+		ll c;
+		cin >> a >> b >> c;
+		--a, --b;
+		adj[a].push_back({b, c});
+		adj[b].push_back({a, c});
+	}
 
-    vector<vector<int>> components;
-    vector<ll> component_vals;
+	vector<vector<int>> components;
+	vector<ll> component_vals;
 
-    // find all connected components
-    for (int i = 0; i < n; i++) {
-        if (!vis[i]) {
-            current_component.clear();
-            current_val = INF;
-            coeffs[i] = {1, 0};  // let first node = x
-            dfs(i);
-            components.push_back(current_component);
-            component_vals.push_back(current_val);
-        }
-    }
+	// find all connected components
+	for (int i = 0; i < n; i++) {
+		if (!vis[i]) {
+			current_component.clear();
+			current_val = INF;
+			coeffs[i] = {1, 0};  // let first node = x
+			dfs(i);
+			components.push_back(current_component);
+			component_vals.push_back(current_val);
+		}
+	}
 
-    if (impossible) {
-        cout << "NO\n";
-        return 0;
-    }
+	if (impossible) {
+		cout << "NO\n";
+		return 0;
+	}
 
-    cout << "YES\n";
-    fill(vis.begin(), vis.end(), false);
+	cout << "YES\n";
+	fill(vis.begin(), vis.end(), false);
 
-    // compute final values for each component
-    for (int i = 0; i < components.size(); i++) {
-        int start = components[i][0];
-        if (component_vals[i] == INF) {
-            // x not fixed -> use median for optimal sum
-            ans[start] = find_median(components[i]);
-        } else {
-            // x was determined by a cycle
-            ans[start] = component_vals[i] / 2.0;
-        }
-        propagate(start);
-    }
+	// compute final values for each component
+	for (int i = 0; i < components.size(); i++) {
+		int start = components[i][0];
+		if (component_vals[i] == INF) {
+			// x not fixed -> use median for optimal sum
+			ans[start] = find_median(components[i]);
+		} else {
+			// x was determined by a cycle
+			ans[start] = component_vals[i] / 2.0;
+		}
+		propagate(start);
+	}
 
-    for (int i = 0; i < n; i++) {
-        cout << fixed << setprecision(1) << ans[i];
-        if (i == n - 1) {
-            cout << '\n';
-        } else {
-            cout << ' ';
-        }
-    }
+	for (int i = 0; i < n; i++) {
+		cout << fixed << setprecision(1) << ans[i];
+		if (i == n - 1) {
+			cout << '\n';
+		} else {
+			cout << ' ';
+		}
+	}
 }
 ```
 
@@ -250,171 +248,170 @@ import java.io.*;
 import java.util.*;
 
 public class Graph {
-    static final long INF = (long) 1e18;
-    
-    static List<List<Pair>> adj;
-    static List<Pair> coeffs;  // each node value is represented as ax + b (stored as pair {a, b})
-    static boolean[] vis;
-    static double[] ans;
-    static List<Integer> currentComponent;
-    static boolean impossible;
-    static long currentVal;
-    
-    static class Pair {
-        long first, second;
-        Pair(long first, long second) {
-            this.first = first;
-            this.second = second;
-        }
-    }
-    
-    static void dfs(int u) {
-        currentComponent.add(u);
-        vis[u] = true;
-        
-        for (Pair edge : adj.get(u)) {
-            int v = (int) edge.first;
-            long w = edge.second;
-            
-            if (vis[v]) {
-                // found a cycle -> check consistency or solve for x
-                Pair res = new Pair(
-                    coeffs.get(u).first + coeffs.get(v).first,
-                    coeffs.get(u).second + coeffs.get(v).second
-                );
-                
-                if (res.first == 0) {
-                    // x terms cancel -> check if constants match
-                    if (res.second != w) impossible = true;
-                } else {
-                    // can solve for x
-                    long expected;
-                    if (res.first == 2) {
-                        expected = w - res.second;
-                    } else {
-                        expected = res.second - w;
-                    }
-                    if (currentVal == INF) {
-                        currentVal = expected;
-                    } else if (currentVal != expected) {
-                        // contradiction with previously determined x
-                        impossible = true;
-                        return;
-                    }
-                }
-            } else {
-                // compute neighbor's value based on edge: v = w - u
-                coeffs.set(v, new Pair(-coeffs.get(u).first, w - coeffs.get(u).second));
-                dfs(v);
-            }
-        }
-    }
-    
-    static void propagate(int u) {
-        // once x is known, propagate actual values through component
-        vis[u] = true;
-        for (Pair edge : adj.get(u)) {
-            int v = (int) edge.first;
-            long w = edge.second;
-            if (!vis[v]) {
-                ans[v] = w - ans[u];
-                propagate(v);
-            }
-        }
-    }
-    
-    static double findMedian(List<Integer> comp) {
-        // optimal x minimizes sum of |ax+b|, which occurs at median of roots
-        List<Long> roots = new ArrayList<>();
-        for (int node : comp) {
-            if (coeffs.get(node).first == 1) {
-                roots.add(-coeffs.get(node).second);
-            } else {
-                roots.add(coeffs.get(node).second);
-            }
-        }
-        Collections.sort(roots);
-        int sz = roots.size();
-        return (roots.get((sz - 1) / 2) + roots.get(sz / 2)) / 2.0;
-    }
-    
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        PrintWriter pw = new PrintWriter(System.out);
-        
-        StringTokenizer st = new StringTokenizer(br.readLine());
-        int n = Integer.parseInt(st.nextToken());
-        int m = Integer.parseInt(st.nextToken());
-        
-        adj = new ArrayList<>();
-        coeffs = new ArrayList<>();
-        vis = new boolean[n];
-        ans = new double[n];
-        impossible = false;
-        
-        for (int i = 0; i < n; i++) {
-            adj.add(new ArrayList<>());
-            coeffs.add(new Pair(-INF, -INF));
-        }
-        
-        // build adjacency list
-        for (int i = 0; i < m; i++) {
-            st = new StringTokenizer(br.readLine());
-            int a = Integer.parseInt(st.nextToken()) - 1;
-            int b = Integer.parseInt(st.nextToken()) - 1;
-            long c = Long.parseLong(st.nextToken());
-            adj.get(a).add(new Pair(b, c));
-            adj.get(b).add(new Pair(a, c));
-        }
-        
-        List<List<Integer>> components = new ArrayList<>();
-        List<Long> componentVals = new ArrayList<>();
-        
-        // find all connected components
-        for (int i = 0; i < n; i++) {
-            if (!vis[i]) {
-                currentComponent = new ArrayList<>();
-                currentVal = INF;
-                coeffs.set(i, new Pair(1, 0));  // let first node = x
-                dfs(i);
-                components.add(new ArrayList<>(currentComponent));
-                componentVals.add(currentVal);
-            }
-        }
-        
-        if (impossible) {
-            pw.println("NO");
-            pw.close();
-            return;
-        }
-        
-        pw.println("YES");
-        Arrays.fill(vis, false);
-        
-        // compute final values for each component
-        for (int i = 0; i < components.size(); i++) {
-            int start = components.get(i).get(0);
-            if (componentVals.get(i) == INF) {
-                // x not fixed -> use median for optimal sum
-                ans[start] = findMedian(components.get(i));
-            } else {
-                // x was determined by a cycle
-                ans[start] = componentVals.get(i) / 2.0;
-            }
-            propagate(start);
-        }
-        
-        for (int i = 0; i < n; i++) {
-            pw.printf("%.1f", ans[i]);
-            if (i == n - 1) {
-                pw.println();
-            } else {
-                pw.print(" ");
-            }
-        }
-        
-        pw.close();
-    }
+	static final long INF = (long)1e18;
+
+	static List<List<Pair>> adj;
+	static List<Pair>
+	    coeffs;  // each node value is represented as ax + b (stored as pair {a, b})
+	static boolean[] vis;
+	static double[] ans;
+	static List<Integer> currentComponent;
+	static boolean impossible;
+	static long currentVal;
+
+	static class Pair {
+		long first, second;
+		Pair(long first, long second) {
+			this.first = first;
+			this.second = second;
+		}
+	}
+
+	static void dfs(int u) {
+		currentComponent.add(u);
+		vis[u] = true;
+
+		for (Pair edge : adj.get(u)) {
+			int v = (int)edge.first;
+			long w = edge.second;
+
+			if (vis[v]) {
+				// found a cycle -> check consistency or solve for x
+				Pair res = new Pair(coeffs.get(u).first + coeffs.get(v).first,
+				                    coeffs.get(u).second + coeffs.get(v).second);
+
+				if (res.first == 0) {
+					// x terms cancel -> check if constants match
+					if (res.second != w) impossible = true;
+				} else {
+					// can solve for x
+					long expected;
+					if (res.first == 2) {
+						expected = w - res.second;
+					} else {
+						expected = res.second - w;
+					}
+					if (currentVal == INF) {
+						currentVal = expected;
+					} else if (currentVal != expected) {
+						// contradiction with previously determined x
+						impossible = true;
+						return;
+					}
+				}
+			} else {
+				// compute neighbor's value based on edge: v = w - u
+				coeffs.set(v, new Pair(-coeffs.get(u).first, w - coeffs.get(u).second));
+				dfs(v);
+			}
+		}
+	}
+
+	static void propagate(int u) {
+		// once x is known, propagate actual values through component
+		vis[u] = true;
+		for (Pair edge : adj.get(u)) {
+			int v = (int)edge.first;
+			long w = edge.second;
+			if (!vis[v]) {
+				ans[v] = w - ans[u];
+				propagate(v);
+			}
+		}
+	}
+
+	static double findMedian(List<Integer> comp) {
+		// optimal x minimizes sum of |ax+b|, which occurs at median of roots
+		List<Long> roots = new ArrayList<>();
+		for (int node : comp) {
+			if (coeffs.get(node).first == 1) {
+				roots.add(-coeffs.get(node).second);
+			} else {
+				roots.add(coeffs.get(node).second);
+			}
+		}
+		Collections.sort(roots);
+		int sz = roots.size();
+		return (roots.get((sz - 1) / 2) + roots.get(sz / 2)) / 2.0;
+	}
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		PrintWriter pw = new PrintWriter(System.out);
+
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int n = Integer.parseInt(st.nextToken());
+		int m = Integer.parseInt(st.nextToken());
+
+		adj = new ArrayList<>();
+		coeffs = new ArrayList<>();
+		vis = new boolean[n];
+		ans = new double[n];
+		impossible = false;
+
+		for (int i = 0; i < n; i++) {
+			adj.add(new ArrayList<>());
+			coeffs.add(new Pair(-INF, -INF));
+		}
+
+		// build adjacency list
+		for (int i = 0; i < m; i++) {
+			st = new StringTokenizer(br.readLine());
+			int a = Integer.parseInt(st.nextToken()) - 1;
+			int b = Integer.parseInt(st.nextToken()) - 1;
+			long c = Long.parseLong(st.nextToken());
+			adj.get(a).add(new Pair(b, c));
+			adj.get(b).add(new Pair(a, c));
+		}
+
+		List<List<Integer>> components = new ArrayList<>();
+		List<Long> componentVals = new ArrayList<>();
+
+		// find all connected components
+		for (int i = 0; i < n; i++) {
+			if (!vis[i]) {
+				currentComponent = new ArrayList<>();
+				currentVal = INF;
+				coeffs.set(i, new Pair(1, 0));  // let first node = x
+				dfs(i);
+				components.add(new ArrayList<>(currentComponent));
+				componentVals.add(currentVal);
+			}
+		}
+
+		if (impossible) {
+			pw.println("NO");
+			pw.close();
+			return;
+		}
+
+		pw.println("YES");
+		Arrays.fill(vis, false);
+
+		// compute final values for each component
+		for (int i = 0; i < components.size(); i++) {
+			int start = components.get(i).get(0);
+			if (componentVals.get(i) == INF) {
+				// x not fixed -> use median for optimal sum
+				ans[start] = findMedian(components.get(i));
+			} else {
+				// x was determined by a cycle
+				ans[start] = componentVals.get(i) / 2.0;
+			}
+			propagate(start);
+		}
+
+		for (int i = 0; i < n; i++) {
+			pw.printf("%.1f", ans[i]);
+			if (i == n - 1) {
+				pw.println();
+			} else {
+				pw.print(" ");
+			}
+		}
+
+		pw.close();
+	}
 }
 ```
 
