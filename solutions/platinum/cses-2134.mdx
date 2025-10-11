@@ -162,241 +162,215 @@ import java.io.*;
 import java.util.*;
 
 public class PathQueriesHLD {
-    static final int MAX = 200005;
-    static final int LOG = 19;
-    static int nodes, queries;
-    static int[] values = new int[MAX];
-    static ArrayList<Integer>[] graph;
-    static int[] subtree = new int[MAX];
-    static int[][] ancestor = new int[MAX][LOG];
-    static int[] depth = new int[MAX];
-    static int[] segTree;
-    static int[] position = new int[MAX];
-    static int[] chain = new int[MAX];
-    static int timer = 1;
+	static final int MAX = 200005;
+	static final int LOG = 19;
+	static int nodes, queries;
+	static int[] values = new int[MAX];
+	static ArrayList<Integer>[] graph;
+	static int[] subtree = new int[MAX];
+	static int[][] ancestor = new int[MAX][LOG];
+	static int[] depth = new int[MAX];
+	static int[] segTree;
+	static int[] position = new int[MAX];
+	static int[] chain = new int[MAX];
+	static int timer = 1;
 
-    static void modify(int pos, int val, int node, int left, int right) {
-        if (left == right) {
-            segTree[node] = val;
-            return;
-        }
-        int mid = (left + right) / 2;
-        if (pos <= mid)
-            modify(pos, val, node * 2, left, mid);
-        else
-            modify(pos, val, node * 2 + 1, mid + 1, right);
-        segTree[node] = Math.max(segTree[node * 2], segTree[node * 2 + 1]);
-    }
+	static void modify(int pos, int val, int node, int left, int right) {
+		if (left == right) {
+			segTree[node] = val;
+			return;
+		}
+		int mid = (left + right) / 2;
+		if (pos <= mid) modify(pos, val, node * 2, left, mid);
+		else modify(pos, val, node * 2 + 1, mid + 1, right);
+		segTree[node] = Math.max(segTree[node * 2], segTree[node * 2 + 1]);
+	}
 
-    static int getMax(int start, int end, int node, int left, int right) {
-        if (start > right || end < left)
-            return 0;
-        if (start <= left && right <= end)
-            return segTree[node];
-        int mid = (left + right) / 2;
-        return Math.max(getMax(start, end, node * 2, left, mid),
-                        getMax(start, end, node * 2 + 1, mid + 1, right));
-    }
+	static int getMax(int start, int end, int node, int left, int right) {
+		if (start > right || end < left) return 0;
+		if (start <= left && right <= end) return segTree[node];
+		int mid = (left + right) / 2;
+		return Math.max(getMax(start, end, node * 2, left, mid),
+		                getMax(start, end, node * 2 + 1, mid + 1, right));
+	}
 
-    static int computeSize(int curr, int parent) {
-        subtree[curr] = 1;
-        for (int child : graph[curr]) {
-            if (child == parent)
-                continue;
-            depth[child] = depth[curr] + 1;
-            ancestor[child][0] = curr;
-            subtree[curr] += computeSize(child, curr);
-        }
-        return subtree[curr];
-    }
+	static int computeSize(int curr, int parent) {
+		subtree[curr] = 1;
+		for (int child : graph[curr]) {
+			if (child == parent) continue;
+			depth[child] = depth[curr] + 1;
+			ancestor[child][0] = curr;
+			subtree[curr] += computeSize(child, curr);
+		}
+		return subtree[curr];
+	}
 
-    static void buildLCA() {
-        for (int level = 1; level < 18; level++) {
-            for (int i = 1; i <= nodes; i++)
-                ancestor[i][level] = ancestor[ancestor[i][level - 1]][level - 1];
-        }
-    }
+	static void buildLCA() {
+		for (int level = 1; level < 18; level++) {
+			for (int i = 1; i <= nodes; i++)
+				ancestor[i][level] = ancestor[ancestor[i][level - 1]][level - 1];
+		}
+	}
 
-    static void decompose(int curr, int parent, int head) {
-        position[curr] = timer++;
-        chain[curr] = head;
-        modify(position[curr], values[curr], 1, 1, nodes);
-        int heavy = -1, maxSize = -1;
-        for (int child : graph[curr]) {
-            if (child == parent)
-                continue;
-            if (subtree[child] > maxSize) {
-                maxSize = subtree[child];
-                heavy = child;
-            }
-        }
-        if (heavy == -1)
-            return;
-        decompose(heavy, curr, head);
-        for (int child : graph[curr]) {
-            if (child == parent || child == heavy)
-                continue;
-            decompose(child, curr, child);
-        }
-    }
+	static void decompose(int curr, int parent, int head) {
+		position[curr] = timer++;
+		chain[curr] = head;
+		modify(position[curr], values[curr], 1, 1, nodes);
+		int heavy = -1, maxSize = -1;
+		for (int child : graph[curr]) {
+			if (child == parent) continue;
+			if (subtree[child] > maxSize) {
+				maxSize = subtree[child];
+				heavy = child;
+			}
+		}
+		if (heavy == -1) return;
+		decompose(heavy, curr, head);
+		for (int child : graph[curr]) {
+			if (child == parent || child == heavy) continue;
+			decompose(child, curr, child);
+		}
+	}
 
-    static int findLCA(int u, int v) {
-        if (depth[u] < depth[v]) {
-            int temp = u;
-            u = v;
-            v = temp;
-        }
-        for (int level = LOG - 1; level >= 0; level--) {
-            if (depth[u] - (1 << level) >= depth[v])
-                u = ancestor[u][level];
-        }
-        for (int level = LOG - 1; level >= 0; level--) {
-            if (ancestor[u][level] != ancestor[v][level]) {
-                u = ancestor[u][level];
-                v = ancestor[v][level];
-            }
-        }
-        if (u != v) {
-            u = ancestor[u][0];
-            v = ancestor[v][0];
-        }
-        return u;
-    }
+	static int findLCA(int u, int v) {
+		if (depth[u] < depth[v]) {
+			int temp = u;
+			u = v;
+			v = temp;
+		}
+		for (int level = LOG - 1; level >= 0; level--) {
+			if (depth[u] - (1 << level) >= depth[v]) u = ancestor[u][level];
+		}
+		for (int level = LOG - 1; level >= 0; level--) {
+			if (ancestor[u][level] != ancestor[v][level]) {
+				u = ancestor[u][level];
+				v = ancestor[v][level];
+			}
+		}
+		if (u != v) {
+			u = ancestor[u][0];
+			v = ancestor[v][0];
+		}
+		return u;
+	}
 
-    static int queryPath(int child, int parent) {
-        int result = 0;
-        while (child != parent) {
-            if (chain[child] == child) {
-                result = Math.max(result, values[child]);
-                child = ancestor[child][0];
-            } else if (depth[chain[child]] > depth[parent]) {
-                result = Math.max(result, getMax(position[chain[child]], position[child], 1, 1, nodes));
-                child = ancestor[chain[child]][0];
-            } else {
-                result = Math.max(result, getMax(position[parent] + 1, position[child], 1, 1, nodes));
-                break;
-            }
-        }
-        return result;
-    }
+	static int queryPath(int child, int parent) {
+		int result = 0;
+		while (child != parent) {
+			if (chain[child] == child) {
+				result = Math.max(result, values[child]);
+				child = ancestor[child][0];
+			} else if (depth[chain[child]] > depth[parent]) {
+				result = Math.max(result, getMax(position[chain[child]],
+				                                 position[child], 1, 1, nodes));
+				child = ancestor[chain[child]][0];
+			} else {
+				result = Math.max(
+				    result, getMax(position[parent] + 1, position[child], 1, 1, nodes));
+				break;
+			}
+		}
+		return result;
+	}
 
-    static class FastScanner {
-        private InputStream input;
-        private byte[] buffer = new byte[1 << 16];
-        private int current;
-        private int total;
+	static class FastScanner {
+		private InputStream input;
+		private byte[] buffer = new byte[1 << 16];
+		private int current;
+		private int total;
 
-        public FastScanner(InputStream input) {
-            this.input = input;
-        }
+		public FastScanner(InputStream input) { this.input = input; }
 
-        int nextByte() {
-            if (total == -1)
-                throw new InputMismatchException();
-            if (current >= total) {
-                current = 0;
-                try {
-                    total = input.read(buffer);
-                } catch (IOException e) {
-                    throw new InputMismatchException();
-                }
-                if (total <= 0)
-                    return -1;
-            }
-            return buffer[current++];
-        }
+		int nextByte() {
+			if (total == -1) throw new InputMismatchException();
+			if (current >= total) {
+				current = 0;
+				try {
+					total = input.read(buffer);
+				} catch (IOException e) { throw new InputMismatchException(); }
+				if (total <= 0) return -1;
+			}
+			return buffer[current++];
+		}
 
-        int nextInt() {
-            int c = nextByte();
-            while (isWhitespace(c))
-                c = nextByte();
-            int sign = 1;
-            if (c == '-') {
-                sign = -1;
-                c = nextByte();
-            }
-            int num = 0;
-            do {
-                if (c < '0' || c > '9')
-                    throw new InputMismatchException();
-                num = num * 10 + c - '0';
-                c = nextByte();
-            } while (!isWhitespace(c));
-            return num * sign;
-        }
+		int nextInt() {
+			int c = nextByte();
+			while (isWhitespace(c)) c = nextByte();
+			int sign = 1;
+			if (c == '-') {
+				sign = -1;
+				c = nextByte();
+			}
+			int num = 0;
+			do {
+				if (c < '0' || c > '9') throw new InputMismatchException();
+				num = num * 10 + c - '0';
+				c = nextByte();
+			} while (!isWhitespace(c));
+			return num * sign;
+		}
 
-        boolean isWhitespace(int c) {
-            return c == ' ' || c == '\n' || c == '\r' || c == '\t' || c == -1;
-        }
-    }
+		boolean isWhitespace(int c) {
+			return c == ' ' || c == '\n' || c == '\r' || c == '\t' || c == -1;
+		}
+	}
 
-    static class FastPrinter {
-        private final StringBuilder output;
+	static class FastPrinter {
+		private final StringBuilder output;
 
-        public FastPrinter() {
-            output = new StringBuilder();
-        }
+		public FastPrinter() { output = new StringBuilder(); }
 
-        public void write(int num) {
-            output.append(num);
-        }
+		public void write(int num) { output.append(num); }
 
-        public void write(char ch) {
-            output.append(ch);
-        }
+		public void write(char ch) { output.append(ch); }
 
-        public void write(String str) {
-            output.append(str);
-        }
+		public void write(String str) { output.append(str); }
 
-        public void flush() {
-            System.out.print(output.toString());
-        }
-    }
+		public void flush() { System.out.print(output.toString()); }
+	}
 
-    public static void main(String[] args) {
-        FastScanner sc = new FastScanner(System.in);
-        FastPrinter printer = new FastPrinter();
+	public static void main(String[] args) {
+		FastScanner sc = new FastScanner(System.in);
+		FastPrinter printer = new FastPrinter();
 
-        nodes = sc.nextInt();
-        queries = sc.nextInt();
+		nodes = sc.nextInt();
+		queries = sc.nextInt();
 
-        graph = new ArrayList[MAX];
-        for (int i = 0; i < MAX; i++)
-            graph[i] = new ArrayList<>();
+		graph = new ArrayList[MAX];
+		for (int i = 0; i < MAX; i++) graph[i] = new ArrayList<>();
 
-        segTree = new int[4 * MAX];
+		segTree = new int[4 * MAX];
 
-        for (int i = 1; i <= nodes; i++)
-            values[i] = sc.nextInt();
+		for (int i = 1; i <= nodes; i++) values[i] = sc.nextInt();
 
-        for (int i = 2; i <= nodes; i++) {
-            int u = sc.nextInt();
-            int v = sc.nextInt();
-            graph[u].add(v);
-            graph[v].add(u);
-        }
+		for (int i = 2; i <= nodes; i++) {
+			int u = sc.nextInt();
+			int v = sc.nextInt();
+			graph[u].add(v);
+			graph[v].add(u);
+		}
 
-        computeSize(1, 1);
-        buildLCA();
-        decompose(1, 1, 1);
+		computeSize(1, 1);
+		buildLCA();
+		decompose(1, 1, 1);
 
-        while (queries-- > 0) {
-            int type = sc.nextInt();
-            if (type == 1) {
-                int node = sc.nextInt(), newVal = sc.nextInt();
-                values[node] = newVal;
-                modify(position[node], values[node], 1, 1, nodes);
-            } else {
-                int u = sc.nextInt(), v = sc.nextInt();
-                int lca = findLCA(u, v);
-                int res = Math.max(Math.max(queryPath(u, lca), queryPath(v, lca)), values[lca]);
-                printer.write(res);
-                printer.write(' ');
-            }
-        }
-        printer.flush();
-    }
+		while (queries-- > 0) {
+			int type = sc.nextInt();
+			if (type == 1) {
+				int node = sc.nextInt(), newVal = sc.nextInt();
+				values[node] = newVal;
+				modify(position[node], values[node], 1, 1, nodes);
+			} else {
+				int u = sc.nextInt(), v = sc.nextInt();
+				int lca = findLCA(u, v);
+				int res = Math.max(Math.max(queryPath(u, lca), queryPath(v, lca)),
+				                   values[lca]);
+				printer.write(res);
+				printer.write(' ');
+			}
+		}
+		printer.flush();
+	}
 }
 ```
 
