@@ -3,6 +3,7 @@ import parseAc from './ac';
 import parseCf from './cf';
 import parseCses from './cses';
 import parseUsaco from './usaco';
+
 export const parsers = {
   'codeforces.com': parseCf,
   'usaco.org': parseUsaco,
@@ -10,14 +11,196 @@ export const parsers = {
   'atcoder.jp': parseAc,
 };
 
+// Alternative headers for retry attempts
+const alternativeHeaders = [
+  {
+    'User-Agent':
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+    Accept:
+      'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+    'Accept-Language': 'en-US,en;q=0.9',
+    'Accept-Encoding': 'gzip, deflate, br',
+    'Cache-Control': 'no-cache',
+    Pragma: 'no-cache',
+    'Sec-Ch-Ua':
+      '"Not_A Brand";v="8", "Chromium";v="120", "Google Chrome";v="120"',
+    'Sec-Ch-Ua-Mobile': '?0',
+    'Sec-Ch-Ua-Platform': '"Windows"',
+    'Sec-Fetch-Dest': 'document',
+    'Sec-Fetch-Mode': 'navigate',
+    'Sec-Fetch-Site': 'none',
+    'Sec-Fetch-User': '?1',
+    'Upgrade-Insecure-Requests': '1',
+  },
+  {
+    'User-Agent':
+      'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+    Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+    'Accept-Language': 'en-US,en;q=0.5',
+    'Accept-Encoding': 'gzip, deflate',
+    Connection: 'keep-alive',
+    'Upgrade-Insecure-Requests': '1',
+  },
+  {
+    'User-Agent':
+      'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+    Accept:
+      'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+    'Accept-Language': 'en-US,en;q=0.9',
+  },
+];
+
+async function fetchWithRetry(
+  url: string,
+  maxRetries: number = 3
+): Promise<string> {
+  for (let attempt = 0; attempt < maxRetries; attempt++) {
+    try {
+      const headers = alternativeHeaders[attempt % alternativeHeaders.length];
+      const delay = attempt * 2000; // 0s, 2s, 4s delays
+
+      if (delay > 0) {
+        console.log(
+          `Retrying in ${delay}ms (attempt ${attempt + 1}/${maxRetries})`
+        );
+        await new Promise(resolve => setTimeout(resolve, delay));
+      }
+
+      const config = {
+        headers,
+        timeout: 15000,
+        maxRedirects: 5,
+        validateStatus: (status: number) => status < 400, // Accept 3xx redirects
+      };
+
+      const response = await axios.get(url, config);
+
+      // Check if we got a challenge page instead of actual content
+      if (
+        response.data.includes('challenge-platform') ||
+        response.data.includes('Just a moment') ||
+        response.data.includes('cf-mitigated')
+      ) {
+        console.log(`Got challenge page on attempt ${attempt + 1}`);
+        if (attempt === maxRetries - 1) {
+          throw new Error('Cloudflare challenge page received - cannot bypass');
+        }
+        continue;
+      }
+
+      return response.data;
+    } catch (error) {
+      console.error(
+        `Attempt ${attempt + 1} failed:`,
+        error instanceof Error ? error.message : error
+      );
+
+      if (attempt === maxRetries - 1) {
+        throw error;
+      }
+    }
+  }
+
+  throw new Error('All retry attempts failed');
+}
+
+// Fallback function to try Codeforces API if direct scraping fails
+async function tryCodeforcesAPI(url: string): Promise<string | null> {
+  try {
+    // Extract contest ID and problem index from URL
+    // URL format: https://codeforces.com/problemset/problem/{contestId}/{index}
+    const match = url.match(/\/problemset\/problem\/(\d+)\/([A-Z])/);
+    if (!match) return null;
+
+    const [, contestIdStr, problemIndex] = match;
+    const contestId = parseInt(contestIdStr, 10);
+    console.log(`Contest ID: ${contestId}, Problem Index: ${problemIndex}`);
+
+    // Try Codeforces API - fetch all problems and search for the specific one
+    const apiUrl = 'https://codeforces.com/api/problemset.problems';
+    console.log(`Trying Codeforces API: ${apiUrl}`);
+
+    const response = await axios.get(apiUrl, {
+      timeout: 10000,
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (compatible; USACO-Guide/1.0)',
+      },
+    });
+
+    if (response.data.status === 'OK' && response.data.result.problems) {
+      // Search for the specific problem in the problems array
+      const problem = response.data.result.problems.find(
+        (p: any) => p.contestId === contestId && p.index === problemIndex
+      );
+
+      if (problem) {
+        console.log(`Found problem via API: ${problem.name}`);
+        // Return HTML structure that matches what parseCf expects
+        return `
+          <html>
+            <head><title>${problem.name}</title></head>
+            <body>
+              <div class="problem-statement">
+                <div class="header">
+                  <div class="title">${problem.index}. ${problem.name}</div>
+                  <div class="time-limit">Time limit: ${problem.timeLimit || 'Unknown'}</div>
+                  <div class="memory-limit">Memory limit: ${problem.memoryLimit || 'Unknown'}</div>
+                  ${problem.points ? `<div class="points">Points: ${problem.points}</div>` : ''}
+                  ${problem.rating ? `<div class="rating">Rating: ${problem.rating}</div>` : ''}
+                </div>
+                <div class="content">
+                  <p>Problem fetched via API. For full problem statement, visit: <a href="${url}">${url}</a></p>
+                  <p>Contest: ${problem.contestId}${problem.index}</p>
+                  ${problem.tags && problem.tags.length > 0 ? `<p>Tags: ${problem.tags.join(', ')}</p>` : ''}
+                  <p>Type: ${problem.type || 'PROGRAMMING'}</p>
+                </div>
+              </div>
+            </body>
+          </html>
+        `;
+      } else {
+        console.log(
+          `Problem ${contestId}${problemIndex} not found in API response`
+        );
+      }
+    }
+  } catch (error) {
+    console.error('Codeforces API fallback failed:', error);
+  }
+
+  return null;
+}
+
 export default async function parse(url: string) {
   let html;
+
   try {
-    html = (await axios.get(url)).data;
+    if (url.includes('codeforces.com')) {
+      try {
+        html = await tryCodeforcesAPI(url);
+      } catch (error) {
+        console.log(
+          'Codeforces API failed, trying Direct scraping fallback...'
+        );
+        const apiResult = await fetchWithRetry(url);
+        if (apiResult) {
+          html = apiResult;
+        } else {
+          throw new Error(
+            `Failed to fetch Codeforces problem ${url}. Both direct scraping and API fallback failed. This may be due to Cloudflare protection or the problem not being available.`
+          );
+        }
+      }
+    } else {
+      html = (await axios.get(url, { timeout: 10000 })).data;
+    }
   } catch (error) {
-    console.error(error);
-    throw new Error(`Failed to fetch html for url ${url}`);
+    console.error('Fetch error:', error);
+    throw new Error(
+      `Failed to fetch html for url ${url}: ${error instanceof Error ? error.message : 'Unknown error'}`
+    );
   }
+
   for (const [domain, parser] of Object.entries(parsers)) {
     if (url.includes(domain)) {
       return parser(url, html);
