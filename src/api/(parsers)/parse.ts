@@ -11,7 +11,13 @@ export const parsers = {
 };
 
 export default async function parse(url: string) {
-  const html = (await axios.get(url)).data;
+  let html;
+  try {
+    html = (await axios.get(url)).data;
+  } catch (error) {
+    console.error(error);
+    throw new Error(`Failed to fetch html for url ${url}`);
+  }
   for (const [domain, parser] of Object.entries(parsers)) {
     if (url.includes(domain)) {
       return parser(url, html);
