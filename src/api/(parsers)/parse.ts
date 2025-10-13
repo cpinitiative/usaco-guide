@@ -1,9 +1,9 @@
 import axios from 'axios';
 import parseAc from './ac';
+import parseCC from './cc';
 import parseCf from './cf';
 import parseCses from './cses';
 import parseUsaco from './usaco';
-import parseCC from './cc';
 export const parsers = {
   'codeforces.com': parseCf,
   'usaco.org': parseUsaco,
