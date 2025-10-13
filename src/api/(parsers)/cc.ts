@@ -2,10 +2,12 @@
 export default function parseCC(url: string, html: string) {
   const urlSplit = url.split('/');
   const uniqueId = urlSplit.at(4);
-  const titleRegex = /<h3 class="notranslate">(.*?)<\/h3>/;
+  const titleRegex = /<title>(.*?)<\/title>/;
+  const titleMatch = html.match(titleRegex);
+  const title = titleMatch ? titleMatch[1].split(" Practice")[0] : 'Problem Name Here.';
   return {
     uniqueId: `cc-${uniqueId}`, // e.g. cc-GLADFIGHT
-    name: html.match(titleRegex)?.[1] ?? 'Unknown',
+    name: title,
     source: 'CC',
     solutionMetadata: {
       kind: 'autogen-label-from-site',
