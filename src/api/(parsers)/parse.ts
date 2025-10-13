@@ -3,11 +3,13 @@ import parseAc from './ac';
 import parseCf from './cf';
 import parseCses from './cses';
 import parseUsaco from './usaco';
+import parseCC from './cc';
 export const parsers = {
   'codeforces.com': parseCf,
   'usaco.org': parseUsaco,
   'cses.fi': parseCses,
   'atcoder.jp': parseAc,
+  'codechef.com': parseCC,
 };
 
 export default async function parse(url: string) {
