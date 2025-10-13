@@ -2,7 +2,7 @@
 export default function parseCC(url: string, html: string) {
   const urlSplit = url.split('/');
   const uniqueId = urlSplit.at(4);
-  const titleRegex = /<h3>(.*?)<\/h3>/;
+  const titleRegex = /<h3 class="notranslate">(.*?)<\/h3>/;
   return {
     uniqueId: `cc-${uniqueId}`, // e.g. cc-GLADFIGHT
     name: html.match(titleRegex)?.[1] ?? 'Unknown',
