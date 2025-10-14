@@ -13,7 +13,7 @@ export default async function handler(
     response.json({ data });
   } catch (error) {
     console.error('Error parsing URL:', error);
-    response.status(400).json({
+    response.status(500).json({
       error: error instanceof Error ? error.message : 'Unknown error occurred',
       url: request.body.url,
     });
