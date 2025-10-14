@@ -108,61 +108,107 @@ async function fetchWithRetry(
 async function tryCodeforcesAPI(url: string): Promise<string | null> {
   try {
     // Extract contest ID and problem index from URL
-    // URL format: https://codeforces.com/problemset/problem/{contestId}/{index}
-    const match = url.match(/\/problemset\/problem\/(\d+)\/([A-Z])/);
+    // First try: https://codeforces.com/problemset/problem/{contestId}/{index}
+    let match = url.match(/\/problemset\/problem\/(\d+)\/([A-Z])/);
+    let contestIdStr: string;
+    let problemIndex: string;
+    let isProblemsetFormat = true;
+
+    if (!match) {
+      // Second try: https://codeforces.com/contest/{contestId}/problem/{index}
+      match = url.match(/\/contest\/(\d+)\/problem\/([A-Z])/);
+      isProblemsetFormat = false;
+    }
+
     if (!match) return null;
 
-    const [, contestIdStr, problemIndex] = match;
+    [, contestIdStr, problemIndex] = match;
     const contestId = parseInt(contestIdStr, 10);
     console.log(`Contest ID: ${contestId}, Problem Index: ${problemIndex}`);
 
-    // Try Codeforces API - fetch all problems and search for the specific one
-    const apiUrl = 'https://codeforces.com/api/problemset.problems';
-    console.log(`Trying Codeforces API: ${apiUrl}`);
+    let response;
+    let problem: any = null;
 
-    const response = await axios.get(apiUrl, {
-      timeout: 10000,
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (compatible; USACO-Guide/1.0)',
-      },
-    });
+    if (isProblemsetFormat) {
+      // Try Codeforces API - fetch all problems and search for the specific one
+      const apiUrl = 'https://codeforces.com/api/problemset.problems';
+      console.log(`Trying Codeforces problemset API: ${apiUrl}`);
 
-    if (response.data.status === 'OK' && response.data.result.problems) {
-      // Search for the specific problem in the problems array
-      const problem = response.data.result.problems.find(
-        (p: any) => p.contestId === contestId && p.index === problemIndex
-      );
+      response = await axios.get(apiUrl, {
+        timeout: 10000,
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (compatible; USACO-Guide/1.0)',
+        },
+      });
 
-      if (problem) {
-        console.log(`Found problem via API: ${problem.name}`);
-        // Return HTML structure that matches what parseCf expects
-        return `
-          <html>
-            <head><title>${problem.name}</title></head>
-            <body>
-              <div class="problem-statement">
-                <div class="header">
-                  <div class="title">${problem.index}. ${problem.name}</div>
-                  <div class="time-limit">Time limit: ${problem.timeLimit || 'Unknown'}</div>
-                  <div class="memory-limit">Memory limit: ${problem.memoryLimit || 'Unknown'}</div>
-                  ${problem.points ? `<div class="points">Points: ${problem.points}</div>` : ''}
-                  ${problem.rating ? `<div class="rating">Rating: ${problem.rating}</div>` : ''}
-                </div>
-                <div class="content">
-                  <p>Problem fetched via API. For full problem statement, visit: <a href="${url}">${url}</a></p>
-                  <p>Contest: ${problem.contestId}${problem.index}</p>
-                  ${problem.tags && problem.tags.length > 0 ? `<p>Tags: ${problem.tags.join(', ')}</p>` : ''}
-                  <p>Type: ${problem.type || 'PROGRAMMING'}</p>
-                </div>
-              </div>
-            </body>
-          </html>
-        `;
-      } else {
-        console.log(
-          `Problem ${contestId}${problemIndex} not found in API response`
+      if (response.data.status === 'OK' && response.data.result.problems) {
+        // Search for the specific problem in the problems array
+        problem = response.data.result.problems.find(
+          (p: any) => p.contestId === contestId && p.index === problemIndex
         );
+
+        if (problem) {
+          console.log(`Found problem via problemset API: ${problem.name}`);
+        } else {
+          console.log(
+            `Problem ${contestId}${problemIndex} not found in problemset API response`
+          );
+        }
       }
+    } else {
+      // Try contest standings API for contest format
+      const apiUrl = `https://codeforces.com/api/contest.standings?contestId=${contestId}`;
+      console.log(`Trying Codeforces contest standings API: ${apiUrl}`);
+
+      response = await axios.get(apiUrl, {
+        timeout: 10000,
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (compatible; USACO-Guide/1.0)',
+        },
+      });
+
+      if (response.data.status === 'OK' && response.data.result.problems) {
+        // Search for the specific problem in the problems array
+        problem = response.data.result.problems.find(
+          (p: any) => p.index === problemIndex
+        );
+
+        if (problem) {
+          console.log(
+            `Found problem via contest standings API: ${problem.name}`
+          );
+        } else {
+          console.log(
+            `Problem ${problemIndex} not found in contest standings API response`
+          );
+        }
+      }
+    }
+
+    if (problem) {
+      // Return HTML structure that matches what parseCf expects
+      return `
+        <html>
+          <head><title>${problem.name}</title></head>
+          <body>
+            <div class="problem-statement">
+              <div class="header">
+                <div class="title">${problem.index}. ${problem.name}</div>
+                <div class="time-limit">Time limit: ${problem.timeLimit || 'Unknown'}</div>
+                <div class="memory-limit">Memory limit: ${problem.memoryLimit || 'Unknown'}</div>
+                ${problem.points ? `<div class="points">Points: ${problem.points}</div>` : ''}
+                ${problem.rating ? `<div class="rating">Rating: ${problem.rating}</div>` : ''}
+              </div>
+              <div class="content">
+                <p>Problem fetched via API. For full problem statement, visit: <a href="${url}">${url}</a></p>
+                <p>Contest: ${problem.contestId}${problem.index}</p>
+                ${problem.tags && problem.tags.length > 0 ? `<p>Tags: ${problem.tags.join(', ')}</p>` : ''}
+                <p>Type: ${problem.type || 'PROGRAMMING'}</p>
+              </div>
+            </div>
+          </body>
+        </html>
+      `;
     }
   } catch (error) {
     console.error('Codeforces API fallback failed:', error);
@@ -192,7 +238,7 @@ export default async function parse(url: string) {
         }
       }
     } else {
-      html = (await axios.get(url, { timeout: 10000 })).data;
+      html = await fetchWithRetry(url);
     }
   } catch (error) {
     console.error('Fetch error:', error);
