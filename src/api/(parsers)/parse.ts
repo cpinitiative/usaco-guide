@@ -26,10 +26,7 @@ const browserHeaders = {
   'Cache-Control': 'max-age=0',
 };
 
-async function fetchWithRetry(
-  url: string,
-  maxRetries: number = 3
-): Promise<string> {
+async function fetchWithRetry(url: string, maxRetries = 3): Promise<string> {
   for (let attempt = 0; attempt < maxRetries; attempt++) {
     try {
       const headers = browserHeaders;
@@ -92,8 +89,6 @@ async function tryCodeforcesAPI(url: string): Promise<string | null> {
     // Extract contest ID and problem index from URL
     // First try: https://codeforces.com/problemset/problem/{contestId}/{index}
     let match = url.match(/\/problemset\/problem\/(\d+)\/([A-Z])/);
-    let contestIdStr: string;
-    let problemIndex: string;
     let isProblemsetFormat = true;
 
     if (!match) {
@@ -104,7 +99,7 @@ async function tryCodeforcesAPI(url: string): Promise<string | null> {
 
     if (!match) return null;
 
-    [, contestIdStr, problemIndex] = match;
+    const [, contestIdStr, problemIndex] = match;
     const contestId = parseInt(contestIdStr, 10);
     console.log(`Contest ID: ${contestId}, Problem Index: ${problemIndex}`);
 
