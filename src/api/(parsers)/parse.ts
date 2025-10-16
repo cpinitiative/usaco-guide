@@ -1,5 +1,6 @@
 import axios from 'axios';
 import parseAc from './ac';
+import parseCC from './cc';
 import parseCf from './cf';
 import parseCses from './cses';
 import parseUsaco from './usaco';
@@ -9,6 +10,7 @@ export const parsers = {
   'usaco.org': parseUsaco,
   'cses.fi': parseCses,
   'atcoder.jp': parseAc,
+  'codechef.com': parseCC,
 };
 
 const browserHeaders = {
