@@ -215,11 +215,11 @@ int main() {
 	vector<int> A(N);
 	for (int &a : A) cin >> a;
 
-	int r = -1, sum = 0, ans = 0;
-	// sum stores sum of A[l ... r inclusive]
+	int r = 0, sum = 0, ans = 0;
+	// sum stores sum of A[l ... r exclusive]
 	for (int l = 0; l < N; sum -= A[l++]) {
-		while (r + 1 < N && sum + A[r + 1] <= T) sum += A[++r];
-		ans = max(ans, r - l + 1);
+		while (r < N && sum + A[r] <= T) sum += A[r++];
+		ans = max(ans, r - l);
 	}
 	cout << ans << "\n";
 }
@@ -242,11 +242,11 @@ public class Books {
 		int[] A = new int[N];
 		for (int i = 0; i < N; i++) { A[i] = io.nextInt(); }
 
-		int r = -1, sum = 0, ans = 0;
-		// sum stores sum of A[l ... r inclusive]
+		int r = 0, sum = 0, ans = 0;
+		// sum stores sum of A[l ... r exclusive]
 		for (int l = 0; l < N; sum -= A[l++]) {
-			while (r + 1 < N && sum + A[r + 1] <= T) sum += A[++r];
-			ans = Math.max(ans, r - l + 1);
+			while (r < N && sum + A[r] <= T) sum += A[r++];
+			ans = Math.max(ans, r - l);
 		}
 
 		io.println(ans);
