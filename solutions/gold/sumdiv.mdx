@@ -22,15 +22,7 @@ $d_1^{B\cdot p_1} \cdot d_2^{B\cdot p_2} \cdot ... \cdot d_k^{B\cdot p_k}$ and w
 the sum of divisors using the above formula,
 $S = \prod_{i=1}^{k}\frac{d_i^{B\cdot p_i+1} - 1}{d_i -1}$.
 
-To compute the above sum we will have to find multiplicative inverse of
-$(d_i-1)$ modulo $10^9+7$, for cases when $(d_i-1)$ is not relatively prime with
-$10^9+7$ we can notice that we wish to find the value of the following series
-modulo $10^9+7$,
-
-for each $1 \le i \le k$,
-$\frac{d_i^{B\cdot p_i+1} - 1}{d_i -1} = 1+d_i + d_i^2 + ... + d_i^{B\cdot p_i}$.
-
-which is equal to $(B\cdot p_i+1)\%(10^9+7)$, whenever, $d_i\%(10^9+7)=0$
+If $d_i\not \equiv 1 \pmod{10^9+7}$, then we can compute the value of the expression $\frac{d_i^{B\cdot p_i+1} - 1}{d_i -1}\pmod{10^9+7}$ using modular exponentiation and modular inverse. Otherwise, the expression equals $1+d_i + d_i^2 + ... + d_i^{B\cdot p_i}\equiv B\cdot p_i+1\pmod{10^9+7}$.
 
 We do need to compute the prime factors of $A$, but thankfully this can be done
 in $\mathcal{O}(\sqrt{A})$ time.
@@ -41,7 +33,7 @@ $10^9+7$.
 
 ## Implementation
 
-**Time Complexity:** $\mathcal{O}(\sqrt{A}\cdot logB)$
+**Time Complexity:** $\mathcal{O}(\sqrt{A}+\log A\cdot \log B)$
 
 <LanguageSection>
 <CPPSection>
