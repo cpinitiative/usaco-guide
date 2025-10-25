@@ -2,7 +2,7 @@
 id: usaco-595
 source: USACO Silver 2016 January
 title: Subsequences Summing to Sevens
-author: Kevin Sheng, thetazero, Melody Yu, Ruben Jing
+author: Kevin Sheng, thetazero, Melody Yu, Ruben Jing, Rameez Parwez
 ---
 
 [Official Analysis (Java)](http://www.usaco.org/current/data/sol_div7_silver_jan16.html)
@@ -143,7 +143,6 @@ print(best_photo, file=open("div7.out", "w"))
 ```
 
 </PySection>
-
 </LanguageSection>
 
 # Video Solution
@@ -161,32 +160,30 @@ By Project Starcoder
 #include <bits/stdc++.h>
 using namespace std;
 
-#define ll long long
-
 int main() {
 	ifstream cin("div7.in");
 	ofstream cout("div7.out");
 
-	ll N;
+	int N;
 	cin >> N;
 
-	vector<ll> cows(N);
-	vector<ll> prefix(N + 1);
+	vector<int> cows(N);
+	vector<int> prefix(N + 1);
 
 	for (int i = 0; i < N; i++) {
 		cin >> cows[i];
 		prefix[i + 1] = (prefix[i] + cows[i]) % 7;
 	}
 
-	vector<int> lastFound(7);
-	for (int i = 0; i < 7; i++) { lastFound[i] = -1; }
+	vector<int> last_found(7);
+	for (int i = 0; i < 7; i++) { last_found[i] = -1; }
 	int maximum = 0;
 
 	for (int i = 0; i < prefix.size(); i++) {
-		if (lastFound[prefix[i]] == -1) {
-			lastFound[prefix[i]] = i;
+		if (last_found[prefix[i]] == -1) {
+			last_found[prefix[i]] = i;
 		} else {
-			maximum = max(i - lastFound[prefix[i]], maximum);
+			maximum = max(i - last_found[prefix[i]], maximum);
 		}
 	}
 
@@ -195,5 +192,4 @@ int main() {
 ```
 
 </CPPSection>
-
 </LanguageSection>
