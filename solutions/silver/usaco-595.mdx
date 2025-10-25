@@ -179,7 +179,7 @@ int main() {
 	for (int i = 0; i < 7; i++) { last_found[i] = -1; }
 	int maximum = 0;
 
-	for (int i = 0; i < prefix.size(); i++) {
+	for (int i = 0; i < N + 1; i++) {
 		if (last_found[prefix[i]] == -1) {
 			last_found[prefix[i]] = i;
 		} else {
@@ -192,4 +192,45 @@ int main() {
 ```
 
 </CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Div7 {
+	public static void main(String[] args) throws Exception {
+		Kattio io = new Kattio("div7");
+		int n = io.nextInt();
+		int[] cows = new int[n];
+		int[] prefix = new int[n + 1];
+		
+		for (int i = 0; i < n; i++) {
+			cows[i] = io.nextInt();
+			prefix[i + 1] = (prefix[i] + cows[i]) % 7;
+		}
+
+		int[] lastFound = new int[7];
+		for (int i = 0; i < 7; i++) {
+			lastFound[i] = -1;
+		}
+
+		int maximum = 0;
+		for (int i = 0; i < n + 1; i++) {
+			if (lastFound[prefix[i]] == -1) {
+				lastFound[prefix[i]] = i;
+			} else {
+				maximum = Math.max(i - lastFound[prefix[i]], maximum);
+			}
+		}
+		io.print(maximum);
+        io.close();
+	}
+
+	//BeginCodeSnip{Kattio}
+}
+```
+
+
+</JavaSection>
 </LanguageSection>
