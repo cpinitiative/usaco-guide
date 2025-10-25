@@ -1,0 +1,98 @@
+---
+id: cf-755C
+source: CF - 8VC Venture Cup 2017 - Elimination Round
+title: PolandBall & Forest
+author: Arnav Gokhale
+---
+
+
+## Explanation
+
+Let's focus on one tree and it's diameter first naming the two endpoints $E_1$ and $E_2$. For every vertex $v$ on this tree, $p[v]$ is either equal to $E_1$ or $E_2$.
+
+So, we can count the number of distinct vertices in $P$ and divide by two to find the number of trees.
+
+However, we must be careful in the case where $P[i]$ = $i$, where the tree is simply a isolated vertex.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+
+<LanguageSection>
+
+<CPPSection>
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	int n; cin >> n;
+	//Array storing whether vertices have been visited
+    vector<bool> visited(n);
+    int ans = 0;
+    for (int i = 0; i < n; i++) {
+        int num; cin >> num;
+        if (i + 1 == num) ans += 2;
+        else if (!visited[num - 1]) {
+            ans++; visited[num - 1] = 1;
+        }
+    }
+    cout << ans/2 << '\n';
+}
+```
+</CPPSection>
+
+<PySection>
+```py
+n = int(input())
+nums = list(map(int, input().split()))
+
+# Array storing whether vertices have been visited
+visited = [False] * n
+ans = 0
+
+for i in range(n):
+    if i + 1 == nums[i]:
+        ans += 2
+    elif not visited[nums[i] - 1]:
+        ans += 1
+        visited[nums[i] - 1] = True
+
+print(ans // 2)
+```
+</PySection>
+
+<JavaSection>
+```java
+import java.io.*;
+import java.util.StringTokenizer;
+
+public class Main {
+	public static void main(String[] args) throws IOException {
+		BufferedReader r = new BufferedReader(new InputStreamReader(System.in));
+        PrintWriter pw = new PrintWriter(System.out);
+
+        int n = Integer.parseInt(r.readLine());
+		//Array storing whether vertices have been visited
+        boolean[] visited = new boolean[n];
+        int ans = 0;
+        int count = 0;
+        
+        StringTokenizer st = new StringTokenizer(r.readLine());
+        for (int i = 0; i < n; i++) {
+            int num = Integer.parseInt(st.nextToken());
+            if (i + 1 == num) {
+                ans += 2;
+            } else if (!visited[num - 1]) {
+                ans++; visited[num - 1] = true;
+            }
+        }
+        pw.print(ans / 2);
+		pw.close();
+	}
+}
+```
+</JavaSection>
+
+</LanguageSection>
