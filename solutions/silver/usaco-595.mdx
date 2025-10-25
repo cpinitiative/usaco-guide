@@ -231,6 +231,29 @@ public class Div7 {
 }
 ```
 
-
 </JavaSection>
+<PySection>
+
+```py
+with open("div7.in", "r") as read:
+	n = int(read.readline())
+	prefix = [0] * (n + 1)
+	for i in range(n):
+		cow = int(read.readline())
+		prefix[i + 1] = (prefix[i] + cow) % 7
+
+
+last_found = [-1] * 7
+maximum = 0
+
+for i in range(n + 1):
+	if last_found[prefix[i]] == -1:
+		last_found[prefix[i]] = i
+	else:
+		maximum = max(i - last_found[prefix[i]], maximum)
+
+print(maximum, file=open("div7.out", "w"))
+```
+
+</PySection>
 </LanguageSection>
