@@ -27,18 +27,21 @@ However, we must be careful in the case where $P[i]$ = $i$, where the tree is si
 using namespace std;
 
 int main() {
-	int n; cin >> n;
-	//Array storing whether vertices have been visited
-    vector<bool> visited(n);
-    int ans = 0;
-    for (int i = 0; i < n; i++) {
-        int num; cin >> num;
-        if (i + 1 == num) ans += 2;
-        else if (!visited[num - 1]) {
-            ans++; visited[num - 1] = 1;
-        }
-    }
-    cout << ans/2 << '\n';
+	int n;
+	cin >> n;
+	// Array storing whether vertices have been visited
+	vector<bool> visited(n);
+	int ans = 0;
+	for (int i = 0; i < n; i++) {
+		int num;
+		cin >> num;
+		if (i + 1 == num) ans += 2;
+		else if (!visited[num - 1]) {
+			ans++;
+			visited[num - 1] = 1;
+		}
+	}
+	cout << ans / 2 << '\n';
 }
 ```
 </CPPSection>
@@ -53,11 +56,11 @@ visited = [False] * n
 ans = 0
 
 for i in range(n):
-    if i + 1 == nums[i]:
-        ans += 2
-    elif not visited[nums[i] - 1]:
-        ans += 1
-        visited[nums[i] - 1] = True
+	if i + 1 == nums[i]:
+		ans += 2
+	elif not visited[nums[i] - 1]:
+		ans += 1
+		visited[nums[i] - 1] = True
 
 print(ans // 2)
 ```
@@ -71,24 +74,25 @@ import java.util.StringTokenizer;
 public class Main {
 	public static void main(String[] args) throws IOException {
 		BufferedReader r = new BufferedReader(new InputStreamReader(System.in));
-        PrintWriter pw = new PrintWriter(System.out);
+		PrintWriter pw = new PrintWriter(System.out);
 
-        int n = Integer.parseInt(r.readLine());
-		//Array storing whether vertices have been visited
-        boolean[] visited = new boolean[n];
-        int ans = 0;
-        int count = 0;
-        
-        StringTokenizer st = new StringTokenizer(r.readLine());
-        for (int i = 0; i < n; i++) {
-            int num = Integer.parseInt(st.nextToken());
-            if (i + 1 == num) {
-                ans += 2;
-            } else if (!visited[num - 1]) {
-                ans++; visited[num - 1] = true;
-            }
-        }
-        pw.print(ans / 2);
+		int n = Integer.parseInt(r.readLine());
+		// Array storing whether vertices have been visited
+		boolean[] visited = new boolean[n];
+		int ans = 0;
+		int count = 0;
+
+		StringTokenizer st = new StringTokenizer(r.readLine());
+		for (int i = 0; i < n; i++) {
+			int num = Integer.parseInt(st.nextToken());
+			if (i + 1 == num) {
+				ans += 2;
+			} else if (!visited[num - 1]) {
+				ans++;
+				visited[num - 1] = true;
+			}
+		}
+		pw.print(ans / 2);
 		pw.close();
 	}
 }
