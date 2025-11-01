@@ -1,7 +1,7 @@
 ---
 id: sumdiv
 source: Kilonova
-title: Sum of divisors
+title: Sumdiv
 author: Mihnea Brebenel, Harshit Lohar
 ---
 
@@ -12,8 +12,11 @@ computed using the
 [divisor function](https://en.wikipedia.org/wiki/Divisor_function).
 
 The formula states that if $d_1^{p_1} \cdot d_2^{p_2} \cdot ... \cdot d_k^{p_k}$
-is the prime factorization of $A$, then the divisors' sum is
-$S = \prod_{i=1}^{k}\frac{d_i^{p_i+1} - 1}{d_i -1}$.
+is the prime factorization of $A$, then the divisors' sum is:
+
+$$
+S = \prod_{i=1}^{k}\frac{d_i^{p_i+1} - 1}{d_i -1}.
+$$
 
 For this problem we need to compute sum of divisors of $A^B$. If the prime
 factorization of $A$ is $d_1^{p_1} \cdot d_2^{p_2} \cdot ... \cdot d_k^{p_k}$
@@ -47,7 +50,7 @@ using namespace std;
 
 const int MOD = 1e9 + 7;
 
-// BeginCodeSnip{Modular Inverse and Binary Exponentiation functions}
+// BeginCodeSnip{Binary Exponentiation}
 ll pow(ll a, ll b, ll m) {
 	ll res = 1;
 	a %= m;  // to avoid overflows when a > 1e9
@@ -59,24 +62,6 @@ ll pow(ll a, ll b, ll m) {
 	return res;
 }
 
-/** The extended Euclidean algorithm used to find the inverse */
-void ext(ll a, ll b, ll &x, ll &y) {
-	if (b == 0) {
-		x = 1, y = 0;
-	} else {
-		ext(b, a % b, x, y);
-		ll tem = x;
-		x = y;
-		y = tem - (a / b) * y;
-	}
-}
-
-/** @return the modular inverse of a mod m */
-ll inv(ll a, ll m) {
-	ll x = 0, y = 0;
-	ext(a, m, x, y);
-	return (x + m) % m;
-}
 // EndCodeSnip
 
 int main() {
@@ -99,7 +84,7 @@ int main() {
 					a /= i;
 				}
 				// find the value of d - 1 and (d^k - 1) modulo (10^9 + 7).
-				ll d_1 = inv((i - 1 + MOD) % MOD, MOD);
+				ll d_1 = pow(i - 1, MOD - 2, MOD);
 				ll dk_1 =
 				    (pow(i, (co * (b % (MOD - 1)) + 1) % (MOD - 1), MOD) - 1 + MOD) %
 				    MOD;
@@ -110,7 +95,7 @@ int main() {
 		if (a > 1 && ((a - 1) % MOD) != 0) {
 			// if a is greater than 1 and a - 1 is not divisible by 10^9 + 7
 			// find the value of d - 1 and (d^k - 1) modulo (10^9 + 7).
-			ll d_1 = inv((a - 1 + MOD) % MOD, MOD);
+			ll d_1 = pow(a - 1, MOD - 2, MOD);
 			ll dk_1 = (pow(a, (b + 1) % (MOD - 1), MOD) - 1 + MOD) % MOD;
 			ans = (ans * ((d_1 * dk_1) % MOD)) % MOD;
 		} else if (a > 1) {
