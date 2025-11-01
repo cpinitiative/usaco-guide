@@ -12,9 +12,10 @@ computed using the
 [divisor function](https://en.wikipedia.org/wiki/Divisor_function).
 
 The formula states that if $d_1^{p_1} \cdot d_2^{p_2} \cdot ... \cdot d_k^{p_k}$
-is the prime factorization of $A$, then the divisors' sum is
+is the prime factorization of $A$, then the divisors' sum is:
+<center>
 $S = \prod_{i=1}^{k}\frac{d_i^{p_i+1} - 1}{d_i -1}$.
-
+</center>
 For this problem we need to compute sum of divisors of $A^B$. If the prime
 factorization of $A$ is $d_1^{p_1} \cdot d_2^{p_2} \cdot ... \cdot d_k^{p_k}$
 then the prime factorization of $A^B$ will be
@@ -59,24 +60,8 @@ ll pow(ll a, ll b, ll m) {
 	return res;
 }
 
-/** The extended Euclidean algorithm used to find the inverse */
-void ext(ll a, ll b, ll &x, ll &y) {
-	if (b == 0) {
-		x = 1, y = 0;
-	} else {
-		ext(b, a % b, x, y);
-		ll tem = x;
-		x = y;
-		y = tem - (a / b) * y;
-	}
-}
-
 /** @return the modular inverse of a mod m */
-ll inv(ll a, ll m) {
-	ll x = 0, y = 0;
-	ext(a, m, x, y);
-	return (x + m) % m;
-}
+ll inv(int x) { return x <= 1 ? x : MOD - MOD / x * inv(MOD % x) % MOD; }
 // EndCodeSnip
 
 int main() {
