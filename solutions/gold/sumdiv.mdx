@@ -50,7 +50,7 @@ using namespace std;
 
 const int MOD = 1e9 + 7;
 
-// BeginCodeSnip{Modular Inverse and Binary Exponentiation functions}
+// BeginCodeSnip{Binary Exponentiation}
 ll pow(ll a, ll b, ll m) {
 	ll res = 1;
 	a %= m;  // to avoid overflows when a > 1e9
@@ -62,8 +62,6 @@ ll pow(ll a, ll b, ll m) {
 	return res;
 }
 
-/** @return the modular inverse of a mod m */
-ll inv(int x) { return x <= 1 ? x : MOD - MOD / x * inv(MOD % x) % MOD; }
 // EndCodeSnip
 
 int main() {
@@ -86,7 +84,7 @@ int main() {
 					a /= i;
 				}
 				// find the value of d - 1 and (d^k - 1) modulo (10^9 + 7).
-				ll d_1 = inv((i - 1 + MOD) % MOD, MOD);
+				ll d_1 = pow(i - 1, MOD - 2, MOD);
 				ll dk_1 =
 				    (pow(i, (co * (b % (MOD - 1)) + 1) % (MOD - 1), MOD) - 1 + MOD) %
 				    MOD;
@@ -97,7 +95,7 @@ int main() {
 		if (a > 1 && ((a - 1) % MOD) != 0) {
 			// if a is greater than 1 and a - 1 is not divisible by 10^9 + 7
 			// find the value of d - 1 and (d^k - 1) modulo (10^9 + 7).
-			ll d_1 = inv((a - 1 + MOD) % MOD, MOD);
+			ll d_1 = pow(a - 1, MOD - 2, MOD);
 			ll dk_1 = (pow(a, (b + 1) % (MOD - 1), MOD) - 1 + MOD) % MOD;
 			ans = (ans * ((d_1 * dk_1) % MOD)) % MOD;
 		} else if (a > 1) {
