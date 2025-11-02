@@ -57,7 +57,7 @@ becomes
 We convert the ternary number into a decimal to assure uniqueness. We only have 9 characters in the board,
 so the general formula to convert from ternary to decimal is:
 $$
-\text{board[row][column]} \times 3^{3 * \text{row} + \text{column}}
+\text{board[row][column]} \times 3^{3 \times \text{row} + \text{column}}
 $$
 for every cell in the board. The biggest number will be $19682$.
 
@@ -71,7 +71,7 @@ To extract a character at index $i$ from the board, we divide by $3^i$ to remove
 
 To add a new character $c$ at index $i$ with board $b$, we have the following operation:
 $$
-b = (b % 3^i) + c * 3^i + (b - b % 3^{i + 1})
+b = (b \% 3^i) + c \times 3^i + (b - b \% 3^{i + 1})
 $$
 which effectively adds the character before index $i$, the new character, and the characters after index $i$.
 
