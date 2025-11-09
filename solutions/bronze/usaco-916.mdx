@@ -602,6 +602,37 @@ public class Revegetate {
 ```
 
 </JavaSection>
+<PySection>
+
+```py
+MAX_COLORS = 4
+
+with open('revegetate.in', 'r') as read:
+	n, m = map(int, read.readline().split())
+	
+	adj = [[] for _ in range(n)]
+	for _ in range(m):
+		a, b = map(int, read.readline().split())
+		a -= 1
+		b -= 1
+		adj[max(a, b)].append(min(a, b))
+
+
+color = [1] * n
+
+with open('revegetate.out', 'w') as write:
+	for b in range(n):
+		used = [False] * (MAX_COLORS + 1)
+
+		for a in adj[b]:
+			used[color[a]] = True
+
+		while used[color[b]]:
+			color[b] += 1
+
+		write.write(str(color[b]))
+```
+</PySection>
 </LanguageSection>
 
 </Spoiler>
