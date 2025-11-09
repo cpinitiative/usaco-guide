@@ -5,124 +5,9 @@ title: Milk Factory
 author: Mrinall Umasudhan, Jesse Choe, Ryan Chou, Chuyang Wang, David Eidenas, Neo Wang, David Guo
 ---
 
-## Video Solution
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_factory_bronze_open19.html)
 
-By Neo Wang
-
-<YouTube id="fN681Y5TEQc" />
-
-<Spoiler title="Video Solution Code">
-<LanguageSection>
-<CPPSection>
-
-```cpp
-#include <bits/stdc++.h>  // see /general/running-code-locally
-using namespace std;
-
-using ll = long long;
-
-using vi = vector<int>;
-#define pb push_back
-#define all(x) begin(x), end(x)
-#define sz(x) (int)(x).size()
-
-using pi = pair<int, int>;
-#define f first
-#define s second
-#define mp make_pair
-
-void setIO(string name = "") {
-	cin.tie(0)->sync_with_stdio(0);  // see /general/fast-io
-	if (sz(name)) {
-		(void)!freopen((name + ".in").c_str(), "r", stdin);  // see /general/io
-		(void)!freopen((name + ".out").c_str(), "w", stdout);
-	}
-}
-
-int in_deg[101], out_deg[101];
-
-int main() {
-	setIO("factory");
-
-	int N;
-	cin >> N;
-
-	// N - 1 edges in a tree
-	for (int i = 0; i < N - 1; i++) {
-		// a -> b
-		// out[a]++, in[b]++;
-		int a, b;
-		cin >> a >> b;
-		out_deg[a]++;
-		in_deg[b]++;
-	}
-
-	bool encountered_sink = false;
-	int idx_sink = -1;
-
-	for (int i = 1; i <= N; i++) {
-		if (encountered_sink && out_deg[i] == 0 && in_deg[i] > 0) {
-			idx_sink = -1;  // answer
-			break;
-		}
-		if (out_deg[i] == 0 && in_deg[i] > 0) {
-			encountered_sink = true;
-			idx_sink = i;
-		}
-	}
-
-	cout << idx_sink << endl;
-}
-```
-
-</CPPSection>
-<JavaSection>
-
-```java
-import java.io.*;
-import java.util.*;
-
-public class Main {
-	public static void main(String[] args) throws IOException {
-		Kattio io = new Kattio("factory");
-		int N = io.nextInt();
-		int[] in_deg = new int[101], out_deg = new int[101];
-		for (int i = 0; i < N - 1; i++) {
-			// a -> b
-			// out[a]++, in[b]++;
-			int a = io.nextInt(), b = io.nextInt();
-			out_deg[a]++;
-			in_deg[b]++;
-		}
-
-		boolean encountered_sink = false;
-		int idx_sink = -1;
-
-		for (int i = 1; i <= N; i++) {
-			if (encountered_sink && out_deg[i] == 0 && in_deg[i] > 0) {
-				idx_sink = -1;
-				break;
-			}
-
-			if (out_deg[i] == 0 && in_deg[i] > 0) {
-				encountered_sink = true;
-				idx_sink = i;
-			}
-		}
-
-		// cout << idx_sink << endl;
-		io.println(idx_sink);
-
-		io.close();
-	}
-
-	// CodeSnip{Kattio}
-}
-```
-
-</JavaSection>
-</LanguageSection>
-</Spoiler>
+# Hints
 
 <Spoiler title="Hint 1">
 
@@ -146,9 +31,9 @@ the walkways connected to station $i$ (as a beginning or an end)?
 
 </Spoiler>
 
-<Spoiler title="Solution 1">
+# Solution 1
 
-[Official Analysis (C++)](http://www.usaco.org/current/data/sol_factory_bronze_open19.html)
+<Spoiler title="Solution 1">
 
 ## Explanation
 
@@ -277,6 +162,8 @@ print(root, file=open("factory.out", "w"))
 </LanguageSection>
 
 </Spoiler>
+
+# Solution 2
 
 <Spoiler title="Solution 2">
 
@@ -465,4 +352,124 @@ print(root, file=open("factory.out", "w"))
 </PySection>
 </LanguageSection>
 
+</Spoiler>
+
+
+# Video Solution
+
+By Neo Wang
+
+<YouTube id="fN681Y5TEQc" />
+
+<Spoiler title="Video Solution Code">
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>  // see /general/running-code-locally
+using namespace std;
+
+using ll = long long;
+
+using vi = vector<int>;
+#define pb push_back
+#define all(x) begin(x), end(x)
+#define sz(x) (int)(x).size()
+
+using pi = pair<int, int>;
+#define f first
+#define s second
+#define mp make_pair
+
+void setIO(string name = "") {
+	cin.tie(0)->sync_with_stdio(0);  // see /general/fast-io
+	if (sz(name)) {
+		(void)!freopen((name + ".in").c_str(), "r", stdin);  // see /general/io
+		(void)!freopen((name + ".out").c_str(), "w", stdout);
+	}
+}
+
+int in_deg[101], out_deg[101];
+
+int main() {
+	setIO("factory");
+
+	int N;
+	cin >> N;
+
+	// N - 1 edges in a tree
+	for (int i = 0; i < N - 1; i++) {
+		// a -> b
+		// out[a]++, in[b]++;
+		int a, b;
+		cin >> a >> b;
+		out_deg[a]++;
+		in_deg[b]++;
+	}
+
+	bool encountered_sink = false;
+	int idx_sink = -1;
+
+	for (int i = 1; i <= N; i++) {
+		if (encountered_sink && out_deg[i] == 0 && in_deg[i] > 0) {
+			idx_sink = -1;  // answer
+			break;
+		}
+		if (out_deg[i] == 0 && in_deg[i] > 0) {
+			encountered_sink = true;
+			idx_sink = i;
+		}
+	}
+
+	cout << idx_sink << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Main {
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio("factory");
+		int N = io.nextInt();
+		int[] in_deg = new int[101], out_deg = new int[101];
+		for (int i = 0; i < N - 1; i++) {
+			// a -> b
+			// out[a]++, in[b]++;
+			int a = io.nextInt(), b = io.nextInt();
+			out_deg[a]++;
+			in_deg[b]++;
+		}
+
+		boolean encountered_sink = false;
+		int idx_sink = -1;
+
+		for (int i = 1; i <= N; i++) {
+			if (encountered_sink && out_deg[i] == 0 && in_deg[i] > 0) {
+				idx_sink = -1;
+				break;
+			}
+
+			if (out_deg[i] == 0 && in_deg[i] > 0) {
+				encountered_sink = true;
+				idx_sink = i;
+			}
+		}
+
+		// cout << idx_sink << endl;
+		io.println(idx_sink);
+
+		io.close();
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+</LanguageSection>
 </Spoiler>
