@@ -553,6 +553,55 @@ int main() {
 ```
 
 </CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Revegetate {
+
+	static final int  MAX_COLORS = 4;
+	public static void main(String[] args) throws Exception {
+		Kattio io = new Kattio("revegetate");
+		int n = io.nextInt();
+		int m = io.nextInt();
+
+		ArrayList<ArrayList<Integer>> adj = new ArrayList<>();
+		for (int i = 0; i < n; i++) {
+            adj.add(new ArrayList<>());
+        }
+		
+		for (int i = 0; i < m; i++) {
+			int a = io.nextInt() - 1;
+			int b = io.nextInt() - 1;
+			adj.get(Math.max(a, b)).add(Math.min(a, b));
+		}
+
+		int[] color = new int[n];
+		for (int i = 0; i < n; i++) {
+			color[i] = 1;
+		}
+
+		for (int b = 0; b < n; b++) {
+			boolean[] used = new boolean[MAX_COLORS + 1];
+			for (int a : adj.get(b)) {
+				used[color[a]] = true;
+			}
+			while (used[color[b]]) {
+				color[b]++;
+			}
+			io.print(color[b]);
+		}
+		io.println();
+        io.close();
+	}
+
+	//CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
 </LanguageSection>
 
 </Spoiler>
