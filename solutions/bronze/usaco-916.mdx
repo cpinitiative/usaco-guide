@@ -408,17 +408,15 @@ import java.util.*;
 
 public class Revegetate {
 
-	static final int  MAX_COLORS = 4;
+	static final int MAX_COLORS = 4;
 	public static void main(String[] args) throws Exception {
 		Kattio io = new Kattio("revegetate");
 		int n = io.nextInt();
 		int m = io.nextInt();
 
 		ArrayList<ArrayList<Integer>> adj = new ArrayList<>();
-		for (int i = 0; i < n; i++) {
-            adj.add(new ArrayList<>());
-        }
-		
+		for (int i = 0; i < n; i++) { adj.add(new ArrayList<>()); }
+
 		for (int i = 0; i < m; i++) {
 			int a = io.nextInt() - 1;
 			int b = io.nextInt() - 1;
@@ -426,25 +424,19 @@ public class Revegetate {
 		}
 
 		int[] color = new int[n];
-		for (int i = 0; i < n; i++) {
-			color[i] = 1;
-		}
+		for (int i = 0; i < n; i++) { color[i] = 1; }
 
 		for (int b = 0; b < n; b++) {
 			boolean[] used = new boolean[MAX_COLORS + 1];
-			for (int a : adj.get(b)) {
-				used[color[a]] = true;
-			}
-			while (used[color[b]]) {
-				color[b]++;
-			}
+			for (int a : adj.get(b)) { used[color[a]] = true; }
+			while (used[color[b]]) { color[b]++; }
 			io.print(color[b]);
 		}
 		io.println();
-        io.close();
+		io.close();
 	}
 
-	//CodeSnip{Kattio}
+	// CodeSnip{Kattio}
 }
 ```
 
@@ -454,9 +446,9 @@ public class Revegetate {
 ```py
 MAX_COLORS = 4
 
-with open('revegetate.in', 'r') as read:
+with open("revegetate.in", "r") as read:
 	n, m = map(int, read.readline().split())
-	
+
 	adj = [[] for _ in range(n)]
 	for _ in range(m):
 		a, b = map(int, read.readline().split())
@@ -467,7 +459,7 @@ with open('revegetate.in', 'r') as read:
 
 color = [1] * n
 
-with open('revegetate.out', 'w') as write:
+with open("revegetate.out", "w") as write:
 	for b in range(n):
 		used = [False] * (MAX_COLORS + 1)
 
