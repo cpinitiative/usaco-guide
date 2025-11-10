@@ -14,9 +14,9 @@ Note: The video solution might not be the same as other solutions. Code in C++.
 
 ## Explanation
 
-Suppose we have a cow travelling horizontally at $(x, y)$ and another cow travelling vertically at $(u,v)$. They will intersect at $(u,y)$ given that $x\lt u$ and $v\lt y$. If a cow reaches this point first, then the later cow will be stopped.
+Suppose we have a cow travelling horizontally at $(x_h, y_h)$ and another cow travelling vertically at $(x_v,y_v)$. They will intersect at $(x_v,y_h)$ given that $x_h\lt x_v$ and $y_v\lt y_h$. If a cow reaches this point first, then the later cow will be stopped.
 
-However, cows can be stopped before reaching possible intersections with other cows. Thus, we need to sort our cows to process them in a way that avoids this issue. We sort our horizontal-bound cows by increasing vertical values, and we sort our vertical-bound cows by increasing horizontal values. We can then check each pair of cows.
+However, cows can be stopped before reaching possible intersections with other cows. Thus, we need to sort our cows to process them in a way that avoids this issue. We sort our horizontal-bound cows by increasing vertical values, and we sort our vertical-bound cows by increasing horizontal values. The sorted order ensures that once we find an unstopped pair of cows, they will have a valid intersection. We can then check each pair of cows.
 1. If either cow has already been stopped, we can skip this pair.
 2. If their paths do not intersect, we can skip this pair.
 3. If neither has been stopped and they do intersect, we stop the cow that is further from the intersection.
