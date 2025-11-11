@@ -2,10 +2,10 @@
 id: usaco-567
 source: USACO Bronze 2015 December
 title: Fence Painting
-author: Benjamin Qi
+author: Benjamin Qi, Rameez Parwez
 ---
 
-[Official Analysis](https://usaco.org/current/data/sol_paint_bronze_dec15.html)
+[Official Analysis (Java)](https://usaco.org/current/data/sol_paint_bronze_dec15.html)
 
 ## Solution 1 (Casework)
 
@@ -30,7 +30,83 @@ For each case, the answer is a different linear combination of $a,b,c,d$.
 ### Implementation
 
 <LanguageSection>
+<CPPSection>
 
+```cpp
+#include <iostream>
+
+void set_up(std::string name) {
+	freopen((name + ".in").c_str(), "r", stdin);
+	freopen((name + ".out").c_str(), "w", stdout);
+}
+
+int main() {
+	set_up("paint");
+	int a, b, c, d;
+	std::cin >> a >> b >> c >> d;
+
+	if (a <= c) {
+		if (b < c) {
+			std::cout << b - a + d - c;
+		} else if (b < d) {
+			std::cout << d - a;
+		} else {
+			std::cout << b - a;
+		}
+	} else {
+		if (d < a) {
+			std::cout << b - a + d - c;
+		} else if (d < b) {
+			std::cout << b - c;
+		} else {
+			std::cout << d - c;
+		}
+	}
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class FencePainting {
+
+	public static void main(String[] args) throws Exception {
+		Kattio io = new Kattio("paint");
+		int a = io.nextInt();
+		int b = io.nextInt();
+		int c = io.nextInt();
+		int d = io.nextInt();
+
+		if (a <= c) {
+			if (b < c) {
+				io.print(b - a + d - c);
+			} else if (b < d) {
+				io.print(d - a);
+			} else {
+				io.print(b - a);
+			}
+		} else {
+			if (d < a) {
+				io.print(b - a + d - c);
+			} else if (d < b) {
+				io.print(b - c);
+			} else {
+				io.print(d - c);
+			}
+		}
+
+		io.close();
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
 <PySection>
 
 ```py
@@ -64,7 +140,6 @@ print(solve(a, b, c, d))
 ```
 
 </PySection>
-
 </LanguageSection>
 
 ### Condensed Implementation
@@ -77,7 +152,74 @@ For example,
 2. We can replace the if statement comparing $b$ and $d$ with $\max(b,d)$.
 
 <LanguageSection>
+<CPPSection>
 
+```cpp
+#include <iostream>
+
+void set_up(std::string name) {
+	freopen((name + ".in").c_str(), "r", stdin);
+	freopen((name + ".out").c_str(), "w", stdout);
+}
+
+int main() {
+	set_up("paint");
+	int a, b, c, d;
+	std::cin >> a >> b >> c >> d;
+
+	if (a > c) {
+		std::swap(a, c);
+		std::swap(b, d);
+	}
+
+	if (b < c) {
+		std::cout << b - a + d - c;
+	} else {
+		std::cout << std::max(b, d) - a;
+	}
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class FencePainting {
+
+	public static void main(String[] args) throws Exception {
+		Kattio io = new Kattio("paint");
+		int a = io.nextInt();
+		int b = io.nextInt();
+		int c = io.nextInt();
+		int d = io.nextInt();
+
+		if (a > c) {
+			int tempA = a;
+			a = c;
+			c = tempA;
+
+			int tempB = b;
+			b = d;
+			d = tempB;
+		}
+
+		if (b < c) {
+			io.print(b - a + d - c);
+		} else {
+			io.print(Math.max(b, d) - a);
+		}
+
+		io.close();
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
 <PySection>
 
 ```py
@@ -102,7 +244,6 @@ print(solve(a, b, c, d))
 ```
 
 </PySection>
-
 </LanguageSection>
 
 </Spoiler>
