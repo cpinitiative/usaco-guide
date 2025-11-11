@@ -2,20 +2,32 @@
 id: usaco-737
 source: USACO Bronze 2017 US Open
 title: Modern Art
-author: Juheon Rhee, Kevin Sheng, Yifan Ma
+author: Juheon Rhee, Kevin Sheng, Yifan Ma, Arnav Gokhale
 ---
-
-<Spoiler title="Hint">
-
-Try solving the sample input by hand: could you apply a similar method in your code?
-
-</Spoiler>
 
 [Official Analysis (C++)](http://www.usaco.org/current/data/sol_art_bronze_open17.html)
 
 # Solution
 
-<Spoiler title="Solution">
+<Spoiler title="Hint 1">
+
+Try solving the sample input by hand: could you apply a similar method in your code?
+
+</Spoiler>
+
+<Spoiler title="Hint 2">
+
+What is a property of a color that cannot be the first painted?
+
+</Spoiler>
+
+## Explanation
+
+Firstly, notice that if two colors are overlapping, we know at least one of them cannot be the original drawn rectangle.
+
+For each color, we can look at left, right, up, and down to find the limits of that color. This creates a rectangle which must have contained that color. Since we are trying to find all the posssible starting colors, we can assume each rectangle is as small as possible.
+
+For each color, if any other color was found in that rectangle formed by the limits, we know that color was drawn over the first, and can be ruled out as a possible starting color.  
 
 ## Implementation
 
@@ -193,4 +205,3 @@ print(sum(valid_start), file=open("art.out", "w"))
 </PySection>
 </LanguageSection>
 
-</Spoiler>
