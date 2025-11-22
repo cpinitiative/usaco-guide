@@ -175,7 +175,7 @@ for c in range(1, MAX_COLOR + 1):
 	left[c], up[c] = float("inf"), float("inf")
 	right[c], down[c] = -1, -1
 
-valid_start = [False] * MAX_COLOR
+valid_start = [False] * (MAX_COLOR + 1)
 with open("art.in") as read:
 	n = int(read.readline().strip())
 	art = [None] * n
@@ -191,13 +191,15 @@ with open("art.in") as read:
 				valid_start[curr] = True
 
 for color in range(1, MAX_COLOR + 1):
-	if any(p[color] == float("inf") for p in [left, right, down, up]):
+	if left[color] == float("inf"):
 		continue
 
 	for c in range(int(up[color]), int(down[color] + 1)):
 		for k in range(int(left[color]), int(right[color] + 1)):
 			if art[c][k] != color:
-				valid_start[art[c][k]] = False
+				other = art[c][k]
+				if other != 0 and other != color:
+					valid_start[other] = False
 
 print(sum(valid_start), file=open("art.out", "w"))
 ```
