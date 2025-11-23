@@ -14,8 +14,8 @@ way to split a path for a rooted tree?
 
 <Spoiler title="Hint 2">
 
-Consider a star graph with edges $(1, 2)$, $(1, 3)$, and $(1, 4)$. One 
-possible layout is to place our first node at $(1, 1)$, and 
+Consider a star graph with edges $(1, 2)$, $(1, 3)$, and $(1, 4)$. One
+possible layout is to place our first node at $(1, 1)$, and
 place all the other nodes on a diagonal. You can find a visualization [here](https://www.desmos.com/calculator/qar1mufj1d).
 
 Can we generalize this idea?
@@ -37,14 +37,14 @@ a node and one of its ancestors.
 
 All that remains is constructing a scheme in which a rectangle can correctly
 cover the nodes in a vertical path. Consider the example graph from the second hint, where
-constructing a graph with a diagonal works. Because we are asked to embed our graph 
+constructing a graph with a diagonal works. Because we are asked to embed our graph
 in a $N \times N$ grid, we can afford to give each node its own column and row. So,
-we can think of our example case in a recursive fashion: instead of placing nodes 
+we can think of our example case in a recursive fashion: instead of placing nodes
 on a diagonal, we can place subtrees on diagonals and partition our grid that way.
 
-Let the current subtree size be $s_i$, and suppose our node is at $(x,y)$. For the root (node 1), we have $s_i = n$ and $(x,y) = (1,1)$. We embed the subtree into an $s_i \times s_i$ grid whose lower-left corner is at $(x,y)$. Recursively, for each of the node's children, we assign a subgrid within that square: the first child and its subtree occupies a square in the lower-right, and each subsequent child is placed "diagonally" continuing toward the top-left. With this embedding, any vertical chain in the tree corresponds exactly to an axis-aligned rectangle in the grid, so we can answer a path query by querying that rectangle.  
+Let the current subtree size be $s_i$, and suppose our node is at $(x,y)$. For the root (node 1), we have $s_i = n$ and $(x,y) = (1,1)$. We embed the subtree into an $s_i \times s_i$ grid whose lower-left corner is at $(x,y)$. Recursively, for each of the node's children, we assign a subgrid within that square: the first child and its subtree occupies a square in the lower-right, and each subsequent child is placed "diagonally" continuing toward the top-left. With this embedding, any vertical chain in the tree corresponds exactly to an axis-aligned rectangle in the grid, so we can answer a path query by querying that rectangle.
 
-For example, the graph formed with edges $(1, 2)$, $(1, 3)$, $(3, 4)$, and $(3, 5)$ will 
+For example, the graph formed with edges $(1, 2)$, $(1, 3)$, $(3, 4)$, and $(3, 5)$ will
 be processed in the following fashion:
 - Node $1$ is placed at $(1, 1)$ and occupies the grid from $(1, 1)$ to $(5, 5)$.
   - Node $2$ has a subtree of size $1$. Thus, it occupies the cell $(5, 2)$.
@@ -55,11 +55,11 @@ be processed in the following fashion:
 
 An example of the case above can be found [here](https://www.desmos.com/calculator/anfr1bswtr).
 
-With that in mind, our algorithm for processing a path involves two steps: splitting 
-our path, and finding a suitable rectangle for the vertical path produced. The first part can be done with any fast LCA algorithm of choice, with the implementation below 
-using binary lifting. For the second step, notice that any child node will have both a 
-greater $x$ and $y$ position than its parent in the scheme we created. Thus, our 
-rectangle is just constructed from the two endpoints of our path. Note that 
+With that in mind, our algorithm for processing a path involves two steps: splitting
+our path, and finding a suitable rectangle for the vertical path produced. The first part can be done with any fast LCA algorithm of choice, with the implementation below
+using binary lifting. For the second step, notice that any child node will have both a
+greater $x$ and $y$ position than its parent in the scheme we created. Thus, our
+rectangle is just constructed from the two endpoints of our path. Note that
 we must make sure our LCA isn't included in both of our rectangles.
 
 ## Implementation
@@ -71,14 +71,14 @@ we must make sure our LCA isn't included in both of our rectangles.
 
 <Warning>
 
-The USACO website does not accept submissions in C++ 17. Make sure to 
+The USACO website does not accept submissions in C++ 17. Make sure to
 submit any code in C++ 11.
 
 </Warning>
 
 ```cpp
-#include <bits/stdc++.h>
 #include "grader.h"
+#include <bits/stdc++.h>
 
 using ll = long long;
 
@@ -91,94 +91,90 @@ std::vector<std::array<int, 2>> locs;
 int n;
 
 int lca(int u, int v) {
-    if (dep[u] < dep[v]) std::swap(u, v);
+	if (dep[u] < dep[v]) std::swap(u, v);
 
-    int diff = dep[u] - dep[v];
-    for (int k = LG - 1; k >= 0; k--) {
-        if (diff & (1 << k)) {
-            u = lift[u][k];
-        }
-    }
+	int diff = dep[u] - dep[v];
+	for (int k = LG - 1; k >= 0; k--) {
+		if (diff & (1 << k)) { u = lift[u][k]; }
+	}
 
-    if (u == v) return u;
+	if (u == v) return u;
 
-    for (int k = LG - 1; k >= 0; k--) {
-        if (lift[u][k] != lift[v][k]) {
-            u = lift[u][k];
-            v = lift[v][k];
-        }
-    }
+	for (int k = LG - 1; k >= 0; k--) {
+		if (lift[u][k] != lift[v][k]) {
+			u = lift[u][k];
+			v = lift[v][k];
+		}
+	}
 
-    return lift[u][0];
+	return lift[u][0];
 }
 
 void addRoad(int a, int b) {
-    if (!n) {
-        n = getN();
-        adj.resize(n);
-        locs.resize(n);
+	if (!n) {
+		n = getN();
+		adj.resize(n);
+		locs.resize(n);
 		lift.resize(n);
-    	dep.resize(n);
+		dep.resize(n);
 		sub.resize(n);
-    }
+	}
 
-    adj[a].push_back(b);
-    adj[b].push_back(a);
+	adj[a].push_back(b);
+	adj[b].push_back(a);
 }
 
 void dfs1(int u, int p) {
-    sub[u] = 1;
-    for (int v : adj[u]) {
-        if (v == p) continue;
-        dep[v] = dep[u] + 1;
-        lift[v][0] = u;
-        for (int i = 1; i < LG; i++) {
-            lift[v][i] = lift[lift[v][i - 1]][i - 1];
-        }
+	sub[u] = 1;
+	for (int v : adj[u]) {
+		if (v == p) continue;
+		dep[v] = dep[u] + 1;
+		lift[v][0] = u;
+		for (int i = 1; i < LG; i++) { lift[v][i] = lift[lift[v][i - 1]][i - 1]; }
 
-        dfs1(v, u);
-        sub[u] += sub[v];
-    }
+		dfs1(v, u);
+		sub[u] += sub[v];
+	}
 }
 
 int timer = 1;
 void dfs2(int u, int p, int l, int r) {
-    locs[u] = {l, timer};
-    setFarmLocation(u, l, timer);
-    timer++;
+	locs[u] = {l, timer};
+	setFarmLocation(u, l, timer);
+	timer++;
 
-    int prev = r + 1;
-    for (int v : adj[u]) {
-        if (v == p) continue;
-        dfs2(v, u, prev - sub[v], prev - 1);
-        prev -= sub[v];
-    }
+	int prev = r + 1;
+	for (int v : adj[u]) {
+		if (v == p) continue;
+		dfs2(v, u, prev - sub[v], prev - 1);
+		prev -= sub[v];
+	}
 }
 
 void buildFarms() {
 	dfs1(0, -1);
-    dfs2(0, -1, 1, n);
+	dfs2(0, -1, 1, n);
 }
 
-void notifyFJ(int a, int b){
-    int l = lca(a, b);
+void notifyFJ(int a, int b) {
+	int l = lca(a, b);
 
-    auto process_path = [&](int anc, int desc, bool exclude = false) {
-        int x1 = locs[anc][0];
-        int y1 = locs[anc][1];
-        int x2 = locs[desc][0];
-        int y2 = locs[desc][1];
-        addBox(x1 + exclude, y1 + exclude, x2, y2);
-    };
+	auto process_path = [&](int anc, int desc, bool exclude = false) {
+		int x1 = locs[anc][0];
+		int y1 = locs[anc][1];
+		int x2 = locs[desc][0];
+		int y2 = locs[desc][1];
+		addBox(x1 + exclude, y1 + exclude, x2, y2);
+	};
 
-    if (l == a) {
-        process_path(a, b);
-    } else if (l == b) {
-        process_path(b, a);
-    } else {
-        process_path(l, a);
-        process_path(l, b, true);
-    }
+	if (l == a) {
+		process_path(a, b);
+	} else if (l == b) {
+		process_path(b, a);
+	} else {
+		process_path(l, a);
+		process_path(l, b, true);
+	}
 }
 ```
 
