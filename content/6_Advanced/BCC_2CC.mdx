@@ -23,7 +23,15 @@ frequency: 1
 
 ## 2-Edge-Connected Components
 
-<Problems problems="sam2" />
+<FocusProblem problem="sam2" />
+
+<IncompleteSection>
+
+(explanation)
+
+</IncompleteSection>
+
+## Implementation
 
 <LanguageSection>
 <CPPSection>
@@ -81,7 +89,7 @@ int main() {
 	}
 
 	for (int node = 0; node < n; node++) {
-		if (id[node] != 0) { dfs(node); }
+		if (id[node] == 0) { dfs(node); }
 	}
 
 	cout << scc << '\n';
@@ -96,11 +104,6 @@ int main() {
 </CPPSection>
 </LanguageSection>
 
-<IncompleteSection>
-
-(implementation)
-
-</IncompleteSection>
 
 ### With DSU
 
@@ -168,13 +171,15 @@ struct TwoEdgeCC {
 
 ### Problems
 
-<FocusProblem problem="probs2" />
+<Problems problems="probs2" />
 
 - SRM 787 1000
 
 ## [Biconnected Components](https://en.wikipedia.org/wiki/Biconnected_component)
 
 <FocusProblem problem="bccSam" />
+
+## Explanation
 
 An important observation is that if you can't go from node $a$ to node $b$ without passing through node $c$, node $c$ is a critical node (articulation point).
 Node $c$ can split $a$ and $b$ into 2 different components if removed. This makes us think about biconnected components.
@@ -185,6 +190,8 @@ In order to do this, we transform the graph into a [block-cut tree](https://en.w
 
 In a block-cut tree, every articulation and biconnected component represents a node. Now that we have turned our graph into a tree how do we check if node the path
 from $a$ to $b$ passes through $c$? To do this we use LCA. You can find more about this [here](https://www.geeksforgeeks.org/check-whether-the-given-node-is-in-the-path-between-the-nodes-u-and-v/).
+
+## Implementation
 
 <LanguageSection>
 <CPPSection>
@@ -358,6 +365,8 @@ int main() {
 		maybe not completely correct
 	</Resource>
 </Resources>
+
+## Implementation
 
 <LanguageSection>
 <CPPSection>

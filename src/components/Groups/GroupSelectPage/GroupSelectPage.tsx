@@ -31,7 +31,7 @@ const GroupSelectPage = () => {
 
   return (
     <Layout>
-      <SEO title="My Groups" />
+      <SEO title="My Groups" image={null} pathname={window.location.pathname} />
       <TopNavigationBar />
       <main>
         <div className="mx-auto max-w-3xl px-4 py-16 lg:px-8">

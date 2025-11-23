@@ -5,6 +5,7 @@ import {
   useUserProgressOnModulesActivity,
   useUserProgressOnProblemsActivity,
 } from '../../context/UserDataContext/properties/userProgress';
+import { useActivity } from '../../hooks/useActivity';
 import './heatmap-styles.css';
 
 type ModuleActivity = ReturnType<typeof useUserProgressOnModulesActivity>[0];
@@ -13,26 +14,20 @@ type ProblemActivity = ReturnType<typeof useUserProgressOnProblemsActivity>[0];
 export type ActivityHeatmapProps = {
   moduleActivities: { [key: number]: ModuleActivity[] };
   problemActivities: { [key: number]: ProblemActivity[] };
+  activityCount: { [key: number]: number };
   endDate?: Date;
 };
 
 export function ActivityHeatmap({
   moduleActivities,
   problemActivities,
+  activityCount,
   endDate,
 }: ActivityHeatmapProps) {
   const [activeDate, setActiveDate] = React.useState<Date | null>(null);
   if (!endDate) endDate = new Date();
   const startDate = new Date(endDate);
   startDate.setMonth(endDate.getMonth() - 10);
-  const activityCount: { [key: number]: number } = {};
-  for (const t in moduleActivities) {
-    activityCount[t] = moduleActivities[t].length;
-  }
-  for (const t in problemActivities) {
-    if (activityCount[t]) activityCount[t] += problemActivities[t].length;
-    else activityCount[t] = problemActivities[t].length;
-  }
   const activeDateProblemsSolved =
     (activeDate && problemActivities[activeDate.getTime()]?.length) ?? 0;
   const activeDateModulesCompleted =
@@ -59,6 +54,7 @@ export function ActivityHeatmap({
                 }
                 return `color-scale-${Math.min(value.count, 4)}`;
               }}
+              tooltipDataAttrs={() => ({})}
             />
           </div>
           <div className="col-span-1">
@@ -89,69 +85,12 @@ export function ActivityHeatmap({
 }
 
 export default function Activity() {
-  const userProgressOnModulesActivity = useUserProgressOnModulesActivity();
-  const userProgressOnProblemsActivity = useUserProgressOnProblemsActivity();
-  const activityCount: { [key: number]: number } = {};
-  const moduleActivities: { [key: number]: ModuleActivity[] } = {};
-  const problemActivities: { [key: number]: ProblemActivity[] } = {};
-
-  const moduleIDs: [string, number][] = [];
-  for (const activity of userProgressOnModulesActivity) {
-    if (
-      activity.moduleProgress === 'Practicing' ||
-      activity.moduleProgress === 'Complete'
-    ) {
-      const newDate = new Date(activity.timestamp);
-      newDate.setHours(0, 0, 0, 0);
-      if (
-        moduleIDs.some(
-          m => m[0] === activity.moduleID && m[1] === newDate.getTime()
-        )
-      ) {
-        continue;
-      }
-      moduleIDs.push([activity.moduleID, newDate.getTime()]);
-      if (newDate.getTime() in activityCount) {
-        activityCount[newDate.getTime()]++;
-        moduleActivities[newDate.getTime()].push(activity);
-      } else {
-        activityCount[newDate.getTime()] = 1;
-        moduleActivities[newDate.getTime()] = [activity];
-      }
-    }
-  }
-
-  const problemIDs: [string, number][] = [];
-  for (const activity of userProgressOnProblemsActivity) {
-    if (activity.problemProgress === 'Solved') {
-      const newDate = new Date(activity.timestamp);
-      newDate.setHours(0, 0, 0, 0);
-      if (
-        problemIDs.some(
-          p => p[0] === activity.problemID && p[1] === newDate.getTime()
-        )
-      ) {
-        continue;
-      }
-      problemIDs.push([activity.problemID, newDate.getTime()]);
-
-      if (newDate.getTime() in activityCount) {
-        activityCount[newDate.getTime()]++;
-      } else {
-        activityCount[newDate.getTime()] = 1;
-      }
-      if (newDate.getTime() in problemActivities) {
-        problemActivities[newDate.getTime()].push(activity);
-      } else {
-        problemActivities[newDate.getTime()] = [activity];
-      }
-    }
-  }
-
+  const { moduleActivities, problemActivities, activityCount } = useActivity();
   return (
     <ActivityHeatmap
       moduleActivities={moduleActivities}
       problemActivities={problemActivities}
+      activityCount={activityCount}
     />
   );
 }

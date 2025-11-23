@@ -24,7 +24,11 @@ import { Feature } from '../components/Index/Feature';
 import { ProblemsetsFeature } from '../components/Index/features/ProblemsetsFeature';
 import { ProgressTrackingFeature } from '../components/Index/features/ProgressTrackingFeature';
 import { ResourcesFeature } from '../components/Index/features/ResourcesFeature';
-import { EasyFunCoding, NonTrivial } from '../components/Index/sponsor-logos';
+import {
+  EasyFunCoding,
+  NonTrivial,
+  XCamp,
+} from '../components/Index/sponsor-logos';
 import TrustedBy from '../components/Index/TrustedBy';
 import Layout from '../components/layout';
 import SEO from '../components/seo';
@@ -50,7 +54,7 @@ const usacoTitleClasses =
 const linkTextStyles =
   'text-blue-600 dark:text-blue-300 transition hover:text-purple-600 dark:hover:text-purple-300';
 
-export default function IndexPage(): JSX.Element {
+export default function IndexPage({ path }): JSX.Element {
   const firebaseUser = useFirebaseUser();
   const loading = useIsUserDataLoaded();
   const location = useLocation();
@@ -71,7 +75,7 @@ export default function IndexPage(): JSX.Element {
 
   return (
     <Layout>
-      <SEO title={null} />
+      <SEO title={null} image={null} pathname={path} />
 
       {/*<a*/}
       {/*  href="http://usaco.org/"*/}
@@ -537,14 +541,19 @@ export default function IndexPage(): JSX.Element {
           <p className="pt-6 font-semibold text-gray-600 uppercase md:text-lg dark:text-gray-400">
             Platinum Sponsors
           </p>
-          <div className="my-8 grid grid-cols-2 items-center gap-0.5 text-gray-600 md:grid-cols-3 lg:my-6 lg:grid-cols-4 dark:text-gray-400">
-            <div className="col-span-1 invert-0 dark:invert">
+          <div className="my-8 grid grid-cols-1 items-center gap-4 space-y-5 text-gray-600 sm:grid-cols-2 sm:space-y-0 md:grid-cols-3 lg:my-6 lg:grid-cols-4 dark:text-gray-400">
+            <div className="col-span-1">
               <a
                 href="http://non-trivial.org/"
                 target="_blank"
                 rel="noreferrer"
               >
                 <NonTrivial />
+              </a>
+            </div>
+            <div className="col-span-1 pt-5 sm:pt-0">
+              <a href="http://x-camp.academy/" target="_blank" rel="noreferrer">
+                <XCamp />
               </a>
             </div>
           </div>

@@ -1,12 +1,17 @@
 import { getFunctions, httpsCallable } from 'firebase/functions';
 import { useCallback } from 'react';
+import { useFirebaseUser } from '../context/UserDataContext/UserDataContext';
 import { useFirebaseApp } from './useFirebase';
 
 export default function useContactFormAction() {
   const firebaseApp = useFirebaseApp();
+  const firebaseUser = useFirebaseUser();
 
   return useCallback(
     async ({ name, email, moduleName, url, lang, topic, message }) => {
+      if (!firebaseUser) {
+        throw new Error('Must be logged in.');
+      }
       if (!name) {
         throw new Error('Please enter your name.');
       }
@@ -37,6 +42,6 @@ export default function useContactFormAction() {
         message,
       });
     },
-    [firebaseApp]
+    [firebaseApp, firebaseUser]
   );
 }

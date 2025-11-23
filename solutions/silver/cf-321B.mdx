@@ -2,7 +2,7 @@
 id: cf-321B
 source: CF
 title: Ciel and Duel
-author: Ryan Chou
+author: Ryan Chou, David Guo
 ---
 
 [Official Analysis (C++)](https://codeforces.com/blog/entry/8192)
@@ -123,4 +123,106 @@ int main() {
 }
 ```
 </CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Main {
+	static class Card {
+		// 1 -> ATK | 0 -> DEF
+		public boolean type;
+		public int strength;
+
+		Card(boolean type, int strength) {
+			this.type = type;
+			this.strength = strength;
+		}
+	}
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int n = Integer.parseInt(st.nextToken());
+		int m = Integer.parseInt(st.nextToken());
+
+		List<Card> jiro = new ArrayList<>();
+		List<Card> ciel = new ArrayList<>();
+
+		for (int i = 0; i < n; i++) {
+			st = new StringTokenizer(br.readLine());
+			String type = st.nextToken();
+			int strength = Integer.parseInt(st.nextToken());
+			jiro.add(new Card("ATK".equals(type), strength));
+		}
+
+		for (int i = 0; i < m; i++) {
+			st = new StringTokenizer(br.readLine());
+			int strength = Integer.parseInt(st.nextToken());
+			ciel.add(new Card(true, strength));
+		}
+
+		// first case: only hit ATK + assign weak cards with strong cards
+
+		// sort by type (ATK first) then by strength (ascending)
+		jiro.sort(Comparator.comparing((Card c) -> c.type)
+		              .reversed()
+		              .thenComparingInt(c -> c.strength));
+
+		// sort ciel by strength (descending)
+		ciel.sort(Comparator.comparingInt((Card c) -> c.strength).reversed());
+
+		int appr1 = 0;
+		for (int i = 0; i < Math.min(n, m); i++) {
+			// break if either we're attacking DEF cards or we don't gain anything
+			if (!jiro.get(i).type || ciel.get(i).strength <= jiro.get(i).strength) {
+				break;
+			}
+			appr1 += ciel.get(i).strength - jiro.get(i).strength;
+		}
+
+		Collections.reverse(jiro);
+		Collections.reverse(ciel);
+
+		boolean[] done = new boolean[m];
+
+		int appr2 = 0;
+		for (int i = 0; i < n; i++) {
+			boolean fnd = false;
+
+			for (int j = 0; j < m; j++) {
+				// if we haven't used j and this card can beat Jiro's card
+				if (!done[j] && ((jiro.get(i).type &&
+				                  ciel.get(j).strength >= jiro.get(i).strength) ||
+				                 (!jiro.get(i).type &&
+				                  ciel.get(j).strength > jiro.get(i).strength))) {
+					done[j] = true;
+
+					if (jiro.get(i).type) {
+						appr2 += ciel.get(j).strength - jiro.get(i).strength;
+					}
+
+					fnd = true;
+					break;
+				}
+			}
+
+			// if we can't do any direct damage, output the first approach
+			if (!fnd) {
+				System.out.println(appr1);
+				return;
+			}
+		}
+
+		// add up all of the direct damage done
+		for (int i = 0; i < m; i++) {
+			if (!done[i]) { appr2 += ciel.get(i).strength; }
+		}
+
+		System.out.println(Math.max(appr2, appr1));
+	}
+}
+```
+</JavaSection>
 </LanguageSection>

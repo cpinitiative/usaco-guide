@@ -12,7 +12,103 @@ author: Nathan Gong
 **Time Complexity:** $\mathcal{O}(M\log N)$
 
 <LanguageSection>
+<CPPSection>
 
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+struct Pasture {
+	int cost;
+	int index;
+	bool had_hay;
+
+	bool operator<(const Pasture &other) const {
+		return cost > other.cost;  // For priority queue
+	}
+};
+
+int main() {
+	freopen("dining.in", "r", stdin);
+	freopen("dining.out", "w", stdout);
+
+	int n, m, k;
+	cin >> n >> m >> k;
+	vector<vector<pair<int, int>>> adj(n);
+	for (int i = 0; i < m; i++) {
+		int u, v, w;
+		cin >> u >> v >> w;
+		adj[--u].push_back({--v, w});
+		adj[v].push_back({u, w});
+	}
+
+	vector<int> hay(n);
+	for (int i = 0; i < k; i++) {
+		int index, yumminess;
+		cin >> index >> yumminess;
+		index--;
+		hay[index] = max(hay[index], yumminess);
+	}
+
+	priority_queue<Pasture> pq;
+
+	/*
+	 * dist[i][0] = shortest path from cow i to barn without stopping for haybales
+	 * dist[i][1] = shortest path from cow i to barn with stopping for a haybale
+	 */
+	vector<array<int, 2>> dist(n, {INT_MAX, INT_MAX});
+
+	dist[n - 1][0] = 0;  // Distance to barn without hay
+	pq.push({0, n - 1, false});
+
+	if (hay[n - 1] > 0) {
+		dist[n - 1][1] = 0;
+		pq.push({-hay[n - 1], n - 1, true});
+	}
+
+	while (!pq.empty()) {
+		auto pasture = pq.top();
+		pq.pop();
+
+		int cost = pasture.cost;
+		int index = pasture.index;
+		bool had_hay = pasture.had_hay;
+
+		if (dist[index][had_hay] < cost) continue;
+
+		for (auto &[next, w] : adj[index]) {
+			int new_cost = cost + w;
+
+			if (had_hay) {
+				if (dist[next][1] > new_cost) {
+					dist[next][1] = new_cost;
+					pq.push({new_cost, next, true});
+				}
+			} else {
+				if (dist[next][0] > new_cost) {
+					dist[next][0] = new_cost;
+					pq.push({new_cost, next, false});
+				}
+
+				if (hay[next] > 0 && dist[next][1] > new_cost - hay[next]) {
+					dist[next][1] = new_cost - hay[next];
+					pq.push({new_cost - hay[next], next, true});
+				}
+			}
+		}
+	}
+
+	for (int i = 0; i < n - 1; i++) {
+		if (dist[i][1] <= dist[i][0]) {
+			cout << 1 << '\n';
+		} else {
+			cout << 0 << '\n';
+		}
+	}
+}
+```
+
+</CPPSection>
 <JavaSection>
 
 ```java
@@ -117,5 +213,4 @@ public class FineDining {
 ```
 
 </JavaSection>
-
 </LanguageSection>

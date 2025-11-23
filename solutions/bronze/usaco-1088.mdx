@@ -5,7 +5,9 @@ title: Spaced Out
 author: Melody Yu (Video), Tyler Xiao (Video), Maggie Liu
 ---
 
-<Spoiler title="Hint 1">
+## Hint
+
+<Spoiler title="Hint">
 
 Look at the two following possible configurations:
 
@@ -17,149 +19,68 @@ C.C.   .CC.
 ```
 
 Do you see anything interesting?
+
 </Spoiler>
-<Spoiler title="Answer to Hint 1">
+
+<Spoiler title="Answer to Hint">
+
 Check out the rows of the first example, and the columns of the second.
 
 Some pattern is definitely at play!
+
 </Spoiler>
 
-## Internal Video Solution
-
-By Maggie Liu
-
-<YouTube id="u6Qlpo9qgvg" />
-
-<Spoiler title="Video Solution Code">
-<LanguageSection>
-<CPPSection>
-
-```cpp
-#include <algorithm>
-#include <iostream>
-using namespace std;
-
-int main() {
-	int n;
-	cin >> n;
-	int grid[1000][1000];
-	for (int i = 0; i < n; i++) {
-		for (int j = 0; j < n; j++) { cin >> grid[i][j]; }
-	}
-
-	int rows_alternate = 0, cols_alternate = 0;
-	// each row has an alternating pattern of cow and no cow
-	for (int i = 0; i < n; i++) {
-		int sum[2]{};
-		// there are two ways to alternate, odd index and even index
-		for (int j = 0; j < n; j++) {
-			sum[j % 2] += grid[i][j];  // j % 2 is 0 for even j and 1 for odd j
-		}
-		// add the best way to the answer for alternating rows
-		rows_alternate += max(sum[0], sum[1]);
-	}
-
-	// each column has an alternating pattern of cow and no cow
-	for (int i = 0; i < n; i++) {
-		int sum[2]{};
-		// two ways to alternate
-		for (int j = 0; j < n; j++) { sum[j % 2] += grid[j][i]; }
-		// add the best way to the answer for alternating columns
-		cols_alternate += max(sum[0], sum[1]);
-	}
-
-	cout << max(rows_alternate, cols_alternate) << endl;
-	return 0;
-}
-```
-
-</CPPSection>
-<JavaSection>
-
-```java
-import java.io.*;
-import java.util.*;
-
-public class SpacedOut {
-	public static void main(String[] args) throws IOException {
-		Kattio io = new Kattio();
-		int n = io.nextInt();
-		int[][] grid = new int[n][n];
-		for (int i = 0; i < n; i++) {
-			for (int j = 0; j < n; j++) { grid[i][j] = io.nextInt(); }
-		}
-
-		int rowsAlternate = 0, colsAlternate = 0;
-		// each row has an alternating pattern of cow and no cow
-		for (int i = 0; i < n; i++) {
-			int[] sum = new int[2];
-			// there are two ways to alternate, odd index and even index
-			for (int j = 0; j < n; j++) {
-				sum[j % 2] += grid[i][j];  // j % 2 is 0 for even j and 1 for odd j
-			}
-			// add the best way to the answer for alternating rows
-			rowsAlternate += Math.max(sum[0], sum[1]);
-		}
-
-		// each column has an alternating pattern of cow and no cow
-		for (int i = 0; i < n; i++) {
-			int[] sum = new int[2];
-			// two ways to alternate
-			for (int j = 0; j < n; j++) { sum[j % 2] += grid[j][i]; }
-			// add the best way to the answer for alternating columns
-			colsAlternate += Math.max(sum[0], sum[1]);
-		}
-
-		io.println(Math.max(rowsAlternate, colsAlternate));
-		io.close();
-	}
-
-	// CodeSnip{Kattio}
-}
-```
-
-</JavaSection>
-
-<PySection>
-
-```py
-with open("planting.in", "r") as input_file:
-	N = int(input_file.readline())
-	degree = [0] * N
-	a = 0
-	b = 0
-	for i in range(1, N):
-		line = input_file.readline().split(" ")
-		a = int(line[0])
-		b = int(line[1])
-		degree[a - 1] += 1
-		degree[b - 1] += 1
-
-
-result = 0
-for i in range(N):
-	result = max(result, degree[i])
-
-
-with open("planting.out", "w") as output_file:
-	output_file.write(str(result + 1))
-	output_file.write("\n")
-```
-</PySection>
-</LanguageSection>
-</Spoiler>
-
-## External Video Solution
-
-Note: The video solution might not be the same as other solutions. Code in Java.
-
-<YouTube id="7eMHxpDQJEw" />
-
-<Spoiler title="Solution">
+## Solution
 
 [Official Analysis (C++ and Java)](http://usaco.org/current/data/sol_prob3_silver_jan21.html)
 
-## Implementation
+
+<Spoiler title="Solution">
+
+### Explanation
+
+The key idea is that in any valid arrangement, either every row alternates between cow and no-cow, or every column alternates between cow and no-cow.
+
+<Spoiler title = "Proof">
+
+If no two cows are adjacent, the claim holds trivially—both rows and columns will alternate in this case.
+
+Otherwise, suppose there exist two cows positioned next to each other. Without loss of generality, assume they are placed horizontally:
+
+```
+?????
+?CC??
+?????
+?????
+?????
+```
+
+The only way to consistently fill the columns containing these two cows is by alternating cow and no-cow entries:
+
+```
+?..??
+?CC??
+?..??
+?CC??
+?..??
+```
+
+Next, we must fill in the remaining columns. Begin with a column adjacent to one that is already filled. We observe that these too must alternate between cow and no-cow; failing to do so inevitably creates a 2 by 2 block with exactly 1 or 3 cows, which is invalid. This same reasoning applies inductively to all remaining columns. Hence, the claim follows.
+
+```
+C..C.
+.CC.C
+C..C.
+.CC.C
+C..C.
+```
+
+</Spoiler>
+
+To solve the problem, we only need to check both scenarios—either rows alternate or columns alternate.
+For each row (or column), there are only two possible alternating patterns, so we pick the arrangement that maximizes beauty.
+
+### Implementation
 
 **Time Complexity:** $\mathcal{O}(N^2)$
 
@@ -276,4 +197,11 @@ print(max(rows_alternate, cols_alternate))
 
 </PySection>
 </LanguageSection>
+
 </Spoiler>
+
+## Video Solution
+
+By Maggie Liu
+
+<YouTube id="u6Qlpo9qgvg" />

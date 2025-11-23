@@ -1,10 +1,12 @@
-import { ComponentMeta, ComponentStory } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-webpack5';
 import React from 'react';
 import ForumCTA from '../../components/ForumCTA';
 
 export default {
   title: 'MarkdownLayout/ForumCTA',
   component: ForumCTA,
-} as ComponentMeta<typeof ForumCTA>;
+} satisfies Meta<typeof ForumCTA>;
 
-export const Default: ComponentStory<typeof ForumCTA> = () => <ForumCTA />;
+export const Default: StoryObj<typeof ForumCTA> = {
+  render: () => <ForumCTA />,
+};

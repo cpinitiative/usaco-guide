@@ -2,12 +2,16 @@
 id: usaco-669
 source: USACO Gold 2016 December
 title: Moocast
-author: Neo Wang, Óscar Garries, Kevin Sheng
+author: Neo Wang, Óscar Garries, Kevin Sheng, David Zhou
 ---
 
 [Official Analysis (Java)](http://www.usaco.org/current/data/sol_moocast_gold_dec16.html)
 
-### Implementation (DSU)
+## Explanation (DSU)
+
+We can build edges between every pair of cows. After sorting the edges based on weight we can use a [DSU](/gold/dsu). Doing so ensures that we include every cow only once through the smallest weights possible.
+
+## Implementation
 
 **Time Complexity:** $\mathcal{O}(N^2 \log(N^2))$
 
@@ -268,9 +272,151 @@ print(last_dist, file=open("moocast.out", "w"))
 </PySection>
 </LanguageSection>
 
-### Implementation (Binary Search + BFS)
+## Explanation (Prim's)
 
-**Time Complexity:** $\mathcal{O}(N^2 \log(\text{hi}))$, where $\text{hi} \ge 2 \cdot 25000^2$
+We can build edges between every pair of cows. We can then construct an MST by greedily selecting the nearest node every time. This guarantees that we include every cow in the network by using the smallest weights possible.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N^2)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int dist_sq(pair<int, int> &a, pair<int, int> &b) {
+	int dx = a.first - b.first;
+	int dy = a.second - b.second;
+	return dx * dx + dy * dy;
+}
+
+int main() {
+	freopen("moocast.in", "r", stdin);
+
+	int N;
+	cin >> N;
+	vector<pair<int, int>> cows(N);
+	for (auto &[x, y] : cows) { cin >> x >> y; }
+
+	/*
+	 * shortest distance to a cow in the spanning tree
+	 * or INT_MAX - 1 if there are no cows in the spanning tree
+	 * or INT_MAX if the cow is in the spanning tree
+	 */
+	vector<int> dist(N, INT_MAX - 1);
+	dist[0] = 0;
+	int m = 0;
+	for (int t = 0; t < N; t++) {
+		int i = min_element(dist.begin(), dist.end()) - dist.begin();
+		m = max(m, dist[i]);
+		dist[i] = INT_MAX;
+		for (int j = 0; j < N; j++) {
+			if (dist[j] != INT_MAX) {
+				dist[j] = min(dist[j], dist_sq(cows[i], cows[j]));
+			}
+		}
+	}
+
+	freopen("moocast.out", "w", stdout);
+	cout << m << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class MooCast {
+	static int distSq(int[] a, int[] b) {
+		int dx = a[0] - b[0];
+		int dy = a[1] - b[1];
+		return dx * dx + dy * dy;
+	}
+
+	static int minIndex(int[] a) {
+		int m = a[0];
+		int j = 0;
+		for (int i = 1; i < a.length; i++) {
+			if (a[i] < m) {
+				m = a[i];
+				j = i;
+			}
+		}
+		return j;
+	}
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader r = new BufferedReader(new FileReader("moocast.in"));
+		StringTokenizer st = new StringTokenizer(r.readLine());
+		int N = Integer.parseInt(st.nextToken());
+		int[][] cows = new int[N][2];
+		for (int i = 0; i < N; i++) {
+			st = new StringTokenizer(r.readLine());
+			cows[i][0] = Integer.parseInt(st.nextToken());
+			cows[i][1] = Integer.parseInt(st.nextToken());
+		}
+
+		/*
+		 * shortest distance to a cow in the spanning tree
+		 * or Integer.MAX_VALUE - 1 if there are no cows in the spanning tree
+		 * or Integer.MAX_VALUE if the cow is in the spanning tree
+		 */
+		int[] dist = new int[N];
+		for (int i = 1; i < N; i++) { dist[i] = Integer.MAX_VALUE - 1; }
+		int m = 0;
+		for (int t = 0; t < N; t++) {
+			int i = minIndex(dist);
+			m = Math.max(m, dist[i]);
+			dist[i] = Integer.MAX_VALUE;
+			for (int j = 0; j < N; j++) {
+				if (dist[j] != Integer.MAX_VALUE) {
+					dist[j] = Math.min(dist[j], distSq(cows[i], cows[j]));
+				}
+			}
+		}
+
+		PrintWriter pw = new PrintWriter(new FileWriter("moocast.out"));
+		pw.println(m);
+		pw.close();
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+def dist_sq(a, b):
+	return (a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2
+
+
+with open("moocast.in", "r") as stdin:
+	N = int(stdin.readline())
+	cows = [tuple(map(int, stdin.readline().strip().split())) for _ in range(N)]
+
+dist = {c: float("inf") for c in cows}
+dist[cows[0]] = 0
+m = 0
+for t in range(N):
+	i = min(dist, key=dist.__getitem__)
+	m = max(m, dist[i])
+	del dist[i]
+	for j in dist:
+		dist[j] = min(dist[j], dist_sq(i, j))
+
+print(m, file=open("moocast.out", "w"))
+```
+
+</PySection>
+</LanguageSection>
+
+## Explanation (Binary Search + BFS)
 
 An alternative solution involves using binary search and BFS.
 
@@ -280,6 +426,10 @@ This can be accomplished with BFS.
 Notice that since this function is monotonic: if all cows are reachable with a certain power level $P$, they will still be reachable with any power level greater than $P$.
 
 Therefore, binary search can be employed to find the minimum value of `power` for which `all_reachable(power)` holds true.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N^2 \log(\text{hi}))$, where $\text{hi} \ge 2 \cdot 25000^2$
 
 <LanguageSection>
 <CPPSection>
@@ -422,143 +572,71 @@ public class Moocast {
 ```
 
 </JavaSection>
-</LanguageSection>
-
-### Implementation (Minimum Spanning Tree)
-
-**Time Complexity:** $\mathcal{O}(N^2)$
-
-<LanguageSection>
-<CPPSection>
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int dist_sq(pair<int, int> &a, pair<int, int> &b) {
-	int dx = a.first - b.first;
-	int dy = a.second - b.second;
-	return dx * dx + dy * dy;
-}
-
-int main() {
-	freopen("moocast.in", "r", stdin);
-
-	int N;
-	cin >> N;
-	vector<pair<int, int>> cows(N);
-	for (auto &[x, y] : cows) { cin >> x >> y; }
-
-	/*
-	 * shortest distance to a cow in the spanning tree
-	 * or INT_MAX - 1 if there are no cows in the spanning tree
-	 * or INT_MAX if the cow is in the spanning tree
-	 */
-	vector<int> dist(N, INT_MAX - 1);
-	dist[0] = 0;
-	int m = 0;
-	for (int t = 0; t < N; t++) {
-		int i = min_element(dist.begin(), dist.end()) - dist.begin();
-		m = max(m, dist[i]);
-		dist[i] = INT_MAX;
-		for (int j = 0; j < N; j++) {
-			if (dist[j] != INT_MAX) {
-				dist[j] = min(dist[j], dist_sq(cows[i], cows[j]));
-			}
-		}
-	}
-
-	freopen("moocast.out", "w", stdout);
-	cout << m << endl;
-}
-```
-
-</CPPSection>
-<JavaSection>
-
-```java
-import java.io.*;
-import java.util.*;
-
-public class MooCast {
-	static int distSq(int[] a, int[] b) {
-		int dx = a[0] - b[0];
-		int dy = a[1] - b[1];
-		return dx * dx + dy * dy;
-	}
-
-	static int minIndex(int[] a) {
-		int m = a[0];
-		int j = 0;
-		for (int i = 1; i < a.length; i++) {
-			if (a[i] < m) {
-				m = a[i];
-				j = i;
-			}
-		}
-		return j;
-	}
-
-	public static void main(String[] args) throws IOException {
-		BufferedReader r = new BufferedReader(new FileReader("moocast.in"));
-		StringTokenizer st = new StringTokenizer(r.readLine());
-		int N = Integer.parseInt(st.nextToken());
-		int[][] cows = new int[N][2];
-		for (int i = 0; i < N; i++) {
-			st = new StringTokenizer(r.readLine());
-			cows[i][0] = Integer.parseInt(st.nextToken());
-			cows[i][1] = Integer.parseInt(st.nextToken());
-		}
-
-		/*
-		 * shortest distance to a cow in the spanning tree
-		 * or Integer.MAX_VALUE - 1 if there are no cows in the spanning tree
-		 * or Integer.MAX_VALUE if the cow is in the spanning tree
-		 */
-		int[] dist = new int[N];
-		for (int i = 1; i < N; i++) { dist[i] = Integer.MAX_VALUE - 1; }
-		int m = 0;
-		for (int t = 0; t < N; t++) {
-			int i = minIndex(dist);
-			m = Math.max(m, dist[i]);
-			dist[i] = Integer.MAX_VALUE;
-			for (int j = 0; j < N; j++) {
-				if (dist[j] != Integer.MAX_VALUE) {
-					dist[j] = Math.min(dist[j], distSq(cows[i], cows[j]));
-				}
-			}
-		}
-
-		PrintWriter pw = new PrintWriter(new FileWriter("moocast.out"));
-		pw.println(m);
-		pw.close();
-	}
-}
-```
-
-</JavaSection>
 <PySection>
 
 ```py
-def dist_sq(a, b):
-	return (a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2
+from collections import deque
 
 
-with open("moocast.in", "r") as stdin:
-	N = int(stdin.readline())
-	cows = [tuple(map(int, stdin.readline().strip().split())) for _ in range(N)]
+def build_adj(cows):
+	n = len(cows)
+	adj = [[] for _ in range(n)]
+	max_dist = 0
+	for i, (xi, yi) in enumerate(cows):
+		neighbors = []
+		for j, (xj, yj) in enumerate(cows):
+			if i == j:
+				continue
+			dx = xi - xj
+			dy = yi - yj
+			d = dx * dx + dy * dy
+			neighbors.append((d, j))
+			if d > max_dist:
+				max_dist = d
+		neighbors.sort()
+		adj[i] = neighbors
+	return adj, max_dist
 
-dist = {c: float("inf") for c in cows}
-dist[cows[0]] = 0
-m = 0
-for t in range(N):
-	i = min(dist, key=dist.__getitem__)
-	m = max(m, dist[i])
-	del dist[i]
-	for j in dist:
-		dist[j] = min(dist[j], dist_sq(i, j))
 
-print(m, file=open("moocast.out", "w"))
+def all_reachable(power, adj):
+	n = len(adj)
+	reached = [False] * n
+	reached[0] = True
+	q = deque([0])
+	append = q.append
+	popleft = q.popleft
+
+	while q:
+		curr = popleft()
+		for d, j in adj[curr]:
+			if d > power:
+				break
+			if not reached[j]:
+				reached[j] = True
+				append(j)
+
+	return all(reached)
+
+
+with open("moocast.in") as f:
+	n = int(f.readline().strip())
+	cows = [tuple(map(int, f.readline().split())) for _ in range(n)]
+
+adj, max_dist = build_adj(cows)
+
+lo, hi = 0, max_dist
+valid = hi
+
+while lo <= hi:
+	mid = (lo + hi) // 2
+	if all_reachable(mid, adj):
+		valid = mid
+		hi = mid - 1
+	else:
+		lo = mid + 1
+
+with open("moocast.out", "w") as f:
+	f.write(str(valid) + "\n")
 ```
 
 </PySection>

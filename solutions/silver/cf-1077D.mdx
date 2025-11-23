@@ -62,6 +62,57 @@ int main() {
 ```
 
 </CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class CuttingOut {
+	private final static int MAX_N = 200000;
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
+
+		int n = io.nextInt();
+		int k = io.nextInt();
+
+		int[] freq = new int[MAX_N + 1];
+		for (int i = 0; i < n; i++) {
+			int x = io.nextInt();
+			freq[x] += 1;
+		}
+
+		int lo = 0;
+		int hi = n;
+		while (lo < hi) {
+			int mid = (lo + hi + 1) / 2;
+			if (can(freq, mid, k)) {
+				lo = mid;
+			} else {
+				hi = mid - 1;
+			}
+		}
+
+		List<Integer> res = new ArrayList<>();
+		for (int i = 1; i <= MAX_N; i++) {
+			for (int j = 0; j < freq[i] / lo; j++) { res.add(i); }
+		}
+
+		for (int i = 0; i < k; i++) { io.print(res.get(i) + " "); }
+		io.close();
+	}
+
+	private static boolean can(int[] freq, int x, int k) {
+		int eleNum = 0;
+		for (int i = 1; i <= MAX_N; i++) { eleNum += freq[i] / x; }
+		return eleNum >= k;
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
 <PySection>
 
 ```py

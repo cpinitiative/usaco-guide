@@ -31,6 +31,7 @@ import { LoadingSpinner } from '../elements/LoadingSpinner';
 import Logo from '../Logo';
 import LogoSquare from '../LogoSquare';
 import SectionsDropdown from '../SectionsDropdown';
+import Banner from './Banner';
 import { SearchModal } from './SearchModal';
 import { UserAvatarMenu } from './UserAvatarMenu';
 
@@ -133,15 +134,15 @@ export default function TopNavigationBar({
   ];
   return (
     <>
-      {/* {!hidePromoBar && (
+      {!hidePromoBar && (
         <>
           <Banner
-            text="Compete for Prizes in the USACO.Guide Informatics Tournament!"
+            text="Join us for our 2025 IOI Team Workshop!"
             action="Register"
-            link="http://contest.joincpi.org:8080/home"
+            link="https://joincpi.org/workshops/ioi25"
           />
         </>
-      )} */}
+      )}
 
       <nav
         className={classNames(
@@ -369,7 +370,7 @@ export default function TopNavigationBar({
         {/*
         Mobile menu, toggle classes based on menu state.
 
-        Menu open: "block", Menu closed: "hidden"
+        Menu open: "block", Menu closed: "hidden
       */}
         <div className={`${isMobileNavOpen ? 'block' : 'hidden'} lg:hidden`}>
           <div className="grid grid-cols-1 divide-y divide-gray-300 pb-6 dark:divide-gray-800">

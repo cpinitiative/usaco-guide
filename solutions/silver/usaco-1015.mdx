@@ -2,16 +2,29 @@
 id: usaco-1015
 source: USACO Silver 2020 February
 title: Triangles
-author: Albert Zhu
+author: Albert Zhu, Sachet Abeysinghe
 ---
 
-[Official Analysis](http://www.usaco.org/current/data/sol_triangles_silver_feb20.html)
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_triangles_silver_feb20.html)
+
+## Explanation
+
+Let's consider the right triangles we can create if we consider every coordinate as the point of the right angle.
+If we have a point $\left(x,y\right)$ as the right angle point, then the other two vertices must be $\left(a,y\right)$ and $\left(x,b\right)$
+(one with the same $x$-coordinate and another with the same $y$-coordinate).
+
+Pairing this $\left(a,y\right)$ and $\left(x,b\right)$ means two times the area of this triangle is $\left|x-a\right|\cdot\left|y-b\right|$.
+Thus, the total contribution for some $\left(x,y\right)$ is $(\sum_{a∈A}\left|x-a\right|)\cdot(\sum_{b∈B}\left|y-b\right|)$.
+
+To do this for each coordinate, we can store the $y$-values for each $x$ and the $x$-values for each $y$.
+Then, we sort the $y$-values for each $x$ and the $x$-values for each $y$, and use prefix sums to compute the distance from all $x$-values and distance from all $y$-values in the lists.
+For each point, multiply the total horizontal distance and total vertical distance to add that to the total answer.
 
 ## Implementation
+
 **Time Complexity:** $\mathcal{O}(N\log N)$
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
@@ -110,7 +123,6 @@ int main() {
 ```
 
 </CPPSection>
-
 <JavaSection>
 
 ```java
@@ -228,5 +240,74 @@ public class Triangles {
 ```
 
 </JavaSection>
+<PySection>
 
+```py
+import itertools
+import bisect
+
+MOD = 10**9 + 7
+
+with open("triangles.in", "r") as read:
+	n = int(read.readline())
+	coordinates = []
+	x_values = dict()
+	y_values = dict()
+
+	for i in range(n):
+		x, y = map(int, read.readline().split())
+		coordinates.append((x, y))
+		# store y-values for each x and x-values for each y in hashmaps
+		if x in x_values:
+			x_values[x].append(y)
+		else:
+			x_values[x] = [y]
+		if y in y_values:
+			y_values[y].append(x)
+		else:
+			y_values[y] = [x]
+
+# sort the y-values for each x and the x-values for each y
+for x in x_values:
+	x_values[x].sort()
+for y in y_values:
+	y_values[y].sort()
+
+# create prefix sum lists for the y-values for each x and the x-values for each y using itertools
+x_prefix = x_values.copy()
+y_prefix = y_values.copy()
+for x in x_prefix:
+	x_prefix[x] = [0] + list(itertools.accumulate(x_prefix[x]))
+for y in y_prefix:
+	y_prefix[y] = [0] + list(itertools.accumulate(y_prefix[y]))
+
+ans = 0
+# loop through all (x, y) coordinates as the right-angle point
+for x, y in coordinates:
+	# binary search for indices in x-coordinate and y-coordinate maps using bisect
+	x_index = bisect.bisect_left(x_values[x], y)
+	y_index = bisect.bisect_left(y_values[y], x)
+	# find sum of distances from y to all y-values using prefix sums
+	x_sum = (
+		y * x_index
+		- x_prefix[x][x_index]
+		+ x_prefix[x][len(x_values[x])]
+		- x_prefix[x][x_index + 1]
+		- (y * (len(x_values[x]) - x_index - 1))
+	)
+	# find sum of distances from x to all x-values using prefix sums
+	y_sum = (
+		x * y_index
+		- y_prefix[y][y_index]
+		+ y_prefix[y][len(y_values[y])]
+		- y_prefix[y][y_index + 1]
+		- (x * (len(y_values[y]) - y_index - 1))
+	)
+	# add sum of triangle areas (product of x_sum and y_sum) to answer
+	ans += x_sum * y_sum
+
+print(ans % MOD, file=open("triangles.out", "w"))
+```
+
+</PySection>
 </LanguageSection>

@@ -35,7 +35,7 @@ export const EditorTopNav = (): JSX.Element => {
   };
 
   return (
-    <div className="block flex items-center justify-between border-b border-gray-200 px-4 dark:border-gray-800 dark:bg-gray-900">
+    <div className="flex items-center justify-between border-b border-gray-200 px-4 dark:border-gray-800 dark:bg-gray-900">
       <div className="flex items-center space-x-4">
         <div className="mr-8 flex flex-nowrap items-center space-x-2 py-2 whitespace-nowrap">
           <div className="h-8 w-8 shrink-0">

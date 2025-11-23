@@ -147,9 +147,9 @@ $$$
 \texttt{ans}[i] = x_1[i] + y_1[i] + \min\limits_{j < i, x_2[j] \le x_1[i], y_2[j] \le y_1[i]}(\texttt{ans}[j] - x_2[j] - y_2[j])
 $$$
 
-We notice that everything inside the $\min$ statement only depends on $j$. The segment tree stores $\texttt{ans}[j] - x_2[j] - y_2[j]$ at index $y_2[j]$. We can seperate the start and end of springboards to create two seperate events for each springboard, still sorting by $(x, y)$. When the event is the start of a springboard, update $ans[i]$ through a segment tree query. When the event is the end of a springboard, update the segment tree.
+We notice that everything inside the $\min$ statement only depends on $j$. The segment tree stores $\texttt{ans}[j] - x_2[j] - y_2[j]$ at index $y_2[j]$. We can separate the start and end of springboards to create two separate events for each springboard, still sorting by $(x, y)$. When the event is the start of a springboard, update $ans[i]$ through a segment tree query. When the event is the end of a springboard, update the segment tree.
 
-By processing in order, the first two conditions in the $\min$ statement are always satisfied. The third is where the segment tree comes into play, where querying the range $[0, y_1[i]]$ is sufficent to satisfy all constraints.
+By processing in order, the first two conditions in the $\min$ statement are always satisfied. The third is where the segment tree comes into play, where querying the range $[0, y_1[i]]$ is sufficient to satisfy all constraints.
 
 Due to the large $N$, coordinate compression is required in the code.
 

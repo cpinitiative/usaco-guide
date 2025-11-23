@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useEffect, useState } from 'react';
 import { DarkModeContext } from './DarkModeContext';
 import { useThemeSetting } from './UserDataContext/properties/simpleProperties';
 import { useIsUserDataLoaded } from './UserDataContext/UserDataContext';
@@ -6,9 +7,11 @@ import { useIsUserDataLoaded } from './UserDataContext/UserDataContext';
 export function DarkModeProvider({ children }) {
   const theme = useThemeSetting();
   const isLoaded = useIsUserDataLoaded();
+  const [isClient, setIsClient] = useState(false);
 
   const [darkMode, setDarkMode] = React.useReducer((prev, next) => {
-    if (prev !== next) {
+    if (prev !== next && isClient) {
+      // Only modify DOM on client
       if (next) {
         document.documentElement.classList.add('dark');
       } else {
@@ -26,7 +29,8 @@ export function DarkModeProvider({ children }) {
     return next;
   }, false);
 
-  React.useEffect(() => {
+  useEffect(() => {
+    setIsClient(true);
     if (!isLoaded) {
       setDarkMode(document.documentElement.classList.contains('dark'));
     }

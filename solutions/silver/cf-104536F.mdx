@@ -2,7 +2,7 @@
 id: cf-104536F
 source: CF
 title: Minimize the Diameter
-author: KJ Karaisz
+author: KJ Karaisz, David Guo
 ---
 
 ## Explanation
@@ -77,4 +77,78 @@ int main() {
 ```
 
 </CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class MinimizeDiameter {
+	private static class Pair {
+		public int first;
+		public int second;
+		public Pair(int first, int second) {
+			this.first = first;
+			this.second = second;
+		}
+	}
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int n = Integer.parseInt(st.nextToken());
+		List<List<Integer>> tree1 = new ArrayList<>(n + 1);
+		for (int i = 0; i <= n; i++) { tree1.add(new ArrayList<>()); }
+
+		for (int i = 0; i < n - 1; i++) {
+			st = new StringTokenizer(br.readLine());
+			int u = Integer.parseInt(st.nextToken());
+			int v = Integer.parseInt(st.nextToken());
+			tree1.get(u).add(v);
+			tree1.get(v).add(u);
+		}
+
+		st = new StringTokenizer(br.readLine());
+		int m = Integer.parseInt(st.nextToken());
+		List<List<Integer>> tree2 = new ArrayList<>(m + 1);
+		for (int i = 0; i <= m; i++) { tree2.add(new ArrayList<>()); }
+
+		for (int i = 0; i < m - 1; i++) {
+			st = new StringTokenizer(br.readLine());
+			int u = Integer.parseInt(st.nextToken());
+			int v = Integer.parseInt(st.nextToken());
+			tree2.get(u).add(v);
+			tree2.get(v).add(u);
+		}
+
+		int tree1Start = dfs(tree1).first;
+		int tree2Start = dfs(tree2).first;
+		int tree1Diameter = dfs(tree1, tree1Start, 0, 0).second;
+		int tree2Diameter = dfs(tree2, tree2Start, 0, 0).second;
+		// (x + 1) / 2 divides by 2 and rounds up
+		int addedEdgeDiameter = (tree1Diameter + 1) / 2 + (tree2Diameter + 1) / 2 + 1;
+
+		int bestDiameter =
+		    Math.max(Math.max(tree1Diameter, tree2Diameter), addedEdgeDiameter);
+		System.out.println(bestDiameter);
+	}
+
+	private static Pair dfs(List<List<Integer>> tree) { return dfs(tree, 1, 0, 0); }
+
+	/** @return the farthest node and its distance from the given node. */
+	private static Pair dfs(List<List<Integer>> tree, int node, int previous,
+	                        int length) {
+		Pair maxPath = new Pair(node, length);
+		for (int i : tree.get(node)) {
+			if (i == previous) { continue; }
+			Pair other = dfs(tree, i, node, length + 1);
+			if (other.second > maxPath.second) { maxPath = other; }
+		}
+		return maxPath;
+	}
+}
+```
+
+</JavaSection>
 </LanguageSection>

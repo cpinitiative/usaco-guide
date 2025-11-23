@@ -2,26 +2,18 @@
 id: usaco-1227
 source: USACO Bronze 2022 US Open
 title: Photoshoot
-author: Kevin Sheng
+author: Kevin Sheng, David Guo
 ---
 
-<Spoiler title="Hint 1">
-
-Not caring about the number of flips, what's the best FJ can do in terms
-of putting cows in their even/odd positions?
-
-</Spoiler>
-
-<Spoiler title="Hint 2">
-
-How can we process the cows such that we don't have to look back to already
-processed cows? Keep in mind that we can only reverse *prefixes*.
-
-</Spoiler>
-
-<Spoiler title="Solution">
-
 [Official Analysis (C++, Java, and Python)](http://usaco.org/current/data/sol_prob1_bronze_open22.html)
+
+## Explanation
+
+We want to maximize the number of Guernseys in even positions. Looking at pairs of adjacent cows, HH contributes nothing, GG always contributes one, and GH/HG can contribute one depending on its orientation. We only consider adjacent pairs with the first cow being in an odd position to avoid overlapping. We say a mixed GH/HG pair is *aligned* if it is HG and *misaligned* if it is GH.
+
+Since reversing a prefix flips the orientation of all earlier pairs, we can iterate through pairs from right to left, keeping track of whether our flips have switched the orientation or not.
+
+If a mixed pair is already aligned under the current orientation, we leave it. Otherwise, we must flip it. A pair is misaligned exactly when its Guernsey ends up on an odd position under the current parity of flips. Each flip is both necessary and sufficient, so the number of times we need to flip misaligned pairs is exactly the minimum number of reversals needed.
 
 ## Implementation
 
@@ -108,5 +100,3 @@ print(flips)
 
 </PySection>
 </LanguageSection>
-
-</Spoiler>

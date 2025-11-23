@@ -2,14 +2,26 @@
 id: usaco-811
 source: USACO Silver 2018 February
 title: Snow Boots
-author: Qi Wang, Ryan Chou, Juheon Rhee
+author: Qi Wang, Ryan Chou, Juheon Rhee, David Guo
 ---
 
 [Official Analysis (C++)](http://www.usaco.org/current/data/sol_snowboots_silver_feb18.html)
 
 ## Explanation
 
-Due to the low bounds on $N$ and $B$, we can run a [DFS (Depth First Search)](/silver/graph-traversal) on every possible location and boot size Farmer John could be wearing.
+We view each position and boot as a state, and run a depth-first search (DFS) to explore every state while marking visited ones.
+
+From any state, we step forward up to the boot's maximum step length onto tiles it can handle, or swap to any later boot that also works on the current tile.
+
+When we reach the last tile, we record the current boot index, keeping the smallest value.
+
+Consider the sample case. We start at tile $1$ with boot $1$. Boot $1$ can step up to $5$ tiles ahead, but since tile $2$ has depth $3\gt0$ we cannot move forward.
+
+Suppose we swap all the way to boot $3$, which allows us to step up to $2$ tiles with depths less than or equal to $6$. We can move to tile $2$ since its depth is $3\le6$. We cannot step to tile $3$ since its depth is $8\gt6$. We move up one tile and now face a similar set of choices.
+
+Each step or swap leads to a new state, which we mark visited so we never repeat it. Eventually this process reaches tile $8$ under several different boots. Whenever we first hit tile $8$ we record that boot's index, and throughout the DFS we keep the minimum such index as our answer.
+
+There are $\mathcal{O}(NB)$ total states and since $N$ and $B$ are both at most $250$, visiting all $\mathcal{O}(N + B)$ neighboring states will be at worst $\mathcal{O}(N^2B + NB^2)$, which runs in time.
 
 ## Implementation
 

@@ -9,8 +9,8 @@ author: Óscar Garries, Neo Wang, Kevin Sheng, Ruben Jing
 
 ## Solution 1 - Binary Search and Floodfill
 
-If a certain wormhole width works, any larger wormhole width will work as well.
-Similarly, if a width fails, any smaller width will also fail.
+If a certain wormhole width works, any smaller wormhole width will work as well.
+Similarly, if a width fails, any larger width will also fail.
 These two facts make it so that we can binary search on the minimal wormhole width.
 
 To check if a given minimal wormhole width $x$ is valid, we use DFS to find all positions
@@ -452,13 +452,11 @@ int main() {
 		c--;  // make the cows 0-indexed
 	}
 
-	int max_width = 0;
 	vector<Wormhole> wormholes(wormhole_num);
 	for (Wormhole &w : wormholes) {
 		read >> w.c1 >> w.c2 >> w.width;
 		w.c1--;
 		w.c2--;
-		max_width = std::max(max_width, w.width);
 	}
 
 	std::sort(wormholes.begin(), wormholes.end());

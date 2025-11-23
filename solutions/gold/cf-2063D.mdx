@@ -1,0 +1,164 @@
+---
+id: cf-2063D
+source: CF
+title: Game With Triangles
+author: Justin Ji
+---
+
+<Spoiler title="Hint 1">
+
+The area of a triangle is $\frac{1}{2}bh$, where $b$ is the length of the base
+and $h$ is height of the triangle. Notice that if we set the base to be the side
+with two points on it, $h$ is always $2$. What does this mean?
+
+</Spoiler>
+
+<Spoiler title="Answer to Hint 1">
+
+If we pick two points $x$ and $y$ on one side, then the area of the resulting
+triangle is just $|x - y|$. The location of the third point on the other side
+does not matter!
+
+</Spoiler>
+
+<Spoiler title="Hint 2">
+
+Try devising a $\mathcal{O}(n^2)$ solution to the problem with the
+information from the first hint.
+
+</Spoiler>
+
+<Spoiler title="Solution">
+
+## Explanation
+
+As mentioned in Hint 1, a triangle's area only depends on the length of
+its base, which is the side where two of our points are. Thus, we can
+reduce the problem to picking $x$ pairs of points in array $a$, and
+$y$ pairs of points in array $b$.
+
+Let's say we want to find the best way to pick $x$ pairs of points in array $a$.
+How can we maximize our area? The most straightforward way to do this would be
+to pair up the $x$ smallest values with the $x$ biggest values in any pairing
+arrangement. We can compute the total area using prefix sums this way.
+
+This gives us our $\mathcal{O}(n^2)$ algorithm: for each value of $k$, iterate
+on our value of $x$, with $y = k - x$. With the greedy strategy above, we can
+compute the best result for each $(x, y)$ pair in $\mathcal{O}(1)$ time.
+
+Let $x$ be the number of pairs we make from array $a$, $f(x)$ be the maximum total
+triangle area from array $a$, and $g(x)$ be the maximum total triangle area from
+array $b$. Then, our answer is the maximum value of $f(x) + g(x)$ across
+all valid values of $x$.
+
+We can make the following claims:
+1. $f(x)$ is strictly increasing, while $g(x)$ is strictly decreasing.
+2. $f(x)$ and $g(x)$ have consecutive differences that are non-increasing, making them convex.
+3. The function $h(x) = f(x) + g(x)$ is convex.
+
+Try to figure out why each of these claims are true!
+
+<Spoiler title="Explanation">
+
+For claim 1, adding another pair of points in our array $a$ is guaranteed to
+increase our total triangle area, assuming that we can still pair up points.
+Conversely, increasing $x$ means decreasing the number of pairs we can make
+in array $b$, making $g(x)$ strictly decreasing.
+
+For claim 2, recall how our greedy strategy to make $x$ pairs is to
+pair up the $x$ biggest points with the $x$ smallest points. If we move
+to making $x+1$ pairs, our only difference is that we add a new pair:
+the $x+1$th smallest value, and the $x+1$th biggest value. Adding this pair
+gives at most the same amount of area as adding pair $x$ into our answer, making
+the consecutive differences non-decreasing.
+
+For claim 3, this is a well-known theorem. The easiest way to justify this is to
+use calculus: in this case, convexity requires the second derivative to
+be non-positive. We can simply apply linearity and see that adding multiple
+functions results with a second derivative that is still non-positive.
+
+</Spoiler>
+
+Now, because convex functions are unimodal,
+our problem is reduced to maximizing a unimodal function. This can be
+handled with ternary or binary search. Make sure to properly restrict your search space,
+as only some values of $x$ are valid.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N\log{N} + M\log{M})$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+using ll = long long;
+
+int main() {
+	int test_num;
+	std::cin >> test_num;
+	for (int t = 0; t < test_num; t++) {
+		int n, m;
+		std::cin >> n >> m;
+		std::vector<int> a(n), b(m);
+		for (int &i : a) { std::cin >> i; }
+		for (int &i : b) { std::cin >> i; }
+
+		// calculate prefix sums for array a
+		std::sort(std::begin(a), std::end(a));
+		std::vector<ll> pf_a(n);
+		pf_a[0] = a[0];
+		for (int i = 1; i < n; i++) { pf_a[i] = a[i] + pf_a[i - 1]; }
+
+		// calculate prefix sums for array b
+		std::sort(std::begin(b), std::end(b));
+		std::vector<ll> pf_b(m);
+		pf_b[0] = b[0];
+		for (int i = 1; i < m; i++) { pf_b[i] = b[i] + pf_b[i - 1]; }
+
+		/** @return best way to choose num pairs in array pf */
+		const auto get_best = [&](const std::vector<ll> &pf, int num) -> ll {
+			const int sz = pf.size();
+			return (pf[sz - 1] - pf[sz - 1 - num]) - (num == 0 ? 0 : pf[num - 1]);
+		};
+
+		// k_max is bounded by the number of points,
+		// and the number of points on each side
+		const int k_max = std::min({n, m, (n + m) / 3});
+		std::cout << k_max << '\n';
+
+		for (int i = 1; i <= k_max; i++) {
+			/** @return best result if we pick j pairs from array a */
+			const auto get = [&](int j) -> ll {
+				return get_best(pf_a, j) + get_best(pf_b, i - j);
+			};
+
+			/**
+			 * We use binary search to find the maximum of our function. (See module)
+			 * In this case, because our function strictly increases, reaches its
+			 * maximum, and becomes strictly decreasing, we find the first point where
+			 * the function beceomes strictly decreasing.
+			 */
+			int lo = std::max(0, 2 * i - m);
+			int hi = std::min(i, n - i);
+			while (lo < hi) {
+				int mid = (lo + hi) / 2;
+				if (get(mid) > get(mid + 1)) {
+					hi = mid;
+				} else {
+					lo = mid + 1;
+				}
+			}
+
+			std::cout << get(lo) << " \n"[i == k_max];
+		}
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
+</Spoiler>

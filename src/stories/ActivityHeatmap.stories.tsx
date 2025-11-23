@@ -1,4 +1,4 @@
-import { Meta, Story } from '@storybook/react';
+import { Meta, StoryFn } from '@storybook/react-webpack5';
 import React from 'react';
 import seedrandom from 'seedrandom';
 import {
@@ -15,7 +15,7 @@ const endDate = new Date(Date.UTC(2023, 12));
 const startDate = new Date(endDate);
 startDate.setMonth(endDate.getMonth() - 10);
 
-const Template: Story<ActivityHeatmapProps> = args => (
+const Template: StoryFn<ActivityHeatmapProps> = args => (
   <ActivityHeatmap endDate={endDate} {...args} />
 );
 
@@ -58,13 +58,40 @@ for (
   randomProblemActivities[i.getTime()] = Array(rng()).fill(dummyProblem);
 }
 console.log(startDate.getTime(), endDate.getTime());
+// Helper to generate activityCount from activities
+const getActivityCount = (
+  moduleActivities: { [key: number]: any[] },
+  problemActivities: { [key: number]: any[] }
+) => {
+  const activityCount: { [key: number]: number } = {};
+  const allKeys = new Set([
+    ...Object.keys(moduleActivities),
+    ...Object.keys(problemActivities),
+  ]);
+  for (const key of allKeys) {
+    const k = Number(key);
+    activityCount[k] =
+      (moduleActivities[k]?.length || 0) + (problemActivities[k]?.length || 0);
+  }
+  return activityCount;
+};
+
 export const Ordered = Template.bind({});
 Ordered.args = {
   moduleActivities: orderedModuleActivities,
   problemActivities: orderedProblemActivities,
+  activityCount: getActivityCount(
+    orderedModuleActivities,
+    orderedProblemActivities
+  ),
 };
+
 export const Random = Template.bind({});
 Random.args = {
   moduleActivities: randomModuleActivities,
   problemActivities: randomProblemActivities,
+  activityCount: getActivityCount(
+    randomModuleActivities,
+    randomProblemActivities
+  ),
 };

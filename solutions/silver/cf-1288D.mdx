@@ -1,0 +1,225 @@
+---
+id: cf-1288D
+source: CF
+title: Minimax Problem
+author: Justin Ji
+---
+
+[Official Analysis (C++)](https://codeforces.com/blog/entry/73105)
+
+## Explanation
+
+At a glance, it's difficult to directly compute the answer without comparing
+each pair of arrays. Instead of directly computing the answer, we can try
+binary searching on it.
+
+If the value we are checking is $x$, then we need a pair of arrays $a$ and $b$
+where $\text{max}(a[i], b[i]) \geq x$ for all valid $i$. We can rephrase this to where
+either $a[i] \geq x$ or $b[i] \geq x$. Given that $m$ is small, this means that we can represent each array as being a bitmask,
+where the $i$-th bit in a given bitmask is turned on if $a[i] \geq x$ in our current array.
+
+Because there are only a maximum of $8$ bits in our bitmask, there are up to $256$ possible bitmasks.
+Note that we can consider two arrays with the same bitmask as being functionally equivalent.
+Thus, we can brute force every pair of bitmasks to see if any pair of arrays satisfies the condition for the value we are checking for.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}((NM+4^{M})\log{A})$, where $A$ is the largest value in the array.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+using ll = long long;
+
+int main() {
+	int n, m;
+	std::cin >> n >> m;
+	std::vector vals(n, std::vector<int>(m));
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < m; j++) { std::cin >> vals[i][j]; }
+	}
+
+	std::pair<int, int> chosen;
+
+	/** @return if an answer of res works, and sets chosen to a valid pair */
+	const auto check = [&](int res) -> bool {
+		std::vector<int> used(1 << m, -1);
+		for (int i = 0; i < n; i++) {
+			// we represent each array i with a bitmask
+			// the bitmask indicates if a[i][j] >= res
+			int mask = 0;
+			for (int j = 0; j < m; j++) { mask |= (vals[i][j] >= res) << j; }
+
+			// we map each mask to its index
+			used[mask] = i;
+		}
+
+		// we now brute force every pair of bitmasks to see if there's
+		// a valid pair that satisfies the condition
+		const int full = (1 << m) - 1;
+		for (int i = 0; i < (1 << m); i++) {
+			for (int j = 0; j < (1 << m); j++) {
+				if ((i | j) == full && used[i] != -1 && used[j] != -1) {
+					chosen = {used[i], used[j]};
+					return true;
+				}
+			}
+		}
+
+		return false;
+	};
+
+	int lo = 0, hi = 1e9;
+	while (lo < hi) {
+		int mid = (lo + hi + 1) / 2;
+		check(mid) ? lo = mid : hi = mid - 1;
+	}
+
+	check(lo);  // make sure chosen pair is correct
+
+	std::cout << chosen.first + 1 << ' ' << chosen.second + 1 << std::endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Minimax {
+	static int n, m;
+	static int[][] vals;
+	static int chosenA = 0, chosenB = 0;
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+
+		n = Integer.parseInt(st.nextToken());
+		m = Integer.parseInt(st.nextToken());
+		vals = new int[n][m];
+
+		for (int i = 0; i < n; i++) {
+			st = new StringTokenizer(br.readLine());
+			for (int j = 0; j < m; j++) {
+				vals[i][j] = Integer.parseInt(st.nextToken());
+			}
+		}
+
+		int lo = 0, hi = (int)1e9;
+		while (lo < hi) {
+			int mid = (lo + hi + 1) / 2;
+			if (check(mid)) {
+				lo = mid;
+			} else {
+				hi = mid - 1;
+			}
+		}
+
+		check(lo);  // make sure chosen pair is correct
+		System.out.println((chosenA + 1) + " " + (chosenB + 1));
+	}
+
+	/** @return if an answer of res works, and sets chosen values */
+	static boolean check(int res) {
+		int[] used = new int[1 << m];
+		Arrays.fill(used, -1);
+
+		for (int i = 0; i < n; i++) {
+			// we represent each array i with a bitmask
+			// the bitmask indicates if a[i][j] >= res
+			int mask = 0;
+			for (int j = 0; j < m; j++) {
+				if (vals[i][j] >= res) { mask |= (1 << j); }
+			}
+
+			// we map each mask to its index
+			used[mask] = i;
+		}
+
+		// we now brute force every pair of bitmasks to see if there's
+		// a valid pair that satisfies the condition
+		final int full = (1 << m) - 1;
+		for (int i = 0; i < (1 << m); i++) {
+			for (int j = 0; j < (1 << m); j++) {
+				if ((i | j) == full && used[i] != -1 && used[j] != -1) {
+					chosenA = used[i];
+					chosenB = used[j];
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+<Warning>
+
+This solution only runs in time when submitted with PyPy.
+
+</Warning>
+
+```py
+import sys
+
+input = sys.stdin.readline
+
+n, m = map(int, input().split())
+vals = [list(map(int, input().split())) for _ in range(n)]
+chosen = [0, 0]
+
+
+def check(res: int) -> bool:
+	"""
+	Checks if an answer of res is attainable. If so, set the
+	values in the chosen list to be a valid pair for our answer.
+	"""
+	used = [-1] * (1 << m)
+	for i in range(n):
+		# we represent each array i with a bitmask
+		# the bitmask indicates if a[i][j] >= res
+		mask = 0
+		for j in range(m):
+			if vals[i][j] >= res:
+				mask |= 1 << j
+
+		# we map each mask to its index
+		used[mask] = i
+
+	# we now brute force every pair of bitmasks to see if there's
+	# a valid pair that satisfies the condition
+	full = (1 << m) - 1
+	for i in range(1 << m):
+		for j in range(1 << m):
+			if (i | j) == full and used[i] != -1 and used[j] != -1:
+				chosen[0], chosen[1] = used[i], used[j]
+				return True
+
+	return False
+
+
+lo = 0
+hi = 10**9
+while lo < hi:
+	mid = (lo + hi + 1) // 2
+	if check(mid):
+		lo = mid
+	else:
+		hi = mid - 1
+
+check(lo)  # make sure chosen pair is correct
+print(chosen[0] + 1, chosen[1] + 1)
+```
+
+</PySection>
+</LanguageSection>

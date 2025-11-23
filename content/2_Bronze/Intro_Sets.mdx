@@ -1,7 +1,8 @@
 ---
 id: intro-sets
-title: (Optional) Introduction to Sets & Maps
+title: Introduction to Sets & Maps
 author: Darren Yao, Benjamin Qi, Allen Li, Jesse Choe, Nathan Gong
+contributors: Elliott Harper
 description: 'Maintaining collections of distinct elements/keys with sets and maps.'
 frequency: 2
 prerequisites:
@@ -99,7 +100,13 @@ set.add(1);  // {1}
 set.add(4);  // {1, 4}
 set.add(2);  // {1, 2, 4}
 
-// Outputs 1, 2, and 4 on separate lines
+/*
+ * Output:
+ * 1
+ * 2
+ * 4
+ */
+
 for (int element : set) { System.out.println(element); }
 ```
 
@@ -871,7 +878,7 @@ for (Map.Entry<Integer, Integer> entry : m.entrySet()) {
 
 However, `Iterator` is outside the scope of this module.
 
-The easiest option (in most cases) if you want to remove/insert mutiple entries
+The easiest option (in most cases) if you want to remove/insert multiple entries
 at once is to use your Container's `.addAll(c)` or `.removeAll(c)` methods. That
 means that you should put all the elements you want to remove (or add) in a new
 Collection, and then use that new Collection as the parameter of the
@@ -908,6 +915,18 @@ for (Map.Entry<Integer, Integer> entry : m.entrySet()) {
 
 ### Solution - Associative Array
 
+To solve this problem efficiently, we need a data structure that can:
+
+- Assign a value to any index `k` (where `k` can be as large as $10^{18}$).
+- Retrieve the value at any index `k` quickly.
+
+A regular array won't work because the indices can be extremely large, making it impossible to allocate enough memory. However, since all values are initially `0` and only a small subset of indices will ever be set or queried, we can use a **map** (also called an associative array or dictionary) to store only the indices that have been assigned a value.
+
+- When we receive a `0 k v` query, we set `a[k] = v` in the map.
+- When we receive a `1 k` query, we print `a[k]` if it exists in the map, or `0` otherwise.
+
+This approach is efficient because both operations are fast in maps, and we only store the keys that are actually used.
+
 Note that we use 64-bit integers since $k$ and $v$ may be large.
 
 <LanguageSection>
@@ -922,7 +941,7 @@ using namespace std;
 int main() {
 	int query_num;
 	cin >> query_num;
-	map<long long, long long> a;
+	map<long long, long long> a;  // Map to store only assigned indices
 	for (int q = 0; q < query_num; q++) {
 		int t;
 		cin >> t;
@@ -933,7 +952,8 @@ int main() {
 		} else if (t == 1) {
 			long long k;
 			cin >> k;
-			cout << a[k] << "\n";
+			// If k is not in the map, operator[] returns 0 by default
+			cout << a[k] << '\n';
 		}
 	}
 }
@@ -950,6 +970,7 @@ public class Main {
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		int queryNum = Integer.parseInt(br.readLine());
+		// Map to store assigned indices
 		HashMap<Long, Long> a = new HashMap<Long, Long>();
 		for (int i = 0; i < queryNum; i++) {
 			StringTokenizer st = new StringTokenizer(br.readLine());
@@ -959,6 +980,7 @@ public class Main {
 				long v = Long.parseLong(st.nextToken());
 				a.put(k, v);
 			} else if (t == 1) {
+				// If k is not present, return 0
 				System.out.println(a.getOrDefault(k, 0L));
 			}
 		}
@@ -972,12 +994,13 @@ public class Main {
 Unfortunately, the straightforward solution fails a few tests specifically designed to make Python `dict`s run slowly:
 
 ```py
-a = dict()
+a = dict()  # Dictionary to store assigned indices
 for _ in range(int(input())):
 	nums = list(map(int, input().split()))
 	if nums[0] == 0:
 		a[nums[1]] = nums[2]
 	elif nums[0] == 1:
+		# Print a[k] if present, else 0
 		print(a.get(nums[1], 0))
 ```
 
@@ -993,26 +1016,27 @@ def wrap(x):
 	return x ^ RANDOM
 
 
-a = dict()
+a = dict()  # Dictionary to store assigned indices
 for _ in range(int(input())):
 	nums = list(map(int, input().split()))
 	if nums[0] == 0:
 		a[wrap(nums[1])] = nums[2]
 	elif nums[0] == 1:
+		# Print a[k] if present, else 0
 		print(a.get(wrap(nums[1]), 0))
 ```
 
 </PySection>
 </LanguageSection>
 
-## Problems
+# Problems
 
 Some of these problems can be solved by sorting alone, though sets or maps could
 make their implementation easier.
 
 <Problems problems="standard" />
 
-## Check Your Understanding
+# Quiz
 
 <LanguageSection>
 <CPPSection>
@@ -1430,7 +1454,7 @@ make their implementation easier.
   <Quiz.Answer correct>
     $3$
     <Quiz.Explanation>
-      Correct. The value assosiated with key $2$ is changed from $5$ to $3$.
+      Correct. The value associated with key $2$ is changed from $5$ to $3$.
     </Quiz.Explanation>
   </Quiz.Answer>
   <Quiz.Answer>

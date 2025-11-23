@@ -314,7 +314,7 @@ public class SortingDemo {
 }
 ```
 
-### Comparator Fucntion
+### Comparator Function
 
 We can also pass a [comparator function](https://stackoverflow.com/a/44233821/12128483)
 directly to `Arrays.sort` (or `Collections.sort`, if you're sorting an `ArrayList`).
@@ -1103,6 +1103,49 @@ public class StaticRangeQueries {
 ```
 
 </JavaSection>
+<PySection>
+
+```py
+N, Q = map(int, input().split())
+
+coordinates = {-1}  # dummy coordinate to the left of everything
+updates = dict()
+queries = []
+
+for n in range(N):  # read updates
+	left, right, value = map(int, input().split())
+	coordinates.add(left)
+	coordinates.add(right)
+	updates[left] = updates.get(left, 0) + value
+	updates[right] = updates.get(right, 0) - value
+
+for q in range(Q):  # read queries
+	left, right = map(int, input().split())
+	coordinates.add(left)
+	coordinates.add(right)
+	queries.append((left, right))
+
+# create coordinate compression
+coordinates = sorted(coordinates)
+index = {coordinates[i]: i for i in range(len(coordinates))}
+
+# compute prefix sums and store them at compressed coordinates
+value = 0
+prefix_sum = [0]
+for i in range(1, len(coordinates)):
+	prefix_sum.append(prefix_sum[-1] + value * (coordinates[i] - coordinates[i - 1]))
+	value += updates.get(coordinates[i], 0)
+
+# answer range queries by changing coordinates
+answers = []
+
+for left, right in queries:
+	answers.append(prefix_sum[index[right]] - prefix_sum[index[left]])
+
+print(*answers)
+```
+
+</PySection>
 </LanguageSection>
 
 # Problems

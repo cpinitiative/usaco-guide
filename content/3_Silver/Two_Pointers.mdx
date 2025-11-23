@@ -203,37 +203,31 @@ You can visualize these pointers as maintaining a sliding window of books for th
 <CPPSection>
 
 ```cpp
-// CodeSnip{CPP Short Template}
+#include <bits/stdc++.h>
+using namespace std;
 
 int main() {
-	setIO();
-	int n, t, ans = 0;
-	cin >> n >> t;
-	vi books(n);
-	for (int i = 0; i < n; i++) { cin >> books[i]; }
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
 
-	int left = 0, right = 0, cur = 0;
-	while (left < n && right < n) {
-		// Finding the maximum right for which cur is less than t.
-		while (right < n) {
-			cur += books[right++];
-			// Subtracting the exceeded book from cur.
-			if (cur > t) {
-				cur -= books[--right];
-				break;
-			}
-		}
+	int N, T;
+	cin >> N >> T;
+	vector<int> A(N);
+	for (int &a : A) cin >> a;
 
-		ans = max(ans, right - left);
-		cur -= books[left++];
+	int r = -1, sum = 0, ans = 0;
+	// sum stores sum of A[l ... r inclusive]
+	for (int l = 0; l < N; sum -= A[l++]) {
+		while (r + 1 < N && sum + A[r + 1] <= T) sum += A[++r];
+		ans = max(ans, r - l + 1);
 	}
-
-	cout << ans;
+	cout << ans << "\n";
 }
 ```
 
 </CPPSection>
 <JavaSection>
+
 
 ```java
 import java.io.*;
@@ -243,25 +237,16 @@ public class Books {
 	public static void main(String[] args) {
 		Kattio io = new Kattio();
 
-		int n = io.nextInt();
-		int t = io.nextInt();
-		int[] books = new int[n];
-		for (int i = 0; i < n; i++) { books[i] = io.nextInt(); }
+		int N = io.nextInt();
+		int T = io.nextInt();
+		int[] A = new int[N];
+		for (int i = 0; i < N; i++) { A[i] = io.nextInt(); }
 
-		int left = 0, right = 0, cur = 0, ans = 0;
-		while (left < n && right < n) {
-			// Finding the maximum right for which cur is less than t.
-			while (right < n) {
-				cur += books[right++];
-				// Subtracting the exceeded book from cur.
-				if (cur > t) {
-					cur -= books[--right];
-					break;
-				}
-			}
-
-			ans = Math.max(ans, right - left);
-			cur -= books[left++];
+		int r = -1, sum = 0, ans = 0;
+		// sum stores sum of A[l ... r inclusive]
+		for (int l = 0; l < N; sum -= A[l++]) {
+			while (r + 1 < N && sum + A[r + 1] <= T) sum += A[++r];
+			ans = Math.max(ans, r - l + 1);
 		}
 
 		io.println(ans);
@@ -276,31 +261,19 @@ public class Books {
 <PySection>
 
 ```py
-n = int(input())
-t = int(input())
+N, T = map(int, input().split())
+A = list(map(int, input().split()))
 
-books = [int(input()) for _ in range(n)]
-
-right = 0
-left = 0
-cur = 0
+r = -1
+window_sum = 0  # sum of A[l ... r inclusive]
 ans = 0
 
-while left < n and right < n:
-	# Finding the maximum right for which cur is less than t.
-	while right < n:
-		cur += books[right]
-		right += 1
-
-		# Subtracting the exceeded book from cur.
-		if cur > t:
-			right -= 1
-			cur -= books[right]
-			break
-
-	ans = max(ans, right - left)
-	cur -= books[left]
-	left += 1
+for l in range(N):
+	while r + 1 < N and window_sum + A[r + 1] <= T:
+		r += 1
+		window_sum += A[r]
+	ans = max(ans, r - l + 1)
+	window_sum -= A[l]
 
 print(ans)
 ```
@@ -310,7 +283,7 @@ print(ans)
 
 ## Problems
 
-<Problems problems="ad" />
+<Problems problems="general" />
 
 ## Quiz
 

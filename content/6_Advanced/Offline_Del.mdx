@@ -29,7 +29,7 @@ $\mathcal{O}(N \log^2 N)$ runtime. You _must_ use merging by rank. An explanatio
 Adding on to the usual DSU, we can store the parent
 and sizes of nodes that are being merged before each merge. This allows us revert each node to their parents before the merge so that the rollback function can use the information to undo the merges.
 
-We can store each state of the DSU using an integer, captured by the snapshot function which returns the number of old merges that has not been rolled back. It's similar taking a picture of something, and years later going back into your photo album and scrolling up until you find this picture.
+We can store each state of the DSU using an integer, captured by the snapshot function which returns the number of old merges that has not been rolled back. It's similar to taking a picture of something, and years later going back into your photo album and scrolling up until you find this picture.
 
 For example, if history array stores $\{(1, 2), (3, 4), (1, 3)\}$, this means that before our most recent unite, the representative element for component $3$ is $1$, and before that the representative element for component $4$ is $3$. If we want to roll back two unites, we would pop the last two elements of the history array and update the representative elements in order.
 
@@ -146,7 +146,7 @@ These types of problems involve determining whether pairs of nodes are in the sa
 
 For dynamic connectivity problems, we say for every query, there's an interval $[l, r]$ where it's active. Obviously, for each edge add/remove query, $l = $ (the index of the query which adds the edge), and $r = $ (the index of the query which removes the edge) $-1$. If an edge never gets removed, then $r = q - 1$. Note that we assign intervals such that for queries outside the interval, they are completely unaffected by this query. We can use similar reasoning to construct intervals for type $2$ and $3$ queries.
 
-We can now construct a query tree. If our interval is encapsulated by the the tree's interval, then we can add our query to the node corresponding to the interval. When answering queries, as we enter the interval, we can process all the operations inside the interval. As we exit the interval, we need to undo them. If we are at a leaf, we can answer type $3$ queries since we have processed all queries outside this interval $[i, i]$. Since we are processing intevals by halves each time, the depth is at most $\log n$, similar to divide and conquer.
+We can now construct a query tree. If our interval is encapsulated by the the tree's interval, then we can add our query to the node corresponding to the interval. When answering queries, as we enter the interval, we can process all the operations inside the interval. As we exit the interval, we need to undo them. If we are at a leaf, we can answer type $3$ queries since we have processed all queries outside this interval $[i, i]$. Since we are processing intervals by halves each time, the depth is at most $\log n$, similar to divide and conquer.
 
 See the code below for implementation details. Note that similar to unite operations, we can also perform and undo operations of type $2$!
 

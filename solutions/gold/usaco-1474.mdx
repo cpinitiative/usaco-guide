@@ -1,0 +1,108 @@
+---
+id: usaco-1474
+source: USACO Gold 2025 January
+title: Reachable Pairs
+author: Akshaj Arora
+---
+
+[Official Analysis (C++)](https://usaco.org/current/data/sol_prob2_gold_jan25.html)
+
+## Explanation
+
+The problem asks us to find the number of pairs of nodes that are reachable from each other, so it suffices to keep track of the size of each connected component. If there are $k$ connected components and the $i$th component has size $a_i$, then the number of reachable pairs is
+$$
+\sum_{i=1}^{k}{\binom{a_i}{2}}
+$$
+since two nodes are reachable if and only if they belong to the same connected component. To maintain the values of $a_i$, we can use a [Disjoint Set Union (DSU)](/gold/dsu).
+
+At each timestamp $i$, if $s_i = 0$, then all edges incident to node $i$ are removed, which splits the node $i$'s component into multiple components. If $s_i = 1$, then node $i$ is removed from its component, but edges are added between all pairs of node $i$'s neighbors, preventing the component from splitting. Instead of adding all of these extra edges, we can just "deactivate" node $i$, reducing its component's size by $1$, while keeping edges adjacent to it. This works because any two of node $i$'s neighbors can only become disconnected when one of them is removed.
+
+Since removing edges is not possible on a DSU, we instead simulate the process in reverse, starting with the final graph's DSU and adding edges and nodes as we go backwards. To create this final graph, we set the sizes of the components of nodes where $s_i = 1$ to $0$ (all other components should start with size $1$). Then, connect all edges between nodes $i$ and $j$ where $s_i = s_j = 1$. Now, we process each $s_i$ in reverse. If $s_i = 1$, then increase the size of node $i$'s component by $1$. Otherwise, if $s_i = 0$, add all edges incident to node $i$ to our DSU.
+
+To compute the answer, we can store a variable $ans$ (initially equal to $0$). Whenever two components of size $x$ and $y$ are linked, add $xy$ to $ans$ (since each pair of nodes with one node from each of the two components is now reachable). Whenever the size of a component is changed from $x$ to $x+1$, add $x$ to $ans$ (since the added node creates $x$ reachable pairs, one with each other node in its component).
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}((N + M) \cdot \alpha(n))$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+
+struct DSU {
+	// s is size of component, p is parent
+	vector<int> p, s;
+	DSU(int n) : p(n, -1), s(n, 1) {}
+	int parent(int x) {
+		if (p[x] == -1) return x;
+		else return p[x] = parent(p[x]);
+	}
+	int &size(int x) { return s[parent(x)]; }
+	bool link(int x, int y) {
+		x = parent(x), y = parent(y);
+		if (x == y) return false;
+		if (size(x) < size(y)) swap(x, y);
+		s[x] += s[y];
+		p[y] = x;
+		return true;
+	}
+};
+
+ll xchoose2(ll x) { return x * (x - 1) / 2; }
+
+void solve() {
+	int n, m;
+	string s;
+	cin >> n >> m >> s;
+	vector<vector<int>> adj(n);
+	for (int i = 0; i < m; i++) {
+		int a, b;
+		cin >> a >> b;
+		a--;
+		b--;
+		adj[a].push_back(b);
+		adj[b].push_back(a);
+	}
+
+	DSU dsu(n);
+	for (int i = 0; i < n; i++) {
+		if (s[i] == '1') {
+			dsu.size(i) = 0;
+			for (int j : adj[i]) {
+				if (s[j] == '1') { dsu.link(i, j); }
+			}
+		}
+	}
+
+	ll pairs = 0;
+	vector<ll> ans;
+	for (int i = n - 1; i >= 0; i--) {
+		if (s[i] == '1') {
+			pairs += dsu.size(i);
+			dsu.size(i)++;
+		} else {
+			for (int j : adj[i]) {
+				if (j < i && s[j] == '0') continue;
+				if (dsu.parent(i) == dsu.parent(j)) continue;
+				pairs += (ll)dsu.size(i) * dsu.size(j);
+				dsu.link(i, j);
+			}
+		}
+		ans.push_back(pairs);
+	}
+
+	reverse(ans.begin(), ans.end());
+	for (auto i : ans) cout << i << '\n';
+}
+
+signed main() {
+	cin.tie(0)->sync_with_stdio(0);
+	solve();
+}
+```
+</CPPSection>
+</LanguageSection>

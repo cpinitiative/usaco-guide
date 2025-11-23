@@ -7,6 +7,8 @@ author: Daniel Zhu
 
 [Official Analysis (C++)](http://www.usaco.org/current/data/sol_prob2_gold_open22.html)
 
+## Explanation
+
 Let $a_i$ be Bessie's ith instruction and $b_j$ be Elsie's jth instruction. Additionally, let $I(i, j)$ denote the set of unique expressions we can make by interleaving Bessie's first $i$ instructions and Elsie's first $j$ instructions. For example, in the sample:
 ```
 3
@@ -79,7 +81,7 @@ Think about the [Commutative Property](https://en.wikipedia.org/wiki/Commutative
 Consider the *properties* of an expression after an instruction is applied to it:
 - $*d$: all coefficients must be a multiple of $d$
 - $+x$: the coefficient of x is *exactly* $1$
-Let's call these the **traits** of that instruction, and let's say an instruction X is **violated** by a subsequent instruction Y if, after applying instruction Y, the traits of instruction X no longer hold. As an example, let instruction X be $*2$ and instruction Y be $+y$. After we apply instruction X to the expression $x$, we get $2x$, which satisfies the trait that all coefficients must be a multiple of 2. However, after applying instruction Y, we get $2x + y$, an expression whose coefficients are no longer all even; therefore, instruction Y violates instruction X. From these defintions, we get an important fact: **two operations that don't violate each other must be commutative** (try to see the intuition)!
+Let's call these the **traits** of that instruction, and let's say an instruction X is **violated** by a subsequent instruction Y if, after applying instruction Y, the traits of instruction X no longer hold. As an example, let instruction X be $*2$ and instruction Y be $+y$. After we apply instruction X to the expression $x$, we get $2x$, which satisfies the trait that all coefficients must be a multiple of 2. However, after applying instruction Y, we get $2x + y$, an expression whose coefficients are no longer all even; therefore, instruction Y violates instruction X. From these definitions, we get an important fact: **two operations that don't violate each other must be commutative** (try to see the intuition)!
 
 If an expression is contained in both sets $A$ and $B$, by definition it can be written as both $E(i - 1, j) \rightarrow a_i$ and $E(i, j - 1) \rightarrow b_j$, and therefore **must satisfy the traits of both $a_i$ and $b_j$**. Thus, we have that:
 1. $a_i$ and $b_j$ are commutative

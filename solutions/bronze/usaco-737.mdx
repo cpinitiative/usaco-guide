@@ -5,168 +5,17 @@ title: Modern Art
 author: Juheon Rhee, Kevin Sheng, Yifan Ma
 ---
 
-## Video Solution
-
-By Yifan Ma
-
-<YouTube id="" />
-
-<Spoiler title="Video Solution Code">
-
-<LanguageSection>
-<CPPSection>
-
-```cpp
-#include <cmath>
-#include <fstream>
-#include <iostream>
-using namespace std;
-#define MAX_N 10
-
-int N, B[MAX_N][MAX_N];
-
-bool color_appears(int c) {
-	for (int i = 0; i < N; i++)
-		for (int j = 0; j < N; j++)
-			if (B[i][j] == c) return true;
-	return false;
-}
-
-// Is c1 "on top of c2" -- i.e., does c1 appear within the bounding box of c2?
-bool on_top_of(int c1, int c2) {
-	// Find c2's bounding box
-	int top = N, bottom = 0, left = N, right = 0;
-	for (int i = 0; i < N; i++)
-		for (int j = 0; j < N; j++)
-			if (B[i][j] == c2) {
-				top = min(top, i);
-				bottom = max(bottom, i);
-				left = min(left, j);
-				right = max(right, j);
-			}
-
-	// Does c1 fall within it?
-	for (int i = top; i <= bottom; i++)
-		for (int j = left; j <= right; j++)
-			if (B[i][j] == c1) return true;
-
-	return false;
-}
-
-int main(void) {
-	ifstream fin("art.in");
-	ofstream fout("art.out");
-	fin >> N;
-	for (int i = 0; i < N; i++) {
-		string s;
-		fin >> s;
-		for (int j = 0; j < N; j++) B[i][j] = s[j] - '0';
-	}
-
-	int answer = 0;
-	for (int i = 1; i <= 9; i++)
-		if (color_appears(i)) {
-			bool could_be_first = true;
-			for (int j = 1; j <= 9; j++)
-				if (j != i && color_appears(j) && on_top_of(i, j))
-					could_be_first = false;
-			if (could_be_first) answer++;
-		}
-
-	fout << answer << "\n";
-	return 0;
-}
-```
-
-</CPPSection>
-
-<JavaSection>
-
-```java
-import java.io.*;
-import java.util.*;
-
-public class Modern_Art {
-
-	static int n;
-	static int[][] B;
-
-	public static void main(String[] args) throws Exception {
-
-		BufferedReader br = new BufferedReader(new FileReader("art.in"));
-		PrintWriter out = new PrintWriter("art.out");
-
-		n = Integer.parseInt(br.readLine());
-		B = new int[n][n];
-		for (int i = 0; i < n; ++i) {
-			String s = br.readLine();
-			for (int j = 0; j < n; ++j) { B[i][j] = s.charAt(j) - '0'; }
-		}
-
-		int ans = 0;
-		for (int i = 1; i <= 9; ++i) {
-			if (color_appears(i)) {
-				boolean could_be_first = true;
-				for (int j = 1; j <= 9; ++j) {
-					if (j != i && color_appears(j) && on_top_of(i, j))
-						could_be_first = false;
-				}
-				if (could_be_first) ++ans;
-			}
-		}
-		out.println(ans);
-
-		out.close();
-		br.close();
-	}
-
-	public static boolean color_appears(int c) {
-		for (int i = 0; i < n; ++i) {
-			for (int j = 0; j < n; ++j) {
-				if (B[i][j] == c) return true;
-			}
-		}
-		return false;
-	}
-
-	// Is c1 "on top of c2" -- i.e., does c1 appear within the bounding box of
-	// c2?
-	public static boolean on_top_of(int c1, int c2) {
-		// Find c2's bounding box
-		int top = n, bottom = 0, left = n, right = 0;
-		for (int i = 0; i < n; i++) {
-			for (int j = 0; j < n; ++j) {
-				if (B[i][j] == c2) {
-					top = Math.min(top, i);
-					bottom = Math.max(bottom, i);
-					left = Math.min(left, j);
-					right = Math.max(right, j);
-				}
-			}
-		}
-
-		// Does c1 fall within it?
-		for (int i = top; i <= bottom; i++) {
-			for (int j = left; j <= right; j++) {
-				if (B[i][j] == c1) return true;
-			}
-		}
-		return false;
-	}
-}
-```
-</JavaSection>
-
-</LanguageSection>
-</Spoiler>
-
 <Spoiler title="Hint">
-Try solving the sample input by hand: could you apply a similar method in your code?
-</Spoiler>
 
-<Spoiler title="Solution">
+Try solving the sample input by hand: could you apply a similar method in your code?
+
+</Spoiler>
 
 [Official Analysis (C++)](http://www.usaco.org/current/data/sol_art_bronze_open17.html)
+
+# Solution
+
+<Spoiler title="Solution">
 
 ## Implementation
 
@@ -239,8 +88,6 @@ int main() {
 <JavaSection>
 
 ```java
-package testing;
-
 import java.io.*;
 
 public class Art {

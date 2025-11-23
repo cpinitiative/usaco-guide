@@ -47,15 +47,15 @@ int main() {
 	vector<vector<int>> dp(n, vector<int>(n, -1));
 
 	int ans = 0;
-	for (int len = n - 1; len >= 0; len++) {
-		dp[len][len] = a[len];
-		for (int r = len; r < n; r++) {
-			for (int k = len; k < r; k++) {
-				if (dp[len][k] != -1 and dp[len][k] == dp[k + 1][r]) {
-					dp[len][r] = dp[len][k] + 1;
+	for (int i = n - 1; i >= 0; i--) {
+		dp[i][i] = a[i];
+		for (int j = i; j < n; j++) {
+			for (int k = i; k < j; k++) {
+				if (dp[i][k] != -1 and dp[i][k] == dp[k + 1][j]) {
+					dp[i][j] = dp[i][k] + 1;
 				}
 			}
-			ans = max(ans, dp[len][r]);
+			ans = max(ans, dp[i][j]);
 		}
 	}
 
@@ -78,18 +78,18 @@ public class U248 {
 		int N = io.nextInt();
 		int[] board = new int[N];
 
-		int[][] dp = new int[N + 1][N + 1];
+		int[][] dp = new int[N][N];
 		for (int i = 0; i < N; i++) {
 			board[i] = io.nextInt();
-			dp[i + 1][i + 1] = board[i];
+			dp[i][i] = board[i];
 		}
 
 		int max_val = 0;
-		for (int i = N - 1; i >= 1; i--) {
-			for (int j = i + 1; j <= N; j++) {
+		for (int i = N - 1; i >= 0; i--) {
+			for (int j = i; j < N; j++) {
 				for (int k = i; k < j; k++) {
-					if (dp[i][k] == dp[k + 1][j]) {
-						dp[i][j] = Math.max(dp[i][j], dp[i][k] + 1);
+					if (dp[i][k] == dp[k + 1][j] && dp[i][k] != 0) {
+						dp[i][j] = dp[i][k] + 1;
 					}
 				}
 

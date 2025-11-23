@@ -99,6 +99,11 @@ export default function ProblemSubmissionInterface({
   if (cannotSubmit) {
     const handleSubmitLink = async e => {
       e.preventDefault();
+      // prevent empty URL submission
+      if (!submissionLink.trim()) {
+        alert('Cannot submit empty URL');
+        return;
+      }
       await submitSubmissionLink(submissionLink, problem.postId, problem.id);
       setSubmissionLink('');
     };

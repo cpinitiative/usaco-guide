@@ -1,4 +1,4 @@
-import { Story } from '@storybook/react';
+import { StoryFn } from '@storybook/react-webpack5';
 import React, { ComponentProps } from 'react';
 import { ListTable } from '../../components/markdown/ListTable/ListTable';
 import markdownDecorator from '../../components/markdown/markdownDecoratorForStorybook';
@@ -11,7 +11,7 @@ export default {
   decorators: [markdownDecorator],
 };
 
-const Template: Story<ComponentProps<typeof ListTable>> = args => (
+const Template: StoryFn<ComponentProps<typeof ListTable>> = args => (
   <ListTable {...args} />
 );
 

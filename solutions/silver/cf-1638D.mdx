@@ -1,0 +1,163 @@
+---
+id: cf-1638D
+source: CF
+title: Big Brush
+author: Kevin Sheng
+---
+
+[Official Analysis (C++)](https://codeforces.com/blog/entry/99942)
+
+## Explanation
+
+As with many problems, the trick is to start in reverse.
+
+We look for all 2 by 2 regions (henceforth referred to as just "regions")
+that could have been painted last (possible if all four squares are the same color)
+and expand outward from them.
+
+We can do this because after "covered" some initial regions,
+we now can "tuck in" adjacent regions that can't be painted so easily
+into the parts that were already covered.
+
+For example, consider this area where we cover the center region of $0$s first:
+<center>
+<table>
+	<tbody>
+		<tr>
+			<td>1</td>
+			<td>1</td>
+			<td>1</td>
+			<td>1</td>
+		</tr>
+	</tbody>
+	<tbody>
+		<tr>
+			<td>1</td>
+			<td>0</td>
+			<td>0</td>
+			<td>1</td>
+		</tr>
+	</tbody>
+	<tbody>
+		<tr>
+			<td>1</td>
+			<td>0</td>
+			<td>0</td>
+			<td>1</td>
+		</tr>
+	</tbody>
+	<tbody>
+		<tr>
+			<td>1</td>
+			<td>1</td>
+			<td>1</td>
+			<td>1</td>
+		</tr>
+	</tbody>
+</table>
+</center>
+After we did that, we can now cover the $1$s by first painting them and then
+painting over the center region with $0$s.
+
+That region of $0$s only affects our opinion of the surrounding 4 by 4 area;
+no other part of the canvas is affected.
+
+There's only $8$ other regions (not counting the original one that was just painted over)
+that could have been made valid by covering one, so there aren't too many edges to consider.
+
+## Implementation
+
+Regions are represeted by the index of their upper left corner.
+
+**Time Complexity:** $\mathcal{O}(nm)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <algorithm>
+#include <iostream>
+#include <set>
+#include <vector>
+
+using std::cout;
+using std::endl;
+using std::pair;
+using std::vector;
+
+/** @return all possible new regions that we might now be able to paint  */
+vector<pair<int, int>> new_paints(int r, int c) {
+	return {{r - 1, c - 1}, {r, c - 1},     {r + 1, c - 1}, {r - 1, c},
+	        {r + 1, c},     {r - 1, c + 1}, {r, c + 1},     {r + 1, c + 1}};
+}
+
+int main() {
+	int row_num, col_num;
+	std::cin >> row_num >> col_num;
+	vector<vector<int>> grid(row_num, vector<int>(col_num));
+	for (int r = 0; r < row_num; r++) {
+		for (int c = 0; c < col_num; c++) { std::cin >> grid[r][c]; }
+	}
+
+	// every square that's already painted; we can tuck other regions into these
+	vector<vector<bool>> painted(row_num, vector<bool>(col_num));
+	/** @return if a region can be painted, and the color to paint it with  */
+	auto can_paint = [&](int r, int c) {
+		if (!(0 <= r && r < row_num - 1 && 0 <= c && c < col_num - 1)) { return -1; }
+		std::set<int> colors;
+		if (!painted[r][c]) { colors.insert(grid[r][c]); }
+		if (!painted[r + 1][c]) { colors.insert(grid[r + 1][c]); }
+		if (!painted[r][c + 1]) { colors.insert(grid[r][c + 1]); }
+		if (!painted[r + 1][c + 1]) { colors.insert(grid[r + 1][c + 1]); }
+		return colors.size() == 1 ? *colors.begin() : -1;
+	};
+
+	vector<pair<int, int>> frontier;
+	vector<vector<int>> ops;
+	// find all valid starting regions
+	for (int r = 0; r < row_num - 1; r++) {
+		for (int c = 0; c < col_num - 1; c++) {
+			int color = can_paint(r, c);
+			if (color != -1) {
+				frontier.push_back({r, c});
+				painted[r][c] = painted[r + 1][c] = painted[r][c + 1] =
+				    painted[r + 1][c + 1] = true;
+				ops.push_back({r, c, color});
+			}
+		}
+	}
+	// expand outwards from what we found
+	while (!frontier.empty()) {
+		const auto [r, c] = frontier.back();
+		frontier.pop_back();
+
+		for (const auto &[nr, nc] : new_paints(r, c)) {
+			int color = can_paint(nr, nc);
+			if (color != -1) {
+				painted[nr][nc] = painted[nr + 1][nc] = painted[nr][nc + 1] =
+				    painted[nr + 1][nc + 1] = true;
+				ops.push_back({nr, nc, color});
+				frontier.push_back({nr, nc});
+			}
+		}
+	}
+
+	// check if any squares were missed & couldn't be painted
+	for (int r = 0; r < row_num; r++) {
+		for (int c = 0; c < col_num; c++) {
+			if (!painted[r][c]) {
+				cout << -1 << endl;
+				return 0;
+			}
+		}
+	}
+
+	cout << ops.size() << endl;
+	for (int i = ops.size() - 1; i >= 0; i--) {
+		printf("%i %i %i\n", ops[i][0] + 1, ops[i][1] + 1, ops[i][2]);
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>

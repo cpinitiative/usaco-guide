@@ -1,0 +1,62 @@
+---
+id: usaco-1371
+source: USACO Bronze 2024 January
+title: Majority Opinion
+author: Junyi Liu
+---
+
+[Official Analysis (C++, Java, Python)](https://usaco.org/current/data/sol_prob1_bronze_jan24.html)
+
+## Explanation
+
+Let $a_{i}$ be the hay cow $i$ likes.
+
+If there are adjacent hays such that $a_{i} = a_{i+1}$, we can run a focus group on $i, i+1, i+2$ or $i-1, i, i+1$.
+This will result in cow $i$ and $i+1$ infecting cow $i+2$ or $i-1$ with the type of hay they like.
+We can keep running focus groups like this to eventually infect every cow with hay $a_{i}$.
+
+Situations where $a_{i} = a_{i+2}$ will also create adjacent hays of the same type (by running a focus group on $i,i+1, i+2$) and therefore this also makes $a_{i}$ part of the answer.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	int test_num;
+	cin >> test_num;
+	for (int t = 0; t < test_num; t++) {
+		int n;
+		cin >> n;
+		vector<int> hay(n);
+		for (int &h : hay) { cin >> h; }
+
+		set<int> results;
+		for (int i = 0; i < n - 1; i++) {
+			if (i + 1 < n && hay[i] == hay[i + 1]) { results.insert(hay[i]); }
+			if (i + 2 < n && hay[i] == hay[i + 2]) { results.insert(hay[i]); }
+		}
+
+		if (results.empty()) {
+			cout << -1;
+		} else {
+			// Printing out the first element separately to be conjugated with a space
+			// to avoid an extra space
+			cout << *results.begin();
+			results.erase(results.begin());
+			for (int i : results) { cout << " " << i; }
+		}
+
+		cout << endl;
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>

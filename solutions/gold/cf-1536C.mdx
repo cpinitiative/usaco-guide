@@ -2,10 +2,34 @@
 id: cf-1536C
 source: CF
 title: Diluc and Kaeya
-author: Kevin Sheng
+author: Kevin Sheng, Ruben Jing
 ---
 
-[Official Editorial](https://codeforces.com/blog/entry/91520)
+[Official Editorial (C++, Java)](https://codeforces.com/blog/entry/91520)
+
+## Explanation
+
+Lets consider a string with a non-reduced ratio $2D:2K$ and a substring with
+ratio $D:K$. If we take out the substring with ratio $D:K$, we are left
+with another substring with ratio $D:K$ ($2D-D:2K-K$), therefore making
+the original string able to be split. Thus, in order to "cut" a substring
+out of the original string, the reduced ratio of the substring must be the
+same as the reduced ratio of the original strng.
+
+Note that the substrings must start from index $0$. If we pull a substring
+out of the middle of the string, it is harder to compute the ratio of the
+elements before it.
+
+Keep track of the total number of 'D's and total number of 'K's. For each prefix,
+the ratio of $D:K$ in lowest terms is $\frac{D}{\gcd(D,K)}:\frac{K}{\gcd(D,K)}$.
+The solution to each prefix is how many times this reduced ratio has appeared so
+far plus one.  We add one because the amount of times this reduced ratio appeared
+is the amount of splits, and the amount of pieces resulting from the splits is the
+splits plus one.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
 
 <LanguageSection>
 <CPPSection>

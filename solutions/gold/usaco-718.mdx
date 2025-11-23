@@ -7,6 +7,8 @@ author: Brad Ma, Jesse Choe
 
 [Official Analysis (C++)](http://www.usaco.org/current/data/sol_nocross_gold_feb17.html)
 
+## Explanation
+
 Let's define $\texttt{dp}[i][j]$ as the maximum number of disjoint friendly crosswalks up to field $i$ on the first side of the road and field $j$ on the second side of the road. We can build a crosswalk between fields $i$ and $j$ as long as there isn't a crosswalk between fields $i$, $j - 1$ and $i - 1$, $j$. Thus, $\texttt{dp}[i][j] = \max(\texttt{dp}[i - 1][j], \texttt{dp}[i][j - 1], \texttt{dp}[i - 1][j - 1] + (|\texttt{id}[i] - \texttt{id}[j]| \leq 4))$, where $\texttt{id}[i]$ and $\texttt{id}[j]$ represent the breed IDs of the cows in the $i$-th and $j$-th fields, respectively.
 
 The answer is $\texttt{dp}[N][N]$.

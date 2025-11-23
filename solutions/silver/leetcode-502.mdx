@@ -42,6 +42,7 @@ class Solution {
 				k--;
 			}
 		}
+
 		while (k > 0 && !pq.empty()) {
 			w += pq.top();
 			pq.pop();
@@ -54,6 +55,53 @@ class Solution {
 ```
 
 </CPPSection>
+<JavaSection>
+
+```java
+class Solution {
+	public int findMaximizedCapital(int k, int w, int[] profits, int[] capital) {
+		int n = profits.length;
+
+		List<Project> projects = new ArrayList<>();
+		for (int i = 0; i < n; i++) {
+			projects.add(new Project(capital[i], profits[i]));
+		}
+		Collections.sort(projects, Comparator.comparingInt(p -> p.capital));
+
+		PriorityQueue<Integer> pq = new PriorityQueue<>(Collections.reverseOrder());
+		int j = 0;
+		while (j < n && k > 0) {
+			if (projects.get(j).capital <= w) {
+				pq.offer(projects.get(j).profit);
+				j++;
+			} else {
+				if (pq.isEmpty()) { return w; }
+				w += pq.poll();
+				k--;
+			}
+		}
+
+		while (k > 0 && !pq.isEmpty()) {
+			w += pq.poll();
+			k--;
+		}
+
+		return w;
+	}
+
+	private static class Project {
+		int capital;
+		int profit;
+
+		Project(int capital, int profit) {
+			this.capital = capital;
+			this.profit = profit;
+		}
+	}
+}
+```
+
+</JavaSection>
 <PySection>
 
 ```py

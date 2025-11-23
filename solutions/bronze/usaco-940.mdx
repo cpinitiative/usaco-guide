@@ -2,127 +2,12 @@
 id: usaco-940
 source: USACO Bronze 2019 Open
 title: Milk Factory
-author: Mrinall Umasudhan, Jesse Choe, Ryan Chou, Chuyang Wang, David Eidenas, Neo Wang
+author: Mrinall Umasudhan, Jesse Choe, Ryan Chou, Chuyang Wang, David Eidenas, Neo Wang, David Guo
 ---
 
-## Video Solution
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_factory_bronze_open19.html)
 
-By Neo Wang
-
-<YouTube id="fN681Y5TEQc" />
-
-<Spoiler title="Video Solution Code">
-<LanguageSection>
-<CPPSection>
-
-```cpp
-#include <bits/stdc++.h>  // see /general/running-code-locally
-using namespace std;
-
-using ll = long long;
-
-using vi = vector<int>;
-#define pb push_back
-#define all(x) begin(x), end(x)
-#define sz(x) (int)(x).size()
-
-using pi = pair<int, int>;
-#define f first
-#define s second
-#define mp make_pair
-
-void setIO(string name = "") {
-	cin.tie(0)->sync_with_stdio(0);  // see /general/fast-io
-	if (sz(name)) {
-		(void)!freopen((name + ".in").c_str(), "r", stdin);  // see /general/io
-		(void)!freopen((name + ".out").c_str(), "w", stdout);
-	}
-}
-
-int in_deg[101], out_deg[101];
-
-int main() {
-	setIO("factory");
-
-	int N;
-	cin >> N;
-
-	// N - 1 edges in a tree
-	for (int i = 0; i < N - 1; i++) {
-		// a -> b
-		// out[a]++, in[b]++;
-		int a, b;
-		cin >> a >> b;
-		out_deg[a]++;
-		in_deg[b]++;
-	}
-
-	bool encountered_sink = false;
-	int idx_sink = -1;
-
-	for (int i = 1; i <= N; i++) {
-		if (encountered_sink && out_deg[i] == 0 && in_deg[i] > 0) {
-			idx_sink = -1;  // answer
-			break;
-		}
-		if (out_deg[i] == 0 && in_deg[i] > 0) {
-			encountered_sink = true;
-			idx_sink = i;
-		}
-	}
-
-	cout << idx_sink << endl;
-}
-```
-
-</CPPSection>
-<JavaSection>
-
-```java
-import java.io.*;
-import java.util.*;
-
-public class Main {
-	public static void main(String[] args) throws IOException {
-		Kattio io = new Kattio("factory");
-		int N = io.nextInt();
-		int[] in_deg = new int[101], out_deg = new int[101];
-		for (int i = 0; i < N - 1; i++) {
-			// a -> b
-			// out[a]++, in[b]++;
-			int a = io.nextInt(), b = io.nextInt();
-			out_deg[a]++;
-			in_deg[b]++;
-		}
-
-		boolean encountered_sink = false;
-		int idx_sink = -1;
-
-		for (int i = 1; i <= N; i++) {
-			if (encountered_sink && out_deg[i] == 0 && in_deg[i] > 0) {
-				idx_sink = -1;
-				break;
-			}
-
-			if (out_deg[i] == 0 && in_deg[i] > 0) {
-				encountered_sink = true;
-				idx_sink = i;
-			}
-		}
-
-		// cout << idx_sink << endl;
-		io.println(idx_sink);
-
-		io.close();
-	}
-
-	// CodeSnip{Kattio}
-}
-```
-
-</JavaSection>
-</LanguageSection>
-</Spoiler>
+# Hints
 
 <Spoiler title="Hint 1">
 
@@ -146,9 +31,24 @@ the walkways connected to station $i$ (as a beginning or an end)?
 
 </Spoiler>
 
+# Solution 1
+
 <Spoiler title="Solution 1">
 
-[Official Analysis (C++)](http://www.usaco.org/current/data/sol_factory_bronze_open19.html)
+## Explanation
+
+Notice that the structure we are dealing with here is a [tree](/silver/intro-tree), or a set of $N$ nodes connected by $N - 1$ edges where every node is reachable from every other node and no cycles exist.
+
+Let's call a node with only incoming directed edges a "sink". We now claim that there exists a sink $X$ in our tree if and only if all other nodes can reach $X$. Moreover, if $X$ exists, it is the unique sink. Try to see why this is true yourself before continuing.
+
+<Spoiler title = "Proof">
+
+1. If all nodes in the tree can reach some node $X$, then $X$ must be a sink. Moreover, $X$ must be the unique sink, since all other nodes need at least one outgoing directed edge to escape them, so they aren't sinks. $X$ cannot have any outgoing edges, since if there was an edge connecting $X$ to node $Y$, then $Y$ cannot reach $X$.
+2. If $X$ is the unique sink, then all nodes in the tree can reach $X$. Suppose some node $Y$ cannot reach $X$. We know that $Y$ has an outgoing edge since it isn't a sink, so let's follow such an edge. Then the node we reach also has an outgoing edge since it isn't a sink, and repeatedly following these edges will inevitably get us to a sink. Since $X$ is the only sink, we must have reached $X$.
+
+</Spoiler>
+
+Therefore, we can keep track of the number of outgoing edges of each node, and if there is exactly one sink $X$, then $X$ is our answer.
 
 ## Implementation
 
@@ -262,6 +162,8 @@ print(root, file=open("factory.out", "w"))
 </LanguageSection>
 
 </Spoiler>
+
+# Solution 2
 
 <Spoiler title="Solution 2">
 
@@ -450,4 +352,126 @@ print(root, file=open("factory.out", "w"))
 </PySection>
 </LanguageSection>
 
+</Spoiler>
+
+
+# Video Solution
+
+By Neo Wang
+
+<YouTube id="fN681Y5TEQc" />
+
+## Video Solution Code
+
+<Spoiler title="Video Solution Code">
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>  // see /general/running-code-locally
+using namespace std;
+
+using ll = long long;
+
+using vi = vector<int>;
+#define pb push_back
+#define all(x) begin(x), end(x)
+#define sz(x) (int)(x).size()
+
+using pi = pair<int, int>;
+#define f first
+#define s second
+#define mp make_pair
+
+void setIO(string name = "") {
+	cin.tie(0)->sync_with_stdio(0);  // see /general/fast-io
+	if (sz(name)) {
+		(void)!freopen((name + ".in").c_str(), "r", stdin);  // see /general/io
+		(void)!freopen((name + ".out").c_str(), "w", stdout);
+	}
+}
+
+int in_deg[101], out_deg[101];
+
+int main() {
+	setIO("factory");
+
+	int N;
+	cin >> N;
+
+	// N - 1 edges in a tree
+	for (int i = 0; i < N - 1; i++) {
+		// a -> b
+		// out[a]++, in[b]++;
+		int a, b;
+		cin >> a >> b;
+		out_deg[a]++;
+		in_deg[b]++;
+	}
+
+	bool encountered_sink = false;
+	int idx_sink = -1;
+
+	for (int i = 1; i <= N; i++) {
+		if (encountered_sink && out_deg[i] == 0 && in_deg[i] > 0) {
+			idx_sink = -1;  // answer
+			break;
+		}
+		if (out_deg[i] == 0 && in_deg[i] > 0) {
+			encountered_sink = true;
+			idx_sink = i;
+		}
+	}
+
+	cout << idx_sink << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Main {
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio("factory");
+		int N = io.nextInt();
+		int[] in_deg = new int[101], out_deg = new int[101];
+		for (int i = 0; i < N - 1; i++) {
+			// a -> b
+			// out[a]++, in[b]++;
+			int a = io.nextInt(), b = io.nextInt();
+			out_deg[a]++;
+			in_deg[b]++;
+		}
+
+		boolean encountered_sink = false;
+		int idx_sink = -1;
+
+		for (int i = 1; i <= N; i++) {
+			if (encountered_sink && out_deg[i] == 0 && in_deg[i] > 0) {
+				idx_sink = -1;
+				break;
+			}
+
+			if (out_deg[i] == 0 && in_deg[i] > 0) {
+				encountered_sink = true;
+				idx_sink = i;
+			}
+		}
+
+		// cout << idx_sink << endl;
+		io.println(idx_sink);
+
+		io.close();
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+</LanguageSection>
 </Spoiler>

@@ -1,0 +1,167 @@
+---
+id: IOI11_garden
+source: IOI 2011 Day 1
+title: Tropical Garden
+author: Justin Ji
+---
+
+## Explanation
+
+First, instead of trying to tackle the problem for arbitrary values of $k$, let's
+try calculating the number of steps it takes for each node to reach node $p$.
+
+When at a fountain, we will only ever take the two most beautiful outgoing trails.
+Let's consider a graph, where we draw edges between **states**. Each state is
+represented as a pair $(u, f)$, where:
+- $u$ is our current node
+- $f$ represents whether we are taking the most beautiful trail
+  - $f=0$ means we can take the most beautiful trail
+  - $f=1$ means we can only take the second most beautiful trail
+
+Now, we want to find the distance from every other state to $(p, 0)$. Finding
+the distances to $(p, 1)$ can be handled in a similar fashion.
+
+We can use our graph traversal method of choice to traverse from $(p, 0)$ out
+to all of our other states. To handle this, we construct a reversed graph, and
+traverse out from $(p, 0)$ to other states. After calculating the distances,
+we know that the distance from any node $i$ to our state $(p, 0)$ is the distance
+from $(i, 0)$ to $(p, 0)$. We handle $(p, 1)$ similarly.
+
+Alright, so now we know how to calculate the distance from every node to $p$. How
+do we handle large values of $k$?
+
+Consider the fact that each state will directly map to another state, forming
+a successor graph. Thus, if we arrive at $(p, 0)$ or $(p, 1)$ at any point,
+one of the following must happen:
+- We arrive at $p$, and end up in a cycle where $p$ is not present
+- We arrive at $(p, f)$, and cycle back to $(p, f)$
+- We arrive at $(p, f)$, encounter $(p, 1-f)$, and loop back to $(p, f)$
+
+Say our state $(p, f)$ falls under the second scenario, where it ends up in a
+cycle of length $n$. Then, for a node $i$ to
+be able to reach $(p, f)$ after $k$ trails, the following must be true for
+some non-negative integer $c$:
+
+$$
+k = \text{dist}((p, f), (i, 0)) + c \cdot n.
+$$
+
+Scenarios 1 and 3 can be handled in a similar fashion. For scenario 3, we have to store the time that we visit the state $(p, 1 - f)$ in our cycle.
+
+With this, we can solve each query in $\mathcal{O}(N)$ by checking each node
+and seeing if it ends up at $p$, using the three cases outlined above.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(M + NQ)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include "garden.h"
+#include "gardenlib.h"
+#include <bits/stdc++.h>
+
+using ll = long long;
+
+constexpr int INF = 1e9;
+
+void count_routes(int n, int m, int p, int r[][2], int q, int g[]) {
+	std::vector<std::vector<std::array<int, 2>>> adj(n);
+	for (int i = 0; i < m; i++) {
+		adj[r[i][0]].push_back({r[i][1], i});
+		adj[r[i][1]].push_back({r[i][0], i});
+	}
+
+	std::vector<std::vector<std::array<int, 2>>> rev(n);
+	for (int i = 0; i < n; i++) {
+		// we only care about the best two edges
+		// note that the edges are already in sorted order
+		if (adj[i].size() > 2) adj[i].resize(2);
+		for (const auto &[j, w] : adj[i]) { rev[j].push_back({i, w}); }
+	}
+
+	std::vector<std::array<int, 2>> dist(n, {INF, INF});
+	std::vector<std::array<int, 2>> to_p(n, {INF, INF});
+	for (int tt = 0; tt < 2; tt++) {
+		// tt = 0 means we take best edge from p
+		// tt = 1 means we don't take best edge
+		if (tt == 1 && adj[p].size() == 1) break;
+
+		std::queue<std::array<int, 3>> bfs;
+		bfs.push({0, p, tt});
+		while (!bfs.empty()) {
+			const auto [t, u, f] = bfs.front();
+			bfs.pop();
+			if (dist[u][f] != INF) continue;
+			dist[u][f] = t;
+
+			int wt = adj[u][0][1];
+			for (const auto &[j, w] : rev[u]) {
+				// make sure we are allowed to take our current edge
+				if (f == 0 && w == wt && adj[u].size() > 1) continue;
+				if (f == 1 && w != wt && adj[u].size() > 1) continue;
+
+				int flag = w != adj[j][0][1];
+				bfs.push({t + 1, j, flag});
+			}
+		}
+
+		// distance will be dist[i][0] because we always start with the best edge
+		for (int i = 0; i < n; i++) { to_p[i][tt] = dist[i][0]; }
+
+		dist.assign(n, {INF, INF});
+	}
+
+	/** @return {cycle length for (p, f), time we visit (p, 1 - f)} */
+	const auto get_cycle = [&](int f) -> std::array<int, 2> {
+		int cycle_len = 0;
+		int saw = 0;
+		std::vector<std::array<bool, 2>> vis(n);
+
+		// we keep on visiting nodes until we reach node p again or reach a cycle
+		int node = p, flag = f, trav = 0;
+		while (!vis[node][flag]) {
+			vis[node][flag] = true;
+			if (node == p && flag == !f) saw = trav;
+
+			const auto [nxt, wt] = adj[node][flag];
+			if (adj[nxt].size() == 1) {
+				node = nxt, flag = 0;
+			} else {
+				node = nxt, flag = (adj[nxt][0][1] == wt);
+			}
+
+			trav++;
+		}
+
+		if (node == p) cycle_len = trav;
+		else cycle_len = INT_MAX, saw = 0;
+		return {cycle_len, saw};
+	};
+
+	std::array<int, 2> s1 = get_cycle(0);
+	std::array<int, 2> s2 = {INT_MAX, 0};
+	if (adj[p].size() > 1) s2 = get_cycle(1);
+
+	for (int t = 0; t < q; t++) {
+		int k = g[t], res = 0;
+		for (int i = 0; i < n; i++) {
+			// we check to_p[i][0] and to_p[i][1] to see if they cycle into p
+			if (to_p[i][0] <= k &&
+			    ((k - to_p[i][0]) % s1[0] == 0 || (k - to_p[i][0]) % s1[0] == s1[1])) {
+				res++;
+			} else if (to_p[i][1] <= k && ((k - to_p[i][1]) % s2[0] == 0 ||
+			                               (k - to_p[i][1]) % s2[0] == s2[1])) {
+				res++;
+			}
+		}
+
+		answer(res);
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>

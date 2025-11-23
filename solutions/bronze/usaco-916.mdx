@@ -2,167 +2,11 @@
 id: usaco-916
 source: USACO Bronze 2019 February
 title: The Great Revegetation
-author: Ryan Chou, Brad Ma, Kevin Sheng
+author: Ryan Chou, Brad Ma, Kevin Sheng, Rameez Parwez
 ---
 
-## Video Solution
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_revegetate_bronze_feb19.html)
 
-By Jay Fu
-
-<YouTube id="GT9PEJbJjxo" />
-
-<Spoiler title="Video Solution Code">
-
-<LanguageSection>
-<CPPSection>
-
-```cpp
-#include <fstream>
-#include <iostream>
-using namespace std;
-
-int main(void) {
-	// N is the number of pastures
-	int N;
-	// M is the number of FJ's cows
-	// aka the number of pairs of pastures that can't have the same grass type
-	// as each other
-	int M;
-	// A and B contains the pasture numbers for each pair of pastures
-	// A contains the lower pasture number while B contains the higher pasture
-	// number A[i] and B[i] indicates that pasture number A[i] and pasture
-	// number B[i] can't have the same grass type G contains the assigned grass
-	// type to each pasture G[i] = x means that the ith pasture is assigned
-	// grass type x
-	int A[151], B[151], G[101];
-	ifstream fin("revegetate.in");
-	// read in input
-	fin >> N >> M;
-	for (int i = 0; i < M; i++) {
-		fin >> A[i] >> B[i];
-
-		// this ensures that A always contains the lower pasture number and B
-		// always contains the higher pasture number for each pair
-		if (A[i] > B[i]) swap(A[i], B[i]);
-	}
-
-	ofstream fout("revegetate.out");
-
-	// i indicates the current pasture
-	// loop iterates through each pasture
-	for (int i = 1; i <= N; i++) {
-		// g indicates the current color type
-		int g;
-
-		// loop iterates through the 4 color types
-		for (g = 1; g <= 4; g++) {
-			// ok indicates whether the current color type works on the current
-			// pasture
-			bool ok = true;
-
-			// j indicates the current pair of pastures A[j] and B[j]
-			// loop iterates through each pair of pastures
-			for (int j = 0; j < M; j++)
-				// if higher pasture number in the pair is the current pasture
-				// number and the other pasture in the pair is already assigned
-				// the current color type this means the current color type
-				// won't work on the current pasture, so ok is set to false
-				if (B[j] == i && G[A[j]] == g) ok = false;
-
-			// if ok is true, we can move on to the next pasture
-			// otherwise, we have to try the next color type
-			if (ok) break;
-		}
-		// sets color type to current pasture
-		G[i] = g;
-		fout << g;
-	}
-	fout << "\n";
-	return 0;
-}
-```
-
-</CPPSection>
-<JavaSection>
-
-```java
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.StringTokenizer;
-public class revegetate {
-	// N is the number of pastures
-	static int N;
-	// M is the number of FJ's cows
-	// aka the number of pairs of pastures that can't have the same grass type
-	// as each other
-	static int M;
-	// A and B contains the pasture numbers for each pair of pastures
-	// A contains the lower pasture number while B contains the higher pasture
-	// number A[i] and B[i] indicates that pasture number A[i] and pasture
-	// number B[i] can't have the same grass type G contains the assigned grass
-	// type to each pasture G[i] = x means that the ith pasture is assigned
-	// grass type x
-	static int[] A, B, G;
-	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new FileReader("revegetate.in"));
-		StringTokenizer s = new StringTokenizer(br.readLine());
-		N = Integer.parseInt(s.nextToken());
-		M = Integer.parseInt(s.nextToken());
-		A = new int[151];
-		B = new int[151];
-		G = new int[101];
-		// read in input
-		for (int i = 0; i < M; i++) {
-			s = new StringTokenizer(br.readLine());
-			A[i] = Integer.parseInt(s.nextToken());
-			B[i] = Integer.parseInt(s.nextToken());
-			// this ensures that A always contains the lower pasture number and
-			// B always contains the higher pasture number for each pair
-			if (A[i] > B[i]) {
-				int temp = A[i];
-				A[i] = B[i];
-				B[i] = temp;
-			}
-		}
-		PrintWriter out = new PrintWriter("revegetate.out");
-		// i indicates the current pasture
-		// loop iterates through each pasture
-		for (int i = 1; i <= N; i++) {
-			// g indicates the current color type
-			int g;
-			// loop iterates through the 4 color types
-			for (g = 1; g <= 4; g++) {
-				// ok indicates whether the current color type works on the
-				// current pasture
-				boolean ok = true;
-				// j indicates the current pair of pastures A[j] and B[j]
-				// loop iterates through each pair of pastures
-				for (int j = 0; j < M; j++)
-					// if higher pasture number in the pair is the current
-					// pasture number and the other pasture in the pair is
-					// already assigned the current color type this means the
-					// current color type won't work on the current pasture, so
-					// ok is set to false
-					if (B[j] == i && G[A[j]] == g) ok = false;
-				// if ok is true, we can move on to the next pasture
-				// otherwise, we have to try the next color type
-				if (ok) break;
-			}
-			// sets color type to the current pasture
-			G[i] = g;
-			out.print(g);
-		}
-		out.println();
-		out.close();
-	}
-}
-```
-
-</JavaSection>
-</LanguageSection>
-</Spoiler>
 
 <Spoiler title="Hint">
 
@@ -170,9 +14,9 @@ What forces us to change to a different grass type?
 
 </Spoiler>
 
-<Spoiler title="Solution 1">
+# Solution 1
 
-[Official Analysis (C++)](http://www.usaco.org/current/data/sol_revegetate_bronze_feb19.html)
+<Spoiler title="Solution 1">
 
 ## Explanation
 
@@ -327,6 +171,8 @@ print("".join(map(str, pastures)), file=open("revegetate.out", "w"))
 </LanguageSection>
 
 </Spoiler>
+
+# Solution 2
 
 <Spoiler title="Solution 2">
 
@@ -497,6 +343,297 @@ print("".join(map(str, pastures)), file=open("revegetate.out", "w"))
 ```
 
 </PySection>
+</LanguageSection>
+
+</Spoiler>
+
+# Solution 3
+
+<Spoiler title="Solution 3 (Faster)">
+
+## Explanation
+
+As in solution 1, we loop through all the pastures, assigning each the lowest color
+that doesn't conflict with any of the requirements. However, instead of looping
+through all requirements, we instead only iterate through those requirements
+for which the current pasture is the greater one.
+
+We can do this efficiently by storing the input
+with [adjacency lists](/bronze/intro-graphs#constructing-adjacency-lists).
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N+M)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	ifstream fin("revegetate.in");
+	ofstream fout("revegetate.out");
+
+	int N, M;
+	fin >> N >> M;
+	vector<vector<int>> adj(N);
+	for (int e = 0; e < M; ++e) {
+		int a, b;
+		fin >> a >> b;
+		--a, --b;
+		adj.at(max(a, b)).push_back(min(a, b));
+	}
+
+	const int MAX_COLORS = 4;
+	vector<int> color(N, 1);
+	for (int b = 0; b < N; ++b) {
+		assert(size(adj.at(b)) < MAX_COLORS);
+		vector<bool> used(MAX_COLORS + 1);
+		for (int a : adj.at(b)) { used.at(color.at(a)) = true; }
+		while (used.at(color.at(b))) { ++color.at(b); }
+		fout << color.at(b);
+	}
+	fout << "\n";
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Revegetate {
+
+	static final int MAX_COLORS = 4;
+	public static void main(String[] args) throws Exception {
+		Kattio io = new Kattio("revegetate");
+		int n = io.nextInt();
+		int m = io.nextInt();
+
+		ArrayList<ArrayList<Integer>> adj = new ArrayList<>();
+		for (int i = 0; i < n; i++) { adj.add(new ArrayList<>()); }
+
+		for (int i = 0; i < m; i++) {
+			int a = io.nextInt() - 1;
+			int b = io.nextInt() - 1;
+			adj.get(Math.max(a, b)).add(Math.min(a, b));
+		}
+
+		int[] color = new int[n];
+		for (int i = 0; i < n; i++) { color[i] = 1; }
+
+		for (int b = 0; b < n; b++) {
+			boolean[] used = new boolean[MAX_COLORS + 1];
+			for (int a : adj.get(b)) { used[color[a]] = true; }
+			while (used[color[b]]) { color[b]++; }
+			io.print(color[b]);
+		}
+		io.println();
+		io.close();
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+MAX_COLORS = 4
+
+with open("revegetate.in", "r") as read:
+	n, m = map(int, read.readline().split())
+
+	adj = [[] for _ in range(n)]
+	for _ in range(m):
+		a, b = map(int, read.readline().split())
+		a -= 1
+		b -= 1
+		adj[max(a, b)].append(min(a, b))
+
+
+color = [1] * n
+
+with open("revegetate.out", "w") as write:
+	for b in range(n):
+		used = [False] * (MAX_COLORS + 1)
+
+		for a in adj[b]:
+			used[color[a]] = True
+
+		while used[color[b]]:
+			color[b] += 1
+
+		write.write(str(color[b]))
+```
+</PySection>
+</LanguageSection>
+
+</Spoiler>
+
+
+
+# Video Solution
+
+By Jay Fu
+
+<YouTube id="GT9PEJbJjxo" />
+
+<Spoiler title="Video Solution Code">
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <fstream>
+#include <iostream>
+using namespace std;
+
+int main(void) {
+	// N is the number of pastures
+	int N;
+	// M is the number of FJ's cows
+	// aka the number of pairs of pastures that can't have the same grass type
+	// as each other
+	int M;
+	// A and B contains the pasture numbers for each pair of pastures
+	// A contains the lower pasture number while B contains the higher pasture
+	// number A[i] and B[i] indicates that pasture number A[i] and pasture
+	// number B[i] can't have the same grass type G contains the assigned grass
+	// type to each pasture G[i] = x means that the ith pasture is assigned
+	// grass type x
+	int A[151], B[151], G[101];
+	ifstream fin("revegetate.in");
+	// read in input
+	fin >> N >> M;
+	for (int i = 0; i < M; i++) {
+		fin >> A[i] >> B[i];
+
+		// this ensures that A always contains the lower pasture number and B
+		// always contains the higher pasture number for each pair
+		if (A[i] > B[i]) swap(A[i], B[i]);
+	}
+
+	ofstream fout("revegetate.out");
+
+	// i indicates the current pasture
+	// loop iterates through each pasture
+	for (int i = 1; i <= N; i++) {
+		// g indicates the current color type
+		int g;
+
+		// loop iterates through the 4 color types
+		for (g = 1; g <= 4; g++) {
+			// ok indicates whether the current color type works on the current
+			// pasture
+			bool ok = true;
+
+			// j indicates the current pair of pastures A[j] and B[j]
+			// loop iterates through each pair of pastures
+			for (int j = 0; j < M; j++)
+				// if higher pasture number in the pair is the current pasture
+				// number and the other pasture in the pair is already assigned
+				// the current color type this means the current color type
+				// won't work on the current pasture, so ok is set to false
+				if (B[j] == i && G[A[j]] == g) ok = false;
+
+			// if ok is true, we can move on to the next pasture
+			// otherwise, we have to try the next color type
+			if (ok) break;
+		}
+		// sets color type to current pasture
+		G[i] = g;
+		fout << g;
+	}
+	fout << "\n";
+	return 0;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.StringTokenizer;
+public class revegetate {
+	// N is the number of pastures
+	static int N;
+	// M is the number of FJ's cows
+	// aka the number of pairs of pastures that can't have the same grass type
+	// as each other
+	static int M;
+	// A and B contains the pasture numbers for each pair of pastures
+	// A contains the lower pasture number while B contains the higher pasture
+	// number A[i] and B[i] indicates that pasture number A[i] and pasture
+	// number B[i] can't have the same grass type G contains the assigned grass
+	// type to each pasture G[i] = x means that the ith pasture is assigned
+	// grass type x
+	static int[] A, B, G;
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new FileReader("revegetate.in"));
+		StringTokenizer s = new StringTokenizer(br.readLine());
+		N = Integer.parseInt(s.nextToken());
+		M = Integer.parseInt(s.nextToken());
+		A = new int[151];
+		B = new int[151];
+		G = new int[101];
+		// read in input
+		for (int i = 0; i < M; i++) {
+			s = new StringTokenizer(br.readLine());
+			A[i] = Integer.parseInt(s.nextToken());
+			B[i] = Integer.parseInt(s.nextToken());
+			// this ensures that A always contains the lower pasture number and
+			// B always contains the higher pasture number for each pair
+			if (A[i] > B[i]) {
+				int temp = A[i];
+				A[i] = B[i];
+				B[i] = temp;
+			}
+		}
+		PrintWriter out = new PrintWriter("revegetate.out");
+		// i indicates the current pasture
+		// loop iterates through each pasture
+		for (int i = 1; i <= N; i++) {
+			// g indicates the current color type
+			int g;
+			// loop iterates through the 4 color types
+			for (g = 1; g <= 4; g++) {
+				// ok indicates whether the current color type works on the
+				// current pasture
+				boolean ok = true;
+				// j indicates the current pair of pastures A[j] and B[j]
+				// loop iterates through each pair of pastures
+				for (int j = 0; j < M; j++)
+					// if higher pasture number in the pair is the current
+					// pasture number and the other pasture in the pair is
+					// already assigned the current color type this means the
+					// current color type won't work on the current pasture, so
+					// ok is set to false
+					if (B[j] == i && G[A[j]] == g) ok = false;
+				// if ok is true, we can move on to the next pasture
+				// otherwise, we have to try the next color type
+				if (ok) break;
+			}
+			// sets color type to the current pasture
+			G[i] = g;
+			out.print(g);
+		}
+		out.println();
+		out.close();
+	}
+}
+```
+
+</JavaSection>
 </LanguageSection>
 
 </Spoiler>

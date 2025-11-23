@@ -2,10 +2,18 @@
 id: usaco-919
 source: USACO Silver 2019 February
 title: Painting the Barn
-author: Qi Wang, Nathan Wang, Kevin Sheng
+author: Qi Wang, Nathan Wang, Kevin Sheng, David Guo
 ---
 
 [Official Analysis (C++)](http://www.usaco.org/current/data/sol_paintbarn_silver_feb19.html)
+
+## Explanation
+
+We record for each rectangle its respective corner increments and decrements in an auxiliary two dimensional array.
+
+We use a two dimensional difference array to drop “start” and “stop” markers at the corners of each paint rectangle, rather than coloring every square inside. When you later sweep through the grid with a cumulative sum from left to right and top to bottom, those corner markers automatically spread their increments into every cell inside the rectangle (and cancel out outside it). As you then scan across and down, you continually add up these markers so that every cell inside a rectangle ends up with exactly one extra coat and cells outside stay the same.
+
+Then we run a two dimensional prefix sum over that array to rebuild the actual count of coats of paint in every cell. Finally, we scan the reconstructed grid and count how many cells have exactly the required number of coats.
 
 ## Implementation
 

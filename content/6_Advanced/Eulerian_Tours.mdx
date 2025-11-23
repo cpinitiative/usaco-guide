@@ -8,9 +8,7 @@ description: Visiting all edges of a graph exactly once.
 frequency: 0
 ---
 
-Mentioned in USACO Training ...
-
-<Problems problems="sam" />
+<!-- Mentioned in USACO Training ... -->
 
 ## Resources
 
@@ -19,9 +17,9 @@ Mentioned in USACO Training ...
 	<Resource source="CP2" title="4.7.3 - Eulerian Graph" />
 </Resources>
 
-## Implementation
+<FocusProblem problem = "sam1"/>
 
-### Mail Delivery
+## Explanation
 
 First, let's define what an **Eulerian path** is.
 
@@ -36,6 +34,8 @@ Now, to find the Eulerian cycle we run a modified DFS.
 The DFS goes through only unvisited edges and the same edge can be processed multiple times throughout the DFS, so we remove it from the graph at the first visit.
 
 The algorithm described is [Hierholzer's Algorithm](https://en.wikipedia.org/wiki/Eulerian_path).
+
+## Implementation
 
 **Time Complexity:** $\mathcal{O}(E)$
 
@@ -99,34 +99,93 @@ int main() {
 ```
 
 </CPPSection>
+<JavaSection>
+
+<Warning>
+
+Due to Java's constant factor, the below code may TLE on a couple of test cases.
+
+</Warning>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class EulerianCycle {
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int n = Integer.parseInt(st.nextToken());
+		int m = Integer.parseInt(st.nextToken());
+
+		List<int[]>[] g = new ArrayList[n];
+		for (int i = 0; i < n; i++) { g[i] = new ArrayList<>(); }
+		boolean[] seen = new boolean[m];
+		int[] degree = new int[n];
+		for (int i = 0; i < m; i++) {
+			st = new StringTokenizer(br.readLine());
+			int x = Integer.parseInt(st.nextToken()) - 1;
+			int y = Integer.parseInt(st.nextToken()) - 1;
+			g[x].add(new int[] {y, i});
+			g[y].add(new int[] {x, i});
+			degree[x]++;
+			degree[y]++;
+		}
+
+		// Check that all degrees are even
+		for (int d : degree) {
+			if ((d & 1) == 1) {
+				System.out.println("IMPOSSIBLE");
+				return;
+			}
+		}
+
+		ArrayDeque<Integer> stack = new ArrayDeque<>();
+		ArrayList<Integer> path = new ArrayList<>();
+		stack.push(0);
+		while (!stack.isEmpty()) {
+			int u = stack.peek();
+			while (!g[u].isEmpty() && seen[g[u].get(g[u].size() - 1)[1]]) {
+				g[u].remove(g[u].size() - 1);  // skip used edges
+			}
+			if (g[u].isEmpty()) {
+				path.add(u);
+				stack.pop();
+			} else {
+				int[] edge = g[u].remove(g[u].size() - 1);
+				int v = edge[0], idx = edge[1];
+				if (!seen[idx]) {
+					seen[idx] = true;
+					stack.push(v);
+				}
+			}
+		}
+
+		PrintWriter pw = new PrintWriter(System.out);
+		if (path.size() != m + 1) {
+			pw.println("IMPOSSIBLE");
+		} else {
+			for (int i = path.size() - 1; i >= 0; i--) {
+				pw.print((path.get(i) + 1) + " ");
+			}
+			pw.println();
+		}
+		pw.close();
+	}
+}
+```
+
+</JavaSection>
 <PySection>
 
 ```py
-path = []
-
-
-def dfs(node: int):
-	stack = [node]
-	while stack:
-		u = stack[-1]
-		if g[u]:
-			son, idx = g[u].pop()
-			if not seen[idx]:
-				seen[idx] = 1
-				stack.append(son)
-		else:
-			path.append(stack.pop())
-
-
 n, m = map(int, input().split())
 
 g = [[] for _ in range(n)]
 seen = [0] * m
 degree = [0] * n
 for i in range(m):
-	x, y = map(int, input().split())
-	x -= 1
-	y -= 1
+	x, y = [int(j) - 1 for j in input().split()]
 	g[x].append((y, i))
 	g[y].append((x, i))
 	degree[x] += 1
@@ -137,7 +196,17 @@ for node in range(n):
 		print("IMPOSSIBLE")
 		exit()
 
-dfs(0)
+path = []
+stack = [0]
+while stack:
+	u = stack[-1]
+	if g[u]:
+		son, idx = g[u].pop()
+		if not seen[idx]:
+			seen[idx] = 1
+			stack.append(son)
+	else:
+		path.append(stack.pop())
 
 if len(path) != m + 1:
 	print("IMPOSSIBLE")
@@ -148,11 +217,17 @@ else:
 </PySection>
 </LanguageSection>
 
-### Teleporters
+<FocusProblem problem = "sam2"/>
+
+## Explanation
 
 The condition of existence for an eulerian path in a directed graph is: At most one node has $out_i - in_i=1$ and at most one node has $in_i - out_i=1$.
 This property is because an Eulerian path or cycle leaves a node the same number of times it enters the node. In a directed
 graph the exception are the start node and the end node.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(E)$
 
 <LanguageSection>
 <CPPSection>
@@ -265,7 +340,7 @@ else:
 
 <FocusProblem problem="de-bruijn-sequence" />
 
-A [De Bruijn sequece](https://en.wikipedia.org/wiki/De_Bruijn_sequence) is a string of minimum length that contains every string of length $n$ exactly once as a substring, for a fixed alphabet with $k$ letters.
+A [De Bruijn sequence](https://en.wikipedia.org/wiki/De_Bruijn_sequence) is a string of minimum length that contains every string of length $n$ exactly once as a substring, for a fixed alphabet with $k$ letters.
 In our case $k=2$ because we only have $0$ and $1$.
 
 Let's take a look at some particular cases:
@@ -280,6 +355,10 @@ We can visualize the transitions - adding $0$ or $1$ - using an oriented graph w
 </center>
 
 An Eulerian path in the above graph represents a valid solution. The starting node has $n-1$ characters and there are $k^n$ edges that each add one more character, so the length of a De-Bruijn string is $k^n+n-1$.
+
+## Implementation
+
+**Time Complexity**: $\mathcal{O}(2^N)$
 
 <LanguageSection>
 <CPPSection>

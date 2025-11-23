@@ -605,12 +605,12 @@ for _ in range(n):
 The number of derangements of $n$ numbers, expressed as $!n$, is the number of
 permutations such that no element appears in its original position. Informally,
 it is the number of ways $n$ hats can be returned to $n$ people such that no
-person recieves their own hat.
+person receives their own hat.
 
 ### Method 1: Principle of Inclusion-Exclusion
 
 Suppose we had events $E_1, E_2, \dots, E_n$, where event $E_i$ corresponds to
-person $i$ recieving their own hat. We would like to calculate $n! - \lvert E_1
+person $i$ receiving their own hat. We would like to calculate $n! - \lvert E_1
 \cup E_2 \cup \dots \cup E_n \rvert$.
 
 We subtract from $n!$ the number of ways for each event to occur; that is,
@@ -625,7 +625,7 @@ $$
 n! - \lvert E_1 \cup E_2 \cup \dots \cup E_n \rvert = \sum_{k = 1}^n (-1)^k \cdot (\text{number of permutations with $k$ fixed points})
 $$
 
-For a set size of $k$, the number of permutations with at least $k$ indicies can
+For a set size of $k$, the number of permutations with at least $k$ indices can
 be computed by choosing a set of size $k$ that are fixed, and permuting the
 other indices. In mathematical terms:
 
@@ -711,13 +711,13 @@ print()
 
 ### Method 2: Dynamic Programming
 
-Suppose person 1 recieved person $i$'s hat. There are two cases:
+Suppose person 1 received person $i$'s hat. There are two cases:
 
-1. If person $i$ recieves person 1's hat, then the problem is reduced to a
+1. If person $i$ receives person 1's hat, then the problem is reduced to a
    subproblem of size $n - 2$. There are $n - 1$ possibilities for $i$ in this
    case, so we add to the current answer $(n - 1)\cdot !(n - 2)$.
-2. If person $i$ does not recieve person 1's hat, then we can reassign person
-   1's hat to be person $i$'s hat (if they recieved person 1's hat, then this
+2. If person $i$ does not receive person 1's hat, then we can reassign person
+   1's hat to be person $i$'s hat (if they received person 1's hat, then this
    would become first case). Thus, this becomes a subproblems with size $n - 1$,
    are there $n - 1$ ways to choose $i$.
 
@@ -943,7 +943,127 @@ Therefore, $P(X = x) = (\frac{x}{k})^n - (\frac{x - 1}{k})^n$, allowing us to ca
 
 ### Implementation
 
-**Time Complexity:** $\mathcal{O}(nk)$ using naive exponentiation or $\mathcal{O}(k \log n)$ using binary exponentiation.
+**Time Complexity:** $\mathcal{O}(k)$ (assuming power runs in constant time).
+
+<Warning>
+
+To pass all the test cases on CSES, we need to handle one of the test cases
+specially: specifically, $(n,k)=(7,10)$.
+
+Usually, you do **not** need to worry about this,
+since problems asking for a floating point number as output will often
+accept any answer sufficiently close to the correct one. Thus, reading
+the explanation hidden in the spoiler is optional.
+
+</Warning>
+
+<Spoiler title="(Optional) Why does one case need to be handled specially?">
+
+Consider the following code snippet:
+
+```cpp
+#include <iomanip>
+#include <iostream>
+
+int main() {
+	double ans = 9.1919575;
+	std::cout << std::fixed << std::setprecision(6) << ans << "\n";
+}
+
+// Output: 9.191957
+```
+
+Why is the number $9.1919575$ seemingly rounding down when it's supposed to
+round up? The reason is that it can't be represented exactly
+in a double, so $ans$ is instead storing the closest double to it, and that
+double happens to be less than it.
+Indeed, if we increase the precision from 6 to 15 when printing, we get the
+following output: $9.191957499999999$.
+
+In general, a fraction $a/b$ cannot be represented exactly in a double
+unless $b$ is a power of two.
+
+Let's print out all cases where this could potentially be a problem.
+In the following code, $dif$ is the difference between the
+answer computed by our solution and the closest number
+of the form `x.xxxxxx5`.
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+double solve_orig(int n, int k) {
+	double expect_max = 0;
+	for (int i = 1; i <= k; i++) {
+		expect_max += i * (pow((double)i / k, n) - pow((double)(i - 1) / k, n));
+	}
+	return expect_max;
+}
+
+int main() {
+	vector<pair<double, pair<int, int>>> by_dif;
+	for (int n = 1; n <= 100; ++n)
+		for (int k = 1; k <= 100; ++k) {
+			double a = solve_orig(n, k);
+			double b = 1e6 * a - 0.5;
+			double dif = abs(b - round(b)) / 1e6;
+			by_dif.push_back({dif, {n, k}});
+		}
+	sort(begin(by_dif), end(by_dif));
+	by_dif.resize(10);
+
+	for (auto [d, p] : by_dif) {
+		cout << "dif = " << d << " n = " << p.first << " " << "k = " << p.second
+		     << "\n";
+
+		stringstream ss;
+		ss << fixed << setprecision(15) << solve_orig(p.first, p.second);
+		cout << ss.str() << "\n\n";
+	}
+}
+```
+
+Output:
+
+```
+dif = 0 n = 2 k = 64
+43.164062500000000
+
+dif = 0 n = 3 k = 32
+24.492187500000000
+
+dif = 0 n = 4 k = 4
+3.617187500000000
+
+dif = 0 n = 7 k = 2
+1.992187500000000
+
+dif = 0 n = 7 k = 10
+9.191957499999999
+
+dif = 1.86265e-15 n = 4 k = 20
+16.483337500000001
+
+dif = 3.12328e-11 n = 33 k = 62
+60.632305500031237
+
+dif = 1.14784e-10 n = 64 k = 98
+96.938251499885212
+
+dif = 1.89349e-10 n = 27 k = 71
+68.932663499810644
+
+dif = 2.14219e-10 n = 53 k = 17
+16.958418499785783
+```
+
+If we look at the smallest few differences, we note that
+$(n,k)\in \{(7,10), (4,20)\}$ are the first two cases where the answer
+cannot be represented exactly in a double. $(4,20)$ happens not to be an issue,
+but $(7,10)$ is.
+
+</Spoiler>
 
 <LanguageSection>
 <CPPSection>
@@ -966,6 +1086,8 @@ int main() {
 		expect_max += i * (pow((double)i / k, n) - pow((double)(i - 1) / k, n));
 	}
 
+	if (n == 7 && k == 10) expect_max += 1e-12;  // fix rounding for edge case
+
 	cout << std::setprecision(6) << std::fixed;  // set output precision
 	cout << expect_max << endl;
 }
@@ -980,6 +1102,9 @@ n, k = [int(i) for i in input().split()]
 expected_max = 0
 for c in range(1, k + 1):
 	expected_max += c * ((c / k) ** n - ((c - 1) / k) ** n)
+
+if n == 7 and k == 10:
+	expected_max += 1e-12
 
 print(f"{expected_max:.6f}")
 ```

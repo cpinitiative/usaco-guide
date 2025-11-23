@@ -1,0 +1,272 @@
+---
+id: usaco-1110
+source: USACO Silver 2021 Feburary
+title: Comfortable Cows
+author: Arnav Gokhale
+---
+
+[Official Analysis (C++)](https://usaco.org/current/data/sol_prob1_silver_feb21.html)
+
+## Explanation
+
+Notice that at any point, if there is a cow adjacent to exactly three other cows,
+Farmer Nhoj must place a cow in the missing fourth spot.
+It now becomes a flood fill question, where, after adding each additional cow, we need to check how many more cows get added as a result, and add them to the answer.
+
+We can maintain a 2D boolean array that represents whether each cell contains a cow and a queue that represents the coordinates of new cows being added.
+
+At each step, we add the cow at $(x, y)$ to our queue.
+While the queue is not empty, we must pop the queue,
+and check if the current cow being added or any of its neighbors has exactly three adjacenct cows.
+
+If any of the above cells has exactly adjacenct neighbors and has not already been visited,
+we push the coordinates of the missing fourth adjacenct cell into the queue.
+
+At each step, count the total number of cells filled by keeping a counter.
+Then, the number of additional cows necessary would be the total number of cows minus the current number of cows.
+
+It is also important to realize that the coordinates of additional cows may exceed the 1000 by 1000 grid set for new cows by up to 500 in each direction. So, you can make the grid 2000 by 2000.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}\left(N + G^2\right)$, where $G$ is the side length of the grid.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int dx[4] = {1, 0, -1, 0};
+const int dy[4] = {0, 1, 0, -1};
+
+/** @returns the amount of neighbors that surrounds a specific cow in the grid */
+int count_neighbors(vector<vector<bool>> &v, int x, int y) {
+	int count_neighbors = 0;
+	for (int i = 0; i < 4; i++) {
+		if (v[x + dx[i]][y + dy[i]]) count_neighbors++;
+	}
+	return count_neighbors;
+}
+
+/** @returns the (x,y) coordinate of the empty 4th grid square for any given cow. */
+array<int, 2> find_empty(vector<vector<bool>> &v, int x, int y) {
+	array<int, 2> empty_cell;
+	for (int i = 0; i < 4; i++) {
+		if (!v[x + dx[i]][y + dy[i]]) empty_cell = {x + dx[i], y + dy[i]};
+	}
+	return empty_cell;
+}
+
+/**
+ * Checks if a cow has exactly three neighbors, and if the 4th cell has
+ * not been pushed already, pushes the cell to the queue.
+ */
+void check_cell(int x, int y, vector<vector<bool>> &v, queue<array<int, 2>> &to_place) {
+	if (count_neighbors(v, x, y) == 3) {
+		array<int, 2> empty_cell = find_empty(v, x, y);
+		if (!v[empty_cell[0]][empty_cell[1]]) { to_place.push(empty_cell); }
+	}
+}
+
+int main() {
+	int n;
+	cin >> n;
+	vector<vector<bool>> filled(2000, vector<bool>(2000));
+	queue<array<int, 2>> to_place;
+	int total_cows = 0;
+	for (int cow_number = 1; cow_number <= n; cow_number++) {
+		array<int, 2> new_cow;
+		cin >> new_cow[0] >> new_cow[1];
+
+		// Offset the grid coordinates by 1000 to account for expansion
+		new_cow[0] += 500;
+		new_cow[1] += 500;
+		to_place.push(new_cow);
+
+		while (!to_place.empty()) {
+			// Get the current cow we are processing from the queue and remove it
+			array<int, 2> current_cow = to_place.front();
+			to_place.pop();
+			if (filled[current_cow[0]][current_cow[1]]) continue;
+			total_cows++;
+			filled[current_cow[0]][current_cow[1]] = true;
+
+			// We now check the current cell and all adjacent cells if they are affected
+			check_cell(current_cow[0], current_cow[1], filled, to_place);
+			for (int i = 0; i < 4; i++) {
+				if (filled[current_cow[0] + dx[i]][current_cow[1] + dy[i]]) {
+					check_cell(current_cow[0] + dx[i], current_cow[1] + dy[i], filled,
+					           to_place);
+				}
+			}
+		}
+
+		// Output is number of cows - the amount of cows placed by Nhoj
+		cout << total_cows - cow_number << endl;
+	}
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class ComfortableCows {
+	public static int[] dx = {1, 0, -1, 0};
+	public static int[] dy = {0, 1, 0, -1};
+
+	/** @returns the amount of neighbors that surrounds a specific cow in the grid */
+	public static int countNeighbors(boolean[][] v, int x, int y) {
+		int countNeighbors = 0;
+		for (int i = 0; i < 4; i++) {
+			if (v[x + dx[i]][y + dy[i]]) countNeighbors++;
+		}
+		return countNeighbors;
+	}
+
+	/** @returns the (x,y) coordinate of the empty 4th grid square for any given cow. */
+	public static int[] findEmpty(boolean[][] v, int x, int y) {
+		int[] emptyCell = new int[2];
+		for (int i = 0; i < 4; i++) {
+			if (!v[x + dx[i]][y + dy[i]]) {
+				emptyCell[0] = x + dx[i];
+				emptyCell[1] = y + dy[i];
+			}
+		}
+		return emptyCell;
+	}
+
+	/**
+	 * Checks if a cow has exactly three neighbors, and if the 4th cell has
+	 * not been pushed already, pushes the cell to the queue.
+	 */
+	public static void checkCell(int x, int y, boolean[][] v, Queue<int[]> toPlace) {
+		if (countNeighbors(v, x, y) == 3) {
+			int[] emptyCell = findEmpty(v, x, y);
+			if (!v[emptyCell[0]][emptyCell[1]]) { toPlace.add(emptyCell); }
+		}
+	}
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
+		PrintWriter output = new PrintWriter(System.out);
+
+		int n = Integer.parseInt(read.readLine());
+		Queue<int[]> toPlace = new ArrayDeque<>();
+		int totalCows = 0;
+		boolean[][] filled = new boolean[2000][2000];
+
+		for (int cowNum = 1; cowNum <= n; cowNum++) {
+			StringTokenizer coords = new StringTokenizer(read.readLine());
+			int x = Integer.parseInt(coords.nextToken()) + 500;
+			int y = Integer.parseInt(coords.nextToken()) + 500;
+			// Offset grid coordinates by 1000 to account for expansion
+			int[] newCow = new int[2];
+			newCow[0] = x;
+			newCow[1] = y;
+			// Push new cow to the queue
+			toPlace.add(newCow);
+			while (!toPlace.isEmpty()) {
+				int[] currentCow = toPlace.poll();
+				if (filled[currentCow[0]][currentCow[1]]) { continue; }
+				totalCows++;
+				filled[currentCow[0]][currentCow[1]] = true;
+
+				// We now check the current cell and all adjacent cells if they are
+				// affected
+				checkCell(currentCow[0], currentCow[1], filled, toPlace);
+				for (int i = 0; i < 4; i++) {
+					if (filled[currentCow[0] + dx[i]][currentCow[1] + dy[i]]) {
+						checkCell(currentCow[0] + dx[i], currentCow[1] + dy[i], filled,
+						          toPlace);
+					}
+				}
+			}
+
+			// Answer is the total number of cows minus the amount of cows placed by
+			// farmer nhoj specifically
+			output.println(totalCows - cowNum);
+		}
+		output.close();
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+from collections import deque
+from typing import List
+
+dx = [1, 0, -1, 0]
+dy = [0, 1, 0, -1]
+
+
+def count_neighbors(v: List[List[bool]], x: int, y: int) -> int:
+	""":return: the amount of neighbors that surrounds a specific cow in the grid"""
+	count_neighbors = 0
+	for i in range(4):
+		if v[x + dx[i]][y + dy[i]]:
+			count_neighbors += 1
+	return count_neighbors
+
+
+def find_empty(v: List[List[bool]], x: int, y: int) -> List[int]:
+	""":return: the (x,y) coordinate of the empty 4th grid square for any given cow."""
+	for i in range(4):
+		if not v[x + dx[i]][y + dy[i]]:
+			empty_cell = [x + dx[i], y + dy[i]]
+			return empty_cell
+
+
+def check_cell(x: int, y: int, v: List[List[bool]], to_place: deque):
+	"""
+	Checks if a cow has exactly three neighbors, and if the 4th
+	cell has not been pushed already, pushes the cell to the queue.
+	"""
+	if count_neighbors(v, x, y) != 3:
+		return
+	empty_cell = find_empty(v, x, y)
+	if not v[empty_cell[0]][empty_cell[1]]:
+		to_place.append(empty_cell)
+
+
+n = int(input())
+to_place = deque()
+filled = [[False] * 2000 for _ in range(2000)]
+
+total_cows = 0
+for cow_number in range(1, n + 1):
+	new_cow = list(map(int, input().split()))
+	new_cow[0] += 500
+	new_cow[1] += 500
+	# Offset the grid coordinates by 1000 to account for expansion
+	to_place.append(new_cow)
+	while to_place:
+		current_cow = to_place.popleft()
+		if filled[current_cow[0]][current_cow[1]]:
+			continue
+
+		total_cows += 1
+		filled[current_cow[0]][current_cow[1]] = True
+
+		# We now check the current cell and all adjacent cells if they are affected
+		check_cell(current_cow[0], current_cow[1], filled, to_place)
+		for i in range(4):
+			if filled[current_cow[0] + dx[i]][current_cow[1] + dy[i]]:
+				check_cell(
+					current_cow[0] + dx[i], current_cow[1] + dy[i], filled, to_place
+				)
+
+	# Answer is the total number of cows minus the amount of cows placed by farmer nhoj specifically
+	print(total_cows - cow_number)
+```
+
+</PySection>
+</LanguageSection>

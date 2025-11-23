@@ -1,0 +1,184 @@
+---
+id: cf-1872E
+source: CF
+title: Data Structures Fan
+author: Arnav Gokhale
+---
+
+## Explanation
+
+We can store two variables: one for the XOR of the numbers in group 0 and another for those in group 1.
+Let's call these $G_0$ and $G_1$ for brevity.
+This means for queries of type 2, we output either $G_0$ or $G_1$ depending on the parameter.
+
+### Type 1 Queries
+
+Let's only consider $G_0$ for now.
+Say we had to flip $s_i$ when it was initially $1$, so we have to "remove" $a_i$ from $G_0$.
+Notice that since XORing is its own inverse ($x ^ x = 0$), we can remove $a_i$ from $G_0$ by setting $G_0$ to $G_0 ^ a_i$.
+
+On the other hand, if $s_i$ was a $0$ it would become a $1$, and we need to add $a_i$ to $G_0$.
+Fascinatingly, setting $G_0$ to $G_0 ^ a_i$ does just what we want as well, since $x ^ 0 = x$!
+
+The logic for $G_1$ goes much the same way, and so
+the two values are updated the same way: $G_0 := G_0 \oplus a_i$ and $G_1 := G_1 \oplus a_i$.
+
+### Efficient Updates
+
+To update $G_0$ and $G_1$, for a given $l$ and $r$, we must find the XOR of all $a_i$ that are contained in the range.
+
+This can be done in $\mathcal{O}(1)$ time by using prefix sums (or prefix XORs in this case).
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(n + q)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+void solve() {
+	int n;
+	cin >> n;
+
+	vector<int> a(n);
+	for (int i = 0; i < n; i++) { cin >> a[i]; }
+	string s;
+	cin >> s;
+
+	int g0 = 0;
+	int g1 = 0;
+	// Construct prefix array
+	vector<int> p(n + 1);
+	for (int i = 1; i <= n; i++) {
+		p[i] = p[i - 1] ^ a[i - 1];
+		if (s[i - 1] == '1') {
+			g1 ^= a[i - 1];
+		} else if (s[i - 1] == '0') {
+			g0 ^= a[i - 1];
+		}
+	}
+
+	int q;
+	cin >> q;
+	for (int i = 0; i < q; i++) {
+		int type;
+		cin >> type;
+		if (type == 1) {
+			// Queries of type 1, update g0 and g1
+			int l, r;
+			cin >> l >> r;
+			g0 = g0 ^ (p[r] ^ p[l - 1]);
+			g1 = g1 ^ (p[r] ^ p[l - 1]);
+		} else {
+			// Queries of type 2 print g0 or g1
+			int num;
+			cin >> num;
+			cout << (num == 0 ? g0 : g1) << ' ';
+		}
+	}
+	cout << '\n';
+}
+
+int main() {
+	int t;
+	cin >> t;
+	for (int i = 0; i < t; i++) { solve(); }
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.StringTokenizer;
+
+public class DataStructuresFan {
+	public static void main(String[] args) throws IOException {
+		BufferedReader rd = new BufferedReader(new InputStreamReader(System.in));
+		int testNum = Integer.parseInt(rd.readLine());
+		for (int t = 0; t < testNum; t++) {
+			int n = Integer.parseInt(rd.readLine());
+			StringTokenizer st = new StringTokenizer(rd.readLine());
+			int[] a = new int[n];
+			for (int i = 0; i < n; i++) { a[i] = Integer.parseInt(st.nextToken()); }
+
+			String s = rd.readLine();
+
+			int g0 = 0;
+			int g1 = 0;
+			// Construct prefix array
+			int[] p = new int[n + 1];
+			for (int i = 1; i <= n; i++) {
+				p[i] = p[i - 1] ^ a[i - 1];
+				if (s.charAt(i - 1) == '1') {
+					g1 ^= a[i - 1];
+				} else {
+					g0 ^= a[i - 1];
+				}
+			}
+
+			int queryNum = Integer.parseInt(rd.readLine());
+			for (int q = 0; q < queryNum; q++) {
+				st = new StringTokenizer(rd.readLine());
+				int type = Integer.parseInt(st.nextToken());
+				if (type == 1) {
+					// Queries of type 1: update g0 and g1
+					int l = Integer.parseInt(st.nextToken());
+					int r = Integer.parseInt(st.nextToken());
+					g0 ^= p[r] ^ p[l - 1];
+					g1 ^= p[r] ^ p[l - 1];
+				} else {
+					// Queries of type 2: print g0 or g1
+					int num = Integer.parseInt(st.nextToken());
+					int output = num == 0 ? g0 : g1;
+					System.out.print(output + " ");
+				}
+			}
+			System.out.println();
+		}
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+for _ in range(int(input())):
+	n = int(input())
+	a = list(map(int, input().split()))
+	s = input()
+	g0 = 0
+	g1 = 0
+
+	# Construct prefix array
+	p = [0] * (n + 1)
+	for i in range(1, n + 1):
+		p[i] = p[i - 1] ^ a[i - 1]
+		if s[i - 1] == "1":
+			g1 ^= a[i - 1]
+		elif s[i - 1] == "0":
+			g0 ^= a[i - 1]
+
+	for _ in range(int(input())):
+		query = list(map(int, input().split()))
+		if query[0] == 1:
+			# Queries of type 1: update g0 and g1
+			l = query[1]
+			r = query[2]
+			g0 ^= p[r] ^ p[l - 1]
+			g1 ^= p[r] ^ p[l - 1]
+		elif query[0] == 2:
+			# Queries of type 2: print g0 or g1
+			print(g0 if query[1] == 0 else g1, end=" ")
+
+	print()
+```
+
+</PySection>
+</LanguageSection>

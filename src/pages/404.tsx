@@ -7,7 +7,7 @@ import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
 export default function NotFoundPage() {
   return (
     <Layout>
-      <SEO title="404 Not Found" />
+      <SEO title="404 Not Found" image={undefined} pathname={undefined} />
       <TopNavigationBar />
 
       <h1 className="mt-16 text-center text-4xl font-black sm:text-5xl">

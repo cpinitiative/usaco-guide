@@ -1,0 +1,134 @@
+---
+id: usaco-1160
+source: USACO Silver 2021 December
+title: Convoluted Intervals
+author: Sachet Abeysinghe
+---
+
+[Official Analysis (C++, Java)](https://usaco.org/current/data/sol_prob3_silver_dec21.html)
+
+## Explanation
+
+Let's start with the brute force solution.
+
+We can iterate over all $k$ from $0…2M$ along with all pairs of intervals $(a_i, b_i)$ and $(a_j, b_j)$.
+For each combination, we increment our answer if $a_i + a_j \le k \le b_i + b_j$.
+This runs in $\mathcal{O}(MN^{2})$, which is extremely slow.
+
+Consider the two following optimizations:
+
+### Optimization 1
+
+Instead of considering each individual $k$, we can think of it as a pair of intervals contributing to all $k$ from $a_i + a_j$ to $b_i + b_j$.
+To count this efficiently, we can use difference arrays, where we do range updates by incrementing position $a_i + a_j$ by one and decrementing position $b_i + b_j + 1$ by one.
+This improves the time complexity to $\mathcal{O}(N^{2}+M)$.
+
+### Optimization 2
+
+We should probably take advantage of the fact that $M$ is relatively small.
+Instead of looping through all pairs of left endpoints $(a_i, a_j)$ and right endpoints $(b_i, b_j)$ in $\mathcal{O}(N^2)$ time, we can iterate over all distinct left endpoint and right endpoint pairs to process multiple at once in $\mathcal{O}(M^2)$.
+We can then multiply the frequencies of each pair of $a_i$ values and each pair of $b_i$ values to count how many times $a_i + a_j$ and $b_i + b_j + 1$ occur among all interval pairs.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}\left(N+M^2\right)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	int n, m;
+	cin >> n >> m;
+
+	vector<pair<int, int>> intervals(n);
+	for (auto &interval : intervals) { cin >> interval.first >> interval.second; }
+
+	vector<int64_t> win_start(2 * m + 1);
+	{
+		vector<long long> a_freq(m + 1);
+		for (int i = 0; i < n; i++) { a_freq.at(intervals.at(i).first)++; }
+		for (int i = 0; i <= m; i++) {
+			for (int j = 0; j <= m; j++) {
+				win_start.at(i + j) += a_freq.at(i) * a_freq.at(j);
+			}
+		}
+	}
+
+	vector<int64_t> win_end(2 * m + 1);
+	{
+		vector<long long> b_freq(m + 1);
+		for (int i = 0; i < n; i++) { b_freq.at(intervals.at(i).second)++; }
+		for (int i = 0; i <= m; i++) {
+			for (int j = 0; j <= m; j++) {
+				win_end.at(i + j) += b_freq.at(i) * b_freq.at(j);
+			}
+		}
+	}
+
+	int64_t win_count = 0;
+	for (int i = 0; i <= 2 * m; ++i) {
+		win_count += win_start.at(i);
+		cout << win_count << '\n';
+		win_count -= win_end.at(i);
+	}
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.StringTokenizer;
+
+public class ConvolutedIntervals {
+	public static void main(String[] args) throws IOException {
+		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer tokenizer = new StringTokenizer(in.readLine());
+		int n = Integer.parseInt(tokenizer.nextToken());
+		int m = Integer.parseInt(tokenizer.nextToken());
+
+		long[] aFreq = new long[m + 1];
+		long[] bFreq = new long[m + 1];
+		for (int j = 1; j <= n; j++) {
+			tokenizer = new StringTokenizer(in.readLine());
+			int a = Integer.parseInt(tokenizer.nextToken());
+			int b = Integer.parseInt(tokenizer.nextToken());
+			aFreq[a]++;
+			bFreq[b]++;
+		}
+
+		long[] aSumFreq = new long[(2 * m) + 1];
+		long[] bSumFreq = new long[(2 * m) + 1];
+		for (int x = 0; x <= m; x++) {
+			for (int y = 0; y <= m; y++) {
+				aSumFreq[x + y] += aFreq[x] * aFreq[y];
+				bSumFreq[x + y] += bFreq[x] * bFreq[y];
+			}
+		}
+
+		long totalPairs = ((long)n) * ((long)n);
+		long aValid = aSumFreq[0];
+		long bValid = totalPairs;
+
+		StringBuilder out = new StringBuilder();
+		for (int x = 0; x <= 2 * m; x++) {
+			if (x > 0) {
+				aValid += aSumFreq[x];
+				bValid -= bSumFreq[x - 1];
+			}
+			long res = aValid + bValid - totalPairs;
+			out.append(res).append('\n');
+		}
+
+		System.out.print(out);
+	}
+}
+```
+
+</JavaSection>
+</LanguageSection>

@@ -4,11 +4,12 @@ title: Introduction to Graphs
 author: Darren Yao, Benjamin Qi
 contributors: Nathan Gong, Ryan Chou, Kevin Sheng, Nikhil Chatterjee
 description: 'What graphs are.'
-frequency: 3
+frequency: 2
+prerequisites:
+  - intro-ds
 ---
 
-Note: Graphs will become a key topic in higher divisions. For Bronze, graphs are
-just a nice way to think about the structure of our data.
+# Introduction
 
 Graphs can be used to represent many things, from images to wireless signals,
 but one of the simplest analogies is to a map. Consider a map with several
@@ -18,13 +19,12 @@ graphs are:
 1.  Is city $A$ connected to city $B$? Consider a region to be a group of cities
     such that each city in the group can reach any other city in said group, but
     no other cities. How many regions are in this map, and which cities are in
-    which region? (Silver)
+    which region? (USACO Silver)
 
 2.  What's the shortest distance I have to travel to get from city $A$ to city
-    $B$? (Gold)
+    $B$? (USACO Gold)
 
-For now, it suffices to learn how graphs are represented (usually **adjacency
-lists**).
+For USACO Bronze, it suffices to learn the basics of how graphs are represented (usually **adjacency lists**).
 
 <Resources>
 	<Resource
@@ -43,6 +43,14 @@ lists**).
 	>
 		interactive - adjacency lists and matrices
 	</Resource>
+  <Resource
+    source="CSA"
+		title="Graph Editor"
+    url="https://csacademy.com/app/graph_editor/"
+    starred
+  >
+    use this tool to visualize your own graphs
+  </Resource>
 	<Resource source="CPH" title="11 - Basics of Graphs" starred>
 		graph terminology, representation
 	</Resource>
@@ -54,13 +62,132 @@ lists**).
 	</Resource>
 </Resources>
 
-<!-- <Resource
-	source="TC"
-	title="Intro to Graphs Section 1"
-	url="introduction-to-graphs-and-their-data-structures-section-1"
- /> -->
+# Constructing Adjacency Lists
 
-## What Does a Bronze Graph Problem Look Like?
+Graphs are often given as input in the following format:
+
+- The first line will contain the number of nodes $N$ and the number of edges $M$.
+- Then follow $M$ lines, each containing a pair of integers specifying an edge of the graph.
+
+For example, the undirected graph given in the [CSAcademy resource from above](https://csacademy.com/lesson/graph_representation) would be represented as the following input:
+
+```
+6 10
+2 4
+0 2
+0 4
+0 5
+5 3
+2 3
+1 3
+4 5
+4 1
+1 5
+```
+
+and could be visualized in the [CSAcademy graph editor](https://csacademy.com/app/graph_editor/):
+
+![](./assets/csa_graph.png)
+
+The following code represents the graph using adjacency lists.
+Once we have the graph in this representation, it is easy to print the number of neighbors of a node, or iterate over the neighbors of a node.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int main() {
+	int N, M;
+	cin >> N >> M;
+	vector<vector<int>> adj(N);
+	for (int i = 0; i < M; ++i) {
+		int u, v;
+		cin >> u >> v;
+		adj.at(u).push_back(v);
+		adj.at(v).push_back(u);
+	}
+	{
+		int u = 1;
+		// print number of vertices adjacent to u
+		cout << "deg(u) = " << adj.at(u).size() << endl;
+		// print all edges with u as an endpoint
+		for (int v : adj.at(u)) cout << "{" << u << ", " << v << "}" << "\n";
+	}
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Main {
+	public static void main(String[] args) throws IOException {
+		BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+
+		StringTokenizer s1 = new StringTokenizer(reader.readLine());
+		int N = Integer.parseInt(s1.nextToken());
+		int M = Integer.parseInt(s1.nextToken());
+
+		List<List<Integer>> adj = new ArrayList<>();
+		for (int i = 0; i < N; i++) { adj.add(new ArrayList<>()); }
+
+		for (int i = 0; i < M; i++) {
+			StringTokenizer s2 = new StringTokenizer(reader.readLine());
+			int u = Integer.parseInt(s2.nextToken());
+			int v = Integer.parseInt(s2.nextToken());
+			adj.get(u).add(v);
+			adj.get(v).add(u);
+		}
+
+		int u = 1;
+		// print number of vertices adjacent to u
+		System.out.println("deg(u) = " + adj.get(u).size());
+		// print all edges with u as an endpoint
+		for (int v : adj.get(u)) { System.out.println("{" + u + ", " + v + "}"); }
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+N, M = map(int, input().split())
+adj = [[] for _ in range(N)]
+
+for i in range(M):
+	u, v = map(int, input().split())
+	adj[u].append(v)
+	adj[v].append(u)
+
+u = 1
+# print number of vertices adjacent to u
+print("deg(u) =", len(adj[u]))
+# print all edges with u as an endpoint
+for v in adj[u]:
+	print("{" + str(u) + ", " + str(v) + "}")
+```
+</PySection>
+</LanguageSection>
+
+Output:
+
+```
+deg(u) = 3
+{1, 3}
+{1, 4}
+{1, 5}
+```
+
+# What Does a Bronze Graph Problem Look Like?
 
 All of the problems below fall into at least one of the following two
 categories:
@@ -69,24 +196,23 @@ categories:
 - To solve the problem, all you need to do is iterate over the adjacency list of
   every vertex.
 
-Knowing [DFS](/silver/graph-traversal) can be helpful but it should not be required.
+In addition, knowledge of [Silver-level graph topics](/silver/graph-traversal) is usually helpful but not strictly required to solve the problem.
 
-## Example - Livestock Lineup
+# Livestock Lineup
 
 <FocusProblem problem="tutorial" />
 
-This problem has multiple solutions. Can you find one that runs in only $\mathcal{O}(n)$ time?
+While the intended solution is to brute force all possible permutations of the cows in $\mathcal O(N\cdot C!)$ time, we can solve the problem in just $\mathcal{O}(C)$ time if we represent the constraints using a graph.
 
-<Spoiler title="Hint">
+## Solution Using Graphs
 
-How can we represent this problem as a graph?
+<Warning>
 
-</Spoiler>
+This explanation, and the implementation that follows, assume that all constraints
+in the input describe distinct pairs of cows. If this assumption did not hold,
+you would first need to remove duplicate constraints.
 
-## Solution with Graphs - Livestock Lineup
-
-While you can brute force all possible permutations of the cows,
-there *is* a solution that works in just $\mathcal{O}(N)$, involving graphs!
+</Warning>
 
 Notice that since the input is guaranteed to be valid, we're always going to end
 up with "chains" of cows that we can arrange as we please. Using the sample given
@@ -98,13 +224,13 @@ Note that cows that are not part of any chain can be considered their own chains
 of length 1 for implementation purposes.
 
 With this representation in mind, we can iterate through the cows in
-lexicographical order. When we visit a cow that could be a possible
-start of a chain (a cow that only has one required neighbor),
-we go through its neighbors, adding cows as we go along, until we hit an end.
+lexicographical (alphabetical) order. When we visit a cow that could be a possible
+start of a chain (a cow that has at most one required neighbor),
+we repeatedly go through its neighbors, adding the cows we visit to the ordering, until we hit an end.
 
 ## Implementation
 
-**Time Complexity:** $\mathcal{O}(N)$
+**Time Complexity:** $\mathcal{O}(C)$
 
 <LanguageSection>
 <CPPSection>
@@ -309,11 +435,7 @@ with open("lineup.out", "w") as out:
 </PySection>
 </LanguageSection>
 
-## Problems
-
-<Problems problems="general" />
-
-## Check Your Understanding
+# Check Your Understanding
 
 <Quiz>
   <Quiz.Question>
@@ -346,7 +468,7 @@ with open("lineup.out", "w") as out:
   </Quiz.Question>
 
   <Quiz.Question>
-    How would we represent the following graph with an adjacency list?
+    How would we represent the following *directed* graph with an adjacency list?
     ![Graph](./assets/graphs_quiz_2.png)
     <Quiz.Answer>
       $
@@ -481,7 +603,7 @@ with open("lineup.out", "w") as out:
     <Quiz.Answer correct>
       True
       <Quiz.Explanation>
-        Correct. Nodes 0, 4, and 5 form a cycle.
+        Correct. Nodes 0, 4, and 5 form a cycle. Nodes 4 and 5 also form a cycle.
       </Quiz.Explanation>
     </Quiz.Answer>
     <Quiz.Answer>
@@ -489,3 +611,7 @@ with open("lineup.out", "w") as out:
     </Quiz.Answer>
   </Quiz.Question>
 </Quiz>
+
+# Problems
+
+<Problems problems="general" />

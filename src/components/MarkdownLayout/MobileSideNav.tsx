@@ -1,8 +1,9 @@
+import { Transition } from '@headlessui/react';
 import { Link } from 'gatsby';
 import * as React from 'react';
+import { Fragment } from 'react';
 import { useMarkdownLayout } from '../../context/MarkdownLayoutContext';
 import Logo from '../Logo';
-import Transition from '../Transition';
 import Breadcrumbs from './Breadcrumbs';
 import SidebarBottomButtons from './SidebarBottomButtons';
 import { SidebarNav } from './SidebarNav/SidebarNav';
@@ -11,10 +12,12 @@ export default function MobileSideNav() {
   const { isMobileNavOpen, setIsMobileNavOpen } = useMarkdownLayout();
 
   return (
-    <Transition show={isMobileNavOpen} timeout={300}>
+    <Transition show={isMobileNavOpen} as={Fragment}>
       <div className="lg:hidden">
         <div className="fixed inset-0 z-40 flex">
           <Transition
+            show={isMobileNavOpen}
+            as={Fragment}
             enter="transition-opacity ease-linear duration-300"
             enterFrom="opacity-0"
             enterTo="opacity-100"
@@ -31,6 +34,8 @@ export default function MobileSideNav() {
           </Transition>
 
           <Transition
+            show={isMobileNavOpen}
+            as={Fragment}
             enter="transition ease-in-out duration-300 transform"
             enterFrom="-translate-x-full"
             enterTo="translate-x-0"

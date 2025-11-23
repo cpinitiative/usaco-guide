@@ -2,15 +2,26 @@
 id: usaco-789
 source: USACO Gold 2018 January
 title: Mootube
-author: Óscar Garries
+author: Óscar Garries, David Zhou
 ---
 
-[Official Analysis](http://www.usaco.org/current/data/sol_mootube_gold_jan18.html)
+[Official Analysis (Java)](http://www.usaco.org/current/data/sol_mootube_gold_jan18.html)
+
+## Editorial
+
+Since removing edges via [DSU](/gold/dsu) is not feasible, we need a way to process the queries such that we only ever join nodes.
+
+We can sort the queries from greatest to least weight to process them offline.
+In a similar manner, we sort the edges based on the same order.
+
+At each query, we can add every edge with a weight greater than or equal to the current query's weight.
+
+We return the size of the connected component minus one for the number of videos that will be recommended from the queried one.
+
+## Implementation
 
 <LanguageSection>
 <CPPSection>
-
-## Implementation
 
 ```cpp
 #include <bits/stdc++.h>

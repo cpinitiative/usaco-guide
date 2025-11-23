@@ -2,7 +2,7 @@
 id: usaco-596
 source: USACO Silver 2016 January
 title: Build Gates
-author: Maggie Liu, Aadit Ambadkar
+author: Maggie Liu, Aadit Ambadkar, Rameez Parwez
 ---
 
 [Official Analysis (Java)](http://www.usaco.org/current/data/sol_gates_silver_jan16.html)
@@ -70,8 +70,7 @@ int main() {
 			}
 		}
 	}
-	// answer is regions - 1 because each gate decreases the number of regions
-	// by 1
+	// answer is regions - 1 because each gate merges two regions
 	cout << regions - 1 << endl;
 	return 0;
 }
@@ -87,6 +86,120 @@ void ff(int i, int j) {
 ```
 
 </CPPSection>
+<JavaSection>
+
+<Info title = "Optimization">
+
+Recursive DFS (which the C++ code uses) is too slow, so here we must use an iterative DFS approach.
+
+</Info>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class BuildGates {
+	private static final Map<Character, int[]> DIR = new HashMap<>() {
+		{
+			put('N', new int[] {-1, 0});
+			put('S', new int[] {1, 0});
+			put('E', new int[] {0, 1});
+			put('W', new int[] {0, -1});
+		}
+	};
+
+	/*
+	 * The largest distance FJ can go from the origin is 1000 units.
+	 * We allocate twice this (since positions can be negative)
+	 * along with 3 extra spots for 0 and 1 unit of padding on each side.
+	 */
+	private static final int MAX_POS = 1000;
+	private static boolean[][] fence = new boolean[2 * MAX_POS + 3][2 * MAX_POS + 3];
+	private static boolean[][] visited = new boolean[2 * MAX_POS + 3][2 * MAX_POS + 3];
+
+	private static int min_x = Integer.MAX_VALUE;
+	private static int max_x = Integer.MIN_VALUE;
+	private static int min_y = Integer.MAX_VALUE;
+	private static int max_y = Integer.MIN_VALUE;
+
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio("gates");
+
+		int n = io.nextInt();
+		String path = io.next();
+
+		// offset the origin
+		int x = MAX_POS + 1;
+		int y = MAX_POS + 1;
+
+		// mark fences, scaling so they are 2 units instead of 1
+		for (int i = 0; i < n; i++) {
+			fence[x + DIR.get(path.charAt(i))[0]][y + DIR.get(path.charAt(i))[1]] =
+			    true;
+			fence[x + 2 * DIR.get(path.charAt(i))[0]]
+			     [y + 2 * DIR.get(path.charAt(i))[1]] = true;
+
+			x += 2 * DIR.get(path.charAt(i))[0];
+			y += 2 * DIR.get(path.charAt(i))[1];
+
+			min_x = Math.min(min_x, x);
+			max_x = Math.max(max_x, x);
+			min_y = Math.min(min_y, y);
+			max_y = Math.max(max_y, y);
+		}
+
+		// expand the farm to include area outside the fences
+		min_x--;
+		max_x++;
+		min_y--;
+		max_y++;
+
+		int regions = 0;
+		for (int i = min_x; i <= max_x; i++) {
+			for (int j = min_y; j <= max_y; j++) {
+				if (!visited[i][j] && !fence[i][j]) {
+					dfs(i, j);
+					regions++;
+				}
+			}
+		}
+
+		// answer is regions - 1 because each gate merges two regions
+		io.println(regions - 1);
+		io.close();
+	}
+
+	private static void dfs(int startX, int startY) {
+		Stack<int[]> stack = new Stack<>();
+		stack.push(new int[] {startX, startY});
+		visited[startX][startY] = true;
+
+		int[] dx = {-1, 0, 0, 1};
+		int[] dy = {0, -1, 1, 0};
+
+		while (!stack.isEmpty()) {
+			int[] curr = stack.pop();
+			int x = curr[0];
+			int y = curr[1];
+
+			for (int k = 0; k < 4; k++) {
+				int nx = x + dx[k];
+				int ny = y + dy[k];
+
+				if (nx >= min_x && nx <= max_x && ny >= min_y && ny <= max_y &&
+				    !visited[nx][ny] && !fence[nx][ny]) {
+					visited[nx][ny] = true;
+					stack.push(new int[] {nx, ny});
+				}
+			}
+		}
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
 </LanguageSection>
 
 ## Alternate Faster Solution

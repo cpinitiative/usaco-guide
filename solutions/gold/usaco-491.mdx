@@ -2,16 +2,224 @@
 id: usaco-491
 source: USACO Silver 2014 December
 title: Piggy Back
-author: Qi Wang, Kakulavaram Sanjana Reddy
+author: Qi Wang, Kakulavaram Sanjana Reddy, David Zhou
 ---
 
-[Official Analysis](http://www.usaco.org/current/data/sol_piggyback_silver.html)
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_piggyback_silver.html)
 
-**Time Complexity:** $\mathcal{O}(N)$
+## Video Solution
+
+By David Zhou
+
+<YouTube id="7IHPKEPe1w0" />
+
+<Spoiler title="Video Solution Code">
 
 <LanguageSection>
-
 <CPPSection>
+
+```cpp
+#include <climits>
+#include <cstdio>
+#include <iostream>
+#include <queue>
+#include <vector>
+using namespace std;
+
+vector<vector<int>> adj;
+
+void bfs(int start, vector<int> &dist) {
+	dist[start] = 0;
+	queue<int> q;
+	q.push(start);
+	while (!q.empty()) {
+		int curr = q.front();
+		q.pop();
+		for (int next : adj[curr]) {
+			if (dist[next] == -1) {
+				dist[next] = dist[curr] + 1;
+				q.push(next);
+			}
+		}
+	}
+}
+
+int main() {
+	// old IO
+	freopen("piggyback.in", "r", stdin);
+	freopen("piggyback.out", "w", stdout);
+	int B, E, P, n, m;
+	cin >> B >> E >> P >> n >> m;
+	adj.resize(n);
+	for (int i = 0; i < m; i++) {
+		int a, b;
+		cin >> a >> b;
+		adj[--a].push_back(--b);
+		adj[b].push_back(a);
+	}
+
+	vector<int> bessie_dist(n, -1), elsie_dist(n, -1), barn_dist(n, -1);
+	// BFS from each starting point
+	bfs(0, bessie_dist);
+	bfs(1, elsie_dist);
+	bfs(n - 1, barn_dist);
+
+	int res = INT_MAX;
+	for (int i = 0; i < n; i++) {
+		int b_dist = bessie_dist[i] * B, e_dist = elsie_dist[i] * E;
+		int barn =
+		    barn_dist[i] * min(B + E, P);  // P may not be more optimal than B + E
+		res = min(res, b_dist + e_dist + barn);
+	}
+
+	cout << res << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Piggyback {
+
+	static List<List<Integer>> adj;
+
+	public static void bfs(int start, int[] dist) {
+		Arrays.fill(dist, -1);
+		dist[start] = 0;
+		Queue<Integer> q = new LinkedList<>();
+		q.add(start);
+		while (!q.isEmpty()) {
+			int curr = q.poll();
+			for (int next : adj.get(curr)) {
+				if (dist[next] == -1) {
+					dist[next] = dist[curr] + 1;
+					q.add(next);
+				}
+			}
+		}
+	}
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new FileReader("piggyback.in"));
+		PrintWriter pw =
+		    new PrintWriter(new BufferedWriter(new FileWriter("piggyback.out")));
+
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int B = Integer.parseInt(st.nextToken());
+		int E = Integer.parseInt(st.nextToken());
+		int P = Integer.parseInt(st.nextToken());
+		int n = Integer.parseInt(st.nextToken());
+		int m = Integer.parseInt(st.nextToken());
+
+		adj = new ArrayList<>();
+		for (int i = 0; i < n; i++) adj.add(new ArrayList<>());
+
+		for (int i = 0; i < m; i++) {
+			st = new StringTokenizer(br.readLine());
+			int a = Integer.parseInt(st.nextToken()) - 1;
+			int b = Integer.parseInt(st.nextToken()) - 1;
+			adj.get(a).add(b);
+			adj.get(b).add(a);
+		}
+
+		int[] bessieDist = new int[n];
+		int[] elsieDist = new int[n];
+		int[] barnDist = new int[n];
+		// BFS from each starting point
+		bfs(0, bessieDist);
+		bfs(1, elsieDist);
+		bfs(n - 1, barnDist);
+
+		int res = Integer.MAX_VALUE;
+		for (int i = 0; i < n; i++) {
+			int bCost = bessieDist[i] * B;
+			int eCost = elsieDist[i] * E;
+			int pCost = barnDist[i] *
+			            Math.min(B + E, P);  // P may not be more optimal than B + E
+			res = Math.min(res, bCost + eCost + pCost);
+		}
+
+		pw.println(res);
+		pw.close();
+		br.close();
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+from collections import deque
+
+
+def bfs(start, dist, adj):
+	dist[start] = 0
+	q = deque([start])
+	while q:
+		curr = q.popleft()
+		for neighbor in adj[curr]:
+			if dist[neighbor] == -1:
+				dist[neighbor] = dist[curr] + 1
+				q.append(neighbor)
+
+
+def main():
+	with open("piggyback.in", "r") as fin:
+		B, E, P, n, m = map(int, fin.readline().split())
+		adj = [[] for _ in range(n)]
+
+		for _ in range(m):
+			a, b = map(int, fin.readline().split())
+			a -= 1
+			b -= 1
+			adj[a].append(b)
+			adj[b].append(a)
+
+	bessie_dist = [-1] * n
+	elsie_dist = [-1] * n
+	barn_dist = [-1] * n
+
+	# BFS from each starting point
+	bfs(0, bessie_dist, adj)
+	bfs(1, elsie_dist, adj)
+	bfs(n - 1, barn_dist, adj)
+
+	res = float("inf")
+	for i in range(n):
+		b_cost = bessie_dist[i] * B
+		e_cost = elsie_dist[i] * E
+		p_cost = barn_dist[i] * min(B + E, P)  # P may not be more optimal than B + E
+		res = min(res, b_cost + e_cost + p_cost)
+
+	with open("piggyback.out", "w") as fout:
+		fout.write(f"{res}\n")
+
+
+if __name__ == "__main__":
+	main()
+```
+
+</PySection>
+</LanguageSection>
+
+</Spoiler>
+
+## Explanation
+
+We can BFS from the three points of Bessie, Elsie, and the barn. By doing so, we determine the distance from these three points to every other point. After, we can loop over all the cells and check the energy spent if it were the meeting location.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N+M)$
+
+<LanguageSection>
+<CPPSection>
+
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
@@ -54,22 +262,21 @@ int main() {
 
 	int min_energy = INT32_MAX;
 	for (int i = 0; i < N; i++) {
-		int energy = dist[0][i] * B + dist[1][i] * E + dist[2][i] * P;
+		int energy = dist[0][i] * B + dist[1][i] * E + dist[2][i] * min(B + E, P);
 		min_energy = min(min_energy, energy);
 	}
 	cout << min_energy << endl;
 }
 ```
+
 </CPPSection>
 <JavaSection>
-
-## Java Implementation
 
 ```java
 import java.io.*;
 import java.util.*;
 
-public class PiggyBack {
+public class Piggyback {
 	static int B, E, P, N, M, A = Integer.MAX_VALUE;
 	static List<Integer>[] adj;
 	static int[][] dist;
@@ -97,12 +304,13 @@ public class PiggyBack {
 			adj[b].add(a);
 		}
 
-		distance(0, 0);
-		distance(1, 1);
-		distance(N - 1, 2);
+		bfs(0, 0);
+		bfs(1, 1);
+		bfs(N - 1, 2);
 
 		for (int i = 0; i < N; i++) {
-			A = Math.min(A, dist[0][i] * B + dist[1][i] * E + dist[2][i] * P);
+			A = Math.min(A, dist[0][i] * B + dist[1][i] * E +
+			                    dist[2][i] * Math.min(B + E, P));
 		}
 
 		io.println(A);
@@ -139,4 +347,58 @@ public class PiggyBack {
 ```
 
 </JavaSection>
+
+<PySection>
+
+```py
+from collections import deque
+
+
+def bfs(start, dist, adj):
+	dist[start] = 0
+	q = deque([start])
+	while q:
+		curr = q.popleft()
+		for neighbor in adj[curr]:
+			if dist[neighbor] == -1:
+				dist[neighbor] = dist[curr] + 1
+				q.append(neighbor)
+
+
+def main():
+	with open("piggyback.in", "r") as fin:
+		B, E, P, n, m = map(int, fin.readline().split())
+		adj = [[] for _ in range(n)]
+
+		for _ in range(m):
+			a, b = map(int, fin.readline().split())
+			a -= 1
+			b -= 1
+			adj[a].append(b)
+			adj[b].append(a)
+
+	bessie_dist = [-1] * n
+	elsie_dist = [-1] * n
+	barn_dist = [-1] * n
+
+	# BFS from each starting point
+	bfs(0, bessie_dist, adj)
+	bfs(1, elsie_dist, adj)
+	bfs(n - 1, barn_dist, adj)
+
+	res = float("inf")
+	for i in range(n):
+		b_cost = bessie_dist[i] * B
+		e_cost = elsie_dist[i] * E
+		p_cost = barn_dist[i] * min(B + E, P)  # P may not be more optimal than B + E
+		res = min(res, b_cost + e_cost + p_cost)
+
+	print(res, file=open("piggyback.out", "w"))
+
+
+if __name__ == "__main__":
+	main()
+```
+
+</PySection>
 </LanguageSection>

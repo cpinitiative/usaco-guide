@@ -2,12 +2,17 @@
 id: usaco-760
 source: USACO Bronze 2017 December
 title: The Bovine Shuffle
-author: Sathvik Chundru, Jesse Choe, Ryan Chou
+author: Sathvik Chundru, Jesse Choe, Ryan Chou, David Guo
 ---
 
 [Official Analysis (C++ and Java)](http://www.usaco.org/current/data/sol_shuffle_bronze_dec17.html)
 
-If the $i$th cow moves to $a_i$ after one shuffle, then the cow at $a_i$ was at $i$ one shuffle ago.
+## Explanation
+
+If the cow in position $i$ moves to position $a_i$ after one shuffle, then after that shuffle the cow sitting at $a_i$ must have come from $i$.
+
+To undo a single shuffle, for each current position $j$ we find the unique $i$ satisfying $a_i = j$ and move the cow at $j$ back to $i$.
+Repeating this step three times recovers the original ordering before any shuffles.
 
 ## Implementation
 

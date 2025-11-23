@@ -1,0 +1,201 @@
+---
+id: cfgym-104128E
+source: gym
+title: Color the Tree
+author: Ryan Fu
+---
+
+[Official Editorial (Chinese)](https://sua.ac/wiki/2022-icpc-nanjing/e/)
+
+## Explanation
+
+### Naive Solution
+
+We observe that any operation will only affect nodes of the same depth. Thus, instead of solving for all depths at once, we can take the sum of the minimum cost to fill in each depth.
+
+Consider the set of nodes at depth $d$ relative to the root. Define $\texttt{dp}[v]$ as the minimum cost to fill in all vertices of depth $d$ in the subtree of $v$, only considering operations selecting vertices at $v$ or lower.
+
+- If $v$ is of depth $d$ (relative to the root), then we must fill it in with cost $a_0$
+$$
+\texttt{dp}[v] =a_0
+$$
+- Otherwise, we can either select to incur a cost of $a_{d-\text{depth}[v]}$ by operating on $v$, or not operate on $v$ and instead solve for each subtree:
+$$
+\texttt{dp}[v] = \min\left( a_{d-\text{depth}[v]},\sum_{u\in\text{Children}(v)} \text{dp}[u]\right)
+$$
+
+Our answer will be the sum of $\texttt{dp}[0]$ for each value of $d$, yielding a solution in $\mathcal{O}(n^2)$ time.
+
+### Virtual Tree Optimization
+
+One observation we can make is for a long chain ending at $v$, we can process it quickly by taking
+
+$$
+\texttt{dp}[v] = \min \left( \min_{x\in[d-\text{depth}[v],d]}a_x, \sum_{u\in\text{Children}(v)} \text{dp}[u] \right)
+$$
+
+We will aim to leverage this fact. Define $S_d$ as the set of vertices at depth $d$, and take $S$ to be the [virtual tree](https://usaco.guide/plat/VT) of $S_d$.
+
+We continue in a similar fashion to previously, but we only compute dynamic programming values for nodes in $S$. The range minimum query can be answered using data structures in logarithmic or linear time.
+
+$$
+\texttt{dp}[v] = \min \left( \min_{x\in[d-\text{depth}[v],d]}a_x, \sum_{u\in\text{Virtual Children}(v)} \text{dp}[u] \right)
+$$
+
+## Implementation
+
+**Time Complexity**: $\mathcal{O}(N \log N)$
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using ll = long long;
+
+constexpr int MAX_N = 1e5 + 1;
+constexpr int LG = 17;
+
+int tin[MAX_N], tout[MAX_N], d[MAX_N], lift[MAX_N][LG], timer;
+ll dp[MAX_N];
+vector<int> adj[MAX_N], vadj[MAX_N], at_d[MAX_N];
+
+void dfs(int v, int p) {
+	d[v] = v ? d[p] + 1 : 0;
+	at_d[d[v]].push_back(v);
+	tin[v] = timer++;
+
+	lift[v][0] = p;
+	for (int i = 1; i < LG; i++) { lift[v][i] = lift[lift[v][i - 1]][i - 1]; }
+
+	for (int u : adj[v]) {
+		if (u == p) { continue; }
+		dfs(u, v);
+	}
+
+	tout[v] = timer++;
+}
+
+int is_ancestor(int u, int v) { return tin[u] <= tin[v] && tout[v] <= tout[u]; }
+
+int lca(int u, int v) {
+	if (is_ancestor(u, v)) { return u; }
+	if (is_ancestor(v, u)) { return v; }
+
+	for (int i = LG - 1; i >= 0; i--) {
+		if (!is_ancestor(lift[u][i], v)) { u = lift[u][i]; }
+	}
+	return lift[u][0];
+}
+
+bool sort_tin(const int &a, const int &b) { return tin[a] < tin[b]; }
+
+vector<int> vtree(vector<int> &key) {
+	// construct virtual tree from set of nodes
+	if (key.empty()) return {};
+
+	vector<int> res = key;
+	sort(res.begin(), res.end(), sort_tin);
+
+	for (int i = 1; i < (int)key.size(); i++) {
+		res.push_back(lca(key[i - 1], key[i]));
+	}
+
+	sort(res.begin(), res.end(), sort_tin);
+	res.erase(unique(res.begin(), res.end()), res.end());
+
+	for (int v : res) { vadj[v].clear(); }
+
+	vector<int> stk = {res[0]};
+
+	for (int i = 1; i < (int)res.size(); i++) {
+		while (tin[res[i]] > tout[stk.back()]) { stk.pop_back(); }
+
+		vadj[stk.back()].push_back(res[i]);
+		stk.push_back(res[i]);
+	}
+
+	return res;
+}
+
+// BeginCodeSnip{RMQ Template}
+template <class T> class MinSegmentTree {
+  private:
+	const T DEFAULT = numeric_limits<T>().max();
+
+	vector<T> segtree;
+	int len;
+
+  public:
+	MinSegmentTree(int len) : len(len), segtree(len * 2, DEFAULT) {}
+
+	void set(int ind, T val) {
+		ind += len;
+		segtree[ind] = val;
+		for (; ind > 1; ind /= 2) {
+			segtree[ind / 2] = min(segtree[ind], segtree[ind ^ 1]);
+		}
+	}
+
+	T range_min(int start, int end) {
+		T res = DEFAULT;
+		for (start += len, end += len; start < end; start /= 2, end /= 2) {
+			if (start % 2 == 1) { res = min(res, segtree[start++]); }
+			if (end % 2 == 1) { res = min(res, segtree[--end]); }
+		}
+		return res;
+	}
+};
+// EndCodeSnip
+
+int main() {
+	int test_num;
+	cin >> test_num;
+	for (int t = 0; t < test_num; t++) {
+		int n;
+		cin >> n;
+
+		for (int i = 0; i <= n; i++) {
+			adj[i].clear();
+			at_d[i].clear();
+		}
+
+		MinSegmentTree<int> rmq(n);
+		for (int i = 0; i < n; i++) {
+			int a;
+			cin >> a;
+			rmq.set(i, a);
+		}
+
+		for (int i = 1; i < n; i++) {
+			int u, v;
+			cin >> u >> v;
+			u--, v--;
+			adj[u].push_back(v);
+			adj[v].push_back(u);
+		}
+
+		dfs(0, 0);
+
+		ll ans = 0;
+
+		for (int dep = 0; dep < n; dep++) {
+			vector<int> vt = vtree(at_d[dep]);
+			reverse(vt.begin(), vt.end());
+
+			for (int v : vt) {
+				dp[v] = rmq.range_min(dep - d[v], dep + 1);
+
+				if (!vadj[v].empty()) {
+					ll sum = 0;
+					for (int u : vadj[v]) { sum += dp[u]; }
+					dp[v] = min(dp[v], sum);
+				}
+			}
+
+			if (!vt.empty()) { ans += dp[vt.back()]; }
+		}
+
+		cout << ans << "\n";
+	}
+}
+```

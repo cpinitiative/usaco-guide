@@ -2,22 +2,21 @@
 id: cf-814C
 source: CF
 title: An impassioned circulation of affection
-author: Neo Wang, Qi Wang, Jesse Choe, Kevin Sheng
+author: Neo Wang, Qi Wang, Jesse Choe, Kevin Sheng, Rameez Parwez, David Guo
 ---
 
-[Official Editorial](https://codeforces.com/blog/entry/52449)
+[Official Editorial (C++)](https://codeforces.com/blog/entry/52449)
 
 ## Solution (Two Pointers)
-
-**Time Complexity:** $\mathcal{O}(nq)$
 
 For each query we can keep a sliding window where no more than $m$ letters in
 the window are not $c$.
 
-### Implementation
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(nq)$
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
@@ -25,7 +24,8 @@ the window are not $c$.
 using namespace std;
 
 int main() {
-	int garland_len, query_num;
+	int garland_len;
+	int query_num;
 	string garland;
 	cin >> garland_len >> garland >> query_num;
 
@@ -48,25 +48,74 @@ int main() {
 			koyomity = max(koyomity, r - l);
 			max_repaint += garland[l++] != color;
 		}
-		cout << koyomity << endl;
+
+		cout << koyomity << '\n';
 	}
 }
 ```
 
 </CPPSection>
+<JavaSection>
 
+```java
+import java.io.*;
+import java.util.*;
+
+public class Garland {
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+		int garlandLen = Integer.parseInt(br.readLine());
+		String garland = br.readLine();
+		int queryNum = Integer.parseInt(br.readLine());
+
+		// Reading all the queries here is faster for some reason
+		StringBuilder qb = new StringBuilder();
+		for (int i = 0; i < queryNum; i++) { qb.append(br.readLine()).append('\n'); }
+		StringTokenizer st = new StringTokenizer(qb.toString());
+
+		char[] arr = garland.toCharArray();
+		StringBuilder out = new StringBuilder();
+		for (int i = 0; i < queryNum; i++) {
+			int maxRepaint = Integer.parseInt(st.nextToken());
+			char color = st.nextToken().charAt(0);
+
+			int l = 0;
+			int r = 0;
+			int koyomity = 0;
+			while (l < garlandLen && r < garlandLen) {
+				while (r < garlandLen) {
+					if (arr[r] != color) {
+						if (maxRepaint == 0) break;
+						maxRepaint--;
+					}
+					r++;
+				}
+				koyomity = Math.max(koyomity, r - l);
+				if (arr[l++] != color) maxRepaint++;
+			}
+			out.append(koyomity).append('\n');
+		}
+
+		System.out.print(out.toString());
+	}
+}
+```
+
+</JavaSection>
 </LanguageSection>
 
 ## Alternative Solution (Two Pointers with Prefix Sums)
-
-**Time Complexity:** $\mathcal{O}(n(k+q))$
 
 For each query we can use prefix sums to check the number of occurrences of a
 given letter $c$ and use two pointers to find the maximum Koyomity ending at a
 given pointer $p2$ from $0 \dots n$.
 
-<LanguageSection>
+## Implementation
 
+**Time Complexity:** $\mathcal{O}(n(k+q))$
+
+<LanguageSection>
 <CPPSection>
 
 ```cpp
@@ -114,7 +163,60 @@ int main() {
 ```
 
 </CPPSection>
+<JavaSection>
 
+```java
+import java.io.*;
+import java.util.*;
+
+public class Garland {
+	private final static int MAX_N = 1500;
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
+
+		int garlandLen = io.nextInt();
+		String garland = io.next();
+		int queryNum = io.nextInt();
+
+		int[][] dp = new int[26][MAX_N + 1];
+		for (int i = 1; i <= garlandLen; i++) {
+			int color = (garland.charAt(i - 1) - 'a');
+			dp[color][i]++;
+		}
+
+		for (int i = 0; i < 26; i++) {
+			for (int j = 1; j <= garlandLen; j++) {
+				dp[i][j] = dp[i][j - 1] + dp[i][j];
+			}
+		}
+
+		for (int i = 0; i < queryNum; i++) {
+			int maxRepaint = io.nextInt();
+			int color = (io.next().charAt(0) - 'a');
+
+			int l = 1;
+			int r = 1;
+			int koyomity = 1;
+			while (r <= garlandLen) {
+				int cCount = dp[color][r] - dp[color][l - 1] + maxRepaint;
+				if (cCount < r - l + 1) {
+					l++;
+				} else {
+					koyomity = Math.max(koyomity, r - l + 1);
+					r++;
+				}
+			}
+			io.println(koyomity);
+		}
+
+		io.close();
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
 </LanguageSection>
 
 ## Alternative Solution (Dynamic Programming)
@@ -124,8 +226,6 @@ int main() {
 Dynamic programming is a [Gold](/gold/intro-dp) topic.
 
 </Warning>
-
-**Time Complexity:** $\mathcal{O}(n^2k + q)$
 
 We are performing up to $200\,000$ queries, so it may be optimal to have some
 way to quickly precompute our answer in constant time.
@@ -156,10 +256,11 @@ Now, we can query the max painting score for any substring containing the first
 character. However, this is not required; we only have to query the optimal
 paintings with size $n$ (the full string) with $\texttt{dp}[n][m_i][c_i]$.
 
-### Implementation
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(n^2k + q)$
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
@@ -217,5 +318,4 @@ int main() {
 ```
 
 </CPPSection>
-
 </LanguageSection>

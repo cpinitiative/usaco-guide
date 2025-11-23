@@ -133,10 +133,9 @@ we iterate through the customers.
 **Time Complexity:** $\mathcal{O}(n\log n)$
 
 <LanguageSection>
-
 <CPPSection>
 
-Implementation Note: Similarly to what was done in an [earlier module](/silver/sorting-custom?lang=cpp#sorting-in-descending-order), we can use `greater<>()` to create a min-heap instead of a max-heap.
+Similarly to what was done in an [earlier module](/silver/sorting-custom?lang=cpp#sorting-in-descending-order), we can use `greater<>()` to create a min-heap instead of a max-heap.
 
 ```cpp
 #include <algorithm>
@@ -160,8 +159,8 @@ int main() {
 
 	int last_room = 0;
 	using Room = pair<int, int>;
-	priority_queue<Room, vector<Room>, greater<Room>>
-	    pq;  // min heap to store departure times.
+	// min heap to store departure times.
+	priority_queue<Room, vector<Room>, greater<Room>> pq;
 	for (int i = 0; i < N; i++) {
 		if (pq.empty() || pq.top().first >= v[i].first.first) {
 			last_room++;
@@ -182,12 +181,13 @@ int main() {
 ```
 
 </CPPSection>
-
 <JavaSection>
 
 <Warning>
+
 Input classes like `Scanner` and `BufferedReader` are too slow for this problem,
 so we have to use [`FastIO`](/general/fast-io?lang=java#even-faster-methods-1) (which reads bytes directly from an input stream) instead.
+
 </Warning>
 
 ```java
@@ -334,6 +334,35 @@ public class RoomAllocation {
 ```
 
 </JavaSection>
+<PySection>
+
+```py
+import heapq
+import sys
+
+n = int(sys.stdin.readline())
+timetable = []
+for customer in range(n):
+	arrival, departure = map(int, sys.stdin.readline().split())
+	timetable.append((arrival, departure, customer))
+
+timetable.sort(key=lambda x: x[0])  # sort by arrival time
+priority_queue = []  # stores pairs of (departure time, customer number)
+room_numbers = [-1] * n  # to be assigned
+
+for arrival, departure, customer in timetable:
+	if priority_queue and arrival > priority_queue[0][0]:  # check for vacant room
+		room_numbers[customer] = room_numbers[priority_queue[0][1]]
+		heapq.heapreplace(priority_queue, (departure, customer))
+	else:  # assign new room
+		heapq.heappush(priority_queue, (departure, customer))
+		room_numbers[customer] = len(priority_queue)
+
+print(len(priority_queue))
+print(*room_numbers)
+```
+
+</PySection>
 
 </LanguageSection>
 

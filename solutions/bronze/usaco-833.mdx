@@ -5,248 +5,16 @@ title: Family Tree
 author: Danh Ta Chi Thanh, Ryan Chou, Chuyang Wang, Kevin Sheng, Amogha Pokkulandra
 ---
 
-## Video Solution
-
-By Amogha Pokkulandra
-
-<YouTube id="CaGt8uCRNxU" />
-
-<Spoiler title="Video Solution Code">
-<LanguageSection>
-<CPPSection>
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-vector<string> m;
-vector<string> d;
-
-int main() {
-	freopen("family.in", "r", stdin);
-	freopen("family.out", "w", stdout);
-
-	int lines;
-	string cowx, cowy;
-	cin >> lines >> cowx >> cowy;
-	string out;
-
-	for (int i = 0; i < lines; i++) {
-		string mom, dot;
-		cin >> mom >> dot;
-		m.push_back(mom);
-		d.push_back(dot);
-	}
-
-	vector<string> xAnc, yAnc;
-	string cx = cowx, cy = cowy;
-
-	while (find(d.begin(), d.end(), cx) != d.end()) {
-		xAnc.push_back(cx);
-		int tempX = distance(d.begin(), find(d.begin(), d.end(), cx));
-		cx = m[tempX];
-	}
-	xAnc.push_back(cx);
-
-	while (find(d.begin(), d.end(), cy) != d.end()) {
-		yAnc.push_back(cy);
-		int tempY = distance(d.begin(), find(d.begin(), d.end(), cy));
-		cy = m[tempY];
-	}
-	yAnc.push_back(cy);
-
-	string common;
-	bool found = false;
-	for (string x : xAnc) {
-		if (found) {
-			break;
-		} else {
-			for (string y : yAnc) {
-				if (x == y) {
-					common = x;
-					found = true;
-					break;
-				}
-			}
-		}
-	}
-
-	if (common == "") {
-		cout << ("NOT RELATED");
-	} else {
-		int xLvl = distance(xAnc.begin(), find(xAnc.begin(), xAnc.end(), common));
-		int yLvl = distance(yAnc.begin(), find(yAnc.begin(), yAnc.end(), common));
-
-		if (xLvl == yLvl && yLvl == 1) {
-			cout << ("SIBLINGS");
-		} else if (xLvl == yLvl || (xLvl > 1 && yLvl > 1)) {
-			cout << ("COUSINS");
-		} else if (xLvl > yLvl) {
-			int diff = xLvl - yLvl;
-			if (cowy == common) {
-				if (diff == 1) {
-					out = "mother";
-				} else {
-					for (int j = 0; j < diff - 2; j++) { out += "great-"; }
-					out += "grand-mother";
-				}
-				cout << (cowy + " is the " + out + " of " + cowx);
-			} else {
-				if (diff == 1) {
-					out = "aunt";
-				} else {
-					for (int k = 0; k < diff - 1; k++) { out += "great-"; }
-					out += "aunt";
-				}
-				cout << (cowy + " is the " + out + " of " + cowx);
-			}
-		} else {
-			int diff = yLvl - xLvl;
-			if (cowx == common) {
-				if (diff == 1) {
-					out = "mother";
-				} else {
-					for (int j = 0; j < diff - 2; j++) { out += "great-"; }
-					out += "grand-mother";
-				}
-				cout << (cowx + " is the " + out + " of " + cowy);
-			} else {
-				if (diff == 1) {
-					out = "aunt";
-				} else {
-					for (int k = 0; k < diff - 1; k++) { out += "great-"; }
-					out += "aunt";
-				}
-				cout << (cowx + " is the " + out + " of " + cowy);
-			}
-		}
-	}
-}
-```
-
-</CPPSection>
-<JavaSection>
-
-```java
-import java.io.*;
-import java.util.*;
-
-public class FamilyTree {
-	public static List<String> m = new ArrayList<String>();
-	public static List<String> d = new ArrayList<String>();
-
-	public static void main(String[] args) throws IOException {
-		PrintWriter pw = new PrintWriter(new File("family.out"));
-		BufferedReader br = new BufferedReader(new FileReader(new File("family.in")));
-
-		StringTokenizer st = new StringTokenizer(br.readLine());
-		int lines = Integer.parseInt(st.nextToken());
-		String cowx = st.nextToken();
-		String cowy = st.nextToken();
-		String out = "";
-
-		for (int i = 0; i < lines; i++) {
-			st = new StringTokenizer(br.readLine());
-			m.add(st.nextToken());
-			d.add(st.nextToken());
-		}
-
-		List<String> xAnc = new ArrayList<String>();
-		List<String> yAnc = new ArrayList<String>();
-
-		String cX = cowx;
-		String cY = cowy;
-
-		while (d.contains(cX)) {
-			xAnc.add(cX);
-			cX = m.get(d.indexOf(cX));
-		}
-		xAnc.add(cX);
-
-		while (d.contains(cY)) {
-			yAnc.add(cY);
-			cY = m.get(d.indexOf(cY));
-		}
-		yAnc.add(cY);
-
-		List<String> comAnc = new ArrayList<String>(xAnc);
-		comAnc.retainAll(yAnc);
-
-		if (comAnc.isEmpty()) {
-			System.out.println("NOT RELATED");
-			pw.println("NOT RELATED");
-		} else {
-			String common = comAnc.get(0);
-			int xLvl = xAnc.indexOf(common);
-			int yLvl = yAnc.indexOf(common);
-
-			if (xLvl == yLvl && yLvl == 1) {
-				System.out.println("SIBLINGS");
-				pw.println("SIBLINGS");
-			} else if (xLvl == yLvl || (xLvl > 1 && yLvl > 1)) {
-				System.out.println("COUSINS");
-				pw.println("COUSINS");
-			} else if (xLvl > yLvl) {
-				int diff = xLvl - yLvl;
-				if (cowy.equals(common)) {
-					if (diff == 1) {
-						out = "mother";
-					} else {
-						for (int j = 0; j < diff - 2; j++) { out += "great-"; }
-						out += "grand-mother";
-					}
-					System.out.println(cowy + " is the " + out + " of " + cowx);
-					pw.println(cowy + " is the " + out + " of " + cowx);
-				} else {
-					if (diff == 1) {
-						out = "aunt";
-					} else {
-						for (int k = 0; k < diff - 1; k++) { out += "great-"; }
-						out += "aunt";
-					}
-					System.out.println(cowy + " is the " + out + " of " + cowx);
-					pw.println(cowy + " is the " + out + " of " + cowx);
-				}
-			} else {
-				int diff = yLvl - xLvl;
-				if (cowx.equals(common)) {
-					if (diff == 1) {
-						out = "mother";
-					} else {
-						for (int j = 0; j < diff - 2; j++) { out += "great-"; }
-						out += "grand-mother";
-					}
-					System.out.println(cowx + " is the " + out + " of " + cowy);
-					pw.println(cowx + " is the " + out + " of " + cowy);
-				} else {
-					if (diff == 1) {
-						out = "aunt";
-					} else {
-						for (int k = 0; k < diff - 1; k++) { out += "great-"; }
-						out += "aunt";
-					}
-					System.out.println(cowx + " is the " + out + " of " + cowy);
-					pw.println(cowx + " is the " + out + " of " + cowy);
-				}
-			}
-		}
-		pw.close();
-		br.close();
-	}
-}
-```
-
-</JavaSection>
-</LanguageSection>
-</Spoiler>
-
-
-## Solution
-
 [Official Analysis (C++)](http://www.usaco.org/current/data/sol_family_bronze_open18.html)
 
+# Solution 1
+
+## Explanation
+
 By finding the closest common ancestor and the distances from the ancestor to the two cows, we can uniquely identify their relationship.
+
 ## Implementation
+
 **Time Complexity:** $\mathcal{O}(N^3)$
 
 <LanguageSection>
@@ -338,8 +106,8 @@ else:
 		print("aunt ", end="")
 	print("of", cow_b)
 ```
-</PySection>
 
+</PySection>
 <JavaSection>
 
 ```java
@@ -432,7 +200,6 @@ public class FamilyTree {
 ```
 
 </JavaSection>
-
 <CPPSection>
 
 ```cpp
@@ -524,27 +291,19 @@ int main() {
 	}
 }
 ```
-</CPPSection>
 
+</CPPSection>
 </LanguageSection>
 
-## Alternative Solution - BFS
+# Solution 2
 
-Note: This is an **alternative** solution and makes use of concepts outside the
-scope of Bronze. Breadth-first search is **not necessary** to know for the
-bronze division.
+## Explanation
+
+Similar to solution 1, but we find the common ancestor of the two cows more efficiently.
+
+## Implementation
 
 **Time Complexity:** $\mathcal{O}(N \log N)$
-
-This problem can also be solved by using BFS to find the common ancestors and
-the distance between the two cows and their nearest common ancestor.
-
-<Warning>
-
-No Bronze / Silver problem has required knowledge of BFS, so feel free to skip
-this solution if you find it unfamiliar and come back later.
-
-</Warning>
 
 <LanguageSection>
 <JavaSection>
@@ -781,3 +540,338 @@ with open("family.out", "w") as written:
 
 </PySection>
 </LanguageSection>
+
+# Solution 3
+
+## Explanation
+
+Let's first create a map from each cow to its parent. Now let's handle this case by case.
+
+1. $X$ and $Y$ being siblings is equivalent to them having the same parent.
+
+2. $Y$ being a *-mother of $X$ is equivalent to $Y$ equaling some ancestor of $X$. We can iterate over the ancestors of $X$ by starting with our current cow being $X$ and then repeatedly setting the current cow to its parent.
+
+3. $Y$ being a *-aunt of $X$ is equivalent $Y$ and some ancestor of $X$ being siblings. We can handle this by combining cases 1 and 2.
+
+4. We can handle $X$ being a *-mother of $Y$ and $X$ being a *-aunt of $Y$ by swapping $X$ and $Y$ and applying the same logic.
+
+5. If $X$ and $Y$'s oldest ancestors are the same, then they are related.
+
+6. Otherwise, if none of the cases above apply, then $X$ and $Y$ are not related.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N\log N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	ifstream fin("family.in");
+	ofstream fout("family.out");
+
+	int N;
+	string c1, c2;
+	fin >> N >> c1 >> c2;
+
+	map<string, string> par;
+	for (int i = 0; i < N; ++i) {
+		string x, y;
+		fin >> x >> y;
+		par[y] = x;
+	}
+
+	if (par.count(c1) && par.count(c2) && par.at(c1) == par.at(c2)) {
+		fout << "SIBLINGS\n";
+		return 0;
+	}
+
+	// if c2 is a *-mother or *-aunt of c1, print and exit
+	auto try_print = [&]() {
+		string current_c1 = c1;
+		int jumps = 0;
+		while (true) {
+			if (current_c1 == c2) {
+				fout << c2 << " is the ";
+				for (int i = 0; i < jumps - 2; ++i) fout << "great-";
+				if (jumps > 1) fout << "grand-";
+				fout << "mother";
+				fout << " of " << c1;
+				fout << "\n";
+				return true;
+			}
+			if (par.count(current_c1) && par.count(c2) &&
+			    par.at(current_c1) == par.at(c2)) {
+				fout << c2 << " is the ";
+				for (int i = 0; i < jumps - 1; ++i) fout << "great-";
+				fout << "aunt";
+				fout << " of " << c1;
+				fout << "\n";
+				return true;
+			}
+			if (!par.count(current_c1)) break;
+			++jumps;
+			current_c1 = par.at(current_c1);
+		}
+		return false;
+	};
+
+	if (try_print()) return 0;
+	swap(c1, c2);
+	if (try_print()) return 0;
+
+	auto top_anc = [&](string s) {
+		while (par.count(s)) s = par.at(s);
+		return s;
+	};
+	if (top_anc(c1) == top_anc(c2)) fout << "COUSINS\n";
+	else fout << "NOT RELATED\n";
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
+
+# Video Solution
+
+By Amogha Pokkulandra
+
+<YouTube id="CaGt8uCRNxU" />
+
+## Video Solution Code
+
+<Spoiler title="Video Solution Code">
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+vector<string> m;
+vector<string> d;
+
+int main() {
+	freopen("family.in", "r", stdin);
+	freopen("family.out", "w", stdout);
+
+	int lines;
+	string cowx, cowy;
+	cin >> lines >> cowx >> cowy;
+	string out;
+
+	for (int i = 0; i < lines; i++) {
+		string mom, dot;
+		cin >> mom >> dot;
+		m.push_back(mom);
+		d.push_back(dot);
+	}
+
+	vector<string> xAnc, yAnc;
+	string cx = cowx, cy = cowy;
+
+	while (find(d.begin(), d.end(), cx) != d.end()) {
+		xAnc.push_back(cx);
+		int tempX = distance(d.begin(), find(d.begin(), d.end(), cx));
+		cx = m[tempX];
+	}
+	xAnc.push_back(cx);
+
+	while (find(d.begin(), d.end(), cy) != d.end()) {
+		yAnc.push_back(cy);
+		int tempY = distance(d.begin(), find(d.begin(), d.end(), cy));
+		cy = m[tempY];
+	}
+	yAnc.push_back(cy);
+
+	string common;
+	bool found = false;
+	for (string x : xAnc) {
+		if (found) {
+			break;
+		} else {
+			for (string y : yAnc) {
+				if (x == y) {
+					common = x;
+					found = true;
+					break;
+				}
+			}
+		}
+	}
+
+	if (common == "") {
+		cout << ("NOT RELATED");
+	} else {
+		int xLvl = distance(xAnc.begin(), find(xAnc.begin(), xAnc.end(), common));
+		int yLvl = distance(yAnc.begin(), find(yAnc.begin(), yAnc.end(), common));
+
+		if (xLvl == yLvl && yLvl == 1) {
+			cout << ("SIBLINGS");
+		} else if (xLvl == yLvl || (xLvl > 1 && yLvl > 1)) {
+			cout << ("COUSINS");
+		} else if (xLvl > yLvl) {
+			int diff = xLvl - yLvl;
+			if (cowy == common) {
+				if (diff == 1) {
+					out = "mother";
+				} else {
+					for (int j = 0; j < diff - 2; j++) { out += "great-"; }
+					out += "grand-mother";
+				}
+				cout << (cowy + " is the " + out + " of " + cowx);
+			} else {
+				if (diff == 1) {
+					out = "aunt";
+				} else {
+					for (int k = 0; k < diff - 1; k++) { out += "great-"; }
+					out += "aunt";
+				}
+				cout << (cowy + " is the " + out + " of " + cowx);
+			}
+		} else {
+			int diff = yLvl - xLvl;
+			if (cowx == common) {
+				if (diff == 1) {
+					out = "mother";
+				} else {
+					for (int j = 0; j < diff - 2; j++) { out += "great-"; }
+					out += "grand-mother";
+				}
+				cout << (cowx + " is the " + out + " of " + cowy);
+			} else {
+				if (diff == 1) {
+					out = "aunt";
+				} else {
+					for (int k = 0; k < diff - 1; k++) { out += "great-"; }
+					out += "aunt";
+				}
+				cout << (cowx + " is the " + out + " of " + cowy);
+			}
+		}
+	}
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class FamilyTree {
+	public static List<String> m = new ArrayList<String>();
+	public static List<String> d = new ArrayList<String>();
+
+	public static void main(String[] args) throws IOException {
+		PrintWriter pw = new PrintWriter(new File("family.out"));
+		BufferedReader br = new BufferedReader(new FileReader(new File("family.in")));
+
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int lines = Integer.parseInt(st.nextToken());
+		String cowx = st.nextToken();
+		String cowy = st.nextToken();
+		String out = "";
+
+		for (int i = 0; i < lines; i++) {
+			st = new StringTokenizer(br.readLine());
+			m.add(st.nextToken());
+			d.add(st.nextToken());
+		}
+
+		List<String> xAnc = new ArrayList<String>();
+		List<String> yAnc = new ArrayList<String>();
+
+		String cX = cowx;
+		String cY = cowy;
+
+		while (d.contains(cX)) {
+			xAnc.add(cX);
+			cX = m.get(d.indexOf(cX));
+		}
+		xAnc.add(cX);
+
+		while (d.contains(cY)) {
+			yAnc.add(cY);
+			cY = m.get(d.indexOf(cY));
+		}
+		yAnc.add(cY);
+
+		List<String> comAnc = new ArrayList<String>(xAnc);
+		comAnc.retainAll(yAnc);
+
+		if (comAnc.isEmpty()) {
+			System.out.println("NOT RELATED");
+			pw.println("NOT RELATED");
+		} else {
+			String common = comAnc.get(0);
+			int xLvl = xAnc.indexOf(common);
+			int yLvl = yAnc.indexOf(common);
+
+			if (xLvl == yLvl && yLvl == 1) {
+				System.out.println("SIBLINGS");
+				pw.println("SIBLINGS");
+			} else if (xLvl == yLvl || (xLvl > 1 && yLvl > 1)) {
+				System.out.println("COUSINS");
+				pw.println("COUSINS");
+			} else if (xLvl > yLvl) {
+				int diff = xLvl - yLvl;
+				if (cowy.equals(common)) {
+					if (diff == 1) {
+						out = "mother";
+					} else {
+						for (int j = 0; j < diff - 2; j++) { out += "great-"; }
+						out += "grand-mother";
+					}
+					System.out.println(cowy + " is the " + out + " of " + cowx);
+					pw.println(cowy + " is the " + out + " of " + cowx);
+				} else {
+					if (diff == 1) {
+						out = "aunt";
+					} else {
+						for (int k = 0; k < diff - 1; k++) { out += "great-"; }
+						out += "aunt";
+					}
+					System.out.println(cowy + " is the " + out + " of " + cowx);
+					pw.println(cowy + " is the " + out + " of " + cowx);
+				}
+			} else {
+				int diff = yLvl - xLvl;
+				if (cowx.equals(common)) {
+					if (diff == 1) {
+						out = "mother";
+					} else {
+						for (int j = 0; j < diff - 2; j++) { out += "great-"; }
+						out += "grand-mother";
+					}
+					System.out.println(cowx + " is the " + out + " of " + cowy);
+					pw.println(cowx + " is the " + out + " of " + cowy);
+				} else {
+					if (diff == 1) {
+						out = "aunt";
+					} else {
+						for (int k = 0; k < diff - 1; k++) { out += "great-"; }
+						out += "aunt";
+					}
+					System.out.println(cowx + " is the " + out + " of " + cowy);
+					pw.println(cowx + " is the " + out + " of " + cowy);
+				}
+			}
+		}
+		pw.close();
+		br.close();
+	}
+}
+```
+
+</JavaSection>
+</LanguageSection>
+
+</Spoiler>

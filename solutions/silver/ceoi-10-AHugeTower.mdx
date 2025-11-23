@@ -2,7 +2,7 @@
 id: ceoi-10-AHugeTower
 source: CEOI 2010
 title: A Huge Tower
-author: Óscar Garries, Evan Zhao
+author: Óscar Garries, Evan Zhao, Rameez Parwez
 ---
 
 [Official Analysis](http://ceoi2010.ics.upjs.sk/pub/documents/ceoi_summary.pdf#page=14)
@@ -11,7 +11,7 @@ author: Óscar Garries, Evan Zhao
 
 First, let's define some variables.
 Let $a_1, a_2, ..., a_n$ be the block sizes, sorted from least to greatest.
-Let $b_i$ be the number of indicies $j$ such that $j < i$ and $a_i \leq a_j + d$.
+Let $b_i$ be the number of indices $j$ such that $j < i$ and $a_i \leq a_j + d$.
 Let $\texttt{ans}_i$ be the answer if the tower consisted of only the blocks $a_1, a_2, ..., a_i$. Of course, this means that $\texttt{ans}_n$ will be the final answer.
 
 For *any* tower consisting of the first $i - 1$ blocks, there will always be $b_i + 1$ number of ways to insert the block of size $a_i$ into the tower.
@@ -21,7 +21,7 @@ Thus, we see that $\texttt{ans}_i = \texttt{ans}_{i-1} \cdot (b_i + 1)$, because
 
 ## Implementation
 
-This solution uses 2-pointers instead of creating the arrays $ans[]$ and $b[]$.
+This solution uses 2 pointers instead of creating the arrays $ans[]$ and $b[]$.
 
 **Time Complexity:** $\mathcal{O}(N \log N)$
 
@@ -33,53 +33,87 @@ This solution uses 2-pointers instead of creating the arrays $ans[]$ and $b[]$.
 #include <iostream>
 #include <vector>
 
-using namespace std;
-
 const int MOD = 1e9 + 9;
 
 int main() {
 	int n, d;
-	cin >> n >> d;
-	vector<int> ar(n);
-	for (int i = 0; i < n; i++) { cin >> ar[i]; }
+	std::cin >> n >> d;
+	std::vector<int> blocks(n);
+	for (int i = 0; i < n; i++) { std::cin >> blocks[i]; }
 
-	sort(ar.begin(), ar.end());  // sort the blocks
+	sort(blocks.begin(), blocks.end());  // sort the blocks
 
-	int r = 0;
-	int sol = 1;
-	for (int l = 0; l < n; l++) {
-		while (r < n - 1 && ar[r + 1] - ar[l] <= d) { r++; }
-		// largest tower we can built when ar[l] block is the base
-		int dist = r - l + 1;
-		sol = (sol * 1LL * dist) % MOD;
+	int right = 0;
+	int res = 1;
+	for (int left = 0; left < n; left++) {
+		while (right < n - 1 && blocks[right + 1] - blocks[left] <= d) { right++; }
+		// lblocksgest tower we can built when blocks[left] block is the base
+		int dist = right - left + 1;
+		res = (res * 1LL * dist) % MOD;
 	}
 
-	cout << sol << endl;
+	std::cout << res << '\n';
 }
 ```
 
 </CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class tower {
+	static final int MOD = 1000000009;
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
+
+		int n = io.nextInt();
+		int d = io.nextInt();
+
+		int[] blocks = new int[n];
+		for (int i = 0; i < n; i++) { blocks[i] = io.nextInt(); }
+
+		Arrays.sort(blocks);  // sort the blocks
+		int right = 0;
+		long res = 1;
+		for (int left = 0; left < n; left++) {
+			while (right < n - 1 && blocks[right + 1] - blocks[left] <= d) { right++; }
+			// largest tower we can built when blocks[left] block is the base
+			int dist = right - left + 1;
+			res = (res * dist) % MOD;
+		}
+
+		io.println(res);
+		io.close();
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
 <PySection>
 
 ```py
 MOD = 10**9 + 9
 
 n, d = map(int, input().split())
-ar = list(map(int, input().split()))
+blocks = list(map(int, input().split()))
 
-ar.sort()  # sort the blocks
+blocks.sort()  # sort the blocks
 
-r = 0
-sol = 1
-for l in range(n):
-	while r < n - 1 and ar[r + 1] - ar[l] <= d:
-		r += 1
+right = 0
+res = 1
+for left in range(n):
+	while right < n - 1 and blocks[right + 1] - blocks[left] <= d:
+		right += 1
 
-	# largest tower we can build when ar[l] block is the base
-	dist = r - l + 1
-	sol = (sol * dist) % MOD
+	# largest tower we can built when blocks[left] block is the base
+	dist = right - left + 1
+	res = (res * dist) % MOD
 
-print(sol)
+print(res)
 ```
 
 </PySection>

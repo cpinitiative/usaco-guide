@@ -13,15 +13,16 @@ const ComeBackTimer = ({ tomorrowMilliseconds }) => {
 
   React.useEffect(() => {
     const interval = setInterval(() => {
-      setMilliseconds(tomorrowMilliseconds - Date.now());
+      setMilliseconds(Math.max(0, tomorrowMilliseconds - Date.now()));
     }, 1000);
     return () => clearInterval(interval);
   }, []);
 
-  const days = Math.floor(milliseconds / 1000 / 60 / 60 / 24);
-  const hours = Math.floor((milliseconds / 1000 / 60 / 60) % 24);
-  const minutes = Math.floor((milliseconds / 1000 / 60) % 60);
-  const seconds = Math.floor((milliseconds / 1000) % 60);
+  const ms = Math.max(0, milliseconds); // Clamp to zero
+  const days = Math.floor(ms / 1000 / 60 / 60 / 24);
+  const hours = Math.floor((ms / 1000 / 60 / 60) % 24);
+  const minutes = Math.floor((ms / 1000 / 60) % 60);
+  const seconds = Math.floor((ms / 1000) % 60);
 
   return (
     <div>

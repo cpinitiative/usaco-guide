@@ -3,17 +3,20 @@ import { BaseHit, Hit } from 'instantsearch.js';
 import * as React from 'react';
 import { Highlight, useHits } from 'react-instantsearch';
 import { moduleIDToSectionMap } from '../../../content/ordering';
+import { useBlindMode } from '../../context/BlindModeContext';
 import { ConfettiProvider } from '../../context/ConfettiContext';
 import {
   useHideDifficultySetting,
   useHideModulesSetting,
   useShowTagsSetting,
 } from '../../context/UserDataContext/properties/simpleProperties';
+import { useUserProgressOnProblems } from '../../context/UserDataContext/properties/userProgress';
 import {
   AlgoliaProblemInfo,
   getProblemURL,
   isUsaco,
   ProblemInfo,
+  ProblemProgress,
   recentUsaco,
 } from '../../models/problem';
 import DifficultyBox from '../DifficultyBox';
@@ -29,6 +32,8 @@ function ProblemHit({ hit }: ProblemHitProps) {
   const hideDifficulty = useHideDifficultySetting();
   const showTags = useShowTagsSetting();
   const hideModules = useHideModulesSetting();
+  const { isBlindMode } = useBlindMode();
+
   if (hit.problemModules.length == 0 && recentUsaco.includes(hit.source)) {
     hit.problemModules.push({
       id: 'usaco-monthlies',
@@ -136,7 +141,7 @@ function ProblemHit({ hit }: ProblemHitProps) {
           </a>
         </>
       )}
-      {!hideModules && (
+      {!hideModules && !isBlindMode && (
         <>
           <p className="dark:text-dark-med-emphasis mt-2 text-sm text-gray-500">
             Appears In:
@@ -172,9 +177,53 @@ function ProblemHit({ hit }: ProblemHitProps) {
   );
 }
 
-export default function ProblemHits() {
+export default function ProblemHits({ shuffle, random }) {
   const { hits } = useHits() as { hits: AlgoliaProblemInfoHit[] };
-  if (!hits.length) {
+  const [displayHits, setDisplayHits] =
+    React.useState<AlgoliaProblemInfoHit[]>(hits);
+  const userProgressOnProblems = useUserProgressOnProblems();
+
+  function shuffleArr(arr) {
+    const nArr = [...arr];
+    let l = nArr.length;
+
+    while (l > 0) {
+      const i = Math.floor(Math.random() * l--);
+      [nArr[l], nArr[i]] = [nArr[i], nArr[l]];
+    }
+
+    return nArr;
+  }
+
+  React.useEffect(() => {
+    if (shuffle) {
+      setDisplayHits(shuffleArr(hits));
+    } else {
+      setDisplayHits(hits);
+    }
+  }, [shuffle, hits]);
+
+  React.useEffect(() => {
+    if (random) {
+      const unsolvedURLs: string[] = [];
+      for (const h of hits) {
+        const status: ProblemProgress =
+          userProgressOnProblems[String(h.uniqueId)] || 'Not Attempted';
+        if (status === 'Not Attempted') {
+          unsolvedURLs.push(h.url);
+        }
+      }
+
+      if (unsolvedURLs.length > 0) {
+        window.open(
+          unsolvedURLs[Math.floor(Math.random() * unsolvedURLs.length)],
+          '_blank'
+        );
+      }
+    }
+  }, [random]);
+
+  if (!hits.length || !displayHits.length) {
     return (
       <Info title="No Problems Found">
         No problems were found matching your search criteria. Try changing your
@@ -182,9 +231,10 @@ export default function ProblemHits() {
       </Info>
     );
   }
+
   return (
     <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-      {hits.map(hit => (
+      {displayHits.map(hit => (
         <ProblemHit hit={hit} key={hit.objectID} />
       ))}
     </div>

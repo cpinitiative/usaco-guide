@@ -5,16 +5,16 @@ title: Frequency of String
 author: Dustin Miao
 ---
 
-The [official editorial](https://codeforces.com/blog/entry/58991) mentions a solution using an Aho-Corasick Automaton built over the query strings. We run the initial string through the automaton to locate all occurence positions of each query. The answer can easily be identified for each query by using a sliding window.
+The [official editorial](https://codeforces.com/blog/entry/58991) mentions a solution using an Aho-Corasick Automaton built over the query strings. We run the initial string through the automaton to locate all occurrence positions of each query. The answer can easily be identified for each query by using a sliding window.
 
-More intuitively, instead of building an Aho-Corasick automaton over the queries, let us build a suffix automaton over the input string. Like before, we will need all occurence positions.
+More intuitively, instead of building an Aho-Corasick automaton over the queries, let us build a suffix automaton over the input string. Like before, we will need all occurrence positions.
 
-For a state $s$, let $pos[s]$ denote the ending position of the first occurence of any string that corresponds to state $s$.
+For a state $s$, let $pos[s]$ denote the ending position of the first occurrence of any string that corresponds to state $s$.
 - When we create a new state $s$, then $pos[s] = len[s] - 1$
 - When we clone state $t$ to create a state $s$, then $pos[s] = pos[t]$
-With this method,  we can easily initialize $pos$ without any extra time complexity. Let $occ_P$ be the set of positions where a string $P$ begins in the string. If state $s$ corresponds to $P$, then clearly $(pos[p] - |P| + 1) \in occ_P$. To find the remainder of occurence positions, we can take advantage of the structure of the suffix automaton.
+With this method,  we can easily initialize $pos$ without any extra time complexity. Let $occ_P$ be the set of positions where a string $P$ begins in the string. If state $s$ corresponds to $P$, then clearly $(pos[p] - |P| + 1) \in occ_P$. To find the remainder of occurrence positions, we can take advantage of the structure of the suffix automaton.
 
-All states where $P$ is a suffix is a candidate for $occ_P$. Thus, we simply do a BFS/DFS on the _suffix-link tree_, or the tree formed by building a tree out of the suffix links and rooted at the initial state, starting from state that we arrive at when we run $P$ through the suffix automaton. There is a technicality that more than one state may have the same occurence position. Namely, this happens only with cloned states; thus, we redefine $pos[s] = -1$ for all cloned states $s$.
+All states where $P$ is a suffix is a candidate for $occ_P$. Thus, we simply do a BFS/DFS on the _suffix-link tree_, or the tree formed by building a tree out of the suffix links and rooted at the initial state, starting from state that we arrive at when we run $P$ through the suffix automaton. There is a technicality that more than one state may have the same occurrence position. Namely, this happens only with cloned states; thus, we redefine $pos[s] = -1$ for all cloned states $s$.
 
 We can preprocess all queries, and solve them all with a single BFS/DFS.
 

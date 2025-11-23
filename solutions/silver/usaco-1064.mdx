@@ -2,103 +2,100 @@
 id: usaco-1064
 source: USACO Silver 2020 December
 title: Stuck in a Rut
-author: Qi Wang, Melody Yu (Video), Brad Ma
+author: Qi Wang, Melody Yu (Video), Brad Ma, David Guo, David Zhou
 ---
 
-[Official Analysis](http://usaco.org/current/data/sol_prob3_silver_dec20.html)
+[Official Analysis (Java)](http://usaco.org/current/data/sol_prob3_silver_dec20.html)
 
 ## Video Solution
 
 Note: The video solution might not be the same as other solutions. Code in C++.
 <YouTube id="7ZA0MQ9uFr4" />
 
+## Explanation
+
+Suppose we have a cow travelling horizontally at $(x_h, y_h)$ and another cow travelling vertically at $(x_v,y_v)$. They will intersect at $(x_v,y_h)$ given that $x_h\lt x_v$ and $y_v\lt y_h$. If a cow reaches this point first, then the later cow will be stopped.
+
+However, cows can be stopped before reaching possible intersections with other cows. Thus, we need to sort our cows to process them in a way that avoids this issue. We sort our horizontal-bound cows by increasing vertical values, and we sort our vertical-bound cows by increasing horizontal values. The sorted order ensures that once we find a potential collision, all cows that could have been would have been stopped. We can then check each pair of cows based on the following criteria:
+1. If either cow has already been stopped, we can skip this pair.
+2. If their paths do not intersect, we can skip this pair.
+3. If neither has been stopped and they do intersect, we stop the cow that is further from the intersection.
+
 ## Implementation
+
+**Time Complexity:** $\mathcal{O}(N^2)$
 
 <LanguageSection>
 <CPPSection>
 
 ```cpp
-// Created by Qi Wang
-
 #include <bits/stdc++.h>
-
 using namespace std;
 
-#define FOR(i, a, b) for (int i = (a); i < (b); i++)
-#define FORE(i, a, b) for (int i = (a); i <= (b); i++)
-#define F0R(i, a) for (int i = 0; i < (a); i++)
-#define trav(a, x) for (auto &a : x)
-
-typedef long long ll;
-
-struct Cow {
-	pair<int, int> coor;
-	int id;
-	Cow(pair<int, int> p, int i) {
-		coor = p;
-		id = i;
-	}
-};
-
-int N;
-vector<Cow> C_N;
-vector<Cow> C_E;
-
-// Custom sorting methods
-bool cmp(const Cow &o, const Cow &t) {
-	if (o.coor.first == t.coor.first) { return o.coor.second < t.coor.second; }
-	return o.coor.first < t.coor.first;
-}
-
-bool cmp2(const Cow &o, const Cow &t) {
-	if (o.coor.second == t.coor.second) { return o.coor.first < t.coor.first; }
-	return o.coor.second < t.coor.second;
-}
-
 int main() {
-	ios_base::sync_with_stdio(0);
-	cin.tie(0);
+	int n;
+	cin >> n;
 
-	cin >> N;
+	vector<int> x_coordinates(n);
+	vector<int> y_coordinates(n);
+	vector<int> east_cows;
+	vector<int> north_cows;
 
-	F0R(i, N) {
-		int x, y;
-		char d;
-		cin >> d >> x >> y;
-		if (d == 'N') {
-			C_N.push_back(Cow({x, y}, i));
+	for (int i = 0; i < n; i++) {
+		char direction;
+		cin >> direction >> x_coordinates[i] >> y_coordinates[i];
+		if (direction == 'E') {
+			east_cows.push_back(i);
 		} else {
-			C_E.push_back(Cow({x, y}, i));
+			north_cows.push_back(i);
 		}
 	}
 
-	sort(C_N.begin(), C_N.end(), cmp);
-	sort(C_E.begin(), C_E.end(), cmp2);
+	// sort the east cows by y-coordinate
+	sort(east_cows.begin(), east_cows.end(),
+	     [&](int a, int b) { return y_coordinates[a] < y_coordinates[b]; });
+	// sort the north cows by x-coordinate
+	sort(north_cows.begin(), north_cows.end(),
+	     [&](int a, int b) { return x_coordinates[a] < x_coordinates[b]; });
 
-	bool stopped[2501];
-	int blame[2501];
-	fill(stopped, stopped + N, false);
-	fill(blame, blame + N, 0);
-	trav(c1, C_E) {
-		trav(c2, C_N) {
-			// Checks whether they intersect
-			if (!stopped[c1.id] && !stopped[c2.id] &&
-			    c1.coor.second >= c2.coor.second && c1.coor.first <= c2.coor.first) {
-				int xlen = c2.coor.first - c1.coor.first;
-				int ylen = c1.coor.second - c2.coor.second;
+	vector<bool> stopped(n);
+	vector<int> amount_stopped(n);
+	for (int j : east_cows) {  // loop through all pairs of cows
+		for (int k : north_cows) {
+			/*
+			 * make sure that both the east and north cows
+			 * are not stopped a collision is only possible
+			 * if the x of the north cow is greater
+			 * than the x of east cow and the y of the east
+			 * cow is greater than the y of the north cow
+			 */
+			if ((!stopped[j]) && (!stopped[k]) &&
+			    (x_coordinates[k] > x_coordinates[j]) &&
+			    (y_coordinates[j] > y_coordinates[k])) {
+				if ((x_coordinates[k] - x_coordinates[j]) >
+				    (y_coordinates[j] - y_coordinates[k])) {
+					// the north cow stops the east cow
+					// mark the east cow as stopped
+					stopped[j] = true;
 
-				// checks which cow will block the other
-				if (ylen < xlen) {
-					stopped[c1.id] = true;
-					blame[c2.id] += 1 + blame[c1.id];
-				} else if (ylen > xlen) {
-					stopped[c2.id] = true;
-					blame[c1.id] += 1 + blame[c2.id];
+					// add number of cows that the east cow stops + 1
+					amount_stopped[k] += (1 + amount_stopped[j]);
+				} else if ((x_coordinates[k] - x_coordinates[j]) <
+				           (y_coordinates[j] - y_coordinates[k])) {
+					// the east cow stops the north cow
+					// mark the north cow as stopped
+					stopped[k] = true;
+
+					// add number of cows that the north cow stops + 1
+					amount_stopped[j] += (1 + amount_stopped[k]);
 				}
+				// if difference in x and difference in y is equal,
+				// let the cows continue as stated in the problem
 			}
 		}
 	}
-	F0R(i, N) { cout << blame[i] << "\n"; }
+
+	for (int i = 0; i < n; i++) { cout << amount_stopped[i] << '\n'; }
 }
 ```
 

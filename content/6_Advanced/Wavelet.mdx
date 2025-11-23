@@ -2,17 +2,46 @@
 id: wavelet
 title: 'Wavelet Tree'
 author: Benjamin Qi
+contributors: Omri Jerbi
 prerequisites:
+  - segtree-ext
   - RURQ
-description: "?"
+description: "Efficiently querying for the kth minimum element in a subarray."
 frequency: 0
 ---
 
-## Wavelet Tree
+## Introduction
+
+Suppose we have a static array of integers $a_0, a_1, \dots, a_{N-1}$ satisfying $0\le a_i<\sigma$, and we want to
+answer online queries of the following form:
+- Find the $k$-th smallest element in the contiguous subarray $a[l:r)$ (where $k$ is 0-indexed).
 
 <FocusProblem problem="waveletSam" />
 
-Like a segment tree on values rather than indices.
+In this module, we will introduce the concept of a *Wavelet Tree* to answer these queries efficiently with respect to both time and memory. Each module solution will build on the previous one.
+
+| Solution | Query Time Complexity | Memory Complexity |
+| ----- | ---- | ---- |
+| Module Solution 1 | $O(\log \sigma\log N)$| $O(N\log \sigma)$ |
+| Module Solutions 2a / 2b | $O(\log \sigma)$ | $O(N\log \sigma)$ |
+| Module Solution 3 | $O(\log \sigma)$ | $O(N)$ |
+| Persistent Segment Tree | $O(\log \sigma)$ | $O(N\log \sigma)$ |
+
+<Optional>
+
+If $\sigma>N$, then we can reduce $\sigma$ to $N$ by first applying [coordinate compression](/silver/sorting-custom#coordinate-compression) to $a$. However, we omit this step in the solutions below, since $\log \sigma$ isn't much larger than $\log N$ for the given constraints.
+
+</Optional>
+
+<Optional>
+
+[Persistent segment trees](/adv/persistent#persistent-segment-tree) can answer queries in the same time complexity as Wavelet Trees. However, Wavelet Trees will use less memory.
+
+</Optional>
+
+## Resources
+
+Reading these resources is optional, unless you find the in-module explanations too succinct.
 
 <Resources>
 	<Resource
@@ -28,14 +57,401 @@ Like a segment tree on values rather than indices.
 		title="Intro to New DS: Wavelet Trees"
 		url="52854"
 	>
-		Link in blog post is broken, check my comment.
 	</Resource>
 </Resources>
 
-### Solution - Range K-th Smallest
+<Optional>
 
-<IncompleteSection />
+The first resource also discusses how to support updates to $a$ including
+swapping ($\text{swap}(a_i, a_{i+1})$), among others.
 
-### Problems
+</Optional>
+
+## Range Kth Smallest: Solution 1
+
+Let's start by building a segment tree on the values $[0, \sigma)$. A segment
+tree node corresponding to a range of values $[v_l, v_r)$ will store
+
+1. A list containing the indices of the array $a$ with values in that range, in increasing order.
+2. If the node is not a leaf (that is, $v_l + 1 < v_r$), pointers to its two child nodes, corresponding to the ranges $[v_l, (v_l+v_r)/2)$ and $[(v_l+v_r)/2, v_r)$.
+
+A tree where each node stores a list of everything under it in sorted order is called a **merge-sort tree**.
+
+To build this data structure, we start at the root node corresponding to the range $[0,\sigma)$,
+partition the indices $[0,N)$ among its two children, and recursively build each child.
+This takes $O(N\log \sigma)$ time and memory.
+
+To answer a query, we again start at the root node, then recursively [walk](/plat/segtree-ext?lang=cpp#walking-on-a-segment-tree) down the tree until we reach the leaf node corresponding to the answer value. To determine whether to walk down into the left
+child or the right child of the current node, we first query the number of indices in the index vector of the left child in the range $[l,r)$ and store it into a variable $\texttt{num\_left}$.
+
+- If $k<\texttt{num\_left}$, then the answer is the $k$th-smallest value in the left child.
+- Otherwise, the answer is the $(k-\texttt{num\_left})$-th smallest value in the right child.
+
+Querying the count in a single node takes $O(\log N)$ time using binary search, and the tree has depth $O(\log \sigma)$, so in a total a query takes $O(\log \sigma\log N)$ time.
+
+### Implementation
+
+Note: we set $\sigma=2^{30}$ so that every node has length equal to a power of two.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int count_prefix(const vector<int> &v, int r) {
+	return lower_bound(begin(v), end(v), r) - begin(v);
+}
+
+struct Wavelet {
+	vector<int> inds;
+	Wavelet *l, *r;
+	void build(const vector<int> &A, int b) {
+		if (b == 0 || inds.empty()) return;
+		l = new Wavelet();
+		r = new Wavelet();
+		for (int x : inds) {
+			if (A[x] & (1 << (b - 1))) r->inds.push_back(x);
+			else l->inds.push_back(x);
+		}
+		l->build(A, b - 1);
+		r->build(A, b - 1);
+	}
+	// k-th (0-indexed) smallest value, only considering A[l, r)
+	int range_kth_smallest(int l, int r, int k, int b) {
+		if (b == 0) return 0;
+		int num_left = count_prefix(this->l->inds, r) - count_prefix(this->l->inds, l);
+		if (k < num_left) return this->l->range_kth_smallest(l, r, k, b - 1);
+		return (1 << (b - 1)) + this->r->range_kth_smallest(l, r, k - num_left, b - 1);
+	}
+};
+
+int main() {
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
+
+	int N, Q;
+	cin >> N >> Q;
+	vector<int> A(N);
+	for (int &a : A) cin >> a;
+
+	// build tree
+	Wavelet *root = new Wavelet();
+	root->inds.resize(N);
+	iota(begin(root->inds), end(root->inds), 0);
+	const int MAX_BIT = 30;
+	root->build(A, MAX_BIT);
+
+	// answer queries
+	for (int q = 0; q < Q; ++q) {
+		int l, r, k;
+		cin >> l >> r >> k;
+		cout << root->range_kth_smallest(l, r, k, MAX_BIT) << "\n";
+	}
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
+
+## Range Kth Smallest: Solution 2a
+
+Our goal in this section is to remove the $\log N$ factor from the query time
+complexity of solution 1 without changing the memory complexity. We'll continue
+to store a vector of integers at each segment tree node. Its length will be
+the same as before, but it will represent something different.
+
+Let's first consider what vector we should store at the root node to compute
+$\texttt{num\_left}$ without binary search. The simplest thing we could do is to
+store the values of $\texttt{count\_prefix}(\texttt{this->l->inds}, r)$ for each possible $r$
+from $0$ to $N$ inclusive. That is, all prefix sums of the length-$N$ bitvector
+with $i$th element equal to $1$ if $a_i$ maps to the left child node, and $0$ otherwise.
+Then $\texttt{num\_left}$ can be computed in constant time just by
+subtracting two prefix sums.
+
+In general, at each non-leaf node of the segment tree, we can first construct a bit vector
+of length equal to the subsequence of $A$ associated with that node with $1$s
+for values that map to the left child node and $0$s for others, and then store
+its prefix sums at that node.
+
+To answer queries, unlike solution 1, we'll need to modify $l$ and $r$ as we
+walk down the tree. Instead of representing the $l$th through $r$th indices of $A$,
+they'll now represent the $l$th through $r$th indices of the subsequence of $A$
+associated with the current node.
+
+### Implementation
+
+Note: The implementation avoids storing $\texttt{count\_prefix}(\texttt{this->l->inds}, 0)$
+since it's always zero.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int count_prefix(const vector<int> &v, int r) { return r == 0 ? 0 : v.at(r - 1); }
+
+struct Wavelet {
+	vector<int> num_lefts;
+	Wavelet *l, *r;
+	void build(const vector<int> &A, int b) {
+		if (b == 0 || A.empty()) return;
+		l = new Wavelet();
+		r = new Wavelet();
+		int num_left = 0;
+		vector<int> A0, A1;
+		for (int x : A) {
+			if (x & (1 << (b - 1))) {
+				A1.push_back(x);
+			} else {
+				++num_left;
+				A0.push_back(x);
+			}
+			num_lefts.push_back(num_left);
+		}
+		l->build(A0, b - 1);
+		r->build(A1, b - 1);
+	}
+	int range_kth_smallest(int l, int r, int k, int b) {
+		if (b == 0) return 0;
+		int pr = count_prefix(num_lefts, r);
+		int pl = count_prefix(num_lefts, l);
+		int num_left = pr - pl;
+		if (k < num_left) return this->l->range_kth_smallest(pl, pr, k, b - 1);
+		return (1 << (b - 1)) +
+		       this->r->range_kth_smallest(l - pl, r - pr, k - num_left, b - 1);
+	}
+};
+
+int main() {
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
+
+	int N, Q;
+	cin >> N >> Q;
+	vector<int> A(N);
+	for (int &a : A) cin >> a;
+
+	// build tree
+	Wavelet *root = new Wavelet();
+	const int MAX_BIT = 30;
+	root->build(A, MAX_BIT);
+
+	// answer queries
+	for (int q = 0; q < Q; ++q) {
+		int l, r, k;
+		cin >> l >> r >> k;
+		cout << root->range_kth_smallest(l, r, k, MAX_BIT) << "\n";
+	}
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
+
+### Solution 2b
+
+The following solution has the same time and memory complexity as the previous one,
+but the constant factor is much better. Specifically, it's more than twice as fast,
+and uses less than one tenth the memory!
+
+To accomplish this, it concatenates the
+bitvectors at each level into a single bitvector of length $N$ before taking prefix sums. This construction is known as the **Wavelet Matrix.**
+
+The query process can be seen to be equivalent to that of the solution above
+(up to translating $l$ and $r$ by a constant).
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
+
+	int N, Q;
+	cin >> N >> Q;
+	vector<int> A(N);
+	for (int &a : A) cin >> a;
+
+	const int MAX_BIT = 30;
+	vector<vector<int>> num_lefts(MAX_BIT);
+	for (int b = MAX_BIT - 1; b >= 0; --b) {
+		vector<int> A0, A1;
+		int num_left = 0;
+		for (int x : A) {
+			if (x & (1 << b)) {
+				A1.push_back(x);
+			} else {
+				++num_left;
+				A0.push_back(x);
+			}
+			num_lefts.at(b).push_back(num_left);
+		}
+		swap(A, A0);
+		A.insert(end(A), begin(A1), end(A1));
+	}
+
+	auto get_num_left = [&](int b, int r) {
+		return r == 0 ? 0 : num_lefts.at(b).at(r - 1);
+	};
+	auto range_kth_smallest = [&](int l, int r, int k) {
+		int ans = 0;
+		for (int b = MAX_BIT - 1; b >= 0; --b) {
+			int pr = get_num_left(b, r);
+			int pl = get_num_left(b, l);
+			int num_left = pr - pl;
+			if (k < num_left) {
+				l = pl, r = pr;
+			} else {
+				k -= num_left;
+				l = l - pl + num_lefts.at(b).back();
+				r = r - pr + num_lefts.at(b).back();
+				ans ^= 1 << b;
+			}
+		}
+		return ans;
+	};
+	for (int q = 0; q < Q; ++q) {
+		int l, r, k;
+		cin >> l >> r >> k;
+		cout << range_kth_smallest(l, r, k) << "\n";
+	}
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
+
+## Range Kth Smallest: Solution 3
+
+Here we discuss how to remove the factor of $\log \sigma$ from the memory complexity.
+
+<Optional>
+
+This entire section can be considered optional since the memory usage of solution 2b is already well below the limit.
+
+</Optional>
+
+The memory bottleneck in solution 2 is storing the prefix sums of $\log \sigma$ length-$N$ bitvectors,
+which takes $O(N\log \sigma)$ integers using the most straightforward approach. However, if we can reduce this to $O(N\log \sigma)$
+*bits* of information, we can pack these bits into $O(N\log \sigma / W)$ words where
+$W$ is the [word](https://en.wikipedia.org/wiki/Word_(computer_architecture)) size ($W=64$ on a 64-bit architecture). This is $O(N)$ words assuming $2^W>\sigma$ (that is, all the integers we're working with fit into a single word).
+
+It remains to describe how to store a single length-$N$ bitvector in
+$O(N)$ bits while still allowing constant time prefix sum queries. Specifically,
+we can store the original bitvector in $N$ bits and only the sums of prefixes
+with length divisible by $W$, taking $O(N\log N/W)$ bits, which is $O(N)$ bits assuming $2^W>N$. To answer a query for the
+$r$th prefix sum in constant time, we start with the $\lfloor r/W\rfloor\cdot W$th prefix sum and then use
+built-in operations that run in constant time to add the contribution of the
+remaining $r\%W$ bits (like $\texttt{\_\_builtin\_popcountll}$ to count the number of bits set in a 64-bit word).
+
+### Implementation
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+struct PrefixSummer {
+	const int BITS = 64;  // word size
+	vector<uint64_t> packed;
+	vector<int> psums;
+	void init(const vector<bool> &v) {
+		packed.resize(size(v) / BITS + 1);
+		for (int i = 0; i < size(v); ++i) {
+			if (v.at(i)) packed.at(i / BITS) |= 1ULL << (i % BITS);
+		}
+		psums = {0};
+		for (auto b : packed) psums.push_back(psums.back() + __builtin_popcountll(b));
+	}
+	int count_prefix(int r) {
+		return psums.at(r / BITS) +
+		       __builtin_popcountll(packed.at(r / BITS) & ((1ULL << (r % BITS)) - 1));
+	}
+	int count() { return psums.back(); }
+};
+
+int main() {
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
+
+	int N, Q;
+	cin >> N >> Q;
+	vector<int> A(N);
+	for (int &a : A) cin >> a;
+
+	const int MAX_BIT = 30;
+	vector<PrefixSummer> num_lefts(MAX_BIT);
+	for (int b = MAX_BIT - 1; b >= 0; --b) {
+		vector<int> A0, A1;
+		vector<bool> bitvec;
+		for (int x : A) {
+			if (x & (1 << b)) {
+				bitvec.push_back(0);
+				A1.push_back(x);
+			} else {
+				bitvec.push_back(1);
+				A0.push_back(x);
+			}
+		}
+		num_lefts.at(b).init(bitvec);
+		swap(A, A0);
+		A.insert(end(A), begin(A1), end(A1));
+	}
+
+	auto range_kth_smallest = [&](int l, int r, int k) {
+		int ans = 0;
+		for (int b = MAX_BIT - 1; b >= 0; --b) {
+			int pr = num_lefts.at(b).count_prefix(r);
+			int pl = num_lefts.at(b).count_prefix(l);
+			int num_left = pr - pl;
+			if (k < num_left) {
+				l = pl, r = pr;
+			} else {
+				k -= num_left;
+				l = l - pl + num_lefts.at(b).count();
+				r = r - pr + num_lefts.at(b).count();
+				ans ^= 1 << b;
+			}
+		}
+		return ans;
+	};
+	for (int q = 0; q < Q; ++q) {
+		int l, r, k;
+		cin >> l >> r >> k;
+		cout << range_kth_smallest(l, r, k) << "\n";
+	}
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
+
+## Problems
+
+<Info title="Suggestion">
+
+Try to solve all the problems below with Wavelet Tree. Other data structures
+will also pass under the given time and memory limits, although they will
+often add a log factor to the time or memory complexities.
+
+</Info>
 
 <Problems problems="wavelet" />

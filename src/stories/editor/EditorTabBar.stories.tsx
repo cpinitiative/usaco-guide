@@ -1,4 +1,4 @@
-import { Story } from '@storybook/react';
+import { StoryFn } from '@storybook/react-webpack5';
 import React, { ComponentProps } from 'react';
 import EditorTabBar from '../../components/Editor/EditorTabBar';
 
@@ -7,7 +7,7 @@ export default {
   component: EditorTabBar,
 };
 
-const Template: Story<ComponentProps<typeof EditorTabBar>> = args => (
+const Template: StoryFn<ComponentProps<typeof EditorTabBar>> = args => (
   <div>
     <EditorTabBar {...args} />
     <div className="h-24 bg-[#1E1E1E] p-8">VSCode Editor</div>

@@ -2,16 +2,28 @@
 id: usaco-690
 source: USACO Silver 2017 January
 title: Cow Dance Show
-author: Óscar Garries, Juheon Rhee, Brad Ma
+author: Óscar Garries, Juheon Rhee, Brad Ma, David Guo
 ---
 
 [Official Analysis (Java)](http://www.usaco.org/current/data/sol_cowdance_silver_jan17.html)
 
+## Explanation
+
+There are two parts in solving this problem. First, we need to efficiently determine whether a given value of $K$ is valid. Second, we need to efficiently find the smallest such $K$ which is valid.
+
+We start by determining if a given $K$ is valid. We can simulate the cows dancing on stage and then leaving, and whenever $K$ cows are on stage, we want to find the earliest time a cow leaves the stage (when the next cow can join). This motivates using a priority queue, which supports efficient insertion and removal of its minimum element. Therefore, checking whether $K$ is valid takes $\mathcal{O}(N\log K)$ time.
+
+Now, we wish to determine the minimum value of $K$ which is valid. Remember that $K=N$ is guaranteed to be a valid value.
+
+Observe that if $K$ is valid, then so is $K+1$, since having an extra spot cannot make the cows dance later than they originally would. Therefore, we can binary search for the smallest such $K$, which is fast enough to solve the problem.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N\log^2N)$
+
 <LanguageSection>
 
 <CPPSection>
-
-**Time Complexity:** $\mathcal{O}(N\log^2N)$
 
 ```cpp
 #include <bits/stdc++.h>

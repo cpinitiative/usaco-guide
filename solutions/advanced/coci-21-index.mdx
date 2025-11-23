@@ -1,0 +1,109 @@
+---
+id: coci-21-index
+source: COCI 2020-21 Contest 6
+title: Index
+author: Benjamin Qi
+---
+
+## [Official Solution](https://hsin.hr/coci/archive/2020_2021/)
+
+**Time Complexity:** $O((N+Q\log N)\log N)$
+
+**Memory Complexity:** $O(N\log N)$
+
+## Alternative Solution 1 (Persistent Segment Tree)
+
+The factor of $Q\log^2N$ from the solution above can be reduced to $Q\log N$
+by replacing binary search with a segment tree walk.
+
+<IncompleteSection />
+
+## Alternative Solution 2 (Wavelet Tree)
+
+Similar as the Wavelet tree module problem. All you need to change is the recursive
+query step.
+
+**Time Complexity:** $O(N+Q\log N)$
+
+**Memory Complexity:** $O(N)$
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+// BeginCodeSnip{BitVector Prefix Summer}
+struct PrefixSummer {
+	const int BITS = 64;
+	vector<uint64_t> packed;
+	vector<int> psums;
+	void init(const vector<bool> &v) {
+		packed.resize(size(v) / BITS + 1);
+		for (int i = 0; i < size(v); ++i) {
+			if (v.at(i)) packed.at(i / BITS) |= 1ULL << (i % BITS);
+		}
+		psums = {0};
+		for (auto b : packed) psums.push_back(psums.back() + __builtin_popcountll(b));
+	}
+	int count_prefix(int r) {
+		return psums.at(r / BITS) +
+		       __builtin_popcountll(packed.at(r / BITS) & ((1ULL << (r % BITS)) - 1));
+	}
+	int count() { return psums.back(); }
+};
+// EndCodeSnip
+
+int main() {
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
+
+	int N, Q;
+	cin >> N >> Q;
+	vector<int> A(N);
+	for (int &a : A) cin >> a;
+
+	const int MAX_BIT = 18;
+	vector<PrefixSummer> num_lefts(MAX_BIT);
+	for (int b = MAX_BIT - 1; b >= 0; --b) {
+		vector<int> A0, A1;
+		vector<bool> bitvec;
+		for (int x : A) {
+			if (x & (1 << b)) {
+				bitvec.push_back(0);
+				A1.push_back(x);
+			} else {
+				bitvec.push_back(1);
+				A0.push_back(x);
+			}
+		}
+		num_lefts.at(b).init(bitvec);
+		swap(A, A0);
+		A.insert(end(A), begin(A1), end(A1));
+	}
+
+	auto range_h_index = [&](int l, int r) {
+		int h = 0;
+		int cites = 0;
+		for (int b = MAX_BIT - 1; b >= 0; --b) {
+			int pr = num_lefts.at(b).count_prefix(r);
+			int pl = num_lefts.at(b).count_prefix(l);
+			int num_left = pr - pl;
+			int num_right = r - l - num_left;
+			if (cites + num_right >= h + (1 << b)) {
+				h += 1 << b;
+				l = l - pl + num_lefts.at(b).count();
+				r = r - pr + num_lefts.at(b).count();
+			} else {
+				cites += num_right;
+				l = pl;
+				r = pr;
+			}
+		}
+		return h;
+	};
+	for (int q = 0; q < Q; ++q) {
+		int l, r;
+		cin >> l >> r;
+		cout << range_h_index(l - 1, r) << "\n";
+	}
+}
+```

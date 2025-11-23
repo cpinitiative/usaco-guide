@@ -1,0 +1,101 @@
+---
+id: ac-YakinikuRestaurants
+source: AC
+title: Yakiniku Restaurants
+author: Daniel Zhu
+---
+
+Let's consider a naive solution first. If we fix the range of restaurants that
+we visit, then we should always visit them in order from left to right. This
+will cause us to lose $A_l + A_{l + 1} + ... + A_r$ units of happiness. Then, each ticket
+$j$ should be spent at the restaurant $i \in [l, r]$ with the largest value of
+$B_{i, j}$. Naively, this approach will run in $\mathcal{O}(N^2 M)$.
+
+Luckily for us, our happiness function $C(l, r)$ satisfies the Quadrangle Inequality!
+To see why, let's use the alternative definition of this inequality provided in the main module:
+> A function $C(l, r)$ satisfies the Quadrangle Inequality iff, when we increment $r$, decrementing $l$ can only grow more expensive. Formally, for all $l \leq r$, $C(l - 1, r) - C(l, r) \leq C(l - 1, r + 1) - C(l, r + 1)$.
+
+Since we're seeking to maximize $C(l, r)$, we instead look to show that incrementing $r$
+can only *diminish* the additional happiness we gain by decrementing $l$. This is
+rather intuitive: since the happiness gained from each ticket is equal to the maximum
+of all restaurants in our range, the impact of adding a single restaurant decreases
+as our range grows larger and larger.
+
+Formally, let $C_i$ denote $\max_{j \in [l + 1, r]} B_{j,i}$, the max happiness we can get
+from ticket $i$. Then, decrementing from $l + 1$ to $l$ changes our happiness by
+$$
+\sum_{i=1}^m \max(B_{l,i} -C_i,0) - A_l
+$$
+
+All $C_i$ can only increase when we increment $r$, and thus the above expression
+can only decrease.
+
+Thus, we can apply the divide-and-conquer method described in the main module to
+solve this problem in $\mathcal{O}(NM \log N)$.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(NM \log N)$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+#define int int64_t
+
+const int N = 5e3 + 1;
+const int M = 201;
+const int K = 13;
+int n, m, a[N];
+
+// RMQ---Sparse table
+int smax(int &a, int b) { return a = max(a, b); }
+struct ST : array<array<int, N>, K> {
+	void build() {
+		for (int k = 0; k < K - 1; k++) {
+			at(k + 1) = at(k);
+			for (int i = 0; i < n - (1 << k); i++) {
+				smax(at(k + 1).at(i), at(k).at(i + (1 << k)));
+			}
+		}
+	}
+
+	int query(int l, int r) {
+		int k = __lg(r - l);
+		return max(at(k).at(l), at(k).at(r - (1 << k)));
+	}
+} b[M];
+
+// maximize C for right endpoints in range [x, y) and left endpoints in range [l, r]
+int solve(int x, int y, int l, int r) {
+	if (x == y) return 0;
+	int i = (x + y) / 2;
+	pair<int, int> opt = {0, i};
+	for (int j = min(i, r); j >= l; j--) {
+		int s = a[j] - a[i];
+		for (int k = 0; k < m; k++) s += b[k].query(j, i + 1);
+		opt = max(opt, {s, j});
+	}
+	if (y - x == 1) return opt.first;
+	return max({opt.first, solve(x, i, l, opt.second), solve(i, y, opt.second, r)});
+}
+
+int32_t main() {
+	cin >> n >> m;
+	for (int i = 1; i < n; i++) cin >> a[i];
+	partial_sum(a, a + n, a);
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < m; j++) cin >> b[j][0][i];
+	}
+	for (int i = 0; i < m; i++) b[i].build();
+	cout << solve(0, n, 0, n - 1) << endl;
+}
+```
+
+</CPPSection>
+
+</LanguageSection>

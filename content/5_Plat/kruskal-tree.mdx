@@ -1,0 +1,172 @@
+---
+id: kruskal-tree
+title: Kruskal Reconstruction Tree
+author: Ryan Fu
+prerequisites:
+  - dsu
+  - tree-euler
+frequency: 1
+
+description: Decomposing Kruskal's algorithm to solve problems about minimum/maximum edge weights.
+---
+
+<Resources>
+	<Resource
+		source="CF"
+		title="[Tutorial] Reachability Tree / DSU-tree"
+		url="https://codeforces.com/blog/entry/85714"
+	>
+	</Resource>
+	<Resource
+		source="smax"
+		title="Kruskal Reconstruction Tree"
+		url="https://mzhang2021.github.io/cp-blog/kruskal/"
+	>
+	</Resource>
+
+</Resources>
+
+## Tutorial
+
+Suppose we want to support static path queries on a tree of size $N$ for the minimum edge between two vertices. Advanced readers may think of techniques like binary lifting, HLD, or even LCT to support operations in logarithmic complexity. A Kruskal Reconstruction Tree (KRT) can answer such queries in $\mathcal{O}(1)$ with $\mathcal{O}(N \log N)$ construction.
+
+We can build a KRT as follows:
+
+- We start with $N$ components each representing each node
+- Process each edge in sorted order. For an edge connecting $(u,v)$, create an auxiliary node $f$ that is the parent of the topmost nodes in the components of $u$ and $v$. Now, $f$ is the new topmost node in the merged component.
+
+Note that maintaining the relationships of components can be done in amortized logarithmic complexity using path compression similar to a [DSU](/gold/dsu?lang=cpp).
+
+We end up with a binary tree of size $2N -1$. We can support queries by returning the edge weight of the node corresponding to $\texttt{lca}(u, v)$.
+
+For a rough proof of correctness, consider the following:
+
+> Consider the KRT right before adding the node corresponding to $\texttt{lca}(u, v)$. By definition of LCA, $u$ and $v$ are not connected, implying that the minimum weight edge can not be weighted less than $\texttt{lca}(u, v)$. Additionally, because all edges added after the one corresponding to $\texttt{lca}(u, v)$ are of greater weight, our answer is indeed the edge corresponding to $\texttt{lca}(u, v)$.
+
+Thus, by using [$\mathcal{O}(1)$ LCA methods](/gold/tree-euler?lang=cpp), we can answer our queries with the aforementioned complexity.
+
+## Example - Qpwoeirut and Vertices
+
+<FocusProblem problem="qpav" />
+
+To solve this task, we can assign edge weights based on their index in the input order. Then, we can construct the Kruskal Tree, only processing edges between nodes that aren't already connected (similar to the Kruskal Tree's namesake, [Kruskal's Algorithm](/gold/mst)).
+
+From here, we need a fast way to query the $\text{LCA}$ of a range of nodes. One way to do this is to maintain the DFS order of the nodes, and take the $\text{LCA}$ of the nodes with the earliest and latest traversal within the range. This can be done with any range query data structure, such as a sparse table or segment tree.
+
+### Implementation
+
+An optimal time complexity for this problem would be $\mathcal{O}(N+M+Q)$, using $\mathcal{O}(1)/\mathcal{O}(N)$ LCA and RMQ methods. However, we present an $\mathcal{O}((N+Q)\log N + M)$ solution for simplicity.
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+constexpr int MAX_N = 4e5 + 5;
+constexpr int LG = 20;
+
+int n, m, q, va[MAX_N], f[MAX_N], nx;
+int trace(int v) { return f[v] == v ? v : f[v] = trace(f[v]); }
+
+/** Implements LCA with binary lifting */
+namespace LCA {
+int lift[MAX_N][LG], ch[MAX_N][2], t, tin[MAX_N], tout[MAX_N], tour[2 * MAX_N];
+
+bool is_ancestor(int u, int v) { return tin[u] <= tin[v] && tout[u] >= tout[v]; }
+
+int lca(int u, int v) {
+	if (is_ancestor(u, v)) { return u; }
+	if (is_ancestor(v, u)) { return v; }
+
+	for (int i = LG - 1; i >= 0; --i) {
+		if (!is_ancestor(lift[u][i], v)) { u = lift[u][i]; }
+	}
+
+	return lift[u][0];
+}
+
+void dfs(int v) {
+	if (v == -1) { return; }
+	tour[t] = v;
+	tin[v] = t;
+
+	for (int i = 1; i < LG; i++) { lift[v][i] = lift[lift[v][i - 1]][i - 1]; }
+
+	dfs(ch[v][0]);
+	dfs(ch[v][1]);
+	tout[v] = t++;
+}
+}  // namespace LCA
+
+/** Point Update / Range Min/Max Segment Tree */
+namespace SGT {
+int sg_min[1 << LG + 1], sg_max[1 << LG + 1];
+
+void point_set(int i, int v) {
+	sg_min[i + (1 << LG)] = sg_max[i + (1 << LG)] = v;
+	for (int j = (i + (1 << LG)) / 2; j; j /= 2) {
+		sg_min[j] = min(sg_min[2 * j], sg_min[2 * j + 1]),
+		sg_max[j] = max(sg_max[2 * j], sg_max[2 * j + 1]);
+	}
+}
+
+/** @return edge (LCA of nodes w/ lowest and highest traversal time in [l, r]) */
+int query(int l, int r) {
+	int lift = MAX_N, rt = -1;
+	for (l += 1 << LG, r += 1 << LG; l < r; l >>= 1, r >>= 1) {
+		if (l & 1) { lift = min(lift, sg_min[l]), rt = max(rt, sg_max[l++]); }
+		if (r & 1) { lift = min(lift, sg_min[--r]), rt = max(rt, sg_max[r]); }
+	}
+	return va[LCA::lca(LCA::tour[lift], LCA::tour[rt])];
+}
+}  // namespace SGT
+
+void solve() {
+	cin >> n >> m >> q;
+
+	iota(f, f + 2 * n, 0);
+	nx = n;
+	memset(LCA::ch, -1, sizeof(LCA::ch));
+
+	for (int i = 0; i < m; i++) {
+		int u, v;
+		cin >> u >> v;
+		// assign u and v to the top of their component
+		u = trace(--u), v = trace(--v);
+
+		// if the edge is within one component, no further work is needed
+		// otherwise, create a new node that is the parent of both components
+
+		if (u == v) { continue; }
+		va[nx] = i, LCA::ch[nx][0] = u, LCA::ch[nx][1] = v;
+		f[u] = f[v] = LCA::lift[u][0] = LCA::lift[v][0] = nx++;
+	}
+
+	LCA::lift[2 * n - 2][0] = 2 * n - 2;
+	LCA::dfs(2 * n - 2);
+
+	// update segment tree for range min/max of dfs-order traversal times
+	for (int i = 0; i < 2 * n - 1; i++) { SGT::point_set(i, LCA::tin[i]); }
+
+	while (q--) {
+		int l, r;
+		cin >> l >> r;
+		if (l == r) {
+			cout << "0 ";
+		} else {
+			cout << SGT::query(l - 1, r) + 1 << " ";
+		}
+	}
+
+	cout << "\n";
+}
+
+int main() {
+	int test_num;
+	cin >> test_num;
+	for (int t = 0; t < test_num; t++) { solve(); }
+}
+```
+
+## Problems
+
+<Problems problems="general" />

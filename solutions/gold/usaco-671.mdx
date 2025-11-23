@@ -2,10 +2,263 @@
 id: usaco-671
 source: USACO Gold 2016 December
 title: Lasers and Mirrors
-author: Maggie Liu, George Pong
+author: Maggie Liu, George Pong, David Zhou
 ---
 
-[Official Analysis](http://www.usaco.org/current/data/sol_lasers_gold_dec16.html)
+## Video Solution
+
+By David Zhou
+
+<YouTube id="IVvh6nn2MCo" />
+
+<Spoiler title="Video Solution Code">
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <climits>
+#include <iostream>
+#include <queue>
+#include <unordered_map>
+#include <utility>
+#include <vector>
+using namespace std;
+
+int main() {
+	freopen("lasers.in", "r", stdin);
+	freopen("lasers.out", "w", stdout);
+	int n;
+	cin >> n;
+
+	// laser is first point; barn is last point
+	vector<pair<int, int>> points(n + 2);
+	cin >> points[0].first >> points[0].second >> points[n + 1].first >>
+	    points[n + 1].second;
+	for (int i = 1; i <= n; i++) { cin >> points[i].first >> points[i].second; }
+
+	//  hashmaps store indices of fence posts at coordinates
+	//  v_to_h converts vertical lasers (x-value) to horizontal ones (y-value)
+	//  h_to_v converts horizontal lasers (y-values) to vertical ones (x-value)
+	unordered_map<int, vector<int>> v_to_h, h_to_v;
+	for (int i = 0; i < points.size(); i++) {
+		int x = points[i].first, y = points[i].second;
+		v_to_h[x].push_back(i);
+		h_to_v[y].push_back(i);
+	}
+
+	// dist stores # of mirrors used to get to a point
+	// dist[dist.size()-1] corresponds to barn's distance
+	vector<int> dist(n + 2, INT_MAX);
+	dist[0] = 0;
+
+	// queue for BFS stores pair of {index, directions}
+	// 0 is vertical; 1 is horizontal
+	queue<pair<int, int>> q;
+	q.push({0, 0});
+	q.push({0, 1});
+	while (!q.empty()) {
+		int idx = q.front().first, dir = q.front().second;
+		q.pop();
+
+		if (dir == 0) {
+			int x = points[idx].first;
+			for (int next : v_to_h[x]) {
+				if (dist[next] == INT_MAX) {
+					dist[next] = dist[idx] + 1;
+					q.push({next, 1});
+				}
+			}
+		} else {
+			int y = points[idx].second;
+			for (int next : h_to_v[y]) {
+				if (dist[next] == INT_MAX) {
+					dist[next] = dist[idx] + 1;
+					q.push({next, 0});
+				}
+			}
+		}
+	}
+
+	cout << (dist[dist.size() - 1] == INT_MAX ? -1 : dist[dist.size() - 1] - 1) << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Lasers {
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new FileReader("lasers.in"));
+		PrintWriter pw =
+		    new PrintWriter(new BufferedWriter(new FileWriter("lasers.out")));
+
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int n = Integer.parseInt(st.nextToken());
+		int x1 = Integer.parseInt(st.nextToken());
+		int y1 = Integer.parseInt(st.nextToken());
+		int x2 = Integer.parseInt(st.nextToken());
+		int y2 = Integer.parseInt(st.nextToken());
+
+		// laser is first point; barn is last point
+		List<int[]> points = new ArrayList<>();
+
+		points.add(new int[] {x1, y1});
+		for (int i = 0; i < n; i++) {
+			st = new StringTokenizer(br.readLine());
+			int x = Integer.parseInt(st.nextToken());
+			int y = Integer.parseInt(st.nextToken());
+			points.add(new int[] {x, y});
+		}
+		points.add(new int[] {x2, y2});
+
+		// hashmaps store indices of fence posts at coordinates
+		// v_to_h converts vertical lasers (x-value) to horizontal ones (y-value)
+		// h_to_v converts horizontal lasers (y-values) to vertical ones (x-value)
+		Map<Integer, List<Integer>> v_to_h = new HashMap<>();
+		Map<Integer, List<Integer>> h_to_v = new HashMap<>();
+
+		for (int i = 0; i < points.size(); i++) {
+			int x = points.get(i)[0];
+			int y = points.get(i)[1];
+			v_to_h.computeIfAbsent(x, k -> new ArrayList<>()).add(i);
+			h_to_v.computeIfAbsent(y, k -> new ArrayList<>()).add(i);
+		}
+
+		// dist stores # of mirrors used to get to a point
+		// dist[dist.size()-1] corresponds to barn's distance
+		int[] dist = new int[n + 2];
+		Arrays.fill(dist, Integer.MAX_VALUE);
+		dist[0] = 0;
+
+		// queue for BFS stores pair of {index, directions}
+		// 0 is vertical; 1 is horizontal
+		Queue<int[]> q = new ArrayDeque<>();
+		q.add(new int[] {0, 0});
+		q.add(new int[] {0, 1});
+
+		while (!q.isEmpty()) {
+			int[] curr = q.poll();
+			int idx = curr[0], dir = curr[1];
+
+			if (dir == 0) {
+				int x = points.get(idx)[0];
+				for (int next : v_to_h.getOrDefault(x, Collections.emptyList())) {
+					if (dist[next] == Integer.MAX_VALUE) {
+						dist[next] = dist[idx] + 1;
+						q.add(new int[] {next, 1});
+					}
+				}
+			} else {
+				int y = points.get(idx)[1];
+				for (int next : h_to_v.getOrDefault(y, Collections.emptyList())) {
+					if (dist[next] == Integer.MAX_VALUE) {
+						dist[next] = dist[idx] + 1;
+						q.add(new int[] {next, 0});
+					}
+				}
+			}
+		}
+
+		pw.println(dist[n + 1] == Integer.MAX_VALUE ? -1 : dist[n + 1] - 1);
+		pw.close();
+		br.close();
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+from collections import deque, defaultdict
+
+
+def main():
+	with open("lasers.in", "r") as f:
+		tokens = f.read().split()
+
+	ptr = 0
+	n = int(tokens[ptr])
+	ptr += 1
+	x1 = int(tokens[ptr])
+	ptr += 1
+	y1 = int(tokens[ptr])
+	ptr += 1
+	x2 = int(tokens[ptr])
+	ptr += 1
+	y2 = int(tokens[ptr])
+	ptr += 1
+
+	# laser is first point; barn is last point
+	points = []
+
+	points.append((x1, y1))
+	for _ in range(n):
+		x = int(tokens[ptr])
+		ptr += 1
+		y = int(tokens[ptr])
+		ptr += 1
+		points.append((x, y))
+	points.append((x2, y2))
+
+	# hashmaps store indices of fence posts at coordinates
+	# v_to_h converts vertical lasers (x-value) to horizontal ones (y-value)
+	# h_to_v converts horizontal lasers (y-values) to vertical ones (x-value)
+	v_to_h = defaultdict(list)
+	h_to_v = defaultdict(list)
+
+	for i, (x, y) in enumerate(points):
+		v_to_h[x].append(i)
+		h_to_v[y].append(i)
+
+	# dist stores # of mirrors used to get to a point
+	# dist[dist.size()-1] corresponds to barn's distance
+	dist = [float("inf")] * (n + 2)
+	dist[0] = 0
+
+	# queue for BFS stores pair of {index, directions}
+	# 0 is vertical; 1 is horizontal
+	q = deque()
+	q.append((0, 0))
+	q.append((0, 1))
+
+	while q:
+		idx, dir = q.popleft()
+
+		if dir == 0:
+			x = points[idx][0]
+			for next_idx in v_to_h.get(x, []):
+				if dist[next_idx] == float("inf"):
+					dist[next_idx] = dist[idx] + 1
+					q.append((next_idx, 1))
+		else:
+			y = points[idx][1]
+			for next_idx in h_to_v.get(y, []):
+				if dist[next_idx] == float("inf"):
+					dist[next_idx] = dist[idx] + 1
+					q.append((next_idx, 0))
+
+	with open("lasers.out", "w") as f:
+		f.write(str(-1 if dist[n + 1] == float("inf") else dist[n + 1] - 1) + "\n")
+
+
+if __name__ == "__main__":
+	main()
+```
+
+</PySection>
+</LanguageSection>
+
+</Spoiler>
+
+[Official Analysis (Java)](http://www.usaco.org/current/data/sol_lasers_gold_dec16.html)
+
+## Explanation
 
 It is optimal to use each fence post at most once, so we can use BFS to find the
 minimum number of fence posts needed to direct the laser to the barn. We store
@@ -26,7 +279,6 @@ one less than the distance.
 **Time Complexity:** $\mathcal{O}(N)$
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
@@ -78,7 +330,6 @@ int main() {
 ```
 
 </CPPSection>
-
 <PySection>
 
 ```py
@@ -138,5 +389,4 @@ print(min_dist, file=open("lasers.out", "w"))
 ```
 
 </PySection>
-
 </LanguageSection>

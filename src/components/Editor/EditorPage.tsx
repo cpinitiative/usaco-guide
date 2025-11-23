@@ -11,7 +11,7 @@
 
 import { PageProps } from 'gatsby';
 import { useAtomValue, useSetAtom } from 'jotai';
-import React, { useEffect } from 'react';
+import React, { lazy } from 'react';
 import Split from 'react-split';
 import {
   filesListAtom,
@@ -20,12 +20,27 @@ import {
   tokenAtom,
 } from '../../atoms/editor';
 import QuizGeneratorProvider from '../../context/QuizGeneratorContext';
+import { LazyLoad } from '../../utils/lazyLoad';
 import Layout from '../layout';
 import SEO from '../seo';
-import { EditorOutput } from './EditorOutput';
-import { EditorSidebar } from './EditorSidebar/EditorSidebar';
-import { EditorTopNav } from './EditorTopNav';
-import { MainEditorInterface } from './MainEditorInterface';
+
+// Lazy load heavy components
+const EditorOutput = lazy(() =>
+  import('./EditorOutput').then(module => ({ default: module.EditorOutput }))
+);
+const EditorSidebar = lazy(() =>
+  import('./EditorSidebar/EditorSidebar').then(module => ({
+    default: module.EditorSidebar,
+  }))
+);
+const EditorTopNav = lazy(() =>
+  import('./EditorTopNav').then(module => ({ default: module.EditorTopNav }))
+);
+const MainEditorInterface = lazy(() =>
+  import('./MainEditorInterface').then(module => ({
+    default: module.MainEditorInterface,
+  }))
+);
 
 // From https://stackoverflow.com/questions/2090551/parse-query-string-in-javascript
 function getQueryVariable(query, variable) {
@@ -43,7 +58,8 @@ export default function EditorPage(props: PageProps): JSX.Element {
   const editor = useAtomValue(monacoEditorInstanceAtom);
   const openOrCreateExistingFile = useSetAtom(openOrCreateExistingFileAtom);
   const setToken = useSetAtom(tokenAtom);
-  useEffect(() => {
+
+  React.useEffect(() => {
     const code = new URLSearchParams(props.location.search).get('code');
     if (!code) return;
     fetch('/api/get-token', {
@@ -60,7 +76,8 @@ export default function EditorPage(props: PageProps): JSX.Element {
       });
     history.replaceState({}, '', '/editor');
   }, [props.location.search, setToken]);
-  const filesList = useAtomValue(filesListAtom); // null if hasn't been loaded from storage yet
+
+  const filesList = useAtomValue(filesListAtom);
   React.useEffect(() => {
     const defaultFilePath =
       props.location?.search?.length > 0
@@ -74,10 +91,12 @@ export default function EditorPage(props: PageProps): JSX.Element {
   return (
     <QuizGeneratorProvider>
       <Layout>
-        <SEO title="Editor" />
+        <SEO title="Editor" image={undefined} pathname={undefined} />
 
         <div className="flex h-screen min-w-[768px] flex-col">
-          <EditorTopNav />
+          <LazyLoad>
+            <EditorTopNav />
+          </LazyLoad>
 
           {typeof window !== 'undefined' && (
             <Split
@@ -87,19 +106,24 @@ export default function EditorPage(props: PageProps): JSX.Element {
               }}
               minSize={[600, 10]}
             >
-              {/* https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.istandaloneeditorconstructionoptions.html */}
               <div className="flex items-stretch">
-                <EditorSidebar
-                  className="h-full shrink-0"
-                  loading={
-                    !!new URLSearchParams(props.location.search).get('code')
-                  }
-                />
-                <MainEditorInterface className="h-full w-0 flex-1" />
+                <LazyLoad>
+                  <EditorSidebar
+                    className="h-full shrink-0"
+                    loading={
+                      !!new URLSearchParams(props.location.search).get('code')
+                    }
+                  />
+                </LazyLoad>
+                <LazyLoad>
+                  <MainEditorInterface className="h-full w-0 flex-1" />
+                </LazyLoad>
               </div>
               <div className="flex flex-col">
                 <div className="relative flex-1 overflow-y-auto">
-                  <EditorOutput />
+                  <LazyLoad>
+                    <EditorOutput />
+                  </LazyLoad>
                 </div>
               </div>
             </Split>

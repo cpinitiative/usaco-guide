@@ -1,7 +1,6 @@
 import Tippy from '@tippyjs/react';
 import * as React from 'react';
 import { useContext, useRef, useState } from 'react';
-import 'tippy.js/themes/light.css';
 import ConfettiContext from '../../context/ConfettiContext';
 import { useDarkMode } from '../../context/DarkModeContext';
 import MarkdownLayoutContext from '../../context/MarkdownLayoutContext';
@@ -170,7 +169,7 @@ export default function ResourcestatusCheckbox({
     Skipped: 'bg-blue-300 dark:bg-blue-700',
     Ignored: 'bg-red-100 dark:bg-red-900',
   };
-  const tippyRef = useRef<any>();
+  const tippyRef = useRef<any>(null);
   const showConfetti = useContext(ConfettiContext);
   return (
     <Tippy

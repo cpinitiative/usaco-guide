@@ -31,18 +31,20 @@ export default function useWindowDimensions() {
     height: 920,
     width: 620,
   });
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
+    setIsClient(true);
     function handleResize() {
       setWindowDimensions(getWindowDimensions());
     }
     handleResize();
 
     const efficientResize = debounce(handleResize, 250);
-
     window.addEventListener('resize', efficientResize);
-    return () => window.removeEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', efficientResize);
   }, []);
 
-  return windowDimensions;
+  // Return default dimensions during SSR, actual dimensions after hydration
+  return isClient ? windowDimensions : { height: 920, width: 620 };
 }

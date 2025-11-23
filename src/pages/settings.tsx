@@ -35,7 +35,7 @@ import { useUserPermissions } from '../context/UserDataContext/UserPermissionsCo
 - Import / Export
  */
 
-export default function SettingsPage() {
+export default function SettingsPage(props) {
   const { isAdmin } = useUserPermissions();
   const tabs = [
     'general',
@@ -64,7 +64,7 @@ export default function SettingsPage() {
 
   return (
     <Layout>
-      <SEO title="Settings" />
+      <SEO title="Settings" image={null} pathname={props.path} />
 
       <TopNavigationBar />
 

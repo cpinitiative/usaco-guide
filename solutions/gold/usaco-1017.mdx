@@ -2,14 +2,18 @@
 id: usaco-1017
 source: USACO Gold 2020 February
 title: Timeline
-author: Sofia Yang, Jeffrey Zhang
+author: Sofia Yang, Jeffrey Zhang, David Guo
 ---
 
-## Solution
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_timeline_gold_feb20.html)
 
-[Official Analysis](http://www.usaco.org/current/data/sol_timeline_gold_feb20.html)
+Let's construct a graph, and for each tuple $(a, b, x)$ we add a directed edge from $a$ to $b$ with weight $x$. Observe that there cannot be any cycles in this graph, since otherwise no solution would exist. Therefore, we can process the sessions (tuples) in order using topological sort.
 
-### Implementation
+Without loss of generality, suppose that the topological sort ordering is $1, 2, \dots , N$ so that all edges satisfy $a \lt b$. Then, for each directed edge in increasing order of $a$, we set $S_b = \max(S_b, S_a + x)$, since the earliest possible date is the later one of $S_b$ and $S_a + x$.
+
+Once we process all edges, the resulting $S_1, S_2, \dots , S_N$ are the earliest possible dates with the given edge constraints, and we are done.
+
+## Implementation
 
 **Time Complexity:** $\mathcal{O}(N+M)$
 

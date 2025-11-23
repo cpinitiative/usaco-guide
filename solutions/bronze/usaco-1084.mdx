@@ -2,7 +2,7 @@
 id: usaco-1084
 source: USACO Bronze 2021 January
 title: Even More Odd Photos
-author: Sathvik Chundru, Melody Yu (Video), Juheon Rhee
+author: Sathvik Chundru, Melody Yu (Video), Juheon Rhee, David Guo
 ---
 
 ## Video Solution
@@ -143,6 +143,18 @@ What about if there's too many odd cows?
 <Spoiler title="Solution">
 
 [Official Analysis (C++)](http://www.usaco.org/current/data/sol_prob2_bronze_jan21.html)
+
+## Explanation
+
+In the best case scenario, each cow is in its own group, and the answer is $N$. When does this happen?
+
+Let $O$ be the number of odd cows and $E$ be the number of even cows in the list initially. For each cow to be in its own group, we must have either $E = O$ or $E = O + 1$.
+
+Otherwise, some groups must contain more than one cow. Now there are two cases to the problem.
+
+If $E \gt O + 1$, then we have too many even cows. Since two even numbers add to an even, we can take an even cow to be the first group, then take an odd cow to be the next group, and repeat this $O$ times. The remaining cows are all even, so putting them all into one big group causes no issues. In this case, the answer is $2O + 1$.
+
+Otherwise, we must have $E < O$, so we have too many odd cows. Since two odd numbers add to an even, we can pair two odd cows together, which is equivalent to having two fewer odd cows and one more even cow. We repeat this process of pairing two odd cows until $E \ge O$, at which point we can use the logic in the first case to compute the answer.
 
 ## Implementation
 
