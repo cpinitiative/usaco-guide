@@ -163,7 +163,7 @@ void buildFarms() {
 void notifyFJ(int a, int b){
     int l = lca(a, b);
 
-    auto on_path = [&](int anc, int desc, bool exclude = false) {
+    auto process_path = [&](int anc, int desc, bool exclude = false) {
         int x1 = locs[anc][0];
         int y1 = locs[anc][1];
         int x2 = locs[desc][0];
@@ -172,12 +172,12 @@ void notifyFJ(int a, int b){
     };
 
     if (l == a) {
-        on_path(a, b);
+        process_path(a, b);
     } else if (l == b) {
-        on_path(b, a);
+        process_path(b, a);
     } else {
-        on_path(l, a);
-        on_path(l, b, true);
+        process_path(l, a);
+        process_path(l, b, true);
     }
 }
 ```
