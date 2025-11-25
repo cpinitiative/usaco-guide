@@ -143,11 +143,11 @@ both the left and right endpoints of the subarray only move to the right.
 
 We can keep a pointer to the left boundary of the window and expand the right
 boundary until we find a song that has already been accounted for. The song can
-be quickly looked up with a set. 
+be quickly looked up with a set.
 
 Then, we erase the left boundary from the set and move the left pointer up by one.
 
-The answer is the largest distance between the left and right pointers. 
+The answer is the largest distance between the left and right pointers.
 <LanguageSection>
 
 <CPPSection>
@@ -261,7 +261,7 @@ as it removes large numbers and keeps small numbers.
 
 #### Monotonoic Queue
 
-A monotonic queue is one that is always increasing or decreasing. It is implemented by ensuring the newest 
+A monotonic queue is one that is always increasing or decreasing. It is implemented by ensuring the newest
 elements are larger or smaller than the previous elements. If not, the previous elements are popped until
 the condition is met.
 
@@ -275,9 +275,7 @@ deque<int> increasing;
 deque<int> decreasing;
 
 for (int e : nums) {
-	while (!increasing.empty() && increasing.back() > e) {
-		increasing.pop_back();
-	}
+	while (!increasing.empty() && increasing.back() > e) { increasing.pop_back(); }
 
 	increasing.push_back(e);
 }
@@ -285,9 +283,7 @@ for (int e : nums) {
 // increasing should be [1, 2, 3, 4]
 
 for (int e : nums) {
-	while (!decreasing.empty() && decreasing.back() < e) {
-		decreasing.pop_back();
-	}
+	while (!decreasing.empty() && decreasing.back() < e) { decreasing.pop_back(); }
 
 	decreasing.push_back(e);
 }
@@ -335,18 +331,18 @@ increasing = collections.deque()
 decreasing = collections.deque()
 
 for e in nums:
-    while increasing and increasing[-1] > e:
-        increasing.pop()
-    
-    increasing.append(e)
+	while increasing and increasing[-1] > e:
+		increasing.pop()
+
+	increasing.append(e)
 
 # increasing should be [1, 2, 3, 4]
 
 for e in nums:
-    while decreasing and decreasing[-1] < e:
-        decreasing.pop()
-    
-    decreasing.append(e)  
+	while decreasing and decreasing[-1] < e:
+		decreasing.pop()
+
+	decreasing.append(e)
 
 # decreasing should be [5, 4]
 ```
@@ -359,27 +355,25 @@ for e in nums:
 
 This is method 2 from cp-algo.
 
-The solution is a monotonic queue with the added window size constraints. We print the 
+The solution is a monotonic queue with the added window size constraints. We print the
 first element (which is the largest, because the queue is decreasing), and then pop it. We pop it
 because the first element is also the oldest due to the FIFO nature of queues, meaning it must be
-removed to shift the window right. Then, we remove any numbers that are smaller than our current 
-number to maintain monotonicity. 
+removed to shift the window right. Then, we remove any numbers that are smaller than our current
+number to maintain monotonicity.
 
 <LanguageSection>
 
 <CPPSection>
 
 ```cpp
-vector<int> maxSlidingWindow(vector<int>& nums, int k) {
+vector<int> maxSlidingWindow(vector<int> &nums, int k) {
 	vector<int> ret;
 	deque<int> d;
 
 	for (int i = 0; i < nums.size(); i++) {
 		if (!d.empty() && d.front() <= i - k) { d.pop_front(); }
 
-		while (!d.empty() && nums[d.back()] < nums[i]) {
-			d.pop_back();
-		}
+		while (!d.empty() && nums[d.back()] < nums[i]) { d.pop_back(); }
 
 		d.push_back(i);
 
@@ -402,9 +396,7 @@ public int[] maxSlidingWindow(int[] nums, int k) {
 	for (int i = 0; i < nums.length; i++) {
 		if (!d.isEmpty() && d.peekFirst() <= i - k) { d.pollFirst(); }
 
-		while (!d.isEmpty() && nums[d.peekLast()] < nums[i]) {
-			d.pollLast();
-		}
+		while (!d.isEmpty() && nums[d.peekLast()] < nums[i]) { d.pollLast(); }
 
 		d.addLast(i);
 
@@ -423,7 +415,7 @@ public int[] maxSlidingWindow(int[] nums, int k) {
 def maxSlidingWindow(self, nums: List[int], k: int) -> List[int]:
 	d = collections.deque()
 	ret = []
-	
+
 	for i, num in enumerate(nums):
 		if d and d[0] <= i - k:
 			d.popleft()
@@ -432,7 +424,7 @@ def maxSlidingWindow(self, nums: List[int], k: int) -> List[int]:
 			d.pop()
 
 		d.append(i)
-		
+
 		if i >= k - 1:
 			ret.append(nums[d[0]])
 
@@ -444,10 +436,10 @@ def maxSlidingWindow(self, nums: List[int], k: int) -> List[int]:
 </LanguageSection>
 
 #### Deque - Storing Values
-Method 1 from cp-algo is a similar approach but stores the value itself rather than indices. 
+Method 1 from cp-algo is a similar approach but stores the value itself rather than indices.
 
 Inserting an element is the same process, but deleting an element is different. Because no
-indices are given this time, we check if the front of the queue is the same as the left boundary 
+indices are given this time, we check if the front of the queue is the same as the left boundary
 of the sliding window. If it is, then we remove it to ensure our window constraints are met.
 
 <LanguageSection>
@@ -455,22 +447,18 @@ of the sliding window. If it is, then we remove it to ensure our window constrai
 <CPPSection>
 
 ```cpp
-vector<int> maxSlidingWindow(vector<int>& nums, int k) {
+vector<int> maxSlidingWindow(vector<int> &nums, int k) {
 	vector<int> res;
 	deque<int> d;
 
 	for (int i = 0; i < nums.size(); i++) {
-		while (!d.empty() && d.back() < nums[i]) {
-			d.pop_back();
-		}
+		while (!d.empty() && d.back() < nums[i]) { d.pop_back(); }
 
 		d.push_back(nums[i]);
 
 		if (i >= k - 1) { res.push_back(d.front()); }
 
-		if (i >= k - 1 && !d.empty() && d.front() == nums[i - k + 1]) {
-			d.pop_front();
-		}
+		if (i >= k - 1 && !d.empty() && d.front() == nums[i - k + 1]) { d.pop_front(); }
 	}
 
 	return res;
@@ -508,13 +496,13 @@ public int[] maxSlidingWindow(int[] nums, int k) {
 def maxSlidingWindow(self, nums: List[int], k: int) -> List[int]:
 	d = collections.deque()
 	ret = []
-	
+
 	for i, num in enumerate(nums):
 		while d and d[-1] < num:
 			d.pop()
 
 		d.append(num)
-		
+
 		if i >= k - 1:
 			ret.append(d[0])
 
