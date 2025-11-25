@@ -2,7 +2,7 @@
 id: cses-1619
 source: CSES
 title: Restaurant Customers
-author: Michael Cao, Neo Wang, Brad Ma, Alex Du, Aadit Ambadkar
+author: Michael Cao, Neo Wang, Brad Ma, Alex Du, Aadit Ambadkar, Arnav Gokhale
 ---
 
 In this problem, we're given $n$ intervals with distinct start and end points,
@@ -407,56 +407,56 @@ print(max_ppl)
 <JavaSection>
 ```java
 import java.io.*;
+import java.util.StringTokenizer;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.StringTokenizer;
 
-public class Main {
+public class RestrauntCustimer {
 	public static void main(String[] args) throws IOException {
 		BufferedReader r = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st = new StringTokenizer(r.readLine());
 		int n = Integer.parseInt(st.nextToken());
+        
+        ArrayList<int[]> times = new ArrayList<int[]>();
 
-		ArrayList<int[]> times = new ArrayList<int[]>();
+        for (int i = 0; i < n; i++) {
+            int start, end;
+            st = new StringTokenizer(r.readLine());
+            start = Integer.parseInt(st.nextToken());
+            end = Integer.parseInt(st.nextToken());
+            times.add(new int[]{start, 1});
+            times.add(new int[]{end + 1, -1});
+        }
 
-		for (int i = 0; i < n; i++) {
-			int start, end;
-			st = new StringTokenizer(r.readLine());
-			start = Integer.parseInt(st.nextToken());
-			end = Integer.parseInt(st.nextToken());
-			times.add(new int[] {start, 1});
-			times.add(new int[] {end + 1, -1});
-		}
+        times.sort((a, b) -> {
+            int cmp = Integer.compare(a[0], b[0]);
+            if (cmp != 0) return cmp;
+            return Integer.compare(a[1], b[1]);
+        });
 
-		times.sort((a, b) -> {
-			int cmp = Integer.compare(a[0], b[0]);
-			if (cmp != 0) return cmp;
-			return Integer.compare(a[1], b[1]);
-		});
+        int curr = 0;
+        int at = 0;
+        // Stores how much the # of people in the restaurant changes each time step
+        int[] ppl_change = new int[2 * n + 2];
+        // Compress the starting & ending events into a single array
+        for (int i = 0; i < 2 * n; i++) {
+            if (i == 0) {
+                times.get(i)[0] = 0;
+            } else if (times.get(i)[0] > curr) {
+                at++;
+                curr = times.get(i)[0];
+            }
+            ppl_change[at + 1] += times.get(i)[1];
+        }
 
-		int curr = 0;
-		int at = 0;
-		// Stores how much the # of people in the restaurant changes each time step
-		int[] ppl_change = new int[2 * n];
-		// Compress the starting & ending events into a single array
-		for (int i = 0; i < 2 * n; i++) {
-			if (i == 0) {
-				times.get(i)[0] = 0;
-			} else if (times.get(i)[0] > curr) {
-				at++;
-				curr = times.get(i)[0];
-			}
-			ppl_change[at + 1] += times.get(i)[1];
-		}
+        int[] ppl_amt = new int[2 * n + 1];
+        for (int i = 1; i < 2 * n + 1; i++) {
+            ppl_amt[i] = ppl_change[i - 1] + ppl_amt[i - 1];
+        }
+        int max_ppl = 0;
+        for (int i = 0; i < 2 * n + 1; i++) { max_ppl = Math.max(max_ppl, ppl_amt[i]); }
 
-		int[] ppl_amt = new int[2 * n + 1];
-		for (int i = 1; i < 2 * n + 1; i++) {
-			ppl_amt[i] = ppl_change[i - 1] + ppl_amt[i - 1];
-		}
-		int max_ppl = 0;
-		for (int i = 0; i < 2 * n + 1; i++) { max_ppl = Math.max(max_ppl, ppl_amt[i]); }
-
-		System.out.println(max_ppl);
+        System.out.println(max_ppl);
 	}
 }
 ```
