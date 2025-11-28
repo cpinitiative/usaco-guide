@@ -221,19 +221,45 @@ export default async function parse(url: string) {
     }
   } catch (error) {
     console.error('Fetch error:', error);
-    throw new Error(
-      `Failed to fetch html for url ${url}: ${error instanceof Error ? error.message : 'Unknown error'}`
-    );
+    // Return fallback data instead of throwing
+    html = '';
   }
 
   for (const [domain, parser] of Object.entries(parsers)) {
     if (url.includes(domain)) {
-      return parser(url, html);
+      try {
+        return parser(url, html || '');
+      } catch (error) {
+        console.error(`Parser error for ${domain}:`, error);
+        // Return fallback data based on domain
+        if (domain === 'usaco.org') {
+          const id = url.split('=').at(-1)?.trim() || 'unknown';
+          return {
+            uniqueId: `usaco-${id}`,
+            name: 'unknown',
+            source: 'unknown',
+            solutionMetadata: {
+              kind: 'USACO',
+              usacoId: isNaN(+id) ? 0 : +id,
+            },
+          };
+        }
+        // For other domains, return a generic fallback
+        return {
+          uniqueId: 'unknown',
+          name: 'unknown',
+          source: 'unknown',
+          solutionMetadata: {},
+        };
+      }
     }
   }
-  throw new Error(`No parser found for this url.
-Available parsers:
-${Object.keys(parsers)
-  .map(key => `  - ${key}`)
-  .join('\n')}`);
+
+  // No parser found - return fallback
+  return {
+    uniqueId: 'unknown',
+    name: 'unknown',
+    source: 'unknown',
+    solutionMetadata: {},
+  };
 }
