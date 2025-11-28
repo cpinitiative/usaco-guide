@@ -220,6 +220,7 @@ export const RestOfMembers: Member[] = [
     website: 'https://kal-che.vercel.app/',
   },
   {
+    photo: 'ruben',
     name: 'Ruben Jing',
     titles: [roles.videoInstructor, roles.contentAuthor],
     github: 'Streakwind',
