@@ -42,12 +42,12 @@ in a $N \times N$ grid, we can afford to give each node its own column and row. 
 we can think of our example case in a recursive fashion: instead of placing nodes
 on a diagonal, we can place subtrees on diagonals and partition our grid that way.
 
-Let the current subtree size be $s_i$, and suppose our node is at $(x,y)$. For the root (node 1), we have $s_i = n$ and $(x,y) = (1,1)$. We embed the subtree into an $s_i \times s_i$ grid whose lower-left corner is at $(x,y)$. 
-Recursively, for each of the node's children, we assign a subgrid within that square: the first child and its subtree occupies a square in the lower-right, and each subsequent child is placed "diagonally" continuing toward the top-left. 
+Let the current subtree size be $s_i$, and suppose our node is at $(x,y)$. For the root (node 1), we have $s_i = n$ and $(x,y) = (1,1)$. We embed the subtree into an $s_i \times s_i$ grid whose lower-left corner is at $(x,y)$.
+Recursively, for each of the node's children, we assign a subgrid within that square: the first child and its subtree occupies a square in the lower-right, and each subsequent child is placed "diagonally" continuing toward the top-left.
 
-With this embedding, any vertical path in our tree corresponds to an axis-aligned rectangle with its corners at the endpoints of our path. To understand why this is the case, consider creating our rectangle 
+With this embedding, any vertical path in our tree corresponds to an axis-aligned rectangle with its corners at the endpoints of our path. To understand why this is the case, consider creating our rectangle
 by expanding it as we traverse from the top node to the bottom node in our path. Our lower-left corner remains fixed at our top node, and we move our upper-right corner as we traverse towards our bottom node.
-Because each embedded subgrid is disjoint from one another, our upper-right corner will never cross into an unintentional subgrid, and we are strictly expanding the rectangle with each move. Thus, our 
+Because each embedded subgrid is disjoint from one another, our upper-right corner will never cross into an unintentional subgrid, and we are strictly expanding the rectangle with each move. Thus, our
 desired rectangle has its corners at the endpoints of our path.
 
 For example, the graph formed with edges $(1, 2)$, $(1, 3)$, $(3, 4)$, and $(3, 5)$ will
@@ -148,13 +148,13 @@ int timer = 1;
 
 // setting all the farm locations
 void dfs2(int u, int p, int x1, int x2) {
-    // timer is used instead of passing in y1 and y2 values for subgrid
+	// timer is used instead of passing in y1 and y2 values for subgrid
 	locs[u] = {x1, timer};
 	setFarmLocation(u, x1, timer);
 	timer++;
 
-    // recursively embedding values, with first child occupying bottom-right
-    // and last child occupying upper-left section of the diagonal
+	// recursively embedding values, with first child occupying bottom-right
+	// and last child occupying upper-left section of the diagonal
 	int prev = x2 + 1;
 	for (int v : adj[u]) {
 		if (v == p) continue;
@@ -171,8 +171,8 @@ void buildFarms() {
 void notifyFJ(int a, int b) {
 	int l = lca(a, b);
 
-    // processes the path from anc to desc, where anc is an ancestor to desc
-    // exclude indicates whether or not we have to exclude the ancestor node
+	// processes the path from anc to desc, where anc is an ancestor to desc
+	// exclude indicates whether or not we have to exclude the ancestor node
 	auto process_path = [&](int anc, int desc, bool exclude = false) {
 		int x1 = locs[anc][0];
 		int y1 = locs[anc][1];
