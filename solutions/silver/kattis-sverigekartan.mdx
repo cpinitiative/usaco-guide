@@ -1,0 +1,247 @@
+---
+id: kattis-sverigekartan
+source: Sweden OI 2024
+title: Map of Sweden
+author: Ruben Jing
+---
+
+## Explanation
+
+Start by using floodfill from Stockholm to see how many `#`s Vidar can reach. The landmass is
+the size of the visited set, as the visited set only consists of `#`s that can be reached from
+Stockholm. We call the set of all `#`s that are reachable from Stockholm the main connected
+component.
+
+If a query is adjacent to the main connected component, meaning the query is reachable from
+Stockholm, the main connected component expands. Additionally, there is a chance that the
+query connects the main connected component to another connected component. Thus, we floodfill
+again if a query is adjacent to the main connected component.
+
+Floodfill skips past `#`s that are already visited so it is guaranteed that every time we run
+floodfill, only new `#`s will be seen.
+
+## Implementation
+
+**Time Complexity:** $ \mathcal{O} (U + RC)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+set<pair<int, int>> visited;
+
+// first denotes the character and second denotes if it is reachable from S
+vector<vector<pair<char, bool>>> grid;
+
+void floodfill(int r, int c) {
+	if (r < 0 || c < 0 || r >= grid.size() || c >= grid[0].size() ||
+	    visited.find({r, c}) != visited.end() || grid[r][c].first == '.') {
+		return;
+	}
+
+	visited.insert({r, c});
+	grid[r][c].second = true;
+
+	floodfill(r + 1, c);
+	floodfill(r - 1, c);
+	floodfill(r, c + 1);
+	floodfill(r, c - 1);
+}
+
+int main() {
+	int r, c, u;
+	cin >> r >> c >> u;
+
+	grid.resize(r, vector<pair<char, bool>>(c));
+	pair<int, int> s;
+
+	for (int i = 0; i < r; i++) {
+		for (int j = 0; j < c; j++) {
+			cin >> grid[i][j].first;
+
+			grid[i][j].second = false;
+
+			if (grid[i][j].first == 'S') {
+				s = make_pair(i, j);
+				grid[i][j].second = true;
+			}
+		}
+	}
+
+	floodfill(s.first, s.second);
+
+	cout << visited.size() << "\n";
+
+	for (int i = 0; i < u; i++) {
+		int a, b;
+		cin >> a >> b;
+		a--;
+		b--;
+
+		grid[a][b].first = '#';
+
+		if ((a >= 1 && grid[a - 1][b].second) || (b >= 1 && grid[a][b - 1].second) ||
+		    (a < r - 1 && grid[a + 1][b].second) ||
+		    (b < c - 1 && grid[a][b + 1].second)) {
+			floodfill(a, b);
+		}
+
+		cout << visited.size() << "\n";
+	}
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class sverigekartan {
+	static Set<Integer> visited = new HashSet<>();
+	static char[][] grid;
+	static boolean[][] reachable;
+
+	static int encode(int r, int c) { return r * grid[0].length + c; }
+
+	static void floodfill(int r, int c) {
+		if (r < 0 || c < 0 || r >= grid.length || c >= grid[0].length ||
+		    visited.contains(encode(r, c)) || grid[r][c] == '.') {
+			return;
+		}
+
+		visited.add(encode(r, c));
+		reachable[r][c] = true;
+
+		floodfill(r + 1, c);
+		floodfill(r - 1, c);
+		floodfill(r, c + 1);
+		floodfill(r, c - 1);
+	}
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		PrintWriter out = new PrintWriter(new BufferedOutputStream(System.out));
+
+		int r = Integer.parseInt(br.readLine().trim());
+		int c = Integer.parseInt(br.readLine().trim());
+		int u = Integer.parseInt(br.readLine().trim());
+
+		grid = new char[r][c];
+		reachable = new boolean[r][c];
+
+		int stockholm_r = 0, stockholm_c = 0;
+
+		for (int i = 0; i < r; i++) {
+			String line = br.readLine();
+
+			for (int j = 0; j < c; j++) {
+				grid[i][j] = line.charAt(j);
+				reachable[i][j] = (line.charAt(j) == 'S') ? true : false;
+
+				if (line.charAt(j) == 'S') {
+					stockholm_r = i;
+					stockholm_c = j;
+				}
+			}
+		}
+
+		floodfill(stockholm_r, stockholm_c);  // 9 spaces for empty board
+
+		out.println(visited.size());
+
+		for (int i = 0; i < u; i++) {
+			StringTokenizer st = new StringTokenizer(br.readLine());
+			int a = Integer.parseInt(st.nextToken()) - 1;
+			int b = Integer.parseInt(st.nextToken()) - 1;
+
+			grid[a][b] = '#';
+
+			if ((a >= 1 && reachable[a - 1][b]) || (b >= 1 && reachable[a][b - 1]) ||
+			    (a < r - 1 && reachable[a + 1][b]) ||
+			    (b < c - 1 && reachable[a][b + 1])) {
+				floodfill(a, b);
+			}
+
+			out.println(visited.size());
+		}
+
+		br.close();
+		out.close();
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+import sys
+
+sys.setrecursionlimit(1000000)
+
+
+def floodfill(r, c, grid, visited):
+	if (
+		r < 0
+		or c < 0
+		or r >= len(grid)
+		or c >= len(grid[0])
+		or (r, c) in visited
+		or grid[r][c][0] == "."
+	):
+		return
+
+	visited.add((r, c))
+	grid[r][c] = (grid[r][c][0], True)
+
+	floodfill(r + 1, c, grid, visited)
+	floodfill(r - 1, c, grid, visited)
+	floodfill(r, c + 1, grid, visited)
+	floodfill(r, c - 1, grid, visited)
+
+
+r, c, u = [int(input()) for _ in range(3)]
+
+grid = [[(None, False) for _ in range(c)] for _ in range(r)]
+visited = set()
+s = None
+
+for i in range(r):
+	row = input()
+	for j in range(c):
+		grid[i][j] = (row[j], row[j] == "S")
+
+		if row[j] == "S":
+			s = (i, j)
+
+floodfill(s[0], s[1], grid, visited)
+
+print(len(visited))
+
+for _ in range(u):
+	a, b = map(int, input().split())
+
+	a -= 1
+	b -= 1
+
+	grid[a][b] = ("#", False)
+
+	if (
+		(a >= 1 and grid[a - 1][b][1])
+		or (b >= 1 and grid[a][b - 1][1])
+		or (a < r - 1 and grid[a + 1][b][1])
+		or (b < c - 1 and grid[a][b + 1][1])
+	):
+		floodfill(a, b, grid, visited)
+
+	print(len(visited))
+```
+
+</PySection>
+</LanguageSection>
