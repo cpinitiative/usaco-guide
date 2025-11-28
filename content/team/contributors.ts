@@ -90,7 +90,11 @@ export const OrderedFirstMembers: Member[] = [
   {
     photo: 'justin_ji',
     name: 'Justin Ji',
-    titles: ['Director of USACO Guide', roles.contentAuthor, roles.liveInstructor],
+    titles: [
+      'Director of USACO Guide',
+      roles.contentAuthor,
+      roles.liveInstructor,
+    ],
     github: 'TheGamingMousse',
   },
   {
@@ -98,7 +102,7 @@ export const OrderedFirstMembers: Member[] = [
     name: 'David Guo',
     titles: ['Director of USACO Guide', roles.contentAuthor],
     github: 'guodavid0418',
-  }
+  },
 ];
 
 export const RestOfMembers: Member[] = [
@@ -218,8 +222,8 @@ export const RestOfMembers: Member[] = [
   {
     name: 'Ruben Jing',
     titles: [roles.videoInstructor, roles.contentAuthor],
-    github: 'Streakwind'
-  }
+    github: 'Streakwind',
+  },
 ];
 
 export const FormerMembers: Member[] = [
