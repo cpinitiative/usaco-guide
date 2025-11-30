@@ -46,12 +46,16 @@ If the scores are valid, we can construct the game using a simple cyclic shift.
 1. **Player 1** simply plays all their cards in increasing order ($1, 2, \dots, N$).
 2. **Player 2** plays cards shifted by $a$ for the first $k$ rounds, and matches Player 1 for the rest.
 
+**Example:**
+Let $k=5$ (non-draw cards), $a=2$, and $b=3$.
+
+*   **Player 1** plays: $[1, 2, 3, 4, 5]$
+*   **Player 2** plays: $[3, 4, 5, 1, 2]$ (shifted left by $a=2$)
+
 **Analysis of the first $k$ rounds:**
 
 *   For the first $b$ rounds, Player 1 plays $i$ and Player 2 plays $i+a$. Since $a > 0$, Player 2 wins ($i+a > i$). This gives Player 2 exactly $b$ points.
 *   For the remaining $a$ rounds, Player 2's cards wrap around to their smallest values ($1, \dots, a$). Player 1 plays values $b+1$ through $k$. Since $b \ge 0$, Player 1's cards are strictly larger than Player 2's cards. This gives Player 1 exactly $a$ points.
-
-This matches the given outcome.
 
 ## Implementation
 
