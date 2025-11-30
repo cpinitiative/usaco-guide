@@ -143,7 +143,9 @@ both the left and right endpoints of the subarray only move to the right.
 
 We keep a pointer for the left boundary of the window and expand the right boundary until we find a song already in our subarray. Checking songs can be done with a set.
 
-Then, we erase the left boundary from the set and move the left pointer up by one.
+Then, we erase the left boundary from the set and move the left pointer up by one. We do this until the right boundary 
+is able to expand. The left boundary is removed until the song immediately after the right boundary is not in 
+our current window's set. The left boundary is removed to provide more flexibility for expanding the right boundary.
 
 The answer is the largest distance between the left and right pointers.
 <LanguageSection>
@@ -353,15 +355,25 @@ We keep a decreasing monotonic queue for finding a sliding window maximum. An
 increasing monotonic queue would only work for finding the sliding window minimum,
 as it removes large numbers and keeps small numbers.
 
+A decreasing monotonic queue removes elements that are smaller than our current 
+element and only keeps elements larger than our current element in order to 
+maintain monotonicity. In this case, a decreasing monotonic queue works well
+as any elements smaller than our current element will serve no use to us finding 
+a sliding window maximum. 
+
+A monotonic queue is similar to a [monotonic stack](https://usaco.guide/gold/stacks#application---nearest-smaller-element), 
+but due to its deque implementation, a monotonic queue has access to both the front and end, 
+making it efficient for sliding window problems. A monotonic stack is useful for nearest greater/smaller element.
+
 #### Deque - Storing Indices
 
 This is method 2 from cp-algo.
 
 The solution is a monotonic queue with the added window size constraints. We print the
-first element (which is the largest, because the queue is decreasing), and then pop it. We pop it
-because the first element is also the oldest due to the FIFO nature of queues, meaning it must be
-removed to shift the window right. Then, we remove any numbers that are smaller than our current
-number to maintain monotonicity.
+first element (which is the largest, because the queue is decreasing), and then pop it if 
+it is the boundary of our current window. We pop it because the first element is also the 
+oldest due to the FIFO nature of queues, meaning it must be removed to shift the window right. 
+Then, we remove any numbers that are smaller than our current number to maintain monotonicity.
 
 <LanguageSection>
 
