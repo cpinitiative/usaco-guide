@@ -21,7 +21,7 @@ From the problem, an operation is defined by two points $l$ and $r$, where $1 \l
 
 Note that a contribution can only be achieved in one of two ways.
 
-1. A cow was not in a desirable location, and the cow was moved to a desirable location during an operations.
+1. A cow was not in a desirable location, and the cow was moved to a desirable location during an operation.
 
 **PLACEHOLDER IMAGE**
 
@@ -46,16 +46,18 @@ Thus, the amount of contributions that can be made from a cow at location $i$ an
 This can be written as
 
 $$
-min(i + 1, N - j)
+\min(i - 1, N - j) + 1
 $$
+
+Note: +1 is added at the end as $l$ and $r$ can equal $i$ and $j$ respectively. 
 
 Now we consider how to calculate contributions created strictly by the second scenario.
 
 Let a cow at position $i$ already be at a desirable location.
 
-We note that the amount of countributions created is equal to the number of operations that can occur which do not involve *i*.
+We note that the amount of contributions created is equal to the number of operations that can occur which do not involve *i*.
 
-In the problem, we are given that the number of operations that can occur between $1$ and $i$ can be written as 
+In the problem, we are given that the number of operations that can occur between $1$ and $N$ can be written as 
 
 $$
 \frac{N \cdot (N + 1)}{2}
@@ -77,13 +79,18 @@ Given that each cow either is or isn't already at a desirable location, the seco
 
 However, for the first scenario, there may be multiple desirable locations a cow could move to. 
 
-Let's denote a cow and deserable location that can create countributions as descirbed in the first scenario as a pair
+Let's denote a cow and a desirable location that can create contributions as described in the first scenario as a pair
 
 If we naively checked each pair, this would take $\mathcal{O}(N)$ time, as in the worst case scenario every single location is a desirable location for every cow.
 
-Let's denote a desirable location's distance to the edge as $d_{desirable}$ and a cow's distance to the edge as $d_{cow}$
+Let's denote a desirable location's minimum distance to the edge as $d_{desirable}$ and a cow's minimum distance to the edge as $d_{cow}$ where $i$ denotes the cow's location and $j$ denotes the desired location as 
 
-Recall earlier the amount of countributions that can occur is equal to $min(d_{cow}, d_{desirable}) + 1$
+$$
+d_{desirable} = \min(j - 1, N - j)\\
+d_{cow} = \min(i - 1, N - i)
+$$
+
+Recall earlier the amount of contributions that can occur is equal to $\min(d_{cow}, d_{desirable}) + 1$
 
 We can optimize this by precomputing $d_{desirable}$ for a certain cow species, then binary searching over this array to see how many pairs are limited by $d_{desirable}$, and how many pairs are limited by $d_{cow}$
 
@@ -91,7 +98,7 @@ We can optimize this by precomputing $d_{desirable}$ for a certain cow species, 
 
 But we're not done yet. Even after finding out how many pairs are limited by $d_{cow}$ and how many pairs are limited by $d_{desirable}$, we still need to sum the contributions, which would take $\mathcal{O}(N)$ time!
 
-We can optimize yet again by implementing prefix arrays. All countributions from pairs limited by $d_{desirable}$ can be found quickly using the prefix array, and all countributions from pairs limited by $d_{cow}$ can be found by multiplying $d_{cow}$ by the number of pairs limited. 
+We can optimize yet again by implementing prefix arrays. All contributions from pairs limited by $d_{desirable}$ can be found quickly using the prefix array, and all contributions from pairs limited by $d_{cow}$ can be found by multiplying $d_{cow}$ by the number of pairs limited. 
 
 **PLACEHOLDER IMAGE**
 
