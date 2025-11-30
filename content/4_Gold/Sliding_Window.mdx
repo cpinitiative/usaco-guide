@@ -160,7 +160,7 @@ int a[200000], ans;
 int main() {
 	int r = -1;
 	cin >> n;
-	for (int i = 0; i < n; i++) cin >> a[i];
+	for (int i = 0; i < n; i++) { cin >> a[i]; }
 
 	for (int i = 0; i < n; i++) {
 		while (r < n - 1 && !s.count(a[r + 1])) s.insert(a[++r]);
@@ -255,10 +255,6 @@ public class test {
 	<Resource source="CPH" title="8.3 - Sliding Window Minimum" />
 </Resources>
 
-We keep a decreasing monotonic queue for finding a sliding window maximum. An
-increasing monotonic queue would only work for finding the sliding window minimum,
-as it removes large numbers and keeps small numbers.
-
 #### Monotonoic Queue
 
 A monotonic queue is one that is always increasing or decreasing. It is implemented by ensuring the newest
@@ -280,7 +276,9 @@ for (int e : nums) {
 	increasing.push_back(e);
 }
 
-// increasing should be [1, 2, 3, 4]
+for (int e : increasing) { 
+	cout << e << " "; // 1 2 3 4
+}
 
 for (int e : nums) {
 	while (!decreasing.empty() && decreasing.back() < e) { decreasing.pop_back(); }
@@ -288,7 +286,9 @@ for (int e : nums) {
 	decreasing.push_back(e);
 }
 
-// decreasing should be [5, 4]
+for (int e : decreasing) { 
+	cout << e << " "; // 5 4
+}
 ```
 
 </CPPSection>
@@ -308,7 +308,7 @@ for (int e : nums) {
 	increasing.addLast(e);
 }
 
-// increasing should be [1, 2, 3, 4]
+System.out.println(increasing); // [1, 2, 3, 4]
 
 for (int e : nums) {
 	while (!decreasing.isEmpty() && decreasing.peekLast() < e) {
@@ -318,7 +318,7 @@ for (int e : nums) {
 	decreasing.addLast(e);
 }
 
-// decreasing should be [5, 4]
+System.out.println(decreasing); // [5, 4]
 ```
 
 </JavaSection>
@@ -336,7 +336,7 @@ for e in nums:
 
 	increasing.append(e)
 
-# increasing should be [1, 2, 3, 4]
+print(increasing) # deque([1, 2, 3, 4])
 
 for e in nums:
 	while decreasing and decreasing[-1] < e:
@@ -344,12 +344,16 @@ for e in nums:
 
 	decreasing.append(e)
 
-# decreasing should be [5, 4]
+print(decreasing) # deque([5, 4])
 ```
 
 </PySection>
 
 </LanguageSection>
+
+We keep a decreasing monotonic queue for finding a sliding window maximum. An
+increasing monotonic queue would only work for finding the sliding window minimum,
+as it removes large numbers and keeps small numbers.
 
 #### Deque - Storing Indices
 
@@ -519,6 +523,7 @@ def maxSlidingWindow(self, nums: List[int], k: int) -> List[int]:
 </PySection>
 
 </LanguageSection>
+
 ### Method 2 - Two Stacks
 
 Method 3 from cp-algo. Not as common but nice to know!
