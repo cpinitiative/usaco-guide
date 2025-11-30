@@ -1,0 +1,122 @@
+---
+id: usaco-1470
+source: USACO Silver 2025 January
+title: Cow Checkups
+author: David Xiao
+---
+
+[Official Analysis (C++)](https://usaco.org/current/data/sol_prob1_silver_jan25.html)
+
+## Explanation
+
+Let's analyze the last test case in detail:
+
+~~~PLACEHOLDER IMAGE~~~
+
+We denote a "desirable location" of a cow as a location where a cow of that species will be checked by the bovine veterinarian.
+
+We denote a "contribution" as a one instance of a cow being moved to a desirable location.
+
+From the problem, an operation is defined by two points $l$ and $r$, where $1 \leq l \leq r \leq N$
+
+Note that a contribution can only be achieved in one of two ways.
+
+1. A cow was not in a desirable location, and the cow was moved to a desirable location during an operations.
+
+~~ PLACEHOLDER IMAGE~~
+
+2. A cow was already in a desirable location, and the cow was not moved during an operation.
+
+~~PLACEHOLDER IMAGE~~
+
+Let's consider how to calculate the contributions created strictly by the first scenario.
+
+Let a cow at location $i$ try to reach a desirable location at location $j$, where $i < j$.
+
+The most intuitive way to achieve this is by setting $l$ to $i$ and $r$ to $j$, so that after the operation, $i$ is moved to $j$
+
+~~PLACEHOLDER IMAGE~~
+
+We observe that the same is true if we set $l$ to $i - 1$ and $r$ to $j + 1$.
+
+Thus, the amount of contributions that can be made from a cow at location $i$ and desirable location at location $j$ is limited by the minimum distance to the edge, as after that $l$ or $r$ would violate the given constraints for a valid operation.
+
+~~PLACEHOLDER IMAGE~~
+
+This can be written as
+
+$$
+min(i + 1, N - j)
+$$
+
+Now we consider how to calculate contributions created strictly by the second scenario.
+
+Let a cow at position $i$ already be at a desirable location.
+
+We note that the amount of countributions created is equal to the number of operations that can occur which do not involve *i*.
+
+In the problem, we are given that the number of operations that can occur between $1$ and $i$ can be written as 
+
+$$
+\frac{N \cdot (N + 1)}{2}
+$$
+
+Thus, the amount of contributions created from a cow at location $i$ at a desirable location can be written as 
+
+$$
+\frac{(i - 1) \cdot i}{2} + \frac{(N - i) \cdot (N - i + 1)}{2}
+$$
+
+~~PLACEHOLDER DIAGRAM~~
+
+Now we need to figure out how to implement this. Given the constraint of $N \leq 5 \cdot 10^5$, it is natural to assume $\mathcal{O}(N \log N)$ time complexity.
+
+This means for each cow, we must be able to find how many contributions it is involved in in at most $\mathcal{O}(log N)$ time.
+
+Given that each cow either is or isn't already at a desirable location, the second scenario can be implemented simply in $\mathcal{O}(1)$ time.
+
+However, for the first scenario, there may be multiple desirable locations a cow could move to. 
+
+Let's denote a cow and deserable location that can create countributions as descirbed in the first scenario as a pair
+
+If we naively checked each pair, this would take $\mathcal{O}(N)$ time, as in the worst case scenario every single location is a desirable location for every cow.
+
+Let's denote a desirable location's distance to the edge as $d_desirable$ and a cow's distance to the edge as $d_cow$
+
+Recall earlier the amount of countributions that can occur is equal to $min(d_cow, d_desirable) + 1$
+
+We can optimize this by precomputing $d_desirable$ for a certain cow species, then binary searching over this array to see how many pairs are limited by $d_desirable$, and how many pairs are limited by $d_cow$
+
+~~PLACEHOLDER IMAGE~~
+
+But we're not done yet. Even after finding out how many pairs are limited by $d_cow$ and how many pairs are limited by $d_desirable$, we still need to sum the contributions, which would take $\mathcal{O}(N)$ time!
+
+We can optimize yet again by implementing prefix arrays. All countributions from pairs limited by $d_desirable$ can be found quickly using the prefix array, and all countributions from pairs limited by $d_cows$ can be found by multiplying $d_cows$ by the number of pairs limited. 
+
+~~PLACEHOLDER IMAGE~~
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N \log N)$
+
+<LanguageSection>
+
+<CPPSection>
+
+(add cpp code)
+
+</CPPSection>
+
+<PySection>
+
+(if you have Python code)
+
+</PySection>
+
+<JavaSection>
+
+(if you have Java code)
+
+</JavaSection>
+
+</LanguageSection>
