@@ -23,17 +23,6 @@ For each position of the window, we want to compute some information.
 
 <FocusProblem problem="constantSam" />
 
-<!-- To compute the sum in the range, instead of using a set, we can store a variable $s$ representing the sum. As we move the window forward, we update $s$ by subtracting $a_i$ from $s$ and adding $a_{j+1}$ to $s$.
- -->
-
-<!-- <Resources>
-	<Resource
-		source="GFG"
-		title="Window Sliding Technique"
-		url="window-sliding-technique"
-	/>
-</Resources> -->
-
 ### Implementation
 
 The most straightforward way to do this is to store an sorted set of integers
@@ -46,7 +35,6 @@ $\mathcal{O}(\log N)$.
 **Time Complexity:** $\mathcal{O}(N\log N)$
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
@@ -65,7 +53,6 @@ vector<int> maxSlidingWindow(vector<int> &nums, int k) {
 ```
 
 </CPPSection>
-
 <JavaSection>
 
 ```java
@@ -95,7 +82,6 @@ static ArrayList<Integer> maxSlidingWindow(int[] nums, int k) {
 ```
 
 </JavaSection>
-
 <PySection>
 
 ```py
@@ -117,7 +103,6 @@ class Solution:
 ```
 
 </PySection>
-
 </LanguageSection>
 
 ### Problems
@@ -133,14 +118,6 @@ both the left and right endpoints of the subarray only move to the right.
 
 ### Solution
 
-<!-- <Resources>
-	<Resource
-		source="Medium"
-		title="Introduction to Sliding Window Algorithms"
-		url="https://levelup.gitconnected.com/an-introduction-to-sliding-window-algorithms-5533c4fe1cc7"
-	/>
-</Resources> -->
-
 We keep a pointer for the left boundary of the window and expand the right boundary until we find a song already in our subarray. Checking songs can be done with a set.
 
 Then, we erase the left boundary from the set and move the left pointer up by one. We do this until the right boundary
@@ -148,8 +125,8 @@ is able to expand. The left boundary is removed until the song immediately after
 our current window's set. The left boundary is removed to provide more flexibility for expanding the right boundary.
 
 The answer is the largest distance between the left and right pointers.
-<LanguageSection>
 
+<LanguageSection>
 <CPPSection>
 
 ```cpp
@@ -172,7 +149,30 @@ int main() {
 ```
 
 </CPPSection>
+<JavaSection>
 
+```java
+public class test {
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		int n = Integer.parseInt(br.readLine());
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int a[] = new int[n];
+		for (int i = 0; i < n; i++) a[i] = Integer.parseInt(st.nextToken());
+		int r = -1;
+		HashSet<Integer> s = new HashSet<Integer>();
+		int ans = 0;
+		for (int i = 0; i < n; i++) {
+			while (r < n - 1 && !s.contains(a[r + 1])) s.add(a[++r]);
+			ans = Math.max(ans, r - i + 1);
+			s.remove(a[i]);
+		}
+		System.out.println(ans);
+	}
+}
+```
+
+</JavaSection>
 <PySection>
 
 ```py
@@ -200,32 +200,6 @@ print(ans)
 ```
 
 </PySection>
-
-<JavaSection>
-
-```java
-public class test {
-	public static void main(String[] args) throws Exception {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		int n = Integer.parseInt(br.readLine());
-		StringTokenizer st = new StringTokenizer(br.readLine());
-		int a[] = new int[n];
-		for (int i = 0; i < n; i++) a[i] = Integer.parseInt(st.nextToken());
-		int r = -1;
-		HashSet<Integer> s = new HashSet<Integer>();
-		int ans = 0;
-		for (int i = 0; i < n; i++) {
-			while (r < n - 1 && !s.contains(a[r + 1])) s.add(a[++r]);
-			ans = Math.max(ans, r - i + 1);
-			s.remove(a[i]);
-		}
-		System.out.println(ans);
-	}
-}
-```
-
-</JavaSection>
-
 </LanguageSection>
 
 ### Problems
@@ -262,7 +236,6 @@ elements are larger or smaller than the previous elements. If not, the previous 
 the condition is met.
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
@@ -272,12 +245,12 @@ deque<int> decreasing;
 
 for (int e : nums) {
 	while (!increasing.empty() && increasing.back() > e) { increasing.pop_back(); }
-
 	increasing.push_back(e);
 }
 
+// 1 2 3 4
 for (int e : increasing) {
-	cout << e << " ";  // 1 2 3 4
+	cout << e << " ";
 }
 
 for (int e : nums) {
@@ -286,13 +259,13 @@ for (int e : nums) {
 	decreasing.push_back(e);
 }
 
+// 5 4
 for (int e : decreasing) {
-	cout << e << " ";  // 5 4
+	cout << e << " ";
 }
 ```
 
 </CPPSection>
-
 <JavaSection>
 
 ```java
@@ -304,7 +277,6 @@ for (int e : nums) {
 	while (!increasing.isEmpty() && increasing.peekLast() > e) {
 		increasing.pollLast();
 	}
-
 	increasing.addLast(e);
 }
 
@@ -314,7 +286,6 @@ for (int e : nums) {
 	while (!decreasing.isEmpty() && decreasing.peekLast() < e) {
 		decreasing.pollLast();
 	}
-
 	decreasing.addLast(e);
 }
 
@@ -322,7 +293,6 @@ System.out.println(decreasing);  // [5, 4]
 ```
 
 </JavaSection>
-
 <PySection>
 
 ```py
@@ -333,7 +303,6 @@ decreasing = collections.deque()
 for e in nums:
 	while increasing and increasing[-1] > e:
 		increasing.pop()
-
 	increasing.append(e)
 
 print(increasing)  # deque([1, 2, 3, 4])
@@ -341,14 +310,12 @@ print(increasing)  # deque([1, 2, 3, 4])
 for e in nums:
 	while decreasing and decreasing[-1] < e:
 		decreasing.pop()
-
 	decreasing.append(e)
 
 print(decreasing)  # deque([5, 4])
 ```
 
 </PySection>
-
 </LanguageSection>
 
 We keep a decreasing monotonic queue for finding a sliding window maximum. An
@@ -399,7 +366,6 @@ vector<int> maxSlidingWindow(vector<int> &nums, int k) {
 ```
 
 </CPPSection>
-
 <JavaSection>
 
 ```java
@@ -422,7 +388,6 @@ public int[] maxSlidingWindow(int[] nums, int k) {
 ```
 
 </JavaSection>
-
 <PySection>
 
 ```py
@@ -446,18 +411,17 @@ def maxSlidingWindow(self, nums: List[int], k: int) -> List[int]:
 ```
 
 </PySection>
-
 </LanguageSection>
 
 #### Deque - Storing Values
-Method 1 from cp-algo is a similar approach but stores the value itself rather than indices.
+
+Method 1 from CP Algorithms is a similar approach but stores the value itself rather than indices.
 
 Inserting an element is the same process, but deleting an element is different. Because no
 indices are given this time, we check if the front of the queue is the same as the left boundary
 of the sliding window. If it is, then we remove it to ensure our window constraints are met.
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
@@ -480,7 +444,6 @@ vector<int> maxSlidingWindow(vector<int> &nums, int k) {
 ```
 
 </CPPSection>
-
 <JavaSection>
 
 ```
@@ -507,7 +470,6 @@ public int[] maxSlidingWindow(int[] nums, int k) {
 ```
 
 </JavaSection>
-
 <PySection>
 
 ```py
@@ -531,7 +493,6 @@ def maxSlidingWindow(self, nums: List[int], k: int) -> List[int]:
 ```
 
 </PySection>
-
 </LanguageSection>
 
 ### Method 2 - Two Stacks
@@ -543,8 +504,8 @@ We use two stacks $s_1$ and $s_2$ to simulate our maximum queue. Every time we a
 Then, we can solve the problem by removing the first element and adding a new element to the queue to simulate our sliding window. As each operation of our queue takes $\mathcal{O}(1)$ time, and we add each of $N$ elements once, we get a time complexity of $\mathcal{O}(N)$.
 
 <LanguageSection>
-
 <CPPSection>
+
 ```cpp
 struct MaxQueue {
 	/**
@@ -615,9 +576,10 @@ class Solution {
 	}
 };
 ```
-</CPPSection>
 
+</CPPSection>
 <JavaSection>
+
 ```java
 class Solution {
 	public int[] maxSlidingWindow(int[] nums, int k) {
