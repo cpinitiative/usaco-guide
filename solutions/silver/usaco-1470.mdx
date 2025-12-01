@@ -57,7 +57,7 @@ $$
 \min(i - 1, N - j) + 1
 $$
 
-Note: +1 is added at the end as $l$ and $r$ can equal $i$ and $j$ respectively. 
+Note: +1 is added at the end as $l$ and $r$ can equal $i$ and $j$ respectively.
 
 Now we consider how to calculate contributions created strictly by the second scenario.
 
@@ -65,7 +65,7 @@ Let a cow at position $i$ already be at a desirable location.
 
 We note that the amount of contributions created is equal to the number of operations that can occur which do not involve *i*.
 
-In the problem, we are given that the number of operations that can occur between $1$ and $N$ can be written as 
+In the problem, we are given that the number of operations that can occur between $1$ and $N$ can be written as
 
 $$
 \frac{N \cdot (N + 1)}{2}
@@ -85,13 +85,13 @@ This means for each cow, we must be able to find how many contributions it is in
 
 Given that each cow either is or isn't already at a desirable location, the second scenario can be implemented simply in $\mathcal{O}(1)$ time per cow.
 
-However, for the first scenario, there may be multiple desirable locations a cow could move to. 
+However, for the first scenario, there may be multiple desirable locations a cow could move to.
 
 Let's denote a cow and a desirable location that can create contributions as described in the first scenario as a pair
 
 If we naively checked each pair, this would take $\mathcal{O}(N)$ time, as in the worst case scenario every single location is a desirable location for every cow.
 
-Let's denote a desirable location's minimum distance to the edge as $d_{desirable}$ and a cow's minimum distance to the edge as $d_{cow}$ where $i$ denotes the cow's location and $j$ denotes the desired location as 
+Let's denote a desirable location's minimum distance to the edge as $d_{desirable}$ and a cow's minimum distance to the edge as $d_{cow}$ where $i$ denotes the cow's location and $j$ denotes the desired location as
 
 $$
 d_{desirable} = \min(j - 1, N - j)
@@ -110,7 +110,7 @@ But we're not done yet. Even after finding out how many pairs are limited by $d_
 
 We can optimize yet again by implementing prefix arrays. All contributions from pairs limited by $d_{desirable}$ can be found in  $\mathcal{O}(1)$ using the prefix array, and all contributions from pairs limited by $d_{cow}$ can be found by multiplying $d_{cow}$ by the number of pairs limited.
 
-Note that precomputation is guranteed to take only  $\mathcal{O}(N)$ time total, since there are only $N$ cows to sum. 
+Note that precomputation is guranteed to take only  $\mathcal{O}(N)$ time total, since there are only $N$ cows to sum.
 
 ## Implementation
 
@@ -125,87 +125,98 @@ Note that precomputation is guranteed to take only  $\mathcal{O}(N)$ time total,
 using namespace std;
 
 int main() {
-    ios::sync_with_stdio(0); cin.tie(0);
+	ios::sync_with_stdio(0);
+	cin.tie(0);
 
-    int num_cows; 
-    cin >> num_cows;
+	int num_cows;
+	cin >> num_cows;
 
-    vector<int> initial_order;
-    
-    int cow;
-    for (int i = 0; i < num_cows; i++) {
-        cin >> cow;
-        initial_order.push_back(cow);
-    }
+	vector<int> initial_order;
 
-    vector<int> ideal_order;
+	int cow;
+	for (int i = 0; i < num_cows; i++) {
+		cin >> cow;
+		initial_order.push_back(cow);
+	}
 
-    for (int i = 0; i < num_cows; i++) {
-        cin >> cow;
-        ideal_order.push_back(cow);
-    }
+	vector<int> ideal_order;
 
-    // Map a cow's species to an array of minimum distances to the edge for that speices in the ideal ordering
-    unordered_map<int, vector<int>> edge_arrays;
+	for (int i = 0; i < num_cows; i++) {
+		cin >> cow;
+		ideal_order.push_back(cow);
+	}
 
-    for (int i = 0; i < num_cows; i++) {
+	// Map a cow's species to an array of minimum distances to the edge for that speices
+	// in the ideal ordering
+	unordered_map<int, vector<int>> edge_arrays;
 
-        int min_distance_to_edge = min(i, num_cows - i - 1);
+	for (int i = 0; i < num_cows; i++) {
 
-        // If an array doesn't already exist for a cow species, create a new array for that species
-        if (edge_arrays.count(ideal_order[i]) == 0) {
-            vector<int> new_edge_array = {min_distance_to_edge};
-            edge_arrays.insert(make_pair(ideal_order[i], new_edge_array));
-        }
+		int min_distance_to_edge = min(i, num_cows - i - 1);
 
-        else {
-            edge_arrays.at(ideal_order[i]).push_back(min_distance_to_edge);
-        }
+		// If an array doesn't already exist for a cow species, create a new array for
+		// that species
+		if (edge_arrays.count(ideal_order[i]) == 0) {
+			vector<int> new_edge_array = {min_distance_to_edge};
+			edge_arrays.insert(make_pair(ideal_order[i], new_edge_array));
+		}
 
-    }
+		else {
+			edge_arrays.at(ideal_order[i]).push_back(min_distance_to_edge);
+		}
+	}
 
-    // Map a cow's species to a prefix array that sums the countributions limited by d_desirable 
-    unordered_map<int, vector<long long>> prefix_arrays;
+	// Map a cow's species to a prefix array that sums the countributions limited by
+	// d_desirable
+	unordered_map<int, vector<long long>> prefix_arrays;
 
-    for (auto &[species, edge_array] : edge_arrays) {
+	for (auto &[species, edge_array] : edge_arrays) {
 
-        // Sort edge arrays as we iterate so we can binary search over it later
-        sort(edge_array.begin(), edge_array.end());
+		// Sort edge arrays as we iterate so we can binary search over it later
+		sort(edge_array.begin(), edge_array.end());
 
-        vector<long long> new_prefix_array = {0};
-        for (int &distance : edge_array) {
-            new_prefix_array.push_back(new_prefix_array.back() + distance + 1);  // +1 so that the prefix array represents sum of contributions rather than sum of edge distances
-        }
+		vector<long long> new_prefix_array = {0};
+		for (int &distance : edge_array) {
+			new_prefix_array.push_back(
+			    new_prefix_array.back() + distance +
+			    1);  // +1 so that the prefix array represents sum of contributions
+			         // rather than sum of edge distances
+		}
 
-        prefix_arrays.insert(make_pair(species, new_prefix_array));
-    }
+		prefix_arrays.insert(make_pair(species, new_prefix_array));
+	}
 
-    long long total_contributions = 0;
+	long long total_contributions = 0;
 
-    for (long long i = 0; i < num_cows; i++) {
+	for (long long i = 0; i < num_cows; i++) {
 
-        int &species = initial_order[i];
+		int &species = initial_order[i];
 
-        // Catches edge case where a cow species exists in the initial ordering but not in the ideal ordering
-        if (edge_arrays.count(species) == 0) {
-            continue;
-        }
+		// Catches edge case where a cow species exists in the initial ordering but not
+		// in the ideal ordering
+		if (edge_arrays.count(species) == 0) { continue; }
 
-        // Scenario 1 computation
-        long long min_distance_to_edge = min(i, num_cows - i - 1);
-        vector<int> &edge_array = edge_arrays.at(species);
-        int index = upper_bound(edge_array.begin(), edge_array.end(), min_distance_to_edge) - edge_array.begin(); // Returns breakoff point where d_cow < d_desirable
+		// Scenario 1 computation
+		long long min_distance_to_edge = min(i, num_cows - i - 1);
+		vector<int> &edge_array = edge_arrays.at(species);
+		int index =
+		    upper_bound(edge_array.begin(), edge_array.end(), min_distance_to_edge) -
+		    edge_array.begin();  // Returns breakoff point where d_cow < d_desirable
 
-        total_contributions += prefix_arrays.at(species)[index]; // Adds contributions limited by d_desirable
-        total_contributions += (min_distance_to_edge + 1) * ((long long) edge_array.size() - index); // Adds contributions limited by d_cow
+		total_contributions += prefix_arrays.at(
+		    species)[index];  // Adds contributions limited by d_desirable
+		total_contributions += (min_distance_to_edge + 1) *
+		                       ((long long)edge_array.size() -
+		                        index);  // Adds contributions limited by d_cow
 
-        // Scenario 2 computation
-        if (initial_order[i] == ideal_order[i]) {
-            total_contributions += ((i * (i + 1)) / 2) + ((num_cows - i - 1) * (num_cows - i) / 2);
-        }
-    }
+		// Scenario 2 computation
+		if (initial_order[i] == ideal_order[i]) {
+			total_contributions +=
+			    ((i * (i + 1)) / 2) + ((num_cows - i - 1) * (num_cows - i) / 2);
+		}
+	}
 
-    cout << total_contributions << endl;
+	cout << total_contributions << endl;
 }
 ```
 
@@ -225,49 +236,55 @@ edge_arrays = dict()
 
 for i in range(num_cows):
 
-    min_distance_to_edge = min(i, num_cows - i - 1)
+	min_distance_to_edge = min(i, num_cows - i - 1)
 
-    # If an array doesn't already exist for a cow species, create a new array for that species
-    if ideal_order[i] not in edge_arrays:
-        edge_arrays[ideal_order[i]] = [min_distance_to_edge]
+	# If an array doesn't already exist for a cow species, create a new array for that species
+	if ideal_order[i] not in edge_arrays:
+		edge_arrays[ideal_order[i]] = [min_distance_to_edge]
 
-    else:
-        edge_arrays[ideal_order[i]].append(min_distance_to_edge)
+	else:
+		edge_arrays[ideal_order[i]].append(min_distance_to_edge)
 
-# Map a cow's species to a prefix array that sums the countributions limited by d_desirable 
+# Map a cow's species to a prefix array that sums the countributions limited by d_desirable
 prefix_arrays = dict()
 
 for species, edge_array in edge_arrays.items():
-    
-    # Sort edge arrays as we iterate so we can binary search over it later
-    edge_array.sort()
 
-    new_prefix_array = [0]
-    for distance in edge_array:
-        new_prefix_array.append(new_prefix_array[-1] + distance + 1) # +1 so that the prefix array represents sum of contributions rather than sum of edge distances
+	# Sort edge arrays as we iterate so we can binary search over it later
+	edge_array.sort()
 
-    prefix_arrays[species] = new_prefix_array
+	new_prefix_array = [0]
+	for distance in edge_array:
+		new_prefix_array.append(
+			new_prefix_array[-1] + distance + 1
+		)  # +1 so that the prefix array represents sum of contributions rather than sum of edge distances
+
+	prefix_arrays[species] = new_prefix_array
 
 total_contributions = 0
 
 for i in range(num_cows):
-    
-    species = initial_order[i]
 
-    # Catches edge case where a cow species exists in the initial ordering but not in the ideal ordering
-    if species not in edge_arrays:
-        continue
+	species = initial_order[i]
 
-    # Scenario 1 computation
-    min_distance_to_edge = min(i, num_cows - i - 1)
-    index = bisect.bisect(edge_arrays[species], min_distance_to_edge)
-    
-    total_contributions += prefix_arrays[species][index]
-    total_contributions += (min_distance_to_edge + 1) * (len(edge_arrays[species]) - index)
+	# Catches edge case where a cow species exists in the initial ordering but not in the ideal ordering
+	if species not in edge_arrays:
+		continue
 
-    # Scenario 2 computation
-    if initial_order[i] == ideal_order[i]:
-        total_contributions += ((i * (i + 1)) // 2) + (((num_cows - i - 1) * (num_cows - i)) // 2)
+	# Scenario 1 computation
+	min_distance_to_edge = min(i, num_cows - i - 1)
+	index = bisect.bisect(edge_arrays[species], min_distance_to_edge)
+
+	total_contributions += prefix_arrays[species][index]
+	total_contributions += (min_distance_to_edge + 1) * (
+		len(edge_arrays[species]) - index
+	)
+
+	# Scenario 2 computation
+	if initial_order[i] == ideal_order[i]:
+		total_contributions += ((i * (i + 1)) // 2) + (
+			((num_cows - i - 1) * (num_cows - i)) // 2
+		)
 
 print(total_contributions)
 ```
