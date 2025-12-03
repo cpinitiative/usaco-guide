@@ -11,29 +11,19 @@ author: David Xiao
 
 Let's analyze the last test case in detail:
 
-![](usaco-1470/testcase.png)
-
 We denote a "desirable location" of a cow as a location where a cow of that species will be checked by the bovine veterinarian.
 
-We denote a "contribution" as a one instance of a cow being moved to a desirable location.
-
-From the problem, an operation is defined by two points $l$ and $r$, where $1 \leq l \leq r \leq N$
+We denote a "contribution" as one instance of a cow being moved to a desirable location.
 
 Note that a contribution can only be achieved in one of two ways.
 
-<ol>
-  <li>
     A cow was not in a desirable location, and the cow was moved to a desirable location during an operation.
-    <br />
-    <img src="usaco-1470/firstscenario.png" alt="Scenario 1 illustration" />
-  </li>
-  <li>
-    A cow was already in a desirable location, and the cow was not moved during an operation.
-    <br />
-    <img src="usaco-1470/secondscenario.png" alt="Scenario 2 illustration" />
-  </li>
-</ol>
 
+![](usaco-1470/firstscenario.png)
+
+    A cow was already in a desirable location, and the cow was not moved during an operation.
+
+![](usaco-1470/secondscenario.png)
 
 Let's consider how to calculate the contributions created strictly by the first scenario.
 
@@ -47,7 +37,7 @@ We observe that the same is true if we set $l$ to $i - 1$ and $r$ to $j + 1$.
 
 ![](usaco-1470/firstscenarioexpanded.png)
 
-Thus, the amount of contributions that can be made from a cow at location $i$ and desirable location at location $j$ is limited by the minimum distance to the edge, as after that $l$ or $r$ would violate the given constraints for a valid operation.
+Thus, the amount of contributions that can be made from a cow at location $i$ and desirable location at location $j$ is limited by the minimum distance to either end of the order, as after that $l$ or $r$ would violate the given constraints for a valid operation.
 
 ![](usaco-1470/firstscenarioall.png)
 
@@ -57,7 +47,7 @@ $$
 \min(i - 1, N - j) + 1
 $$
 
-Note: +1 is added at the end as $l$ and $r$ can equal $i$ and $j$ respectively.
+Note that we add $1$ to the end because $l$ and $r$ can equal $i$ and $j$ respectively.
 
 Now we consider how to calculate contributions created strictly by the second scenario.
 
@@ -71,13 +61,10 @@ $$
 \frac{N \cdot (N + 1)}{2}
 $$
 
-Thus, the amount of contributions created from a cow at location $i$ at a desirable location can be written as the sum of all the possible operations before after after $i$
+Thus, the amount of contributions created from a cow at location $i$ at a desirable location can be written as the sum of all the possible operations before  after $i$
 
-$$
 \frac{i \cdot (i + 1)}{2} + \frac{(N - i - 1) \cdot (N - i)}{2}
 $$
-
-![](usaco-1470/secondscenarioall.png)
 
 Now we need to figure out how to implement this. Given the constraint of $N \leq 5 \cdot 10^5$, it is natural to assume $\mathcal{O}(N \log N)$ time complexity.
 
@@ -87,7 +74,7 @@ Given that each cow either is or isn't already at a desirable location, the seco
 
 However, for the first scenario, there may be multiple desirable locations a cow could move to.
 
-Let's denote a cow and a desirable location that can create contributions as described in the first scenario as a pair
+Let's denote a cow and a desirable location that can create contributions as described in the first scenario as a pair.
 
 If we naively checked each pair, this would take $\mathcal{O}(N)$ time, as in the worst case scenario every single location is a desirable location for every cow.
 
