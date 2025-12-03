@@ -169,6 +169,58 @@ public class Measurement {
 ```
 
 </JavaSection>
+<PySection>
+
+```py
+import bisect
+
+with open("measurement.in", "r") as read:
+	n, g = map(int, read.readline().split())
+	measurements = [list(map(int, read.readline().split())) for i in range(n)]
+	# sort by day
+	measurements.sort()
+
+# maintain a sorted list and a dictionary of cow outputs
+sorted_list = []
+cows = list(set([x[1] for x in measurements]))
+values = dict()
+for i in range(len(cows)):
+	values[cows[i]] = g
+	sorted_list.append([g, cows[i]])
+
+changes = 0
+sorted_list.append([g, float("inf")])
+top_cows = sorted(set(cows + [float("inf")]))
+for i in range(n):
+	day, cow, change = map(int, measurements[i])
+
+	# find index to update using bisect
+	index = bisect.bisect_left(sorted_list, [values[cow], cow])
+
+	# maintain sorted order
+	sorted_list.pop(index)
+	bisect.insort(sorted_list, [values[cow] + change, cow])
+	values[cow] += change
+
+	# find highest output
+	highest_output = sorted_list[-1][0]
+
+	# find cows with highest output
+	top_cows2 = []
+	for j in range(len(sorted_list) - 1, -1, -1):
+		if sorted_list[j][0] == highest_output:
+			top_cows2.append(sorted_list[j][1])
+		else:
+			break
+	top_cows2.sort()
+	if top_cows != top_cows2:
+		top_cows = top_cows2
+		changes += 1
+
+print(changes, file=open("measurement.out", "w"))
+```
+
+</PySection>
 </LanguageSection>
 
 ## Solution 2 - Priority Queue

@@ -1,0 +1,419 @@
+---
+id: baltic-20-graph
+source: Baltic OI
+title: 2020 - Graph
+author: David Zhou
+---
+
+[Official Analysis](https://codeforces.com/blog/entry/80525)
+
+## Explanation
+
+### Constraint Propagation
+
+Suppose the value of one endpoint of an edge is $u$. If $u + v = s$, then we can find the value of the other endpoint to be $v = s - u$. Based on this, if we fix one node's value in a connected component, all other values in that component are determined by following the edges.
+
+### Determining General Values of Nodes
+
+For each connected component, we can express all node values in terms of a single variable $x$:
+
+- We start with an arbitrary node and set its value to $x$
+- Then we propagate through the edges. If $u = ax + b$ and edge $(u,v)$ has sum $s$, then $v = s - u = -ax + (s - b)$
+
+This means that every node's value is represented in the form of $cx + d$, where $c=\pm1$.
+
+### Checking Feasibility in Cyclic Connected Components
+
+We encounter a cycle when we visit an already-visited node. This means that we need to check for feasibility.
+- If we reach node $u$ again, we have two expressions for it
+- The cycle gives us an equation in terms of $x$
+- If the equation has no solution or contradicts a previous solution, the problem is infeasible
+
+<Spoiler title="Why Cycle Equations Determine x">
+Consider a path from node $u$ back to itself. Let $u = a_1x + b_1$, our starting value for propagation. At some point later on, if we loop back, we will get another expression of $u = a_2x + b_2$.
+
+**Case 1:** $a_1 = a_2$: We get $b_1 = b_2$. If $b_1 \neq b_2$, the connected component is infeasible, so the entire graph is infeasible.
+
+**Case 2:** $a_1 \neq a_2$: We can solve: $x = \dfrac{b_2-b_1}{a_1 - a_2}$, uniquely determining a value for $x$.
+</Spoiler>
+
+### Acyclic Connected Components
+
+When no cycle determines $x$, we must choose its value to minimize the expression: $\sum_{i=1}^n |a_i x + b_i|$. This can be done by setting $x$ to the median of the roots, as this problem reduces down to the minimization of the sum of absolute differences.
+
+<Spoiler title="Why Median Minimizes Sum">
+We want to minimize the function $f(x) = \sum_{i=1}^n |a_i x + b_i|$.
+
+Since each $a_i \in \{+1, -1\}$, we can rewrite each term as $|a_i x + b_i| = |x - r_i|$, where $r_i = -\dfrac{b_i}{a_i}$
+
+Thus, minimizing $f(x)$ is equivalent to minimizing $f(x) = \sum_{i=1}^n |x - r_i|$
+
+Intuitively, we can think of trying to push $x$ as close to the middle of the roots as possible, as placing it there will "balance" the values.
+
+Mathematically, we can fix any $x \in \mathbb{R}$ and a small positive increment $h > 0$ so that no $r_i$ lies in the interval $(x, x + h]$.
+
+Consider the change
+$f(x + h) - f(x) = \sum_{i=1}^{k} (|x + h - r_i| - |x - r_i|)$.
+
+For each $i$, one of two things happens:
+- If $r_i \le x$, then $|x + h - r_i| - |x - r_i| = h$.
+- If $r_i > x$, then $|x + h - r_i| - |x - r_i| = -h$.
+
+Therefore, $f(x + h) - f(x) = h \cdot(\# {\{i : r_i \le x\}} - \# {\{i : r_i > x\}})$.
+
+Let $L(x) = \# {\{i : r_i \le x\}}$ and $R(x) = \# {\{i : r_i > x\}}$.
+Note that $L(x) + R(x) = n$.
+
+If $L(x) < R(x)$ then $f(x + h) - f(x) < 0$, so moving slightly to the right decreases $g$.
+
+If $L(x) > R(x)$ then $f(x + h) - f(x) > 0$, so moving slightly to the right increases $g$. Equivalently, moving to the left decreases $g$.
+
+If $L(x) = R(x)$ then $f(x + h) = f(x)$. moves do not affect the value of $g$.
+
+Therefore, the only possible minima occur at points where $L(x) \ge R(x)$ and $R(x) \ge L(x)$. This means either $L(x) = R(x)$ or moving in either direction leaves the counts balanced. This is true at the median of the roots.
+
+</Spoiler>
+
+### Determining Actual Values of Nodes
+
+Regardless of how we computed $x$, once we have it, we need to propagate this value throughout the connected components. We can plug $x$ into each $ax + b$ and determine the exact value of each node that minimizes the sum of their absolute values.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N\log N + M)$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <algorithm>
+#include <iomanip>
+#include <iostream>
+#include <vector>
+
+using namespace std;
+using ll = long long;
+using pll = pair<ll, ll>;
+
+const ll INF = 1e18;
+
+vector<vector<pll>> adj;
+vector<pll> coeffs;  // each node value is represented as ax + b (stored as pair {a, b})
+vector<bool> vis;
+vector<double> ans;
+vector<int> current_component;
+bool impossible;
+ll current_val;
+
+void dfs(int u) {
+	current_component.push_back(u);
+	vis[u] = true;
+
+	for (auto [v, w] : adj[u]) {
+		if (vis[v]) {
+			// found a cycle -> check consistency or solve for x
+			pll res = {coeffs[u].first + coeffs[v].first,
+			           coeffs[u].second + coeffs[v].second};
+
+			if (res.first == 0) {
+				// x terms cancel -> check if constants match
+				if (res.second != w) { impossible = true; }
+			} else {
+				// can solve for x
+				ll expected;
+				if (res.first == 2) {
+					expected = w - res.second;
+				} else {
+					expected = res.second - w;
+				}
+				if (current_val == INF) {
+					current_val = expected;
+				} else if (current_val != expected) {
+					// contradiction with previously determined x
+					impossible = true;
+					return;
+				}
+			}
+		} else {
+			// compute neighbor's value based on edge: v = w - u
+			coeffs[v] = {-coeffs[u].first, w - coeffs[u].second};
+			dfs(v);
+		}
+	}
+}
+
+void propagate(int u) {
+	// once x is known, propagate actual values through component
+	vis[u] = true;
+	for (auto [v, w] : adj[u]) {
+		if (!vis[v]) {
+			ans[v] = w - ans[u];
+			propagate(v);
+		}
+	}
+}
+
+double find_median(const vector<int> &comp) {
+	// optimal x minimizes sum of |ax+b|, which occurs at median of roots
+	vector<ll> roots;
+	for (int node : comp) {
+		if (coeffs[node].first == 1) {
+			roots.push_back(-coeffs[node].second);
+		} else {
+			roots.push_back(coeffs[node].second);
+		}
+	}
+	sort(roots.begin(), roots.end());
+	int sz = roots.size();
+	return (roots[(sz - 1) / 2] + roots[sz / 2]) / 2.0;
+}
+
+int main() {
+	ios_base::sync_with_stdio(false);
+	cin.tie(nullptr);
+
+	int n, m;
+	cin >> n >> m;
+
+	adj.resize(n);
+	coeffs.assign(n, {-INF, -INF});
+	vis.assign(n, false);
+	ans.resize(n);
+	impossible = false;
+
+	// build adjacency list
+	for (int i = 0; i < m; i++) {
+		int a, b;
+		ll c;
+		cin >> a >> b >> c;
+		--a, --b;
+		adj[a].push_back({b, c});
+		adj[b].push_back({a, c});
+	}
+
+	vector<vector<int>> components;
+	vector<ll> component_vals;
+
+	// find all connected components
+	for (int i = 0; i < n; i++) {
+		if (!vis[i]) {
+			current_component.clear();
+			current_val = INF;
+			coeffs[i] = {1, 0};  // let first node = x
+			dfs(i);
+			components.push_back(current_component);
+			component_vals.push_back(current_val);
+		}
+	}
+
+	if (impossible) {
+		cout << "NO\n";
+		return 0;
+	}
+
+	cout << "YES\n";
+	fill(vis.begin(), vis.end(), false);
+
+	// compute final values for each component
+	for (int i = 0; i < components.size(); i++) {
+		int start = components[i][0];
+		if (component_vals[i] == INF) {
+			// x not fixed -> use median for optimal sum
+			ans[start] = find_median(components[i]);
+		} else {
+			// x was determined by a cycle
+			ans[start] = component_vals[i] / 2.0;
+		}
+		propagate(start);
+	}
+
+	for (int i = 0; i < n; i++) {
+		cout << fixed << setprecision(1) << ans[i];
+		if (i == n - 1) {
+			cout << '\n';
+		} else {
+			cout << ' ';
+		}
+	}
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Graph {
+	static final long INF = (long)1e18;
+
+	static List<List<Pair>> adj;
+	static List<Pair> coeffs;  // node value represented as ax + b (stored as {a, b})
+	static boolean[] vis;
+	static double[] ans;
+	static List<Integer> currentComponent;
+	static boolean impossible;
+	static long currentVal;
+
+	static class Pair {
+		long first, second;
+		Pair(long first, long second) {
+			this.first = first;
+			this.second = second;
+		}
+	}
+
+	static void dfs(int u) {
+		currentComponent.add(u);
+		vis[u] = true;
+
+		for (Pair edge : adj.get(u)) {
+			int v = (int)edge.first;
+			long w = edge.second;
+
+			if (vis[v]) {
+				// found a cycle -> check consistency or solve for x
+				Pair res = new Pair(coeffs.get(u).first + coeffs.get(v).first,
+				                    coeffs.get(u).second + coeffs.get(v).second);
+
+				if (res.first == 0) {
+					// x terms cancel -> check if constants match
+					if (res.second != w) impossible = true;
+				} else {
+					// can solve for x
+					long expected;
+					if (res.first == 2) {
+						expected = w - res.second;
+					} else {
+						expected = res.second - w;
+					}
+					if (currentVal == INF) {
+						currentVal = expected;
+					} else if (currentVal != expected) {
+						// contradiction with previously determined x
+						impossible = true;
+						return;
+					}
+				}
+			} else {
+				// compute neighbor's value based on edge: v = w - u
+				coeffs.set(v, new Pair(-coeffs.get(u).first, w - coeffs.get(u).second));
+				dfs(v);
+			}
+		}
+	}
+
+	static void propagate(int u) {
+		// once x is known, propagate actual values through component
+		vis[u] = true;
+		for (Pair edge : adj.get(u)) {
+			int v = (int)edge.first;
+			long w = edge.second;
+			if (!vis[v]) {
+				ans[v] = w - ans[u];
+				propagate(v);
+			}
+		}
+	}
+
+	static double findMedian(List<Integer> comp) {
+		// optimal x minimizes sum of |ax+b|, which occurs at median of roots
+		List<Long> roots = new ArrayList<>();
+		for (int node : comp) {
+			if (coeffs.get(node).first == 1) {
+				roots.add(-coeffs.get(node).second);
+			} else {
+				roots.add(coeffs.get(node).second);
+			}
+		}
+		Collections.sort(roots);
+		int sz = roots.size();
+		return (roots.get((sz - 1) / 2) + roots.get(sz / 2)) / 2.0;
+	}
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		PrintWriter pw = new PrintWriter(System.out);
+
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int n = Integer.parseInt(st.nextToken());
+		int m = Integer.parseInt(st.nextToken());
+
+		adj = new ArrayList<>();
+		coeffs = new ArrayList<>();
+		vis = new boolean[n];
+		ans = new double[n];
+		impossible = false;
+
+		for (int i = 0; i < n; i++) {
+			adj.add(new ArrayList<>());
+			coeffs.add(new Pair(-INF, -INF));
+		}
+
+		// build adjacency list
+		for (int i = 0; i < m; i++) {
+			st = new StringTokenizer(br.readLine());
+			int a = Integer.parseInt(st.nextToken()) - 1;
+			int b = Integer.parseInt(st.nextToken()) - 1;
+			long c = Long.parseLong(st.nextToken());
+			adj.get(a).add(new Pair(b, c));
+			adj.get(b).add(new Pair(a, c));
+		}
+
+		List<List<Integer>> components = new ArrayList<>();
+		List<Long> componentVals = new ArrayList<>();
+
+		// find all connected components
+		for (int i = 0; i < n; i++) {
+			if (!vis[i]) {
+				currentComponent = new ArrayList<>();
+				currentVal = INF;
+				coeffs.set(i, new Pair(1, 0));  // let first node = x
+				dfs(i);
+				components.add(new ArrayList<>(currentComponent));
+				componentVals.add(currentVal);
+			}
+		}
+
+		if (impossible) {
+			pw.println("NO");
+			pw.close();
+			return;
+		}
+
+		pw.println("YES");
+		Arrays.fill(vis, false);
+
+		// compute final values for each component
+		for (int i = 0; i < components.size(); i++) {
+			int start = components.get(i).get(0);
+			if (componentVals.get(i) == INF) {
+				// x not fixed -> use median for optimal sum
+				ans[start] = findMedian(components.get(i));
+			} else {
+				// x was determined by a cycle
+				ans[start] = componentVals.get(i) / 2.0;
+			}
+			propagate(start);
+		}
+
+		for (int i = 0; i < n; i++) {
+			pw.printf("%.1f", ans[i]);
+			if (i == n - 1) {
+				pw.println();
+			} else {
+				pw.print(" ");
+			}
+		}
+
+		pw.close();
+	}
+}
+```
+
+</JavaSection>
+
+</LanguageSection>
