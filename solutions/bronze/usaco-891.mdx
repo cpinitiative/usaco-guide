@@ -1,0 +1,140 @@
+---
+id: usaco-891
+source: USACO Bronze 2019 January
+title: Shell Game
+author: SeungJoon Park
+---
+
+[Official Analysis (C++)](https://usaco.org/current/data/sol_shell_bronze_jan19.html)
+
+## Explanation
+
+The question can be solved by simulating each case and comparing the correct guesses from each case. The simulation takes only $\mathcal{O}(N)$ for time complexity since it will perform $N$ times, so it can be utilized for this problem. Below there are two different solving methods.
+
+The C++ code and Java code provided below has an algorithmic approach. It only contains two arrays: one that stores the possible initial positions labeled by index and another that stores the number of correct gusses. It is reasonable because the locations are specified by index. After swapping according to each operation, the program will use the number that uses $g$, the guessed index, to access the position that is guessed as an index for the counter, specifying the index of the answer array and accumulate separately.
+
+The Python code provided below simulates every possible situation of this game, since it is guaranteed that the initial stone is located at either index of 0, 1, or 2. After setting each case, simply run the code by switching the stones for every case and accumulate the correct guesses. Finally, print out the maximum correct guesses as the answer.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <algorithm>
+using namespace std;
+
+int main() {
+    ios::sync_with_stdio(0);
+    cin.tie(0);
+    freopen("shell.in","r",stdin);
+    freopen("shell.out","w",stdout);
+
+    int n; cin >> n;
+
+    // shell_at_pos[i] stores the label of the shell located at position i
+    // The shells can be placed arbitrarily at the start.
+    int shell_at_pos[3] = {0, 1, 2};
+
+    // counter[i] stores the number of times the shell with label i was picked
+    int counter[3] = {0, 0, 0};
+
+    for (int i = 0; i < n; i++) {
+        int a, b, g; cin >> a >> b >> g;
+        // Zero indexing: offset all positions by 1
+        a--; b--; g--;
+
+        // Perform Bessie's swapping operation
+        int tmp = shell_at_pos[a];
+        shell_at_pos[a] = shell_at_pos[b];
+        shell_at_pos[b] = tmp;
+
+        // Count the number of times Elsie guesses each particular shell
+        counter[shell_at_pos[g]]++;
+    }
+
+    cout << *max_element(counter,counter+3);    // requires <algorithm>
+
+    return 0;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class ShellGame {
+    public static void main(String[] args) throws Exception {
+        BufferedReader input = new BufferedReader(new FileReader("shell.in"));
+
+
+        int n = Integer.parseInt(input.readLine());
+        int[] shell_at_pos = {0,1,2};
+        int[] counter = {0,0,0};
+        int max = -1;
+
+        for (int i = 0; i < n; i++) {
+            StringTokenizer st = new StringTokenizer(input.readLine());
+            int a = Integer.parseInt(st.nextToken()) - 1;
+            int b = Integer.parseInt(st.nextToken()) - 1;
+            int g = Integer.parseInt(st.nextToken()) - 1;
+
+            int tmp = shell_at_pos[a];
+            shell_at_pos[a] = shell_at_pos[b];
+            shell_at_pos[b] = tmp;
+
+            counter[shell_at_pos[g]]++;
+            if (counter[shell_at_pos[g]] > max) {
+                max = counter[shell_at_pos[g]];
+            }
+        }
+
+        PrintWriter out = new PrintWriter("shell.out");
+        out.println(max);
+        out.close();
+    }
+}
+```
+
+</JavaSection>
+
+<PySection>
+
+```py
+read = open("shell.in")
+
+n = int(read.readline())
+
+# initialize each case (1: pebble)
+c1 = [1,0,0]
+c2 = [0,1,0]
+c3 = [0,0,1]
+
+# storing count
+ans = [0,0,0]
+
+for _ in range(n):
+    a,b,g = [int(i) - 1 for i in read.readline().split()]
+    
+    # swapping each case
+    c1[a],c1[b] = c1[b],c1[a]
+    c2[a],c2[b] = c2[b],c2[a]
+    c3[a],c3[b] = c3[b],c3[a]
+
+    # evaluate the guess on each case
+    if c1[g]: ans[0] +=1
+    if c2[g]: ans[1] +=1
+    if c3[g]: ans[2] +=1
+
+# print the maximum counted guess
+print(max(ans), file=open("shell.out", "w"))
+```
+
+</PySection>
+</LanguageSection>
