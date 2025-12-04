@@ -19,16 +19,16 @@ From CPH:
 > A sliding window is a constant-size subarray that moves from left to right
 > through the array.
 
-For each position of the window, we want to compute some information.
+For each position of the window, we wish to compute some information.
 
 <FocusProblem problem="constantSam" />
 
 ### Implementation
 
-The most straightforward way to do this is to store an sorted set of integers
-representing the integers inside the window. If the window currently spans the
-range $i \dots j$, we observe that moving the range forward to $i+1 \dots j+1$
-only removes $a_i$ and adds $a_{j+1}$ to the window. We can support these two
+The most straightforward way to do this is to maintain a sorted set of integers 
+containing the integers inside the window. If the window currently spans the
+range $i \dots j$, we observe that sliding the range forward to $i+1 \dots j+1$
+removes $a_i$ and adds $a_{j+1}$ to the window. We can support these two
 operations and query for the minimum / maximum in the set in
 $\mathcal{O}(\log N)$.
 
@@ -111,7 +111,7 @@ class Solution:
 
 ## With Two Pointers
 
-In general, it is not required for the subarray to have constant size as long as
+In general, it isn't required for the subarray to have constant size as long as
 both the left and right endpoints of the subarray only move to the right.
 
 <FocusProblem problem="sam" />
@@ -121,7 +121,7 @@ both the left and right endpoints of the subarray only move to the right.
 We keep a pointer for the left boundary of the window and expand the right boundary until we find a song already in our subarray. Checking songs can be done with a set.
 
 Then, we erase the left boundary from the set and move the left pointer up by one. We do this until the right boundary
-is able to expand. The left boundary is removed until the song immediately after the right boundary is not in
+is able to expand. The left boundary is removed until the song immediately after the right boundary isn't in
 our current window's set. The left boundary is removed to provide more flexibility for expanding the right boundary.
 
 The answer is the largest distance between the left and right pointers.
@@ -130,6 +130,9 @@ The answer is the largest distance between the left and right pointers.
 <CPPSection>
 
 ```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
 int n;
 set<int> s;
 int a[200000], ans;
@@ -152,7 +155,7 @@ int main() {
 <JavaSection>
 
 ```java
-public class test {
+public class Playlist {
 	public static void main(String[] args) throws Exception {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		int n = Integer.parseInt(br.readLine());
