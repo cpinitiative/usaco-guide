@@ -25,29 +25,38 @@ Lastly, we can print the answer according to the comparison.
 <CPPSection>
 
 ```cpp
-#include <iostream>
 #include <algorithm>
+#include <iostream>
 using namespace std;
 
 int main() {
-    ios::sync_with_stdio(0);
-    cin.tie(0);
+	ios::sync_with_stdio(0);
+	cin.tie(0);
 
-    int n,q; cin >> n >> q;
-    int c[n]; for (int i = 0; i < n; i++) { cin >> c[i]; }
-    for (int i = 0; i < n; i++) { int tmp; cin >> tmp; c[i] -= tmp; }
+	int n, q;
+	cin >> n >> q;
+	int c[n];
+	for (int i = 0; i < n; i++) { cin >> c[i]; }
+	for (int i = 0; i < n; i++) {
+		int tmp;
+		cin >> tmp;
+		c[i] -= tmp;
+	}
 
-    sort(c,c+n,greater<int>());
+	sort(c, c + n, greater<int>());
 
-    for (int r = 0; r < q; r++) {
-        int v,s; cin >> v >> s;
-        if (c[v-1] > s) { cout << "YES\n"; }
-        else { cout << "NO\n"; }
-    }
+	for (int r = 0; r < q; r++) {
+		int v, s;
+		cin >> v >> s;
+		if (c[v - 1] > s) {
+			cout << "YES\n";
+		} else {
+			cout << "NO\n";
+		}
+	}
 
-    return 0;
+	return 0;
 }
-
 ```
 
 </CPPSection>
@@ -58,26 +67,29 @@ int main() {
 import java.util.*;
 
 public class MaximizingProduct {
-    public static void main(String[] args) throws Exception {
-        Scanner sc = new Scanner(System.in);
+	public static void main(String[] args) throws Exception {
+		Scanner sc = new Scanner(System.in);
 
-        int n = sc.nextInt();
-        int q = sc.nextInt();
+		int n = sc.nextInt();
+		int q = sc.nextInt();
 
-        Integer[] c = new Integer[n];
-        for (int i = 0; i < n; i++) { c[i] = sc.nextInt(); }
-        for (int i = 0; i < n; i++) { c[i] -= sc.nextInt(); }
-        Arrays.sort(c,Collections.reverseOrder());
+		Integer[] c = new Integer[n];
+		for (int i = 0; i < n; i++) { c[i] = sc.nextInt(); }
+		for (int i = 0; i < n; i++) { c[i] -= sc.nextInt(); }
+		Arrays.sort(c, Collections.reverseOrder());
 
-        for (int r = 0; r < q; r++) {
-            int v = sc.nextInt();
-            int s = sc.nextInt();
+		for (int r = 0; r < q; r++) {
+			int v = sc.nextInt();
+			int s = sc.nextInt();
 
-            if (c[v-1] > s) { System.out.println("YES"); }
-            else { System.out.println("NO"); }
-        }
-        sc.close();
-    }
+			if (c[v - 1] > s) {
+				System.out.println("YES");
+			} else {
+				System.out.println("NO");
+			}
+		}
+		sc.close();
+	}
 }
 ```
 
@@ -86,15 +98,18 @@ public class MaximizingProduct {
 <PySection>
 
 ```py
-n,q = map(int,input().split())
-c = list(map(int,input().split()))
-t = list(map(int,input().split()))
-for i in range(n): c[i] -= t[i]
+n, q = map(int, input().split())
+c = list(map(int, input().split()))
+t = list(map(int, input().split()))
+for i in range(n):
+	c[i] -= t[i]
 c.sort(reverse=True)
 for _ in range(q):
-    v,s = map(int,input().split())
-    if (c[v-1] > s): print("YES")
-    else: print("NO")
+	v, s = map(int, input().split())
+	if c[v - 1] > s:
+		print("YES")
+	else:
+		print("NO")
 ```
 
 </PySection>
