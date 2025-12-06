@@ -84,9 +84,9 @@ $$
 d_{des} = \min(j + 1, N - j)
 $$
 
-Recall earlier the amount of contributions that can occur is equal to $\min(d_{cow}, d_{des})
+Recall earlier the amount of contributions that can occur is equal to $\min(d_{cow}, d_{des})$
 
-Thus, for a certain cow, we want to find out how many contributions are limited by $d_{des}$ when $d_{des} < d_{cow}$ of each desirable location, and how many are limited by $d_{cow}$ when $d_{cow} < d_{des}$. We can do this by setting up an array of all $d_{des}$, and binary searching over this array to see for how many desirable locations $d_{des} < d{cow}$, and how many desirable locations $d_{cow} < d{cow}$.
+Thus, for a certain cow, we want to find out how many contributions are limited by $d_{des}$ when $d_{des} < d_{cow}$ of each desirable location, and how many are limited by $d_{cow}$ when $d_{cow} < d_{des}$. We can do this by setting up an array of all $d_{des}$, and binary searching over this array to see for how many desirable locations $d_{des} < d_{cow}$, and how many desirable locations $d_{cow} < d_{des}$.
 
 ![](usaco-1470/firstscenariooptimization.png)
 
@@ -96,7 +96,9 @@ We can optimize this by implementing a prefix array that sums [0...$i$] of the $
 
 Thus, the formula for the contributions provided by the first scenario can be found as written below given $m$ is the point where $d_{cow}$ becomes less than $d_{des}$.
 
-prefix_array[m] + 
+$$
+prefix_array[m] + d_{cow} \cdot (N - m)
+$$
 
 ## Implementation
 
