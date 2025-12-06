@@ -41,7 +41,7 @@ Thus, the amount of contributions that can be made from a cow at location $i$ an
 
 ![](usaco-1470/firstscenarioall.png)
 
-Mathamatically, the contirbutions can be written as 
+Mathamatically, the contirbutions can be written as
 
 $$
 \min(i + 1, N - j)
@@ -94,7 +94,7 @@ However, this still results in $\mathcal{O}(N)$ time, since we still have to sum
 
 We can optimize this by implementing a prefix array that sums the indices$[0 \dots i]$ of the $d_{des}$ array so we can find the sum of $d_{des}$ from the start of a list to any point in $\mathcal{O}(1)$ time. Then, all contributions limited by $d_{cow}$ can be found by multiplying  $d_{cow}$ by the number of pairs limited.
 
-Thus, the formula for the contributions provided by the first scenario can be found as written below, given $m$ is the point where $d_{cow}$ becomes less than $d_{des}$. 
+Thus, the formula for the contributions provided by the first scenario can be found as written below, given $m$ is the point where $d_{cow}$ becomes less than $d_{des}$.
 
 $$
 \text{prefix}[m] + d_{\text{cow}} \cdot (N - m)
@@ -151,7 +151,8 @@ int main() {
 	// d_desirable
 	unordered_map<int, vector<long long>> prefix_arrays;
 
-	for (auto &[species, edge_array] : edge_arrays) {  // iterating by reference is important for sorting
+	for (auto &[species, edge_array] :
+	     edge_arrays) {  // iterating by reference is important for sorting
 
 		// Sort edge arrays as we iterate so we can binary search over it later
 		sort(edge_array.begin(), edge_array.end());
@@ -176,7 +177,8 @@ int main() {
 
 		// Scenario 1 computation
 		long long min_distance_to_edge = min(i + 1, num_cows - i);
-		vector<int> &edge_array = edge_arrays.at(species); // reference is important to save time
+		vector<int> &edge_array =
+		    edge_arrays.at(species);  // reference is important to save time
 		int index =
 		    upper_bound(edge_array.begin(), edge_array.end(), min_distance_to_edge) -
 		    edge_array.begin();  // Returns breakoff point where d_cow < d_desirable
