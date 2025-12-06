@@ -92,12 +92,12 @@ Thus, for a certain cow, we want to find out how many contributions are limited 
 
 However, this still results in $\mathcal{O}(N)$ time, since we still have to sum up all contributions at the end.
 
-We can optimize this by implementing a prefix array that sums [0...$i$] of the $d_{des}$ array so we can find the sum of $d_{des}$ from the start of a list to any point in $\mathcal{O}(1)$ time. Then, all contributions limited by $d_{cow}$ can be found by multiplying  $d_{cow}$ by the number of pairs limited.
+We can optimize this by implementing a prefix array that sums $[0 \dots i]$ of the $d_{des}$ array so we can find the sum of $d_{des}$ from the start of a list to any point in $\mathcal{O}(1)$ time. Then, all contributions limited by $d_{cow}$ can be found by multiplying  $d_{cow}$ by the number of pairs limited.
 
 Thus, the formula for the contributions provided by the first scenario can be found as written below given $m$ is the point where $d_{cow}$ becomes less than $d_{des}$.
 
 $$
-\ttext{prefix_array[m]} + d_{cow} \cdot (N - m)
+\text{prefix_array[m]} + d_{cow} \cdot (N - m)
 $$
 
 ## Implementation
