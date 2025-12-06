@@ -92,7 +92,7 @@ Thus, for a certain cow, we want to find out how many contributions are limited 
 
 However, this still results in $\mathcal{O}(N)$ time, since we still have to sum up all contributions at the end.
 
-We can optimize this by implementing a prefix array that sums [0...$i$] of the $d_{des}$ array so we can find the sum of $d_{des}$ from the start of a list to any point in $\mathcal{O}(1)$ time. Then, all contribtions limited by $d_{cow}$ can be found by multiplying  $d_{cow}$ by the number of pairs limited.
+We can optimize this by implementing a prefix array that sums [0...$i$] of the $d_{des}$ array so we can find the sum of $d_{des}$ from the start of a list to any point in $\mathcal{O}(1)$ time. Then, all contributions limited by $d_{cow}$ can be found by multiplying  $d_{cow}$ by the number of pairs limited.
 
 Thus, the formula for the contributions provided by the first scenario can be found as written below given $m$ is the point where $d_{cow}$ becomes less than $d_{des}$.
 
@@ -134,7 +134,7 @@ int main() {
 		ideal_order.push_back(cow);
 	}
 
-	// Map a cow's species to an array of minimum distances to the edge for that speices
+	// Map a cow's species to an array of minimum distances to the edge for that species
 	// in the ideal ordering
 	unordered_map<int, vector<int>> edge_arrays;
 
@@ -154,7 +154,7 @@ int main() {
 		}
 	}
 
-	// Map a cow's species to a prefix array that sums the countributions limited by
+	// Map a cow's species to a prefix array that sums the contributions limited by
 	// d_desirable
 	unordered_map<int, vector<long long>> prefix_arrays;
 
@@ -216,12 +216,12 @@ num_cows = int(input())
 initial_order = [int(x) for x in input().split()]
 ideal_order = [int(x) for x in input().split()]
 
-# Map a cow's species to an array of minimum distances to the edge for that speices in the ideal ordering
+# Map a cow's species to an array of minimum distances to the edge for that species in the ideal ordering
 edge_arrays = dict()
 
 for i in range(num_cows):
 
-	min_distance_to_edge = min(i, num_cows - i - 1)
+	min_distance_to_edge = min(i + 1, num_cows - i)
 
 	# If an array doesn't already exist for a cow species, create a new array for that species
 	if ideal_order[i] not in edge_arrays:
@@ -230,7 +230,7 @@ for i in range(num_cows):
 	else:
 		edge_arrays[ideal_order[i]].append(min_distance_to_edge)
 
-# Map a cow's species to a prefix array that sums the countributions limited by d_desirable
+# Map a cow's species to a prefix array that sums the contributions limited by d_desirable
 prefix_arrays = dict()
 
 for species, edge_array in edge_arrays.items():
@@ -240,9 +240,7 @@ for species, edge_array in edge_arrays.items():
 
 	new_prefix_array = [0]
 	for distance in edge_array:
-		new_prefix_array.append(
-			new_prefix_array[-1] + distance + 1
-		)  # +1 so that the prefix array represents sum of contributions rather than sum of edge distances
+		new_prefix_array.append(new_prefix_array[-1] + distance)
 
 	prefix_arrays[species] = new_prefix_array
 
@@ -257,11 +255,11 @@ for i in range(num_cows):
 		continue
 
 	# Scenario 1 computation
-	min_distance_to_edge = min(i, num_cows - i - 1)
+	min_distance_to_edge = min(i + 1, num_cows - i)
 	index = bisect.bisect(edge_arrays[species], min_distance_to_edge)
 
 	total_contributions += prefix_arrays[species][index]
-	total_contributions += (min_distance_to_edge + 1) * (
+	total_contributions += (min_distance_to_edge) * (
 		len(edge_arrays[species]) - index
 	)
 
