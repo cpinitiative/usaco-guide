@@ -96,6 +96,8 @@ Binary search on a BIT.
 #include <bits/stdc++.h>
 using namespace std;
 
+constexpr int bits(int x) { return x == 0 ? 0 : 31 - __builtin_clz(x); }
+
 /**
  * Description: range sum queries and point updates for $D$ dimensions
  * Source: https://codeforces.com/blog/entry/64914
@@ -135,7 +137,7 @@ template <class T, int N>
 int get_kth(const BIT<T, N> &bit, T des) {
     assert(des > 0);
     int ind = 0;
-    for (int i = (1 << int(log2(N))); i; i >>= 1)
+    for (int i = 1 << bits(N); i; i /= 2)
         if (ind + i <= N && bit.bit[ind + i].val < des)
             des -= bit.bit[ind += i].val;
     assert(ind < N);
