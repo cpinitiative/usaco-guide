@@ -13,51 +13,51 @@ Because the performances are distinct, each improvementous subarray can be uniqu
 
 <Spoiler title="Hint 2">
 
-Assume we fix the location of our minimum value, and count the number of 
-corresponding valid subarrays. One possible way to count the subarrays is to fix the left endpoint, 
-and count all valid right endpoints. How can we reduce the number of left 
+Assume we fix the location of our minimum value, and count the number of
+corresponding valid subarrays. One possible way to count the subarrays is to fix the left endpoint,
+and count all valid right endpoints. How can we reduce the number of left
 endpoints we consider?
 
 </Spoiler>
 
 [Official Analysis (Italian)](https://wiki.olinfo.it/it/2021/pre-oii/allenamento)
 
-# Solution 
+# Solution
 
 <Spoiler title="Solution">
 
 ## Explanation
 
-As mentioned in the hints, we iterate on $i$, and count all the subarrays 
-where location $i$ has the minimum value. Let $l_i$ and $r_i$ be the nearest positions to the left and right of $i$ that contain values smaller than $i$. Any valid subarray's 
+As mentioned in the hints, we iterate on $i$, and count all the subarrays
+where location $i$ has the minimum value. Let $l_i$ and $r_i$ be the nearest positions to the left and right of $i$ that contain values smaller than $i$. Any valid subarray's
 endpoints cannot cross $l_i$ or $r_i$.
 
-A slow way of calculating our answer would be to iterate on our left endpoint, and count 
-the valid right endpoints. If our left endpoint is $x$, then the number of 
-valid right endpoints is $\max(0, r - y)$, if $y$ is the first index after $i$ 
+A slow way of calculating our answer would be to iterate on our left endpoint, and count
+the valid right endpoints. If our left endpoint is $x$, then the number of
+valid right endpoints is $\max(0, r - y)$, if $y$ is the first index after $i$
 such that $a[y] > \max_{x \le j \le i} a[j]$.
 
-One optimization we can make is to observe that all indices $x$ where 
-$\max_{x \le j \le i} a[j]$ is the same correspond to the same range of valid right 
+One optimization we can make is to observe that all indices $x$ where
+$\max_{x \le j \le i} a[j]$ is the same correspond to the same range of valid right
 endpoints. Thus, we can compress our left endpoints.
 
-With that optimization, the number of relevant left endpoints across all $i$ 
+With that optimization, the number of relevant left endpoints across all $i$
 amortizes to $\mathcal{O}(n)$. To understand why, consider the following facts:
 - All valid left endpoints need to have their value be in the range $[l_i + 1, i]$.
 - For all positions $j$ in $[i + 1, r - 1]$, $l_j \geq i$, as $a_i$ is guaranteed to be smaller than $a_j$. Thus, the same valid left endpoints for $i$ cannot apply to indices in this range.
-- If a valid left endpoint has valid right endpoints, then the nearest larger value 
+- If a valid left endpoint has valid right endpoints, then the nearest larger value
   must be within $[i + 1, r - 1]$. If such a value does not exist, we do not consider it.
 - For indices at or after $r$, any left endpoints considered at $i$ are irrelevant, as the existence of a larger value in the range $[i + 1, r - 1]$ means that we no longer consider it.
 
-Thus, all that remains is to efficiently find the relevant left endpoints, and count 
-the number of corresponding right endpoints. For each $i$, we calculate the location of the nearest larger element to the left and right. 
+Thus, all that remains is to efficiently find the relevant left endpoints, and count
+the number of corresponding right endpoints. For each $i$, we calculate the location of the nearest larger element to the left and right.
 
-Finding all the relevant left endpoints for an index $i$ can be done by starting at $i$, and chaining to the next larger element to the left until we exit our range of possible left endpoints. 
+Finding all the relevant left endpoints for an index $i$ can be done by starting at $i$, and chaining to the next larger element to the left until we exit our range of possible left endpoints.
 
-A left endpoint being relevant implies that the nearest larger element to the right 
+A left endpoint being relevant implies that the nearest larger element to the right
 is after index $i$. Thus, if such an element is in the range $[i + 1, r - 1]$, then we can count the number of right endpoints easily. Otherwise, we stop iterating.
 
-To calculate the nearest larger and smaller elements, we use a monotonic stack. 
+To calculate the nearest larger and smaller elements, we use a monotonic stack.
 
 ## Implementation
 
@@ -74,9 +74,7 @@ using ll = long long;
 ll conta(int n, std::vector<int> a) {
 	// calculates the nearest bigger element, and pushes idx into the stack
 	const auto nearest_bigger = [&](std::vector<int> &stk, int idx) -> int {
-		while (stk.size() > 1 && a[stk.back()] < a[idx]) {
-			stk.pop_back();
-		}
+		while (stk.size() > 1 && a[stk.back()] < a[idx]) { stk.pop_back(); }
 
 		int res = stk.back();
 		stk.push_back(idx);
@@ -85,9 +83,7 @@ ll conta(int n, std::vector<int> a) {
 
 	// calculates the nearest smaller element, and pushes idx into the stack
 	const auto nearest_smaller = [&](std::vector<int> &stk, int idx) -> int {
-		while (stk.size() > 1 && a[stk.back()] > a[idx]) {
-			stk.pop_back();
-		}
+		while (stk.size() > 1 && a[stk.back()] > a[idx]) { stk.pop_back(); }
 
 		int res = stk.back();
 		stk.push_back(idx);
@@ -123,16 +119,14 @@ ll conta(int n, std::vector<int> a) {
 			// stop iterating if this maxima is too big for the range [lb, rb]
 			if (big_r[idx] > rb) break;
 
-			// because our index is a relevant maxima, we know that the nearest 
+			// because our index is a relevant maxima, we know that the nearest
 			// larger element to the right is NOT in the range [idx, i]
 			res += 1ll * (idx - big_l[idx]) * (rb - big_r[idx] + 1);
 			idx = big_l[idx];
 		}
 
 		// add the result for all remaining left endpoints
-		if (big_r[idx] <= rb) {
-			res += 1ll * (idx - lb + 1) * (rb - big_r[idx] + 1);
-		}
+		if (big_r[idx] <= rb) { res += 1ll * (idx - lb + 1) * (rb - big_r[idx] + 1); }
 	}
 
 	return res;
