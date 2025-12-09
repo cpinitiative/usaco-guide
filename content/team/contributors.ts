@@ -229,7 +229,7 @@ export const RestOfMembers: Member[] = [
     photo: 'arnav_g',
     name: 'Arnav Gokhale',
     titles: [roles.contentAuthor],
-  }
+  },
 ];
 
 export const FormerMembers: Member[] = [
