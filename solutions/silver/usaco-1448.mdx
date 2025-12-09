@@ -1,5 +1,5 @@
 ---
-id: usaco-1148
+id: usaco-1448
 source: USACO Silver 2024 December
 title: 2D Conveyor Belt
 author: Ruben Jing
@@ -13,11 +13,11 @@ We make two key observations.
 1. An empty cell on the border is always good, as if FJ places conveyers optimally,
    the cell will point outward.
 2. A cell pointing into another good cell is also good. If FJ places conveyors
-   onto empty cells optimally,  this means that the empty cell should always
-   point into a good cell.
+   onto empty cells optimally, the conveyor should point into an adjacent good 
+   cell if possible.
 
 With these observations, the general idea is to floodfill from every point
-and see how many good cells it can reach. The amount of unusable cells
+and see how many good cells exist in the grid. The amount of unusable cells
 is the total squares minus good cells.
 
 To satisfy the query restriction, we can start with the latest query
@@ -25,8 +25,11 @@ and work our way back. The amount of good cells will only increase: the
 more empty cells there are, the more flexibility there is to place a
 good conveyor.
 
-Whenever we "undo" a query, we DFS from the new empty cell. If it is good, then we check if any cells around it
-become good. Otherwise, we leave it as is.
+Whenever we "undo" a query, we DFS from the new empty cell. If it is good, 
+then we check if any cells around it become good. Otherwise, we leave it as is.
+
+The floodfill is guaranteed to run in $\mathcal{O}(N^2)$ because good cells are
+not revisited, meaning that $N^2$ cells will be visited at most.
 
 ## Implementation
 
