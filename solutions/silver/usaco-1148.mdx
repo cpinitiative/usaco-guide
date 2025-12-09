@@ -41,10 +41,10 @@ become good. Otherwise, we leave it as is.
 using namespace std;
 
 int n, q;
-int goodAmt = 0;
+int good_amt = 0;
 
-bool isValid(int r, int c) { return (r > -1 && c > -1 && r < n && c < n); }
-bool isBorder(int r, int c) { return (r == 0 || c == 0 || r == n - 1 || c == n - 1); }
+bool isValid(int r, int c) { return r > -1 && c > -1 && r < n && c < n; }
+bool isBorder(int r, int c) { return r == 0 || c == 0 || r == n - 1 || c == n - 1; }
 
 bool checkGood(vector<vector<char>> &grid, vector<vector<bool>> &good, int r, int c) {
 	if (grid[r][c] == '?' && isBorder(r, c)) { return true; }
@@ -76,7 +76,7 @@ void dfs(vector<vector<char>> &grid, vector<vector<bool>> &good, int r, int c) {
 	if (!isValid(r, c) || !checkGood(grid, good, r, c) || good[r][c]) { return; }
 
 	good[r][c] = true;
-	goodAmt++;
+	good_amt++;
 
 	dfs(grid, good, r + 1, c);
 	dfs(grid, good, r - 1, c);
@@ -108,7 +108,7 @@ int main() {
 
 	vector<int> res;
 	for (auto [r, c, t] : queries) {
-		res.push_back(n * n - goodAmt);
+		res.push_back(n * n - good_amt);
 
 		grid[r][c] = '?';
 		dfs(grid, good, r, c);
