@@ -225,6 +225,11 @@ export const RestOfMembers: Member[] = [
     titles: [roles.videoInstructor, roles.contentAuthor],
     github: 'Streakwind',
   },
+  {
+    photo: 'arnav_g',
+    name: 'Arnav Gokhale',
+    titles: [roles.contentAuthor],
+  }
 ];
 
 export const FormerMembers: Member[] = [
