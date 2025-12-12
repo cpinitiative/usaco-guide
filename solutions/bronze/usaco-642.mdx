@@ -24,13 +24,11 @@ Note that removing less than three cows is not beneficial, as removing one more 
 <PySection>
 
 ```py
-import sys
 import itertools
 
-sys.stdin = open("reduce.in")
-sys.stdout = open("reduce.out", "w")
-N = int(input())
-coordinates = [tuple(map(int, input().split())) for i in range(N)]
+with open("reduce.in") as read:
+    n = int(read.readline())
+    coordinates = [tuple(map(int, read.readline().split())) for i in range(n)]
 
 sort_by_x = sorted(coordinates)
 sort_by_y = sorted(coordinates, key=lambda coord: coord[1])
@@ -38,13 +36,13 @@ candidates = sort_by_x[:3] + sort_by_x[-3:] + sort_by_y[:3] + sort_by_y[-3:]
 min_area = float("inf")
 
 for removed in itertools.combinations(candidates, 3):
-	new_coords = [c for c in coordinates if c not in removed]
-	x_coords = [coord[0] for coord in new_coords]
-	y_coords = [coord[1] for coord in new_coords]
-	area = (max(x_coords) - min(x_coords)) * (max(y_coords) - min(y_coords))
-	min_area = min(min_area, area)
+    new_coords = [c for c in coordinates if c not in removed]
+    x_coords = [coord[0] for coord in new_coords]
+    y_coords = [coord[1] for coord in new_coords]
+    area = (max(x_coords) - min(x_coords)) * (max(y_coords) - min(y_coords))
+    min_area = min(min_area, area)
 
-print(min_area)
+print(min_area, file=open("reduce.out", "w"))
 ```
 
 </PySection>
