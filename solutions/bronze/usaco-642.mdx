@@ -1,0 +1,51 @@
+---
+id: usaco-642
+source: USACO Silver 2016 US Open
+title: Field Reduction
+author: Sachet Abeysinghe
+---
+
+[Official Analysis (C++)](https://usaco.org/current/data/sol_reduce_silver_open16.html)
+
+## Explanation
+
+To start, consider the problem without removing three cows. The minimum area of the enclosing fence is the product of the difference between the largest x-coordinate and smallest x-coordinate and the difference between the largest y-coordinate and smallest y-coordinate.
+
+To reduce this bounding box, we must remove the cows near the four boundaries of the rectangle. Since we can only remove at most three cows, we should only consider the three extremes on each direction. That means our candidates include the three cows with the smallest x-values, the three with the largest x-values, the three with the smallest y-values, and the three with the largest y-values. This candidate set thus includes no more than twelve cows. Finally, we can simply brute force removing all combinations of three candidates and find the minimum enclosing rectangle of the new set of coordinates.
+
+Note that removing less than three cows is not beneficial, as removing one more cow will either decrease the area or make it stay the same.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N\log N)$
+
+<LanguageSection>
+
+<PySection>
+
+```py
+import sys
+import itertools
+sys.stdin = open("reduce.in")
+sys.stdout = open("reduce.out", "w")
+N = int(input())
+coordinates = [tuple(map(int, input().split())) for i in range(N)]
+
+sort_by_x = sorted(coordinates)
+sort_by_y = sorted(coordinates, key=lambda coord: coord[1])
+candidates = sort_by_x[:3] + sort_by_x[-3:] + sort_by_y[:3] + sort_by_y[-3:]
+min_area = float("inf")
+
+for removed in itertools.combinations(candidates, 3):
+    new_coords = [c for c in coordinates if c not in removed]
+    x_coords = [coord[0] for coord in new_coords]
+    y_coords = [coord[1] for coord in new_coords]
+    area = (max(x_coords) - min(x_coords)) * (max(y_coords) - min(y_coords))
+    min_area = min(min_area, area)
+
+print(min_area)
+```
+
+</PySection>
+
+</LanguageSection>
