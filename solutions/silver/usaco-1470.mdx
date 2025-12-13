@@ -41,15 +41,13 @@ Thus, the amount of contributions that can be made from a cow at location $i$ an
 
 ![](usaco-1470/firstscenarioall.png)
 
-If 0-indexing, the contribution from $i$ and $j$ can be written as $\min(i + 1, n - j)$.
+In a 0-indexing system, the contribution from $i$ and $j$ can be written as $\min(i + 1, n - j)$.
 
 Now we consider how to calculate contributions created strictly by the second scenario.
 
 Let a cow at position $i$ already be at a desirable location.
 
-The amount of contributions created is equal to the number of operations that do not involve $i$.
-
-In the problem, we are given that the number of operations that can occur between $1$ and $N$ can be written as
+The amount of contributions created is equal to the number of operations that do not involve $i$. In the problem, we are given that the number of operations that can occur between $1$ and $N$ can be written as
 
 $$
 \frac{N (N + 1)}{2}.
@@ -80,9 +78,7 @@ $$
 d_{des} = \min(j + 1, N - j)
 $$
 
-Recall that the amount of contributions that can occur is equal to $\min(d_{cow}, d_{des})$.
-
-Thus, for a given cow, we want to find out how many contributions are limited by $d_{des}$ when $d_{des} < d_{cow}$ of each desirable location, and how many are limited by $d_{cow}$ when $d_{cow} < d_{des}$. We can do this by setting up an array of all $d_{des}$, and binary searching over this array to see for how many desirable locations $d_{des} < d_{cow}$, and how many desirable locations $d_{cow} < d_{des}$.
+For a given cow, consider all desirable locations that it can pair with. Each pair contributes $\min(d_{cow}, d_{des})$ contributions. Thus, to speed up processing, we want to seperate the pairs which the given cow is a part of into two groups: ones where contributions are limited by $d_{des}$ because $d_{des} < d_{cow}$, and ones where contributions are limited by $d_{cow}$ because $d_{cow} < d_{des}$. We can partition them by creating a sorted array of all $d_{des}$, then binary searching over this array to determine the index where $d_{des} \geq d_{cow}$. Before this index, contributions will be limited by $d_{des}$, and after this index, contributions will be limited by $d_{cow}$
 
 ![](usaco-1470/firstscenariooptimization.png)
 
