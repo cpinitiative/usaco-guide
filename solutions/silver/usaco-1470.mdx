@@ -9,7 +9,7 @@ author: David Xiao
 
 ## Explanation
 
-Let's analyze the last test case in detail:
+Let's analyze the last test case in detail.
 
 We denote a "desirable location" of a cow as a location where a cow of that species will be checked by the bovine veterinarian.
 
@@ -17,11 +17,11 @@ We denote a "contribution" as one instance of a cow being moved to a desirable l
 
 Note that a contribution can only be achieved in one of two ways.
 
-A cow was not in a desirable location, and the cow was moved to a desirable location during an operation.
+The first way is if a cow was not in a desirable location, and the cow was moved to a desirable location during an operation.
 
 ![](usaco-1470/firstscenario.png)
 
-A cow was already in a desirable location, and the cow was not moved during an operation.
+The second way is if a cow was already in a desirable location, and the cow was not moved during an operation.
 
 ![](usaco-1470/secondscenario.png)
 
@@ -29,7 +29,7 @@ Let's consider how to calculate the contributions created strictly by the first 
 
 Let a cow at location $i$ try to reach a desirable location at location $j$, where $i < j$.
 
-The most intuitive way to achieve this is by setting $l$ to $i$ and $r$ to $j$, so that after the operation, $i$ is moved to $j$
+The most intuitive way to achieve this is by setting $l$ to $i$ and $r$ to $j$, so that after the operation, $i$ is moved to $j$.
 
 ![](usaco-1470/firstscenarioexact.png)
 
@@ -41,41 +41,37 @@ Thus, the amount of contributions that can be made from a cow at location $i$ an
 
 ![](usaco-1470/firstscenarioall.png)
 
-Mathamatically, the contirbutions can be written as
-
-$$
-\min(i + 1, N - j)
-$$
+If 0-indexing, the contribution from $i$ and $j$ can be written as $\min(i + 1, n - j)$.
 
 Now we consider how to calculate contributions created strictly by the second scenario.
 
 Let a cow at position $i$ already be at a desirable location.
 
-We note that the amount of contributions created is equal to the number of operations that can occur which do not involve *i*.
+The amount of contributions created is equal to the number of operations that do not involve $i$.
 
 In the problem, we are given that the number of operations that can occur between $1$ and $N$ can be written as
 
 $$
-\frac{N \cdot (N + 1)}{2}
+\frac{N (N + 1)}{2}.
 $$
 
-Thus, the amount of contributions created from a cow at location $i$ at a desirable location can be written as the sum of all the possible operations before and after $i$
+Thus, the amount of contributions created from a cow at location $i$ at a desirable location can be written as the sum of all the possible operations before and after $i$:
 
 $$
-\frac{i \cdot (i + 1)}{2} + \frac{(N - i - 1) \cdot (N - i)}{2}
+\frac{i \cdot (i + 1)}{2} + \frac{(N - i - 1) \cdot (N - i)}{2}.
 $$
 
-We can implement this by iterating through each cow to figure out how many contributions each cow in the initial order makes.
+We can implement this by iterating through each cow to determine how many contributions each cow in the initial order makes.
 
-Given that each cow either is or isn't already at a desirable location, the second scenario can be a simple check if the cow is in a desirable location, then applying the formula described above.
+As each cow either is or isn't already at a desirable location, the second scenario is handled with a simple check if the cow is in a desirable location, then applying the formula described above.
 
 However, for the first scenario, there may be multiple desirable locations a cow could move to.
 
-Let's denote a cow and a desirable location that can create contributions as described in the first scenario as a pair.
+Let's denote a cow and a desirable location that can create contributions as described in the first scenario as a pair $(i, j)$.
 
-If we naively checked each pair, this would take $\mathcal{O}(N)$ time per cow, as in the worst case scenario every single location is a desirable location for every cow.
+If we naively checked each pair, this would take $\mathcal{O}(N)$ time per cow, as in the worst case scenario, each pair of locations is viable.
 
-Let's denote a desirable location's minimum distance to an end as $d_{des}$ and a cow's minimum distance to an end as $d_{cow}$ where $i$ denotes the cow's location and $j$ denotes the desired location
+Let's denote a desirable location's minimum distance to an end as $d_{des}$ and a cow's minimum distance to an end as $d_{cow}$, where $i$ denotes the cow's location and $j$ denotes the desired location
 
 $$
 d_{cow} = \min(i + 1, N - i)
@@ -84,20 +80,20 @@ $$
 d_{des} = \min(j + 1, N - j)
 $$
 
-Recall earlier the amount of contributions that can occur is equal to $\min(d_{cow}, d_{des})$
+Recall that the amount of contributions that can occur is equal to $\min(d_{cow}, d_{des})$.
 
-Thus, for a certain cow, we want to find out how many contributions are limited by $d_{des}$ when $d_{des} < d_{cow}$ of each desirable location, and how many are limited by $d_{cow}$ when $d_{cow} < d_{des}$. We can do this by setting up an array of all $d_{des}$, and binary searching over this array to see for how many desirable locations $d_{des} < d_{cow}$, and how many desirable locations $d_{cow} < d_{des}$.
+Thus, for a given cow, we want to find out how many contributions are limited by $d_{des}$ when $d_{des} < d_{cow}$ of each desirable location, and how many are limited by $d_{cow}$ when $d_{cow} < d_{des}$. We can do this by setting up an array of all $d_{des}$, and binary searching over this array to see for how many desirable locations $d_{des} < d_{cow}$, and how many desirable locations $d_{cow} < d_{des}$.
 
 ![](usaco-1470/firstscenariooptimization.png)
 
 However, this still results in $\mathcal{O}(N)$ time, since we still have to sum up all contributions at the end.
 
-We can optimize this by implementing a prefix array that sums the indices$[0 \dots i]$ of the $d_{des}$ array so we can find the sum of $d_{des}$ from the start of a list to any point in $\mathcal{O}(1)$ time. Then, all contributions limited by $d_{cow}$ can be found by multiplying  $d_{cow}$ by the number of pairs limited.
+We can optimize this by implementing a prefix sum array that sums the indices$[0 \dots i]$ of the $d_{des}$ array so we can find the sum of $d_{des}$ from the start of a list to any point in $\mathcal{O}(1)$ time. Then, all contributions limited by $d_{cow}$ can be found by multiplying  $d_{cow}$ by the number of pairs limited.
 
-Thus, the formula for the contributions provided by the first scenario can be found as written below, given $m$ is the point where $d_{cow}$ becomes less than $d_{des}$.
+Thus, the formula for the contributions provided by the first scenario can be found as written below, given $m$ is the point where $d_{cow}$ becomes less than $d_{des}$:
 
 $$
-\text{prefix}[m] + d_{\text{cow}} \cdot (N - m)
+\text{prefix}[m] + d_{\text{cow}} \cdot (N - m).
 $$
 
 ## Implementation
@@ -132,7 +128,6 @@ int main() {
 	unordered_map<int, vector<int>> edge_arrays;
 
 	for (int i = 0; i < num_cows; i++) {
-
 		int min_distance_to_edge = min(i + 1, num_cows - i);
 
 		// If an array doesn't already exist for a cow species, create a new array for
@@ -151,9 +146,8 @@ int main() {
 	// d_desirable
 	unordered_map<int, vector<long long>> prefix_arrays;
 
-	for (auto &[species, edge_array] :
-	     edge_arrays) {  // iterating by reference is important for sorting
-
+	// iterating by reference is important for sorting
+	for (auto &[species, edge_array] : edge_arrays) {  
 		// Sort edge arrays as we iterate so we can binary search over it later
 		sort(edge_array.begin(), edge_array.end());
 
@@ -168,7 +162,6 @@ int main() {
 	long long total_contributions = 0;
 
 	for (long long i = 0; i < num_cows; i++) {
-
 		int species = initial_order[i];
 
 		// Catches edge case where a cow species exists in the initial ordering but not
@@ -215,7 +208,6 @@ ideal_order = [int(x) for x in input().split()]
 edge_arrays = dict()
 
 for i in range(num_cows):
-
 	min_distance_to_edge = min(i + 1, num_cows - i)
 
 	# If an array doesn't already exist for a cow species, create a new array for that species
@@ -229,7 +221,6 @@ for i in range(num_cows):
 prefix_arrays = dict()
 
 for species, edge_array in edge_arrays.items():
-
 	# Sort edge arrays as we iterate so we can binary search over it later
 	edge_array.sort()
 
@@ -242,7 +233,6 @@ for species, edge_array in edge_arrays.items():
 total_contributions = 0
 
 for i in range(num_cows):
-
 	species = initial_order[i]
 
 	# Catches edge case where a cow species exists in the initial ordering but not in the ideal ordering
