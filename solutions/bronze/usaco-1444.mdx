@@ -1,0 +1,109 @@
+---
+id: usaco-1444
+source: USCAO Bronze December 2024
+title: Farmer John's Cheese Block
+author: Arnav Gokhale
+---
+
+[Official Analysis (C++)](http://usaco.org/current/data/sol_prob2_bronze_dec24.html)
+
+## Explanation
+
+For each of the three dimensions, we can create a array that represents how many blocks of cheese are left in the respective axis after fixing the other two dimensions.
+
+For example, we can create a array for the x-dimension, that represents the number of blocks of cheese that have are left for all y and z. Once the count of a given (y,z) reaches 0, we know a new brick configuration has formed, and we can add one to the answer.
+
+So, maintain three arrays for the x,y, and z dimension, and for each query update all three dimensions to count how many new distinct configurations of bricks can be stuck through the block of cheese.
+
+## Implementation
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+  int n, q; cin >> n >> q;
+  
+  vector<vector<vector<int>>> a(3, vector<vector<int>>(n, vector<int> (n, n)));
+  int ans = 0;
+  while (q--) {
+    int x, y, z; cin >> x >> y >> z;
+    a[0][y][z]--;
+    a[1][x][z]--;
+    a[2][x][y]--;
+
+    ans += !(a[0][y][z]) + !(a[1][x][z]) + !(a[2][x][y]);
+
+    cout << ans << '\n';
+  }
+}
+```
+
+</CPPSection>
+
+<PySection>
+
+```py
+import sys
+input = sys.stdin.readline
+
+n, q = map(int, input().split())
+
+ct = [[[n for _ in range(n)] for _ in range(n)] for _ in range(3)]
+ans = 0
+
+for _ in range(q):
+    x, y, z = map(int, input().split())
+    
+    ct[0][y][z] -= 1
+    ct[1][x][z] -= 1
+    ct[2][x][y] -= 1
+    
+    ans += (ct[0][y][z] == 0) + (ct[1][x][z] == 0) + (ct[2][x][y] == 0)
+    
+    print(ans)
+```
+
+
+</PySection>
+
+<JavaSection>
+```java
+import java.io.*;
+import java.util.StringTokenizer;
+
+public class Main {
+	public static void main(String[] args) throws IOException {
+		BufferedReader r = new BufferedReader(new InputStreamReader(System.in));
+		PrintWriter pw = new PrintWriter(System.out);
+
+		StringTokenizer st = new StringTokenizer(r.readLine());
+		int n = Integer.parseInt(st.nextToken());
+        int q = Integer.parseInt(st.nextToken());
+
+        int[][][] ct = new int[3][n][n];
+        int ans = 0;
+
+        for (int query = 0; query < q; query++) {
+            st = new StringTokenizer(r.readLine());
+            int x = Integer.parseInt(st.nextToken());
+            int y = Integer.parseInt(st.nextToken());
+            int z = Integer.parseInt(st.nextToken());
+
+            ct[0][y][z]++; ct[1][x][z]++; ct[2][x][y]++;
+            ans += (ct[0][y][z] == n ? 1 : 0) + (int)(ct[1][x][z] == n ? 1 : 0) + (int)(ct[2][x][y] == n ? 1 : 0);
+            pw.println(ans);
+        }
+		
+		pw.close();
+	}
+}
+```
+
+</JavaSection>
+
+</LanguageSection>
