@@ -39,30 +39,31 @@ So, to prove a query was successful, we simply need to check if $C + W$ and $C +
 using namespace std;
 
 int main() {
-	string s; cin >> s;
-    //Calculate prefix array for each character
-    vector<array<int,3>> a(s.size() + 1);
+	string s;
+	cin >> s;
+	// Calculate prefix array for each character
+	vector<array<int, 3>> a(s.size() + 1);
 
-    for (int i = 1; i <= s.size(); i++) {
-        a[i][0] = a[i-1][0] + (s[i-1] == 'C');
-        a[i][1] = a[i-1][1] + (s[i-1] == 'O');
-        a[i][2] = a[i-1][2] + (s[i-1] == 'W');
-    }
+	for (int i = 1; i <= s.size(); i++) {
+		a[i][0] = a[i - 1][0] + (s[i - 1] == 'C');
+		a[i][1] = a[i - 1][1] + (s[i - 1] == 'O');
+		a[i][2] = a[i - 1][2] + (s[i - 1] == 'W');
+	}
 
-    int q; cin >> q;
-    //Test each query
-    while (q--) {
-        int n1, n2;
-        cin >> n1 >> n2;
+	int q;
+	cin >> q;
+	// Test each query
+	while (q--) {
+		int n1, n2;
+		cin >> n1 >> n2;
 		int c = a[n2][0] - a[n1 - 1][0];
 		int o = a[n2][1] - a[n1 - 1][1];
 		int w = a[n2][2] - a[n1 - 1][2];
 
 		if ((c + w) % 2 == 1 and (c + o) % 2 == 1) cout << 'Y';
-        else cout << 'N';
-    }
+		else cout << 'N';
+	}
 }
-
 ```
 
 </CPPSection>
@@ -77,23 +78,22 @@ n = len(s)
 a = [[0, 0, 0] for _ in range(n + 1)]
 
 for i, ch in enumerate(s, 1):
-    a[i][0] = a[i-1][0] + (ch == 'C')
-    a[i][1] = a[i-1][1] + (ch == 'O')
-    a[i][2] = a[i-1][2] + (ch == 'W')
+	a[i][0] = a[i - 1][0] + (ch == "C")
+	a[i][1] = a[i - 1][1] + (ch == "O")
+	a[i][2] = a[i - 1][2] + (ch == "W")
 
 q = int(input())
 
 # Test each query
 for _ in range(q):
-    n1, n2 = map(int, input().split())
-    c = a[n2][0] - a[n1 - 1][0]
-    o = a[n2][1] - a[n1 - 1][1]
-    w = a[n2][2] - a[n1 - 1][2]
-    if (c + w) % 2 == 1 and (c + o) % 2 == 1:
-        print('Y', end = "")
-    else:
-        print('N', end = "")
-
+	n1, n2 = map(int, input().split())
+	c = a[n2][0] - a[n1 - 1][0]
+	o = a[n2][1] - a[n1 - 1][1]
+	w = a[n2][2] - a[n1 - 1][2]
+	if (c + w) % 2 == 1 and (c + o) % 2 == 1:
+		print("Y", end="")
+	else:
+		print("N", end="")
 ```
 
 </PySection>
@@ -108,29 +108,29 @@ public class COWOperations {
 	public static void main(String[] args) throws IOException {
 		BufferedReader r = new BufferedReader(new InputStreamReader(System.in));
 		PrintWriter pw = new PrintWriter(System.out);
-        String s = r.readLine();
+		String s = r.readLine();
 
-        //Calculate the prefix array for each character
-        int[][] a = new int[s.length() + 1][3];
-        for (int i = 1; i <= s.length(); i++) {
-            a[i][0] = a[i-1][0] + ((s.charAt(i-1) == 'C') ? 1 : 0);
-            a[i][1] = a[i-1][1] + ((s.charAt(i-1) == 'O') ? 1 : 0);
-            a[i][2] = a[i-1][2] + ((s.charAt(i-1) == 'W') ? 1 : 0);
-        }
+		// Calculate the prefix array for each character
+		int[][] a = new int[s.length() + 1][3];
+		for (int i = 1; i <= s.length(); i++) {
+			a[i][0] = a[i - 1][0] + ((s.charAt(i - 1) == 'C') ? 1 : 0);
+			a[i][1] = a[i - 1][1] + ((s.charAt(i - 1) == 'O') ? 1 : 0);
+			a[i][2] = a[i - 1][2] + ((s.charAt(i - 1) == 'W') ? 1 : 0);
+		}
 
-        //Test each query
-        int q = Integer.parseInt(r.readLine());
-        for (int query = 0; query < q; query++) {
-            StringTokenizer st = new StringTokenizer(r.readLine());
-            int n1 = Integer.parseInt(st.nextToken());
-            int n2 = Integer.parseInt(st.nextToken());
+		// Test each query
+		int q = Integer.parseInt(r.readLine());
+		for (int query = 0; query < q; query++) {
+			StringTokenizer st = new StringTokenizer(r.readLine());
+			int n1 = Integer.parseInt(st.nextToken());
+			int n2 = Integer.parseInt(st.nextToken());
 
-            int c = a[n2][0] - a[n1 - 1][0], o = a[n2][1] - a[n1 - 1][1], w = a[n2][2] - a[n1 - 1][2];
+			int c = a[n2][0] - a[n1 - 1][0], o = a[n2][1] - a[n1 - 1][1],
+			    w = a[n2][2] - a[n1 - 1][2];
 
-            if ((c + w) % 2 == 1 && (c + o) % 2 == 1) pw.print('Y');
-            else pw.print('N');
-        }
-
+			if ((c + w) % 2 == 1 && (c + o) % 2 == 1) pw.print('Y');
+			else pw.print('N');
+		}
 
 		pw.close();
 	}
