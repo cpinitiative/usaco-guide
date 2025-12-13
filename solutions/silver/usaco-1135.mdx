@@ -1,0 +1,115 @@
+---
+id: usaco-1135
+source: USACO Silver 2021 US Open
+title: Do You Know Your ABCs?
+author: Sachet Abeysinghe
+---
+
+[Official Analysis (C++, Java)](https://usaco.org/current/data/sol_prob2_silver_open21.html)
+
+## Explanation
+
+Due to the low bounds, we can use a brute-force approach. There are seven labels $A$, $B$, $C$, $A + B$, $B + C$, $A + C$, and $A + B + C$. We need exactly $N$ of them, so we can iterate over all combinations of $N$ labels to decide which labels appear in this test case.
+
+For a chosen set of labels, we need to decide which number corresponds to which label. We iterate over all permutations of the chosen labels, mapping them to the input array in order. Finally, we need to deduce the unique triple $(A, B, C)$ consistent with the mappings. To do this, we track candidate values for $A$, $B$, and $C$ using sets. If each of $A$, $B$, and $C$ has one consistent value, we record the triple as valid.
+
+We can always deduce a possible value for each of $A$, $B$, and $C$, because each variable appears in four of the seven labels. At most three of these labels can be missing, so we can use the remaining label to determine the variable's value.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(T)$
+
+<LanguageSection>
+
+<PySection>
+
+```py
+import itertools
+
+for i in range(int(input())):
+	N = int(input())
+	arr = [int(x) for x in input().split()]
+
+	def deduce_ABC(tags):
+		a = b = c = ab = bc = ac = abc = -1
+		for i in range(N):
+			value = arr[i]
+			tag = tags[i]
+			if tag == "A":
+				a = value
+			if tag == "B":
+				b = value
+			if tag == "C":
+				c = value
+			if tag == "A+B":
+				ab = value
+			if tag == "B+C":
+				bc = value
+			if tag == "A+C":
+				ac = value
+			if tag == "A+B+C":
+				abc = value
+
+		possible_a, possible_b, possible_c = set(), set(), set()
+		if a != -1:
+			possible_a.add(a)
+			if ab != -1:
+				possible_b.add(ab - a)
+			if ac != -1:
+				possible_c.add(ac - a)
+		if b != -1:
+			possible_b.add(b)
+			if ab != -1:
+				possible_a.add(ab - b)
+			if bc != -1:
+				possible_c.add(bc - b)
+		if c != -1:
+			possible_c.add(c)
+			if ac != -1:
+				possible_a.add(ac - c)
+			if bc != -1:
+				possible_b.add(bc - c)
+		if abc != -1:
+			if bc != -1:
+				possible_a.add(abc - bc)
+			if ac != -1:
+				possible_b.add(abc - ac)
+			if ab != -1:
+				possible_c.add(abc - ab)
+
+		if len(possible_a) != 1 or len(possible_b) != 1 or len(possible_c) != 1:
+			return
+
+		final_a, final_b, final_c = (
+			list(possible_a)[0],
+			list(possible_b)[0],
+			list(possible_c)[0],
+		)
+		if not 1 <= final_a <= final_b <= final_c:
+			return
+		if (
+			(ac != -1 and final_a + final_c != ac)
+			or (ab != -1 and final_a + final_b != ab)
+			or (bc != -1 and final_b + final_c != bc)
+			or (abc != -1 and final_a + final_b + final_c != abc)
+		):
+			return
+		return (final_a, final_b, final_c)
+
+	valid_triples = set()
+	combinations = itertools.combinations(
+		["A", "B", "C", "A+B", "B+C", "A+C", "A+B+C"], N
+	)
+	for combination in combinations:
+		permutations = itertools.permutations(combination)
+		for permutation in permutations:
+			triple = deduce_ABC(permutation)
+			if triple != None:
+				valid_triples.add(triple)
+
+	print(len(valid_triples))
+```
+
+</PySection>
+
+</LanguageSection>
