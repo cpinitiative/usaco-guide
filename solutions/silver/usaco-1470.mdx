@@ -69,7 +69,7 @@ Let's denote a cow and a desirable location that can create contributions as des
 
 If we naively checked each pair, this would take $\mathcal{O}(N)$ time per cow, as in the worst case scenario, each pair of locations is viable.
 
-Let's denote a desirable location's minimum distance to an end as $d_{des}$ and a cow's minimum distance to an end as $d_{cow}$, where $i$ denotes the cow's location and $j$ denotes the desired location
+Let's denote a desirable location's minimum distance to an end as $d_{des}$ and a cow's minimum distance to an end as $d_{cow}$, where $i$ denotes the cow's location and $j$ denotes the desired location.
 
 $$
 d_{cow} = \min(i + 1, N - i)
@@ -78,13 +78,13 @@ $$
 d_{des} = \min(j + 1, N - j)
 $$
 
-For a given cow, consider all desirable locations that it can pair with. Each pair contributes $\min(d_{cow}, d_{des})$ contributions. Thus, to speed up processing, we want to seperate the pairs which the given cow is a part of into two groups: ones where contributions are limited by $d_{des}$ because $d_{des} < d_{cow}$, and ones where contributions are limited by $d_{cow}$ because $d_{cow} < d_{des}$. We can partition them by creating a sorted array of all $d_{des}$, then binary searching over this array to determine the index where $d_{des} \geq d_{cow}$. Before this index, contributions will be limited by $d_{des}$, and after this index, contributions will be limited by $d_{cow}$
+For a given cow, consider all desirable locations that it can pair with. Each pair contributes $\min(d_{cow}, d_{des})$ contributions. Thus, to speed up processing, we want to separate the pairs which the given cow is a part of into two groups: ones where contributions are limited by $d_{des}$ because $d_{des} < d_{cow}$, and ones where contributions are limited by $d_{cow}$ because $d_{cow} < d_{des}$. We can partition them by creating a sorted array of all $d_{des}$, then binary searching over this array to determine the index where $d_{des} \geq d_{cow}$. Before this index, contributions will be limited by $d_{des}$, and after this index, contributions will be limited by $d_{cow}$.
 
 ![](usaco-1470/firstscenariooptimization.png)
 
-However, this still results in $\mathcal{O}(N)$ time, since we still have to sum up all contributions at the end.
+However, this still results in $\mathcal{O}(N)$ time, since we still have to sum up all $d_{des}$ contributions at the end.
 
-We can optimize this by implementing a prefix sum array that sums the indices$[0 \dots i]$ of the $d_{des}$ array so we can find the sum of $d_{des}$ from the start of a list to any point in $\mathcal{O}(1)$ time. Then, all contributions limited by $d_{cow}$ can be found by multiplying  $d_{cow}$ by the number of pairs limited.
+We can optimize this by implementing a prefix sum array that sums the indices $[0, i]$ of the $d_{des}$ array, so we can find the sum of valid $d_{des}$ from the start of a list to any point in $\mathcal{O}(1)$ time. Then, all contributions limited by $d_{cow}$ can be found by multiplying $d_{cow}$ by the number of pairs limited.
 
 Thus, the formula for the contributions provided by the first scenario can be found as written below, given $m$ is the point where $d_{cow}$ becomes less than $d_{des}$:
 
