@@ -52,16 +52,14 @@ int timer = 1;
 void dfs(int v = 0, int p = 0) {
 	in[v] = timer++;
 	par[v][0] = p;
-	
-	for (int i = 1; i < 22; i++) {
-		par[v][i] = par[par[v][i - 1]][i - 1];
-	}
-	
+
+	for (int i = 1; i < 22; i++) { par[v][i] = par[par[v][i - 1]][i - 1]; }
+
 	for (int x : adj[v]) {
 		if (x == p) continue;
 		dfs(x, v);
 	}
-	
+
 	ot[v] = timer++;
 }
 
@@ -81,57 +79,52 @@ void upd(int ind, int val) {
 	}
 }
 
-bool anc(int u, int v) {
-	return (in[u] <= in[v] && ot[u] >= ot[v]);
-}
+bool anc(int u, int v) { return (in[u] <= in[v] && ot[u] >= ot[v]); }
 
 int lca(int u, int v) {
 	if (anc(u, v)) return u;
-	
+
 	for (int i = 21; i >= 0; i--) {
-		if (par[u][i] >= 0 && !anc(par[u][i], v)) {
-			u = par[u][i];
-		}
+		if (par[u][i] >= 0 && !anc(par[u][i], v)) { u = par[u][i]; }
 	}
-	
+
 	return par[u][0];
 }
 
 int main() {
 	freopen("cowland.in", "r", stdin);
 	freopen("cowland.out", "w", stdout);
-	
+
 	int q;
 	cin >> n >> q;
-	
-	for (int i = 0; i < n; i++) {
-		cin >> arr[i];
-	}
-	
+
+	for (int i = 0; i < n; i++) { cin >> arr[i]; }
+
 	for (int i = 1; i < n; i++) {
 		int u, v;
 		cin >> u >> v;
-		--u; --v;
+		--u;
+		--v;
 		adj[u].push_back(v);
 		adj[v].push_back(u);
 	}
-	
+
 	dfs();
-	
+
 	for (int i = 0; i < n; i++) {
 		upd(in[i], arr[i]);
 		upd(ot[i], arr[i]);
 	}
-	
+
 	for (int que = 0; que < q; que++) {
 		int t;
 		cin >> t;
-		
+
 		if (t == 1) {
 			int s, x;
 			cin >> s >> x;
 			--s;
-			
+
 			upd(in[s], arr[s]);
 			upd(ot[s], arr[s]);
 			arr[s] = x;
@@ -140,8 +133,9 @@ int main() {
 		} else {
 			int u, v;
 			cin >> u >> v;
-			--u; --v;
-			
+			--u;
+			--v;
+
 			int w = lca(u, v);
 			cout << (XOR(in[u]) ^ XOR(in[v]) ^ arr[w]) << endl;
 		}
@@ -158,167 +152,162 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-    static final int LOG = 18;
+	static final int LOG = 18;
 
-    // BeginCodeSnip{Binary Indexed Tree}
-    static class BIT {
-        final int n;
-        final int[] bit;
+	// BeginCodeSnip{Binary Indexed Tree}
+	static class BIT {
+		final int n;
+		final int[] bit;
 
-        BIT(int n) {
-            this.n = n;
-            this.bit = new int[n + 1];
-        }
+		BIT(int n) {
+			this.n = n;
+			this.bit = new int[n + 1];
+		}
 
-        void xorAdd(int idx, int val) {
-            for (; idx <= n; idx += idx & -idx) {
-                bit[idx] ^= val;
-            }
-        }
+		void xorAdd(int idx, int val) {
+			for (; idx <= n; idx += idx & -idx) { bit[idx] ^= val; }
+		}
 
-        int xorQuery(int idx) {
-            int res = 0;
-            for (; idx > 0; idx -= idx & -idx) {
-                res ^= bit[idx];
-            }
-            return res;
-        }
-    }
-    // EndCodeSnip
+		int xorQuery(int idx) {
+			int res = 0;
+			for (; idx > 0; idx -= idx & -idx) { res ^= bit[idx]; }
+			return res;
+		}
+	}
+	// EndCodeSnip
 
-    static boolean isAncestor(int u, int v, int[] in, int[] out) {
-        return in[u] <= in[v] && out[u] >= out[v];
-    }
+	static boolean isAncestor(int u, int v, int[] in, int[] out) {
+		return in[u] <= in[v] && out[u] >= out[v];
+	}
 
-    static int lca(int u, int v, int[][] up, int[] in, int[] out) {
-        if (isAncestor(u, v, in, out)) return u;
-        if (isAncestor(v, u, in, out)) return v;
-        for (int i = LOG - 1; i >= 0; i--) {
-            int pu = up[i][u];
-            if (!isAncestor(pu, v, in, out)) u = pu;
-        }
-        return up[0][u];
-    }
+	static int lca(int u, int v, int[][] up, int[] in, int[] out) {
+		if (isAncestor(u, v, in, out)) return u;
+		if (isAncestor(v, u, in, out)) return v;
+		for (int i = LOG - 1; i >= 0; i--) {
+			int pu = up[i][u];
+			if (!isAncestor(pu, v, in, out)) u = pu;
+		}
+		return up[0][u];
+	}
 
-    static class FastScanner {
-        private final InputStream in;
-        private final byte[] buffer = new byte[1 << 16];
-        private int ptr = 0, len = 0;
+	static class FastScanner {
+		private final InputStream in;
+		private final byte[] buffer = new byte[1 << 16];
+		private int ptr = 0, len = 0;
 
-        FastScanner(InputStream in) { this.in = in; }
+		FastScanner(InputStream in) { this.in = in; }
 
-        private int readByte() throws IOException {
-            if (ptr >= len) {
-                len = in.read(buffer);
-                ptr = 0;
-                if (len <= 0) return -1;
-            }
-            return buffer[ptr++];
-        }
+		private int readByte() throws IOException {
+			if (ptr >= len) {
+				len = in.read(buffer);
+				ptr = 0;
+				if (len <= 0) return -1;
+			}
+			return buffer[ptr++];
+		}
 
-        int nextInt() throws IOException {
-            int c;
-            do {
-                c = readByte();
-                if (c == -1) return Integer.MIN_VALUE;
-            } while (c <= ' ');
-            int sign = 1;
-            if (c == '-') {
-                sign = -1;
-                c = readByte();
-            }
-            int val = 0;
-            while (c > ' ') {
-                val = val * 10 + (c - '0');
-                c = readByte();
-            }
-            return val * sign;
-        }
-    }
+		int nextInt() throws IOException {
+			int c;
+			do {
+				c = readByte();
+				if (c == -1) return Integer.MIN_VALUE;
+			} while (c <= ' ');
+			int sign = 1;
+			if (c == '-') {
+				sign = -1;
+				c = readByte();
+			}
+			int val = 0;
+			while (c > ' ') {
+				val = val * 10 + (c - '0');
+				c = readByte();
+			}
+			return val * sign;
+		}
+	}
 
-    public static void main(String[] args) throws Exception {
-        FastScanner fs = new FastScanner(new FileInputStream("cowland.in"));
-        PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("cowland.out")));
+	public static void main(String[] args) throws Exception {
+		FastScanner fs = new FastScanner(new FileInputStream("cowland.in"));
+		PrintWriter out =
+		    new PrintWriter(new BufferedWriter(new FileWriter("cowland.out")));
 
-        int n = fs.nextInt();
-        int q = fs.nextInt();
-        int[] a = new int[n];
-        for (int i = 0; i < n; i++) a[i] = fs.nextInt();
+		int n = fs.nextInt();
+		int q = fs.nextInt();
+		int[] a = new int[n];
+		for (int i = 0; i < n; i++) a[i] = fs.nextInt();
 
-        ArrayList<Integer>[] adj = new ArrayList[n];
-        for (int i = 0; i < n; i++) adj[i] = new ArrayList<>();
-        for (int i = 0; i < n - 1; i++) {
-            int u = fs.nextInt() - 1;
-            int v = fs.nextInt() - 1;
-            adj[u].add(v);
-            adj[v].add(u);
-        }
+		ArrayList<Integer>[] adj = new ArrayList[n];
+		for (int i = 0; i < n; i++) adj[i] = new ArrayList<>();
+		for (int i = 0; i < n - 1; i++) {
+			int u = fs.nextInt() - 1;
+			int v = fs.nextInt() - 1;
+			adj[u].add(v);
+			adj[v].add(u);
+		}
 
-        int[] in = new int[n];
-        int[] outTime = new int[n];
-        int[] depth = new int[n];
-        int[][] up = new int[LOG][n];
+		int[] in = new int[n];
+		int[] outTime = new int[n];
+		int[] depth = new int[n];
+		int[][] up = new int[LOG][n];
 
-        // iterative DFS to compute in/out times, depth, and immediate parent
-        int timer = 1;
-        int[] parent = new int[n];
-        int[] idx = new int[n];
-        int[] stack = new int[n];
-        int sp = 0;
-        stack[sp++] = 0;
-        parent[0] = 0;
-        up[0][0] = 0;
-        depth[0] = 0;
-        in[0] = timer++;
+		// iterative DFS to compute in/out times, depth, and immediate parent
+		int timer = 1;
+		int[] parent = new int[n];
+		int[] idx = new int[n];
+		int[] stack = new int[n];
+		int sp = 0;
+		stack[sp++] = 0;
+		parent[0] = 0;
+		up[0][0] = 0;
+		depth[0] = 0;
+		in[0] = timer++;
 
-        while (sp > 0) {
-            int v = stack[sp - 1];
-            if (idx[v] < adj[v].size()) {
-                int to = adj[v].get(idx[v]++);
-                if (to == parent[v]) continue;
-                parent[to] = v;
-                up[0][to] = v;
-                depth[to] = depth[v] + 1;
-                in[to] = timer++;
-                stack[sp++] = to;
-            } else {
-                outTime[v] = timer++;
-                sp--;
-            }
-        }
+		while (sp > 0) {
+			int v = stack[sp - 1];
+			if (idx[v] < adj[v].size()) {
+				int to = adj[v].get(idx[v]++);
+				if (to == parent[v]) continue;
+				parent[to] = v;
+				up[0][to] = v;
+				depth[to] = depth[v] + 1;
+				in[to] = timer++;
+				stack[sp++] = to;
+			} else {
+				outTime[v] = timer++;
+				sp--;
+			}
+		}
 
-        for (int i = 1; i < LOG; i++) {
-            for (int v = 0; v < n; v++) {
-                up[i][v] = up[i - 1][up[i - 1][v]];
-            }
-        }
+		for (int i = 1; i < LOG; i++) {
+			for (int v = 0; v < n; v++) { up[i][v] = up[i - 1][up[i - 1][v]]; }
+		}
 
-        BIT bit = new BIT(timer + 2);
-        for (int v = 0; v < n; v++) {
-            bit.xorAdd(in[v], a[v]);
-            bit.xorAdd(outTime[v], a[v]);
-        }
+		BIT bit = new BIT(timer + 2);
+		for (int v = 0; v < n; v++) {
+			bit.xorAdd(in[v], a[v]);
+			bit.xorAdd(outTime[v], a[v]);
+		}
 
-        for (int qi = 0; qi < q; qi++) {
-            int t = fs.nextInt();
-            if (t == 1) {
-                int s = fs.nextInt() - 1;
-                int x = fs.nextInt();
-                int delta = a[s] ^ x;
-                a[s] = x;
-                bit.xorAdd(in[s], delta);
-                bit.xorAdd(outTime[s], delta);
-            } else {
-                int u = fs.nextInt() - 1;
-                int v = fs.nextInt() - 1;
-                int w = lca(u, v, up, in, outTime);
-                int ans = bit.xorQuery(in[u]) ^ bit.xorQuery(in[v]) ^ a[w];
-                out.println(ans);
-            }
-        }
+		for (int qi = 0; qi < q; qi++) {
+			int t = fs.nextInt();
+			if (t == 1) {
+				int s = fs.nextInt() - 1;
+				int x = fs.nextInt();
+				int delta = a[s] ^ x;
+				a[s] = x;
+				bit.xorAdd(in[s], delta);
+				bit.xorAdd(outTime[s], delta);
+			} else {
+				int u = fs.nextInt() - 1;
+				int v = fs.nextInt() - 1;
+				int w = lca(u, v, up, in, outTime);
+				int ans = bit.xorQuery(in[u]) ^ bit.xorQuery(in[v]) ^ a[w];
+				out.println(ans);
+			}
+		}
 
-        out.close();
-    }
+		out.close();
+	}
 }
 ```
 
@@ -360,131 +349,127 @@ int timer = 0;
 
 // BeginCodeSnip{XOR Segment Tree}
 template <class T> struct SegTree {
-    const T ID = 0;
-    T cmb(T a, T b) { return a ^ b; }
-    int n;
-    vector<T> seg;
-    SegTree(int _n) {
-        for (n = 1; n < _n;) n *= 2;
-        seg.assign(2 * n, ID);
-    }
-    void pull(int p) { seg[p] = cmb(seg[2 * p], seg[2 * p + 1]); }
-    void upd(int p, T val) {
-        seg[p += n] = val;
-        for (p /= 2; p; p /= 2) pull(p);
-    }
-    T query(int l, int r) {
-        T ra = ID, rb = ID;
-        for (l += n, r += n + 1; l < r; l /= 2, r /= 2) {
-            if (l & 1) ra = cmb(ra, seg[l++]);
-            if (r & 1) rb = cmb(seg[--r], rb);
-        }
-        return cmb(ra, rb);
-    }
+	const T ID = 0;
+	T cmb(T a, T b) { return a ^ b; }
+	int n;
+	vector<T> seg;
+	SegTree(int _n) {
+		for (n = 1; n < _n;) n *= 2;
+		seg.assign(2 * n, ID);
+	}
+	void pull(int p) { seg[p] = cmb(seg[2 * p], seg[2 * p + 1]); }
+	void upd(int p, T val) {
+		seg[p += n] = val;
+		for (p /= 2; p; p /= 2) pull(p);
+	}
+	T query(int l, int r) {
+		T ra = ID, rb = ID;
+		for (l += n, r += n + 1; l < r; l /= 2, r /= 2) {
+			if (l & 1) ra = cmb(ra, seg[l++]);
+			if (r & 1) rb = cmb(seg[--r], rb);
+		}
+		return cmb(ra, rb);
+	}
 };
 // EndCodeSnip
 
 void dfs_sz(int cur, int parent) {
-    sz[cur] = 1;
-    parentArr[cur] = parent;
+	sz[cur] = 1;
+	parentArr[cur] = parent;
 
-    for (int child : adj[cur]) {
-        if (child == parent) continue;
-        dep[child] = dep[cur] + 1;
-        dfs_sz(child, cur);
-        sz[cur] += sz[child];
-    }
+	for (int child : adj[cur]) {
+		if (child == parent) continue;
+		dep[child] = dep[cur] + 1;
+		dfs_sz(child, cur);
+		sz[cur] += sz[child];
+	}
 }
 
 void dfs_hld(int cur, int parent, int top) {
-    tp[cur] = top;
-    pos[cur] = timer++;
-    val[pos[cur]] = arr[cur];
+	tp[cur] = top;
+	pos[cur] = timer++;
+	val[pos[cur]] = arr[cur];
 
-    int h_chi = -1, h_sz = -1;
-    for (int child : adj[cur]) {
-        if (child == parent) continue;
-        if (sz[child] > h_sz) {
-            h_sz = sz[child];
-            h_chi = child;
-        }
-    }
+	int h_chi = -1, h_sz = -1;
+	for (int child : adj[cur]) {
+		if (child == parent) continue;
+		if (sz[child] > h_sz) {
+			h_sz = sz[child];
+			h_chi = child;
+		}
+	}
 
-    if (h_chi == -1) return;
+	if (h_chi == -1) return;
 
-    dfs_hld(h_chi, cur, top);
+	dfs_hld(h_chi, cur, top);
 
-    for (int child : adj[cur]) {
-        if (child == parent || child == h_chi) continue;
-        dfs_hld(child, cur, child);
-    }
+	for (int child : adj[cur]) {
+		if (child == parent || child == h_chi) continue;
+		dfs_hld(child, cur, child);
+	}
 }
 
 SegTree<int> segtree(1);
 
 int query_path(int x, int y) {
-    int res = 0;
+	int res = 0;
 
-    while (tp[x] != tp[y]) {
-        if (dep[tp[x]] < dep[tp[y]]) swap(x, y);
+	while (tp[x] != tp[y]) {
+		if (dep[tp[x]] < dep[tp[y]]) swap(x, y);
 		res ^= segtree.query(pos[tp[x]], pos[x]);
-        x = parentArr[tp[x]];
-    }
+		x = parentArr[tp[x]];
+	}
 
-    if (dep[x] > dep[y]) swap(x, y);
+	if (dep[x] > dep[y]) swap(x, y);
 
 	res ^= segtree.query(pos[x], pos[y]);
 
-    return res;
+	return res;
 }
 
 void update(int node, int new_val) { segtree.upd(pos[node], new_val); }
 
 int main() {
-    freopen("cowland.in", "r", stdin);
-    freopen("cowland.out", "w", stdout);
+	freopen("cowland.in", "r", stdin);
+	freopen("cowland.out", "w", stdout);
 
-    cin >> n >> q;
+	cin >> n >> q;
 
-    for (int i = 0; i < n; i++) {
-        cin >> arr[i];
-    }
+	for (int i = 0; i < n; i++) { cin >> arr[i]; }
 
-    for (int i = 1; i < n; i++) {
-        int u, v;
-        cin >> u >> v;
-        --u;
-        --v;
-        adj[u].push_back(v);
-        adj[v].push_back(u);
-    }
+	for (int i = 1; i < n; i++) {
+		int u, v;
+		cin >> u >> v;
+		--u;
+		--v;
+		adj[u].push_back(v);
+		adj[v].push_back(u);
+	}
 
-    dep[0] = 0;
-    dfs_sz(0, 0);
-    dfs_hld(0, 0, 0);
+	dep[0] = 0;
+	dfs_sz(0, 0);
+	dfs_hld(0, 0, 0);
 
-    segtree = SegTree<int>(n);
-    for (int i = 0; i < n; i++) {
-        segtree.upd(i, val[i]);
-    }
+	segtree = SegTree<int>(n);
+	for (int i = 0; i < n; i++) { segtree.upd(i, val[i]); }
 
-    for (int que = 0; que < q; que++) {
-        int t;
-        cin >> t;
+	for (int que = 0; que < q; que++) {
+		int t;
+		cin >> t;
 
-        if (t == 1) {
-            int s, x;
-            cin >> s >> x;
-            --s;
-            update(s, x);
-        } else {
-            int u, v;
-            cin >> u >> v;
-            --u;
-            --v;
-            cout << query_path(u, v) << endl;
-        }
-    }
+		if (t == 1) {
+			int s, x;
+			cin >> s >> x;
+			--s;
+			update(s, x);
+		} else {
+			int u, v;
+			cin >> u >> v;
+			--u;
+			--v;
+			cout << query_path(u, v) << endl;
+		}
+	}
 }
 ```
 
