@@ -9,7 +9,7 @@ author: Albert Ye, David Zhou
 
 ## Solution 1: Euler Tour + Binary Lifting
 
-This problem requires supporting point updates and XOR path queries on a tree. We can use an [Euler Tour](/gold/tree-euler) combined with a [Fenwick tree](/gold/PURS#binary-indexed-tree) to compute root-to-node XORs efficiently and binary lifting to find the [Lowest Common Ancestor (LCA)](/plat/binary-jump) of any two nodes.
+This problem requires supporting point updates and XOR path queries on a tree. We can perform an [Euler Tour](/gold/tree-euler) combined with a [Fenwick tree](/gold/PURS#binary-indexed-tree) to compute root-to-node XORs efficiently and binary lifting to find the [Lowest Common Ancestor (LCA)](/plat/binary-jump) of any two nodes.
 
 Let $\texttt{in}[x]$ and $\texttt{out}[x]$ denote the entry and exit times of node $x$ during an Euler Tour. By storing each node's value $e_x$ at both positions $\texttt{in}[x]$ and $\texttt{out}[x]$ in the Fenwick tree, the prefix XOR up to $\texttt{in}[v]$ gives the XOR of all values on the path from the root to node $v$.
 
@@ -34,11 +34,7 @@ To update a node $x$ to a new value $e'_x$, we XOR the difference $e_x\oplus e'_
 <CPPSection>
 
 ```cpp
-#include <algorithm>
-#include <cstdio>
-#include <cstring>
-#include <iostream>
-#include <vector>
+#include <bits/stdc++.h>
 
 #define MAXN 100005
 #define bitinc(x) (x & -x)
@@ -151,7 +147,7 @@ int main() {
 import java.io.*;
 import java.util.*;
 
-public class Main {
+public class CowLand {
 	static final int LOG = 18;
 
 	// BeginCodeSnip{Binary Indexed Tree}
