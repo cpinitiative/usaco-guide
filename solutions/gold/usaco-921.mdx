@@ -2,71 +2,40 @@
 id: usaco-921
 source: USACO Gold 2019 February
 title: Cow Land
-author: Albert Ye
+author: Albert Ye, David Zhou
 ---
 
-**Time Complexity:** $\mathcal{O}((n+q) \log n)$
+## Explanation
 
-**Main Idea:** We use Euler tour technique to initialize a binary indexed tree,
-and use the binary indexed tree to run range XOR queries.
+This problem requires supporting point updates and XOR path queries on a tree. We can use an [Euler Tour](/gold/tree-euler) combined with a [Fenwick Tree](/gold/PURS) to compute root-to-node XORs efficiently and binary lifting to find the [Lowest Common Ancestor (LCA)](/plat/binary-jump) of any two nodes.
 
-Check the
-[official solution](http://usaco.org/current/data/sol_cowland_gold_feb19.html)
-for another, more complicated, solution with HLD.
+Let $\texttt{in}[x]$ and $\texttt{out}[x]$ denote the entry and exit times of node $x$ during an Euler Tour. By storing each node's value $e_x$ at both positions $\texttt{in}[x]$ and $\texttt{out}[x]$ in the Fenwick Tree, the prefix XOR up to $\texttt{in}[x]$ gives the XOR of all values on the path from the root to node $x$.
 
-Let $e_x$ be the enjoyment values for each of the attractions, and $lca(i, j)$
-be the lowest common ancestor between nodes $i$ and $j$.
+Define $X(x)$ as the XOR of values from the root to node $x$. Then the XOR along the path between nodes $u$ and $v$ is:
+$$
+X(u)\oplus X(v)\oplus e_{\text{lca}(u,v)}.
+$$
+This works because $X(u)$ and $X(v)$ each include the path from the root to their LCA, which cancels out when XORed together. We must XOR in $e_{\text{lca}(u,v)}$ once to include the LCA node in the final result.
 
-## Euler Tour Technique
-
-Let $i_x$ and $o_x$ be the in and out times for the tree, which we find through
-DFS with the Euler tour technique mentioned in
-[this section](/gold/tree-euler).
-
-## Binary Indexed Tree
-
-We create a binary indexed tree which supports range updates and XOR queries.
-Note that the inverse of XOR is XOR itself.
-
-Store $e_x$ at indices $i_x$ and $o_x$ for all $x$ in the BIT. Note that the
-prefix XOR to $i_x$ is now the path XOR from the root node to each node at the
-tree. See
-[the solution for Path Queries](/solutions/cses-1138) for a
-comprehensive explanation.
-
-Let the prefix XOR at $i$ be $X(i)$. The difference between the explanation for Path Queries and this problem is that
-we have range XOR queries instead of range sum queries. This precomputation takes $\mathcal{O}(n \log n)$.
-
-## Responding to Queries
-
-We now need to respond to path queries and updates. To update node $x$, we
-remove the current values at $i_x$ and $o_x$ and replace these indices with the
-new value. For a path query, we just output
-$X(i) \oplus X(j) \oplus e_{lca(i, j)}$ (where $\oplus$ represents the XOR
-operation). The $X(i)$ and $X(j)$ are the XOR queries for the paths from $0$ to
-$i$ and $0$ to $j$, respectively. The path from $0$ to $lca(i, j)$ is counted
-twice and thus negates itself. Thus, we need to also XOR $e_{lca(i,j)}$ to
-account for the full path XOR from $i$ to $j$.
-
-LCA precomputation is known to take $\mathcal{O}(n \log n)$ with sparse table.
-Additionally, updates and queries both take $\mathcal{O}(\log n)$ each, the
-complexity of the LCA and BIT queries. As there are $q$ updates and queries in
-total, the total complexity for the querying step is $\mathcal{O}(q \log n)$.
-Hence, the total complexity is $\mathcal{O}((n+q) \log n)$.
+To update a node $x$ to a new value $e'_x$, we XOR the difference $e_x\oplus e'_x$ into both $\texttt{in}[x]$ and $\texttt{out}[x]$.
 
 ## Implementation
 
-**Time Complexity:** $\mathcal{O}((n+q) \log n)$
+**Time Complexity:** $\mathcal{O}((N+Q)\log N)$
 
 <LanguageSection>
+
 <CPPSection>
 
-
 ```cpp
-#include <bits/stdc++.h>
+#include <algorithm>
+#include <cstdio>
+#include <cstring>
+#include <iostream>
+#include <vector>
 
 #define MAXN 100005
-#define bitinc(x) (x & -x);
+#define bitinc(x) (x & -x)
 
 using namespace std;
 
@@ -76,99 +45,98 @@ vector<int> adj[MAXN];
 int timer = 1;
 // does initial DFS to find the time in/out for each subtree-range.
 void dfs(int v = 0, int p = 0) {
-	in[v] = timer++;
-	par[v][0] = p;
-	for (int i = 1; i < 22; i++) par[v][i] = par[par[v][i - 1]][i - 1];
-	for (int x : adj[v]) {
-		if (x == p) continue;
-		dfs(x, v);
-	}
-	ot[v] = timer++;
+    in[v] = timer++;
+    par[v][0] = p;
+    for (int i = 1; i < 22; i++) par[v][i] = par[par[v][i - 1]][i - 1];
+    for (int x : adj[v]) {
+        if (x == p) continue;
+        dfs(x, v);
+    }
+    ot[v] = timer++;
 }
 
 // prefix xor. reversible = done onto itself
 int XOR(int ind) {
-	int xo = 0;
-	while (ind > 0) {
-		xo ^= bit[ind];
-		ind -= bitinc(ind);
-	}
-	return xo;
+    int xo = 0;
+    while (ind > 0) {
+        xo ^= bit[ind];
+        ind -= bitinc(ind);
+    }
+    return xo;
 }
 void upd(int ind, int val) {
-	while (ind <= timer) {
-		bit[ind] ^= val;
-		ind += bitinc(ind);
-	}
+    while (ind <= timer) {
+        bit[ind] ^= val;
+        ind += bitinc(ind);
+    }
 }
 
 bool anc(int u, int v) { return (in[u] <= in[v] && ot[u] >= ot[v]); }
 
 // method finding all lca's
 int lca(int u, int v) {
-	if (anc(u, v)) return u;
-	for (int i = 21; i >= 0; i--) {
-		if (par[u][i] >= 0 && !anc(par[u][i], v)) u = par[u][i];
-	}
-	return par[u][0];
+    if (anc(u, v)) return u;
+    for (int i = 21; i >= 0; i--) {
+        if (par[u][i] >= 0 && !anc(par[u][i], v)) u = par[u][i];
+    }
+    return par[u][0];
 }
 
 int main() {
-	freopen("cowland.in", "r", stdin);
-	freopen("cowland.out", "w", stdout);
-	int q;
-	cin >> n >> q;
-	for (int i = 0; i < n; i++) cin >> arr[i];
-	for (int i = 1; i < n; i++) {
-		int u, v;
-		cin >> u >> v;
-		--u;
-		--v;
-		adj[u].push_back(v);
-		adj[v].push_back(u);
-	}
-	dfs();
-	// add each vertex query right now.
-	for (int i = 0; i < n; i++) {
-		upd(in[i], arr[i]);
-		upd(ot[i], arr[i]);
-	}
-	// rep. for each query
-	for (int que = 0; que < q; que++) {
-		int t;
-		cin >> t;
-		if (t == 1) {
-			int s, x;
-			cin >> s >> x;
-			--s;
-			// erase the initial arr[s] value.
-			upd(in[s], arr[s]);
-			upd(ot[s], arr[s]);
-			arr[s] = x;
-			// update the arr[s] value to x.
-			upd(in[s], arr[s]);
-			upd(ot[s], arr[s]);
-		} else {
-			int u, v;
-			cin >> u >> v;
-			--u;
-			--v;
-			int w = lca(u, v);
-			cout << ((XOR(in[u]) ^ XOR(in[v])) ^ arr[w]) << endl;
-		}
-	}
+    freopen("cowland.in", "r", stdin);
+    freopen("cowland.out", "w", stdout);
+    int q;
+    cin >> n >> q;
+    for (int i = 0; i < n; i++) cin >> arr[i];
+    for (int i = 1; i < n; i++) {
+        int u, v;
+        cin >> u >> v;
+        --u;
+        --v;
+        adj[u].push_back(v);
+        adj[v].push_back(u);
+    }
+    dfs();
+    // add each vertex query right now.
+    for (int i = 0; i < n; i++) {
+        upd(in[i], arr[i]);
+        upd(ot[i], arr[i]);
+    }
+    // rep. for each query
+    for (int que = 0; que < q; que++) {
+        int t;
+        cin >> t;
+        if (t == 1) {
+            int s, x;
+            cin >> s >> x;
+            --s;
+            // erase the initial arr[s] value.
+            upd(in[s], arr[s]);
+            upd(ot[s], arr[s]);
+            arr[s] = x;
+            // update the arr[s] value to x.
+            upd(in[s], arr[s]);
+            upd(ot[s], arr[s]);
+        } else {
+            int u, v;
+            cin >> u >> v;
+            --u;
+            --v;
+            int w = lca(u, v);
+            cout << ((XOR(in[u]) ^ XOR(in[v])) ^ arr[w]) << endl;
+        }
+    }
 }
 ```
 
 </CPPSection>
+
 <JavaSection>
 
 ```java
 import java.io.*;
 import java.util.*;
 
-// this one uses a segment tree for the xor-ing instead of a BIT, but overall
-// it's the same philosophy
 public class CowLand {
 	private static class MinSegTree {
 		private final int[] segtree;
@@ -217,7 +185,7 @@ public class CowLand {
 		public int min(int from, int to) {
 			if (from < 0 || to > arrSize) {
 				throw new IllegalArgumentException(String.format(
-				    "the bounds %s and %s are out of bounds i think", from, to));
+				    "Bounds [%s, %s) are out of range", from, to));
 			}
 			return min(from, to, 0, 0, size);
 		}
@@ -242,19 +210,18 @@ public class CowLand {
 		private final int arrSize;
 		private final int size;
 
-		public XORSegTree(int len) {  // constructs the thing kinda like an array
+		public XORSegTree(int len) {
 			int size = 1;
 			while (size < len) { size *= 2; }
 			this.size = size;
 			arrSize = len;
-			segtree = new int[size * 2];  // we won't necessarily use all of the
-			                              // element but that doesn't really matter
+			segtree = new int[size * 2];
 		}
 
 		public void set(int index, int element) {
 			if (index < 0 || index > arrSize) {
 				throw new IllegalArgumentException(
-				    String.format("%s should be out of bounds lol", index));
+				    String.format("Index %s is out of bounds", index));
 			}
 			set(index, element, 0, 0, size);
 		}
@@ -274,19 +241,16 @@ public class CowLand {
 			}
 		}
 
-		// for this one, from and to follow "normal" slicing rules - left bound
-		// is inclusive, right bound isn't
 		public int xor(int from, int to) {
 			if (from < 0 || to > arrSize) {
 				throw new IllegalArgumentException(String.format(
-				    "the bounds %s and %s are out of bounds i think", from, to));
+				    "Bounds [%s, %s) are out of range", from, to));
 			}
 			return xor(from, to, 0, 0, size);
 		}
 
 		private int xor(int from, int to, int currNode, int left, int right) {
-			if (right <= from ||
-			    to <= left) {  // oof, out of bounds, so the sum is definitely 0
+			if (right <= from || to <= left) {
 				return 0;
 			}
 			if (from <= left && right <= to) { return segtree[currNode]; }
@@ -349,18 +313,15 @@ public class CowLand {
 		public int LCA(int n1, int n2) {
 			int p1 = firstOcc[n1];
 			int p2 = firstOcc[n2];
-			if (p1 > p2) {  // see which one occurs first because of the minimum
-				            // thing
+			if (p1 > p2) {
 				int temp = p1;
 				p1 = p2;
 				p2 = temp;
 			}
-			return LCATree.min(p1,
-			                   p2 + 1);  // + 1 because of the bounds of min()
+			return LCATree.min(p1, p2 + 1);
 		}
 
-		private void eulerTour() {  // i could just put this in the constructor
-			                        // but this makes it look better
+		private void eulerTour() {
 			ArrayDeque<int[]> frontier =
 			    new ArrayDeque<>(Collections.singletonList(new int[] {0, -1, 0}));
 			HashSet<Integer> visited = new HashSet<>();
@@ -371,17 +332,14 @@ public class CowLand {
 				if (curr[0] == -1 || visited.contains(curr[0])) { continue; }
 				visited.add(curr[0]);
 				height[curr[0]] = curr[2];
-				firstOcc[curr[0]] =
-				    eulerTour.size() - 1;  // -1 because of that .add(curr[0]) above
+				firstOcc[curr[0]] = eulerTour.size() - 1;
 				if (curr[0] != 0) {
 					frontier.addFirst(
 					    new int[] {curr[1], parent[curr[1]], curr[2] - 1});
 				}
-				boolean isLeaf = true;  // i know i could like check the amt of
-				                        // neighbors but this is somehow faster
+				boolean isLeaf = true;
 				for (int n : neighbors[curr[0]]) {
-					if (n != curr[1]) {  // visit all children (don't process
-						                 // the parent)
+					if (n != curr[1]) {
 						parent[n] = curr[0];
 						frontier.addFirst(new int[] {n, curr[0], curr[2] + 1});
 						isLeaf = false;
@@ -393,7 +351,6 @@ public class CowLand {
 	}
 
 	public static void main(String[] args) throws IOException {
-		long start = System.currentTimeMillis();
 		BufferedReader read = new BufferedReader(new FileReader("cowland.in"));
 		StringTokenizer initial = new StringTokenizer(read.readLine());
 		int placeNum = Integer.parseInt(initial.nextToken());
@@ -422,17 +379,11 @@ public class CowLand {
 				break;
 			case 2:
 				int happiness = park.query(query[1] - 1, query[2] - 1);
-				// System.out.println(happiness);  // <- adding this makes the
-				// thing too slow lol
 				written.println(happiness);
 				break;
-			default:
-				throw new IllegalArgumentException("what kind of query is " +
-				                                   Arrays.toString(query) + " lol");
 			}
 		}
 		written.close();
-		System.out.printf("time: %d ms%n", System.currentTimeMillis() - start);
 	}
 }
 ```
