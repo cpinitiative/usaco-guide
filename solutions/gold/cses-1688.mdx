@@ -11,7 +11,7 @@ This problem asks us to find the [lowest common ancestor (LCA)](/plat/binary-jum
 
 HLD Preprocessing:
 
-- Compute subtree sizes to identify heavy children 
+- Compute subtree sizes to identify heavy children
 - Decompose the tree into heavy paths
 - Assign each node to a heavy path chain and store the top node
 
@@ -45,71 +45,71 @@ int sz[N], p[N], dep[N];
 int tp[N];  // top of the heavy path chain
 
 void dfs_sz(int cur, int par) {
-    sz[cur] = 1;
-    p[cur] = par;
-    for (int chi : adj[cur]) {
-        if (chi == par) continue;
-        dep[chi] = dep[cur] + 1;
-        dfs_sz(chi, cur);
-        sz[cur] += sz[chi];
-    }
+	sz[cur] = 1;
+	p[cur] = par;
+	for (int chi : adj[cur]) {
+		if (chi == par) continue;
+		dep[chi] = dep[cur] + 1;
+		dfs_sz(chi, cur);
+		sz[cur] += sz[chi];
+	}
 }
 
 void dfs_hld(int cur, int par, int top) {
-    tp[cur] = top;
+	tp[cur] = top;
 
-    // find heavy child (child with largest subtree)
-    int h_chi = -1, h_sz = -1;
-    for (int chi : adj[cur]) {
-        if (chi == par) continue;
-        if (sz[chi] > h_sz) {
-            h_sz = sz[chi];
-            h_chi = chi;
-        }
-    }
+	// find heavy child (child with largest subtree)
+	int h_chi = -1, h_sz = -1;
+	for (int chi : adj[cur]) {
+		if (chi == par) continue;
+		if (sz[chi] > h_sz) {
+			h_sz = sz[chi];
+			h_chi = chi;
+		}
+	}
 
-    if (h_chi == -1) return;  // leaf node
+	if (h_chi == -1) return;  // leaf node
 
-    // extend heavy path to heavy child
-    dfs_hld(h_chi, cur, top);
+	// extend heavy path to heavy child
+	dfs_hld(h_chi, cur, top);
 
-    // start new heavy paths for light children
-    for (int chi : adj[cur]) {
-        if (chi == par || chi == h_chi) continue;
-        dfs_hld(chi, cur, chi);
-    }
+	// start new heavy paths for light children
+	for (int chi : adj[cur]) {
+		if (chi == par || chi == h_chi) continue;
+		dfs_hld(chi, cur, chi);
+	}
 }
 
 int lca(int x, int y) {
-    // move up the tree until both nodes are on the same heavy path
-    while (tp[x] != tp[y]) {
-        // move the node with deeper heavy path top
-        if (dep[tp[x]] < dep[tp[y]]) swap(x, y);
-        x = p[tp[x]];
-    }
-    // both on same heavy path, return the shallower one
-    return dep[x] < dep[y] ? x : y;
+	// move up the tree until both nodes are on the same heavy path
+	while (tp[x] != tp[y]) {
+		// move the node with deeper heavy path top
+		if (dep[tp[x]] < dep[tp[y]]) swap(x, y);
+		x = p[tp[x]];
+	}
+	// both on same heavy path, return the shallower one
+	return dep[x] < dep[y] ? x : y;
 }
 
 int main() {
-    cin >> n >> q;
+	cin >> n >> q;
 
-    for (int i = 2; i <= n; i++) {
-        int boss;
-        cin >> boss;
-        adj[boss].push_back(i);
-        adj[i].push_back(boss);
-    }
+	for (int i = 2; i <= n; i++) {
+		int boss;
+		cin >> boss;
+		adj[boss].push_back(i);
+		adj[i].push_back(boss);
+	}
 
-    dep[1] = 0;
-    dfs_sz(1, 0);
-    dfs_hld(1, 0, 1);
+	dep[1] = 0;
+	dfs_sz(1, 0);
+	dfs_hld(1, 0, 1);
 
-    while (q--) {
-        int a, b;
-        cin >> a >> b;
-        cout << lca(a, b) << "\n";
-    }
+	while (q--) {
+		int a, b;
+		cin >> a >> b;
+		cout << lca(a, b) << "\n";
+	}
 }
 ```
 
