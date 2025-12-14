@@ -148,153 +148,144 @@ import java.io.*;
 import java.util.*;
 
 public class CowLand {
-    static final int LOG = 18;
+	static final int LOG = 18;
 
-    // BeginCodeSnip{Binary Indexed Tree}
-    static class BIT {
-        final int n;
-        final int[] bit;
+	// BeginCodeSnip{Binary Indexed Tree}
+	static class BIT {
+		final int n;
+		final int[] bit;
 
-        BIT(int n) {
-            this.n = n;
-            this.bit = new int[n + 1];
-        }
+		BIT(int n) {
+			this.n = n;
+			this.bit = new int[n + 1];
+		}
 
-        void xorAdd(int idx, int val) {
-            for (; idx <= n; idx += idx & -idx) {
-                bit[idx] ^= val;
-            }
-        }
+		void xorAdd(int idx, int val) {
+			for (; idx <= n; idx += idx & -idx) { bit[idx] ^= val; }
+		}
 
-        int xorQuery(int idx) {
-            int res = 0;
-            for (; idx > 0; idx -= idx & -idx) {
-                res ^= bit[idx];
-            }
-            return res;
-        }
-    }
-    // EndCodeSnip
+		int xorQuery(int idx) {
+			int res = 0;
+			for (; idx > 0; idx -= idx & -idx) { res ^= bit[idx]; }
+			return res;
+		}
+	}
+	// EndCodeSnip
 
-    static boolean isAncestor(int u, int v, int[] in, int[] out) {
-        return in[u] <= in[v] && out[u] >= out[v];
-    }
+	static boolean isAncestor(int u, int v, int[] in, int[] out) {
+		return in[u] <= in[v] && out[u] >= out[v];
+	}
 
-    static int lca(int u, int v, int[][] up, int[] in, int[] out) {
-        if (isAncestor(u, v, in, out)) return u;
-        if (isAncestor(v, u, in, out)) return v;
-        
-        for (int i = LOG - 1; i >= 0; i--) {
-            // Simply check if jumping up keeps us below the ancestor of v
-            if (!isAncestor(up[i][u], v, in, out)) {
-                u = up[i][u];
-            }
-        }
-        return up[0][u];
-    }
+	static int lca(int u, int v, int[][] up, int[] in, int[] out) {
+		if (isAncestor(u, v, in, out)) return u;
+		if (isAncestor(v, u, in, out)) return v;
 
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new FileReader("cowland.in"));
-        PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("cowland.out")));
+		for (int i = LOG - 1; i >= 0; i--) {
+			// Simply check if jumping up keeps us below the ancestor of v
+			if (!isAncestor(up[i][u], v, in, out)) { u = up[i][u]; }
+		}
+		return up[0][u];
+	}
 
-        StringTokenizer st = new StringTokenizer(br.readLine());
-        int n = Integer.parseInt(st.nextToken());
-        int q = Integer.parseInt(st.nextToken());
-        
-        st = new StringTokenizer(br.readLine());
-        int[] a = new int[n];
-        for (int i = 0; i < n; i++) {
-            a[i] = Integer.parseInt(st.nextToken());
-        }
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new FileReader("cowland.in"));
+		PrintWriter out =
+		    new PrintWriter(new BufferedWriter(new FileWriter("cowland.out")));
 
-        ArrayList<Integer>[] adj = new ArrayList[n];
-        for (int i = 0; i < n; i++) adj[i] = new ArrayList<>();
-        
-        for (int i = 0; i < n - 1; i++) {
-            st = new StringTokenizer(br.readLine());
-            int u = Integer.parseInt(st.nextToken()) - 1;
-            int v = Integer.parseInt(st.nextToken()) - 1;
-            adj[u].add(v);
-            adj[v].add(u);
-        }
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int n = Integer.parseInt(st.nextToken());
+		int q = Integer.parseInt(st.nextToken());
 
-        // Arrays for tree data
-        int[] in = new int[n];
-        int[] outTime = new int[n];
-        // Removed unused 'depth' array
-        int[][] up = new int[LOG][n];
-        int[] parent = new int[n];
+		st = new StringTokenizer(br.readLine());
+		int[] a = new int[n];
+		for (int i = 0; i < n; i++) { a[i] = Integer.parseInt(st.nextToken()); }
 
-        // Iterative DFS initialization
-        int timer = 1;
-        int[] idx = new int[n]; 
-        int[] stack = new int[n];
-        int sp = 0; 
+		ArrayList<Integer>[] adj = new ArrayList[n];
+		for (int i = 0; i < n; i++) adj[i] = new ArrayList<>();
 
-        // Push root (0)
-        stack[sp++] = 0;
-        parent[0] = 0;
-        up[0][0] = 0;
-        in[0] = timer++;
+		for (int i = 0; i < n - 1; i++) {
+			st = new StringTokenizer(br.readLine());
+			int u = Integer.parseInt(st.nextToken()) - 1;
+			int v = Integer.parseInt(st.nextToken()) - 1;
+			adj[u].add(v);
+			adj[v].add(u);
+		}
 
-        while (sp > 0) {
-            int v = stack[sp - 1];
-            
-            if (idx[v] < adj[v].size()) {
-                int to = adj[v].get(idx[v]++);
-                if (to == parent[v]) continue;
-                
-                parent[to] = v;
-                up[0][to] = v;
-                in[to] = timer++;
-                stack[sp++] = to;
-            } else {
-                outTime[v] = timer++;
-                sp--;
-            }
-        }
+		// Arrays for tree data
+		int[] in = new int[n];
+		int[] outTime = new int[n];
+		// Removed unused 'depth' array
+		int[][] up = new int[LOG][n];
+		int[] parent = new int[n];
 
-        // Compute Binary Lifting table
-        for (int i = 1; i < LOG; i++) {
-            for (int v = 0; v < n; v++) {
-                up[i][v] = up[i - 1][up[i - 1][v]];
-            }
-        }
+		// Iterative DFS initialization
+		int timer = 1;
+		int[] idx = new int[n];
+		int[] stack = new int[n];
+		int sp = 0;
 
-        BIT bit = new BIT(timer + 2);
-        for (int v = 0; v < n; v++) {
-            bit.xorAdd(in[v], a[v]);
-            bit.xorAdd(outTime[v], a[v]);
-        }
+		// Push root (0)
+		stack[sp++] = 0;
+		parent[0] = 0;
+		up[0][0] = 0;
+		in[0] = timer++;
 
-        // Process Queries
-        for (int qi = 0; qi < q; qi++) {
-            st = new StringTokenizer(br.readLine());
-            int t = Integer.parseInt(st.nextToken());
-            if (t == 1) {
-                // Update
-                int s = Integer.parseInt(st.nextToken()) - 1;
-                int x = Integer.parseInt(st.nextToken());
-                int delta = a[s] ^ x;
-                a[s] = x;
-                bit.xorAdd(in[s], delta);
-                bit.xorAdd(outTime[s], delta);
-            } else {
-                // Query
-                int u = Integer.parseInt(st.nextToken()) - 1;
-                int v = Integer.parseInt(st.nextToken()) - 1;
-                int w = lca(u, v, up, in, outTime);
-                
-                int pathU = bit.xorQuery(in[u]);
-                int pathV = bit.xorQuery(in[v]);
-                int ans = pathU ^ pathV ^ a[w];
-                
-                out.println(ans);
-            }
-        }
-        
-        out.close();
-    }
+		while (sp > 0) {
+			int v = stack[sp - 1];
+
+			if (idx[v] < adj[v].size()) {
+				int to = adj[v].get(idx[v]++);
+				if (to == parent[v]) continue;
+
+				parent[to] = v;
+				up[0][to] = v;
+				in[to] = timer++;
+				stack[sp++] = to;
+			} else {
+				outTime[v] = timer++;
+				sp--;
+			}
+		}
+
+		// Compute Binary Lifting table
+		for (int i = 1; i < LOG; i++) {
+			for (int v = 0; v < n; v++) { up[i][v] = up[i - 1][up[i - 1][v]]; }
+		}
+
+		BIT bit = new BIT(timer + 2);
+		for (int v = 0; v < n; v++) {
+			bit.xorAdd(in[v], a[v]);
+			bit.xorAdd(outTime[v], a[v]);
+		}
+
+		// Process Queries
+		for (int qi = 0; qi < q; qi++) {
+			st = new StringTokenizer(br.readLine());
+			int t = Integer.parseInt(st.nextToken());
+			if (t == 1) {
+				// Update
+				int s = Integer.parseInt(st.nextToken()) - 1;
+				int x = Integer.parseInt(st.nextToken());
+				int delta = a[s] ^ x;
+				a[s] = x;
+				bit.xorAdd(in[s], delta);
+				bit.xorAdd(outTime[s], delta);
+			} else {
+				// Query
+				int u = Integer.parseInt(st.nextToken()) - 1;
+				int v = Integer.parseInt(st.nextToken()) - 1;
+				int w = lca(u, v, up, in, outTime);
+
+				int pathU = bit.xorQuery(in[u]);
+				int pathV = bit.xorQuery(in[v]);
+				int ans = pathU ^ pathV ^ a[w];
+
+				out.println(ans);
+			}
+		}
+
+		out.close();
+	}
 }
 ```
 
