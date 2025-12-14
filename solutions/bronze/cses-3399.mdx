@@ -1,0 +1,117 @@
+---
+id: cses-3399
+source: CSES
+title: Raab Game I
+author: Zayd Krunz
+---
+
+<Spoiler title="Hint 1">
+First, consider the draws. In a draw, nobody wins. If $a+b$ is the number of games that are won, how many games must be draws?
+</Spoiler>
+
+<Spoiler title="Hint 2">
+After handling the draws, we are left with a subproblem where the total number of cards is $k = a+b$.
+Since both players have the exact same set of cards $\{1, 2, \dots, k\}$, the sum of their card values is equal.
+Is it possible for one player to win *every* round (i.e., score $k$) if the sets are identical?
+</Spoiler>
+
+<Spoiler title="Hint 3">
+Try a cyclic shift. If Player 1 plays cards in increasing order $1, 2, \dots, k$, try having Player 2 play cards shifted by $a$ (modulo $k$). For example, if $k=5$, Player 1 might play $1, 2, 3, 4, 5$, and Player 2 will play $2, 3, 4, 5, 1$.
+</Spoiler>
+
+<Spoiler title="Solution">
+
+## Explanation
+
+Let $N$ be the number of cards and $a$ and $b$ be the target scores.
+
+First, we handle the draws. The number of draws required is $D = N - (a + b)$. If $D < 0$, the result is impossible since the games played must sum to $N$. Otherwise, we can satisfy these draws by having both players play their largest $D$ cards against each other (e.g., $N$ vs $N$, $N-1$ vs $N-1$, etc.).
+
+This reduces the problem to constructing a game with cards $\{1, 2, \dots, k\}$ where $k = a + b$ and no draws exist.
+
+### Existence Condition
+
+We must determine if a valid game exists for the remaining $k$ cards.
+
+Since $k$ represents the non-draw games, one player must win each round. Thus, Player 1 having a score of $k$ implies that they won every single round. This would require Player 1's card to be strictly greater than Player 2's card in every matchup.
+
+However, both players possess the exact same set of cards $\{1, \dots, k\}$, so the sum of their cards is equal. If Player 1's cards were strictly greater in every round, their total sum would be strictly greater than Player 2's total sum, which is impossible.
+
+Therefore, if there are any non-draw games ($k > 0$), neither player can end with a score of 0. If $a=0$ or $b=0$, the answer is `NO`.
+
+### Construction
+
+If the scores are valid, we can construct the game using a simple cyclic shift.
+
+1. **Player 1** simply plays all their cards in increasing order ($1, 2, \dots, N$).
+2. **Player 2** plays cards shifted by $a$ for the first $k$ rounds, and matches Player 1 for the rest.
+
+**Example:**
+Let $k=5$ (non-draw cards), $a=2$, and $b=3$.
+
+*   **Player 1** plays: $[1, 2, 3, 4, 5]$
+*   **Player 2** plays: $[3, 4, 5, 1, 2]$ (shifted left by $a=2$)
+
+**Analysis of the first $k$ rounds:**
+
+*   For the first $b$ rounds, Player 1 plays $i$ and Player 2 plays $i+a$. Since $a > 0$, Player 2 wins ($i+a > i$). This gives Player 2 exactly $b$ points.
+*   For the remaining $a$ rounds, Player 2's cards wrap around to their smallest values ($1, \dots, a$). Player 1 plays values $b+1$ through $k$. Since $b \ge 0$, Player 1's cards are strictly larger than Player 2's cards. This gives Player 1 exactly $a$ points.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+using namespace std;
+
+void solve() {
+	int n, a, b;
+	cin >> n >> a >> b;
+
+	int draws = n - (a + b);
+
+	// Impossible if we need more draws than cards available
+	if (draws < 0) {
+		cout << "NO" << "\n";
+		return;
+	}
+
+	// Impossible if one player implies a total victory on non-draw cards
+	int k = n - draws;
+	if (k > 0 && (a == 0 || b == 0)) {
+		cout << "NO" << "\n";
+		return;
+	}
+
+	cout << "YES" << "\n";
+
+	// Player 1: Plays 1..k (winning/losing rounds), then k+1..n (draws)
+	for (int i = 1; i <= n; i++) { cout << i << " "; }
+	cout << "\n";
+
+	// Player 2: Cyclic shift for first k cards
+	for (int i = 1; i <= k; i++) {
+		// Shift by a and wrap around
+		int val = i + a;
+		if (val > k) val -= k;
+		cout << val << " ";
+	}
+
+	// Player 2: Matches the draw cards exactly
+	for (int i = k + 1; i <= n; i++) { cout << i << " "; }
+	cout << "\n";
+}
+
+int main() {
+	int t;
+	cin >> t;
+	while (t--) solve();
+}
+```
+</CPPSection>
+</LanguageSection>
+</Spoiler>

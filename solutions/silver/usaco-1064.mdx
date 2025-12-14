@@ -2,17 +2,28 @@
 id: usaco-1064
 source: USACO Silver 2020 December
 title: Stuck in a Rut
-author: Qi Wang, Melody Yu (Video), Brad Ma, David Guo
+author: Qi Wang, Melody Yu (Video), Brad Ma, David Guo, David Zhou
 ---
 
-[Official Analysis](http://usaco.org/current/data/sol_prob3_silver_dec20.html)
+[Official Analysis (Java)](http://usaco.org/current/data/sol_prob3_silver_dec20.html)
 
 ## Video Solution
 
 Note: The video solution might not be the same as other solutions. Code in C++.
 <YouTube id="7ZA0MQ9uFr4" />
 
+## Explanation
+
+Suppose we have a cow travelling horizontally at $(x_h, y_h)$ and another cow travelling vertically at $(x_v,y_v)$. They will intersect at $(x_v,y_h)$ given that $x_h\lt x_v$ and $y_v\lt y_h$. If a cow reaches this point first, then the later cow will be stopped.
+
+However, cows can be stopped before reaching possible intersections with other cows. Thus, we need to sort our cows to process them in a way that avoids this issue. We sort our horizontal-bound cows by increasing vertical values, and we sort our vertical-bound cows by increasing horizontal values. The sorted order ensures that once we find a potential collision, all cows that could have been would have been stopped. We can then check each pair of cows based on the following criteria:
+1. If either cow has already been stopped, we can skip this pair.
+2. If their paths do not intersect, we can skip this pair.
+3. If neither has been stopped and they do intersect, we stop the cow that is further from the intersection.
+
 ## Implementation
+
+**Time Complexity:** $\mathcal{O}(N^2)$
 
 <LanguageSection>
 <CPPSection>

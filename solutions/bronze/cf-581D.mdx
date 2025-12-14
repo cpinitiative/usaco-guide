@@ -2,7 +2,7 @@
 id: cf-581D
 source: CF
 title: Three Logos
-author: Chongtian Ma
+author: Chongtian Ma, Naresh Baskaran
 ---
 
 [Official Editorial](https://codeforces.com/blog/entry/20508)
@@ -31,7 +31,7 @@ int main() {
 	long long area = 0;
 	for (pair<int, int> p : logos) { area += p.first * p.second; }
 
-	// if area is not a perfect square, then it's already invalid
+	// If area is not a perfect square, then it's already invalid
 	int len = 1;
 	while (len * len < area) { len++; }
 
@@ -39,16 +39,16 @@ int main() {
 		printf("-1");
 		return 0;
 	}
-	// loop through all rotations of each rectangle
+	// Loop through all rotations of each rectangle
 	for (int rotate_mask = 0; rotate_mask < (1 << N); rotate_mask++) {
-		vector<string> grid(len, string(len, 'Z'));  // temporary grid
+		vector<string> grid(len, string(len, 'Z'));  // Temporary grid
 		// 'Z' represents an empty space in the grid
 		int num_placed = 0;
 		for (int i = 0; i < len; i++) {
 			for (int j = 0; j < len; j++) {
 				if (grid[i][j] == 'Z') {
 					if (num_placed == N) {
-						// we have already placed all the logos
+						// We have already placed all the logos
 						goto outer;
 					}
 
@@ -56,15 +56,15 @@ int main() {
 					int h = logos[num_placed].second;
 
 					if (rotate_mask & (1 << num_placed)) {
-						// rotate 90 degrees
+						// Rotate 90 degrees
 						swap(w, h);
 					}
 
-					// place configuration
+					// Place configuration
 					for (int r = i; r < i + h; r++) {
 						for (int c = j; c < j + w; c++) {
 							if (r >= len || c >= len || grid[r][c] != 'Z') {
-								// out of bounds or already a logo here
+								// Out of bounds or already a logo here
 								goto outer;
 							}
 							grid[r][c] = num_placed + 'A';
@@ -76,13 +76,13 @@ int main() {
 			}
 		}
 
-		// at this point, all logos must be placed
+		// At this point, all logos must be placed
 		assert(num_placed == N);
 
 		printf("%d\n", len);
 		for (int i = 0; i < len; i++) { printf("%s\n", grid[i].c_str()); }
 		return 0;
-		// continue the iteration
+		// Continue the iteration
 	outer:;
 	}
 	printf("-1");
@@ -109,7 +109,7 @@ public class ThreeLogos {
 		long area = 0;
 		for (int[] p : logos) { area += p[0] * p[1]; }
 
-		// if area is not a perfect square, then it's already invalid
+		// If area is not a perfect square, then it's already invalid
 		int len = 1;
 		while (len * len < area) { len++; }
 
@@ -118,7 +118,7 @@ public class ThreeLogos {
 			return;
 		}
 
-		// loop through all rotations of each rectangle
+		// Loop through all rotations of each rectangle
 		for (int rotateMask = 0; rotateMask < (1 << N); rotateMask++) {
 			char[][] grid = new char[len][len];
 			for (int i = 0; i < len; i++) {
@@ -132,7 +132,7 @@ public class ThreeLogos {
 				for (int j = 0; j < len; j++) {
 					if (grid[i][j] == 'Z') {
 						if (numPlaced == N) {
-							// we have already placed all the logos
+							// We have already placed all the logos
 							break outerLoop;
 						}
 
@@ -140,17 +140,17 @@ public class ThreeLogos {
 						int h = logos[numPlaced][1];
 
 						if ((rotateMask & (1 << numPlaced)) != 0) {
-							// rotate 90 degrees
+							// Rotate 90 degrees
 							int temp = w;
 							w = h;
 							h = temp;
 						}
 
-						// place configuration
+						// Place configuration
 						for (int r = i; r < i + h; r++) {
 							for (int c = j; c < j + w; c++) {
 								if (r >= len || c >= len || grid[r][c] != 'Z') {
-									// out of bounds or already a logo here
+									// Out of bounds or already a logo here
 									continue outerLoop;
 								}
 								grid[r][c] = (char)(numPlaced + 'A');
@@ -162,7 +162,7 @@ public class ThreeLogos {
 				}
 			}
 
-			// at this point, all logos must be placed
+			// At this point, all logos must be placed
 			if (numPlaced == N) {
 				System.out.println(len);
 				for (int i = 0; i < len; i++) {
@@ -190,7 +190,7 @@ def main():
 
 	area = sum(p[0] * p[1] for p in logos)
 
-	# if area is not a perfect square, then it's already invalid
+	# If area is not a perfect square, then it's already invalid
 	len_side = 1
 	while len_side * len_side < area:
 		len_side += 1
@@ -199,11 +199,11 @@ def main():
 		print("-1")
 		return
 
-	# loop through all rotations of each rectangle
+	# Loop through all rotations of each rectangle
 	for rotate_mask in range(1 << N):
 		grid = [
 			["Z" for _ in range(len_side)] for _ in range(len_side)
-		]  # temporary grid
+		]  # Temporary grid
 		# 'Z' represents an empty space in the grid
 		num_placed = 0
 
@@ -211,17 +211,17 @@ def main():
 			for j in range(len_side):
 				if grid[i][j] == "Z":
 					if num_placed == N:
-						# we have already placed all the logos
+						# We have already placed all the logos
 						goto_outer = True
 						break
 
 					w, h = logos[num_placed]
 
 					if rotate_mask & (1 << num_placed):
-						# rotate 90 degrees
+						# Rotate 90 degrees
 						w, h = h, w
 
-					# place configuration
+					# Place configuration
 					if all(
 						0 <= r < len_side and 0 <= c < len_side and grid[r][c] == "Z"
 						for r in range(i, i + h)
@@ -239,7 +239,7 @@ def main():
 				continue
 			break
 		else:
-			# at this point, all logos must be placed
+			# At this point, all logos must be placed
 			assert num_placed == N
 
 			print(len_side)
@@ -259,7 +259,7 @@ if __name__ == "__main__":
 
 ## Alternative Implementation
 
-This problem can be solved in $ \mathcal{O}(1)$ time (ignoring the time to print the output), by simply
+This problem can be solved in $\mathcal{O}(1)$ time (ignoring the time to print the output), by simply
 considering the two possible cases.
 
 If the logos can fit they can either:
@@ -295,15 +295,15 @@ void solve(void) {
 	b.ch = 'B';
 	c.ch = 'C';
 
-	// rotate logos to reduce the amount of casework
-	// longer side = x, shorter side = y
+	// Rotate logos to reduce the amount of casework
+	// Longer side = x, shorter side = y
 	if (a.x < a.y) swap(a.x, a.y);
 	if (b.x < b.y) swap(b.x, b.y);
 	if (c.x < c.y) swap(c.x, c.y);
 
-	// first case: all 3 have the same width, so try to place them one under the other
+	// First case: all 3 have the same width, so try to place them one under the other
 	if (a.x == b.x && a.x == c.x) {
-		if (a.y + b.y + c.y == a.x) {  // if they actually form a square
+		if (a.y + b.y + c.y == a.x) {  // If they actually form a square
 			cout << a.x << "\n";
 
 			a.print();
@@ -316,12 +316,12 @@ void solve(void) {
 		return;
 	}
 
-	// let a be the logo with the largest x
+	// Let a be the logo with the largest x
 	if (c.x > b.x) swap(b, c);
 	if (b.x > a.x) swap(a, b);
 
 	int remaining_y = a.x - a.y;
-	// rotate them as needed
+	// Rotate them as needed
 	if (b.x == remaining_y) swap(b.x, b.y);
 	if (c.x == remaining_y) swap(c.x, c.y);
 
@@ -351,4 +351,76 @@ int main(void) {
 ```
 
 </CPPSection>
+<PySection>
+
+```py
+class Logo:
+	def __init__(self, x, y, ch):
+		# Rotate logos to reduce the amount of casework
+		# Longer side = x, shorter side = y
+		if x < y:
+			y, x = x, y
+
+		self.x = x
+		self.y = y
+		self.ch = ch
+
+	def rotate(self):
+		# Rotate the rectangle by 90 degrees
+		self.x, self.y = self.y, self.x
+
+	def print_rectangle(self):
+		for _ in range(self.y):
+			print(self.ch * self.x)
+
+
+def main():
+	values = [int(i) for i in input().split()]
+
+	a = Logo(values[0], values[1], "A")
+	b = Logo(values[2], values[3], "B")
+	c = Logo(values[4], values[5], "C")
+
+	# First case: all 3 have the same width, so try to place them one under the other
+	if a.x == b.x == c.x:
+		if a.y + b.y + c.y == a.x:  # If they actually form a square
+			print(a.x)
+			a.print_rectangle()
+			b.print_rectangle()
+			c.print_rectangle()
+
+			return
+
+	# Let a be the logo with the largest x
+	if c.x > b.x:
+		b, c = c, b
+	if b.x > a.x:
+		a, b = b, a
+
+	remaining_y = a.x - a.y
+
+	# Rotate the rectangles if their longer side, x, matches the remaining height
+	if b.x == remaining_y:
+		b.rotate()
+	if c.x == remaining_y:
+		c.rotate()
+
+	if b.y == remaining_y and c.y == remaining_y:
+		print(a.x)
+		a.print_rectangle()
+
+		for _ in range(b.y):
+			print(b.ch * b.x + c.ch * c.x)
+
+		return
+
+	print(-1)
+
+
+if __name__ == "__main__":
+	main()
+```
+
+</PySection>
+
 </LanguageSection>
