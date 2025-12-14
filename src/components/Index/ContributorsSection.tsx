@@ -166,7 +166,7 @@ const MemberCard = ({
               {member.titles.map(title => (
                 <span
                   key={title}
-                  className="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-sm font-medium whitespace-nowrap text-gray-800 dark:bg-gray-600 dark:text-neutral-200"
+                  className="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-sm font-medium break-words text-gray-800 dark:bg-gray-600 dark:text-neutral-200"
                 >
                   {title}
                 </span>
