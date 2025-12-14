@@ -349,127 +349,131 @@ int timer = 0;
 
 // BeginCodeSnip{XOR Segment Tree}
 template <class T> struct SegTree {
-	const T ID = 0;
-	T cmb(T a, T b) { return a ^ b; }
-	int n;
-	vector<T> seg;
-	SegTree(int _n) {
-		for (n = 1; n < _n;) n *= 2;
-		seg.assign(2 * n, ID);
-	}
-	void pull(int p) { seg[p] = cmb(seg[2 * p], seg[2 * p + 1]); }
-	void upd(int p, T val) {
-		seg[p += n] = val;
-		for (p /= 2; p; p /= 2) pull(p);
-	}
-	T query(int l, int r) {
-		T ra = ID, rb = ID;
-		for (l += n, r += n + 1; l < r; l /= 2, r /= 2) {
-			if (l & 1) ra = cmb(ra, seg[l++]);
-			if (r & 1) rb = cmb(seg[--r], rb);
-		}
-		return cmb(ra, rb);
-	}
+    static constexpr T ID = 0;
+    T cmb(T a, T b) { return a ^ b; }
+    int n;
+    vector<T> seg;
+    SegTree(int _n) {
+        for (n = 1; n < _n;) n *= 2;
+        seg.assign(2 * n, ID);
+    }
+    void pull(int p) { seg[p] = cmb(seg[2 * p], seg[2 * p + 1]); }
+    void upd(int p, T val) {
+        seg[p += n] = val;
+        for (p /= 2; p; p /= 2) pull(p);
+    }
+    T query(int l, int r) {
+        T ra = ID, rb = ID;
+        for (l += n, r += n + 1; l < r; l /= 2, r /= 2) {
+            if (l & 1) ra = cmb(ra, seg[l++]);
+            if (r & 1) rb = cmb(seg[--r], rb);
+        }
+        return cmb(ra, rb);
+    }
 };
 // EndCodeSnip
 
 void dfs_sz(int cur, int parent) {
-	sz[cur] = 1;
-	parentArr[cur] = parent;
+    sz[cur] = 1;
+    parentArr[cur] = parent;
 
-	for (int child : adj[cur]) {
-		if (child == parent) continue;
-		dep[child] = dep[cur] + 1;
-		dfs_sz(child, cur);
-		sz[cur] += sz[child];
-	}
+    for (int child : adj[cur]) {
+        if (child == parent) continue;
+        dep[child] = dep[cur] + 1;
+        dfs_sz(child, cur);
+        sz[cur] += sz[child];
+    }
 }
 
 void dfs_hld(int cur, int parent, int top) {
-	tp[cur] = top;
-	pos[cur] = timer++;
-	val[pos[cur]] = arr[cur];
+    tp[cur] = top;
+    pos[cur] = timer++;
+    val[pos[cur]] = arr[cur];
 
-	int h_chi = -1, h_sz = -1;
-	for (int child : adj[cur]) {
-		if (child == parent) continue;
-		if (sz[child] > h_sz) {
-			h_sz = sz[child];
-			h_chi = child;
-		}
-	}
+    int h_chi = -1, h_sz = -1;
+    for (int child : adj[cur]) {
+        if (child == parent) continue;
+        if (sz[child] > h_sz) {
+            h_sz = sz[child];
+            h_chi = child;
+        }
+    }
 
-	if (h_chi == -1) return;
+    if (h_chi == -1) return;
 
-	dfs_hld(h_chi, cur, top);
+    dfs_hld(h_chi, cur, top);
 
-	for (int child : adj[cur]) {
-		if (child == parent || child == h_chi) continue;
-		dfs_hld(child, cur, child);
-	}
+    for (int child : adj[cur]) {
+        if (child == parent || child == h_chi) continue;
+        dfs_hld(child, cur, child);
+    }
 }
 
 SegTree<int> segtree(1);
 
 int query_path(int x, int y) {
-	int res = 0;
+    int res = 0;
 
-	while (tp[x] != tp[y]) {
-		if (dep[tp[x]] < dep[tp[y]]) swap(x, y);
-		res ^= segtree.query(pos[tp[x]], pos[x]);
-		x = parentArr[tp[x]];
-	}
+    while (tp[x] != tp[y]) {
+        if (dep[tp[x]] < dep[tp[y]]) swap(x, y);
+        res ^= segtree.query(pos[tp[x]], pos[x]);
+        x = parentArr[tp[x]];
+    }
 
-	if (dep[x] > dep[y]) swap(x, y);
+    if (dep[x] > dep[y]) swap(x, y);
 
-	res ^= segtree.query(pos[x], pos[y]);
+    res ^= segtree.query(pos[x], pos[y]);
 
-	return res;
+    return res;
 }
 
 void update(int node, int new_val) { segtree.upd(pos[node], new_val); }
 
 int main() {
-	freopen("cowland.in", "r", stdin);
-	freopen("cowland.out", "w", stdout);
+    freopen("cowland.in", "r", stdin);
+    freopen("cowland.out", "w", stdout);
 
-	cin >> n >> q;
+    cin >> n >> q;
 
-	for (int i = 0; i < n; i++) { cin >> arr[i]; }
+    for (int i = 0; i < n; i++) {
+        cin >> arr[i];
+    }
 
-	for (int i = 1; i < n; i++) {
-		int u, v;
-		cin >> u >> v;
-		--u;
-		--v;
-		adj[u].push_back(v);
-		adj[v].push_back(u);
-	}
+    for (int i = 1; i < n; i++) {
+        int u, v;
+        cin >> u >> v;
+        --u;
+        --v;
+        adj[u].push_back(v);
+        adj[v].push_back(u);
+    }
 
-	dep[0] = 0;
-	dfs_sz(0, 0);
-	dfs_hld(0, 0, 0);
+    dep[0] = 0;
+    dfs_sz(0, 0);
+    dfs_hld(0, 0, 0);
 
-	segtree = SegTree<int>(n);
-	for (int i = 0; i < n; i++) { segtree.upd(i, val[i]); }
+    segtree = SegTree<int>(n);
+    for (int i = 0; i < n; i++) {
+        segtree.upd(i, val[i]);
+    }
 
-	for (int que = 0; que < q; que++) {
-		int t;
-		cin >> t;
+    for (int que = 0; que < q; que++) {
+        int t;
+        cin >> t;
 
-		if (t == 1) {
-			int s, x;
-			cin >> s >> x;
-			--s;
-			update(s, x);
-		} else {
-			int u, v;
-			cin >> u >> v;
-			--u;
-			--v;
-			cout << query_path(u, v) << endl;
-		}
-	}
+        if (t == 1) {
+            int s, x;
+            cin >> s >> x;
+            --s;
+            update(s, x);
+        } else {
+            int u, v;
+            cin >> u >> v;
+            --u;
+            --v;
+            cout << query_path(u, v) << endl;
+        }
+    }
 }
 ```
 
