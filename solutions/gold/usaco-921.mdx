@@ -5,17 +5,23 @@ title: Cow Land
 author: Albert Ye, David Zhou
 ---
 
-## Explanation
+[Official Analysis (C++)](https://usaco.org/current/data/sol_cowland_gold_feb19.html)
 
-This problem requires supporting point updates and XOR path queries on a tree. We can use an [Euler Tour](/gold/tree-euler) combined with a [Fenwick Tree](/gold/PURS#binary-indexed-tree) to compute root-to-node XORs efficiently and binary lifting to find the [Lowest Common Ancestor (LCA)](/plat/binary-jump) of any two nodes.
+## Solution 1: Euler Tour + Binary Lifting
 
-Let $\texttt{in}[x]$ and $\texttt{out}[x]$ denote the entry and exit times of node $x$ during an Euler Tour. By storing each node's value $e_x$ at both positions $\texttt{in}[x]$ and $\texttt{out}[x]$ in the Fenwick Tree, the prefix XOR up to $\texttt{in}[x]$ gives the XOR of all values on the path from the root to node $x$.
+This problem requires supporting point updates and XOR path queries on a tree. We can use an [Euler Tour](/gold/tree-euler) combined with a [Fenwick tree](/gold/PURS#binary-indexed-tree) to compute root-to-node XORs efficiently and binary lifting to find the [Lowest Common Ancestor (LCA)](/plat/binary-jump) of any two nodes.
+
+Let $\texttt{in}[x]$ and $\texttt{out}[x]$ denote the entry and exit times of node $x$ during an Euler Tour. By storing each node's value $e_x$ at both positions $\texttt{in}[x]$ and $\texttt{out}[x]$ in the Fenwick tree, the prefix XOR up to $\texttt{in}[v]$ gives the XOR of all values on the path from the root to node $v$.
+
+This works because nodes in the subtree of $x$ have entry times in the range $[\texttt{in}[x], \texttt{out}[x])$, so their root paths all contain $e_x$. We XOR $e_x$ at $\texttt{in}[x]$ to include it for the subtree, and XOR it again at $\texttt{out}[x]$ to cancel it out for nodes outside the subtree. This is possible due to XOR's self-inverse property.
 
 Define $X(x)$ as the XOR of values from the root to node $x$. Then the XOR along the path between nodes $u$ and $v$ is:
+
 $$
 X(u)\oplus X(v)\oplus e_{\text{lca}(u,v)}.
 $$
-This works because $X(u)$ and $X(v)$ each include the path from the root to their LCA, which cancels out when XORed together. We must XOR in $e_{\text{lca}(u,v)}$ once to include the LCA node in the final result.
+
+$X(u)$ and $X(v)$ each include the path from the root to their LCA, which cancels out when XORed together. We must XOR in $e_{\text{lca}(u,v)}$ once to include the LCA node in the final result.
 
 To update a node $x$ to a new value $e'_x$, we XOR the difference $e_x\oplus e'_x$ into both $\texttt{in}[x]$ and $\texttt{out}[x]$.
 
@@ -41,21 +47,24 @@ using namespace std;
 
 int n, arr[MAXN], bit[4 * MAXN], in[MAXN], ot[MAXN], par[MAXN][22];
 vector<int> adj[MAXN];
-
 int timer = 1;
-// does initial DFS to find the time in/out for each subtree-range.
+
 void dfs(int v = 0, int p = 0) {
 	in[v] = timer++;
 	par[v][0] = p;
-	for (int i = 1; i < 22; i++) par[v][i] = par[par[v][i - 1]][i - 1];
+	
+	for (int i = 1; i < 22; i++) {
+		par[v][i] = par[par[v][i - 1]][i - 1];
+	}
+	
 	for (int x : adj[v]) {
 		if (x == p) continue;
 		dfs(x, v);
 	}
+	
 	ot[v] = timer++;
 }
 
-// prefix xor. reversible = done onto itself
 int XOR(int ind) {
 	int xo = 0;
 	while (ind > 0) {
@@ -64,6 +73,7 @@ int XOR(int ind) {
 	}
 	return xo;
 }
+
 void upd(int ind, int val) {
 	while (ind <= timer) {
 		bit[ind] ^= val;
@@ -71,59 +81,69 @@ void upd(int ind, int val) {
 	}
 }
 
-bool anc(int u, int v) { return (in[u] <= in[v] && ot[u] >= ot[v]); }
+bool anc(int u, int v) {
+	return (in[u] <= in[v] && ot[u] >= ot[v]);
+}
 
-// method finding all lca's
 int lca(int u, int v) {
 	if (anc(u, v)) return u;
+	
 	for (int i = 21; i >= 0; i--) {
-		if (par[u][i] >= 0 && !anc(par[u][i], v)) u = par[u][i];
+		if (par[u][i] >= 0 && !anc(par[u][i], v)) {
+			u = par[u][i];
+		}
 	}
+	
 	return par[u][0];
 }
 
 int main() {
 	freopen("cowland.in", "r", stdin);
 	freopen("cowland.out", "w", stdout);
+	
 	int q;
 	cin >> n >> q;
-	for (int i = 0; i < n; i++) cin >> arr[i];
+	
+	for (int i = 0; i < n; i++) {
+		cin >> arr[i];
+	}
+	
 	for (int i = 1; i < n; i++) {
 		int u, v;
 		cin >> u >> v;
-		--u;
-		--v;
+		--u; --v;
 		adj[u].push_back(v);
 		adj[v].push_back(u);
 	}
+	
 	dfs();
-	// add each vertex query right now.
+	
 	for (int i = 0; i < n; i++) {
 		upd(in[i], arr[i]);
 		upd(ot[i], arr[i]);
 	}
-	// rep. for each query
+	
 	for (int que = 0; que < q; que++) {
 		int t;
 		cin >> t;
+		
 		if (t == 1) {
 			int s, x;
 			cin >> s >> x;
 			--s;
-			// erase the initial arr[s] value.
+			
 			upd(in[s], arr[s]);
 			upd(ot[s], arr[s]);
 			arr[s] = x;
-			// update the arr[s] value to x.
 			upd(in[s], arr[s]);
 			upd(ot[s], arr[s]);
 		} else {
 			int u, v;
 			cin >> u >> v;
-			--u;
-			--v;
+			--u; --v;
+			
 			int w = lca(u, v);
-			cout << ((XOR(in[u]) ^ XOR(in[v])) ^ arr[w]) << endl;
+			cout << (XOR(in[u]) ^ XOR(in[v]) ^ arr[w]) << endl;
 		}
 	}
 }
@@ -137,254 +157,336 @@ int main() {
 import java.io.*;
 import java.util.*;
 
-public class CowLand {
-	private static class MinSegTree {
-		private final int[] segtree;
-		private final int arrSize;
-		private final int size;
-		private final Comparator<Integer> cmp;
+public class Main {
+    static final int LOG = 18;
 
-		public MinSegTree(int len, Comparator<Integer> comp) {
-			int size = 1;
-			while (size < len) { size *= 2; }
-			this.size = size;
-			cmp = comp;
-			arrSize = len;
-			segtree = new int[size * 2];
-		}
+    // BeginCodeSnip{Binary Indexed Tree}
+    static class BIT {
+        final int n;
+        final int[] bit;
 
-		public MinSegTree(int[] arr, Comparator<Integer> comp) {
-			this(arr.length, comp);
-			for (int i = 0; i < arr.length; i++) { set(i, arr[i]); }
-		}
+        BIT(int n) {
+            this.n = n;
+            this.bit = new int[n + 1];
+        }
 
-		public void set(int index, int element) {
-			if (index < 0 || index > arrSize) {
-				throw new IllegalArgumentException(
-				    String.format("%s should be out of bounds", index));
-			}
-			set(index, element, 0, 0, size);
-		}
+        void xorAdd(int idx, int val) {
+            for (; idx <= n; idx += idx & -idx) {
+                bit[idx] ^= val;
+            }
+        }
 
-		private void set(int index, int element, int currNode, int left, int right) {
-			if (right - left == 1) {
-				segtree[currNode] = element;
-			} else {
-				int mid = (left + right) / 2;
-				if (index < mid) {
-					set(index, element, 2 * currNode + 1, left, mid);
-				} else {
-					set(index, element, 2 * currNode + 2, mid, right);
-				}
-				segtree[currNode] = Collections.min(
-				    Arrays.asList(segtree[2 * currNode + 1], segtree[2 * currNode + 2]),
-				    cmp);
-			}
-		}
+        int xorQuery(int idx) {
+            int res = 0;
+            for (; idx > 0; idx -= idx & -idx) {
+                res ^= bit[idx];
+            }
+            return res;
+        }
+    }
+    // EndCodeSnip
 
-		public int min(int from, int to) {
-			if (from < 0 || to > arrSize) {
-				throw new IllegalArgumentException(
-				    String.format("Bounds [%s, %s) are out of range", from, to));
-			}
-			return min(from, to, 0, 0, size);
-		}
+    static boolean isAncestor(int u, int v, int[] in, int[] out) {
+        return in[u] <= in[v] && out[u] >= out[v];
+    }
 
-		private int min(int from, int to, int currNode, int left, int right) {
-			if (right <= from || to <= left) { return Integer.MAX_VALUE; }
-			if (from <= left && right <= to) { return segtree[currNode]; }
-			int middle = (left + right) / 2;
-			int leftPart = min(from, to, 2 * currNode + 1, left, middle);
-			int rightPart = min(from, to, 2 * currNode + 2, middle, right);
-			if (leftPart == Integer.MAX_VALUE) {
-				return rightPart;
-			} else if (rightPart == Integer.MAX_VALUE) {
-				return leftPart;
-			}
-			return cmp.compare(leftPart, rightPart) < 0 ? leftPart : rightPart;
-		}
-	}
+    static int lca(int u, int v, int[][] up, int[] in, int[] out) {
+        if (isAncestor(u, v, in, out)) return u;
+        if (isAncestor(v, u, in, out)) return v;
+        for (int i = LOG - 1; i >= 0; i--) {
+            int pu = up[i][u];
+            if (!isAncestor(pu, v, in, out)) u = pu;
+        }
+        return up[0][u];
+    }
 
-	private static class XORSegTree {
-		private final int[] segtree;
-		private final int arrSize;
-		private final int size;
+    static class FastScanner {
+        private final InputStream in;
+        private final byte[] buffer = new byte[1 << 16];
+        private int ptr = 0, len = 0;
 
-		public XORSegTree(int len) {
-			int size = 1;
-			while (size < len) { size *= 2; }
-			this.size = size;
-			arrSize = len;
-			segtree = new int[size * 2];
-		}
+        FastScanner(InputStream in) { this.in = in; }
 
-		public void set(int index, int element) {
-			if (index < 0 || index > arrSize) {
-				throw new IllegalArgumentException(
-				    String.format("Index %s is out of bounds", index));
-			}
-			set(index, element, 0, 0, size);
-		}
+        private int readByte() throws IOException {
+            if (ptr >= len) {
+                len = in.read(buffer);
+                ptr = 0;
+                if (len <= 0) return -1;
+            }
+            return buffer[ptr++];
+        }
 
-		private void set(int index, int element, int currNode, int left, int right) {
-			if (right - left == 1) {
-				segtree[currNode] = element;
-			} else {
-				int mid = (left + right) / 2;
-				if (index < mid) {
-					set(index, element, 2 * currNode + 1, left, mid);
-				} else {
-					set(index, element, 2 * currNode + 2, mid, right);
-				}
-				segtree[currNode] =
-				    segtree[2 * currNode + 1] ^ segtree[2 * currNode + 2];
-			}
-		}
+        int nextInt() throws IOException {
+            int c;
+            do {
+                c = readByte();
+                if (c == -1) return Integer.MIN_VALUE;
+            } while (c <= ' ');
+            int sign = 1;
+            if (c == '-') {
+                sign = -1;
+                c = readByte();
+            }
+            int val = 0;
+            while (c > ' ') {
+                val = val * 10 + (c - '0');
+                c = readByte();
+            }
+            return val * sign;
+        }
+    }
 
-		public int xor(int from, int to) {
-			if (from < 0 || to > arrSize) {
-				throw new IllegalArgumentException(
-				    String.format("Bounds [%s, %s) are out of range", from, to));
-			}
-			return xor(from, to, 0, 0, size);
-		}
+    public static void main(String[] args) throws Exception {
+        FastScanner fs = new FastScanner(new FileInputStream("cowland.in"));
+        PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("cowland.out")));
 
-		private int xor(int from, int to, int currNode, int left, int right) {
-			if (right <= from || to <= left) { return 0; }
-			if (from <= left && right <= to) { return segtree[currNode]; }
-			int middle = (left + right) / 2;
-			int leftPartSum = xor(from, to, 2 * currNode + 1, left, middle);
-			int rightPartSum = xor(from, to, 2 * currNode + 2, middle, right);
-			return leftPartSum ^ rightPartSum;
-		}
-	}
+        int n = fs.nextInt();
+        int q = fs.nextInt();
+        int[] a = new int[n];
+        for (int i = 0; i < n; i++) a[i] = fs.nextInt();
 
-	private static class AmusementPark {
-		private final ArrayList<Integer>[] neighbors;
-		private final ArrayList<Integer> eulerTour = new ArrayList<>();
-		private final int[] firstOcc;
-		private final int[] lastOcc;
-		private final int[] height;
-		private final int[] enjoyment;
-		private final int nodes;
+        ArrayList<Integer>[] adj = new ArrayList[n];
+        for (int i = 0; i < n; i++) adj[i] = new ArrayList<>();
+        for (int i = 0; i < n - 1; i++) {
+            int u = fs.nextInt() - 1;
+            int v = fs.nextInt() - 1;
+            adj[u].add(v);
+            adj[v].add(u);
+        }
 
-		private final MinSegTree LCATree;
-		private final XORSegTree queryTree;
+        int[] in = new int[n];
+        int[] outTime = new int[n];
+        int[] depth = new int[n];
+        int[][] up = new int[LOG][n];
 
-		public AmusementPark(ArrayList<Integer>[] neighbors, int[] respectiveVals) {
-			this.neighbors = neighbors;
-			enjoyment = respectiveVals.clone();
-			nodes = neighbors.length;
-			firstOcc = new int[nodes];
-			lastOcc = new int[nodes];
-			height = new int[nodes];
+        // iterative DFS to compute in/out times, depth, and immediate parent
+        int timer = 1;
+        int[] parent = new int[n];
+        int[] idx = new int[n];
+        int[] stack = new int[n];
+        int sp = 0;
+        stack[sp++] = 0;
+        parent[0] = 0;
+        up[0][0] = 0;
+        depth[0] = 0;
+        in[0] = timer++;
 
-			eulerTour();
-			boolean[] seen = new boolean[nodes];
-			for (int i = eulerTour.size() - 1; i >= 0; i--) {
-				int n = eulerTour.get(i);
-				if (!seen[n]) {
-					lastOcc[n] = i;
-					seen[n] = true;
-				}
-			}
-			queryTree = new XORSegTree(eulerTour.size());
-			for (int n = 0; n < nodes; n++) {
-				queryTree.set(firstOcc[n], enjoyment[n]);
-				queryTree.set(lastOcc[n], enjoyment[n]);
-			}
-			LCATree = new MinSegTree(eulerTour.stream().mapToInt(i -> i).toArray(),
-			                         Comparator.comparingInt(n -> height[n]));
-		}
+        while (sp > 0) {
+            int v = stack[sp - 1];
+            if (idx[v] < adj[v].size()) {
+                int to = adj[v].get(idx[v]++);
+                if (to == parent[v]) continue;
+                parent[to] = v;
+                up[0][to] = v;
+                depth[to] = depth[v] + 1;
+                in[to] = timer++;
+                stack[sp++] = to;
+            } else {
+                outTime[v] = timer++;
+                sp--;
+            }
+        }
 
-		public int query(int n1, int n2) {
-			return queryTree.xor(0, firstOcc[n1] + 1) ^
-			    queryTree.xor(0, firstOcc[n2] + 1) ^ enjoyment[LCA(n1, n2)];
-		}
+        for (int i = 1; i < LOG; i++) {
+            for (int v = 0; v < n; v++) {
+                up[i][v] = up[i - 1][up[i - 1][v]];
+            }
+        }
 
-		public void set(int node, int val) {
-			enjoyment[node] = val;
-			queryTree.set(firstOcc[node], val);
-			queryTree.set(lastOcc[node], val);
-		}
+        BIT bit = new BIT(timer + 2);
+        for (int v = 0; v < n; v++) {
+            bit.xorAdd(in[v], a[v]);
+            bit.xorAdd(outTime[v], a[v]);
+        }
 
-		public int LCA(int n1, int n2) {
-			int p1 = firstOcc[n1];
-			int p2 = firstOcc[n2];
-			if (p1 > p2) {
-				int temp = p1;
-				p1 = p2;
-				p2 = temp;
-			}
-			return LCATree.min(p1, p2 + 1);
-		}
+        for (int qi = 0; qi < q; qi++) {
+            int t = fs.nextInt();
+            if (t == 1) {
+                int s = fs.nextInt() - 1;
+                int x = fs.nextInt();
+                int delta = a[s] ^ x;
+                a[s] = x;
+                bit.xorAdd(in[s], delta);
+                bit.xorAdd(outTime[s], delta);
+            } else {
+                int u = fs.nextInt() - 1;
+                int v = fs.nextInt() - 1;
+                int w = lca(u, v, up, in, outTime);
+                int ans = bit.xorQuery(in[u]) ^ bit.xorQuery(in[v]) ^ a[w];
+                out.println(ans);
+            }
+        }
 
-		private void eulerTour() {
-			ArrayDeque<int[]> frontier =
-			    new ArrayDeque<>(Collections.singletonList(new int[] {0, -1, 0}));
-			HashSet<Integer> visited = new HashSet<>();
-			int[] parent = new int[nodes];
-			while (!frontier.isEmpty()) {
-				int[] curr = frontier.removeFirst();
-				eulerTour.add(curr[0]);
-				if (curr[0] == -1 || visited.contains(curr[0])) { continue; }
-				visited.add(curr[0]);
-				height[curr[0]] = curr[2];
-				firstOcc[curr[0]] = eulerTour.size() - 1;
-				if (curr[0] != 0) {
-					frontier.addFirst(
-					    new int[] {curr[1], parent[curr[1]], curr[2] - 1});
-				}
-				boolean isLeaf = true;
-				for (int n : neighbors[curr[0]]) {
-					if (n != curr[1]) {
-						parent[n] = curr[0];
-						frontier.addFirst(new int[] {n, curr[0], curr[2] + 1});
-						isLeaf = false;
-					}
-				}
-				if (isLeaf) { eulerTour.add(curr[0]); }
-			}
-		}
-	}
-
-	public static void main(String[] args) throws IOException {
-		BufferedReader read = new BufferedReader(new FileReader("cowland.in"));
-		StringTokenizer initial = new StringTokenizer(read.readLine());
-		int placeNum = Integer.parseInt(initial.nextToken());
-		int queryNum = Integer.parseInt(initial.nextToken());
-		int[] initialVals = Arrays.stream(read.readLine().split(" "))
-		                        .mapToInt(Integer::parseInt)
-		                        .toArray();
-		ArrayList<Integer>[] neighbors = new ArrayList[placeNum];
-		for (int p = 0; p < placeNum; p++) { neighbors[p] = new ArrayList<>(); }
-		for (int i = 0; i < placeNum - 1; i++) {
-			int[] route = Arrays.stream(read.readLine().split(" "))
-			                  .mapToInt(j -> Integer.parseInt(j) - 1)
-			                  .toArray();
-			neighbors[route[0]].add(route[1]);
-			neighbors[route[1]].add(route[0]);
-		}
-		AmusementPark park = new AmusementPark(neighbors, initialVals);
-		PrintWriter written = new PrintWriter("cowland.out");
-		for (int q = 0; q < queryNum; q++) {
-			int[] query = Arrays.stream(read.readLine().split(" "))
-			                  .mapToInt(Integer::parseInt)
-			                  .toArray();
-			switch (query[0]) {
-			case 1:
-				park.set(query[1] - 1, query[2]);
-				break;
-			case 2:
-				int happiness = park.query(query[1] - 1, query[2] - 1);
-				written.println(happiness);
-				break;
-			}
-		}
-		written.close();
-	}
+        out.close();
+    }
 }
 ```
 
 </JavaSection>
+
+</LanguageSection>
+
+## Solution 2: Heavy-Light Decomposition
+
+We can also solve this using [HLD](/plat/hld). After decomposing the tree into heavy paths, we assign each node a position $\texttt{pos[node]}$ in a linearized array and store values at $\texttt{val[pos[node]]}$. Each heavy path is contiguous in this array, with $\texttt{tp[node]}$ storing the top of the heavy chain containing $\texttt{node}$.
+
+For a path query between nodes $u$ and $v$, we repeatedly jump from the deeper node to the parent of its chain top until both nodes are on the same chain. At each step, we need to query the XOR of a contiguous segment of the linearized array. To achieve $\mathcal{O}(\log^2 N)$ complexity, we must use a data structure such as a segment tree (or Fenwick tree) to answer these segment queries in $\mathcal{O}(\log N)$.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}((N+Q)\log^2 N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <algorithm>
+#include <cstdio>
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+const int MAXN = 100005;
+
+int n, q;
+int arr[MAXN];
+vector<int> adj[MAXN];
+
+int sz[MAXN], parentArr[MAXN], dep[MAXN];
+int tp[MAXN], pos[MAXN];
+int val[MAXN];
+int timer = 0;
+
+// BeginCodeSnip{XOR Segment Tree}
+template <class T> struct SegTree {
+    const T ID = 0;
+    T cmb(T a, T b) { return a ^ b; }
+    int n;
+    vector<T> seg;
+    SegTree(int _n) {
+        for (n = 1; n < _n;) n *= 2;
+        seg.assign(2 * n, ID);
+    }
+    void pull(int p) { seg[p] = cmb(seg[2 * p], seg[2 * p + 1]); }
+    void upd(int p, T val) {
+        seg[p += n] = val;
+        for (p /= 2; p; p /= 2) pull(p);
+    }
+    T query(int l, int r) {
+        T ra = ID, rb = ID;
+        for (l += n, r += n + 1; l < r; l /= 2, r /= 2) {
+            if (l & 1) ra = cmb(ra, seg[l++]);
+            if (r & 1) rb = cmb(seg[--r], rb);
+        }
+        return cmb(ra, rb);
+    }
+};
+// EndCodeSnip
+
+void dfs_sz(int cur, int parent) {
+    sz[cur] = 1;
+    parentArr[cur] = parent;
+
+    for (int child : adj[cur]) {
+        if (child == parent) continue;
+        dep[child] = dep[cur] + 1;
+        dfs_sz(child, cur);
+        sz[cur] += sz[child];
+    }
+}
+
+void dfs_hld(int cur, int parent, int top) {
+    tp[cur] = top;
+    pos[cur] = timer++;
+    val[pos[cur]] = arr[cur];
+
+    int h_chi = -1, h_sz = -1;
+    for (int child : adj[cur]) {
+        if (child == parent) continue;
+        if (sz[child] > h_sz) {
+            h_sz = sz[child];
+            h_chi = child;
+        }
+    }
+
+    if (h_chi == -1) return;
+
+    dfs_hld(h_chi, cur, top);
+
+    for (int child : adj[cur]) {
+        if (child == parent || child == h_chi) continue;
+        dfs_hld(child, cur, child);
+    }
+}
+
+SegTree<int> segtree(1);
+
+int query_path(int x, int y) {
+    int res = 0;
+
+    while (tp[x] != tp[y]) {
+        if (dep[tp[x]] < dep[tp[y]]) swap(x, y);
+		res ^= segtree.query(pos[tp[x]], pos[x]);
+        x = parentArr[tp[x]];
+    }
+
+    if (dep[x] > dep[y]) swap(x, y);
+
+	res ^= segtree.query(pos[x], pos[y]);
+
+    return res;
+}
+
+void update(int node, int new_val) { segtree.upd(pos[node], new_val); }
+
+int main() {
+    freopen("cowland.in", "r", stdin);
+    freopen("cowland.out", "w", stdout);
+
+    cin >> n >> q;
+
+    for (int i = 0; i < n; i++) {
+        cin >> arr[i];
+    }
+
+    for (int i = 1; i < n; i++) {
+        int u, v;
+        cin >> u >> v;
+        --u;
+        --v;
+        adj[u].push_back(v);
+        adj[v].push_back(u);
+    }
+
+    dep[0] = 0;
+    dfs_sz(0, 0);
+    dfs_hld(0, 0, 0);
+
+    segtree = SegTree<int>(n);
+    for (int i = 0; i < n; i++) {
+        segtree.upd(i, val[i]);
+    }
+
+    for (int que = 0; que < q; que++) {
+        int t;
+        cin >> t;
+
+        if (t == 1) {
+            int s, x;
+            cin >> s >> x;
+            --s;
+            update(s, x);
+        } else {
+            int u, v;
+            cin >> u >> v;
+            --u;
+            --v;
+            cout << query_path(u, v) << endl;
+        }
+    }
+}
+```
+
+</CPPSection>
 </LanguageSection>
