@@ -1,0 +1,122 @@
+---
+id: usaco-1183
+source: USACO Silver 2022 January
+title: Cow Frisbee
+author: Sachet Abeysinghe
+---
+
+[Official Analysis (C++)] (https://usaco.org/current/data/sol_prob2_silver_jan22.html)
+
+## Explanation
+
+Consider a cow with height $h$ at position $i$. The cow can form valid pairs with another cow if in a contiguous stretch to the left or right, no cow has height $\ge h$. Thus, the key observation is that this cow can only form valid pairs with the nearest taller cow to the left and right. Within this span, all cows are shorter. There are two methods to find the pairs of positions.
+
+## Solution 1 - Monotonic Stack
+
+We iterate from left to right while maintaining a stack of positions, such that the heights at these positions monotonically decrease. When a taller cow appears, it resolves all shorter cows to its left by becoming their nearest taller cow on the right. If the stack is non-empty afterward, the top of the stack is the nearest taller cow to the left of the current cow.
+
+### Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+
+<PySection>
+
+```py
+n = int(input())
+heights = [int(x) for x in input().split()]
+stack = []
+answer = 0
+
+for i in range(n):
+    while stack and heights[stack[-1]] < heights[i]:
+        answer += i - stack[-1] + 1
+        stack.pop()
+    if stack:
+        answer += i - stack[-1] + 1
+    stack.append(i)
+
+print(answer)
+```
+
+</PySection>
+
+</LanguageSection>
+
+## Solution 2 - Sorted Set/List
+
+We can process cows in decreasing order of height and maintain a sorted set/list of their positions. For each cow we're considering, the current sorted set/list of positions will have the positions of cows taller than this cow. To find the nearest to the left and right, we do a binary search of the current cow's position.
+
+### Implementation
+
+**Time Complexity:** $\mathcal{O}(N\log N)$
+
+<LanguageSection>
+
+<PySection>
+
+```py
+// BeginCodeSnip{Sorted List}
+import bisect
+
+class FenwickTree:
+    def __init__(s, x):
+        s.bit = list(x); s.size = len(x)
+        for i in range(s.size):
+            j = i | (i + 1)
+            if j < s.size: s.bit[j] += s.bit[i]
+    def update(s, i, x):
+        while i < s.size: s.bit[i] += x; i |= i + 1
+    def __call__(s, end):
+        r = 0
+        while end: r += s.bit[end - 1]; end &= end - 1
+        return r
+    def find_kth(s, k):
+        idx = -1
+        for d in reversed(range(s.size.bit_length())):
+            right = idx + (1 << d)
+            if right < s.size and s.bit[right] <= k: idx = right; k -= s.bit[right]
+        return idx + 1, k
+
+class SortedList:
+    block_size = 700
+    def __init__(s, it=()):
+        s.macro = []; s.micros = [[]]; s.micro_size = [0]; s.fenwick = FenwickTree([0]); s.size = 0
+        for x in it: s.insert(x)
+    def insert(s, x):
+        i = bisect.bisect_left(s.macro, x); j = bisect.bisect(s.micros[i], x)
+        s.micros[i].insert(j, x); s.size += 1; s.micro_size[i] += 1; s.fenwick.update(i, 1)
+        if len(s.micros[i]) >= s.block_size:
+            s.micros[i:i+1] = s.micros[i][:s.block_size>>1], s.micros[i][s.block_size>>1:]
+            s.micro_size[i:i+1] = s.block_size>>1, s.block_size>>1
+            s.fenwick = FenwickTree(s.micro_size)
+            s.macro.insert(i, s.micros[i+1][0])
+    def __getitem__(s, k): i, j = s._find_kth(k); return s.micros[i][j]
+    def lower_bound(s, x): i = bisect.bisect_left(s.macro, x) ; return s.fenwick(i) + bisect.bisect_left(s.micros[i], x)
+    def _find_kth(s, k): return s.fenwick.find_kth(k + s.size if k < 0 else k)
+    def __len__(s): return s.size
+// EndCodeSnip
+
+n = int(input())
+heights = [int(x) for x in input().split()]
+process_cows = sorted([(height, position) for position, height in enumerate(heights)], reverse=True)
+positions = SortedList()
+answer = 0
+
+for height, position in process_cows:
+    index = positions.lower_bound(position)
+    # add distance of nearest taller cow on left, if any
+    if index > 0:
+        answer += position - positions[index - 1] + 1
+    # add distance of nearest taller cow on right, if any
+    if index < len(positions):
+        answer += positions[index] - position + 1
+    positions.insert(position)
+
+print(answer)
+```
+
+</PySection>
+
+</LanguageSection>
