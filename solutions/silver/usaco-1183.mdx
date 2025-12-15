@@ -30,9 +30,11 @@ stack = []
 answer = 0
 
 for i in range(n):
+    # i is position of nearest taller cow to right
     while stack and heights[stack[-1]] < heights[i]:
         answer += i - stack[-1] + 1
         stack.pop()
+    # nearest taller cow to left of i
     if stack:
         answer += i - stack[-1] + 1
     stack.append(i)
