@@ -152,37 +152,65 @@ public class CowLand {
 
 	// BeginCodeSnip{Binary Indexed Tree}
 	static class BIT {
-		final int n;
-		final int[] bit;
+		private final int[] bit;
+		private final int[] arr;
+		private final int len;
 
-		BIT(int n) {
-			this.n = n;
-			this.bit = new int[n + 1];
+		BIT(int len) {
+			bit = new int[len + 1];
+			arr = new int[len];
+			this.len = len;
 		}
 
-		void xorAdd(int idx, int val) {
-			for (; idx <= n; idx += idx & -idx) { bit[idx] ^= val; }
+		/** Sets the value of index ind in the actual array to val. */
+		void set(int ind, int val) { add(ind, val ^ arr[ind]); }
+
+		/** XORs val to the element at index ind. */
+		void add(int ind, int val) {
+			arr[ind] ^= val;
+			ind++;
+			for (; ind <= len; ind += ind & -ind) { bit[ind] ^= val; }
 		}
 
-		int xorQuery(int idx) {
-			int res = 0;
-			for (; idx > 0; idx -= idx & -idx) { res ^= bit[idx]; }
-			return res;
+		/** @return The XOR of all values in [0, ind]. */
+		int prefXor(int ind) {
+			ind++;
+			int xor = 0;
+			for (; ind > 0; ind -= ind & -ind) { xor ^= bit[ind]; }
+			return xor;
 		}
 	}
 	// EndCodeSnip
 
-	static boolean isAncestor(int u, int v, int[] in, int[] out) {
-		return in[u] <= in[v] && out[u] >= out[v];
+	static ArrayList<Integer>[] adj;
+	static int[] in, outTime, a;
+	static int[][] up;
+	static int timer = 0;
+
+	static void dfs(int v, int par) {
+		in[v] = timer++;
+		up[0][v] = par;
+
+		for (int i = 1; i < LOG; i++) { up[i][v] = up[i - 1][up[i - 1][v]]; }
+
+		for (int child : adj[v]) {
+			if (child == par) continue;
+			dfs(child, v);
+		}
+
+		outTime[v] = timer++;
 	}
 
-	static int lca(int u, int v, int[][] up, int[] in, int[] out) {
-		if (isAncestor(u, v, in, out)) return u;
-		if (isAncestor(v, u, in, out)) return v;
+	static boolean isAncestor(int u, int v) {
+		return in[u] <= in[v] && outTime[u] >= outTime[v];
+	}
+
+	static int lca(int u, int v) {
+		if (isAncestor(u, v)) return u;
+		if (isAncestor(v, u)) return v;
 
 		for (int i = LOG - 1; i >= 0; i--) {
-			// Simply check if jumping up keeps us below the ancestor of v
-			if (!isAncestor(up[i][u], v, in, out)) { u = up[i][u]; }
+			if (!isAncestor(up[i][u], v)) { u = up[i][u]; }
 		}
 		return up[0][u];
 	}
@@ -197,11 +225,11 @@ public class CowLand {
 		int q = Integer.parseInt(st.nextToken());
 
 		st = new StringTokenizer(br.readLine());
-		int[] a = new int[n];
+		a = new int[n];
 		for (int i = 0; i < n; i++) { a[i] = Integer.parseInt(st.nextToken()); }
 
-		ArrayList<Integer>[] adj = new ArrayList[n];
-		for (int i = 0; i < n; i++) adj[i] = new ArrayList<>();
+		adj = new ArrayList[n];
+		for (int i = 0; i < n; i++) { adj[i] = new ArrayList<>(); }
 
 		for (int i = 0; i < n - 1; i++) {
 			st = new StringTokenizer(br.readLine());
@@ -211,73 +239,35 @@ public class CowLand {
 			adj[v].add(u);
 		}
 
-		// Arrays for tree data
-		int[] in = new int[n];
-		int[] outTime = new int[n];
-		// Removed unused 'depth' array
-		int[][] up = new int[LOG][n];
-		int[] parent = new int[n];
+		in = new int[n];
+		outTime = new int[n];
+		up = new int[LOG][n];
 
-		// Iterative DFS initialization
-		int timer = 1;
-		int[] idx = new int[n];
-		int[] stack = new int[n];
-		int sp = 0;
+		dfs(0, 0);
 
-		// Push root (0)
-		stack[sp++] = 0;
-		parent[0] = 0;
-		up[0][0] = 0;
-		in[0] = timer++;
-
-		while (sp > 0) {
-			int v = stack[sp - 1];
-
-			if (idx[v] < adj[v].size()) {
-				int to = adj[v].get(idx[v]++);
-				if (to == parent[v]) continue;
-
-				parent[to] = v;
-				up[0][to] = v;
-				in[to] = timer++;
-				stack[sp++] = to;
-			} else {
-				outTime[v] = timer++;
-				sp--;
-			}
-		}
-
-		// Compute Binary Lifting table
-		for (int i = 1; i < LOG; i++) {
-			for (int v = 0; v < n; v++) { up[i][v] = up[i - 1][up[i - 1][v]]; }
-		}
-
-		BIT bit = new BIT(timer + 2);
+		BIT bit = new BIT(timer);
 		for (int v = 0; v < n; v++) {
-			bit.xorAdd(in[v], a[v]);
-			bit.xorAdd(outTime[v], a[v]);
+			bit.set(in[v], a[v]);
+			bit.set(outTime[v], a[v]);
 		}
 
-		// Process Queries
 		for (int qi = 0; qi < q; qi++) {
 			st = new StringTokenizer(br.readLine());
 			int t = Integer.parseInt(st.nextToken());
 			if (t == 1) {
-				// Update
 				int s = Integer.parseInt(st.nextToken()) - 1;
 				int x = Integer.parseInt(st.nextToken());
 				int delta = a[s] ^ x;
 				a[s] = x;
-				bit.xorAdd(in[s], delta);
-				bit.xorAdd(outTime[s], delta);
+				bit.add(in[s], delta);
+				bit.add(outTime[s], delta);
 			} else {
-				// Query
 				int u = Integer.parseInt(st.nextToken()) - 1;
 				int v = Integer.parseInt(st.nextToken()) - 1;
-				int w = lca(u, v, up, in, outTime);
+				int w = lca(u, v);
 
-				int pathU = bit.xorQuery(in[u]);
-				int pathV = bit.xorQuery(in[v]);
+				int pathU = bit.prefXor(in[u]);
+				int pathV = bit.prefXor(in[v]);
 				int ans = pathU ^ pathV ^ a[w];
 
 				out.println(ans);
