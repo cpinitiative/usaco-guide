@@ -41,7 +41,7 @@ To update a node $x$ to a new value $e'_x$, we XOR the difference $e_x\oplus e'_
 
 using namespace std;
 
-int n, arr[MAXN], bit[4 * MAXN], in[MAXN], ot[MAXN], par[MAXN][22];
+int n, arr[MAXN], bit[2 * MAXN + 5], in[MAXN], ot[MAXN], par[MAXN][22];
 vector<int> adj[MAXN];
 int timer = 1;
 
@@ -320,57 +320,61 @@ int n, q;
 int arr[MAXN];
 vector<int> adj[MAXN];
 
-int sz[MAXN], parentArr[MAXN], dep[MAXN];
+int sz[MAXN], parent[MAXN], dep[MAXN];
 int tp[MAXN], pos[MAXN];
 int val[MAXN];
 int timer = 0;
 
 // BeginCodeSnip{XOR Segment Tree}
-template <class T> struct SegTree {
-	static constexpr T ID = 0;
-	T cmb(T a, T b) { return a ^ b; }
-	int n;
-	vector<T> seg;
-	SegTree(int _n) {
-		for (n = 1; n < _n;) n *= 2;
-		seg.assign(2 * n, ID);
-	}
-	void pull(int p) { seg[p] = cmb(seg[2 * p], seg[2 * p + 1]); }
-	void upd(int p, T val) {
-		seg[p += n] = val;
-		for (p /= 2; p; p /= 2) pull(p);
-	}
-	T query(int l, int r) {
-		T ra = ID, rb = ID;
-		for (l += n, r += n + 1; l < r; l /= 2, r /= 2) {
-			if (l & 1) ra = cmb(ra, seg[l++]);
-			if (r & 1) rb = cmb(seg[--r], rb);
+template <class T> class XorSegmentTree {
+  private:
+	T DEFAULT = 0;
+
+	vector<T> segtree;
+	int len;
+
+  public:
+	XorSegmentTree(int len) : len(len), segtree(len * 2, DEFAULT) {}
+
+	void set(int ind, T val) {
+		ind += len;
+		segtree[ind] = val;
+		for (; ind > 1; ind /= 2) {
+			segtree[ind / 2] = segtree[ind] ^ segtree[ind ^ 1];
 		}
-		return cmb(ra, rb);
+	}
+
+	T range_xor(int start, int end) {
+		T xor_val = DEFAULT;
+		for (start += len, end += len; start < end; start /= 2, end /= 2) {
+			if (start % 2 == 1) { xor_val ^= segtree[start++]; }
+			if (end % 2 == 1) { xor_val ^= segtree[--end]; }
+		}
+		return xor_val;
 	}
 };
 // EndCodeSnip
 
-void dfs_sz(int cur, int parent) {
+void dfs_sz(int cur, int par) {
 	sz[cur] = 1;
-	parentArr[cur] = parent;
+	parent[cur] = par;
 
 	for (int child : adj[cur]) {
-		if (child == parent) continue;
+		if (child == par) continue;
 		dep[child] = dep[cur] + 1;
 		dfs_sz(child, cur);
 		sz[cur] += sz[child];
 	}
 }
 
-void dfs_hld(int cur, int parent, int top) {
+void dfs_hld(int cur, int par, int top) {
 	tp[cur] = top;
 	pos[cur] = timer++;
 	val[pos[cur]] = arr[cur];
 
 	int h_chi = -1, h_sz = -1;
 	for (int child : adj[cur]) {
-		if (child == parent) continue;
+		if (child == par) continue;
 		if (sz[child] > h_sz) {
 			h_sz = sz[child];
 			h_chi = child;
@@ -382,30 +386,30 @@ void dfs_hld(int cur, int parent, int top) {
 	dfs_hld(h_chi, cur, top);
 
 	for (int child : adj[cur]) {
-		if (child == parent || child == h_chi) continue;
+		if (child == par || child == h_chi) continue;
 		dfs_hld(child, cur, child);
 	}
 }
 
-SegTree<int> segtree(1);
+XorSegmentTree<int> segtree(1);
 
 int query_path(int x, int y) {
 	int res = 0;
 
 	while (tp[x] != tp[y]) {
 		if (dep[tp[x]] < dep[tp[y]]) swap(x, y);
-		res ^= segtree.query(pos[tp[x]], pos[x]);
-		x = parentArr[tp[x]];
+		res ^= segtree.range_xor(pos[tp[x]], pos[x] + 1);
+		x = parent[tp[x]];
 	}
 
 	if (dep[x] > dep[y]) swap(x, y);
 
-	res ^= segtree.query(pos[x], pos[y]);
+	res ^= segtree.range_xor(pos[x], pos[y] + 1);
 
 	return res;
 }
 
-void update(int node, int new_val) { segtree.upd(pos[node], new_val); }
+void update(int node, int new_val) { segtree.set(pos[node], new_val); }
 
 int main() {
 	freopen("cowland.in", "r", stdin);
@@ -428,8 +432,8 @@ int main() {
 	dfs_sz(0, 0);
 	dfs_hld(0, 0, 0);
 
-	segtree = SegTree<int>(n);
-	for (int i = 0; i < n; i++) { segtree.upd(i, val[i]); }
+	segtree = XorSegmentTree<int>(n);
+	for (int i = 0; i < n; i++) { segtree.set(i, val[i]); }
 
 	for (int que = 0; que < q; que++) {
 		int t;
