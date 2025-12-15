@@ -79,9 +79,9 @@ int main() {
 	for (auto [height, position] : cows) {
 		auto index = positions.lower_bound(position);
 		// nearest taller cow on left
-		if (index != positions.begin()) { answer += (position - *prev(index) + 1); }
+		if (index != positions.begin()) { answer += position - *prev(index) + 1; }
 		// nearest taller cow on right
-		if (index != positions.end()) { answer += (*index - position + 1); }
+		if (index != positions.end()) { answer += *index - position + 1; }
 
 		positions.insert(position);
 	}
