@@ -30,14 +30,14 @@ stack = []
 answer = 0
 
 for i in range(n):
-    # i is position of nearest taller cow to right
-    while stack and heights[stack[-1]] < heights[i]:
-        answer += i - stack[-1] + 1
-        stack.pop()
-    # nearest taller cow to left of i
-    if stack:
-        answer += i - stack[-1] + 1
-    stack.append(i)
+	# i is position of nearest taller cow to right
+	while stack and heights[stack[-1]] < heights[i]:
+		answer += i - stack[-1] + 1
+		stack.pop()
+	# nearest taller cow to left of i
+	if stack:
+		answer += i - stack[-1] + 1
+	stack.append(i)
 
 print(answer)
 ```
@@ -63,38 +63,30 @@ We can process cows in decreasing order of height and maintain a sorted set/list
 using namespace std;
 
 int main() {
-    int n;
-    cin >> n;
+	int n;
+	cin >> n;
 
-    vector<int> heights(n);
-    for (int i = 0; i < n; i++) {
-        cin >> heights[i];
-    }
+	vector<int> heights(n);
+	for (int i = 0; i < n; i++) { cin >> heights[i]; }
 
-    vector<pair<int,int>> cows;
-    for (int i = 0; i < n; i++) {
-        cows.emplace_back(heights[i], i);
-    }
-    sort(cows.begin(), cows.end(), greater<>());
+	vector<pair<int, int>> cows;
+	for (int i = 0; i < n; i++) { cows.emplace_back(heights[i], i); }
+	sort(cows.begin(), cows.end(), greater<>());
 
-    set<int> positions;
-    long long answer = 0;
+	set<int> positions;
+	long long answer = 0;
 
-    for (auto [height, position] : cows) {
-        auto index = positions.lower_bound(position);
-        // nearest taller cow on left
-        if (index != positions.begin()) {
-            answer += (position - *prev(index) + 1);
-        }
-        // nearest taller cow on right
-        if (index != positions.end()) {
-            answer += (*index - position + 1);
-        }
+	for (auto [height, position] : cows) {
+		auto index = positions.lower_bound(position);
+		// nearest taller cow on left
+		if (index != positions.begin()) { answer += (position - *prev(index) + 1); }
+		// nearest taller cow on right
+		if (index != positions.end()) { answer += (*index - position + 1); }
 
-        positions.insert(position);
-    }
+		positions.insert(position);
+	}
 
-    cout << answer << "\n";
+	cout << answer << "\n";
 }
 ```
 
