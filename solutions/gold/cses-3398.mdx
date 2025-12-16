@@ -8,22 +8,22 @@ author: Justin Ji
 ## Explanation
 
 Let's interpret our permutation $p$ as the edges in a functional graph, where
-for each $i$ there exists a directed edge $(i, p_i)$. As $p$ is a permutation,
-each node has an in-degree and out-degree of one, meaning that our graph is composed
-of disjoint cycles. To understand why, observe that a node connected to a cycle without being part
+for each $i$, there exists a directed edge $(i, p_i)$. As $p$ is a permutation,
+each node has an in-degree and an out-degree of one, meaning that our graph is composed
+of disjoint cycles. To understand why, observe that a node which is connected to a cycle without being part
 of it would imply that some node has an in-degree greater than one.
 
 As each node is in a cycle, each value will eventually return to its starting position
-after a certain amount of time. Specifically, if $s_i$ denotes the size of the cycle
+after a certain amount of time. Specifically, if $s_i$ denotes the size of the cycle which 
 node $i$ is in, then each value $i$ returns to its location after $s_i$ rounds.
 
 This means that our answer is $\text{lcm}(s_1, s_2, \dots, s_n)$, as the LCM
 of cycle sizes corresponds to the first value divisible by all the cycle sizes.
 However, trivially calculating the LCM is not possible, as we need to find
-the value modulo $10^9 + 7$, and the LCM can grow far beyond that.
+the value modulo $10^9 + 7$, and the LCM can grow far beyond that bound.
 Note that using the formula $\text{lcm}(a, b) = \frac{a \cdot b}{\gcd(a, b)}$ and
-iteratively calculating the LCM does not work, as $a$ and $b$ being under modulo means
-the modular inverse of the GCD will not be calculated correctly.
+iteratively calculating the LCM doesn't work either, as $a$ and $b$ being under modulo means
+that the modular inverse of the GCD will not be calculated correctly.
 
 Recall that the LCM of two numbers can be calculated by taking each prime appearing in either number and raising it to the largest power appearing in either factorization. Formally, this can be written as
 
@@ -32,7 +32,7 @@ $$
 $$
 
 With this in mind, we can calculate the LCM of our $s_i$ values by prime factorizing
-each $s_i$, and combining it with the LCM of all previous $i$ using the formulation above. We store prime factors in a map and use trivial division to calculate our prime factorization.
+each $s_i$, and combining it with the LCM of all previous $i$ using the formulation above. We store prime factors in a map and use simple division to calculate our prime factorization.
 
 ## Implementation
 
@@ -62,6 +62,7 @@ std::vector<std::array<int, 2>> prime_factorize(int x) {
 	}
 
 	if (x > 1) { res.push_back({x, 1}); }
+
 	return res;
 }
 
@@ -106,7 +107,7 @@ int main() {
 <PySection>
 
 ```py
-MOD = 10**9 + 7
+MOD = 10 ** 9 + 7
 
 
 def prime_factorize(x):
@@ -123,6 +124,7 @@ def prime_factorize(x):
 
 	if x > 1:
 		res.append((x, 1))
+
 	return res
 
 
@@ -178,6 +180,7 @@ public class PermutationRounds {
 		}
 
 		if (x > 1) { res.add(new int[] {x, 1}); }
+
 		return res;
 	}
 
