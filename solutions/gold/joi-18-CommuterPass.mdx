@@ -2,36 +2,40 @@
 id: joi-18-CommuterPass
 source: JOI 2018
 title: Commuter Pass
-author: Andi Qu, Nathan Wang
+author: Andi Qu, Nathan Wang, Justin Ji
 ---
+
+## Explanation
 
 1. Use Dijkstra's to calculate distances from $s$, $u$, and $v$.
 2. Consider a subset of directed edges where each directed edge is part of a
    shortest path from $s$ to $t$. Note that this subset is a DAG, and can be
-   found by keeping track of the parents of every node when running Dijkstra's.
-3. Note that an optimal path will be
-   $u \rightarrow x \rightarrow y \rightarrow v$, where $x \rightarrow y$ is a
-   path on the DAG. Note that any path on the DAG is a valid commuter pass
-   option, and the only node with in-degree 0 is $u$, and the only node with
-   out-degree 0 is $t$ in the DAG.
-4. Define `dpU(i)` = minimum distance from $u$ to any node $x$ such that $x$ is
-   in a path from $s$ to $i$ in the DAG.
-5. Define `dpV(i)` = minimum distance from $v$ to any node $x$ such that $x$ is
-   in a path from $s$ to $i$ in the DAG.
-6. The DP transition for `dpU(i)` is `dpU(i) = min(distU[i], dpU(parent_i))` for
-   each parent of `i` (see `dijkstra2` function implementation for more
-   details). `dpV`'s transition is defined similarly.
-7. Our answer is `dpU(v) + dpV(v)`. Since edges are bidirectional, an optimal
-   path can also be $v \rightarrow x \rightarrow y \rightarrow u$ where
-   $x \rightarrow y$ is a path on the DAG. We can solve this by rerunning steps
-   2-7 while switching $u$ and $v$. In Andi's code, steps 2-7 are implemented in
-   the `dijkstra2` function.
-8. Alternatively, the answer could just be from $u$ directly to $v$ without
-   using the commuter pass.
+   found by keeping track of the parents of every node when running Dijkstra's with $s$ as the starting node.
+3. An optimal path will either be in the form $u \rightarrow x \rightarrow y \rightarrow 
+   v$ or $v \rightarrow x \rightarrow y \rightarrow u$, where
+   $x \rightarrow y$ is a path on the DAG. Note that any path on the DAG is a valid commuter pass
+   option.
+4. Without loss of generality, assume that our path has the form 
+   $u \rightarrow x \rightarrow y \rightarrow v$.
+5. Define $\text{dp}_1(i)$ as the minimum distance from $u$ to any node $x$ such that 
+   $x$ is on a path from $s$ to $i$ in the DAG.
+6. Define $\text{dp}_2(i)$ as the minimum distance from $u$ to $v$ if the commuter pass 
+   edges used are on a path from $s$ to $i$ in the DAG.
+7. For each parent of a node $i$, our transitions are:
+   $$
+   \begin{aligned}
+	\text{dp}_1(i) &= \min\!\left\{ \text{dp}_1(i),\; \text{dist}_u(i),\; \text{dp}_1(\text{par}_i) \right\}, \\
+	\text{dp}_2(i) &= \min\!\left\{ \text{dp}_2(i),\; \text{dp}_1(i) + \text{dist}_v(i),\; \text{dp}_2(\text{par}_i) \right\}.
+   \end{aligned}
+   $$
+8. If the source node is $s$, then the answer is $\text{dp}_2(t)$. To handle the case 
+   where the optimal path has the form $v \rightarrow x \rightarrow y \rightarrow u$, we repeat the algorithm for the source node $t$. 
+9. Alternatively, the answer could be the distance from $u$ to $v$ without using the 
+   commuter pass.
 
 ## Implementation
 
-Andi's implementation:
+**Time Complexity:** $\mathcal{O}(M \log N)$
 
 <LanguageSection>
 <CPPSection>
@@ -70,7 +74,6 @@ void dijkstra2(ll start, ll end) {
 
 	priority_queue<pair<ll, pair<ll, ll>>> pq;
 	pq.push({0, {start, 0}});
-	dp[0][0] = dp[1][0] = LLONG_MAX / 2;
 	while (!pq.empty()) {
 		ll c, node, par;
 		pair<ll, ll> p;
@@ -82,18 +85,15 @@ void dijkstra2(ll start, ll end) {
 			visited[node] = true;
 			ds[node] = -c;
 			dp[0][node] = min(du[node], dp[0][par]);
-			dp[1][node] = min(dv[node], dp[1][par]);
+			dp[1][node] = min(dp[0][node] + dv[node], dp[1][par]);
 			for (auto i : graph[node]) pq.push({c - i.second, {i.first, node}});
 		} else if (-c == ds[node]) {
-			if (min(du[node], dp[0][par]) + min(dv[node], dp[1][par]) <=
-			    dp[0][node] + dp[1][node]) {
-				dp[0][node] = min(du[node], dp[0][par]);
-				dp[1][node] = min(dv[node], dp[1][par]);
-			}
+			dp[0][node] = min(dp[0][node], dp[0][par]);
+			dp[1][node] = min({dp[1][node], dp[0][node] + dv[node], dp[1][par]});
 		}
 	}
 
-	ans = min(ans, dp[0][end] + dp[1][end]);
+	ans = min(ans, dp[1][end]);
 }
 
 int main() {
