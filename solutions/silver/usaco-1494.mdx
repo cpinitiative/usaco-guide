@@ -29,44 +29,44 @@ Once we have chosen the element, we perform the operation on $a$ and find the ne
 
 ```py
 for t in range(int(input())):
-    n = int(input())
-    array = [int(x) for x in input().split()]
+	n = int(input())
+	array = [int(x) for x in input().split()]
 
-    # find optimal sequence b without operation
-    best = []
-    for i in range(n):
-        while best and best[-1][0] < array[i]:
-            best.pop()
-        best.append([array[i], i])
+	# find optimal sequence b without operation
+	best = []
+	for i in range(n):
+		while best and best[-1][0] < array[i]:
+			best.pop()
+		best.append([array[i], i])
 
-    # find optimal operation
-    best.insert(0, [n + 1, -1])
-    best.append([-1, n])
-    move_index = -1
-    new_index = -1
-    move_cow = -1
+	# find optimal operation
+	best.insert(0, [n + 1, -1])
+	best.append([-1, n])
+	move_index = -1
+	new_index = -1
+	move_cow = -1
 
-    for i in range(1, len(best) - 1):
-        if best[i][1] != best[i - 1][1] + 1:
-            left = 0 if i == 0 else best[i - 1][1] + 1
-            right = best[i][1] - 1
-            if max(array[left:right + 1]) >= best[i + 1][0]:
-                move_index = best[i][1]
-                new_index = left
-                move_cow = best[i][0]
-                break
+	for i in range(1, len(best) - 1):
+		if best[i][1] != best[i - 1][1] + 1:
+			left = 0 if i == 0 else best[i - 1][1] + 1
+			right = best[i][1] - 1
+			if max(array[left : right + 1]) >= best[i + 1][0]:
+				move_index = best[i][1]
+				new_index = left
+				move_cow = best[i][0]
+				break
 
-    # perform the operation and find new optimal sequence b
-    if move_index != -1:
-        del array[move_index]
-        array.insert(new_index, move_cow)
+	# perform the operation and find new optimal sequence b
+	if move_index != -1:
+		del array[move_index]
+		array.insert(new_index, move_cow)
 
-    new_best = []
-    for i in range(n):
-        while new_best and new_best[-1] < array[i]:
-            new_best.pop()
-        new_best.append(array[i])
-    print(*new_best)
+	new_best = []
+	for i in range(n):
+		while new_best and new_best[-1] < array[i]:
+			new_best.pop()
+		new_best.append(array[i])
+	print(*new_best)
 ```
 
 </PySection>
