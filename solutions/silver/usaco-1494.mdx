@@ -1,0 +1,74 @@
+---
+id: usaco-1494
+source: USACO Silver 2025 February
+title: The Best Lineup
+author: Sachet Abeysinghe
+---
+
+[Official Analysis (C++)](https://usaco.org/current/data/sol_prob1_silver_feb25.html)
+
+## Explanation
+
+First, let's construct the lexicographically greatest sequence without the operation, and call this $s$. There are many ways to do this, but one easy way is to use a monotonic stack. We iterate from left to right and while the top element of the stack is less than the current element, we pop it. Then, we push the current element onto the stack. We will also maintain the indices at which these elements appear in array $a$.
+
+It can be shown that the optimal solution is achieved by performing the operation on one of the elements in $s$. Consider some chosen element in $s$ with index $x$ such that the previous and following elements have index $l$ and $r$, respectively. It is optimal to perform the operation on the index $x$ to move it right after $l$. This is because some element in the range $(l, x)$ can potentially be included in the lexicographically optimal sequence. The candidate for this is the maximum in this range, and this needs to be at least the value of $a_r$ to be included.
+
+To understand this, consider the test case $[6, 4, 2, 5, 2, 3]$ where we consider moving 5 right after 6. The subarray $[4, 2]$ has maximum 4, and this is greater than the next element in $s$, 3, so this move is beneficial. However, if the 4 were a 1 or 2, it wouldn't have been.
+
+The only thing remaining is to find the optimal chosen element. To do this, we iterate $s$ from left to right, and whenever we find an element satisfying the condition, we choose this element to move and break. This is because future elements satisfying the condition aren't as optimal. Consider the array $[7, 5, 1, 6, 3, 4]$. We can either move 6 right after 7 or 4 right after 6, as they both satisfy the condition. However, the former leads to the answer $[7, 6, 5, 4]$ and the latter leads to the answer $[7, 6, 4, 3]$, which is lexicographically less.
+
+Once we have chosen the element, we perform the operation on $a$ and find the new lexicographically greatest sequence.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+
+<PySection>
+
+```py
+for t in range(int(input())):
+    n = int(input())
+    array = [int(x) for x in input().split()]
+
+    # find optimal sequence b without operation
+    best = []
+    for i in range(n):
+        while best and best[-1][0] < array[i]:
+            best.pop()
+        best.append([array[i], i])
+
+    # find optimal operation
+    best.insert(0, [n + 1, -1])
+    best.append([-1, n])
+    move_index = -1
+    new_index = -1
+    move_cow = -1
+
+    for i in range(1, len(best) - 1):
+        if best[i][1] != best[i - 1][1] + 1:
+            left = 0 if i == 0 else best[i - 1][1] + 1
+            right = best[i][1] - 1
+            if max(array[left:right + 1]) >= best[i + 1][0]:
+                move_index = best[i][1]
+                new_index = left
+                move_cow = best[i][0]
+                break
+
+    # perform the operation and find new optimal sequence b
+    if move_index != -1:
+        del array[move_index]
+        array.insert(new_index, move_cow)
+
+    new_best = []
+    for i in range(n):
+        while new_best and new_best[-1] < array[i]:
+            new_best.pop()
+        new_best.append(array[i])
+    print(*new_best)
+```
+
+</PySection>
+
+</LanguageSection>
