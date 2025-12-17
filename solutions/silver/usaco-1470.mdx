@@ -1,0 +1,256 @@
+---
+id: usaco-1470
+source: USACO Silver 2025 January
+title: Cow Checkups
+author: David Xiao
+---
+
+[Official Analysis (C++)](https://usaco.org/current/data/sol_prob1_silver_jan25.html)
+
+## Explanation
+
+Let's analyze the last test case in detail.
+
+We denote a "desirable location" of a cow as a location where a cow of that species will be checked by the bovine veterinarian.
+
+We denote a "contribution" as one instance of a cow being moved to a desirable location.
+
+Note that a contribution can only be achieved in one of two ways.
+
+The first way is if a cow was not in a desirable location, and the cow was moved to a desirable location during an operation.
+
+![](usaco-1470/firstscenario.png)
+
+The second way is if a cow was already in a desirable location, and the cow was not moved during an operation.
+
+![](usaco-1470/secondscenario.png)
+
+Let's consider how to calculate the contributions created strictly by the first scenario.
+
+Let a cow at location $i$ try to reach a desirable location at location $j$, where $i < j$.
+
+The most intuitive way to achieve this is by setting $l$ to $i$ and $r$ to $j$, so that after the operation, $i$ is moved to $j$.
+
+![](usaco-1470/firstscenarioexact.png)
+
+We observe that the same is true if we set $l$ to $i - 1$ and $r$ to $j + 1$.
+
+![](usaco-1470/firstscenarioexpanded.png)
+
+Thus, the amount of contributions that can be made from a cow at location $i$ and desirable location at location $j$ is limited by the minimum distance to either end of the order, as after that $l$ or $r$ would violate the given constraints for a valid operation.
+
+![](usaco-1470/firstscenarioall.png)
+
+In a 0-indexing system, the contribution from $i$ and $j$ can be written as $\min(i + 1, n - j)$.
+
+Now we consider how to calculate contributions created strictly by the second scenario.
+
+Let a cow at position $i$ already be at a desirable location.
+
+The amount of contributions created is equal to the number of operations that do not involve $i$. In the problem, we are given that the number of operations that can occur between $1$ and $N$ can be written as
+
+$$
+\frac{N (N + 1)}{2}.
+$$
+
+Thus, the amount of contributions created from a cow at location $i$ at a desirable location can be written as the sum of all the possible operations before and after $i$:
+
+$$
+\frac{i \cdot (i + 1)}{2} + \frac{(N - i - 1) \cdot (N - i)}{2}.
+$$
+
+We can implement this by iterating through each cow to determine how many contributions each cow in the initial order makes.
+
+As each cow either is or isn't already at a desirable location, the second scenario is handled with a simple check if the cow is in a desirable location, then applying the formula described above.
+
+However, for the first scenario, there may be multiple desirable locations a cow could move to.
+
+Let's denote a cow and a desirable location that can create contributions as described in the first scenario as a pair $(i, j)$.
+
+If we naively checked each pair, this would take $\mathcal{O}(N)$ time per cow, as in the worst case scenario, each pair of locations is viable.
+
+Let's denote a desirable location's minimum distance to an end as $d_{des}$ and a cow's minimum distance to an end as $d_{cow}$, where $i$ denotes the cow's location and $j$ denotes the desired location.
+
+$$
+d_{cow} = \min(i + 1, N - i)
+$$
+$$
+d_{des} = \min(j + 1, N - j)
+$$
+
+For a given cow, consider all desirable locations that it can pair with. Each pair contributes $\min(d_{cow}, d_{des})$ contributions. Thus, to speed up processing, we want to separate the pairs which the given cow is a part of into two groups: ones where contributions are limited by $d_{des}$ because $d_{des} < d_{cow}$, and ones where contributions are limited by $d_{cow}$ because $d_{cow} < d_{des}$. We can partition them by creating a sorted array of all $d_{des}$, then binary searching over this array to determine the index where $d_{des} \geq d_{cow}$. Before this index, contributions will be limited by $d_{des}$, and after this index, contributions will be limited by $d_{cow}$.
+
+![](usaco-1470/firstscenariooptimization.png)
+
+However, this still results in $\mathcal{O}(N)$ time, since we still have to sum up all $d_{des}$ contributions at the end.
+
+We can optimize this by implementing a prefix sum array that sums the indices $[0, i]$ of the $d_{des}$ array, so we can find the sum of valid $d_{des}$ from the start of a list to any point in $\mathcal{O}(1)$ time. Then, all contributions limited by $d_{cow}$ can be found by multiplying $d_{cow}$ by the number of pairs limited.
+
+Thus, the formula for the contributions provided by the first scenario can be found as written below, given $m$ is the point where $d_{cow}$ becomes less than $d_{des}$:
+
+$$
+\text{prefix}[m] + d_{\text{cow}} \cdot (N - m).
+$$
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N \log N)$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	ios::sync_with_stdio(0);
+	cin.tie(0);
+
+	int num_cows;
+	cin >> num_cows;
+
+	vector<int> initial_order(num_cows);
+
+	for (int i = 0; i < num_cows; i++) { cin >> initial_order[i]; }
+
+	vector<int> ideal_order(num_cows);
+
+	for (int i = 0; i < num_cows; i++) { cin >> ideal_order[i]; }
+
+	// Map a cow's species to an array of minimum distances to the edge for that species
+	// in the ideal ordering
+	unordered_map<int, vector<int>> edge_arrays;
+
+	for (int i = 0; i < num_cows; i++) {
+		int min_distance_to_edge = min(i + 1, num_cows - i);
+
+		// If an array doesn't already exist for a cow species, create a new array for
+		// that species
+		if (edge_arrays.count(ideal_order[i]) == 0) {
+			vector<int> new_edge_array = {min_distance_to_edge};
+			edge_arrays.insert(make_pair(ideal_order[i], new_edge_array));
+		}
+
+		else {
+			edge_arrays.at(ideal_order[i]).push_back(min_distance_to_edge);
+		}
+	}
+
+	// Map a cow's species to a prefix array that sums the contributions limited by
+	// d_desirable
+	unordered_map<int, vector<long long>> prefix_arrays;
+
+	// iterating by reference is important for sorting
+	for (auto &[species, edge_array] : edge_arrays) {
+		// Sort edge arrays as we iterate so we can binary search over it later
+		sort(edge_array.begin(), edge_array.end());
+
+		vector<long long> new_prefix_array = {0};
+		for (int distance : edge_array) {
+			new_prefix_array.push_back(new_prefix_array.back() + distance);
+		}
+
+		prefix_arrays.insert(make_pair(species, new_prefix_array));
+	}
+
+	long long total_contributions = 0;
+
+	for (long long i = 0; i < num_cows; i++) {
+		int species = initial_order[i];
+
+		// Catches edge case where a cow species exists in the initial ordering but not
+		// in the ideal ordering
+		if (edge_arrays.count(species) == 0) { continue; }
+
+		// Scenario 1 computation
+		long long min_distance_to_edge = min(i + 1, num_cows - i);
+		vector<int> &edge_array =
+		    edge_arrays.at(species);  // reference is important to save time
+		int index =
+		    upper_bound(edge_array.begin(), edge_array.end(), min_distance_to_edge) -
+		    edge_array.begin();  // Returns breakoff point where d_cow < d_desirable
+
+		total_contributions += prefix_arrays.at(
+		    species)[index];  // Adds contributions limited by d_desirable
+		total_contributions +=
+		    (min_distance_to_edge) * ((long long)edge_array.size() -
+		                              index);  // Adds contributions limited by d_cow
+
+		// Scenario 2 computation
+		if (initial_order[i] == ideal_order[i]) {
+			total_contributions +=
+			    ((i * (i + 1)) / 2) + ((num_cows - i - 1) * (num_cows - i) / 2);
+		}
+	}
+
+	cout << total_contributions << endl;
+}
+```
+
+</CPPSection>
+
+<PySection>
+
+```py
+import bisect
+
+num_cows = int(input())
+initial_order = [int(x) for x in input().split()]
+ideal_order = [int(x) for x in input().split()]
+
+# Map a cow's species to an array of minimum distances to the edge for that species in the ideal ordering
+edge_arrays = dict()
+
+for i in range(num_cows):
+	min_distance_to_edge = min(i + 1, num_cows - i)
+
+	# If an array doesn't already exist for a cow species, create a new array for that species
+	if ideal_order[i] not in edge_arrays:
+		edge_arrays[ideal_order[i]] = [min_distance_to_edge]
+
+	else:
+		edge_arrays[ideal_order[i]].append(min_distance_to_edge)
+
+# Map a cow's species to a prefix array that sums the contributions limited by d_desirable
+prefix_arrays = dict()
+
+for species, edge_array in edge_arrays.items():
+	# Sort edge arrays as we iterate so we can binary search over it later
+	edge_array.sort()
+
+	new_prefix_array = [0]
+	for distance in edge_array:
+		new_prefix_array.append(new_prefix_array[-1] + distance)
+
+	prefix_arrays[species] = new_prefix_array
+
+total_contributions = 0
+
+for i in range(num_cows):
+	species = initial_order[i]
+
+	# Catches edge case where a cow species exists in the initial ordering but not in the ideal ordering
+	if species not in edge_arrays:
+		continue
+
+	# Scenario 1 computation
+	min_distance_to_edge = min(i + 1, num_cows - i)
+	index = bisect.bisect(edge_arrays[species], min_distance_to_edge)
+
+	total_contributions += prefix_arrays[species][index]
+	total_contributions += (min_distance_to_edge) * (len(edge_arrays[species]) - index)
+
+	# Scenario 2 computation
+	if initial_order[i] == ideal_order[i]:
+		total_contributions += ((i * (i + 1)) // 2) + (
+			((num_cows - i - 1) * (num_cows - i)) // 2
+		)
+
+print(total_contributions)
+```
+
+</PySection>
+
+</LanguageSection>

@@ -1,0 +1,95 @@
+---
+id: usaco-1183
+source: USACO Silver 2022 January
+title: Cow Frisbee
+author: Sachet Abeysinghe
+---
+
+[Official Analysis (C++)](https://usaco.org/current/data/sol_prob2_silver_jan22.html)
+
+## Explanation
+
+Consider a cow with height $h$ at position $i$. The cow can form valid pairs with another cow if in a contiguous stretch to the left or right, no cow has height $\ge h$. Thus, the key observation is that this cow can only form valid pairs with the nearest taller cow to the left and right. Within this span, all cows are shorter. Furthermore, if the right endpoint is after the nearest taller cow to the right, the cow would get blocked by this cow. Similar reasoning applies for the nearest taller cow to the left. There are two methods to find the pairs of positions.
+
+## Solution 1 - Monotonic Stack
+
+We iterate from left to right while maintaining a stack of positions, such that the heights at these positions monotonically decrease. When a taller cow appears, it resolves all shorter cows to its left by becoming their nearest taller cow on the right. If the stack is non-empty afterward, the top of the stack is the nearest taller cow to the left of the current cow.
+
+### Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+
+<PySection>
+
+```py
+n = int(input())
+heights = [int(x) for x in input().split()]
+stack = []
+answer = 0
+
+for i in range(n):
+	# i is position of nearest taller cow to right
+	while stack and heights[stack[-1]] < heights[i]:
+		answer += i - stack[-1] + 1
+		stack.pop()
+	# nearest taller cow to left of i
+	if stack:
+		answer += i - stack[-1] + 1
+	stack.append(i)
+
+print(answer)
+```
+
+</PySection>
+
+</LanguageSection>
+
+## Solution 2 - Sorted Set/List
+
+We can process cows in decreasing order of height and maintain a sorted set of their positions. For each cow we're considering, the current sorted set of positions will have the positions of cows taller than this cow. To find the nearest taller cow to the left and right, we use binary search or built-in methods to find the nearest cow in our set.
+
+### Implementation
+
+**Time Complexity:** $\mathcal{O}(N\log N)$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	int n;
+	cin >> n;
+
+	vector<int> heights(n);
+	for (int i = 0; i < n; i++) { cin >> heights[i]; }
+
+	vector<pair<int, int>> cows;
+	for (int i = 0; i < n; i++) { cows.emplace_back(heights[i], i); }
+	sort(cows.begin(), cows.end(), greater<>());
+
+	set<int> positions;
+	long long answer = 0;
+
+	for (auto [height, position] : cows) {
+		auto index = positions.lower_bound(position);
+		// nearest taller cow on left
+		if (index != positions.begin()) { answer += position - *prev(index) + 1; }
+		// nearest taller cow on right
+		if (index != positions.end()) { answer += *index - position + 1; }
+
+		positions.insert(position);
+	}
+
+	cout << answer << "\n";
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
