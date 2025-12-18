@@ -1,0 +1,103 @@
+---
+id: usaco-1468
+source: USACO Bronze 2025 January
+title: It's Mooin' Time II
+author: Sachet Abeysinghe
+---
+
+[Official Analysis (C++, Python)](http://www.usaco.org/current/data/sol_prob2_bronze_jan25.html)
+
+## Explanation
+
+Consider the array $[4, 2, 3, 3, 6, 3, 3]$. With the first two threes, we can form the moos $[4, 3, 3]$ and $[2, 3, 3]$. Then, with the next two threes, we can form
+the $[6, 3, 3]$. However, notice that with these two threes, we can also form $[4, 3, 3]$ and $[2, 3, 3]$. This leads to the key observation: we can make all possible moos with the last two occurrences alone.
+
+Thus, for each candidate as the repeating integer, the number of moos we can form is the number of distinct integers before the second to last occurrence (if it exists). But don't forget that for a moo, the second equals the third but not the first! Because of this, we need to subtract one from the number of moos we form if there is a third occurrence of the repeating integer.
+
+To efficiently calculate the number of distinct numbers to the left of any index, we use a set and precompute the number of distinct values of each prefix by querying the length of the set.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    int n;
+    cin >> n;
+
+    vector<int> a(n);
+    for (int i = 0; i < n; i++) {
+        cin >> a[i];
+    }
+    // find indices of occurrences of each number
+    vector<vector<int>> frequency(n + 1);
+    for (int i = 0; i < n; i++) {
+        frequency[a[i]].push_back(i);
+    }
+
+    // precompute number of distinct values to the left of each index
+    vector<int> num_distinct(n);
+    set<int> distinct_vals;
+    for (int i = 0; i < n; i++) {
+        num_distinct[i] = distinct_vals.size();
+        distinct_vals.insert(a[i]);
+    }
+
+    // calculate answer
+    long long ans = 0;
+    for (int num = 1; num <= n; num++) {
+        if ((int)frequency[num].size() >= 2) {
+            int second_last_index = frequency[num][frequency[num].size() - 2];
+            ans += num_distinct[second_last_index];
+            if ((int)frequency[num].size() >= 3) {
+                ans -= 1;
+            }
+        }
+    }
+
+    cout << ans << "\n";
+}
+```
+
+</CPPSection>
+
+<PySection>
+
+```py
+n = int(input())
+array = [int(x) for x in input().split()]
+# find indices of occurrences of each number
+frequency = dict()
+for i in range(n):
+    if array[i] in frequency:
+        frequency[array[i]].append(i)
+    else:
+        frequency[array[i]] = [i]
+
+# precompute number of distinct values to the left of each index
+num_distinct = []
+distinct_vals = set()
+for i in range(n):
+    num_distinct.append(len(distinct_vals))
+    distinct_vals.add(array[i])
+
+# calculate answer
+ans = 0
+for num in frequency:
+    if len(frequency[num]) >= 2:
+        ans += num_distinct[frequency[num][-2]]
+        if len(frequency[num]) >= 3:
+            ans -= 1
+print(ans)
+```
+
+</PySection>
+
+</LanguageSection>
