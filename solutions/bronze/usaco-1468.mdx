@@ -11,7 +11,7 @@ author: Sachet Abeysinghe
 
 Consider the array $[4, 2, 3, 3, 6, 3, 3]$. With the first pair of threes, we can form the moos $[4, 3, 3]$ and $[2, 3, 3]$. Then, with the last pair of threes, we can form $[6, 3, 3]$. However, notice that with the last pair, we can also form $[4, 3, 3]$ and $[2, 3, 3]$. This leads to the key observation: we can make all possible moos with the last two occurrences alone.
 
-Thus, for each candidate as the repeating integer, the number of moos we can form is the number of distinct integers before the second to last occurrence (if it exists). But don't forget that for a moo, the second equals the third but not the first! Because of this, we need to subtract one from the number of moos we form if there is a third occurrence of the repeating integer.
+Thus, for each candidate as the repeating integer, the number of moos we can form is the number of distinct integers before the second to last occurrence (if it exists). However, as the first integer in a moo does not equal the second or third, we must subtract one from our count if there is a third occurrence of the candidate repeating integer.
 
 To efficiently calculate the number of distinct numbers to the left of any index, we use a set and precompute the number of distinct values of each prefix by querying the length of the set.
 
@@ -48,10 +48,10 @@ int main() {
 	// calculate answer
 	long long ans = 0;
 	for (int num = 1; num <= n; num++) {
-		if ((int)frequency[num].size() >= 2) {
+		if (frequency[num].size() >= 2) {
 			int second_last_index = frequency[num][frequency[num].size() - 2];
 			ans += num_distinct[second_last_index];
-			if ((int)frequency[num].size() >= 3) { ans -= 1; }
+			if (frequency[num].size() >= 3) { ans -= 1; }
 		}
 	}
 
