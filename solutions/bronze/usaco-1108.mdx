@@ -1,0 +1,51 @@
+---
+id: usaco-1108
+source: USACO Bronze 2021 February
+title: Comfortable Cows
+author: Sachet Abeysinghe
+---
+
+[Official Analysis (C++)](https://usaco.org/current/data/sol_prob2_bronze_feb21.html)
+
+## Explanation
+
+Observe that when a cow is added, at most five cows can become comfortable or uncomfortable: the new cow and any adjacent cows that exist in each of the four directions. Let's create a function to check whether there is a comfortable cow in a certain position. We will also maintain a set of comfortable cows. After adding a cow, we check whether each of the five positions contain a comfortable cow using the function and update the set accordingly. Finally, we print the length of the set of comfortable cows.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+
+<PySection>
+
+```py
+n = int(input())
+
+def check_comfortable(x, y):
+    if (x, y) not in cows:
+        return
+    adjacent = 0
+    for cow in [(x - 1, y), (x + 1, y), (x, y - 1), (x, y + 1)]:
+        if cow in cows:
+            adjacent += 1
+    return adjacent == 3
+
+cows = set()
+comfortable = set()
+for i in range(n):
+    x, y = map(int, input().split())
+    cows.add((x, y))
+
+    for cow in [(x, y), (x - 1, y), (x + 1, y), (x, y - 1), (x, y + 1)]:
+        if check_comfortable(cow[0], cow[1]):
+            comfortable.add(cow)
+        else:
+            comfortable.discard(cow)
+
+    print(len(comfortable))
+```
+
+</PySection>
+
+</LanguageSection>
