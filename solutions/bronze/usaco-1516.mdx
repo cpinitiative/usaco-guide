@@ -28,36 +28,36 @@ occurrences from both ends). When we find the maximum, we only add one to the an
 using namespace std;
 
 int main() {
-    int t;
-    cin >> t;
+	int t;
+	cin >> t;
 
-    for (int tc = 0; tc < t; tc++) {
-        int n;
-        cin >> n;
+	for (int tc = 0; tc < t; tc++) {
+		int n;
+		cin >> n;
 
-        unordered_map<int, int> frequency;
-        int tallest = 0;
-        for (int i = 0; i < n; i++) {
-            int x;
-            cin >> x;
-            frequency[x]++;
-            tallest = max(tallest, x);
-        }
-        
-        int answer = 0;
-        for (auto &p : frequency) {
-            int height = p.first;
-            int count = p.second;
+		unordered_map<int, int> frequency;
+		int tallest = 0;
+		for (int i = 0; i < n; i++) {
+			int x;
+			cin >> x;
+			frequency[x]++;
+			tallest = max(tallest, x);
+		}
 
-            if (height == tallest) {
-                answer += 1;
-            } else if (count >= 2) {
-                answer += 2;
-            }
-        }
+		int answer = 0;
+		for (auto &p : frequency) {
+			int height = p.first;
+			int count = p.second;
 
-        cout << answer << '\n';
-    }
+			if (height == tallest) {
+				answer += 1;
+			} else if (count >= 2) {
+				answer += 2;
+			}
+		}
+
+		cout << answer << '\n';
+	}
 }
 ```
 
@@ -69,18 +69,18 @@ int main() {
 from collections import Counter
 
 for t in range(int(input())):
-    n = int(input())
-    frequency = Counter([int(x) for x in input().split()])
-    tallest = max(frequency.keys())
-    answer = 0
+	n = int(input())
+	frequency = Counter([int(x) for x in input().split()])
+	tallest = max(frequency.keys())
+	answer = 0
 
-    for height in frequency:
-        if height == tallest:
-            answer += 1
-        elif frequency[height] >= 2:
-            answer += 2
+	for height in frequency:
+		if height == tallest:
+			answer += 1
+		elif frequency[height] >= 2:
+			answer += 2
 
-    print(answer)
+	print(answer)
 ```
 
 </PySection>
