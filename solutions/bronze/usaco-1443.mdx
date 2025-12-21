@@ -1,0 +1,38 @@
+---
+id: usaco-1443
+source: USACO Bronze 2024 December
+title: Roundabout Rounding
+author: Sachet Abeysinghe
+---
+
+[Official Analysis (C++, Python)](http://www.usaco.org/current/data/sol_prob1_bronze_dec24.html)
+
+## Explanation
+
+Let's first only consider integers $2 \le x \le 100$ such that rounding $x$ to the nearest $10^P$ is different than chain rounding to the nearest $10^P$. For integers $1$ to $44$, we notice that the methods give the same result: $0$. However, for integers $45$ to $49$, chain rounding gives $100$ and normal rounding gives $0$. From $50$ to $100$, the roundings then become the same again. Observe that this same pattern applies for further intervals: the integers given by the intervals: $[445, 499]$, $[4445, 4999]$, etc. give different results for the two rounding methods.
+
+Thus, for any given input $N$ where we want to find the number of integers in $[2, N]$ that are in these key intervals, we can use the following algorithm: add $\min\left(N-44,5\right)$ to the answer if $N \gt 44$ to include the integers in $[45, 49]$, add $\min\left(N-444,55\right)$ for $N \gt 444$, and etc. Alternatively, you can create a function to find the number of integer overlaps between any two intervals and pass $[2, N]$ and each of the answer intervals.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(T)$
+
+<LanguageSection>
+
+<PySection>
+
+```py
+for t in range(int(input())):
+    n = int(input())
+    different = 0
+
+    for i in range(2, 10):
+        if n > int("4" * i):
+            different += min(n - int("4" * i), int("5" * (i - 1)))
+
+    print(different)
+```
+
+</PySection>
+
+</LanguageSection>
