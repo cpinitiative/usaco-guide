@@ -37,7 +37,7 @@ An expansion can either add or subtract a contribution:
 1. It can add a contribution by moving a cow from a previously undesirable location to a desirable location, as described in the first scenario.
 2. It can subtract a contribution by moving a cow from a previously desirable location to an undesirable location, as described in the second scenario.
 
-This can be checked with a few simple if statements during iteration. 
+This can be checked with a few simple if statements during iteration.
 
 ## Implementation
 
@@ -68,85 +68,67 @@ int main() {
 
 	for (int i = 0; i < num_cows; i++) { cin >> ideal_order[i]; }
 
-    // Store number of operations resulting in N cows being checked as an array where
-    // operations[N cows checked] = number of operations
-    vector<long long> operations(num_cows + 1);
-    
-    // Calculate amount of cows already in a desirable location
-    int correct_placement = 0;
-    for (int i = 0; i < num_cows; i++) {
-        if (initial_order[i] == ideal_order[i]) {
-            correct_placement++;
-        }
-    }
+	// Store number of operations resulting in N cows being checked as an array where
+	// operations[N cows checked] = number of operations
+	vector<long long> operations(num_cows + 1);
 
-    // Odd-length subarray iteration
-    for (int i = 0; i < num_cows; i++) {
-        int left = i;
-        int right = i;
+	// Calculate amount of cows already in a desirable location
+	int correct_placement = 0;
+	for (int i = 0; i < num_cows; i++) {
+		if (initial_order[i] == ideal_order[i]) { correct_placement++; }
+	}
 
-        // current_placement = (# cows moved into correct positions) - (# cows moved out of correct positions)
-        long long current_placement = 0;
+	// Odd-length subarray iteration
+	for (int i = 0; i < num_cows; i++) {
+		int left = i;
+		int right = i;
 
-        while (left >= 0 and right < num_cows) {
-            if (initial_order[left] == ideal_order[right]) {
-                current_placement++;
-            }
-                
-            if (initial_order[right] == ideal_order[left]) {
-                current_placement++;
-            }
+		// current_placement = (# cows moved into correct positions) - (# cows moved out
+		// of correct positions)
+		long long current_placement = 0;
 
-            if (initial_order[left] == ideal_order[left]) {
-                current_placement--;
-            }
-            
-            if (initial_order[right] == ideal_order[right]) {
-                current_placement--;
-            }
+		while (left >= 0 and right < num_cows) {
+			if (initial_order[left] == ideal_order[right]) { current_placement++; }
 
-            operations[current_placement + correct_placement]++;
+			if (initial_order[right] == ideal_order[left]) { current_placement++; }
 
-            left--;
-            right++;
-        }
-    }
+			if (initial_order[left] == ideal_order[left]) { current_placement--; }
 
-    // Even-length subarray iteration
-    for (int i = 1; i < num_cows; i++) {
-        int left = i - 1;
-        int right = i;
+			if (initial_order[right] == ideal_order[right]) { current_placement--; }
 
-        // current_placement = (# cows moved into correct positions) - (# cows moved out of correct positions)
-        long long current_placement = 0;
+			operations[current_placement + correct_placement]++;
 
-        while (left >= 0 and right < num_cows) {
-            if (initial_order[left] == ideal_order[right]) {
-                current_placement++;
-            }
-                
-            if (initial_order[right] == ideal_order[left]) {
-                current_placement++;
-            }
+			left--;
+			right++;
+		}
+	}
 
-            if (initial_order[left] == ideal_order[left]) {
-                current_placement--;
-            }
-            
-            if (initial_order[right] == ideal_order[right]) {
-                current_placement--;
-            }
+	// Even-length subarray iteration
+	for (int i = 1; i < num_cows; i++) {
+		int left = i - 1;
+		int right = i;
 
-            operations[current_placement + correct_placement]++;
+		// current_placement = (# cows moved into correct positions) - (# cows moved out
+		// of correct positions)
+		long long current_placement = 0;
 
-            left--;
-            right++;
-        }
-    }
+		while (left >= 0 and right < num_cows) {
+			if (initial_order[left] == ideal_order[right]) { current_placement++; }
 
-    for (long long op : operations) {
-        cout << op << "\n";
-    }
+			if (initial_order[right] == ideal_order[left]) { current_placement++; }
+
+			if (initial_order[left] == ideal_order[left]) { current_placement--; }
+
+			if (initial_order[right] == ideal_order[right]) { current_placement--; }
+
+			operations[current_placement + correct_placement]++;
+
+			left--;
+			right++;
+		}
+	}
+
+	for (long long op : operations) { cout << op << "\n"; }
 }
 ```
 
@@ -166,63 +148,63 @@ operations = [0 for i in range(num_cows + 1)]
 # Calculate amount of cows already in a desirable location
 correct_placement = 0
 for i in range(num_cows):
-    if initial_order[i] == ideal_order[i]:
-        correct_placement += 1
+	if initial_order[i] == ideal_order[i]:
+		correct_placement += 1
 
 # Odd-subarray length iteration
 for i in range(num_cows):
-    left = i
-    right = i
+	left = i
+	right = i
 
-    # current_placement = (# cows moved into correct positions) - (# cows moved out of correct positions)
-    current_placement = 0
+	# current_placement = (# cows moved into correct positions) - (# cows moved out of correct positions)
+	current_placement = 0
 
-    while (left >= 0 and right < num_cows):
-        if (initial_order[left] == ideal_order[right]):
-            current_placement += 1
-            
-        if (initial_order[right] == ideal_order[left]):
-            current_placement += 1
+	while left >= 0 and right < num_cows:
+		if initial_order[left] == ideal_order[right]:
+			current_placement += 1
 
-        if (initial_order[left] == ideal_order[left]):
-            current_placement -= 1
-        
-        if (initial_order[right] == ideal_order[right]):
-            current_placement -= 1
+		if initial_order[right] == ideal_order[left]:
+			current_placement += 1
 
-        operations[current_placement + correct_placement] += 1
+		if initial_order[left] == ideal_order[left]:
+			current_placement -= 1
 
-        left -= 1
-        right += 1
+		if initial_order[right] == ideal_order[right]:
+			current_placement -= 1
+
+		operations[current_placement + correct_placement] += 1
+
+		left -= 1
+		right += 1
 
 # Even-subarray length iteration
 for i in range(1, num_cows):
-    left = i - 1
-    right = i
+	left = i - 1
+	right = i
 
-    # current_placement = (# cows moved into correct positions) - (# cows moved out of correct positions)
-    current_placement = 0
+	# current_placement = (# cows moved into correct positions) - (# cows moved out of correct positions)
+	current_placement = 0
 
-    while (left >= 0 and right < num_cows):
-        if (initial_order[left] == ideal_order[right]):
-            current_placement += 1
-            
-        if (initial_order[right] == ideal_order[left]):
-            current_placement += 1
+	while left >= 0 and right < num_cows:
+		if initial_order[left] == ideal_order[right]:
+			current_placement += 1
 
-        if (initial_order[left] == ideal_order[left]):
-            current_placement -= 1
-        
-        if (initial_order[right] == ideal_order[right]):
-            current_placement -= 1
+		if initial_order[right] == ideal_order[left]:
+			current_placement += 1
 
-        operations[current_placement + correct_placement] += 1
+		if initial_order[left] == ideal_order[left]:
+			current_placement -= 1
 
-        left -= 1
-        right += 1
+		if initial_order[right] == ideal_order[right]:
+			current_placement -= 1
+
+		operations[current_placement + correct_placement] += 1
+
+		left -= 1
+		right += 1
 
 for op in operations:
-    print(op)
+	print(op)
 ```
 
 </PySection>
