@@ -9,41 +9,25 @@ author: David Xiao
 
 ## Explanation
 
-Let's analyze the last test case in detail.
-
 We denote a "desirable location" of a cow as a location where a cow of that species will be checked by the bovine veterinarian.
 
 We denote a "contribution" as one instance of a cow being moved to a desirable location.
 
-Note that a contribution can only be achieved in one of two ways.
-
-The first way is if a cow was not in a desirable location, and the cow was moved to a desirable location during an operation.
-
-![](usaco-1469/firstscenario.png)
-
-The second way is if a cow was already in a desirable location, and the cow was not moved during an operation.
-
-![](usaco-1469/secondscenario.png)
-
-Since $N \leq 7500$, our solution must run in $\mathcal{O}(N^2)$ time. We are asked how many contributions are made in every operation, thus we have to check each individual operation, and determine the number of contributions in $\mathcal{O}(1)$ time.
-
-We have to make an important observation. For a given operation with endpoints $l$ and $r$, an operation with endpoints $l - 1$ and $r + 1$ moves the cows from $l$ to $r$ to the same locations, and also swaps $l - 1$ and $r + 1$. Therefore, only the two newly added endpoints can change whether a cow is in a desirable location.
+We observe that for a given operation with endpoints $l$ and $r$, an operation with endpoints $l - 1$ and $r + 1$ moves the cows from $l$ to $r$ to the same locations, and also swaps $l - 1$ and $r + 1$. Therefore, only the two newly added endpoints can change whether a cow is in a desirable location.
 
 ![](usaco-1469/expansion.png)
 
 Thus, we can start at all operations where $l = r$, then gradually expand the operations by decrementing $l$ and incrementing $r$ until the operation is no longer valid, and calculate how many contributions are added by the endpoints each time we expand our operation. This only calculates all odd-length operations, so we do the same starting from $l = r - 1$, to calculate all even-length operations.
 
 An expansion can either add or subtract a contribution:
-1. It can add a contribution by moving a cow from a previously undesirable location to a desirable location, as described in the first scenario.
-2. It can subtract a contribution by moving a cow from a previously desirable location to an undesirable location, as described in the second scenario.
+1. It can add a contribution by moving a cow from a previously undesirable location to a desirable location.
+2. It can subtract a contribution by moving a cow from a previously desirable location to an undesirable location.
 
 This can be checked with a few simple if statements during iteration. 
 
 ## Implementation
 
 **Time Complexity:** $\mathcal{O}(N^2)$
-
-Note: The Python $N^2$ solution will TLE after testcase 6, due to the nature of the language, and no faster solution exists.
 
 <LanguageSection>
 
@@ -70,7 +54,7 @@ int main() {
 
     // Store number of operations resulting in N cows being checked as an array where
     // operations[N cows checked] = number of operations
-    vector<long long> operations(num_cows + 1);
+    vector<int> operations(num_cows + 1);
     
     // Calculate amount of cows already in a desirable location
     int correct_placement = 0;
@@ -86,7 +70,7 @@ int main() {
         int right = i;
 
         // current_placement = (# cows moved into correct positions) - (# cows moved out of correct positions)
-        long long current_placement = 0;
+        int current_placement = 0;
 
         while (left >= 0 and right < num_cows) {
             if (initial_order[left] == ideal_order[right]) {
@@ -118,7 +102,7 @@ int main() {
         int right = i;
 
         // current_placement = (# cows moved into correct positions) - (# cows moved out of correct positions)
-        long long current_placement = 0;
+        int current_placement = 0;
 
         while (left >= 0 and right < num_cows) {
             if (initial_order[left] == ideal_order[right]) {
@@ -144,7 +128,7 @@ int main() {
         }
     }
 
-    for (long long op : operations) {
+    for (int op : operations) {
         cout << op << "\n";
     }
 }
@@ -153,6 +137,12 @@ int main() {
 </CPPSection>
 
 <PySection>
+
+<Warning>  
+
+The solution described will TLE after test case 6 if submitted with Python.  
+
+</Warning>  
 
 ```py
 num_cows = int(input())
