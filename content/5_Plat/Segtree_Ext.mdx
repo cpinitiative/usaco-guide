@@ -178,7 +178,6 @@ public class Main {
 		io.close();
 	}
 
-	
 	// CodeSnip{Kattio}
 }
 ```
@@ -362,16 +361,14 @@ public class Main {
 			tree[node] = tree[node * 2] + tree[node * 2 + 1];
 		}
 
-		void set(int idx, int val) {
-			set(idx, val, 1, 0, n - 1);
-		}
+		void set(int idx, int val) { set(idx, val, 1, 0, n - 1); }
 
 		int rangeSum(int ql, int qr, int node, int l, int r) {
 			if (qr < l || r < ql) return 0;
 			if (ql <= l && r <= qr) return tree[node];
 			int mid = (l + r) / 2;
-			return rangeSum(ql, qr, node * 2, l, mid)
-			     + rangeSum(ql, qr, node * 2 + 1, mid + 1, r);
+			return rangeSum(ql, qr, node * 2, l, mid) +
+			    rangeSum(ql, qr, node * 2 + 1, mid + 1, r);
 		}
 
 		int rangeSum(int l, int r) {
@@ -383,15 +380,11 @@ public class Main {
 			if (l == r) return l;
 			int mid = (l + r) / 2;
 			int leftSum = pref + tree[node * 2];
-			if (leftSum >= k) {
-				return walk(node * 2, l, mid, k, pref);
-			}
+			if (leftSum >= k) { return walk(node * 2, l, mid, k, pref); }
 			return walk(node * 2 + 1, mid + 1, r, k, leftSum);
 		}
 
-		int walk(int k) {
-			return walk(1, 0, n - 1, k, 0);
-		}
+		int walk(int k) { return walk(1, 0, n - 1, k, 0); }
 	}
 
 	public static void main(String[] args) throws Exception {
@@ -443,8 +436,6 @@ public class Main {
 		io.close();
 	}
 	// CodeSnip{Kattio}
-
-	
 }
 ```
 </JavaSection>
