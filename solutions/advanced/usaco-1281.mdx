@@ -1,0 +1,129 @@
+---
+id: usaco-1281
+source: USACO Gold 2023 January
+title: Find and Replace
+author: Justin Ji
+---
+
+[Official Analysis (C++, Java)](https://usaco.org/current/data/sol_prob1_gold_jan23.html)
+
+## Explanation
+
+The brute force solution is to directly construct our string. We create 
+a tree data structure, where our leaf nodes represent the current string. For 
+each operation $(c, s)$, we attach new nodes representing the characters in $s$ for all 
+leaf nodes with value $c$. 
+
+However, as our string's length can grow beyond $2^{100000}$ (e.g. through doubling our string each time), directly constructing our tree is infeasible. The most problematic inefficiency 
+is that most of our subtrees are identical. Specifically,
+after each operation, all leaf nodes with the same character will produce equivalent 
+subtrees, so we can link them all to a common node.
+
+With our more optimized data structure, we can now print our string. Let's define a recursive process 
+$\texttt{print}(u, l, r)$, which prints the substring $[l, r]$ in node $u$. For each child $v$, 
+if its corresponding range within $u$ intersects with $[l, r]$, we recurse to $\texttt{print}(v, l', r')$. Once we reach a leaf node, we print out its corresponding character.
+
+To analyze the time complexity of our print function, we can break down print queries 
+into two types:
+1. Print queries where $[l, r]$ is not the entire string for $u$.
+2. Print queries where $[l, r]$ is the entire string for $u$.
+
+If $N$ is the number of operations, then there are $\mathcal{O}(N)$ queries of the first type. The reason why is that only 
+a prefix and suffix of locations in $[l, r]$ don't cleanly fill an entire node's range, and 
+those ranges can only traverse down the data structure, which has $N$ nodes.
+
+The second type of query is trickier to handle. For the number of type 2 queries to amortize, 
+we need the number of print queries to be proportional to the string length. However, as our 
+current data structure allows for chains, the number of nodes can grow much larger than 
+the number of leaf nodes. To remedy this, we compress all chains, as chains do not affect 
+our answer. Because each node in our tree has either $0$ or more than $1$ child, the number of total 
+type 2 print queries is $\mathcal{O}(L)$, where $L$ is the length of our string.
+
+With these optimizations, our algorithm runs in time. The implementation below 
+uses pointers, but using arrays and indices instead of pointers is also valid. We also process queries in reverse to make constructing the data structure easier.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(M+L)$, where $M$ is the sum of $|s|$ over all operations, and $L$ is the length of our range.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using ll = long long;
+
+constexpr ll INF = 1e18;
+
+struct node {
+    char c;
+    ll size;
+    std::vector<node*> nxt;
+
+    void print(ll l, ll r) {
+        if (nxt.empty()) {
+            std::cout << c;
+            return;
+        }
+
+        ll nl = 0;
+        for (node* sub : nxt) {
+            ll nr = nl + sub->size - 1;
+            
+			// calculate the intersection of the ranges
+			// if there's a valid intersection, recurse
+            ll pl = std::max(l, nl);
+            ll pr = std::min(r, nr);
+            if (pl <= pr) sub->print(pl - nl, pr - nl);
+
+            nl += sub->size;
+            if (nl > INF) break;
+        }
+    }
+};
+
+int main() {
+	std::ios_base::sync_with_stdio(false);
+	std::cin.tie(nullptr);
+	
+	ll l, r;
+    int n;
+    std::cin >> l >> r >> n;
+    l--, r--;
+
+    std::vector<std::pair<char, std::string>> ops(n);
+    for (auto &[c, s] : ops) std::cin >> c >> s;
+    
+    std::array<node*, 26> prev;
+    for (char c = 'a'; c <= 'z'; c++) {
+        prev[c - 'a'] = new node{c, 1};
+    }
+
+	// process operations in reverse when constructing
+    for (int i = n - 1; i >= 0; i--) {
+        const auto &[c, s] = ops[i];
+        node* cur = new node{c, 0};
+        for (char j : s) {
+			// attach previous nodes to our new node from this operation
+			// make sure to clamp size to INF (1e18) for overflow
+            cur->size += prev[j - 'a']->size;
+            if (cur->size > INF) cur->size = INF;
+            cur->nxt.push_back(prev[j - 'a']);
+        }
+
+		// if a chain is formed, we can throw away our new node 
+		// and redirect prev[c] to the next 'relevant' node
+        if (s.size() == 1) {
+            prev[c - 'a'] = (cur->nxt)[0];
+        } else {
+            prev[c - 'a'] = cur;
+        }
+    }
+
+	// call print(l, r) for the root
+    prev[0]->print(l, r);
+}
+```
+
+</CPPSection>
+</LanguageSection>
