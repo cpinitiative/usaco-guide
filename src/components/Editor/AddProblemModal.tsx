@@ -6,23 +6,75 @@ import {
 } from '@headlessui/react';
 import React, { useState } from 'react';
 import { formatMetadata } from '../../utils/prettierFormatter';
+import Modal from '../Modal';
 import CopyButton from './CopyButton';
+
 async function addProblem(
   url: string,
   setMetadata: (metadata: string) => void,
-  setStatus: (status: 'Get Metadata' | 'Fetching metadata...') => void
+  setStatus: (status: 'Get Metadata' | 'Fetching metadata...') => void,
+  setShowError: (show: boolean) => void
 ) {
+  const createUnknownMetadata = () => ({
+    uniqueId: 'unknown',
+    name: 'unknown',
+    url,
+    source: 'unknown',
+    difficulty: 'N/A',
+    isStarred: false,
+    tags: ['Add Tags'],
+    solutionMetadata: {
+      kind: 'none',
+    },
+  });
+
   try {
     setStatus('Fetching metadata...');
-    const parsed = (
-      await fetch('/api/fetch-metadata', {
+
+    let response;
+    try {
+      response = await fetch('/api/fetch-metadata', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ url }),
-      }).then(res => res.json())
-    ).data;
+      });
+    } catch (e) {
+      // Network error
+      console.error('Network error:', e);
+      const metadata = createUnknownMetadata();
+      setMetadata(await formatMetadata(JSON.stringify(metadata, null, 2)));
+      setStatus('Get Metadata');
+      setShowError(true);
+      return;
+    }
+
+    let result;
+    try {
+      result = await response.json();
+    } catch (e) {
+      // Invalid JSON response
+      console.error('Invalid JSON response:', e);
+      const metadata = createUnknownMetadata();
+      setMetadata(await formatMetadata(JSON.stringify(metadata, null, 2)));
+      setStatus('Get Metadata');
+      setShowError(true);
+      return;
+    }
+
+    if (!response.ok) {
+      // API returned an error status code
+      console.error('API error:', result.error || 'Unknown error');
+      const metadata = createUnknownMetadata();
+      setMetadata(await formatMetadata(JSON.stringify(metadata, null, 2)));
+      setStatus('Get Metadata');
+      setShowError(true);
+      return;
+    }
+
+    // If we get here, the request was successful
+    const parsed = result.data;
     const metadata = {
       uniqueId: parsed.uniqueId,
       name: parsed.name,
@@ -31,15 +83,21 @@ async function addProblem(
       difficulty: 'N/A',
       isStarred: false,
       tags: ['Add Tags'],
-      solutionMetadata: parsed.solutionMetadata,
+      solutionMetadata: parsed.solutionMetadata || { kind: 'none' },
     };
+
     setMetadata(await formatMetadata(JSON.stringify(metadata, null, 2)));
     setStatus('Get Metadata');
   } catch (e) {
-    setMetadata(e.toString());
+    // This catch block is a final safety net for any unexpected errors
+    console.error('Unexpected error:', e);
+    const metadata = createUnknownMetadata();
+    setMetadata(await formatMetadata(JSON.stringify(metadata, null, 2)));
     setStatus('Get Metadata');
+    setShowError(true);
   }
 }
+
 export default function AddProblemModal(props: {
   isOpen: boolean;
   onClose: () => void;
@@ -49,6 +107,7 @@ export default function AddProblemModal(props: {
   const [status, setStatus] = useState<'Get Metadata' | 'Fetching metadata...'>(
     'Get Metadata'
   );
+  const [showError, setShowError] = useState(false);
   return (
     <Dialog
       open={props.isOpen}
@@ -88,7 +147,9 @@ export default function AddProblemModal(props: {
               <button
                 className="btn"
                 disabled={status === 'Fetching metadata...'}
-                onClick={() => addProblem(link, setMetadata, setStatus)}
+                onClick={() =>
+                  addProblem(link, setMetadata, setStatus, setShowError)
+                }
               >
                 {status}
               </button>
@@ -107,6 +168,32 @@ export default function AddProblemModal(props: {
           </DialogPanel>
         </div>
       </div>
+
+      <Modal isOpen={showError} onClose={() => setShowError(false)}>
+        <div className="text-center">
+          <DialogTitle
+            as="h3"
+            className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100"
+          >
+            Error Processing Request
+          </DialogTitle>
+          <div className="mt-4">
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              There was an error while processing your request. You can manually
+              edit the data.
+            </p>
+          </div>
+          <div className="mt-6">
+            <button
+              type="button"
+              className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 dark:bg-blue-900 dark:text-blue-100 dark:hover:bg-blue-800"
+              onClick={() => setShowError(false)}
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      </Modal>
     </Dialog>
   );
 }
