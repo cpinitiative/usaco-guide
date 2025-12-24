@@ -9,12 +9,12 @@ author: Justin Ji
 
 ## Explanation
 
-The brute force solution is to directly construct our string. We create
+The brute force solution is to directly construct our string. We utilize
 a tree data structure, where our leaf nodes represent the current string. For
 each operation $(c, s)$, we attach new nodes representing the characters in $s$ for all
 leaf nodes with value $c$.
 
-However, as our string's length can grow beyond $2^{100000}$ (e.g. through doubling our string each time), directly constructing our tree is infeasible. The most problematic inefficiency
+However, since our string's length can grow beyond $2^{100000}$ (e.g. through doubling our string each time), directly constructing our tree is infeasible. The most problematic inefficiency
 is that most of our subtrees are identical. Specifically,
 after each operation, all leaf nodes with the same character will produce equivalent
 subtrees, so we can link them all to a common node.
@@ -35,12 +35,14 @@ those ranges can only traverse down the data structure, which has $N$ nodes.
 The second type of query is trickier to handle. For the number of type 2 queries to amortize,
 we need the number of print queries to be proportional to the string length. However, as our
 current data structure allows for chains, the number of nodes can grow much larger than
-the number of leaf nodes. To remedy this, we compress all chains, as chains do not affect
-our answer. Because each node in our tree has either $0$ or more than $1$ child, the number of total
+the number of leaf nodes.
+
+To remedy this, we compress all chains, as chains do not affect
+our answer. Since each node in our tree has either $0$ or more than $1$ child, the total number of
 type 2 print queries is $\mathcal{O}(L)$, where $L$ is the length of our string.
 
 With these optimizations, our algorithm runs in time. The implementation below
-uses pointers, but using arrays and indices instead of pointers is also valid. We also process queries in reverse to make constructing the data structure easier.
+uses pointers, but using arrays and indices instead of pointers is also perfectly valid. We also process queries in reverse to make constructing the data structure easier.
 
 ## Implementation
 
