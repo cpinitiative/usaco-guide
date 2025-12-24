@@ -22,30 +22,28 @@ Observe that when a cow is added, at most five cows can become comfortable or un
 ```py
 n = int(input())
 
-
 def check_comfortable(x, y):
-	if (x, y) not in cows:
-		return
-	adjacent = 0
-	for cow in [(x - 1, y), (x + 1, y), (x, y - 1), (x, y + 1)]:
-		if cow in cows:
-			adjacent += 1
-	return adjacent == 3
+    if not cows[x][y]:
+        return
+    adjacent = 0
+    for cow in [(x - 1, y), (x + 1, y), (x, y - 1), (x, y + 1)]:
+        if cows[cow[0]][cow[1]]:
+            adjacent += 1
+    return adjacent == 3
 
-
-cows = set()
+cows = [[False] * 1001 for i in range(1001)]
 comfortable = set()
 for i in range(n):
-	x, y = map(int, input().split())
-	cows.add((x, y))
+    x, y = map(int, input().split())
+    cows[x][y] = True
 
-	for cow in [(x, y), (x - 1, y), (x + 1, y), (x, y - 1), (x, y + 1)]:
-		if check_comfortable(cow[0], cow[1]):
-			comfortable.add(cow)
-		else:
-			comfortable.discard(cow)
+    for cow in [(x, y), (x - 1, y), (x + 1, y), (x, y - 1), (x, y + 1)]:
+        if check_comfortable(cow[0], cow[1]):
+            comfortable.add(cow)
+        else:
+            comfortable.discard(cow)
 
-	print(len(comfortable))
+    print(len(comfortable))
 ```
 
 </PySection>
