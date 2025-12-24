@@ -1,0 +1,202 @@
+---
+id: usaco-1469
+source: USACO Bronze 2025 January
+title: Cow Checkups
+author: David Xiao
+---
+
+[Official Analysis (C++)](https://usaco.org/current/data/sol_prob3_bronze_jan25.html)
+
+## Explanation
+
+We denote a "desirable location" of a cow as a location where a cow of that species will be checked by the bovine veterinarian.
+
+We denote a "contribution" as one instance of a cow being moved to a desirable location.
+
+We observe that for a given operation with endpoints $l$ and $r$, an operation with endpoints $l - 1$ and $r + 1$ moves the cows from $l$ to $r$ to the same locations, and also swaps $l - 1$ and $r + 1$. Therefore, only the two newly added endpoints can change whether a cow is in a desirable location.
+
+![](usaco-1469/expansion.png)
+
+Thus, we can start at all operations where $l = r$, then gradually expand the operations by decrementing $l$ and incrementing $r$ until the operation is no longer valid, and calculate how many contributions are added by the endpoints each time we expand our operation. This only calculates all odd-length operations, so we do the same starting from $l = r - 1$, to calculate all even-length operations.
+
+An expansion can either add or subtract a contribution:
+1. It can add a contribution by moving a cow from a previously undesirable location to a desirable location.
+2. It can subtract a contribution by moving a cow from a previously desirable location to an undesirable location.
+
+This can be checked with a few simple if statements during iteration.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N^2)$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	ios::sync_with_stdio(0);
+	cin.tie(0);
+
+	int num_cows;
+	cin >> num_cows;
+
+	vector<int> initial_order(num_cows);
+
+	for (int i = 0; i < num_cows; i++) { cin >> initial_order[i]; }
+
+	vector<int> ideal_order(num_cows);
+
+	for (int i = 0; i < num_cows; i++) { cin >> ideal_order[i]; }
+
+	// Store number of operations resulting in N cows being checked as an array where
+	// operations[N cows checked] = number of operations
+	vector<int> operations(num_cows + 1);
+
+	// Calculate amount of cows already in a desirable location
+	int correct_placement = 0;
+	for (int i = 0; i < num_cows; i++) {
+		if (initial_order[i] == ideal_order[i]) { correct_placement++; }
+	}
+
+	// Odd-length subarray iteration
+	for (int i = 0; i < num_cows; i++) {
+		int left = i;
+		int right = i;
+
+		// current_placement = (# cows moved into correct positions) - (# cows moved out
+		// of correct positions)
+		int current_placement = 0;
+
+		while (left >= 0 and right < num_cows) {
+			if (initial_order[left] == ideal_order[right]) { current_placement++; }
+
+			if (initial_order[right] == ideal_order[left]) { current_placement++; }
+
+			if (initial_order[left] == ideal_order[left]) { current_placement--; }
+
+			if (initial_order[right] == ideal_order[right]) { current_placement--; }
+
+			operations[current_placement + correct_placement]++;
+
+			left--;
+			right++;
+		}
+	}
+
+	// Even-length subarray iteration
+	for (int i = 1; i < num_cows; i++) {
+		int left = i - 1;
+		int right = i;
+
+		// current_placement = (# cows moved into correct positions) - (# cows moved out
+		// of correct positions)
+		int current_placement = 0;
+
+		while (left >= 0 and right < num_cows) {
+			if (initial_order[left] == ideal_order[right]) { current_placement++; }
+
+			if (initial_order[right] == ideal_order[left]) { current_placement++; }
+
+			if (initial_order[left] == ideal_order[left]) { current_placement--; }
+
+			if (initial_order[right] == ideal_order[right]) { current_placement--; }
+
+			operations[current_placement + correct_placement]++;
+
+			left--;
+			right++;
+		}
+	}
+
+	for (int op : operations) { cout << op << "\n"; }
+}
+```
+
+</CPPSection>
+
+<PySection>
+
+<Warning>
+
+The solution described will TLE after test case 6 if submitted with Python.
+
+</Warning>
+
+```py
+num_cows = int(input())
+initial_order = [int(x) for x in input().split()]
+ideal_order = [int(x) for x in input().split()]
+
+# Store number of operations resulting in N cows being checked as an array where
+# operations[N cows checked] = number of operations
+operations = [0 for i in range(num_cows + 1)]
+
+# Calculate amount of cows already in a desirable location
+correct_placement = 0
+for i in range(num_cows):
+	if initial_order[i] == ideal_order[i]:
+		correct_placement += 1
+
+# Odd-subarray length iteration
+for i in range(num_cows):
+	left = i
+	right = i
+
+	# current_placement = (# cows moved into correct positions) - (# cows moved out of correct positions)
+	current_placement = 0
+
+	while left >= 0 and right < num_cows:
+		if initial_order[left] == ideal_order[right]:
+			current_placement += 1
+
+		if initial_order[right] == ideal_order[left]:
+			current_placement += 1
+
+		if initial_order[left] == ideal_order[left]:
+			current_placement -= 1
+
+		if initial_order[right] == ideal_order[right]:
+			current_placement -= 1
+
+		operations[current_placement + correct_placement] += 1
+
+		left -= 1
+		right += 1
+
+# Even-subarray length iteration
+for i in range(1, num_cows):
+	left = i - 1
+	right = i
+
+	# current_placement = (# cows moved into correct positions) - (# cows moved out of correct positions)
+	current_placement = 0
+
+	while left >= 0 and right < num_cows:
+		if initial_order[left] == ideal_order[right]:
+			current_placement += 1
+
+		if initial_order[right] == ideal_order[left]:
+			current_placement += 1
+
+		if initial_order[left] == ideal_order[left]:
+			current_placement -= 1
+
+		if initial_order[right] == ideal_order[right]:
+			current_placement -= 1
+
+		operations[current_placement + correct_placement] += 1
+
+		left -= 1
+		right += 1
+
+for op in operations:
+	print(op)
+```
+
+</PySection>
+
+</LanguageSection>
