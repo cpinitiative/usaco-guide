@@ -88,12 +88,124 @@ int main() {
 </CPPSection>
 
 <JavaSection>
+```java
+import java.io.*;
+import java.util.*;
 
+public class LCIS {
+    public static void main(String[] args) throws IOException {
+        BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st;
+
+        // read n and sequence a
+        int n = Integer.parseInt(read.readLine());
+        int[] a = new int[n];
+        st = new StringTokenizer(read.readLine());
+        for (int i = 0; i < n; i++) a[i] = Integer.parseInt(st.nextToken());
+
+        // read m and sequence b
+        int m = Integer.parseInt(read.readLine());
+        int[] b = new int[m];
+        st = new StringTokenizer(read.readLine());
+        for (int i = 0; i < m; i++) b[i] = Integer.parseInt(st.nextToken());
+
+        // initialize dp and parent arrays
+        int[] dp = new int[m];
+        int[] parent = new int[m];
+        Arrays.fill(parent, -1);
+
+        // LCIS DP
+        for (int i = 0; i < n; i++) {
+            int current = 0;
+            int last = -1;
+            for (int j = 0; j < m; j++) {
+                if (a[i] == b[j]) {
+                    if (current + 1 > dp[j]) {
+                        dp[j] = current + 1;
+                        parent[j] = last;
+                    }
+                } else if (a[i] > b[j]) {
+                    if (dp[j] > current) {
+                        current = dp[j];
+                        last = j;
+                    }
+                }
+            }
+        }
+
+        // find length and ending index
+        int length = 0, pos = -1;
+        for (int j = 0; j < m; j++) {
+            if (dp[j] > length) {
+                length = dp[j];
+                pos = j;
+            }
+        }
+
+        // reconstruct LCIS
+        List<Integer> lcis = new ArrayList<>();
+        while (pos != -1) {
+            lcis.add(b[pos]);
+            pos = parent[pos];
+        }
+        Collections.reverse(lcis);
+
+        // output using StringBuilder
+        StringBuilder out = new StringBuilder();
+        out.append(length).append("\n");
+        for (int x : lcis) out.append(x).append(" ");
+        System.out.println(out);
+    }
+}
+```
 </JavaSection>
 
+<PySection>
+```py
+# read input
+n = int(input())
+a = list(map(int, input().split()))
+m = int(input())
+b = list(map(int, input().split()))
 
-<Warning title="Tight Constraints">
-Note that when printing out queries, make sure to use "\n" instead of endl or you will get a TLE!
-</Warning>
+# initialize dp and parent arrays
+dp = [0] * m
+parent = [-1] * m
+
+# LCIS DP
+for i in range(n):
+    current = 0
+    last = -1
+    for j in range(m):
+        if a[i] == b[j]:
+            if current + 1 > dp[j]:
+                dp[j] = current + 1
+                parent[j] = last
+        elif a[i] > b[j]:
+            if dp[j] > current:
+                current = dp[j]
+                last = j
+
+# find length and ending index
+length = 0
+pos = -1
+for j in range(m):
+    if dp[j] > length:
+        length = dp[j]
+        pos = j
+
+# reconstruct LCIS
+lcis = []
+while pos != -1:
+    lcis.append(b[pos])
+    pos = parent[pos]
+
+lcis.reverse()
+
+# print output
+print(length)
+print(*lcis)
+```
+</PySection>
 
 </LanguageSection>
