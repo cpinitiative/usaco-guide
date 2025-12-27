@@ -15,7 +15,7 @@ Note that this is my solution, alternate solutions might be available online. I 
 
 We can track the length of the LCIS ending at `b[j]` in a list `dp[j]`. We can also create a parent list where `parent[j]` points to the index in `b` of the last number in `dp[j]`, letting us reconstruct the subsequence at the end.
 
-Looping through sequence `a`, we can try to add to each subsequence in `dp`. We can track the longest LCIS ending at elements of `b` that are smaller than `a[i]`, and store its index to extend it if `a[i]` matches a later element.
+Looping through sequence `a`, we can try to add to each subsequence in `dp`. We can track the current LCIS ending at elements of `b` that are smaller than `a[i]` (I called this `current`), and store its index to extend it if `a[i]` matches a later element (I called this `last`).
 
 For each `b[j]`, we check if `a[i]` can extend the LCIS ending at `b[j]`. If `a[i] == b[j]`, then the LCIS can be extended, and `dp[j]` should be updated. If `a[i] > b[j]`, `a[i]` could possibly be added later to the sequence, and we need to update the length of the LCIS. If `a[i] < b[j]`, we don't do anything because `a[i]` cannot extend the subsequence.
 
@@ -65,7 +65,7 @@ int main() {
         }
     }
 
-	// find the sequence length
+	// find the sequence length and the last index of the sequence
     int length = 0, pos = -1;
     for (int j = 0; j < m; j++) {
         if (dp[j] > length) {
@@ -74,7 +74,7 @@ int main() {
         }
     }
 
-	// reconstruct the sequence
+	// reconstruct LCIS
     vector<int> lcis;
     while (pos != -1) {
         lcis.push_back(b[pos]);
