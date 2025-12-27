@@ -13,9 +13,9 @@ Observe that a string is an irreducible anagram if any of these three conditions
 
 1. The string has more than three different characters
 2. The first and last character are different
-3. The string is of length 1 
+3. The string is of length 1
 
-The last two conditions are easy to check. However, to check the first condition, we 
+The last two conditions are easy to check. However, to check the first condition, we
 must use prefix sums. For each of the 26 letters of the alphabet, we can hold a prefix
 sum counting how many times the letter has been seen. If on an interval, three letters
 have been seen at least once, then the string is an irreducible anagram.
@@ -32,43 +32,49 @@ have been seen at least once, then the string is an irreducible anagram.
 
 using namespace std;
 
-int main () {
-    string s;
-    int t;
+int main() {
+	string s;
+	int t;
 
-    cin >> s;
-    cin >> t;
+	cin >> s;
+	cin >> t;
 
-    vector<vector<int>> pref(26, vector<int>(s.length() + 1));
+	vector<vector<int>> pref(26, vector<int>(s.length() + 1));
 
-    for (int i = 1; i < s.length() + 1; i++) {
-        char let = s[i - 1];
+	for (int i = 1; i < s.length() + 1; i++) {
+		char let = s[i - 1];
 
-        for (int letter = 0; letter < 26; letter++) {
-            pref[letter][i] = pref[letter][i - 1];
-        }
+		for (int letter = 0; letter < 26; letter++) {
+			pref[letter][i] = pref[letter][i - 1];
+		}
 
-        pref[let - 'a'][i] = pref[let - 'a'][i - 1] + 1;
-    }
+		pref[let - 'a'][i] = pref[let - 'a'][i - 1] + 1;
+	}
 
-    while (t--) {
-        int a, b; cin >> a >> b;
+	while (t--) {
+		int a, b;
+		cin >> a >> b;
 
-        int num_diff = 0;
+		int num_diff = 0;
 
-        for (int i = 0; i < 26; i++) {
-            if (pref[i][b] - pref[i][a - 1] > 0) num_diff++;
-        }
+		for (int i = 0; i < 26; i++) {
+			if (pref[i][b] - pref[i][a - 1] > 0) num_diff++;
+		}
 
-        string ans = "";
+		string ans = "";
 
-        if (b == a) { ans = "Yes"; }
-        else if (num_diff >= 3) { ans = "Yes"; }
-        else if (s[a - 1] != s[b - 1]) { ans = "Yes"; }
-        else { ans = "No"; }
-        
-        cout << ans << "\n";
-    }
+		if (b == a) {
+			ans = "Yes";
+		} else if (num_diff >= 3) {
+			ans = "Yes";
+		} else if (s[a - 1] != s[b - 1]) {
+			ans = "Yes";
+		} else {
+			ans = "No";
+		}
+
+		cout << ans << "\n";
+	}
 }
 ```
 
