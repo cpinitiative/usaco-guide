@@ -5,12 +5,23 @@ title: LCIS
 author: Aryaveer Shishodia
 ---
 
-[Official Editorial (C++)](https://codeforces.com/blog/entry/5921)
-## Implementation
+[Official Editorial (C++)](https://codeforces.com/blog/entry/298)
 
-Note this is a bit different from the implementation outlined in the official
-editorial. This loops over the start and end of the substrings rather than the
-length first.
+Note that during the contest, the problem was modified due ot a bug in the solution. Because the original problem was unsolvable with the given constraints, the problem was modified, but the solution to the modified problem was not posted there.
+
+## Solution: LIS DP
+
+Note that this is my solution, alternate solutions might be available online. I labeled the sequences `a` and `b`.
+
+We can track the length of the LCIS ending at `b[j]` in a list `dp[j]`. We can also create a parent list where `parent[j]` points to the index in `b` of the last number in `dp[j]`, letting us reconstruct the subsequence at the end.
+
+Looping through sequence `a`, we can try to add to each subsequence in `dp`. We can track the longest LCIS ending at elements of `b` that are smaller than `a[i]`, and store its index to extend it if `a[i]` matches a later element.
+
+For each `b[j]`, we check if `a[i]` can extend the LCIS ending at `b[j]`. If `a[i] == b[j]`, then the LCIS can be extended, and `dp[j]` should be updated. If `a[i] > b[j]`, `a[i]` could possibly be added later to the sequence, and we need to update the length of the LCIS. If `a[i] < b[j]`, we don't do anything because `a[i]` cannot extend the subsequence.
+
+After that, we find the length of the LCIS in `dp` and reconstruct the sequence.
+
+## Implementation
 
 **Time Complexity:** $\mathcal{O}(NM)$
 
@@ -28,39 +39,55 @@ using namespace std;
 
 int main() {
 	cin.tie(0)->sync_with_stdio(false);
-	string s;
-	cin >> s;
-	int n = s.length();
 
-	// dp[i][j] = number of palidrome substrings in [i,j]
-	vector<vector<int>> dp(n, vector<int>(n));
+	// read the 2 sequences
+	int n, m; cin >> n;
+    vector<int> a(n);
+    for (int& i : a) cin >> i;
+    cin >> m;
+    vector<int> b(m);
+    for (int& i : b) cin >> i;
 
-	// pal[i][j] = true if [i,j] is a palindrome
-	vector<vector<bool>> pal(n, vector<bool>(n));
+	// initialize dp
+    vector<int> dp(m, 0), parent(m, -1);
 
-	for (int i = n - 1; i >= 0; i--) {
-		// base case: strings of length 1 are always a palindrome
-		dp[i][i] = pal[i][i] = 1;
-		for (int j = i + 1; j < n; j++) {
-			/*
-			 * We add a character before start and after the end.
-			 * If previously was a palindrome and the new characters
-			 * are the same, then it is still a palindrome.
-			 */
-			pal[i][j] = (pal[i + 1][j - 1] || j - i == 1) && (s[i] == s[j]);
+	// loop through a
+    for (int i = 0; i < n; i++) {
+        int current = 0;
+        int last = -1;
+        for (int j = 0; j < m; j++) {
+            if (a[i] == b[j]) {
+                if (current + 1 > dp[j]) {
+                    dp[j] = current + 1;
+                    parent[j] = last;
+                }
+            } else if (a[i] > b[j]) {
+                if (dp[j] > current) {
+                    current = dp[j];
+                    last = j;
+                }
+            }
+        }
+    }
 
-			// number of palindromes using inclusion - exclusion
-			dp[i][j] = dp[i + 1][j] + dp[i][j - 1] - dp[i + 1][j - 1] + pal[i][j];
-		}
-	}
+	// find the sequence length
+    int length = 0, pos = -1;
+    for (int j = 0; j < m; j++) {
+        if (dp[j] > length) {
+            length = dp[j];
+            pos = j;
+        }
+    }
 
-	int q;
-	cin >> q;
-	for (int i = 0; i < q; i++) {
-		int l, r;
-		cin >> l >> r;
-		cout << dp[l - 1][r - 1] << "\n";
-	}
+	// reconstruct the sequence
+    vector<int> lcis;
+    while (pos != -1) {
+        lcis.push_back(b[pos]);
+        pos = parent[pos];
+    }
+    reverse(lcis.begin(), lcis.end());
+    cout << length << endl;
+    for (int x : lcis) cout << x << ' ';
 }
 ```
 
