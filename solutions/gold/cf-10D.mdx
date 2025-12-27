@@ -36,53 +36,54 @@ int main() {
 	cin.tie(0)->sync_with_stdio(false);
 
 	// read the 2 sequences
-	int n, m; cin >> n;
-    vector<int> a(n);
-    for (int& i : a) cin >> i;
-    cin >> m;
-    vector<int> b(m);
-    for (int& i : b) cin >> i;
+	int n, m;
+	cin >> n;
+	vector<int> a(n);
+	for (int &i : a) cin >> i;
+	cin >> m;
+	vector<int> b(m);
+	for (int &i : b) cin >> i;
 
 	// initialize dp
-    vector<int> dp(m, 0), parent(m, -1);
+	vector<int> dp(m, 0), parent(m, -1);
 
 	// loop through a
-    for (int i = 0; i < n; i++) {
-        int current = 0;
-        int last = -1;
-        for (int j = 0; j < m; j++) {
-            if (a[i] == b[j]) {
-                if (current + 1 > dp[j]) {
-                    dp[j] = current + 1;
-                    parent[j] = last;
-                }
-            } else if (a[i] > b[j]) {
-                if (dp[j] > current) {
-                    current = dp[j];
-                    last = j;
-                }
-            }
-        }
-    }
+	for (int i = 0; i < n; i++) {
+		int current = 0;
+		int last = -1;
+		for (int j = 0; j < m; j++) {
+			if (a[i] == b[j]) {
+				if (current + 1 > dp[j]) {
+					dp[j] = current + 1;
+					parent[j] = last;
+				}
+			} else if (a[i] > b[j]) {
+				if (dp[j] > current) {
+					current = dp[j];
+					last = j;
+				}
+			}
+		}
+	}
 
 	// find the sequence length and the last index of the sequence
-    int length = 0, pos = -1;
-    for (int j = 0; j < m; j++) {
-        if (dp[j] > length) {
-            length = dp[j];
-            pos = j;
-        }
-    }
+	int length = 0, pos = -1;
+	for (int j = 0; j < m; j++) {
+		if (dp[j] > length) {
+			length = dp[j];
+			pos = j;
+		}
+	}
 
 	// reconstruct LCIS
-    vector<int> lcis;
-    while (pos != -1) {
-        lcis.push_back(b[pos]);
-        pos = parent[pos];
-    }
-    reverse(lcis.begin(), lcis.end());
-    cout << length << endl;
-    for (int x : lcis) cout << x << ' ';
+	vector<int> lcis;
+	while (pos != -1) {
+		lcis.push_back(b[pos]);
+		pos = parent[pos];
+	}
+	reverse(lcis.begin(), lcis.end());
+	cout << length << endl;
+	for (int x : lcis) cout << x << ' ';
 }
 ```
 
@@ -94,69 +95,69 @@ import java.io.*;
 import java.util.*;
 
 public class LCIS {
-    public static void main(String[] args) throws IOException {
-        BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st;
+	public static void main(String[] args) throws IOException {
+		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st;
 
-        // read n and sequence a
-        int n = Integer.parseInt(read.readLine());
-        int[] a = new int[n];
-        st = new StringTokenizer(read.readLine());
-        for (int i = 0; i < n; i++) a[i] = Integer.parseInt(st.nextToken());
+		// read n and sequence a
+		int n = Integer.parseInt(read.readLine());
+		int[] a = new int[n];
+		st = new StringTokenizer(read.readLine());
+		for (int i = 0; i < n; i++) a[i] = Integer.parseInt(st.nextToken());
 
-        // read m and sequence b
-        int m = Integer.parseInt(read.readLine());
-        int[] b = new int[m];
-        st = new StringTokenizer(read.readLine());
-        for (int i = 0; i < m; i++) b[i] = Integer.parseInt(st.nextToken());
+		// read m and sequence b
+		int m = Integer.parseInt(read.readLine());
+		int[] b = new int[m];
+		st = new StringTokenizer(read.readLine());
+		for (int i = 0; i < m; i++) b[i] = Integer.parseInt(st.nextToken());
 
-        // initialize dp and parent arrays
-        int[] dp = new int[m];
-        int[] parent = new int[m];
-        Arrays.fill(parent, -1);
+		// initialize dp and parent arrays
+		int[] dp = new int[m];
+		int[] parent = new int[m];
+		Arrays.fill(parent, -1);
 
-        // LCIS DP
-        for (int i = 0; i < n; i++) {
-            int current = 0;
-            int last = -1;
-            for (int j = 0; j < m; j++) {
-                if (a[i] == b[j]) {
-                    if (current + 1 > dp[j]) {
-                        dp[j] = current + 1;
-                        parent[j] = last;
-                    }
-                } else if (a[i] > b[j]) {
-                    if (dp[j] > current) {
-                        current = dp[j];
-                        last = j;
-                    }
-                }
-            }
-        }
+		// LCIS DP
+		for (int i = 0; i < n; i++) {
+			int current = 0;
+			int last = -1;
+			for (int j = 0; j < m; j++) {
+				if (a[i] == b[j]) {
+					if (current + 1 > dp[j]) {
+						dp[j] = current + 1;
+						parent[j] = last;
+					}
+				} else if (a[i] > b[j]) {
+					if (dp[j] > current) {
+						current = dp[j];
+						last = j;
+					}
+				}
+			}
+		}
 
-        // find length and ending index
-        int length = 0, pos = -1;
-        for (int j = 0; j < m; j++) {
-            if (dp[j] > length) {
-                length = dp[j];
-                pos = j;
-            }
-        }
+		// find length and ending index
+		int length = 0, pos = -1;
+		for (int j = 0; j < m; j++) {
+			if (dp[j] > length) {
+				length = dp[j];
+				pos = j;
+			}
+		}
 
-        // reconstruct LCIS
-        List<Integer> lcis = new ArrayList<>();
-        while (pos != -1) {
-            lcis.add(b[pos]);
-            pos = parent[pos];
-        }
-        Collections.reverse(lcis);
+		// reconstruct LCIS
+		List<Integer> lcis = new ArrayList<>();
+		while (pos != -1) {
+			lcis.add(b[pos]);
+			pos = parent[pos];
+		}
+		Collections.reverse(lcis);
 
-        // output using StringBuilder
-        StringBuilder out = new StringBuilder();
-        out.append(length).append("\n");
-        for (int x : lcis) out.append(x).append(" ");
-        System.out.println(out);
-    }
+		// output using StringBuilder
+		StringBuilder out = new StringBuilder();
+		out.append(length).append("\n");
+		for (int x : lcis) out.append(x).append(" ");
+		System.out.println(out);
+	}
 }
 ```
 
@@ -176,31 +177,31 @@ parent = [-1] * m
 
 # LCIS DP
 for i in range(n):
-    current = 0
-    last = -1
-    for j in range(m):
-        if a[i] == b[j]:
-            if current + 1 > dp[j]:
-                dp[j] = current + 1
-                parent[j] = last
-        elif a[i] > b[j]:
-            if dp[j] > current:
-                current = dp[j]
-                last = j
+	current = 0
+	last = -1
+	for j in range(m):
+		if a[i] == b[j]:
+			if current + 1 > dp[j]:
+				dp[j] = current + 1
+				parent[j] = last
+		elif a[i] > b[j]:
+			if dp[j] > current:
+				current = dp[j]
+				last = j
 
 # find length and ending index
 length = 0
 pos = -1
 for j in range(m):
-    if dp[j] > length:
-        length = dp[j]
-        pos = j
+	if dp[j] > length:
+		length = dp[j]
+		pos = j
 
 # reconstruct LCIS
 lcis = []
 while pos != -1:
-    lcis.append(b[pos])
-    pos = parent[pos]
+	lcis.append(b[pos])
+	pos = parent[pos]
 
 lcis.reverse()
 
