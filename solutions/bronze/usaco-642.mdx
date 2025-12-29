@@ -21,6 +21,76 @@ Note that removing less than three cows is not beneficial, as removing one more 
 
 <LanguageSection>
 
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <set>
+
+using namespace std;
+
+int main(){
+    int n; cin >> n;
+
+    vector<pair<int, int>> cows(n);
+    
+    vector<int> xs(n);
+    vector<int> ys(n);
+    
+    for (int i = 0; i < n; i++){
+        int x, y; cin >> x >> y;
+        cows[i] = {x,y};
+        
+        xs[i] = x;
+        ys[i] = y;
+    }
+
+    sort(xs.begin(), xs.end());
+    sort(ys.begin(), ys.end());
+
+    vector<int> candinates;
+    for (int i = 0; i < n; i++){
+        auto [x1, y1] = cows[i];
+        
+        // the 3 most extreme in any of the 4 directions.
+        if (x1 <= xs[3] || x1 >= xs[n-3] || y1 <= ys[2] || y1 >= ys[n-3]){
+            candinates.push_back(i);
+        }
+    }
+    
+    // Generating subsets with bitmasks
+    int bestArea = INT32_MAX;
+    for (int i = 0; i <= 1 << candinates.size(); i++){
+        set<int> removing;
+        for (int b = 0; b < candinates.size(); b++){
+            if (i&(1<<b)) removing.insert(candinates[b]);
+        }
+        if (removing.size() != 3) continue;
+        
+        // Compute area
+        int minX = INT32_MAX;
+        int maxX = INT32_MIN;
+        int minY = INT32_MAX;
+        int maxY = INT32_MIN;
+        for (int i = 0; i < cows.size(); i++){
+            if (removing.count(i)) continue;
+            
+            minX = min(minX, cows[i].first);
+            maxX = max(maxX, cows[i].first);
+            minY = min(minY, cows[i].second);
+            maxY = max(maxY, cows[i].second);
+        }
+    
+        bestArea = min(bestArea, (maxX-minX)*(maxY-minY));
+    }
+
+    cout << bestArea;
+}
+```
+
+</CPPSection>
+
 <PySection>
 
 ```py
