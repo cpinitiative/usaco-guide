@@ -9,11 +9,9 @@ author: SeungJoon Park
 
 ## Explanation
 
-First, we can directly make an array that contains the difference between $c_i$ and $t_i$, since we eventually need to subtract ti in every case.
+First, rearrange $S+t_i \lt c_i$ to $S \lt c_i - t_i$, and sorting it allows us to make the comparisons easier.
 
-Next, we can sort this array in descending order.
-
-Then, we can check if the value located at $V-1$ in the array is greater than $S$. It means that following elements is possible, since it is sorted in descending order. In other words, going $V$ farms is possible when the value at $V-1$ is greater than $S$.
+Then, we can check if the value located at $V$ in the array is greater than $S$. It means that following elements is possible, since it is sorted in descending order. In other words, going $V$ farms is possible when the value at $V$ is greater than $S$.
 
 Lastly, we can print the answer according to the comparison.
 
@@ -27,35 +25,40 @@ Lastly, we can print the answer according to the comparison.
 ```cpp
 #include <algorithm>
 #include <iostream>
+#include <vector>
 using namespace std;
 
 int main() {
 	ios::sync_with_stdio(0);
-	cin.tie(0);
+    cin.tie(0);
 
-	int n, q;
-	cin >> n >> q;
-	int c[n];
-	for (int i = 0; i < n; i++) { cin >> c[i]; }
-	for (int i = 0; i < n; i++) {
-		int tmp;
-		cin >> tmp;
-		c[i] -= tmp;
-	}
+    int n, q;
+    cin >> n >> q;
+    vector<int> c;
+    for (int i = 0; i < n; i++) { 
+        int tmp; 
+        cin >> tmp; 
+        c.push_back(tmp); 
+    }
+    for (int i = 0; i < n; i++) {
+        int tmp;
+        cin >> tmp;
+        c[i] -= tmp;
+    }
 
-	sort(c, c + n, greater<int>());
+    sort(c.begin(), c.end(), greater<int>());
 
-	for (int r = 0; r < q; r++) {
-		int v, s;
-		cin >> v >> s;
-		if (c[v - 1] > s) {
-			cout << "YES\n";
-		} else {
-			cout << "NO\n";
-		}
-	}
+    for (int r = 0; r < q; r++) {
+        int v, s;
+        cin >> v >> s;
+        if (c[v - 1] > s) {
+        cout << "YES\n";
+        } else {
+        cout << "NO\n";
+        }
+    }
 
-	return 0;
+    return 0;
 }
 ```
 
