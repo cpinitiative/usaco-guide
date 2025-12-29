@@ -72,60 +72,60 @@ vector<int> x, ans;
 int lef[MAXN], rig[MAXN];
 
 void divi(int l, int r, vector<int> v) {
-    if (v.size() == 0) return;
+	if (v.size() == 0) return;
 
-    if (l == r) {
-        for (int _ : v) ans[_] = x[l];
-        return;
-    }
+	if (l == r) {
+		for (int _ : v) ans[_] = x[l];
+		return;
+	}
 
-    int m = (l + r) / 2;
+	int m = (l + r) / 2;
 
-    lef[m] = x[m];
-    for (int i = m - 1; i >= l; i--) lef[i] = min(x[i], lef[i + 1]);
+	lef[m] = x[m];
+	for (int i = m - 1; i >= l; i--) lef[i] = min(x[i], lef[i + 1]);
 
-    rig[m + 1] = x[m + 1];
-    for (int i = m + 2; i < r + 1; i++) rig[i] = min(rig[i - 1], x[i]);
+	rig[m + 1] = x[m + 1];
+	for (int i = m + 2; i < r + 1; i++) rig[i] = min(rig[i - 1], x[i]);
 
-    vector<int> todo[2];
-    for (int t : v) {
-        int a = A[t], b = B[t];
-        if (a <= m && m < b) {  // we can answer the query immediately
-            ans[t] = min(min(lef[a], x[m]), rig[b]);
-            continue;
-        }
-        // otherwise
-        // either [a,b] is contained within [l,m]   -> it's placed into todo[0]
-        // or     [a,b] is contained within [m+1,r] -> it's placed into todo[1]
-        todo[a > m].push_back(t);
-    }
+	vector<int> todo[2];
+	for (int t : v) {
+		int a = A[t], b = B[t];
+		if (a <= m && m < b) {  // we can answer the query immediately
+			ans[t] = min(min(lef[a], x[m]), rig[b]);
+			continue;
+		}
+		// otherwise
+		// either [a,b] is contained within [l,m]   -> it's placed into todo[0]
+		// or     [a,b] is contained within [m+1,r] -> it's placed into todo[1]
+		todo[a > m].push_back(t);
+	}
 
-    divi(l, m, todo[0]);
-    divi(m + 1, r, todo[1]);
+	divi(l, m, todo[0]);
+	divi(m + 1, r, todo[1]);
 }
 
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
 
-    cin >> n >> q;
+	cin >> n >> q;
 
-    x.resize(n);
-    for (int i = 0; i < n; i++) cin >> x[i];
+	x.resize(n);
+	for (int i = 0; i < n; i++) cin >> x[i];
 
-    for (int i = 0; i < q; i++) {
-        cin >> A[i] >> B[i];
-        A[i]--, B[i]--;
-    }
+	for (int i = 0; i < q; i++) {
+		cin >> A[i] >> B[i];
+		A[i]--, B[i]--;
+	}
 
-    vector<int> query(q);
-    iota(query.begin(), query.end(), 0);
+	vector<int> query(q);
+	iota(query.begin(), query.end(), 0);
 
-    ans.resize(q);
+	ans.resize(q);
 
-    divi(0, n - 1, query);
+	divi(0, n - 1, query);
 
-    for (int i = 0; i < q; i++) cout << ans[i] << '\n';
+	for (int i = 0; i < q; i++) cout << ans[i] << '\n';
 }
 ```
 
