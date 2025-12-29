@@ -154,40 +154,64 @@ Examples of queries:
   `min(dat[1][12],dat[1][18])`.
 
 ```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+static const int MAXN = 200000 + 5;
+
 int n, q;
-vi x, ans;
+vector<int> x, ans;
 
-int dat[18][MX], mask[MX];  // 18 = ceil(log2(n))
+int dat[18][MAXN]; // 18 = ceil(log2(n))
+int mask[MAXN];
 
-void divi(int l, int r, int lev) {  // generate dat and mask
-	if (l == r) return;
-	int m = (l + r) / 2;
-	dat[lev][m] = x[m];
-	ROF(i, l, m) dat[lev][i] = min(x[i], dat[lev][i + 1]);
-	dat[lev][m + 1] = x[m + 1];
-	FOR(i, m + 2, r + 1) dat[lev][i] = min(dat[lev][i - 1], x[i]);
-	FOR(i, m + 1, r + 1) mask[i] ^= 1 << lev;
-	divi(l, m, lev + 1);
-	divi(m + 1, r, lev + 1);
+void divi(int l, int r, int lev) {   // generate dat and mask
+    if (l == r) return;
+
+    int m = (l + r) / 2;
+
+    dat[lev][m] = x[m];
+    for (int i = m - 1; i >= l; i--)
+        dat[lev][i] = min(x[i], dat[lev][i + 1]);
+
+    dat[lev][m + 1] = x[m + 1];
+    for (int i = m + 2; i <= r; i++)
+        dat[lev][i] = min(dat[lev][i - 1], x[i]);
+
+    for (int i = m + 1; i <= r; i++)
+        mask[i] ^= (1 << lev);
+
+    divi(l, m, lev + 1);
+    divi(m + 1, r, lev + 1);
 }
 
 int main() {
-	setIO();
-	re(n, q);
-	x.rsz(n);
-	re(x);
-	divi(0, n - 1, 0);
-	F0R(i, q) {
-		int a, b;
-		re(a, b);
-		a--, b--;
-		if (a == b) ps(x[a]);
-		else {  // find level where info is stored
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    cin >> n >> q;
+
+    x.resize(n);
+    for (int i = 0; i < n; i++)
+        cin >> x[i];
+
+    divi(0, n - 1, 0);
+
+    for (int i = 0; i < q; i++) {
+        int a, b;
+        cin >> a >> b;
+        a--, b--;
+
+        if (a == b) {
+            cout << x[a] << '\n';
+        } else { // find level where info is stored
 			// ctz gives number of trailing zeroes
-			int bits = __builtin_ctz(mask[a] ^ mask[b]);
-			ps(min(dat[bits][a], dat[bits][b]));
-		}
-	}
+            int bits = __builtin_ctz(mask[a] ^ mask[b]);
+            cout << min(dat[bits][a], dat[bits][b]) << '\n';
+        }
+    }
+
+    return 0;
 }
 ```
 
