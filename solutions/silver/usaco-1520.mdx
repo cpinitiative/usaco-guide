@@ -26,30 +26,35 @@ For a skill level $s$ and courage $c$, the condition that at most $c$ edges have
 ```py
 import bisect
 import itertools
+
 n = int(input())
 waypoints = [[[0], 0] for i in range(n)]
 for waypoint in range(1, n):
-    parent, difficulty, enjoyment = map(int, input().split())
-    waypoints[waypoint][0] = sorted(waypoints[parent - 1][0][:] + [difficulty])[-11:]
-    waypoints[waypoint][1] = waypoints[parent - 1][1] + enjoyment
+	parent, difficulty, enjoyment = map(int, input().split())
+	waypoints[waypoint][0] = sorted(waypoints[parent - 1][0][:] + [difficulty])[-11:]
+	waypoints[waypoint][1] = waypoints[parent - 1][1] + enjoyment
 
 top_11_difficulties = [[] for i in range(11)]
 pref_max = []
 for courage in range(11):
-    for waypoint in range(1, n):
-        if len(waypoints[waypoint][0]) > courage:
-            top_11_difficulties[courage].append([waypoints[waypoint][0][-courage - 1], waypoints[waypoint][1]])
-    top_11_difficulties[courage].sort()
-    pref_max.append(list(itertools.accumulate([x[1] for x in top_11_difficulties[courage]], max)))
+	for waypoint in range(1, n):
+		if len(waypoints[waypoint][0]) > courage:
+			top_11_difficulties[courage].append(
+				[waypoints[waypoint][0][-courage - 1], waypoints[waypoint][1]]
+			)
+	top_11_difficulties[courage].sort()
+	pref_max.append(
+		list(itertools.accumulate([x[1] for x in top_11_difficulties[courage]], max))
+	)
 
 m = int(input())
 for friend in range(m):
-    skill, courage = map(int, input().split())
-    max_enjoyment = 0
-    max_index = bisect.bisect(top_11_difficulties[courage], [skill, float("inf")]) - 1
-    if max_index >= 0:
-        max_enjoyment = pref_max[courage][max_index]
-    print(max_enjoyment)
+	skill, courage = map(int, input().split())
+	max_enjoyment = 0
+	max_index = bisect.bisect(top_11_difficulties[courage], [skill, float("inf")]) - 1
+	if max_index >= 0:
+		max_enjoyment = pref_max[courage][max_index]
+	print(max_enjoyment)
 ```
 
 </PySection>
