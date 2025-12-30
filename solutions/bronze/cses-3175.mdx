@@ -28,24 +28,23 @@ std::vector<int> res;
 std::vector<int> ele;
 
 void backtrack() {
-    
+
 	if (ele.empty()) {
 		for (int x : res) { std::cout << x << " \n"[x == res.back()]; }
 		exit(0);
 	}
 
-    for (int i = ele.size() - 1; i >= 0; --i) {
-        int x = ele[i];
-        
-        if (res.empty() || std::abs(res.back() - x) != 1) {
-            ele.erase(ele.begin() + i);
-            res.push_back(x);
-            backtrack();                
-            res.pop_back();
-            ele.insert(ele.begin() + i, x);
-        }
-    }
+	for (int i = ele.size() - 1; i >= 0; --i) {
+		int x = ele[i];
 
+		if (res.empty() || std::abs(res.back() - x) != 1) {
+			ele.erase(ele.begin() + i);
+			res.push_back(x);
+			backtrack();
+			res.pop_back();
+			ele.insert(ele.begin() + i, x);
+		}
+	}
 }
 
 int main() {
@@ -57,9 +56,7 @@ int main() {
 		return 0;
 	}
 
-	for (int i = n; i >= 1; i--) {
-        ele.push_back(i);
-    }
+	for (int i = n; i >= 1; i--) { ele.push_back(i); }
 
 	backtrack();
 }
