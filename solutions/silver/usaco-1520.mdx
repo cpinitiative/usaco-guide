@@ -9,7 +9,7 @@ author: Sachet Abeysinghe
 
 ## Explanation
 
-We are given a tree of waypoints rooted at waypoint $1$, with each edge assigned with a difficulty and enjoyment value. We must answer $M$ queries to find the maximum total enjoyment from a path to a starting waypoint to the root, such that at most $c$ edges have difficulty greater than $s$.
+We are given a tree of waypoints rooted at waypoint $1$, with each edge assigned a difficulty and enjoyment value. We must answer $M$ queries to find the maximum total enjoyment from a path to a starting waypoint to the root, such that at most $c$ edges have difficulty greater than $s$.
 
 For each starting waypoint, let's store the difficulties of the path and the total accumulated enjoyment. We start with waypoint $1$ having difficulties list $[0]$ and enjoyment $0$. Then, for the $i$th starting waypoint, the difficulties consist of the difficulties of the $p_i$th starting waypoint plus the difficulty of the $i$th run. The enjoyment is the enjoyment of the $p_i$th starting waypoint plus the enjoyment of the $i$th run. This works because $p_i < i$ for all $i$, so we can use the information we have from the parent $p_i$ (difficulty and enjoyment) to incrementally find the difficulties and enjoyment for each starting waypoint.
 
@@ -20,7 +20,6 @@ For a skill level $s$ and courage $c$, the condition that at most $c$ edges have
 **Time Complexity:** $\mathcal{O}(N\log N+M\log N)$
 
 <LanguageSection>
-
 <PySection>
 
 ```py
@@ -58,5 +57,4 @@ for friend in range(m):
 ```
 
 </PySection>
-
 </LanguageSection>
