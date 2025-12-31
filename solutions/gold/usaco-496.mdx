@@ -32,29 +32,29 @@ Regarding the implementation, we can negate all the end values in order to apply
 using namespace std;
 
 int main() {
-    freopen("cowjog.in", "r", stdin);
-    freopen("cowjog.out", "w", stdout);
+	freopen("cowjog.in", "r", stdin);
+	freopen("cowjog.out", "w", stdout);
 
-    int n, t;
-    cin >> n >> t;
+	int n, t;
+	cin >> n >> t;
 
-    vector<long long> min_ends;
+	vector<long long> min_ends;
 
-    for (int i = 0; i < n; i++) {
-        long long start, speed;
-        cin >> start >> speed;
-        
-        // Negate to transform non-increasing into non-decreasing
-        long long end = -(start + speed * t);
+	for (int i = 0; i < n; i++) {
+		long long start, speed;
+		cin >> start >> speed;
 
-        if (upper_bound(min_ends.begin(), min_ends.end(), end) == min_ends.end()) {
-            min_ends.push_back(end);
-        } else {
-            *upper_bound(min_ends.begin(), min_ends.end(), end) = end;
-        }
-    }
-    
-    cout << min_ends.size() << endl;
+		// Negate to transform non-increasing into non-decreasing
+		long long end = -(start + speed * t);
+
+		if (upper_bound(min_ends.begin(), min_ends.end(), end) == min_ends.end()) {
+			min_ends.push_back(end);
+		} else {
+			*upper_bound(min_ends.begin(), min_ends.end(), end) = end;
+		}
+	}
+
+	cout << min_ends.size() << endl;
 }
 ```
 
@@ -67,50 +67,51 @@ import java.io.*;
 import java.util.*;
 
 public class CowJog {
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new FileReader("cowjog.in"));
-        PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("cowjog.out")));
-        StringTokenizer st = new StringTokenizer(br.readLine());
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new FileReader("cowjog.in"));
+		PrintWriter out =
+		    new PrintWriter(new BufferedWriter(new FileWriter("cowjog.out")));
+		StringTokenizer st = new StringTokenizer(br.readLine());
 
-        int n = Integer.parseInt(st.nextToken());
-        int t = Integer.parseInt(st.nextToken());
+		int n = Integer.parseInt(st.nextToken());
+		int t = Integer.parseInt(st.nextToken());
 
-        ArrayList<Long> minEnds = new ArrayList<>();
+		ArrayList<Long> minEnds = new ArrayList<>();
 
-        for (int i = 0; i < n; i++) {
-            st = new StringTokenizer(br.readLine());
-            long start = Long.parseLong(st.nextToken());
-            long speed = Long.parseLong(st.nextToken());
-            
-            // Negate to transform non-increasing into non-decreasing
-            long end = -(start + speed * (long) t);
+		for (int i = 0; i < n; i++) {
+			st = new StringTokenizer(br.readLine());
+			long start = Long.parseLong(st.nextToken());
+			long speed = Long.parseLong(st.nextToken());
 
-            int pos = bSearch(minEnds, end);
-            if (pos == minEnds.size()) {
-                minEnds.add(end);
-            } else {
-                minEnds.set(pos, end);
-            }
-        }
+			// Negate to transform non-increasing into non-decreasing
+			long end = -(start + speed * (long)t);
 
-        out.println(minEnds.size());
-        out.close();
-        br.close();
-    }
+			int pos = bSearch(minEnds, end);
+			if (pos == minEnds.size()) {
+				minEnds.add(end);
+			} else {
+				minEnds.set(pos, end);
+			}
+		}
 
-    static int bSearch(ArrayList<Long> list, long key) {
-        int low = 0;
-        int high = list.size();
-        while (low < high) {
-            int mid = low + (high - low) / 2;
-            if (list.get(mid) <= key) {
-                low = mid + 1;
-            } else {
-                high = mid;
-            }
-        }
-        return low;
-    }
+		out.println(minEnds.size());
+		out.close();
+		br.close();
+	}
+
+	static int bSearch(ArrayList<Long> list, long key) {
+		int low = 0;
+		int high = list.size();
+		while (low < high) {
+			int mid = low + (high - low) / 2;
+			if (list.get(mid) <= key) {
+				low = mid + 1;
+			} else {
+				high = mid;
+			}
+		}
+		return low;
+	}
 }
 ```
 
