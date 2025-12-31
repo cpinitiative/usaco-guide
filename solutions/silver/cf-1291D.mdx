@@ -32,14 +32,14 @@ have been seen at least once, then the string is an irreducible anagram.
 
 using namespace std;
 
+const int LETTERS = 26;
+
 int main() {
 	string s;
-	int t;
 
 	cin >> s;
-	cin >> t;
 
-	vector<vector<int>> pref(26, vector<int>(s.length() + 1));
+	vector<vector<int>> pref(LETTERS, vector<int>(s.length() + 1));
 
 	for (int i = 1; i < s.length() + 1; i++) {
 		char let = s[i - 1];
@@ -50,6 +50,10 @@ int main() {
 
 		pref[let - 'a'][i] = pref[let - 'a'][i - 1] + 1;
 	}
+
+	int t;
+
+	cin >> t;
 
 	while (t--) {
 		int a, b;
