@@ -195,28 +195,23 @@ although it doesn't shorten the code by much.
 #include <bits/stdc++.h>
 using namespace std;
 
-#define sz(x) (int)size(x)
-
-using ll = long long;
-using vl = vector<ll>;
-
-vl psum(const vl &a) {
-	vl psum(sz(a) + 1);
-	for (int i = 0; i < sz(a); ++i) psum[i + 1] = psum[i] + a[i];
-	// or partial_sum(begin(a),end(a),begin(psum)+1);
-	return psum;
+vector<long long> psum(const vector<int> &arr) {
+	vector<long long> psums(arr.size() + 1);
+	for (int i = 0; i < arr.size(); i++) { psums[i + 1] = psums[i] + arr[i]; }
+	// or partial_sum(begin(a), end(a), begin(psums) + 1);
+	return psums;
 }
 
 int main() {
 	int N, Q;
 	cin >> N >> Q;
-	vl a(N);
-	for (ll &x : a) cin >> x;
-	vl p = psum(a);
+	vector<int> nums(N);
+	for (int i = 0; i < N; i++) { cin >> nums[i]; }
+	vector<long long> prefix_arr = psum(nums);
 	for (int i = 0; i < Q; ++i) {
 		int l, r;
 		cin >> l >> r;
-		cout << p[r] - p[l] << "\n";
+		cout << prefix_arr[r] - prefix_arr[l] << "\n";
 	}
 }
 ```
@@ -238,27 +233,27 @@ public class Main {
 		Q = Integer.parseInt(st.nextToken());
 
 		st = new StringTokenizer(reader.readLine());
-		long[] a = new long[N];
-		for (int i = 0; i < N; i++) { a[i] = Long.parseLong(st.nextToken()); }
+		int[] nums = new int[N];
+		for (int i = 0; i < N; i++) { nums[i] = Integer.parseInt(st.nextToken()); }
 
-		long[] p = psum(a);
+		long[] prefix_arr = psum(nums);
 
 		for (int i = 0; i < Q; i++) {
 			int l, r;
 			st = new StringTokenizer(reader.readLine());
 			l = Integer.parseInt(st.nextToken());
 			r = Integer.parseInt(st.nextToken());
-			writer.println(p[r] - p[l]);
+			writer.println(prefix_arr[r] - prefix_arr[l]);
 		}
 
 		reader.close();
 		writer.close();
 	}
 
-	public static long[] psum(long[] a) {
+	public static long[] psum(int[] arr) {
 		long[] psums = new long[N + 1];
 
-		for (int i = 0; i < N; i++) { psums[i + 1] = psums[i] + a[i]; }
+		for (int i = 0; i < N; i++) { psums[i + 1] = psums[i] + arr[i]; }
 
 		return psums;
 	}
@@ -269,20 +264,20 @@ public class Main {
 <PySection>
 
 ```py
-def psum(a):
-	psum = [0]
-	for i in a:
-		psum.append(psum[-1] + i)
-	return psum
+def psum(arr):
+	psums = [0]
+	for i in arr:
+		psums.append(psum[-1] + i)
+	return psums
 
 
 N, Q = map(int, input().split())
-a = list(map(int, input().split()))
-p = psum(a)
+nums = list(map(int, input().split()))
+prefix_arr = psum(nums)
 
 for i in range(Q):
 	l, r = map(int, input().split())
-	print(p[r] - p[l])
+	print(prefix_arr[r] - prefix_arr[l])
 ```
 
 An alternative approach is to use [`itertools.accumulate`](https://docs.python.org/3/library/itertools.html#itertools.accumulate).
@@ -293,18 +288,18 @@ If using a newer version, you can use the optional parameter `initial=0` as well
 import itertools
 
 
-def psum(a):
-	return [0] + list(itertools.accumulate(a))
+def psum(arr):
+	return [0] + list(itertools.accumulate(arr))
 
 
 # BeginCodeSnip{Same code as above}
 N, Q = map(int, input().split())
-a = list(map(int, input().split()))
-p = psum(a)
+nums = list(map(int, input().split()))
+prefix_arr = psum(nums)
 
 for i in range(Q):
 	l, r = map(int, input().split())
-	print(p[r] - p[l])
+	print(prefix_arr[r] - prefix_arr[l])
 # EndCodeSnip
 ```
 
