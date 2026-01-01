@@ -36,29 +36,29 @@ length one at either $l$ or $r$, and another of everything else. For example, $s
 $\text{aabcc}$ is not an irreducible anagram because we can have a segment $[0, 1]$ and another $[2, 4]$.
 Thus it is optimal to have $t[l]\neq s[l]$ AND $t[r]\neq s[r]$.
 
-Consider the case where $s$ has two distinct characters, and let $s$ have an irreducible anagram $t$. 
-Additionally, let $s[0] = \text{a}$. The same explanation applies when $s[0] = \text{b}$, but the 
+Consider the case where $s$ has two distinct characters, and let $s$ have an irreducible anagram $t$.
+Additionally, let $s[0] = \text{a}$. The same explanation applies when $s[0] = \text{b}$, but the
 letters will be flipped ($\text{a}\to\text{b and b}\to\text{a}$).
 
-Define $x$ as the leftmost position where the number of $\text{b}$s on $s[0:x]$ is greater than 
+Define $x$ as the leftmost position where the number of $\text{b}$s on $s[0:x]$ is greater than
 or equal to the number of $\text{b}$s on $t[0:x]$. $x$ is the position where the number of
-$\text{b}$s in $s$ are equal to the number of $\text{b}$s in $t$: the further right you go, the more 
-$\text{b}$s you get, so the first position this condition holds is when the number of 
+$\text{b}$s in $s$ are equal to the number of $\text{b}$s in $t$: the further right you go, the more
+$\text{b}$s you get, so the first position this condition holds is when the number of
 $\text{b}$s are equal. Because we only have two distinct characters, the number of $\text{a}$s must also
 be the same. If we have $x+1$ total characters and a number of $\text{b}$s, which we call $n$, we must
-have $x + 1 - n \ \text{a}$s in both strings. Thus, $s[0:x]$ and $t[0:x]$ are also anagrams: if there are 
-the same number of $\text{a}$s in $s$ and $t$, and $\text{b}$s in $s$ and $t$, then they must be anagrams. Because the 
-first and last characters are equal, meaning the last character is $\text{a}$, we know $x$ must 
+have $x + 1 - n \ \text{a}$s in both strings. Thus, $s[0:x]$ and $t[0:x]$ are also anagrams: if there are
+the same number of $\text{a}$s in $s$ and $t$, and $\text{b}$s in $s$ and $t$, then they must be anagrams. Because the
+first and last characters are equal, meaning the last character is $\text{a}$, we know $x$ must
 come before the last character, as adding an $\text{a}$ won't help with increasing the $\text{b}$ count.
 This implies the existence of another anagram.
 
 Given that one anagram exists from $[0:x]$, we know that $t$ is a reducible anagram, a contradiction to what
-we asserted before. The remaining substring must be an anagram as well because the number of $\text{a}$s 
-in $s$ and $t$ are equal, and $\text{b}$s in $s$ and $t$ are also equal. In essence, 
+we asserted before. The remaining substring must be an anagram as well because the number of $\text{a}$s
+in $s$ and $t$ are equal, and $\text{b}$s in $s$ and $t$ are also equal. In essence,
 it's just saying $\text{some number} - \text{another number} = \text{some number} - \text{another number}$,
 where $\text{some number}$ can be the total number of $\text{a}$s or $\text{b}$s, and $\text{another number}$
-can be the number of that same character that was in $[0:x]$. The left hand side and right hand side can 
-represent $s$ and $t$. 
+can be the number of that same character that was in $[0:x]$. The left hand side and right hand side can
+represent $s$ and $t$.
 
 The case where three distinct characters exist is a bit more complicated. In order to assure that the first character of $s$ and
 an anagram are different, we can insert all occurrences of the last distinct character to appear to the front. Next, to assure that
