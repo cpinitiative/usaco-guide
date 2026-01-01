@@ -731,52 +731,50 @@ int main() {
 ```java
 import java.util.Scanner;
 public class GregArray {
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
 
-        int n = sc.nextInt();
-        int m = sc.nextInt();
-        int k = sc.nextInt();
+		int n = sc.nextInt();
+		int m = sc.nextInt();
+		int k = sc.nextInt();
 
-        long[] a = new long[n+1];
-        for (int i = 1; i <= n; i++) {
-            a[i] = sc.nextLong();
-        }
+		long[] a = new long[n + 1];
+		for (int i = 1; i <= n; i++) { a[i] = sc.nextLong(); }
 
-        int[][] updates = new int[m][3];
-        for (int i = 0; i < m; i++) {
-            updates[i][0] = sc.nextInt();
-            updates[i][1] = sc.nextInt();
-            updates[i][2] = sc.nextInt();
-        }
+		int[][] updates = new int[m][3];
+		for (int i = 0; i < m; i++) {
+			updates[i][0] = sc.nextInt();
+			updates[i][1] = sc.nextInt();
+			updates[i][2] = sc.nextInt();
+		}
 
-        long[] s = new long[m + 2];
-        long[] add = new long[n + 2];
+		long[] s = new long[m + 2];
+		long[] add = new long[n + 2];
 
-        for (int i = 0; i < k; i++) {
-            int x = sc.nextInt();
-            int y = sc.nextInt();
-            s[x]++;
-            s[y+1]--;
-        }
+		for (int i = 0; i < k; i++) {
+			int x = sc.nextInt();
+			int y = sc.nextInt();
+			s[x]++;
+			s[y + 1]--;
+		}
 
-        for (int i = 1; i <= m; i++) {
-            // apply prefix sums
-            s[i] += s[i-1];
-            
-            // at the same time compute the second difference array
-            add[updates[i-1][0]] += s[i]*updates[i-1][2];
-            add[updates[i-1][1]+1] -= s[i]*updates[i-1][2];
-        }
+		for (int i = 1; i <= m; i++) {
+			// apply prefix sums
+			s[i] += s[i - 1];
 
-        for (int i = 1; i <= n; i++) {
-            // apply prefix sums
-            add[i] += add[i-1];
-            System.out.print((a[i]+add[i]) + " ");
-        }
-        System.out.println();
-        sc.close();
-    }
+			// at the same time compute the second difference array
+			add[updates[i - 1][0]] += s[i] * updates[i - 1][2];
+			add[updates[i - 1][1] + 1] -= s[i] * updates[i - 1][2];
+		}
+
+		for (int i = 1; i <= n; i++) {
+			// apply prefix sums
+			add[i] += add[i - 1];
+			System.out.print((a[i] + add[i]) + " ");
+		}
+		System.out.println();
+		sc.close();
+	}
 }
 ```
 
