@@ -1,0 +1,88 @@
+---
+id: usaco-1516
+source: USACO Bronze 2025 US Open
+title: More Cow Photos
+author: Sachet Abeysinghe
+---
+
+[Official Analysis (C++, Python)](https://usaco.org/current/data/sol_prob2_bronze_open25.html)
+
+## Explanation
+
+We want the heights to be symmetric (i.e. same element from both ends) and no two adjacent elements to be equal. Therefore, the elements we
+select must have a frequency of at least two so we can make it symmetric on both ends. The maximum, however, must only have one occurrence since adjacent cows can't have the same height.
+
+To implement this, we compute the frequency map and add $2$ to the answer for every element with frequency $\ge 2$ (because this element will account for two
+occurrences from both ends). When we find the maximum, we only add $1$ to the answer since it can only have one occurrence.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	int t;
+	cin >> t;
+
+	for (int tc = 0; tc < t; tc++) {
+		int n;
+		cin >> n;
+
+		unordered_map<int, int> frequency;
+		int tallest = 0;
+		for (int i = 0; i < n; i++) {
+			int x;
+			cin >> x;
+			frequency[x]++;
+			tallest = max(tallest, x);
+		}
+
+		int answer = 0;
+		for (auto &p : frequency) {
+			int height = p.first;
+			int count = p.second;
+
+			if (height == tallest) {
+				answer += 1;
+			} else if (count >= 2) {
+				answer += 2;
+			}
+		}
+
+		cout << answer << '\n';
+	}
+}
+```
+
+</CPPSection>
+
+<PySection>
+
+```py
+from collections import Counter
+
+for t in range(int(input())):
+	n = int(input())
+	frequency = Counter([int(x) for x in input().split()])
+	tallest = max(frequency.keys())
+	answer = 0
+
+	for height in frequency:
+		if height == tallest:
+			answer += 1
+		elif frequency[height] >= 2:
+			answer += 2
+
+	print(answer)
+```
+
+</PySection>
+
+</LanguageSection>
