@@ -32,29 +32,31 @@ Regarding the implementation, we can negate all the end values in order to apply
 using namespace std;
 
 int main() {
-	freopen("cowjog.in", "r", stdin);
-	freopen("cowjog.out", "w", stdout);
+    freopen("cowjog.in", "r", stdin);
+    freopen("cowjog.out", "w", stdout);
 
-	int n, t;
-	cin >> n >> t;
+    int n, t;
+    cin >> n >> t;
 
-	vector<long long> min_ends;
+    vector<long long> min_ends;
 
-	for (int i = 0; i < n; i++) {
-		long long start, speed;
-		cin >> start >> speed;
+    for (int i = 0; i < n; i++) {
+        int start, speed;
+        cin >> start >> speed;
 
-		// Negate to transform non-increasing into non-decreasing
-		long long end = -(start + speed * t);
+        // Negate to transform non-increasing into non-decreasing
+        long long end = -(start + (long long)speed * t);
+        
+        auto it = upper_bound(min_ends.begin(), min_ends.end(), end);
 
-		if (upper_bound(min_ends.begin(), min_ends.end(), end) == min_ends.end()) {
-			min_ends.push_back(end);
-		} else {
-			*upper_bound(min_ends.begin(), min_ends.end(), end) = end;
-		}
-	}
+        if (it == min_ends.end()) {
+            min_ends.push_back(end);
+        } else {
+            *it = end;
+        }
+    }
 
-	cout << min_ends.size() << endl;
+    cout << min_ends.size() << endl;
 }
 ```
 
