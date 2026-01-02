@@ -34,33 +34,33 @@ int main() {
 
 	vector<pair<int, int>> cows(n);
 
-	vector<int> xs(n);
-	vector<int> ys(n);
+	vector<int> sort_by_x(n);
+	vector<int> sort_by_y(n);
 
 	for (int i = 0; i < n; i++) {
 		int x, y;
 		cin >> x >> y;
 		cows[i] = {x, y};
 
-		xs[i] = x;
-		ys[i] = y;
+		sort_by_x[i] = x;
+		sort_by_y[i] = y;
 	}
 
-	sort(xs.begin(), xs.end());
-	sort(ys.begin(), ys.end());
+	sort(sort_by_x.begin(), sort_by_x.end());
+	sort(sort_by_y.begin(), sort_by_y.end());
 
 	vector<int> candidates;
 	for (int i = 0; i < n; i++) {
-		auto [x1, y1] = cows[i];
+		auto [x, y] = cows[i];
 
 		// the 3 most extreme in any of the 4 directions.
-		if (x1 <= xs[3] || x1 >= xs[n - 3] || y1 <= ys[2] || y1 >= ys[n - 3]) {
+		if (x <= sort_by_x[3] || x >= sort_by_x[n - 3] || y <= sort_by_y[2] || y >= sort_by_y[n - 3]) {
 			candidates.push_back(i);
 		}
 	}
 
 	// Generating subsets with bitmasks
-	int bestArea = INT32_MAX;
+	int min_area = INT32_MAX;
 	for (int i = 0; i < (1 << candidates.size()); i++) {
 		set<int> removing;
 		for (int b = 0; b < candidates.size(); b++) {
@@ -69,23 +69,23 @@ int main() {
 		if (removing.size() != 3) continue;
 
 		// Compute area
-		int minX = INT32_MAX;
-		int maxX = INT32_MIN;
-		int minY = INT32_MAX;
-		int maxY = INT32_MIN;
+		int min_x = INT_MAX;
+		int max_x = INT_MAX;
+		int min_y = INT_MAX;
+		int max_y = INT_MAX;
 		for (int i = 0; i < cows.size(); i++) {
 			if (removing.count(i)) continue;
 
-			minX = min(minX, cows[i].first);
-			maxX = max(maxX, cows[i].first);
-			minY = min(minY, cows[i].second);
-			maxY = max(maxY, cows[i].second);
+			min_x = min(min_x, cows[i].first);
+			max_x = max(max_x, cows[i].first);
+			min_y = min(min_y, cows[i].second);
+			max_y = max(max_y, cows[i].second);
 		}
 
-		bestArea = min(bestArea, (maxX - minX) * (maxY - minY));
+		min_area = min(min_area, (max_x - min_x) * (max_y - min_y));
 	}
 
-	cout << bestArea;
+	cout << min_area;
 }
 ```
 
