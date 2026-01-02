@@ -9,14 +9,14 @@ author: Maggie Liu, Aadit Ambadkar, Rameez Parwez, Ruben Jing
 
 ## Explanation
 
-We can model the fences, and then floodfill to find the number of connected components. The number 
-of regions closed by a fence is the number of connected components minus one, as one connected component 
+We can model the fences, and then floodfill to find the number of connected components. The number
+of regions closed by a fence is the number of connected components minus one, as one connected component
 is the rest of the farm that isn't enclosed by a fence. Each region only needs one gate to connect it
 to the rest of the farm, so the answer is the amount of connected components minus one.
 
 If a fence is seen, the floodfil is stopped.
 
-Each fence can be thought of as two grid units. The reason we use two is for cases such as $NESW$. 
+Each fence can be thought of as two grid units. The reason we use two is for cases such as $NESW$.
 If we only use one grid unit per fence, there would be no area inside it, and thus we would undercount.
 
 <Warning>
@@ -24,13 +24,13 @@ If we only use one grid unit per fence, there would be no area inside it, and th
 The official solution stores the farm in a $2005 \times 2005$ boolean array with
 the origin at $(1002, 1002)$, but this is not sufficient. Since each fence
 segment is doubled, the maximum distance in each direction could be $2000$
-units, causing an input such as $1000$ $\texttt{N}$s to go out of bounds. 
+units, causing an input such as $1000$ $\texttt{N}$s to go out of bounds.
 
 To not go out of bounds, an array of size $4003 \times 4003$ should be used:
-$1$ unit for the origin position, $2000$ units in each direction from 
-the origin and $1$ more unit in each direction to ensure that the 
-farm includes area beyond the fence. The origin is at $(2001, 2001)$, and there is 
-"buffer" space at row/column $0$ and $4002$, which is obtained from adding or 
+$1$ unit for the origin position, $2000$ units in each direction from
+the origin and $1$ more unit in each direction to ensure that the
+farm includes area beyond the fence. The origin is at $(2001, 2001)$, and there is
+"buffer" space at row/column $0$ and $4002$, which is obtained from adding or
 subtracting $2000$ from the origin then correspondingly adding or subtracting $1$.
 
 If we floodfill through the entire grid without constraints,
