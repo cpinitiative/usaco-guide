@@ -9,9 +9,9 @@ author: SeungJoon Park
 
 ## Explanation
 
-First, we rearrange $S+t_i \lt c_i$ to $S \lt c_i - t_i$, as sorting it allows us to make the comparisons easier.
+First, we rearrange $S+t_i \lt c_i$ to $S \lt c_i - t_i$, as sorting farms in descending order of $c_i - t_i$ makes comparisons easier.
 
-Then, we check if the value located at $V$ in the array is greater than $S$. It means that following elements is possible, since it is sorted in descending order. In other words, going $V$ farms is possible when the value at $V$ is greater than $S$.
+Then, we check if the value located at $V$ in the array is greater than $S$. If so, all previous values are possible, since the array is sorted in descending order. In other words, going to $V$ farms is possible when the value at $V$ is greater than $S$.
 
 Lastly, we determine the final answer according to the comparison.
 
@@ -30,19 +30,17 @@ Lastly, we determine the final answer according to the comparison.
 using namespace std;
 
 int main() {
-
 	int n, q;
 	cin >> n >> q;
-	vector<int> c;
+	vector<int> c(n);
 	for (int i = 0; i < n; i++) {
-		int tmp;
-		cin >> tmp;
-		c.push_back(tmp);
+		cin >> c[i];
 	}
+
 	for (int i = 0; i < n; i++) {
-		int tmp;
-		cin >> tmp;
-		c[i] -= tmp;
+		int t;
+		cin >> t;
+		c[i] -= t;
 	}
 
 	sort(c.begin(), c.end(), greater<int>());
@@ -87,6 +85,7 @@ public class MaximizingProduct {
 				System.out.println("NO");
 			}
 		}
+
 		sc.close();
 	}
 }
@@ -104,6 +103,7 @@ for i in range(n):
 	c[i] -= t[i]
 
 c.sort(reverse=True)
+
 for _ in range(q):
 	v, s = map(int, input().split())
 	if c[v - 1] > s:
