@@ -14,7 +14,7 @@ comfortable or uncomfortable: the newly added cow and any adjacent cows
 that exist in each of the four directions. We can create a function to
 check whether or not there is a comfortable cow in a certain position.
 We also maintain a set of comfortable cows. After adding a cow, we check
-whether each of the five positions contains a comfortable cow using our 
+whether each of the five positions contains a comfortable cow using our
 function and update the set accordingly. Finally, we print the length of
 the set of comfortable cows for each query.
 
@@ -26,29 +26,27 @@ the set of comfortable cows for each query.
 <CPPSection>
 
 ```cpp
+#include <array>
 #include <iostream>
 #include <unordered_set>
-#include <array>
 
 int cows[1001][1001] = {0};
 
 struct Hash {
-    template <class T1, class T2>
-    size_t operator()(const std::pair<T1, T2>& p) const {
-        auto h1 = std::hash<T1>{}(p.first);
-        auto h2 = std::hash<T2>{}(p.second);
-        return h1 ^ (h2 << 1);
-    }
+	template <class T1, class T2> size_t operator()(const std::pair<T1, T2> &p) const {
+		auto h1 = std::hash<T1>{}(p.first);
+		auto h2 = std::hash<T2>{}(p.second);
+		return h1 ^ (h2 << 1);
+	}
 };
 
 bool check_comfortable(int x, int y) {
 
-	if (!cows[x][y]) {
-		return false;
-	}
+	if (!cows[x][y]) { return false; }
 
 	int adjacent = 0;
-	for (auto &cow : std::array<std::pair<int, int>, 4> {{{x - 1, y}, {x + 1, y}, {x, y - 1}, {x, y + 1}}}) {
+	for (auto &cow : std::array<std::pair<int, int>, 4>{
+	         {{x - 1, y}, {x + 1, y}, {x, y - 1}, {x, y + 1}}}) {
 		if (cow.first >= 0 && cow.second >= 0 && cows[cow.first][cow.second]) {
 			adjacent++;
 		}
@@ -59,7 +57,7 @@ bool check_comfortable(int x, int y) {
 int main() {
 	int n;
 	std::cin >> n;
-	
+
 	std::unordered_set<std::pair<int, int>, Hash> comfortable;
 
 	for (int i = 0; i < n; i++) {
@@ -67,8 +65,10 @@ int main() {
 		std::cin >> x >> y;
 		cows[x][y] = 1;
 
-		for (auto &cow : std::array<std::pair<int, int>, 5> {{{x, y}, {x - 1, y}, {x + 1, y}, {x, y - 1}, {x, y + 1}}}) {
-			if (cow.first >= 0 && cow.second >= 0 && check_comfortable(cow.first, cow.second)) {
+		for (auto &cow : std::array<std::pair<int, int>, 5>{
+		         {{x, y}, {x - 1, y}, {x + 1, y}, {x, y - 1}, {x, y + 1}}}) {
+			if (cow.first >= 0 && cow.second >= 0 &&
+			    check_comfortable(cow.first, cow.second)) {
 				comfortable.insert(cow);
 			} else {
 				comfortable.erase(cow);
