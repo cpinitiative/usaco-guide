@@ -13,21 +13,21 @@ Each fence can be thought of as two grid units. The reason we use two is for cas
 If we only use one grid unit per fence, there would be no area inside it, and thus we would undercount.
 
 We can model the fences, and floodfill to find the number of connected components. The region not
-enclosed by a fence is also counted as one connected component. By merging the regions enclosed 
-by a fence with the region not enclosed by the fence, by means of a gate, we can ensure the farm 
-is connected. The cows are able to go from a region enclosed by a fence into the region not enclosed 
+enclosed by a fence is also counted as one connected component. By merging the regions enclosed
+by a fence with the region not enclosed by the fence, by means of a gate, we can ensure the farm
+is connected. The cows are able to go from a region enclosed by a fence into the region not enclosed
 by a fence and subsequently visit another region which is enclosed by a fence.
 
 Therefore, the number of gates that must be used is equal to the number of regions enclosed by the fence,
 which is the number of connected components minus one.
 
-We can perform floodfill and have the fences signify a stopping point. If a fence is seen, we no longer 
+We can perform floodfill and have the fences signify a stopping point. If a fence is seen, we no longer
 continue to floodfill in that direction. This is because floodfill is performed to simulate the cows' movement,
-and a cow cannot walk through a fence. 
+and a cow cannot walk through a fence.
 
-To count the number of connected components, we perform floodfill from every point in our boundaries (more 
-on that in the warning below). If we have already visited a point, we don't floodfill any further. If we 
-have to start a new floodfill, it means the point we're starting on was not reached from prior 
+To count the number of connected components, we perform floodfill from every point in our boundaries (more
+on that in the warning below). If we have already visited a point, we don't floodfill any further. If we
+have to start a new floodfill, it means the point we're starting on was not reached from prior
 floodfills, meaning it is in a separate component. Thus, we add one to our count of connected components.
 
 <Warning>
