@@ -2,25 +2,56 @@
 id: usaco-596
 source: USACO Silver 2016 January
 title: Build Gates
-author: Maggie Liu, Aadit Ambadkar, Rameez Parwez
+author: Maggie Liu, Aadit Ambadkar, Rameez Parwez, Ruben Jing
 ---
 
 [Official Analysis (Java)](http://www.usaco.org/current/data/sol_gates_silver_jan16.html)
+
+## Explanation
+
+Each fence can be thought of as two grid units. The reason we use two is for cases such as $NESW$.
+If we only use one grid unit per fence, there would be no area inside it, and thus we would undercount.
+
+We can model the fences, and floodfill to find the number of connected components. The region not
+enclosed by a fence is also counted as one connected component. By merging the regions enclosed
+by a fence with the region not enclosed by the fence, by means of a gate, we can ensure the farm
+is connected. The cows are able to go from a region enclosed by a fence into the region not enclosed
+by a fence and subsequently visit another region which is enclosed by a fence.
+
+Therefore, the number of gates that must be used is equal to the number of regions enclosed by the fence,
+which is the number of connected components minus one.
+
+We can perform floodfill and have the fences signify a stopping point. If a fence is seen, we no longer
+continue to floodfill in that direction. This is because floodfill is performed to simulate the cows' movement,
+and a cow cannot walk through a fence.
+
+To count the number of connected components, we perform floodfill from every point in our boundaries (more
+on that in the warning below). If we have already visited a point, we don't floodfill any further. If we
+have to start a new floodfill, it means the point we're starting on was not reached from prior
+floodfills, meaning it is in a separate component. Thus, we add one to our count of connected components.
 
 <Warning>
 
 The official solution stores the farm in a $2005 \times 2005$ boolean array with
 the origin at $(1002, 1002)$, but this is not sufficient. Since each fence
 segment is doubled, the maximum distance in each direction could be $2000$
-units, causing an input such as $1000$ $\texttt{N}$s to go out of bounds. To not
-go out of bounds, an array of size $4003 \times 4003$ should be used: $1$ unit
-for the origin position, $2000$ units in each direction from the origin and $1$
-more unit in each direction to ensure that the farm includes area beyond the
-fence.
+units, causing an input such as $1000$ $\texttt{N}$s to go out of bounds.
+
+To not go out of bounds, an array of size $4003 \times 4003$ should be used:
+$1$ unit for the origin position, $2000$ units in each direction from
+the origin and $1$ more unit in each direction to ensure that the
+farm includes area beyond the fence. The origin is at $(2001, 2001)$, and there is
+"buffer" space at row/column $0$ and $4002$, which is obtained from adding or
+subtracting $2000$ from the origin then correspondingly adding or subtracting $1$.
+
+If we floodfill through the entire grid without constraints,
+a stack overflow would occur. This is why we must use `maxx`, `minx`, `maxy`, and `miny`.
 
 </Warning>
 
 ## Implementation
+
+**Time Complexity:** $\mathcal{O}(N^2)$
 
 <LanguageSection>
 <CPPSection>
