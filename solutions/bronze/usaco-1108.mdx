@@ -16,7 +16,64 @@ Observe that when a cow is added, at most five cows can become comfortable or un
 **Time Complexity:** $\mathcal{O}(N)$
 
 <LanguageSection>
+<CPPSection>
 
+```cpp
+#include <iostream>
+#include <unordered_set>
+#include <array>
+
+int cows[1001][1001] = {0};
+
+struct Hash {
+    template <class T1, class T2>
+    size_t operator()(const std::pair<T1, T2>& p) const {
+        auto h1 = std::hash<T1>{}(p.first);
+        auto h2 = std::hash<T2>{}(p.second);
+        return h1 ^ (h2 << 1);
+    }
+};
+
+bool check_comfortable(int x, int y) {
+
+	if (!cows[x][y]) {
+		return false;
+	}
+
+	int adjacent = 0;
+	for (auto &cow : std::array<std::pair<int, int>, 4> {{{x - 1, y}, {x + 1, y}, {x, y - 1}, {x, y + 1}}}) {
+		if (cow.first >= 0 && cow.second >= 0 && cows[cow.first][cow.second]) {
+			adjacent++;
+		}
+	}
+	return adjacent == 3;
+}
+
+int main() {
+	int n;
+	std::cin >> n;
+	
+	std::unordered_set<std::pair<int, int>, Hash> comfortable;
+
+	for (int i = 0; i < n; i++) {
+		int x, y;
+		std::cin >> x >> y;
+		cows[x][y] = 1;
+
+		for (auto &cow : std::array<std::pair<int, int>, 5> {{{x, y}, {x - 1, y}, {x + 1, y}, {x, y - 1}, {x, y + 1}}}) {
+			if (cow.first >= 0 && cow.second >= 0 && check_comfortable(cow.first, cow.second)) {
+				comfortable.insert(cow);
+			} else {
+				comfortable.erase(cow);
+			}
+		}
+
+		std::cout << comfortable.size() << '\n';
+	}
+}
+```
+
+</CPPSection>
 <PySection>
 
 ```py
@@ -49,5 +106,4 @@ for i in range(n):
 ```
 
 </PySection>
-
 </LanguageSection>
