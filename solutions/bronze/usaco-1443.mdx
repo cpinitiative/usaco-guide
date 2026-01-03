@@ -2,7 +2,7 @@
 id: usaco-1443
 source: USACO Bronze 2024 December
 title: Roundabout Rounding
-author: Sachet Abeysinghe
+author: Sachet Abeysinghe, Rameez Parwez
 ---
 
 [Official Analysis (C++, Python)](http://www.usaco.org/current/data/sol_prob1_bronze_dec24.html)
@@ -18,7 +18,31 @@ Thus, for any given input $N$ where we want to find the number of integers in $[
 **Time Complexity:** $\mathcal{O}(T)$
 
 <LanguageSection>
+<CPPSection>
 
+```cpp
+#include <iostream>
+#include <string>
+
+int main() {
+	int t;
+	std::cin >> t;
+	while (t--) {
+		int n;
+		std::cin >> n;
+		int different = 0;
+		for (int i = 2; i < 10; i++) {
+			if (n > stoi(std::string(i, '4'))) {
+				different += std::min(n - stoi(std::string(i, '4')),
+				                      stoi(std::string(i - 1, '5')));
+			}
+		}
+		std::cout << different << '\n';
+	}
+}
+```
+
+</CPPSection>
 <PySection>
 
 ```py
@@ -34,5 +58,4 @@ for t in range(int(input())):
 ```
 
 </PySection>
-
 </LanguageSection>
