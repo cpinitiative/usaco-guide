@@ -22,36 +22,32 @@ We iterate from left to right while maintaining a stack of positions, such that 
 <LanguageSection>
 <CPPSection>
 
-```cpp 
+```cpp
 #include <iostream>
-#include <vector>
 #include <stack>
+#include <vector>
 
 int main() {
-    int n;
-    std::cin >> n;
-    std::vector<int> heights(n);
+	int n;
+	std::cin >> n;
+	std::vector<int> heights(n);
 
-    for (int &x : heights) {
-        std::cin >> x;
-    }
+	for (int &x : heights) { std::cin >> x; }
 
-    long long answer = 0;
-    std::stack<int> stack;
-    for (int i = 0; i < n; i++) {
-        while (!stack.empty() && heights[stack.top()] < heights[i]) {
-            answer += i - stack.top() + 1;
-            stack.pop();
-        }
+	long long answer = 0;
+	std::stack<int> stack;
+	for (int i = 0; i < n; i++) {
+		while (!stack.empty() && heights[stack.top()] < heights[i]) {
+			answer += i - stack.top() + 1;
+			stack.pop();
+		}
 
-        if (!stack.empty()) {
-            answer += i - stack.top() + 1;
-        }
+		if (!stack.empty()) { answer += i - stack.top() + 1; }
 
-        stack.push(i);
-    }
+		stack.push(i);
+	}
 
-    std::cout << answer << '\n';
+	std::cout << answer << '\n';
 }
 ```
 
