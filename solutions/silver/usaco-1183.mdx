@@ -37,11 +37,12 @@ int main() {
 	long long answer = 0;
 	std::stack<int> stack;
 	for (int i = 0; i < n; i++) {
+		// i is position of nearest taller cow to right
 		while (!stack.empty() && heights[stack.top()] < heights[i]) {
 			answer += i - stack.top() + 1;
 			stack.pop();
 		}
-
+		// nearest taller cow to left of i
 		if (!stack.empty()) { answer += i - stack.top() + 1; }
 
 		stack.push(i);
