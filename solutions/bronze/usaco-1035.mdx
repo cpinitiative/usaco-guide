@@ -11,13 +11,15 @@ author: Aarav Sethi
 ### Goal
 - We are given a binary string with `0` representing an empty stall, and `1` representing an occupied stall. 
 - We need to find the two most optimal places to put cows, to maximize $D$.
-- $D$ is the minimum area between two occupied stalls/`1`s.
+- $D$ is the minimum area between two occupied stalls.
 
 The sample testcase can be solved by fitting two cows in the two largest gaps.
-**ex.** `10001001000010` -> `10101001010010`.
+**ex.** `10001001000010` -> `10`**`1`**`010010`**`1`**`0010`.
 
-But there exist additional edge cases we need to account for:
-1. `100010001` - Place two cows in the two largest gaps. 
+But many more cases exist, for `1000001`, or `0001000` for example.
+
+All the cases are:
+1. `100010001` - Place two cows in the two largest gaps.
 2. `10000001` - Fit two cows within the $1/3$ and $2/3$ marks of the largest gap.
 3. `00001000` - Place at the two far edges.
 4. `10000000`/`00000001` - Place a cow in one of the far edges, and one in the largest gap.
@@ -25,7 +27,7 @@ But there exist additional edge cases we need to account for:
 We can now test all of these cases, and maximize $D$.
 
 ## Implementation
-**Time Complexity:** $\mathcal{O}(N\log^2N)$
+**Time Complexity:** $\mathcal{O}(N\log N)$
 
 <LanguageSection>
 
