@@ -2,7 +2,7 @@
 id: usaco-1183
 source: USACO Silver 2022 January
 title: Cow Frisbee
-author: Sachet Abeysinghe
+author: Sachet Abeysinghe, Rameez Parwez
 ---
 
 [Official Analysis (C++)](https://usaco.org/current/data/sol_prob2_silver_jan22.html)
@@ -20,7 +20,39 @@ We iterate from left to right while maintaining a stack of positions, such that 
 **Time Complexity:** $\mathcal{O}(N)$
 
 <LanguageSection>
+<CPPSection>
 
+```cpp
+#include <iostream>
+#include <stack>
+#include <vector>
+
+int main() {
+	int n;
+	std::cin >> n;
+	std::vector<int> heights(n);
+
+	for (int &x : heights) { std::cin >> x; }
+
+	long long answer = 0;
+	std::stack<int> stack;
+	for (int i = 0; i < n; i++) {
+		// i is position of nearest taller cow to right
+		while (!stack.empty() && heights[stack.top()] < heights[i]) {
+			answer += i - stack.top() + 1;
+			stack.pop();
+		}
+		// nearest taller cow to left of i
+		if (!stack.empty()) { answer += i - stack.top() + 1; }
+
+		stack.push(i);
+	}
+
+	std::cout << answer << '\n';
+}
+```
+
+</CPPSection>
 <PySection>
 
 ```py
@@ -43,7 +75,6 @@ print(answer)
 ```
 
 </PySection>
-
 </LanguageSection>
 
 ## Solution 2 - Sorted Set/List
@@ -55,7 +86,6 @@ We can process cows in decreasing order of height and maintain a sorted set of t
 **Time Complexity:** $\mathcal{O}(N\log N)$
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
@@ -91,5 +121,4 @@ int main() {
 ```
 
 </CPPSection>
-
 </LanguageSection>
