@@ -9,7 +9,7 @@ author: Aarav Sethi
 
 ## Explanation
 ### Goal
-- We are given a binary string with `0` representing an empty stall, and `1` representing an occupied stall. 
+- We are given a binary string with `0` representing an empty stall, and `1` representing an occupied stall.
 - We need to find the two most optimal places to put cows, to maximize $D$.
 - $D$ is the minimum area between two occupied stalls.
 
@@ -37,109 +37,114 @@ We can now test all of these cases, and maximize $D$.
 
 using namespace std;
 
-int compute_D(string stalls){
-    int d = INT32_MAX;
-    int last1 = -1;
+int compute_D(string stalls) {
+	int d = INT32_MAX;
+	int last1 = -1;
 
-    for (int i = 0; i < stalls.length(); i++){
-        if (stalls[i] == '1'){
-            if (last1 != -1) d = min(d, i-last1);
-            last1 = i;
-        }
-    }
-    
-    return d;
+	for (int i = 0; i < stalls.length(); i++) {
+		if (stalls[i] == '1') {
+			if (last1 != -1) d = min(d, i - last1);
+			last1 = i;
+		}
+	}
+
+	return d;
 }
-vector<pair<int, int>> get_zeros(string stalls){
-    vector<pair<int, int>> zeros; // [(start, end)], we can then sort to maximize end-start
+vector<pair<int, int>> get_zeros(string stalls) {
+	vector<pair<int, int>>
+	    zeros;  // [(start, end)], we can then sort to maximize end-start
 
-    int zeros_start = -1;
-    for (int i = 0; i < stalls.size(); i++){
-        if (stalls[i] == '0' && zeros_start == -1){ // entered a '0' and not already counting
-            // start counting
-            zeros_start = i;
-        }
-        if ((stalls[i] == '1' && zeros_start != -1) || i == stalls.size()-1){ // hit a '1' & we have counted some zeros, or we have reached the end
-            // insert the zero sequence
-            zeros.push_back({zeros_start, i});
-            zeros_start = -1;
-        }
-    }
+	int zeros_start = -1;
+	for (int i = 0; i < stalls.size(); i++) {
+		if (stalls[i] == '0' &&
+		    zeros_start == -1) {  // entered a '0' and not already counting
+			// start counting
+			zeros_start = i;
+		}
+		if ((stalls[i] == '1' && zeros_start != -1) ||
+		    i == stalls.size() - 1) {  // hit a '1' & we have counted some zeros, or we
+			                           // have reached the end
+			// insert the zero sequence
+			zeros.push_back({zeros_start, i});
+			zeros_start = -1;
+		}
+	}
 
-    sort(zeros.begin(), zeros.end(), [](auto a, auto b){
-        return (a.second-a.first) > (b.second-b.first);
-    });
-    
-    return zeros;
+	sort(zeros.begin(), zeros.end(),
+	     [](auto a, auto b) { return (a.second - a.first) > (b.second - b.first); });
+
+	return zeros;
 }
 
-int main() { 
-	int n; cin >> n;
-    string stalls; cin >> stalls;
+int main() {
+	int n;
+	cin >> n;
+	string stalls;
+	cin >> stalls;
 
-    auto zeros = get_zeros(stalls);
-    
-    int d = 0;
-    if (zeros.size() >= 2){
-        // 100010001
-        // place at the most spaced locations
-        string c = stalls;
-        
-        for (int i = 0; i < 2; i++){
-            auto sZ = get_zeros(stalls);
-            auto loc = sZ[0];
-            int pos = (loc.first+loc.second)/2; // midpoint
-        
-            c[pos] = '1';
-        }
-        
-        d = max(d, compute_D(c));
-    }
-    if (zeros.size() >= 1){
-        // 100000001
-        // place one at 1/3 and one at 2/3
-        auto loc = zeros[0];
-        int gap = loc.second-loc.first;
-        
-        string c = stalls;
-        c[loc.first+gap/3] = '1';
-        c[loc.first+(gap*2)/3] = '1';
-        
-        d = max(d, compute_D(c));
-    }
-    if (stalls[0] == '0' && stalls[stalls.size()-1] == '0') {
-        // 000010000
-        // place at two edges
-        string c = stalls;
-        c[0] = '1';
-        c[stalls.size()-1] = '1';
-        
-        d = max(d, compute_D(c));
-    }
-    if (stalls[0] == '0') {
-        // 00010001
-        // place at furthest point & within largest zero
-        string c = stalls;
-        c[0] = '1';
-        
-        auto nZ = getZeros(c);
-        c[(nZ[0].first+nZ[0].second)/2] = '1';
-        
-        d = max(d, compute_D(c));
-    }
-    if (stalls[stalls.size()-1] == '0') {
-        // 10010000
-        // place at furthest point & within largest zero
-        string c = stalls;
-        c[stalls.size()-1] = '1';
-        
-        auto nZ = getZeros(c);
-        c[(nZ[0].first+nZ[0].second)/2] = '1';
-        
-        d = max(d, compute_D(c));
-    }
-    
-    cout << d;
+	auto zeros = get_zeros(stalls);
+
+	int d = 0;
+	if (zeros.size() >= 2) {
+		// 100010001
+		// place at the most spaced locations
+		string c = stalls;
+
+		for (int i = 0; i < 2; i++) {
+			auto sZ = get_zeros(stalls);
+			auto loc = sZ[0];
+			int pos = (loc.first + loc.second) / 2;  // midpoint
+
+			c[pos] = '1';
+		}
+
+		d = max(d, compute_D(c));
+	}
+	if (zeros.size() >= 1) {
+		// 100000001
+		// place one at 1/3 and one at 2/3
+		auto loc = zeros[0];
+		int gap = loc.second - loc.first;
+
+		string c = stalls;
+		c[loc.first + gap / 3] = '1';
+		c[loc.first + (gap * 2) / 3] = '1';
+
+		d = max(d, compute_D(c));
+	}
+	if (stalls[0] == '0' && stalls[stalls.size() - 1] == '0') {
+		// 000010000
+		// place at two edges
+		string c = stalls;
+		c[0] = '1';
+		c[stalls.size() - 1] = '1';
+
+		d = max(d, compute_D(c));
+	}
+	if (stalls[0] == '0') {
+		// 00010001
+		// place at furthest point & within largest zero
+		string c = stalls;
+		c[0] = '1';
+
+		auto nZ = getZeros(c);
+		c[(nZ[0].first + nZ[0].second) / 2] = '1';
+
+		d = max(d, compute_D(c));
+	}
+	if (stalls[stalls.size() - 1] == '0') {
+		// 10010000
+		// place at furthest point & within largest zero
+		string c = stalls;
+		c[stalls.size() - 1] = '1';
+
+		auto nZ = getZeros(c);
+		c[(nZ[0].first + nZ[0].second) / 2] = '1';
+
+		d = max(d, compute_D(c));
+	}
+
+	cout << d;
 }
 ```
 </CPPSection>
