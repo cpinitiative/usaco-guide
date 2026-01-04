@@ -35,7 +35,7 @@ We can now test all of these cases, and maximize $D$.
 
 using namespace std;
 
-int computeD(string stalls){
+int compute_D(string stalls){
     int d = INT32_MAX;
     int last1 = -1;
 
@@ -48,19 +48,19 @@ int computeD(string stalls){
     
     return d;
 }
-vector<pair<int, int>> getZeros(string stalls){
+vector<pair<int, int>> get_zeros(string stalls){
     vector<pair<int, int>> zeros; // [(start, end)], we can then sort to maximize end-start
 
-    int zerosStart = -1;
+    int zeros_start = -1;
     for (int i = 0; i < stalls.size(); i++){
-        if (stalls[i] == '0' && zerosStart == -1){ // entered a '0' and not already counting
+        if (stalls[i] == '0' && zeros_start == -1){ // entered a '0' and not already counting
             // start counting
-            zerosStart = i;
+            zeros_start = i;
         }
-        if ((stalls[i] == '1' && zerosStart != -1) || i == stalls.size()-1){ // hit a '1' & we have counted some zeros, or we have reached the end
+        if ((stalls[i] == '1' && zeros_start != -1) || i == stalls.size()-1){ // hit a '1' & we have counted some zeros, or we have reached the end
             // insert the zero sequence
-            zeros.push_back({zerosStart, i});
-            zerosStart = -1;
+            zeros.push_back({zeros_start, i});
+            zeros_start = -1;
         }
     }
 
@@ -75,7 +75,7 @@ int main() {
 	int n; cin >> n;
     string stalls; cin >> stalls;
 
-    auto zeros = getZeros(stalls);
+    auto zeros = get_zeros(stalls);
     
     int d = 0;
     if (zeros.size() >= 2){
@@ -84,14 +84,14 @@ int main() {
         string c = stalls;
         
         for (int i = 0; i < 2; i++){
-            auto sZ = getZeros(stalls);
+            auto sZ = get_zeros(stalls);
             auto loc = sZ[0];
             int pos = (loc.first+loc.second)/2; // midpoint
         
             c[pos] = '1';
         }
         
-        d = max(d, computeD(c));
+        d = max(d, compute_D(c));
     }
     if (zeros.size() >= 1){
         // 100000001
@@ -103,7 +103,7 @@ int main() {
         c[loc.first+gap/3] = '1';
         c[loc.first+(gap*2)/3] = '1';
         
-        d = max(d, computeD(c));
+        d = max(d, compute_D(c));
     }
     if (stalls[0] == '0' && stalls[stalls.size()-1] == '0') {
         // 000010000
@@ -112,7 +112,7 @@ int main() {
         c[0] = '1';
         c[stalls.size()-1] = '1';
         
-        d = max(d, computeD(c));
+        d = max(d, compute_D(c));
     }
     if (stalls[0] == '0') {
         // 00010001
@@ -123,7 +123,7 @@ int main() {
         auto nZ = getZeros(c);
         c[(nZ[0].first+nZ[0].second)/2] = '1';
         
-        d = max(d, computeD(c));
+        d = max(d, compute_D(c));
     }
     if (stalls[stalls.size()-1] == '0') {
         // 10010000
@@ -134,7 +134,7 @@ int main() {
         auto nZ = getZeros(c);
         c[(nZ[0].first+nZ[0].second)/2] = '1';
         
-        d = max(d, computeD(c));
+        d = max(d, compute_D(c));
     }
     
     cout << d;
