@@ -30,15 +30,7 @@ the set of comfortable cows for each query.
 #include <iostream>
 #include <unordered_set>
 
-int cows[1001][1001];
-
-struct Hash {
-	template <class T1, class T2> size_t operator()(const std::pair<T1, T2> &p) const {
-		auto h1 = std::hash<T1>{}(p.first);
-		auto h2 = std::hash<T2>{}(p.second);
-		return h1 ^ (h2 << 1);
-	}
-};
+int cows[1002][1002];
 
 bool check_comfortable(int x, int y) {
 
@@ -58,7 +50,8 @@ int main() {
 	int n;
 	std::cin >> n;
 
-	std::unordered_set<std::pair<int, int>, Hash> comfortable;
+	int comfortable[1002][1002];
+    int res = 0;
 
 	for (int i = 0; i < n; i++) {
 		int x, y;
@@ -67,15 +60,20 @@ int main() {
 
 		for (auto &cow : std::array<std::pair<int, int>, 5>{
 		         {{x, y}, {x - 1, y}, {x + 1, y}, {x, y - 1}, {x, y + 1}}}) {
-			if (cow.first >= 0 && cow.second >= 0 &&
-			    check_comfortable(cow.first, cow.second)) {
-				comfortable.insert(cow);
-			} else {
-				comfortable.erase(cow);
-			}
+			if (cow.first >= 0 && cow.second >= 0) {
+                bool is_comfortable = check_comfortable(cow.first, cow.second);
+
+                if (is_comfortable && !comfortable[cow.first][cow.second]) {
+                    comfortable[cow.first][cow.second] = 1;
+                    res++;
+                } else if (!is_comfortable && comfortable[cow.first][cow.second]) {
+                    comfortable[cow.first][cow.second] = 0;
+                    res--;
+                }
+            }
 		}
 
-		std::cout << comfortable.size() << '\n';
+		std::cout << res << '\n';
 	}
 }
 ```
