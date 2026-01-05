@@ -1,0 +1,270 @@
+---
+id: usaco-1467
+source: USACO Bronze 2025 January
+title: Astral Superposition
+author: Aarav Sethi
+---
+
+## Explanation
+
+### Case 1: $A = 0$ and $B = 0$
+In image 2 stars can only dissapear so the answer is how many times `G` & `B` occur.
+<center>
+<table className="text-center">
+	<tbody>
+		<tr>
+			<td>W</td>
+			<td>W</td>
+			<td className="bg-blue-300 dark:bg-purple-800">B</td>
+		</tr>
+		<tr>
+			<td className="bg-blue-300 dark:bg-purple-800">B</td>
+			<td className="bg-blue-300 dark:bg-purple-800">B</td>
+			<td className="bg-blue-300 dark:bg-purple-800">B</td>
+		</tr>
+		<tr>
+			<td className="bg-blue-200 dark:bg-purple-900">G</td>
+			<td className="bg-blue-200 dark:bg-purple-900">G</td>
+			<td className="bg-blue-200 dark:bg-purple-900">G</td>
+		</tr>
+	</tbody>
+</table>
+</center>
+
+For the above case with $A = 0$ and $B = 0$ the answer would be $7$ stars.
+### Case 2: $A \ne 0$ or $B \ne 0$ 
+When $A$ and $B$ are non-zero we can trace stars to other stars, and identify which are from image 1 and image 2.
+
+<center>
+<table className="text-center">
+	<tbody>
+		<tr>
+			<td className="bg-blue-200 dark:bg-purple-900">G</td>
+			<td>W</td>
+			<td className="bg-blue-200 dark:bg-purple-900">G</td>
+			<td>W</td>
+			<td>W</td>
+		</tr>
+		<tr>
+			<td>W</td>
+			<td className="bg-blue-200 dark:bg-purple-900">G</td>
+			<td>W</td>
+			<td>W</td>
+			<td>W</td>
+		</tr>
+		<tr>
+			<td>W</td>
+			<td className="bg-blue-300 dark:bg-purple-800">B</td>
+			<td>W</td>
+			<td className="bg-blue-200 dark:bg-purple-900">G</td>
+			<td>W</td>
+		</tr>
+		<tr>
+			<td>W</td>
+			<td>W</td>
+			<td>W</td>
+			<td>W</td>
+			<td>W</td>
+		</tr>
+		<tr>
+			<td>W</td>
+			<td>W</td>
+			<td className="bg-blue-200 dark:bg-purple-900">G</td>
+			<td>W</td>
+			<td>W</td>
+		</tr>
+	</tbody>
+</table>
+</center>
+
+For example in this graph $A = 1$ and $B = 2$.
+We can see that $(1,1)$ moved to $(2,3)$. 
+<center>
+<table className="text-center">
+	<tbody>
+		<tr>
+			<td className="bg-green-200 dark:bg-green-900">G</td>
+			<td>W</td>
+			<td className="bg-blue-200 dark:bg-purple-900">G</td>
+			<td>W</td>
+			<td>W</td>
+		</tr>
+		<tr>
+			<td>W</td>
+			<td className="bg-blue-200 dark:bg-purple-900">G</td>
+			<td>W</td>
+			<td>W</td>
+			<td>W</td>
+		</tr>
+		<tr>
+			<td>W</td>
+			<td className="bg-green-200 dark:bg-green-800">B</td>
+			<td>W</td>
+			<td className="bg-blue-200 dark:bg-purple-900">G</td>
+			<td>W</td>
+		</tr>
+		<tr>
+			<td>W</td>
+			<td>W</td>
+			<td>W</td>
+			<td>W</td>
+			<td>W</td>
+		</tr>
+		<tr>
+			<td>W</td>
+			<td>W</td>
+			<td className="bg-blue-200 dark:bg-purple-900">G</td>
+			<td>W</td>
+			<td>W</td>
+		</tr>
+	</tbody>
+</table>
+</center>
+
+All of the shifted stars are:
+- $(1,1)$ to $(2,3)$
+- $(3,1)$ to $(4,3)$
+- $(2,3)$ to $(3,5)$
+and are from image 2, so removing the stars we know are in image-2 to gives us a minimum of $4$ stars.
+
+We do not assign `B` stars as image-2-only since it is in both images.
+
+### Edge Cases
+A lot of edge cases come from `B` cells, for example with $A = 1$ and $B = 1$
+<center>
+<table className="text-center">
+	<tbody>
+		<tr>
+			<td>W</td>
+			<td>W</td>
+			<td>W</td>
+		</tr>
+		<tr>
+			<td>W</td>
+			<td className="bg-blue-300 dark:bg-purple-800">B</td>
+			<td>W</td>
+		</tr>
+		<tr>
+			<td>W</td>
+			<td>W</td>
+			<td>W</td>
+		</tr>
+	</tbody>
+</table>
+</center>
+would result in $-1$ since if we backtrack, a `W` cell points to `B` which is not possible for it to be in both images.
+***
+Another case with $A=1$ and $B=0$ is
+<center>
+<table className="text-center">
+	<tbody>
+		<tr>
+			<td className="bg-blue-200 dark:bg-purple-900">G</td>
+			<td className="bg-blue-200 dark:bg-purple-900">G</td>
+			<td className="bg-blue-300 dark:bg-purple-800">B</td>
+		</tr>
+		<tr>
+			<td className="bg-blue-200 dark:bg-purple-900">G</td>
+			<td className="bg-blue-200 dark:bg-purple-900">G</td>
+			<td>W</td>
+		</tr>
+		<tr>
+			<td>W</td>
+			<td>W</td>
+			<td>W</td>
+		</tr>
+	</tbody>
+</table>
+</center>
+with the earlier logic we can point
+- $(1,1)$ to $(2,1)$
+- $(1,2)$ to $(2,2)$
+which is <b>incorrect</b>! 
+
+This is because the `B` cell has to be pointed by something. This means that the $(2,1)$ in image 2 was deleted, and is actually from image 1.
+
+### Algorithm
+These are all the base rules so we can now structure the logic:
+- If $A=0$ and $B=0$ then count how many `G` & `B`s occur.
+- Otherwise for every star not assigned to image 2, add $A$ and $B$ to its coordinates and see where it leads. 
+- If it leads to a star (not `B`) then assign that to image 2.
+- For every `B` cell, check if another star leads to it otherwise return $-1$.
+- If a `B` cell is led to by an star assigned to image 2, it should be unassigned from image 2.
+
+
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(T\cdot D^2\cdot \log D)$
+
+<LanguageSection>
+
+<CPPSection>
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int main(){
+    int t; cin >> t;
+    while (t--){
+        int d, a, b; cin >> d >> a >> b;
+        
+        vector<string> superimposed(d);
+        for (int i = 0; i < d; i++) cin >> superimposed[i];
+        
+        int allStars = 0;
+        for (int x = 0; x < d; x++) for (int y = 0; y < d; y++) 
+            if (superimposed[x][y] != 'W') 
+                allStars++; 
+        
+        int stars = 0;
+        if (a == 0 && b == 0){
+            /* just return how many stars */
+            stars = allStars;
+        } else {            
+            /* First pass ignore all "directed" stars */
+            set<pair<int, int>> image2;
+            set<pair<int, int>> leadsTo;
+            
+            for (int x = 0; x < d; x++) for (int y = 0; y < d; y++){
+                if (superimposed[y][x] == 'W' || image2.count({x,y})) continue;
+            
+                int nx = x + a;
+                int ny = y + b;
+                
+                if (ny < d && nx < d && superimposed[ny][nx] != 'W'){ // otherwise it has been deleted
+                    leadsTo.insert({x,y});
+                    if (superimposed[ny][nx] != 'B') // do not ignore B cells
+                        image2.insert({nx,ny});
+                }
+            }
+            
+            /* Second pass, handle all black stars */
+            bool invalid = false;
+            for (int x = 0; x < d; x++) for (int y = 0; y < d; y++){
+                if (superimposed[y][x] != 'B') continue;
+                
+                int nx = x - a;
+                int ny = y - b;
+                
+                if (nx < 0 || ny < 0 || superimposed[ny][nx] == 'W'){ // Not possible that nothing led to us
+                    invalid  = true;
+                    break;
+                }
+                
+                if (image2.count({nx, ny})){ // whoever leaded to us could not have been image2, they were removed
+                    image2.erase({nx, ny});
+                }
+            }
+            
+            if (invalid) stars = -1;
+            else stars = allStars-image2.size();
+        }
+        cout << stars << "\n";
+    }
+}
+```
+</CPPSection>
+
+</LanguageSection>
