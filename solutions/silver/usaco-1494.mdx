@@ -26,75 +26,71 @@ Once we have chosen the element, we perform the operation on $a$ and find the ne
 <LanguageSection>
 <CPPSection>
 
-```cpp 
+```cpp
+#include <algorithm>
 #include <iostream>
 #include <vector>
-#include <algorithm>
 
 int main() {
-    
-    int t;
-    std::cin >> t;
-    
-    while (t--) {
-        int n;
-        std::cin >> n;
-        std::vector<int> arr(n);
-		
-        for (int &x : arr) {
-			std::cin >> x;
-		}
-        
+
+	int t;
+	std::cin >> t;
+
+	while (t--) {
+		int n;
+		std::cin >> n;
+		std::vector<int> arr(n);
+
+		for (int &x : arr) { std::cin >> x; }
+
 		// find optimal sequence b without operation
-        std::vector<std::pair<int, int>> best;
-        for (int i = 0; i < n; i++) {
-            while (!best.empty() && best.back().first < arr[i]) {
-                best.pop_back();
-            }
-            best.push_back({arr[i], i});
-        }
-        
+		std::vector<std::pair<int, int>> best;
+		for (int i = 0; i < n; i++) {
+			while (!best.empty() && best.back().first < arr[i]) { best.pop_back(); }
+			best.push_back({arr[i], i});
+		}
+
 		// find optimal operation
-        best.insert(best.begin(), {n + 1, -1});
-        best.push_back({-1, n});
-        
-        int move_index = -1;
-        int new_index = -1;
-        int move_cow = -1;
-        
-        for (int i = 1; i < (int)best.size() - 1; i++) {
-            if (best[i].second != best[i - 1].second + 1) {
-                int left = (i == 1) ? 0 : best[i - 1].second + 1;
-                int right = best[i].second - 1;
-                
-				int mx = *max_element(arr.begin() + left, arr.begin() + right + 1);       
-                if (mx >= best[i + 1].first) {
-                    move_index = best[i].second;
-                    new_index = left;
-                    move_cow = best[i].first;
-                    break;
-                }
-            }
-        }
-        
+		best.insert(best.begin(), {n + 1, -1});
+		best.push_back({-1, n});
+
+		int move_index = -1;
+		int new_index = -1;
+		int move_cow = -1;
+
+		for (int i = 1; i < (int)best.size() - 1; i++) {
+			if (best[i].second != best[i - 1].second + 1) {
+				int left = (i == 1) ? 0 : best[i - 1].second + 1;
+				int right = best[i].second - 1;
+
+				int mx = *max_element(arr.begin() + left, arr.begin() + right + 1);
+				if (mx >= best[i + 1].first) {
+					move_index = best[i].second;
+					new_index = left;
+					move_cow = best[i].first;
+					break;
+				}
+			}
+		}
+
 		// perform the operation and find new optimal sequence b
-        if (move_index != -1) {
-            arr.erase(arr.begin() + move_index);
-            arr.insert(arr.begin() + new_index, move_cow);
-        }
-        
-        std::vector<int> new_best;
-        for (int i = 0; i < n; i++) {
-            while (!new_best.empty() && new_best.back() < arr[i]) {
-                new_best.pop_back();
-            }
-            new_best.push_back(arr[i]);
-        }
-        
+		if (move_index != -1) {
+			arr.erase(arr.begin() + move_index);
+			arr.insert(arr.begin() + new_index, move_cow);
+		}
+
+		std::vector<int> new_best;
+		for (int i = 0; i < n; i++) {
+			while (!new_best.empty() && new_best.back() < arr[i]) {
+				new_best.pop_back();
+			}
+			new_best.push_back(arr[i]);
+		}
+
 		for (int i = 0; i < (int)new_best.size(); i++) {
 			std::cout << new_best[i] << " \n"[i == (int)new_best.size() - 1];
 		}
-    }   
+	}
 }
 ```
 
