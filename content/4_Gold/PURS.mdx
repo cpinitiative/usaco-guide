@@ -269,6 +269,90 @@ public class MinSegmentTree {
 ```
 
 </JavaSection>
+<PySection>
+
+<Warning>
+Due to heavy recursion and function-call overhead, this implementation exceeds the time limit. To pass on CSES, use the iterative implementation or a faster language.
+</Warning>
+
+```py
+import math
+from typing import List, Optional
+
+
+class MinSegmentTree:
+	def __init__(self, arr: Optional[List[int]] = None, length: Optional[int] = None):
+		self.DEFAULT = math.inf
+		if arr is None:
+			self.n = length
+			self.segtree = [self.DEFAULT] * (self.n * 4)
+		else:
+			self.n = len(arr)
+			self.segtree = [self.DEFAULT] * (self.n * 4)
+			self._build(arr, 1, 0, self.n - 1)
+
+	def _combine(self, a: int, b: int) -> int:
+		return min(a, b)
+
+	def _build(self, arr: List[int], at: int, at_left: int, at_right: int) -> None:
+		if at_left == at_right:
+			self.segtree[at] = arr[at_left]
+			return
+		mid = (at_left + at_right) // 2
+		self._build(arr, at * 2, at_left, mid)
+		self._build(arr, at * 2 + 1, mid + 1, at_right)
+		self.segtree[at] = self._combine(self.segtree[at * 2], self.segtree[at * 2 + 1])
+
+	def _set(self, ind: int, val: int, at: int, at_left: int, at_right: int) -> None:
+		if at_left == at_right:
+			self.segtree[at] = val
+			return
+		mid = (at_left + at_right) // 2
+		if ind <= mid:
+			self._set(ind, val, at * 2, at_left, mid)
+		else:
+			self._set(ind, val, at * 2 + 1, mid + 1, at_right)
+		self.segtree[at] = self._combine(self.segtree[at * 2], self.segtree[at * 2 + 1])
+
+	def set(self, ind: int, val: int) -> None:
+		if self.n == 0:
+			return
+		self._set(ind, val, 1, 0, self.n - 1)
+
+	def _range_min(
+		self, start: int, end: int, at: int, at_left: int, at_right: int
+	) -> int:
+		if at_right < start or end < at_left:
+			return self.DEFAULT
+		if start <= at_left and at_right <= end:
+			return self.segtree[at]
+		mid = (at_left + at_right) // 2
+		left_res = self._range_min(start, end, at * 2, at_left, mid)
+		right_res = self._range_min(start, end, at * 2 + 1, mid + 1, at_right)
+		return self._combine(left_res, right_res)
+
+	def range_min(self, start: int, end: int) -> int:
+		if self.n == 0:
+			return self.DEFAULT
+		return self._range_min(start, end, 1, 0, self.n - 1)
+
+
+arr_len, query_num = map(int, input().split())
+arr = list(map(int, input().split()))
+segtree = MinSegmentTree(arr=arr)
+
+out = []
+for _ in range(query_num):
+	t, a, b = map(int, input().split())
+	if t == 1:
+		segtree.set(a - 1, b)
+	else:
+		out.append(str(segtree.range_min(a - 1, b - 1)))
+
+print("\n".join(out))
+```
+
+</PySection>
 </LanguageSection>
 
 ### Iterative Implementation
@@ -665,6 +749,92 @@ public class SumSegmentTree {
 ```
 
 </JavaSection>
+<PySection>
+
+<Warning>
+This Python segment tree is too slow for CSES and will result in TIME LIMIT EXCEEDED due to heavy recursion and
+function-call overhead.
+
+Use an iterative version or a faster language.
+</Warning>
+
+```py
+from typing import List, Optional
+
+
+class SumSegmentTree:
+	def __init__(self, arr: Optional[List[int]] = None, length: Optional[int] = None):
+		self.DEFAULT = 0
+		if arr is None:
+			self.n = length
+			self.segtree = [self.DEFAULT] * (self.n * 4)
+		else:
+			self.n = len(arr)
+			self.segtree = [self.DEFAULT] * (self.n * 4)
+			self._build(arr, 1, 0, self.n - 1)
+
+	def _combine(self, a: int, b: int) -> int:
+		return a + b
+
+	def _build(self, arr: List[int], at: int, at_left: int, at_right: int) -> None:
+		if at_left == at_right:
+			self.segtree[at] = arr[at_left]
+			return
+		mid = (at_left + at_right) // 2
+		self._build(arr, at * 2, at_left, mid)
+		self._build(arr, at * 2 + 1, mid + 1, at_right)
+		self.segtree[at] = self._combine(self.segtree[at * 2], self.segtree[at * 2 + 1])
+
+	def _set(self, ind: int, val: int, at: int, at_left: int, at_right: int) -> None:
+		if at_left == at_right:
+			self.segtree[at] = val
+			return
+		mid = (at_left + at_right) // 2
+		if ind <= mid:
+			self._set(ind, val, at * 2, at_left, mid)
+		else:
+			self._set(ind, val, at * 2 + 1, mid + 1, at_right)
+		self.segtree[at] = self._combine(self.segtree[at * 2], self.segtree[at * 2 + 1])
+
+	def set(self, ind: int, val: int) -> None:
+		if self.n == 0:
+			return
+		self._set(ind, val, 1, 0, self.n - 1)
+
+	def _range_sum(
+		self, start: int, end: int, at: int, at_left: int, at_right: int
+	) -> int:
+		if at_right < start or end < at_left:
+			return self.DEFAULT
+		if start <= at_left and at_right <= end:
+			return self.segtree[at]
+		mid = (at_left + at_right) // 2
+		left_res = self._range_sum(start, end, at * 2, at_left, mid)
+		right_res = self._range_sum(start, end, at * 2 + 1, mid + 1, at_right)
+		return self._combine(left_res, right_res)
+
+	def range_sum(self, start: int, end: int) -> int:
+		if self.n == 0:
+			return self.DEFAULT
+		return self._range_sum(start, end, 1, 0, self.n - 1)
+
+
+arr_len, query_num = map(int, input().split())
+arr = list(map(int, input().split()))
+segtree = SumSegmentTree(arr=arr)
+
+out = []
+for _ in range(query_num):
+	t, a, b = map(int, input().split())
+	if t == 1:
+		segtree.set(a - 1, b)
+	else:
+		out.append(str(segtree.range_sum(a - 1, b - 1)))
+
+print("\n".join(out))
+```
+
+</PySection>
 </LanguageSection>
 
 ### Iterative Implementation
