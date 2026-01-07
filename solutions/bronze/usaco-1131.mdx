@@ -52,29 +52,28 @@ int main() {
 	vector<int> citations(n);
 	for (int i = 0; i < n; i++) { cin >> citations[i]; }
 
-    auto compute_hIndex = [&]() {
-        sort(citations.begin(), citations.end(), greater<int>());
+	auto compute_hIndex = [&]() {
+		sort(citations.begin(), citations.end(), greater<int>());
 
-        int hIndex = 0;
-        for (int i = 0; i < citations.size(); ++i) {
-            if (citations[i] >= i + 1) {
-                hIndex = i + 1;
-            } else {
-                break;
-            }
-        }
-        return hIndex;
-    };
-
+		int hIndex = 0;
+		for (int i = 0; i < citations.size(); ++i) {
+			if (citations[i] >= i + 1) {
+				hIndex = i + 1;
+			} else {
+				break;
+			}
+		}
+		return hIndex;
+	};
 
 	int cur_h = compute_hIndex();
-	if (cur_h != n) { // all are in
+	if (cur_h != n) {  // all are in
 		for (int i = cur_h; i >= 0; i--) {
 			if (i <= cur_h - l) { break; }
 			citations[i] += 1;
 		}
 	}
-    int new_h = compute_hIndex();
+	int new_h = compute_hIndex();
 
 	cout << new_h << endl;
 }
