@@ -5,19 +5,33 @@ title: LCIS
 author: Aryaveer Shishodia
 ---
 
-[Official Editorial](https://codeforces.com/blog/entry/298)
+[Official Blog](https://codeforces.com/blog/entry/298)
 
-Note that during the contest, the problem was modified due to a bug in the solution. Because the original problem was unsolvable with the given constraints, the problem was modified, but the solution to the modified problem was not posted there.
+<Warning>
+
+Note that during the contest, the problem was modified due to a bug in the solution. Because the original problem was unsolvable with the given constraints, the problem was modified, but the solution to the modified problem was not posted there. User solutions may be available online.
+
+</Warning>
 
 ## Solution: LIS DP
 
-Note that this is my solution, alternate solutions might be available online. I labeled the sequences `a` and `b`.
+I labeled the sequences `a` and `b`.
 
-We can track the length of the LCIS ending at `b[j]` in a list `dp[j]`. We can also create a parent list where `parent[j]` points to the index in `b` of the last number in `dp[j]`, letting us reconstruct the subsequence at the end.
+We can track the length of the LCIS ending at `b[j]` in a list:
 
-Looping through sequence `a`, we can try to add to each subsequence in `dp`. We can track the current LCIS ending at elements of `b` that are smaller than `a[i]` (I called this `current`), and store its index to extend it if `a[i]` matches a later element (I called this `last`).
+$$dp[j] = max(dp[j],dp[k]+1)\\:for\\:all\\:k \lt j\\:where\\:a[i] = b[j]\\:and\\:b[k] \lt b[j]$$
 
-For each `b[j]`, we check if `a[i]` can extend the LCIS ending at `b[j]`. If `a[i] == b[j]`, then the LCIS can be extended, and `dp[j]` should be updated. If `a[i] > b[j]`, `a[i]` could possibly be added later to the sequence, and we need to update the length of the LCIS. If `a[i] < b[j]`, we don't do anything because `a[i]` cannot extend the subsequence.
+We can also create a parent list that stores the index to the last number in `dp[j]` for each `j`, letting us reconstruct the subsequence at the end.
+
+Looping through sequence `a`, we try to add to each subsequence in `dp`. We track the current LCIS ending at elements of `b` that are smaller than `a[i]`, and store its index as `last` to extend it if `a[i]` matches a later element.
+
+For each `b[j]`, we check if `a[i]` can extend the LCIS ending at `b[j]`.
+
+* If $a[i] = b[j]$, then the LCIS can be extended, and `dp[j]` should be updated.
+
+* If $a[i] \gt b[j]$, `a[i]` could possibly be added later to the sequence, and we need to update the length of the LCIS.
+
+* If $a[i] \lt b[j]$, we don't do anything because `a[i]` cannot extend the subsequence.
 
 After that, we find the length of the LCIS in `dp` and reconstruct the sequence.
 
@@ -33,24 +47,31 @@ After that, we find the length of the LCIS in `dp` and reconstruct the sequence.
 using namespace std;
 
 int main() {
-	cin.tie(0)->sync_with_stdio(false);
+	ios::sync_with_stdio(false);
+	cin.tie(0);
 
 	// read the 2 sequences
+
 	int n, m;
+
 	cin >> n;
 	vector<int> a(n);
-	for (int &i : a) cin >> i;
+	for (int &i : a) { cin >> i; }
+
 	cin >> m;
 	vector<int> b(m);
-	for (int &i : b) cin >> i;
+	for (int &i : b) { cin >> i; }
 
 	// initialize dp
+
 	vector<int> dp(m, 0), parent(m, -1);
 
 	// loop through a
+
 	for (int i = 0; i < n; i++) {
 		int current = 0;
 		int last = -1;
+
 		for (int j = 0; j < m; j++) {
 			if (a[i] == b[j]) {
 				if (current + 1 > dp[j]) {
@@ -67,7 +88,9 @@ int main() {
 	}
 
 	// find the sequence length and the last index of the sequence
+
 	int length = 0, pos = -1;
+
 	for (int j = 0; j < m; j++) {
 		if (dp[j] > length) {
 			length = dp[j];
@@ -76,14 +99,16 @@ int main() {
 	}
 
 	// reconstruct LCIS
+
 	vector<int> lcis;
 	while (pos != -1) {
 		lcis.push_back(b[pos]);
 		pos = parent[pos];
 	}
 	reverse(lcis.begin(), lcis.end());
+
 	cout << length << endl;
-	for (int x : lcis) cout << x << ' ';
+	for (int x : lcis) { cout << x << ' '; }
 }
 ```
 
@@ -103,13 +128,13 @@ public class LCIS {
 		int n = Integer.parseInt(read.readLine());
 		int[] a = new int[n];
 		st = new StringTokenizer(read.readLine());
-		for (int i = 0; i < n; i++) a[i] = Integer.parseInt(st.nextToken());
+		for (int i = 0; i < n; i++) { a[i] = Integer.parseInt(st.nextToken()); }
 
 		// read m and sequence b
 		int m = Integer.parseInt(read.readLine());
 		int[] b = new int[m];
 		st = new StringTokenizer(read.readLine());
-		for (int i = 0; i < m; i++) b[i] = Integer.parseInt(st.nextToken());
+		for (int i = 0; i < m; i++) { b[i] = Integer.parseInt(st.nextToken()); }
 
 		// initialize dp and parent arrays
 		int[] dp = new int[m];
@@ -120,6 +145,7 @@ public class LCIS {
 		for (int i = 0; i < n; i++) {
 			int current = 0;
 			int last = -1;
+
 			for (int j = 0; j < m; j++) {
 				if (a[i] == b[j]) {
 					if (current + 1 > dp[j]) {
@@ -137,6 +163,7 @@ public class LCIS {
 
 		// find length and ending index
 		int length = 0, pos = -1;
+
 		for (int j = 0; j < m; j++) {
 			if (dp[j] > length) {
 				length = dp[j];
@@ -153,8 +180,9 @@ public class LCIS {
 		Collections.reverse(lcis);
 
 		// output using StringBuilder
+		System.out.println(length);
+
 		StringBuilder out = new StringBuilder();
-		out.append(length).append("\n");
 		for (int x : lcis) out.append(x).append(" ");
 		System.out.println(out);
 	}
@@ -179,6 +207,7 @@ parent = [-1] * m
 for i in range(n):
 	current = 0
 	last = -1
+
 	for j in range(m):
 		if a[i] == b[j]:
 			if current + 1 > dp[j]:
