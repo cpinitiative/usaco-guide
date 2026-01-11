@@ -1,7 +1,7 @@
 ---
 id: dp-sos
 title: Sum over Subsets DP
-author: Rameez Parwez, Siyong Huang, Aakash Gokhale
+author: Dongkyu Han, Rameez Parwez, Siyong Huang, Aakash Gokhale
 description: Solving subset sum problems efficiently with DP.
 prerequisites:
   - dp-bitmasks
@@ -34,6 +34,13 @@ redirects:
 	>
 		Characterizing SOS DP as multidimensional prefix sums
 	</Resource>
+	<Resource
+		source="queuedlab"
+		title="Sum over Subsets (SOS) DP"
+		url="https://blog.queuedlab.com/posts/sos-dp"
+	>
+		Characterizing SOS DP as multidimensional prefix sums (in Korean)
+	</Resource>
 </Resources>
 
 **Sum Over Subsets (SOS)** is a technique used to efficiently calculate the sum of values for all subsets of a given set or bitmask.
@@ -52,7 +59,7 @@ For example, $F(5)=A[0]+A[1]+A[4]+A[5]$.
 
 ### Brute Force
 
-The naive solution would be to iterate over all pair of masks, summing $A[i]$ only when one of them is a subset of the other $(i.e.,i$ $\&$ $x = i)$.
+The naive solution would be to iterate over all pair of masks, summing $A[i]$ only when one of them is a subset of the other (i.e., $i \& x = i$).
 
 <LanguageSection>
 <CPPSection>
@@ -131,7 +138,7 @@ The operation $(i - 1)$ $\&$ $x$ ensures that each new value of $i$ is strictly 
 
 <Spoiler title="Proof">
 
-The number of subset masks for a bitmask of size $k$(i.e., $k$ set bits) is $2^k$. There are $n \choose k$ bitmasks with $k$ set bits. Thus, the total number of operations is:
+The number of subset masks for a bitmask of size $k$ (i.e., $k$ set bits) is $2^k$. There are $n \choose k$ bitmasks with $k$ set bits. Thus, the total number of operations is:
 
 $$
 \sum^n_{k = 0}{n \choose k} \cdot 2^k = (1 + 2)^n = 3^n.
@@ -141,7 +148,7 @@ $$
 
 ### Faster Solution using Dynamic Programming
 
-While the previous method is better, it still has some redundancy. For example, if a bitmask $i$ has $k$ unset bits, then $A[i]$ is summed $2^k$ times. If we precompute and reuse these sums, we can eliminate repeated additions.
+While the previous method is better, it still has some redundancy. For example, if a bitmask $i$ has $k$ unset bits, then $A[i]$ is summed $2^k$ times. By grouping masks that frequently appear together, we can precompute and reuse their sums to eliminate repeated additions.
 
 #### Subset Mask Partitioning with $S(x, i)$
 
@@ -151,25 +158,25 @@ $$
 S(x, i) = \{y \subseteq x \mid y \oplus x < 2^i\}
 $$
 
-In simpler terms, $S(x, i)$ contains all subset masks of $x$ whose bits to the left of the $i$-th bit match those of $x$.
+In simpler terms, $S(x, i)$ contains all subset masks of $x$ whose bits match those of $x$ except for the rightmost $i$ bits.
 
 For example:
 $$
-S(11010110, 3) = \{11010000,11010010,11010100,11010110\}
+S(\mathbf{101}1010, 4) = \{\mathbf{101}0000,\mathbf{101}0010,\mathbf{101}1000,\mathbf{101}1010\}
 $$
 
-We can decompose $S(x, i)$ as follows:
+We can decompose $S(x, i+1)$ as follows:
 
-1.  If the $i$-th bit of $x$ is $0$, then $S(x, i) = S(x, i - 1)$.
+1.  If the $i$-th bit of $x$ is $0$, then $S(x, i+1) = S(x, i)$.
 2.  If the $i$-th bit of $x$ is $1$:
-    - Subsets with the $i$-th bit $1: S(x, i - 1)$.
-    - Subsets with the $i$-th bit $0 : S(x \oplus 2^i, i - 1)$.
+    - Subsets with the $i$-th bit $1: S(x, i)$.
+    - Subsets with the $i$-th bit $0 : S(x \oplus 2^i, i)$.
 Thus:
 $$
-S(x, i) =
+S(x, i+1) =
 \begin{cases}
-S(x, i - 1) & \text{if the i-th bit is 0} \\
-S(x, i - 1) \cup S(x \oplus 2^i, i - 1) & \text{if the i-th bit is 1}
+S(x, i) & \text{if the $i$-th bit is 0} \\
+S(x, i) \cup S(x \oplus 2^i, i) & \text{if the $i$-th bit is 1}
 \end{cases}
 $$
 
@@ -326,7 +333,7 @@ Let's say we want to calculate the prefix sum array for 4D grid. We can calculat
 - Finally, after sweeping along the w-axis, $S[i][j][k][l]$ contains the sum of $A[a][b][c][d]$ where:
 	- $a \leq i, b \leq j, c \leq k,$ and $d \leq l$.
 
-If we extend this idea to $n$ dimensions, here's what happens: after sweeping along the $i$-th axis, $S[x]$ contains the sum of the values in $A$ where the first $i$ coordinates are less than or equal to the $x$, and the remaining coordinates match $x$. Sound familiar? That's exactly what $F(x)$ represents in the SOS problem!
+If we extend this idea to $n$ dimensions, here's what happens: after sweeping along the $i$-th axis, $S[x]$ contains the sum of the values in $A$ where the first $i$ coordinates are less than or equal to the $x$, and the remaining coordinates match $x$. Sound familiar? That's exactly what $dp[x][i]$ represents!
 
 If we think of each bit in a bitmask as its own axis, then a bitmask $x$ with $n$ bits can be viewed as an $n$-dimensional coordinate, where each component is either $0$ or $1$. A submask of $x$ corresponds to an $n$-dimensional coordinate where each component is less than or equal to $x$.
 
