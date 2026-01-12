@@ -226,7 +226,7 @@ for x in range(1 << n):
 
 #### Optimized Memory Usage
 
-Since $dp[x][i]$ only depends on $dp[x][i - 1]$, we can reuse the DP array.
+Since $dp[x][i+1]$ only depends on $dp[x][i]$, we can reuse the DP array.
 
 <LanguageSection>
 <CPPSection>
@@ -333,11 +333,11 @@ Let's say we want to calculate the prefix sum array for 4D grid. We can calculat
 - Finally, after sweeping along the w-axis, $S[i][j][k][l]$ contains the sum of $A[a][b][c][d]$ where:
 	- $a \leq i, b \leq j, c \leq k,$ and $d \leq l$.
 
-If we extend this idea to $n$ dimensions, here's what happens: after sweeping along the $i$-th axis, $S[x]$ contains the sum of the values in $A$ where the first $i$ coordinates are less than or equal to the $x$, and the remaining coordinates match $x$. Sound familiar? That's exactly what $dp[x][i]$ represents!
+If we extend this idea to $n$ dimensions, here's what happens after sweeping along the $i$-th axis. For each $n$-dimensional vector $x$, $S[x]$ contains the sum of the values in $A$ where the first $i+1$ coordinates are less than or equal to $x$, and the remaining coordinates match $x$. Sound familiar?
 
-If we think of each bit in a bitmask as its own axis, then a bitmask $x$ with $n$ bits can be viewed as an $n$-dimensional coordinate, where each component is either $0$ or $1$. A submask of $x$ corresponds to an $n$-dimensional coordinate where each component is less than or equal to $x$.
+Let's compare it to the SOS problem. If we think of each bit in a bitmask as its own axis, then a bitmask $x$ with $n$ bits can be viewed as an $n$-dimensional vector, where each coordinate is either $0$ or $1$. A submask of $x$ corresponds to an $n$-dimensional vector where each coordinate is less than or equal to $x$.
 
-Therefore, when we interpret the bitmask as an $n$-dimensional coordinate, $F(x)$ aligns with the definition of an $n$-dimensional prefix sum!
+Therefore, when we interpret the bitmask as an $n$-dimensional vector, $F(x)$ aligns with the definition of an $n$-dimensional prefix sum!
 
 By applying the sweeping algorithm along each axis, we get the memory-optimized SOS DP solution mentioned earlier, demonstrating that SOS DP is indeed an **n-dimensional prefix sum**.
 
