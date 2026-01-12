@@ -45,9 +45,9 @@ redirects:
 
 **Sum Over Subsets (SOS)** is a technique used to efficiently calculate the sum of values for all subsets of a given set or bitmask.
 
-## Implementation
+## Sum over Subsets Problem
 
-Consider an array $A$ with $2^n$ elements. Our goal is to calculate $F(x)$ for all $x = 0, 1, 2, \dots, 2^n - 1$. Here, $F(x)$ represents the sum of values in array $A$ for all subsets $i$ of $x$. That is:
+Consider an array $A$ with $2^n$ elements. Our goal is to calculate $F(x)$ for all $x = 0, 1, 2, \dots, 2^n - 1$. Here, $F(x)$ represents the sum of values in array $A$ for all subsets (submasks) $i$ of $x$. That is:
 
 $$
 F(x) = \sum_{i \subseteq x} A[i]
@@ -59,7 +59,7 @@ For example, $F(5)=A[0]+A[1]+A[4]+A[5]$.
 
 ### Brute Force
 
-The naive solution would be to iterate over all pair of masks, summing $A[i]$ only when one of them is a subset of the other (i.e., $i \& x = i$).
+The naive solution would be to iterate over all pair of masks, summing $A[i]$ only when one of them is a subset of the other (i.e., $i\ \&\ x = i$).
 
 <LanguageSection>
 <CPPSection>
@@ -94,7 +94,7 @@ This solution has a time complexity of $\mathcal{O}(2^n \cdot 2^n) = O(4^n)$, wh
 
 ### Optimized Solution: Iterating Over Submasks
 
-Instead of iterating over all $2^n$ bitmasks for $i$, we can optimize by iterating only over the subset mask of $x$ using the formula $i = (i - 1)\& x$, which efficiently generates all valid subsets of $x$ in reverse order. This approach skips unnecessary combinations, significantly reducing the number of iterations and improving the time complexity.
+Instead of iterating over all $2^n$ bitmasks for $i$, we can optimize by iterating only over the subset masks of $x$ using the formula $i = (i - 1)\ \&\  x$, which efficiently generates all valid subsets of $x$ in reverse order. This approach skips unnecessary combinations, significantly reducing the number of iterations and improving the time complexity.
 
 <LanguageSection>
 <CPPSection>
@@ -128,9 +128,9 @@ for x in range(1 << n):
 
 <Spoiler title="How does this work?">
 
-When we subtract $1$ from a bitmask $i$, the rightmost $1$-bit becomes $0$, and all bits to the right of it will become $1$. By performing a bitwise _AND_ with $x$, we ensure that only the bits within $x$ are retained. By starting with $i = x$ and repeatedly applying $(i - 1)$ $\&$ $x$, all subset masks of $x$ are visited in reverse order.
+When we subtract $1$ from a bitmask $i$, the rightmost $1$-bit becomes $0$, and all bits to the right of it will become $1$. By performing a bitwise _AND_ with $x$, we ensure that only the bits within $x$ are retained. By starting with $i = x$ and repeatedly applying $(i - 1)\ \&\ x$, all subset masks of $x$ are visited in reverse order.
 
-The operation $(i - 1)$ $\&$ $x$ ensures that each new value of $i$ is strictly smaller than the previous one and is also a valid submask of $x$. There is no need to explicitly check $(i$ $\&$ $x) = i$.
+The operation $(i - 1)\ \&\ x$ ensures that each new value of $i$ is strictly smaller than the previous one and is also a valid submask of $x$. There is no need to explicitly check $(i\ \&\ x) = i$.
 
 </Spoiler>
 
