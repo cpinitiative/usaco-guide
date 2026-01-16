@@ -51,15 +51,12 @@ int compute_D(string stalls) {
 }
 vector<pair<int, int>> get_zeros(string stalls) {
 	// [(start, end)], we can then sort to maximize end-start
-	vector<pair<int, int>>
-	    zeros;
+	vector<pair<int, int>> zeros;
 
 	int zeros_start = -1;
 	for (int i = 0; i < stalls.size(); i++) {
 		// if entered a '0' and not already counting, start counting
-		if (stalls[i] == '0' && zeros_start == -1) {
-			zeros_start = i;
-		}
+		if (stalls[i] == '0' && zeros_start == -1) { zeros_start = i; }
 
 		// hit a '1' & we have counted some zeros, or we have reached the end
 		if ((stalls[i] == '1' && zeros_start != -1) || i == stalls.size() - 1) {
