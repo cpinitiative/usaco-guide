@@ -49,7 +49,7 @@ pair<int, int> get_largest_zeros(string stalls) {
 	// we can then get the two with maximum (end-start)
 	pair<int, int> largestZero = {-1, -1};
 
-    // get sizes
+	// get sizes
 	int zeros_start = -1;
 	for (int i = 0; i < stalls.size(); i++) {
 		// if entered a '0' and not already counting, start counting
@@ -59,9 +59,9 @@ pair<int, int> get_largest_zeros(string stalls) {
 		if ((stalls[i] == '1' && zeros_start != -1) || i == stalls.size() - 1) {
 			// insert the zero sequence
 			pair<int, int> zero = {zeros_start, i};
-            if ((zero.second-zero.first) > (largestZero.second-largestZero.first)){
-                largestZero = zero;
-            }
+			if ((zero.second - zero.first) > (largestZero.second - largestZero.first)) {
+				largestZero = zero;
+			}
 			zeros_start = -1;
 		}
 	}
@@ -83,10 +83,10 @@ int main() {
 		// place at the most spaced locations
 		string c = stalls;
 
-        c[(largest.first + largest.second) / 2] = '1';
-	    
-        auto nextLargest = get_largest_zeros(c);
-        c[(nextLargest.first + nextLargest.second) / 2] = '1';
+		c[(largest.first + largest.second) / 2] = '1';
+
+		auto nextLargest = get_largest_zeros(c);
+		c[(nextLargest.first + nextLargest.second) / 2] = '1';
 
 		d = max(d, compute_D(c));
 	}
