@@ -642,12 +642,12 @@ Otherwise, the path from node $x$ to node $y$ is equivalent to the subarray $[\t
 <LanguageSection>
 <CPPSection>
 
-```cpp 
-#include <iostream>
-#include <vector>
-#include <cmath>
+```cpp
 #include <algorithm>
+#include <cmath>
+#include <iostream>
 #include <unordered_map>
+#include <vector>
 
 using namespace std;
 
@@ -664,9 +664,9 @@ bool seen[MAXN];
 vector<vector<int>> g(MAXN + 5);
 unordered_map<int, int> mp;
 
-struct Query { 
+struct Query {
 	int l, r, lca, id;
-	bool operator<(const Query& oth) const {
+	bool operator<(const Query &oth) const {
 		int b1 = l / block_size, b2 = oth.l / block_size;
 		return b1 < b2 || (b1 == b2 && r < oth.r);
 	}
@@ -679,9 +679,7 @@ void dfs(int node, int parent) {
 	node_at[timer] = node;
 	depth[node] = depth[parent] + 1;
 	up[node][0] = parent;
-	for (int i = 1; i < MAXLOG; i++) {
-		up[node][i] = up[up[node][i - 1]][i - 1];
-	}
+	for (int i = 1; i < MAXLOG; i++) { up[node][i] = up[up[node][i - 1]][i - 1]; }
 	for (int son : g[node]) {
 		if (son == parent) { continue; }
 		dfs(son, node);
@@ -693,10 +691,8 @@ void dfs(int node, int parent) {
 int get_lca(int x, int y) {
 	if (depth[x] > depth[y]) { swap(x, y); }
 	int diff = depth[y] - depth[x];
-	for (int i = 0; (1 << i) <= diff; i++){
-		if ((1 << i) & diff) {
-			y = up[y][i];
-		}
+	for (int i = 0; (1 << i) <= diff; i++) {
+		if ((1 << i) & diff) { y = up[y][i]; }
 	}
 	if (x == y) { return x; }
 	for (int i = MAXLOG; i >= 0; i--) {
@@ -725,9 +721,7 @@ int main() {
 
 	cin >> n >> q;
 
-	for (int i = 1; i <= n; i++) {
-		cin >> v[i];
-	}
+	for (int i = 1; i <= n; i++) { cin >> v[i]; }
 
 	for (int i = 1; i < n; i++) {
 		int x, y;
@@ -743,10 +737,13 @@ int main() {
 	for (int i = 1; i <= q; i++) {
 		int x, y;
 		cin >> x >> y;
-		if (start[x] > start[y]) { swap(x,  y); }
+		if (start[x] > start[y]) { swap(x, y); }
 		int l = get_lca(x, y);
-		if (l == x) {  queries.push_back({start[x], start[y], -1, i}); } 
-		else { queries.push_back({en[x], start[y], l, i}); }
+		if (l == x) {
+			queries.push_back({start[x], start[y], -1, i});
+		} else {
+			queries.push_back({en[x], start[y], l, i});
+		}
 	}
 
 	sort(queries.begin(), queries.end());
@@ -762,11 +759,9 @@ int main() {
 		if (lc != -1) { add_value(lc); }
 		ans[queries[i].id] = distinct;
 		if (lc != -1) { add_value(lc); }
- 	}
-
-	for (int i = 1; i <= q; i++) {
-		cout << ans[i] << '\n';
 	}
+
+	for (int i = 1; i <= q; i++) { cout << ans[i] << '\n'; }
 
 	return 0;
 }
