@@ -146,7 +146,7 @@ export const RestOfMembers: Member[] = [
   {
     photo: 'srijith',
     name: 'Srijith Chinthalapudi',
-    titles: ['Director of Self-Study Classes', roles.liveInstructor],
+    titles: ['Director of Video/Self-Study Classes', roles.liveInstructor],
   },
   {
     photo: 'i_chen_chou',
@@ -224,6 +224,11 @@ export const RestOfMembers: Member[] = [
     name: 'Ruben Jing',
     titles: [roles.videoInstructor, roles.contentAuthor],
     github: 'Streakwind',
+  },
+  {
+    photo: 'arnav_g',
+    name: 'Arnav Gokhale',
+    titles: [roles.contentAuthor],
   },
 ];
 

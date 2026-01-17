@@ -24,9 +24,10 @@ All that is left to do is to efficiently query for the maximum edge on a tree pa
 
 ```cpp
 #include <bits/stdc++.h>
+
 using namespace std;
 
-const int MAXN = 2e5;
+const int MAXN = 2e5 + 1;
 const int LOGN = 18;  // log of MAXN base 2
 
 // Simple DSU class with Small to Large merging
@@ -107,8 +108,6 @@ int query(int a, int b) {
 			b = par[b][d];
 		}
 
-	assert(dep[a] == dep[b]);
-
 	if (a == b) return ans;
 
 	for (int d = LOGN - 1; d >= 0; d--)
@@ -127,6 +126,9 @@ int query(int a, int b) {
 }  // namespace LCA
 
 int main() {
+	ios::sync_with_stdio(false);
+	cin.tie(NULL);
+
 	dsu.init();
 
 	cin >> N >> M >> Q;

@@ -1,0 +1,114 @@
+---
+id: usaco-1397
+source: USACO Bronze 2024 February
+title: Maximizing Productivity
+author: SeungJoon Park
+---
+
+[Official Analysis (C++, Python)](https://usaco.org/current/data/sol_prob3_bronze_feb24.html)
+
+## Explanation
+
+First, we rearrange $S+t_i \lt c_i$ to $S \lt c_i - t_i$, as sorting farms in descending order of $c_i - t_i$ makes comparisons easier.
+
+Then, we check if the value of $c_i - t_i$ located at $V$ in the array is greater than $S$. If so, all previous values are possible, since the array is sorted in descending order. In other words, going to $V$ farms is possible when the value at $V$ is greater than $S$.
+
+Lastly, we determine the final answer according to the comparison.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N \log N + Q)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <algorithm>
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+int main() {
+	int n, q;
+	cin >> n >> q;
+	vector<int> c(n);
+	for (int i = 0; i < n; i++) { cin >> c[i]; }
+	for (int i = 0; i < n; i++) {
+		int t;
+		cin >> t;
+		c[i] -= t;
+	}
+
+	sort(c.begin(), c.end(), greater<int>());
+
+	for (int r = 0; r < q; r++) {
+		int v, s;
+		cin >> v >> s;
+		if (c[v - 1] > s) {
+			cout << "YES\n";
+		} else {
+			cout << "NO\n";
+		}
+	}
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.util.*;
+
+public class MaximizingProduct {
+	public static void main(String[] args) throws Exception {
+		Scanner sc = new Scanner(System.in);
+
+		int n = sc.nextInt();
+		int q = sc.nextInt();
+
+		Integer[] c = new Integer[n];
+		for (int i = 0; i < n; i++) { c[i] = sc.nextInt(); }
+		for (int i = 0; i < n; i++) { c[i] -= sc.nextInt(); }
+
+		Arrays.sort(c, Collections.reverseOrder());
+
+		for (int r = 0; r < q; r++) {
+			int v = sc.nextInt();
+			int s = sc.nextInt();
+
+			if (c[v - 1] > s) {
+				System.out.println("YES");
+			} else {
+				System.out.println("NO");
+			}
+		}
+
+		sc.close();
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+n, q = map(int, input().split())
+c = list(map(int, input().split()))
+t = list(map(int, input().split()))
+
+for i in range(n):
+	c[i] -= t[i]
+
+c.sort(reverse=True)
+
+for _ in range(q):
+	v, s = map(int, input().split())
+	if c[v - 1] > s:
+		print("YES")
+	else:
+		print("NO")
+```
+
+</PySection>
+</LanguageSection>

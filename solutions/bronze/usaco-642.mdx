@@ -1,0 +1,118 @@
+---
+id: usaco-642
+source: USACO Silver 2016 US Open
+title: Field Reduction
+author: Sachet Abeysinghe, Aarav Sethi
+---
+
+[Official Analysis (C++)](https://usaco.org/current/data/sol_reduce_silver_open16.html)
+
+## Explanation
+
+To start, consider the problem without removing three cows. The minimum area of the enclosing fence is the product of the difference between the largest x-coordinate and smallest x-coordinate and the difference between the largest y-coordinate and smallest y-coordinate.
+
+To reduce this bounding box, we must remove the cows near the four boundaries of the rectangle. Since we can only remove at most three cows, we should only consider the three extremes on each direction. That means our candidates include the three cows with the smallest x-values, the three with the largest x-values, the three with the smallest y-values, and the three with the largest y-values. This candidate set thus includes no more than twelve cows. Finally, we can simply brute force removing all combinations of three candidates and find the minimum enclosing rectangle of the new set of coordinates.
+
+Note that removing less than three cows is not beneficial, as removing one more cow will either decrease the area or make it stay the same.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N\log N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int main() {
+	int n;
+	cin >> n;
+
+	vector<pair<int, int>> cows(n);
+
+	vector<int> sort_by_x(n);
+	vector<int> sort_by_y(n);
+
+	for (int i = 0; i < n; i++) {
+		int x, y;
+		cin >> x >> y;
+		cows[i] = {x, y};
+
+		sort_by_x[i] = x;
+		sort_by_y[i] = y;
+	}
+
+	sort(sort_by_x.begin(), sort_by_x.end());
+	sort(sort_by_y.begin(), sort_by_y.end());
+
+	vector<int> candidates;
+	for (int i = 0; i < n; i++) {
+		auto [x, y] = cows[i];
+
+		// the 3 most extreme in any of the 4 directions.
+		if (x <= sort_by_x[3] || x >= sort_by_x[n - 3] || y <= sort_by_y[2] ||
+		    y >= sort_by_y[n - 3]) {
+			candidates.push_back(i);
+		}
+	}
+
+	// Generating subsets with bitmasks
+	int min_area = INT_MAX;
+	for (int i = 0; i < (1 << candidates.size()); i++) {
+		set<int> removing;
+		for (int b = 0; b < candidates.size(); b++) {
+			if (i & (1 << b)) removing.insert(candidates[b]);
+		}
+		if (removing.size() != 3) continue;
+
+		// Compute area
+		int min_x = INT_MAX;
+		int max_x = INT_MAX;
+		int min_y = INT_MAX;
+		int max_y = INT_MAX;
+		for (int i = 0; i < cows.size(); i++) {
+			if (removing.count(i)) continue;
+
+			min_x = min(min_x, cows[i].first);
+			max_x = max(max_x, cows[i].first);
+			min_y = min(min_y, cows[i].second);
+			max_y = max(max_y, cows[i].second);
+		}
+
+		min_area = min(min_area, (max_x - min_x) * (max_y - min_y));
+	}
+
+	cout << min_area;
+}
+```
+
+</CPPSection>
+<PySection>
+
+```py
+import itertools
+
+with open("reduce.in") as read:
+	n = int(read.readline())
+	coordinates = [tuple(map(int, read.readline().split())) for i in range(n)]
+
+sort_by_x = sorted(coordinates)
+sort_by_y = sorted(coordinates, key=lambda coord: coord[1])
+candidates = sort_by_x[:3] + sort_by_x[-3:] + sort_by_y[:3] + sort_by_y[-3:]
+min_area = float("inf")
+
+for removed in itertools.combinations(candidates, 3):
+	new_coords = [c for c in coordinates if c not in removed]
+	x_coords = [coord[0] for coord in new_coords]
+	y_coords = [coord[1] for coord in new_coords]
+	area = (max(x_coords) - min(x_coords)) * (max(y_coords) - min(y_coords))
+	min_area = min(min_area, area)
+
+print(min_area, file=open("reduce.out", "w"))
+```
+
+</PySection>
+</LanguageSection>
