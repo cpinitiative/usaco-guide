@@ -15,7 +15,7 @@ giving each railroad to the first child that can accept it. This is effectively 
 each child one at a time and constructing a maximum spanning tree for each of them individually.
 
 However, linearly iterating through the entire list of DSUs would result in a
-runtime of about $\mathcal{O}(KM)$, which is too slow given the bounds.
+runtime of about $\mathcal{O}(MK \alpha(N))$, which is too slow given the bounds.
 
 To quickly find the first child that can accept a railroad, let's try using binary search!
 But for binary search to actually work, we first need to prove the following:
@@ -31,7 +31,7 @@ Say we had two children that are adjacent in seniority: $c_i$ and $c_{i+1}$, wit
 If giving $c_{i+1}$ the railroad would make it so that obtaining $c_i$ from the new $c_{i+1}$ is impossible,
 then that would mean the railroad would connect some two components of $c_i$ and thus also mean that $c_i$ should be the first to accept the railroad, not $c_{i+1}$.
 
-Using binary search reduces $\mathcal{O}(KM)$ to $\mathcal{O}(K \log M)$, which runs in time.
+Using binary search reduces $\mathcal{O}(MK \alpha(N))$ to $\mathcal{O}(M \log K \alpha(N))$, which runs in time.
 
 ## Implementation
 
