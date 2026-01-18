@@ -1,0 +1,64 @@
+---
+id: spoj-lcmsum
+source: SPOJ
+title: LCM Sum
+author: Mihnea Brebenel
+---
+
+## Explanation
+
+## Implementation 
+
+**Time Complexity:** $\mathcal{O}(N\cdot\log^2{N})$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp 
+#include <iostream>
+
+using namespace std;
+
+const int MAXN = 1e6;
+
+long long phi[MAXN + 5], sum[MAXN + 5];
+
+int main() {
+
+	ios_base::sync_with_stdio(false);
+	cin.tie(nullptr);
+
+	int t;
+	cin >> t;
+
+	for (int i = 1; i <= MAXN; i++) { phi[i] = i; }
+	
+	for (int i = 2; i <= MAXN; i++) {
+		// If i is prime
+		if (phi[i] == i) {
+			for (int j = i; j <= MAXN; j += i) {
+				phi[j] -= phi[j] / i;
+			}
+		}
+	}
+
+	for (int i = 1; i <= MAXN; i++) {
+		for (int j = i; j <= MAXN; j += i) {
+			sum[j] += i * phi[i];
+		}
+	}
+
+	while (t--) {
+		int n;
+		cin >> n;
+		long long ans = sum[n] + 1;
+		ans = 1LL * ans * n / 2LL;
+		cout << ans << '\n';
+	}
+
+	return 0;
+}
+```
+
+</CPPSection>
+</LanguageSection>
