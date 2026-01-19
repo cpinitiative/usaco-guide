@@ -33,7 +33,7 @@ The inner sum is equal to $\frac{m \cdot \phi(m)}{2}$ for $m > 1$.
 
 ## Implementation
 
-**Time Complexity:** $\mathcal{O}(N\cdot\log{N} + T)$
+**Time Complexity:** $\mathcal{O}(N\log{N} + T)$
 
 <LanguageSection>
 <CPPSection>
@@ -52,9 +52,6 @@ int main() {
 	ios_base::sync_with_stdio(false);
 	cin.tie(nullptr);
 
-	int t;
-	cin >> t;
-
 	for (int i = 1; i <= MAXN; i++) { phi[i] = i; }
 
 	for (int i = 2; i <= MAXN; i++) {
@@ -68,6 +65,9 @@ int main() {
 		for (int j = i; j <= MAXN; j += i) { sum[j] += i * phi[i]; }
 	}
 
+	int t;
+	cin >> t;
+	
 	while (t--) {
 		int n;
 		cin >> n;
