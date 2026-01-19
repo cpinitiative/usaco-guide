@@ -8,7 +8,9 @@ author: Mihnea Brebenel
 ## Explanation
 
 We'll use the following identity in trying to bring the given sum to a more convenient form:
-- $x \cdot y=\texttt{gcd}(x, y)\cdot\text{lcm}(x, y)$
+$$
+x \cdot y=\gcd(x, y)\cdot\text{lcm}(x, y)
+$$
 
 $$
 \sum_{i = 1}^{n}{\texttt{lcm}(i, n)} = \sum_{i = 1}^{n}{\frac{i \cdot n}{\texttt{gcd}(i, n)}}=n\cdot\sum_{i=1}^{n}{\frac{i}{\text{gcd}(i, n)}}
@@ -31,7 +33,7 @@ The inner sum is equal to $\frac{m \cdot \phi(m)}{2}$ for $m > 1$.
 
 ## Implementation
 
-**Time Complexity:** $\mathcal{O}(N\cdot\log^2{N})$
+**Time Complexity:** $\mathcal{O}(N\cdot\log{N} + T)$
 
 <LanguageSection>
 <CPPSection>
@@ -43,7 +45,7 @@ using namespace std;
 
 const int MAXN = 1e6;
 
-long long phi[MAXN + 5], sum[MAXN + 5];
+long long phi[MAXN + 1], sum[MAXN + 1];
 
 int main() {
 
