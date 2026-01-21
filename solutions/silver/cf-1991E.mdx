@@ -1,0 +1,296 @@
+---
+id: cf-1991E
+source: CF
+title: Coloring Game
+author: Arnav Gokhale
+---
+
+## Explanation
+
+Firstly, determine if the graph is bipartite.
+
+If the graph is not bipartite, the Alice can choose the same two colors everytime. Since the graph is not bipartite, it is impossible for Bob to color the graph with only two colors such that no connected nodes have the same color. Thus, if the graph is not bipartite then Alice will always win.
+
+If the graph is bipartite, it can be split up into two groups, such that there are no edges connecting nodes within groups. Bob can then choose to color nodes in group 1 with color 1 and nodes in group 2 with color 2. Once one group is fully complete, Bob can use either color 3 or the original color on the unfinished group, which ensures that nodes in different groups will always have different colors. Therefore, if the graph is bipartite then Bob will always win.
+
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N\log^2N)$
+
+<LanguageSection>
+
+<CPPSection>
+```
+#include <bits/stdc++.h>
+using namespace std;
+void solve() {
+    int n, m; cin >> n >> m;
+    vector<vector<int>> a(n);
+
+    for (int i = 0; i < m; i++) {
+        int u, v; cin >> u >> v;
+        a[--u].push_back(--v);
+        a[v].push_back(u);
+    }
+
+    vector<int> cl(n);
+    vector<int> tws, ows;
+    
+    bool f = false;
+    auto dfs = [&] (auto&& self, int nd, int c) -> void {
+        cl[nd] = c;
+        if (c == 1) ows.push_back(nd);
+        else tws.push_back(nd);
+
+        for (int x : a[nd]) {
+            if (cl[x] == 0) self(self, x, 3 - c);
+            else if (cl[x] == c) {
+                f = true; return;
+            }
+        }
+    };
+
+    dfs(dfs, 0, 1);
+
+    if (f) {
+        int gb;
+        cout << "Alice" << endl;
+        for (int i = 0; i < n; i++) {
+            cout << 1 << " " << 2 << endl;
+            cin >> gb >> gb;
+        }
+    } else {
+        cout << "Bob" << endl;
+        int c1, c2, pt1 = 0, pt2 = 0;
+
+        for (int i = 0; i < n; i++) {
+            cin >> c1 >> c2;
+            if (c1 == 1 and c2 == 2 or c2 == 1 and c1 == 2) {
+                if (pt1 != ows.size()) {
+                    cout << ows[pt1] + 1 << " " << 1 << endl; pt1++;
+                } else {
+                    cout << tws[pt2] + 1 << " " << 2 << endl; pt2++;
+                }
+            } else if (c1 == 2 or c2 == 2) {
+                if (pt2 != tws.size()) {
+                    cout << tws[pt2] + 1 << " " << 2 << endl; pt2++;
+                } else {
+                    cout << ows[pt1] + 1 << " " << 3 << endl; pt1++;
+                }
+            } else {
+                if (pt1 != ows.size()) {
+                    cout << ows[pt1] + 1 << " " << 1 << endl; pt1++;
+                } else {
+                    cout << tws[pt2] + 1 << " " << 3 << endl; pt2++;
+                }
+            }
+        }
+    }
+}
+int main() {
+	int t; cin >> t;
+    while (t--) {
+        solve();
+    }
+}
+```
+</CPPSection>
+
+<PySection>
+```
+import sys
+input = sys.stdin.readline
+
+def solve():
+    n, m = map(int, input().split())
+    adj = [[] for _ in range(n)]
+
+    for _ in range(m):
+        u, v = map(int, input().split())
+        u -= 1
+        v -= 1
+        adj[u].append(v)
+        adj[v].append(u)
+
+    color = [0] * n
+    ows = []
+    tws = []
+    bad = False
+
+    def dfs(u, c):
+        nonlocal fail
+        color[u] = c
+        if c == 1:
+            ows.append(u)
+        else:
+            tws.append(u)
+
+        for v in adj[u]:
+            if color[v] == 0:
+                dfs(v, 3 - c)
+                if fail:
+                    return
+            elif color[v] == c:
+                fail = True
+                return
+
+    dfs(0, 1)
+
+    if bad:
+        sys.stdout.write("Alice\n")
+        for _ in range(n):
+            sys.stdout.write("1 2\n")
+            input()  # consume judge response
+    else:
+        sys.stdout.write("Bob\n")
+        pt1 = pt2 = 0
+
+        for _ in range(n):
+            c1, c2 = map(int, input().split())
+
+            if (c1 == 1 and c2 == 2) or (c1 == 2 and c2 == 1):
+                if pt1 < len(ows):
+                    sys.stdout.write(f"{ows[pt1] + 1} 1\n")
+                    pt1 += 1
+                else:
+                    sys.stdout.write(f"{tws[pt2] + 1} 2\n")
+                    pt2 += 1
+
+            elif c1 == 2 or c2 == 2:
+                if pt2 < len(tws):
+                    sys.stdout.write(f"{tws[pt2] + 1} 2\n")
+                    pt2 += 1
+                else:
+                    sys.stdout.write(f"{ows[pt1] + 1} 3\n")
+                    pt1 += 1
+
+            else:
+                if pt1 < len(ows):
+                    sys.stdout.write(f"{ows[pt1] + 1} 1\n")
+                    pt1 += 1
+                else:
+                    sys.stdout.write(f"{tws[pt2] + 1} 3\n")
+                    pt2 += 1
+
+
+def main():
+    t = int(input())
+    while t:
+        solve()
+        t -= 1
+
+if __name__ == "__main__":
+    main()
+```
+
+</PySection>
+
+<JavaSection>
+```
+import java.io.*;
+import java.util.*;
+
+public class Main {
+
+    static List<Integer>[] a;
+    static int[] cl;
+    static List<Integer> tws, ows;
+    static boolean f;
+
+    static void dfs(int nd, int c) {
+        cl[nd] = c;
+        if (c == 1) ows.add(nd);
+        else tws.add(nd);
+
+        for (int x : a[nd]) {
+            if (cl[x] == 0) {
+                dfs(x, 3 - c);
+                if (f) return;
+            } else if (cl[x] == c) {
+                f = true;
+                return;
+            }
+        }
+    }
+
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringBuilder out = new StringBuilder();
+
+        int t = Integer.parseInt(br.readLine().trim());
+
+        while (t-- > 0) {
+            StringTokenizer st = new StringTokenizer(br.readLine());
+            int n = Integer.parseInt(st.nextToken());
+            int m = Integer.parseInt(st.nextToken());
+
+            a = new ArrayList[n];
+            for (int i = 0; i < n; i++) a[i] = new ArrayList<>();
+
+            for (int i = 0; i < m; i++) {
+                st = new StringTokenizer(br.readLine());
+                int u = Integer.parseInt(st.nextToken()) - 1;
+                int v = Integer.parseInt(st.nextToken()) - 1;
+                a[u].add(v);
+                a[v].add(u);
+            }
+
+            cl = new int[n];
+            tws = new ArrayList<>();
+            ows = new ArrayList<>();
+            f = false;
+
+            dfs(0, 1);
+
+            if (f) {
+                out.append("Alice\n");
+                for (int i = 0; i < n; i++) {
+                    out.append("1 2\n");
+                    br.readLine(); // consume input
+                }
+            } else {
+                out.append("Bob\n");
+                int pt1 = 0, pt2 = 0;
+
+                for (int i = 0; i < n; i++) {
+                    st = new StringTokenizer(br.readLine());
+                    int c1 = Integer.parseInt(st.nextToken());
+                    int c2 = Integer.parseInt(st.nextToken());
+
+                    if ((c1 == 1 && c2 == 2) || (c1 == 2 && c2 == 1)) {
+                        if (pt1 < ows.size()) {
+                            out.append(ows.get(pt1) + 1).append(" 1\n");
+                            pt1++;
+                        } else {
+                            out.append(tws.get(pt2) + 1).append(" 2\n");
+                            pt2++;
+                        }
+                    } else if (c1 == 2 || c2 == 2) {
+                        if (pt2 < tws.size()) {
+                            out.append(tws.get(pt2) + 1).append(" 2\n");
+                            pt2++;
+                        } else {
+                            out.append(ows.get(pt1) + 1).append(" 3\n");
+                            pt1++;
+                        }
+                    } else {
+                        if (pt1 < ows.size()) {
+                            out.append(ows.get(pt1) + 1).append(" 1\n");
+                            pt1++;
+                        } else {
+                            out.append(tws.get(pt2) + 1).append(" 3\n");
+                            pt2++;
+                        }
+                    }
+                }
+            }
+        }
+
+        System.out.print(out.toString());
+    }
+}
+```
+</JavaSection>
+
+</LanguageSection>
