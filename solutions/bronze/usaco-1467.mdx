@@ -5,10 +5,17 @@ title: Astral Superposition
 author: Aarav Sethi
 ---
 
+[Official Analysis (C++ & Python)](https://usaco.org/current/data/sol_prob1_bronze_jan25.html)
+
 ## Explanation
 
 ### Case 1: $A = 0$ and $B = 0$
-In image 2 stars can only dissapear so the answer is how many times `G` & `B` occur.
+Since no stars are moving, they can only disappear in image 2.
+- `B` means the star stayed across both images
+- `G` means the star existed **only in the first image**, and then disappeared in the second image.
+- `W` means in either picture there was no star.
+so in order to count how many stars were in image 2, we count how many `B`s and `G`s are present.
+
 <center>
 <table className="text-center">
 	<tbody>
@@ -33,7 +40,8 @@ In image 2 stars can only dissapear so the answer is how many times `G` & `B` oc
 
 For the above case with $A = 0$ and $B = 0$ the answer would be $7$ stars.
 ### Case 2: $A \ne 0$ or $B \ne 0$
-When $A$ and $B$ are non-zero we can trace stars to other stars, and identify which are from image 1 and image 2.
+When $A$ and $B$ are non-zero we can tell that star $(i, j)$ moved to star $(i+A, j+B)$. So for every star (top-left to bottom-right) $(i, j)$ 
+if a $(i+A, j+B)$ is present, we can tell that $(i+A, j+B)$ was shifted and belongs to image 2.
 
 <center>
 <table className="text-center">
@@ -195,7 +203,7 @@ These are all the base rules so we can now structure the logic:
 
 ## Implementation
 
-**Time Complexity:** $\mathcal{O}(T\cdot D^2\cdot \log D)$
+**Time Complexity:** $\mathcal{O}(T\cdot D^2)$
 
 <LanguageSection>
 
@@ -222,25 +230,24 @@ int main() {
 
 		int stars = 0;
 		if (a == 0 && b == 0) {
-			/* just return how many stars */
+			// just return how many stars
 			stars = allStars;
 		} else {
-			/* First pass ignore all "directed" stars */
-			set<pair<int, int>> image2;
-			set<pair<int, int>> leadsTo;
+			// First pass ignore all "directed" stars
+            vector<vector<bool>> image2(1000, vector<bool>(1000));
 
 			for (int x = 0; x < d; x++)
 				for (int y = 0; y < d; y++) {
-					if (superimposed[y][x] == 'W' || image2.count({x, y})) continue;
+					if (superimposed[y][x] == 'W' || image2[x][y]) continue;
 
 					int nx = x + a;
 					int ny = y + b;
 
-					if (ny < d && nx < d &&
-					    superimposed[ny][nx] != 'W') {  // otherwise it has been deleted
-						leadsTo.insert({x, y});
-						if (superimposed[ny][nx] != 'B')  // do not ignore B cells
-							image2.insert({nx, ny});
+                    // otherwise it has been deleted
+					if (ny < d && nx < d && superimposed[ny][nx] != 'W') {
+                        // do not ignore B cells
+						if (superimposed[ny][nx] != 'B')
+							image2[nx][ny] = true;
 					}
 				}
 
@@ -253,22 +260,27 @@ int main() {
 					int nx = x - a;
 					int ny = y - b;
 
-					if (nx < 0 || ny < 0 ||
-					    superimposed[ny][nx] ==
-					        'W') {  // Not possible that nothing led to us
+                    // Not possible that nothing led to this
+					if (nx < 0 || ny < 0 || superimposed[ny][nx] == 'W') {
 						invalid = true;
 						break;
 					}
 
-					if (image2.count(
-					        {nx, ny})) {  // whoever leaded to us could not have been
-						                  // image2, they were removed
-						image2.erase({nx, ny});
+                    // whoever leaded to us could not have been image2, they were removed
+					if (image2[nx][ny]) {
+						image2[nx][ny] = false;
 					}
 				}
 
+            // Count how many stars in image 2
+            int image2numstars = 0;
+            for (int x = 0; x < d; x++)
+                for (int y = 0; y < d; y++){
+                    image2numstars += image2[x][y];
+                }
+
 			if (invalid) stars = -1;
-			else stars = allStars - image2.size();
+			else stars = allStars - image2numstars;
 		}
 		cout << stars << "\n";
 	}
