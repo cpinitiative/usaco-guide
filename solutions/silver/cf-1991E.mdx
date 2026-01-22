@@ -7,11 +7,11 @@ author: Arnav Gokhale
 
 ## Explanation
 
-Firstly, determine if the graph is bipartite.
+First, we determine if the graph is bipartite.
 
-If the graph is not bipartite, the Alice can choose the same two colors everytime. Since the graph is not bipartite, it is impossible for Bob to color the graph with only two colors such that no connected nodes have the same color. Thus, if the graph is not bipartite then Alice will always win.
+If the graph is not bipartite, the Alice can choose the same two colors everytime. Since the graph is not bipartite, it is impossible for Bob to color the graph with only two colors such that no connected nodes have the same color. Thus, if the graph is not bipartite, Alice will always win.
 
-If the graph is bipartite, it can be split up into two groups, such that there are no edges connecting nodes within groups. Bob can then choose to color nodes in group 1 with color 1 and nodes in group 2 with color 2. Once one group is fully complete, Bob can use either color 3 or the original color on the unfinished group, which ensures that nodes in different groups will always have different colors. Therefore, if the graph is bipartite then Bob will always win.
+If the graph is bipartite, it can be split up into two groups, such that there are no edges connecting nodes within the groups. Bob can then choose to color nodes in group 1 with color 1 and nodes in group 2 with color 2. Once one group is fully complete, Bob can use either color 3 or the original color on the unfinished group, which ensures that nodes in different groups will always have different colors. Therefore, if the graph is bipartite then Bob will always win.
 
 
 ## Implementation
@@ -24,12 +24,14 @@ If the graph is bipartite, it can be split up into two groups, such that there a
 ```
 #include <bits/stdc++.h>
 using namespace std;
+
 void solve() {
     int n, m; cin >> n >> m;
     vector<vector<int>> a(n);
 
     for (int i = 0; i < m; i++) {
-        int u, v; cin >> u >> v;
+        int u, v;
+		cin >> u >> v;
         a[--u].push_back(--v);
         a[v].push_back(u);
     }
@@ -46,7 +48,8 @@ void solve() {
         for (int x : a[nd]) {
             if (cl[x] == 0) self(self, x, 3 - c);
             else if (cl[x] == c) {
-                f = true; return;
+                f = true;
+				return;
             }
         }
     };
@@ -88,12 +91,14 @@ void solve() {
         }
     }
 }
+
 int main() {
 	int t; cin >> t;
     while (t--) {
         solve();
     }
 }
+
 ```
 </CPPSection>
 
