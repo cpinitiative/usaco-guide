@@ -19,11 +19,12 @@ With this a $\mathcal{O}(N^2)$ brute-force would work, here is a snippet:
 <CPPSection>
 
 ```cpp
-for (int myL = 0; myL < n; myL++){
-    for (int myR = 0; myR < n; myR++){
-        if ((beatenBy[l][myL] && beatenBy[r][myL]) || (beatenBy[l][myR] && beatenBy[r][myR]))
-          possible++;
-    }
+for (int myL = 0; myL < n; myL++) {
+	for (int myR = 0; myR < n; myR++) {
+		if ((beatenBy[l][myL] && beatenBy[r][myL]) ||
+		    (beatenBy[l][myR] && beatenBy[r][myR]))
+			possible++;
+	}
 }
 ```
 
@@ -39,14 +40,14 @@ You can notice that if `myL` is already able to beat both `l` & `r`, you do not 
 <LanguageSection>
 <CPPSection>
 ```cpp
-for (int myL = 0; myL < n; myL++){
-    if (beatenBy[l][myL] && beatenBy[r][myL]) {
-      possible += n;
-    } else {
-      for (int myR = 0; myR < n; myR++){
-        if (beatenBy[l][myR] && beatenBy[r][myR]) possible++;
-      }
-   }
+for (int myL = 0; myL < n; myL++) {
+	if (beatenBy[l][myL] && beatenBy[r][myL]) {
+		possible += n;
+	} else {
+		for (int myR = 0; myR < n; myR++) {
+			if (beatenBy[l][myR] && beatenBy[r][myR]) possible++;
+		}
+	}
 }
 ```
 </CPPSection>
@@ -57,8 +58,8 @@ If you let $x$ be how many gestures out of N can beat both of Elsies `l` & `r`, 
 <LanguageSection>
 <CPPSection>
 ```cpp
-for (int myL = 0; myL < n; myL++){
-  if (beatenBy[l][myL] && beatenBy[r][myL]) possible += n;
+for (int myL = 0; myL < n; myL++) {
+	if (beatenBy[l][myL] && beatenBy[r][myL]) possible += n;
 ```
 </CPPSection>
 </LanguageSection>
@@ -92,34 +93,38 @@ A simple formula that can be derived is $xn + x(n-x)$.
 using namespace std;
 
 int main() {
-	int n, m; cin >> n >> m;
+	int n, m;
+	cin >> n >> m;
 
-    // Read the win triangle
-    vector<vector<bool>> beatenBy(n, vector<bool>(n));
-    for (int i = 0; i < n; i++){
-        for (int j = 0; j <= i; j++){
-            char state; cin >> state;
-            if (state == 'L') {
-                beatenBy[i][j] = true;
-            } else if (state == 'W'){ 
-                beatenBy[j][i] = true;
-            }
-        }
-    }
+	// Read the win triangle
+	vector<vector<bool>> beatenBy(n, vector<bool>(n));
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j <= i; j++) {
+			char state;
+			cin >> state;
+			if (state == 'L') {
+				beatenBy[i][j] = true;
+			} else if (state == 'W') {
+				beatenBy[j][i] = true;
+			}
+		}
+	}
 
-    // Read Elsie's moves
-    for (int i = 0; i < m; i++){
-        int l, r; cin >> l >> r;
-        l--; r--;
+	// Read Elsie's moves
+	for (int i = 0; i < m; i++) {
+		int l, r;
+		cin >> l >> r;
+		l--;
+		r--;
 
-        int x = 0;
-        for (int a = 0; a < n; a++){
-            if (beatenBy[l][a] && beatenBy[r][a]) x++;
-        }
-        
-        int possible = x*n + x*(n-x); // equation is explained above
-        cout << possible << "\n";
-    }
+		int x = 0;
+		for (int a = 0; a < n; a++) {
+			if (beatenBy[l][a] && beatenBy[r][a]) x++;
+		}
+
+		int possible = x * n + x * (n - x);  // equation is explained above
+		cout << possible << "\n";
+	}
 }
 ```
 
