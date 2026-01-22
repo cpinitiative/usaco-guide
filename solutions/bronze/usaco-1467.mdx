@@ -40,8 +40,11 @@ To count how many stars were in image 2, we count how many `B`s and `G`s are pre
 
 For the above case with $A = 0$ and $B = 0$ the answer would be $7$ stars.
 ### Case 2: $A \ne 0$ or $B \ne 0$
-When $A$ and $B$ are non-zero we can tell that star $(i, j)$ moved to star $(i+A, j+B)$. So for every star (top-left to bottom-right) $(i, j)$
-if a $(i+A, j+B)$ is present, we can tell that $(i+A, j+B)$ was shifted and belongs to image 2.
+> This will begin with some simple logic and extend later (for `B` stars).
+
+When $A$ and $B$ are non-zero we can tell that star $(i, j)$ moved to star $(i+A, j+B)$.
+
+So for every star (top-left to bottom-right) $(i, j)$ if a $(i+A, j+B)$ is present, we can tell that $(i+A, j+B)$ was shifted and belongs to image 2.
 
 <center>
 <table className="text-center">
@@ -202,7 +205,7 @@ These are all the base rules so we can now structure the logic:
 
 ## Implementation
 
-**Time Complexity:** $\mathcal{O}(T\cdot D^2)$
+**Time Complexity:** $\mathcal{O}(T\cdot N^2)$
 
 <LanguageSection>
 
@@ -216,15 +219,15 @@ int main() {
 	int t;
 	cin >> t;
 	while (t--) {
-		int d, a, b;
-		cin >> d >> a >> b;
+		int n, a, b;
+		cin >> n >> a >> b;
 
-		vector<string> superimposed(d);
-		for (int i = 0; i < d; i++) cin >> superimposed[i];
+		vector<string> superimposed(n);
+		for (int i = 0; i < n; i++) cin >> superimposed[i];
 
 		int allStars = 0;
-		for (int x = 0; x < d; x++)
-			for (int y = 0; y < d; y++)
+		for (int x = 0; x < n; x++)
+			for (int y = 0; y < n; y++)
 				if (superimposed[x][y] != 'W') allStars++;
 
 		int stars = 0;
@@ -233,46 +236,50 @@ int main() {
 			stars = allStars;
 		} else {
 			// First pass ignore all "directed" stars
-			vector<vector<bool>> image2(1000, vector<bool>(1000));
+            vector<vector<bool>> image2(n, vector<bool>(n));
 
-			for (int x = 0; x < d; x++)
-				for (int y = 0; y < d; y++) {
+			for (int x = 0; x < n; x++)
+				for (int y = 0; y < n; y++) {
 					if (superimposed[y][x] == 'W' || image2[x][y]) continue;
 
 					int nx = x + a;
 					int ny = y + b;
 
-					// otherwise it has been deleted
-					if (ny < d && nx < d && superimposed[ny][nx] != 'W') {
-						// do not ignore B cells
-						if (superimposed[ny][nx] != 'B') image2[nx][ny] = true;
+                    // otherwise it has been deleted
+					if (ny < n && nx < n && superimposed[ny][nx] != 'W') {
+                        // do not ignore B cells
+						if (superimposed[ny][nx] != 'B')
+							image2[nx][ny] = true;
 					}
 				}
 
 			/* Second pass, handle all black stars */
 			bool invalid = false;
-			for (int x = 0; x < d; x++)
-				for (int y = 0; y < d; y++) {
+			for (int x = 0; x < n; x++)
+				for (int y = 0; y < n; y++) {
 					if (superimposed[y][x] != 'B') continue;
 
 					int nx = x - a;
 					int ny = y - b;
 
-					// Not possible that nothing led to this
+                    // Not possible that nothing led to this
 					if (nx < 0 || ny < 0 || superimposed[ny][nx] == 'W') {
 						invalid = true;
 						break;
 					}
 
-					// whoever leaded to us could not have been image2, they were
-					// removed
-					if (image2[nx][ny]) { image2[nx][ny] = false; }
+                    // whoever leaded to us could not have been image2, they were removed
+					if (image2[nx][ny]) {
+						image2[nx][ny] = false;
+					}
 				}
 
-			// Count how many stars in image 2
-			int image2numstars = 0;
-			for (int x = 0; x < d; x++)
-				for (int y = 0; y < d; y++) { image2numstars += image2[x][y]; }
+            // Count how many stars in image 2
+            int image2numstars = 0;
+            for (int x = 0; x < n; x++)
+                for (int y = 0; y < n; y++){
+                    image2numstars += image2[x][y];
+                }
 
 			if (invalid) stars = -1;
 			else stars = allStars - image2numstars;
