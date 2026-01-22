@@ -236,7 +236,7 @@ int main() {
 			stars = allStars;
 		} else {
 			// First pass ignore all "directed" stars
-            vector<vector<bool>> image2(n, vector<bool>(n));
+			vector<vector<bool>> image2(n, vector<bool>(n));
 
 			for (int x = 0; x < n; x++)
 				for (int y = 0; y < n; y++) {
@@ -245,11 +245,10 @@ int main() {
 					int nx = x + a;
 					int ny = y + b;
 
-                    // otherwise it has been deleted
+					// otherwise it has been deleted
 					if (ny < n && nx < n && superimposed[ny][nx] != 'W') {
-                        // do not ignore B cells
-						if (superimposed[ny][nx] != 'B')
-							image2[nx][ny] = true;
+						// do not ignore B cells
+						if (superimposed[ny][nx] != 'B') image2[nx][ny] = true;
 					}
 				}
 
@@ -262,24 +261,21 @@ int main() {
 					int nx = x - a;
 					int ny = y - b;
 
-                    // Not possible that nothing led to this
+					// Not possible that nothing led to this
 					if (nx < 0 || ny < 0 || superimposed[ny][nx] == 'W') {
 						invalid = true;
 						break;
 					}
 
-                    // whoever leaded to us could not have been image2, they were removed
-					if (image2[nx][ny]) {
-						image2[nx][ny] = false;
-					}
+					// whoever leaded to us could not have been image2, they were
+					// removed
+					if (image2[nx][ny]) { image2[nx][ny] = false; }
 				}
 
-            // Count how many stars in image 2
-            int image2numstars = 0;
-            for (int x = 0; x < n; x++)
-                for (int y = 0; y < n; y++){
-                    image2numstars += image2[x][y];
-                }
+			// Count how many stars in image 2
+			int image2numstars = 0;
+			for (int x = 0; x < n; x++)
+				for (int y = 0; y < n; y++) { image2numstars += image2[x][y]; }
 
 			if (invalid) stars = -1;
 			else stars = allStars - image2numstars;
