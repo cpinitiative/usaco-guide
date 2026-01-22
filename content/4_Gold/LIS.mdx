@@ -2,7 +2,7 @@
 id: lis
 title: 'Longest Increasing Subsequence'
 author: Michael Cao, Benjamin Qi, Andi Qu, Andrew Wang
-contributors: Dong Liu, Siyong Huang, Aryansh Shrivastava, Kevin Sheng
+contributors: Dong Liu, Siyong Huang, Aryansh Shrivastava, Kevin Sheng, Katja Frantzen
 prerequisites:
   - intro-dp
 description: Finding and using the longest increasing subsequence of an array.
@@ -589,6 +589,32 @@ class PCB {
 ```
 
 </JavaSection>
+<PythonSection>
+
+```python
+
+from bisect import bisect_left
+
+n = int(input())
+board = []
+endpoints = []
+for _ in range(n):
+    in_, out = map(int, input().split())
+    board.append((in_, out))
+board.sort()
+
+endpoints.append(board[0][1])
+for x in range(1, n):
+    v = board[x][1]
+    if v < endpoints[-1]:
+        endpoints.append(v)
+    else:
+        index = bisect_left([-x for x in endpoints], -v)  # invert list in order to use bisect_left
+        endpoints[index] = v
+print(len(endpoints))
+
+
+</PythonSection>
 </LanguageSection>
 
 ## Problems
