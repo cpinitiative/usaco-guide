@@ -591,25 +591,26 @@ class PCB {
 </JavaSection>
 <PythonSection>
 ```py
-
 from bisect import bisect_left
 
 n = int(input())
 board = []
 endpoints = []
 for _ in range(n):
-    l, r = map(int, input().split())
-    board.append((l, r))
+	l, r = map(int, input().split())
+	board.append((l, r))
 board.sort()
 
 endpoints.append(board[0][1])
 for x in range(1, n):
-    v = board[x][1]
-    if v < endpoints[-1]:
-        endpoints.append(v)
-    else:
-        index = bisect_left([-x for x in endpoints], -v)  # invert list in order to use bisect_left
-        endpoints[index] = v
+	v = board[x][1]
+	if v < endpoints[-1]:
+		endpoints.append(v)
+	else:
+		index = bisect_left(
+			[-x for x in endpoints], -v
+		)  # invert list in order to use bisect_left
+		endpoints[index] = v
 print(len(endpoints))
 ```
 
