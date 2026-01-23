@@ -80,213 +80,215 @@ int main() {
 </CPPSection>
 
 <JavaSection>
-We are using Binary Indexed Tree Approach for Java as Segment Tree will result in TLE.
+
 ```java
-```cpp
-```cpp
 import java.io.*;
 import java.util.*;
-
-// Utilizing the Fact that Total Unique Number of Salaries Including the Queries and
-// Input Array is no more than n (2e5) + 2 * q (2e5) which is 6*10^5.
+ 
+// Utilizing the Fact that Total Unique Number of Salaries Including the Queries and Input Array is no more than n (2e5) + 2 * q (2e5) which is 6*10^5.
 
 // So we don't have to worry about salary in range 1e9, we will compress it.
 
-public
-class Main {
-	static Reader fr = new Reader();
-	static PrintWriter out = new PrintWriter(System.out);
+public class Main { static Reader fr = new Reader(); static PrintWriter out =
+new PrintWriter(System.out);
 
-	static long[] list;
-	static long[] Seq;
-	static HashMap<Long, Integer> map;
+    static long [] list;
+    static long [] Seq;
+    static HashMap<Long, Integer> map;
 
-  public
-	static void Solve() throws IOException {
-		int test = 1;
-		for (int tests = 0; tests < test; tests++) {
-			int n = fr.nextInt();
-			int q = fr.nextInt();
+    public static void Solve() throws IOException{
+        int test=1;
+        for (int tests = 0; tests < test; tests++) {
+            int n=fr.nextInt();
+            int q=fr.nextInt();
 
-			list = new long[n + (q << 1)];
-			int ptr = 0;
-			long[] arr = new long[n];
-			for (int i = 0; i < n; i++) {
-				arr[i] = fr.nextLong();
-				list[ptr++] = arr[i];
-			}
+            list = new long [n+(q<<1)];
+            int ptr=0;
+            long [] arr = new long [n];
+            for(int i=0; i<n; i++) {
+                arr[i]=fr.nextLong();
+                list[ptr++]=arr[i];
+            }
 
-			long[][] query = new long[q][3];
-			for (int i = 0; i < q; i++) {
-				char ch = fr.nextChar();
-				long a = fr.nextLong();
-				long b = fr.nextLong();
+            long [][] query=new long [q][3];
+            for(int i=0; i<q; i++) {
+                char ch=fr.nextChar();
+                long a=fr.nextLong();
+                long b=fr.nextLong();
 
-				if (ch == '!') {
-					query[i][0] = 0;
-					query[i][1] = a - 1;
-					query[i][2] = b;
+                if(ch=='!') {
+                    query[i][0]=0;
+                    query[i][1]=a-1;
+                    query[i][2]=b;
 
-					list[ptr++] = b;
-				} else {
-					query[i][0] = 1;
-					query[i][1] = a;
-					query[i][2] = b;
-					list[ptr++] = a;
-					list[ptr++] = b;
-				}
-			}
+                    list[ptr++]=b;
+                } else {
+                    query[i][0]=1;
+                    query[i][1]=a;
+                    query[i][2]=b;
+                    list[ptr++]=a;
+                    list[ptr++]=b;
+                }
+            }
 
-			// Compression Step
-			// Start
-			Arrays.sort(list, 0, ptr);
 
-			int cnt = 0;
-			long prev = 0;
-			map = new HashMap<>();
-			for (int i = 0; i < ptr; i++) {
-				if (prev != list[i]) map.put(list[i], cnt++);
-				prev = list[i];
-			}
-			// End
+    		// Compression Step
+    		// Start
+            Arrays.sort(list, 0, ptr);
 
-			BIT bt = new BIT(cnt);
+            int cnt=0;
+            long prev=0;
+            map=new HashMap<>();
+            for(int i=0; i<ptr; i++) {
+                if(prev != list[i]) map.put(list[i], cnt++);
+                prev = list[i];
+            }
+    		// End
 
-			for (long ele : arr) { bt.update(map.get(ele), 1); }
+            BIT bt = new BIT(cnt);
 
-			StringBuilder SB = new StringBuilder();
-			for (long[] qr : query) {
-				if (qr[0] == 0) {
-					bt.update(map.get(arr[(int)qr[1]]), -1);
-					arr[(int)qr[1]] = qr[2];
-					bt.update(map.get(arr[(int)qr[1]]), 1);
-				} else {
-					int ans = bt.get(map.get(qr[1]), map.get(qr[2]));
 
-					SB.append(ans).append('\n');
-				}
-			}
+            for(long ele : arr) {
+                bt.update(map.get(ele), 1);
+            }
 
-			out.println(SB);
-		}
-	}
+            StringBuilder SB = new StringBuilder();
+            for(long [] qr : query) {
+                if(qr[0] == 0) {
+                    bt.update(map.get(arr[(int)qr[1]]), -1);
+                    arr[(int)qr[1]]=qr[2];
+                    bt.update(map.get(arr[(int)qr[1]]), 1);
+                } else {
+                    int ans = bt.get(map.get(qr[1]), map.get(qr[2]));
 
-  public
-	static void main(String[] args) throws java.lang.Exception {
-		Solve();
-		out.close();
-	}
+                    SB.append(ans).append('\n');
+                }
+            }
 
-	// BeginCodeSnip{Reader}
-	static class Reader {
-	  private
-		final int BUFFER_SIZE = 1 << 16;
-	  private
-		DataInputStream din;
-	  private
-		byte[] buffer;
-	  private
-		int bufferPointer, bytesRead;
+            out.println(SB);
+        }
+    }
 
-	  public
-		Reader() {
-			din = new DataInputStream(System.in);
-			buffer = new byte[BUFFER_SIZE];
-			bufferPointer = bytesRead = 0;
-		}
+    public static void main (String[] args) throws java.lang.Exception
+    {
+        Solve();
+        out.close();
+    }
 
-		// Reads the next integer from input
-	  public
-		int nextInt() throws IOException {
-			int ret = 0;
-			byte c = read();
-			while (c <= ' ') { c = read(); }
-			boolean neg = (c == '-');
-			if (neg) c = read();
-			do { ret = ret * 10 + c - '0'; } while ((c = read()) >= '0' && c <= '9');
-			return neg ? -ret : ret;
-		}
 
-		// Reads the next long from input
-	  public
-		long nextLong() throws IOException {
-			long ret = 0;
-			byte c = read();
-			while (c <= ' ') { c = read(); }
-			boolean neg = (c == '-');
-			if (neg) c = read();
-			do { ret = ret * 10 + c - '0'; } while ((c = read()) >= '0' && c <= '9');
-			return neg ? -ret : ret;
-		}
+    // BeginCodeSnip{Reader}
+    static class Reader {
+        private final int BUFFER_SIZE = 1 << 16;
+        private DataInputStream din;
+        private byte[] buffer;
+        private int bufferPointer, bytesRead;
 
-	  public
-		char nextChar() throws IOException {
-			byte c = read();
-			while (c <= ' ') { c = read(); }
-			return (char)c;
-		}
+        public Reader() {
+            din = new DataInputStream(System.in);
+            buffer = new byte[BUFFER_SIZE];
+            bufferPointer = bytesRead = 0;
+        }
 
-		// Reads the next byte from the buffer
-	  private
-		byte read() throws IOException {
-			if (bufferPointer == bytesRead) fillBuffer();
-			return buffer[bufferPointer++];
-		}
+        // Reads the next integer from input
+        public int nextInt() throws IOException {
+            int ret = 0;
+            byte c = read();
+            while (c <= ' ') {
+                c = read();
+            }
+            boolean neg = (c == '-');
+            if (neg) c = read();
+            do {
+                ret = ret * 10 + c - '0';
+            } while ((c = read()) >= '0' && c <= '9');
+            return neg ? -ret : ret;
+        }
 
-		// Fills the buffer with new data
-	  private
-		void fillBuffer() throws IOException {
-			bytesRead = din.read(buffer, bufferPointer = 0, BUFFER_SIZE);
-			if (bytesRead == -1) buffer[0] = -1;
-		}
-	}
-	// EndCodeSnip
+        // Reads the next long from input
+        public long nextLong() throws IOException {
+            long ret = 0;
+            byte c = read();
+            while (c <= ' ') {
+                c = read();
+            }
+            boolean neg = (c == '-');
+            if (neg) c = read();
+            do {
+                ret = ret * 10 + c - '0';
+            } while ((c = read()) >= '0' && c <= '9');
+            return neg ? -ret : ret;
+        }
 
-	public static int
-	max(int a, int b) {
-		return Math.max(a, b);
-	}
-  public
-	static int min(int a, int b) { return Math.min(a, b); }
-  public
-	static long max(long a, long b) { return Math.max(a, b); }
-  public
-	static long min(long a, long b) { return Math.min(a, b); }
+        public char nextChar() throws IOException {
+            byte c = read();
+            while (c <= ' ') {
+                c = read();
+            }
+            return (char) c;
+        }
+
+        // Reads the next byte from the buffer
+        private byte read() throws IOException {
+            if (bufferPointer == bytesRead) fillBuffer();
+            return buffer[bufferPointer++];
+        }
+
+        // Fills the buffer with new data
+        private void fillBuffer() throws IOException {
+            bytesRead = din.read(buffer, bufferPointer = 0, BUFFER_SIZE);
+            if (bytesRead == -1) buffer[0] = -1;
+        }
+    }
+    // EndCodeSnip
+
+    public static int max(int a, int b) {return Math.max(a, b);}
+    public static int min(int a, int b) {return Math.min(a, b);}
+    public static long max(long a, long b) {return Math.max(a, b);}
+    public static long min(long a, long b) {return Math.min(a, b);}
 
 }
 
-class BIT {
-	int[] bit;
-	int size;
+class BIT { int [] bit; int size;
 
-  public
-	BIT(int n) {
-		this.size = n;
-		bit = new int[n + 1];
-	}
-	int sum(int r) {
-		int res = 0;
-		for (; r >= 0; r = (r & (r + 1)) - 1) { res += bit[r]; }
+    public BIT(int n) {
+        this.size = n;
+        bit=new int[n+1];
+    }
+    int sum(int r) {
+        int res=0;
+        for(; r>=0; r=(r&(r+1))-1) {
+            res+=bit[r];
+        }
 
-		return res;
-	}
+        return res;
+    }
 
-	void update(int x, int delta) {
-		for (; x < size; x |= x + 1) { bit[x] += delta; }
-	}
+    void update(int x, int delta) {
+        for(; x<size; x|=x+1) {
+            bit[x]+=delta;
+        }
+    }
 
-	int get(int l, int r) { return sum(r) - sum(l - 1); }
+    int get(int l, int r) {
+        return sum(r)-sum(l-1);
+    }
 
 }
 
-```` </ JavaSection></ LanguageSection>
+```
 
-    Here is a similar solution with a `map` that passes slightly under the time limit.
+</JavaSection>
+</LanguageSection>
 
-    <LanguageSection><CPPSection>
+Here is a similar solution with a `map` that passes slightly under the time
+limit.
 
+<LanguageSection>
+<CPPSection>
+
+```cpp
 #include <bits/stdc++.h>
-    using namespace std;
+using namespace std;
 
 using ll = long long;
 using ld = long double;
@@ -634,18 +636,21 @@ int main() {
 }
 ````
 
-    </ CPPSection></ LanguageSection>
+</CPPSection>
+</LanguageSection>
 
-    ##Solution 2
+## Solution 2
 
-    Just use indexed set !
+Just use indexed set!
 
-    <LanguageSection><CPPSection>
+<LanguageSection>
+<CPPSection>
 
+```cpp
 #include <bits/stdc++.h>
 #include <ext/pb_ds/assoc_container.hpp>
 
-    using namespace std;
+using namespace std;
 using namespace __gnu_pbds;
 
 typedef long long ll;
