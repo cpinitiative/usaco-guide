@@ -7,185 +7,172 @@ author: Ashok Narayan
 
 ## Explanation
 
-We are given \(N\) strings and want to find the **shortest possible string** that contains **all of them as substrings**.
+The problem asks us to find the length of the shortest string that contains a given set of $N$ strings as substrings. This is a variation of the Shortest Common Superstring problem. Since $N$ is small, we can use a brute-force approach with permutations combined with efficient string hashing.
 
-This is a variant of the **Shortest Common Superstring** problem. Since \(N\) is small, we can afford to try all orderings after some preprocessing.
+### Step 1: Filtering Redundant Strings
 
----
+First, observe that if a string $A$ is a substring of another string $B$, we never need to explicitly worry about "covering" $A$. If our result string contains $B$, it automatically contains $A$. Therefore, we can remove all strings that are substrings of other strings in the input set.
 
-## Step 1: Remove Redundant Strings
+To check if string $A$ is a substring of $B$ efficiently, we can use **Rolling Hashes**. We compute the hash of $A$ and compare it against the hashes of all substrings of $B$ with length $|A|$.
 
-If a string \(A\) is a substring of another string \(B\), then we never need to explicitly include \(A\).  
-Any superstring containing \(B\) will automatically contain \(A\).
+### Step 2: Calculating Overlaps
 
-Thus, we can safely **remove all strings that are substrings of other strings**.
+Once we have a filtered set of unique strings, we need to arrange them in a specific order. When we concatenate string $A$ followed by string $B$, we can merge them if a suffix of $A$ matches a prefix of $B$. To minimize the total length, we want to maximize this overlap.
 
-### Efficient Substring Checking
+Let $overlap(A, B)$ be the length of the longest suffix of $A$ that is equal to a prefix of $B$. The cost (additional characters needed) to append $B$ after $A$ is $|B| - overlap(A, B)$.
 
-We use **rolling hashes**:
+We can precompute these overlap costs for every pair of strings $(i, j)$. Using rolling hashes, we can check equality of suffixes and prefixes in $O(1)$ after $O(L)$ preprocessing.
 
-- Precompute prefix hashes for each string.
-- For every pair \((A, B)\) with \(|A| \le |B|\), compare the hash of \(A\) against all substrings of \(B\) with length \(|A|\).
-- Each comparison runs in \(O(1)\) after preprocessing.
+### Step 3: Finding the Best Permutation
 
----
+After preprocessing the overlaps, the problem reduces to finding an ordering (permutation) of the strings $S_{p_1}, S_{p_2}, \dots, S_{p_k}$ such that the total length is minimized.
 
-## Step 2: Compute Overlaps
+The total length for a specific permutation is:
+$$|S_{p_1}| + \sum_{i=2}^{k} (|S_{p_i}| - overlap(S_{p_{i-1}}, S_{p_i}))$$
 
-When appending string \(B\) after string \(A\), we may overlap them if a suffix of \(A\) matches a prefix of \(B\).
+Since $N$ is small (implied by the problem type to be around 10 or fewer), we can iterate through all $N!$ permutations using `next_permutation` and calculate the total length for each, keeping the minimum.
 
-### Definition
+### Time Complexity
 
-\[
-\text{overlap}(A, B)
-\]
-is the length of the longest suffix of \(A\) that matches a prefix of \(B\).
+1.  **Preprocessing Hashes:** $O(N \cdot L)$, where $L$ is the maximum length of a string.
+2.  **Filtering Substrings:** We compare every pair. $O(N^2 \cdot L)$.
+3.  **Overlap Calculation:** We compute overlaps for all pairs. $O(N^2 \cdot L)$.
+4.  **Permutations:** There are $N!$ permutations. For each, we sum the costs in $O(N)$. Total: $O(N! \cdot N)$.
 
-The additional length needed is:
-\[
-|B| - \text{overlap}(A, B)
-\]
-
----
-
-## Step 3: Try All Permutations
-
-For a permutation
-\[
-S_{p_1}, S_{p_2}, \dots, S_{p_k}
-\]
-the total length is:
-\[
-|S_{p_1}| + \sum_{i=2}^{k} (|S_{p_i}| - \text{overlap}(S_{p_{i-1}}, S_{p_i}))
-\]
-
-Since \(N \le 10\), we can brute force all permutations.
-
----
-
-## Time Complexity
-
-Let \(L\) be the maximum string length.
-
-- Hash preprocessing: \(O(NL)\)
-- Substring filtering: \(O(N^2 L)\)
-- Overlap computation: \(O(N^2 L)\)
-- Permutations: \(O(N! \cdot N)\)
-
-Overall:
-\[
-O(N^2 L + N! \cdot N)
-\]
-
----
+The overall time complexity is $O(N^2 L + N! \cdot N)$, which fits well within time limits for small $N$.
 
 ## Implementation
 
 <LanguageSection>
+
 <CPPSection>
 
-<pre><code className="language-cpp">
-#include &lt;bits/stdc++.h&gt;
+```cpp
+#include <bits/stdc++.h>
+
 using namespace std;
 
 class HashedString {
 private:
+    // Change M and B if needed for collision avoidance
     static const long long M = 1e9 + 9;
     static const long long B = 9973;
-    static vector&lt;long long&gt; pow;
-    vector&lt;long long&gt; p_hash;
+
+    // pow[i] contains B^i % M
+    static vector<long long> pow;
+
+    // p_hash[i] is the hash of the first i characters of the given string
+    vector<long long> p_hash;
 
 public:
     int size;
-
     HashedString(const string &s) : p_hash(s.size() + 1) {
-        while (pow.size() &lt;= s.size())
-            pow.push_back((pow.back() * B) % M);
-
-        size = s.size();
+        while (pow.size() <= s.size()) { pow.push_back((pow.back() * B) % M); }
+        this->size = s.size();
         p_hash[0] = 0;
-        for (int i = 0; i &lt; size; i++)
-            p_hash[i + 1] = (p_hash[i] * B + s[i]) % M;
+        for (int i = 0; i < s.size(); i++) {
+            p_hash[i + 1] = ((p_hash[i] * B) % M + s[i]) % M;
+        }
     }
 
-    long long get_hash(int l, int r) {
-        long long res =
-            p_hash[r + 1] - (p_hash[l] * pow[r - l + 1]) % M;
-        return (res + M) % M;
+    long long get_hash(int start, int end) {
+        long long raw_val =
+                (p_hash[end + 1] - (p_hash[start] * pow[end - start + 1]));
+        return (raw_val % M + M) % M;
     }
 };
+vector<long long> HashedString::pow = {1};
 
-vector&lt;long long&gt; HashedString::pow = {1};
-
-bool isSubstr(HashedString &a, HashedString &b) {
-    for (int i = 0; i + a.size &lt;= b.size; i++) {
-        if (a.get_hash(0, a.size - 1) ==
-            b.get_hash(i, i + a.size - 1))
-            return true;
+// Checks if A is a substring of B
+bool isSubstr(HashedString &a, HashedString &b){
+    int l = 0, r = a.size - 1;
+    while (r < b.size){
+        if (a.get_hash(0, a.size - 1) == b.get_hash(l, r)) return true;
+        l++;
+        r++;
     }
     return false;
 }
 
-int getMergeLength(HashedString &a, HashedString &b) {
-    int max_overlap = 0;
-    for (int len = 1; len &lt;= min(a.size, b.size); len++) {
-        if (a.get_hash(a.size - len, a.size - 1) ==
-            b.get_hash(0, len - 1)) {
-            max_overlap = len;
+// Calculates the length added by appending b to a
+// (Size of b minus the longest suffix of a matching a prefix of b)
+int getMergeLength(HashedString &a, HashedString &b){
+    int r = a.size - 1;
+    int mx = 0;
+    // Check overlaps of length k
+    for (int k = 0; k < b.size; ++k) {
+        if (r < 0) break;
+        // Compare the hash of the suffix of a and the prefix of b with length k+1
+        if (a.get_hash(r, a.size - 1) == b.get_hash(0, k)){
+            mx = k + 1;
         }
+        r--;
     }
-    return b.size - max_overlap;
+    // We only need to add the non-overlapping part of b
+    return b.size - mx;
 }
 
-int main() {
+int main(){
     int n;
-    cin &gt;&gt; n;
-
-    vector&lt;HashedString&gt; v;
-    for (int i = 0; i &lt; n; i++) {
+    cin >> n;
+    vector<HashedString> v;
+    vector<HashedString> tmp;
+    vector<int> idx;
+    
+    // Read input
+    for (int i = 0; i < n; ++i) {
         string s;
-        cin &gt;&gt; s;
-        v.emplace_back(s);
+        cin >> s;
+        v.push_back(HashedString(s));
     }
 
-    sort(v.begin(), v.end(),
-         [](auto &a, auto &b) { return a.size &lt; b.size; });
-
-    vector&lt;HashedString&gt; filtered;
-    for (int i = 0; i &lt; v.size(); i++) {
-        bool keep = true;
-        for (int j = i + 1; j &lt; v.size(); j++) {
-            if (isSubstr(v[i], v[j])) {
-                keep = false;
+    // Step 1: Remove unneeded strings (those that are substrings of others)
+    sort(v.begin(), v.end(), [](HashedString a, HashedString b){ return a.size < b.size;});
+    for (int i = 0; i < v.size(); ++i) {
+        bool f = true;
+        for (int j = i + 1; j < v.size(); ++j) {
+            // If v[i] is smaller and is a substring of v[j], we don't need v[i]
+            if (i == j || v[i].size > v[j].size) continue;
+            if (isSubstr(v[i], v[j])){
+                f = false;
                 break;
             }
         }
-        if (keep) filtered.push_back(v[i]);
+        if (f) tmp.push_back(v[i]);
     }
-
-    v = filtered;
+    v = tmp;
     n = v.size();
 
-    vector&lt;vector&lt;int&gt;&gt; merge_length(n, vector&lt;int&gt;(n));
-    for (int i = 0; i &lt; n; i++)
-        for (int j = 0; j &lt; n; j++)
-            if (i != j)
-                merge_length[i][j] = getMergeLength(v[i], v[j]);
+    // Step 2: Precompute merge costs
+    // merge_length[i][j] stores the cost to append v[j] after v[i]
+    vector merge_length(n, vector<int>(n));
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < n; ++j) {
+            if (i == j) continue;
+            merge_length[i][j] = getMergeLength(v[i], v[j]);
+        }
+    }
 
-    vector&lt;int&gt; perm(n);
-    iota(perm.begin(), perm.end(), 0);
+    // Initialize permutation indices
+    for (int i = 0; i < n; ++i) {
+        idx.push_back(i);
+    }
 
-    int ans = INT_MAX;
+    // Step 3: Try all permutations to find the minimal total length
+    int ans = INT32_MAX;
     do {
-        int cur = v[perm[0]].size;
-        for (int i = 1; i &lt; n; i++)
-            cur += merge_length[perm[i - 1]][perm[i]];
-        ans = min(ans, cur);
-    } while (next_permutation(perm.begin(), perm.end()));
-
-    cout &lt;&lt; ans &lt;&lt; '\n';
+        // Start with the full length of the first string
+        int current_len = v[idx[0]].size;
+        for (int i = 1; i < n; ++i) {
+            // Add the cost of appending the next string in the sequence
+            current_len += merge_length[idx[i - 1]][idx[i]];
+        }
+        ans = min(ans, current_len);
+    } while (next_permutation(idx.begin(), idx.end()));
+    
+    cout << ans << '\n';
 }
-</code></pre>
-
+```
 </CPPSection>
-</LanguageSection>
+
+</LanguageSection>	
