@@ -45,7 +45,7 @@ Since $N$ is small (implied by the problem type to be around 10 or fewer), we ca
 using namespace std;
 
 class HashedString {
-private:
+  private:
 	// Change M and B if needed for collision avoidance
 	static const long long M = 1e9 + 9;
 	static const long long B = 9973;
@@ -56,12 +56,10 @@ private:
 	// p_hash[i] is the hash of the first i characters of the given string
 	vector<long long> p_hash;
 
-public:
+  public:
 	int size;
 	HashedString(const string &s) : p_hash(s.size() + 1) {
-		while (pow.size() <= s.size()) {
-			pow.push_back((pow.back() * B) % M);
-		}
+		while (pow.size() <= s.size()) { pow.push_back((pow.back() * B) % M); }
 		this->size = s.size();
 		p_hash[0] = 0;
 		for (int i = 0; i < s.size(); i++) {
@@ -70,8 +68,7 @@ public:
 	}
 
 	long long get_hash(int start, int end) {
-		long long raw_val =
-		    (p_hash[end + 1] - (p_hash[start] * pow[end - start + 1]));
+		long long raw_val = (p_hash[end + 1] - (p_hash[start] * pow[end - start + 1]));
 		return (raw_val % M + M) % M;
 	}
 };
@@ -120,9 +117,8 @@ int main() {
 	}
 
 	// Step 1: Remove unneeded strings (those that are substrings of others)
-	sort(v.begin(), v.end(), [](HashedString a, HashedString b) {
-		return a.size < b.size;
-	});
+	sort(v.begin(), v.end(),
+	     [](HashedString a, HashedString b) { return a.size < b.size; });
 	for (int i = 0; i < v.size(); ++i) {
 		bool f = true;
 		for (int j = i + 1; j < v.size(); ++j) {
@@ -149,9 +145,7 @@ int main() {
 	}
 
 	// Initialize permutation indices
-	for (int i = 0; i < n; ++i) {
-		idx.push_back(i);
-	}
+	for (int i = 0; i < n; ++i) { idx.push_back(i); }
 
 	// Step 3: Try all permutations to find the minimal total length
 	int ans = INT32_MAX;
