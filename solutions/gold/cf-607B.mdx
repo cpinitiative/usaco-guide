@@ -53,23 +53,23 @@ int main() {
 	ios_base::sync_with_stdio(0);
 	cin.tie(0);
 
-	int gemNum;
-	cin >> gemNum;
+	int n;
+	cin >> n;
 
-	vector<int> gems(gemNum);
-	for (int i = 0; i < gemNum; ++i) cin >> gems[i];
+	vector<int> gems(n);
+	for (int i = 0; i < n; ++i) cin >> gems[i];
 
 	/*
 	 * this[i][j] = min swipes to clear literally everything from i to j (inclusive)
 	 * the +1 is to just have a buffer for some invalid range accesses
 	 * (the array will always return 0 for invalid ranges)
 	 */
-	vector<vector<int>> swipes(gemNum + 1, vector<int>(gemNum, 0));
+	vector<vector<int>> swipes(n + 1, vector<int>(n, 0));
 
-	for (int i = 0; i < gemNum; ++i) swipes[i][i] = 1;
+	for (int i = 0; i < n; ++i) swipes[i][i] = 1;
 
-	for (int len = 2; len <= gemNum; ++len) {
-		for (int start = 0; start <= gemNum - len; ++start) {
+	for (int len = 2; len <= n; ++len) {
+		for (int start = 0; start <= n - len; ++start) {
 			int end = start + len - 1;
 
 			// maybe we just have to erase an end on its own
@@ -93,7 +93,7 @@ int main() {
 		}
 	}
 
-	cout << swipes[0][gemNum - 1] << '\n';
+	cout << swipes[0][n - 1] << '\n';
 
 	return 0;
 }
