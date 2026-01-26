@@ -3,7 +3,7 @@ id: two-pointers
 redirects:
  - /silver/2P
 title: 'Two Pointers'
-author: Darren Yao, Qi Wang, Ryan Chou
+author: Darren Yao, Qi Wang, Ryan Chou, David Zhou
 contributors: Aadit Ambadkar, Juheon Rhee
 prerequisites:
   - intro-sorting
@@ -34,12 +34,171 @@ frequency: 2
 
 ## Two Pointers
 
-The two pointers method iterates two pointers across an array, to track the start and end
-of an interval. It can also be used to track two values in an array as shown in [CPH's 2SUM](/CPH.pdf#page=87) solution.
+The **Two Pointers** algorithm iterates two pointers across an array to track indices satisfying some condition. There are two common ways to use two pointers:
+1. Two pointers starting at different ends of the array and moving towards each other.
+2. Two pointers moving in the same direction at different speeds. This variation is known as the **Sliding Window** algorithm.
 
-<FocusProblem problem="book" />
+## 2SUM Functionality
 
-## Solution - Books
+The first method is commonly used to find two elements in an array that satisfy a condition (like summing to a target value). We can essentially iterate over all pairs in $\mathcal{O}(N)$ time if the array is sorted.
+
+<FocusProblem problem="sample1" />
+
+### Solution - Sum of Two Values
+
+We want to find two indices $i$ and $j$ such that $a_i + a_j = x$.
+
+We can start by sorting the array. Then, we can initialize a left pointer at the beginning of the array ($L=0$) and a right pointer at the end ($R=N-1$).
+
+While $L < R$:
+1. If $a[L] + a[R] == x$, we have found the target sum.
+2. If $a[L] + a[R] < x$, the sum is too small. To increase the sum, we increment $L$.
+3. If $a[L] + a[R] > x$, the sum is too large. To decrease the sum, we decrement $R$.
+
+Since the array is sorted, moving the left pointer to the right will only increase the sum, and moving the right pointer to the left will only decrease the sum.
+
+**Time Complexity:** $\mathcal{O}(N \log N)$ (due to sorting)
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <utility>
+
+using namespace std;
+
+int main() {
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
+
+	int n, x;
+	cin >> n >> x;
+	vector<pair<int, int>> a(n);
+	for (int i = 0; i < n; i++) {
+		cin >> a[i].first;
+		a[i].second = i + 1;
+	}
+	sort(a.begin(), a.end());
+
+	int l = 0, r = n - 1;
+	while (l < r) {
+		if (a[l].first + a[r].first == x) {
+			cout << a[l].second << " " << a[r].second << "\n";
+			return 0;
+		}
+		if (a[l].first + a[r].first < x) {
+			l++;
+		} else {
+			r--;
+		}
+	}
+	cout << "IMPOSSIBLE\n";
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class SumOfTwoValues {
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		PrintWriter pw = new PrintWriter(System.out);
+
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int n = Integer.parseInt(st.nextToken());
+		int x = Integer.parseInt(st.nextToken());
+
+		int[] a = new int[n];
+		st = new StringTokenizer(br.readLine());
+		for (int i = 0; i < n; i++) {
+			a[i] = Integer.parseInt(st.nextToken());
+		}
+
+		Pair[] pairs = new Pair[n];
+		for (int i = 0; i < n; i++) {
+			pairs[i] = new Pair(a[i], i + 1);
+		}
+		
+		Arrays.sort(pairs);
+
+		int l = 0, r = n - 1;
+		boolean found = false;
+		while (l < r) {
+			if (pairs[l].val + pairs[r].val == x) {
+				pw.println(pairs[l].idx + " " + pairs[r].idx);
+				found = true;
+				break;
+			}
+			if (pairs[l].val + pairs[r].val < x) {
+				l++;
+			} else {
+				r--;
+			}
+		}
+		if (!found) pw.println("IMPOSSIBLE");
+		pw.close();
+	}
+
+	static class Pair implements Comparable<Pair> {
+		int val, idx;
+		public Pair(int val, int idx) {
+			this.val = val;
+			this.idx = idx;
+		}
+		public int compareTo(Pair other) {
+			return Integer.compare(this.val, other.val);
+		}
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```python
+n, x = map(int, input().split())
+a = list(map(int, input().split()))
+
+nums = []
+for i in range(n):
+	nums.append((a[i], i + 1))
+
+nums.sort()
+
+l = 0
+r = n - 1
+found = False
+while l < r:
+	if nums[l][0] + nums[r][0] == x:
+		print(nums[l][1], nums[r][1])
+		found = True
+		break
+	elif nums[l][0] + nums[r][0] < x:
+		l += 1
+	else:
+		r -= 1
+
+if not found:
+	print("IMPOSSIBLE")
+```
+
+</PySection>
+</LanguageSection>
+
+## Sliding Window
+
+The **Sliding Window** method is a variation of the two pointers technique where two pointers move in the same direction to maintain a specific range or "window" of elements. While standard two pointers often move towards each other, the sliding window technique is used to find a contiguous subarray that satisfies a condition.
+
+<FocusProblem problem="sample2" />
+
+### Solution - Books
 
 We want to find the longest contiguous segment of books that can be read within $t$ minutes.
 
@@ -189,13 +348,7 @@ Here's an animation of the above example:
 	<source src="/animations/two_pointers.mp4" type="video/mp4"/>
 </video>
 
-<Info title="Pro Tip">
-
-You can visualize these pointers as maintaining a sliding window of books for this problem.
-
-</Info>
-
-### Implementation
+#### Implementation
 
 **Time Complexity:** $\mathcal{O}(N)$
 
