@@ -71,31 +71,27 @@ Since the array is sorted, moving the left pointer to the right will only increa
 using namespace std;
 
 int main() {
-	ios::sync_with_stdio(false);
-	cin.tie(nullptr);
-
 	int n, x;
 	cin >> n >> x;
-	vector<pair<int, int>> a(n);
+	vector<pair<int, int>> nums(n);
 	for (int i = 0; i < n; i++) {
-		cin >> a[i].first;
-		a[i].second = i + 1;
+		cin >> nums[i].first;
+		nums[i].second = i;
 	}
-	sort(a.begin(), a.end());
-
+	sort(nums.begin(), nums.end());
 	int l = 0, r = n - 1;
 	while (l < r) {
-		if (a[l].first + a[r].first == x) {
-			cout << a[l].second << " " << a[r].second << "\n";
+		int sum = nums[l].first + nums[r].first;
+		if (sum == x) {
+			cout << nums[l].second + 1 << " " << nums[r].second + 1 << endl;
 			return 0;
-		}
-		if (a[l].first + a[r].first < x) {
+		} else if (sum < x) {
 			l++;
-		} else {
+		} else if (sum > x) {
 			r--;
 		}
 	}
-	cout << "IMPOSSIBLE\n";
+	if (l == r) { cout << "IMPOSSIBLE" << endl; }
 }
 ```
 
@@ -106,51 +102,33 @@ int main() {
 import java.io.*;
 import java.util.*;
 
-public class SumOfTwoValues {
+public class Main {
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		PrintWriter pw = new PrintWriter(System.out);
-
 		StringTokenizer st = new StringTokenizer(br.readLine());
 		int n = Integer.parseInt(st.nextToken());
 		int x = Integer.parseInt(st.nextToken());
 
-		int[] a = new int[n];
+		List<int[]> nums = new ArrayList<>();
 		st = new StringTokenizer(br.readLine());
-		for (int i = 0; i < n; i++) { a[i] = Integer.parseInt(st.nextToken()); }
-
-		Pair[] pairs = new Pair[n];
-		for (int i = 0; i < n; i++) { pairs[i] = new Pair(a[i], i + 1); }
-
-		Arrays.sort(pairs);
-
+		for (int i = 0; i < n; i++) {
+			nums.add(new int[] {Integer.parseInt(st.nextToken()), i});
+		}
+		nums.sort(Comparator.comparingInt(a -> a[0]));
 		int l = 0, r = n - 1;
-		boolean found = false;
 		while (l < r) {
-			if (pairs[l].val + pairs[r].val == x) {
-				pw.println(pairs[l].idx + " " + pairs[r].idx);
-				found = true;
-				break;
-			}
-			if (pairs[l].val + pairs[r].val < x) {
+			int sum = nums.get(l)[0] + nums.get(r)[0];
+			if (sum == x) {
+				System.out.println((nums.get(l)[1] + 1) + " " + (nums.get(r)[1] + 1));
+				return;
+			} else if (sum < x) {
 				l++;
 			} else {
 				r--;
 			}
 		}
-		if (!found) pw.println("IMPOSSIBLE");
-		pw.close();
-	}
 
-	static class Pair implements Comparable<Pair> {
-		int val, idx;
-		public Pair(int val, int idx) {
-			this.val = val;
-			this.idx = idx;
-		}
-		public int compareTo(Pair other) {
-			return Integer.compare(this.val, other.val);
-		}
+		System.out.println("IMPOSSIBLE");
 	}
 }
 ```
@@ -160,29 +138,23 @@ public class SumOfTwoValues {
 
 ```py
 n, x = map(int, input().split())
-a = list(map(int, input().split()))
 
-nums = []
-for i in range(n):
-	nums.append((a[i], i + 1))
-
+nums = [(int(val), i) for i, val in enumerate(input().split())]
 nums.sort()
 
 l = 0
 r = n - 1
-found = False
 while l < r:
-	if nums[l][0] + nums[r][0] == x:
-		print(nums[l][1], nums[r][1])
-		found = True
-		break
-	elif nums[l][0] + nums[r][0] < x:
+	sum = nums[l][0] + nums[r][0]
+	if sum == x:
+		print(nums[l][1] + 1, nums[r][1] + 1)
+		exit()
+	elif sum < x:
 		l += 1
 	else:
 		r -= 1
 
-if not found:
-	print("IMPOSSIBLE")
+print("IMPOSSIBLE")
 ```
 
 </PySection>
