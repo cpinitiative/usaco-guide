@@ -87,16 +87,14 @@ bool isSubstr(const HashedString &a, const HashedString &b) {
 	return false;
 }
 
-// Calculates the length added by appending b to a
-// (Size of b minus the longest suffix of a matching a prefix of b)
+// Calculates the length added by appending b to a (Size of b - (longest suffix of a matching a prefix of b))
 int getMergeLength(const HashedString &a, const HashedString &b) {
 	int r = a.size - 1;
 	int mx = 0;
 	// Check overlaps of length k
 	for (int k = 0; k < b.size; ++k) {
 		if (r < 0) { break; }
-		// Compare the hash of the suffix of a and the prefix of b with length
-		// k+1
+		// Compare the hash of the suffix of a and the prefix of b with length k+1
 		if (a.get_hash(r, a.size - 1) == b.get_hash(0, k)) { mx = k + 1; }
 		r--;
 	}
