@@ -49,58 +49,53 @@ and $k$ to the start and end without any problems.
 
 using namespace std;
 
-int main()
-{
-    ios_base::sync_with_stdio(0);
-    cin.tie(0);
+int main() {
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
 
-    int gemNum;
-    cin >> gemNum;
+	int gemNum;
+	cin >> gemNum;
 
-    vector<int> gems(gemNum);
-    for (int i = 0; i < gemNum; ++i)
-        cin >> gems[i];
+	vector<int> gems(gemNum);
+	for (int i = 0; i < gemNum; ++i) cin >> gems[i];
 
-    /*
-     * this[i][j] = min swipes to clear literally everything from i to j (inclusive)
-     * the +1 is to just have a buffer for some invalid range accesses
-     * (the array will always return 0 for invalid ranges)
-     */
-    vector<vector<int>> swipes(gemNum + 1, vector<int>(gemNum, 0));
+	/*
+	 * this[i][j] = min swipes to clear literally everything from i to j (inclusive)
+	 * the +1 is to just have a buffer for some invalid range accesses
+	 * (the array will always return 0 for invalid ranges)
+	 */
+	vector<vector<int>> swipes(gemNum + 1, vector<int>(gemNum, 0));
 
-    for (int i = 0; i < gemNum; ++i)
-        swipes[i][i] = 1;
+	for (int i = 0; i < gemNum; ++i) swipes[i][i] = 1;
 
-    for (int len = 2; len <= gemNum; ++len)
-    {
-        for (int start = 0; start <= gemNum - len; ++start)
-        {
-            int end = start + len - 1;
+	for (int len = 2; len <= gemNum; ++len) {
+		for (int start = 0; start <= gemNum - len; ++start) {
+			int end = start + len - 1;
 
-            // maybe we just have to erase an end on its own
-            swipes[start][end] = 1 + swipes[start + 1][end];
+			// maybe we just have to erase an end on its own
+			swipes[start][end] = 1 + swipes[start + 1][end];
 
-            for (int match = start + 2; match <= end; ++match)
-            {
-                if (gems[start] == gems[match])
-                {
-                    // in this case the final swipe on the left range can also
-                    // clear the gem at start and match
-                    swipes[start][end] = min(swipes[start][end], swipes[start + 1][match - 1] + swipes[match + 1][end]);
-                }
-            }
+			for (int match = start + 2; match <= end; ++match) {
+				if (gems[start] == gems[match]) {
+					// in this case the final swipe on the left range can also
+					// clear the gem at start and match
+					swipes[start][end] =
+					    min(swipes[start][end],
+					        swipes[start + 1][match - 1] + swipes[match + 1][end]);
+				}
+			}
 
-            // edge case for starting a new palindrome
-            if (gems[start] == gems[start + 1])
-            {
-                swipes[start][end] = min(swipes[start][end], swipes[start + 2][end] + 1);
-            }
-        }
-    }
+			// edge case for starting a new palindrome
+			if (gems[start] == gems[start + 1]) {
+				swipes[start][end] =
+				    min(swipes[start][end], swipes[start + 2][end] + 1);
+			}
+		}
+	}
 
-    cout << swipes[0][gemNum - 1] << '\n';
+	cout << swipes[0][gemNum - 1] << '\n';
 
-    return 0;
+	return 0;
 }
 ```
 
