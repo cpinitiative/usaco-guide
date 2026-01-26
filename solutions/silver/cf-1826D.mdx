@@ -2,15 +2,27 @@
 id: cf-1826D
 source: CF
 title: Running Miles
-author: Chongtian Ma, Rameez Parwez
+author: Chongtian Ma, Rameez Parwez, Ruben Jing
 ---
 
 [Official Analysis](https://codeforces.com/blog/entry/115892)
 
 ## Explanation
 
-Compute a prefix array that stores the maximum value of $\texttt{beauty}[i] + i$ for sights to the left of each point,
-and a suffix array that stores the maximum value of $\texttt{beauty}[i] - i$ for sights to the right of each point.
+The given equation demonstrates how as the distance between the left and right boundaries
+increase, the value of the equation decreases. Thus, in order to maximize the value, it is
+best to set two of the most beautiful sights at the boundaries. Then, the distance between
+the boundaries is decreased, meaning the value of the equation is increased. Knowing this,
+we can create a new equation reflecting that two of the sights are at the boundaries.
+$$
+b_{i_1} + b_{l} + b_{r} + (l - r) = b_{i_1} + (b_{l} + l) + (b_{r} - r).
+$$
+This simplifies the problem into finding a middle sight and adding it to the maximum $b_l + l$
+from the left and the maximum $b_r + r$ from the right.
+
+In order to do so, we can compute a prefix array that stores the maximum value of $\texttt{beauty}[i] + i$
+for sights to the left of each point, and a suffix array that stores the maximum value of $\texttt{beauty}[i] - i$
+for sights to the right of each point.
 
 For each possible middle sight, we combine the best contributions from its left and right with its own beauty to maximize the result.
 

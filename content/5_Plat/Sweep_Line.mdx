@@ -8,6 +8,8 @@ prerequisites:
 frequency: 1
 ---
 
+## Introduction
+
 Imagine you have a vertical line that "sweeps" the plane from left to right.
 That's the main idea behind the sweep line.
 
@@ -19,7 +21,7 @@ at the "critical" positions (e.g. points and intersections).
 <IncompleteSection>
 
 should the reader already be familiar with the 1D case (union of intervals on
-number line?) never explicitly mentioned in module
+number line?) never explicitly mentioned in the module
 
 </IncompleteSection>
 
@@ -32,28 +34,117 @@ number line?) never explicitly mentioned in module
    />
 </Resources>
 
+## Restaurant Customers
+
+<FocusProblem problem="sample1" />
+
+### Solution
+
+The solution uses a sweep line approach. Each interval is converted into two
+events: $(a_i, +1)$ for an arrival and $(b_i, -1)$ for a departure. This
+produces $2N$ events in total.
+
+All events are sorted by time; if two events coincide, departures are processed
+before arrivals. Traversing the sorted list from left to right, we maintain a
+counter of active customers. The counter is incremented on arrival events and
+decremented on departure events. The maximum value reached during this traversal
+is the answer.
+
+For example, intervals $(5,8), (2,4), (3,9)$ yield the event sequence
+$(2,+1), (3,+1), (4,-1), (5,+1), (8,-1), (9,-1)$ with counters $1,2,1,2,1,0$.
+The maximum is $2$.
+
+Creating events takes $\mathcal{O}(N)$, sorting them takes
+$\mathcal{O}(N \log N)$, and the sweep is $\mathcal{O}(N)$. Thus, the overall
+complexity is $\mathcal{O}(N \log N)$.
+
+### Implementation
+
+**Time Complexity:** $\mathcal{O}(N\log N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	int n;
+	cin >> n;
+
+	vector<pair<int, int>> events;
+	for (int i = 0; i < n; i++) {
+		int arrival, departure;
+		cin >> arrival >> departure;
+		events.push_back({arrival, +1});
+		events.push_back({departure, -1});
+	}
+
+	sort(events.begin(), events.end());
+
+	int active = 0;      // current number of customers
+	int max_active = 0;  // maximum number of customers at any point of time
+	for (auto &[time, change] : events) {
+		active += change;
+		max_active = max(max_active, active);
+	}
+	cout << max_active << "\n";
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
 ## Closest Pair
 
 <FocusProblem problem="closest" />
 
 ### Solution 1
 
-**Time Complexity:** $\mathcal{O}(N\log N)$
+We will use a divide and conquer algorithm. First, sort the points by
+x-coordinate. Now, let $P$ be the subarray of points in the current step. Then,
+partition $P$ into two groups $L$ and $R$ representing the left and right halves
+of $P$. Let $\delta_l$ and $\delta_r$ be the answer of $L$ and $R$ respectively,
+and define $\delta$ as $\min(\delta_l, \delta_r)$.
 
-We will use a divide and conquer algorithm. First, sort the points by x-coordinate. Now, let $P$ be the subarray of points in the current step. Then, partition $P$ into two groups $L$ and $R$ representing the left and right halves of $P$. Let $\delta_l$ and $\delta_r$ be the answer of $L$ and $R$ respectively, and define $\delta$ as $\min(\delta_l, \delta_r)$.
+Then $\delta$ is the upperbound of the answer. If a more optimal answer exists,
+it must bridge the two halves of the array (i.e. one of its endpoints is in $L$
+and the other is in $R$). Let $mx$ be the x-coordinate of any median of $P$.
+Define two sets $L'$ and $R'$ such that
+$L' = \{p_i | x_i \leq mx, mx - x_i \leq \delta\}$ and
+$R' = \{p_i | x_i \geq mx, x_i - mx \leq \delta\}$
 
-Then $\delta$ is the upperbound of the answer. If a more optimal answer exists, it must bridge the two halves of the array (i.e. one of its endpoints is in $L$ and the other is in $R$). Let $mx$ be the x-coordinate of any median of $P$. Define two sets $L'$ and $R'$ such that $L' = \{p_i | x_i \leq mx, mx - x_i \leq \delta\}$ and $R' = \{p_i | x_i \geq mx, x_i - mx \leq \delta\}$
+A brute force matching algorithm that computes $\texttt{dist}(p, q)$ for all
+$p \in L'$, $q \in R'$ would have a worst-case runtime of
+$(\frac n 2)^2 = \mathcal{O}(n^2)$ (recall that $L'$ and $R'$ may have up to
+$\frac N 2$ points). However, because we are searching for distances of at most
+$\delta$, it suffices for each $p \in L'$ to check all points
+$\{q | q \in R', p.y - \delta \leq q.y \leq p.y + \delta\}$.
 
-A brute force matching algorithm that computes $\texttt{dist}(p, q)$ for all $p \in L'$, $q \in R'$ would have a worst-case runtime of $(\frac n 2)^2 = \mathcal{O}(n^2)$ (recall that $L'$ and $R'$ may have up to $\frac N 2$ points). However, because we are searching for distances of at most $\delta$, it suffices for each $p \in L'$ to check all points $\{q | q \in R', p.y - \delta \leq q.y \leq p.y + \delta\}$.
-
-It can be shown that for each point $p$, there is a constant number of points that satisfy this property. Because each point in $R'$ is at least $\delta_r \geq \delta$ apart, arranging the points in the worst case would result in 6 points in the corners and sides of the bounding rectangle.
+It can be shown that for each point $p$, there is a constant number of points
+that satisfy this property. Because each point in $R'$ is at least
+$\delta_r \geq \delta$ apart, arranging the points in the worst case would
+result in 6 points in the corners and sides of the bounding rectangle.
 
 ![Worst-case bounding box arrangement](./assets/sweeplineboundingbox.png)
+
 <!--- https://i.imgur.com/FuvFPUR.png -->
 
-To achieve the desired $\mathcal{O}(n)$ complexity per layer, we need to be able to efficiently get the points sorted by both x-coordinate (for dividing $P$) and y-coordinate (for matching between $L'$ and $R'$). This can be achieved by taking advantage of the merge-sort-like algorithm: sort by x-coordinate in the beginning, then for each step, merge the y-coordinates recursively.
+To achieve the desired $\mathcal{O}(n)$ complexity per layer, we need to be able
+to efficiently get the points sorted by both x-coordinate (for dividing $P$) and
+y-coordinate (for matching between $L'$ and $R'$). This can be achieved by
+taking advantage of the merge-sort-like algorithm: sort by x-coordinate in the
+beginning, then for each step, merge the y-coordinates recursively.
 
-Because each step now runs in linear time and there is a total of $\lceil \log n \rceil$ steps, by the [master theorem](https://en.wikipedia.org/wiki/Master_theorem_(analysis_of_algorithms)) our solution now runs in $\mathcal{O}(n\log n)$.
+Because each step now runs in linear time and there is a total of
+$\lceil \log n \rceil$ steps, by the
+[master theorem](<https://en.wikipedia.org/wiki/Master_theorem_(analysis_of_algorithms)>)
+our solution now runs in $\mathcal{O}(n\log n)$.
+
+### Implementation
+
+**Time Complexity:** $\mathcal{O}(N\log N)$
 
 <LanguageSection>
 <CPPSection>
@@ -143,16 +234,28 @@ int main() {
 
 ### Solution 2
 
-**Time Complexity:** $\mathcal{O}(N\log N)$
-
-Extending Solution 1, we can use a set instead of divide and conquer. Once again, we define $\delta$ as the shortest distance between two points so far. After sorting the points by x-coordinate, we iterate through them while maintaining a running window containing the y-coordinates of all points in $[x-\delta,x]$.
+Extending Solution 1, we can use a set instead of divide and conquer. Once
+again, we define $\delta$ as the shortest distance between two points so far.
+After sorting the points by x-coordinate, we iterate through them while
+maintaining a running window containing the y-coordinates of all points in
+$[x-\delta,x]$.
 
 ![Set Solution Sweep Line Bounding Box](./assets/setsolutionboundingbox.png)
+
 <!--- https://imgur.com/a/iA4cVvk -->
 
-As we visit point $P$, we utilize the set to consider all points with y-coordiate in $[P_y-\delta, P_y+\delta]$. The set contains $[P_x-\delta, P_x]$ because of how it is maintained as a running window. Now we have the same bounding box as Solution 1, with at most 6 points inside.
+As we visit point $P$, we utilize the set to consider all points with
+y-coordiate in $[P_y-\delta, P_y+\delta]$. The set contains $[P_x-\delta, P_x]$
+because of how it is maintained as a running window. Now we have the same
+bounding box as Solution 1, with at most 6 points inside.
 
-For each point, we recalculate $\delta = \min(\delta, \delta_p)$, and update our set accordingly. Each point is inserted and removed from the set at most once, so the algorithm yields $\mathcal{O}(n\log n)$.
+For each point, we recalculate $\delta = \min(\delta, \delta_p)$, and update our
+set accordingly. Each point is inserted and removed from the set at most once,
+so the algorithm yields $\mathcal{O}(n\log n)$.
+
+### Implementation
+
+**Time Complexity:** $\mathcal{O}(N\log N)$
 
 <LanguageSection>
 <CPPSection>
@@ -215,17 +318,27 @@ int main() {
 
 <FocusProblem problem="segSam" />
 
-### Solution
-Let's simplify the problem a little bit and focus on finding any overlapping segments.
+### Solution - Cow Steeplechase II
 
-To find a pair of overlapping segments, use a sweep line approach by sweeping a vertical line across the scene from left to right, pausing at every segment endpoint.
+Let's simplify the problem a little bit and focus on finding any overlapping
+segments.
 
-We simulate this by sorting all the segment endpoints by $x$ and walking through the sorted array (called 'events' in the code below). As we scan, we keep track of active segments
-using a set (called 'active_segments' in the code below). When we hit the beginning point of a segment, add it to the active set, and remove it from the active set when we hit the ending point of a segment.
+To find a pair of overlapping segments, use a sweep line approach by sweeping a
+vertical line across the scene from left to right, pausing at every segment
+endpoint.
 
-Inserting or removing the active segments from the set takes $\mathcal{O}(\log n)$ per operation.
+We simulate this by sorting all the segment endpoints by $x$ and walking through
+the sorted array (called 'events' in the code below). As we scan, we keep track
+of active segments using a set (called 'active_segments' in the code below).
+When we hit the beginning point of a segment, add it to the active set, and
+remove it from the active set when we hit the ending point of a segment.
 
-The active set of segments is ordered by $y$ coordinate. If two segments overlap, they are adjacent in the set, so every time we insert or remove a segment, we check if the adjacent segments overlap.
+Inserting or removing the active segments from the set takes
+$\mathcal{O}(\log n)$ per operation.
+
+The active set of segments is ordered by $y$ coordinate. If two segments
+overlap, they are adjacent in the set, so every time we insert or remove a
+segment, we check if the adjacent segments overlap.
 
 Here is an animation of how it works:
 
@@ -233,16 +346,15 @@ Here is an animation of how it works:
 	<source src="/animations/cowsteeplechase.mp4" type="video/mp4"/>
 </video>
 
-## Implementation
+### Implementation
 
-Time complexity: $\mathcal{O}(n\log n)$.
+**Time complexity:** $\mathcal{O}(N\log N)$.
 
 <LanguageSection>
 <CPPSection>
 
 ```cpp
 #include <bits/stdc++.h>
-
 using namespace std;
 
 long long sweep_line_x;
@@ -391,11 +503,17 @@ int main() {
 
 <FocusProblem problem="manSam" />
 
-The key observation is that although there are many points, they're spread across a pretty small surface.
-Because of this, instead of using Kruskal's or Prim's algorithm, we can use Dijkstra's.
-Starting from an arbitrary point, we run Dijkstra's algorithm with a priority queue that will sort the points by their distance to the MST.
+### Solution - Grid MST
 
-*Time Complexity:* $\mathcal{O}(S^3\log S)$, where S is the grid size
+The key observation is that although there are many points, they're spread
+across a pretty small surface. Because of this, instead of using Kruskal's or
+Prim's algorithm, we can use Dijkstra's. Starting from an arbitrary point, we
+run Dijkstra's algorithm with a priority queue that will sort the points by
+their distance to the MST.
+
+### Implementation
+
+**Time Complexity:** $\mathcal{O}(S^3\log S)$, where $S$ is the grid size
 
 <LanguageSection>
 <CPPSection>
@@ -470,6 +588,8 @@ int main() {
 </CPPSection>
 </LanguageSection>
 
+### Problems
+
 <Problems problems="man" />
 
 <!--
@@ -492,8 +612,6 @@ normal line sweep.
 
 ### Solution - Seeing the Boundary
 
-**Complexity:** $\mathcal O(N + Rp_i \log R)$
-
 In this problem, there are three types of events: when our ray hits a fence
 post, enters a rock, or exits a rock.
 
@@ -508,8 +626,11 @@ type-3 events we've processed so far are equal.
 Note that some optimizations (e.g. not constructing the list of fence posts
 explicitly) may be required to get 100 points.
 
-<LanguageSection>
+### Implementation
 
+**Time Complexity:** $\mathcal O(N + Rp_i \log R)$
+
+<LanguageSection>
 <CPPSection>
 
 ```cpp
@@ -616,7 +737,6 @@ int main() {
 ```
 
 </CPPSection>
-
 </LanguageSection>
 
 ### Problems

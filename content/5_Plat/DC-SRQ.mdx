@@ -62,23 +62,33 @@ commutative.
 ### Solution - RMQ
 
 ```cpp
-int n, q, A[MX], B[MX];
-vi x, ans;
-int lef[MX], rig[MX];
+#include <bits/stdc++.h>
+using namespace std;
 
-void divi(int l, int r, vi v) {
-	if (!sz(v)) return;
+static const int MAXN = 200000 + 5;
+
+int n, q, A[MAXN], B[MAXN];
+vector<int> x, ans;
+int lef[MAXN], rig[MAXN];
+
+void divi(int l, int r, vector<int> v) {
+	if (v.size() == 0) return;
+
 	if (l == r) {
-		trav(_, v) ans[_] = x[l];
+		for (int _ : v) ans[_] = x[l];
 		return;
 	}
+
 	int m = (l + r) / 2;
+
 	lef[m] = x[m];
-	ROF(i, l, m) lef[i] = min(x[i], lef[i + 1]);
+	for (int i = m - 1; i >= l; i--) lef[i] = min(x[i], lef[i + 1]);
+
 	rig[m + 1] = x[m + 1];
-	FOR(i, m + 2, r + 1) rig[i] = min(rig[i - 1], x[i]);
-	vi todo[2];
-	trav(t, v) {
+	for (int i = m + 2; i < r + 1; i++) rig[i] = min(rig[i - 1], x[i]);
+
+	vector<int> todo[2];
+	for (int t : v) {
 		int a = A[t], b = B[t];
 		if (a <= m && m < b) {  // we can answer the query immediately
 			ans[t] = min(min(lef[a], x[m]), rig[b]);
@@ -87,26 +97,35 @@ void divi(int l, int r, vi v) {
 		// otherwise
 		// either [a,b] is contained within [l,m]   -> it's placed into todo[0]
 		// or     [a,b] is contained within [m+1,r] -> it's placed into todo[1]
-		todo[a > m].pb(t);
+		todo[a > m].push_back(t);
 	}
+
 	divi(l, m, todo[0]);
 	divi(m + 1, r, todo[1]);
 }
 
 int main() {
-	setIO();
-	re(n, q);
-	x.rsz(n);
-	re(x);
-	F0R(i, q) {
-		re(A[i], B[i]);
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
+
+	cin >> n >> q;
+
+	x.resize(n);
+	for (int i = 0; i < n; i++) cin >> x[i];
+
+	for (int i = 0; i < q; i++) {
+		cin >> A[i] >> B[i];
 		A[i]--, B[i]--;
 	}
-	vi query(q);
-	iota(all(query), 0);
-	ans.rsz(q);
+
+	vector<int> query(q);
+	iota(query.begin(), query.end(), 0);
+
+	ans.resize(q);
+
 	divi(0, n - 1, query);
-	F0R(i, q) ps(ans[i]);
+
+	for (int i = 0; i < q; i++) cout << ans[i] << '\n';
 }
 ```
 
@@ -154,40 +173,60 @@ Examples of queries:
   `min(dat[1][12],dat[1][18])`.
 
 ```cpp
-int n, q;
-vi x, ans;
+#include <bits/stdc++.h>
+using namespace std;
 
-int dat[18][MX], mask[MX];  // 18 = ceil(log2(n))
+static const int MAXN = 200000 + 5;
+
+int n, q;
+vector<int> x, ans;
+
+int dat[18][MAXN];  // 18 = ceil(log2(n))
+int mask[MAXN];
 
 void divi(int l, int r, int lev) {  // generate dat and mask
 	if (l == r) return;
+
 	int m = (l + r) / 2;
+
 	dat[lev][m] = x[m];
-	ROF(i, l, m) dat[lev][i] = min(x[i], dat[lev][i + 1]);
+	for (int i = m - 1; i >= l; i--) dat[lev][i] = min(x[i], dat[lev][i + 1]);
+
 	dat[lev][m + 1] = x[m + 1];
-	FOR(i, m + 2, r + 1) dat[lev][i] = min(dat[lev][i - 1], x[i]);
-	FOR(i, m + 1, r + 1) mask[i] ^= 1 << lev;
+	for (int i = m + 2; i <= r; i++) dat[lev][i] = min(dat[lev][i - 1], x[i]);
+
+	for (int i = m + 1; i <= r; i++) mask[i] ^= (1 << lev);
+
 	divi(l, m, lev + 1);
 	divi(m + 1, r, lev + 1);
 }
 
 int main() {
-	setIO();
-	re(n, q);
-	x.rsz(n);
-	re(x);
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
+
+	cin >> n >> q;
+
+	x.resize(n);
+	for (int i = 0; i < n; i++) cin >> x[i];
+
 	divi(0, n - 1, 0);
-	F0R(i, q) {
+
+	for (int i = 0; i < q; i++) {
 		int a, b;
-		re(a, b);
+		cin >> a >> b;
 		a--, b--;
-		if (a == b) ps(x[a]);
-		else {  // find level where info is stored
-			// ctz gives number of trailing zeroes
+
+		if (a == b) {
+			cout << x[a] << '\n';
+		} else {  // find level where info is stored
+			      // ctz gives number of trailing zeroes
 			int bits = __builtin_ctz(mask[a] ^ mask[b]);
-			ps(min(dat[bits][a], dat[bits][b]));
+			cout << min(dat[bits][a], dat[bits][b]) << '\n';
 		}
 	}
+
+	return 0;
 }
 ```
 

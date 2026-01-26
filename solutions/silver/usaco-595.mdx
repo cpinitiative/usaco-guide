@@ -2,16 +2,37 @@
 id: usaco-595
 source: USACO Silver 2016 January
 title: Subsequences Summing to Sevens
-author: Kevin Sheng, thetazero, Melody Yu
+author: Kevin Sheng, thetazero, Melody Yu, Ruben Jing
 ---
 
 [Official Analysis (Java)](http://www.usaco.org/current/data/sol_div7_silver_jan16.html)
 
-## Video Solution
+# Solution
 
-Note: The video solution might not be the same as other solutions. Code in C++.
+## Explanation
 
-<YouTube id="wXNhLjiuTgw" />
+We can calculate the prefix sum array of our IDs to quickly compute
+whether or not a range of cows has IDs summing to a multiple of $7$.
+
+Given a prefix sum array $p$, the sum over the range $[l, r]$ is $p[r] - p[l-1]$.
+We must also make sure this sum is a multiple of $7$ to be a valid group.
+These two conditions give us the following:
+$$
+(p[r] - p[l - 1]) \equiv 0 \pmod{7} \Longleftrightarrow p[r] \equiv p[l - 1] \pmod{7}
+$$
+Thus, we can simplify the solution to finding the largest difference between two indices
+where their prefix sums are equivalent mod $7$.
+
+Additionally, because the prefix sum at $i$ is defined by
+$$
+p[i]\%7 = \left(a[i]+p[i-1]\right)\%7,
+$$
+we can find the prefix mod $7$ when precomputing to avoid large numbers.
+
+In order to find the largest consecutive group, we try to find the largest distance
+between two equal prefixes. We can have a list that stores the first occurrence
+of each remainder. Everytime we see a remainder again, we calculate the distance
+between the current index and the first occurrence of the remainder.
 
 ## Implementation
 
@@ -122,5 +143,57 @@ print(best_photo, file=open("div7.out", "w"))
 ```
 
 </PySection>
+
+</LanguageSection>
+
+# Video Solution
+
+By Project Starcoder
+
+<YouTube id="wXNhLjiuTgw" />
+
+## Video Solution Code
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+#define ll long long
+
+int main() {
+	ifstream cin("div7.in");
+	ofstream cout("div7.out");
+
+	ll N;
+	cin >> N;
+
+	vector<ll> cows(N);
+	vector<ll> prefix(N + 1);
+
+	for (int i = 0; i < N; i++) {
+		cin >> cows[i];
+		prefix[i + 1] = (prefix[i] + cows[i]) % 7;
+	}
+
+	vector<int> lastFound(7);
+	for (int i = 0; i < 7; i++) { lastFound[i] = -1; }
+	int maximum = 0;
+
+	for (int i = 0; i < prefix.size(); i++) {
+		if (lastFound[prefix[i]] == -1) {
+			lastFound[prefix[i]] = i;
+		} else {
+			maximum = max(i - lastFound[prefix[i]], maximum);
+		}
+	}
+
+	cout << maximum;
+}
+```
+
+</CPPSection>
 
 </LanguageSection>

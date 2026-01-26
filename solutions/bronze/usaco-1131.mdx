@@ -2,7 +2,7 @@
 id: usaco-1131
 source: USACO Bronze 2021 US Open
 title: Acowdemia I
-author: Juheon Rhee
+author: Juheon Rhee, Aarav Sethi
 ---
 
 [Official Analysis (Java)](http://www.usaco.org/current/data/sol_prob1_bronze_open21.html)
@@ -51,25 +51,31 @@ int main() {
 
 	vector<int> citations(n);
 	for (int i = 0; i < n; i++) { cin >> citations[i]; }
-	sort(citations.begin(), citations.end(), greater<int>());
-	int length = citations.size();
 
-	while (length >= 0 && citations[length - 1] < length) { length -= 1; }
+	auto compute_hIndex = [&]() {
+		sort(citations.begin(), citations.end(), greater<int>());
 
-	int cur_h = length;
-	length = citations.size();
+		int hIndex = 0;
+		for (int i = 0; i < citations.size(); ++i) {
+			if (citations[i] >= i + 1) {
+				hIndex = i + 1;
+			} else {
+				break;
+			}
+		}
+		return hIndex;
+	};
 
-	if (cur_h != n) {
+	int cur_h = compute_hIndex();
+	if (cur_h != n) {  // all are in
 		for (int i = cur_h; i >= 0; i--) {
-			if (i <= cur_h - 1) { break; }
+			if (i <= cur_h - l) { break; }
 			citations[i] += 1;
 		}
 	}
-	sort(citations.begin(), citations.end(), greater<int>());
+	int new_h = compute_hIndex();
 
-	while (length >= 0 && citations[length - 1] < length) { length -= 1; }
-
-	cout << length << endl;
+	cout << new_h << endl;
 }
 ```
 

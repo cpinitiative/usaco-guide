@@ -2,20 +2,32 @@
 id: usaco-737
 source: USACO Bronze 2017 US Open
 title: Modern Art
-author: Juheon Rhee, Kevin Sheng, Yifan Ma
+author: Juheon Rhee, Kevin Sheng, Yifan Ma, Arnav Gokhale
 ---
-
-<Spoiler title="Hint">
-
-Try solving the sample input by hand: could you apply a similar method in your code?
-
-</Spoiler>
 
 [Official Analysis (C++)](http://www.usaco.org/current/data/sol_art_bronze_open17.html)
 
 # Solution
 
-<Spoiler title="Solution">
+<Spoiler title="Hint 1">
+
+Try solving the sample input by hand: could you apply a similar method in your code?
+
+</Spoiler>
+
+<Spoiler title="Hint 2">
+
+What is a property of a color that cannot be the first painted?
+
+</Spoiler>
+
+## Explanation
+
+First, notice that if two colors are overlapping, we know at least one of them cannot be the original rectangle.
+
+For each color $c_1$, we can determine the limits of that color and consider its bounding rectangle. Any other color $c_2$ that appears inside this rectangle in the final grid must have been painted after $c_1$, and we can rule out $c_2$ as the first color painted.
+
+We must notice that we always choose the smallest bounding rectangle as possible for each color $c_1$. This is because a larger rectangle creates more intersection between colors, which could elminate valid starting colors.
 
 ## Implementation
 
@@ -163,7 +175,7 @@ for c in range(1, MAX_COLOR + 1):
 	left[c], up[c] = float("inf"), float("inf")
 	right[c], down[c] = -1, -1
 
-valid_start = [False] * MAX_COLOR
+valid_start = [False] * (MAX_COLOR + 1)
 with open("art.in") as read:
 	n = int(read.readline().strip())
 	art = [None] * n
@@ -179,18 +191,18 @@ with open("art.in") as read:
 				valid_start[curr] = True
 
 for color in range(1, MAX_COLOR + 1):
-	if any(p[color] == float("inf") for p in [left, right, down, up]):
+	if left[color] == float("inf"):
 		continue
 
 	for c in range(int(up[color]), int(down[color] + 1)):
 		for k in range(int(left[color]), int(right[color] + 1)):
 			if art[c][k] != color:
-				valid_start[art[c][k]] = False
+				other = art[c][k]
+				if other != 0 and other != color:
+					valid_start[other] = False
 
 print(sum(valid_start), file=open("art.out", "w"))
 ```
 
 </PySection>
 </LanguageSection>
-
-</Spoiler>

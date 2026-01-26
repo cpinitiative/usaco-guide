@@ -3,7 +3,7 @@ id: sliding-window
 redirects:
   - /gold/sliding
 title: 'Sliding Window'
-author: Benjamin Qi
+author: Benjamin Qi, Ruben Jing
 contributors: Darren Yao, Andrew Wang, Chuyang Wang, Martin Lin
 prerequisites:
   - intro-sorted-sets
@@ -19,34 +19,22 @@ From CPH:
 > A sliding window is a constant-size subarray that moves from left to right
 > through the array.
 
-For each position of the window, we want to compute some information.
+For each position of the window, we wish to compute some information.
 
 <FocusProblem problem="constantSam" />
 
-<!-- To compute the sum in the range, instead of using a set, we can store a variable $s$ representing the sum. As we move the window forward, we update $s$ by subtracting $a_i$ from $s$ and adding $a_{j+1}$ to $s$.
- -->
-
-<!-- <Resources>
-	<Resource
-		source="GFG"
-		title="Window Sliding Technique"
-		url="window-sliding-technique"
-	/>
-</Resources> -->
-
 ### Implementation
 
-The most straightforward way to do this is to store an sorted set of integers
-representing the integers inside the window. If the window currently spans the
-range $i \dots j$, we observe that moving the range forward to $i+1 \dots j+1$
-only removes $a_i$ and adds $a_{j+1}$ to the window. We can support these two
+The most straightforward way to do this is to maintain a sorted set of integers
+containing the integers inside the window. If the window currently spans the
+range $i \dots j$, we observe that sliding the range forward to $i+1 \dots j+1$
+removes $a_i$ and adds $a_{j+1}$ to the window. We can support these two
 operations and query for the minimum / maximum in the set in
 $\mathcal{O}(\log N)$.
 
 **Time Complexity:** $\mathcal{O}(N\log N)$
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
@@ -65,7 +53,6 @@ vector<int> maxSlidingWindow(vector<int> &nums, int k) {
 ```
 
 </CPPSection>
-
 <JavaSection>
 
 ```java
@@ -95,7 +82,6 @@ static ArrayList<Integer> maxSlidingWindow(int[] nums, int k) {
 ```
 
 </JavaSection>
-
 <PySection>
 
 ```py
@@ -117,7 +103,6 @@ class Solution:
 ```
 
 </PySection>
-
 </LanguageSection>
 
 ### Problems
@@ -126,26 +111,28 @@ class Solution:
 
 ## With Two Pointers
 
-In general, it is not required for the subarray to have constant size as long as
+In general, it isn't required for the subarray to have constant size as long as
 both the left and right endpoints of the subarray only move to the right.
 
 <FocusProblem problem="sam" />
 
 ### Solution
 
-<!-- <Resources>
-	<Resource
-		source="Medium"
-		title="Introduction to Sliding Window Algorithms"
-		url="https://levelup.gitconnected.com/an-introduction-to-sliding-window-algorithms-5533c4fe1cc7"
-	/>
-</Resources> -->
+We keep a pointer for the left boundary of the window and expand the right boundary until we find a song already in our subarray. Checking songs can be done with a set.
+
+Then, we erase the left boundary from the set and move the left pointer up by one. We do this until the right boundary
+is able to expand. The left boundary is removed until the song immediately after the right boundary isn't in
+our current window's set. The left boundary is removed to provide more flexibility for expanding the right boundary.
+
+The answer is the largest distance between the left and right pointers.
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
 int n;
 set<int> s;
 int a[200000], ans;
@@ -153,8 +140,9 @@ int a[200000], ans;
 int main() {
 	int r = -1;
 	cin >> n;
-	F0R(i, n) cin >> a[i];
-	F0R(i, n) {
+	for (int i = 0; i < n; i++) { cin >> a[i]; }
+
+	for (int i = 0; i < n; i++) {
 		while (r < n - 1 && !s.count(a[r + 1])) s.insert(a[++r]);
 		ans = max(ans, r - i + 1);
 		s.erase(a[i]);
@@ -164,7 +152,30 @@ int main() {
 ```
 
 </CPPSection>
+<JavaSection>
 
+```java
+public class Playlist {
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		int n = Integer.parseInt(br.readLine());
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int a[] = new int[n];
+		for (int i = 0; i < n; i++) a[i] = Integer.parseInt(st.nextToken());
+		int r = -1;
+		HashSet<Integer> s = new HashSet<Integer>();
+		int ans = 0;
+		for (int i = 0; i < n; i++) {
+			while (r < n - 1 && !s.contains(a[r + 1])) s.add(a[++r]);
+			ans = Math.max(ans, r - i + 1);
+			s.remove(a[i]);
+		}
+		System.out.println(ans);
+	}
+}
+```
+
+</JavaSection>
 <PySection>
 
 ```py
@@ -192,32 +203,6 @@ print(ans)
 ```
 
 </PySection>
-
-<JavaSection>
-
-```java
-public class test {
-	public static void main(String[] args) throws Exception {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		int n = Integer.parseInt(br.readLine());
-		StringTokenizer st = new StringTokenizer(br.readLine());
-		int a[] = new int[n];
-		for (int i = 0; i < n; i++) a[i] = Integer.parseInt(st.nextToken());
-		int r = -1;
-		HashSet<Integer> s = new HashSet<Integer>();
-		int ans = 0;
-		for (int i = 0; i < n; i++) {
-			while (r < n - 1 && !s.contains(a[r + 1])) s.add(a[++r]);
-			ans = Math.max(ans, r - i + 1);
-			s.remove(a[i]);
-		}
-		System.out.println(ans);
-	}
-}
-```
-
-</JavaSection>
-
 </LanguageSection>
 
 ### Problems
@@ -243,11 +228,118 @@ public class test {
 
 ### Method 1 - Deque
 
-Method 2 from cp-algo.
-
 <Resources>
 	<Resource source="CPH" title="8.3 - Sliding Window Minimum" />
 </Resources>
+
+#### Monotonoic Queue
+
+A monotonic queue is one that is always increasing or decreasing. It is implemented by ensuring the newest
+elements are larger or smaller than the previous elements. If not, the previous elements are popped until
+the condition is met.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+vector<int> nums{1, 2, 3, 5, 4};
+deque<int> increasing;
+deque<int> decreasing;
+
+for (int e : nums) {
+	while (!increasing.empty() && increasing.back() > e) { increasing.pop_back(); }
+	increasing.push_back(e);
+}
+
+// 1 2 3 4
+for (int e : increasing) { cout << e << " "; }
+
+for (int e : nums) {
+	while (!decreasing.empty() && decreasing.back() < e) { decreasing.pop_back(); }
+
+	decreasing.push_back(e);
+}
+
+// 5 4
+for (int e : decreasing) { cout << e << " "; }
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+int[] nums = {1, 2, 3, 5, 4};
+ArrayDeque<Integer> increasing = new ArrayDeque<Integer>();
+ArrayDeque<Integer> decreasing = new ArrayDeque<Integer>();
+
+for (int e : nums) {
+	while (!increasing.isEmpty() && increasing.peekLast() > e) {
+		increasing.pollLast();
+	}
+	increasing.addLast(e);
+}
+
+System.out.println(increasing);  // [1, 2, 3, 4]
+
+for (int e : nums) {
+	while (!decreasing.isEmpty() && decreasing.peekLast() < e) {
+		decreasing.pollLast();
+	}
+	decreasing.addLast(e);
+}
+
+System.out.println(decreasing);  // [5, 4]
+```
+
+</JavaSection>
+<PySection>
+
+```py
+nums = [1, 2, 3, 5, 4]
+increasing = collections.deque()
+decreasing = collections.deque()
+
+for e in nums:
+	while increasing and increasing[-1] > e:
+		increasing.pop()
+	increasing.append(e)
+
+print(increasing)  # deque([1, 2, 3, 4])
+
+for e in nums:
+	while decreasing and decreasing[-1] < e:
+		decreasing.pop()
+	decreasing.append(e)
+
+print(decreasing)  # deque([5, 4])
+```
+
+</PySection>
+</LanguageSection>
+
+We keep a decreasing monotonic queue for finding a sliding window maximum. An
+increasing monotonic queue would only work for finding the sliding window minimum,
+as it removes large numbers and keeps small numbers.
+
+A decreasing monotonic queue removes elements that are smaller than our current
+element and only keeps elements larger than our current element in order to
+maintain monotonicity. In this case, a decreasing monotonic queue works well
+as any elements smaller than our current element will serve no use to us finding
+a sliding window maximum.
+
+A monotonic queue is similar to a [monotonic stack](https://usaco.guide/gold/stacks#application---nearest-smaller-element),
+but due to its deque implementation, a monotonic queue has access to both the front and end,
+making it efficient for sliding window problems. A monotonic stack is useful for nearest greater/smaller element.
+
+#### Deque - Storing Indices
+
+This is method 2 from cp-algo.
+
+The solution is a monotonic queue with the added window size constraints. We print the
+first element (which is the largest, because the queue is decreasing), and then pop it if
+it is the boundary of our current window. We pop it because the first element is also the
+oldest due to the FIFO nature of queues, meaning it must be removed to shift the window right.
+Then, we remove any numbers that are smaller than our current number to maintain monotonicity.
 
 <LanguageSection>
 
@@ -255,74 +347,151 @@ Method 2 from cp-algo.
 
 ```cpp
 vector<int> maxSlidingWindow(vector<int> &nums, int k) {
-	deque<int> d;
 	vector<int> ret;
-	for (int i = 0; i < k; i++) {
-		while (!d.empty() && nums[i] > nums[d.back()]) { d.pop_back(); }
-		d.push_back(i);
-	}
-	for (int i = k; i < nums.size(); i++) {
-		ret.push_back(nums[d.front()]);
+	deque<int> d;
+
+	for (int i = 0; i < nums.size(); i++) {
 		if (!d.empty() && d.front() <= i - k) { d.pop_front(); }
-		while (!d.empty() && nums[i] >= nums[d.back()]) { d.pop_back(); }
+
+		while (!d.empty() && nums[d.back()] < nums[i]) { d.pop_back(); }
+
 		d.push_back(i);
+
+		if (i >= k - 1) { ret.push_back(nums[d.front()]); }
 	}
-	ret.push_back(nums[d.front()]);
+
 	return ret;
 }
 ```
 
 </CPPSection>
-
 <JavaSection>
 
 ```java
-static ArrayList<Integer> maxSlidingWindow(int[] nums, int k) {
-	ArrayList<Integer> ret = new ArrayList<Integer>();
+public int[] maxSlidingWindow(int[] nums, int k) {
+	int[] ret = new int[nums.length - k + 1];
 	ArrayDeque<Integer> d = new ArrayDeque<Integer>();
-	for (int i = 0; i < k; i++) {
-		while (!d.isEmpty() && nums[i] > nums[d.peekLast()]) { d.pollLast(); }
-		d.addLast(i);
-	}
-	for (int i = k; i < nums.length; i++) {
-		ret.add(nums[d.peekFirst()]);
+
+	for (int i = 0; i < nums.length; i++) {
 		if (!d.isEmpty() && d.peekFirst() <= i - k) { d.pollFirst(); }
-		while (!d.isEmpty() && nums[i] >= nums[d.peekLast()]) { d.pollLast(); }
-		d.add(i);
+
+		while (!d.isEmpty() && nums[d.peekLast()] < nums[i]) { d.pollLast(); }
+
+		d.addLast(i);
+
+		if (i >= k - 1) { ret[i - k + 1] = nums[d.peekFirst()]; }
 	}
-	ret.add(nums[d.peekFirst()]);
+
 	return ret;
 }
 ```
 
 </JavaSection>
-
 <PySection>
 
 ```py
-from typing import List
-
-
-def maxSlidingWindow(self, nums: List[int], k: int) -> list[int]:
+def maxSlidingWindow(self, nums: List[int], k: int) -> List[int]:
 	d = collections.deque()
+	ret = []
 
-	def enqueue(i: int) -> None:
-		while d and nums[d[-1]] <= nums[i]:
-			d.pop()
-		d.append(i)
-		while d and (i - d[0]) >= k:
+	for i, num in enumerate(nums):
+		if d and d[0] <= i - k:
 			d.popleft()
 
-	ret = []
-	for i in range(len(nums)):
-		enqueue(i)
-		if i + 1 >= k:
+		while d and nums[d[-1]] < num:
+			d.pop()
+
+		d.append(i)
+
+		if i >= k - 1:
 			ret.append(nums[d[0]])
+
 	return ret
 ```
 
 </PySection>
+</LanguageSection>
 
+#### Deque - Storing Values
+
+Method 1 from CP Algorithms is a similar approach but stores the value itself rather than indices.
+
+Inserting an element is the same process, but deleting an element is different. Because no
+indices are given this time, we check if the front of the queue is the same as the left boundary
+of the sliding window. If it is, then we remove it to ensure our window constraints are met.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+vector<int> maxSlidingWindow(vector<int> &nums, int k) {
+	vector<int> res;
+	deque<int> d;
+
+	for (int i = 0; i < nums.size(); i++) {
+		while (!d.empty() && d.back() < nums[i]) { d.pop_back(); }
+
+		d.push_back(nums[i]);
+
+		if (i >= k - 1) { res.push_back(d.front()); }
+
+		if (i >= k - 1 && !d.empty() && d.front() == nums[i - k + 1]) { d.pop_front(); }
+	}
+
+	return res;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```
+public int[] maxSlidingWindow(int[] nums, int k) {
+	int[] ret = new int[nums.length - k + 1];
+	ArrayDeque<Integer> d = new ArrayDeque<Integer>();
+
+	for (int i = 0; i < nums.length; i++) {
+		while (!d.isEmpty() && d.peekLast() < nums[i]) {
+			d.pollLast();
+		}
+
+		d.addLast(nums[i]);
+
+		if (i >= k - 1) { ret[i - k + 1] = d.peekFirst(); }
+
+		if (i >= k - 1 && !d.isEmpty() && d.peekFirst() == nums[i - k + 1]) {
+			d.pollFirst();
+		}
+	}
+
+	return ret;
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+def maxSlidingWindow(self, nums: List[int], k: int) -> List[int]:
+	d = collections.deque()
+	ret = []
+
+	for i, num in enumerate(nums):
+		while d and d[-1] < num:
+			d.pop()
+
+		d.append(num)
+
+		if i >= k - 1:
+			ret.append(d[0])
+
+		if i >= k - 1 and d and d[0] == nums[i - k + 1]:
+			d.popleft()
+
+	return ret
+```
+
+</PySection>
 </LanguageSection>
 
 ### Method 2 - Two Stacks
@@ -334,8 +503,8 @@ We use two stacks $s_1$ and $s_2$ to simulate our maximum queue. Every time we a
 Then, we can solve the problem by removing the first element and adding a new element to the queue to simulate our sliding window. As each operation of our queue takes $\mathcal{O}(1)$ time, and we add each of $N$ elements once, we get a time complexity of $\mathcal{O}(N)$.
 
 <LanguageSection>
-
 <CPPSection>
+
 ```cpp
 struct MaxQueue {
 	/**
@@ -406,9 +575,10 @@ class Solution {
 	}
 };
 ```
-</CPPSection>
 
+</CPPSection>
 <JavaSection>
+
 ```java
 class Solution {
 	public int[] maxSlidingWindow(int[] nums, int k) {
@@ -572,5 +742,3 @@ class Solution:
 ### Problems
 
 <Problems problems="queue" />
-
-<IncompleteSection />
