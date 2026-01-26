@@ -49,35 +49,58 @@ and $k$ to the start and end without any problems.
 
 using namespace std;
 
-const int INF = 1e9;
+int main()
+{
+    ios_base::sync_with_stdio(0);
+    cin.tie(0);
 
-int main() {
-	ios_base::sync_with_stdio(0);
-	cin.tie(0);
+    int gemNum;
+    cin >> gemNum;
 
-	int n;
-	cin >> n;
+    vector<int> gems(gemNum);
+    for (int i = 0; i < gemNum; ++i)
+        cin >> gems[i];
 
-	vector<int> a(n);
-	for (int i = 0; i < n; ++i) cin >> a[i];
+    /*
+     * this[i][j] = min swipes to clear literally everything from i to j (inclusive)
+     * the +1 is to just have a buffer for some invalid range accesses
+     * (the array will always return 0 for invalid ranges)
+     */
+    vector<vector<int>> swipes(gemNum + 1, vector<int>(gemNum, 0));
 
-	vector<vector<int>> dp(n, vector<int>(n, INF));
+    for (int i = 0; i < gemNum; ++i)
+        swipes[i][i] = 1;
 
-	for (int i = 0; i < n; ++i) dp[i][i] = 1;
+    for (int len = 2; len <= gemNum; ++len)
+    {
+        for (int start = 0; start <= gemNum - len; ++start)
+        {
+            int end = start + len - 1;
 
-	for (int k = 1; k < n; ++k) {
-		for (int i = 0; i + k < n; ++i) {
-			for (int j = i; j < i + k; ++j)
-				dp[i][i + k] = min(dp[i][i + k], dp[i][j] + dp[j + 1][i + k]);
-			if (a[i] == a[i + k])
-				if (k == 1) dp[i][i + k] = 1;
-				else dp[i][i + k] = min(dp[i][i + k], dp[i + 1][i + k - 1]);
-		}
-	}
+            // maybe we just have to erase an end on its own
+            swipes[start][end] = 1 + swipes[start + 1][end];
 
-	cout << dp[0][n - 1] << '\n';
+            for (int match = start + 2; match <= end; ++match)
+            {
+                if (gems[start] == gems[match])
+                {
+                    // in this case the final swipe on the left range can also
+                    // clear the gem at start and match
+                    swipes[start][end] = min(swipes[start][end], swipes[start + 1][match - 1] + swipes[match + 1][end]);
+                }
+            }
 
-	return 0;
+            // edge case for starting a new palindrome
+            if (gems[start] == gems[start + 1])
+            {
+                swipes[start][end] = min(swipes[start][end], swipes[start + 2][end] + 1);
+            }
+        }
+    }
+
+    cout << swipes[0][gemNum - 1] << '\n';
+
+    return 0;
 }
 ```
 
