@@ -44,6 +44,7 @@ Since $N$ is small (implied by the problem type to be around 10 or fewer), we ca
 
 using namespace std;
 
+// BeginCodeSnip{HashedString}
 class HashedString {
   private:
 	// Change M and B if needed for collision avoidance
@@ -67,15 +68,16 @@ class HashedString {
 		}
 	}
 
-	long long get_hash(int start, int end) {
+	long long get_hash(int start, int end) const {
 		long long raw_val = (p_hash[end + 1] - (p_hash[start] * pow[end - start + 1]));
 		return (raw_val % M + M) % M;
 	}
 };
 vector<long long> HashedString::pow = {1};
+// EndCodeSnip
 
 // Checks if A is a substring of B
-bool isSubstr(HashedString &a, HashedString &b) {
+bool isSubstr(const HashedString &a, const HashedString &b) {
 	int l = 0, r = a.size - 1;
 	while (r < b.size) {
 		if (a.get_hash(0, a.size - 1) == b.get_hash(l, r)) { return true; }
@@ -87,7 +89,7 @@ bool isSubstr(HashedString &a, HashedString &b) {
 
 // Calculates the length added by appending b to a
 // (Size of b minus the longest suffix of a matching a prefix of b)
-int getMergeLength(HashedString &a, HashedString &b) {
+int getMergeLength(const HashedString &a, const HashedString &b) {
 	int r = a.size - 1;
 	int mx = 0;
 	// Check overlaps of length k
@@ -118,7 +120,7 @@ int main() {
 
 	// Step 1: Remove unneeded strings (those that are substrings of others)
 	sort(v.begin(), v.end(),
-	     [](HashedString a, HashedString b) { return a.size < b.size; });
+	     [](const HashedString &a, const HashedString &b) { return a.size < b.size; });
 	for (int i = 0; i < v.size(); ++i) {
 		bool f = true;
 		for (int j = i + 1; j < v.size(); ++j) {
