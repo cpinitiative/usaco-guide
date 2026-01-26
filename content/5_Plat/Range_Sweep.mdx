@@ -6,7 +6,7 @@ prerequisites:
   - PURS
   - lis
 description: 'Solving 2D grid problems using 1D range queries.'
-frequency: 2 
+frequency: 2
 ---
 
 <FocusProblem problem="sample" />
@@ -113,106 +113,100 @@ int main() {
 
 </CPPSection>
 
-<JavaSection> 
+<JavaSection>
 
 ```java
 import java.io.*;
 import java.util.*;
 
 public class IntersectionPoints {
-    // BeginCodeSnip{BIT (from the PURS module)}
-    static class BIT {
-        private int size;
-        private int[] bit;
-        private int[] arr;
+	// BeginCodeSnip{BIT (from the PURS module)}
+	static class BIT {
+		private int size;
+		private int[] bit;
+		private int[] arr;
 
-        public BIT(int size) {
-            this.size = size;
-            this.bit = new int[size + 1];
-            this.arr = new int[size];
-        }
+		public BIT(int size) {
+			this.size = size;
+			this.bit = new int[size + 1];
+			this.arr = new int[size];
+		}
 
-        public void set(int ind, int val) {
-            add(ind, val - arr[ind]);
-        }
+		public void set(int ind, int val) { add(ind, val - arr[ind]); }
 
-        public void add(int ind, int val) {
-            arr[ind] += val;
-            ind++;
-            for (; ind <= size; ind += ind & -ind) {
-                bit[ind] += val;
-            }
-        }
+		public void add(int ind, int val) {
+			arr[ind] += val;
+			ind++;
+			for (; ind <= size; ind += ind & -ind) { bit[ind] += val; }
+		}
 
-        public int prefSum(int ind) {
-            ind++;
-            int total = 0;
-            for (; ind > 0; ind -= ind & -ind) {
-                total += bit[ind];
-            }
-            return total;
-        }
-    }
-    // EndCodeSnip
+		public int prefSum(int ind) {
+			ind++;
+			int total = 0;
+			for (; ind > 0; ind -= ind & -ind) { total += bit[ind]; }
+			return total;
+		}
+	}
+	// EndCodeSnip
 
-    private static final int MAX_POS = 1_000_000;
+	private static final int MAX_POS = 1_000_000;
 
-    static class Event implements Comparable<Event> {
-        int y, type, x1, x2;
+	static class Event implements Comparable<Event> {
+		int y, type, x1, x2;
 
-        public Event(int y, int type, int x1, int x2) {
-            this.y = y;
-            this.type = type; // 1: start vert, 2: horiz, 3: end vert
-            this.x1 = x1;
-            this.x2 = x2;
-        }
+		public Event(int y, int type, int x1, int x2) {
+			this.y = y;
+			this.type = type;  // 1: start vert, 2: horiz, 3: end vert
+			this.x1 = x1;
+			this.x2 = x2;
+		}
 
-        @Override
-        public int compareTo(Event other) {
-            if (this.y != other.y) return Integer.compare(this.y, other.y);
-            return Integer.compare(this.type, other.type);
-        }
-    }
+		@Override
+		public int compareTo(Event other) {
+			if (this.y != other.y) return Integer.compare(this.y, other.y);
+			return Integer.compare(this.type, other.type);
+		}
+	}
 
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int n = Integer.parseInt(br.readLine());
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		int n = Integer.parseInt(br.readLine());
 
-        List<Event> events = new ArrayList<>();
-        for (int i = 0; i < n; i++) {
-            StringTokenizer st = new StringTokenizer(br.readLine());
-            int x1 = Integer.parseInt(st.nextToken());
-            int y1 = Integer.parseInt(st.nextToken());
-            int x2 = Integer.parseInt(st.nextToken());
-            int y2 = Integer.parseInt(st.nextToken());
+		List<Event> events = new ArrayList<>();
+		for (int i = 0; i < n; i++) {
+			StringTokenizer st = new StringTokenizer(br.readLine());
+			int x1 = Integer.parseInt(st.nextToken());
+			int y1 = Integer.parseInt(st.nextToken());
+			int x2 = Integer.parseInt(st.nextToken());
+			int y2 = Integer.parseInt(st.nextToken());
 
-            if (y1 == y2) { // Horizontal
-                events.add(new Event(y1, 2, x1, x2));
-            } else { // Vertical
-                events.add(new Event(y1, 1, x1, 1));
-                events.add(new Event(y2, 3, x1, 1));
-            }
-        }
-        Collections.sort(events);
+			if (y1 == y2) {  // Horizontal
+				events.add(new Event(y1, 2, x1, x2));
+			} else {  // Vertical
+				events.add(new Event(y1, 1, x1, 1));
+				events.add(new Event(y2, 3, x1, 1));
+			}
+		}
+		Collections.sort(events);
 
-        BIT bit = new BIT(2 * MAX_POS + 1);
-        long ans = 0;
+		BIT bit = new BIT(2 * MAX_POS + 1);
+		long ans = 0;
 
-        for (Event e : events) {
-            int x1 = e.x1 + MAX_POS;
-            int x2 = e.x2 + MAX_POS;
+		for (Event e : events) {
+			int x1 = e.x1 + MAX_POS;
+			int x2 = e.x2 + MAX_POS;
 
-            if (e.type == 1) {
-                bit.add(x1, 1);
-            } else if (e.type == 2) {
-                ans += bit.prefSum(x2) - bit.prefSum(x1 - 1);
-            } else {
-                bit.add(x1, -1);
-            }
-        }
+			if (e.type == 1) {
+				bit.add(x1, 1);
+			} else if (e.type == 2) {
+				ans += bit.prefSum(x2) - bit.prefSum(x1 - 1);
+			} else {
+				bit.add(x1, -1);
+			}
+		}
 
-        System.out.println(ans);
-    }
+		System.out.println(ans);
+	}
 }
 ```
 
@@ -363,119 +357,120 @@ import java.io.*;
 import java.util.*;
 
 public class Springboards {
-    // BeginCodeSnip{Segment Tree (from the PURS module)}
-    static class MinSegmentTree {
-        private int len;
-        private int[] segtree;
-        private final int DEFAULT = Integer.MAX_VALUE;
+	// BeginCodeSnip{Segment Tree (from the PURS module)}
+	static class MinSegmentTree {
+		private int len;
+		private int[] segtree;
+		private final int DEFAULT = Integer.MAX_VALUE;
 
-        public MinSegmentTree(int len) {
-            this.len = len;
-            segtree = new int[len * 2];
-            Arrays.fill(segtree, DEFAULT);
-        }
+		public MinSegmentTree(int len) {
+			this.len = len;
+			segtree = new int[len * 2];
+			Arrays.fill(segtree, DEFAULT);
+		}
 
-        public void set(int ind, int val) {
-            ind += len;
-            segtree[ind] = Math.min(segtree[ind], val);
-            for (; ind > 1; ind /= 2) {
-                segtree[ind / 2] = Math.min(segtree[ind], segtree[ind ^ 1]);
-            }
-        }
+		public void set(int ind, int val) {
+			ind += len;
+			segtree[ind] = Math.min(segtree[ind], val);
+			for (; ind > 1; ind /= 2) {
+				segtree[ind / 2] = Math.min(segtree[ind], segtree[ind ^ 1]);
+			}
+		}
 
-        public int rangeMin(int start, int end) {
-            int min = DEFAULT;
-            for (start += len, end += len; start < end; start /= 2, end /= 2) {
-                if (start % 2 == 1) min = Math.min(min, segtree[start++]);
-                if (end % 2 == 1) min = Math.min(min, segtree[--end]);
-            }
-            return min;
-        }
-    }
-    // EndCodeSnip
+		public int rangeMin(int start, int end) {
+			int min = DEFAULT;
+			for (start += len, end += len; start < end; start /= 2, end /= 2) {
+				if (start % 2 == 1) min = Math.min(min, segtree[start++]);
+				if (end % 2 == 1) min = Math.min(min, segtree[--end]);
+			}
+			return min;
+		}
+	}
+	// EndCodeSnip
 
-    static class Point implements Comparable<Point> {
-        int x, y, i;
-        boolean isStart;
+	static class Point implements Comparable<Point> {
+		int x, y, i;
+		boolean isStart;
 
-        public Point(int x, int y, int i, boolean isStart) {
-            this.x = x;
-            this.y = y;
-            this.i = i;
-            this.isStart = isStart;
-        }
+		public Point(int x, int y, int i, boolean isStart) {
+			this.x = x;
+			this.y = y;
+			this.i = i;
+			this.isStart = isStart;
+		}
 
-        @Override
-        public int compareTo(Point p) {
-            if (this.x != p.x) return Integer.compare(this.x, p.x);
-            return Integer.compare(this.y, p.y);
-        }
-    }
+		@Override
+		public int compareTo(Point p) {
+			if (this.x != p.x) return Integer.compare(this.x, p.x);
+			return Integer.compare(this.y, p.y);
+		}
+	}
 
-    static List<Integer> distinctY = new ArrayList<>();
+	static List<Integer> distinctY = new ArrayList<>();
 
-    static int yIndex(int y) {
-        int idx = Collections.binarySearch(distinctY, y);
-        return idx < 0 ? -1 : idx; 
-    }
+	static int yIndex(int y) {
+		int idx = Collections.binarySearch(distinctY, y);
+		return idx < 0 ? -1 : idx;
+	}
 
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new FileReader("boards.in"));
-        PrintWriter pw = new PrintWriter(new FileWriter("boards.out"));
-        StringTokenizer st = new StringTokenizer(br.readLine());
-        
-        int n = Integer.parseInt(st.nextToken());
-        int p = Integer.parseInt(st.nextToken());
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new FileReader("boards.in"));
+		PrintWriter pw = new PrintWriter(new FileWriter("boards.out"));
+		StringTokenizer st = new StringTokenizer(br.readLine());
 
-        List<Point> events = new ArrayList<>();
-        for (int i = 0; i < p; ++i) {
-            st = new StringTokenizer(br.readLine());
-            int x1 = Integer.parseInt(st.nextToken());
-            int y1 = Integer.parseInt(st.nextToken());
-            int x2 = Integer.parseInt(st.nextToken());
-            int y2 = Integer.parseInt(st.nextToken());
-            
-            events.add(new Point(x1, y1, i, true));
-            events.add(new Point(x2, y2, i, false));
-            distinctY.add(y1);
-            distinctY.add(y2);
-        }
-        
-        Collections.sort(distinctY);
-        // Remove duplicates for coordinate compression
-        List<Integer> uniqueY = new ArrayList<>();
-        if (!distinctY.isEmpty()) {
-            uniqueY.add(distinctY.get(0));
-            for (int i = 1; i < distinctY.size(); i++) {
-                if (!distinctY.get(i).equals(distinctY.get(i - 1))) {
-                    uniqueY.add(distinctY.get(i));
-                }
-            }
-        }
-        distinctY = uniqueY;
+		int n = Integer.parseInt(st.nextToken());
+		int p = Integer.parseInt(st.nextToken());
 
-        Collections.sort(events);
+		List<Point> events = new ArrayList<>();
+		for (int i = 0; i < p; ++i) {
+			st = new StringTokenizer(br.readLine());
+			int x1 = Integer.parseInt(st.nextToken());
+			int y1 = Integer.parseInt(st.nextToken());
+			int x2 = Integer.parseInt(st.nextToken());
+			int y2 = Integer.parseInt(st.nextToken());
 
-        int[] ans = new int[p];
-        MinSegmentTree segtree = new MinSegmentTree(distinctY.size() + 1);
-        segtree.set(0, 0);
+			events.add(new Point(x1, y1, i, true));
+			events.add(new Point(x2, y2, i, false));
+			distinctY.add(y1);
+			distinctY.add(y2);
+		}
 
-        for (Point point : events) {
-            int yIdx = yIndex(point.y);
-            if (point.isStart) {
-                int query = segtree.rangeMin(0, yIdx + 1);
-                ans[point.i] = point.x + point.y + query;
-            } else {
-                segtree.set(yIdx, ans[point.i] - point.x - point.y);
-            }
-        }
+		Collections.sort(distinctY);
+		// Remove duplicates for coordinate compression
+		List<Integer> uniqueY = new ArrayList<>();
+		if (!distinctY.isEmpty()) {
+			uniqueY.add(distinctY.get(0));
+			for (int i = 1; i < distinctY.size(); i++) {
+				if (!distinctY.get(i).equals(distinctY.get(i - 1))) {
+					uniqueY.add(distinctY.get(i));
+				}
+			}
+		}
+		distinctY = uniqueY;
 
-        // Query the full range to account for the transition from the last springboard to (N, N)
-        // rangeMin returns min(ans[j] - x2[j] - y2[j]). We add 2*N to complete the formula.
-        pw.println(segtree.rangeMin(0, distinctY.size() + 1) + 2L * n);
-        pw.close();
-        br.close();
-    }
+		Collections.sort(events);
+
+		int[] ans = new int[p];
+		MinSegmentTree segtree = new MinSegmentTree(distinctY.size() + 1);
+		segtree.set(0, 0);
+
+		for (Point point : events) {
+			int yIdx = yIndex(point.y);
+			if (point.isStart) {
+				int query = segtree.rangeMin(0, yIdx + 1);
+				ans[point.i] = point.x + point.y + query;
+			} else {
+				segtree.set(yIdx, ans[point.i] - point.x - point.y);
+			}
+		}
+
+		// Query the full range to account for the transition from the last springboard
+		// to (N, N) rangeMin returns min(ans[j] - x2[j] - y2[j]). We add 2*N to
+		// complete the formula.
+		pw.println(segtree.rangeMin(0, distinctY.size() + 1) + 2L * n);
+		pw.close();
+		br.close();
+	}
 }
 ```
 </JavaSection>
