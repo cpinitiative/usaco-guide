@@ -673,72 +673,73 @@ def precompute():
 
 ### Solution
 
-The queries ask us for the sum of the greatest common divisor between all the numbers smaller than $n$.
+The queries ask us for the sum of the greatest common divisor between all pairs of numbers not exceeding n.
 
-Let's start by defining a function $f(n, d)$ as how many pairs of numbers less or equal than $n$ have the greatest common divisor equal to $d$. i.e. $gcd(a, b)=d$.
+Let's define a function f(j) as the sum of gcd values over all ordered pairs 1 ≤ a, b ≤ j, i.e.
+f(j) = Σ gcd(a, b).
 
-Defining the function this way gives us the following equation: $f(n,d)=f(\frac{n}{d}, 1)$.
-The reasong why is simple: By choosing two coprime numbers $a$ and $b$ such that $a,b \le \frac{n}{d}$,
-we can make sure $a \cdot d, b \cdot d \le n$ and $gcd(a \cdot d, b \cdot d) = d$, thus contributing to the global answer.
+To compute this efficiently, we group pairs according to their gcd.  
+If gcd(a, b) = d, then we can write a = d·x and b = d·y with gcd(x, y) = 1.  
+Thus, after dividing both numbers by d, we only need to count coprime pairs.
 
-Shifting away to our new function $f(\frac{n}{d}, 1)$ allows us to compute $f(n, d)$ more easily using a slightly modified phi function preprocessing.
-To find the sum we multiply $f(n, d)$ with $d$.
+The number of integers up to k that are coprime with k is given by Euler's totient function φ(k).  
+Using this fact, we obtain the identity
 
-This way the answer for a query is $\sum_{d=1}^{n}d \cdot f(n, d) = \sum_{d=1}^{n}d \cdot f(\frac{n}{d}, 1)$.
+f(j) = Σ_{i | j} i · φ(j / i),
+
+where each divisor i contributes i multiplied by the number of pairs whose reduced gcd is 1.
+
+However, this sum also includes pairs where a = b.  
+Since gcd(a, a) = a, there are exactly j such terms, which must be excluded because the problem only considers a < b.  
+Therefore, the contribution for each j becomes f(j) − j.
+
+Finally, we precompute prefix sums
+
+sum[n] = Σ_{k=1}^{n} (f[k] − k),
+
+so every query can be answered in O(1) time after preprocessing.
+
+The preprocessing runs in O(n log n) using a sieve-style computation of φ.
 
 <LanguageSection>
 <CPPSection>
 
 ```cpp
 #include <bits/stdc++.h>
+#define ll long long
 using namespace std;
 
-const int MAX_N = 1e6;
-// phi[i] = how many pairs of numbers <=i are coprime
-long long phi[MAX_N + 1];
-// Store the values found to speed up the recursion process
-unordered_map<int, long long> memo;
+const ll MOD = 1e6 + 1;
 
-long long solve(long long n) {
-	if (n <= MAX_N) { return phi[n]; }
-	if (memo.count(n)) { return memo[n]; }
+vector<ll> phi(MOD, 0), f(MOD, 0), sum(MOD, 0);
 
-	long long d = sqrt(n);
-	long long ans = 1LL * n * (n + 1) / 2;
-	for (int i = 2; n / i > d; i++) { ans -= solve(n / i); }
+int main()
+{
+    for(int i = 1; i < MOD; i++)
+        phi[i] = i;
 
-	for (int i = d; i >= 1; i--) { ans -= 1LL * (n / i - n / (i + 1)) * solve(i); }
-	memo[n] = ans;
+    for(int i = 2; i < MOD; i++)
+        if(phi[i] == i)
+            for(int j = i; j < MOD; j += i)
+                phi[j] -= phi[j] / i;
 
-	return ans;
-}
+    for(int i = 1; i < MOD; i++)
+        for(int j = i; j < MOD; j += i)
+            f[j] += i * phi[j / i];
 
-int main() {
-	// Precompute the values of phi as previously shown
-	for (int i = 1; i <= MAX_N; i++) { phi[i] = i; }
-	for (int i = 2; i <= MAX_N; i++) {
-		// If i is prime
-		if (phi[i] == i) {
-			phi[i]--;
-			for (int j = i + i; j <= MAX_N; j += i) { phi[j] = phi[j] / i * (i - 1); }
-		}
-	}
+    for(int i = 1; i < MOD; i++)
+        sum[i] = sum[i - 1] + f[i] - i;
 
-	// Prefix sums of phi
-	for (int i = 2; i <= MAX_N; i++) { phi[i] += phi[i - 1]; }
+    int n;
+    while(cin >> n)
+    {
+        if(n == 0) break;
+        cout << sum[n] << '\n';
+    }
 
-	int n;
-	while (cin >> n) {
-		if (n == 0) { break; }
-
-		long long ans = 0;
-		for (int d = 1; d <= n; d++) { ans += d * (solve(n / d) - 1); }
-
-		cout << ans << '\n';
-	}
+    return 0;
 }
 ```
-
 </CPPSection>
 </LanguageSection>
 
