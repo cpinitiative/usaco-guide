@@ -678,11 +678,11 @@ The queries ask us for the sum of the greatest common divisor between all pairs 
 Let's define a function f(j) as the sum of gcd values over all ordered pairs 1 ≤ a, b ≤ j, i.e.
 f(j) = Σ gcd(a, b).
 
-To compute this efficiently, we group pairs according to their gcd.  
-If gcd(a, b) = d, then we can write a = d·x and b = d·y with gcd(x, y) = 1.  
+To compute this efficiently, we group pairs according to their gcd.
+If gcd(a, b) = d, then we can write a = d·x and b = d·y with gcd(x, y) = 1.
 Thus, after dividing both numbers by d, we only need to count coprime pairs.
 
-The number of integers up to k that are coprime with k is given by Euler's totient function φ(k).  
+The number of integers up to k that are coprime with k is given by Euler's totient function φ(k).
 Using this fact, we obtain the identity
 
 $$
@@ -691,8 +691,8 @@ $$
 
 where each divisor i contributes i multiplied by the number of pairs whose reduced gcd is 1.
 
-However, this sum also includes pairs where a = b.  
-Since gcd(a, a) = a, there are exactly j such terms, which must be excluded because the problem only considers a < b.  
+However, this sum also includes pairs where a = b.
+Since gcd(a, a) = a, there are exactly j such terms, which must be excluded because the problem only considers a < b.
 Therefore, the contribution for each j becomes f(j) − j.
 
 Finally, we precompute prefix sums
@@ -717,31 +717,25 @@ const ll MOD = 1e6 + 1;
 
 vector<ll> phi(MOD, 0), f(MOD, 0), sum(MOD, 0);
 
-int main()
-{
-    for(int i = 1; i < MOD; i++)
-        phi[i] = i;
+int main() {
+	for (int i = 1; i < MOD; i++) phi[i] = i;
 
-    for(int i = 2; i < MOD; i++)
-        if(phi[i] == i)
-            for(int j = i; j < MOD; j += i)
-                phi[j] -= phi[j] / i;
+	for (int i = 2; i < MOD; i++)
+		if (phi[i] == i)
+			for (int j = i; j < MOD; j += i) phi[j] -= phi[j] / i;
 
-    for(int i = 1; i < MOD; i++)
-        for(int j = i; j < MOD; j += i)
-            f[j] += i * phi[j / i];
+	for (int i = 1; i < MOD; i++)
+		for (int j = i; j < MOD; j += i) f[j] += i * phi[j / i];
 
-    for(int i = 1; i < MOD; i++)
-        sum[i] = sum[i - 1] + f[i] - i;
+	for (int i = 1; i < MOD; i++) sum[i] = sum[i - 1] + f[i] - i;
 
-    int n;
-    while(cin >> n)
-    {
-        if(n == 0) break;
-        cout << sum[n] << '\n';
-    }
+	int n;
+	while (cin >> n) {
+		if (n == 0) break;
+		cout << sum[n] << '\n';
+	}
 
-    return 0;
+	return 0;
 }
 ```
 </CPPSection>
