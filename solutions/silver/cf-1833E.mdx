@@ -9,7 +9,7 @@ author: Ruben Jing
 
 ## Explanation
 
-The conditions can be represented as a graph. If the cow at $1$ remembers $2$,
+The conditions can be represented as a graph. If the person at $1$ remembers $2$,
 then $1$ must be next to $2$. If $2$ remembers $3$, then $2$ must be next to $3$.
 This creates a connected component $1-2-3$.
 
@@ -19,8 +19,7 @@ will be in one connected component. Separating these two nodes would not
 follow the provided conditions.
 
 The second observation is that you can merge any two round dances if and only
-if a node only has one neighbor. If a node only has one neighbor, the graph
-is not cyclic.
+if a node only has one neighbor, meaning the round dances do not form a cycle.
 
 A cyclic round dance cannot be merged with another round dance because
 each node can have two neighbors at most, If each node has two neighbors,
@@ -28,11 +27,9 @@ then the connected component cannot be connected to another connected component
 because no node can accept another neighbor.
 
 Finally, all the noncyclic connected components can be merged
-into one connected component. Merging two noncyclic connected components results
-in another noncyclic connected component. We can merge two noncyclic
-connected components, then merge the result with another noncyclic connected component, etc.
-We end up with only one noncyclic connected component.
-
+into one connected component. Merging two noncyclic connected components 
+creates another noncyclic connected component. Thus, we can merge all noncyclic 
+connected components with each other into one noncyclic connected component.
 
 ## Implementation
 
@@ -53,18 +50,18 @@ void solve() {
 	vector<set<int>> adj(n);
 
 	for (int i = 0; i < n; i++) {
-		int e;
-		cin >> e;
+		int a;
+		cin >> a;
 
-		e--;
+		a--;
 
 		// avoid duplicates
-		adj[i].insert(e);
-		adj[e].insert(i);
+		adj[i].insert(a);
+		adj[a].insert(i);
 	}
 
 	int min_num = 0, max_num = 0;
-	int mergable = 0;
+	int mergeable = 0;
 
 	vector<bool> visited(n);
 
@@ -93,14 +90,14 @@ void solve() {
 
 			for (int e : component) {
 				if (adj[e].size() == 1) {  // only one neighbor
-					mergable++;
+					mergeable++;
 					break;
 				}
 			}
 		}
 	}
 
-	min_num = max_num - (mergable != 0 ? mergable - 1 : 0);
+	min_num = max_num - max(0, mergeable - 1);
 
 	cout << min_num << " " << max_num << "\n";
 }
