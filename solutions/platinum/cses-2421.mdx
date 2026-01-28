@@ -54,72 +54,66 @@ const ll MOD = 1e9 + 7;
 const int MAX_N = 5005;
 const int ALPH = 26;
 
-ll nCr[MAX_N][MAX_N];            // binomial coefficients
-ll dp[ALPH + 3][MAX_N];          // dp[i][j]: first i chars, length j
-ll freq[ALPH];                  // frequency of each character
+ll nCr[MAX_N][MAX_N];    // binomial coefficients
+ll dp[ALPH + 3][MAX_N];  // dp[i][j]: first i chars, length j
+ll freq[ALPH];           // frequency of each character
 
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
 
-    string s;
-    cin >> s;
+	string s;
+	cin >> s;
 
-    int n = s.size();
+	int n = s.size();
 
-    // count character frequencies
-    for(char c : s)
-        freq[c - 'a']++;
+	// count character frequencies
+	for (char c : s) freq[c - 'a']++;
 
-    // keep only non-zero frequencies
-    vector<int> counts;
-    counts.push_back(0); // dummy for 1-indexing
-    for(int i = 0; i < ALPH; i++)
-        if(freq[i]) counts.push_back(freq[i]);
+	// keep only non-zero frequencies
+	vector<int> counts;
+	counts.push_back(0);  // dummy for 1-indexing
+	for (int i = 0; i < ALPH; i++)
+		if (freq[i]) counts.push_back(freq[i]);
 
-    // precompute binomial coefficients
-    nCr[0][0] = 1;
-    for(int i = 1; i <= n; i++){
-        nCr[i][0] = 1;
-        for(int j = 1; j <= n; j++)
-            nCr[i][j] = (nCr[i-1][j-1] + nCr[i-1][j]) % MOD;
-    }
+	// precompute binomial coefficients
+	nCr[0][0] = 1;
+	for (int i = 1; i <= n; i++) {
+		nCr[i][0] = 1;
+		for (int j = 1; j <= n; j++)
+			nCr[i][j] = (nCr[i - 1][j - 1] + nCr[i - 1][j]) % MOD;
+	}
 
-    dp[0][0] = 1;
+	dp[0][0] = 1;
 
-    int used_len = 0;
+	int used_len = 0;
 
-    // process each character group
-    for(int i = 1; i < (int)counts.size(); i++){
-        int f = counts[i];
+	// process each character group
+	for (int i = 1; i < (int)counts.size(); i++) {
+		int f = counts[i];
 
-        for(int j = 0; j <= used_len; j++){
-            for(int k = 1; k <= f; k++){
-                ll ways =
-                    dp[i-1][j] *
-                    nCr[f-1][k-1] % MOD *
-                    nCr[j+k][k] % MOD;
+		for (int j = 0; j <= used_len; j++) {
+			for (int k = 1; k <= f; k++) {
+				ll ways = dp[i - 1][j] * nCr[f - 1][k - 1] % MOD * nCr[j + k][k] % MOD;
 
-                dp[i][j+k] = (dp[i][j+k] + ways) % MOD;
-            }
-        }
+				dp[i][j + k] = (dp[i][j + k] + ways) % MOD;
+			}
+		}
 
-        used_len += f;
-    }
+		used_len += f;
+	}
 
-    // inclusion-exclusion by parity
-    ll answer = 0;
-    int groups = counts.size() - 1;
+	// inclusion-exclusion by parity
+	ll answer = 0;
+	int groups = counts.size() - 1;
 
-    for(int i = 0; i <= n; i++){
-        if((i + n) % 2 == 0)
-            answer = (answer + dp[groups][i]) % MOD;
-        else
-            answer = (answer - dp[groups][i] + MOD) % MOD;
-    }
+	for (int i = 0; i <= n; i++) {
+		if ((i + n) % 2 == 0) answer = (answer + dp[groups][i]) % MOD;
+		else answer = (answer - dp[groups][i] + MOD) % MOD;
+	}
 
-    cout << answer << '\n';
-    return 0;
+	cout << answer << '\n';
+	return 0;
 }
 ```
 
@@ -139,22 +133,22 @@ n = len(s)
 # frequency of each character
 freq = [0] * ALPH
 for c in s:
-    freq[ord(c) - ord('a')] += 1
+	freq[ord(c) - ord("a")] += 1
 
 # keep only non-zero frequencies
 counts = [0]
 for f in freq:
-    if f:
-        counts.append(f)
+	if f:
+		counts.append(f)
 
 # precompute binomial coefficients (Pascal triangle)
 nCr = [[0] * (n + 1) for _ in range(n + 1)]
 nCr[0][0] = 1
 
 for i in range(1, n + 1):
-    nCr[i][0] = 1
-    for j in range(1, i + 1):
-        nCr[i][j] = (nCr[i - 1][j - 1] + nCr[i - 1][j]) % MOD
+	nCr[i][0] = 1
+	for j in range(1, i + 1):
+		nCr[i][j] = (nCr[i - 1][j - 1] + nCr[i - 1][j]) % MOD
 
 # dp[i][j] = ways using first i characters to form length j
 dp = [[0] * (n + 1) for _ in range(len(counts))]
@@ -164,31 +158,27 @@ used_len = 0
 
 # process each character group
 for i in range(1, len(counts)):
-    f = counts[i]
+	f = counts[i]
 
-    for j in range(used_len + 1):
-        if dp[i - 1][j] == 0:
-            continue
+	for j in range(used_len + 1):
+		if dp[i - 1][j] == 0:
+			continue
 
-        for k in range(1, f + 1):
-            ways = (
-                dp[i - 1][j]
-                * nCr[f - 1][k - 1] % MOD
-                * nCr[j + k][k] % MOD
-            )
-            dp[i][j + k] = (dp[i][j + k] + ways) % MOD
+		for k in range(1, f + 1):
+			ways = dp[i - 1][j] * nCr[f - 1][k - 1] % MOD * nCr[j + k][k] % MOD
+			dp[i][j + k] = (dp[i][j + k] + ways) % MOD
 
-    used_len += f
+	used_len += f
 
 # inclusion-exclusion by parity
 answer = 0
 groups = len(counts) - 1
 
 for i in range(n + 1):
-    if (i + n) % 2 == 0:
-        answer = (answer + dp[groups][i]) % MOD
-    else:
-        answer = (answer - dp[groups][i]) % MOD
+	if (i + n) % 2 == 0:
+		answer = (answer + dp[groups][i]) % MOD
+	else:
+		answer = (answer - dp[groups][i]) % MOD
 
 print(answer % MOD)
 ```
