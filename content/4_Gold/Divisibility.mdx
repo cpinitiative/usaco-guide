@@ -673,51 +673,34 @@ def precompute():
 
 ### Solution
 
-We are asked to compute
+We are asked to compute the sum of GCDs for all pairs $(i, j)$ such that $1 \le i < j \le n$:
 
 $$
-\sum_{1 \le a < b \le n} \gcd(a,b).
+\sum_{i=1}^{n} \sum_{j=i+1}^{n} \gcd(i,j).
 $$
 
-A direct $O(n^2)$ enumeration over all pairs is too slow, so we use number theory.
-
-First, define
+Let's define a helper function $f(n)$ which computes the sum of GCDs for a fixed second element $n$:
 
 $$
-f(j)=\sum_{1 \le a,b \le j} \gcd(a,b),
+f(n) = \sum_{i=1}^{n} \gcd(i, n).
 $$
 
-which is the sum of gcd values over all ordered pairs inside the square
-$[1,j] \times [1,j]$.
-
-To compute this efficiently, group pairs by their gcd value.
-If $\gcd(a,b)=d$, then we can write $a=dx, b=dy$ with $\gcd(x,y)=1$.
-After dividing both numbers by $d$, we only need to count coprime pairs.
-
-The number of integers up to $k$ that are coprime with $k$ is given by Euler's totient function $\phi(k)$.
-From this we obtain the identity
+This function sums $\gcd(i, n)$ for all $i \le n$. The terms where $\gcd(i, n) = d$ are exactly those where $d$ divides $n$ and $\gcd(i/d, n/d) = 1$. The number of such integers $i$ is given by Euler's totient function $\phi(n/d)$. Thus, we can rewrite $f(n)$ as a sum over the divisors of $n$:
 
 $$
-f(j)=\sum_{i \mid j} i \cdot \phi\left(\frac{j}{i}\right)
+f(n) = \sum_{d|n} d \cdot \phi\left(\frac{n}{d}\right).
 $$
 
-This counts all ordered pairs.
-However, the problem only considers pairs with $a<b$.
-The diagonal pairs $a=b$ contribute $\gcd(a,a)=a$, and there are exactly $j$ such terms, so we subtract them.
+We can compute $f(n)$ for all $n$ up to $MAXN$ efficiently. Instead of factoring every number, we iterate through every possible divisor $i$ and update all its multiples $j$. For a fixed $i$, we add the contribution $i \cdot \phi(j/i)$ to $f(j)$ for all $j$ that are multiples of $i$.
 
-Thus the required contribution for each $j$ is $(f(j)-j)$.
+The total complexity of this precomputation is bounded by the harmonic series sum: 
+$\sum_{i=1}^{N} \frac{N}{i} \approx N \ln N$
 
-Finally, we precompute prefix sums
+Finally, the problem asks for pairs where $i < j$. The value $f(j)$ includes the case $i=j$ (where $\gcd(j, j) = j$), which we must exclude. The answer for a given $n$ is the prefix sum of these adjusted values:
 
 $$
-\text{sum}[n]=\sum_{k=1}^{n} (f[k]-k),
+\text{ans}[n] = \sum_{j=1}^{n} (f(j) - j).
 $$
-
-so each query can be answered in $O(1)$.
-
-The totient sieve runs in $O(n \log \log n)$, and the divisor enumeration for
-computing $f$ runs in $O(n \log n)$.
-Hence, the overall preprocessing complexity is $O(n \log n)$.
 
 <LanguageSection>
 <CPPSection>
@@ -726,7 +709,6 @@ Hence, the overall preprocessing complexity is $O(n \log n)$.
 #include <bits/stdc++.h>
 using namespace std;
 using ll = long long;
-
 const int MAX_N = 1e6;
 
 ll phi[MAX_N + 1];
@@ -741,7 +723,7 @@ int main() {
 		if (phi[i] == i)
 			for (int j = i; j <= MAX_N; j += i) phi[j] -= phi[j] / i;
 
-	// compute f[j] = sum_{a,b <= j} gcd(a,b)
+	// compute f[j]
 	for (int i = 1; i <= MAX_N; i++)
 		for (int j = i; j <= MAX_N; j += i) f[j] += 1LL * i * phi[j / i];
 
@@ -757,6 +739,7 @@ int main() {
 	return 0;
 }
 ```
+
 </CPPSection> </LanguageSection>
 
 ## Problems
