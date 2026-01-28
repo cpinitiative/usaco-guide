@@ -34,17 +34,17 @@ frequency: 2
 
 ## Two Pointers
 
-The **Two Pointers** method iterates two pointers across an array to track indices satisfying some condition. There are two common ways to use two pointers:
+The **Two Pointers** method iterates two pointers across an array to track indices satisfying some condition. There are two common variations:
 1. Two pointers starting at different ends of the array and moving towards each other.
 2. Two pointers moving in the same direction at different speeds. This variation is known as the **Sliding Window** algorithm.
 
 ## Sum of Two Values
 
-The first method is commonly used to find two elements in an array that satisfy a condition (like summing to a target value). We can essentially iterate over all pairs in $\mathcal{O}(N)$ time if the array is sorted.
-
 <FocusProblem problem="sample1" />
 
 ### Solution - Sum of Two Values
+
+The "Opposite Ends" method allows us to find the target pair in linear time if the array is sorted. Instead of checking every possible pair (which would take $\mathcal{O}(N^2)$ time), we use the sorted property to narrow down the search space in a single pass.
 
 We want to find two indices $i$ and $j$ such that $a_i + a_j = x$.
 
@@ -55,7 +55,7 @@ While $L < R$:
 2. If $a[L] + a[R] < x$, the sum is too small. To increase the sum, we increment $L$.
 3. If $a[L] + a[R] > x$, the sum is too large. To decrease the sum, we decrement $R$.
 
-Since the array is sorted, moving the left pointer to the right will only increase the sum, and moving the right pointer to the left will only decrease the sum.
+Since the array is sorted, moving the left pointer to the right will never decrease the sum, and moving the right pointer to the left will never increase the sum.
 
 **Time Complexity:** $\mathcal{O}(N \log N)$
 
