@@ -690,19 +690,19 @@ $$
 which is the sum of gcd values over all ordered pairs inside the square
 $[1,j] \times [1,j]$.
 
-To compute this efficiently, group pairs by their gcd value.  
-If $\gcd(a,b)=d$, then we can write $a=dx, b=dy$ with $\gcd(x,y)=1$.  
+To compute this efficiently, group pairs by their gcd value.
+If $\gcd(a,b)=d$, then we can write $a=dx, b=dy$ with $\gcd(x,y)=1$.
 After dividing both numbers by $d$, we only need to count coprime pairs.
 
-The number of integers up to $k$ that are coprime with $k$ is given by Euler's totient function $\phi(k)$.  
+The number of integers up to $k$ that are coprime with $k$ is given by Euler's totient function $\phi(k)$.
 From this we obtain the identity
 
 $$
 f(j)=\sum_{i \mid j} i \cdot \phi\left(\frac{j}{i}\right)
 $$
 
-This counts all ordered pairs.  
-However, the problem only considers pairs with $(a<b\)$.  
+This counts all ordered pairs.
+However, the problem only considers pairs with $(a<b\)$.
 The diagonal pairs $a=b$ contribute $\gcd(a,a)=a$, and there are exactly $j$ such terms, so we subtract them.
 
 Thus the required contribution for each $j$ is $\(f(j)-j\)$.
@@ -716,7 +716,7 @@ $$
 so each query can be answered in $O(1)$.
 
 The totient sieve runs in $O(n \log \log n)$, and the divisor enumeration for
-computing $f$ runs in $O(n \log n)$.  
+computing $f$ runs in $O(n \log n)$.
 Hence, the overall preprocessing complexity is $O(n \log n)$.
 
 <LanguageSection>
@@ -734,30 +734,27 @@ ll f[MAX_N + 1];
 ll sum[MAX_N + 1];
 
 int main() {
-    // compute phi using sieve
-    for (int i = 1; i <= MAX_N; i++) phi[i] = i;
+	// compute phi using sieve
+	for (int i = 1; i <= MAX_N; i++) phi[i] = i;
 
-    for (int i = 2; i <= MAX_N; i++)
-        if (phi[i] == i)
-            for (int j = i; j <= MAX_N; j += i)
-                phi[j] -= phi[j] / i;
+	for (int i = 2; i <= MAX_N; i++)
+		if (phi[i] == i)
+			for (int j = i; j <= MAX_N; j += i) phi[j] -= phi[j] / i;
 
-    // compute f[j] = sum_{a,b <= j} gcd(a,b)
-    for (int i = 1; i <= MAX_N; i++)
-        for (int j = i; j <= MAX_N; j += i)
-            f[j] += 1LL * i * phi[j / i];
+	// compute f[j] = sum_{a,b <= j} gcd(a,b)
+	for (int i = 1; i <= MAX_N; i++)
+		for (int j = i; j <= MAX_N; j += i) f[j] += 1LL * i * phi[j / i];
 
-    // prefix sums for answers (remove diagonal a=b)
-    for (int i = 1; i <= MAX_N; i++)
-        sum[i] = sum[i - 1] + f[i] - i;
+	// prefix sums for answers (remove diagonal a=b)
+	for (int i = 1; i <= MAX_N; i++) sum[i] = sum[i - 1] + f[i] - i;
 
-    int n;
-    while (cin >> n) {
-        if (n == 0) break;
-        cout << sum[n] << '\n';
-    }
+	int n;
+	while (cin >> n) {
+		if (n == 0) break;
+		cout << sum[n] << '\n';
+	}
 
-    return 0;
+	return 0;
 }
 ```
 </CPPSection> </LanguageSection>
