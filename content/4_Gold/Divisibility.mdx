@@ -673,37 +673,51 @@ def precompute():
 
 ### Solution
 
-The queries ask us for the sum of the greatest common divisor between all pairs of numbers not exceeding n.
-
-Let's define a function f(j) as the sum of gcd values over all ordered pairs 1 ≤ a, b ≤ j, i.e.
-f(j) = Σ gcd(a, b).
-
-To compute this efficiently, we group pairs according to their gcd.
-If gcd(a, b) = d, then we can write a = d·x and b = d·y with gcd(x, y) = 1.
-Thus, after dividing both numbers by d, we only need to count coprime pairs.
-
-The number of integers up to k that are coprime with k is given by Euler's totient function φ(k).
-Using this fact, we obtain the identity
+We are asked to compute
 
 $$
-f(j) = \sum_{i \mid j} i \cdot \phi\!\left(\frac{j}{i}\right)
+\sum_{1 \le a < b \le n} \gcd(a,b)
 $$
 
-where each divisor i contributes i multiplied by the number of pairs whose reduced gcd is 1.
+A direct $\(O(n^2)\)$ enumeration over all pairs is too slow, so we use number theory.
 
-However, this sum also includes pairs where a = b.
-Since gcd(a, a) = a, there are exactly j such terms, which must be excluded because the problem only considers a < b.
-Therefore, the contribution for each j becomes f(j) − j.
+First, define
+
+$$
+f(j)=\sum_{1 \le a,b \le j} \gcd(a,b),
+$$
+
+which is the sum of gcd values over all ordered pairs inside the square
+$[1,j] \times [1,j]$.
+
+To compute this efficiently, group pairs by their gcd value.  
+If $\gcd(a,b)=d$, then we can write $a=dx, b=dy$ with $\gcd(x,y)=1$.  
+After dividing both numbers by $d$, we only need to count coprime pairs.
+
+The number of integers up to $k$ that are coprime with $k$ is given by Euler's totient function $\phi(k)$.  
+From this we obtain the identity
+
+$$
+f(j)=\sum_{i \mid j} i \cdot \phi\left(\frac{j}{i}\right)
+$$
+
+This counts all ordered pairs.  
+However, the problem only considers pairs with $(a<b\)$.  
+The diagonal pairs $a=b$ contribute $\gcd(a,a)=a$, and there are exactly $j$ such terms, so we subtract them.
+
+Thus the required contribution for each $j$ is $\(f(j)-j\)$.
 
 Finally, we precompute prefix sums
 
 $$
-\text{sum}[n] = \sum_{k=1}^{n} (f[k] - k)
+\text{sum}[n]=\sum_{k=1}^{n} (f[k]-k),
 $$
 
-so every query can be answered in O(1) time after preprocessing.
+so each query can be answered in $O(1)$.
 
-The preprocessing runs in O(n log n) using a sieve-style computation of φ.
+The totient sieve runs in $O(n \log \log n)$, and the divisor enumeration for
+computing $f$ runs in $O(n \log n)$.  
+Hence, the overall preprocessing complexity is $O(n \log n)$.
 
 <LanguageSection>
 <CPPSection>
@@ -713,33 +727,40 @@ The preprocessing runs in O(n log n) using a sieve-style computation of φ.
 #define ll long long
 using namespace std;
 
-const ll MOD = 1e6 + 1;
+const int MAX_N = 1e6;
 
-vector<ll> phi(MOD, 0), f(MOD, 0), sum(MOD, 0);
+ll phi[MAX_N + 1];
+ll f[MAX_N + 1];
+ll sum[MAX_N + 1];
 
 int main() {
-	for (int i = 1; i < MOD; i++) phi[i] = i;
+    // compute phi using sieve
+    for (int i = 1; i <= MAX_N; i++) phi[i] = i;
 
-	for (int i = 2; i < MOD; i++)
-		if (phi[i] == i)
-			for (int j = i; j < MOD; j += i) phi[j] -= phi[j] / i;
+    for (int i = 2; i <= MAX_N; i++)
+        if (phi[i] == i)
+            for (int j = i; j <= MAX_N; j += i)
+                phi[j] -= phi[j] / i;
 
-	for (int i = 1; i < MOD; i++)
-		for (int j = i; j < MOD; j += i) f[j] += i * phi[j / i];
+    // compute f[j] = sum_{a,b <= j} gcd(a,b)
+    for (int i = 1; i <= MAX_N; i++)
+        for (int j = i; j <= MAX_N; j += i)
+            f[j] += 1LL * i * phi[j / i];
 
-	for (int i = 1; i < MOD; i++) sum[i] = sum[i - 1] + f[i] - i;
+    // prefix sums for answers (remove diagonal a=b)
+    for (int i = 1; i <= MAX_N; i++)
+        sum[i] = sum[i - 1] + f[i] - i;
 
-	int n;
-	while (cin >> n) {
-		if (n == 0) break;
-		cout << sum[n] << '\n';
-	}
+    int n;
+    while (cin >> n) {
+        if (n == 0) break;
+        cout << sum[n] << '\n';
+    }
 
-	return 0;
+    return 0;
 }
 ```
-</CPPSection>
-</LanguageSection>
+</CPPSection> </LanguageSection>
 
 ## Problems
 
