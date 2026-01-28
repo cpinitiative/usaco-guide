@@ -1,0 +1,194 @@
+---
+id: cses-2421
+source: CSES
+title: Counting Reorders
+author: Kiruthees G
+---
+
+## Explanation
+
+We are given a string $s$ of length $n$ and want to count certain permutations of its multiset of characters subject to a parity condition.
+
+First, we count the frequency of each character. Suppose the counts are
+$c_1, c_2, \dots, c_m$.
+
+We build the answer using dynamic programming over character groups.
+
+Let $\binom{n}{k}$ denote binomial coefficients, precomputed using Pascal’s triangle.
+
+Define $dp[i][j]$ as the number of ways to use the first $i$ distinct characters and form a sequence of length $j$.
+
+For each character with frequency $f$, we choose $k$ copies ($1 \le k \le f$) and merge them into the existing sequence:
+
+- choose which $k-1$ internal splits come from the same character: $\binom{f-1}{k-1}$
+- choose positions to insert these $k$ items among current $j$: $\binom{j+k}{k}$
+
+So the transition becomes
+
+$$
+dp[i][j+k] += dp[i-1][j] \cdot \binom{f-1}{k-1} \cdot \binom{j+k}{k}.
+$$
+
+After processing all characters, we apply inclusion–exclusion based on parity:
+
+$$
+\sum_{i=0}^{n} (-1)^{n+i} \cdot dp[m][i].
+$$
+
+This gives the final result.
+
+## Implementation
+
+**Time Complexity: $\mathcal O(n^2)$**
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using ll = long long;
+
+const ll MOD = 1e9 + 7;
+const int MAX_N = 5005;
+const int ALPH = 26;
+
+ll nCr[MAX_N][MAX_N];            // binomial coefficients
+ll dp[ALPH + 3][MAX_N];          // dp[i][j]: first i chars, length j
+ll freq[ALPH];                  // frequency of each character
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    string s;
+    cin >> s;
+
+    int n = s.size();
+
+    // count character frequencies
+    for(char c : s)
+        freq[c - 'a']++;
+
+    // keep only non-zero frequencies
+    vector<int> counts;
+    counts.push_back(0); // dummy for 1-indexing
+    for(int i = 0; i < ALPH; i++)
+        if(freq[i]) counts.push_back(freq[i]);
+
+    // precompute binomial coefficients
+    nCr[0][0] = 1;
+    for(int i = 1; i <= n; i++){
+        nCr[i][0] = 1;
+        for(int j = 1; j <= n; j++)
+            nCr[i][j] = (nCr[i-1][j-1] + nCr[i-1][j]) % MOD;
+    }
+
+    dp[0][0] = 1;
+
+    int used_len = 0;
+
+    // process each character group
+    for(int i = 1; i < (int)counts.size(); i++){
+        int f = counts[i];
+
+        for(int j = 0; j <= used_len; j++){
+            for(int k = 1; k <= f; k++){
+                ll ways =
+                    dp[i-1][j] *
+                    nCr[f-1][k-1] % MOD *
+                    nCr[j+k][k] % MOD;
+
+                dp[i][j+k] = (dp[i][j+k] + ways) % MOD;
+            }
+        }
+
+        used_len += f;
+    }
+
+    // inclusion-exclusion by parity
+    ll answer = 0;
+    int groups = counts.size() - 1;
+
+    for(int i = 0; i <= n; i++){
+        if((i + n) % 2 == 0)
+            answer = (answer + dp[groups][i]) % MOD;
+        else
+            answer = (answer - dp[groups][i] + MOD) % MOD;
+    }
+
+    cout << answer << '\n';
+    return 0;
+}
+```
+
+<LanguageSection>
+<CPPSection>
+
+```py
+import sys
+
+MOD = 10**9 + 7
+MAX_N = 5005
+ALPH = 26
+
+s = sys.stdin.readline().strip()
+n = len(s)
+
+# frequency of each character
+freq = [0] * ALPH
+for c in s:
+    freq[ord(c) - ord('a')] += 1
+
+# keep only non-zero frequencies
+counts = [0]
+for f in freq:
+    if f:
+        counts.append(f)
+
+# precompute binomial coefficients (Pascal triangle)
+nCr = [[0] * (n + 1) for _ in range(n + 1)]
+nCr[0][0] = 1
+
+for i in range(1, n + 1):
+    nCr[i][0] = 1
+    for j in range(1, i + 1):
+        nCr[i][j] = (nCr[i - 1][j - 1] + nCr[i - 1][j]) % MOD
+
+# dp[i][j] = ways using first i characters to form length j
+dp = [[0] * (n + 1) for _ in range(len(counts))]
+dp[0][0] = 1
+
+used_len = 0
+
+# process each character group
+for i in range(1, len(counts)):
+    f = counts[i]
+
+    for j in range(used_len + 1):
+        if dp[i - 1][j] == 0:
+            continue
+
+        for k in range(1, f + 1):
+            ways = (
+                dp[i - 1][j]
+                * nCr[f - 1][k - 1] % MOD
+                * nCr[j + k][k] % MOD
+            )
+            dp[i][j + k] = (dp[i][j + k] + ways) % MOD
+
+    used_len += f
+
+# inclusion-exclusion by parity
+answer = 0
+groups = len(counts) - 1
+
+for i in range(n + 1):
+    if (i + n) % 2 == 0:
+        answer = (answer + dp[groups][i]) % MOD
+    else:
+        answer = (answer - dp[groups][i]) % MOD
+
+print(answer % MOD)
+```
