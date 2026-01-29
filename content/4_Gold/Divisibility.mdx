@@ -685,22 +685,22 @@ $$
 f(n) = \sum_{i=1}^{n} \gcd(i, n).
 $$
 
-This function sums $\gcd(i, n)$ for all $i \le n$. The terms where $\gcd(i, n) = d$ are exactly those where $d$ divides $n$ and $\gcd(i/d, n/d) = 1$. The number of such integers $i$ is given by Euler's totient function $\phi(n/d)$. Thus, we can rewrite $f(n)$ as a sum over the divisors of $n$:
+This function sums $\gcd(i, n)$ for all $i \le n$. The terms where $\gcd(i, n) = d$ are exactly those where $d$ divides $n$ and $\gcd(\frac{i}{d}, \frac{n}{d}) = 1$. The number of such integers $i$ is given by Euler's totient function $\phi(\frac{n}{d})$. Thus, we can rewrite $f(n)$ as a sum over the divisors of $n$:
 
 $$
 f(n) = \sum_{d|n} d \cdot \phi\left(\frac{n}{d}\right).
 $$
 
-We can compute $f(n)$ for all $n$ up to $MAXN$ efficiently. Instead of factoring every number, we iterate through every possible divisor $i$ and update all its multiples $j$. For a fixed $i$, we add the contribution $i \cdot \phi(j/i)$ to $f(j)$ for all $j$ that are multiples of $i$.
-
-The total complexity of this precomputation is bounded by the harmonic series sum:
-$\sum_{i=1}^{N} \frac{N}{i} \approx N \ln N$
+We can compute $f(n)$ for all $n$ up to $10^6$ efficiently. Instead of factoring every number, we iterate through every possible divisor $i$ and update all its multiples $j$. For a fixed $i$, we add the contribution $i \cdot \phi(\frac{j}{i})$ to $f(j)$ for all $j$ that are multiples of $i$.
 
 Finally, the problem asks for pairs where $i < j$. The value $f(j)$ includes the case $i=j$ (where $\gcd(j, j) = j$), which we must exclude. The answer for a given $n$ is the prefix sum of these adjusted values:
 
 $$
 \text{ans}[n] = \sum_{j=1}^{n} (f(j) - j).
 $$
+
+The total complexity of this precomputation is bounded by the harmonic series sum:
+$\sum_{i=1}^{N} \frac{N}{i} \approx N \ln N$
 
 <LanguageSection>
 <CPPSection>
