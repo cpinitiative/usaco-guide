@@ -3,7 +3,7 @@ id: two-pointers
 redirects:
  - /silver/2P
 title: 'Two Pointers'
-author: Darren Yao, Qi Wang, Ryan Chou
+author: Darren Yao, Qi Wang, Ryan Chou, David Zhou
 contributors: Aadit Ambadkar, Juheon Rhee
 prerequisites:
   - intro-sorting
@@ -34,12 +34,141 @@ frequency: 2
 
 ## Two Pointers
 
-The two pointers method iterates two pointers across an array, to track the start and end
-of an interval. It can also be used to track two values in an array as shown in [CPH's 2SUM](/CPH.pdf#page=87) solution.
+The **Two Pointers** method iterates two pointers across an array to track indices satisfying some condition. There are two common variations:
+1. Two pointers starting at different ends of the array and moving towards each other.
+2. Two pointers moving in the same direction at different speeds. This variation is known as the **Sliding Window** algorithm.
 
-<FocusProblem problem="book" />
+## Sum of Two Values
 
-## Solution - Books
+<FocusProblem problem="sample1" />
+
+### Solution - Sum of Two Values
+
+The "Opposite Ends" method allows us to find the target pair in linear time if the array is sorted. Instead of checking every possible pair (which would take $\mathcal{O}(N^2)$ time), we use the sorted property to narrow down the search space in a single pass.
+
+We want to find two indices $i$ and $j$ such that $a_i + a_j = x$.
+
+We can start by sorting the array. Then, we can initialize a left pointer at the beginning of the array ($l=0$) and a right pointer at the end ($r=N-1$).
+
+While $l < r$:
+1. If $a[l] + a[r] == x$, we have found the target sum.
+2. If $a[l] + a[r] < x$, the sum is too small. To increase the sum, we increment $l$.
+3. If $a[l] + a[r] > x$, the sum is too large. To decrease the sum, we decrement $r$.
+
+Since the array is sorted, moving the left pointer to the right will never decrease the sum, and moving the right pointer to the left will never increase the sum.
+
+### Implementation
+
+**Time Complexity:** $\mathcal{O}(N \log N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <algorithm>
+#include <iostream>
+#include <utility>
+#include <vector>
+
+using namespace std;
+
+int main() {
+	int n, x;
+	cin >> n >> x;
+	vector<pair<int, int>> nums(n);
+	for (int i = 0; i < n; i++) {
+		cin >> nums[i].first;
+		nums[i].second = i;
+	}
+	sort(nums.begin(), nums.end());
+	int l = 0, r = n - 1;
+	while (l < r) {
+		int sum = nums[l].first + nums[r].first;
+		if (sum == x) {
+			cout << nums[l].second + 1 << " " << nums[r].second + 1 << endl;
+			return 0;
+		} else if (sum < x) {
+			l++;
+		} else if (sum > x) {
+			r--;
+		}
+	}
+	cout << "IMPOSSIBLE" << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Main {
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int n = Integer.parseInt(st.nextToken());
+		int x = Integer.parseInt(st.nextToken());
+
+		List<int[]> nums = new ArrayList<>();
+		st = new StringTokenizer(br.readLine());
+		for (int i = 0; i < n; i++) {
+			nums.add(new int[] {Integer.parseInt(st.nextToken()), i});
+		}
+		nums.sort(Comparator.comparingInt(a -> a[0]));
+		int l = 0, r = n - 1;
+		while (l < r) {
+			int sum = nums.get(l)[0] + nums.get(r)[0];
+			if (sum == x) {
+				System.out.println((nums.get(l)[1] + 1) + " " + (nums.get(r)[1] + 1));
+				return;
+			} else if (sum < x) {
+				l++;
+			} else {
+				r--;
+			}
+		}
+
+		System.out.println("IMPOSSIBLE");
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+n, x = map(int, input().split())
+
+nums = [(int(val), i) for i, val in enumerate(input().split())]
+nums.sort()
+
+l = 0
+r = n - 1
+while l < r:
+	sum = nums[l][0] + nums[r][0]
+	if sum == x:
+		print(nums[l][1] + 1, nums[r][1] + 1)
+		exit()
+	elif sum < x:
+		l += 1
+	else:
+		r -= 1
+
+print("IMPOSSIBLE")
+```
+
+</PySection>
+</LanguageSection>
+
+## Sliding Window
+
+The **Sliding Window** method is a variation of the two pointers technique where two pointers move in the same direction to maintain a specific range or "window" of elements. While standard two pointers often move towards each other, the sliding window technique is used to find a contiguous subarray that satisfies a condition.
+
+<FocusProblem problem="sample2" />
+
+### Solution - Books
 
 We want to find the longest contiguous segment of books that can be read within $t$ minutes.
 
@@ -188,12 +317,6 @@ Here's an animation of the above example:
 <video width="960" height="720" controls>
 	<source src="/animations/two_pointers.mp4" type="video/mp4"/>
 </video>
-
-<Info title="Pro Tip">
-
-You can visualize these pointers as maintaining a sliding window of books for this problem.
-
-</Info>
 
 ### Implementation
 
