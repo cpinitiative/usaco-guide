@@ -673,18 +673,34 @@ def precompute():
 
 ### Solution
 
-The queries ask us for the sum of the greatest common divisor between all the numbers smaller than $n$.
+We are asked to compute the sum of GCDs for all pairs $(i, j)$ such that $1 \le i < j \le n$:
 
-Let's start by defining a function $f(n, d)$ as how many pairs of numbers less or equal than $n$ have the greatest common divisor equal to $d$. i.e. $gcd(a, b)=d$.
+$$
+\sum_{i=1}^{n} \sum_{j=i+1}^{n} \gcd(i,j).
+$$
 
-Defining the function this way gives us the following equation: $f(n,d)=f(\frac{n}{d}, 1)$.
-The reasong why is simple: By choosing two coprime numbers $a$ and $b$ such that $a,b \le \frac{n}{d}$,
-we can make sure $a \cdot d, b \cdot d \le n$ and $gcd(a \cdot d, b \cdot d) = d$, thus contributing to the global answer.
+Let's define a helper function $f(n)$ which computes the sum of GCDs for a fixed second element $n$:
 
-Shifting away to our new function $f(\frac{n}{d}, 1)$ allows us to compute $f(n, d)$ more easily using a slightly modified phi function preprocessing.
-To find the sum we multiply $f(n, d)$ with $d$.
+$$
+f(n) = \sum_{i=1}^{n} \gcd(i, n).
+$$
 
-This way the answer for a query is $\sum_{d=1}^{n}d \cdot f(n, d) = \sum_{d=1}^{n}d \cdot f(\frac{n}{d}, 1)$.
+This function sums $\gcd(i, n)$ for all $i \le n$. The terms where $\gcd(i, n) = d$ are exactly those where $d$ divides $n$ and $\gcd(\frac{i}{d}, \frac{n}{d}) = 1$. The number of such integers $i$ is given by Euler's totient function $\phi(\frac{n}{d})$. Thus, we can rewrite $f(n)$ as a sum over the divisors of $n$:
+
+$$
+f(n) = \sum_{d|n} d \cdot \phi\left(\frac{n}{d}\right).
+$$
+
+We can compute $f(n)$ for all $n$ up to $10^6$ efficiently. Instead of factoring every number, we iterate through every possible divisor $i$ and update all its multiples $j$. For a fixed $i$, we add the contribution $i \cdot \phi(\frac{j}{i})$ to $f(j)$ for all $j$ that are multiples of $i$.
+
+Finally, the problem asks for pairs where $i < j$. The value $f(j)$ includes the case $i=j$ (where $\gcd(j, j) = j$), which we must exclude. The answer for a given $n$ is the prefix sum of these adjusted values:
+
+$$
+\text{ans}[n] = \sum_{j=1}^{n} (f(j) - j).
+$$
+
+The total complexity of this precomputation is bounded by the harmonic series sum:
+$\sum_{i=1}^{N} \frac{N}{i} \approx N \ln N$
 
 <LanguageSection>
 <CPPSection>
@@ -692,55 +708,39 @@ This way the answer for a query is $\sum_{d=1}^{n}d \cdot f(n, d) = \sum_{d=1}^{
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
-
+using ll = long long;
 const int MAX_N = 1e6;
-// phi[i] = how many pairs of numbers <=i are coprime
-long long phi[MAX_N + 1];
-// Store the values found to speed up the recursion process
-unordered_map<int, long long> memo;
 
-long long solve(long long n) {
-	if (n <= MAX_N) { return phi[n]; }
-	if (memo.count(n)) { return memo[n]; }
-
-	long long d = sqrt(n);
-	long long ans = 1LL * n * (n + 1) / 2;
-	for (int i = 2; n / i > d; i++) { ans -= solve(n / i); }
-
-	for (int i = d; i >= 1; i--) { ans -= 1LL * (n / i - n / (i + 1)) * solve(i); }
-	memo[n] = ans;
-
-	return ans;
-}
+ll phi[MAX_N + 1];
+ll f[MAX_N + 1];
+ll sum[MAX_N + 1];
 
 int main() {
-	// Precompute the values of phi as previously shown
-	for (int i = 1; i <= MAX_N; i++) { phi[i] = i; }
-	for (int i = 2; i <= MAX_N; i++) {
-		// If i is prime
-		if (phi[i] == i) {
-			phi[i]--;
-			for (int j = i + i; j <= MAX_N; j += i) { phi[j] = phi[j] / i * (i - 1); }
-		}
-	}
+	// compute phi using sieve
+	for (int i = 1; i <= MAX_N; i++) phi[i] = i;
 
-	// Prefix sums of phi
-	for (int i = 2; i <= MAX_N; i++) { phi[i] += phi[i - 1]; }
+	for (int i = 2; i <= MAX_N; i++)
+		if (phi[i] == i)
+			for (int j = i; j <= MAX_N; j += i) phi[j] -= phi[j] / i;
+
+	// compute f[j]
+	for (int i = 1; i <= MAX_N; i++)
+		for (int j = i; j <= MAX_N; j += i) f[j] += 1LL * i * phi[j / i];
+
+	// prefix sums for answers (remove diagonal a=b)
+	for (int i = 1; i <= MAX_N; i++) sum[i] = sum[i - 1] + f[i] - i;
 
 	int n;
 	while (cin >> n) {
-		if (n == 0) { break; }
-
-		long long ans = 0;
-		for (int d = 1; d <= n; d++) { ans += d * (solve(n / d) - 1); }
-
-		cout << ans << '\n';
+		if (n == 0) break;
+		cout << sum[n] << '\n';
 	}
+
+	return 0;
 }
 ```
 
-</CPPSection>
-</LanguageSection>
+</CPPSection> </LanguageSection>
 
 ## Problems
 
