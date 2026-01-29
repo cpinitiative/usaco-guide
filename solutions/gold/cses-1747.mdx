@@ -5,6 +5,8 @@ title: Pyramid Array
 author: Ashok Narayan
 ---
 
+[Question](https://cses.fi/problemset/task/1747)
+
 ## Explanation
 
 The problem asks for the minimum number of adjacent swaps required to transform an array into a pyramid (increasing then decreasing). Recall that the minimum number of adjacent swaps to reorder an array is equal to the number of inversions between the initial and final states.
@@ -26,11 +28,11 @@ Let's formalize this. We process elements in descending order of value. When we 
 3.  The cost to add the current element is $\min(L, R)$.
 4.  After processing, we mark index $i$ as "active" (containing a processed element).
 
-This is a dynamic counting problem on indices. We can model the state of the array as a sequence of $0$s and $1$s, where a $1$ at index $j$ means the element originally at $j$ has been processed.
+This is a dynamic counting problem on indices. We can model the state of the array as a binary sequence of $0$s and $1$s, where a $1$ at index $j$ means the element originally at $j$ has been processed.
 * **Query:** To find $L$, we need the sum of values in the range $[0, i-1]$. This is a **Range Sum Query**.
 * **Update:** To mark index $i$ as processed, we change the value at $i$ from $0$ to $1$. This is a **Point Update**.
 
-Since we need both operations to be efficient, a **Binary Indexed Tree (Fenwick Tree)** or a **Segment Tree** is ideal. Both support these operations in $O(\log N)$ time.
+Since we need both operations to be efficient, a **Binary Indexed Tree (Fenwick Tree)**. In this questions we can very well proceed with **Segment Tree** too.
 
 ### Time Complexity
 
@@ -85,7 +87,7 @@ int main() {
 	vector<pair<int, int>> elements(n);
 	for (int i = 0; i < n; i++) {
 		cin >> elements[i].first;
-		elements[i].second = i + 1; // 1-based indexing for BIT
+		elements[i].second = i + 1; // 1-based indexing 
 	}
 
 	// Sort in descending order to process largest elements first
