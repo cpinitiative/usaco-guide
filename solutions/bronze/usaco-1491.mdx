@@ -32,45 +32,38 @@ int N, U;
 vector<string> grid;
 
 int contribution(int r, int c) {
-    vector<char> cells = {
-        grid[r][c],
-        grid[N - r - 1][c],
-        grid[r][N - c - 1],
-        grid[N - r - 1][N - c - 1]
-    };
+	vector<char> cells = {grid[r][c], grid[N - r - 1][c], grid[r][N - c - 1],
+	                      grid[N - r - 1][N - c - 1]};
 
-    int painted = 0;
-    for (char ch : cells) {
-        if (ch == '#') painted++;
-    }
-    return min(painted, 4 - painted);
+	int painted = 0;
+	for (char ch : cells) {
+		if (ch == '#') painted++;
+	}
+	return min(painted, 4 - painted);
 }
 
 int main() {
-    cin >> N >> U;
-    grid.resize(N);
-    for (int i = 0; i < N; i++) {
-        cin >> grid[i];
-    }
+	cin >> N >> U;
+	grid.resize(N);
+	for (int i = 0; i < N; i++) { cin >> grid[i]; }
 
-    long long ans = 0;
-    for (int row = 0; row < N / 2; row++) {
-        for (int col = 0; col < N / 2; col++) {
-            ans += contribution(row, col);
-        }
-    }
+	long long ans = 0;
+	for (int row = 0; row < N / 2; row++) {
+		for (int col = 0; col < N / 2; col++) { ans += contribution(row, col); }
+	}
 
-    cout << ans << '\n';
+	cout << ans << '\n';
 
-    for (int i = 0; i < U; i++) {
-        int r, c;
-        cin >> r >> c;
-        r--; c--;
-        ans -= contribution(r, c);
-        grid[r][c] = (grid[r][c] == '.') ? '#' : '.';
-        ans += contribution(r, c);
-        cout << ans << '\n';
-    }
+	for (int i = 0; i < U; i++) {
+		int r, c;
+		cin >> r >> c;
+		r--;
+		c--;
+		ans -= contribution(r, c);
+		grid[r][c] = (grid[r][c] == '.') ? '#' : '.';
+		ans += contribution(r, c);
+		cout << ans << '\n';
+	}
 }
 ```
 
@@ -82,25 +75,32 @@ int main() {
 N, U = map(int, input().split())
 grid = [list(input()) for i in range(N)]
 
+
 def contribution(r, c):
-    cells = [grid[r][c], grid[N - r - 1][c], grid[r][N - c - 1], grid[N - r - 1][N - c - 1]]
-    painted = cells.count("#")
-    return min(painted, 4 - painted)
+	cells = [
+		grid[r][c],
+		grid[N - r - 1][c],
+		grid[r][N - c - 1],
+		grid[N - r - 1][N - c - 1],
+	]
+	painted = cells.count("#")
+	return min(painted, 4 - painted)
+
 
 ans = 0
 for row in range(N // 2):
-    for column in range(N // 2):
-        ans += contribution(row, column)
+	for column in range(N // 2):
+		ans += contribution(row, column)
 print(ans)
 
 for i in range(U):
-    r, c = map(int, input().split())
-    r -= 1
-    c -= 1
-    ans -= contribution(r, c)
-    grid[r][c] = "#" if grid[r][c] == "." else "."
-    ans += contribution(r, c)
-    print(ans)
+	r, c = map(int, input().split())
+	r -= 1
+	c -= 1
+	ans -= contribution(r, c)
+	grid[r][c] = "#" if grid[r][c] == "." else "."
+	ans += contribution(r, c)
+	print(ans)
 ```
 
 </PySection>
