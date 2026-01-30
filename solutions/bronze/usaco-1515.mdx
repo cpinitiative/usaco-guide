@@ -4,18 +4,20 @@ source: 2025 US Open Bronze
 title: Hoof Paper Scissors Minus One
 author: Aarav Sethi
 ---
+
 [Official Analysis (Python)](https://usaco.org/current/data/sol_prob1_bronze_open25.html$0)
 
 ## Explanation
+
 In order to solve this, we need to check how many possible pairs of gestures exist in which one of the two gestures can beat both of Elsie's left and right gestures.
 
 ### Testcases 1 to 6
+
 This can be solved by first creating a 2D array to tell if gesture $i$ can be beaten by gesture $j$.
 
-With this a $\mathcal{O}(N^2)$ brute-force would work. Here is a snippet:
+With this, a $\mathcal{O}(N^2)$ brute-force per game works. Here is a snippet:
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
@@ -29,16 +31,19 @@ for (int myL = 0; myL < n; myL++) {
 ```
 
 </CPPSection>
-
 </LanguageSection>
 
 ### Testcases 7 to 12
-To optimize the computation per game from $\mathcal{O}(N^2)$ -> $\mathcal{O}(N)$, a series of optimizations are required, which eventually turn into a single formula.
+
+To optimize the computation per game from $\mathcal{O}(N^2)$ to $\mathcal{O}(N)$, a series of optimizations is required, which eventually turn into a single formula.
 
 #### Optimization 1:
-You can notice that if `myL` is already able to beat both `l` & `r`, you do not need to bother with trying every `myR`.
+
+You can notice that if `myL` is already able to beat both `l` and `r`, you do not need to bother with trying every `myR`.
+
 <LanguageSection>
 <CPPSection>
+
 ```cpp
 for (int myL = 0; myL < n; myL++) {
 	if (beatenBy[l][myL] && beatenBy[r][myL]) {
@@ -50,34 +55,38 @@ for (int myL = 0; myL < n; myL++) {
 	}
 }
 ```
+
 </CPPSection>
 </LanguageSection>
 
 #### Optimization 2:
-If you let $x$ be how many gestures out of N can beat both of Elsie's `l` & `r`, then we can assume that this check:
+
+If you let $x$ be how many gestures out of $N$ can beat both of Elsie's `l` and `r`, then we can assume that this check:
+
 <LanguageSection>
 <CPPSection>
+
 ```cpp
 for (int myL = 0; myL < n; myL++) {
 	if (beatenBy[l][myL] && beatenBy[r][myL]) possible += n;
 ```
+
 </CPPSection>
 </LanguageSection>
 is equivalent to
+
 ```
 possible += x * n;
 ```
 
 and the else clause runs $n-x$ times, and adds $x$ possibilities.
+
 ```
-possible += x*(n-x)
+possible += x * (n - x)
 ```
 
-A simple formula that can be derived is $xn + x(n-x)$.
-
-
-
-
+With this, we can derive that the formula for winning pairs is $xn + x(n-x)$. Directly implementing
+this formula allows us to solve each game in $\mathcal{O}(N)$ time.
 
 ## Implementation
 
