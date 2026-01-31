@@ -12,13 +12,13 @@ The problem asks for the minimum number of adjacent swaps required to transform 
 
 ### Initial Greedy Strategy
 
-To minimize inversions, we should greedily place the elements. Consider processing the elements from **largest to smallest**.
+To minimize inversions, we should greedily place the elements. Consider processing the elements from largest to smallest.
 * The largest element should be in the "peak" of pyramid, which may not be in the center of the array.
-* For every subsequent element, we have to place it in the immediate **left** or immediate **right** of the "central block" that is formed by the already processed elements.
+* For every subsequent element, we have to place it in the immediate left or immediate right of the "central block" that is formed by the already processed elements.
 
 To minimize the total number of swaps, we simply calculate the cost for both options:
-1.  **Left Cost:** The number of swaps to move $x$ to the left of the block. This equals the number of already-placed (larger) elements currently to the left of $x$.
-2.  **Right Cost:** The number of swaps to move $x$ to the right of the block. This equals the number of already-placed (larger) elements currently to the right of $x$.
+1.  *Left Cost:* The number of swaps to move $x$ to the left of the block. This equals the number of already-placed (larger) elements currently to the left of $x$.
+2.  *Right Cost:* The number of swaps to move $x$ to the right of the block. This equals the number of already-placed (larger) elements currently to the right of $x$.
 
 We greedily choose the minimum of these two for each element.
 
@@ -28,17 +28,17 @@ We greedily choose the minimum of these two for each element.
 To guarantee the minimum cost, we must prove that our choices are optimal. Let's break the total cost down into individual contributions.
 
 For any element $x$, consider the set of all elements larger than it, denoted as $S$.
-In a valid pyramid structure, the values increase to a peak and then decrease. This implies that the set of largest elements $S$ must form a **contiguous block** in the center of the array, and $x$ must be placed outside this block (either to the immediate left or immediate right).
+In a valid pyramid structure, the values increase to a peak and then decrease. This implies that the set of largest elements $S$ must form a *contiguous block* in the center of the array, and $x$ must be placed outside this block (either to the immediate left or immediate right).
 
 Both these cases have an associated cost. Choosing the minimum out of these will give the min cost for processing current element x. But how does that ensure global min cost?
 
 
 **Independence of Decisions :**
 Crucially, the cost of these choices depends ***only*** on the initial input array:
-* **Cost Left:** The number of swaps needed to move $x$ to the left of $S$ is exactly the count of elements in $S_{>x}$ that are currently at indices *less than* $x$'s index.
-* **Cost Right:** The number of swaps needed to move $x$ to the right of $S$ is exactly the count of elements in $S_{>x}$ that are currently at indices *greater than* $x$'s index.
+* *Cost Left:* The number of swaps needed to move $x$ to the left of $S$ is exactly the count of elements in $S$ that are currently at indices *less than* $x$'s index.
+* *Cost Right:* The number of swaps needed to move $x$ to the right of $S$ is exactly the count of elements in $S$ that are currently at indices *greater than* $x$'s index.
 
-Since the cost for placing $x$ depends only on the *original positions* of the larger elements (and not on where those larger elements eventually end up), we can make the optimal decision for each element **independently**. Minimizing the cost for each element individually guarantees the global minimum.
+Since the cost for placing $x$ depends only on the original positions of the larger elements (and not on where those larger elements eventually end up), we can make the optimal decision for each element independently. Minimizing the cost for each element individually guarantees the global minimum.
 
 
 
@@ -48,11 +48,11 @@ Now this essentially reduces to *dynamically* counting the number of inversions.
 * **Query:** To find $L$, we need the sum of values in the range $[0, i-1]$. This is a **Range Sum Query**.
 * **Update:** To mark index $i$ as processed, we change the value at $i$ from $0$ to $1$. This is a **Point Update**.
 
-Since we need both operations to be efficient we use a **Binary Indexed Tree (Fenwick Tree)**.
+Since we need both operations to be efficient we use a ***Binary Indexed Tree (Fenwick Tree)***.
 
 ## Implementation
 
-**Time Complexity:** $\mathcal{O}(N\log N)$
+Time Complexity: $\mathcal{O}(N\log N)$
 
 <LanguageSection>
 <CPPSection>
