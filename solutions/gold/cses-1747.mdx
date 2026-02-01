@@ -5,15 +5,14 @@ title: Pyramid Array
 author: Ashok Narayan
 ---
 
-
 ## Explanation
 
-The problem asks for the minimum number of adjacent swaps required to transform an array into a pyramid (increasing then decreasing). Recall that the minimum number of adjacent swaps to reorder an array is equal to the number of inversions between the initial and final states.
+The problem asks for the minimum number of adjacent swaps required to transform an array into a pyramid (increasing, then decreasing). Recall that the minimum number of adjacent swaps to reorder an array is equal to the number of inversions between the initial and final states.
 
 ### Initial Greedy Strategy
 
 To minimize inversions, we should greedily place the elements. Consider processing the elements from largest to smallest.
-* The largest element should be in the "peak" of pyramid, which may not be in the center of the array.
+* The largest element should be in the "peak" of the pyramid, which may not be in the center of the array.
 * For every subsequent element, we have to place it in the immediate left or immediate right of the "central block" that is formed by the already processed elements.
 
 To minimize the total number of swaps, we simply calculate the cost for both options:
@@ -22,8 +21,7 @@ To minimize the total number of swaps, we simply calculate the cost for both opt
 
 We greedily choose the minimum of these two for each element.
 
-
-### Why the Greedy Strategy Works
+### Why Greedy Works
 
 To guarantee the minimum cost, we must prove that our choices are optimal. Let's break the total cost down into individual contributions.
 
@@ -38,17 +36,15 @@ Crucially, the cost of these choices depends **only** on the initial input array
 
 Since the cost for placing $x$ depends only on the original positions of the larger elements (and not on where those larger elements eventually end up), we can make the optimal decision for each element independently. Minimizing the cost for each element individually guarantees the global minimum.
 
+### Algorithm
 
-
-## Algorithm
-
-Now this essentially reduces to *dynamically* counting the number of inversions. We model the array as a binary sequence where a *1* represents an already processed (larger) element.
+This reduces to dynamically counting the number of inversions. We model the array as a binary sequence where a *1* represents an already processed (larger) element.
 * $L$ is the number of already processed (larger) elements located to the left of the current index.
 * $R$ is the number of already processed (larger) elements located to the right of the current index.
 * **Query:** To find $L$, we need the sum of values in the range $[0, i-1]$. Since we have processed $k$ elements so far, we can derive $R$ as $k - L$. This is a **Range Sum Query**.
 * **Update:** To mark index $i$ as processed, we change the value at $i$ from $0$ to $1$. This is a **Point Update**
 
-Since we need both operations to be efficient we use a ***Binary Indexed Tree (Fenwick Tree)***.
+Since we need both operations to be efficient, we use a **Binary Indexed Tree** or similar PURS data structure.
 
 ## Implementation
 
