@@ -45,6 +45,8 @@ The number of ways to update the DP state involves two combinatorial calculation
     How many ways can we split frequency $f$ into $k$ non-empty groups? This is a "Stars and Bars" problem:
     $$\binom{f - 1}{k - 1}$$
 
+
+
 2.  **Merging with existing segments:**
     If we previously had $j$ segments and we add $k$ new segments, we now have $j+k$ total segments. How many relative orderings exist between the old segments and the new ones?
     $$\binom{j+k}{k}$$
@@ -59,14 +61,19 @@ To understand this final step, we must define exactly what we are counting. Our 
 ### The "Bad Pair" Concept
 Let's define a **Bad Pair** as any instance where two identical characters sit next to each other (e.g., `AA`).
 
+* In our DP state `dp[groups][i]`, we built the string by arranging $i$ **segments** of characters.
 * In our DP state $dp[groups][i]$, we built the string by arranging $i$ **segments** of characters.
 * **Crucial Insight:** Whenever we put multiple identical characters into a single segment (like `AAA`), we are implicitly "locking in" Bad Pairs.
 
 ### Segments vs. Bad Pairs
+There is a direct mathematical relationship between the number of segments and the number of Bad Pairs. For a character appearing $f$ times:
 There is a direct mathematical relationship between the number of segments and the number of Bad Pairs. For a character appearing $F$ times:
 
+* If we split it into $f$ segments (e.g., `A`, `A`, `A`), we have **0** Bad Pairs.
 * If we split it into $F$ segments (e.g., `A`, `A`, `A`), we have **0** Bad Pairs.
 * If we split it into $1$ segment (e.g., `AAA`), we have **2** Bad Pairs.
+* **General Formula:** For a total string of length $n$ divided into $i$ segments, the number of Bad Pairs ($K$) is:
+    $$K = n - i$$
 * **Formula**: $\text{Bad Pairs} = \text{Total Characters} - \text{Total Segments}$.
 
 ### Applying the Principle
@@ -74,18 +81,26 @@ The **Principle of Inclusion-Exclusion (PIE)** states that to find the number of
 
 1.  **Sum** all arrangements.
 2.  **Subtract** those with at least 1 Bad Pair.
+3.  **Add** back those with at least 2 Bad Pairs.
+4.  **Subtract** those with 3... and so on.
 3.  **Add** back those with at least 2 Bad Pairs (because we subtracted them too many times).
 4.  **Subtract** those with at least 3... and so on.
 
+The mathematical sign for any state with $K$ bad pairs is:
 The sign depends on the number of Bad Pairs ($K$):
 $$\text{Sign} = (-1)^K$$
 
 ### The Parity Simplification
+Since $K = n - i$:
+* We need the sign for $(-1)^{n-i}$.
+* If $n$ and $i$ have the **same parity** (both even or both odd), then $n-i$ is even $\rightarrow$ **Positive (+)**.
+* If they have **different parity**, then $n-i$ is odd $\rightarrow$ **Negative (-)**.
 Since $K = N - i$ (where $N$ is total length, $i$ is segments):
 * We need the sign for $(-1)^{N-i}$.
 * If $N$ and $i$ have the **same parity** (both even or both odd), then $N-i$ is even $\rightarrow$ **Positive (+)**.
 * If they have **different parity**, then $N-i$ is odd $\rightarrow$ **Negative (-)**.
 
+In code, checking if $(n - i)$ is even is logically identical to checking if $(n + i)$ is even. This allows us to use the simple toggle: `if ((i + n) % 2 == 0)`.
 This logic allows us to reduce the complex PIE formula into a simple if/else check on $(n + i)$.
 
 ---
@@ -93,9 +108,6 @@ This logic allows us to reduce the complex PIE formula into a simple if/else che
 ## Implementation
 
 **Time Complexity: $\mathcal O(n^2)$**
-
-<LanguageSection>
-<CPPSection>
 
 ```cpp
 #include <bits/stdc++.h>
@@ -176,10 +188,6 @@ int main() {
 	return 0;
 }
 ```
-
-<LanguageSection>
-<CPPSection>
-
 ```py
 import sys
 
