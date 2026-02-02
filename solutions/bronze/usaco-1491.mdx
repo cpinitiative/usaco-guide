@@ -33,10 +33,10 @@ int n, u;
 vector<string> grid;
 
 int contribution(int r, int c) {
-    // 4 symmetric cells
+	// 4 symmetric cells
 	vector<char> cells = {grid[r][c], grid[n - r - 1][c], grid[r][n - c - 1],
 	                      grid[n - r - 1][n - c - 1]};
-    // Min flips to make them all equal
+	// Min flips to make them all equal
 	int painted = 0;
 	for (char ch : cells) {
 		if (ch == '#') painted++;
@@ -49,7 +49,7 @@ int main() {
 	grid.resize(n);
 	for (int i = 0; i < n; i++) { cin >> grid[i]; }
 
-    // Initial answer (only need top-left quadrant)
+	// Initial answer (only need top-left quadrant)
 	int ans = 0;
 	for (int row = 0; row < n / 2; row++) {
 		for (int col = 0; col < n / 2; col++) { ans += contribution(row, col); }
@@ -62,9 +62,9 @@ int main() {
 		cin >> r >> c;
 		r--;
 		c--;
-		ans -= contribution(r, c); // remove old contribution
-		grid[r][c] = (grid[r][c] == '.') ? '#' : '.'; // toggle
-		ans += contribution(r, c); // add new contribution
+		ans -= contribution(r, c);                     // remove old contribution
+		grid[r][c] = (grid[r][c] == '.') ? '#' : '.';  // toggle
+		ans += contribution(r, c);                     // add new contribution
 		cout << ans << '\n';
 	}
 }
@@ -80,16 +80,17 @@ grid = [list(input()) for i in range(n)]
 
 
 def contribution(r, c):
-    # 4 symmetric cells
+	# 4 symmetric cells
 	cells = [
 		grid[r][c],
 		grid[n - r - 1][c],
 		grid[r][n - c - 1],
 		grid[n - r - 1][n - c - 1],
 	]
-    # Min flips to make them all equal
+	# Min flips to make them all equal
 	painted = cells.count("#")
 	return min(painted, 4 - painted)
+
 
 # Initial answer (only need top-left quadrant)
 ans = 0
@@ -102,9 +103,9 @@ for i in range(u):
 	r, c = map(int, input().split())
 	r -= 1
 	c -= 1
-	ans -= contribution(r, c) # remove old contribution
-	grid[r][c] = "#" if grid[r][c] == "." else "." # toggle
-	ans += contribution(r, c) # add new contribution
+	ans -= contribution(r, c)  # remove old contribution
+	grid[r][c] = "#" if grid[r][c] == "." else "."  # toggle
+	ans += contribution(r, c)  # add new contribution
 	print(ans)
 ```
 
