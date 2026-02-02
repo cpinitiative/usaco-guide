@@ -1,0 +1,114 @@
+---
+id: usaco-1491
+source: USACO Bronze 2025 February
+title: Reflection
+author: Sachet Abeysinghe
+---
+
+[Official Analysis (C++)](https://usaco.org/current/data/sol_prob1_bronze_feb25.html)
+
+## Explanation
+
+Let's consider each individual square in the top left quadrant and find the minimum number of operations required for this square and the corresponding cells in the other three quadrants to match.
+1. If there are three painted squares, we paint the remaining cell, taking one operation.
+2. If there are two painted squares, we can either paint the two other cells or remove paint on the two cells, taking two operations.
+3. If there is one painted square, we remove paint on the cell, taking one operation.
+4. Finally, if all four are painted or not painted, they already match, so zero operations.
+
+Adding up all the contributions for each cell will give us the minimum number of operations needed to achieve the reflective condition. Then, for each of the $U$ updates, we only need to consider the change of contribution of the updated cell and its corresponding cells in the other three quadrants. The simplest way to handle this is to remove the current contribution for those four cells, update the grid, and then add the new contribution.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N^{2}+U)$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int n, u;
+vector<string> grid;
+
+int contribution(int r, int c) {
+	// 4 symmetric cells
+	vector<char> cells = {grid[r][c], grid[n - r - 1][c], grid[r][n - c - 1],
+	                      grid[n - r - 1][n - c - 1]};
+	// Min flips to make them all equal
+	int painted = 0;
+	for (char ch : cells) {
+		if (ch == '#') painted++;
+	}
+	return min(painted, 4 - painted);
+}
+
+int main() {
+	cin >> n >> u;
+	grid.resize(n);
+	for (int i = 0; i < n; i++) { cin >> grid[i]; }
+
+	// Initial answer (only need top-left quadrant)
+	int ans = 0;
+	for (int row = 0; row < n / 2; row++) {
+		for (int col = 0; col < n / 2; col++) { ans += contribution(row, col); }
+	}
+
+	cout << ans << '\n';
+
+	for (int i = 0; i < u; i++) {
+		int r, c;
+		cin >> r >> c;
+		r--;
+		c--;
+		ans -= contribution(r, c);                     // remove old contribution
+		grid[r][c] = (grid[r][c] == '.') ? '#' : '.';  // toggle
+		ans += contribution(r, c);                     // add new contribution
+		cout << ans << '\n';
+	}
+}
+```
+
+</CPPSection>
+
+<PySection>
+
+```py
+n, u = map(int, input().split())
+grid = [list(input()) for i in range(n)]
+
+
+def contribution(r, c):
+	# 4 symmetric cells
+	cells = [
+		grid[r][c],
+		grid[n - r - 1][c],
+		grid[r][n - c - 1],
+		grid[n - r - 1][n - c - 1],
+	]
+	# Min flips to make them all equal
+	painted = cells.count("#")
+	return min(painted, 4 - painted)
+
+
+# Initial answer (only need top-left quadrant)
+ans = 0
+for row in range(n // 2):
+	for column in range(n // 2):
+		ans += contribution(row, column)
+print(ans)
+
+for i in range(u):
+	r, c = map(int, input().split())
+	r -= 1
+	c -= 1
+	ans -= contribution(r, c)  # remove old contribution
+	grid[r][c] = "#" if grid[r][c] == "." else "."  # toggle
+	ans += contribution(r, c)  # add new contribution
+	print(ans)
+```
+
+</PySection>
+
+</LanguageSection>
