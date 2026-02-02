@@ -1,0 +1,226 @@
+---
+id: cses-2421
+source: CSES
+title: Counting Reorders
+author: Kiruthees G
+---
+
+## Approach & Intuition
+
+This problem is a classic combinatorial challenge that cannot be solved by simple permutations (like $\frac{n!}{n_1!n_2!...}$) because the constraint "no adjacent characters are equal" creates complex dependencies.
+
+To solve this efficiently for a string length up to 5000, we use **Dynamic Programming (DP)** combined with the **Principle of Inclusion-Exclusion**.
+
+
+
+### The Core Idea: "Building Blocks"
+
+Instead of placing characters one by one, we process the string **character group by character group**.
+
+1.  **Group by Frequency:** We first count how many times each character appears (e.g., A: 2, B: 1, C: 1).
+2.  **Forming Segments:** For a character appearing $f$ times, we can split it into $k$ distinct segments (or blocks). For example, if we have `aaa`, we could treat it as:
+    * 1 segment: `(aaa)`
+    * 2 segments: `(aa), (a)` or `(a), (aa)`
+    * 3 segments: `(a), (a), (a)`
+3.  **Interleaving:** We use DP to track how many ways we can interleave these segments with the segments we have already built from previous characters.
+
+---
+
+## Step-by-Step Explanation
+
+### 1. Preprocessing
+We count the frequency of every character. We also precompute **Binomial Coefficients** (nCr) using Pascal's Triangle logic. This allows us to calculate combinations in $O(1)$ time during the main algorithm.
+
+### 2. The Dynamic Programming State
+We define a DP table:
+$$dp[i][j]$$
+
+* $i$: We have processed the first $i$ distinct character types.
+* $j$: The total number of **segments** (groups of characters) currently formed.
+
+### 3. The Transition (The Math)
+When we introduce a new character with frequency $f$, we decide to split it into $k$ segments.
+
+The number of ways to update the DP state involves two combinatorial calculations:
+
+1.  **Splitting the new character:**
+    How many ways can we split frequency $f$ into $k$ non-empty groups? This is a "Stars and Bars" problem:
+    $$\binom{f - 1}{k - 1}$$
+
+2.  **Merging with existing segments:**
+    If we previously had $j$ segments and we add $k$ new segments, we now have $j+k$ total segments. How many relative orderings exist between the old segments and the new ones?
+    $$\binom{j+k}{k}$$
+
+**The Update Rule:**
+$$dp[i][j+k] += dp[i-1][j] \times \binom{f-1}{k-1} \times \binom{j+k}{k}$$
+
+### 4. Inclusion-Exclusion Principle (The Final Answer)
+After processing all character groups, `dp[groups][i]` tells us the number of ways to form a sequence with exactly $i$ segments.
+
+However, simply having segments doesn't guarantee the "no adjacent" rule is met *between* the segments we implicitly created. To get the final answer, we apply Inclusion-Exclusion based on the parity of the string length and segments:
+
+* We sum up the values of $dp[final][i]$.
+* If $(n + i)$ is even, we add.
+* If $(n + i)$ is odd, we subtract.
+
+---
+
+## Implementation
+
+**Time Complexity: $\mathcal O(n^2)$**
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+
+const ll MOD = 1e9 + 7;
+const int MAX_N = 5005;
+const int ALPH = 26;
+
+ll nCr[MAX_N][MAX_N];            // Binomial coefficients table
+ll dp[ALPH + 3][MAX_N];          // dp[i][j]: i-th char group, j total segments
+ll freq[ALPH];                   // Frequency of each character
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    string s;
+    cin >> s;
+    int n = s.size();
+
+    // 1. Count Frequencies
+    for(char c : s)
+        freq[c - 'a']++;
+
+    // Filter out characters that don't appear in the string
+    vector<int> counts;
+    counts.push_back(0); // Dummy 0-index
+    for(int i = 0; i < ALPH; i++)
+        if(freq[i]) counts.push_back(freq[i]);
+
+    // 2. Precompute nCr (Pascal's Triangle)
+    nCr[0][0] = 1;
+    for(int i = 1; i <= n; i++){
+        nCr[i][0] = 1;
+        for(int j = 1; j <= n; j++)
+            nCr[i][j] = (nCr[i-1][j-1] + nCr[i-1][j]) % MOD;
+    }
+
+    // 3. Dynamic Programming
+    dp[0][0] = 1;
+    int used_len = 0; // Tracks number of segments processed so far
+
+    for(int i = 1; i < (int)counts.size(); i++){
+        int f = counts[i]; // Frequency of current char
+        
+        // Iterate over previous number of segments (j)
+        for(int j = 0; j <= used_len; j++){
+            // Iterate over how many segments (k) we split the current char into
+            for(int k = 1; k <= f; k++){
+                
+                ll ways = dp[i-1][j];
+                
+                // Ways to split frequency f into k parts
+                ways = (ways * nCr[f-1][k-1]) % MOD;
+                
+                // Ways to interleave k new parts into j existing parts
+                ways = (ways * nCr[j+k][k]) % MOD;
+
+                // Update DP state
+                dp[i][j+k] = (dp[i][j+k] + ways) % MOD;
+            }
+        }
+        used_len += f;
+    }
+
+    // 4. Inclusion-Exclusion
+    ll answer = 0;
+    int groups = counts.size() - 1;
+    
+    for(int i = 0; i <= n; i++){
+        // Apply PIE based on parity
+        if((i + n) % 2 == 0)
+            answer = (answer + dp[groups][i]) % MOD;
+        else
+            answer = (answer - dp[groups][i] + MOD) % MOD;
+    }
+
+    cout << answer << '\n';
+    return 0;
+}
+```
+
+<LanguageSection>
+<CPPSection>
+
+```py
+import sys
+
+MOD = 10**9 + 7
+MAX_N = 5005
+ALPH = 26
+
+s = sys.stdin.readline().strip()
+n = len(s)
+
+# frequency of each character
+freq = [0] * ALPH
+for c in s:
+    freq[ord(c) - ord('a')] += 1
+
+# keep only non-zero frequencies
+counts = [0]
+for f in freq:
+    if f:
+        counts.append(f)
+
+# precompute binomial coefficients (Pascal triangle)
+nCr = [[0] * (n + 1) for _ in range(n + 1)]
+nCr[0][0] = 1
+
+for i in range(1, n + 1):
+    nCr[i][0] = 1
+    for j in range(1, i + 1):
+        nCr[i][j] = (nCr[i - 1][j - 1] + nCr[i - 1][j]) % MOD
+
+# dp[i][j] = ways using first i characters to form length j
+dp = [[0] * (n + 1) for _ in range(len(counts))]
+dp[0][0] = 1
+
+used_len = 0
+
+# process each character group
+for i in range(1, len(counts)):
+    f = counts[i]
+
+    for j in range(used_len + 1):
+        if dp[i - 1][j] == 0:
+            continue
+
+        for k in range(1, f + 1):
+            ways = (
+                dp[i - 1][j]
+                * nCr[f - 1][k - 1] % MOD
+                * nCr[j + k][k] % MOD
+            )
+            dp[i][j + k] = (dp[i][j + k] + ways) % MOD
+
+    used_len += f
+
+# inclusion-exclusion by parity
+answer = 0
+groups = len(counts) - 1
+
+for i in range(n + 1):
+    if (i + n) % 2 == 0:
+        answer = (answer + dp[groups][i]) % MOD
+    else:
+        answer = (answer - dp[groups][i]) % MOD
+
+print(answer % MOD)
+```
