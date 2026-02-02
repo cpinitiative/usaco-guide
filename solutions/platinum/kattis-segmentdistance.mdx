@@ -36,7 +36,7 @@ Now consider two segments, $S_1$ and $S_2$. We can visualize the relationship be
 
 Now it $P_2$ == $P_3$, then the line segments are intersecting. So shortest distance is 0. (Trivial case)
 
-Otherwise keep repeating the process till you get to a point where $P_n$, $P_{n+1}$, $P_{n+2}$, $P_{n+3}$ where $P_n$ == $P_{n+2}$ and $P_{n+1}$ == $P_{n+3}$. This means that we have reached the last loop. Here we can observe that **always** atleast one of $P_n$ or $P_n+1$ is an endpoint of a line segment.  
+Otherwise keep repeating the process till you get to a point where $P_n$, $P_{n+1}$, $P_{n+2}$, $P_{n+3}$ where $P_n$ == $P_{n+2}$ and $P_{n+1}$ == $P_{n+3}$. This means that we have reached the last loop. Here we can observe that **always** atleast one of $P_n$ or $P_n+1$ is an endpoint of a line segment.
 
 Therefore, to solve the problem for any case, we simply calculate the minimum of four values:
 1.  $\text{dist}(A, S_2)$
@@ -75,107 +75,101 @@ using T = double;
 
 // BeginCodeSnip{Point Class}
 struct Point {
-    T x, y;
-    Point operator-(const Point& other) const { return {x - other.x, y - other.y}; }
-    Point operator+(const Point& other) const { return {x + other.x, y + other.y}; }
-    Point operator*(T s) const { return {x * s, y * s}; }
-    
-    T dot(const Point& other) const { return x * other.x + y * other.y; }
-    T cross(const Point& other) const { return x * other.y - y * other.x; }
-    
-    double dist() const { return hypot(x, y); }
-    double dist2() const { return x * x + y * y; } // Squared length
+	T x, y;
+	Point operator-(const Point &other) const { return {x - other.x, y - other.y}; }
+	Point operator+(const Point &other) const { return {x + other.x, y + other.y}; }
+	Point operator*(T s) const { return {x * s, y * s}; }
 
-    // Check if vector is effectively zero (for degenerate segments)
-    bool isZero() const { return abs(x) < 1e-9 && abs(y) < 1e-9; }
+	T dot(const Point &other) const { return x * other.x + y * other.y; }
+	T cross(const Point &other) const { return x * other.y - y * other.x; }
+
+	double dist() const { return hypot(x, y); }
+	double dist2() const { return x * x + y * y; }  // Squared length
+
+	// Check if vector is effectively zero (for degenerate segments)
+	bool isZero() const { return abs(x) < 1e-9 && abs(y) < 1e-9; }
 };
 // EndCodeSnip
 
 // BeginCodeSnip{Intersection}
 // Checks if segment AB intersects segment CD using parametric equations
 bool intersect(Point a, Point b, Point c, Point d) {
-    Point ab = b - a;
-    Point cd = d - c;
-    
-    // Cross product of direction vectors
-    double cross_prod = cd.cross(ab);
+	Point ab = b - a;
+	Point cd = d - c;
 
-    // If parallel or collinear, we treat as NO intersection for this problem.
-    // The point-to-segment distance checks will handle the collinear cases.
-    if (abs(cross_prod) < 1e-9) return false;
+	// Cross product of direction vectors
+	double cross_prod = cd.cross(ab);
 
-    // Solve for parameters t (for AB) and u (for CD) using the accepted logic
-    // We derive these from the linear system: a + t*ab = c + u*cd
-    double t = (ab.x * (c.y - a.y) + ab.y * (a.x - c.x)) / cross_prod;
-    double u = (cd.x * (a.y - c.y) + cd.y * (c.x - a.x)) / -cross_prod;
+	// If parallel or collinear, we treat as NO intersection for this problem.
+	// The point-to-segment distance checks will handle the collinear cases.
+	if (abs(cross_prod) < 1e-9) return false;
 
-    // Check if the intersection point lies strictly within both segments
-    return (0.0 <= t && t <= 1.0) && (0.0 <= u && u <= 1.0);
+	// Solve for parameters t (for AB) and u (for CD) using the accepted logic
+	// We derive these from the linear system: a + t*ab = c + u*cd
+	double t = (ab.x * (c.y - a.y) + ab.y * (a.x - c.x)) / cross_prod;
+	double u = (cd.x * (a.y - c.y) + cd.y * (c.x - a.x)) / -cross_prod;
+
+	// Check if the intersection point lies strictly within both segments
+	return (0.0 <= t && t <= 1.0) && (0.0 <= u && u <= 1.0);
 }
 // EndCodeSnip
 
 // BeginCodeSnip{Distance Logic}
 // Minimum distance from point P to segment AB
 double distPointSegment(Point p, Point a, Point b) {
-    Point ab = b - a;
-    
-    // Handle case where segment is just a single point
-    if (ab.isZero()) return (p - a).dist();
+	Point ab = b - a;
 
-    Point ap = p - a;
-    
-    // Project P onto the line containing AB. 
-    // t represents the position of the projection along the vector AB.
-    double t = ap.dot(ab) / ab.dist2();
+	// Handle case where segment is just a single point
+	if (ab.isZero()) return (p - a).dist();
 
-    if (t < 0.0) {
-        // Closest point is A
-        return (p - a).dist();
-    } else if (t > 1.0) {
-        // Closest point is B
-        return (p - b).dist();
-    } else {
-        // Closest point is the projection itself
-        Point projection = a + (ab * t);
-        return (p - projection).dist();
-    }
+	Point ap = p - a;
+
+	// Project P onto the line containing AB.
+	// t represents the position of the projection along the vector AB.
+	double t = ap.dot(ab) / ab.dist2();
+
+	if (t < 0.0) {
+		// Closest point is A
+		return (p - a).dist();
+	} else if (t > 1.0) {
+		// Closest point is B
+		return (p - b).dist();
+	} else {
+		// Closest point is the projection itself
+		Point projection = a + (ab * t);
+		return (p - projection).dist();
+	}
 }
 // EndCodeSnip
 
 void solve() {
-    Point a, b, c, d;
-    cin >> a.x >> a.y >> b.x >> b.y >> c.x >> c.y >> d.x >> d.y;
+	Point a, b, c, d;
+	cin >> a.x >> a.y >> b.x >> b.y >> c.x >> c.y >> d.x >> d.y;
 
-    // Case 1: Strict Intersection
-    // If the segments strictly cross, distance is 0.
-    if (intersect(a, b, c, d)) {
-        cout << "0.00\n";
-    } 
-    // Case 2: No Intersection
-    // Includes parallel, collinear-disjoint, and skew cases.
-    // The answer is the minimum distance from any endpoint to the other segment.
-    else {
-        double ans = min({
-            distPointSegment(c, a, b),
-            distPointSegment(d, a, b),
-            distPointSegment(a, c, d),
-            distPointSegment(b, c, d)
-        });
-        cout << ans << "\n";
-    }
+	// Case 1: Strict Intersection
+	// If the segments strictly cross, distance is 0.
+	if (intersect(a, b, c, d)) {
+		cout << "0.00\n";
+	}
+	// Case 2: No Intersection
+	// Includes parallel, collinear-disjoint, and skew cases.
+	// The answer is the minimum distance from any endpoint to the other segment.
+	else {
+		double ans = min({distPointSegment(c, a, b), distPointSegment(d, a, b),
+		                  distPointSegment(a, c, d), distPointSegment(b, c, d)});
+		cout << ans << "\n";
+	}
 }
 
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-    cout << fixed << setprecision(2);
-    
-    int t;
-    cin >> t;
-    while (t--) {
-        solve();
-    }
-    return 0;
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
+	cout << fixed << setprecision(2);
+
+	int t;
+	cin >> t;
+	while (t--) { solve(); }
+	return 0;
 }
 ```
 
