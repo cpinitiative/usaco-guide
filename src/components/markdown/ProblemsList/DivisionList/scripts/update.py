@@ -14,7 +14,6 @@ CONTESTS_SHORT = ["dec", "jan", "feb", "open"]
 CONTESTS_LONG = ["December", "January", "February", "US Open"]
 YEAR_OFFSETS = [0, 1, 1, 1]
 
-
 def parse(url: str) -> BeautifulSoup:
 	req = urllib.request.Request(url, headers={"User-Agent": "Magic Browser"})
 	page = urllib.request.urlopen(req)
@@ -111,7 +110,7 @@ def gen_contest_to_points(
 	return score_data
 
 
-def add_div_to_probs(div_to_probs: dict, url: str):
+def add_div_to_probs(div_to_probs: dict, url: str, newFormat: bool):
 	logger.debug(url)
 	soup = parse(url).find("div", class_="panel")
 	contest = ""
@@ -138,13 +137,22 @@ def add_div_to_probs(div_to_probs: dict, url: str):
 			ID = res[0][res[0].rfind("=") + 1 :]
 
 			def strip_contest(word: str):
-				"""Input: USACO 2022 December Contest, Platinum
-				Output: 2022 December"""
-				word = word[len("USACO ") :]
-				ind = word.rfind(" Contest")
-				if ind == -1:
-					return word[:4] + " US Open"
-				return word[:ind]
+				if newFormat:
+					# Input: USACO 2026 First Contest, Platinum
+					# Output: 2026 First Contest
+
+					word = word[len("USACO "):]
+					word = word.split(",")[0]   # remove ", Platinum"
+					return word
+				else:
+					# Input: USACO 2022 December Contest, Platinum
+					# Output: 2022 December
+
+					word = word[len("USACO ") :]
+					ind = word.rfind(" Contest")
+					if ind == -1:
+						return word[:4] + " US Open"
+					return word[:ind]
 
 			div_to_probs[get_division(contest)].append(
 				[ID, strip_contest(contest), title]
@@ -163,13 +171,26 @@ def gen_div_to_probs(
 	if div_to_probs is None:
 		div_to_probs = {division: [] for division in DIVISIONS}
 	for season in seasons:
-		for contest, offset in zip(CONTESTS_SHORT, YEAR_OFFSETS):
-			try:
-				add_div_to_probs(
-					div_to_probs, f"{INDEX_PREFIX}{contest}{season+offset}results"
-				)
-			except ValueError:
-				break
+		if season >= 26:
+			for index in range(4):
+				url = f"{INDEX_PREFIX}season{season}contest{index+1}results"
+
+				try:
+					add_div_to_probs(
+						div_to_probs, url, True
+					)
+				except ValueError:
+					break
+		else:
+			for contest, offset in zip(CONTESTS_SHORT, YEAR_OFFSETS):
+				url = f"{INDEX_PREFIX}{contest}{season+offset}results"
+
+				try:
+					add_div_to_probs(
+						div_to_probs, url, False
+					)
+				except ValueError:
+					break
 	for division in DIVISIONS:
 		div_to_probs[division] = sorted(
 			[*set([tuple(x) for x in div_to_probs[division]])], key=lambda x: int(x[0])
@@ -195,19 +216,19 @@ def gen_id_to_sol(seasons: Iterable[int], id_to_sol: Optional[dict] = None) -> d
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--start_season", "-s", type=int, default=22)
-parser.add_argument("--end_season", "-e", type=int, default=22)
+parser.add_argument("--start_season", "-s", type=int, default=26)
+parser.add_argument("--end_season", "-e", type=int, default=26)
 parser.add_argument("--inplace", "-i", type=int, default=1)
+
 args = parser.parse_args()
 seasons = list(range(args.start_season, args.end_season + 1))
 logger.info(f"seasons = {seasons}")
 
-# Get the directory path of the currently executing script
+# Get the directory path of the currently executing script, and set it at cwd
 current_dir = os.path.dirname(os.path.abspath(__file__))
-# Change the current working directory to the directory of the script
 os.chdir(current_dir)
 
-for f in [gen_contest_to_points]:
+for f in [gen_div_to_probs]: # add gen_contest_to_points to brackets for points
 	print(f.__name__)
 	init = None
 	if args.inplace:
