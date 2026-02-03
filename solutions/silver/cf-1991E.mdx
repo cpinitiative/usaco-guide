@@ -5,14 +5,15 @@ title: Coloring Game
 author: Arnav Gokhale
 ---
 
+[Official Analysis (C++)](https://codeforces.com/blog/entry/132014)
+
 ## Explanation
 
-First, we determine if the graph is bipartite.
+Firstly, determine if the graph is bipartite.
 
-If the graph is not bipartite, the Alice can choose the same two colors everytime. Since the graph is not bipartite, it is impossible for Bob to color the graph with only two colors such that no connected nodes have the same color. Thus, if the graph is not bipartite, Alice will always win.
+If the graph is not bipartite, Alice can choose the same two colors every time. Since the graph is not bipartite, it is impossible for Bob to color the graph with only two colors such that no connected nodes have the same color. Thus, Alice will always win.
 
-If the graph is bipartite, it can be split up into two groups, such that there are no edges connecting nodes within the groups. Bob can then choose to color nodes in group 1 with color 1 and nodes in group 2 with color 2. Once one group is fully complete, Bob can use either color 3 or the original color on the unfinished group, which ensures that nodes in different groups will always have different colors. Therefore, if the graph is bipartite then Bob will always win.
-
+If the graph is bipartite, it can be split up into two groups, such that there are no edges connecting nodes within groups. Bob can assign nodes in group 1 with color 1, and nodes in group 2 with color 2. Once one group is fully complete, Bob can use either color 3 or the original color on the unfinished group, which ensures that nodes in different groups will always have different colors. Therefore, if the graph is bipartite, Bob will always win.
 
 ## Implementation
 
@@ -21,73 +22,76 @@ If the graph is bipartite, it can be split up into two groups, such that there a
 <LanguageSection>
 
 <CPPSection>
-```
+
+```cpp
 #include <bits/stdc++.h>
 using namespace std;
-using namespace std;
-
 void solve() {
-    int n, m;
-    cin >> n >> m;
-    vector<vector<int>> a(n);
+    int n, m; cin >> n >> m;
+    vector<vector<int>> adj(n);
 
     for (int i = 0; i < m; i++) {
-        int u, v;
-		cin >> u >> v;
-        a[--u].push_back(--v);
-        a[v].push_back(u);
+        int u, v; cin >> u >> v;
+        adj[--u].push_back(--v);
+        adj[v].push_back(u);
     }
 
     vector<int> cl(n);
-    vector<int> tws, ows;
-
-    bool f = false;
+    vector<int> twos, ones;
+    
+    bool notBipartite = false;
     auto dfs = [&] (auto&& self, int nd, int c) -> void {
         cl[nd] = c;
-        if (c == 1) ows.push_back(nd);
-        else tws.push_back(nd);
+        if (c == 1) ones.push_back(nd);
+        else twos.push_back(nd);
 
-        for (int x : a[nd]) {
+        for (int x : adj[nd]) {
             if (cl[x] == 0) self(self, x, 3 - c);
             else if (cl[x] == c) {
-                f = true;
-				return;
+                notBipartite = true; 
+                return;
             }
         }
     };
 
     dfs(dfs, 0, 1);
 
-    if (f) {
+    if (notBipartite) {
         int gb;
-        cout << "Alice" << endl;
+        cout << "Alice" << '\n';
         for (int i = 0; i < n; i++) {
-            cout << 1 << " " << 2 << endl;
+            cout << 1 << " " << 2 << '\n';
             cin >> gb >> gb;
         }
     } else {
-        cout << "Bob" << endl;
-        int c1, c2, pt1 = 0, pt2 = 0;
+        cout << "Bob" << '\n';
+        int color1, color2, pt1 = 0, pt2 = 0;
 
         for (int i = 0; i < n; i++) {
-            cin >> c1 >> c2;
-            if (c1 == 1 and c2 == 2 or c2 == 1 and c1 == 2) {
-                if (pt1 != ows.size()) {
-                    cout << ows[pt1] + 1 << " " << 1 << endl; pt1++;
+            cin >> color1 >> color2;
+            if (color1 == 1 and color2 == 2 or color2 == 1 and color1 == 2) {
+                if (pt1 != ones.size()) {
+                    cout << ones[pt1] + 1 << " " << 1 << '\n'; 
+                    pt1++;
                 } else {
-                    cout << tws[pt2] + 1 << " " << 2 << endl; pt2++;
+                    cout << twos[pt2] + 1 << " " << 2 << '\n'; 
+                    pt2++;
                 }
-            } else if (c1 == 2 or c2 == 2) {
-                if (pt2 != tws.size()) {
-                    cout << tws[pt2] + 1 << " " << 2 << endl; pt2++;
+            } else if (color1 == 2 or color2 == 2) {
+                if (pt2 != twos.size()) {
+                    cout << twos[pt2] + 1 << " " << 2 << '\n'; 
+                    pt2++;
                 } else {
-                    cout << ows[pt1] + 1 << " " << 3 << endl; pt1++;
+                    cout << ones[pt1] + 1 << " " << 3 << '\n'; 
+                    pt1++;
                 }
             } else {
-                if (pt1 != ows.size()) {
-                    cout << ows[pt1] + 1 << " " << 1 << endl; pt1++;
+                if (pt1 != ones.size()) {
+                    cout << ones[pt1] + 1 << " " << 1 << '\n';
+                     pt1++;
                 } else {
-                    cout << tws[pt2] + 1 << " " << 3 << endl; pt2++;
+                    cout << twos[pt2] + 1 << " " << 3 << '\n'; 
+                    pt2++;
                 }
             }
         }
@@ -105,7 +109,8 @@ int main() {
 </CPPSection>
 
 <PySection>
-```
+
+```py
 import sys
 input = sys.stdin.readline
 
@@ -121,64 +126,71 @@ def solve():
         adj[v].append(u)
 
     color = [0] * n
-    ows = []
-    tws = []
-    bad = False
+    ones = []
+    twos = []
+    notBipartite = False
 
-    def dfs(u, c):
-        nonlocal fail
-        color[u] = c
-        if c == 1:
-            ows.append(u)
-        else:
-            tws.append(u)
+    stack = [0]
+    color[0] = 1
+    ones.append(0)
 
+    while stack and not notBipartite:
+        u = stack.pop()
         for v in adj[u]:
             if color[v] == 0:
-                dfs(v, 3 - c)
-                if fail:
-                    return
-            elif color[v] == c:
-                fail = True
-                return
+                color[v] = 3 - color[u]
+                if color[v] == 1:
+                    ones.append(v)
+                else:
+                    twos.append(v)
+                stack.append(v)
+            elif color[v] == color[u]:
+                notBipartite = True
+                break
 
-    dfs(0, 1)
-
-    if bad:
+    if notBipartite:
         sys.stdout.write("Alice\n")
+        sys.stdout.flush()
+
         for _ in range(n):
             sys.stdout.write("1 2\n")
-            input()  # consume judge response
+            sys.stdout.flush()
+            input() 
     else:
         sys.stdout.write("Bob\n")
-        pt1 = pt2 = 0
+        sys.stdout.flush()
+
+        pt1 = 0
+        pt2 = 0
 
         for _ in range(n):
             c1, c2 = map(int, input().split())
 
             if (c1 == 1 and c2 == 2) or (c1 == 2 and c2 == 1):
-                if pt1 < len(ows):
-                    sys.stdout.write(f"{ows[pt1] + 1} 1\n")
+                if pt1 < len(ones):
+                    sys.stdout.write(f"{ones[pt1] + 1} 1\n")
                     pt1 += 1
                 else:
-                    sys.stdout.write(f"{tws[pt2] + 1} 2\n")
+                    sys.stdout.write(f"{twos[pt2] + 1} 2\n")
                     pt2 += 1
 
             elif c1 == 2 or c2 == 2:
-                if pt2 < len(tws):
-                    sys.stdout.write(f"{tws[pt2] + 1} 2\n")
+                if pt2 < len(twos):
+                    sys.stdout.write(f"{twos[pt2] + 1} 2\n")
                     pt2 += 1
                 else:
-                    sys.stdout.write(f"{ows[pt1] + 1} 3\n")
+                    sys.stdout.write(f"{ones[pt1] + 1} 3\n")
                     pt1 += 1
 
             else:
-                if pt1 < len(ows):
-                    sys.stdout.write(f"{ows[pt1] + 1} 1\n")
+                if pt1 < len(ones):
+                    sys.stdout.write(f"{ones[pt1] + 1} 1\n")
                     pt1 += 1
                 else:
-                    sys.stdout.write(f"{tws[pt2] + 1} 3\n")
+                    sys.stdout.write(f"{twos[pt2] + 1} 3\n")
                     pt2 += 1
+
+            sys.stdout.flush()
 
 
 def main():
@@ -189,12 +201,14 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 ```
 
 </PySection>
 
 <JavaSection>
-```
+```java
+
 import java.io.*;
 import java.util.*;
 
@@ -210,7 +224,7 @@ public class Main {
         if (c == 1) ows.add(nd);
         else tws.add(nd);
 
-        for (int x : a[nd]) {
+        for (int x : adj[nd]) {
             if (cl[x] == 0) {
                 dfs(x, 3 - c);
                 if (f) return;
@@ -233,14 +247,14 @@ public class Main {
             int m = Integer.parseInt(st.nextToken());
 
             a = new ArrayList[n];
-            for (int i = 0; i < n; i++) a[i] = new ArrayList<>();
+            for (int i = 0; i < n; i++) adj[i] = new ArrayList<>();
 
             for (int i = 0; i < m; i++) {
                 st = new StringTokenizer(br.readLine());
                 int u = Integer.parseInt(st.nextToken()) - 1;
                 int v = Integer.parseInt(st.nextToken()) - 1;
-                a[u].add(v);
-                a[v].add(u);
+                adj[u].add(v);
+                adj[v].add(u);
             }
 
             cl = new int[n];
