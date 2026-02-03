@@ -38,7 +38,7 @@ In a grid, you can reach the same cell  by going Right  Down or Down  Right. Wit
 
 Inside the `while` loop, we look at every coordinate  in our current frontier. We check its neighbors:
 
-* Down 
+* Down
 * Right
 
 We find the smallest character available across **all** possible neighbors of the **entire** frontier. This ensures we are making the best move for the path as a whole.
@@ -53,11 +53,11 @@ We then swap `cur` with `next` and repeat until we can no longer move.
 
 ## Implementation
 
-**Time Complexity**: 
+**Time Complexity**:
 
 Since each cell in the  grid is added to the frontier and processed at most once due to the `used` array, the total number of operations is proportional to the number of cells in the grid.
 
-**Space Complexity**: 
+**Space Complexity**:
 
 This is required to store the grid and the `used` array.
 
@@ -69,7 +69,7 @@ This is required to store the grid and the `used` array.
 using namespace std;
 
 int main() {
-	//Fast IO
+	// Fast IO
 	ios::sync_with_stdio(false);
 	cin.tie(nullptr);
 
@@ -94,7 +94,7 @@ int main() {
 	const int dy[2] = {0, 1};
 
 	while (true) {
-		char best = '{'; // Sentinel value (ASCII '{' comes after 'z' i.e., '{'>'z')
+		char best = '{';  // Sentinel value (ASCII '{' comes after 'z' i.e., '{'>'z')
 
 		// 1. Identify the smallest possible character for the next step
 		for (auto [x, y] : cur) {
@@ -116,20 +116,19 @@ int main() {
 				int nx = x + dx[d], ny = y + dy[d];
 				// Only add to frontier if it matches the best char and isn't used
 				if (nx < n && ny < n && !used[nx][ny] && v[nx][ny] == best) {
-					used[nx][ny] = 1; 
+					used[nx][ny] = 1;
 					next.emplace_back(nx, ny);
 				}
 			}
 		}
 
 		ans.push_back(best);
-		cur.swap(next); // Move to the next step
+		cur.swap(next);  // Move to the next step
 	}
 
 	cout << ans << '\n';
 	return 0;
 }
-
 ```
 
 </CPPSection>
