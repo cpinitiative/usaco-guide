@@ -14,6 +14,7 @@ CONTESTS_SHORT = ["dec", "jan", "feb", "open"]
 CONTESTS_LONG = ["December", "January", "February", "US Open"]
 YEAR_OFFSETS = [0, 1, 1, 1]
 
+
 def parse(url: str) -> BeautifulSoup:
 	req = urllib.request.Request(url, headers={"User-Agent": "Magic Browser"})
 	page = urllib.request.urlopen(req)
@@ -141,8 +142,8 @@ def add_div_to_probs(div_to_probs: dict, url: str, newFormat: bool):
 					# Input: USACO 2026 First Contest, Platinum
 					# Output: 2026 First Contest
 
-					word = word[len("USACO "):]
-					word = word.split(",")[0]   # remove ", Platinum"
+					word = word[len("USACO ") :]
+					word = word.split(",")[0]  # remove ", Platinum"
 					return word
 				else:
 					# Input: USACO 2022 December Contest, Platinum
@@ -176,9 +177,7 @@ def gen_div_to_probs(
 				url = f"{INDEX_PREFIX}season{season}contest{index+1}results"
 
 				try:
-					add_div_to_probs(
-						div_to_probs, url, True
-					)
+					add_div_to_probs(div_to_probs, url, True)
 				except ValueError:
 					break
 		else:
@@ -186,9 +185,7 @@ def gen_div_to_probs(
 				url = f"{INDEX_PREFIX}{contest}{season+offset}results"
 
 				try:
-					add_div_to_probs(
-						div_to_probs, url, False
-					)
+					add_div_to_probs(div_to_probs, url, False)
 				except ValueError:
 					break
 	for division in DIVISIONS:
@@ -228,7 +225,7 @@ logger.info(f"seasons = {seasons}")
 current_dir = os.path.dirname(os.path.abspath(__file__))
 os.chdir(current_dir)
 
-for f in [gen_div_to_probs]: # add gen_contest_to_points to brackets for points
+for f in [gen_div_to_probs]:  # add gen_contest_to_points to brackets for points
 	print(f.__name__)
 	init = None
 	if args.inplace:
