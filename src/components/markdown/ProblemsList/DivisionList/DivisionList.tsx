@@ -24,8 +24,8 @@ const divisions = ['Bronze', 'Silver', 'Gold', 'Platinum'];
 const getSeasons = () => {
   const res: string[] = [];
   for (let i = startYear; i <= endYear; ++i) {
-    if (endYear >= 2026) res.push(`${i}`);
-    else res.push(`${i - 1} - ${i}`);
+    if (i >= 2026) res.push(`${i}`);
+    else res.push(`${i} - ${i + 1}`);
   }
   res.push(allYears);
   res.reverse();
