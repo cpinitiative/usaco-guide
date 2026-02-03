@@ -25,7 +25,7 @@ const getSeasons = () => {
   const res: string[] = [];
   for (let i = startYear; i <= endYear; ++i) {
     if (i >= 2026) res.push(`${i}`);
-    else res.push(`${i-1} - ${i}`);
+    else res.push(`${i - 1} - ${i}`);
   }
   res.push(allYears);
   res.reverse();
