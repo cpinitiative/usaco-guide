@@ -1,0 +1,136 @@
+---
+id: cses-3359
+source: CSES
+title: Minimal Grid Path
+author: Kiruthees G
+---
+
+This code solves the problem of finding the **lexicographically smallest path** in an  grid. You start at the top-left corner  and want to reach the bottom-right corner  by only moving **right** or **down**.
+
+---
+
+## Approach & Intuition
+
+When we want the lexicographically smallest string, we must make the "best" (smallest) choice at every possible step. This is a **Greedy** approach. However, a simple greedy choice (just looking at the immediate neighbors of one cell) isn't enough because multiple paths might offer the same smallest character.
+
+To handle this, we use a **Frontier-based BFS**. Instead of tracking just one path, we track a "frontier" of all grid positions that currently share the same best prefix string.
+
+### The Core Logic
+
+1. **Identify the Frontier**: Start with the frontier containing only $$(0,0)$$
+2. **Find the Best Move**: Look at all possible moves (Right/Down) from **every** cell currently in our frontier.
+3. **Filter**: Out of all those possible next characters, find the minimum one (e.g., 'a' is better than 'b').
+4. **Update the Frontier**: The new frontier will consist only of the cells that contain that "best" character.
+5. **Deduplicate**: If two different cells in the current frontier can move to the same next cell, we only add that next cell to our list once.
+
+---
+
+## Step-by-Step Explanation
+
+### 1. Initialization
+
+We store our starting character in the answer string and put the starting coordinates  into our `cur` (current frontier) vector. We also initialize a `used` 2D array.
+
+**Why do we need `used`?**
+In a grid, you can reach the same cell  by going Right  Down or Down  Right. Without a `used` array, the same cell would be added to the frontier multiple times, causing the algorithm to slow down significantly (exponentially) in large grids.
+
+### 2. Finding the Global Best Character
+
+Inside the `while` loop, we look at every coordinate  in our current frontier. We check its neighbors:
+
+* Down: 
+* Right: 
+
+We find the smallest character available across **all** possible neighbors of the **entire** frontier. This ensures we are making the best move for the path as a whole.
+
+### 3. Expanding the Frontier
+
+Once we know the smallest character (stored in `best`), we iterate through the frontier again. Any neighbor that matches this `best` character and hasn't been visited yet is added to the `next` frontier.
+
+We then swap `cur` with `next` and repeat until we can no longer move.
+
+---
+
+## Implementation
+
+**Time Complexity**: 
+
+Since each cell in the  grid is added to the frontier and processed at most once due to the `used` array, the total number of operations is proportional to the number of cells in the grid.
+
+**Space Complexity**: 
+
+This is required to store the grid and the `used` array.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	// Optimize I/O operations
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
+
+	int n;
+	cin >> n;
+	vector<string> v(n);
+	for (int i = 0; i < n; ++i) cin >> v[i];
+
+	// Frontier of positions that have formed the current best prefix
+	vector<pair<int, int>> cur;
+	cur.emplace_back(0, 0);
+
+	// 'used' prevents processing the same cell multiple times (Deduplication)
+	vector<vector<unsigned char>> used(n, vector<unsigned char>(n, 0));
+	used[0][0] = 1;
+
+	string ans;
+	ans.push_back(v[0][0]);
+
+	// Possible moves: Down (1, 0) and Right (0, 1)
+	const int dx[2] = {1, 0};
+	const int dy[2] = {0, 1};
+
+	while (true) {
+		char best = '{'; // Sentinel value (ASCII '{' comes after 'z')
+
+		// 1. Identify the smallest possible character for the next step
+		for (auto [x, y] : cur) {
+			for (int d = 0; d < 2; ++d) {
+				int nx = x + dx[d], ny = y + dy[d];
+				if (nx < n && ny < n && !used[nx][ny]) {
+					if (v[nx][ny] < best) best = v[nx][ny];
+				}
+			}
+		}
+
+		// If no neighbors are found, we have reached the end
+		if (best == '{') break;
+
+		// 2. Build the next frontier using only the 'best' character
+		vector<pair<int, int>> next;
+		for (auto [x, y] : cur) {
+			for (int d = 0; d < 2; ++d) {
+				int nx = x + dx[d], ny = y + dy[d];
+				// Only add to frontier if it matches the best char and isn't used
+				if (nx < n && ny < n && !used[nx][ny] && v[nx][ny] == best) {
+					used[nx][ny] = 1; 
+					next.emplace_back(nx, ny);
+				}
+			}
+		}
+
+		ans.push_back(best);
+		cur.swap(next); // Move to the next step
+	}
+
+	cout << ans << '\n';
+	return 0;
+}
+
+```
+
+</CPPSection>
+</LanguageSection>
