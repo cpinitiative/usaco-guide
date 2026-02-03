@@ -13,7 +13,7 @@ This code solves the problem of finding the **lexicographically smallest path** 
 
 When we want the lexicographically smallest string, we must make the "best" (smallest) choice at every possible step. This is a **Greedy** approach. However, a simple greedy choice (just looking at the immediate neighbors of one cell) isn't enough because multiple paths might offer the same smallest character.
 
-To handle this, we use a **Frontier-based BFS**. Instead of tracking just one path, we track a "frontier" of all grid positions that currently share the same best prefix string.
+To handle this, we use a **Frontier-based BFS**. Instead of tracking just one path, we track a "frontier" of *all grid positions* that currently share the *same best prefix* string.
 
 ### The Core Logic
 
@@ -38,8 +38,8 @@ In a grid, you can reach the same cell  by going Right  Down or Down  Right. Wit
 
 Inside the `while` loop, we look at every coordinate  in our current frontier. We check its neighbors:
 
-* Down: 
-* Right: 
+* Down 
+* Right
 
 We find the smallest character available across **all** possible neighbors of the **entire** frontier. This ensures we are making the best move for the path as a whole.
 
@@ -69,7 +69,7 @@ This is required to store the grid and the `used` array.
 using namespace std;
 
 int main() {
-	// Optimize I/O operations
+	//Fast IO
 	ios::sync_with_stdio(false);
 	cin.tie(nullptr);
 
@@ -94,7 +94,7 @@ int main() {
 	const int dy[2] = {0, 1};
 
 	while (true) {
-		char best = '{'; // Sentinel value (ASCII '{' comes after 'z')
+		char best = '{'; // Sentinel value (ASCII '{' comes after 'z' i.e., '{'>'z')
 
 		// 1. Identify the smallest possible character for the next step
 		for (auto [x, y] : cur) {
