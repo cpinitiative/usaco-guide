@@ -78,9 +78,9 @@ const DivisionButton = ({
   }, []);
 
   let newFormatOption = option;
-  if (str.includes(" - ")){
+  if (str.includes(' - ')) {
     // check if the end year >= 2026 so we can make it from "2025 - 2026" to just "2026". Doing this inside of getSeasons leads to a crash?
-    const afterDash = str.split(" - ")[1];
+    const afterDash = str.split(' - ')[1];
     const year = parseInt(afterDash, 10);
 
     if (Number.isInteger(year) && year >= 2026) {
