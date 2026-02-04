@@ -77,20 +77,6 @@ const DivisionButton = ({
     return () => document.removeEventListener('mousedown', handleClick);
   }, []);
 
-  const newFormat = (option: string) => {
-    if (!option.startsWith('A') && option.includes(' - ')) {
-      // check if the end year >= 2026 so we can make it from "2025 - 2026" to just "2026".
-      // Doing this inside of getSeasons leads to a crash?
-      const afterDash = option.split(' - ')[1];
-      const year = parseInt(afterDash, 10);
-
-      if (Number.isInteger(year) && year >= 2026) {
-        return String(year);
-      }
-    }
-    return option;
-  };
-
   return (
     <div className="relative inline-block text-left" ref={ref}>
       <div>
@@ -109,7 +95,7 @@ const DivisionButton = ({
             {getCircle(state)}
 
             <span className={`flex-1 ${getCircle(state) ? 'ml-2' : ''}`}>
-              {newFormat(state)}
+              {state}
             </span>
 
             <svg
@@ -153,14 +139,14 @@ const DivisionButton = ({
             >
               {options.map(option => (
                 <button
-                  key={newFormat(option)}
+                  key={option}
                   onClick={() => handleSelect(option)}
                   className="dark:text-dark-high-emphasis dark:hover:text-dark-high-emphasis flex w-full items-center px-3 py-2 text-left text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:bg-gray-100 focus:text-gray-900 focus:outline-hidden dark:hover:bg-gray-700"
                   role="menuitem"
                 >
                   {getCircle(option)}
                   <span className={`flex-1 ${getCircle(option) ? 'ml-2' : ''}`}>
-                    {newFormat(option)}
+                    {option}
                   </span>
                 </button>
               ))}
