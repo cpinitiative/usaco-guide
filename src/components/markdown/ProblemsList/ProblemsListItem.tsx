@@ -59,10 +59,10 @@ export default function ProblemsListItem(
     if (parseInt(parts[0]) >= 26) {
       // season26contest1results
       let index = 0;
-      if (parts[1] == 'first') index = 1;
-      else if (parts[1] == 'second') index = 2;
-      else if (parts[1] == 'third') index = 3;
-      else if (parts[1] == 'fourth') index = 4; // unsure of how US Open will be formatted yet, for now just use fourth + 4.
+      if (parts[1] == 'First') index = 1;
+      else if (parts[1] == 'Second') index = 2;
+      else if (parts[1] == 'Third') index = 3;
+      else if (parts[1] == 'Fourth') index = 4; // unsure of how US Open will be formatted yet, for now just use fourth + 4.
 
       resultsUrl = `http://www.usaco.org/index.php?page=season${parts[0]}contest${index}results`;
     } else {
