@@ -24,8 +24,7 @@ const divisions = ['Bronze', 'Silver', 'Gold', 'Platinum'];
 const getSeasons = () => {
   const res: string[] = [];
   for (let i = startYear; i <= endYear; ++i) {
-    if (i >= 2026) res.push(`${i}`);
-    else res.push(`${i - 1} - ${i}`);
+    res.push(`${i - 1} - ${i}`);
   }
   res.push(allYears);
   res.reverse();
@@ -77,6 +76,17 @@ const DivisionButton = ({
     document.addEventListener('mousedown', handleClick);
     return () => document.removeEventListener('mousedown', handleClick);
   }, []);
+
+  let newFormatOption = option;
+  if (str.includes(" - ")){
+    // check if the end year >= 2026 so we can make it from "2025 - 2026" to just "2026". Doing this inside of getSeasons leads to a crash?
+    const afterDash = str.split(" - ")[1];
+    const year = parseInt(afterDash, 10);
+
+    if (Number.isInteger(year) && year >= 2026) {
+      newFormatOption = String(year);
+    }
+  }
 
   return (
     <div className="relative inline-block text-left" ref={ref}>
@@ -140,14 +150,14 @@ const DivisionButton = ({
             >
               {options.map(option => (
                 <button
-                  key={option}
+                  key={newFormatOption}
                   onClick={() => handleSelect(option)}
                   className="dark:text-dark-high-emphasis dark:hover:text-dark-high-emphasis flex w-full items-center px-3 py-2 text-left text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:bg-gray-100 focus:text-gray-900 focus:outline-hidden dark:hover:bg-gray-700"
                   role="menuitem"
                 >
                   {getCircle(option)}
                   <span className={`flex-1 ${getCircle(option) ? 'ml-2' : ''}`}>
-                    {option}
+                    {newFormatOption}
                   </span>
                 </button>
               ))}
