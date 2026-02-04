@@ -1,0 +1,124 @@
+## Approach & Intuition
+
+The goal is to partition a set of $N$ rabbits into any number of disjoint groups to maximize the total compatibility score.
+
+### The Core Idea: Subsets of Subsets
+
+Instead of deciding which group each rabbit belongs to one by one, we think about the problem in terms of **masks**.
+
+1. **Bitmask Representation**: An integer `m` between $0$ and $2^N - 1$ represents a subset of rabbits. If the $i$-th bit is set ($1$), Rabbit $i$ is included in the subset.
+2. **Precalculation**: Before running the main DP, we calculate the internal compatibility score for every possible subset as if they formed a single group.
+3. **Recursive Partitioning**: To find the max score for a mask `m`, we can pick any submask `s` to be one group, and then add it to the best possible score for the remaining rabbits (`m ^ s`).
+
+---
+
+## Step-by-Step Explanation
+
+### 1. Precalculating Subset Scores
+
+For every mask $m$, we calculate `sc[m]`, which is the sum of $a_{i,j}$ for all pairs $(i,j)$ such that both &i& and &j& are in the mask.
+
+* If a mask has fewer than 2 rabbits, its score is 0.
+* Otherwise, we iterate through all pairs within the mask.
+
+### 2. The Dynamic Programming State
+
+We define our DP state $$dp[mask]$$ as: The maximum score Taro can earn by partitioning the rabbits represented by `mask` into any number of groups.
+Base Case:  (No rabbits, no points).
+
+### 3. The Transition 
+
+To compute $dp[m]$, we iterate through all possible submasks $s$ of $m$. We treat $s$ as **one individual group** and combine its precalculated score with the optimal solution for the rest of the mask ($m \setminus s$).
+
+$$
+dp[m] = \max_{s \subseteq m} \{ dp[m \setminus s] + sc[s] \}
+$$
+
+#### Efficiency Note: Iterating Over Submasks
+
+The code uses a specific bitwise trick to iterate over submasks:
+`for(int s = m; s; s = (s - 1) & m)`
+This loop visits every submask of $m$ exactly once. While a naive approach (iterating all  $2^N$ masks for every mask) would be $O(4^N)$, this specific submask iteration reduces the total complexity to $O(3^N)$.
+
+---
+
+## Implementation
+
+**Time Complexity**: $\mathcal{O}(3^N + N^2 \cdot 2^N)$
+
+The precalculation takes $\mathcal{O}(N^2 \cdot 2^N)$, and the DP transitions take $\mathcal{O}(3^N)$. For $N=16$, $3^{16} \approx 4.3 \times 10^7$ which comfortably fits within a 1-second time limit.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+// Use long long as scores can exceed the range of a 32-bit integer
+#define int long long
+
+/**
+ * Solve function using Bitmask DP
+ * n: Number of rabbits
+ * a: Compatibility matrix
+ */
+int solve(int n, vector<vector<int>>& a) {
+    int N = 1 << n; // Total number of possible masks (2^n)
+
+    // sc[m]: Internal score if all rabbits in mask 'm' form ONE group
+    // dp[m]: Max score possible for partition of rabbits in mask 'm'
+    vector<int> sc(N), dp(N, 0);
+
+    // 1. Precalculate the score for every possible standalone group
+    for (int m = 0; m < N; m++) {
+        int s = 0;
+        for (int i = 0; i < n; i++) {
+            if (m & (1 << i)) { // If rabbit i is in the mask
+                for (int j = i + 1; j < n; j++) {
+                    if (m & (1 << j)) { // If rabbit j is also in the mask
+                        s += a[i][j];
+                    }
+                }
+            }
+        }
+        sc[m] = s;
+    }
+
+    // 2. Main DP Transition
+    for (int m = 1; m < N; m++) {
+        /* Iterate through all submasks 's' of the current mask 'm'.
+           s represents the "last group" being formed.
+           m ^ s represents the remaining rabbits.
+        */
+        for (int s = m; s > 0; s = (s - 1) & m) {
+            dp[m] = max(dp[m], dp[m ^ s] + sc[s]);
+        }
+    }
+
+    return dp[N - 1]; // Return max score for the mask representing all rabbits
+}
+
+signed main() {
+    // Optimize standard I/O
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int n;
+    if (!(cin >> n)) return 0;
+
+    vector<vector<int>> a(n, vector<int>(n));
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            cin >> a[i][j];
+        }
+    }
+
+    cout << solve(n, a) << endl;
+    return 0;
+}
+
+```
+
+</CPPSection>
+</LanguageSection>
