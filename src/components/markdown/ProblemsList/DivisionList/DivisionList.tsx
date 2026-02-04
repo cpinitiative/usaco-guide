@@ -89,7 +89,7 @@ const DivisionButton = ({
       }
     }
     return option;
-  }
+  };
 
   return (
     <div className="relative inline-block text-left" ref={ref}>
