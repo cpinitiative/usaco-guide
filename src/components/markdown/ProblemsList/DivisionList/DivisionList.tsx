@@ -76,7 +76,7 @@ const DivisionButton = ({
     document.addEventListener('mousedown', handleClick);
     return () => document.removeEventListener('mousedown', handleClick);
   }, []);
-  
+
   const newFormat = (option: string) => {
     if (option.includes(' - ')) {
       // check if the end year >= 2026 so we can make it from "2025 - 2026" to just "2026".
