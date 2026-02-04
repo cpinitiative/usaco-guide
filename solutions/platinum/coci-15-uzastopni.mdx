@@ -1,0 +1,135 @@
+---
+id: coci-15-uzastopni
+source: coci
+title: 2015 - Uzastopni
+author: Ashok Narayan
+---
+
+## Explanation
+
+The core of this problem is  verifying the "consecutive set" constraint across a tree structure. Since every invited group must be a connected subtree rooted at Petar, we can frame the problem as finding all possible **continuous joke ranges** $[L, R]$ that can be formed by a valid subtree.
+
+### The Core Logic
+The "trick" is to recognize that for any employee $u$ to satisfy the consecutive rule, their own joke $V_u$ must act as the bridge between the various joke ranges provided by their subordinates. 
+
+If employee $u$ tells joke 5, they can only form a valid range if their subordinates collectively provide ranges that perfectly "touch" 5—for instance, one subordinate providing $[3, 4]$ and another providing $[6, 7]$. Together, they create the gapless set $[3, 7]$. 
+
+
+
+### Algorithm
+This is a classic *DP on Trees* kind of problem.
+
+To solve this optimally, we use a **Post-order DFS with Bitset optimization**:
+
+1.  **Bottom-Up Processing:** We travel to the leaves and work upward. For each node $u$, we identify all possible $[L, R]$ ranges that the subtree rooted at $u$ can cover.
+2.  **Range Merging:** We treat the subordinates' valid ranges as building blocks. We need to determine if a subset of these blocks can be combined to form a larger, contiguous range that includes the supervisor's joke.
+3.  **Bitset Reachability:** We use **bitsets** to handle this merging process. Each bitset $dp[u][l]$ stores which values $r$ are "reachable" starting from joke type $l$. By using bitwise `OR` operations, we can instantly check if adding a subordinate's range $[l_x, r_x]$ extends our current range. This is significantly faster than nested loops and fits perfectly within the joke type constraints (1–100).
+4.  **Validation:** Before finalizing a range for node $u$, we ensure it contains $V_u$ and does not violate the uniqueness rule by checking that no subordinate range already included $V_u$.
+
+
+
+Once the DFS reaches Petar (node 1), the total number of unique ranges stored at his level represents all the different sets of jokes he can see at his party.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N \cdot V^2 / w)$, where $w$ represents the bitset optimization (here, 64).
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MAXN = 10005;
+const int MAXV = 102; // Max joke type is 100
+
+int N;
+int joke_type[MAXN];
+vector<int> adj[MAXN];
+vector<pair<int, int>> valid_ranges[MAXN];
+
+// dp[l][r] indicates if a consecutive range [l, r] can be formed 
+// using subtrees of the current node's children.
+
+bitset<MAXV> dp[MAXV]; 
+
+// BeginCodeSnip{DFS with DP on Trees}
+void solve_dfs(int u, int p) {
+    // 1. Recurse to leaves first
+    for (int v_node : adj[u]) {
+        if (v_node != p) solve_dfs(v_node, u);
+    }
+
+    // 2. Collect all valid [l, r] ranges from children
+    // child_ranges[l] stores all possible 'r' such that [l, r] is valid
+    vector<int> child_ranges[MAXV];
+    for (int v_node : adj[u]) {
+        if (v_node == p) continue;
+        for (auto &range : valid_ranges[v_node]) {
+            child_ranges[range.first].push_back(range.second);
+        }
+    }
+
+    // 3. Reset DP for the current node
+    for (int i = 0; i < MAXV; i++) dp[i].reset();
+
+    // 4. Build ranges from right to left
+    int my_joke = joke_type[u];
+    
+    for (int l = 100; l >= 1; l--) {
+        if (l == my_joke) {
+            // If the range starts at my joke, try to extend it with 
+            // any ranges that start at my_joke + 1
+            dp[l] |= dp[l + 1];
+            dp[l].set(l);
+        } else {
+            // Try to merge child ranges [l, r]
+            for (int r : child_ranges[l]) {
+                // Rule: A child range cannot contain the current supervisor's joke
+                if (r < my_joke || l > my_joke) {
+                    dp[l] |= dp[r + 1];
+                    dp[l].set(r);
+                }
+            }
+        }
+
+        // 5. Store valid ranges that include the current node's joke
+        if (l <= my_joke) {
+            for (int r = my_joke; r <= 100; r++) {
+                if (dp[l][r]) {
+                    valid_ranges[u].push_back({l, r});
+                }
+            }
+        }
+    }
+}
+
+// EndCodeSnip
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    cin >> N;
+    for (int i = 1; i <= N; i++) cin >> joke_type[i];
+
+    for (int i = 0; i < N - 1; i++) {
+        int u, v;
+        cin >> u >> v;
+        adj[u].push_back(v);
+        adj[v].push_back(u);
+    }
+
+    solve_dfs(1, 0);
+
+    // The answer is the number of valid [L, R] ranges possible at the root
+    cout << valid_ranges[1].size() << endl;
+
+    return 0;
+}
+```
+
+</CPPSection>
+</LanguageSection>
