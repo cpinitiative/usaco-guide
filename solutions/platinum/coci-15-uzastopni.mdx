@@ -34,9 +34,9 @@ For a node `x`, after processing all children:
 1. Split the children into two groups:
    - `lo`: children whose joke type is **smaller** than `joke[x]`
    - `hi`: children whose joke type is **larger** than `joke[x]`
-2. To extend to the **left**, process `lo` in decreasing order of joke type.  
+2. To extend to the **left**, process `lo` in decreasing order of joke type.
    If the current left expansion of `x` overlaps with the right expansion of a child, we can safely merge them.
-3. To extend to the **right**, process `hi` in increasing order of joke type.  
+3. To extend to the **right**, process `hi` in increasing order of joke type.
    If the current right expansion of `x` overlaps with the left expansion of a child, we merge them as well.
 
 The ordering guarantees that:
@@ -89,23 +89,17 @@ void dfs(int x) {
 	rans[x][joke[x] + 1] = 1;
 
 	// Extend to smaller joke types
-	sort(lo.begin(), lo.end(),
-	     [&](int a, int b) { return joke[a] > joke[b]; });
+	sort(lo.begin(), lo.end(), [&](int a, int b) { return joke[a] > joke[b]; });
 
 	for (int y : lo) {
-		if ((lans[x] & rans[y]).any()) {
-			lans[x] |= lans[y];
-		}
+		if ((lans[x] & rans[y]).any()) { lans[x] |= lans[y]; }
 	}
 
 	// Extend to larger joke types
-	sort(hi.begin(), hi.end(),
-	     [&](int a, int b) { return joke[a] < joke[b]; });
+	sort(hi.begin(), hi.end(), [&](int a, int b) { return joke[a] < joke[b]; });
 
 	for (int y : hi) {
-		if ((rans[x] & lans[y]).any()) {
-			rans[x] |= rans[y];
-		}
+		if ((rans[x] & lans[y]).any()) { rans[x] |= rans[y]; }
 	}
 }
 // EndCodeSnip
@@ -120,14 +114,15 @@ int main() {
 	joke.resize(N);
 	for (int i = 0; i < N; i++) {
 		cin >> joke[i];
-		--joke[i]; // make joke types 0-based
+		--joke[i];  // make joke types 0-based
 	}
 
 	child.assign(N, {});
 	for (int i = 0; i < N - 1; i++) {
 		int a, b;
 		cin >> a >> b;
-		--a; --b;
+		--a;
+		--b;
 		child[a].push_back(b);
 	}
 
