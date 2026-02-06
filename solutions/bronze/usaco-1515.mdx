@@ -1,5 +1,4 @@
 ---
-
 id: usaco-1515
 source: 2025 US Open Bronze
 title: Hoof Paper Scissors Minus One
@@ -10,21 +9,21 @@ author: Aarav Sethi
 
 ## Explanation
 
-To solve this, we need to check how many possible pairs of gestures exist in which one of the two gestures can beat both of Elsie’s left and right gestures.
+In order to solve this, we need to check how many possible pairs of gestures exist in which one of the two gestures can beat both of Elsie's left and right gestures.
 
 ### Testcases 1 to 6
 
-This can be solved by first creating a 2D array to determine if gesture $i$ can be beaten by gesture $j$ from the pyramid provided in the input, as shown below:
-<LanguageSection>
+This can be solved by first creating a 2D array to tell if gesture $i$ can be beaten by gesture $j$ that will be derived from the "win pyramid" provided in the input.
 
+<LanguageSection>
 <CPPSection>
+
 ```cpp
 vector<vector<bool>> beatenBy(n, vector<bool>(n));
 for (int i = 0; i < n; i++) {
 	for (int j = 0; j <= i; j++) {
 		char state;
 		cin >> state;
-
 		if (state == 'L') {
 			beatenBy[i][j] = true;
 		} else if (state == 'W') {
@@ -33,14 +32,16 @@ for (int i = 0; i < n; i++) {
 	}
 }
 ```
+
 </CPPSection>
+</LanguageSection>
+
+
+With this, a $\mathcal{O}(N^2)$ brute-force for each game will work. Here is an example:
+
 <LanguageSection>
-
-With this, a $\mathcal{O}(N^2)$ brute-force for every game will work. Here is an example:
-
-<LanguageSection>
-
 <CPPSection>
+
 ```cpp
 for (int myL = 0; myL < n; myL++) {
 	for (int myR = 0; myR < n; myR++) {
@@ -50,8 +51,8 @@ for (int myL = 0; myL < n; myL++) {
 	}
 }
 ```
-</CPPSection>
 
+</CPPSection>
 </LanguageSection>
 
 ### Testcases 7 to 12
@@ -63,29 +64,28 @@ To optimize the computation per game from $\mathcal{O}(N^2)$ to $\mathcal{O}(N)$
 You can notice that if `myL` is already able to beat both `l` and `r`, you do not need to bother with trying every `myR`.
 
 <LanguageSection>
-
 <CPPSection>
-``cpp
+
+```cpp
 for (int myL = 0; myL < n; myL++) {
- if (beatenBy[l][myL] && beatenBy[r][myL]) {
-  possible += n;
- } else {
-  for (int myR = 0; myR < n; myR++) {
-   if (beatenBy[l][myR] && beatenBy[r][myR]) possible++;
-  }
- }
+	if (beatenBy[l][myL] && beatenBy[r][myL]) {
+		possible += n;
+	} else {
+		for (int myR = 0; myR < n; myR++) {
+			if (beatenBy[l][myR] && beatenBy[r][myR]) possible++;
+		}
+	}
 }
 ```
-</CPPSection>
 
+</CPPSection>
 </LanguageSection>
 
 #### Optimization 2:
 
-If you let $x$ be how many gestures out of $N$ can beat both of Elsie’s `l` and `r`, then we can assume that this check:
+If you let $x$ be how many gestures out of $N$ can beat both of Elsie's `l` and `r`, then we can assume that this check:
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
@@ -94,17 +94,19 @@ for (int myL = 0; myL < n; myL++) {
 ```
 
 </CPPSection>
-
 </LanguageSection>
-
 is equivalent to
+
 ```
 possible += x * n;
 ```
+
 and the else clause runs $n-x$ times, and adds $x$ possibilities.
+
 ```
 possible += x * (n - x)
 ```
+
 With this, we can derive that the formula for winning pairs is $xn + x(n-x)$. Directly implementing
 this formula allows us to solve each game in $\mathcal{O}(N)$ time.
 
@@ -115,6 +117,7 @@ this formula allows us to solve each game in $\mathcal{O}(N)$ time.
 <LanguageSection>
 
 <CPPSection>
+
 ```cpp
 #include <bits/stdc++.h>
 
@@ -155,6 +158,7 @@ int main() {
 	}
 }
 ```
+
 </CPPSection>
 
 </LanguageSection>
