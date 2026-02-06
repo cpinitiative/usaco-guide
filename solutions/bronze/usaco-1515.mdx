@@ -20,18 +20,18 @@ This can be solved by first creating a 2D array to determine if gesture $i$ can 
 <CPPSection>
 ```cpp
 vector<vector<bool>> beatenBy(n, vector<bool>(n));
- for (int i = 0; i < n; i++) {
-  for (int j = 0; j <= i; j++) {
-   char state;
-   cin >> state;
+for (int i = 0; i < n; i++) {
+	for (int j = 0; j <= i; j++) {
+		char state;
+		cin >> state;
 
-   if (state == 'L') {
-    beatenBy[i][j] = true;
-   } else if (state == 'W') {
-    beatenBy[j][i] = true;
-   }
-  }
- }
+		if (state == 'L') {
+			beatenBy[i][j] = true;
+		} else if (state == 'W') {
+			beatenBy[j][i] = true;
+		}
+	}
+}
 ```
 </CPPSection>
 <LanguageSection>
@@ -43,11 +43,11 @@ With this, a $\mathcal{O}(N^2)$ brute-force for every game will work. Here is an
 <CPPSection>
 ```cpp
 for (int myL = 0; myL < n; myL++) {
- for (int myR = 0; myR < n; myR++) {
-  if ((beatenBy[l][myL] && beatenBy[r][myL]) ||
-      (beatenBy[l][myR] && beatenBy[r][myR]))
-   possible++;
- }
+	for (int myR = 0; myR < n; myR++) {
+		if ((beatenBy[l][myL] && beatenBy[r][myL]) ||
+		    (beatenBy[l][myR] && beatenBy[r][myR]))
+			possible++;
+	}
 }
 ```
 </CPPSection>
@@ -90,7 +90,7 @@ If you let $x$ be how many gestures out of $N$ can beat both of Elsie’s `l` an
 
 ```cpp
 for (int myL = 0; myL < n; myL++) {
- if (beatenBy[l][myL] && beatenBy[r][myL]) possible += n;
+	if (beatenBy[l][myL] && beatenBy[r][myL]) possible += n;
 ```
 
 </CPPSection>
@@ -121,38 +121,38 @@ this formula allows us to solve each game in $\mathcal{O}(N)$ time.
 using namespace std;
 
 int main() {
- int n, m;
- cin >> n >> m;
+	int n, m;
+	cin >> n >> m;
 
- // Read the win triangle
- vector<vector<bool>> beatenBy(n, vector<bool>(n));
- for (int i = 0; i < n; i++) {
-  for (int j = 0; j <= i; j++) {
-   char state;
-   cin >> state;
-   if (state == 'L') {
-    beatenBy[i][j] = true;
-   } else if (state == 'W') {
-    beatenBy[j][i] = true;
-   }
-  }
- }
+	// Read the win triangle
+	vector<vector<bool>> beatenBy(n, vector<bool>(n));
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j <= i; j++) {
+			char state;
+			cin >> state;
+			if (state == 'L') {
+				beatenBy[i][j] = true;
+			} else if (state == 'W') {
+				beatenBy[j][i] = true;
+			}
+		}
+	}
 
- // Read Elsie's moves
- for (int i = 0; i < m; i++) {
-  int l, r;
-  cin >> l >> r;
-  l--;
-  r--;
+	// Read Elsie's moves
+	for (int i = 0; i < m; i++) {
+		int l, r;
+		cin >> l >> r;
+		l--;
+		r--;
 
-  int x = 0;
-  for (int a = 0; a < n; a++) {
-   if (beatenBy[l][a] && beatenBy[r][a]) x++;
-  }
+		int x = 0;
+		for (int a = 0; a < n; a++) {
+			if (beatenBy[l][a] && beatenBy[r][a]) x++;
+		}
 
-  int possible = x * n + x * (n - x);  // equation is explained above
-  cout << possible << "\n";
- }
+		int possible = x * n + x * (n - x);  // equation is explained above
+		cout << possible << "\n";
+	}
 }
 ```
 </CPPSection>
