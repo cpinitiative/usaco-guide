@@ -1,9 +1,56 @@
-Use this code to solve it. Ford Fulkerson!
 ---
+id: cses-1711
+source: cses
+title: Distinct Routes
+author: Ashok Narayan
+---
+
+## Explanation
+
+The core of the question lies on the constraint that you can use every teleporter only ONCE. How many times can we start from 1 and reach n with this constraint.
+
+### Why simple greedy fails
+
+Taking the shortest path *currently available* in every iteration from 1 to n is NOT optimal. To understand this, assume you take the shortest path in first day. Now on next day you figure out that 2 more paths have lost connection since 2 edges were used in the path taken on first day. This induces net LOSS in number of days you can sustain
+
+### Ford–Fulkerson
+
+Ford–Fulkerson is an algorithm used to compute the **maximum flow** from a source to a sink in a directed graph where each edge has a capacity.  
+It repeatedly finds a path from source to sink that still has unused capacity (called an *augmenting path*) and pushes flow through it until no such path exists.
+
+If all edge capacities are integers, Ford–Fulkerson guarantees that the total flow found is maximal.
+
+---
+
+### Solution
+
+Each day corresponds to a path from room `1` to room `n`.  
+Since every teleporter can be used **only once**, no two paths may share the same teleporter.
+
+We model the game as a flow network:
+- Rooms are nodes
+- Teleporters are directed edges with **capacity = 1**
+- Room `1` is the source, room `n` is the sink
+
+Now the problem reduces to finding the **maximum number of edge-disjoint paths** from `1` to `n`, which is exactly the **maximum flow** in this network.
+
+Using Ford–Fulkerson, each successful augmenting path represents one playable day.  
+When no more augmenting paths exist, the total flow equals the maximum number of days you can play.  
+The used edges can then be traced back to print the actual routes.
+
+---
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(F \cdot (N + M))$,  
+where $F$ is the maximum flow (number of days).
+
+
+
 <LanguageSection>
 <CPPSection>
 
 ```cpp
+
 
 #include <bits/stdc++.h>
 using namespace std;
@@ -11,7 +58,7 @@ using namespace std;
 int n, m, vis[505], cap[505][505], og[505][505];
 vector<int> adj[505];
  
-// Standard DFS to find path
+// BeginCodeSnip{DFS with Flow}
 bool dfs(int u) {
     vis[u] = 1;
     if (u == n) return true;
@@ -26,6 +73,8 @@ bool dfs(int u) {
     }
     return false;
 }
+
+// EndCodeSnip
  
 int main() {
     ios::sync_with_stdio(0); cin.tie(0);
@@ -65,6 +114,7 @@ int main() {
         cout << "\n";
     }
 }
+
 ```
 
 </CPPSection>
