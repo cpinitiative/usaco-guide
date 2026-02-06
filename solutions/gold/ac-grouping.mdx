@@ -1,13 +1,11 @@
 ---
 id: ac-grouping
-source: Atcoder
+source: AtCoder
 title: Grouping
 author: Kiruthees G
 ---
 
 ### The Core logic
-
-Instead of deciding which group each rabbit belongs to one by one, we think about the problem in terms of **masks**.
 
 1. **Bitmask Representation**: An integer `m` between $0$ and $2^N - 1$ represents a subset of rabbits. If the $i$-th bit is set ($1$), Rabbit $i$ is included in the subset.
 2. **Precalculation**: Before running the main DP, we calculate the internal compatibility score for every possible subset as if they formed a single group.
@@ -19,29 +17,23 @@ Instead of deciding which group each rabbit belongs to one by one, we think abou
 
 ### 1. Precalculating Subset Scores
 
-For every mask $m$, we calculate `sc[m]`, which is the sum of $a_{i,j}$ for all pairs $(i,j)$ such that both &i& and &j& are in the mask.
+For every mask $m$, we calculate `sc[m]`, which is the sum of $a_{i,j}$ for all pairs $(i,j)$ such that both &i& and &j& are in the mask. $(i<j)$
 
 * If a mask has fewer than 2 rabbits, its score is 0.
 * Otherwise, we iterate through all pairs within the mask.
 
-### 2. The Dynamic Programming State
+### 2. The DP State
 
 We define our DP state $$dp[mask]$$ as: The maximum score Taro can earn by partitioning the rabbits represented by `mask` into any number of groups.
 Base Case:  (No rabbits, no points).
 
 ### 3. The Transition 
 
-To compute $dp[m]$, we iterate through all possible submasks $s$ of $m$. We treat $s$ as **one individual group** and combine its precalculated score with the optimal solution for the rest of the mask ($m \setminus s$).
+To compute $dp[m]$, we iterate through all possible submasks $s$ of $m$. We treat $s$ as **one individual group** and combine its precalculated score with the optimal solution for the rest of the mask ($m \char`\^ s$).
 
 $$
-dp[m] = \max_{s \subseteq m} \{ dp[m \setminus s] + sc[s] \}
+dp[m] = \max_{s \subseteq m} \{ dp[m \char`\^ s] + sc[s] \}
 $$
-
-#### Efficiency Note: Iterating Over Submasks
-
-The code uses a specific bitwise trick to iterate over submasks:
-`for(int s = m; s; s = (s - 1) & m)`
-This loop visits every submask of $m$ exactly once. While a naive approach (iterating all  $2^N$ masks for every mask) would be $O(4^N)$, this specific submask iteration reduces the total complexity to $O(3^N)$.
 
 ---
 
@@ -49,7 +41,7 @@ This loop visits every submask of $m$ exactly once. While a naive approach (iter
 
 **Time Complexity**: $\mathcal{O}(3^N + N^2 \cdot 2^N)$
 
-The precalculation takes $\mathcal{O}(N^2 \cdot 2^N)$, and the DP transitions take $\mathcal{O}(3^N)$. For $N=16$, $3^{16} \approx 4.3 \times 10^7$ which comfortably fits within a 1-second time limit.
+The precalculation takes $\mathcal{O}(N^2 \cdot 2^N)$, and the DP transitions take $\mathcal{O}(3^N)$. 
 
 <LanguageSection>
 <CPPSection>
@@ -107,8 +99,7 @@ signed main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
 
-    int n;
-    if (!(cin >> n)) return 0;
+    int n; cin>>n;
 
     vector<vector<int>> a(n, vector<int>(n));
     for (int i = 0; i < n; i++) {
