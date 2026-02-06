@@ -1,0 +1,120 @@
+---
+id: cses-1711
+source: CSES
+title: Distinct Routes
+author: Ashok Narayan
+---
+
+## Explanation
+
+The core of the question lies on the constraint that you can use every teleporter only ONCE. How many times can we start from `1` and reach `n` with this constraint.
+
+---
+
+### Ford–Fulkerson
+
+Ford–Fulkerson is an algorithm used to compute the **maximum flow** from a source to a sink in a directed graph where each edge has a capacity.
+It repeatedly finds a path from source to sink that still has unused capacity (called an *augmenting path*) and pushes flow through it until no such path exists.
+
+If all edge capacities are integers, Ford–Fulkerson guarantees that the total flow found is maximal.
+
+---
+
+### Solution
+
+Each day corresponds to a path from room `1` to room `n`.
+Since every teleporter can be used **only once**, no two paths may share the same teleporter.
+
+We model the game as a flow network:
+- Rooms are nodes
+- Teleporters are directed edges with **capacity = 1**
+- Room `1` is the source, room `n` is the sink
+
+Now the problem reduces to finding the **maximum number of edge-disjoint paths** from `1` to `n`, which is exactly the **maximum flow** in this network.
+
+Using Ford–Fulkerson, each successful augmenting path represents one playable day.
+When no more augmenting paths exist, the total flow equals the maximum number of days you can play.
+The used edges can then be traced back to print the actual routes.
+
+---
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(F \cdot (N + M))$,
+where $F$ is the maximum flow (number of days).
+
+
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int n, m, vis[505], cap[505][505], og[505][505];
+vector<int> adj[505];
+
+// BeginCodeSnip{DFS with Flow}
+bool dfs(int u) {
+	vis[u] = 1;
+	if (u == n) return true;
+	for (int v : adj[u]) {
+		if (cap[u][v] && !vis[v]) {  // If capacity exists and not visited
+			if (dfs(v)) {
+				cap[u][v]--;  // Reduce forward capacity
+				cap[v][u]++;  // Increase backward capacity
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+// EndCodeSnip
+
+int main() {
+	ios::sync_with_stdio(0);
+	cin.tie(0);
+	cin >> n >> m;
+	for (int i = 0; i < m; i++) {
+		int u, v;
+		cin >> u >> v;
+		adj[u].push_back(v);
+		adj[v].push_back(u);       // Add reverse edge for flow algorithm
+		cap[u][v] = og[u][v] = 1;  // Mark capacity and original edge
+	}
+
+	int k = 0;
+	while (true) {
+		memset(vis, 0, sizeof(vis));
+		if (!dfs(1)) break;
+		k++;
+	}
+
+	cout << k << "\n";
+	while (k--) {
+		vector<int> path;
+		int curr = 1;
+		while (true) {
+			path.push_back(curr);
+			if (curr == n) break;
+			for (int v : adj[curr]) {
+				// If edge existed originally AND is currently used (capacity 0)
+				if (og[curr][v] && cap[curr][v] == 0) {
+					og[curr][v] = 0;  // Mark as printed so we don't reuse
+					curr = v;
+					break;
+				}
+			}
+		}
+		cout << path.size() << "\n";
+		for (int p : path) cout << p << " ";
+		cout << "\n";
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>
