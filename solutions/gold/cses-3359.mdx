@@ -5,15 +5,11 @@ title: Minimal Grid Path
 author: Kiruthees G
 ---
 
-This code solves the problem of finding the **lexicographically smallest path** in an  grid. You start at the top-left corner  and want to reach the bottom-right corner  by only moving **right** or **down**.
-
----
-
 ## Approach & Intuition
 
 When we want the lexicographically smallest string, we must make the "best" (smallest) choice at every possible step. This is a **Greedy** approach. However, a simple greedy choice (just looking at the immediate neighbors of one cell) isn't enough because multiple paths might offer the same smallest character.
 
-To handle this, we use a **Frontier-based BFS**. Instead of tracking just one path, we track a "frontier" of *all grid positions* that currently share the *same best prefix* string.
+To handle this, we use a **Frontier-based BFS**. Instead of tracking just one path, we track a "frontier" of **all grid positions** that currently share the **same best prefix** string.
 
 ### The Core Logic
 
@@ -25,7 +21,7 @@ To handle this, we use a **Frontier-based BFS**. Instead of tracking just one pa
 
 ---
 
-## Step-by-Step Explanation
+## Explanation
 
 ### 1. Initialization
 
@@ -54,12 +50,6 @@ We then swap `cur` with `next` and repeat until we can no longer move.
 ## Implementation
 
 **Time Complexity:** $\mathcal{O}(n^2)$
-
-Since each cell in the  grid is added to the frontier and processed at most once due to the `used` array, the total number of operations is proportional to the number of cells in the grid.
-
-**Space Complexity:** $\mathcal{O}(n^2)$
-
-This is required to store the grid and the `used` array.
 
 <LanguageSection>
 <CPPSection>
