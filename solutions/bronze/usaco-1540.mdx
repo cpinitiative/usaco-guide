@@ -19,13 +19,18 @@ If $N$ is odd, no solution exists. Square strings have even length, so odd $N*3$
 
 ### Observation 3:
 
-$M \le 3$ is always true, because a valid solution is always just grouping all the C’s, O’s, and W’s.
+$M \le 3$ is always true, because a valid solution is always just grouping all the `C`'s, `O`'s, and `W`'s.
 
 ### Observation 4:
 
-It can be proven that $M \le 2$ is also always true, and this is because any two possible substrings (COW, OWC, WCO) will all have a substring of length 2 in common and one letter left over.
+$M \le 2$ is always true. This is because any two possible substrings (`COW`, `OWC`, `WCO`) will all have a substring atleast 2 characters long in common.
 
-Because of this, you can keep one pointer at the start, and one in the center of the string. And for every $3$ length substring, take the common 2-letter substring of both pointers into operation 2, and the remainder goes to operation 1.
+For example `COW` and `OWC` have `OW` in common, or `WCO` and `OWC` have `WC` in common.
+
+Using this property a greedy algorithm can be made by:
+- split the string in half
+- for both halfs of the string, read all $N/2$ components left to right.
+- add the largest common substring of both components into operation 1, and the remainder into operation 2.
 
 ### Examples:
 
@@ -133,7 +138,6 @@ So for this operation 1 would be `CCOWCCCOWC` and operation 2 would be `OWOWOWOW
 
 ```cpp
 #include <bits/stdc++.h>
-#define NEWLINE (t == 0 ? "" : "\n")  // this exists to avoid trailing newlines
 
 using namespace std;
 
@@ -153,7 +157,7 @@ int main() {
 
 		// Odd size, no solution
 		if (n % 2 != 0) {
-			cout << -1 << NEWLINE;
+			cout << -1 << "\n";
 			continue;
 		}
 
@@ -199,7 +203,7 @@ int main() {
 		for (int i = 0; i < n * 3; i++) {
 			cout << ans[i] << (i + 1 == n * 3 ? "" : " ");
 		}
-		cout << NEWLINE;
+		cout << "\n";
 	}
 }
 ```
