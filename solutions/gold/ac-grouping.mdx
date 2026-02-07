@@ -17,7 +17,7 @@ author: Kiruthees G
 
 ### 1. Precalculating Subset Scores
 
-For every mask $m$, we calculate `sc[m]`, which is the sum of $a_{i,j}$ for all pairs $(i,j)$ such that both &i& and &j& are in the mask. $(i<j)$
+For every mask $m$, we calculate `sc[m]`, which is the sum of $a_{i,j}$ for all pairs $(i,j)$ such that both $i$ and $j$ are in the mask. $(i<j)$
 
 * If a mask has fewer than 2 rabbits, its score is 0.
 * Otherwise, we iterate through all pairs within the mask.
@@ -25,6 +25,7 @@ For every mask $m$, we calculate `sc[m]`, which is the sum of $a_{i,j}$ for all 
 ### 2. The DP State
 
 We define our DP state $$dp[mask]$$ as: The maximum score Taro can earn by partitioning the rabbits represented by `mask` into any number of groups.
+
 Base Case:  (No rabbits, no points).
 
 ### 3. The Transition 
@@ -49,8 +50,6 @@ The precalculation takes $\mathcal{O}(N^2 \cdot 2^N)$, and the DP transitions ta
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
-
-// Use long long as scores can exceed the range of a 32-bit integer
 #define int long long
 
 /**
@@ -99,7 +98,8 @@ signed main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
 
-    int n; cin>>n;
+    int n;
+    cin>>n;
 
     vector<vector<int>> a(n, vector<int>(n));
     for (int i = 0; i < n; i++) {
