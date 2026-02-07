@@ -17,7 +17,7 @@ import { DivisionProblemInfo } from './DivisionProblemInfo';
 import idToSol from './id_to_sol.json';
 
 const startYear = 2016;
-const endYear = 2025; // manually increment this for a new season
+const endYear = 2026; // manually increment this for a new season
 const allYears = `All (${startYear - 1} - ${endYear})`;
 const divisions = ['Bronze', 'Silver', 'Gold', 'Platinum'];
 
