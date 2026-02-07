@@ -38,65 +38,52 @@ void solve() {
 		adj[v].push_back(u);
 	}
 
-	vector<int> cl(n);
-	vector<int> twos, ones;
+    vector<int> c(n, -1);
+    c[0] = 0;
 
 	bool notBipartite = false;
-	auto dfs = [&](auto &&self, int nd, int c) -> void {
-		cl[nd] = c;
-		if (c == 1) ones.push_back(nd);
-		else twos.push_back(nd);
-
+	auto dfs = [&](auto &&self, int nd) -> void {
+		
 		for (int x : adj[nd]) {
-			if (cl[x] == 0) self(self, x, 3 - c);
-			else if (cl[x] == c) {
+			if (c[x] == -1) {
+                c[x] = !c[nd];
+                self(self, x);
+            } else if (c[x] == c[nd]) {
 				notBipartite = true;
 				return;
 			}
 		}
 	};
 
-	dfs(dfs, 0, 1);
+	dfs(dfs, 0);
 
 	if (notBipartite) {
 		int gb;
-		cout << "Alice" << '\n';
+		cout << "Alice" << endl;
 		for (int i = 0; i < n; i++) {
-			cout << 1 << " " << 2 << '\n';
+			cout << 1 << " " << 2 << endl;
 			cin >> gb >> gb;
 		}
 	} else {
-		cout << "Bob" << '\n';
-		int color1, color2, pt1 = 0, pt2 = 0;
+		cout << "Bob" << endl;
+        array<vector<int>, 2> g;
+        for (int i = 0; i < n; i++) {
+            g[c[i]].push_back(i);
+        }
 
-		for (int i = 0; i < n; i++) {
-			cin >> color1 >> color2;
-			if (color1 == 1 and color2 == 2 or color2 == 1 and color1 == 2) {
-				if (pt1 != ones.size()) {
-					cout << ones[pt1] + 1 << " " << 1 << '\n';
-					pt1++;
-				} else {
-					cout << twos[pt2] + 1 << " " << 2 << '\n';
-					pt2++;
-				}
-			} else if (color1 == 2 or color2 == 2) {
-				if (pt2 != twos.size()) {
-					cout << twos[pt2] + 1 << " " << 2 << '\n';
-					pt2++;
-				} else {
-					cout << ones[pt1] + 1 << " " << 3 << '\n';
-					pt1++;
-				}
-			} else {
-				if (pt1 != ones.size()) {
-					cout << ones[pt1] + 1 << " " << 1 << '\n';
-					pt1++;
-				} else {
-					cout << twos[pt2] + 1 << " " << 3 << '\n';
-					pt2++;
-				}
-			}
-		}
+        for (int i = 0; i < n; i++) {
+            int a, b;
+            cin >> a >> b;
+            a--, b--;
+            if (a > b) { swap(a, b); }
+            if (g[a].size()) {
+                cout << g[a].back() + 1 << " " << a + 1 << endl;
+                g[a].pop_back();
+            } else {
+                cout << g[!a].back() + 1 << " " << b + 1 << endl;
+                g[!a].pop_back();
+            }
+        }	
 	}
 }
 
@@ -105,6 +92,7 @@ int main() {
 	cin >> t;
 	while (t--) { solve(); }
 }
+
 ```
 </CPPSection>
 
@@ -113,97 +101,68 @@ int main() {
 ```py
 import sys
 
-input = sys.stdin.readline
-
-
 def solve():
-	n, m = map(int, input().split())
-	adj = [[] for _ in range(n)]
+    data = sys.stdin
+    
+    n, m = map(int, data.readline().split())
+    
+    adj = [[] for _ in range(n)]
+    for _ in range(m):
+        u, v = map(int, data.readline().split())
+        u -= 1
+        v -= 1
+        adj[u].append(v)
+        adj[v].append(u)
 
-	for _ in range(m):
-		u, v = map(int, input().split())
-		u -= 1
-		v -= 1
-		adj[u].append(v)
-		adj[v].append(u)
+    c = [-1] * n
+    c[0] = 0
+    not_bipartite = False
 
-	color = [0] * n
-	ones = []
-	twos = []
-	notBipartite = False
+    stack = [0]
+    while stack and not not_bipartite:
+        nd = stack.pop()
+        for x in adj[nd]:
+            if c[x] == -1:
+                c[x] = c[nd] ^ 1
+                stack.append(x)
+            elif c[x] == c[nd]:
+                not_bipartite = True
+                break
 
-	stack = [0]
-	color[0] = 1
-	ones.append(0)
+    if not_bipartite:
+        print("Alice", flush=True)
+        for _ in range(n):
+            print(1, 2, flush=True)
+            data.readline()
+    else:
+        print("Bob", flush=True)
+        g = [[], []]
+        for i in range(n):
+            g[c[i]].append(i)
 
-	while stack and not notBipartite:
-		u = stack.pop()
-		for v in adj[u]:
-			if color[v] == 0:
-				color[v] = 3 - color[u]
-				if color[v] == 1:
-					ones.append(v)
-				else:
-					twos.append(v)
-				stack.append(v)
-			elif color[v] == color[u]:
-				notBipartite = True
-				break
+        for _ in range(n):
+            a, b = map(int, data.readline().split())
+            a -= 1
+            b -= 1
+            if a > b:
+                a, b = b, a
 
-	if notBipartite:
-		sys.stdout.write("Alice\n")
-		sys.stdout.flush()
-
-		for _ in range(n):
-			sys.stdout.write("1 2\n")
-			sys.stdout.flush()
-			input()
-	else:
-		sys.stdout.write("Bob\n")
-		sys.stdout.flush()
-
-		pt1 = 0
-		pt2 = 0
-
-		for _ in range(n):
-			c1, c2 = map(int, input().split())
-
-			if (c1 == 1 and c2 == 2) or (c1 == 2 and c2 == 1):
-				if pt1 < len(ones):
-					sys.stdout.write(f"{ones[pt1] + 1} 1\n")
-					pt1 += 1
-				else:
-					sys.stdout.write(f"{twos[pt2] + 1} 2\n")
-					pt2 += 1
-
-			elif c1 == 2 or c2 == 2:
-				if pt2 < len(twos):
-					sys.stdout.write(f"{twos[pt2] + 1} 2\n")
-					pt2 += 1
-				else:
-					sys.stdout.write(f"{ones[pt1] + 1} 3\n")
-					pt1 += 1
-
-			else:
-				if pt1 < len(ones):
-					sys.stdout.write(f"{ones[pt1] + 1} 1\n")
-					pt1 += 1
-				else:
-					sys.stdout.write(f"{twos[pt2] + 1} 3\n")
-					pt2 += 1
-
-			sys.stdout.flush()
+            if g[a]:
+                v = g[a].pop()
+                print(v + 1, a + 1, flush=True)
+            else:
+                v = g[a ^ 1].pop()
+                print(v + 1, b + 1, flush=True)
 
 
 def main():
-	t = int(input())
-	while t:
-		solve()
-		t -= 1
-
+    t = int(sys.stdin.readline())
+    for _ in range(t):
+        solve()
 
 if __name__ == "__main__":
-	main()
+    main()
+
 ```
 
 </PySection>
@@ -216,103 +175,101 @@ import java.util.*;
 
 public class Main {
 
-	static List<Integer>[] a;
-	static int[] cl;
-	static List<Integer> tws, ows;
-	static boolean f;
+    static List<Integer>[] adj;
+    static int[] color;
+    static boolean bad;
 
-	static void dfs(int nd, int c) {
-		cl[nd] = c;
-		if (c == 1) ows.add(nd);
-		else tws.add(nd);
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)));
 
-		for (int x : adj[nd]) {
-			if (cl[x] == 0) {
-				dfs(x, 3 - c);
-				if (f) return;
-			} else if (cl[x] == c) {
-				f = true;
-				return;
-			}
-		}
-	}
+        int t = Integer.parseInt(br.readLine().trim());
 
-	public static void main(String[] args) throws Exception {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		StringBuilder out = new StringBuilder();
+        while (t-- > 0) {
+            StringTokenizer st = new StringTokenizer(br.readLine());
+            int n = Integer.parseInt(st.nextToken());
+            int m = Integer.parseInt(st.nextToken());
 
-		int t = Integer.parseInt(br.readLine().trim());
+            adj = new ArrayList[n];
+            for (int i = 0; i < n; i++) adj[i] = new ArrayList<>();
 
-		while (t-- > 0) {
-			StringTokenizer st = new StringTokenizer(br.readLine());
-			int n = Integer.parseInt(st.nextToken());
-			int m = Integer.parseInt(st.nextToken());
+            for (int i = 0; i < m; i++) {
+                st = new StringTokenizer(br.readLine());
+                int u = Integer.parseInt(st.nextToken()) - 1;
+                int v = Integer.parseInt(st.nextToken()) - 1;
+                adj[u].add(v);
+                adj[v].add(u);
+            }
 
-			a = new ArrayList[n];
-			for (int i = 0; i < n; i++) adj[i] = new ArrayList<>();
+            color = new int[n];
+            Arrays.fill(color, -1);
+            color[0] = 0;
+            bad = false;
 
-			for (int i = 0; i < m; i++) {
-				st = new StringTokenizer(br.readLine());
-				int u = Integer.parseInt(st.nextToken()) - 1;
-				int v = Integer.parseInt(st.nextToken()) - 1;
-				adj[u].add(v);
-				adj[v].add(u);
-			}
+            ArrayDeque<Integer> stack = new ArrayDeque<>();
+            stack.push(0);
 
-			cl = new int[n];
-			tws = new ArrayList<>();
-			ows = new ArrayList<>();
-			f = false;
+            while (!stack.isEmpty() && !bad) {
+                int nd = stack.pop();
+                for (int x : adj[nd]) {
+                    if (color[x] == -1) {
+                        color[x] = color[nd] ^ 1;
+                        stack.push(x);
+                    } else if (color[x] == color[nd]) {
+                        bad = true;
+                        break;
+                    }
+                }
+            }
 
-			dfs(0, 1);
+            if (bad) {
+                out.println("Alice");
+                out.flush();
 
-			if (f) {
-				out.append("Alice\n");
-				for (int i = 0; i < n; i++) {
-					out.append("1 2\n");
-					br.readLine();  // consume input
-				}
-			} else {
-				out.append("Bob\n");
-				int pt1 = 0, pt2 = 0;
+                for (int i = 0; i < n; i++) {
+                    out.println("1 2");
+                    out.flush();
+                    br.readLine();
+                }
+            } else {
+                out.println("Bob");
+                out.flush();
 
-				for (int i = 0; i < n; i++) {
-					st = new StringTokenizer(br.readLine());
-					int c1 = Integer.parseInt(st.nextToken());
-					int c2 = Integer.parseInt(st.nextToken());
+                ArrayList<Integer>[] g = new ArrayList[2];
+                g[0] = new ArrayList<>();
+                g[1] = new ArrayList<>();
 
-					if ((c1 == 1 && c2 == 2) || (c1 == 2 && c2 == 1)) {
-						if (pt1 < ows.size()) {
-							out.append(ows.get(pt1) + 1).append(" 1\n");
-							pt1++;
-						} else {
-							out.append(tws.get(pt2) + 1).append(" 2\n");
-							pt2++;
-						}
-					} else if (c1 == 2 || c2 == 2) {
-						if (pt2 < tws.size()) {
-							out.append(tws.get(pt2) + 1).append(" 2\n");
-							pt2++;
-						} else {
-							out.append(ows.get(pt1) + 1).append(" 3\n");
-							pt1++;
-						}
-					} else {
-						if (pt1 < ows.size()) {
-							out.append(ows.get(pt1) + 1).append(" 1\n");
-							pt1++;
-						} else {
-							out.append(tws.get(pt2) + 1).append(" 3\n");
-							pt2++;
-						}
-					}
-				}
-			}
-		}
+                for (int i = 0; i < n; i++) {
+                    g[color[i]].add(i);
+                }
 
-		System.out.print(out.toString());
-	}
+                for (int i = 0; i < n; i++) {
+                    st = new StringTokenizer(br.readLine());
+                    int a = Integer.parseInt(st.nextToken()) - 1;
+                    int b = Integer.parseInt(st.nextToken()) - 1;
+                    if (a > b) {
+                        int tmp = a;
+                        a = b;
+                        b = tmp;
+                    }
+
+                    if (!g[a].isEmpty()) {
+                        int v = g[a].remove(g[a].size() - 1);
+                        out.println((v + 1) + " " + (a + 1));
+                    } else {
+                        int v = g[a ^ 1].remove(g[a ^ 1].size() - 1);
+                        out.println((v + 1) + " " + (b + 1));
+                    }
+                    out.flush();
+                }
+            }
+        }
+
+        out.flush();
+    }
 }
+
+
 ```
 </JavaSection>
 
