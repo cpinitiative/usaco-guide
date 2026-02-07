@@ -2,7 +2,7 @@
 id: cses-1144
 source: CSES
 title: Salary Queries
-author: Benjamin Qi, Óscar Garries, Tirth Gohil
+author: Benjamin Qi, Óscar Garries
 ---
 
 ## Solution 1
@@ -90,7 +90,7 @@ import java.util.*;
 
 // So we don't have to worry about salary in range 1e9, we will compress it.
 
-public class Main {
+public class Salary_Queries {
 	static Reader fr = new Reader();
 	static PrintWriter out = new PrintWriter(System.out);
 
@@ -98,77 +98,71 @@ public class Main {
 	static long[] Seq;
 	static HashMap<Long, Integer> map;
 
-	public static void Solve() throws IOException {
-		int test = 1;
-		for (int tests = 0; tests < test; tests++) {
-			int n = fr.nextInt();
-			int q = fr.nextInt();
-
-			list = new long[n + (q << 1)];
-			int ptr = 0;
-			long[] arr = new long[n];
-			for (int i = 0; i < n; i++) {
-				arr[i] = fr.nextLong();
-				list[ptr++] = arr[i];
-			}
-
-			long[][] query = new long[q][3];
-			for (int i = 0; i < q; i++) {
-				char ch = fr.nextChar();
-				long a = fr.nextLong();
-				long b = fr.nextLong();
-
-				if (ch == '!') {
-					query[i][0] = 0;
-					query[i][1] = a - 1;
-					query[i][2] = b;
-
-					list[ptr++] = b;
-				} else {
-					query[i][0] = 1;
-					query[i][1] = a;
-					query[i][2] = b;
-					list[ptr++] = a;
-					list[ptr++] = b;
-				}
-			}
-
-			// Compression Step
-			// Start
-			Arrays.sort(list, 0, ptr);
-
-			int cnt = 0;
-			long prev = 0;
-			map = new HashMap<>();
-			for (int i = 0; i < ptr; i++) {
-				if (prev != list[i]) map.put(list[i], cnt++);
-				prev = list[i];
-			}
-			// End
-
-			BIT bt = new BIT(cnt);
-
-			for (long ele : arr) { bt.update(map.get(ele), 1); }
-
-			StringBuilder SB = new StringBuilder();
-			for (long[] qr : query) {
-				if (qr[0] == 0) {
-					bt.update(map.get(arr[(int)qr[1]]), -1);
-					arr[(int)qr[1]] = qr[2];
-					bt.update(map.get(arr[(int)qr[1]]), 1);
-				} else {
-					int ans = bt.get(map.get(qr[1]), map.get(qr[2]));
-
-					SB.append(ans).append('\n');
-				}
-			}
-
-			out.println(SB);
-		}
-	}
-
 	public static void main(String[] args) throws java.lang.Exception {
-		Solve();
+		int n = fr.nextInt();
+		int q = fr.nextInt();
+		
+		// Fixed-size array avoids ArrayList's resizing overhead and Long autoboxing.
+		list = new long[n + (q << 1)];
+		int ptr = 0;
+		long[] arr = new long[n];
+		for (int i = 0; i < n; i++) {
+			arr[i] = fr.nextLong();
+			list[ptr++] = arr[i];
+		}
+
+		long[][] query = new long[q][3];
+		for (int i = 0; i < q; i++) {
+			char ch = fr.nextChar();
+			long a = fr.nextLong();
+			long b = fr.nextLong();
+
+			if (ch == '!') {
+				query[i][0] = 0;
+				query[i][1] = a - 1;
+				query[i][2] = b;
+
+				list[ptr++] = b;
+			} else {
+				query[i][0] = 1;
+				query[i][1] = a;
+				query[i][2] = b;
+				list[ptr++] = a;
+				list[ptr++] = b;
+			}
+		}
+
+		// Compression Step
+		// Start
+		Arrays.sort(list, 0, ptr);
+
+		int cnt = 0;
+		long prev = 0;
+		map = new HashMap<>();
+		for (int i = 0; i < ptr; i++) {
+			if (prev != list[i]) map.put(list[i], cnt++);
+			prev = list[i];
+		}
+		// End
+
+		BIT bt = new BIT(cnt);
+
+		for (long ele : arr) { bt.update(map.get(ele), 1); }
+
+		StringBuilder SB = new StringBuilder();
+		for (long[] qr : query) {
+			if (qr[0] == 0) {
+				bt.update(map.get(arr[(int)qr[1]]), -1);
+				arr[(int)qr[1]] = qr[2];
+				bt.update(map.get(arr[(int)qr[1]]), 1);
+			} else {
+				int ans = bt.get(map.get(qr[1]), map.get(qr[2]));
+
+				SB.append(ans).append('\n');
+			}
+		}
+
+		out.println(SB.to_string());
 		out.close();
 	}
 
@@ -258,6 +252,8 @@ class BIT {
 
 </JavaSection>
 </LanguageSection>
+
+
 
 Here is a similar solution with a `map` that passes slightly under the time
 limit.
