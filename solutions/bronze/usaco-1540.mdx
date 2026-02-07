@@ -133,70 +133,74 @@ So for this operation 1 would be `CCOWCCCOWC` and operation 2 would be `OWOWOWOW
 
 ```cpp
 #include <bits/stdc++.h>
-#define NEWLINE (t == 0 ? "" : "\n") // this exists to avoid trailing newlines
+#define NEWLINE (t == 0 ? "" : "\n")  // this exists to avoid trailing newlines
 
 using namespace std;
 
-int main(){
-    int t; cin >> t;
+int main() {
+	int t;
+	cin >> t;
 
 	// k value can be ignored since we will always output most optimal
-    int _k; cin >> _k; 
+	int _k;
+	cin >> _k;
 
-    while(t--){
-        int n; cin >> n;
-        string s; cin >> s;
-        
-        // Odd size, no solution
-        if (n%2 != 0){
-            cout << -1 << NEWLINE;
-            continue;
-        }
-        
-        vector<int> ans(n*3, 1);
-        int solution = -1;
-        
-        string split1 = s.substr(0, s.size()/2);
-        string split2 = s.substr(s.size()/2, s.size()/2);
-        
-        if (split1 == split2){
+	while (t--) {
+		int n;
+		cin >> n;
+		string s;
+		cin >> s;
+
+		// Odd size, no solution
+		if (n % 2 != 0) {
+			cout << -1 << NEWLINE;
+			continue;
+		}
+
+		vector<int> ans(n * 3, 1);
+		int solution = -1;
+
+		string split1 = s.substr(0, s.size() / 2);
+		string split2 = s.substr(s.size() / 2, s.size() / 2);
+
+		if (split1 == split2) {
 			// M = 1
-            solution = 1;
-        } else {
-            solution = 2;
-            int i = 0;
-            int j = (n*3)/2;
-            while (j < n*3){
+			solution = 1;
+		} else {
+			solution = 2;
+			int i = 0;
+			int j = (n * 3) / 2;
+			while (j < n * 3) {
 				// The case where both substrings are the same can be ignored since
 				// by default they will both go to operation 1.
 
-                if (s[i] == s[j+1]){
+				if (s[i] == s[j + 1]) {
 					// first & second are same, ex: COW & WCO
-                    ans[i] = 2;
-                    ans[i+1] = 2;
-                    
-                    ans[j+1] = 2;
-                    ans[j+2] = 2;
-                } else if (s[i+1] == s[j]){
+					ans[i] = 2;
+					ans[i + 1] = 2;
+
+					ans[j + 1] = 2;
+					ans[j + 2] = 2;
+				} else if (s[i + 1] == s[j]) {
 					// second & first are same, ex: OWC & WCO
-                    ans[i+1] = 2;
-                    ans[i+2] = 2;
-                    
-                    ans[j] = 2;
-                    ans[j+1] = 2;
-                }
-                
-                i += 3;
-                j += 3;
-            }
-        }
-        
-        cout << solution << "\n";
-        for (int i = 0; i < n*3; i++){
-            cout << ans[i] << (i+1 == n*3 ? "" : " ");
-        }
-        cout << NEWLINE;
-    }
+					ans[i + 1] = 2;
+					ans[i + 2] = 2;
+
+					ans[j] = 2;
+					ans[j + 1] = 2;
+				}
+
+				i += 3;
+				j += 3;
+			}
+		}
+
+		cout << solution << "\n";
+		for (int i = 0; i < n * 3; i++) {
+			cout << ans[i] << (i + 1 == n * 3 ? "" : " ");
+		}
+		cout << NEWLINE;
+	}
 }
 ```
 
