@@ -48,7 +48,7 @@ int main() {
 	// Fast IO
 	ios_base::sync_with_stdio(false);
 	cin.tie(nullptr);
-	
+
 	int n;
 	cin >> n;
 	vector<string> grid(n);
@@ -59,40 +59,36 @@ int main() {
 	string res;
 	res += grid[0][0];
 
-	// best_path[r][c] keeps track of which cells can lead to the best lexicographical result
+	// best_path[r][c] keeps track of which cells can lead to the best lexicographical
+	// result
 	vector<vector<bool>> best_path(n, vector<bool>(n));
 	best_path[0][0] = true;
 
 	// We process the grid diagonal by diagonal
 	for (int i = 0; i < path_len - 1; i++) {
-		char best = '{'; // Sentinel value: ASCII '{' is greater than 'z'
+		char best = '{';  // Sentinel value: ASCII '{' is greater than 'z'
 
-		
 		// Look at all neighbors of cells currently marked as "best"
 		// to find the smallest character available for the next step.
-		
+
 		for (int r = 0; r <= min(n - 1, i); r++) {
 			int c = i - r;
 			if (c >= n || !best_path[r][c]) continue;
 
-			if (r + 1 < n) best = min(best, grid[r + 1][c]);   // Down
-			if (c + 1 < n) best = min(best, grid[r][c + 1]);   // Right
+			if (r + 1 < n) best = min(best, grid[r + 1][c]);  // Down
+			if (c + 1 < n) best = min(best, grid[r][c + 1]);  // Right
 		}
 
 		res += best;
-		
-		// Now that we know the best character, we mark all cells on the 
+
+		// Now that we know the best character, we mark all cells on the
 		// next diagonal (i + 1) that possess this character and are reachable.
 		for (int r = 0; r <= min(n - 1, i); r++) {
 			int c = i - r;
 			if (c >= n || !best_path[r][c]) continue;
 
-			if (r + 1 < n && grid[r + 1][c] == best) {
-				best_path[r + 1][c] = true;
-			}
-			if (c + 1 < n && grid[r][c + 1] == best) {
-				best_path[r][c + 1] = true;
-			}
+			if (r + 1 < n && grid[r + 1][c] == best) { best_path[r + 1][c] = true; }
+			if (c + 1 < n && grid[r][c + 1] == best) { best_path[r][c + 1] = true; }
 		}
 	}
 
