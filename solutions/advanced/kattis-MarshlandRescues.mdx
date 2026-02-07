@@ -20,26 +20,17 @@ So, the task reduces to computing the **maximum possible minimum distance from a
 
 For any fixed distance `d`, we want to check whether there exists a point inside the polygon that is at least `d` away from **every edge**.
 
-For each edge of the convex polygon, this condition can be represented as a **half-plane**: the set of points lying on the inward side of the edge, shifted inward by distance `d`.
+For each edge of the convex polygon, this set of points at distance atleast `d` from edge can be represented as a **half-plane** whose boundary line is at distance `d` from edge (*on it's inward side*).
 
-The intersection of all these half-planes represents all points whose distance from every polygon edge is at least `d`.  
-If this intersection is non-empty, then such a point exists; otherwise, it does not.
+If there exists a common intersection for all these planes, then we can be certain that there is a point that is atleast at distance `d` from **ALL** edges. (Morover, all the points in this intersection satisfy this.)
 
-Checking whether this intersection exists can be done using the standard **Half-Plane Intersection** algorithm.
+[Half Plane Intersection](https://codeforces.com/blog/entry/61710)
 
 
 ---
 ### Solution
 
-The answer is a real value, so we use **binary search** on the maximum possible distance `d`.
-
-For a fixed `d`, we check whether there exists a point inside the polygon whose distance from every edge is at least `d`.  
-This feasibility check is done by shifting each polygon edge inward by distance `d`, forming a set of half-planes, and verifying whether their intersection is non-empty.
-
-If the intersection exists, then `d` is feasible and we try a larger value.  
-Otherwise, we reduce `d`.
-
-Repeating this process for sufficient iterations yields the required precision for the maximum distance.
+For any `d` we know how to **check** if a solution exits. Now we can **Binary Search** on all possible values of `d`. 
 
 
 ---
