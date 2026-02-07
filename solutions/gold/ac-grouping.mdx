@@ -28,7 +28,7 @@ We define our DP state $$dp[mask]$$ as: The maximum score Taro can earn by parti
 
 Base Case:  (No rabbits, no points).
 
-### 3. The Transition 
+### 3. The Transition
 
 To compute $dp[m]$, we iterate through all possible submasks $s$ of $m$. We treat $s$ as **one individual group** and combine its precalculated score with the optimal solution for the rest of the mask ($m \char`\^ s$).
 
@@ -42,7 +42,7 @@ $$
 
 **Time Complexity**: $\mathcal{O}(3^N + N^2 \cdot 2^N)$
 
-The precalculation takes $\mathcal{O}(N^2 \cdot 2^N)$, and the DP transitions take $\mathcal{O}(3^N)$. 
+The precalculation takes $\mathcal{O}(N^2 \cdot 2^N)$, and the DP transitions take $\mathcal{O}(3^N)$.
 
 <LanguageSection>
 <CPPSection>
@@ -57,59 +57,57 @@ using namespace std;
  * n: Number of rabbits
  * a: Compatibility matrix
  */
-int solve(int n, vector<vector<int>>& a) {
-    int N = 1 << n; // Total number of possible masks (2^n)
+int solve(int n, vector<vector<int>> &a) {
+	int N = 1 << n;  // Total number of possible masks (2^n)
 
-    // sc[m]: Internal score if all rabbits in mask 'm' form ONE group
-    // dp[m]: Max score possible for partition of rabbits in mask 'm'
-    vector<int> sc(N), dp(N, 0);
+	// sc[m]: Internal score if all rabbits in mask 'm' form ONE group
+	// dp[m]: Max score possible for partition of rabbits in mask 'm'
+	vector<int> sc(N), dp(N, 0);
 
-    // 1. Precalculate the score for every possible standalone group
-    for (int m = 0; m < N; m++) {
-        int s = 0;
-        for (int i = 0; i < n; i++) {
-            if (m & (1 << i)) { // If rabbit i is in the mask
-                for (int j = i + 1; j < n; j++) {
-                    if (m & (1 << j)) { // If rabbit j is also in the mask
-                        s += a[i][j];
-                    }
-                }
-            }
-        }
-        sc[m] = s;
-    }
+	// 1. Precalculate the score for every possible standalone group
+	for (int m = 0; m < N; m++) {
+		int s = 0;
+		for (int i = 0; i < n; i++) {
+			if (m & (1 << i)) {  // If rabbit i is in the mask
+				for (int j = i + 1; j < n; j++) {
+					if (m & (1 << j)) {  // If rabbit j is also in the mask
+						s += a[i][j];
+					}
+				}
+			}
+		}
+		sc[m] = s;
+	}
 
-    // 2. Main DP Transition
-    for (int m = 1; m < N; m++) {
-        /* Iterate through all submasks 's' of the current mask 'm'.
-           s represents the "last group" being formed.
-           m ^ s represents the remaining rabbits.
-        */
-        for (int s = m; s > 0; s = (s - 1) & m) {
-            dp[m] = max(dp[m], dp[m ^ s] + sc[s]);
-        }
-    }
+	// 2. Main DP Transition
+	for (int m = 1; m < N; m++) {
+		/* Iterate through all submasks 's' of the current mask 'm'.
+		   s represents the "last group" being formed.
+		   m ^ s represents the remaining rabbits.
+		*/
+		for (int s = m; s > 0; s = (s - 1) & m) {
+			dp[m] = max(dp[m], dp[m ^ s] + sc[s]);
+		}
+	}
 
-    return dp[N - 1]; // Return max score for the mask representing all rabbits
+	return dp[N - 1];  // Return max score for the mask representing all rabbits
 }
 
 signed main() {
-    // Fast IO
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+	// Fast IO
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
 
-    int n; cin>>n;
-    vector<vector<int>> a(n, vector<int>(n));
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
-            cin >> a[i][j];
-        }
-    }
+	int n;
+	cin >> n;
+	vector<vector<int>> a(n, vector<int>(n));
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) { cin >> a[i][j]; }
+	}
 
-    cout << solve(n, a) << endl;
-    return 0;
+	cout << solve(n, a) << endl;
+	return 0;
 }
-
 ```
 
 </CPPSection>
