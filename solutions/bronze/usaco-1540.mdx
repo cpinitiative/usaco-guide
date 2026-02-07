@@ -1,0 +1,205 @@
+---
+id: usaco-1540
+source: 2026 First Contest Bronze
+title: Cow Splits
+author: Aarav Sethi
+---
+
+[Official Analysis (C++)](https://usaco.org/current/data/sol_prob2_bronze_season26contest1.html)
+
+## Explanation
+
+### Observation 1:
+
+$M=0$ if and only if the string must already be square. For example, WCOCOWWCOCOW is WCOCOW repeated twice, requiring no splits.
+
+### Observation 2:
+
+If $N$ is odd, no solution exists. Square strings have even length, so odd $N*3$ cannot be formed from even-length square strings. Therefore, $N$ must be even.
+
+### Observation 3:
+
+$M \le 3$ is always true, because a valid solution is always just grouping all the C’s, O’s, and W’s.
+
+### Observation 4:
+
+It can be proven that $M \le 2$ is also always true, and this is because any two possible substrings (COW, OWC, WCO) will all have a substring of length 2 in common and one letter left over.
+
+Because of this, you can keep one pointer at the start, and one in the center of the string. And for every $3$ length substring, take the common 2-letter substring of both pointers into operation 2, and the remainder goes to operation 1.
+
+### Examples:
+
+Let blue symbolize operation 1, and purple symbolize operation 2. Every row is a step, and the last row is the $M=2$ result.
+
+If two substrings are the same, we will add the entire substring to operation 1. Adding to operation 2 would also be valid.
+
+<center>
+<table className="text-center">
+	<tbody>
+		<tr>
+			<td className="bg-blue-300 dark:bg-blue-600">C</td>
+			<td className="bg-purple-300 dark:bg-purple-800">O</td>
+			<td className="bg-purple-300 dark:bg-purple-800">W</td>
+			<td>C</td>
+			<td>O</td>
+			<td>W</td>
+			<td>O</td>
+			<td>W</td>
+			<td>C</td>
+			<td className="bg-purple-300 dark:bg-purple-800">O</td>
+			<td className="bg-purple-300 dark:bg-purple-800">W</td>
+			<td className="bg-blue-300 dark:bg-blue-600">C</td>
+			<td>O</td>
+			<td>W</td>
+			<td>C</td>
+			<td>O</td>
+			<td>W</td>
+			<td>C</td>
+		</tr>
+		<tr>
+			<td className="bg-blue-300 dark:bg-blue-600">C</td>
+			<td className="bg-purple-300 dark:bg-purple-800">O</td>
+			<td className="bg-purple-300 dark:bg-purple-800">W</td>
+			<td className="bg-blue-300 dark:bg-blue-600">C</td>
+			<td className="bg-purple-300 dark:bg-purple-800">O</td>
+			<td className="bg-purple-300 dark:bg-purple-800">W</td>
+			<td>O</td>
+			<td>W</td>
+			<td>C</td>
+			<td className="bg-purple-300 dark:bg-purple-800">O</td>
+			<td className="bg-purple-300 dark:bg-purple-800">W</td>
+			<td className="bg-blue-300 dark:bg-blue-600">C</td>
+			<td className="bg-purple-300 dark:bg-purple-800">O</td>
+			<td className="bg-purple-300 dark:bg-purple-800">W</td>
+			<td className="bg-blue-300 dark:bg-blue-600">C</td>
+			<td>O</td>
+			<td>W</td>
+			<td>C</td>
+		</tr>
+		<tr>
+			<td className="bg-blue-300 dark:bg-blue-600">C</td>
+			<td className="bg-purple-300 dark:bg-purple-800">O</td>
+			<td className="bg-purple-300 dark:bg-purple-800">W</td>
+			<td className="bg-blue-300 dark:bg-blue-600">C</td>
+			<td className="bg-purple-300 dark:bg-purple-800">O</td>
+			<td className="bg-purple-300 dark:bg-purple-800">W</td>
+			<td>O</td>
+			<td>W</td>
+			<td>C</td>
+			<td className="bg-purple-300 dark:bg-purple-800">O</td>
+			<td className="bg-purple-300 dark:bg-purple-800">W</td>
+			<td className="bg-blue-300 dark:bg-blue-600">C</td>
+			<td className="bg-purple-300 dark:bg-purple-800">O</td>
+			<td className="bg-purple-300 dark:bg-purple-800">W</td>
+			<td className="bg-blue-300 dark:bg-blue-600">C</td>
+			<td>O</td>
+			<td>W</td>
+			<td>C</td>
+		</tr>
+		<tr>
+			<td className="bg-blue-300 dark:bg-blue-600">C</td>
+			<td className="bg-purple-300 dark:bg-purple-800">O</td>
+			<td className="bg-purple-300 dark:bg-purple-800">W</td>
+			<td className="bg-blue-300 dark:bg-blue-600">C</td>
+			<td className="bg-purple-300 dark:bg-purple-800">O</td>
+			<td className="bg-purple-300 dark:bg-purple-800">W</td>
+			<td className="bg-blue-300 dark:bg-blue-600">O</td>
+			<td className="bg-blue-300 dark:bg-blue-600">W</td>
+			<td className="bg-blue-300 dark:bg-blue-600">C</td>
+			<td className="bg-purple-300 dark:bg-purple-800">O</td>
+			<td className="bg-purple-300 dark:bg-purple-800">W</td>
+			<td className="bg-blue-300 dark:bg-blue-600">C</td>
+			<td className="bg-purple-300 dark:bg-purple-800">O</td>
+			<td className="bg-purple-300 dark:bg-purple-800">W</td>
+			<td className="bg-blue-300 dark:bg-blue-600">C</td>
+			<td className="bg-blue-300 dark:bg-blue-600">O</td>
+			<td className="bg-blue-300 dark:bg-blue-600">W</td>
+			<td className="bg-blue-300 dark:bg-blue-600">C</td>
+		</tr>
+	</tbody>
+</table>
+</center>
+
+So for this operation 1 would be `CCOWCCCOWC` and operation 2 would be `OWOWOWOW`. Both valid square strings.
+
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+#define NEWLINE (t == 0 ? "" : "\n") // this exists to avoid trailing newlines
+
+using namespace std;
+
+int main(){
+    int t; cin >> t;
+
+	// k value can be ignored since we will always output most optimal
+    int _k; cin >> _k; 
+
+    while(t--){
+        int n; cin >> n;
+        string s; cin >> s;
+        
+        // Odd size, no solution
+        if (n%2 != 0){
+            cout << -1 << NEWLINE;
+            continue;
+        }
+        
+        vector<int> ans(n*3, 1);
+        int solution = -1;
+        
+        string split1 = s.substr(0, s.size()/2);
+        string split2 = s.substr(s.size()/2, s.size()/2);
+        
+        if (split1 == split2){
+			// M = 1
+            solution = 1;
+        } else {
+            solution = 2;
+            int i = 0;
+            int j = (n*3)/2;
+            while (j < n*3){
+				// The case where both substrings are the same can be ignored since
+				// by default they will both go to operation 1.
+
+                if (s[i] == s[j+1]){
+					// first & second are same, ex: COW & WCO
+                    ans[i] = 2;
+                    ans[i+1] = 2;
+                    
+                    ans[j+1] = 2;
+                    ans[j+2] = 2;
+                } else if (s[i+1] == s[j]){
+					// second & first are same, ex: OWC & WCO
+                    ans[i+1] = 2;
+                    ans[i+2] = 2;
+                    
+                    ans[j] = 2;
+                    ans[j+1] = 2;
+                }
+                
+                i += 3;
+                j += 3;
+            }
+        }
+        
+        cout << solution << "\n";
+        for (int i = 0; i < n*3; i++){
+            cout << ans[i] << (i+1 == n*3 ? "" : " ");
+        }
+        cout << NEWLINE;
+    }
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
