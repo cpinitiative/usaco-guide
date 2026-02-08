@@ -26,11 +26,13 @@ If the graph is bipartite, it can be split up into two groups, such that there a
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
+
 void solve() {
 	int n, m;
 	cin >> n >> m;
 	vector<vector<int>> adj(n);
 
+	// Setup the graph
 	for (int i = 0; i < m; i++) {
 		int u, v;
 		cin >> u >> v;
@@ -54,9 +56,11 @@ void solve() {
 		}
 	};
 
+	// Dfs to check whether the graph is bipartite or not
 	dfs(dfs, 0);
 
 	if (notBipartite) {
+		// If not bipartite, Alice will win
 		int gb;
 		cout << "Alice" << endl;
 		for (int i = 0; i < n; i++) {
@@ -64,6 +68,7 @@ void solve() {
 			cin >> gb >> gb;
 		}
 	} else {
+		// Graph is bipartite, Bob will win
 		cout << "Bob" << endl;
 		array<vector<int>, 2> g;
 		for (int i = 0; i < n; i++) { g[c[i]].push_back(i); }
@@ -103,6 +108,7 @@ def solve():
 
 	n, m = map(int, data.readline().split())
 
+	# Setup the graph
 	adj = [[] for _ in range(n)]
 	for _ in range(m):
 		u, v = map(int, data.readline().split())
@@ -115,6 +121,7 @@ def solve():
 	c[0] = 0
 	not_bipartite = False
 
+	# Determine whether the graph is bipartite or not
 	stack = [0]
 	while stack and not not_bipartite:
 		nd = stack.pop()
@@ -127,11 +134,13 @@ def solve():
 				break
 
 	if not_bipartite:
+		# If not bipartite, Alice will win
 		print("Alice", flush=True)
 		for _ in range(n):
 			print(1, 2, flush=True)
 			data.readline()
 	else:
+		# If bipartite, Bob will win
 		print("Bob", flush=True)
 		g = [[], []]
 		for i in range(n):
@@ -170,7 +179,7 @@ if __name__ == "__main__":
 import java.io.*;
 import java.util.*;
 
-public class Main {
+public class ColoringGame {
 
 	static List<Integer>[] adj;
 	static int[] color;
@@ -191,6 +200,7 @@ public class Main {
 			adj = new ArrayList[n];
 			for (int i = 0; i < n; i++) adj[i] = new ArrayList<>();
 
+			// Setup the graph
 			for (int i = 0; i < m; i++) {
 				st = new StringTokenizer(br.readLine());
 				int u = Integer.parseInt(st.nextToken()) - 1;
@@ -204,9 +214,9 @@ public class Main {
 			color[0] = 0;
 			bad = false;
 
+			// Determine whether the graph is bipartite or not
 			ArrayDeque<Integer> stack = new ArrayDeque<>();
 			stack.push(0);
-
 			while (!stack.isEmpty() && !bad) {
 				int nd = stack.pop();
 				for (int x : adj[nd]) {
@@ -221,6 +231,7 @@ public class Main {
 			}
 
 			if (bad) {
+				// If graph is not bipartite, Alice will win
 				out.println("Alice");
 				out.flush();
 
@@ -230,6 +241,7 @@ public class Main {
 					br.readLine();
 				}
 			} else {
+				// If graph is bipartite, Bob wins
 				out.println("Bob");
 				out.flush();
 
