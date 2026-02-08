@@ -64,7 +64,8 @@ int main() {
 	string res;
 	res += grid[0][0];
 
-	// best_path[r][c] keeps track of which cells can lead to the best lexicographical result
+	// best_path[r][c] keeps track of which cells can lead to the best lexicographical
+	// result
 	vector<vector<bool>> best_path(n, vector<bool>(n));
 	best_path[0][0] = true;
 
@@ -72,7 +73,8 @@ int main() {
 	for (int i = 0; i < path_len - 1; i++) {
 		char best = 'z';  // Initialize with max possible value
 
-		// Pass 1: Look at all neighbors of cells currently marked as "best" to find the smallest character available for the next step.
+		// Pass 1: Look at all neighbors of cells currently marked as "best" to find the
+		// smallest character available for the next step.
 		for (int r = 0; r <= min(n - 1, i); r++) {
 			int c = i - r;
 			if (c >= n || !best_path[r][c]) continue;
@@ -83,7 +85,8 @@ int main() {
 
 		res += best;
 
-		// Pass 2: Now that we know the best character, we mark all cells on the next diagonal (i + 1) that possess this character and are reachable.
+		// Pass 2: Now that we know the best character, we mark all cells on the next
+		// diagonal (i + 1) that possess this character and are reachable.
 		for (int r = 0; r <= min(n - 1, i); r++) {
 			int c = i - r;
 			if (c >= n || !best_path[r][c]) continue;
