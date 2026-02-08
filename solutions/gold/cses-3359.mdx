@@ -1,0 +1,102 @@
+---
+id: cses-3359
+source: CSES
+title: Minimal Grid Path
+author: Kiruthees G
+---
+
+## Intuition
+
+The core idea is to process the grid **diagonal by diagonal**. Instead of keeping a list of coordinates, we use a 2D boolean table `best_path` to mark which cells are currently part of a potentially optimal path.
+
+1. **Iterative Selection**: We know the path will exactly be $2n-1$ characters long. We determine the character for each position $i$ in the path by looking at all cells reachable at that step.
+2. **Two-Pass Sweep**: For each diagonal, we perform two passes:
+* **Pass 1**: Find the globally smallest character available among all valid neighbors.
+* **Pass 2**: Mark all neighbors that possess that "best" character as valid starting points for the next diagonal.
+
+---
+
+## Explanation
+
+### 1. Diagonal Layers
+
+In any path from $(0, 0)$ to $(n-1, n-1)$, the $i$-th character in your string (0-indexed) corresponds to a cell $(r, c)$ where $r+c=i$ (i.e., the Diagonals in the grid). By iterating through $i$ from $0$ to $2n-2$, we cover every step of the path systematically.
+
+### 2. Identifying "Best" Neighbors
+
+At any step $i$, we only care about cells where best_path[r][c] is true. We look at their neighbors $(r+1, c)$ and $(r, c+1)$. We find the minimum character across all these possible next moves. This ensures that we are always extending the lexicographically smallest prefix.
+
+### 3. Updating the Path State
+
+Once the `best` character for the next step is identified, we update `best_path`. If a neighbor contains the `best` character **and** is reachable from a currently valid cell, it is marked `true`. This "filters" our path options as we move toward the bottom-right corner.
+
+---
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N^2)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+
+int main() {
+	// Fast IO
+	ios_base::sync_with_stdio(false);
+	cin.tie(nullptr);
+
+	int n;
+	cin >> n;
+	vector<string> grid(n);
+	for (auto &i : grid) cin >> i;
+
+	// In an n x n grid, any path from (0,0) to (n-1, n-1) is exactly 2n - 1 chars long
+	const int path_len = 2 * n - 1;
+	string res;
+	res += grid[0][0];
+
+	// best_path[r][c] keeps track of which cells can lead to the best lexicographical
+	// result
+	vector<vector<bool>> best_path(n, vector<bool>(n));
+	best_path[0][0] = true;
+
+	// We process the grid diagonal by diagonal
+	for (int i = 0; i < path_len - 1; i++) {
+		char best = '{';  // Sentinel value: ASCII '{' is greater than 'z'
+
+		// Look at all neighbors of cells currently marked as "best"
+		// to find the smallest character available for the next step.
+
+		for (int r = 0; r <= min(n - 1, i); r++) {
+			int c = i - r;
+			if (c >= n || !best_path[r][c]) continue;
+
+			if (r + 1 < n) best = min(best, grid[r + 1][c]);  // Down
+			if (c + 1 < n) best = min(best, grid[r][c + 1]);  // Right
+		}
+
+		res += best;
+
+		// Now that we know the best character, we mark all cells on the
+		// next diagonal (i + 1) that possess this character and are reachable.
+		for (int r = 0; r <= min(n - 1, i); r++) {
+			int c = i - r;
+			if (c >= n || !best_path[r][c]) continue;
+
+			if (r + 1 < n && grid[r + 1][c] == best) { best_path[r + 1][c] = true; }
+			if (c + 1 < n && grid[r][c + 1] == best) { best_path[r][c + 1] = true; }
+		}
+	}
+
+	cout << res << '\n';
+
+	return 0;
+}
+```
+
+</CPPSection>
+</LanguageSection>
