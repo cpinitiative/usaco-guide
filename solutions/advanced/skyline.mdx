@@ -1,0 +1,100 @@
+---
+id: skyline
+source: SPOJ
+title: SKYLINE
+author: Ashok Narayan
+---
+## Explanation
+
+The skyline consists of `N` skyscrapers with distinct heights from `1` to `N`, arranged from left to right.  
+The director wants to avoid any three buildings at positions `i < j < k` such that: `height[i] < height[j] < height[k]`.
+Let us call this as a *123* pattern.
+
+---
+
+### Deriving the recurrence relation
+
+Let us focus on the tallest building, whose height is `N`, and fix its position in the skyline.
+
+This building splits the skyline into two independent parts:
+- `k` buildings to its left
+- `N - 1 - k` buildings to its right
+
+If we arrange all the left buildings to be taller than all the right buildings, and both sides seperately have a valid arrangement, then we can avoid the *123* pattern for sure.
+
+Therefore, once the position of the tallest building is fixed, the validity of the skyline depends solely on the validity of the left and right parts independently.
+
+If there are `k` buildings on the left:
+- the left part can be arranged in `f(k)` valid ways
+- the right part can be arranged in `f(N - 1 - k)` valid ways
+
+Since the two parts are independent, the total number of valid skylines for this choice is:
+ `f(k) * f(N - 1 - k)`
+
+Summing over all possible values of `k` from `0` to `N - 1`, we obtain the recurrence:
+
+    $f(N) = \sum_{k=0}^{N-1} f(k) \cdot f(N-k-1)$
+
+with base cases:
+`f(0) = f(1) = 1`
+
+
+---
+
+The recurrence relation obtained above is exactly the recurrence definition of the  
+**Catalan numbers**.
+
+
+Therefore, the number of skyline orderings that avoid the forbidden sloping pattern for `N` buildings is simply the **N-th Catalan number**.
+
+---
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N^2)$ preprocessing, $\mathcal{O}(1)$ per query
+
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+
+#include <bits/stdc++.h>
+using namespace std;
+
+static const int MAXN = 1000;
+static const int MOD = 1000000;
+
+int x;
+vector<int> C(MAXN + 1);
+
+//BeginCodeSnip{Catalan Numbers Preprocessing}
+void compute_catalan() {
+    C[0] = C[1] = 1;
+    for (int i = 2; i <= MAXN; ++i) {
+        C[i] = 0;
+        for (int j = 0; j < i; ++j) {
+            C[i] = (C[i] + 1LL * C[j] * C[i - j - 1]) % MOD;
+        }
+    }
+}
+//EndCodeSnip
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    compute_catalan();
+
+    while (cin >> x && x != 0) {
+        cout << C[x] << '\n';
+    }
+	
+    return 0;
+}
+
+
+```
+
+</CPPSection>
+</LanguageSection>
+
