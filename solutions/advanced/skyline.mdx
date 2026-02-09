@@ -12,40 +12,16 @@ Let us call this as a *123* pattern.
 
 ---
 
-### Deriving the recurrence relation
+### Solution idea
 
-Let us focus on the tallest building, whose height is `N`, and fix its position in the skyline.
+This question essentially boils down to finding the n-th catalan number. 
 
-This building splits the skyline into two independent parts:
-- `k` buildings to its left
-- `N - 1 - k` buildings to its right
-
-If we arrange all the left buildings to be taller than all the right buildings, and both sides seperately have a valid arrangement, then we can avoid the *123* pattern for sure.
-
-Therefore, once the position of the tallest building is fixed, the validity of the skyline depends solely on the validity of the left and right parts independently.
-
-If there are `k` buildings on the left:
-- the left part can be arranged in `f(k)` valid ways
-- the right part can be arranged in `f(N - 1 - k)` valid ways
-
-Since the two parts are independent, the total number of valid skylines for this choice is:
- `f(k) * f(N - 1 - k)`
-
-Summing over all possible values of `k` from `0` to `N - 1`, we obtain the recurrence:
-
-    $f(N) = \sum_{k=0}^{N-1} f(k) \cdot f(N-k-1)$
-
-with base cases:
-`f(0) = f(1) = 1`
+As a general fact the number of permutations of length `n` that avoids any 3-length patterns (like *123*, *132*, *213*) are all equal to C_n. [Proof](https://www.kth.se/social/files/5493dabff2765406ac5c8e75/CatalanEng.pdf)
 
 
 ---
 
-The recurrence relation obtained above is exactly the recurrence definition of the  
-**Catalan numbers**.
-
-
-Therefore, the number of skyline orderings that avoid the forbidden sloping pattern for `N` buildings is simply the **N-th Catalan number**.
+In this code, a dp approach is used (instead of the formula for finding) since the question requires the value modulo `1000000`. Since this is not a prime number *Fermat's Little theorem* for finding inverse factorials can NOT be used. 
 
 ---
 ## Implementation
