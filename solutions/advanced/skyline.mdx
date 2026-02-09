@@ -6,7 +6,7 @@ author: Ashok Narayan
 ---
 ## Explanation
 
-The skyline consists of `N` skyscrapers with distinct heights from `1` to `N`, arranged from left to right.  
+The skyline consists of `N` skyscrapers with distinct heights from `1` to `N`, arranged from left to right.
 The director wants to avoid any three buildings at positions `i < j < k` such that: `height[i] < height[j] < height[k]`.
 Let us call this as a *123* pattern.
 
@@ -14,14 +14,14 @@ Let us call this as a *123* pattern.
 
 ### Solution idea
 
-This question essentially boils down to finding the n-th catalan number. 
+This question essentially boils down to finding the n-th catalan number.
 
 As a general fact the number of permutations of length `n` that avoids any 3-length patterns (like *123*, *132*, *213*) are all equal to C_n. [Proof](https://www.kth.se/social/files/5493dabff2765406ac5c8e75/CatalanEng.pdf)
 
 
 ---
 
-In this code, a dp approach is used (instead of the formula for finding) since the question requires the value modulo `1000000`. Since this is not a prime number *Fermat's Little theorem* for finding inverse factorials can NOT be used. 
+In this code, a dp approach is used (instead of the formula for finding) since the question requires the value modulo `1000000`. Since this is not a prime number *Fermat's Little theorem* for finding inverse factorials can NOT be used.
 
 ---
 ## Implementation
@@ -43,34 +43,27 @@ static const int MOD = 1000000;
 int x;
 vector<int> C(MAXN + 1);
 
-//BeginCodeSnip{Catalan Numbers Preprocessing}
+// BeginCodeSnip{Catalan Numbers Preprocessing}
 void compute_catalan() {
-    C[0] = C[1] = 1;
-    for (int i = 2; i <= MAXN; ++i) {
-        C[i] = 0;
-        for (int j = 0; j < i; ++j) {
-            C[i] = (C[i] + 1LL * C[j] * C[i - j - 1]) % MOD;
-        }
-    }
+	C[0] = C[1] = 1;
+	for (int i = 2; i <= MAXN; ++i) {
+		C[i] = 0;
+		for (int j = 0; j < i; ++j) { C[i] = (C[i] + 1LL * C[j] * C[i - j - 1]) % MOD; }
+	}
 }
-//EndCodeSnip
+// EndCodeSnip
 
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
 
-    compute_catalan();
+	compute_catalan();
 
-    while (cin >> x && x != 0) {
-        cout << C[x] << '\n';
-    }
-	
-    return 0;
+	while (cin >> x && x != 0) { cout << C[x] << '\n'; }
+
+	return 0;
 }
-
-
 ```
 
 </CPPSection>
 </LanguageSection>
-
