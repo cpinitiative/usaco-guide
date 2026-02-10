@@ -5,9 +5,9 @@ title: Grouping
 author: Kiruthees G
 ---
 
-## Explanation
+#### [Unofficial Editorial (C++)](https://nwatx.me/post/atcoderdp)
 
-TThe goal is to partition a set of $N$ rabbits into any number of groups to maximize the total compatibility score. Since $N$ is small (up to 16), we use Bitmask DP.
+## Explanation
 
 ### 1. Bitmask Representation
 
@@ -20,16 +20,13 @@ We define `dp[i]` as the maximum score possible for the subset of rabbits repres
 The transition involves two steps for each mask $i$:
 
 1. **Base Score**: Initialize `dp[i]` by calculating the sum of $a_{j,k}$ for all pairs $(j, k)$ within the mask. This assumes all rabbits in the mask form a single group.
-2. **Merging Subsets**: Improve `dp[i]` by splitting the mask into two disjoint submasks $j$ and $i \char`\^ j$. The transition is:
+2. **Merging Subsets**: Improve `dp[i]` by splitting the mask into two disjoint submasks $j$ and $i ⊕ j$. The transition is:
 
-$$dp[i] = \max_{j \subseteq i} \{ dp[j] + dp[i \char`\^ j] \}$$
+$$
+dp[i] = \max_{j \subseteq i} \{ dp[j] + dp[i ⊕ j] \}
+$$
 
 For an efficient way to iterate over submasks, we use the pattern `for (int j = i; j; j = (j - 1) & i)`. You can read more about this technique in the [USACO Guide: Merging Subsets](https://usaco.guide/gold/dp-bitmasks?lang=cpp#merging-subsets).
-
-### Additional Resources
-
-* [USACO Guide: Bitmask DP](https://usaco.guide/gold/dp-bitmasks?lang=cpp)
-* [Unofficial Editorial (Nwatx)](https://nwatx.me/post/atcoderdp)
 
 ---
 
@@ -66,6 +63,7 @@ int main() {
 			}
 		}
 
+		// Iterate over all submasks j of the current mask i
 		// Try splitting the mask into smaller groups to find a better score
 		for (int j = (i - 1) & i; j > 0; j = (j - 1) & i) {
 			dp[i] = max(dp[i], dp[j] + dp[i ^ j]);
