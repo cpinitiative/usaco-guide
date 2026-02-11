@@ -164,6 +164,8 @@ def add_div_to_probs(div_to_probs: dict, url: str, newFormat: bool):
 		process_child(child)
 	if not found_problem:
 		raise ValueError("found no problems")
+
+
 def gen_div_to_probs(
 	seasons: Iterable[int], div_to_probs: Optional[dict] = None
 ) -> dict:
@@ -191,7 +193,6 @@ def gen_div_to_probs(
 			[*set([tuple(x) for x in div_to_probs[division]])], key=lambda x: int(x[0])
 		)
 	return div_to_probs
-
 
 
 def add_extra_problems(extra_problems: dict, url: str, newFormat: bool):
@@ -240,17 +241,14 @@ def add_extra_problems(extra_problems: dict, url: str, newFormat: bool):
 
 			extra_problems["EXTRA_PROBLEMS"].append(
 				{
-					"uniqueId": "usaco-"+ID,
+					"uniqueId": "usaco-" + ID,
 					"name": title,
-					"url": "https://usaco.org/index.php?page=viewproblem2&cpid="+ID,
+					"url": "https://usaco.org/index.php?page=viewproblem2&cpid=" + ID,
 					"source": get_division(contest),
 					"difficulty": "N/A",
 					"isStarred": False,
 					"tags": [],
-					"solutionMetadata": {
-						"kind": "USACO",
-						"usacoId": ID
-					}
+					"solutionMetadata": {"kind": "USACO", "usacoId": ID},
 				},
 			)
 			found_problem = True
@@ -259,14 +257,13 @@ def add_extra_problems(extra_problems: dict, url: str, newFormat: bool):
 		process_child(child)
 	if not found_problem:
 		raise ValueError("found no problems")
+
+
 def gen_extra_problems(
 	seasons: Iterable[int], extra_problems: Optional[dict] = None
 ) -> dict:
 	if extra_problems is None:
-		extra_problems = {
-			"MODULE_ID": "EXTRA_PROBLEMS",
-			"EXTRA_PROBLEMS": []
-		}
+		extra_problems = {"MODULE_ID": "EXTRA_PROBLEMS", "EXTRA_PROBLEMS": []}
 	for season in seasons:
 		if season >= 26:
 			for index in range(4):
@@ -285,6 +282,7 @@ def gen_extra_problems(
 				except ValueError:
 					break
 	return extra_problems
+
 
 def add_id_to_sol(id_to_sol: dict, url: str):
 	soup = parse(url)
@@ -318,7 +316,7 @@ os.chdir(current_dir)
 
 for filename, func in {
 	f"../div_to_probs.json": gen_div_to_probs,
-	f"../../../../../../content/extraProblems.json": gen_extra_problems # crazy path lol
+	f"../../../../../../content/extraProblems.json": gen_extra_problems,  # crazy path lol
 }.items():
 	init = None
 
