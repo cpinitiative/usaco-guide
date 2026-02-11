@@ -1,0 +1,101 @@
+---
+id: cses-3359
+source: CSES
+title: Minimal Grid Path
+author: Kiruthees G
+---
+
+## Explanation
+
+The problem asks for the lexicographically smallest path, which means we want the alphabetically smallest string possible. This suggests a Greedy strategy: at every step of the path, we want to pick the smallest available character.
+
+However, a simple greedy search (picking the single best neighbor) fails because multiple paths might offer the same "best" character at the current step but diverge later. To solve this, we cannot restrict ourselves to a single path. Instead, we must track all currently optimal paths simultaneously. If multiple cells offer the minimal character 'A', we keep all of them as candidates for the next step.
+
+### 1. Understanding Lexicographical Minimality
+
+A string $S$ is lexicographically smaller than $T$ if, at the first position where they differ, the character in $S$ is smaller than in $T$. This implies that the earlier characters in the string carry the most weight. Our goal is to minimize the 1st character, then the 2nd, and so on. This structure allows us to build the solution character by character from the start to the end.
+
+### 2. Diagonal Layers
+
+In a grid where we only move Down or Right, every cell $(r, c)$ is reachable in exactly $r+c$ steps. This means that all candidates for the $k$-th character of our path lie on the diagonal line where $r+c = k$.
+
+This observation motivates us to process the grid **diagonal by diagonal**. By iterating $i$ from $0$ to $2n-2$, we systematically determine the $i$-th character of the final string based on the best available choices from the previous diagonal.
+
+### 3. The Sweep Process
+
+We use a 2D boolean table `best_path` to track which cells are part of a valid, minimal prefix. For each diagonal $i$:
+
+* **Find the Best Character**: We scan all valid cells (where `best_path` is true) and look at their reachable neighbors (Down and Right). We find the global minimum character among all these neighbors.
+* **Filter Candidates**: Once the best character is found, we update `best_path` for the next diagonal. A cell on the next diagonal is marked valid only if it contains that minimum character and is reachable from a current **valid cell**.
+
+This effectively "prunes" suboptimal paths at every layer, leaving only the branches that contribute to the lexicographically smallest result.
+
+---
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(n^2)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+using ll = long long;
+
+int main() {
+	ios_base::sync_with_stdio(false);
+	cin.tie(nullptr);
+
+	int n;
+	cin >> n;
+	vector<string> grid(n);
+	for (auto &i : grid) cin >> i;
+
+	// In an n x n grid, any path from (0,0) to (n-1,n-1) is exactly 2n-1 chars long
+	const int path_len = 2 * n - 1;
+	string res;
+	res += grid[0][0];
+
+	// best_path[r][c] keeps track of which cells can
+	// lead to the best lexicographical result
+	vector<vector<bool>> best_path(n, vector<bool>(n));
+	best_path[0][0] = true;
+
+	// We process the grid diagonal by diagonal
+	for (int i = 0; i < path_len - 1; i++) {
+		char best = 'z';  // Initialize with max possible value
+
+		// Pass 1: Look at all neighbors of cells currently marked as "best" to
+		// find the smallest character available for the next step.
+		for (int r = 0; r <= min(n - 1, i); r++) {
+			int c = i - r;
+			if (c >= n || !best_path[r][c]) continue;
+
+			if (r + 1 < n) best = min(best, grid[r + 1][c]);  // Down
+			if (c + 1 < n) best = min(best, grid[r][c + 1]);  // Right
+		}
+
+		res += best;
+
+		// Pass 2: Now that we know the best character, we mark all cells on the next
+		// diagonal (i + 1) that possess this character and are reachable.
+		for (int r = 0; r <= min(n - 1, i); r++) {
+			int c = i - r;
+			if (c >= n || !best_path[r][c]) continue;
+
+			if (r + 1 < n && grid[r + 1][c] == best) { best_path[r + 1][c] = true; }
+			if (c + 1 < n && grid[r][c + 1] == best) { best_path[r][c + 1] = true; }
+		}
+	}
+
+	cout << res << '\n';
+
+	return 0;
+}
+```
+
+</CPPSection>
+</LanguageSection>
