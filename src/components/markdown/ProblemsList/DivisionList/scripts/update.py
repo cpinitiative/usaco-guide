@@ -164,8 +164,6 @@ def add_div_to_probs(div_to_probs: dict, url: str, newFormat: bool):
 		process_child(child)
 	if not found_problem:
 		raise ValueError("found no problems")
-
-
 def gen_div_to_probs(
 	seasons: Iterable[int], div_to_probs: Optional[dict] = None
 ) -> dict:
@@ -194,6 +192,99 @@ def gen_div_to_probs(
 		)
 	return div_to_probs
 
+
+
+def add_extra_problems(extra_problems: dict, url: str, newFormat: bool):
+	logger.debug(url)
+	soup = parse(url).find("div", class_="panel")
+	contest = ""
+
+	def get_division(x: str) -> str:
+		for division in DIVISIONS:
+			if x.endswith(division):
+				return division
+		raise ValueError("No division found")
+
+	found_problem = False
+
+	def process_child(child):
+		nonlocal contest, found_problem
+		if child.name == "h2":
+			contest = child.text.strip()
+		if (
+			child.name == "div"
+			and child.has_attr("class")
+			and child["class"] == ["panel", "historypanel"]
+		):
+			title = child.find("b").text
+			res = [y["href"] for y in child.find_all("a")]
+			ID = res[0][res[0].rfind("=") + 1 :]
+
+			def strip_contest(word: str):
+				if newFormat:
+					# Input: USACO 2026 First Contest, Platinum
+					# Output: 2026 First Contest
+
+					word = word[len("USACO ") :]
+					word = word.split(",")[0]  # remove ", Platinum"
+					return word
+				else:
+					# Input: USACO 2022 December Contest, Platinum
+					# Output: 2022 December
+
+					word = word[len("USACO ") :]
+					ind = word.rfind(" Contest")
+					if ind == -1:
+						return word[:4] + " US Open"
+					return word[:ind]
+
+			extra_problems["EXTRA_PROBLEMS"].append(
+				{
+					"uniqueId": "usaco-"+ID,
+					"name": title,
+					"url": "https://usaco.org/index.php?page=viewproblem2&cpid="+ID,
+					"source": get_division(contest),
+					"difficulty": "N/A",
+					"isStarred": False,
+					"tags": [],
+					"solutionMetadata": {
+						"kind": "USACO",
+						"usacoId": ID
+					}
+				},
+			)
+			found_problem = True
+
+	for child in soup.children:
+		process_child(child)
+	if not found_problem:
+		raise ValueError("found no problems")
+def gen_extra_problems(
+	seasons: Iterable[int], extra_problems: Optional[dict] = None
+) -> dict:
+	if extra_problems is None:
+		extra_problems = {
+			"MODULE_ID": "EXTRA_PROBLEMS",
+			"EXTRA_PROBLEMS": []
+		}
+	for season in seasons:
+		if season >= 26:
+			for index in range(4):
+				url = f"{INDEX_PREFIX}season{season}contest{index+1}results"
+
+				try:
+					add_extra_problems(extra_problems, url, True)
+				except ValueError:
+					break
+		else:
+			for contest, offset in zip(CONTESTS_SHORT, YEAR_OFFSETS):
+				url = f"{INDEX_PREFIX}{contest}{season+offset}results"
+
+				try:
+					add_extra_problems(extra_problems, url, False)
+				except ValueError:
+					break
+	return extra_problems
 
 def add_id_to_sol(id_to_sol: dict, url: str):
 	soup = parse(url)
@@ -225,16 +316,19 @@ logger.info(f"seasons = {seasons}")
 current_dir = os.path.dirname(os.path.abspath(__file__))
 os.chdir(current_dir)
 
-for f in [gen_div_to_probs]:  # add gen_contest_to_points to brackets for points
-	print(f.__name__)
+for filename, func in {
+	f"../div_to_probs.json": gen_div_to_probs,
+	f"../../../../../../content/extraProblems.json": gen_extra_problems # crazy path lol
+}.items():
 	init = None
+
 	if args.inplace:
-		filename = f"../{f.__name__[len('gen_'):]}.json"
 		with open(filename, "r") as file:
 			init = json.load(file)
-	d = f(seasons, init)
+
+	d = func(seasons, init)
+
 	if args.inplace:
-		filename = f"../{f.__name__[len('gen_'):]}.json"
 		with open(filename, "w") as file:
 			json.dump(d, file, indent=2)
 	else:
