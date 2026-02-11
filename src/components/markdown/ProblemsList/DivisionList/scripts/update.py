@@ -290,16 +290,22 @@ def add_id_to_sol(id_to_sol: dict, url: str):
 		res = [y["href"] for y in x.find_all("a")]
 		problem_id = res[0][res[0].rfind("=") + 1 :]
 		id_to_sol[problem_id] = res[-1][res[-1].rfind("sol_") :]
+
+
 def gen_id_to_sol(seasons: Iterable[int], id_to_sol: Optional[dict] = None) -> dict:
 	if id_to_sol is None:
 		id_to_sol = {}
 	for season in seasons:
 		if season < 26:
 			for contest, offset in zip(CONTESTS_SHORT, YEAR_OFFSETS):
-				add_id_to_sol(id_to_sol, f"{INDEX_PREFIX}{contest}{season + offset}results")
+				add_id_to_sol(
+					id_to_sol, f"{INDEX_PREFIX}{contest}{season + offset}results"
+				)
 		else:
 			for i in range(1, 5):
-				add_id_to_sol(id_to_sol, f"{INDEX_PREFIX}season{season}contest{i}results")
+				add_id_to_sol(
+					id_to_sol, f"{INDEX_PREFIX}season{season}contest{i}results"
+				)
 	return id_to_sol
 
 
