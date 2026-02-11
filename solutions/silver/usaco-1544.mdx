@@ -30,45 +30,47 @@ We can then apply the same idea to maximize the amount of `1` bits.
 using namespace std;
 
 int main() {
-	int t, n, k; string x, y; cin >> t;
-    while (t--) {
-        cin >> n >> k >> x;
+	int t, n, k;
+	string x, y;
+	cin >> t;
+	while (t--) {
+		cin >> n >> k >> x;
 
-        // c[i] = {number of 1 bits in chain, size of chain}
-        vector<pair<int,int>> c(k,{0,1});
-        y = string(k,'0');
-        y.reserve(n);
+		// c[i] = {number of 1 bits in chain, size of chain}
+		vector<pair<int, int>> c(k, {0, 1});
+		y = string(k, '0');
+		y.reserve(n);
 
-        // Build the chains using XOR property
-        for (int i = 0; i < n-k; i++) {
-            y += ((y[i] == '1')^(x[i] == '1')^(x[i+1] == '1'))+'0';
-            c[i%k].first += y[y.size()-1]-'0';
-            c[i%k].second++;
-        }
+		// Build the chains using XOR property
+		for (int i = 0; i < n - k; i++) {
+			y += ((y[i] == '1') ^ (x[i] == '1') ^ (x[i + 1] == '1')) + '0';
+			c[i % k].first += y[y.size() - 1] - '0';
+			c[i % k].second++;
+		}
 
-        // Compute minimum number of ones
-        int m = INT_MAX, count = 0;
-        bool p = false;
-        for (auto& [ones,len] : c) {
-            count += min(ones,len-ones); // len-ones is the number of 0 bits
-            m = min(m,abs(2*ones-len)); // ones-(len-ones)
-            p ^= (ones >= len-ones); // parity counter
-        }
-        if (p != (x[0] == '1')) count += m;
-        cout << count << ' ';
+		// Compute minimum number of ones
+		int m = INT_MAX, count = 0;
+		bool p = false;
+		for (auto &[ones, len] : c) {
+			count += min(ones, len - ones);   // len-ones is the number of 0 bits
+			m = min(m, abs(2 * ones - len));  // ones-(len-ones)
+			p ^= (ones >= len - ones);        // parity counter
+		}
+		if (p != (x[0] == '1')) count += m;
+		cout << count << ' ';
 
-        // Compute maximum number of ones
-        m = INT_MAX;
-        count = 0;
-        p = false;
-        for (auto& [ones,len] : c) {
-            count += max(ones,len-ones);
-            m = min(m,abs(len-2*ones));
-            p ^= (2*ones <= len); // opposite flip condition
-        }
-        if (p != (x[0] == '1')) count -= m;
-        cout << count << endl;
-    }
+		// Compute maximum number of ones
+		m = INT_MAX;
+		count = 0;
+		p = false;
+		for (auto &[ones, len] : c) {
+			count += max(ones, len - ones);
+			m = min(m, abs(len - 2 * ones));
+			p ^= (2 * ones <= len);  // opposite flip condition
+		}
+		if (p != (x[0] == '1')) count -= m;
+		cout << count << endl;
+	}
 }
 ```
 
@@ -80,67 +82,68 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-    static class Chain {
-        int ones;
-        int len;
-        Chain(int ones, int len) {
-            this.ones = ones;
-            this.len = len;
-        }
-    }
+	static class Chain {
+		int ones;
+		int len;
+		Chain(int ones, int len) {
+			this.ones = ones;
+			this.len = len;
+		}
+	}
 
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int test = Integer.parseInt(br.readLine().trim());
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		int test = Integer.parseInt(br.readLine().trim());
 
-        for (int t = 0; t < test; t++) {
-            String[] parts = br.readLine().trim().split(" ");
-            int n = Integer.parseInt(parts[0]);
-            int k = Integer.parseInt(parts[1]);
-            String x = br.readLine().trim();
+		for (int t = 0; t < test; t++) {
+			String[] parts = br.readLine().trim().split(" ");
+			int n = Integer.parseInt(parts[0]);
+			int k = Integer.parseInt(parts[1]);
+			String x = br.readLine().trim();
 
-            // Initialize chains
-            Chain[] chains = new Chain[k];
-            for (int i = 0; i < k; i++) chains[i] = new Chain(0, 1);
+			// Initialize chains
+			Chain[] chains = new Chain[k];
+			for (int i = 0; i < k; i++) chains[i] = new Chain(0, 1);
 
-            // Build the reconstructed string using XOR property
-            StringBuilder y = new StringBuilder();
-            for (int i = 0; i < k; i++) y.append('0');
-            y.ensureCapacity(n); // optional, like reserve in C++
+			// Build the reconstructed string using XOR property
+			StringBuilder y = new StringBuilder();
+			for (int i = 0; i < k; i++) y.append('0');
+			y.ensureCapacity(n);  // optional, like reserve in C++
 
-            for (int i = 0; i < n - k; i++) {
-                int bit = ((y.charAt(i) - '0') ^ (x.charAt(i) - '0') ^ (x.charAt(i + 1) - '0'));
-                y.append((char)(bit + '0'));
+			for (int i = 0; i < n - k; i++) {
+				int bit = ((y.charAt(i) - '0') ^ (x.charAt(i) - '0') ^
+				           (x.charAt(i + 1) - '0'));
+				y.append((char)(bit + '0'));
 
-                int chainIndex = i % k;
-                chains[chainIndex].ones += bit;
-                chains[chainIndex].len++;
-            }
+				int chainIndex = i % k;
+				chains[chainIndex].ones += bit;
+				chains[chainIndex].len++;
+			}
 
-            // Compute minimum number of ones
-            int m = Integer.MAX_VALUE, count = 0;
-            boolean p = false;
-            for (Chain c : chains) {
-                count += Math.min(c.ones, c.len - c.ones);
-                m = Math.min(m, Math.abs(2 * c.ones - c.len));
-                p ^= (c.ones >= c.len - c.ones);
-            }
-            if (p != (x.charAt(0) == '1')) count += m;
-            System.out.print(count + " ");
+			// Compute minimum number of ones
+			int m = Integer.MAX_VALUE, count = 0;
+			boolean p = false;
+			for (Chain c : chains) {
+				count += Math.min(c.ones, c.len - c.ones);
+				m = Math.min(m, Math.abs(2 * c.ones - c.len));
+				p ^= (c.ones >= c.len - c.ones);
+			}
+			if (p != (x.charAt(0) == '1')) count += m;
+			System.out.print(count + " ");
 
-            // Compute maximum number of ones
-            m = Integer.MAX_VALUE;
-            count = 0;
-            p = false;
-            for (Chain c : chains) {
-                count += Math.max(c.ones, c.len - c.ones);
-                m = Math.min(m, Math.abs(c.len - 2 * c.ones));
-                p ^= (2 * c.ones <= c.len);
-            }
-            if (p != (x.charAt(0) == '1')) count -= m;
-            System.out.println(count);
-        }
-    }
+			// Compute maximum number of ones
+			m = Integer.MAX_VALUE;
+			count = 0;
+			p = false;
+			for (Chain c : chains) {
+				count += Math.max(c.ones, c.len - c.ones);
+				m = Math.min(m, Math.abs(c.len - 2 * c.ones));
+				p ^= (2 * c.ones <= c.len);
+			}
+			if (p != (x.charAt(0) == '1')) count -= m;
+			System.out.println(count);
+		}
+	}
 }
 ```
 
@@ -151,43 +154,43 @@ public class Main {
 t = int(input())
 
 for _ in range(t):
-    n, k = map(int, input().split())
-    x = input().strip()
-    
-    # c[i] = [number of 1 bits in chain, size of chain]
-    c = [[0, 1] for _ in range(k)]
-    
-    # Build the chains using the XOR property
-    y = [False] * n  # initialize full length, first k bits are '0'
+	n, k = map(int, input().split())
+	x = input().strip()
 
-    for i in range(n - k):
-        y[k+i] = y[i] ^ (x[i] == '1') ^ (x[i+1] == '1')
-        c[i%k][0] += y[k+i]
-        c[i%k][1] += 1
-    
-    # Compute minimum number of ones
-    m = float('inf')
-    count = 0
-    p = False
-    for ones, length in c:
-        count += min(ones, length - ones)
-        m = min(m, abs(2 * ones - length))
-        p ^= (ones >= length - ones)
-    if p != (x[0] == '1'):
-        count += m
-    print(count, end=' ')
-    
-    # Compute maximum number of ones
-    m = float('inf')
-    count = 0
-    p = False
-    for ones, length in c:
-        count += max(ones, length - ones)
-        m = min(m, abs(length - 2 * ones))
-        p ^= (2 * ones <= length)
-    if p != (x[0] == '1'):
-        count -= m
-    print(count)
+	# c[i] = [number of 1 bits in chain, size of chain]
+	c = [[0, 1] for _ in range(k)]
+
+	# Build the chains using the XOR property
+	y = [False] * n  # initialize full length, first k bits are '0'
+
+	for i in range(n - k):
+		y[k + i] = y[i] ^ (x[i] == "1") ^ (x[i + 1] == "1")
+		c[i % k][0] += y[k + i]
+		c[i % k][1] += 1
+
+	# Compute minimum number of ones
+	m = float("inf")
+	count = 0
+	p = False
+	for ones, length in c:
+		count += min(ones, length - ones)
+		m = min(m, abs(2 * ones - length))
+		p ^= ones >= length - ones
+	if p != (x[0] == "1"):
+		count += m
+	print(count, end=" ")
+
+	# Compute maximum number of ones
+	m = float("inf")
+	count = 0
+	p = False
+	for ones, length in c:
+		count += max(ones, length - ones)
+		m = min(m, abs(length - 2 * ones))
+		p ^= 2 * ones <= length
+	if p != (x[0] == "1"):
+		count -= m
+	print(count)
 ```
 
 </PySection>
