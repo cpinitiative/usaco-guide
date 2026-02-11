@@ -281,6 +281,17 @@ def gen_extra_problems(
 					add_extra_problems(extra_problems, url, False)
 				except ValueError:
 					break
+
+	# Remove duplicates
+	seen = []
+	unique = []
+
+	for item in extra_problems["EXTRA_PROBLEMS"]:
+		if item not in seen:
+			seen.append(item)
+			unique.append(item)
+
+	extra_problems["EXTRA_PROBLEMS"] = unique
 	return extra_problems
 
 
