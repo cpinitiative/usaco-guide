@@ -9,7 +9,7 @@ author: Kiruthees G
 
 We need to support range updates of the form $x \leftarrow b \cdot x + c$ and range sum queries. This is a classic application of a **Segment Tree with Lazy Propagation**.
 
-Each node in the segment tree will store the sum of values in its range. Additionally, we need to maintain "lazy tags" to represent pending updates. Since the update is a linear function (affine transformation), our lazy tag will be a pair $(b, c)$ representing the operation $f(x) = b \cdot x + c$.
+Each node in the segment tree will store the sum of values in its range. Additionally, we need to maintain "lazy tags" to represent pending updates. Since the update is a linear function, our lazy tag will be a pair $(b, c)$ representing the operation $f(x) = b \cdot x + c$.
 
 ### 1. Node Update
 
@@ -24,7 +24,7 @@ $$
 The most important part of this problem is handling multiple updates. Suppose a node already has a pending update $f_1(x) = b_1 x + c_1$. If we apply a new update $f_2(x) = b_2 x + c_2$ on top of it, the effective operation becomes:
 
 $$
-f_{new}(x) = f_2(f_1(x)) = b_2(b_1 x + c_1) + c_2 = (b_2 b_1) x + (b_2 c_1 + c_2)
+f_{new}(x) = f_2(f_1(x)) = b_2 (b_1 x + c_1) + c_2 = (b_2 b_1) x + (b_2 c_1 + c_2)
 $$
 
 Thus, the new lazy tag $(b_{new}, c_{new})$ is $(b_2 b_1, b_2 c_1 + c_2)$.
@@ -59,7 +59,7 @@ void apply_tag(int node, int l, int r, ll b, ll c) {
 	tree[node] = (tree[node] * b + c * len) % MOD;
 
 	// Update the lazy tag using function composition
-	// (b_final, c_final) = (b_new * old_b) * x + (b_new * old_c + c_new)
+	// (b_new, c_new) = (b_2*b_1) * x + (b_2*c_1 + c_2)
 	lazy[node].first = (lazy[node].first * b) % MOD;
 	lazy[node].second = (lazy[node].second * b + c) % MOD;
 }
@@ -109,8 +109,7 @@ ll query(int node, int l, int r, int ql, int qr) {
 	if (ql <= l && r <= qr) return tree[node];
 	push(node, l, r);
 	int mid = (l + r) / 2;
-	return (query(2 * node, l, mid, ql, qr) + query(2 * node + 1, mid, r, ql, qr)) %
-	       MOD;
+	return (query(2*node,l,mid,ql,qr) + query(2*node+1,mid,r,ql,qr)) % MOD;
 }
 
 int main() {
@@ -121,7 +120,6 @@ int main() {
 	a.resize(N);
 	for (int i = 0; i < N; i++) cin >> a[i];
 
-	// Tree size is usually 4*N
 	tree.resize(4 * N);
 	lazy.resize(4 * N);
 
