@@ -1,7 +1,7 @@
 ---
-id: range-affine-range-sum 
+id: range-affine-range-sum
 source: YS
-title: Range Affine Range Sum 
+title: Range Affine Range Sum
 author: Kiruthees G
 ---
 
@@ -50,98 +50,98 @@ const int MOD = 998244353;
 int N, Q;
 vector<ll> a;
 vector<ll> tree;
-vector<pair<ll, ll>> lazy; // Stores {b, c} for operation x -> b*x + c
+vector<pair<ll, ll>> lazy;  // Stores {b, c} for operation x -> b*x + c
 
 // Applies the affine transformation (b, c) to a specific node
 void apply_tag(int node, int l, int r, ll b, ll c) {
-    // Update: sum = sum * b + c * length
-    ll len = r - l;
-    tree[node] = (tree[node] * b + c * len) % MOD;
-    
-    // Update the lazy tag using function composition
-    // (b_final, c_final) = (b_new * old_b) * x + (b_new * old_c + c_new)
-    lazy[node].first = (lazy[node].first * b) % MOD;
-    lazy[node].second = (lazy[node].second * b + c) % MOD;
+	// Update: sum = sum * b + c * length
+	ll len = r - l;
+	tree[node] = (tree[node] * b + c * len) % MOD;
+
+	// Update the lazy tag using function composition
+	// (b_final, c_final) = (b_new * old_b) * x + (b_new * old_c + c_new)
+	lazy[node].first = (lazy[node].first * b) % MOD;
+	lazy[node].second = (lazy[node].second * b + c) % MOD;
 }
 
 // Pushes lazy tags down to children
 void push(int node, int l, int r) {
-    if (lazy[node].first == 1 && lazy[node].second == 0) return; // Identity check
+	if (lazy[node].first == 1 && lazy[node].second == 0) return;  // Identity check
 
-    int mid = (l + r) / 2;
-    int left = 2 * node;
-    int right = 2 * node + 1;
+	int mid = (l + r) / 2;
+	int left = 2 * node;
+	int right = 2 * node + 1;
 
-    apply_tag(left, l, mid, lazy[node].first, lazy[node].second);
-    apply_tag(right, mid, r, lazy[node].first, lazy[node].second);
+	apply_tag(left, l, mid, lazy[node].first, lazy[node].second);
+	apply_tag(right, mid, r, lazy[node].first, lazy[node].second);
 
-    // Reset current node's tag to identity
-    lazy[node] = {1, 0};
+	// Reset current node's tag to identity
+	lazy[node] = {1, 0};
 }
 
 void build(int node, int l, int r) {
-    lazy[node] = {1, 0}; // Initialize identity
-    if (l + 1 == r) {
-        tree[node] = a[l] % MOD;
-        return;
-    }
-    int mid = (l + r) / 2;
-    build(2 * node, l, mid);
-    build(2 * node + 1, mid, r);
-    tree[node] = (tree[2 * node] + tree[2 * node + 1]) % MOD;
+	lazy[node] = {1, 0};  // Initialize identity
+	if (l + 1 == r) {
+		tree[node] = a[l] % MOD;
+		return;
+	}
+	int mid = (l + r) / 2;
+	build(2 * node, l, mid);
+	build(2 * node + 1, mid, r);
+	tree[node] = (tree[2 * node] + tree[2 * node + 1]) % MOD;
 }
 
 void update(int node, int l, int r, int ql, int qr, ll b, ll c) {
-    if (ql >= r || qr <= l) return;
-    if (ql <= l && r <= qr) {
-        apply_tag(node, l, r, b, c);
-        return;
-    }
-    push(node, l, r);
-    int mid = (l + r) / 2;
-    update(2 * node, l, mid, ql, qr, b, c);
-    update(2 * node + 1, mid, r, ql, qr, b, c);
-    tree[node] = (tree[2 * node] + tree[2 * node + 1]) % MOD;
+	if (ql >= r || qr <= l) return;
+	if (ql <= l && r <= qr) {
+		apply_tag(node, l, r, b, c);
+		return;
+	}
+	push(node, l, r);
+	int mid = (l + r) / 2;
+	update(2 * node, l, mid, ql, qr, b, c);
+	update(2 * node + 1, mid, r, ql, qr, b, c);
+	tree[node] = (tree[2 * node] + tree[2 * node + 1]) % MOD;
 }
 
 ll query(int node, int l, int r, int ql, int qr) {
-    if (ql >= r || qr <= l) return 0;
-    if (ql <= l && r <= qr) return tree[node];
-    push(node, l, r);
-    int mid = (l + r) / 2;
-    return (query(2 * node, l, mid, ql, qr) + query(2 * node + 1, mid, r, ql, qr)) % MOD;
+	if (ql >= r || qr <= l) return 0;
+	if (ql <= l && r <= qr) return tree[node];
+	push(node, l, r);
+	int mid = (l + r) / 2;
+	return (query(2 * node, l, mid, ql, qr) + query(2 * node + 1, mid, r, ql, qr)) %
+	       MOD;
 }
 
 int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
+	ios_base::sync_with_stdio(false);
+	cin.tie(nullptr);
 
-    cin >> N >> Q;
-    a.resize(N);
-    for (int i = 0; i < N; i++) cin >> a[i];
+	cin >> N >> Q;
+	a.resize(N);
+	for (int i = 0; i < N; i++) cin >> a[i];
 
-    // Tree size is usually 4*N
-    tree.resize(4 * N);
-    lazy.resize(4 * N);
+	// Tree size is usually 4*N
+	tree.resize(4 * N);
+	lazy.resize(4 * N);
 
-    build(1, 0, N);
+	build(1, 0, N);
 
-    while (Q--) {
-        int type;
-        cin >> type;
-        if (type == 0) {
-            int l, r;
-            ll b, c;
-            cin >> l >> r >> b >> c;
-            update(1, 0, N, l, r, b, c);
-        } else {
-            int l, r;
-            cin >> l >> r;
-            cout << query(1, 0, N, l, r) << "\n";
-        }
-    }
+	while (Q--) {
+		int type;
+		cin >> type;
+		if (type == 0) {
+			int l, r;
+			ll b, c;
+			cin >> l >> r >> b >> c;
+			update(1, 0, N, l, r, b, c);
+		} else {
+			int l, r;
+			cin >> l >> r;
+			cout << query(1, 0, N, l, r) << "\n";
+		}
+	}
 }
-
 ```
 
 </CPPSection>
