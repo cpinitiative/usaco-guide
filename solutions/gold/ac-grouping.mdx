@@ -9,8 +9,6 @@ author: Kiruthees G
 
 ## Explanation
 
-### DP State and Transition
-
 We define $dp[i]$ as the maximum score possible for the subset of rabbits represented by mask $i$.
 
 The transition involves two steps for each mask $i$:
@@ -19,10 +17,8 @@ The transition involves two steps for each mask $i$:
 2. **Merging Subsets**: Improve $dp[i]$ by splitting the mask into two disjoint submasks $j$ and $i \oplus j$. The transition is:
 
 $$
-dp[i] = \max_{j \subseteq i} \{ dp[j] + dp[i \oplus j] \}
+dp[i] = \max_{j \subseteq i} \left(dp[i], dp[j] + dp[i \oplus j] \right)
 $$
-
-For an efficient way to iterate over submasks, we use the pattern `for (int j = i; j; j = (j - 1) & i)`. You can read more about this technique in the [Merging Subsets section](/gold/dp-bitmasks#merging-subsets) of the module.
 
 ---
 
