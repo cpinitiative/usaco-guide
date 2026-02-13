@@ -1,0 +1,90 @@
+---
+id: HDU-5608
+source: HDU
+title: Function
+author: Benjamin Qi
+---
+
+Same as computing prefix sums of $\phi$, except we change the function $h$.
+
+```cpp
+#include <atcoder/modint>
+#include <bits/stdc++.h>
+
+using namespace std;
+using namespace atcoder;
+
+using mint = modint1000000007;
+
+template <class T> using V = vector<T>;
+#define all(x) begin(x), end(x)
+
+using ll = long long;
+
+ll sq(ll x) { return x * x; }
+
+// BeginCodeSnip{Dirichlet Inverse}
+struct Dirichlet {
+	ll N;
+	int s = 0, k;
+	Dirichlet(ll N_) : N(N_) {
+		while (sq(s + 1) <= N) ++s;
+		k = 2 * s - (s == N / s);
+	}
+	ll pos_to_val(int i) {
+		if (i < s) return i + 1;
+		return N / (k - i);
+	}
+	int val_to_pos(ll l) {
+		if (l <= s) return l - 1;
+		return k - N / l;
+	}
+	V<mint> invert(const V<mint> &f, const V<mint> &h) {
+		// return g s.t. f * g = h
+		V<mint> g(k);
+		mint inv_f0 = mint(1) / f.front();
+		for (int i = 0; i < k; ++i) {
+			mint remainder = h.at(i);
+			if (i > 0) {
+				ll v = pos_to_val(i);
+				ll j = 1;
+				for (; j * j <= v; ++j) {
+					int p = val_to_pos(v / j);
+					if (j > 1) remainder -= (f[j - 1] - (j == 1 ? 0 : f[j - 2])) * g[p];
+					remainder -= (g[j - 1] - (j == 1 ? 0 : g[j - 2])) * f[p];
+				}
+				--j;
+				assert(j > 0);
+				remainder += f[j - 1] * g[j - 1];
+			}
+			g.at(i) = remainder * inv_f0;
+		}
+		return g;
+	}
+};
+// EndCodeSnip
+
+void solve() {
+	ll N;
+	cin >> N;
+	Dirichlet dc(N);
+	int k = dc.k;
+	V<mint> f(k), h(k);
+	mint i3 = mint(1) / 3;
+	for (int i = 0; i < k; ++i) {
+		mint v = dc.pos_to_val(i);
+		f.at(i) = v;
+		h.at(i) = v * (v - 1) * (v - 2) * i3;
+	}
+	auto ret = dc.invert(f, h);
+	cout << ret.back().val() << "\n";
+}
+
+int main() {
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
+	int T;
+	cin >> T;
+	while (T--) solve();
+}
+```
