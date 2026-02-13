@@ -1,0 +1,247 @@
+---
+id: prefix-sums-nt-2
+title: 'Prefix Sums of Number-Theoretic Functions (Part 2)'
+author: Benjamin Qi and others
+description: How to count primes.
+frequency: 0
+prerequisites:
+- prefix-sums-nt-1
+---
+
+## Example - Counting Primes
+
+<FocusProblem problem="f1" />
+
+There are at least two ways to do this problem.
+The first solution has a higher time complexity but a less complex implementation,
+while the second has a lower time complexity at the cost of a more complex implementation.
+
+For a more complete explanation of these algorithms, refer to [this CF blog post](https://codeforces.com/blog/entry/91632).
+
+## Explanation 1
+
+Utilizes a dynamic programming approach based on a recursion relation derived from sieving.
+
+The algorithm iteratively reduces the count of numbers that are not divisible by primes, utilizing a recursive formula.
+It achieves a complexity of $O(\frac{N^{3/4}}{\sqrt{\log N}})$.
+
+### Implementation
+
+**Time Complexity: $O(\frac{N^{3/4}}{\sqrt{\log N}})$**
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <algorithm>
+#include <cmath>
+#include <iostream>
+#include <vector>
+
+using ll = long long;
+using std::cout;
+using std::endl;
+using std::pair;
+using std::vector;
+
+ll count_primes(ll n) {
+	vector<ll> v;
+	for (ll k = 1; k * k <= n; k++) {
+		v.push_back(n / k);
+		v.push_back(k);
+	}
+	sort(v.begin(), v.end());
+	v.erase(std::unique(v.begin(), v.end()), v.end());
+
+	/*
+	 * return i such that v[i] = x
+	 * since v[i] = i + 1 for i <= sqrt(n) and v[v.size() - i] = n / i for i <=
+	 * sqrt(n), we can calculate index in O(1)
+	 */
+	ll sq = sqrt(n);
+	auto geti = [&](ll x) {
+		if (x <= sq) {
+			return (int)x - 1;
+		} else {
+			return (int)(v.size() - (n / x));
+		}
+	};
+
+	vector<ll> dp(v.size());
+	// S(n, 0) = n
+	for (int i = 0; i < v.size(); i++) { dp[i] = v[i]; }
+
+	int a = 0;
+	for (ll p = 2; p * p <= n; p++) {
+		// this condition is true for primes
+		if (dp[geti(p)] != dp[geti(p - 1)]) {
+			a++;
+			for (int i = (int)v.size() - 1; i >= 0; --i) {
+				if (v[i] < p * p) { break; }
+				dp[i] -= dp[geti(v[i] / p)] - a;
+			}
+		}
+	}
+
+	return dp[geti(n)] - 1;
+}
+
+int main() {
+	ll n;
+	std::cin >> n;
+	cout << count_primes(n) << endl;
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
+## Explanation 2
+
+There exists an $O(\frac{n^{2/3}}{\sqrt[3]{\log n}})$ implementation; see [Maksim1744’s Codeforces blog](https://codeforces.com/blog/entry/91632) for more details.
+Below is an implementation with a BIT.
+Note that the fastest solutions to this library checker problem look like they run in $O(\frac{N^{3/4}}{\sqrt{\log N}})$.
+
+### Implementation
+
+**Time Complexity: $O(\frac{n^{2/3}}{\sqrt[3]{\log n}})$**
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <algorithm>
+#include <cmath>
+#include <iostream>
+#include <vector>
+
+using ll = long long;
+using std::cout;
+using std::endl;
+using std::pair;
+using std::vector;
+
+// BeginCodeSnip{BIT (from PURS module)}
+template <class T> class BIT {
+  private:
+	int size;
+	vector<T> bit;
+	vector<T> arr;
+
+  public:
+	BIT(int size) : size(size), bit(size + 1), arr(size) {}
+
+	void set(int ind, T val) { add(ind, val - arr[ind]); }
+
+	void add(int ind, T val) {
+		arr[ind] += val;
+		ind++;
+		for (; ind <= size; ind += ind & -ind) { bit[ind] += val; }
+	}
+
+	T pref_sum(int ind) {
+		ind++;
+		T total = 0;
+		for (; ind > 0; ind -= ind & -ind) { total += bit[ind]; }
+		return total;
+	}
+};
+// EndCodeSnip
+
+struct PrimeCounter {
+	vector<int> primes;
+	vector<int> mnprimes;
+	ll ans;
+	ll y;
+	vector<pair<pair<ll, int>, char>> queries;
+
+	ll count_primes(ll n) {
+		/*
+		 * this y is actually n / y
+		 * also no logarithms, welcome to reality, this y is the best for
+		 * n=10^12 or n=10^13
+		 */
+		y = std::pow(n, 0.64);
+		if (n < 100) { y = n; }
+
+		// linear sieve
+		primes.clear();
+		mnprimes.assign(y + 1, -1);
+		ans = 0;
+		for (int i = 2; i <= y; ++i) {
+			if (mnprimes[i] == -1) {
+				mnprimes[i] = primes.size();
+				primes.push_back(i);
+			}
+			for (int k = 0; k < primes.size(); ++k) {
+				int j = primes[k];
+				if (i * j > y) { break; }
+				mnprimes[i * j] = k;
+				if (i % j == 0) { break; }
+			}
+		}
+		if (n < 100) { return primes.size(); }
+		ll s = n / y;
+
+		for (int p : primes) {
+			if (p > s) { break; }
+			ans++;
+		}
+		// pi(n / y)
+		int ssz = ans;
+
+		// F with two pointers
+		int ptr = primes.size() - 1;
+		for (int i = ssz; i < primes.size(); ++i) {
+			while (ptr >= i && (ll)primes[i] * primes[ptr] > n) { ptr--; }
+			if (ptr < i) { break; }
+			ans -= ptr - i + 1;
+		}
+
+		// phi, store all queries
+		phi(n, ssz - 1);
+
+		sort(queries.begin(), queries.end());
+		int ind = 2;
+		int sz = primes.size();
+
+		// the order in fenwick will be reversed, because prefix sum in a
+		// fenwick is just one query
+		BIT<int> fw(sz);
+		for (auto [na, sign] : queries) {
+			auto [n, a] = na;
+			while (ind <= n) { fw.add(sz - 1 - mnprimes[ind++], 1); }
+			ans += (fw.pref_sum(sz - a - 2) + 1) * sign;
+		}
+		queries.clear();
+		return ans - 1;
+	}
+
+	void phi(ll n, int a, int sign = 1) {
+		if (n == 0) { return; }
+		if (a == -1) {
+			ans += n * sign;
+			return;
+		}
+		if (n <= y) {
+			queries.emplace_back(pair<int, int>{n, a}, sign);
+			return;
+		}
+		phi(n, a - 1, sign);
+		phi(n / primes[a], a - 1, -sign);
+	}
+} prime_counter;
+
+int main() {
+	ll n;
+	std::cin >> n;
+	cout << prime_counter.count_primes(n) << endl;
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
+## Problems
+
+<Problems problems="general" />
