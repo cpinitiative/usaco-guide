@@ -26,7 +26,7 @@ The functions that we'd like to compute prefix sums over in the first two focus 
 1. If a function $f: \mathbb{Z}^+ \rightarrow \mathbb{C}$ maps positive integers
    to complex numbers, it's an arithmetic function.
 2. If $f(n)$ is an arithmetic function, $f(1) = 1$ and $f(p\cdot q) =
-   f(p) \cdot f(q)$ for any coprime positive integers $p,q$, it's a
+   f(p) \cdot f(q)$ for any coprime positive integers $p$, $q$, it's a
    multiplicative function.
 3. If $f(n)$ is multiplicative and $f(p \cdot q)$ = $f(p)\cdot f(q)$ for any
    positive integers $p$, $q$, it's a completely multiplicative function.
@@ -288,7 +288,7 @@ for both small cases, then subtract out their overlap.
 
 Additionally, $\sum_{x\in Q_N}\sqrt x\le O(\sum_{i=1}^{\sqrt N}\sqrt {N/i})\le O(N^{3/4})$.
 
-It is possible to reduce this to $O(N^{2/3})$ time (see [this comment](https://codeforces.com/blog/entry/117635?#comment-1041002)).
+Bonus: It is possible to reduce this to $O(N^{2/3})$ time (see [this comment](https://codeforces.com/blog/entry/117635?#comment-1041002)).
 
 </Spoiler>
 
@@ -523,9 +523,6 @@ with $f=I$ and $h=id$.
 
 Time Complexity: $O(N^{3/4})$
 
-Note: You can optimize this to $O(N^{2/3})$ by applying the method introduced
-in the second resource.
-
 ```cpp
 #include <atcoder/modint>
 #include <bits/stdc++.h>
@@ -608,6 +605,11 @@ int main() {
 
 </CPPSection>
 </LanguageSection>
+
+Bonus: You can optimize this to $O(N^{2/3})$ by applying the method introduced
+in the second resource. More specifically, $g$ and its prefix sums can be precomputed
+up to $N^{2/3}$ in $O(N^{2/3})$ time using a linear sieve. Then computing the remaining
+prefix sums takes $O(\sum_{i=1}^{N^{1/3}}\sqrt{N/i})=O(N^{2/3})$ additional time.
 
 </Spoiler>
 
