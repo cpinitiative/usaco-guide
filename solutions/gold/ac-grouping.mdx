@@ -20,11 +20,15 @@ $$
 dp[i] = \max_{j \subseteq i} \left(dp[i], dp[j] + dp[i \oplus j] \right)
 $$
 
-**Why $i \oplus j$?**
+
+<Info>
 
 Since $j$ is a subset of $i$, the XOR operation ($i \oplus j$) acts like set subtraction. It "toggles off" the bits that are present in $j$, leaving you with exactly the remaining bits of $i$. This guarantees that $j$ and $i \oplus j$ are disjoint parts that perfectly combine to form $i$.
 
----
+For an efficient way to iterate over submasks $j$, we use the pattern `for (int j = i; j; j = (j - 1) & i)`. You can read more about this technique in the [Merging Subsets section](/gold/dp-bitmasks#merging-subsets) of the module.
+
+</Info>
+
 
 ## Implementation
 
@@ -51,6 +55,7 @@ int main() {
 	}
 
 	vector<ll> dp(1 << n);
+
 	// Iterate through every possible subset of rabbits
 	for (int i = 1; i < (1 << n); i++) {
 		// Calculate internal score if this subset forms ONE single group
@@ -72,5 +77,6 @@ int main() {
 	cout << dp[(1 << n) - 1] << '\n';
 }
 ```
+
 </CPPSection>
 </LanguageSection>
