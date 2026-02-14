@@ -10,25 +10,22 @@ author: Aarav Sethi
 ## Explanation
 
 ### Observation 1:
-
 $M=1$ if and only if the string is already square. For example, `WCOCOWWCOCOW` is `WCOCOW` repeated twice, allowing for a single deletion operation.
 
 ### Observation 2:
-
-If $N$ is odd, no solution exists. Square strings have even length, so odd $N*3$ cannot be formed from even-length square strings. Therefore, $N$ must be even.
+If $N$ is odd, no solution exists. Square strings have even length, and since the total length $N * 3$ will be odd, it cannot be formed from even-length square strings. Therefore, $N$ must be even.
 
 ### Observation 3:
+$M \le 3$ is always true, because a valid solution is just grouping all the `C`'s, `O`'s, and `W`'s in separate operations.
 
-$M \le 3$ is always true, because a valid solution is always just grouping all the `C`'s, `O`'s, and `W`'s.
+### Full Solution:
 
-### Observation 4:
-
-$M \le 2$ is always true. This is because any two possible substrings (`COW`, `OWC`, `WCO`) share a common substring of at least length 2.
+$M \le 2$ is always true. This is because any two possible components (`COW`, `OWC`, `WCO`) share a common substring of at least length 2.
 
 For example `COW` and `OWC` have `OW` in common, or `WCO` and `OWC` have `WC` in common.
 
 Using this property a greedy algorithm can be made by:
-- Split the string in half
+- Splitting the string in half
 - For both halves of the string, read all $N/2$ components left to right.
 - Add the largest common substring of both components into operation 1, and the remainder into operation 2.
 Since each operation has the same characters added for every corresponding component from both halves of the string, each operation will end up as a square string.
