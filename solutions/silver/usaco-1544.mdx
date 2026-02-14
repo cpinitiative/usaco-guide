@@ -20,7 +20,7 @@ We can then apply the same idea to maximize the amount of `1` bits.
 
 ## Implementation
 
-**Time Complexity:** $\mathcal{O}(\Sigma{N})$
+**Time Complexity:** $\mathcal{O}({N})$
 
 <LanguageSection>
 <CPPSection>
@@ -30,21 +30,21 @@ We can then apply the same idea to maximize the amount of `1` bits.
 using namespace std;
 
 int main() {
-	int t, n, k;
-	string x, y;
-	cin >> t;
+	int t; cin >> t;
 	while (t--) {
-		cin >> n >> k >> x;
+		int n, k;
+		string r, b;
+		cin >> n >> k >> r;
 
 		// c[i] = {number of 1 bits in chain, size of chain}
 		vector<pair<int, int>> c(k, {0, 1});
-		y = string(k, '0');
-		y.reserve(n);
+		b = string(k, '0');
+		b.reserve(n);
 
 		// Build the chains using XOR property
 		for (int i = 0; i < n - k; i++) {
-			y += ((y[i] == '1') ^ (x[i] == '1') ^ (x[i + 1] == '1')) + '0';
-			c[i % k].first += y[y.size() - 1] - '0';
+			b += ((b[i] == '1') ^ (r[i] == '1') ^ (r[i+1] == '1')) + '0';
+			c[i % k].first += b[b.size() - 1] - '0';
 			c[i % k].second++;
 		}
 
@@ -56,7 +56,7 @@ int main() {
 			m = min(m, abs(2 * ones - len));  // ones-(len-ones)
 			p ^= (ones >= len - ones);        // parity counter
 		}
-		if (p != (x[0] == '1')) count += m;
+		if (p != (r[0] == '1')) count += m;
 		cout << count << ' ';
 
 		// Compute maximum number of ones
@@ -68,7 +68,7 @@ int main() {
 			m = min(m, abs(len - 2 * ones));
 			p ^= (2 * ones <= len);  // opposite flip condition
 		}
-		if (p != (x[0] == '1')) count -= m;
+		if (p != (r[0] == '1')) count -= m;
 		cout << count << endl;
 	}
 }
@@ -99,21 +99,20 @@ public class Main {
 			String[] parts = br.readLine().trim().split(" ");
 			int n = Integer.parseInt(parts[0]);
 			int k = Integer.parseInt(parts[1]);
-			String x = br.readLine().trim();
+			String r = br.readLine().trim();
 
 			// Initialize chains
 			Chain[] chains = new Chain[k];
 			for (int i = 0; i < k; i++) chains[i] = new Chain(0, 1);
 
 			// Build the reconstructed string using XOR property
-			StringBuilder y = new StringBuilder();
-			for (int i = 0; i < k; i++) y.append('0');
-			y.ensureCapacity(n);  // optional, like reserve in C++
+			StringBuilder b = new StringBuilder();
+			for (int i = 0; i < k; i++) b.append('0');
 
 			for (int i = 0; i < n - k; i++) {
-				int bit = ((y.charAt(i) - '0') ^ (x.charAt(i) - '0') ^
-				           (x.charAt(i + 1) - '0'));
-				y.append((char)(bit + '0'));
+				int bit = ((b.charAt(i) - '0') ^ (r.charAt(i) - '0') ^
+				           (r.charAt(i + 1) - '0'));
+				b.append((char)(bit + '0'));
 
 				int chainIndex = i % k;
 				chains[chainIndex].ones += bit;
@@ -128,7 +127,7 @@ public class Main {
 				m = Math.min(m, Math.abs(2 * c.ones - c.len));
 				p ^= (c.ones >= c.len - c.ones);
 			}
-			if (p != (x.charAt(0) == '1')) count += m;
+			if (p != (r.charAt(0) == '1')) count += m;
 			System.out.print(count + " ");
 
 			// Compute maximum number of ones
@@ -140,7 +139,7 @@ public class Main {
 				m = Math.min(m, Math.abs(c.len - 2 * c.ones));
 				p ^= (2 * c.ones <= c.len);
 			}
-			if (p != (x.charAt(0) == '1')) count -= m;
+			if (p != (r.charAt(0) == '1')) count -= m;
 			System.out.println(count);
 		}
 	}
@@ -155,17 +154,17 @@ t = int(input())
 
 for _ in range(t):
 	n, k = map(int, input().split())
-	x = input().strip()
+	r = input().strip()
 
 	# c[i] = [number of 1 bits in chain, size of chain]
 	c = [[0, 1] for _ in range(k)]
 
 	# Build the chains using the XOR property
-	y = [False] * n  # initialize full length, first k bits are '0'
+	b = [False] * n  # initialize full length, first k bits are '0'
 
 	for i in range(n - k):
-		y[k + i] = y[i] ^ (x[i] == "1") ^ (x[i + 1] == "1")
-		c[i % k][0] += y[k + i]
+		b[k + i] = b[i] ^ (r[i] == "1") ^ (r[i + 1] == "1")
+		c[i % k][0] += b[k + i]
 		c[i % k][1] += 1
 
 	# Compute minimum number of ones
@@ -176,7 +175,7 @@ for _ in range(t):
 		count += min(ones, length - ones)
 		m = min(m, abs(2 * ones - length))
 		p ^= ones >= length - ones
-	if p != (x[0] == "1"):
+	if p != (r[0] == "1"):
 		count += m
 	print(count, end=" ")
 
@@ -188,7 +187,7 @@ for _ in range(t):
 		count += max(ones, length - ones)
 		m = min(m, abs(length - 2 * ones))
 		p ^= 2 * ones <= length
-	if p != (x[0] == "1"):
+	if p != (r[0] == "1"):
 		count -= m
 	print(count)
 ```
