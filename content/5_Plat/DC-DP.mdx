@@ -33,8 +33,8 @@ $$
 where $C(i,j)$ is a cost function and you can compute it in $O(1)$ time.
 Furthermore, $dp(i,j) =0$ for $j<0$.
 
-The straightforward implementation gives a runtime of $O(MN^2)$ if $0\leq i <  M$ and $0\leq j < N$.
-Divide & Conquer DP allows this to be optimized to $O(M N \log N)$.
+The straightforward implementation gives a runtime of $O(mn^2)$ if $0\leq i <  m$ and $0\leq j < n$.
+Divide & Conquer DP allows this to be optimized to $O(mn \log n)$.
 
 For each $i,j$, let $\text{opt}(i,j)$ be the value of $k$ that minimizes the right hand side of the equation.
 Divide & Conquer DP **only applies if**
@@ -58,7 +58,7 @@ Similarly, we can compute $\text{opt}(i, 3n/4)$ and recursively split the ranges
 To begin analyzing the complexity of the Divide & Conquer, first note that there are $O(\log{n})$ levels in the recursion. We claim that $O(n)$ steps are being done at each level. Let the total length of the $\text{opt}$ intervals (denoted by $rl$ and $rr$ in the code) in the $k$th level be $S_k$, and observe that any time an interval from level $k$ of length $l$ is split, the resulting interval(s) have total length at most $l + 1$. Furthermore, at level $k$, at most $2^k$ splits are performed, so we have that $S_{k + 1} \leq S_k + 2^k$. Applying the bound inductively with $S_0 = n$ gives that for each level $k$,
 
 $$
-S_k < n + 2^k \in O(n)
+S_k < n + 2^k \in O(n).
 $$
 
 Thus, the complexity of each Divide & Conquer is $O(n\log{n})$, and the complexity of the entire DP computation is $O(mn\log{n})$.
