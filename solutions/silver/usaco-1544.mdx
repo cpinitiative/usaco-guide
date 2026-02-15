@@ -8,13 +8,14 @@ author: Aryaveer Shishodia
 [Official Analysis (Python)](http://usaco.org/current/data/sol_prob3_silver_season26contest1.html)
 
 ## Explanation
-The "remainder when the number of ones in the length-K window of $b$ with leftmost index $i$ is divided by two" is analogous to the XOR of the window. The only difference between the windows of $r_i$ and $r_{i+1}$ is that $r_i$'s window contains $b_i$, while $r_{i+1}$'s contains $b_{i+k}$.
+The value of $r_i$ is equivalent to the XOR of the length-K window beginning at $i$. The only difference between the windows of $r_i$ and $r_{i+1}$ is that $r_i$'s window contains $b_i$, while $r_{i+1}$'s contains $b_{i+k}$.
 
-$$r_i\oplus r_{i+1} = b_i\oplus b_{i+k}$$
+$$(b_i\oplus b_{i+1} ...\oplus b_{i+k-1})\oplus(b_{i+1}...\oplus b_{i+k-1}\oplus b_{i+k}) = r_i\oplus r_{i+1} = b_i\oplus b_{i+k}$$
+$$r_i\oplus r_{i+1}\oplus b_i = b_{i+k}$$
 
-Since we are given $r$, choosing the value of $b_i$ determines $b_{i+k}$, which in turn determines $b_{i+2k}$, $b_{i+3k}$, and so on. This splits $b$ into $k$ binary chains, each determined by one of the first $k$ characters of $b$. For each chain, we can set the first character to `0` and `1`, and compare which one will minimize the amount of `1` bits.
+Since we are given $r$, choosing the value of $b_i$ determines $b_{i+k}$, which in turn determines $b_{i+2k}$, $b_{i+3k}$, and so on. This splits $b$ into $k$ binary chains, each dependent on one of the first $k$ characters of $b$. For each chain, we can set the first character to `0` or `1`, comparing which will minimize the amount of `1` bits.
 
-The only thing that restricts the first $k$ bits of $b$ is $r_1$, which will sometimes force us to flip one of our initial bits despite it increasing the number of `1` bits in the chain. We can check if our configuration satisfies $r_1$ by recording the bitwise XOR of the optimal first $k$ bits, and storing a running minimum $m$ the minimal cost of flipping a chain. If the bitwise XOR of the first k elements doesn't align with $r_1$, we can then flip that chain back and add $m$ to our count.
+The only thing that restricts the first $k$ bits of $b$ is $r_1$, which will sometimes force us to flip one of our initial bits despite it increasing the number of `1` bits in the string. We can check if our configuration satisfies $r_1$ by recording the bitwise XOR of the optimal first $k$ bits, and storing a running minimum $m$, representing the additional amount `1` bits to flip a chain. If the bitwise XOR of the optimal first $k$ bits doesn't align with $r_1$, we can then flip the selected chain back and add $m$ to our count.
 
 We can then apply the same idea to maximize the amount of `1` bits.
 
