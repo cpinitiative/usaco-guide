@@ -53,9 +53,15 @@ A nice way to reformulate the Quadrangle Inequality is the following: when we in
 We can then apply the idea behind Divide & Conquer.
 Fix a given $i$. First, compute $\text{opt}(i,n/2)$.
 Then compute $\text{opt}(i, n/4)$ using the fact that it is less than or equal to $\text{opt}(i, n/2)$.
-Similarly, we can compute $\text{opt}(i, 3n/4)$ and recursively split the ranges in half, keeping track on the lower and upper bounds.
+Similarly, we can compute $\text{opt}(i, 3n/4)$ and recursively split the ranges in half, keeping track on the lower and upper bounds. Refer to the code below for more details.
 
-Since each possible value of $\text{opt}(i, j)$ appears $O(\log n)$ times, this gives a final runtime of $O(mn \log n)$.
+To begin analyzing the complexity of the Divide & Conquer, first note that there are $O(\log{n})$ levels in the recursion. We claim that $O(n)$ steps are being done at each level. Let the total length of the $\text{opt}$ intervals (denoted by $rl$ and $rr$ in the code) in the $k$th level be $S_k$, and observe that any time an interval from level $k$ of length $l$ is split, the resulting interval(s) have total length at most $l + 1$. Furthermore, at level $k$, at most $2^k$ splits are performed, so we have that $S_{k + 1} \leq S_k + 2^k$. Applying the bound inductively with $S_0 = n$ gives that for each level $k$,
+
+$$
+S_k < n + 2^k \in O(n)
+$$
+
+Thus, the complexity of each Divide & Conquer is $O(n\log{n})$, and the complexity of the entire DP computation is $O(mn\log{n})$.
 
 ## Example - Circular Barn
 
