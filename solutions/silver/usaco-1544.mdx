@@ -11,6 +11,7 @@ author: Aryaveer Shishodia
 The value of $r_i$ is equivalent to the XOR of the length-K window beginning at $i$. The only difference between the windows of $r_i$ and $r_{i+1}$ is that $r_i$'s window contains $b_i$, while $r_{i+1}$'s contains $b_{i+k}$.
 
 $$(b_i\oplus b_{i+1} ...\oplus b_{i+k-1})\oplus(b_{i+1}...\oplus b_{i+k-1}\oplus b_{i+k}) = r_i\oplus r_{i+1} = b_i\oplus b_{i+k}$$
+
 $$r_i\oplus r_{i+1}\oplus b_i = b_{i+k}$$
 
 Since we are given $r$, choosing the value of $b_i$ determines $b_{i+k}$, which in turn determines $b_{i+2k}$, $b_{i+3k}$, and so on. This splits $b$ into $k$ binary chains, each dependent on one of the first $k$ characters of $b$. For each chain, we can set the first character to `0` or `1`, comparing which will minimize the amount of `1` bits.
