@@ -5,6 +5,8 @@ title: Digit Sum
 author: Chongtian Ma
 ---
 
+# Solution
+
 ## Explanation
 
 Let's define the function $\mathtt{pref}(x)$ to return the sum of digits among all integers from $0$ to $x$ inclusive.
@@ -31,7 +33,7 @@ However, we still have to add the sum of digits for all numbers with less than $
 
 ## Implementation
 
-**Time Complexity:** $\mathcal{O}(n^2)$ for each query.
+**Time Complexity:** $\mathcal{O}(n^2)$ for each query, where $n$ is the length of the number.
 
 <LanguageSection>
 <CPPSection>
@@ -111,7 +113,7 @@ int main() {
 </CPPSection>
 </LanguageSection>
 
-# Alternative solution
+# Alternate Solution
 
 ## Explanation
 
@@ -152,22 +154,26 @@ int number_length;
 array<ll, 2> calc(int pos, bool is_free) {
 	// Base case is we have an empty suffix, so total sum is 0 and total amount is 1
 	if (pos == number_length) { return {0, 1}; }
-	if (dp[pos][is_free][0] != -1) return dp[pos][is_free];
+	if (dp[pos][is_free][0] != -1) return dp[pos][is_free
+
 	bool next_is_free;
 	array<ll, 2> ans = {0, 0};
 	for (int d = 0; d < 10; d++) {
 		// This means our number would be too big
 		if (is_free == false && d > (digits[pos] - '0')) break;
 		next_is_free = is_free;
+
 		// Update our freedom value
 		if (is_free == false && d < (digits[pos] - '0')) next_is_free = true;
 		auto next_state = calc(pos + 1, next_is_free);
+
 		// Add amount of numbers to the current dp state
 		ans[1] += next_state[1];
+
 		// Add contribution of the current digit and total sum of digits after current
-		// digit
 		ans[0] += d * next_state[1] + next_state[0];
 	}
+
 	return dp[pos][is_free] = ans;
 }
 
@@ -179,14 +185,14 @@ ll pref(ll n) {
 	for (int i = 0; i < number_length; i++) {
 		for (int j = 0; j < 2; j++) dp[i][j] = {-1, 0};
 	}
+
 	return calc(0, false)[0];
 }
 
 void solve() {
 	ll l, r;
 	cin >> l >> r;
-	cout << pref(r) - pref(l - 1) << "\n";
-	return;
+	cout << pref(r) - pref(l - 1) << '\n';
 }
 
 int main() {
