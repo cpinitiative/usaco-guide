@@ -54,7 +54,7 @@ Direct application of Kuhn's algorithm fails on general graphs because an augmen
 
 TODO: add diagram
 
-It is tempting to modify Kuhn's algorithm and make it work by creating two "versions" of a node: a version that only has black (unmatched) edges pointing out and red (matched) edges pointing in, and a version that only has red edges pointing out and black edges pointing in. This artificially introduces some of the characteristics of bipartite graphs, and deals with parity neatly. However, in this case, it is possible to visit a particular node twice (on different parities), presenting additional issues. 
+It is tempting to modify Kuhn's algorithm and make it work by creating two "versions" of a node: a version that only has black (unmatched) edges pointing out and red (matched) edges pointing in, and a version that only has red edges pointing out and black edges pointing in. This artificially introduces some of the characteristics of bipartite graphs, and deals with parity neatly. However, in this case, it is possible to visit a particular node twice (on different parities), presenting additional issues.
 
 TODO: add diagram
 
@@ -80,241 +80,234 @@ When we find an augmenting path, we need to "unroll" all the cycles involved. Ca
 #include "bits/stdc++.h"
 using namespace std;
 #define all(x) begin(x), end(x)
-#define sz(x) (int) (x).size()
+#define sz(x) (int)(x).size()
 #define int long long
 
 namespace blossom {
-	const int mxn=1e3;
-	int rt,n,g[mxn][mxn],a[mxn],nx,f[mxn],vis[mxn],b[mxn],p[mxn];
-	vector<int> cyc[mxn];
-	queue<int> q;
-	
-	void init(int N) {
-		n=rt=N;
-		memset(g,-1,sizeof(g));
-		iota(a,a+n,0);
-	}
-	
-	void add_edge(int u, int v) {
-		g[u][v]=v;
-		g[v][u]=u;
-	}
-	
-	int trace(int a) {
-		return f[a]==rt?a:trace(f[a]);
-	}
-	
-	void path(int v, vector<int>& res) {
+const int mxn = 1e3;
+int rt, n, g[mxn][mxn], a[mxn], nx, f[mxn], vis[mxn], b[mxn], p[mxn];
+vector<int> cyc[mxn];
+queue<int> q;
+
+void init(int N) {
+	n = rt = N;
+	memset(g, -1, sizeof(g));
+	iota(a, a + n, 0);
+}
+
+void add_edge(int u, int v) {
+	g[u][v] = v;
+	g[v][u] = u;
+}
+
+int trace(int a) { return f[a] == rt ? a : trace(f[a]); }
+
+void path(int v, vector<int> &res) {
+	res.push_back(v);
+	while (f[v] != rt) {
+		v = f[v];
 		res.push_back(v);
-		while (f[v]!=rt) {
-			v=f[v];
-			res.push_back(v);
+	}
+}
+
+vector<int> path(int v) {
+	vector<int> res{v};
+
+	return res;
+}
+
+int contract(int u, int v) {
+	cyc[nx].clear();
+	vector<int> pu;
+	path(u, pu);
+	vector<int> pv;
+	path(v, pv);
+
+	int lc;
+	while (sz(pu) && sz(pv) && pu.back() == pv.back()) {
+		lc = pu.back();
+		pu.pop_back();
+		pv.pop_back();
+	}
+	f[nx] = f[lc];
+	p[nx] = 0;
+	vis[nx] = vis[lc];
+	a[nx] = a[lc];
+	cyc[nx].push_back(lc);
+	for (int i = sz(pu) - 1; i >= 0; i--) cyc[nx].push_back(pu[i]);
+	for (int i : pv) cyc[nx].push_back(i);
+	memset(g[nx], -1, sizeof(g[nx]));
+
+	for (int i : cyc[nx]) {
+		b[i] = nx;
+		for (int j = 0; j < nx; j++) {
+			if (g[i][j] != -1) { g[nx][j] = g[i][j]; }
+			if (g[j][i] != -1) { g[j][nx] = i; }
 		}
 	}
-	
-	vector<int> path(int v) {
-		vector<int> res{v};
-		
+
+	for (int j = 0; j < nx; j++) {
+		if (g[lc][j] != -1) { g[nx][j] = g[lc][j]; }
+		if (g[j][lc] != -1) { g[j][nx] = lc; }
+	}
+
+	for (int i : cyc[nx]) {
+		for (int j = 0; j < nx; j++) {
+			if (b[j] == nx) continue;
+			if (f[j] == i) f[j] = nx;
+		}
+	}
+
+	b[nx] = nx;
+	return nx++;
+}
+
+vector<int> traverse_cycle(int v, int pv, int nx, int fe) {
+	vector<int> res;
+	if (v < n) {
+		res.push_back(v);
 		return res;
 	}
-	
-	int contract(int u, int v) {
-		cyc[nx].clear();
-		vector<int> pu; path(u,pu);
-		vector<int> pv; path(v,pv);
-		
-		int lc;
-		while (sz(pu)&&sz(pv)&&pu.back()==pv.back()) {
-			lc=pu.back();
-			pu.pop_back();
-			pv.pop_back();
-		}
-		f[nx]=f[lc];
-		p[nx]=0;
-		vis[nx]=vis[lc];
-		a[nx]=a[lc];
-		cyc[nx].push_back(lc);
-		for (int i=sz(pu)-1; i>=0; i--)
-			cyc[nx].push_back(pu[i]);
-		for (int i:pv) cyc[nx].push_back(i);
-		memset(g[nx],-1,sizeof(g[nx]));
-	
-		for (int i:cyc[nx]) {
-			b[i]=nx;
-			for (int j=0; j<nx; j++) {
-				if (g[i][j]!=-1) {
-					g[nx][j]=g[i][j];
-				}
-				if (g[j][i]!=-1) {
-					g[j][nx]=i;	
-				}
-			}
-		}
-		
-		for (int j=0; j<nx; j++) {
-			if (g[lc][j]!=-1) {
-				g[nx][j]=g[lc][j];
-			}
-			if (g[j][lc]!=-1) {
-				g[j][nx]=lc;	
-			}
-		}
-		
-		for (int i:cyc[nx]) {
-			for (int j=0; j<nx; j++) {
-				if (b[j]==nx) continue;
-				if (f[j]==i) f[j]=nx;
-			}
-		}
-		
-		
-		b[nx]=nx;
-		return nx++;
+
+	int f = g[pv][v];
+	int l = g[nx][v];
+
+	int ind = find(all(cyc[v]), f) - cyc[v].begin();
+	int iter;
+	if (fe) {
+		if (ind % 2) iter = 1;
+		else iter = -1;
+	} else {
+		if (ind % 2) iter = -1;
+		else iter = 1;
 	}
-	
-	
-	vector<int> traverse_cycle(int v, int pv, int nx, int fe) {
-		vector<int> res;
-		if (v<n) {
-			res.push_back(v);
-			return res;
-		}
-		
-		int f=g[pv][v];
-		int l=g[nx][v];
-		
-		int ind=find(all(cyc[v]),f)-cyc[v].begin();
-		int iter;
-		if (fe) {
-			if (ind%2) iter=1;
-			else iter=-1;
+
+	if (f == cyc[v][0]) {
+		int ind1 = find(all(cyc[v]), l) - cyc[v].begin();
+		if (ind1 % 2) {
+			iter = -1;
 		} else {
-			if (ind%2) iter=-1;
-			else iter=1;
+			iter = 1;
 		}
-		
-		if (f==cyc[v][0]) {
-			int ind1=find(all(cyc[v]),l)-cyc[v].begin();
-			if (ind1%2) {
-				iter=-1;
+	}
+
+	vector<int> r1;
+	for (int i = ind; cyc[v][i] != l; i = (i + iter + sz(cyc[v])) % sz(cyc[v])) {
+		r1.push_back(cyc[v][i]);
+	}
+
+	r1.push_back(l);
+	r1.push_back(nx);
+	for (int i = 0; i < sz(r1) - 1; i++) {
+		vector<int> r2 = traverse_cycle(r1[i], pv, r1[i + 1], fe);
+		for (int i : r2) res.push_back(i);
+		fe = 1 - fe;
+		pv = r1[i];
+	}
+
+	return res;
+}
+
+vector<int> tr(int v, int pv) {
+	vector<int> res;
+	int eg = 1;
+	while (v != rt) {
+		vector<int> r1 = traverse_cycle(v, pv, f[v], eg);
+		eg = 1 - eg;
+		for (int i : r1) res.push_back(i);
+		pv = v;
+		v = f[v];
+	}
+	return res;
+}
+
+void augment(int u, int v) {
+	vector<int> pu = tr(u, v);
+	vector<int> pv = tr(v, u);
+	reverse(all(pu));
+	for (int i : pv) pu.push_back(i);
+
+	assert(sz(pu) % 2 == 0);
+	for (int i = 0; i < sz(pu); i += 2) {
+		a[pu[i]] = pu[i + 1];
+		a[pu[i + 1]] = pu[i];
+	}
+}
+
+bool bfs() {
+	while (sz(q)) q.pop();
+	nx = n + 1;
+	rt = n;
+	iota(b, b + n, 0);
+	fill(f, f + mxn, rt);
+	memset(g[rt], -1, sizeof(g[rt]));
+
+	for (int i = 0; i < n; i++) {
+		for (int j = n; j < mxn; j++) { g[i][j] = -1; }
+	}
+
+	memset(vis, -1, sizeof(vis));
+	for (int i = 0; i < n; i++) {
+		if (a[i] == i) {
+			q.push(i);
+			vis[i] = i;
+			f[i] = rt;
+			p[i] = 0;
+			g[rt][i] = i;
+		}
+	}
+	while (sz(q)) {
+		int u = q.front();
+		q.pop();
+		if (b[u] != u) continue;
+		int nx1 = nx;
+		for (int v = 0; v < nx1; v++) {
+			if (g[u][v] == -1) continue;
+			if (b[v] != v) continue;
+			if (vis[trace(v)] != -1 && vis[trace(v)] != vis[u] && p[v] == 0) {
+				augment(u, v);
+				return 1;
+			} else if (vis[v] == -1) {
+				int x = a[v];
+				f[v] = u;
+				f[x] = v;
+				vis[v] = vis[x] = vis[u];
+				p[v] = 1;
+				p[x] = 0;
+				q.push(x);
 			} else {
-				iter=1;
-			}
-		}
-		
-		vector<int> r1;
-		for (int i=ind; cyc[v][i]!=l; i=(i+iter+sz(cyc[v]))%sz(cyc[v])) {
-			r1.push_back(cyc[v][i]);
-		}
-		
-		r1.push_back(l);
-		r1.push_back(nx);
-		for (int i=0; i<sz(r1)-1; i++) {
-			vector<int> r2=traverse_cycle(r1[i],pv,r1[i+1],fe);
-			for (int i:r2) res.push_back(i);
-			fe=1-fe; pv=r1[i];
-		}
-
-		return res;
-	}
-	
-	vector<int> tr(int v, int pv) {
-		vector<int> res;
-		int eg=1;
-		while (v!=rt) {
-			vector<int> r1 = traverse_cycle(v,pv,f[v],eg);
-			eg=1-eg;
-			for (int i:r1) res.push_back(i);
-			pv=v;
-			v=f[v];
-		}
-		return res;
-	}
-	
-	void augment(int u, int v) {
-		vector<int> pu=tr(u,v);
-		vector<int> pv=tr(v,u);	
-		reverse(all(pu));
-		for (int i:pv) pu.push_back(i);
-
-		assert(sz(pu)%2==0);
-		for (int i=0; i<sz(pu); i+=2) {
-			a[pu[i]]=pu[i+1];
-			a[pu[i+1]]=pu[i];
-		}
-
-	}
-	
-	bool bfs() {
-		while (sz(q)) q.pop();
-		nx=n+1; rt=n;
-		iota(b,b+n,0);
-		fill(f,f+mxn,rt);
-		memset(g[rt],-1,sizeof(g[rt]));
-		
-		for (int i=0; i<n; i++) {
-			for (int j=n; j<mxn; j++) {
-				g[i][j]=-1;
-			}
-		}
-		
-		memset(vis,-1,sizeof(vis));
-		for (int i=0; i<n; i++) {
-			if (a[i]==i) {
-				q.push(i);
-				vis[i]=i; f[i]=rt; p[i]=0;
-				g[rt][i]=i;
-			}
-		}
-		while (sz(q)) {
-			int u=q.front(); q.pop();
-			if (b[u]!=u) continue;
-			int nx1=nx;
-			for (int v=0; v<nx1; v++) {
-				if (g[u][v]==-1) continue;
-				if (b[v]!=v) continue;
-				if (vis[trace(v)]!=-1 && vis[trace(v)]!=vis[u] && p[v]==0) {
-					augment(u,v);
-					return 1;
-				} else if (vis[v]==-1) {
-					int x=a[v];
-					f[v]=u; f[x]=v;
-					vis[v]=vis[x]=vis[u];
-					p[v]=1; p[x]=0;
-					q.push(x);
-				} else {
-					if (p[v]==0) {
-						int bl=contract(u,v);
-						q.push(bl);
-						break;
-					}
+				if (p[v] == 0) {
+					int bl = contract(u, v);
+					q.push(bl);
+					break;
 				}
-				
 			}
 		}
-		
-		return 0;
 	}
-	
-};
+
+	return 0;
+}
+
+};  // namespace blossom
 
 signed main() {
-	ios::sync_with_stdio(false); cin.tie(nullptr);
-	int n,m; cin>>n>>m;
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
+	int n, m;
+	cin >> n >> m;
 	blossom::init(n);
 	while (m--) {
-		int u,v; cin>>u>>v;
-		blossom::add_edge(u,v);
+		int u, v;
+		cin >> u >> v;
+		blossom::add_edge(u, v);
 	}
-	int cnt=0;
-	while (blossom::bfs())
-		cnt++;
-	cout<<cnt<<"\n";
-	
-	for (int i=0; i<n; i++) {
-		if (blossom::a[i]>i) cout<<i<<" "<<blossom::a[i]<<"\n";
+	int cnt = 0;
+	while (blossom::bfs()) cnt++;
+	cout << cnt << "\n";
+
+	for (int i = 0; i < n; i++) {
+		if (blossom::a[i] > i) cout << i << " " << blossom::a[i] << "\n";
 	}
-		
 }
 ```
 
