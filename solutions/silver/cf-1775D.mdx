@@ -11,139 +11,6 @@ author: Kevin Sheng, johnzhou721
 
 ### Explanation
 
-First, notice that when you have spiders that are friends, the $\gcd$
-requirement implies that they must share a common prime factor.  This implies
-that all spiders with a common factor can directly pass messages to one another.
-
-Note that "directly" passing messages from one another for *any* spiders that
-share the common factor is expensive to maintain; $3\times10^5$ is already
-enough spiders such that having many more orders of magnitudes of edges to
-represent all possible communications naively simply isn't going to cut it.
-
-However, what we *can* do is set up intermediate nodes that, to represent a
-communication by way of the common prime factor represented by this intermediate
-node between two spiders, we represent it by first having a spider send a
-message to this intermediate node, and then to another spider connected to this
-intermediate node; i.e. we create an intermediate node for each prime factor
-present in the data, and connect spiders to intermediate nodes if and only if
-the spider is divisible by the prime factor represented by that intermediate
-node.
-
-It is easy to see that the length of the path in the sense of the original
-problem is the length of the shortest path over our new reformulated graph,
-divided by 2.  We add 1 to that, since we need to count the starting node,
-according to the problem's specifications.
-
-The total number of nodes is $\leq3\times10^5+\pi(3\times10^5)=3\times 10^5+25991\approx3.2\times10^5$, and, since in the worst case in terms of the number
-of prime factors in a number,
-$2\times3\times5\times7\times\dots\times17>3\times10^5$
-(multiplying the 7 smallest primes), we at most have $7$ prime factors for a
-number, the number of edges does not exceed $3\times10^5\times7=2.1\times10^6$.
-This means that BFS for finding the shortest path, with a time complexity of
-$\mathcal O(n+m)\approx 6\sim 7\text{ orders of magnitude}$, is sufficient.
-
-### Implementation
-
-<LanguageSection>
-<CPPSection>
-
-```cpp
-#include <algorithm>
-#include <iostream>
-#include <map>
-#include <queue>
-#include <utility>
-#include <vector>
-using namespace std;
-int n;
-vector<int> g[400005];
-bool vis[400005];
-int primes[400005];
-int spf[400005];
-int parent[400005];
-
-int total;
-void addprime(int p, int i) {
-	if (!primes[p]) primes[p] = ++total;
-	// cout << p << ' ' << primes[p] << endl;
-	g[primes[p]].push_back(i);
-	g[i].push_back(primes[p]);
-}
-
-void sieve() {
-	for (int i = 2; i <= 400000; i++) spf[i] = i;
-	for (int i = 2; i * i <= 400000; i++) {
-		if (spf[i] == i) {
-			for (int j = i * i; j <= 400000; j += i) {
-				if (spf[j] == j) spf[j] = i;
-			}
-		}
-	}
-}
-
-void factorize(int a, int i) {
-	while (a > 1) {
-		int p = spf[a];
-		if (a > 1 && a % p == 0) addprime(p, i);
-		while (a > 1 && a % p == 0) a /= p;
-	}
-}
-
-int main() {
-	sieve();
-	cin >> n;
-	total = n;
-	for (int i = 1; i <= n; i++) {
-		int a;
-		cin >> a;
-		factorize(a, i);
-	}
-	int start, end;
-	cin >> start >> end;
-	queue<pair<int, int>> q;
-	vis[start] = true;
-	q.push(make_pair(start, 0));
-	while (!q.empty()) {
-		auto front = q.front();
-		q.pop();
-		int loc = front.first, len = front.second;
-		// cout << loc << endl;
-		if (loc == end) {
-			cout << len / 2 + 1 << endl;
-			vector<int> points(1, loc);
-			int current = loc;
-			while (current != start) {
-				current = parent[current];
-				points.push_back(current);
-			}
-			reverse(points.begin(), points.end());
-			int cnt = 0;
-			for (auto a : points) {
-				if (++cnt % 2) cout << a << ' ';
-			}
-			cout << endl;
-			return 0;
-		}
-		for (int next : g[loc]) {
-			if (!vis[next]) {
-				vis[next] = true;
-				parent[next] = loc;
-				q.push(make_pair(next, len + 1));
-			}
-		}
-	}
-	cout << -1 << endl;
-	return 0;
-}
-```
-
-</CPPSection>
-</LanguageSection>
-
-## Solution 2
-
-### Explanation
-
 The first observation we need to make is that all spiders which share a common
 factor form a complete graph where all pairs of spiders in this group are friends with each other.
 
@@ -352,4 +219,140 @@ public class FriendlySpiders {
 ```
 
 </JavaSection>
+</LanguageSection>
+
+## Solution 2
+
+### Explanation
+
+First, notice that when you have spiders that are friends, the $\gcd$
+requirement implies that they must share a common prime factor.  This implies
+that all spiders with a common factor can directly pass messages to one another.
+
+Note that "directly" passing messages from one another for *any* spiders that
+share the common factor is expensive to maintain; $3\times10^5$ is already
+enough spiders such that having many more orders of magnitudes of edges to
+represent all possible communications naively simply isn't going to cut it.
+
+However, what we *can* do is set up intermediate nodes that, to represent a
+communication by way of the common prime factor represented by this intermediate
+node between two spiders, we represent it by first having a spider send a
+message to this intermediate node, and then to another spider connected to this
+intermediate node; i.e. we create an intermediate node for each prime factor
+present in the data, and connect spiders to intermediate nodes if and only if
+the spider is divisible by the prime factor represented by that intermediate
+node.
+
+It is easy to see that the length of the path in the sense of the original
+problem is the length of the shortest path over our new reformulated graph,
+divided by 2.  We add 1 to that, since we need to count the starting node,
+according to the problem's specifications.
+
+The total number of nodes is $\leq3\times10^5+\pi(3\times10^5)=3\times 10^5+25991\approx3.2\times10^5$, and, since in the worst case in terms of the number
+of prime factors in a number,
+$2\times3\times5\times7\times\dots\times17>3\times10^5$
+(multiplying the 7 smallest primes), we at most have $7$ prime factors for a
+number, the number of edges does not exceed $3\times10^5\times7=2.1\times10^6$.
+This means that BFS for finding the shortest path, with a time complexity of
+$\mathcal O(n+m)\approx 6\sim 7\text{ orders of magnitude}$, is sufficient.
+
+### Implementation
+
+This implementation uses a sieve for a little bit of speedup, which is not strictly
+required for this problem.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <algorithm>
+#include <iostream>
+#include <map>
+#include <queue>
+#include <utility>
+#include <vector>
+using namespace std;
+int n;
+vector<int> g[400005];
+bool vis[400005];
+int primes[400005];
+int spf[400005];
+int parent[400005];
+
+int total;
+void addprime(int p, int i) {
+	if (!primes[p]) primes[p] = ++total;
+	// cout << p << ' ' << primes[p] << endl;
+	g[primes[p]].push_back(i);
+	g[i].push_back(primes[p]);
+}
+
+void sieve() {
+	for (int i = 2; i <= 400000; i++) spf[i] = i;
+	for (int i = 2; i * i <= 400000; i++) {
+		if (spf[i] == i) {
+			for (int j = i * i; j <= 400000; j += i) {
+				if (spf[j] == j) spf[j] = i;
+			}
+		}
+	}
+}
+
+void factorize(int a, int i) {
+	while (a > 1) {
+		int p = spf[a];
+		if (a > 1 && a % p == 0) addprime(p, i);
+		while (a > 1 && a % p == 0) a /= p;
+	}
+}
+
+int main() {
+	sieve();
+	cin >> n;
+	total = n;
+	for (int i = 1; i <= n; i++) {
+		int a;
+		cin >> a;
+		factorize(a, i);
+	}
+	int start, end;
+	cin >> start >> end;
+	queue<pair<int, int>> q;
+	vis[start] = true;
+	q.push(make_pair(start, 0));
+	while (!q.empty()) {
+		auto front = q.front();
+		q.pop();
+		int loc = front.first, len = front.second;
+		// cout << loc << endl;
+		if (loc == end) {
+			cout << len / 2 + 1 << endl;
+			vector<int> points(1, loc);
+			int current = loc;
+			while (current != start) {
+				current = parent[current];
+				points.push_back(current);
+			}
+			reverse(points.begin(), points.end());
+			int cnt = 0;
+			for (auto a : points) {
+				if (++cnt % 2) cout << a << ' ';
+			}
+			cout << endl;
+			return 0;
+		}
+		for (int next : g[loc]) {
+			if (!vis[next]) {
+				vis[next] = true;
+				parent[next] = loc;
+				q.push(make_pair(next, len + 1));
+			}
+		}
+	}
+	cout << -1 << endl;
+	return 0;
+}
+```
+
+</CPPSection>
 </LanguageSection>
