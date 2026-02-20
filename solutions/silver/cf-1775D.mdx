@@ -272,7 +272,6 @@ required for this problem.
 #include <utility>
 #include <vector>
 using namespace std;
-int n;
 vector<int> g[400005];
 bool vis[400005];
 int primes[400005];
@@ -282,7 +281,6 @@ int parent[400005];
 int total;
 void addprime(int p, int i) {
 	if (!primes[p]) primes[p] = ++total;
-	// cout << p << ' ' << primes[p] << endl;
 	g[primes[p]].push_back(i);
 	g[i].push_back(primes[p]);
 }
@@ -308,6 +306,7 @@ void factorize(int a, int i) {
 
 int main() {
 	sieve();
+    int n;
 	cin >> n;
 	total = n;
 	for (int i = 1; i <= n; i++) {
@@ -324,7 +323,6 @@ int main() {
 		auto front = q.front();
 		q.pop();
 		int loc = front.first, len = front.second;
-		// cout << loc << endl;
 		if (loc == end) {
 			cout << len / 2 + 1 << endl;
 			vector<int> points(1, loc);
