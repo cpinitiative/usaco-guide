@@ -159,20 +159,20 @@ array<ll, 2> calc(int pos, bool is_free) {
 	bool next_is_free;
 	array<ll, 2> ans = {0, 0};
 	for (int d = 0; d < 10; d++) {
-			// This means our number would be too big
-			if (is_free == false && d > (digits[pos] - '0')) break;
-			next_is_free = is_free;
+		// This means our number would be too big
+		if (is_free == false && d > (digits[pos] - '0')) break;
+		next_is_free = is_free;
 
-			// Update our freedom value
-			if (is_free == false && d < (digits[pos] - '0')) next_is_free = true;
-			auto next_state = calc(pos + 1, next_is_free);
+		// Update our freedom value
+		if (is_free == false && d < (digits[pos] - '0')) next_is_free = true;
+		auto next_state = calc(pos + 1, next_is_free);
 
-			// Add amount of numbers to the current dp state
-			ans[1] += next_state[1];
+		// Add amount of numbers to the current dp state
+		ans[1] += next_state[1];
 
-			// Add contribution of the current digit and total sum of digits after
-			// current
-			ans[0] += d * next_state[1] + next_state[0];
+		// Add contribution of the current digit and total sum of digits after
+		// current
+		ans[0] += d * next_state[1] + next_state[0];
 	}
 
 	return dp[pos][is_free] = ans;
