@@ -234,14 +234,14 @@ share the common factor is expensive to maintain; $3\times10^5$ is already
 enough spiders such that having many more orders of magnitudes of edges to
 represent all possible communications naively simply isn't going to cut it.
 
-However, what we *can* do is set up intermediate nodes that, to represent a
-communication by way of the common prime factor represented by this intermediate
-node between two spiders, we represent it by first having a spider send a
-message to this intermediate node, and then to another spider connected to this
-intermediate node; i.e. we create an intermediate node for each prime factor
-present in the data, and connect spiders to intermediate nodes if and only if
-the spider is divisible by the prime factor represented by that intermediate
-node.
+Since the complete graphs for the spiders are grouped by prime factors, we think
+of representing the prime factor in some way.  One good way to do this is to
+create an intermediate node for each prime factor present in the data.  Then,
+from each of those prime factors nodes, we connect to the spiders divisible
+by that prime factor.  A communication from a spider to another with a common
+prime factor will thus be formulated as the spider passing its message to the
+prime factor "station", and then the station passing the message to another
+spider with the same prime factor.
 
 It is easy to see that the length of the path in the sense of the original
 problem is the length of the shortest path over our new reformulated graph,
