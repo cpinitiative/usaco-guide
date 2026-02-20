@@ -48,12 +48,12 @@ $\mathcal O(n+m)\approx 6\sim 7\text{ orders of magnitude}$, is sufficient.
 <CPPSection>
 
 ```cpp
-#include <iostream>
-#include <vector>
-#include <map>
-#include <utility>
-#include <queue>
 #include <algorithm>
+#include <iostream>
+#include <map>
+#include <queue>
+#include <utility>
+#include <vector>
 using namespace std;
 int n;
 vector<int> g[400005];
@@ -64,75 +64,76 @@ int parent[400005];
 
 int total;
 void addprime(int p, int i) {
-    if (!primes[p])
-        primes[p] = ++total;
-    // cout << p << ' ' << primes[p] << endl;
-    g[primes[p]].push_back(i);
-    g[i].push_back(primes[p]);
+	if (!primes[p]) primes[p] = ++total;
+	// cout << p << ' ' << primes[p] << endl;
+	g[primes[p]].push_back(i);
+	g[i].push_back(primes[p]);
 }
 
 void sieve() {
-    for(int i = 2; i <= 400000; i++) spf[i] = i;
-    for(int i = 2; i*i <= 400000; i++) {
-        if(spf[i] == i) {
-            for(int j = i*i; j <= 400000; j += i) {
-                if(spf[j] == j) spf[j] = i;
-            }
-        }
-    }
+	for (int i = 2; i <= 400000; i++) spf[i] = i;
+	for (int i = 2; i * i <= 400000; i++) {
+		if (spf[i] == i) {
+			for (int j = i * i; j <= 400000; j += i) {
+				if (spf[j] == j) spf[j] = i;
+			}
+		}
+	}
 }
 
 void factorize(int a, int i) {
-    while(a > 1) {
-        int p = spf[a];
-        if (a > 1 && a % p == 0) addprime(p, i);
-        while (a > 1 && a % p == 0) a /= p;
-    }
+	while (a > 1) {
+		int p = spf[a];
+		if (a > 1 && a % p == 0) addprime(p, i);
+		while (a > 1 && a % p == 0) a /= p;
+	}
 }
 
 int main() {
-    sieve();
-    cin >> n;
-    total = n;
-    for (int i = 1; i <= n; i++) {
-        int a;
-        cin >> a;
-        factorize(a, i);
-    }
-    int start, end;
-    cin >> start >> end;
-    queue<pair<int, int>> q;
-    vis[start] = true;
-    q.push(make_pair(start, 0));
-    while (!q.empty()) {
-        auto front = q.front();
-        q.pop();
-        int loc = front.first, len = front.second;
-        // cout << loc << endl;
-        if (loc == end) {
-            cout << len / 2 + 1 << endl;
-            vector<int> points(1, loc);
-            int current = loc;
-            while (current != start) { current = parent[current]; points.push_back(current); }
-            reverse(points.begin(), points.end());
-            int cnt = 0;
-            for (auto a: points) {
-                if (++cnt % 2)
-                    cout << a << ' ';
-            }
-            cout << endl;
-            return 0;
-        }
-        for (int next : g[loc]) {
-            if (!vis[next]) {
-                vis[next] = true;
-                parent[next] = loc;
-                q.push(make_pair(next, len+1));
-            }
-        }
-    }
-    cout << -1 << endl;
-    return 0;
+	sieve();
+	cin >> n;
+	total = n;
+	for (int i = 1; i <= n; i++) {
+		int a;
+		cin >> a;
+		factorize(a, i);
+	}
+	int start, end;
+	cin >> start >> end;
+	queue<pair<int, int>> q;
+	vis[start] = true;
+	q.push(make_pair(start, 0));
+	while (!q.empty()) {
+		auto front = q.front();
+		q.pop();
+		int loc = front.first, len = front.second;
+		// cout << loc << endl;
+		if (loc == end) {
+			cout << len / 2 + 1 << endl;
+			vector<int> points(1, loc);
+			int current = loc;
+			while (current != start) {
+				current = parent[current];
+				points.push_back(current);
+			}
+			reverse(points.begin(), points.end());
+			int cnt = 0;
+			for (auto a : points) {
+				if (++cnt % 2) cout << a << ' ';
+			}
+			cout << endl;
+			return 0;
+		}
+		for (int next : g[loc]) {
+			if (!vis[next]) {
+				vis[next] = true;
+				parent[next] = loc;
+				q.push(make_pair(next, len + 1));
+			}
+		}
+	}
+	cout << -1 << endl;
+	return 0;
 }
 ```
 
