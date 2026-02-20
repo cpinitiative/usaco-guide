@@ -248,18 +248,26 @@ problem is the length of the shortest path over our new reformulated graph,
 divided by 2.  We add 1 to that, since we need to count the starting node,
 according to the problem's specifications.
 
-The total number of nodes is $\leq3\times10^5+\pi(3\times10^5)=3\times 10^5+25991\approx3.2\times10^5$, and, since in the worst case in terms of the number
-of prime factors in a number,
-$2\times3\times5\times7\times\dots\times17>3\times10^5$
-(multiplying the 7 smallest primes), we at most have $7$ prime factors for a
-number, the number of edges does not exceed $3\times10^5\times7=2.1\times10^6$.
-This means that BFS for finding the shortest path, with a time complexity of
-$\mathcal O(n+m)\approx 6\sim 7\text{ orders of magnitude}$, is sufficient.
+The time complexity for a BFS is $\mathcal O(V+E)$; in this case, the number of
+vertices is $n+\pi(n)$, and since $\pi(n)<n$, this is $\mathcal O(n)$.  For
+the number of edges, there's only a modest amount of prime factors can at most
+have before we reach $3\times10^5$ ($2\times3\times5\times\cdots\times\17$ with
+$7$ primes already works).  By some number theory, the total amount of edges is
+$\mathcal O(n\frac{\log n}{\log\log n})$.
+
+So the time complexity for the BFS is $\mathcal O(n\frac{\log n}{\log\log n})$
+overall, but it may be dominated by factorization.
 
 ### Implementation
 
 This implementation uses a sieve for a little bit of speedup, which is not strictly
 required for this problem.
+
+For factorizing all the numbers, the sieve implemented below is
+$\mathcal O(n\log\log A)$ with $A=3\times10^5$ being the upper bound for the
+numbers; the factorization step is then on average $\mathcal O(\log\log A)$.
+The average time complexity is then
+$\mathcal O(n\frac{\log n}{\log\log n}+n\log\log A)\approx\mathcal O(n\log\log n)$.
 
 <LanguageSection>
 <CPPSection>
