@@ -14,18 +14,18 @@ Based on the problem's conditions, each consecutive jump
 between ropes cannot exceed the distance of the previous jump.
 If we frame the problem as traversing from the rope at $m$ outward, this condition becomes reversed. To traverse from the rope at $m$ to some other rope, the jumps we take must have non-decreasing length.
 
-Given the condition for a valid path, being able to reach position $m$ with less initial rope is always optimal. Thus, we can model this problem as a single-source shortest paths problem, where we start from node $m$ and expand outward to calculate the needed rope lengths. Naively computing distances takes $\mathcal{O}(N^2 \log{N})$ time.
+Given the condition for a valid path, being able to reach position $m$ with less initial rope is always optimal. Thus, we can model this problem as a single-source shortest paths problem, where we start from the rope at $m$ and expand outward to calculate the needed rope lengths. Naively computing distances takes $\mathcal{O}(N^2 \log{N})$ time.
 
 ### Optimizing Calculating Distances
 
-Let $s[i]$ denote the initial rope length needed to reach the rope at $m$.
+Let $s[i]$ denote the initial rope length needed to reach $m$ from rope $i$.
 If we are at some node $i$, and want to update our distances, our Dijkstra's code to push to new nodes might look something like this:
 
 ```cpp
 // i = the current node
-// s = the rope length to go from i to m
+// s[i] = the rope length to go from i to m
 for (int j = 0; j < n; j++) {
-	if (abs(p[j] - p[i]) >= s) { pq.push({abs(p[j] - p[i]), j}); }
+	if (abs(p[j] - p[i]) >= s[i]) { pq.push({abs(p[j] - p[i]), j}); }
 }
 ```
 
@@ -34,10 +34,10 @@ we split our distance calculations into two parts:
 - $\text{dist}_l[i]$ is the rope length needed to reach $m$, if the last jump was from the left.
 - $\text{dist}_r[i]$ is the rope length needed to reach $m$, if the last jump was from the right.
 
-Note that the directions are defined with respect to our single-source shortest paths graph model.
+The directions for both distance definitions are from **moving away** from a previous rope. For example, if we move from a rope at position $5$ to position $3$ in our Dijkstra code, we would update $\text{dist}_l$ for the rope at $3$.
 
-WLOG, assume that we are processing $\text{dist}_l[i]$. We observe that:
-- If $i$ has a neighbor to the left, we can potentially update $\text{dist}_l[i-1]$ simply by extending the jump used to reach $\text{dist}_l[i]$.
+WLOG, assume that we are processing $\text{dist}_l[i]$. Observe that:
+- If $i$ has a neighbor to the left, we can potentially update $\text{dist}_l[i-1]$ simply by extending the jump used to obtain $\text{dist}_l[i]$.
 - From the pseudocode above, this type of transition is essentially the same as handling the prefix of possible Dijkstra transitions.
 
 With these observations, we can reduce the number of possible edges from
@@ -64,7 +64,7 @@ This allows us to calculate the minimum rope length to reach $m$ in $\mathcal{O}
 
 Starting at the temporary rope, we end up jumping to some other rope to
 eventually reach $m$. $\text{dist}[i]$ stores the minimal rope length
-to reach $m$, so we can reuse it in calculating `minLength`.
+to reach $m$ from any other rope, so we can reuse it in calculating `minLength`.
 
 A naive way of computing our answer would look something like this:
 
@@ -85,7 +85,7 @@ $$
 Since the jump distance is $d - p[i]$, we aim to find the maximal
 $p[i]$ amongst all $i$ satisfying the condition above. To do this,
 we can sort all ropes by $\text{dist}[i] + p[i]$, and compute the
-prefix maximum value of $p[i]$ for each rope. Then, to query the best value, we use binary search to find the first $i$ satisfying the condition.
+prefix maximum value of $p[i]$ for each rope. Then, to query the best value, we use binary search to find the last $i$ satisfying the condition.
 
 By using similar logic for the case where $p[i] \geq d$, we can
 answer each query in $\mathcal{O}(\log N)$ time.
