@@ -194,51 +194,54 @@ We store two pointers, one for the current city and one for the current tower. W
 <CPPSection>
 
 ```cpp
-#include <bits/stdc++.h>
-using namespace std;
+#include <iostream>
+#include <vector>
 
-typedef long long ll;
-typedef pair<int, int> pii;
-typedef vector<int> vi;
+const int MOD = 1e9 + 7;
+const int MAX_N = 1e5;
 
-#define mp make_pair
-#define pb push_back
-
-#define FOR(i, a, b) for (int i = a; i < b; i++)
-#define F0R(i, a) for (int i = 0; i < a; i++)
-
-#define f first
-#define s second
-#define lb lower_bound
-#define ub upper_bound
-
-const int MOD = 1000000007;
-double PI = 4 * atan(1);
-
-int dist[100000], ans = 0;
+int dist[MAX_N];
 
 int main() {
-	ios_base::sync_with_stdio(0);
-	cin.tie(0);
-	F0R(i, 100000) dist[i] = 2 * MOD;
-	int n, m;
-	cin >> n >> m;
-	vi a(n), b(m);
-	F0R(i, n) cin >> a[i];
-	F0R(i, m) cin >> b[i];
-	int c1 = 0;
-	F0R(i, n) {
-		while (c1 < (m - 1) && b[c1 + 1] <= a[i]) c1++;
-		dist[i] = min(dist[i], abs(a[i] - b[c1]));
-	}
-	c1 = m - 1;
-	for (int i = n - 1; i >= 0; --i) {
-		while (c1 > 0 && b[c1 - 1] >= a[i]) c1--;
-		dist[i] = min(dist[i], abs(a[i] - b[c1]));
-	}
-	F0R(i, n) ans = max(ans, dist[i]);
-	cout << ans;
-	return 0;
+
+    for (int i = 0; i < MAX_N; i++) {
+        dist[i] = 2 * MOD;
+    }
+
+    int n, m;
+    int res = 0;
+    int j = 0;
+    std::cin >> n >> m;
+    std::vector<int> cities(n), towers(m);
+
+    for (int &x : cities) {
+        std::cin >> x;
+    }
+    for (int &x : towers) {
+        std::cin >> x;
+    }
+    
+    for (int i = 0; i < n; i++) {
+        while (j < (m - 1) && towers[j + 1] <= cities[i]) {
+            j++;
+        }
+        dist[i] = std::min(dist[i], std::abs(cities[i] - towers[j]));
+    }
+
+    j = m - 1;
+    for (int i = n - 1; i >= 0; i--) {
+        while (j > 0 && towers[j - 1] >= cities[i]) {
+            j--;
+        }
+        dist[i] = std::min(dist[i], std::abs(cities[i] - towers[j]));
+    }
+
+    for (int i = 0; i < n; i++) {
+        res = std::max(res, dist[i]);
+    }
+
+    std::cout << res << '\n';
+
 }
 ```
 
