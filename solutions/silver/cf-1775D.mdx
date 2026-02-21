@@ -276,19 +276,36 @@ const int MAXPRIMES = 100000;
 const int MAXN = 300000;
 const int MAXNODES = MAXN + MAXPRIMES;
 const int MAXNUM = 300000;
+// Adjacency list for nodes in the graph described above.
 vector<int> g[MAXNODES + 1];
+// Whether each node is visited; used by the BFS in main.
 bool vis[MAXNODES + 1];
-int primes[MAXPRIMES + 1];
+// This represents a mapping from the prime factor itself
+// to the node number in the graph; i.e. primes[prime] ==
+// node number for prime factor
+int primes[MAXNUM + 1];
+// Used by sieve and efficient factorization; smallest prime
+// factor maintained for each number.
 int spf[MAXNUM + 1];
+// Used to reconstruct the path after the BFS in main, by
+// storing the node (the value) from which a node (the index)
+// is visited.
 int parent[MAXNODES + 1];
 
 int total;
+
+// Register the fact that the i-th number has prime factor p.
+// This will create a new prime factor node if necessary, and
+// make the correct connections to the node.
 void addprime(int p, int i) {
 	if (!primes[p]) primes[p] = ++total;
 	g[primes[p]].push_back(i);
 	g[i].push_back(primes[p]);
 }
 
+// A pre-processing step for efficient factorization; uses
+// Eratosthenes' sieve to pre-determine the smallest prime
+// factor for each number.
 void sieve() {
 	for (int i = 2; i <= MAXNUM; i++) spf[i] = i;
 	for (int i = 2; i * i <= MAXNUM; i++) {
@@ -300,6 +317,8 @@ void sieve() {
 	}
 }
 
+// Factorize a number; the index of the node is also passed
+// in to facilitate making connections in the process.
 void factorize(int a, int i) {
 	while (a > 1) {
 		int p = spf[a];
@@ -313,6 +332,8 @@ int main() {
 	int n;
 	cin >> n;
 	total = n;
+    // Process each input, and make the necessary node
+	// connections.
 	for (int i = 1; i <= n; i++) {
 		int a;
 		cin >> a;
@@ -320,6 +341,10 @@ int main() {
 	}
 	int start, end;
 	cin >> start >> end;
+
+	// Standard BFS algorithm.
+	// q tracks the location and path length for
+	// each visit.
 	queue<pair<int, int>> q;
 	vis[start] = true;
 	q.push(make_pair(start, 0));
@@ -327,9 +352,16 @@ int main() {
 		auto front = q.front();
 		q.pop();
 		int loc = front.first, len = front.second;
+
+		// Since BFS is breadth-first, the first to reach the
+		// end shall terminate all other searching.
 		if (loc == end) {
 			cout << len / 2 + 1 << endl;
 			vector<int> points(1, loc);
+
+			// Trace the parents (last nodes) visited recursively
+			// until we get to the start.  Then, reverse the constructed
+			// path and output it (but only odd-numbered, aka. original nodes).
 			int current = loc;
 			while (current != start) {
 				current = parent[current];
@@ -343,6 +375,7 @@ int main() {
 			cout << endl;
 			return 0;
 		}
+
 		for (int next : g[loc]) {
 			if (!vis[next]) {
 				vis[next] = true;
@@ -351,6 +384,8 @@ int main() {
 			}
 		}
 	}
+
+	// If no path is found, print -1.
 	cout << -1 << endl;
 }
 ```
