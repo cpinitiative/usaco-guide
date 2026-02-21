@@ -230,9 +230,9 @@ But we can't maintain all the possible edges between any two spiders, as that's
 too slow.
 
 Since the complete graphs for the spiders are grouped by prime factors, we
-build a graph that groups spiders by prime factors.  We do this
+build a graph that groups spiders by prime factors. We do this
 by creating nodes representing prime factors, and connecting them
-to the spiders divisible by that prime factor.  Two spiders communicating
+to the spiders divisible by that prime factor. Two spiders communicating
 will be the sender communicating to the prime factor node, and the prime
 factor node communicating to the receiver.
 
@@ -243,11 +243,12 @@ divided by 2 plus 1, accounting for the starting node.
 The number of vertices is the amount of prime factors plus the amount of nodes;
 the amount of prime factors must be less than $a_\mathrm{max} < 3\times10^5$,
 as factors must be less than the numbers themselves, and not every number is
-prime.  So the amount of vertices cannot exceed $6\times10^5$.
+prime. So the amount of vertices cannot exceed $6\times10^5$.
 For the number of edges, for any number less than $3\times10^5$ there are at
 most $7$ prime factors for it; the maximum amount of prime factors can be
 obtained by a construction not repeating any prime factors, and using the
-smallest prime factors (i.e. $2\times3\times5\times7\times\cdots\times17>3\times10^5$).
+smallest prime factors (i.e.
+$2\times3\times5\times7\times\cdots\times17>3\times10^5$).
 
 ## Implementation
 
@@ -270,11 +271,16 @@ with $A=\max(a_i)$ by elementary number theory.
 
 using namespace std;
 
-vector<int> g[400005];
-bool vis[400005];
-int primes[400005];
-int spf[400005];
-int parent[400005];
+// There's less than 1e5 primes under 3e5
+const int MAXPRIMES = 100000;
+const int MAXN = 300000;
+const int MAXNODES = MAXN + MAXPRIMES;
+const int MAXNUM = 300000;
+vector<int> g[MAXNODES+1];
+bool vis[MAXNODES+1];
+int primes[MAXPRIMES+1];
+int spf[MAXNUM+1];
+int parent[MAXNODES+1];
 
 int total;
 void addprime(int p, int i) {
@@ -284,10 +290,10 @@ void addprime(int p, int i) {
 }
 
 void sieve() {
-	for (int i = 2; i <= 400000; i++) spf[i] = i;
-	for (int i = 2; i * i <= 400000; i++) {
+	for (int i = 2; i <= 300000; i++) spf[i] = i;
+	for (int i = 2; i * i <= 300000; i++) {
 		if (spf[i] == i) {
-			for (int j = i * i; j <= 400000; j += i) {
+			for (int j = i * i; j <= 300000; j += i) {
 				if (spf[j] == j) spf[j] = i;
 			}
 		}
