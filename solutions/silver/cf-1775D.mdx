@@ -226,43 +226,36 @@ public class FriendlySpiders {
 ## Explanation
 
 First, notice that two spiders are friends, they must share a common prime factor.
-But due to the constraints of this question, we can't maintain all the possible edges
-between any two spiders.
+But we can't maintain all the possible edges between any two spiders, as that's
+too slow.
 
-Since the complete graphs for the spiders are grouped by prime factors, we want to
-represent the prime factors somehow. One good way to do this is to
-create an intermediate node for each prime factor present in the data. Then,
-from each of those prime factors nodes, we connect to the spiders divisible
-by that prime factor. A communication from a spider to another with a common
-prime factor will thus be formulated as the spider passing its message to the
-prime factor "station", and then the station passing the message to another
-spider with the same prime factor.
+Since the complete graphs for the spiders are grouped by prime factors, we
+build a graph that groups spiders by prime factors.  We do this
+by creating nodes representing prime factors, and connecting them
+to the spiders divisible by that prime factor.  Two spiders communicating
+will be the sender communicating to the prime factor node, and the prime
+factor node communicating to the receiver.
 
 We can now notice that the length of the path in the original
 problem is the length of the shortest path over our newly reformulated graph,
 divided by 2 plus 1, accounting for the starting node.
-according to the problem's specifications.
 
-The time complexity for a BFS is $\mathcal O(V+E)$; in this case, the number of
-vertices is $n+\pi(n)$, and since $\pi(n)<n$, this is $\mathcal O(n)$. For
-the number of edges, there's only a modest amount of prime factors can at most
-have before we reach $3\times10^5$ ($2\times3\times5\times\cdots\times17$ with
-$7$ primes already works). By some number theory, the total amount of edges is
-$\mathcal O(n\frac{\log n}{\log\log n})$.
-
-So the time complexity for the BFS is $\mathcal O(n\frac{\log n}{\log\log n})$
-overall.
+The number of vertices is the amount of prime factors plus the amount of nodes;
+the amount of prime factors must be less than $a_\mathrm{max} < 3\times10^5$,
+as factors must be less than the numbers themselves, and not every number is
+prime.  So the amount of vertices cannot exceed $6\times10^5$.
+For the number of edges, for any number less than $3\times10^5$ there are at
+most $7$ prime factors for it; the maximum amount of prime factors can be
+obtained by a construction not repeating any prime factors, and using the
+smallest prime factors (i.e. $2\times3\times5\times7\times\cdots\times17>3\times10^5$).
 
 ## Implementation
 
 This implementation uses a sieve for a little bit of speedup, which is not strictly
-required for this problem.
-
-For factorizing all the numbers, the sieve implemented below is
-$\mathcal O(n\log\log A)$ with $A=3\times10^5$ being the upper bound for the
-numbers; the factorization step is then on average $\mathcal O(\log\log A)$.
-The average time complexity is then
-$\mathcal O(n\frac{\log n}{\log\log n}+n\log\log A)$.
+required for this problem. It is obvious that the scale of the solution will not
+time out from the calculations above; but to be exact, the time complexity of this
+implementation is $\mathcal O(n\frac{\log n}{\log\log n}+\frac A{\log A}+n\log\log A)$
+with $A=\max(a_i)$ by elementary number theory.
 
 <LanguageSection>
 <CPPSection>
