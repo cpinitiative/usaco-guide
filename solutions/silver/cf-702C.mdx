@@ -7,11 +7,15 @@ author: Nathan Wang, Benjamin Qi, Maggie Liu, Brad Ma, George Pong
 
 [Official Editorial](https://codeforces.com/blog/entry/46324?locale=en)
 
-## Solution 1 - Binary Search
+# Solution 1 - Binary Search
+
+## Explanation
 
 For each city, we find the nearest tower to its left and right using binary search.
 We then calculate the distance to both towers and pick the smaller one to get the minimum radius for the city.
 The largest of these values is our answer.
+
+## Implementation
 
 **Time Complexity:** $\mathcal{O}(N \log N)$
 
@@ -174,11 +178,15 @@ print(min_r)
 </PySection>
 </LanguageSection>
 
-## Solution 2 - Two Pointers
+# Solution 2 - Two Pointers
+
+## Explanation
 
 For each city, we need to find the minimum distance to a tower, which we will call pairing. Observe that if a tower $T$'s position is greater a city $C$'s position, then all towers with a coordinate greater that of $T$ cannot pair to provide the minimum distance with $C$. Furthermore, if a city $C_1$ has a position less than $C_2$, then any towers with a position less than that of $C_1$'s tower cannot provide the minimum distance for $C_2$. These two details allow us to use two pointers to solve this problem.
 
 We store two pointers, one for the current city and one for the current tower. We start at the first city and first tower, both with the smallest coordinate. We calculate the distance between the city and towers with increasingly higher coordinates until the current tower's coordinate is greater than that of the current city. One of these distances must be the minimum distance from the city to all towers. Then, we start the process for the next city and keep the pointer at the current tower. We repeat this process for all cities in order of their position. The maximum out of all the minimum distances between a city and a tower will be our answer.
+
+## Implementation
 
 **Time Complexity:** $\mathcal{O}(N)$
 
