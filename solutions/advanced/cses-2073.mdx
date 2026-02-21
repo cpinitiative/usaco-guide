@@ -8,12 +8,18 @@ author: Ashok Narayan
 ## Explanation
 
 
-We have to apply `m` reversals. Following a brute force approach leads to $\mathcal{O}((N * M))$. Thus it is not feasible. Instead, we can use *Implicit Treap* along with *Lazy Propogation*.
+We have to apply `m` reversals. Following a brute force approach leads to $\mathcal{O}(N * M)$. Thus it is not feasible. Instead, we can use **Implicit Treap** along with **Lazy Propogation**.
 
+### What is implicit in this Treap?
+
+In a regular treap, each node stores an explicit key that determines its position in the BST order.  
+In an implicit treap, there is **no stored key for ordering** — the position of each element is computed implicitly using subtree sizes.
+
+The `in-order traversal` (*DFS*) represents the current sequence, and the index of any node is determined by how many nodes exist in its left subtree. This allows us to split and merge by position efficiently without maintaining or updating explicit indices(after applying reversal operations).
 
 To reverse a substring from index $L$ to $R$, we perform the following steps:
 1. **Isolate the Substring:** We use the `split` function to divide our Treap into three separate trees: `T1` (elements before index $L$), `T2` (elements from $L$ to $R$), and `T3` (elements after index $R$).
-2. **Lazy Reversal:** Physically reversing every node in `T2` would be too slow. Instead, we use a lazy boolean flag, `rev`. We simply toggle this flag at the root of `T2` in $\mathcal{O}(1)$ time. 
+2. **Lazy Reversal:** Physically reversing every node in `T2` would be too slow. Instead, we use a bool, `rev`. We simply toggle this flag at the root of `T2`. 
 3. **Reassemble:** We use the `merge` function to stitch `T1`, `T2`, and `T3` back together.
 
 
