@@ -231,6 +231,53 @@ int main() {
 ```
 
 </CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class PairUp {
+	public static void main(String[] args) throws Exception {
+		Kattio io = new Kattio("pairup");
+		
+		int n = io.nextInt();
+        int[][] cows = new int[n][2];
+        for (int i = 0; i < n; i++) {
+            cows[i][0] = io.nextInt();
+            cows[i][1] = io.nextInt();
+        }
+
+        Arrays.sort(cows, (a, b) -> a[1] - b[1]);
+
+        int currL = 0, countL = 0;
+        int currR = n - 1, countR = 0;
+        int ans = 0;
+
+        while (currL <= currR) {
+            ans = Math.max(ans, cows[currL][1] + cows[currR][1]);
+            countL++;
+            countR++;
+
+            if (countL > cows[currL][0]) {
+                currL++;
+                countL = 0;
+            }
+            if (countR > cows[currR][0]) {
+                currR--;
+                countR = 0;
+            }
+        }
+
+        io.println(ans);
+        io.close();
+	}
+
+	//CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
 </LanguageSection>
 
 </Spoiler>
