@@ -17,15 +17,15 @@ We will generally use a two-pointer sliding window technique on
 the sorted cows array to find the $length-N$ window containing the most
 cows (i.e fewest empty spaces). The minimum value is the number of empty
 spaces in that window. However, there is an edge case: if $N-1$ cows are
-already consecutive but the last cow is far away, we need $2$ moves 
+already consecutive but the last cow is far away, we need $2$ moves
 instead of $1$ since we have to bridge the gap first.
 
 ### Maximum
 
 It is similar to the bronze version of this problem. We will consider
 the total number of empty cells between all cows, then subtract the gap
-we want to sacrifice. Here, the gaps are $(herd[1] - herd[0]) $and 
-$(herd[N-1] - herd[N-2])$. To get the maximum value, we sacrifice the 
+we want to sacrifice. Here, the gaps are $(herd[1] - herd[0]) $and
+$(herd[N-1] - herd[N-2])$. To get the maximum value, we sacrifice the
 smaller of the two gaps.
 
 ## Implementation
@@ -194,9 +194,7 @@ int main() {
 	cin >> n;
 
 	vector<int> cows(n);
-	for (int i = 0; i < n; i++) {
-		cin >> cows[i];
-	}
+	for (int i = 0; i < n; i++) { cin >> cows[i]; }
 
 	sort(cows.begin(), cows.end());
 
@@ -213,7 +211,8 @@ int main() {
 		int max_range = 0;
 		for (p1 = 0; p1 < n; p1++) {
 			while (p2 < n - 1 && cows[p2 + 1] - cows[p1] <= n - 1) {
-				// keep going until you find a range of size n (not indexes, cow locations)
+				// keep going until you find a range of size n (not indexes, cow
+				// locations)
 				p2++;
 			}
 			int range_size = p2 - p1 + 1;
@@ -222,8 +221,8 @@ int main() {
 		min_ans = n - max_range;
 	}
 
-	cout << min_ans << endl << max(cows[n - 2] - cows[0], cows[n - 1] - cows[1]) - (n - 2);
-
+	cout << min_ans << endl
+	     << max(cows[n - 2] - cows[0], cows[n - 1] - cows[1]) - (n - 2);
 }
 ```
 
@@ -240,14 +239,12 @@ public class Herding {
 
 		int n = io.nextInt();
 		int[] cows = new int[n];
-		for (int i = 0; i < n; i++) {
-			cows[i] = Integer.parseInt(io.next());
-		}
+		for (int i = 0; i < n; i++) { cows[i] = Integer.parseInt(io.next()); }
 
 		Arrays.sort(cows);
 
 		int minAns = 0;
-        // two special cases
+		// two special cases
 		if (cows[n - 2] - cows[0] == n - 2 && cows[n - 1] - cows[n - 2] > 2) {
 			minAns = 2;
 		} else if (cows[n - 1] - cows[1] == n - 2 && cows[1] - cows[0] > 2) {
@@ -258,7 +255,8 @@ public class Herding {
 			int maxRange = 0;
 			for (p1 = 0; p1 < n; p1++) {
 				while (p2 < n - 1 && cows[p2 + 1] - cows[p1] <= n - 1) {
-					// keep going until you find a range of size n (not indexes, cow locations)
+					// keep going until you find a range of size n (not indexes, cow
+					// locations)
 					p2++;
 				}
 				int rangeSize = p2 - p1 + 1;
@@ -269,7 +267,7 @@ public class Herding {
 
 		io.println(minAns);
 		io.println(Math.max(cows[n - 2] - cows[0], cows[n - 1] - cows[1]) - (n - 2));
-        io.close();
+		io.close();
 	}
 
 	// CodeSnip{Kattio}
@@ -288,23 +286,25 @@ min_ans = 0
 
 # two special cases
 if cows[n - 2] - cows[0] == n - 2 and cows[n - 1] - cows[n - 2] > 2:
-    min_ans = 2
+	min_ans = 2
 elif cows[n - 1] - cows[1] == n - 2 and cows[1] - cows[0] > 2:
-    min_ans = 2
+	min_ans = 2
 else:
-    p1 = 0
-    p2 = 0
-    max_range = 0
-    for p1 in range(n):
-        while p2 < n - 1 and cows[p2 + 1] - cows[p1] <= n - 1:
+	p1 = 0
+	p2 = 0
+	max_range = 0
+	for p1 in range(n):
+		while p2 < n - 1 and cows[p2 + 1] - cows[p1] <= n - 1:
 			# keep going until you find a range of size n (not indexes, cow locations)
-            p2 += 1
-        range_size = p2 - p1 + 1
-        max_range = max(max_range, range_size)
-    min_ans = n - max_range
+			p2 += 1
+		range_size = p2 - p1 + 1
+		max_range = max(max_range, range_size)
+	min_ans = n - max_range
 
 with open("herding.out", "w") as f:
-    f.write(f"{min_ans}\n{max(cows[n - 2] - cows[0], cows[n - 1] - cows[1]) - (n - 2)}\n")
+	f.write(
+		f"{min_ans}\n{max(cows[n - 2] - cows[0], cows[n - 1] - cows[1]) - (n - 2)}\n"
+	)
 ```
 
 </PySection>
