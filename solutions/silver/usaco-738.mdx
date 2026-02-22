@@ -188,45 +188,41 @@ Note: The video solution might not be the same as other solutions. Code in C++.
 <LanguageSection>
 <CPPSection>
 
-```cpp 
+```cpp
 #include <bits/stdc++.h>
 using namespace std;
 
 int main() {
-    ifstream cin("pairup.in");
-    ofstream cout("pairup.out");
+	ifstream cin("pairup.in");
+	ofstream cout("pairup.out");
 
-    int n;
-    cin >> n;
+	int n;
+	cin >> n;
 
-    vector<pair<int, int>> cows(n);
-    for (int i = 0; i < n; i++) {
-        cin >> cows[i].first >> cows[i].second;
-    }
+	vector<pair<int, int>> cows(n);
+	for (int i = 0; i < n; i++) { cin >> cows[i].first >> cows[i].second; }
 
-    sort(begin(cows), end(cows), [&] (auto &a, auto &b) {
-        return a.second < b.second;
-    });
+	sort(begin(cows), end(cows), [&](auto &a, auto &b) { return a.second < b.second; });
 
-    int curr_l = 0, count_l = 0;
-    int curr_r = n - 1, count_r = 0;
-    int ans = 0;
+	int curr_l = 0, count_l = 0;
+	int curr_r = n - 1, count_r = 0;
+	int ans = 0;
 
-    while (curr_l <= curr_r) {
-        ans = max(ans, cows[curr_l].second + cows[curr_r].second);
-        count_l++, count_r++;
+	while (curr_l <= curr_r) {
+		ans = max(ans, cows[curr_l].second + cows[curr_r].second);
+		count_l++, count_r++;
 
-        if (count_l > cows[curr_l].first) {
-            curr_l++;
-            count_l = 0;
-        }
-        if (count_r > cows[curr_r].first) {
-            curr_r--;
-            count_r = 0;
-        }
-    }
-    
-    cout << ans << '\n';
+		if (count_l > cows[curr_l].first) {
+			curr_l++;
+			count_l = 0;
+		}
+		if (count_r > cows[curr_r].first) {
+			curr_r--;
+			count_r = 0;
+		}
+	}
+
+	cout << ans << '\n';
 }
 ```
 
@@ -240,40 +236,40 @@ import java.util.*;
 public class PairUp {
 	public static void main(String[] args) throws Exception {
 		Kattio io = new Kattio("pairup");
-		
+
 		int n = io.nextInt();
-        int[][] cows = new int[n][2];
-        for (int i = 0; i < n; i++) {
-            cows[i][0] = io.nextInt();
-            cows[i][1] = io.nextInt();
-        }
+		int[][] cows = new int[n][2];
+		for (int i = 0; i < n; i++) {
+			cows[i][0] = io.nextInt();
+			cows[i][1] = io.nextInt();
+		}
 
-        Arrays.sort(cows, (a, b) -> a[1] - b[1]);
+		Arrays.sort(cows, (a, b) -> a[1] - b[1]);
 
-        int currL = 0, countL = 0;
-        int currR = n - 1, countR = 0;
-        int ans = 0;
+		int currL = 0, countL = 0;
+		int currR = n - 1, countR = 0;
+		int ans = 0;
 
-        while (currL <= currR) {
-            ans = Math.max(ans, cows[currL][1] + cows[currR][1]);
-            countL++;
-            countR++;
+		while (currL <= currR) {
+			ans = Math.max(ans, cows[currL][1] + cows[currR][1]);
+			countL++;
+			countR++;
 
-            if (countL > cows[currL][0]) {
-                currL++;
-                countL = 0;
-            }
-            if (countR > cows[currR][0]) {
-                currR--;
-                countR = 0;
-            }
-        }
+			if (countL > cows[currL][0]) {
+				currL++;
+				countL = 0;
+			}
+			if (countR > cows[currR][0]) {
+				currR--;
+				countR = 0;
+			}
+		}
 
-        io.println(ans);
-        io.close();
+		io.println(ans);
+		io.close();
 	}
 
-	//CodeSnip{Kattio}
+	// CodeSnip{Kattio}
 }
 ```
 
