@@ -225,10 +225,42 @@ int main() {
 	cout << min_ans << endl << max(cows[n - 2] - cows[0], cows[n - 1] - cows[1]) - (n - 2);
 
 }
-
 ```
 
 </CPPSection>
+<PySection>
+
+```py
+with open("herding.in") as read:
+	n = int(read.readline())
+	cows = sorted(int(read.readline()) for _ in range(n))
+
+min_ans = 0
+
+# two special cases
+if cows[n - 2] - cows[0] == n - 2 and cows[n - 1] - cows[n - 2] > 2:
+    min_ans = 2
+elif cows[n - 1] - cows[1] == n - 2 and cows[1] - cows[0] > 2:
+    min_ans = 2
+else:
+    p1 = 0
+    p2 = 0
+    max_range = 0
+    for p1 in range(n):
+        while p2 < n - 1 and cows[p2 + 1] - cows[p1] <= n - 1:
+			# keep going until you find a range of size n (not indexes, cow locations)
+            p2 += 1
+        range_size = p2 - p1 + 1
+        max_range = max(max_range, range_size)
+    min_ans = n - max_range
+
+max_ans = max(cows[n - 2] - cows[0], cows[n - 1] - cows[1]) - (n - 2)
+
+with open("herding.out", "w") as f:
+    f.write(f"{min_ans}\n{max_ans}\n")
+```
+
+</PySection>
 </LanguageSection>
 
 </Spoiler>
