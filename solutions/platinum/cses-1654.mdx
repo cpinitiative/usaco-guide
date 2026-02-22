@@ -7,7 +7,7 @@ author: Ashok Narayan
 
 ## Explanation
 
-A brute force approach would, for each element `x`, iterate over all other elements `y` and check the three conditions.  
+A brute force approach would, for each element `x`, iterate over all other elements `y` and check the three conditions.
 This results in **O(n²)** time, which is too slow for large `n`.
 
 Lets understand the relations:
@@ -25,7 +25,7 @@ Now the problem reduces to:
 
 Doing this naively by iterating over submasks for every `x` would take about **O(3^20)** in total, which is infeasible.
 
-Instead, we apply **SOS DP (zeta transform)**.  
+Instead, we apply **SOS DP (zeta transform)**.
 By iterating over each bit and each mask once, we can compute:
 
 - `dp[mask]` → number of submasks of `mask`
@@ -53,38 +53,30 @@ Thus, we replace repeated brute force enumeration with a single SOS DP preproces
 using namespace std;
 
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
 
-    int n;
-    cin >> n;
+	int n;
+	cin >> n;
 
-    vector<int> a(n);
-    for (int &x : a)
-        cin >> x;
+	vector<int> a(n);
+	for (int &x : a) cin >> x;
 
-    vector<int> dp(1 << 20), kp(1 << 20);
+	vector<int> dp(1 << 20), kp(1 << 20);
 
+	for (int x : a) dp[x]++, kp[x]++;
 
-    for (int x : a) 
-        dp[x]++, kp[x]++;
+	for (int i = 0; i < 20; ++i)
+		for (int mask = 0; mask < (1 << 20); ++mask)
 
-    for (int i=0; i<20; ++i)
-        for (int mask=0; mask<(1<<20); ++mask)
-            
-			if (mask & (1<<i))
-                dp[mask] += dp[mask ^ (1<<i)];
-            else
-                kp[mask] += kp[mask ^ (1<<i)];
+			if (mask & (1 << i)) dp[mask] += dp[mask ^ (1 << i)];
+			else kp[mask] += kp[mask ^ (1 << i)];
 
-    for (int x:a) 
-        cout << dp[x] << ' '
-             << kp[x] << ' '
-             << n - dp[((1<<20) - 1) ^ x] << '\n';
+	for (int x : a)
+		cout << dp[x] << ' ' << kp[x] << ' ' << n - dp[((1 << 20) - 1) ^ x] << '\n';
 
-    return 0;
+	return 0;
 }
-
 ```
 </CPPSection>
 </LanguageSection>
