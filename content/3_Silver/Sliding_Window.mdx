@@ -1,0 +1,261 @@
+---
+id: sliding-window
+title: 'Sliding Window'
+author: Darren Yao, Qi Wang, Ryan Chou, David Zhou
+prerequisites:
+  - intro-sorting
+  - two-pointers
+description:
+frequency: 2
+---
+
+## Resources
+
+<Resources>
+</Resources>
+
+## Sliding Window
+
+The **Sliding Window** method is a variation of the two pointers technique where two pointers move in the same direction to maintain a specific range or "window" of elements. While standard two pointers often move towards each other, the sliding window technique is used to find a contiguous subarray that satisfies a condition.
+
+<FocusProblem problem="sample1" />
+
+### Solution - Books
+
+We want to find the longest contiguous segment of books that can be read within $t$ minutes.
+
+To accomplish this, we can define $\texttt{left}$ and $\texttt{right}$ to represent the beginning and end of the segment. Both will start at the beginning of the array. These numbers can be thought of as pointers, hence the name "two pointers."
+
+For every value of $\texttt{left}$ in increasing order, let's increase $\texttt{right}$ until the total time for the segment is maximized while being less than or equal to $t$.
+
+$\texttt{ans}$ will store the maximum value of $\texttt{right} - \texttt{left}+1$ (segment size) that we have encountered so far.
+
+After incrementing $\texttt{left}$ by one, the time used decreases, hence the right pointer never has to move leftwards. Thus:
+
+**Since both pointers will move at most $N$ times, the overall time complexity is $\mathcal{O}(N)$.**
+
+As an example, consider the first case in the sample inputs:
+<center>
+<table>
+	<tbody>
+		<tr>
+			<td>Left Pointer</td>
+			<th className="bg-yellow-100 dark:bg-yellow-800"></th>
+			<th></th>
+			<th></th>
+			<th></th>
+		</tr>
+	</tbody>
+	<tbody>
+		<tr>
+			<td>$\texttt{arr}[i]$</td>
+			<td>3</td>
+			<td>1</td>
+			<td>2</td>
+			<td>1</td>
+		</tr>
+	</tbody>
+	<tbody>
+		<tr>
+			<td>Right Pointer</td>
+			<th className="bg-yellow-100 dark:bg-yellow-800"></th>
+			<th></th>
+			<th></th>
+			<th></th>
+		</tr>
+	</tbody>
+</table>
+</center>
+We can move the right pointer to index $1$:
+<center>
+<table>
+	<tbody>
+		<tr>
+			<td>Left Pointer</td>
+			<th className="bg-yellow-100 dark:bg-yellow-800"></th>
+			<th></th>
+			<th></th>
+			<th></th>
+		</tr>
+	</tbody>
+	<tbody>
+		<tr>
+			<td>$\texttt{arr}[i]$</td>
+			<td>3</td>
+			<td>1</td>
+			<td>2</td>
+			<td>1</td>
+		</tr>
+	</tbody>
+	<tbody>
+		<tr>
+			<td>Right Pointer</td>
+			<th></th>
+			<th className="bg-yellow-100 dark:bg-yellow-800"></th>
+			<th></th>
+			<th></th>
+		</tr>
+	</tbody>
+</table>
+</center>
+The sum of the values in this range is $4$, and there are $2$ values. So, the current maximum segment length is $\texttt{ans}=2$. By incrementing the left pointer by $1$, we can subtract $3$ from the sum of values to get $1$. The array then looks like:
+<center>
+<table>
+	<tbody>
+		<tr>
+			<td>Left Pointer</td>
+			<th></th>
+			<th className="bg-yellow-100 dark:bg-yellow-800"></th>
+			<th></th>
+			<th></th>
+		</tr>
+	</tbody>
+	<tbody>
+		<tr>
+			<td>$\texttt{arr}[i]$</td>
+			<td>3</td>
+			<td>1</td>
+			<td>2</td>
+			<td>1</td>
+		</tr>
+	</tbody>
+	<tbody>
+		<tr>
+			<td>Right Pointer</td>
+			<th></th>
+			<th className="bg-yellow-100 dark:bg-yellow-800"></th>
+			<th></th>
+			<th></th>
+		</tr>
+	</tbody>
+</table>
+</center>
+Now, we can move the right pointer to the end. This makes the sum of values $1+2+1=4$ and the length of the segment equal to $3$. So, $\texttt{ans}$ is now $3$.
+<center>
+<table>
+	<tbody>
+		<tr>
+			<td>Left Pointer</td>
+			<th></th>
+			<th className="bg-yellow-100 dark:bg-yellow-800"></th>
+			<th></th>
+			<th></th>
+		</tr>
+	</tbody>
+	<tbody>
+		<tr>
+			<td>$\texttt{arr}[i]$</td>
+			<td>3</td>
+			<td>1</td>
+			<td>2</td>
+			<td>1</td>
+		</tr>
+	</tbody>
+	<tbody>
+		<tr>
+			<td>Right Pointer</td>
+			<th></th>
+			<th></th>
+			<th></th>
+			<th className="bg-yellow-100 dark:bg-yellow-800"></th>
+		</tr>
+	</tbody>
+</table>
+</center>
+
+Since the right pointer has reached the end of the array, we are done at this point. This leaves us with $\texttt{ans}=3$.
+
+Here's an animation of the above example:
+<video width="960" height="720" controls>
+	<source src="/animations/two_pointers.mp4" type="video/mp4"/>
+</video>
+
+### Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
+
+	int N, T;
+	cin >> N >> T;
+	vector<int> A(N);
+	for (int &a : A) cin >> a;
+
+	int r = -1, sum = 0, ans = 0;
+	// sum stores sum of A[l ... r inclusive]
+	for (int l = 0; l < N; sum -= A[l++]) {
+		while (r + 1 < N && sum + A[r + 1] <= T) sum += A[++r];
+		ans = max(ans, r - l + 1);
+	}
+	cout << ans << "\n";
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Books {
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
+
+		int N = io.nextInt();
+		int T = io.nextInt();
+		int[] A = new int[N];
+		for (int i = 0; i < N; i++) { A[i] = io.nextInt(); }
+
+		int r = -1, sum = 0, ans = 0;
+		// sum stores sum of A[l ... r inclusive]
+		for (int l = 0; l < N; sum -= A[l++]) {
+			while (r + 1 < N && sum + A[r + 1] <= T) sum += A[++r];
+			ans = Math.max(ans, r - l + 1);
+		}
+
+		io.println(ans);
+		io.close();
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+N, T = map(int, input().split())
+A = list(map(int, input().split()))
+
+r = -1
+window_sum = 0  # sum of A[l ... r inclusive]
+ans = 0
+
+for l in range(N):
+	while r + 1 < N and window_sum + A[r + 1] <= T:
+		r += 1
+		window_sum += A[r]
+	ans = max(ans, r - l + 1)
+	window_sum -= A[l]
+
+print(ans)
+```
+
+</PySection>
+</LanguageSection>
+
+## Problems
+
+<Problems problems="general" />

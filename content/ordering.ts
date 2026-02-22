@@ -99,6 +99,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
     {
       name: 'Sorting & Searching',
       items: [
+        'sliding-window',
         'two-pointers',
         'binary-search-sorted-array',
         'binary-search',
