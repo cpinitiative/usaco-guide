@@ -228,6 +228,55 @@ int main() {
 ```
 
 </CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Herding {
+	public static void main(String[] args) throws Exception {
+		Kattio io = new Kattio("herding");
+
+		int n = io.nextInt();
+		int[] cows = new int[n];
+		for (int i = 0; i < n; i++) {
+			cows[i] = Integer.parseInt(io.next());
+		}
+
+		Arrays.sort(cows);
+
+		int minAns = 0;
+        // two special cases
+		if (cows[n - 2] - cows[0] == n - 2 && cows[n - 1] - cows[n - 2] > 2) {
+			minAns = 2;
+		} else if (cows[n - 1] - cows[1] == n - 2 && cows[1] - cows[0] > 2) {
+			minAns = 2;
+		} else {
+			int p1 = 0;
+			int p2 = 0;
+			int maxRange = 0;
+			for (p1 = 0; p1 < n; p1++) {
+				while (p2 < n - 1 && cows[p2 + 1] - cows[p1] <= n - 1) {
+					// keep going until you find a range of size n (not indexes, cow locations)
+					p2++;
+				}
+				int rangeSize = p2 - p1 + 1;
+				maxRange = Math.max(maxRange, rangeSize);
+			}
+			minAns = n - maxRange;
+		}
+
+		io.println(minAns);
+		io.println(Math.max(cows[n - 2] - cows[0], cows[n - 1] - cows[1]) - (n - 2));
+        io.close();
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
 <PySection>
 
 ```py
@@ -254,10 +303,8 @@ else:
         max_range = max(max_range, range_size)
     min_ans = n - max_range
 
-max_ans = max(cows[n - 2] - cows[0], cows[n - 1] - cows[1]) - (n - 2)
-
 with open("herding.out", "w") as f:
-    f.write(f"{min_ans}\n{max_ans}\n")
+    f.write(f"{min_ans}\n{max(cows[n - 2] - cows[0], cows[n - 1] - cows[1]) - (n - 2)}\n")
 ```
 
 </PySection>
