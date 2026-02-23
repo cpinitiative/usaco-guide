@@ -27,35 +27,32 @@ This runs within the time limit because, for each query, $\text{sum}[i][j]$ is u
 using namespace std;
 
 int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
+	ios_base::sync_with_stdio(false);
+	cin.tie(nullptr);
 
 	int n, k, q;
-    cin >> n >> k >> q;
-    
-    vector<vector<int>> values(n, vector<int> (n));
-    vector<vector<int>> sums(n, vector<int> (n));
+	cin >> n >> k >> q;
 
-    int answer = 0;
-    while (q-- > 0) {
-        int r, c, v; 
-        cin >> r >> c >> v;
+	vector<vector<int>> values(n, vector<int>(n));
+	vector<vector<int>> sums(n, vector<int>(n));
 
-        int diff = v - values[--r][--c];
-        values[r][c] = v;
-        for (int i = max(0, r - k + 1); i <= min(r, n - k); i++) {
-            for (int j = max(0, c - k + 1); j <= min(c, n - k); j++) {
-                sums[i][j] += diff;
-                answer = max(answer, sums[i][j]);
-            }
-        }
+	int answer = 0;
+	while (q-- > 0) {
+		int r, c, v;
+		cin >> r >> c >> v;
 
-        cout << answer << '\n';
-    }
+		int diff = v - values[--r][--c];
+		values[r][c] = v;
+		for (int i = max(0, r - k + 1); i <= min(r, n - k); i++) {
+			for (int j = max(0, c - k + 1); j <= min(c, n - k); j++) {
+				sums[i][j] += diff;
+				answer = max(answer, sums[i][j]);
+			}
+		}
 
-
+		cout << answer << '\n';
+	}
 }
-
 ```
 
 </CPPSection>
