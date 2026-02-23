@@ -269,7 +269,7 @@ constexpr int MAX_PRIMES = 100000;
 constexpr int MAX_NODES = MAX_N + MAX_PRIMES;
 vector<int> adj[MAX_NODES + 1];
 bool visited[MAX_NODES + 1];
-int primes[MAX_LEGS + 1];  // primes[p] = node in graph associated w the prime p
+int primes[MAX_LEGS + 1];          // primes[p] = node in graph associated w the prime p
 int smallest_prime[MAX_LEGS + 1];  // smallest_prime[i] = smallest prime factor of i
 int parent[MAX_NODES + 1];
 
@@ -277,14 +277,14 @@ int node_at;  // Largest node added so far
 
 /** Calculates the smallest prime for each number. */
 void sieve() {
-    for (int i = 2; i <= MAX_LEGS; i++) { smallest_prime[i] = i; }
-    for (int i = 2; i * i <= MAX_LEGS; i++) {
-        if (smallest_prime[i] == i) {
-            for (int j = i * i; j <= MAX_LEGS; j += i) {
-                if (smallest_prime[j] == j) smallest_prime[j] = i;
-            }
-        }
-    }
+	for (int i = 2; i <= MAX_LEGS; i++) { smallest_prime[i] = i; }
+	for (int i = 2; i * i <= MAX_LEGS; i++) {
+		if (smallest_prime[i] == i) {
+			for (int j = i * i; j <= MAX_LEGS; j += i) {
+				if (smallest_prime[j] == j) smallest_prime[j] = i;
+			}
+		}
+	}
 }
 
 /**
@@ -293,74 +293,72 @@ void sieve() {
  * @param i The id of the node in the graph
  */
 void factorize(int a, int i) {
-    while (a > 1) {
-        int p = smallest_prime[a];
-        if (a > 1 && a % p == 0) {
-            // New prime factor found- let's add it to the graph
-            if (!primes[p]) { primes[p] = ++node_at; }
-            adj[primes[p]].push_back(i);
-            adj[i].push_back(primes[p]);
-        }
-        while (a > 1 && a % p == 0) { a /= p; }
-    }
+	while (a > 1) {
+		int p = smallest_prime[a];
+		if (a > 1 && a % p == 0) {
+			// New prime factor found- let's add it to the graph
+			if (!primes[p]) { primes[p] = ++node_at; }
+			adj[primes[p]].push_back(i);
+			adj[i].push_back(primes[p]);
+		}
+		while (a > 1 && a % p == 0) { a /= p; }
+	}
 }
 
 int main() {
-    sieve();
-    int n;
-    cin >> n;
-    node_at = n;
-    
-    for (int i = 1; i <= n; i++) {
-        int a;
-        cin >> a;
-        factorize(a, i);
-    }
-    int start, end;
-    cin >> start >> end;
+	sieve();
+	int n;
+	cin >> n;
+	node_at = n;
 
-    // Find path using BFS
-    queue<pair<int, int>> q;
-    visited[start] = true;
-    q.push({start, 0});
-    while (!q.empty()) {
-        auto front = q.front();
-        q.pop();
-        int loc = front.first;
-        int len = front.second;
+	for (int i = 1; i <= n; i++) {
+		int a;
+		cin >> a;
+		factorize(a, i);
+	}
+	int start, end;
+	cin >> start >> end;
 
-        if (loc == end) {
-            cout << len / 2 + 1 << endl;
-            vector<int> points(1, loc);
+	// Find path using BFS
+	queue<pair<int, int>> q;
+	visited[start] = true;
+	q.push({start, 0});
+	while (!q.empty()) {
+		auto front = q.front();
+		q.pop();
+		int loc = front.first;
+		int len = front.second;
 
-            // Backtrack to find OG path
-            int current = loc;
-            while (current != start) {
-                current = parent[current];
-                points.push_back(current);
-            }
-            reverse(points.begin(), points.end());
+		if (loc == end) {
+			cout << len / 2 + 1 << endl;
+			vector<int> points(1, loc);
 
-            for (int i = 0; i < points.size(); i++) {
-                if (i % 2 == 0) {
-                    cout << points[i] << ' ';
-                }
-            }
-            cout << endl;
-            return 0;
-        }
+			// Backtrack to find OG path
+			int current = loc;
+			while (current != start) {
+				current = parent[current];
+				points.push_back(current);
+			}
+			reverse(points.begin(), points.end());
 
-        for (int next : adj[loc]) {
-            if (!visited[next]) {
-                visited[next] = true;
-                parent[next] = loc;
-                q.push(make_pair(next, len + 1));
-            }
-        }
-    }
+			for (int i = 0; i < points.size(); i++) {
+				if (i % 2 == 0) { cout << points[i] << ' '; }
+			}
+			cout << endl;
+			return 0;
+		}
 
-    // If no path is found, print -1.
-    cout << -1 << endl;
+		for (int next : adj[loc]) {
+			if (!visited[next]) {
+				visited[next] = true;
+				parent[next] = loc;
+				q.push(make_pair(next, len + 1));
+			}
+		}
+	}
+
+	// If no path is found, print -1.
+	cout << -1 << endl;
 }
 ```
 
