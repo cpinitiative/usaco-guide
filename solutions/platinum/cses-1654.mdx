@@ -8,13 +8,13 @@ author: Ashok Narayan
 ## Explanation
 
 A brute force approach would, for each element $x$, iterate over all other elements $y$ and check the three conditions.
-This results in **$O(n^2)$** time, which is too slow for large $n$.
+This results in $\mathcal{O}(N^2)$ time, which is too slow.
 
 Lets understand the relations:
 
-- $x \mid y = x$  →  $y$ is a **submask** of $x$
-- $x \& y = x$  →  $y$ is a **supermask** of $x$
-- $x \& y \ne 0$  →  total minus masks **disjoint** with $x$
+- $x \, \mid \, y = x \implies$  $y$ is a **submask** of $x$
+- $x \mathbin{\&} y = x \implies$ $y$ is a **supermask** of $x$
+- $x \mathbin{\&} y \neq 0 \implies$ $y$ is **not disjoint** with $x$
 
 Since values are at most $2^{20}$, we treat each number as a 20-bit mask and build a frequency array.
 
@@ -23,35 +23,34 @@ Now the problem reduces to:
 - For every mask, count how many of its **submasks** appear.
 - For every mask, count how many of its **supermasks** appear.
 
-Doing this naively by iterating over submasks for every $x$ would take about **$O(3^{20})$** in total, which is infeasible.
+Doing this naively by iterating over submasks for every $x$ takes up to $3^{20}$ operations, which is infeasible.
 
 Instead, we apply **SOS DP**.
 By iterating over each bit and each mask once, we can compute:
 
-- $dp[\text{mask}]$ → number of submasks of $mask$
-- $kp[\text{mask}]$ → number of supermasks of $mask$
+- $dp[\text{mask}]$ is the number of submasks of $\text{mask}$
+- $kp[\text{mask}]$ is the number of supermasks of $\text{mask}$
 
-This preprocessing runs in **$O(20 \cdot 2^{20})$**.
+This is a standard application of SOS DP and can be computed in $\mathcal{O}(B \cdot 2^{B})$ time, where $B = 20$ in this problem.
 
-Finally:
-- First answer = $dp[x]$
-- Second answer = $kp[x]$
-- Third answer = $n - dp[\text{full\_mask} \oplus x]$
-
-Thus, we replace repeated brute force enumeration with a single SOS DP preprocessing step.
+Finally, we can use these values to answer each query.
+- First answer: $dp[x]$
+- Second answer: $kp[x]$
+- Third answer: $n - dp[\text{full\_mask} \oplus x]$
 
 ## Implementation
 
-**Time Complexity:** $\mathcal{O}((20 * 2^{20}) + n)$
+**Time Complexity:** $\mathcal{O}(B \cdot 2^{B} + N)$, where $B$ is the number of bits in the mask.
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
-
 #include <bits/stdc++.h>
 using namespace std;
+
+constexpr int B = 20;
+constexpr int FULL_MASK = (1 << B) - 1;
 
 int main() {
 	ios::sync_with_stdio(false);
@@ -63,21 +62,23 @@ int main() {
 	vector<int> a(n);
 	for (int &x : a) cin >> x;
 
-	vector<int> dp(1 << 20), kp(1 << 20);
+	vector<int> dp(1 << B), kp(1 << B);
 
 	for (int x : a) dp[x]++, kp[x]++;
 
-	for (int i = 0; i < 20; ++i)
-		for (int mask = 0; mask < (1 << 20); ++mask)
-
+	for (int i = 0; i < B; ++i) {
+		for (int mask = 0; mask < (1 << B); ++mask) {
 			if (mask & (1 << i)) dp[mask] += dp[mask ^ (1 << i)];
 			else kp[mask] += kp[mask ^ (1 << i)];
+        }
+    }
 
-	for (int x : a)
-		cout << dp[x] << ' ' << kp[x] << ' ' << n - dp[((1 << 20) - 1) ^ x] << '\n';
+	for (int x : a) 
+		cout << dp[x] << ' ' << kp[x] << ' ' << n - dp[FULL_MASK ^ x] << '\n';
 
 	return 0;
 }
 ```
+
 </CPPSection>
 </LanguageSection>
