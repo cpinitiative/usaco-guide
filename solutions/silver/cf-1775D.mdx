@@ -225,38 +225,30 @@ public class FriendlySpiders {
 
 ## Explanation
 
-First, notice that two spiders are friends, they must share a common prime factor.
-But we can't maintain all the possible edges between any two spiders, as that's
-too slow.
+Maintain all the possible edges between any two spiders is to inefficient.
 
 Since the complete graphs for the spiders are grouped by prime factors, we
 build a graph that groups spiders by prime factors. We do this
 by creating nodes representing prime factors, and connecting them
-to the spiders divisible by that prime factor. Two spiders communicating
-will be the sender communicating to the prime factor node, and the prime
-factor node communicating to the receiver.
+to the spiders divisible by that prime factor.
 
 We can now notice that the length of the path in the original
 problem is the length of the shortest path over our newly reformulated graph,
 divided by 2 plus 1, accounting for the starting node.
 
-The number of vertices is the amount of prime factors plus the amount of nodes;
-the amount of prime factors must be less than $a_\mathrm{max} < 3\times10^5$,
-as factors must be less than the numbers themselves, and not every number is
-prime. So the amount of vertices cannot exceed $6\times10^5$.
-For the number of edges, for any number less than $3\times10^5$ there are at
-most $7$ prime factors for it; the maximum amount of prime factors can be
-obtained by a construction not repeating any prime factors, and using the
-smallest prime factors (i.e.
-$2\times3\times5\times7\times\cdots\times17>3\times10^5$).
+The number of vertices is the amount of prime factors plus the amount of nodes,
+which is at most double $N$.
+As for the number of edges, notice that any integer $n$ can have at most $\log n$ prime factors,
+so our number of edges is bounded by $O(N \log N)$.
+
+With these parameters for our altered graph, BFS now becomes feasible.
 
 ## Implementation
 
 This implementation uses a sieve for a little bit of speedup, which is not strictly
-required for this problem. It is obvious that the scale of the solution will not
-time out from the calculations above; but to be exact, the time complexity of this
-implementation is $\mathcal O(n\frac{\log n}{\log\log n}+\frac A{\log A}+n\log\log A)$
-with $A=\max(a_i)$ by elementary number theory.
+required for this problem. To be exact, though, the time complexity of this
+implementation is $\mathcal{O}(n\frac{\log n}{\log\log n}+\frac A{\log A}+n\log\log A)$
+where $A=\max(a_i)$ by some number theory.
 
 <LanguageSection>
 <CPPSection>
@@ -266,131 +258,109 @@ with $A=\max(a_i)$ by elementary number theory.
 #include <iostream>
 #include <map>
 #include <queue>
-#include <utility>
 #include <vector>
 
 using namespace std;
 
-// There's less than 1e5 primes under 3e5.
-// This represents the maximum number of primes under the maximum a.
-const int MAXPRIMES = 100000;
-// MAXN is the maximum n for this problem.
-const int MAXN = 300000;
-const int MAXNODES = MAXN + MAXPRIMES;
-// MAXNUM is the maximum possible a[i] from the problem constraints.
-const int MAXNUM = 300000;
-// Adjacency list for nodes in the graph described above.
-vector<int> g[MAXNODES + 1];
-// Whether each node is visited; used by the BFS in main.
-bool vis[MAXNODES + 1];
-// This represents a mapping from the prime factor itself
-// to the node number in the graph; i.e. primes[prime] ==
-// node number for prime factor
-int primes[MAXNUM + 1];
-// Used by sieve and efficient factorization; smallest prime
-// factor maintained for each number.
-int spf[MAXNUM + 1];
-// Used to reconstruct the path after the BFS in main, by
-// storing the node (the value) from which a node (the index)
-// is visited.
-int parent[MAXNODES + 1];
+constexpr int MAX_N = 300000;
+constexpr int MAX_LEGS = 300000;
+// There's less than 1e5 primes under 3e5
+constexpr int MAX_PRIMES = 100000;
+constexpr int MAX_NODES = MAX_N + MAX_PRIMES;
+vector<int> adj[MAX_NODES + 1];
+bool visited[MAX_NODES + 1];
+int primes[MAX_LEGS + 1];  // primes[p] = node in graph associated w the prime p
+int smallest_prime[MAX_LEGS + 1];  // smallest_prime[i] = smallest prime factor of i
+int parent[MAX_NODES + 1];
 
-int total;
+int node_at;  // Largest node added so far
 
-// Register the fact that the i-th number has prime factor p.
-// This will create a new prime factor node if necessary, and
-// make the correct connections to the node.
-void addprime(int p, int i) {
-	if (!primes[p]) primes[p] = ++total;
-	g[primes[p]].push_back(i);
-	g[i].push_back(primes[p]);
-}
-
-// A pre-processing step for efficient factorization; uses
-// Eratosthenes' sieve to pre-determine the smallest prime
-// factor for each number.
+/** Calculates the smallest prime for each number. */
 void sieve() {
-	for (int i = 2; i <= MAXNUM; i++) spf[i] = i;
-	for (int i = 2; i * i <= MAXNUM; i++) {
-		if (spf[i] == i) {
-			for (int j = i * i; j <= MAXNUM; j += i) {
-				if (spf[j] == j) spf[j] = i;
-			}
-		}
-	}
+    for (int i = 2; i <= MAX_LEGS; i++) { smallest_prime[i] = i; }
+    for (int i = 2; i * i <= MAX_LEGS; i++) {
+        if (smallest_prime[i] == i) {
+            for (int j = i * i; j <= MAX_LEGS; j += i) {
+                if (smallest_prime[j] == j) smallest_prime[j] = i;
+            }
+        }
+    }
 }
 
-// Factorize a number; the index of the node is also passed
-// in to facilitate making connections in the process.
-// Inputs a as the number, and i as the index.
+/**
+ * Factorize a number and add relevant edges in the graph
+ * @param a The value of the node
+ * @param i The id of the node in the graph
+ */
 void factorize(int a, int i) {
-	while (a > 1) {
-		int p = spf[a];
-		if (a > 1 && a % p == 0) addprime(p, i);
-		while (a > 1 && a % p == 0) a /= p;
-	}
+    while (a > 1) {
+        int p = smallest_prime[a];
+        if (a > 1 && a % p == 0) {
+            // New prime factor found- let's add it to the graph
+            if (!primes[p]) { primes[p] = ++node_at; }
+            adj[primes[p]].push_back(i);
+            adj[i].push_back(primes[p]);
+        }
+        while (a > 1 && a % p == 0) { a /= p; }
+    }
 }
 
 int main() {
-	sieve();
-	int n;
-	cin >> n;
-	total = n;
-	// Process each input, and make the necessary node
-	// connections.
-	for (int i = 1; i <= n; i++) {
-		int a;
-		cin >> a;
-		factorize(a, i);
-	}
-	int start, end;
-	cin >> start >> end;
+    sieve();
+    int n;
+    cin >> n;
+    node_at = n;
+    
+    for (int i = 1; i <= n; i++) {
+        int a;
+        cin >> a;
+        factorize(a, i);
+    }
+    int start, end;
+    cin >> start >> end;
 
-	// Standard BFS algorithm.
-	// q tracks the location and path length for
-	// each visit.
-	queue<pair<int, int>> q;
-	vis[start] = true;
-	q.push(make_pair(start, 0));
-	while (!q.empty()) {
-		auto front = q.front();
-		q.pop();
-		int loc = front.first, len = front.second;
+    // Find path using BFS
+    queue<pair<int, int>> q;
+    visited[start] = true;
+    q.push({start, 0});
+    while (!q.empty()) {
+        auto front = q.front();
+        q.pop();
+        int loc = front.first;
+        int len = front.second;
 
-		// Since BFS is breadth-first, the first to reach the
-		// end shall terminate all other searching.
-		if (loc == end) {
-			cout << len / 2 + 1 << endl;
-			vector<int> points(1, loc);
+        if (loc == end) {
+            cout << len / 2 + 1 << endl;
+            vector<int> points(1, loc);
 
-			// Trace the parents (last nodes) visited recursively
-			// until we get to the start.  Then, reverse the constructed
-			// path and output it (but only odd-numbered, aka. original nodes).
-			int current = loc;
-			while (current != start) {
-				current = parent[current];
-				points.push_back(current);
-			}
-			reverse(points.begin(), points.end());
-			int cnt = 0;
-			for (auto a : points) {
-				if (++cnt % 2) cout << a << ' ';
-			}
-			cout << endl;
-			return 0;
-		}
+            // Backtrack to find OG path
+            int current = loc;
+            while (current != start) {
+                current = parent[current];
+                points.push_back(current);
+            }
+            reverse(points.begin(), points.end());
 
-		for (int next : g[loc]) {
-			if (!vis[next]) {
-				vis[next] = true;
-				parent[next] = loc;
-				q.push(make_pair(next, len + 1));
-			}
-		}
-	}
+            for (int i = 0; i < points.size(); i++) {
+                if (i % 2 == 0) {
+                    cout << points[i] << ' ';
+                }
+            }
+            cout << endl;
+            return 0;
+        }
 
-	// If no path is found, print -1.
-	cout << -1 << endl;
+        for (int next : adj[loc]) {
+            if (!visited[next]) {
+                visited[next] = true;
+                parent[next] = loc;
+                q.push(make_pair(next, len + 1));
+            }
+        }
+    }
+
+    // If no path is found, print -1.
+    cout << -1 << endl;
 }
 ```
 
