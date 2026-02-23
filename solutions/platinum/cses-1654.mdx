@@ -7,41 +7,42 @@ author: Ashok Narayan
 
 ## Explanation
 
-A brute force approach would, for each element `x`, iterate over all other elements `y` and check the three conditions.
-This results in **O(n²)** time, which is too slow for large `n`.
+A brute force approach would, for each element $x$, iterate over all other elements $y$ and check the three conditions.
+This results in **$O(n^2)$** time, which is too slow for large $n$.
 
 Lets understand the relations:
 
-- `x | y = x`  →  `y` is a **submask** of `x`
-- `x & y = x`  →  `y` is a **supermask** of `x`
-- `x & y ≠ 0`  →  total minus masks **disjoint** with `x`
+- $x \mid y = x$  →  $y$ is a **submask** of $x$
+- $x \& y = x$  →  $y$ is a **supermask** of $x$
+- $x \& y \ne 0$  →  total minus masks **disjoint** with $x$
 
-Since values are at most `2^20`, we treat each number as a 20-bit mask and build a frequency array.
+Since values are at most $2^{20}$, we treat each number as a 20-bit mask and build a frequency array.
 
 Now the problem reduces to:
 
 - For every mask, count how many of its **submasks** appear.
 - For every mask, count how many of its **supermasks** appear.
 
-Doing this naively by iterating over submasks for every `x` would take about **O(3^20)** in total, which is infeasible.
+Doing this naively by iterating over submasks for every $x$ would take about **$O(3^{20})$** in total, which is infeasible.
 
-Instead, we apply **SOS DP (zeta transform)**.
+Instead, we apply **SOS DP**.
 By iterating over each bit and each mask once, we can compute:
 
-- `dp[mask]` → number of submasks of `mask`
-- `kp[mask]` → number of supermasks of `mask`
+- $dp[\text{mask}]$ → number of submasks of $mask$
+- $kp[\text{mask}]$ → number of supermasks of $mask$
 
-This preprocessing runs in **O(20 * 2^20)**.
+This preprocessing runs in **$O(20 \cdot 2^{20})$**.
 
 Finally:
-- First answer = `dp[x]`
-- Second answer = `kp[x]`
-- Third answer = `n - dp[full_mask ^ x]`
+- First answer = $dp[x]$
+- Second answer = $kp[x]$
+- Third answer = $n - dp[\text{full\_mask} \oplus x]$
 
 Thus, we replace repeated brute force enumeration with a single SOS DP preprocessing step.
+
 ## Implementation
 
-**Time Complexity:** $\mathcal{O}((B * 2^{B}) + n)$, where $B$ is the number of bits in the mask.
+**Time Complexity:** $\mathcal{O}((20 * 2^{20}) + n)$
 
 <LanguageSection>
 
