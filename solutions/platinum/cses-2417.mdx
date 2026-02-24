@@ -35,7 +35,7 @@ So we must subtract the overcounted pairs.
 
 ### Step 1: Counting Multiples
 
-For every $d$ from $1$ to $\text{maxVal}$, we iterate over its multiples: 
+For every $d$ from $1$ to $\text{maxVal}$, we iterate over its multiples:
 
 > `count[d] += freq[multiple]`
 
@@ -84,7 +84,7 @@ We are asked to count pairs that are **coprime**, i.e., `gcd(x, y) = 1`. So the 
 
 ## Implementation
 
-**Time Complexity:** $\mathcal{O}(A \log A + N)$, 
+**Time Complexity:** $\mathcal{O}(A \log A + N)$,
 
 <LanguageSection>
 <CPPSection>
@@ -95,39 +95,38 @@ using namespace std;
 
 const int MAXA = 1e6 + 5;
 
-int main(){
+int main() {
 	ios::sync_with_stdio(0);
 	cin.tie(0);
-	
-	int n; cin >> n;
-	
+
+	int n;
+	cin >> n;
+
 	vector<int> freq(MAXA, 0);
 	int maxVal = 0;
-	
+
 	int x;
-	for (int i = 0; i < n; ++i){
+	for (int i = 0; i < n; ++i) {
 		cin >> x;
 		freq[x]++;
 		maxVal = max(maxVal, x);
 	}
-	
-	vector<long long> count(maxVal + 1, 0);
-	vector<long long> pairs(maxVal + 1, 0); 
-	
-	for (int d = 1; d <= maxVal; ++d)
-		for (int mult = d; mult <= maxVal; mult += d)
-			count[d] += freq[mult];
 
-	// Inclusion - Exclusion Principle 
-	for (int d = maxVal; d >= 1; --d){
-		long long total = count[d] * (count[d] - 1) /2;
-		
-		for (int mult = 2*d; mult <= maxVal; mult += d)
-			total -= pairs[mult];
-		
+	vector<long long> count(maxVal + 1, 0);
+	vector<long long> pairs(maxVal + 1, 0);
+
+	for (int d = 1; d <= maxVal; ++d)
+		for (int mult = d; mult <= maxVal; mult += d) count[d] += freq[mult];
+
+	// Inclusion - Exclusion Principle
+	for (int d = maxVal; d >= 1; --d) {
+		long long total = count[d] * (count[d] - 1) / 2;
+
+		for (int mult = 2 * d; mult <= maxVal; mult += d) total -= pairs[mult];
+
 		pairs[d] = total;
 	}
-	
+
 	cout << pairs[1] << '\n';
 	return 0;
 }
