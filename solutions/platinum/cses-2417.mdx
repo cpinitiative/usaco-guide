@@ -7,10 +7,84 @@ author: Ashok Narayan
 
 ## Explanation
 
+A brute force approach would check every pair $(i, j)$ and compute $\gcd(a_i, a_j)$.
+This takes $\mathcal{O}(N^2 \log A)$ time, which is too slow for large $N$.
+
+Instead of directly checking whether $\gcd(x, y) = 1$, we count pairs by grouping them according to their gcd.
+
+---
+
+### How to group them?
+
+Let:
+
+* `count[d]` = number of elements in the array divisible by $d$.
+* `pairs[d]` = number of pairs whose gcd is exactly $d$.
+
+If `count[d]` elements are divisible by $d$, then the number of unordered pairs among them is:
+
+$$
+\binom{\text{count}[d]}{2} = \frac{\text{count}[d] \cdot (\text{count}[d] - 1)}{2}
+$$
+
+However, this counts pairs whose gcd is $d$, $2d$, $3d$ and so on.
+
+So we must subtract the overcounted pairs.
+
+---
+
+### Step 1: Counting Multiples
+
+For every $d$ from $1$ to $\text{maxVal}$, we iterate over its multiples: 
+
+> `count[d] += freq[multiple]`
+
+After this loop, `count[d]` stores how many numbers are divisible by $d$.
+
+This preprocessing runs in harmonic time:
+
+$$
+\sum_{d=1}^{A} \frac{A}{d} = \mathcal{O}(A \log A)
+$$
+
+---
+
+### Step 2: Inclusion–Exclusion on GCD
+
+We now compute `pairs[d]` from largest $d$ down to $1$.
+
+For a fixed $d$:
+
+1. Start with all pairs divisible by $d$:
+
+$$
+\text{total} = \binom{\text{count}[d]}{2}
+$$
+
+2. Subtract pairs already assigned to multiples of $d$:
+
+$$
+\text{pairs}[d] = \text{total} - \sum_{k \ge 2} \text{pairs}[k \cdot d]
+$$
+
+Why does this work?
+
+* Every pair with gcd equal to some multiple $k d$ was included in `total`.
+* Since we process in decreasing order of $d$, all `pairs[k*d]` are already computed.
+* Subtracting them leaves only pairs whose gcd is exactly $d$.
+
+This is a classic **Inclusion–Exclusion over divisors** .
+
+
+
+
+We are asked to count pairs that are **coprime**, i.e., `gcd(x, y) = 1`. So the answer is `pairs[1]`.
+
+---
 
 ## Implementation
 
-**Time Complexity:** $\mathcal{O}()$, 
+**Time Complexity:** $\mathcal{O}(A \log A + N)$, 
 
 <LanguageSection>
 <CPPSection>
@@ -43,8 +117,8 @@ int main(){
 	for (int d = 1; d <= maxVal; ++d)
 		for (int mult = d; mult <= maxVal; mult += d)
 			count[d] += freq[mult];
-	
-	// Inclusion - Exclusion Principle application
+
+	// Inclusion - Exclusion Principle 
 	for (int d = maxVal; d >= 1; --d){
 		long long total = count[d] * (count[d] - 1) /2;
 		
