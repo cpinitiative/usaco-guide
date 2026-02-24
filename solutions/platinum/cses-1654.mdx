@@ -46,11 +46,10 @@ If bit `i` is set in `mask`, then any submask of `mask` either:
 - does not use bit `i`, or
 - does use bit `i`.
 
-The submasks that do not use bit `i` correspond exactly to `mask ^ (1 << i)`.  
+The submasks that do not use bit `i` correspond exactly to `mask ^ (1 << i)`.
 So we accumulate:
 ```cpp
-    if (mask & (1 << i))
-        dp[mask] += dp[mask ^ (1 << i)];
+if (mask & (1 << i)) dp[mask] += dp[mask ^ (1 << i)];
 ```
 
 After processing all bits, `dp[mask]` equals the total number of elements that are submasks of `mask`.
@@ -59,12 +58,11 @@ After processing all bits, `dp[mask]` equals the total number of elements that a
 
 #### Supermask DP
 
-Symmetrically, if bit `i` is not set in `mask`, then supermasks of `mask` that include bit `i` correspond to `mask ^ (1 << i)`.  
+Symmetrically, if bit `i` is not set in `mask`, then supermasks of `mask` that include bit `i` correspond to `mask ^ (1 << i)`.
 So we accumulate:
 
 ```cpp
-    if (!(mask & (1 << i)))
-        kp[mask] += kp[mask ^ (1 << i)];
+if (!(mask & (1 << i))) kp[mask] += kp[mask ^ (1 << i)];
 ```
 ---
 
@@ -84,7 +82,7 @@ Instead, count the complement:
 
     `x & y = 0`
 
-This is true if and only if every set bit of `y` lies outside `x`,  
+This is true if and only if every set bit of `y` lies outside `x`,
 i.e., `y` is a submask of `~x`.
 
 Since we only consider the lowest `B` bits:
