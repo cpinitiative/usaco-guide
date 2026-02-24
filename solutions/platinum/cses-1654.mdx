@@ -26,18 +26,78 @@ Now the problem reduces to:
 Doing this naively by iterating over submasks for every $x$ takes up to $3^{20}$ operations, which is infeasible.
 
 Instead, we apply **SOS DP**.
-By iterating over each bit and each mask once, we can compute:
 
-- $dp[\text{mask}]$ is the number of submasks of $\text{mask}$
-- $kp[\text{mask}]$ is the number of supermasks of $\text{mask}$
+---
 
-This is a standard application of SOS DP and can be computed in $\mathcal{O}(B \cdot 2^{B})$ time, where $B = 20$ in this problem.
+### How the SOS DP Transitions Work
 
-Finally, we can use these values to answer each query.
-- First answer: $dp[x]$
-- Second answer: $kp[x]$
-- Third answer: $n - dp[\text{FULL\_MASK} \oplus x]$
+We initialize both `dp` and `kp` with the frequency of each mask.
 
+- `dp[mask]` will become the number of array elements that are **submasks** of `mask`.
+- `kp[mask]` will become the number of array elements that are **supermasks** of `mask`.
+
+---
+
+#### Submask DP
+
+For each bit `i` and each `mask`:
+
+If bit `i` is set in `mask`, then any submask of `mask` either:
+- does not use bit `i`, or
+- does use bit `i`.
+
+The submasks that do not use bit `i` correspond exactly to `mask ^ (1 << i)`.  
+So we accumulate:
+```cpp
+    if (mask & (1 << i))
+        dp[mask] += dp[mask ^ (1 << i)];
+```
+
+After processing all bits, `dp[mask]` equals the total number of elements that are submasks of `mask`.
+
+---
+
+#### Supermask DP
+
+Symmetrically, if bit `i` is not set in `mask`, then supermasks of `mask` that include bit `i` correspond to `mask ^ (1 << i)`.  
+So we accumulate:
+
+```cpp
+    if (!(mask & (1 << i)))
+        kp[mask] += kp[mask ^ (1 << i)];
+```
+---
+
+After all bits are processed, `kp[mask]` stores the number of elements that are supermasks of `mask`.
+
+Both computations run in O(B * 2^B).
+
+---
+
+### Deriving the Third Answer
+
+We need the count of `y` such that:
+
+    `x & y != 0`
+
+Instead, count the complement:
+
+    `x & y = 0`
+
+This is true if and only if every set bit of `y` lies outside `x`,  
+i.e., `y` is a submask of `~x`.
+
+Since we only consider the lowest `B` bits:
+
+   ` ~x = FULL_MASK ^ x`
+
+Thus,
+
+- Number of `y` with `x & y = 0` = `dp[FULL_MASK ^ x]`
+
+Therefore,
+
+- Number of `y` with `x & y != 0` = `n - dp[FULL_MASK ^ x]`
 ## Implementation
 
 **Time Complexity:** $\mathcal{O}(B \cdot 2^{B} + N)$, where $B$ is the number of bits in the mask.
