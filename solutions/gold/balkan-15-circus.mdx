@@ -1,0 +1,198 @@
+---
+id: balkan-15-circus
+source: Balkan OI
+title: 2015 - Circus
+author: Justin Ji
+---
+
+## Explanation
+
+For the sake of convenience, we assume that position $m$ has a rope.
+Also, we can sort the list of rope locations and relabel them as such. This does not affect the problem, but makes thinking about it easier.
+
+Based on the problem's conditions, each consecutive jump
+between ropes cannot exceed the distance of the previous jump.
+If we frame the problem as traversing outward from the rope at $m$, this condition becomes reversed. To traverse from the rope at $m$ to another rope, the jumps we take must have non-decreasing lengths.
+
+Given the condition for a valid path, there is no case where we would want to reach position $m$ with more initial rope than required. Thus, we can model this problem as a single-source shortest paths problem, expanding outward from the rope at $m$ to calculate the required rope lengths. Naively computing distances takes $\mathcal{O}(N^2 \log{N})$ time.
+
+### Optimizing Calculating Distances
+
+Let $s[i]$ denote the initial rope length needed to reach $m$ from rope $i$.
+If we are at some node $i$, and want to update our distances, our Dijkstra's code to push to new nodes might look something like this:
+
+```cpp
+// i = the current node
+// s[i] = the rope length to go from i to m
+for (int j = 0; j < n; j++) {
+	if (abs(p[j] - p[i]) >= s[i]) { pq.push({abs(p[j] - p[i]), j}); }
+}
+```
+
+Notice that if we sort the list of positions $p$, a prefix and suffix of positions will allow for transitions. To use this property,
+we split our distance calculations into two parts:
+- $\text{dist}_l[i]$ is the rope length needed to reach $m$, if the last jump was from the left.
+- $\text{dist}_r[i]$ is the rope length needed to reach $m$, if the last jump was from the right.
+
+The directions for both distance definitions are from **moving away** from a previous rope. For example, if we move from a rope at position $5$ to position $3$ in our Dijkstra code, we would update $\text{dist}_l$ for the rope at $3$.
+
+Consider calculating $\text{dist}_l[i]$, with the logic for calculating $\text{dist}_r[i]$ being similar. Observe that:
+- If $i$ has a neighbor to the left, we can potentially update $\text{dist}_l[i-1]$ simply by extending the jump used to obtain $\text{dist}_l[i]$.
+- From the pseudocode above, this type of transition is essentially the same as handling the prefix of possible Dijkstra transitions.
+
+With these observations, we can reduce the number of possible edges from
+$\mathcal{O}(N^2)$ to $\mathcal{O}(N)$. The pseudocode for transitions is
+as follows:
+
+```cpp
+// i = the current node
+// dist_l[i] = distance if previous jump was from left
+// dist_r[i] = distance if previous jump was from right
+// assume currently processing dist_l[i]
+if (i > 0) { pq.push({dist_l[i] + (p[i] - p[i - 1])}); }
+
+int next_left;  // next node to left with jump dist >= dist_l[i]
+pq.push({p[i] - p[next_left], next_left});
+
+int next_right;  // next node to the right with jump dist >= dist_l[i]
+pq.push({p[next_right] - p[i], next_right});
+```
+
+This allows us to calculate the minimum rope length to reach $m$ in $\mathcal{O}(N \log N)$ time.
+
+### Calculating `minLength(d)`
+
+Starting at the temporary rope, we end up jumping to some other rope to
+eventually reach $m$. $\text{dist}[i]$ stores the minimal rope length
+to reach $m$ from any other rope, so we can reuse it in calculating `minLength`.
+
+A naive way of computing our answer would look something like this:
+
+```cpp
+int best = INF;
+for (int i = 0; i < n; i++) {
+	if (abs(p[i] - d) >= dist[i]) { best = min(best, p[i] - d); }
+}
+```
+
+Without loss of generality, assume that $p[i] \leq d$. Then, we can rewrite the condition for
+updating our best answer:
+
+$$
+d - p[i] \geq \text{dist}[i] \implies d \geq \text{dist}[i] + p[i]
+$$
+
+Since the jump distance is $d - p[i]$, we aim to find the maximal
+$p[i]$ amongst all $i$ satisfying the condition above. To do this,
+we can sort all ropes by $\text{dist}[i] + p[i]$, and compute the
+prefix maximum value of $p[i]$ for each rope. Then, to query the best value, we use binary search to find the last $i$ satisfying the condition.
+
+By using similar logic for the case where $p[i] \geq d$, we can
+answer each query in $\mathcal{O}(\log N)$ time.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}((N+Q)\log{N})$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using ll = long long;
+
+constexpr int INF = 1e9;
+
+std::map<int, int> best_f, best_r;
+
+void init(int n, int m, int p[]) {
+	// sort points for lower bound and ghost edges
+	std::sort(p, p + n);
+
+	// dist[i] = {dist from left, dist from right}
+	std::vector<std::array<int, 2>> dist(n, {INF, INF});
+	std::priority_queue<std::array<int, 3>> pq;
+	for (int i = 0; i < n; i++) {
+		// initialize left dist with jump from m
+		pq.push({-(m - p[i]), i, 0});
+	}
+
+	while (!pq.empty()) {
+		auto [t, u, f] = pq.top();
+		pq.pop();
+		t *= -1;
+		if (dist[u][f] <= t) continue;
+		dist[u][f] = t;
+
+		// use the 'fake' edge
+		if (f == 0 && u > 0) {
+			pq.push({-(t + p[u] - p[u - 1]), u - 1, 0});
+		} else if (f == 1 && u + 1 < n) {
+			pq.push({-(t + p[u + 1] - p[u]), u + 1, 1});
+		}
+
+		// jump forward by at least t
+		int nxt = std::lower_bound(p, p + n, p[u] + t) - p;
+		if (nxt < n) { pq.push({-(p[nxt] - p[u]), nxt, 1}); }
+
+		// jump backwards by at least t
+		nxt = std::upper_bound(p, p + n, p[u] - t) - p - 1;
+		if (nxt >= 0) { pq.push({-(p[u] - p[nxt]), nxt, 0}); }
+	}
+
+	for (int i = 0; i < n; i++) {
+		// dist[i][0] = min rope length to reach destination from rope i
+		dist[i][0] = std::min(dist[i][0], dist[i][1]);
+	}
+
+	std::vector<int> ord(n);
+	std::iota(ord.begin(), ord.end(), 0);
+
+	// sort points by descending entry location for forward first jumps
+	std::sort(ord.begin(), ord.end(), [&](int x, int y) -> bool {
+		return p[x] - dist[x][0] > p[y] - dist[y][0];
+	});
+
+	int best = INF;
+	for (int i : ord) {
+		// find minimum p[i] for shortest jump
+		best = std::min(best, p[i]);
+		best_f[p[i] - dist[i][0]] = best;
+	}
+
+	// sort points by ascending entry location for reverse first jumps
+	std::sort(ord.begin(), ord.end(), [&](int x, int y) -> bool {
+		return p[x] + dist[x][0] < p[y] + dist[y][0];
+	});
+
+	best = -INF;
+	for (int i : ord) {
+		// find maximum p[i] for shortest jump
+		best = std::max(best, p[i]);
+		best_r[p[i] + dist[i][0]] = best;
+	}
+
+	// allow for jump directly to m
+	best_f[m] = m;
+}
+
+int minLength(int d) {
+	int best = INF;
+
+	// find minimum jump for forward
+	auto it = best_f.lower_bound(d);
+	if (it != best_f.end()) { best = std::min(best, (it->second) - d); }
+
+	// find minimum jump for reverse
+	it = best_r.upper_bound(d);
+	if (it != best_r.begin()) {
+		--it;
+		best = std::min(best, d - (it->second));
+	}
+
+	return best;
+}
+```
+
+</CPPSection>
+</LanguageSection>
