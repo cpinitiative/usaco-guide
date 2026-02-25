@@ -63,136 +63,132 @@ down the lane.
 #include <vector>
 using namespace std;
 #define int long long
-int l[200005], r[200005], lab[200005], m[200005], b[200005], ff[200005], minn[200005], maxn[200005];
+int l[200005], r[200005], lab[200005], m[200005], b[200005], ff[200005], minn[200005],
+    maxn[200005];
 vector<int> g[200005];
 vector<int> w[200005];
 map<int, int> segments;
 vector<int> points[200005];
 pair<int, int> propag(int x, int y, int z) {
-    int m = -::m[x];
-    int b = z - ::b[x];
-    return make_pair(m, b);
+	int m = -::m[x];
+	int b = z - ::b[x];
+	return make_pair(m, b);
 }
 // Returns:
 // 1. First bool: If the configuration is possible.
 // 2. Second element, first bool: If any action is needed.
 // 3. Second element, second bool: What number to make fixed,
 // if neccessary.
-pair<bool, pair<bool, int> > loopback(int m1, int b1, int m2, int b2) {
-    if (m1 == m2 && b1 != b2) {
-        return make_pair(false, make_pair(false, 0));
-    } else if (m1 == m2 && b1 == b2) {
-        return make_pair(true, make_pair(false, 0));
-    } else {
-        if ((b2 - b1) % (m1 - m2) == 0) {
-            return make_pair(true, make_pair(true, (b2 - b1) / (m1 - m2)));
-        }
-        return make_pair(false, make_pair(false, 0));
-    }
+pair<bool, pair<bool, int>> loopback(int m1, int b1, int m2, int b2) {
+	if (m1 == m2 && b1 != b2) {
+		return make_pair(false, make_pair(false, 0));
+	} else if (m1 == m2 && b1 == b2) {
+		return make_pair(true, make_pair(false, 0));
+	} else {
+		if ((b2 - b1) % (m1 - m2) == 0) {
+			return make_pair(true, make_pair(true, (b2 - b1) / (m1 - m2)));
+		}
+		return make_pair(false, make_pair(false, 0));
+	}
 }
 bool okay = true;
 void dfs(int label, int fa, int x) {
-    lab[x] = label;
-    points[label].push_back(x);
-    minn[x] = min((l[x] - b[x]) / m[x], (r[x] - b[x]) / m[x]);
-    maxn[x] = max((l[x] - b[x]) / m[x], (r[x] - b[x]) / m[x]);
-    for (int i = 0; i < g[x].size(); i++) {
-        int y = g[x][i];
-        int z = w[x][i];
-        if (y == fa) continue;
-        int m; int b;
-        m = propag(x, y, z).first;
-        b = propag(x, y, z).second;
-        if (::m[y] == 0) {
-            ::m[y] = m; ::b[y] = b;
-            dfs(label, x, y);
-        } else {
-            int m2 = ::m[y], b2 = ::b[y];
-            auto result = loopback(m, b, m2, b2);
-            if (!result.first) {
-                okay = false;
-            }
-            if (result.second.first) {
-                if (ff[label] == 2e9) {
-                    ff[label] = result.second.second;
-                } else {
-                    if (ff[label] != result.second.second) {
-                        okay = false;
-                    }
-                }
-            }
-        }
-    }
+	lab[x] = label;
+	points[label].push_back(x);
+	minn[x] = min((l[x] - b[x]) / m[x], (r[x] - b[x]) / m[x]);
+	maxn[x] = max((l[x] - b[x]) / m[x], (r[x] - b[x]) / m[x]);
+	for (int i = 0; i < g[x].size(); i++) {
+		int y = g[x][i];
+		int z = w[x][i];
+		if (y == fa) continue;
+		int m;
+		int b;
+		m = propag(x, y, z).first;
+		b = propag(x, y, z).second;
+		if (::m[y] == 0) {
+			::m[y] = m;
+			::b[y] = b;
+			dfs(label, x, y);
+		} else {
+			int m2 = ::m[y], b2 = ::b[y];
+			auto result = loopback(m, b, m2, b2);
+			if (!result.first) { okay = false; }
+			if (result.second.first) {
+				if (ff[label] == 2e9) {
+					ff[label] = result.second.second;
+				} else {
+					if (ff[label] != result.second.second) { okay = false; }
+				}
+			}
+		}
+	}
 }
-signed main()
-{
-    int t;
-    cin >> t;
-    while (t--) {
-        int n, m;
-        cin >> n >> m;
-        for (int i = 1; i <= n; i++) {
-            g[i].clear();
-            w[i].clear();
-            ::m[i] = 0;
-            ::b[i] = 0;
-            points[i].clear();
-        }
-        okay = true;
-        for (int i = 1; i <= n; i++) cin >> l[i];
-        for (int i = 1; i <= n; i++) cin >> r[i];
-        for (int i = 1; i <= n; i++) ff[i] = 2e9;
-        for (int i = 1; i <= m; i++) {
-            int x, y, z;
-            cin >> x >> y >> z;
-            g[x].push_back(y);
-            w[x].push_back(z);
-            g[y].push_back(x);
-            w[y].push_back(z);
-        }
-        bool putokay = false;
-        for (int i = 1; i <= n; i++) {
-            if (!::m[i]) {
-                ::m[i] = 1;
-                dfs(i, -1, i);
-            }
-            if (!okay && !putokay) {
-                cout << "-1" << endl;
-                putokay = true;
-                // break;
-            }
-        }
-        if (!okay) continue;
+signed main() {
+	int t;
+	cin >> t;
+	while (t--) {
+		int n, m;
+		cin >> n >> m;
+		for (int i = 1; i <= n; i++) {
+			g[i].clear();
+			w[i].clear();
+			::m[i] = 0;
+			::b[i] = 0;
+			points[i].clear();
+		}
+		okay = true;
+		for (int i = 1; i <= n; i++) cin >> l[i];
+		for (int i = 1; i <= n; i++) cin >> r[i];
+		for (int i = 1; i <= n; i++) ff[i] = 2e9;
+		for (int i = 1; i <= m; i++) {
+			int x, y, z;
+			cin >> x >> y >> z;
+			g[x].push_back(y);
+			w[x].push_back(z);
+			g[y].push_back(x);
+			w[y].push_back(z);
+		}
+		bool putokay = false;
+		for (int i = 1; i <= n; i++) {
+			if (!::m[i]) {
+				::m[i] = 1;
+				dfs(i, -1, i);
+			}
+			if (!okay && !putokay) {
+				cout << "-1" << endl;
+				putokay = true;
+				// break;
+			}
+		}
+		if (!okay) continue;
 
-        int ans = 0;
-        for (int i = 1; i <= n; i++) {
-            if (ff[i] == 2e9) {
-                segments.clear();
-                for (auto pt: points[i]) {
-                    if (minn[pt] <= maxn[pt]) {
-                        segments[minn[pt]]++;
-                        segments[maxn[pt] + 1]--;
-                    }
-                }
-                int total = 0;
-                int mmax = -1;
-                for (auto sgmt: segments) {
-                    total += sgmt.second;
-                    mmax = max(mmax, total);
-                }
-                mmax = max(mmax, total);
-                ans += mmax;
-            } else {
-                for (auto pt: points[i]) {
-                    if (minn[pt] <= ff[i] && ff[i] <= maxn[pt]) {
-                        ans++;
-                    }
-                }
-            }
-        }
-        cout << ans << endl;
-    }
-    return 0;
+		int ans = 0;
+		for (int i = 1; i <= n; i++) {
+			if (ff[i] == 2e9) {
+				segments.clear();
+				for (auto pt : points[i]) {
+					if (minn[pt] <= maxn[pt]) {
+						segments[minn[pt]]++;
+						segments[maxn[pt] + 1]--;
+					}
+				}
+				int total = 0;
+				int mmax = -1;
+				for (auto sgmt : segments) {
+					total += sgmt.second;
+					mmax = max(mmax, total);
+				}
+				mmax = max(mmax, total);
+				ans += mmax;
+			} else {
+				for (auto pt : points[i]) {
+					if (minn[pt] <= ff[i] && ff[i] <= maxn[pt]) { ans++; }
+				}
+			}
+		}
+		cout << ans << endl;
+	}
+	return 0;
 }
 ```
 
