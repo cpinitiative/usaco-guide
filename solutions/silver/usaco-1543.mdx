@@ -7,6 +7,47 @@ author: John Zhou
 
 [Official Analysis](https://usaco.org/current/data/sol_prob2_silver_season26contest1.html)
 
+# Solution
+
+## Explanation
+
+First, notice that the constraints $(x, y, z)$ form an undirected, weighted graph, where the constraints
+are the edges and the generators are the vertices.  Each connected component can be optimized independently.
+
+Let us first consider the cases when the graph has no cycles. In this case, consider a single connected
+component; note that we may choose an arbitary vertex, $v$, and let $x=a_v$.
+
+Since there are no cycles, we may start from vertex $v$ and traverse all vertices in the connected component
+without visiting any previously visited vertices (other than the vertices we came from, due to the
+representation of an undirected graph as a directed one). In the traversal, since each edge is a constraint,
+it is possible to represent the required value for the current node in terms of the node we came from during
+the traversal. For example, if the traversal leads us from node $1$ to node $2$ with the constraint $a_1+a_2=3$,
+then we may write $a_2=3-a_1$.
+
+Note that since we start from $v$ and we can build representations based on the previous arriving node each
+time, we can actually build a representation of all other nodes in the current connected component in terms of
+$x$, the initial value of the node we started from, by a simple substitution with the previous node's
+expression each time we propagate the expressions.
+
+From there, we can also set the expression to the minimum and maximum values for a generator to function
+and solve for $x$ to find out what ranges of $x$ is required for this specific generator to function.  After
+this, since we have multiple ranges of $x$, and we must find a value of $x$ that covers the maximum amount
+of ranges (which implies the maximum number of generators may function), we can track each range as
+"enter range" and "exit range" events, sort the events by their $x$ values, and then execute those events
+one by one, finding the maximum amount of generators we may entertain for that connected component as we
+sweep across the number line.  Adding the values for each component will then yield our answer.
+
+Now, what happens if we have cycles?  In our traversal for each component, cycles break the assumption that
+we're not going to visit a previously visited node. In mathematical terms, this means that we will come
+up with *two* different representations of power for a generator. We may connect those two representations
+when we revisit a node by equating them and solving the equation; after that, only one $x$ value is
+permissible for the connected component, so instead of the "events" handling described previously, we
+only use that value of $x$, and check it against the minimum and maximum $x$ values required by each
+node to see if it will generate power.
+
+## Implementation
+
+**Time Complexity**: $\mathcal O(N+M)$
 
 <LanguageSection>
 
