@@ -43,7 +43,11 @@ up with *two* different representations of power for a generator. We may connect
 when we revisit a node by equating them and solving the equation; after that, only one $x$ value is
 permissible for the connected component, so instead of the "events" handling described previously, we
 only use that value of $x$, and check it against the minimum and maximum $x$ values required by each
-node to see if it will generate power.
+node to see if it will generate power. If the equation is unsolvable, then we cannot satisfy all
+constraints; if the equation has infinitely many solutions, we can treat it as doing nothing.  These
+actions will essentially connect our two equivalence chains of representations, which means that
+we only need to do it once to the node we're about to revisit, not to every previously done node
+down the lane.
 
 ## Implementation
 
@@ -88,7 +92,6 @@ pair<bool, pair<bool, int> > loopback(int m1, int b1, int m2, int b2) {
 }
 bool okay = true;
 void dfs(int label, int fa, int x) {
-    // cout << "000---" << label << ' ' << fa << ' ' << x << endl;
     lab[x] = label;
     points[label].push_back(x);
     minn[x] = min((l[x] - b[x]) / m[x], (r[x] - b[x]) / m[x]);
@@ -96,9 +99,7 @@ void dfs(int label, int fa, int x) {
     for (int i = 0; i < g[x].size(); i++) {
         int y = g[x][i];
         int z = w[x][i];
-        // cout << "-----" << x << ' ' << y << ' ' << z << endl;
         if (y == fa) continue;
-        // cout << "=====" << x << ' ' << y << ' ' << z << endl;
         int m; int b;
         m = propag(x, y, z).first;
         b = propag(x, y, z).second;
@@ -109,18 +110,14 @@ void dfs(int label, int fa, int x) {
             int m2 = ::m[y], b2 = ::b[y];
             auto result = loopback(m, b, m2, b2);
             if (!result.first) {
-                // cout << "-1" << endl;
                 okay = false;
-                // exit(0);
             }
             if (result.second.first) {
                 if (ff[label] == 2e9) {
                     ff[label] = result.second.second;
                 } else {
                     if (ff[label] != result.second.second) {
-                        // cout << "-1" << endl;
                         okay = false;
-                        // exit(0);
                     }
                 }
             }
@@ -164,7 +161,6 @@ signed main()
                 putokay = true;
                 // break;
             }
-            // cout << lab[i] << ' ' << minn[i] << ' ' << ff[i] << ' ' << maxn[i] << endl;
         }
         if (!okay) continue;
 
@@ -186,12 +182,10 @@ signed main()
                 }
                 mmax = max(mmax, total);
                 ans += mmax;
-                // cout << "+++" << mmax << endl;
             } else {
                 for (auto pt: points[i]) {
                     if (minn[pt] <= ff[i] && ff[i] <= maxn[pt]) {
                         ans++;
-                        // cout << "---" << i << ' ' << pt << endl;
                     }
                 }
             }
