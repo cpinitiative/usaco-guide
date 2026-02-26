@@ -11,23 +11,21 @@ author: John Zhou
 
 ## Explanation
 
-First, notice that the constraints $(x, y, z)$ form an undirected, weighted graph, where the constraints
-are the edges and the generators are the vertices.  Each connected component can be optimized independently.
+First, notice that the constraints $(x, y, z)$ form an undirected weighted graph, where the constraints
+are the edges and the generators are the vertices.  Each connected component can be optimized independently,
+and below we shall consider one connected component.
 
-Let us first consider the cases when the graph has no cycles. In this case, consider a single connected
-component; note that we may choose an arbitary vertex, $v$, and let $x=a_v$.
+Let us first consider the cases when the component has no cycles. In this case, we choose an arbitary vertex,
+$v$, and let the variable $x$ represent $a_v$.
 
 Since there are no cycles, we may start from vertex $v$ and traverse all vertices in the connected component
-without visiting any previously visited vertices (other than the vertices we came from, due to the
-representation of an undirected graph as a directed one). In the traversal, since each edge is a constraint,
-it is possible to represent the required value for the current node in terms of the node we came from during
-the traversal. For example, if the traversal leads us from node $1$ to node $2$ with the constraint $a_1+a_2=3$,
-then we may write $a_2=3-a_1$.
+without visiting any already visited vertices. In the traversal, since each edge is a constraint,
+we can write the value for the node we go to in terms of the node we came from. For example, if the
+traversal leads us from node $1$ to node $2$ with the constraint $a_1+a_2=3$, then we may write $a_2=3-a_1$.
 
-Note that since we start from $v$ and we can build representations based on the previous arriving node each
-time, we can actually build a representation of all other nodes in the current connected component in terms of
-$x$, the initial value of the node we started from, by a simple substitution with the previous node's
-expression each time we propagate the expressions.
+We can stack up and subtitute those representations at each traversal, and build a representation of all
+other nodes in the current connected component in terms of $x$, and using the previous paragraph to build
+new representations from the representation of our source node for the current step.
 
 From there, we can also set the expression to the minimum and maximum values for a generator to function
 and solve for $x$ to find out what ranges of $x$ is required for this specific generator to function.  After
