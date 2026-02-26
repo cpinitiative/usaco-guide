@@ -240,7 +240,7 @@ export const isUsaco = (source: string): boolean => {
   if (source.startsWith('20')) {
     // this is for the division list -- the source in this case is like 2015 December or something
     if (
-      ['December', 'January', 'February', 'US Open', 
+      ['December', 'January', 'February', 'US Open',
         'First Contest', 'Second Contest', 'Third Contest'
       ].some(x =>
         source.endsWith(x)
