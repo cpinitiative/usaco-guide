@@ -23,29 +23,29 @@ without visiting any already visited vertices. In the traversal, since each edge
 we can write the value for the node we go to in terms of the node we came from. For example, if the
 traversal leads us from node $1$ to node $2$ with the constraint $a_1+a_2=3$, then we may write $a_2=3-a_1$.
 
-We can stack up and subtitute those representations at each traversal, and build a representation of all
-other nodes in the current connected component in terms of $x$, and using the previous paragraph to build
-new representations from the representation of our source node for the current step.
+We can build a representation of all other nodes in the current connected component in terms of $x$ by
+recursively building them, using the representation of the previously traversed node and the last paragraph
+to derive a representation for the current node in terms of $x$. We can set this expression equal to
+the minimum and maximum values for the generator to function, and solve for $x$ to find out what ranges of
+$x$ is required for this specific generator to function. After this, we have multiple ranges of $x$, each
+representing the range needed for each generator to function. From there, we must find a value of $x$ that
+is in the maximum amount of ranges, which means that the maximal amount of generators can function.
+We can use a difference array (using a map) to add 1 to the number of ranges there in each range, and then
+loop over the map, keep track of the prefix sums of that array, and then max them out to obtain the
+largest amount of generators that can function in this component.
 
-From there, we can also set the expression to the minimum and maximum values for a generator to function
-and solve for $x$ to find out what ranges of $x$ is required for this specific generator to function.  After
-this, since we have multiple ranges of $x$, and we must find a value of $x$ that covers the maximum amount
-of ranges (which implies the maximum number of generators may function), we can track each range as
-"enter range" and "exit range" events, sort the events by their $x$ values, and then execute those events
-one by one, finding the maximum amount of generators we may entertain for that connected component as we
-sweep across the number line.  Adding the values for each component will then yield our answer.
+Now, what happens if we have cycles? In our traversal for each component, cycles break the assumption that
+we will not revisit nodes. When we do revisit one, we will get *two* different representations of power
+mandated for a generator. We may equate the expressions, and solve for $x$; if unsolvable, this problem
+is unsolvable; if infinitely many solutions, then we don't need to do anything, same as if this revisit
+never occured; if there is exactly one solution, then we fix $x$ for this connected component, and if
+it's ever fixed again through this process to a different value; declare as unsolvable. We only need
+to consider this for a node we're about to revisit, and not further down the chain, as the solving
+process connects those two chains of representations already.
 
-Now, what happens if we have cycles?  In our traversal for each component, cycles break the assumption that
-we're not going to visit a previously visited node. In mathematical terms, this means that we will come
-up with *two* different representations of power for a generator. We may connect those two representations
-when we revisit a node by equating them and solving the equation; after that, only one $x$ value is
-permissible for the connected component, so instead of the "events" handling described previously, we
-only use that value of $x$, and check it against the minimum and maximum $x$ values required by each
-node to see if it will generate power. If the equation is unsolvable, then we cannot satisfy all
-constraints; if the equation has infinitely many solutions, we can treat it as doing nothing.  These
-actions will essentially connect our two equivalence chains of representations, which means that
-we only need to do it once to the node we're about to revisit, not to every previously done node
-down the lane.
+At the end, if there is a fixed value for a connected component, then instead of using a procedure similar
+to a difference array, we just check how many ranges the single fixed value satisifies.  Doing the
+above procedure for each connected component yields the answer.
 
 ## Implementation
 
