@@ -45,6 +45,16 @@ Overcounting happens when:
 To systematically handle this, we classify rows and columns into structural categories.
 
 ---
+### What is a Violation?
+
+A **violation** occurs when a row is assigned to a column that contradicts one of its fixed constraints.
+
+- If a row contains an `A` at column `c`, it must be assigned to column `c`. Assigning it elsewhere is an **A-violation**.
+- If a row contains a `B` at column `c`, it must be assigned to column `c`. Assigning it elsewhere is a **B-violation**.
+
+So, a violation simply means breaking a forced `A` or `B` position in the permutation.
+
+---
 
 ### Category Definitions
 
@@ -125,10 +135,49 @@ $$
 This formula counts all valid completions while correcting overcounting via the Inclusion–Exclusion Principle.
 
 ---
+### Further Optimisation
+
+The direct implementation evaluates all triples `(i, j, k)`, which gives  
+$\mathcal{O}(N^3)$ time complexity.
+
+To improve this, fix a value of `i`. After fixing `i`, the remaining part of the formula becomes:
+
+$$
+\sum_{j,k}
+(-1)^{j+k}
+\cdot
+\binom{C_1}{j}
+\binom{C_2}{k}
+\cdot
+(C_4 - i - j)!
+\cdot
+(C_5 - i - k)!
+$$
+
+
+Now observe:
+
+- The `j` terms depend only on `j`.
+- The `k` terms depend only on `k`.
+- There is no interaction between `j` and `k`.
+
+So the double sum factorizes into:
+
+( sum over j ) * ( sum over k )
+
+Each of these can be computed in $\mathcal{O}(N)$.
+
+Since `i` runs at most N times, the total complexity becomes:
+
+$\mathcal{O}(N^2)$
+
+The key idea is that once `i` is fixed, the remaining inclusion–exclusion contributions separate into two independent sums.
+
+---
 
 ## Implementation
 
-**Time Complexity:** $\mathcal{O}(N^3)$
+**Time Complexity:** $\mathcal{O}(N^2)$
 
 **Space Complexity:** $\mathcal{O}(N)$
 
@@ -164,31 +213,44 @@ ll formula(int C0, int C1, int C2, int C3, int C4, int C5) {
 	ll ans = 0;
 
 	for (int i = 0; i <= min(C0, C3); i++) {
+
+		// Compute sum over j
+		ll sumJ = 0;
 		for (int j = 0; j <= C1; j++) {
-			for (int k = 0; k <= C2; k++) {
+			if (C4 - i - j < 0) continue;
 
-				ll cur = 1;
+			ll cur = nCr(C1, j) * fact[C4 - i - j] % MOD;
+			if (j & 1) cur = (MOD - cur) % MOD;
 
-				cur = cur * nCr(C0, i) % MOD;
-				cur = cur * nCr(C1, j) % MOD;
-				cur = cur * nCr(C2, k) % MOD;
-				cur = cur * nCr(C3, i) % MOD;
-
-				cur = cur * fact[i] % MOD;
-				cur = cur * fact[C4 - i - j] % MOD;
-				cur = cur * fact[C5 - i - k] % MOD;
-
-				if ((i + j + k) & 1) cur = (MOD - cur) % MOD;
-
-				ans = (ans + cur) % MOD;
-			}
+			sumJ = (sumJ + cur) % MOD;
 		}
+
+		// Compute sum over k
+		ll sumK = 0;
+		for (int k = 0; k <= C2; k++) {
+			if (C5 - i - k < 0) continue;
+
+			ll cur = nCr(C2, k) * fact[C5 - i - k] % MOD;
+			if (k & 1) cur = (MOD - cur) % MOD;
+
+			sumK = (sumK + cur) % MOD;
+		}
+
+		ll cur = 1;
+		cur = cur * nCr(C0, i) % MOD;
+		cur = cur * nCr(C3, i) % MOD;
+		cur = cur * fact[i] % MOD;
+		cur = cur * sumJ % MOD;
+		cur = cur * sumK % MOD;
+
+		if (i & 1) cur = (MOD - cur) % MOD;
+
+		ans = (ans + cur) % MOD;
 	}
 
 	return ans;
 }
 // EndCodeSnip
-
 int main() {
 	ios::sync_with_stdio(false);
 	cin.tie(nullptr);
