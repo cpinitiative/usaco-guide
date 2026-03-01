@@ -47,12 +47,16 @@ To systematically handle this, we classify rows and columns into structural cate
 ---
 ### What is a Violation?
 
-A **violation** occurs when a row is assigned to a column that contradicts one of its fixed constraints.
+In our counting approach, each row eventually assigns one column for `A` and one column for `B`.
 
-- If a row contains an `A` at column `c`, it must be assigned to column `c`. Assigning it elsewhere is an **A-violation**.
-- If a row contains a `B` at column `c`, it must be assigned to column `c`. Assigning it elsewhere is a **B-violation**.
+A **violation** occurs when a row’s assignments are inconsistent with a valid completion. This can happen in two ways:
 
-So, a violation simply means breaking a forced `A` or `B` position in the permutation.
+- The assigned `A` and `B` columns coincide (both placed in the same cell), or
+- A forced `A` or `B` position in the original grid is not respected.
+
+Thus, a violation is any row-level conflict that prevents the assignment from being valid.
+
+The Inclusion–Exclusion step counts configurations where certain rows are allowed to violate this condition, and then corrects the overcounting using alternating signs.
 
 ---
 
