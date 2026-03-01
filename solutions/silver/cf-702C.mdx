@@ -7,11 +7,15 @@ author: Nathan Wang, Benjamin Qi, Maggie Liu, Brad Ma, George Pong
 
 [Official Editorial](https://codeforces.com/blog/entry/46324?locale=en)
 
-## Solution 1 - Binary Search
+# Solution 1 - Binary Search
+
+## Explanation
 
 For each city, we find the nearest tower to its left and right using binary search.
 We then calculate the distance to both towers and pick the smaller one to get the minimum radius for the city.
 The largest of these values is our answer.
+
+## Implementation
 
 **Time Complexity:** $\mathcal{O}(N \log N)$
 
@@ -174,11 +178,15 @@ print(min_r)
 </PySection>
 </LanguageSection>
 
-## Solution 2 - Two Pointers
+# Solution 2 - Two Pointers
+
+## Explanation
 
 For each city, we need to find the minimum distance to a tower, which we will call pairing. Observe that if a tower $T$'s position is greater a city $C$'s position, then all towers with a coordinate greater that of $T$ cannot pair to provide the minimum distance with $C$. Furthermore, if a city $C_1$ has a position less than $C_2$, then any towers with a position less than that of $C_1$'s tower cannot provide the minimum distance for $C_2$. These two details allow us to use two pointers to solve this problem.
 
 We store two pointers, one for the current city and one for the current tower. We start at the first city and first tower, both with the smallest coordinate. We calculate the distance between the city and towers with increasingly higher coordinates until the current tower's coordinate is greater than that of the current city. One of these distances must be the minimum distance from the city to all towers. Then, we start the process for the next city and keep the pointer at the current tower. We repeat this process for all cities in order of their position. The maximum out of all the minimum distances between a city and a tower will be our answer.
+
+## Implementation
 
 **Time Complexity:** $\mathcal{O}(N)$
 
@@ -186,51 +194,41 @@ We store two pointers, one for the current city and one for the current tower. W
 <CPPSection>
 
 ```cpp
-#include <bits/stdc++.h>
-using namespace std;
+#include <iostream>
+#include <vector>
 
-typedef long long ll;
-typedef pair<int, int> pii;
-typedef vector<int> vi;
+const int MOD = 1e9 + 7;
+const int MAX_N = 1e5;
 
-#define mp make_pair
-#define pb push_back
-
-#define FOR(i, a, b) for (int i = a; i < b; i++)
-#define F0R(i, a) for (int i = 0; i < a; i++)
-
-#define f first
-#define s second
-#define lb lower_bound
-#define ub upper_bound
-
-const int MOD = 1000000007;
-double PI = 4 * atan(1);
-
-int dist[100000], ans = 0;
+int dist[MAX_N];
 
 int main() {
-	ios_base::sync_with_stdio(0);
-	cin.tie(0);
-	F0R(i, 100000) dist[i] = 2 * MOD;
+
+	for (int i = 0; i < MAX_N; i++) { dist[i] = 2 * MOD; }
+
 	int n, m;
-	cin >> n >> m;
-	vi a(n), b(m);
-	F0R(i, n) cin >> a[i];
-	F0R(i, m) cin >> b[i];
-	int c1 = 0;
-	F0R(i, n) {
-		while (c1 < (m - 1) && b[c1 + 1] <= a[i]) c1++;
-		dist[i] = min(dist[i], abs(a[i] - b[c1]));
+	int res = 0;
+	int j = 0;
+	std::cin >> n >> m;
+	std::vector<int> cities(n), towers(m);
+
+	for (int &x : cities) { std::cin >> x; }
+	for (int &x : towers) { std::cin >> x; }
+
+	for (int i = 0; i < n; i++) {
+		while (j < (m - 1) && towers[j + 1] <= cities[i]) { j++; }
+		dist[i] = std::min(dist[i], std::abs(cities[i] - towers[j]));
 	}
-	c1 = m - 1;
-	for (int i = n - 1; i >= 0; --i) {
-		while (c1 > 0 && b[c1 - 1] >= a[i]) c1--;
-		dist[i] = min(dist[i], abs(a[i] - b[c1]));
+
+	j = m - 1;
+	for (int i = n - 1; i >= 0; i--) {
+		while (j > 0 && towers[j - 1] >= cities[i]) { j--; }
+		dist[i] = std::min(dist[i], std::abs(cities[i] - towers[j]));
 	}
-	F0R(i, n) ans = max(ans, dist[i]);
-	cout << ans;
-	return 0;
+
+	for (int i = 0; i < n; i++) { res = std::max(res, dist[i]); }
+
+	std::cout << res << '\n';
 }
 ```
 
