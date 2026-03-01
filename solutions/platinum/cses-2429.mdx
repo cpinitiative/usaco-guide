@@ -47,16 +47,11 @@ To systematically handle this, we classify rows and columns into structural cate
 ---
 ### What is a Violation?
 
-In our counting approach, each row eventually assigns one column for `A` and one column for `B`.
+In our construction, each row is assigned one column for `A` and one column for `B`.
 
-A **violation** occurs when a row’s assignments are inconsistent with a valid completion. This can happen in two ways:
+A **violation** occurs if these two assignments coincide — that is, both `A` and `B` end up in the same cell of a row. Such a configuration is invalid.
 
-- The assigned `A` and `B` columns coincide (both placed in the same cell), or
-- A forced `A` or `B` position in the original grid is not respected.
-
-Thus, a violation is any row-level conflict that prevents the assignment from being valid.
-
-The Inclusion–Exclusion step counts configurations where certain rows are allowed to violate this condition, and then corrects the overcounting using alternating signs.
+The Principle of Inclusion–Exclusion counts configurations where certain rows are allowed to violate this condition, and then corrects the overcounting using alternating signs.
 
 ---
 
@@ -64,12 +59,12 @@ The Inclusion–Exclusion step counts configurations where certain rows are allo
 
 Let:
 
-- `C0`: Rows with neither `A` nor `B`
-- `C1`: Rows with only `B`, and its column has no `A`
-- `C2`: Rows with only `A`, and its column has no `B`
-- `C3`: Columns with neither `A` nor `B`
-- `C4`: Columns without `A`
-- `C5`: Columns without `B`
+- `C0`: Number of rows containing neither `A` nor `B`
+- `C1`: Number of rows that contain a `B` in column `c`, where column `c` contains no `A`
+- `C2`: Number of rows that contain an `A` in column `c`, where column `c` contains no `B`
+- `C3`: Number of columns containing neither `A` nor `B`
+- `C4`: Number of columns without `A`
+- `C5`: Number of columns without `B`
 
 These values summarize all available flexibility in the grid.
 
@@ -167,15 +162,25 @@ Now observe:
 
 So the double sum factorizes into:
 
-( sum over j ) * ( sum over k )
+$$
+\left(
+\sum_j
+(-1)^j
+\binom{C_1}{j}
+(C_4 - i - j)!
+\right)
+\cdot
+\left(
+\sum_k
+(-1)^k
+\binom{C_2}{k}
+(C_5 - i - k)!
+\right)
+$$
 
 Each of these can be computed in $\mathcal{O}(N)$.
 
-Since `i` runs at most $N$ times, the total complexity becomes:
 
-$\mathcal{O}(N^2)$
-
-The key idea is that once `i` is fixed, the remaining inclusion–exclusion contributions separate into two independent sums.
 
 ---
 
