@@ -1,0 +1,195 @@
+---
+id: usaco-1543
+source: USACO Silver 2026 First Contest
+title: Mooclear Reactor
+author: John Zhou
+---
+
+[Official Analysis (C++)](https://usaco.org/current/data/sol_prob2_silver_season26contest1.html)
+
+# Solution
+
+## Explanation
+
+First, notice that the constraints $(x, y, z)$ form an undirected weighted graph, where the constraints
+are the edges and the generators are the vertices.  Each connected component can be optimized independently,
+and below we shall consider one connected component.
+
+Let us first consider the cases when the component has no cycles. In this case, we choose an arbitary vertex,
+$v$, and let the variable $x$ represent $a_v$.
+
+Since there are no cycles, we may start from vertex $v$ and traverse all vertices in the connected component
+without visiting any already visited vertices. In the traversal, since each edge is a constraint,
+we can write the value for the node we go to in terms of the node we came from. For example, if the
+traversal leads us from node $1$ to node $2$ with the constraint $a_1+a_2=3$, then we may write $a_2=3-a_1$.
+
+We can build a representation of all other nodes in the current connected component in terms of $x$ by
+recursively building them, using the representation of the previously traversed node and the last paragraph
+to derive a representation for the current node in terms of $x$. We can set this expression equal to
+the minimum and maximum values for the generator to function, and solve for $x$ to find out what ranges of
+$x$ is required for this specific generator to function. After this, we have multiple ranges of $x$, each
+representing the range needed for each generator to function. From there, we must find a value of $x$ that
+is in the maximum amount of ranges, which means that the maximal amount of generators can function.
+We can use a difference array (using a map) to add 1 to the number of ranges there in each range, and then
+loop over the map, keep track of the prefix sums of that array, and then max them out to obtain the
+largest amount of generators that can function in this component.
+
+Now, what happens if we have cycles? In our traversal for each component, cycles break the assumption that
+we will not revisit nodes. When we do revisit one, we will get *two* different representations of power
+mandated for a generator. We may equate the expressions, and solve for $x$; if unsolvable, this problem
+is unsolvable; if infinitely many solutions, then we don't need to do anything, same as if this revisit
+never occured; if there is exactly one solution, then we fix $x$ for this connected component, and if
+it's ever fixed again through this process to a different value; declare as unsolvable. We only need
+to consider this for a node we're about to revisit, and not further down the chain, as the solving
+process connects those two chains of representations already.
+
+At the end, if there is a fixed value for a connected component, then instead of using a procedure similar
+to a difference array, we just check how many ranges the single fixed value satisifies.  Doing the
+above procedure for each connected component yields the answer.
+
+## Implementation
+
+**Time Complexity**: $\mathcal O(N+M)$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <map>
+#include <vector>
+using namespace std;
+#define int long long
+int l[200005], r[200005], lab[200005], m[200005], b[200005], ff[200005], minn[200005],
+    maxn[200005];
+vector<int> g[200005];
+vector<int> w[200005];
+map<int, int> segments;
+vector<int> points[200005];
+pair<int, int> propag(int x, int y, int z) {
+	int m = -::m[x];
+	int b = z - ::b[x];
+	return make_pair(m, b);
+}
+// Returns:
+// 1. First bool: If the configuration is possible.
+// 2. Second element, first bool: If any action is needed.
+// 3. Second element, second bool: What number to make fixed,
+// if neccessary.
+pair<bool, pair<bool, int>> loopback(int m1, int b1, int m2, int b2) {
+	if (m1 == m2 && b1 != b2) {
+		return make_pair(false, make_pair(false, 0));
+	} else if (m1 == m2 && b1 == b2) {
+		return make_pair(true, make_pair(false, 0));
+	} else {
+		if ((b2 - b1) % (m1 - m2) == 0) {
+			return make_pair(true, make_pair(true, (b2 - b1) / (m1 - m2)));
+		}
+		return make_pair(false, make_pair(false, 0));
+	}
+}
+bool okay = true;
+void dfs(int label, int fa, int x) {
+	lab[x] = label;
+	points[label].push_back(x);
+	minn[x] = min((l[x] - b[x]) / m[x], (r[x] - b[x]) / m[x]);
+	maxn[x] = max((l[x] - b[x]) / m[x], (r[x] - b[x]) / m[x]);
+	for (int i = 0; i < g[x].size(); i++) {
+		int y = g[x][i];
+		int z = w[x][i];
+		if (y == fa) continue;
+		int m;
+		int b;
+		m = propag(x, y, z).first;
+		b = propag(x, y, z).second;
+		if (::m[y] == 0) {
+			::m[y] = m;
+			::b[y] = b;
+			dfs(label, x, y);
+		} else {
+			int m2 = ::m[y], b2 = ::b[y];
+			auto result = loopback(m, b, m2, b2);
+			if (!result.first) { okay = false; }
+			if (result.second.first) {
+				if (ff[label] == 2e9) {
+					ff[label] = result.second.second;
+				} else {
+					if (ff[label] != result.second.second) { okay = false; }
+				}
+			}
+		}
+	}
+}
+signed main() {
+	int t;
+	cin >> t;
+	while (t--) {
+		int n, m;
+		cin >> n >> m;
+		for (int i = 1; i <= n; i++) {
+			g[i].clear();
+			w[i].clear();
+			::m[i] = 0;
+			::b[i] = 0;
+			points[i].clear();
+		}
+		okay = true;
+		for (int i = 1; i <= n; i++) cin >> l[i];
+		for (int i = 1; i <= n; i++) cin >> r[i];
+		for (int i = 1; i <= n; i++) ff[i] = 2e9;
+		for (int i = 1; i <= m; i++) {
+			int x, y, z;
+			cin >> x >> y >> z;
+			g[x].push_back(y);
+			w[x].push_back(z);
+			g[y].push_back(x);
+			w[y].push_back(z);
+		}
+		bool putokay = false;
+		for (int i = 1; i <= n; i++) {
+			if (!::m[i]) {
+				::m[i] = 1;
+				dfs(i, -1, i);
+			}
+			if (!okay && !putokay) {
+				cout << "-1" << endl;
+				putokay = true;
+				// break;
+			}
+		}
+		if (!okay) continue;
+
+		int ans = 0;
+		for (int i = 1; i <= n; i++) {
+			if (ff[i] == 2e9) {
+				segments.clear();
+				for (auto pt : points[i]) {
+					if (minn[pt] <= maxn[pt]) {
+						segments[minn[pt]]++;
+						segments[maxn[pt] + 1]--;
+					}
+				}
+				int total = 0;
+				int mmax = -1;
+				for (auto sgmt : segments) {
+					total += sgmt.second;
+					mmax = max(mmax, total);
+				}
+				mmax = max(mmax, total);
+				ans += mmax;
+			} else {
+				for (auto pt : points[i]) {
+					if (minn[pt] <= ff[i] && ff[i] <= maxn[pt]) { ans++; }
+				}
+			}
+		}
+		cout << ans << endl;
+	}
+	return 0;
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
