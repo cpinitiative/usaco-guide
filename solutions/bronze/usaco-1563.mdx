@@ -1,0 +1,49 @@
+---
+id: usaco-1563
+source: USACO Bronze 2026 Second Contest
+title: It's Mooin' Time IV
+author: Sachet Abeysinghe
+---
+
+[Official Analysis (C++, Java, Python)](https://usaco.org/current/data/sol_prob1_bronze_season26contest2.html)
+
+## Explanation
+
+Observe that a character's final state at a certain position is determined by the number of $0$'s typed after it. If it is even, the flips modifying this character will cancel out, so the final state will be the original character as typed. Otherwise, it will be flipped. Note that this means the last character of the answer string must be the last character of the input string, because there are no $0$ characters after it to flip it.
+
+We can solve this problem by building the string in reverse. We can determine whether or not to flip each character based on the parity of the number of $O$ characters that will come after it. In particular, the only thing that matters when determining a final character are the $O$'s after it, so we can build the string from right to left accordingly. Clearly, this will always allow us to construct a valid answer (the answer is always YES).
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+
+<PySection>
+
+```py
+t, k = map(int, input().split())
+
+for _ in range(t):
+	n = int(input())
+	string = input()
+	print("YES")
+
+	if k == 1:
+		o_count = 0
+		ans = [""] * n
+		for i in range(n - 1, -1, -1):
+			if o_count % 2 == 0:
+				ans[i] = string[i]
+			else:
+				ans[i] = "O" if string[i] == "M" else "M"
+
+			if ans[i] == "O":
+				o_count += 1
+
+		print("".join(ans))
+```
+
+</PySection>
+
+</LanguageSection>
