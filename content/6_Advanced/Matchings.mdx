@@ -1,0 +1,319 @@
+# Matchings
+
+In graph theory, a *matching* is a set of edges such that no vertex is incident to more than one edge.
+
+# Maximum Bipartite Matching
+
+Bipartite graphs provide a structure conducive to efficient matching algorithms.
+
+## Flow Representation
+
+Partition a bipartite graph in vertices of set $U$ and set $V$. We can construct a flow network where solving maximum flow is a bijection of maximu matching by connecting the source to all nodes in $U$, and the sink to all nodes in $V$, and setting the capacity of all edges to capacity $1$.
+
+TODO: add diagram
+
+Applying Edmonds-Karp yields a time complexity of $\mathcal{O}(VE^2)$, whereas Dinic's yields $\mathcal{O}(V^2E)$.
+
+TODO: add code where we have the cool usaco guide folded thing for a flow impl and then some simple code
+
+## Kuhn's Algorithm
+Define a *red edge* be an edge used in our matching, and a *black edge* be any non-red edge.
+Define an *alternating* path to be a path that alternates between red and black edges.
+Define an *augmenting* path to be a (simple) alternating path which begins and ends with a non-matched vertex. (Note: All alternating paths between two unsaturated vertices in a bipartite graph will necessarily be simple).
+
+Berge's lemma states that a matching is maximum if and only if an augmenting path does not exist. The proof is left as an exercise to the reader.
+
+The idea of Kuhn's algorithm is to repeatedly find augmenting paths, and improve our matching. We can find augmenting paths by running a DFS from each vertex, alternatively traversing along black and red edges until we reach an unmatched node. We can then invert all edge colors on an augmenting path to improve our matching by one.
+
+In the worst case, we DFS $\mathcal{O}(V)$ times, yielding a time complexity of $\mathcal{O}(VE)$.
+
+TODO: add diagram of flipping augmenting path
+
+[add code]
+
+Impl tip: just iterate up or smth
+
+
+## Hopcraft-Karp Algorithm
+
+Kuhn's algorithm is slow because we find at most $1$ augmenting path each time we traverse the graph. Hopcraft-Karp aims to find multiple augmenting paths at once when processing a graph.
+
+We find augmenting paths using a multi-source BFS. We start our BFS from each unmatched node in $U$ (one side of our bipartite graph).  After our BFS, we are left with a set of "ending" nodes at a certain BFS depth. We then run a DFS from each source node, traversing along BFS-visited paths (this can be implemented cleanly by storing the BFS depth of each vertex) to create a maximal set of augmenting paths of minimum length. (Note: this is different, and easier, from finding a maximum set). Then, similar to Kuhn, we then invert all edge colors on each augmenting path to improve our matching by the number of augmenting paths.
+
+ After an iteration of this algorithm, we increase the minimum length of a possible augmenting path. This has a worst-case time complexity of $\mathcal{O}(E\sqrt{V})$, the proof of which is left as an exercise to the reader.
+
+[add alr existing usaco guide code]
+
+# Maximum Matching
+
+We can also solve maximum cardinality matching on a general graph.
+
+## Blossom Algorithm
+
+Direct application of Kuhn's algorithm fails on general graphs because an augmenting path may require visiting nodes on a different parity than the shortest path.
+
+TODO: add diagram
+
+It is tempting to modify Kuhn's algorithm and make it work by creating two "versions" of a node: a version that only has black (unmatched) edges pointing out and red (matched) edges pointing in, and a version that only has red edges pointing out and black edges pointing in. This artificially introduces some of the characteristics of bipartite graphs, and deals with parity neatly. However, in this case, it is possible to visit a particular node twice (on different parities), presenting additional issues.
+
+TODO: add diagram
+
+TODO: is this part really necessary?
+
+One observation is that whenever we visit on a node on an even parity [this node is matched to its father] that we "need" to visit on an odd parity [this node is matched to its son] to form an augmenting path, we form on odd cycle. To simulate visiting such nodes on both parities while also avoiding visiting some nodes twice, we "contract" odd cycles into a new node (while still keeping the visiting each node only once criterion).
+
+Observe that each odd cycle will have the following structure:
+
+TODO: add diagram
+
+We define the "root" [is this bad terminology] of a cycle to be the highest node. Observe that this node is also the only node adjacent to two black (nonmatching) edges.
+
+Observe also that creating this merged cycle-node gracefully "fixes" the issue of visiting nodes on the opposite parity that we originally visited them (eg, simulating going the other way around the cycle). Nodes with odd depths with respect to the root can "achieve" an even-depth continuation of the BFS, since the merged node has even depth with respect to the root (specifically, the merged node has the same depth). And nodes with even depth with respect to the root do **not** "access" another parity of BFS, since when traversing the cycle in the opposite direction originally discovered by BFS, they must visit their matched node rather than visit a node outside the cycle. [not sure if this past sentence is necessary]
+
+When we find an augmenting path, we need to "unroll" all the cycles involved. Care should be taken when consider which way to traverse around a cycle, and considering the case of nested cycles. For more details, refer to the sample implementation.
+
+[my code is lwk fried, surely it becomes cleaner and commented later]
+
+[i will probably add some more explanations about nuances of the algorithm later]
+
+```cpp
+#include "bits/stdc++.h"
+using namespace std;
+#define all(x) begin(x), end(x)
+#define sz(x) (int)(x).size()
+#define int long long
+
+namespace blossom {
+const int mxn = 1e3;
+int rt, n, g[mxn][mxn], a[mxn], nx, f[mxn], vis[mxn], b[mxn], p[mxn];
+vector<int> cyc[mxn];
+queue<int> q;
+
+void init(int N) {
+	n = rt = N;
+	memset(g, -1, sizeof(g));
+	iota(a, a + n, 0);
+}
+
+void add_edge(int u, int v) {
+	g[u][v] = v;
+	g[v][u] = u;
+}
+
+int trace(int a) { return f[a] == rt ? a : trace(f[a]); }
+
+void path(int v, vector<int> &res) {
+	res.push_back(v);
+	while (f[v] != rt) {
+		v = f[v];
+		res.push_back(v);
+	}
+}
+
+vector<int> path(int v) {
+	vector<int> res{v};
+
+	return res;
+}
+
+int contract(int u, int v) {
+	cyc[nx].clear();
+	vector<int> pu;
+	path(u, pu);
+	vector<int> pv;
+	path(v, pv);
+
+	int lc;
+	while (sz(pu) && sz(pv) && pu.back() == pv.back()) {
+		lc = pu.back();
+		pu.pop_back();
+		pv.pop_back();
+	}
+	f[nx] = f[lc];
+	p[nx] = 0;
+	vis[nx] = vis[lc];
+	a[nx] = a[lc];
+	cyc[nx].push_back(lc);
+	for (int i = sz(pu) - 1; i >= 0; i--) cyc[nx].push_back(pu[i]);
+	for (int i : pv) cyc[nx].push_back(i);
+	memset(g[nx], -1, sizeof(g[nx]));
+
+	for (int i : cyc[nx]) {
+		b[i] = nx;
+		for (int j = 0; j < nx; j++) {
+			if (g[i][j] != -1) { g[nx][j] = g[i][j]; }
+			if (g[j][i] != -1) { g[j][nx] = i; }
+		}
+	}
+
+	for (int j = 0; j < nx; j++) {
+		if (g[lc][j] != -1) { g[nx][j] = g[lc][j]; }
+		if (g[j][lc] != -1) { g[j][nx] = lc; }
+	}
+
+	for (int i : cyc[nx]) {
+		for (int j = 0; j < nx; j++) {
+			if (b[j] == nx) continue;
+			if (f[j] == i) f[j] = nx;
+		}
+	}
+
+	b[nx] = nx;
+	return nx++;
+}
+
+vector<int> traverse_cycle(int v, int pv, int nx, int fe) {
+	vector<int> res;
+	if (v < n) {
+		res.push_back(v);
+		return res;
+	}
+
+	int f = g[pv][v];
+	int l = g[nx][v];
+
+	int ind = find(all(cyc[v]), f) - cyc[v].begin();
+	int iter;
+	if (fe) {
+		if (ind % 2) iter = 1;
+		else iter = -1;
+	} else {
+		if (ind % 2) iter = -1;
+		else iter = 1;
+	}
+
+	if (f == cyc[v][0]) {
+		int ind1 = find(all(cyc[v]), l) - cyc[v].begin();
+		if (ind1 % 2) {
+			iter = -1;
+		} else {
+			iter = 1;
+		}
+	}
+
+	vector<int> r1;
+	for (int i = ind; cyc[v][i] != l; i = (i + iter + sz(cyc[v])) % sz(cyc[v])) {
+		r1.push_back(cyc[v][i]);
+	}
+
+	r1.push_back(l);
+	r1.push_back(nx);
+	for (int i = 0; i < sz(r1) - 1; i++) {
+		vector<int> r2 = traverse_cycle(r1[i], pv, r1[i + 1], fe);
+		for (int i : r2) res.push_back(i);
+		fe = 1 - fe;
+		pv = r1[i];
+	}
+
+	return res;
+}
+
+vector<int> tr(int v, int pv) {
+	vector<int> res;
+	int eg = 1;
+	while (v != rt) {
+		vector<int> r1 = traverse_cycle(v, pv, f[v], eg);
+		eg = 1 - eg;
+		for (int i : r1) res.push_back(i);
+		pv = v;
+		v = f[v];
+	}
+	return res;
+}
+
+void augment(int u, int v) {
+	vector<int> pu = tr(u, v);
+	vector<int> pv = tr(v, u);
+	reverse(all(pu));
+	for (int i : pv) pu.push_back(i);
+
+	assert(sz(pu) % 2 == 0);
+	for (int i = 0; i < sz(pu); i += 2) {
+		a[pu[i]] = pu[i + 1];
+		a[pu[i + 1]] = pu[i];
+	}
+}
+
+bool bfs() {
+	while (sz(q)) q.pop();
+	nx = n + 1;
+	rt = n;
+	iota(b, b + n, 0);
+	fill(f, f + mxn, rt);
+	memset(g[rt], -1, sizeof(g[rt]));
+
+	for (int i = 0; i < n; i++) {
+		for (int j = n; j < mxn; j++) { g[i][j] = -1; }
+	}
+
+	memset(vis, -1, sizeof(vis));
+	for (int i = 0; i < n; i++) {
+		if (a[i] == i) {
+			q.push(i);
+			vis[i] = i;
+			f[i] = rt;
+			p[i] = 0;
+			g[rt][i] = i;
+		}
+	}
+	while (sz(q)) {
+		int u = q.front();
+		q.pop();
+		if (b[u] != u) continue;
+		int nx1 = nx;
+		for (int v = 0; v < nx1; v++) {
+			if (g[u][v] == -1) continue;
+			if (b[v] != v) continue;
+			if (vis[trace(v)] != -1 && vis[trace(v)] != vis[u] && p[v] == 0) {
+				augment(u, v);
+				return 1;
+			} else if (vis[v] == -1) {
+				int x = a[v];
+				f[v] = u;
+				f[x] = v;
+				vis[v] = vis[x] = vis[u];
+				p[v] = 1;
+				p[x] = 0;
+				q.push(x);
+			} else {
+				if (p[v] == 0) {
+					int bl = contract(u, v);
+					q.push(bl);
+					break;
+				}
+			}
+		}
+	}
+
+	return 0;
+}
+
+};  // namespace blossom
+
+signed main() {
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
+	int n, m;
+	cin >> n >> m;
+	blossom::init(n);
+	while (m--) {
+		int u, v;
+		cin >> u >> v;
+		blossom::add_edge(u, v);
+	}
+	int cnt = 0;
+	while (blossom::bfs()) cnt++;
+	cout << cnt << "\n";
+
+	for (int i = 0; i < n; i++) {
+		if (blossom::a[i] > i) cout << i << " " << blossom::a[i] << "\n";
+	}
+}
+```
+
+The time complexity is ...
+
+
+# Assignment Problem (Maximum Weighted Complete Matching)
+
+aka Hungarian
