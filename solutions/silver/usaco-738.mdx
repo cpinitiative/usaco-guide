@@ -8,11 +8,9 @@ author: Sofia Yang, Ryan Chou, Melody Yu
 
 [Official Analysis (C++)](http://www.usaco.org/current/data/sol_pairup_silver_open17.html)
 
-## Video Solution
+# Solution
 
-Note: The video solution might not be the same as other solutions. Code in C++.
-<YouTube id="yIoUWlzH_7w" />
-
+## Explanation
 
 In the sample input, we have the following cows:
 $8, 5, 5, 2$, and there's two ways to pair these up.
@@ -32,6 +30,7 @@ Therefore, $A+C < B + C$.
 We should always pair up the greatest value ($C$), with the smallest value ($A$), in order to achieve the most optimal milking time.
 
 ## Implementation
+
 **Time Complexity:** $\mathcal{O}(N\log N)$
 
 (Because it requires sorting the input, which is $\mathcal{O}(N\log N)$).
@@ -81,6 +80,7 @@ int main() {
 	fout << M << "\n";
 }
 ```
+
 </CPPSection>
 <PySection>
 
@@ -117,9 +117,9 @@ while left <= right:
 
 print(ans)
 ```
+
 </PySection>
 <JavaSection>
-
 
 ```java
 import java.io.*;
@@ -171,5 +171,109 @@ class Pair implements Comparable<Pair> {
 ```
 
 </JavaSection>
-
 </LanguageSection>
+
+## Video Solution
+
+Note: The video solution might not be the same as other solutions. Code in C++.
+
+<YouTube id="yIoUWlzH_7w" />
+
+<Spoiler title = "Video Solution Code">
+
+### Implementation
+
+**Time Complexity:** $\mathcal{O} (N \log N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	ifstream cin("pairup.in");
+	ofstream cout("pairup.out");
+
+	int n;
+	cin >> n;
+
+	vector<pair<int, int>> cows(n);
+	for (int i = 0; i < n; i++) { cin >> cows[i].first >> cows[i].second; }
+
+	sort(begin(cows), end(cows), [&](auto &a, auto &b) { return a.second < b.second; });
+
+	int curr_l = 0, count_l = 0;
+	int curr_r = n - 1, count_r = 0;
+	int ans = 0;
+
+	while (curr_l <= curr_r) {
+		ans = max(ans, cows[curr_l].second + cows[curr_r].second);
+		count_l++, count_r++;
+
+		if (count_l > cows[curr_l].first) {
+			curr_l++;
+			count_l = 0;
+		}
+		if (count_r > cows[curr_r].first) {
+			curr_r--;
+			count_r = 0;
+		}
+	}
+
+	cout << ans << '\n';
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class PairUp {
+	public static void main(String[] args) throws Exception {
+		Kattio io = new Kattio("pairup");
+
+		int n = io.nextInt();
+		int[][] cows = new int[n][2];
+		for (int i = 0; i < n; i++) {
+			cows[i][0] = io.nextInt();
+			cows[i][1] = io.nextInt();
+		}
+
+		Arrays.sort(cows, (a, b) -> a[1] - b[1]);
+
+		int currL = 0, countL = 0;
+		int currR = n - 1, countR = 0;
+		int ans = 0;
+
+		while (currL <= currR) {
+			ans = Math.max(ans, cows[currL][1] + cows[currR][1]);
+			countL++;
+			countR++;
+
+			if (countL > cows[currL][0]) {
+				currL++;
+				countL = 0;
+			}
+			if (countR > cows[currR][0]) {
+				currR--;
+				countR = 0;
+			}
+		}
+
+		io.println(ans);
+		io.close();
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+</LanguageSection>
+
+</Spoiler>
