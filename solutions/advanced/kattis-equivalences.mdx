@@ -7,16 +7,16 @@ author: Ashok Narayan
 
 ## Explanation
 
-We can model each statement as a node in a directed graph.  
+We can model each statement as a node in a directed graph.
 If statement `u` implies statement `v`, add a directed edge `u → v`.
 
-To make all statements equivalent, every statement must imply every other statement.  
+To make all statements equivalent, every statement must imply every other statement.
 In graph terms, the graph must be **strongly connected**.
 
 ---
 
 ### Compressing SCCs
-We can compress each SCC into a single node using ***Tarjan's Algorithm***. 
+We can compress each SCC into a single node using ***Tarjan's Algorithm***.
 Now let there be `k` SCCs.
     - If `k = 1` graph is already strongly connected. Answer is `0`.
     - Else, we have to add edges between these components
@@ -29,9 +29,9 @@ A component with:
 - in-degree `0` cannot be reached from others.
 - out-degree `0` cannot reach others.
 
-Let 
+Let
 - `in0` = number of components with in-degree `0`
-- `out0` = number of components with out-degree `0` 
+- `out0` = number of components with out-degree `0`
 
 To make the DAG strongly connected, we must fix all such components.
 
@@ -60,109 +60,104 @@ using namespace std;
 
 #define int long long
 
-//BeginCodeSnip{Tarjan Solver template}
+// BeginCodeSnip{Tarjan Solver template}
 class TarjanSolver {
   private:
-    vector<vector<int>> rev_adj;
-    vector<int> post, comp;
-    vector<bool> visited;
-    int timer = 0, id = 0;
+	vector<vector<int>> rev_adj;
+	vector<int> post, comp;
+	vector<bool> visited;
+	int timer = 0, id = 0;
 
-    void fill_post(int at){
-        visited[at] = true;
-        for(int n : rev_adj[at])
-            if(!visited[n]) fill_post(n);
-        post[at] = timer++;
-    }
+	void fill_post(int at) {
+		visited[at] = true;
+		for (int n : rev_adj[at])
+			if (!visited[n]) fill_post(n);
+		post[at] = timer++;
+	}
 
-    void find_comp(int at){
-        visited[at] = true;
-        comp[at] = id;
-        for(int n : adj[at])
-            if(!visited[n]) find_comp(n);
-    }
+	void find_comp(int at) {
+		visited[at] = true;
+		comp[at] = id;
+		for (int n : adj[at])
+			if (!visited[n]) find_comp(n);
+	}
 
   public:
-    const vector<vector<int>>& adj;
+	const vector<vector<int>> &adj;
 
-    TarjanSolver(const vector<vector<int>>& adj)
-        : adj(adj), rev_adj(adj.size()),
-          post(adj.size()), comp(adj.size()),
-          visited(adj.size()) {
+	TarjanSolver(const vector<vector<int>> &adj)
+	    : adj(adj), rev_adj(adj.size()), post(adj.size()), comp(adj.size()),
+	      visited(adj.size()) {
 
-        vector<int> nodes(adj.size());
-        for(int i = 0; i < adj.size(); i++){
-            nodes[i] = i;
-            for(int v : adj[i])
-                rev_adj[v].pb(i);
-        }
+		vector<int> nodes(adj.size());
+		for (int i = 0; i < adj.size(); i++) {
+			nodes[i] = i;
+			for (int v : adj[i]) rev_adj[v].pb(i);
+		}
 
-        for(int i = 0; i < adj.size(); i++)
-            if(!visited[i]) fill_post(i);
+		for (int i = 0; i < adj.size(); i++)
+			if (!visited[i]) fill_post(i);
 
-        sort(nodes.begin(), nodes.end(),
-             [&](int a, int b){ return post[a] > post[b]; });
+		sort(nodes.begin(), nodes.end(),
+		     [&](int a, int b) { return post[a] > post[b]; });
 
-        visited.assign(adj.size(), false);
-        for(int v : nodes)
-            if(!visited[v]){
-                find_comp(v);
-                id++;
-            }
-    }
+		visited.assign(adj.size(), false);
+		for (int v : nodes)
+			if (!visited[v]) {
+				find_comp(v);
+				id++;
+			}
+	}
 
-    int comp_num() const { return id; }
-    int get_comp(int n) const { return comp[n]; }
+	int comp_num() const { return id; }
+	int get_comp(int n) const { return comp[n]; }
 };
-//EndCodeSnip
+// EndCodeSnip
 
-void solve(){
-    int n, m;
-    cin >> n >> m;
+void solve() {
+	int n, m;
+	cin >> n >> m;
 
-    vector<vector<int>> g(n);
-    while(m--){
-        int u, v;
-        cin >> u >> v;
-        g[--u].pb(--v);
-    }
+	vector<vector<int>> g(n);
+	while (m--) {
+		int u, v;
+		cin >> u >> v;
+		g[--u].pb(--v);
+	}
 
-    TarjanSolver scc(g);
-    int k = scc.comp_num();
+	TarjanSolver scc(g);
+	int k = scc.comp_num();
 
-    if(k == 1){
-        cout << 0 << "\n";
-        return;
-    }
+	if (k == 1) {
+		cout << 0 << "\n";
+		return;
+	}
 
 	// BeginCodeSnip{Getting in and out degrees}
-    vector<int> in(k), out(k);
-    int cu, cv
-    for(int u = 0; u < n; ++u)
-        for(int v : g[u]){
-            cu = scc.get_comp(u);
-            cv = scc.get_comp(v);
-            if(cu != cv)
-                out[cu]++, in[cv]++;
-        }   
-    // EndCodeSnip    
+	vector<int> in(k), out(k);
+	int cu, cv for (int u = 0; u < n; ++u) for (int v : g[u]) {
+		cu = scc.get_comp(u);
+		cv = scc.get_comp(v);
+		if (cu != cv) out[cu]++, in[cv]++;
+	}
+	// EndCodeSnip
 
-    int in0 = 0, out0 = 0;
-    for(int i = 0; i < k; ++i){
-        if(in[i] == 0) in0++;
-        if(out[i] == 0) out0++;
-    }
+	int in0 = 0, out0 = 0;
+	for (int i = 0; i < k; ++i) {
+		if (in[i] == 0) in0++;
+		if (out[i] == 0) out0++;
+	}
 
-    cout << max(in0, out0) << "\n";
+	cout << max(in0, out0) << "\n";
 }
 
-signed main(){
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+signed main() {
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
 
-    int t;
-    cin >> t;
-    while(t--) solve();
+	int t;
+	cin >> t;
+	while (t--) solve();
 }
 ```
 
