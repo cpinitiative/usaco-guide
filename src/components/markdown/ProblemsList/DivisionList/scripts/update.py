@@ -258,80 +258,84 @@ def add_extra_problems(extra_problems: dict, url: str, newFormat: bool):
 	if not found_problem:
 		raise ValueError("found no problems")
 
+
 def collect_existing_unique_ids(root_folder: str) -> set[str]:
-    existing_ids = set()
+	existing_ids = set()
 
-    for root, _, files in os.walk(root_folder):
-        for filename in files:
-            if not filename.endswith(".problems.json"):
-                continue
+	for root, _, files in os.walk(root_folder):
+		for filename in files:
+			if not filename.endswith(".problems.json"):
+				continue
 
-            full_path = os.path.join(root, filename)
+			full_path = os.path.join(root, filename)
 
-            with open(full_path, "r", encoding="utf-8") as f:
-                try:
-                    data = json.load(f)
-                except json.JSONDecodeError:
-                    continue  # skip malformed files
+			with open(full_path, "r", encoding="utf-8") as f:
+				try:
+					data = json.load(f)
+				except json.JSONDecodeError:
+					continue  # skip malformed files
 
-            if not isinstance(data, dict):
-                continue
+			if not isinstance(data, dict):
+				continue
 
-            for value in data.values():
-                if isinstance(value, list):
-                    for problem in value:
-                        if isinstance(problem, dict) and "uniqueId" in problem:
-                            existing_ids.add(problem["uniqueId"])
+			for value in data.values():
+				if isinstance(value, list):
+					for problem in value:
+						if isinstance(problem, dict) and "uniqueId" in problem:
+							existing_ids.add(problem["uniqueId"])
 
-    return existing_ids
+	return existing_ids
+
+
 def gen_extra_problems(
-    seasons: Iterable[int],
-    extra_problems: Optional[dict] = None,
-    main_problems_root: Optional[str] = None,
+	seasons: Iterable[int],
+	extra_problems: Optional[dict] = None,
+	main_problems_root: Optional[str] = None,
 ) -> dict:
 
-    if extra_problems is None:
-        extra_problems = {"MODULE_ID": "EXTRA_PROBLEMS", "EXTRA_PROBLEMS": []}
+	if extra_problems is None:
+		extra_problems = {"MODULE_ID": "EXTRA_PROBLEMS", "EXTRA_PROBLEMS": []}
 
-    existing_ids = collect_existing_unique_ids( "../../../../../../content")
+	existing_ids = collect_existing_unique_ids("../../../../../../content")
 
-    for season in seasons:
-        if season >= 26:
-            for index in range(4):
-                url = f"{INDEX_PREFIX}season{season}contest{index+1}results"
-                try:
-                    add_extra_problems(extra_problems, url, True)
-                except ValueError:
-                    break
-        else:
-            for contest, offset in zip(CONTESTS_SHORT, YEAR_OFFSETS):
-                url = f"{INDEX_PREFIX}{contest}{season+offset}results"
-                try:
-                    add_extra_problems(extra_problems, url, False)
-                except ValueError:
-                    break
+	for season in seasons:
+		if season >= 26:
+			for index in range(4):
+				url = f"{INDEX_PREFIX}season{season}contest{index+1}results"
+				try:
+					add_extra_problems(extra_problems, url, True)
+				except ValueError:
+					break
+		else:
+			for contest, offset in zip(CONTESTS_SHORT, YEAR_OFFSETS):
+				url = f"{INDEX_PREFIX}{contest}{season+offset}results"
+				try:
+					add_extra_problems(extra_problems, url, False)
+				except ValueError:
+					break
 
-    # Remove duplicates
-    filtered = []
-    seen_ids = set()
+	# Remove duplicates
+	filtered = []
+	seen_ids = set()
 
-    for item in extra_problems["EXTRA_PROBLEMS"]:
-        uid = item.get("uniqueId")
+	for item in extra_problems["EXTRA_PROBLEMS"]:
+		uid = item.get("uniqueId")
 
-        if not uid:
-            continue  # skip malformed entries
+		if not uid:
+			continue  # skip malformed entries
 
-        if uid in existing_ids:
-            continue  # already present in main modules
+		if uid in existing_ids:
+			continue  # already present in main modules
 
-        if uid in seen_ids:
-            continue  # duplicate within extras
+		if uid in seen_ids:
+			continue  # duplicate within extras
 
-        seen_ids.add(uid)
-        filtered.append(item)
+		seen_ids.add(uid)
+		filtered.append(item)
 
-    extra_problems["EXTRA_PROBLEMS"] = filtered
-    return extra_problems
+	extra_problems["EXTRA_PROBLEMS"] = filtered
+	return extra_problems
+
 
 def add_id_to_sol(id_to_sol: dict, url: str):
 	soup = parse(url)
