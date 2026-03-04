@@ -83,6 +83,7 @@ export const probSources = {
     'https://szkopul.edu.pl/problemset/problem/',
     'Polish Olympiad in Informatics',
   ],
+  QOJ: ['https://qoj.ac/', 'QOJ.ac', 'Check the "Editorial" tab.'],
   SPOJ: ['https://www.spoj.com/problems/', 'Sphere Online Judge'],
   TLX: [
     'https://tlx.toki.id/',
