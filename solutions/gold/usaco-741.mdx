@@ -20,52 +20,50 @@ $\mathcal{O}(NM^2\log N)$ solution:
 using namespace std;
 
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
 
-    freopen("cownomics.in", "r", stdin);
-    freopen("cownomics.out", "w", stdout);
+	freopen("cownomics.in", "r", stdin);
+	freopen("cownomics.out", "w", stdout);
 
-    int N, M;
-    cin >> N >> M;
+	int N, M;
+	cin >> N >> M;
 
-    vector<string> g(2 * N);
-    for (auto &s : g) cin >> s;
+	vector<string> g(2 * N);
+	for (auto &s : g) cin >> s;
 
-    int ans = INT_MAX;
+	int ans = INT_MAX;
 
-    for (int i = 0; i < M; i++) {
-        vector<int> v(2 * N);
-        
-        iota(v.begin(), v.end(), 0);
+	for (int i = 0; i < M; i++) {
+		vector<int> v(2 * N);
 
-        auto common = [&](int x, int y) {
-            int ind = i;
-            while (ind < M && g[x][ind] == g[y][ind]) ind++;
-            return ind;
-        };
+		iota(v.begin(), v.end(), 0);
 
-        auto cmp = [&](int x, int y) {
-            int ind = common(x, y);
-            return ind < M && g[x][ind] < g[y][ind];
-        };
+		auto common = [&](int x, int y) {
+			int ind = i;
+			while (ind < M && g[x][ind] == g[y][ind]) ind++;
+			return ind;
+		};
 
-        sort(v.begin(), v.end(), cmp);
+		auto cmp = [&](int x, int y) {
+			int ind = common(x, y);
+			return ind < M && g[x][ind] < g[y][ind];
+		};
 
-        int mx = i;
+		sort(v.begin(), v.end(), cmp);
 
-        for (int j = 0; j < 2 * N - 1; j++) {
-            if (v[j] / N != v[j + 1] / N) {
-                mx = max(mx, common(v[j], v[j + 1]));
-            }
-        }
+		int mx = i;
 
-        if (mx == M) break;
+		for (int j = 0; j < 2 * N - 1; j++) {
+			if (v[j] / N != v[j + 1] / N) { mx = max(mx, common(v[j], v[j + 1])); }
+		}
 
-        ans = min(ans, mx + 1 - i);
-    }
+		if (mx == M) break;
 
-    cout << ans << "\n";
+		ans = min(ans, mx + 1 - i);
+	}
+
+	cout << ans << "\n";
 }
 ```
 
@@ -76,57 +74,53 @@ $\mathcal{O}(NM^2)$ solution:
 using namespace std;
 
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
 
-    freopen("cownomics.in", "r", stdin);
-    freopen("cownomics.out", "w", stdout);
+	freopen("cownomics.in", "r", stdin);
+	freopen("cownomics.out", "w", stdout);
 
-    int N, M;
-    cin >> N >> M;
+	int N, M;
+	cin >> N >> M;
 
-    vector<string> g(2 * N);
-    for (auto &s : g) cin >> s;
+	vector<string> g(2 * N);
+	for (auto &s : g) cin >> s;
 
-    vector<int> suf(2 * N);
+	vector<int> suf(2 * N);
 
-    iota(suf.begin(), suf.end(), 0);
+	iota(suf.begin(), suf.end(), 0);
 
-    int ans = INT_MAX;
+	int ans = INT_MAX;
 
-    for (int i = M - 1; i >= 0; i--) {
-        vector<int> tmp[26];
+	for (int i = M - 1; i >= 0; i--) {
+		vector<int> tmp[26];
 
-        for (int t : suf) {
-            tmp[g[t][i] - 'A'].push_back(t);
-        }
+		for (int t : suf) { tmp[g[t][i] - 'A'].push_back(t); }
 
-        suf.clear();
+		suf.clear();
 
-        for (int j = 0; j < 26; j++) {
-            suf.insert(suf.end(), tmp[j].begin(), tmp[j].end());
-        }
+		for (int j = 0; j < 26; j++) {
+			suf.insert(suf.end(), tmp[j].begin(), tmp[j].end());
+		}
 
-        auto common = [&](int x, int y) {
-            int ind = i;
-            while (ind < M && g[x][ind] == g[y][ind]) ind++;
-            return ind;
-        };
+		auto common = [&](int x, int y) {
+			int ind = i;
+			while (ind < M && g[x][ind] == g[y][ind]) ind++;
+			return ind;
+		};
 
-        int mx = i;
+		int mx = i;
 
-        for (int j = 0; j < 2 * N - 1; j++) {
-            if (suf[j] / N != suf[j + 1] / N) {
-                mx = max(mx, common(suf[j], suf[j + 1]));
-            }
-        }
+		for (int j = 0; j < 2 * N - 1; j++) {
+			if (suf[j] / N != suf[j + 1] / N) {
+				mx = max(mx, common(suf[j], suf[j + 1]));
+			}
+		}
 
-        if (mx < M) {
-            ans = min(ans, mx + 1 - i);
-        }
-    }
+		if (mx < M) { ans = min(ans, mx + 1 - i); }
+	}
 
-    cout << ans << "\n";
+	cout << ans << "\n";
 }
 ```
 
