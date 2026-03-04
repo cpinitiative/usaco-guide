@@ -137,9 +137,9 @@ export default function TopNavigationBar({
       {!hidePromoBar && (
         <>
           <Banner
-            text="Our next semester of live classes starts this weekend!"
+            text="The USACO.Guide Informatics Tournament takes place on 3/14!"
             action="Register here"
-            link="https://joincpi.org/classes"
+            link="https://contest.joincpi.org"
           />
         </>
       )}
