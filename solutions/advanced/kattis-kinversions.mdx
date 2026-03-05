@@ -27,9 +27,7 @@ $$
 
 ### Converting to Polynomial Multiplication
 
-To compute this using convolution, we reverse one array.
-
-Define: $$ C_i = A_{n-1-i}$$
+To compute this using convolution, we **reverse** one array (let us reverse `A`)
 
 Now construct two polynomials:
 
@@ -38,7 +36,7 @@ P(x) = \sum_{i=0}^{n-1} B_i x^i
 $$
 
 $$
-Q(x) = \sum_{i=0}^{n-1} C_i x^i
+Q(x) = \sum_{i=0}^{n-1} A_i x^i
 $$
 
 Let: $$ R(x) = P(x) \cdot Q(x)$$
@@ -113,9 +111,9 @@ int main() {
 
 	string s;
 	cin >> s;
-	int n = s.size();
+	int n = s.size() + 1;
 
-	vector<int> a(n + 1), b(n + 1);
+	vector<int> a(n), b(n);
 
 	for (int i = 0; i < n; ++i)
 		if (s[i] == 'A') a[i + 1] = 1;
