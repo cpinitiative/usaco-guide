@@ -402,6 +402,32 @@ print(sorted_map.bisect_right(6))  # 4
 A **multiset** is a sorted set that allows multiple copies of the same element.
 
 <LanguageSection>
+
+<PySection>
+
+While there are no multisets in Python, we can implement one using the `collections.Counter` data structure that maps values to their respective frequencies. All values initially start with a count of 0, and it works similarly to a dictionary.
+
+```py
+from collections import Counter
+
+ms = Counter()
+ms[1] += 1  # {1: 1}
+ms[14] += 1  # {1: 1, 14: 1}
+ms[9] += 1  # {1: 1, 14: 1, 9: 1}
+ms[2] += 1  # {1: 1, 14: 1, 9: 1, 2: 1}
+ms[9] += 1  # {1: 1, 14: 1, 9: 2, 2: 1}
+ms[9] += 1  # {1: 1, 14: 1, 9: 3, 2: 1}
+
+print(ms[4])  # 0
+print(ms[9])  # 3
+print(ms[14])  # 1
+ms[9] -= 1  # remove an occurence of 9
+print(ms[9])  # 2
+del ms[9]  # remove all occurences of 9
+print(ms[9])  # 0
+```
+</PySection>
+
 <CPPSection>
 
 In addition to all of the regular set operations,
