@@ -208,7 +208,6 @@ signed main() {
 
 		for (int i = 1; i <= n; i++) cin >> l[i];
 		for (int i = 1; i <= n; i++) cin >> r[i];
-		// Initialize all component id fixed values to SENTINEL.
 		for (int i = 1; i <= n; i++) ff[i] = SENTINEL;
 		for (int i = 1; i <= M; i++) {
 			int x, y, z;
@@ -220,11 +219,8 @@ signed main() {
 		}
 
 		for (int i = 1; i <= n; i++) {
-			// Check if the node has been visited before,
-			// since all visited nodes must have an assigned m
-			// or coefficient representation.
+			// Only start a dfs if the node has not been visited before.
 			if (!m[i]) {
-				// Initialize to =reference value=1x+0.
 				m[i] = 1;
 				b[i] = 0;
 				dfs(i, -1, i);
@@ -237,29 +233,17 @@ signed main() {
 
 		int ans = 0;
 		// Process each connected component independently.
-		// In here, there may be extra is enumerated
-		// that are not a reference node; however, in those
-		// cases, there are no points in points[i], which means
-		// those will essentially be noops.
+		// Non-reference nodes have nothing in points[] and is equivalent
+		// to a noop.
 		for (int i = 1; i <= n; i++) {
 			if (ff[i] == SENTINEL) {
 				// No fixed value; count the reference value that
 				// satisifies the most generators.
-				// segments is used as a difference array, though
-				// using map guarantees that only significant changes
-				// are stored to save memory.
 				segments.clear();
 				for (auto pt : points[i]) {
-					// If minn[pt] > maxn[pt], there's no range
-					// to generate power for that generator, so we
-					// discard it.
-					if (minn[pt] <= maxn[pt]) {
-						segments[minn[pt]]++;
-						segments[maxn[pt] + 1]--;
-					}
+					segments[minn[pt]]++;
+					segments[maxn[pt] + 1]--;
 				}
-				// Use the prefix sum approach to determine the maximum
-				// covers on any point.
 				int total = 0;
 				int mmax = -1;
 				for (auto sgmt : segments) {
@@ -269,9 +253,7 @@ signed main() {
 				mmax = max(mmax, total);
 				ans += mmax;
 			} else {
-				// If there is already a fixed reference value, then
-				// just check if it falls into the required reference
-				// value for this generator to function.
+				// Fixed reference value; simple check for functioning count.
 				for (auto pt : points[i]) {
 					if (minn[pt] <= ff[i] && ff[i] <= maxn[pt]) { ans++; }
 				}
