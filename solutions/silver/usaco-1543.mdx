@@ -101,11 +101,19 @@ ll minn[200005], maxn[200005];
 map<ll, int> segments;
 // Keeps track of each point for a connected component.
 vector<int> points[200005];
+
+
+/**
+ * Given a constraint, calculate the expression of the new node
+ * in terms of the old node that is traversed from
+ * @param x Specifies the old node
+ * @param y Specifies the new node
+ * @param z Specifies the sum required by the constraint
+ */
 pair<ll, ll> propag(int x, int y, ll z) {
-	ll m = -::m[x];
-	ll b = z - ::b[x];
-	return make_pair(m, b);
+	return make_pair(-m[x], z - b[x]);
 }
+
 // Returns:
 // 1. First bool: If the configuration is possible.
 // 2. Second element, first bool: If any action is needed.
@@ -133,17 +141,16 @@ void dfs(int label, int fa, int x) {
 		int y = g[x][i];
 		int z = w[x][i];
 		if (y == fa) continue;
-		ll m;
-		ll b;
-		m = propag(x, y, z).first;
-		b = propag(x, y, z).second;
-		if (::m[y] == 0) {
-			::m[y] = m;
-			::b[y] = b;
+		auto result = propag(x, y, z);
+		ll m1 = result.first;
+		ll b1 = result.second;
+		if (m[y] == 0) {
+			m[y] = m1;
+			b[y] = b1;
 			dfs(label, x, y);
 		} else {
-			ll m2 = ::m[y], b2 = ::b[y];
-			auto result = loopback(m, b, m2, b2);
+			ll m2 = m[y], b2 = b[y];
+			auto result = loopback(m1, b1, m2, b2);
 			if (!result.first) { okay = false; }
 			if (result.second.first) {
 				if (ff[label] == 2e9) {
@@ -159,20 +166,20 @@ signed main() {
 	int t;
 	cin >> t;
 	while (t--) {
-		int n, m;
-		cin >> n >> m;
+		int n, M;
+		cin >> n >> M;
 		for (int i = 1; i <= n; i++) {
 			g[i].clear();
 			w[i].clear();
-			::m[i] = 0;
-			::b[i] = 0;
+			m[i] = 0;
+			b[i] = 0;
 			points[i].clear();
 		}
 		okay = true;
 		for (int i = 1; i <= n; i++) cin >> l[i];
 		for (int i = 1; i <= n; i++) cin >> r[i];
 		for (int i = 1; i <= n; i++) ff[i] = 2e9;
-		for (int i = 1; i <= m; i++) {
+		for (int i = 1; i <= M; i++) {
 			int x, y, z;
 			cin >> x >> y >> z;
 			g[x].push_back(y);
@@ -182,8 +189,8 @@ signed main() {
 		}
 		bool putokay = false;
 		for (int i = 1; i <= n; i++) {
-			if (!::m[i]) {
-				::m[i] = 1;
+			if (!m[i]) {
+				m[i] = 1;
 				dfs(i, -1, i);
 			}
 			if (!okay && !putokay) {
