@@ -1,0 +1,142 @@
+---
+id: coci-15-uzastopni
+source: coci
+title: 2015 - Uzastopni
+author: Ashok Narayan
+---
+
+## Explanation
+
+The core of this problem is  verifying the "consecutive set" constraint across a tree structure. Since every invited group must be a connected subtree rooted at Petar, we can frame the problem as finding all possible **continuous joke ranges** $[L, R]$ that can be formed by a valid subtree.
+
+---
+
+### The Core Logic
+The "trick" is to recognize that for any employee $u$ to satisfy the consecutive rule, their own joke $V_u$ must act as the bridge between the various joke ranges provided by their subordinates.
+
+If employee $u$ tells joke 5, they can only form a valid range if their subordinates collectively provide ranges that perfectly "touch" 5—for instance, one subordinate providing $[3, 4]$ and another providing $[6, 7]$. Together, they create the gapless set $[3, 7]$.
+
+
+We maintain two bitsets for every node `x`:
+
+- `lans[x][v] = 1` if the subtree rooted at `x` can cover all joke types from `v` up to `joke[x]`
+- `rans[x][v] = 1` if the subtree rooted at `x` can cover all joke types from `joke[x]` up to `v - 1`
+
+Initially, each node can always form the trivial interval containing only its own joke.
+
+---
+
+### DFS Construction
+
+We process the tree with a **post-order DFS**.
+
+For a node `x`, after processing all children:
+1. Split the children into two groups:
+   - `lo`: children whose joke type is **smaller** than `joke[x]`
+   - `hi`: children whose joke type is **larger** than `joke[x]`
+2. To extend to the **left**, process `lo` in decreasing order of joke type.
+   If the current left expansion of `x` overlaps with the right expansion of a child, we can safely merge them.
+3. To extend to the **right**, process `hi` in increasing order of joke type.
+   If the current right expansion of `x` overlaps with the left expansion of a child, we merge them as well.
+
+The ordering guarantees that:
+- joke types remain unique,
+- no gaps are introduced,
+- and only valid consecutive sets are formed.
+
+---
+
+
+At the root (Petar), any valid consecutive set is determined by choosing:
+- a valid left boundary from `lans[0]`, and
+- a valid right boundary from `rans[0]`.
+
+Thus, the total number of different joke sets Petar can see is the product of the number of valid left and right boundaries at the root.
+
+
+
+
+
+---
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N \cdot V / w)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+
+#include <bits/stdc++.h>
+using namespace std;
+
+vector<vector<int>> child;
+vector<int> joke;
+vector<bitset<101>> lans, rans;
+
+// BeginCodeSnip{DFS}
+void dfs(int x) {
+	vector<int> lo, hi;
+
+	for (int y : child[x]) {
+		dfs(y);
+		if (joke[y] < joke[x]) lo.push_back(y);
+		if (joke[y] > joke[x]) hi.push_back(y);
+	}
+
+	// Base case: interval containing only joke[x]
+	lans[x][joke[x]] = 1;
+	rans[x][joke[x] + 1] = 1;
+
+	// Extend to smaller joke types
+	sort(lo.begin(), lo.end(), [&](int a, int b) { return joke[a] > joke[b]; });
+
+	for (int y : lo) {
+		if ((lans[x] & rans[y]).any()) { lans[x] |= lans[y]; }
+	}
+
+	// Extend to larger joke types
+	sort(hi.begin(), hi.end(), [&](int a, int b) { return joke[a] < joke[b]; });
+
+	for (int y : hi) {
+		if ((rans[x] & lans[y]).any()) { rans[x] |= rans[y]; }
+	}
+}
+// EndCodeSnip
+
+int main() {
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
+
+	int N;
+	cin >> N;
+
+	joke.resize(N);
+	for (int i = 0; i < N; i++) {
+		cin >> joke[i];
+		--joke[i];  // make joke types 0-based
+	}
+
+	child.assign(N, {});
+	for (int i = 0; i < N - 1; i++) {
+		int a, b;
+		cin >> a >> b;
+		--a;
+		--b;
+		child[a].push_back(b);
+	}
+
+	lans.assign(N, bitset<101>());
+	rans.assign(N, bitset<101>());
+
+	dfs(0);
+
+	long long ans = 1LL * lans[0].count() * rans[0].count();
+	cout << ans << "\n";
+
+	return 0;
+}
+```
+
+</CPPSection>
+</LanguageSection>

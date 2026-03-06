@@ -1,0 +1,197 @@
+---
+id: SPOJ-DIVCNT2
+source: SPOJ
+title: DIVCNT2
+author: Benjamin Qi
+---
+
+
+<IncompleteSection>
+
+clean this up
+
+</IncompleteSection>
+
+<Spoiler title="Hint">
+
+Express $h(x)=\sigma_0(x^2)$ as the Dirichlet convolution of two functions,
+one of which is $f(x)=\sigma_0(x)$.
+
+</Spoiler>
+
+<Spoiler title="Solution">
+
+If we define $g(x)=\mu^2(x)$ then $h=f*g$. We can find $f_x$ and $g_x$ for all
+$x\in Q_N$ in $O(N^{2/3})$ time, then $h_N$ from those values in $O(N^{1/2})$ time.
+
+**Time Complexity:** $O(N^{2/3})$
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+typedef long long ll;
+typedef long double ld;
+typedef double db;
+typedef string str;
+
+typedef pair<int, int> pi;
+typedef pair<ll, ll> pl;
+typedef pair<db, db> pd;
+
+typedef vector<int> vi;
+typedef vector<ll> vl;
+typedef vector<db> vd;
+typedef vector<str> vs;
+typedef vector<pi> vpi;
+typedef vector<pl> vpl;
+typedef vector<pd> vpd;
+
+#define mp make_pair
+#define f first
+#define s second
+#define sz(x) (int)x.size()
+#define all(x) begin(x), end(x)
+#define rall(x) (x).rbegin(), (x).rend()
+#define rsz resize
+#define ins insert
+#define ft front()
+#define bk back()
+#define pf push_front
+#define pb push_back
+#define eb emplace_back
+#define lb lower_bound
+#define ub upper_bound
+
+#define FOR(i, a, b) for (int i = (a); i < (b); ++i)
+#define F0R(i, a) FOR(i, 0, a)
+#define ROF(i, a, b) for (int i = (b) - 1; i >= (a); --i)
+#define R0F(i, a) ROF(i, 0, a)
+#define trav(a, x) for (auto &a : x)
+
+const int MOD = 1e9 + 7;  // 998244353;
+const int MX = 2e5 + 5;
+const ll INF = 1e18;
+const ld PI = acos((ld)-1);
+const int xd[4] = {1, 0, -1, 0}, yd[4] = {0, 1, 0, -1};
+
+template <class T> bool ckmin(T &a, const T &b) { return b < a ? a = b, 1 : 0; }
+template <class T> bool ckmax(T &a, const T &b) { return a < b ? a = b, 1 : 0; }
+int pct(int x) { return __builtin_popcount(x); }
+int bit(int x) { return 31 - __builtin_clz(x); }  // floor(log2(x))
+int cdiv(int a, int b) {
+	return a / b + !(a < 0 || a % b == 0);
+}  // division of a by b rounded up, assumes b > 0
+
+const int LIM = 1e8;
+
+/**
+ * Description: Tests primality up to $SZ$. Runs faster if only
+ * odd indices are stored.
+ * Time: O(SZ\log\log SZ) or O(SZ)
+ * Source: KACTL
+ * Verification: https://open.kattis.com/problems/primesieve
+ */
+
+short mu[LIM], mn[LIM];  // smallest prime that divides
+ll tau[LIM];
+vi pr;
+
+int MU2[LIM];
+
+ll N;
+bool calced = 0;
+
+ll cumMu2(ll N) {
+	if (calced && N < LIM) return MU2[N];
+	ll ans = 0;
+	for (ll d = 1; d * d <= N; ++d) ans += N / d / d * mu[d];
+	return ans;
+}
+
+ll cumTau(ll N) {
+	if (calced && N < LIM) return tau[N];
+	ll ans = 0;
+	for (ll z = 1; z <= N;) {
+		ll zz = N / (N / z) + 1;
+		ans += (zz - z) * (N / z);
+		z = zz;
+	}
+	// if (ans != TAU[N]) dbg(N,ans,TAU[N]);
+	return ans;
+}
+
+ll solve() {
+	// conv mu^2 and tau
+	ll lst = 0, ans = 0;
+	for (ll z = 1; z <= N;) {
+		ll zz = N / (N / z);
+		ll cur = cumMu2(zz);
+		// dbg(z,zz);
+		ans += (cur - lst) * cumTau(N / z);
+		z = zz + 1;
+		lst = cur;
+	}
+	return ans;
+}
+
+void calc(int zz) {
+	mu[1] = tau[1] = 1;
+	FOR(i, 2, zz) {
+		if (tau[i] == 0) {
+			mu[i] = -1, tau[i] = mn[i] = 2;
+			pr.pb(i);
+		}
+		for (auto p : pr) {
+			int v = i * p;
+			if (v >= LIM) break;
+			if (i % p == 0) {
+				mu[v] = 0, tau[v] = tau[i] / mn[i] * (mn[v] = (mn[i] + 1));
+				break;
+			} else {
+				mu[v] = -mu[i];
+				tau[v] = tau[i] * (mn[v] = 2);
+			}
+		}
+	}
+	FOR(i, 1, zz) {
+		MU2[i] = MU2[i - 1] + mu[i] * mu[i];
+		tau[i] = tau[i - 1] + tau[i];
+	}
+	calced = 1;
+}
+
+int main() {
+	// clock_t beg = clock();
+	int T;
+	cin >> T;
+	vl todo;
+	ll mx = 0;
+	F0R(i, T) {
+		cin >> N;
+		todo.pb(N);
+		ckmax(mx, N);
+	}
+	if (mx <= 10000) calc(10001);
+	else calc(1e8);
+	/*FOR(i,1,10001) {
+	    N = i;
+	    cout << solve() << endl;
+	}*/
+	trav(t, todo) {
+		N = t;
+		cout << solve() << endl;
+	}
+	// cerr << (db)(clock()-beg)/CLOCKS_PER_SEC;
+	// you should actually read the stuff at the bottom
+}
+
+/* stuff you should look for
+ * int overflow, array bounds
+ * special cases (n=1?)
+ * do smth instead of nothing and stay organized
+ * WRITE STUFF DOWN
+ */
+```
+
+</Spoiler>

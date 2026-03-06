@@ -7,7 +7,7 @@ author: Kevin Sheng
 
 # Explanation
 
-At first glance, it seems Kruskal's would be more appropriate for this problem, so let's use that.
+At first glance, it seems Kruskal's would be more appropriate for this problem, so let's try that.
 
 Let's first give each child their own [DSU](/gold/dsu) data structure to store which cities are connected with their railroads,
 and then iterate through the railroads through decreasing order of price,
@@ -15,7 +15,7 @@ giving each railroad to the first child that can accept it. This is effectively 
 each child one at a time and constructing a maximum spanning tree for each of them individually.
 
 However, linearly iterating through the entire list of DSUs would result in a
-runtime of about $\mathcal{O}(KM)$, which is too slow given the bounds.
+runtime of about $\mathcal{O}(MK \alpha(N))$, which is too slow given the bounds.
 
 To quickly find the first child that can accept a railroad, let's try using binary search!
 But for binary search to actually work, we first need to prove the following:
@@ -24,18 +24,18 @@ No matter what railroad we're processing,
 all children after the first child that can accept the current railroad
 can also accept said railroad, while all children *before* that child cannot.
 
-For this to hold, each DSU's connected components must be obtainable from the one after by adding some edges (0 edges is fine too).
+For this to hold, each DSU's connected components must be obtainable from the one after by adding some edges (zero edges is fine too).
 This is obviously true for when we start, so now all we have to prove is that giving a railroad to the first child that can accept it will preserve this relation.
 
 Say we had two children that are adjacent in seniority: $c_i$ and $c_{i+1}$, with $c_i$ being older, and $c_{i+1}$ being the first child that can accept the current railroad.
 If giving $c_{i+1}$ the railroad would make it so that obtaining $c_i$ from the new $c_{i+1}$ is impossible,
 then that would mean the railroad would connect some two components of $c_i$ and thus also mean that $c_i$ should be the first to accept the railroad, not $c_{i+1}$.
 
-Using binary search reduces $\mathcal{O}(KM)$ to $\mathcal{O}(K \log M)$, which runs in time.
+Using binary search reduces $\mathcal{O}(MK \alpha(N))$ to $\mathcal{O}(M \log K \alpha(N))$, which runs in time.
 
 ## Implementation
 
-**Time Complexity:** $\mathcal{O}(K\log M)$ for each of $T$ test cases
+**Time Complexity:** $\mathcal{O}(NK + M \log K \alpha(N))$
 
 <LanguageSection>
 <CPPSection>

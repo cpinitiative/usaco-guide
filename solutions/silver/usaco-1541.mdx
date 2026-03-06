@@ -1,0 +1,60 @@
+---
+id: usaco-1541
+source: USACO 2026 First Contest
+title: Photoshoot
+author: Arnav Gokhale
+---
+
+[Official Analysis (C++)](https://usaco.org/current/data/sol_prob3_bronze_season26contest1.html)
+
+## Explanation
+
+We can maintain a $N$ by $N$ grid representing the beauty values of all the cows. We also maintain a 2D array $\text{sum}[i][j]$, which represents the attractiveness index of the $K$ by $K$ picture with its upper-left corner at $(i, j)$.
+
+At each query, we update the attractiveness indices of all photos which contain the updated cow, as they will be the only photos affected. Updating the running maximum with these new values, we get the answer for the query.
+
+This runs within the time limit because, for each query, $\text{sum}[i][j]$ is updated $\mathcal{O}(K^2)$ times, which is no more than 625 entries. Since these values only ever increase, we do not need to recompute the entire answer. Instead, we only need to account for the newly updated cells.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N^2 + QK^2)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	ios_base::sync_with_stdio(false);
+	cin.tie(nullptr);
+
+	int n, k, q;
+	cin >> n >> k >> q;
+
+	vector<vector<int>> values(n, vector<int>(n));
+	vector<vector<int>> sums(n, vector<int>(n));
+
+	int answer = 0;
+	while (q--) {
+		int r, c, v;
+		cin >> r >> c >> v;
+		--r, --c;
+
+		int diff = v - values[r][c];
+		values[r][c] = v;
+		for (int i = max(0, r - k + 1); i <= min(r, n - k); i++) {
+			for (int j = max(0, c - k + 1); j <= min(c, n - k); j++) {
+				sums[i][j] += diff;
+				answer = max(answer, sums[i][j]);
+			}
+		}
+
+		cout << answer << '\n';
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>

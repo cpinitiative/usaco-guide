@@ -1,0 +1,122 @@
+---
+id: usaco-496
+source: Old Gold
+title: Cow Jog
+author: David Zhou
+---
+
+[Official Analysis (C++)](https://usaco.org/current/data/sol_cowjog_gold.html)
+
+## Explanation
+
+The problem asks for the minimum number of lanes required such that cows in the same lane never catch up to one another.
+
+First, we compute the potential end position of each cow: $E_i = P_i + (S_i \cdot T)$, where $P_i$ is the starting position and $S_i$ is the speed. Since cows are provided in ascending order of their starting positions ($P_1 < P_2 < \dots < P_N$), cow $i$ will catch up to cow $j$ (where $i < j$) if and only if $E_i \geq E_j$. This means that the cow behind will either reach the same position or pass the cow in front, forcing them to be in different lanes.
+
+To occupy the same lane, a set of cows with indices $i_1 < i_2 < \dots < i_m$ must satisfy $E_{i_1} < E_{i_2} < \dots < E_{i_m}$. If we have a sequence of cows where $E_i \ge E_j \ge E_k \ge \dots$, every single cow in that sequence must belong to a unique lane because they all "block" the ones behind them. Consequently, the minimum number of lanes required to accommodate all cows is equal to the length of the **longest non-increasing subsequence** of end positions. Intuitively, the length of this subsequence represents the largest possible group of cows where every pair is guaranteed to conflict.
+
+Regarding the implementation, we can negate all the end values in order to apply traditional LIS logic. Since a non-increasing subsequence has a pair-wise relationship of $E_i \geq E_j$, negation transforms it into $-E_i \leq -E_j$. This turns the requirement into finding the length of the **longest non-decreasing subsequence** of negative values, which can be solved using traditional methods. An alternate approach is to maintain positive values but process the cows in reverse order (from $N-1$ down to $0$), which achieves the same effect.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N\log N)$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <algorithm>
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int main() {
+	freopen("cowjog.in", "r", stdin);
+	freopen("cowjog.out", "w", stdout);
+
+	int n, t;
+	cin >> n >> t;
+
+	vector<long long> min_ends;
+
+	for (int i = 0; i < n; i++) {
+		int start, speed;
+		cin >> start >> speed;
+
+		// Negate to transform non-increasing into non-decreasing
+		long long end = -(start + (long long)speed * t);
+
+		auto it = upper_bound(min_ends.begin(), min_ends.end(), end);
+
+		if (it == min_ends.end()) {
+			min_ends.push_back(end);
+		} else {
+			*it = end;
+		}
+	}
+
+	cout << min_ends.size() << endl;
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class CowJog {
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new FileReader("cowjog.in"));
+		PrintWriter out =
+		    new PrintWriter(new BufferedWriter(new FileWriter("cowjog.out")));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+
+		int n = Integer.parseInt(st.nextToken());
+		int t = Integer.parseInt(st.nextToken());
+
+		ArrayList<Long> minEnds = new ArrayList<>();
+
+		for (int i = 0; i < n; i++) {
+			st = new StringTokenizer(br.readLine());
+			long start = Long.parseLong(st.nextToken());
+			long speed = Long.parseLong(st.nextToken());
+
+			// Negate to transform non-increasing into non-decreasing
+			long end = -(start + speed * (long)t);
+
+			int pos = bSearch(minEnds, end);
+			if (pos == minEnds.size()) {
+				minEnds.add(end);
+			} else {
+				minEnds.set(pos, end);
+			}
+		}
+
+		out.println(minEnds.size());
+		out.close();
+		br.close();
+	}
+
+	static int bSearch(ArrayList<Long> list, long key) {
+		int low = 0;
+		int high = list.size();
+		while (low < high) {
+			int mid = low + (high - low) / 2;
+			if (list.get(mid) <= key) {
+				low = mid + 1;
+			} else {
+				high = mid;
+			}
+		}
+		return low;
+	}
+}
+```
+
+</JavaSection>
+
+</LanguageSection>

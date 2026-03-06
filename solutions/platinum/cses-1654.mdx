@@ -1,0 +1,142 @@
+---
+id: cses-1654
+source: CSES
+title: Bit Problem
+author: Ashok Narayan
+---
+
+## Explanation
+
+A brute force approach would, for each element $x$, iterate over all other elements $y$ and check the three conditions.
+This results in $\mathcal{O}(N^2)$ time, which is too slow.
+
+Let's understand the relations:
+
+- $x \, \mid \, y = x \implies$  $y$ is a **submask** of $x$
+- $x \mathbin{\&} y = x \implies$ $y$ is a **supermask** of $x$
+- $x \mathbin{\&} y \neq 0 \implies$ $y$ is **not disjoint** with $x$
+
+Since values are at most $2^{20}$, we treat each number as a 20-bit mask and build a frequency array.
+
+Now the problem reduces to:
+
+- For every mask, count how many of its **submasks** appear.
+- For every mask, count how many of its **supermasks** appear.
+
+Doing this naively by iterating over submasks for every $x$ takes up to $3^{20}$ operations, which is infeasible.
+
+Instead, we apply **SOS DP**.
+
+---
+
+### How the SOS DP Transitions Work
+
+We initialize both `dp` and `kp` with the frequency of each mask.
+
+- `dp[mask]` will become the number of array elements that are **submasks** of `mask`.
+- `kp[mask]` will become the number of array elements that are **supermasks** of `mask`.
+
+---
+
+#### Submask DP
+
+For each bit `i` and each `mask`:
+
+If bit `i` is set in `mask`, then any submask of `mask` either:
+- does not use bit `i`, or
+- does use bit `i`.
+
+The submasks that do not use bit `i` correspond exactly to `mask ^ (1 << i)`.
+So we accumulate:
+```cpp
+if (mask & (1 << i)) dp[mask] += dp[mask ^ (1 << i)];
+```
+
+After processing all bits, `dp[mask]` equals the total number of elements that are submasks of `mask`.
+
+---
+
+#### Supermask DP
+
+Symmetrically, if bit `i` is not set in `mask`, then supermasks of `mask` that include bit `i` correspond to `mask ^ (1 << i)`.
+So we accumulate:
+
+```cpp
+if (!(mask & (1 << i))) kp[mask] += kp[mask ^ (1 << i)];
+```
+---
+
+After all bits are processed, `kp[mask]` stores the number of elements that are supermasks of `mask`.
+
+Both computations run in $\mathcal O(B \cdot 2^B)$.
+
+---
+
+### Deriving the Third Answer
+
+We need the count of `y` such that:
+
+    `x & y != 0`
+
+Instead, count the complement:
+
+    `x & y = 0`
+
+This is true if and only if every set bit of `y` lies outside `x`,
+i.e., `y` is a submask of `~x`.
+
+Since we only consider the lowest `B` bits:
+
+   ` ~x = FULL_MASK ^ x`
+
+Thus,
+
+- Number of `y` with `x & y = 0` = `dp[FULL_MASK ^ x]`
+
+Therefore,
+
+- Number of `y` with `x & y != 0` = `n - dp[FULL_MASK ^ x]`
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(B \cdot 2^{B} + N)$, where $B$ is the number of bits in the mask.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+constexpr int B = 20;
+constexpr int FULL_MASK = (1 << B) - 1;
+
+int main() {
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
+
+	int n;
+	cin >> n;
+
+	vector<int> a(n);
+	for (int &x : a) cin >> x;
+
+	vector<int> dp(1 << B), kp(1 << B);
+
+	for (int x : a) dp[x]++, kp[x]++;
+
+	for (int i = 0; i < B; ++i) {
+		for (int mask = 0; mask < (1 << B); ++mask) {
+			if (mask & (1 << i)) dp[mask] += dp[mask ^ (1 << i)];
+			else kp[mask] += kp[mask ^ (1 << i)];
+		}
+	}
+
+	for (int x : a)
+		cout << dp[x] << ' ' << kp[x] << ' ' << n - dp[FULL_MASK ^ x] << '\n';
+
+	return 0;
+}
+```
+
+</CPPSection>
+</LanguageSection>

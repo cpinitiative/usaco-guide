@@ -1,0 +1,135 @@
+---
+id: cses-1747
+source: CSES
+title: Pyramid Array
+author: Ashok Narayan
+---
+
+## Explanation
+
+The problem asks for the minimum number of adjacent swaps required to transform an array into a pyramid (increasing, then decreasing). Recall that the minimum number of adjacent swaps to reorder an array is equal to the number of inversions between the initial and final states.
+
+### Initial Greedy Strategy
+
+To minimize inversions, we should greedily place the elements. Consider processing the elements from largest to smallest.
+* The largest element should be in the "peak" of the pyramid, which may not be in the center of the array.
+* For every subsequent element, we have to place it in the immediate left or immediate right of the "central block" that is formed by the already processed elements.
+
+To minimize the total number of swaps, we simply calculate the cost for both options:
+1.  Left Cost: The number of swaps to move $x$ to the left of the block. This equals the number of already-placed (larger) elements currently to the left of $x$.
+2.  Right Cost: The number of swaps to move $x$ to the right of the block. This equals the number of already-placed (larger) elements currently to the right of $x$.
+
+We greedily choose the minimum of these two for each element.
+
+### Why Greedy Works
+
+To guarantee the minimum cost, we must prove that our choices are optimal. Let's break the total cost down into individual contributions.
+
+For any element $x$, consider the set of all elements larger than it, denoted as $S$.
+In a valid pyramid structure, the values increase to a peak and then decrease. This implies that the set of largest elements $S$ must form a *contiguous block* in the center of the array, and $x$ must be placed outside this block (either to the immediate left or immediate right).
+
+Both these cases have an associated cost. Choosing the minimum out of these will give the min cost for processing current element x. But how does that ensure global min cost?
+
+Crucially, the cost of these choices depends **only** on the initial input array:
+* Left Cost: The number of swaps needed to move $x$ to the left of $S$ is exactly the count of elements in $S$ that are currently at indices *less than* $x$'s index.
+* Right Cost: The number of swaps needed to move $x$ to the right of $S$ is exactly the count of elements in $S$ that are currently at indices *greater than* $x$'s index.
+
+Since the cost for placing $x$ depends only on the original positions of the larger elements (and not on where those larger elements eventually end up), we can make the optimal decision for each element independently. Minimizing the cost for each element individually guarantees the global minimum.
+
+### Algorithm
+
+This reduces to dynamically counting the number of inversions. We model the array as a binary sequence where a *1* represents an already processed (larger) element.
+* $L$ is the number of already processed (larger) elements located to the left of the current index.
+* $R$ is the number of already processed (larger) elements located to the right of the current index.
+* **Query:** To find $L$, we need the sum of values in the range $[0, i-1]$. Since we have processed $k$ elements so far, we can derive $R$ as $k - L$. This is a **Range Sum Query**.
+* **Update:** To mark index $i$ as processed, we change the value at $i$ from $0$ to $1$. This is a **Point Update**
+
+Since we need both operations to be efficient, we use a **Binary Indexed Tree** or similar PURS data structure.
+
+## Implementation
+
+Time Complexity: $\mathcal{O}(N\log N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+// BeginCodeSnip{BIT}
+template <class T> class BIT {
+  private:
+	int size;
+	vector<T> bit;
+	vector<T> arr;
+
+  public:
+	BIT(int size) : size(size), bit(size + 1), arr(size) {}
+
+	/** Sets the value at index ind to val. */
+	void set(int ind, T val) { add(ind, val - arr[ind]); }
+
+	/** Adds val to the element at index ind. */
+	void add(int ind, T val) {
+		arr[ind] += val;
+		ind++;
+		for (; ind <= size; ind += ind & -ind) { bit[ind] += val; }
+	}
+
+	/** @return The sum of all values in [0, ind]. */
+	T pref_sum(int ind) {
+		ind++;
+		T total = 0;
+		for (; ind > 0; ind -= ind & -ind) { total += bit[ind]; }
+		return total;
+	}
+};
+// EndCodeSnip
+
+int main() {
+	ios::sync_with_stdio(false);
+	cin.tie(NULL);
+
+	int n;
+	cin >> n;
+
+	// Store elements as {value, original_index}
+	vector<pair<int, int>> elements(n);
+	for (int i = 0; i < n; i++) {
+		cin >> elements[i].first;
+		// Store 0-based index to match the BIT template
+		elements[i].second = i;
+	}
+
+	// Sort in descending order to process largest elements first
+	sort(elements.rbegin(), elements.rend());
+
+	BIT<int> ft(n);
+	long long total_swaps = 0;
+
+	for (int i = 0; i < n; i++) {
+		int current_pos = elements[i].second;
+
+		// Calculate how many larger elements are already to the left
+		// pref_sum returns sum in [0, current_pos - 1]
+		int left_cost = ft.pref_sum(current_pos - 1);
+
+		// Calculate how many larger elements are already to the right
+		// 'i' is the total count of elements processed so far (all larger)
+		int right_cost = i - left_cost;
+
+		// Greedily choose the side with fewer swaps (inversions)
+		total_swaps += min(left_cost, right_cost);
+
+		// Mark this position as occupied (Point Update)
+		ft.add(current_pos, 1);
+	}
+
+	cout << total_swaps << endl;
+
+	return 0;
+}
+```
+</CPPSection>
+</LanguageSection>
