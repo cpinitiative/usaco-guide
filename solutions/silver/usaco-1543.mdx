@@ -70,17 +70,40 @@ above procedure for each connected component yields the answer.
 #include <iostream>
 #include <map>
 #include <vector>
+typedef long long ll;
 using namespace std;
-#define int long long
-int l[200005], r[200005], lab[200005], m[200005], b[200005], ff[200005], minn[200005],
-    maxn[200005];
+// g and w collective represents (through alignment of indices)
+// the graph given by the constraints; g is the nodes that a node
+// is connected to, w is the weight of the corresponding edge
+// described in the same index of g
 vector<int> g[200005];
 vector<int> w[200005];
-map<int, int> segments;
+// As given by the problem.
+ll l[200005], r[200005];
+// A label each node is assigned with; this corresponds with the
+// vertex that all other vertices in that component are represented
+// in terms of.
+int lab[200005];
+// Coefficient (m) and constant (b) representations of each node
+// in terms of the reference node in each connected component.
+// There *must* be a nonzero coefficient for a representation to
+// be valid; therefore, the code also checks if m[v] is non-zero
+// to see if a vertex has been traversed.
+ll m[200005], b[200005];
+// Represents fixed values for components; the index is the
+// "reference" node for the component.
+ll ff[200005];
+// The minimum and maximum values of x of the connected component
+// required for each specific node to function
+ll minn[200005], maxn[200005];
+// A temporary map declared to facilitate maximization of nodes
+// activated; see main()
+map<ll, int> segments;
+// Keeps track of each point for a connected component.
 vector<int> points[200005];
-pair<int, int> propag(int x, int y, int z) {
-	int m = -::m[x];
-	int b = z - ::b[x];
+pair<ll, ll> propag(int x, int y, ll z) {
+	ll m = -::m[x];
+	ll b = z - ::b[x];
 	return make_pair(m, b);
 }
 // Returns:
@@ -88,7 +111,7 @@ pair<int, int> propag(int x, int y, int z) {
 // 2. Second element, first bool: If any action is needed.
 // 3. Second element, second bool: What number to make fixed,
 // if neccessary.
-pair<bool, pair<bool, int>> loopback(int m1, int b1, int m2, int b2) {
+pair<bool, pair<bool, ll>> loopback(ll m1, ll b1, ll m2, ll b2) {
 	if (m1 == m2 && b1 != b2) {
 		return make_pair(false, make_pair(false, 0));
 	} else if (m1 == m2 && b1 == b2) {
@@ -110,8 +133,8 @@ void dfs(int label, int fa, int x) {
 		int y = g[x][i];
 		int z = w[x][i];
 		if (y == fa) continue;
-		int m;
-		int b;
+		ll m;
+		ll b;
 		m = propag(x, y, z).first;
 		b = propag(x, y, z).second;
 		if (::m[y] == 0) {
@@ -119,7 +142,7 @@ void dfs(int label, int fa, int x) {
 			::b[y] = b;
 			dfs(label, x, y);
 		} else {
-			int m2 = ::m[y], b2 = ::b[y];
+			ll m2 = ::m[y], b2 = ::b[y];
 			auto result = loopback(m, b, m2, b2);
 			if (!result.first) { okay = false; }
 			if (result.second.first) {
