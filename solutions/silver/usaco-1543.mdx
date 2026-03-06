@@ -72,35 +72,37 @@ above procedure for each connected component yields the answer.
 #include <vector>
 typedef long long ll;
 using namespace std;
+constexpr int MAXN = 200005;
 // g and w collective represents (through alignment of indices)
 // the graph given by the constraints; g is the nodes that a node
 // is connected to, w is the weight of the corresponding edge
 // described in the same index of g
-vector<int> g[200005];
-vector<int> w[200005];
+vector<int> g[MAXN];
+vector<int> w[MAXN];
 // As given by the problem.
-ll l[200005], r[200005];
+ll l[MAXN], r[MAXN];
 // A label each node is assigned with; this corresponds with the
 // vertex that all other vertices in that component are represented
 // in terms of.
-int lab[200005];
+int lab[MAXN];
 // Coefficient (m) and constant (b) representations of each node
 // in terms of the reference node in each connected component.
 // There *must* be a nonzero coefficient for a representation to
 // be valid; therefore, the code also checks if m[v] is non-zero
 // to see if a vertex has been traversed.
-ll m[200005], b[200005];
+ll m[MAXN], b[MAXN];
 // Represents fixed values for components; the index is the
 // "reference" node for the component.
-ll ff[200005];
+ll ff[MAXN];
 // The minimum and maximum values of x of the connected component
 // required for each specific node to function
-ll minn[200005], maxn[200005];
+ll minn[MAXN], maxn[MAXN];
+// Keeps track of each point for a connected component.
+vector<int> points[MAXN];
+
 // A temporary map declared to facilitate maximization of nodes
 // activated; see main()
 map<ll, int> segments;
-// Keeps track of each point for a connected component.
-vector<int> points[200005];
 
 /**
  * Given a constraint, calculate the expression of the new node
@@ -108,26 +110,54 @@ vector<int> points[200005];
  * @param x Specifies the old node
  * @param y Specifies the new node
  * @param z Specifies the sum required by the constraint
+ * @return A pair with the coefficient and constant for the new
+ *         representation
  */
-pair<ll, ll> propag(int x, int y, ll z) { return make_pair(-m[x], z - b[x]); }
+pair<ll, ll> propag(int x, int y, ll z) {
+	return make_pair(-m[x], z - b[x]);
+}
 
-// Returns:
-// 1. First bool: If the configuration is possible.
-// 2. Second element, first bool: If any action is needed.
-// 3. Second element, second bool: What number to make fixed,
-// if neccessary.
+/**
+ * A function used in situations where 2 representations
+ * for a node can be computed. This function equates and
+ * solve them.
+ * @param m1 Coefficient for the first representation.
+ * @param b1 Constant for the first representation.
+ * @param m2 Coefficient for the second representation.
+ * @param b2 Constant for the second representation.
+ * @return A pair detailng:
+ *         - first: Whether this equation is solvable with integers.
+ *           If this is false, then there is no solution for the whole
+ *           problem.
+ *         - second.first: Whether there is any action required to
+ *           fix a value.  This is meaningless if first is false.
+ *         - second.second: The fixed x, if necessary, for the
+ *           connected component as determined by the equation.
+ */
 pair<bool, pair<bool, ll>> loopback(ll m1, ll b1, ll m2, ll b2) {
+	// If the coefficients are the same, the linear terms may be
+	// canceled; we get b1 = b2. If that is not solvable (aka.
+	// b1 != b2), report so.
 	if (m1 == m2 && b1 != b2) {
 		return make_pair(false, make_pair(false, 0));
-	} else if (m1 == m2 && b1 == b2) {
+	}
+	// If the 2 representations are essentially the same, then there's
+	// nothing to do (i.e. any x suffices).
+	else if (m1 == m2 && b1 == b2) {
 		return make_pair(true, make_pair(false, 0));
-	} else {
+	}
+	// The equation is m1*x+b1=m2*x+b2 --> (m1-m2)*x=(b2-b1) -->
+	// x=(b2-b1)/(m1-m2).  If this is a fraction, return impossible
+	// as we cannot have a fraction in any nodes (including the
+	// reference.)
+	else {
 		if ((b2 - b1) % (m1 - m2) == 0) {
 			return make_pair(true, make_pair(true, (b2 - b1) / (m1 - m2)));
 		}
 		return make_pair(false, make_pair(false, 0));
 	}
 }
+
 bool okay = true;
 void dfs(int label, int fa, int x) {
 	lab[x] = label;
