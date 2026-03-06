@@ -1,0 +1,125 @@
+---
+id: kattis-kinversions
+source: Kattis
+title:  K-Inversions
+author: Ashok Narayan
+---
+
+## Explanation
+
+We want the number of indices $i$ satisfying:
+
+$$
+s_i = B \quad \text{and} \quad s_{i+k} = A
+$$
+
+Define two arrays:
+
+- $B_i = 1$ if $s_i = B$, otherwise $0$
+- $A_i = 1$ if $s_i = A$, otherwise $0$
+
+Then the number of $k$-inversions equals:
+
+$$
+\sum_{i=0}^{n-1} B_i \cdot A_{i+k}
+$$
+
+
+### Converting to Polynomial Multiplication
+
+To compute this using convolution, we first **reverse** one array (let us reverse `B`).
+
+Now construct two polynomials:
+
+$$
+P(x) = \sum_{i=0}^{n-1} A_i x^i
+$$
+
+$$
+Q(x) = \sum_{i=0}^{n-1} B_i x^i
+$$
+
+Let $C(x) = P(x) \cdot Q(x)$. Then the coefficient: `C[n - 1 + k]` is exactly the number of `k-inversions`.
+
+Thus, the entire problem reduces to computing a single polynomial multiplication and extracting specific coefficients.
+
+---
+
+### Optimising using FFT
+
+Finding this using brute force runs in $\mathcal{O}(n^2)$ time.
+
+Using Fast Fourier Transform (FFT), convolution runs in $\mathcal{O}(n \log n)$ time.
+
+---
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(n \log n)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+
+#include <bits/stdc++.h>
+using namespace std;
+
+using cd = complex<double>;
+const double PI = acos(-1);
+
+// BeginCodeSnip{FFT Template}
+void fft(vector<cd> &a, bool inv) {
+	int n = a.size();
+	if (n == 1) return;
+	vector<cd> a0(n / 2), a1(n / 2);
+	for (int i = 0; 2 * i < n; i++) a0[i] = a[2 * i], a1[i] = a[2 * i + 1];
+	fft(a0, inv);
+	fft(a1, inv);
+	double ang = 2 * PI / n * (inv ? -1 : 1);
+	cd w(1), wn(cos(ang), sin(ang));
+	for (int i = 0; 2 * i < n; i++) {
+		a[i] = a0[i] + w * a1[i];
+		a[i + n / 2] = a0[i] - w * a1[i];
+		if (inv) a[i] /= 2, a[i + n / 2] /= 2;
+		w *= wn;
+	}
+}
+
+vector<int> mul(vector<int> a, vector<int> b) {
+	int n = 1;
+	while (n < a.size() + b.size()) n <<= 1;
+	vector<cd> fa(a.begin(), a.end()), fb(b.begin(), b.end());
+	fa.resize(n);
+	fb.resize(n);
+	fft(fa, 0);
+	fft(fb, 0);
+	for (int i = 0; i < n; i++) fa[i] *= fb[i];
+	fft(fa, 1);
+	vector<int> r(n);
+	for (int i = 0; i < n; i++) r[i] = round(fa[i].real());
+	return r;
+}
+// EndCodeSnip
+
+int main() {
+	ios::sync_with_stdio(0);
+	cin.tie(0);
+
+	string s;
+	cin >> s;
+	int n = s.size();
+
+	vector<int> a(n), b(n);
+
+	for (int i = 0; i < n; ++i)
+		if (s[i] == 'A') a[i] = 1;
+		else b[n - i - 1] = 1;
+
+	auto c = mul(a, b);
+	for (int i = 1; i < n; i++) cout << c[i + n - 1] << '\n';
+}
+```
+
+</CPPSection>
+</LanguageSection>
