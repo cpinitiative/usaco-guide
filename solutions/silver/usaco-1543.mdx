@@ -87,17 +87,6 @@ map<ll, int> segments;
 bool okay = true;
 
 /**
- * Given a constraint, calculate the expression of the new node
- * in terms of the old node that is traversed from
- * @param x Specifies the old node
- * @param y Specifies the new node
- * @param z Specifies the sum required by the constraint
- * @return A pair with the coefficient and constant for the new
- *         representation
- */
-pair<ll, ll> propag(int x, int y, ll z) { return make_pair(-m[x], z - b[x]); }
-
-/**
  * A function used in situations where 2 representations
  * for a node can be computed. This function equates and
  * solve them.
@@ -105,31 +94,21 @@ pair<ll, ll> propag(int x, int y, ll z) { return make_pair(-m[x], z - b[x]); }
  * @param b1 Constant for the first representation.
  * @param m2 Coefficient for the second representation.
  * @param b2 Constant for the second representation.
- * @return A pair detailng:
+ * @return A pair of a bool and a pair detailng:
  *         - first: Whether this equation is solvable with integers.
- *           If this is false, then there is no solution for the whole
- *           problem.
- *         - second.first: Whether there is any action required to
- *           fix a value.  This is meaningless if first is false.
- *         - second.second: The fixed x, if necessary, for the
- *           connected component as determined by the equation.
+ *         - second.first: Whether a value shall be fixed.
+ *         - second.second: The fixed x value, if second.first is true.
  */
 pair<bool, pair<bool, ll>> loopback(ll m1, ll b1, ll m2, ll b2) {
-	// If the coefficients are the same, the linear terms may be
-	// canceled; we get b1 = b2. If that is not solvable (aka.
-	// b1 != b2), report so.
+	// The equation is m1*x+b1=m2*x+b2 --> (m1-m2)*x=(b2-b1) -->
+	// x=(b2-b1)/(m1-m2).  Return nothing to do if simplifies to 0x=0,
+	// conflict if 0x=a where a!=0, conflict if x is a fraction.
 	if (m1 == m2 && b1 != b2) {
 		return make_pair(false, make_pair(false, 0));
 	}
-	// If the 2 representations are essentially the same, then there's
-	// nothing to do (i.e. any x suffices).
 	else if (m1 == m2 && b1 == b2) {
 		return make_pair(true, make_pair(false, 0));
 	}
-	// The equation is m1*x+b1=m2*x+b2 --> (m1-m2)*x=(b2-b1) -->
-	// x=(b2-b1)/(m1-m2).  If this is a fraction, return impossible
-	// as we cannot have a fraction in any nodes (including the
-	// reference.)
 	else {
 		if ((b2 - b1) % (m1 - m2) == 0) {
 			return make_pair(true, make_pair(true, (b2 - b1) / (m1 - m2)));
@@ -143,47 +122,44 @@ pair<bool, pair<bool, ll>> loopback(ll m1, ll b1, ll m2, ll b2) {
  * @param label The reference node number for the connected component of
  *              the node traversed.
  * @param fa The previous node that we came from during the traversal.
- *           This is only used to avoid re-traversing to the old node we
- *           came from, so the initial call simply enters a dummy fa value.
+ *           Used to avoid re-traversing to the node we came from, so
+ *           initial DFS call simply uses a dummy fa value.
  * @param x The current node number.
  */
 void dfs(int label, int fa, int x) {
 	points[label].push_back(x);
+
 	// By this point, there is already a representation of the
-	// current node; we solve m * {min, max} + b = {l, r}, so
-	// {min, max} = ({l, r} - b) / m; we compute the values with
-	// both l and r, and the smaller is min and the larger is max.
-	// No worrying about rounding, as m[x] = +/- 1.
+	// current node; we solve m * {min, max} + b = {l, r} as
+	// {min, max} = ({l, r} - b) / m; the smaller is min and the
+	// larger is max.
+	// No worries about rounding, as m[x] = +/- 1.
 	minn[x] = min((l[x] - b[x]) / m[x], (r[x] - b[x]) / m[x]);
 	maxn[x] = max((l[x] - b[x]) / m[x], (r[x] - b[x]) / m[x]);
+
 	for (int i = 0; i < g[x].size(); i++) {
 		int y = g[x][i];
 		int z = w[x][i];
 		if (y == fa) continue;
-		// Build a representation for the node we are to traverse to.
-		auto result = propag(x, y, z);
-		ll m1 = result.first;
-		ll b1 = result.second;
-		// If it doesn't have a representation yet, store the representation
-		// computed.
+
+		ll m1 = -m[x];
+		ll b1 = z - b[x];
+		// To-be-traversed node not visited yet
 		if (m[y] == 0) {
 			m[y] = m1;
 			b[y] = b1;
 			dfs(label, x, y);
-		} else {
-			// Use loopback to equate the current representation with the
-			// previous representation, and act accordingly.
+		}
+		// Already visited; act accordingly from how the solution
+		// works out.
+		else {
 			ll m2 = m[y], b2 = b[y];
 			auto result = loopback(m1, b1, m2, b2);
 			if (!result.first) { okay = false; }
 			if (result.second.first) {
-				// A sentinel value indicates that we have not set a value
-				// before.
 				if (ff[label] == SENTINEL) {
 					ff[label] = result.second.second;
 				} else {
-					// If there is already a set value for the traversing node,
-					// then this is a conflict.
 					if (ff[label] != result.second.second) { okay = false; }
 				}
 			}
