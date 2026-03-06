@@ -1,0 +1,82 @@
+---
+id: ac-grouping
+source: AtCoder
+title: Grouping
+author: Kiruthees G
+---
+
+[Unofficial Analysis (C++)](https://nwatx.me/post/atcoderdp)
+
+## Explanation
+
+We define $dp[i]$ as the maximum score possible for the subset of rabbits represented by mask $i$.
+
+The transition involves two steps for each mask $i$:
+
+1. **Base Score**: Initialize $dp[i]$ by calculating the sum of $a_{j,k}$ for all pairs $(j, k)$ within the mask. This assumes all rabbits in the mask form a single group.
+2. **Merging Subsets**: Improve $dp[i]$ by splitting the mask into two disjoint submasks $j$ and $i \oplus j$. The transition is:
+
+$$
+dp[i] = \max_{j \subseteq i} \left(dp[i], dp[j] + dp[i \oplus j] \right)
+$$
+
+
+<Info>
+
+Since $j$ is a subset of $i$, the XOR operation ($i \oplus j$) acts like set subtraction. It "toggles off" the bits that are present in $j$, leaving you with exactly the remaining bits of $i$. This guarantees that $j$ and $i \oplus j$ are disjoint parts that perfectly combine to form $i$.
+
+For an efficient way to iterate over submasks $j$, we use the pattern `for (int j = i; j; j = (j - 1) & i)`. You can read more about this technique in the [Merging Subsets section](/gold/dp-bitmasks#merging-subsets) of the module.
+
+</Info>
+
+
+## Implementation
+
+**Time Complexity**: $\mathcal{O}(3^N + N^2 \cdot 2^N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using ll = long long;
+
+int main() {
+	ios_base::sync_with_stdio(false);
+	cin.tie(nullptr);
+
+	int n;
+	cin >> n;
+	vector a(n, vector<int>(n));
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) { cin >> a[i][j]; }
+	}
+
+	vector<ll> dp(1 << n);
+
+	// Iterate through every possible subset of rabbits
+	for (int i = 1; i < (1 << n); i++) {
+		// Calculate internal score if this subset forms ONE single group
+		for (int j = 0; j < n; j++) {
+			if (!(i >> j & 1)) continue;
+			for (int k = j + 1; k < n; k++) {
+				if (!(i >> k & 1)) continue;
+				dp[i] += a[j][k];
+			}
+		}
+
+		// Iterate over all submasks j of the current mask i
+		// Try splitting the mask into smaller groups to find a better score
+		for (int j = (i - 1) & i; j > 0; j = (j - 1) & i) {
+			dp[i] = max(dp[i], dp[j] + dp[i ^ j]);
+		}
+	}
+
+	cout << dp[(1 << n) - 1] << '\n';
+}
+```
+
+</CPPSection>
+</LanguageSection>

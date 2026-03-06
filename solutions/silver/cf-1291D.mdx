@@ -1,0 +1,135 @@
+---
+id: cf-1291D
+source: CF
+title: Irreducible Anagrams
+author: Ruben Jing
+---
+
+[Official Editorial (C++)](https://codeforces.com/blog/entry/73563)
+
+## Explanation
+
+First, we can consider the case where $l = r$, meaning the substring has length $1$. A reducible anagram
+requires the substring to be split into $k \geq 2$ segments, which is impossible for length $1$.
+Thus, a substring of length $1$ has an irreducible anagram.
+
+In the following cases, $l \neq r$.
+
+We consider the case where $s[l] \neq s[r]$. We can create an anagram where all occurrences of $s[r]$
+are in the front, and the rest of the string follows. This is an irreducible anagram. We can make sure
+that the last segment contains no occurrences of $s[r]$. This is possible as all the occurrences are in the front.
+
+To illustrate this, consider the scenario where our string is $\text{abbbb}$. We can create the
+anagram $\text{bbbba}$. This anagram is irreducible because in order to include $\text{a}$, we must
+use the entire string, showing how it cannot be reduced.
+
+Next, we consider the case where $s[l] = s[r]$. Whether or not the substring has an irreducible anagram
+varies from case to case.
+
+Start by considering the case where the substring only contains one distinct character. This does not have an irreducible
+anagram because its only anagram is itself. Because its only anagram is itself, any segments that we choose
+will always be anagrams of each other, meaning it only has a reducible anagram.
+
+From the previous examples, it can be seen that having $t[l]=s[l]$ and/or $t[r]=s[r]$ does not help with
+creating an irreducible anagram. If this happens, we can split the string into two segments, one of
+length one at either $l$ or $r$, and another of everything else. For example, $s=\text{abcca}$,
+$\text{aabcc}$ is not an irreducible anagram because we can have a segment $[0, 0]$ and another $[1, 4]$.
+Thus it is optimal to have $t[l]\neq s[l]$ AND $t[r]\neq s[r]$.
+
+Consider the case where $s$ has two distinct characters, and let $s$ have an irreducible anagram $t$.
+Additionally, let $s[0] = \text{a}$. The same explanation applies when $s[0] = \text{b}$, but the
+letters will be flipped ($\text{a}\to\text{b and b}\to\text{a}$).
+
+Define $x$ as the leftmost position where the number of $\text{b}$s on $s[0:x]$ is greater than
+or equal to the number of $\text{b}$s on $t[0:x]$. $x$ is the position where the number of
+$\text{b}$s in $s$ are equal to the number of $\text{b}$s in $t$: the further right you go, the more
+$\text{b}$s you get, so the first position this condition holds is when the number of
+$\text{b}$s are equal. Because we only have two distinct characters, the number of $\text{a}$s must also
+be the same. If we have $x+1$ total characters and a number of $\text{b}$s, which we call $n$, we must
+have $x + 1 - n \ \text{a}$s in both strings. Thus, $s[0:x]$ and $t[0:x]$ are also anagrams: if there are
+the same number of $\text{a}$s in $s$ and $t$, and $\text{b}$s in $s$ and $t$, then they must be anagrams. Because the
+first and last characters are equal, meaning the last character is $\text{a}$, we know $x$ must
+come before the last character, as adding an $\text{a}$ won't help with increasing the $\text{b}$ count.
+This implies the existence of another anagram.
+
+Given that one anagram exists from $[0:x]$, we know that $t$ is a reducible anagram, a contradiction to what
+we asserted before. The remaining substring must be an anagram as well because the number of $\text{a}$s
+in $s$ and $t$ are equal, and $\text{b}$s in $s$ and $t$ are also equal. In essence,
+it's just saying $\text{some number} - \text{another number} = \text{some number} - \text{another number}$,
+where $\text{some number}$ can be the total number of $\text{a}$s or $\text{b}$s, and $\text{another number}$
+can be the number of that same character that was in $[0:x]$. The left hand side and right hand side can
+represent $s$ and $t$.
+
+The case where three distinct characters exist is a bit more complicated. In order to assure that the first character of $s$ and
+an anagram are different, we can insert all occurrences of the last distinct character to appear to the front. Next, to assure that
+the last character of $s$ and an anagram are different, we can insert all occurrences of the last character after the last distinct
+character, if they are different (if they are the same, we don't need to do anything). Now, we can insert the rest of the string
+in any order. This anagram is irreducible. The last character in $s$ will be one of the first characters in $t$, forcing us to
+use the entire string if we wish to create an anagram.
+
+We can generalize these observations: a string has at least one irreducible
+anagram if any of these three conditions hold:
+
+1. The string has three or more different characters
+2. The first and last character are different
+3. The string is of length 1
+
+The last two conditions are easy to check. However, to check the first condition, we
+must use prefix sums. For each of the 26 letters of the alphabet, we can hold a prefix
+sum counting how many times the letter has been seen. If on an interval, three letters
+have been seen at least once, then the string is an irreducible anagram.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(|s| + q)$ where $|s|$ is the length of string $s$ and $q$ is the number of queries
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+const int LETTERS = 26;
+
+int main() {
+	string s;
+
+	cin >> s;
+
+	vector<array<int, LETTERS>> pref(s.length() + 1);
+
+	for (int i = 1; i < s.length() + 1; i++) {
+		pref[i] = pref[i - 1];
+
+		char let = s[i - 1];
+		pref[i][let - 'a']++;
+	}
+
+	int t;
+
+	cin >> t;
+
+	while (t--) {
+		int a, b;
+		cin >> a >> b;
+
+		int num_diff = 0;
+
+		for (int i = 0; i < LETTERS; i++) {
+			if (pref[b][i] - pref[a - 1][i] > 0) { num_diff++; }
+		}
+
+		if (b == a || num_diff >= 3 || s[a - 1] != s[b - 1]) {
+			cout << "Yes" << "\n";
+		} else {
+			cout << "No" << "\n";
+		}
+	}
+}
+```
+
+</CPPSection>
+
+</LanguageSection>

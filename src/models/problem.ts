@@ -83,6 +83,7 @@ export const probSources = {
     'https://szkopul.edu.pl/problemset/problem/',
     'Polish Olympiad in Informatics',
   ],
+  QOJ: ['https://qoj.ac/', 'QOJ.ac', 'Check the "Editorial" tab.'],
   SPOJ: ['https://www.spoj.com/problems/', 'Sphere Online Judge'],
   TLX: [
     'https://tlx.toki.id/',
@@ -240,9 +241,15 @@ export const isUsaco = (source: string): boolean => {
   if (source.startsWith('20')) {
     // this is for the division list -- the source in this case is like 2015 December or something
     if (
-      ['December', 'January', 'February', 'US Open'].some(x =>
-        source.endsWith(x)
-      )
+      [
+        'December',
+        'January',
+        'February',
+        'US Open',
+        'First Contest',
+        'Second Contest',
+        'Third Contest',
+      ].some(x => source.endsWith(x))
     ) {
       return true;
     }

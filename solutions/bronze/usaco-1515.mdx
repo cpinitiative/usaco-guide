@@ -1,0 +1,164 @@
+---
+id: usaco-1515
+source: 2025 US Open Bronze
+title: Hoof Paper Scissors Minus One
+author: Aarav Sethi
+---
+
+[Official Analysis (Python)](https://usaco.org/current/data/sol_prob1_bronze_open25.html)
+
+## Explanation
+
+In order to solve this, we need to check how many possible pairs of gestures exist in which one of the two gestures can beat both of Elsie's left and right gestures.
+
+### Testcases 1 to 6
+
+This can be solved by first creating a 2D array to tell if gesture $i$ can be beaten by gesture $j$ that will be derived from the "win pyramid" provided in the input.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+vector<vector<bool>> beatenBy(n, vector<bool>(n));
+for (int i = 0; i < n; i++) {
+	for (int j = 0; j <= i; j++) {
+		char state;
+		cin >> state;
+		if (state == 'L') {
+			beatenBy[i][j] = true;
+		} else if (state == 'W') {
+			beatenBy[j][i] = true;
+		}
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
+
+With this, a $\mathcal{O}(N^2)$ brute-force for each game will work. Here is an example:
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+for (int myL = 0; myL < n; myL++) {
+	for (int myR = 0; myR < n; myR++) {
+		if ((beatenBy[l][myL] && beatenBy[r][myL]) ||
+		    (beatenBy[l][myR] && beatenBy[r][myR]))
+			possible++;
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
+### Testcases 7 to 12
+
+To optimize the computation per game from $\mathcal{O}(N^2)$ to $\mathcal{O}(N)$, a series of optimizations is required, which eventually turn into a single formula.
+
+#### Optimization 1:
+
+You can notice that if `myL` is already able to beat both `l` and `r`, you do not need to bother with trying every `myR`.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+for (int myL = 0; myL < n; myL++) {
+	if (beatenBy[l][myL] && beatenBy[r][myL]) {
+		possible += n;
+	} else {
+		for (int myR = 0; myR < n; myR++) {
+			if (beatenBy[l][myR] && beatenBy[r][myR]) possible++;
+		}
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
+#### Optimization 2:
+
+If you let $x$ be how many gestures out of $N$ can beat both of Elsie's `l` and `r`, then we can assume that this check:
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+for (int myL = 0; myL < n; myL++) {
+	if (beatenBy[l][myL] && beatenBy[r][myL]) possible += n;
+```
+
+</CPPSection>
+</LanguageSection>
+is equivalent to
+
+```
+possible += x * n;
+```
+
+and the else clause runs $n-x$ times, and adds $x$ possibilities.
+
+```
+possible += x * (n - x)
+```
+
+With this, we can derive that the formula for winning pairs is $xn + x(n-x)$. Directly implementing
+this formula allows us to solve each game in $\mathcal{O}(N)$ time.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N^2+MN)$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int main() {
+	int n, m;
+	cin >> n >> m;
+
+	// Read the win triangle
+	vector<vector<bool>> beatenBy(n, vector<bool>(n));
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j <= i; j++) {
+			char state;
+			cin >> state;
+			if (state == 'L') {
+				beatenBy[i][j] = true;
+			} else if (state == 'W') {
+				beatenBy[j][i] = true;
+			}
+		}
+	}
+
+	// Read Elsie's moves
+	for (int i = 0; i < m; i++) {
+		int l, r;
+		cin >> l >> r;
+		l--;
+		r--;
+
+		int x = 0;
+		for (int a = 0; a < n; a++) {
+			if (beatenBy[l][a] && beatenBy[r][a]) x++;
+		}
+
+		int possible = x * n + x * (n - x);  // equation is explained above
+		cout << possible << "\n";
+	}
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
