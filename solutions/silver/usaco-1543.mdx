@@ -45,14 +45,10 @@ is the minimum $x$, and the higher the maximum $x$ for the generator to function
 
 Now, what happens if we have cycles? In our traversal for each component, cycles break the assumption that
 we will not revisit nodes. When we do revisit one, we will get *two* different representations of power
-mandated for a generator. We may equate the expressions, and solve for $x$; if unsolvable, this problem
-is unsolvable; if infinitely many solutions, then we don't need to do anything, same as if this revisit
-never occured; if there is exactly one solution, then we fix $x$ for this connected component, and if
-it's ever fixed again through this process to a different value; declare as unsolvable. We only need
-to consider this for a node we're about to revisit, and not further down the chain, as the solving
-process connects those two chains of representations already. Concretely, this means that if we're
-about to revisit a node, we still compute its new representation as described in the previous paragraph;
-then, we set the two representations equal, to see if we need to fix $x$ for the connected component.
+mandated for a generator. We equate the expressions and solve for $x$, resulting in three cases:
+- If there are no **integer** solutions, fulfilling the constraints is impossible.
+- If there are **infinite** solutions, we do nothing.
+- If there is **one** solution, we set the value of $x$ for this component.
 
 At the end, if there is a fixed value for a connected component, then instead of using a procedure similar
 to a difference array, we just check how many ranges the single fixed value satisifies.  Doing the
