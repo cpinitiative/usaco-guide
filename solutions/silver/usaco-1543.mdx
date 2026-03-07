@@ -86,13 +86,13 @@ bool okay = true;
  * @returns {solvable, {fixed value, what value if so}}
  */
 pair<bool, pair<bool, ll>> resolve_eq(ll m1, ll b1, ll m2, ll b2) {
-    if (m1 == m2 && b1 != b2) {
-        return {false, {false, 0}};
-    } else if (m1 == m2 && b1 == b2) {
-        return {true, {false, 0}};
-    }
-    if ((b2 - b1) % (m1 - m2) == 0) { return {true, {true, (b2 - b1) / (m1 - m2)}}; }
-    return {false, {false, 0}};
+	if (m1 == m2 && b1 != b2) {
+		return {false, {false, 0}};
+	} else if (m1 == m2 && b1 == b2) {
+		return {true, {false, 0}};
+	}
+	if ((b2 - b1) % (m1 - m2) == 0) { return {true, {true, (b2 - b1) / (m1 - m2)}}; }
+	return {false, {false, 0}};
 }
 
 /**
@@ -102,113 +102,114 @@ pair<bool, pair<bool, ll>> resolve_eq(ll m1, ll b1, ll m2, ll b2) {
  * has to be a certain value.
  */
 void dfs(int source, int prev, int curr) {
-    components[source].push_back(curr);
+	components[source].push_back(curr);
 
-    if (sign[curr] == 1) {
-        central_lb[curr] = lo[curr] - offset[curr];
-        central_ub[curr] = hi[curr] - offset[curr];
-    } else if (sign[curr] == -1) {
-        central_lb[curr] = -hi[curr] + offset[curr];
-        central_ub[curr] = -lo[curr] + offset[curr];
-    }
+	if (sign[curr] == 1) {
+		central_lb[curr] = lo[curr] - offset[curr];
+		central_ub[curr] = hi[curr] - offset[curr];
+	} else if (sign[curr] == -1) {
+		central_lb[curr] = -hi[curr] + offset[curr];
+		central_ub[curr] = -lo[curr] + offset[curr];
+	}
 
-    for (int i = 0; i < adj[curr].size(); i++) {
-        int y = adj[curr][i];
-        int z = adj_val[curr][i];
-        if (y == prev) { continue; }
+	for (int i = 0; i < adj[curr].size(); i++) {
+		int y = adj[curr][i];
+		int z = adj_val[curr][i];
+		if (y == prev) { continue; }
 
-        ll m1 = -sign[curr];
-        ll b1 = z - offset[curr];
-        if (sign[y] == 0) {
-            // Not visited yet
-            sign[y] = m1;
-            offset[y] = b1;
-            dfs(source, curr, y);
-        } else {
-            // Already visited- see if this equation forces/breaks anything
-            ll m2 = sign[y];
-            ll b2 = offset[y];
-            const auto& [solvable, fixed] = resolve_eq(m1, b1, m2, b2);
-            if (!solvable) { okay = false; }
-            if (fixed.first) {
-                if (forced[source] == INT64_MAX) {
-                    forced[source] = fixed.second;
-                } else if (forced[source] != fixed.second) {
-                    okay = false;
-                }
-            }
-        }
-    }
+		ll m1 = -sign[curr];
+		ll b1 = z - offset[curr];
+		if (sign[y] == 0) {
+			// Not visited yet
+			sign[y] = m1;
+			offset[y] = b1;
+			dfs(source, curr, y);
+		} else {
+			// Already visited- see if this equation forces/breaks anything
+			ll m2 = sign[y];
+			ll b2 = offset[y];
+			const auto &[solvable, fixed] = resolve_eq(m1, b1, m2, b2);
+			if (!solvable) { okay = false; }
+			if (fixed.first) {
+				if (forced[source] == INT64_MAX) {
+					forced[source] = fixed.second;
+				} else if (forced[source] != fixed.second) {
+					okay = false;
+				}
+			}
+		}
+	}
 }
 
 int main() {
-    int test_num;
-    cin >> test_num;
-    for (int t = 0; t < test_num; t++) {
-        int n, m;
-        cin >> n >> m;
-        for (int i = 1; i <= n; i++) {
-            adj[i].clear();
-            adj_val[i].clear();
-            components[i].clear();
-            sign[i] = 0;
-            offset[i] = 0;
-        }
+	int test_num;
+	cin >> test_num;
+	for (int t = 0; t < test_num; t++) {
+		int n, m;
+		cin >> n >> m;
+		for (int i = 1; i <= n; i++) {
+			adj[i].clear();
+			adj_val[i].clear();
+			components[i].clear();
+			sign[i] = 0;
+			offset[i] = 0;
+		}
 
-        for (int i = 1; i <= n; i++) { cin >> lo[i]; }
-        for (int i = 1; i <= n; i++) { cin >> hi[i]; }
-        for (int i = 1; i <= n; i++) { forced[i] = INT64_MAX; }
-        for (int i = 1; i <= m; i++) {
-            int x, y, z;
-            cin >> x >> y >> z;
-            adj[x].push_back(y);
-            adj_val[x].push_back(z);
-            adj[y].push_back(x);
-            adj_val[y].push_back(z);
-        }
+		for (int i = 1; i <= n; i++) { cin >> lo[i]; }
+		for (int i = 1; i <= n; i++) { cin >> hi[i]; }
+		for (int i = 1; i <= n; i++) { forced[i] = INT64_MAX; }
+		for (int i = 1; i <= m; i++) {
+			int x, y, z;
+			cin >> x >> y >> z;
+			adj[x].push_back(y);
+			adj_val[x].push_back(z);
+			adj[y].push_back(x);
+			adj_val[y].push_back(z);
+		}
 
-        okay = true;
-        for (int src = 1; src <= n; src++) {
-            if (!sign[src]) {
-                sign[src] = 1;
-                offset[src] = 0;
-                dfs(src, -1, src);
-            }
-        }
-        if (!okay) {
-            cout << -1 << endl;
-            continue;
-        }
+		okay = true;
+		for (int src = 1; src <= n; src++) {
+			if (!sign[src]) {
+				sign[src] = 1;
+				offset[src] = 0;
+				dfs(src, -1, src);
+			}
+		}
+		if (!okay) {
+			cout << -1 << endl;
+			continue;
+		}
 
-        int most_rods = 0;
-        for (int src = 1; src <= n; src++) {
-            if (forced[src] == INT64_MAX) {
-                // If the node isn't forced, so a prefix sum-esque approach
-                map<ll, int> segments;
-                for (int pt : components[src]) {
-                    segments[central_lb[pt]]++;
-                    segments[central_ub[pt] + 1]--;
-                }
+		int most_rods = 0;
+		for (int src = 1; src <= n; src++) {
+			if (forced[src] == INT64_MAX) {
+				// If the node isn't forced, so a prefix sum-esque approach
+				map<ll, int> segments;
+				for (int pt : components[src]) {
+					segments[central_lb[pt]]++;
+					segments[central_ub[pt] + 1]--;
+				}
 
-                int curr_total = 0;
-                int best = 0;
-                for (const auto& [pt, delta] : segments) {
-                    curr_total += delta;
-                    best = max(best, curr_total);
-                }
-                most_rods += best;
-            } else {
-                // Otherwise just check and see how many rods we get
-                for (int pt : components[src]) {
-                    if (central_lb[pt] <= forced[src] && forced[src] <= central_ub[pt]) {
-                        most_rods++;
-                    }
-                }
-            }
-        }
+				int curr_total = 0;
+				int best = 0;
+				for (const auto &[pt, delta] : segments) {
+					curr_total += delta;
+					best = max(best, curr_total);
+				}
+				most_rods += best;
+			} else {
+				// Otherwise just check and see how many rods we get
+				for (int pt : components[src]) {
+					if (central_lb[pt] <= forced[src] &&
+					    forced[src] <= central_ub[pt]) {
+						most_rods++;
+					}
+				}
+			}
+		}
 
-        cout << most_rods << endl;
-    }
+		cout << most_rods << endl;
+	}
 }
 ```
 
