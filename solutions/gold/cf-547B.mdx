@@ -1,0 +1,77 @@
+---
+id: cf-547B
+source: CF
+title: Mike and Feet
+author: Raagav Bala
+---
+
+
+## Explanation
+
+Let's begin by considering bear $i$ with a height of $\texttt{heights}[i]$. If this bear is the shortest in a group, then that group only extends until we find another bear shorter than bear $i$.
+
+This means that for each bear, we want to know
+* the closest bear to the left that is shorter
+* the closest bear to the right that is shorter
+
+Say these are at indices $\texttt{L}[i]$ and $\texttt{R}[i]$, respectively. We know that bear $i$ is the shortest bear for any group that lies in between them, so the largest possible group where bear $i$ is the shortest has size $\texttt{R}[i] - \texttt{L}[i] - 1$. 
+
+To find the nearest shorter bears $\texttt{L}[i]$ and $\texttt{R}[i]$, we use a monotonic stack. As we iterate through bears, while the height of the bear at the top of the stack is greater than or equal to the height of the current bear $i$, we pop the top bear from the stack. After popping all such bears, the bear now at the top is the closest shorter bear, so we store its index in $\texttt{L}[i]$ or $\texttt{R}[i]$. Then we push bear $i$ onto the stack.
+
+Now, suppose that bear $i$ can determine the strength of a group of size $s$. Then its height is potentially the maximum strength among all groups of size $s$. However, even though we store the *largest group* that bear $i$ can be in, any smaller group nested in this larger group would also have bear $i$ as its shortest bear. Thus, if a bear works for a group of size $s$, it can also work for all smaller group sizes.
+
+So, our outline for the solution is
+
+1. Compute $\texttt{L}$ and $\texttt{R}$ using a forward and backward pass through $\texttt{heights}$
+2. For each bear from indices $0$ to $N-1$, use $\texttt{R}[i] - \texttt{L}[i] - 1$ to determine the size of largest group where each bear is the shortest
+3. Find the maximum strength of each group size and store in an array called $\texttt{strengths}$
+4. Iterate from largest group size to the smallest one, where $\texttt{strengths}[i] = \texttt{max}(\texttt{strengths}[i],~\texttt{strengths}[i+1])$
+
+
+## Implementation
+
+<LanguageSection>
+
+
+<PySection>
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+```py
+N = int(input())
+heights = list(map(int, input().split()))
+L = [-1]*N # closest bear to the left shorter than bear i
+R = [N]*N # closest bear to the right shorter than bear i
+
+stack_left = []
+for i in range(N):
+    while stack_left and heights[stack_left[-1]] >= heights[i]: stack_left.pop()
+    if stack_left: L[i] = stack_left[-1]
+    else: L[i] = -1
+    stack_left.append(i)
+
+stack_right = []
+for i in range(N-1, -1, -1):
+    while stack_right and heights[stack_right[-1]] >= heights[i]: stack_right.pop()
+    if stack_right: R[i] = stack_right[-1]
+    else: R[i] = N
+    stack_right.append(i)
+
+strengths = [0]*N
+for i in range(N):
+    # longest group where bear i is the shortest
+    length = R[i] - L[i] - 2
+    if heights[i] > strengths[length]: strengths[length] = heights[i]
+
+# account for smaller groups inside larger ones
+for k in range(N-2, -1, -1):
+    strengths[k] = max(strengths[k], strengths[k+1])
+
+print(" ".join(map(str, strengths)))
+```
+
+
+</PySection>
+
+
+</LanguageSection>
