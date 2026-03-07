@@ -12,29 +12,35 @@ author: John Zhou
 ## Explanation
 
 The constraints $(x, y, z)$ form an undirected weighted graph, where the constraints
-are the edges and the generators are the vertices.  We optimize each component independently.
+are the edges and the generators are the vertices.
+We optimize each component independently.
 
-Let us first consider the cases when the component is a tree. In this case, we choose an arbitary vertex,
-$v$, and let the variable $x$ represent $a_v$.
+### Case 1: Tree
 
-Starting from vertex $v$, we traverse the tree, defining each node's value by its parent node and edge values.
-For example, if we start from node $v$ (which has a value of $x$) to node $u$ with an edge of weight $5$, we
-can rewrite $a_u$ as $5 - a_v$, or $5 - x$. After traversing the tree, we can rewrite each node's value as a
-function of $x$, either in the form $a - x$ or $x - a$, where $a$ is a positive constant.
+If the component is a tree, we can take any node (say node $v$) and represent its value $a_v$ with $x$.
 
-For each node, after calculating its value in terms of $x$, we calculate the minimum and maximum value that $x$
-can take to satisfy the stable operating range of the reactor. This reframes our problem as finding the value of
-$x$ that is inside the most ranges, which can be solved using a difference array with a map.
+We then DFS from $v$ to see what the other node's values are in terms of $x$.
+For example, if there's an edge from $v$ to $u$, we can write $a_u=5-a_v=5-x$.
+After this DFS, all nodes' values are in the form $a-x$ or $a+x$, where $a$ is some integer.
 
-Now, what happens if we have cycles? In our traversal for each component, cycles break the assumption that
-we will not revisit nodes. When we do revisit one, we will get *two* different representations of power
+To get the most reactor rods out of this, we calculate for each rod the smallest and largest value
+that $x$ can take for the rod to be activated.
+This now becomes finding the value of $x$ that is inside the most ranges,
+which can be solved using a difference array and coordinate compresison.
+
+### Case 2: Graph With Cycles
+
+If there's cycles, then there's a chance that we visit the same node twice.
+When we do revisit one, we will get _two_ different representations of power
 mandated for a generator. We equate the expressions and solve for $x$, resulting in three cases:
-- If there are no **integer** solutions, fulfilling the constraints is impossible.
-- If there are **infinite** solutions, we do nothing.
-- If there is **one** solution, we set the value of $x$ for this component.
-  - If a fixed value is already set for this component and it is different, declare this problem unsolvable.
 
-If there is a fixed value set for the component, then we just check how many ranges of $x$ this specific fixed
+1. If there are no **integer** solutions, fulfilling the constraints is impossible.
+2. If there are **infinite** solutions, we do nothing.
+   Either representation will work from here on out.
+3. If there is **one** solution, we set the value of $x$ for this component.
+   If there's already a different fixed value for this component, declare this problem unsolvable.
+
+If there is a fixed value set for the component, then we check how many ranges of $x$ this specific fixed
 value is inside, instead of choosing an arbitrary $x$ with the most ranges covering it.
 
 Performing the above procedure for each connected component and summing yields the answer.
@@ -43,202 +49,168 @@ Performing the above procedure for each connected component and summing yields t
 
 **Time Complexity**: $\mathcal O(N+M)$
 
-The sign of $x$ is also the coefficient, represented with $m$.  The code uses a more generalized approach
-for simplicity to avoid branching for sign.
-
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
+#include <cstdint>
 #include <iostream>
 #include <map>
 #include <vector>
-typedef long long ll;
-using namespace std;
-constexpr int MAXN = 200005;
-constexpr ll SENTINEL = 9e18;
-// g and w represents the graph given by the constraints;
-// g is the connecting node, w is the weight of the edge w/ same
-// indicies in g
-vector<int> g[MAXN];
-vector<int> w[MAXN];
-ll l[MAXN], r[MAXN];
-// Stores the representation computed for each node, as
-// a_v = m_v x + b.
-// m is also the sign, so it's +/- 1 when it's valid.  Thus, the code
-// also checks if m[v] is non-zero to see if a vertex has been traversed.
-ll m[MAXN], b[MAXN];
-// ff[i] is any fixed value, if set, for a component using reference node i.
-ll ff[MAXN];
-// Computed minimums and maximums reference values required for each generator
-// to function.
-ll minn[MAXN], maxn[MAXN];
-// List of points for each connected component; empty for non-reference nodes.
-vector<int> points[MAXN];
-// A temporary map declared to facilitate maximization of nodes
-// activated; see main()
-map<ll, int> segments;
 
-// A flag used to indicate if solutions cannot be found in the
-// current problem; if this is set to false at any time, at the end
-// of the current dataset, -1 will be printed instead of the presumed
-// answer.
+using namespace std;
+using ll = long long;
+
+constexpr int MAX_N = 2e5 + 1;
+
+ll lo[MAX_N];
+ll hi[MAX_N];
+vector<int> adj[MAX_N];
+vector<int> adj_val[MAX_N];
+
+vector<int> components[MAX_N];
+ll sign[MAX_N];
+ll offset[MAX_N];
+ll forced[MAX_N];
+// If a node i isn't fixed, these two variables indicate
+// a range for the source node to be in so i can activate
+ll central_lb[MAX_N];
+ll central_ub[MAX_N];
+
 bool okay = true;
 
 /**
- * A function used in situations where 2 representations
- * for a node can be computed. This function equates and
- * solve them.
- * @param m1 Coefficient for the first representation.
- * @param b1 Constant for the first representation.
- * @param m2 Coefficient for the second representation.
- * @param b2 Constant for the second representation.
- * @return A pair of a bool and a pair detailng:
- *         - first: Whether this equation is solvable with integers.
- *         - second.first: Whether a value shall be fixed.
- *         - second.second: The fixed x value, if second.first is true.
+ * Sometimes for a single node we have it in terms of m1 * x + b1 and m2 * x + b2
+ * This function check to see if this equation fixes x or if it's unresolvable,
+ * and returns the value it's fixed to if it is.
+ * @returns {solvable, {fixed value, what value if so}}
  */
-pair<bool, pair<bool, ll>> loopback(ll m1, ll b1, ll m2, ll b2) {
-	// The equation is m1*x+b1=m2*x+b2 which is (m1-m2)*x=(b2-b1), so
-	// x=(b2-b1)/(m1-m2).  Return nothing to do if simplifies to 0x=0,
-	// conflict if 0x=a where a!=0, conflict if x is a fraction.
-	if (m1 == m2 && b1 != b2) {
-		return make_pair(false, make_pair(false, 0));
-	} else if (m1 == m2 && b1 == b2) {
-		return make_pair(true, make_pair(false, 0));
-	} else {
-		if ((b2 - b1) % (m1 - m2) == 0) {
-			return make_pair(true, make_pair(true, (b2 - b1) / (m1 - m2)));
-		}
-		return make_pair(false, make_pair(false, 0));
-	}
+pair<bool, pair<bool, ll>> resolve_eq(ll m1, ll b1, ll m2, ll b2) {
+    if (m1 == m2 && b1 != b2) {
+        return {false, {false, 0}};
+    } else if (m1 == m2 && b1 == b2) {
+        return {true, {false, 0}};
+    }
+    if ((b2 - b1) % (m1 - m2) == 0) { return {true, {true, (b2 - b1) / (m1 - m2)}}; }
+    return {false, {false, 0}};
 }
 
 /**
- * Recursive DFS routine.
- * @param label The reference node number for the connected component of
- *              the node traversed.
- * @param fa The previous node that we came from during the traversal.
- *           Used to avoid re-traversing to the node we came from, so
- *           initial DFS call simply uses a dummy fa value.
- * @param x The current node number.
+ * Define all nodes reachable from source in terms of it.
+ * Will set forced[source] to some value or okay to false,
+ * depending on whether the component is solvable or if the value of source
+ * has to be a certain value.
  */
-void dfs(int label, int fa, int x) {
-	points[label].push_back(x);
+void dfs(int source, int prev, int curr) {
+    components[source].push_back(curr);
 
-	// By this point, there is already a representation of the
-	// current node; we solve m * {min, max} + b = {l, r} as
-	// {min, max} = ({l, r} - b) / m; the smaller is min and the
-	// larger is max.
-	// No worries about rounding, as m[x] = +/- 1.
-	minn[x] = min((l[x] - b[x]) / m[x], (r[x] - b[x]) / m[x]);
-	maxn[x] = max((l[x] - b[x]) / m[x], (r[x] - b[x]) / m[x]);
+    if (sign[curr] == 1) {
+        central_lb[curr] = lo[curr] - offset[curr];
+        central_ub[curr] = hi[curr] - offset[curr];
+    } else if (sign[curr] == -1) {
+        central_lb[curr] = -hi[curr] + offset[curr];
+        central_ub[curr] = -lo[curr] + offset[curr];
+    }
 
-	for (int i = 0; i < g[x].size(); i++) {
-		int y = g[x][i];
-		int z = w[x][i];
-		if (y == fa) continue;
+    for (int i = 0; i < adj[curr].size(); i++) {
+        int y = adj[curr][i];
+        int z = adj_val[curr][i];
+        if (y == prev) { continue; }
 
-		ll m1 = -m[x];
-		ll b1 = z - b[x];
-		// To-be-traversed node not visited yet
-		if (m[y] == 0) {
-			m[y] = m1;
-			b[y] = b1;
-			dfs(label, x, y);
-		}
-		// Already visited; act accordingly from how the solution
-		// works out.
-		else {
-			ll m2 = m[y], b2 = b[y];
-			auto result = loopback(m1, b1, m2, b2);
-			if (!result.first) { okay = false; }
-			if (result.second.first) {
-				if (ff[label] == SENTINEL) {
-					ff[label] = result.second.second;
-				} else {
-					if (ff[label] != result.second.second) { okay = false; }
-				}
-			}
-		}
-	}
+        ll m1 = -sign[curr];
+        ll b1 = z - offset[curr];
+        if (sign[y] == 0) {
+            // Not visited yet
+            sign[y] = m1;
+            offset[y] = b1;
+            dfs(source, curr, y);
+        } else {
+            // Already visited- see if this equation forces/breaks anything
+            ll m2 = sign[y];
+            ll b2 = offset[y];
+            const auto& [solvable, fixed] = resolve_eq(m1, b1, m2, b2);
+            if (!solvable) { okay = false; }
+            if (fixed.first) {
+                if (forced[source] == INT64_MAX) {
+                    forced[source] = fixed.second;
+                } else if (forced[source] != fixed.second) {
+                    okay = false;
+                }
+            }
+        }
+    }
 }
-signed main() {
-	int t;
-	cin >> t;
-	while (t--) {
-		int n, M;
-		cin >> n >> M;
-		// Reset any used globals that may affect the next iteration.
-		for (int i = 1; i <= n; i++) {
-			g[i].clear();
-			w[i].clear();
-			m[i] = 0;
-			b[i] = 0;
-			points[i].clear();
-		}
-		okay = true;
 
-		for (int i = 1; i <= n; i++) cin >> l[i];
-		for (int i = 1; i <= n; i++) cin >> r[i];
-		for (int i = 1; i <= n; i++) ff[i] = SENTINEL;
-		for (int i = 1; i <= M; i++) {
-			int x, y, z;
-			cin >> x >> y >> z;
-			g[x].push_back(y);
-			w[x].push_back(z);
-			g[y].push_back(x);
-			w[y].push_back(z);
-		}
+int main() {
+    int test_num;
+    cin >> test_num;
+    for (int t = 0; t < test_num; t++) {
+        int n, m;
+        cin >> n >> m;
+        for (int i = 1; i <= n; i++) {
+            adj[i].clear();
+            adj_val[i].clear();
+            components[i].clear();
+            sign[i] = 0;
+            offset[i] = 0;
+        }
 
-		for (int i = 1; i <= n; i++) {
-			// Only start a dfs if the node has not been visited before.
-			if (!m[i]) {
-				m[i] = 1;
-				b[i] = 0;
-				dfs(i, -1, i);
-			}
-		}
-		if (!okay) {
-			cout << "-1" << endl;
-			continue;
-		}
+        for (int i = 1; i <= n; i++) { cin >> lo[i]; }
+        for (int i = 1; i <= n; i++) { cin >> hi[i]; }
+        for (int i = 1; i <= n; i++) { forced[i] = INT64_MAX; }
+        for (int i = 1; i <= m; i++) {
+            int x, y, z;
+            cin >> x >> y >> z;
+            adj[x].push_back(y);
+            adj_val[x].push_back(z);
+            adj[y].push_back(x);
+            adj_val[y].push_back(z);
+        }
 
-		int ans = 0;
-		// Process each connected component independently.
-		// Non-reference nodes have nothing in points[] and is equivalent
-		// to a noop.
-		for (int i = 1; i <= n; i++) {
-			if (ff[i] == SENTINEL) {
-				// No fixed value; count the reference value that
-				// satisifies the most generators.
-				segments.clear();
-				for (auto pt : points[i]) {
-					segments[minn[pt]]++;
-					segments[maxn[pt] + 1]--;
-				}
-				int total = 0;
-				int mmax = -1;
-				for (auto sgmt : segments) {
-					total += sgmt.second;
-					mmax = max(mmax, total);
-				}
-				mmax = max(mmax, total);
-				ans += mmax;
-			} else {
-				// Fixed reference value; simple check for functioning count.
-				for (auto pt : points[i]) {
-					if (minn[pt] <= ff[i] && ff[i] <= maxn[pt]) { ans++; }
-				}
-			}
-		}
-		cout << ans << endl;
-	}
-	return 0;
+        okay = true;
+        for (int src = 1; src <= n; src++) {
+            if (!sign[src]) {
+                sign[src] = 1;
+                offset[src] = 0;
+                dfs(src, -1, src);
+            }
+        }
+        if (!okay) {
+            cout << -1 << endl;
+            continue;
+        }
+
+        int most_rods = 0;
+        for (int src = 1; src <= n; src++) {
+            if (forced[src] == INT64_MAX) {
+                // If the node isn't forced, so a prefix sum-esque approach
+                map<ll, int> segments;
+                for (int pt : components[src]) {
+                    segments[central_lb[pt]]++;
+                    segments[central_ub[pt] + 1]--;
+                }
+
+                int curr_total = 0;
+                int best = 0;
+                for (const auto& [pt, delta] : segments) {
+                    curr_total += delta;
+                    best = max(best, curr_total);
+                }
+                most_rods += best;
+            } else {
+                // Otherwise just check and see how many rods we get
+                for (int pt : components[src]) {
+                    if (central_lb[pt] <= forced[src] && forced[src] <= central_ub[pt]) {
+                        most_rods++;
+                    }
+                }
+            }
+        }
+
+        cout << most_rods << endl;
+    }
 }
 ```
 
 </CPPSection>
-
 </LanguageSection>
