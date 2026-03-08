@@ -29,7 +29,7 @@ Thus, the **maximum flow from `S` to `T`** is exactly the **maximum bipartite ma
 
 ### Algorithm
 
-We implement this using **Dinic's Algorithm**, which runs in  
+We implement this using **Dinic's Algorithm**, which runs in
 $\mathcal{O}(V^2 E)$.
 
 After running the flow algorithm, we can recover the matching by checking which edges between the left and right partitions have `flow = 1`.
@@ -52,137 +52,115 @@ You can also refer [this](https://www.youtube.com/watch?v=M6cm8UeeziI) video for
 #include <bits/stdc++.h>
 using namespace std;
 
-//BeginCodeSnip{Dinic's Algorithm}
+// BeginCodeSnip{Dinic's Algorithm}
 struct Edge {
-    int to, rev, cap;
+	int to, rev, cap;
 };
 
 struct Dinic {
-    int n;
-    vector<vector<Edge>> g;
-    vector<int> level, it;
+	int n;
+	vector<vector<Edge>> g;
+	vector<int> level, it;
 
-    Dinic(int n) : n(n) {
-        g.assign(n, {});
-        level.resize(n);
-        it.resize(n);
-    }
+	Dinic(int n) : n(n) {
+		g.assign(n, {});
+		level.resize(n);
+		it.resize(n);
+	}
 
-    void addEdge(int u, int v, int cap) {
-        g[u].push_back({v, (int)g[v].size(), cap});
-        g[v].push_back({u, (int)g[u].size() - 1, 0});
-    }
+	void addEdge(int u, int v, int cap) {
+		g[u].push_back({v, (int)g[v].size(), cap});
+		g[v].push_back({u, (int)g[u].size() - 1, 0});
+	}
 
-    bool bfs(int s, int t) {
-        fill(level.begin(), level.end(), -1);
-        queue<int> q;
-        level[s] = 0;
-        q.push(s);
+	bool bfs(int s, int t) {
+		fill(level.begin(), level.end(), -1);
+		queue<int> q;
+		level[s] = 0;
+		q.push(s);
 
-        while (!q.empty()) {
-            int v = q.front(); q.pop();
-            for (auto &e : g[v]) {
-                if (e.cap > 0 && level[e.to] == -1) {
-                    level[e.to] = level[v] + 1;
-                    q.push(e.to);
-                }
-            }
-        }
-        return level[t] != -1;
-    }
+		while (!q.empty()) {
+			int v = q.front();
+			q.pop();
+			for (auto &e : g[v]) {
+				if (e.cap > 0 && level[e.to] == -1) {
+					level[e.to] = level[v] + 1;
+					q.push(e.to);
+				}
+			}
+		}
+		return level[t] != -1;
+	}
 
-    int dfs(int v, int t, int f) {
-        if (v == t) return f;
+	int dfs(int v, int t, int f) {
+		if (v == t) return f;
 
-        for (int &i = it[v]; i < g[v].size(); i++) {
-            Edge &e = g[v][i];
+		for (int &i = it[v]; i < g[v].size(); i++) {
+			Edge &e = g[v][i];
 
-            if (e.cap > 0 && level[e.to] == level[v] + 1) {
-                int pushed = dfs(e.to, t, min(f, e.cap));
+			if (e.cap > 0 && level[e.to] == level[v] + 1) {
+				int pushed = dfs(e.to, t, min(f, e.cap));
 
-                if (pushed) {
-                    e.cap -= pushed;
-                    g[e.to][e.rev].cap += pushed;
-                    return pushed;
-                }
-            }
-        }
-        return 0;
-    }
+				if (pushed) {
+					e.cap -= pushed;
+					g[e.to][e.rev].cap += pushed;
+					return pushed;
+				}
+			}
+		}
+		return 0;
+	}
 
-    int maxFlow(int s, int t) {
-        int flow = 0;
+	int maxFlow(int s, int t) {
+		int flow = 0;
 
-        while (bfs(s, t)) {
-            fill(it.begin(), it.end(), 0);
-            int f;
-            while ((f = dfs(s, t, INT_MAX)))
-                flow += f;
-        }
+		while (bfs(s, t)) {
+			fill(it.begin(), it.end(), 0);
+			int f;
+			while ((f = dfs(s, t, INT_MAX))) flow += f;
+		}
 
-        return flow;
-    }
+		return flow;
+	}
 };
-//EndCodeSnip
+// EndCodeSnip
 
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
 
-    int n, m, e;
-    cin >> n >> m >> e;
-	
-	//BeginCodeSnip{Flow Network Construction}
-    int S = 0;
-    int T = n + m + 1;
+	int n, m, e;
+	cin >> n >> m >> e;
 
-    Dinic dinic(n + m + 2);
+	// BeginCodeSnip{Flow Network Construction}
+	int S = 0;
+	int T = n + m + 1;
 
-    for (int i = 0; i < e; i++) {
-        int u, v;
-        cin >> u >> v;
-        u++; v++;
-        dinic.addEdge(u, n + v, 1);
-    }
+	Dinic dinic(n + m + 2);
 
-    for (int i = 1; i <= n; i++)
-        dinic.addEdge(S, i, 1);
+	for (int i = 0; i < e; i++) {
+		int u, v;
+		cin >> u >> v;
+		u++;
+		v++;
+		dinic.addEdge(u, n + v, 1);
+	}
 
-    for (int i = 1; i <= m; i++)
-        dinic.addEdge(n + i, T, 1);
-	//EndCodeSnip
-	
-    cout << dinic.maxFlow(S, T) << "\n";
+	for (int i = 1; i <= n; i++) dinic.addEdge(S, i, 1);
 
-    for (int i = 1; i <= n; i++) {
-        for (auto &e : dinic.g[i]) {
-            if (e.to > n && e.to <= n + m && e.cap == 0)
-                cout << i - 1 << " " << e.to - n - 1 << "\n";
-        }
-    }
+	for (int i = 1; i <= m; i++) dinic.addEdge(n + i, T, 1);
+	// EndCodeSnip
+
+	cout << dinic.maxFlow(S, T) << "\n";
+
+	for (int i = 1; i <= n; i++) {
+		for (auto &e : dinic.g[i]) {
+			if (e.to > n && e.to <= n + m && e.cap == 0)
+				cout << i - 1 << " " << e.to - n - 1 << "\n";
+		}
+	}
 }
-
 ```
 
 </CPPSection>
 </LanguageSection>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
