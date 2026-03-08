@@ -1,0 +1,188 @@
+---
+id: ys-BipartiteMatching
+source: YS
+title: Bipartite Matching
+author: Ashok Narayan
+---
+## Explanation
+
+This problem asks us to compute the **maximum matching** in a bipartite graph with $L$ vertices on the left, $R$ vertices on the right, and $M$ edges connecting them.
+
+We solve this by reducing it to a **maximum flow** problem.
+
+---
+
+### Flow Network Construction
+
+We build a flow network as follows:
+
+1. Create a **source** node `S` and a **sink** node `T`.
+2. For every vertex on the **left side**, add an edge from `S` to that vertex with capacity `1`.
+3. For every vertex on the **right side**, add an edge from that vertex to `T` with capacity `1`.
+4. For every bipartite edge $(a_i, b_i)$, add a directed edge from the left vertex $a_i$ to the right vertex $b_i$ with capacity `1`.
+
+Because every edge has capacity `1`, any unit of flow corresponds to selecting that edge in the matching. The capacity constraints ensure that each vertex can be matched with at most one other vertex.
+
+Thus, the **maximum flow from `S` to `T`** is exactly the **maximum bipartite matching**.
+
+---
+
+### Algorithm
+
+We implement this using **Dinic's Algorithm**, which runs in  
+$\mathcal{O}(V^2 E)$ in the general case and performs much faster in practice for bipartite graphs.
+
+After running the flow algorithm, we can recover the matching by checking which edges between the left and right partitions have `flow = 1`.
+
+You can also refer [this](https://www.youtube.com/watch?v=M6cm8UeeziI) video for understanding **Dinic's Algorithm** well.
+
+
+---
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(V^2 E)$
+
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+
+#include <bits/stdc++.h>
+using namespace std;
+
+//BeginCodeSnip{Dinic's Algorithm}
+struct Edge {
+    int to, rev, cap;
+};
+
+struct Dinic {
+    int n;
+    vector<vector<Edge>> g;
+    vector<int> level, it;
+
+    Dinic(int n) : n(n) {
+        g.assign(n, {});
+        level.resize(n);
+        it.resize(n);
+    }
+
+    void addEdge(int u, int v, int cap) {
+        g[u].push_back({v, (int)g[v].size(), cap});
+        g[v].push_back({u, (int)g[u].size() - 1, 0});
+    }
+
+    bool bfs(int s, int t) {
+        fill(level.begin(), level.end(), -1);
+        queue<int> q;
+        level[s] = 0;
+        q.push(s);
+
+        while (!q.empty()) {
+            int v = q.front(); q.pop();
+            for (auto &e : g[v]) {
+                if (e.cap > 0 && level[e.to] == -1) {
+                    level[e.to] = level[v] + 1;
+                    q.push(e.to);
+                }
+            }
+        }
+        return level[t] != -1;
+    }
+
+    int dfs(int v, int t, int f) {
+        if (v == t) return f;
+
+        for (int &i = it[v]; i < g[v].size(); i++) {
+            Edge &e = g[v][i];
+
+            if (e.cap > 0 && level[e.to] == level[v] + 1) {
+                int pushed = dfs(e.to, t, min(f, e.cap));
+
+                if (pushed) {
+                    e.cap -= pushed;
+                    g[e.to][e.rev].cap += pushed;
+                    return pushed;
+                }
+            }
+        }
+        return 0;
+    }
+
+    int maxFlow(int s, int t) {
+        int flow = 0;
+
+        while (bfs(s, t)) {
+            fill(it.begin(), it.end(), 0);
+            int f;
+            while ((f = dfs(s, t, INT_MAX)))
+                flow += f;
+        }
+
+        return flow;
+    }
+};
+//EndCodeSnip
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int n, m, e;
+    cin >> n >> m >> e;
+	
+	//BeginCodeSnip{Flow Network Construction}
+    int S = 0;
+    int T = n + m + 1;
+
+    Dinic dinic(n + m + 2);
+
+    for (int i = 0; i < e; i++) {
+        int u, v;
+        cin >> u >> v;
+        u++; v++;
+        dinic.addEdge(u, n + v, 1);
+    }
+
+    for (int i = 1; i <= n; i++)
+        dinic.addEdge(S, i, 1);
+
+    for (int i = 1; i <= m; i++)
+        dinic.addEdge(n + i, T, 1);
+	//EndCodeSnip
+	
+    cout << dinic.maxFlow(S, T) << "\n";
+
+    for (int i = 1; i <= n; i++) {
+        for (auto &e : dinic.g[i]) {
+            if (e.to > n && e.to <= n + m && e.cap == 0)
+                cout << i - 1 << " " << e.to - n - 1 << "\n";
+        }
+    }
+}
+
+```
+
+</CPPSection>
+</LanguageSection>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
