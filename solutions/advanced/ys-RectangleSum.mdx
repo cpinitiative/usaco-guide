@@ -6,7 +6,7 @@ author: Ashok Narayan
 ---
 ## Explanation
 
-We are given $N$ points on a 2D plane. Each point has coordinates $(x_i, y_i)$ and a weight $w_i$.  
+We are given $N$ points on a 2D plane. Each point has coordinates $(x_i, y_i)$ and a weight $w_i$.
 For each query `(l, d, r, u)`, we must find the **sum of weights of all points inside the rectangle**:
 
 `l ≤ x < r` and `d ≤ y < u`.
@@ -17,7 +17,7 @@ For each query `(l, d, r, u)`, we must find the **sum of weights of all points i
 
 
 
-A useful observation is that the rectangle constraint splits into an **x-range** and a **y-range**.  
+A useful observation is that the rectangle constraint splits into an **x-range** and a **y-range**.
 If we sort all points by their `x` coordinate, the condition $l ≤ x < r$ becomes a **contiguous range of indices** in the sorted array.
 
 Then the problem becomes:
@@ -32,16 +32,16 @@ Then we build a **Wavelet Tree** on the array of points (ordered by `x`). The va
 
 ### How we modify the Normal Wavelet Tree template?
 
-Normally, a Wavelet Tree can count how many values fall inside a range. 
+Normally, a Wavelet Tree can count how many values fall inside a range.
 
-But our problem requires the **sum of weights**, not just the count.  
+But our problem requires the **sum of weights**, not just the count.
 To support this, we store the additional `pref` array, where:
 
 `pref[i] = sum of weights of the first i elements in this node`
 
 
 Therefore, for each node it stores:
-- `b` —  prefix array that tells how many elements from the current prefix go to the **left child**  
+- `b` —  prefix array that tells how many elements from the current prefix go to the **left child**
 - `pref` — a prefix sum of **weights** for the elements in this segment
 
 The `b` array lets us translate a query range `[L, R]` from the current node into the correct ranges in its children while descending the tree.
@@ -80,107 +80,103 @@ Because the tree height is `O(log N)`, each query is processed efficiently.
 #include <bits/stdc++.h>
 using namespace std;
 
-//BeginCodeSnip{Our Wavelet Tree template}
+// BeginCodeSnip{Our Wavelet Tree template}
 struct WaveletTree {
-    int lo, hi;
-    WaveletTree *l, *r;
-    vector<int> b;
-    vector<long long> pref;
+	int lo, hi;
+	WaveletTree *l, *r;
+	vector<int> b;
+	vector<long long> pref;
 
-    WaveletTree(pair<int,long long>* from, pair<int,long long>* to, int x, int y) {
-        lo = x; hi = y;
-        l = r = nullptr;
+	WaveletTree(pair<int, long long> *from, pair<int, long long> *to, int x, int y) {
+		lo = x;
+		hi = y;
+		l = r = nullptr;
 
-        pref.reserve(to - from + 1);
-        pref.push_back(0);
-        for (auto it = from; it != to; ++it)
-            pref.push_back(pref.back() + it->second);
+		pref.reserve(to - from + 1);
+		pref.push_back(0);
+		for (auto it = from; it != to; ++it) pref.push_back(pref.back() + it->second);
 
-        if (lo == hi || from >= to) return;
+		if (lo == hi || from >= to) return;
 
-        int mid = (lo + hi) >> 1;
-        auto f = [&](const pair<int,long long>& e){ return e.first <= mid; };
+		int mid = (lo + hi) >> 1;
+		auto f = [&](const pair<int, long long> &e) { return e.first <= mid; };
 
-        b.reserve(to - from + 1);
-        b.push_back(0);
-        for (auto it = from; it != to; ++it)
-            b.push_back(b.back() + f(*it));
+		b.reserve(to - from + 1);
+		b.push_back(0);
+		for (auto it = from; it != to; ++it) b.push_back(b.back() + f(*it));
 
-        auto p = stable_partition(from, to, f);
-        l = new WaveletTree(from, p, lo, mid);
-        r = new WaveletTree(p, to, mid + 1, hi);
-    }
+		auto p = stable_partition(from, to, f);
+		l = new WaveletTree(from, p, lo, mid);
+		r = new WaveletTree(p, to, mid + 1, hi);
+	}
 
-    long long query(int L, int R, int d, int u) {
-        if (L > R || u < lo || d > hi) return 0;
-        if (d <= lo && hi <= u) return pref[R] - pref[L - 1];
+	long long query(int L, int R, int d, int u) {
+		if (L > R || u < lo || d > hi) return 0;
+		if (d <= lo && hi <= u) return pref[R] - pref[L - 1];
 
-        int lb = b[L - 1], rb = b[R];
-        long long res = 0;
+		int lb = b[L - 1], rb = b[R];
+		long long res = 0;
 
-        if (l) res += l->query(lb + 1, rb, d, u);
-        if (r) res += r->query(L - lb, R - rb, d, u);
+		if (l) res += l->query(lb + 1, rb, d, u);
+		if (r) res += r->query(L - lb, R - rb, d, u);
 
-        return res;
-    }
+		return res;
+	}
 };
 
 struct Point {
-    int x, y;
-    long long w;
+	int x, y;
+	long long w;
 };
-//EndCodeSnip
+// EndCodeSnip
 
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
 
-    //BeginCodeSnip{Getting input and Building the Wavelet tree}
-    int n, q;
-    cin >> n >> q;
+	// BeginCodeSnip{Getting input and Building the Wavelet tree}
+	int n, q;
+	cin >> n >> q;
 
-    vector<Point> p(n);
-    vector<int> ys(n);
+	vector<Point> p(n);
+	vector<int> ys(n);
 
-    for (int i = 0; i < n; i++) {
-        cin >> p[i].x >> p[i].y >> p[i].w;
-        ys[i] = p[i].y;
-    }
+	for (int i = 0; i < n; i++) {
+		cin >> p[i].x >> p[i].y >> p[i].w;
+		ys[i] = p[i].y;
+	}
 
-    sort(ys.begin(), ys.end());
-    ys.erase(unique(ys.begin(), ys.end()), ys.end());
+	sort(ys.begin(), ys.end());
+	ys.erase(unique(ys.begin(), ys.end()), ys.end());
 
-    sort(p.begin(), p.end(), [](const Point& a, const Point& b) {
-        return a.x < b.x;
-    });
+	sort(p.begin(), p.end(), [](const Point &a, const Point &b) { return a.x < b.x; });
 
-    vector<pair<int,long long>> a(n);
-    vector<int> xs(n);
+	vector<pair<int, long long>> a(n);
+	vector<int> xs(n);
 
-    for (int i = 0; i < n; i++) {
-        int y = lower_bound(ys.begin(), ys.end(), p[i].y) - ys.begin() + 1;
-        a[i] = {y, p[i].w};
-        xs[i] = p[i].x;
-    }
+	for (int i = 0; i < n; i++) {
+		int y = lower_bound(ys.begin(), ys.end(), p[i].y) - ys.begin() + 1;
+		a[i] = {y, p[i].w};
+		xs[i] = p[i].x;
+	}
 
-    WaveletTree wt(a.data(), a.data() + n, 1, ys.size());
-    //EndCodeSnip
+	WaveletTree wt(a.data(), a.data() + n, 1, ys.size());
+	// EndCodeSnip
 
-    int l, d, r, u, L, D, R, U;
-    while (q--) {
-        
-        cin >> l >> d >> r >> u;
+	int l, d, r, u, L, D, R, U;
+	while (q--) {
 
-        L = lower_bound(xs.begin(), xs.end(), l) - xs.begin() + 1;
-        R = lower_bound(xs.begin(), xs.end(), r) - xs.begin();
-        D = lower_bound(ys.begin(), ys.end(), d) - ys.begin() + 1;
-        U = lower_bound(ys.begin(), ys.end(), u) - ys.begin();
+		cin >> l >> d >> r >> u;
 
-        if (L > R || D > U) cout << 0 << '\n';
-        else cout << wt.query(L, R, D, U) << '\n';
-    }
+		L = lower_bound(xs.begin(), xs.end(), l) - xs.begin() + 1;
+		R = lower_bound(xs.begin(), xs.end(), r) - xs.begin();
+		D = lower_bound(ys.begin(), ys.end(), d) - ys.begin() + 1;
+		U = lower_bound(ys.begin(), ys.end(), u) - ys.begin();
+
+		if (L > R || D > U) cout << 0 << '\n';
+		else cout << wt.query(L, R, D, U) << '\n';
+	}
 }
-
 ```
 
 </CPPSection>
