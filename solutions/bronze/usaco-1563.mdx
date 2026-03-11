@@ -2,7 +2,7 @@
 id: usaco-1563
 source: USACO Bronze 2026 Second Contest
 title: It's Mooin' Time IV
-author: Sachet Abeysinghe
+author: Sachet Abeysinghe, Yiqiao Zhao
 ---
 
 [Official Analysis (C++, Java, Python)](https://usaco.org/current/data/sol_prob1_bronze_season26contest2.html)
@@ -18,6 +18,47 @@ We can solve this problem by building the string in reverse. We can determine wh
 **Time Complexity:** $\mathcal{O}(N)$
 
 <LanguageSection>
+
+<CPPSection>
+
+```cpp
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int k;
+bool flipped;
+
+void solve(){
+    int N; cin>>N;
+    string s; cin>>s;
+    cout<<"YES\n";
+    if(k == 0){
+        return;
+    }
+    vector<char> steps(N);
+    for (int i = N-1; i > -1; i--)
+    {
+        if((s[i] == 'O') ^ flipped){
+            flipped = !flipped;
+            steps[i] = 'O';
+        }else{
+            steps[i] = 'M';
+        }
+    }
+    for(int i = 0; i < N; i++){
+        cout<<steps[i];
+    }
+    cout<<'\n';
+}
+
+int main(){
+    int T; cin>>T>>k;
+    while(T--){
+        solve();
+    }
+}
+```
 
 <PySection>
 
