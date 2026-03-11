@@ -26,33 +26,32 @@ We can solve this problem by building the string in reverse. We can determine wh
 #include <bits/stdc++.h>
 using namespace std;
 
-int k;
-bool flipped;
-
-void solve() {
-	int N;
-	cin >> N;
-	string s;
-	cin >> s;
-	cout << "YES\n";
-	if (k == 0) { return; }
-	vector<char> steps(N);
-	for (int i = N - 1; i > -1; i--) {
-		if ((s[i] == 'O') ^ flipped) {
-			flipped = !flipped;
-			steps[i] = 'O';
-		} else {
-			steps[i] = 'M';
-		}
-	}
-	for (int i = 0; i < N; i++) { cout << steps[i]; }
-	cout << '\n';
-}
-
-int main() {
-	int T;
-	cin >> T >> k;
-	while (T--) { solve(); }
+int main(){
+    int k;
+    bool flipped;
+    int T; cin>>T>>k;
+    while(T--){
+        int N; cin>>N;
+        string s; cin>>s;
+        cout<<"YES\n";
+        if(k == 0){
+            continue;
+        }
+        vector<char> steps(N);
+        for (int i = N-1; i > -1; i--)
+        {
+            if((s[i] == 'O') ^ flipped){
+                flipped = !flipped;
+                steps[i] = 'O';
+            }else{
+                steps[i] = 'M';
+            }
+        }
+        for(int i = 0; i < N; i++){
+            cout<<steps[i];
+        }
+        cout<<'\n';
+    }
 }
 ```
 
