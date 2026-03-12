@@ -26,10 +26,9 @@ We can solve this problem by building the string in reverse. We can determine wh
 using namespace std;
 
 int main() {
-	int k, t;
+	int t, k;
 	cin >> t >> k;
-
-	bool flipped;
+	
 	while (t--) {
 		int n;
 		string s;
@@ -39,19 +38,26 @@ int main() {
 
 		if (k == 0) continue;
 
-		vector<char> steps(n);
+		vector<char> ans(n);
+        bool flipped = false;
 		for (int i = n - 1; i >= 0; i--) {
-			if ((s[i] == 'O') ^ flipped) {
-				flipped = !flipped;
-				steps[i] = 'O';
-			} else {
-				steps[i] = 'M';
-			}
+			if (flipped) {
+                ans[i] = (s[i] == 'O') ? 'M' : 'O';
+            } else {
+                ans[i] = s[i];
+            }
+
+            if (ans[i] == 'O') {
+                flipped = !flipped;
+            }
 		}
 
-		for (int i = 0; i < n; i++) cout << steps[i];
-		cout << '\n';
-	}
+		for (int i = 0; i < n; i++) {
+            cout << ans[i];
+        }
+
+        cout << '\n';
+    }
 }
 ```
 
