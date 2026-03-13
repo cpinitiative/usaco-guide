@@ -59,113 +59,104 @@ Eventually we find the largest `λ` such that the MST still contains at least `w
 #include <bits/stdc++.h>
 using namespace std;
 
-//BeginCodeSnip{DSU for Kruskal}
+// BeginCodeSnip{DSU for Kruskal}
 struct DSU {
-    int n, cc;
-    vector<int> par, rnk;
+	int n, cc;
+	vector<int> par, rnk;
 
-    void init(int _n) {
-        n = cc = _n;
-        rnk.assign(n + 5, 1);
-        par.resize(n + 5);
-        iota(par.begin(), par.end(), 0);
-    }
+	void init(int _n) {
+		n = cc = _n;
+		rnk.assign(n + 5, 1);
+		par.resize(n + 5);
+		iota(par.begin(), par.end(), 0);
+	}
 
-    int find(int v) {
-        return par[v] = (par[v] == v ? v : find(par[v]));
-    }
+	int find(int v) { return par[v] = (par[v] == v ? v : find(par[v])); }
 
-    bool unite(int a, int b) {
-        a = find(a);
-        b = find(b);
+	bool unite(int a, int b) {
+		a = find(a);
+		b = find(b);
 
-        if (a == b) return false;
+		if (a == b) return false;
 
-        if (rnk[a] < rnk[b]) swap(a, b);
+		if (rnk[a] < rnk[b]) swap(a, b);
 
-        par[b] = a;
-        rnk[a] += rnk[b];
-        cc--;
+		par[b] = a;
+		rnk[a] += rnk[b];
+		cc--;
 
-        return true;
-    }
+		return true;
+	}
 };
 // EndCodeSnip
 
 long long n, m, k, w, x, a, b, c;
-vector<array<long long,4>> edges;
+vector<array<long long, 4>> edges;
 DSU dsu;
 
-//BeginCodeSnip{Solve for a Lambda}
-pair<long long,long long> solve(long long lambda) {
+// BeginCodeSnip{Solve for a Lambda}
+pair<long long, long long> solve(long long lambda) {
 
-    for (auto &e : edges)
-        e[0] += -e[1] * lambda;
+	for (auto &e : edges) e[0] += -e[1] * lambda;
 
-    sort(edges.begin(), edges.end());
+	sort(edges.begin(), edges.end());
 
-    dsu.init(n);
+	dsu.init(n);
 
-    long long total = 0, cnt = 0;
+	long long total = 0, cnt = 0;
 
-    for (auto e : edges) {
-        if (dsu.unite(e[2], e[3])) {
-            total += e[0];
-            cnt += -e[1];
-        }
-    }
+	for (auto e : edges) {
+		if (dsu.unite(e[2], e[3])) {
+			total += e[0];
+			cnt += -e[1];
+		}
+	}
 
-    for (auto &e : edges)
-        e[0] -= -e[1] * lambda;
+	for (auto &e : edges) e[0] -= -e[1] * lambda;
 
-    return {total, cnt};
+	return {total, cnt};
 }
-//EndCodeSnip
+// EndCodeSnip
 
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
 
-    cin >> n >> m >> k >> w;
-    vector<bool> special(n, false);
-    
-    long long lo = -1e18, hi = 1e18, mid;
+	cin >> n >> m >> k >> w;
+	vector<bool> special(n, false);
 
-    // BeginCodeSnip{Get and Store input}
-    for (int i = 0; i < k; ++i) {
-        cin >> x;
-        --x;
-        special[x] = true;
-    }
+	long long lo = -1e18, hi = 1e18, mid;
 
-    edges.resize(m);
+	// BeginCodeSnip{Get and Store input}
+	for (int i = 0; i < k; ++i) {
+		cin >> x;
+		--x;
+		special[x] = true;
+	}
 
-    for (int i = 0; i < m; ++i) {
-        cin >> a >> b >> c;
-        --a; --b;
-        edges[i] = {c, -(special[a] ^ special[b]), a, b};
-    }
-    // EndCodeSnip
-    
-    //BeginCodeSnip{Lagrangian Relaxation}
-    while (lo + 1 < hi) {
-        mid = (lo + hi) / 2;
-        if (solve(mid).second >= w)
-            lo = mid;
-        else
-            hi = mid;
-    }
-    //EndCodeSnip
+	edges.resize(m);
 
-    auto ans = solve(lo);
+	for (int i = 0; i < m; ++i) {
+		cin >> a >> b >> c;
+		--a;
+		--b;
+		edges[i] = {c, -(special[a] ^ special[b]), a, b};
+	}
+	// EndCodeSnip
 
-    if (ans.second >= w && dsu.cc == 1)
-        cout << ans.first - w * lo << "\n";
-    else
-        cout << -1 << "\n";
+	// BeginCodeSnip{Lagrangian Relaxation}
+	while (lo + 1 < hi) {
+		mid = (lo + hi) / 2;
+		if (solve(mid).second >= w) lo = mid;
+		else hi = mid;
+	}
+	// EndCodeSnip
+
+	auto ans = solve(lo);
+
+	if (ans.second >= w && dsu.cc == 1) cout << ans.first - w * lo << "\n";
+	else cout << -1 << "\n";
 }
-
-
 ```
 
 </CPPSection>
