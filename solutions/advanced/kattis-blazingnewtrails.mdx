@@ -1,0 +1,172 @@
+---
+id: kattis-blazingnewtrails
+source: Kattis
+title: Blazing New Trails
+author: Ashok Narayan
+---
+## Explanation
+
+We are given `n` places of interest and `m` possible hiking trails between them. Among these places, `k` are marked as **special**. Each trail connects two places and has a certain cost.
+
+The goal is to build hiking trails so that:
+
+- Every place is connected to every other place.
+- There is **exactly one path between any two places**.
+- Exactly `w` trails connect a **special place and a regular place**.
+- The **total cost of the chosen trails is minimized**.
+
+---
+
+### Solving without Special Edges
+
+If we ignore the constraint on special–regular edges, the problem simply becomes finding a **Minimum Spanning Tree**, which can be solved using **Kruskal's algorithm with a DSU**.
+
+
+---
+
+### Tackling Special Edges using Lagrangian Relaxation
+
+To control the number of special–regular edges in the spanning tree, we introduce a parameter `λ`. For every edge that connects a special node with a regular node, we temporarily modify its cost by adding `λ`.
+
+So the modified cost becomes:
+
+`cost' = cost + λ * type`
+
+where `type = 1` if the edge connects a special node and a regular node, otherwise `0`.
+
+If `λ` is **large**, special edges become expensive and the MST will include fewer of them. If `λ` is **small or negative**, special edges become cheaper and the MST will include more of them. This means the number of special edges chosen in the MST changes **monotonically** with `λ`.
+
+Because of this behavior, we can **binary search on `λ`**:
+
+- Run the MST using the modified costs.
+- Count how many special edges appear in the resulting tree.
+- If the count is **at least `w`**, we increase `λ`.
+- Otherwise, we decrease `λ`.
+
+Eventually we find the largest `λ` such that the MST still contains at least `w` special edges. Since we added `λ` to each of those edges artificially, we subtract `w * λ` from the final cost to recover the real minimum cost.
+
+---
+## Implementation
+
+**Time Complexity:** $\mathcal{O}((m \log m + m \alpha(n)) \cdot \log C)$
+
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+
+#include <bits/stdc++.h>
+using namespace std;
+
+//BeginCodeSnip{DSU for Kruskal}
+struct DSU {
+    int n, cc;
+    vector<int> par, rnk;
+
+    void init(int _n) {
+        n = cc = _n;
+        rnk.assign(n + 5, 1);
+        par.resize(n + 5);
+        iota(par.begin(), par.end(), 0);
+    }
+
+    int find(int v) {
+        return par[v] = (par[v] == v ? v : find(par[v]));
+    }
+
+    bool unite(int a, int b) {
+        a = find(a);
+        b = find(b);
+
+        if (a == b) return false;
+
+        if (rnk[a] < rnk[b]) swap(a, b);
+
+        par[b] = a;
+        rnk[a] += rnk[b];
+        cc--;
+
+        return true;
+    }
+};
+// EndCodeSnip
+
+long long n, m, k, w, x, a, b, c;
+vector<array<long long,4>> edges;
+DSU dsu;
+
+//BeginCodeSnip{Solve for a Lambda}
+pair<long long,long long> solve(long long lambda) {
+
+    for (auto &e : edges)
+        e[0] += -e[1] * lambda;
+
+    sort(edges.begin(), edges.end());
+
+    dsu.init(n);
+
+    long long total = 0, cnt = 0;
+
+    for (auto e : edges) {
+        if (dsu.unite(e[2], e[3])) {
+            total += e[0];
+            cnt += -e[1];
+        }
+    }
+
+    for (auto &e : edges)
+        e[0] -= -e[1] * lambda;
+
+    return {total, cnt};
+}
+//EndCodeSnip
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    cin >> n >> m >> k >> w;
+    vector<bool> special(n, false);
+    
+    long long lo = -1e18, hi = 1e18, mid;
+
+    // BeginCodeSnip{Get and Store input}
+    for (int i = 0; i < k; ++i) {
+        cin >> x;
+        --x;
+        special[x] = true;
+    }
+
+    edges.resize(m);
+
+    for (int i = 0; i < m; ++i) {
+        cin >> a >> b >> c;
+        --a; --b;
+        edges[i] = {c, -(special[a] ^ special[b]), a, b};
+    }
+    // EndCodeSnip
+    
+    //BeginCodeSnip{Lagrangian Relaxation}
+    while (lo + 1 < hi) {
+        mid = (lo + hi) / 2;
+        if (solve(mid).second >= w)
+            lo = mid;
+        else
+            hi = mid;
+    }
+    //EndCodeSnip
+
+    auto ans = solve(lo);
+
+    if (ans.second >= w && dsu.cc == 1)
+        cout << ans.first - w * lo << "\n";
+    else
+        cout << -1 << "\n";
+}
+
+
+```
+
+</CPPSection>
+</LanguageSection>
