@@ -43,9 +43,36 @@ Because of this behavior, we can **binary search on `λ`**:
 - If the count is **at least `w`**, we increase `λ`.
 - Otherwise, we decrease `λ`.
 
+<Spoiler title="Why 'At Least' Implies 'Exactly' ?">
+
+If our binary search finishes and the constructed MST has `> w` special edges, how does our final calculation `ans.first - w * lo` still give the correct answer for exactly `w` edges?
+
+This happens when the minimum spanning tree is not unique for our optimal `λ`. It represents a collinear segment on the lower convex hull of our cost function. On this segment, multiple valid spanning trees exist with different numbers of special edges, but **they all share the exact same minimum modified cost**.
+
+Because our sorting tie-breaker strictly prioritizes special edges (`-1 < 0`), our `solve()` function deterministically finds the tree at the extreme end of this segment (maximizing special edges, where `cnt >= w`). 
+
+However, the hypothetical tree with exactly `w` special edges lies on this exact same flat segment and thus has the same modified total cost. Therefore, we don't need to explicitly construct it. We take the shared modified total cost (`ans.first`) and simply subtract the penalty for exactly `w` edges (`w * lo`) to recover the true minimum cost.
+
+</Spoiler>
+
 Eventually we find the largest `λ` such that the MST still contains at least `w` special edges. Since we added `λ` to each of those edges artificially, we subtract `w * λ` from the final cost to recover the real minimum cost.
 
 ---
+### Impossibility Check
+
+Before we binary search, we must verify if a spanning tree with exactly `w` special edges is even structurally possible. If the graph geometry forces us to use more or fewer special edges just to keep the graph connected, our binary search will push `λ` to infinity and produce an incorrect result.
+
+To prevent this, we determine the absolute boundaries for the number of special edges any valid spanning tree can contain:
+
+- **Maximum special edges:** Run Kruskal's algorithm strictly prioritizing **special edges** over **regular edges**.
+- **Minimum special edges:** Run Kruskal's algorithm strictly prioritizing **regular edges** over **special edges**.
+
+If the graph cannot be fully connected, or if `w` falls strictly outside this `[min, max]` range, it is impossible. We immediately output `-1` and terminate before any binary search occurs.
+
+
+
+---
+
 ## Implementation
 
 **Time Complexity:** $\mathcal{O}((m \log m + m \alpha(n)) \cdot \log C)$
@@ -61,32 +88,32 @@ using namespace std;
 
 // BeginCodeSnip{DSU for Kruskal}
 struct DSU {
-	int n, cc;
-	vector<int> par, rnk;
+    int n, cc;
+    vector<int> par, rnk;
 
-	void init(int _n) {
-		n = cc = _n;
-		rnk.assign(n + 5, 1);
-		par.resize(n + 5);
-		iota(par.begin(), par.end(), 0);
-	}
+    void init(int _n) {
+        n = cc = _n;
+        rnk.assign(n + 5, 1);
+        par.resize(n + 5);
+        iota(par.begin(), par.end(), 0);
+    }
 
-	int find(int v) { return par[v] = (par[v] == v ? v : find(par[v])); }
+    int find(int v) { return par[v] = (par[v] == v ? v : find(par[v])); }
 
-	bool unite(int a, int b) {
-		a = find(a);
-		b = find(b);
+    bool unite(int a, int b) {
+        a = find(a);
+        b = find(b);
 
-		if (a == b) return false;
+        if (a == b) return false;
 
-		if (rnk[a] < rnk[b]) swap(a, b);
+        if (rnk[a] < rnk[b]) swap(a, b);
 
-		par[b] = a;
-		rnk[a] += rnk[b];
-		cc--;
+        par[b] = a;
+        rnk[a] += rnk[b];
+        cc--;
 
-		return true;
-	}
+        return true;
+    }
 };
 // EndCodeSnip
 
@@ -97,65 +124,112 @@ DSU dsu;
 // BeginCodeSnip{Solve for a Lambda}
 pair<long long, long long> solve(long long lambda) {
 
-	for (auto &e : edges) e[0] += -e[1] * lambda;
+    for (auto &e : edges) e[0] += -e[1] * lambda;
 
-	sort(edges.begin(), edges.end());
+    sort(edges.begin(), edges.end());
 
-	dsu.init(n);
+    dsu.init(n);
 
-	long long total = 0, cnt = 0;
+    long long total = 0, cnt = 0;
 
-	for (auto e : edges) {
-		if (dsu.unite(e[2], e[3])) {
-			total += e[0];
-			cnt += -e[1];
-		}
-	}
+    for (auto e : edges) {
+        if (dsu.unite(e[2], e[3])) {
+            total += e[0];
+            cnt += -e[1];
+        }
+    }
 
-	for (auto &e : edges) e[0] -= -e[1] * lambda;
+    for (auto &e : edges) e[0] -= -e[1] * lambda;
 
-	return {total, cnt};
+    return {total, cnt};
 }
 // EndCodeSnip
 
 int main() {
-	ios::sync_with_stdio(false);
-	cin.tie(nullptr);
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
 
-	cin >> n >> m >> k >> w;
-	vector<bool> special(n, false);
+    cin >> n >> m >> k >> w;
+    vector<bool> special(n, false);
 
-	long long lo = -1e18, hi = 1e18, mid;
+    long long lo = -1e18, hi = 1e18, mid;
 
-	// BeginCodeSnip{Get and Store input}
-	for (int i = 0; i < k; ++i) {
-		cin >> x;
-		--x;
-		special[x] = true;
-	}
+    // BeginCodeSnip{Get and Store input}
+    for (int i = 0; i < k; ++i) {
+        cin >> x;
+        --x;
+        special[x] = true;
+    }
 
-	edges.resize(m);
+    edges.resize(m);
 
-	for (int i = 0; i < m; ++i) {
-		cin >> a >> b >> c;
-		--a;
-		--b;
-		edges[i] = {c, -(special[a] ^ special[b]), a, b};
-	}
-	// EndCodeSnip
+    for (int i = 0; i < m; ++i) {
+        cin >> a >> b >> c;
+        --a;
+        --b;
+        edges[i] = {c, -(special[a] ^ special[b]), a, b};
+    }
+    // EndCodeSnip
 
-	// BeginCodeSnip{Lagrangian Relaxation}
-	while (lo + 1 < hi) {
-		mid = (lo + hi) / 2;
-		if (solve(mid).second >= w) lo = mid;
-		else hi = mid;
-	}
-	// EndCodeSnip
+    // BeginCodeSnip{Impossibility Check}
+    
+    // Force Special edges before regular edges
+    sort(edges.begin(), edges.end(), [](const array<long long, 4>& x, const array<long long, 4>& y) {
+        if (x[1] != y[1]) return x[1] < y[1]; 
+        return x[0] < y[0];
+    });
+    dsu.init(n);
+    long long max_special = 0, edges_used = 0;
+    for (auto e : edges) {
+        if (dsu.unite(e[2], e[3])) {
+            max_special += -e[1];
+            edges_used++;
+        }
+    }
+    
+    // If we can't even connect the graph, it's impossible
+    if (edges_used != n - 1) {
+        cout << -1 << "\n";
+        return 0;
+    }
 
-	auto ans = solve(lo);
+    // Force regular edges before special edges
+    sort(edges.begin(), edges.end(), [](const array<long long, 4>& x, const array<long long, 4>& y) {
+        if (x[1] != y[1]) return x[1] > y[1]; 
+        return x[0] < y[0];
+    });
 
-	if (ans.second >= w && dsu.cc == 1) cout << ans.first - w * lo << "\n";
-	else cout << -1 << "\n";
+    dsu.init(n);
+    long long min_special = 0;
+    for (auto e : edges) {
+        if (dsu.unite(e[2], e[3])) {
+            min_special += -e[1]; 
+        }
+    }
+
+    // If w is strictly outside the bounds, it's structurally impossible
+    if (w < min_special || w > max_special) {
+        cout << -1 << "\n";
+        return 0;
+    }
+   
+
+    // Reset edges type
+    for (auto &e : edges) e[1] = -(special[e[2]] ^ special[e[3]]);
+    // EndCodeSnip
+
+    // BeginCodeSnip{Lagrangian Relaxation}
+    while (lo + 1 < hi) {
+        mid = (lo + hi) / 2;
+        if (solve(mid).second >= w) lo = mid;
+        else hi = mid;
+    }
+    // EndCodeSnip
+
+    auto ans = solve(lo);
+
+    if (ans.second >= w && dsu.cc == 1) cout << ans.first - w * lo << "\n";
+    else cout << -1 << "\n";
 }
 ```
 
